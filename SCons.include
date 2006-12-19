@@ -1,0 +1,138 @@
+import os
+import re
+
+def _makedef(target, source, env):
+  dll = str(target[0])
+  if dll.endswith(".def"):
+      dll = dll[:-4] + '.dll'
+  infh = open(str(source[0]), "r")
+  outfh = open(str(target[0]), "w")
+  print >> outfh, "LIBRARY %s" % dll
+  print >> outfh, "EXPORTS"
+  srch = re.compile("\s*\w+.*\s+(\w+)\(")
+  for line in infh:
+      m = srch.match(line)
+      if m:
+          print >> outfh, "  %s" % m.group(1)
+
+class WineEnvironment(Environment):
+    """Environment to build Windows binaries under Linux, by running the
+       MSVC compiler (cl) and linker (link) through wine, using the w32cc
+       and w32link shell scripts"""
+    def __init__(self, platform='win32', CC='w32cc', LINK='w32link', **kw):
+        Environment.__init__(self, platform=platform, CC=CC, LINK=LINK, **kw)
+        posix_env = Environment(platform='posix')
+        self['SHLIBPREFIX'] = self['LIBLINKPREFIX'] = 'lib'
+        self['LIBSUFFIX'] = '.lib'
+        self['PSPAWN'] = posix_env['PSPAWN']
+        self['SPAWN'] = posix_env['SPAWN']
+        self['SHELL'] = posix_env['SHELL']
+        self['ENV'] = posix_env['ENV']
+
+def get_modeller_config():
+    if ARGUMENTS.has_key('modsource'):
+        modsource = ARGUMENTS['modsource']
+    else:
+        try:
+            modsource = os.environ['MODINSTALLSVN']
+        except KeyError:
+            raise KeyError, \
+                """Could not determine Modeller source location - 
+                   specify with 'scons modsource=/home/modeller' or similar"""
+
+    if ARGUMENTS.has_key('modinstall'):
+        modinstall = ARGUMENTS['modinstall']
+    else:
+        modinstall = modsource
+
+    (fhin, fhout, fherr) = os.popen3("%s/bin/modSVN -" % modsource)
+    print >> fhin, "print 'EXE type: ', info.exe_type"
+    fhin.close()
+    err = fherr.read()
+    if err:
+        raise IOError, ("Error running Modeller: " + err)
+    for line in fhout:
+        if line.startswith("EXE type"):
+            exetype=line[11:].rstrip('\r\n')
+    include = ['%s/src/include' % modsource,
+               '%s/src/include/%s' % (modsource, exetype)]
+    bin = '%s/bin' % modsource
+    if exetype == 'i386-w32':
+        libpath = ['%s/src/main' % modsource]
+        libinstall = '%s/bin' % modinstall
+    else:
+        libpath = ['%s/lib/%s' % (modsource, exetype)]
+        libinstall = '%s/lib/%s' % (modinstall, exetype)
+    libs = ["modeller"]
+    pyinstall = '%s/modlib' % modinstall
+    if exetype == 'mac10v4-xlf':
+        libs += ["hdf5", "hdf5_hl"]
+    elif exetype == 'mac10v4-intel':
+        libs += ["hdf5", "hdf5_hl", "imf", "svml", "ifcore", "irc"]
+    return {'include':include, 'libpath':libpath, 'libs':libs,
+            'exetype':exetype, 'bin':bin, 'libinstall':libinstall,
+            'pyinstall':pyinstall}
+
+def is_wine_platform(modconfig):
+    import SCons.Platform
+    return modconfig['exetype'] == 'i386-w32' \
+           and SCons.Platform.platform_default() == 'posix'
+
+def get_python_include(modconfig):
+    if is_wine_platform(modconfig):
+        return '/usr/lib/w32comp/w32python/2.4/include/'
+    else:
+        import distutils.sysconfig
+        return distutils.sysconfig.get_python_inc()
+
+def CheckGNUHash(context):
+    """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
+    context.Message('Checking whether GNU_HASH linking should be disabled...')
+    lastLINKFLAGS = context.env['LINKFLAGS']
+    context.env.Append(LINKFLAGS="-Wl,--hash-style=sysv")
+    text = """
+int main(void)
+{ return 0; }
+"""
+    res = context.TryLink(text, '.c')
+    if not res:
+        context.Result("no")
+        context.env.Replace(LINKFLAGS=lastLINKFLAGS)
+    else:
+        context.Result("yes")
+    return res
+
+def MyEnvironment(modconfig, *args, **kw):
+    import platform
+    if is_wine_platform(modconfig):
+        env = WineEnvironment(*args, **kw)
+        env.is_wine = True
+    else:
+        env = Environment(*args, **kw)
+        env.is_wine = False
+    env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
+
+    conf = env.Configure(custom_tests = {'CheckGNUHash': CheckGNUHash})
+    if platform.system() == 'Linux':
+        conf.CheckGNUHash()
+    conf.Finish()
+
+    return env
+
+def configure_for_pyext(env, modconfig):
+    """Set environment variables to build a Python extension."""
+    env = env.Copy()
+    if env.is_wine:
+        env['SHLIBSUFFIX'] = '.pyd'
+    else:
+        if modconfig['exetype'].startswith('rs6000'):
+            env['ENV']['PATH'] += ':/usr/vac/bin'
+        from distutils.sysconfig import get_config_vars
+        vars = get_config_vars('CC', 'OPT', 'BASECFLAGS', 'LDSHARED', 'SO')
+        (cc, opt, basecflags, ldshared, so) = vars
+        env['CC'] = cc
+        env['SHLINK'] = ldshared
+        env['SHLINKFLAGS'] = []
+        env['SHLIBSUFFIX'] = so
+        env['CPPFLAGS'] = basecflags + " " + opt
+    return env
