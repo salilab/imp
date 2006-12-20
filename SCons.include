@@ -49,11 +49,15 @@ def get_modeller_config():
     print >> fhin, "print 'EXE type: ', info.exe_type"
     fhin.close()
     err = fherr.read()
-    if err:
-        raise IOError, ("Error running Modeller: " + err)
+    exetype = None
     for line in fhout:
         if line.startswith("EXE type"):
             exetype=line[11:].rstrip('\r\n')
+    if exetype is None:
+        if err:
+            raise IOError, ("Error running Modeller: " + err)
+        else:
+            raise IOError, "Unknown error running Modeller"
     include = ['%s/src/include' % modsource,
                '%s/src/include/%s' % (modsource, exetype)]
     bin = '%s/bin' % modsource
