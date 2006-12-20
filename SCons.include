@@ -1,19 +1,22 @@
+"""Utility functions used by all TNT modules"""
+
 import os
 import re
 
 def _makedef(target, source, env):
-  dll = str(target[0])
-  if dll.endswith(".def"):
-      dll = dll[:-4] + '.dll'
-  infh = open(str(source[0]), "r")
-  outfh = open(str(target[0]), "w")
-  print >> outfh, "LIBRARY %s" % dll
-  print >> outfh, "EXPORTS"
-  srch = re.compile("\s*\w+.*\s+(\w+)\(")
-  for line in infh:
-      m = srch.match(line)
-      if m:
-          print >> outfh, "  %s" % m.group(1)
+    """Build a Windows .def file (DLL exports file) from a header file"""
+    dll = str(target[0])
+    if dll.endswith(".def"):
+        dll = dll[:-4] + '.dll'
+    infh = open(str(source[0]), "r")
+    outfh = open(str(target[0]), "w")
+    print >> outfh, "LIBRARY %s" % dll
+    print >> outfh, "EXPORTS"
+    srch = re.compile("\s*\w+.*\s+(\w+)\(")
+    for line in infh:
+        m = srch.match(line)
+        if m:
+            print >> outfh, "  %s" % m.group(1)
 
 class WineEnvironment(Environment):
     """Environment to build Windows binaries under Linux, by running the
@@ -30,6 +33,8 @@ class WineEnvironment(Environment):
         self['ENV'] = posix_env['ENV']
 
 def get_modeller_config():
+    """Figure out where the Modeller source code is, and where it is
+       installed."""
     if ARGUMENTS.has_key('modsource'):
         modsource = ARGUMENTS['modsource']
     else:
@@ -78,11 +83,13 @@ def get_modeller_config():
             'pyinstall':pyinstall}
 
 def is_wine_platform(modconfig):
+    """Return True if we are building Windows executables on Linux/Wine"""
     import SCons.Platform
     return modconfig['exetype'] == 'i386-w32' \
            and SCons.Platform.platform_default() == 'posix'
 
 def get_python_include(modconfig):
+    """Get the directory containing Python.h"""
     if is_wine_platform(modconfig):
         return '/usr/lib/w32comp/w32python/2.4/include/'
     else:
@@ -107,6 +114,7 @@ int main(void)
     return res
 
 def MyEnvironment(modconfig, *args, **kw):
+    """Create an environment suitable for building TNT modules"""
     import platform
     if is_wine_platform(modconfig):
         env = WineEnvironment(*args, **kw)
@@ -129,23 +137,31 @@ def configure_for_pyext(env, modconfig):
     from platform import system
     e = env.Copy()
     e['SHLIBPREFIX'] = ''
+    # We're not going to link against the extension, so don't need a Windows
+    # import library (.lib file):
     e['no_import_lib'] = 1
     platform = e['PLATFORM']
     if e.is_wine:
         e['SHLIBSUFFIX'] = '.pyd'
     else:
         if platform == 'aix':
+            # Make sure compilers are in the PATH, so that Python's script for
+            # building AIX extension modules can find them:
             e['ENV']['PATH'] += ':/usr/vac/bin'
         from distutils.sysconfig import get_config_vars
         vars = get_config_vars('CC', 'OPT', 'BASECFLAGS', 'LDSHARED', 'SO')
         (cc, opt, basecflags, ldshared, so) = vars
+        # Don't require stack protector stuff on Linux, as this adds a
+        # requirement for glibc-2.4:
         opt = opt.replace("-fstack-protector", "")
         e['CC'] = cc
         e['SHLIBSUFFIX'] = so
         e['CPPFLAGS'] = basecflags + " " + opt
+        # Default link flags on OS X don't work for us:
         if platform == 'darwin':
             e['SHLINKFLAGS'] = \
                      '$LINKFLAGS -bundle -flat_namespace -undefined suppress'
+        # Don't set link flags on Linux, as that would negate our GNU_HASH check
         elif system() != "Linux":
             e['SHLINKFLAGS'] = []
             e['SHLINK'] = ldshared
