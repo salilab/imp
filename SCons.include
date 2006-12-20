@@ -121,18 +121,20 @@ def MyEnvironment(modconfig, *args, **kw):
 
 def configure_for_pyext(env, modconfig):
     """Set environment variables to build a Python extension."""
-    env = env.Copy()
-    if env.is_wine:
-        env['SHLIBSUFFIX'] = '.pyd'
+    e = env.Copy()
+    e['SHLIBPREFIX'] = ''
+    e['no_import_lib'] = 1
+    if e.is_wine:
+        e['SHLIBSUFFIX'] = '.pyd'
     else:
         if modconfig['exetype'].startswith('rs6000'):
-            env['ENV']['PATH'] += ':/usr/vac/bin'
+            e['ENV']['PATH'] += ':/usr/vac/bin'
         from distutils.sysconfig import get_config_vars
         vars = get_config_vars('CC', 'OPT', 'BASECFLAGS', 'LDSHARED', 'SO')
         (cc, opt, basecflags, ldshared, so) = vars
-        env['CC'] = cc
-        env['SHLINK'] = ldshared
-        env['SHLINKFLAGS'] = []
-        env['SHLIBSUFFIX'] = so
-        env['CPPFLAGS'] = basecflags + " " + opt
-    return env
+        e['CC'] = cc
+        e['SHLINK'] = ldshared
+        e['SHLINKFLAGS'] = []
+        e['SHLIBSUFFIX'] = so
+        e['CPPFLAGS'] = basecflags + " " + opt
+    return e
