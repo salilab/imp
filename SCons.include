@@ -126,6 +126,7 @@ def MyEnvironment(modconfig, *args, **kw):
 
 def configure_for_pyext(env, modconfig):
     """Set environment variables to build a Python extension."""
+    from platform import system
     e = env.Copy()
     e['SHLIBPREFIX'] = ''
     e['no_import_lib'] = 1
@@ -138,13 +139,14 @@ def configure_for_pyext(env, modconfig):
         from distutils.sysconfig import get_config_vars
         vars = get_config_vars('CC', 'OPT', 'BASECFLAGS', 'LDSHARED', 'SO')
         (cc, opt, basecflags, ldshared, so) = vars
+        opt = opt.replace("-fstack-protector", "")
         e['CC'] = cc
-        e['SHLINKFLAGS'] = []
         e['SHLIBSUFFIX'] = so
         e['CPPFLAGS'] = basecflags + " " + opt
         if platform == 'darwin':
             e['SHLINKFLAGS'] = \
                      '$LINKFLAGS -bundle -flat_namespace -undefined suppress'
-        else:
+        elif system() != "Linux":
+            e['SHLINKFLAGS'] = []
             e['SHLINK'] = ldshared
     return e
