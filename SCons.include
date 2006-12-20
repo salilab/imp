@@ -114,7 +114,7 @@ def MyEnvironment(modconfig, *args, **kw):
     else:
         env = Environment(*args, **kw)
         env.is_wine = False
-    env['SHLINKFLAGS'] = env['SHLINKFLAGS'].replace(' -no_archive', '')
+    env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace(' -no_archive', '')
     env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
 
     conf = env.Configure(custom_tests = {'CheckGNUHash': CheckGNUHash})
