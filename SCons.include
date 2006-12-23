@@ -124,6 +124,8 @@ def MyEnvironment(modconfig, *args, **kw):
         env.is_wine = False
     env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace(' -no_archive', '')
     env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
+    if env['CC'] == 'gcc':
+        env.Append(CCFLAGS="-Wall")
 
     conf = env.Configure(custom_tests = {'CheckGNUHash': CheckGNUHash})
     if platform.system() == 'Linux':
