@@ -31,6 +31,8 @@ class WineEnvironment(Environment):
         self['SPAWN'] = posix_env['SPAWN']
         self['SHELL'] = posix_env['SHELL']
         self['ENV'] = posix_env['ENV']
+        # Make sure we get the same Windows C library as Modeller
+        self.Append(CFLAGS="/MD")
 
 def get_modeller_config():
     """Figure out where the Modeller source code is, and where it is
@@ -69,9 +71,14 @@ def get_modeller_config():
     if exetype == 'i386-w32':
         libpath = ['%s/src/main' % modsource]
         libinstall = '%s/bin' % modinstall
+        # Don't link with -lm on Windows, since that pulls in some weird
+        # Intel Fortran file, which in turn is linked against the wrong C
+        # library
+        libm = []
     else:
         libpath = ['%s/lib/%s' % (modsource, exetype)]
         libinstall = '%s/lib/%s' % (modinstall, exetype)
+        libm = ['m']
     libs = ["modeller"]
     pyinstall = '%s/modlib' % modinstall
     if exetype == 'mac10v4-xlf':
@@ -80,7 +87,7 @@ def get_modeller_config():
         libs += ["hdf5", "hdf5_hl", "imf", "svml", "ifcore", "irc"]
     return {'include':include, 'libpath':libpath, 'libs':libs,
             'exetype':exetype, 'bin':bin, 'libinstall':libinstall,
-            'pyinstall':pyinstall}
+            'pyinstall':pyinstall, 'libm':libm}
 
 def is_wine_platform(modconfig):
     """Return True if we are building Windows executables on Linux/Wine"""
