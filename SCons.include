@@ -141,6 +141,8 @@ def MyEnvironment(modconfig, *args, **kw):
     elif sys == 'SunOS':
         # Find locally-installed libraries in /usr/local (e.g. for SWIG)
         env['ENV']['LD_LIBRARY_PATH'] = '/usr/local/lib'
+    if os.environ.has_key('EXECUTABLE_TYPESVN'):
+        env['ENV']['EXECUTABLE_TYPESVN'] = os.environ['EXECUTABLE_TYPESVN']
     conf.Finish()
 
     return env
