@@ -18,6 +18,14 @@ def _makedef(target, source, env):
         if m:
             print >> outfh, "  %s" % m.group(1)
 
+import SCons.Script
+_SWIGScanner = SCons.Scanner.ClassicCPP(
+    "SWIGScan",
+    ".i",
+    "CPPPATH",
+    '^[ \t]*[%,#][ \t]*(?:include|import)[ \t]*(<|")([^>"]+)(>|")'
+)
+
 class WineEnvironment(Environment):
     """Environment to build Windows binaries under Linux, by running the
        MSVC compiler (cl) and linker (link) through wine, using the w32cc
@@ -131,6 +139,7 @@ def MyEnvironment(modconfig, *args, **kw):
         env.is_wine = False
     env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace(' -no_archive', '')
     env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
+    env.Append(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall")
 
