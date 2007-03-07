@@ -12,7 +12,7 @@ def _makedef(target, source, env):
     outfh = open(str(target[0]), "w")
     print >> outfh, "LIBRARY %s" % dll
     print >> outfh, "EXPORTS"
-    srch = re.compile("\s*\w+.*\s+(\w+)\(")
+    srch = re.compile("\s*\w+.*\s+\**(\w+)\(")
     for line in infh:
         m = srch.match(line)
         if m:
