@@ -88,14 +88,14 @@ def get_modeller_config():
         libinstall = '%s/lib/%s' % (modinstall, exetype)
         libm = ['m']
     libs = ["modeller"]
-    pyinstall = '%s/modlib' % modinstall
+    pyinstall = modlib = '%s/modlib' % modinstall
     if exetype == 'mac10v4-xlf':
         libs += ["hdf5", "hdf5_hl"]
     elif exetype == 'mac10v4-intel':
         libs += ["hdf5", "hdf5_hl", "imf", "svml", "ifcore", "irc"]
     return {'include':include, 'libpath':libpath, 'libs':libs,
             'exetype':exetype, 'bin':bin, 'libinstall':libinstall,
-            'pyinstall':pyinstall, 'libm':libm}
+            'pyinstall':pyinstall, 'modlib':modlib, 'libm':libm}
 
 def is_wine_platform(modconfig):
     """Return True if we are building Windows executables on Linux/Wine"""
