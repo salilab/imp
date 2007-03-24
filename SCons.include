@@ -3,20 +3,21 @@
 import os
 import re
 
-def _makedef(target, source, env):
-    """Build a Windows .def file (DLL exports file) from a header file"""
+def _makedef(target, sources, env):
+    """Build a Windows .def file (DLL exports file) from header files"""
     dll = str(target[0])
     if dll.endswith(".def"):
         dll = dll[:-4] + '.dll'
-    infh = open(str(source[0]), "r")
     outfh = open(str(target[0]), "w")
     print >> outfh, "LIBRARY %s" % dll
     print >> outfh, "EXPORTS"
-    srch = re.compile("\s*\w+.*\s+\**(\w+)\(")
-    for line in infh:
-        m = srch.match(line)
-        if m:
-            print >> outfh, "  %s" % m.group(1)
+    for source in sources:
+        infh = open(str(source), "r")
+        srch = re.compile("\s*\w+.*\s+\**(\w+)\(")
+        for line in infh:
+            m = srch.match(line)
+            if m:
+                print >> outfh, "  %s" % m.group(1)
 
 import SCons.Script
 _SWIGScanner = SCons.Scanner.ClassicCPP(
