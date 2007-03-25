@@ -3,7 +3,7 @@
 import os
 import re
 
-def _makedef(target, sources, env):
+def _makedef(target, source, env):
     """Build a Windows .def file (DLL exports file) from header files"""
     dll = str(target[0])
     if dll.endswith(".def"):
@@ -11,9 +11,9 @@ def _makedef(target, sources, env):
     outfh = open(str(target[0]), "w")
     print >> outfh, "LIBRARY %s" % dll
     print >> outfh, "EXPORTS"
-    for source in sources:
-        infh = open(str(source), "r")
-        srch = re.compile("\s*\w+.*\s+\**(\w+)\(")
+    srch = re.compile("\s*\w+.*\s+\**(\w+)\(")
+    for s in source:
+        infh = open(str(s), "r")
         for line in infh:
             m = srch.match(line)
             if m:
