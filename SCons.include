@@ -91,9 +91,9 @@ def get_modeller_config():
     libs = ["modeller"]
     pyinstall = modlib = '%s/modlib' % modinstall
     if exetype == 'mac10v4-xlf':
-        libs += ["hdf5", "hdf5_hl"]
+        libs += ["hdf5", "hdf5_hl", "saxs"]
     elif exetype == 'mac10v4-intel':
-        libs += ["hdf5", "hdf5_hl", "imf", "svml", "ifcore", "irc"]
+        libs += ["hdf5", "hdf5_hl", "saxs", "imf", "svml", "ifcore", "irc"]
     return {'include':include, 'libpath':libpath, 'libs':libs,
             'exetype':exetype, 'bin':bin, 'libinstall':libinstall,
             'pyinstall':pyinstall, 'modlib':modlib, 'libm':libm}
