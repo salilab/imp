@@ -3,7 +3,7 @@
 use strict;
 use File::Compare;
 
-my @cfiles = glob("src/*.c src/*/*.c");
+my @cfiles = glob("src/*.c src/*/*.c *.cpp *.c");
 
 foreach my $file (@cfiles) {
   check_c_file($file);
@@ -28,7 +28,10 @@ sub check_c_file {
   my $indent_opts = "-kr -i2 -nut -ncs -cp0 -l79 -T dstr -T strpool ".
                     "-T fpos_t -T FILE -T mbool -T hid_t -T hsize_t ".
                     "-T herr_t -T H5E_error_t -T GString -T gboolean ".
-                    "-T GError -T gchar -T GArray -T GScanner";
+                    "-T GError -T gchar -T GArray -T GScanner -T Model ".
+                    "-T bool -T Indexes_Generator -T Array_Obj_Array ".
+                    "-T Math_Form -T Float_Array -T Const_Float_Array ".
+                    "-T Restraint_Set";
   if (system("indent $indent_opts < $filename > $newfile") != 0) {
     die "Cannot fork: $?";
   }
