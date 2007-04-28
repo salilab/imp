@@ -107,7 +107,7 @@ def is_wine_platform(modconfig):
 def get_python_include(modconfig):
     """Get the directory containing Python.h"""
     if is_wine_platform(modconfig):
-        return '/usr/lib/w32comp/w32python/2.4/include/'
+        return '/usr/lib/w32comp/w32python/2.5/include/'
     else:
         import distutils.sysconfig
         return distutils.sysconfig.get_python_inc()
