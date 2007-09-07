@@ -31,7 +31,7 @@ sub check_c_file {
                     "-T GError -T gchar -T GArray -T GScanner -T Model ".
                     "-T bool -T Indexes_Generator -T Array_Obj_Array ".
                     "-T Math_Form -T Float_Array -T Const_Float_Array ".
-                    "-T Restraint_Set";
+                    "-T Restraint_Set -T mod_mdt";
   if (system("indent $indent_opts < $filename > $newfile") != 0) {
     die "Cannot fork: $?";
   }
