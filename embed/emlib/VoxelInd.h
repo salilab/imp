@@ -11,6 +11,8 @@
 
   OVERVIEW TEXT
 
+  responsibilities: holds and manage a voxel index
+
 */
 
 #include <iostream>
@@ -71,6 +73,6 @@ public:
   
 
 private:
-  int v[3];
+  int v[3]; // the oder is ZYX
 };
 #endif //_VOXELIND_H
