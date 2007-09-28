@@ -6,7 +6,6 @@ import os
 # set the appropriate search path
 import sys
 sys.path.append("../python_libs")
-sys.path.append("../../")
 import IMP_Modeller_Intf
 import IMP_Test, imp2
 

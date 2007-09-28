@@ -12,9 +12,14 @@ Export('env', 'modconfig', 'pythoninc', 'configure_for_pyext',
        'is_wine_platform')
 
 # Subdirectories to build:
-src = SConscript('IMP/SConscript')
+bin = SConscript('bin/SConscript')
+Export('bin')
+src, pyext = SConscript('IMP/SConscript')
 SConscript('IMP_mov/SConscript')
 SConscript('doc/SConscript')
 
-# Build the library (src directory) and Python extension by default:
-env.Default(src)
+# bin script first require libraries to be built:
+env.Depends(bin, [src, pyext])
+
+# Build the binaries by default:
+env.Default(bin)
