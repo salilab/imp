@@ -1,6 +1,7 @@
 import modeller, unittest
 import modeller
 import modeller.optimizers
+import os
 
 # set the appropriate search path
 import sys
@@ -141,6 +142,7 @@ class test_pair_connectivity(IMP_Test.IMPTestCase):
         self.modeller_model.write (file='out_pair_connectivity.pdb', model_format='PDB')
 
         coords = self.LoadCoordinates('out_pair_connectivity.pdb')
+        os.unlink('out_pair_connectivity.pdb')
 
         # min distances
         min_dist = []

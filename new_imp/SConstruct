@@ -12,3 +12,7 @@ Export('env', 'modconfig', 'pythoninc', 'configure_for_pyext',
 
 # Subdirectories to build:
 src = SConscript('IMP/SConscript')
+SConscript('IMP_mov/SConscript')
+
+# Build the library (src directory) and Python extension by default:
+env.Default(src)

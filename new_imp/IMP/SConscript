@@ -17,4 +17,9 @@ lib = e.SharedLibrary('_imp2', files + ('imp.i',),
 # Install the Python extension and any .py files:
 libinst = e.Install(modconfig['libinstall'], lib)
 e.Alias('install', [libinst])
+
+# Subdirectories:
+test = SConscript('tests/SConscript')
+e.Depends(test, lib)
+
 Return('lib')

@@ -1,6 +1,7 @@
 import modeller, unittest
 import modeller
 import modeller.optimizers
+import os
 
 # set the appropriate search path
 import sys
@@ -103,6 +104,7 @@ class test_proximity(IMP_Test.IMPTestCase):
         self.modeller_model.write (file='out_proximity.pdb', model_format='PDB')
 
         coords = self.LoadCoordinates('out_proximity.pdb')
+        os.unlink('out_proximity.pdb')
 
         # min distances
         for i in range(len(coords)):

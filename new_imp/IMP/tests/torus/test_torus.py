@@ -1,6 +1,7 @@
 import modeller, unittest
 import modeller
 import modeller.optimizers
+import os
 
 # set the appropriate search path
 import sys
@@ -61,6 +62,7 @@ class test_torus(IMP_Test.IMPTestCase):
         coords = self.LoadCoordinates('out_torus.pdb')
         for coord in coords:
             self.assert_(self.TestInTorus(coord, 50, 10), "in torus condition")
+        os.unlink('out_torus.pdb')
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 import modeller, unittest
 import modeller
 import modeller.optimizers
+import os
 
 # set the appropriate search path
 import sys
@@ -60,6 +61,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '>=', 8.0, 1, 0, 0), "x-min condition")
         rs.set_is_active(False)
+        os.unlink('out_x_min.pdb')
 
     # x max
     def test_x_max(self):
@@ -85,6 +87,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '<=', -8.0, 1, 0, 0), "x-max condition")
         rs.set_is_active(False)
+        os.unlink('out_x_max.pdb')
 
 
     # y min
@@ -111,6 +114,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '>=', 8.0, 0, 1, 0), "y-min condition")
         rs.set_is_active(False)
+        os.unlink('out_y_min.pdb')
 
     # y max
     def test_y_max(self):
@@ -136,6 +140,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '<=', -8.0, 0, 1, 0), "y-max condition")
         rs.set_is_active(False)
+        os.unlink('out_y_max.pdb')
 
     # z min
     def test_z_min(self):
@@ -161,6 +166,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '>=', 8.0, 0, 0, 1), "z-min condition")
         rs.set_is_active(False)
+        os.unlink('out_z_min.pdb')
 
     # z max
     def test_z_max(self):
@@ -186,6 +192,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '<=', -8.0, 0, 0, 1), "z-max condition")
         rs.set_is_active(False)
+        os.unlink('out_z_max.pdb')
 
     # xy radial
     def test_xy_radial(self):
@@ -211,6 +218,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '<=', 8.1, 1, 1, 0), "xy_radial condition")
         rs.set_is_active(False)
+        os.unlink('out_xy_radial.pdb')
 
     # xz radial
     def test_xz_radial(self):
@@ -236,6 +244,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '<=', 8.1, 1, 0, 1), "xz_radial condition")
         rs.set_is_active(False)
+        os.unlink('out_xz_radial.pdb')
 
     # yz radial
     def test_yz_radial(self):
@@ -261,6 +270,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '<=', 8.1, 0, 1, 1), "yz_radial condition")
         rs.set_is_active(False)
+        os.unlink('out_yz_radial.pdb')
 
     # xyz sphere
     def test_xyz_sphere(self):
@@ -286,6 +296,7 @@ class test_coordinate(IMP_Test.IMPTestCase):
         for coord in coords:
             self.assert_(self.TestAbsPos(coord, '<=', 8.1, 1, 1, 1), "xyz_sphere condition")
         rs.set_is_active(False)
+        os.unlink('out_xyz_sphere.pdb')
 
 if __name__ == '__main__':
     unittest.main()
