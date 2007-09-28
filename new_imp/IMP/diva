@@ -1,0 +1,7 @@
+# a bit of a misnomer since this should be run from synth
+# but it will allow the compiled lib to be used on the
+# cluster through diva. diva is a Sun so you cannot compile
+# there since the cluster is linux x86 machines.
+source run_swig
+source synth_compile_imp
+source diva_link_imp

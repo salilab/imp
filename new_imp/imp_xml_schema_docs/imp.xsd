@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by NIH (NIH) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="imp">
+		<xs:annotation>
+			<xs:documentation>schema for IMP particles and restraints</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:sequence>
+					<xs:element name="Particles" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Particle" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="float" minOccurs="0" maxOccurs="unbounded">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="value" type="xs:float" default="0.0" minOccurs="0"/>
+														<xs:element name="optimize" type="xs:boolean" default="true" minOccurs="0"/>
+													</xs:sequence>
+													<xs:attribute name="name" type="xs:string"/>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="int" minOccurs="0" maxOccurs="unbounded">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="value" type="xs:integer"/>
+													</xs:sequence>
+													<xs:attribute name="name" type="xs:string"/>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="string" minOccurs="0" maxOccurs="unbounded">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="value" type="xs:string"/>
+													</xs:sequence>
+													<xs:attribute name="name" type="xs:string"/>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:attribute name="id" type="xs:integer"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:sequence>
+					<xs:element name="Restraint_Set" minOccurs="0" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="distance_restraint" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="particle_pairs">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="pair" maxOccurs="unbounded"/>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="score_func" type="xs:string"/>
+											<xs:choice>
+												<xs:element name="distance" type="xs:float"/>
+												<xs:element name="distance_attribute" type="xs:string"/>
+											</xs:choice>
+											<xs:element name="sd" type="xs:float"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="torus_restraint" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="particle_list"/>
+											<xs:element name="main_radius" type="xs:float"/>
+											<xs:element name="tube_radius" type="xs:float"/>
+											<xs:element name="score_func" type="xs:string"/>
+											<xs:element name="sd" type="xs:float"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="proximity_restraint" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="particle_list"/>
+											<xs:element name="score_func" type="xs:string"/>
+											<xs:choice>
+												<xs:element name="distance" type="xs:float"/>
+												<xs:element name="distance_attribute" type="xs:string"/>
+											</xs:choice>
+											<xs:element name="sd" type="xs:float"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="connectivity_restraint" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="particle_list"/>
+											<xs:element name="type_attribute" type="xs:string"/>
+											<xs:element name="score_func" type="xs:string"/>
+											<xs:choice>
+												<xs:element name="distance" type="xs:float"/>
+												<xs:element name="distance_attribute" type="xs:string"/>
+											</xs:choice>
+											<xs:element name="sd" type="xs:float"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="name" type="xs:string"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:sequence>
+			<xs:attribute name="xmlns" type="xs:anyURI"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

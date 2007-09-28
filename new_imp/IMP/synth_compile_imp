@@ -1,0 +1,2 @@
+g++ -Wall -c Score_Func.cpp Model.cpp Model_Data.cpp Optimizer.cpp Particle.cpp Restraint_Set.cpp Restraint.cpp Complexes_Restraints.cpp Rigid_Body.cpp log.cpp imp.cpp imp_wrap.cxx -fPIC -I/usr/include/python2.5
+

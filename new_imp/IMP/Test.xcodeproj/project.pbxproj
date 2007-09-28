@@ -1,0 +1,290 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8DD76F650486A84900D96B5E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.cpp */; settings = {ATTRIBUTES = (); }; };
+		BA270DED0C591CDB00DCFAFC /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA270DEC0C591CDB00DCFAFC /* log.cpp */; };
+		BA270E7F0C5C03FF00DCFAFC /* Model_Loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA270E7D0C5C03FF00DCFAFC /* Model_Loader.cpp */; };
+		BA270E800C5C03FF00DCFAFC /* Model_Loader.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA270E7E0C5C03FF00DCFAFC /* Model_Loader.h */; };
+		BA3473290C7A0BB60032E6E9 /* Restraint_Set.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA3473270C7A0BB60032E6E9 /* Restraint_Set.cpp */; };
+		BA34732A0C7A0BB60032E6E9 /* Restraint_Set.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA3473280C7A0BB60032E6E9 /* Restraint_Set.h */; };
+		BA3A3F910C3DF2270007EE26 /* IMP.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA3A3F8F0C3DF2270007EE26 /* IMP.h */; };
+		BA3B6CBA0C4C2D470088822F /* Optimizer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA3B6CB80C4C2D470088822F /* Optimizer.h */; };
+		BA3B6CBB0C4C2D470088822F /* Optimizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA3B6CB90C4C2D470088822F /* Optimizer.cpp */; };
+		BA3B6CC40C4C2D7A0088822F /* Restraint.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA3B6CC20C4C2D7A0088822F /* Restraint.h */; };
+		BA3B6CC50C4C2D7A0088822F /* Restraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA3B6CC30C4C2D7A0088822F /* Restraint.cpp */; };
+		BA3B6D9D0C4D41FA0088822F /* Math_Form.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA3B6D9B0C4D41FA0088822F /* Math_Form.h */; };
+		BA3B6D9E0C4D41FA0088822F /* Math_Form.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA3B6D9C0C4D41FA0088822F /* Math_Form.cpp */; };
+		BA5BC63C0C611BB5000F76ED /* Model_Data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA5BC63A0C611BB5000F76ED /* Model_Data.cpp */; };
+		BA5BC63D0C611BB5000F76ED /* Model_Data.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA5BC63B0C611BB5000F76ED /* Model_Data.h */; };
+		BA82C6320C7BA03E003C3EA4 /* Complexes_Restraints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BA82C6300C7BA03E003C3EA4 /* Complexes_Restraints.cpp */; };
+		BA82C6330C7BA03E003C3EA4 /* Complexes_Restraints.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA82C6310C7BA03E003C3EA4 /* Complexes_Restraints.h */; };
+		BAF7A7610C44041000C541F2 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BAF7A7600C44041000C541F2 /* Particle.cpp */; };
+		BAF7A7670C44055500C541F2 /* Particle.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BAF7A7660C44055500C541F2 /* Particle.h */; };
+		BAF7A7870C4409FE00C541F2 /* imp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BAF7A7860C4409FE00C541F2 /* imp.cpp */; };
+		BAF7A7890C440A0500C541F2 /* log.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BAF7A7880C440A0500C541F2 /* log.h */; };
+		BAF7A86B0C4420C600C541F2 /* Model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BAF7A86A0C4420C600C541F2 /* Model.cpp */; };
+		BAF7A86D0C4420CD00C541F2 /* Model.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BAF7A86C0C4420CD00C541F2 /* Model.h */; };
+		BAF7AC680C47090900C541F2 /* Rigid_Body.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BAF7AC660C47090900C541F2 /* Rigid_Body.h */; };
+		BAF7AC690C47090900C541F2 /* Rigid_Body.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BAF7AC670C47090900C541F2 /* Rigid_Body.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				BA3A3F910C3DF2270007EE26 /* IMP.h in CopyFiles */,
+				BAF7A7670C44055500C541F2 /* Particle.h in CopyFiles */,
+				BAF7A7890C440A0500C541F2 /* log.h in CopyFiles */,
+				BAF7A86D0C4420CD00C541F2 /* Model.h in CopyFiles */,
+				BAF7AC680C47090900C541F2 /* Rigid_Body.h in CopyFiles */,
+				BA3B6CBA0C4C2D470088822F /* Optimizer.h in CopyFiles */,
+				BA3B6CC40C4C2D7A0088822F /* Restraint.h in CopyFiles */,
+				BA3B6D9D0C4D41FA0088822F /* Math_Form.h in CopyFiles */,
+				BA270E800C5C03FF00DCFAFC /* Model_Loader.h in CopyFiles */,
+				BA5BC63D0C611BB5000F76ED /* Model_Data.h in CopyFiles */,
+				BA34732A0C7A0BB60032E6E9 /* Restraint_Set.h in CopyFiles */,
+				BA82C6330C7BA03E003C3EA4 /* Complexes_Restraints.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		08FB7796FE84155DC02AAC07 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		8DD76F6C0486A84900D96B5E /* Test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Test; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA270DEC0C591CDB00DCFAFC /* log.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = log.cpp; sourceTree = "<group>"; };
+		BA270E7D0C5C03FF00DCFAFC /* Model_Loader.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Model_Loader.cpp; sourceTree = "<group>"; };
+		BA270E7E0C5C03FF00DCFAFC /* Model_Loader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Model_Loader.h; sourceTree = "<group>"; };
+		BA3473270C7A0BB60032E6E9 /* Restraint_Set.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Restraint_Set.cpp; sourceTree = "<group>"; };
+		BA3473280C7A0BB60032E6E9 /* Restraint_Set.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Restraint_Set.h; sourceTree = "<group>"; };
+		BA3A3F8F0C3DF2270007EE26 /* IMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMP.h; sourceTree = "<group>"; };
+		BA3B6CB80C4C2D470088822F /* Optimizer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Optimizer.h; sourceTree = "<group>"; };
+		BA3B6CB90C4C2D470088822F /* Optimizer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Optimizer.cpp; sourceTree = "<group>"; };
+		BA3B6CC20C4C2D7A0088822F /* Restraint.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Restraint.h; sourceTree = "<group>"; };
+		BA3B6CC30C4C2D7A0088822F /* Restraint.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Restraint.cpp; sourceTree = "<group>"; };
+		BA3B6D9B0C4D41FA0088822F /* Math_Form.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Math_Form.h; sourceTree = "<group>"; };
+		BA3B6D9C0C4D41FA0088822F /* Math_Form.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Math_Form.cpp; sourceTree = "<group>"; };
+		BA5BC63A0C611BB5000F76ED /* Model_Data.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Model_Data.cpp; sourceTree = "<group>"; };
+		BA5BC63B0C611BB5000F76ED /* Model_Data.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Model_Data.h; sourceTree = "<group>"; };
+		BA82C6300C7BA03E003C3EA4 /* Complexes_Restraints.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Complexes_Restraints.cpp; sourceTree = "<group>"; };
+		BA82C6310C7BA03E003C3EA4 /* Complexes_Restraints.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Complexes_Restraints.h; sourceTree = "<group>"; };
+		BAF7A7600C44041000C541F2 /* Particle.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Particle.cpp; sourceTree = "<group>"; };
+		BAF7A7660C44055500C541F2 /* Particle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Particle.h; sourceTree = "<group>"; };
+		BAF7A7860C4409FE00C541F2 /* imp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imp.cpp; sourceTree = "<group>"; };
+		BAF7A7880C440A0500C541F2 /* log.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
+		BAF7A86A0C4420C600C541F2 /* Model.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Model.cpp; sourceTree = "<group>"; };
+		BAF7A86C0C4420CD00C541F2 /* Model.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
+		BAF7AC660C47090900C541F2 /* Rigid_Body.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rigid_Body.h; sourceTree = "<group>"; };
+		BAF7AC670C47090900C541F2 /* Rigid_Body.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rigid_Body.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = Test;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				BA3A3F8F0C3DF2270007EE26 /* IMP.h */,
+				BAF7A7860C4409FE00C541F2 /* imp.cpp */,
+				BAF7A7880C440A0500C541F2 /* log.h */,
+				08FB7796FE84155DC02AAC07 /* main.cpp */,
+				BA3B6D9C0C4D41FA0088822F /* Math_Form.cpp */,
+				BA3B6D9B0C4D41FA0088822F /* Math_Form.h */,
+				BAF7A86A0C4420C600C541F2 /* Model.cpp */,
+				BA270DEC0C591CDB00DCFAFC /* log.cpp */,
+				BA5BC63A0C611BB5000F76ED /* Model_Data.cpp */,
+				BA5BC63B0C611BB5000F76ED /* Model_Data.h */,
+				BAF7A86C0C4420CD00C541F2 /* Model.h */,
+				BA270E7D0C5C03FF00DCFAFC /* Model_Loader.cpp */,
+				BA270E7E0C5C03FF00DCFAFC /* Model_Loader.h */,
+				BA3B6CB90C4C2D470088822F /* Optimizer.cpp */,
+				BA3B6CB80C4C2D470088822F /* Optimizer.h */,
+				BAF7A7600C44041000C541F2 /* Particle.cpp */,
+				BAF7A7660C44055500C541F2 /* Particle.h */,
+				BA3B6CC30C4C2D7A0088822F /* Restraint.cpp */,
+				BA3B6CC20C4C2D7A0088822F /* Restraint.h */,
+				BA3473270C7A0BB60032E6E9 /* Restraint_Set.cpp */,
+				BA3473280C7A0BB60032E6E9 /* Restraint_Set.h */,
+				BAF7AC660C47090900C541F2 /* Rigid_Body.h */,
+				BAF7AC670C47090900C541F2 /* Rigid_Body.cpp */,
+				BA82C6300C7BA03E003C3EA4 /* Complexes_Restraints.cpp */,
+				BA82C6310C7BA03E003C3EA4 /* Complexes_Restraints.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* Test */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* Test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "Test" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Test;
+			productInstallPath = "$(HOME)/bin";
+			productName = Test;
+			productReference = 8DD76F6C0486A84900D96B5E /* Test */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "Test" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* Test */;
+			projectDirPath = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* Test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DD76F650486A84900D96B5E /* main.cpp in Sources */,
+				BAF7A7610C44041000C541F2 /* Particle.cpp in Sources */,
+				BAF7A7870C4409FE00C541F2 /* imp.cpp in Sources */,
+				BAF7A86B0C4420C600C541F2 /* Model.cpp in Sources */,
+				BAF7AC690C47090900C541F2 /* Rigid_Body.cpp in Sources */,
+				BA3B6CBB0C4C2D470088822F /* Optimizer.cpp in Sources */,
+				BA3B6CC50C4C2D7A0088822F /* Restraint.cpp in Sources */,
+				BA3B6D9E0C4D41FA0088822F /* Math_Form.cpp in Sources */,
+				BA270DED0C591CDB00DCFAFC /* log.cpp in Sources */,
+				BA270E7F0C5C03FF00DCFAFC /* Model_Loader.cpp in Sources */,
+				BA5BC63C0C611BB5000F76ED /* Model_Data.cpp in Sources */,
+				BA3473290C7A0BB60032E6E9 /* Restraint_Set.cpp in Sources */,
+				BA82C6320C7BA03E003C3EA4 /* Complexes_Restraints.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB923208733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = Test;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB923308733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = Test;
+			};
+			name = Release;
+		};
+		1DEB923608733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB923708733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923208733DC60010E9CD /* Debug */,
+				1DEB923308733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923608733DC60010E9CD /* Debug */,
+				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

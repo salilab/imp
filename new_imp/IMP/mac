@@ -1,0 +1,5 @@
+export MACOSX_DEPLOYMENT_TARGET="10.4"
+source run_swig
+source mac_compile_imp
+source mac_link_imp
+
