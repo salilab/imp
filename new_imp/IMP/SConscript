@@ -1,25 +1,21 @@
 Import('env', 'modconfig', 'pythoninc', 'configure_for_pyext',
        'is_wine_platform')
 
-# Get a modified build environment suitable for building Python extensions:
-e = configure_for_pyext(env, modconfig)
-e.Append(CPPPATH=[pythoninc])
-
 # Source files
 files = ('Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp', 'Optimizer.cpp',
          'Particle.cpp', 'Restraint_Set.cpp', 'Restraint.cpp',
          'Complexes_Restraints.cpp', 'Rigid_Body.cpp', 'log.cpp', 'imp.cpp')
 
-# Build the Python extension from SWIG interface file:
-lib = e.SharedLibrary('_imp2', files + ('imp.i',),
-                      SWIGFLAGS='-python -c++ -naturalvar')
+# Build the shared library:
+lib = env.SharedLibrary('imp', files)
 
-# Install the Python extension and any .py files:
-libinst = e.Install(modconfig['libinstall'], lib)
-e.Alias('install', [libinst])
+# Install the library:
+libinst = env.Install(modconfig['libinstall'], lib)
+env.Alias('install', [libinst])
 
 # Subdirectories:
+pyext = SConscript('pyext/SConscript')
 test = SConscript('tests/SConscript')
-e.Depends(test, lib)
+env.Depends(test, lib)
 
-Return('lib')
+Return('lib', 'pyext')

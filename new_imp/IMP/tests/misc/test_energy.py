@@ -1,7 +1,6 @@
 import modeller
 import modeller.optimizers
 import sys
-sys.path.append("../../")
 sys.path.append("../python_libs/")
 import imp2
 import IMP_Modeller_Intf

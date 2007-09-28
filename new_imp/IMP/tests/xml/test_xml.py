@@ -4,7 +4,6 @@ import modeller.optimizers
 # set the appropriate search path
 import sys
 
-sys.path.append("../../")
 sys.path.append("../python_libs/")
 import IMP_Modeller_Intf
 import imp2
