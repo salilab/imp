@@ -1,6 +1,7 @@
 import modeller, unittest
 import modeller
 import modeller.optimizers
+import os
 
 # set the appropriate search path
 import sys
@@ -184,7 +185,7 @@ class test_connectivity(IMP_Test.IMPTestCase):
         if d23 < max_dist:
             sum = sum + 1
         self.assert_(sum >= 2, "min spanning tree for three particle types")
-
+        os.unlink('out_connectivity.pdb')
 
 if __name__ == '__main__':
     unittest.main()
