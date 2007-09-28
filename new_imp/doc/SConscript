@@ -1,1 +1,2 @@
+SConscript('html/SConscript')
 SConscript('internal/SConscript')

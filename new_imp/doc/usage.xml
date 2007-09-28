@@ -1,0 +1,40 @@
+<chapter id="usage">
+<title>Usage</title>
+
+<sect1 id="compilation">
+<title>Compilation from source code</title>
+<para>
+You can get the current &IMP; code by running the following:
+</para>
+<screen>
+<command>svn co https://svn.salilab.org/imp/trunk imp</command>
+</screen>
+
+<para>
+If you already have a copy of &IMP;, you can update it to the current code
+by running
+</para>
+<screen>
+<command>svn update</command>
+</screen>
+
+<para>
+To compile, set the <varname>MODINSTALLSVN</varname> environment variable to
+where you have &MODELLER; installed and run <command>scons</command> in the
+<filename>imp/new_imp</filename> directory (and optionally
+<command>scons test</command>). To install, run
+<command>scons install</command>, which will install the &IMP;
+libraries in the same directories as &MODELLER;.
+</para>
+
+</sect1>
+
+<sect1 id="reference">
+<title>Reference manual</title>
+<para>
+For information on the low-level &IMP; code, see the
+<ulink url="doxygen/index.html">C++ API reference</ulink>.
+</para>
+</sect1>
+
+</chapter>
