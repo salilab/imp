@@ -1,3 +1,0 @@
-source run_swig
-source synth_compile_imp
-source synth_link_imp

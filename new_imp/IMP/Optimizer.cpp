@@ -72,7 +72,7 @@ Float Steepest_Descent::optimize (Model& model, int max_steps, Float threshold)
   std::vector<Float> temp_vals;
   std::vector<Float> temp_derivs;
   std::vector<Float_Index> float_indexes;
-  Float last_score, new_score;
+  Float last_score, new_score = 0.0;
   Model_Data* model_data;
 
   model_data = model.get_model_data();

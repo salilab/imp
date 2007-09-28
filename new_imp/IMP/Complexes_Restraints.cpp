@@ -64,7 +64,7 @@ RSR_Coordinate::~RSR_Coordinate ()
 
 Float RSR_Coordinate::evaluate(bool calc_deriv)
 {
-  Float score, deriv;
+  Float score = 0.0, deriv;
   Float x, y, z;
   Float dx = 0.0;
   Float dy = 0.0;
