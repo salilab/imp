@@ -61,7 +61,7 @@ class RSR_Distance : public Restraint
 public:
   // particles must be at least this far apart to calculate the
   // ... distance restraint. Force it otherwise.
-  static const Float MIN_DISTANCE = 0.0000001;
+  static const Float MIN_DISTANCE;
 
   RSR_Distance(Model& model,
                Particle* p1,
