@@ -16,7 +16,7 @@ namespace imp
 // Abstract class for representing restraints
 
 // static constants
-const Float RSR_Distance::MIN_DISTANCE;
+const Float RSR_Distance::MIN_DISTANCE = 0.0000001;
 
 /**
   Constructor
