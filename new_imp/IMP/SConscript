@@ -6,8 +6,17 @@ files = ('Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp', 'Optimizer.cpp',
          'Particle.cpp', 'Restraint_Set.cpp', 'Restraint.cpp',
          'Complexes_Restraints.cpp', 'Rigid_Body.cpp', 'log.cpp', 'imp.cpp')
 
+# Header files
+headers = ('Complexes_Restraints.h', 'Model_Data.h', 'Optimizer.h',
+           'Restraint_Set.h', 'IMP.h', 'Model.h', 'Particle.h', 'Rigid_Body.h',
+           'log.h', 'Model_Loader.h', 'Restraint.h', 'Score_Func.h')
+
+# Build a Windows DLL exports file from the public header files:
+env.W32Def('libimp.def', headers)
+
 # Build the shared library:
-lib = env.SharedLibrary('imp', files)
+lib = env.SharedLibrary('imp', files, WIN32DEFPREFIX='lib',
+                        WIN32_INSERT_DEF=1, WINDOWSEXPPREFIX='lib')
 
 # Install the library:
 libinst = env.Install(modconfig['libinstall'], lib)

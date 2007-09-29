@@ -43,7 +43,7 @@ class WineEnvironment(Environment):
         # Make sure we get the same Windows C/C++ library as Modeller, and
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
-        self.Append(CXXFLAGS="/MD /GX")
+        self.Append(CXXFLAGS="/MD /GR /GX")
 
 def get_modeller_config():
     """Figure out where the Modeller source code is, and where it is
