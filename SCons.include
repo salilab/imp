@@ -40,8 +40,10 @@ class WineEnvironment(Environment):
         self['SPAWN'] = posix_env['SPAWN']
         self['SHELL'] = posix_env['SHELL']
         self['ENV'] = posix_env['ENV']
-        # Make sure we get the same Windows C library as Modeller
+        # Make sure we get the same Windows C/C++ library as Modeller, and
+        # enable C++ exception handling
         self.Append(CFLAGS="/MD")
+        self.Append(CXXFLAGS="/MD /GX")
 
 def get_modeller_config():
     """Figure out where the Modeller source code is, and where it is
