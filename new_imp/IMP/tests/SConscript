@@ -23,6 +23,7 @@ e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
 
 # Always run our unit test:
 test = e.Test("test.passed", "run-all-tests.py")
+e.Depends(test, bin)
 e.Alias("test", test)
 e.AlwaysBuild("test.passed")
 Return('test')
