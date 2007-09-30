@@ -17,7 +17,7 @@
 
 
 #include "Map3D.h"
-#include "Map3DHeader.h"
+#include "DensityHeader.h"
 #include "Vector3.h"
 #include <iostream>
 #include <iomanip>
@@ -35,7 +35,12 @@ public:
   DensityMap(){}
   void Read(ifstream &file, MapReaderWriter &reader);
   void Write(ostream &file,MapReaderWriter &writer);
+
+  // header inspection 
+  const DensityHeader &get_header()const {return header;}
+
 protected:
+  DensityHeader header;
 };
 
 

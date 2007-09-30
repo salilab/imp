@@ -15,7 +15,7 @@
 */
 
 #include "Vector3.h"
-#include "Map3DHeader.h"
+
 #include <math.h>
 #include <stdlib.h>
 
@@ -31,22 +31,19 @@ public:
   // constructors
 
   Map3D() {}
-  Map3D(int * _extent,int * _orig, float *_spacing);
-  Map3D(const Map3D &copy_map); // copy constuctor
+  Map3D(int nx_,int ny_,int nz_,float *voxelsize_);
+  //TODO: should the copy cont copy all the data?
+  //Map3D(const Map3D &copy_map); // copy constuctor
   ~Map3D();
 
 
   // handle the data allocation/release
-
-  int AllocateData(int *_extent);    
   int Release(); // free the allocated grid
 
-  // header inspection 
-  const Map3DHeader &get_header()const {return header;}
 
   int threeD2oneD_index(int x_ind, int y_ind, int z_ind) {
     // TODO: should we add here a validation check
-    return x_ind+y_ind*header.get_extent(0)+z_ind*header.get_extent(0)*header.get_extent(1);
+    return x_ind+y_ind*nx+z_ind*nx*ny;
   }
 
   // given a location - check if it is part of the grid
@@ -107,7 +104,8 @@ protected:
   Vector3 translateGrid; // the left-buttom voxel of the grid is assumed to be located at (0,0,0). The exact location of the grid is found in the XPLOR file. We insert this data to the translateGrid vector
 
   dataItemT *data; // the order is ZYX (Z-slowest)
-  Map3DHeader header;
+  float voxelsize[3];
+  int nx,ny,nz;
 private:
   bool allocated;
 };

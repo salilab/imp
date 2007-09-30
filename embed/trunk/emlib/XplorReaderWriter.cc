@@ -1,19 +1,24 @@
 #include "XplorReaderWriter.h"
-int XplorReaderWriter::Read(ifstream & XPLORstream) {
-  ReadHeader(XPLORstream);
+int XplorReaderWriter::Read(ifstream & XPLORstream,real **data, DensityHeader &header) {
+  
+  //header
+  XplorHeader xheader;
+  ReadHeader(XPLORstream,xheader);
+  xheader.GenerateCommonHeader(header);
 
-  int allocation_size = header.get_extent(0)*header.get_extent(1)*header.get_extent(2)*sizeof(real);
-  data =  new real[allocation_size];
-  if (data == NULL) {
-    cout << "XplorReader::Read can not allocated space for data - the requested size: " << allocation_size << endl;
+  //data
+  int size = xheader.extent[0]*xheader.extent[1]*xheader.extent[2];
+  *data =  new real[size];
+  if (*data == NULL) {
+    cout << "XplorReader::Read can not allocated space for data - the requested size: " << size * sizeof(real) << endl;
     return -1;
   }
-  ReadMap(XPLORstream);
+  ReadMap(XPLORstream, *data, xheader);
   return 0;
-}
+} 
 
 
-int XplorReaderWriter::ReadHeader(ifstream & XPLORstream)
+int XplorReaderWriter::ReadHeader(ifstream & XPLORstream, XplorHeader &header)
 {
  
   char line[300];
@@ -35,17 +40,17 @@ int XplorReaderWriter::ReadHeader(ifstream & XPLORstream)
       div = (int)(floor(j/3.0));
       mod = j - 3 * div;
       if (mod == 0) {
-	header.set_grid(div,result);
+	header.grid[div]=result;
       }
       else if (mod == 1) {
-	header.set_orig(div,result);
+	header.orig[div]=result;
       }
       else // mod == 2
-	header.set_top(div,result);
+	header.top[div]=result;
       lineBreaker = strtok (NULL," ");
   }
   for(int j=0;j<3;j++) {
-    header.set_extent(j,header.get_top(j)-header.get_orig(j)+1);
+    header.extent[j]=header.top[j]-header.orig[j]+1;
   }
 
   ////////////////////
@@ -61,23 +66,18 @@ int XplorReaderWriter::ReadHeader(ifstream & XPLORstream)
     div = (int)(floor(j/3.0));
     mod = j - 3 * div;
     if (div == 0) {
-      header.set_cellsize(mod,val);
+      header.cellsize[mod]=val;
     }
-    else // div == 1 {
-      header.set_cellangle(mod,val);
+    else {  // div == 1 
+      header.cellangle[mod]=val;
+    }
+    lineBreaker = strtok (NULL," ");
   }
-   
-  lineBreaker = strtok (NULL," ");
 
-  for(int j=0;j<3;j++)
-    header.set_voxelsize(j,header.get_cellsize(j)/header.get_grid(j));
-
-//TODO - ???????
-
-//   translateGrid.updateX(orig[0]*spacing[0]);
-//   translateGrid.updateY(orig[1]*spacing[1]);
-//   translateGrid.updateZ(orig[2]*spacing[2]);
-
+  for(int j=0;j<3;j++) {
+    header.voxelsize[j]=header.cellsize[j]/header.grid[j];
+    header.translateGrid[j]=header.orig[j]*header.voxelsize[j];
+  }
 
   //////////////
   // read the grid order
@@ -89,7 +89,7 @@ int XplorReaderWriter::ReadHeader(ifstream & XPLORstream)
 }
 
 
-int  XplorReaderWriter::ReadMap(ifstream &XPLORstream)
+int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, real *data, XplorHeader &header)
 {
 
   //reading the map according to the grid order.
@@ -101,8 +101,8 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream)
 
   // update orig and top according to the values in the map
   for(int i=0;i<3;i++) {
-      header.set_orig(i,9999);
-      header.set_top(i,-9999);
+      header.orig[i]=9999;
+      header.top[i]=-9999;
     }
 
   
@@ -129,32 +129,32 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream)
 	strncpy(dens,line+(counter*12),12);
 	counter ++;
 	density = atof(dens);   
-	data[x+y*header.get_extent(0)+z*header.get_extent(0)*header.get_extent(1)] = density;
-	if (x<header.get_orig(0))
-	  header.set_orig(0,x);
-	if (y<header.get_orig(1))
-	  header.set_orig(1,y);
-	if (z<header.get_orig(2))
-	  header.set_orig(2,z);
-	if (x>header.get_top(0))
-	  header.set_top(0,x);
-	if (y>header.get_top(1))
-	  header.set_top(1,y);
-	if (z>header.get_top(2))
-	  header.set_top(2,z);
+	data[x+y*header.extent[0]+z*header.extent[0]*header.extent[1]] = density;
+	if (x<header.orig[0])
+	  header.orig[0]=x;
+	if (y<header.orig[1])
+	  header.orig[1]=y;
+	if (z<header.orig[2])
+	  header.orig[2]=z;
+	if (x>header.top[0])
+	  header.top[0]=x;
+	if (y>header.top[1])
+	  header.top[1]=y;
+	if (z>header.top[2])
+	  header.top[2]=z;
 
 	x++;
-	if (x >= header.get_extent(0) ) {
+	if (x >= header.extent[0] ) {
 	  x=0;
 	  y++;
-	  if ( y>= header.get_extent(1))
+	  if ( y>= header.extent[1])
 	    keep = false;
 	}
 		
       } // while counter < densNum
 	 
 	     
-      if (y >= header.get_extent(1)) {
+      if (y >= header.extent[1]) {
 	x=0;
 	y=0;
 	z++;
@@ -167,35 +167,36 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream)
 }
 
 
-void XplorReaderWriter::Write(ostream& s) const {
+void XplorReaderWriter::Write(ostream& s,const real *data, const DensityHeader &header_ )  {
+  XplorHeader header(header_);
 
   s <<endl << "       2"<<endl << "REMARKS file name = ??? " << endl << "REMARKS Date ...... created by em lib " << endl;
   s.setf(ios::right, ios::adjustfield);
   s.width(8);
-  float translateGrid[3];
   for (int i =0;i<3;i++){
-  s << setw(8)<<header.get_grid(i)<<
-    setw(8)<<floor(translateGrid[i]/header.get_voxelsize(i))+1<<
-    setw(8)<<floor(translateGrid[i]/header.get_voxelsize(i))+1+header.get_extent(i)-1;
+  s << setw(8)<<header.grid[i]<<
+    setw(8)<<floor(header.translateGrid[i]/header.voxelsize[i])<<
+    setw(8)<<floor(header.translateGrid[i]/header.voxelsize[i])+header.extent[i]-1;
   }
   s<<endl;
   for (int i =0;i<3;i++){
-    s<< scientific << setprecision(5)<<setw(12)<<header.get_cellsize(i);
+    s<< scientific << setprecision(5)<<setw(12)<<header.cellsize[i];
   }
   for (int i =0;i<3;i++){
-    s<< scientific << setprecision(5)<<setw(12)<<header.get_cellangle(i);
+    s<< scientific << setprecision(5)<<setw(12)<<header.cellangle[i];
   }
-  s << "XYZ" << endl; // Z is the slowest
+  s << endl << "XYZ" << endl; // Z is the slowest
   int counter = 0;
-  for(int k=0;k<header.get_extent(2);k++) { 
+  for(int k=0;k<header.extent[2];k++) { 
     if (counter != 0){
       s << endl;
       counter=0;
     }
+
     s<<setw(8)<<k<<endl;
-    for(int j=0;j<  header.get_extent(1);j++) {
-      for(int i=0;i< header.get_extent(0);i++) {
-	s<< scientific << setprecision(5)<<setw(12)<<data[i+j*header.get_extent(0)+k*header.get_extent(0)*header.get_extent(1)];
+    for(int j=0;j<  header.extent[1];j++) {
+      for(int i=0;i< header.extent[0];i++) {
+	s<< scientific << setprecision(5)<<setw(12)<<data[i+j*header.extent[0]+k*header.extent[0]*header.extent[1]];
 	counter++;
 	if (counter == 6) {
 	  counter = 0;
