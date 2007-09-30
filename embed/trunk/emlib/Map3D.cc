@@ -3,19 +3,18 @@
 #ifdef INCLUDE_SHEILD
 
 template <class dataItemT>
-Map3D<dataItemT>::Map3D(int * extent_,int *orig_, float *voxelsize_){
-  header = Map3DHeader();
-  AllocateData(extent_);
+Map3D<dataItemT>::Map3D(int nx_,int ny_,int nz_,float *voxelsize_) : nx(nx_),ny(ny_),nz(nz_){
   for(int i=0;i<3;i++) {
-    header.set_orig(i,orig_[i]);
-    header.set_voxelsize(i,voxelsize_[i]);
+    voxelsize[i]=voxelsize_[i];
   }
+  allocate_1d_array_range(nz,ny,nx);
+
 }
-template <class dataItemT>
-Map3D<dataItemT>::Map3D(const Map3D &copy_map) {
-  header = Map3DHeader(copy_map);
-  allocate_1d_array_range(header.get_extent(2),header.get_extent(1),header.get_extent(0));
-}
+
+// template <class dataItemT>
+// Map3D<dataItemT>::Map3D(const Map3D &copy_map) {
+//   allocate_1d_array_range(header.get_extent(2),header.get_extent(1),header.get_extent(0));
+// }
 
 
 template <class dataItemT>
@@ -46,8 +45,8 @@ const dataItemT & Map3D<dataItemT>::get_voxeldata (int i, int j,int k) const {
 
 template <class dataItemT>
 void Map3D<dataItemT>::setData(int i,int j,int k, const dataItemT d) {
-  if ((i<0) || (i>header.get_extent(0)-1) || (j<0) || (j>header.get_extent(1)-1) || (k<0) || (k>header.get_extent(2)-1)) {
-    cout << " Map3D::setData is out of range: " << i << "  " << j << "  " << k << " and the extent is " << header.get_extent(0) << "  " << header.get_extent(1) << "  " << header.get_extent(2) << endl;
+  if ((i<0) || (i>nx-1) || (j<0) || (j>ny-1) || (k<0) || (k>nz-1)) {
+    cout << " Map3D::setData is out of range: " << i << "  " << j << "  " << k << " and the extent is " << nx << "  " << ny << "  " << nz << endl;
     //todo - raise error
   }
   data[threeD2oneD_index(i,j,k)] = d;

@@ -12,11 +12,17 @@
 
   OVERVIEW TEXT
   an abstract class for reading a map
+
+
+  CHANGES LOG
+  Sep 27 2007, Keren: change the class into a stateless one.
+
+
 */
 
 
 
-#include "Map3DHeader.h"
+#include "DensityHeader.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -30,18 +36,9 @@ public:
 //     m.Read(s);
 //   }
  
-  virtual int Read(ifstream &file) {} ;
-  virtual void Write(ostream& s) const {};
-
-
-  real* get_data() const { return data;}
-  const Map3DHeader& get_header()const {return header;}
-
-  
-  
-  //protected:
-  real *data;
-  Map3DHeader header;
+  virtual int Read(ifstream &file, real **data, DensityHeader &header) {return 0;} ;
+  virtual void Write(ostream& s, const real *data, const DensityHeader &header) {};
+  virtual ~MapReaderWriter(){};
 
 };
 
