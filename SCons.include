@@ -170,6 +170,8 @@ def configure_for_pyext(env, modconfig):
     platform = e['PLATFORM']
     if e.is_wine:
         e['SHLIBSUFFIX'] = '.pyd'
+        # Directory containing python25.lib:
+        e.Append(LIBPATH='/usr/lib/w32comp/w32python/2.5/lib/')
     else:
         if platform == 'aix':
             # Make sure compilers are in the PATH, so that Python's script for

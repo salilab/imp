@@ -9,10 +9,12 @@
 #if !defined(__optimizer_h)
 #define __optimizer_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
-class Optimizer
+class IMPDLLEXPORT Optimizer
 {
 public:
   Optimizer();
@@ -27,7 +29,7 @@ public:
   }
 };
 
-class Steepest_Descent : public Optimizer
+class IMPDLLEXPORT Steepest_Descent : public Optimizer
 {
 public:
   Steepest_Descent();

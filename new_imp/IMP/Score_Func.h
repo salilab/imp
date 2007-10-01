@@ -10,13 +10,15 @@
 #if !defined(__score_func_h)
 #define __score_func_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
 // Abstract functor class for score functions
 // Decided to pass the derivative by reference so that the functor form could be
 // maintained for both the score calls and the score and partial derivative calls.
-class Score_Func
+class IMPDLLEXPORT Score_Func
 {
 public:
   Score_Func() {}
@@ -26,7 +28,7 @@ public:
 };
 
 // Harmonic score function (symmetric about the mean)
-class Harmonic : public Score_Func
+class IMPDLLEXPORT Harmonic : public Score_Func
 {
 public:
   Harmonic() {}
@@ -40,7 +42,7 @@ public:
 };
 
 // Lower bound harmonic score function (non-zero when feature < mean)
-class Harmonic_Lower_Bound : public Harmonic
+class IMPDLLEXPORT Harmonic_Lower_Bound : public Harmonic
 {
 public:
   Harmonic_Lower_Bound() {}
@@ -51,7 +53,7 @@ public:
 };
 
 // Upper bound harmonic score function (non-zero when feature > mean)
-class Harmonic_Upper_Bound : public Harmonic
+class IMPDLLEXPORT Harmonic_Upper_Bound : public Harmonic
 {
 public:
   Harmonic_Upper_Bound() {}

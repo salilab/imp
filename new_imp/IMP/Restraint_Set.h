@@ -10,6 +10,8 @@
 #if !defined(__restraint_set_h)
 #define __restraint_set_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
@@ -17,7 +19,7 @@ class Restraint;
 class Restraint_Set;
 
 // Used to hold a set of related restraints
-class Restraint_Set
+class IMPDLLEXPORT Restraint_Set
 {
 public:
   Restraint_Set(std::string name = std::string("no_name"));

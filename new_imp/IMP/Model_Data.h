@@ -9,6 +9,8 @@
 #if !defined(__model_data_h)
 #define __model_data_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
@@ -21,7 +23,7 @@ class Model;
 // differentiable and is stored in a structure that can accomodate
 // differentiation. Int and string data is stored directly in
 // vectors.
-class Model_Data
+class IMPDLLEXPORT Model_Data
 {
   friend class Model;
   friend class Particle;
@@ -101,7 +103,7 @@ protected:
 };
 
 // variable iterator
-class Opt_Float_Index_Iterator
+class IMPDLLEXPORT Opt_Float_Index_Iterator
 {
 public:
   Opt_Float_Index_Iterator() {}
