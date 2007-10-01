@@ -9,6 +9,8 @@
 #if !defined(__model_loader_h)
 #define __model_loader_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
@@ -21,7 +23,7 @@ class Restraint_Set;
 class Optimizer;
 class Rigid_Body;
 
-class Model_Loader
+class IMPDLLEXPORT Model_Loader
 {
 public:
   Model_Loader();

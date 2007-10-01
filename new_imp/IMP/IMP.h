@@ -19,6 +19,8 @@
 #include <string>
 #include <iomanip>
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
@@ -26,7 +28,7 @@ class Model;
 class Particle;
 class Rigid_Body;
 
-extern Model& get_model(void);
+extern IMPDLLEXPORT Model& get_model(void);
 
 
 // basic types used by IMP
@@ -35,7 +37,7 @@ typedef int Int;
 typedef std::string String;
 
 // if I don't do this as a template, I eliminate the swig errors
-class Float_Index
+class IMPDLLEXPORT Float_Index
 {
 public:
   Float_Index(int idx = 0) {
@@ -57,7 +59,7 @@ protected:
   int index_;
 };
 
-class Int_Index
+class IMPDLLEXPORT Int_Index
 {
 public:
   Int_Index(int idx = 0) {
@@ -81,7 +83,7 @@ protected:
 
 // indexes for retrieving particle information
 template <class T>
-class Data_Index
+class IMPDLLEXPORT Data_Index
 {
 public:
   Data_Index(int idx = 0) {

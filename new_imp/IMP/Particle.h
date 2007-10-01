@@ -9,6 +9,8 @@
 #if !defined(__particle_h)
 #define __particle_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
@@ -19,7 +21,7 @@ class Restraint;
 // be deactivated so that they no longer play a role in model optimization.
 // Removing particles and their attributes would cause problems in the way
 // attribute values are indexed and should not be done.
-class Particle
+class IMPDLLEXPORT Particle
 {
 public:
   Particle();

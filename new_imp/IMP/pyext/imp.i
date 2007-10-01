@@ -12,6 +12,10 @@
 #include "Model.h"
 %}
 
+/* Ignore shared object import/export stuff */
+#define IMPDLLEXPORT
+#define IMPDLLLOCAL
+
 %include "std_vector.i"
 %include "std_map.i"
 %include "std_string.i"

@@ -10,10 +10,12 @@
 #if !defined(__rigid_body_h)
 #define __rigid_body_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
-class Rigid_Body
+class IMPDLLEXPORT Rigid_Body
 {
 public:
   Rigid_Body();

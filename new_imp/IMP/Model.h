@@ -9,6 +9,8 @@
 #if !defined(__model_h)
 #define __model_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
@@ -22,7 +24,7 @@ class Model_Data;
 // Class for storing model, its restraints, constraints, and particles.
 // All attribute data for particles is stored through indexing in the
 // model_data_ structure.
-class Model
+class IMPDLLEXPORT Model
 {
   friend class Particle_Iterator;
   friend class Restraint_Set_Iterator;
@@ -79,7 +81,7 @@ protected:
 
 
 // particle iterator
-class Particle_Iterator
+class IMPDLLEXPORT Particle_Iterator
 {
 public:
   Particle_Iterator() {}
@@ -93,7 +95,7 @@ protected:
 };
 
 // restraint set iterator
-class Restraint_Set_Iterator
+class IMPDLLEXPORT Restraint_Set_Iterator
 {
 public:
   Restraint_Set_Iterator() {}

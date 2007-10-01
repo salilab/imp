@@ -6,10 +6,10 @@
  *
  */
 
-#include "Restraint.h"
-
 #if !defined(__complexes_restraints_h)
 #define __complexes_restraints_h 1
+
+#include "Restraint.h"
 
 namespace imp
 {

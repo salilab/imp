@@ -10,11 +10,13 @@
 #if !defined(__restraint_h)
 #define __restraint_h 1
 
+#include "IMP_config.h"
+
 namespace imp
 {
 
 // Abstract class for representing restraints
-class Restraint
+class IMPDLLEXPORT Restraint
 {
 public:
   Restraint();
@@ -56,7 +58,7 @@ protected:
 };
 
 // Distance restraint between two particles
-class RSR_Distance : public Restraint
+class IMPDLLEXPORT RSR_Distance : public Restraint
 {
 public:
   // particles must be at least this far apart to calculate the
@@ -107,7 +109,7 @@ protected:
 
 // Swig is not accepting the subclassing if it is in a different file
 // Restrict particle position with respect to one or more coordinates
-class RSR_Coordinate : public Restraint
+class IMPDLLEXPORT RSR_Coordinate : public Restraint
 {
 public:
   RSR_Coordinate(Model& model,
@@ -142,7 +144,7 @@ protected:
 };
 
 // Restrict particle position to interior of a torus
-class RSR_Torus : public Restraint
+class IMPDLLEXPORT RSR_Torus : public Restraint
 {
 public:
   RSR_Torus(Model& model,
@@ -179,7 +181,7 @@ protected:
 
 
 // Restrict maximum distance between any two particles
-class RSR_Proximity : public Restraint
+class IMPDLLEXPORT RSR_Proximity : public Restraint
 {
 public:
   RSR_Proximity(Model& model,
@@ -229,7 +231,7 @@ protected:
 };
 
 // Restrict max distance between at one or more pair of particles of any two sets of particles
-class RSR_Pair_Connectivity : public Restraint
+class IMPDLLEXPORT RSR_Pair_Connectivity : public Restraint
 {
 public:
   RSR_Pair_Connectivity(Model& model,
@@ -314,7 +316,7 @@ protected:
 
 
 // Restrict max distance between at least one pair of particles of any two distinct types
-class RSR_Connectivity : public Restraint
+class IMPDLLEXPORT RSR_Connectivity : public Restraint
 {
 public:
   RSR_Connectivity(Model& model,
@@ -398,7 +400,7 @@ protected:
 // Restrict min distance between all pairs of particles of formed from one or two sets of particles.
 // If two sets of particles are passed, it assumes that the two sets of particles have no overlap
 // (otherwise, you will get repeats).
-class RSR_Exclusion_Volume : public Restraint
+class IMPDLLEXPORT RSR_Exclusion_Volume : public Restraint
 {
 public:
   RSR_Exclusion_Volume(Model& model,
