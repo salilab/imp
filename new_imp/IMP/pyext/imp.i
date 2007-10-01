@@ -16,12 +16,11 @@
 %include "std_map.i"
 %include "std_string.i"
 
-namespace std
-	{
-	%template(vectori) vector<int>;
-	%template(vectorf) vector<float>;
-	}
-	
+namespace std {
+  %template(vectori) vector<int>;
+  %template(vectorf) vector<float>;
+}
+
 %feature("director");
 
 %include "IMP.h"
@@ -34,4 +33,3 @@ namespace std
 %include "Complexes_Restraints.h"
 %include "Restraint.h"
 %include "Rigid_Body.h"
-
