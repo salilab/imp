@@ -1,0 +1,3 @@
+create emlib.i - which basically includes all the .h files in the lib
+now run 
+swig -python -c++ pyext/emlib.i
