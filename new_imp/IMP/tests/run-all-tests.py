@@ -6,7 +6,7 @@ def regressionTest():
     path = os.path.abspath(os.path.dirname(sys.argv[0]))
     modobjs = []
     for subdir in ('connectivity', 'pair_connectivity', 'torus',
-                   'coordinate', 'proximity'):
+                   'coordinate', 'proximity', 'exclusion_volumes'):
         files = os.listdir(os.path.join(path, subdir))
         test = re.compile("^test_.*\.py$", re.IGNORECASE)
         files = filter(test.search, files)

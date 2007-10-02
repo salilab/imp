@@ -4,7 +4,8 @@ Import('env', 'modconfig', 'pythoninc', 'configure_for_pyext',
 # Source files
 files = ('Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp', 'Optimizer.cpp',
          'Particle.cpp', 'Restraint_Set.cpp', 'Restraint.cpp',
-         'Complexes_Restraints.cpp', 'Rigid_Body.cpp', 'log.cpp', 'imp.cpp')
+         'Complexes_Restraints.cpp', 'Rigid_Body.cpp', 'log.cpp', 'imp.cpp',
+         'emfile.cpp', 'emscore.cpp')
 
 # Header files
 headers = ('Complexes_Restraints.h', 'Model_Data.h', 'Optimizer.h',
