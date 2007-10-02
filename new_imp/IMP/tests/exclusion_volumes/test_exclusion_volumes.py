@@ -1,6 +1,7 @@
 import modeller, unittest
 import modeller
 import modeller.optimizers
+import os
 
 # set the appropriate search path
 import sys
@@ -140,6 +141,7 @@ class test_exclusion_volumes(IMP_Test.IMPTestCase):
         self.modeller_model.write (file='out_exclusion_volume_one_list.pdb', model_format='PDB')
 
         coords = self.LoadCoordinates('out_exclusion_volume_one_list.pdb')
+        os.unlink('out_exclusion_volume_one_list.pdb')
 
         # check min distances for intra-protein pairs
         for i in range(0, 4):
@@ -207,6 +209,7 @@ class test_exclusion_volumes(IMP_Test.IMPTestCase):
         self.modeller_model.write (file='out_exclusion_volume_two_lists.pdb', model_format='PDB')
 
         coords = self.LoadCoordinates('out_exclusion_volume_two_lists.pdb')
+        os.unlink('out_exclusion_volume_two_lists.pdb')
 
         # check min distances for intra-protein and inter-protein pairs
         for i in range(0, 11):
