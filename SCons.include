@@ -178,12 +178,16 @@ def configure_for_pyext(env, modconfig):
             # building AIX extension modules can find them:
             e['ENV']['PATH'] += ':/usr/vac/bin'
         from distutils.sysconfig import get_config_vars
-        vars = get_config_vars('CC', 'OPT', 'BASECFLAGS', 'LDSHARED', 'SO')
-        (cc, opt, basecflags, ldshared, so) = vars
+        vars = get_config_vars('CC', 'CXX', 'OPT', 'BASECFLAGS', 'LDSHARED',
+                               'SO')
+        (cc, cxx, opt, basecflags, ldshared, so) = vars
         # Don't require stack protector stuff on Linux, as this adds a
         # requirement for glibc-2.4:
         opt = opt.replace("-fstack-protector", "")
+        # Remove options that don't work with C++ code:
+        opt = opt.replace("-Wstrict-prototypes", "")
         e['CC'] = cc
+        e['CXX'] = cxx
         e['SHLIBSUFFIX'] = so
         e['CPPFLAGS'] = basecflags + " " + opt
         # Default link flags on OS X don't work for us:
