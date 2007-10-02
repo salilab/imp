@@ -142,7 +142,7 @@ def MyEnvironment(modconfig, *args, **kw):
         env.is_wine = False
     env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace(' -no_archive', '')
     env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
-    env.Append(SCANNERS = _SWIGScanner)
+    env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -Werror")
 
