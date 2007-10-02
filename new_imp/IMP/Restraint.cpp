@@ -155,6 +155,7 @@ RSR_Distance::RSR_Distance(Model& model,
                            const Float sd,
                            Score_Func* score_func)
 {
+  // LogMsg(VERBOSE, "Construct distance restraint: " << attr_name);
   Float mean = model_data_->get_float(p1->float_index(attr_name))
                + model_data_->get_float(p2->float_index(attr_name));
   set_up(model, p1, p2, mean, sd, score_func);
@@ -181,6 +182,7 @@ void RSR_Distance::set_up(Model& model,
 {
   model_data_ = model.get_model_data();
 
+  // LogMsg(VERBOSE, "Set up distance restraint.");
   particles_.push_back(p1);
   x1_ = p1->float_index(std::string("X"));
   y1_ = p1->float_index(std::string("Y"));

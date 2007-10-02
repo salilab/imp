@@ -314,7 +314,6 @@ protected:
 };
 
 
-
 // Restrict max distance between at least one pair of particles of any two distinct types
 class IMPDLLEXPORT RSR_Connectivity : public Restraint
 {
@@ -439,10 +438,73 @@ protected:
   /** number of particles in vector 2 */
   int num_particles2_;
 
-  /** total number of restraints being tested */
+  /** total number of restraints */
   int num_restraints_;
   /** restraints and their scores */
   std::vector<RSR_Distance*> dist_rsrs_;
+};
+
+// Calculate score based on fit to EM map
+class RSR_EM_Coarse : public Restraint
+{
+public:
+  RSR_EM_Coarse(Model& model,
+                std::vector<int>& particle_indexes,
+                EM_Density *emdens,
+                int nx,
+                int ny,
+                int nz,
+                float pixelsize,
+                float resolution,
+                std::string radius_str,
+                std::string weight_str,
+                EM_Gridcoord *gridcd,
+                float scalefac
+               );
+
+  virtual ~RSR_EM_Coarse();
+
+  virtual Float evaluate(bool calc_deriv);
+
+  // status
+  virtual void show (std::ostream& out = std::cout);
+  virtual std::string version(void) {
+    return "0.0.1";
+  }
+  virtual std::string last_modified_by(void) {
+    return "Frido and Keren";
+  }
+
+protected:
+  EM_Density *emdens_;
+  int nx_;
+  int ny_;
+  int nz_;
+  float pixelsize_;
+  float resolution_;
+  EM_Gridcoord *gridcd_;
+  float scalefac_;
+
+  int num_particles_;
+
+  // weight and radius associated with each particle
+  Float *radius_;
+  Float *weight_;
+
+  // coordinates to pass to EM score C routine
+  Float_Index *x_;
+  Float_Index *y_;
+  Float_Index *z_;
+
+  // coordinates to pass to EM score C routine
+  Float *cdx_;
+  Float *cdy_;
+  Float *cdz_;
+
+  // partial derivs to pass to EM score C routine
+  Float *dvx_;
+  Float *dvy_;
+  Float *dvz_;
 };
 
 } // namespace imp

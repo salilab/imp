@@ -275,6 +275,20 @@ def Move_Rigid_Body_Expr(model, expr, dx, dy, dz, mdl):
     Copy_IMP_Coords_To_Modeller(model.particles, mdl.atoms)
 
 
+def Write_PDB(model, fname):
+    """ Write PDB based on particle attributes. """
+# based on:
+# 0         1         2         3         4         5         6         7
+# 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+# ATOM   1887  N   LEU A 411      39.891  85.957  24.294  1.00 46.58           N
+    fp = open (fname, "w")
+    i = 0
+    for p in model.particles:
+        fp.write("ATOM %6d%3s   %s %s%4d      %5.3f  %5.3f  %5.3f  1.00  0.00           %s\n" % (i, 'CA', 'ALA', chr(64 + p.get_int("chain")), p.get_int("aa_idx"), p.x(), p.y(), p.z(), 'C'))
+        i = i + 1
+    fp.close()
+
+
 def Show_Modeller_and_IMP(atoms, particles):
     """ Show Modeller and IMP atoms and their partial derivatives"""
     print "Modeller:"

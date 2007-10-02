@@ -172,6 +172,9 @@ def load_restraint_set(model, restraint_set_node, base_particle):
         elif (r.nodeName == 'proximity_restraint'):
             load_rsr_proximity(model, rs_idx, r, base_particle)
 
+                elif (r.nodeName == 'exclusion_volume_restraint'):
+                    load_rsr_exclusion_volume(model, rs_idx, r, base_particle)
+
 
 def load_rsr_distance(model, rs_idx, rsr, base_particle):
     """ Load distance restraint set from the DOM """
@@ -471,6 +474,60 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
     print "adding proximity rsr: ", p_idx, distance, sd, score_func
     model.restraints.append(imp2.RSR_Proximity(model, particle_indexes, distance, sd, score_func))
     model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
+
+
+
+def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
+    """ Load exclusion volume restraint set from the DOM """
+    print "Load  exclusion volume restraint"
+
+    # defaults
+    distance_attribute = ''
+    sd = 0.1
+    num_lists = 0
+
+    # get the parameters
+    for param in rsr.childNodes:
+        if num_lists == 0 and param.nodeName == 'particle_list':
+            particle_list1 = get_particle_list(param)
+            num_lists = 1
+
+        elif param.nodeName == 'particle_list':
+            particle_list2 = get_particle_list(param)
+            num_lists = 2
+
+        elif param.nodeName == 'sd':
+            sd = float(param.childNodes[0].nodeValue)
+
+        elif param.nodeName == 'distance_attribute':
+            distance_attribute = str(param.childNodes[0].nodeValue)
+
+    # make sure we have the needed parameters
+    if distance_attribute == '':
+        print "No distance specified."
+        return
+
+    # create a vector of particle indexes
+    particle_indexes1 = imp2.vectori()
+    particle_indexes1.clear()
+    for p_idx in particle_list1:
+        particle_indexes1.push_back(int(p_idx))
+
+    if (num_lists == 2):
+        particle_indexes2 = imp2.vectori()
+        particle_indexes2.clear()
+        for p_idx in particle_list2:
+            particle_indexes2.push_back(int(p_idx))
+
+        print "adding inter particle exclusion volumes for two bodies: ", model, particle_indexes1, particle_indexes2, distance_attribute, sd
+        r = imp2.RSR_Exclusion_Volume(model, particle_indexes1, particle_indexes2, distance_attribute, sd)
+        model.restraints.append(r)
+        model.restraint_sets[rs_idx].add_restraint(r)
+    else:
+        print "adding intra particle exclusion volumes for one body: ", model, particle_indexes1, distance_attribute, sd
+        r = imp2.RSR_Exclusion_Volume(model, particle_indexes1, distance_attribute, sd)
+        model.restraints.append(r)
+        model.restraint_sets[rs_idx].add_restraint(r)
 
 
 

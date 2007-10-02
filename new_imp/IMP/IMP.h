@@ -111,6 +111,9 @@ typedef Data_Index<String> String_Index;
 
 } // namespace imp
 
+#include "emfile.h"
+#include "emscore.h"
+
 #include "log.h"
 #include "Particle.h"
 #include "Optimizer.h"
