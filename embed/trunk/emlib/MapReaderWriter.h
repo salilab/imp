@@ -36,8 +36,8 @@ public:
 //     m.Read(s);
 //   }
  
-  virtual int Read(ifstream &file, real **data, DensityHeader &header) {return 0;} ;
-  virtual void Write(ostream& s, const real *data, const DensityHeader &header) {};
+  virtual int Read(char *filename, real **data, DensityHeader &header) {return 0;} ;
+  virtual void Write(char *filename, const real *data, const DensityHeader &header) {};
   virtual ~MapReaderWriter(){};
 
 };

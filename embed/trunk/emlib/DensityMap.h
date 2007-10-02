@@ -27,14 +27,15 @@ using std::ios;
 
 typedef float real;
 
-class DensityMap: public Map3D<float>
+
+class DensityMap:   public Map3D<float>
 {
 public:
   //---
   // Creates a density map from the templateP with the given resolution and spacing. 
   DensityMap(){}
-  void Read(ifstream &file, MapReaderWriter &reader);
-  void Write(ostream &file,MapReaderWriter &writer);
+  void Read(char *filename, MapReaderWriter &reader);
+  void Write(char *filename,MapReaderWriter &writer);
 
   // header inspection 
   const DensityHeader &get_header()const {return header;}

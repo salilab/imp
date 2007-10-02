@@ -1,0 +1,22 @@
+# Include IMP build utility functions:
+execfile('../imp/SCons.include')
+
+# Get Modeller and Python locations, and set up a build environment:
+modconfig = get_modeller_config()
+pythoninc = get_python_include(modconfig)
+env = MyEnvironment(modconfig)
+
+
+# Make these objects available to SConscript files:
+Export('env', 'modconfig', 'pythoninc', 'configure_for_pyext',
+       'is_wine_platform')
+
+# Subdirectories to build:
+emlib = SConscript('emlib/SConscript')
+
+
+# bin script first require libraries to be built:
+#env.Depends(emlib, [ pyext])
+
+# Build the binaries by default:
+env.Default(emlib)
