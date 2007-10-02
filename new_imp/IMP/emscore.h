@@ -54,7 +54,7 @@ struct density *tmodsample (int nx, int ny, int nz, float pixelsize,
 IMPDLLEXPORT
 float stdv (struct density *emdens, float *meanval);
 
-MPDLLEXPORT
+IMPDLLEXPORT
 void stdnormalize(struct density *emdens);
 
 #endif
