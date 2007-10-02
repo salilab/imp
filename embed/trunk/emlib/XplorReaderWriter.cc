@@ -1,6 +1,7 @@
 #include "XplorReaderWriter.h"
-int XplorReaderWriter::Read(ifstream & XPLORstream,real **data, DensityHeader &header) {
-  
+int XplorReaderWriter::Read(char *filename,real **data, DensityHeader &header) {
+
+  ifstream XPLORstream(filename);
   //header
   XplorHeader xheader;
   ReadHeader(XPLORstream,xheader);
@@ -14,6 +15,7 @@ int XplorReaderWriter::Read(ifstream & XPLORstream,real **data, DensityHeader &h
     return -1;
   }
   ReadMap(XPLORstream, *data, xheader);
+  XPLORstream.close();
   return 0;
 } 
 
@@ -167,8 +169,11 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, real *data, XplorHeader &
 }
 
 
-void XplorReaderWriter::Write(ostream& s,const real *data, const DensityHeader &header_ )  {
+void XplorReaderWriter::Write(char *filename,const real *data, const DensityHeader &header_ )  {
   XplorHeader header(header_);
+
+
+  ofstream s(filename);
 
   s <<endl << "       2"<<endl << "REMARKS file name = ??? " << endl << "REMARKS Date ...... created by em lib " << endl;
   s.setf(ios::right, ios::adjustfield);
@@ -206,4 +211,5 @@ void XplorReaderWriter::Write(ostream& s,const real *data, const DensityHeader &
     }
   }
   s<<endl << "  -9999" << endl;
+  s.close();
 }
