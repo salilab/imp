@@ -6,6 +6,8 @@
 #include <cstdio>
 #include <cmath>
 
+#include "IMP_config.h"
+
 //struct density;
 struct density {
   float *data;
@@ -38,6 +40,7 @@ struct gridcoord {
 
 typedef struct gridcoord EM_Gridcoord;
 
+IMPDLLEXPORT
 void read_em_header (char *filename,
                      int *magic,
                      int *type,
@@ -69,6 +72,7 @@ void read_em_header (char *filename,
                      float *Marker_Y,
                      int lswap);
 
+IMPDLLEXPORT
 struct density *read_em (char *filename,
                                int *magic,
                                int *type,
@@ -100,6 +104,7 @@ struct density *read_em (char *filename,
                                float *Marker_Y,
                                int lswap);
 
+IMPDLLEXPORT
 void write_em (char *filename,
                int magic,
                int type,
@@ -129,6 +134,7 @@ void write_em (char *filename,
                struct density *emdens,
                int lswap);
 
+IMPDLLEXPORT
 void write_em_header (FILE *output, int magic, int type, int dimx, int dimy, int dimz,
                       char comment[80], float voltage, float Cs, float Aperture, float Magnification,
                       float Postmagnification, float Exposuretime, float Objectpixelsize, float Microscope,
@@ -137,13 +143,24 @@ void write_em_header (FILE *output, int magic, int type, int dimx, int dimy, int
                       float EnergyOffset, float Tiltangle, float Tiltaxis, float Marker_X, float Marker_Y,
                       int lswap);
 
+IMPDLLEXPORT
 void free_density(struct density *emdens);
+
+IMPDLLEXPORT
 float get_densityval(struct density *emdens, int x, int y, int z);
+
+IMPDLLEXPORT
 void set_densityval(struct density *emdens, int x, int y, int z, float denval);
+
+IMPDLLEXPORT
 void get_magic(char *filename, int *magic);
+
 /* read in core data */
+IMPDLLEXPORT
 struct density *read_emdens(char *filename, int type, int nx, int  ny, int nz, int lswap);
+
 /* swap bytes */
+IMPDLLEXPORT
 void swap(char *x, char size);
 
 #endif

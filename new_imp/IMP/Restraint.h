@@ -445,7 +445,7 @@ protected:
 };
 
 // Calculate score based on fit to EM map
-class RSR_EM_Coarse : public Restraint
+class IMPDLLEXPORT RSR_EM_Coarse : public Restraint
 {
 public:
   RSR_EM_Coarse(Model& model,
