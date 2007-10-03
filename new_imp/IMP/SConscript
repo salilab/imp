@@ -1,29 +1,13 @@
-Import('env', 'modconfig')
+Import('env', 'modconfig', 'get_sharedlib_environment')
 
-# Pass gcc or MSVC suitable options to mark dynamic symbols as exported or
-# private:
-env = env.Copy()
-env.Append(CPPDEFINES=['IMP_EXPORTS', '${VIS_CPPDEFINES}'],
-           CCFLAGS='${VIS_CCFLAGS}')
-
-# On AIX things get confused if AIX C but not AIX C++ is installed - AIX C
-# options get passed to g++ - so hard code GNU link flags:
-if 'aixcc' in env['TOOLS'] and 'aixc++' not in env['TOOLS'] \
-   and 'g++' in env['TOOLS']:
-    slflags = str(env['SHLINKFLAGS'])
-    env['SHLINKFLAGS'] = slflags.replace('-qmkshrobj -qsuppress=1501-218',
-                                         '-shared')
+# Get an environment suitable for building a shared library:
+env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
 
 # Source files
 files = ('Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp', 'Optimizer.cpp',
          'Particle.cpp', 'Restraint_Set.cpp', 'Restraint.cpp',
          'Complexes_Restraints.cpp', 'Rigid_Body.cpp', 'log.cpp', 'imp.cpp',
          'emfile.cpp', 'emscore.cpp')
-
-# Header files
-headers = ('Complexes_Restraints.h', 'Model_Data.h', 'Optimizer.h',
-           'Restraint_Set.h', 'IMP.h', 'Model.h', 'Particle.h', 'Rigid_Body.h',
-           'log.h', 'Model_Loader.h', 'Restraint.h', 'Score_Func.h')
 
 # Build the shared library:
 lib = env.SharedLibrary('imp', files)

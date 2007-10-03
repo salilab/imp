@@ -1,13 +1,9 @@
-Import('env', 'modconfig', 'pythoninc', 'configure_for_pyext')
+Import('env', 'modconfig', 'get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
-e = configure_for_pyext(env, modconfig)
-e.Append(CPPPATH=[pythoninc, '..'])
-e.Append(LIBPATH=['..'], LIBS='imp')
-
-# AIX tries to use the C compiler rather than g++, so hardcode it here:
-shlink = str(e['SHLINK'])
-e['SHLINK'] = shlink.replace(' cc_r', ' g++')
+e = get_pyext_environment(env, cplusplus=True)
+e.Append(CPPPATH='..')
+e.Append(LIBPATH='..', LIBS='imp')
 
 # Build the Python extension from SWIG interface file:
 pyext = e.SharedLibrary('_imp2', 'imp.i',

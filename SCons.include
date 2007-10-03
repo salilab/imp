@@ -91,9 +91,9 @@ def is_wine_platform(modconfig):
     return modconfig['exetype'] == 'i386-w32' \
            and SCons.Platform.platform_default() == 'posix'
 
-def get_python_include(modconfig):
+def _get_python_include(env):
     """Get the directory containing Python.h"""
-    if is_wine_platform(modconfig):
+    if env.is_wine:
         return '/usr/lib/w32comp/w32python/2.5/include/'
     else:
         import distutils.sysconfig
@@ -169,8 +169,31 @@ def MyEnvironment(modconfig, *args, **kw):
 
     return env
 
-def configure_for_pyext(env, modconfig):
-    """Set environment variables to build a Python extension."""
+def get_sharedlib_environment(env, cppdefine, cplusplus=False):
+    """Get a modified environment suitable for building shared libraries
+       (i.e. using gcc ELF visibility macros or MSVC dllexport/dllimport macros
+       to mark dynamic symbols as exported or private). `cppdefine` should be
+       the name of a cpp symbol to define to tell MSVC that we are building the
+       library (by convention something of the form FOO_EXPORTS).
+       If `cplusplus` is True, additional configuration suitable for a C++
+       shared library is done."""
+    e = env.Copy()
+    e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
+             CCFLAGS='${VIS_CCFLAGS}')
+
+    # On AIX things get confused if AIX C but not AIX C++ is installed - AIX C
+    # options get passed to g++ - so hard code GNU link flags:
+    if 'aixcc' in env['TOOLS'] and 'aixc++' not in env['TOOLS'] \
+       and 'g++' in env['TOOLS']:
+        slflags = str(env['SHLINKFLAGS'])
+        e['SHLINKFLAGS'] = slflags.replace('-qmkshrobj -qsuppress=1501-218',
+                                           '-shared')
+    return e
+
+def get_pyext_environment(env, cplusplus=False):
+    """Get a modified environment for building a Python extension.
+       If `cplusplus` is True, additional configuration suitable for a C++
+       extension is done."""
     from platform import system
     e = env.Copy()
     e['SHLIBPREFIX'] = ''
@@ -209,6 +232,9 @@ def configure_for_pyext(env, modconfig):
             e['CCFLAGS'].remove('-Werror')
         except ValueError:
             pass
+        # AIX tries to use the C compiler rather than g++, so hardcode it here:
+        if platform == 'aix' and cplusplus:
+            ldshared = ldshared.replace(' cc_r', ' g++')
         # Default link flags on OS X don't work for us:
         if platform == 'darwin':
             e['SHLINKFLAGS'] = \
@@ -217,4 +243,5 @@ def configure_for_pyext(env, modconfig):
         elif system() != "Linux":
             e['SHLINKFLAGS'] = []
             e['SHLINK'] = ldshared
+    e.Append(CPPPATH=[_get_python_include(e)])
     return e
