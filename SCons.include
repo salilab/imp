@@ -144,7 +144,7 @@ def MyEnvironment(modconfig, *args, **kw):
     env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
-        env.Append(CCFLAGS="-Wall -Werror")
+        env.Append(CCFLAGS="-Wall -Werror -g -O3")
 
     conf = env.Configure(custom_tests = {'CheckGNUHash': CheckGNUHash})
     sys = platform.system()
@@ -190,6 +190,9 @@ def configure_for_pyext(env, modconfig):
         e['CXX'] = cxx
         e['SHLIBSUFFIX'] = so
         e['CPPFLAGS'] = basecflags + " " + opt
+        # Some gcc versions don't like the code that SWIG generates - but let
+        # that go, because we have no control over it:
+        e['CCFLAGS'] = str(e['CCFLAGS']).replace('-Werror', '')
         # Default link flags on OS X don't work for us:
         if platform == 'darwin':
             e['SHLINKFLAGS'] = \
