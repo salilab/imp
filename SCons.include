@@ -131,6 +131,26 @@ int main(void)
         context.Result("yes")
     return res
 
+def CheckGCCVisibility(context):
+    """Check if the compiler supports setting visibility of symbols"""
+    context.Message('Checking whether compiler supports -fvisibility...')
+    lastCCFLAGS = context.env['CCFLAGS']
+    context.env.Append(CCFLAGS="-fvisibility=hidden")
+    text = """
+__attribute__ ((visibility("default")))
+int main(void)
+{ return 0; }
+"""
+    res = context.TryLink(text, '.c')
+    context.env.Replace(CCFLAGS=lastCCFLAGS)
+    if not res:
+        context.Result("no")
+    else:
+        context.env.Append(VIS_CPPDEFINES=['GCC_VISIBILITY'],
+                           VIS_CCFLAGS="-fvisibility=hidden")
+        context.Result("yes")
+    return res
+
 def MyEnvironment(modconfig, *args, **kw):
     """Create an environment suitable for building NMP modules"""
     import platform
@@ -146,10 +166,13 @@ def MyEnvironment(modconfig, *args, **kw):
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -Werror -g -O3")
 
-    conf = env.Configure(custom_tests = {'CheckGNUHash': CheckGNUHash})
+    custom_tests = {'CheckGNUHash': CheckGNUHash,
+                    'CheckGCCVisibility': CheckGCCVisibility}
+    conf = env.Configure(custom_tests = custom_tests)
     sys = platform.system()
     if sys == 'Linux':
         conf.CheckGNUHash()
+        conf.CheckGCCVisibility()
     elif sys == 'SunOS':
         # Find locally-installed libraries in /usr/local (e.g. for SWIG)
         env['ENV']['LD_LIBRARY_PATH'] = '/usr/local/lib'

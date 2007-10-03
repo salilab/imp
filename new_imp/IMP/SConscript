@@ -1,5 +1,10 @@
-Import('env', 'modconfig', 'pythoninc', 'configure_for_pyext',
-       'is_wine_platform')
+Import('env', 'modconfig')
+
+# Pass gcc or MSVC suitable options to mark dynamic symbols as exported or
+# private:
+env = env.Copy()
+env.Append(CPPDEFINES=['IMP_EXPORTS', '${VIS_CPPDEFINES}'],
+           CCFLAGS='${VIS_CCFLAGS}')
 
 # Source files
 files = ('Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp', 'Optimizer.cpp',
@@ -13,7 +18,7 @@ headers = ('Complexes_Restraints.h', 'Model_Data.h', 'Optimizer.h',
            'log.h', 'Model_Loader.h', 'Restraint.h', 'Score_Func.h')
 
 # Build the shared library:
-lib = env.SharedLibrary('imp', files, CPPDEFINES=['IMP_EXPORTS'])
+lib = env.SharedLibrary('imp', files)
 
 # Install the library:
 libinst = env.Install(modconfig['libinstall'], lib)
