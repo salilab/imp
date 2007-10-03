@@ -2,7 +2,7 @@ Import('env','modconfig')
 
 
 # Source files
-files = ('MapReaderWriter.cc','DensityHeader.cc','Map3D.cc','DensityMap.cc','EMReaderWriter.cc','XplorReaderWriter.cc')
+files = ('MapReaderWriter.cc','DensityHeader.cc','Map3D.cc','DensityMap.cc','EMReaderWriter.cc','XplorReaderWriter.cc',)
 
 # Header files - for win
 #headers = ('def.h','MapReaderWriter.h','DensityHeader.h','Map3D.h','DensityMap.h','EMReaderWriter.h','XplorReaderWriter.h')

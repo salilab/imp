@@ -640,7 +640,6 @@ class floatMap3D(_object):
         except: self.this = this
     __swig_destroy__ = _emlib.delete_floatMap3D
     __del__ = lambda self : None;
-    def Release(*args): return _emlib.floatMap3D_Release(*args)
     def threeD2oneD_index(*args): return _emlib.floatMap3D_threeD2oneD_index(*args)
     def get_voxeldata(*args): return _emlib.floatMap3D_get_voxeldata(*args)
     def setData(*args): return _emlib.floatMap3D_setData(*args)
@@ -678,6 +677,12 @@ class EMHeader(_object):
         try: self.this.append(this)
         except: self.this = this
     def GenerateCommonHeader(*args): return _emlib.EMHeader_GenerateCommonHeader(*args)
+    __swig_setmethods__["magic"] = _emlib.EMHeader_magic_set
+    __swig_getmethods__["magic"] = _emlib.EMHeader_magic_get
+    if _newclass:magic = _swig_property(_emlib.EMHeader_magic_get, _emlib.EMHeader_magic_set)
+    __swig_setmethods__["type"] = _emlib.EMHeader_type_set
+    __swig_getmethods__["type"] = _emlib.EMHeader_type_get
+    if _newclass:type = _swig_property(_emlib.EMHeader_type_get, _emlib.EMHeader_type_set)
     __swig_setmethods__["nx"] = _emlib.EMHeader_nx_set
     __swig_getmethods__["nx"] = _emlib.EMHeader_nx_get
     if _newclass:nx = _swig_property(_emlib.EMHeader_nx_get, _emlib.EMHeader_nx_set)
@@ -687,12 +692,6 @@ class EMHeader(_object):
     __swig_setmethods__["nz"] = _emlib.EMHeader_nz_set
     __swig_getmethods__["nz"] = _emlib.EMHeader_nz_get
     if _newclass:nz = _swig_property(_emlib.EMHeader_nz_get, _emlib.EMHeader_nz_set)
-    __swig_setmethods__["magic"] = _emlib.EMHeader_magic_set
-    __swig_getmethods__["magic"] = _emlib.EMHeader_magic_get
-    if _newclass:magic = _swig_property(_emlib.EMHeader_magic_get, _emlib.EMHeader_magic_set)
-    __swig_setmethods__["type"] = _emlib.EMHeader_type_set
-    __swig_getmethods__["type"] = _emlib.EMHeader_type_get
-    if _newclass:type = _swig_property(_emlib.EMHeader_type_get, _emlib.EMHeader_type_set)
     __swig_setmethods__["comment"] = _emlib.EMHeader_comment_set
     __swig_getmethods__["comment"] = _emlib.EMHeader_comment_get
     if _newclass:comment = _swig_property(_emlib.EMHeader_comment_get, _emlib.EMHeader_comment_set)

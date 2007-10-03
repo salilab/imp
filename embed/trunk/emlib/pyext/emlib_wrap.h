@@ -19,8 +19,8 @@ class SwigDirector_MapReaderWriter : public MapReaderWriter, public Swig::Direct
 
 public:
     SwigDirector_MapReaderWriter(PyObject *self);
-    virtual int Read(char *filename, real **data, DensityHeader &header);
-    virtual void Write(char *filename, real const *data, DensityHeader const &header);
+    virtual int Read(char const *filename, real **data, DensityHeader &header);
+    virtual void Write(char const *filename, real const *data, DensityHeader const &header);
     virtual ~SwigDirector_MapReaderWriter();
 
 
@@ -65,8 +65,8 @@ class SwigDirector_EMReaderWriter : public EMReaderWriter, public Swig::Director
 
 public:
     SwigDirector_EMReaderWriter(PyObject *self);
-    virtual int Read(char *filename, real **data, DensityHeader &header);
-    virtual void Write(char *filename, real const *data, DensityHeader const &header);
+    virtual int Read(char const *filename, real **data, DensityHeader &header);
+    virtual void Write(char const *filename, real const *data, DensityHeader const &header);
     virtual ~SwigDirector_EMReaderWriter();
 
 
@@ -111,8 +111,8 @@ class SwigDirector_XplorReaderWriter : public XplorReaderWriter, public Swig::Di
 
 public:
     SwigDirector_XplorReaderWriter(PyObject *self);
-    virtual int Read(char *filename, real **data, DensityHeader &header);
-    virtual void Write(char *filename, real const *data, DensityHeader const &header);
+    virtual int Read(char const *filename, real **data, DensityHeader &header);
+    virtual void Write(char const *filename, real const *data, DensityHeader const &header);
     virtual ~SwigDirector_XplorReaderWriter();
 
 

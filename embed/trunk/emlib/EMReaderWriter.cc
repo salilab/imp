@@ -8,7 +8,6 @@ EMHeader::EMHeader(const DensityHeader &header) {
   nz=header.nz;
   magic=header.magic;
   type=header.data_type;
-  //  dimx=header.dimx;dimy=header.dimy;dimz=header.dimz; - todo - ask frido - does not appear in the table
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
     comment[i]=header.comments[0][i];
   }
@@ -43,7 +42,6 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
   header.nz=nz;
   header.magic=magic;
   header.data_type=type;
-  //  header.dimx=dimx;header.dimy=dimy;header.dimz=dimz;
 
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
   header.comments[0][i]=comment[i];
@@ -75,35 +73,34 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
 }
 
 
-int EMReaderWriter::Read(ifstream &file, real **data, DensityHeader &header) {
+int EMReaderWriter::Read(const char *filename, real **data, DensityHeader &header) {
+  ifstream file(filename);
   EMHeader eheader;
   ReadHeader(file,eheader);
   eheader.GenerateCommonHeader(header);
-
   ReadData(file, data, eheader);
+  file.close();
   return 0;
 }
 
 
 
-void EMReaderWriter::Write(ostream& s,const real *data, const DensityHeader &header_ ) {
-
+void EMReaderWriter::Write(const char* filename,const real *data, const DensityHeader &header_ ) {
+  ofstream s(filename);
   EMHeader header(header_);
-  header.type=5;
   WriteHeader(s,header);
-  //todo - improve this function
-  char tmp[1];
-  for (int i=0;i<header.nx*header.ny*header.nz;i++) {
-    tmp[0]=char(data[i]);
-    s.write((char * )tmp,sizeof(float));
-  }
+  s.write((char *) data,sizeof(real)*header.nx*header.ny*header.nz);
+  s.close();
 }
 
 
 
 int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header ) {
   
-  s.write((char *) &header,sizeof(EMHeader));
+  EMHeader::EMHeaderParse ehp;
+  ehp.Init(header);
+  
+  s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
   if(s.bad())
     {
       cout << "EMReaderWriter::WriteHeader. Error writing MRC header to file" << endl;
@@ -116,7 +113,7 @@ int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header ) {
 
 
 /* swap bytes */
-void swap(char *x, char size)
+void swap(char *x, int size)
 {
   unsigned char c;
   unsigned short s;
@@ -150,7 +147,10 @@ void swap(char *x, char size)
 
 int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
 
-  file.read((char *)&header, sizeof(EMHeader));
+  EMHeader::EMHeaderParse ehp;
+  file.read((char *)&ehp, sizeof(EMHeader::EMHeaderParse));
+  
+  ehp.InitEMHeader(header);
   return 0;
 }
 
@@ -160,7 +160,6 @@ int EMReaderWriter::ReadData(ifstream &file, real **data, const EMHeader &header
     int nvox = header.nx*header.ny*header.nz;
 
     // allocate data
-
     *data = new real[nvox];
     if (*data == NULL) {
       cout << "EMReaderWriter::ReadData can not allocated space for data - the requested size: " << nvox*sizeof(real) << endl;
@@ -170,7 +169,6 @@ int EMReaderWriter::ReadData(ifstream &file, real **data, const EMHeader &header
 
     //a density of a single voxel can be reprented in 1 to 4 bytes. header.type provides this information.
     // 1 : byte 
-
     int voxel_data_size;
     if ( header.type == 1 ) {
       voxel_data_size =sizeof(unsigned char);
@@ -187,18 +185,18 @@ int EMReaderWriter::ReadData(ifstream &file, real **data, const EMHeader &header
     }
 
 
-    char voxeldata[nvox];
+    char voxeldata[nvox*voxel_data_size];
     file.read((char  *)&voxeldata,  voxel_data_size*nvox);
-    char tmp;
-    for (int i=0;i<=nvox;i++) {
+    char tmp[voxel_data_size];
+    for (int i=0;i<nvox;i++) {
+      cout << i << endl;
+      strncpy(tmp,&(voxeldata[i*voxel_data_size]),voxel_data_size);
       if (header.lswap==1) { 
-	tmp = voxeldata[i];
-	swap(&tmp,4);
-	voxeldata[i]=tmp;
+	swap(tmp,voxel_data_size);
       }
-      (*data)[i] = (float) voxeldata[i];
+      memcpy(&((*data)[i]),&tmp,voxel_data_size);
     }
-    free(voxeldata);
+    //    delete(voxeldata);
     
     return 0;
 }

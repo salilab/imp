@@ -37,10 +37,6 @@ public:
   ~Map3D();
 
 
-  // handle the data allocation/release
-  int Release(); // free the allocated grid
-
-
   int threeD2oneD_index(int x_ind, int y_ind, int z_ind) const{
     // TODO: should we add here a validation check
     return x_ind+y_ind*nx+z_ind*nx*ny;
