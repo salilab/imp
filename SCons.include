@@ -204,6 +204,9 @@ def configure_for_pyext(env, modconfig):
         vars = get_config_vars('CC', 'CXX', 'OPT', 'BASECFLAGS', 'LDSHARED',
                                'SO')
         (cc, cxx, opt, basecflags, ldshared, so) = vars
+        # distutils on AIX can get confused if AIX C but GNU C++ is installed:
+        if platform == 'aix' and cxx == '':
+            cxx = 'g++'
         # Don't require stack protector stuff on Linux, as this adds a
         # requirement for glibc-2.4:
         opt = opt.replace("-fstack-protector", "")
