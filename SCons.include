@@ -3,23 +3,7 @@
 import os
 import re
 
-def _makedef(target, source, env):
-    """Build a Windows .def file (DLL exports file) from header files"""
-    dll = str(target[0])
-    if dll.endswith(".def"):
-        dll = dll[:-4] + '.dll'
-    outfh = open(str(target[0]), "w")
-    print >> outfh, "LIBRARY %s" % dll
-    print >> outfh, "EXPORTS"
-    srch = re.compile("\s*\w+.*\s+\**(\w+)\(")
-    for s in source:
-        infh = open(str(s), "r")
-        for line in infh:
-            m = srch.match(line)
-            if m:
-                print >> outfh, "  %s" % m.group(1)
-
-import SCons.Script
+import SCons
 _SWIGScanner = SCons.Scanner.ClassicCPP(
     "SWIGScan",
     ".i",
@@ -164,7 +148,6 @@ def MyEnvironment(modconfig, *args, **kw):
         env['SHLINKFLAGS'].remove('-no_archive')
     except ValueError:
         pass
-    env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -Werror -g -O3")
