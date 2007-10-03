@@ -160,7 +160,10 @@ def MyEnvironment(modconfig, *args, **kw):
     else:
         env = Environment(*args, **kw)
         env.is_wine = False
-    env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace(' -no_archive', '')
+    try:
+        env['SHLINKFLAGS'].remove('-no_archive')
+    except ValueError:
+        pass
     env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
@@ -218,7 +221,10 @@ def configure_for_pyext(env, modconfig):
         e['CPPFLAGS'] = basecflags + " " + opt
         # Some gcc versions don't like the code that SWIG generates - but let
         # that go, because we have no control over it:
-        e['CCFLAGS'] = str(e['CCFLAGS']).replace('-Werror', '')
+        try:
+            e['CCFLAGS'].remove('-Werror')
+        except ValueError:
+            pass
         # Default link flags on OS X don't work for us:
         if platform == 'darwin':
             e['SHLINKFLAGS'] = \
