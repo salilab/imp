@@ -14,26 +14,6 @@ if 'aixcc' in env['TOOLS'] and 'aixc++' not in env['TOOLS'] \
     env['SHLINKFLAGS'] = slflags.replace('-qmkshrobj -qsuppress=1501-218',
                                          '-shared')
 
-# Check for the powf() function in the C++ cmath header:
-def CheckPowf(context):
-    context.Message('Checking for powf() function in C++ cmath header...')
-    text = """
-#include <cmath>
-int main(void)
-{ return (int)powf(0.,0.); }
-"""
-    res = context.TryLink(text, '.cpp')
-    if not res:
-        context.Result("no")
-    else:
-        context.Result("yes")
-    return res
-
-conf = env.Configure(custom_tests={'CheckPowf': CheckPowf})
-if conf.CheckPowf():
-    env.Append(CPPDEFINES=['HAVE_POWF'])
-conf.Finish()
-
 # Source files
 files = ('Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp', 'Optimizer.cpp',
          'Particle.cpp', 'Restraint_Set.cpp', 'Restraint.cpp',
