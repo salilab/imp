@@ -19,6 +19,7 @@ class WineEnvironment(Environment):
         Environment.__init__(self, platform=platform, CC=CC, LINK=LINK, **kw)
         posix_env = Environment(platform='posix')
         self['SHLIBPREFIX'] = self['LIBLINKPREFIX'] = 'lib'
+        self['WINDOWSEXPPREFIX'] = 'lib'
         self['LIBSUFFIX'] = '.lib'
         self['PSPAWN'] = posix_env['PSPAWN']
         self['SPAWN'] = posix_env['SPAWN']
