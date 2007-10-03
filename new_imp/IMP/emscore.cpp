@@ -203,7 +203,7 @@ void deriv_emscore (struct density *emdens, int nx, int ny, int nz, float pixels
 {
   float lim, sq2pi3, rsig, rsigsq, inv_rsigsq, vsig, vsigsq, sig,
   inv_sigsq, normfac, rnormfac, kdist, rkdist, rsq;
-  float tdvx, tdvy, tdvz, tmp;
+  float tdvx = 0., tdvy = 0., tdvz = 0., tmp;
   float eps=0.000001, pi=3.1415926535897931, timessig=3.;
   int ii, iminx, iminy, iminz, imaxx, imaxy, imaxz, ivox, ivoxx, ivoxy, ivoxz;
 
