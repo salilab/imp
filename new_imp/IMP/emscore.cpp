@@ -7,7 +7,7 @@ void free_gridcoord( struct gridcoord *gridcd)
 };
 
 // get R-sqare value
-static float get_rsq(float voxx, float voxy, float vozy, float cdx,
+static float get_rsq(float voxx, float voxy, float voxz, float cdx,
                      float cdy, float cdz)
 {
   float dx, dy, dz;
