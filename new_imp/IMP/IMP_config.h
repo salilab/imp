@@ -18,7 +18,7 @@
   #endif
   #define IMPDLLLOCAL
 #else
-  #ifdef HAVE_GCCVISIBILITYPATCH
+  #ifdef GCC_VISIBILITY
     #define IMPDLLEXPORT __attribute__ ((visibility("default")))
     #define IMPDLLLOCAL __attribute__ ((visibility("hidden")))
   #else
