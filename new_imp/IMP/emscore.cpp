@@ -71,10 +71,10 @@ float stdv (struct density *emdens, float *meanval)
   stdval = .0;
   for (ii=0;ii<nvox;ii++) {
     *meanval = *meanval + emdens->data[ii];
-    stdval = stdval + powf(emdens->data[ii], 2);
+    stdval = stdval + pow(emdens->data[ii], 2);
   }
   *meanval = *meanval / nvox;
-  tmp = powf(*meanval,2) * nvox;
+  tmp = pow(*meanval, 2) * nvox;
   stdval = stdval - tmp;
   stdval = sqrt(stdval) / nvox;
   emdens->stdval = stdval;
@@ -208,14 +208,14 @@ void deriv_emscore (struct density *emdens, int nx, int ny, int nz, float pixels
   int ii, iminx, iminy, iminz, imaxx, imaxy, imaxz, ivox, ivoxx, ivoxy, ivoxz;
 
   *ierr = 0;
-  sq2pi3 = 1./sqrt(powf(2.*pi, 3));
+  sq2pi3 = 1. / sqrt(pow(2. * pi, 3));
   // convert resolution to sigma squared
   rsig = 1./(sqrt(2.*log(2.))) * resolution / 2.;
   rsigsq = rsig * rsig;
   inv_rsigsq = 1./rsigsq * .5;
-  rnormfac =  sq2pi3 * 1/powf(rsig,3);
+  rnormfac =  sq2pi3 * 1. / pow(rsig, 3.);
   rkdist   = timessig * rsig;
-  lim = exp( -.5 * powf(timessig-eps,2));
+  lim = exp(-0.5 * pow(timessig - eps, 2.));
   for (ii=0; ii<ncd; ii++) {
     if (radius[ii] > eps) {
       vsig = 1./(sqrt(2.*log(2.))) * radius[ii];
@@ -224,7 +224,7 @@ void deriv_emscore (struct density *emdens, int nx, int ny, int nz, float pixels
       sig = sqrt(inv_sigsq);
       kdist = timessig * sig;
       inv_sigsq = 1./inv_sigsq *.5;
-      normfac = sq2pi3 * 1/powf(sig,3);
+      normfac = sq2pi3 * 1.0 / pow(sig, 3.);
     } else {
       inv_sigsq = inv_rsigsq;
       normfac = rnormfac;
@@ -246,8 +246,9 @@ void deriv_emscore (struct density *emdens, int nx, int ny, int nz, float pixels
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++) {
         ivox = ivoxz * nx * ny + ivoxy * nx + iminx;
         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          rsq = powf(gridcd->x[ivox] - cdx[ii], 2) + powf(gridcd->y[ivox] - cdy[ii], 2) +
-                powf(gridcd->z[ivox] - cdz[ii], 2);
+          rsq = pow(gridcd->x[ivox] - cdx[ii], 2)
+                + pow(gridcd->y[ivox] - cdy[ii], 2)
+                + pow(gridcd->z[ivox] - cdz[ii], 2);
           rsq = exp(- rsq * inv_sigsq );
           tmp = (cdx[ii]-gridcd->x[ivox]) * rsq;
           if ( tmp>lim ) tdvx = tdvx + tmp;
@@ -303,7 +304,7 @@ struct density *modsample (int nx, int ny, int nz, float pixelsize,
   struct density *moddens;
 
   *ierr = 0;
-  sq2pi3 = 1./sqrt(powf(2.*pi, 3));
+  sq2pi3 = 1. / sqrt(pow(2. * pi, 3));
   moddens = (density *) malloc(sizeof(struct density));
   moddens->data = (float *) calloc(sizeof(float), nx*ny*nz);
   moddens->nx = nx;
@@ -313,9 +314,9 @@ struct density *modsample (int nx, int ny, int nz, float pixelsize,
   rsig = 1./(sqrt(2.*log(2.))) * resolution / 2.;
   rsigsq = rsig * rsig;
   inv_rsigsq = 1./rsigsq * .5;
-  rnormfac =  sq2pi3 * 1/powf(rsig,3);
+  rnormfac = sq2pi3 * 1. / pow(rsig, 3.);
   rkdist   = timessig * rsig;
-  lim = exp( -.5 * powf(timessig-eps,2));
+  lim = exp(-0.5 * pow(timessig - eps, 2.));
   // actual sampling
   for (ii=0; ii<ncd; ii++) {
     if (radius[ii] > eps) {
@@ -325,8 +326,8 @@ struct density *modsample (int nx, int ny, int nz, float pixelsize,
       sig = sqrt(inv_sigsq);
       kdist = timessig * sig;
       inv_sigsq = 1./inv_sigsq *.5;
-      //normfac = sq2pi3 * (1/powf(vsig,3)) * rnormfac;
-      normfac = sq2pi3 * 1/powf(sig,3);
+      //normfac = sq2pi3 * (1/pow(vsig,3)) * rnormfac;
+      normfac = sq2pi3 * 1. / pow(sig, 3.);
     } else {
       inv_sigsq = inv_rsigsq;
       normfac = rnormfac;
@@ -355,8 +356,9 @@ struct density *modsample (int nx, int ny, int nz, float pixelsize,
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++) {
         ivox = ivoxz * nx * ny + ivoxy * nx + iminx;
         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          rsq = powf(gridcd->x[ivox] - cdx[ii], 2) + powf(gridcd->y[ivox] - cdy[ii], 2) +
-                powf(gridcd->z[ivox] - cdz[ii], 2);
+          rsq = pow(gridcd->x[ivox] - cdx[ii], 2.)
+                + pow(gridcd->y[ivox] - cdy[ii], 2.)
+                + pow(gridcd->z[ivox] - cdz[ii], 2.);
           tmp = exp(- rsq * inv_sigsq );
           if ( tmp>lim ) moddens->data[ivox] = moddens->data[ivox] + normfac * wei[ii] * tmp;
           ivox++;
