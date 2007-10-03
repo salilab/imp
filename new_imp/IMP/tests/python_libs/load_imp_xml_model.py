@@ -1,14 +1,6 @@
 import xml.dom.minidom
-
-# set the appropriate search path
-import sys
-
-sys.path.append("/Users/bret/Dev/new_imp/IMP")
-sys.path.append("/Users/bret/Dev/new_imp/IMP/tests")
-sys.path.append("../")
-sys.path.append("../../")
 import imp2
-import IMP_Modeller_Intf
+import IMP_Utils
 
 def load_imp_model(model, xml_file_path, base_particle = 0):
     """ Load imp model from given xml file """
@@ -35,11 +27,8 @@ def load_particles(model, particles_node, base_particle):
     try:
         model.particles
     except AttributeError:
-        print "particle list built"
         model.particles = []
         model.num_particles = 0
-    else:
-        print "particle list exists"
 
     # process individual particle nodes
     for part in particles_node.childNodes:
@@ -50,8 +39,7 @@ def load_particles(model, particles_node, base_particle):
 def load_particle(model, particle_node, base_particle):
     """ Load particle from the DOM """
     id = particle_node.getAttribute('id')
-    print "Load particle", id
-    model.particles.append(IMP_Modeller_Intf.Particle(model, 0.0, 0.0, 0.0))
+    model.particles.append(IMP_Utils.Particle(model, 0.0, 0.0, 0.0))
     p_idx = len(model.particles)-1
 
     # process particle attributes
@@ -69,7 +57,6 @@ def load_particle(model, particle_node, base_particle):
 def load_float(model, p_idx, attr_node):
     """ Load float attribute from the DOM and add it to the particle """
     name = attr_node.getAttribute('name')
-    print "Load float attribute", name
     p = model.particles[p_idx].imp()
 
     # defaults
@@ -82,14 +69,12 @@ def load_float(model, p_idx, attr_node):
         if n.nodeName == 'value':
             value = n.childNodes[0].nodeValue
 
-    print name, value, optimize
     p.add_float(str(name), float(value), bool(optimize))
 
 
 def load_int(model, p_idx, attr_node):
     """ Load int attribute from the DOM and add it to the particle """
     name = attr_node.getAttribute('name')
-    print "Load int attribute", name
     p = model.particles[p_idx].imp()
 
     # defaults
@@ -98,14 +83,12 @@ def load_int(model, p_idx, attr_node):
         if n.nodeName == 'value':
             value = n.childNodes[0].nodeValue
 
-    print name, value
     p.add_int(str(name), int(value))
 
 
 def load_string(model, p_idx, attr_node):
     """ Load string attribute from the DOM and add it to the particle """
     name = attr_node.getAttribute('name')
-    print "Load string attribute", name
     p = model.particles[p_idx].imp()
 
     # defaults
@@ -124,33 +107,23 @@ def load_restraint_set(model, restraint_set_node, base_particle):
     try:
         model.restraint_sets
     except AttributeError:
-        print "restraint set list built"
         model.restraint_sets = []
-    else:
-        print "restraint set list exists"
 
     try:
         model.restraints
     except AttributeError:
-        print "restraint list built"
         model.restraints = []
-    else:
-        print "restraint list exists"
 
     try:
         model.score_funcs
     except AttributeError:
-        print "score functions list built"
         model.score_funcs = {}
-    else:
-        print "restraint list exists"
 
     # get restraint set parameters
     name = str(restraint_set_node.getAttribute('name'))
     model.restraint_sets.append(imp2.Restraint_Set(name))
     rs_idx = len(model.restraint_sets) - 1
     model.add_restraint_set(model.restraint_sets[rs_idx])
-    print "Load restraint set", name
 
     # process restraints in subnodes
     for r in restraint_set_node.childNodes:
@@ -172,13 +145,15 @@ def load_restraint_set(model, restraint_set_node, base_particle):
         elif (r.nodeName == 'proximity_restraint'):
             load_rsr_proximity(model, rs_idx, r, base_particle)
 
-                elif (r.nodeName == 'exclusion_volume_restraint'):
-                    load_rsr_exclusion_volume(model, rs_idx, r, base_particle)
+        elif (r.nodeName == 'exclusion_volume_restraint'):
+            load_rsr_exclusion_volume(model, rs_idx, r, base_particle)
+
+        elif (r.nodeName == 'exclusion_volume_restraint'):
+            load_rsr_exclusion_volume(model, rs_idx, r, base_particle)
 
 
 def load_rsr_distance(model, rs_idx, rsr, base_particle):
     """ Load distance restraint set from the DOM """
-    print "Load distance restraint"
 
     # process restraint parameters
 
@@ -221,14 +196,12 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
         if distance_attribute != '':
             distance = p1.get_float(distance_attribute) + p2.get_float(distance_attribute)
 
-        print "adding distance rsr: ", pair[0], pair[1], distance, sd, score_func
         model.restraints.append(imp2.RSR_Distance(model, p1.imp(), p2.imp(), distance, sd, score_func))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
 def load_rsr_torus(model, rs_idx, rsr, base_particle):
     """ Load torus restraint set from the DOM """
-    print "Load torus restraint"
 
     # process restraint parameters
 
@@ -264,7 +237,6 @@ def load_rsr_torus(model, rs_idx, rsr, base_particle):
     # add restraint for each particle in the list
     for p_idx in particle_list:
         p = model.particles[int(p_idx)].imp()
-        print "adding torus rsr: ", p_idx, main_radius, tube_radius, sd, score_func
         model.restraints.append(imp2.RSR_Torus(model, p, main_radius, tube_radius, sd, score_func))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
@@ -306,7 +278,6 @@ def load_rsr_coordinate(model, rs_idx, rsr, base_particle):
     # add restraint for each particle in the list
     for p_idx in particle_list:
         p = model.particles[int(p_idx)].imp()
-        print "adding coordinate rsr: ", p_idx, distance, sd, score_func
         model.restraints.append(imp2.RSR_Coordinate(model, p, axis, distance, sd, score_func))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
@@ -360,11 +331,9 @@ def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
 
     # add restraint for for vector of particles
     if distance_attribute:
-        print "adding connectivity rsr: ", p_idx, distance_attribute, sd, score_func
         model.restraints.append(imp2.RSR_Connectivity(model, particle_indexes, type_attribute, distance_attribute, sd, score_func))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
     else:
-        print "adding connectivity rsr: ", p_idx, distance_attribute, sd, score_func
         model.restraints.append(imp2.RSR_Connectivity(model, particle_indexes, type_attribute, distance, sd, score_func))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
@@ -429,12 +398,10 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
 
     # add restraint for for vector of particles
     if distance_attribute:
-        print "adding pair connectivity rsr: ", model, particle_indexes1, particle_indexes2, distance_attribute, sd, score_func, number_of_connects
         r = imp2.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, distance_attribute, sd, score_func, number_of_connects)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
     else:
-        print "adding pair connectivity rsr: ", distance_attribute, sd, score_func
         r = imp2.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, distance, sd, score_func, number_of_connects)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
@@ -471,7 +438,6 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
         particle_indexes.push_back(int(p_idx))
 
     # add restraint for for vector of particles
-    print "adding proximity rsr: ", p_idx, distance, sd, score_func
     model.restraints.append(imp2.RSR_Proximity(model, particle_indexes, distance, sd, score_func))
     model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
