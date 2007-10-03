@@ -1,7 +1,6 @@
 %module(directors="1") emlib
 %{
 #include "../def.h"
-#include "../MapReaderWriter.h"
 #include "../DensityHeader.h"
 #include "../Map3D.h"
 #include "../DensityMap.h"

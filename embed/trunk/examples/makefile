@@ -1,8 +1,7 @@
 CC = g++
-MOLLIB = ../mollib/
 EMLIB = ../emlib/
-CCFLAGS  = -I$(MOLLIB) -I$(EMLIB)  -ftemplate-depth-50 -Wall -O2 -fPIC 
-LDFLAGS =  -L$(MOLLIB) -lmol  -L$(EMLIB) -lem  -Wl 
+CCFLAGS  =  -I$(EMLIB)  -ftemplate-depth-50 -Wall -O2 -fPIC 
+LDFLAGS =   -L$(EMLIB) -lem  -Wl 
 
 CLASSES =  read_write_map
 

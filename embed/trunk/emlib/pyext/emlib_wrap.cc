@@ -2994,57 +2994,56 @@ namespace Swig {
 #define SWIGTYPE_p_f_r_std__ios_base__r_std__ios_base swig_types[29]
 #define SWIGTYPE_p_float swig_types[30]
 #define SWIGTYPE_p_fmtflags swig_types[31]
-#define SWIGTYPE_p_ifstream swig_types[32]
-#define SWIGTYPE_p_int swig_types[33]
-#define SWIGTYPE_p_int_type swig_types[34]
-#define SWIGTYPE_p_iostate swig_types[35]
-#define SWIGTYPE_p_long swig_types[36]
-#define SWIGTYPE_p_long_double swig_types[37]
-#define SWIGTYPE_p_long_long swig_types[38]
-#define SWIGTYPE_p_off_type swig_types[39]
-#define SWIGTYPE_p_openmode swig_types[40]
-#define SWIGTYPE_p_p_PyObject swig_types[41]
-#define SWIGTYPE_p_p_float swig_types[42]
-#define SWIGTYPE_p_p_void swig_types[43]
-#define SWIGTYPE_p_pos_type swig_types[44]
-#define SWIGTYPE_p_reference swig_types[45]
-#define SWIGTYPE_p_seekdir swig_types[46]
-#define SWIGTYPE_p_short swig_types[47]
-#define SWIGTYPE_p_size_t swig_types[48]
-#define SWIGTYPE_p_size_type swig_types[49]
-#define SWIGTYPE_p_state_type swig_types[50]
-#define SWIGTYPE_p_std__basic_iosTchar_std__char_traitsTchar_t_t swig_types[51]
-#define SWIGTYPE_p_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[52]
-#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[53]
-#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__char_type swig_types[54]
-#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__off_type swig_types[55]
-#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__pos_type swig_types[56]
-#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[57]
-#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__off_type swig_types[58]
-#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__pos_type swig_types[59]
-#define SWIGTYPE_p_std__basic_streambufTchar_std__char_traitsTchar_t_t swig_types[60]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t swig_types[61]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__allocator_type swig_types[62]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__const_iterator swig_types[63]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__const_reverse_iterator swig_types[64]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__iterator swig_types[65]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__reverse_iterator swig_types[66]
-#define SWIGTYPE_p_std__invalid_argument swig_types[67]
-#define SWIGTYPE_p_std__ios_base swig_types[68]
-#define SWIGTYPE_p_std__locale swig_types[69]
-#define SWIGTYPE_p_std__vectorTfloat_std__allocatorTfloat_t_t swig_types[70]
-#define SWIGTYPE_p_std__vectorTfloat_std__allocatorTfloat_t_t__allocator_type swig_types[71]
-#define SWIGTYPE_p_std__vectorTint_std__allocatorTint_t_t swig_types[72]
-#define SWIGTYPE_p_std__vectorTint_std__allocatorTint_t_t__allocator_type swig_types[73]
-#define SWIGTYPE_p_swig__PySwigIterator swig_types[74]
-#define SWIGTYPE_p_traits_type swig_types[75]
-#define SWIGTYPE_p_unsigned_int swig_types[76]
-#define SWIGTYPE_p_unsigned_long swig_types[77]
-#define SWIGTYPE_p_unsigned_long_long swig_types[78]
-#define SWIGTYPE_p_unsigned_short swig_types[79]
-#define SWIGTYPE_p_value_type swig_types[80]
-static swig_type_info *swig_types[82];
-static swig_module_info swig_module = {swig_types, 81, 0, 0, 0, 0};
+#define SWIGTYPE_p_int swig_types[32]
+#define SWIGTYPE_p_int_type swig_types[33]
+#define SWIGTYPE_p_iostate swig_types[34]
+#define SWIGTYPE_p_long swig_types[35]
+#define SWIGTYPE_p_long_double swig_types[36]
+#define SWIGTYPE_p_long_long swig_types[37]
+#define SWIGTYPE_p_off_type swig_types[38]
+#define SWIGTYPE_p_openmode swig_types[39]
+#define SWIGTYPE_p_p_PyObject swig_types[40]
+#define SWIGTYPE_p_p_float swig_types[41]
+#define SWIGTYPE_p_p_void swig_types[42]
+#define SWIGTYPE_p_pos_type swig_types[43]
+#define SWIGTYPE_p_reference swig_types[44]
+#define SWIGTYPE_p_seekdir swig_types[45]
+#define SWIGTYPE_p_short swig_types[46]
+#define SWIGTYPE_p_size_t swig_types[47]
+#define SWIGTYPE_p_size_type swig_types[48]
+#define SWIGTYPE_p_state_type swig_types[49]
+#define SWIGTYPE_p_std__basic_iosTchar_std__char_traitsTchar_t_t swig_types[50]
+#define SWIGTYPE_p_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[51]
+#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[52]
+#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__char_type swig_types[53]
+#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__off_type swig_types[54]
+#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__pos_type swig_types[55]
+#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[56]
+#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__off_type swig_types[57]
+#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__pos_type swig_types[58]
+#define SWIGTYPE_p_std__basic_streambufTchar_std__char_traitsTchar_t_t swig_types[59]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t swig_types[60]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__allocator_type swig_types[61]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__const_iterator swig_types[62]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__const_reverse_iterator swig_types[63]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__iterator swig_types[64]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__reverse_iterator swig_types[65]
+#define SWIGTYPE_p_std__invalid_argument swig_types[66]
+#define SWIGTYPE_p_std__ios_base swig_types[67]
+#define SWIGTYPE_p_std__locale swig_types[68]
+#define SWIGTYPE_p_std__vectorTfloat_std__allocatorTfloat_t_t swig_types[69]
+#define SWIGTYPE_p_std__vectorTfloat_std__allocatorTfloat_t_t__allocator_type swig_types[70]
+#define SWIGTYPE_p_std__vectorTint_std__allocatorTint_t_t swig_types[71]
+#define SWIGTYPE_p_std__vectorTint_std__allocatorTint_t_t__allocator_type swig_types[72]
+#define SWIGTYPE_p_swig__PySwigIterator swig_types[73]
+#define SWIGTYPE_p_traits_type swig_types[74]
+#define SWIGTYPE_p_unsigned_int swig_types[75]
+#define SWIGTYPE_p_unsigned_long swig_types[76]
+#define SWIGTYPE_p_unsigned_long_long swig_types[77]
+#define SWIGTYPE_p_unsigned_short swig_types[78]
+#define SWIGTYPE_p_value_type swig_types[79]
+static swig_type_info *swig_types[81];
+static swig_module_info swig_module = {swig_types, 80, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3135,7 +3134,6 @@ namespace swig {
 
 
 #include "../def.h"
-#include "../MapReaderWriter.h"
 #include "../DensityHeader.h"
 #include "../Map3D.h"
 #include "../DensityMap.h"
@@ -5121,7 +5119,7 @@ SwigDirector_MapReaderWriter::SwigDirector_MapReaderWriter(PyObject *self): MapR
 
 
 
-int SwigDirector_MapReaderWriter::Read(char *filename, real **data, DensityHeader &header) {
+int SwigDirector_MapReaderWriter::Read(char const *filename, real **data, DensityHeader &header) {
   int c_result;
   swig::PyObject_var obj0;
   obj0 = SWIG_FromCharPtr((const char *)filename);
@@ -5156,7 +5154,7 @@ int SwigDirector_MapReaderWriter::Read(char *filename, real **data, DensityHeade
 }
 
 
-void SwigDirector_MapReaderWriter::Write(char *filename, real const *data, DensityHeader const &header) {
+void SwigDirector_MapReaderWriter::Write(char const *filename, real const *data, DensityHeader const &header) {
   swig::PyObject_var obj0;
   obj0 = SWIG_FromCharPtr((const char *)filename);
   swig::PyObject_var obj1;
@@ -5193,7 +5191,7 @@ SwigDirector_EMReaderWriter::SwigDirector_EMReaderWriter(PyObject *self): EMRead
 
 
 
-int SwigDirector_EMReaderWriter::Read(char *filename, real **data, DensityHeader &header) {
+int SwigDirector_EMReaderWriter::Read(char const *filename, real **data, DensityHeader &header) {
   int c_result;
   swig::PyObject_var obj0;
   obj0 = SWIG_FromCharPtr((const char *)filename);
@@ -5228,7 +5226,7 @@ int SwigDirector_EMReaderWriter::Read(char *filename, real **data, DensityHeader
 }
 
 
-void SwigDirector_EMReaderWriter::Write(char *filename, real const *data, DensityHeader const &header) {
+void SwigDirector_EMReaderWriter::Write(char const *filename, real const *data, DensityHeader const &header) {
   swig::PyObject_var obj0;
   obj0 = SWIG_FromCharPtr((const char *)filename);
   swig::PyObject_var obj1;
@@ -5265,7 +5263,7 @@ SwigDirector_XplorReaderWriter::SwigDirector_XplorReaderWriter(PyObject *self): 
 
 
 
-int SwigDirector_XplorReaderWriter::Read(char *filename, real **data, DensityHeader &header) {
+int SwigDirector_XplorReaderWriter::Read(char const *filename, real **data, DensityHeader &header) {
   int c_result;
   swig::PyObject_var obj0;
   obj0 = SWIG_FromCharPtr((const char *)filename);
@@ -5300,7 +5298,7 @@ int SwigDirector_XplorReaderWriter::Read(char *filename, real **data, DensityHea
 }
 
 
-void SwigDirector_XplorReaderWriter::Write(char *filename, real const *data, DensityHeader const &header) {
+void SwigDirector_XplorReaderWriter::Write(char const *filename, real const *data, DensityHeader const &header) {
   swig::PyObject_var obj0;
   obj0 = SWIG_FromCharPtr((const char *)filename);
   swig::PyObject_var obj1;
@@ -20685,7 +20683,7 @@ SWIGINTERN PyObject *_wrap_MapReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self), 
   arg1 = reinterpret_cast< MapReaderWriter * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MapReaderWriter_Read" "', argument " "2"" of type '" "char *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MapReaderWriter_Read" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
   res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_p_float, 0 |  0 );
@@ -20705,9 +20703,9 @@ SWIGINTERN PyObject *_wrap_MapReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self), 
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->MapReaderWriter::Read(arg2,arg3,*arg4);
+      result = (int)(arg1)->MapReaderWriter::Read((char const *)arg2,arg3,*arg4);
     } else {
-      result = (int)(arg1)->Read(arg2,arg3,*arg4);
+      result = (int)(arg1)->Read((char const *)arg2,arg3,*arg4);
     }
   } catch (Swig::DirectorException&) {
     SWIG_fail;
@@ -20751,7 +20749,7 @@ SWIGINTERN PyObject *_wrap_MapReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self),
   arg1 = reinterpret_cast< MapReaderWriter * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MapReaderWriter_Write" "', argument " "2"" of type '" "char *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MapReaderWriter_Write" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
   res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_float, 0 |  0 );
@@ -20771,9 +20769,9 @@ SWIGINTERN PyObject *_wrap_MapReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self),
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      (arg1)->MapReaderWriter::Write(arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+      (arg1)->MapReaderWriter::Write((char const *)arg2,(real const *)arg3,(DensityHeader const &)*arg4);
     } else {
-      (arg1)->Write(arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+      (arg1)->Write((char const *)arg2,(real const *)arg3,(DensityHeader const &)*arg4);
     }
   } catch (Swig::DirectorException&) {
     SWIG_fail;
@@ -24135,28 +24133,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_floatMap3D_Release(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  Map3D<float > *arg1 = (Map3D<float > *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:floatMap3D_Release",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Map3DTfloat_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "floatMap3D_Release" "', argument " "1"" of type '" "Map3D<float > *""'"); 
-  }
-  arg1 = reinterpret_cast< Map3D<float > * >(argp1);
-  result = (int)(arg1)->Release();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_floatMap3D_threeD2oneD_index(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Map3D<float > *arg1 = (Map3D<float > *) 0 ;
@@ -24356,7 +24332,7 @@ SWIGINTERN PyObject *_wrap_DensityMap_Read(PyObject *SWIGUNUSEDPARM(self), PyObj
   arg1 = reinterpret_cast< DensityMap * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DensityMap_Read" "', argument " "2"" of type '" "char *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DensityMap_Read" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
   res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_MapReaderWriter,  0 );
@@ -24367,7 +24343,7 @@ SWIGINTERN PyObject *_wrap_DensityMap_Read(PyObject *SWIGUNUSEDPARM(self), PyObj
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DensityMap_Read" "', argument " "3"" of type '" "MapReaderWriter &""'"); 
   }
   arg3 = reinterpret_cast< MapReaderWriter * >(argp3);
-  (arg1)->Read(arg2,*arg3);
+  (arg1)->Read((char const *)arg2,*arg3);
   resultobj = SWIG_Py_Void();
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
@@ -24401,7 +24377,7 @@ SWIGINTERN PyObject *_wrap_DensityMap_Write(PyObject *SWIGUNUSEDPARM(self), PyOb
   arg1 = reinterpret_cast< DensityMap * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DensityMap_Write" "', argument " "2"" of type '" "char *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DensityMap_Write" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
   res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_MapReaderWriter,  0 );
@@ -24412,7 +24388,7 @@ SWIGINTERN PyObject *_wrap_DensityMap_Write(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DensityMap_Write" "', argument " "3"" of type '" "MapReaderWriter &""'"); 
   }
   arg3 = reinterpret_cast< MapReaderWriter * >(argp3);
-  (arg1)->Write(arg2,*arg3);
+  (arg1)->Write((char const *)arg2,*arg3);
   resultobj = SWIG_Py_Void();
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
@@ -24569,6 +24545,112 @@ SWIGINTERN PyObject *_wrap_EMHeader_GenerateCommonHeader(PyObject *SWIGUNUSEDPAR
   arg2 = reinterpret_cast< DensityHeader * >(argp2);
   (arg1)->GenerateCommonHeader(*arg2);
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EMHeader_magic_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  EMHeader *arg1 = (EMHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:EMHeader_magic_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_magic_set" "', argument " "1"" of type '" "EMHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< EMHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EMHeader_magic_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->magic = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EMHeader_magic_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  EMHeader *arg1 = (EMHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:EMHeader_magic_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_magic_get" "', argument " "1"" of type '" "EMHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< EMHeader * >(argp1);
+  result = (int) ((arg1)->magic);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EMHeader_type_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  EMHeader *arg1 = (EMHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:EMHeader_type_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_type_set" "', argument " "1"" of type '" "EMHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< EMHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EMHeader_type_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->type = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EMHeader_type_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  EMHeader *arg1 = (EMHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:EMHeader_type_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_type_get" "', argument " "1"" of type '" "EMHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< EMHeader * >(argp1);
+  result = (int) ((arg1)->type);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -24734,119 +24816,13 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_EMHeader_magic_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  EMHeader *arg1 = (EMHeader *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:EMHeader_magic_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_magic_set" "', argument " "1"" of type '" "EMHeader *""'"); 
-  }
-  arg1 = reinterpret_cast< EMHeader * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EMHeader_magic_set" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  if (arg1) (arg1)->magic = arg2;
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_EMHeader_magic_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  EMHeader *arg1 = (EMHeader *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:EMHeader_magic_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_magic_get" "', argument " "1"" of type '" "EMHeader *""'"); 
-  }
-  arg1 = reinterpret_cast< EMHeader * >(argp1);
-  result = (int) ((arg1)->magic);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_EMHeader_type_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  EMHeader *arg1 = (EMHeader *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:EMHeader_type_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_type_set" "', argument " "1"" of type '" "EMHeader *""'"); 
-  }
-  arg1 = reinterpret_cast< EMHeader * >(argp1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EMHeader_type_set" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  if (arg1) (arg1)->type = arg2;
-  
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_EMHeader_type_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  EMHeader *arg1 = (EMHeader *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:EMHeader_type_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_type_get" "', argument " "1"" of type '" "EMHeader *""'"); 
-  }
-  arg1 = reinterpret_cast< EMHeader * >(argp1);
-  result = (int) ((arg1)->type);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_EMHeader_comment_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EMHeader *arg1 = (EMHeader *) 0 ;
   char *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  char temp2[80] ;
+  char temp2[81] ;
   int res2 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -24857,13 +24833,13 @@ SWIGINTERN PyObject *_wrap_EMHeader_comment_set(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_comment_set" "', argument " "1"" of type '" "EMHeader *""'"); 
   }
   arg1 = reinterpret_cast< EMHeader * >(argp1);
-  res2 = SWIG_AsCharArray(obj1, temp2, 80);
+  res2 = SWIG_AsCharArray(obj1, temp2, 81);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMHeader_comment_set" "', argument " "2"" of type '" "char [80]""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMHeader_comment_set" "', argument " "2"" of type '" "char [81]""'");
   }
   arg2 = reinterpret_cast< char * >(temp2);
-  if (arg2) memcpy(arg1->comment,arg2,80*sizeof(char));
-  else memset(arg1->comment,0,80*sizeof(char));
+  if (arg2) memcpy(arg1->comment,arg2,81*sizeof(char));
+  else memset(arg1->comment,0,81*sizeof(char));
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -24887,7 +24863,7 @@ SWIGINTERN PyObject *_wrap_EMHeader_comment_get(PyObject *SWIGUNUSEDPARM(self), 
   arg1 = reinterpret_cast< EMHeader * >(argp1);
   result = (char *)(char *) ((arg1)->comment);
   {
-    size_t size = 80;
+    size_t size = 81;
     
     while (size && (result[size - 1] == '\0')) --size;
     
@@ -26150,14 +26126,15 @@ SWIGINTERN PyObject *EMHeader_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObj
 SWIGINTERN PyObject *_wrap_EMReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EMReaderWriter *arg1 = (EMReaderWriter *) 0 ;
-  ifstream *arg2 = 0 ;
+  char *arg2 = (char *) 0 ;
   real **arg3 = (real **) 0 ;
   DensityHeader *arg4 = 0 ;
   int result;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
   void *argp3 = 0 ;
   int res3 = 0 ;
   void *argp4 = 0 ;
@@ -26166,6 +26143,8 @@ SWIGINTERN PyObject *_wrap_EMReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self), P
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   
   if (!PyArg_ParseTuple(args,(char *)"OOOO:EMReaderWriter_Read",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMReaderWriter, 0 |  0 );
@@ -26173,14 +26152,11 @@ SWIGINTERN PyObject *_wrap_EMReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMReaderWriter_Read" "', argument " "1"" of type '" "EMReaderWriter *""'"); 
   }
   arg1 = reinterpret_cast< EMReaderWriter * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_ifstream,  0 );
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMReaderWriter_Read" "', argument " "2"" of type '" "ifstream &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMReaderWriter_Read" "', argument " "2"" of type '" "char const *""'");
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EMReaderWriter_Read" "', argument " "2"" of type '" "ifstream &""'"); 
-  }
-  arg2 = reinterpret_cast< ifstream * >(argp2);
+  arg2 = reinterpret_cast< char * >(buf2);
   res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res3)) {
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EMReaderWriter_Read" "', argument " "3"" of type '" "real **""'"); 
@@ -26194,10 +26170,22 @@ SWIGINTERN PyObject *_wrap_EMReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EMReaderWriter_Read" "', argument " "4"" of type '" "DensityHeader &""'"); 
   }
   arg4 = reinterpret_cast< DensityHeader * >(argp4);
-  result = (int)(arg1)->Read(*arg2,arg3,*arg4);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->EMReaderWriter::Read((char const *)arg2,arg3,*arg4);
+    } else {
+      result = (int)(arg1)->Read((char const *)arg2,arg3,*arg4);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
 fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return NULL;
 }
 
@@ -26205,13 +26193,14 @@ fail:
 SWIGINTERN PyObject *_wrap_EMReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EMReaderWriter *arg1 = (EMReaderWriter *) 0 ;
-  std::ostream *arg2 = 0 ;
+  char *arg2 = (char *) 0 ;
   real *arg3 = (real *) 0 ;
   DensityHeader *arg4 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
   void *argp3 = 0 ;
   int res3 = 0 ;
   void *argp4 = 0 ;
@@ -26220,6 +26209,8 @@ SWIGINTERN PyObject *_wrap_EMReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self), 
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   
   if (!PyArg_ParseTuple(args,(char *)"OOOO:EMReaderWriter_Write",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMReaderWriter, 0 |  0 );
@@ -26227,14 +26218,11 @@ SWIGINTERN PyObject *_wrap_EMReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMReaderWriter_Write" "', argument " "1"" of type '" "EMReaderWriter *""'"); 
   }
   arg1 = reinterpret_cast< EMReaderWriter * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t,  0 );
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMReaderWriter_Write" "', argument " "2"" of type '" "std::ostream &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMReaderWriter_Write" "', argument " "2"" of type '" "char const *""'");
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EMReaderWriter_Write" "', argument " "2"" of type '" "std::ostream &""'"); 
-  }
-  arg2 = reinterpret_cast< std::ostream * >(argp2);
+  arg2 = reinterpret_cast< char * >(buf2);
   res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_float, 0 |  0 );
   if (!SWIG_IsOK(res3)) {
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EMReaderWriter_Write" "', argument " "3"" of type '" "real const *""'"); 
@@ -26248,10 +26236,22 @@ SWIGINTERN PyObject *_wrap_EMReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EMReaderWriter_Write" "', argument " "4"" of type '" "DensityHeader const &""'"); 
   }
   arg4 = reinterpret_cast< DensityHeader * >(argp4);
-  (arg1)->Write(*arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      (arg1)->EMReaderWriter::Write((char const *)arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+    } else {
+      (arg1)->Write((char const *)arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_Py_Void();
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
 fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return NULL;
 }
 
@@ -26963,7 +26963,7 @@ SWIGINTERN PyObject *_wrap_XplorReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self)
   arg1 = reinterpret_cast< XplorReaderWriter * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XplorReaderWriter_Read" "', argument " "2"" of type '" "char *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XplorReaderWriter_Read" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
   res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_p_float, 0 |  0 );
@@ -26983,9 +26983,9 @@ SWIGINTERN PyObject *_wrap_XplorReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self)
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->XplorReaderWriter::Read(arg2,arg3,*arg4);
+      result = (int)(arg1)->XplorReaderWriter::Read((char const *)arg2,arg3,*arg4);
     } else {
-      result = (int)(arg1)->Read(arg2,arg3,*arg4);
+      result = (int)(arg1)->Read((char const *)arg2,arg3,*arg4);
     }
   } catch (Swig::DirectorException&) {
     SWIG_fail;
@@ -27029,7 +27029,7 @@ SWIGINTERN PyObject *_wrap_XplorReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self
   arg1 = reinterpret_cast< XplorReaderWriter * >(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XplorReaderWriter_Write" "', argument " "2"" of type '" "char *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "XplorReaderWriter_Write" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = reinterpret_cast< char * >(buf2);
   res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_float, 0 |  0 );
@@ -27049,9 +27049,9 @@ SWIGINTERN PyObject *_wrap_XplorReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      (arg1)->XplorReaderWriter::Write(arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+      (arg1)->XplorReaderWriter::Write((char const *)arg2,(real const *)arg3,(DensityHeader const &)*arg4);
     } else {
-      (arg1)->Write(arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+      (arg1)->Write((char const *)arg2,(real const *)arg3,(DensityHeader const &)*arg4);
     }
   } catch (Swig::DirectorException&) {
     SWIG_fail;
@@ -27462,7 +27462,6 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DensityHeader_swigregister", DensityHeader_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_floatMap3D", _wrap_new_floatMap3D, METH_VARARGS, NULL},
 	 { (char *)"delete_floatMap3D", _wrap_delete_floatMap3D, METH_VARARGS, NULL},
-	 { (char *)"floatMap3D_Release", _wrap_floatMap3D_Release, METH_VARARGS, NULL},
 	 { (char *)"floatMap3D_threeD2oneD_index", _wrap_floatMap3D_threeD2oneD_index, METH_VARARGS, NULL},
 	 { (char *)"floatMap3D_get_voxeldata", _wrap_floatMap3D_get_voxeldata, METH_VARARGS, NULL},
 	 { (char *)"floatMap3D_setData", _wrap_floatMap3D_setData, METH_VARARGS, NULL},
@@ -27475,16 +27474,16 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DensityMap_swigregister", DensityMap_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_EMHeader", _wrap_new_EMHeader, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_GenerateCommonHeader", _wrap_EMHeader_GenerateCommonHeader, METH_VARARGS, NULL},
+	 { (char *)"EMHeader_magic_set", _wrap_EMHeader_magic_set, METH_VARARGS, NULL},
+	 { (char *)"EMHeader_magic_get", _wrap_EMHeader_magic_get, METH_VARARGS, NULL},
+	 { (char *)"EMHeader_type_set", _wrap_EMHeader_type_set, METH_VARARGS, NULL},
+	 { (char *)"EMHeader_type_get", _wrap_EMHeader_type_get, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_nx_set", _wrap_EMHeader_nx_set, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_nx_get", _wrap_EMHeader_nx_get, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_ny_set", _wrap_EMHeader_ny_set, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_ny_get", _wrap_EMHeader_ny_get, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_nz_set", _wrap_EMHeader_nz_set, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_nz_get", _wrap_EMHeader_nz_get, METH_VARARGS, NULL},
-	 { (char *)"EMHeader_magic_set", _wrap_EMHeader_magic_set, METH_VARARGS, NULL},
-	 { (char *)"EMHeader_magic_get", _wrap_EMHeader_magic_get, METH_VARARGS, NULL},
-	 { (char *)"EMHeader_type_set", _wrap_EMHeader_type_set, METH_VARARGS, NULL},
-	 { (char *)"EMHeader_type_get", _wrap_EMHeader_type_get, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_comment_set", _wrap_EMHeader_comment_set, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_comment_get", _wrap_EMHeader_comment_get, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_voltage_set", _wrap_EMHeader_voltage_set, METH_VARARGS, NULL},
@@ -27668,7 +27667,6 @@ static swig_type_info _swigt__p_f_r_std__ios_base__r_std__basic_iostreamTchar_st
 static swig_type_info _swigt__p_f_r_std__ios_base__r_std__basic_iosTchar_std__char_traitsTchar_t_t = {"_p_f_r_std__ios_base__r_std__basic_iosTchar_std__char_traitsTchar_t_t", 0, 0, 0, 0, 0};
 static swig_type_info _swigt__p_float = {"_p_float", "float *|real *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_fmtflags = {"_p_fmtflags", "fmtflags *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_ifstream = {"_p_ifstream", "ifstream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int_type = {"_p_int_type", "int_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_iostate = {"_p_iostate", "iostate *", 0, 0, (void*)0, 0};
@@ -27693,7 +27691,7 @@ static swig_type_info _swigt__p_std__basic_istreamTchar_std__char_traitsTchar_t_
 static swig_type_info _swigt__p_std__basic_istreamTchar_std__char_traitsTchar_t_t__char_type = {"_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__char_type", "char *|std::basic_istream<char >::char_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__basic_istreamTchar_std__char_traitsTchar_t_t__off_type = {"_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__off_type", "streamoff *|std::basic_istream<char >::off_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__basic_istreamTchar_std__char_traitsTchar_t_t__pos_type = {"_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__pos_type", "streampos *|std::basic_istream<char >::pos_type *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_std__basic_ostreamTchar_std__char_traitsTchar_t_t = {"_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t", "std::basic_ostream<char,std::char_traits<char > > *|std::ostream *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__basic_ostreamTchar_std__char_traitsTchar_t_t = {"_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t", "std::basic_ostream<char,std::char_traits<char > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__off_type = {"_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__off_type", "streamoff *|std::basic_ostream<char >::off_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__pos_type = {"_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__pos_type", "streampos *|std::basic_ostream<char >::pos_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__basic_streambufTchar_std__char_traitsTchar_t_t = {"_p_std__basic_streambufTchar_std__char_traitsTchar_t_t", "std::basic_streambuf<char,std::char_traits<char > > *", 0, 0, (void*)0, 0};
@@ -27751,7 +27749,6 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_f_r_std__ios_base__r_std__ios_base,
   &_swigt__p_float,
   &_swigt__p_fmtflags,
-  &_swigt__p_ifstream,
   &_swigt__p_int,
   &_swigt__p_int_type,
   &_swigt__p_iostate,
@@ -27834,7 +27831,6 @@ static swig_cast_info _swigc__p_f_r_std__ios_base__r_std__basic_iosTchar_std__ch
 static swig_cast_info _swigc__p_f_r_std__ios_base__r_std__ios_base[] = {  {&_swigt__p_f_r_std__ios_base__r_std__basic_ostreamTchar_std__char_traitsTchar_t_t, _p_f_r_std__ios_base__r_std__basic_ostreamTchar_std__char_traitsTchar_t_tTo_p_f_r_std__ios_base__r_std__ios_base, 0, 0},  {&_swigt__p_f_r_std__ios_base__r_std__basic_istreamTchar_std__char_traitsTchar_t_t, _p_f_r_std__ios_base__r_std__basic_istreamTchar_std__char_traitsTchar_t_tTo_p_f_r_std__ios_base__r_std__ios_base, 0, 0},  {&_swigt__p_f_r_std__ios_base__r_std__ios_base, 0, 0, 0},  {&_swigt__p_f_r_std__ios_base__r_std__basic_iostreamTchar_std__char_traitsTchar_t_t, _p_f_r_std__ios_base__r_std__basic_iostreamTchar_std__char_traitsTchar_t_tTo_p_f_r_std__ios_base__r_std__ios_base, 0, 0},  {&_swigt__p_f_r_std__ios_base__r_std__basic_iosTchar_std__char_traitsTchar_t_t, _p_f_r_std__ios_base__r_std__basic_iosTchar_std__char_traitsTchar_t_tTo_p_f_r_std__ios_base__r_std__ios_base, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_float, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_fmtflags[] = {  {&_swigt__p_fmtflags, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_ifstream[] = {  {&_swigt__p_ifstream, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_int_type[] = {  {&_swigt__p_int_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_iostate[] = {  {&_swigt__p_iostate, 0, 0, 0},{0, 0, 0, 0}};
@@ -27917,7 +27913,6 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_f_r_std__ios_base__r_std__ios_base,
   _swigc__p_float,
   _swigc__p_fmtflags,
-  _swigc__p_ifstream,
   _swigc__p_int,
   _swigc__p_int_type,
   _swigc__p_iostate,

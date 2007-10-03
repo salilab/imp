@@ -69,8 +69,8 @@ public:
 
 class XplorReaderWriter : public MapReaderWriter {
 public:
-  int Read(char *filename, real **data, DensityHeader &header);
-  void Write(char *filename,const real *data, const DensityHeader &header );
+  int Read(const char *filename, real **data, DensityHeader &header);
+  void Write(const char *filename,const real *data, const DensityHeader &header );
 protected:
   int ReadHeader(ifstream & XPLORstream,XplorHeader &header);
   int  ReadMap(ifstream &XPLORstream,real *data, XplorHeader &header);

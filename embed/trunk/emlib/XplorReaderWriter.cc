@@ -1,5 +1,5 @@
 #include "XplorReaderWriter.h"
-int XplorReaderWriter::Read(char *filename,real **data, DensityHeader &header) {
+int XplorReaderWriter::Read(const char *filename,real **data, DensityHeader &header) {
 
   ifstream XPLORstream(filename);
   //header
@@ -169,7 +169,7 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, real *data, XplorHeader &
 }
 
 
-void XplorReaderWriter::Write(char *filename,const real *data, const DensityHeader &header_ )  {
+void XplorReaderWriter::Write(const char *filename,const real *data, const DensityHeader &header_ )  {
   XplorHeader header(header_);
 
 

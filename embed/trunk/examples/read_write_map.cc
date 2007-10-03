@@ -1,5 +1,5 @@
 #include "DensityMap.h"
-#include "XplorReaderWriter.h"
+#include "EMReaderWriter.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -7,26 +7,18 @@ using namespace std;
 
 int main(int argc,char *argv[]) {
 
-  const char* em_filenameI, *em_filenameO;
+   char* em_filenameI, *em_filenameO;
   em_filenameI = argv[1];
   em_filenameO = argv[2];
   // load the EM density map
   DensityMap scene;
-  ifstream mapFile(em_filenameI);
-  XplorReaderWriter xrw;
+  EMReaderWriter erw;
 
-  scene.Read(mapFile,xrw);
-
-  mapFile.close();
-		   
+  scene.Read(em_filenameI,erw);
+  cout <<" after read"<<endl;
   // write the map
-  ofstream outFile(em_filenameO);
+  scene.Write(em_filenameO,erw);
 
-  scene.Write(outFile,xrw);
-
-  outFile.close();
-
-		   
 
   return 0;
 }

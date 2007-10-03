@@ -2,19 +2,19 @@ Import('env', 'modconfig','pythoninc','configure_for_pyext')
 
 # Get a modified build environment suitable for building Python extensions:
 e = configure_for_pyext(env, modconfig)
-e.Append(CPPPATH=[pythoninc, '../../imp'])
+e.Append(CPPPATH=[pythoninc, '..'])
 e.Append(LIBPATH=['..'], LIBS='emlib')
 
 # Build the Python extension from SWIG interface file:
 pyext = e.SharedLibrary('_emlib', 'emlib.i',
                         SWIGFLAGS='-python -c++')
 # .py file should also be generated:
-pymod = File('emlib.py')
-e.Depends(pymod, 'emlib.i')
+pyem = File('emlib.py')
+e.Depends(pyem, 'emlib.i')
 
 # Install the Python extension and any .py files:
 libinst = e.Install(modconfig['libinstall'], pyext)
-pyinst = e.Install(modconfig['pyinstall'], pymod)
+pyinst = e.Install(modconfig['pyinstall'], pyem)
 e.Alias('install', [libinst, pyinst])
 
 Return('pyext')
