@@ -5,6 +5,10 @@ e = configure_for_pyext(env, modconfig)
 e.Append(CPPPATH=[pythoninc, '..'])
 e.Append(LIBPATH=['..'], LIBS='imp')
 
+# AIX tries to use the C compiler rather than g++, so hardcode it here:
+shlink = str(e['SHLINK'])
+e['SHLINK'] = shlink.replace(' cc_r', ' g++')
+
 # Build the Python extension from SWIG interface file:
 pyext = e.SharedLibrary('_imp2', 'imp.i',
                         SWIGFLAGS='-python -c++ -naturalvar -IIMP')
