@@ -33,9 +33,7 @@ class DensityMap:   public Map3D<float>
 public:
   //---
   // Creates a density map from the templateP with the given resolution and spacing. 
-  DensityMap(){
-    loc_calculated = false;
-  }
+  DensityMap();
 
   void Read(const char *filename, MapReaderWriter &reader);
   void Write(const char *filename,MapReaderWriter &writer);
@@ -48,9 +46,12 @@ public:
       data[i]=0.0;
     }
   }
+
+  //normalization 
   float calcRMS();
 
-
+  void stdNormalize();
+  
   // voxel inspection
   float voxel2loc(const int &index,int dim);
 
@@ -68,6 +69,8 @@ protected:
   float *y_loc;
   float *z_loc;
   bool loc_calculated;
+  bool normalized;
+  bool rms_calculated;
 };
 
 
