@@ -18,6 +18,7 @@
 #include <map>
 #include <string>
 #include <iomanip>
+#include <stdexcept>
 
 #include "IMP_config.h"
 
