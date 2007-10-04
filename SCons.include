@@ -196,13 +196,13 @@ def get_pyext_environment(env, cplusplus=False):
        extension is done."""
     from platform import system
     e = env.Copy()
-    e['SHLIBPREFIX'] = ''
+    e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
     # import library (.lib file):
     e['no_import_lib'] = 1
     platform = e['PLATFORM']
     if e.is_wine:
-        e['SHLIBSUFFIX'] = '.pyd'
+        e['LDMODULESUFFIX'] = '.pyd'
         # Directory containing python25.lib:
         e.Append(LIBPATH='/usr/lib/w32comp/w32python/2.5/lib/')
     else:
@@ -224,7 +224,7 @@ def get_pyext_environment(env, cplusplus=False):
         opt = opt.replace("-Wstrict-prototypes", "")
         e['CC'] = cc
         e['CXX'] = cxx
-        e['SHLIBSUFFIX'] = so
+        e['LDMODULESUFFIX'] = so
         e['CPPFLAGS'] = basecflags + " " + opt
         # Some gcc versions don't like the code that SWIG generates - but let
         # that go, because we have no control over it:
