@@ -242,7 +242,7 @@ subclassed.</para>
 <title>Historical notes</title>
 
 <para>Restraint sets were initially a subclass of Restraints but it ended up
-being easier to keep them separate, so analagous functions are now overloaded
+being easier to keep them separate, so analogous functions are now overloaded
 rather than accessed via polymorphism. This was done in part to implement
 filters in a different way. Filters will be added to restraint sets and
 applied in the order that they are added. Previously, Filters were restraint
