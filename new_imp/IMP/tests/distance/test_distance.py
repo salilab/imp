@@ -75,8 +75,9 @@ class test_distance(IMP_Test.IMPTestCase):
         """ test that distance restraints are reasonable """
 
         # score should not change with deriv calcs
-        for i in range(len(self.rsrs)):
-            self.assert_(self.rsrs[i].evaluate(False) == self.rsrs[i].evaluate(True), "score should be independent of whether derivatives are calcuated or not")
+        for rsr in self.rsrs:
+            self.assertAlmostEqual(rsr.evaluate(False), rsr.evaluate(True),
+                                   places=5)
 
         # score should be equivalent if attribute is used or equivalent hard-coded distance is used
         for i in range(9):
