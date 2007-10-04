@@ -53,7 +53,7 @@ public:
   };
 
   // particle float attributes (assumed differentiable variables)
-  Float_Index add_float(const Float value, const std::string name="none");
+  Float_Index add_float(const Float value);
   void set_float(const Float_Index idx, const Float value);
   Float get_float(const Float_Index idx);
 

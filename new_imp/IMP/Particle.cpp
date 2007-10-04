@@ -90,6 +90,8 @@ bool Particle::is_active(void)
   Add a Float attribute to this particle.
 
   \param[in] name Name of the attribute being added.
+
+  return true if Float attribute successfully added.
  */
 
 bool Particle::add_float (const std::string name, const Float value, const bool is_optimized)
@@ -98,14 +100,34 @@ bool Particle::add_float (const std::string name, const Float value, const bool 
 
   LogMsg(VERBOSE, "add_float: " << name);
   // if optimized, give name to get stats generated for this name (e.g. "X", "Y" or "Z")
-  if (is_optimized)
-    fi = model_data_->add_float(value, name);
-  else
-    fi = model_data_->add_float(value);
+  // if (is_optimized)
+  //   fi = model_data_->add_float(value, name);
+  // else
+
+  // It may be better to manage strings only at the Particle level.
+  // You could create the Stat structure here or use an existing
+  // one if it already exists for a particular string, then pass
+  // a reference to it to the variable.
+  fi = model_data_->add_float(value);
 
   float_indexes_[name] = fi;
   model_data_->set_is_optimized(fi, is_optimized);
   return true;
+}
+
+
+/**
+  Does particle have a Float attribute with the given name.
+
+  \param[in] name Name of the attribute being checked.
+
+  return true if Float attribute exists in this particle.
+ */
+
+
+bool Particle::has_float (const std::string name)
+{
+  return (float_indexes_.find(name) != float_indexes_.end());
 }
 
 
@@ -119,6 +141,9 @@ bool Particle::add_float (const std::string name, const Float value, const bool 
 
 Float_Index Particle::float_index(const std::string name)
 {
+  if (float_indexes_.find(name) == float_indexes_.end()) {
+    throw std::out_of_range("Unknown float attribute name");
+  }
   return float_indexes_[name];
 }
 
@@ -128,6 +153,8 @@ Float_Index Particle::float_index(const std::string name)
 
   \param[in] in Input stream to read value from.
   \param[in] name Name of the attribute being added.
+
+  return true if Int attribute successfully added.
  */
 
 bool Particle::add_int (const std::string name, const Int value)
@@ -135,6 +162,21 @@ bool Particle::add_int (const std::string name, const Int value)
   LogMsg(VERBOSE, "add_int: " << name);
   int_indexes_[name] = model_data_->add_int(value);
   return true;
+}
+
+
+/**
+  Does particle have an Int attribute with the given name.
+
+  \param[in] name Name of the attribute being checked.
+
+  return true if Int attribute exists in this particle.
+ */
+
+
+bool Particle::has_int (const std::string name)
+{
+  return (int_indexes_.find(name) != int_indexes_.end());
 }
 
 
@@ -148,6 +190,9 @@ bool Particle::add_int (const std::string name, const Int value)
 
 Int_Index Particle::int_index(const std::string name)
 {
+  if (int_indexes_.find(name) == int_indexes_.end()) {
+    throw std::out_of_range("Unknown int attribute name");
+  }
   return int_indexes_[name];
 }
 
@@ -159,12 +204,29 @@ Int_Index Particle::int_index(const std::string name)
 
   \param[in] in Input stream to read value from.
   \param[in] name Name of the attribute being added.
+
+  return true if String attribute successfully added.
  */
 
 bool Particle::add_string(const std::string name, const String value)
 {
   string_indexes_[name] = model_data_->add_string(value);
   return true;
+}
+
+
+/**
+  Does particle have an String attribute with the given name.
+
+  \param[in] name Name of the attribute being checked.
+
+  return true if String attribute exists in this particle.
+ */
+
+
+bool Particle::has_string (const std::string name)
+{
+  return (string_indexes_.find(name) != string_indexes_.end());
 }
 
 
@@ -179,6 +241,9 @@ bool Particle::add_string(const std::string name, const String value)
 
 String_Index Particle::string_index(const std::string name)
 {
+  if (string_indexes_.find(name) == string_indexes_.end()) {
+    throw std::out_of_range("Unknown string attribute name");
+  }
   return string_indexes_[name];
 }
 
