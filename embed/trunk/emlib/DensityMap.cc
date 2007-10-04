@@ -1,5 +1,13 @@
 #include "DensityMap.h"
 
+
+DensityMap::DensityMap(){
+  loc_calculated = false;
+  normalized = false;
+  rms_calculated = false;
+}
+
+
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   //TODO: we need to decide who does the allocation ( mapreaderwriter or density)? if we keep the current implementation ( mapreaderwriter ) we need to pass a pointer to data
   reader.Read(filename,&data,header);
@@ -55,8 +63,25 @@ void DensityMap::calc_all_voxel2loc() {
 
 
 
+void DensityMap::stdNormalize() {
+  
+  float inv_std = 1.0/calcRMS();
+  float mean = header.dmean;
+  int nvox = header.nx * header.ny * header.nz;
+  for (int ii=0;ii<nvox;ii++) {
+    data[ii] = (data[ii] - mean) * inv_std;
+  }
+  normalized = true;
+  header.rms=1.;
+  header.dmean=0.0;
+}
+
+
+
 float DensityMap::calcRMS() {
 
+  if (rms_calculated)
+    return header.rms;
 
   int  nvox = header.nx * header.ny * header.nz;
   float meanval = .0;
