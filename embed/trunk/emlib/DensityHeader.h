@@ -20,10 +20,12 @@ class DensityHeader {
 
 public:
   DensityHeader() {}
-  DensityHeader(const DensityHeader & other_header) {
 
-    //TODO - add copy const
-  }
+  // a copy constructor is not defined in a class, the compiler  itself defines one. This will ensure a shallow copy. 
+  //If the class does not have pointer variables with dynamically allocated memory, then one need not worry about defining a 
+  //copy constructor. It can be left to the compiler's discretion.
+  //But if the class has pointer variables and has some dynamic memory allocations, then it is a must to have a copy constructor.
+
 
 
   static const unsigned short MAP_FIELD_SIZE   =  4;
@@ -57,9 +59,9 @@ public:
   float Magnification;	//Magnification
   float Postmagnification; //Postmagnification (of energy filter)
   float Exposuretime; //Exposuretime
-  float Objectpixelsize; //Objectpixelsize
+  float Objectpixelsize; //this is the actual pixelsize 
   float Microscope;	//Microscope
-  float Pixelsize; //Pixelsize
+  float Pixelsize; //Pixelsize - used for the microscope CCD camera
   float CCDArea;	//CCDArea
   float Defocus;	//Defocus
   float Astigmatism;//Astigmatism
@@ -74,6 +76,7 @@ public:
   float MarkerX;//Marker_X coordinate
   float MarkerY;//Marker_Y coordinate
   int lswap;
+  float resolution;
 };
 
 

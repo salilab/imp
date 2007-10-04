@@ -39,13 +39,13 @@ public:
 
   int threeD2oneD_index(int x_ind, int y_ind, int z_ind) const{
     // TODO: should we add here a validation check
-    return x_ind+y_ind*nx+z_ind*nx*ny;
+    return x_ind+y_ind*nnx+z_ind*nnx*nny;
   }
 
-   const dataItemT  get_voxeldata(int i, int j,int k) const;
-
-   void setData(int i,int j,int k, dataItemT);
-
+  const dataItemT  get_voxeldata(int i, int j,int k) const;
+  
+  void setData(int i,int j,int k, dataItemT);
+  const dataItemT* get_data() const  {return data;}
 
 protected:
   void free_1d_array_range(dataItemT *t);
@@ -56,7 +56,7 @@ protected:
 
   dataItemT *data; // the order is ZYX (Z-slowest)
   float voxelsize[3];
-  int nx,ny,nz;
+  int nnx,nny,nnz;
 private:
   bool allocated;
 };
