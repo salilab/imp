@@ -151,6 +151,7 @@ int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
   file.read((char *)&ehp, sizeof(EMHeader::EMHeaderParse));
   
   ehp.InitEMHeader(header);
+  header.Objectpixelsize = 1.0;
   return 0;
 }
 
@@ -189,7 +190,6 @@ int EMReaderWriter::ReadData(ifstream &file, real **data, const EMHeader &header
     file.read((char  *)&voxeldata,  voxel_data_size*nvox);
     char tmp[voxel_data_size];
     for (int i=0;i<nvox;i++) {
-      cout << i << endl;
       strncpy(tmp,&(voxeldata[i*voxel_data_size]),voxel_data_size);
       if (header.lswap==1) { 
 	swap(tmp,voxel_data_size);

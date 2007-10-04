@@ -3,11 +3,11 @@
 #ifdef INCLUDE_SHEILD
 
 template <class dataItemT>
-Map3D<dataItemT>::Map3D(int nx_,int ny_,int nz_,float *voxelsize_) : nx(nx_),ny(ny_),nz(nz_){
+Map3D<dataItemT>::Map3D(int nx_,int ny_,int nz_,float *voxelsize_) : nnx(nx_),nny(ny_),nnz(nz_){
   for(int i=0;i<3;i++) {
     voxelsize[i]=voxelsize_[i];
   }
-  allocate_1d_array_range(nz,ny,nx);
+  allocate_1d_array_range(nnz,nny,nnx);
 
 }
 
@@ -35,8 +35,8 @@ const dataItemT  Map3D<dataItemT>::get_voxeldata (int i, int j,int k) const {
 
 template <class dataItemT>
 void Map3D<dataItemT>::setData(int i,int j,int k, const dataItemT d) {
-  if ((i<0) || (i>nx-1) || (j<0) || (j>ny-1) || (k<0) || (k>nz-1)) {
-    cout << " Map3D::setData is out of range: " << i << "  " << j << "  " << k << " and the extent is " << nx << "  " << ny << "  " << nz << endl;
+  if ((i<0) || (i>nnx-1) || (j<0) || (j>nny-1) || (k<0) || (k>nnz-1)) {
+    cout << " Map3D::setData is out of range: " << i << "  " << j << "  " << k << " and the extent is " << nnx << "  " << nny << "  " << nnz << endl;
     //todo - raise error
   }
   data[threeD2oneD_index(i,j,k)] = d;

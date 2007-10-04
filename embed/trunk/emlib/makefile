@@ -8,7 +8,7 @@ LDFLAGS = -I$(PLIB) -lpython2.5 -L$(MOLLIB) -lmol
 
 
 
-CLASSES =  Vector3 Map3D DensityHeader MapReaderWriter XplorReaderWriter EMReaderWriter  DensityMap  
+CLASSES =  Vector3 Map3D DensityHeader MapReaderWriter XplorReaderWriter EMReaderWriter  DensityMap  SampledDensityMap CoarseCC
 
 # Prepare object and source file list using pattern substitution func.
 ALL  = $(CLASSES)
