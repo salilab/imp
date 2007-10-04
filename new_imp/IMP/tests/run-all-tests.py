@@ -3,11 +3,11 @@ import unittest, sys, os, re
 sys.path.append('python_libs')
 
 def regressionTest():
+    """Run all tests in files called test_*.py in current directory and
+       subdirectories"""
     path = os.path.abspath(os.path.dirname(sys.argv[0]))
     modobjs = []
-    for subdir in ('connectivity', 'pair_connectivity', 'torus',
-                   'coordinate', 'proximity', 'exclusion_volumes', 'xml',
-                   'particles', 'distance'):
+    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
         files = os.listdir(os.path.join(path, subdir))
         test = re.compile("^test_.*\.py$", re.IGNORECASE)
         files = filter(test.search, files)
