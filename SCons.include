@@ -202,9 +202,12 @@ def get_pyext_environment(env, cplusplus=False):
     e['no_import_lib'] = 1
     platform = e['PLATFORM']
     if e.is_wine:
-        e['LDMODULESUFFIX'] = '.pyd'
+        # Have to set SHLIBSUFFIX and PREFIX on Windows otherwise the
+        # mslink tool complains
+        e['SHLIBPREFIX'] = ''
+        e['LDMODULESUFFIX'] = e['SHLIBSUFFIX'] = '.pyd'
         # Directory containing python25.lib:
-        e.Append(LIBPATH='/usr/lib/w32comp/w32python/2.5/lib/')
+        e.Append(LIBPATH=['/usr/lib/w32comp/w32python/2.5/lib/'])
     else:
         if platform == 'aix':
             # Make sure compilers are in the PATH, so that Python's script for
