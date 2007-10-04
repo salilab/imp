@@ -69,6 +69,8 @@ int main(int argc,char *argv[]) {
 
   model_map.calcRMS();
   scene.calcRMS();
+  scene.stdNormalize();
+  model_map.stdNormalize();
   float res =   cc.evaluate(scene,
 	      model_map,
 	      x,y,z,
