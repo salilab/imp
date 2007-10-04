@@ -31,14 +31,17 @@ public:
 
   // float attributes
   bool add_float(const std::string name, const Float value = 0.0, const bool optimize = false);
+  bool has_float(const std::string name);
   Float_Index float_index(const std::string name);
 
   // int attributes
   bool add_int(const std::string name, const Int value);
+  bool has_int(const std::string name);
   Int_Index int_index(const std::string name);
 
   // string attributes
   bool add_string(const std::string name, const String value);
+  bool has_string(const std::string name);
   String_Index string_index(const std::string name);
 
   // status

@@ -35,10 +35,12 @@ Model_Data::~Model_Data ()
   Add particle float attribute to the model. The returned index can be used
   for obtaining and setting the attribute value.
 
+  \param[in] value Initial value of the attribute.
+
   \return index of a new float attribute.
  */
 
-Float_Index Model_Data::add_float(const Float value, const std::string name)
+Float_Index Model_Data::add_float(const Float value)
 {
   Float_Index f_index;
   int size = float_data_.size();
@@ -47,9 +49,6 @@ Float_Index Model_Data::add_float(const Float value, const std::string name)
 
   f_index.set_index(size);
   float_data_[f_index.index()].value_ = value;
-
-  if (name != "none") {
-  }
 
   return f_index;
 }
@@ -146,10 +145,12 @@ void Model_Data::zero_derivatives(void)
   Add particle int attribute to the model. The returned index can be used
   for obtaining and setting the attribute value.
 
+  \param[in] value Initial value of the attribute.
+
   \return index of a new int attribute.
  */
 
-Int_Index Model_Data::add_int(const Int i)
+Int_Index Model_Data::add_int(const Int value)
 {
   Int_Index i_index;
   int size = int_data_.size();
@@ -157,7 +158,7 @@ Int_Index Model_Data::add_int(const Int i)
   int_data_.resize(size+1);
 
   i_index.set_index(size);
-  int_data_[i_index.index()] = i;
+  int_data_[i_index.index()] = value;
 
   return i_index;
 }
@@ -193,10 +194,12 @@ Int Model_Data::get_int(const Int_Index idx)
   Add particle string attribute to the model. The returned index can be used
   for obtaining and setting the attribute value.
 
+  \param[in] value Initial value of the attribute.
+
   \return index of a new string attribute.
  */
 
-String_Index Model_Data::add_string(const String str)
+String_Index Model_Data::add_string(const String value)
 {
   String_Index s_index;
   int size = string_data_.size();
@@ -204,7 +207,7 @@ String_Index Model_Data::add_string(const String str)
   string_data_.resize(size+1);
 
   s_index.set_index(size);
-  string_data_[s_index.index()] = str;
+  string_data_[s_index.index()] = value;
 
   return s_index;
 }
