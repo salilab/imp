@@ -6,8 +6,8 @@
  *
  */
 
-#if !defined(__model_data_h)
-#define __model_data_h 1
+#ifndef __IMP_MODEL_DATA_H
+#define __IMP_MODEL_DATA_H
 
 #include <vector>
 #include <map>
@@ -124,4 +124,4 @@ protected:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_MODEL_DATA_H */

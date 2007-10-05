@@ -6,8 +6,8 @@
  *
  */
 
-#if !defined(__complexes_restraints_h)
-#define __complexes_restraints_h 1
+#ifndef __IMP_COMPLEXES_RESTRAINTS_H
+#define __IMP_COMPLEXES_RESTRAINTS_H
 
 #include <list>
 
@@ -419,4 +419,4 @@ protected:
 
 } // namespace imp
 
-#endif
+#endif /* __IMP_COMPLEXES_RESTRAINTS_H */

@@ -6,8 +6,8 @@
  *
  */
 
-#if !defined(__model_h)
-#define __model_h 1
+#ifndef __IMP_MODEL_H
+#define __IMP_MODEL_H
 
 #include "IMP_config.h"
 #include "Model_Data.h"
@@ -107,4 +107,4 @@ protected:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_MODEL_H */

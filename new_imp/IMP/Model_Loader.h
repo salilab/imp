@@ -6,8 +6,8 @@
  *
  */
 
-#if !defined(__model_loader_h)
-#define __model_loader_h 1
+#ifndef __IMP_MODEL_LOADER_H
+#define __IMP_MODEL_LOADER_H
 
 #include <fstream>
 
@@ -36,4 +36,4 @@ public:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_MODEL_LOADER_H */

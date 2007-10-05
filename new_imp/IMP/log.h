@@ -1,3 +1,6 @@
+#ifndef __IMP_LOG_H
+#define __IMP_LOG_H
+
 #include <iostream>
 #include <fstream>
 
@@ -28,3 +31,5 @@ void EnterMsg(char *str);
 
 // Errors are always shown, and then the program is quit
 #define ErrorMsg(stream) AppendLog(); imp_log << "** ERROR **  " << stream << std::endl; std::cout << "** ERROR **  " << stream << std::endl; CloseLog(); exit(0);
+
+#endif  /* __IMP_LOG_H */

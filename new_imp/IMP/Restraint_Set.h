@@ -6,9 +6,8 @@
  *
  */
 
-
-#if !defined(__restraint_set_h)
-#define __restraint_set_h 1
+#ifndef __IMP_RESTRAINT_SET_H
+#define __IMP_RESTRAINT_SET_H
 
 #include <string>
 
@@ -74,4 +73,4 @@ protected:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_RESTRAINT_SET_H */
