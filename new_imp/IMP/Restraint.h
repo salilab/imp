@@ -10,6 +10,8 @@
 #if !defined(__restraint_h)
 #define __restraint_h 1
 
+#include <vector>
+
 #include "IMP_config.h"
 
 namespace imp

@@ -43,6 +43,7 @@ namespace std {
 
 %include "emfile.h"
 %include "emscore.h"
+%include "Base_Types.h"
 %include "IMP.h"
 %include "Model.h"
 %include "Model_Data.h"

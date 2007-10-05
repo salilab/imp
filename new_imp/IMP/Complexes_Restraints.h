@@ -9,6 +9,8 @@
 #if !defined(__complexes_restraints_h)
 #define __complexes_restraints_h 1
 
+#include <list>
+
 #include "IMP_config.h"
 #include "Restraint.h"
 

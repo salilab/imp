@@ -6,6 +6,8 @@
  *
  */
 
+#include <stdexcept>
+
 #include "IMP.h"
 
 namespace imp
