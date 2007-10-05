@@ -30,6 +30,12 @@ class test_particles(IMP_Test.IMPTestCase):
         for i in range(0,6):
             p1.add_float("attr_" + str(i), 3.5 * i, False)
 
+    def test_bad_attributes(self):
+        """Asking for non-existent attributes should cause an error"""
+        p1 = self.particles[0].imp()
+        self.assertRaises(IndexError, p1.float_index, "notexist")
+        self.assertRaises(IndexError, p1.int_index, "notexist")
+        self.assertRaises(IndexError, p1.string_index, "notexist")
 
     def test_particles(self):
         """ test that particle attributes are available and correct """
