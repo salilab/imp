@@ -9,6 +9,8 @@
 #if !defined(__particle_h)
 #define __particle_h 1
 
+#include <map>
+
 #include "IMP_config.h"
 
 namespace imp
