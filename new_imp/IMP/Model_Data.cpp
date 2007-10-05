@@ -1,12 +1,13 @@
 /*
- *  Model.cpp
+ *  Model_Data.cpp
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP.h"
+#include "Model_Data.h"
+#include "log.h"
 
 namespace imp
 {

@@ -1,3 +1,8 @@
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
+
 #include "emfile.h"
 
 /* free memory of density */

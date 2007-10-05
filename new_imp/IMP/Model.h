@@ -10,16 +10,12 @@
 #define __model_h 1
 
 #include "IMP_config.h"
+#include "Model_Data.h"
+#include "Restraint_Set.h"
+#include "Rigid_Body.h"
 
 namespace imp
 {
-
-
-class Particle;
-class Restraint_Set;
-class Optimizer;
-class Rigid_Body;
-class Model_Data;
 
 // Class for storing model, its restraints, constraints, and particles.
 // All attribute data for particles is stored through indexing in the

@@ -6,8 +6,13 @@
  *
  */
 
+#include <cmath>
 
-#include "IMP.h"
+#include "Complexes_Restraints.h"
+#include "Model.h"
+#include "Particle.h"
+#include "log.h"
+#include "emscore.h"
 
 namespace imp
 {

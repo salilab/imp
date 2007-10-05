@@ -7,10 +7,11 @@
 #include <iomanip>
 
 #include "log.h"
-#include "IMP.h"
 #include "Particle.h"
 #include "Model.h"
 #include "Model_Loader.h"
+#include "Complexes_Restraints.h"
+#include "Optimizer.h"
 
 using namespace imp;
 

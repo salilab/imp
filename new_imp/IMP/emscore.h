@@ -1,10 +1,6 @@
 #ifndef __EMSCORE__
 #define __EMSCORE__
 
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <cmath>
 #include "emfile.h"
 
 #include "IMP_config.h"

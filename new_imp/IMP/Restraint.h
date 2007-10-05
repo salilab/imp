@@ -11,8 +11,11 @@
 #define __restraint_h 1
 
 #include <vector>
+#include <iostream>
 
 #include "IMP_config.h"
+#include "Model_Data.h"
+#include "Score_Func.h"
 
 namespace imp
 {
@@ -57,6 +60,56 @@ protected:
 
   // shouldn't be necessary, but keep around for debugging
   std::vector<Particle*> particles_;
+};
+
+// Distance restraint between two particles
+class IMPDLLEXPORT RSR_Distance : public Restraint
+{
+public:
+  // particles must be at least this far apart to calculate the
+  // ... distance restraint. Force it otherwise.
+  static const Float MIN_DISTANCE;
+
+  RSR_Distance(Model& model,
+               Particle* p1,
+               Particle* p2,
+               const Float mean,
+               const Float sd,
+               Score_Func* score_func);
+  RSR_Distance(Model& model,
+               Particle* p1,
+               Particle* p2,
+               const std::string attr_name,
+               const Float sd,
+               Score_Func* score_func);
+  virtual ~RSR_Distance();
+
+  virtual Float evaluate(bool calc_deriv);
+
+  // status
+  virtual void show (std::ostream& out = std::cout);
+  virtual std::string version(void) {
+    return "0.5.0";
+  }
+  virtual std::string last_modified_by(void) {
+    return "Bret Peterson";
+  }
+
+protected:
+  void set_up(Model& model,
+              Particle* p1,
+              Particle* p2,
+              const Float mean,
+              const Float sd,
+              Score_Func* score_func);
+
+  // variables used to determine the distance
+  Float_Index x1_, y1_, z1_, x2_, y2_, z2_;
+
+  // variables used to calculate the math form
+  Float mean_, sd_;
+  // math form for this restraint (typically one of the harmonics)
+  Score_Func* score_func_;
 };
 
 } // namespace imp
