@@ -31,24 +31,6 @@ public:
   }
 };
 
-class IMPDLLEXPORT Steepest_Descent : public Optimizer
-{
-public:
-  Steepest_Descent();
-  virtual ~Steepest_Descent();
-
-  virtual Float optimize(Model& model, int max_steps, Float threshold=0.0);
-  virtual std::string version(void) {
-    return "0.5.0";
-  }
-  virtual std::string last_modified_by(void) {
-    return "Bret Peterson";
-  }
-
-protected:
-  Float step_size;
-};
-
 } // namespace imp
 
 #endif  /* __IMP_OPTIMIZER_H */

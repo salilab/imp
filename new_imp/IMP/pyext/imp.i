@@ -1,17 +1,6 @@
 %module(directors="1") imp2
 %{
-#include "emfile.h"
-#include "emscore.h"
 #include "IMP.h"
-#include "Particle.h"
-#include "Optimizer.h"
-#include "Score_Func.h"
-#include "Restraint_Set.h"
-#include "Restraint.h"
-#include "Complexes_Restraints.h"
-#include "Rigid_Body.h"
-#include "Model_Data.h"
-#include "Model.h"
 %}
 
 /* Ignore shared object import/export stuff */
@@ -52,5 +41,6 @@ namespace std {
 %include "Model.h"
 %include "Particle.h"
 %include "Optimizer.h"
+%include "Steepest_Descent.h"
 %include "Complexes_Restraints.h"
 %include "Rigid_Body.h"
