@@ -34,10 +34,6 @@ through Python. If you want, you can also define a syntax and code for loading
 the restraint from a text file by modifying the
 <filename>Model_Loader.cpp</filename> code.</para>
 
-<note><para>SWIG seems to have a problem with subclasses in separate .h files.
-For now, put the declaration in the <filename>Restraint.h</filename>
-file.</para></note>
-
 </sect1>
 
 

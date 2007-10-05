@@ -50,6 +50,6 @@ namespace std {
 %include "Optimizer.h"
 %include "Score_Func.h"
 %include "Restraint_Set.h"
-%include "Complexes_Restraints.h"
 %include "Restraint.h"
+%include "Complexes_Restraints.h"
 %include "Rigid_Body.h"
