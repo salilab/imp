@@ -7,6 +7,7 @@
  */
 
 #include "Optimizer.h"
+#include "log.h"
 
 namespace imp
 {
@@ -20,7 +21,7 @@ namespace imp
 
 Optimizer::Optimizer()
 {
-  std::cout << "Created optimizer" << std::endl;
+  LogMsg(VERBOSE, "Created optimizer");
 }
 
 
@@ -94,13 +95,13 @@ Float Steepest_Descent::optimize (Model& model, int max_steps, Float threshold)
   temp_derivs.resize(opt_var_cnt);
 
   for (int step = 0; step < max_steps; step++) {
-    std::cout << "=== Step " << step << " ===" << std::endl;
+    LogMsg(VERBOSE, "=== Step " << step << " ===");
     // model.show(std::cout);
     int cnt = 0;
 
     // evaluate the last model state
     last_score = model.evaluate(true);
-    std::cout << "start score: " << last_score << std::endl;
+    LogMsg(VERBOSE, "start score: " << last_score);
 
     // store the old values
     for (int i = 0; i < opt_var_cnt; i++) {
@@ -119,15 +120,14 @@ Float Steepest_Descent::optimize (Model& model, int max_steps, Float threshold)
 
       // try new values based on moving down the gradient at the current step size
       for (int i = 0; i < opt_var_cnt; i++) {
-        std::cout <<  i << " move: " << temp_vals[i] << " new: " << temp_vals[i] - temp_derivs[i] * step_size << "  " << temp_derivs[i] << std::endl;
+        LogMsg(VERBOSE, i << " move: " << temp_vals[i] << " new: " << temp_vals[i] - temp_derivs[i] * step_size << "  " << temp_derivs[i]);
 
         model_data->set_float(float_indexes[i], temp_vals[i] - temp_derivs[i] * step_size);
       }
 
       // check the new model
       new_score = model.evaluate(false);
-      std::cout << "last score: " << last_score << "  new score: " << new_score << "  step size: " << step_size << std::endl;
-      std::cout.flush();
+      LogMsg(VERBOSE, "last score: " << last_score << "  new score: " << new_score << "  step size: " << step_size);
 
       // if the score is less than the threshold, we're done
       if (new_score <= threshold)

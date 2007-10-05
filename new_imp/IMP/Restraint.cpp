@@ -235,8 +235,16 @@ Float RSR_Distance::evaluate(bool calc_deriv)
 
   // if distance is too close to zero, set it to some non-zero value
   if (distance < RSR_Distance::MIN_DISTANCE) {
-    delta_x = RSR_Distance::MIN_DISTANCE; // arbitrary move
+    delta_x = std::rand(); // arbitrary move
+    delta_y = std::rand(); // arbitrary move
+    delta_z = std::rand(); // arbitrary move
     distance = sqrt(delta_x*delta_x + delta_y*delta_y + delta_z*delta_z);
+
+    // normalize the random move, to the min disance
+    delta_x = RSR_Distance::MIN_DISTANCE * delta_x / distance;
+    delta_y = RSR_Distance::MIN_DISTANCE * delta_y / distance;
+    delta_z = RSR_Distance::MIN_DISTANCE * delta_z / distance;
+    distance = RSR_Distance::MIN_DISTANCE;
   }
 
   // if needed, calculate the partial derivatives of the scores with respect to the particle attributes
