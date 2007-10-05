@@ -6,8 +6,8 @@
  *
  */
 
-#if !defined(__imp_h)
-#define __imp_h 1
+#ifndef __IMP_H
+#define __IMP_H
 
 #include "IMP_config.h"
 
@@ -35,4 +35,4 @@ extern IMPDLLEXPORT Model& get_model(void);
 #include "Model.h"
 #include "Model_Loader.h"
 
-#endif
+#endif  /* __IMP_H */

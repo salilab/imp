@@ -7,8 +7,8 @@
  * Used to be Math_Form but Daniel thought that name was too vague.
  */
 
-#if !defined(__score_func_h)
-#define __score_func_h 1
+#ifndef __IMP_SCORE_FUNC_H
+#define __IMP_SCORE_FUNC_H
 
 #include "IMP_config.h"
 #include "Base_Types.h"
@@ -66,4 +66,4 @@ public:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_SCORE_FUNC_H */

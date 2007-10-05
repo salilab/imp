@@ -6,8 +6,8 @@
  *
  */
 
-#if !defined(__base_types_h)
-#define __base_types_h 1
+#ifndef __IMP_BASE_TYPES_H
+#define __IMP_BASE_TYPES_H
 
 #include <string>
 
@@ -96,4 +96,4 @@ typedef Data_Index<String> String_Index;
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_BASE_TYPES_H */

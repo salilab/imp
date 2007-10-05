@@ -6,9 +6,8 @@
  *
  */
 
-
-#if !defined(__restraint_h)
-#define __restraint_h 1
+#ifndef __IMP_RESTRAINT_H
+#define __IMP_RESTRAINT_H
 
 #include <vector>
 #include <iostream>
@@ -114,4 +113,4 @@ protected:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_RESTRAINT_H */

@@ -6,8 +6,8 @@
  *
  */
 
-#if !defined(__optimizer_h)
-#define __optimizer_h 1
+#ifndef __IMP_OPTIMIZER_H
+#define __IMP_OPTIMIZER_H
 
 #include "IMP_config.h"
 #include "Base_Types.h"
@@ -51,4 +51,4 @@ protected:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_OPTIMIZER_H */

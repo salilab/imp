@@ -1,5 +1,5 @@
-#ifndef __EMFILE__
-#define __EMFILE__
+#ifndef __IMP_EMFILE_H
+#define __IMP_EMFILE_H
 
 #include <cstdio>
 
@@ -160,4 +160,4 @@ struct density *read_emdens(char *filename, int type, int nx, int  ny, int nz, i
 IMPDLLEXPORT
 void swap(char *x, char size);
 
-#endif
+#endif  /* __IMP_EMFILE_H */

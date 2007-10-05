@@ -6,9 +6,8 @@
  *
  */
 
-
-#if !defined(__rigid_body_h)
-#define __rigid_body_h 1
+#ifndef __IMP_RIGID_BODY_H
+#define __IMP_RIGID_BODY_H
 
 #include "IMP_config.h"
 
@@ -29,4 +28,4 @@ protected:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_RIGID_BODY_H */

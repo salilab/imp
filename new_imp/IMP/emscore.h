@@ -1,5 +1,5 @@
-#ifndef __EMSCORE__
-#define __EMSCORE__
+#ifndef __IMP_EMSCORE_H
+#define __IMP_EMSCORE_H
 
 #include "emfile.h"
 
@@ -53,4 +53,4 @@ float stdv (struct density *emdens, float *meanval);
 IMPDLLEXPORT
 void stdnormalize(struct density *emdens);
 
-#endif
+#endif  /* __IMP_EMSCORE_H */

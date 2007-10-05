@@ -6,8 +6,8 @@
  *
  */
 
-#if !defined(__particle_h)
-#define __particle_h 1
+#ifndef __IMP_PARTICLE_H
+#define __IMP_PARTICLE_H
 
 #include <map>
 
@@ -68,4 +68,4 @@ protected:
 
 } // namespace imp
 
-#endif
+#endif  /* __IMP_PARTICLE_H */
