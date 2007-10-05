@@ -1,5 +1,5 @@
 /*
- *  Restraint.cpp
+ *  Complexes_Restraints.cpp
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
