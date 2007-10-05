@@ -1,3 +1,8 @@
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
+
 #include "emscore.h"
 
 // free grid coordinate structure

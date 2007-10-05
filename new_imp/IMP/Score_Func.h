@@ -11,6 +11,7 @@
 #define __score_func_h 1
 
 #include "IMP_config.h"
+#include "Base_Types.h"
 
 namespace imp
 {

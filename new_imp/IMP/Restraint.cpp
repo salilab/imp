@@ -6,17 +6,21 @@
  *
  */
 
+#include <cmath>
 
-#include "IMP.h"
+#include "Restraint.h"
+#include "Particle.h"
+#include "Model.h"
+#include "log.h"
 
 namespace imp
 {
 
-//######### Restraint #########
-// Abstract class for representing restraints
-
 // static constants
 const Float RSR_Distance::MIN_DISTANCE = 0.0000001;
+
+//######### Restraint #########
+// Abstract class for representing restraints
 
 /**
   Constructor

@@ -12,12 +12,12 @@
 #include <map>
 
 #include "IMP_config.h"
+#include "Base_Types.h"
+#include "Model_Data.h"
+#include "Restraint.h"
 
 namespace imp
 {
-
-class Model_Data;
-class Restraint;
 
 // Particle methods and indexes to particle attributes. Particles can
 // be deactivated so that they no longer play a role in model optimization.

@@ -6,7 +6,7 @@
  *
  */
 
-#include "IMP.h"
+#include "Score_Func.h"
 
 namespace imp
 {

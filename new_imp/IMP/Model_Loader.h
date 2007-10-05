@@ -9,19 +9,15 @@
 #if !defined(__model_loader_h)
 #define __model_loader_h 1
 
+#include <fstream>
+
 #include "IMP_config.h"
+#include "Model.h"
+#include "Particle.h"
+#include "log.h"
 
 namespace imp
 {
-
-
-class Score_Func;
-class Model;
-class Particle;
-class Restraint;
-class Restraint_Set;
-class Optimizer;
-class Rigid_Body;
 
 class IMPDLLEXPORT Model_Loader
 {

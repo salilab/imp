@@ -10,13 +10,13 @@
 #if !defined(__restraint_set_h)
 #define __restraint_set_h 1
 
+#include <string>
+
 #include "IMP_config.h"
+#include "Restraint.h"
 
 namespace imp
 {
-
-class Restraint;
-class Restraint_Set;
 
 // Used to hold a set of related restraints
 class IMPDLLEXPORT Restraint_Set

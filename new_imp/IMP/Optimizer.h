@@ -10,6 +10,8 @@
 #define __optimizer_h 1
 
 #include "IMP_config.h"
+#include "Base_Types.h"
+#include "Model.h"
 
 namespace imp
 {

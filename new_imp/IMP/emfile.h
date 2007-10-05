@@ -1,10 +1,7 @@
 #ifndef __EMFILE__
 #define __EMFILE__
 
-#include <cstdlib>
-#include <cstring>
 #include <cstdio>
-#include <cmath>
 
 #include "IMP_config.h"
 

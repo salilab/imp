@@ -8,7 +8,8 @@
 
 #include <stdexcept>
 
-#include "IMP.h"
+#include "Particle.h"
+#include "log.h"
 
 namespace imp
 {

@@ -1,5 +1,5 @@
 /*
- *  Model.h
+ *  Model_Data.h
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
@@ -9,12 +9,17 @@
 #if !defined(__model_data_h)
 #define __model_data_h 1
 
+#include <vector>
+#include <map>
+
 #include "IMP_config.h"
+#include "Base_Types.h"
 
 namespace imp
 {
 
 class Model;
+class Particle;
 
 
 

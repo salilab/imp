@@ -6,7 +6,10 @@
  *
  */
 
-#include "IMP.h"
+#include "Model.h"
+#include "Model_Data.h"
+#include "Particle.h"
+#include "log.h"
 
 namespace imp
 {

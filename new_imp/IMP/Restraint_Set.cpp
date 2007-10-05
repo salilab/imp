@@ -7,7 +7,10 @@
  */
 
 
-#include "IMP.h"
+#include "Restraint_Set.h"
+#include "Restraint.h"
+#include "Model_Data.h"
+#include "log.h"
 
 namespace imp
 {

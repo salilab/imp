@@ -6,7 +6,7 @@
  *
  */
 
-#include "IMP.h"
+#include "Optimizer.h"
 
 namespace imp
 {

@@ -7,7 +7,7 @@
  */
 
 
-#include "IMP.h"
+#include "Rigid_Body.h"
 
 namespace imp
 {
