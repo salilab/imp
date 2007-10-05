@@ -104,6 +104,13 @@ class IMPTestCase(unittest.TestCase):
         dz = pointA[2] - pointB[2]
         return math.sqrt(dx*dx + dy*dy + dz*dz)
 
+    def IMP_Distance (self, particles, idx0, idx1):
+        """ Return distance between two given particles """
+        dx = particles[idx0].x() - particles[idx1].x()
+        dy = particles[idx0].y() - particles[idx1].y()
+        dz = particles[idx0].z() - particles[idx1].z()
+        return math.sqrt(dx*dx + dy*dy + dz*dz)
+
     def TestMinDistance (self, pointA, pointB, dist):
         """ Test if given points are more than the given distance apart """
         if self.Distance(pointA, pointB) > dist:

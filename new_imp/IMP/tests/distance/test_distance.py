@@ -15,7 +15,6 @@ class test_distance(IMP_Test.IMPTestCase):
 
         self.imp_model = imp2.Model()
         self.particles = []
-        self.restraint_sets = []
         self.rsrs = []
 
         self.score_func_ub = imp2.Harmonic_Upper_Bound()
@@ -63,12 +62,6 @@ class test_distance(IMP_Test.IMPTestCase):
         self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), 4.0, 0.1, self.score_func_ub))
         self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), 4.0, 0.1, self.score_func_lb))
         self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), 4.0, 0.1, self.score_func_h))
-
-        # add restraints
-        rs = imp2.Restraint_Set("distance_rsrs")
-        self.restraint_sets.append(rs)
-        for i in range(len(self.rsrs)):
-            rs.add_restraint(self.rsrs[i])
 
 
     def test_distance(self):
