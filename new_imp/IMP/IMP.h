@@ -10,16 +10,6 @@
 #define __IMP_H
 
 #include "IMP_config.h"
-
-namespace imp
-{
-
-class Model;
-
-extern IMPDLLEXPORT Model& get_model(void);
-
-} // namespace imp
-
 #include "emfile.h"
 #include "emscore.h"
 #include "log.h"
