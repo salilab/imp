@@ -33,7 +33,7 @@ class CGOptimizerTests(IMP_Test.IMPTestCase):
     def test_cg_woods_func(self):
         """Check that we can optimize the Woods function with CG"""
         self._test_starting_conditions((-3.0, -1.0, -3.0, -1.0))
-#       self._test_starting_conditions((2.0, 3.0, 8.0, -5.0))
+        self._test_starting_conditions((2.0, 3.0, 8.0, -5.0))
 
     def _test_starting_conditions(self, starting_values):
         """Test the optimizer with given starting conditions"""
@@ -51,7 +51,7 @@ class CGOptimizerTests(IMP_Test.IMPTestCase):
         model.add_restraint_set(rs)
         model.set_up_trajectory('', False, False)
         opt = imp2.Conjugate_Gradients()
-        e = opt.optimize(model, 100)
+        e = opt.optimize(model, 100, 1e-5)
         model_data = model.get_model_data()
         for p in particles:
             val = model_data.get_float(p.float_index("X"))
