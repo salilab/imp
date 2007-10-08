@@ -17,6 +17,7 @@
 #include "Particle.h"
 #include "Optimizer.h"
 #include "Steepest_Descent.h"
+#include "Conjugate_Gradients.h"
 #include "Score_Func.h"
 #include "Restraint.h"
 #include "Complexes_Restraints.h"

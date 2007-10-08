@@ -49,5 +49,6 @@ namespace imp {
 %include "Particle.h"
 %include "Optimizer.h"
 %include "Steepest_Descent.h"
+%include "Conjugate_Gradients.h"
 %include "Complexes_Restraints.h"
 %include "Rigid_Body.h"
