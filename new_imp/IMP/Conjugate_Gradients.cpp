@@ -59,7 +59,10 @@ Conjugate_Gradients::~Conjugate_Gradients()
  * Conjugate gradients optimization, as per Shanno and Phua, ACM Transactions
  * On Mathematical Software 6 (December 1980), 618-622
  *
- * \param[in] model Model that is being optimized.
+ * \param[in] model     Model that is being optimized.
+ * \param[in] max_steps Maximum number of iterations before aborting.
+ * \param[in] threshold Largest acceptable gradient-squared value
+ *                      for convergence.
  *
  * \return score of the final state of the model.
  */
@@ -79,20 +82,18 @@ Float Conjugate_Gradients::optimize(Model& model, int max_steps,
     n++;
     float_indices.push_back(opt_float_iter.get());
   }
-  std::cout << "cg " << n << " variables" << std::endl;
 
   x.resize(n);
   dx.resize(n);
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
     x[i] = model_data->get_float(float_indices[i]);
-    std::cout << "state " << i << " " << x[i] << std::endl;
   }
 
   // INITIALIZE ITER,IFUN,NFLAG,AND IOUTK,WHICH COUNTS OUTPUT ITERATIONS.
   int iter = 0, ifun = 0, nrst, ncalls, nflag = 0;
   float dg1, xsq, gsq, f = 0., alpha, dg = 1., minf, ap, fp, dp, step, dal, u1,
-        u2, u3, u4, at, w1 = 0., w2 = 0., rtst;
+        u2, u3, u4, at, w1 = 0., w2 = 0., rtst, bestf;
   bool rsw;
 
   // dx holds the gradient at x
@@ -132,7 +133,6 @@ g20: f = get_score(model, model_data, float_indices, x, dx);
 
 /* TEST IF THE INITIAL POINT IS THE MINIMIZER. */
   if (gsq <= eps * eps * std::max(1.0f, xsq)) {
-    std::cout << "initial point is the minimizer" << std::endl;
     goto end;
   }
 
@@ -192,7 +192,6 @@ g80: if (alpha * step > eps) {
     goto g20;
   }
   nflag = 2;
-  std::cout << "failure of linear search" << std::endl;
   goto end;
 
 /* CALCULATE THE TRIAL POINT. */
@@ -209,7 +208,6 @@ g90: for (i = 0; i < n; i++) {
     goto g110;
   }
   nflag = 1;
-  std::cout << "max_steps exceeded" << std::endl;
   goto end;
 
 /* COMPUTE THE DERIVATIVE OF F AT ALPHA. */
@@ -305,8 +303,7 @@ g170: gsq = xsq = 0.0;
     gsq += dx[i] * dx[i];
     xsq += x[i] * x[i];
   }
-  if (gsq <= eps * eps * std::max(1.0f, xsq)) {
-    std::cout << "line search converged" << std::endl;
+  if (gsq < threshold) {
     goto end;
   }
 
@@ -408,6 +405,15 @@ g300: dg1 = 0.0;
 g320: nflag = 3;
 
 end:
+  // If the 'best current estimate' is better than the current state, return
+  // that:
+  bestf = get_score(model, model_data, float_indices, estimate, destimate);
+  if (bestf < f) {
+    for (i = 0; i < n; i++) {
+      x[i] = estimate[i];
+    }
+    f = bestf;
+  }
   // Set final model state
   for (i = 0; i < n; i++) {
     model_data->set_float(float_indices[i], x[i]);
