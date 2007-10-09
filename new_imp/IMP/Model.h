@@ -31,7 +31,7 @@ public:
   Model_Data* get_model_data(void);
 
   // particles
-  void add_particle(Particle* particle);
+  size_t add_particle(Particle* particle);
   Particle* particle(size_t idx);
 
   // restraints
