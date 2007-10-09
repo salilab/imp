@@ -50,9 +50,8 @@ class test_particles(IMP_Test.IMPTestCase):
             self.assert_(model_data.get_float(fidx) == 1.5 * i, "expecting particle "+str(i)+" radius to be "+str(1.5*i) + " not " + str(model_data.get_float(fidx)))
             iidx = p1.int_index("id")
             self.assert_(model_data.get_int(iidx) == i, "expecting particle "+str(i)+" id to be "+str(i) + " not " + str(model_data.get_int(iidx)))
-            # strings not fully implemented yet
-            # sidx = p1.string_index("id_str")
-            # self.assert_(model_data.get_string(sidx) == '', "expecting particle "+str(i)+" id_str to be name_"+str(i) + " not " + model_data.get_string(sidx))
+            sidx = p1.string_index("id_str")
+            self.assert_(model_data.get_string(sidx) == "name_"+str(i), "expecting particle "+str(i)+" id_str to be name_"+str(i) + " not " + model_data.get_string(sidx))
 
         # test additional attributes in particle 11
         p1 = self.particles[11]

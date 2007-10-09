@@ -19,7 +19,19 @@ namespace imp
 
 Particle::Particle ()
 {
+  ErrorMsg("This constructor has been deprecated, please pass a pointer to the model data in the constructor.");
+  is_active_ = true;
+}
+
+
+/**
+  Constructor
+ */
+
+Particle::Particle (Model_Data* model_data)
+{
   LogMsg(VERBOSE, "create particle");
+  model_data_ = model_data;
   is_active_ = true;
 }
 
@@ -42,6 +54,7 @@ Give accesss to model particle data.
 
 void Particle::set_model_data(Model_Data* model_data)
 {
+  ErrorMsg("This method has been deprecated, please pass a pointer to the model data in the constructor.");
   model_data_ = model_data;
 }
 

@@ -66,6 +66,28 @@ protected:
   int index_;
 };
 
+class IMPDLLEXPORT String_Index
+{
+public:
+  String_Index(int idx = 0) {
+    index_ = idx;
+  }
+
+  ~String_Index(void) {
+  }
+
+  int index(void) const {
+    return index_;
+  }
+
+  void set_index(const int idx) {
+    index_ = idx;
+  }
+
+protected:
+  int index_;
+};
+
 // indexes for retrieving particle information
 template <class T>
 class IMPDLLEXPORT Data_Index
@@ -92,7 +114,8 @@ protected:
 
 // typedefs for the particle variable and attribute indexes
 // typedef Data_Index<Float> Float_Index;
-typedef Data_Index<String> String_Index;
+// typedef Data_Index<Int> Int_Index;
+// typedef Data_Index<String> String_Index;
 
 } // namespace imp
 

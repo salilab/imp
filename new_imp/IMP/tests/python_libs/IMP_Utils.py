@@ -10,12 +10,12 @@ class XYZParticle(imp2.Particle):
     def __init__(self, model, x, y, z):
         """Initialize particle with IMP model it belongs to and its xyz
            coordinates"""
-        imp2.Particle.__init__(self)
+        imp2.Particle.__init__(self, model.get_model_data())
+        self.model_data = self.model_data()
         model.add_particle(self);
         self.add_float("X", x, True)
         self.add_float("Y", y, True)
         self.add_float("Z", z, True)
-        self.model_data = self.model_data()
 
     def get_float(self, name):
         """Get float attribute of particle with given name"""
