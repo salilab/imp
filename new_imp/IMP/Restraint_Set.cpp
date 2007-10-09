@@ -25,7 +25,7 @@ namespace imp
   Constructor
  */
 
-Restraint_Set::Restraint_Set (std::string name)
+Restraint_Set::Restraint_Set (const std::string name)
 {
   LogMsg(VERBOSE, "Restraint set constructed");
 
@@ -57,6 +57,15 @@ void Restraint_Set::set_model_data(Model_Data* model_data)
   model_data_ = model_data;
 }
 
+/** Get name of this restraint set. */
+std::string Restraint_Set::name(void) {
+  return name_;
+}
+
+/** Set name of this restraint set. */
+void Restraint_Set::set_name(const std::string name) {
+  name_ = name;
+}
 
 /**
   Add restraint to the restraint set.
