@@ -21,22 +21,26 @@ namespace imp
 class IMPDLLEXPORT Restraint_Set
 {
 public:
-  Restraint_Set(std::string name = std::string("no_name"));
+  Restraint_Set(const std::string name);
   ~Restraint_Set();
+
+  /** Give access to model particle data. */
   void set_model_data(Model_Data* model_data);
 
-  std::string name(void) {
-    return name_;
-  }
-  void set_name(std::string name) {
-    name_ = name;
-  }
+  /** Get name of this restraint set. */
+  std::string name(void);
 
-  // return the score for this restraint or set of restraints
-  // ... given the current state of the model
+  /** Set name of this restraint set. */
+  void set_name(const std::string name);
+
+  /** Return the score for this restraint or set of restraints
+      given the current state of the model */
   Float evaluate(bool calc_deriv);
 
+  /** Add restraint to the restraint set. */
   void add_restraint(Restraint *restraint);
+
+  /** Add restraint set to the restraint set. */
   void add_restraint_set(Restraint_Set *restraint_set);
   // void add_filter(Filter *filter);
 
