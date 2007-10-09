@@ -4,33 +4,30 @@ import math
 
 # ============== Utilities ==============
 
-class Particle:
+class XYZParticle(imp2.Particle):
     """Wrapper for IMP particles that focuses on x,y,z coordinates"""
 
     def __init__(self, model, x, y, z):
-        """Initialize particle with IMP model it belongs to and its xyz coordinates"""
-        self.imp_particle = imp2.Particle()
-        model.add_particle(self.imp_particle);
-        self.imp_particle.add_float("X", x, True)
-        self.imp_particle.add_float("Y", y, True)
-        self.imp_particle.add_float("Z", z, True)
-        self.model_data = self.imp_particle.model_data()
-
-    def imp(self):
-        """Return IMP particle pointer"""
-        return self.imp_particle
+        """Initialize particle with IMP model it belongs to and its xyz
+           coordinates"""
+        imp2.Particle.__init__(self)
+        model.add_particle(self);
+        self.add_float("X", x, True)
+        self.add_float("Y", y, True)
+        self.add_float("Z", z, True)
+        self.model_data = self.model_data()
 
     def get_float(self, name):
         """Get float attribute of particle with given name"""
-        return self.model_data.get_float(self.imp_particle.float_index(name))
+        return self.model_data.get_float(self.float_index(name))
 
     def get_int(self, name):
         """Get int attribute of particle with given name"""
-        return self.model_data.get_int(self.imp_particle.int_index(name))
+        return self.model_data.get_int(self.int_index(name))
 
     def get_string(self, name):
         """Get string attribute of particle with given name"""
-        return self.model_data.get_string(self.imp_particle.string_index(name))
+        return self.model_data.get_string(self.string_index(name))
 
     def x(self):
         """Get x position of particle"""
@@ -46,45 +43,45 @@ class Particle:
 
     def set_x(self, value):
         """Set x position of particle"""
-        self.model_data.set_float(self.imp_particle.float_index("X"), value)
+        self.model_data.set_float(self.float_index("X"), value)
 
     def set_y(self, value):
         """Set y position of particle"""
-        self.model_data.set_float(self.imp_particle.float_index("Y"), value)
+        self.model_data.set_float(self.float_index("Y"), value)
 
     def set_z(self, value):
         """Set z position of particle"""
-        self.model_data.set_float(self.imp_particle.float_index("Z"), value)
+        self.model_data.set_float(self.float_index("Z"), value)
 
     def dx(self):
         """Get partial derivative of score with respect to particle's x position"""
-        return self.model_data.get_deriv(self.imp_particle.float_index("X"))
+        return self.model_data.get_deriv(self.float_index("X"))
 
     def dy(self):
         """Get partial derivative of score with respect to particle's y position"""
-        return self.model_data.get_deriv(self.imp_particle.float_index("Y"))
+        return self.model_data.get_deriv(self.float_index("Y"))
 
     def dz(self):
         """Get partial derivative of score with respect to particle's z position"""
-        return self.model_data.get_deriv(self.imp_particle.float_index("Z"))
+        return self.model_data.get_deriv(self.float_index("Z"))
 
     def add_to_dx(self, value):
         """Add to partial derivative of score with respect to particle's x position"""
-        self.model_data.add_to_deriv(self.imp_particle.float_index("X"), value)
+        self.model_data.add_to_deriv(self.float_index("X"), value)
 
     def add_to_dy(self, value):
         """Add to partial derivative of score with respect to particle's y position"""
-        self.model_data.add_to_deriv(self.imp_particle.float_index("Y"), value)
+        self.model_data.add_to_deriv(self.float_index("Y"), value)
 
     def add_to_dz(self, value):
         """Add to partial derivative of score with respect to particle's z position"""
-        self.model_data.add_to_deriv(self.imp_particle.float_index("Z"), value)
+        self.model_data.add_to_deriv(self.float_index("Z"), value)
 
 
 def Init_IMP_From_Modeller(model, particles, atoms):
     """ Init IMP particles from Modeller atoms """
     for (num, at) in enumerate(atoms):
-        particles.append(Particle(model, at.x, at.y, at.z))
+        particles.append(XYZParticle(model, at.x, at.y, at.z))
 
 
 def Copy_IMP_Coords_To_Modeller(particles, atoms):
@@ -131,7 +128,7 @@ def Set_Up_Exclusion_Volumes(model, particles, radius_name, rsrs, score_func, sd
     for i in range(len(particles)-1):
         for j in range(i+1, len(particles)):
             mean = particles[i].get_float(radius_name) + particles[j].get_float(radius_name)
-            rsrs.append(imp2.RSR_Distance(model, particles[i].imp(), particles[j].imp(), mean, sd, score_func))
+            rsrs.append(imp2.RSR_Distance(model, particles[i], particles[j], mean, sd, score_func))
 
 
 def Write_PDB(model, fname):

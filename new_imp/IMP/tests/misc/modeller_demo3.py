@@ -51,7 +51,7 @@ rs.add_restraint(r)
 
 # create IMP restraints
 score_func = imp2.Harmonic()
-dist_rsr = imp2.RSR_Distance(model, particles[0].imp(), particles[2].imp(), 5.0, 0.1, score_func)
+dist_rsr = imp2.RSR_Distance(model, particles[0], particles[2], 5.0, 0.1, score_func)
 print "adding IMP restraints"
 rs.add_restraint(dist_rsr)
 

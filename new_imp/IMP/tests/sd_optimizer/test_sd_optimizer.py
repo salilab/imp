@@ -21,21 +21,24 @@ class test_sd_optimizer(IMP_Test.IMPTestCase):
         self.score_func_h = imp2.Harmonic()
 
         # create particles 0 - 1
-        self.particles.append(IMP_Utils.Particle(self.imp_model, -43.0, 65.0, 93.0))
-        self.particles.append(IMP_Utils.Particle(self.imp_model, 20.0, 74.0, -80.0))
-        self.particles.append(IMP_Utils.Particle(self.imp_model, 4.0, -39.0, 26.0))
+        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+                                                    -43.0, 65.0, 93.0))
+        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+                                                    20.0, 74.0, -80.0))
+        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+                                                    4.0, -39.0, 26.0))
 
-        p1 = self.particles[0].imp()
+        p1 = self.particles[0]
         p1.add_float("radius", 1.0, False)
-        p1 = self.particles[1].imp()
+        p1 = self.particles[1]
         p1.add_float("radius", 2.0, False)
-        p1 = self.particles[2].imp()
+        p1 = self.particles[2]
         p1.add_float("radius", 3.0, False)
 
         # separate 3 particles by their radii
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[1].imp(), "radius", 0.1, self.score_func_h))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[2].imp(), "radius", 0.1, self.score_func_h))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), "radius", 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[1], "radius", 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", 0.1, self.score_func_h))
 
         # add restraints
         rs = imp2.Restraint_Set("distance_rsrs")

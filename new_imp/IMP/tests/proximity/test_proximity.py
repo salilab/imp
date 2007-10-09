@@ -32,32 +32,32 @@ class test_proximity(IMP_Test.IMPTestCase):
         self.t.append(IMP_Modeller_Intf.IMP_Restraints(self.imp_model, self.particles))
 
         self.modeller_model = IMP_Modeller_Intf.Create_Particles(6, self.env, self.imp_model, self.particles)
-        p1 = self.particles[0].imp()
+        p1 = self.particles[0]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 1)
         p1.add_int("id", 1)
 
-        p1 = self.particles[1].imp()
+        p1 = self.particles[1]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 1)
         p1.add_int("id", 2)
 
-        p1 = self.particles[2].imp()
+        p1 = self.particles[2]
         p1.add_float("radius", 1.5, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 3)
 
-        p1 = self.particles[3].imp()
+        p1 = self.particles[3]
         p1.add_float("radius", 1.5, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 4)
 
-        p1 = self.particles[4].imp()
+        p1 = self.particles[4]
         p1.add_float("radius", 1.0, False)
         p1.add_int("protein", 3)
         p1.add_int("id", 5)
 
-        p1 = self.particles[5].imp()
+        p1 = self.particles[5]
         p1.add_float("radius", 1.0, False)
         p1.add_int("protein", 3)
         p1.add_int("id", 6)

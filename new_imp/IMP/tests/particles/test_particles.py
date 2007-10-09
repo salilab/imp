@@ -20,8 +20,9 @@ class test_particles(IMP_Test.IMPTestCase):
 
         # create particles 0 - 11
         for i in range(0,12):
-            self.particles.append(IMP_Utils.Particle(self.imp_model, i*2, i*3, i*4))
-            p1 = self.particles[i].imp()
+            self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+                                                        i*2, i*3, i*4))
+            p1 = self.particles[i]
             p1.add_float("radius", 1.5 * i, False)
             p1.add_int("id", i)
             p1.add_string("id_str", "name_"+str(i))
@@ -32,7 +33,7 @@ class test_particles(IMP_Test.IMPTestCase):
 
     def test_bad_attributes(self):
         """Asking for non-existent attributes should cause an error"""
-        p1 = self.particles[0].imp()
+        p1 = self.particles[0]
         self.assertRaises(IndexError, p1.float_index, "notexist")
         self.assertRaises(IndexError, p1.int_index, "notexist")
         self.assertRaises(IndexError, p1.string_index, "notexist")
@@ -44,7 +45,7 @@ class test_particles(IMP_Test.IMPTestCase):
 
          # check particles 0 - 11
         for i in range(0,12):
-            p1 = self.particles[i].imp()
+            p1 = self.particles[i]
             fidx = p1.float_index("radius")
             self.assert_(model_data.get_float(fidx) == 1.5 * i, "expecting particle "+str(i)+" radius to be "+str(1.5*i) + " not " + str(model_data.get_float(fidx)))
             iidx = p1.int_index("id")
@@ -54,7 +55,7 @@ class test_particles(IMP_Test.IMPTestCase):
             # self.assert_(model_data.get_string(sidx) == '', "expecting particle "+str(i)+" id_str to be name_"+str(i) + " not " + model_data.get_string(sidx))
 
         # test additional attributes in particle 11
-        p1 = self.particles[11].imp()
+        p1 = self.particles[11]
         for i in range(0,6):
             fidx = p1.float_index("attr_" + str(i))
             self.assert_(model_data.get_float(fidx) == 3.5 * i, "expecting particle "+str(i)+" radius to be "+str(3.2*i) + " not " + str(model_data.get_float(fidx)))

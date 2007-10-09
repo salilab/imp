@@ -32,62 +32,62 @@ class test_exclusion_volumes(IMP_Test.IMPTestCase):
         self.t.append(IMP_Modeller_Intf.IMP_Restraints(self.imp_model, self.particles))
 
         self.modeller_model = IMP_Modeller_Intf.Create_Particles(12, self.env, self.imp_model, self.particles)
-        p1 = self.particles[0].imp()
+        p1 = self.particles[0]
         p1.add_float("radius", 1.0, False)
         p1.add_int("protein", 1)
         p1.add_int("id", 1)
 
-        p1 = self.particles[1].imp()
+        p1 = self.particles[1]
         p1.add_float("radius", 1.0, False)
         p1.add_int("protein", 1)
         p1.add_int("id", 2)
 
-        p1 = self.particles[2].imp()
+        p1 = self.particles[2]
         p1.add_float("radius", 1.0, False)
         p1.add_int("protein", 1)
         p1.add_int("id", 3)
 
-        p1 = self.particles[3].imp()
+        p1 = self.particles[3]
         p1.add_float("radius", 1.5, False)
         p1.add_int("protein", 1)
         p1.add_int("id", 4)
 
-        p1 = self.particles[4].imp()
+        p1 = self.particles[4]
         p1.add_float("radius", 1.5, False)
         p1.add_int("protein", 1)
         p1.add_int("id", 5)
 
-        p1 = self.particles[5].imp()
+        p1 = self.particles[5]
         p1.add_float("radius", 1.5, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 6)
 
-        p1 = self.particles[6].imp()
+        p1 = self.particles[6]
         p1.add_float("radius", 1.5, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 7)
 
-        p1 = self.particles[7].imp()
+        p1 = self.particles[7]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 8)
 
-        p1 = self.particles[8].imp()
+        p1 = self.particles[8]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 9)
 
-        p1 = self.particles[9].imp()
+        p1 = self.particles[9]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 10)
 
-        p1 = self.particles[10].imp()
+        p1 = self.particles[10]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 11)
 
-        p1 = self.particles[11].imp()
+        p1 = self.particles[11]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 2)
         p1.add_int("id", 12)
@@ -123,10 +123,10 @@ class test_exclusion_volumes(IMP_Test.IMPTestCase):
 
         # connect the beads within the two proteins together
         for i in range(0, 4):
-            rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[i].imp(), self.particles[i+1].imp(), "radius", 0.1, score_func_ub))
+            rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[i], self.particles[i+1], "radius", 0.1, score_func_ub))
 
         for i in range(5, 11):
-            rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[i].imp(), self.particles[i+1].imp(), "radius", 0.1, score_func_ub))
+            rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[i], self.particles[i+1], "radius", 0.1, score_func_ub))
 
         # create the exclusion volume for each protein
         rsrs.append(imp2.RSR_Exclusion_Volume(self.imp_model, particle_indexes1, "radius", 0.1))
@@ -182,10 +182,10 @@ class test_exclusion_volumes(IMP_Test.IMPTestCase):
 
         # connect the beads within the two proteins together
         for i in range(0, 4):
-            rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[i].imp(), self.particles[i+1].imp(), "radius", 0.1, score_func_ub))
+            rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[i], self.particles[i+1], "radius", 0.1, score_func_ub))
 
         for i in range(5, 11):
-            rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[i].imp(), self.particles[i+1].imp(), "radius", 0.1, score_func_ub))
+            rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[i], self.particles[i+1], "radius", 0.1, score_func_ub))
 
         # create the exclusion volume for each protein
         rsrs.append(imp2.RSR_Exclusion_Volume(self.imp_model, particle_indexes1, "radius", 0.1))

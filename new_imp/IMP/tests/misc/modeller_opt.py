@@ -38,8 +38,8 @@ imp_model.add_restraint_set(rs)
 # the restraint pointer must be kept alive in Python or it gets deleted in IMP
 score_func = imp2.Harmonic()
 dist_rsr = []
-dist_rsr.append(imp2.RSR_Distance(imp_model, particles[0].imp(), particles[2].imp(), 5.0, 0.1, score_func))
-dist_rsr.append(imp2.RSR_Distance(imp_model, particles[1].imp(), particles[2].imp(), 5.0, 0.1, score_func))
+dist_rsr.append(imp2.RSR_Distance(imp_model, particles[0], particles[2], 5.0, 0.1, score_func))
+dist_rsr.append(imp2.RSR_Distance(imp_model, particles[1], particles[2], 5.0, 0.1, score_func))
 for i in range(0,len(dist_rsr)):
     rs.add_restraint(dist_rsr[i])
 
