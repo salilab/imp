@@ -27,6 +27,7 @@ class IMPDLLEXPORT Particle
 {
 public:
   Particle();
+  Particle(Model_Data* model_data);
   ~Particle();
   void set_model_data(Model_Data* model_data);
   Model_Data* model_data(void);

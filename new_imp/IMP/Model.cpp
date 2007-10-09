@@ -74,7 +74,8 @@ size_t Model::add_particle(Particle* particle)
 {
   // a particle needs access to the model_data for
   // the model that it is a part of
-  particle->set_model_data(model_data_);
+  // particle now gets model_data from its constructor
+  // particle->set_model_data(model_data_);
 
   // add the particle to the model list of particles
   particles_.push_back(particle);

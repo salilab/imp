@@ -751,6 +751,14 @@ RSR_Pair_Connectivity::~RSR_Pair_Connectivity ()
   minimum spanning tree with nodes corresponding to particle types and the
   edge weights corresponding to restraint violation scores).
 
+  There is a potential when using this restraint for two large rigid bodies
+  to maintain its own exclusion volume restraints. These could be calculated
+  only for the particles in the neighborhoods of the particles involved in the
+  activated restraints rather than between all particles in the two bodies.
+  Since once restraints are activated, they tend to be activated over and over,
+  the exclusion volume restraint sets should only be reset whenever on rare
+  occasion the neighborhoods actually change.
+  
  \param[in] calc_deriv If true, partial first derivatives should be calculated.
  \return score associated with this restraint for the given state of the model.
   */
@@ -1327,21 +1335,12 @@ void RSR_Exclusion_Volume::show(std::ostream& out)
 }
 
 
-//######### RSR_Exclusion_Volume Restraint #########
-// Apply restraints that prevent particles from getting too close together
+//######### RSR_EM_Coarse Restraint #########
 
 /**
-  Constructor - set up the values and indexes for this exclusion volume restraint. Use
-  the attr_name to access the radii for the minimum distance between two particles.
-  Assume that there is no overlap between the two particle lists. Create restraints for
-  all possible pairs between the two lists.
-
-  \param[in] model Pointer to the model.
-  \param[in] particles1 Vector of indexes of particles of the first body.
-  \param[in] particles2 Vector of indexes of particles of the second body.
-  \param[in] attr_name The attribute used to determine the vw radius of each particle.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
- */
+  Constructor - set up the values and indexes for this EM coarse restraint. 
+  
+*/
 
 RSR_EM_Coarse::RSR_EM_Coarse(Model& model,
                              std::vector<int>& particle_indexes,

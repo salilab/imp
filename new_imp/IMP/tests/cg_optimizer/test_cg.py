@@ -39,9 +39,9 @@ class CGOptimizerTests(IMP_Test.IMPTestCase):
         """Test the optimizer with given starting conditions"""
         model = imp2.Model()
         particles = []
-   
+
         for value in starting_values:
-            p = imp2.Particle()
+            p = imp2.Particle(model.get_model_data())
             model.add_particle(p)
             particles.append(p)
             p.add_float("X", value, True)
