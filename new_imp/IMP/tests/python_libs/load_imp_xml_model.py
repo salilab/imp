@@ -39,7 +39,7 @@ def load_particles(model, particles_node, base_particle):
 def load_particle(model, particle_node, base_particle):
     """ Load particle from the DOM """
     id = particle_node.getAttribute('id')
-    model.particles.append(IMP_Utils.Particle(model, 0.0, 0.0, 0.0))
+    model.particles.append(IMP_Utils.XYZParticle(model, 0.0, 0.0, 0.0))
     p_idx = len(model.particles)-1
 
     # process particle attributes
@@ -57,7 +57,7 @@ def load_particle(model, particle_node, base_particle):
 def load_float(model, p_idx, attr_node):
     """ Load float attribute from the DOM and add it to the particle """
     name = attr_node.getAttribute('name')
-    p = model.particles[p_idx].imp()
+    p = model.particles[p_idx]
 
     # defaults
     optimize = True
@@ -75,7 +75,7 @@ def load_float(model, p_idx, attr_node):
 def load_int(model, p_idx, attr_node):
     """ Load int attribute from the DOM and add it to the particle """
     name = attr_node.getAttribute('name')
-    p = model.particles[p_idx].imp()
+    p = model.particles[p_idx]
 
     # defaults
     value = 0
@@ -89,7 +89,7 @@ def load_int(model, p_idx, attr_node):
 def load_string(model, p_idx, attr_node):
     """ Load string attribute from the DOM and add it to the particle """
     name = attr_node.getAttribute('name')
-    p = model.particles[p_idx].imp()
+    p = model.particles[p_idx]
 
     # defaults
     value = ""
@@ -196,7 +196,7 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
         if distance_attribute != '':
             distance = p1.get_float(distance_attribute) + p2.get_float(distance_attribute)
 
-        model.restraints.append(imp2.RSR_Distance(model, p1.imp(), p2.imp(), distance, sd, score_func))
+        model.restraints.append(imp2.RSR_Distance(model, p1, p2, distance, sd, score_func))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -236,7 +236,7 @@ def load_rsr_torus(model, rs_idx, rsr, base_particle):
 
     # add restraint for each particle in the list
     for p_idx in particle_list:
-        p = model.particles[int(p_idx)].imp()
+        p = model.particles[int(p_idx)]
         model.restraints.append(imp2.RSR_Torus(model, p, main_radius, tube_radius, sd, score_func))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
@@ -277,7 +277,7 @@ def load_rsr_coordinate(model, rs_idx, rsr, base_particle):
 
     # add restraint for each particle in the list
     for p_idx in particle_list:
-        p = model.particles[int(p_idx)].imp()
+        p = model.particles[int(p_idx)]
         model.restraints.append(imp2.RSR_Coordinate(model, p, axis, distance, sd, score_func))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 

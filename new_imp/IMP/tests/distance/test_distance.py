@@ -22,46 +22,49 @@ class test_distance(IMP_Test.IMPTestCase):
         self.score_func_h = imp2.Harmonic()
 
         # create particles 0 - 1
-        self.particles.append(IMP_Utils.Particle(self.imp_model, -3.0, 0.0, 0.0))
-        self.particles.append(IMP_Utils.Particle(self.imp_model, 0.0, 0.0, 0.0))
-        self.particles.append(IMP_Utils.Particle(self.imp_model, 4.0, 0.0, 0.0))
+        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+                                                    -3.0, 0.0, 0.0))
+        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+                                                    0.0, 0.0, 0.0))
+        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+                                                    4.0, 0.0, 0.0))
 
-        p1 = self.particles[0].imp()
+        p1 = self.particles[0]
         p1.add_float("radius", 1.0, False)
-        p1 = self.particles[1].imp()
+        p1 = self.particles[1]
         p1.add_float("radius", 2.0, False)
-        p1 = self.particles[2].imp()
+        p1 = self.particles[2]
         p1.add_float("radius", 3.0, False)
 
         # all should be 0.0
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[0].imp(), "radius", 0.1, self.score_func_ub))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[0].imp(), "radius", 0.1, self.score_func_lb))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[0].imp(), "radius", 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], "radius", 0.1, self.score_func_ub))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], "radius", 0.1, self.score_func_lb))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], "radius", 0.1, self.score_func_h))
 
         # exceed lower bound
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[2].imp(), "radius", 0.1, self.score_func_ub))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[2].imp(), "radius", 0.1, self.score_func_lb))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[2].imp(), "radius", 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", 0.1, self.score_func_ub))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", 0.1, self.score_func_lb))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", 0.1, self.score_func_h))
 
         # exceed upper bound
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), "radius", 0.1, self.score_func_ub))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), "radius", 0.1, self.score_func_lb))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), "radius", 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", 0.1, self.score_func_ub))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", 0.1, self.score_func_lb))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", 0.1, self.score_func_h))
 
         # all should be 0.0
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[0].imp(), 3.0, 0.1, self.score_func_ub))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[0].imp(), 3.0, 0.1, self.score_func_lb))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[0].imp(), 3.0, 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], 3.0, 0.1, self.score_func_ub))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], 3.0, 0.1, self.score_func_lb))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], 3.0, 0.1, self.score_func_h))
 
         # exceed lower bound
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[2].imp(), 5.0, 0.1, self.score_func_ub))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[2].imp(), 5.0, 0.1, self.score_func_lb))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1].imp(), self.particles[2].imp(), 5.0, 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], 5.0, 0.1, self.score_func_ub))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], 5.0, 0.1, self.score_func_lb))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], 5.0, 0.1, self.score_func_h))
 
         # exceed upper bound
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), 4.0, 0.1, self.score_func_ub))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), 4.0, 0.1, self.score_func_lb))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0].imp(), self.particles[2].imp(), 4.0, 0.1, self.score_func_h))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], 4.0, 0.1, self.score_func_ub))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], 4.0, 0.1, self.score_func_lb))
+        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], 4.0, 0.1, self.score_func_h))
 
 
     def test_distance(self):

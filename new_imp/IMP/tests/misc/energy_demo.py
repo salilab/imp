@@ -26,62 +26,62 @@ t.append(IMP_Modeller_Intf.IMP_Restraints(model, particles))
 # get particles for Modeller
 mdl = IMP_Modeller_Intf.Create_Particles(12, env, model, particles)
 
-p1 = particles[0].imp()
+p1 = particles[0]
 p1.add_float("radius", 2.0, False)
 p1.add_int("protein", 1)
 p1.add_int("id", 1)
 
-p1 = particles[1].imp()
+p1 = particles[1]
 p1.add_float("radius", 2.0, False)
 p1.add_int("protein", 1)
 p1.add_int("id", 2)
 
-p1 = particles[2].imp()
+p1 = particles[2]
 p1.add_float("radius", 2.0, False)
 p1.add_int("protein", 1)
 p1.add_int("id", 3)
 
-p1 = particles[3].imp()
+p1 = particles[3]
 p1.add_float("radius", 1.5, False)
 p1.add_int("protein", 2)
 p1.add_int("id", 4)
 
-p1 = particles[4].imp()
+p1 = particles[4]
 p1.add_float("radius", 1.5, False)
 p1.add_int("protein", 2)
 p1.add_int("id", 5)
 
-p1 = particles[5].imp()
+p1 = particles[5]
 p1.add_float("radius", 1.5, False)
 p1.add_int("protein", 2)
 p1.add_int("id", 6)
 
-p1 = particles[6].imp()
+p1 = particles[6]
 p1.add_float("radius", 1.5, False)
 p1.add_int("protein", 2)
 p1.add_int("id", 7)
 
-p1 = particles[7].imp()
+p1 = particles[7]
 p1.add_float("radius", 1.0, False)
 p1.add_int("protein", 3)
 p1.add_int("id", 8)
 
-p1 = particles[8].imp()
+p1 = particles[8]
 p1.add_float("radius", 1.0, False)
 p1.add_int("protein", 3)
 p1.add_int("id", 9)
 
-p1 = particles[9].imp()
+p1 = particles[9]
 p1.add_float("radius", 1.0, False)
 p1.add_int("protein", 3)
 p1.add_int("id", 10)
 
-p1 = particles[10].imp()
+p1 = particles[10]
 p1.add_float("radius", 1.0, False)
 p1.add_int("protein", 3)
 p1.add_int("id", 11)
 
-p1 = particles[11].imp()
+p1 = particles[11]
 p1.add_float("radius", 1.0, False)
 p1.add_int("protein", 3)
 p1.add_int("id", 12)
