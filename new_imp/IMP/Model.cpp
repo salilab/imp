@@ -67,12 +67,20 @@ Particle* Model::particle(size_t idx)
   Add particle to the model.
 
   \param[in] particle Pointer to new particle.
+  \return index of particle within the model
  */
 
-void Model::add_particle(Particle* particle)
+size_t Model::add_particle(Particle* particle)
 {
+  // a particle needs access to the model_data for
+  // the model that it is a part of
   particle->set_model_data(model_data_);
+
+  // add the particle to the model list of particles
   particles_.push_back(particle);
+
+  // return the particle index
+  return particles_.size() - 1; 
 }
 
 
