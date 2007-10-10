@@ -19,7 +19,7 @@ Map3D<dataItemT>::Map3D(int nx_,int ny_,int nz_,float *voxelsize_) : nnx(nx_),nn
 
 template <class dataItemT>
 Map3D<dataItemT>::~Map3D() {
-  free_1d_array_range(data);
+  free_1d_array_range(data_);
 }
 
 
@@ -27,7 +27,7 @@ template <class dataItemT>
 const dataItemT  Map3D<dataItemT>::get_voxeldata (int i, int j,int k) const {
 
   // TODO - add validation test
-  dataItemT val = data[threeD2oneD_index(i,j,k)];
+  dataItemT val = data_[threeD2oneD_index(i,j,k)];
   return val;
 }
 
@@ -39,7 +39,7 @@ void Map3D<dataItemT>::setData(int i,int j,int k, const dataItemT d) {
     cout << " Map3D::setData is out of range: " << i << "  " << j << "  " << k << " and the extent is " << nnx << "  " << nny << "  " << nnz << endl;
     //todo - raise error
   }
-  data[threeD2oneD_index(i,j,k)] = d;
+  data_[threeD2oneD_index(i,j,k)] = d;
 }
 
 
@@ -48,7 +48,7 @@ template <class dataItemT>
 dataItemT * Map3D<dataItemT>::allocate_1d_array_range(int zdim,int ydim,int xdim) {
   float *t;
   t = (dataItemT *)malloc((zdim*ydim*xdim)*sizeof(dataItemT));
-  if (!data) 
+  if (!data_) 
     {cout <<" Map3D<dataItemT>::AllocateData allocation failure for size " << (zdim*ydim*xdim)*sizeof(dataItemT **) << endl;
       exit(-1);
     }

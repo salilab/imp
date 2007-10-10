@@ -153,4 +153,51 @@ private:
 };
 
 
+class SwigDirector_MRCReaderWriter : public MRCReaderWriter, public Swig::Director {
+
+public:
+    SwigDirector_MRCReaderWriter(PyObject *self);
+    SwigDirector_MRCReaderWriter(PyObject *self, char *fn);
+    virtual int Read(char const *fn_in, real **data, DensityHeader &head);
+    virtual void Write(char const *fn_out, real const *data, DensityHeader const &head);
+    virtual ~SwigDirector_MRCReaderWriter();
+
+
+/* Internal Director utilities */
+public:
+    bool swig_get_inner(const char* name) const {
+      std::map<std::string, bool>::const_iterator iv = inner.find(name);
+      return (iv != inner.end() ? iv->second : false);
+    }
+
+    void swig_set_inner(const char* name, bool val) const
+    { inner[name] = val;}
+
+private:
+    mutable std::map<std::string, bool> inner;
+
+
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+/* VTable implementation */
+    PyObject *swig_get_method(size_t method_index, const char *method_name) const {
+      PyObject *method = vtable[method_index];
+      if (!method) {
+        swig::PyObject_var name = PyString_FromString(method_name);
+        method = PyObject_GetAttr(swig_get_self(), name);
+        if (method == NULL) {
+          std::string msg = "Method in class MRCReaderWriter doesn't exist, undefined ";
+          msg += method_name;
+          Swig::DirectorMethodException::raise(msg.c_str());
+        }
+        vtable[method_index] = method;
+      };
+      return method;
+    }
+private:
+    mutable swig::PyObject_var vtable[2];
+#endif
+
+};
+
+
 #endif

@@ -6,6 +6,10 @@
 #include "../DensityMap.h"
 #include "../EMReaderWriter.h"
 #include "../XplorReaderWriter.h"
+#include "../MRCReaderWriter.h"
+#include "../SampledDensityMap.h"
+#include "../CoarseCC.h"
+#include "../CoarseCCatIntervals.h"
 %}
 
 %include "std_common.i"
@@ -14,15 +18,12 @@
 %include "std_map.i"
 %include "std_string.i"
 %include "std_iostream.i"
-
+%include "cpointer.i"
 
 namespace std {
   %template(vectori) vector<int>;
   %template(vectorf) vector<float>;
 }
-
-
-
 
 
 %feature("director");
@@ -35,5 +36,7 @@ namespace std {
 %include "../DensityMap.h"
 %include "../EMReaderWriter.h"
 %include "../XplorReaderWriter.h"
-
-
+%include "../MRCReaderWriter.h"
+%include "../SampledDensityMap.h"
+%include "../CoarseCC.h"
+%include "../CoarseCCatIntervals.h"

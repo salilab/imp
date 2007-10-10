@@ -60,45 +60,48 @@ class MRCHeader
 
 class MRCReaderWriter : public MapReaderWriter
 {
-	public:
-		char *filename; // Name of the file
-		fstream fs;  // file stream for the file read
-		MRCHeader header; // The header of the file
-		float *grid;     // The grid of data. The data is stored in the grid with the convention that the order of indexes is z,y,x
-						   // the grid index is n = nx*ny*k+ny*j+i
-	public:
+public:
+  
+  MRCReaderWriter(void){}
+  MRCReaderWriter(char *fn) {
+    filename=fn;
+  }
+  
+  int Read(const char *fn_in, real **data, DensityHeader &head);
+  void Write(const char *fn_out, const real *data, const DensityHeader &head);
 
-		MRCReaderWriter(void){}
-		MRCReaderWriter(char *fn) {
-			filename=fn;
-		}
+private:
 
-		int Read(const char *fn_in, real **data, DensityHeader &head);
-		void Write(const char *fn_out, const real *data, const DensityHeader &head);
-
-	
+  
 		// By default the data are read into the grid of the class, but an external pointer to another grid can be especified
-		int read(void) {
-		  return read(&grid);
-		}
-		int read(float **pt);
+  int read(void) {
+    return read(&grid);
+  }
+  int read(float **pt);
+  
+  // read the header
+  int read_header(void);
+  // read different modes
+  int read_data(float *pt);
+  int read_8_data(float *pt);
+  int read_32_data(float *pt);
+  int read_grid(void *pt,size_t size,size_t n);
+  int seek_to_data(void);
+  // Write functions
+  int write(const char *fn)
+  {
+    return write(fn,grid);
+  }	
+  int write(const char *fn,const float *pt);
+  int write_header(fstream *f_out);
+  int write_data(fstream *f_out,const float *pt);
 
-		// read the header
-		int read_header(void);
-		// read different modes
-		int read_data(float *pt);
-		int read_8_data(float *pt);
-		int read_32_data(float *pt);
-		int read_grid(void *pt,size_t size,size_t n);
-		int seek_to_data(void);
-		// Write functions
-		int write(char *fn)
-		{
-			return write(fn,grid);
-		}	
-		int write(char *fn,const float *pt);
-		int write_header(fstream *f_out);
-		int write_data(fstream *f_out,const float *pt);
+
+  char *filename; // Name of the file
+  fstream fs;  // file stream for the file read
+  MRCHeader header; // The header of the file
+  float *grid;     // The grid of data. The data is stored in the grid with the convention that the order of indexes is z,y,x
+	
 };
 
 

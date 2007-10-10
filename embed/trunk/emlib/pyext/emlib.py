@@ -437,6 +437,8 @@ class MapReaderWriter(_object):
         return weakref_proxy(self)
 MapReaderWriter_swigregister = _emlib.MapReaderWriter_swigregister
 MapReaderWriter_swigregister(MapReaderWriter)
+PI = cvar.PI
+EPS = cvar.EPS
 
 class DensityHeader(_object):
     __swig_setmethods__ = {}
@@ -623,6 +625,9 @@ class DensityHeader(_object):
     __swig_setmethods__["lswap"] = _emlib.DensityHeader_lswap_set
     __swig_getmethods__["lswap"] = _emlib.DensityHeader_lswap_get
     if _newclass:lswap = _swig_property(_emlib.DensityHeader_lswap_get, _emlib.DensityHeader_lswap_set)
+    __swig_setmethods__["resolution"] = _emlib.DensityHeader_resolution_set
+    __swig_getmethods__["resolution"] = _emlib.DensityHeader_resolution_get
+    if _newclass:resolution = _swig_property(_emlib.DensityHeader_resolution_get, _emlib.DensityHeader_resolution_set)
     __swig_destroy__ = _emlib.delete_DensityHeader
     __del__ = lambda self : None;
 DensityHeader_swigregister = _emlib.DensityHeader_swigregister
@@ -643,6 +648,7 @@ class floatMap3D(_object):
     def threeD2oneD_index(*args): return _emlib.floatMap3D_threeD2oneD_index(*args)
     def get_voxeldata(*args): return _emlib.floatMap3D_get_voxeldata(*args)
     def setData(*args): return _emlib.floatMap3D_setData(*args)
+    def data(*args): return _emlib.floatMap3D_data(*args)
 floatMap3D_swigregister = _emlib.floatMap3D_swigregister
 floatMap3D_swigregister(floatMap3D)
 
@@ -660,7 +666,15 @@ class DensityMap(floatMap3D):
         except: self.this = this
     def Read(*args): return _emlib.DensityMap_Read(*args)
     def Write(*args): return _emlib.DensityMap_Write(*args)
-    def get_header(*args): return _emlib.DensityMap_get_header(*args)
+    def setResolution(*args): return _emlib.DensityMap_setResolution(*args)
+    def ResetData(*args): return _emlib.DensityMap_ResetData(*args)
+    def calcRMS(*args): return _emlib.DensityMap_calcRMS(*args)
+    def stdNormalize(*args): return _emlib.DensityMap_stdNormalize(*args)
+    def voxel2loc(*args): return _emlib.DensityMap_voxel2loc(*args)
+    def header(*args): return _emlib.DensityMap_header(*args)
+    def x_loc(*args): return _emlib.DensityMap_x_loc(*args)
+    def y_loc(*args): return _emlib.DensityMap_y_loc(*args)
+    def z_loc(*args): return _emlib.DensityMap_z_loc(*args)
     __swig_destroy__ = _emlib.delete_DensityMap
     __del__ = lambda self : None;
 DensityMap_swigregister = _emlib.DensityMap_swigregister
@@ -862,6 +876,218 @@ class XplorReaderWriter(MapReaderWriter):
         return weakref_proxy(self)
 XplorReaderWriter_swigregister = _emlib.XplorReaderWriter_swigregister
 XplorReaderWriter_swigregister(XplorReaderWriter)
+
+MRC_LABEL_SIZE = _emlib.MRC_LABEL_SIZE
+MRC_USER = _emlib.MRC_USER
+MRC_NUM_LABELS = _emlib.MRC_NUM_LABELS
+class MRCHeader(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MRCHeader, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, MRCHeader, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["nz"] = _emlib.MRCHeader_nz_set
+    __swig_getmethods__["nz"] = _emlib.MRCHeader_nz_get
+    if _newclass:nz = _swig_property(_emlib.MRCHeader_nz_get, _emlib.MRCHeader_nz_set)
+    __swig_setmethods__["ny"] = _emlib.MRCHeader_ny_set
+    __swig_getmethods__["ny"] = _emlib.MRCHeader_ny_get
+    if _newclass:ny = _swig_property(_emlib.MRCHeader_ny_get, _emlib.MRCHeader_ny_set)
+    __swig_setmethods__["nx"] = _emlib.MRCHeader_nx_set
+    __swig_getmethods__["nx"] = _emlib.MRCHeader_nx_get
+    if _newclass:nx = _swig_property(_emlib.MRCHeader_nx_get, _emlib.MRCHeader_nx_set)
+    __swig_setmethods__["mode"] = _emlib.MRCHeader_mode_set
+    __swig_getmethods__["mode"] = _emlib.MRCHeader_mode_get
+    if _newclass:mode = _swig_property(_emlib.MRCHeader_mode_get, _emlib.MRCHeader_mode_set)
+    __swig_setmethods__["nxstart"] = _emlib.MRCHeader_nxstart_set
+    __swig_getmethods__["nxstart"] = _emlib.MRCHeader_nxstart_get
+    if _newclass:nxstart = _swig_property(_emlib.MRCHeader_nxstart_get, _emlib.MRCHeader_nxstart_set)
+    __swig_setmethods__["nystart"] = _emlib.MRCHeader_nystart_set
+    __swig_getmethods__["nystart"] = _emlib.MRCHeader_nystart_get
+    if _newclass:nystart = _swig_property(_emlib.MRCHeader_nystart_get, _emlib.MRCHeader_nystart_set)
+    __swig_setmethods__["nzstart"] = _emlib.MRCHeader_nzstart_set
+    __swig_getmethods__["nzstart"] = _emlib.MRCHeader_nzstart_get
+    if _newclass:nzstart = _swig_property(_emlib.MRCHeader_nzstart_get, _emlib.MRCHeader_nzstart_set)
+    __swig_setmethods__["mx"] = _emlib.MRCHeader_mx_set
+    __swig_getmethods__["mx"] = _emlib.MRCHeader_mx_get
+    if _newclass:mx = _swig_property(_emlib.MRCHeader_mx_get, _emlib.MRCHeader_mx_set)
+    __swig_setmethods__["my"] = _emlib.MRCHeader_my_set
+    __swig_getmethods__["my"] = _emlib.MRCHeader_my_get
+    if _newclass:my = _swig_property(_emlib.MRCHeader_my_get, _emlib.MRCHeader_my_set)
+    __swig_setmethods__["mz"] = _emlib.MRCHeader_mz_set
+    __swig_getmethods__["mz"] = _emlib.MRCHeader_mz_get
+    if _newclass:mz = _swig_property(_emlib.MRCHeader_mz_get, _emlib.MRCHeader_mz_set)
+    __swig_setmethods__["xlen"] = _emlib.MRCHeader_xlen_set
+    __swig_getmethods__["xlen"] = _emlib.MRCHeader_xlen_get
+    if _newclass:xlen = _swig_property(_emlib.MRCHeader_xlen_get, _emlib.MRCHeader_xlen_set)
+    __swig_setmethods__["ylen"] = _emlib.MRCHeader_ylen_set
+    __swig_getmethods__["ylen"] = _emlib.MRCHeader_ylen_get
+    if _newclass:ylen = _swig_property(_emlib.MRCHeader_ylen_get, _emlib.MRCHeader_ylen_set)
+    __swig_setmethods__["zlen"] = _emlib.MRCHeader_zlen_set
+    __swig_getmethods__["zlen"] = _emlib.MRCHeader_zlen_get
+    if _newclass:zlen = _swig_property(_emlib.MRCHeader_zlen_get, _emlib.MRCHeader_zlen_set)
+    __swig_setmethods__["alpha"] = _emlib.MRCHeader_alpha_set
+    __swig_getmethods__["alpha"] = _emlib.MRCHeader_alpha_get
+    if _newclass:alpha = _swig_property(_emlib.MRCHeader_alpha_get, _emlib.MRCHeader_alpha_set)
+    __swig_setmethods__["beta"] = _emlib.MRCHeader_beta_set
+    __swig_getmethods__["beta"] = _emlib.MRCHeader_beta_get
+    if _newclass:beta = _swig_property(_emlib.MRCHeader_beta_get, _emlib.MRCHeader_beta_set)
+    __swig_setmethods__["gamma"] = _emlib.MRCHeader_gamma_set
+    __swig_getmethods__["gamma"] = _emlib.MRCHeader_gamma_get
+    if _newclass:gamma = _swig_property(_emlib.MRCHeader_gamma_get, _emlib.MRCHeader_gamma_set)
+    __swig_setmethods__["mapc"] = _emlib.MRCHeader_mapc_set
+    __swig_getmethods__["mapc"] = _emlib.MRCHeader_mapc_get
+    if _newclass:mapc = _swig_property(_emlib.MRCHeader_mapc_get, _emlib.MRCHeader_mapc_set)
+    __swig_setmethods__["mapr"] = _emlib.MRCHeader_mapr_set
+    __swig_getmethods__["mapr"] = _emlib.MRCHeader_mapr_get
+    if _newclass:mapr = _swig_property(_emlib.MRCHeader_mapr_get, _emlib.MRCHeader_mapr_set)
+    __swig_setmethods__["maps"] = _emlib.MRCHeader_maps_set
+    __swig_getmethods__["maps"] = _emlib.MRCHeader_maps_get
+    if _newclass:maps = _swig_property(_emlib.MRCHeader_maps_get, _emlib.MRCHeader_maps_set)
+    __swig_setmethods__["dmin"] = _emlib.MRCHeader_dmin_set
+    __swig_getmethods__["dmin"] = _emlib.MRCHeader_dmin_get
+    if _newclass:dmin = _swig_property(_emlib.MRCHeader_dmin_get, _emlib.MRCHeader_dmin_set)
+    __swig_setmethods__["dmax"] = _emlib.MRCHeader_dmax_set
+    __swig_getmethods__["dmax"] = _emlib.MRCHeader_dmax_get
+    if _newclass:dmax = _swig_property(_emlib.MRCHeader_dmax_get, _emlib.MRCHeader_dmax_set)
+    __swig_setmethods__["dmean"] = _emlib.MRCHeader_dmean_set
+    __swig_getmethods__["dmean"] = _emlib.MRCHeader_dmean_get
+    if _newclass:dmean = _swig_property(_emlib.MRCHeader_dmean_get, _emlib.MRCHeader_dmean_set)
+    __swig_setmethods__["ispg"] = _emlib.MRCHeader_ispg_set
+    __swig_getmethods__["ispg"] = _emlib.MRCHeader_ispg_get
+    if _newclass:ispg = _swig_property(_emlib.MRCHeader_ispg_get, _emlib.MRCHeader_ispg_set)
+    __swig_setmethods__["nsymbt"] = _emlib.MRCHeader_nsymbt_set
+    __swig_getmethods__["nsymbt"] = _emlib.MRCHeader_nsymbt_get
+    if _newclass:nsymbt = _swig_property(_emlib.MRCHeader_nsymbt_get, _emlib.MRCHeader_nsymbt_set)
+    __swig_setmethods__["user"] = _emlib.MRCHeader_user_set
+    __swig_getmethods__["user"] = _emlib.MRCHeader_user_get
+    if _newclass:user = _swig_property(_emlib.MRCHeader_user_get, _emlib.MRCHeader_user_set)
+    __swig_setmethods__["xorigin"] = _emlib.MRCHeader_xorigin_set
+    __swig_getmethods__["xorigin"] = _emlib.MRCHeader_xorigin_get
+    if _newclass:xorigin = _swig_property(_emlib.MRCHeader_xorigin_get, _emlib.MRCHeader_xorigin_set)
+    __swig_setmethods__["yorigin"] = _emlib.MRCHeader_yorigin_set
+    __swig_getmethods__["yorigin"] = _emlib.MRCHeader_yorigin_get
+    if _newclass:yorigin = _swig_property(_emlib.MRCHeader_yorigin_get, _emlib.MRCHeader_yorigin_set)
+    __swig_setmethods__["zorigin"] = _emlib.MRCHeader_zorigin_set
+    __swig_getmethods__["zorigin"] = _emlib.MRCHeader_zorigin_get
+    if _newclass:zorigin = _swig_property(_emlib.MRCHeader_zorigin_get, _emlib.MRCHeader_zorigin_set)
+    __swig_setmethods__["map"] = _emlib.MRCHeader_map_set
+    __swig_getmethods__["map"] = _emlib.MRCHeader_map_get
+    if _newclass:map = _swig_property(_emlib.MRCHeader_map_get, _emlib.MRCHeader_map_set)
+    __swig_setmethods__["machinestamp"] = _emlib.MRCHeader_machinestamp_set
+    __swig_getmethods__["machinestamp"] = _emlib.MRCHeader_machinestamp_get
+    if _newclass:machinestamp = _swig_property(_emlib.MRCHeader_machinestamp_get, _emlib.MRCHeader_machinestamp_set)
+    __swig_setmethods__["rms"] = _emlib.MRCHeader_rms_set
+    __swig_getmethods__["rms"] = _emlib.MRCHeader_rms_get
+    if _newclass:rms = _swig_property(_emlib.MRCHeader_rms_get, _emlib.MRCHeader_rms_set)
+    __swig_setmethods__["nlabl"] = _emlib.MRCHeader_nlabl_set
+    __swig_getmethods__["nlabl"] = _emlib.MRCHeader_nlabl_get
+    if _newclass:nlabl = _swig_property(_emlib.MRCHeader_nlabl_get, _emlib.MRCHeader_nlabl_set)
+    __swig_setmethods__["labels"] = _emlib.MRCHeader_labels_set
+    __swig_getmethods__["labels"] = _emlib.MRCHeader_labels_get
+    if _newclass:labels = _swig_property(_emlib.MRCHeader_labels_get, _emlib.MRCHeader_labels_set)
+    def FromDensityHeader(*args): return _emlib.MRCHeader_FromDensityHeader(*args)
+    def ToDensityHeader(*args): return _emlib.MRCHeader_ToDensityHeader(*args)
+    def __init__(self, *args): 
+        this = _emlib.new_MRCHeader(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _emlib.delete_MRCHeader
+    __del__ = lambda self : None;
+MRCHeader_swigregister = _emlib.MRCHeader_swigregister
+MRCHeader_swigregister(MRCHeader)
+
+class MRCReaderWriter(MapReaderWriter):
+    __swig_setmethods__ = {}
+    for _s in [MapReaderWriter]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MRCReaderWriter, name, value)
+    __swig_getmethods__ = {}
+    for _s in [MapReaderWriter]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, MRCReaderWriter, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        if self.__class__ == MRCReaderWriter:
+            args = (None,) + args
+        else:
+            args = (self,) + args
+        this = _emlib.new_MRCReaderWriter(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    def Read(*args): return _emlib.MRCReaderWriter_Read(*args)
+    def Write(*args): return _emlib.MRCReaderWriter_Write(*args)
+    __swig_destroy__ = _emlib.delete_MRCReaderWriter
+    __del__ = lambda self : None;
+    def __disown__(self):
+        self.this.disown()
+        _emlib.disown_MRCReaderWriter(self)
+        return weakref_proxy(self)
+MRCReaderWriter_swigregister = _emlib.MRCReaderWriter_swigregister
+MRCReaderWriter_swigregister(MRCReaderWriter)
+
+get_machine_stamp = _emlib.get_machine_stamp
+is_bigendian = _emlib.is_bigendian
+byte_swap = _emlib.byte_swap
+class SampledDensityMap(DensityMap):
+    __swig_setmethods__ = {}
+    for _s in [DensityMap]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, SampledDensityMap, name, value)
+    __swig_getmethods__ = {}
+    for _s in [DensityMap]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, SampledDensityMap, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        this = _emlib.new_SampledDensityMap(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    def ReSample(*args): return _emlib.SampledDensityMap_ReSample(*args)
+    def rsig(*args): return _emlib.SampledDensityMap_rsig(*args)
+    def rsigsq(*args): return _emlib.SampledDensityMap_rsigsq(*args)
+    def inv_rsigsq(*args): return _emlib.SampledDensityMap_inv_rsigsq(*args)
+    def rnormfac(*args): return _emlib.SampledDensityMap_rnormfac(*args)
+    def rkdist(*args): return _emlib.SampledDensityMap_rkdist(*args)
+    def lim(*args): return _emlib.SampledDensityMap_lim(*args)
+    def timessig(*args): return _emlib.SampledDensityMap_timessig(*args)
+    def KernelSetup(*args): return _emlib.SampledDensityMap_KernelSetup(*args)
+    def CalcBoundingBox(*args): return _emlib.SampledDensityMap_CalcBoundingBox(*args)
+    __swig_destroy__ = _emlib.delete_SampledDensityMap
+    __del__ = lambda self : None;
+SampledDensityMap_swigregister = _emlib.SampledDensityMap_swigregister
+SampledDensityMap_swigregister(SampledDensityMap)
+
+class CoarseCC(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, CoarseCC, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, CoarseCC, name)
+    __repr__ = _swig_repr
+    __swig_getmethods__["evaluate"] = lambda x: _emlib.CoarseCC_evaluate
+    if _newclass:evaluate = staticmethod(_emlib.CoarseCC_evaluate)
+    __swig_getmethods__["calcDerivatives"] = lambda x: _emlib.CoarseCC_calcDerivatives
+    if _newclass:calcDerivatives = staticmethod(_emlib.CoarseCC_calcDerivatives)
+    def __init__(self, *args): 
+        this = _emlib.new_CoarseCC(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _emlib.delete_CoarseCC
+    __del__ = lambda self : None;
+CoarseCC_swigregister = _emlib.CoarseCC_swigregister
+CoarseCC_swigregister(CoarseCC)
+CoarseCC_evaluate = _emlib.CoarseCC_evaluate
+CoarseCC_calcDerivatives = _emlib.CoarseCC_calcDerivatives
+
+class CoarseCCatIntervals(CoarseCC):
+    __swig_setmethods__ = {}
+    for _s in [CoarseCC]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, CoarseCCatIntervals, name, value)
+    __swig_getmethods__ = {}
+    for _s in [CoarseCC]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, CoarseCCatIntervals, name)
+    def __init__(self): raise AttributeError, "No constructor defined"
+    __repr__ = _swig_repr
+    def evaluate(*args): return _emlib.CoarseCCatIntervals_evaluate(*args)
+    __swig_destroy__ = _emlib.delete_CoarseCCatIntervals
+    __del__ = lambda self : None;
+CoarseCCatIntervals_swigregister = _emlib.CoarseCCatIntervals_swigregister
+CoarseCCatIntervals_swigregister(CoarseCCatIntervals)
 
 
 

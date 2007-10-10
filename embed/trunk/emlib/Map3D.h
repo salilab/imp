@@ -45,7 +45,7 @@ public:
   const dataItemT  get_voxeldata(int i, int j,int k) const;
   
   void setData(int i,int j,int k, dataItemT);
-  const dataItemT* get_data() const  {return data;}
+  const dataItemT* data() const  {return data_;}
 
 protected:
   void free_1d_array_range(dataItemT *t);
@@ -54,7 +54,7 @@ protected:
   // orientation data
   Vector3 translateGrid; // the left-buttom voxel of the grid is assumed to be located at (0,0,0). The exact location of the grid is found in the XPLOR file. We insert this data to the translateGrid vector
 
-  dataItemT *data; // the order is ZYX (Z-slowest)
+  dataItemT *data_; // the order is ZYX (Z-slowest)
   float voxelsize[3];
   int nnx,nny,nnz;
 private:

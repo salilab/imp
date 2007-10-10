@@ -2962,88 +2962,94 @@ namespace Swig {
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_DensityHeader swig_types[0]
-#define SWIGTYPE_p_DensityMap swig_types[1]
-#define SWIGTYPE_p_EMHeader swig_types[2]
-#define SWIGTYPE_p_EMReaderWriter swig_types[3]
-#define SWIGTYPE_p_Map3DTfloat_t swig_types[4]
-#define SWIGTYPE_p_MapReaderWriter swig_types[5]
-#define SWIGTYPE_p_XplorHeader swig_types[6]
-#define SWIGTYPE_p_XplorReaderWriter swig_types[7]
-#define SWIGTYPE_p_a_DensityHeader__COMMENT_FIELD_SINGLE_SIZE__char swig_types[8]
-#define SWIGTYPE_p_allocator_type swig_types[9]
-#define SWIGTYPE_p_bool swig_types[10]
-#define SWIGTYPE_p_char swig_types[11]
-#define SWIGTYPE_p_char_type swig_types[12]
-#define SWIGTYPE_p_const_reference swig_types[13]
-#define SWIGTYPE_p_difference_type swig_types[14]
-#define SWIGTYPE_p_double swig_types[15]
-#define SWIGTYPE_p_f_enum_std__ios_base__event_r_std__ios_base_int__void swig_types[16]
-#define SWIGTYPE_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basic_iosTchar_std__char_traitsTchar_t_t swig_types[17]
-#define SWIGTYPE_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[18]
-#define SWIGTYPE_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[19]
-#define SWIGTYPE_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[20]
-#define SWIGTYPE_p_f_r_std__basic_istream__char_std__char_traits__char______r_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[21]
-#define SWIGTYPE_p_f_r_std__basic_istream__char_std__char_traits__char______r_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[22]
-#define SWIGTYPE_p_f_r_std__basic_ostream__char_std__char_traits__char______r_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[23]
-#define SWIGTYPE_p_f_r_std__basic_ostream__char_std__char_traits__char______r_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[24]
-#define SWIGTYPE_p_f_r_std__ios_base__r_std__basic_iosTchar_std__char_traitsTchar_t_t swig_types[25]
-#define SWIGTYPE_p_f_r_std__ios_base__r_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[26]
-#define SWIGTYPE_p_f_r_std__ios_base__r_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[27]
-#define SWIGTYPE_p_f_r_std__ios_base__r_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[28]
-#define SWIGTYPE_p_f_r_std__ios_base__r_std__ios_base swig_types[29]
-#define SWIGTYPE_p_float swig_types[30]
-#define SWIGTYPE_p_fmtflags swig_types[31]
-#define SWIGTYPE_p_int swig_types[32]
-#define SWIGTYPE_p_int_type swig_types[33]
-#define SWIGTYPE_p_iostate swig_types[34]
-#define SWIGTYPE_p_long swig_types[35]
-#define SWIGTYPE_p_long_double swig_types[36]
-#define SWIGTYPE_p_long_long swig_types[37]
-#define SWIGTYPE_p_off_type swig_types[38]
-#define SWIGTYPE_p_openmode swig_types[39]
-#define SWIGTYPE_p_p_PyObject swig_types[40]
-#define SWIGTYPE_p_p_float swig_types[41]
-#define SWIGTYPE_p_p_void swig_types[42]
-#define SWIGTYPE_p_pos_type swig_types[43]
-#define SWIGTYPE_p_reference swig_types[44]
-#define SWIGTYPE_p_seekdir swig_types[45]
-#define SWIGTYPE_p_short swig_types[46]
-#define SWIGTYPE_p_size_t swig_types[47]
-#define SWIGTYPE_p_size_type swig_types[48]
-#define SWIGTYPE_p_state_type swig_types[49]
-#define SWIGTYPE_p_std__basic_iosTchar_std__char_traitsTchar_t_t swig_types[50]
-#define SWIGTYPE_p_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[51]
-#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[52]
-#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__char_type swig_types[53]
-#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__off_type swig_types[54]
-#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__pos_type swig_types[55]
-#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[56]
-#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__off_type swig_types[57]
-#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__pos_type swig_types[58]
-#define SWIGTYPE_p_std__basic_streambufTchar_std__char_traitsTchar_t_t swig_types[59]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t swig_types[60]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__allocator_type swig_types[61]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__const_iterator swig_types[62]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__const_reverse_iterator swig_types[63]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__iterator swig_types[64]
-#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__reverse_iterator swig_types[65]
-#define SWIGTYPE_p_std__invalid_argument swig_types[66]
-#define SWIGTYPE_p_std__ios_base swig_types[67]
-#define SWIGTYPE_p_std__locale swig_types[68]
-#define SWIGTYPE_p_std__vectorTfloat_std__allocatorTfloat_t_t swig_types[69]
-#define SWIGTYPE_p_std__vectorTfloat_std__allocatorTfloat_t_t__allocator_type swig_types[70]
-#define SWIGTYPE_p_std__vectorTint_std__allocatorTint_t_t swig_types[71]
-#define SWIGTYPE_p_std__vectorTint_std__allocatorTint_t_t__allocator_type swig_types[72]
-#define SWIGTYPE_p_swig__PySwigIterator swig_types[73]
-#define SWIGTYPE_p_traits_type swig_types[74]
-#define SWIGTYPE_p_unsigned_int swig_types[75]
-#define SWIGTYPE_p_unsigned_long swig_types[76]
-#define SWIGTYPE_p_unsigned_long_long swig_types[77]
-#define SWIGTYPE_p_unsigned_short swig_types[78]
-#define SWIGTYPE_p_value_type swig_types[79]
-static swig_type_info *swig_types[81];
-static swig_module_info swig_module = {swig_types, 80, 0, 0, 0, 0};
+#define SWIGTYPE_p_CoarseCC swig_types[0]
+#define SWIGTYPE_p_DensityHeader swig_types[1]
+#define SWIGTYPE_p_DensityMap swig_types[2]
+#define SWIGTYPE_p_EMHeader swig_types[3]
+#define SWIGTYPE_p_EMReaderWriter swig_types[4]
+#define SWIGTYPE_p_MRCHeader swig_types[5]
+#define SWIGTYPE_p_MRCReaderWriter swig_types[6]
+#define SWIGTYPE_p_Map3DTfloat_t swig_types[7]
+#define SWIGTYPE_p_MapReaderWriter swig_types[8]
+#define SWIGTYPE_p_SampledDensityMap swig_types[9]
+#define SWIGTYPE_p_XplorHeader swig_types[10]
+#define SWIGTYPE_p_XplorReaderWriter swig_types[11]
+#define SWIGTYPE_p_a_80__char swig_types[12]
+#define SWIGTYPE_p_a_DensityHeader__COMMENT_FIELD_SINGLE_SIZE__char swig_types[13]
+#define SWIGTYPE_p_allocator_type swig_types[14]
+#define SWIGTYPE_p_bool swig_types[15]
+#define SWIGTYPE_p_char swig_types[16]
+#define SWIGTYPE_p_char_type swig_types[17]
+#define SWIGTYPE_p_const_reference swig_types[18]
+#define SWIGTYPE_p_difference_type swig_types[19]
+#define SWIGTYPE_p_double swig_types[20]
+#define SWIGTYPE_p_f_enum_std__ios_base__event_r_std__ios_base_int__void swig_types[21]
+#define SWIGTYPE_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basic_iosTchar_std__char_traitsTchar_t_t swig_types[22]
+#define SWIGTYPE_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[23]
+#define SWIGTYPE_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[24]
+#define SWIGTYPE_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[25]
+#define SWIGTYPE_p_f_r_std__basic_istream__char_std__char_traits__char______r_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[26]
+#define SWIGTYPE_p_f_r_std__basic_istream__char_std__char_traits__char______r_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[27]
+#define SWIGTYPE_p_f_r_std__basic_ostream__char_std__char_traits__char______r_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[28]
+#define SWIGTYPE_p_f_r_std__basic_ostream__char_std__char_traits__char______r_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[29]
+#define SWIGTYPE_p_f_r_std__ios_base__r_std__basic_iosTchar_std__char_traitsTchar_t_t swig_types[30]
+#define SWIGTYPE_p_f_r_std__ios_base__r_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[31]
+#define SWIGTYPE_p_f_r_std__ios_base__r_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[32]
+#define SWIGTYPE_p_f_r_std__ios_base__r_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[33]
+#define SWIGTYPE_p_f_r_std__ios_base__r_std__ios_base swig_types[34]
+#define SWIGTYPE_p_float swig_types[35]
+#define SWIGTYPE_p_fmtflags swig_types[36]
+#define SWIGTYPE_p_int swig_types[37]
+#define SWIGTYPE_p_int_type swig_types[38]
+#define SWIGTYPE_p_iostate swig_types[39]
+#define SWIGTYPE_p_long swig_types[40]
+#define SWIGTYPE_p_long_double swig_types[41]
+#define SWIGTYPE_p_long_long swig_types[42]
+#define SWIGTYPE_p_off_type swig_types[43]
+#define SWIGTYPE_p_openmode swig_types[44]
+#define SWIGTYPE_p_p_PyObject swig_types[45]
+#define SWIGTYPE_p_p_float swig_types[46]
+#define SWIGTYPE_p_p_void swig_types[47]
+#define SWIGTYPE_p_pos_type swig_types[48]
+#define SWIGTYPE_p_reference swig_types[49]
+#define SWIGTYPE_p_seekdir swig_types[50]
+#define SWIGTYPE_p_short swig_types[51]
+#define SWIGTYPE_p_size_t swig_types[52]
+#define SWIGTYPE_p_size_type swig_types[53]
+#define SWIGTYPE_p_state_type swig_types[54]
+#define SWIGTYPE_p_std__basic_iosTchar_std__char_traitsTchar_t_t swig_types[55]
+#define SWIGTYPE_p_std__basic_iostreamTchar_std__char_traitsTchar_t_t swig_types[56]
+#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t swig_types[57]
+#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__char_type swig_types[58]
+#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__off_type swig_types[59]
+#define SWIGTYPE_p_std__basic_istreamTchar_std__char_traitsTchar_t_t__pos_type swig_types[60]
+#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t swig_types[61]
+#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__off_type swig_types[62]
+#define SWIGTYPE_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t__pos_type swig_types[63]
+#define SWIGTYPE_p_std__basic_streambufTchar_std__char_traitsTchar_t_t swig_types[64]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t swig_types[65]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__allocator_type swig_types[66]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__const_iterator swig_types[67]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__const_reverse_iterator swig_types[68]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__iterator swig_types[69]
+#define SWIGTYPE_p_std__basic_stringTchar_std__char_traitsTchar_t_std__allocatorTchar_t_t__reverse_iterator swig_types[70]
+#define SWIGTYPE_p_std__invalid_argument swig_types[71]
+#define SWIGTYPE_p_std__ios_base swig_types[72]
+#define SWIGTYPE_p_std__locale swig_types[73]
+#define SWIGTYPE_p_std__vectorTfloat_std__allocatorTfloat_t_t swig_types[74]
+#define SWIGTYPE_p_std__vectorTfloat_std__allocatorTfloat_t_t__allocator_type swig_types[75]
+#define SWIGTYPE_p_std__vectorTint_std__allocatorTint_t_t swig_types[76]
+#define SWIGTYPE_p_std__vectorTint_std__allocatorTint_t_t__allocator_type swig_types[77]
+#define SWIGTYPE_p_swig__PySwigIterator swig_types[78]
+#define SWIGTYPE_p_traits_type swig_types[79]
+#define SWIGTYPE_p_unsigned_char swig_types[80]
+#define SWIGTYPE_p_unsigned_int swig_types[81]
+#define SWIGTYPE_p_unsigned_long swig_types[82]
+#define SWIGTYPE_p_unsigned_long_long swig_types[83]
+#define SWIGTYPE_p_unsigned_short swig_types[84]
+#define SWIGTYPE_p_value_type swig_types[85]
+static swig_type_info *swig_types[87];
+static swig_module_info swig_module = {swig_types, 86, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3134,12 +3140,14 @@ namespace swig {
 
 
 #include "../def.h"
-#include "../MapReaderWriter.h"
 #include "../DensityHeader.h"
 #include "../Map3D.h"
 #include "../DensityMap.h"
 #include "../EMReaderWriter.h"
 #include "../XplorReaderWriter.h"
+#include "../MRCReaderWriter.h"
+#include "../SampledDensityMap.h"
+#include "../CoarseCC.h"
 
 
 #include <stdexcept>
@@ -5327,6 +5335,85 @@ void SwigDirector_XplorReaderWriter::Write(char const *filename, real const *dat
 
 
 SwigDirector_XplorReaderWriter::~SwigDirector_XplorReaderWriter() {
+}
+
+SwigDirector_MRCReaderWriter::SwigDirector_MRCReaderWriter(PyObject *self): MRCReaderWriter(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((MRCReaderWriter *)this, this); 
+}
+
+
+
+
+SwigDirector_MRCReaderWriter::SwigDirector_MRCReaderWriter(PyObject *self, char *fn): MRCReaderWriter(fn), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((MRCReaderWriter *)this, this); 
+}
+
+
+
+
+int SwigDirector_MRCReaderWriter::Read(char const *fn_in, real **data, DensityHeader &head) {
+  int c_result;
+  swig::PyObject_var obj0;
+  obj0 = SWIG_FromCharPtr((const char *)fn_in);
+  swig::PyObject_var obj1;
+  obj1 = SWIG_NewPointerObj(SWIG_as_voidptr(data), SWIGTYPE_p_p_float,  0 );
+  swig::PyObject_var obj2;
+  obj2 = SWIG_NewPointerObj(SWIG_as_voidptr(&head), SWIGTYPE_p_DensityHeader,  0 );
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call MRCReaderWriter.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 0;
+  const char * const swig_method_name = "Read";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::PyObject_var result = PyObject_CallFunction(method, (char *)"(OOO)" ,(PyObject *)obj0,(PyObject *)obj1,(PyObject *)obj2);
+#else
+  swig::PyObject_var result = PyObject_CallMethod(swig_get_self(), (char *)"Read", (char *)"(OOO)" ,(PyObject *)obj0,(PyObject *)obj1,(PyObject *)obj2);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'MRCReaderWriter.Read'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+void SwigDirector_MRCReaderWriter::Write(char const *fn_out, real const *data, DensityHeader const &head) {
+  swig::PyObject_var obj0;
+  obj0 = SWIG_FromCharPtr((const char *)fn_out);
+  swig::PyObject_var obj1;
+  obj1 = SWIG_NewPointerObj(SWIG_as_voidptr(data), SWIGTYPE_p_float,  0 );
+  swig::PyObject_var obj2;
+  obj2 = SWIG_NewPointerObj(SWIG_as_voidptr(&head), SWIGTYPE_p_DensityHeader,  0 );
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call MRCReaderWriter.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 1;
+  const char * const swig_method_name = "Write";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::PyObject_var result = PyObject_CallFunction(method, (char *)"(OOO)" ,(PyObject *)obj0,(PyObject *)obj1,(PyObject *)obj2);
+#else
+  swig::PyObject_var result = PyObject_CallMethod(swig_get_self(), (char *)"Write", (char *)"(OOO)" ,(PyObject *)obj0,(PyObject *)obj1,(PyObject *)obj2);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'MRCReaderWriter.Write'");
+    }
+  }
+}
+
+
+SwigDirector_MRCReaderWriter::~SwigDirector_MRCReaderWriter() {
 }
 
 #ifdef __cplusplus
@@ -20653,6 +20740,34 @@ SWIGINTERN PyObject *vectorf_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObje
   return SWIG_Py_Void();
 }
 
+SWIGINTERN int PI_set(PyObject *) {
+  SWIG_Error(SWIG_AttributeError,"Variable PI is read-only.");
+  return 1;
+}
+
+
+SWIGINTERN PyObject *PI_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_From_double(static_cast< double >(PI));
+  return pyobj;
+}
+
+
+SWIGINTERN int EPS_set(PyObject *) {
+  SWIG_Error(SWIG_AttributeError,"Variable EPS is read-only.");
+  return 1;
+}
+
+
+SWIGINTERN PyObject *EPS_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_From_float(static_cast< float >(EPS));
+  return pyobj;
+}
+
+
 SWIGINTERN PyObject *_wrap_MapReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MapReaderWriter *arg1 = (MapReaderWriter *) 0 ;
@@ -20862,7 +20977,7 @@ SWIGINTERN PyObject *MapReaderWriter_swigregister(PyObject *SWIGUNUSEDPARM(self)
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_DensityHeader__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_DensityHeader(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DensityHeader *result = 0 ;
   
@@ -20871,59 +20986,6 @@ SWIGINTERN PyObject *_wrap_new_DensityHeader__SWIG_0(PyObject *SWIGUNUSEDPARM(se
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DensityHeader, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_DensityHeader__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  DensityHeader *arg1 = 0 ;
-  DensityHeader *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:new_DensityHeader",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_DensityHeader,  0  | 0);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_DensityHeader" "', argument " "1"" of type '" "DensityHeader const &""'"); 
-  }
-  if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_DensityHeader" "', argument " "1"" of type '" "DensityHeader const &""'"); 
-  }
-  arg1 = reinterpret_cast< DensityHeader * >(argp1);
-  result = (DensityHeader *)new DensityHeader((DensityHeader const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DensityHeader, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_DensityHeader(PyObject *self, PyObject *args) {
-  int argc;
-  PyObject *argv[2];
-  int ii;
-  
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = PyObject_Length(args);
-  for (ii = 0; (ii < argc) && (ii < 1); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
-  }
-  if (argc == 0) {
-    return _wrap_new_DensityHeader__SWIG_0(self, args);
-  }
-  if (argc == 1) {
-    int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_DensityHeader, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_DensityHeader__SWIG_1(self, args);
-    }
-  }
-  
-fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'new_DensityHeader'.\n  Possible C/C++ prototypes are:\n    DensityHeader()\n    DensityHeader(DensityHeader const &)\n");
   return NULL;
 }
 
@@ -23974,6 +24036,59 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DensityHeader_resolution_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityHeader *arg1 = (DensityHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DensityHeader_resolution_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityHeader_resolution_set" "', argument " "1"" of type '" "DensityHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DensityHeader_resolution_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->resolution = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DensityHeader_resolution_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityHeader *arg1 = (DensityHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DensityHeader_resolution_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityHeader_resolution_get" "', argument " "1"" of type '" "DensityHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityHeader * >(argp1);
+  result = (float) ((arg1)->resolution);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_delete_DensityHeader(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DensityHeader *arg1 = (DensityHeader *) 0 ;
@@ -24128,28 +24243,6 @@ SWIGINTERN PyObject *_wrap_delete_floatMap3D(PyObject *SWIGUNUSEDPARM(self), PyO
   delete arg1;
   
   resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_floatMap3D_Release(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  Map3D<float > *arg1 = (Map3D<float > *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:floatMap3D_Release",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Map3DTfloat_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "floatMap3D_Release" "', argument " "1"" of type '" "Map3D<float > *""'"); 
-  }
-  arg1 = reinterpret_cast< Map3D<float > * >(argp1);
-  result = (int)(arg1)->Release();
-  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -24311,6 +24404,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_floatMap3D_get_data(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Map3D<float > *arg1 = (Map3D<float > *) 0 ;
+  float *result = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:floatMap3D_get_data",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Map3DTfloat_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "floatMap3D_get_data" "', argument " "1"" of type '" "Map3D<float > const *""'"); 
+  }
+  arg1 = reinterpret_cast< Map3D<float > * >(argp1);
+  result = (float *)((Map3D<float > const *)arg1)->get_data();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *floatMap3D_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O|swigregister", &obj)) return NULL;
@@ -24417,6 +24532,144 @@ SWIGINTERN PyObject *_wrap_DensityMap_Write(PyObject *SWIGUNUSEDPARM(self), PyOb
   return resultobj;
 fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DensityMap_setResolution(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityMap *arg1 = (DensityMap *) 0 ;
+  float *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float temp2 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DensityMap_setResolution",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityMap_setResolution" "', argument " "1"" of type '" "DensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityMap * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DensityMap_setResolution" "', argument " "2"" of type '" "float""'");
+  } 
+  temp2 = static_cast< float >(val2);
+  arg2 = &temp2;
+  (arg1)->setResolution((float const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DensityMap_ResetData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityMap *arg1 = (DensityMap *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DensityMap_ResetData",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityMap_ResetData" "', argument " "1"" of type '" "DensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityMap * >(argp1);
+  (arg1)->ResetData();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DensityMap_calcRMS(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityMap *arg1 = (DensityMap *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DensityMap_calcRMS",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityMap_calcRMS" "', argument " "1"" of type '" "DensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityMap * >(argp1);
+  result = (float)(arg1)->calcRMS();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DensityMap_stdNormalize(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityMap *arg1 = (DensityMap *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DensityMap_stdNormalize",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityMap_stdNormalize" "', argument " "1"" of type '" "DensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityMap * >(argp1);
+  (arg1)->stdNormalize();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DensityMap_voxel2loc(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityMap *arg1 = (DensityMap *) 0 ;
+  int *arg2 = 0 ;
+  int arg3 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DensityMap_voxel2loc",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityMap_voxel2loc" "', argument " "1"" of type '" "DensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityMap * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DensityMap_voxel2loc" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "DensityMap_voxel2loc" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = static_cast< int >(val3);
+  result = (float)(arg1)->voxel2loc((int const &)*arg2,arg3);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
   return NULL;
 }
 
@@ -24577,10 +24830,10 @@ fail:
 SWIGINTERN PyObject *_wrap_EMHeader_magic_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EMHeader *arg1 = (EMHeader *) 0 ;
-  char arg2 ;
+  int arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  char val2 ;
+  int val2 ;
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -24591,11 +24844,11 @@ SWIGINTERN PyObject *_wrap_EMHeader_magic_set(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_magic_set" "', argument " "1"" of type '" "EMHeader *""'"); 
   }
   arg1 = reinterpret_cast< EMHeader * >(argp1);
-  ecode2 = SWIG_AsVal_char(obj1, &val2);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EMHeader_magic_set" "', argument " "2"" of type '" "char""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EMHeader_magic_set" "', argument " "2"" of type '" "int""'");
   } 
-  arg2 = static_cast< char >(val2);
+  arg2 = static_cast< int >(val2);
   if (arg1) (arg1)->magic = arg2;
   
   resultobj = SWIG_Py_Void();
@@ -24608,7 +24861,7 @@ fail:
 SWIGINTERN PyObject *_wrap_EMHeader_magic_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EMHeader *arg1 = (EMHeader *) 0 ;
-  char result;
+  int result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -24619,67 +24872,8 @@ SWIGINTERN PyObject *_wrap_EMHeader_magic_get(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_magic_get" "', argument " "1"" of type '" "EMHeader *""'"); 
   }
   arg1 = reinterpret_cast< EMHeader * >(argp1);
-  result = (char) ((arg1)->magic);
-  resultobj = SWIG_From_char(static_cast< char >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_EMHeader_dummy_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  EMHeader *arg1 = (EMHeader *) 0 ;
-  char *arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  char temp2[2] ;
-  int res2 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:EMHeader_dummy_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_dummy_set" "', argument " "1"" of type '" "EMHeader *""'"); 
-  }
-  arg1 = reinterpret_cast< EMHeader * >(argp1);
-  res2 = SWIG_AsCharArray(obj1, temp2, 2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMHeader_dummy_set" "', argument " "2"" of type '" "char [2]""'");
-  }
-  arg2 = reinterpret_cast< char * >(temp2);
-  if (arg2) memcpy(arg1->dummy,arg2,2*sizeof(char));
-  else memset(arg1->dummy,0,2*sizeof(char));
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_EMHeader_dummy_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  EMHeader *arg1 = (EMHeader *) 0 ;
-  char *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:EMHeader_dummy_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_EMHeader, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_dummy_get" "', argument " "1"" of type '" "EMHeader *""'"); 
-  }
-  arg1 = reinterpret_cast< EMHeader * >(argp1);
-  result = (char *)(char *) ((arg1)->dummy);
-  {
-    size_t size = 2;
-    
-    while (size && (result[size - 1] == '\0')) --size;
-    
-    resultobj = SWIG_FromCharPtrAndSize(result, size);
-  }
+  result = (int) ((arg1)->magic);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -24689,10 +24883,10 @@ fail:
 SWIGINTERN PyObject *_wrap_EMHeader_type_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EMHeader *arg1 = (EMHeader *) 0 ;
-  char arg2 ;
+  int arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  char val2 ;
+  int val2 ;
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -24703,11 +24897,11 @@ SWIGINTERN PyObject *_wrap_EMHeader_type_set(PyObject *SWIGUNUSEDPARM(self), PyO
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_type_set" "', argument " "1"" of type '" "EMHeader *""'"); 
   }
   arg1 = reinterpret_cast< EMHeader * >(argp1);
-  ecode2 = SWIG_AsVal_char(obj1, &val2);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EMHeader_type_set" "', argument " "2"" of type '" "char""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EMHeader_type_set" "', argument " "2"" of type '" "int""'");
   } 
-  arg2 = static_cast< char >(val2);
+  arg2 = static_cast< int >(val2);
   if (arg1) (arg1)->type = arg2;
   
   resultobj = SWIG_Py_Void();
@@ -24720,7 +24914,7 @@ fail:
 SWIGINTERN PyObject *_wrap_EMHeader_type_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   EMHeader *arg1 = (EMHeader *) 0 ;
-  char result;
+  int result;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -24731,8 +24925,8 @@ SWIGINTERN PyObject *_wrap_EMHeader_type_get(PyObject *SWIGUNUSEDPARM(self), PyO
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_type_get" "', argument " "1"" of type '" "EMHeader *""'"); 
   }
   arg1 = reinterpret_cast< EMHeader * >(argp1);
-  result = (char) ((arg1)->type);
-  resultobj = SWIG_From_char(static_cast< char >(result));
+  result = (int) ((arg1)->type);
+  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -24904,7 +25098,7 @@ SWIGINTERN PyObject *_wrap_EMHeader_comment_set(PyObject *SWIGUNUSEDPARM(self), 
   char *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  char temp2[80] ;
+  char temp2[81] ;
   int res2 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -24915,13 +25109,13 @@ SWIGINTERN PyObject *_wrap_EMHeader_comment_set(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EMHeader_comment_set" "', argument " "1"" of type '" "EMHeader *""'"); 
   }
   arg1 = reinterpret_cast< EMHeader * >(argp1);
-  res2 = SWIG_AsCharArray(obj1, temp2, 80);
+  res2 = SWIG_AsCharArray(obj1, temp2, 81);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMHeader_comment_set" "', argument " "2"" of type '" "char [80]""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EMHeader_comment_set" "', argument " "2"" of type '" "char [81]""'");
   }
   arg2 = reinterpret_cast< char * >(temp2);
-  if (arg2) memcpy(arg1->comment,arg2,80*sizeof(char));
-  else memset(arg1->comment,0,80*sizeof(char));
+  if (arg2) memcpy(arg1->comment,arg2,81*sizeof(char));
+  else memset(arg1->comment,0,81*sizeof(char));
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -24945,7 +25139,7 @@ SWIGINTERN PyObject *_wrap_EMHeader_comment_get(PyObject *SWIGUNUSEDPARM(self), 
   arg1 = reinterpret_cast< EMHeader * >(argp1);
   result = (char *)(char *) ((arg1)->comment);
   {
-    size_t size = 80;
+    size_t size = 81;
     
     while (size && (result[size - 1] == '\0')) --size;
     
@@ -27223,6 +27417,2725 @@ SWIGINTERN PyObject *XplorReaderWriter_swigregister(PyObject *SWIGUNUSEDPARM(sel
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_MRCHeader_nz_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_nz_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nz_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_nz_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->nz = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nz_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_nz_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nz_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->nz);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_ny_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_ny_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_ny_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_ny_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->ny = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_ny_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_ny_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_ny_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->ny);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nx_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_nx_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nx_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_nx_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->nx = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nx_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_nx_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nx_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->nx);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mode_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_mode_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mode_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_mode_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->mode = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mode_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_mode_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mode_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->mode);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nxstart_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_nxstart_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nxstart_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_nxstart_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->nxstart = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nxstart_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_nxstart_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nxstart_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->nxstart);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nystart_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_nystart_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nystart_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_nystart_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->nystart = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nystart_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_nystart_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nystart_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->nystart);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nzstart_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_nzstart_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nzstart_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_nzstart_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->nzstart = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nzstart_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_nzstart_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nzstart_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->nzstart);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mx_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_mx_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mx_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_mx_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->mx = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mx_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_mx_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mx_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->mx);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_my_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_my_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_my_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_my_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->my = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_my_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_my_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_my_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->my);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mz_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_mz_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mz_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_mz_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->mz = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mz_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_mz_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mz_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->mz);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_xlen_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_xlen_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_xlen_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_xlen_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->xlen = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_xlen_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_xlen_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_xlen_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->xlen);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_ylen_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_ylen_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_ylen_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_ylen_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->ylen = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_ylen_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_ylen_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_ylen_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->ylen);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_zlen_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_zlen_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_zlen_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_zlen_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->zlen = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_zlen_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_zlen_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_zlen_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->zlen);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_alpha_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_alpha_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_alpha_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_alpha_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->alpha = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_alpha_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_alpha_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_alpha_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->alpha);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_beta_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_beta_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_beta_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_beta_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->beta = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_beta_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_beta_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_beta_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->beta);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_gamma_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_gamma_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_gamma_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_gamma_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->gamma = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_gamma_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_gamma_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_gamma_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->gamma);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mapc_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_mapc_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mapc_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_mapc_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->mapc = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mapc_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_mapc_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mapc_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->mapc);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mapr_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_mapr_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mapr_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_mapr_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->mapr = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_mapr_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_mapr_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_mapr_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->mapr);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_maps_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_maps_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_maps_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_maps_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->maps = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_maps_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_maps_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_maps_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->maps);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_dmin_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_dmin_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_dmin_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_dmin_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->dmin = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_dmin_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_dmin_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_dmin_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->dmin);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_dmax_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_dmax_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_dmax_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_dmax_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->dmax = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_dmax_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_dmax_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_dmax_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->dmax);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_dmean_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_dmean_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_dmean_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_dmean_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->dmean = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_dmean_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_dmean_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_dmean_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->dmean);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_ispg_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_ispg_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_ispg_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_ispg_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->ispg = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_ispg_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_ispg_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_ispg_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->ispg);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nsymbt_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_nsymbt_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nsymbt_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_nsymbt_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->nsymbt = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nsymbt_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_nsymbt_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nsymbt_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->nsymbt);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_user_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int *arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_user_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_user_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MRCHeader_user_set" "', argument " "2"" of type '" "int [25]""'"); 
+  } 
+  arg2 = reinterpret_cast< int * >(argp2);
+  {
+    if (arg2) {
+      size_t ii = 0;
+      for (; ii < (size_t)25; ++ii) arg1->user[ii] = arg2[ii];
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""user""' of type '""int [25]""'");
+    }
+  }
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_user_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int *result = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_user_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_user_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int *)(int *) ((arg1)->user);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_xorigin_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_xorigin_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_xorigin_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_xorigin_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->xorigin = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_xorigin_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_xorigin_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_xorigin_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->xorigin);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_yorigin_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_yorigin_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_yorigin_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_yorigin_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->yorigin = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_yorigin_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_yorigin_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_yorigin_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->yorigin);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_zorigin_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_zorigin_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_zorigin_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_zorigin_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->zorigin = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_zorigin_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_zorigin_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_zorigin_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->zorigin);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_map_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  char *arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  char temp2[4] ;
+  int res2 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_map_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_map_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  res2 = SWIG_AsCharArray(obj1, temp2, 4);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MRCHeader_map_set" "', argument " "2"" of type '" "char [4]""'");
+  }
+  arg2 = reinterpret_cast< char * >(temp2);
+  if (arg2) memcpy(arg1->map,arg2,4*sizeof(char));
+  else memset(arg1->map,0,4*sizeof(char));
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_map_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  char *result = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_map_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_map_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (char *)(char *) ((arg1)->map);
+  {
+    size_t size = 4;
+    
+    while (size && (result[size - 1] == '\0')) --size;
+    
+    resultobj = SWIG_FromCharPtrAndSize(result, size);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_machinestamp_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_machinestamp_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_machinestamp_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_machinestamp_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->machinestamp = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_machinestamp_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_machinestamp_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_machinestamp_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->machinestamp);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_rms_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_rms_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_rms_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_rms_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->rms = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_rms_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_rms_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_rms_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (float) ((arg1)->rms);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nlabl_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_nlabl_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nlabl_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MRCHeader_nlabl_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  if (arg1) (arg1)->nlabl = arg2;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_nlabl_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_nlabl_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_nlabl_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (int) ((arg1)->nlabl);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_labels_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  char (*arg2)[80] ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_labels_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_labels_set" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_a_80__char, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MRCHeader_labels_set" "', argument " "2"" of type '" "char [10][80]""'"); 
+  } 
+  arg2 = reinterpret_cast< char (*)[80] >(argp2);
+  {
+    if (arg2) {
+      size_t ii = 0;
+      for (; ii < (size_t)10; ++ii) {
+        if (arg2[ii]) {
+          size_t jj = 0;
+          for (; jj < (size_t)80; ++jj) arg1->labels[ii][jj] = arg2[ii][jj];
+        } else {
+          SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""labels""' of type '""char [10][80]""'");
+        }
+      }
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""labels""' of type '""char [10][80]""'");
+    }
+  }
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_labels_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  char (*result)[80] = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MRCHeader_labels_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_labels_get" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  result = (char (*)[80])(char (*)[80]) ((arg1)->labels);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_a_80__char, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_FromDensityHeader(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  DensityHeader *arg2 = 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_FromDensityHeader",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_FromDensityHeader" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_DensityHeader,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MRCHeader_FromDensityHeader" "', argument " "2"" of type '" "DensityHeader const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MRCHeader_FromDensityHeader" "', argument " "2"" of type '" "DensityHeader const &""'"); 
+  }
+  arg2 = reinterpret_cast< DensityHeader * >(argp2);
+  result = (int)(arg1)->FromDensityHeader((DensityHeader const &)*arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCHeader_ToDensityHeader(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  DensityHeader *arg2 = 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:MRCHeader_ToDensityHeader",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCHeader_ToDensityHeader" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_DensityHeader,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MRCHeader_ToDensityHeader" "', argument " "2"" of type '" "DensityHeader &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MRCHeader_ToDensityHeader" "', argument " "2"" of type '" "DensityHeader &""'"); 
+  }
+  arg2 = reinterpret_cast< DensityHeader * >(argp2);
+  result = (int)(arg1)->ToDensityHeader(*arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_MRCHeader(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_MRCHeader")) SWIG_fail;
+  result = (MRCHeader *)new MRCHeader();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MRCHeader, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_MRCHeader(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCHeader *arg1 = (MRCHeader *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_MRCHeader",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCHeader, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MRCHeader" "', argument " "1"" of type '" "MRCHeader *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCHeader * >(argp1);
+  delete arg1;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *MRCHeader_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O|swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_MRCHeader, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_new_MRCReaderWriter__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  MRCReaderWriter *result = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_MRCReaderWriter",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (MRCReaderWriter *)new SwigDirector_MRCReaderWriter(arg1); 
+  } else {
+    result = (MRCReaderWriter *)new MRCReaderWriter(); 
+  }
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MRCReaderWriter, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_MRCReaderWriter__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  char *arg2 = (char *) 0 ;
+  MRCReaderWriter *result = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_MRCReaderWriter",&obj0,&obj1)) SWIG_fail;
+  arg1 = obj0;
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_MRCReaderWriter" "', argument " "2"" of type '" "char *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (MRCReaderWriter *)new SwigDirector_MRCReaderWriter(arg1,arg2); 
+  } else {
+    result = (MRCReaderWriter *)new MRCReaderWriter(arg2); 
+  }
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MRCReaderWriter, SWIG_POINTER_NEW |  0 );
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_MRCReaderWriter(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[3];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 1) {
+    int _v;
+    _v = (argv[0] != 0);
+    if (_v) {
+      return _wrap_new_MRCReaderWriter__SWIG_0(self, args);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    _v = (argv[0] != 0);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_new_MRCReaderWriter__SWIG_1(self, args);
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'new_MRCReaderWriter'.\n  Possible C/C++ prototypes are:\n    MRCReaderWriter(PyObject *)\n    MRCReaderWriter(PyObject *,char *)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCReaderWriter_Read(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCReaderWriter *arg1 = (MRCReaderWriter *) 0 ;
+  char *arg2 = (char *) 0 ;
+  real **arg3 = (real **) 0 ;
+  DensityHeader *arg4 = 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:MRCReaderWriter_Read",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCReaderWriter, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCReaderWriter_Read" "', argument " "1"" of type '" "MRCReaderWriter *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCReaderWriter * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MRCReaderWriter_Read" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MRCReaderWriter_Read" "', argument " "3"" of type '" "real **""'"); 
+  }
+  arg3 = reinterpret_cast< real ** >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4, SWIGTYPE_p_DensityHeader,  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MRCReaderWriter_Read" "', argument " "4"" of type '" "DensityHeader &""'"); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MRCReaderWriter_Read" "', argument " "4"" of type '" "DensityHeader &""'"); 
+  }
+  arg4 = reinterpret_cast< DensityHeader * >(argp4);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->MRCReaderWriter::Read((char const *)arg2,arg3,*arg4);
+    } else {
+      result = (int)(arg1)->Read((char const *)arg2,arg3,*arg4);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MRCReaderWriter_Write(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCReaderWriter *arg1 = (MRCReaderWriter *) 0 ;
+  char *arg2 = (char *) 0 ;
+  real *arg3 = (real *) 0 ;
+  DensityHeader *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:MRCReaderWriter_Write",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCReaderWriter, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MRCReaderWriter_Write" "', argument " "1"" of type '" "MRCReaderWriter *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCReaderWriter * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MRCReaderWriter_Write" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MRCReaderWriter_Write" "', argument " "3"" of type '" "real const *""'"); 
+  }
+  arg3 = reinterpret_cast< real * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4, SWIGTYPE_p_DensityHeader,  0  | 0);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "MRCReaderWriter_Write" "', argument " "4"" of type '" "DensityHeader const &""'"); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MRCReaderWriter_Write" "', argument " "4"" of type '" "DensityHeader const &""'"); 
+  }
+  arg4 = reinterpret_cast< DensityHeader * >(argp4);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      (arg1)->MRCReaderWriter::Write((char const *)arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+    } else {
+      (arg1)->Write((char const *)arg2,(real const *)arg3,(DensityHeader const &)*arg4);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_Py_Void();
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_MRCReaderWriter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCReaderWriter *arg1 = (MRCReaderWriter *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_MRCReaderWriter",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCReaderWriter, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MRCReaderWriter" "', argument " "1"" of type '" "MRCReaderWriter *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCReaderWriter * >(argp1);
+  delete arg1;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_disown_MRCReaderWriter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MRCReaderWriter *arg1 = (MRCReaderWriter *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_MRCReaderWriter",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MRCReaderWriter, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_MRCReaderWriter" "', argument " "1"" of type '" "MRCReaderWriter *""'"); 
+  }
+  arg1 = reinterpret_cast< MRCReaderWriter * >(argp1);
+  {
+    Swig::Director *director = dynamic_cast<Swig::Director *>(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *MRCReaderWriter_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O|swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_MRCReaderWriter, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_get_machine_stamp(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":get_machine_stamp")) SWIG_fail;
+  result = (int)get_machine_stamp();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_is_bigendian(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":is_bigendian")) SWIG_fail;
+  result = (int)is_bigendian();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_byte_swap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  unsigned char *arg1 = (unsigned char *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:byte_swap",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_unsigned_char, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "byte_swap" "', argument " "1"" of type '" "unsigned char *""'"); 
+  }
+  arg1 = reinterpret_cast< unsigned char * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "byte_swap" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  byte_swap(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_SampledDensityMap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityHeader *arg1 = 0 ;
+  SampledDensityMap *result = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_SampledDensityMap",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_DensityHeader,  0  | 0);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_SampledDensityMap" "', argument " "1"" of type '" "DensityHeader const &""'"); 
+  }
+  if (!argp1) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_SampledDensityMap" "', argument " "1"" of type '" "DensityHeader const &""'"); 
+  }
+  arg1 = reinterpret_cast< DensityHeader * >(argp1);
+  result = (SampledDensityMap *)new SampledDensityMap((DensityHeader const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SampledDensityMap, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SampledDensityMap_ReSample(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SampledDensityMap *arg1 = (SampledDensityMap *) 0 ;
+  float *arg2 = (float *) 0 ;
+  float *arg3 = (float *) 0 ;
+  float *arg4 = (float *) 0 ;
+  int *arg5 = 0 ;
+  float *arg6 = (float *) 0 ;
+  float *arg7 = (float *) 0 ;
+  int *arg8 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  int temp5 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  void *argp7 = 0 ;
+  int res7 = 0 ;
+  void *argp8 = 0 ;
+  int res8 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  PyObject * obj7 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOOO:SampledDensityMap_ReSample",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6,&obj7)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SampledDensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SampledDensityMap_ReSample" "', argument " "1"" of type '" "SampledDensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< SampledDensityMap * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SampledDensityMap_ReSample" "', argument " "2"" of type '" "float const *""'"); 
+  }
+  arg2 = reinterpret_cast< float * >(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SampledDensityMap_ReSample" "', argument " "3"" of type '" "float const *""'"); 
+  }
+  arg3 = reinterpret_cast< float * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SampledDensityMap_ReSample" "', argument " "4"" of type '" "float const *""'"); 
+  }
+  arg4 = reinterpret_cast< float * >(argp4);
+  ecode5 = SWIG_AsVal_int(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "SampledDensityMap_ReSample" "', argument " "5"" of type '" "int""'");
+  } 
+  temp5 = static_cast< int >(val5);
+  arg5 = &temp5;
+  res6 = SWIG_ConvertPtr(obj5, &argp6,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "SampledDensityMap_ReSample" "', argument " "6"" of type '" "float const *""'"); 
+  }
+  arg6 = reinterpret_cast< float * >(argp6);
+  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res7)) {
+    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "SampledDensityMap_ReSample" "', argument " "7"" of type '" "float const *""'"); 
+  }
+  arg7 = reinterpret_cast< float * >(argp7);
+  res8 = SWIG_ConvertPtr(obj7, &argp8, SWIGTYPE_p_int,  0 );
+  if (!SWIG_IsOK(res8)) {
+    SWIG_exception_fail(SWIG_ArgError(res8), "in method '" "SampledDensityMap_ReSample" "', argument " "8"" of type '" "int &""'"); 
+  }
+  if (!argp8) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SampledDensityMap_ReSample" "', argument " "8"" of type '" "int &""'"); 
+  }
+  arg8 = reinterpret_cast< int * >(argp8);
+  (arg1)->ReSample((float const *)arg2,(float const *)arg3,(float const *)arg4,(int const &)*arg5,(float const *)arg6,(float const *)arg7,*arg8);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SampledDensityMap_test(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SampledDensityMap *arg1 = (SampledDensityMap *) 0 ;
+  float *arg2 = (float *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SampledDensityMap_test",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SampledDensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SampledDensityMap_test" "', argument " "1"" of type '" "SampledDensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< SampledDensityMap * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SampledDensityMap_test" "', argument " "2"" of type '" "float *""'"); 
+  }
+  arg2 = reinterpret_cast< float * >(argp2);
+  (arg1)->test(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SampledDensityMap_calcDerivatives(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SampledDensityMap *arg1 = (SampledDensityMap *) 0 ;
+  float *arg2 = (float *) 0 ;
+  float *arg3 = (float *) 0 ;
+  float *arg4 = (float *) 0 ;
+  int *arg5 = 0 ;
+  float *arg6 = (float *) 0 ;
+  float *arg7 = (float *) 0 ;
+  float *arg8 = 0 ;
+  float *arg9 = (float *) 0 ;
+  float *arg10 = (float *) 0 ;
+  float *arg11 = (float *) 0 ;
+  int *arg12 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  int temp5 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  void *argp7 = 0 ;
+  int res7 = 0 ;
+  float temp8 ;
+  float val8 ;
+  int ecode8 = 0 ;
+  void *argp9 = 0 ;
+  int res9 = 0 ;
+  void *argp10 = 0 ;
+  int res10 = 0 ;
+  void *argp11 = 0 ;
+  int res11 = 0 ;
+  void *argp12 = 0 ;
+  int res12 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  PyObject * obj7 = 0 ;
+  PyObject * obj8 = 0 ;
+  PyObject * obj9 = 0 ;
+  PyObject * obj10 = 0 ;
+  PyObject * obj11 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOOOOOOO:SampledDensityMap_calcDerivatives",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6,&obj7,&obj8,&obj9,&obj10,&obj11)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SampledDensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "1"" of type '" "SampledDensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< SampledDensityMap * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "2"" of type '" "float const *""'"); 
+  }
+  arg2 = reinterpret_cast< float * >(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "3"" of type '" "float const *""'"); 
+  }
+  arg3 = reinterpret_cast< float * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "4"" of type '" "float const *""'"); 
+  }
+  arg4 = reinterpret_cast< float * >(argp4);
+  ecode5 = SWIG_AsVal_int(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "5"" of type '" "int""'");
+  } 
+  temp5 = static_cast< int >(val5);
+  arg5 = &temp5;
+  res6 = SWIG_ConvertPtr(obj5, &argp6,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "6"" of type '" "float const *""'"); 
+  }
+  arg6 = reinterpret_cast< float * >(argp6);
+  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res7)) {
+    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "7"" of type '" "float const *""'"); 
+  }
+  arg7 = reinterpret_cast< float * >(argp7);
+  ecode8 = SWIG_AsVal_float(obj7, &val8);
+  if (!SWIG_IsOK(ecode8)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "8"" of type '" "float""'");
+  } 
+  temp8 = static_cast< float >(val8);
+  arg8 = &temp8;
+  res9 = SWIG_ConvertPtr(obj8, &argp9,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res9)) {
+    SWIG_exception_fail(SWIG_ArgError(res9), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "9"" of type '" "float *""'"); 
+  }
+  arg9 = reinterpret_cast< float * >(argp9);
+  res10 = SWIG_ConvertPtr(obj9, &argp10,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res10)) {
+    SWIG_exception_fail(SWIG_ArgError(res10), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "10"" of type '" "float *""'"); 
+  }
+  arg10 = reinterpret_cast< float * >(argp10);
+  res11 = SWIG_ConvertPtr(obj10, &argp11,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res11)) {
+    SWIG_exception_fail(SWIG_ArgError(res11), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "11"" of type '" "float *""'"); 
+  }
+  arg11 = reinterpret_cast< float * >(argp11);
+  res12 = SWIG_ConvertPtr(obj11, &argp12, SWIGTYPE_p_int,  0 );
+  if (!SWIG_IsOK(res12)) {
+    SWIG_exception_fail(SWIG_ArgError(res12), "in method '" "SampledDensityMap_calcDerivatives" "', argument " "12"" of type '" "int &""'"); 
+  }
+  if (!argp12) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SampledDensityMap_calcDerivatives" "', argument " "12"" of type '" "int &""'"); 
+  }
+  arg12 = reinterpret_cast< int * >(argp12);
+  (arg1)->calcDerivatives((float const *)arg2,(float const *)arg3,(float const *)arg4,(int const &)*arg5,(float const *)arg6,(float const *)arg7,(float const &)*arg8,arg9,arg10,arg11,*arg12);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_SampledDensityMap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SampledDensityMap *arg1 = (SampledDensityMap *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_SampledDensityMap",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SampledDensityMap, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SampledDensityMap" "', argument " "1"" of type '" "SampledDensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< SampledDensityMap * >(argp1);
+  delete arg1;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *SampledDensityMap_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O|swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_SampledDensityMap, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_new_CoarseCC(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CoarseCC *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_CoarseCC")) SWIG_fail;
+  result = (CoarseCC *)new CoarseCC();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_CoarseCC, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CoarseCC_evaluate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CoarseCC *arg1 = (CoarseCC *) 0 ;
+  DensityMap *arg2 = 0 ;
+  SampledDensityMap *arg3 = 0 ;
+  float *arg4 = (float *) 0 ;
+  float *arg5 = (float *) 0 ;
+  float *arg6 = (float *) 0 ;
+  float *arg7 = (float *) 0 ;
+  float *arg8 = (float *) 0 ;
+  float *arg9 = (float *) 0 ;
+  int *arg10 = 0 ;
+  float *arg11 = (float *) 0 ;
+  float *arg12 = (float *) 0 ;
+  float arg13 ;
+  bool arg14 ;
+  int *arg15 = 0 ;
+  float result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  void *argp7 = 0 ;
+  int res7 = 0 ;
+  void *argp8 = 0 ;
+  int res8 = 0 ;
+  void *argp9 = 0 ;
+  int res9 = 0 ;
+  int temp10 ;
+  int val10 ;
+  int ecode10 = 0 ;
+  void *argp11 = 0 ;
+  int res11 = 0 ;
+  void *argp12 = 0 ;
+  int res12 = 0 ;
+  float val13 ;
+  int ecode13 = 0 ;
+  bool val14 ;
+  int ecode14 = 0 ;
+  void *argp15 = 0 ;
+  int res15 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  PyObject * obj7 = 0 ;
+  PyObject * obj8 = 0 ;
+  PyObject * obj9 = 0 ;
+  PyObject * obj10 = 0 ;
+  PyObject * obj11 = 0 ;
+  PyObject * obj12 = 0 ;
+  PyObject * obj13 = 0 ;
+  PyObject * obj14 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOOOOOOOOOO:CoarseCC_evaluate",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6,&obj7,&obj8,&obj9,&obj10,&obj11,&obj12,&obj13,&obj14)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CoarseCC, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CoarseCC_evaluate" "', argument " "1"" of type '" "CoarseCC *""'"); 
+  }
+  arg1 = reinterpret_cast< CoarseCC * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_DensityMap,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CoarseCC_evaluate" "', argument " "2"" of type '" "DensityMap const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "CoarseCC_evaluate" "', argument " "2"" of type '" "DensityMap const &""'"); 
+  }
+  arg2 = reinterpret_cast< DensityMap * >(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_SampledDensityMap,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "CoarseCC_evaluate" "', argument " "3"" of type '" "SampledDensityMap &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "CoarseCC_evaluate" "', argument " "3"" of type '" "SampledDensityMap &""'"); 
+  }
+  arg3 = reinterpret_cast< SampledDensityMap * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "CoarseCC_evaluate" "', argument " "4"" of type '" "float const *""'"); 
+  }
+  arg4 = reinterpret_cast< float * >(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "CoarseCC_evaluate" "', argument " "5"" of type '" "float const *""'"); 
+  }
+  arg5 = reinterpret_cast< float * >(argp5);
+  res6 = SWIG_ConvertPtr(obj5, &argp6,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "CoarseCC_evaluate" "', argument " "6"" of type '" "float const *""'"); 
+  }
+  arg6 = reinterpret_cast< float * >(argp6);
+  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res7)) {
+    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "CoarseCC_evaluate" "', argument " "7"" of type '" "float *""'"); 
+  }
+  arg7 = reinterpret_cast< float * >(argp7);
+  res8 = SWIG_ConvertPtr(obj7, &argp8,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res8)) {
+    SWIG_exception_fail(SWIG_ArgError(res8), "in method '" "CoarseCC_evaluate" "', argument " "8"" of type '" "float *""'"); 
+  }
+  arg8 = reinterpret_cast< float * >(argp8);
+  res9 = SWIG_ConvertPtr(obj8, &argp9,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res9)) {
+    SWIG_exception_fail(SWIG_ArgError(res9), "in method '" "CoarseCC_evaluate" "', argument " "9"" of type '" "float *""'"); 
+  }
+  arg9 = reinterpret_cast< float * >(argp9);
+  ecode10 = SWIG_AsVal_int(obj9, &val10);
+  if (!SWIG_IsOK(ecode10)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode10), "in method '" "CoarseCC_evaluate" "', argument " "10"" of type '" "int""'");
+  } 
+  temp10 = static_cast< int >(val10);
+  arg10 = &temp10;
+  res11 = SWIG_ConvertPtr(obj10, &argp11,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res11)) {
+    SWIG_exception_fail(SWIG_ArgError(res11), "in method '" "CoarseCC_evaluate" "', argument " "11"" of type '" "float const *""'"); 
+  }
+  arg11 = reinterpret_cast< float * >(argp11);
+  res12 = SWIG_ConvertPtr(obj11, &argp12,SWIGTYPE_p_float, 0 |  0 );
+  if (!SWIG_IsOK(res12)) {
+    SWIG_exception_fail(SWIG_ArgError(res12), "in method '" "CoarseCC_evaluate" "', argument " "12"" of type '" "float const *""'"); 
+  }
+  arg12 = reinterpret_cast< float * >(argp12);
+  ecode13 = SWIG_AsVal_float(obj12, &val13);
+  if (!SWIG_IsOK(ecode13)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode13), "in method '" "CoarseCC_evaluate" "', argument " "13"" of type '" "float""'");
+  } 
+  arg13 = static_cast< float >(val13);
+  ecode14 = SWIG_AsVal_bool(obj13, &val14);
+  if (!SWIG_IsOK(ecode14)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode14), "in method '" "CoarseCC_evaluate" "', argument " "14"" of type '" "bool""'");
+  } 
+  arg14 = static_cast< bool >(val14);
+  res15 = SWIG_ConvertPtr(obj14, &argp15, SWIGTYPE_p_int,  0 );
+  if (!SWIG_IsOK(res15)) {
+    SWIG_exception_fail(SWIG_ArgError(res15), "in method '" "CoarseCC_evaluate" "', argument " "15"" of type '" "int &""'"); 
+  }
+  if (!argp15) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "CoarseCC_evaluate" "', argument " "15"" of type '" "int &""'"); 
+  }
+  arg15 = reinterpret_cast< int * >(argp15);
+  result = (float)(arg1)->evaluate((DensityMap const &)*arg2,*arg3,(float const *)arg4,(float const *)arg5,(float const *)arg6,arg7,arg8,arg9,(int const &)*arg10,(float const *)arg11,(float const *)arg12,arg13,arg14,*arg15);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_CoarseCC(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CoarseCC *arg1 = (CoarseCC *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_CoarseCC",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CoarseCC, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_CoarseCC" "', argument " "1"" of type '" "CoarseCC *""'"); 
+  }
+  arg1 = reinterpret_cast< CoarseCC * >(argp1);
+  delete arg1;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *CoarseCC_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O|swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_CoarseCC, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_PySwigIterator", _wrap_delete_PySwigIterator, METH_VARARGS, NULL},
 	 { (char *)"PySwigIterator_value", _wrap_PySwigIterator_value, METH_VARARGS, NULL},
@@ -27540,18 +30453,25 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DensityHeader_MarkerY_get", _wrap_DensityHeader_MarkerY_get, METH_VARARGS, NULL},
 	 { (char *)"DensityHeader_lswap_set", _wrap_DensityHeader_lswap_set, METH_VARARGS, NULL},
 	 { (char *)"DensityHeader_lswap_get", _wrap_DensityHeader_lswap_get, METH_VARARGS, NULL},
+	 { (char *)"DensityHeader_resolution_set", _wrap_DensityHeader_resolution_set, METH_VARARGS, NULL},
+	 { (char *)"DensityHeader_resolution_get", _wrap_DensityHeader_resolution_get, METH_VARARGS, NULL},
 	 { (char *)"delete_DensityHeader", _wrap_delete_DensityHeader, METH_VARARGS, NULL},
 	 { (char *)"DensityHeader_swigregister", DensityHeader_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_floatMap3D", _wrap_new_floatMap3D, METH_VARARGS, NULL},
 	 { (char *)"delete_floatMap3D", _wrap_delete_floatMap3D, METH_VARARGS, NULL},
-	 { (char *)"floatMap3D_Release", _wrap_floatMap3D_Release, METH_VARARGS, NULL},
 	 { (char *)"floatMap3D_threeD2oneD_index", _wrap_floatMap3D_threeD2oneD_index, METH_VARARGS, NULL},
 	 { (char *)"floatMap3D_get_voxeldata", _wrap_floatMap3D_get_voxeldata, METH_VARARGS, NULL},
 	 { (char *)"floatMap3D_setData", _wrap_floatMap3D_setData, METH_VARARGS, NULL},
+	 { (char *)"floatMap3D_get_data", _wrap_floatMap3D_get_data, METH_VARARGS, NULL},
 	 { (char *)"floatMap3D_swigregister", floatMap3D_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_DensityMap", _wrap_new_DensityMap, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_Read", _wrap_DensityMap_Read, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_Write", _wrap_DensityMap_Write, METH_VARARGS, NULL},
+	 { (char *)"DensityMap_setResolution", _wrap_DensityMap_setResolution, METH_VARARGS, NULL},
+	 { (char *)"DensityMap_ResetData", _wrap_DensityMap_ResetData, METH_VARARGS, NULL},
+	 { (char *)"DensityMap_calcRMS", _wrap_DensityMap_calcRMS, METH_VARARGS, NULL},
+	 { (char *)"DensityMap_stdNormalize", _wrap_DensityMap_stdNormalize, METH_VARARGS, NULL},
+	 { (char *)"DensityMap_voxel2loc", _wrap_DensityMap_voxel2loc, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_get_header", _wrap_DensityMap_get_header, METH_VARARGS, NULL},
 	 { (char *)"delete_DensityMap", _wrap_delete_DensityMap, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_swigregister", DensityMap_swigregister, METH_VARARGS, NULL},
@@ -27559,8 +30479,6 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"EMHeader_GenerateCommonHeader", _wrap_EMHeader_GenerateCommonHeader, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_magic_set", _wrap_EMHeader_magic_set, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_magic_get", _wrap_EMHeader_magic_get, METH_VARARGS, NULL},
-	 { (char *)"EMHeader_dummy_set", _wrap_EMHeader_dummy_set, METH_VARARGS, NULL},
-	 { (char *)"EMHeader_dummy_get", _wrap_EMHeader_dummy_get, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_type_set", _wrap_EMHeader_type_set, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_type_get", _wrap_EMHeader_type_get, METH_VARARGS, NULL},
 	 { (char *)"EMHeader_nx_set", _wrap_EMHeader_nx_set, METH_VARARGS, NULL},
@@ -27651,6 +30569,96 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_XplorReaderWriter", _wrap_delete_XplorReaderWriter, METH_VARARGS, NULL},
 	 { (char *)"disown_XplorReaderWriter", _wrap_disown_XplorReaderWriter, METH_VARARGS, NULL},
 	 { (char *)"XplorReaderWriter_swigregister", XplorReaderWriter_swigregister, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nz_set", _wrap_MRCHeader_nz_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nz_get", _wrap_MRCHeader_nz_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_ny_set", _wrap_MRCHeader_ny_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_ny_get", _wrap_MRCHeader_ny_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nx_set", _wrap_MRCHeader_nx_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nx_get", _wrap_MRCHeader_nx_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mode_set", _wrap_MRCHeader_mode_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mode_get", _wrap_MRCHeader_mode_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nxstart_set", _wrap_MRCHeader_nxstart_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nxstart_get", _wrap_MRCHeader_nxstart_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nystart_set", _wrap_MRCHeader_nystart_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nystart_get", _wrap_MRCHeader_nystart_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nzstart_set", _wrap_MRCHeader_nzstart_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nzstart_get", _wrap_MRCHeader_nzstart_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mx_set", _wrap_MRCHeader_mx_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mx_get", _wrap_MRCHeader_mx_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_my_set", _wrap_MRCHeader_my_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_my_get", _wrap_MRCHeader_my_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mz_set", _wrap_MRCHeader_mz_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mz_get", _wrap_MRCHeader_mz_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_xlen_set", _wrap_MRCHeader_xlen_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_xlen_get", _wrap_MRCHeader_xlen_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_ylen_set", _wrap_MRCHeader_ylen_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_ylen_get", _wrap_MRCHeader_ylen_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_zlen_set", _wrap_MRCHeader_zlen_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_zlen_get", _wrap_MRCHeader_zlen_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_alpha_set", _wrap_MRCHeader_alpha_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_alpha_get", _wrap_MRCHeader_alpha_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_beta_set", _wrap_MRCHeader_beta_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_beta_get", _wrap_MRCHeader_beta_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_gamma_set", _wrap_MRCHeader_gamma_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_gamma_get", _wrap_MRCHeader_gamma_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mapc_set", _wrap_MRCHeader_mapc_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mapc_get", _wrap_MRCHeader_mapc_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mapr_set", _wrap_MRCHeader_mapr_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_mapr_get", _wrap_MRCHeader_mapr_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_maps_set", _wrap_MRCHeader_maps_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_maps_get", _wrap_MRCHeader_maps_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_dmin_set", _wrap_MRCHeader_dmin_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_dmin_get", _wrap_MRCHeader_dmin_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_dmax_set", _wrap_MRCHeader_dmax_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_dmax_get", _wrap_MRCHeader_dmax_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_dmean_set", _wrap_MRCHeader_dmean_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_dmean_get", _wrap_MRCHeader_dmean_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_ispg_set", _wrap_MRCHeader_ispg_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_ispg_get", _wrap_MRCHeader_ispg_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nsymbt_set", _wrap_MRCHeader_nsymbt_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nsymbt_get", _wrap_MRCHeader_nsymbt_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_user_set", _wrap_MRCHeader_user_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_user_get", _wrap_MRCHeader_user_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_xorigin_set", _wrap_MRCHeader_xorigin_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_xorigin_get", _wrap_MRCHeader_xorigin_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_yorigin_set", _wrap_MRCHeader_yorigin_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_yorigin_get", _wrap_MRCHeader_yorigin_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_zorigin_set", _wrap_MRCHeader_zorigin_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_zorigin_get", _wrap_MRCHeader_zorigin_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_map_set", _wrap_MRCHeader_map_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_map_get", _wrap_MRCHeader_map_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_machinestamp_set", _wrap_MRCHeader_machinestamp_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_machinestamp_get", _wrap_MRCHeader_machinestamp_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_rms_set", _wrap_MRCHeader_rms_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_rms_get", _wrap_MRCHeader_rms_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nlabl_set", _wrap_MRCHeader_nlabl_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_nlabl_get", _wrap_MRCHeader_nlabl_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_labels_set", _wrap_MRCHeader_labels_set, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_labels_get", _wrap_MRCHeader_labels_get, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_FromDensityHeader", _wrap_MRCHeader_FromDensityHeader, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_ToDensityHeader", _wrap_MRCHeader_ToDensityHeader, METH_VARARGS, NULL},
+	 { (char *)"new_MRCHeader", _wrap_new_MRCHeader, METH_VARARGS, NULL},
+	 { (char *)"delete_MRCHeader", _wrap_delete_MRCHeader, METH_VARARGS, NULL},
+	 { (char *)"MRCHeader_swigregister", MRCHeader_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_MRCReaderWriter", _wrap_new_MRCReaderWriter, METH_VARARGS, NULL},
+	 { (char *)"MRCReaderWriter_Read", _wrap_MRCReaderWriter_Read, METH_VARARGS, NULL},
+	 { (char *)"MRCReaderWriter_Write", _wrap_MRCReaderWriter_Write, METH_VARARGS, NULL},
+	 { (char *)"delete_MRCReaderWriter", _wrap_delete_MRCReaderWriter, METH_VARARGS, NULL},
+	 { (char *)"disown_MRCReaderWriter", _wrap_disown_MRCReaderWriter, METH_VARARGS, NULL},
+	 { (char *)"MRCReaderWriter_swigregister", MRCReaderWriter_swigregister, METH_VARARGS, NULL},
+	 { (char *)"get_machine_stamp", _wrap_get_machine_stamp, METH_VARARGS, NULL},
+	 { (char *)"is_bigendian", _wrap_is_bigendian, METH_VARARGS, NULL},
+	 { (char *)"byte_swap", _wrap_byte_swap, METH_VARARGS, NULL},
+	 { (char *)"new_SampledDensityMap", _wrap_new_SampledDensityMap, METH_VARARGS, NULL},
+	 { (char *)"SampledDensityMap_ReSample", _wrap_SampledDensityMap_ReSample, METH_VARARGS, NULL},
+	 { (char *)"SampledDensityMap_test", _wrap_SampledDensityMap_test, METH_VARARGS, NULL},
+	 { (char *)"SampledDensityMap_calcDerivatives", _wrap_SampledDensityMap_calcDerivatives, METH_VARARGS, NULL},
+	 { (char *)"delete_SampledDensityMap", _wrap_delete_SampledDensityMap, METH_VARARGS, NULL},
+	 { (char *)"SampledDensityMap_swigregister", SampledDensityMap_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_CoarseCC", _wrap_new_CoarseCC, METH_VARARGS, NULL},
+	 { (char *)"CoarseCC_evaluate", _wrap_CoarseCC_evaluate, METH_VARARGS, NULL},
+	 { (char *)"delete_CoarseCC", _wrap_delete_CoarseCC, METH_VARARGS, NULL},
+	 { (char *)"CoarseCC_swigregister", CoarseCC_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -27659,6 +30667,9 @@ static PyMethodDef SwigMethods[] = {
 
 static void *_p_DensityMapTo_p_Map3DTfloat_t(void *x) {
     return (void *)((Map3D<float > *)  ((DensityMap *) x));
+}
+static void *_p_SampledDensityMapTo_p_Map3DTfloat_t(void *x) {
+    return (void *)((Map3D<float > *) (DensityMap *) ((SampledDensityMap *) x));
 }
 static void *_p_f_r_std__ios_base__r_std__basic_ostreamTchar_std__char_traitsTchar_t_tTo_p_f_r_std__ios_base__r_std__ios_base(void *x) {
     return (void *)((std::ios_base &(*)(std::ios_base &)) (std::basic_ios<char > *) ((std::basic_ostream<char,std::char_traits<char > > &(*)(std::ios_base &)) x));
@@ -27690,6 +30701,9 @@ static void *_p_EMReaderWriterTo_p_MapReaderWriter(void *x) {
 static void *_p_XplorReaderWriterTo_p_MapReaderWriter(void *x) {
     return (void *)((MapReaderWriter *)  ((XplorReaderWriter *) x));
 }
+static void *_p_MRCReaderWriterTo_p_MapReaderWriter(void *x) {
+    return (void *)((MapReaderWriter *)  ((MRCReaderWriter *) x));
+}
 static void *_p_f_r_std__basic_istream__char_std__char_traits__char______r_std__basic_iostreamTchar_std__char_traitsTchar_t_tTo_p_f_r_std__basic_istream__char_std__char_traits__char______r_std__basic_istreamTchar_std__char_traitsTchar_t_t(void *x) {
     return (void *)((std::basic_istream<char,std::char_traits<char > > &(*)(std::basic_istream<char,std::char_traits<char > > &))  ((std::basic_iostream<char,std::char_traits<char > > &(*)(std::basic_istream<char,std::char_traits<char > > &)) x));
 }
@@ -27720,14 +30734,22 @@ static void *_p_f_r_std__basic_ios__char_std__char_traits__char______r_std__basi
 static void *_p_std__basic_iostreamTchar_std__char_traitsTchar_t_tTo_p_std__basic_ostreamTchar_std__char_traitsTchar_t_t(void *x) {
     return (void *)((std::basic_ostream<char,std::char_traits<char > > *)  ((std::basic_iostream<char,std::char_traits<char > > *) x));
 }
+static void *_p_SampledDensityMapTo_p_DensityMap(void *x) {
+    return (void *)((DensityMap *)  ((SampledDensityMap *) x));
+}
+static swig_type_info _swigt__p_CoarseCC = {"_p_CoarseCC", "CoarseCC *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DensityHeader = {"_p_DensityHeader", "DensityHeader *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DensityMap = {"_p_DensityMap", "DensityMap *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_EMHeader = {"_p_EMHeader", "EMHeader *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_EMReaderWriter = {"_p_EMReaderWriter", "EMReaderWriter *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MRCHeader = {"_p_MRCHeader", "MRCHeader *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MRCReaderWriter = {"_p_MRCReaderWriter", "MRCReaderWriter *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Map3DTfloat_t = {"_p_Map3DTfloat_t", "Map3D<float > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MapReaderWriter = {"_p_MapReaderWriter", "MapReaderWriter *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_SampledDensityMap = {"_p_SampledDensityMap", "SampledDensityMap *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_XplorHeader = {"_p_XplorHeader", "XplorHeader *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_XplorReaderWriter = {"_p_XplorReaderWriter", "XplorReaderWriter *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_a_80__char = {"_p_a_80__char", "char (*)[80]", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_a_DensityHeader__COMMENT_FIELD_SINGLE_SIZE__char = {"_p_a_DensityHeader__COMMENT_FIELD_SINGLE_SIZE__char", "char (*)[DensityHeader::COMMENT_FIELD_SINGLE_SIZE]", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_allocator_type = {"_p_allocator_type", "allocator_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_bool = {"_p_bool", "bool *", 0, 0, (void*)0, 0};
@@ -27750,7 +30772,7 @@ static swig_type_info _swigt__p_f_r_std__ios_base__r_std__basic_ostreamTchar_std
 static swig_type_info _swigt__p_f_r_std__ios_base__r_std__basic_istreamTchar_std__char_traitsTchar_t_t = {"_p_f_r_std__ios_base__r_std__basic_istreamTchar_std__char_traitsTchar_t_t", 0, 0, 0, 0, 0};
 static swig_type_info _swigt__p_f_r_std__ios_base__r_std__basic_iostreamTchar_std__char_traitsTchar_t_t = {"_p_f_r_std__ios_base__r_std__basic_iostreamTchar_std__char_traitsTchar_t_t", 0, 0, 0, 0, 0};
 static swig_type_info _swigt__p_f_r_std__ios_base__r_std__basic_iosTchar_std__char_traitsTchar_t_t = {"_p_f_r_std__ios_base__r_std__basic_iosTchar_std__char_traitsTchar_t_t", 0, 0, 0, 0, 0};
-static swig_type_info _swigt__p_float = {"_p_float", "float *|real *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_float = {"_p_float", "float *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_fmtflags = {"_p_fmtflags", "fmtflags *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int_type = {"_p_int_type", "int_type *", 0, 0, (void*)0, 0};
@@ -27795,6 +30817,7 @@ static swig_type_info _swigt__p_std__vectorTint_std__allocatorTint_t_t = {"_p_st
 static swig_type_info _swigt__p_std__vectorTint_std__allocatorTint_t_t__allocator_type = {"_p_std__vectorTint_std__allocatorTint_t_t__allocator_type", "std::allocator<int > *|std::vector<int >::allocator_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__PySwigIterator = {"_p_swig__PySwigIterator", "swig::PySwigIterator *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_traits_type = {"_p_traits_type", "traits_type *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_unsigned_char = {"_p_unsigned_char", "unsigned char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_int = {"_p_unsigned_int", "unsigned int *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_long = {"_p_unsigned_long", "unsigned long *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_unsigned_long_long = {"_p_unsigned_long_long", "unsigned long long *", 0, 0, (void*)0, 0};
@@ -27802,14 +30825,19 @@ static swig_type_info _swigt__p_unsigned_short = {"_p_unsigned_short", "unsigned
 static swig_type_info _swigt__p_value_type = {"_p_value_type", "value_type *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
+  &_swigt__p_CoarseCC,
   &_swigt__p_DensityHeader,
   &_swigt__p_DensityMap,
   &_swigt__p_EMHeader,
   &_swigt__p_EMReaderWriter,
+  &_swigt__p_MRCHeader,
+  &_swigt__p_MRCReaderWriter,
   &_swigt__p_Map3DTfloat_t,
   &_swigt__p_MapReaderWriter,
+  &_swigt__p_SampledDensityMap,
   &_swigt__p_XplorHeader,
   &_swigt__p_XplorReaderWriter,
+  &_swigt__p_a_80__char,
   &_swigt__p_a_DensityHeader__COMMENT_FIELD_SINGLE_SIZE__char,
   &_swigt__p_allocator_type,
   &_swigt__p_bool,
@@ -27877,6 +30905,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_std__vectorTint_std__allocatorTint_t_t__allocator_type,
   &_swigt__p_swig__PySwigIterator,
   &_swigt__p_traits_type,
+  &_swigt__p_unsigned_char,
   &_swigt__p_unsigned_int,
   &_swigt__p_unsigned_long,
   &_swigt__p_unsigned_long_long,
@@ -27884,14 +30913,19 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_value_type,
 };
 
+static swig_cast_info _swigc__p_CoarseCC[] = {  {&_swigt__p_CoarseCC, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DensityHeader[] = {  {&_swigt__p_DensityHeader, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_DensityMap[] = {  {&_swigt__p_DensityMap, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_DensityMap[] = {  {&_swigt__p_DensityMap, 0, 0, 0},  {&_swigt__p_SampledDensityMap, _p_SampledDensityMapTo_p_DensityMap, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_EMHeader[] = {  {&_swigt__p_EMHeader, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_EMReaderWriter[] = {  {&_swigt__p_EMReaderWriter, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_Map3DTfloat_t[] = {  {&_swigt__p_DensityMap, _p_DensityMapTo_p_Map3DTfloat_t, 0, 0},  {&_swigt__p_Map3DTfloat_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_MapReaderWriter[] = {  {&_swigt__p_MapReaderWriter, 0, 0, 0},  {&_swigt__p_EMReaderWriter, _p_EMReaderWriterTo_p_MapReaderWriter, 0, 0},  {&_swigt__p_XplorReaderWriter, _p_XplorReaderWriterTo_p_MapReaderWriter, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MRCHeader[] = {  {&_swigt__p_MRCHeader, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MRCReaderWriter[] = {  {&_swigt__p_MRCReaderWriter, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Map3DTfloat_t[] = {  {&_swigt__p_DensityMap, _p_DensityMapTo_p_Map3DTfloat_t, 0, 0},  {&_swigt__p_SampledDensityMap, _p_SampledDensityMapTo_p_Map3DTfloat_t, 0, 0},  {&_swigt__p_Map3DTfloat_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MapReaderWriter[] = {  {&_swigt__p_MapReaderWriter, 0, 0, 0},  {&_swigt__p_EMReaderWriter, _p_EMReaderWriterTo_p_MapReaderWriter, 0, 0},  {&_swigt__p_XplorReaderWriter, _p_XplorReaderWriterTo_p_MapReaderWriter, 0, 0},  {&_swigt__p_MRCReaderWriter, _p_MRCReaderWriterTo_p_MapReaderWriter, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SampledDensityMap[] = {  {&_swigt__p_SampledDensityMap, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_XplorHeader[] = {  {&_swigt__p_XplorHeader, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_XplorReaderWriter[] = {  {&_swigt__p_XplorReaderWriter, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_a_80__char[] = {  {&_swigt__p_a_80__char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_a_DensityHeader__COMMENT_FIELD_SINGLE_SIZE__char[] = {  {&_swigt__p_a_DensityHeader__COMMENT_FIELD_SINGLE_SIZE__char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_allocator_type[] = {  {&_swigt__p_allocator_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_bool[] = {  {&_swigt__p_bool, 0, 0, 0},{0, 0, 0, 0}};
@@ -27959,6 +30993,7 @@ static swig_cast_info _swigc__p_std__vectorTint_std__allocatorTint_t_t[] = {  {&
 static swig_cast_info _swigc__p_std__vectorTint_std__allocatorTint_t_t__allocator_type[] = {  {&_swigt__p_std__vectorTint_std__allocatorTint_t_t__allocator_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__PySwigIterator[] = {  {&_swigt__p_swig__PySwigIterator, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_traits_type[] = {  {&_swigt__p_traits_type, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_unsigned_char[] = {  {&_swigt__p_unsigned_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_int[] = {  {&_swigt__p_unsigned_int, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_long[] = {  {&_swigt__p_unsigned_long, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_unsigned_long_long[] = {  {&_swigt__p_unsigned_long_long, 0, 0, 0},{0, 0, 0, 0}};
@@ -27966,14 +31001,19 @@ static swig_cast_info _swigc__p_unsigned_short[] = {  {&_swigt__p_unsigned_short
 static swig_cast_info _swigc__p_value_type[] = {  {&_swigt__p_value_type, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
+  _swigc__p_CoarseCC,
   _swigc__p_DensityHeader,
   _swigc__p_DensityMap,
   _swigc__p_EMHeader,
   _swigc__p_EMReaderWriter,
+  _swigc__p_MRCHeader,
+  _swigc__p_MRCReaderWriter,
   _swigc__p_Map3DTfloat_t,
   _swigc__p_MapReaderWriter,
+  _swigc__p_SampledDensityMap,
   _swigc__p_XplorHeader,
   _swigc__p_XplorReaderWriter,
+  _swigc__p_a_80__char,
   _swigc__p_a_DensityHeader__COMMENT_FIELD_SINGLE_SIZE__char,
   _swigc__p_allocator_type,
   _swigc__p_bool,
@@ -28041,6 +31081,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_std__vectorTint_std__allocatorTint_t_t__allocator_type,
   _swigc__p_swig__PySwigIterator,
   _swigc__p_traits_type,
+  _swigc__p_unsigned_char,
   _swigc__p_unsigned_int,
   _swigc__p_unsigned_long,
   _swigc__p_unsigned_long_long,
@@ -28612,9 +31653,14 @@ SWIGEXPORT void SWIG_init(void) {
   
   
   
+  SWIG_addvarlink(SWIG_globals(),(char*)"PI",PI_get, PI_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"EPS",EPS_get, EPS_set);
   SWIG_Python_SetConstant(d, "DensityHeader_MAP_FIELD_SIZE",SWIG_From_unsigned_SS_short(static_cast< unsigned short >(DensityHeader::MAP_FIELD_SIZE)));
   SWIG_Python_SetConstant(d, "DensityHeader_USER_FIELD_SIZE",SWIG_From_unsigned_SS_short(static_cast< unsigned short >(DensityHeader::USER_FIELD_SIZE)));
   SWIG_Python_SetConstant(d, "DensityHeader_COMMENT_FIELD_NUM_OF",SWIG_From_unsigned_SS_short(static_cast< unsigned short >(DensityHeader::COMMENT_FIELD_NUM_OF)));
   SWIG_Python_SetConstant(d, "DensityHeader_COMMENT_FIELD_SINGLE_SIZE",SWIG_From_unsigned_SS_short(static_cast< unsigned short >(DensityHeader::COMMENT_FIELD_SINGLE_SIZE)));
+  SWIG_Python_SetConstant(d, "MRC_LABEL_SIZE",SWIG_From_int(static_cast< int >(80)));
+  SWIG_Python_SetConstant(d, "MRC_USER",SWIG_From_int(static_cast< int >(25)));
+  SWIG_Python_SetConstant(d, "MRC_NUM_LABELS",SWIG_From_int(static_cast< int >(10)));
 }
 
