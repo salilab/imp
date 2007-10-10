@@ -58,6 +58,7 @@ RSR_Coordinate::RSR_Coordinate(Model& model,
 
 RSR_Coordinate::~RSR_Coordinate ()
 {
+  LogMsg(VERBOSE,"Delete RSR_Coordinate: beware of early Python calls to destructor.");
 }
 
 /**
@@ -212,6 +213,7 @@ RSR_Torus::RSR_Torus(Model& model,
 
 RSR_Torus::~RSR_Torus ()
 {
+  LogMsg(VERBOSE,"Delete RSR_Torus: beware of early Python calls to destructor.");
 }
 
 /**
@@ -453,6 +455,7 @@ RSR_Proximity::~RSR_Proximity ()
   for (int i = 0; i < num_restraints_; i++) {
     delete dist_rsrs_[i];
   }
+  LogMsg(VERBOSE,"Delete RSR_Proximity: beware of early Python calls to destructor.");
 }
 
 /**
@@ -743,6 +746,7 @@ RSR_Pair_Connectivity::~RSR_Pair_Connectivity ()
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
     delete(rs_iter->rsr_);
   }
+  LogMsg(VERBOSE,"Delete RSR_Pair_Connectivity: beware of early Python calls to destructor.");
 }
 
 /**
@@ -1038,6 +1042,7 @@ RSR_Connectivity::~RSR_Connectivity ()
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
     delete(rs_iter->rsr_);
   }
+  LogMsg(VERBOSE,"Delete RSR_Connectivity: beware of early Python calls to destructor.");
 }
 
 /**
@@ -1289,6 +1294,7 @@ RSR_Exclusion_Volume::~RSR_Exclusion_Volume ()
   for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end(); ++rsr_iter) {
     delete(*rsr_iter);
   }
+  LogMsg(VERBOSE,"Delete RSR_Exclusion_Volume: beware of early Python calls to destructor.");
 }
 
 /**
@@ -1423,6 +1429,8 @@ RSR_EM_Coarse::~RSR_EM_Coarse ()
   delete dvx_;
   delete dvy_;
   delete dvz_;
+
+  LogMsg(VERBOSE,"Delete RSR_EM_Coarse: beware of early Python calls to destructor.");
 }
 
 /**

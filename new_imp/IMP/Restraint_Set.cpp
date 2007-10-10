@@ -42,7 +42,7 @@ Destructor
 
 Restraint_Set::~Restraint_Set ()
 {
-  LogMsg(VERBOSE, "Restraint set deleted");
+  LogMsg(VERBOSE,"Delete Restraint_Set: beware of early Python calls to destructor.");
 }
 
 
