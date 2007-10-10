@@ -183,7 +183,9 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         env['MODELLER_' + mod] = ''
     for mod in ('CPPPATH', 'LIBPATH', 'LIBS'):
         env['MODELLER_' + mod] = []
-    if not env.GetOption('clean') and not env.GetOption('help'):
+    # Note: would like to check for 'help' here too, but that requires a
+    # post 0.97 scons snapshot
+    if not env.GetOption('clean'):
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility,
                         'CheckModeller': CheckModeller}
@@ -191,7 +193,9 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         if sys == 'Linux':
             conf.CheckGNUHash()
         conf.CheckGCCVisibility()
-        if not conf.CheckModeller():
+        # Check explicitly for False, since all checks will return Null if
+        # configure has been disabled
+        if conf.CheckModeller() is False:
             _modeller_check_failed(require_modeller)
         conf.Finish()
     return env
