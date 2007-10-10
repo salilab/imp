@@ -84,8 +84,6 @@ int main(void)
 def CheckModeller(context):
     """Find Modeller include and library directories"""
     context.Message('Checking for MODELLER...')
-    context.env['MODELLER_MODPY'] = ''
-    context.env['MODELLER_EXETYPE'] = ''
     modeller = context.env['modeller']
     if modeller is False:
         context.Result("not found")
@@ -174,6 +172,9 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
     # Make Modeller exetype variable available:
     if os.environ.has_key('EXECUTABLE_TYPESVN'):
         env['ENV']['EXECUTABLE_TYPESVN'] = os.environ['EXECUTABLE_TYPESVN']
+    # Set empty variables in case the Modeller check fails:
+    env['MODELLER_MODPY'] = ''
+    env['MODELLER_EXETYPE'] = ''
     if not conf.CheckModeller():
         msg = "  You can set the directory where MODELLER is installed by\n" + \
               "  setting the MODINSTALLSVN environment variable, or with\n" + \
