@@ -8,6 +8,15 @@ DensityMap::DensityMap(){
 }
 
 
+
+void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
+  int nvox = nx*ny*nz;
+  data_ = new real[nvox];
+  header_.nx=nx;
+  header_.ny=ny;
+  header_.nz=nz;
+}
+
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   //TODO: we need to decide who does the allocation ( mapreaderwriter or density)? if we keep the current implementation ( mapreaderwriter ) we need to pass a pointer to data
   reader.Read(filename,&data_,header_);

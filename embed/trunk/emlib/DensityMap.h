@@ -35,6 +35,8 @@ public:
   // Creates a density map from the templateP with the given resolution and spacing. 
   DensityMap();
 
+
+  void CreateVoidMap(const int &nx,const int &ny,const int &nz);
   void Read(const char *filename, MapReaderWriter &reader);
   void Write(const char *filename,MapReaderWriter &writer);
   void setResolution(const float &res_) { header_.resolution = res_;}
@@ -62,6 +64,7 @@ public:
 
   // inspection functions
   const DensityHeader &header()const {return header_;}
+  DensityHeader &header_writable() {return header_;}
   
   float* x_loc() const {return x_loc_;}
   float* y_loc() const {return y_loc_;}

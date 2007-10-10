@@ -1,4 +1,4 @@
-file ../imp/SCons.include,line 174:
+file SCons.include,line 174:
 	Configure(confdir = .sconf_temp)
 scons: Configure: Checking whether GNU_HASH linking should be disabled...
 scons: Configure: ".sconf_temp/conftest_0.c" is up to date.

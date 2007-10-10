@@ -23,9 +23,8 @@
   float eps=.000001;
 
   float escore = Corr(em_map, model_map,eps);
-  cout << " em-score : " << escore << endl;
   escore = scalefac * (1. - escore);
-  cout << " em-score2 : " << escore << endl;
+
 
   if (lderiv > 0) {
     calcDerivatives(

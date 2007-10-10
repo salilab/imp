@@ -6,26 +6,29 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header) {
     header_ = header;
     //allocate the data
     int nvox = header_.nx*header_.ny*header_.nz;
-    cout << " SampledDensityMap::SampledDensityMap nvox : " << nvox << endl;
     data_ = new real[nvox]; 
 
     // init sampling parameters ( a function of the resolution)
+    kernel_param_init = false;
     SamplingParamInit();
-
     calc_all_voxel2loc();
 
   }
 
 void SampledDensityMap::SamplingParamInit() {
-    timessig_=3.; // the number of sigmas used - 3 means that 99% of the density is considered.  
-    sq2pi3_ = 1. / sqrt(powf(2. * PI, 3));
+  if (kernel_param_init)
+    return;
+
+  timessig_=3.; // the number of sigmas used - 3 means that 99% of the density is considered.  
+  sq2pi3_ = 1. / sqrt(powf(2. * PI, 3));
      // convert resolution to sigma squared
-    rsig_ = 1./(sqrt(2.*log(2.))) * header_.resolution / 2.;
-    rsigsq_ = rsig_ * rsig_;
-    inv_rsigsq_ = 1./rsigsq_ * .5;
-    rnormfac_ = sq2pi3_ * 1. / powf(rsig_, 3.);
-    rkdist_   = timessig_ * rsig_;
-    lim_ = exp(-0.5 * powf(timessig_ - EPS, 2.));
+  rsig_ = 1./(sqrt(2.*log(2.))) * header_.resolution / 2.;
+  rsigsq_ = rsig_ * rsig_;
+  inv_rsigsq_ = 1./rsigsq_ * .5;
+  rnormfac_ = sq2pi3_ * 1. / powf(rsig_, 3.);
+  rkdist_   = timessig_ * rsig_;
+  lim_ = exp(-0.5 * powf(timessig_ - EPS, 2.));
+  kernel_param_init = true;
   }
 
   void SampledDensityMap::ReSample( 
@@ -35,7 +38,10 @@ void SampledDensityMap::SamplingParamInit() {
 				   int &ierr){
 
     ResetData();
+    SamplingParamInit();
+    calc_all_voxel2loc();
 
+    cout << "  sq2pi3_: " <<  sq2pi3_ << " timessig_ : " << timessig_ << endl;
     ierr = 0;
 
     int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
@@ -46,11 +52,11 @@ void SampledDensityMap::SamplingParamInit() {
   // actual sampling
 
   for (int ii=0; ii<ncd; ii++) {
-    cout << "ii :  " << ii << " radii: " << *(radius[ii]) << " x: " << *(cdx[ii]) << " y: " << *(cdy[ii]) << " z:" << *(cdz[ii]) << " weight: " << *(wei[ii]) << endl;
+        cout << "ii :  " << ii << " radii: " << *(radius[ii]) << " x: " << *(cdx[ii]) << " y: " << *(cdy[ii]) << " z:" << *(cdz[ii]) << " weight: " << *(wei[ii]) << endl;
 
     // for a specific radii calculate the kernel and how many voxels should be considered (kdist)
     KernelSetup(*(radius[ii]),vsig,vsigsq,inv_sigsq,sig,kdist,normfac);
-    cout << " kernel data : " << vsig << "  " << vsigsq<< "  " << inv_sigsq<< "  " << sig<< "  " << kdist<< "  " << normfac<<endl;
+     cout << " kernel data : vsig: " << vsig << " vsigsq: " << vsigsq<< " inv_sigsq: " << inv_sigsq<< " sig: " << sig<< " kdist: " << kdist<< " normfac:  " << normfac<<endl;
     CalcBoundingBox(*(cdx[ii]),*(cdy[ii]),*(cdz[ii]),
 		      kdist,
 		      iminx, iminy, iminz,
@@ -77,56 +83,6 @@ void SampledDensityMap::SamplingParamInit() {
 
 
   }
-// void  SampledDensityMap::calcDerivatives(
-// 		       float **cdx,  float **cdy,  float **cdz, 
-// 		      const int &ncd,
-// 		       float **radius,  float **wei,
-// 		      const float &scalefac,
-// 		      float *dvx, float *dvy,float *dvz, 
-// 		      int &ierr
-// 		  )
-// {
-
-//   ierr=0;
-
-//   float  vsig, vsigsq, sig,
-//   inv_sigsq, normfac,  kdist,  rsq;
-//   float tdvx = 0., tdvy = 0., tdvz = 0., tmp;
-//   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
-
-
-//   for (int ii=0; ii<ncd; ii++) {
-//     KernelSetup(*(radius[ii]),vsig,vsigsq,inv_sigsq,sig,kdist,normfac);
-//     CalcBoundingBox(*(cdx[ii]),*(cdy[ii]),*(cdz[ii]),
-// 		      kdist,
-// 		      iminx, iminy, iminz,
-// 		      imaxx, imaxy, imaxz);
-//     int ivox;
-//     for (int ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
-//       for (int ivoxy=iminy;ivoxy<=imaxy;ivoxy++) {
-//         ivox = ivoxz * header.nx * header.ny + ivoxy * header.nx + iminx;
-//         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-//           rsq = powf(x_loc[ivox] - *(cdx[ii]), 2)
-// 	    + powf(y_loc[ivox] - *(cdy[ii]), 2)
-// 	    + powf(z_loc[ivox] - *(cdz[ii]), 2);
-//           rsq = exp(- rsq * inv_sigsq );
-//           tmp = (*(cdx[ii])-x_loc[ivox]) * rsq;
-//           if ( tmp>lim ) tdvx = tdvx + tmp;
-//           tmp = (*(cdy[ii])-y_loc[ivox]) * rsq;
-//           if ( tmp>lim ) tdvy = tdvy + tmp;
-//           tmp = (*(cdz[ii])-z_loc[ivox]) * rsq;
-//           if ( tmp>lim ) tdvz = tdvz + tmp;
-//           ivox++;
-//         }
-//       }
-//     }
-//     dvx[ii] = dvx[ii] + *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvx;
-//     dvy[ii] = dvy[ii] + *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvy;
-//     dvz[ii] = dvz[ii] + *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvz;
-//   }
-// }
-
-
 
 /** If we don't have powf(), emulate it with pow() */
 float powf(float x, float y)
@@ -146,7 +102,6 @@ void SampledDensityMap::KernelSetup  (
 		 float &kdist,
 		 float &normfac) const {
 		 
-  cout << " SampledDensityMap::KernelSetup radii : " << radii << endl;
 
   if (radii > EPS) { // to prevent calculation for particles with the same radius ( atoms)
     vsig = 1./(sqrt(2.*log(2.))) * radii; // volume sigma
@@ -156,7 +111,6 @@ void SampledDensityMap::KernelSetup  (
     kdist = timessig_ * sig;
     inv_sigsq = 1./inv_sigsq *.5;
     normfac = sq2pi3_ * 1. / powf(sig, 3.);
-    cout << " the calculated normfac : " << normfac << endl;
   }
   else {
     inv_sigsq = inv_rsigsq_;

@@ -31,6 +31,9 @@ public:
 
 
   /*create new density map for sampled map. */
+  SampledDensityMap() {
+    kernel_param_init = false;
+  };
   SampledDensityMap(const DensityHeader &header_);
 
   
@@ -112,6 +115,7 @@ protected:
 
   //kernel handeling
   float sq2pi3_;
+  bool kernel_param_init;
   float rsig_, rsigsq_,inv_rsigsq_,rnormfac_,rkdist_,lim_,timessig_;
 
 };

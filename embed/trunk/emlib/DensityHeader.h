@@ -19,7 +19,13 @@
 class DensityHeader {
 
 public:
-  DensityHeader() {}
+  DensityHeader() {
+
+    nx=0;ny=0;nz=0; 
+    data_type=0; 
+    Objectpixelsize = 1.0;
+    magic=6;
+  }
 
   // a copy constructor is not defined in a class, the compiler  itself defines one. This will ensure a shallow copy. 
   //If the class does not have pointer variables with dynamically allocated memory, then one need not worry about defining a 
