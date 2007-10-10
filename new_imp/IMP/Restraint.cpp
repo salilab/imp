@@ -40,7 +40,7 @@ Destructor
 
 Restraint::~Restraint ()
 {
-  LogMsg(VERBOSE,"Delete restraint: beware of early Python calls to destructor.");
+  LogMsg(VERBOSE, "Restraint deleted");
 }
 
 
@@ -134,12 +134,10 @@ void Restraint::check_particles_active(void)
 RSR_Distance::RSR_Distance(Model& model,
                            Particle* p1,
                            Particle* p2,
-                           const Float mean,
-                           const Float sd,
-                           Score_Func* score_func)
+                           Basic_Score_Func_Params* score_func_params)
 {
   model_data_ = model.get_model_data();
-  set_up(model, p1, p2, mean, sd, score_func);
+  set_up(model, p1, p2, score_func_params);
 }
 
 /**
@@ -157,15 +155,16 @@ RSR_Distance::RSR_Distance(Model& model,
                            Particle* p1,
                            Particle* p2,
                            const std::string attr_name,
-                           const Float sd,
-                           Score_Func* score_func)
+                           Basic_Score_Func_Params* score_func_params)
 {
   model_data_ = model.get_model_data();
 
   // LogMsg(VERBOSE, "Construct distance restraint: " << attr_name);
   Float mean = model_data_->get_float(p1->float_index(attr_name))
                + model_data_->get_float(p2->float_index(attr_name));
-  set_up(model, p1, p2, mean, sd, score_func);
+               
+  score_func_params->set_mean(mean);
+  set_up(model, p1, p2, score_func_params);
 }
 
 
@@ -183,9 +182,7 @@ RSR_Distance::RSR_Distance(Model& model,
 void RSR_Distance::set_up(Model& model,
                           Particle* p1,
                           Particle* p2,
-                          const Float mean,
-                          const Float sd,
-                          Score_Func* score_func)
+                          Basic_Score_Func_Params* score_func_params)
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
   particles_.push_back(p1);
@@ -198,9 +195,7 @@ void RSR_Distance::set_up(Model& model,
   y2_ = p2->float_index(std::string("Y"));
   z2_ = p2->float_index(std::string("Z"));
 
-  mean_ = mean;
-  sd_ = sd;
-  score_func_ = score_func;
+  score_func_ = score_func_params->create_score_func();
 }
 
 
@@ -210,7 +205,6 @@ void RSR_Distance::set_up(Model& model,
 
 RSR_Distance::~RSR_Distance ()
 {
-  LogMsg(VERBOSE,"Delete RSR_Distance: beware of early Python calls to destructor.");
 }
 
 /**
@@ -254,7 +248,7 @@ Float RSR_Distance::evaluate(bool calc_deriv)
     Float deriv;
 
     // calculate the score and feature derivative based on the distance feature
-    score = (*score_func_)(distance, mean_, sd_, deriv);
+    score = (*score_func_)(distance, deriv);
 
     dx = delta_x / distance * deriv;
     model_data_->add_to_deriv(x1_, dx);
@@ -282,7 +276,7 @@ Float RSR_Distance::evaluate(bool calc_deriv)
 
   else {
     // calculate the score based on the distance feature
-    score = (*score_func_)(distance, mean_, sd_);
+    score = (*score_func_)(distance);
   }
 
   LogMsg(VERBOSE, "distance: " << distance << "   score: " << score);
@@ -329,6 +323,3 @@ void RSR_Distance::show(std::ostream& out)
 
 
 }  // namespace imp
-
-
-

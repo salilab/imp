@@ -25,9 +25,7 @@ public:
   RSR_Coordinate(Model& model,
                  Particle* p1,
                  const std::string type,
-                 const Float distance,
-                 const Float sd,
-                 Score_Func* score_func);
+                 Basic_Score_Func_Params* score_func_params);
   virtual ~RSR_Coordinate();
 
   virtual Float evaluate(bool calc_deriv);
@@ -47,8 +45,6 @@ protected:
   // type of coordinate position to use:
   // X_AXIS, Y_AXIS, Z_AXIS, XY_RADIAL, XZ_RADIAL, YZ_RADIAL, XYZ_SPHERE
   std::string axis_;
-  // variables used to calculate the math form
-  Float distance_, sd_;
   // math form for this restraint (typically one of the harmonics)
   Score_Func* score_func_;
 };
@@ -61,8 +57,7 @@ public:
             Particle* p1,
             const Float main_radius,
             const Float tube_radius,
-            const Float sd,
-            Score_Func* score_func);
+            Basic_Score_Func_Params* score_func_params);
   virtual ~RSR_Torus();
 
   virtual Float evaluate(bool calc_deriv);
@@ -83,8 +78,6 @@ protected:
   Float main_radius_;
   // radius of the torus tube
   Float tube_radius_;
-  // variables used to calculate the math form
-  Float distance_, sd_;
   // math form for this restraint (typically one of the harmonics)
   Score_Func* score_func_;
 };
@@ -97,17 +90,15 @@ public:
   RSR_Proximity(Model& model,
                 // couldn't get Swig to work with std::vector<Particle*>&
                 std::vector<int>& particle_indexes,
-                const Float mean,
-                const Float sd,
-                Score_Func* score_func);
+                const Float distance,
+                Basic_Score_Func_Params* score_func_params);
 
   RSR_Proximity(Model& model,
                 // couldn't get Swig to work with std::vector<Particle*>&
                 std::vector<int>& particle_indexes,
                 const std::string attr_name,
-                const Float mean,
-                const Float sd,
-                Score_Func* score_func);
+                const Float distance,
+                Basic_Score_Func_Params* score_func_params);
 
   virtual ~RSR_Proximity();
 
@@ -148,9 +139,7 @@ public:
                         // couldn't get Swig to work with std::vector<Particle*>&
                         std::vector<int>& particle1_indexes,
                         std::vector<int>& particle2_indexes,
-                        const Float mean,
-                        const Float sd,
-                        Score_Func* score_func,
+                        Basic_Score_Func_Params* score_func_params,
                         const int num_to_apply = 1,
                         const bool particle_reuse = false);
 
@@ -159,8 +148,7 @@ public:
                         std::vector<int>& particle1_indexes,
                         std::vector<int>& particle2_indexes,
                         const std::string attr_name,
-                        const Float sd,
-                        Score_Func* score_func,
+                        Basic_Score_Func_Params* score_func_params,
                         const int num_to_apply,
                         const bool particle_reuse = false);
 
@@ -232,17 +220,14 @@ public:
                    // couldn't get Swig to work with std::vector<Particle*>&
                    std::vector<int>& particle_indexes,
                    const std::string type,
-                   const Float mean,
-                   const Float sd,
-                   Score_Func* score_func);
+                   Basic_Score_Func_Params* score_func_params);
 
   RSR_Connectivity(Model& model,
                    // couldn't get Swig to work with std::vector<Particle*>&
                    std::vector<int>& particle_indexes,
                    const std::string type,
                    const std::string attr_name,
-                   const Float sd,
-                   Score_Func* score_func);
+                   Basic_Score_Func_Params* score_func_params);
 
   virtual ~RSR_Connectivity();
 
@@ -317,14 +302,14 @@ public:
                        std::vector<int>& particle1_indexes,
                        std::vector<int>& particle2_indexes,
                        const std::string attr_name,
-                       const Float sd
+                       Basic_Score_Func_Params* score_func_params
                       );
 
   RSR_Exclusion_Volume(Model& model,
                        // couldn't get Swig to work with std::vector<Particle*>&
                        std::vector<int>& particle_indexes,
                        const std::string attr_name,
-                       const Float sd
+                       Basic_Score_Func_Params* score_func_params
                       );
 
   virtual ~RSR_Exclusion_Volume();

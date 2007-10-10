@@ -178,10 +178,10 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
             distance_attribute = str(param.childNodes[0].nodeValue)
 
         elif param.nodeName == 'score_func':
-            score_func = get_score_func(model, str(param.childNodes[0].nodeValue))
+            score_func_str = str(param.childNodes[0].nodeValue)
 
     # make sure we have the needed parameters
-    if score_func == None:
+    if score_func_str == None:
         print "No score function specified."
         return
 
@@ -196,7 +196,8 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
         if distance_attribute != '':
             distance = p1.get_float(distance_attribute) + p2.get_float(distance_attribute)
 
-        model.restraints.append(imp2.RSR_Distance(model, p1, p2, distance, sd, score_func))
+        score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
+        model.restraints.append(imp2.RSR_Distance(model, p1, p2, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -227,17 +228,18 @@ def load_rsr_torus(model, rs_idx, rsr, base_particle):
             sd = float(param.childNodes[0].nodeValue)
 
         elif param.nodeName == 'score_func':
-            score_func = get_score_func(model, str(param.childNodes[0].nodeValue))
+            score_func_str = str(param.childNodes[0].nodeValue)
 
     # make sure we have the needed parameters
-    if score_func == None:
+    if score_func_str == None:
         print "No score function specified."
         return
 
     # add restraint for each particle in the list
     for p_idx in particle_list:
         p = model.particles[int(p_idx)]
-        model.restraints.append(imp2.RSR_Torus(model, p, main_radius, tube_radius, sd, score_func))
+        score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
+        model.restraints.append(imp2.RSR_Torus(model, p, main_radius, tube_radius, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -268,17 +270,18 @@ def load_rsr_coordinate(model, rs_idx, rsr, base_particle):
             sd = float(param.childNodes[0].nodeValue)
 
         elif param.nodeName == 'score_func':
-            score_func = get_score_func(model, str(param.childNodes[0].nodeValue))
+            score_func_str = str(param.childNodes[0].nodeValue)
 
     # make sure we have the needed parameters
-    if score_func == None:
+    if score_func_str == None:
         print "No score function specified."
         return
 
     # add restraint for each particle in the list
     for p_idx in particle_list:
         p = model.particles[int(p_idx)]
-        model.restraints.append(imp2.RSR_Coordinate(model, p, axis, distance, sd, score_func))
+        score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
+        model.restraints.append(imp2.RSR_Coordinate(model, p, axis, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -313,15 +316,16 @@ def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
             type_attribute = str(param.childNodes[0].nodeValue)
 
         elif param.nodeName == 'score_func':
-            score_func = get_score_func(model, str(param.childNodes[0].nodeValue))
+            score_func_str = str(param.childNodes[0].nodeValue)
+
+    # make sure we have the needed parameters
+    if score_func_str == None:
+        print "No score function specified."
+        return
 
     # make sure we have the needed parameters
     if distance == None and distance_attribute == '':
         print "No distance specified."
-        return
-
-    if score_func == None:
-        print "No score function specified."
         return
 
     # create a vector of particle indexes
@@ -331,10 +335,12 @@ def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
 
     # add restraint for for vector of particles
     if distance_attribute:
-        model.restraints.append(imp2.RSR_Connectivity(model, particle_indexes, type_attribute, distance_attribute, sd, score_func))
+        score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
+        model.restraints.append(imp2.RSR_Connectivity(model, particle_indexes, type_attribute, distance_attribute, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
     else:
-        model.restraints.append(imp2.RSR_Connectivity(model, particle_indexes, type_attribute, distance, sd, score_func))
+        score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
+        model.restraints.append(imp2.RSR_Connectivity(model, particle_indexes, type_attribute, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -371,7 +377,7 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
             distance_attribute = str(param.childNodes[0].nodeValue)
 
         elif param.nodeName == 'score_func':
-            score_func = get_score_func(model, str(param.childNodes[0].nodeValue))
+            score_func_str = str(param.childNodes[0].nodeValue)
 
         elif param.nodeName == 'number_of_connects':
             number_of_connects = int(param.childNodes[0].nodeValue)
@@ -381,7 +387,8 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
         print "No distance specified."
         return
 
-    if score_func == None:
+    # make sure we have the needed parameters
+    if score_func_str == None:
         print "No score function specified."
         return
 
@@ -398,11 +405,13 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
 
     # add restraint for for vector of particles
     if distance_attribute:
-        r = imp2.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, distance_attribute, sd, score_func, number_of_connects)
+        score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
+        r = imp2.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, distance_attribute, score_func_params, number_of_connects)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
     else:
-        r = imp2.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, distance, sd, score_func, number_of_connects)
+        score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
+        r = imp2.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, score_func_params, number_of_connects)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
 
@@ -430,7 +439,12 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
             sd = float(param.childNodes[0].nodeValue)
 
         elif param.nodeName == 'score_func':
-            score_func = get_score_func(model, str(param.childNodes[0].nodeValue))
+            score_func_str = str(param.childNodes[0].nodeValue)
+
+    # make sure we have the needed parameters
+    if score_func_str == None:
+        print "No score function specified."
+        return
 
     # create a vector of particle indexes
     particle_indexes = imp2.vectori()
@@ -438,7 +452,8 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
         particle_indexes.push_back(int(p_idx))
 
     # add restraint for for vector of particles
-    model.restraints.append(imp2.RSR_Proximity(model, particle_indexes, distance, sd, score_func))
+        score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
+    model.restraints.append(imp2.RSR_Proximity(model, particle_indexes, distance, score_func_params))
     model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -479,6 +494,7 @@ def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
     for p_idx in particle_list1:
         particle_indexes1.push_back(int(p_idx))
 
+    score_func_params = get_basic_score_func_params("harmonic_lower_bound", 0.0, sd)
     if (num_lists == 2):
         particle_indexes2 = imp2.vectori()
         particle_indexes2.clear()
@@ -486,34 +502,20 @@ def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
             particle_indexes2.push_back(int(p_idx))
 
         print "adding inter particle exclusion volumes for two bodies: ", model, particle_indexes1, particle_indexes2, distance_attribute, sd
-        r = imp2.RSR_Exclusion_Volume(model, particle_indexes1, particle_indexes2, distance_attribute, sd)
+        r = imp2.RSR_Exclusion_Volume(model, particle_indexes1, particle_indexes2, distance_attribute, score_func_params)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
     else:
         print "adding intra particle exclusion volumes for one body: ", model, particle_indexes1, distance_attribute, sd
-        r = imp2.RSR_Exclusion_Volume(model, particle_indexes1, distance_attribute, sd)
+        r = imp2.RSR_Exclusion_Volume(model, particle_indexes1, distance_attribute, score_func_params)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
 
 
 
-def get_score_func(model, score_func_str):
-    """ Get score function corresponding to the given name """
-    try:
-        score_func = model.score_funcs[score_func_str]
-    except KeyError:
-        if score_func_str == 'harmonic':
-            model.score_funcs[score_func_str] = imp2.Harmonic()
-
-        elif score_func_str == 'harmonic_lower_bound':
-            model.score_funcs[score_func_str] = imp2.Harmonic_Lower_Bound()
-
-        elif score_func_str == 'harmonic_upper_bound':
-            model.score_funcs[score_func_str] = imp2.Harmonic_Upper_Bound()
-
-        score_func = model.score_funcs[score_func_str]
-
-    return score_func
+def get_basic_score_func_params(score_func_str, mean=0.0, sd=0.1):
+    """ Get score function params corresponding to the given name """
+    return imp2.Basic_Score_Func_Params(score_func_str, mean, sd)
 
 
 # support different ways of specifying particle pairs in the XML.

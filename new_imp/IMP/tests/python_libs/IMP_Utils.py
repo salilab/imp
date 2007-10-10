@@ -123,12 +123,13 @@ def Set_Restraint_Set_Is_Active(model, restraint_set_name, is_active):
             model.restraint_sets[i].set_is_active(is_active)
 
 
-def Set_Up_Exclusion_Volumes(model, particles, radius_name, rsrs, score_func, sd = 0.1):
+def Set_Up_Exclusion_Volumes(model, particles, radius_name, rsrs, sd = 0.1):
     """ Add all needed exclusion volumes to the restraint list """
     for i in range(len(particles)-1):
         for j in range(i+1, len(particles)):
             mean = particles[i].get_float(radius_name) + particles[j].get_float(radius_name)
-            rsrs.append(imp2.RSR_Distance(model, particles[i], particles[j], mean, sd, score_func))
+            score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", mean, sd)
+            rsrs.append(imp2.RSR_Distance(model, particles[i], particles[j], score_func_params))
 
 
 def Write_PDB(model, fname):

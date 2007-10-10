@@ -48,9 +48,9 @@ class test_torus(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Upper_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Torus(self.imp_model, p_iter.get(), 50, 10, 0.1, score_func)
+            r = imp2.RSR_Torus(self.imp_model, p_iter.get(), 50, 10, score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 

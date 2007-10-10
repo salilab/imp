@@ -27,17 +27,13 @@ namespace imp
   \param[in] p1 Pointer to particle of the restraint.
   \param[in] axis String indicating the axis of absolute reference:
       X_AXIS, Y_AXIS, Z_AXIS, XY_RADIAL, XZ_RADIAL, YZ_RADIAL, XYZ_SPHERE
-  \param[in] distance Distance relative the given absolute reference.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] score_func_params Parameters for creating a score function.
  */
 
 RSR_Coordinate::RSR_Coordinate(Model& model,
                                Particle* p1,
                                const std::string axis,
-                               const Float distance,
-                               const Float sd,
-                               Score_Func* score_func)
+                               Basic_Score_Func_Params* score_func_params)
 {
   model_data_ = model.get_model_data();
 
@@ -47,9 +43,7 @@ RSR_Coordinate::RSR_Coordinate(Model& model,
   z1_ = p1->float_index(std::string("Z"));
 
   axis_ = axis;
-  distance_ = distance;
-  sd_ = sd;
-  score_func_ = score_func;
+  score_func_ = score_func_params->create_score_func();
 }
 
 /**
@@ -58,7 +52,6 @@ RSR_Coordinate::RSR_Coordinate(Model& model,
 
 RSR_Coordinate::~RSR_Coordinate ()
 {
-  LogMsg(VERBOSE,"Delete RSR_Coordinate: beware of early Python calls to destructor.");
 }
 
 /**
@@ -84,23 +77,23 @@ Float RSR_Coordinate::evaluate(bool calc_deriv)
 
   // restrain the x coordinate
   if (axis_ == "X_AXIS") {
-    score = (*score_func_)(x, distance_, sd_, dx);
+    score = (*score_func_)(x, dx);
   }
 
   // restrain the y coordinate
   else if (axis_ == "Y_AXIS") {
-    score = (*score_func_)(y, distance_, sd_, dy);
+    score = (*score_func_)(y, dy);
   }
 
   // restrain the z coordinate
   else if (axis_ == "Z_AXIS") {
-    score = (*score_func_)(z, distance_, sd_, dz);
+    score = (*score_func_)(z, dz);
   }
 
   // restrain the xy radial distance
   else if (axis_ == "XY_RADIAL") {
     current_distance = sqrt(x * x + y * y);
-    score = (*score_func_)(sqrt(x * x + y * y), distance_, sd_, deriv);
+    score = (*score_func_)(sqrt(x * x + y * y), deriv);
     dx = x / current_distance * deriv;
     dy = y / current_distance * deriv;
   }
@@ -108,7 +101,7 @@ Float RSR_Coordinate::evaluate(bool calc_deriv)
   // restrain the xz radial distance
   else if (axis_ == "XZ_RADIAL") {
     current_distance = sqrt(x * x + z * z);
-    score = (*score_func_)(current_distance, distance_, sd_, deriv);
+    score = (*score_func_)(current_distance, deriv);
     dx = x / current_distance * deriv;
     dz = z / current_distance * deriv;
   }
@@ -116,7 +109,7 @@ Float RSR_Coordinate::evaluate(bool calc_deriv)
   // restrain the yz radial distance
   else if (axis_ == "YZ_RADIAL") {
     current_distance = sqrt(y * y + z * z);
-    score = (*score_func_)(current_distance, distance_, sd_, deriv);
+    score = (*score_func_)(current_distance, deriv);
     dy = y / current_distance * deriv;
     dz = z / current_distance * deriv;
   }
@@ -124,7 +117,7 @@ Float RSR_Coordinate::evaluate(bool calc_deriv)
   // restrain the xyz spherical distance (Euclidian distance from origin)
   else if (axis_ == "XYZ_SPHERE") {
     current_distance = sqrt(x * x + y * y + z * z);
-    score = (*score_func_)(current_distance, distance_, sd_, deriv);
+    score = (*score_func_)(current_distance, deriv);
     dx = x / current_distance * deriv;
     dy = y / current_distance * deriv;
     dz = z / current_distance * deriv;
@@ -167,8 +160,6 @@ void RSR_Coordinate::show(std::ostream& out)
   out << "  dz1:" << model_data_->get_deriv(z1_) << std::endl;
 
   out << "  axis:" << axis_;
-  out << "  distance:" << distance_;
-  out << "  sd:" << sd_ << std::endl;
 }
 
 
@@ -183,16 +174,14 @@ void RSR_Coordinate::show(std::ostream& out)
   \param[in] p1 Pointer to particle of the restraint.
   \param[in] main_radius The main radius from the origin to the midline of the tube.
   \param[in] tube_radius The tube radius is min distance from the tube midline to the tube surface.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] score_func_params Parameters for creating a score function.
  */
 
 RSR_Torus::RSR_Torus(Model& model,
                      Particle* p1,
                      const Float main_radius,
                      const Float tube_radius,
-                     const Float sd,
-                     Score_Func* score_func)
+                     Basic_Score_Func_Params* score_func_params)
 {
   model_data_ = model.get_model_data();
 
@@ -203,8 +192,7 @@ RSR_Torus::RSR_Torus(Model& model,
 
   main_radius_ = main_radius;
   tube_radius_ = tube_radius;
-  sd_ = sd;
-  score_func_ = score_func;
+  score_func_ = score_func_params->create_score_func();
 }
 
 /**
@@ -213,7 +201,6 @@ RSR_Torus::RSR_Torus(Model& model,
 
 RSR_Torus::~RSR_Torus ()
 {
-  LogMsg(VERBOSE,"Delete RSR_Torus: beware of early Python calls to destructor.");
 }
 
 /**
@@ -275,7 +262,7 @@ Float RSR_Torus::evaluate(bool calc_deriv)
   // the derivative vector stays constant independent of distance from torus
   // i.e. a unit vector
   else {
-    score = (*score_func_)(torus_feature, 0.0, sd_, deriv);
+    score = (*score_func_)(torus_feature, deriv);
   }
 
   // if needed, use the partial derivatives
@@ -318,7 +305,6 @@ void RSR_Torus::show(std::ostream& out)
 
   out << "  main radius:" << main_radius_;
   out << "  tube radius:" << tube_radius_;
-  out << "  sd:" << sd_ << std::endl;
 }
 
 
@@ -332,32 +318,30 @@ void RSR_Torus::show(std::ostream& out)
   Constructor - set up the values and indexes for this connectivity restraint.
 
   \param[in] model Pointer to the model.
-  \param[in] particles Vector of pointers  to particle of the restraint.
-  \param[in] distance The expected distance for each restraint.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] particles Vector of indexes of particles of first body.
+  \param[in] distance Maximum length allowable between any two particles.
+  \param[in] score_func_params Parameters for creating a score function.
  */
 
 RSR_Proximity::RSR_Proximity(Model& model,
                              std::vector<int>& particle_indexes,
                              const Float distance,
-                             const Float sd,
-                             Score_Func* score_func)
+                             Basic_Score_Func_Params* score_func_params)
 {
   set_up(model, particle_indexes);
 
   // get the indexes associated with the restraints
   int idx = 0;
-  Float actual_mean = distance;
+  score_func_params->set_mean(distance);
+  score_func_params->set_score_func_type("harmonic_upper_bound");
   for (int i = 0; i < num_particles_ - 1; i++) {
     for (int j = i + 1; j < num_particles_; j++) {
       // create the restraint
+      
       dist_rsrs_[idx] = new RSR_Distance(model,
                                          particles_[i],
                                          particles_[j],
-                                         actual_mean,
-                                         sd,
-                                         score_func);
+                                         score_func_params);
       idx++;
     }
   }
@@ -373,16 +357,15 @@ RSR_Proximity::RSR_Proximity(Model& model,
   \param[in] model Pointer to the model.
   \param[in] particles Vector of pointers  to particle of the restraint.
   \param[in] attr_name Name to get radii to calculate the mean distance.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] distance Maximum length allowable between any two particles.
+  \param[in] score_func_params Parameters for creating a score function.
  */
 
 RSR_Proximity::RSR_Proximity(Model& model,
                              std::vector<int>& particle_indexes,
                              const std::string attr_name,
                              const Float distance,
-                             const Float sd,
-                             Score_Func* score_func)
+                             Basic_Score_Func_Params* score_func_params)
 {
   // Use those radii to calculate the expected distance
   set_up(model, particle_indexes);
@@ -390,6 +373,7 @@ RSR_Proximity::RSR_Proximity(Model& model,
   // get the indexes associated with the restraints
   int idx = 0;
   Float actual_mean;
+  score_func_params->set_score_func_type("harmonic_upper_bound");
   for (int i = 0; i < num_particles_ - 1; i++) {
     for (int j = i + 1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance between centers
@@ -398,12 +382,11 @@ RSR_Proximity::RSR_Proximity(Model& model,
 
       // create the restraint
       LogMsg(VERBOSE, i << " " << j << " add distance: " << actual_mean);
+      score_func_params->set_mean(actual_mean);
       dist_rsrs_[idx] = new RSR_Distance(model,
                                          particles_[i],
                                          particles_[j],
-                                         actual_mean,
-                                         sd,
-                                         score_func);
+                                         score_func_params);
       idx++;
     }
   }
@@ -413,10 +396,7 @@ RSR_Proximity::RSR_Proximity(Model& model,
   Set up the values and indexes for this connectivity restraint for the constructors.
 
   \param[in] model Pointer to the model.
-  \param[in] particles Vector of pointers  to particle of the restraint.
-  \param[in] mean The expected distance for each resatraint.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] particles Vector of indexes of particles in the restraint.
  */
 
 void RSR_Proximity::set_up(Model& model,
@@ -455,7 +435,6 @@ RSR_Proximity::~RSR_Proximity ()
   for (int i = 0; i < num_restraints_; i++) {
     delete dist_rsrs_[i];
   }
-  LogMsg(VERBOSE,"Delete RSR_Proximity: beware of early Python calls to destructor.");
 }
 
 /**
@@ -566,19 +545,17 @@ void RSR_Proximity::show(std::ostream& out)
   Use the given mean for the expected distance between two particles.
 
   \param[in] model Pointer to the model.
-  \param[in] particle1_indexes Vector of pointers  to particles of first body.
-  \param[in] particle2_indexes Vector of pointers  to particles of second body.
-  \param[in] mean The expected distance for each restraint.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] particle1_indexes Vector of indexes of particles of first body.
+  \param[in] particle2_indexes Vector of indexes of particles of second body.
+  \param[in] score_func_params Parameters for creating a score function.
+  \param[in] num_to_apply Number of minimum restraints to apply.
+  \param[in] particle_reuse Allow minimum restraints to use particle more than once.
  */
 
 RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
     std::vector<int>& particle1_indexes,
     std::vector<int>& particle2_indexes,
-    const Float mean,
-    const Float sd,
-    Score_Func* score_func,
+    Basic_Score_Func_Params* score_func_params,
     const int num_to_apply,
     const bool particle_reuse)
 {
@@ -589,7 +566,6 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
 
   // get the indexes associated with the restraints
   int idx = 0;
-  Float actual_mean = mean;
   // use iterator to move through each predefined position in the restraint/score list
   std::list<RSR_Pair_Connectivity::Restraint_Score>::iterator rs_iter;
   rs_iter = rsr_scores_.begin();
@@ -603,9 +579,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
         rs_iter->rsr_ = new RSR_Distance(model,
                                          particles_[i],
                                          particles_[j],
-                                         actual_mean,
-                                         sd,
-                                         score_func);
+                                         score_func_params);
 
         rs_iter->part1_idx_ = i;
         rs_iter->part2_idx_ = j;
@@ -621,7 +595,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
 }
 
 /**
-  Constructor - set up the values and indexes for this connectivity restraint. Use
+  Constructor - set up the values and indexes for this pair connectivity restraint. Use
   the attr_name to specify the attribute you want to use for determining the expected
   distance between two particles.
 
@@ -629,16 +603,16 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
   \param[in] particles Vector of pointers  to particle of the restraint.
   \param[in] type The main radius from the origin to the midline of the tube.
   \param[in] attr_name Name to get radii to calculate the mean distance.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] score_func_params Parameters for creating a score function.
+  \param[in] num_to_apply Number of minimum restraints to apply.
+  \param[in] particle_reuse Allow minimum restraints to use particle more than once.
  */
 
 RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
     std::vector<int>& particle1_indexes,
     std::vector<int>& particle2_indexes,
     const std::string attr_name,
-    const Float sd,
-    Score_Func* score_func,
+    Basic_Score_Func_Params* score_func_params,
     const int num_to_apply,
     const bool particle_reuse)
 {
@@ -661,6 +635,8 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
       actual_mean = model_data_->get_float(particles_[i]->float_index(attr_name))
                     + model_data_->get_float(particles_[j]->float_index(attr_name));
 
+      score_func_params->set_mean(actual_mean);
+      
       // create the restraint
       if (rs_iter == rsr_scores_.end()) {
         ErrorMsg("Reached end of rsr_scores too early.");
@@ -669,9 +645,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
         rs_iter->rsr_ = new RSR_Distance(model,
                                          particles_[i],
                                          particles_[j],
-                                         actual_mean,
-                                         sd,
-                                         score_func);
+                                         score_func_params);
 
         rs_iter->part1_idx_ = i;
         rs_iter->part2_idx_ = j;
@@ -687,16 +661,11 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
 }
 
 /**
-  Set up the values and indexes for this connectivity restraint for the constructors.
+  Set up the values and indexes for this pair connectivity restraint for the constructors.
 
   \param[in] model Pointer to the model.
-  \param[in] particles Vector of pointers  to particle of the restraint.
-  \param[in] type The main radius from the origin to the midline of the tube.
-  \param[in] radius If radius is an empty string, use the mean.
-      Otherwise, use the name to get radii to calculate the mean distance.
-  \param[in] mean The expected distance for each resatraint.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] particles1 Vector of indexes of particles in first body of the restraint.
+  \param[in] particles2 Vector of indexes of particles in second body of the restraint.
  */
 
 void RSR_Pair_Connectivity::set_up(Model& model,
@@ -746,7 +715,6 @@ RSR_Pair_Connectivity::~RSR_Pair_Connectivity ()
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
     delete(rs_iter->rsr_);
   }
-  LogMsg(VERBOSE,"Delete RSR_Pair_Connectivity: beware of early Python calls to destructor.");
 }
 
 /**
@@ -845,24 +813,19 @@ void RSR_Pair_Connectivity::show(std::ostream& out)
   \param[in] model Pointer to the model.
   \param[in] particles Vector of pointers  to particle of the restraint.
   \param[in] type The attribute used to determine if particles are equivalent.
-  \param[in] mean The expected distance for each restraint.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] score_func_params Parameters for creating a score function.
  */
 
 RSR_Connectivity::RSR_Connectivity(Model& model,
                                    std::vector<int>& particle_indexes,
                                    const std::string type,
-                                   const Float mean,
-                                   const Float sd,
-                                   Score_Func* score_func)
+                                   Basic_Score_Func_Params* score_func_params)
 {
   std::list<RSR_Connectivity::Restraint_Score>::iterator rs_iter;
 
   set_up(model, particle_indexes, type);
 
   // set up the restraints
-  Float actual_mean = mean;
   rs_iter = rsr_scores_.begin();
   for (int i = 0; i < num_particles_ - 1; i++) {
     for (int j = i + 1; j < num_particles_; j++) {
@@ -877,9 +840,7 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
           rs_iter->rsr_ = new RSR_Distance(model,
                                            particles_[i],
                                            particles_[j],
-                                           actual_mean,
-                                           sd,
-                                           score_func);
+                                           score_func_params);
           ++rs_iter;
         }
       }
@@ -901,16 +862,14 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
   \param[in] particles Vector of pointers  to particle of the restraint.
   \param[in] type The attribute used to determine if particles are equivalent.
   \param[in] attr_name Name to get radii to calculate the mean distance.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+  \param[in] score_func_params Parameters for creating a score function.
  */
 
 RSR_Connectivity::RSR_Connectivity(Model& model,
                                    std::vector<int>& particle_indexes,
                                    const std::string type,
                                    const std::string attr_name,
-                                   const Float sd,
-                                   Score_Func* score_func)
+                                   Basic_Score_Func_Params* score_func_params)
 {
   std::list<RSR_Connectivity::Restraint_Score>::iterator rs_iter;
 
@@ -933,13 +892,13 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
           actual_mean = model_data_->get_float(particles_[i]->float_index(attr_name))
                         + model_data_->get_float(particles_[j]->float_index(attr_name));
 
+          score_func_params->set_mean(actual_mean);
+          
           // create the restraint
           rs_iter->rsr_ = new RSR_Distance(model,
                                            particles_[i],
                                            particles_[j],
-                                           actual_mean,
-                                           sd,
-                                           score_func);
+                                           score_func_params);
           ++rs_iter;
         }
       }
@@ -1042,7 +1001,6 @@ RSR_Connectivity::~RSR_Connectivity ()
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
     delete(rs_iter->rsr_);
   }
-  LogMsg(VERBOSE,"Delete RSR_Connectivity: beware of early Python calls to destructor.");
 }
 
 /**
@@ -1180,7 +1138,7 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
     std::vector<int>& particle1_indexes,
     std::vector<int>& particle2_indexes,
     const std::string attr_name,
-    const Float sd
+    Basic_Score_Func_Params* score_func_params
                                           )
 {
   Particle* p1;
@@ -1204,7 +1162,6 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
 
   // get the indexes associated with the restraints
   Float actual_mean;
-  Score_Func* score_func = (Score_Func*) new Harmonic_Lower_Bound();
   LogMsg(VERBOSE, "Add inter-body exclusion volume restraints " << num_restraints_);
 
   // particle 1 indexes
@@ -1215,13 +1172,13 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
       actual_mean = model_data_->get_float(particles_[i]->float_index(attr_name))
                     + model_data_->get_float(particles_[j]->float_index(attr_name));
 
+      score_func_params->set_mean(actual_mean);
+      
       // create the restraint
       dist_rsrs_.push_back(new RSR_Distance(model,
                                             particles_[i],
                                             particles_[j],
-                                            actual_mean,
-                                            sd,
-                                            score_func));
+                                            score_func_params));
     }
   }
 }
@@ -1241,7 +1198,7 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
     // couldn't get Swig to work with std::vector<Particle*>&
     std::vector<int>& particle_indexes,
     const std::string attr_name,
-    const Float sd
+    Basic_Score_Func_Params* score_func_params
                                           )
 {
   Particle* p1;
@@ -1259,7 +1216,6 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
   // get the indexes associated with the restraints
   int idx = 0;
   Float actual_mean;
-  Score_Func* score_func = (Score_Func*) new Harmonic_Lower_Bound();
   LogMsg(VERBOSE, "Add intra-body exclusion volume restraints " << num_restraints_);
 
   // particle 1 indexes
@@ -1270,13 +1226,13 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
       actual_mean = model_data_->get_float(particles_[i]->float_index(attr_name))
                     + model_data_->get_float(particles_[j]->float_index(attr_name));
 
+      score_func_params->set_mean(actual_mean);
+      
       // create the restraint
       dist_rsrs_.push_back(new RSR_Distance(model,
                                             particles_[i],
                                             particles_[j],
-                                            actual_mean,
-                                            sd,
-                                            score_func));
+                                            score_func_params));
       idx++;
     }
   }
@@ -1294,7 +1250,6 @@ RSR_Exclusion_Volume::~RSR_Exclusion_Volume ()
   for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end(); ++rsr_iter) {
     delete(*rsr_iter);
   }
-  LogMsg(VERBOSE,"Delete RSR_Exclusion_Volume: beware of early Python calls to destructor.");
 }
 
 /**
@@ -1429,8 +1384,6 @@ RSR_EM_Coarse::~RSR_EM_Coarse ()
   delete dvx_;
   delete dvy_;
   delete dvz_;
-
-  LogMsg(VERBOSE,"Delete RSR_EM_Coarse: beware of early Python calls to destructor.");
 }
 
 /**
@@ -1499,6 +1452,3 @@ void RSR_EM_Coarse::show(std::ostream& out)
 }
 
 }  // namespace imp
-
-
-
