@@ -1,5 +1,5 @@
 # # Include IMP build utility functions:
-execfile('../imp/SCons.include')
+execfile('SCons.include')
 
 # # Get Modeller and Python locations, and set up a build environment:
 modconfig = get_modeller_config()

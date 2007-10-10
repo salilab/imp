@@ -1,0 +1,236 @@
+"""Utility functions used by all NMP modules"""
+
+import os
+import re
+
+def _makedef(target, source, env):
+    """Build a Windows .def file (DLL exports file) from header files"""
+    dll = str(target[0])
+    if dll.endswith(".def"):
+        dll = dll[:-4] + '.dll'
+    outfh = open(str(target[0]), "w")
+    print >> outfh, "LIBRARY %s" % dll
+    print >> outfh, "EXPORTS"
+    srch = re.compile("\s*\w+.*\s+\**(\w+)\(")
+    for s in source:
+        infh = open(str(s), "r")
+        for line in infh:
+            m = srch.match(line)
+            if m:
+                print >> outfh, "  %s" % m.group(1)
+
+import SCons.Script
+_SWIGScanner = SCons.Scanner.ClassicCPP(
+    "SWIGScan",
+    ".i",
+    "CPPPATH",
+    '^[ \t]*[%,#][ \t]*(?:include|import)[ \t]*(<|")([^>"]+)(>|")'
+)
+
+class WineEnvironment(Environment):
+    """Environment to build Windows binaries under Linux, by running the
+       MSVC compiler (cl) and linker (link) through wine, using the w32cc
+       and w32link shell scripts"""
+    def __init__(self, platform='win32', CC='w32cc', LINK='w32link', **kw):
+        Environment.__init__(self, platform=platform, CC=CC, LINK=LINK, **kw)
+        posix_env = Environment(platform='posix')
+        self['SHLIBPREFIX'] = self['LIBLINKPREFIX'] = 'lib'
+        self['LIBSUFFIX'] = '.lib'
+        self['PSPAWN'] = posix_env['PSPAWN']
+        self['SPAWN'] = posix_env['SPAWN']
+        self['SHELL'] = posix_env['SHELL']
+        self['ENV'] = posix_env['ENV']
+        # Make sure we get the same Windows C/C++ library as Modeller, and
+        # enable C++ exception handling
+        self.Append(CFLAGS="/MD")
+        self.Append(CXXFLAGS="/MD /GR /GX")
+
+def get_modeller_config():
+    """Figure out where the Modeller source code is, and where it is
+       installed."""
+    if ARGUMENTS.has_key('modsource'):
+        modsource = ARGUMENTS['modsource']
+    else:
+        try:
+            modsource = os.environ['MODINSTALLSVN']
+        except KeyError:
+            raise KeyError, \
+                """Could not determine Modeller source location - 
+                   specify with 'scons modsource=/home/modeller' or similar"""
+
+    if ARGUMENTS.has_key('modinstall'):
+        modinstall = ARGUMENTS['modinstall']
+    else:
+        modinstall = modsource
+
+    (fhin, fhout, fherr) = os.popen3("%s/bin/modSVN -" % modsource)
+    print >> fhin, "print 'EXE type: ', info.exe_type"
+    fhin.close()
+    err = fherr.read()
+    exetype = None
+    for line in fhout:
+        if line.startswith("EXE type"):
+            exetype=line[11:].rstrip('\r\n')
+    if exetype is None:
+        if err:
+            raise IOError, ("Error running Modeller: " + err)
+        else:
+            raise IOError, "Unknown error running Modeller"
+    include = ['%s/src/include' % modsource,
+               '%s/src/include/%s' % (modsource, exetype)]
+    bin = '%s/bin' % modsource
+    if exetype == 'i386-w32':
+        libpath = ['%s/src/main' % modsource]
+        libinstall = '%s/bin' % modinstall
+        # Don't link with -lm on Windows, since that pulls in some weird
+        # Intel Fortran file, which in turn is linked against the wrong C
+        # library
+        libm = []
+    else:
+        libpath = ['%s/lib/%s' % (modsource, exetype)]
+        libinstall = '%s/lib/%s' % (modinstall, exetype)
+        libm = ['m']
+    libs = ["modeller", "saxs"]
+    pyinstall = modlib = '%s/modlib' % modinstall
+    if exetype == 'mac10v4-xlf':
+        libs += ["hdf5", "hdf5_hl", "saxs"]
+    elif exetype == 'mac10v4-intel':
+        libs += ["hdf5", "hdf5_hl", "saxs", "imf", "svml", "ifcore", "irc"]
+    return {'include':include, 'libpath':libpath, 'libs':libs,
+            'exetype':exetype, 'bin':bin, 'libinstall':libinstall,
+            'pyinstall':pyinstall, 'modlib':modlib, 'libm':libm}
+
+def is_wine_platform(modconfig):
+    """Return True if we are building Windows executables on Linux/Wine"""
+    import SCons.Platform
+    return modconfig['exetype'] == 'i386-w32' \
+           and SCons.Platform.platform_default() == 'posix'
+
+def get_python_include(modconfig):
+    """Get the directory containing Python.h"""
+    if is_wine_platform(modconfig):
+        return '/usr/lib/w32comp/w32python/2.5/include/'
+    else:
+        import distutils.sysconfig
+        return distutils.sysconfig.get_python_inc()
+
+def CheckGNUHash(context):
+    """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
+    context.Message('Checking whether GNU_HASH linking should be disabled...')
+    lastLINKFLAGS = context.env['LINKFLAGS']
+    context.env.Append(LINKFLAGS="-Wl,--hash-style=sysv")
+    text = """
+int main(void)
+{ return 0; }
+"""
+    res = context.TryLink(text, '.c')
+    if not res:
+        context.Result("no")
+        context.env.Replace(LINKFLAGS=lastLINKFLAGS)
+    else:
+        context.Result("yes")
+    return res
+
+def CheckGCCVisibility(context):
+    """Check if the compiler supports setting visibility of symbols"""
+    context.Message('Checking whether compiler supports -fvisibility...')
+    lastCCFLAGS = context.env['CCFLAGS']
+    context.env.Append(CCFLAGS="-fvisibility=hidden")
+    text = """
+__attribute__ ((visibility("default")))
+int main(void)
+{ return 0; }
+"""
+    res = context.TryLink(text, '.c')
+    context.env.Replace(CCFLAGS=lastCCFLAGS)
+    if not res:
+        context.Result("no")
+    else:
+        context.env.Append(VIS_CPPDEFINES=['GCC_VISIBILITY'],
+                           VIS_CCFLAGS="-fvisibility=hidden")
+        context.Result("yes")
+    return res
+
+def MyEnvironment(modconfig, *args, **kw):
+    """Create an environment suitable for building NMP modules"""
+    import platform
+    if is_wine_platform(modconfig):
+        env = WineEnvironment(*args, **kw)
+        env.is_wine = True
+    else:
+        env = Environment(*args, **kw)
+        env.is_wine = False
+    try:
+        env['SHLINKFLAGS'].remove('-no_archive')
+    except ValueError:
+        pass
+    env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
+    env.Prepend(SCANNERS = _SWIGScanner)
+    if env['CC'] == 'gcc':
+        env.Append(CCFLAGS="-Wall -Werror -g -O3")
+
+    custom_tests = {'CheckGNUHash': CheckGNUHash,
+                    'CheckGCCVisibility': CheckGCCVisibility}
+    conf = env.Configure(custom_tests = custom_tests)
+    sys = platform.system()
+    if sys == 'Linux':
+        conf.CheckGNUHash()
+        conf.CheckGCCVisibility()
+    elif sys == 'SunOS':
+        # Find locally-installed libraries in /usr/local (e.g. for SWIG)
+        env['ENV']['LD_LIBRARY_PATH'] = '/usr/local/lib'
+    if os.environ.has_key('EXECUTABLE_TYPESVN'):
+        env['ENV']['EXECUTABLE_TYPESVN'] = os.environ['EXECUTABLE_TYPESVN']
+    conf.Finish()
+
+    return env
+
+def configure_for_pyext(env, modconfig):
+    """Set environment variables to build a Python extension."""
+    from platform import system
+    e = env.Copy()
+    e['SHLIBPREFIX'] = ''
+    # We're not going to link against the extension, so don't need a Windows
+    # import library (.lib file):
+    e['no_import_lib'] = 1
+    platform = e['PLATFORM']
+    if e.is_wine:
+        e['SHLIBSUFFIX'] = '.pyd'
+        # Directory containing python25.lib:
+        e.Append(LIBPATH='/usr/lib/w32comp/w32python/2.5/lib/')
+    else:
+        if platform == 'aix':
+            # Make sure compilers are in the PATH, so that Python's script for
+            # building AIX extension modules can find them:
+            e['ENV']['PATH'] += ':/usr/vac/bin'
+        from distutils.sysconfig import get_config_vars
+        vars = get_config_vars('CC', 'CXX', 'OPT', 'BASECFLAGS', 'LDSHARED',
+                               'SO')
+        (cc, cxx, opt, basecflags, ldshared, so) = vars
+        # distutils on AIX can get confused if AIX C but GNU C++ is installed:
+        if platform == 'aix' and cxx == '':
+            cxx = 'g++'
+        # Don't require stack protector stuff on Linux, as this adds a
+        # requirement for glibc-2.4:
+        opt = opt.replace("-fstack-protector", "")
+        # Remove options that don't work with C++ code:
+        opt = opt.replace("-Wstrict-prototypes", "")
+        e['CC'] = cc
+        e['CXX'] = cxx
+        e['SHLIBSUFFIX'] = so
+        e['CPPFLAGS'] = basecflags + " " + opt
+        # Some gcc versions don't like the code that SWIG generates - but let
+        # that go, because we have no control over it:
+        try:
+            e['CCFLAGS'].remove('-Werror')
+        except ValueError:
+            pass
+        # Default link flags on OS X don't work for us:
+        if platform == 'darwin':
+            e['SHLINKFLAGS'] = \
+                     '$LINKFLAGS -bundle -flat_namespace -undefined suppress'
+        # Don't set link flags on Linux, as that would negate our GNU_HASH check
+        elif system() != "Linux":
+            e['SHLINKFLAGS'] = []
+            e['SHLINK'] = ldshared
+    return e
