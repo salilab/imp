@@ -75,7 +75,7 @@ void Model_Data::set_float(const Float_Index idx, const Float value)
   \return value of particle float attribute.
  */
 
-Float Model_Data::get_float(const Float_Index idx)
+Float Model_Data::get_float(const Float_Index idx) const
 {
   return float_data_[idx.index()].value_;
 }
@@ -100,7 +100,7 @@ void Model_Data::add_to_deriv(const Float_Index idx, Float value)
   \param[in] idx Index of the particle float attribute.
   */
 
-Float Model_Data::get_deriv(const Float_Index idx)
+Float Model_Data::get_deriv(const Float_Index idx) const
 {
   return float_data_[idx.index()].deriv_;
 }
@@ -124,7 +124,7 @@ void Model_Data::set_is_optimized(const Float_Index idx, bool is_optimized)
   \return True if particle float attribute is to be optimized.
   */
 
-bool Model_Data::is_optimized(const Float_Index idx)
+bool Model_Data::is_optimized(const Float_Index idx) const
 {
   return float_data_[idx.index()].is_optimized_;
 }
@@ -184,7 +184,7 @@ void Model_Data::set_int(const Int_Index idx, const Int value)
   \return value of particle float attribute.
  */
 
-Int Model_Data::get_int(const Int_Index idx)
+Int Model_Data::get_int(const Int_Index idx) const
 {
   LogMsg(VERBOSE, "get_int: " << int_data_.size() << " " << idx.index());
   return int_data_[idx.index()];
@@ -233,7 +233,7 @@ void Model_Data::set_string(const String_Index idx, const String value)
   \return value of particle string attribute.
  */
 
-String Model_Data::get_string(const String_Index idx)
+String Model_Data::get_string(const String_Index idx) const
 {
   return string_data_[idx.index()];
 }
@@ -288,7 +288,7 @@ bool Opt_Float_Index_Iterator::next(void)
  \return True if another optimizable variable is available.
  */
 
-Float_Index Opt_Float_Index_Iterator::get(void)
+Float_Index Opt_Float_Index_Iterator::get(void) const
 {
   Float_Index fi;
 

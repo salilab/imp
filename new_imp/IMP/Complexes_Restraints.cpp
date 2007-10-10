@@ -412,7 +412,7 @@ void RSR_Proximity::set_up(Model& model,
   // set up the particles, their position indexes, and their type indexes
   Particle* p1;
   for (int i = 0; i < num_particles_; i++) {
-    p1 = model.particle(particle_indexes[i]);
+    p1 = model.get_particle(particle_indexes[i]);
     particles_.push_back(p1);
   }
 
@@ -686,12 +686,12 @@ void RSR_Pair_Connectivity::set_up(Model& model,
   LogMsg(VERBOSE, "set up particle types");
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles1_; i++) {
-    p1 = model.particle(particle1_indexes[i]);
+    p1 = model.get_particle(particle1_indexes[i]);
     particles_.push_back(p1);
   }
 
   for (int i = 0; i < num_particles2_; i++) {
-    p1 = model.particle(particle2_indexes[i]);
+    p1 = model.get_particle(particle2_indexes[i]);
     particles_.push_back(p1);
   }
 
@@ -938,7 +938,7 @@ void RSR_Connectivity::set_up(Model& model,
   LogMsg(VERBOSE, "set up particle types");
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles_; i++) {
-    p1 = model.particle(particle_indexes[i]);
+    p1 = model.get_particle(particle_indexes[i]);
     particles_.push_back(p1);
     type_.push_back(p1->int_index(type));
   }
@@ -1149,12 +1149,12 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
   num_particles2_ = particle2_indexes.size();
   num_particles_ = num_particles1_ + num_particles2_;
   for (int i = 0; i < num_particles1_; i++) {
-    p1 = model.particle(particle1_indexes[i]);
+    p1 = model.get_particle(particle1_indexes[i]);
     particles_.push_back(p1);
   }
 
   for (int i = 0; i < num_particles2_; i++) {
-    p1 = model.particle(particle2_indexes[i]);
+    p1 = model.get_particle(particle2_indexes[i]);
     particles_.push_back(p1);
   }
 
@@ -1207,7 +1207,7 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
 
   num_particles_ = particle_indexes.size();
   for (int i = 0; i < num_particles_; i++) {
-    p1 = model.particle(particle_indexes[i]);
+    p1 = model.get_particle(particle_indexes[i]);
     particles_.push_back(p1);
   }
 
@@ -1325,7 +1325,7 @@ RSR_EM_Coarse::RSR_EM_Coarse(Model& model,
   LogMsg(VERBOSE, "set up particles");
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles_; i++) {
-    p1 = model.particle(particle_indexes[i]);
+    p1 = model.get_particle(particle_indexes[i]);
     particles_.push_back(p1);
   }
 
