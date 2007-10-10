@@ -54,7 +54,7 @@ Model_Data* Model::get_model_data(void)
   \return idx-th particle in model.
  */
 
-Particle* Model::particle(size_t idx)
+Particle* Model::get_particle(size_t idx) const
 {
   if ((idx < 0) || (idx >= particles_.size())) {
     return NULL;

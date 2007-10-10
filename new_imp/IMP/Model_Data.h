@@ -60,11 +60,11 @@ public:
   // particle float attributes (assumed differentiable variables)
   Float_Index add_float(const Float value);
   void set_float(const Float_Index idx, const Float value);
-  Float get_float(const Float_Index idx);
+  Float get_float(const Float_Index idx) const;
 
   void add_to_deriv(const Float_Index idx, const Float value);
-  Float get_deriv(const Float_Index idx);
-  bool is_optimized(const Float_Index idx);
+  Float get_deriv(const Float_Index idx) const;
+  bool is_optimized(const Float_Index idx) const;
   void set_is_optimized(const Float_Index idx, bool is_optimized);
 
   void zero_derivatives(void);
@@ -72,12 +72,12 @@ public:
   // particle int attributes
   Int_Index add_int(const Int value);
   void set_int(const Int_Index idx, const Int value);
-  Int get_int(const Int_Index idx);
+  Int get_int(const Int_Index idx) const;
 
   // particle string attributes
   String_Index add_string(const String value);
   void set_string(const String_Index idx, const String value);
-  String get_string(const String_Index idx);
+  String get_string(const String_Index idx) const;
 
 protected:
   Model_Data();
@@ -114,7 +114,7 @@ public:
   Opt_Float_Index_Iterator() {}
   void reset(Model_Data* model_data);
   bool next(void);
-  Float_Index get(void);
+  Float_Index get(void) const;
 
 protected:
   int cur_;

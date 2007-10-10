@@ -30,28 +30,28 @@ public:
   Particle(Model_Data* model_data);
   ~Particle();
   void set_model_data(Model_Data* model_data);
-  Model_Data* model_data(void);
+  Model_Data* model_data(void) const;
 
   // float attributes
   bool add_float(const std::string name, const Float value = 0.0, const bool optimize = false);
-  bool has_float(const std::string name);
-  Float_Index float_index(const std::string name);
+  bool has_float(const std::string name) const;
+  Float_Index float_index(const std::string name) const;
 
   // int attributes
   bool add_int(const std::string name, const Int value);
-  bool has_int(const std::string name);
-  Int_Index int_index(const std::string name);
+  bool has_int(const std::string name) const;
+  Int_Index int_index(const std::string name) const;
 
   // string attributes
   bool add_string(const std::string name, const String value);
-  bool has_string(const std::string name);
-  String_Index string_index(const std::string name);
+  bool has_string(const std::string name) const;
+  String_Index string_index(const std::string name) const;
 
   // status
   void set_is_active (bool is_active);
-  bool is_active (void);
+  bool is_active (void) const;
 
-  void show (std::ostream& out = std::cout);
+  void show (std::ostream& out = std::cout) const;
 
 protected:
   // all of the particle data

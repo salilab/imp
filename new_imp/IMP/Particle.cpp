@@ -65,7 +65,7 @@ Get pointer to model particle data.
 \return all particle data in the model.
 */
 
-Model_Data* Particle::model_data(void)
+Model_Data* Particle::model_data(void) const
 {
   return model_data_;
 }
@@ -95,7 +95,7 @@ referencing the particle should be evaluated.
  \return true it the particle is active.
  */
 
-bool Particle::is_active(void)
+bool Particle::is_active(void) const
 {
   return is_active_;
 }
@@ -140,7 +140,7 @@ bool Particle::add_float (const std::string name, const Float value, const bool 
  */
 
 
-bool Particle::has_float (const std::string name)
+bool Particle::has_float (const std::string name) const
 {
   return (float_indexes_.find(name) != float_indexes_.end());
 }
@@ -154,12 +154,12 @@ bool Particle::has_float (const std::string name)
   \return index to the attribute.
  */
 
-Float_Index Particle::float_index(const std::string name)
+Float_Index Particle::float_index(const std::string name) const
 {
   if (float_indexes_.find(name) == float_indexes_.end()) {
     throw std::out_of_range("Unknown float attribute name");
   }
-  return float_indexes_[name];
+  return float_indexes_.find(name)->second;
 }
 
 
@@ -189,7 +189,7 @@ bool Particle::add_int (const std::string name, const Int value)
  */
 
 
-bool Particle::has_int (const std::string name)
+bool Particle::has_int (const std::string name) const
 {
   return (int_indexes_.find(name) != int_indexes_.end());
 }
@@ -203,12 +203,12 @@ bool Particle::has_int (const std::string name)
   \return index to the attribute.
  */
 
-Int_Index Particle::int_index(const std::string name)
+Int_Index Particle::int_index(const std::string name) const
 {
   if (int_indexes_.find(name) == int_indexes_.end()) {
     throw std::out_of_range("Unknown int attribute name");
   }
-  return int_indexes_[name];
+  return int_indexes_.find(name)->second;
 }
 
 
@@ -239,7 +239,7 @@ bool Particle::add_string(const std::string name, const String value)
  */
 
 
-bool Particle::has_string (const std::string name)
+bool Particle::has_string (const std::string name) const
 {
   return (string_indexes_.find(name) != string_indexes_.end());
 }
@@ -254,12 +254,12 @@ bool Particle::has_string (const std::string name)
   \return index to the attribute.
  */
 
-String_Index Particle::string_index(const std::string name)
+String_Index Particle::string_index(const std::string name) const
 {
   if (string_indexes_.find(name) == string_indexes_.end()) {
     throw std::out_of_range("Unknown string attribute name");
   }
-  return string_indexes_[name];
+  return string_indexes_.find(name)->second;
 }
 
 
@@ -269,7 +269,7 @@ String_Index Particle::string_index(const std::string name)
  \param[in] out Stream to write particle description to.
  */
 
-void Particle::show (std::ostream& out)
+void Particle::show (std::ostream& out) const
 {
   char* inset = "  ";
   out << std::endl;
@@ -281,7 +281,7 @@ void Particle::show (std::ostream& out)
   out << std::endl;
 
   out << inset << inset << "float attributes:" << std::endl;
-  std::map<std::string, Float_Index>::iterator iter2;
+  std::map<std::string, Float_Index>::const_iterator iter2;
   for (iter2 = float_indexes_.begin(); iter2 != float_indexes_.end(); ++iter2) {
     out << inset << inset << inset << iter2->first << "  " << model_data_->get_float(iter2->second);
     if (model_data_->is_optimized(iter2->second)) {
@@ -292,13 +292,13 @@ void Particle::show (std::ostream& out)
   }
 
   out << inset << inset << "int attributes:" << std::endl;
-  std::map<std::string, Int_Index>::iterator iter3;
+  std::map<std::string, Int_Index>::const_iterator iter3;
   for (iter3 = int_indexes_.begin(); iter3 != int_indexes_.end(); ++iter3) {
     out << inset << inset << inset << iter3->first << "  " << model_data_->get_int(iter3->second) << std::endl;
   }
 
   out << inset << inset << "string attributes:" << std::endl;
-  std::map<std::string, String_Index>::iterator iter4;
+  std::map<std::string, String_Index>::const_iterator iter4;
   for (iter4 = string_indexes_.begin(); iter4 != string_indexes_.end(); ++iter4) {
     out << inset << inset << inset << iter4->first << "  " << model_data_->get_string(iter4->second) << std::endl;
   }

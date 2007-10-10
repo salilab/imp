@@ -32,7 +32,9 @@ public:
 
   // particles
   size_t add_particle(Particle* particle);
-  Particle* particle(size_t idx);
+  Particle* get_particle(size_t idx) const;
+  //Particle* get_particle(size_t idx) { return particle(idx);}
+  //Particle* get_particle(size_t idx) const { return const_cast<Model*>(this)->particle(idx);}
 
   // restraints
   void add_restraint_set(Restraint_Set* restraint_set);
