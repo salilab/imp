@@ -226,6 +226,9 @@ def get_pyext_environment(env, cplusplus=False):
        extension is done."""
     from platform import system
     e = env.Copy()
+    if 'swig' not in e['TOOLS']:
+        print "ERROR: SWIG could not be found. SWIG is needed to build."
+        Exit(1)
     e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
     # import library (.lib file):
