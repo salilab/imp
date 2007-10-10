@@ -72,15 +72,12 @@ public:
   RSR_Distance(Model& model,
                Particle* p1,
                Particle* p2,
-               const Float mean,
-               const Float sd,
-               Score_Func* score_func);
+               Basic_Score_Func_Params* score_func_params);
   RSR_Distance(Model& model,
                Particle* p1,
                Particle* p2,
                const std::string attr_name,
-               const Float sd,
-               Score_Func* score_func);
+               Basic_Score_Func_Params* score_func_params);
   virtual ~RSR_Distance();
 
   virtual Float evaluate(bool calc_deriv);
@@ -98,9 +95,7 @@ protected:
   void set_up(Model& model,
               Particle* p1,
               Particle* p2,
-              const Float mean,
-              const Float sd,
-              Score_Func* score_func);
+              Basic_Score_Func_Params* score_func_params);
 
   // variables used to determine the distance
   Float_Index x1_, y1_, z1_, x2_, y2_, z2_;

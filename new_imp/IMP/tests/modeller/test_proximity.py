@@ -80,11 +80,9 @@ class test_proximity(IMP_Test.IMPTestCase):
 
         particle_indexes = imp2.vectori()
         rsrs = []
-        score_func_ub = imp2.Harmonic_Upper_Bound()
-        score_func_lb = imp2.Harmonic_Lower_Bound()
 
         # set up exclusion volumes
-        IMP_Modeller_Intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs, score_func_lb)
+        IMP_Modeller_Intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs)
 
         max_distance = 10.0
 
@@ -92,7 +90,9 @@ class test_proximity(IMP_Test.IMPTestCase):
         particle_indexes.clear()
         for i in range(6):
             particle_indexes.push_back(i)
-        rsrs.append(imp2.RSR_Proximity(self.imp_model, particle_indexes, "radius", max_distance, 0.1, score_func_ub))
+
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
+        rsrs.append(imp2.RSR_Proximity(self.imp_model, particle_indexes, "radius", max_distance, score_func_params))
 
         # add restraints
         for i in range(len(rsrs)):

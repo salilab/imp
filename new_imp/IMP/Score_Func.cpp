@@ -29,9 +29,9 @@ Harmonic::~Harmonic()
   \param[in] sd Allowable standard deviation value of the feature.
  */
 
-Float Harmonic::operator()(Float feature, Float mean, Float sd)
+Float Harmonic::operator()(Float feature)
 {
-  return harmonic(feature, mean, sd);
+  return harmonic(feature);
 }
 
 /**
@@ -48,9 +48,9 @@ Float Harmonic::operator()(Float feature, Float mean, Float sd)
                       the feature value.
  */
 
-Float Harmonic::operator()(Float feature, Float mean, Float sd, Float& deriv)
+Float Harmonic::operator()(Float feature, Float& deriv)
 {
-  return harmonic(feature, mean, sd, deriv);
+  return harmonic(feature, deriv);
 }
 
 /**
@@ -64,11 +64,11 @@ Float Harmonic::operator()(Float feature, Float mean, Float sd, Float& deriv)
   \param[in] sd Allowable standard deviation value of the feature.
  */
 
-Float Harmonic::harmonic(Float feature, Float mean, Float sd)
+Float Harmonic::harmonic(Float feature)
 {
   Float dummy;
 
-  return harmonic(feature, mean, sd, dummy);
+  return harmonic(feature, dummy);
 }
 
 /**
@@ -86,12 +86,13 @@ Float Harmonic::harmonic(Float feature, Float mean, Float sd)
                       the feature value.
  */
 
-Float Harmonic::harmonic(Float feature, Float mean, Float sd, Float& deriv)
+Float Harmonic::harmonic(Float feature, Float& deriv)
 {
   Float e;
-
-  sd /= 0.54318463; // correction factor to match Modeller
-  e = (feature - mean) / sd;
+  Float sd;
+  
+  sd = sd_ / 0.54318463; // correction factor to match Modeller
+  e = (feature - mean_) / sd;
   deriv = e / sd * 2.0; // * 2.0 is correction factor to match Modeller
   return e * e;
 }
@@ -114,12 +115,12 @@ Harmonic_Lower_Bound::~Harmonic_Lower_Bound()
   \param[in] sd Allowable standard deviation value of the feature.
  */
 
-Float Harmonic_Lower_Bound::operator()(Float feature, Float mean, Float sd)
+Float Harmonic_Lower_Bound::operator()(Float feature)
 {
-  if (feature >= mean)
+  if (feature >= mean_)
     return 0.0;
   else
-    return harmonic(feature, mean, sd);
+    return harmonic(feature);
 }
 
 /**
@@ -137,13 +138,13 @@ Float Harmonic_Lower_Bound::operator()(Float feature, Float mean, Float sd)
                       the feature value.
  */
 
-Float Harmonic_Lower_Bound::operator()(Float feature, Float mean, Float sd, Float& deriv)
+Float Harmonic_Lower_Bound::operator()(Float feature, Float& deriv)
 {
-  if (feature >= mean) {
+  if (feature >= mean_) {
     deriv = 0.0;
     return 0.0;
   } else
-    return harmonic(feature, mean, sd, deriv);
+    return harmonic(feature, deriv);
 }
 
 /** Destructor */
@@ -164,12 +165,12 @@ Harmonic_Upper_Bound::~Harmonic_Upper_Bound()
   \param[in] sd Allowable standard deviation value of the feature.
  */
 
-Float Harmonic_Upper_Bound::operator()(Float feature, Float mean, Float sd)
+Float Harmonic_Upper_Bound::operator()(Float feature)
 {
-  if (feature <= mean)
+  if (feature <= mean_)
     return 0.0;
   else
-    return harmonic(feature, mean, sd);
+    return harmonic(feature);
 }
 
 /**
@@ -187,14 +188,94 @@ Float Harmonic_Upper_Bound::operator()(Float feature, Float mean, Float sd)
                       the feature value.
  */
 
-Float Harmonic_Upper_Bound::operator()(Float feature, Float mean, Float sd, Float& deriv)
+Float Harmonic_Upper_Bound::operator()(Float feature, Float& deriv)
 {
-  if (feature <= mean) {
+  if (feature <= mean_) {
     deriv = 0.0;
     return 0.0;
   } else
-    return harmonic(feature, mean, sd, deriv);
+    return harmonic(feature, deriv);
 }
 
-}  // namespace imp
+//######### Score_Func_Params #########
 
+/**
+  Constructor
+ */
+
+Basic_Score_Func_Params::Basic_Score_Func_Params(std::string score_func_type, 
+                                                 Float mean, Float sd)
+{
+  mean_ = mean;
+  sd_ = sd;
+  score_func_type_ = score_func_type;
+}
+
+
+/**
+Destructor
+ */
+
+Basic_Score_Func_Params::~Basic_Score_Func_Params ()
+{
+}
+
+
+/**
+Set the mean to use in calculating this score function.
+
+\param[in] mean Value for the mean.
+*/
+
+void Basic_Score_Func_Params::set_mean(Float mean)
+{
+  mean_ = mean;
+}
+
+/**
+Set the standard deviation to use in calculating this score function.
+
+\param[in] sd Value for the standard deviation.
+*/
+
+void Basic_Score_Func_Params::set_sd(Float sd)
+{
+  sd_ = sd;
+}
+
+/**
+Set the type of score function to use.
+
+\param[in] mean Value for the mean.
+*/
+
+void Basic_Score_Func_Params::set_score_func_type(std::string score_func_type)
+{
+  score_func_type_ = score_func_type;
+}
+
+
+/**
+Create the specified score function with the current set of parameters
+and return a pointer to that score function.
+
+\return pointer to score function.
+*/
+
+Score_Func* Basic_Score_Func_Params::create_score_func(void)
+{
+  if (score_func_type_ == "harmonic") {
+    return new Harmonic(mean_, sd_);
+  } else if (score_func_type_ == "harmonic_lower_bound") {
+    return new Harmonic_Lower_Bound(mean_, sd_);
+  } else if (score_func_type_ == "harmonic_upper_bound") {
+    return new Harmonic_Upper_Bound(mean_, sd_);
+  }
+  
+  ErrorMsg("Unknown score function: " << score_func_type_);
+  return NULL;
+}
+
+
+
+}  // namespace imp

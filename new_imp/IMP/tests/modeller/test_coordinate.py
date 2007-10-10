@@ -47,9 +47,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Lower_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
         while p_iter.next():
-            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "X_AXIS", 8.0, 0.1, score_func))
+            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "X_AXIS", score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
@@ -73,9 +73,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Upper_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
         while p_iter.next():
-            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "X_AXIS", -8.0, 0.1, score_func))
+            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "X_AXIS", score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
@@ -100,9 +100,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Lower_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
         while p_iter.next():
-            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Y_AXIS", 8.0, 0.1, score_func))
+            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Y_AXIS", score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
@@ -126,9 +126,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Upper_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
         while p_iter.next():
-            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Y_AXIS", -8.0, 0.1, score_func))
+            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Y_AXIS", score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
@@ -152,9 +152,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Lower_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Z_AXIS", 8.0, 0.1, score_func)
+            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Z_AXIS", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -178,9 +178,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Upper_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Z_AXIS", -8.0, 0.1, score_func)
+            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Z_AXIS", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -204,9 +204,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Upper_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XY_RADIAL", 8.0, 0.1, score_func)
+            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XY_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -230,9 +230,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Upper_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XZ_RADIAL", 8.0, 0.1, score_func)
+            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XZ_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -256,9 +256,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Upper_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "YZ_RADIAL", 8.0, 0.1, score_func)
+            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "YZ_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -282,9 +282,9 @@ class test_coordinate(IMP_Test.IMPTestCase):
 
         p_iter = imp2.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func = imp2.Harmonic_Upper_Bound()
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XYZ_SPHERE", 8.0, 0.1, score_func)
+            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XYZ_SPHERE", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 

@@ -112,11 +112,9 @@ class test_pair_connectivity(IMP_Test.IMPTestCase):
         particle_indexes1 = imp2.vectori()
         particle_indexes2 = imp2.vectori()
         rsrs = []
-        score_func_ub = imp2.Harmonic_Upper_Bound()
-        score_func_lb = imp2.Harmonic_Lower_Bound()
 
         # set up exclusion volumes
-        IMP_Modeller_Intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs, score_func_lb)
+        IMP_Modeller_Intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs)
 
         # connect 2 proteins together by two beads
         particle_indexes1.clear()
@@ -130,7 +128,8 @@ class test_pair_connectivity(IMP_Test.IMPTestCase):
         # it should work whether this is True or False
         # However, if it is False, the close pairs should all be between distinct particles
         particle_reuse = False
-        rsrs.append(imp2.RSR_Pair_Connectivity(self.imp_model, particle_indexes1, particle_indexes2, "radius", 0.1, score_func_ub, num_connects, particle_reuse))
+        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
+        rsrs.append(imp2.RSR_Pair_Connectivity(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params, num_connects, particle_reuse))
 
         # add restraints
         for i in range(len(rsrs)):
