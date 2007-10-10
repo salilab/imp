@@ -1,4 +1,4 @@
-Import('env', 'modconfig', 'get_sharedlib_environment')
+Import('env', 'get_sharedlib_environment')
 
 # Get an environment suitable for building a shared library:
 env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
@@ -14,12 +14,11 @@ files = ('Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp', 'Optimizer.cpp',
 lib = env.SharedLibrary('imp', files)
 
 # Install the library:
-libinst = env.Install(modconfig['libinstall'], lib)
+libinst = env.Install(env['libdir'], lib)
 env.Alias('install', [libinst])
 
 # Subdirectories:
 pyext = SConscript('pyext/SConscript')
-test = SConscript('tests/SConscript')
-env.Depends(test, lib)
+SConscript('tests/SConscript')
 
 Return('lib', 'pyext')

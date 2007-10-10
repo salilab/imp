@@ -4,5 +4,4 @@ import os.path
 
 env.Doxygen("doxygen.conf")
 
-docdir = ARGUMENTS.get('docdir', '/usr/share/doc/imp')
-env.InstallAs(os.path.join(docdir, 'doxygen'), 'html')
+env.InstallAs(os.path.join(env['docdir'], 'doxygen'), 'html')

@@ -27,6 +27,6 @@ env.Append(BUILDERS = {'Docbook': builder_docbook})
 
 docbook = env.Docbook("index.html", "../manual.xml")
 
-docdir = ARGUMENTS.get('docdir', '/usr/share/doc/imp')
+docdir = env['docdir']
 env.Install(docdir, docbook)
 env.Alias('docinstall', docdir)

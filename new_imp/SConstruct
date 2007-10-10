@@ -1,13 +1,23 @@
 # Include IMP build utility functions:
 execfile('../SCons.include')
 
-# Get Modeller location, and set up a build environment:
-modconfig = get_modeller_config()
-env = MyEnvironment(modconfig, tools=["default", "doxygen"],
+# Set up build environment:
+opts = Options()
+add_common_options(opts, "imp")
+env = MyEnvironment(options=opts, require_modeller=False,
+                    tools=["default", "doxygen"],
                     toolpath=["../tools"])
+Help(opts.GenerateHelpText(env))
+
+# Some targets require MODELLER:
+if 'test' in COMMAND_LINE_TARGETS and env['MODELLER_EXETYPE'] == '':
+    print "ERROR: cannot run full test suite without MODELLER."
+    print "You could try the 'imptest' target instead for just"
+    print "the non-MODELLER tests."
+    Exit(1)
 
 # Make these objects available to SConscript files:
-Export('env', 'modconfig', 'get_pyext_environment', 'get_sharedlib_environment')
+Export('env', 'get_pyext_environment', 'get_sharedlib_environment')
 
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')

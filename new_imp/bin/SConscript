@@ -1,24 +1,17 @@
-import os
-
-Import('env', 'modconfig')
+Import('env')
 
 # Custom builder to generate file:
 def builder_script_file(target, source, env):
     infile = file(source[0].abspath, 'r')
     outfile = file(target[0].abspath, 'w')
-    modpy = "%s/modpy.sh" % modconfig['bin']
-    # If the modpy.sh script doesn't exist, assume that Modeller will work
-    # without it (e.g. on Macs, using the binary .dmg install):
-    if not os.path.exists(modpy):
-        modpy = ''
     for line in infile:
         line = line.rstrip('\r\n')
         if line.endswith("@TOPDIR@"):
-            line = "TOPDIR=" + env.Dir('#').abspath
+            line = "TOPDIR=" + source[1].get_contents()
         elif line.endswith("@MODPY@"):
-            line = "MODPY=" + modpy
-        elif line.endswith("@EXETYPE@"):
-            line = "EXETYPE=" + modconfig['exetype']
+            line = "MODPY=" + source[2].get_contents()
+        elif line.endswith("@PATHSEP@"):
+            line = "PATHSEP=\"" + source[3].get_contents() + "\""
         print >> outfile, line
     outfile.close()
     infile.close()
@@ -26,5 +19,8 @@ def builder_script_file(target, source, env):
 
 env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
 
-bin = env.ScriptFile("imppy.sh", "imppy.sh.in")
+bin = env.ScriptFile("imppy.sh",
+                     ["imppy.sh.in", env.Value(env.Dir('#').abspath),
+                      env.Value(env['MODELLER_MODPY']),
+                      env.Value(env['PATHSEP'])])
 Return('bin')
