@@ -24448,6 +24448,60 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DensityMap_CreateVoidMap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityMap *arg1 = (DensityMap *) 0 ;
+  int *arg2 = 0 ;
+  int *arg3 = 0 ;
+  int *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int temp4 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:DensityMap_CreateVoidMap",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityMap_CreateVoidMap" "', argument " "1"" of type '" "DensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityMap * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DensityMap_CreateVoidMap" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "DensityMap_CreateVoidMap" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "DensityMap_CreateVoidMap" "', argument " "4"" of type '" "int""'");
+  } 
+  temp4 = static_cast< int >(val4);
+  arg4 = &temp4;
+  (arg1)->CreateVoidMap((int const &)*arg2,(int const &)*arg3,(int const &)*arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DensityMap_Read(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DensityMap *arg1 = (DensityMap *) 0 ;
@@ -24692,6 +24746,31 @@ SWIGINTERN PyObject *_wrap_DensityMap_header(PyObject *SWIGUNUSEDPARM(self), PyO
   arg1 = reinterpret_cast< DensityMap * >(argp1);
   {
     DensityHeader const &_result_ref = ((DensityMap const *)arg1)->header();
+    result = (DensityHeader *) &_result_ref;
+  }
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DensityHeader, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DensityMap_header_writable(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DensityMap *arg1 = (DensityMap *) 0 ;
+  DensityHeader *result = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DensityMap_header_writable",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DensityMap, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DensityMap_header_writable" "', argument " "1"" of type '" "DensityMap *""'"); 
+  }
+  arg1 = reinterpret_cast< DensityMap * >(argp1);
+  {
+    DensityHeader &_result_ref = (arg1)->header_writable();
     result = (DensityHeader *) &_result_ref;
   }
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DensityHeader, 0 |  0 );
@@ -29703,7 +29782,20 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_SampledDensityMap(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_SampledDensityMap__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SampledDensityMap *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_SampledDensityMap")) SWIG_fail;
+  result = (SampledDensityMap *)new SampledDensityMap();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SampledDensityMap, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_SampledDensityMap__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DensityHeader *arg1 = 0 ;
   SampledDensityMap *result = 0 ;
@@ -29724,6 +29816,34 @@ SWIGINTERN PyObject *_wrap_new_SampledDensityMap(PyObject *SWIGUNUSEDPARM(self),
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SampledDensityMap, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_SampledDensityMap(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[2];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 1); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 0) {
+    return _wrap_new_SampledDensityMap__SWIG_0(self, args);
+  }
+  if (argc == 1) {
+    int _v;
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_DensityHeader, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_SampledDensityMap__SWIG_1(self, args);
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'new_SampledDensityMap'.\n  Possible C/C++ prototypes are:\n    SampledDensityMap()\n    SampledDensityMap(DensityHeader const &)\n");
   return NULL;
 }
 
@@ -31087,6 +31207,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"floatMap3D_data", _wrap_floatMap3D_data, METH_VARARGS, NULL},
 	 { (char *)"floatMap3D_swigregister", floatMap3D_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_DensityMap", _wrap_new_DensityMap, METH_VARARGS, NULL},
+	 { (char *)"DensityMap_CreateVoidMap", _wrap_DensityMap_CreateVoidMap, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_Read", _wrap_DensityMap_Read, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_Write", _wrap_DensityMap_Write, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_setResolution", _wrap_DensityMap_setResolution, METH_VARARGS, NULL},
@@ -31095,6 +31216,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DensityMap_stdNormalize", _wrap_DensityMap_stdNormalize, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_voxel2loc", _wrap_DensityMap_voxel2loc, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_header", _wrap_DensityMap_header, METH_VARARGS, NULL},
+	 { (char *)"DensityMap_header_writable", _wrap_DensityMap_header_writable, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_x_loc", _wrap_DensityMap_x_loc, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_y_loc", _wrap_DensityMap_y_loc, METH_VARARGS, NULL},
 	 { (char *)"DensityMap_z_loc", _wrap_DensityMap_z_loc, METH_VARARGS, NULL},

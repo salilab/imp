@@ -86,8 +86,15 @@ int EMReaderWriter::Read(const char *filename, real **data, DensityHeader &heade
 
 
 void EMReaderWriter::Write(const char* filename,const real *data, const DensityHeader &header_ ) {
+
+  
+  
   ofstream s(filename);
   EMHeader header(header_);
+  //init header data if not set
+  if (header.type == 0) {
+    header.type = 5;
+  }
   WriteHeader(s,header);
   s.write((char *) data,sizeof(real)*header.nx*header.ny*header.nz);
   s.close();

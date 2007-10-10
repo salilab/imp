@@ -1,4 +1,7 @@
 %module(directors="1") emlib
+
+%apply int *OUTPUT {int *ierr};
+
 %{
 #include "../def.h"
 #include "../DensityHeader.h"
@@ -11,6 +14,7 @@
 #include "../CoarseCC.h"
 #include "../CoarseCCatIntervals.h"
 %}
+
 
 %include "std_common.i"
 %include "std_ios.i"

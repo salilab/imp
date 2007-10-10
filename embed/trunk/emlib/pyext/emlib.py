@@ -664,6 +664,7 @@ class DensityMap(floatMap3D):
         this = _emlib.new_DensityMap(*args)
         try: self.this.append(this)
         except: self.this = this
+    def CreateVoidMap(*args): return _emlib.DensityMap_CreateVoidMap(*args)
     def Read(*args): return _emlib.DensityMap_Read(*args)
     def Write(*args): return _emlib.DensityMap_Write(*args)
     def setResolution(*args): return _emlib.DensityMap_setResolution(*args)
@@ -672,6 +673,7 @@ class DensityMap(floatMap3D):
     def stdNormalize(*args): return _emlib.DensityMap_stdNormalize(*args)
     def voxel2loc(*args): return _emlib.DensityMap_voxel2loc(*args)
     def header(*args): return _emlib.DensityMap_header(*args)
+    def header_writable(*args): return _emlib.DensityMap_header_writable(*args)
     def x_loc(*args): return _emlib.DensityMap_x_loc(*args)
     def y_loc(*args): return _emlib.DensityMap_y_loc(*args)
     def z_loc(*args): return _emlib.DensityMap_z_loc(*args)
