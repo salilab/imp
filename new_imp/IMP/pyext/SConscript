@@ -1,4 +1,4 @@
-Import('env', 'modconfig', 'get_pyext_environment')
+Import('env', 'get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(env, cplusplus=True)
@@ -13,8 +13,8 @@ pymod = File('imp2.py')
 e.Depends(pymod, 'imp.i')
 
 # Install the Python extension and any .py files:
-libinst = e.Install(modconfig['libinstall'], pyext)
-pyinst = e.Install(modconfig['pyinstall'], pymod)
+libinst = e.Install(e['pyextdir'], pyext)
+pyinst = e.Install(e['pythondir'], pymod)
 e.Alias('install', [libinst, pyinst])
 
 Return('pyext')
