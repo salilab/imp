@@ -138,6 +138,19 @@ def CheckModeller(context):
     context.Result(modeller)
     return True
 
+def _modeller_check_failed(require_modeller):
+    """Print an informative message if the Modeller check failed"""
+    msg = "  You can set the directory where MODELLER is installed by\n" + \
+          "  setting the MODINSTALLSVN environment variable, or with\n" + \
+          "  'scons modeller=/opt/modeller' or similar.\n"
+    print
+    if require_modeller:
+        print "ERROR: MODELLER is required to build this package\n\n" + msg
+        Exit(1)
+    else:
+        print "  MODELLER was not found: build will continue but some"
+        print "  functionality will be missing.\n\n" + msg
+
 def MyEnvironment(options=None, require_modeller=True, *args, **kw):
     """Create an environment suitable for building IMP modules"""
     import platform
@@ -158,36 +171,29 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -Werror -g -O3")
 
-    custom_tests = {'CheckGNUHash': CheckGNUHash,
-                    'CheckGCCVisibility': CheckGCCVisibility,
-                    'CheckModeller': CheckModeller}
-    conf = env.Configure(custom_tests = custom_tests)
     sys = platform.system()
-    if sys == 'Linux':
-        conf.CheckGNUHash()
-    elif sys == 'SunOS':
+    if sys == 'SunOS':
         # Find locally-installed libraries in /usr/local (e.g. for SWIG)
         env['ENV']['LD_LIBRARY_PATH'] = '/usr/local/lib'
-    conf.CheckGCCVisibility()
     # Make Modeller exetype variable available:
     if os.environ.has_key('EXECUTABLE_TYPESVN'):
         env['ENV']['EXECUTABLE_TYPESVN'] = os.environ['EXECUTABLE_TYPESVN']
     # Set empty variables in case the Modeller check fails:
-    env['MODELLER_MODPY'] = ''
-    env['MODELLER_EXETYPE'] = ''
-    if not conf.CheckModeller():
-        msg = "  You can set the directory where MODELLER is installed by\n" + \
-              "  setting the MODINSTALLSVN environment variable, or with\n" + \
-              "  'scons modeller=/opt/modeller' or similar.\n"
-        print
-        if require_modeller:
-            print "ERROR: MODELLER is required to build this package\n\n" + msg
-            Exit(1)
-        else:
-            print "  MODELLER was not found: build will continue but some"
-            print "  functionality will be missing.\n\n" + msg
-    conf.Finish()
-
+    for mod in ('MODPY', 'EXETYPE'):
+        env['MODELLER_' + mod] = ''
+    for mod in ('CPPPATH', 'LIBPATH', 'LIBS'):
+        env['MODELLER_' + mod] = []
+    if not env.GetOption('clean') and not env.GetOption('help'):
+        custom_tests = {'CheckGNUHash': CheckGNUHash,
+                        'CheckGCCVisibility': CheckGCCVisibility,
+                        'CheckModeller': CheckModeller}
+        conf = env.Configure(custom_tests = custom_tests)
+        if sys == 'Linux':
+            conf.CheckGNUHash()
+        conf.CheckGCCVisibility()
+        if not conf.CheckModeller():
+            _modeller_check_failed(require_modeller)
+        conf.Finish()
     return env
 
 def _fix_aix_cpp_link(env, cplusplus, linkflags):
