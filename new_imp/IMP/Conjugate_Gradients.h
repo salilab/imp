@@ -22,10 +22,10 @@ public:
   virtual ~Conjugate_Gradients();
 
   virtual Float optimize(Model& model, int max_steps, Float threshold=0.0);
-  virtual std::string version(void) {
+  virtual std::string version(void) const {
     return "0.1";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Ben Webb";
   }
 };

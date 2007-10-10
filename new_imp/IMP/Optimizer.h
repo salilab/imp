@@ -23,10 +23,10 @@ public:
   virtual ~Optimizer();
 
   virtual Float optimize(Model& model, int max_steps, Float threshold=0.0) = 0;
-  virtual std::string version(void) {
+  virtual std::string version(void) const {
     return "unknown";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "unknown";
   }
 };

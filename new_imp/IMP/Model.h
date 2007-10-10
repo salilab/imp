@@ -28,7 +28,7 @@ class IMPDLLEXPORT Model
 public:
   Model();
   ~Model();
-  Model_Data* get_model_data(void);
+  Model_Data* get_model_data(void) const;
 
   // particles
   size_t add_particle(Particle* particle);
@@ -50,11 +50,11 @@ public:
   // set state to the trajectory file
   void save_state(void);
 
-  void show (std::ostream& out = std::cout);
-  std::string version(void) {
+  void show (std::ostream& out = std::cout) const;
+  std::string version(void) const {
     return "0.5.0";
   }
-  std::string last_modified_by(void) {
+  std::string last_modified_by(void) const{
     return "Bret Peterson";
   }
 

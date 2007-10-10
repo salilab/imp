@@ -33,16 +33,16 @@ public:
 
   // status
   void set_is_active(const bool active);
-  bool is_active(void);
+  bool is_active(void) const;
 
   // called when at least one particle has been inactivated
   virtual void check_particles_active(void);
 
-  virtual void show(std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show(std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "unknown";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "unknown";
   }
 
@@ -83,11 +83,11 @@ public:
   virtual Float evaluate(bool calc_deriv);
 
   // status
-  virtual void show (std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show (std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "0.5.0";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Bret Peterson";
   }
 

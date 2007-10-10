@@ -44,7 +44,7 @@ void Rigid_Body::set_num_particles (int num_particles)
 
  */
 
-int Rigid_Body::num_particles (void)
+int Rigid_Body::num_particles (void) const
 {
   return num_particles_;
 }

@@ -42,7 +42,7 @@ Model::~Model ()
   \return pointer to all model particle data.
  */
 
-Model_Data* Model::get_model_data(void)
+Model_Data* Model::get_model_data(void) const
 {
   return model_data_;
 }
@@ -238,7 +238,7 @@ void Model::save_state(void)
  \param[in] out Stream to write model description to.
 */
 
-void Model::show(std::ostream& out)
+void Model::show(std::ostream& out) const
 {
   out << std::endl << std::endl;
   out << "** Model **" << std::endl;
