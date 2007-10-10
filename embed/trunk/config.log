@@ -1,4 +1,4 @@
-file ../imp/SCons.include,line 149:
+file ../imp/SCons.include,line 174:
 	Configure(confdir = .sconf_temp)
 scons: Configure: Checking whether GNU_HASH linking should be disabled...
 scons: Configure: ".sconf_temp/conftest_0.c" is up to date.
@@ -11,11 +11,31 @@ scons: Configure: The original builder output was:
   |
 scons: Configure: ".sconf_temp/conftest_0.o" is up to date.
 scons: Configure: The original builder output was:
-  |gcc -o .sconf_temp/conftest_0.o -c -Wall -Werror .sconf_temp/conftest_0.c
+  |gcc -o .sconf_temp/conftest_0.o -c -Wall -Werror -g -O3 .sconf_temp/conftest_0.c
   |
 scons: Configure: ".sconf_temp/conftest_0" is up to date.
 scons: Configure: The original builder output was:
   |gcc -o .sconf_temp/conftest_0 -Wl,--hash-style=sysv .sconf_temp/conftest_0.o
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking whether compiler supports -fvisibility...
+scons: Configure: ".sconf_temp/conftest_1.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_1.c <-
+  |  |
+  |  |__attribute__ ((visibility("default")))
+  |  |int main(void)
+  |  |{ return 0; }
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_1.o" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_1.o -c -Wall -Werror -g -O3 -fvisibility=hidden .sconf_temp/conftest_1.c
+  |
+scons: Configure: ".sconf_temp/conftest_1" is up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_1 -Wl,--hash-style=sysv .sconf_temp/conftest_1.o
   |
 scons: Configure: (cached) yes
 
