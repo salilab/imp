@@ -31,11 +31,11 @@ public:
   virtual Float evaluate(bool calc_deriv);
 
   // status
-  virtual void show (std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show (std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "0.5.0";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Bret Peterson";
   }
 
@@ -63,11 +63,11 @@ public:
   virtual Float evaluate(bool calc_deriv);
 
   // status
-  virtual void show (std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show (std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "0.5.0";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Bret Peterson";
   }
 
@@ -105,11 +105,11 @@ public:
   virtual Float evaluate(bool calc_deriv);
 
   // status
-  virtual void show (std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show (std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "0.5.0";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Bret Peterson";
   }
 
@@ -157,11 +157,11 @@ public:
   virtual Float evaluate(bool calc_deriv);
 
   // status
-  virtual void show (std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show (std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "0.5.0";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Bret Peterson";
   }
 
@@ -174,7 +174,7 @@ protected:
     void evaluate(void) {
       score_ = rsr_->evaluate(false);
     }
-    bool operator<(const Restraint_Score& rs) {
+    bool operator<(const Restraint_Score& rs) const {
       return score_ < rs.score_;
     }
 
@@ -234,11 +234,11 @@ public:
   virtual Float evaluate(bool calc_deriv);
 
   // status
-  virtual void show (std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show (std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "0.5.0";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Bret Peterson";
   }
 
@@ -252,7 +252,7 @@ protected:
     void evaluate(void) {
       score_ = rsr_->evaluate(false);
     }
-    bool operator<(const Restraint_Score& rs) {
+    bool operator<(const Restraint_Score& rs) const {
       return score_ < rs.score_;
     }
 
@@ -317,11 +317,11 @@ public:
   virtual Float evaluate(bool calc_deriv);
 
   // status
-  virtual void show (std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show (std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "0.5.0";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Bret Peterson";
   }
 
@@ -362,11 +362,11 @@ public:
   virtual Float evaluate(bool calc_deriv);
 
   // status
-  virtual void show (std::ostream& out = std::cout);
-  virtual std::string version(void) {
+  virtual void show (std::ostream& out = std::cout) const;
+  virtual std::string version(void) const {
     return "0.0.1";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const {
     return "Frido and Keren";
   }
 

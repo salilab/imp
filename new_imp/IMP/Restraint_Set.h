@@ -28,7 +28,7 @@ public:
   void set_model_data(Model_Data* model_data);
 
   /** Get name of this restraint set. */
-  std::string name(void);
+  std::string name(void) const;
 
   /** Set name of this restraint set. */
   void set_name(const std::string name);
@@ -46,12 +46,12 @@ public:
 
   // status
   void set_is_active (const bool is_active);
-  bool is_active (void);
+  bool is_active (void) const;
 
   // called when at least one particle has been inactivated
   void check_particles_active (void);
 
-  void show (std::ostream& out = std::cout);
+  void show (std::ostream& out = std::cout) const;
 
 protected:
   // all of the particle data

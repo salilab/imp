@@ -21,7 +21,7 @@ public:
   ~Rigid_Body();
 
   void set_num_particles(int num_particles);
-  int num_particles(void);
+  int num_particles(void) const;
 protected:
   int num_particles_;
 };

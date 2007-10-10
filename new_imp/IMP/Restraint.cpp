@@ -77,7 +77,7 @@ evaluated.
  \return true it the restraint is active.
  */
 
-bool Restraint::is_active(void)
+bool Restraint::is_active(void) const
 {
   return is_active_  && are_particles_active_;
 }
@@ -89,7 +89,7 @@ bool Restraint::is_active(void)
  \param[in] out Stream to send restraint description to.
  */
 
-void Restraint::show(std::ostream& out)
+void Restraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "unknown restraint (active):" << std::endl;
@@ -290,7 +290,7 @@ Float RSR_Distance::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Distance::show(std::ostream& out)
+void RSR_Distance::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "distance restraint (active):" << std::endl;

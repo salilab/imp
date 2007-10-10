@@ -142,7 +142,7 @@ Float RSR_Coordinate::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Coordinate::show(std::ostream& out)
+void RSR_Coordinate::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "coordinate restraint (active):" << std::endl;
@@ -286,7 +286,7 @@ Float RSR_Torus::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Torus::show(std::ostream& out)
+void RSR_Torus::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "torus restraint (active):" << std::endl;
@@ -521,7 +521,7 @@ Float RSR_Proximity::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Proximity::show(std::ostream& out)
+void RSR_Proximity::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "proximity restraint (active):" << std::endl;
@@ -786,7 +786,7 @@ Float RSR_Pair_Connectivity::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Pair_Connectivity::show(std::ostream& out)
+void RSR_Pair_Connectivity::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "pair connectivity restraint (active):" << std::endl;
@@ -1102,7 +1102,7 @@ Float RSR_Connectivity::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Connectivity::show(std::ostream& out)
+void RSR_Connectivity::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "connectivity restraint (active):" << std::endl;
@@ -1283,7 +1283,7 @@ Float RSR_Exclusion_Volume::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Exclusion_Volume::show(std::ostream& out)
+void RSR_Exclusion_Volume::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "exclusion volume restraint (active):" << std::endl;
@@ -1439,7 +1439,7 @@ Float RSR_EM_Coarse::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_EM_Coarse::show(std::ostream& out)
+void RSR_EM_Coarse::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "em coarse restraint (active):" << std::endl;

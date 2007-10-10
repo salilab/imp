@@ -58,7 +58,7 @@ void Restraint_Set::set_model_data(Model_Data* model_data)
 }
 
 /** Get name of this restraint set. */
-std::string Restraint_Set::name(void) {
+std::string Restraint_Set::name(void) const {
   return name_;
 }
 
@@ -157,7 +157,7 @@ void Restraint_Set::set_is_active (const bool is_active)
  \return true if restraint set is active.
  */
 
-bool Restraint_Set::is_active (void)
+bool Restraint_Set::is_active (void) const
 {
   return(is_active_);
 }
@@ -168,7 +168,7 @@ bool Restraint_Set::is_active (void)
  \param[in] out Stream to send restraint description to.
  */
 
-void Restraint_Set::show(std::ostream& out)
+void Restraint_Set::show(std::ostream& out) const 
 {
   out << "restraint set " << name_ << ":" << std::endl;
   for (size_t i=0; i < restraints_.size(); i++) {
