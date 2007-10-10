@@ -32,6 +32,7 @@ Model::Model ()
 
 Model::~Model ()
 {
+  LogMsg(VERBOSE,"Delete Model: beware of early Python calls to destructor.");
 }
 
 

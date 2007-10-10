@@ -33,7 +33,7 @@ class IMPDLLEXPORT Harmonic : public Score_Func
 {
 public:
   Harmonic() {}
-  virtual ~Harmonic() {}
+  virtual ~Harmonic();
 
   virtual Float operator()(Float feature, Float mean, Float sd, Float& deriv);
   virtual Float operator()(Float feature, Float mean, Float sd);
@@ -47,7 +47,7 @@ class IMPDLLEXPORT Harmonic_Lower_Bound : public Harmonic
 {
 public:
   Harmonic_Lower_Bound() {}
-  virtual ~Harmonic_Lower_Bound() {}
+  virtual ~Harmonic_Lower_Bound();
 
   virtual Float operator()(Float feature, Float mean, Float sd, Float& deriv);
   virtual Float operator()(Float feature, Float mean, Float sd);
@@ -58,7 +58,7 @@ class IMPDLLEXPORT Harmonic_Upper_Bound : public Harmonic
 {
 public:
   Harmonic_Upper_Bound() {}
-  virtual ~Harmonic_Upper_Bound() {}
+  virtual ~Harmonic_Upper_Bound();
 
   virtual Float operator()(Float feature, Float mean, Float sd, Float& deriv);
   virtual Float operator()(Float feature, Float mean, Float sd);

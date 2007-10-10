@@ -7,9 +7,17 @@
  */
 
 #include "Score_Func.h"
+#include "log.h"
 
 namespace imp
 {
+
+/** Destructor */
+Harmonic::~Harmonic()
+{
+  LogMsg(VERBOSE,
+         "Delete Harmonic: beware of early Python calls to destructor.");
+}
 
 /**
   Calculate harmonic score with respect to the given feature.
@@ -88,6 +96,13 @@ Float Harmonic::harmonic(Float feature, Float mean, Float sd, Float& deriv)
   return e * e;
 }
 
+/** Destructor */
+Harmonic_Lower_Bound::~Harmonic_Lower_Bound()
+{
+  LogMsg(VERBOSE, "Delete Harmonic_Lower_Bound: beware of early Python "
+                  "calls to destructor.");
+}
+
 /**
   Calculate harmonic score with respect to the given feature if
   the feature is less than the mean. Otherwise, the score is zero.
@@ -129,6 +144,13 @@ Float Harmonic_Lower_Bound::operator()(Float feature, Float mean, Float sd, Floa
     return 0.0;
   } else
     return harmonic(feature, mean, sd, deriv);
+}
+
+/** Destructor */
+Harmonic_Upper_Bound::~Harmonic_Upper_Bound()
+{
+  LogMsg(VERBOSE, "Delete Harmonic_Upper_Bound: beware of early Python "
+                  "calls to destructor.");
 }
 
 /**

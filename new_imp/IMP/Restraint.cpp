@@ -40,7 +40,7 @@ Destructor
 
 Restraint::~Restraint ()
 {
-  LogMsg(VERBOSE, "Restraint deleted");
+  LogMsg(VERBOSE,"Delete restraint: beware of early Python calls to destructor.");
 }
 
 
@@ -210,6 +210,7 @@ void RSR_Distance::set_up(Model& model,
 
 RSR_Distance::~RSR_Distance ()
 {
+  LogMsg(VERBOSE,"Delete RSR_Distance: beware of early Python calls to destructor.");
 }
 
 /**
