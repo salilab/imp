@@ -1,5 +1,7 @@
 # Include IMP build utility functions:
-execfile('../SCons.include')
+import sys
+sys.path.append('../')
+from tools import *
 
 # Set up build environment:
 opts = Options()

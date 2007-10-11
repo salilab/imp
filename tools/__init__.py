@@ -3,6 +3,10 @@
 import os.path
 import re
 import sys
+from SCons.Script import *
+
+__all__ = ["add_common_options", "MyEnvironment", "get_pyext_environment",
+           "get_sharedlib_environment"]
 
 import SCons
 _SWIGScanner = SCons.Scanner.ClassicCPP(
