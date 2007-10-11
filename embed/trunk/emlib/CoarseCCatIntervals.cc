@@ -21,7 +21,7 @@ float CoarseCCatIntervals::evaluate(
 				     const DensityMap &data, 
 				     SampledDensityMap &model_map,
 				     float **cdx,  float **cdy,  float **cdz,
-				     float *dvx, float *dvy, float *dvz, 
+				     float **dvx, float **dvy, float **dvz, 
 				     const int &ncd,
 				     float **radius,  float **wei,
 				     float scalefac,
@@ -38,9 +38,9 @@ float CoarseCCatIntervals::evaluate(
 
     if (lderiv) { 
       for(int i=0;i<ncd;i++) {
-	stored_dvx_[i] = dvx[i];
-	stored_dvy_[i] = dvy[i];
-	stored_dvz_[i] = dvz[i];
+	stored_dvx_[i] = *dvx[i];
+	stored_dvy_[i] = *dvy[i];
+	stored_dvz_[i] = *dvz[i];
       }
     }
 
@@ -57,9 +57,9 @@ float CoarseCCatIntervals::evaluate(
 
     if (lderiv) { // sync the derivatives. Now remove the additional contributions ( currently stored in store_dv from the new values
        for(int i=0;i<ncd;i++) {
-      stored_dvx_[i] = dvx[i] - stored_dvx_[i];
-      stored_dvy_[i] = dvy[i] - stored_dvy_[i];
-      stored_dvz_[i] = dvz[i] - stored_dvz_[i];
+      stored_dvx_[i] = *dvx[i] - stored_dvx_[i];
+      stored_dvy_[i] = *dvy[i] - stored_dvy_[i];
+      stored_dvz_[i] = *dvz[i] - stored_dvz_[i];
        }
     }
   }
@@ -67,9 +67,9 @@ float CoarseCCatIntervals::evaluate(
   // to the general terms
   else {
     for(int i=0;i<ncd;i++) {
-      dvx[i] += stored_dvx_[i];
-      dvy[i] += stored_dvy_[i];
-      dvz[i] += stored_dvz_[i];
+      *dvx[i] += stored_dvx_[i];
+      *dvy[i] += stored_dvy_[i];
+      *dvz[i] += stored_dvz_[i];
       
     }
     ++calls_counter;

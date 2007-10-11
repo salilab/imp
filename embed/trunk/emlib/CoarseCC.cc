@@ -4,7 +4,7 @@
  float CoarseCC::evaluate(const DensityMap &em_map, 
 				SampledDensityMap &model_map,
 				float **cdx,  float **cdy,  float **cdz,
-				float *dvx, float *dvy, float *dvz, 
+				float **dvx, float **dvy, float **dvz, 
 				const int &ncd,
 				float **radius,  float **wei,
 				float scalefac,
@@ -23,6 +23,7 @@
   float eps=.000001;
 
   float escore = Corr(em_map, model_map,eps);
+
   escore = scalefac * (1. - escore);
 
 
@@ -71,8 +72,9 @@
       ccc = ccc + em_data[ii] * model_data[ii];
     }
   }
+
+  ccc = ccc/(1.0*nvox * nvox* em_header.rms * model_header.rms);
   //  cout << " cc : " << ccc << "  " << nvox << "  " << em_header.rms << "  " <<  model_header.rms << endl;
-  ccc = ccc/(nvox * nvox* em_header.rms * model_header.rms);
   return ccc;
 };
 
@@ -87,7 +89,7 @@ void  CoarseCC::calcDerivatives(
 				const int &ncd,
 				float **radius,  float **wei,
 				const float &scalefac,
-				float *dvx, float *dvy,float *dvz, 
+				float **dvx, float **dvy,float **dvz, 
 				int &ierr
 				)
 {
@@ -133,9 +135,9 @@ void  CoarseCC::calcDerivatives(
         }
       }
     }
-    dvx[ii] +=  *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvx;
-    dvy[ii] +=  *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvy;
-    dvz[ii] +=  *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvz;
+    *dvx[ii] +=  *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvx;
+    *dvy[ii] +=  *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvy;
+    *dvz[ii] +=  *(wei[ii]) * 2.*inv_sigsq * scalefac * normfac * tdvz;
   }
 }
 
