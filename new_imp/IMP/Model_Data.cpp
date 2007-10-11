@@ -68,18 +68,6 @@ void Model_Data::set_float(const Float_Index idx, const Float value)
 }
 
 
-/**
-  Get particle float attribute.
-
-  \param[in] idx Index of the particle float attribute.
-  \return value of particle float attribute.
- */
-
-Float Model_Data::get_float(const Float_Index idx) const
-{
-  return float_data_[idx.index()].value_;
-}
-
 
 /**
   Add value to deriviative.
@@ -178,20 +166,6 @@ void Model_Data::set_int(const Int_Index idx, const Int value)
 
 
 /**
-  Get particle int attribute.
-
-  \param[in] idx Index of the particle int attribute.
-  \return value of particle float attribute.
- */
-
-Int Model_Data::get_int(const Int_Index idx) const
-{
-  LogMsg(VERBOSE, "get_int: " << int_data_.size() << " " << idx.index());
-  return int_data_[idx.index()];
-}
-
-
-/**
   Add particle string attribute to the model. The returned index can be used
   for obtaining and setting the attribute value.
 
@@ -223,19 +197,6 @@ String_Index Model_Data::add_string(const String value)
 void Model_Data::set_string(const String_Index idx, const String value)
 {
   string_data_[idx.index()] = value;
-}
-
-
-/**
-  Get particle string attribute.
-
-  \param[in] idx Index of the particle string attribute.
-  \return value of particle string attribute.
- */
-
-String Model_Data::get_string(const String_Index idx) const
-{
-  return string_data_[idx.index()];
 }
 
 
