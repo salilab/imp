@@ -21,7 +21,7 @@ namespace imp
 Model::Model ()
 {
   model_data_ = new Model_Data();
-  InitLog("log.txt");
+  //InitLog("log.txt");
   frame_num_ = 0;
 }
 
@@ -32,7 +32,7 @@ Model::Model ()
 
 Model::~Model ()
 {
-  LogMsg(VERBOSE,"Delete Model: beware of early Python calls to destructor.");
+  IMP_LOG(VERBOSE,"Delete Model: beware of early Python calls to destructor.");
 }
 
 
@@ -126,7 +126,7 @@ Float Model::evaluate(bool calc_derivs)
 {
   // One or more particles may have been activated or deactivated.
   // Check each restraint to see if it changes its active status.
-  LogMsg(VERBOSE, "Model evaluate (" << restraint_sets_.size() << " restraint sets):");
+  IMP_LOG(VERBOSE, "Model evaluate (" << restraint_sets_.size() << " restraint sets):");
   if (model_data_->check_particles_active()) {
     for (size_t i = 0; i < restraint_sets_.size(); i++) {
       restraint_sets_[i]->check_particles_active();
@@ -143,12 +143,12 @@ Float Model::evaluate(bool calc_derivs)
   // for current state of the model
   Float score = 0.0;
   for (size_t i = 0; i < restraint_sets_.size(); i++) {
-    LogMsg(VERBOSE, "Evaluating restraints " << restraint_sets_[i]->name() << ":");
+    IMP_LOG(VERBOSE, "Evaluating restraints " << restraint_sets_[i]->name() << ":");
     if (restraint_sets_[i]->is_active()) {
       score += restraint_sets_[i]->evaluate(calc_derivs);
     }
 
-    LogMsg(VERBOSE, "Cumulative score: " << score);
+    IMP_LOG(VERBOSE, "Cumulative score: " << score);
   }
 
   // if trajectory is on and we are calculating derivatives, save state in trajectory file
@@ -157,7 +157,7 @@ Float Model::evaluate(bool calc_derivs)
   if (calc_derivs)
     save_state();
 
-  LogMsg(VERBOSE, "Final score: " << score);
+  IMP_LOG(VERBOSE, "Final score: " << score);
   return score;
 }
 
@@ -176,17 +176,14 @@ void Model::set_up_trajectory(const std::string trajectory_path, bool trajectory
   trajectory_on_ = trajectory_on;
 
   if (clear_file) {
-    try {
-      std::ofstream fout;
-      fout.open(trajectory_path_.c_str(), std::ios_base::out);
-      fout.close();
-
-      frame_num_ = 0;
-    }
-
-    catch (...) {
-      ErrorMsg("Unable to initialize trajectory file: " << trajectory_path_ << ". Trajectory is off. ");
-      trajectory_on_ = false;
+    std::ofstream fout;
+    fout.open(trajectory_path_.c_str(), std::ios_base::out);
+    if (!fout.is_open()) {
+      IMP_ERROR("Unable to initialize trajectory file: " << trajectory_path_
+		<< ". Trajectory writing is off.");
+      trajectory_on_=false;
+    } else {
+      frame_num_=0;
     }
   }
 }
@@ -201,35 +198,45 @@ void Model::save_state(void)
   if (!trajectory_on_)
     return;
 
-  try {
+  //try {
     std::ofstream fout;
 
     fout.open(trajectory_path_.c_str(), std::ios_base::app);
-
-    fout << "FRAME " << frame_num_ << std::endl;
-    frame_num_++;
-    fout << particles_.size() << std::endl;
-
-    // for each particle, output its current state
-    Float_Index fi;
-    for (size_t i = 0; i < particles_.size(); i++) {
-      fi = particles_[i]->float_index("X");
-      fout << model_data_->get_float(fi) << " ";
-
-      fi = particles_[i]->float_index("Y");
-      fout << model_data_->get_float(fi) << " ";
-
-      fi = particles_[i]->float_index("Z");
-      fout << model_data_->get_float(fi) << std::endl;
+    if (!fout.is_open()) {
+      IMP_ERROR("Unable to open trajectory file: " 
+		<< trajectory_path_ << ". Trajectory is off. ");
+      trajectory_on_=false;
+    } else {
+      fout << "FRAME " << frame_num_ << std::endl;
+      frame_num_++;
+      fout << particles_.size() << std::endl;
+      
+      // for each particle, output its current state
+      Float_Index fi;
+      for (size_t i = 0; i < particles_.size(); i++) {
+	fi = particles_[i]->float_index("X");
+	fout << model_data_->get_float(fi) << " ";
+	
+	fi = particles_[i]->float_index("Y");
+	fout << model_data_->get_float(fi) << " ";
+	
+	fi = particles_[i]->float_index("Z");
+	fout << model_data_->get_float(fi) << std::endl;
+      }
+      if (!fout) {
+	IMP_ERROR("Error writing to trajectory file. Trajectory is off. ");
+	trajectory_on_=false;
+      }
     }
+      //}
 
-    fout.close();
-  }
+      //fout.close();
+      //}
 
-  catch (...) {
+      /*catch (...) {
     ErrorMsg("Unable to save to trajectory file: " << trajectory_path_ << ". Trajectory is off. ");
     trajectory_on_ = false;
-  }
+    }*/
 }
 
 /**

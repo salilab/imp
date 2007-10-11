@@ -34,10 +34,10 @@ class IMPDLLEXPORT Particle
   friend class String_Attribute_Iterator;
 
 public:
-  Particle();
+
+ 
   Particle(Model_Data* model_data);
   ~Particle();
-  void set_model_data(Model_Data* model_data);
   Model_Data* model_data(void) const;
 
   // float attributes
