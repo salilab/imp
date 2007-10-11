@@ -405,7 +405,7 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
 
     # add restraint for for vector of particles
     if distance_attribute:
-        score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
+        score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
         r = IMP.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, distance_attribute, score_func_params, number_of_connects)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
