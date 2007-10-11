@@ -28,7 +28,7 @@ const Float RSR_Distance::MIN_DISTANCE = 0.0000001;
 
 Restraint::Restraint ()
 {
-  LogMsg(VERBOSE, "Restraint constructed");
+  IMP_LOG(VERBOSE, "Restraint constructed");
   is_active_ = true; // active by default
   are_particles_active_ = true; // active by default
 }
@@ -40,7 +40,7 @@ Destructor
 
 Restraint::~Restraint ()
 {
-  LogMsg(VERBOSE, "Restraint deleted");
+  IMP_LOG(VERBOSE, "Restraint deleted");
 }
 
 
@@ -279,7 +279,7 @@ Float RSR_Distance::evaluate(bool calc_deriv)
     score = (*score_func_)(distance);
   }
 
-  LogMsg(VERBOSE, "distance: " << distance << "   score: " << score);
+  IMP_LOG(VERBOSE, "distance: " << distance << "   score: " << score);
   return score;
 }
 

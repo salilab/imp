@@ -8,6 +8,7 @@
 
 #include "Score_Func.h"
 #include "log.h"
+#include "mystdexcept.h"
 
 namespace imp
 {
@@ -15,8 +16,8 @@ namespace imp
 /** Destructor */
 Harmonic::~Harmonic()
 {
-  LogMsg(VERBOSE,
-         "Delete Harmonic: beware of early Python calls to destructor.");
+  IMP_LOG(VERBOSE,
+	  "Delete Harmonic: beware of early Python calls to destructor.");
 }
 
 /**
@@ -100,8 +101,8 @@ Float Harmonic::harmonic(Float feature, Float& deriv)
 /** Destructor */
 Harmonic_Lower_Bound::~Harmonic_Lower_Bound()
 {
-  LogMsg(VERBOSE, "Delete Harmonic_Lower_Bound: beware of early Python "
-                  "calls to destructor.");
+  IMP_LOG(VERBOSE, "Delete Harmonic_Lower_Bound: beware of early Python "
+	  << "calls to destructor.");
 }
 
 /**
@@ -150,8 +151,8 @@ Float Harmonic_Lower_Bound::operator()(Float feature, Float& deriv)
 /** Destructor */
 Harmonic_Upper_Bound::~Harmonic_Upper_Bound()
 {
-  LogMsg(VERBOSE, "Delete Harmonic_Upper_Bound: beware of early Python "
-                  "calls to destructor.");
+  IMP_LOG(VERBOSE, "Delete Harmonic_Upper_Bound: beware of early Python "
+	  << "calls to destructor.");
 }
 
 /**
@@ -272,7 +273,8 @@ Score_Func* Basic_Score_Func_Params::create_score_func(void)
     return new Harmonic_Upper_Bound(mean_, sd_);
   }
   
-  ErrorMsg("Unknown score function: " << score_func_type_);
+  IMP_check(0, "Unknown score function: " << score_func_type_,
+	    std::out_of_range("Unknown score function"));
   return NULL;
 }
 

@@ -21,7 +21,7 @@ namespace imp
 
 Optimizer::Optimizer()
 {
-  LogMsg(VERBOSE, "Created optimizer");
+  IMP_LOG(VERBOSE, "Created optimizer");
 }
 
 

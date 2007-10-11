@@ -3,33 +3,210 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
+#include <cassert>
+#include "IMP_config.h"
 
-#define VERBOSE 0
-#define TERSE 1
+/*! \file Logging and error reporting support for IMP*/
 
-#define LOG_LEVEL VERBOSE
+namespace imp
+{
+//! The log levels supported by IMP
+enum Log_Level {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
 
-// The log file stream
-extern std::ofstream imp_log;
+//! The targets for IMP logging
+enum Log_Target {COUT, FILE};
 
-// Functions for opening and closing the log file stream
-void InitLog(char* log_fname);
-void AppendLog(void);
-void CloseLog(void);
-void EnterMsg(char *str);
+namespace internal {
 
-// Macros for writing to the log file:
+class IMPDLLEXPORT Log
+{
+public:
 
-// LogMsg uses log level to decide what to show.
-// If given level is below current LOG_LEVEL, then nothing is written.
-// For right now, "nothing" is sending an empty string to the standard
-// error stream.
-#define LogMsg(log_level, stream) AppendLog(); log_level >= LOG_LEVEL ? imp_log << stream << std::endl : std::cerr << ""; CloseLog();
+  Log_Level get_level() {
+    return level_;
+  }
+  void set_level(Log_Level l) {
+    level_=l;
+  }
 
-// Warnings are always shown
-#define WarningMsg(stream) AppendLog(); imp_log << "** WARNING **  " << stream << std::endl; CloseLog();
+  std::ostream &get_stream(Log_Level l) {
+    if (is_output(l)) {
+      if (target_== COUT) {
+        return std::cout;
+      } else {
+        return fstream_;
+      }
+    } else return std::cout;
+  }
 
-// Errors are always shown, and then the program is quit
-#define ErrorMsg(stream) AppendLog(); imp_log << "** ERROR **  " << stream << std::endl; std::cout << "** ERROR **  " << stream << std::endl; CloseLog(); exit(0);
+  bool is_output(Log_Level l) {
+    return l <= get_level();
+  }
+
+  Log_Target get_target() {
+    return target_;
+  }
+  void set_target(Log_Target k) {
+    target_=k;
+  }
+  void set_filename(std::string k) {
+    fstream_.open(k.c_str());
+    if (!fstream_) {
+      std::cerr << "Error opening log file " << k << std::endl;
+    }
+  };
+
+
+  Log()  :level_(SILENT), target_(COUT) {
+    static int count=0;
+    ++count;
+    assert(count==1);
+  }
+private:
+
+  Log(const Log&) {}
+
+  Log_Level level_;
+  Log_Target target_;
+  std::ofstream fstream_;
+};
+
+}
+
+//! A general exception for an error in IMP
+struct IMPDLLEXPORT Error_exception: public std::exception {
+
+};
+
+//! Get the log object. This really shouldn't be called from C++.
+IMPDLLEXPORT inline internal::Log &get_log()
+{
+  static internal::Log l;
+  return l;
+}
+
+//! Set the current log level for IMP
+IMPDLLEXPORT inline void set_log_level(Log_Level l)
+{
+  get_log().set_level(l);
+}
+
+//! Set the target of logs
+IMPDLLEXPORT inline void set_log_target(Log_Target l)
+{
+  get_log().set_target(l);
+}
+
+//! Set the file name for the IMP log. This must be called if a log file is to be used.
+IMPDLLEXPORT inline void set_log_file(std::string l)
+{
+  get_log().set_filename(l);
+}
+
+//! Determine whether a given log level should be output. This probably should not be called in C++.
+IMPDLLEXPORT inline bool is_log_output(Log_Level l)
+{
+  return get_log().is_output(l);
+}
+
+
+//! The stream to output a particular log level to. This probably should not be called in C++.
+IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
+{
+  return get_log().get_stream(l);
+}
+
+} // namespace imp
+
+#ifndef IMP_DISABLE_LOGGING
+
+//! Write an entry to a log.
+/*!
+  \param[in] level The imp::Log_Level for the message
+
+  \param[in] expr A stream expression to be sent to the output stream
+*/
+#define IMP_LOG(level, expr) if (imp::is_log_output(level)) \
+    { imp::get_log_stream(level) << expr << std::flush;};
+
+//! Write an entry to a log. This is to be used for objects with no operator<<.
+/*!
+  \param[in] level The imp::Log_Level for the message
+
+  \param[in] expr An expression which writes something to IMP_STREAM
+*/
+#define IMP_LOG_WRITE(level, expr) if (imp::is_log_output(level)) \
+    {std::ostream &IMP_STREAM= imp::get_log_stream(level); expr;}
+
+
+//! Write an warning to a log.
+/*!
+  \param[in] expr An expression to be output to the log. It is prefixed by "WARNING"
+*/
+#define IMP_WARN(expr) if (imp::get_log_output(imp::WARNING)) \
+    { imp::get_log_stream(imp::WARNING) << "WARNING  " << expr << std::flush;};
+
+//! Write an entry to a log. This is to be used for objects with no operator<<.
+/*!
+  \param[in] expr An expression which writes something to IMP_STREAM. It is prefixed by "WARNING"
+*/
+#define IMP_WARN_WRITE(expr) if (imp::is_log_output(imp::WARNING)) \
+    {std::ostream &IMP_STREAM= imp::get_log_stream(imp::Log::WARNING); expr;}
+
+
+
+//! Write an warning to a standard error.
+/*!
+  \param[in] expr An expression to be output to std::cerr. It is prefixed by "ERROR"
+*/
+#define IMP_ERROR(expr) std::cerr << "ERROR: " << expr << std::endl;
+//! Write an entry to standard error. This is to be used for objects with no operator<<.
+/*!
+  \param[in] expr An expression which writes something to IMP_STREAM. It is prefixed by "ERROR"
+*/
+#define IMP_ERROR_WRITE(expr) {std::ostream &IMP_STREAM= std::cerr; std:cerr<< "ERROR "; expr; std::cerr << std::endl;}
+
+
+//! Set the log level
+#define IMP_SET_LOG_LEVEL(level) imp::Log::get_log()::set_level(level);
+
+
+
+#else
+#define IMP_LOG(l,e)
+#define IMP_LOG_WRITE(l,e)
+#endif
+
+#ifndef NDEBUG
+
+//! An assertion for IMP. An imp::Error_exception will be thrown.
+/*!
+  \param[in] expr The assertion expression.
+
+  \param[in] message Write this message if the assertion fails.
+ */
+#define IMP_assert(expr, message) if (!(expr)) {IMP_ERROR(message); throw imp::Error_exception();}
+#else
+#define IMP_assert(expr, message)
+#endif
+
+//! An runtime check for IMP.
+/*!
+  \param[in] expr The assertion expression.
+
+  \param[in] message Write this message if the assertion fails.
+
+  \param[in] exception Throw the object constructed by this expression.
+ */
+#define IMP_check(expr, message, exception) if (!(expr)) {IMP_ERROR(message); throw exception;}
+
+//! An runtime failure for IMP.
+/*!
+  \param[in] message Write this message if the assertion fails.
+
+  \param[in] exception Throw the object constructed by this expression.
+ */
+#define IMP_failure(message, exception) {IMP_ERROR(message); throw exception;}
 
 #endif  /* __IMP_LOG_H */

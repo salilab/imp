@@ -13,15 +13,6 @@
 namespace imp
 {
 
-/**
-  Constructor
- */
-
-Particle::Particle ()
-{
-  ErrorMsg("This constructor has been deprecated, please pass a pointer to the model data in the constructor.");
-  is_active_ = true;
-}
 
 
 /**
@@ -30,7 +21,7 @@ Particle::Particle ()
 
 Particle::Particle (Model_Data* model_data)
 {
-  LogMsg(VERBOSE, "create particle");
+  IMP_LOG(VERBOSE, "create particle");
   model_data_ = model_data;
   is_active_ = true;
 }
@@ -42,21 +33,10 @@ Particle::Particle (Model_Data* model_data)
 
 Particle::~Particle ()
 {
-  LogMsg(VERBOSE, "delete particle");
+  IMP_LOG(VERBOSE, "delete particle");
 }
 
 
-/**
-Give accesss to model particle data.
-
-\param[in] model_data All particle data in the model.
-*/
-
-void Particle::set_model_data(Model_Data* model_data)
-{
-  ErrorMsg("This method has been deprecated, please pass a pointer to the model data in the constructor.");
-  model_data_ = model_data;
-}
 
 
 /**
@@ -113,7 +93,8 @@ bool Particle::add_float (const std::string name, const Float value, const bool 
 {
   Float_Index fi;
 
-  LogMsg(VERBOSE, "add_float: " << name);
+  IMP_LOG(VERBOSE, "add_float: " << name);
+  IMP_assert(!has_float(name), "Trying to add the name '" <<  name << "' twice.");
   // if optimized, give name to get stats generated for this name (e.g. "X", "Y" or "Z")
   // if (is_optimized)
   //   fi = model_data_->add_float(value, name);
@@ -156,9 +137,8 @@ bool Particle::has_float (const std::string name) const
 
 Float_Index Particle::float_index(const std::string name) const
 {
-  if (float_indexes_.find(name) == float_indexes_.end()) {
-    throw std::out_of_range("Unknown float attribute name");
-  }
+  IMP_check(has_float(name), "Unknown float attribute '" << name << "'", 
+	    std::out_of_range("Unknown float attribute name"));
   return float_indexes_.find(name)->second;
 }
 
@@ -174,7 +154,8 @@ Float_Index Particle::float_index(const std::string name) const
 
 bool Particle::add_int (const std::string name, const Int value)
 {
-  LogMsg(VERBOSE, "add_int: " << name);
+  IMP_LOG(VERBOSE, "add_int: " << name);
+  IMP_assert(!has_int(name), "Trying to add the name '" <<  name << "' twice.");
   int_indexes_[name] = model_data_->add_int(value);
   return true;
 }
@@ -205,9 +186,9 @@ bool Particle::has_int (const std::string name) const
 
 Int_Index Particle::int_index(const std::string name) const
 {
-  if (int_indexes_.find(name) == int_indexes_.end()) {
-    throw std::out_of_range("Unknown int attribute name");
-  }
+  IMP_check(has_int(name), "Unknown int attribute '" << name << "'", 
+	    std::out_of_range("Unknown int attribute name"));
+
   return int_indexes_.find(name)->second;
 }
 
@@ -225,6 +206,9 @@ Int_Index Particle::int_index(const std::string name) const
 
 bool Particle::add_string(const std::string name, const String value)
 {
+  IMP_assert(!has_string(name), 
+	     "Trying to add the name '" <<  name << "' twice.");
+  
   string_indexes_[name] = model_data_->add_string(value);
   return true;
 }
@@ -256,9 +240,9 @@ bool Particle::has_string (const std::string name) const
 
 String_Index Particle::string_index(const std::string name) const
 {
-  if (string_indexes_.find(name) == string_indexes_.end()) {
-    throw std::out_of_range("Unknown string attribute name");
-  }
+  IMP_check(has_string(name), "Unknown string attribute '" << name << "'", 
+	    std::out_of_range("Unknown string attribute name"));
+ 
   return string_indexes_.find(name)->second;
 }
 

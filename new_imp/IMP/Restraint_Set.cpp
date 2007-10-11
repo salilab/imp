@@ -27,7 +27,7 @@ namespace imp
 
 Restraint_Set::Restraint_Set (const std::string name)
 {
-  LogMsg(VERBOSE, "Restraint set constructed");
+  IMP_LOG(VERBOSE, "Restraint set constructed");
 
   restraints_.resize(0);
 
@@ -42,7 +42,7 @@ Destructor
 
 Restraint_Set::~Restraint_Set ()
 {
-  LogMsg(VERBOSE,"Delete Restraint_Set: beware of early Python calls to destructor.");
+  IMP_LOG(VERBOSE,"Delete Restraint_Set: beware of early Python calls to destructor.");
 }
 
 
@@ -145,9 +145,9 @@ void Restraint_Set::set_is_active (const bool is_active)
 {
   is_active_ = is_active;
   if (is_active_) {
-    LogMsg(VERBOSE, name_ << " was set to active.");
+    IMP_LOG(VERBOSE, name_ << " was set to active.");
   } else {
-    LogMsg(VERBOSE, name_ << " was set to inactive.");
+    IMP_LOG(VERBOSE, name_ << " was set to inactive.");
   }
 }
 

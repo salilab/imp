@@ -13,6 +13,7 @@
 #include "Particle.h"
 #include "log.h"
 #include "emscore.h"
+#include "mystdexcept.h"
 
 namespace imp
 {
@@ -130,7 +131,7 @@ Float RSR_Coordinate::evaluate(bool calc_deriv)
     model_data_->add_to_deriv(z1_, dz);
   }
 
-  LogMsg(VERBOSE, axis_ << " score: " << score << "  x: " << x << " y: " << y << " z: " << z << "   dx: " << dx << " dy: " << dy << " dz: " << dz << std::endl);
+  IMP_LOG(VERBOSE, axis_ << " score: " << score << "  x: " << x << " y: " << y << " z: " << z << "   dx: " << dx << " dy: " << dy << " dz: " << dz << std::endl);
 
   return score;
 }
@@ -220,7 +221,7 @@ Float RSR_Torus::evaluate(bool calc_deriv)
   Float x, y, z;
   Float dx, dy, dz;
 
-  LogMsg(VERBOSE, "... evaluating torus restraint.");
+  IMP_LOG(VERBOSE, "... evaluating torus restraint.");
   // get current position of particle
   x = model_data_->get_float(x1_);
   y = model_data_->get_float(y1_);
@@ -346,7 +347,7 @@ RSR_Proximity::RSR_Proximity(Model& model,
     }
   }
 
-  LogMsg(VERBOSE,
+  IMP_LOG(VERBOSE,
          "Number of restraints: " << num_restraints_ << "  number of particles: " <<
          num_particles_ << std::endl);
 }
@@ -381,7 +382,7 @@ RSR_Proximity::RSR_Proximity(Model& model,
                     - model_data_->get_float(particles_[j]->float_index(attr_name));
 
       // create the restraint
-      LogMsg(VERBOSE, i << " " << j << " add distance: " << actual_mean);
+      IMP_LOG(VERBOSE, i << " " << j << " add distance: " << actual_mean);
       score_func_params->set_mean(actual_mean);
       dist_rsrs_[idx] = new RSR_Distance(model,
                                          particles_[i],
@@ -402,7 +403,7 @@ RSR_Proximity::RSR_Proximity(Model& model,
 void RSR_Proximity::set_up(Model& model,
                            std::vector<int>& particle_indexes)
 {
-  LogMsg(VERBOSE, "init RSR_Connectivity");
+  IMP_LOG(VERBOSE, "init RSR_Connectivity");
 
   model_data_ = model.get_model_data();
 
@@ -451,7 +452,7 @@ Float RSR_Proximity::evaluate(bool calc_deriv)
 {
   int idx;
 
-  LogMsg(VERBOSE, "evaluate RSR_Proximity");
+  IMP_LOG(VERBOSE, "evaluate RSR_Proximity");
 
   // calculate the scores for all of the restraints
   /*
@@ -506,7 +507,7 @@ Float RSR_Proximity::evaluate(bool calc_deriv)
     idx = i;
 
     score += dist_rsrs_[idx]->evaluate(calc_deriv);
-    LogMsg(VERBOSE,
+    IMP_LOG(VERBOSE,
            " " << i << " Applying Restraint: score: "
            << score << std::endl);
   }
@@ -573,9 +574,10 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
     for (int j = num_particles1_; j < num_particles1_ + num_particles2_; j++) {
       // create the restraint
       if (rs_iter == rsr_scores_.end()) {
-        ErrorMsg("Reached end of rsr_scores too early.");
+        IMP_failure("Reached end of rsr_scores too early.",
+		    std::out_of_range("Reached end of rsr_scores too early"));
       } else {
-        LogMsg(VERBOSE, "Adding possible restraint: " << i << " " << j);
+        IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         rs_iter->rsr_ = new RSR_Distance(model,
                                          particles_[i],
                                          particles_[j],
@@ -589,7 +591,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
     }
   }
 
-  LogMsg(VERBOSE, idx <<
+  IMP_LOG(VERBOSE, idx <<
          "  num_restraints_: " << num_restraints_ << "  num_particles1_: " <<
          num_particles1_ << " num_particles2_:" << num_particles2_ << std::endl);
 }
@@ -639,9 +641,10 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
       
       // create the restraint
       if (rs_iter == rsr_scores_.end()) {
-        ErrorMsg("Reached end of rsr_scores too early.");
+        IMP_failure("Reached end of rsr_scores too early.",
+		    std::out_of_range("Reached end of rsr_scores too early"));
       } else {
-        LogMsg(VERBOSE, "Adding possible restraint: " << i << " " << j);
+        IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         rs_iter->rsr_ = new RSR_Distance(model,
                                          particles_[i],
                                          particles_[j],
@@ -655,7 +658,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
     }
   }
 
-  LogMsg(VERBOSE, idx <<
+  IMP_LOG(VERBOSE, idx <<
          "  num_restraints_: " << num_restraints_ << "  num_particles1_: " <<
          num_particles1_ << " num_particles2_:" << num_particles2_ << std::endl);
 }
@@ -674,7 +677,7 @@ void RSR_Pair_Connectivity::set_up(Model& model,
 {
   Particle* p1;
 
-  LogMsg(VERBOSE, "init RSR_Connectivity");
+  IMP_LOG(VERBOSE, "init RSR_Connectivity");
 
   model_data_ = model.get_model_data();
 
@@ -683,7 +686,7 @@ void RSR_Pair_Connectivity::set_up(Model& model,
   num_particles2_ = particle2_indexes.size();
   num_particles_ = num_particles1_ + num_particles2_;
 
-  LogMsg(VERBOSE, "set up particle types");
+  IMP_LOG(VERBOSE, "set up particle types");
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles1_; i++) {
     p1 = model.get_particle(particle1_indexes[i]);
@@ -739,27 +742,27 @@ Float RSR_Pair_Connectivity::evaluate(bool calc_deriv)
 {
   std::list<RSR_Pair_Connectivity::Restraint_Score>::iterator rs_iter;
 
-  LogMsg(VERBOSE, "evaluate RSR_Pair_Connectivity");
+  IMP_LOG(VERBOSE, "evaluate RSR_Pair_Connectivity");
 
   // only use a particle at most once in set of restraints
   for (int i = 0; i < num_particles_; i++)
     used_[i] = false;
 
   // calculate the scores for all of the restraints
-  LogMsg(VERBOSE, "calculate restraint scores");
+  IMP_LOG(VERBOSE, "calculate restraint scores");
   int j = 0;
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
     rs_iter->evaluate();
-    LogMsg(VERBOSE, j++ << " score: " << rs_iter->score_);
+    IMP_LOG(VERBOSE, j++ << " score: " << rs_iter->score_);
   }
 
   // sort by the scores
   rsr_scores_.sort();
 
-  LogMsg(VERBOSE, "sorted");
+  IMP_LOG(VERBOSE, "sorted");
   j = 0;
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
-    LogMsg(VERBOSE, j++ << " score: " << rs_iter->score_);
+    IMP_LOG(VERBOSE, j++ << " score: " << rs_iter->score_);
   }
 
   Float score = 0.0;
@@ -831,7 +834,7 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       if (particle_type_[j] != particle_type_[i]) {
         if (rs_iter == rsr_scores_.end()) {
-          ErrorMsg("Over ran the caculated number of restraints in RSR_Connectivity");
+          IMP_failure("Over ran the caculated number of restraints in RSR_Connectivity", std::out_of_range("Over ran the calculated number of restraints"));
         } else {
           rs_iter->part1_type_ = particle_type_[i];
           rs_iter->part2_type_ = particle_type_[j];
@@ -847,7 +850,7 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
     }
   }
 
-  LogMsg(VERBOSE,
+  IMP_LOG(VERBOSE,
          "Number of types: " << num_types_ << "  max_type_: " << max_type_ <<
          "  num_restraints_: " << num_restraints_ << "  num_particles_: " <<
          num_particles_ << std::endl);
@@ -873,7 +876,7 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
 {
   std::list<RSR_Connectivity::Restraint_Score>::iterator rs_iter;
 
-  LogMsg(VERBOSE, "RSR_Connectivity constructor");
+  IMP_LOG(VERBOSE, "RSR_Connectivity constructor");
   set_up(model, particle_indexes, type);
 
   // set up the restraints
@@ -883,7 +886,7 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       if (particle_type_[j] != particle_type_[i]) {
         if (rs_iter == rsr_scores_.end()) {
-          ErrorMsg("Over ran the caculated number of restraints in RSR_Connectivity");
+          IMP_failure("Over ran the caculated number of restraints in RSR_Connectivity", std::out_of_range("Over ran the calculated number of restraints"));
         } else {
           rs_iter->part1_type_ = particle_type_[i];
           rs_iter->part2_type_ = particle_type_[j];
@@ -905,7 +908,7 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
     }
   }
 
-  LogMsg(VERBOSE,
+  IMP_LOG(VERBOSE,
          "Number of types: " << num_types_ << "  max_type_: " << max_type_ <<
          "  num_restraints_: " << num_restraints_ << "  num_particles_: " <<
          num_particles_ << std::endl);
@@ -925,17 +928,17 @@ void RSR_Connectivity::set_up(Model& model,
 {
   Particle* p1;
 
-  LogMsg(VERBOSE, "init RSR_Connectivity");
+  IMP_LOG(VERBOSE, "init RSR_Connectivity");
 
   model_data_ = model.get_model_data();
 
-  LogMsg(VERBOSE, "got model data " << model_data_);
+  IMP_LOG(VERBOSE, "got model data " << model_data_);
 
   /** number of particles in the restraint */
   num_particles_ = particle_indexes.size();
   particle_type_.resize(num_particles_);
 
-  LogMsg(VERBOSE, "set up particle types");
+  IMP_LOG(VERBOSE, "set up particle types");
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles_; i++) {
     p1 = model.get_particle(particle_indexes[i]);
@@ -943,8 +946,8 @@ void RSR_Connectivity::set_up(Model& model,
     type_.push_back(p1->int_index(type));
   }
 
-  LogMsg(VERBOSE, "Size of particles: " << particles_.size() << "  size of types:" << type_.size() << "  num_particles_: " << num_particles_ << "  particle_type_: " << particle_type_.size());
-  LogMsg(VERBOSE, "Figure out number of types");
+  IMP_LOG(VERBOSE, "Size of particles: " << particles_.size() << "  size of types:" << type_.size() << "  num_particles_: " << num_particles_ << "  particle_type_: " << particle_type_.size());
+  IMP_LOG(VERBOSE, "Figure out number of types");
   // figure out how many types there are
   int next_type;
   max_type_ = 0;
@@ -968,9 +971,9 @@ void RSR_Connectivity::set_up(Model& model,
 
   // types can range from 0 to max_type_ - 1
   max_type_++;
-  LogMsg(VERBOSE, "Max types: " << max_type_);
+  IMP_LOG(VERBOSE, "Max types: " << max_type_);
 
-  LogMsg(VERBOSE, "Figure out number of restraints");
+  IMP_LOG(VERBOSE, "Figure out number of restraints");
   // figure out how many restraints there are
   // Could use num_restraints = sum((S-si)si)) where is total number of particles
   // ... and si is number of particles of type i (summed over all types)
@@ -983,7 +986,7 @@ void RSR_Connectivity::set_up(Model& model,
     }
   }
 
-  LogMsg(VERBOSE, "Num restraints: " << num_restraints_);
+  IMP_LOG(VERBOSE, "Num restraints: " << num_restraints_);
   // use number of restraints and number of types to set up some of the
   // ... main arrays
   tree_id_.resize(max_type_);
@@ -1015,12 +1018,12 @@ RSR_Connectivity::~RSR_Connectivity ()
 
 Float RSR_Connectivity::evaluate(bool calc_deriv)
 {
-  LogMsg(VERBOSE, "evaluate RSR_Connectivity");
+  IMP_LOG(VERBOSE, "evaluate RSR_Connectivity");
 
   std::list<RSR_Connectivity::Restraint_Score>::iterator rs_iter;
 
   // calculate the scores for all of the restraints
-  LogMsg(VERBOSE, "calculate restraint scores");
+  IMP_LOG(VERBOSE, "calculate restraint scores");
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
     rs_iter->evaluate();
   }
@@ -1029,7 +1032,7 @@ Float RSR_Connectivity::evaluate(bool calc_deriv)
   rsr_scores_.sort();
 
   // calculate the minmimum spanning tree
-  LogMsg(VERBOSE, "calc spanning tree");
+  IMP_LOG(VERBOSE, "calc spanning tree");
   int max_tree_id = 0;
 
   // initially there are no trees
@@ -1045,7 +1048,7 @@ Float RSR_Connectivity::evaluate(bool calc_deriv)
     type1 = rs_iter->part1_type_;
     type2 = rs_iter->part2_type_;
 
-    LogMsg(VERBOSE, "Test for " << type1 << " " << type2);
+    IMP_LOG(VERBOSE, "Test for " << type1 << " " << type2);
     // if neither particle is in a tree, create a new tree
     if (!tree_id_[type1] && !tree_id_[type2]) {
       max_tree_id++;
@@ -1053,7 +1056,7 @@ Float RSR_Connectivity::evaluate(bool calc_deriv)
       tree_id_[type2] = max_tree_id;
 
       num_edges++;
-      LogMsg(VERBOSE, "Evaluate for " << type1 << " " << type2);
+      IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
       score += rs_iter->rsr_->evaluate(calc_deriv);
     }
 
@@ -1067,7 +1070,7 @@ Float RSR_Connectivity::evaluate(bool calc_deriv)
       }
 
       num_edges++;
-      LogMsg(VERBOSE, "Evaluate for " << type1 << " " << type2);
+      IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
       score += rs_iter->rsr_->evaluate(calc_deriv);
     }
 
@@ -1086,7 +1089,7 @@ Float RSR_Connectivity::evaluate(bool calc_deriv)
         }
 
         num_edges++;
-        LogMsg(VERBOSE, "Evaluate for " << type1 << " " << type2);
+        IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
         score += rs_iter->rsr_->evaluate(calc_deriv);
       }
     }
@@ -1162,7 +1165,7 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
 
   // get the indexes associated with the restraints
   Float actual_mean;
-  LogMsg(VERBOSE, "Add inter-body exclusion volume restraints " << num_restraints_);
+  IMP_LOG(VERBOSE, "Add inter-body exclusion volume restraints " << num_restraints_);
 
   // particle 1 indexes
   for (int i = 0; i < num_particles1_; i++) {
@@ -1216,7 +1219,7 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
   // get the indexes associated with the restraints
   int idx = 0;
   Float actual_mean;
-  LogMsg(VERBOSE, "Add intra-body exclusion volume restraints " << num_restraints_);
+  IMP_LOG(VERBOSE, "Add intra-body exclusion volume restraints " << num_restraints_);
 
   // particle 1 indexes
   for (int i = 0; i < num_particles_ - 1; i++) {
@@ -1322,7 +1325,7 @@ RSR_EM_Coarse::RSR_EM_Coarse(Model& model,
   /** number of particles in the restraint */
   num_particles_ = particle_indexes.size();
 
-  LogMsg(VERBOSE, "set up particles");
+  IMP_LOG(VERBOSE, "set up particles");
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles_; i++) {
     p1 = model.get_particle(particle_indexes[i]);
@@ -1353,7 +1356,7 @@ RSR_EM_Coarse::RSR_EM_Coarse(Model& model,
     z_[i] = p1->float_index(std::string("Z"));
     weight_[i] = model_data_->get_float(p1->float_index(weight_str));
     radius_[i] = model_data_->get_float(p1->float_index(radius_str));
-    LogMsg (VERBOSE, "radius " << radius_str << radius_[i]);
+    IMP_LOG (VERBOSE, "radius " << radius_str << radius_[i]);
   }
 
   emdens_ = emdens;
@@ -1407,10 +1410,10 @@ Float RSR_EM_Coarse::evaluate(bool calc_deriv)
     dvy_[i] = 0.0;
     dvz_[i] = 0.0;
 
-    LogMsg(VERBOSE, i << " x: " << cdx_[i] << " y: " << cdy_[i] << " z: " << cdz_[i] << " weight_: " << weight_[i] << " radius: " << radius_[i]);
+    IMP_LOG(VERBOSE, i << " x: " << cdx_[i] << " y: " << cdy_[i] << " z: " << cdz_[i] << " weight_: " << weight_[i] << " radius: " << radius_[i]);
   }
 
-  LogMsg(VERBOSE, "before emscore: " << emdens_ << " nx_" << nx_ << " ny_" << ny_ << " nz_" << nz_ << " pixelsize_" << pixelsize_ << " resolution_" << resolution_ << " " <<
+  IMP_LOG(VERBOSE, "before emscore: " << emdens_ << " nx_" << nx_ << " ny_" << ny_ << " nz_" << nz_ << " pixelsize_" << pixelsize_ << " resolution_" << resolution_ << " " <<
          cdx_ << " " << cdy_ << " " << cdz_ << " " << dvx_ << " " << dvy_ << " " << dvz_ << " num_particles_" << num_particles_ << " " <<
          radius_ << " " << weight_ << " gridcd_" << gridcd_ << " scalefac_" << scalefac_);
 
@@ -1419,7 +1422,7 @@ Float RSR_EM_Coarse::evaluate(bool calc_deriv)
                   cdx_, cdy_, cdz_, dvx_, dvy_, dvz_, num_particles_,
                   radius_, weight_, gridcd_, scalefac_, lderiv, &ierr);
 
-  LogMsg(VERBOSE, "after emscore: " << score << " calc_deriv" << calc_deriv);
+  IMP_LOG(VERBOSE, "after emscore: " << score << " calc_deriv" << calc_deriv);
   score = 0.0;
   if (calc_deriv) {
     for (int i = 0; i < num_particles_; i++) {
