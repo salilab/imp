@@ -1,19 +1,13 @@
 import modeller
 import modeller.optimizers
+import IMP.modeller_intf
+import IMP
+import IMP.xml_loader
 
-# set the appropriate search path
-import sys
-
-sys.path.append("../../")
-sys.path.append("../python_libs/")
-import IMP_Modeller_Intf
-import imp2
-import load_imp_xml_model
-
-model = imp2.Model()
+model = IMP.Model()
 
 # load document from an XML file
-doc = load_imp_xml_model.load_imp_model(model, "gold_model.xml")
+doc = IMP.xml_loader.load_imp_model(model, "gold_model.xml")
 
 # intialize Modeller
 modeller.log.level(0,0,0,0,0)
@@ -26,10 +20,10 @@ env.libs.parameters.read(file="$(LIB)/par.lib")
 
 # add IMP model and restraints as an energy term to Modeller model
 t = env.edat.energy_terms
-t.append(IMP_Modeller_Intf.IMP_Restraints(model, model.particles))
+t.append(IMP.modeller_intf.IMP_Restraints(model, model.particles))
         
 # get particles for Modeller
-mdl = IMP_Modeller_Intf.Create_Particles_From_IMP(env, model)
+mdl = IMP.modeller_intf.Create_Particles_From_IMP(env, model)
 
 
 atmsel = modeller.selection(mdl)
@@ -93,6 +87,6 @@ while score > 10.0 and num_runs < 1000:
 
     print num_runs, score
     
-IMP_Modeller_Intf.Show_Distances(model.particles)
+IMP.modeller_intf.Show_Distances(model.particles)
 mdl.write(file="out.pdb", model_format="PDB")
 

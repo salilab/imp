@@ -1,16 +1,16 @@
-import imp2
+import IMP
 import math
 
 
 # ============== Utilities ==============
 
-class XYZParticle(imp2.Particle):
+class XYZParticle(IMP.Particle):
     """Wrapper for IMP particles that focuses on x,y,z coordinates"""
 
     def __init__(self, model, x=None, y=None, z=None):
         """Initialize particle with IMP model it belongs to and its xyz
            coordinates"""
-        imp2.Particle.__init__(self, model.get_model_data())
+        IMP.Particle.__init__(self, model.get_model_data())
         self.model_data = self.model_data()
         model.add_particle(self);
         if x is not None:
@@ -131,8 +131,8 @@ def Set_Up_Exclusion_Volumes(model, particles, radius_name, rsrs, sd = 0.1):
     for i in range(len(particles)-1):
         for j in range(i+1, len(particles)):
             mean = particles[i].get_float(radius_name) + particles[j].get_float(radius_name)
-            score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", mean, sd)
-            rsrs.append(imp2.RSR_Distance(model, particles[i], particles[j], score_func_params))
+            score_func_params = IMP.Basic_Score_Func_Params("harmonic_lower_bound", mean, sd)
+            rsrs.append(IMP.RSR_Distance(model, particles[i], particles[j], score_func_params))
 
 
 def Write_PDB(model, fname):
@@ -189,19 +189,19 @@ def Show_IMP_Particles(particles):
     for i in range(0, len(particles)):
         print 'particle', i
         print '  float attributes:'
-        float_attr_iter = imp2.Float_Attribute_Iterator()
+        float_attr_iter = IMP.Float_Attribute_Iterator()
         float_attr_iter.reset(particles[i])
         while float_attr_iter.next():
             print '    ',float_attr_iter.get_key(),": ",float_attr_iter.get_value()
 
         print '  int attributes:'
-        int_attr_iter = imp2.Int_Attribute_Iterator()
+        int_attr_iter = IMP.Int_Attribute_Iterator()
         int_attr_iter.reset(particles[i])
         while int_attr_iter.next():
             print '    ',int_attr_iter.get_key(),": ",int_attr_iter.get_value()
 
         print '  string attributes:'
-        string_attr_iter = imp2.String_Attribute_Iterator()
+        string_attr_iter = IMP.String_Attribute_Iterator()
         string_attr_iter.reset(particles[i])
         while string_attr_iter.next():
             print '    ',string_attr_iter.get_key(),": ",string_attr_iter.get_value()

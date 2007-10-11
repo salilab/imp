@@ -1,7 +1,5 @@
 import unittest, sys, os, re
 
-sys.path.append('python_libs')
-
 def regressionTest():
     """Run all tests in files called test_*.py in current directory and
        subdirectories, but exclude Modeller tests"""

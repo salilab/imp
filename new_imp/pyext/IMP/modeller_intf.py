@@ -1,8 +1,8 @@
 import modeller
 import modeller.optimizers
 import math
-import imp2
-from IMP_Utils import *
+import IMP
+from IMP.utils import *
 
 # ============== Using a Modeller Optimizer ==============
 
@@ -38,11 +38,11 @@ class IMP_Restraints(modeller.terms.energy_term):
 
 # ============== Using an IMP Optimizer ==============
 
-class Modeller_Restraints(imp2.Restraint):
+class Modeller_Restraints(IMP.Restraint):
     """Calculate score and derivs based on all Modeller-defined restraints"""
 
     def __init__(self, imp_model, modeller_model, particles):
-        imp2.Restraint.__init__(self)
+        IMP.Restraint.__init__(self)
         self.modeller_model = modeller_model
         self.imp_model = imp_model
         self.particles = particles

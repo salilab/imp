@@ -1,26 +1,22 @@
 import unittest
-
-# set the appropriate search path
-import sys
-sys.path.append("../python_libs/")
-import IMP_Utils
-import IMP_Test, imp2
+import IMP.utils
+import IMP.test, IMP
 
 # Class to test particles
-class test_particles(IMP_Test.IMPTestCase):
+class test_particles(IMP.test.IMPTestCase):
     """test particles"""
 
     def setUp(self):
         """set up Modeller with the torus restraints """
 
-        self.imp_model = imp2.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []
 
         # create particles 0 - 11
         for i in range(0,12):
-            self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+            self.particles.append(IMP.utils.XYZParticle(self.imp_model,
                                                         i*2, i*3, i*4))
             p1 = self.particles[i]
             p1.add_float("radius", 1.5 * i, False)
@@ -42,7 +38,7 @@ class test_particles(IMP_Test.IMPTestCase):
 
     def test_attribute_iterator(self):
         """Iterate over all attributes within a particle"""
-        float_attr_iter = imp2.Float_Attribute_Iterator()
+        float_attr_iter = IMP.Float_Attribute_Iterator()
         float_attr_iter.reset(self.particles[0])
         cnt = 0
         while float_attr_iter.next():
@@ -57,7 +53,7 @@ class test_particles(IMP_Test.IMPTestCase):
             self.assert_(self.particles[11].get_float(float_attr_iter.get_key()) == float_attr_iter.get_value(), "Value should match the one accessed through the key.")
         self.assert_(cnt == 10, "Particle 11 should have 10 float attributes.")
 
-        int_attr_iter = imp2.Int_Attribute_Iterator()
+        int_attr_iter = IMP.Int_Attribute_Iterator()
         int_attr_iter.reset(self.particles[0])
         cnt = 0
         while int_attr_iter.next():
@@ -72,7 +68,7 @@ class test_particles(IMP_Test.IMPTestCase):
             self.assert_(self.particles[11].get_int(int_attr_iter.get_key()) == int_attr_iter.get_value(), "Value should match the one accessed through the key.")
         self.assert_(cnt == 2, "Particle 11 should have 2 int attributes.")
 
-        string_attr_iter = imp2.String_Attribute_Iterator()
+        string_attr_iter = IMP.String_Attribute_Iterator()
         string_attr_iter.reset(self.particles[0])
         cnt = 0
         while string_attr_iter.next():
@@ -87,7 +83,7 @@ class test_particles(IMP_Test.IMPTestCase):
             self.assert_(self.particles[11].get_string(string_attr_iter.get_key()) == string_attr_iter.get_value(), "Value should match the one accessed through the key.")
         self.assert_(cnt == 2, "Particle 11 should have 2 string attributes.")
 
-        IMP_Utils.Show_IMP_Particles(self.particles)
+        IMP.utils.Show_IMP_Particles(self.particles)
 
     def test_particles(self):
         """ test that particle attributes are available and correct """

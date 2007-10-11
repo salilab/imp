@@ -18,7 +18,6 @@ libinst = env.Install(env['libdir'], lib)
 env.Alias('install', [libinst])
 
 # Subdirectories:
-pyext = SConscript('pyext/SConscript')
 SConscript('tests/SConscript')
 
-Return('lib', 'pyext')
+Return('lib')

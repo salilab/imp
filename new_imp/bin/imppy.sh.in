@@ -21,7 +21,7 @@ else
   LIBPATH=${LIBPATH}${PATHSEP}${LLP}
 fi
 
-PP=${TOPDIR}/IMP/pyext
+PP=${TOPDIR}/pyext
 if test -z "${PYTHONPATH}"; then
   PYTHONPATH=${PP}
 else

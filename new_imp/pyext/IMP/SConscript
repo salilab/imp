@@ -1,0 +1,11 @@
+import os.path
+
+Import('env')
+
+# Python files
+files = ('__init__.py', 'modeller_intf.py', 'test.py', 'utils.py',
+         'xml_loader.py')
+
+pydir = os.path.join(env['pythondir'], 'IMP')
+pyinst = env.Install(pydir, files)
+env.Alias('install', pyinst)

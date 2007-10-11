@@ -1,20 +1,16 @@
 import unittest
 import os
-
-# set the appropriate search path
-import sys
-sys.path.append("../python_libs/")
-import IMP_Test, imp2
-import load_imp_xml_model
+import IMP.test, IMP
+import IMP.xml_loader
 
 # Class to test XML file loading
-class test_xml(IMP_Test.IMPTestCase):
+class test_xml(IMP.test.IMPTestCase):
     """test test XML file loading"""
 
     def setUp(self):
         """set up IMP model by loading the xml document """
-        self.imp_model = imp2.Model()
-        self.doc = load_imp_xml_model.load_imp_model(self.imp_model,
+        self.imp_model = IMP.Model()
+        self.doc = IMP.xml_loader.load_imp_model(self.imp_model,
                                                      "xml/model.xml")
 
     def test_xml(self):
@@ -22,7 +18,7 @@ class test_xml(IMP_Test.IMPTestCase):
         model_data = self.imp_model.get_model_data()
 
         # test particles
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
         num_particles = 0
         while p_iter.next():

@@ -1,16 +1,11 @@
 import modeller, unittest
-import modeller
 import modeller.optimizers
 import os
-
-# set the appropriate search path
-import sys
-sys.path.append("../python_libs/")
-import IMP_Modeller_Intf
-import IMP_Test, imp2
+import IMP.modeller_intf
+import IMP.test, IMP
 
 # Class to test various coordinate restraints
-class test_coordinate(IMP_Test.IMPTestCase):
+class test_coordinate(IMP.test.IMPTestCase):
     """Test various absolute position restraints"""
 
     def setUp(self):
@@ -22,15 +17,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
 
-        self.imp_model = imp2.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []
 
         self.t = self.env.edat.energy_terms
-        self.t.append(IMP_Modeller_Intf.IMP_Restraints(self.imp_model, self.particles))
+        self.t.append(IMP.modeller_intf.IMP_Restraints(self.imp_model, self.particles))
 
-        self.modeller_model = IMP_Modeller_Intf.Create_Particles(12, self.env, self.imp_model, self.particles)
+        self.modeller_model = IMP.modeller_intf.Create_Particles(12, self.env, self.imp_model, self.particles)
         self.atmsel = modeller.selection(self.modeller_model)
 
         self.opt = modeller.optimizers.conjugate_gradients()
@@ -41,15 +36,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all x values should be greater than the set minimum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("x-min")
+        rs = IMP.Restraint_Set("x-min")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
         while p_iter.next():
-            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "X_AXIS", score_func_params))
+            self.rsrs.append(IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "X_AXIS", score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
@@ -67,15 +62,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all x values should be less than the set maximum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("x-max")
+        rs = IMP.Restraint_Set("x-max")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
         while p_iter.next():
-            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "X_AXIS", score_func_params))
+            self.rsrs.append(IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "X_AXIS", score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
@@ -94,15 +89,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all y values should be greater than the set minimum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("y-min")
+        rs = IMP.Restraint_Set("y-min")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
         while p_iter.next():
-            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Y_AXIS", score_func_params))
+            self.rsrs.append(IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "Y_AXIS", score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
@@ -120,15 +115,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all y values should be less than the set maximum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("y-max")
+        rs = IMP.Restraint_Set("y-max")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
         while p_iter.next():
-            self.rsrs.append(imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Y_AXIS", score_func_params))
+            self.rsrs.append(IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "Y_AXIS", score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
@@ -146,15 +141,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all z values should be greater than the set minimum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("z-min")
+        rs = IMP.Restraint_Set("z-min")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_lower_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Z_AXIS", score_func_params)
+            r = IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "Z_AXIS", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -172,15 +167,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all z values should be less than the set maximum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("z-max")
+        rs = IMP.Restraint_Set("z-max")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", -8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "Z_AXIS", score_func_params)
+            r = IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "Z_AXIS", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -198,15 +193,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all xy distances should be less than the set maximum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("xy_radial")
+        rs = IMP.Restraint_Set("xy_radial")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XY_RADIAL", score_func_params)
+            r = IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "XY_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -224,15 +219,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all xz distances should be less than the set maximum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("xz_radial")
+        rs = IMP.Restraint_Set("xz_radial")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XZ_RADIAL", score_func_params)
+            r = IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "XZ_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -250,15 +245,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all yz distances should be less than the set maximum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        self.restraint_sets.append(imp2.Restraint_Set("yz_radial"))
+        self.restraint_sets.append(IMP.Restraint_Set("yz_radial"))
         rs = self.restraint_sets[len(self.restraint_sets)-1]
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "YZ_RADIAL", score_func_params)
+            r = IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "YZ_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
@@ -276,15 +271,15 @@ class test_coordinate(IMP_Test.IMPTestCase):
         """ all xyz distances should be less than the set maximum """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        self.restraint_sets.append(imp2.Restraint_Set("xyz_sphere"))
+        self.restraint_sets.append(IMP.Restraint_Set("xyz_sphere"))
         rs = self.restraint_sets[len(self.restraint_sets)-1]
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 8.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Coordinate(self.imp_model, p_iter.get(), "XYZ_SPHERE", score_func_params)
+            r = IMP.RSR_Coordinate(self.imp_model, p_iter.get(), "XYZ_SPHERE", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 
