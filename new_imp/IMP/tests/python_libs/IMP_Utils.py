@@ -181,6 +181,30 @@ def Show_IMP_Particles(particles, attrs):
         print
 
 
+def Show_IMP_Particles(particles):
+    """ Show IMP particle' attributes"""
+    for i in range(0, len(particles)):
+        print 'particle', i
+        print '  float attributes:'
+        float_attr_iter = imp2.Float_Attribute_Iterator()
+        float_attr_iter.reset(particles[i])
+        while float_attr_iter.next():
+            print '    ',float_attr_iter.get_key(),": ",float_attr_iter.get_value()
+
+        print '  int attributes:'
+        int_attr_iter = imp2.Int_Attribute_Iterator()
+        int_attr_iter.reset(particles[i])
+        while int_attr_iter.next():
+            print '    ',int_attr_iter.get_key(),": ",int_attr_iter.get_value()
+
+        print '  string attributes:'
+        string_attr_iter = imp2.String_Attribute_Iterator()
+        string_attr_iter.reset(particles[i])
+        while string_attr_iter.next():
+            print '    ',string_attr_iter.get_key(),": ",string_attr_iter.get_value()
+        print
+
+
 def Show_Distances(particles):
     """ Show Distances using IMP particles """
     for i in range(0, len(particles)):
