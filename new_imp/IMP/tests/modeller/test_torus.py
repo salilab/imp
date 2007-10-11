@@ -1,16 +1,11 @@
 import modeller, unittest
-import modeller
 import modeller.optimizers
 import os
-
-# set the appropriate search path
-import sys
-sys.path.append("../python_libs/")
-import IMP_Modeller_Intf
-import IMP_Test, imp2
+import IMP.modeller_intf
+import IMP.test, IMP
 
 # Class to test torus restraints
-class test_torus(IMP_Test.IMPTestCase):
+class test_torus(IMP.test.IMPTestCase):
     """test torus restraints"""
 
     def setUp(self):
@@ -23,15 +18,15 @@ class test_torus(IMP_Test.IMPTestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
 
-        self.imp_model = imp2.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []
 
         self.t = self.env.edat.energy_terms
-        self.t.append(IMP_Modeller_Intf.IMP_Restraints(self.imp_model, self.particles))
+        self.t.append(IMP.modeller_intf.IMP_Restraints(self.imp_model, self.particles))
 
-        self.modeller_model = IMP_Modeller_Intf.Create_Particles(12, self.env, self.imp_model, self.particles)
+        self.modeller_model = IMP.modeller_intf.Create_Particles(12, self.env, self.imp_model, self.particles)
         self.atmsel = modeller.selection(self.modeller_model)
 
         self.opt = modeller.optimizers.conjugate_gradients()
@@ -42,15 +37,15 @@ class test_torus(IMP_Test.IMPTestCase):
         """ all particles should be inside the specified torus """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = imp2.Restraint_Set("torus")
+        rs = IMP.Restraint_Set("torus")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = imp2.Particle_Iterator()
+        p_iter = IMP.Particle_Iterator()
         p_iter.reset(self.imp_model)
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
         while p_iter.next():
-            r = imp2.RSR_Torus(self.imp_model, p_iter.get(), 50, 10, score_func_params)
+            r = IMP.RSR_Torus(self.imp_model, p_iter.get(), 50, 10, score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 

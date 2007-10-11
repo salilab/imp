@@ -1,15 +1,10 @@
 import unittest
-import imp2
+import IMP, IMP.test
 
-# set the appropriate search path
-import sys
-sys.path.append("../python_libs/")
-import IMP_Test
-
-class WoodsFunc(imp2.Restraint):
+class WoodsFunc(IMP.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
     def __init__(self, model, particles):
-        imp2.Restraint.__init__(self)
+        IMP.Restraint.__init__(self)
         self.model_data = model.get_model_data()
         self.indices = [p.float_index("X") for p in particles]
 
@@ -29,7 +24,7 @@ class WoodsFunc(imp2.Restraint):
                 self.model_data.add_to_deriv(i, d)
         return e
 
-class CGOptimizerTests(IMP_Test.IMPTestCase):
+class CGOptimizerTests(IMP.test.IMPTestCase):
     def test_cg_woods_func(self):
         """Check that we can optimize the Woods function with CG"""
         self._test_starting_conditions((-3.0, -1.0, -3.0, -1.0))
@@ -37,20 +32,20 @@ class CGOptimizerTests(IMP_Test.IMPTestCase):
 
     def _test_starting_conditions(self, starting_values):
         """Test the optimizer with given starting conditions"""
-        model = imp2.Model()
+        model = IMP.Model()
         particles = []
 
         for value in starting_values:
-            p = imp2.Particle(model.get_model_data())
+            p = IMP.Particle(model.get_model_data())
             model.add_particle(p)
             particles.append(p)
             p.add_float("X", value, True)
         rsr = WoodsFunc(model, particles)
-        rs = imp2.Restraint_Set("woodsfunc")
+        rs = IMP.Restraint_Set("woodsfunc")
         rs.add_restraint(rsr)
         model.add_restraint_set(rs)
         model.set_up_trajectory('', False, False)
-        opt = imp2.Conjugate_Gradients()
+        opt = IMP.Conjugate_Gradients()
         e = opt.optimize(model, 100, 1e-5)
         model_data = model.get_model_data()
         for p in particles:

@@ -24,7 +24,8 @@ Export('env', 'get_pyext_environment', 'get_sharedlib_environment')
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')
 Export('bin')
-src, pyext = SConscript('IMP/SConscript')
+src = SConscript('IMP/SConscript')
+pyext = SConscript('pyext/SConscript')
 SConscript('IMP_mov/SConscript')
 SConscript('doc/SConscript')
 

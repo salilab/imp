@@ -1,29 +1,25 @@
 import unittest
-
-# set the appropriate search path
-import sys
-sys.path.append("../python_libs/")
-import IMP_Utils
-import IMP_Test, imp2
+import IMP.utils
+import IMP.test, IMP
 
 # Class to test steepest descent optimizer in IMP
-class test_sd_optimizer(IMP_Test.IMPTestCase):
+class test_sd_optimizer(IMP.test.IMPTestCase):
     """test steepest descent optimizer in IMP """
 
     def setUp(self):
         """set up distance restraints and create optimizer """
 
-        self.imp_model = imp2.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []
 
         # create particles 0 - 1
-        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
                                                     -43.0, 65.0, 93.0))
-        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
                                                     20.0, 74.0, -80.0))
-        self.particles.append(IMP_Utils.XYZParticle(self.imp_model,
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
                                                     4.0, -39.0, 26.0))
 
         p1 = self.particles[0]
@@ -34,20 +30,20 @@ class test_sd_optimizer(IMP_Test.IMPTestCase):
         p1.add_float("radius", 3.0, False)
 
         # separate 3 particles by their radii
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic", 0.0, 0.1)
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic", 0.0, 0.1)
 
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[1], "radius", score_func_params))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params))
-        self.rsrs.append(imp2.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params))
+        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[1], "radius", score_func_params))
+        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params))
+        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params))
 
         # add restraints
-        rs = imp2.Restraint_Set("distance_rsrs")
+        rs = IMP.Restraint_Set("distance_rsrs")
         self.imp_model.add_restraint_set(rs)
         self.restraint_sets.append(rs)
         for i in range(len(self.rsrs)):
             rs.add_restraint(self.rsrs[i])
 
-        self.steepest_descent = imp2.Steepest_Descent()
+        self.steepest_descent = IMP.Steepest_Descent()
 
 
 

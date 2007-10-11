@@ -1,11 +1,9 @@
 import modeller
 import modeller.optimizers
-import sys
-sys.path.append("../python_libs/")
-import imp2
-import IMP_Modeller_Intf
+import IMP
+import IMP.modeller_intf
 
-import IMP_Test
+import IMP.test
 
 # intialize Modeller
 modeller.log.level(0,0,0,0,0)
@@ -16,15 +14,15 @@ env.libs.topology.read(file='$(LIB)/top_heav.lib')
 env.libs.parameters.read(file='$(LIB)/par.lib')
 
 # intialize particles for IMP
-model = imp2.Model()
+model = IMP.Model()
 particles = []
 
 # add IMP model and restraints as an energy term to Modeller model
 t = env.edat.energy_terms
-t.append(IMP_Modeller_Intf.IMP_Restraints(model, particles))
+t.append(IMP.modeller_intf.IMP_Restraints(model, particles))
 
 # get particles for Modeller
-mdl = IMP_Modeller_Intf.Create_Particles(12, env, model, particles)
+mdl = IMP.modeller_intf.Create_Particles(12, env, model, particles)
 
 p1 = particles[0]
 p1.add_float("radius", 2.0, False)
@@ -90,38 +88,38 @@ atmsel = modeller.selection(mdl)
 atoms = mdl.atoms
 atmsel.randomize_xyz(deviation=100.0)
 
-rs = imp2.Restraint_Set("connect")
+rs = IMP.Restraint_Set("connect")
 model.add_restraint_set(rs)
-score_func = imp2.Harmonic()
+score_func = IMP.Harmonic()
 
 # add connectivity restraints
 
-particle_indexes = imp2.vectori()
+particle_indexes = IMP.vectori()
 rsrs = []
 
 # connect 3 proteins together
 particle_indexes.clear()
 for i in range(0, 12):
     particle_indexes.push_back(i)
-rsrs.append(imp2.RSR_Connectivity(model, particle_indexes, "protein", "radius", 0.1, score_func))
+rsrs.append(IMP.RSR_Connectivity(model, particle_indexes, "protein", "radius", 0.1, score_func))
 
 # connect particles in protein1 together
 particle_indexes.clear()
 for i in range(0, 3):
     particle_indexes.push_back(i)
-rsrs.append(imp2.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
+rsrs.append(IMP.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
 
 # connect particles in protein2 together
 particle_indexes.clear()
 for i in range(3, 7):
     particle_indexes.push_back(i)
-rsrs.append(imp2.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
+rsrs.append(IMP.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
 
 # connect particles in protein3together
 particle_indexes.clear()
 for i in range(7, 12):
     particle_indexes.push_back(i)
-rsrs.append(imp2.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
+rsrs.append(IMP.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
 
 # add restraints
 for i in range(0, len(rsrs)):
@@ -134,8 +132,8 @@ print atmsel.energy()
 
 mdl.write (file='out.pdb', model_format='PDB')
 
-IMP_Modeller_Intf.Show_Distances(particles)
-IMP_Modeller_Intf.Show_IMP_Particles(particles,
+IMP.modeller_intf.Show_Distances(particles)
+IMP.modeller_intf.Show_IMP_Particles(particles,
                                 (('float', 'X'), ('float', 'Y'),
                                 ('float', 'Z'), ('float', 'radius'),
                                 ('int', 'protein'), ('int', 'id')))

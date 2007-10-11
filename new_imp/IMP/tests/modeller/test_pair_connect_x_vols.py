@@ -2,15 +2,11 @@ import modeller, unittest
 import modeller
 import modeller.optimizers
 import os
-
-# set the appropriate search path
-import sys
-sys.path.append("../python_libs/")
-import IMP_Modeller_Intf
-import IMP_Test, imp2
+import IMP.modeller_intf
+import IMP.test, IMP
 
 # Class to test pair connectivity restraints
-class test_pair_connectivity(IMP_Test.IMPTestCase):
+class test_pair_connectivity(IMP.test.IMPTestCase):
     """test pair connectivity restraints"""
 
     def setUp(self):
@@ -23,15 +19,15 @@ class test_pair_connectivity(IMP_Test.IMPTestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
 
-        self.imp_model = imp2.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []
 
         self.t = self.env.edat.energy_terms
-        self.t.append(IMP_Modeller_Intf.IMP_Restraints(self.imp_model, self.particles))
+        self.t.append(IMP.modeller_intf.IMP_Restraints(self.imp_model, self.particles))
 
-        self.modeller_model = IMP_Modeller_Intf.Create_Particles(12, self.env, self.imp_model, self.particles)
+        self.modeller_model = IMP.modeller_intf.Create_Particles(12, self.env, self.imp_model, self.particles)
         p1 = self.particles[0]
         p1.add_float("radius", 1.0, False)
         p1.add_int("protein", 1)
@@ -103,14 +99,14 @@ class test_pair_connectivity(IMP_Test.IMPTestCase):
         should be connected, either directly or indirectly through other proteins """
         self.atmsel.randomize_xyz(deviation=25.0)
 
-        rs = imp2.Restraint_Set("connect")
+        rs = IMP.Restraint_Set("connect")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
         # add connectivity restraints
 
-        particle_indexes1 = imp2.vectori()
-        particle_indexes2 = imp2.vectori()
+        particle_indexes1 = IMP.vectori()
+        particle_indexes2 = IMP.vectori()
         rsrs = []
 
         # connect 2 proteins together by two beads
@@ -123,14 +119,14 @@ class test_pair_connectivity(IMP_Test.IMPTestCase):
         num_connects = 3
 
         # set up exclusion volumes
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_lower_bound", 0.0, 0.1)
-        rsrs.append(imp2.RSR_Exclusion_Volume(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params))
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_lower_bound", 0.0, 0.1)
+        rsrs.append(IMP.RSR_Exclusion_Volume(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params))
 
         # it should work whether this is True or False
         # However, if it is False, the close pairs should all be between distinct particles
         particle_reuse = False
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
-        rsrs.append(imp2.RSR_Pair_Connectivity(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params, num_connects, particle_reuse))
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
+        rsrs.append(IMP.RSR_Pair_Connectivity(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params, num_connects, particle_reuse))
 
         # add restraints
         for i in range(len(rsrs)):

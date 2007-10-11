@@ -2,15 +2,11 @@ import modeller, unittest
 import modeller
 import modeller.optimizers
 import os
-
-# set the appropriate search path
-import sys
-sys.path.append("../python_libs/")
-import IMP_Modeller_Intf
-import IMP_Test, imp2
+import IMP.modeller_intf
+import IMP.test, IMP
 
 # Class to test proximity restraints
-class test_proximity(IMP_Test.IMPTestCase):
+class test_proximity(IMP.test.IMPTestCase):
     """test proximity restraints"""
 
     def setUp(self):
@@ -23,15 +19,15 @@ class test_proximity(IMP_Test.IMPTestCase):
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
 
-        self.imp_model = imp2.Model()
+        self.imp_model = IMP.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []
 
         self.t = self.env.edat.energy_terms
-        self.t.append(IMP_Modeller_Intf.IMP_Restraints(self.imp_model, self.particles))
+        self.t.append(IMP.modeller_intf.IMP_Restraints(self.imp_model, self.particles))
 
-        self.modeller_model = IMP_Modeller_Intf.Create_Particles(6, self.env, self.imp_model, self.particles)
+        self.modeller_model = IMP.modeller_intf.Create_Particles(6, self.env, self.imp_model, self.particles)
         p1 = self.particles[0]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 1)
@@ -72,17 +68,17 @@ class test_proximity(IMP_Test.IMPTestCase):
         """ all particles should be within a given max distance of each other """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        self.restraint_sets.append(imp2.Restraint_Set("proximity"))
+        self.restraint_sets.append(IMP.Restraint_Set("proximity"))
         rs = self.restraint_sets[len(self.restraint_sets)-1]
         self.imp_model.add_restraint_set(rs)
 
         # add proximity restraints
 
-        particle_indexes = imp2.vectori()
+        particle_indexes = IMP.vectori()
         rsrs = []
 
         # set up exclusion volumes
-        IMP_Modeller_Intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs)
+        IMP.modeller_intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs)
 
         max_distance = 10.0
 
@@ -91,8 +87,8 @@ class test_proximity(IMP_Test.IMPTestCase):
         for i in range(6):
             particle_indexes.push_back(i)
 
-        score_func_params = imp2.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
-        rsrs.append(imp2.RSR_Proximity(self.imp_model, particle_indexes, "radius", max_distance, score_func_params))
+        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
+        rsrs.append(IMP.RSR_Proximity(self.imp_model, particle_indexes, "radius", max_distance, score_func_params))
 
         # add restraints
         for i in range(len(rsrs)):

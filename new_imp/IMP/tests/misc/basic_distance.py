@@ -1,16 +1,11 @@
 import unittest
+import IMP
 
-# set the appropriate search path
-import sys
-sys.path.append("../../")
-sys.path.append("../python_libs/")
-import imp2
-
-model = imp2.Model()
+model = IMP.Model()
 
 print "adding particles"
 particles = []
-particles.append(imp2.Particle())
+particles.append(IMP.Particle())
 model.add_particle(particles[0]);
 particles[0].add_float("X", 0.5, True)
 particles[0].add_float("Y", 0.0, True)
@@ -19,7 +14,7 @@ particles[0].add_float("radius", 1.6)
 particles[0].add_int("protein", 1)
 particles[0].show()
 
-particles.append(imp2.Particle())
+particles.append(IMP.Particle())
 model.add_particle(particles[1]);
 particles[1].add_float("X", -0.5, True)
 particles[1].add_float("Y", 0.0, True)
@@ -29,15 +24,15 @@ particles[1].add_int("protein", 1)
 particles[1].show()
 
 print "adding restraints"
-rs = imp2.Restraint_Set("dist_rsrs")
+rs = IMP.Restraint_Set("dist_rsrs")
 model.add_restraint_set(rs)
 
-score_func = imp2.Harmonic()
-dist_rsr = imp2.RSR_Distance(model, particles[0], particles[1], 3.0, 0.1, score_func)
+score_func = IMP.Harmonic()
+dist_rsr = IMP.RSR_Distance(model, particles[0], particles[1], 3.0, 0.1, score_func)
 rs.add_restraint(dist_rsr)
 
 print "adding optimizer"
-steepest_descent = imp2.Steepest_Descent()
+steepest_descent = IMP.Steepest_Descent()
 
 
 print "optimizing the model"
