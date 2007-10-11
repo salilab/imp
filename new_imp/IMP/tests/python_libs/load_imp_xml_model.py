@@ -39,7 +39,7 @@ def load_particles(model, particles_node, base_particle):
 def load_particle(model, particle_node, base_particle):
     """ Load particle from the DOM """
     id = particle_node.getAttribute('id')
-    model.particles.append(IMP_Utils.XYZParticle(model, 0.0, 0.0, 0.0))
+    model.particles.append(IMP_Utils.XYZParticle(model))
     p_idx = len(model.particles)-1
 
     # process particle attributes

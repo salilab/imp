@@ -7,15 +7,18 @@ import math
 class XYZParticle(imp2.Particle):
     """Wrapper for IMP particles that focuses on x,y,z coordinates"""
 
-    def __init__(self, model, x, y, z):
+    def __init__(self, model, x=None, y=None, z=None):
         """Initialize particle with IMP model it belongs to and its xyz
            coordinates"""
         imp2.Particle.__init__(self, model.get_model_data())
         self.model_data = self.model_data()
         model.add_particle(self);
-        self.add_float("X", x, True)
-        self.add_float("Y", y, True)
-        self.add_float("Z", z, True)
+        if x is not None:
+            self.add_float("X", x, True)
+        if y is not None:
+            self.add_float("Y", y, True)
+        if z is not None:
+            self.add_float("Z", z, True)
 
     def get_float(self, name):
         """Get float attribute of particle with given name"""
