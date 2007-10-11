@@ -60,7 +60,16 @@ public:
   // particle float attributes (assumed differentiable variables)
   Float_Index add_float(const Float value);
   void set_float(const Float_Index idx, const Float value);
-  Float get_float(const Float_Index idx) const;
+
+  /**
+  Get particle float attribute. INLINE
+
+  \param[in] idx Index of the particle float attribute.
+  \return value of particle float attribute.
+  */
+  Float get_float(const Float_Index idx) const {
+    return float_data_[idx.index()].value_;
+  }
 
   void add_to_deriv(const Float_Index idx, const Float value);
   Float get_deriv(const Float_Index idx) const;
@@ -72,12 +81,30 @@ public:
   // particle int attributes
   Int_Index add_int(const Int value);
   void set_int(const Int_Index idx, const Int value);
-  Int get_int(const Int_Index idx) const;
+
+  /**
+   Get particle int attribute. INLINE
+
+   \param[in] idx Index of the particle int attribute.
+   \return value of particle float attribute.
+   */
+  Int get_int(const Int_Index idx) const {
+    return int_data_[idx.index()];
+  }
 
   // particle string attributes
   String_Index add_string(const String value);
   void set_string(const String_Index idx, const String value);
-  String get_string(const String_Index idx) const;
+
+  /**
+  Get particle string attribute. INLINE
+
+  \param[in] idx Index of the particle string attribute.
+  \return value of particle string attribute.
+   */
+  String get_string(const String_Index idx) const {
+    return string_data_[idx.index()];
+  }
 
 protected:
   Model_Data();
