@@ -1,4 +1,16 @@
+import os.path
+
 Import('env', 'get_pyext_environment')
+
+# Move src to dest, but only if src exists:
+from SCons.Action import ActionFactory
+def _move_action(dest, src):
+    if os.path.exists(src):
+        os.rename(src, dest)
+MoveIfExists = \
+  ActionFactory(_move_action,
+                lambda dest, src: 'MoveIfExists("%s", "%s")' % (dest, src))
+
 
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(env, cplusplus=True)
@@ -9,7 +21,7 @@ e.Append(LIBPATH='../IMP', LIBS='imp')
 pyext = e.LoadableModule('_IMP', 'IMP.i',
                          SWIGFLAGS='-python -c++ -naturalvar -IIMP')
 # .py file should also be generated; move to IMP subdirectory:
-e.AddPostAction(pyext, Move('pyext/IMP/__init__.py', 'pyext/IMP.py'))
+e.AddPostAction(pyext, MoveIfExists('pyext/IMP/__init__.py', 'pyext/IMP.py'))
 pymod = File('IMP/__init__.py')
 e.Depends(pymod, pyext)
 
