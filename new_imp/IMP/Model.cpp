@@ -23,6 +23,7 @@ Model::Model ()
   model_data_ = new Model_Data();
   //InitLog("log.txt");
   frame_num_ = 0;
+  trajectory_on_ = false;
 }
 
 
