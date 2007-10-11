@@ -52,7 +52,7 @@ public:
 			const DensityMap &data, 
 			SampledDensityMap &model_map,
 			float **cdx,  float **cdy,  float **cdz,
-			float *dvx, float *dvy, float *dvz, 
+			float **dvx, float **dvy, float **dvz, 
 			const int &ncd,
 			float **radius,  float **wei,
 			float scalefac,
@@ -67,7 +67,7 @@ public:
 			       const int &ncd,
 			       float **radius,  float **wei,
 			       const float &scalefac,
-			       float *dvx, float *dvy,float *dvz, 
+			       float **dvx, float **dvy,float **dvz, 
 			       int &ierr
 			       );
 

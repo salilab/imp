@@ -41,7 +41,7 @@ void SampledDensityMap::SamplingParamInit() {
     SamplingParamInit();
     calc_all_voxel2loc();
 
-    cout << "  sq2pi3_: " <<  sq2pi3_ << " timessig_ : " << timessig_ << endl;
+    //    cout << "  sq2pi3_: " <<  sq2pi3_ << " timessig_ : " << timessig_ << endl;
     ierr = 0;
 
     int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
@@ -52,11 +52,11 @@ void SampledDensityMap::SamplingParamInit() {
   // actual sampling
 
   for (int ii=0; ii<ncd; ii++) {
-        cout << "ii :  " << ii << " radii: " << *(radius[ii]) << " x: " << *(cdx[ii]) << " y: " << *(cdy[ii]) << " z:" << *(cdz[ii]) << " weight: " << *(wei[ii]) << endl;
+    //  cout << "ii :  " << ii << " radii: " << *(radius[ii]) << " x: " << *(cdx[ii]) << " y: " << *(cdy[ii]) << " z:" << *(cdz[ii]) << " weight: " << *(wei[ii]) << endl;
 
     // for a specific radii calculate the kernel and how many voxels should be considered (kdist)
     KernelSetup(*(radius[ii]),vsig,vsigsq,inv_sigsq,sig,kdist,normfac);
-     cout << " kernel data : vsig: " << vsig << " vsigsq: " << vsigsq<< " inv_sigsq: " << inv_sigsq<< " sig: " << sig<< " kdist: " << kdist<< " normfac:  " << normfac<<endl;
+    //     cout << " kernel data : vsig: " << vsig << " vsigsq: " << vsigsq<< " inv_sigsq: " << inv_sigsq<< " sig: " << sig<< " kdist: " << kdist<< " normfac:  " << normfac<<endl;
     CalcBoundingBox(*(cdx[ii]),*(cdy[ii]),*(cdz[ii]),
 		      kdist,
 		      iminx, iminy, iminz,

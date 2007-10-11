@@ -30366,9 +30366,9 @@ SWIGINTERN PyObject *_wrap_CoarseCC_evaluate(PyObject *SWIGUNUSEDPARM(self), PyO
   float **arg3 = (float **) 0 ;
   float **arg4 = (float **) 0 ;
   float **arg5 = (float **) 0 ;
-  float *arg6 = (float *) 0 ;
-  float *arg7 = (float *) 0 ;
-  float *arg8 = (float *) 0 ;
+  float **arg6 = (float **) 0 ;
+  float **arg7 = (float **) 0 ;
+  float **arg8 = (float **) 0 ;
   int *arg9 = 0 ;
   float **arg10 = (float **) 0 ;
   float **arg11 = (float **) 0 ;
@@ -30452,21 +30452,21 @@ SWIGINTERN PyObject *_wrap_CoarseCC_evaluate(PyObject *SWIGUNUSEDPARM(self), PyO
     SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "CoarseCC_evaluate" "', argument " "5"" of type '" "float **""'"); 
   }
   arg5 = reinterpret_cast< float ** >(argp5);
-  res6 = SWIG_ConvertPtr(obj5, &argp6,SWIGTYPE_p_float, 0 |  0 );
+  res6 = SWIG_ConvertPtr(obj5, &argp6,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res6)) {
-    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "CoarseCC_evaluate" "', argument " "6"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "CoarseCC_evaluate" "', argument " "6"" of type '" "float **""'"); 
   }
-  arg6 = reinterpret_cast< float * >(argp6);
-  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_float, 0 |  0 );
+  arg6 = reinterpret_cast< float ** >(argp6);
+  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res7)) {
-    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "CoarseCC_evaluate" "', argument " "7"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "CoarseCC_evaluate" "', argument " "7"" of type '" "float **""'"); 
   }
-  arg7 = reinterpret_cast< float * >(argp7);
-  res8 = SWIG_ConvertPtr(obj7, &argp8,SWIGTYPE_p_float, 0 |  0 );
+  arg7 = reinterpret_cast< float ** >(argp7);
+  res8 = SWIG_ConvertPtr(obj7, &argp8,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res8)) {
-    SWIG_exception_fail(SWIG_ArgError(res8), "in method '" "CoarseCC_evaluate" "', argument " "8"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res8), "in method '" "CoarseCC_evaluate" "', argument " "8"" of type '" "float **""'"); 
   }
-  arg8 = reinterpret_cast< float * >(argp8);
+  arg8 = reinterpret_cast< float ** >(argp8);
   ecode9 = SWIG_AsVal_int(obj8, &val9);
   if (!SWIG_IsOK(ecode9)) {
     SWIG_exception_fail(SWIG_ArgError(ecode9), "in method '" "CoarseCC_evaluate" "', argument " "9"" of type '" "int""'");
@@ -30519,9 +30519,9 @@ SWIGINTERN PyObject *_wrap_CoarseCC_calcDerivatives(PyObject *SWIGUNUSEDPARM(sel
   float **arg6 = (float **) 0 ;
   float **arg7 = (float **) 0 ;
   float *arg8 = 0 ;
-  float *arg9 = (float *) 0 ;
-  float *arg10 = (float *) 0 ;
-  float *arg11 = (float *) 0 ;
+  float **arg9 = (float **) 0 ;
+  float **arg10 = (float **) 0 ;
+  float **arg11 = (float **) 0 ;
   int *arg12 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -30608,21 +30608,21 @@ SWIGINTERN PyObject *_wrap_CoarseCC_calcDerivatives(PyObject *SWIGUNUSEDPARM(sel
   } 
   temp8 = static_cast< float >(val8);
   arg8 = &temp8;
-  res9 = SWIG_ConvertPtr(obj8, &argp9,SWIGTYPE_p_float, 0 |  0 );
+  res9 = SWIG_ConvertPtr(obj8, &argp9,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res9)) {
-    SWIG_exception_fail(SWIG_ArgError(res9), "in method '" "CoarseCC_calcDerivatives" "', argument " "9"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res9), "in method '" "CoarseCC_calcDerivatives" "', argument " "9"" of type '" "float **""'"); 
   }
-  arg9 = reinterpret_cast< float * >(argp9);
-  res10 = SWIG_ConvertPtr(obj9, &argp10,SWIGTYPE_p_float, 0 |  0 );
+  arg9 = reinterpret_cast< float ** >(argp9);
+  res10 = SWIG_ConvertPtr(obj9, &argp10,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res10)) {
-    SWIG_exception_fail(SWIG_ArgError(res10), "in method '" "CoarseCC_calcDerivatives" "', argument " "10"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res10), "in method '" "CoarseCC_calcDerivatives" "', argument " "10"" of type '" "float **""'"); 
   }
-  arg10 = reinterpret_cast< float * >(argp10);
-  res11 = SWIG_ConvertPtr(obj10, &argp11,SWIGTYPE_p_float, 0 |  0 );
+  arg10 = reinterpret_cast< float ** >(argp10);
+  res11 = SWIG_ConvertPtr(obj10, &argp11,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res11)) {
-    SWIG_exception_fail(SWIG_ArgError(res11), "in method '" "CoarseCC_calcDerivatives" "', argument " "11"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res11), "in method '" "CoarseCC_calcDerivatives" "', argument " "11"" of type '" "float **""'"); 
   }
-  arg11 = reinterpret_cast< float * >(argp11);
+  arg11 = reinterpret_cast< float ** >(argp11);
   res12 = SWIG_ConvertPtr(obj11, &argp12, SWIGTYPE_p_int,  0 );
   if (!SWIG_IsOK(res12)) {
     SWIG_exception_fail(SWIG_ArgError(res12), "in method '" "CoarseCC_calcDerivatives" "', argument " "12"" of type '" "int &""'"); 
@@ -30689,9 +30689,9 @@ SWIGINTERN PyObject *_wrap_CoarseCCatIntervals_evaluate(PyObject *SWIGUNUSEDPARM
   float **arg4 = (float **) 0 ;
   float **arg5 = (float **) 0 ;
   float **arg6 = (float **) 0 ;
-  float *arg7 = (float *) 0 ;
-  float *arg8 = (float *) 0 ;
-  float *arg9 = (float *) 0 ;
+  float **arg7 = (float **) 0 ;
+  float **arg8 = (float **) 0 ;
+  float **arg9 = (float **) 0 ;
   int *arg10 = 0 ;
   float **arg11 = (float **) 0 ;
   float **arg12 = (float **) 0 ;
@@ -30787,21 +30787,21 @@ SWIGINTERN PyObject *_wrap_CoarseCCatIntervals_evaluate(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "CoarseCCatIntervals_evaluate" "', argument " "6"" of type '" "float **""'"); 
   }
   arg6 = reinterpret_cast< float ** >(argp6);
-  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_float, 0 |  0 );
+  res7 = SWIG_ConvertPtr(obj6, &argp7,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res7)) {
-    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "CoarseCCatIntervals_evaluate" "', argument " "7"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "CoarseCCatIntervals_evaluate" "', argument " "7"" of type '" "float **""'"); 
   }
-  arg7 = reinterpret_cast< float * >(argp7);
-  res8 = SWIG_ConvertPtr(obj7, &argp8,SWIGTYPE_p_float, 0 |  0 );
+  arg7 = reinterpret_cast< float ** >(argp7);
+  res8 = SWIG_ConvertPtr(obj7, &argp8,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res8)) {
-    SWIG_exception_fail(SWIG_ArgError(res8), "in method '" "CoarseCCatIntervals_evaluate" "', argument " "8"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res8), "in method '" "CoarseCCatIntervals_evaluate" "', argument " "8"" of type '" "float **""'"); 
   }
-  arg8 = reinterpret_cast< float * >(argp8);
-  res9 = SWIG_ConvertPtr(obj8, &argp9,SWIGTYPE_p_float, 0 |  0 );
+  arg8 = reinterpret_cast< float ** >(argp8);
+  res9 = SWIG_ConvertPtr(obj8, &argp9,SWIGTYPE_p_p_float, 0 |  0 );
   if (!SWIG_IsOK(res9)) {
-    SWIG_exception_fail(SWIG_ArgError(res9), "in method '" "CoarseCCatIntervals_evaluate" "', argument " "9"" of type '" "float *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res9), "in method '" "CoarseCCatIntervals_evaluate" "', argument " "9"" of type '" "float **""'"); 
   }
-  arg9 = reinterpret_cast< float * >(argp9);
+  arg9 = reinterpret_cast< float ** >(argp9);
   ecode10 = SWIG_AsVal_int(obj9, &val10);
   if (!SWIG_IsOK(ecode10)) {
     SWIG_exception_fail(SWIG_ArgError(ecode10), "in method '" "CoarseCCatIntervals_evaluate" "', argument " "10"" of type '" "int""'");
