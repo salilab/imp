@@ -89,13 +89,17 @@ def CheckModeller(context):
     """Find Modeller include and library directories"""
     context.Message('Checking for MODELLER...')
     modeller = context.env['modeller']
-    if modeller is False:
+    if modeller is False or modeller is 0:
         context.Result("not found")
         return False
     modbin = "%s/bin/modSVN" % modeller
-    (fhin, fhout, fherr) = os.popen3(modbin + " -")
-    print >> fhin, "print 'EXE type: ', info.exe_type"
-    fhin.close()
+    try:
+        (fhin, fhout, fherr) = os.popen3(modbin + " -")
+        print >> fhin, "print 'EXE type: ', info.exe_type"
+        fhin.close()
+    except IOError, e:
+        context.Result("could not run MODELLER script %s: %s" % (modbin, e))
+        return False
     err = fherr.read()
     exetype = None
     for line in fhout:
