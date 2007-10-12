@@ -25,6 +25,13 @@
 #include "Model.h"
 #include "ModelLoader.h"
 #include "restraints/Restraint.h"
-#include "restraints/Complexes_Restraints.h"
+#include "restraints/DistanceRestraint.h"
+#include "restraints/TorusRestraint.h"
+#include "restraints/CoordinateRestraint.h"
+#include "restraints/ProximityRestraint.h"
+#include "restraints/ConnectivityRestraint.h"
+#include "restraints/PairConnectivityRestraint.h"
+#include "restraints/ExclusionVolumeRestraint.h"
+#include "restraints/CoarseEMRestraint.h"
 
 #endif  /* __IMP_H */

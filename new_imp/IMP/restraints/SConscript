@@ -1,6 +1,9 @@
 Import('env')
 
-files = ['Complexes_Restraints.cpp', 'Restraint.cpp']
+files = ['CoarseEMRestraint.cpp', 'PairConnectivityRestraint.cpp', 
+         'ConnectivityRestraint.cpp', 'ProximityRestraint.cpp',
+         'CoordinateRestraint.cpp', 'Restraint.cpp', 'DistanceRestraint.cpp',
+         'TorusRestraint.cpp', 'ExclusionVolumeRestraint.cpp']
 
 files = [File(x) for x in files]
 Return('files')
