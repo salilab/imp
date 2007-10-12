@@ -1,0 +1,14 @@
+/**
+  \mainpage IMP API reference
+  
+  \section intro Introduction
+  
+    This is the API reference for IMP, an Integrative Modeling Platform. Use
+    the 'Data Structures' tab to browse all of the IMP classes.
+  
+  \section links Links
+
+    See also the IMP
+    <a href="https://salilab.org/internal/manuals/imp/">online manual</a>.
+  
+ */

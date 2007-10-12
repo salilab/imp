@@ -8,6 +8,6 @@ docdir = os.path.join(env['docdir'], 'doxygen')
 
 # Install all files from 'dox' directory into the 'docdir' directory (cannot
 # use env.InstallAs() right now, due to scons bug #1751)
-env.Command(Dir(docdir), dox,
+env.Command(Dir(env.subst(docdir)), dox,
             "install -d $TARGET && install $SOURCE/* $TARGET",
             source_scanner=DirScanner)
