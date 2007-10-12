@@ -1,0 +1,198 @@
+/**
+ *  \file ExclusionVolumeRestraint.cpp   Restrict min distance between all
+ *                                       pairs of particles of formed from
+ *                                       one or two sets of particles.
+ *
+ *  Copyright 2007 Sali Lab. All rights reserved.
+ *
+ */
+
+#include <cmath>
+
+#include "../Model.h"
+#include "../Particle.h"
+#include "../log.h"
+#include "ExclusionVolumeRestraint.h"
+
+namespace imp
+{
+
+//######### ExclusionVolumeRestraint Restraint #########
+// Apply restraints that prevent particles from getting too close together
+
+/**
+  Constructor - set up the values and indexes for this exclusion volume restraint. Use
+  the attr_name to access the radii for the minimum distance between two particles.
+  Assume that there is no overlap between the two particle lists. Create restraints for
+  all possible pairs between the two lists.
+
+  \param[in] model Pointer to the model.
+  \param[in] particles1 Vector of indexes of particles of the first body.
+  \param[in] particles2 Vector of indexes of particles of the second body.
+  \param[in] attr_name The attribute used to determine the vw radius of each particle.
+  \param[in] sd Standard deviation associated with the score function for the restraint.
+ */
+
+ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
+    // couldn't get Swig to work with std::vector<Particle*>&
+    std::vector<int>& particle1_indexes,
+    std::vector<int>& particle2_indexes,
+    const std::string attr_name,
+    BasicScoreFuncParams* score_func_params
+                                          )
+{
+  Particle* p1;
+
+  model_data_ = model.get_model_data();
+
+  num_particles1_ = particle1_indexes.size();
+  num_particles2_ = particle2_indexes.size();
+  num_particles_ = num_particles1_ + num_particles2_;
+  for (int i = 0; i < num_particles1_; i++) {
+    p1 = model.get_particle(particle1_indexes[i]);
+    particles_.push_back(p1);
+  }
+
+  for (int i = 0; i < num_particles2_; i++) {
+    p1 = model.get_particle(particle2_indexes[i]);
+    particles_.push_back(p1);
+  }
+
+  num_restraints_ = num_particles1_ * num_particles2_;
+
+  // get the indexes associated with the restraints
+  Float actual_mean;
+  IMP_LOG(VERBOSE, "Add inter-body exclusion volume restraints " << num_restraints_);
+
+  // particle 1 indexes
+  for (int i = 0; i < num_particles1_; i++) {
+    // particle 2 indexes
+    for (int j = num_particles1_; j < num_particles_; j++) {
+      // Use those radii to calculate the expected distance
+      actual_mean = model_data_->get_float(particles_[i]->float_index(attr_name))
+                    + model_data_->get_float(particles_[j]->float_index(attr_name));
+
+      score_func_params->set_mean(actual_mean);
+      
+      // create the restraint
+      dist_rsrs_.push_back(new DistanceRestraint(model,
+                                            particles_[i],
+                                            particles_[j],
+                                            score_func_params));
+    }
+  }
+}
+
+/**
+  Constructor - set up the values and indexes for this exclusion volume restraint. Use
+  the attr_name to access the radii for the minimum distance between two particles.
+  Create restraints for all possible pairs of particles in the list.
+
+  \param[in] model Pointer to the model.
+  \param[in] particles Vector of indexes of particles.
+  \param[in] attr_name The attribute used to determine the vw radius of each particle.
+  \param[in] sd Standard deviation associated with the score function for the restraint.
+ */
+
+ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
+    // couldn't get Swig to work with std::vector<Particle*>&
+    std::vector<int>& particle_indexes,
+    const std::string attr_name,
+    BasicScoreFuncParams* score_func_params
+                                          )
+{
+  Particle* p1;
+
+  model_data_ = model.get_model_data();
+
+  num_particles_ = particle_indexes.size();
+  for (int i = 0; i < num_particles_; i++) {
+    p1 = model.get_particle(particle_indexes[i]);
+    particles_.push_back(p1);
+  }
+
+  num_restraints_ = num_particles_ * (num_particles_ - 1) / 2;
+
+  // get the indexes associated with the restraints
+  int idx = 0;
+  Float actual_mean;
+  IMP_LOG(VERBOSE, "Add intra-body exclusion volume restraints " << num_restraints_);
+
+  // particle 1 indexes
+  for (int i = 0; i < num_particles_ - 1; i++) {
+    // particle 2 indexes (avoid duplicates and particle with itself)
+    for (int j = i+1; j < num_particles_; j++) {
+      // Use those radii to calculate the expected distance
+      actual_mean = model_data_->get_float(particles_[i]->float_index(attr_name))
+                    + model_data_->get_float(particles_[j]->float_index(attr_name));
+
+      score_func_params->set_mean(actual_mean);
+      
+      // create the restraint
+      dist_rsrs_.push_back(new DistanceRestraint(model,
+                                            particles_[i],
+                                            particles_[j],
+                                            score_func_params));
+      idx++;
+    }
+  }
+}
+
+
+/**
+  Destructor
+ */
+
+ExclusionVolumeRestraint::~ExclusionVolumeRestraint ()
+{
+  std::vector<DistanceRestraint*>::iterator rsr_iter;
+
+  for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end(); ++rsr_iter) {
+    delete(*rsr_iter);
+  }
+}
+
+/**
+  Calculate the distance restraints for the given particles. Use the smallest
+  restraints that will connect one particle of each type together (i.e. a
+  minimum spanning tree with nodes corresponding to particle types and the
+  edge weights corresponding to restraint violation scores).
+
+ \param[in] calc_deriv If true, partial first derivatives should be calculated.
+ \return score associated with this restraint for the given state of the model.
+  */
+
+Float ExclusionVolumeRestraint::evaluate(bool calc_deriv)
+{
+  std::vector<DistanceRestraint*>::iterator rsr_iter;
+
+  Float score = 0.0;
+
+  // until this is smarter, just calculate them all
+  for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end(); ++rsr_iter) {
+    score += (*rsr_iter)->evaluate(calc_deriv);
+  }
+
+  return score;
+}
+
+
+/**
+  Show the current restraint.
+
+ \param[in] out Stream to send restraint description to.
+ */
+
+void ExclusionVolumeRestraint::show(std::ostream& out) const
+{
+  if (is_active()) {
+    out << "exclusion volume restraint (active):" << std::endl;
+  } else {
+    out << "exclusion volume  restraint (inactive):" << std::endl;
+  }
+
+  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "  num particles:" << num_particles_;
+}
+
+}  // namespace imp
