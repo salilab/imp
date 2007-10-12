@@ -1,3 +1,10 @@
+/**
+ *  \file log.h     Logging and error reporting support.
+ *
+ *  Copyright 2007 Sali Lab. All rights reserved.
+ *
+ */
+
 #ifndef __IMP_LOG_H
 #define __IMP_LOG_H
 
@@ -5,9 +12,8 @@
 #include <fstream>
 #include <cstdlib>
 #include <cassert>
+#include <string>
 #include "IMP_config.h"
-
-/*! \file Logging and error reporting support for IMP*/
 
 namespace imp
 {
