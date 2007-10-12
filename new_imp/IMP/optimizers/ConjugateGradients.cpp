@@ -39,139 +39,49 @@ static Float get_score(Model &model, ModelData *model_data,
   return score;
 }
 
-/**
-  Constructor
+
+/** Try to find the minimum of the function in the given direction.
+    \param[out]   x         Current state (updated on output)
+    \param[out]   dx        Gradient at current state (updated on output)
+    \param[inout] alpha     Current step length (updated on output)
+    \param[inout] ifun      Current number of function evaluations (updated
+                            on output)
+    \param[inout] f         Current function value (updated on output)
+    \param[in]    max_steps Maximum number of function evaluations
+    \param[in]    search    Direction in which to search
+    \param[in]    estimate  Initial state
+    \param[in]    destimate Gradient of initial state
+
+    \return true if the line search succeeded, false if max_steps was exceeded
+            or a minimum could not be found.
  */
-ConjugateGradients::ConjugateGradients()
+static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
+                        float &alpha, Model &model, ModelData *model_data,
+                        const std::vector<FloatIndex> &float_indices,
+                        int &ifun, float &f, float &dg, float &dg1,
+                        int max_steps, const std::vector<Float> &search,
+                        const std::vector<Float> &estimate,
+                        const std::vector<Float> &destimate)
 {
-}
+  float ap, fp, dp, step, minf, u1, u2;
+  int i, n, ncalls = ifun;
 
-
-/**
-  Destructor
- */
-ConjugateGradients::~ConjugateGradients()
-{
-}
-
-
-/**
- * Conjugate gradients optimization, as per Shanno and Phua, ACM Transactions
- * On Mathematical Software 6 (December 1980), 618-622
- *
- * \param[in] model     Model that is being optimized.
- * \param[in] max_steps Maximum number of iterations before aborting.
- * \param[in] threshold Largest acceptable gradient-squared value
- *                      for convergence.
- *
- * \return score of the final state of the model.
- */
-Float ConjugateGradients::optimize(Model& model, int max_steps,
-                                    Float threshold)
-{
-  std::vector<FloatIndex> float_indices;
-  std::vector<Float> x, dx;
-  int n = 0, i;
-  ModelData* model_data = model.get_model_data();
-
-  OptFloatIndexIterator opt_float_iter;
-
-  opt_float_iter.reset(model_data);
-  // determine n, the number of degrees of freedom
-  while (opt_float_iter.next()) {
-    n++;
-    float_indices.push_back(opt_float_iter.get());
-  }
-
-  x.resize(n);
-  dx.resize(n);
-  // get initial state in x(n):
-  for (i = 0; i < n; i++) {
-    x[i] = model_data->get_float(float_indices[i]);
-  }
-
-  // Initialize optimization variables
-  int ifun = 0, nrst, ncalls, nflag = 0;
-  float dg1, xsq, dxsq, f = 0., alpha, dg = 1., minf, ap, fp, dp, step, u1,
-        u2, u3, u4, w1 = 0., w2 = 0., rtst, bestf;
-  bool gradient_direction;
-
-  // dx holds the gradient at x
-  // search holds the search vector
-  // estimate holds the best current estimate to the minimizer
-  // destimate holds the gradient at the best current estimate
-  // resy holds the restart Y vector
-  // ressearch holds the restart search vector
-  std::vector<Float> search, estimate, destimate, resy, ressearch;
-  search.resize(n);
-  estimate.resize(n);
-  destimate.resize(n);
-  resy.resize(n);
-  ressearch.resize(n);
-
-  /* Calculate the function and gradient at the initial
-     point and initialize nrst,which is used to determine
-     whether a Beale restart is being done. nrst=n means that this
-     iteration is a restart iteration. */
-g20: f = get_score(model, model_data, float_indices, x, dx);
-  ifun++;
-  nrst = n;
-  // this is a gradient, not restart, direction:
-  gradient_direction = true;
-
-  /* Calculate the initial search direction, the norm of x squared,
-     and the norm of dx squared. dg1 is the current directional
-     derivative, while xsq and dxsq are the squared norms. */
-  dg1 = xsq = 0.;
-
-  for (i = 0; i < n; i++) {
-    search[i] = -dx[i];
-    xsq += x[i] * x[i];
-    dg1 -= dx[i] * dx[i];
-  }
-  dxsq = -dg1;
-
-  /* Test if the initial point is the minimizer. */
-  if (dxsq <= eps * eps * std::max(1.0f, xsq)) {
-    goto end;
-  }
-
-  /* Begin the major iteration loop. ncalls is used to guarantee that
-     at least two points have been tried. minf is the current function value. */
-g40: minf = f;
-  ncalls = ifun;
-
-  /* Begin linear search. alpha is the steplength. */
-
-  if (gradient_direction) {
-    /* This results in scaling the initial search vector to unity. */
-    alpha = 1.0 / sqrt(dxsq);
-  } else if (nrst == 1) {
-    /* Set alpha to 1.0 after a restart. */
-    alpha = 1.0;
-  } else {
-    /* Set alpha to the nonrestart conjugate gradient alpha. */
-    alpha = alpha * dg / dg1;
-  }
-
-
+  n = float_indices.size();
   /* THE LINEAR SEARCH FITS A CUBIC TO F AND DAL, THE FUNCTION AND ITS
      DERIVATIVE AT ALPHA, AND TO FP AND DP,THE FUNCTION
      AND DERIVATIVE AT THE PREVIOUS TRIAL POINT AP.
      INITIALIZE AP ,FP,AND DP. */
   ap = 0.;
-  fp = minf;
+  fp = minf = f;
   dp = dg1;
 
   /* SAVE THE CURRENT DERIVATIVE TO SCALE THE NEXT SEARCH VECTOR. */
   dg = dg1;
 
-  /* Calculate the current steplength and store the current x and dx. */
+  /* Calculate the current steplength */
   step = 0.;
   for (i = 0; i < n; i++) {
     step += search[i] * search[i];
-    estimate[i] = x[i];
-    destimate[i] = dx[i];
   }
   step = sqrt(step);
 
@@ -181,14 +91,7 @@ g40: minf = f;
 
     /* TEST FOR FAILURE OF THE LINEAR SEARCH. */
     if (alpha * step <= eps) {
-  
-      /* TEST IF DIRECTION IS A GRADIENT DIRECTION. */
-      if (gradient_direction) {
-        nflag = 2;
-        goto end;
-      } else {
-        goto g20;
-      }
+      return false;
     }
   
     /* CALCULATE THE TRIAL POINT. */
@@ -200,10 +103,8 @@ g40: minf = f;
     f = get_score(model, model_data, float_indices, x, dx);
   
     /* TEST IF THE MAXIMUM NUMBER OF FUNCTION CALLS HAVE BEEN USED. */
-    ifun++;
-    if (ifun > max_steps) {
-      nflag = 1;
-      goto end;
+    if (++ifun > max_steps) {
+      return false;
     }
   
     /* COMPUTE THE DERIVATIVE OF F AT ALPHA. */
@@ -283,6 +184,141 @@ g40: minf = f;
     fp = f;
     dp = dal;
     alpha = at;
+  }
+  return true;
+}
+
+
+/**
+  Constructor
+ */
+ConjugateGradients::ConjugateGradients()
+{
+}
+
+
+/**
+  Destructor
+ */
+ConjugateGradients::~ConjugateGradients()
+{
+}
+
+
+/**
+ * Conjugate gradients optimization, as per Shanno and Phua, ACM Transactions
+ * On Mathematical Software 6 (December 1980), 618-622
+ *
+ * \param[in] model     Model that is being optimized.
+ * \param[in] max_steps Maximum number of iterations before aborting.
+ * \param[in] threshold Largest acceptable gradient-squared value
+ *                      for convergence.
+ *
+ * \return score of the final state of the model.
+ */
+Float ConjugateGradients::optimize(Model& model, int max_steps,
+                                   Float threshold)
+{
+  std::vector<FloatIndex> float_indices;
+  std::vector<Float> x, dx;
+  int n = 0, i;
+  ModelData* model_data = model.get_model_data();
+
+  OptFloatIndexIterator opt_float_iter;
+
+  opt_float_iter.reset(model_data);
+  // determine n, the number of degrees of freedom
+  while (opt_float_iter.next()) {
+    n++;
+    float_indices.push_back(opt_float_iter.get());
+  }
+
+  x.resize(n);
+  dx.resize(n);
+  // get initial state in x(n):
+  for (i = 0; i < n; i++) {
+    x[i] = model_data->get_float(float_indices[i]);
+  }
+
+  // Initialize optimization variables
+  int ifun = 0, nrst, nflag = 0;
+  float dg1, xsq, dxsq, f = 0., alpha, dg = 1., step, u1,
+        u2, u3, u4, w1 = 0., w2 = 0., rtst, bestf;
+  bool gradient_direction;
+
+  // dx holds the gradient at x
+  // search holds the search vector
+  // estimate holds the best current estimate to the minimizer
+  // destimate holds the gradient at the best current estimate
+  // resy holds the restart Y vector
+  // ressearch holds the restart search vector
+  std::vector<Float> search, estimate, destimate, resy, ressearch;
+  search.resize(n);
+  estimate.resize(n);
+  destimate.resize(n);
+  resy.resize(n);
+  ressearch.resize(n);
+
+  /* Calculate the function and gradient at the initial
+     point and initialize nrst,which is used to determine
+     whether a Beale restart is being done. nrst=n means that this
+     iteration is a restart iteration. */
+g20: f = get_score(model, model_data, float_indices, x, dx);
+  ifun++;
+  nrst = n;
+  // this is a gradient, not restart, direction:
+  gradient_direction = true;
+
+  /* Calculate the initial search direction, the norm of x squared,
+     and the norm of dx squared. dg1 is the current directional
+     derivative, while xsq and dxsq are the squared norms. */
+  dg1 = xsq = 0.;
+
+  for (i = 0; i < n; i++) {
+    search[i] = -dx[i];
+    xsq += x[i] * x[i];
+    dg1 -= dx[i] * dx[i];
+  }
+  dxsq = -dg1;
+
+  /* Test if the initial point is the minimizer. */
+  if (dxsq <= eps * eps * std::max(1.0f, xsq)) {
+    goto end;
+  }
+
+  /* Begin the major iteration loop. */
+g40:
+  /* Begin linear search. alpha is the steplength. */
+
+  if (gradient_direction) {
+    /* This results in scaling the initial search vector to unity. */
+    alpha = 1.0 / sqrt(dxsq);
+  } else if (nrst == 1) {
+    /* Set alpha to 1.0 after a restart. */
+    alpha = 1.0;
+  } else {
+    /* Set alpha to the nonrestart conjugate gradient alpha. */
+    alpha = alpha * dg / dg1;
+  }
+
+  /* Store current best estimate for the score */
+  estimate = x;
+  destimate = dx;
+
+  /* Try to find a better score by linear search */
+  if (!line_search(x, dx, alpha, model, model_data, float_indices, ifun, f,
+                   dg, dg1, max_steps, search, estimate, destimate)) {
+    /* If the line search failed, it was either because the maximum number
+       of iterations was exceeded, or the minimum could not be found */
+    if (ifun > max_steps) {
+      nflag = 1;
+      goto end;
+    } else if (gradient_direction) {
+      nflag = 2;
+      goto end;
+    } else {
+      goto g20;
+    }
   }
 
   /* THE LINE SEARCH HAS CONVERGED. TEST FOR CONVERGENCE OF THE ALGORITHM. */
