@@ -22,14 +22,14 @@ typedef int Int;
 typedef std::string String;
 
 // if I don't do this as a template, I eliminate the swig errors
-class IMPDLLEXPORT Float_Index
+class IMPDLLEXPORT FloatIndex
 {
 public:
-  Float_Index(int idx = 0) {
+  FloatIndex(int idx = 0) {
     index_ = idx;
   }
 
-  ~Float_Index(void) {
+  ~FloatIndex(void) {
   }
 
   int index(void) const {
@@ -44,14 +44,14 @@ protected:
   int index_;
 };
 
-class IMPDLLEXPORT Int_Index
+class IMPDLLEXPORT IntIndex
 {
 public:
-  Int_Index(int idx = 0) {
+  IntIndex(int idx = 0) {
     index_ = idx;
   }
 
-  ~Int_Index(void) {
+  ~IntIndex(void) {
   }
 
   int index(void) const {
@@ -66,14 +66,14 @@ protected:
   int index_;
 };
 
-class IMPDLLEXPORT String_Index
+class IMPDLLEXPORT StringIndex
 {
 public:
-  String_Index(int idx = 0) {
+  StringIndex(int idx = 0) {
     index_ = idx;
   }
 
-  ~String_Index(void) {
+  ~StringIndex(void) {
   }
 
   int index(void) const {
@@ -90,14 +90,14 @@ protected:
 
 // indexes for retrieving particle information
 template <class T>
-class IMPDLLEXPORT Data_Index
+class IMPDLLEXPORT DataIndex
 {
 public:
-  Data_Index(int idx = 0) {
+  DataIndex(int idx = 0) {
     index_ = idx;
   }
 
-  ~Data_Index(void) {
+  ~DataIndex(void) {
   }
 
   int index(void) const {
@@ -113,9 +113,9 @@ protected:
 };
 
 // typedefs for the particle variable and attribute indexes
-// typedef Data_Index<Float> Float_Index;
-// typedef Data_Index<Int> Int_Index;
-// typedef Data_Index<String> String_Index;
+// typedef DataIndex<Float> FloatIndex;
+// typedef DataIndex<Int> IntIndex;
+// typedef DataIndex<String> StringIndex;
 
 } // namespace imp
 

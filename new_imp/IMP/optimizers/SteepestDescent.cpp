@@ -1,5 +1,5 @@
 /*
- *  Steepest_Descent.cpp
+ *  SteepestDescent.cpp
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
@@ -7,7 +7,7 @@
  */
 
 #include "../log.h"
-#include "Steepest_Descent.h"
+#include "SteepestDescent.h"
 
 namespace imp
 {
@@ -20,7 +20,7 @@ namespace imp
   Constructor
  */
 
-Steepest_Descent::Steepest_Descent()
+SteepestDescent::SteepestDescent()
 {
 }
 
@@ -29,7 +29,7 @@ Steepest_Descent::Steepest_Descent()
   Destructor
  */
 
-Steepest_Descent::~Steepest_Descent ()
+SteepestDescent::~SteepestDescent ()
 {
 }
 
@@ -46,20 +46,20 @@ if we are sufficiently far from a score of zero. If a score of zero is reached, 
 \return score of the final state of the model.
 */
 
-Float Steepest_Descent::optimize (Model& model, int max_steps, Float threshold)
+Float SteepestDescent::optimize (Model& model, int max_steps, Float threshold)
 {
   std::vector<Float> temp_vals;
   std::vector<Float> temp_derivs;
-  std::vector<Float_Index> float_indexes;
+  std::vector<FloatIndex> float_indexes;
   Float last_score, new_score = 0.0;
-  Model_Data* model_data;
+  ModelData* model_data;
 
   model_data = model.get_model_data();
 
   // set up the indexes
   int opt_var_cnt = 0;
 
-  Opt_Float_Index_Iterator opt_float_iter;
+  OptFloatIndexIterator opt_float_iter;
 
   opt_float_iter.reset(model_data);
   while (opt_float_iter.next()) {
@@ -83,7 +83,7 @@ Float Steepest_Descent::optimize (Model& model, int max_steps, Float threshold)
 
     // store the old values
     for (int i = 0; i < opt_var_cnt; i++) {
-      Float_Index fi = float_indexes[0];
+      FloatIndex fi = float_indexes[0];
 
       temp_vals[i] = model_data->get_float(float_indexes[i]);
       temp_derivs[i] = model_data->get_deriv(float_indexes[i]);

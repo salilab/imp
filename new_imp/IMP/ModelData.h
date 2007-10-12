@@ -1,5 +1,5 @@
 /*
- *  Model_Data.h
+ *  ModelData.h
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
@@ -28,15 +28,15 @@ class Particle;
 // differentiable and is stored in a structure that can accomodate
 // differentiation. Int and string data is stored directly in
 // vectors.
-class IMPDLLEXPORT Model_Data
+class IMPDLLEXPORT ModelData
 {
   friend class Model;
   friend class Particle;
-  friend class Opt_Float_Index_Iterator;
+  friend class OptFloatIndexIterator;
 
 public:
   // variables
-  class Float_Data
+  class FloatData
   {
   public:
     Float value_;
@@ -58,8 +58,8 @@ public:
   };
 
   // particle float attributes (assumed differentiable variables)
-  Float_Index add_float(const Float value);
-  void set_float(const Float_Index idx, const Float value);
+  FloatIndex add_float(const Float value);
+  void set_float(const FloatIndex idx, const Float value);
 
   /**
   Get particle float attribute. INLINE
@@ -67,20 +67,20 @@ public:
   \param[in] idx Index of the particle float attribute.
   \return value of particle float attribute.
   */
-  Float get_float(const Float_Index idx) const {
+  Float get_float(const FloatIndex idx) const {
     return float_data_[idx.index()].value_;
   }
 
-  void add_to_deriv(const Float_Index idx, const Float value);
-  Float get_deriv(const Float_Index idx) const;
-  bool is_optimized(const Float_Index idx) const;
-  void set_is_optimized(const Float_Index idx, bool is_optimized);
+  void add_to_deriv(const FloatIndex idx, const Float value);
+  Float get_deriv(const FloatIndex idx) const;
+  bool is_optimized(const FloatIndex idx) const;
+  void set_is_optimized(const FloatIndex idx, bool is_optimized);
 
   void zero_derivatives(void);
 
   // particle int attributes
-  Int_Index add_int(const Int value);
-  void set_int(const Int_Index idx, const Int value);
+  IntIndex add_int(const Int value);
+  void set_int(const IntIndex idx, const Int value);
 
   /**
    Get particle int attribute. INLINE
@@ -88,13 +88,13 @@ public:
    \param[in] idx Index of the particle int attribute.
    \return value of particle float attribute.
    */
-  Int get_int(const Int_Index idx) const {
+  Int get_int(const IntIndex idx) const {
     return int_data_[idx.index()];
   }
 
   // particle string attributes
-  String_Index add_string(const String value);
-  void set_string(const String_Index idx, const String value);
+  StringIndex add_string(const String value);
+  void set_string(const StringIndex idx, const String value);
 
   /**
   Get particle string attribute. INLINE
@@ -102,13 +102,13 @@ public:
   \param[in] idx Index of the particle string attribute.
   \return value of particle string attribute.
    */
-  String get_string(const String_Index idx) const {
+  String get_string(const StringIndex idx) const {
     return string_data_[idx.index()];
   }
 
 protected:
-  Model_Data();
-  ~Model_Data();
+  ModelData();
+  ~ModelData();
 
   // used by model to see if restraints need to check their particles
   bool check_particles_active(void) {
@@ -122,7 +122,7 @@ protected:
   // these are stored outside of particles to allow
   // ... restraints to get access them directly through
   // ... indexes rather than through particle dereferencing.
-  std::vector<Float_Data> float_data_;
+  std::vector<FloatData> float_data_;
   std::vector<Int> int_data_;
   std::vector<String> string_data_;
 
@@ -135,17 +135,17 @@ protected:
 };
 
 // variable iterator
-class IMPDLLEXPORT Opt_Float_Index_Iterator
+class IMPDLLEXPORT OptFloatIndexIterator
 {
 public:
-  Opt_Float_Index_Iterator() {}
-  void reset(Model_Data* model_data);
+  OptFloatIndexIterator() {}
+  void reset(ModelData* model_data);
   bool next(void);
-  Float_Index get(void) const;
+  FloatIndex get(void) const;
 
 protected:
   int cur_;
-  Model_Data* model_data_;
+  ModelData* model_data_;
 };
 
 

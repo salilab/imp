@@ -1,5 +1,5 @@
 /*
- *  Restraint_Set.h
+ *  RestraintSet.h
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
@@ -18,14 +18,14 @@ namespace imp
 {
 
 // Used to hold a set of related restraints
-class IMPDLLEXPORT Restraint_Set
+class IMPDLLEXPORT RestraintSet
 {
 public:
-  Restraint_Set(const std::string name);
-  ~Restraint_Set();
+  RestraintSet(const std::string name);
+  ~RestraintSet();
 
   /** Give access to model particle data. */
-  void set_model_data(Model_Data* model_data);
+  void set_model_data(ModelData* model_data);
 
   /** Get name of this restraint set. */
   std::string name(void) const;
@@ -41,7 +41,7 @@ public:
   void add_restraint(Restraint *restraint);
 
   /** Add restraint set to the restraint set. */
-  void add_restraint_set(Restraint_Set *restraint_set);
+  void add_restraint_set(RestraintSet *restraint_set);
   // void add_filter(Filter *filter);
 
   // status
@@ -55,7 +55,7 @@ public:
 
 protected:
   // all of the particle data
-  Model_Data* model_data_;
+  ModelData* model_data_;
 
   // restraint set is active flag
   bool is_active_;
@@ -63,7 +63,7 @@ protected:
   // restraint sets have an associated name
   std::string name_;
 
-  std::vector<Restraint_Set *> restraint_sets_;
+  std::vector<RestraintSet *> restraint_sets_;
 
   // restraints to evaluate
   // these can be accessed with an iterator by a filter.

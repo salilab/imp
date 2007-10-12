@@ -18,7 +18,7 @@
 namespace imp
 {
 
-//######### RSR_Coordinate Restraint #########
+//######### CoordinateRestraint Restraint #########
 // Optimize based on distance from an absolute position
 
 /**
@@ -31,10 +31,10 @@ namespace imp
   \param[in] score_func_params Parameters for creating a score function.
  */
 
-RSR_Coordinate::RSR_Coordinate(Model& model,
+CoordinateRestraint::CoordinateRestraint(Model& model,
                                Particle* p1,
                                const std::string axis,
-                               Basic_Score_Func_Params* score_func_params)
+                               BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
 
@@ -51,7 +51,7 @@ RSR_Coordinate::RSR_Coordinate(Model& model,
   Destructor
  */
 
-RSR_Coordinate::~RSR_Coordinate ()
+CoordinateRestraint::~CoordinateRestraint ()
 {
 }
 
@@ -62,7 +62,7 @@ RSR_Coordinate::~RSR_Coordinate ()
  \param[in] calc_deriv If true, partial first derivatives should be calculated.
   */
 
-Float RSR_Coordinate::evaluate(bool calc_deriv)
+Float CoordinateRestraint::evaluate(bool calc_deriv)
 {
   Float score = 0.0, deriv;
   Float x, y, z;
@@ -143,7 +143,7 @@ Float RSR_Coordinate::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Coordinate::show(std::ostream& out) const
+void CoordinateRestraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "coordinate restraint (active):" << std::endl;
@@ -164,7 +164,7 @@ void RSR_Coordinate::show(std::ostream& out) const
 }
 
 
-//######### RSR_Torus Restraint #########
+//######### TorusRestraint Restraint #########
 // Optimize based on distance from torus interior
 
 /**
@@ -178,11 +178,11 @@ void RSR_Coordinate::show(std::ostream& out) const
   \param[in] score_func_params Parameters for creating a score function.
  */
 
-RSR_Torus::RSR_Torus(Model& model,
+TorusRestraint::TorusRestraint(Model& model,
                      Particle* p1,
                      const Float main_radius,
                      const Float tube_radius,
-                     Basic_Score_Func_Params* score_func_params)
+                     BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
 
@@ -200,7 +200,7 @@ RSR_Torus::RSR_Torus(Model& model,
   Destructor
  */
 
-RSR_Torus::~RSR_Torus ()
+TorusRestraint::~TorusRestraint ()
 {
 }
 
@@ -211,7 +211,7 @@ RSR_Torus::~RSR_Torus ()
  \param[in] calc_deriv If true, partial first derivatives should be calculated.
   */
 
-Float RSR_Torus::evaluate(bool calc_deriv)
+Float TorusRestraint::evaluate(bool calc_deriv)
 {
   Float tube_center_x, tube_center_y;
   Float xy_distance_from_center;
@@ -287,7 +287,7 @@ Float RSR_Torus::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Torus::show(std::ostream& out) const
+void TorusRestraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "torus restraint (active):" << std::endl;
@@ -310,7 +310,7 @@ void RSR_Torus::show(std::ostream& out) const
 
 
 
-//######### RSR_Proximity Restraint #########
+//######### ProximityRestraint Restraint #########
 // Given a list of particles, this restraint calculates the distance
 // restraints between all pairs of particles, and then applies the
 // one restraint with the greatest score.
@@ -324,10 +324,10 @@ void RSR_Torus::show(std::ostream& out) const
   \param[in] score_func_params Parameters for creating a score function.
  */
 
-RSR_Proximity::RSR_Proximity(Model& model,
+ProximityRestraint::ProximityRestraint(Model& model,
                              std::vector<int>& particle_indexes,
                              const Float distance,
-                             Basic_Score_Func_Params* score_func_params)
+                             BasicScoreFuncParams* score_func_params)
 {
   set_up(model, particle_indexes);
 
@@ -339,7 +339,7 @@ RSR_Proximity::RSR_Proximity(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       // create the restraint
       
-      dist_rsrs_[idx] = new RSR_Distance(model,
+      dist_rsrs_[idx] = new DistanceRestraint(model,
                                          particles_[i],
                                          particles_[j],
                                          score_func_params);
@@ -362,11 +362,11 @@ RSR_Proximity::RSR_Proximity(Model& model,
   \param[in] score_func_params Parameters for creating a score function.
  */
 
-RSR_Proximity::RSR_Proximity(Model& model,
+ProximityRestraint::ProximityRestraint(Model& model,
                              std::vector<int>& particle_indexes,
                              const std::string attr_name,
                              const Float distance,
-                             Basic_Score_Func_Params* score_func_params)
+                             BasicScoreFuncParams* score_func_params)
 {
   // Use those radii to calculate the expected distance
   set_up(model, particle_indexes);
@@ -384,7 +384,7 @@ RSR_Proximity::RSR_Proximity(Model& model,
       // create the restraint
       IMP_LOG(VERBOSE, i << " " << j << " add distance: " << actual_mean);
       score_func_params->set_mean(actual_mean);
-      dist_rsrs_[idx] = new RSR_Distance(model,
+      dist_rsrs_[idx] = new DistanceRestraint(model,
                                          particles_[i],
                                          particles_[j],
                                          score_func_params);
@@ -400,10 +400,10 @@ RSR_Proximity::RSR_Proximity(Model& model,
   \param[in] particles Vector of indexes of particles in the restraint.
  */
 
-void RSR_Proximity::set_up(Model& model,
+void ProximityRestraint::set_up(Model& model,
                            std::vector<int>& particle_indexes)
 {
-  IMP_LOG(VERBOSE, "init RSR_Connectivity");
+  IMP_LOG(VERBOSE, "init ConnectivityRestraint");
 
   model_data_ = model.get_model_data();
 
@@ -431,7 +431,7 @@ void RSR_Proximity::set_up(Model& model,
   Destructor
  */
 
-RSR_Proximity::~RSR_Proximity ()
+ProximityRestraint::~ProximityRestraint ()
 {
   for (int i = 0; i < num_restraints_; i++) {
     delete dist_rsrs_[i];
@@ -448,11 +448,11 @@ RSR_Proximity::~RSR_Proximity ()
  \resturn score associated with this restraint for the given state of the model.
   */
 
-Float RSR_Proximity::evaluate(bool calc_deriv)
+Float ProximityRestraint::evaluate(bool calc_deriv)
 {
   int idx;
 
-  IMP_LOG(VERBOSE, "evaluate RSR_Proximity");
+  IMP_LOG(VERBOSE, "evaluate ProximityRestraint");
 
   // calculate the scores for all of the restraints
   /*
@@ -522,7 +522,7 @@ Float RSR_Proximity::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Proximity::show(std::ostream& out) const
+void ProximityRestraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "proximity restraint (active):" << std::endl;
@@ -537,7 +537,7 @@ void RSR_Proximity::show(std::ostream& out) const
 
 
 
-//######### RSR_Pair_Connectivity Restraint #########
+//######### PairConnectivityRestraint Restraint #########
 // Optimize based on N "best" distances for pairs of particles
 // between two structures (e.g. rigid bodies)
 
@@ -553,10 +553,10 @@ void RSR_Proximity::show(std::ostream& out) const
   \param[in] particle_reuse Allow minimum restraints to use particle more than once.
  */
 
-RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
+PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     std::vector<int>& particle1_indexes,
     std::vector<int>& particle2_indexes,
-    Basic_Score_Func_Params* score_func_params,
+    BasicScoreFuncParams* score_func_params,
     const int num_to_apply,
     const bool particle_reuse)
 {
@@ -568,7 +568,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
   // get the indexes associated with the restraints
   int idx = 0;
   // use iterator to move through each predefined position in the restraint/score list
-  std::list<RSR_Pair_Connectivity::Restraint_Score>::iterator rs_iter;
+  std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
   rs_iter = rsr_scores_.begin();
   for (int i = 0; i < num_particles1_; i++) {
     for (int j = num_particles1_; j < num_particles1_ + num_particles2_; j++) {
@@ -578,7 +578,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
 		    std::out_of_range("Reached end of rsr_scores too early"));
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
-        rs_iter->rsr_ = new RSR_Distance(model,
+        rs_iter->rsr_ = new DistanceRestraint(model,
                                          particles_[i],
                                          particles_[j],
                                          score_func_params);
@@ -610,11 +610,11 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
   \param[in] particle_reuse Allow minimum restraints to use particle more than once.
  */
 
-RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
+PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     std::vector<int>& particle1_indexes,
     std::vector<int>& particle2_indexes,
     const std::string attr_name,
-    Basic_Score_Func_Params* score_func_params,
+    BasicScoreFuncParams* score_func_params,
     const int num_to_apply,
     const bool particle_reuse)
 {
@@ -627,7 +627,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
   Float actual_mean;
 
   // use iterator to move through each predefined position in the restraint/score list
-  std::list<RSR_Pair_Connectivity::Restraint_Score>::iterator rs_iter;
+  std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
   rs_iter = rsr_scores_.begin();
   // particles from list 1
   for (int i = 0; i < num_particles1_; i++) {
@@ -645,7 +645,7 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
 		    std::out_of_range("Reached end of rsr_scores too early"));
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
-        rs_iter->rsr_ = new RSR_Distance(model,
+        rs_iter->rsr_ = new DistanceRestraint(model,
                                          particles_[i],
                                          particles_[j],
                                          score_func_params);
@@ -671,13 +671,13 @@ RSR_Pair_Connectivity::RSR_Pair_Connectivity(Model& model,
   \param[in] particles2 Vector of indexes of particles in second body of the restraint.
  */
 
-void RSR_Pair_Connectivity::set_up(Model& model,
+void PairConnectivityRestraint::set_up(Model& model,
                                    std::vector<int>& particle1_indexes,
                                    std::vector<int>& particle2_indexes)
 {
   Particle* p1;
 
-  IMP_LOG(VERBOSE, "init RSR_Connectivity");
+  IMP_LOG(VERBOSE, "init ConnectivityRestraint");
 
   model_data_ = model.get_model_data();
 
@@ -711,9 +711,9 @@ void RSR_Pair_Connectivity::set_up(Model& model,
   Destructor
  */
 
-RSR_Pair_Connectivity::~RSR_Pair_Connectivity ()
+PairConnectivityRestraint::~PairConnectivityRestraint ()
 {
-  std::list<RSR_Pair_Connectivity::Restraint_Score>::iterator rs_iter;
+  std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
     delete(rs_iter->rsr_);
@@ -738,11 +738,11 @@ RSR_Pair_Connectivity::~RSR_Pair_Connectivity ()
  \return score associated with this restraint for the given state of the model.
   */
 
-Float RSR_Pair_Connectivity::evaluate(bool calc_deriv)
+Float PairConnectivityRestraint::evaluate(bool calc_deriv)
 {
-  std::list<RSR_Pair_Connectivity::Restraint_Score>::iterator rs_iter;
+  std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
-  IMP_LOG(VERBOSE, "evaluate RSR_Pair_Connectivity");
+  IMP_LOG(VERBOSE, "evaluate PairConnectivityRestraint");
 
   // only use a particle at most once in set of restraints
   for (int i = 0; i < num_particles_; i++)
@@ -789,7 +789,7 @@ Float RSR_Pair_Connectivity::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Pair_Connectivity::show(std::ostream& out) const
+void PairConnectivityRestraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "pair connectivity restraint (active):" << std::endl;
@@ -805,7 +805,7 @@ void RSR_Pair_Connectivity::show(std::ostream& out) const
 
 
 
-//######### RSR_Connectivity Restraint #########
+//######### ConnectivityRestraint Restraint #########
 // Optimize based on "best" distances for pairs of particles w
 // representing one of each possible pair of particle types
 
@@ -819,12 +819,12 @@ void RSR_Pair_Connectivity::show(std::ostream& out) const
   \param[in] score_func_params Parameters for creating a score function.
  */
 
-RSR_Connectivity::RSR_Connectivity(Model& model,
+ConnectivityRestraint::ConnectivityRestraint(Model& model,
                                    std::vector<int>& particle_indexes,
                                    const std::string type,
-                                   Basic_Score_Func_Params* score_func_params)
+                                   BasicScoreFuncParams* score_func_params)
 {
-  std::list<RSR_Connectivity::Restraint_Score>::iterator rs_iter;
+  std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
   set_up(model, particle_indexes, type);
 
@@ -834,13 +834,13 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       if (particle_type_[j] != particle_type_[i]) {
         if (rs_iter == rsr_scores_.end()) {
-          IMP_failure("Over ran the caculated number of restraints in RSR_Connectivity", std::out_of_range("Over ran the calculated number of restraints"));
+          IMP_failure("Over ran the caculated number of restraints in ConnectivityRestraint", std::out_of_range("Over ran the calculated number of restraints"));
         } else {
           rs_iter->part1_type_ = particle_type_[i];
           rs_iter->part2_type_ = particle_type_[j];
 
           // create the restraint
-          rs_iter->rsr_ = new RSR_Distance(model,
+          rs_iter->rsr_ = new DistanceRestraint(model,
                                            particles_[i],
                                            particles_[j],
                                            score_func_params);
@@ -868,15 +868,15 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
   \param[in] score_func_params Parameters for creating a score function.
  */
 
-RSR_Connectivity::RSR_Connectivity(Model& model,
+ConnectivityRestraint::ConnectivityRestraint(Model& model,
                                    std::vector<int>& particle_indexes,
                                    const std::string type,
                                    const std::string attr_name,
-                                   Basic_Score_Func_Params* score_func_params)
+                                   BasicScoreFuncParams* score_func_params)
 {
-  std::list<RSR_Connectivity::Restraint_Score>::iterator rs_iter;
+  std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
-  IMP_LOG(VERBOSE, "RSR_Connectivity constructor");
+  IMP_LOG(VERBOSE, "ConnectivityRestraint constructor");
   set_up(model, particle_indexes, type);
 
   // set up the restraints
@@ -886,7 +886,7 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       if (particle_type_[j] != particle_type_[i]) {
         if (rs_iter == rsr_scores_.end()) {
-          IMP_failure("Over ran the caculated number of restraints in RSR_Connectivity", std::out_of_range("Over ran the calculated number of restraints"));
+          IMP_failure("Over ran the caculated number of restraints in ConnectivityRestraint", std::out_of_range("Over ran the calculated number of restraints"));
         } else {
           rs_iter->part1_type_ = particle_type_[i];
           rs_iter->part2_type_ = particle_type_[j];
@@ -898,7 +898,7 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
           score_func_params->set_mean(actual_mean);
           
           // create the restraint
-          rs_iter->rsr_ = new RSR_Distance(model,
+          rs_iter->rsr_ = new DistanceRestraint(model,
                                            particles_[i],
                                            particles_[j],
                                            score_func_params);
@@ -922,13 +922,13 @@ RSR_Connectivity::RSR_Connectivity(Model& model,
   \param[in] type The attribute used to determine if particles are equivalent.
  */
 
-void RSR_Connectivity::set_up(Model& model,
+void ConnectivityRestraint::set_up(Model& model,
                               std::vector<int>& particle_indexes,
                               const std::string type)
 {
   Particle* p1;
 
-  IMP_LOG(VERBOSE, "init RSR_Connectivity");
+  IMP_LOG(VERBOSE, "init ConnectivityRestraint");
 
   model_data_ = model.get_model_data();
 
@@ -997,9 +997,9 @@ void RSR_Connectivity::set_up(Model& model,
   Destructor
  */
 
-RSR_Connectivity::~RSR_Connectivity ()
+ConnectivityRestraint::~ConnectivityRestraint ()
 {
-  std::list<RSR_Connectivity::Restraint_Score>::iterator rs_iter;
+  std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
   for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
     delete(rs_iter->rsr_);
@@ -1016,11 +1016,11 @@ RSR_Connectivity::~RSR_Connectivity ()
  \return score associated with this restraint for the given state of the model.
   */
 
-Float RSR_Connectivity::evaluate(bool calc_deriv)
+Float ConnectivityRestraint::evaluate(bool calc_deriv)
 {
-  IMP_LOG(VERBOSE, "evaluate RSR_Connectivity");
+  IMP_LOG(VERBOSE, "evaluate ConnectivityRestraint");
 
-  std::list<RSR_Connectivity::Restraint_Score>::iterator rs_iter;
+  std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
   // calculate the scores for all of the restraints
   IMP_LOG(VERBOSE, "calculate restraint scores");
@@ -1105,7 +1105,7 @@ Float RSR_Connectivity::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Connectivity::show(std::ostream& out) const
+void ConnectivityRestraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "connectivity restraint (active):" << std::endl;
@@ -1120,7 +1120,7 @@ void RSR_Connectivity::show(std::ostream& out) const
 
 
 
-//######### RSR_Exclusion_Volume Restraint #########
+//######### ExclusionVolumeRestraint Restraint #########
 // Apply restraints that prevent particles from getting too close together
 
 /**
@@ -1136,12 +1136,12 @@ void RSR_Connectivity::show(std::ostream& out) const
   \param[in] sd Standard deviation associated with the score function for the restraint.
  */
 
-RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
+ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
     // couldn't get Swig to work with std::vector<Particle*>&
     std::vector<int>& particle1_indexes,
     std::vector<int>& particle2_indexes,
     const std::string attr_name,
-    Basic_Score_Func_Params* score_func_params
+    BasicScoreFuncParams* score_func_params
                                           )
 {
   Particle* p1;
@@ -1178,7 +1178,7 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
       score_func_params->set_mean(actual_mean);
       
       // create the restraint
-      dist_rsrs_.push_back(new RSR_Distance(model,
+      dist_rsrs_.push_back(new DistanceRestraint(model,
                                             particles_[i],
                                             particles_[j],
                                             score_func_params));
@@ -1197,11 +1197,11 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
   \param[in] sd Standard deviation associated with the score function for the restraint.
  */
 
-RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
+ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
     // couldn't get Swig to work with std::vector<Particle*>&
     std::vector<int>& particle_indexes,
     const std::string attr_name,
-    Basic_Score_Func_Params* score_func_params
+    BasicScoreFuncParams* score_func_params
                                           )
 {
   Particle* p1;
@@ -1232,7 +1232,7 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
       score_func_params->set_mean(actual_mean);
       
       // create the restraint
-      dist_rsrs_.push_back(new RSR_Distance(model,
+      dist_rsrs_.push_back(new DistanceRestraint(model,
                                             particles_[i],
                                             particles_[j],
                                             score_func_params));
@@ -1246,9 +1246,9 @@ RSR_Exclusion_Volume::RSR_Exclusion_Volume(Model& model,
   Destructor
  */
 
-RSR_Exclusion_Volume::~RSR_Exclusion_Volume ()
+ExclusionVolumeRestraint::~ExclusionVolumeRestraint ()
 {
-  std::vector<RSR_Distance*>::iterator rsr_iter;
+  std::vector<DistanceRestraint*>::iterator rsr_iter;
 
   for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end(); ++rsr_iter) {
     delete(*rsr_iter);
@@ -1265,9 +1265,9 @@ RSR_Exclusion_Volume::~RSR_Exclusion_Volume ()
  \return score associated with this restraint for the given state of the model.
   */
 
-Float RSR_Exclusion_Volume::evaluate(bool calc_deriv)
+Float ExclusionVolumeRestraint::evaluate(bool calc_deriv)
 {
-  std::vector<RSR_Distance*>::iterator rsr_iter;
+  std::vector<DistanceRestraint*>::iterator rsr_iter;
 
   Float score = 0.0;
 
@@ -1286,7 +1286,7 @@ Float RSR_Exclusion_Volume::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Exclusion_Volume::show(std::ostream& out) const
+void ExclusionVolumeRestraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "exclusion volume restraint (active):" << std::endl;
@@ -1299,14 +1299,14 @@ void RSR_Exclusion_Volume::show(std::ostream& out) const
 }
 
 
-//######### RSR_EM_Coarse Restraint #########
+//######### CoarseEMRestraint Restraint #########
 
 /**
   Constructor - set up the values and indexes for this EM coarse restraint. 
   
 */
 
-RSR_EM_Coarse::RSR_EM_Coarse(Model& model,
+CoarseEMRestraint::CoarseEMRestraint(Model& model,
                              std::vector<int>& particle_indexes,
                              EM_Density* emdens,
                              int nx,
@@ -1332,9 +1332,9 @@ RSR_EM_Coarse::RSR_EM_Coarse(Model& model,
     particles_.push_back(p1);
   }
 
-  x_ = new Float_Index[num_particles_];
-  y_ = new Float_Index[num_particles_];
-  z_ = new Float_Index[num_particles_];
+  x_ = new FloatIndex[num_particles_];
+  y_ = new FloatIndex[num_particles_];
+  z_ = new FloatIndex[num_particles_];
 
   cdx_ = new float[num_particles_];
   cdy_ = new float[num_particles_];
@@ -1374,7 +1374,7 @@ RSR_EM_Coarse::RSR_EM_Coarse(Model& model,
   Destructor
  */
 
-RSR_EM_Coarse::~RSR_EM_Coarse ()
+CoarseEMRestraint::~CoarseEMRestraint ()
 {
   delete x_;
   delete y_;
@@ -1396,7 +1396,7 @@ RSR_EM_Coarse::~RSR_EM_Coarse ()
  \return score associated with this restraint for the given state of the model.
   */
 
-Float RSR_EM_Coarse::evaluate(bool calc_deriv)
+Float CoarseEMRestraint::evaluate(bool calc_deriv)
 {
   int lderiv = (int) calc_deriv;
   int ierr;
@@ -1442,7 +1442,7 @@ Float RSR_EM_Coarse::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_EM_Coarse::show(std::ostream& out) const
+void CoarseEMRestraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "em coarse restraint (active):" << std::endl;

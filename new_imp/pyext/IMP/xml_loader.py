@@ -121,7 +121,7 @@ def load_restraint_set(model, restraint_set_node, base_particle):
 
     # get restraint set parameters
     name = str(restraint_set_node.getAttribute('name'))
-    model.restraint_sets.append(IMP.Restraint_Set(name))
+    model.restraint_sets.append(IMP.RestraintSet(name))
     rs_idx = len(model.restraint_sets) - 1
     model.add_restraint_set(model.restraint_sets[rs_idx])
 
@@ -197,7 +197,7 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
             distance = p1.get_float(distance_attribute) + p2.get_float(distance_attribute)
 
         score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
-        model.restraints.append(IMP.RSR_Distance(model, p1, p2, score_func_params))
+        model.restraints.append(IMP.DistanceRestraint(model, p1, p2, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -239,7 +239,7 @@ def load_rsr_torus(model, rs_idx, rsr, base_particle):
     for p_idx in particle_list:
         p = model.particles[int(p_idx)]
         score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
-        model.restraints.append(IMP.RSR_Torus(model, p, main_radius, tube_radius, score_func_params))
+        model.restraints.append(IMP.TorusRestraint(model, p, main_radius, tube_radius, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -281,7 +281,7 @@ def load_rsr_coordinate(model, rs_idx, rsr, base_particle):
     for p_idx in particle_list:
         p = model.particles[int(p_idx)]
         score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
-        model.restraints.append(IMP.RSR_Coordinate(model, p, axis, score_func_params))
+        model.restraints.append(IMP.CoordinateRestraint(model, p, axis, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -336,11 +336,11 @@ def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
     # add restraint for for vector of particles
     if distance_attribute:
         score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
-        model.restraints.append(IMP.RSR_Connectivity(model, particle_indexes, type_attribute, distance_attribute, score_func_params))
+        model.restraints.append(IMP.ConnectivityRestraint(model, particle_indexes, type_attribute, distance_attribute, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
     else:
         score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
-        model.restraints.append(IMP.RSR_Connectivity(model, particle_indexes, type_attribute, score_func_params))
+        model.restraints.append(IMP.ConnectivityRestraint(model, particle_indexes, type_attribute, score_func_params))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -406,12 +406,12 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
     # add restraint for for vector of particles
     if distance_attribute:
         score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
-        r = IMP.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, distance_attribute, score_func_params, number_of_connects)
+        r = IMP.PairConnectivityRestraint(model, particle_indexes1, particle_indexes2, distance_attribute, score_func_params, number_of_connects)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
     else:
         score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
-        r = IMP.RSR_Pair_Connectivity(model, particle_indexes1, particle_indexes2, score_func_params, number_of_connects)
+        r = IMP.PairConnectivityRestraint(model, particle_indexes1, particle_indexes2, score_func_params, number_of_connects)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
 
@@ -453,7 +453,7 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
 
     # add restraint for for vector of particles
         score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
-    model.restraints.append(IMP.RSR_Proximity(model, particle_indexes, distance, score_func_params))
+    model.restraints.append(IMP.ProximityRestraint(model, particle_indexes, distance, score_func_params))
     model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 
@@ -502,12 +502,12 @@ def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
             particle_indexes2.push_back(int(p_idx))
 
         print "adding inter particle exclusion volumes for two bodies: ", model, particle_indexes1, particle_indexes2, distance_attribute, sd
-        r = IMP.RSR_Exclusion_Volume(model, particle_indexes1, particle_indexes2, distance_attribute, score_func_params)
+        r = IMP.ExclusionVolumeRestraint(model, particle_indexes1, particle_indexes2, distance_attribute, score_func_params)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
     else:
         print "adding intra particle exclusion volumes for one body: ", model, particle_indexes1, distance_attribute, sd
-        r = IMP.RSR_Exclusion_Volume(model, particle_indexes1, distance_attribute, score_func_params)
+        r = IMP.ExclusionVolumeRestraint(model, particle_indexes1, distance_attribute, score_func_params)
         model.restraints.append(r)
         model.restraint_sets[rs_idx].add_restraint(r)
 
@@ -515,7 +515,7 @@ def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
 
 def get_basic_score_func_params(score_func_str, mean=0.0, sd=0.1):
     """ Get score function params corresponding to the given name """
-    return IMP.Basic_Score_Func_Params(score_func_str, mean, sd)
+    return IMP.BasicScoreFuncParams(score_func_str, mean, sd)
 
 
 # support different ways of specifying particle pairs in the XML.

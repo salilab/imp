@@ -18,7 +18,7 @@ class test_xml(IMP.test.IMPTestCase):
         model_data = self.imp_model.get_model_data()
 
         # test particles
-        p_iter = IMP.Particle_Iterator()
+        p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)
         num_particles = 0
         while p_iter.next():

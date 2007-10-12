@@ -13,15 +13,15 @@
 
 #include "IMP_config.h"
 #include "Base_Types.h"
-#include "Model_Data.h"
+#include "ModelData.h"
 #include "restraints/Restraint.h"
 
 namespace imp
 {
 
-typedef std::map<std::string, String_Index> String_Index_Map;
-typedef std::map<std::string, Int_Index> Int_Index_Map;
-typedef std::map<std::string, Float_Index> Float_Index_Map;
+typedef std::map<std::string, StringIndex> StringIndexMap;
+typedef std::map<std::string, IntIndex> IntIndexMap;
+typedef std::map<std::string, FloatIndex> FloatIndexMap;
 
 // Particle methods and indexes to particle attributes. Particles can
 // be deactivated so that they no longer play a role in model optimization.
@@ -29,31 +29,31 @@ typedef std::map<std::string, Float_Index> Float_Index_Map;
 // attribute values are indexed and should not be done.
 class IMPDLLEXPORT Particle
 {
-  friend class Float_Attribute_Iterator;
-  friend class Int_Attribute_Iterator;
-  friend class String_Attribute_Iterator;
+  friend class FloatAttributeIterator;
+  friend class IntAttributeIterator;
+  friend class StringAttributeIterator;
 
 public:
 
  
-  Particle(Model_Data* model_data);
+  Particle(ModelData* model_data);
   ~Particle();
-  Model_Data* model_data(void) const;
+  ModelData* model_data(void) const;
 
   // float attributes
   bool add_float(const std::string name, const Float value = 0.0, const bool optimize = false);
   bool has_float(const std::string name) const;
-  Float_Index float_index(const std::string name) const;
+  FloatIndex float_index(const std::string name) const;
 
   // int attributes
   bool add_int(const std::string name, const Int value);
   bool has_int(const std::string name) const;
-  Int_Index int_index(const std::string name) const;
+  IntIndex int_index(const std::string name) const;
 
   // string attributes
   bool add_string(const std::string name, const String value);
   bool has_string(const std::string name) const;
-  String_Index string_index(const std::string name) const;
+  StringIndex string_index(const std::string name) const;
 
   // status
   void set_is_active (bool is_active);
@@ -63,16 +63,16 @@ public:
 
 protected:
   // all of the particle data
-  Model_Data* model_data_;
+  ModelData* model_data_;
 
   bool is_active_; // true if particle is active
 
   // float attributes associated with the particle
-  std::map<std::string, Float_Index> float_indexes_;
+  std::map<std::string, FloatIndex> float_indexes_;
   // int attributes associated with the particle
-  std::map<std::string, Int_Index> int_indexes_;
+  std::map<std::string, IntIndex> int_indexes_;
   // string attributes associated with the particle
-  std::map<std::string, String_Index> string_indexes_;
+  std::map<std::string, StringIndex> string_indexes_;
 };
 
 
@@ -81,7 +81,7 @@ protected:
 
   The basic form for use is:
 
-   iter = new Float_Attribute_Iterator;
+   iter = new FloatAttributeIterator;
    iter->reset(particle_that_i_am_interested_in);
    while (iter->next())
     {
@@ -89,11 +89,11 @@ protected:
     // get next value with iter->get_value()
     }
  */
-class IMPDLLEXPORT Float_Attribute_Iterator
+class IMPDLLEXPORT FloatAttributeIterator
 {
 public:
-  Float_Attribute_Iterator() {}
-  ~Float_Attribute_Iterator() {}
+  FloatAttributeIterator() {}
+  ~FloatAttributeIterator() {}
 
   /**
     Reset the iterator to iterate over the given particles Float attributes.
@@ -144,7 +144,7 @@ public:
   }
 
 protected:
-  Float_Index_Map::iterator cur_; // map iterator
+  FloatIndexMap::iterator cur_; // map iterator
   Particle* particle_;
   bool reset_; // flag indicating iterator was reset
 };
@@ -153,11 +153,11 @@ protected:
 /**
   Iterator for getting all int attributes from a particle
  */
-class IMPDLLEXPORT Int_Attribute_Iterator
+class IMPDLLEXPORT IntAttributeIterator
 {
 public:
-  Int_Attribute_Iterator() {}
-  ~Int_Attribute_Iterator() {}
+  IntAttributeIterator() {}
+  ~IntAttributeIterator() {}
 
   /**
     Reset the iterator to iterate over the given particles int attributes.
@@ -208,7 +208,7 @@ public:
   }
 
 protected:
-  Int_Index_Map::iterator cur_;
+  IntIndexMap::iterator cur_;
   Particle* particle_;
   bool reset_;
 };
@@ -217,11 +217,11 @@ protected:
 /**
   Iterator for getting all String attributes from a particle
  */
-class IMPDLLEXPORT String_Attribute_Iterator
+class IMPDLLEXPORT StringAttributeIterator
 {
 public:
-  String_Attribute_Iterator() {}
-  ~String_Attribute_Iterator() {}
+  StringAttributeIterator() {}
+  ~StringAttributeIterator() {}
 
   /**
     Reset the iterator to iterate over the given particles String attributes.
@@ -272,7 +272,7 @@ public:
   }
 
 protected:
-  String_Index_Map::iterator cur_;
+  StringIndexMap::iterator cur_;
   Particle* particle_;
   bool reset_;
 };

@@ -28,51 +28,51 @@ class test_distance(IMP.test.IMPTestCase):
         p1 = self.particles[2]
         p1.add_float("radius", 3.0, False)
 
-        score_func_params_ub = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
-        score_func_params_lb = IMP.Basic_Score_Func_Params("harmonic_lower_bound", 0.0, 0.1)
-        score_func_params_h = IMP.Basic_Score_Func_Params("harmonic", 0.0, 0.1)
+        score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
+        score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 0.0, 0.1)
+        score_func_params_h = IMP.BasicScoreFuncParams("harmonic", 0.0, 0.1)
 
         # all should be 0.0
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], "radius", score_func_params_ub))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], "radius", score_func_params_lb))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], "radius", score_func_params_h))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[0], "radius", score_func_params_ub))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[0], "radius", score_func_params_lb))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[0], "radius", score_func_params_h))
 
         # exceed lower bound
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params_ub))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params_lb))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params_h))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params_ub))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params_lb))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params_h))
 
         # exceed upper bound
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params_ub))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params_lb))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params_h))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params_ub))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params_lb))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params_h))
 
         # all should be 0.0
-        score_func_params_ub = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 3.0, 0.1)
-        score_func_params_lb = IMP.Basic_Score_Func_Params("harmonic_lower_bound", 3.0, 0.1)
-        score_func_params_h = IMP.Basic_Score_Func_Params("harmonic", 3.0, 0.1)
+        score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 3.0, 0.1)
+        score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 3.0, 0.1)
+        score_func_params_h = IMP.BasicScoreFuncParams("harmonic", 3.0, 0.1)
 
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], score_func_params_ub))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], score_func_params_lb))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[0], score_func_params_h))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[0], score_func_params_ub))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[0], score_func_params_lb))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[0], score_func_params_h))
 
         # exceed lower bound
-        score_func_params_ub = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 5.0, 0.1)
-        score_func_params_lb = IMP.Basic_Score_Func_Params("harmonic_lower_bound", 5.0, 0.1)
-        score_func_params_h = IMP.Basic_Score_Func_Params("harmonic", 5.0, 0.1)
+        score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 5.0, 0.1)
+        score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 5.0, 0.1)
+        score_func_params_h = IMP.BasicScoreFuncParams("harmonic", 5.0, 0.1)
 
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], score_func_params_ub))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], score_func_params_lb))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], score_func_params_h))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[2], score_func_params_ub))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[2], score_func_params_lb))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[2], score_func_params_h))
 
         # exceed upper bound
-        score_func_params_ub = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 4.0, 0.1)
-        score_func_params_lb = IMP.Basic_Score_Func_Params("harmonic_lower_bound", 4.0, 0.1)
-        score_func_params_h = IMP.Basic_Score_Func_Params("harmonic", 4.0, 0.1)
+        score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 4.0, 0.1)
+        score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 4.0, 0.1)
+        score_func_params_h = IMP.BasicScoreFuncParams("harmonic", 4.0, 0.1)
 
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], score_func_params_ub))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], score_func_params_lb))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], score_func_params_h))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[2], score_func_params_ub))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[2], score_func_params_lb))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[2], score_func_params_h))
 
 
     def test_distance(self):

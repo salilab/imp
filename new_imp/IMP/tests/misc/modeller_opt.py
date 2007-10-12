@@ -28,15 +28,15 @@ IMP.modeller_intf.Init_IMP_From_Modeller(imp_model, particles, atoms)
 
 # create a restraint set
 print "adding IMP restraints"
-rs = IMP.Restraint_Set("dist_rsrs")
+rs = IMP.RestraintSet("dist_rsrs")
 imp_model.add_restraint_set(rs)
 
 # create IMP restraints
 # the restraint pointer must be kept alive in Python or it gets deleted in IMP
 score_func = IMP.Harmonic()
 dist_rsr = []
-dist_rsr.append(IMP.RSR_Distance(imp_model, particles[0], particles[2], 5.0, 0.1, score_func))
-dist_rsr.append(IMP.RSR_Distance(imp_model, particles[1], particles[2], 5.0, 0.1, score_func))
+dist_rsr.append(IMP.DistanceRestraint(imp_model, particles[0], particles[2], 5.0, 0.1, score_func))
+dist_rsr.append(IMP.DistanceRestraint(imp_model, particles[1], particles[2], 5.0, 0.1, score_func))
 for i in range(0,len(dist_rsr)):
     rs.add_restraint(dist_rsr[i])
 

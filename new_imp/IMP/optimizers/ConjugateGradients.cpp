@@ -1,5 +1,5 @@
 /*
- *  Conjugate_Gradients.cpp
+ *  ConjugateGradients.cpp
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
@@ -9,7 +9,7 @@
 #include <cmath>
 
 #include "../log.h"
-#include "Conjugate_Gradients.h"
+#include "ConjugateGradients.h"
 
 namespace imp
 {
@@ -19,8 +19,8 @@ static const float eps = 1.2e-7;
 
 /** Get the score for the model with the current state of optimizable variables
     x, and return the derivatives in dscore. */
-static Float get_score(Model &model, Model_Data *model_data,
-                       std::vector<Float_Index> float_indices,
+static Float get_score(Model &model, ModelData *model_data,
+                       std::vector<FloatIndex> float_indices,
                        std::vector<Float> &x, std::vector<Float> &dscore)
 {
   int i, opt_var_cnt = float_indices.size();
@@ -42,7 +42,7 @@ static Float get_score(Model &model, Model_Data *model_data,
 /**
   Constructor
  */
-Conjugate_Gradients::Conjugate_Gradients()
+ConjugateGradients::ConjugateGradients()
 {
 }
 
@@ -50,7 +50,7 @@ Conjugate_Gradients::Conjugate_Gradients()
 /**
   Destructor
  */
-Conjugate_Gradients::~Conjugate_Gradients()
+ConjugateGradients::~ConjugateGradients()
 {
 }
 
@@ -66,15 +66,15 @@ Conjugate_Gradients::~Conjugate_Gradients()
  *
  * \return score of the final state of the model.
  */
-Float Conjugate_Gradients::optimize(Model& model, int max_steps,
+Float ConjugateGradients::optimize(Model& model, int max_steps,
                                     Float threshold)
 {
-  std::vector<Float_Index> float_indices;
+  std::vector<FloatIndex> float_indices;
   std::vector<Float> x, dx;
   int n = 0, i;
-  Model_Data* model_data = model.get_model_data();
+  ModelData* model_data = model.get_model_data();
 
-  Opt_Float_Index_Iterator opt_float_iter;
+  OptFloatIndexIterator opt_float_iter;
 
   opt_float_iter.reset(model_data);
   // determine n, the number of degrees of freedom

@@ -9,8 +9,8 @@ restraints_files = SConscript('restraints/SConscript')
 optimizers_files = SConscript('optimizers/SConscript')
 
 # Source files
-files = ['Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp',
-         'Particle.cpp', 'Restraint_Set.cpp', 'RigidBody.cpp', 'log.cpp',
+files = ['ScoreFunc.cpp', 'Model.cpp', 'ModelData.cpp',
+         'Particle.cpp', 'RestraintSet.cpp', 'RigidBody.cpp', 'log.cpp',
          'emfile.cpp', 'emscore.cpp'] + restraints_files + optimizers_files
 
 # Build the shared library:

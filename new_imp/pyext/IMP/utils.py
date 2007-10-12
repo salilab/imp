@@ -119,7 +119,7 @@ def Get_IMP_Derivs(particles, dvx, dvy, dvz):
         dvz[idx] = particles[idx].dz()
 
 
-def Set_Restraint_Set_Is_Active(model, restraint_set_name, is_active):
+def Set_RestraintSet_Is_Active(model, restraint_set_name, is_active):
     """ Set whether the given restraint set is active (True) or inactive (False) """
     for i in range(len(model.restraint_sets)):
         if restraint_set_name == model.restraint_sets[i].name():
@@ -131,8 +131,8 @@ def Set_Up_Exclusion_Volumes(model, particles, radius_name, rsrs, sd = 0.1):
     for i in range(len(particles)-1):
         for j in range(i+1, len(particles)):
             mean = particles[i].get_float(radius_name) + particles[j].get_float(radius_name)
-            score_func_params = IMP.Basic_Score_Func_Params("harmonic_lower_bound", mean, sd)
-            rsrs.append(IMP.RSR_Distance(model, particles[i], particles[j], score_func_params))
+            score_func_params = IMP.BasicScoreFuncParams("harmonic_lower_bound", mean, sd)
+            rsrs.append(IMP.DistanceRestraint(model, particles[i], particles[j], score_func_params))
 
 
 def Write_PDB(model, fname):
@@ -189,19 +189,19 @@ def Show_IMP_Particles(particles):
     for i in range(0, len(particles)):
         print 'particle', i
         print '  float attributes:'
-        float_attr_iter = IMP.Float_Attribute_Iterator()
+        float_attr_iter = IMP.FloatAttributeIterator()
         float_attr_iter.reset(particles[i])
         while float_attr_iter.next():
             print '    ',float_attr_iter.get_key(),": ",float_attr_iter.get_value()
 
         print '  int attributes:'
-        int_attr_iter = IMP.Int_Attribute_Iterator()
+        int_attr_iter = IMP.IntAttributeIterator()
         int_attr_iter.reset(particles[i])
         while int_attr_iter.next():
             print '    ',int_attr_iter.get_key(),": ",int_attr_iter.get_value()
 
         print '  string attributes:'
-        string_attr_iter = IMP.String_Attribute_Iterator()
+        string_attr_iter = IMP.StringAttributeIterator()
         string_attr_iter.reset(particles[i])
         while string_attr_iter.next():
             print '    ',string_attr_iter.get_key(),": ",string_attr_iter.get_value()

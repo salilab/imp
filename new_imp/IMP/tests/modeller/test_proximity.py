@@ -68,7 +68,7 @@ class test_proximity(IMP.test.IMPTestCase):
         """ all particles should be within a given max distance of each other """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        self.restraint_sets.append(IMP.Restraint_Set("proximity"))
+        self.restraint_sets.append(IMP.RestraintSet("proximity"))
         rs = self.restraint_sets[len(self.restraint_sets)-1]
         self.imp_model.add_restraint_set(rs)
 
@@ -87,8 +87,8 @@ class test_proximity(IMP.test.IMPTestCase):
         for i in range(6):
             particle_indexes.push_back(i)
 
-        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
-        rsrs.append(IMP.RSR_Proximity(self.imp_model, particle_indexes, "radius", max_distance, score_func_params))
+        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
+        rsrs.append(IMP.ProximityRestraint(self.imp_model, particle_indexes, "radius", max_distance, score_func_params))
 
         # add restraints
         for i in range(len(rsrs)):

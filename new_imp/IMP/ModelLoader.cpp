@@ -1,12 +1,12 @@
 /*
- *  Model_Loader.cpp
+ *  ModelLoader.cpp
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
  */
 
-#include "Model_Loader.h"
+#include "ModelLoader.h"
 
 namespace imp
 {
@@ -15,7 +15,7 @@ namespace imp
   Constructor
  */
 
-Model_Loader::Model_Loader ()
+ModelLoader::ModelLoader ()
 {
 }
 
@@ -24,7 +24,7 @@ Model_Loader::Model_Loader ()
   Destructor
  */
 
-Model_Loader::~Model_Loader ()
+ModelLoader::~ModelLoader ()
 {
 }
 
@@ -38,7 +38,7 @@ Model_Loader::~Model_Loader ()
   \return true if the load succeeded.
  */
 
-bool Model_Loader::load_model(Model& model, const std::string& fname)
+bool ModelLoader::load_model(Model& model, const std::string& fname)
 {
   try {
     std::ifstream fin;
@@ -61,7 +61,7 @@ bool Model_Loader::load_model(Model& model, const std::string& fname)
         std::string name;
         fin >> name;
         std::cout << "Add restraint set " << name << ": " << std::endl;
-        Restraint_Set* rs = new Restraint_Set(name);
+        RestraintSet* rs = new RestraintSet(name);
         model.add_restraint_set(rs);
         load_restraint_set(model, *rs, fin);
       }
@@ -101,7 +101,7 @@ bool Model_Loader::load_model(Model& model, const std::string& fname)
   \param[in] in Input stream that the particle should be read from.
  */
 
-void Model_Loader::load_particle(Particle& particle, std::istream& in)
+void ModelLoader::load_particle(Particle& particle, std::istream& in)
 {
   try {
     std::string next_word;
@@ -171,7 +171,7 @@ void Model_Loader::load_particle(Particle& particle, std::istream& in)
   \param[in] in Input stream that the restraints should be read from.
  */
 
-void Model_Loader::load_restraint_set(Model& model, Restraint_Set& restraint_set, std::istream& in)
+void ModelLoader::load_restraint_set(Model& model, RestraintSet& restraint_set, std::istream& in)
 {
   try {
     std::string next_word;
@@ -181,7 +181,7 @@ void Model_Loader::load_restraint_set(Model& model, Restraint_Set& restraint_set
         std::string name;
         in >> name;
         std::cout << "Add restraint set " << name << ": " << std::endl;
-        Restraint_Set* rs = new Restraint_Set(name);
+        RestraintSet* rs = new RestraintSet(name);
         restraint_set.add_restraint_set(rs);
         load_restraint_set(model, *rs, in);
       }
@@ -219,7 +219,7 @@ void Model_Loader::load_restraint_set(Model& model, Restraint_Set& restraint_set
   \param[in] in Input stream that the restraints should be read from.
  */
 
-void Model_Loader::load_distance_restraints(Model& model, Restraint_Set& restraint_set, std::istream& in)
+void ModelLoader::load_distance_restraints(Model& model, RestraintSet& restraint_set, std::istream& in)
 {
   try {
     std::string next_word;
@@ -267,7 +267,7 @@ void Model_Loader::load_distance_restraints(Model& model, Restraint_Set& restrai
       }
 
       restraint_set.add_restraint(
-        (Restraint*) new RSR_Distance(model, p1, p2, mean, sd, score_func));
+        (Restraint*) new DistanceRestraint(model, p1, p2, mean, sd, score_func));
     }
   }
 
@@ -284,7 +284,7 @@ void Model_Loader::load_distance_restraints(Model& model, Restraint_Set& restrai
   \return Pointer to specified math form functor.
  */
 
-Score_Func* Model_Loader::get_score_func(const std::string score_func_name)
+Score_Func* ModelLoader::get_score_func(const std::string score_func_name)
 {
   if (score_func_name == "HARMONIC") {
     return (Score_Func*) new Harmonic();

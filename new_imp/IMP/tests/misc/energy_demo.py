@@ -88,7 +88,7 @@ atmsel = modeller.selection(mdl)
 atoms = mdl.atoms
 atmsel.randomize_xyz(deviation=100.0)
 
-rs = IMP.Restraint_Set("connect")
+rs = IMP.RestraintSet("connect")
 model.add_restraint_set(rs)
 score_func = IMP.Harmonic()
 
@@ -101,25 +101,25 @@ rsrs = []
 particle_indexes.clear()
 for i in range(0, 12):
     particle_indexes.push_back(i)
-rsrs.append(IMP.RSR_Connectivity(model, particle_indexes, "protein", "radius", 0.1, score_func))
+rsrs.append(IMP.ConnectivityRestraint(model, particle_indexes, "protein", "radius", 0.1, score_func))
 
 # connect particles in protein1 together
 particle_indexes.clear()
 for i in range(0, 3):
     particle_indexes.push_back(i)
-rsrs.append(IMP.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
+rsrs.append(IMP.ConnectivityRestraint(model, particle_indexes, "id", "radius", 0.1, score_func))
 
 # connect particles in protein2 together
 particle_indexes.clear()
 for i in range(3, 7):
     particle_indexes.push_back(i)
-rsrs.append(IMP.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
+rsrs.append(IMP.ConnectivityRestraint(model, particle_indexes, "id", "radius", 0.1, score_func))
 
 # connect particles in protein3together
 particle_indexes.clear()
 for i in range(7, 12):
     particle_indexes.push_back(i)
-rsrs.append(IMP.RSR_Connectivity(model, particle_indexes, "id", "radius", 0.1, score_func))
+rsrs.append(IMP.ConnectivityRestraint(model, particle_indexes, "id", "radius", 0.1, score_func))
 
 # add restraints
 for i in range(0, len(rsrs)):

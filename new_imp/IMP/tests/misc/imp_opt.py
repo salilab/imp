@@ -22,7 +22,7 @@ particles = []
 IMP.modeller_intf.Init_IMP_From_Modeller(imp_model, particles, atoms)
 
 # create a restraint set
-rs = IMP.Restraint_Set("dist_rsrs")
+rs = IMP.RestraintSet("dist_rsrs")
 imp_model.add_restraint_set(rs)
 
 # add Modeller restraints
@@ -38,14 +38,14 @@ rs.add_restraint(r)
 
 # create IMP restraints
 score_func = IMP.Harmonic()
-dist_rsr = IMP.RSR_Distance(imp_model, particles[0], particles[2], 5.0, 0.1, score_func)
+dist_rsr = IMP.DistanceRestraint(imp_model, particles[0], particles[2], 5.0, 0.1, score_func)
 print "adding IMP restraints"
 rs.add_restraint(dist_rsr)
 
 IMP.modeller_intf.Show_Modeller_and_IMP(atoms, particles)
 
 print "run optimizer"
-steepest_descent = IMP.Steepest_Descent()
+steepest_descent = IMP.SteepestDescent()
 steepest_descent.optimize(imp_model, 10)
 
 IMP.modeller_intf.Show_Modeller_and_IMP(atoms, particles)

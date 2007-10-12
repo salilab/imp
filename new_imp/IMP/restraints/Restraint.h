@@ -13,8 +13,8 @@
 #include <iostream>
 
 #include "../IMP_config.h"
-#include "../Model_Data.h"
-#include "../Score_Func.h"
+#include "../ModelData.h"
+#include "../ScoreFunc.h"
 
 namespace imp
 {
@@ -25,7 +25,7 @@ class IMPDLLEXPORT Restraint
 public:
   Restraint();
   virtual ~Restraint();
-  void set_model_data(Model_Data* model_data);
+  void set_model_data(ModelData* model_data);
 
   // return the score for this restraint or set of restraints
   // ... given the current state of the model
@@ -48,7 +48,7 @@ public:
 
 protected:
   // all of the particle data
-  Model_Data* model_data_;
+  ModelData* model_data_;
 
   // restraint is active if active_ AND particles_active_
   // true if restraint has not been deactivated
@@ -62,23 +62,23 @@ protected:
 };
 
 // Distance restraint between two particles
-class IMPDLLEXPORT RSR_Distance : public Restraint
+class IMPDLLEXPORT DistanceRestraint : public Restraint
 {
 public:
   // particles must be at least this far apart to calculate the
   // ... distance restraint. Force it otherwise.
   static const Float MIN_DISTANCE;
 
-  RSR_Distance(Model& model,
+  DistanceRestraint(Model& model,
                Particle* p1,
                Particle* p2,
-               Basic_Score_Func_Params* score_func_params);
-  RSR_Distance(Model& model,
+               BasicScoreFuncParams* score_func_params);
+  DistanceRestraint(Model& model,
                Particle* p1,
                Particle* p2,
                const std::string attr_name,
-               Basic_Score_Func_Params* score_func_params);
-  virtual ~RSR_Distance();
+               BasicScoreFuncParams* score_func_params);
+  virtual ~DistanceRestraint();
 
   virtual Float evaluate(bool calc_deriv);
 
@@ -95,15 +95,15 @@ protected:
   void set_up(Model& model,
               Particle* p1,
               Particle* p2,
-              Basic_Score_Func_Params* score_func_params);
+              BasicScoreFuncParams* score_func_params);
 
   // variables used to determine the distance
-  Float_Index x1_, y1_, z1_, x2_, y2_, z2_;
+  FloatIndex x1_, y1_, z1_, x2_, y2_, z2_;
 
   // variables used to calculate the math form
   Float mean_, sd_;
   // math form for this restraint (typically one of the harmonics)
-  Score_Func* score_func_;
+  ScoreFunc* score_func_;
 };
 
 } // namespace imp

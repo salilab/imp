@@ -1,5 +1,5 @@
 /*
- *  Restraint_Set.cpp
+ *  RestraintSet.cpp
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
@@ -7,8 +7,8 @@
  */
 
 
-#include "Restraint_Set.h"
-#include "Model_Data.h"
+#include "RestraintSet.h"
+#include "ModelData.h"
 #include "log.h"
 #include "restraints/Restraint.h"
 
@@ -25,7 +25,7 @@ namespace imp
   Constructor
  */
 
-Restraint_Set::Restraint_Set (const std::string name)
+RestraintSet::RestraintSet (const std::string name)
 {
   IMP_LOG(VERBOSE, "Restraint set constructed");
 
@@ -40,9 +40,9 @@ Restraint_Set::Restraint_Set (const std::string name)
 Destructor
  */
 
-Restraint_Set::~Restraint_Set ()
+RestraintSet::~RestraintSet ()
 {
-  IMP_LOG(VERBOSE,"Delete Restraint_Set: beware of early Python calls to destructor.");
+  IMP_LOG(VERBOSE,"Delete RestraintSet: beware of early Python calls to destructor.");
 }
 
 
@@ -52,18 +52,18 @@ Give accesss to model particle data.
 \param[in] model_data All particle data in the model.
 */
 
-void Restraint_Set::set_model_data(Model_Data* model_data)
+void RestraintSet::set_model_data(ModelData* model_data)
 {
   model_data_ = model_data;
 }
 
 /** Get name of this restraint set. */
-std::string Restraint_Set::name(void) const {
+std::string RestraintSet::name(void) const {
   return name_;
 }
 
 /** Set name of this restraint set. */
-void Restraint_Set::set_name(const std::string name) {
+void RestraintSet::set_name(const std::string name) {
   name_ = name;
 }
 
@@ -73,7 +73,7 @@ void Restraint_Set::set_name(const std::string name) {
   \param[in] restraint The restraint to add to the restraint set.
  */
 
-void Restraint_Set::add_restraint(Restraint* restraint)
+void RestraintSet::add_restraint(Restraint* restraint)
 {
   restraints_.push_back(restraint);
 }
@@ -85,7 +85,7 @@ void Restraint_Set::add_restraint(Restraint* restraint)
   \param[in] restraint_set The restraint set to add to this restraint set.
  */
 
-void Restraint_Set::add_restraint_set(Restraint_Set* restraint_set)
+void RestraintSet::add_restraint_set(RestraintSet* restraint_set)
 {
   restraint_set->set_model_data(model_data_);
   restraint_sets_.push_back(restraint_set);
@@ -99,7 +99,7 @@ void Restraint_Set::add_restraint_set(Restraint_Set* restraint_set)
  \param[in] calc_deriv If true, partial first derivatives should be calculated.
  */
 
-Float Restraint_Set::evaluate(bool calc_deriv)
+Float RestraintSet::evaluate(bool calc_deriv)
 {
   Float score;
 
@@ -123,7 +123,7 @@ Float Restraint_Set::evaluate(bool calc_deriv)
 to see if it changes its active status.
 */
 
-void Restraint_Set::check_particles_active(void)
+void RestraintSet::check_particles_active(void)
 {
   for (size_t i=0; i < restraints_.size(); i++) {
     restraints_[i]->check_particles_active();
@@ -141,7 +141,7 @@ void Restraint_Set::check_particles_active(void)
  \param[in] is_active True is restraint set should be evaluated.
  */
 
-void Restraint_Set::set_is_active (const bool is_active)
+void RestraintSet::set_is_active (const bool is_active)
 {
   is_active_ = is_active;
   if (is_active_) {
@@ -157,7 +157,7 @@ void Restraint_Set::set_is_active (const bool is_active)
  \return true if restraint set is active.
  */
 
-bool Restraint_Set::is_active (void) const
+bool RestraintSet::is_active (void) const
 {
   return(is_active_);
 }
@@ -168,7 +168,7 @@ bool Restraint_Set::is_active (void) const
  \param[in] out Stream to send restraint description to.
  */
 
-void Restraint_Set::show(std::ostream& out) const 
+void RestraintSet::show(std::ostream& out) const 
 {
   out << "restraint set " << name_ << ":" << std::endl;
   for (size_t i=0; i < restraints_.size(); i++) {

@@ -99,7 +99,7 @@ class test_pair_connectivity(IMP.test.IMPTestCase):
         should be connected, either directly or indirectly through other proteins """
         self.atmsel.randomize_xyz(deviation=25.0)
 
-        rs = IMP.Restraint_Set("connect")
+        rs = IMP.RestraintSet("connect")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
@@ -124,8 +124,8 @@ class test_pair_connectivity(IMP.test.IMPTestCase):
         # it should work whether this is True or False
         # However, if it is False, the close pairs should all be between distinct particles
         particle_reuse = False
-        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
-        rsrs.append(IMP.RSR_Pair_Connectivity(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params, num_connects, particle_reuse))
+        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
+        rsrs.append(IMP.PairConnectivityRestraint(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params, num_connects, particle_reuse))
 
         # add restraints
         for i in range(len(rsrs)):
