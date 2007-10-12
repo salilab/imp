@@ -12,7 +12,7 @@
 #include "IMP_config.h"
 #include "Model_Data.h"
 #include "Restraint_Set.h"
-#include "Rigid_Body.h"
+#include "RigidBody.h"
 
 namespace imp
 {
@@ -69,7 +69,7 @@ protected:
   std::vector<Restraint_Set*> restraint_sets_;
 
   // sets of particles that move as a single rigid body
-  std::vector<Rigid_Body*> rigid_bodies_;
+  std::vector<RigidBody*> rigid_bodies_;
 
   // trajectory file path
   std::string trajectory_path_;

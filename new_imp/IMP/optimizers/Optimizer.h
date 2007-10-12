@@ -1,6 +1,5 @@
-/*
- *  Optimizer.h
- *  IMP
+/**
+ *  \file Optimizer.h     Base class for all optimizers.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -16,6 +15,7 @@
 namespace imp
 {
 
+/** Base class for all optimizers */
 class IMPDLLEXPORT Optimizer
 {
 public:

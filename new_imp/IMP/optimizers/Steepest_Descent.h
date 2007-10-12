@@ -1,6 +1,5 @@
-/*
- *  Steepest_Descent.h
- *  IMP
+/**
+ *  \file Steepest_Descent.h   Simple steepest descent optimizer.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -15,6 +14,7 @@
 namespace imp
 {
 
+/** A simple steepest descent optimizer */
 class IMPDLLEXPORT Steepest_Descent : public Optimizer
 {
 public:

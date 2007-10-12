@@ -75,7 +75,7 @@ private:
 }
 
 //! A general exception for an error in IMP
-struct IMPDLLEXPORT Error_exception: public std::exception {
+struct IMPDLLEXPORT ErrorException: public std::exception {
 
 };
 
@@ -180,13 +180,13 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 
 #ifndef NDEBUG
 
-//! An assertion for IMP. An imp::Error_exception will be thrown.
+//! An assertion for IMP. An imp::ErrorException will be thrown.
 /*!
   \param[in] expr The assertion expression.
 
   \param[in] message Write this message if the assertion fails.
  */
-#define IMP_assert(expr, message) if (!(expr)) {IMP_ERROR(message); throw imp::Error_exception();}
+#define IMP_assert(expr, message) if (!(expr)) {IMP_ERROR(message); throw imp::ErrorException();}
 #else
 #define IMP_assert(expr, message)
 #endif

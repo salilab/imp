@@ -20,7 +20,7 @@
 #include "optimizers/Conjugate_Gradients.h"
 #include "Score_Func.h"
 #include "Restraint_Set.h"
-#include "Rigid_Body.h"
+#include "RigidBody.h"
 #include "Model_Data.h"
 #include "Model.h"
 #include "Model_Loader.h"
