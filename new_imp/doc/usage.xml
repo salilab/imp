@@ -37,4 +37,126 @@ For information on the low-level &IMP; code, see the
 </para>
 </sect1>
 
+<sect1 id="style">
+<title>Style guide</title>
+
+<sect2>
+<title>C++ formatting</title>
+
+<sect3>
+<title>Indentation</title>
+<para>All C++ headers and code should be indented in 'Linux' style, with
+2-space indents. Do not use tabs. This is roughly the output of
+<ulink url="http://astyle.sourceforge.net/">Artistic Style</ulink> with
+the <parameter>--convert-tabs --style=linux --indent=spaces=2</parameter>
+parameters. Split lines if necessary to ensure that no line is longer than
+80 characters.
+</para>
+
+<para><emphasis>Rationale:</emphasis>
+Different users have different-sized windows or terminals, and different tab
+settings. This is also similar to other lab C and Fortran projects.
+</para>
+</sect3>
+
+<sect3>
+<title>Comments</title>
+
+<para>Format to allow 
+<ulink url="http://www.stack.nl/~dimitri/doxygen/">Doxygen</ulink>
+automated documentation creation. For example:</para>
+
+<informalexample><programlisting>
+/**
+  Calculates the square root.
+
+  \param[in] the_value Calculate the square root of this value.
+
+  \return the square root of the given value.
+ */
+</programlisting></informalexample>
+</sect3>
+
+<sect3>
+<title>Class names</title>
+
+<para>Use CamelCase (i.e. capitalized concatenated words). For example:</para>
+<informalexample><programlisting>
+class SpecialVector
+{
+};
+</programlisting></informalexample>
+
+<para><emphasis>Rationale:</emphasis>
+This makes it easier to tell between class names and function names where
+this is ambiguous (particularly an issue with the Python interface). The
+Python guys also mandate CamelCase for their class names, so this avoids
+any need to rename classes between C++ and Python to ensure clean Python code.
+</para>
+</sect3>
+
+<sect3>
+<title>Member functions (class methods)</title>
+
+<para>Use lower case, with words separated by underscores. For example:</para>
+<informalexample><programlisting>
+void SpecialVector::add_constant(int the_constant)
+</programlisting></informalexample>
+
+<para>Use set_ at the beginning of setting accessor functions, and get_ at the
+beginning of accessor functions used to get a member variable value.
+For example:</para>
+
+<informalexample><programlisting>
+float Sphere::get_radius(void) const;
+void Sphere::set_radius(float);
+</programlisting></informalexample>
+</sect3>
+
+<sect3>
+<title>Member variables (class variables)</title>
+
+<para>Use lower case, with words separated by underscores. End name in an
+underscore. For example:</para>
+<informalexample><programlisting>
+std::vector&lt;int&gt; spec_vector_; 
+</programlisting></informalexample>
+</sect3>
+
+<sect3>
+<title>Local variables</title>
+
+<para>Use lower case, with words separated by underscores. For example:</para>
+<informalexample><programlisting>
+int i, num_particles;
+</programlisting></informalexample>
+
+<para><emphasis>Rationale:</emphasis>
+A trailing underscore makes it simple to tell between class members and
+local variables.</para>
+</sect3>
+
+</sect2>
+
+<sect2>
+<title>C++ libraries and namespaces</title>
+<para>Explicitly use namespace prefixes rather than the "using namespace"
+syntax.</para>
+
+<para><emphasis>Rationale:</emphasis>
+Avoids namespace pollution, and removes any ambiguity.
+</para>
+
+</sect2>
+
+<sect2>
+<title>Python formatting</title>
+<para>All Python code should conform to the
+<ulink url="http://www.python.org/dev/peps/pep-0008/">Python style
+guide</ulink>. In essence this translates to 4-space indents, no tabs, and
+similar class, method and variable naming to the C++ code.</para>
+</sect2>
+
+</sect1>
+
 </chapter>
