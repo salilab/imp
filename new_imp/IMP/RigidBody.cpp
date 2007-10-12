@@ -1,13 +1,12 @@
 /*
- *  Rigid_Body.cpp
- *  IMP
+ *  \file RigidBody.cpp    Class for grouping particles into rigid bodies.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
  */
 
 
-#include "Rigid_Body.h"
+#include "RigidBody.h"
 
 namespace imp
 {
@@ -16,7 +15,7 @@ namespace imp
   Constructor
  */
 
-Rigid_Body::Rigid_Body ()
+RigidBody::RigidBody ()
 {
 }
 
@@ -25,7 +24,7 @@ Rigid_Body::Rigid_Body ()
   Destructor
  */
 
-Rigid_Body::~Rigid_Body ()
+RigidBody::~RigidBody()
 {
 }
 
@@ -34,7 +33,7 @@ Rigid_Body::~Rigid_Body ()
 
  */
 
-void Rigid_Body::set_num_particles (int num_particles)
+void RigidBody::set_num_particles(int num_particles)
 {
   num_particles_ = num_particles;
 }
@@ -44,7 +43,7 @@ void Rigid_Body::set_num_particles (int num_particles)
 
  */
 
-int Rigid_Body::num_particles (void) const
+int RigidBody::num_particles(void) const
 {
   return num_particles_;
 }

@@ -51,4 +51,4 @@ namespace imp {
 %include "optimizers/Steepest_Descent.h"
 %include "optimizers/Conjugate_Gradients.h"
 %include "restraints/Complexes_Restraints.h"
-%include "Rigid_Body.h"
+%include "RigidBody.h"

@@ -1,6 +1,5 @@
-/*
- *  Conjugate_Gradients.h
- *  IMP
+/**
+ *  \file Conjugate_Gradients.h    Simple conjugate gradients optimizer.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -15,6 +14,9 @@
 namespace imp
 {
 
+/** Simple conjugate gradients optimizer, as per Shanno and Phua,
+    ACM Transactions On Mathematical Software 6 (December 1980), 618-622
+ */ 
 class IMPDLLEXPORT Conjugate_Gradients : public Optimizer
 {
 public:
