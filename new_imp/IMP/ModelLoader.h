@@ -1,5 +1,5 @@
 /*
- *  Model_Loader.h
+ *  ModelLoader.h
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
@@ -19,18 +19,18 @@
 namespace imp
 {
 
-class IMPDLLEXPORT Model_Loader
+class IMPDLLEXPORT ModelLoader
 {
 public:
-  Model_Loader();
-  ~Model_Loader();
+  ModelLoader();
+  ~ModelLoader();
 
   // Model
   bool load_model(Model& model, const std::string& fname);
   void load_particle(Particle& particle, std::istream& in);
-  void load_restraint_set(Model& model, Restraint_Set& restraint_set, std::istream& in);
-  void load_distance_restraints(Model& model, Restraint_Set& restraint_set, std::istream& in);
-  Score_Func* get_score_func(const std::string score_func_name);
+  void load_restraint_set(Model& model, RestraintSet& restraint_set, std::istream& in);
+  void load_distance_restraints(Model& model, RestraintSet& restraint_set, std::istream& in);
+  ScoreFunc* get_score_func(const std::string score_func_name);
 
 };
 

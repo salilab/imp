@@ -37,15 +37,15 @@ class test_torus(IMP.test.IMPTestCase):
         """ all particles should be inside the specified torus """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = IMP.Restraint_Set("torus")
+        rs = IMP.RestraintSet("torus")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
-        p_iter = IMP.Particle_Iterator()
+        p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)
-        score_func_params = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
+        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
         while p_iter.next():
-            r = IMP.RSR_Torus(self.imp_model, p_iter.get(), 50, 10, score_func_params)
+            r = IMP.TorusRestraint(self.imp_model, p_iter.get(), 50, 10, score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
 

@@ -30,20 +30,20 @@ class test_sd_optimizer(IMP.test.IMPTestCase):
         p1.add_float("radius", 3.0, False)
 
         # separate 3 particles by their radii
-        score_func_params = IMP.Basic_Score_Func_Params("harmonic", 0.0, 0.1)
+        score_func_params = IMP.BasicScoreFuncParams("harmonic", 0.0, 0.1)
 
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[1], "radius", score_func_params))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params))
-        self.rsrs.append(IMP.RSR_Distance(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[1], "radius", score_func_params))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[2], "radius", score_func_params))
+        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[2], "radius", score_func_params))
 
         # add restraints
-        rs = IMP.Restraint_Set("distance_rsrs")
+        rs = IMP.RestraintSet("distance_rsrs")
         self.imp_model.add_restraint_set(rs)
         self.restraint_sets.append(rs)
         for i in range(len(self.rsrs)):
             rs.add_restraint(self.rsrs[i])
 
-        self.steepest_descent = IMP.Steepest_Descent()
+        self.steepest_descent = IMP.SteepestDescent()
 
 
 

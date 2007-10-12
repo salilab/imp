@@ -98,7 +98,7 @@ class test_connectivity(IMP.test.IMPTestCase):
         should be connected, either directly or indirectly through other proteins """
         self.atmsel.randomize_xyz(deviation=100.0)
 
-        rs = IMP.Restraint_Set("connect")
+        rs = IMP.RestraintSet("connect")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
 
@@ -107,7 +107,7 @@ class test_connectivity(IMP.test.IMPTestCase):
         particle_indexes = IMP.vectori()
         rsrs = []
 
-        score_func_params_ub = IMP.Basic_Score_Func_Params("harmonic_upper_bound", 0.0, 0.1)
+        score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
 
         # set up exclusion volumes
         IMP.modeller_intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs)
@@ -116,25 +116,25 @@ class test_connectivity(IMP.test.IMPTestCase):
         particle_indexes.clear()
         for i in range(12):
             particle_indexes.push_back(i)
-        rsrs.append(IMP.RSR_Connectivity(self.imp_model, particle_indexes, "protein", "radius", score_func_params_ub))
+        rsrs.append(IMP.ConnectivityRestraint(self.imp_model, particle_indexes, "protein", "radius", score_func_params_ub))
 
         # connect particles in protein1 together
         particle_indexes.clear()
         for i in range(3):
             particle_indexes.push_back(i)
-        rsrs.append(IMP.RSR_Connectivity(self.imp_model, particle_indexes, "id", "radius", score_func_params_ub))
+        rsrs.append(IMP.ConnectivityRestraint(self.imp_model, particle_indexes, "id", "radius", score_func_params_ub))
 
         # connect particles in protein2 together
         particle_indexes.clear()
         for i in range(3, 7):
             particle_indexes.push_back(i)
-        rsrs.append(IMP.RSR_Connectivity(self.imp_model, particle_indexes, "id", "radius", score_func_params_ub))
+        rsrs.append(IMP.ConnectivityRestraint(self.imp_model, particle_indexes, "id", "radius", score_func_params_ub))
 
         # connect particles in protein3 together
         particle_indexes.clear()
         for i in range(7, 12):
             particle_indexes.push_back(i)
-        rsrs.append(IMP.RSR_Connectivity(self.imp_model, particle_indexes, "id", "radius", score_func_params_ub))
+        rsrs.append(IMP.ConnectivityRestraint(self.imp_model, particle_indexes, "id", "radius", score_func_params_ub))
 
         # add restraints
         for i in range(len(rsrs)):

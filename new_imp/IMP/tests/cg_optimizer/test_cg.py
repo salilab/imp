@@ -41,11 +41,11 @@ class CGOptimizerTests(IMP.test.IMPTestCase):
             particles.append(p)
             p.add_float("X", value, True)
         rsr = WoodsFunc(model, particles)
-        rs = IMP.Restraint_Set("woodsfunc")
+        rs = IMP.RestraintSet("woodsfunc")
         rs.add_restraint(rsr)
         model.add_restraint_set(rs)
         model.set_up_trajectory('', False, False)
-        opt = IMP.Conjugate_Gradients()
+        opt = IMP.ConjugateGradients()
         e = opt.optimize(model, 100, 1e-5)
         model_data = model.get_model_data()
         for p in particles:

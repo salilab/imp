@@ -19,14 +19,14 @@ namespace imp
 {
 
 // Restrict particle position with respect to one or more coordinates
-class IMPDLLEXPORT RSR_Coordinate : public Restraint
+class IMPDLLEXPORT CoordinateRestraint : public Restraint
 {
 public:
-  RSR_Coordinate(Model& model,
+  CoordinateRestraint(Model& model,
                  Particle* p1,
                  const std::string type,
-                 Basic_Score_Func_Params* score_func_params);
-  virtual ~RSR_Coordinate();
+                 BasicScoreFuncParams* score_func_params);
+  virtual ~CoordinateRestraint();
 
   virtual Float evaluate(bool calc_deriv);
 
@@ -41,24 +41,24 @@ public:
 
 protected:
   // variables used to determine the distance
-  Float_Index x1_, y1_, z1_;
+  FloatIndex x1_, y1_, z1_;
   // type of coordinate position to use:
   // X_AXIS, Y_AXIS, Z_AXIS, XY_RADIAL, XZ_RADIAL, YZ_RADIAL, XYZ_SPHERE
   std::string axis_;
   // math form for this restraint (typically one of the harmonics)
-  Score_Func* score_func_;
+  ScoreFunc* score_func_;
 };
 
 // Restrict particle position to interior of a torus
-class IMPDLLEXPORT RSR_Torus : public Restraint
+class IMPDLLEXPORT TorusRestraint : public Restraint
 {
 public:
-  RSR_Torus(Model& model,
+  TorusRestraint(Model& model,
             Particle* p1,
             const Float main_radius,
             const Float tube_radius,
-            Basic_Score_Func_Params* score_func_params);
-  virtual ~RSR_Torus();
+            BasicScoreFuncParams* score_func_params);
+  virtual ~TorusRestraint();
 
   virtual Float evaluate(bool calc_deriv);
 
@@ -73,34 +73,34 @@ public:
 
 protected:
   // variables used to determine the distance
-  Float_Index x1_, y1_, z1_;
+  FloatIndex x1_, y1_, z1_;
   // main radius of the torus
   Float main_radius_;
   // radius of the torus tube
   Float tube_radius_;
   // math form for this restraint (typically one of the harmonics)
-  Score_Func* score_func_;
+  ScoreFunc* score_func_;
 };
 
 
 // Restrict maximum distance between any two particles
-class IMPDLLEXPORT RSR_Proximity : public Restraint
+class IMPDLLEXPORT ProximityRestraint : public Restraint
 {
 public:
-  RSR_Proximity(Model& model,
+  ProximityRestraint(Model& model,
                 // couldn't get Swig to work with std::vector<Particle*>&
                 std::vector<int>& particle_indexes,
                 const Float distance,
-                Basic_Score_Func_Params* score_func_params);
+                BasicScoreFuncParams* score_func_params);
 
-  RSR_Proximity(Model& model,
+  ProximityRestraint(Model& model,
                 // couldn't get Swig to work with std::vector<Particle*>&
                 std::vector<int>& particle_indexes,
                 const std::string attr_name,
                 const Float distance,
-                Basic_Score_Func_Params* score_func_params);
+                BasicScoreFuncParams* score_func_params);
 
-  virtual ~RSR_Proximity();
+  virtual ~ProximityRestraint();
 
   virtual Float evaluate(bool calc_deriv);
 
@@ -128,31 +128,31 @@ protected:
   /** indexes of local indexes sorted by energies */
   std::vector<int> rsr_idx_;
   /** the distance restraints */
-  std::vector<RSR_Distance*> dist_rsrs_;
+  std::vector<DistanceRestraint*> dist_rsrs_;
 };
 
 // Restrict max distance between at one or more pair of particles of any two sets of particles
-class IMPDLLEXPORT RSR_Pair_Connectivity : public Restraint
+class IMPDLLEXPORT PairConnectivityRestraint : public Restraint
 {
 public:
-  RSR_Pair_Connectivity(Model& model,
+  PairConnectivityRestraint(Model& model,
                         // couldn't get Swig to work with std::vector<Particle*>&
                         std::vector<int>& particle1_indexes,
                         std::vector<int>& particle2_indexes,
-                        Basic_Score_Func_Params* score_func_params,
+                        BasicScoreFuncParams* score_func_params,
                         const int num_to_apply = 1,
                         const bool particle_reuse = false);
 
-  RSR_Pair_Connectivity(Model& model,
+  PairConnectivityRestraint(Model& model,
                         // couldn't get Swig to work with std::vector<Particle*>&
                         std::vector<int>& particle1_indexes,
                         std::vector<int>& particle2_indexes,
                         const std::string attr_name,
-                        Basic_Score_Func_Params* score_func_params,
+                        BasicScoreFuncParams* score_func_params,
                         const int num_to_apply,
                         const bool particle_reuse = false);
 
-  virtual ~RSR_Pair_Connectivity();
+  virtual ~PairConnectivityRestraint();
 
   virtual Float evaluate(bool calc_deriv);
 
@@ -166,21 +166,21 @@ public:
   }
 
 protected:
-  class Restraint_Score
+  class RestraintScore
   {
   public:
-    Restraint_Score() {}
-    ~Restraint_Score() {}
+    RestraintScore() {}
+    ~RestraintScore() {}
     void evaluate(void) {
       score_ = rsr_->evaluate(false);
     }
-    bool operator<(const Restraint_Score& rs) const {
+    bool operator<(const RestraintScore& rs) const {
       return score_ < rs.score_;
     }
 
     int part1_idx_;
     int part2_idx_;
-    RSR_Distance* rsr_;
+    DistanceRestraint* rsr_;
     Float score_;
   };
 
@@ -190,7 +190,7 @@ protected:
               std::vector<int>& particle2_indexes);
 
   // variables to determine the particle type
-  std::vector<Int_Index> type_;
+  std::vector<IntIndex> type_;
 
   /** number of particles all together */
   int num_particles_;
@@ -208,28 +208,28 @@ protected:
   /** total number of restraints being tested */
   int num_restraints_;
   /** restraints and their scores */
-  std::list<Restraint_Score> rsr_scores_;
+  std::list<RestraintScore> rsr_scores_;
 };
 
 
 // Restrict max distance between at least one pair of particles of any two distinct types
-class IMPDLLEXPORT RSR_Connectivity : public Restraint
+class IMPDLLEXPORT ConnectivityRestraint : public Restraint
 {
 public:
-  RSR_Connectivity(Model& model,
+  ConnectivityRestraint(Model& model,
                    // couldn't get Swig to work with std::vector<Particle*>&
                    std::vector<int>& particle_indexes,
                    const std::string type,
-                   Basic_Score_Func_Params* score_func_params);
+                   BasicScoreFuncParams* score_func_params);
 
-  RSR_Connectivity(Model& model,
+  ConnectivityRestraint(Model& model,
                    // couldn't get Swig to work with std::vector<Particle*>&
                    std::vector<int>& particle_indexes,
                    const std::string type,
                    const std::string attr_name,
-                   Basic_Score_Func_Params* score_func_params);
+                   BasicScoreFuncParams* score_func_params);
 
-  virtual ~RSR_Connectivity();
+  virtual ~ConnectivityRestraint();
 
   virtual Float evaluate(bool calc_deriv);
 
@@ -244,26 +244,26 @@ public:
 
 protected:
   // switch to using rsr_scores to allow STL sorting
-  class Restraint_Score
+  class RestraintScore
   {
   public:
-    Restraint_Score() {}
-    ~Restraint_Score() {}
+    RestraintScore() {}
+    ~RestraintScore() {}
     void evaluate(void) {
       score_ = rsr_->evaluate(false);
     }
-    bool operator<(const Restraint_Score& rs) const {
+    bool operator<(const RestraintScore& rs) const {
       return score_ < rs.score_;
     }
 
     int part1_type_;
     int part2_type_;
-    RSR_Distance* rsr_;
+    DistanceRestraint* rsr_;
     Float score_;
   };
 
   /** restraints and their scores */
-  std::list<Restraint_Score> rsr_scores_;
+  std::list<RestraintScore> rsr_scores_;
 
   void set_up(Model& model,
               // couldn't get Swig to work with std::vector<Particle*>&
@@ -271,7 +271,7 @@ protected:
               const std::string type);
 
   // variables to determine the particle type
-  std::vector<Int_Index> type_;
+  std::vector<IntIndex> type_;
 
   /** number of particles in the restraint */
   int num_particles_;
@@ -294,25 +294,25 @@ protected:
 // Restrict min distance between all pairs of particles of formed from one or two sets of particles.
 // If two sets of particles are passed, it assumes that the two sets of particles have no overlap
 // (otherwise, you will get repeats).
-class IMPDLLEXPORT RSR_Exclusion_Volume : public Restraint
+class IMPDLLEXPORT ExclusionVolumeRestraint : public Restraint
 {
 public:
-  RSR_Exclusion_Volume(Model& model,
+  ExclusionVolumeRestraint(Model& model,
                        // couldn't get Swig to work with std::vector<Particle*>&
                        std::vector<int>& particle1_indexes,
                        std::vector<int>& particle2_indexes,
                        const std::string attr_name,
-                       Basic_Score_Func_Params* score_func_params
+                       BasicScoreFuncParams* score_func_params
                       );
 
-  RSR_Exclusion_Volume(Model& model,
+  ExclusionVolumeRestraint(Model& model,
                        // couldn't get Swig to work with std::vector<Particle*>&
                        std::vector<int>& particle_indexes,
                        const std::string attr_name,
-                       Basic_Score_Func_Params* score_func_params
+                       BasicScoreFuncParams* score_func_params
                       );
 
-  virtual ~RSR_Exclusion_Volume();
+  virtual ~ExclusionVolumeRestraint();
 
   virtual Float evaluate(bool calc_deriv);
 
@@ -336,14 +336,14 @@ protected:
   /** total number of restraints */
   int num_restraints_;
   /** restraints and their scores */
-  std::vector<RSR_Distance*> dist_rsrs_;
+  std::vector<DistanceRestraint*> dist_rsrs_;
 };
 
 // Calculate score based on fit to EM map
-class IMPDLLEXPORT RSR_EM_Coarse : public Restraint
+class IMPDLLEXPORT CoarseEMRestraint : public Restraint
 {
 public:
-  RSR_EM_Coarse(Model& model,
+  CoarseEMRestraint(Model& model,
                 std::vector<int>& particle_indexes,
                 EM_Density *emdens,
                 int nx,
@@ -357,7 +357,7 @@ public:
                 float scalefac
                );
 
-  virtual ~RSR_EM_Coarse();
+  virtual ~CoarseEMRestraint();
 
   virtual Float evaluate(bool calc_deriv);
 
@@ -387,9 +387,9 @@ protected:
   Float *weight_;
 
   // coordinates to pass to EM score C routine
-  Float_Index *x_;
-  Float_Index *y_;
-  Float_Index *z_;
+  FloatIndex *x_;
+  FloatIndex *y_;
+  FloatIndex *z_;
 
   // coordinates to pass to EM score C routine
   Float *cdx_;

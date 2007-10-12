@@ -1,6 +1,5 @@
-/*
- *  Score_Func.h
- *  IMP
+/**
+ *  \file ScoreFunc.h    Scoring functions.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -19,17 +18,17 @@ namespace imp
 // Abstract functor class for score functions
 // Decided to pass the derivative by reference so that the functor form could be
 // maintained for both the score calls and the score and partial derivative calls.
-class IMPDLLEXPORT Score_Func
+class IMPDLLEXPORT ScoreFunc
 {
 public:
-  Score_Func() {}
-  virtual ~Score_Func() {}
+  ScoreFunc() {}
+  virtual ~ScoreFunc() {}
   virtual Float operator()(Float feature, Float& deriv) = 0;
   virtual Float operator()(Float feature) = 0;
 };
 
 // Harmonic score function (symmetric about the mean)
-class IMPDLLEXPORT Harmonic : public Score_Func
+class IMPDLLEXPORT Harmonic : public ScoreFunc
 {
 public:
   Harmonic(Float mean, Float sd) {mean_ = mean; sd_ = sd;}
@@ -47,48 +46,48 @@ protected:
 };
 
 // Lower bound harmonic score function (non-zero when feature < mean)
-class IMPDLLEXPORT Harmonic_Lower_Bound : public Harmonic
+class IMPDLLEXPORT HarmonicLowerBound : public Harmonic
 {
 public:
-  Harmonic_Lower_Bound(Float mean, Float sd) : Harmonic(mean, sd) {}
-  virtual ~Harmonic_Lower_Bound();
+  HarmonicLowerBound(Float mean, Float sd) : Harmonic(mean, sd) {}
+  virtual ~HarmonicLowerBound();
 
   virtual Float operator()(Float feature, Float& deriv);
   virtual Float operator()(Float feature);
 };
 
 // Upper bound harmonic score function (non-zero when feature > mean)
-class IMPDLLEXPORT Harmonic_Upper_Bound : public Harmonic
+class IMPDLLEXPORT HarmonicUpperBound : public Harmonic
 {
 public:
-  Harmonic_Upper_Bound(Float mean, Float sd) : Harmonic(mean, sd) {}
-  virtual ~Harmonic_Upper_Bound();
+  HarmonicUpperBound(Float mean, Float sd) : Harmonic(mean, sd) {}
+  virtual ~HarmonicUpperBound();
 
   virtual Float operator()(Float feature, Float& deriv);
   virtual Float operator()(Float feature);
 };
 
 
-// Abstract class containing parameters for creating Score_Func instances.
+// Abstract class containing parameters for creating ScoreFunc instances.
 // Also has factory method for creating those instances.
-class IMPDLLEXPORT Score_Func_Params
+class IMPDLLEXPORT ScoreFuncParams
 {
 public:
-  Score_Func_Params() {}
-  virtual ~Score_Func_Params() {}
-  virtual Score_Func* create_score_func(void) = 0;
+  ScoreFuncParams() {}
+  virtual ~ScoreFuncParams() {}
+  virtual ScoreFunc* create_score_func(void) = 0;
 };
 
-// Basic class containing parameters for creating Score_Func instances
+// Basic class containing parameters for creating ScoreFunc instances
 // that require a mean and standard deviation.
-class IMPDLLEXPORT Basic_Score_Func_Params : public Score_Func_Params
+class IMPDLLEXPORT BasicScoreFuncParams : public ScoreFuncParams
 {
 public:
-  Basic_Score_Func_Params(std::string score_func_type = "harmonic", 
+  BasicScoreFuncParams(std::string score_func_type = "harmonic", 
                           Float mean = 1.0,
                           Float sd = 0.1);
-  virtual ~Basic_Score_Func_Params();
-  virtual Score_Func* create_score_func(void);
+  virtual ~BasicScoreFuncParams();
+  virtual ScoreFunc* create_score_func(void);
   void set_mean(Float mean);
   void set_sd(Float sd);
   void set_score_func_type(std::string score_func_type);

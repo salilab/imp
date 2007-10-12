@@ -1,5 +1,5 @@
 /**
- *  \file Conjugate_Gradients.h    Simple conjugate gradients optimizer.
+ *  \file ConjugateGradients.h    Simple conjugate gradients optimizer.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -17,11 +17,11 @@ namespace imp
 /** Simple conjugate gradients optimizer, as per Shanno and Phua,
     ACM Transactions On Mathematical Software 6 (December 1980), 618-622
  */ 
-class IMPDLLEXPORT Conjugate_Gradients : public Optimizer
+class IMPDLLEXPORT ConjugateGradients : public Optimizer
 {
 public:
-  Conjugate_Gradients();
-  virtual ~Conjugate_Gradients();
+  ConjugateGradients();
+  virtual ~ConjugateGradients();
 
   virtual Float optimize(Model& model, int max_steps, Float threshold=0.0);
   virtual std::string version(void) const {

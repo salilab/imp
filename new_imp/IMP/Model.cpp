@@ -7,7 +7,7 @@
  */
 
 #include "Model.h"
-#include "Model_Data.h"
+#include "ModelData.h"
 #include "Particle.h"
 #include "log.h"
 
@@ -20,7 +20,7 @@ namespace imp
 
 Model::Model ()
 {
-  model_data_ = new Model_Data();
+  model_data_ = new ModelData();
   //InitLog("log.txt");
   frame_num_ = 0;
   trajectory_on_ = false;
@@ -43,7 +43,7 @@ Model::~Model ()
   \return pointer to all model particle data.
  */
 
-Model_Data* Model::get_model_data(void) const
+ModelData* Model::get_model_data(void) const
 {
   return model_data_;
 }
@@ -93,7 +93,7 @@ size_t Model::add_particle(Particle* particle)
  \param[in] restraint_set Pointer to the restraint set.
 */
 
-void Model::add_restraint_set(Restraint_Set* restraint_set)
+void Model::add_restraint_set(RestraintSet* restraint_set)
 {
   restraint_set->set_model_data(model_data_);
   restraint_sets_.push_back(restraint_set);
@@ -106,7 +106,7 @@ void Model::add_restraint_set(Restraint_Set* restraint_set)
  \param[in] name Name of restraint within the model.
 */
 
-Restraint_Set* Model::restraint_set(const std::string name)
+RestraintSet* Model::restraint_set(const std::string name)
 {
   for (size_t i = 0; i < restraint_sets_.size(); i++) {
     if (restraint_sets_[i]->name() == name)
@@ -213,7 +213,7 @@ void Model::save_state(void)
       fout << particles_.size() << std::endl;
       
       // for each particle, output its current state
-      Float_Index fi;
+      FloatIndex fi;
       for (size_t i = 0; i < particles_.size(); i++) {
 	fi = particles_[i]->float_index("X");
 	fout << model_data_->get_float(fi) << " ";
@@ -265,7 +265,7 @@ void Model::show(std::ostream& out) const
 
 }
 
-// ####  Particle_Iterator ####
+// ####  ParticleIterator ####
 // Iterator returns all Particles in the Model
 
 
@@ -276,7 +276,7 @@ void Model::show(std::ostream& out) const
  \param[in] model The model data that is being referenced.
  */
 
-void Particle_Iterator::reset(Model* model)
+void ParticleIterator::reset(Model* model)
 {
   model_ = model;
   cur_ = -1;
@@ -290,7 +290,7 @@ void Particle_Iterator::reset(Model* model)
  \return True if another particle is available.
  */
 
-bool Particle_Iterator::next(void)
+bool ParticleIterator::next(void)
 {
   cur_ += 1;
   if (cur_ >= (int) model_->particles_.size()) {
@@ -309,7 +309,7 @@ bool Particle_Iterator::next(void)
  \return True pointer to next particle (NULL if we are out of bounds).
  */
 
-Particle* Particle_Iterator::get(void)
+Particle* ParticleIterator::get(void)
 {
   if (cur_ >= (int) model_->particles_.size()) {
     return NULL;
@@ -319,7 +319,7 @@ Particle* Particle_Iterator::get(void)
 }
 
 
-// ####  Restraint_Set_Iterator ####
+// ####  RestraintSetIterator ####
 // Iterator returns all restraint sets in the Model
 
 
@@ -330,7 +330,7 @@ Particle* Particle_Iterator::get(void)
  \param[in] model The model data that is being referenced.
  */
 
-void Restraint_Set_Iterator::reset(Model* model)
+void RestraintSetIterator::reset(Model* model)
 {
   model_ = model;
   cur_ = -1;
@@ -344,7 +344,7 @@ void Restraint_Set_Iterator::reset(Model* model)
  \return True if another restraint_set is available.
  */
 
-bool Restraint_Set_Iterator::next(void)
+bool RestraintSetIterator::next(void)
 {
   cur_ += 1;
   if (cur_ >= (int) model_->restraint_sets_.size()) {
@@ -363,7 +363,7 @@ bool Restraint_Set_Iterator::next(void)
  \return True pointer to next restraint_set (NULL if we are out of bounds).
  */
 
-Restraint_Set* Restraint_Set_Iterator::get(void)
+RestraintSet* RestraintSetIterator::get(void)
 {
   if (cur_ >= (int) model_->restraint_sets_.size()) {
     return NULL;

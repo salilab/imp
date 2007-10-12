@@ -1,12 +1,12 @@
 /*
- *  Score_Func.cpp
+ *  ScoreFunc.cpp
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
  */
 
-#include "Score_Func.h"
+#include "ScoreFunc.h"
 #include "log.h"
 #include "mystdexcept.h"
 
@@ -99,9 +99,9 @@ Float Harmonic::harmonic(Float feature, Float& deriv)
 }
 
 /** Destructor */
-Harmonic_Lower_Bound::~Harmonic_Lower_Bound()
+HarmonicLowerBound::~HarmonicLowerBound()
 {
-  IMP_LOG(VERBOSE, "Delete Harmonic_Lower_Bound: beware of early Python "
+  IMP_LOG(VERBOSE, "Delete HarmonicLowerBound: beware of early Python "
 	  << "calls to destructor.");
 }
 
@@ -116,7 +116,7 @@ Harmonic_Lower_Bound::~Harmonic_Lower_Bound()
   \param[in] sd Allowable standard deviation value of the feature.
  */
 
-Float Harmonic_Lower_Bound::operator()(Float feature)
+Float HarmonicLowerBound::operator()(Float feature)
 {
   if (feature >= mean_)
     return 0.0;
@@ -139,7 +139,7 @@ Float Harmonic_Lower_Bound::operator()(Float feature)
                       the feature value.
  */
 
-Float Harmonic_Lower_Bound::operator()(Float feature, Float& deriv)
+Float HarmonicLowerBound::operator()(Float feature, Float& deriv)
 {
   if (feature >= mean_) {
     deriv = 0.0;
@@ -149,9 +149,9 @@ Float Harmonic_Lower_Bound::operator()(Float feature, Float& deriv)
 }
 
 /** Destructor */
-Harmonic_Upper_Bound::~Harmonic_Upper_Bound()
+HarmonicUpperBound::~HarmonicUpperBound()
 {
-  IMP_LOG(VERBOSE, "Delete Harmonic_Upper_Bound: beware of early Python "
+  IMP_LOG(VERBOSE, "Delete HarmonicUpperBound: beware of early Python "
 	  << "calls to destructor.");
 }
 
@@ -166,7 +166,7 @@ Harmonic_Upper_Bound::~Harmonic_Upper_Bound()
   \param[in] sd Allowable standard deviation value of the feature.
  */
 
-Float Harmonic_Upper_Bound::operator()(Float feature)
+Float HarmonicUpperBound::operator()(Float feature)
 {
   if (feature <= mean_)
     return 0.0;
@@ -189,7 +189,7 @@ Float Harmonic_Upper_Bound::operator()(Float feature)
                       the feature value.
  */
 
-Float Harmonic_Upper_Bound::operator()(Float feature, Float& deriv)
+Float HarmonicUpperBound::operator()(Float feature, Float& deriv)
 {
   if (feature <= mean_) {
     deriv = 0.0;
@@ -198,13 +198,13 @@ Float Harmonic_Upper_Bound::operator()(Float feature, Float& deriv)
     return harmonic(feature, deriv);
 }
 
-//######### Score_Func_Params #########
+//######### ScoreFuncParams #########
 
 /**
   Constructor
  */
 
-Basic_Score_Func_Params::Basic_Score_Func_Params(std::string score_func_type, 
+BasicScoreFuncParams::BasicScoreFuncParams(std::string score_func_type, 
                                                  Float mean, Float sd)
 {
   mean_ = mean;
@@ -217,7 +217,7 @@ Basic_Score_Func_Params::Basic_Score_Func_Params(std::string score_func_type,
 Destructor
  */
 
-Basic_Score_Func_Params::~Basic_Score_Func_Params ()
+BasicScoreFuncParams::~BasicScoreFuncParams ()
 {
 }
 
@@ -228,7 +228,7 @@ Set the mean to use in calculating this score function.
 \param[in] mean Value for the mean.
 */
 
-void Basic_Score_Func_Params::set_mean(Float mean)
+void BasicScoreFuncParams::set_mean(Float mean)
 {
   mean_ = mean;
 }
@@ -239,7 +239,7 @@ Set the standard deviation to use in calculating this score function.
 \param[in] sd Value for the standard deviation.
 */
 
-void Basic_Score_Func_Params::set_sd(Float sd)
+void BasicScoreFuncParams::set_sd(Float sd)
 {
   sd_ = sd;
 }
@@ -250,7 +250,7 @@ Set the type of score function to use.
 \param[in] mean Value for the mean.
 */
 
-void Basic_Score_Func_Params::set_score_func_type(std::string score_func_type)
+void BasicScoreFuncParams::set_score_func_type(std::string score_func_type)
 {
   score_func_type_ = score_func_type;
 }
@@ -263,14 +263,14 @@ and return a pointer to that score function.
 \return pointer to score function.
 */
 
-Score_Func* Basic_Score_Func_Params::create_score_func(void)
+ScoreFunc* BasicScoreFuncParams::create_score_func(void)
 {
   if (score_func_type_ == "harmonic") {
     return new Harmonic(mean_, sd_);
   } else if (score_func_type_ == "harmonic_lower_bound") {
-    return new Harmonic_Lower_Bound(mean_, sd_);
+    return new HarmonicLowerBound(mean_, sd_);
   } else if (score_func_type_ == "harmonic_upper_bound") {
-    return new Harmonic_Upper_Bound(mean_, sd_);
+    return new HarmonicUpperBound(mean_, sd_);
   }
   
   IMP_check(0, "Unknown score function: " << score_func_type_,

@@ -17,7 +17,7 @@ namespace imp
 {
 
 // static constants
-const Float RSR_Distance::MIN_DISTANCE = 0.0000001;
+const Float DistanceRestraint::MIN_DISTANCE = 0.0000001;
 
 //######### Restraint #########
 // Abstract class for representing restraints
@@ -51,7 +51,7 @@ Give accesss to model particle data.
 \param[in] model_data All particle data in the model.
 */
 
-void Restraint::set_model_data(Model_Data* model_data)
+void Restraint::set_model_data(ModelData* model_data)
 {
   model_data_ = model_data;
 }
@@ -131,10 +131,10 @@ void Restraint::check_particles_active(void)
   \param[in] score_func Score function for the restraint.
  */
 
-RSR_Distance::RSR_Distance(Model& model,
+DistanceRestraint::DistanceRestraint(Model& model,
                            Particle* p1,
                            Particle* p2,
-                           Basic_Score_Func_Params* score_func_params)
+                           BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
   set_up(model, p1, p2, score_func_params);
@@ -151,11 +151,11 @@ RSR_Distance::RSR_Distance(Model& model,
   \param[in] score_func Score function for the restraint.
  */
 
-RSR_Distance::RSR_Distance(Model& model,
+DistanceRestraint::DistanceRestraint(Model& model,
                            Particle* p1,
                            Particle* p2,
                            const std::string attr_name,
-                           Basic_Score_Func_Params* score_func_params)
+                           BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
 
@@ -179,10 +179,10 @@ RSR_Distance::RSR_Distance(Model& model,
   \param[in] score_func Score function for the restraint.
  */
 
-void RSR_Distance::set_up(Model& model,
+void DistanceRestraint::set_up(Model& model,
                           Particle* p1,
                           Particle* p2,
-                          Basic_Score_Func_Params* score_func_params)
+                          BasicScoreFuncParams* score_func_params)
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
   particles_.push_back(p1);
@@ -203,7 +203,7 @@ void RSR_Distance::set_up(Model& model,
   Destructor
  */
 
-RSR_Distance::~RSR_Distance ()
+DistanceRestraint::~DistanceRestraint ()
 {
 }
 
@@ -214,7 +214,7 @@ RSR_Distance::~RSR_Distance ()
  \param[in] calc_deriv If true, partial first derivatives should be calculated.
   */
 
-Float RSR_Distance::evaluate(bool calc_deriv)
+Float DistanceRestraint::evaluate(bool calc_deriv)
 {
   Float distance;
   Float delta_x, delta_y, delta_z;
@@ -229,17 +229,17 @@ Float RSR_Distance::evaluate(bool calc_deriv)
   distance = sqrt(delta_x*delta_x + delta_y*delta_y + delta_z*delta_z);
 
   // if distance is too close to zero, set it to some non-zero value
-  if (distance < RSR_Distance::MIN_DISTANCE) {
+  if (distance < DistanceRestraint::MIN_DISTANCE) {
     delta_x = std::rand(); // arbitrary move
     delta_y = std::rand(); // arbitrary move
     delta_z = std::rand(); // arbitrary move
     distance = sqrt(delta_x*delta_x + delta_y*delta_y + delta_z*delta_z);
 
     // normalize the random move, to the min disance
-    delta_x = RSR_Distance::MIN_DISTANCE * delta_x / distance;
-    delta_y = RSR_Distance::MIN_DISTANCE * delta_y / distance;
-    delta_z = RSR_Distance::MIN_DISTANCE * delta_z / distance;
-    distance = RSR_Distance::MIN_DISTANCE;
+    delta_x = DistanceRestraint::MIN_DISTANCE * delta_x / distance;
+    delta_y = DistanceRestraint::MIN_DISTANCE * delta_y / distance;
+    delta_z = DistanceRestraint::MIN_DISTANCE * delta_z / distance;
+    distance = DistanceRestraint::MIN_DISTANCE;
   }
 
   // if needed, calculate the partial derivatives of the scores with respect to the particle attributes
@@ -290,7 +290,7 @@ Float RSR_Distance::evaluate(bool calc_deriv)
  \param[in] out Stream to send restraint description to.
  */
 
-void RSR_Distance::show(std::ostream& out) const
+void DistanceRestraint::show(std::ostream& out) const
 {
   if (is_active()) {
     out << "distance restraint (active):" << std::endl;

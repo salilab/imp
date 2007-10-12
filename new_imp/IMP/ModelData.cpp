@@ -1,12 +1,12 @@
 /*
- *  Model_Data.cpp
+ *  ModelData.cpp
  *  IMP
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
  */
 
-#include "Model_Data.h"
+#include "ModelData.h"
 #include "log.h"
 
 namespace imp
@@ -16,7 +16,7 @@ namespace imp
   Constructor
  */
 
-Model_Data::Model_Data ()
+ModelData::ModelData ()
 {
   check_particles_active_ = false;
 }
@@ -26,7 +26,7 @@ Model_Data::Model_Data ()
   Destructor
  */
 
-Model_Data::~Model_Data ()
+ModelData::~ModelData ()
 {
 }
 
@@ -41,9 +41,9 @@ Model_Data::~Model_Data ()
   \return index of a new float attribute.
  */
 
-Float_Index Model_Data::add_float(const Float value)
+FloatIndex ModelData::add_float(const Float value)
 {
-  Float_Index f_index;
+  FloatIndex f_index;
   int size = float_data_.size();
 
   float_data_.resize(size+1);
@@ -62,7 +62,7 @@ Float_Index Model_Data::add_float(const Float value)
   \param[in] value Value the attribute should be given.
  */
 
-void Model_Data::set_float(const Float_Index idx, const Float value)
+void ModelData::set_float(const FloatIndex idx, const Float value)
 {
   float_data_[idx.index()].value_ = value;
 }
@@ -76,7 +76,7 @@ void Model_Data::set_float(const Float_Index idx, const Float value)
   \param[in] value Value to add to the float attribute derivative.
  */
 
-void Model_Data::add_to_deriv(const Float_Index idx, Float value)
+void ModelData::add_to_deriv(const FloatIndex idx, Float value)
 {
   float_data_[idx.index()].deriv_ += value;
 }
@@ -88,7 +88,7 @@ void Model_Data::add_to_deriv(const Float_Index idx, Float value)
   \param[in] idx Index of the particle float attribute.
   */
 
-Float Model_Data::get_deriv(const Float_Index idx) const
+Float ModelData::get_deriv(const FloatIndex idx) const
 {
   return float_data_[idx.index()].deriv_;
 }
@@ -100,7 +100,7 @@ Float Model_Data::get_deriv(const Float_Index idx) const
   \param[in] is_optimized True if particle float attribute is to be optimized.
   */
 
-void Model_Data::set_is_optimized(const Float_Index idx, bool is_optimized)
+void ModelData::set_is_optimized(const FloatIndex idx, bool is_optimized)
 {
   float_data_[idx.index()].is_optimized_ = is_optimized;
 }
@@ -112,7 +112,7 @@ void Model_Data::set_is_optimized(const Float_Index idx, bool is_optimized)
   \return True if particle float attribute is to be optimized.
   */
 
-bool Model_Data::is_optimized(const Float_Index idx) const
+bool ModelData::is_optimized(const FloatIndex idx) const
 {
   return float_data_[idx.index()].is_optimized_;
 }
@@ -122,7 +122,7 @@ bool Model_Data::is_optimized(const Float_Index idx) const
   Set all derivatives to zero.
 */
 
-void Model_Data::zero_derivatives(void)
+void ModelData::zero_derivatives(void)
 {
   for (size_t i = 0; i < float_data_.size(); i++) {
     float_data_[i].deriv_ = (Float) 0.0;
@@ -139,9 +139,9 @@ void Model_Data::zero_derivatives(void)
   \return index of a new int attribute.
  */
 
-Int_Index Model_Data::add_int(const Int value)
+IntIndex ModelData::add_int(const Int value)
 {
-  Int_Index i_index;
+  IntIndex i_index;
   int size = int_data_.size();
 
   int_data_.resize(size+1);
@@ -159,7 +159,7 @@ Int_Index Model_Data::add_int(const Int value)
   \param[in] value Value the attribute should be given.
  */
 
-void Model_Data::set_int(const Int_Index idx, const Int value)
+void ModelData::set_int(const IntIndex idx, const Int value)
 {
   int_data_[idx.index()] = value;
 }
@@ -174,9 +174,9 @@ void Model_Data::set_int(const Int_Index idx, const Int value)
   \return index of a new string attribute.
  */
 
-String_Index Model_Data::add_string(const String value)
+StringIndex ModelData::add_string(const String value)
 {
-  String_Index s_index;
+  StringIndex s_index;
   int size = string_data_.size();
 
   string_data_.resize(size+1);
@@ -194,14 +194,14 @@ String_Index Model_Data::add_string(const String value)
   \param[in] value Value the attribute should be given.
  */
 
-void Model_Data::set_string(const String_Index idx, const String value)
+void ModelData::set_string(const StringIndex idx, const String value)
 {
   string_data_[idx.index()] = value;
 }
 
 
-// ####  Opt_Float_Index_Iterator ####
-// Iterator returns all optimizable Floats in the Model_Data
+// ####  OptFloatIndexIterator ####
+// Iterator returns all optimizable Floats in the ModelData
 
 
 /**
@@ -211,7 +211,7 @@ void Model_Data::set_string(const String_Index idx, const String value)
  \param[in] model_data The model data that is being referenced.
  */
 
-void Opt_Float_Index_Iterator::reset(Model_Data* model_data)
+void OptFloatIndexIterator::reset(ModelData* model_data)
 {
   model_data_ = model_data;
   cur_ = -1;
@@ -225,9 +225,9 @@ void Opt_Float_Index_Iterator::reset(Model_Data* model_data)
  \return True if another optimizable variable is available.
  */
 
-bool Opt_Float_Index_Iterator::next(void)
+bool OptFloatIndexIterator::next(void)
 {
-  Float_Index fi;
+  FloatIndex fi;
 
   do {
     fi.set_index(++cur_);
@@ -249,9 +249,9 @@ bool Opt_Float_Index_Iterator::next(void)
  \return True if another optimizable variable is available.
  */
 
-Float_Index Opt_Float_Index_Iterator::get(void) const
+FloatIndex OptFloatIndexIterator::get(void) const
 {
-  Float_Index fi;
+  FloatIndex fi;
 
   fi.set_index(cur_);
   return fi;

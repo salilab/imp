@@ -10,8 +10,8 @@
 #define __IMP_MODEL_H
 
 #include "IMP_config.h"
-#include "Model_Data.h"
-#include "Restraint_Set.h"
+#include "ModelData.h"
+#include "RestraintSet.h"
 #include "RigidBody.h"
 
 namespace imp
@@ -22,13 +22,13 @@ namespace imp
 // model_data_ structure.
 class IMPDLLEXPORT Model
 {
-  friend class Particle_Iterator;
-  friend class Restraint_Set_Iterator;
+  friend class ParticleIterator;
+  friend class RestraintSetIterator;
 
 public:
   Model();
   ~Model();
-  Model_Data* get_model_data(void) const;
+  ModelData* get_model_data(void) const;
 
   // particles
   size_t add_particle(Particle* particle);
@@ -37,8 +37,8 @@ public:
   //Particle* get_particle(size_t idx) const { return const_cast<Model*>(this)->particle(idx);}
 
   // restraints
-  void add_restraint_set(Restraint_Set* restraint_set);
-  Restraint_Set* restraint_set(const std::string name);
+  void add_restraint_set(RestraintSet* restraint_set);
+  RestraintSet* restraint_set(const std::string name);
 
   // for each restraint_set, call evaluate
   Float evaluate(bool calc_derivs);
@@ -60,13 +60,13 @@ public:
 
 protected:
   // all of the data associated with the particles
-  Model_Data* model_data_;
+  ModelData* model_data_;
 
   // particles themselves
   std::vector<Particle*> particles_;
 
   // all base-level restraints and/or restraint sets of the model
-  std::vector<Restraint_Set*> restraint_sets_;
+  std::vector<RestraintSet*> restraint_sets_;
 
   // sets of particles that move as a single rigid body
   std::vector<RigidBody*> rigid_bodies_;
@@ -79,10 +79,10 @@ protected:
 
 
 // particle iterator
-class IMPDLLEXPORT Particle_Iterator
+class IMPDLLEXPORT ParticleIterator
 {
 public:
-  Particle_Iterator() {}
+  ParticleIterator() {}
   void reset(Model* model);
   bool next(void);
   Particle* get(void);
@@ -93,13 +93,13 @@ protected:
 };
 
 // restraint set iterator
-class IMPDLLEXPORT Restraint_Set_Iterator
+class IMPDLLEXPORT RestraintSetIterator
 {
 public:
-  Restraint_Set_Iterator() {}
+  RestraintSetIterator() {}
   void reset(Model* model);
   bool next(void);
-  Restraint_Set* get(void);
+  RestraintSet* get(void);
 
 protected:
   int cur_;

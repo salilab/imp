@@ -24,15 +24,15 @@ particles[1].add_int("protein", 1)
 particles[1].show()
 
 print "adding restraints"
-rs = IMP.Restraint_Set("dist_rsrs")
+rs = IMP.RestraintSet("dist_rsrs")
 model.add_restraint_set(rs)
 
 score_func = IMP.Harmonic()
-dist_rsr = IMP.RSR_Distance(model, particles[0], particles[1], 3.0, 0.1, score_func)
+dist_rsr = IMP.DistanceRestraint(model, particles[0], particles[1], 3.0, 0.1, score_func)
 rs.add_restraint(dist_rsr)
 
 print "adding optimizer"
-steepest_descent = IMP.Steepest_Descent()
+steepest_descent = IMP.SteepestDescent()
 
 
 print "optimizing the model"

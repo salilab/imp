@@ -19,7 +19,7 @@ namespace imp
   Constructor
  */
 
-Particle::Particle (Model_Data* model_data)
+Particle::Particle (ModelData* model_data)
 {
   IMP_LOG(VERBOSE, "create particle");
   model_data_ = model_data;
@@ -45,7 +45,7 @@ Get pointer to model particle data.
 \return all particle data in the model.
 */
 
-Model_Data* Particle::model_data(void) const
+ModelData* Particle::model_data(void) const
 {
   return model_data_;
 }
@@ -91,7 +91,7 @@ bool Particle::is_active(void) const
 
 bool Particle::add_float (const std::string name, const Float value, const bool is_optimized)
 {
-  Float_Index fi;
+  FloatIndex fi;
 
   IMP_LOG(VERBOSE, "add_float: " << name);
   IMP_assert(!has_float(name), "Trying to add the name '" <<  name << "' twice.");
@@ -135,7 +135,7 @@ bool Particle::has_float (const std::string name) const
   \return index to the attribute.
  */
 
-Float_Index Particle::float_index(const std::string name) const
+FloatIndex Particle::float_index(const std::string name) const
 {
   IMP_check(has_float(name), "Unknown float attribute '" << name << "'", 
 	    std::out_of_range("Unknown float attribute name"));
@@ -184,7 +184,7 @@ bool Particle::has_int (const std::string name) const
   \return index to the attribute.
  */
 
-Int_Index Particle::int_index(const std::string name) const
+IntIndex Particle::int_index(const std::string name) const
 {
   IMP_check(has_int(name), "Unknown int attribute '" << name << "'", 
 	    std::out_of_range("Unknown int attribute name"));
@@ -238,7 +238,7 @@ bool Particle::has_string (const std::string name) const
   \return index to the attribute.
  */
 
-String_Index Particle::string_index(const std::string name) const
+StringIndex Particle::string_index(const std::string name) const
 {
   IMP_check(has_string(name), "Unknown string attribute '" << name << "'", 
 	    std::out_of_range("Unknown string attribute name"));
@@ -265,7 +265,7 @@ void Particle::show (std::ostream& out) const
   out << std::endl;
 
   out << inset << inset << "float attributes:" << std::endl;
-  std::map<std::string, Float_Index>::const_iterator iter2;
+  std::map<std::string, FloatIndex>::const_iterator iter2;
   for (iter2 = float_indexes_.begin(); iter2 != float_indexes_.end(); ++iter2) {
     out << inset << inset << inset << iter2->first << "  " << model_data_->get_float(iter2->second);
     if (model_data_->is_optimized(iter2->second)) {
@@ -276,13 +276,13 @@ void Particle::show (std::ostream& out) const
   }
 
   out << inset << inset << "int attributes:" << std::endl;
-  std::map<std::string, Int_Index>::const_iterator iter3;
+  std::map<std::string, IntIndex>::const_iterator iter3;
   for (iter3 = int_indexes_.begin(); iter3 != int_indexes_.end(); ++iter3) {
     out << inset << inset << inset << iter3->first << "  " << model_data_->get_int(iter3->second) << std::endl;
   }
 
   out << inset << inset << "string attributes:" << std::endl;
-  std::map<std::string, String_Index>::const_iterator iter4;
+  std::map<std::string, StringIndex>::const_iterator iter4;
   for (iter4 = string_indexes_.begin(); iter4 != string_indexes_.end(); ++iter4) {
     out << inset << inset << inset << iter4->first << "  " << model_data_->get_string(iter4->second) << std::endl;
   }
