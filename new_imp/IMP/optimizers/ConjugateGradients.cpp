@@ -350,10 +350,10 @@ g40:
      as the Beale restart vectors and save d'y and y'y
      in w1 and w2. */
   if (nrst == n) {
+    ressearch = search;
     w1 = w2 = 0.;
     for (i = 0; i < n; i++) {
       resy[i] = dx[i] - destimate[i];
-      ressearch[i] = search[i];
       w1 += resy[i] * resy[i];
       w2 += search[i] * resy[i];
     }
@@ -404,9 +404,9 @@ g40:
   }
 
   /* CALCULATE THE DERIVATIVE ALONG THE NEW SEARCH VECTOR. */
+  search = estimate;
   dg1 = 0.0;
   for (i = 0; i < n; i++) {
-    search[i] = estimate[i];
     dg1 += search[i] * dx[i];
   }
 
