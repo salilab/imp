@@ -15,24 +15,25 @@ reading in files via IMP.</para>
 <sect1 id="addrsr">
 <title>Adding a Restraint</title>
 
-<para>Create file <filename>my_restraint.h</filename> (use another file as a
-model; e.g. <filename>Complexes_Restraints.h</filename>).</para>
+<para>Create file <filename>MyRestraint.h</filename> in the
+<filename>restraints</filename> directory (use another file as a
+model; e.g. <filename>DistanceRestraint.h</filename>).</para>
 
 <note><para>Make sure you change the #define value to match the new file name
 or it won't get compiled.</para></note>
 
-<para>Create file <filename>my_restraint.cpp</filename> (use another file as a
-model; e.g. <filename>Complexes_Restraints.cpp</filename>).</para>
+<para>Create file <filename>MyRestraint.cpp</filename> (use another file as a
+model; e.g. <filename>DistanceRestraint.cpp</filename>).</para>
 
 <para>Define the constructor, destructor, and evaluate method.</para>
 
-<para>Add header file name to <filename>imp.i</filename> (for SWIG) and the C++
-file name to <filename>SConstruct</filename>.</para>
+<para>Add header file name to <filename>pyext/IMP.i</filename> (for SWIG) and
+the C++ file name to <filename>SConstruct</filename>.</para>
 
 <para>Recompile the shared library and the restraint should now be available
 through Python. If you want, you can also define a syntax and code for loading
 the restraint from a text file by modifying the
-<filename>Model_Loader.cpp</filename> code.</para>
+<filename>ModelLoader.cpp</filename> code.</para>
 
 </sect1>
 
@@ -97,15 +98,15 @@ that it contains.</para>
 public:
   Model();
   ~Model();
-  Model_Data* get_model_data(void);
+  ModelData* get_model_data(void);
 	
   // particles
   void add_particle(Particle* particle);
   Particle* particle(size_t idx);
 
   // restraints
-  void add_restraint_set(Restraint_Set* restraint_set);
-  Restraint_Set* restraint_set(const std::string name);
+  void add_restraint_set(RestraintSet* restraint_set);
+  RestraintSet* restraint_set(const std::string name);
 
   // for each restraint_set, call evaluate
   Float evaluate(bool calc_derivs);
@@ -128,19 +129,19 @@ associated values.</para>
 public:
   Particle();
   ~Particle();
-  void set_model_data(Model_Data* model_data);
+  void set_model_data(ModelData* model_data);
 
   // float attributes
   bool add_float(const std::string name, const Float value = 0.0, const bool optimize = false);
-  Float_Index float_index(const std::string name);
+  FloatIndex float_index(const std::string name);
 
   // int attributes
   bool add_int(const std::string name, const Int value);
-  Int_Index int_index(const std::string name);
+  IntIndex int_index(const std::string name);
 
   // string attributes
   bool add_string(const std::string name, const String value);
-  String_Index string_index(const std::string name);
+  StringIndex string_index(const std::string name);
 	
   // status
   void set_is_active(bool is_active);
@@ -156,7 +157,7 @@ public:
 
 <para>A key issue is how to remove particles. Removing particles has at least
 two complications. The indexed attributes (see
-<classname>Model_Data</classname>) cannot actually be removed without
+<classname>ModelData</classname>) cannot actually be removed without
 disrupting the indexes used by other particles. Reuse also runs the risk of
 the new particle being used although the index was intended for the old one.
 Another complication is that it is not clear what the best way to handle
@@ -189,7 +190,7 @@ attributes that will not be used for those that are not optimized.</para>
 </sect1>
 
 <sect1 id="rsrset">
-<title>Restraint_Set</title>
+<title>RestraintSet</title>
 
 <para>A restraint set is a container holding restraints and other restraint
 sets. It can also hold filters that can be used to deactivate some of the
@@ -200,9 +201,9 @@ restraints.</para>
 
 <informalexample><programlisting>
 public:
-  Restraint_Set(std::string name = std::string("no_name"));
-  ~Restraint_Set();
-  void set_model_data(Model_Data* model_data);
+  RestraintSet(std::string name = std::string("no_name"));
+  ~RestraintSet();
+  void set_model_data(ModelData* model_data);
 	
   std::string name(void) {return name_;}
   void set_name(std::string name) {name_ = name;}
@@ -212,7 +213,7 @@ public:
   Float evaluate(bool calc_deriv);
 	
   void add_restraint(Restraint *restraint);
-  void add_restraint_set(Restraint_Set *restraint_set);
+  void add_restraint_set(RestraintSet *restraint_set);
   // void add_filter(Filter *filter);
 	
   // status
@@ -269,7 +270,7 @@ provide a gradient in a direction that will reduce the current score.</para>
 public:
   Restraint();
   virtual ~Restraint();
-  void set_model_data(Model_Data* model_data);
+  void set_model_data(ModelData* model_data);
 
   // return the score for this restraint or set of restraints
   // ... given the current state of the model
@@ -317,7 +318,7 @@ optimizers which seems desirable.</para>
 </sect1>
 
 <sect1 id="modeldata">
-<title>Model_Data</title>
+<title>ModelData</title>
 
 <para>The model data refers to all of the attributes of the model and their
 associated values. Currently, all attributes are associated with particles
@@ -338,7 +339,7 @@ would have a set of statistics that can be reached in Model with the name "X".
 <informalexample><programlisting>
 public:
   // variables
-  class Float_Data {
+  class FloatData {
   public:
     Float value_;
     Float deriv_;
@@ -358,26 +359,26 @@ public:
   };
 
   // particle float attributes (assumed differentiable variables)
-  Float_Index add_float(const Float value, const std::string name="none");
-  void set_float(const Float_Index idx, const Float value);
-  Float get_float(const Float_Index idx);
+  FloatIndex add_float(const Float value, const std::string name="none");
+  void set_float(const FloatIndex idx, const Float value);
+  Float get_float(const FloatIndex idx);
 
-  void add_to_deriv(const Float_Index idx, const Float value);
-  Float get_deriv(const Float_Index idx);
-  bool is_optimized(const Float_Index idx);
-  void set_is_optimized(const Float_Index idx, bool is_optimized);
+  void add_to_deriv(const FloatIndex idx, const Float value);
+  Float get_deriv(const FloatIndex idx);
+  bool is_optimized(const FloatIndex idx);
+  void set_is_optimized(const FloatIndex idx, bool is_optimized);
 
   void zero_derivatives(void);
 
   // particle int attributes
-  Int_Index add_int(const Int value);
-  void set_int(const Int_Index idx, const Int value);
-  Int get_int(const Int_Index idx);
+  IntIndex add_int(const Int value);
+  void set_int(const IntIndex idx, const Int value);
+  Int get_int(const IntIndex idx);
 
   // particle string attributes
-  String_Index add_string(const String value);
-  void set_string(const String_Index idx, const String value);
-  String get_string(const String_Index idx);
+  StringIndex add_string(const String value);
+  void set_string(const StringIndex idx, const String value);
+  String get_string(const StringIndex idx);
 </programlisting></informalexample>
 </sect2>
 
@@ -386,7 +387,7 @@ public:
 
 <para>There is some question what is the best way to sequence through a list.
 Here we are using reset(), next(), and get(), which is common and is easy to
-access and use through Python. Here Opt_Float_Index_Iterator is used to get
+access and use through Python. Here OptFloatIndexIterator is used to get
 all of the Float attributes that are being optimized.</para>
 
 <para>The inconsistency of naming of the accessors here is due to fact that
@@ -405,7 +406,7 @@ very different attributes without lots of unused memory locations.</para>
 </sect1>
 
 <sect1 id="modelloader">
-<title>Model_Loader</title>
+<title>ModelLoader</title>
 
 <para>The model loader loads the model from a file.</para>
 
@@ -414,14 +415,14 @@ very different attributes without lots of unused memory locations.</para>
 
 <informalexample><programlisting>
 public:
-  Model_Loader();
-  ~Model_Loader();
+  ModelLoader();
+  ~ModelLoader();
 
   // Model
   bool load_model(Model&amp; model, const std::string&amp; fname);
   void load_particle(Particle&amp; particle, std::istream&amp; in);
-  void load_restraint_set(Model&amp; model, Restraint_Set&amp; restraint_set, std::istream&amp; in);
-  void load_distance_restraints(Model&amp; model, Restraint_Set&amp; restraint_set, std::istream&amp; in);
+  void load_restraint_set(Model&amp; model, RestraintSet&amp; restraint_set, std::istream&amp; in);
+  void load_distance_restraints(Model&amp; model, RestraintSet&amp; restraint_set, std::istream&amp; in);
   score_func* get_score_func(const std::string score_func_name);
 </programlisting></informalexample>
 </sect2>
