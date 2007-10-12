@@ -9,9 +9,9 @@
 #ifndef __IMP_OPTIMIZER_H
 #define __IMP_OPTIMIZER_H
 
-#include "IMP_config.h"
-#include "Base_Types.h"
-#include "Model.h"
+#include "../IMP_config.h"
+#include "../Base_Types.h"
+#include "../Model.h"
 
 namespace imp
 {

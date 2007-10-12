@@ -8,12 +8,12 @@
 
 #include <cmath>
 
+#include "../Model.h"
+#include "../Particle.h"
+#include "../log.h"
+#include "../emscore.h"
+#include "../mystdexcept.h"
 #include "Complexes_Restraints.h"
-#include "Model.h"
-#include "Particle.h"
-#include "log.h"
-#include "emscore.h"
-#include "mystdexcept.h"
 
 namespace imp
 {

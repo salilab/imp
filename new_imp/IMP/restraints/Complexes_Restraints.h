@@ -11,9 +11,9 @@
 
 #include <list>
 
-#include "IMP_config.h"
+#include "../IMP_config.h"
+#include "../emfile.h"
 #include "Restraint.h"
-#include "emfile.h"
 
 namespace imp
 {

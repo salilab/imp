@@ -1,0 +1,6 @@
+Import('env')
+
+files = ['Complexes_Restraints.cpp', 'Restraint.cpp']
+
+files = [File(x) for x in files]
+Return('files')
