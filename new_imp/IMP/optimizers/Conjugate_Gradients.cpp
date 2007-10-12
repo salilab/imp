@@ -91,7 +91,7 @@ Float Conjugate_Gradients::optimize(Model& model, int max_steps,
   }
 
   // Initialize optimization variables
-  int iter = 0, ifun = 0, nrst, ncalls, nflag = 0;
+  int ifun = 0, nrst, ncalls, nflag = 0;
   float dg1, xsq, dxsq, f = 0., alpha, dg = 1., minf, ap, fp, dp, step, u1,
         u2, u3, u4, w1 = 0., w2 = 0., rtst, bestf;
   bool gradient_direction;
@@ -165,9 +165,6 @@ g40: minf = f;
 
   /* SAVE THE CURRENT DERIVATIVE TO SCALE THE NEXT SEARCH VECTOR. */
   dg = dg1;
-
-  /* UPDATE THE ITERATION. */
-  iter++;
 
   /* Calculate the current steplength and store the current x and dx. */
   step = 0.;
