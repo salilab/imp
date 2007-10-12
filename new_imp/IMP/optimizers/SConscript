@@ -1,0 +1,6 @@
+Import('env')
+
+files = ['Optimizer.cpp', 'Steepest_Descent.cpp', 'Conjugate_Gradients.cpp']
+
+files = [File(x) for x in files]
+Return('files')

@@ -8,10 +8,10 @@
 
 #include <cmath>
 
+#include "../Particle.h"
+#include "../Model.h"
+#include "../log.h"
 #include "Restraint.h"
-#include "Particle.h"
-#include "Model.h"
-#include "log.h"
 
 namespace imp
 {

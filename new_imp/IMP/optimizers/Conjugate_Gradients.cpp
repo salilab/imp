@@ -8,8 +8,8 @@
 
 #include <cmath>
 
+#include "../log.h"
 #include "Conjugate_Gradients.h"
-#include "log.h"
 
 namespace imp
 {

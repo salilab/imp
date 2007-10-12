@@ -14,7 +14,7 @@
 #include "IMP_config.h"
 #include "Base_Types.h"
 #include "Model_Data.h"
-#include "Restraint.h"
+#include "restraints/Restraint.h"
 
 namespace imp
 {

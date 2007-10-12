@@ -6,8 +6,8 @@
  *
  */
 
+#include "../log.h"
 #include "Steepest_Descent.h"
-#include "log.h"
 
 namespace imp
 {

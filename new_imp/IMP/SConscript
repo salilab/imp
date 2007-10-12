@@ -3,12 +3,15 @@ Import('env', 'get_sharedlib_environment')
 # Get an environment suitable for building a shared library:
 env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
 
+# Subdirectories:
+SConscript('tests/SConscript')
+restraints_files = SConscript('restraints/SConscript')
+optimizers_files = SConscript('optimizers/SConscript')
+
 # Source files
-files = ('Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp', 'Optimizer.cpp',
-         'Particle.cpp', 'Restraint_Set.cpp', 'Restraint.cpp',
-         'Complexes_Restraints.cpp', 'Rigid_Body.cpp', 'log.cpp',
-         'emfile.cpp', 'emscore.cpp', 'Steepest_Descent.cpp',
-         'Conjugate_Gradients.cpp')
+files = ['Score_Func.cpp', 'Model.cpp', 'Model_Data.cpp',
+         'Particle.cpp', 'Restraint_Set.cpp', 'Rigid_Body.cpp', 'log.cpp',
+         'emfile.cpp', 'emscore.cpp'] + restraints_files + optimizers_files
 
 # Build the shared library:
 lib = env.SharedLibrary('imp', files)
@@ -16,8 +19,5 @@ lib = env.SharedLibrary('imp', files)
 # Install the library:
 libinst = env.Install(env['libdir'], lib)
 env.Alias('install', [libinst])
-
-# Subdirectories:
-SConscript('tests/SConscript')
 
 Return('lib')

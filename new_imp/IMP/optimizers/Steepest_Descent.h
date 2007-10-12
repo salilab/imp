@@ -9,7 +9,7 @@
 #ifndef __IMP_STEEPEST_DESCENT_H
 #define __IMP_STEEPEST_DESCENT_H
 
-#include "IMP_config.h"
+#include "../IMP_config.h"
 #include "Optimizer.h"
 
 namespace imp

@@ -9,7 +9,7 @@
 #ifndef __IMP_CONJUGATE_GRADIENTS_H
 #define __IMP_CONJUGATE_GRADIENTS_H
 
-#include "IMP_config.h"
+#include "../IMP_config.h"
 #include "Optimizer.h"
 
 namespace imp

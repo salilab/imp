@@ -8,9 +8,9 @@
 
 
 #include "Restraint_Set.h"
-#include "Restraint.h"
 #include "Model_Data.h"
 #include "log.h"
+#include "restraints/Restraint.h"
 
 namespace imp
 {

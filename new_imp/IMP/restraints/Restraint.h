@@ -12,9 +12,9 @@
 #include <vector>
 #include <iostream>
 
-#include "IMP_config.h"
-#include "Model_Data.h"
-#include "Score_Func.h"
+#include "../IMP_config.h"
+#include "../Model_Data.h"
+#include "../Score_Func.h"
 
 namespace imp
 {
