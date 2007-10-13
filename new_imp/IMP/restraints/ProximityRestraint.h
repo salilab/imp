@@ -15,7 +15,7 @@
 #include "Restraint.h"
 #include "DistanceRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //! Restrict maximum distance between any two particles
@@ -66,6 +66,6 @@ protected:
   std::vector<DistanceRestraint*> dist_rsrs_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif /* __IMP_PROXIMITY_RESTRAINT_H */

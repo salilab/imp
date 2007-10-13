@@ -13,7 +13,7 @@
 #include "../log.h"
 #include "DistanceRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 // static constants
@@ -221,4 +221,4 @@ void DistanceRestraint::show(std::ostream& out) const
   out << "  sd:" << sd_ << std::endl;
 }
 
-}  // namespace imp
+}  // namespace IMP

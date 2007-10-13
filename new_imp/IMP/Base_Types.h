@@ -13,7 +13,7 @@
 
 #include "IMP_config.h"
 
-namespace imp
+namespace IMP
 {
 
 // basic types used by IMP
@@ -117,6 +117,6 @@ protected:
 // typedef DataIndex<Int> IntIndex;
 // typedef DataIndex<String> StringIndex;
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_BASE_TYPES_H */

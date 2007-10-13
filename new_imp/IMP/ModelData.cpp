@@ -9,7 +9,7 @@
 #include "ModelData.h"
 #include "log.h"
 
-namespace imp
+namespace IMP
 {
 
 /**
@@ -259,5 +259,5 @@ FloatIndex OptFloatIndexIterator::get(void) const
 
 
 
-}  // namespace imp
+}  // namespace IMP
 

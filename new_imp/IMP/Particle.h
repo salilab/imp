@@ -16,7 +16,7 @@
 #include "ModelData.h"
 #include "restraints/Restraint.h"
 
-namespace imp
+namespace IMP
 {
 
 typedef std::map<std::string, StringIndex> StringIndexMap;
@@ -277,6 +277,6 @@ protected:
   bool reset_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_PARTICLE_H */

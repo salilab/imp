@@ -10,7 +10,7 @@
 #include "log.h"
 #include "mystdexcept.h"
 
-namespace imp
+namespace IMP
 {
 
 /** Destructor */
@@ -280,4 +280,4 @@ ScoreFunc* BasicScoreFuncParams::create_score_func(void)
 
 
 
-}  // namespace imp
+}  // namespace IMP

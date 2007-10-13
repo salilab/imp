@@ -13,7 +13,7 @@
 #include "../emscore.h"
 #include "CoarseEMRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //######### CoarseEMRestraint Restraint #########
@@ -171,4 +171,4 @@ void CoarseEMRestraint::show(std::ostream& out) const
   out << "  num particles:" << num_particles_;
 }
 
-}  // namespace imp
+}  // namespace IMP

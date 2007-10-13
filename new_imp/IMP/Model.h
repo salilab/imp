@@ -14,7 +14,7 @@
 #include "RestraintSet.h"
 #include "RigidBody.h"
 
-namespace imp
+namespace IMP
 {
 
 // Class for storing model, its restraints, constraints, and particles.
@@ -107,6 +107,6 @@ protected:
 };
 
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_MODEL_H */

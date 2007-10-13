@@ -11,7 +11,7 @@
 #include "../IMP_config.h"
 #include "Optimizer.h"
 
-namespace imp
+namespace IMP
 {
 
 /** A simple steepest descent optimizer */
@@ -33,6 +33,6 @@ protected:
   Float step_size;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_STEEPEST_DESCENT_H */

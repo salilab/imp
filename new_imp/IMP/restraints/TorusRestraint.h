@@ -13,7 +13,7 @@
 #include "../IMP_config.h"
 #include "Restraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //! Restrict particle position to interior of a torus
@@ -49,6 +49,6 @@ protected:
   ScoreFunc* score_func_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif /* __IMP_TORUS_RESTRAINT_H */

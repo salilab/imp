@@ -9,7 +9,7 @@
 #include "../log.h"
 #include "SteepestDescent.h"
 
-namespace imp
+namespace IMP
 {
 
 //######### Steepest Descent #########
@@ -144,4 +144,4 @@ Float SteepestDescent::optimize (Model& model, int max_steps, Float threshold)
 }
 
 
-}  // namespace imp
+}  // namespace IMP

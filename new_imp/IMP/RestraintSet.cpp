@@ -12,7 +12,7 @@
 #include "log.h"
 #include "restraints/Restraint.h"
 
-namespace imp
+namespace IMP
 {
 
 
@@ -178,7 +178,7 @@ void RestraintSet::show(std::ostream& out) const
 }
 
 
-}  // namespace imp
+}  // namespace IMP
 
 
 

@@ -10,7 +10,7 @@
 #include "mystdexcept.h"
 #include "log.h"
 
-namespace imp
+namespace IMP
 {
 
 
@@ -288,4 +288,4 @@ void Particle::show (std::ostream& out) const
   }
 }
 
-}  // namespace imp
+}  // namespace IMP

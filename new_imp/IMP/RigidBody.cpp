@@ -8,7 +8,7 @@
 
 #include "RigidBody.h"
 
-namespace imp
+namespace IMP
 {
 
 /**
@@ -50,7 +50,7 @@ int RigidBody::num_particles(void) const
 
 
 
-}  // namespace imp
+}  // namespace IMP
 
 
 

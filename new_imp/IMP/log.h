@@ -15,7 +15,7 @@
 #include <string>
 #include "IMP_config.h"
 
-namespace imp
+namespace IMP
 {
 //! The log levels supported by IMP
 enum Log_Level {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
@@ -123,42 +123,42 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
   return get_log().get_stream(l);
 }
 
-} // namespace imp
+} // namespace IMP
 
 #ifndef IMP_DISABLE_LOGGING
 
 //! Write an entry to a log.
 /*!
-  \param[in] level The imp::Log_Level for the message
+  \param[in] level The IMP::Log_Level for the message
 
   \param[in] expr A stream expression to be sent to the output stream
 */
-#define IMP_LOG(level, expr) if (imp::is_log_output(level)) \
-    { imp::get_log_stream(level) << expr << std::flush;};
+#define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
+    { IMP::get_log_stream(level) << expr << std::flush;};
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /*!
-  \param[in] level The imp::Log_Level for the message
+  \param[in] level The IMP::Log_Level for the message
 
   \param[in] expr An expression which writes something to IMP_STREAM
 */
-#define IMP_LOG_WRITE(level, expr) if (imp::is_log_output(level)) \
-    {std::ostream &IMP_STREAM= imp::get_log_stream(level); expr;}
+#define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
+    {std::ostream &IMP_STREAM= IMP::get_log_stream(level); expr;}
 
 
 //! Write an warning to a log.
 /*!
   \param[in] expr An expression to be output to the log. It is prefixed by "WARNING"
 */
-#define IMP_WARN(expr) if (imp::get_log_output(imp::WARNING)) \
-    { imp::get_log_stream(imp::WARNING) << "WARNING  " << expr << std::flush;};
+#define IMP_WARN(expr) if (IMP::get_log_output(IMP::WARNING)) \
+    { IMP::get_log_stream(IMP::WARNING) << "WARNING  " << expr << std::flush;};
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /*!
   \param[in] expr An expression which writes something to IMP_STREAM. It is prefixed by "WARNING"
 */
-#define IMP_WARN_WRITE(expr) if (imp::is_log_output(imp::WARNING)) \
-    {std::ostream &IMP_STREAM= imp::get_log_stream(imp::Log::WARNING); expr;}
+#define IMP_WARN_WRITE(expr) if (IMP::is_log_output(IMP::WARNING)) \
+    {std::ostream &IMP_STREAM= IMP::get_log_stream(IMP::Log::WARNING); expr;}
 
 
 
@@ -175,7 +175,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 
 
 //! Set the log level
-#define IMP_SET_LOG_LEVEL(level) imp::Log::get_log()::set_level(level);
+#define IMP_SET_LOG_LEVEL(level) IMP::Log::get_log()::set_level(level);
 
 
 
@@ -186,13 +186,13 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 
 #ifndef NDEBUG
 
-//! An assertion for IMP. An imp::ErrorException will be thrown.
+//! An assertion for IMP. An IMP::ErrorException will be thrown.
 /*!
   \param[in] expr The assertion expression.
 
   \param[in] message Write this message if the assertion fails.
  */
-#define IMP_assert(expr, message) if (!(expr)) {IMP_ERROR(message); throw imp::ErrorException();}
+#define IMP_assert(expr, message) if (!(expr)) {IMP_ERROR(message); throw IMP::ErrorException();}
 #else
 #define IMP_assert(expr, message)
 #endif

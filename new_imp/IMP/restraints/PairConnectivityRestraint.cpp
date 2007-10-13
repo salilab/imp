@@ -15,7 +15,7 @@
 #include "../mystdexcept.h"
 #include "PairConnectivityRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //######### PairConnectivityRestraint Restraint #########
@@ -284,4 +284,4 @@ void PairConnectivityRestraint::show(std::ostream& out) const
   out << "  num restraints to apply:" << num_to_apply_;
 }
 
-}  // namespace imp
+}  // namespace IMP

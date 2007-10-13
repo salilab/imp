@@ -15,7 +15,7 @@
 #include "../ModelData.h"
 #include "../ScoreFunc.h"
 
-namespace imp
+namespace IMP
 {
 
 //! Distance restraint between two particles
@@ -63,6 +63,6 @@ protected:
   ScoreFunc* score_func_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_DISTANCE_RESTRAINT_H */

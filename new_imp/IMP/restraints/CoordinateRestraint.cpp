@@ -13,7 +13,7 @@
 #include "../log.h"
 #include "CoordinateRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 /**
@@ -158,4 +158,4 @@ void CoordinateRestraint::show(std::ostream& out) const
   out << "  axis:" << axis_;
 }
 
-}  // namespace imp
+}  // namespace IMP
