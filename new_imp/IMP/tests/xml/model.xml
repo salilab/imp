@@ -2,9 +2,9 @@
 <imp xmlns='http://www.salilab.org/xml/imp' xmlns:imp='http://www.salilab.org/xml/imp'>
 	<particles>
 		<particle id="0">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>2.0</value>
 				<optimize>F</optimize>
@@ -15,9 +15,9 @@
 		</particle>
 		
 		<particle id="1">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>2.0</value>
 				<optimize>F</optimize>
@@ -28,9 +28,9 @@
 		</particle>
 		
 		<particle id="2">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>2.0</value>
 				<optimize>F</optimize>
@@ -41,9 +41,9 @@
 		</particle>
 		
 		<particle id="3">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.5</value>
 				<optimize>F</optimize>
@@ -54,9 +54,9 @@
 		</particle>
 		
 		<particle id="4">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.5</value>
 				<optimize>F</optimize>
@@ -67,9 +67,9 @@
 		</particle>
 		
 		<particle id="5">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.5</value>
 				<optimize>F</optimize>
@@ -80,9 +80,9 @@
 		</particle>
 		
 		<particle id="6">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.5</value>
 				<optimize>F</optimize>
@@ -93,9 +93,9 @@
 		</particle>
 		
 		<particle id="7">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.0</value>
 				<optimize>F</optimize>
@@ -106,9 +106,9 @@
 		</particle>
 		
 		<particle id="8">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.0</value>
 				<optimize>F</optimize>
@@ -119,9 +119,9 @@
 		</particle>
 		
 		<particle id="9">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.0</value>
 				<optimize>F</optimize>
@@ -132,9 +132,9 @@
 		</particle>
 		
 		<particle id="10">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.0</value>
 				<optimize>F</optimize>
@@ -145,9 +145,9 @@
 		</particle>
 		
 		<particle id="11">
-			<float name="X"/>
-			<float name="Y"/>
-			<float name="Z"/>
+			<float name="x"/>
+			<float name="y"/>
+			<float name="z"/>
 			<float name="radius">
 				<value>1.0</value>
 				<optimize>F</optimize>
