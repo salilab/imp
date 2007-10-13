@@ -14,7 +14,7 @@
 #include "../log.h"
 #include "ExclusionVolumeRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //######### ExclusionVolumeRestraint Restraint #########
@@ -195,4 +195,4 @@ void ExclusionVolumeRestraint::show(std::ostream& out) const
   out << "  num particles:" << num_particles_;
 }
 
-}  // namespace imp
+}  // namespace IMP

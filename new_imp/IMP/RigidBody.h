@@ -10,7 +10,7 @@
 
 #include "IMP_config.h"
 
-namespace imp
+namespace IMP
 {
 
 /** Class for grouping particles into rigid bodies. */
@@ -26,6 +26,6 @@ protected:
   int num_particles_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_RIGIDBODY_H */

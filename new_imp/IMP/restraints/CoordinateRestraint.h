@@ -15,7 +15,7 @@
 #include "../emfile.h"
 #include "Restraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //! Restrict particle position with respect to one or more coordinates
@@ -49,6 +49,6 @@ protected:
   ScoreFunc* score_func_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif /* __IMP_COORDINATE_RESTRAINT_H */

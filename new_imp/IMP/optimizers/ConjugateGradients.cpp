@@ -11,7 +11,7 @@
 #include "../log.h"
 #include "ConjugateGradients.h"
 
-namespace imp
+namespace IMP
 {
 
 /** Estimate of limit of machine precision */
@@ -442,4 +442,4 @@ end:
   return f;
 }
 
-}  // namespace imp
+}  // namespace IMP

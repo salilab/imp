@@ -12,7 +12,7 @@
 #include "../log.h"
 #include "TorusRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 /**
@@ -156,4 +156,4 @@ void TorusRestraint::show(std::ostream& out) const
   out << "  tube radius:" << tube_radius_;
 }
 
-}  // namespace imp
+}  // namespace IMP

@@ -8,7 +8,7 @@
 
 #include "ModelLoader.h"
 
-namespace imp
+namespace IMP
 {
 
 /**
@@ -303,5 +303,5 @@ Score_Func* ModelLoader::get_score_func(const std::string score_func_name)
   }
 }
 
-}  // namespace imp
+}  // namespace IMP
 

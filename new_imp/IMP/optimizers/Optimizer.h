@@ -12,7 +12,7 @@
 #include "../Base_Types.h"
 #include "../Model.h"
 
-namespace imp
+namespace IMP
 {
 
 /** Base class for all optimizers */
@@ -31,6 +31,6 @@ public:
   }
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_OPTIMIZER_H */

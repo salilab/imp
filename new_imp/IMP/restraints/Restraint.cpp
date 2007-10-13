@@ -13,7 +13,7 @@
 #include "../log.h"
 #include "Restraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //######### Restraint #########
@@ -114,4 +114,4 @@ void Restraint::check_particles_active(void)
   }
 }
 
-}  // namespace imp
+}  // namespace IMP

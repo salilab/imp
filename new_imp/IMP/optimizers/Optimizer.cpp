@@ -9,7 +9,7 @@
 #include "../log.h"
 #include "Optimizer.h"
 
-namespace imp
+namespace IMP
 {
 
 //######### Optimizer #########
@@ -33,6 +33,6 @@ Optimizer::~Optimizer()
 {
 }
 
-}  // namespace imp
+}  // namespace IMP
 
 

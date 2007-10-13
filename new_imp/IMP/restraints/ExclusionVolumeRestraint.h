@@ -16,7 +16,7 @@
 #include "Restraint.h"
 #include "DistanceRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 // Restrict min distance between all pairs of particles of formed from one or two sets of particles.
@@ -67,6 +67,6 @@ protected:
   std::vector<DistanceRestraint*> dist_rsrs_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif /* __IMP_EXCLUSION_VOLUME_RESTRAINT_H */

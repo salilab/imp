@@ -17,7 +17,7 @@
 #include "Restraint.h"
 #include "DistanceRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 /// Restrict max distance between at one or more pair of particles of any two sets of particles
@@ -100,6 +100,6 @@ protected:
   std::list<RestraintScore> rsr_scores_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif /* __IMP_PAIR_CONNECTIVITY_RESTRAINT_H */

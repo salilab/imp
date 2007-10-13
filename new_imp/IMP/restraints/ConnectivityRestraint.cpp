@@ -15,7 +15,7 @@
 #include "../mystdexcept.h"
 #include "ConnectivityRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //######### ConnectivityRestraint Restraint #########
@@ -330,4 +330,4 @@ void ConnectivityRestraint::show(std::ostream& out) const
   out << "  num particles:" << num_particles_;
 }
 
-}  // namespace imp
+}  // namespace IMP

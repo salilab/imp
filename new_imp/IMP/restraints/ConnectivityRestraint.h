@@ -17,7 +17,7 @@
 #include "Restraint.h"
 #include "DistanceRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 // Restrict max distance between at least one pair of particles of any two distinct types
@@ -98,6 +98,6 @@ protected:
   std::vector<int> tree_id_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif /* __IMP_CONNECTIVITY_RESTRAINT_H */

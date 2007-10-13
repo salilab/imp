@@ -12,7 +12,7 @@
 #include "IMP_config.h"
 #include "Base_Types.h"
 
-namespace imp
+namespace IMP
 {
 
 // Abstract functor class for score functions
@@ -99,6 +99,6 @@ protected:
 };
 
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_SCORE_FUNC_H */

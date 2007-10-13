@@ -11,7 +11,7 @@
 #include "Particle.h"
 #include "log.h"
 
-namespace imp
+namespace IMP
 {
 
 /**
@@ -375,5 +375,5 @@ RestraintSet* RestraintSetIterator::get(void)
 
 
 
-}  // namespace imp
+}  // namespace IMP
 

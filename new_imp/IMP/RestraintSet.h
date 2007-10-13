@@ -14,7 +14,7 @@
 #include "IMP_config.h"
 #include "restraints/Restraint.h"
 
-namespace imp
+namespace IMP
 {
 
 // Used to hold a set of related restraints
@@ -75,6 +75,6 @@ protected:
   // std::vector<Filter *> filters_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_RESTRAINT_SET_H */

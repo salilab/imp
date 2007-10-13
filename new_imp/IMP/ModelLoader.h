@@ -16,7 +16,7 @@
 #include "Particle.h"
 #include "log.h"
 
-namespace imp
+namespace IMP
 {
 
 class IMPDLLEXPORT ModelLoader
@@ -34,6 +34,6 @@ public:
 
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_MODEL_LOADER_H */

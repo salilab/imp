@@ -15,7 +15,7 @@
 #include "IMP_config.h"
 #include "Base_Types.h"
 
-namespace imp
+namespace IMP
 {
 
 class Model;
@@ -149,6 +149,6 @@ protected:
 };
 
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_MODEL_DATA_H */

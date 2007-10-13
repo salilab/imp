@@ -11,7 +11,7 @@
 #include "../IMP_config.h"
 #include "Optimizer.h"
 
-namespace imp
+namespace IMP
 {
 
 /** Simple conjugate gradients optimizer, as per Shanno and Phua,
@@ -32,6 +32,6 @@ public:
   }
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_CONJUGATE_GRADIENTS_H */

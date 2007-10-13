@@ -14,7 +14,7 @@
 #include "../emfile.h"
 #include "Restraint.h"
 
-namespace imp
+namespace IMP
 {
 
 // Calculate score based on fit to EM map
@@ -80,6 +80,6 @@ protected:
   Float *dvz_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif /* __IMP_COARSE_EM_RESTRAINT_H */

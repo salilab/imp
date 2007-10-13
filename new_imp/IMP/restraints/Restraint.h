@@ -16,7 +16,7 @@
 #include "../ModelData.h"
 #include "../ScoreFunc.h"
 
-namespace imp
+namespace IMP
 {
 
 // Abstract class for representing restraints
@@ -61,6 +61,6 @@ protected:
   std::vector<Particle*> particles_;
 };
 
-} // namespace imp
+} // namespace IMP
 
 #endif  /* __IMP_RESTRAINT_H */

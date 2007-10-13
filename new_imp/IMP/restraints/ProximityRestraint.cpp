@@ -13,7 +13,7 @@
 #include "../log.h"
 #include "ProximityRestraint.h"
 
-namespace imp
+namespace IMP
 {
 
 //######### ProximityRestraint Restraint #########
@@ -240,4 +240,4 @@ void ProximityRestraint::show(std::ostream& out) const
   out << "  num particles:" << num_particles_;
 }
 
-}  // namespace imp
+}  // namespace IMP
