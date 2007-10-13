@@ -68,11 +68,11 @@ CoarseEMRestraint::CoarseEMRestraint(Model& model,
 
   for (int i = 0; i < num_particles_; i++) {
     p1 = particles_[i];
-    x_[i] = p1->float_index(std::string("X"));
-    y_[i] = p1->float_index(std::string("Y"));
-    z_[i] = p1->float_index(std::string("Z"));
-    weight_[i] = model_data_->get_float(p1->float_index(weight_str));
-    radius_[i] = model_data_->get_float(p1->float_index(radius_str));
+    x_[i] = p1->get_float_index(std::string("X"));
+    y_[i] = p1->get_float_index(std::string("Y"));
+    z_[i] = p1->get_float_index(std::string("Z"));
+    weight_[i] = model_data_->get_float(p1->get_float_index(weight_str));
+    radius_[i] = model_data_->get_float(p1->get_float_index(radius_str));
     IMP_LOG (VERBOSE, "radius " << radius_str << radius_[i]);
   }
 

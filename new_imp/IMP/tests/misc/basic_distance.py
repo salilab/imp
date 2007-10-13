@@ -44,13 +44,13 @@ print "Score: ", model.evaluate(False)
 model_data = model.get_model_data()
 for i in range(0,2):
     print "Particle", i
-    idx = particles[i].float_index("X")
+    idx = particles[i].get_float_index("X")
     print "  X:", model_data.get_float(idx), " dS/dX:", model_data.get_deriv(idx);
-    idx = particles[i].float_index("Y")
+    idx = particles[i].get_float_index("Y")
     print "  Y:", model_data.get_float(idx), " dS/dY:", model_data.get_deriv(idx);
-    idx = particles[i].float_index("Z")
+    idx = particles[i].get_float_index("Z")
     print "  Z:", model_data.get_float(idx), " dS/dZ:", model_data.get_deriv(idx);
-    idx = particles[i].float_index("radius")
+    idx = particles[i].get_float_index("radius")
     print "  radius:", model_data.get_float(idx);
 
 print "done"

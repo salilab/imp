@@ -105,8 +105,8 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
           rs_iter->part2_type_ = particle_type_[j];
 
           // Use those radii to calculate the expected distance
-          actual_mean = model_data_->get_float(particles_[i]->float_index(attr_name))
-                        + model_data_->get_float(particles_[j]->float_index(attr_name));
+          actual_mean = model_data_->get_float(particles_[i]->get_float_index(attr_name))
+                        + model_data_->get_float(particles_[j]->get_float_index(attr_name));
 
           score_func_params->set_mean(actual_mean);
           
@@ -156,7 +156,7 @@ void ConnectivityRestraint::set_up(Model& model,
   for (int i = 0; i < num_particles_; i++) {
     p1 = model.get_particle(particle_indexes[i]);
     particles_.push_back(p1);
-    type_.push_back(p1->int_index(type));
+    type_.push_back(p1->get_int_index(type));
   }
 
   IMP_LOG(VERBOSE, "Size of particles: " << particles_.size() << "  size of types:" << type_.size() << "  num_particles_: " << num_particles_ << "  particle_type_: " << particle_type_.size());

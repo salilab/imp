@@ -38,22 +38,22 @@ public:
  
   Particle(ModelData* model_data);
   ~Particle();
-  ModelData* model_data(void) const;
+  ModelData* get_model_data(void) const;
 
   // float attributes
   bool add_float(const std::string name, const Float value = 0.0, const bool optimize = false);
   bool has_float(const std::string name) const;
-  FloatIndex float_index(const std::string name) const;
+  FloatIndex get_float_index(const std::string name) const;
 
   // int attributes
   bool add_int(const std::string name, const Int value);
   bool has_int(const std::string name) const;
-  IntIndex int_index(const std::string name) const;
+  IntIndex get_int_index(const std::string name) const;
 
   // string attributes
   bool add_string(const std::string name, const String value);
   bool has_string(const std::string name) const;
-  StringIndex string_index(const std::string name) const;
+  StringIndex get_string_index(const std::string name) const;
 
   // status
   void set_is_active (bool is_active);

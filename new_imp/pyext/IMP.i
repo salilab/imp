@@ -32,9 +32,9 @@ namespace std {
 %apply float *OUTPUT { float *voltage, float *Cs, float *Aperture, float *Magnification, float *Postmagnification, float *Exposuretime, float *Objectpixelsize, float *Microscope, float *Pixelsize, float *CCDArea, float *Defocus, float *Astigmatism, float *AstigmatismAngle, float *FocusIncrement, float *CountsPerElectron, float *Intensity, float *EnergySlitwidth, float *EnergyOffset, float *Tiltangle, float *Tiltaxis, float *Marker_X, float *Marker_Y, float *meanval}
 
 namespace IMP {
-%catches(std::out_of_range) Particle::float_index;
-%catches(std::out_of_range) Particle::int_index;
-%catches(std::out_of_range) Particle::string_index;
+%catches(std::out_of_range) Particle::get_float_index;
+%catches(std::out_of_range) Particle::get_int_index;
+%catches(std::out_of_range) Particle::get_string_index;
 }
 
 %include "emfile.h"

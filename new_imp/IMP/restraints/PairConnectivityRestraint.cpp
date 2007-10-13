@@ -115,8 +115,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     // particles from list 2
     for (int j = num_particles1_; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
-      actual_mean = model_data_->get_float(particles_[i]->float_index(attr_name))
-                    + model_data_->get_float(particles_[j]->float_index(attr_name));
+      actual_mean = model_data_->get_float(particles_[i]->get_float_index(attr_name))
+                    + model_data_->get_float(particles_[j]->get_float_index(attr_name));
 
       score_func_params->set_mean(actual_mean);
       
