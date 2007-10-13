@@ -1,5 +1,4 @@
 import unittest
-import random
 import os
 import IMP
 import IMP.test
@@ -38,10 +37,7 @@ class test_torus(IMP.test.IMPTestCase):
             rs.add_restraint(r)
 
         # Randomize particle coordinates
-        for p in self.particles:
-            p.set_x(random.uniform(-50., 50.0))
-            p.set_y(random.uniform(-50., 50.0))
-            p.set_z(random.uniform(-50., 50.0))
+        self.randomize_particles(self.particles, 50.0)
 
         self.opt.optimize(self.imp_model, 50, 1e-4)
         for p in self.particles:
