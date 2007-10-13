@@ -1,33 +1,22 @@
-import modeller, unittest
-import modeller
-import modeller.optimizers
+import unittest
 import os
-import IMP.modeller_intf
-import IMP.test, IMP
+import IMP
+import IMP.test
+import IMP.utils
 
-# Class to test pair connectivity restraints
 class test_pair_connectivity(IMP.test.IMPTestCase):
-    """test pair connectivity restraints"""
+    """Class to test pair connectivity restraints"""
 
     def setUp(self):
-        """set up Modeller with connectivity restraints """
-        modeller.log.level(0,0,0,0,0)
-
-        self.env = modeller.environ()
-        self.env.io.atom_files_directory = '../data/'
-        self.env.edat.dynamic_sphere = False
-        self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
-        self.env.libs.parameters.read(file='$(LIB)/par.lib')
-
+        """Build test model and optimizer"""
         self.imp_model = IMP.Model()
         self.particles = []
         self.restraint_sets = []
         self.rsrs = []
 
-        self.t = self.env.edat.energy_terms
-        self.t.append(IMP.modeller_intf.IMP_Restraints(self.imp_model, self.particles))
-
-        self.modeller_model = IMP.modeller_intf.Create_Particles(12, self.env, self.imp_model, self.particles)
+        for p in range(12):
+            self.particles.append(IMP.utils.XYZParticle(self.imp_model,
+                                                        0., 0., 0.))
         p1 = self.particles[0]
         p1.add_float("radius", 1.0, False)
         p1.add_int("protein", 1)
@@ -88,17 +77,13 @@ class test_pair_connectivity(IMP.test.IMPTestCase):
         p1.add_int("protein", 2)
         p1.add_int("id", 12)
 
-        self.atmsel = modeller.selection(self.modeller_model)
+        self.opt = IMP.ConjugateGradients()
 
-        self.opt = modeller.optimizers.conjugate_gradients()
-
-
-    # connectivity
-    def test_connectivity(self):
-        """ all particles in a single protein should be connected, and all proteins
-        should be connected, either directly or indirectly through other proteins """
-        self.atmsel.randomize_xyz(deviation=25.0)
-
+    def _run_test_pair_connectivity(self, use_python):
+        """Test pair connectivity restraint.
+           All particles in a single protein should be connected, and all
+           proteins should be connected, either directly or indirectly
+           through other proteins """
         rs = IMP.RestraintSet("connect")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint_set(rs)
@@ -109,9 +94,19 @@ class test_pair_connectivity(IMP.test.IMPTestCase):
         particle_indexes2 = IMP.vectori()
         rsrs = []
 
-        # set up exclusion volumes
-        IMP.modeller_intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs)
-
+        if use_python:
+            # set up exclusion volumes using a Python loop:
+            IMP.utils.Set_Up_Exclusion_Volumes(self.imp_model, self.particles,
+                                               "radius", rsrs)
+        else:
+            # use the C++ exclusion volume restraint:
+            score_func_params = IMP.BasicScoreFuncParams("harmonic_lower_bound",
+                                                         0.0, 0.1)
+            rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model,
+                                                     particle_indexes1,
+                                                     particle_indexes2,
+                                                     "radius",
+                                                     score_func_params))
         # connect 2 proteins together by two beads
         particle_indexes1.clear()
         for i in range(0, 5):
@@ -122,30 +117,36 @@ class test_pair_connectivity(IMP.test.IMPTestCase):
         num_connects = 3
 
         # it should work whether this is True or False
-        # However, if it is False, the close pairs should all be between distinct particles
+        # However, if it is False, the close pairs should all be between
+        # distinct particles
         particle_reuse = False
-        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
-        rsrs.append(IMP.PairConnectivityRestraint(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params, num_connects, particle_reuse))
+        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
+                                                     0.0, 0.1)
+        rsrs.append(IMP.PairConnectivityRestraint(self.imp_model,
+                                                  particle_indexes1,
+                                                  particle_indexes2, "radius",
+                                                  score_func_params,
+                                                  num_connects, particle_reuse))
 
         # add restraints
         for i in range(len(rsrs)):
             rs.add_restraint(rsrs[i])
 
-        self.atmsel.randomize_xyz(deviation=100.0)
-        new_mdl = self.opt.optimize (self.atmsel, max_iterations=55, actions=None)
-        self.modeller_model.write (file='out_pair_connectivity.pdb', model_format='PDB')
-
-        coords = self.LoadCoordinates('out_pair_connectivity.pdb')
-        os.unlink('out_pair_connectivity.pdb')
+        self.randomize_particles(self.particles, 50.0)
+        self.opt.optimize(self.imp_model, 55, 1e-4)
 
         # min distances
         min_dist = []
         for i in range(num_connects):
             min_dist.append(10000000)
 
-        for i in range(0, 5):
-            for j in range(5, 12):
-                d = self.Distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+        for (i, pi) in enumerate(self.particles[0:5]):
+            icoord = (pi.x(), pi.y(), pi.z())
+            irad = pi.get_float("radius")
+            for (j, pj) in enumerate(self.particles[5:12]):
+                jcoord = (pj.x(), pj.y(), pj.z())
+                jrad = pj.get_float("radius")
+                d = self.Distance(icoord, jcoord) - irad - jrad
                 found = False
                 for k in range(num_connects):
                     if not found:
@@ -158,7 +159,16 @@ class test_pair_connectivity(IMP.test.IMPTestCase):
                         d = d1
 
         for i in range(num_connects):
-            self.assert_(min_dist[i] < 0.05, "min distance for any pair condition")
+            self.assert_(min_dist[i] < 0.05,
+                         "min distance for any pair condition")
+
+    def test_pair_connectivity_python(self):
+        """Test pair connectivity restraint using Python exclusion volumes"""
+        self._run_test_pair_connectivity(True)
+
+    def test_pair_connectivity_c(self):
+        """Test pair connectivity restraint using C++ exclusion volumes"""
+        self._run_test_pair_connectivity(False)
 
 if __name__ == '__main__':
     unittest.main()
