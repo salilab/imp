@@ -23,9 +23,9 @@ class test_xml(IMP.test.IMPTestCase):
         num_particles = 0
         while p_iter.next():
             p = p_iter.get()
-            fidx = p.float_index("radius")
+            fidx = p.get_float_index("radius")
             radius = model_data.get_float(fidx)
-            iidx = p.int_index("protein")
+            iidx = p.get_int_index("protein")
             protein = model_data.get_int(iidx)
             num_particles = num_particles + 1
             if protein == 1:

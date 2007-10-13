@@ -45,7 +45,7 @@ Get pointer to model particle data.
 \return all particle data in the model.
 */
 
-ModelData* Particle::model_data(void) const
+ModelData* Particle::get_model_data(void) const
 {
   return model_data_;
 }
@@ -135,7 +135,7 @@ bool Particle::has_float (const std::string name) const
   \return index to the attribute.
  */
 
-FloatIndex Particle::float_index(const std::string name) const
+FloatIndex Particle::get_float_index(const std::string name) const
 {
   IMP_check(has_float(name), "Unknown float attribute '" << name << "'", 
 	    std::out_of_range("Unknown float attribute name"));
@@ -184,7 +184,7 @@ bool Particle::has_int (const std::string name) const
   \return index to the attribute.
  */
 
-IntIndex Particle::int_index(const std::string name) const
+IntIndex Particle::get_int_index(const std::string name) const
 {
   IMP_check(has_int(name), "Unknown int attribute '" << name << "'", 
 	    std::out_of_range("Unknown int attribute name"));
@@ -238,7 +238,7 @@ bool Particle::has_string (const std::string name) const
   \return index to the attribute.
  */
 
-StringIndex Particle::string_index(const std::string name) const
+StringIndex Particle::get_string_index(const std::string name) const
 {
   IMP_check(has_string(name), "Unknown string attribute '" << name << "'", 
 	    std::out_of_range("Unknown string attribute name"));

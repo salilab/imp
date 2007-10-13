@@ -6,7 +6,7 @@ class WoodsFunc(IMP.Restraint):
     def __init__(self, model, particles):
         IMP.Restraint.__init__(self)
         self.model_data = model.get_model_data()
-        self.indices = [p.float_index("X") for p in particles]
+        self.indices = [p.get_float_index("X") for p in particles]
 
     def evaluate(self, calc_deriv):
         (x1, x2, x3, x4) = [self.model_data.get_float(i) for i in self.indices]
@@ -49,7 +49,7 @@ class CGOptimizerTests(IMP.test.IMPTestCase):
         e = opt.optimize(model, 100, 1e-5)
         model_data = model.get_model_data()
         for p in particles:
-            val = model_data.get_float(p.float_index("X"))
+            val = model_data.get_float(p.get_float_index("X"))
             self.assertAlmostEqual(val, 1.0, places=1)
         self.assertAlmostEqual(e, 0.0, places=2)
 

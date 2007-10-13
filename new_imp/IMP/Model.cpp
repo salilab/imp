@@ -215,13 +215,13 @@ void Model::save_state(void)
       // for each particle, output its current state
       FloatIndex fi;
       for (size_t i = 0; i < particles_.size(); i++) {
-	fi = particles_[i]->float_index("X");
+	fi = particles_[i]->get_float_index("X");
 	fout << model_data_->get_float(fi) << " ";
 	
-	fi = particles_[i]->float_index("Y");
+	fi = particles_[i]->get_float_index("Y");
 	fout << model_data_->get_float(fi) << " ";
 	
-	fi = particles_[i]->float_index("Z");
+	fi = particles_[i]->get_float_index("Z");
 	fout << model_data_->get_float(fi) << std::endl;
       }
       if (!fout) {

@@ -35,9 +35,9 @@ TorusRestraint::TorusRestraint(Model& model,
   model_data_ = model.get_model_data();
 
   particles_.push_back(p1);
-  x1_ = p1->float_index(std::string("X"));
-  y1_ = p1->float_index(std::string("Y"));
-  z1_ = p1->float_index(std::string("Z"));
+  x1_ = p1->get_float_index(std::string("X"));
+  y1_ = p1->get_float_index(std::string("Y"));
+  z1_ = p1->get_float_index(std::string("Z"));
 
   main_radius_ = main_radius;
   tube_radius_ = tube_radius;

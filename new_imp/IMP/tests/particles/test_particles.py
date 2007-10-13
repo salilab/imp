@@ -32,9 +32,9 @@ class test_particles(IMP.test.IMPTestCase):
     def test_bad_attributes(self):
         """Asking for non-existent attributes should cause an error"""
         p1 = self.particles[0]
-        self.assertRaises(IndexError, p1.float_index, "notexist")
-        self.assertRaises(IndexError, p1.int_index, "notexist")
-        self.assertRaises(IndexError, p1.string_index, "notexist")
+        self.assertRaises(IndexError, p1.get_float_index, "notexist")
+        self.assertRaises(IndexError, p1.get_int_index, "notexist")
+        self.assertRaises(IndexError, p1.get_string_index, "notexist")
 
     def test_attribute_iterator(self):
         """Iterate over all attributes within a particle"""
@@ -93,17 +93,17 @@ class test_particles(IMP.test.IMPTestCase):
          # check particles 0 - 11
         for i in range(0,12):
             p1 = self.particles[i]
-            fidx = p1.float_index("radius")
+            fidx = p1.get_float_index("radius")
             self.assert_(model_data.get_float(fidx) == 1.5 * i, "expecting particle "+str(i)+" radius to be "+str(1.5*i) + " not " + str(model_data.get_float(fidx)))
-            iidx = p1.int_index("id")
+            iidx = p1.get_int_index("id")
             self.assert_(model_data.get_int(iidx) == i, "expecting particle "+str(i)+" id to be "+str(i) + " not " + str(model_data.get_int(iidx)))
-            sidx = p1.string_index("id_str")
+            sidx = p1.get_string_index("id_str")
             self.assert_(model_data.get_string(sidx) == "name_"+str(i), "expecting particle "+str(i)+" id_str to be name_"+str(i) + " not " + model_data.get_string(sidx))
 
         # test additional attributes in particle 11
         p1 = self.particles[11]
         for i in range(0,6):
-            fidx = p1.float_index("attr_" + str(i))
+            fidx = p1.get_float_index("attr_" + str(i))
             self.assert_(model_data.get_float(fidx) == 3.5 * i, "expecting particle "+str(i)+" radius to be "+str(3.2*i) + " not " + str(model_data.get_float(fidx)))
 
 

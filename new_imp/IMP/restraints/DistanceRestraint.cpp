@@ -62,8 +62,8 @@ DistanceRestraint::DistanceRestraint(Model& model,
   model_data_ = model.get_model_data();
 
   // LogMsg(VERBOSE, "Construct distance restraint: " << attr_name);
-  Float mean = model_data_->get_float(p1->float_index(attr_name))
-               + model_data_->get_float(p2->float_index(attr_name));
+  Float mean = model_data_->get_float(p1->get_float_index(attr_name))
+               + model_data_->get_float(p2->get_float_index(attr_name));
                
   score_func_params->set_mean(mean);
   set_up(model, p1, p2, score_func_params);
@@ -88,14 +88,14 @@ void DistanceRestraint::set_up(Model& model,
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
   particles_.push_back(p1);
-  x1_ = p1->float_index(std::string("X"));
-  y1_ = p1->float_index(std::string("Y"));
-  z1_ = p1->float_index(std::string("Z"));
+  x1_ = p1->get_float_index(std::string("X"));
+  y1_ = p1->get_float_index(std::string("Y"));
+  z1_ = p1->get_float_index(std::string("Z"));
 
   particles_.push_back(p2);
-  x2_ = p2->float_index(std::string("X"));
-  y2_ = p2->float_index(std::string("Y"));
-  z2_ = p2->float_index(std::string("Z"));
+  x2_ = p2->get_float_index(std::string("X"));
+  y2_ = p2->get_float_index(std::string("Y"));
+  z2_ = p2->get_float_index(std::string("Z"));
 
   score_func_ = score_func_params->create_score_func();
 }

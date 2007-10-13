@@ -84,8 +84,8 @@ ProximityRestraint::ProximityRestraint(Model& model,
   for (int i = 0; i < num_particles_ - 1; i++) {
     for (int j = i + 1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance between centers
-      actual_mean = distance - model_data_->get_float(particles_[i]->float_index(attr_name))
-                    - model_data_->get_float(particles_[j]->float_index(attr_name));
+      actual_mean = distance - model_data_->get_float(particles_[i]->get_float_index(attr_name))
+                    - model_data_->get_float(particles_[j]->get_float_index(attr_name));
 
       // create the restraint
       IMP_LOG(VERBOSE, i << " " << j << " add distance: " << actual_mean);
