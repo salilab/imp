@@ -1,5 +1,4 @@
 import unittest
-import random
 import os
 import IMP
 import IMP.test
@@ -80,19 +79,12 @@ class test_connectivity(IMP.test.IMPTestCase):
 
         self.opt = IMP.ConjugateGradients()
 
-    def _randomize_model(self, particles):
-        """Randomize model particle positions"""
-        for p in particles:
-            p.set_x(random.uniform(-50., 50.0))
-            p.set_y(random.uniform(-50., 50.0))
-            p.set_z(random.uniform(-50., 50.0))
-
     def test_connectivity(self):
         """Test connectivity restraint.
            All particles in a single protein should be connected, and all
            proteins should be connected, either directly or indirectly
            through other proteins."""
-        self._randomize_model(self.particles)
+        self.randomize_particles(self.particles, 50.0)
 
         rs = IMP.RestraintSet("connect")
         self.restraint_sets.append(rs)
@@ -146,7 +138,7 @@ class test_connectivity(IMP.test.IMPTestCase):
         for i in range(len(rsrs)):
             rs.add_restraint(rsrs[i])
 
-        self._randomize_model(self.particles)
+        self.randomize_particles(self.particles, 50.0)
         self.opt.optimize(self.imp_model, 55, 1e-4)
 
         # min distances

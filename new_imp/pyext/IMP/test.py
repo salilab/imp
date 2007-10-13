@@ -1,8 +1,16 @@
 import re, math, unittest
+import random
 
 
 class IMPTestCase(unittest.TestCase):
     """ Super class for IMP test cases """
+
+    def randomize_particles(self, particles, deviation):
+        """Randomize the xyz coordinates of a list of particles"""
+        for p in particles:
+            p.set_x(random.uniform(-deviation, deviation))
+            p.set_y(random.uniform(-deviation, deviation))
+            p.set_z(random.uniform(-deviation, deviation))
 
     def LoadCoordinates(self, pdb_file):
         """ Load coordinates from a PDB file """
