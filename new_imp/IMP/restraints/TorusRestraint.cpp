@@ -17,7 +17,7 @@ namespace IMP
 
 /**
   Constructor - set up the values and indexes for this torus restraint. Expects
- coordinates to be labeled "X", "Y", and "Z" in the particles.
+ coordinates to be labeled "x", "y", and "z" in the particles.
 
   \param[in] model Pointer to the model.
   \param[in] p1 Pointer to particle of the restraint.
@@ -35,9 +35,9 @@ TorusRestraint::TorusRestraint(Model& model,
   model_data_ = model.get_model_data();
 
   particles_.push_back(p1);
-  x1_ = p1->get_float_index(std::string("X"));
-  y1_ = p1->get_float_index(std::string("Y"));
-  z1_ = p1->get_float_index(std::string("Z"));
+  x1_ = p1->get_float_index(std::string("x"));
+  y1_ = p1->get_float_index(std::string("y"));
+  z1_ = p1->get_float_index(std::string("z"));
 
   main_radius_ = main_radius;
   tube_radius_ = tube_radius;

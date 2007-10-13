@@ -14,11 +14,11 @@ class XYZParticle(IMP.Particle):
         self.model_data = self.get_model_data()
         model.add_particle(self);
         if x is not None:
-            self.add_float("X", x, True)
+            self.add_float("x", x, True)
         if y is not None:
-            self.add_float("Y", y, True)
+            self.add_float("y", y, True)
         if z is not None:
-            self.add_float("Z", z, True)
+            self.add_float("z", z, True)
 
     def get_float(self, name):
         """Get float attribute of particle with given name"""
@@ -34,51 +34,51 @@ class XYZParticle(IMP.Particle):
 
     def x(self):
         """Get x position of particle"""
-        return self.get_float("X")
+        return self.get_float("x")
 
     def y(self):
         """Get y position of particle"""
-        return self.get_float("Y")
+        return self.get_float("y")
 
     def z(self):
         """Get z position of particle"""
-        return self.get_float("Z")
+        return self.get_float("z")
 
     def set_x(self, value):
         """Set x position of particle"""
-        self.model_data.set_float(self.get_float_index("X"), value)
+        self.model_data.set_float(self.get_float_index("x"), value)
 
     def set_y(self, value):
         """Set y position of particle"""
-        self.model_data.set_float(self.get_float_index("Y"), value)
+        self.model_data.set_float(self.get_float_index("y"), value)
 
     def set_z(self, value):
         """Set z position of particle"""
-        self.model_data.set_float(self.get_float_index("Z"), value)
+        self.model_data.set_float(self.get_float_index("z"), value)
 
     def dx(self):
         """Get partial derivative of score with respect to particle's x position"""
-        return self.model_data.get_deriv(self.get_float_index("X"))
+        return self.model_data.get_deriv(self.get_float_index("x"))
 
     def dy(self):
         """Get partial derivative of score with respect to particle's y position"""
-        return self.model_data.get_deriv(self.get_float_index("Y"))
+        return self.model_data.get_deriv(self.get_float_index("y"))
 
     def dz(self):
         """Get partial derivative of score with respect to particle's z position"""
-        return self.model_data.get_deriv(self.get_float_index("Z"))
+        return self.model_data.get_deriv(self.get_float_index("z"))
 
     def add_to_dx(self, value):
         """Add to partial derivative of score with respect to particle's x position"""
-        self.model_data.add_to_deriv(self.get_float_index("X"), value)
+        self.model_data.add_to_deriv(self.get_float_index("x"), value)
 
     def add_to_dy(self, value):
         """Add to partial derivative of score with respect to particle's y position"""
-        self.model_data.add_to_deriv(self.get_float_index("Y"), value)
+        self.model_data.add_to_deriv(self.get_float_index("y"), value)
 
     def add_to_dz(self, value):
         """Add to partial derivative of score with respect to particle's z position"""
-        self.model_data.add_to_deriv(self.get_float_index("Z"), value)
+        self.model_data.add_to_deriv(self.get_float_index("z"), value)
 
 
 def Init_IMP_From_Modeller(model, particles, atoms):

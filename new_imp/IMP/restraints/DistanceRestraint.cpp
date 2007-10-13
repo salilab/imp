@@ -88,14 +88,14 @@ void DistanceRestraint::set_up(Model& model,
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
   particles_.push_back(p1);
-  x1_ = p1->get_float_index(std::string("X"));
-  y1_ = p1->get_float_index(std::string("Y"));
-  z1_ = p1->get_float_index(std::string("Z"));
+  x1_ = p1->get_float_index(std::string("x"));
+  y1_ = p1->get_float_index(std::string("y"));
+  z1_ = p1->get_float_index(std::string("z"));
 
   particles_.push_back(p2);
-  x2_ = p2->get_float_index(std::string("X"));
-  y2_ = p2->get_float_index(std::string("Y"));
-  z2_ = p2->get_float_index(std::string("Z"));
+  x2_ = p2->get_float_index(std::string("x"));
+  y2_ = p2->get_float_index(std::string("y"));
+  z2_ = p2->get_float_index(std::string("z"));
 
   score_func_ = score_func_params->create_score_func();
 }

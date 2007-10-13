@@ -191,7 +191,7 @@ void Model::set_up_trajectory(const std::string trajectory_path, bool trajectory
 
 /**
  Save the state of the model to the trajectory file.
-Currently hardcoded for "X", "Y" and "Z" particle float attributes.
+Currently hardcoded for "x", "y" and "z" particle float attributes.
 */
 
 void Model::save_state(void)
@@ -215,13 +215,13 @@ void Model::save_state(void)
       // for each particle, output its current state
       FloatIndex fi;
       for (size_t i = 0; i < particles_.size(); i++) {
-	fi = particles_[i]->get_float_index("X");
+	fi = particles_[i]->get_float_index("x");
 	fout << model_data_->get_float(fi) << " ";
 	
-	fi = particles_[i]->get_float_index("Y");
+	fi = particles_[i]->get_float_index("y");
 	fout << model_data_->get_float(fi) << " ";
 	
-	fi = particles_[i]->get_float_index("Z");
+	fi = particles_[i]->get_float_index("z");
 	fout << model_data_->get_float(fi) << std::endl;
       }
       if (!fout) {

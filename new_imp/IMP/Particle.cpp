@@ -95,7 +95,7 @@ bool Particle::add_float (const std::string name, const Float value, const bool 
 
   IMP_LOG(VERBOSE, "add_float: " << name);
   IMP_assert(!has_float(name), "Trying to add the name '" <<  name << "' twice.");
-  // if optimized, give name to get stats generated for this name (e.g. "X", "Y" or "Z")
+  // if optimized, give name to get stats generated for this name (e.g. "x", "y" or "z")
   // if (is_optimized)
   //   fi = model_data_->add_float(value, name);
   // else
