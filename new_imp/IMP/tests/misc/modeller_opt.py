@@ -29,7 +29,7 @@ IMP.modeller_intf.Init_IMP_From_Modeller(imp_model, particles, atoms)
 # create a restraint set
 print "adding IMP restraints"
 rs = IMP.RestraintSet("dist_rsrs")
-imp_model.add_restraint_set(rs)
+imp_model.add_restraint(rs)
 
 # create IMP restraints
 # the restraint pointer must be kept alive in Python or it gets deleted in IMP

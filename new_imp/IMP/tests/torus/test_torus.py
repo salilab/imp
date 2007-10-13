@@ -24,7 +24,7 @@ class test_torus(IMP.test.IMPTestCase):
         """All particles should be inside the specified torus"""
         rs = IMP.RestraintSet("torus")
         self.restraint_sets.append(rs)
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)

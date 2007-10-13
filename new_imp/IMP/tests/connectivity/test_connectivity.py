@@ -88,7 +88,7 @@ class test_connectivity(IMP.test.IMPTestCase):
 
         rs = IMP.RestraintSet("connect")
         self.restraint_sets.append(rs)
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         # add connectivity restraints
 

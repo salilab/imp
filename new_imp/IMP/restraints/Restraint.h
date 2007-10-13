@@ -23,7 +23,7 @@ namespace IMP
 class IMPDLLEXPORT Restraint
 {
 public:
-  Restraint();
+  Restraint(std::string name=std::string());
   virtual ~Restraint();
   void set_model_data(ModelData* model_data);
 
@@ -45,7 +45,10 @@ public:
   virtual std::string last_modified_by(void) const {
     return "unknown";
   }
-
+  //! Get the name of the restraint
+  const std::string& get_name() const{return name_;}
+  //! Set the name of the restraint
+  void set_name(const std::string &name){ name_=name;}
 protected:
   // all of the particle data
   ModelData* model_data_;
@@ -59,6 +62,8 @@ protected:
 
   // shouldn't be necessary, but keep around for debugging
   std::vector<Particle*> particles_;
+
+  std::string name_;
 };
 
 } // namespace IMP

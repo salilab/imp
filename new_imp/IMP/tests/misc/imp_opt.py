@@ -23,7 +23,7 @@ IMP.modeller_intf.Init_IMP_From_Modeller(imp_model, particles, atoms)
 
 # create a restraint set
 rs = IMP.RestraintSet("dist_rsrs")
-imp_model.add_restraint_set(rs)
+imp_model.add_restraint(rs)
 
 # add Modeller restraints
 rsr = modeller_model.restraints

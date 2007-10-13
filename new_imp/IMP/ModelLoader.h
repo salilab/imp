@@ -15,6 +15,7 @@
 #include "Model.h"
 #include "Particle.h"
 #include "log.h"
+#include "restraints/RestraintSet.h"
 
 namespace IMP
 {

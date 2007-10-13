@@ -25,7 +25,7 @@ class test_coordinate(IMP.test.IMPTestCase):
 
         rs = IMP.RestraintSet("%s-min" % coord)
         self.restraint_sets.append(rs)
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)
@@ -56,7 +56,7 @@ class test_coordinate(IMP.test.IMPTestCase):
 
         rs = IMP.RestraintSet("%s-max" % coord)
         self.restraint_sets.append(rs)
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)
@@ -87,7 +87,7 @@ class test_coordinate(IMP.test.IMPTestCase):
 
         rs = IMP.RestraintSet("xy_radial")
         self.restraint_sets.append(rs)
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)
@@ -111,7 +111,7 @@ class test_coordinate(IMP.test.IMPTestCase):
 
         rs = IMP.RestraintSet("xz_radial")
         self.restraint_sets.append(rs)
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)
@@ -135,7 +135,7 @@ class test_coordinate(IMP.test.IMPTestCase):
 
         self.restraint_sets.append(IMP.RestraintSet("yz_radial"))
         rs = self.restraint_sets[len(self.restraint_sets)-1]
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)
@@ -159,7 +159,7 @@ class test_coordinate(IMP.test.IMPTestCase):
 
         self.restraint_sets.append(IMP.RestraintSet("xyz_sphere"))
         rs = self.restraint_sets[len(self.restraint_sets)-1]
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         p_iter = IMP.ParticleIterator()
         p_iter.reset(self.imp_model)

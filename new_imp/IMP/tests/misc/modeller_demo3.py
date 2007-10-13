@@ -24,7 +24,7 @@ IMP.modeller_intf.Init_IMP_From_Modeller(model, particles, atoms)
 
 # create a restraint set
 rs = IMP.RestraintSet("dist_rsrs")
-model.add_restraint_set(rs)
+model.add_restraint(rs)
 
 # add Modeller restraints
 rsr = mdl.restraints
@@ -69,7 +69,7 @@ while particles.next():
     particle = particles.get()
     print particle
 
-restraint_sets = IMP.RestraintSet_Iterator()
+restraint_sets = IMP.RestraintIterator()
 restraint_sets.reset(model)
 while restraint_sets.next():
     restraint_set = restraint_sets.get()

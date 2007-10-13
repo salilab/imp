@@ -38,7 +38,7 @@ class test_sd_optimizer(IMP.test.IMPTestCase):
 
         # add restraints
         rs = IMP.RestraintSet("distance_rsrs")
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
         self.restraint_sets.append(rs)
         for i in range(len(self.rsrs)):
             rs.add_restraint(self.rsrs[i])

@@ -99,7 +99,7 @@ class test_exclusion_volumes(IMP.test.IMPTestCase):
         not be closer than allowed by their vw radii"""
         rs = IMP.RestraintSet("one_list")
         self.restraint_sets.append(rs)
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         # add connectivity restraints
 
@@ -159,7 +159,7 @@ class test_exclusion_volumes(IMP.test.IMPTestCase):
         not be closer than allowed by their vw radii"""
         rs = IMP.RestraintSet("two_lists")
         self.restraint_sets.append(rs)
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         # add connectivity restraints
 
