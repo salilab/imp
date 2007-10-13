@@ -78,16 +78,21 @@ class IMPTestCase(unittest.TestCase):
         fp.close()
         return out
 
-    def TestAbsPos (self, point, operator, ref_value, x_mask, y_mask, z_mask):
-        """ Test absolute position of the given point """
-        """ Use masks to indicate which coordinates to use """
+    def check_abs_pos(self, particle, operator, ref_value, x_mask, y_mask,
+                      z_mask):
+        """Test absolute position of the given xyz particle. Use masks to
+           indicate which coordinates to use """
+        point = (particle.x(), particle.y(), particle.z())
         if x_mask + y_mask + z_mask < 2:
             value = point[0]*x_mask + point[1]*y_mask + point[2]*z_mask
         else:
-            value = math.sqrt(point[0]*point[0]*x_mask + point[1]*point[1]*y_mask + point[2]*point[2]*z_mask)
+            value = math.sqrt(point[0]*point[0]*x_mask + \
+                              point[1]*point[1]*y_mask + \
+                              point[2]*point[2]*z_mask)
 
         if eval(str(value) + operator + str(ref_value)) == False:
-            print "  ** FAILED ** ", str(value) + operator + str(ref_value), "  (", x_mask, y_mask, z_mask, point, ")"
+            print "  ** FAILED ** ", str(value) + operator + str(ref_value), \
+                  "  (", x_mask, y_mask, z_mask, point, ")"
         return eval(str(value) + operator + str(ref_value))
 
     def TestInTorus (self, point, main_radius, tube_radius):
