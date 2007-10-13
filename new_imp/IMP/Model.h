@@ -11,7 +11,7 @@
 
 #include "IMP_config.h"
 #include "ModelData.h"
-#include "RestraintSet.h"
+#include "restraints/Restraint.h"
 #include "RigidBody.h"
 
 namespace IMP
@@ -23,7 +23,7 @@ namespace IMP
 class IMPDLLEXPORT Model
 {
   friend class ParticleIterator;
-  friend class RestraintSetIterator;
+  friend class RestraintIterator;
 
 public:
   Model();
@@ -35,10 +35,20 @@ public:
   Particle* get_particle(size_t idx) const;
   //Particle* get_particle(size_t idx) { return particle(idx);}
   //Particle* get_particle(size_t idx) const { return const_cast<Model*>(this)->particle(idx);}
+ /** Return the total number of restraints*/
+  unsigned int number_of_particles() const {
+    return particles_.size();
+  }
 
+  typedef int RestraintIndex;
   // restraints
-  void add_restraint_set(RestraintSet* restraint_set);
-  RestraintSet* restraint_set(const std::string name);
+  RestraintIndex add_restraint(Restraint* restraint_set);
+  Restraint* get_restraint(RestraintIndex i) const;
+
+  /** Return the total number of restraints*/
+  unsigned int number_of_restraints() const {
+    return restraints_.size();
+  }
 
   // for each restraint_set, call evaluate
   Float evaluate(bool calc_derivs);
@@ -66,7 +76,7 @@ protected:
   std::vector<Particle*> particles_;
 
   // all base-level restraints and/or restraint sets of the model
-  std::vector<RestraintSet*> restraint_sets_;
+  std::vector<Restraint*> restraints_;
 
   // sets of particles that move as a single rigid body
   std::vector<RigidBody*> rigid_bodies_;
@@ -93,13 +103,13 @@ protected:
 };
 
 // restraint set iterator
-class IMPDLLEXPORT RestraintSetIterator
+class IMPDLLEXPORT RestraintIterator
 {
 public:
-  RestraintSetIterator() {}
+  RestraintIterator() {}
   void reset(Model* model);
   bool next(void);
-  RestraintSet* get(void);
+  Restraint* get(void);
 
 protected:
   int cur_;

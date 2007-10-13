@@ -19,7 +19,7 @@
 #include "optimizers/SteepestDescent.h"
 #include "optimizers/ConjugateGradients.h"
 #include "ScoreFunc.h"
-#include "RestraintSet.h"
+#include "restraints/RestraintSet.h"
 #include "RigidBody.h"
 #include "ModelData.h"
 #include "Model.h"

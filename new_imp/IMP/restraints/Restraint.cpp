@@ -23,7 +23,7 @@ namespace IMP
   Constructor
  */
 
-Restraint::Restraint ()
+Restraint::Restraint (std::string name): name_(name)
 {
   IMP_LOG(VERBOSE, "Restraint constructed");
   is_active_ = true; // active by default

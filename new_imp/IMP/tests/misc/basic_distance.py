@@ -25,7 +25,7 @@ particles[1].show()
 
 print "adding restraints"
 rs = IMP.RestraintSet("dist_rsrs")
-model.add_restraint_set(rs)
+model.add_restraint(rs)
 
 score_func = IMP.Harmonic()
 dist_rsr = IMP.DistanceRestraint(model, particles[0], particles[1], 3.0, 0.1, score_func)

@@ -10,6 +10,7 @@
 #include "ModelData.h"
 #include "Particle.h"
 #include "log.h"
+#include "mystdexcept.h"
 
 namespace IMP
 {
@@ -93,27 +94,26 @@ size_t Model::add_particle(Particle* particle)
  \param[in] restraint_set Pointer to the restraint set.
 */
 
-void Model::add_restraint_set(RestraintSet* restraint_set)
+Model::RestraintIndex Model::add_restraint(Restraint* restraint_set)
 {
-  restraint_set->set_model_data(model_data_);
-  restraint_sets_.push_back(restraint_set);
+  //restraint_set->set_model_data(model_data_);
+  restraints_.push_back(restraint_set);
+  return restraints_.size()-1;
 }
 
 
 /**
  Get restraint set from model.
 
- \param[in] name Name of restraint within the model.
+ \param[in] i The RestraintIndex returned when adding
 */
 
-RestraintSet* Model::restraint_set(const std::string name)
+Restraint* Model::get_restraint(RestraintIndex i) const
 {
-  for (size_t i = 0; i < restraint_sets_.size(); i++) {
-    if (restraint_sets_[i]->name() == name)
-      return restraint_sets_[i];
-  }
-
-  return NULL;
+  IMP_check(static_cast<unsigned int>(i) < restraints_.size(), 
+	    "Out of range restraint requested",
+	    std::out_of_range("Invalid restraint requested"));
+  return restraints_[i];
 }
 
 
@@ -127,10 +127,10 @@ Float Model::evaluate(bool calc_derivs)
 {
   // One or more particles may have been activated or deactivated.
   // Check each restraint to see if it changes its active status.
-  IMP_LOG(VERBOSE, "Model evaluate (" << restraint_sets_.size() << " restraint sets):");
+  IMP_LOG(VERBOSE, "Model evaluate (" << restraints_.size() << " restraint sets):");
   if (model_data_->check_particles_active()) {
-    for (size_t i = 0; i < restraint_sets_.size(); i++) {
-      restraint_sets_[i]->check_particles_active();
+    for (size_t i = 0; i < restraints_.size(); i++) {
+      restraints_[i]->check_particles_active();
     }
 
     model_data_->set_check_particles_active(false);
@@ -143,10 +143,10 @@ Float Model::evaluate(bool calc_derivs)
   // evaluate all of the active restraints to get score (and derviatives)
   // for current state of the model
   Float score = 0.0;
-  for (size_t i = 0; i < restraint_sets_.size(); i++) {
-    IMP_LOG(VERBOSE, "Evaluating restraints " << restraint_sets_[i]->name() << ":");
-    if (restraint_sets_[i]->is_active()) {
-      score += restraint_sets_[i]->evaluate(calc_derivs);
+  for (size_t i = 0; i < restraints_.size(); i++) {
+    IMP_LOG(VERBOSE, "Evaluating restraints " << restraints_[i]->get_name() << ":");
+    if (restraints_[i]->is_active()) {
+      score += restraints_[i]->evaluate(calc_derivs);
     }
 
     IMP_LOG(VERBOSE, "Cumulative score: " << score);
@@ -257,10 +257,10 @@ void Model::show(std::ostream& out) const
     particles_[i]->show(out);
   }
 
-  for (size_t i = 0; i < restraint_sets_.size(); i++) {
-    out  << std::endl << "* Restraint Set *" << std::endl;
+  for (size_t i = 0; i < restraints_.size(); i++) {
+    out  << std::endl << "* Restraint *" << std::endl;
 
-    restraint_sets_[i]->show();
+    restraints_[i]->show(out);
   }
 
 }
@@ -330,7 +330,7 @@ Particle* ParticleIterator::get(void)
  \param[in] model The model data that is being referenced.
  */
 
-void RestraintSetIterator::reset(Model* model)
+void RestraintIterator::reset(Model* model)
 {
   model_ = model;
   cur_ = -1;
@@ -344,11 +344,11 @@ void RestraintSetIterator::reset(Model* model)
  \return True if another restraint_set is available.
  */
 
-bool RestraintSetIterator::next(void)
+bool RestraintIterator::next(void)
 {
   cur_ += 1;
-  if (cur_ >= (int) model_->restraint_sets_.size()) {
-    cur_ = (int) model_->restraint_sets_.size();
+  if (cur_ >= (int) model_->restraints_.size()) {
+    cur_ = (int) model_->restraints_.size();
     return false;
   }
 
@@ -363,13 +363,13 @@ bool RestraintSetIterator::next(void)
  \return True pointer to next restraint_set (NULL if we are out of bounds).
  */
 
-RestraintSet* RestraintSetIterator::get(void)
+Restraint* RestraintIterator::get(void)
 {
-  if (cur_ >= (int) model_->restraint_sets_.size()) {
+  if (cur_ >= (int) model_->restraints_.size()) {
     return NULL;
   }
 
-  return model_->restraint_sets_[cur_];
+  return model_->restraints_[cur_];
 }
 
 

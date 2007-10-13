@@ -89,7 +89,7 @@ atoms = mdl.atoms
 atmsel.randomize_xyz(deviation=100.0)
 
 rs = IMP.RestraintSet("connect")
-model.add_restraint_set(rs)
+model.add_restraint(rs)
 score_func = IMP.Harmonic()
 
 # add connectivity restraints

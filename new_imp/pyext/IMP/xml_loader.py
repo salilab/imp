@@ -123,7 +123,7 @@ def load_restraint_set(model, restraint_set_node, base_particle):
     name = str(restraint_set_node.getAttribute('name'))
     model.restraint_sets.append(IMP.RestraintSet(name))
     rs_idx = len(model.restraint_sets) - 1
-    model.add_restraint_set(model.restraint_sets[rs_idx])
+    model.add_restraint(model.restraint_sets[rs_idx])
 
     # process restraints in subnodes
     for r in restraint_set_node.childNodes:

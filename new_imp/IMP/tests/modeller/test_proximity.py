@@ -70,7 +70,7 @@ class test_proximity(IMP.test.IMPTestCase):
 
         self.restraint_sets.append(IMP.RestraintSet("proximity"))
         rs = self.restraint_sets[len(self.restraint_sets)-1]
-        self.imp_model.add_restraint_set(rs)
+        self.imp_model.add_restraint(rs)
 
         # add proximity restraints
 
