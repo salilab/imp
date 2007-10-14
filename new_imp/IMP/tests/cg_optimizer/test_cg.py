@@ -36,7 +36,7 @@ class CGOptimizerTests(IMP.test.IMPTestCase):
         particles = []
 
         for value in starting_values:
-            p = IMP.Particle(model.get_model_data())
+            p = IMP.Particle()
             model.add_particle(p)
             particles.append(p)
             p.add_float("x", value, True)

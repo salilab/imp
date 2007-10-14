@@ -82,6 +82,7 @@ size_t Model::add_particle(Particle* particle)
 
   // add the particle to the model list of particles
   particles_.push_back(particle);
+  particle->set_model_data(model_data_);
 
   // return the particle index
   return particles_.size() - 1; 
@@ -96,7 +97,7 @@ size_t Model::add_particle(Particle* particle)
 
 Model::RestraintIndex Model::add_restraint(Restraint* restraint_set)
 {
-  //restraint_set->set_model_data(model_data_);
+  restraint_set->set_model_data(model_data_);
   restraints_.push_back(restraint_set);
   return restraints_.size()-1;
 }
