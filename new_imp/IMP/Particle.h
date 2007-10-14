@@ -23,6 +23,8 @@ typedef std::map<std::string, StringIndex> StringIndexMap;
 typedef std::map<std::string, IntIndex> IntIndexMap;
 typedef std::map<std::string, FloatIndex> FloatIndexMap;
 
+class Model;
+
 // Particle methods and indexes to particle attributes. Particles can
 // be deactivated so that they no longer play a role in model optimization.
 // Removing particles and their attributes would cause problems in the way
@@ -32,12 +34,14 @@ class IMPDLLEXPORT Particle
   friend class FloatAttributeIterator;
   friend class IntAttributeIterator;
   friend class StringAttributeIterator;
-
+  friend class Model;
+  void set_model_data(ModelData*);
 public:
 
  
-  Particle(ModelData* model_data);
+  Particle();
   ~Particle();
+ 
   ModelData* get_model_data(void) const;
 
   // float attributes

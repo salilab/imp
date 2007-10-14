@@ -19,10 +19,9 @@ namespace IMP
   Constructor
  */
 
-Particle::Particle (ModelData* model_data)
+Particle::Particle (): model_data_(NULL)
 {
   IMP_LOG(VERBOSE, "create particle");
-  model_data_ = model_data;
   is_active_ = true;
 }
 
@@ -50,6 +49,16 @@ ModelData* Particle::get_model_data(void) const
   return model_data_;
 }
 
+/**
+Set pointer to model particle data. This is called by the Model after the particle is added. 
+
+\return all particle data in the model.
+*/
+
+void Particle::set_model_data(ModelData *md)
+{
+  model_data_=md;
+}
 
 
 /**
@@ -94,6 +103,8 @@ bool Particle::add_float (const std::string name, const Float value, const bool 
   FloatIndex fi;
 
   IMP_LOG(VERBOSE, "add_float: " << name);
+  IMP_assert(model_data_ != NULL, 
+	     "Particle must be added to Model before an attributes are added");
   IMP_assert(!has_float(name), "Trying to add the name '" <<  name << "' twice.");
   // if optimized, give name to get stats generated for this name (e.g. "x", "y" or "z")
   // if (is_optimized)
@@ -155,6 +166,8 @@ FloatIndex Particle::get_float_index(const std::string name) const
 bool Particle::add_int (const std::string name, const Int value)
 {
   IMP_LOG(VERBOSE, "add_int: " << name);
+  IMP_assert(model_data_ != NULL, 
+	     "Particle must be added to Model before an attributes are added");
   IMP_assert(!has_int(name), "Trying to add the name '" <<  name << "' twice.");
   int_indexes_[name] = model_data_->add_int(value);
   return true;
@@ -206,6 +219,8 @@ IntIndex Particle::get_int_index(const std::string name) const
 
 bool Particle::add_string(const std::string name, const String value)
 {
+  IMP_assert(model_data_ != NULL, 
+		"Particle must be added to Model before an attributes are added");
   IMP_assert(!has_string(name), 
 	     "Trying to add the name '" <<  name << "' twice.");
   

@@ -19,14 +19,18 @@
 namespace IMP
 {
 
+class Model;
+
 // Abstract class for representing restraints
 class IMPDLLEXPORT Restraint
 {
+  friend class Model;
+  void set_model_data(ModelData* model_data);
+
 public:
   Restraint(std::string name=std::string());
   virtual ~Restraint();
-  void set_model_data(ModelData* model_data);
-
+ 
   // return the score for this restraint or set of restraints
   // ... given the current state of the model
   virtual Float evaluate(bool calc_deriv) = 0;

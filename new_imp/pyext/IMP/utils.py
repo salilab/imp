@@ -10,9 +10,9 @@ class XYZParticle(IMP.Particle):
     def __init__(self, model, x=None, y=None, z=None):
         """Initialize particle with IMP model it belongs to and its xyz
            coordinates"""
-        IMP.Particle.__init__(self, model.get_model_data())
-        self.model_data = self.get_model_data()
+        IMP.Particle.__init__(self)
         model.add_particle(self);
+        self.model_data = self.get_model_data()
         if x is not None:
             self.add_float("x", x, True)
         if y is not None:

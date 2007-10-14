@@ -34,7 +34,6 @@ class IMPDLLEXPORT ModelData
   friend class Particle;
   friend class OptFloatIndexIterator;
 
-public:
   // variables
   class FloatData
   {
@@ -56,6 +55,8 @@ public:
     Float max_delta_;
     Float min_delta_;
   };
+public:
+
 
   // particle float attributes (assumed differentiable variables)
   FloatIndex add_float(const Float value);
