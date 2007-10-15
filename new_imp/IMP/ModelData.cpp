@@ -77,7 +77,7 @@ Float ModelData::get_deriv(const FloatIndex idx) const
 //! Indicate if the particle float attribute is to be optimized.
 /** \return True if particle float attribute is to be optimized.
  */
-bool ModelData::is_optimized(const FloatIndex idx) const
+bool ModelData::get_is_optimized(const FloatIndex idx) const
 {
   return float_data_[idx.index()].is_optimized_;
 }
@@ -188,7 +188,7 @@ bool OptFloatIndexIterator::next(void)
       return false;
     }
 
-  } while (!model_data_->is_optimized(fi));
+  } while (!model_data_->get_is_optimized(fi));
 
   return true;
 }

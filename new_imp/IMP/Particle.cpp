@@ -283,7 +283,7 @@ void Particle::show (std::ostream& out) const
   std::map<std::string, FloatIndex>::const_iterator iter2;
   for (iter2 = float_indexes_.begin(); iter2 != float_indexes_.end(); ++iter2) {
     out << inset << inset << inset << iter2->first << "  " << model_data_->get_float(iter2->second);
-    if (model_data_->is_optimized(iter2->second)) {
+    if (model_data_->get_is_optimized(iter2->second)) {
       out << " (optimized)" << std::endl;
     } else {
       out << std::endl;
