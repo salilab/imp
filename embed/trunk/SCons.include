@@ -1,25 +1,10 @@
-"""Utility functions used by all NMP modules"""
+"""Utility functions used by all emlib modules"""
 
-import os
+import os.path
 import re
+import sys
 
-def _makedef(target, source, env):
-    """Build a Windows .def file (DLL exports file) from header files"""
-    dll = str(target[0])
-    if dll.endswith(".def"):
-        dll = dll[:-4] + '.dll'
-    outfh = open(str(target[0]), "w")
-    print >> outfh, "LIBRARY %s" % dll
-    print >> outfh, "EXPORTS"
-    srch = re.compile("\s*\w+.*\s+\**(\w+)\(")
-    for s in source:
-        infh = open(str(s), "r")
-        for line in infh:
-            m = srch.match(line)
-            if m:
-                print >> outfh, "  %s" % m.group(1)
-
-import SCons.Script
+import SCons
 _SWIGScanner = SCons.Scanner.ClassicCPP(
     "SWIGScan",
     ".i",
@@ -32,83 +17,28 @@ class WineEnvironment(Environment):
        MSVC compiler (cl) and linker (link) through wine, using the w32cc
        and w32link shell scripts"""
     def __init__(self, platform='win32', CC='w32cc', LINK='w32link', **kw):
+        if sys.platform != 'linux2':
+            print "ERROR: Wine is supported only on Linux systems"
+            Exit(1)
         Environment.__init__(self, platform=platform, CC=CC, LINK=LINK, **kw)
         posix_env = Environment(platform='posix')
         self['SHLIBPREFIX'] = self['LIBLINKPREFIX'] = 'lib'
+        self['WINDOWSEXPPREFIX'] = 'lib'
         self['LIBSUFFIX'] = '.lib'
         self['PSPAWN'] = posix_env['PSPAWN']
         self['SPAWN'] = posix_env['SPAWN']
         self['SHELL'] = posix_env['SHELL']
         self['ENV'] = posix_env['ENV']
+        self['PYTHON'] = 'w32python'
+        self['PATHSEP'] = ';'
         # Make sure we get the same Windows C/C++ library as Modeller, and
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
         self.Append(CXXFLAGS="/MD /GR /GX")
 
-def get_modeller_config():
-    """Figure out where the Modeller source code is, and where it is
-       installed."""
-    if ARGUMENTS.has_key('modsource'):
-        modsource = ARGUMENTS['modsource']
-    else:
-        try:
-            modsource = os.environ['MODINSTALLSVN']
-        except KeyError:
-            raise KeyError, \
-                """Could not determine Modeller source location - 
-                   specify with 'scons modsource=/home/modeller' or similar"""
-
-    if ARGUMENTS.has_key('modinstall'):
-        modinstall = ARGUMENTS['modinstall']
-    else:
-        modinstall = modsource
-
-    (fhin, fhout, fherr) = os.popen3("%s/bin/modSVN -" % modsource)
-    print >> fhin, "print 'EXE type: ', info.exe_type"
-    fhin.close()
-    err = fherr.read()
-    exetype = None
-    for line in fhout:
-        if line.startswith("EXE type"):
-            exetype=line[11:].rstrip('\r\n')
-    if exetype is None:
-        if err:
-            raise IOError, ("Error running Modeller: " + err)
-        else:
-            raise IOError, "Unknown error running Modeller"
-    include = ['%s/src/include' % modsource,
-               '%s/src/include/%s' % (modsource, exetype)]
-    bin = '%s/bin' % modsource
-    if exetype == 'i386-w32':
-        libpath = ['%s/src/main' % modsource]
-        libinstall = '%s/bin' % modinstall
-        # Don't link with -lm on Windows, since that pulls in some weird
-        # Intel Fortran file, which in turn is linked against the wrong C
-        # library
-        libm = []
-    else:
-        libpath = ['%s/lib/%s' % (modsource, exetype)]
-        libinstall = '%s/lib/%s' % (modinstall, exetype)
-        libm = ['m']
-    libs = ["modeller", "saxs"]
-    pyinstall = modlib = '%s/modlib' % modinstall
-    if exetype == 'mac10v4-xlf':
-        libs += ["hdf5", "hdf5_hl", "saxs"]
-    elif exetype == 'mac10v4-intel':
-        libs += ["hdf5", "hdf5_hl", "saxs", "imf", "svml", "ifcore", "irc"]
-    return {'include':include, 'libpath':libpath, 'libs':libs,
-            'exetype':exetype, 'bin':bin, 'libinstall':libinstall,
-            'pyinstall':pyinstall, 'modlib':modlib, 'libm':libm}
-
-def is_wine_platform(modconfig):
-    """Return True if we are building Windows executables on Linux/Wine"""
-    import SCons.Platform
-    return modconfig['exetype'] == 'i386-w32' \
-           and SCons.Platform.platform_default() == 'posix'
-
-def get_python_include(modconfig):
+def _get_python_include(env):
     """Get the directory containing Python.h"""
-    if is_wine_platform(modconfig):
+    if env['wine']:
         return '/usr/lib/w32comp/w32python/2.5/include/'
     else:
         import distutils.sysconfig
@@ -151,53 +81,93 @@ int main(void)
         context.Result("yes")
     return res
 
-def MyEnvironment(modconfig, *args, **kw):
-    """Create an environment suitable for building NMP modules"""
+
+
+
+
+def MyEnvironment(options=None, *args, **kw):
+    """Create an environment suitable for building emlib modules"""
     import platform
-    if is_wine_platform(modconfig):
-        env = WineEnvironment(*args, **kw)
-        env.is_wine = True
+    env = Environment(tools=[], options=options)
+    if env['wine']:
+        env = WineEnvironment(options=options, *args, **kw)
     else:
-        env = Environment(*args, **kw)
-        env.is_wine = False
+        env = Environment(options=options, *args, **kw)
+        env['PYTHON'] = 'python'
+        env['PATHSEP'] = os.path.pathsep
     try:
         env['SHLINKFLAGS'].remove('-no_archive')
     except ValueError:
         pass
-    env.Append(BUILDERS = {'W32Def': Builder(action=_makedef)})
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -Werror -g -O3")
+	print "-Wall -Werror -g -O3"
 
-    custom_tests = {'CheckGNUHash': CheckGNUHash,
-                    'CheckGCCVisibility': CheckGCCVisibility}
-    conf = env.Configure(custom_tests = custom_tests)
     sys = platform.system()
-    if sys == 'Linux':
-        conf.CheckGNUHash()
-        conf.CheckGCCVisibility()
-    elif sys == 'SunOS':
+    if sys == 'SunOS':
         # Find locally-installed libraries in /usr/local (e.g. for SWIG)
         env['ENV']['LD_LIBRARY_PATH'] = '/usr/local/lib'
-    if os.environ.has_key('EXECUTABLE_TYPESVN'):
-        env['ENV']['EXECUTABLE_TYPESVN'] = os.environ['EXECUTABLE_TYPESVN']
-    conf.Finish()
-
+    # Note: would like to check for 'help' here too, but that requires a
+    # post 0.97 scons snapshot
+    if not env.GetOption('clean'):
+        custom_tests = {'CheckGNUHash': CheckGNUHash
+   ###                     'CheckGCCVisibility': CheckGCCVisibility,
+                        }
+        conf = env.Configure(custom_tests = custom_tests)
+        if sys == 'Linux':
+            conf.CheckGNUHash()
+###        conf.CheckGCCVisibility()
+        # Check explicitly for False, since all checks will return Null if
+        conf.Finish()
     return env
 
-def configure_for_pyext(env, modconfig):
-    """Set environment variables to build a Python extension."""
+def _fix_aix_cpp_link(env, cplusplus, linkflags):
+    """On AIX things get confused if AIX C but not AIX C++ is installed - AIX C
+       options get passed to g++ - so hard code GNU link flags"""
+    if cplusplus and 'aixcc' in env['TOOLS'] and 'aixc++' not in env['TOOLS'] \
+       and 'g++' in env['TOOLS']:
+        slflags = str(env[linkflags])
+        env[linkflags] = slflags.replace('-qmkshrobj -qsuppress=1501-218',
+                                         '-shared')
+
+def get_sharedlib_environment(env, cplusplus=False):
+    """Get a modified environment suitable for building shared libraries
+       (i.e. using gcc ELF visibility macros or MSVC dllexport/dllimport macros
+       to mark dynamic symbols as exported or private). `cppdefine` should be
+       the name of a cpp symbol to define to tell MSVC that we are building the
+       library (by convention something of the form FOO_EXPORTS).
+       If `cplusplus` is True, additional configuration suitable for a C++
+       shared library is done."""
+    e = env.Copy()
+    e.Append(
+             CCFLAGS='${VIS_CCFLAGS}')
+    print '${VIS_CCFLAGS}'
+
+    _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
+    return e
+
+def get_pyext_environment(env, cplusplus=False):
+    """Get a modified environment for building a Python extension.
+       If `cplusplus` is True, additional configuration suitable for a C++
+       extension is done."""
     from platform import system
     e = env.Copy()
-    e['SHLIBPREFIX'] = ''
+    if 'swig' not in e['TOOLS']:
+        print "ERROR: SWIG could not be found. SWIG is needed to build."
+        Exit(1)
+    e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
     # import library (.lib file):
     e['no_import_lib'] = 1
     platform = e['PLATFORM']
-    if e.is_wine:
-        e['SHLIBSUFFIX'] = '.pyd'
+    if e['wine']:
+        # Have to set SHLIBSUFFIX and PREFIX on Windows otherwise the
+        # mslink tool complains
+        e['SHLIBPREFIX'] = ''
+        e['LDMODULESUFFIX'] = e['SHLIBSUFFIX'] = '.pyd'
         # Directory containing python25.lib:
-        e.Append(LIBPATH='/usr/lib/w32comp/w32python/2.5/lib/')
+        e.Append(LIBPATH=['/usr/lib/w32comp/w32python/2.5/lib/'])
     else:
         if platform == 'aix':
             # Make sure compilers are in the PATH, so that Python's script for
@@ -214,23 +184,48 @@ def configure_for_pyext(env, modconfig):
         # requirement for glibc-2.4:
         opt = opt.replace("-fstack-protector", "")
         # Remove options that don't work with C++ code:
-        opt = opt.replace("-Wstrict-prototypes", "")
-        e['CC'] = cc
-        e['CXX'] = cxx
-        e['SHLIBSUFFIX'] = so
-        e['CPPFLAGS'] = basecflags + " " + opt
+        if cplusplus:
+            opt = opt.replace("-Wstrict-prototypes", "")
+        e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
+        e.Replace(CPPFLAGS=basecflags.split() + opt.split())
         # Some gcc versions don't like the code that SWIG generates - but let
         # that go, because we have no control over it:
         try:
             e['CCFLAGS'].remove('-Werror')
         except ValueError:
             pass
+        # AIX tries to use the C compiler rather than g++, so hardcode it here:
+        if platform == 'aix' and cplusplus:
+            ldshared = ldshared.replace(' cc_r', ' g++')
         # Default link flags on OS X don't work for us:
         if platform == 'darwin':
-            e['SHLINKFLAGS'] = \
-                     '$LINKFLAGS -bundle -flat_namespace -undefined suppress'
+            e.Replace(LDMODULEFLAGS= \
+                      '$LINKFLAGS -bundle -flat_namespace -undefined suppress')
         # Don't set link flags on Linux, as that would negate our GNU_HASH check
         elif system() != "Linux":
-            e['SHLINKFLAGS'] = []
-            e['SHLINK'] = ldshared
+            e['LDMODULEFLAGS'] = []
+            e['SHLINK'] = e['LDMODULE'] = ldshared
+    e.Append(CPPPATH=[_get_python_include(e)])
+    _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
+
+def add_common_options(opts, package):
+    """Add common options to an SCons Options object."""
+    opts.Add(PathOption('prefix', 'Top-level installation directory', '/usr',
+                        PathOption.PathAccept))
+    opts.Add(PathOption('datadir', 'Data file installation directory',
+                        '${prefix}/share/%s' % package, PathOption.PathAccept))
+    opts.Add(PathOption('libdir', 'Shared library installation directory',
+                        '${prefix}/lib', PathOption.PathAccept))
+    opts.Add(PathOption('pythondir', 'Python module installation directory',
+                        '${prefix}/lib/python%d.%d/site-packages' \
+                        % sys.version_info[0:2], PathOption.PathAccept))
+    opts.Add(PathOption('pyextdir',
+                        'Python extension module installation directory',
+                        '${pythondir}', PathOption.PathAccept))
+    opts.Add(PathOption('docdir', 'Documentation installation directory',
+                        '${prefix}/share/doc/%s' % package,
+                        PathOption.PathAccept))
+    opts.Add(BoolOption('wine',
+                        'Build using MS Windows tools via Wine emulation',
+                        False))
