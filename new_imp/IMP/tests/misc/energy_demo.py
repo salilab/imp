@@ -2,8 +2,7 @@ import modeller
 import modeller.optimizers
 import IMP
 import IMP.modeller_intf
-
-import IMP.test
+import IMP.utils
 
 # intialize Modeller
 modeller.log.level(0,0,0,0,0)
@@ -19,10 +18,10 @@ particles = []
 
 # add IMP model and restraints as an energy term to Modeller model
 t = env.edat.energy_terms
-t.append(IMP.modeller_intf.IMP_Restraints(model, particles))
+t.append(IMP.modeller_intf.IMPRestraints(model, particles))
 
 # get particles for Modeller
-mdl = IMP.modeller_intf.Create_Particles(12, env, model, particles)
+mdl = IMP.modeller_intf.create_particles(12, env, model, particles)
 
 p1 = particles[0]
 p1.add_float("radius", 2.0, False)
@@ -132,8 +131,5 @@ print atmsel.energy()
 
 mdl.write (file='out.pdb', model_format='PDB')
 
-IMP.modeller_intf.Show_Distances(particles)
-IMP.modeller_intf.Show_IMP_Particles(particles,
-                                (('float', 'X'), ('float', 'Y'),
-                                ('float', 'Z'), ('float', 'radius'),
-                                ('int', 'protein'), ('int', 'id')))
+IMP.utils.show_distances(particles)
+IMP.utils.show_particles(particles)

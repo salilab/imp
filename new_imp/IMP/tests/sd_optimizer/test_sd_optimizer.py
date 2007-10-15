@@ -55,7 +55,9 @@ class test_sd_optimizer(IMP.test.IMPTestCase):
 
         for i in range(0, 2):
             for j in range(i+1, 3):
-                dist = self.IMP_Distance(self.particles, i, j) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+                dist = self.particle_distance(self.particles, i, j) \
+                       - self.particles[i].get_float("radius") \
+                       - self.particles[j].get_float("radius")
                 self.assertAlmostEqual(0.0, dist, places=2)
 
 
@@ -78,7 +80,9 @@ class test_sd_optimizer(IMP.test.IMPTestCase):
 
         for i in range(0, 2):
             for j in range(i+1, 3):
-                dist = self.IMP_Distance(self.particles, i, j) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+                dist = self.particle_distance(self.particles, i, j) \
+                       - self.particles[i].get_float("radius") \
+                       - self.particles[j].get_float("radius")
                 self.assertAlmostEqual(0.0, dist, places=2)
 
 

@@ -96,7 +96,7 @@ class test_pair_connectivity(IMP.test.IMPTestCase):
 
         if use_python:
             # set up exclusion volumes using a Python loop:
-            IMP.utils.Set_Up_Exclusion_Volumes(self.imp_model, self.particles,
+            IMP.utils.set_up_exclusion_volumes(self.imp_model, self.particles,
                                                "radius", rsrs)
         else:
             # use the C++ exclusion volume restraint:
@@ -146,7 +146,7 @@ class test_pair_connectivity(IMP.test.IMPTestCase):
             for (j, pj) in enumerate(self.particles[5:12]):
                 jcoord = (pj.x(), pj.y(), pj.z())
                 jrad = pj.get_float("radius")
-                d = self.Distance(icoord, jcoord) - irad - jrad
+                d = self.get_distance(icoord, jcoord) - irad - jrad
                 found = False
                 for k in range(num_connects):
                     if not found:

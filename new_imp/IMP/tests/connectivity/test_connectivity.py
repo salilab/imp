@@ -99,7 +99,7 @@ class test_connectivity(IMP.test.IMPTestCase):
                                                         0.0, 0.1)
 
         # set up exclusion volumes
-        IMP.utils.Set_Up_Exclusion_Volumes(self.imp_model, self.particles,
+        IMP.utils.set_up_exclusion_volumes(self.imp_model, self.particles,
                                            "radius", rsrs)
 
         # connect 3 proteins together
@@ -150,8 +150,8 @@ class test_connectivity(IMP.test.IMPTestCase):
                 p = self.particles[j]
                 jcoord = (p.x(), p.y(), p.z())
                 jrad = p.get_float("radius")
-                self.assert_(self.TestMinDistance(icoord, jcoord,
-                                                  irad + jrad - 0.05),
+                self.assert_(self.check_min_distance(icoord, jcoord,
+                                                     irad + jrad - 0.05),
                              "min distance for any pair condition")
 
         # max distances
@@ -168,7 +168,7 @@ class test_connectivity(IMP.test.IMPTestCase):
                 jcoord = (p.x(), p.y(), p.z())
                 jrad = p.get_float("radius")
                 t2 = p.get_int("protein")
-                d = self.Distance(icoord, jcoord) - irad - jrad
+                d = self.get_distance(icoord, jcoord) - irad - jrad
                 if t1 == 1 and t2 == 2:
                     if d < d12:
                         d12 = d

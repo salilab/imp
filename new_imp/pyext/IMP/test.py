@@ -3,7 +3,7 @@ import random
 
 
 class IMPTestCase(unittest.TestCase):
-    """ Super class for IMP test cases """
+    """Super class for IMP test cases"""
 
     def randomize_particles(self, particles, deviation):
         """Randomize the xyz coordinates of a list of particles"""
@@ -12,20 +12,21 @@ class IMPTestCase(unittest.TestCase):
             p.set_y(random.uniform(-deviation, deviation))
             p.set_z(random.uniform(-deviation, deviation))
 
-    def LoadCoordinates(self, pdb_file):
-        """ Load coordinates from a PDB file """
+    def load_coordinates(self, pdb_file):
+        """Load coordinates from a PDB file"""
         fp = open(pdb_file, 'r')
 
         coords = []
         for line in fp:
             if line[0:4] == 'ATOM':
-                coords.append((float(line[30:38]), float(line[38:46]), float(line[46:54])))
+                coords.append((float(line[30:38]), float(line[38:46]),
+                               float(line[46:54])))
 
         fp.close()
         return coords
 
-    def LoadAttributes(self, attr_file):
-        """ Load attributes from an IMP attributes file """
+    def load_attributes(self, attr_file):
+        """Load attributes from an IMP attributes file"""
         fp = open("test_attr.imp", "r")
 
         out = {}
@@ -81,7 +82,7 @@ class IMPTestCase(unittest.TestCase):
     def check_abs_pos(self, particle, operator, ref_value, x_mask, y_mask,
                       z_mask):
         """Test absolute position of the given xyz particle. Use masks to
-           indicate which coordinates to use """
+           indicate which coordinates to use"""
         point = (particle.x(), particle.y(), particle.z())
         if x_mask + y_mask + z_mask < 2:
             value = point[0]*x_mask + point[1]*y_mask + point[2]*z_mask
@@ -95,8 +96,8 @@ class IMPTestCase(unittest.TestCase):
                   "  (", x_mask, y_mask, z_mask, point, ")"
         return eval(str(value) + operator + str(ref_value))
 
-    def TestInTorus (self, point, main_radius, tube_radius):
-        """ Test if given point is in the torus """
+    def check_in_torus(self, point, main_radius, tube_radius):
+        """Test if given point is in the torus"""
         rad_dist = math.sqrt(point[0]*point[0] + point[1]*point[1])
         tube_ctr_x = point[0] / rad_dist * main_radius
         tube_ctr_y = point[1] / rad_dist * main_radius
@@ -107,35 +108,38 @@ class IMPTestCase(unittest.TestCase):
         if tube_dist < tube_radius:
             return True
         else:
-            print "  ** FAILED ** ", tube_dist, " > ", tube_radius, "  (", point, ")"
+            print "  ** FAILED ** ", tube_dist, " > ", tube_radius, "  (", \
+                  point, ")"
             return False
 
-    def Distance (self, pointA, pointB):
-        """ Return distance between two given points """
+    def get_distance(self, pointA, pointB):
+        """Return distance between two given points"""
         dx = pointA[0] - pointB[0]
         dy = pointA[1] - pointB[1]
         dz = pointA[2] - pointB[2]
         return math.sqrt(dx*dx + dy*dy + dz*dz)
 
-    def IMP_Distance (self, particles, idx0, idx1):
-        """ Return distance between two given particles """
+    def particle_distance(self, particles, idx0, idx1):
+        """Return distance between two given particles"""
         dx = particles[idx0].x() - particles[idx1].x()
         dy = particles[idx0].y() - particles[idx1].y()
         dz = particles[idx0].z() - particles[idx1].z()
         return math.sqrt(dx*dx + dy*dy + dz*dz)
 
-    def TestMinDistance (self, pointA, pointB, dist):
-        """ Test if given points are more than the given distance apart """
-        if self.Distance(pointA, pointB) > dist:
+    def check_min_distance(self, pointA, pointB, dist):
+        """Test if given points are more than the given distance apart"""
+        if self.get_distance(pointA, pointB) > dist:
             return True
         else:
-            print "  ** FAILED ** ", self.Distance(pointA, pointB), " < ", dist, "  (", pointA, ",", pointB, ")"
+            print "  ** FAILED ** ", self.get_distance(pointA, pointB), \
+                  " < ", dist, "  (", pointA, ",", pointB, ")"
             return False
 
-    def TestMaxDistance (self, pointA, pointB, dist):
-        """ Test if given points are less than the given distance apart """
-        if self.Distance(pointA, pointB) < dist:
+    def check_max_distance(self, pointA, pointB, dist):
+        """Test if given points are less than the given distance apart"""
+        if self.get_distance(pointA, pointB) < dist:
             return True
         else:
-            print "  ** FAILED ** ", self.Distance(pointA, pointB), " > ", dist, "  (", pointA, ",", pointB, ")"
+            print "  ** FAILED ** ", self.get_distance(pointA, pointB), \
+                  " > ", dist, "  (", pointA, ",", pointB, ")"
             return False
