@@ -42,7 +42,7 @@ class test_torus(IMP.test.IMPTestCase):
         self.opt.optimize(self.imp_model, 50, 1e-4)
         for p in self.particles:
             coord = (p.x(), p.y(), p.z())
-            self.assert_(self.TestInTorus(coord, 50, 10.001),
+            self.assert_(self.check_in_torus(coord, 50, 10.001),
                          "in torus condition")
 
 if __name__ == '__main__':

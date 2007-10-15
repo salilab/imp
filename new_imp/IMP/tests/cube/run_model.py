@@ -1,7 +1,8 @@
 import modeller
 import modeller.optimizers
-import IMP.modeller_intf
 import IMP
+import IMP.modeller_intf
+import IMP.utils
 import IMP.xml_loader
 
 model = IMP.Model()
@@ -20,10 +21,10 @@ env.libs.parameters.read(file="$(LIB)/par.lib")
 
 # add IMP model and restraints as an energy term to Modeller model
 t = env.edat.energy_terms
-t.append(IMP.modeller_intf.IMP_Restraints(model, model.particles))
+t.append(IMP.modeller_intf.IMPRestraints(model, model.particles))
         
 # get particles for Modeller
-mdl = IMP.modeller_intf.Create_Particles_From_IMP(env, model)
+mdl = IMP.modeller_intf.create_particles_from_imp(env, model)
 
 
 atmsel = modeller.selection(mdl)
@@ -87,6 +88,6 @@ while score > 10.0 and num_runs < 1000:
 
     print num_runs, score
     
-IMP.modeller_intf.Show_Distances(model.particles)
+IMP.utils.show_distances(model.particles)
 mdl.write(file="out.pdb", model_format="PDB")
 

@@ -2,8 +2,10 @@ import modeller, unittest
 import modeller
 import modeller.optimizers
 import os
+import IMP
 import IMP.modeller_intf
-import IMP.test, IMP
+import IMP.utils
+import IMP.test
 
 # Class to test proximity restraints
 class test_proximity(IMP.test.IMPTestCase):
@@ -25,9 +27,12 @@ class test_proximity(IMP.test.IMPTestCase):
         self.rsrs = []
 
         self.t = self.env.edat.energy_terms
-        self.t.append(IMP.modeller_intf.IMP_Restraints(self.imp_model, self.particles))
+        self.t.append(IMP.modeller_intf.IMPRestraints(self.imp_model,
+                                                      self.particles))
 
-        self.modeller_model = IMP.modeller_intf.Create_Particles(6, self.env, self.imp_model, self.particles)
+        self.modeller_model = IMP.modeller_intf.create_particles(6, self.env,
+                                                                 self.imp_model,
+                                                                 self.particles)
         p1 = self.particles[0]
         p1.add_float("radius", 2.0, False)
         p1.add_int("protein", 1)
@@ -78,7 +83,8 @@ class test_proximity(IMP.test.IMPTestCase):
         rsrs = []
 
         # set up exclusion volumes
-        IMP.modeller_intf.Set_Up_Exclusion_Volumes(self.imp_model, self.particles, "radius", rsrs)
+        IMP.utils.set_up_exclusion_volumes(self.imp_model, self.particles,
+                                           "radius", rsrs)
 
         max_distance = 10.0
 
@@ -98,18 +104,18 @@ class test_proximity(IMP.test.IMPTestCase):
         new_mdl = self.opt.optimize (self.atmsel, max_iterations=1800, actions=None)
         self.modeller_model.write (file='out_proximity.pdb', model_format='PDB')
 
-        coords = self.LoadCoordinates('out_proximity.pdb')
+        coords = self.load_coordinates('out_proximity.pdb')
         os.unlink('out_proximity.pdb')
 
         # min distances
         for i in range(len(coords)):
             for j in range(i+1,len(coords)):
-                self.assert_(self.TestMinDistance(coords[i], coords[j], self.particles[i].get_float("radius") + self.particles[j].get_float("radius") - 0.1), "min distance for any pair condition (" + str(i) + ", " + str(j) + ")")
+                self.assert_(self.check_min_distance(coords[i], coords[j], self.particles[i].get_float("radius") + self.particles[j].get_float("radius") - 0.1), "min distance for any pair condition (" + str(i) + ", " + str(j) + ")")
 
         # max distances
         for i in range(len(coords)):
             for j in range(i+1,len(coords)):
-                self.assert_(self.TestMaxDistance(coords[i], coords[j], max_distance - self.particles[i].get_float("radius") - self.particles[j].get_float("radius") + 0.1), "max distance for any pair condition (" + str(i) + ", " + str(j) + ")")
+                self.assert_(self.check_max_distance(coords[i], coords[j], max_distance - self.particles[i].get_float("radius") - self.particles[j].get_float("radius") + 0.1), "max distance for any pair condition (" + str(i) + ", " + str(j) + ")")
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,7 @@
 import unittest
+import IMP
 import IMP.utils
-import IMP.test, IMP
+import IMP.test
 
 # Class to test particles
 class test_particles(IMP.test.IMPTestCase):
@@ -83,7 +84,7 @@ class test_particles(IMP.test.IMPTestCase):
             self.assert_(self.particles[11].get_string(string_attr_iter.get_key()) == string_attr_iter.get_value(), "Value should match the one accessed through the key.")
         self.assert_(cnt == 2, "Particle 11 should have 2 string attributes.")
 
-        IMP.utils.Show_IMP_Particles(self.particles)
+        IMP.utils.show_particles(self.particles)
 
     def test_particles(self):
         """ test that particle attributes are available and correct """

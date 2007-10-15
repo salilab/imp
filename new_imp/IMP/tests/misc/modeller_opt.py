@@ -2,6 +2,7 @@ import modeller
 import modeller.optimizers
 import IMP
 import IMP.modeller_intf
+import IMP.utils
 
 # intialize Modeller
 modeller.log.level(0,0,0,0,0)
@@ -17,14 +18,14 @@ imp_model = IMP.Model()
 particles = []
 
 t = env.edat.energy_terms
-t.append(IMP.modeller_intf.IMP_Restraints(imp_model, particles))
+t.append(IMP.modeller_intf.IMPRestraints(imp_model, particles))
 
 # get particles for Modeller
 print "adding particles"
 modeller_model = modeller.model(env, file='./particles.pdb')
 atoms = modeller_model.atoms
 # intialize particles for IMP
-IMP.modeller_intf.Init_IMP_From_Modeller(imp_model, particles, atoms)
+IMP.modeller_intf.init_imp_from_modeller(imp_model, particles, atoms)
 
 # create a restraint set
 print "adding IMP restraints"
@@ -49,6 +50,6 @@ new_mdl = opt.optimize (atmsel, max_iterations=55, actions=None)
 print atmsel.energy()
 
 # show the results
-IMP.modeller_intf.Show_Modeller_and_IMP(atoms, particles)
-IMP.modeller_intf.Show_Distances(particles)
-IMP.modeller_intf.Show_IMP_Particles_Pos(particles)
+IMP.modeller_intf.show_modeller_and_imp(atoms, particles)
+IMP.utils.show_distances(particles)
+IMP.utils.show_particles_pos(particles)

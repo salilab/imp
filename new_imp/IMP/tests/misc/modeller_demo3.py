@@ -3,6 +3,7 @@ import modeller.optimizers
 import IMP
 import IMP.modeller_intf
 import IMP.test
+import IMP.utils
 
 # intialize Modeller
 modeller.log.level(0,0,0,0,0)
@@ -20,7 +21,7 @@ atoms = mdl.atoms
 model = IMP.Model()
 print "adding particles"
 particles = []
-IMP.modeller_intf.Init_IMP_From_Modeller(model, particles, atoms)
+IMP.modeller_intf.init_imp_from_modeller(model, particles, atoms)
 
 # create a restraint set
 rs = IMP.RestraintSet("dist_rsrs")
@@ -42,7 +43,7 @@ rsr.add(modeller.forms.gaussian(group=modeller.physical.xy_distance,
 #                          mean=3., stdev=0.1))
 
 # make Modeller restraints accessible to IMP
-r = IMP.modeller_intf.Modeller_Restraints(model, mdl, particles)
+r = IMP.modeller_intf.ModellerRestraints(model, mdl, particles)
 print "adding Modeller restraints"
 rs.add_restraint(r)
 
@@ -52,15 +53,14 @@ dist_rsr = IMP.DistanceRestraint(model, particles[0], particles[2], 5.0, 0.1, sc
 print "adding IMP restraints"
 rs.add_restraint(dist_rsr)
 
-IMP.modeller_intf.Show_Modeller_and_IMP(atoms, particles)
+IMP.modeller_intf.show_modeller_and_imp(atoms, particles)
 
 print "run optimizer"
 steepest_descent = IMP.SteepestDescent()
 steepest_descent.optimize(model, 10, 0.0)
 
-IMP.modeller_intf.Show_Modeller_and_IMP(atoms, particles)
-
-IMP.modeller_intf.Show_Distances(particles)
+IMP.modeller_intf.show_modeller_and_imp(atoms, particles)
+IMP.utils.show_distances(particles)
 
 
 particles = IMP.ParticleIterator()

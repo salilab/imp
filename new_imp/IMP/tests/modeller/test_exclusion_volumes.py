@@ -2,8 +2,9 @@ import modeller, unittest
 import modeller
 import modeller.optimizers
 import os
+import IMP
 import IMP.modeller_intf
-import IMP.test, IMP
+import IMP.test
 
 # Class to test pair connectivity restraints
 class test_exclusion_volumes(IMP.test.IMPTestCase):
@@ -25,9 +26,12 @@ class test_exclusion_volumes(IMP.test.IMPTestCase):
         self.rsrs = []
 
         self.t = self.env.edat.energy_terms
-        self.t.append(IMP.modeller_intf.IMP_Restraints(self.imp_model, self.particles))
+        self.t.append(IMP.modeller_intf.IMPRestraints(self.imp_model,
+                                                      self.particles))
 
-        self.modeller_model = IMP.modeller_intf.Create_Particles(12, self.env, self.imp_model, self.particles)
+        self.modeller_model = IMP.modeller_intf.create_particles(12, self.env,
+                                                                 self.imp_model,
+                                                                 self.particles)
         p1 = self.particles[0]
         p1.add_float("radius", 1.0, False)
         p1.add_int("protein", 1)
@@ -137,18 +141,18 @@ class test_exclusion_volumes(IMP.test.IMPTestCase):
         new_mdl = self.opt.optimize (self.atmsel, max_iterations=100, actions=None)
         self.modeller_model.write (file='out_exclusion_volume_one_list.pdb', model_format='PDB')
 
-        coords = self.LoadCoordinates('out_exclusion_volume_one_list.pdb')
+        coords = self.load_coordinates('out_exclusion_volume_one_list.pdb')
         os.unlink('out_exclusion_volume_one_list.pdb')
 
         # check min distances for intra-protein pairs
         for i in range(0, 4):
             for j in range(i+1, 5):
-                d = self.Distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
                 self.assert_(d > -0.05, "particles "+str(i)+" and "+str(j)+" are too close together.")
 
         for i in range(5, 11):
             for j in range(i+1, 12):
-                d = self.Distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
                 self.assert_(d > -0.05, "particles "+str(i)+" and "+str(j)+" are too close together.")
 
 
@@ -206,13 +210,13 @@ class test_exclusion_volumes(IMP.test.IMPTestCase):
         new_mdl = self.opt.optimize (self.atmsel, max_iterations=200, actions=None)
         self.modeller_model.write (file='out_exclusion_volume_two_lists.pdb', model_format='PDB')
 
-        coords = self.LoadCoordinates('out_exclusion_volume_two_lists.pdb')
+        coords = self.load_coordinates('out_exclusion_volume_two_lists.pdb')
         os.unlink('out_exclusion_volume_two_lists.pdb')
 
         # check min distances for intra-protein and inter-protein pairs
         for i in range(0, 11):
             for j in range(i+1, 12):
-                d = self.Distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
                 self.assert_(d > -0.05, "particles "+str(i)+" and "+str(j)+" are too close together.")
 
 if __name__ == '__main__':
