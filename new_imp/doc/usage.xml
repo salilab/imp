@@ -64,15 +64,19 @@ settings. This is also similar to other lab C and Fortran projects.
 
 <para>Format to allow 
 <ulink url="http://www.stack.nl/~dimitri/doxygen/">Doxygen</ulink>
-automated documentation creation. For example:</para>
-
+automated documentation creation. If possible, specify both a 'brief'
+description and a more detailed one (in which parameters, return values,
+and exceptions are documented). Use //! for the one-line brief description
+and /** ... */ for the multi-line detailed description (put the closing */ on
+a new line, so that these comments are always multi-line (Doxygen will not
+accept both a 'brief' comment and a one-line detailed comment). All header
+and source files should have a starting comment header, using the \file
+command to document the purpose of the file.
+For example:</para>
 <informalexample><programlisting>
-/**
-  Calculates the square root.
-
-  \param[in] the_value Calculate the square root of this value.
-
-  \return the square root of the given value.
+//! Calculates the square root.
+/** \param[in] the_value Calculate the square root of this value.
+    \return the square root of the given value.
  */
 </programlisting></informalexample>
 </sect3>

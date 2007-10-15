@@ -1,6 +1,5 @@
-/*
- *  ModelData.cpp
- *  IMP
+/**
+ *  \file ModelData.cpp  \brief Storage for all model particle data.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -12,35 +11,25 @@
 namespace IMP
 {
 
-/**
-  Constructor
- */
-
+//! Constructor
 ModelData::ModelData ()
 {
   check_particles_active_ = false;
 }
 
 
-/**
-  Destructor
- */
-
+//! Destructor
 ModelData::~ModelData ()
 {
 }
 
 
-
-/**
-  Add particle float attribute to the model. The returned index can be used
-  for obtaining and setting the attribute value.
-
-  \param[in] value Initial value of the attribute.
-
-  \return index of a new float attribute.
+//! Add particle float attribute (assumed differentiable) to the model.
+/** The returned index can be used for obtaining and setting the attribute
+    value.
+    \param[in] value Initial value of the attribute.
+    \return index of a new float attribute.
  */
-
 FloatIndex ModelData::add_float(const Float value)
 {
   FloatIndex f_index;
@@ -55,13 +44,10 @@ FloatIndex ModelData::add_float(const Float value)
 }
 
 
-/**
-  Set particle attribute value.
-
-  \param[in] idx Index of the attribute.
-  \param[in] value Value the attribute should be given.
+//! Set particle attribute value.
+/** \param[in] idx Index of the attribute.
+    \param[in] value Value the attribute should be given.
  */
-
 void ModelData::set_float(const FloatIndex idx, const Float value)
 {
   float_data_[idx.index()].value_ = value;
@@ -69,59 +55,44 @@ void ModelData::set_float(const FloatIndex idx, const Float value)
 
 
 
-/**
-  Add value to deriviative.
-
-  \param[in] idx Index of the particle float attribute.
-  \param[in] value Value to add to the float attribute derivative.
+//! Add value to derivative.
+/** \param[in] idx Index of the particle float attribute.
+    \param[in] value Value to add to the float attribute derivative.
  */
-
 void ModelData::add_to_deriv(const FloatIndex idx, Float value)
 {
   float_data_[idx.index()].deriv_ += value;
 }
 
 
-/**
-  Get deriviative of the given particle float attribute.
-
-  \param[in] idx Index of the particle float attribute.
-  */
-
+//! Get derivative of the given particle float attribute.
+/** \param[in] idx Index of the particle float attribute.
+ */
 Float ModelData::get_deriv(const FloatIndex idx) const
 {
   return float_data_[idx.index()].deriv_;
 }
 
 
-/**
-  Set whether the particle float attribute is to be optimized.
-
-  \param[in] is_optimized True if particle float attribute is to be optimized.
-  */
-
-void ModelData::set_is_optimized(const FloatIndex idx, bool is_optimized)
-{
-  float_data_[idx.index()].is_optimized_ = is_optimized;
-}
-
-
-/**
-  Indicate in the particle float attribute is to be optimized.
-
-  \return True if particle float attribute is to be optimized.
-  */
-
+//! Indicate if the particle float attribute is to be optimized.
+/** \return True if particle float attribute is to be optimized.
+ */
 bool ModelData::is_optimized(const FloatIndex idx) const
 {
   return float_data_[idx.index()].is_optimized_;
 }
 
 
-/**
-  Set all derivatives to zero.
-*/
+//! Set whether the particle float attribute is to be optimized.
+/** \param[in] is_optimized True if particle float attribute is to be optimized.
+ */
+void ModelData::set_is_optimized(const FloatIndex idx, bool is_optimized)
+{
+  float_data_[idx.index()].is_optimized_ = is_optimized;
+}
 
+
+//! Set all derivatives to zero.
 void ModelData::zero_derivatives(void)
 {
   for (size_t i = 0; i < float_data_.size(); i++) {
@@ -130,15 +101,13 @@ void ModelData::zero_derivatives(void)
 }
 
 
-/**
-  Add particle int attribute to the model. The returned index can be used
-  for obtaining and setting the attribute value.
+//! Add particle int attribute to the model.
+/** The returned index can be used for obtaining and setting the
+    attribute value.
 
-  \param[in] value Initial value of the attribute.
-
-  \return index of a new int attribute.
+    \param[in] value Initial value of the attribute.
+    \return index of a new int attribute.
  */
-
 IntIndex ModelData::add_int(const Int value)
 {
   IntIndex i_index;
@@ -152,28 +121,22 @@ IntIndex ModelData::add_int(const Int value)
   return i_index;
 }
 
-/**
-  Set particle attribute value.
-
-  \param[in] idx Index of the attribute.
-  \param[in] value Value the attribute should be given.
+//! Set particle attribute value.
+/** \param[in] idx Index of the attribute.
+    \param[in] value Value the attribute should be given.
  */
-
 void ModelData::set_int(const IntIndex idx, const Int value)
 {
   int_data_[idx.index()] = value;
 }
 
 
-/**
-  Add particle string attribute to the model. The returned index can be used
-  for obtaining and setting the attribute value.
-
-  \param[in] value Initial value of the attribute.
-
-  \return index of a new string attribute.
+//! Add particle string attribute to the model.
+/** The returned index can be used for obtaining and setting the attribute
+    value.
+    \param[in] value Initial value of the attribute.
+    \return index of a new string attribute.
  */
-
 StringIndex ModelData::add_string(const String value)
 {
   StringIndex s_index;
@@ -187,30 +150,21 @@ StringIndex ModelData::add_string(const String value)
   return s_index;
 }
 
-/**
-  Set particle attribute value.
-
-  \param[in] idx Index of the attribute.
-  \param[in] value Value the attribute should be given.
+//! Set particle attribute value.
+/** \param[in] idx Index of the attribute.
+    \param[in] value Value the attribute should be given.
  */
-
 void ModelData::set_string(const StringIndex idx, const String value)
 {
   string_data_[idx.index()] = value;
 }
 
 
-// ####  OptFloatIndexIterator ####
-// Iterator returns all optimizable Floats in the ModelData
-
-
-/**
-  Reset the iterator so that after the next call to next(),
- get() will return the first optimizable Float variable.
-
- \param[in] model_data The model data that is being referenced.
+//! Reset the iterator.
+/** After the next call to next(), get() will return the first optimizable
+    Float variable.
+    \param[in] model_data The model data that is being referenced.
  */
-
 void OptFloatIndexIterator::reset(ModelData* model_data)
 {
   model_data_ = model_data;
@@ -218,13 +172,11 @@ void OptFloatIndexIterator::reset(ModelData* model_data)
 }
 
 
-/**
-  Check if another optimizable Float variable is available, and if so,
- make sure it is called by the next call to get().
-
- \return True if another optimizable variable is available.
+//! Move to the next optimizable Float variable.
+/** Check if another optimizable Float variable is available, and if so,
+    make sure it is called by the next call to get().
+    \return True if another optimizable variable is available.
  */
-
 bool OptFloatIndexIterator::next(void)
 {
   FloatIndex fi;
@@ -242,13 +194,10 @@ bool OptFloatIndexIterator::next(void)
 }
 
 
-/**
-  Return the next available optimizable Float variable. Should only
-  be called if next() returned True.
-
- \return True if another optimizable variable is available.
+//! Return the current available optimizable Float variable.
+/** Should only be called if next() returned True.
+    \return the index of the Float variable.
  */
-
 FloatIndex OptFloatIndexIterator::get(void) const
 {
   FloatIndex fi;
@@ -257,7 +206,4 @@ FloatIndex OptFloatIndexIterator::get(void) const
   return fi;
 }
 
-
-
 }  // namespace IMP
-
