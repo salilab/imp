@@ -95,7 +95,7 @@ public:
   /** \param[in] idx Index of the particle float attribute.
       \return True if particle float attribute is to be optimized.
    */
-  bool is_optimized(const FloatIndex idx) const;
+  bool get_is_optimized(const FloatIndex idx) const;
 
   //! Set whether the particle float attribute is to be optimized.
   /** \param[in] idx Index of the particle float attribute.
