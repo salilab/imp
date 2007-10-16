@@ -1,6 +1,5 @@
-/*
- *  Particle.cpp
- *  IMP
+/**
+ *  \file Particle.cpp   \brief Classes to handle individual model particles.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -14,60 +13,44 @@ namespace IMP
 {
 
 
-
-/**
-  Constructor
- */
-
-Particle::Particle (): model_data_(NULL)
+//! Constructor
+Particle::Particle(): model_data_(NULL)
 {
   IMP_LOG(VERBOSE, "create particle");
   is_active_ = true;
 }
 
 
-/**
-  Destructor
- */
-
-Particle::~Particle ()
+//! Destructor
+Particle::~Particle()
 {
   IMP_LOG(VERBOSE, "delete particle");
 }
 
 
-
-
-/**
-Get pointer to model particle data.
-
-\return all particle data in the model.
-*/
-
+//! Get pointer to model particle data.
+/** \return all particle data in the model.
+ */
 ModelData* Particle::get_model_data(void) const
 {
   return model_data_;
 }
 
-/**
-Set pointer to model particle data. This is called by the Model after the particle is added. 
-
-\return all particle data in the model.
-*/
-
+//! Set pointer to model particle data.
+/** This is called by the Model after the particle is added. 
+    \param[in] md Pointer to a ModelData object.
+ */
 void Particle::set_model_data(ModelData *md)
 {
   model_data_=md;
 }
 
 
-/**
-  Set whether the particle is active. I.e. if restraints
-referencing the particle should be evaluated.
-
- \param[in] is_active If true, the particle is active.
+//! Set whether the particle is active.
+/** Restraints referencing the particle are only evaluated for 'active'
+    particles.
+    \param[in] is_active If true, the particle is active.
  */
-
 void Particle::set_is_active(const bool is_active)
 {
   is_active_ = is_active;
@@ -77,28 +60,24 @@ void Particle::set_is_active(const bool is_active)
 }
 
 
-/**
-  Get whether the particle is active. I.e. if restraints
-referencing the particle should be evaluated.
-
- \return true it the particle is active.
+//! Get whether the particle is active.
+/** Restraints referencing the particle are only evaluated for 'active'
+    particles.
+    \return true it the particle is active.
  */
-
 bool Particle::is_active(void) const
 {
   return is_active_;
 }
 
 
-/**
-  Add a Float attribute to this particle.
-
-  \param[in] name Name of the attribute being added.
-
-  return true if Float attribute successfully added.
+//! Add a Float attribute to this particle.
+/** \param[in] name Name of the attribute being added.
+    \param[in] value Initial value of the attribute.
+    \param[in] is_optimized Whether the attribute's value should be optimizable.
  */
-
-bool Particle::add_float (const std::string name, const Float value, const bool is_optimized)
+void Particle::add_float(const std::string name, const Float value,
+                         const bool is_optimized)
 {
   FloatIndex fi;
 
@@ -119,33 +98,24 @@ bool Particle::add_float (const std::string name, const Float value, const bool 
 
   float_indexes_[name] = fi;
   model_data_->set_is_optimized(fi, is_optimized);
-  return true;
 }
 
 
-/**
-  Does particle have a Float attribute with the given name.
-
-  \param[in] name Name of the attribute being checked.
-
-  return true if Float attribute exists in this particle.
+//! Does particle have a Float attribute with the given name.
+/** \param[in] name Name of the attribute being checked.
+    \return true if Float attribute exists in this particle.
  */
-
-
-bool Particle::has_float (const std::string name) const
+bool Particle::has_float(const std::string name) const
 {
   return (float_indexes_.find(name) != float_indexes_.end());
 }
 
 
-/**
-  Get the specified Float attribute for this particle.
-
-  \param[in] name Name of the attribute being retrieved.
-
-  \return index to the attribute.
+//! Get the specified Float attribute for this particle.
+/** \param[in] name Name of the attribute being retrieved.
+    \exception std::out_of_range attribute does not exist.
+    \return index to the attribute.
  */
-
 FloatIndex Particle::get_float_index(const std::string name) const
 {
   IMP_check(has_float(name), "Unknown float attribute '" << name << "'", 
@@ -154,49 +124,35 @@ FloatIndex Particle::get_float_index(const std::string name) const
 }
 
 
-/**
-  Add an Int attribute to this particle.
-
-  \param[in] in Input stream to read value from.
-  \param[in] name Name of the attribute being added.
-
-  return true if Int attribute successfully added.
+//! Add an Int attribute to this particle.
+/** \param[in] name Name of the attribute being added.
+    \param[in] value Initial value of the attribute.
  */
-
-bool Particle::add_int (const std::string name, const Int value)
+void Particle::add_int(const std::string name, const Int value)
 {
   IMP_LOG(VERBOSE, "add_int: " << name);
   IMP_assert(model_data_ != NULL, 
 	     "Particle must be added to Model before an attributes are added");
   IMP_assert(!has_int(name), "Trying to add the name '" <<  name << "' twice.");
   int_indexes_[name] = model_data_->add_int(value);
-  return true;
 }
 
 
-/**
-  Does particle have an Int attribute with the given name.
-
-  \param[in] name Name of the attribute being checked.
-
-  return true if Int attribute exists in this particle.
+//! Does particle have an Int attribute with the given name.
+/** \param[in] name Name of the attribute being checked.
+    \return true if Int attribute exists in this particle.
  */
-
-
-bool Particle::has_int (const std::string name) const
+bool Particle::has_int(const std::string name) const
 {
   return (int_indexes_.find(name) != int_indexes_.end());
 }
 
 
-/**
-  Get the specified Int attribute for this particle.
-
-  \param[in] name Name of the attribute being retrieved.
-
-  \return index to the attribute.
+//! Get the specified Int attribute for this particle.
+/** \param[in] name Name of the attribute being retrieved.
+    \exception std::out_of_range attribute does not exist.
+    \return index to the attribute.
  */
-
 IntIndex Particle::get_int_index(const std::string name) const
 {
   IMP_check(has_int(name), "Unknown int attribute '" << name << "'", 
@@ -206,18 +162,11 @@ IntIndex Particle::get_int_index(const std::string name) const
 }
 
 
-
-
-/**
-  Add a String attribute to this particle.
-
-  \param[in] in Input stream to read value from.
-  \param[in] name Name of the attribute being added.
-
-  return true if String attribute successfully added.
+//! Add a String attribute to this particle.
+/** \param[in] name Name of the attribute being added.
+    \param[in] value Initial value of the attribute. 
  */
-
-bool Particle::add_string(const std::string name, const String value)
+void Particle::add_string(const std::string name, const String value)
 {
   IMP_assert(model_data_ != NULL, 
 		"Particle must be added to Model before an attributes are added");
@@ -225,34 +174,24 @@ bool Particle::add_string(const std::string name, const String value)
 	     "Trying to add the name '" <<  name << "' twice.");
   
   string_indexes_[name] = model_data_->add_string(value);
-  return true;
 }
 
 
-/**
-  Does particle have an String attribute with the given name.
-
-  \param[in] name Name of the attribute being checked.
-
-  return true if String attribute exists in this particle.
+//! Does particle have a String attribute with the given name.
+/** \param[in] name Name of the attribute being checked.
+    \return true if Int attribute exists in this particle.
  */
-
-
-bool Particle::has_string (const std::string name) const
+bool Particle::has_string(const std::string name) const
 {
   return (string_indexes_.find(name) != string_indexes_.end());
 }
 
 
-
-/**
-  Get the specified String attribute for this particle.
-
-  \param[in] name Name of the attribute being retrieved.
-
-  \return index to the attribute.
+//! Get the specified String attribute for this particle.
+/** \param[in] name Name of the attribute being retrieved.
+    \exception std::out_of_range attribute does not exist.
+    \return index to the attribute.
  */
-
 StringIndex Particle::get_string_index(const std::string name) const
 {
   IMP_check(has_string(name), "Unknown string attribute '" << name << "'", 
@@ -262,13 +201,10 @@ StringIndex Particle::get_string_index(const std::string name) const
 }
 
 
-/**
-  Show the particle
-
- \param[in] out Stream to write particle description to.
+//! Show the particle
+/** \param[in] out Stream to write particle description to.
  */
-
-void Particle::show (std::ostream& out) const
+void Particle::show(std::ostream& out) const
 {
   char* inset = "  ";
   out << std::endl;

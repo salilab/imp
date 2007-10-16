@@ -1,6 +1,5 @@
-/*
- *  Base_Types.h
- *  IMP
+/**
+ *  \file Base_Types.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -16,9 +15,13 @@
 namespace IMP
 {
 
-// basic types used by IMP
+//! Basic floating-point value (could be float, double...)
 typedef float Float;
+
+//! Basic integer value
 typedef int Int;
+
+//! Basic string value
 typedef std::string String;
 
 // if I don't do this as a template, I eliminate the swig errors

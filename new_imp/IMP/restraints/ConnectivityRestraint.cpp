@@ -1,7 +1,8 @@
 /**
- *  \file ConnectivityRestraint.cpp   Restrict max distance between at least
- *                                    one pair of particles of any two
- *                                    distinct types.
+ *  \file ConnectivityRestraint.cpp  \brief Connectivity restraint.
+ *
+ *  Restrict max distance between at least one pair of particles of any
+ *  two distinct types.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -18,24 +19,17 @@
 namespace IMP
 {
 
-//######### ConnectivityRestraint Restraint #########
-// Optimize based on "best" distances for pairs of particles w
-// representing one of each possible pair of particle types
-
+//! Constructor using a given mean for particle-particle expected distance.
 /**
-  Constructor - set up the values and indexes for this connectivity restraint. Use
-  the given mean for the expected distance between two particles.
-
-  \param[in] model Pointer to the model.
-  \param[in] particles Vector of pointers  to particle of the restraint.
-  \param[in] type The attribute used to determine if particles are equivalent.
-  \param[in] score_func_params Parameters for creating a score function.
+    \param[in] model Pointer to the model.
+    \param[in] particle_indexes Vector of particle indices. \todo Should use
+               Particle pointers instead.
+    \param[in] type The attribute used to determine if particles are equivalent.
+    \param[in] score_func_params Parameters for creating a score function.
  */
-
 ConnectivityRestraint::ConnectivityRestraint(Model& model,
-                                   std::vector<int>& particle_indexes,
-                                   const std::string type,
-                                   BasicScoreFuncParams* score_func_params)
+    std::vector<int>& particle_indexes, const std::string type,
+    BasicScoreFuncParams* score_func_params)
 {
   std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
@@ -69,23 +63,18 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
          num_particles_ << std::endl);
 }
 
-/**
-  Constructor - set up the values and indexes for this connectivity restraint. Use
-  the attr_name to specify the attribute you want to use for determining the expected
-  distance between two particles.
 
-  \param[in] model Pointer to the model.
-  \param[in] particles Vector of pointers  to particle of the restraint.
-  \param[in] type The attribute used to determine if particles are equivalent.
-  \param[in] attr_name Name to get radii to calculate the mean distance.
-  \param[in] score_func_params Parameters for creating a score function.
+//! Constructor using a given attribute for particle-particle expected distance.
+/** \param[in] model Pointer to the model.
+    \param[in] particle_indexes Vector of particle indices. \todo Should use
+               Particle pointers instead.
+    \param[in] type The attribute used to determine if particles are equivalent.
+    \param[in] attr_name Name to get radii to calculate the mean distance.
+    \param[in] score_func_params Parameters for creating a score function.
  */
-
 ConnectivityRestraint::ConnectivityRestraint(Model& model,
-                                   std::vector<int>& particle_indexes,
-                                   const std::string type,
-                                   const std::string attr_name,
-                                   BasicScoreFuncParams* score_func_params)
+    std::vector<int>& particle_indexes, const std::string type,
+    const std::string attr_name, BasicScoreFuncParams* score_func_params)
 {
   std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
@@ -127,17 +116,16 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
          num_particles_ << std::endl);
 }
 
-/**
-  Set up the values and indexes for this connectivity restraint for the constructors.
 
-  \param[in] model Pointer to the model.
-  \param[in] particles Vector of pointers  to particle of the restraint.
-  \param[in] type The attribute used to determine if particles are equivalent.
+//! Set up initial values for the constructors.
+/** \param[in] model Pointer to the model.
+    \param[in] particle_indexes Vector of particle indices. \todo Should use
+               Particle pointers instead.
+    \param[in] type The attribute used to determine if particles are equivalent.
  */
-
 void ConnectivityRestraint::set_up(Model& model,
-                              std::vector<int>& particle_indexes,
-                              const std::string type)
+                                   std::vector<int>& particle_indexes,
+                                   const std::string type)
 {
   Particle* p1;
 
@@ -206,10 +194,7 @@ void ConnectivityRestraint::set_up(Model& model,
   rsr_scores_.resize(num_restraints_);
 }
 
-/**
-  Destructor
- */
-
+//! Destructor
 ConnectivityRestraint::~ConnectivityRestraint ()
 {
   std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
@@ -219,16 +204,18 @@ ConnectivityRestraint::~ConnectivityRestraint ()
   }
 }
 
-/**
-  Calculate the distance restraints for the given particles. Use the smallest
-  restraints that will connect one particle of each type together (i.e. a
-  minimum spanning tree with nodes corresponding to particle types and the
-  edge weights corresponding to restraint violation scores).
 
- \param[in] calc_deriv If true, partial first derivatives should be calculated.
- \return score associated with this restraint for the given state of the model.
-  */
+//! Evaluate this restraint and return the score.
+/** Calculate the distance restraints for the given particles. Use the smallest
+    restraints that will connect one particle of each type together (i.e. a
+    minimum spanning tree with nodes corresponding to particle types and the
+    edge weights corresponding to restraint violation scores).
 
+    \param[in] calc_deriv If true, partial first derivatives should be
+                          calculated.
+    \return score associated with this restraint for the given state of
+            the model.
+ */
 Float ConnectivityRestraint::evaluate(bool calc_deriv)
 {
   IMP_LOG(VERBOSE, "evaluate ConnectivityRestraint");

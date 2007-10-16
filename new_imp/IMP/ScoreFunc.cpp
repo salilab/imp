@@ -1,6 +1,5 @@
-/*
- *  ScoreFunc.cpp
- *  IMP
+/**
+ *  \file ScoreFunc.cpp  \brief Scoring functions.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -13,58 +12,38 @@
 namespace IMP
 {
 
-/** Destructor */
+//! Destructor
 Harmonic::~Harmonic()
 {
   IMP_LOG(VERBOSE,
 	  "Delete Harmonic: beware of early Python calls to destructor.");
 }
 
-/**
-  Calculate harmonic score with respect to the given feature.
-
-  \param[in] feature Value of feature being tested.
-
-  \param[in] mean Expected mean value of the feature.
-
-  \param[in] sd Allowable standard deviation value of the feature.
+//! Calculate harmonic score with respect to the given feature.
+/** \param[in] feature Value of feature being tested.
+    \return Score
  */
-
 Float Harmonic::operator()(Float feature)
 {
   return harmonic(feature);
 }
 
-/**
-  Calculate harmonic score and partial derivative of the score
-  with respect to the given feature.
-
-  \param[in] feature Value of feature being tested.
-
-  \param[in] mean Expected mean value of the feature.
-
-  \param[in] sd Allowable standard deviation value of the feature.
-
-  \param[out] deriv Partial derivative of the score with respect to
+//! Calculate harmonic score and derivative with respect to the given feature.
+/** \param[in] feature Value of feature being tested.
+    \param[out] deriv Partial derivative of the score with respect to
                       the feature value.
+    \return Score
  */
-
 Float Harmonic::operator()(Float feature, Float& deriv)
 {
   return harmonic(feature, deriv);
 }
 
-/**
-  Calculate harmonic score with respect to the given feature.
-  Implemented to support lower and upper bound harmonics as well.
-
-  \param[in] feature Value of feature being tested.
-
-  \param[in] mean Expected mean value of the feature.
-
-  \param[in] sd Allowable standard deviation value of the feature.
+//! Calculate harmonic score with respect to the given feature.
+/** Implemented to support lower and upper bound harmonics as well.
+    \param[in] feature Value of feature being tested.
+    \return Score
  */
-
 Float Harmonic::harmonic(Float feature)
 {
   Float dummy;
@@ -72,21 +51,13 @@ Float Harmonic::harmonic(Float feature)
   return harmonic(feature, dummy);
 }
 
-/**
-  Calculate harmonic score and partial derivative of the score
-  with respect to the given feature. Implemented to support lower
-  and upper bound harmonics as well.
-
-  \param[in] feature Value of feature being tested.
-
-  \param[in] mean Expected mean value of the feature.
-
-  \param[in] sd Allowable standard deviation value of the feature.
-
-  \param[out] deriv Partial derivative of the score with respect to
+//! Calculate harmonic score and derivative with respect to the given feature.
+/** Implemented to support lower and upper bound harmonics as well.
+    \param[in] feature Value of feature being tested.
+    \param[out] deriv Partial derivative of the score with respect to
                       the feature value.
+    \return Score
  */
-
 Float Harmonic::harmonic(Float feature, Float& deriv)
 {
   Float e;
@@ -98,24 +69,18 @@ Float Harmonic::harmonic(Float feature, Float& deriv)
   return e * e;
 }
 
-/** Destructor */
+//! Destructor
 HarmonicLowerBound::~HarmonicLowerBound()
 {
   IMP_LOG(VERBOSE, "Delete HarmonicLowerBound: beware of early Python "
 	  << "calls to destructor.");
 }
 
-/**
-  Calculate harmonic score with respect to the given feature if
-  the feature is less than the mean. Otherwise, the score is zero.
-
-  \param[in] feature Value of feature being tested.
-
-  \param[in] mean Expected mean value of the feature.
-
-  \param[in] sd Allowable standard deviation value of the feature.
+//! Calculate lower-bound harmonic score with respect to the given feature.
+/** If the feature is greater than or equal to the mean, the score is zero.
+    \param[in] feature Value of feature being tested.
+    \return Score
  */
-
 Float HarmonicLowerBound::operator()(Float feature)
 {
   if (feature >= mean_)
@@ -124,21 +89,14 @@ Float HarmonicLowerBound::operator()(Float feature)
     return harmonic(feature);
 }
 
-/**
-  Calculate harmonic score and partial derivative of the score
-  with respect to the given feature if the feature is less than
-  the mean. Otherwise, the score is zero.
 
-  \param[in] feature Value of feature being tested.
-
-  \param[in] mean Expected mean value of the feature.
-
-  \param[in] sd Allowable standard deviation value of the feature.
-
-  \param[out] deriv Partial derivative of the score with respect to
+//! Calculate lower-bound harmonic score and derivative for a feature.
+/** If the feature is greater than or equal to the mean, the score is zero.
+    \param[in] feature Value of feature being tested.
+    \param[out] deriv Partial derivative of the score with respect to
                       the feature value.
+    \return Score
  */
-
 Float HarmonicLowerBound::operator()(Float feature, Float& deriv)
 {
   if (feature >= mean_) {
@@ -148,24 +106,19 @@ Float HarmonicLowerBound::operator()(Float feature, Float& deriv)
     return harmonic(feature, deriv);
 }
 
-/** Destructor */
+//! Destructor
 HarmonicUpperBound::~HarmonicUpperBound()
 {
   IMP_LOG(VERBOSE, "Delete HarmonicUpperBound: beware of early Python "
 	  << "calls to destructor.");
 }
 
-/**
-  Calculate harmonic score with respect to the given feature if
-  the feature is greater than the mean. Otherwise, the score is zero.
 
-  \param[in] feature Value of feature being tested.
-
-  \param[in] mean Expected mean value of the feature.
-
-  \param[in] sd Allowable standard deviation value of the feature.
+//! Calculate upper-bound harmonic score with respect to the given feature.
+/** If the feature is less than or equal to the mean, the score is zero.
+    \param[in] feature Value of feature being tested.
+    \return Score
  */
-
 Float HarmonicUpperBound::operator()(Float feature)
 {
   if (feature <= mean_)
@@ -174,21 +127,14 @@ Float HarmonicUpperBound::operator()(Float feature)
     return harmonic(feature);
 }
 
-/**
-  Calculate harmonic score and partial derivative of the score
-  with respect to the given feature if the feature is greater than
-  the mean. Otherwise, the score is zero.
 
-  \param[in] feature Value of feature being tested.
-
-  \param[in] mean Expected mean value of the feature.
-
-  \param[in] sd Allowable standard deviation value of the feature.
-
-  \param[out] deriv Partial derivative of the score with respect to
+//! Calculate upper-bound harmonic score and derivative for a feature.
+/** If the feature is less than or equal to the mean, the score is zero.
+    \param[in] feature Value of feature being tested.
+    \param[out] deriv Partial derivative of the score with respect to
                       the feature value.
+    \return Score
  */
-
 Float HarmonicUpperBound::operator()(Float feature, Float& deriv)
 {
   if (feature <= mean_) {
@@ -198,14 +144,9 @@ Float HarmonicUpperBound::operator()(Float feature, Float& deriv)
     return harmonic(feature, deriv);
 }
 
-//######### ScoreFuncParams #########
-
-/**
-  Constructor
- */
-
+//! Constructor
 BasicScoreFuncParams::BasicScoreFuncParams(std::string score_func_type, 
-                                                 Float mean, Float sd)
+                                           Float mean, Float sd)
 {
   mean_ = mean;
   sd_ = sd;
@@ -213,56 +154,40 @@ BasicScoreFuncParams::BasicScoreFuncParams(std::string score_func_type,
 }
 
 
-/**
-Destructor
- */
-
+//! Destructor
 BasicScoreFuncParams::~BasicScoreFuncParams ()
 {
 }
 
 
-/**
-Set the mean to use in calculating this score function.
-
-\param[in] mean Value for the mean.
-*/
-
+//! Set the mean to use in calculating this score function.
+/** \param[in] mean Value for the mean.
+ */
 void BasicScoreFuncParams::set_mean(Float mean)
 {
   mean_ = mean;
 }
 
-/**
-Set the standard deviation to use in calculating this score function.
-
-\param[in] sd Value for the standard deviation.
-*/
-
+//! Set the standard deviation to use in calculating this score function.
+/** \param[in] sd Value for the standard deviation.
+ */
 void BasicScoreFuncParams::set_sd(Float sd)
 {
   sd_ = sd;
 }
 
-/**
-Set the type of score function to use.
-
-\param[in] mean Value for the mean.
-*/
-
+//! Set the type of score function to use.
+/** \param[in] score_func_type Name of the score function type
+ */
 void BasicScoreFuncParams::set_score_func_type(std::string score_func_type)
 {
   score_func_type_ = score_func_type;
 }
 
 
-/**
-Create the specified score function with the current set of parameters
-and return a pointer to that score function.
-
-\return pointer to score function.
-*/
-
+//! Create a new score function with the current set of parameters.
+/** \return pointer to score function.
+ */
 ScoreFunc* BasicScoreFuncParams::create_score_func(void)
 {
   if (score_func_type_ == "harmonic") {
@@ -277,7 +202,6 @@ ScoreFunc* BasicScoreFuncParams::create_score_func(void)
 	    std::out_of_range("Unknown score function"));
   return NULL;
 }
-
 
 
 }  // namespace IMP

@@ -1,5 +1,5 @@
 /**
- *  \file TorusRestraint.cpp   Score based on distance from torus interior
+ *  \file TorusRestraint.cpp \brief Score based on distance from torus interior
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -15,22 +15,20 @@
 namespace IMP
 {
 
-/**
-  Constructor - set up the values and indexes for this torus restraint. Expects
- coordinates to be labeled "x", "y", and "z" in the particles.
+//! Constructor - set up the values and indexes for this torus restraint.
+/** Expects coordinates to be labeled "x", "y", and "z" in the particles.
 
-  \param[in] model Pointer to the model.
-  \param[in] p1 Pointer to particle of the restraint.
-  \param[in] main_radius The main radius from the origin to the midline of the tube.
-  \param[in] tube_radius The tube radius is min distance from the tube midline to the tube surface.
-  \param[in] score_func_params Parameters for creating a score function.
+    \param[in] model Pointer to the model.
+    \param[in] p1 Pointer to particle of the restraint.
+    \param[in] main_radius The main radius from the origin to the midline
+                           of the tube.
+    \param[in] tube_radius The tube radius is min distance from the tube
+                           midline to the tube surface.
+    \param[in] score_func_params Parameters for creating a score function.
  */
-
-TorusRestraint::TorusRestraint(Model& model,
-                     Particle* p1,
-                     const Float main_radius,
-                     const Float tube_radius,
-                     BasicScoreFuncParams* score_func_params)
+TorusRestraint::TorusRestraint(Model& model, Particle* p1,
+                               const Float main_radius, const Float tube_radius,
+                               BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
 
@@ -44,21 +42,18 @@ TorusRestraint::TorusRestraint(Model& model,
   score_func_ = score_func_params->create_score_func();
 }
 
-/**
-  Destructor
- */
 
-TorusRestraint::~TorusRestraint ()
+//! Destructor
+TorusRestraint::~TorusRestraint()
 {
 }
 
-/**
-  Calculate the score for this coordinate restraint based on the current
-  state of the model.
 
- \param[in] calc_deriv If true, partial first derivatives should be calculated.
-  */
-
+//! Calculate the score for this restraint for the current model state.
+/** \param[in] calc_deriv If true, partial first derivatives should
+                          be calculated.
+    \return Current score.
+ */
 Float TorusRestraint::evaluate(bool calc_deriv)
 {
   Float tube_center_x, tube_center_y;
@@ -129,12 +124,9 @@ Float TorusRestraint::evaluate(bool calc_deriv)
 }
 
 
-/**
-  Show the current restraint.
-
- \param[in] out Stream to send restraint description to.
+//! Show the current restraint.
+/** \param[in] out Stream to send restraint description to.
  */
-
 void TorusRestraint::show(std::ostream& out) const
 {
   if (is_active()) {

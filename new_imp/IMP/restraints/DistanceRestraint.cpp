@@ -1,6 +1,5 @@
 /**
- *  \file DistanceRestraint.cpp   Distance restraint between two particles.
- *  IMP
+ *  \file DistanceRestraint.cpp \brief Distance restraint between two particles.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -16,48 +15,33 @@
 namespace IMP
 {
 
-// static constants
+//! particles must be at least this far apart to calculate the restraint
 const Float DistanceRestraint::MIN_DISTANCE = 0.0000001;
 
-//######### Distance Restraint #########
-// Distance restraint between two particles
-
-/**
-  Constructor - set up the values and indexes for this distant restraint.
-
-  \param[in] model Pointer to the model.
-  \param[in] p1 Pointer to first particle in distance restraint.
-  \param[in] p2 Pointer to second particle in distance restraint.
-  \param[in] mean Mean associated with the score function for the restraint.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+//! Constructor - set up the restraint using a given mean.
+/** \param[in] model Pointer to the model.
+    \param[in] p1 Pointer to first particle in distance restraint.
+    \param[in] p2 Pointer to second particle in distance restraint.
+    \param[in] score_func_params Score function parameters for the restraint.
  */
-
-DistanceRestraint::DistanceRestraint(Model& model,
-                           Particle* p1,
-                           Particle* p2,
-                           BasicScoreFuncParams* score_func_params)
+DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
+                                     BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
   set_up(model, p1, p2, score_func_params);
 }
 
-/**
-  Constructor - set up the values and indexes for this distant restraint.
-
-  \param[in] model Pointer to the model.
-  \param[in] p1 Pointer to first particle in distance restraint.
-  \param[in] p2 Pointer to second particle in distance restraint.
-  \param[in] attr_name Name of attribute to be used to determine the expected distance (e.g. "radius").
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+//! Constructor - set up the restraint using a given attribute.
+/** \param[in] model Pointer to the model.
+    \param[in] p1 Pointer to first particle in distance restraint.
+    \param[in] p2 Pointer to second particle in distance restraint.
+    \param[in] attr_name Name of attribute to be used to determine the
+                         expected distance (e.g. "radius").
+    \param[in] score_func_params Score function parameters for the restraint.
  */
-
-DistanceRestraint::DistanceRestraint(Model& model,
-                           Particle* p1,
-                           Particle* p2,
-                           const std::string attr_name,
-                           BasicScoreFuncParams* score_func_params)
+DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
+                                     const std::string attr_name,
+                                     BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
 
@@ -70,21 +54,14 @@ DistanceRestraint::DistanceRestraint(Model& model,
 }
 
 
-/**
-  Set up for the distant restraint constructors.
-
-  \param[in] model Pointer to the model.
-  \param[in] p1 Pointer to first particle in distance restraint.
-  \param[in] p2 Pointer to second particle in distance restraint.
-  \param[in] mean Mean associated with the score function for the restraint.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
-  \param[in] score_func Score function for the restraint.
+//! Do set up for the distant restraint constructors.
+/** \param[in] model Pointer to the model.
+    \param[in] p1 Pointer to first particle in distance restraint.
+    \param[in] p2 Pointer to second particle in distance restraint.
+    \param[in] score_func_params Score function parameters for the restraint.
  */
-
-void DistanceRestraint::set_up(Model& model,
-                          Particle* p1,
-                          Particle* p2,
-                          BasicScoreFuncParams* score_func_params)
+void DistanceRestraint::set_up(Model& model, Particle* p1, Particle* p2,
+                               BasicScoreFuncParams* score_func_params)
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
   particles_.push_back(p1);
@@ -101,21 +78,17 @@ void DistanceRestraint::set_up(Model& model,
 }
 
 
-/**
-  Destructor
- */
-
+//! Destructor
 DistanceRestraint::~DistanceRestraint ()
 {
 }
 
-/**
-  Calculate the score for this distance restraint based on the current
-  state of the model.
 
- \param[in] calc_deriv If true, partial first derivatives should be calculated.
-  */
-
+//! Calculate the score for this distance restraint.
+/** \param[in] calc_deriv If true, partial first derivatives should be
+                          calculated.
+    \return Current score.
+ */
 Float DistanceRestraint::evaluate(bool calc_deriv)
 {
   Float distance;
@@ -186,12 +159,9 @@ Float DistanceRestraint::evaluate(bool calc_deriv)
 }
 
 
-/**
-  Show the current restraint.
-
- \param[in] out Stream to send restraint description to.
+//! Show the current restraint.
+/** \param[in] out Stream to send restraint description to.
  */
-
 void DistanceRestraint::show(std::ostream& out) const
 {
   if (is_active()) {

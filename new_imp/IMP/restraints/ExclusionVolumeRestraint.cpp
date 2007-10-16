@@ -1,7 +1,9 @@
 /**
- *  \file ExclusionVolumeRestraint.cpp   Restrict min distance between all
- *                                       pairs of particles of formed from
- *                                       one or two sets of particles.
+ *  \file ExclusionVolumeRestraint.cpp  \brief Excluded volume restraint.
+ *
+ *  Prevent particles from getting too close together, by restricting the
+ *  minimum distance between all pairs of particles formed from one or two
+ *  sets of particles.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -17,29 +19,24 @@
 namespace IMP
 {
 
-//######### ExclusionVolumeRestraint Restraint #########
-// Apply restraints that prevent particles from getting too close together
+//! Set up restraint using two sets of particles.
+/** Uses the attr_name to access the radii for the minimum distance between
+    any two particles. Assumes that there is no overlap between the two
+    particle lists. Create restraints for all possible pairs between the
+    two lists.
 
-/**
-  Constructor - set up the values and indexes for this exclusion volume restraint. Use
-  the attr_name to access the radii for the minimum distance between two particles.
-  Assume that there is no overlap between the two particle lists. Create restraints for
-  all possible pairs between the two lists.
-
-  \param[in] model Pointer to the model.
-  \param[in] particles1 Vector of indexes of particles of the first body.
-  \param[in] particles2 Vector of indexes of particles of the second body.
-  \param[in] attr_name The attribute used to determine the vw radius of each particle.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
+    \param[in] model Pointer to the model.
+    \param[in] particle1_indexes Vector of indexes of particles of the
+                                 first body.
+    \param[in] particle2_indexes Vector of indexes of particles of the
+                                 second body.
+    \param[in] attr_name The attribute used to determine the radius of
+                         each particle.
+    \param[in] score_func_params Scoring function parameters.
  */
-
 ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
-    // couldn't get Swig to work with std::vector<Particle*>&
-    std::vector<int>& particle1_indexes,
-    std::vector<int>& particle2_indexes,
-    const std::string attr_name,
-    BasicScoreFuncParams* score_func_params
-                                          )
+    std::vector<int>& particle1_indexes, std::vector<int>& particle2_indexes,
+    const std::string attr_name, BasicScoreFuncParams* score_func_params)
 {
   Particle* p1;
 
@@ -83,23 +80,21 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
   }
 }
 
-/**
-  Constructor - set up the values and indexes for this exclusion volume restraint. Use
-  the attr_name to access the radii for the minimum distance between two particles.
-  Create restraints for all possible pairs of particles in the list.
 
-  \param[in] model Pointer to the model.
-  \param[in] particles Vector of indexes of particles.
-  \param[in] attr_name The attribute used to determine the vw radius of each particle.
-  \param[in] sd Standard deviation associated with the score function for the restraint.
+//! Set up restraint using one set of particles.
+/** Uses the attr_name to access the radii for the minimum distance between
+    any two particles. Create restraints for all possible pairs of particles
+    in the list.
+
+    \param[in] model Pointer to the model.
+    \param[in] particle_indexes Vector of indexes of particles
+    \param[in] attr_name The attribute used to determine the radius of
+                         each particle.
+    \param[in] score_func_params Scoring function parameters.
  */
-
 ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
-    // couldn't get Swig to work with std::vector<Particle*>&
-    std::vector<int>& particle_indexes,
-    const std::string attr_name,
-    BasicScoreFuncParams* score_func_params
-                                          )
+    std::vector<int>& particle_indexes, const std::string attr_name,
+    BasicScoreFuncParams* score_func_params)
 {
   Particle* p1;
 
@@ -139,10 +134,7 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
 }
 
 
-/**
-  Destructor
- */
-
+//! Destructor
 ExclusionVolumeRestraint::~ExclusionVolumeRestraint ()
 {
   std::vector<DistanceRestraint*>::iterator rsr_iter;
@@ -152,16 +144,18 @@ ExclusionVolumeRestraint::~ExclusionVolumeRestraint ()
   }
 }
 
-/**
-  Calculate the distance restraints for the given particles. Use the smallest
-  restraints that will connect one particle of each type together (i.e. a
-  minimum spanning tree with nodes corresponding to particle types and the
-  edge weights corresponding to restraint violation scores).
 
- \param[in] calc_deriv If true, partial first derivatives should be calculated.
- \return score associated with this restraint for the given state of the model.
-  */
+//! Get the score of the restraint for the model.
+/** Calculate the distance restraints for the given particles. Use the smallest
+    restraints that will connect one particle of each type together (i.e. a
+    minimum spanning tree with nodes corresponding to particle types and the
+    edge weights corresponding to restraint violation scores).
 
+    \param[in] calc_deriv If true, partial first derivatives should be
+                          calculated.
+    \return score associated with this restraint for the given state of
+            the model.
+ */
 Float ExclusionVolumeRestraint::evaluate(bool calc_deriv)
 {
   std::vector<DistanceRestraint*>::iterator rsr_iter;
@@ -177,12 +171,9 @@ Float ExclusionVolumeRestraint::evaluate(bool calc_deriv)
 }
 
 
-/**
-  Show the current restraint.
-
- \param[in] out Stream to send restraint description to.
+//! Show the current restraint.
+/** \param[in] out Stream to send restraint description to.
  */
-
 void ExclusionVolumeRestraint::show(std::ostream& out) const
 {
   if (is_active()) {

@@ -1,6 +1,7 @@
-/*
- *  \file CoordianteRestraint.h     Optimize based on distance from an
- *                                  absolute position.
+/**
+ *  \file CoordinateRestraint.h   \brief Absolute position restraint.
+ *
+ *  Optimize based on distance from an absolute position.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -22,16 +23,22 @@ namespace IMP
 class IMPDLLEXPORT CoordinateRestraint : public Restraint
 {
 public:
-  CoordinateRestraint(Model& model,
-                 Particle* p1,
-                 const std::string type,
-                 BasicScoreFuncParams* score_func_params);
+  CoordinateRestraint(Model& model, Particle* p1, const std::string type,
+                      BasicScoreFuncParams* score_func_params);
   virtual ~CoordinateRestraint();
 
+  //! Calculate the score for this coordinate restraint.
+  /** \param[in] calc_deriv If true, partial first derivatives should be
+                            calculated.
+      \return Current score.
+   */
   virtual Float evaluate(bool calc_deriv);
 
-  // status
-  virtual void show (std::ostream& out = std::cout) const;
+  //! Show the current restraint.
+  /** \param[in] out Stream to send restraint description to.
+   */
+  virtual void show(std::ostream& out = std::cout) const;
+
   virtual std::string version(void) const {
     return "0.5.0";
   }
@@ -40,12 +47,13 @@ public:
   }
 
 protected:
-  // variables used to determine the distance
+  //! variables used to determine the distance
   FloatIndex x1_, y1_, z1_;
-  // type of coordinate position to use:
-  // X_AXIS, Y_AXIS, Z_AXIS, XY_RADIAL, XZ_RADIAL, YZ_RADIAL, XYZ_SPHERE
+  //! type of coordinate position to use
+  /** X_AXIS, Y_AXIS, Z_AXIS, XY_RADIAL, XZ_RADIAL, YZ_RADIAL, XYZ_SPHERE
+   */
   std::string axis_;
-  // math form for this restraint (typically one of the harmonics)
+  //! math form for this restraint (typically one of the harmonics)
   ScoreFunc* score_func_;
 };
 

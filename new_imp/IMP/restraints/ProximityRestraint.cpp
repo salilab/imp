@@ -1,6 +1,7 @@
 /**
- *  \file ProximityRestraint.cpp   Restrict maximum distance between any
- *                                 two particles.
+ *  \file ProximityRestraint.cpp \brief Proximity restraint.
+ *
+ *  Restrict maximum distance between any two particles.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -16,24 +17,16 @@
 namespace IMP
 {
 
-//######### ProximityRestraint Restraint #########
-// Given a list of particles, this restraint calculates the distance
-// restraints between all pairs of particles, and then applies the
-// one restraint with the greatest score.
-
-/**
-  Constructor - set up the values and indexes for this connectivity restraint.
-
-  \param[in] model Pointer to the model.
-  \param[in] particles Vector of indexes of particles of first body.
-  \param[in] distance Maximum length allowable between any two particles.
-  \param[in] score_func_params Parameters for creating a score function.
+//! Constructor - set up the restraint for point-like particles.
+/** \param[in] model Pointer to the model.
+    \param[in] particle_indexes Vector of indexes of particles
+    \param[in] distance Maximum length allowable between any two particles.
+    \param[in] score_func_params Parameters for creating a score function.
  */
-
 ProximityRestraint::ProximityRestraint(Model& model,
-                             std::vector<int>& particle_indexes,
-                             const Float distance,
-                             BasicScoreFuncParams* score_func_params)
+                                       std::vector<int>& particle_indexes,
+                                       const Float distance,
+                                       BasicScoreFuncParams* score_func_params)
 {
   set_up(model, particle_indexes);
 
@@ -45,10 +38,9 @@ ProximityRestraint::ProximityRestraint(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       // create the restraint
       
-      dist_rsrs_[idx] = new DistanceRestraint(model,
-                                         particles_[i],
-                                         particles_[j],
-                                         score_func_params);
+      dist_rsrs_[idx] = new DistanceRestraint(model, particles_[i],
+                                              particles_[j],
+                                              score_func_params);
       idx++;
     }
   }
@@ -58,21 +50,19 @@ ProximityRestraint::ProximityRestraint(Model& model,
          num_particles_ << std::endl);
 }
 
-/**
-  Constructor - set up the values and indexes for this connectivity restraint.
 
-  \param[in] model Pointer to the model.
-  \param[in] particles Vector of pointers  to particle of the restraint.
-  \param[in] attr_name Name to get radii to calculate the mean distance.
-  \param[in] distance Maximum length allowable between any two particles.
-  \param[in] score_func_params Parameters for creating a score function.
+//! Constructor - set up the restraint for particles with radii.
+/** \param[in] model Pointer to the model.
+    \param[in] particle_indexes Vector of indexes of particles
+    \param[in] attr_name Name to get radii to calculate the mean distance.
+    \param[in] distance Maximum length allowable between any two particles.
+    \param[in] score_func_params Parameters for creating a score function.
  */
-
 ProximityRestraint::ProximityRestraint(Model& model,
-                             std::vector<int>& particle_indexes,
-                             const std::string attr_name,
-                             const Float distance,
-                             BasicScoreFuncParams* score_func_params)
+                                       std::vector<int>& particle_indexes,
+                                       const std::string attr_name,
+                                       const Float distance,
+                                       BasicScoreFuncParams* score_func_params)
 {
   // Use those radii to calculate the expected distance
   set_up(model, particle_indexes);
@@ -99,15 +89,13 @@ ProximityRestraint::ProximityRestraint(Model& model,
   }
 }
 
-/**
-  Set up the values and indexes for this connectivity restraint for the constructors.
 
-  \param[in] model Pointer to the model.
-  \param[in] particles Vector of indexes of particles in the restraint.
+//! Internal set up for the constructors.
+/** \param[in] model Pointer to the model.
+    \param[in] particle_indexes Vector of indexes of particles in the restraint.
  */
-
 void ProximityRestraint::set_up(Model& model,
-                           std::vector<int>& particle_indexes)
+                                std::vector<int>& particle_indexes)
 {
   IMP_LOG(VERBOSE, "init ConnectivityRestraint");
 
@@ -133,27 +121,27 @@ void ProximityRestraint::set_up(Model& model,
   rsr_idx_.resize(num_restraints_);
 }
 
-/**
-  Destructor
- */
 
-ProximityRestraint::~ProximityRestraint ()
+//! Destructor
+ProximityRestraint::~ProximityRestraint()
 {
   for (int i = 0; i < num_restraints_; i++) {
     delete dist_rsrs_[i];
   }
 }
 
-/**
-  Calculate the distance restraints for the given particles. Use the smallest
-  restraints that will connect one particle of each type together (i.e. a
-  minimum spanning tree with nodes corresponding to particle types and the
-  edge weights corresponding to restraint violation score values).
 
- \param[in] calc_deriv If true, partial first derivatives should be calculated.
- \resturn score associated with this restraint for the given state of the model.
-  */
+//! Evaluate the score for the model.
+/** Calculate the distance restraints for the given particles. Use the smallest
+    restraints that will connect one particle of each type together (i.e. a
+    minimum spanning tree with nodes corresponding to particle types and the
+    edge weights corresponding to restraint violation score values).
 
+    \param[in] calc_deriv If true, partial first derivatives should be
+                          calculated.
+    \return score associated with this restraint for the given state of
+            the model.
+ */
 Float ProximityRestraint::evaluate(bool calc_deriv)
 {
   int idx;
@@ -222,12 +210,9 @@ Float ProximityRestraint::evaluate(bool calc_deriv)
 }
 
 
-/**
-  Show the current restraint.
-
- \param[in] out Stream to send restraint description to.
+//! Show the current restraint.
+/** \param[in] out Stream to send restraint description to.
  */
-
 void ProximityRestraint::show(std::ostream& out) const
 {
   if (is_active()) {

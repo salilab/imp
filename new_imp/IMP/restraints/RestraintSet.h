@@ -1,6 +1,5 @@
-/*
- *  RestraintSet.h
- *  IMP
+/**
+ *  \file RestraintSet.h     \brief Used to hold a set of related restraints.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -17,46 +16,59 @@
 namespace IMP
 {
 
-// Used to hold a set of related restraints
-class IMPDLLEXPORT RestraintSet: public Restraint
+//! Used to hold a set of related restraints
+class IMPDLLEXPORT RestraintSet : public Restraint
 {
 public:
   RestraintSet(const std::string& name=std::string());
   ~RestraintSet();
 
-  /** Return the score for this restraint or set of restraints
-      given the current state of the model */
+  //! Calculate the score for this restraint for the current model state.
+  /** \param[in] calc_deriv If true, partial first derivatives should
+                            be calculated.
+      \return Current score.
+   */
   virtual Float evaluate(bool calc_deriv);
 
-  //! The type to use to retreive a restraint
+  //! The type to use to retrieve a restraint
   typedef int RestraintIndex;
 
-  /** Add restraint to the restraint set. */
+  //! Add restraint to the restraint set.
+  /** \param[in] restraint The restraint to add to the restraint set.
+      \return the index of the newly-added restraint in the restraint set.
+   */
   RestraintIndex add_restraint(Restraint *restraint);
 
-  /** Access a restraint in this set*/
+  //! Access a restraint in the restraint set.
+  /** \param[in] i The RestraintIndex of the restraint to retrieve.
+      \exception std::out_of_range the index is out of range.
+      \return Pointer to the Restraint.
+   */
   Restraint *get_restraint(RestraintIndex i) const;
 
-  /** Return the total number of restraints*/
+  //! Return the total number of restraints
   unsigned int number_of_restraints() const {
     return restraints_.size();
   }
 
-  // called when at least one particle has been inactivated
-  virtual void check_particles_active (void);
+  //! Called when at least one particle has been inactivated.
+  /** Check each restraint to see if it changes its active status.
+   */
+  virtual void check_particles_active(void);
 
+  //! Show the current restraint.
+  /** \param[in] out Stream to send restraint description to.
+   */
   void show (std::ostream& out = std::cout) const;
 
 protected:
 
-   // restraints to evaluate
-  // these can be accessed with an iterator by a filter.
-  // in the case where the restraint is a single simple restraint,
-  // ... this vector contains a pointer to itself.
+  //! Restraints to evaluate.
+  /** These can be accessed with an iterator by a filter.
+      In the case where the restraint is a single simple restraint,
+      this vector contains a pointer to itself.
+   */
   std::vector<Restraint *> restraints_;
-
-  // Filters
-  // std::vector<Filter *> filters_;
 };
 
 } // namespace IMP
