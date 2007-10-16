@@ -1,6 +1,6 @@
-/*
- *  Model.cpp
- *  IMP
+/**
+ *  \file Model.h   \brief Storage of a model, its restraints,
+ *                         constraints and particles.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -15,64 +15,34 @@
 namespace IMP
 {
 
-/**
-  Constructor
- */
-
+//! Constructor
 Model::Model ()
 {
   model_data_ = new ModelData();
-  //InitLog("log.txt");
   frame_num_ = 0;
   trajectory_on_ = false;
 }
 
 
-/**
-  Destructor
- */
-
+//! Destructor
 Model::~Model ()
 {
   IMP_LOG(VERBOSE,"Delete Model: beware of early Python calls to destructor.");
 }
 
 
-/**
- Get pointer to all model particle data.
-
-  \return pointer to all model particle data.
+//! Get pointer to all model particle data.
+/** \return pointer to all model particle data.
  */
-
 ModelData* Model::get_model_data(void) const
 {
   return model_data_;
 }
 
-/**
-  Get idx-th particle from the model. If idx is
-  out of bounds, return null.
-
-  \return idx-th particle in model.
+//! Add a particle to the model.
+/** \param[in] particle Pointer to new particle.
+    \return index of particle within the model
  */
-
-Particle* Model::get_particle(size_t idx) const
-{
-  if ((idx < 0) || (idx >= particles_.size())) {
-    return NULL;
-  }
-
-  return particles_[idx];
-}
-
-
-/**
-  Add particle to the model.
-
-  \param[in] particle Pointer to new particle.
-  \return index of particle within the model
- */
-
 size_t Model::add_particle(Particle* particle)
 {
   // a particle needs access to the model_data for
@@ -89,12 +59,25 @@ size_t Model::add_particle(Particle* particle)
 }
 
 
-/**
- Add restraint set to model.
+//! Get a pointer to a particle in the model, or null if out of bounds.
+/** \param[in] idx  Index of particle
+    \return Pointer to the particle, or null if out of bounds.
+ */
+Particle* Model::get_particle(size_t idx) const
+{
+  if ((idx < 0) || (idx >= particles_.size())) {
+    return NULL;
+  }
 
- \param[in] restraint_set Pointer to the restraint set.
-*/
+  return particles_[idx];
+}
 
+
+
+//! Add restraint set to the model.
+/** \param[in] restraint_set Pointer to the restraint set.
+    \return the index of the newly-added restraint.
+ */
 Model::RestraintIndex Model::add_restraint(Restraint* restraint_set)
 {
   restraint_set->set_model_data(model_data_);
@@ -103,12 +86,11 @@ Model::RestraintIndex Model::add_restraint(Restraint* restraint_set)
 }
 
 
-/**
- Get restraint set from model.
-
- \param[in] i The RestraintIndex returned when adding
-*/
-
+//! Get restraint set from the model.
+/** \param[in] i The RestraintIndex returned when adding.
+    \exception std::out_of_range restraint index is out of range.
+    \return pointer to the restraint.
+ */
 Restraint* Model::get_restraint(RestraintIndex i) const
 {
   IMP_check(static_cast<unsigned int>(i) < restraints_.size(), 
@@ -118,12 +100,10 @@ Restraint* Model::get_restraint(RestraintIndex i) const
 }
 
 
-/**
- Evaluate all of the restraints in the model and return the score.
-
- \param[in] out Stream to write model description to.
-*/
-
+//! Evaluate all of the restraints in the model and return the score.
+/** \param[in] calc_derivs If true, also evaluate the first derivatives.
+    \return The score.
+ */
 Float Model::evaluate(bool calc_derivs)
 {
   // One or more particles may have been activated or deactivated.
@@ -164,15 +144,15 @@ Float Model::evaluate(bool calc_derivs)
 }
 
 
-/**
- Set up trajectory.
-
- \param[in] trajectory_path Path to file where the trajectory will be written.
- \param[in] trajectory_on True if trajectory is to be written as model is optimized.
- \param[in] clear_file True if trajectory file should be cleared now.
-*/
-
-void Model::set_up_trajectory(const std::string trajectory_path, bool trajectory_on, bool clear_file)
+//! Set up trajectory.
+/** \param[in] trajectory_path Path to file where the trajectory will be
+                               written.
+    \param[in] trajectory_on True if trajectory is to be written as model
+                             is optimized.
+    \param[in] clear_file True if trajectory file should be cleared now.
+ */
+void Model::set_up_trajectory(const std::string trajectory_path,
+                              bool trajectory_on, bool clear_file)
 {
   trajectory_path_ = trajectory_path;
   trajectory_on_ = trajectory_on;
@@ -190,63 +170,49 @@ void Model::set_up_trajectory(const std::string trajectory_path, bool trajectory
   }
 }
 
-/**
- Save the state of the model to the trajectory file.
-Currently hardcoded for "x", "y" and "z" particle float attributes.
-*/
-
+//! Save the state of the model to the trajectory file.
+/** \warning Currently hardcoded for "x", "y" and "z" particle float attributes.
+ */
 void Model::save_state(void)
 {
-  if (!trajectory_on_)
+  if (!trajectory_on_) {
     return;
+  }
 
-  //try {
-    std::ofstream fout;
+  std::ofstream fout;
 
-    fout.open(trajectory_path_.c_str(), std::ios_base::app);
-    if (!fout.is_open()) {
-      IMP_ERROR("Unable to open trajectory file: " 
-		<< trajectory_path_ << ". Trajectory is off. ");
-      trajectory_on_=false;
-    } else {
-      fout << "FRAME " << frame_num_ << std::endl;
-      frame_num_++;
-      fout << particles_.size() << std::endl;
-      
-      // for each particle, output its current state
-      FloatIndex fi;
-      for (size_t i = 0; i < particles_.size(); i++) {
-	fi = particles_[i]->get_float_index("x");
-	fout << model_data_->get_float(fi) << " ";
-	
-	fi = particles_[i]->get_float_index("y");
-	fout << model_data_->get_float(fi) << " ";
-	
-	fi = particles_[i]->get_float_index("z");
-	fout << model_data_->get_float(fi) << std::endl;
-      }
-      if (!fout) {
-	IMP_ERROR("Error writing to trajectory file. Trajectory is off. ");
-	trajectory_on_=false;
-      }
+  fout.open(trajectory_path_.c_str(), std::ios_base::app);
+  if (!fout.is_open()) {
+    IMP_ERROR("Unable to open trajectory file: " 
+              << trajectory_path_ << ". Trajectory is off. ");
+    trajectory_on_=false;
+  } else {
+    fout << "FRAME " << frame_num_ << std::endl;
+    frame_num_++;
+    fout << particles_.size() << std::endl;
+    
+    // for each particle, output its current state
+    FloatIndex fi;
+    for (size_t i = 0; i < particles_.size(); i++) {
+      fi = particles_[i]->get_float_index("x");
+      fout << model_data_->get_float(fi) << " ";
+
+      fi = particles_[i]->get_float_index("y");
+      fout << model_data_->get_float(fi) << " ";
+
+      fi = particles_[i]->get_float_index("z");
+      fout << model_data_->get_float(fi) << std::endl;
     }
-      //}
-
-      //fout.close();
-      //}
-
-      /*catch (...) {
-    ErrorMsg("Unable to save to trajectory file: " << trajectory_path_ << ". Trajectory is off. ");
-    trajectory_on_ = false;
-    }*/
+    if (!fout) {
+      IMP_ERROR("Error writing to trajectory file. Trajectory is off. ");
+      trajectory_on_=false;
+    }
+  }
 }
 
-/**
- Show the model contents.
-
- \param[in] out Stream to write model description to.
-*/
-
+//! Show the model contents.
+/** \param[in] out Stream to write model description to.
+ */
 void Model::show(std::ostream& out) const
 {
   out << std::endl << std::endl;
@@ -266,17 +232,10 @@ void Model::show(std::ostream& out) const
 
 }
 
-// ####  ParticleIterator ####
-// Iterator returns all Particles in the Model
-
-
-/**
-  Reset the iterator so that after the next call to next(),
- get() will return the first particle.
-
- \param[in] model The model data that is being referenced.
+//! Reset the iterator.
+/** After the next call to next(), get() will return the first particle.
+    \param[in] model  The model that is being referenced.
  */
-
 void ParticleIterator::reset(Model* model)
 {
   model_ = model;
@@ -284,13 +243,11 @@ void ParticleIterator::reset(Model* model)
 }
 
 
-/**
-  Check if another particle is available, and if so,
- make sure it is called by the next call to get().
-
- \return True if another particle is available.
+//! Move to the next particle.
+/** Check if another particle is available, and if so, make sure it is
+    called by the next call to get().
+    \return True if another particle is available.
  */
-
 bool ParticleIterator::next(void)
 {
   cur_ += 1;
@@ -303,13 +260,10 @@ bool ParticleIterator::next(void)
 }
 
 
-/**
-  Return the next available particle. Should only
-  be called if next() returned True.
-
- \return True pointer to next particle (NULL if we are out of bounds).
+//! Return the next particle.
+/** Should only be called if next() returned True.
+    \return Pointer to the next particle, or null if out of bounds.
  */
-
 Particle* ParticleIterator::get(void)
 {
   if (cur_ >= (int) model_->particles_.size()) {
@@ -320,17 +274,10 @@ Particle* ParticleIterator::get(void)
 }
 
 
-// ####  RestraintSetIterator ####
-// Iterator returns all restraint sets in the Model
-
-
-/**
-  Reset the iterator so that after the next call to next(),
- get() will return the first restraint_set.
-
- \param[in] model The model data that is being referenced.
+//! Reset the iterator.
+/** After the next call to next(), get() will return the first restraint set.
+    \param[in] model The model that is being referenced.
  */
-
 void RestraintIterator::reset(Model* model)
 {
   model_ = model;
@@ -338,13 +285,11 @@ void RestraintIterator::reset(Model* model)
 }
 
 
-/**
-  Check if another restraint_set is available, and if so,
- make sure it is called by the next call to get().
-
- \return True if another restraint_set is available.
+//! Move to the next restraint set if available.
+/** Check if another restraint set is available, and if so,
+    make sure it is called by the next call to get().
+    \return True if another restraint set is available.
  */
-
 bool RestraintIterator::next(void)
 {
   cur_ += 1;
@@ -357,13 +302,10 @@ bool RestraintIterator::next(void)
 }
 
 
-/**
-  Return the next available restraint_set. Should only
-  be called if next() returned True.
-
- \return True pointer to next restraint_set (NULL if we are out of bounds).
- */
-
+//! Return the current restraint set.
+/** Should only be called if next() returned True.
+    \return pointer to the restraint set, or null if out of bounds.
+ */ 
 Restraint* RestraintIterator::get(void)
 {
   if (cur_ >= (int) model_->restraints_.size()) {
@@ -374,7 +316,4 @@ Restraint* RestraintIterator::get(void)
 }
 
 
-
-
 }  // namespace IMP
-
