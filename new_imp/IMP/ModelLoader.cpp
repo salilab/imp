@@ -1,6 +1,5 @@
-/*
- *  ModelLoader.cpp
- *  IMP
+/**
+ *  \file ModelLoader.h   \brief Classes to populate a model from a file.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -11,33 +10,24 @@
 namespace IMP
 {
 
-/**
-  Constructor
- */
-
+//! Constructor
 ModelLoader::ModelLoader ()
 {
 }
 
 
-/**
-  Destructor
- */
-
+//! Destructor
 ModelLoader::~ModelLoader ()
 {
 }
 
 
-/**
-  Load model from the given file into the given model structure.
+//! Load model from the given file into the given model structure.
+/** \param[in] model Model structure that model should be loaded into.
+    \param[in] fname Name of file containing the model definition.
 
-  \param[in] model Model structure that model should be loaded into.
-  \param[in] fname Name of file containing the model definition.
-
-  \return true if the load succeeded.
+    \return true if the load succeeded.
  */
-
 bool ModelLoader::load_model(Model& model, const std::string& fname)
 {
   try {
@@ -86,21 +76,20 @@ bool ModelLoader::load_model(Model& model, const std::string& fname)
 }
 
 
-/**
-  Load particle from the given input stream. Typical particle in file will
-  look as follows:
-  PARTICLE 1
-   X VAR 1.0 T
-   Y VAR 0.0 T
-   Z VAR 0.0 T
-   radius ATTR FLOAT 1.0
-   protein ATTR INT 1
-  END_PARTICLE
-
-  \param[in] particle Particle structure that particle should be loaded into.
-  \param[in] in Input stream that the particle should be read from.
+//! Load particle from the given input stream.
+/** Typical particle in file will look as follows:
+    \verbatim
+    PARTICLE 1
+     X VAR 1.0 T
+     Y VAR 0.0 T
+     Z VAR 0.0 T
+     radius ATTR FLOAT 1.0
+     protein ATTR INT 1
+    END_PARTICLE
+    \endverbatim
+    \param[in] particle Particle structure that particle should be loaded into.
+    \param[in] in Input stream that the particle should be read from.
  */
-
 void ModelLoader::load_particle(Particle& particle, std::istream& in)
 {
   try {
@@ -162,16 +151,16 @@ void ModelLoader::load_particle(Particle& particle, std::istream& in)
 
 
 
-/**
-  Load restraint set from the given input stream. Restraint sets can contain
-  unnamed restraints or other restraint sets. Typical restraint set in file will
-  look as follows:
+//! Load restraint set from the given input stream.
+/** RestraintSets can contain unnamed restraints or other restraint sets.
 
-  \param[in] restraint_set Restraint set that all embedded restraints and restraint sets should be added to.
-  \param[in] in Input stream that the restraints should be read from.
+    \param[in] model Model structure that model should be loaded into.
+    \param[in] restraint_set RestraintSet that all embedded restraints
+                             and restraint sets should be added to.
+    \param[in] in Input stream that the restraints should be read from.
  */
-
-void ModelLoader::load_restraint_set(Model& model, RestraintSet& restraint_set, std::istream& in)
+void ModelLoader::load_restraint_set(Model& model, RestraintSet& restraint_set,
+                                     std::istream& in)
 {
   try {
     std::string next_word;
@@ -212,14 +201,15 @@ void ModelLoader::load_restraint_set(Model& model, RestraintSet& restraint_set, 
   }
 }
 
-/**
-  Load distance restraints and add them to the given restraint set.
-
-  \param[in] restraint_set Restraint set that distance restraints should be added to.
-  \param[in] in Input stream that the restraints should be read from.
+//! Load distance restraints and add them to the given restraint set.
+/** \param[in] model Model structure that model should be loaded into.
+    \param[in] restraint_set RestraintSet that distance restraints should
+               be added to.
+    \param[in] in Input stream that the restraints should be read from.
  */
-
-void ModelLoader::load_distance_restraints(Model& model, RestraintSet& restraint_set, std::istream& in)
+void ModelLoader::load_distance_restraints(Model& model,
+                                           RestraintSet& restraint_set,
+                                           std::istream& in)
 {
   try {
     std::string next_word;
@@ -276,14 +266,10 @@ void ModelLoader::load_distance_restraints(Model& model, RestraintSet& restraint
   }
 }
 
-/**
-  Get pointer to the specified math form.
-
-  \param[in] score_func_name Name of the math form desired.
-
-  \return Pointer to specified math form functor.
+//! Get pointer to the specified scoring function.
+/** \param[in] score_func_name Name of the scoring function desired.
+    \return Pointer to specified scoring function.
  */
-
 Score_Func* ModelLoader::get_score_func(const std::string score_func_name)
 {
   if (score_func_name == "HARMONIC") {
@@ -304,4 +290,3 @@ Score_Func* ModelLoader::get_score_func(const std::string score_func_name)
 }
 
 }  // namespace IMP
-
