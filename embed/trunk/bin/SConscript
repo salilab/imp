@@ -1,0 +1,24 @@
+Import('env')
+
+# Custom builder to generate file:
+def builder_script_file(target, source, env):
+    infile = file(source[0].abspath, 'r')
+    outfile = file(target[0].abspath, 'w')
+    for line in infile:
+        line = line.rstrip('\r\n')
+        if line.endswith("@TOPDIR@"):
+            line = "TOPDIR=" + source[1].get_contents()
+        elif line.endswith("@PATHSEP@"):
+            line = "PATHSEP=\"" + source[2].get_contents() + "\""
+        print >> outfile, line
+    outfile.close()
+    infile.close()
+    env.Execute(Chmod(str(target[0]), 0755))
+
+env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
+
+bin = env.ScriptFile("empy.sh",
+                     ["empy.sh.in", env.Value(env.Dir('#').abspath),
+		     env.Value(env['PATHSEP'])
+		     ])
+Return('bin')
