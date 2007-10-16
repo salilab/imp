@@ -1,7 +1,8 @@
 /**
- *  \file ConnectivityRestraint.h     Restrict max distance between at least
- *                                    one pair of particles of any two
- *                                    distinct types.
+ *  \file ConnectivityRestraint.h    \brief Connectivity restraint.
+ *
+ *  Restrict max distance between at least one pair of particles of any
+ *  two distinct types.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -20,7 +21,10 @@
 namespace IMP
 {
 
-// Restrict max distance between at least one pair of particles of any two distinct types
+//! Connectivity restraint.
+/** Restrict max distance between at least one pair of particles of any
+    two distinct types.
+ */
 class IMPDLLEXPORT ConnectivityRestraint : public Restraint
 {
 public:
@@ -39,6 +43,18 @@ public:
 
   virtual ~ConnectivityRestraint();
 
+  //! Evaluate this restraint and return the score.
+  /** Calculate the distance restraints for the given particles. Use the
+      smallest restraints that will connect one particle of each type
+      together (i.e. a minimum spanning tree with nodes corresponding to
+      particle types and the edge weights corresponding to restraint
+      violation scores).
+
+      \param[in] calc_deriv If true, partial first derivatives should be
+                            calculated.
+      \return score associated with this restraint for the given state of
+              the model.
+   */
   virtual Float evaluate(bool calc_deriv);
 
   // status
@@ -70,31 +86,36 @@ protected:
     Float score_;
   };
 
-  /** restraints and their scores */
+  //! restraints and their scores
   std::list<RestraintScore> rsr_scores_;
 
-  void set_up(Model& model,
-              // couldn't get Swig to work with std::vector<Particle*>&
-              std::vector<int>& particle_indexes,
+  //! Set up initial values for the constructors.
+  /** \param[in] model Pointer to the model.
+      \param[in] particle_indexes Vector of particle indices. \todo Should use
+                                  Particle pointers instead.
+      \param[in] type The attribute used to determine if particles
+                      are equivalent.
+   */
+  void set_up(Model& model, std::vector<int>& particle_indexes,
               const std::string type);
 
-  // variables to determine the particle type
+  //! variables to determine the particle type
   std::vector<IntIndex> type_;
 
-  /** number of particles in the restraint */
+  //! number of particles in the restraint
   int num_particles_;
 
-  /** maximum type (type can be from 0 to max_type-1) */
+  //! maximum type (type can be from 0 to max_type-1)
   int max_type_;
-  /** number of particle types */
+  //! number of particle types
   int num_types_;
-  /** particle types */
+  //! particle types
   std::vector<int> particle_type_;
 
-  /** total number of restraints being tested */
+  //! total number of restraints being tested
   int num_restraints_;
 
-  /** each unconnected tree has a non-zero id */
+  //! each unconnected tree has a non-zero id
   std::vector<int> tree_id_;
 };
 

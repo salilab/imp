@@ -1,6 +1,5 @@
-/*
- *  IMP.h
- *  IMP
+/**
+ *  \file IMP.h   \brief IMP, an Integrative Modeling Platform.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *

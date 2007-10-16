@@ -1,7 +1,8 @@
 /**
- *  \file PairConnectivityRestraint.cpp    Restrict max distance between one
- *                                         or more pair of particles of any
- *                                         two sets of particles.
+ *  \file PairConnectivityRestraint.cpp \brief  Pair connectivity restraint.
+ *
+ *  Restrict max distance between one or more pair of particles of any
+ *  two sets of particles (e.g. rigid bodies).
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -18,27 +19,18 @@
 namespace IMP
 {
 
-//######### PairConnectivityRestraint Restraint #########
-// Optimize based on N "best" distances for pairs of particles
-// between two structures (e.g. rigid bodies)
-
-/**
-  Constructor - set up the values and indexes for this pair connectivity restraint.
-  Use the given mean for the expected distance between two particles.
-
-  \param[in] model Pointer to the model.
-  \param[in] particle1_indexes Vector of indexes of particles of first body.
-  \param[in] particle2_indexes Vector of indexes of particles of second body.
-  \param[in] score_func_params Parameters for creating a score function.
-  \param[in] num_to_apply Number of minimum restraints to apply.
-  \param[in] particle_reuse Allow minimum restraints to use particle more than once.
+//! Set up a restraint using the given mean for particle-particle distance.
+/** \param[in] model Pointer to the model.
+    \param[in] particle1_indexes Vector of indexes of particles of first body.
+    \param[in] particle2_indexes Vector of indexes of particles of second body.
+    \param[in] score_func_params Parameters for creating a score function.
+    \param[in] num_to_apply Number of minimum restraints to apply.
+    \param[in] particle_reuse Allow minimum restraints to use particle
+                              more than once.
  */
-
 PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
-    std::vector<int>& particle1_indexes,
-    std::vector<int>& particle2_indexes,
-    BasicScoreFuncParams* score_func_params,
-    const int num_to_apply,
+    std::vector<int>& particle1_indexes, std::vector<int>& particle2_indexes,
+    BasicScoreFuncParams* score_func_params, const int num_to_apply,
     const bool particle_reuse)
 {
   particle_reuse_ = particle_reuse;
@@ -77,27 +69,20 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
          num_particles1_ << " num_particles2_:" << num_particles2_ << std::endl);
 }
 
-/**
-  Constructor - set up the values and indexes for this pair connectivity restraint. Use
-  the attr_name to specify the attribute you want to use for determining the expected
-  distance between two particles.
-
-  \param[in] model Pointer to the model.
-  \param[in] particles Vector of pointers  to particle of the restraint.
-  \param[in] type The main radius from the origin to the midline of the tube.
-  \param[in] attr_name Name to get radii to calculate the mean distance.
-  \param[in] score_func_params Parameters for creating a score function.
-  \param[in] num_to_apply Number of minimum restraints to apply.
-  \param[in] particle_reuse Allow minimum restraints to use particle more than once.
+//! Set up a restraint using the given attribute for particle-particle distance.
+/** \param[in] model Pointer to the model.
+    \param[in] particle1_indexes Vector of indexes of particles of first body.
+    \param[in] particle2_indexes Vector of indexes of particles of second body.
+    \param[in] attr_name Name to get radii to calculate the mean distance.
+    \param[in] score_func_params Parameters for creating a score function.
+    \param[in] num_to_apply Number of minimum restraints to apply.
+    \param[in] particle_reuse Allow minimum restraints to use particle
+                              more than once.
  */
-
 PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
-    std::vector<int>& particle1_indexes,
-    std::vector<int>& particle2_indexes,
-    const std::string attr_name,
-    BasicScoreFuncParams* score_func_params,
-    const int num_to_apply,
-    const bool particle_reuse)
+    std::vector<int>& particle1_indexes, std::vector<int>& particle2_indexes,
+    const std::string attr_name, BasicScoreFuncParams* score_func_params,
+    const int num_to_apply, const bool particle_reuse)
 {
   particle_reuse_ = particle_reuse;
   num_to_apply_ = num_to_apply;
@@ -144,17 +129,17 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
          num_particles1_ << " num_particles2_:" << num_particles2_ << std::endl);
 }
 
-/**
-  Set up the values and indexes for this pair connectivity restraint for the constructors.
 
-  \param[in] model Pointer to the model.
-  \param[in] particles1 Vector of indexes of particles in first body of the restraint.
-  \param[in] particles2 Vector of indexes of particles in second body of the restraint.
+//! Internal set up for the constructors.
+/** \param[in] model Pointer to the model.
+    \param[in] particle1_indexes Vector of indexes of particles in first body
+                                 of the restraint.
+    \param[in] particle2_indexes Vector of indexes of particles in second body
+                                 of the restraint.
  */
-
 void PairConnectivityRestraint::set_up(Model& model,
-                                   std::vector<int>& particle1_indexes,
-                                   std::vector<int>& particle2_indexes)
+                                       std::vector<int>& particle1_indexes,
+                                       std::vector<int>& particle2_indexes)
 {
   Particle* p1;
 
@@ -188,11 +173,8 @@ void PairConnectivityRestraint::set_up(Model& model,
   rsr_scores_.resize(num_restraints_);
 }
 
-/**
-  Destructor
- */
-
-PairConnectivityRestraint::~PairConnectivityRestraint ()
+//! Destructor
+PairConnectivityRestraint::~PairConnectivityRestraint()
 {
   std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
@@ -201,24 +183,26 @@ PairConnectivityRestraint::~PairConnectivityRestraint ()
   }
 }
 
-/**
-  Calculate the distance restraints for the given particles. Use the smallest
-  restraints that will connect one particle of each type together (i.e. a
-  minimum spanning tree with nodes corresponding to particle types and the
-  edge weights corresponding to restraint violation scores).
 
-  There is a potential when using this restraint for two large rigid bodies
-  to maintain its own exclusion volume restraints. These could be calculated
-  only for the particles in the neighborhoods of the particles involved in the
-  activated restraints rather than between all particles in the two bodies.
-  Since once restraints are activated, they tend to be activated over and over,
-  the exclusion volume restraint sets should only be reset whenever on rare
-  occasion the neighborhoods actually change.
+//! Evaluate the restraint for the current model state.
+/** Calculate the distance restraints for the given particles. Use the smallest
+    restraints that will connect one particle of each type together (i.e. a
+    minimum spanning tree with nodes corresponding to particle types and the
+    edge weights corresponding to restraint violation scores).
+
+    There is a potential when using this restraint for two large rigid bodies
+    to maintain its own exclusion volume restraints. These could be calculated
+    only for the particles in the neighborhoods of the particles involved in the
+    activated restraints rather than between all particles in the two bodies.
+    Since once restraints are activated, they tend to be activated over and
+    over, the exclusion volume restraint sets should only be reset whenever
+    on rare occasion the neighborhoods actually change.
   
- \param[in] calc_deriv If true, partial first derivatives should be calculated.
- \return score associated with this restraint for the given state of the model.
-  */
-
+    \param[in] calc_deriv If true, partial first derivatives should be
+                          calculated.
+    \return score associated with this restraint for the given state of
+            the model.
+ */
 Float PairConnectivityRestraint::evaluate(bool calc_deriv)
 {
   std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
@@ -264,12 +248,9 @@ Float PairConnectivityRestraint::evaluate(bool calc_deriv)
 }
 
 
-/**
-  Show the current restraint.
-
- \param[in] out Stream to send restraint description to.
+//! Show the current restraint.
+/** \param[in] out Stream to send restraint description to.
  */
-
 void PairConnectivityRestraint::show(std::ostream& out) const
 {
   if (is_active()) {

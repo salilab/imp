@@ -1,5 +1,5 @@
 /**
- *  \file Model.h   \brief Storage of a model, its restraints,
+ *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.

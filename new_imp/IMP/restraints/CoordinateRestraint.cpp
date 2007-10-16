@@ -1,6 +1,7 @@
-/*
- *  \file CoordianteRestraint.cpp   Optimize based on distance from an
- *                                  absolute position.
+/**
+ *  \file CoordinateRestraint.cpp \brief Absolute position restraint.
+ *
+ *  Optimize based on distance from an absolute position.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -16,20 +17,16 @@
 namespace IMP
 {
 
-/**
-  Constructor - set up the values and indexes for this coordinate restraint.
-
-  \param[in] model Pointer to the model.
-  \param[in] p1 Pointer to particle of the restraint.
-  \param[in] axis String indicating the axis of absolute reference:
-      X_AXIS, Y_AXIS, Z_AXIS, XY_RADIAL, XZ_RADIAL, YZ_RADIAL, XYZ_SPHERE
-  \param[in] score_func_params Parameters for creating a score function.
+//! Constructor - set up the values and indexes for this coordinate restraint.
+/** \param[in] model Pointer to the model.
+    \param[in] p1 Pointer to particle of the restraint.
+    \param[in] axis String indicating the axis of absolute reference:
+                    X_AXIS, Y_AXIS, Z_AXIS, XY_RADIAL, XZ_RADIAL, YZ_RADIAL,
+                    XYZ_SPHERE
+    \param[in] score_func_params Parameters for creating a score function.
  */
-
-CoordinateRestraint::CoordinateRestraint(Model& model,
-                               Particle* p1,
-                               const std::string axis,
-                               BasicScoreFuncParams* score_func_params)
+CoordinateRestraint::CoordinateRestraint(Model& model, Particle* p1,
+    const std::string axis, BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
 
@@ -42,21 +39,17 @@ CoordinateRestraint::CoordinateRestraint(Model& model,
   score_func_ = score_func_params->create_score_func();
 }
 
-/**
-  Destructor
- */
-
-CoordinateRestraint::~CoordinateRestraint ()
+//! Destructor
+CoordinateRestraint::~CoordinateRestraint()
 {
 }
 
-/**
-  Calculate the score for this coordinate restraint based on the current
-  state of the model.
 
- \param[in] calc_deriv If true, partial first derivatives should be calculated.
-  */
-
+//! Calculate the score for this coordinate restraint.
+/** \param[in] calc_deriv If true, partial first derivatives should be
+                          calculated.
+    \return Current score.
+ */
 Float CoordinateRestraint::evaluate(bool calc_deriv)
 {
   Float score = 0.0, deriv;
@@ -132,12 +125,9 @@ Float CoordinateRestraint::evaluate(bool calc_deriv)
 }
 
 
-/**
-  Show the current restraint.
-
- \param[in] out Stream to send restraint description to.
+//! Show the current restraint.
+/** \param[in] out Stream to send restraint description to.
  */
-
 void CoordinateRestraint::show(std::ostream& out) const
 {
   if (is_active()) {

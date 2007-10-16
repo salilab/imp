@@ -1,6 +1,5 @@
-/*
- *  Particle.h
- *  IMP
+/**
+ *  \file Particle.h     \brief Classes to handle individual model particles.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -25,72 +24,138 @@ typedef std::map<std::string, FloatIndex> FloatIndexMap;
 
 class Model;
 
-// Particle methods and indexes to particle attributes. Particles can
-// be deactivated so that they no longer play a role in model optimization.
-// Removing particles and their attributes would cause problems in the way
-// attribute values are indexed and should not be done.
+//! Class to handle individual model particles.
+/** This class contains particle methods and indexes to particle attributes.
+    Particles can be deactivated so that they no longer play a role in model
+    optimization. Removing particles and their attributes would cause
+    problems in the way attribute values are indexed and should not be done.
+ */
 class IMPDLLEXPORT Particle
 {
   friend class FloatAttributeIterator;
   friend class IntAttributeIterator;
   friend class StringAttributeIterator;
   friend class Model;
-  void set_model_data(ModelData*);
 public:
 
- 
   Particle();
   ~Particle();
  
+  //! Get pointer to model particle data.
+  /** \return all particle data in the model.
+   */
   ModelData* get_model_data(void) const;
 
-  // float attributes
-  bool add_float(const std::string name, const Float value = 0.0, const bool optimize = false);
+  //! Add a Float attribute to this particle.
+  /** \param[in] name Name of the attribute being added.
+      \param[in] value Initial value of the attribute.
+      \param[in] is_optimized Whether the attribute's value should be
+                              optimizable.
+   */
+  void add_float(const std::string name, const Float value = 0.0,
+                 const bool is_optimized = false);
+
+  //! Does particle have a Float attribute with the given name.
+  /** \param[in] name Name of the attribute being checked.
+      \return true if Float attribute exists in this particle.
+   */
   bool has_float(const std::string name) const;
+
+  //! Get the specified Float attribute for this particle.
+  /** \param[in] name Name of the attribute being retrieved.
+      \exception std::out_of_range attribute does not exist.
+      \return index to the attribute.
+   */
   FloatIndex get_float_index(const std::string name) const;
 
-  // int attributes
-  bool add_int(const std::string name, const Int value);
+  //! Add an Int attribute to this particle.
+  /** \param[in] name Name of the attribute being added.
+      \param[in] value Initial value of the attribute.
+   */
+  void add_int(const std::string name, const Int value);
+
+  //! Does particle have an Int attribute with the given name.
+  /** \param[in] name Name of the attribute being checked.
+      \return true if Int attribute exists in this particle.
+   */
   bool has_int(const std::string name) const;
+
+  //! Get the specified Int attribute for this particle.
+  /** \param[in] name Name of the attribute being retrieved.
+      \exception std::out_of_range attribute does not exist.
+      \return index to the attribute.
+   */
   IntIndex get_int_index(const std::string name) const;
 
-  // string attributes
-  bool add_string(const std::string name, const String value);
+  //! Add a String attribute to this particle.
+  /** \param[in] name Name of the attribute being added.
+      \param[in] value Initial value of the attribute.
+   */
+  void add_string(const std::string name, const String value);
+
+  //! Does particle have a String attribute with the given name.
+  /** \param[in] name Name of the attribute being checked.
+      \return true if Int attribute exists in this particle.
+   */
   bool has_string(const std::string name) const;
+
+  //! Get the specified String attribute for this particle.
+  /** \param[in] name Name of the attribute being retrieved.
+      \exception std::out_of_range attribute does not exist.
+      \return index to the attribute.
+   */
   StringIndex get_string_index(const std::string name) const;
 
-  // status
-  void set_is_active (bool is_active);
-  bool is_active (void) const;
+  //! Set whether the particle is active.
+  /** Restraints referencing the particle are only evaluated for 'active'
+      particles.
+     \param[in] is_active If true, the particle is active.
+   */
+  void set_is_active(const bool is_active);
 
-  void show (std::ostream& out = std::cout) const;
+  //! Get whether the particle is active.
+  /** Restraints referencing the particle are only evaluated for 'active'
+      particles.
+      \return true it the particle is active.
+   */
+  bool is_active(void) const;
+
+  //! Show the particle
+  /** \param[in] out Stream to write particle description to.
+   */
+  void show(std::ostream& out = std::cout) const;
 
 protected:
-  // all of the particle data
+
+  //! Set pointer to model particle data.
+  /** This is called by the Model after the particle is added. 
+      \param[in] md Pointer to a ModelData object.
+   */
+  void set_model_data(ModelData *md);
+
+  //! all of the particle data
   ModelData* model_data_;
 
-  bool is_active_; // true if particle is active
+  //! true if particle is active
+  bool is_active_;
 
-  // float attributes associated with the particle
+  //! float attributes associated with the particle
   std::map<std::string, FloatIndex> float_indexes_;
-  // int attributes associated with the particle
+  //! int attributes associated with the particle
   std::map<std::string, IntIndex> int_indexes_;
-  // string attributes associated with the particle
+  //! string attributes associated with the particle
   std::map<std::string, StringIndex> string_indexes_;
 };
 
 
-/**
-  Iterator for getting all Float attributes from a particle
+//! Iterator for getting all Float attributes from a particle
+/** The basic form for use is:
 
-  The basic form for use is:
-
-   iter = new FloatAttributeIterator;
-   iter->reset(particle_that_i_am_interested_in);
-   while (iter->next())
-    {
-    // get next key with iter->get_key()
-    // get next value with iter->get_value()
+    iter = new FloatAttributeIterator;
+    iter->reset(particle_that_i_am_interested_in);
+    while (iter->next()) {
+      // get next key with iter->get_key()
+      // get next value with iter->get_value()
     }
  */
 class IMPDLLEXPORT FloatAttributeIterator
@@ -99,20 +164,18 @@ public:
   FloatAttributeIterator() {}
   ~FloatAttributeIterator() {}
 
-  /**
-    Reset the iterator to iterate over the given particles Float attributes.
-
-    \param[in] particle Pointer to the particle.
+  //! Reset the iterator.
+  /** After the next call to next(), get() will return the first Float
+      attribute in the Particle.
+      \param[in] particle  The Particle that is being referenced.
    */
   void reset(Particle* particle) {
     particle_ = particle;
     reset_ = true;
   }
 
-  /**
-    Move the iterator to the next Float attribute.
-
-    \return true if another Float attribute is available.
+  //! Move the iterator to the next Float attribute.
+  /** \return true if another Float attribute is available.
    */
   bool next(void) {
     if (reset_) {
@@ -127,56 +190,48 @@ public:
     return true;
   }
 
-  /**
-    Get the key of the Float attribute currently pointed at
-    by the iterator.
-
-    \return key of current Float attribute.
+  //! Get the key of the Float attribute currently pointed at by the iterator.
+  /** \return key of current Float attribute.
    */
-  std::string get_key(void) {
+  std::string get_key(void) const {
     return cur_->first;
   }
 
-  /**
-    Get the value of the Float attribute currently pointed at
-    by the iterator.
-
-    \return value of current Float attribute.
+  //! Get the value of the Float attribute currently pointed at by the iterator.
+  /** \return value of current Float attribute.
    */
-  Float get_value(void) {
+  Float get_value(void) const {
     return particle_->model_data_->get_float(cur_->second);
   }
 
 protected:
-  FloatIndexMap::iterator cur_; // map iterator
+  //! map iterator
+  FloatIndexMap::iterator cur_;
   Particle* particle_;
-  bool reset_; // flag indicating iterator was reset
+  //! flag indicating iterator was reset
+  bool reset_;
 };
 
 
-/**
-  Iterator for getting all int attributes from a particle
- */
+//! Iterator for getting all Int attributes from a particle
 class IMPDLLEXPORT IntAttributeIterator
 {
 public:
   IntAttributeIterator() {}
   ~IntAttributeIterator() {}
 
-  /**
-    Reset the iterator to iterate over the given particles int attributes.
-
-    \param[in] particle Pointer to the particle.
+  //! Reset the iterator.
+  /** After the next call to next(), get() will return the first Int
+      attribute in the Particle.
+      \param[in] particle  The Particle that is being referenced.
    */
   void reset(Particle* particle) {
     particle_ = particle;
     reset_ = true;
   }
 
-  /**
-    Move the iterator to the next Int attribute.
-
-    \return true if another Int attribute is available.
+  //! Move the iterator to the next Int attribute.
+  /** \return true if another Int attribute is available.
    */
   bool next(void) {
     if (reset_) {
@@ -191,23 +246,17 @@ public:
     return true;
   }
 
-  /**
-    Get the key of the Int attribute currently pointed at
-    by the iterator.
-
-    \return key of current Int attribute.
+  //! Get the key of the Int attribute currently pointed at by the iterator.
+  /** \return key of current Int attribute.
    */
-  std::string get_key(void) {
+  std::string get_key(void) const {
     return cur_->first;
   }
 
-  /**
-    Get the value of the Int attribute currently pointed at
-    by the iterator.
-
-    \return value of current Int attribute.
+  //! Get the value of the Int attribute currently pointed at by the iterator.
+  /** \return value of current Int attribute.
    */
-  Int get_value(void) {
+  Int get_value(void) const {
     return particle_->model_data_->get_int(cur_->second);
   }
 
@@ -218,29 +267,26 @@ protected:
 };
 
 
-/**
-  Iterator for getting all String attributes from a particle
- */
+//! Iterator for getting all String attributes from a particle
 class IMPDLLEXPORT StringAttributeIterator
 {
 public:
   StringAttributeIterator() {}
   ~StringAttributeIterator() {}
 
-  /**
-    Reset the iterator to iterate over the given particles String attributes.
 
-    \param[in] particle Pointer to the particle.
+  //! Reset the iterator.
+  /** After the next call to next(), get() will return the first String
+      attribute in the Particle.
+      \param[in] particle  The Particle that is being referenced.
    */
   void reset(Particle* particle) {
     particle_ = particle;
     reset_ = true;
   }
 
-  /**
-    Move the iterator to the next String attribute.
-
-    \return true if another String attribute is available.
+  //! Move the iterator to the next String attribute.
+  /** \return true if another String attribute is available.
    */
   bool next(void) {
     if (reset_) {
@@ -255,23 +301,17 @@ public:
     return true;
   }
 
-  /**
-    Get the key of the String attribute currently pointed at
-    by the iterator.
-
-    \return key of current String attribute.
+  //! Get the key of the String attribute currently pointed at by the iterator.
+  /** \return key of current String attribute.
    */
-  std::string get_key(void) {
+  std::string get_key(void) const {
     return cur_->first;
   }
 
-  /**
-    Get the value of the String attribute currently pointed at
-    by the iterator.
-
-    \return value of current String attribute.
+  //! Get the value of the attribute currently pointed at by the iterator.
+  /** \return value of current String attribute.
    */
-  String get_value(void) {
+  String get_value(void) const {
     return particle_->model_data_->get_string(cur_->second);
   }
 

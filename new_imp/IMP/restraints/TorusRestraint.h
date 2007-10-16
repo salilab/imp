@@ -1,5 +1,5 @@
-/*
- *  \file TorusRestraint.h     Score based on distance from torus interior
+/**
+ *  \file TorusRestraint.h   \brief Score based on distance from torus interior
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -20,17 +20,23 @@ namespace IMP
 class IMPDLLEXPORT TorusRestraint : public Restraint
 {
 public:
-  TorusRestraint(Model& model,
-            Particle* p1,
-            const Float main_radius,
-            const Float tube_radius,
-            BasicScoreFuncParams* score_func_params);
+  TorusRestraint(Model& model, Particle* p1, const Float main_radius,
+                 const Float tube_radius,
+                 BasicScoreFuncParams* score_func_params);
   virtual ~TorusRestraint();
 
+  //! Calculate the score for this restraint for the current model state.
+  /** \param[in] calc_deriv If true, partial first derivatives should
+                            be calculated.
+      \return Current score.
+   */
   virtual Float evaluate(bool calc_deriv);
 
-  // status
-  virtual void show (std::ostream& out = std::cout) const;
+  //! Show the current restraint.
+  /** \param[in] out Stream to send restraint description to.
+   */
+  virtual void show(std::ostream& out = std::cout) const;
+
   virtual std::string version(void) const {
     return "0.5.0";
   }
@@ -39,13 +45,13 @@ public:
   }
 
 protected:
-  // variables used to determine the distance
+  //! variables used to determine the distance
   FloatIndex x1_, y1_, z1_;
-  // main radius of the torus
+  //! main radius of the torus
   Float main_radius_;
-  // radius of the torus tube
+  //! radius of the torus tube
   Float tube_radius_;
-  // math form for this restraint (typically one of the harmonics)
+  //! math form for this restraint (typically one of the harmonics)
   ScoreFunc* score_func_;
 };
 

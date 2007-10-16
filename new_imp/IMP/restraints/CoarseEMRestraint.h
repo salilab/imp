@@ -1,5 +1,5 @@
 /**
- *  \file CoarseEMRestraint.h    Calculate score based on fit to EM map.
+ *  \file CoarseEMRestraint.h    \brief Calculate score based on fit to EM map.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -17,30 +17,31 @@
 namespace IMP
 {
 
-// Calculate score based on fit to EM map
+//! Calculate score based on fit to EM map
 class IMPDLLEXPORT CoarseEMRestraint : public Restraint
 {
 public:
-  CoarseEMRestraint(Model& model,
-                std::vector<int>& particle_indexes,
-                EM_Density *emdens,
-                int nx,
-                int ny,
-                int nz,
-                float pixelsize,
-                float resolution,
-                std::string radius_str,
-                std::string weight_str,
-                EM_Gridcoord *gridcd,
-                float scalefac
-               );
+  CoarseEMRestraint(Model& model, std::vector<int>& particle_indexes,
+                    EM_Density *emdens, int nx, int ny, int nz, float pixelsize,
+                    float resolution, std::string radius_str,
+                    std::string weight_str, EM_Gridcoord *gridcd,
+                    float scalefac);
 
   virtual ~CoarseEMRestraint();
 
+  //! Calculate the em coarse restraint score.
+  /** \param[in] calc_deriv If true, partial first derivatives should be
+                            calculated.
+      \return score associated with this restraint for the given state
+              of the model.
+   */
   virtual Float evaluate(bool calc_deriv);
 
-  // status
-  virtual void show (std::ostream& out = std::cout) const;
+  //! Show the current restraint.
+  /** \param[in] out Stream to send restraint description to.
+   */
+  virtual void show(std::ostream& out = std::cout) const;
+
   virtual std::string version(void) const {
     return "0.0.1";
   }

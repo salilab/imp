@@ -1,5 +1,5 @@
 /**
- *  \file ModelLoader.h   \brief Classes to populate a model from a file.
+ *  \file ModelLoader.cpp \brief Classes to populate a model from a file.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
