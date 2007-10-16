@@ -64,6 +64,8 @@ class test_sample_particles(unittest.TestCase):
 		dvz= EM.vectorf()
 		dvz.insert(dvz.begin(),3,0.0)
 
+
+		print 'before eval'
 	
 		cc = EM.CoarseCC()
 		score=cc.evaluate(
@@ -75,6 +77,7 @@ class test_sample_particles(unittest.TestCase):
 			0
 	
 			)
+		print 'after eval'
 		print score
 		# the mean and std are not correct
 		self.assert_(score < 0.01, "unexpected cross correlation score")
