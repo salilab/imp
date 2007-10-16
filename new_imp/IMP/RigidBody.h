@@ -1,5 +1,5 @@
 /**
- *  \file RigidBody.h      Class for grouping particles into rigid bodies.
+ *  \file RigidBody.h   \brief Class for grouping particles into rigid bodies.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -13,15 +13,22 @@
 namespace IMP
 {
 
-/** Class for grouping particles into rigid bodies. */
+//! Class for grouping particles into rigid bodies.
 class IMPDLLEXPORT RigidBody
 {
 public:
   RigidBody();
   ~RigidBody();
 
+  //! Set number of particles in the rigid body.
+  /** \param[in] num_particles Number of particles.
+   */
   void set_num_particles(int num_particles);
-  int num_particles(void) const;
+
+  //! Get the number of particles in the rigid body.
+  /** \return Number of particles in the body.
+   */
+  int get_num_particles(void) const;
 protected:
   int num_particles_;
 };
