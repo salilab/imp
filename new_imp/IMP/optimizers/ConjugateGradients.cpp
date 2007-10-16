@@ -1,6 +1,5 @@
-/*
- *  ConjugateGradients.cpp
- *  IMP
+/**
+ *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -14,11 +13,17 @@
 namespace IMP
 {
 
-/** Estimate of limit of machine precision */
+//! Estimate of limit of machine precision
 static const float eps = 1.2e-7;
 
-/** Get the score for the model with the current state of optimizable variables
-    x, and return the derivatives in dscore. */
+//! Get the score for a given model state.
+/** \param[in] model The model to score.
+    \param[in] model_data The corresponding ModelData.
+    \param[in] float_indices Indices of optimizable variables.
+    \param[in] x Current value of optimizable variables.
+    \param[out] dscore First derivatives for current state.
+    \return The model score.
+ */
 static Float get_score(Model &model, ModelData *model_data,
                        std::vector<FloatIndex> float_indices,
                        std::vector<Float> &x, std::vector<Float> &dscore)
@@ -40,8 +45,8 @@ static Float get_score(Model &model, ModelData *model_data,
 }
 
 
-/** Try to find the minimum of the function in the given direction.
-    \param[out]   x         Current state (updated on output)
+//! Try to find the minimum of the function in the given direction.
+/** \param[out]   x         Current state (updated on output)
     \param[out]   dx        Gradient at current state (updated on output)
     \param[inout] alpha     Current step length (updated on output)
     \param[inout] ifun      Current number of function evaluations (updated
@@ -189,32 +194,24 @@ static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
 }
 
 
-/**
-  Constructor
- */
+//! Constructor
 ConjugateGradients::ConjugateGradients()
 {
 }
 
 
-/**
-  Destructor
- */
+//! Destructor
 ConjugateGradients::~ConjugateGradients()
 {
 }
 
 
-/**
- * Conjugate gradients optimization, as per Shanno and Phua, ACM Transactions
- * On Mathematical Software 6 (December 1980), 618-622
- *
- * \param[in] model     Model that is being optimized.
- * \param[in] max_steps Maximum number of iterations before aborting.
- * \param[in] threshold Largest acceptable gradient-squared value
- *                      for convergence.
- *
- * \return score of the final state of the model.
+//! Optimize the model.
+/** \param[in] model     Model that is being optimized.
+    \param[in] max_steps Maximum number of iterations before aborting.
+    \param[in] threshold Largest acceptable gradient-squared value
+                         for convergence.
+    \return score of the final state of the model.
  */
 Float ConjugateGradients::optimize(Model& model, int max_steps,
                                    Float threshold)

@@ -1,5 +1,5 @@
 /**
- *  \file SteepestDescent.h   Simple steepest descent optimizer.
+ *  \file SteepestDescent.h   \brief Simple steepest descent optimizer.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -14,14 +14,28 @@
 namespace IMP
 {
 
-/** A simple steepest descent optimizer */
+//! A simple steepest descent optimizer
 class IMPDLLEXPORT SteepestDescent : public Optimizer
 {
 public:
   SteepestDescent();
   virtual ~SteepestDescent();
 
+  //! Optimize the model.
+  /** Follow the gradient based on the partial derivatives. Multiply by the
+      current step size. If the score gets worse, reduce the step size.
+      If the score gets better, increase the step size if we are sufficiently
+      far from a score of zero. If the score reaches the threshold, quit.
+
+      \param[in] model Model that is being optimized.
+      \param[in] max_steps The maximum steps that should be take before
+                           giving up.
+      \param[in] threshold Terminate optimization when score drops to
+                           this value.
+      \return score of the final state of the model.
+   */
   virtual Float optimize(Model& model, int max_steps, Float threshold=0.0);
+
   virtual std::string version(void) {
     return "0.5.0";
   }

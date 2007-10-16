@@ -1,6 +1,5 @@
-/*
- *  SteepestDescent.cpp
- *  IMP
+/**
+ *  \file SteepestDescent.cpp \brief Simple steepest descent optimizer.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -12,40 +11,29 @@
 namespace IMP
 {
 
-//######### Steepest Descent #########
-// A simple steepest descent optimizer
-
-
-/**
-  Constructor
- */
-
+//! Constructor
 SteepestDescent::SteepestDescent()
 {
 }
 
 
-/**
-  Destructor
- */
-
+//! Destructor
 SteepestDescent::~SteepestDescent ()
 {
 }
 
 
-/**
-Follow the gradient based on the partial derivatives. Multiply by the current step size.
-If the score gets worse, reduce the step size. If the score gets better, increase the step size
-if we are sufficiently far from a score of zero. If a score of zero is reached, quit.
+//! Optimize the model.
+/** Follow the gradient based on the partial derivatives. Multiply by the
+   current step size. If the score gets worse, reduce the step size.
+   If the score gets better, increase the step size if we are sufficiently
+   far from a score of zero. If the score reaches the threshold, quit.
 
-\param[in] model Model that is being optimized.
-\param[in] variables Variables that may be optimizable.
-\param[in] max_steps The maximum steps that should be take before giving up.
-
-\return score of the final state of the model.
-*/
-
+   \param[in] model Model that is being optimized.
+   \param[in] max_steps The maximum steps that should be take before giving up.
+   \param[in] threshold Terminate optimization when score drops to this value.
+   \return score of the final state of the model.
+ */
 Float SteepestDescent::optimize (Model& model, int max_steps, Float threshold)
 {
   std::vector<Float> temp_vals;
