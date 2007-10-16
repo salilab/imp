@@ -1,6 +1,5 @@
-/*
- *  Optimizer.cpp
- *  IMP
+/**
+ *  \file Optimizer.cpp   \brief Base class for all optimizers.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -12,27 +11,16 @@
 namespace IMP
 {
 
-//######### Optimizer #########
-// Abstract class for optimizers
-
-/**
-  Constructor
- */
-
+//! Constructor
 Optimizer::Optimizer()
 {
   IMP_LOG(VERBOSE, "Created optimizer");
 }
 
 
-/**
-  Destructor
- */
-
+//! Destructor
 Optimizer::~Optimizer()
 {
 }
 
 }  // namespace IMP
-
-

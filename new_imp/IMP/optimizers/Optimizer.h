@@ -1,5 +1,5 @@
 /**
- *  \file Optimizer.h     Base class for all optimizers.
+ *  \file Optimizer.h     \brief Base class for all optimizers.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -15,14 +15,16 @@
 namespace IMP
 {
 
-/** Base class for all optimizers */
+//! Base class for all optimizers
 class IMPDLLEXPORT Optimizer
 {
 public:
   Optimizer();
   virtual ~Optimizer();
 
+  //! Optimize the model and return the final score.
   virtual Float optimize(Model& model, int max_steps, Float threshold=0.0) = 0;
+
   virtual std::string version(void) const {
     return "unknown";
   }
