@@ -1,0 +1,21 @@
+Import('env', 'get_sharedlib_environment')
+
+# Get an environment suitable for building a shared library:
+env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
+
+env.Append(CPPPATH=['../IMP',env['EM_CPPPATH']])
+env.Append(LIBPATH=['../IMP',env['EM_LIBPATH']], LIBS=['imp',env['EM_LIBS']])
+
+files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp')
+
+# Build the shared library:
+lib = env.SharedLibrary('impem', files)
+
+# Install the library:
+libinst = env.Install(env['libdir'], lib)
+env.Alias('install', [libinst])
+
+# Subdirectories:
+SConscript('pyext/SConscript')
+
+Return('lib')

@@ -28,6 +28,7 @@ src = SConscript('IMP/SConscript')
 pyext = SConscript('pyext/SConscript')
 SConscript('rsr/IMP_mov/SConscript')
 SConscript('doc/SConscript')
+SConscript('impEM/SConscript')
 
 # bin script first requires libraries to be built:
 env.Depends(bin, [src, pyext])
