@@ -44,40 +44,40 @@ public:
   void ReSelect(std::vector<int>& particle_indexes);
 
   int size() {
-    return particle_indexes_.size();
+    return particle_indexes.size();
   }
   int x_float_ind(int ind) {
-    return x_indexes_[ind];
+    return x_indexes[ind];
   }
   int y_float_ind(int ind) {
-    return y_indexes_[ind];
+    return y_indexes[ind];
   }
 
   int z_float_ind(int ind) {
-    return z_indexes_[ind];
+    return z_indexes[ind];
   }
 
   float x(int ind) {
-    return model_.get_model_data()->get_float(x_indexes_[ind]);
+    return model->get_model_data()->get_float(x_indexes[ind]);
   }
   float y(int ind) {
-    return model_.get_model_data()->get_float(y_indexes_[ind]);
+    return model->get_model_data()->get_float(y_indexes[ind]);
   }
   float z(int ind) {
-    return model_.get_model_data()->get_float(z_indexes_[ind]);
+    return model->get_model_data()->get_float(z_indexes[ind]);
   }
   float r(int ind) {
-    return model_.get_model_data()->get_float(r_att_indexes_[ind]);
+    return model->get_model_data()->get_float(r_att_indexes[ind]);
   }
   float w(int ind) {
-    return model_.get_model_data()->get_float(w_att_indexes_[ind]);
+    return model->get_model_data()->get_float(w_att_indexes[ind]);
   }
 private:
-  Model model_;
-  std::vector<int> particle_indexes_;
-  std::vector<int> x_indexes_,y_indexes_,z_indexes_;
-  std::vector<int> r_att_indexes_,w_att_indexes_;
-  std::string radius_att_name_,weight_att_name_;
+  Model *model;
+  std::vector<int> particle_indexes;
+  std::vector<int> x_indexes,y_indexes,z_indexes;
+  std::vector<int> r_att_indexes,w_att_indexes;
+  std::string radius_att_name,weight_att_name;
 
 };
 
