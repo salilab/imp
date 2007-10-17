@@ -128,49 +128,46 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 #ifndef IMP_DISABLE_LOGGING
 
 //! Write an entry to a log.
-/*!
-  \param[in] level The IMP::Log_Level for the message
-
-  \param[in] expr A stream expression to be sent to the output stream
-*/
+/** \param[in] level The IMP::Log_Level for the message
+    \param[in] expr A stream expression to be sent to the output stream
+ */
 #define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
     { IMP::get_log_stream(level) << expr << std::flush;};
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
-/*!
-  \param[in] level The IMP::Log_Level for the message
-
-  \param[in] expr An expression which writes something to IMP_STREAM
-*/
+/** \param[in] level The IMP::Log_Level for the message
+    \param[in] expr An expression which writes something to IMP_STREAM
+ */
 #define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
     {std::ostream &IMP_STREAM= IMP::get_log_stream(level); expr;}
 
 
 //! Write an warning to a log.
-/*!
-  \param[in] expr An expression to be output to the log. It is prefixed by "WARNING"
-*/
+/** \param[in] expr An expression to be output to the log. It is prefixed
+                    by "WARNING"
+ */
 #define IMP_WARN(expr) if (IMP::get_log_output(IMP::WARNING)) \
     { IMP::get_log_stream(IMP::WARNING) << "WARNING  " << expr << std::flush;};
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
-/*!
-  \param[in] expr An expression which writes something to IMP_STREAM. It is prefixed by "WARNING"
-*/
+/** \param[in] expr An expression which writes something to IMP_STREAM.
+                    It is prefixed by "WARNING"
+ */
 #define IMP_WARN_WRITE(expr) if (IMP::is_log_output(IMP::WARNING)) \
     {std::ostream &IMP_STREAM= IMP::get_log_stream(IMP::Log::WARNING); expr;}
 
 
 
 //! Write an warning to a standard error.
-/*!
-  \param[in] expr An expression to be output to std::cerr. It is prefixed by "ERROR"
-*/
+/** \param[in] expr An expression to be output to std::cerr. It is prefixed
+                    by "ERROR"
+ */
 #define IMP_ERROR(expr) std::cerr << "ERROR: " << expr << std::endl;
+
 //! Write an entry to standard error. This is to be used for objects with no operator<<.
-/*!
-  \param[in] expr An expression which writes something to IMP_STREAM. It is prefixed by "ERROR"
-*/
+/** \param[in] expr An expression which writes something to IMP_STREAM.
+                    It is prefixed by "ERROR"
+ */
 #define IMP_ERROR_WRITE(expr) {std::ostream &IMP_STREAM= std::cerr; std:cerr<< "ERROR "; expr; std::cerr << std::endl;}
 
 
@@ -187,10 +184,11 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 #ifndef NDEBUG
 
 //! An assertion for IMP. An IMP::ErrorException will be thrown.
-/*!
-  \param[in] expr The assertion expression.
+/** Since it is a debug-only check and no attempt should be made to
+    recover from it, the exception type cannot be specified.
 
-  \param[in] message Write this message if the assertion fails.
+    \param[in] expr The assertion expression.
+    \param[in] message Write this message if the assertion fails.
  */
 #define IMP_assert(expr, message) if (!(expr)) {IMP_ERROR(message); throw IMP::ErrorException();}
 #else
@@ -198,20 +196,15 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 #endif
 
 //! An runtime check for IMP.
-/*!
-  \param[in] expr The assertion expression.
-
-  \param[in] message Write this message if the assertion fails.
-
-  \param[in] exception Throw the object constructed by this expression.
+/** \param[in] expr The assertion expression.
+    \param[in] message Write this message if the assertion fails.
+    \param[in] exception Throw the object constructed by this expression.
  */
 #define IMP_check(expr, message, exception) if (!(expr)) {IMP_ERROR(message); throw exception;}
 
 //! An runtime failure for IMP.
-/*!
-  \param[in] message Write this message if the assertion fails.
-
-  \param[in] exception Throw the object constructed by this expression.
+/** \param[in] message Write this message if the assertion fails.
+    \param[in] exception Throw the object constructed by this expression.
  */
 #define IMP_failure(message, exception) {IMP_ERROR(message); throw exception;}
 

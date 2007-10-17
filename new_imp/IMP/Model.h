@@ -206,6 +206,12 @@ protected:
 };
 
 
+inline std::ostream &operator<<(std::ostream &out, const Model &s) {
+  s.show(out);
+  return out;
+}
+
+
 } // namespace IMP
 
 #endif  /* __IMP_MODEL_H */

@@ -149,6 +149,14 @@ protected:
 };
 
 
+
+inline std::ostream &operator<<(std::ostream &out, const Particle &s) {
+  s.show(out);
+  return out;
+}
+
+
+
 //! Iterator for getting all Float attributes from a particle
 /** The basic form for use is:
 

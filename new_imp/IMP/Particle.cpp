@@ -73,7 +73,8 @@ void Particle::add_float(const std::string name, const Float value,
   IMP_LOG(VERBOSE, "add_float: " << name);
   IMP_assert(model_data_ != NULL, 
              "Particle must be added to Model before an attributes are added");
-  IMP_assert(!has_float(name), "Trying to add the name '" <<  name << "' twice.");
+  IMP_assert(!has_float(name), "Trying to add the name '" 
+             <<  name << "' twice. Particle state is " << *this);
   // if optimized, give name to get stats generated for this name (e.g. "x", "y" or "z")
   // if (is_optimized)
   //   fi = model_data_->add_float(value, name);
@@ -107,7 +108,8 @@ bool Particle::has_float(const std::string name) const
  */
 FloatIndex Particle::get_float_index(const std::string name) const
 {
-  IMP_check(has_float(name), "Unknown float attribute '" << name << "'", 
+  IMP_check(has_float(name), "Unknown float attribute '" << name 
+            << "'. Particle state is " << *this, 
             std::out_of_range("Unknown float attribute name"));
   return float_indexes_.find(name)->second;
 }
@@ -122,7 +124,8 @@ void Particle::add_int(const std::string name, const Int value)
   IMP_LOG(VERBOSE, "add_int: " << name);
   IMP_assert(model_data_ != NULL, 
              "Particle must be added to Model before an attributes are added");
-  IMP_assert(!has_int(name), "Trying to add the name '" <<  name << "' twice.");
+  IMP_assert(!has_int(name), "Trying to add the name '"
+             <<  name << "' twice. Particle state is " << *this);
   int_indexes_[name] = model_data_->add_int(value);
 }
 
@@ -144,7 +147,8 @@ bool Particle::has_int(const std::string name) const
  */
 IntIndex Particle::get_int_index(const std::string name) const
 {
-  IMP_check(has_int(name), "Unknown int attribute '" << name << "'", 
+  IMP_check(has_int(name), "Unknown int attribute '" << name 
+            << "'. Particle state is " << *this, 
             std::out_of_range("Unknown int attribute name"));
 
   return int_indexes_.find(name)->second;
@@ -160,7 +164,8 @@ void Particle::add_string(const std::string name, const String value)
   IMP_assert(model_data_ != NULL, 
              "Particle must be added to Model before an attributes are added");
   IMP_assert(!has_string(name), 
-             "Trying to add the name '" <<  name << "' twice.");
+             "Trying to add the name '" 
+             <<  name << "' twice. Particle state is " << *this);
   
   string_indexes_[name] = model_data_->add_string(value);
 }
@@ -183,7 +188,8 @@ bool Particle::has_string(const std::string name) const
  */
 StringIndex Particle::get_string_index(const std::string name) const
 {
-  IMP_check(has_string(name), "Unknown string attribute '" << name << "'", 
+  IMP_check(has_string(name), "Unknown string attribute '" << name 
+            << "'. Particle state is " << *this, 
             std::out_of_range("Unknown string attribute name"));
  
   return string_indexes_.find(name)->second;

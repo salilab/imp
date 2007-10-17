@@ -95,6 +95,14 @@ protected:
   std::string name_;
 };
 
+
+
+inline std::ostream &operator<<(std::ostream &out, const Restraint &s) {
+  s.show(out);
+  return out;
+}
+
+
 } // namespace IMP
 
 #endif  /* __IMP_RESTRAINT_H */
