@@ -26,12 +26,16 @@ public:
     nx=0;ny=0;nz=0; 
     data_type=0; 
     nxstart=1; nystart=1; nzstart=1;
+    
+    mx = nxstart + nx - 1; my = nystart + ny - 1; mz = nzstart + nz - 1;
+    alpha=90. ; beta=90. ; gamma=90.;
     mapc =1; mapr=2; maps=3;
-    dmin=0;dmax=0;dmean=0;
     ispg=0;
     nsymbt=0;
     Objectpixelsize = 1.0;
     machinestamp = 0;
+    nlabl=0;
+    strcpy(map,"MAP \0");
     magic=6;
   }
 
@@ -61,7 +65,8 @@ public:
     s<< "machinestamp: " << v.machinestamp << endl;
     s <<"rms: " << v.rms << endl;
     s<<"nlabl: " << v.nlabl <<endl;
-    s <<"comments : " << v.comments << endl;		  
+    for(int i=0;i<v.nlabl;i++)
+      s << "comments[" << i << "] = ->" <<  v.comments[i] << "<-" << endl;
     return s;
   }
 

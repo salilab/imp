@@ -7,12 +7,10 @@ int MRCReaderWriter::Read(const char *fn_in, real **data, DensityHeader &head)
 {
   // Read file
   filename.assign(fn_in);
-  cout << "MRCReaderWriter::Read 1 " << endl;
   read(data);
-  cout << "MRCReaderWriter::Read 2 " << endl;
+
   // Translate header to DensityHeader
   header.ToDensityHeader(head);
-  cout << "MRCReaderWriter::Read 3 " << endl;
   return 0;
 }
 
@@ -20,11 +18,8 @@ int MRCReaderWriter::Read(const char *fn_in, real **data, DensityHeader &head)
 // Writes an MRC file from the data and the general DensityHeader
 void MRCReaderWriter::Write(const char *fn_out, const real *data, const DensityHeader &head)
 {
-	// Translate DensityHeader to MRCHeader
+	// Translate DensityHeader to MRCHeader and write
 	header.FromDensityHeader(head);
-	cout << " ------  header  to write ---------- " << endl;
-	cout << header << endl;
-	cout << " ------------------------------------ " << endl;
 	// Write
 	write(fn_out,data);
 }
@@ -183,64 +178,87 @@ int MRCReaderWriter::read_header(void)
 // Write a MRC file
 int MRCReaderWriter::write(const char *fn,const float *pt)
 {
-	fstream f_out;
-	f_out.open(fn,fstream::out | fstream::binary);
-	if(!f_out.fail())
-	{
-		// Write header
-		if(write_header(&f_out)==1)
-		{
-			cout << "MRCReaderWriter::write. Error writing MRC header to file " << fn << endl;
-			return 1;
-		}
-		// Write values
-		if(write_data(&f_out,pt)==1)
-		{
-			cout << "MRCReaderWriter::write. Error writing MRC data to file " << fn << endl;
-		    return 1;
-		}
-	}
-	f_out.close();
-	return 0;
+  ofstream s(fn);
+  if(!s.fail()) {
+    // Write header
+    if(write_header(s)==1) {
+      cout << "MRCReaderWriter::write. Error writing MRC header to file " << fn << endl;
+      return 1;
+    }
+    // Write values
+    if(write_data(s,pt)==1) {
+      cout << "MRCReaderWriter::write. Error writing MRC data to file " << fn << endl;
+      return 1;
+    }
+  }
+  s.close();
+  return 0;
 }
 
 
 
 
 /* Writes the MRC header to a file */
-int MRCReaderWriter::write_header(fstream *f_out)
+int MRCReaderWriter::write_header(ofstream &s)
 {
-// 	header.alpha = header.beta = header.gamma = 90.0;
-// 	header.mapc = 1; header.mapr = 2; header.maps = 3;
-	memcpy(header.map, "MAP ", 4);
-       	header.machinestamp = get_machine_stamp();
-	//	header.nlabl = 1;
-	//	header.mode = 2;
 
-	header.ispg = 1065353216;
+  
+  int wordsize=4; 
+  s.write((char *) &header.nx,wordsize);
+  s.write((char *) &header.ny,wordsize);
+  s.write((char *) &header.nz,wordsize);
+  s.write((char *) &header.mode,wordsize);
+  s.write((char *) &header.nxstart,wordsize);
+  s.write((char *) &header.nystart,wordsize);
+  s.write((char *) &header.nzstart,wordsize);
+  s.write((char *) &header.mx,wordsize);
+  s.write((char *) &header.my,wordsize);
+  s.write((char *) &header.mz,wordsize);
+  s.write((char *) &header.xlen,wordsize);
+  s.write((char *) &header.ylen,wordsize);
+  s.write((char *) &header.zlen,wordsize);
+  s.write((char *) &header.alpha,wordsize);
+  s.write((char *) &header.beta,wordsize);
+  s.write((char *) &header.gamma,wordsize);
+  s.write((char *) &header.mapc,wordsize);
+  s.write((char *) &header.mapr,wordsize);
+  s.write((char *) &header.maps,wordsize);
+  s.write((char *) &header.dmin,wordsize);
+  s.write((char *) &header.dmax,wordsize);
+  s.write((char *) &header.dmean,wordsize);
+  s.write((char *) &header.ispg,wordsize);
+  s.write((char *) &header.nsymbt,wordsize);
+  s.write((char *) &header.user,wordsize*MRC_USER);
+  s.write((char *) &header.xorigin,wordsize);
+  s.write((char *) &header.yorigin,wordsize);
+  s.write((char *) &header.zorigin,wordsize);
+  s.write((char *) &header.map,wordsize);
+  s.write((char *) &header.machinestamp,wordsize);
+  s.write((char *) &header.rms,wordsize);
+  s.write((char *) &header.nlabl,wordsize);
+  s.write((char *) &header.labels,sizeof(char)*MRC_NUM_LABELS*MRC_LABEL_SIZE);
+  if(s.bad()) {
+    cout << "MRCReaderWriter::write_header. Error writing MRC header to file" << endl;
+    return 1;
+  }
 
-	f_out->write((char *) &header,sizeof(MRCHeader));
-	if(f_out->bad())
-	{
-		cout << "MRCReaderWriter::write_header. Error writing MRC header to file" << endl;
-		return 1;
-	}
-
-	return 0;
+  return 0;
+  
 }
 
 /* Writes the grid of values of an EM map to a MRC file */
-int MRCReaderWriter::write_data(fstream *f_out,const float *pt)
+int MRCReaderWriter::write_data(ofstream &s,const float *pt)
 {
-	size_t n = header.nx * header.ny * header.nz;
-	f_out->write((char *)pt,sizeof(float)*n);
-	if(f_out->bad())
-	{
-		cout << "MRCReaderWriter::write_header. Error writing MRC data to file" << endl;
-		return 1;
-	}
-	cout << "MRC file written: grid " << header.nx << "x" << header.ny << "x" << header.nz << endl;
-	return 0;
+
+  s.write((char *)pt,sizeof(float)*header.nx * header.ny * header.nz);
+  if(s.bad()){
+    cout << "MRCReaderWriter::write_header. Error writing MRC data to file" << endl;
+    return 1;
+  }
+  cout << "MRC file written: grid " << header.nx << "x" << header.ny << "x" << header.nz << endl;
+  return 0;
+
+
 }
 
 
@@ -288,86 +306,91 @@ void byte_swap(unsigned char *ch, int n_array)
 // Translate DensityHeader to MRCHeader
 int MRCHeader::FromDensityHeader(const DensityHeader &h)
 {
-	nz=h.nz; 	ny=h.ny; 	nx=h.nx; // map size
-	// mode
-	if(h.data_type==0) // data type not initialized
-	  mode = 2;
-	if(h.data_type==1)
-	  mode=0;
-	else if(h.data_type==2)
-	  mode=1;
-	else if(h.data_type==4)
-	  mode=2;
+  string empty;
+  
+  nz=h.nz; 	ny=h.ny; 	nx=h.nx; // map size
+  // mode
+  if(h.data_type==0) // data type not initialized
+    mode = 2;
+  if(h.data_type==1)
+    mode=0;
+  else if(h.data_type==2)
+    mode=1;
+  else if(h.data_type==4)
+    mode=2;
 
-	cout << "mode is : "<< mode << endl;
-	nxstart=h.nxstart ; nystart=h.nystart ; nzstart=h.nzstart; // number of first columns in map (default = 0)
-	mx=h.mx ; my=h.my ; mz=h.mz; // Number of intervals along each dimension
-	xlen=h.xlen ; ylen=h.ylen ; zlen=h.zlen; // Cell dimensions (angstroms)
-	alpha=h.alpha ; beta=h.beta ; gamma=h.gamma; // Cell angles (degrees)
-	/* Axes corresponding to columns (mapc), rows (mapr) and sections (maps) (1,2,3 for x,y,z) */
-	mapc=h.mapc ; mapr=h.mapr ; maps=h.maps; 
-	/* Minimum, maximum and mean density value */
-	dmin=h.dmin ; dmax=h.dmax ; dmean=h.dmean; 
-	ispg=h.ispg; // Sapce group number 0 or 1 (default 0) 
-	nsymbt=h.nsymbt; // Number of bytes used for symmetry data (0 or 80)
 
-	// extra space used for anything - 0 by default
-	for(int i=0;i<MRC_USER;i++)
-		user[i]=h.user[i];
-	strcpy(map,h.map); // character string 'MAP ' to identify file type
-	xorigin=h.xorigin ; yorigin=h.yorigin ; zorigin=h.zorigin;  // Origin used for transforms 
-	machinestamp=h.machinestamp; // machine stamp (0x11110000 bigendian, 0x44440000 little)
-	if (machinestamp == 0) {
-	  machinestamp = get_machine_stamp();
-	}
+  nxstart=h.nxstart ; nystart=h.nystart ; nzstart=h.nzstart; // number of first columns in map (default = 0)
+  mx=h.mx ; my=h.my ; mz=h.mz; // Number of intervals along each dimension
+  xlen=h.xlen ; ylen=h.ylen ; zlen=h.zlen; // Cell dimensions (angstroms)
+  alpha=h.alpha ; beta=h.beta ; gamma=h.gamma; // Cell angles (degrees)
+  /* Axes corresponding to columns (mapc), rows (mapr) and sections (maps) (1,2,3 for x,y,z) */
+  mapc=h.mapc ; mapr=h.mapr ; maps=h.maps; 
+  /* Minimum, maximum and mean density value */
+  dmin=h.dmin ; dmax=h.dmax ; dmean=h.dmean; 
+  ispg=h.ispg; // Sapce group number 0 or 1 (default 0) 
+  nsymbt=h.nsymbt; // Number of bytes used for symmetry data (0 or 80)
 
-	rms=h.rms; // RMS deviation of map from mean density
-	nlabl=h.nlabl; // Number of labels being used
-	// Copy comments
-	for(int i=0;i<nlabl;i++)
-		strcpy(labels[i],h.comments[i]);
-	for(int i=nlabl;i<MRC_NUM_LABELS;i++)
-		strcpy(labels[i],"");
-	
-	return 0;
+  // extra space used for anything - 0 by default
+  for(int i=0;i<MRC_USER;i++)
+    user[i]=h.user[i];
+  strcpy(map,"MAP \0"); // character string 'MAP ' to identify file type
+  xorigin=h.xorigin ; yorigin=h.yorigin ; zorigin=h.zorigin;  // Origin used for transforms 
+  machinestamp=h.machinestamp; // machine stamp (0x11110000 bigendian, 0x44440000 little)
+  rms=h.rms; // RMS deviation of map from mean density
+  nlabl=h.nlabl; // Number of labels being used
+  // Copy comments
+  for(int i=0;i<nlabl;i++)
+    strcpy(labels[i],h.comments[i]);
+  // Fill empty coments with null character
+  char *c="\0";empty.resize(MRC_LABEL_SIZE,*c);
+  for(int i=nlabl;i<MRC_NUM_LABELS;i++)
+    strcpy(labels[i],empty.c_str());
+
+  return 0;
 }
 
 // Translate MRCHeader to DensityHeader
 int MRCHeader::ToDensityHeader(DensityHeader &h)
 {
-	h.nz=nz; 	h.ny=ny; 	h.nx=nx; // map size
-	// mode
-	if(mode==0)
-		h.data_type=1;
-	else if(mode==1)
-		h.data_type=2;
-	else if(mode==2)
-		h.data_type=4;
-	h.nxstart=nxstart ; h.nystart=nystart ; h.nzstart=nzstart; // number of first columns in map (default = 0)
-	h.mx=mx ; h.my=my ; h.mz=mz; // Number of intervals along each dimension
-	h.xlen=xlen ; h.ylen=ylen ; h.zlen=zlen; // Cell dimensions (angstroms)
-	h.alpha=alpha ; h.beta=beta ; h.gamma=gamma; // Cell angles (degrees)
-	/* Axes corresponding to columns (mapc), rows (mapr) and sections (maps) (1,2,3 for x,y,z) */
-	h.mapc=mapc ; h.mapr=mapr ; h.maps=maps; 
-	/* Minimum, maximum and mean density value */
-	h.dmin=dmin ; h.dmax=dmax ; h.dmean=dmean; 
-	h.ispg=ispg; // Sapce group number 0 or 1 (default 0) 
-	h.nsymbt=nsymbt; // Number of bytes used for symmetry data (0 or 80)
-	// extra space used for anything - 0 by default
-	for(int i=0;i<MRC_USER;i++)
-		h.user[i]=user[i];
-	strcpy(h.map,map); // character string 'MAP ' to identify file type
-	h.xorigin=xorigin ; h.yorigin=yorigin ; h.zorigin=zorigin;  // Origin used for transforms 
-	h.machinestamp=machinestamp; // machine stamp (0x11110000 bigendian, 0x44440000 little)
-	h.rms=rms; // RMS deviation of map from mean density
-	h.nlabl=nlabl; // Number of labels being used
-	// Copy comments
-	for(int i=0;i<h.nlabl;i++)
-		strcpy(h.comments[i],labels[i]);
-	for(int i=h.nlabl;i<MRC_NUM_LABELS;i++)
-		strcpy(h.comments[i],"");
-	
-	return 0;
+  string empty;
+  h.nz=nz; 	h.ny=ny; 	h.nx=nx; // map size
+  // mode
+  if(mode==0)
+    h.data_type=1;
+  else if(mode==1)
+    h.data_type=2;
+  else if(mode==2)
+    h.data_type=4;
+  h.nxstart=nxstart ; h.nystart=nystart ; h.nzstart=nzstart; // number of first columns in map (default = 0)
+  h.mx=mx ; h.my=my ; h.mz=mz; // Number of intervals along each dimension
+  h.xlen=xlen ; h.ylen=ylen ; h.zlen=zlen; // Cell dimensions (angstroms)
+  h.alpha=alpha ; h.beta=beta ; h.gamma=gamma; // Cell angles (degrees)
+  /* Axes corresponding to columns (mapc), rows (mapr) and sections (maps) (1,2,3 for x,y,z) */
+  h.mapc=mapc ; h.mapr=mapr ; h.maps=maps; 
+  /* Minimum, maximum and mean density value */
+  h.dmin=dmin ; h.dmax=dmax ; h.dmean=dmean; 
+  h.ispg=ispg; // Sapce group number 0 or 1 (default 0) 
+  h.nsymbt=nsymbt; // Number of bytes used for symmetry data (0 or 80)
+  // extra space used for anything - 0 by default
+  for(int i=0;i<MRC_USER;i++)
+    h.user[i]=user[i];
+  strcpy(h.map,"MAP \0"); // character string 'MAP ' to identify file type
+  h.xorigin=xorigin ; h.yorigin=yorigin ; h.zorigin=zorigin;  // Origin used for transforms 
+  h.machinestamp=machinestamp; // machine stamp (0x11110000 bigendian, 0x44440000 little)
+  h.rms=rms; // RMS deviation of map from mean density
+  h.nlabl=nlabl; // Number of labels being used
+
+  // Copy comments  
+  for(int i=0;i<h.nlabl;i++)
+    strcpy(h.comments[i],labels[i]);
+
+
+  // Fill empty coments with null character
+  char *c="\0";empty.resize(MRC_LABEL_SIZE,*c);
+  for(int i=h.nlabl;i<MRC_NUM_LABELS;i++) 
+    strcpy(h.comments[i],empty.c_str());
+  return 0;
 }
 
 

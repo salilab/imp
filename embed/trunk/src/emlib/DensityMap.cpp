@@ -5,6 +5,7 @@ DensityMap::DensityMap(){
   loc_calculated = false;
   normalized = false;
   rms_calculated = false;
+  x_loc=NULL;y_loc=NULL;z_loc=NULL;
 }
 
 
@@ -46,13 +47,15 @@ DensityMap& DensityMap::operator=(const DensityMap& other) {
 }
 
 
-
 DensityMap::~DensityMap() {
 
     delete data;
-    delete x_loc;
-    delete y_loc;
-    delete z_loc;
+    if (x_loc != NULL)
+      delete x_loc;
+    if (y_loc != NULL)
+      delete y_loc;
+    if (z_loc != NULL)
+      delete z_loc;
 
   }
 
@@ -67,17 +70,28 @@ void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
   header.nz=nz;
 }
 
+
+void DensityMap::Read(const string &filename, MapReaderWriter &reader) {
+  Read (filename.c_str(),reader);
+}
+
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   //TODO: we need to decide who does the allocation ( mapreaderwriter or density)? if we keep the current implementation ( mapreaderwriter ) we need to pass a pointer to data
 
   reader.Read(filename,&data,header);
 
-  stdNormalize();
+  //  stdNormalize();
 
 }
 void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
   writer.Write(filename,data,header);
 }
+
+void DensityMap::Write(const string &filename, MapReaderWriter &writer) {
+  Write(filename.c_str(),writer);
+}
+
+
 
 float DensityMap::voxel2loc(const int &index,int dim) {
   if (!loc_calculated) 
@@ -169,3 +183,11 @@ float DensityMap::calcRMS() {
 
 }
 
+
+
+  // data managment
+void DensityMap::ResetData() {
+  for (int i=0;i<header.nx*header.ny*header.nz;i++) {
+    data[i]=0.0;
+  }
+}
