@@ -1,0 +1,11 @@
+body {
+  background: white;
+  color:#000066;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size: small;
+}
+
+img.figure {
+  border: solid 1px;
+  margin: 15px;
+}
