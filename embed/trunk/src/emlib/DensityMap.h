@@ -1,4 +1,4 @@
-#ifndef _DENSITYMAP_H
+hh#ifndef _DENSITYMAP_H
 #define _DENSITYMAP_H
 
 
