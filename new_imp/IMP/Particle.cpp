@@ -60,17 +60,6 @@ void Particle::set_is_active(const bool is_active)
 }
 
 
-//! Get whether the particle is active.
-/** Restraints referencing the particle are only evaluated for 'active'
-    particles.
-    \return true it the particle is active.
- */
-bool Particle::is_active(void) const
-{
-  return is_active_;
-}
-
-
 //! Add a Float attribute to this particle.
 /** \param[in] name Name of the attribute being added.
     \param[in] value Initial value of the attribute.

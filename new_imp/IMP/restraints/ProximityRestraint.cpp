@@ -215,7 +215,7 @@ Float ProximityRestraint::evaluate(bool calc_deriv)
  */
 void ProximityRestraint::show(std::ostream& out) const
 {
-  if (is_active()) {
+  if (get_is_active()) {
     out << "proximity restraint (active):" << std::endl;
   } else {
     out << "proximity restraint (inactive):" << std::endl;

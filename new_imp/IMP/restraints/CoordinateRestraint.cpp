@@ -130,7 +130,7 @@ Float CoordinateRestraint::evaluate(bool calc_deriv)
  */
 void CoordinateRestraint::show(std::ostream& out) const
 {
-  if (is_active()) {
+  if (get_is_active()) {
     out << "coordinate restraint (active):" << std::endl;
   } else {
     out << "coordinate restraint (inactive):" << std::endl;

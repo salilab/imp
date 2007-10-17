@@ -54,9 +54,9 @@ void Restraint::set_is_active(const bool is_active)
 //! Get whether the restraint is active. i.e. if it should be evaluated.
 /** \return true if the restraint is active.
  */
-bool Restraint::is_active(void) const
+bool Restraint::get_is_active(void) const
 {
-  return is_active_  && are_particles_active_;
+  return is_active_ && are_particles_active_;
 }
 
 
@@ -65,7 +65,7 @@ bool Restraint::is_active(void) const
  */
 void Restraint::show(std::ostream& out) const
 {
-  if (is_active()) {
+  if (get_is_active()) {
     out << "unknown restraint (active):" << std::endl;
   } else {
     out << "unknown restraint (inactive):" << std::endl;
@@ -84,7 +84,7 @@ void Restraint::check_particles_active(void)
 {
   are_particles_active_ = true;
   for (size_t i = 0; i < particles_.size(); i++) {
-    if (!particles_[i]->is_active()) {
+    if (!particles_[i]->get_is_active()) {
       are_particles_active_ = false;
       return;
     }

@@ -14,6 +14,7 @@
 #include "../IMP_config.h"
 #include "../ModelData.h"
 #include "../ScoreFunc.h"
+#include "../boost/noncopyable.h"
 
 namespace IMP
 {
@@ -21,7 +22,7 @@ namespace IMP
 class Model;
 
 //! Abstract class for representing restraints
-class IMPDLLEXPORT Restraint
+class IMPDLLEXPORT Restraint : public boost::noncopyable
 {
   friend class Model;
 
@@ -49,7 +50,7 @@ public:
   //! Get whether the restraint is active. i.e. if it should be evaluated.
   /** \return true if the restraint is active.
    */
-  bool is_active(void) const;
+  bool get_is_active(void) const;
 
   //! Check if all necessary particles are still active.
   /** If not, inactivate self. Called when at least one model particle

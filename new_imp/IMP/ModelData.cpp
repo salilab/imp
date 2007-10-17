@@ -37,8 +37,8 @@ FloatIndex ModelData::add_float(const Float value)
 
   float_data_.resize(size+1);
 
-  f_index.set_index(size);
-  float_data_[f_index.index()].value_ = value;
+  f_index = FloatIndex(size);//.set_index(size);
+  float_data_[f_index.get_index()].value_ = value;
 
   return f_index;
 }
@@ -50,7 +50,7 @@ FloatIndex ModelData::add_float(const Float value)
  */
 void ModelData::set_float(const FloatIndex idx, const Float value)
 {
-  float_data_[idx.index()].value_ = value;
+  float_data_[idx.get_index()].value_ = value;
 }
 
 
@@ -61,7 +61,7 @@ void ModelData::set_float(const FloatIndex idx, const Float value)
  */
 void ModelData::add_to_deriv(const FloatIndex idx, Float value)
 {
-  float_data_[idx.index()].deriv_ += value;
+  float_data_[idx.get_index()].deriv_ += value;
 }
 
 
@@ -70,7 +70,7 @@ void ModelData::add_to_deriv(const FloatIndex idx, Float value)
  */
 Float ModelData::get_deriv(const FloatIndex idx) const
 {
-  return float_data_[idx.index()].deriv_;
+  return float_data_[idx.get_index()].deriv_;
 }
 
 
@@ -79,7 +79,7 @@ Float ModelData::get_deriv(const FloatIndex idx) const
  */
 bool ModelData::get_is_optimized(const FloatIndex idx) const
 {
-  return float_data_[idx.index()].is_optimized_;
+  return float_data_[idx.get_index()].is_optimized_;
 }
 
 
@@ -88,7 +88,7 @@ bool ModelData::get_is_optimized(const FloatIndex idx) const
  */
 void ModelData::set_is_optimized(const FloatIndex idx, bool is_optimized)
 {
-  float_data_[idx.index()].is_optimized_ = is_optimized;
+  float_data_[idx.get_index()].is_optimized_ = is_optimized;
 }
 
 
@@ -115,8 +115,8 @@ IntIndex ModelData::add_int(const Int value)
 
   int_data_.resize(size+1);
 
-  i_index.set_index(size);
-  int_data_[i_index.index()] = value;
+  i_index= IntIndex(size);
+  int_data_[i_index.get_index()] = value;
 
   return i_index;
 }
@@ -127,7 +127,7 @@ IntIndex ModelData::add_int(const Int value)
  */
 void ModelData::set_int(const IntIndex idx, const Int value)
 {
-  int_data_[idx.index()] = value;
+  int_data_[idx.get_index()] = value;
 }
 
 
@@ -144,8 +144,8 @@ StringIndex ModelData::add_string(const String value)
 
   string_data_.resize(size+1);
 
-  s_index.set_index(size);
-  string_data_[s_index.index()] = value;
+  s_index= StringIndex(size);
+  string_data_[s_index.get_index()] = value;
 
   return s_index;
 }
@@ -156,7 +156,7 @@ StringIndex ModelData::add_string(const String value)
  */
 void ModelData::set_string(const StringIndex idx, const String value)
 {
-  string_data_[idx.index()] = value;
+  string_data_[idx.get_index()] = value;
 }
 
 
@@ -182,7 +182,7 @@ bool OptFloatIndexIterator::next(void)
   FloatIndex fi;
 
   do {
-    fi.set_index(++cur_);
+    fi= FloatIndex(++cur_);
     if (cur_ >= (int) model_data_->float_data_.size()) {
       cur_--; // keep pointing at the last item
       return false;
@@ -202,7 +202,7 @@ FloatIndex OptFloatIndexIterator::get(void) const
 {
   FloatIndex fi;
 
-  fi.set_index(cur_);
+  fi= FloatIndex(cur_);
   return fi;
 }
 

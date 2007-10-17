@@ -307,7 +307,7 @@ Float ConnectivityRestraint::evaluate(bool calc_deriv)
 
 void ConnectivityRestraint::show(std::ostream& out) const
 {
-  if (is_active()) {
+  if (get_is_active()) {
     out << "connectivity restraint (active):" << std::endl;
   } else {
     out << "connectivity restraint (inactive):" << std::endl;

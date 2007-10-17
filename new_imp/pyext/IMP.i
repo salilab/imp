@@ -39,12 +39,15 @@ namespace IMP {
 
 %include "emfile.h"
 %include "emscore.h"
+%include "Index.h"
 %include "Base_Types.h"
 %include "IMP.h"
+%include "boost/noncopyable.h"
 %include "ScoreFunc.h"
 %include "ModelData.h"
 %include "restraints/Restraint.h"
 %include "restraints/RestraintSet.h"
+%include "State.h"
 %include "Model.h"
 %include "Particle.h"
 %include "optimizers/Optimizer.h"
@@ -59,3 +62,12 @@ namespace IMP {
 %include "restraints/ExclusionVolumeRestraint.h"
 %include "restraints/CoarseEMRestraint.h"
 %include "RigidBody.h"
+
+namespace IMP {
+  %template(IntIndex) Index<Int>;
+  %template(FloatIndex) Index<Float>;
+  %template(StringIndex) Index<String>;
+  %template(ParticleIndex) Index<ParticleTag>;
+  %template(RestraintIndex) Index<RestraintTag>;
+  %template(StateIndex) Index<StateTag>;
+}

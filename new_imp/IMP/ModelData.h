@@ -77,7 +77,7 @@ public:
       \return value of particle float attribute.
    */
   Float get_float(const FloatIndex idx) const {
-    return float_data_[idx.index()].value_;
+    return float_data_[idx.get_index()].value_;
   }
 
   //! Add value to derivative.
@@ -126,7 +126,7 @@ public:
       \return value of particle float attribute.
    */
   Int get_int(const IntIndex idx) const {
-    return int_data_[idx.index()];
+    return int_data_[idx.get_index()];
   }
 
   //! Add particle string attribute to the model.
@@ -148,7 +148,7 @@ public:
       \return value of particle string attribute.
    */
   String get_string(const StringIndex idx) const {
-    return string_data_[idx.index()];
+    return string_data_[idx.get_index()];
   }
 
 protected:

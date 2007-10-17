@@ -11,7 +11,8 @@
 #include <string>
 
 #include "IMP_config.h"
-
+#include "Index.h"
+#include <iostream>
 namespace IMP
 {
 
@@ -24,97 +25,18 @@ typedef int Int;
 //! Basic string value
 typedef std::string String;
 
-// if I don't do this as a template, I eliminate the swig errors
-class IMPDLLEXPORT FloatIndex
-{
-public:
-  FloatIndex(int idx = 0) {
-    index_ = idx;
-  }
 
-  ~FloatIndex(void) {
-  }
 
-  int index(void) const {
-    return index_;
-  }
+struct ParticleTag{};
+struct RestraintTag{};
+struct StateTag{};
 
-  void set_index(const int idx) {
-    index_ = idx;
-  }
-
-protected:
-  int index_;
-};
-
-class IMPDLLEXPORT IntIndex
-{
-public:
-  IntIndex(int idx = 0) {
-    index_ = idx;
-  }
-
-  ~IntIndex(void) {
-  }
-
-  int index(void) const {
-    return index_;
-  }
-
-  void set_index(const int idx) {
-    index_ = idx;
-  }
-
-protected:
-  int index_;
-};
-
-class IMPDLLEXPORT StringIndex
-{
-public:
-  StringIndex(int idx = 0) {
-    index_ = idx;
-  }
-
-  ~StringIndex(void) {
-  }
-
-  int index(void) const {
-    return index_;
-  }
-
-  void set_index(const int idx) {
-    index_ = idx;
-  }
-
-protected:
-  int index_;
-};
-
-// indexes for retrieving particle information
-template <class T>
-class IMPDLLEXPORT DataIndex
-{
-public:
-  DataIndex(int idx = 0) {
-    index_ = idx;
-  }
-
-  ~DataIndex(void) {
-  }
-
-  int index(void) const {
-    return index_;
-  }
-
-  void set_index(const int idx) {
-    index_ = idx;
-  }
-
-protected:
-  int index_;
-};
-
+typedef Index<Int> IntIndex;
+typedef Index<Float> FloatIndex;
+typedef Index<String> StringIndex;
+typedef Index<ParticleTag> ParticleIndex;
+typedef Index<RestraintTag> RestraintIndex;
+typedef Index<StateTag> StateIndex;
 // typedefs for the particle variable and attribute indexes
 // typedef DataIndex<Float> FloatIndex;
 // typedef DataIndex<Int> IntIndex;

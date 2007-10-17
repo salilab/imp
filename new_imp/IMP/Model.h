@@ -13,6 +13,8 @@
 #include "ModelData.h"
 #include "restraints/Restraint.h"
 #include "RigidBody.h"
+#include "State.h"
+#include "boost/noncopyable.h"
 
 namespace IMP
 {
@@ -21,7 +23,7 @@ namespace IMP
 /** All attribute data for particles is stored through indexing in the
     model_data_ structure.
  */
-class IMPDLLEXPORT Model
+  class IMPDLLEXPORT Model: public boost::noncopyable
 {
   friend class ParticleIterator;
   friend class RestraintIterator;
@@ -39,20 +41,20 @@ public:
   /** \param[in] particle Pointer to new particle.
       \return index of particle within the model
    */
-  size_t add_particle(Particle* particle);
+  ParticleIndex add_particle(Particle* particle);
 
   //! Get a pointer to a particle in the model, or null if out of bounds.
   /** \param[in] idx  Index of particle
       \return Pointer to the particle, or null if out of bounds.
    */
-  Particle* get_particle(size_t idx) const;
+  Particle* get_particle(ParticleIndex idx) const;
 
   //! Get the total number of particles in the model.
   unsigned int number_of_particles() const {
     return particles_.size();
   }
 
-  typedef int RestraintIndex;
+ 
 
   //! Add restraint set to the model.
   /** \param[in] restraint_set Pointer to the restraint set.
@@ -67,7 +69,12 @@ public:
    */
   Restraint* get_restraint(RestraintIndex i) const;
 
-  //! Return the total number of restraints in the model.
+
+  StateIndex add_state(State* restraint_set);
+  State* get_state(StateIndex i) const;
+
+
+  /** Return the total number of restraints*/
   unsigned int number_of_restraints() const {
     return restraints_.size();
   }
@@ -115,6 +122,10 @@ protected:
 
   //! all base-level restraints and/or restraint sets of the model
   std::vector<Restraint*> restraints_;
+
+  // all base-level restraints and/or restraint sets of the model
+  std::vector<State*> states_;
+
 
   //! sets of particles that move as a single rigid body
   std::vector<RigidBody*> rigid_bodies_;

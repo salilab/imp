@@ -43,7 +43,7 @@ ModelData* Model::get_model_data(void) const
 /** \param[in] particle Pointer to new particle.
     \return index of particle within the model
  */
-size_t Model::add_particle(Particle* particle)
+ParticleIndex Model::add_particle(Particle* particle)
 {
   // a particle needs access to the model_data for
   // the model that it is a part of
@@ -59,32 +59,66 @@ size_t Model::add_particle(Particle* particle)
 }
 
 
+
 //! Get a pointer to a particle in the model, or null if out of bounds.
 /** \param[in] idx  Index of particle
     \return Pointer to the particle, or null if out of bounds.
  */
-Particle* Model::get_particle(size_t idx) const
+Particle* Model::get_particle(ParticleIndex idx) const
 {
   if ((idx < 0) || (idx >= particles_.size())) {
     return NULL;
   }
 
-  return particles_[idx];
+  return particles_[idx.get_index()];
 }
-
 
 
 //! Add restraint set to the model.
 /** \param[in] restraint_set Pointer to the restraint set.
     \return the index of the newly-added restraint.
  */
-Model::RestraintIndex Model::add_restraint(Restraint* restraint_set)
+RestraintIndex Model::add_restraint(Restraint* restraint_set)
 {
   restraint_set->set_model_data(model_data_);
   restraints_.push_back(restraint_set);
   return restraints_.size()-1;
 }
 
+
+/**
+ Get restraint set from model.
+
+ \param[in] i The StateIndex returned when adding
+*/
+
+State* Model::get_state(StateIndex i) const
+{
+  IMP_check(i.get_index() < states_.size(), 
+	    "Out of range State requested",
+	    std::out_of_range("Invalid State requested"));
+  return states_[i.get_index()];
+}
+
+
+/**
+ Add a State to model.
+
+ \param[in] State state to be added.
+*/
+StateIndex Model::add_state(State* restraint_set)
+{
+  restraint_set->set_model_data(model_data_);
+  states_.push_back(restraint_set);
+  return states_.size()-1;
+}
+
+
+/**
+ Get restraint set from model.
+
+ \param[in] i The RestraintIndex returned when adding
+*/
 
 //! Get restraint set from the model.
 /** \param[in] i The RestraintIndex returned when adding.
@@ -93,12 +127,11 @@ Model::RestraintIndex Model::add_restraint(Restraint* restraint_set)
  */
 Restraint* Model::get_restraint(RestraintIndex i) const
 {
-  IMP_check(static_cast<unsigned int>(i) < restraints_.size(), 
+  IMP_check(i.get_index() < restraints_.size(), 
 	    "Out of range restraint requested",
 	    std::out_of_range("Invalid restraint requested"));
-  return restraints_[i];
+  return restraints_[i.get_index()];
 }
-
 
 //! Evaluate all of the restraints in the model and return the score.
 /** \param[in] calc_derivs If true, also evaluate the first derivatives.
@@ -121,12 +154,17 @@ Float Model::evaluate(bool calc_derivs)
   if (calc_derivs)
     model_data_->zero_derivatives();
 
+  for (size_t i = 0; i < states_.size(); i++) {
+    IMP_LOG(VERBOSE, "Updating state " << states_[i]->get_name() << ":");
+    states_[i]->update();
+  }
+
   // evaluate all of the active restraints to get score (and derviatives)
   // for current state of the model
   Float score = 0.0;
   for (size_t i = 0; i < restraints_.size(); i++) {
-    IMP_LOG(VERBOSE, "Evaluating restraints " << restraints_[i]->get_name() << ":");
-    if (restraints_[i]->is_active()) {
+    IMP_LOG(VERBOSE, "Evaluating restraint " << restraints_[i]->get_name() << ":");
+    if (restraints_[i]->get_is_active()) {
       score += restraints_[i]->evaluate(calc_derivs);
     }
 
