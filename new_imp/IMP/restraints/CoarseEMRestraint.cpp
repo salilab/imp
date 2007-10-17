@@ -143,7 +143,7 @@ Float CoarseEMRestraint::evaluate(bool calc_deriv)
  */
 void CoarseEMRestraint::show(std::ostream& out) const
 {
-  if (is_active()) {
+  if (get_is_active()) {
     out << "em coarse restraint (active):" << std::endl;
   } else {
     out << "em coarse  restraint (inactive):" << std::endl;

@@ -41,25 +41,25 @@ class test_xml(IMP.test.IMPTestCase):
         #restraint_sets = self.imp_model.get_restraints
         self.assertEqual(self.imp_model.number_of_restraints(), 3,
                          "xml file contains three restraint sets")
-        self.assertEqual(self.imp_model.get_restraint(0).get_name(),
+        self.assertEqual(self.imp_model.get_restraint(IMP.RestraintIndex(0)).get_name(),
                          'exclusion_volumes', 
                          "not expecting restraint set name: " 
-                         + self.imp_model.get_restraint(0).get_name())
-        self.assertEqual(self.imp_model.get_restraint(1).get_name(),
+                         + self.imp_model.get_restraint(IMP.RestraintIndex(0)).get_name())
+        self.assertEqual(self.imp_model.get_restraint(IMP.RestraintIndex(1)).get_name(),
                          'torus', 
                          "not expecting restraint set name: " 
-                         + self.imp_model.get_restraint(1).get_name())
-        self.assertEqual(self.imp_model.get_restraint(2).get_name(),
+                         + self.imp_model.get_restraint(IMP.RestraintIndex(1)).get_name())
+        self.assertEqual(self.imp_model.get_restraint(IMP.RestraintIndex(2)).get_name(),
                          'connections', 
                          "not expecting restraint set name: "
-                         + self.imp_model.get_restraint(2).get_name())
+                         + self.imp_model.get_restraint(IMP.RestraintIndex(2)).get_name())
 
         # test restraints
-        score = self.imp_model.get_restraint(0).evaluate(False)
+        score = self.imp_model.get_restraint(IMP.RestraintIndex(0)).evaluate(False)
         self.assert_((score > 16000) and (score < 17000), "expecting a score of 16198.2236328 not : " + str(score))
-        score = self.imp_model.get_restraint(1).evaluate(False)
+        score = self.imp_model.get_restraint(IMP.RestraintIndex(1)).evaluate(False)
         self.assert_((score > 624000) and (score < 625000), "expecting a score of 624531.0625 not : " + str(score))
-        score = self.imp_model.get_restraint(2).evaluate(False)
+        score = self.imp_model.get_restraint(IMP.RestraintIndex(2)).evaluate(False)
         self.assert_((score > -100) and (score < 100), "expecting a score of 0.0 not : " + str(score))
 
 if __name__ == '__main__':

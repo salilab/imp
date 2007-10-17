@@ -164,7 +164,7 @@ Float DistanceRestraint::evaluate(bool calc_deriv)
  */
 void DistanceRestraint::show(std::ostream& out) const
 {
-  if (is_active()) {
+  if (get_is_active()) {
     out << "distance restraint (active):" << std::endl;
   } else {
     out << "distance restraint (inactive):" << std::endl;

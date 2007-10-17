@@ -176,7 +176,7 @@ Float ExclusionVolumeRestraint::evaluate(bool calc_deriv)
  */
 void ExclusionVolumeRestraint::show(std::ostream& out) const
 {
-  if (is_active()) {
+  if (get_is_active()) {
     out << "exclusion volume restraint (active):" << std::endl;
   } else {
     out << "exclusion volume  restraint (inactive):" << std::endl;

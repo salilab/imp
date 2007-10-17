@@ -64,7 +64,7 @@ Float RestraintSet::evaluate(bool calc_deriv)
 
   score = (Float) 0.0;
   for (size_t i=0; i < restraints_.size(); i++) {
-    if (restraints_[i]->is_active())
+    if (restraints_[i]->get_is_active())
       score += restraints_[i]->evaluate(calc_deriv);
   }
 

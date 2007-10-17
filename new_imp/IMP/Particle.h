@@ -14,6 +14,7 @@
 #include "Base_Types.h"
 #include "ModelData.h"
 #include "restraints/Restraint.h"
+#include "boost/noncopyable.h"
 
 namespace IMP
 {
@@ -30,7 +31,7 @@ class Model;
     optimization. Removing particles and their attributes would cause
     problems in the way attribute values are indexed and should not be done.
  */
-class IMPDLLEXPORT Particle
+class IMPDLLEXPORT Particle : public boost::noncopyable
 {
   friend class FloatAttributeIterator;
   friend class IntAttributeIterator;
@@ -118,7 +119,7 @@ public:
       particles.
       \return true it the particle is active.
    */
-  bool is_active(void) const;
+   bool get_is_active(void) const {return is_active_;}
 
   //! Show the particle
   /** \param[in] out Stream to write particle description to.
