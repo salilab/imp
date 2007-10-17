@@ -14,12 +14,12 @@ MoveIfExists = \
 
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(env, cplusplus=True)
-e.Append(CPPPATH='../IMP')
-e.Append(LIBPATH='../IMP', LIBS='imp')
+e.Append(CPPPATH='../src')
+e.Append(LIBPATH='../src', LIBS='imp')
 
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('_IMP', 'IMP.i',
-                         SWIGFLAGS='-python -c++ -naturalvar -IIMP')
+                         SWIGFLAGS='-python -c++ -naturalvar -Isrc')
 # .py file should also be generated; move to IMP subdirectory:
 e.AddPostAction(pyext, MoveIfExists('pyext/IMP/__init__.py', 'pyext/IMP.py'))
 pymod = File('IMP/__init__.py')
