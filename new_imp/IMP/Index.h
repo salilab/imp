@@ -13,32 +13,66 @@
 namespace IMP {
 
 //! A simple class for defining typechecked indices. 
+/** Non-default instances of Index are well ordered.
+ */
 template <class L>
 class Index {
 public:
-  Index(int i=-1): i_(i) {
+  Index(int i): i_(i) {
+    IMP_assert(i>=0, "Index initializer must be positive. " << i << " is not.");
+  }
+  //! A defaultly constructed Index can be compared for equality, but not ordered.
+  Index(): i_(-1) {
   }
   unsigned int get_index() const {
     IMP_check(i_ >=0, "get_index() called on defaultly constructed Index",
-	      ErrorException());
+              ErrorException());
     return i_;
   }
   std::ostream &show(std::ostream &out) const {
-    out << "(" << i_ << ")";
+    if (!is_default()) {
+      out << "(" << i_ << ")";
+    } else {
+      out << "(Invalid)";
+    }
     return out;
   }
-  bool operator==(const Index<L> &o) const {return i_==o.i_;}
-  bool operator>(const Index<L> &o) const {return i_ > o.i_;}
-  bool operator<(const Index<L> &o) const {return i_ < o.i_;}
-  bool operator!=(const Index<L> &o) const {return i_!=o.i_;}
-  bool operator>=(const Index<L> &o) const {return i_ >= o.i_;}
-  bool operator<=(const Index<L> &o) const {return i_ <= o.i_;}
+  bool operator==(const Index<L> &o) const {
+    return i_==o.i_;
+  }
+  bool operator>(const Index<L> &o) const {
+    IMP_assert(!is_default() && !o.is_default(),
+               "Ordering with uninitialized index is undefined");
+    return i_ > o.i_;
+  }
+  bool operator<(const Index<L> &o) const {
+    IMP_assert(!is_default() && !o.is_default(),
+               "Ordering with uninitialized index is undefined");
+    return i_ < o.i_;
+  }
+  bool operator!=(const Index<L> &o) const {
+    return i_!=o.i_;
+  }
+  bool operator>=(const Index<L> &o) const {
+    IMP_assert(!is_default() && !o.is_default(),
+               "Ordering with uninitialized index is undefined");
+    return i_ >= o.i_;
+  }
+  bool operator<=(const Index<L> &o) const {
+    IMP_assert(!is_default() && !o.is_default(),
+               "Ordering with uninitialized index is undefined");
+    return i_ <= o.i_;
+  }
 private:
+  bool is_default() const {
+    return i_==-1;
+  }
+
   int i_;
 };
 
 template <class L>
-std::ostream &operator<<(std::ostream &out, const Index<L> &i) {
+inline std::ostream &operator<<(std::ostream &out, const Index<L> &i) {
   return i.show(out);
 }
 

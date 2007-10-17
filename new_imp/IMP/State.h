@@ -53,6 +53,12 @@ protected:
   std::string name_;
 };
 
+
+inline std::ostream &operator<<(std::ostream &out, const State &s) {
+  s.show(out);
+  return out;
+}
+
 } // namespace IMP
 
 #endif  /* __IMP_STATE_H */
