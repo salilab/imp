@@ -86,39 +86,31 @@ RestraintIndex Model::add_restraint(Restraint* restraint_set)
 }
 
 
-/**
- Get restraint set from model.
-
- \param[in] i The StateIndex returned when adding
-*/
-
+//! Get state from the model.
+/** \param[in] i The StateIndex returned when adding.
+    \exception std::out_of_range state index is out of range.
+    \return pointer to the state.
+ */
 State* Model::get_state(StateIndex i) const
 {
   IMP_check(i.get_index() < states_.size(), 
-	    "Out of range State requested",
-	    std::out_of_range("Invalid State requested"));
+            "Out of range State requested",
+            std::out_of_range("Invalid State requested"));
   return states_[i.get_index()];
 }
 
 
-/**
- Add a State to model.
-
- \param[in] State state to be added.
+//! Add state to the model.
+/** \param[in] state Pointer to the state.
+    \return the index of the newly-added state.
 */
-StateIndex Model::add_state(State* restraint_set)
+StateIndex Model::add_state(State* state)
 {
-  restraint_set->set_model_data(model_data_);
-  states_.push_back(restraint_set);
+  state->set_model_data(model_data_);
+  states_.push_back(state);
   return states_.size()-1;
 }
 
-
-/**
- Get restraint set from model.
-
- \param[in] i The RestraintIndex returned when adding
-*/
 
 //! Get restraint set from the model.
 /** \param[in] i The RestraintIndex returned when adding.
@@ -128,8 +120,8 @@ StateIndex Model::add_state(State* restraint_set)
 Restraint* Model::get_restraint(RestraintIndex i) const
 {
   IMP_check(i.get_index() < restraints_.size(), 
-	    "Out of range restraint requested",
-	    std::out_of_range("Invalid restraint requested"));
+            "Out of range restraint requested",
+            std::out_of_range("Invalid restraint requested"));
   return restraints_[i.get_index()];
 }
 
@@ -200,7 +192,7 @@ void Model::set_up_trajectory(const std::string trajectory_path,
     fout.open(trajectory_path_.c_str(), std::ios_base::out);
     if (!fout.is_open()) {
       IMP_ERROR("Unable to initialize trajectory file: " << trajectory_path_
-		<< ". Trajectory writing is off.");
+                << ". Trajectory writing is off.");
       trajectory_on_=false;
     } else {
       frame_num_=0;

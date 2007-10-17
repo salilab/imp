@@ -23,7 +23,7 @@ namespace IMP
 /** All attribute data for particles is stored through indexing in the
     model_data_ structure.
  */
-  class IMPDLLEXPORT Model: public boost::noncopyable
+class IMPDLLEXPORT Model: public boost::noncopyable
 {
   friend class ParticleIterator;
   friend class RestraintIterator;
@@ -54,8 +54,6 @@ public:
     return particles_.size();
   }
 
- 
-
   //! Add restraint set to the model.
   /** \param[in] restraint_set Pointer to the restraint set.
       \return the index of the newly-added restraint.
@@ -69,12 +67,20 @@ public:
    */
   Restraint* get_restraint(RestraintIndex i) const;
 
+  //! Add state to the model.
+  /** \param[in] state Pointer to the state.
+      \return the index of the newly-added state.
+   */
+  StateIndex add_state(State* state);
 
-  StateIndex add_state(State* restraint_set);
+  //! Get state from the model.
+  /** \param[in] i The StateIndex returned when adding.
+      \exception std::out_of_range state index is out of range.
+      \return pointer to the state.
+   */
   State* get_state(StateIndex i) const;
 
-
-  /** Return the total number of restraints*/
+  //! Return the total number of restraints
   unsigned int number_of_restraints() const {
     return restraints_.size();
   }

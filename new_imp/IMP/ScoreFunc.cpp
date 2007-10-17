@@ -16,7 +16,7 @@ namespace IMP
 Harmonic::~Harmonic()
 {
   IMP_LOG(VERBOSE,
-	  "Delete Harmonic: beware of early Python calls to destructor.");
+          "Delete Harmonic: beware of early Python calls to destructor.");
 }
 
 //! Calculate harmonic score with respect to the given feature.
@@ -73,7 +73,7 @@ Float Harmonic::harmonic(Float feature, Float& deriv)
 HarmonicLowerBound::~HarmonicLowerBound()
 {
   IMP_LOG(VERBOSE, "Delete HarmonicLowerBound: beware of early Python "
-	  << "calls to destructor.");
+          << "calls to destructor.");
 }
 
 //! Calculate lower-bound harmonic score with respect to the given feature.
@@ -110,7 +110,7 @@ Float HarmonicLowerBound::operator()(Float feature, Float& deriv)
 HarmonicUpperBound::~HarmonicUpperBound()
 {
   IMP_LOG(VERBOSE, "Delete HarmonicUpperBound: beware of early Python "
-	  << "calls to destructor.");
+          << "calls to destructor.");
 }
 
 
@@ -199,7 +199,7 @@ ScoreFunc* BasicScoreFuncParams::create_score_func(void)
   }
   
   IMP_check(0, "Unknown score function: " << score_func_type_,
-	    std::out_of_range("Unknown score function"));
+            std::out_of_range("Unknown score function"));
   return NULL;
 }
 
