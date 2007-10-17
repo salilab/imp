@@ -48,8 +48,8 @@ RestraintSet::RestraintIndex RestraintSet::add_restraint(Restraint* restraint)
 Restraint* RestraintSet::get_restraint(RestraintIndex i) const
 {
   IMP_check(static_cast<unsigned int>(i) < restraints_.size(),
-	    "Invalid restraint requested",
-	    std::out_of_range("Invalid restraint"));
+            "Invalid restraint requested",
+            std::out_of_range("Invalid restraint"));
   return restraints_[i];
 }
 

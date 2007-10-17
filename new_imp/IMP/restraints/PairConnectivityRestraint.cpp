@@ -48,7 +48,7 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
       // create the restraint
       if (rs_iter == rsr_scores_.end()) {
         IMP_failure("Reached end of rsr_scores too early.",
-		    std::out_of_range("Reached end of rsr_scores too early"));
+                    std::out_of_range("Reached end of rsr_scores too early"));
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         rs_iter->rsr_ = new DistanceRestraint(model,
@@ -108,7 +108,7 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
       // create the restraint
       if (rs_iter == rsr_scores_.end()) {
         IMP_failure("Reached end of rsr_scores too early.",
-		    std::out_of_range("Reached end of rsr_scores too early"));
+                    std::out_of_range("Reached end of rsr_scores too early"));
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         rs_iter->rsr_ = new DistanceRestraint(model,
