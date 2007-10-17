@@ -1,21 +1,6 @@
 #ifndef _EMFITRESTRAINT_H
 #define _EMFITRESTRAINT_H
 
-/*
-  CLASS
-
-  KEYWORDS
-
-  AUTHORS
-  Bret
-  Keren Lasker (mailto: kerenl@salilab.org)
-
-
-  OVERVIEW TEXT
-
-*/
-
-
 
 #include "IMP_config.h"
 #include "Model.h"
@@ -52,15 +37,15 @@ public:
     return "0.0.1";
   }
   virtual std::string last_modified_by(void) {
-    return "Frido and Keren";
+    return "Keren";
   }
 
 private:
 
-  DensityMap target_dens_map;
-  SampledDensityMap model_dens_map;
+  DensityMap *target_dens_map;
+  SampledDensityMap *model_dens_map;
   //! reference to the IMP environment
-  Model model;
+  ModelData *model_data;
   float scalefac;
   int num_particles;
   IMPParticlesAccessPoint access_p;

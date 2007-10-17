@@ -12,18 +12,18 @@ EMFitRestraint::EMFitRestraint(Model& model_,
                                std::string weight_str_,
                                float scale_)
 {
-  target_dens_map = em_map_;
-  model = model_;
-  //  target_dens_map = &em_map_;
+
+  target_dens_map = &em_map_;
+  model_data = model_.get_model_data();
   scalefac = scale_;
-  model_dens_map =   SampledDensityMap(em_map_.get_header());
+  model_dens_map =   new SampledDensityMap(em_map_.get_header());
 
 
 
-  /** number of particles in the restraint */
+  /*  number of particles in the restraint */
   num_particles = particle_indexes_.size();
 
-  IMP_LOG(VERBOSE, " RSR_EM_Fit::RSR_EM_Fit set up particles");
+  //  IMP_LOG(VERBOSE, " RSR_EM_Fit::RSR_EM_Fit set up particles");
 
   // set up the particles, their position indexes, and their type indexes
   Particle* p1;
@@ -32,11 +32,11 @@ EMFitRestraint::EMFitRestraint(Model& model_,
     particles_.push_back(p1);
   }
 
-  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after setting up particles " << endl );
+  //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after setting up particles " << endl );
 
   // init the access_p
   access_p = IMPParticlesAccessPoint(
-               model,
+               model_,
                particle_indexes_,
                radius_str_,
                weight_str_);
@@ -44,24 +44,25 @@ EMFitRestraint::EMFitRestraint(Model& model_,
 
   // initialize the derivatives
 
-  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit before initializing derivatives " << endl);
+  //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit before initializing derivatives " << endl);
   dx.insert(dx.begin(),particle_indexes_.size(),0.0);
   dy.insert(dy.begin(),particle_indexes_.size(),0.0);
   dz.insert(dz.begin(),particle_indexes_.size(),0.0);
 
 
-  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after initializing derivatives " << endl);
+  //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after initializing derivatives " << endl);
 
   // normalize the target density data
-  target_dens_map.stdNormalize();
+  target_dens_map->stdNormalize();
 
-  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << endl);
-  // have an initial sampling of the model grid
+  //     IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << endl);
+  //  have an initial sampling of the model grid
 
   int ierr;
-  model_dens_map.resample(access_p,
-                          ierr);
-  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << endl);
+  model_dens_map->resample(access_p,
+                           ierr);
+  // IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << endl);
+  cout << 5 << endl;
 }
 
 
@@ -78,15 +79,17 @@ EMFitRestraint::~EMFitRestraint()
  */
 Float EMFitRestraint::evaluate(bool calc_deriv)
 {
+
+  return 0.0;
   calc_deriv = true;
-  IMP_LOG(VERBOSE, "in RSR_EM_Fit::evaluate calc_deriv: " << calc_deriv << endl);
+  //  IMP_LOG(VERBOSE, "in RSR_EM_Fit::evaluate calc_deriv: " << calc_deriv << endl);
   // TODO - should we resample again?
   int ierr;
-  model_dens_map.resample( access_p,
-                           ierr);
+  model_dens_map->resample( access_p,
+                            ierr);
   Float score;
-  score =CoarseCC::evaluate(target_dens_map,
-                            model_dens_map,
+  score =CoarseCC::evaluate(*target_dens_map,
+                            *model_dens_map,
                             access_p,
                             dx,dy,dz,
                             scalefac,
@@ -96,12 +99,12 @@ Float EMFitRestraint::evaluate(bool calc_deriv)
 
   // now update the derivatives
   for (int ii=0;ii<access_p.size();ii++) {
-    model.get_model_data()->add_to_deriv(access_p.x_float_ind(ii),dx[ii]);
-    model.get_model_data()->add_to_deriv(access_p.y_float_ind(ii),dy[ii]);
-    model.get_model_data()->add_to_deriv(access_p.z_float_ind(ii),dz[ii]);
+    model_data->add_to_deriv(access_p.x_float_ind(ii),dx[ii]);
+    model_data->add_to_deriv(access_p.y_float_ind(ii),dy[ii]);
+    model_data->add_to_deriv(access_p.z_float_ind(ii),dz[ii]);
   }
 
-  IMP_LOG(VERBOSE, "after emscore: " << score << " calc_deriv" << calc_deriv);
+  //  IMP_LOG(VERBOSE, "after emscore: " << score << " calc_deriv" << calc_deriv);
   return score;
 }
 
