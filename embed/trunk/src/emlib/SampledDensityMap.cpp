@@ -16,6 +16,9 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header_) {
   }
 
 
+
+
+
 void SampledDensityMap::calculate_particles_bounding_box(
 					 const ParticlesAccessPoint &access_p,
 					 std::vector<float> &lower_bound,

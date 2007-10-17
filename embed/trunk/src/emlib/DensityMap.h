@@ -31,6 +31,7 @@ public:
    */
   DensityMap();
   DensityMap(const DensityMap &other);
+  DensityMap&  operator=(const DensityMap &other );
   ~DensityMap();
 
   /**

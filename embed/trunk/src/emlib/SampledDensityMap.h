@@ -40,9 +40,12 @@ public:
   SampledDensityMap() {
     kernel_param_init = false;
   }
+  
   /** 
-      The size of the map is determined by the header and the data is allocated.*/
+      The size of the map is determined by the header and the data is allocated.
+  */
   SampledDensityMap(const DensityHeader &header_);
+
   /** 
       Generatea a sampled density map from the particles.
 

@@ -10,6 +10,7 @@ DensityMap::DensityMap(){
 
 
 DensityMap::DensityMap(const DensityMap &other){
+  cout << " DensityMap::DensityMap " << endl;
   header = other.header;
   int size = header.nx*header.ny*header.nz;
   data = new real[size];
@@ -18,24 +19,41 @@ DensityMap::DensityMap(const DensityMap &other){
   z_loc = new real[size];
   for (int i=0;i<header.nx*header.ny*header.nz;i++) {
     data[i] = other.data[i];
+  }
+  loc_calculated = other.loc_calculated;
+  if (loc_calculated ) {
+  for (int i=0;i<header.nx*header.ny*header.nz;i++) {
     x_loc[i] = other.x_loc[i];
     y_loc[i] = other.y_loc[i];
     z_loc[i] = other.z_loc[i];
   }
-  
+  }
 
   data_allocated = other.data_allocated;
-  loc_calculated = other.loc_calculated;
   normalized = other.normalized;
   rms_calculated = other.rms_calculated;
 }
 
+DensityMap& DensityMap::operator=(const DensityMap& other) {
+   if (this == &other) // protect against invalid self-assignment
+     {
+       return *this;
+     }
+   
+   DensityMap *a = new DensityMap(other);
+   return *a;
+       
+}
+
+
 
 DensityMap::~DensityMap() {
+  cout << " DensityMap::~DensityMap " << endl;
     delete data;
     delete x_loc;
     delete y_loc;
     delete z_loc;
+  cout << " DensityMap::~DensityMap end" << endl;
   }
 
 
