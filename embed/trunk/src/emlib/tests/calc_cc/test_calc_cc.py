@@ -44,6 +44,7 @@ class test_sample_particles(unittest.TestCase):
 		erw = EM.EMReaderWriter()
 		self.scene.Read("in.em",erw)
 		self.scene.get_header_writable().resolution = 2.0
+		self.scene.stdNormalize()
 		self.particles = particles_provider()
 		self.particles.Init()
 

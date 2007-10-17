@@ -110,7 +110,7 @@ int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header ) {
   s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
   if(s.bad())
     {
-      cout << "EMReaderWriter::WriteHeader. Error writing MRC header to file" << endl;
+      cout << "EMReaderWriter::WriteHeader. Error writing header to file" << endl;
       return 1;
     }
   return 0;

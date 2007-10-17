@@ -69,7 +69,6 @@
   for (int ii=0;ii<nvox;ii++) {
     
     if (model_data[ii] > voxel_data_threshold) {
-
       ccc = ccc + em_data[ii] * model_data[ii];
     }
   }

@@ -151,14 +151,14 @@ void SampledDensityMap::sampling_param_init() {
 
     for (int ii=0; ii<access_p.get_size(); ii++) {
 
-      //      cout << " atoms-in-em: " <<     access_p.get_x(ii) << "  " << 
-      //	access_p.get_y(ii)  << "  " <<  access_p.get_z(ii) << endl;
+            cout << " atoms-in-em: " <<     access_p.get_x(ii) << "  " << 
+      	access_p.get_y(ii)  << "  " <<  access_p.get_z(ii) << endl;
 	
 
 
     // for a specific radii calculate the kernel and how many voxels should be considered (kdist)
       kernel_setup(access_p.get_r(ii),vsig,vsigsq,inv_sigsq,sig,kdist,normfac);
-      //      cout << " kernel data : vsig: " << vsig << " vsigsq: " << vsigsq<< " inv_sigsq: " << inv_sigsq<< " sig: " << sig<< " kdist: " << kdist<< " normfac:  " << normfac<<endl;
+            cout << " kernel data : vsig: " << vsig << " vsigsq: " << vsigsq<< " inv_sigsq: " << inv_sigsq<< " sig: " << sig<< " kdist: " << kdist<< " normfac:  " << normfac<<endl;
       calc_sampling_bounding_box(access_p.get_x(ii),access_p.get_y(ii),access_p.get_z(ii),
 				 kdist,
 				 iminx, iminy, iminz,
@@ -166,22 +166,23 @@ void SampledDensityMap::sampling_param_init() {
       
     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++) {
-        ivox = ivoxz * header.nx * header.ny + ivoxy * header.nx + iminx;
-
+	
+	// we increment ivox this way to avoid unnesecessary multiplication operations.
+	ivox = ivoxz * header.nx * header.ny + ivoxy * header.nx + iminx;
         for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
+	  
           rsq = powf(x_loc[ivox] - access_p.get_x(ii), 2.)
 	    + powf(y_loc[ivox] - access_p.get_y(ii) , 2.)
 	    + powf(z_loc[ivox] - access_p.get_z(ii), 2.);
 
           tmp = exp(- rsq * inv_sigsq );
-	   // if statement to ensure even sampling within the box
+	  // if statement to ensure even sampling within the box
           if ( tmp>lim_ ) data[ivox] = data[ivox] + normfac * access_p.get_w(ii) * tmp;
-
-          ivox++;
+	  ivox++;
         }
       }
     }
-  }
+    }
 
   stdNormalize();
 

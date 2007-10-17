@@ -73,7 +73,9 @@ class MRCHeader
     s<< "machinestamp: " << v.machinestamp << endl;
     s <<"rms: " << v.rms << endl;
     s<<"nlabl: " << v.nlabl <<endl;
-    s <<"labels : " << v.labels << endl;		  
+    s <<"labels : " << v.labels << endl;
+    for(int i=0;i<v.nlabl;i++)
+      s <<"labels[" << i << "] = ->" <<  v.labels[i] << "<-" << endl;
     return s;
   }
 
@@ -118,8 +120,8 @@ private:
     return write(fn,grid);
   }	
   int write(const char *fn,const float *pt);
-  int write_header(fstream *f_out);
-  int write_data(fstream *f_out,const float *pt);
+  int write_header(ofstream &s);
+  int write_data(ofstream &s,const float *pt);
 
 
   string filename; // Name of the file

@@ -39,15 +39,13 @@ public:
   void CreateVoidMap(const int &nx,const int &ny,const int &nz);
 
   void Read(const char *filename, MapReaderWriter &reader);
+  void Read(const string &filename, MapReaderWriter &reader);
   void Write(const char *filename,MapReaderWriter &writer);
+  void Write(const string &filename, MapReaderWriter &writer);
 
 
   // data managment
-  void ResetData() {
-    for (int i=0;i<header.nx*header.ny*header.nz;i++) {
-      data[i]=0.0;
-    }
-  }
+  void ResetData(); 
 
   /*calculate RMSD and mean of a map
     values are stored in the header.
