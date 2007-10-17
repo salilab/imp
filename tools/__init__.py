@@ -159,6 +159,36 @@ def _modeller_check_failed(require_modeller):
         print "  MODELLER was not found: build will continue but some"
         print "  functionality will be missing.\n\n" + msg
 
+
+def CheckEM(context):
+    """Find EM include and library directories"""
+    context.Message('Checking for EM...')
+    em = context.env['em']
+    if em is False or em is 0:
+        context.Result("not found")
+        return False
+
+    libs = ['em']
+    context.env['EM_CPPPATH'] = em+'/src/emlib'  
+    context.env['EM_LIBPATH'] = [em+'/src/emlib' ]
+    context.env['EM_LIBS'] = ['em']
+    context.Result(em)
+    return True
+
+
+def _em_check_failed(require_modeller):
+    """Print an informative message if the em lib check failed"""
+    msg = "  You can set the directory where the em lib is installed by\n" + \
+          "  'scons em=/opt/em' or similar.\n"
+    print
+    if require_modeller:
+        print "ERROR: the em lib is required to build this package\n\n" + msg
+        Exit(1)
+    else:
+        print "  the em lib was not found: build will continue but some"
+        print "  functionality will be missing.\n\n" + msg
+
+
 def MyEnvironment(options=None, require_modeller=True, *args, **kw):
     """Create an environment suitable for building IMP modules"""
     import platform
@@ -191,12 +221,15 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         env['MODELLER_' + mod] = ''
     for mod in ('CPPPATH', 'LIBPATH', 'LIBS'):
         env['MODELLER_' + mod] = []
+    for suff in ('CPPPATH', 'LIBPATH', 'LIBS'):
+        env['EM_' + suff] = ""
     # Note: would like to check for 'help' here too, but that requires a
     # post 0.97 scons snapshot
     if not env.GetOption('clean'):
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility,
-                        'CheckModeller': CheckModeller}
+                        'CheckModeller': CheckModeller,
+                        'CheckEM':CheckEM}
         conf = env.Configure(custom_tests = custom_tests)
         if sys == 'Linux':
             conf.CheckGNUHash()
@@ -205,6 +238,8 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         # configure has been disabled
         if conf.CheckModeller() is False:
             _modeller_check_failed(require_modeller)
+        if conf.CheckEM() is False:
+            _em_check_failed(False)
         conf.Finish()
     return env
 
@@ -313,6 +348,7 @@ def add_common_options(opts, package):
                         PathOption.PathAccept))
     opts.Add(PackageOption('modeller', 'Location of the MODELLER package',
                            os.environ.get('MODINSTALLSVN', False)))
+    opts.Add(PackageOption('em', 'Location of the em lib', False))
     opts.Add(BoolOption('wine',
                         'Build using MS Windows tools via Wine emulation',
                         False))
