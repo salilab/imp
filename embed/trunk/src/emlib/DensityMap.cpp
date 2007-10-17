@@ -10,7 +10,7 @@ DensityMap::DensityMap(){
 
 
 DensityMap::DensityMap(const DensityMap &other){
-  cout << " DensityMap::DensityMap " << endl;
+
   header = other.header;
   int size = header.nx*header.ny*header.nz;
   data = new real[size];
@@ -48,12 +48,12 @@ DensityMap& DensityMap::operator=(const DensityMap& other) {
 
 
 DensityMap::~DensityMap() {
-  cout << " DensityMap::~DensityMap " << endl;
+
     delete data;
     delete x_loc;
     delete y_loc;
     delete z_loc;
-  cout << " DensityMap::~DensityMap end" << endl;
+
   }
 
 
@@ -69,11 +69,11 @@ void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
 
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   //TODO: we need to decide who does the allocation ( mapreaderwriter or density)? if we keep the current implementation ( mapreaderwriter ) we need to pass a pointer to data
-  cout << " before read " << endl;
+
   reader.Read(filename,&data,header);
-  cout << " after read " << endl;
+
   stdNormalize();
-  cout << " after norm " << endl;
+
 }
 void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
   writer.Write(filename,data,header);
