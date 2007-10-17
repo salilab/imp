@@ -4,7 +4,6 @@ Import('env', 'get_sharedlib_environment')
 env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
 
 # Subdirectories:
-SConscript('tests/SConscript')
 restraints_files = SConscript('restraints/SConscript')
 optimizers_files = SConscript('optimizers/SConscript')
 
