@@ -71,7 +71,7 @@ class test_fitting(IMP.test.IMPTestCase):
         """Check that load of nonexistent file is handled cleanly"""
         scene = EM.DensityMap()
         erw = EM.EMReaderWriter()
-        self.assertRaises(IOError, scene.Read, "in.em", erw)
+        self.assertRaises(IOError, scene.Read, "/not/exist/foo", erw)
 
     def test_em_fit(self):
         """Test pair connectivity restraint.
