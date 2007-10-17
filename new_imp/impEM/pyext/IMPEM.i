@@ -17,7 +17,7 @@
 
 namespace IMP {
   class Model;
-  class Float;
+  typedef float Float;
   class Restraint;
 }
 %include "../IMPParticlesAccessPoint.h"
