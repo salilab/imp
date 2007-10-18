@@ -1,4 +1,4 @@
-hh#ifndef _DENSITYMAP_H
+#ifndef _DENSITYMAP_H
 #define _DENSITYMAP_H
 
 
@@ -61,8 +61,8 @@ public:
   float voxel2loc(const int &index,int dim);
 
   // inspection functions
-  const DensityHeader &get_header()const {return header;}
-  DensityHeader &get_header_writable() {return header;}
+  const DensityHeader *get_header()const {return &header;}
+  DensityHeader *get_header_writable() {return &header;}
   
   float* get_x_loc() const {return x_loc;}
   float* get_y_loc() const {return y_loc;}

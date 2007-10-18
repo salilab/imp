@@ -74,7 +74,12 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
 
 
 int EMReaderWriter::Read(const char *filename, real **data, DensityHeader &header) {
-  ifstream file(filename);
+  ifstream file;
+  file.open(filename,ifstream::in);
+  if (!file.good()) {
+    cout << " the file " << filename << " was not found " << endl;
+    return 1;
+  }
   EMHeader eheader;
   ReadHeader(file,eheader);
   eheader.GenerateCommonHeader(header);

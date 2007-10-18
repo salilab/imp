@@ -15,12 +15,10 @@
 		     access_p,
 		     ierr);
 
-
-
   float eps=.000001;
 
   float escore = corr(em_map, model_map,eps);
-
+  cout <<"escore : "<< escore << endl;
   escore = scalefac * (1. - escore);
 
 
@@ -46,6 +44,7 @@
 
 
   // check that the em and the model are of the same size
+  const DensityHeader *model_header = model_map.get_header();
 
 
   if (recalc_ccnormfac) {
@@ -55,15 +54,15 @@
 
   //TODO - check that the size of the em_map and the model_map is the same
 
-  const DensityHeader em_header = em_map.get_header();
-  const DensityHeader model_header = model_map.get_header();
+  const DensityHeader *em_header = em_map.get_header();
+  //  const DensityHeader *model_header = model_map.get_header();
   const real *em_data = em_map.get_data();
   const real *model_data = model_map.get_data();
 
 
 
 
-  int  nvox = em_header.nx*em_header.ny*em_header.nz;
+  int  nvox = em_header->nx*em_header->ny*em_header->nz;
   float ccc = 0.0;
 
   for (int ii=0;ii<nvox;ii++) {
@@ -73,8 +72,8 @@
     }
   }
 
-  ccc = ccc/(1.0*nvox * nvox* em_header.rms * model_header.rms);
-   cout << " cc : " << ccc << "  " << nvox << "  " << em_header.rms << "  " <<  model_header.rms << endl;
+  ccc = ccc/(1.0*nvox * nvox* em_header->rms * model_header->rms);
+  //   cout << " cc : " << ccc << "  " << nvox << "  " << em_header->rms << "  " <<  model_header->rms << endl;
   return ccc;
 };
 
@@ -100,7 +99,7 @@ void  CoarseCC::calcDerivatives(
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
 
 
-  DensityHeader header =model_map.get_header();
+  const DensityHeader *header =model_map.get_header();
   const float *x_loc = model_map.get_x_loc();
   const float *y_loc = model_map.get_y_loc();
   const float *z_loc = model_map.get_z_loc();
@@ -117,7 +116,7 @@ void  CoarseCC::calcDerivatives(
     int ivox;
     for (int ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       for (int ivoxy=iminy;ivoxy<=imaxy;ivoxy++) {
-        ivox = ivoxz * header.nx * header.ny + ivoxy * header.nx + iminx;
+        ivox = ivoxz * header->nx * header->ny + ivoxy * header->nx + iminx;
         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
           rsq = powf(x_loc[ivox] - access_p.get_x(ii), 2)
 	    + powf(y_loc[ivox] - access_p.get_y(ii), 2)

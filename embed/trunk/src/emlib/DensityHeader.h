@@ -24,7 +24,7 @@ public:
   DensityHeader() {
 
     nx=0;ny=0;nz=0; 
-    data_type=0; 
+    data_type=5; 
     nxstart=1; nystart=1; nzstart=1;
     
     mx = nxstart + nx - 1; my = nystart + ny - 1; mz = nzstart + nz - 1;
