@@ -1,11 +1,20 @@
 body {
   background: white;
-  color:#000066;
-  font-family:Arial, Helvetica, sans-serif;
+  color: #000066;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: small;
 }
 
-img.figure {
+img.linkfigure {
   border: solid 1px;
   margin: 15px;
+}
+
+img.figure {
+  border: none;
+  margin: 15px;
+}
+
+p.centerimg {
+  text-align: center;
 }
