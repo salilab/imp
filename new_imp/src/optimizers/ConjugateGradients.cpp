@@ -98,26 +98,26 @@ static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
     if (alpha * step <= eps) {
       return false;
     }
-  
+
     /* CALCULATE THE TRIAL POINT. */
     for (i = 0; i < n; i++) {
       x[i] = estimate[i] + alpha * search[i];
     }
-  
+
     /* EVALUATE THE FUNCTION AT THE TRIAL POINT. */
     f = get_score(model, model_data, float_indices, x, dx);
-  
+
     /* TEST IF THE MAXIMUM NUMBER OF FUNCTION CALLS HAVE BEEN USED. */
     if (++ifun > max_steps) {
       return false;
     }
-  
+
     /* COMPUTE THE DERIVATIVE OF F AT ALPHA. */
     dal = 0.0;
     for (i = 0; i < n; i++) {
       dal += dx[i] * search[i];
     }
-  
+
     /* TEST WHETHER THE NEW POINT HAS A NEGATIVE SLOPE BUT A HIGHER
        FUNCTION VALUE THAN ALPHA=0. IF THIS IS THE CASE,THE SEARCH
        HAS PASSED THROUGH A LOCAL MAX AND IS HEADING FOR A DISTANT LOCAL
@@ -130,20 +130,20 @@ static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
       dp = dg;
       continue;
     }
-  
+
     /* IF NOT, TEST WHETHER THE STEPLENGTH CRITERIA HAVE BEEN MET. */
     if (f <= (minf + 0.0001 * alpha * dg) && fabs(dal / dg) <= 0.9) {
-  
+
       /* IF THEY HAVE BEEN MET, TEST IF TWO POINTS HAVE BEEN TRIED
          AND IF THE TRUE LINE MINIMUM HAS NOT BEEN FOUND. */
       if (ifun - ncalls > 1 || fabs(dal / dg) <= eps) {
         break;
       }
     }
-  
+
     /* A NEW POINT MUST BE TRIED. USE CUBIC INTERPOLATION TO FIND
        THE TRIAL POINT AT. */
-  
+
     u1 = dp + dal - 3.0 * (fp - f) / (ap - alpha);
     u2 = u1 * u1 - dp * dal;
     if (u2 < 0.) {
@@ -151,10 +151,10 @@ static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
     }
     u2 = sqrt(u2);
     at = alpha - (alpha - ap) * (dal + u2 - u1) / (dal - dp + 2. * u2);
-  
+
     /* TEST WHETHER THE LINE MINIMUM HAS BEEN BRACKETED. */
     if (dal / dp <= 0.) {
-  
+
       /* THE MINIMUM HAS BEEN BRACKETED. TEST WHETHER THE TRIAL POINT LIES
          SUFFICIENTLY WITHIN THE BRACKETED INTERVAL.
          IF IT DOES NOT, CHOOSE AT AS THE MIDPOINT OF THE INTERVAL. */
@@ -162,28 +162,28 @@ static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
           || at > (0.99 * std::max(alpha, ap))) {
         at = (alpha + ap) / 2.0;
       }
-  
+
       /* THE MINIMUM HAS NOT BEEN BRACKETED. TEST IF BOTH POINTS ARE
          GREATER THAN THE MINIMUM AND THE TRIAL POINT IS SUFFICIENTLY
          SMALLER THAN EITHER. */
     } else if (dal <= 0.0 || 0.0 >= at || at >= (0.99 * std::min(ap, alpha))) {
-  
+
       /* TEST IF BOTH POINTS ARE LESS THAN THE MINIMUM AND THE TRIAL POINT
          IS SUFFICIENTLY LARGE. */
       if (dal > 0.0 || at <= (1.01 * std::max(ap, alpha))) {
-  
+
         /* IF THE TRIAL POINT IS TOO SMALL,DOUBLE THE LARGEST PRIOR POINT. */
         if (dal <= 0.0) {
           at = 2.0 * std::max(ap, alpha);
         }
-  
+
         /* IF THE TRIAL POINT IS TOO LARGE, HALVE THE SMALLEST PRIOR POINT. */
         if (dal > 0.) {
           at = std::min(ap, alpha) / 2.0;
         }
       }
     }
-  
+
     /* SET AP=ALPHA, ALPHA=AT,AND CONTINUE SEARCH. */
     ap = alpha;
     fp = f;
@@ -239,8 +239,8 @@ Float ConjugateGradients::optimize(Model& model, int max_steps,
 
   // Initialize optimization variables
   int ifun = 0, nrst, nflag = 0;
-  float dg1, xsq, dxsq, f = 0., alpha, dg = 1., step, u1,
-        u2, u3, u4, w1 = 0., w2 = 0., rtst, bestf;
+  float dg1, xsq, dxsq, alpha, dg, step, u1, u2, u3, u4;
+  float f = 0., dg = 1., w1 = 0., w2 = 0., rtst, bestf;
   bool gradient_direction;
 
   // dx holds the gradient at x
@@ -260,7 +260,8 @@ Float ConjugateGradients::optimize(Model& model, int max_steps,
      point and initialize nrst,which is used to determine
      whether a Beale restart is being done. nrst=n means that this
      iteration is a restart iteration. */
-g20: f = get_score(model, model_data, float_indices, x, dx);
+g20:
+  f = get_score(model, model_data, float_indices, x, dx);
   ifun++;
   nrst = n;
   // this is a gradient, not restart, direction:
