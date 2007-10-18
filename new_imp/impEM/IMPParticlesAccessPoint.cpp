@@ -4,9 +4,9 @@ namespace IMP
 {
 
 IMPParticlesAccessPoint::IMPParticlesAccessPoint(Model& model_,
-						 std::vector<int>& particle_indexes_,
-						 std::string radius_att_name_,
-						 std::string weight_att_name_)
+    std::vector<int>& particle_indexes_,
+    std::string radius_att_name_,
+    std::string weight_att_name_)
 {
   model = &model_;
   particle_indexes =  particle_indexes_;
@@ -16,7 +16,7 @@ IMPParticlesAccessPoint::IMPParticlesAccessPoint(Model& model_,
 
 
 void IMPParticlesAccessPoint::InitSingleAttIndexes(std::vector<int> &data,
-						   const std::string &attribute_name)
+    const std::string &attribute_name)
 {
   data.clear();
   for (std::vector<int>::const_iterator it = particle_indexes.begin(); it != particle_indexes.end(); it++) {
@@ -35,8 +35,7 @@ void IMPParticlesAccessPoint::InitAllAttIndexes()
 }
 
 
-  void IMPParticlesAccessPoint::ReSelect(
-					  std::vector<int>& particle_indexes_)
+void IMPParticlesAccessPoint::ReSelect(std::vector<int>& particle_indexes_)
 {
   particle_indexes = particle_indexes_;
   InitAllAttIndexes();
