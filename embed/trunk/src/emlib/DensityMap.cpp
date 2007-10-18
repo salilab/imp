@@ -2,10 +2,12 @@
 
 
 DensityMap::DensityMap(){
+
   loc_calculated = false;
   normalized = false;
   rms_calculated = false;
   x_loc=NULL;y_loc=NULL;z_loc=NULL;
+  data=NULL;
 }
 
 
@@ -48,8 +50,8 @@ DensityMap& DensityMap::operator=(const DensityMap& other) {
 
 
 DensityMap::~DensityMap() {
-
-    delete data;
+    if (data != NULL)
+      delete data;
     if (x_loc != NULL)
       delete x_loc;
     if (y_loc != NULL)
@@ -72,14 +74,17 @@ void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
 
 
 void DensityMap::Read(const string &filename, MapReaderWriter &reader) {
-  Read (filename.c_str(),reader);
+
+  Read(filename.c_str(),reader);
 }
 
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   //TODO: we need to decide who does the allocation ( mapreaderwriter or density)? if we keep the current implementation ( mapreaderwriter ) we need to pass a pointer to data
-
-  reader.Read(filename,&data,header);
-
+  if (reader.Read(filename,&data,header) != 0) {
+    // TODO: here we should throw exception
+    //    std::cerr << "ERROR: " << "unable to read map encoded in file : " << filename << std::endl;
+    //  throw std::exception();
+  }
   //  stdNormalize();
 
 }
@@ -152,6 +157,7 @@ void DensityMap::stdNormalize() {
     data[ii] = (data[ii] - mean) * inv_std;
   }
   normalized = true;
+  rms_calculated=true;
   header.rms=1.;
   header.dmean=0.0;
 }
