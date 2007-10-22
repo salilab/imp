@@ -239,7 +239,7 @@ Float ConjugateGradients::optimize(Model& model, int max_steps,
 
   // Initialize optimization variables
   int ifun = 0, nrst, nflag = 0;
-  float dg1, xsq, dxsq, alpha, dg, step, u1, u2, u3, u4;
+  float dg1, xsq, dxsq, alpha, step, u1, u2, u3, u4;
   float f = 0., dg = 1., w1 = 0., w2 = 0., rtst, bestf;
   bool gradient_direction;
 
