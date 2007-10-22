@@ -16,6 +16,6 @@ e.Depends(pymod, pyext)
 
 # Install the Python extension:
 libinst = e.Install(e['pyextdir'], pyext)
-e.Alias('install', libinst)
+e.Alias('impEM-install', libinst)
 
 Return('pyext')

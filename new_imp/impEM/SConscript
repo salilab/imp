@@ -13,7 +13,7 @@ lib = env.SharedLibrary('impem', files)
 
 # Install the library:
 libinst = env.Install(env['libdir'], lib)
-env.Alias('install', [libinst])
+env.Alias('impEM-install', [libinst])
 
 # Subdirectories:
 SConscript('pyext/SConscript')
