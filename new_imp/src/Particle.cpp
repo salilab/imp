@@ -5,9 +5,9 @@
  *
  */
 
-#include "Particle.h"
+#include "IMP/Particle.h"
+#include "IMP/log.h"
 #include "mystdexcept.h"
-#include "log.h"
 
 namespace IMP
 {

@@ -7,10 +7,10 @@
 
 #include <cmath>
 
-#include "../Particle.h"
-#include "../Model.h"
-#include "../log.h"
-#include "Restraint.h"
+#include "IMP/Particle.h"
+#include "IMP/Model.h"
+#include "IMP/log.h"
+#include "IMP/restraints/Restraint.h"
 
 namespace IMP
 {

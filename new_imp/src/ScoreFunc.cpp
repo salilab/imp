@@ -5,8 +5,8 @@
  *
  */
 
-#include "ScoreFunc.h"
-#include "log.h"
+#include "IMP/ScoreFunc.h"
+#include "IMP/log.h"
 #include "mystdexcept.h"
 
 namespace IMP

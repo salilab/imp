@@ -9,10 +9,10 @@
 
 #include <cmath>
 
-#include "../Model.h"
-#include "../Particle.h"
-#include "../log.h"
-#include "ProximityRestraint.h"
+#include "IMP/Model.h"
+#include "IMP/Particle.h"
+#include "IMP/log.h"
+#include "IMP/restraints/ProximityRestraint.h"
 
 namespace IMP
 {

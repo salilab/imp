@@ -309,6 +309,8 @@ def add_common_options(opts, package):
                         '${prefix}/share/%s' % package, PathOption.PathAccept))
     opts.Add(PathOption('libdir', 'Shared library installation directory',
                         '${prefix}/lib', PathOption.PathAccept))
+    opts.Add(PathOption('includedir', 'Include file installation directory',
+                        '${prefix}/include', PathOption.PathAccept))
     opts.Add(PathOption('pythondir', 'Python module installation directory',
                         '${prefix}/lib/python%d.%d/site-packages' \
                         % sys.version_info[0:2], PathOption.PathAccept))

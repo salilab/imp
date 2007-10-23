@@ -5,8 +5,8 @@
  *
  */
 
-#include "ModelData.h"
-#include "log.h"
+#include "IMP/ModelData.h"
+#include "IMP/log.h"
 
 namespace IMP
 {

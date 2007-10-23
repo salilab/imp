@@ -5,8 +5,8 @@
  *
  */
 
-#include "../log.h"
-#include "SteepestDescent.h"
+#include "IMP/log.h"
+#include "IMP/optimizers/SteepestDescent.h"
 
 namespace IMP
 {

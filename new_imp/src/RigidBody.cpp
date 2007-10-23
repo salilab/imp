@@ -6,7 +6,7 @@
  */
 
 
-#include "RigidBody.h"
+#include "IMP/RigidBody.h"
 
 namespace IMP
 {

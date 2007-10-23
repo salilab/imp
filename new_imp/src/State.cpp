@@ -7,9 +7,9 @@
 
 #include <cmath>
 
-#include "ModelData.h"
-#include "log.h"
-#include "State.h"
+#include "IMP/ModelData.h"
+#include "IMP/log.h"
+#include "IMP/State.h"
 
 namespace IMP
 {

@@ -5,8 +5,8 @@
  *
  */
 
-#include "../log.h"
-#include "Optimizer.h"
+#include "IMP/log.h"
+#include "IMP/optimizers/Optimizer.h"
 
 namespace IMP
 {

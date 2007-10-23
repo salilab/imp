@@ -7,8 +7,8 @@
 
 #include <cmath>
 
-#include "../log.h"
-#include "ConjugateGradients.h"
+#include "IMP/log.h"
+#include "IMP/optimizers/ConjugateGradients.h"
 
 namespace IMP
 {

@@ -6,10 +6,10 @@
  *
  */
 
-#include "Model.h"
-#include "ModelData.h"
-#include "Particle.h"
-#include "log.h"
+#include "IMP/Model.h"
+#include "IMP/ModelData.h"
+#include "IMP/Particle.h"
+#include "IMP/log.h"
 #include "mystdexcept.h"
 
 namespace IMP

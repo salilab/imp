@@ -22,6 +22,7 @@ Export('env', 'get_pyext_environment', 'get_sharedlib_environment',
 bin = SConscript('bin/SConscript')
 Export('bin')
 src = SConscript('src/SConscript')
+SConscript('include/SConscript')
 pyext = SConscript('pyext/SConscript')
 SConscript('test/SConscript')
 SConscript('rsr/IMP_mov/SConscript')
