@@ -75,10 +75,6 @@ void Particle::add_float(const std::string name, const Float value,
              "Particle must be added to Model before an attributes are added");
   IMP_assert(!has_float(name), "Trying to add the name '" 
              <<  name << "' twice. Particle state is " << *this);
-  // if optimized, give name to get stats generated for this name (e.g. "x", "y" or "z")
-  // if (is_optimized)
-  //   fi = model_data_->add_float(value, name);
-  // else
 
   // It may be better to manage strings only at the Particle level.
   // You could create the Stat structure here or use an existing
@@ -213,7 +209,8 @@ void Particle::show(std::ostream& out) const
   out << inset << inset << "float attributes:" << std::endl;
   std::map<std::string, FloatIndex>::const_iterator iter2;
   for (iter2 = float_indexes_.begin(); iter2 != float_indexes_.end(); ++iter2) {
-    out << inset << inset << inset << iter2->first << "  " << model_data_->get_float(iter2->second);
+    out << inset << inset << inset << iter2->first << "  "
+        << model_data_->get_float(iter2->second);
     if (model_data_->get_is_optimized(iter2->second)) {
       out << " (optimized)" << std::endl;
     } else {
@@ -224,13 +221,16 @@ void Particle::show(std::ostream& out) const
   out << inset << inset << "int attributes:" << std::endl;
   std::map<std::string, IntIndex>::const_iterator iter3;
   for (iter3 = int_indexes_.begin(); iter3 != int_indexes_.end(); ++iter3) {
-    out << inset << inset << inset << iter3->first << "  " << model_data_->get_int(iter3->second) << std::endl;
+    out << inset << inset << inset << iter3->first << "  "
+        << model_data_->get_int(iter3->second) << std::endl;
   }
 
   out << inset << inset << "string attributes:" << std::endl;
   std::map<std::string, StringIndex>::const_iterator iter4;
-  for (iter4 = string_indexes_.begin(); iter4 != string_indexes_.end(); ++iter4) {
-    out << inset << inset << inset << iter4->first << "  " << model_data_->get_string(iter4->second) << std::endl;
+  for (iter4 = string_indexes_.begin(); iter4 != string_indexes_.end();
+       ++iter4) {
+    out << inset << inset << inset << iter4->first << "  "
+        << model_data_->get_string(iter4->second) << std::endl;
   }
 }
 

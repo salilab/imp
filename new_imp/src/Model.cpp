@@ -133,7 +133,8 @@ Float Model::evaluate(bool calc_derivs)
 {
   // One or more particles may have been activated or deactivated.
   // Check each restraint to see if it changes its active status.
-  IMP_LOG(VERBOSE, "Model evaluate (" << restraints_.size() << " restraint sets):");
+  IMP_LOG(VERBOSE, "Model evaluate (" << restraints_.size()
+                   << " restraint sets):");
   if (model_data_->check_particles_active()) {
     for (size_t i = 0; i < restraints_.size(); i++) {
       restraints_[i]->check_particles_active();
@@ -155,7 +156,8 @@ Float Model::evaluate(bool calc_derivs)
   // for current state of the model
   Float score = 0.0;
   for (size_t i = 0; i < restraints_.size(); i++) {
-    IMP_LOG(VERBOSE, "Evaluating restraint " << restraints_[i]->get_name() << ":");
+    IMP_LOG(VERBOSE, "Evaluating restraint " << restraints_[i]->get_name()
+                     << ":");
     if (restraints_[i]->get_is_active()) {
       score += restraints_[i]->evaluate(calc_derivs);
     }
@@ -163,9 +165,10 @@ Float Model::evaluate(bool calc_derivs)
     IMP_LOG(VERBOSE, "Cumulative score: " << score);
   }
 
-  // if trajectory is on and we are calculating derivatives, save state in trajectory file
-  // Arguably this should be done in the optimizer, but we would have to find a way to
-  // support this in Modeller
+  // if trajectory is on and we are calculating derivatives, save state in
+  // trajectory file
+  // Arguably this should be done in the optimizer, but we would have to
+  // find a way to support this in Modeller
   if (calc_derivs)
     save_state();
 
@@ -248,7 +251,8 @@ void Model::show(std::ostream& out) const
   out << std::endl << std::endl;
   out << "** Model **" << std::endl;
 
-  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "version: " << version() << "  " << "last_modified_by: "
+      << last_modified_by() << std::endl;
   out << particles_.size() << " particles" << std::endl;
   for (size_t i = 0; i < particles_.size(); i++) {
     particles_[i]->show(out);

@@ -104,20 +104,24 @@ IMPDLLEXPORT inline void set_log_target(Log_Target l)
   get_log().set_target(l);
 }
 
-//! Set the file name for the IMP log. This must be called if a log file is to be used.
+//! Set the file name for the IMP log; must be called if a file is to be used.
 IMPDLLEXPORT inline void set_log_file(std::string l)
 {
   get_log().set_filename(l);
 }
 
-//! Determine whether a given log level should be output. This probably should not be called in C++.
+//! Determine whether a given log level should be output.
+/** \note This probably should not be called in C++.
+ */
 IMPDLLEXPORT inline bool is_log_output(Log_Level l)
 {
   return get_log().is_output(l);
 }
 
 
-//! The stream to output a particular log level to. This probably should not be called in C++.
+//! The stream to output a particular log level to.
+/** \note This probably should not be called in C++.
+ */
 IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 {
   return get_log().get_stream(l);
@@ -164,11 +168,16 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
  */
 #define IMP_ERROR(expr) std::cerr << "ERROR: " << expr << std::endl;
 
-//! Write an entry to standard error. This is to be used for objects with no operator<<.
+//! Write an entry to standard error; for objects with no operator<<.
 /** \param[in] expr An expression which writes something to IMP_STREAM.
                     It is prefixed by "ERROR"
  */
-#define IMP_ERROR_WRITE(expr) {std::ostream &IMP_STREAM= std::cerr; std:cerr<< "ERROR "; expr; std::cerr << std::endl;}
+#define IMP_ERROR_WRITE(expr) { \
+  std::ostream &IMP_STREAM = std::cerr; \
+  std:cerr<< "ERROR "; \
+  expr; \
+  std::cerr << std::endl; \
+}
 
 
 //! Set the log level
@@ -190,7 +199,11 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
     \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
  */
-#define IMP_assert(expr, message) if (!(expr)) {IMP_ERROR(message); throw IMP::ErrorException();}
+#define IMP_assert(expr, message) \
+  if (!(expr)) { \
+    IMP_ERROR(message); \
+    throw IMP::ErrorException(); \
+  }
 #else
 #define IMP_assert(expr, message)
 #endif
@@ -200,7 +213,11 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
     \param[in] message Write this message if the assertion fails.
     \param[in] exception Throw the object constructed by this expression.
  */
-#define IMP_check(expr, message, exception) if (!(expr)) {IMP_ERROR(message); throw exception;}
+#define IMP_check(expr, message, exception) \
+  if (!(expr)) { \
+    IMP_ERROR(message); \
+    throw exception; \
+  }
 
 //! An runtime failure for IMP.
 /** \param[in] message Write this message if the assertion fails.
