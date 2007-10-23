@@ -11,9 +11,6 @@
 %include "std_map.i"
 %include "std_string.i"
 
-%include "typemaps.i"
-%include "cstring.i"
-
 %include "IMP_exceptions.i"
 
 namespace std {
@@ -23,17 +20,6 @@ namespace std {
 
 %feature("director");
 
-%apply int *OUTPUT { int *magic };
-%apply int *OUTPUT { int *ierr };
-%apply int *OUTPUT { int *type };
-%apply int *OUTPUT { int *dimx};
-%apply int *OUTPUT { int *dimy};
-%apply int *OUTPUT { int *dimz};
-%cstring_output_allocate(char **comment, free(*$1));
-%apply float *OUTPUT { float *voltage, float *Cs, float *Aperture, float *Magnification, float *Postmagnification, float *Exposuretime, float *Objectpixelsize, float *Microscope, float *Pixelsize, float *CCDArea, float *Defocus, float *Astigmatism, float *AstigmatismAngle, float *FocusIncrement, float *CountsPerElectron, float *Intensity, float *EnergySlitwidth, float *EnergyOffset, float *Tiltangle, float *Tiltaxis, float *Marker_X, float *Marker_Y, float *meanval}
-
-%include "emfile.h"
-%include "emscore.h"
 %include "Index.h"
 %include "Base_Types.h"
 %include "IMP.h"
@@ -55,7 +41,6 @@ namespace std {
 %include "restraints/ConnectivityRestraint.h"
 %include "restraints/PairConnectivityRestraint.h"
 %include "restraints/ExclusionVolumeRestraint.h"
-%include "restraints/CoarseEMRestraint.h"
 %include "RigidBody.h"
 
 namespace IMP {

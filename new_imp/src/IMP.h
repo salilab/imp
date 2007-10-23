@@ -9,8 +9,6 @@
 #define __IMP_H
 
 #include "IMP_config.h"
-#include "emfile.h"
-#include "emscore.h"
 #include "log.h"
 #include "Base_Types.h"
 #include "Particle.h"
@@ -31,6 +29,5 @@
 #include "restraints/ConnectivityRestraint.h"
 #include "restraints/PairConnectivityRestraint.h"
 #include "restraints/ExclusionVolumeRestraint.h"
-#include "restraints/CoarseEMRestraint.h"
 
 #endif  /* __IMP_H */
