@@ -14,7 +14,6 @@
 #include <list>
 
 #include "../IMP_config.h"
-#include "../emfile.h"
 #include "Restraint.h"
 #include "DistanceRestraint.h"
 
