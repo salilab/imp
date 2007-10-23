@@ -14,6 +14,7 @@ namespace IMP {
 
 //! A simple class for defining typechecked indices. 
 /** Non-default instances of Index are well ordered.
+    A defaultly constructed Index can be compared for equality, but not ordered.
  */
 template <class L>
 class Index {
@@ -22,7 +23,6 @@ public:
     IMP_check(i >= 0, "Index initializer must be positive. " << i << " is not.",
               ErrorException());
   }
-  //! A defaultly constructed Index can be compared for equality, but not ordered.
   Index(): i_(-1) {
   }
   unsigned int get_index() const {

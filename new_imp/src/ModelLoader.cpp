@@ -131,13 +131,15 @@ void ModelLoader::load_particle(Particle& particle, std::istream& in)
         }
 
         else {
-          ErrorMsg("Unsupported attribute type " << attr_type << ", expected FLOAT, INT or STRING." << std::endl);
+          ErrorMsg("Unsupported attribute type " << attr_type
+                   << ", expected FLOAT, INT or STRING." << std::endl);
         }
       }
 
       // something went wrong
       else {
-        ErrorMsg("Expected VAR or ATTR after " << name << " in particle." << std::endl);
+        ErrorMsg("Expected VAR or ATTR after " << name << " in particle."
+                 << std::endl);
       }
 
       in >> next_word;
@@ -189,7 +191,8 @@ void ModelLoader::load_restraint_set(Model& model, RestraintSet& restraint_set,
 
       // something went wrong
       else {
-        ErrorMsg("Expected RESTRAINT_SET or RESTRAINT within the restraint set." << std::endl);
+        ErrorMsg("Expected RESTRAINT_SET or RESTRAINT within the restraint set."
+                 << std::endl);
       }
 
       in >> next_word;
@@ -230,7 +233,8 @@ void ModelLoader::load_distance_restraints(Model& model,
 
       in >> particle_format;
       if (particle_format != "PARTICLE_PAIRS") {
-        ErrorMsg("Unknown particle specifiers in DISTANCE restraint." << std::endl);
+        ErrorMsg("Unknown particle specifiers in DISTANCE restraint."
+                 << std::endl);
       }
     }
 
@@ -257,7 +261,8 @@ void ModelLoader::load_distance_restraints(Model& model,
       }
 
       restraint_set.add_restraint(
-        (Restraint*) new DistanceRestraint(model, p1, p2, mean, sd, score_func));
+        (Restraint*) new DistanceRestraint(model, p1, p2, mean, sd,
+                                           score_func));
     }
   }
 
