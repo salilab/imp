@@ -1,0 +1,15 @@
+import os.path
+Import('env')
+
+files = ['Base_Types.h', 'Index.h', 'ModelLoader.h', 'ScoreFunc.h', 'Model.h',
+         'Particle.h', 'State.h', 'IMP_config.h', 'ModelData.h', 'RigidBody.h',
+         'log.h']
+
+# Install the include files:
+includedir = os.path.join(env['includedir'], 'IMP')
+inst = env.Install(includedir, files)
+env.Alias('install', inst)
+
+# Subdirectories
+SConscript('restraints/SConscript')
+SConscript('optimizers/SConscript')

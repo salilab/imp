@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "log.h"
+#include "IMP/log.h"
 
 
 std::ofstream imp_log;

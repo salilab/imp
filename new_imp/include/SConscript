@@ -1,0 +1,11 @@
+Import('env')
+
+files = ['IMP.h']
+
+# Install the include files:
+includedir = env['includedir']
+inst = env.Install(includedir, files)
+env.Alias('install', inst)
+
+# Subdirectories
+SConscript('IMP/SConscript')

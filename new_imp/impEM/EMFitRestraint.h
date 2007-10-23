@@ -2,8 +2,8 @@
 #define _EMFITRESTRAINT_H
 
 
-#include "IMP_config.h"
-#include "Model.h"
+#include "IMP/IMP_config.h"
+#include "IMP/Model.h"
 
 #include "DensityMap.h"
 #include "CoarseCC.h"

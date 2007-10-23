@@ -11,10 +11,10 @@
 
 #include <cmath>
 
-#include "../Model.h"
-#include "../Particle.h"
-#include "../log.h"
-#include "ExclusionVolumeRestraint.h"
+#include "IMP/Model.h"
+#include "IMP/Particle.h"
+#include "IMP/log.h"
+#include "IMP/restraints/ExclusionVolumeRestraint.h"
 
 namespace IMP
 {

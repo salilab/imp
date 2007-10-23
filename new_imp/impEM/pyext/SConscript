@@ -2,7 +2,7 @@ Import('emenv', 'get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(emenv, cplusplus=True)
-e.Append(CPPPATH='../../src')
+e.Append(CPPPATH='#/include')
 e.Append(CPPPATH=e['EM_CPPPATH'])
 e.Append(LIBPATH=['../../src', '../'], LIBS=['imp', 'impem'])
 e.Append(LIBPATH=[e['EM_LIBPATH']], LIBS=[e['EM_LIBS']])

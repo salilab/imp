@@ -16,12 +16,12 @@
 #include <vector>
 #include <map>
 
+#include "IMP/IMP_config.h"
+#include "IMP/ModelData.h"
+#include "IMP/Model.h"
 
 #include "ParticlesAccessPoint.h"
 #include "Particle.h"
-#include "IMP_config.h"
-#include "ModelData.h"
-#include "Model.h"
 
 namespace IMP
 {

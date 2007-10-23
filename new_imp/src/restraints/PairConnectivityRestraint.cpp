@@ -10,11 +10,11 @@
 
 #include <cmath>
 
-#include "../Model.h"
-#include "../Particle.h"
-#include "../log.h"
+#include "IMP/Model.h"
+#include "IMP/Particle.h"
+#include "IMP/log.h"
+#include "IMP/restraints/PairConnectivityRestraint.h"
 #include "../mystdexcept.h"
-#include "PairConnectivityRestraint.h"
 
 namespace IMP
 {
