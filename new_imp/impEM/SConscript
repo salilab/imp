@@ -1,19 +1,30 @@
-Import('env', 'get_sharedlib_environment')
+from tools import emlib
+
+Import('env', 'get_sharedlib_environment', 'invalidate_environment')
+
+# Get custom environment for building against EMLIB:
+emenv = env.Clone()
+emlib.configure_check(emenv)
+Export('emenv')
+
+# Make sure that all builds with this environment fail if EMLIB was not found:
+if emenv['EM_LIBS'] == '':
+    invalidate_environment(emenv, emlib.fail)
 
 # Get an environment suitable for building a shared library:
-env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
+e = get_sharedlib_environment(emenv, 'IMP_EXPORTS', cplusplus=True)
 
-env.Append(CPPPATH=['../src', env['EM_CPPPATH']])
-env.Append(LIBPATH=['../src', env['EM_LIBPATH']], LIBS=['imp',env['EM_LIBS']])
+e.Append(CPPPATH=['../src', e['EM_CPPPATH']])
+e.Append(LIBPATH=['../src', e['EM_LIBPATH']], LIBS=['imp', e['EM_LIBS']])
 
 files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp')
 
 # Build the shared library:
-lib = env.SharedLibrary('impem', files)
+lib = e.SharedLibrary('impem', files)
 
 # Install the library:
-libinst = env.Install(env['libdir'], lib)
-env.Alias('impEM-install', [libinst])
+libinst = e.Install(e['libdir'], lib)
+e.Alias('impEM-install', [libinst])
 
 # Subdirectories:
 SConscript('pyext/SConscript')
