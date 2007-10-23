@@ -30,8 +30,6 @@ void SampledDensityMap::calculate_particles_bounding_box(
   upper_bound.insert(upper_bound.begin(),3,-9999.9);
 
 
-
-  
   for ( int i=0;i<access_p.get_size();i++) {
 
     if (access_p.get_x(i) < lower_bound[0]) {
@@ -95,10 +93,10 @@ SampledDensityMap::SampledDensityMap(
 				     int sig_cutoff) {
 
   int ierr=0;
+
   std::vector<float> lower_bound, upper_bound;
 
   calculate_particles_bounding_box(access_p,lower_bound,upper_bound);
-
   set_header(lower_bound,upper_bound,
 	     resolution,voxel_size,sig_cutoff);
   data = new real[header.nx*header.ny*header.nz];
@@ -111,6 +109,7 @@ SampledDensityMap::SampledDensityMap(
 
   resample(access_p,
 	   ierr);
+
 }
 
 
@@ -151,14 +150,14 @@ void SampledDensityMap::sampling_param_init() {
 
     for (int ii=0; ii<access_p.get_size(); ii++) {
 
-            cout << " atoms-in-em: " <<     access_p.get_x(ii) << "  " << 
-      	access_p.get_y(ii)  << "  " <<  access_p.get_z(ii) << endl;
+      //                  cout << " atoms-in-em: " <<     access_p.get_x(ii) << "  " << 
+      //            	access_p.get_y(ii)  << "  " <<  access_p.get_z(ii) << endl;
 	
 
 
     // for a specific radii calculate the kernel and how many voxels should be considered (kdist)
       kernel_setup(access_p.get_r(ii),vsig,vsigsq,inv_sigsq,sig,kdist,normfac);
-            cout << " kernel data : vsig: " << vsig << " vsigsq: " << vsigsq<< " inv_sigsq: " << inv_sigsq<< " sig: " << sig<< " kdist: " << kdist<< " normfac:  " << normfac<<endl;
+      //          cout << " kernel data : vsig: " << vsig << " vsigsq: " << vsigsq<< " inv_sigsq: " << inv_sigsq<< " sig: " << sig<< " kdist: " << kdist<< " normfac:  " << normfac<<endl;
       calc_sampling_bounding_box(access_p.get_x(ii),access_p.get_y(ii),access_p.get_z(ii),
 				 kdist,
 				 iminx, iminy, iminz,

@@ -196,4 +196,7 @@ void DensityMap::ResetData() {
   for (int i=0;i<header.nx*header.ny*header.nz;i++) {
     data[i]=0.0;
   }
+  normalized = false;
+  rms_calculated = false;
+
 }

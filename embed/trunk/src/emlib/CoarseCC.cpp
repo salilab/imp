@@ -1,6 +1,5 @@
 #include "CoarseCC.h"
 
-
  float CoarseCC::evaluate(const DensityMap &em_map, 
 			  SampledDensityMap &model_map,
 			  const ParticlesAccessPoint &access_p,
@@ -11,14 +10,16 @@
 
 
   int ierr = 0;
+
   model_map.resample(
 		     access_p,
 		     ierr);
 
+
   float eps=.000001;
 
   float escore = corr(em_map, model_map,eps);
-  cout <<"escore : "<< escore << endl;
+  //  cout <<"escore : "<< escore << endl;
   escore = scalefac * (1. - escore);
 
 
@@ -55,11 +56,11 @@
   //TODO - check that the size of the em_map and the model_map is the same
 
   const DensityHeader *em_header = em_map.get_header();
-  //  const DensityHeader *model_header = model_map.get_header();
   const real *em_data = em_map.get_data();
   const real *model_data = model_map.get_data();
 
 
+  
 
 
   int  nvox = em_header->nx*em_header->ny*em_header->nz;
@@ -68,12 +69,13 @@
   for (int ii=0;ii<nvox;ii++) {
     
     if (model_data[ii] > voxel_data_threshold) {
+      //      cout << em_data[ii] << " || " <<  model_data[ii] << endl;
       ccc = ccc + em_data[ii] * model_data[ii];
     }
   }
 
   ccc = ccc/(1.0*nvox * nvox* em_header->rms * model_header->rms);
-  //   cout << " cc : " << ccc << "  " << nvox << "  " << em_header->rms << "  " <<  model_header->rms << endl;
+  //  cout << " cc : " << ccc << "  " << nvox << "  " << em_header->rms << "  " <<  model_header->rms << endl;
   return ccc;
 };
 

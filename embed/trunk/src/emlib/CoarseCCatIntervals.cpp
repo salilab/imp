@@ -2,7 +2,8 @@
 	
 CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd){
 
-  calls_counter=0;    
+  calls_counter=0;    // Number of times the evaluation has been called. The evaluation is only performed the first time and 
+		      // when calls_counter reaches eval_interval. Otherwise the stored_cc_ value is returned
   stored_cc_ = 0.0;   
 
   // Allocate memmory for the derivative terms if not done yet
