@@ -6,7 +6,7 @@ import sys
 from SCons.Script import *
 
 __all__ = ["add_common_options", "MyEnvironment", "get_pyext_environment",
-           "get_sharedlib_environment"]
+           "get_sharedlib_environment", "invalidate_environment", "emlib"]
 
 import SCons
 _SWIGScanner = SCons.Scanner.ClassicCPP(
@@ -160,35 +160,6 @@ def _modeller_check_failed(require_modeller):
         print "  functionality will be missing.\n\n" + msg
 
 
-def CheckEM(context):
-    """Find EM include and library directories"""
-    context.Message('Checking for EM...')
-    em = context.env['em']
-    if em is False or em is 0:
-        context.Result("not found")
-        return False
-
-    libs = ['em']
-    context.env['EM_CPPPATH'] = em+'/src/emlib'  
-    context.env['EM_LIBPATH'] = [em+'/src/emlib' ]
-    context.env['EM_LIBS'] = ['em']
-    context.Result(em)
-    return True
-
-
-def _em_check_failed(require_modeller):
-    """Print an informative message if the em lib check failed"""
-    msg = "  You can set the directory where the em lib is installed by\n" + \
-          "  'scons em=/opt/em' or similar.\n"
-    print
-    if require_modeller:
-        print "ERROR: the em lib is required to build this package\n\n" + msg
-        Exit(1)
-    else:
-        print "  the em lib was not found: build will continue but some"
-        print "  functionality will be missing.\n\n" + msg
-
-
 def MyEnvironment(options=None, require_modeller=True, *args, **kw):
     """Create an environment suitable for building IMP modules"""
     import platform
@@ -221,15 +192,12 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         env['MODELLER_' + mod] = ''
     for mod in ('CPPPATH', 'LIBPATH', 'LIBS'):
         env['MODELLER_' + mod] = []
-    for suff in ('CPPPATH', 'LIBPATH', 'LIBS'):
-        env['EM_' + suff] = ""
     # Note: would like to check for 'help' here too, but that requires a
     # post 0.97 scons snapshot
     if not env.GetOption('clean'):
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility,
-                        'CheckModeller': CheckModeller,
-                        'CheckEM':CheckEM}
+                        'CheckModeller': CheckModeller}
         conf = env.Configure(custom_tests = custom_tests)
         if sys == 'Linux':
             conf.CheckGNUHash()
@@ -238,8 +206,6 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         # configure has been disabled
         if conf.CheckModeller() is False:
             _modeller_check_failed(require_modeller)
-        if conf.CheckEM() is False:
-            _em_check_failed(False)
         conf.Finish()
     return env
 
@@ -260,7 +226,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
        library (by convention something of the form FOO_EXPORTS).
        If `cplusplus` is True, additional configuration suitable for a C++
        shared library is done."""
-    e = env.Copy()
+    e = env.Clone()
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CCFLAGS='${VIS_CCFLAGS}')
 
@@ -272,8 +238,8 @@ def get_pyext_environment(env, cplusplus=False):
        If `cplusplus` is True, additional configuration suitable for a C++
        extension is done."""
     from platform import system
-    e = env.Copy()
-    if 'swig' not in e['TOOLS']:
+    e = env.Clone()
+    if 'swig' not in e['TOOLS'] and not env.GetOption('clean'):
         print "ERROR: SWIG could not be found. SWIG is needed to build."
         Exit(1)
     e['LDMODULEPREFIX'] = ''
@@ -329,6 +295,12 @@ def get_pyext_environment(env, cplusplus=False):
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
+def invalidate_environment(env, fail_builder):
+    """'Break' an environment, so that any builds with it use the fail_builder
+       function (which should be an Action which terminates the build)"""
+    for var in ('SHLINKCOM', 'CCCOM', 'CXXCOM', 'SHCCCOM', 'SHCXXCOM'):
+        env[var] = fail_builder
+
 def add_common_options(opts, package):
     """Add common options to an SCons Options object."""
     opts.Add(PathOption('prefix', 'Top-level installation directory', '/usr',
@@ -348,7 +320,6 @@ def add_common_options(opts, package):
                         PathOption.PathAccept))
     opts.Add(PackageOption('modeller', 'Location of the MODELLER package',
                            os.environ.get('MODINSTALLSVN', False)))
-    opts.Add(PackageOption('em', 'Location of the em lib', False))
     opts.Add(BoolOption('wine',
                         'Build using MS Windows tools via Wine emulation',
                         False))

@@ -2,7 +2,7 @@ Import('env', 'bin')
 
 import os
 
-e = env.Copy()
+e = env.Clone()
 
 # Custom builder to run unit tests:
 def builder_unit_test(target, source, env):
@@ -14,10 +14,21 @@ def builder_unit_test(target, source, env):
     else:
         print "unit tests FAILED"
         return 1
+
+def fail_modeller(env, target, source):
+    print "\n  ERROR: cannot run full test suite without MODELLER."
+    print "  You could try the 'imptest' target instead for just"
+    print "  the non-MODELLER tests.\n"
+    return 1
+
 e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
 
-# All tests:
-test = e.Test("test.passed", ["run-all-tests.py", bin])
+# All tests (require Modeller):
+source = ["run-all-tests.py", bin]
+if e['MODELLER_EXETYPE'] != '':
+    test = e.Test("test.passed", source)
+else:
+    test = e.Command("test.passed", source, fail_modeller)
 e.Alias("test", test)
 e.AlwaysBuild("test.passed")
 

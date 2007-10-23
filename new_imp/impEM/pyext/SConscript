@@ -1,11 +1,11 @@
-Import('env', 'get_pyext_environment')
+Import('emenv', 'get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
-e = get_pyext_environment(env, cplusplus=True)
+e = get_pyext_environment(emenv, cplusplus=True)
 e.Append(CPPPATH='../../src')
-e.Append(CPPPATH=env['EM_CPPPATH'])
+e.Append(CPPPATH=e['EM_CPPPATH'])
 e.Append(LIBPATH=['../../src', '../'], LIBS=['imp', 'impem'])
-e.Append(LIBPATH=[env['EM_LIBPATH']], LIBS=[env['EM_LIBS']])
+e.Append(LIBPATH=[e['EM_LIBPATH']], LIBS=[e['EM_LIBS']])
 
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('_IMPEM', 'IMPEM.i',
