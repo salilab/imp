@@ -19,9 +19,9 @@
 #include "IMP/IMP_config.h"
 #include "IMP/ModelData.h"
 #include "IMP/Model.h"
+#include "IMP/Particle.h"
 
 #include "ParticlesAccessPoint.h"
-#include "Particle.h"
 
 namespace IMP
 {

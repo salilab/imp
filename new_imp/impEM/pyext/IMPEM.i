@@ -1,6 +1,6 @@
 %module(directors="1") IMPEM
 %{
-#include "../../src/IMP.h"
+#include "IMP.h"
 #include "../IMPParticlesAccessPoint.h"
 #include "../EMFitRestraint.h"
 %}
