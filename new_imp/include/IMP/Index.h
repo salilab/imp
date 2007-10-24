@@ -10,14 +10,16 @@
 
 #include "log.h"
 
-namespace IMP {
+namespace IMP
+{
 
-//! A simple class for defining typechecked indices. 
+//! A simple class for defining typechecked indices.
 /** Non-default instances of Index are well ordered.
     A defaultly constructed Index can be compared for equality, but not ordered.
  */
 template <class L>
-class Index {
+class Index
+{
 public:
   Index(int i): i_(i) {
     IMP_check(i >= 0, "Index initializer must be positive. " << i << " is not.",
@@ -73,7 +75,8 @@ private:
 };
 
 template <class L>
-inline std::ostream &operator<<(std::ostream &out, const Index<L> &i) {
+inline std::ostream &operator<<(std::ostream &out, const Index<L> &i)
+{
   return i.show(out);
 }
 

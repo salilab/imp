@@ -28,17 +28,15 @@ class IMPDLLEXPORT ConnectivityRestraint : public Restraint
 {
 public:
   ConnectivityRestraint(Model& model,
-                   // couldn't get Swig to work with std::vector<Particle*>&
-                   std::vector<int>& particle_indexes,
-                   const std::string type,
-                   BasicScoreFuncParams* score_func_params);
+                        std::vector<int>& particle_indexes,
+                        const std::string type,
+                        BasicScoreFuncParams* score_func_params);
 
   ConnectivityRestraint(Model& model,
-                   // couldn't get Swig to work with std::vector<Particle*>&
-                   std::vector<int>& particle_indexes,
-                   const std::string type,
-                   const std::string attr_name,
-                   BasicScoreFuncParams* score_func_params);
+                        std::vector<int>& particle_indexes,
+                        const std::string type,
+                        const std::string attr_name,
+                        BasicScoreFuncParams* score_func_params);
 
   virtual ~ConnectivityRestraint();
 

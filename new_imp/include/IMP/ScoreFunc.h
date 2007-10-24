@@ -34,7 +34,10 @@ public:
 class IMPDLLEXPORT Harmonic : public ScoreFunc
 {
 public:
-  Harmonic(Float mean, Float sd) {mean_ = mean; sd_ = sd;}
+  Harmonic(Float mean, Float sd) {
+    mean_ = mean;
+    sd_ = sd;
+  }
   virtual ~Harmonic();
 
   //! Calculate harmonic score with respect to the given feature.
@@ -66,7 +69,7 @@ public:
       \return Score
    */
   Float harmonic(Float feature, Float& deriv);
-  
+
 protected:
   Float mean_;
   Float sd_;
@@ -139,7 +142,7 @@ public:
 class IMPDLLEXPORT BasicScoreFuncParams : public ScoreFuncParams
 {
 public:
-  BasicScoreFuncParams(std::string score_func_type = "harmonic", 
+  BasicScoreFuncParams(std::string score_func_type = "harmonic",
                        Float mean = 1.0, Float sd = 0.1);
   virtual ~BasicScoreFuncParams();
 

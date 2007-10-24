@@ -27,7 +27,7 @@ class IMPDLLEXPORT State : public boost::noncopyable
 public:
   State(std::string name=std::string());
   virtual ~State();
- 
+
   // return the score for this restraint or set of restraints
   // ... given the current state of the model
   virtual void update() = 0;
@@ -40,12 +40,18 @@ public:
     return "unknown";
   }
   //! Get the name of the restraint
-  const std::string& get_name() const{return name_;}
+  const std::string& get_name() const {
+    return name_;
+  }
   //! Set the name of the restraint
-  void set_name(const std::string &name){ name_=name;}
+  void set_name(const std::string &name) {
+    name_=name;
+  }
 
   //! return the stored model data
-  ModelData *get_model_data() const {return model_data_;}
+  ModelData *get_model_data() const {
+    return model_data_;
+  }
 protected:
   // all of the particle data
   ModelData* model_data_;
@@ -54,7 +60,8 @@ protected:
 };
 
 
-inline std::ostream &operator<<(std::ostream &out, const State &s) {
+inline std::ostream &operator<<(std::ostream &out, const State &s)
+{
   s.show(out);
   return out;
 }

@@ -27,9 +27,9 @@ typedef std::string String;
 
 
 
-struct ParticleTag{};
-struct RestraintTag{};
-struct StateTag{};
+struct ParticleTag {};
+struct RestraintTag {};
+struct StateTag {};
 
 typedef Index<Int> IntIndex;
 typedef Index<Float> FloatIndex;
