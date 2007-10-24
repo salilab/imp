@@ -47,7 +47,7 @@ public:
       smallest restraints that will connect one particle of each type together
       (i.e. a minimum spanning tree with nodes corresponding to particle
       types and the edge weights corresponding to restraint violation scores).
-  
+
       There is a potential when using this restraint for two large rigid bodies
       to maintain its own exclusion volume restraints. These could be calculated
       only for the particles in the neighborhoods of the particles involved in
@@ -55,7 +55,7 @@ public:
       bodies. Since once restraints are activated, they tend to be activated
       over and over, the exclusion volume restraint sets should only be reset
       whenever on rare occasion the neighborhoods actually change.
-                                        
+    
       \param[in] calc_deriv If true, partial first derivatives should be
                             calculated.
       \return score associated with this restraint for the given state of

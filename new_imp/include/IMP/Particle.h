@@ -41,7 +41,7 @@ public:
 
   Particle();
   ~Particle();
- 
+
   //! Get pointer to model particle data.
   /** \return all particle data in the model.
    */
@@ -119,7 +119,9 @@ public:
       particles.
       \return true it the particle is active.
    */
-   bool get_is_active(void) const {return is_active_;}
+  bool get_is_active(void) const {
+    return is_active_;
+  }
 
   //! Show the particle
   /** \param[in] out Stream to write particle description to.
@@ -129,7 +131,7 @@ public:
 protected:
 
   //! Set pointer to model particle data.
-  /** This is called by the Model after the particle is added. 
+  /** This is called by the Model after the particle is added.
       \param[in] md Pointer to a ModelData object.
    */
   void set_model_data(ModelData *md);
@@ -150,7 +152,8 @@ protected:
 
 
 
-inline std::ostream &operator<<(std::ostream &out, const Particle &s) {
+inline std::ostream &operator<<(std::ostream &out, const Particle &s)
+{
   s.show(out);
   return out;
 }

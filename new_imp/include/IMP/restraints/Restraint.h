@@ -34,7 +34,7 @@ class IMPDLLEXPORT Restraint : public boost::noncopyable
 public:
   Restraint(std::string name=std::string());
   virtual ~Restraint();
- 
+
   //! Return the score for this restraint for the current state of the model.
   /** \param[in] calc_deriv if true, first derivatives should also be
                             calculated.
@@ -71,10 +71,14 @@ public:
   }
 
   //! Get the name of the restraint
-  const std::string& get_name() const {return name_;}
+  const std::string& get_name() const {
+    return name_;
+  }
 
   //! Set the name of the restraint
-  void set_name(const std::string &name) { name_=name;}
+  void set_name(const std::string &name) {
+    name_=name;
+  }
 
 protected:
   //! all of the particle data
@@ -97,7 +101,8 @@ protected:
 
 
 
-inline std::ostream &operator<<(std::ostream &out, const Restraint &s) {
+inline std::ostream &operator<<(std::ostream &out, const Restraint &s)
+{
   s.show(out);
   return out;
 }
