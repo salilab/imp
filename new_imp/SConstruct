@@ -25,7 +25,6 @@ src = SConscript('src/SConscript')
 SConscript('include/SConscript')
 pyext = SConscript('pyext/SConscript')
 SConscript('test/SConscript')
-SConscript('rsr/IMP_mov/SConscript')
 SConscript('doc/SConscript')
 SConscript('impEM/SConscript')
 
