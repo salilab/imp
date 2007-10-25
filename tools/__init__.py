@@ -129,10 +129,10 @@ def CheckModeller(context):
                            "Windows MODELLER binary")
             return False
     libs = ["modeller", "saxs"]
-    if exetype == 'mac10v4-xlf':
-        libs += ["hdf5", "hdf5_hl", "saxs"]
+    if exetype in ('mac10v4-xlf', 'mac10v4-gnu'):
+        libs += ["hdf5", "hdf5_hl"]
     elif exetype == 'mac10v4-intel':
-        libs += ["hdf5", "hdf5_hl", "saxs", "imf", "svml", "ifcore", "irc"]
+        libs += ["hdf5", "hdf5_hl", "imf", "svml", "ifcore", "irc"]
     modpy = "%s/bin/modpy.sh" % modeller
     # If the modpy.sh script doesn't exist, assume that Modeller will work
     # without it (e.g. on Macs, using the binary .dmg install):
