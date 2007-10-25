@@ -1,20 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-             "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-<link href="/imp/imp.css" rel="stylesheet" type="text/css">
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<script type="text/javascript" src="/escramble-new.js"></script>
-<title>IMP, an Integrative Modeling Platform</title>
-</head>
+<?php
+  include "functions.inc";
+  write_header("index");
+?>
 
-<body>
-
-<p class="centerimg">
-  <img src="imp_banner.jpg" alt="IMP, an Integrative Modeling Platform">
-</p>
-
-<hr>
 <h2>Purpose of IMP</h2>
 
 <p><img class="figure" style="float:right" src="exp_cycle.png"
@@ -61,52 +49,7 @@ provide infrastructure that encourages and supports contributions from
 other laboratories and allows integration with existing modeling packages.</p>
 
 <p style="clear:both">
-<hr>
 
-<h2>References</h2>
-
-<p><a href="hybrid.jpg">
-<img class="linkfigure" style="float:right" src="hybrid.png" alt="particles">
-</a></p>
-
-<ul>
-<li>F. Alber, S. Dokudovskaya, L. Veenhoff, W. Zhang, J. Kipper, D. Devos,
-A. Suprapto, O. Karni, R. Williams, B.T. Chait, A. Sali, M.P. Rout <i>Molecular
-Architecture of the Nuclear Pore Complex: A Comprehensive Proteomic Survey.</i>
-submitted</li>
-
-<li>F. Alber, S. Dokudovskaya, L. Veenhoff, W. Zhang, J. Kipper, D. Devos,
-A. Suprapto, O. Karni, R. Williams, B.T. Chait, M.P Rout, A. Sali
-<i>Determining the architectures of macromolecular assemblies by integrating
-spatial restraints from proteomic data.</i> submitted</li>
-	
-<li>F. Alber, M. Kim, A. Sali. <i>Structural characterization of assemblies
-from overall shape and subcomplex compositions.</i> Structure 13, 435-445, 2005.
-</li>
-
-<li>F. Alber, N. Eswar, A. Sali <i>Structure determination of macromolecular
-complexes by experiment and computation.</i> In: Practical Bioinformatics.
-Ed: J. Bujnicki. Springer-Verlag, Berlin Heidelberg, 15, 73-96, 2004</li>
-
-<li>A. Sali <i>NIH Workshop on Structural Proteomics of Biological
-Complexes.</i> Structure 11, 1043-1047, 2003</li>
-</ul>
-
-
-
-<hr>
-<h2>Contacts</h2>
-
-<p>To learn more about IMP and how you can contribute, contact one of the
-following IMP architects:</p>
-
-<p>Ben Webb
-  <noscript><p><a href="mailto:benATsalilabDOTorg">benATsalilabDOTorg</a></p></noscript>
-  <script type="text/javascript">escramble("ben","salilab.org")</script>
-
-<p>Daniel Russel
-  <noscript><p><a href="mailto:drusselATsalilabDOTorg">drusselATsalilabDOTorg</a></p></noscript>
-  <script type="text/javascript">escramble("drussel","salilab.org")</script>
-
-</body>
-</html>
+<?php
+  write_footer();
+?>
