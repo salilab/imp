@@ -70,12 +70,13 @@ and exceptions are documented). Use //! for the one-line brief description
 and /** ... */ for the multi-line detailed description (put the closing */ on
 a new line, so that these comments are always multi-line (Doxygen will not
 accept both a 'brief' comment and a one-line detailed comment). All header
-and source files should have a starting comment header, using the \file
-command to document the purpose of the file.
+and source files should have a starting comment header, using the
+<command>\file</command> command to document the purpose of the file.
 For example:</para>
 <informalexample><programlisting>
 //! Calculates the square root.
 /** \param[in] the_value Calculate the square root of this value.
+    \exception std::domain_error value is out of range (negative).
     \return the square root of the given value.
  */
 </programlisting></informalexample>
@@ -97,6 +98,21 @@ this is ambiguous (particularly an issue with the Python interface). The
 Python guys also mandate CamelCase for their class names, so this avoids
 any need to rename classes between C++ and Python to ensure clean Python code.
 </para>
+</sect3>
+
+<sect3>
+<title>Exceptions</title>
+<para>Exceptions are classes, so name as for classes, above. Do not use
+exception specfications, but do document the possible exceptions thrown by
+a function with the Doxygen <command>\exception</command> command.
+</para>
+
+<para><emphasis>Rationale:</emphasis>
+Exception specifications do not guarantee that only the listed exceptions will
+be thrown, and actually hurt compiler optimizations in many cases. Many
+libraries (such as Boost) <ulink url="http://www.gotw.ca/publications/mill22.htm">advise against using them</ulink>.
+</para>
+
 </sect3>
 
 <sect3>
@@ -158,7 +174,12 @@ Avoids namespace pollution, and removes any ambiguity.
 <para>All Python code should conform to the
 <ulink url="http://www.python.org/dev/peps/pep-0008/">Python style
 guide</ulink>. In essence this translates to 4-space indents, no tabs, and
-similar class, method and variable naming to the C++ code.</para>
+similar class, method and variable naming to the C++ code. You can ensure that
+your Python code is correctly indented by using the
+<ulink url="http://docutils.sourceforge.net/sandbox/py-rest-doc/utils/reindent.py">reindent.py</ulink>
+script, available as part of the Python distribution.
+</para>
+
 </sect2>
 
 </sect1>
