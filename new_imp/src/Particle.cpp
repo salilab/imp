@@ -162,7 +162,7 @@ void Particle::add_string(const std::string name, const String value)
   IMP_assert(!has_string(name), 
              "Trying to add the name '" 
              <<  name << "' twice. Particle state is " << *this);
-  
+
   string_indexes_[name] = model_data_->add_string(value);
 }
 
@@ -187,7 +187,7 @@ StringIndex Particle::get_string_index(const std::string name) const
   IMP_check(has_string(name), "Unknown string attribute '" << name 
             << "'. Particle state is " << *this, 
             std::out_of_range("Unknown string attribute name"));
- 
+
   return string_indexes_.find(name)->second;
 }
 

@@ -48,7 +48,7 @@ DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
   // LogMsg(VERBOSE, "Construct distance restraint: " << attr_name);
   Float mean = model_data_->get_float(p1->get_float_index(attr_name))
                + model_data_->get_float(p2->get_float_index(attr_name));
-               
+
   score_func_params->set_mean(mean);
   set_up(model, p1, p2, score_func_params);
 }
@@ -117,7 +117,8 @@ Float DistanceRestraint::evaluate(bool calc_deriv)
     distance = DistanceRestraint::MIN_DISTANCE;
   }
 
-  // if needed, calculate the partial derivatives of the scores with respect to the particle attributes
+  // if needed, calculate the partial derivatives of the scores with respect
+  // to the particle attributes
   if (calc_deriv) {
     Float dx, dy, dz;
     Float deriv;
@@ -136,17 +137,6 @@ Float DistanceRestraint::evaluate(bool calc_deriv)
     dz = delta_z / distance * deriv;
     model_data_->add_to_deriv(z1_, dz);
     model_data_->add_to_deriv(z2_, -dz);
-
-    /*
-     LogMsg(VERBOSE, "distance restraint dX1 (" << model_data_->get_float(x1_) << "): " << model_data_->get_deriv(x1_) << std::endl);
-     LogMsg(VERBOSE, "distance restraint dX2 (" << model_data_->get_float(x2_) << "): " << model_data_->get_deriv(x2_) << std::endl);
-
-     LogMsg(VERBOSE, "distance restraint dY1 (" << model_data_->get_float(y1_) << "): " << model_data_->get_deriv(y1_) << std::endl);
-     LogMsg(VERBOSE, "distance restraint dY2 (" << model_data_->get_float(y2_) << "): " << model_data_->get_deriv(y2_) << std::endl);
-
-     LogMsg(VERBOSE, "distance restraint dZ1 (" << model_data_->get_float(z1_) << "): " << model_data_->get_deriv(z1_) << std::endl);
-     LogMsg(VERBOSE, "distance restraint dZ2 (" << model_data_->get_float(z2_) << "): " << model_data_->get_deriv(z2_) << std::endl);
-    */
   }
 
   else {
@@ -170,7 +160,8 @@ void DistanceRestraint::show(std::ostream& out) const
     out << "distance restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "version: " << version() << "  " << "last_modified_by: "
+      << last_modified_by() << std::endl;
   out << "  x1:" << model_data_->get_float(x1_);
   out << "  y1:" << model_data_->get_float(y1_);
   out << "  z1:" << model_data_->get_float(z1_) << std::endl;

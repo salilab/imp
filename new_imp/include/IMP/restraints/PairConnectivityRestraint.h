@@ -55,7 +55,7 @@ public:
       bodies. Since once restraints are activated, they tend to be activated
       over and over, the exclusion volume restraint sets should only be reset
       whenever on rare occasion the neighborhoods actually change.
-    
+
       \param[in] calc_deriv If true, partial first derivatives should be
                             calculated.
       \return score associated with this restraint for the given state of

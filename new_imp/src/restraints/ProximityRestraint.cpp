@@ -37,7 +37,7 @@ ProximityRestraint::ProximityRestraint(Model& model,
   for (int i = 0; i < num_particles_ - 1; i++) {
     for (int j = i + 1; j < num_particles_; j++) {
       // create the restraint
-      
+
       dist_rsrs_[idx] = new DistanceRestraint(model, particles_[i],
                                               particles_[j],
                                               score_func_params);
@@ -46,8 +46,8 @@ ProximityRestraint::ProximityRestraint(Model& model,
   }
 
   IMP_LOG(VERBOSE,
-         "Number of restraints: " << num_restraints_ << "  number of particles: " <<
-         num_particles_ << std::endl);
+         "Number of restraints: " << num_restraints_
+         << "  number of particles: " << num_particles_ << std::endl);
 }
 
 
@@ -74,8 +74,10 @@ ProximityRestraint::ProximityRestraint(Model& model,
   for (int i = 0; i < num_particles_ - 1; i++) {
     for (int j = i + 1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance between centers
-      actual_mean = distance - model_data_->get_float(particles_[i]->get_float_index(attr_name))
-                    - model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      Float attri, attrj;
+      attri = model_data_->get_float(particles_[i]->get_float_index(attr_name));
+      attrj = model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      actual_mean = distance - attri - attrj;
 
       // create the restraint
       IMP_LOG(VERBOSE, i << " " << j << " add distance: " << actual_mean);
@@ -221,7 +223,8 @@ void ProximityRestraint::show(std::ostream& out) const
     out << "proximity restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "version: " << version() << "  " << "last_modified_by: "
+      << last_modified_by() << std::endl;
   out << "  num particles:" << num_particles_;
 }
 

@@ -44,7 +44,7 @@ void State::set_model_data(ModelData* model_data)
 void State::show(std::ostream& out) const
 {
   out << "unknown state:" << std::endl;
-  
+
   out << "version: " << version() << std::endl;
   out << "last_modified_by: " << last_modified_by() << std::endl;
 }

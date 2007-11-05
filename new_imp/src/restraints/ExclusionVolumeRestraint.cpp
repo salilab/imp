@@ -59,18 +59,21 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
 
   // get the indexes associated with the restraints
   Float actual_mean;
-  IMP_LOG(VERBOSE, "Add inter-body exclusion volume restraints " << num_restraints_);
+  IMP_LOG(VERBOSE, "Add inter-body exclusion volume restraints "
+          << num_restraints_);
 
   // particle 1 indexes
   for (int i = 0; i < num_particles1_; i++) {
     // particle 2 indexes
     for (int j = num_particles1_; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
-      actual_mean = model_data_->get_float(particles_[i]->get_float_index(attr_name))
-                    + model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      Float attri, attrj;
+      attri = model_data_->get_float(particles_[i]->get_float_index(attr_name));
+      attrj = model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);
-      
+
       // create the restraint
       dist_rsrs_.push_back(new DistanceRestraint(model,
                                             particles_[i],
@@ -111,18 +114,21 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
   // get the indexes associated with the restraints
   int idx = 0;
   Float actual_mean;
-  IMP_LOG(VERBOSE, "Add intra-body exclusion volume restraints " << num_restraints_);
+  IMP_LOG(VERBOSE, "Add intra-body exclusion volume restraints "
+          << num_restraints_);
 
   // particle 1 indexes
   for (int i = 0; i < num_particles_ - 1; i++) {
     // particle 2 indexes (avoid duplicates and particle with itself)
     for (int j = i+1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
-      actual_mean = model_data_->get_float(particles_[i]->get_float_index(attr_name))
-                    + model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      Float attri, attrj;
+      attri = model_data_->get_float(particles_[i]->get_float_index(attr_name));
+      attrj = model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);
-      
+
       // create the restraint
       dist_rsrs_.push_back(new DistanceRestraint(model,
                                             particles_[i],
@@ -139,7 +145,8 @@ ExclusionVolumeRestraint::~ExclusionVolumeRestraint ()
 {
   std::vector<DistanceRestraint*>::iterator rsr_iter;
 
-  for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end(); ++rsr_iter) {
+  for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end();
+       ++rsr_iter) {
     delete(*rsr_iter);
   }
 }
@@ -163,7 +170,8 @@ Float ExclusionVolumeRestraint::evaluate(bool calc_deriv)
   Float score = 0.0;
 
   // until this is smarter, just calculate them all
-  for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end(); ++rsr_iter) {
+  for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end();
+       ++rsr_iter) {
     score += (*rsr_iter)->evaluate(calc_deriv);
   }
 
@@ -182,7 +190,8 @@ void ExclusionVolumeRestraint::show(std::ostream& out) const
     out << "exclusion volume  restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "version: " << version() << "  " << "last_modified_by: "
+      << last_modified_by() << std::endl;
   out << "  num particles:" << num_particles_;
 }
 
