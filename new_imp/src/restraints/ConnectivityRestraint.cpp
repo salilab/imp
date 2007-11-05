@@ -41,7 +41,10 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       if (particle_type_[j] != particle_type_[i]) {
         if (rs_iter == rsr_scores_.end()) {
-          IMP_failure("Over ran the caculated number of restraints in ConnectivityRestraint", std::out_of_range("Over ran the calculated number of restraints"));
+          IMP_failure("Over ran the caculated number of restraints in "
+                      "ConnectivityRestraint",
+                      std::out_of_range("Over ran the calculated number of "
+                                        "restraints"));
         } else {
           rs_iter->part1_type_ = particle_type_[i];
           rs_iter->part2_type_ = particle_type_[j];
@@ -88,17 +91,22 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       if (particle_type_[j] != particle_type_[i]) {
         if (rs_iter == rsr_scores_.end()) {
-          IMP_failure("Over ran the caculated number of restraints in ConnectivityRestraint", std::out_of_range("Over ran the calculated number of restraints"));
+          IMP_failure("Over ran the caculated number of restraints in "
+                      "ConnectivityRestraint",
+                      std::out_of_range("Over ran the calculated number of "
+                                        "restraints"));
         } else {
           rs_iter->part1_type_ = particle_type_[i];
           rs_iter->part2_type_ = particle_type_[j];
 
           // Use those radii to calculate the expected distance
-          actual_mean = model_data_->get_float(particles_[i]->get_float_index(attr_name))
-                        + model_data_->get_float(particles_[j]->get_float_index(attr_name));
+          FloatIndex indi = particles_[i]->get_float_index(attr_name);
+          FloatIndex indj = particles_[j]->get_float_index(attr_name);
+          actual_mean = model_data_->get_float(indi)
+                        + model_data_->get_float(indj);
 
           score_func_params->set_mean(actual_mean);
-          
+
           // create the restraint
           rs_iter->rsr_ = new DistanceRestraint(model,
                                            particles_[i],
@@ -147,7 +155,9 @@ void ConnectivityRestraint::set_up(Model& model,
     type_.push_back(p1->get_int_index(type));
   }
 
-  IMP_LOG(VERBOSE, "Size of particles: " << particles_.size() << "  size of types:" << type_.size() << "  num_particles_: " << num_particles_ << "  particle_type_: " << particle_type_.size());
+  IMP_LOG(VERBOSE, "Size of particles: " << particles_.size()
+          << "  size of types:" << type_.size() << "  num_particles_: "
+          << num_particles_ << "  particle_type_: " << particle_type_.size());
   IMP_LOG(VERBOSE, "Figure out number of types");
   // figure out how many types there are
   int next_type;
@@ -176,8 +186,8 @@ void ConnectivityRestraint::set_up(Model& model,
 
   IMP_LOG(VERBOSE, "Figure out number of restraints");
   // figure out how many restraints there are
-  // Could use num_restraints = sum((S-si)si)) where is total number of particles
-  // ... and si is number of particles of type i (summed over all types)
+  // Could use num_restraints = sum((S-si)si)) where is total number of
+  // particles and si is number of particles of type i (summed over all types)
   num_restraints_ = num_particles_ * (num_particles_ - 1) / 2;
   for (int i = 0; i < num_particles_ - 1; i++) {
     for (int j = i + 1; j < num_particles_; j++) {
@@ -244,7 +254,9 @@ Float ConnectivityRestraint::evaluate(bool calc_deriv)
   Float score = 0.0;
   int num_edges = 0;
   int type1, type2;
-  for (rs_iter = rsr_scores_.begin(); (rs_iter != rsr_scores_.end()) && (num_edges < num_types_ - 1); ++rs_iter) {
+  for (rs_iter = rsr_scores_.begin();
+       (rs_iter != rsr_scores_.end()) && (num_edges < num_types_ - 1);
+       ++rs_iter) {
     type1 = rs_iter->part1_type_;
     type2 = rs_iter->part2_type_;
 
@@ -313,7 +325,8 @@ void ConnectivityRestraint::show(std::ostream& out) const
     out << "connectivity restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "version: " << version() << "  " << "last_modified_by: "
+      << last_modified_by() << std::endl;
   out << "  num particles:" << num_particles_;
 }
 

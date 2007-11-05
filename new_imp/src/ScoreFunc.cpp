@@ -62,7 +62,7 @@ Float Harmonic::harmonic(Float feature, Float& deriv)
 {
   Float e;
   Float sd;
-  
+
   sd = sd_ / 0.54318463; // correction factor to match Modeller
   e = (feature - mean_) / sd;
   deriv = e / sd * 2.0; // * 2.0 is correction factor to match Modeller
@@ -145,7 +145,7 @@ Float HarmonicUpperBound::operator()(Float feature, Float& deriv)
 }
 
 //! Constructor
-BasicScoreFuncParams::BasicScoreFuncParams(std::string score_func_type, 
+BasicScoreFuncParams::BasicScoreFuncParams(std::string score_func_type,
                                            Float mean, Float sd)
 {
   mean_ = mean;
@@ -197,7 +197,7 @@ ScoreFunc* BasicScoreFuncParams::create_score_func(void)
   } else if (score_func_type_ == "harmonic_upper_bound") {
     return new HarmonicUpperBound(mean_, sd_);
   }
-  
+
   IMP_check(0, "Unknown score function: " << score_func_type_,
             std::out_of_range("Unknown score function"));
   return NULL;

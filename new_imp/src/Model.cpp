@@ -223,7 +223,7 @@ void Model::save_state(void)
     fout << "FRAME " << frame_num_ << std::endl;
     frame_num_++;
     fout << particles_.size() << std::endl;
-    
+
     // for each particle, output its current state
     FloatIndex fi;
     for (size_t i = 0; i < particles_.size(); i++) {

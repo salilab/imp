@@ -40,7 +40,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
 
   // get the indexes associated with the restraints
   int idx = 0;
-  // use iterator to move through each predefined position in the restraint/score list
+  // use iterator to move through each predefined position in the
+  // restraint/score list
   std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
   rs_iter = rsr_scores_.begin();
   for (int i = 0; i < num_particles1_; i++) {
@@ -66,7 +67,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
 
   IMP_LOG(VERBOSE, idx <<
          "  num_restraints_: " << num_restraints_ << "  num_particles1_: " <<
-         num_particles1_ << " num_particles2_:" << num_particles2_ << std::endl);
+         num_particles1_ << " num_particles2_:" << num_particles2_
+         << std::endl);
 }
 
 //! Set up a restraint using the given attribute for particle-particle distance.
@@ -92,7 +94,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
   int idx = 0;
   Float actual_mean;
 
-  // use iterator to move through each predefined position in the restraint/score list
+  // use iterator to move through each predefined position in the
+  // restraint/score list
   std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
   rs_iter = rsr_scores_.begin();
   // particles from list 1
@@ -100,11 +103,13 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     // particles from list 2
     for (int j = num_particles1_; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
-      actual_mean = model_data_->get_float(particles_[i]->get_float_index(attr_name))
-                    + model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      Float attri, attrj;
+      attri = model_data_->get_float(particles_[i]->get_float_index(attr_name));
+      attrj = model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);
-      
+
       // create the restraint
       if (rs_iter == rsr_scores_.end()) {
         IMP_failure("Reached end of rsr_scores too early.",
@@ -126,7 +131,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
 
   IMP_LOG(VERBOSE, idx <<
          "  num_restraints_: " << num_restraints_ << "  num_particles1_: " <<
-         num_particles1_ << " num_particles2_:" << num_particles2_ << std::endl);
+         num_particles1_ << " num_particles2_:" << num_particles2_
+         << std::endl);
 }
 
 
@@ -197,7 +203,7 @@ PairConnectivityRestraint::~PairConnectivityRestraint()
     Since once restraints are activated, they tend to be activated over and
     over, the exclusion volume restraint sets should only be reset whenever
     on rare occasion the neighborhoods actually change.
-  
+
     \param[in] calc_deriv If true, partial first derivatives should be
                           calculated.
     \return score associated with this restraint for the given state of
@@ -233,8 +239,10 @@ Float PairConnectivityRestraint::evaluate(bool calc_deriv)
   Float score = 0.0;
   rs_iter = rsr_scores_.begin();
   int num_applied = 0;
-  for (int i = 0; (num_applied < num_to_apply_) && (rs_iter != rsr_scores_.end()); i++) {
-    if (particle_reuse_ || (!used_[rs_iter->part1_idx_] && !used_[rs_iter->part2_idx_])) {
+  for (int i = 0; num_applied < num_to_apply_ && rs_iter != rsr_scores_.end();
+       ++i) {
+    if (particle_reuse_ || (!used_[rs_iter->part1_idx_]
+                            && !used_[rs_iter->part2_idx_])) {
       used_[rs_iter->part1_idx_] = true;
       used_[rs_iter->part2_idx_] = true;
       score += rs_iter->rsr_->evaluate(calc_deriv);
@@ -259,8 +267,10 @@ void PairConnectivityRestraint::show(std::ostream& out) const
     out << "pair connectivity restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
-  out << "  num particles1:" << num_particles1_ << "  num particles2:" << num_particles2_;
+  out << "version: " << version() << "  " << "last_modified_by: "
+      << last_modified_by() << std::endl;
+  out << "  num particles1:" << num_particles1_ << "  num particles2:"
+      << num_particles2_;
   out << "  num restraints:" << num_restraints_;
   out << "  num restraints to apply:" << num_to_apply_;
 }
