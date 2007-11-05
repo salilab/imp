@@ -119,7 +119,9 @@ Float CoordinateRestraint::evaluate(bool calc_deriv)
     model_data_->add_to_deriv(z1_, dz);
   }
 
-  IMP_LOG(VERBOSE, axis_ << " score: " << score << "  x: " << x << " y: " << y << " z: " << z << "   dx: " << dx << " dy: " << dy << " dz: " << dz << std::endl);
+  IMP_LOG(VERBOSE, axis_ << " score: " << score << "  x: " << x << " y: " << y
+          << " z: " << z << "   dx: " << dx << " dy: " << dy << " dz: " << dz
+          << std::endl);
 
   return score;
 }
@@ -136,7 +138,8 @@ void CoordinateRestraint::show(std::ostream& out) const
     out << "coordinate restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "version: " << version() << "  " << "last_modified_by: "
+      << last_modified_by() << std::endl;
   out << "  x1:" << model_data_->get_float(x1_);
   out << "  y1:" << model_data_->get_float(y1_);
   out << "  z1:" << model_data_->get_float(z1_) << std::endl;
