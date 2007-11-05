@@ -135,7 +135,8 @@ void TorusRestraint::show(std::ostream& out) const
     out << "torus restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "version: " << version() << "  " << "last_modified_by: "
+      << last_modified_by() << std::endl;
   out << "  x1:" << model_data_->get_float(x1_);
   out << "  y1:" << model_data_->get_float(y1_);
   out << "  z1:" << model_data_->get_float(z1_) << std::endl;

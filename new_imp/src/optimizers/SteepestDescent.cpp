@@ -79,21 +79,27 @@ Float SteepestDescent::optimize (Model& model, int max_steps, Float threshold)
 
     bool done = false;
     bool not_changing = false;
-    bool move_bigger; // try to increase step_size if we are moving to slowly down gradient
+    // try to increase step_size if we are moving to slowly down gradient
+    bool move_bigger;
     while (!done && (cnt < 200)) {
       cnt++;
       move_bigger = true;
 
-      // try new values based on moving down the gradient at the current step size
+      // try new values based on moving down the gradient at the current
+      // step size
       for (int i = 0; i < opt_var_cnt; i++) {
-        IMP_LOG(VERBOSE, i << " move: " << temp_vals[i] << " new: " << temp_vals[i] - temp_derivs[i] * step_size << "  " << temp_derivs[i]);
+        IMP_LOG(VERBOSE, i << " move: " << temp_vals[i] << " new: "
+                << temp_vals[i] - temp_derivs[i] * step_size << "  "
+                << temp_derivs[i]);
 
-        model_data->set_float(float_indexes[i], temp_vals[i] - temp_derivs[i] * step_size);
+        model_data->set_float(float_indexes[i],
+                              temp_vals[i] - temp_derivs[i] * step_size);
       }
 
       // check the new model
       new_score = model.evaluate(false);
-      IMP_LOG(VERBOSE, "last score: " << last_score << "  new score: " << new_score << "  step size: " << step_size);
+      IMP_LOG(VERBOSE, "last score: " << last_score << "  new score: "
+              << new_score << "  step size: " << step_size);
 
       // if the score is less than the threshold, we're done
       if (new_score <= threshold)

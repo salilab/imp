@@ -25,7 +25,8 @@ RestraintSet::RestraintSet(const std::string& name): Restraint(name)
 //! Destructor
 RestraintSet::~RestraintSet()
 {
-  IMP_LOG(VERBOSE,"Delete RestraintSet: beware of early Python calls to destructor.");
+  IMP_LOG(VERBOSE, "Delete RestraintSet: beware of early Python calls to "
+                   "destructor.");
 }
 
 
