@@ -3,11 +3,9 @@ Import('env','get_sharedlib_environment')
 print 'call get_sharedlib_environment'
 env = get_sharedlib_environment(env,  cplusplus=True)
 
-# Subdirectories:
-SConscript('tests/SConscript')
 
 # Source files
-files = ('MapReaderWriter.cpp','DensityHeader.cpp','DensityMap.cpp','EMReaderWriter.cpp','XplorReaderWriter.cpp','MRCReaderWriter.cpp','SampledDensityMap.cpp','CoarseCC.cpp','CoarseCCatIntervals.cpp')
+files = ('MapReaderWriter.cpp','DensityHeader.cpp','DensityMap.cpp','EMReaderWriter.cpp','XplorReaderWriter.cpp','MRCReaderWriter.cpp','KernelParameters.cpp','SampledDensityMap.cpp','CoarseCC.cpp','CoarseCCatIntervals.cpp')
 
 
 # Build the shared library:
@@ -19,6 +17,5 @@ env.Alias('install', [libinst])
 
 # Subdirectories:
 pyext = SConscript('pyext/SConscript')
-#SConscript('tests/SConscript')
 
 Return('lib', 'pyext')

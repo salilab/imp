@@ -1,24 +1,13 @@
 #ifndef _COARSECCATINTERVALS_H
 #define _COARSECCATINTERVALS_H
 
-/*
-  CLASS
-
-  KEYWORDS
-
-  AUTHORS
-  Javi
-  Keren Lasker (mailto: kerenl@salilab.org)
 
 
-  OVERVIEW TEXT
-  Cross correlation coefficient calculator.
-  Stored CCC and derivate values and recompute then every each X steps.
-*/
 
 #include "CoarseCC.h"
 #include <vector>
 
+//!  Cross correlation coefficient calculator. Stored CCC and derivate values and recompute then every each X steps.
 class CoarseCCatIntervals : public CoarseCC {
 
 public:
@@ -54,13 +43,12 @@ public:
 		 std::vector<float> &dvx,std::vector<float>&dvy,std::vector<float>&dvz,
 		 float scalefac,
 		 bool lderiv,
-		 int &ierr,
 		 unsigned long eval_interval );
 
 
 protected:
   //  unsigned long eval_interval_;                  // the interval size before recalculating the CC score
-  unsigned long calls_counter;          // counts the number of time the evalute function was called
+  int calls_counter;          // counts the number of time the evalute function was called
   float stored_cc_ ;                        // Stored correlation value
   float *stored_dvx_,*stored_dvy_,*stored_dvz_; // Stored derivative terms
 

@@ -1,24 +1,6 @@
 #ifndef _XPLORREADER_H
 #define _XPLORREADER_H
 
-/*
-  CLASS
-
-  XplorReader
-
-  KEYWORDS
-
-  AUTHORS
-  Keren Lasker (mailto: kerenl@salilab.org)
-
-  OVERVIEW TEXT
-
-
-  CHANGES LOG
-  Sep 27 2007, Keren: change the class into a stateless one.
-
-*/
-
 #include <math.h>
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
@@ -40,7 +22,7 @@ public:
     cellsize[0]=m_header.xlen;cellsize[1]=m_header.ylen;cellsize[2]=m_header.zlen; 
     cellangle[0]=m_header.alpha; cellangle[1]=m_header.beta; cellangle[2]=m_header.gamma;
     voxelsize[0]=m_header.xlen/m_header.mx; voxelsize[1]=m_header.ylen/m_header.my; voxelsize[2]=m_header.zlen/m_header.mz;
-    translateGrid[0]=m_header.xorigin ; translateGrid[1]= m_header.yorigin; translateGrid[2]=  m_header.zorigin;
+    translateGrid[0]=m_header.get_xorigin() ; translateGrid[1]= m_header.get_yorigin(); translateGrid[2]=  m_header.get_zorigin();
 
   }
   void GenerateCommonHeader(DensityHeader &m_header) {
@@ -49,7 +31,7 @@ public:
     m_header.nx=extent[0];m_header.ny=extent[1];m_header.nz=extent[2]; 
     m_header.xlen=cellsize[0];m_header.ylen=cellsize[1];m_header.zlen=cellsize[2]; 
     m_header.alpha=cellangle[0]; m_header.beta=cellangle[1]; m_header.gamma=cellangle[2];
-    m_header.xorigin = translateGrid[0];  m_header.yorigin = translateGrid[1];  m_header.zorigin = translateGrid[2];
+    m_header.set_xorigin(translateGrid[0]);  m_header.set_yorigin(translateGrid[1]);  m_header.set_zorigin(translateGrid[2]);
 
   }
   

@@ -30,7 +30,7 @@
 class MRCHeader
 {
 	public:	
-		int nz,ny,nx; // map size
+		int nx,ny,nz; // map size
 		int mode; /* 0 	image : signed 8-bit bytes range -128 to 127. 1 image : 16-bit halfwords. 
 					 2 	image : 32-bit reals. 3 	transform : complex 16-bit integers
 					 4 	transform : complex 32-bit reals */
