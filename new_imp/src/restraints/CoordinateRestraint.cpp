@@ -46,11 +46,11 @@ CoordinateRestraint::~CoordinateRestraint()
 
 
 //! Calculate the score for this coordinate restraint.
-/** \param[in] calc_deriv If true, partial first derivatives should be
-                          calculated.
+/** \param[in] accum If not NULL, use this object to accumulate partial first
+                     derivatives.
     \return Current score.
  */
-Float CoordinateRestraint::evaluate(bool calc_deriv)
+Float CoordinateRestraint::evaluate(DerivativeAccumulator *accum)
 {
   Float score = 0.0, deriv;
   Float x, y, z;
@@ -113,10 +113,10 @@ Float CoordinateRestraint::evaluate(bool calc_deriv)
   }
 
   // if needed, use the partial derivatives
-  if (calc_deriv) {
-    model_data_->add_to_deriv(x1_, dx);
-    model_data_->add_to_deriv(y1_, dy);
-    model_data_->add_to_deriv(z1_, dz);
+  if (accum) {
+    accum->add_to_deriv(x1_, dx);
+    accum->add_to_deriv(y1_, dy);
+    accum->add_to_deriv(z1_, dz);
   }
 
   IMP_LOG(VERBOSE, axis_ << " score: " << score << "  x: " << x << " y: " << y

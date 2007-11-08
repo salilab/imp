@@ -50,11 +50,11 @@ TorusRestraint::~TorusRestraint()
 
 
 //! Calculate the score for this restraint for the current model state.
-/** \param[in] calc_deriv If true, partial first derivatives should
-                          be calculated.
+/** \param[in] accum If not NULL, use this object to accumulate partial first
+                     derivatives.
     \return Current score.
  */
-Float TorusRestraint::evaluate(bool calc_deriv)
+Float TorusRestraint::evaluate(DerivativeAccumulator *accum)
 {
   Float tube_center_x, tube_center_y;
   Float xy_distance_from_center;
@@ -110,14 +110,14 @@ Float TorusRestraint::evaluate(bool calc_deriv)
   }
 
   // if needed, use the partial derivatives
-  if (calc_deriv) {
+  if (accum) {
     dx = deriv * x / distance_from_tube_center;
     dy = deriv * y / distance_from_tube_center;
     dz = deriv * z / distance_from_tube_center;
 
-    model_data_->add_to_deriv(x1_, dx);
-    model_data_->add_to_deriv(y1_, dy);
-    model_data_->add_to_deriv(z1_, dz);
+    accum->add_to_deriv(x1_, dx);
+    accum->add_to_deriv(y1_, dy);
+    accum->add_to_deriv(z1_, dz);
   }
 
   return score;

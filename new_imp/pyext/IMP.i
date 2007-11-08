@@ -26,6 +26,7 @@ namespace std {
 %include "IMP/boost/noncopyable.h"
 %include "IMP/ScoreFunc.h"
 %include "IMP/ModelData.h"
+%include "IMP/DerivativeAccumulator.h"
 %include "IMP/restraints/Restraint.h"
 %include "IMP/restraints/RestraintSet.h"
 %include "IMP/State.h"

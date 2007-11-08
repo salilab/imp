@@ -158,12 +158,12 @@ ExclusionVolumeRestraint::~ExclusionVolumeRestraint ()
     minimum spanning tree with nodes corresponding to particle types and the
     edge weights corresponding to restraint violation scores).
 
-    \param[in] calc_deriv If true, partial first derivatives should be
-                          calculated.
+    \param[in] accum If not NULL, use this object to accumulate partial first
+                     derivatives.
     \return score associated with this restraint for the given state of
             the model.
  */
-Float ExclusionVolumeRestraint::evaluate(bool calc_deriv)
+Float ExclusionVolumeRestraint::evaluate(DerivativeAccumulator *accum)
 {
   std::vector<DistanceRestraint*>::iterator rsr_iter;
 
@@ -172,7 +172,7 @@ Float ExclusionVolumeRestraint::evaluate(bool calc_deriv)
   // until this is smarter, just calculate them all
   for (rsr_iter = dist_rsrs_.begin(); rsr_iter != dist_rsrs_.end();
        ++rsr_iter) {
-    score += (*rsr_iter)->evaluate(calc_deriv);
+    score += (*rsr_iter)->evaluate(accum);
   }
 
   return score;

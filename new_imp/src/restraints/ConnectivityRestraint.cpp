@@ -221,12 +221,12 @@ ConnectivityRestraint::~ConnectivityRestraint ()
     minimum spanning tree with nodes corresponding to particle types and the
     edge weights corresponding to restraint violation scores).
 
-    \param[in] calc_deriv If true, partial first derivatives should be
-                          calculated.
+    \param[in] accum If not NULL, use this object to accumulate partial first
+                     derivatives.
     \return score associated with this restraint for the given state of
             the model.
  */
-Float ConnectivityRestraint::evaluate(bool calc_deriv)
+Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
 {
   IMP_LOG(VERBOSE, "evaluate ConnectivityRestraint");
 
@@ -269,7 +269,7 @@ Float ConnectivityRestraint::evaluate(bool calc_deriv)
 
       num_edges++;
       IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
-      score += rs_iter->rsr_->evaluate(calc_deriv);
+      score += rs_iter->rsr_->evaluate(accum);
     }
 
     // if only one particle is already in a tree, add the other particle
@@ -283,7 +283,7 @@ Float ConnectivityRestraint::evaluate(bool calc_deriv)
 
       num_edges++;
       IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
-      score += rs_iter->rsr_->evaluate(calc_deriv);
+      score += rs_iter->rsr_->evaluate(accum);
     }
 
     // both particles are already in trees
@@ -302,7 +302,7 @@ Float ConnectivityRestraint::evaluate(bool calc_deriv)
 
         num_edges++;
         IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
-        score += rs_iter->rsr_->evaluate(calc_deriv);
+        score += rs_iter->rsr_->evaluate(accum);
       }
     }
   }

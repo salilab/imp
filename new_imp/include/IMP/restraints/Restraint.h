@@ -14,6 +14,7 @@
 #include "../IMP_config.h"
 #include "../ModelData.h"
 #include "../ScoreFunc.h"
+#include "../DerivativeAccumulator.h"
 #include "../boost/noncopyable.h"
 
 namespace IMP
@@ -36,11 +37,11 @@ public:
   virtual ~Restraint();
 
   //! Return the score for this restraint for the current state of the model.
-  /** \param[in] calc_deriv if true, first derivatives should also be
-                            calculated.
+  /** \param[in] accum If not NULL, use this object to accumulate partial first
+                       derivatives.
       \return Current score.
    */
-  virtual Float evaluate(bool calc_deriv) = 0;
+  virtual Float evaluate(DerivativeAccumulator *accum) = 0;
 
   //! Set whether the restraint is active i.e. if it should be evaluated.
   /** \param[in] is_active If true, the restraint is active.

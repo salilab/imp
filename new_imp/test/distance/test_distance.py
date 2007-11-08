@@ -79,26 +79,27 @@ class test_distance(IMP.test.IMPTestCase):
         """ test that distance restraints are reasonable """
 
         # score should not change with deriv calcs
+        accum = IMP.DerivativeAccumulator(self.imp_model.get_model_data())
         for rsr in self.rsrs:
-            self.assertAlmostEqual(rsr.evaluate(False), rsr.evaluate(True),
+            self.assertAlmostEqual(rsr.evaluate(None), rsr.evaluate(accum),
                                    places=5)
 
         # score should be equivalent if attribute is used or equivalent hard-coded distance is used
         for i in range(9):
-            self.assert_(self.rsrs[i].evaluate(False) == self.rsrs[i+9].evaluate(False), "should get same distance whether explicit or through radii")
+            self.assert_(self.rsrs[i].evaluate(None) == self.rsrs[i+9].evaluate(None), "should get same distance whether explicit or through radii")
 
         # exact match
-        self.assert_(self.rsrs[0].evaluate(False) == 0.0, "unexpected distance score")
-        self.assert_(self.rsrs[1].evaluate(False) == 0.0, "unexpected distance score")
-        self.assert_(self.rsrs[2].evaluate(False) == 0.0, "unexpected distance score")
+        self.assert_(self.rsrs[0].evaluate(None) == 0.0, "unexpected distance score")
+        self.assert_(self.rsrs[1].evaluate(None) == 0.0, "unexpected distance score")
+        self.assert_(self.rsrs[2].evaluate(None) == 0.0, "unexpected distance score")
 
         # too close
-        self.assert_(self.rsrs[0].evaluate(False) == 0.0, "unexpected distance score")
-        self.assert_(self.rsrs[1].evaluate(False) == self.rsrs[2].evaluate(False) == 0.0, "unexpected distance score")
+        self.assert_(self.rsrs[0].evaluate(None) == 0.0, "unexpected distance score")
+        self.assert_(self.rsrs[1].evaluate(None) == self.rsrs[2].evaluate(None) == 0.0, "unexpected distance score")
 
         # too far
-        self.assert_(self.rsrs[1].evaluate(False) == 0.0, "unexpected distance score")
-        self.assert_(self.rsrs[0].evaluate(False) == self.rsrs[2].evaluate(False) == 0.0, "unexpected distance score")
+        self.assert_(self.rsrs[1].evaluate(None) == 0.0, "unexpected distance score")
+        self.assert_(self.rsrs[0].evaluate(None) == self.rsrs[2].evaluate(None) == 0.0, "unexpected distance score")
 
 if __name__ == '__main__':
     unittest.main()

@@ -8,20 +8,20 @@ class WoodsFunc(IMP.Restraint):
         self.model_data = model.get_model_data()
         self.indices = [p.get_float_index("x") for p in particles]
 
-    def evaluate(self, calc_deriv):
+    def evaluate(self, accum):
         (x1, x2, x3, x4) = [self.model_data.get_float(i) for i in self.indices]
         a = x2 - x1 * x1
         b = x4 - x3 * x3
         e = 100.0 * a * a + (1.0 - x1) ** 2+ 90.0 * b * b + (1.0 - x3) ** 2 \
             + 10.1 * ((x2 - 1.0) ** 2 + (x4 - 1.0) ** 2) \
             + 19.8 * (x2 - 1.0) * (x4 - 1.0)
-        if calc_deriv:
+        if accum:
             dx = [-2.0 * (200.0 * x1 * a + 1.0 - x1),
                    2.0 * (100.0 * a + 10.1 * (x2 - 1.0) + 9.9 * (x4 - 1.0)),
                   -2.0 * (180.0 * x3 * b + 1.0 - x3),
                    2.0 * (90.0 * b + 10.1 * (x4 - 1.0) + 9.9 * (x2 - 1.0))]
             for (i, d) in zip(self.indices, dx):
-                self.model_data.add_to_deriv(i, d)
+                accum.add_to_deriv(i, d)
         return e
 
 class CGOptimizerTests(IMP.test.IMPTestCase):

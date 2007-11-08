@@ -55,19 +55,31 @@ Restraint* RestraintSet::get_restraint(RestraintIndex i) const
 }
 
 //! Calculate the score for this restraint for the current model state.
-/** \param[in] calc_deriv If true, partial first derivatives should
-                          be calculated.
+/** \param[in] accum If not NULL, use this object to accumulate partial first
+                     derivatives.
     \return Current score.
  */
-Float RestraintSet::evaluate(bool calc_deriv)
+Float RestraintSet::evaluate(DerivativeAccumulator *accum)
 {
   Float score;
 
-  score = (Float) 0.0;
-  for (size_t i=0; i < restraints_.size(); i++) {
-    if (restraints_[i]->get_is_active())
-      score += restraints_[i]->evaluate(calc_deriv);
+  // Use a local copy of the accumulator for our sub-restraints
+  DerivativeAccumulator *ouracc = NULL;
+  if (accum) {
+    ouracc = new DerivativeAccumulator(*accum);
   }
+
+  score = (Float) 0.0;
+  try {
+    for (size_t i=0; i < restraints_.size(); i++) {
+      if (restraints_[i]->get_is_active())
+        score += restraints_[i]->evaluate(ouracc);
+    }
+  } catch (...) {
+    delete ouracc;
+    throw;
+  }
+  delete ouracc;
 
   return score;
 }
