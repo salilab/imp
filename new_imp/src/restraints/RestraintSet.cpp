@@ -16,7 +16,8 @@ namespace IMP
 
 
 //! Constructor
-RestraintSet::RestraintSet(const std::string& name): Restraint(name)
+RestraintSet::RestraintSet(const std::string& name)
+    : Restraint(name), weight_(1.0)
 {
   IMP_LOG(VERBOSE, "Restraint set constructed");
 }
@@ -66,7 +67,7 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
   // Use a local copy of the accumulator for our sub-restraints
   DerivativeAccumulator *ouracc = NULL;
   if (accum) {
-    ouracc = new DerivativeAccumulator(*accum);
+    ouracc = new DerivativeAccumulator(*accum, weight_);
   }
 
   score = (Float) 0.0;
@@ -81,7 +82,7 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
   }
   delete ouracc;
 
-  return score;
+  return score * weight_;
 }
 
 
