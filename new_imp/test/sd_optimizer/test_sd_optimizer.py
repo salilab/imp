@@ -2,9 +2,8 @@ import unittest
 import IMP.utils
 import IMP.test, IMP
 
-# Class to test steepest descent optimizer in IMP
-class test_sd_optimizer(IMP.test.IMPTestCase):
-    """test steepest descent optimizer in IMP """
+class SteepestDescentTests(IMP.test.IMPTestCase):
+    """Test steepest descent optimizer"""
 
     def setUp(self):
         """set up distance restraints and create optimizer """
@@ -49,7 +48,7 @@ class test_sd_optimizer(IMP.test.IMPTestCase):
 
 
     def test_sd_optimizer1(self):
-        """ test that optimizer brings particles together """
+        """Test that optimizer brings particles together"""
 
         self.steepest_descent.optimize(self.imp_model, 50)
 
@@ -62,7 +61,7 @@ class test_sd_optimizer(IMP.test.IMPTestCase):
 
 
     def test_sd_optimizer2(self):
-        """ test that optimizer spreads particles apart """
+        """Test that optimizer spreads particles apart"""
 
         self.particles[0].set_x(0.0)
         self.particles[0].set_y(0.0)

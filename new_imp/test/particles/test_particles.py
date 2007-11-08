@@ -3,9 +3,8 @@ import IMP
 import IMP.utils
 import IMP.test
 
-# Class to test particles
-class test_particles(IMP.test.IMPTestCase):
-    """test particles"""
+class ParticleTests(IMP.test.IMPTestCase):
+    """Test particles"""
 
     def setUp(self):
         """set up Modeller with the torus restraints """
@@ -87,7 +86,7 @@ class test_particles(IMP.test.IMPTestCase):
         IMP.utils.show_particles(self.particles)
 
     def test_particles(self):
-        """ test that particle attributes are available and correct """
+        """Test that particle attributes are available and correct"""
 
         model_data = self.imp_model.get_model_data()
 

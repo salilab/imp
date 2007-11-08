@@ -6,9 +6,8 @@ import IMP
 import IMP.modeller_intf
 import IMP.test
 
-# Class to test pair connectivity restraints
-class test_exclusion_volumes(IMP.test.IMPTestCase):
-    """test exclusion volumes restraints"""
+class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
+    """Test exclusion volume restraints"""
 
     def setUp(self):
         """set up Modeller with exclusion volumes restraints """
@@ -97,10 +96,10 @@ class test_exclusion_volumes(IMP.test.IMPTestCase):
         self.opt = modeller.optimizers.conjugate_gradients()
 
 
-    # intra-protein exclusion volumes
     def test_exclusion_volumes_one_list(self):
-        """ all particles in a single protein should be connected but should
-        not be closer than allowed by their vw radii"""
+        """Test exclusion volumes (intra-protein).
+           All particles in a single protein should be connected but should
+           not be closer than allowed by their VDW radii."""
         rs = IMP.RestraintSet("one_list")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
@@ -156,11 +155,11 @@ class test_exclusion_volumes(IMP.test.IMPTestCase):
                 self.assert_(d > -0.05, "particles "+str(i)+" and "+str(j)+" are too close together.")
 
 
-    # intra- and inter- protein exclusion volumes
     def test_exclusion_volumes_two_lists(self):
-        """ all particles in a single protein should be connected and the two
-        proteins should be connected in four locations but beads should
-        not be closer than allowed by their vw radii"""
+        """Test exclusion volumes (intra- and inter-protein).
+           All particles in a single protein should be connected and the two
+           proteins should be connected in four locations but beads should
+           not be closer than allowed by their VDW radii."""
         rs = IMP.RestraintSet("two_lists")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)

@@ -4,7 +4,7 @@ import IMP
 import IMP.test
 import IMP.utils
 
-class test_torus(IMP.test.IMPTestCase):
+class TorusRestraintTests(IMP.test.IMPTestCase):
     """Class to test torus restraints"""
 
     def setUp(self):
