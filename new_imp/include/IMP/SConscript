@@ -1,7 +1,7 @@
 import os.path
 Import('env')
 
-files = ['Base_Types.h', 'Index.h', 'ModelLoader.h', 'ScoreFunc.h', 'Model.h',
+files = ['Base_Types.h', 'Index.h', 'ScoreFunc.h', 'Model.h',
          'Particle.h', 'State.h', 'IMP_config.h', 'ModelData.h', 'RigidBody.h',
          'log.h', 'DerivativeAccumulator.h']
 
