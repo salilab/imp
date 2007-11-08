@@ -20,7 +20,6 @@
 #include "IMP/RigidBody.h"
 #include "IMP/ModelData.h"
 #include "IMP/Model.h"
-#include "IMP/ModelLoader.h"
 #include "IMP/restraints/Restraint.h"
 #include "IMP/restraints/DistanceRestraint.h"
 #include "IMP/restraints/TorusRestraint.h"
