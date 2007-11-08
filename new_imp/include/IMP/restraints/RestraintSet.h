@@ -33,6 +33,11 @@ public:
   //! The type to use to retrieve a restraint
   typedef int RestraintIndex;
 
+  //! Set weight for all restraints contained by this set.
+  /** \param[in] weight The new value of the weight.
+    */
+  void set_weight(Float weight) { weight_ = weight; }
+
   //! Add restraint to the restraint set.
   /** \param[in] restraint The restraint to add to the restraint set.
       \return the index of the newly-added restraint in the restraint set.
@@ -69,6 +74,9 @@ protected:
       this vector contains a pointer to itself.
    */
   std::vector<Restraint *> restraints_;
+
+  //! Weight for all restraints.
+  Float weight_;
 };
 
 } // namespace IMP

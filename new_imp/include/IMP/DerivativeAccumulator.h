@@ -20,10 +20,10 @@ namespace IMP
 class IMPDLLEXPORT DerivativeAccumulator
 {
 public:
-  DerivativeAccumulator(ModelData *model_data, float weight=1.0)
+  DerivativeAccumulator(ModelData *model_data, Float weight=1.0)
       : model_data_(model_data), weight_(weight) {}
 
-  DerivativeAccumulator(const DerivativeAccumulator &copy, float weight=1.0)
+  DerivativeAccumulator(const DerivativeAccumulator &copy, Float weight=1.0)
       : model_data_(copy.model_data_), weight_(copy.weight_ * weight) {}
 
   //! Add value to derivative.
@@ -36,7 +36,7 @@ public:
 
 protected:
   ModelData *model_data_;
-  float weight_;
+  Float weight_;
 };
 
 } // namespace IMP
