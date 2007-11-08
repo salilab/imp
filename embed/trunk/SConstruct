@@ -21,7 +21,7 @@ bin = SConscript('bin/SConscript')
 Export('bin')
 
 src, pyext = SConscript('src/emlib/SConscript')
-
+SConscript('test/SConscript')
 #SConscript('doc/SConscript')
 
 
