@@ -3,9 +3,8 @@ import os
 import IMP.test, IMP
 import IMP.xml_loader
 
-# Class to test XML file loading
-class test_xml(IMP.test.IMPTestCase):
-    """test test XML file loading"""
+class XMLTests(IMP.test.IMPTestCase):
+    """Test XML file loading"""
 
     def setUp(self):
         """set up IMP model by loading the xml document """
@@ -14,7 +13,7 @@ class test_xml(IMP.test.IMPTestCase):
                                                      "xml/model.xml")
 
     def test_xml(self):
-        """ check the xml """
+        """Check reading of XML files"""
         model_data = self.imp_model.get_model_data()
 
         # test particles

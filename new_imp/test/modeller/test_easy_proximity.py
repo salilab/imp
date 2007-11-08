@@ -6,9 +6,8 @@ import IMP.modeller_intf
 import IMP.utils
 import IMP.test
 
-# Class to test proximity restraints
-class test_proximity(IMP.test.IMPTestCase):
-    """test proximity restraints"""
+class ProximityRestraintTests(IMP.test.IMPTestCase):
+    """Test proximity restraints"""
 
     def setUp(self):
         """set up Modeller with proximity restraints """
@@ -59,7 +58,7 @@ class test_proximity(IMP.test.IMPTestCase):
 
     # proximity
     def test_proximity(self):
-        """ all particles should be within a given max distance of each other """
+        """All particles should be within a given max distance of each other"""
         self.atmsel.randomize_xyz(deviation=100.0)
 
         self.restraint_sets.append(IMP.RestraintSet("proximity"))

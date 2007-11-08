@@ -2,9 +2,8 @@ import unittest
 import IMP.utils
 import IMP.test, IMP
 
-# Class to test particles
-class test_distance(IMP.test.IMPTestCase):
-    """test distance restraint and three harmonic score functions """
+class DistanceTests(IMP.test.IMPTestCase):
+    """Test distance restraint and three harmonic score functions"""
 
     def setUp(self):
         """set up distance restraints """
@@ -76,7 +75,7 @@ class test_distance(IMP.test.IMPTestCase):
 
 
     def test_distance(self):
-        """ test that distance restraints are reasonable """
+        """Test that distance restraints are reasonable"""
 
         # score should not change with deriv calcs
         accum = IMP.DerivativeAccumulator(self.imp_model.get_model_data())

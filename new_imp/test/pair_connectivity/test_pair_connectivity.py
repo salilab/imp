@@ -4,8 +4,8 @@ import IMP
 import IMP.test
 import IMP.utils
 
-class test_pair_connectivity(IMP.test.IMPTestCase):
-    """Class to test pair connectivity restraints"""
+class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
+    """Test pair connectivity restraints."""
 
     def setUp(self):
         """Build test model and optimizer"""
