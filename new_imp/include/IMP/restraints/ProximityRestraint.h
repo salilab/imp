@@ -45,12 +45,12 @@ public:
       types and the edge weights corresponding to restraint violation score
       values).
 
-      \param[in] calc_deriv If true, partial first derivatives should be
-                            calculated.
+      \param[in] accum If not NULL, use this object to accumulate partial first
+                       derivatives.
       \return score associated with this restraint for the given state of
               the model.
    */
-  virtual Float evaluate(bool calc_deriv);
+  virtual Float evaluate(DerivativeAccumulator *accum);
 
   //! Show the current restraint.
   /** \param[in] out Stream to send restraint description to.

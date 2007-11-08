@@ -26,11 +26,11 @@ public:
   virtual ~TorusRestraint();
 
   //! Calculate the score for this restraint for the current model state.
-  /** \param[in] calc_deriv If true, partial first derivatives should
-                            be calculated.
+  /** \param[in] accum If not NULL, use this object to accumulate partial first
+                       derivatives.
       \return Current score.
    */
-  virtual Float evaluate(bool calc_deriv);
+  virtual Float evaluate(DerivativeAccumulator *accum);
 
   //! Show the current restraint.
   /** \param[in] out Stream to send restraint description to.

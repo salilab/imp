@@ -79,23 +79,23 @@ void DistanceRestraint::set_up(Model& model, Particle* p1, Particle* p2,
 
 
 //! Destructor
-DistanceRestraint::~DistanceRestraint ()
+DistanceRestraint::~DistanceRestraint()
 {
 }
 
 
 //! Calculate the score for this distance restraint.
-/** \param[in] calc_deriv If true, partial first derivatives should be
-                          calculated.
+/** \param[in] accum If not NULL, use this object to accumulate partial first
+                     derivatives.
     \return Current score.
  */
-Float DistanceRestraint::evaluate(bool calc_deriv)
+Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
 {
   Float distance;
   Float delta_x, delta_y, delta_z;
   Float score;
 
-  // we need deltas for calculing the distance and the derivatives
+  // we need deltas for calculating the distance and the derivatives
   delta_x = model_data_->get_float(x1_) - model_data_->get_float(x2_);
   delta_y = model_data_->get_float(y1_) - model_data_->get_float(y2_);
   delta_z = model_data_->get_float(z1_) - model_data_->get_float(z2_);
@@ -119,7 +119,7 @@ Float DistanceRestraint::evaluate(bool calc_deriv)
 
   // if needed, calculate the partial derivatives of the scores with respect
   // to the particle attributes
-  if (calc_deriv) {
+  if (accum) {
     Float dx, dy, dz;
     Float deriv;
 
@@ -127,16 +127,16 @@ Float DistanceRestraint::evaluate(bool calc_deriv)
     score = (*score_func_)(distance, deriv);
 
     dx = delta_x / distance * deriv;
-    model_data_->add_to_deriv(x1_, dx);
-    model_data_->add_to_deriv(x2_, -dx);
+    accum->add_to_deriv(x1_, dx);
+    accum->add_to_deriv(x2_, -dx);
 
     dy = delta_y / distance * deriv;
-    model_data_->add_to_deriv(y1_, dy);
-    model_data_->add_to_deriv(y2_, -dy);
+    accum->add_to_deriv(y1_, dy);
+    accum->add_to_deriv(y2_, -dy);
 
     dz = delta_z / distance * deriv;
-    model_data_->add_to_deriv(z1_, dz);
-    model_data_->add_to_deriv(z2_, -dz);
+    accum->add_to_deriv(z1_, dz);
+    accum->add_to_deriv(z2_, -dz);
   }
 
   else {

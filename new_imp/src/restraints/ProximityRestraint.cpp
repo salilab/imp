@@ -139,12 +139,12 @@ ProximityRestraint::~ProximityRestraint()
     minimum spanning tree with nodes corresponding to particle types and the
     edge weights corresponding to restraint violation score values).
 
-    \param[in] calc_deriv If true, partial first derivatives should be
-                          calculated.
+    \param[in] accum If not NULL, use this object to accumulate partial first
+                     derivatives.
     \return score associated with this restraint for the given state of
             the model.
  */
-Float ProximityRestraint::evaluate(bool calc_deriv)
+Float ProximityRestraint::evaluate(DerivativeAccumulator *accum)
 {
   int idx;
 
@@ -202,7 +202,7 @@ Float ProximityRestraint::evaluate(bool calc_deriv)
     // idx = rsr_idx_[i];
     idx = i;
 
-    score += dist_rsrs_[idx]->evaluate(calc_deriv);
+    score += dist_rsrs_[idx]->evaluate(accum);
     IMP_LOG(VERBOSE,
            " " << i << " Applying Restraint: score: "
            << score << std::endl);

@@ -19,6 +19,7 @@ namespace IMP
 
 class Model;
 class Particle;
+class DerivativeAccumulator;
 
 
 //! Storage for all model particle data.
@@ -32,6 +33,7 @@ class IMPDLLEXPORT ModelData
   friend class Model;
   friend class Particle;
   friend class OptFloatIndexIterator;
+  friend class DerivativeAccumulator;
 
   // variables
   class FloatData
@@ -79,12 +81,6 @@ public:
   Float get_float(const FloatIndex idx) const {
     return float_data_[idx.get_index()].value_;
   }
-
-  //! Add value to derivative.
-  /** \param[in] idx Index of the particle float attribute.
-      \param[in] value Value to add to the float attribute derivative.
-   */
-  void add_to_deriv(const FloatIndex idx, const Float value);
 
   //! Get derivative of the given particle float attribute.
   /** \param[in] idx Index of the particle float attribute.
@@ -154,6 +150,12 @@ public:
 protected:
   ModelData();
   ~ModelData();
+
+  //! Add value to derivative (used by DerivativeAccumulator).
+  /** \param[in] idx Index of the particle float attribute.
+      \param[in] value Value to add to the float attribute derivative.
+   */
+  void add_to_deriv(const FloatIndex idx, const Float value);
 
   //! used by model to see if restraints need to check their particles
   bool check_particles_active(void) {

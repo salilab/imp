@@ -204,12 +204,12 @@ PairConnectivityRestraint::~PairConnectivityRestraint()
     over, the exclusion volume restraint sets should only be reset whenever
     on rare occasion the neighborhoods actually change.
 
-    \param[in] calc_deriv If true, partial first derivatives should be
-                          calculated.
+    \param[in] accum If not NULL, use this object to accumulate partial first
+                     derivatives.
     \return score associated with this restraint for the given state of
             the model.
  */
-Float PairConnectivityRestraint::evaluate(bool calc_deriv)
+Float PairConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
 {
   std::list<PairConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
@@ -245,7 +245,7 @@ Float PairConnectivityRestraint::evaluate(bool calc_deriv)
                             && !used_[rs_iter->part2_idx_])) {
       used_[rs_iter->part1_idx_] = true;
       used_[rs_iter->part2_idx_] = true;
-      score += rs_iter->rsr_->evaluate(calc_deriv);
+      score += rs_iter->rsr_->evaluate(accum);
       num_applied++;
     }
 

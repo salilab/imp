@@ -10,6 +10,7 @@
 #include "IMP/ModelData.h"
 #include "IMP/Particle.h"
 #include "IMP/log.h"
+#include "IMP/DerivativeAccumulator.h"
 #include "mystdexcept.h"
 
 namespace IMP
@@ -152,14 +153,16 @@ Float Model::evaluate(bool calc_derivs)
     states_[i]->update();
   }
 
-  // evaluate all of the active restraints to get score (and derviatives)
+  // evaluate all of the active restraints to get score (and derivatives)
   // for current state of the model
   Float score = 0.0;
+  DerivativeAccumulator accum(model_data_);
+  DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
   for (size_t i = 0; i < restraints_.size(); i++) {
     IMP_LOG(VERBOSE, "Evaluating restraint " << restraints_[i]->get_name()
                      << ":");
     if (restraints_[i]->get_is_active()) {
-      score += restraints_[i]->evaluate(calc_derivs);
+      score += restraints_[i]->evaluate(accpt);
     }
 
     IMP_LOG(VERBOSE, "Cumulative score: " << score);
