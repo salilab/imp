@@ -201,8 +201,6 @@ int MRCReaderWriter::write(const char *fn,const float *pt)
 /* Writes the MRC header to a file */
 int MRCReaderWriter::write_header(ofstream &s)
 {
-
-  
   int wordsize=4; 
   s.write((char *) &header.nx,wordsize);
   s.write((char *) &header.ny,wordsize);
@@ -308,7 +306,7 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
 {
   string empty;
   
-  nz=h.nz; 	ny=h.ny; 	nx=h.nx; // map size
+  nz=h.nz;   ny=h.ny;  nx=h.nx; // map size
   // mode
   if(h.data_type==0) // data type not initialized
     mode = 2;
@@ -318,7 +316,6 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
     mode=1;
   else if(h.data_type==4)
     mode=2;
-
 
   nxstart=h.nxstart ; nystart=h.nystart ; nzstart=h.nzstart; // number of first columns in map (default = 0)
   mx=h.mx ; my=h.my ; mz=h.mz; // Number of intervals along each dimension
@@ -335,7 +332,7 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
   for(int i=0;i<MRC_USER;i++)
     user[i]=h.user[i];
   strcpy(map,"MAP \0"); // character string 'MAP ' to identify file type
-  xorigin=h.xorigin ; yorigin=h.yorigin ; zorigin=h.zorigin;  // Origin used for transforms 
+  xorigin=h.get_xorigin() ; yorigin=h.get_yorigin() ; zorigin=h.get_zorigin();  // Origin used for transforms 
   machinestamp=h.machinestamp; // machine stamp (0x11110000 bigendian, 0x44440000 little)
   rms=h.rms; // RMS deviation of map from mean density
   nlabl=h.nlabl; // Number of labels being used
@@ -343,7 +340,8 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
   for(int i=0;i<nlabl;i++)
     strcpy(labels[i],h.comments[i]);
   // Fill empty coments with null character
-  char *c="\0";empty.resize(MRC_LABEL_SIZE,*c);
+  char *c="\0";
+  empty.resize(MRC_LABEL_SIZE,*c);
   for(int i=nlabl;i<MRC_NUM_LABELS;i++)
     strcpy(labels[i],empty.c_str());
 
@@ -376,7 +374,7 @@ int MRCHeader::ToDensityHeader(DensityHeader &h)
   for(int i=0;i<MRC_USER;i++)
     h.user[i]=user[i];
   strcpy(h.map,"MAP \0"); // character string 'MAP ' to identify file type
-  h.xorigin=xorigin ; h.yorigin=yorigin ; h.zorigin=zorigin;  // Origin used for transforms 
+  h.set_xorigin(xorigin) ; h.set_yorigin(yorigin) ; h.set_zorigin(zorigin);  // Origin used for transforms 
   h.machinestamp=machinestamp; // machine stamp (0x11110000 bigendian, 0x44440000 little)
   h.rms=rms; // RMS deviation of map from mean density
   h.nlabl=nlabl; // Number of labels being used

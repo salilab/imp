@@ -2,8 +2,7 @@
 	
 CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd){
 
-  calls_counter=0;    // Number of times the evaluation has been called. The evaluation is only performed the first time and 
-		      // when calls_counter reaches eval_interval. Otherwise the stored_cc_ value is returned
+  calls_counter=0;    // Number of times the evaluation has been called. The evaluation is only performed the first time and when calls_counter reaches eval_interval. Otherwise the stored_cc_ value is returned
   stored_cc_ = 0.0;   
 
   // Allocate memmory for the derivative terms if not done yet
@@ -19,13 +18,12 @@ CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd){
 }
 
 float CoarseCCatIntervals::evaluate(
-				     const DensityMap &data, 
+				     const DensityMap &em_map, 
 				     SampledDensityMap &model_map,
 				     const ParticlesAccessPoint &access_p,
 				     std::vector<float> &dvx,std::vector<float>&dvy,std::vector<float>&dvz,
 				     float scalefac,
 				     bool lderiv,
-				     int &ierr,		 
 				     unsigned long eval_interval ){ // the interval size before recalculating the CC score
 
 
@@ -36,7 +34,7 @@ float CoarseCCatIntervals::evaluate(
     // The base evaluate function adds the EM contiorbution to the existing derivates.
 
     stored_cc_ = CoarseCC::evaluate(
-			data,model_map,
+			em_map,model_map,
 			access_p,
 			dvx,dvy,dvz,
 			scalefac,
@@ -56,10 +54,11 @@ float CoarseCCatIntervals::evaluate(
   // to the general terms
   else {
     for(int i=0;i<access_p.get_size();i++) {
-      dvx[i] = stored_dvx_[i];
-      dvy[i] = stored_dvy_[i];
-      dvz[i] = stored_dvz_[i];
-      
+      if (lderiv) {
+	dvx[i] = stored_dvx_[i];
+	dvy[i] = stored_dvy_[i];
+	dvz[i] = stored_dvz_[i];
+      }
     }
     ++calls_counter;
   }

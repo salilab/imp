@@ -12,6 +12,7 @@ DensityMap::DensityMap(){
 
 
 
+//TODO - update the copy cons
 DensityMap::DensityMap(const DensityMap &other){
 
   header = other.header;
@@ -73,28 +74,25 @@ void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
 }
 
 
-void DensityMap::Read(const string &filename, MapReaderWriter &reader) {
-
-  Read(filename.c_str(),reader);
-}
+// void DensityMap::Read(const string &filename, MapReaderWriter &reader) {
+//   Read(filename.c_str(),reader);
+// }
 
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   //TODO: we need to decide who does the allocation ( mapreaderwriter or density)? if we keep the current implementation ( mapreaderwriter ) we need to pass a pointer to data
   if (reader.Read(filename,&data,header) != 0) {
-    // TODO: here we should throw exception
-    //    std::cerr << "ERROR: " << "unable to read map encoded in file : " << filename << std::endl;
-    //  throw std::exception();
+    std::cerr << " DensityMap::Read unable to read map encoded in file : " << filename << std::endl;
+    throw 1;
   }
-  //  stdNormalize();
-
+  calc_all_voxel2loc();
 }
 void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
   writer.Write(filename,data,header);
 }
 
-void DensityMap::Write(const string &filename, MapReaderWriter &writer) {
-  Write(filename.c_str(),writer);
-}
+// void DensityMap::Write(const string &filename, MapReaderWriter &writer) {
+//   Write(filename.c_str(),writer);
+// }
 
 
 
@@ -111,55 +109,91 @@ float DensityMap::voxel2loc(const int &index,int dim) {
   return z_loc[index];
 }
 
+
+int DensityMap::loc2voxel(float x,float y,float z) const
+{
+  if (!part_of_volume(x,y,z))
+    throw std::out_of_range("the point is not part of the grid");
+		      
+  int ivoxx=(int)floor((x-header.get_xorigin())/header.Objectpixelsize);
+  int ivoxy=(int)floor((y-header.get_yorigin())/header.Objectpixelsize);
+  int ivoxz=(int)floor((z-header.get_zorigin())/header.Objectpixelsize);
+  return ivoxz * header.nx * header.ny + ivoxy * header.nx + ivoxx;
+}
+
+bool DensityMap::part_of_volume(float x,float y,float z) const
+{
+  if( x>=header.get_xorigin() and x<=header.get_top(0) and 
+      y>=header.get_yorigin() and y<=header.get_top(1) and
+      z>=header.get_zorigin() and z<=header.get_top(2) ) {
+    return true;
+
+  }
+  else {
+    return false;
+
+  }
+}
+
+
+
+
 void DensityMap::calc_all_voxel2loc() {
 
   if (loc_calculated) 
     return;
+
   int nvox = header.nx*header.ny*header.nz;
   x_loc = new float[nvox];
   y_loc = new float[nvox];
   z_loc = new float[nvox];
-  loc_calculated = true;
 
 
 
   int ix=0,iy=0,iz=0;
 
   for (int ii=0;ii<nvox;ii++) {
-    x_loc[ii] =  ix * header.Objectpixelsize + header.xorigin;
-    y_loc[ii] =  iy * header.Objectpixelsize + header.yorigin;
-    z_loc[ii] =  iz * header.Objectpixelsize + header.zorigin;
+    x_loc[ii] =  ix * header.Objectpixelsize + header.get_xorigin();
+    y_loc[ii] =  iy * header.Objectpixelsize + header.get_yorigin();
+    z_loc[ii] =  iz * header.Objectpixelsize + header.get_zorigin();
 
     // bookkeeping
-    ix = ix +1;
+    ix++;
     if (ix == header.nx) {
       ix = 0;
-      iy = iy+1;
+      ++iy;
       if (iy == header.ny) {
         iy = 0;
-        iz = iz+1;
+        ++iz;
       }
     }
   }
+  loc_calculated = true;
 }
 
 
 
-void DensityMap::stdNormalize() {
+void DensityMap::std_normalize() {
   
   if (normalized)
     return;
-
+  
+  float max_value=-1e40, min_value=1e40;
   float inv_std = 1.0/calcRMS();
   float mean = header.dmean;
   int nvox = header.nx * header.ny * header.nz;
+
   for (int ii=0;ii<nvox;ii++) {
     data[ii] = (data[ii] - mean) * inv_std;
+    if(	data[ii]>max_value) max_value=data[ii];
+    if(	data[ii]<min_value) min_value=data[ii];
   }
   normalized = true;
   rms_calculated=true;
   header.rms=1.;
   header.dmean=0.0;
+  header.dmin=min_value;
+  header.dmax=max_value;
 }
 
 
@@ -169,20 +203,27 @@ float DensityMap::calcRMS() {
   if (rms_calculated)
     return header.rms;
 
+  float max_value=-1e40, min_value=1e40;
   int  nvox = header.nx * header.ny * header.nz;
   float meanval = .0;
   float stdval = .0;
 
   for (int ii=0;ii<nvox;ii++) {
-    meanval = meanval + data[ii];
-    stdval = stdval + powf(data[ii], 2);
+    meanval +=  data[ii];
+    stdval += data[ii]*data[ii];
+    if(	data[ii]>max_value) max_value=data[ii];
+    if(	data[ii]<min_value) min_value=data[ii];
+
   }
   
+  header.dmin=min_value;
+  header.dmax=max_value;
+
+
   meanval /=  nvox;
   header.dmean = meanval;
 
-  stdval = stdval - (powf(meanval, 2) * nvox);
-  stdval = sqrt(stdval) / nvox;
+  stdval = sqrt(stdval/nvox-meanval*meanval);
   header.rms = stdval;
 
   return stdval;
@@ -192,7 +233,7 @@ float DensityMap::calcRMS() {
 
 
   // data managment
-void DensityMap::ResetData() {
+void DensityMap::reset_data() {
   for (int i=0;i<header.nx*header.ny*header.nz;i++) {
     data[i]=0.0;
   }
@@ -200,3 +241,43 @@ void DensityMap::ResetData() {
   rms_calculated = false;
 
 }
+
+
+
+  void DensityMap::set_origin(float x,float y,float z) 
+  {
+    header.set_xorigin(x);header.set_yorigin(y);header.set_zorigin(z);
+    header.compute_xyz_top(); // We have to compute the xmin,xmax, ... values again after changing the origin
+    loc_calculated=false;
+    delete(x_loc);delete(y_loc);delete(z_loc);
+    calc_all_voxel2loc();
+  }
+
+
+
+
+bool DensityMap::same_origin  (const DensityMap &other) const{
+    
+  if( fabs(get_header()->get_xorigin()-other.get_header()->get_xorigin())<EPS and 
+      fabs(get_header()->get_yorigin()-other.get_header()->get_yorigin())<EPS and
+      fabs(get_header()->get_zorigin()-other.get_header()->get_zorigin())<EPS)
+    return true;
+  return false;
+    
+  
+}
+
+bool DensityMap::same_dimensions  (const DensityMap &other) const {
+  if(	get_header()->nx==other.get_header()->nx and 
+	get_header()->ny==other.get_header()->ny and
+	get_header()->nz==other.get_header()->nz)
+    return true;
+  return false;
+}
+
+bool DensityMap::same_voxel_size  (const DensityMap &other) const{
+  if( fabs(get_header()->Objectpixelsize-other.get_header()->Objectpixelsize)< EPS)
+    return true;
+  return false;
+}
+

@@ -1,19 +1,11 @@
 #ifndef _PARTICLESACCESSPOINT_H
 #define _PARTICLESACCESSPOINT_H
 
-/*
-  CLASS
-
-  KEYWORDS
-
-  AUTHORS
-  Keren Lasker (mailto: kerenl@salilab.org)
 
 
-  OVERVIEW TEXT
-  Handles access to particles 
+#include <iostream>
+#include <iomanip>
 
-*/
 class ParticlesAccessPoint {
 public:
   // implmenets particle iterator

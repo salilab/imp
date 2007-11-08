@@ -1,29 +1,13 @@
 #ifndef _COARSECC_H
 #define _COARSECC_H
 
-/*
-  CLASS
-
-  KEYWORDS
-
-  AUTHORS
-  Friedrich Foerster
-  Keren Lasker (mailto: kerenl@salilab.org)
-
-
-  OVERVIEW TEXT
-
-  CoarseCC is responsible for performing coarse fitting between two density objects.
-  The pixels involved are direves from the positions of N particles.
-
-*/
-
 
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
 #include "ParticlesAccessPoint.h"
 #include <vector>
-
+#include "exp.h"
+//!CoarseCC is responsible for performing coarse fitting between two density objects. The pixels involved are direves from the positions of N particles.
 class CoarseCC {
 
 public:
@@ -55,43 +39,39 @@ public:
 
 
   static void  calcDerivatives(
-			       const SampledDensityMap &model_map,
+			       SampledDensityMap &model_map,
 			       const ParticlesAccessPoint &access_p,
 			       const float &scalefac,
 			       std::vector<float> &dvx, std::vector<float>&dvy, std::vector<float>&dvz, 
 			       int &ierr
 			       );
 
-protected:
-
-/* Routine for Corr
-   correlation between em density and density of a model moddens
-   threshold can be specified that is checked in moddens to reduce
-   elements of summation
-
-   This is not the local CC function
-   INPUT
-   em_map                  em density (mean=0)
-   model_map               the model density ( mean=0)
-   voxel_data_threshold    elements < threshold in moddens are not summed
-   recalc_ccnormfac        final normalization factor for corr (output) 
 
 
-   OUTPUT
-   CCC
+  //! Correlation between em density and density of a model moddens
+  //! threshold can be specified that is checked in moddens to reduce
+  //! elements of summation
+  //!This is not the local CC function
+  /**
+     \param[in] em_map               the target map ( experimentally determined)
+     \param[in] model_map            the sampled density map of the model
+     \param[in] voxel_data_threshold voxels with value lower than threshold in model_map are not summed
+     \param[in] recalc_ccnormfac determines wheather the model_map should be normalized prior to the correlation calculation.                recalc_ccnormfac==false is faster, but potentially innacurate
+     \return the cross correlation coefficient value between two density maps
+     comments:
+     Frido:
+     I am pretty sure what causes the subtle difference:
+     the corr routine requires that the mean is subtracted from the em-density. we did not do that, yet.
+
 */
+  static float cross_correlation_coefficient (const DensityMap &em_map,
+		     DensityMap &model_map,
+		     float voxel_data_threshold, // avoid calculating correlation on voxels below the threshold.
+		     bool recalc_ccnormfac = true);
+  
 
 
-
-/*the corr routine should return 1 (it did 0.99996 for me). 
-I am pretty sure what causes the subtle difference:
-the corr routine requires that the mean is subtracted from the em-density. we did not do that, yet.
-
- */
-  static float corr (const DensityMap &em_map,
-	      DensityMap &model_map,
-	      float voxel_data_threshold, // avoid calculating correlation on voxels below the threshold.
-	      bool recalc_ccnormfac = true);
+protected:
 
 
 };

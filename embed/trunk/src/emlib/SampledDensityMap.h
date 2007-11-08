@@ -1,25 +1,14 @@
 #ifndef _SAMPLEDDENSITYMAP_H
 #define _SAMPLEDDENSITYMAP_H
 
-/*
-  CLASS
-
-  KEYWORDS
-
-  AUTHORS
-  Friedrich Foerster
-  Keren Lasker (mailto: kerenl@salilab.org)
-
-
-  OVERVIEW TEXT
-  samples a given model on a grid 
-*/
 
 #include <vector>
 #include "DensityMap.h"
 #include "DensityHeader.h"
 #include "def.h"
 #include "ParticlesAccessPoint.h"
+#include "KernelParameters.h"
+#include "exp.h"
 
 //an advantage of using const double over define is that it limits the use of pointers to effect the data:
 //#define PI 3.141592653589793238462643383
@@ -38,7 +27,6 @@ public:
   */
 
   SampledDensityMap() {
-    kernel_param_init = false;
   }
   
   /** 
@@ -46,10 +34,9 @@ public:
   */
   SampledDensityMap(const DensityHeader &header_);
 
-  /** 
-      Generatea a sampled density map from the particles.
+  //! Generatea a sampled density map from the particles.
 
-      IMPUT
+  /*      INPUT
 
       access_p : particles
       resolution   : half width the Gaussian
@@ -71,42 +58,20 @@ public:
 
 
 
-  /**Sampling beads on an EM grid
-    
-    INPUT
-    access_p        access point to the particles ( locations, radius, weight)
-    ierr            error
+  //!Sampling beads on an EM grid
+  /**  
+    /param[in]access_p        access point to the particles ( locations, radius, weight)
   */
   void resample(
-		const ParticlesAccessPoint &access_p,
-		int &ierr);
+		const ParticlesAccessPoint &access_p);
+		
 
 
-  // access functions
-  float rsig() const { return rsig_;}
-  float rsigsq() const {return rsigsq_;}
-  float inv_rsigsq() const {return inv_rsigsq_;}
-  float rnormfac() const {return rnormfac_;}
-  float rkdist() const {return rkdist_;}
-  float lim() const {return lim_;}
-  float timessig() const {return timessig_;}
-
-
-
-  void kernel_setup (
-		 const float radii,
-		 float &vsig,
-		 float &vsigsq,
-		 float &inv_sigsq,
-		 float &sig,
-		 float &kdist,
-		 float &normfac) const;
-		 
   void calc_sampling_bounding_box  (const float &x,const float &y,const float &z,
 				    const float &kdist,
 				    int &iminx,int &iminy, int &iminz,
 				    int &imaxx,int &imaxy, int &imaxz) const;
-
+  KernelParameters *get_kernel_params()  { return &kernel_params;}
 
 
 protected:
@@ -116,18 +81,11 @@ protected:
      convention: all parameters that start with r correspond to resolution.
      e.g. rsig: sigma (in Gaussian Fct.) for resolution 
   */
-  void sampling_param_init();
-
-
-
 
   void calculate_particles_bounding_box(
 					const ParticlesAccessPoint &access_p,
 					std::vector<float> &lower_bound,
 					std::vector<float> &upper_bound);
-
-
-
 
   void set_header(
 		  const std::vector<float> &lower_bound,
@@ -162,10 +120,7 @@ protected:
 
 
   //kernel handeling
-  float sq2pi3_;
-  bool kernel_param_init;
-  float rsig_, rsigsq_,inv_rsigsq_,rnormfac_,rkdist_,lim_,timessig_;
-
+  KernelParameters kernel_params;
 };
 
 
