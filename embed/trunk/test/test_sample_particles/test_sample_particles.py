@@ -47,11 +47,9 @@ class test_sample_particles(unittest.TestCase):
 		 print 'after setup'
 
 	def test_sample(self):
-	        print 'start test_sample'
-		""" test that the create map is reasonable """
+		""" test that the sampling works """
 		resolution = 2.0
 		voxel_size = 1.0
-	        print 'start test_sample 0'
 		scene = EM.SampledDensityMap(self.particles_p,
 					     resolution,voxel_size)
                 
@@ -64,10 +62,7 @@ class test_sample_particles(unittest.TestCase):
 		# the mean and std are not correct
 		self.assert_(scene.get_header().dmean == 0.0, "unexpected mean for the map")
 		self.assert_(scene.get_header().rms == 1.0, "unexpected rms for the map")
-		print 'after test_sample'   
 
 if __name__ == '__main__':
-    print 'start test_sample_particels'
     unittest.main()
-    print 'end test_sample_particels'
 		 

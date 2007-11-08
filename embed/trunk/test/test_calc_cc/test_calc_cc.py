@@ -40,10 +40,7 @@ class test_sample_particles(unittest.TestCase):
 	"""test particles sampling  """
 
 	def setUp(self):
-	        print 'test_calc_cc'
-		in_filename = os.path.abspath("calc_cc/in.em")
-		out_filename = os.path.abspath("calc_cc/out.em")
-		sampled_filename = os.path.abspath("calc_cc/sampled.mrc")
+		in_filename = os.path.abspath("data/three_particles_in.em")
 
 		self.scene = EM.DensityMap()
 		mrw = EM.MRCReaderWriter()
@@ -52,7 +49,7 @@ class test_sample_particles(unittest.TestCase):
 
 		self.scene.get_header_writable().resolution = 2.0
 		self.scene.std_normalize()
-		self.scene.Write(out_filename,erw)
+
 		
 		self.particles = particles_provider()
 		self.particles.Init()
@@ -61,7 +58,6 @@ class test_sample_particles(unittest.TestCase):
 			self.particles,
 			2.0,1.0
 			)
-		self.particles_sampling.Write(sampled_filename,mrw)		
 
 		
 	def test_sample(self):
