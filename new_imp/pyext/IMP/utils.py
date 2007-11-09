@@ -10,62 +10,67 @@ class XYZParticle(IMP.Particle):
         """Initialize particle with IMP model it belongs to and its xyz
            coordinates"""
         IMP.Particle.__init__(self)
-        model.add_particle(self);
+        model.add_particle(self)
+        # Map xyz strings to FloatKeys only once for all XYZParticles
+        if not hasattr(self, '_xkey'):
+            XYZParticle._xkey = IMP.FloatKey("x")
+            XYZParticle._ykey = IMP.FloatKey("y")
+            XYZParticle._zkey = IMP.FloatKey("z")
         self.model_data = self.get_model().get_model_data()
         if x is not None:
-            self.add_attribute(IMP.FloatKey("x"), x, True)
+            self.add_attribute(self._xkey, x, True)
         if y is not None:
-            self.add_attribute(IMP.FloatKey("y"), y, True)
+            self.add_attribute(self._ykey, y, True)
         if z is not None:
-            self.add_attribute(IMP.FloatKey("z"), z, True)
+            self.add_attribute(self._zkey, z, True)
 
     def x(self):
         """Get x position of particle"""
-        return self.get_value(IMP.FloatKey("x"))
+        return self.get_value(self._xkey)
 
     def y(self):
         """Get y position of particle"""
-        return self.get_value(IMP.FloatKey("y"))
+        return self.get_value(self._ykey)
 
     def z(self):
         """Get z position of particle"""
-        return self.get_value(IMP.FloatKey("z"))
+        return self.get_value(self._zkey)
 
     def set_x(self, value):
         """Set x position of particle"""
-        self.set_value(IMP.FloatKey("x"), value)
+        self.set_value(self._xkey, value)
 
     def set_y(self, value):
         """Set y position of particle"""
-        self.set_value(IMP.FloatKey("y"), value)
+        self.set_value(self._ykey, value)
 
     def set_z(self, value):
         """Set z position of particle"""
-        self.set_value(IMP.FloatKey("z"), value)
+        self.set_value(self._zkey, value)
 
     def dx(self):
         """Get partial derivative of score with respect to particle's x position"""
-        return self.get_derivative(IMP.FloatKey("x"))
+        return self.get_derivative(self._xkey)
 
     def dy(self):
         """Get partial derivative of score with respect to particle's y position"""
-        return self.get_derivative(IMP.FloatKey("y"))
+        return self.get_derivative(self._ykey)
 
     def dz(self):
         """Get partial derivative of score with respect to particle's z position"""
-        return self.get_derivative(IMP.FloatKey("z"))
+        return self.get_derivative(self._zkey)
 
     def add_to_dx(self, value, da):
         """Add to partial derivative of score with respect to particle's x position"""
-        self.add_to_derivative(IMP.FloatKey("x"), value, da)
+        self.add_to_derivative(self._xkey, value, da)
 
     def add_to_dy(self, value, da):
         """Add to partial derivative of score with respect to particle's y position"""
-        self.add_to_derivative(IMP.FloatKey("y"), value, da)
+        self.add_to_derivative(self._ykey, value, da)
 
     def add_to_dz(self, value, da):
         """Add to partial derivative of score with respect to particle's z position"""
-        self.add_to_derivative(IMP.FloatKey("z"), value, da)
+        self.add_to_derivative(self._zkey, value, da)
 
 
 def set_restraint_set_is_active(model, restraint_set_name, is_active):
