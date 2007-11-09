@@ -3,6 +3,7 @@
                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
   <!ENTITY IMP "<application>IMP</application>">
   <!ENTITY MODELLER "<application>MODELLER</application>">
+  <!ENTITY doxygen "doxygen/">
   <!ENTITY usage SYSTEM "usage.xml">
   <!ENTITY notes SYSTEM "notes.xml">
 ]>
