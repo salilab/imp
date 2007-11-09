@@ -49,13 +49,7 @@ continues until the max_steps are taken or the score threshold is reached.
 <sect2 id="optinterface">
 <title>Interface</title>
 
-<informalexample><programlisting>
-public:
-  Optimizer();
-  virtual ~Optimizer();
-	
-  virtual Float optimize(Model&amp; model, int max_steps, Float threshold=0.0) = 0;
-</programlisting></informalexample>
+<para>See the <ulink url="&doxygen;classIMP_1_1Optimizer.html"><classname>IMP::Optimizer</classname> class reference</ulink>.</para>
 
 </sect2>
 
@@ -94,25 +88,7 @@ that it contains.</para>
 <sect2 id="modelinterface">
 <title>Interface</title>
 
-<informalexample><programlisting>
-public:
-  Model();
-  ~Model();
-  ModelData* get_model_data(void);
-	
-  // particles
-  void add_particle(Particle* particle);
-  Particle* particle(size_t idx);
-
-  // restraints
-  void add_restraint_set(RestraintSet* restraint_set);
-  RestraintSet* restraint_set(const std::string name);
-
-  // for each restraint_set, call evaluate
-  Float evaluate(bool calc_derivs);
-
-  void show (std::ostream&amp; out = std::cout);
-</programlisting></informalexample>
+<para>See the <ulink url="&doxygen;classIMP_1_1Model.html"><classname>IMP::Model</classname> class reference</ulink>.</para>
 </sect2>
 
 </sect1>
@@ -125,31 +101,7 @@ associated values.</para>
 
 <sect2 id="particleinterface">
 <title>Interface</title>
-<informalexample><programlisting>
-public:
-  Particle();
-  ~Particle();
-  void set_model_data(ModelData* model_data);
-
-  // float attributes
-  bool add_float(const std::string name, const Float value = 0.0, const bool optimize = false);
-  FloatIndex float_index(const std::string name);
-
-  // int attributes
-  bool add_int(const std::string name, const Int value);
-  IntIndex int_index(const std::string name);
-
-  // string attributes
-  bool add_string(const std::string name, const String value);
-  StringIndex string_index(const std::string name);
-	
-  // status
-  void set_is_active(bool is_active);
-  bool is_active(void);
-	
-  void show(std::ostream&amp; out = std::cout);
-</programlisting></informalexample>
-
+<para>See the <ulink url="&doxygen;classIMP_1_1Particle.html"><classname>IMP::Particle</classname> class reference</ulink>.</para>
 </sect2>
 
 <sect2 id="particleissues">
@@ -198,33 +150,7 @@ restraints.</para>
 
 <sect2 id="rsrsetinterface">
 <title>Interface</title>
-
-<informalexample><programlisting>
-public:
-  RestraintSet(std::string name = std::string("no_name"));
-  ~RestraintSet();
-  void set_model_data(ModelData* model_data);
-	
-  std::string name(void) {return name_;}
-  void set_name(std::string name) {name_ = name;}
-
-  // return the score for this restraint or set of restraints
-  // ... given the current state of the model
-  Float evaluate(bool calc_deriv);
-	
-  void add_restraint(Restraint *restraint);
-  void add_restraint_set(RestraintSet *restraint_set);
-  // void add_filter(Filter *filter);
-	
-  // status
-  void set_is_active(const bool is_active);
-  bool is_active(void);
-
-  // called when at least one particle has been inactivated
-  void check_particles_active(void);
-
-  void show(std::ostream&amp; out = std::cout);
-</programlisting></informalexample>
+<para>See the <ulink url="&doxygen;classIMP_1_1RestraintSet.html"><classname>IMP::RestraintSet</classname> class reference</ulink>.</para>
 </sect2>
 
 <sect2 id="rsrsetissues">
@@ -266,25 +192,7 @@ provide a gradient in a direction that will reduce the current score.</para>
 
 <sect2 id="restraintinterface">
 <title>Interface</title>
-<informalexample><programlisting>
-public:
-  Restraint();
-  virtual ~Restraint();
-  void set_model_data(ModelData* model_data);
-
-  // return the score for this restraint or set of restraints
-  // ... given the current state of the model
-  virtual Float evaluate(bool calc_deriv) = 0;
-
-  // status
-  void set_is_active(const bool active);
-  bool is_active(void);
-
-  // called when at least one particle has been inactivated
-  virtual void check_particles_active(void);
-
-  virtual void show(std::ostream&amp; out = std::cout);
-</programlisting></informalexample>
+<para>See the <ulink url="&doxygen;classIMP_1_1Restraint.html"><classname>IMP::Restraint</classname> class reference</ulink>.</para>
 </sect2>
 
 
@@ -335,51 +243,7 @@ would have a set of statistics that can be reached in Model with the name "X".
 
 <sect2 id="modeldatainterface">
 <title>Interface</title>
-
-<informalexample><programlisting>
-public:
-  // variables
-  class FloatData {
-  public:
-    Float value_;
-    Float deriv_;
-    int stats_index_;
-    bool is_optimized_;
-  };
-
-  // variable statistics
-  // intended for keeping track of change sizes during optimization
-  // ... for efficiency issues (e.g. updates of neighborhoods)
-  class Statistics {
-  public:
-    Float min_;
-    Float max_;
-    Float max_delta_;
-    Float min_delta_;
-  };
-
-  // particle float attributes (assumed differentiable variables)
-  FloatIndex add_float(const Float value, const std::string name="none");
-  void set_float(const FloatIndex idx, const Float value);
-  Float get_float(const FloatIndex idx);
-
-  void add_to_deriv(const FloatIndex idx, const Float value);
-  Float get_deriv(const FloatIndex idx);
-  bool is_optimized(const FloatIndex idx);
-  void set_is_optimized(const FloatIndex idx, bool is_optimized);
-
-  void zero_derivatives(void);
-
-  // particle int attributes
-  IntIndex add_int(const Int value);
-  void set_int(const IntIndex idx, const Int value);
-  Int get_int(const IntIndex idx);
-
-  // particle string attributes
-  StringIndex add_string(const String value);
-  void set_string(const StringIndex idx, const String value);
-  String get_string(const StringIndex idx);
-</programlisting></informalexample>
+<para>See the <ulink url="&doxygen;classIMP_1_1ModelData.html"><classname>IMP::ModelData</classname> class reference</ulink>.</para>
 </sect2>
 
 <sect2 id="modeldataissues">
@@ -403,48 +267,6 @@ of one dimensional arrays for each variable type but allow particles to have
 very different attributes without lots of unused memory locations.</para>
 
 </sect2>
-</sect1>
-
-<sect1 id="modelloader">
-<title>ModelLoader</title>
-
-<para>The model loader loads the model from a file.</para>
-
-<sect2 id="modelloaderinterface">
-<title>Interface</title>
-
-<informalexample><programlisting>
-public:
-  ModelLoader();
-  ~ModelLoader();
-
-  // Model
-  bool load_model(Model&amp; model, const std::string&amp; fname);
-  void load_particle(Particle&amp; particle, std::istream&amp; in);
-  void load_restraint_set(Model&amp; model, RestraintSet&amp; restraint_set, std::istream&amp; in);
-  void load_distance_restraints(Model&amp; model, RestraintSet&amp; restraint_set, std::istream&amp; in);
-  score_func* get_score_func(const std::string score_func_name);
-</programlisting></informalexample>
-</sect2>
-
-<sect2 id="modelloaderissues">
-<title>Issues</title>
-<para>The loader will probably end up not being used, since it easier to
-write your own in Python or use the Python XML loader.</para>
-</sect2>
-
-<sect2 id="modelloaderhistory">
-<title>Historical notes</title>
-
-<para>Each component of the model was previously responsible for loading
-itself from a text file. This has some advantages in that it extending
-the system can be contained within a single Restraint class definition.
-However, the current mode assumes that instantiation of components is more
-likely to come through the Python interface than through reading of a single
-text file. In that case, the Model Loader will be used mostly internally
-for testing.</para>
-</sect2>
-
 </sect1>
 
 </chapter>
