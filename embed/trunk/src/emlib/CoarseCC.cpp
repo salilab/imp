@@ -97,10 +97,6 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     float *xloc = model_map.get_x_loc();	
     float *yloc = model_map.get_y_loc();	
     float *zloc = model_map.get_z_loc();
-    float *em_xloc = em_map.get_x_loc();	
-    float *em_yloc = em_map.get_y_loc();	
-    float *em_zloc = em_map.get_z_loc();
-
     model_map.get_header_writable()->compute_xyz_top();
 
     int j; // Index for em_data

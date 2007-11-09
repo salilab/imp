@@ -101,8 +101,8 @@ def MyEnvironment(options=None, *args, **kw):
         pass
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
-#        env.Append(CCFLAGS="-Wall -Werror -g -O3")
-        env.Append(CCFLAGS="-Wall  -g -O3")
+        env.Append(CCFLAGS="-Wall -Werror -g -O3")
+#        env.Append(CCFLAGS="-Wall  -g -O3")
 	print "-Wall -Werror -g -O3"
 
     sys = platform.system()
