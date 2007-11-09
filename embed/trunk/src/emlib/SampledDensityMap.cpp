@@ -163,12 +163,6 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
 }
 
 
-
-
-
-
-
-
  void SampledDensityMap::calc_sampling_bounding_box(const float &x,const float &y,const float &z,
 		       const float &kdist,
 		       int &iminx,int &iminy, int &iminz,

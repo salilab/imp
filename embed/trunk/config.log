@@ -11,7 +11,7 @@ scons: Configure: The original builder output was:
   |
 scons: Configure: ".sconf_temp/conftest_0.o" is up to date.
 scons: Configure: The original builder output was:
-  |gcc -o .sconf_temp/conftest_0.o -c -Wall -g -O3 .sconf_temp/conftest_0.c
+  |gcc -o .sconf_temp/conftest_0.o -c -Wall -Werror -g -O3 .sconf_temp/conftest_0.c
   |
 scons: Configure: ".sconf_temp/conftest_0" is up to date.
 scons: Configure: The original builder output was:
