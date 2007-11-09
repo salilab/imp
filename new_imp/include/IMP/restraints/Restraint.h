@@ -37,7 +37,7 @@ public:
                        derivatives.
       \return Current score.
    */
-  virtual Float evaluate(DerivativeAccumulator *accum) {return 0;}
+  virtual Float evaluate(DerivativeAccumulator *accum) = 0;
 
   //! Set whether the restraint is active i.e. if it should be evaluated.
   /** \param[in] is_active If true, the restraint is active.
@@ -60,13 +60,9 @@ public:
    */
   virtual void show(std::ostream& out) const;
 
-  virtual std::string version(void) const {
-    return std::string("unknown");
-  }
+  virtual std::string version(void) const = 0;
 
-  virtual std::string last_modified_by(void) const {
-    return std::string("unknown");
-  }
+  virtual std::string last_modified_by(void) const = 0;
 
   //! Get the name of the restraint
   const std::string& get_name() const {

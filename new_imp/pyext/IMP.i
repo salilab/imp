@@ -10,7 +10,12 @@
 #define IMP_OUTPUT_OPERATOR_1(f)
 #define IMP_OUTPUT_OPERATOR(f)
 #define IMP_HIDE(f)
-#define IMP_RESTRAINT(a,b)
+#define IMP_RESTRAINT(a,b) \
+  virtual Float evaluate(DerivativeAccumulator *accum);\
+  virtual void show(std::ostream &out) const;\
+  virtual std::string version() const {return std::string(version_string);}\
+  virtual std::string last_modified_by() const {return std::string(lmb_string);}
+
 
 %include "std_vector.i"
 %include "std_map.i"
