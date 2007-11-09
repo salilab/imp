@@ -34,25 +34,23 @@ namespace IMP
                          each particle.
     \param[in] score_func_params Scoring function parameters.
  */
-ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
+ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model* model,
     std::vector<int>& particle1_indexes, std::vector<int>& particle2_indexes,
     FloatKey attr_name, BasicScoreFuncParams* score_func_params)
 {
   Particle* p1;
 
-  model_data_ = model.get_model_data();
-
   num_particles1_ = particle1_indexes.size();
   num_particles2_ = particle2_indexes.size();
   num_particles_ = num_particles1_ + num_particles2_;
   for (int i = 0; i < num_particles1_; i++) {
-    p1 = model.get_particle(particle1_indexes[i]);
-    particles_.push_back(p1);
+    p1 = model->get_particle(particle1_indexes[i]);
+    add_particle(p1);
   }
 
   for (int i = 0; i < num_particles2_; i++) {
-    p1 = model.get_particle(particle2_indexes[i]);
-    particles_.push_back(p1);
+    p1 = model->get_particle(particle2_indexes[i]);
+    add_particle(p1);
   }
 
   num_restraints_ = num_particles1_ * num_particles2_;
@@ -68,17 +66,17 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
     for (int j = num_particles1_; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
       Float attri, attrj;
-      attri = model_data_->get_value(particles_[i]->get_attribute(attr_name));
-      attrj = model_data_->get_value(particles_[j]->get_attribute(attr_name));
+      attri = get_particle(i)->get_value(attr_name);
+      attrj = get_particle(j)->get_value(attr_name);
       actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);
 
       // create the restraint
       dist_rsrs_.push_back(new DistanceRestraint(model,
-                                            particles_[i],
-                                            particles_[j],
-                                            score_func_params));
+                                                 get_particle(i),
+                                                 get_particle(j),
+                                                 score_func_params));
     }
   }
 }
@@ -95,18 +93,16 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
                          each particle.
     \param[in] score_func_params Scoring function parameters.
  */
-ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
+ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model* model,
     std::vector<int>& particle_indexes, FloatKey attr_name,
     BasicScoreFuncParams* score_func_params)
 {
   Particle* p1;
 
-  model_data_ = model.get_model_data();
-
   num_particles_ = particle_indexes.size();
   for (int i = 0; i < num_particles_; i++) {
-    p1 = model.get_particle(particle_indexes[i]);
-    particles_.push_back(p1);
+    p1 = model->get_particle(particle_indexes[i]);
+    add_particle(p1);
   }
 
   num_restraints_ = num_particles_ * (num_particles_ - 1) / 2;
@@ -123,16 +119,16 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
     for (int j = i+1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
       Float attri, attrj;
-      attri = model_data_->get_value(particles_[i]->get_attribute(attr_name));
-      attrj = model_data_->get_value(particles_[j]->get_attribute(attr_name));
+      attri = get_particle(i)->get_value(attr_name);
+      attrj = get_particle(j)->get_value(attr_name);
       actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);
 
       // create the restraint
       dist_rsrs_.push_back(new DistanceRestraint(model,
-                                            particles_[i],
-                                            particles_[j],
+                                                 get_particle(i),
+                                                 get_particle(j),
                                             score_func_params));
       idx++;
     }

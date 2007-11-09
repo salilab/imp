@@ -16,6 +16,8 @@
 #include "../ScoreFunc.h"
 #include "../DerivativeAccumulator.h"
 #include "../boost/noncopyable.h"
+#include "../utility.h"
+#include "../log.h"
 
 namespace IMP
 {
@@ -25,12 +27,6 @@ class Model;
 //! Abstract class for representing restraints
 class IMPDLLEXPORT Restraint : public boost::noncopyable
 {
-  friend class Model;
-
-  //! Give accesss to model particle data.
-  /** \param[in] model_data All particle data in the model.
-   */
-  void set_model_data(ModelData* model_data);
 
 public:
   Restraint(std::string name=std::string());
@@ -41,7 +37,7 @@ public:
                        derivatives.
       \return Current score.
    */
-  virtual Float evaluate(DerivativeAccumulator *accum) = 0;
+  virtual Float evaluate(DerivativeAccumulator *accum) {return 0;}
 
   //! Set whether the restraint is active i.e. if it should be evaluated.
   /** \param[in] is_active If true, the restraint is active.
@@ -62,13 +58,14 @@ public:
   //! Show the current restraint.
   /** \param[in] out Stream to send restraint description to.
    */
-  virtual void show(std::ostream& out = std::cout) const;
+  virtual void show(std::ostream& out) const;
 
   virtual std::string version(void) const {
-    return "unknown";
+    return std::string("unknown");
   }
+
   virtual std::string last_modified_by(void) const {
-    return "unknown";
+    return std::string("unknown");
   }
 
   //! Get the name of the restraint
@@ -81,9 +78,35 @@ public:
     name_=name;
   }
 
-protected:
+  Particle *get_particle(unsigned int i) const;
+
+  int add_particle(Particle *p) {
+    particles_.push_back(p);
+    return particles_.size()-1;
+  }
+
+  //! The model the restraint is part of.
+  /** \param[in] model The model.
+   */
+  void set_model(Model* model){
+    model_=model;
+  }
+
+
+
+  //! Return the model containing this restraint
+  Model *get_model() const {
+    return model_;
+  }
+
+  //! Return the number of particles this restraint knows about
+  unsigned int number_of_particles() const {
+    return particles_.size();
+  }
+
+private:
   //! all of the particle data
-  ModelData* model_data_;
+  Model* model_;
 
   /** restraint is active if active_ AND particles_active_
       true if restraint has not been deactivated
@@ -94,20 +117,22 @@ protected:
   //! true if all particles that restraint uses are active
   bool are_particles_active_;
 
-  //! shouldn't be necessary, but keep around for debugging
   std::vector<Particle*> particles_;
 
   std::string name_;
 };
 
+IMP_OUTPUT_OPERATOR(Restraint);
 
 
-inline std::ostream &operator<<(std::ostream &out, const Restraint &s)
-{
-  s.show(out);
-  return out;
-}
-
+inline Particle *Restraint::get_particle(unsigned int i) const {
+    IMP_check(i < particles_.size(),
+              "There are only " << particles_.size()
+              << " but particle " << i << " was requested in restraint "
+              << *this,
+              IndexException("Not enough particles"));
+    return particles_[i];
+  }
 
 } // namespace IMP
 

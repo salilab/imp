@@ -53,10 +53,11 @@ ParticleIndex Model::add_particle(Particle* particle)
 
   // add the particle to the model list of particles
   particles_.push_back(particle);
-  particle->set_model(this);
+  ParticleIndex pi(particles_.size() - 1);
+  particle->set_model(this, pi);
 
   // return the particle index
-  return particles_.size() - 1; 
+  return pi; 
 }
 
 
@@ -81,9 +82,10 @@ Particle* Model::get_particle(ParticleIndex idx) const
  */
 RestraintIndex Model::add_restraint(Restraint* restraint_set)
 {
-  restraint_set->set_model_data(model_data_);
   restraints_.push_back(restraint_set);
-  return restraints_.size()-1;
+  RestraintIndex ri(restraints_.size()-1);
+  restraint_set->set_model(this);
+  return ri;
 }
 
 
@@ -156,7 +158,7 @@ Float Model::evaluate(bool calc_derivs)
   // evaluate all of the active restraints to get score (and derivatives)
   // for current state of the model
   Float score = 0.0;
-  DerivativeAccumulator accum(model_data_);
+  DerivativeAccumulator accum;
   DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
   for (size_t i = 0; i < restraints_.size(); i++) {
     IMP_LOG(VERBOSE, "Evaluating restraint " << restraints_[i]->get_name()
@@ -217,6 +219,8 @@ void Model::save_state(void)
 
   std::ofstream fout;
 
+  FloatKey x("x"), y("y"), z("z");
+
   fout.open(trajectory_path_.c_str(), std::ios_base::app);
   if (!fout.is_open()) {
     IMP_ERROR("Unable to open trajectory file: " 
@@ -230,14 +234,11 @@ void Model::save_state(void)
     // for each particle, output its current state
     FloatIndex fi;
     for (size_t i = 0; i < particles_.size(); i++) {
-      fi = particles_[i]->get_attribute(FloatKey("x"));
-      fout << model_data_->get_value(fi) << " ";
+      fout << particles_[i]->get_value(x) << " ";
 
-      fi = particles_[i]->get_attribute(FloatKey("y"));
-      fout << model_data_->get_value(fi) << " ";
+      fout <<  particles_[i]->get_value(y) << " ";
 
-      fi = particles_[i]->get_attribute(FloatKey("z"));
-      fout << model_data_->get_value(fi) << std::endl;
+      fout << particles_[i]->get_value(z) << " ";
     }
     if (!fout) {
       IMP_ERROR("Error writing to trajectory file. Trajectory is off. ");

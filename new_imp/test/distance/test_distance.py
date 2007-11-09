@@ -79,7 +79,7 @@ class DistanceTests(IMP.test.IMPTestCase):
         """Test that distance restraints are reasonable"""
 
         # score should not change with deriv calcs
-        accum = IMP.DerivativeAccumulator(self.imp_model.get_model_data())
+        accum = IMP.DerivativeAccumulator()
         for rsr in self.rsrs:
             self.assertAlmostEqual(rsr.evaluate(None), rsr.evaluate(accum),
                                    places=5)

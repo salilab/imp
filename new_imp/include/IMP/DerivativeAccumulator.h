@@ -20,22 +20,20 @@ namespace IMP
 class IMPDLLEXPORT DerivativeAccumulator
 {
 public:
-  DerivativeAccumulator(ModelData *model_data, Float weight=1.0)
-      : model_data_(model_data), weight_(weight) {}
+  DerivativeAccumulator(Float weight=1.0)
+      : weight_(weight) {}
 
   DerivativeAccumulator(const DerivativeAccumulator &copy, Float weight=1.0)
-      : model_data_(copy.model_data_), weight_(copy.weight_ * weight) {}
+      : weight_(copy.weight_ * weight) {}
 
-  //! Add value to derivative.
-  /** \param[in] idx Index of the particle float attribute.
-      \param[in] value Value to add to the float attribute derivative.
-  */
-  void add_to_deriv(const FloatIndex idx, const Float value) {
-    model_data_->add_to_deriv(idx, value * weight_);
+  //! Scale a value appropriately.
+  /** \param[in] value Value to add to the float attribute derivative.
+   */
+  Float operator()(const Float value) const {
+    return value * weight_;
   }
 
 protected:
-  ModelData *model_data_;
   Float weight_;
 };
 

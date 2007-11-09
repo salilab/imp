@@ -24,53 +24,34 @@ namespace IMP
 /** Given a list of particles, this restraint calculates the distance
     restraints between all pairs of particles, and then applies the
     one restraint with the greatest score.
+
+    Calculate the distance restraints for the given particles. Use the
+    smallest restraints that will connect one particle of each type together
+    (i.e. a minimum spanning tree with nodes corresponding to particle
+    types and the edge weights corresponding to restraint violation score
+    values).
  */
 class IMPDLLEXPORT ProximityRestraint : public Restraint
 {
 public:
-  ProximityRestraint(Model& model, std::vector<int>& particle_indexes,
+  ProximityRestraint(Model* model, std::vector<int>& particle_indexes,
                      const Float distance,
                      BasicScoreFuncParams* score_func_params);
 
-  ProximityRestraint(Model& model, std::vector<int>& particle_indexes,
+  ProximityRestraint(Model* model, std::vector<int>& particle_indexes,
                      FloatKey attr_name, const Float distance,
                      BasicScoreFuncParams* score_func_params);
 
   virtual ~ProximityRestraint();
 
-  //! Evaluate the score for the model.
-  /** Calculate the distance restraints for the given particles. Use the
-      smallest restraints that will connect one particle of each type together
-      (i.e. a minimum spanning tree with nodes corresponding to particle
-      types and the edge weights corresponding to restraint violation score
-      values).
-
-      \param[in] accum If not NULL, use this object to accumulate partial first
-                       derivatives.
-      \return score associated with this restraint for the given state of
-              the model.
-   */
-  virtual Float evaluate(DerivativeAccumulator *accum);
-
-  //! Show the current restraint.
-  /** \param[in] out Stream to send restraint description to.
-   */
-  virtual void show(std::ostream& out = std::cout) const;
-
-  virtual std::string version(void) const {
-    return "0.5.0";
-  }
-  virtual std::string last_modified_by(void) const {
-    return "Bret Peterson";
-  }
-
+  IMP_RESTRAINT("0.5", "Daniel Russel")
 protected:
   //! Internal set up for the constructors.
   /** \param[in] model Pointer to the model.
       \param[in] particle_indexes Vector of indexes of particles in the
                  restraint.
    */
-  void set_up(Model& model, std::vector<int>& particle_indexes);
+  void set_up(Model* model, std::vector<int>& particle_indexes);
 
   //! number of particles in the restraint
   int num_particles_;

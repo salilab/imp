@@ -23,16 +23,22 @@ namespace IMP
 //! Connectivity restraint.
 /** Restrict max distance between at least one pair of particles of any
     two distinct types.
+
+    Calculate the distance restraints for the given particles. Use the
+    smallest restraints that will connect one particle of each type
+    together (i.e. a minimum spanning tree with nodes corresponding to
+    particle types and the edge weights corresponding to restraint
+    violation scores).
  */
 class IMPDLLEXPORT ConnectivityRestraint : public Restraint
 {
 public:
-  ConnectivityRestraint(Model& model,
+  ConnectivityRestraint(Model* model,
                         std::vector<int>& particle_indexes,
                         IntKey type,
                         BasicScoreFuncParams* score_func_params);
 
-  ConnectivityRestraint(Model& model,
+  ConnectivityRestraint(Model* model,
                         std::vector<int>& particle_indexes,
                         IntKey type,
                         FloatKey attr_name,
@@ -40,28 +46,7 @@ public:
 
   virtual ~ConnectivityRestraint();
 
-  //! Evaluate this restraint and return the score.
-  /** Calculate the distance restraints for the given particles. Use the
-      smallest restraints that will connect one particle of each type
-      together (i.e. a minimum spanning tree with nodes corresponding to
-      particle types and the edge weights corresponding to restraint
-      violation scores).
-
-      \param[in] accum If not NULL, use this object to accumulate partial first
-                       derivatives.
-      \return score associated with this restraint for the given state of
-              the model.
-   */
-  virtual Float evaluate(DerivativeAccumulator *accum);
-
-  // status
-  virtual void show (std::ostream& out = std::cout) const;
-  virtual std::string version(void) const {
-    return "0.5.0";
-  }
-  virtual std::string last_modified_by(void) const {
-    return "Bret Peterson";
-  }
+  IMP_RESTRAINT("0.5", "Daniel Russel")
 
 protected:
   // switch to using rsr_scores to allow STL sorting
@@ -93,11 +78,11 @@ protected:
       \param[in] type The attribute used to determine if particles
                       are equivalent.
    */
-  void set_up(Model& model, std::vector<int>& particle_indexes,
+  void set_up(Model* model, std::vector<int>& particle_indexes,
               IntKey type);
 
   //! variables to determine the particle type
-  std::vector<IntIndex> type_;
+  IntKey type_;
 
   //! number of particles in the restraint
   int num_particles_;

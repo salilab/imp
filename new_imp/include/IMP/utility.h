@@ -54,9 +54,19 @@
 #define IMP_OUTPUT_OPERATOR(name)                                    \
   inline std::ostream &operator<<(std::ostream &out, const name &i)     \
   {                                                                     \
-    return i.show(out);                                                 \
+    i.show(out);                                                 \
+    return out;                                                  \
   }
 
-#define IMP_HIDE(x) x
+//! Define the basic things you need for a Restraint.
+/** These are: show, evaluate, version, last_modified_by
+    \param[in] version_string The version string.
+    \param[in] lmb_string The name of the last modifier.
+ */
+#define IMP_RESTRAINT(version_string, lmb_string) \
+  virtual float evaluate(DerivativeAccumulator *accum);\
+  virtual void show(std::ostream &out) const;\
+  virtual std::string version() const {return std::string(version_string);}\
+  virtual std::string last_modified_by() const {return std::string(lmb_string);}
 
 #endif  /* __IMP_UTILITY_H */

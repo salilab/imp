@@ -12,11 +12,12 @@
 
 #include "IMP_config.h"
 #include "Base_Types.h"
-#include "ModelData.h"
+#include "Model.h"
 #include "restraints/Restraint.h"
 #include "boost/noncopyable.h"
 #include "utility.h"
 #include "AttributeKey.h"
+#include "DerivativeAccumulator.h"
 
 namespace IMP
 {
@@ -45,12 +46,18 @@ public:
 
 
   Particle();
-  ~Particle();
+
+  //! The index of this particle in the model
+  ParticleIndex get_index() const {
+    return pi_;
+  }
 
   //! Get pointer to model particle data.
   /** \return all particle data in the model.
    */
-  Model* get_model(void) const;
+  Model* get_model(void) const {
+    return model_;
+  }
 
   //! Add a Float attribute to this particle.
   /** \param[in] name Name of the attribute being added.
@@ -67,12 +74,34 @@ public:
    */
   bool has_attribute(FloatKey name) const;
 
-  //! Get the specified Float attribute for this particle.
+  //! Get the specified Float for this particle.
   /** \param[in] name Name of the attribute being retrieved.
       \exception std::out_of_range attribute does not exist.
-      \return index to the attribute.
+      \return the value of this attribute.
    */
-  FloatIndex get_attribute(FloatKey name) const;
+  Float get_value(FloatKey name) const;
+
+  //! Set the specified Float for this particle.
+  /** \param[in] name Name of the attribute being set.
+      \param[in] value Value of the attribute being set.
+      \exception std::out_of_range attribute does not exist.
+   */
+  void set_value(FloatKey name, Float value);
+
+  //! Add to the derivative of a specified float.
+  /** \param[in] name Name of the attribute being modified.
+      \param[in] value Value being added.
+      \param[in] da The DerivativeAccumulator to scale the value.
+      \exception std::out_of_range attribute does not exist.
+   */
+  void add_to_derivative(FloatKey name, Float value,
+                         const DerivativeAccumulator &da);
+
+  //! Get the derivative of a specified Float.
+  /** \param[in] name Name of the attribute being modified.
+      \exception std::out_of_range attribute does not exist.
+   */
+  Float get_derivative(FloatKey name) const;
 
   //! Add an Int attribute to this particle.
   /** \param[in] name Name of the attribute being added.
@@ -86,12 +115,19 @@ public:
    */
   bool has_attribute(IntKey name) const;
 
-  //! Get the specified Int attribute for this particle.
+  //! Get the specified Int for this particle.
   /** \param[in] name Name of the attribute being retrieved.
       \exception std::out_of_range attribute does not exist.
-      \return index to the attribute.
+      \return value of the attribute.
    */
-  IntIndex get_attribute(IntKey name) const;
+  Int get_value(IntKey name) const;
+
+  //! Set the specified Int for this particle.
+  /** \param[in] name Name of the attribute being set.
+      \param[in] value Value of the attribute being set.
+      \exception std::out_of_range attribute does not exist.
+   */
+  void set_value(IntKey name, Int value);
 
   //! Add a String attribute to this particle.
   /** \param[in] name Name of the attribute being added.
@@ -105,17 +141,24 @@ public:
    */
   bool has_attribute(StringKey name) const;
 
-  //! Get the specified String attribute for this particle.
+  //! Get the specified String for this particle.
   /** \param[in] name Name of the attribute being retrieved.
       \exception std::out_of_range attribute does not exist.
-      \return index to the attribute.
+      \return value of the attribute.
    */
-  StringIndex get_attribute(StringKey  name) const;
+  String get_value(StringKey name) const;
+
+  //! Set the specified String for this particle.
+  /** \param[in] name Name of the attribute being set.
+      \param[in] value Value of the attribute being set.
+      \exception std::out_of_range attribute does not exist.
+   */
+  void set_value(StringKey name, String value);
 
   //! Set whether the particle is active.
   /** Restraints referencing the particle are only evaluated for 'active'
       particles.
-     \param[in] is_active If true, the particle is active.
+      \param[in] is_active If true, the particle is active.
    */
   void set_is_active(const bool is_active);
 
@@ -135,11 +178,21 @@ public:
 
 protected:
 
+  template <class T>
+  T get_value_t(Index<T> k) const {
+    return model_->get_model_data()->get_value(k);
+  }
+
+  template <class T>
+  void set_value_t(Index<T> k, const T&v) {
+    model_->get_model_data()->set_value(k, v);
+  }
+
   //! Set pointer to model particle data.
   /** This is called by the Model after the particle is added.
       \param[in] md Pointer to a ModelData object.
    */
-  void set_model(Model *md);
+  void set_model(Model *md, ParticleIndex pi);
 
   //! all of the particle data
   Model* model_;
@@ -153,12 +206,78 @@ protected:
   internal::AttributeTable<Int>  int_indexes_;
   //! string attributes associated with the particle
   internal::AttributeTable<String>  string_indexes_;
+
+  ParticleIndex pi_;
 };
 
 
 IMP_OUTPUT_OPERATOR(Particle)
 
 
+
+inline bool Particle::has_attribute(FloatKey name) const
+{
+  return float_indexes_.contains(name);
+}
+
+
+
+inline Float Particle::get_value(FloatKey name) const
+{
+  return get_value_t(float_indexes_.get_value(name));
+}
+
+inline Float Particle::get_derivative(FloatKey name) const
+{
+  return model_->get_model_data()->get_deriv(float_indexes_.get_value(name));
+}
+
+inline void Particle::set_value(FloatKey name, Float value)
+{
+  set_value_t(float_indexes_.get_value(name), value);
+}
+
+inline void Particle::add_to_derivative(FloatKey name, Float value,
+                                        const DerivativeAccumulator &da)
+{
+  return model_->get_model_data()->add_to_deriv(float_indexes_.get_value(name),
+         da(value));
+}
+
+inline bool Particle::has_attribute(IntKey name) const
+{
+  return int_indexes_.contains(name);
+}
+
+
+
+inline Int Particle::get_value(IntKey name) const
+{
+  return get_value_t(int_indexes_.get_value(name));
+}
+
+
+inline void Particle::set_value(IntKey name, Int value)
+{
+  return set_value_t(int_indexes_.get_value(name), value);
+}
+
+inline bool Particle::has_attribute(StringKey name) const
+{
+  return string_indexes_.contains(name);
+}
+
+
+
+inline String Particle::get_value(StringKey name) const
+{
+  return get_value_t(string_indexes_.get_value(name));
+}
+
+inline void Particle::set_value(StringKey name, String value)
+{
+  return set_value_t(string_indexes_.get_value(name), value);
+}
 
 } // namespace IMP
 

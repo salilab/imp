@@ -24,6 +24,8 @@ std::vector<AttributeKeyData> attribute_key_data;
 template <class T>
 inline void AttributeTable<T>::insert(Key k, Value v)
 {
+  IMP_assert(v != Value(),
+             "Can't add attribute with no index");
   if (map_.size() <= k.get_index()) {
     map_.resize(k.get_index()+1);
   }
@@ -31,27 +33,9 @@ inline void AttributeTable<T>::insert(Key k, Value v)
              "Trying to add attribute \"" << k.get_string()
              << "\" twice");
   map_[k.get_index()]= v;
+  IMP_assert(contains(k), "Something is broken");
 }
 
-template <class T>
-inline const typename AttributeTable<T>::Value
-    AttributeTable<T>::operator[](Key k) const
-{
-  IMP_check(k.get_index()< map_.size()
-            && map_[k.get_index()] != Value(),
-            "Attribute \"" << k.get_string()
-            << "\" not found in table.",
-            std::out_of_range(std::string("Invalid attribute \"")
-                              + k.get_string() + "\" requested"));
-  return map_[k.get_index()];
-}
-
-template <class T>
-inline bool AttributeTable<T>::contains(Key k) const
-{
-  return map_.size() < k.get_index()
-         && map_[k.get_index()] != Value();
-}
 
 template <class T>
 inline std::ostream &AttributeTable<T>::show(std::ostream &out,
@@ -77,28 +61,14 @@ Particle::Particle(): model_(NULL)
 }
 
 
-//! Destructor
-Particle::~Particle()
-{
-  IMP_LOG(VERBOSE, "delete particle");
-}
-
-
-//! Get pointer to model particle data.
-/** \return all particle data in the model.
- */
-Model* Particle::get_model(void) const
-{
-  return model_;
-}
-
 //! Set pointer to model particle data.
 /** This is called by the Model after the particle is added.
     \param[in] md Pointer to a ModelData object.
  */
-void Particle::set_model(Model *md)
+void Particle::set_model(Model *md, ParticleIndex pi)
 {
   model_=md;
+  pi_=pi;
 }
 
 
@@ -122,38 +92,15 @@ void Particle::set_is_active(const bool is_active)
     \param[in] is_optimized Whether the attribute's value should be optimizable.
  */
 void Particle::add_attribute(FloatKey name, const Float value,
-                             const bool is_optimized)
+                             bool is_optimized)
 {
-  FloatIndex fi;
-
   IMP_LOG(VERBOSE, "add_float: " << name);
   IMP_assert(model_ != NULL,
              "Particle must be added to Model before an attributes are added");
-  fi = model_->get_model_data()->add_float(value);
+  float_indexes_.insert(name, model_->get_model_data()->add_float(value));
 
-  float_indexes_.insert(name, fi);
-  model_->get_model_data()->set_is_optimized(fi, is_optimized);
-}
-
-
-//! Does particle have a Float attribute with the given name.
-/** \param[in] name Name of the attribute being checked.
-    \return true if Float attribute exists in this particle.
- */
-bool Particle::has_attribute(FloatKey name) const
-{
-  return float_indexes_.contains(name);
-}
-
-
-//! Get the specified Float attribute for this particle.
-/** \param[in] name Name of the attribute being retrieved.
-    \exception std::out_of_range attribute does not exist.
-    \return index to the attribute.
- */
-FloatIndex Particle::get_attribute(FloatKey name) const
-{
-  return float_indexes_[name];
+  model_->get_model_data()->set_is_optimized(float_indexes_.get_value(name),
+                                             is_optimized);
 }
 
 
@@ -170,27 +117,6 @@ void Particle::add_attribute(IntKey name, const Int value)
 }
 
 
-//! Does particle have an Int attribute with the given name.
-/** \param[in] name Name of the attribute being checked.
-    \return true if Int attribute exists in this particle.
- */
-bool Particle::has_attribute(IntKey name) const
-{
-  return int_indexes_.contains(name);
-}
-
-
-//! Get the specified Int attribute for this particle.
-/** \param[in] name Name of the attribute being retrieved.
-    \exception std::out_of_range attribute does not exist.
-    \return index to the attribute.
- */
-IntIndex Particle::get_attribute(IntKey name) const
-{
-  return int_indexes_[name];
-}
-
-
 //! Add a String attribute to this particle.
 /** \param[in] name Name of the attribute being added.
     \param[in] value Initial value of the attribute.
@@ -202,26 +128,6 @@ void Particle::add_attribute(StringKey name, const String value)
   string_indexes_.insert(name, model_->get_model_data()->add_string(value));
 }
 
-
-//! Does particle have a String attribute with the given name.
-/** \param[in] name Name of the attribute being checked.
-    \return true if Int attribute exists in this particle.
- */
-bool Particle::has_attribute(StringKey name) const
-{
-  return string_indexes_.contains(name);
-}
-
-
-//! Get the specified String attribute for this particle.
-/** \param[in] name Name of the attribute being retrieved.
-    \exception std::out_of_range attribute does not exist.
-    \return index to the attribute.
- */
-StringIndex Particle::get_attribute(StringKey name) const
-{
-  return string_indexes_[name];
-}
 
 
 //! Show the particle

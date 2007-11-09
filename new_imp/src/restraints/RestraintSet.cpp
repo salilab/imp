@@ -38,6 +38,7 @@ RestraintSet::~RestraintSet()
 RestraintSet::RestraintIndex RestraintSet::add_restraint(Restraint* restraint)
 {
   restraints_.push_back(restraint);
+  restraint->set_model(get_model());
   return restraints_.size()-1;
 }
 
@@ -103,11 +104,11 @@ void RestraintSet::check_particles_active(void)
  */
 void RestraintSet::show(std::ostream& out) const 
 {
-  out << "restraint set " << name_ << ":" << std::endl;
+  out << "restraint set " << get_name() << ":" << std::endl;
   for (size_t i=0; i < restraints_.size(); i++) {
     restraints_[i]->show(out);
   }
-  out << "... end restraint set " << name_ << std::endl;
+  out << "... end restraint set " << get_name() << std::endl;
 }
 
 

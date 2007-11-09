@@ -112,17 +112,17 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
         # min distances
         model_data = self.imp_model.get_model_data()
         for i in range(len(coords)):
-            iidx = self.particles[i].get_attribute(radius)
+            irad = self.particles[i].get_value(radius)
             for j in range(i+1,len(coords)):
-                jidx = self.particles[j].get_attribute(radius)
-                self.assert_(self.check_min_distance(coords[i], coords[j], model_data.get_value(iidx) + model_data.get_value(jidx) - 0.1), "min distance for any pair condition (" + str(i) + ", " + str(j) + ")")
+                jrad = self.particles[j].get_value(radius)
+                self.assert_(self.check_min_distance(coords[i], coords[j], irad + jrad - 0.1), "min distance for any pair condition (" + str(i) + ", " + str(j) + ")")
 
         # max distances
         for i in range(len(coords)):
-            iidx = self.particles[i].get_attribute(radius)
+            irad = self.particles[i].get_value(radius)
             for j in range(i+1,len(coords)):
-                jidx = self.particles[j].get_attribute(radius)
-                self.assert_(self.check_max_distance(coords[i], coords[j], max_distance - model_data.get_value(iidx) - model_data.get_value(jidx) + 0.1), "max distance for any pair condition (" + str(i) + ", " + str(j) + ")")
+                jrad = self.particles[j].get_value(radius)
+                self.assert_(self.check_max_distance(coords[i], coords[j], max_distance - irad - jrad + 0.1), "max distance for any pair condition (" + str(i) + ", " + str(j) + ")")
 
 if __name__ == '__main__':
     unittest.main()

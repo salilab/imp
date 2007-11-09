@@ -32,9 +32,9 @@ class ParticleTests(IMP.test.IMPTestCase):
     def test_bad_attributes(self):
         """Asking for non-existent attributes should cause an error"""
         p1 = self.particles[0]
-        self.assertRaises(IndexError, p1.get_attribute, IMP.FloatKey("notexist"))
-        self.assertRaises(IndexError, p1.get_attribute, IMP.IntKey("notexist"))
-        self.assertRaises(IndexError, p1.get_attribute, IMP.StringKey("notexist"))
+        self.assertRaises(IndexError, p1.get_value, IMP.FloatKey("notexist"))
+        self.assertRaises(IndexError, p1.get_value, IMP.IntKey("notexist"))
+        self.assertRaises(IndexError, p1.get_value, IMP.StringKey("notexist"))
 
 
     def test_particles(self):
@@ -45,18 +45,18 @@ class ParticleTests(IMP.test.IMPTestCase):
          # check particles 0 - 11
         for i in range(0,12):
             p1 = self.particles[i]
-            fidx = p1.get_attribute(IMP.FloatKey("radius"))
-            self.assert_(model_data.get_value(fidx) == 1.5 * i, "expecting particle "+str(i)+" radius to be "+str(1.5*i) + " not " + str(model_data.get_value(fidx)))
-            iidx = p1.get_attribute(IMP.IntKey("id"))
-            self.assert_(model_data.get_value(iidx) == i, "expecting particle "+str(i)+" id to be "+str(i) + " not " + str(model_data.get_value(iidx)))
-            sidx = p1.get_attribute(IMP.StringKey("id_str"))
-            self.assert_(model_data.get_value(sidx) == "name_"+str(i), "expecting particle "+str(i)+" id_str to be name_"+str(i) + " not " + model_data.get_value(sidx))
+            fidx = p1.get_value(IMP.FloatKey("radius"))
+            self.assert_(fidx == 1.5 * i, "expecting particle "+str(i)+" radius to be "+str(1.5*i) + " not " + str(fidx))
+            iidx = p1.get_value(IMP.IntKey("id"))
+            self.assert_(iidx == i, "expecting particle "+str(i)+" id to be "+str(i) + " not " + str(iidx))
+            sidx = p1.get_value(IMP.StringKey("id_str"))
+            self.assert_(sidx == "name_"+str(i), "expecting particle "+str(i)+" id_str to be name_"+str(i) + " not " + sidx)
 
         # test additional attributes in particle 11
         p1 = self.particles[11]
         for i in range(0,6):
-            fidx = p1.get_attribute(IMP.FloatKey("attr_" + str(i)))
-            self.assert_(model_data.get_value(fidx) == 3.5 * i, "expecting particle "+str(i)+" radius to be "+str(3.2*i) + " not " + str(model_data.get_value(fidx)))
+            fidx = p1.get_value(IMP.FloatKey("attr_" + str(i)))
+            self.assert_(fidx == 3.5 * i, "expecting particle "+str(i)+" radius to be "+str(3.2*i) + " not " + str(fidx))
 
 
 if __name__ == '__main__':

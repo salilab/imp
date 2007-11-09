@@ -23,12 +23,7 @@ public:
   RestraintSet(const std::string& name=std::string());
   ~RestraintSet();
 
-  //! Calculate the score for this restraint for the current model state.
-  /** \param[in] accum If not NULL, use this object to accumulate partial first
-                       derivatives.
-      \return Current score.
-   */
-  virtual Float evaluate(DerivativeAccumulator *accum);
+  IMP_RESTRAINT("0.5", "Daniel Russel")
 
   //! The type to use to retrieve a restraint
   typedef int RestraintIndex;
@@ -60,11 +55,6 @@ public:
   /** Check each restraint to see if it changes its active status.
    */
   virtual void check_particles_active(void);
-
-  //! Show the current restraint.
-  /** \param[in] out Stream to send restraint description to.
-   */
-  void show (std::ostream& out = std::cout) const;
 
 protected:
 
