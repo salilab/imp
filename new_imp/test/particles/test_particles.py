@@ -3,24 +3,28 @@ import IMP
 import IMP.utils
 import IMP.test
 
+xkey = IMP.FloatKey("x")
+ykey = IMP.FloatKey("y")
+zkey = IMP.FloatKey("z")
+idkey = IMP.IntKey("id")
+radkey = IMP.FloatKey("radius")
+
 class ParticleTests(IMP.test.IMPTestCase):
     """Test particles"""
 
     def setUp(self):
-        """set up Modeller with the torus restraints """
+        """Build a set of test particles"""
 
-        self.imp_model = IMP.Model()
+        self.model = IMP.Model()
         self.particles = []
-        self.restraint_sets = []
-        self.rsrs = []
 
         # create particles 0 - 11
         for i in range(0,12):
-            self.particles.append(IMP.utils.XYZParticle(self.imp_model,
+            self.particles.append(IMP.utils.XYZParticle(self.model,
                                                         i*2, i*3, i*4))
             p1 = self.particles[i]
-            p1.add_attribute(IMP.FloatKey("radius"), 1.5 * i, False)
-            p1.add_attribute(IMP.IntKey("id"), i)
+            p1.add_attribute(radkey, 1.5 * i, False)
+            p1.add_attribute(idkey, i)
             p1.add_attribute(IMP.IntKey("six"), 6)
             p1.add_attribute(IMP.StringKey("id_str"), "name_"+str(i))
             p1.add_attribute(IMP.StringKey("six"), "b:0110")
@@ -36,28 +40,49 @@ class ParticleTests(IMP.test.IMPTestCase):
         self.assertRaises(IndexError, p1.get_value, IMP.IntKey("notexist"))
         self.assertRaises(IndexError, p1.get_value, IMP.StringKey("notexist"))
 
+    def test_get_set_methods(self):
+        """Test particle get_ and set_ methods"""
+        for (i, p) in enumerate(self.particles):
+            self.assertEqual(p.get_index(), IMP.ParticleIndex(i))
+            model = p.get_model()
+        p = self.particles[0]
+        self.assertEqual(p.get_is_active(), True)
+        p.set_is_active(False)
+        self.assertEqual(p.get_is_active(), False)
+
+    def test_derivatives(self):
+        """Test get/set of derivatives"""
+        p = self.particles[0]
+        self.assertEqual(p.get_derivative(xkey), 0.0)
+        da = IMP.DerivativeAccumulator()
+        p.add_to_derivative(xkey, 10.0, da)
+        self.assertEqual(p.get_derivative(xkey), 10.0)
+        da = IMP.DerivativeAccumulator(2.0)
+        p.add_to_derivative(xkey, 10.0, da)
+        self.assertEqual(p.get_derivative(xkey), 30.0)
 
     def test_particles(self):
         """Test that particle attributes are available and correct"""
-
-        model_data = self.imp_model.get_model_data()
-
-         # check particles 0 - 11
-        for i in range(0,12):
-            p1 = self.particles[i]
-            fidx = p1.get_value(IMP.FloatKey("radius"))
-            self.assert_(fidx == 1.5 * i, "expecting particle "+str(i)+" radius to be "+str(1.5*i) + " not " + str(fidx))
-            iidx = p1.get_value(IMP.IntKey("id"))
-            self.assert_(iidx == i, "expecting particle "+str(i)+" id to be "+str(i) + " not " + str(iidx))
-            sidx = p1.get_value(IMP.StringKey("id_str"))
-            self.assert_(sidx == "name_"+str(i), "expecting particle "+str(i)+" id_str to be name_"+str(i) + " not " + sidx)
+        for (i, p) in enumerate(self.particles):
+            self.assert_(p.has_attribute(xkey))
+            # A Float "x" exists; make sure that has_attribute doesn't get
+            # confused between different types of attribute:
+            self.assert_(not p.has_attribute(IMP.IntKey("x")))
+            self.assert_(not p.has_attribute(IMP.IntKey("notexist")))
+            self.assertEqual(p.get_value(xkey), i * 2)
+            self.assertEqual(p.get_value(ykey), i * 3)
+            self.assertEqual(p.get_value(zkey), i * 4)
+            self.assertEqual(p.get_value(idkey), i)
+            self.assertEqual(p.get_value(IMP.StringKey("id_str")),
+                             "name_" + str(i))
+            self.assertEqual(p.get_value(IMP.IntKey("six")), 6)
+            self.assertEqual(p.get_value(IMP.StringKey("six")), "b:0110")
 
         # test additional attributes in particle 11
-        p1 = self.particles[11]
+        p = self.particles[11]
         for i in range(0,6):
-            fidx = p1.get_value(IMP.FloatKey("attr_" + str(i)))
-            self.assert_(fidx == 3.5 * i, "expecting particle "+str(i)+" radius to be "+str(3.2*i) + " not " + str(fidx))
-
+            val = p.get_value(IMP.FloatKey("attr_" + str(i)))
+            self.assertEqual(val, 3.5 * i)
 
 if __name__ == '__main__':
     unittest.main()
