@@ -64,7 +64,7 @@
     \param[in] lmb_string The name of the last modifier.
  */
 #define IMP_RESTRAINT(version_string, lmb_string) \
-  virtual float evaluate(DerivativeAccumulator *accum);\
+  virtual Float evaluate(DerivativeAccumulator *accum);\
   virtual void show(std::ostream &out) const;\
   virtual std::string version() const {return std::string(version_string);}\
   virtual std::string last_modified_by() const {return std::string(lmb_string);}
