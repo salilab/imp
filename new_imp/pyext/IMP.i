@@ -6,6 +6,10 @@
 /* Ignore shared object import/export stuff */
 #define IMPDLLEXPORT
 #define IMPDLLLOCAL
+#define IMP_COMPARISONS_1(f) bool operator==(const This &o) const ; bool operator<(const This &o) const; bool operator>(const This &o) const; bool operator!=(const This &o) const; bool operator<=(const This &o) const; bool operator>=(const This &o) const;
+#define IMP_OUTPUT_OPERATOR_1(f)
+#define IMP_OUTPUT_OPERATOR(f)
+#define IMP_HIDE(f)
 
 %include "std_vector.i"
 %include "std_map.i"
@@ -24,6 +28,7 @@ namespace std {
 %include "IMP/Base_Types.h"
 %include "IMP.h"
 %include "IMP/boost/noncopyable.h"
+%include "IMP/AttributeKey.h"
 %include "IMP/ScoreFunc.h"
 %include "IMP/ModelData.h"
 %include "IMP/DerivativeAccumulator.h"
@@ -51,4 +56,7 @@ namespace IMP {
   %template(ParticleIndex) Index<ParticleTag>;
   %template(RestraintIndex) Index<RestraintTag>;
   %template(StateIndex) Index<StateTag>;
+  %template(FloatKey) AttributeKey<Float>;
+  %template(IntKey) AttributeKey<Int>;
+  %template(StringKey) AttributeKey<String>;
 }

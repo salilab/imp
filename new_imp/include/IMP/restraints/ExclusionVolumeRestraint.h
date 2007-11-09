@@ -32,11 +32,11 @@ class IMPDLLEXPORT ExclusionVolumeRestraint : public Restraint
 public:
   ExclusionVolumeRestraint(Model& model, std::vector<int>& particle1_indexes,
                            std::vector<int>& particle2_indexes,
-                           const std::string attr_name,
+                           FloatKey attr_name,
                            BasicScoreFuncParams* score_func_params);
 
   ExclusionVolumeRestraint(Model& model, std::vector<int>& particle_indexes,
-                           const std::string attr_name,
+                           FloatKey attr_name,
                            BasicScoreFuncParams* score_func_params);
 
   virtual ~ExclusionVolumeRestraint();

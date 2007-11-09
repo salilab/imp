@@ -72,13 +72,13 @@ public:
   /** \param[in] idx Index of the attribute.
       \param[in] value Value the attribute should be given.
    */
-  void set_float(const FloatIndex idx, const Float value);
+  void set_value(const FloatIndex idx, const Float value);
 
   //! Get particle float attribute (inline).
   /** \param[in] idx Index of the particle float attribute.
       \return value of particle float attribute.
    */
-  Float get_float(const FloatIndex idx) const {
+  Float get_value(const FloatIndex idx) const {
     return float_data_[idx.get_index()].value_;
   }
 
@@ -115,13 +115,13 @@ public:
   /** \param[in] idx Index of the attribute.
       \param[in] value Value the attribute should be given.
    */
-  void set_int(const IntIndex idx, const Int value);
+  void set_value(const IntIndex idx, const Int value);
 
   //! Get particle int attribute (inline).
   /** \param[in] idx Index of the particle int attribute.
       \return value of particle float attribute.
    */
-  Int get_int(const IntIndex idx) const {
+  Int get_value(const IntIndex idx) const {
     return int_data_[idx.get_index()];
   }
 
@@ -137,13 +137,13 @@ public:
   /** \param[in] idx Index of the attribute.
       \param[in] value Value the attribute should be given.
    */
-  void set_string(const StringIndex idx, const String value);
+  void set_value(const StringIndex idx, const String value);
 
   //! Get particle string attribute (inline).
   /** \param[in] idx Index of the particle string attribute.
       \return value of particle string attribute.
    */
-  String get_string(const StringIndex idx) const {
+  String get_value(const StringIndex idx) const {
     return string_data_[idx.get_index()];
   }
 

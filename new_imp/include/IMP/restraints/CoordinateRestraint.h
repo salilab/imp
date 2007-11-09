@@ -22,7 +22,7 @@ namespace IMP
 class IMPDLLEXPORT CoordinateRestraint : public Restraint
 {
 public:
-  CoordinateRestraint(Model& model, Particle* p1, const std::string type,
+  CoordinateRestraint(Model& model, Particle* p1, String type,
                       BasicScoreFuncParams* score_func_params);
   virtual ~CoordinateRestraint();
 

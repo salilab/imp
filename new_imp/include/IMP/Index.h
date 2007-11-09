@@ -9,7 +9,7 @@
 #define __IMP_INDEX_H
 
 #include "log.h"
-
+#include "utility.h"
 namespace IMP
 {
 
@@ -21,6 +21,7 @@ template <class L>
 class Index
 {
 public:
+  typedef Index<L> This;
   Index(int i): i_(i) {
     IMP_check(i >= 0, "Index initializer must be positive. " << i << " is not.",
               ErrorException());
@@ -40,32 +41,8 @@ public:
     }
     return out;
   }
-  bool operator==(const Index<L> &o) const {
-    return i_==o.i_;
-  }
-  bool operator>(const Index<L> &o) const {
-    IMP_assert(!is_default() && !o.is_default(),
-               "Ordering with uninitialized index is undefined");
-    return i_ > o.i_;
-  }
-  bool operator<(const Index<L> &o) const {
-    IMP_assert(!is_default() && !o.is_default(),
-               "Ordering with uninitialized index is undefined");
-    return i_ < o.i_;
-  }
-  bool operator!=(const Index<L> &o) const {
-    return i_!=o.i_;
-  }
-  bool operator>=(const Index<L> &o) const {
-    IMP_assert(!is_default() && !o.is_default(),
-               "Ordering with uninitialized index is undefined");
-    return i_ >= o.i_;
-  }
-  bool operator<=(const Index<L> &o) const {
-    IMP_assert(!is_default() && !o.is_default(),
-               "Ordering with uninitialized index is undefined");
-    return i_ <= o.i_;
-  }
+  IMP_COMPARISONS_1(i_)
+
 private:
   bool is_default() const {
     return i_==-1;
@@ -74,11 +51,9 @@ private:
   int i_;
 };
 
-template <class L>
-inline std::ostream &operator<<(std::ostream &out, const Index<L> &i)
-{
-  return i.show(out);
-}
+
+IMP_OUTPUT_OPERATOR_1(Index)
+
 
 } // namespace IMP
 

@@ -29,7 +29,7 @@ public:
   DistanceRestraint(Model& model, Particle* p1, Particle* p2,
                     BasicScoreFuncParams* score_func_params);
   DistanceRestraint(Model& model, Particle* p1, Particle* p2,
-                    const std::string attr_name,
+                    FloatKey attr_name,
                     BasicScoreFuncParams* score_func_params);
   virtual ~DistanceRestraint();
 

@@ -83,7 +83,7 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
  */
 PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     std::vector<int>& particle1_indexes, std::vector<int>& particle2_indexes,
-    const std::string attr_name, BasicScoreFuncParams* score_func_params,
+    FloatKey attr_name, BasicScoreFuncParams* score_func_params,
     const int num_to_apply, const bool particle_reuse)
 {
   particle_reuse_ = particle_reuse;
@@ -104,8 +104,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     for (int j = num_particles1_; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
       Float attri, attrj;
-      attri = model_data_->get_float(particles_[i]->get_float_index(attr_name));
-      attrj = model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      attri = model_data_->get_value(particles_[i]->get_attribute(attr_name));
+      attrj = model_data_->get_value(particles_[j]->get_attribute(attr_name));
       actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);

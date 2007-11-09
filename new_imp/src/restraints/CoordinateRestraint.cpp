@@ -31,9 +31,9 @@ CoordinateRestraint::CoordinateRestraint(Model& model, Particle* p1,
   model_data_ = model.get_model_data();
 
   particles_.push_back(p1);
-  x1_ = p1->get_float_index(std::string("x"));
-  y1_ = p1->get_float_index(std::string("y"));
-  z1_ = p1->get_float_index(std::string("z"));
+  x1_ = p1->get_attribute(FloatKey("x"));
+  y1_ = p1->get_attribute(FloatKey("y"));
+  z1_ = p1->get_attribute(FloatKey("z"));
 
   axis_ = axis;
   score_func_ = score_func_params->create_score_func();
@@ -60,9 +60,9 @@ Float CoordinateRestraint::evaluate(DerivativeAccumulator *accum)
   Float current_distance;
 
   // get current position of particle
-  x = model_data_->get_float(x1_);
-  y = model_data_->get_float(y1_);
-  z = model_data_->get_float(z1_);
+  x = model_data_->get_value(x1_);
+  y = model_data_->get_value(y1_);
+  z = model_data_->get_value(z1_);
 
   // restrain the x coordinate
   if (axis_ == "X_AXIS") {
@@ -140,9 +140,9 @@ void CoordinateRestraint::show(std::ostream& out) const
 
   out << "version: " << version() << "  " << "last_modified_by: "
       << last_modified_by() << std::endl;
-  out << "  x1:" << model_data_->get_float(x1_);
-  out << "  y1:" << model_data_->get_float(y1_);
-  out << "  z1:" << model_data_->get_float(z1_) << std::endl;
+  out << "  x1:" << model_data_->get_value(x1_);
+  out << "  y1:" << model_data_->get_value(y1_);
+  out << "  z1:" << model_data_->get_value(z1_) << std::endl;
 
   out << "  dx1:" << model_data_->get_deriv(x1_);
   out << "  dy1:" << model_data_->get_deriv(y1_);

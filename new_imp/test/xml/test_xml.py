@@ -22,10 +22,10 @@ class XMLTests(IMP.test.IMPTestCase):
         num_particles = 0
         while p_iter.next():
             p = p_iter.get()
-            fidx = p.get_float_index("radius")
-            radius = model_data.get_float(fidx)
-            iidx = p.get_int_index("protein")
-            protein = model_data.get_int(iidx)
+            fidx = p.get_attribute(IMP.FloatKey("radius"))
+            radius = model_data.get_value(fidx)
+            iidx = p.get_attribute(IMP.IntKey("protein"))
+            protein = model_data.get_value(iidx)
             num_particles = num_particles + 1
             if protein == 1:
                 self.assert_(radius == 2.0, "protein1 beads should have radius 2.0")

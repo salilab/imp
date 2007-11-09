@@ -11,73 +11,65 @@ class XYZParticle(IMP.Particle):
            coordinates"""
         IMP.Particle.__init__(self)
         model.add_particle(self);
-        self.model_data = self.get_model_data()
+        self.model_data = self.get_model().get_model_data()
         if x is not None:
-            self.add_float("x", x, True)
+            self.add_attribute(IMP.FloatKey("x"), x, True)
         if y is not None:
-            self.add_float("y", y, True)
+            self.add_attribute(IMP.FloatKey("y"), y, True)
         if z is not None:
-            self.add_float("z", z, True)
+            self.add_attribute(IMP.FloatKey("z"), z, True)
 
-    def get_float(self, name):
+    def get_value(self, name):
         """Get float attribute of particle with given name"""
-        return self.model_data.get_float(self.get_float_index(name))
-
-    def get_int(self, name):
-        """Get int attribute of particle with given name"""
-        return self.model_data.get_int(self.get_int_index(name))
-
-    def get_string(self, name):
-        """Get string attribute of particle with given name"""
-        return self.model_data.get_string(self.get_string_index(name))
+        return self.model_data.get_value(self.get_attribute(name))
 
     def x(self):
         """Get x position of particle"""
-        return self.get_float("x")
+        return self.get_value(IMP.FloatKey("x"))
 
     def y(self):
         """Get y position of particle"""
-        return self.get_float("y")
+        return self.get_value(IMP.FloatKey("y"))
 
     def z(self):
         """Get z position of particle"""
-        return self.get_float("z")
+        return self.get_value(IMP.FloatKey("z"))
 
     def set_x(self, value):
         """Set x position of particle"""
-        self.model_data.set_float(self.get_float_index("x"), value)
+        self.model_data.set_value(self.get_attribute(IMP.FloatKey("x")), value)
 
     def set_y(self, value):
         """Set y position of particle"""
-        self.model_data.set_float(self.get_float_index("y"), value)
+        self.model_data.set_value(self.get_attribute(IMP.FloatKey("y")), value)
 
     def set_z(self, value):
         """Set z position of particle"""
-        self.model_data.set_float(self.get_float_index("z"), value)
+        self.model_data.set_value(self.get_attribute(IMP.FloatKey("z")), value)
 
     def dx(self):
         """Get partial derivative of score with respect to particle's x position"""
-        return self.model_data.get_deriv(self.get_float_index("x"))
+        return self.model_data.get_deriv(self.get_attribute(IMP.FloatKey("x")))
 
     def dy(self):
         """Get partial derivative of score with respect to particle's y position"""
-        return self.model_data.get_deriv(self.get_float_index("y"))
+        return self.model_data.get_deriv(self.get_attribute(IMP.FloatKey("y")))
 
     def dz(self):
         """Get partial derivative of score with respect to particle's z position"""
-        return self.model_data.get_deriv(self.get_float_index("z"))
+        return self.model_data.get_deriv(self.get_attribute(IMP.FloatKey("z")))
 
     def add_to_dx(self, value):
         """Add to partial derivative of score with respect to particle's x position"""
-        self.model_data.add_to_deriv(self.get_float_index("x"), value)
+        self.model_data.add_to_deriv(self.get_attribute(IMP.FloatKey("x")), value)
 
     def add_to_dy(self, value):
         """Add to partial derivative of score with respect to particle's y position"""
-        self.model_data.add_to_deriv(self.get_float_index("y"), value)
+        self.model_data.add_to_deriv(self.get_attribute(IMP.FloatKey("y")), value)
 
     def add_to_dz(self, value):
         """Add to partial derivative of score with respect to particle's z position"""
-        self.model_data.add_to_deriv(self.get_float_index("z"), value)
+        self.model_data.add_to_deriv(self.get_attribute(IMP.FloatKey("z")), value)
 
 
 def set_restraint_set_is_active(model, restraint_set_name, is_active):
@@ -92,8 +84,8 @@ def set_up_exclusion_volumes(model, particles, radius_name, rsrs, sd = 0.1):
     """Add all needed exclusion volumes to the restraint list"""
     for i in range(len(particles)-1):
         for j in range(i+1, len(particles)):
-            mean = particles[i].get_float(radius_name) \
-                   + particles[j].get_float(radius_name)
+            mean = particles[i].get_value(radius_name) \
+                   + particles[j].get_value(radius_name)
             score_func_params = IMP.BasicScoreFuncParams("harmonic_lower_bound",
                                                          mean, sd)
             rsrs.append(IMP.DistanceRestraint(model, particles[i], particles[j],
