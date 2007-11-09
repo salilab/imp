@@ -10,6 +10,7 @@
 #define IMP_OUTPUT_OPERATOR_1(f)
 #define IMP_OUTPUT_OPERATOR(f)
 #define IMP_HIDE(f)
+#define IMP_RESTRAINT(a,b)
 
 %include "std_vector.i"
 %include "std_map.i"

@@ -30,12 +30,10 @@ TorusRestraint::TorusRestraint(Model& model, Particle* p1,
                                const Float main_radius, const Float tube_radius,
                                BasicScoreFuncParams* score_func_params)
 {
-  model_data_ = model.get_model_data();
-
-  particles_.push_back(p1);
-  x1_ = p1->get_attribute(FloatKey("x"));
-  y1_ = p1->get_attribute(FloatKey("y"));
-  z1_ = p1->get_attribute(FloatKey("z"));
+  add_particle(p1);
+  x_ = FloatKey("x");
+  y_ = FloatKey("y");
+  z_ = FloatKey("z");
 
   main_radius_ = main_radius;
   tube_radius_ = tube_radius;
@@ -66,9 +64,9 @@ Float TorusRestraint::evaluate(DerivativeAccumulator *accum)
 
   IMP_LOG(VERBOSE, "... evaluating torus restraint.");
   // get current position of particle
-  x = model_data_->get_value(x1_);
-  y = model_data_->get_value(y1_);
-  z = model_data_->get_value(z1_);
+  x = get_particle(0)->get_value(x_);
+  y = get_particle(0)->get_value(y_);
+  z = get_particle(0)->get_value(z_);
 
   // get the x, y distance from the origin
   xy_distance_from_center = sqrt(x * x + y * y);
@@ -115,9 +113,9 @@ Float TorusRestraint::evaluate(DerivativeAccumulator *accum)
     dy = deriv * y / distance_from_tube_center;
     dz = deriv * z / distance_from_tube_center;
 
-    accum->add_to_deriv(x1_, dx);
-    accum->add_to_deriv(y1_, dy);
-    accum->add_to_deriv(z1_, dz);
+    get_particle(0)->add_to_derivative(x_, dx, *accum);
+    get_particle(0)->add_to_derivative(y_, dy, *accum);
+    get_particle(0)->add_to_derivative(z_, dz, *accum);
   }
 
   return score;
@@ -135,15 +133,9 @@ void TorusRestraint::show(std::ostream& out) const
     out << "torus restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: "
+  out << "  version: " << version() << "  " << "  last_modified_by: "
       << last_modified_by() << std::endl;
-  out << "  x1:" << model_data_->get_value(x1_);
-  out << "  y1:" << model_data_->get_value(y1_);
-  out << "  z1:" << model_data_->get_value(z1_) << std::endl;
-
-  out << "  dx1:" << model_data_->get_deriv(x1_);
-  out << "  dy1:" << model_data_->get_deriv(y1_);
-  out << "  dz1:" << model_data_->get_deriv(z1_) << std::endl;
+  out << "  particle: " << get_particle(0)->get_index() << "  ";
 
   out << "  main radius:" << main_radius_;
   out << "  tube radius:" << tube_radius_;

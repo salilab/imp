@@ -22,32 +22,15 @@ namespace IMP
 class IMPDLLEXPORT CoordinateRestraint : public Restraint
 {
 public:
-  CoordinateRestraint(Model& model, Particle* p1, String type,
+  CoordinateRestraint(Model* model, Particle* p1, String type,
                       BasicScoreFuncParams* score_func_params);
   virtual ~CoordinateRestraint();
 
-  //! Calculate the score for this coordinate restraint.
-  /** \param[in] accum If not NULL, use this object to accumulate partial first
-                       derivatives.
-      \return Current score.
-   */
-  virtual Float evaluate(DerivativeAccumulator *accum);
-
-  //! Show the current restraint.
-  /** \param[in] out Stream to send restraint description to.
-   */
-  virtual void show(std::ostream& out = std::cout) const;
-
-  virtual std::string version(void) const {
-    return "0.5.0";
-  }
-  virtual std::string last_modified_by(void) const {
-    return "Bret Peterson";
-  }
+  IMP_RESTRAINT("0.5", "Daniel Russel");
 
 protected:
   //! variables used to determine the distance
-  FloatIndex x1_, y1_, z1_;
+  FloatKey x_, y_, z_;
   //! type of coordinate position to use
   /** X_AXIS, Y_AXIS, Z_AXIS, XY_RADIAL, XZ_RADIAL, YZ_RADIAL, XYZ_SPHERE
    */

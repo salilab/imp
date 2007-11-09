@@ -134,9 +134,19 @@ public:
   typedef Index<T> Value;
   typedef AttributeKey<T> Key;
   AttributeTable() {}
-  const Value operator[](Key k) const;
+  const Value get_value(Key k) const {
+    IMP_check(contains(k),
+              "Attribute \"" << k.get_string()
+              << "\" not found in table.",
+              IndexException(std::string("Invalid attribute \"")
+                             + k.get_string() + "\" requested"));
+    return map_[k.get_index()];
+  }
   void insert(Key k, Value v);
-  bool contains(Key k) const;
+  bool contains(Key k) const {
+    return map_.size() > k.get_index()
+           && map_[k.get_index()] != Value();
+  }
   std::ostream &show(std::ostream &out, const char *prefix="") const;
 };
 

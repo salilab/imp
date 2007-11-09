@@ -18,7 +18,7 @@ namespace IMP
 //! Constructor
 Restraint::Restraint(std::string name): name_(name)
 {
-  model_data_=NULL;
+  model_=NULL;
   IMP_LOG(VERBOSE, "Restraint constructed");
   is_active_ = true; // active by default
   are_particles_active_ = true; // active by default
@@ -29,16 +29,6 @@ Restraint::Restraint(std::string name): name_(name)
 Restraint::~Restraint()
 {
   IMP_LOG(VERBOSE, "Restraint deleted");
-}
-
-
-
-//! Give accesss to model particle data.
-/** \param[in] model_data All particle data in the model.
- */
-void Restraint::set_model_data(ModelData* model_data)
-{
-  model_data_ = model_data;
 }
 
 

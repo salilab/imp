@@ -10,7 +10,9 @@
       throw;
     } catch (std::out_of_range &e) {
       SWIG_exception(SWIG_IndexError, e.what());
-    }
+    } catch (IMP::IndexException &e) {
+      SWIG_exception(SWIG_IndexError, e.what());
+    }   
   /* SWIG_exception contains "goto fail" so make sure the label is defined */
   fail:
     return;

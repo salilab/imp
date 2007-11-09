@@ -25,28 +25,10 @@ public:
                  BasicScoreFuncParams* score_func_params);
   virtual ~TorusRestraint();
 
-  //! Calculate the score for this restraint for the current model state.
-  /** \param[in] accum If not NULL, use this object to accumulate partial first
-                       derivatives.
-      \return Current score.
-   */
-  virtual Float evaluate(DerivativeAccumulator *accum);
-
-  //! Show the current restraint.
-  /** \param[in] out Stream to send restraint description to.
-   */
-  virtual void show(std::ostream& out = std::cout) const;
-
-  virtual std::string version(void) const {
-    return "0.5.0";
-  }
-  virtual std::string last_modified_by(void) const {
-    return "Bret Peterson";
-  }
-
+  IMP_RESTRAINT("0.5", "Daniel Russel")
 protected:
   //! variables used to determine the distance
-  FloatIndex x1_, y1_, z1_;
+  FloatKey x_, y_, z_;
   //! main radius of the torus
   Float main_radius_;
   //! radius of the torus tube

@@ -27,7 +27,7 @@ namespace IMP
     \param[in] type The attribute used to determine if particles are equivalent.
     \param[in] score_func_params Parameters for creating a score function.
  */
-ConnectivityRestraint::ConnectivityRestraint(Model& model,
+ConnectivityRestraint::ConnectivityRestraint(Model* model,
     std::vector<int>& particle_indexes, IntKey type,
     BasicScoreFuncParams* score_func_params)
 {
@@ -51,9 +51,9 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
 
           // create the restraint
           rs_iter->rsr_ = new DistanceRestraint(model,
-                                           particles_[i],
-                                           particles_[j],
-                                           score_func_params);
+                                                get_particle(i),
+                                                get_particle(j),
+                                                score_func_params);
           ++rs_iter;
         }
       }
@@ -75,7 +75,7 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
     \param[in] attr_name Name to get radii to calculate the mean distance.
     \param[in] score_func_params Parameters for creating a score function.
  */
-ConnectivityRestraint::ConnectivityRestraint(Model& model,
+ConnectivityRestraint::ConnectivityRestraint(Model* model,
     std::vector<int>& particle_indexes, IntKey type,
     FloatKey attr_name, BasicScoreFuncParams* score_func_params)
 {
@@ -100,18 +100,17 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
           rs_iter->part2_type_ = particle_type_[j];
 
           // Use those radii to calculate the expected distance
-          FloatIndex indi = particles_[i]->get_attribute(attr_name);
-          FloatIndex indj = particles_[j]->get_attribute(attr_name);
-          actual_mean = model_data_->get_value(indi)
-            + model_data_->get_value(indj);
+          Float fi = get_particle(i)->get_value(attr_name);
+          Float fj = get_particle(j)->get_value(attr_name);
+          actual_mean = fi + fj;
 
           score_func_params->set_mean(actual_mean);
 
           // create the restraint
           rs_iter->rsr_ = new DistanceRestraint(model,
-                                           particles_[i],
-                                           particles_[j],
-                                           score_func_params);
+                                                get_particle(i),
+                                                get_particle(j),
+                                                score_func_params);
           ++rs_iter;
         }
       }
@@ -131,7 +130,7 @@ ConnectivityRestraint::ConnectivityRestraint(Model& model,
                Particle pointers instead.
     \param[in] type The attribute used to determine if particles are equivalent.
  */
-void ConnectivityRestraint::set_up(Model& model,
+void ConnectivityRestraint::set_up(Model* model,
                                    std::vector<int>& particle_indexes,
                                    IntKey type)
 {
@@ -139,24 +138,23 @@ void ConnectivityRestraint::set_up(Model& model,
 
   IMP_LOG(VERBOSE, "init ConnectivityRestraint");
 
-  model_data_ = model.get_model_data();
-
-  IMP_LOG(VERBOSE, "got model data " << model_data_);
+  //IMP_LOG(VERBOSE, "got model data " << model_data_);
 
   /** number of particles in the restraint */
   num_particles_ = particle_indexes.size();
   particle_type_.resize(num_particles_);
 
   IMP_LOG(VERBOSE, "set up particle types");
+  type_=type;
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles_; i++) {
-    p1 = model.get_particle(particle_indexes[i]);
-    particles_.push_back(p1);
-    type_.push_back(p1->get_attribute(type));
+    p1 = model->get_particle(particle_indexes[i]);
+    add_particle(p1);
+    //type_.push_back(p1->get_attribute(type));
   }
 
-  IMP_LOG(VERBOSE, "Size of particles: " << particles_.size()
-          << "  size of types:" << type_.size() << "  num_particles_: "
+  IMP_LOG(VERBOSE, "Size of particles: " << number_of_particles()
+          << "  num_particles_: "
           << num_particles_ << "  particle_type_: " << particle_type_.size());
   IMP_LOG(VERBOSE, "Figure out number of types");
   // figure out how many types there are
@@ -164,7 +162,7 @@ void ConnectivityRestraint::set_up(Model& model,
   max_type_ = 0;
   num_types_ = 0;
   for (int i = 0; i < num_particles_; i++) {
-    next_type = model_data_->get_value(type_[i]);
+    next_type = get_particle(i)->get_value(type_);
     if (max_type_ < next_type) {
       max_type_ = next_type;
     }

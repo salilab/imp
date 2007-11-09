@@ -85,6 +85,13 @@ struct IMPDLLEXPORT ErrorException: public std::exception {
 
 };
 
+//! A an exception for an request for an invalid member of a container
+struct IMPDLLEXPORT IndexException: public std::exception {
+  //! just eat the string for now
+  template <class T>
+  IndexException(T){}
+};
+
 //! Get the log object. This really shouldn't be called from C++.
 IMPDLLEXPORT inline internal::Log &get_log()
 {

@@ -25,15 +25,13 @@ namespace IMP
                     XYZ_SPHERE
     \param[in] score_func_params Parameters for creating a score function.
  */
-CoordinateRestraint::CoordinateRestraint(Model& model, Particle* p1,
+CoordinateRestraint::CoordinateRestraint(Model* model, Particle* p1,
     const std::string axis, BasicScoreFuncParams* score_func_params)
 {
-  model_data_ = model.get_model_data();
-
-  particles_.push_back(p1);
-  x1_ = p1->get_attribute(FloatKey("x"));
-  y1_ = p1->get_attribute(FloatKey("y"));
-  z1_ = p1->get_attribute(FloatKey("z"));
+  add_particle(p1);
+  x_ = FloatKey("x");
+  y_ = FloatKey("y");
+  z_ = FloatKey("z");
 
   axis_ = axis;
   score_func_ = score_func_params->create_score_func();
@@ -60,9 +58,9 @@ Float CoordinateRestraint::evaluate(DerivativeAccumulator *accum)
   Float current_distance;
 
   // get current position of particle
-  x = model_data_->get_value(x1_);
-  y = model_data_->get_value(y1_);
-  z = model_data_->get_value(z1_);
+  x = get_particle(0)->get_value(x_);
+  y = get_particle(0)->get_value(y_);
+  z = get_particle(0)->get_value(z_);
 
   // restrain the x coordinate
   if (axis_ == "X_AXIS") {
@@ -114,9 +112,9 @@ Float CoordinateRestraint::evaluate(DerivativeAccumulator *accum)
 
   // if needed, use the partial derivatives
   if (accum) {
-    accum->add_to_deriv(x1_, dx);
-    accum->add_to_deriv(y1_, dy);
-    accum->add_to_deriv(z1_, dz);
+    get_particle(0)->add_to_derivative(x_, dx, *accum);
+    get_particle(0)->add_to_derivative(y_, dy, *accum);
+    get_particle(0)->add_to_derivative(z_, dz, *accum);
   }
 
   IMP_LOG(VERBOSE, axis_ << " score: " << score << "  x: " << x << " y: " << y
@@ -140,13 +138,8 @@ void CoordinateRestraint::show(std::ostream& out) const
 
   out << "version: " << version() << "  " << "last_modified_by: "
       << last_modified_by() << std::endl;
-  out << "  x1:" << model_data_->get_value(x1_);
-  out << "  y1:" << model_data_->get_value(y1_);
-  out << "  z1:" << model_data_->get_value(z1_) << std::endl;
-
-  out << "  dx1:" << model_data_->get_deriv(x1_);
-  out << "  dy1:" << model_data_->get_deriv(y1_);
-  out << "  dz1:" << model_data_->get_deriv(z1_) << std::endl;
+  out << "  particles: " << get_particle(0)->get_index() 
+      << " and " << get_particle(0)->get_index();
 
   out << "  axis:" << axis_;
 }

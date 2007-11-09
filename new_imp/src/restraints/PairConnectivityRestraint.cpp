@@ -28,7 +28,7 @@ namespace IMP
     \param[in] particle_reuse Allow minimum restraints to use particle
                               more than once.
  */
-PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
+PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
     std::vector<int>& particle1_indexes, std::vector<int>& particle2_indexes,
     BasicScoreFuncParams* score_func_params, const int num_to_apply,
     const bool particle_reuse)
@@ -53,8 +53,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         rs_iter->rsr_ = new DistanceRestraint(model,
-                                         particles_[i],
-                                         particles_[j],
+                                              get_particle(i),
+                                              get_particle(j),
                                          score_func_params);
 
         rs_iter->part1_idx_ = i;
@@ -81,7 +81,7 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     \param[in] particle_reuse Allow minimum restraints to use particle
                               more than once.
  */
-PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
+PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
     std::vector<int>& particle1_indexes, std::vector<int>& particle2_indexes,
     FloatKey attr_name, BasicScoreFuncParams* score_func_params,
     const int num_to_apply, const bool particle_reuse)
@@ -104,8 +104,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     for (int j = num_particles1_; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
       Float attri, attrj;
-      attri = model_data_->get_value(particles_[i]->get_attribute(attr_name));
-      attrj = model_data_->get_value(particles_[j]->get_attribute(attr_name));
+      attri = get_particle(i)->get_value(attr_name);
+      attrj = get_particle(j)->get_value(attr_name);
       actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);
@@ -117,9 +117,9 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         rs_iter->rsr_ = new DistanceRestraint(model,
-                                         particles_[i],
-                                         particles_[j],
-                                         score_func_params);
+                                              get_particle(i),
+                                              get_particle(j),
+                                              score_func_params);
 
         rs_iter->part1_idx_ = i;
         rs_iter->part2_idx_ = j;
@@ -143,7 +143,7 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model& model,
     \param[in] particle2_indexes Vector of indexes of particles in second body
                                  of the restraint.
  */
-void PairConnectivityRestraint::set_up(Model& model,
+void PairConnectivityRestraint::set_up(Model* model,
                                        std::vector<int>& particle1_indexes,
                                        std::vector<int>& particle2_indexes)
 {
@@ -151,7 +151,7 @@ void PairConnectivityRestraint::set_up(Model& model,
 
   IMP_LOG(VERBOSE, "init ConnectivityRestraint");
 
-  model_data_ = model.get_model_data();
+  //model_data_ = model.get_model_data();
 
   /** number of particles in the restraint */
   num_particles1_ = particle1_indexes.size();
@@ -161,13 +161,13 @@ void PairConnectivityRestraint::set_up(Model& model,
   IMP_LOG(VERBOSE, "set up particle types");
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles1_; i++) {
-    p1 = model.get_particle(particle1_indexes[i]);
-    particles_.push_back(p1);
+    p1 = model->get_particle(particle1_indexes[i]);
+    add_particle(p1);
   }
 
   for (int i = 0; i < num_particles2_; i++) {
-    p1 = model.get_particle(particle2_indexes[i]);
-    particles_.push_back(p1);
+    p1 = model->get_particle(particle2_indexes[i]);
+    add_particle(p1);
   }
 
   // figure out how many restraints there are

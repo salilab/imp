@@ -24,10 +24,9 @@ const Float DistanceRestraint::MIN_DISTANCE = 0.0000001;
     \param[in] p2 Pointer to second particle in distance restraint.
     \param[in] score_func_params Score function parameters for the restraint.
  */
-DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
+DistanceRestraint::DistanceRestraint(Model* model, Particle* p1, Particle* p2,
                                      BasicScoreFuncParams* score_func_params)
 {
-  model_data_ = model.get_model_data();
   set_up(model, p1, p2, score_func_params);
 }
 
@@ -39,15 +38,14 @@ DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
                          expected distance (e.g. "radius").
     \param[in] score_func_params Score function parameters for the restraint.
  */
-DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
+DistanceRestraint::DistanceRestraint(Model* model, Particle* p1, Particle* p2,
                                      FloatKey attr_name,
                                      BasicScoreFuncParams* score_func_params)
 {
-  model_data_ = model.get_model_data();
 
   // LogMsg(VERBOSE, "Construct distance restraint: " << attr_name);
-  Float mean = model_data_->get_value(p1->get_attribute(attr_name))
-               + model_data_->get_value(p2->get_attribute(attr_name));
+  Float mean = p1->get_value(attr_name)
+               + p2->get_value(attr_name);
 
   score_func_params->set_mean(mean);
   set_up(model, p1, p2, score_func_params);
@@ -60,19 +58,16 @@ DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
     \param[in] p2 Pointer to second particle in distance restraint.
     \param[in] score_func_params Score function parameters for the restraint.
  */
-void DistanceRestraint::set_up(Model& model, Particle* p1, Particle* p2,
+void DistanceRestraint::set_up(Model* model, Particle* p1, Particle* p2,
                                BasicScoreFuncParams* score_func_params)
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
-  particles_.push_back(p1);
-  x1_ = p1->get_attribute(FloatKey("x"));
-  y1_ = p1->get_attribute(FloatKey("y"));
-  z1_ = p1->get_attribute(FloatKey("z"));
+  add_particle(p1);
+  x_ = FloatKey("x");
+  y_ = FloatKey("y");
+  z_ = FloatKey("z");
 
-  particles_.push_back(p2);
-  x2_ = p2->get_attribute(FloatKey("x"));
-  y2_ = p2->get_attribute(FloatKey("y"));
-  z2_ = p2->get_attribute(FloatKey("z"));
+  add_particle(p2);
 
   score_func_ = score_func_params->create_score_func();
 }
@@ -96,9 +91,9 @@ Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
   Float score;
 
   // we need deltas for calculating the distance and the derivatives
-  delta_x = model_data_->get_value(x1_) - model_data_->get_value(x2_);
-  delta_y = model_data_->get_value(y1_) - model_data_->get_value(y2_);
-  delta_z = model_data_->get_value(z1_) - model_data_->get_value(z2_);
+  delta_x = get_particle(0)->get_value(x_) - get_particle(1)->get_value(x_);
+  delta_y = get_particle(0)->get_value(y_) - get_particle(1)->get_value(y_);
+  delta_z = get_particle(0)->get_value(z_) - get_particle(1)->get_value(z_);
 
   // calculate the distance feature
   distance = sqrt(delta_x*delta_x + delta_y*delta_y + delta_z*delta_z);
@@ -127,16 +122,16 @@ Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
     score = (*score_func_)(distance, deriv);
 
     dx = delta_x / distance * deriv;
-    accum->add_to_deriv(x1_, dx);
-    accum->add_to_deriv(x2_, -dx);
+    get_particle(0)->add_to_derivative(x_, dx, *accum);
+    get_particle(1)->add_to_derivative(x_, -dx, *accum);
 
     dy = delta_y / distance * deriv;
-    accum->add_to_deriv(y1_, dy);
-    accum->add_to_deriv(y2_, -dy);
+    get_particle(0)->add_to_derivative(y_, dy, *accum);
+    get_particle(1)->add_to_derivative(y_, -dy, *accum);
 
     dz = delta_z / distance * deriv;
-    accum->add_to_deriv(z1_, dz);
-    accum->add_to_deriv(z2_, -dz);
+    get_particle(0)->add_to_derivative(z_, dz, *accum);
+    get_particle(1)->add_to_derivative(z_, -dz, *accum);
   }
 
   else {
@@ -162,21 +157,8 @@ void DistanceRestraint::show(std::ostream& out) const
 
   out << "version: " << version() << "  " << "last_modified_by: "
       << last_modified_by() << std::endl;
-  out << "  x1:" << model_data_->get_value(x1_);
-  out << "  y1:" << model_data_->get_value(y1_);
-  out << "  z1:" << model_data_->get_value(z1_) << std::endl;
-
-  out << "  dx1:" << model_data_->get_deriv(x1_);
-  out << "  dy1:" << model_data_->get_deriv(y1_);
-  out << "  dz1:" << model_data_->get_deriv(z1_) << std::endl;
-
-  out << "  x2:" << model_data_->get_value(x2_);
-  out << "  y2:" << model_data_->get_value(y2_);
-  out << "  z2:" << model_data_->get_value(z2_) << std::endl;
-
-  out << "  dx2:" << model_data_->get_deriv(x2_);
-  out << "  dy2:" << model_data_->get_deriv(y2_);
-  out << "  dz2:" << model_data_->get_deriv(z2_) << std::endl;
+  out << "  particles: " << get_particle(0)->get_index() 
+      << " and " << get_particle(1)->get_index();
 
   out << "  mean:" << mean_;
   out << "  sd:" << sd_ << std::endl;

@@ -5,11 +5,12 @@ class WoodsFunc(IMP.Restraint):
     """Woods function for four input values, defined as an IMP restraint"""
     def __init__(self, model, particles):
         IMP.Restraint.__init__(self)
-        self.model_data = model.get_model_data()
-        self.indices = [p.get_attribute(IMP.FloatKey("x")) for p in particles]
+        self.particles= particles
+        self.index= IMP.FloatKey("x")
+
 
     def evaluate(self, accum):
-        (x1, x2, x3, x4) = [self.model_data.get_value(i) for i in self.indices]
+        (x1, x2, x3, x4) = [p.get_value(self.index) for p in self.particles]
         a = x2 - x1 * x1
         b = x4 - x3 * x3
         e = 100.0 * a * a + (1.0 - x1) ** 2+ 90.0 * b * b + (1.0 - x3) ** 2 \
@@ -20,8 +21,10 @@ class WoodsFunc(IMP.Restraint):
                    2.0 * (100.0 * a + 10.1 * (x2 - 1.0) + 9.9 * (x4 - 1.0)),
                   -2.0 * (180.0 * x3 * b + 1.0 - x3),
                    2.0 * (90.0 * b + 10.1 * (x4 - 1.0) + 9.9 * (x2 - 1.0))]
-            for (i, d) in zip(self.indices, dx):
-                accum.add_to_deriv(i, d)
+            for (p,d) in zip(self.particles, dx):
+                p.add_to_derivative(self.index, d, accum);
+            #for (i, d) in zip(self.indices, dx):
+            #    accum.add_to_deriv(i, d)
         return e
 
 class CGOptimizerTests(IMP.test.IMPTestCase):
@@ -47,7 +50,7 @@ class CGOptimizerTests(IMP.test.IMPTestCase):
         e = opt.optimize(model, 100, 1e-5)
         model_data = model.get_model_data()
         for p in particles:
-            val = model_data.get_value(p.get_attribute(IMP.FloatKey("x")))
+            val = p.get_value(IMP.FloatKey("x"))
             self.assertAlmostEqual(val, 1.0, places=1)
         self.assertAlmostEqual(e, 0.0, places=2)
 

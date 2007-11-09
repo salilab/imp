@@ -19,6 +19,8 @@
 namespace IMP
 {
 
+  class Particle;
+
 //! Class for storing model, its restraints, constraints, and particles.
 /** All attribute data for particles is stored through indexing in the
     model_data_ structure.

@@ -23,7 +23,7 @@ namespace IMP
     \param[in] distance Maximum length allowable between any two particles.
     \param[in] score_func_params Parameters for creating a score function.
  */
-ProximityRestraint::ProximityRestraint(Model& model,
+ProximityRestraint::ProximityRestraint(Model* model,
                                        std::vector<int>& particle_indexes,
                                        const Float distance,
                                        BasicScoreFuncParams* score_func_params)
@@ -38,8 +38,8 @@ ProximityRestraint::ProximityRestraint(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       // create the restraint
 
-      dist_rsrs_[idx] = new DistanceRestraint(model, particles_[i],
-                                              particles_[j],
+      dist_rsrs_[idx] = new DistanceRestraint(model, get_particle(i),
+                                              get_particle(j),
                                               score_func_params);
       idx++;
     }
@@ -58,7 +58,7 @@ ProximityRestraint::ProximityRestraint(Model& model,
     \param[in] distance Maximum length allowable between any two particles.
     \param[in] score_func_params Parameters for creating a score function.
  */
-ProximityRestraint::ProximityRestraint(Model& model,
+ProximityRestraint::ProximityRestraint(Model* model,
                                        std::vector<int>& particle_indexes,
                                        FloatKey attr_name,
                                        const Float distance,
@@ -75,17 +75,17 @@ ProximityRestraint::ProximityRestraint(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance between centers
       Float attri, attrj;
-      attri = model_data_->get_value(particles_[i]->get_attribute(attr_name));
-      attrj = model_data_->get_value(particles_[j]->get_attribute(attr_name));
+      attri = get_particle(i)->get_value(attr_name);
+      attrj = get_particle(j)->get_value(attr_name);
       actual_mean = distance - attri - attrj;
 
       // create the restraint
       IMP_LOG(VERBOSE, i << " " << j << " add distance: " << actual_mean);
       score_func_params->set_mean(actual_mean);
       dist_rsrs_[idx] = new DistanceRestraint(model,
-                                         particles_[i],
-                                         particles_[j],
-                                         score_func_params);
+                                              get_particle(i),
+                                              get_particle(j),
+                                              score_func_params);
       idx++;
     }
   }
@@ -96,12 +96,10 @@ ProximityRestraint::ProximityRestraint(Model& model,
 /** \param[in] model Pointer to the model.
     \param[in] particle_indexes Vector of indexes of particles in the restraint.
  */
-void ProximityRestraint::set_up(Model& model,
+void ProximityRestraint::set_up(Model* model,
                                 std::vector<int>& particle_indexes)
 {
   IMP_LOG(VERBOSE, "init ConnectivityRestraint");
-
-  model_data_ = model.get_model_data();
 
   /** number of particles in the restraint */
   num_particles_ = particle_indexes.size();
@@ -109,8 +107,8 @@ void ProximityRestraint::set_up(Model& model,
   // set up the particles, their position indexes, and their type indexes
   Particle* p1;
   for (int i = 0; i < num_particles_; i++) {
-    p1 = model.get_particle(particle_indexes[i]);
-    particles_.push_back(p1);
+    p1 = model->get_particle(particle_indexes[i]);
+    add_particle(p1);
   }
 
   // figure out how many restraints there are
