@@ -15,97 +15,97 @@
 
 namespace IMP
 {
-template <class TT>
-static std::string type_string()
+
+namespace internal {
+struct AttributeKeyData {
+  std::map<std::string, int> map;
+  std::vector<std::string> rmap;
+};
+
+inline unsigned int attribute_table_index(Float)
 {
-  return "Unknown";
-}
-template <>
-static std::string type_string<Float>()
-{
-  return "Float";
-}
-template <>
-static std::string type_string<String>()
-{
-  return "String";
-}
-template <>
-static std::string type_string<Int>()
-{
-  return "Int";
+  return 0;
 }
 
+inline unsigned int attribute_table_index(Int)
+{
+  return 1;
+}
 
+inline unsigned int attribute_table_index(String)
+{
+  return 2;
+}
 
+extern IMPDLLEXPORT std::vector<AttributeKeyData> attribute_key_data;
 
+template <class T>
+class AttributeTable;
+}
 
-//! A base class for AttributeKeys
+//! A base class for Attribute Keys
 /** This class does internal caching of the strings to accelerate the
     name lookup. It is better to create an AttributeKey and reuse it
     rather than recreate it many times from strings.
+
+    If you use this with a new type, you must add a new definition of
+    attribute_table_index. Yes, this is an evil hack, but I couldn't
+    get linking to work with static members of the template class.
  */
 template <class T>
 class AttributeKey
 {
+  friend class internal::AttributeTable<T>;
+  int str_;
 
-  std::string str_;
+  static internal::AttributeKeyData& data() {
+    unsigned int i= internal::attribute_table_index(T());
+    if ( internal::attribute_key_data.size() <= i) {
+      internal::attribute_key_data.resize(i+1);
+    }
+    return internal::attribute_key_data[i];
+  }
 
-  // Hack to avoid having to manually allocate memory for the table
-  /*Map &map() const {
-    static Map map;
-    return map;
-  }
-  RMap &rmap() const {
-    static RMap rmap;
-    return rmap;
-    }*/
-  static const std::string& default_string() {
-    const static std::string nil="NULL";
-    return nil;
-  }
   bool is_default() const {
-    return str_.empty();
+    return str_==-1;
+  }
+  static const std::string &get_string(int i) {
+    IMP_assert(static_cast<unsigned int>(i)
+               < data().rmap.size(),
+               "Corrupted "  << " AttributeKey " << i
+               << " vs " << data().rmap.size());
+    return data().rmap[i];
   }
 public:
+
+
+
   typedef AttributeKey<T> This;
 
   //! make a default (uninitalized) key
-  AttributeKey():str_() {}
+  AttributeKey():str_(-1) {}
   //! Generate a key from the given string
   AttributeKey(const char *c) {
-    /*if (map_.find(c) == map_.end()) {
+    std::string sc(c);
+    if (data().map.find(sc) == data().map.end()) {
 
-      int sz= map_.size();
-      map_[c]=sz;
-      rmap_.push_back(c);
+      int sz= data().map.size();
+      data().map[sc]=sz;
+      data().rmap.push_back(sc);
       str_= sz;
-      std::cerr << "Creating " << type_string<T>() << " attribute \"" << c
-                << "\" with id " << sz
-                << " string is " << get_string() << std::endl;
+      IMP_assert(data().rmap.size() == data().map.size(), "Unequal map sizes")
     } else {
-      str_= map_.find(c)->second;
-      }*/
-    str_=c;
+      str_= data().map.find(sc)->second;
+    }
+    //str_=c;
   };
 
-  /*AttributeKey(const AttributeKey<T> &o): str_(o.str_) {
-    IMP_assert(is_default()
-               || static_cast<unsigned int>(str_) < rmap_.size(),
-               "AttributeKey issue. Key is "
-               << str_ << " but there are only " << rmap_.size()
-               << " in map");
-               }*/
 
   //! Turn a key into a pretty string
-  const std::string &get_string() const {
-    if (is_default()) return default_string();
-    /*IMP_assert(static_cast<unsigned int>(str_)
-               < rmap_.size(),
-               "Corrupted " << type_string<T>() << " AttributeKey " << str_
-               << " vs " << rmap_.size());
-               return rmap_[str_];*/
-    return str_;
+  const std::string get_string() const {
+    if (is_default()) return std::string("NULL");
+    return get_string(str_);
+    //return str_;
   }
 
   IMP_COMPARISONS_1(str_)
@@ -114,25 +114,36 @@ public:
     return out << "\"" << get_string() << "\"";
   }
 
-  /*static void list () {
-    IMP_assert(map_.size() == rmap_.size(),
-                     "Something is up with the maps.");
-    std::cerr << "Dumping keys for " << type_string<T>()
-              << " attributes (" << rmap_.size() << ")\n";
-    for (unsigned int i=0; i< rmap_.size(); ++i) {
-      std::cerr << i << "\"" << rmap_[i] << "\"" << std::endl;
-    }
-    }*/
+  unsigned int get_index() const {
+    IMP_assert(!is_default(),
+               "Cannot get index on defaultly constructed AttributeKey");
+    return str_;
+  }
 };
 
-
-/*template <class T>
-std::map<std::string, int> AttributeKey<T>::map_;
-template <class T>
-std::vector<std::string> AttributeKey<T>::rmap_;*/
-
-
 IMP_OUTPUT_OPERATOR_1(AttributeKey)
+
+
+namespace internal {
+
+template <class T>
+class AttributeTable
+{
+  std::vector<Index<T> > map_;
+public:
+  typedef Index<T> Value;
+  typedef AttributeKey<T> Key;
+  AttributeTable() {}
+  const Value operator[](Key k) const;
+  void insert(Key k, Value v);
+  bool contains(Key k) const;
+  std::ostream &show(std::ostream &out, const char *prefix="") const;
+};
+
+IMP_OUTPUT_OPERATOR_1(AttributeTable)
+
+}
+
 }
 
 #endif  /* __IMP_ATTRIBUTE_KEY_H */
