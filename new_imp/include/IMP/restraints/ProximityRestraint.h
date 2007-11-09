@@ -33,7 +33,7 @@ public:
                      BasicScoreFuncParams* score_func_params);
 
   ProximityRestraint(Model& model, std::vector<int>& particle_indexes,
-                     const std::string attr_name, const Float distance,
+                     FloatKey attr_name, const Float distance,
                      BasicScoreFuncParams* score_func_params);
 
   virtual ~ProximityRestraint();

@@ -36,7 +36,7 @@ namespace IMP
  */
 ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
     std::vector<int>& particle1_indexes, std::vector<int>& particle2_indexes,
-    const std::string attr_name, BasicScoreFuncParams* score_func_params)
+    FloatKey attr_name, BasicScoreFuncParams* score_func_params)
 {
   Particle* p1;
 
@@ -68,8 +68,8 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
     for (int j = num_particles1_; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
       Float attri, attrj;
-      attri = model_data_->get_float(particles_[i]->get_float_index(attr_name));
-      attrj = model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      attri = model_data_->get_value(particles_[i]->get_attribute(attr_name));
+      attrj = model_data_->get_value(particles_[j]->get_attribute(attr_name));
       actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);
@@ -96,7 +96,7 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
     \param[in] score_func_params Scoring function parameters.
  */
 ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
-    std::vector<int>& particle_indexes, const std::string attr_name,
+    std::vector<int>& particle_indexes, FloatKey attr_name,
     BasicScoreFuncParams* score_func_params)
 {
   Particle* p1;
@@ -123,8 +123,8 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model& model,
     for (int j = i+1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
       Float attri, attrj;
-      attri = model_data_->get_float(particles_[i]->get_float_index(attr_name));
-      attrj = model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      attri = model_data_->get_value(particles_[i]->get_attribute(attr_name));
+      attrj = model_data_->get_value(particles_[j]->get_attribute(attr_name));
       actual_mean = attri + attrj;
 
       score_func_params->set_mean(actual_mean);

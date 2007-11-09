@@ -7,6 +7,8 @@ import IMP.modeller_intf
 import IMP.utils
 import IMP.test
 
+radius = IMP.FloatKey("radius")
+
 class ProximityRestraintTests(IMP.test.IMPTestCase):
     """Test proximity restraints"""
 
@@ -33,34 +35,34 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
                                                                  self.imp_model,
                                                                  self.particles)
         p1 = self.particles[0]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 1)
+        p1.add_attribute(radius, 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 1)
 
         p1 = self.particles[1]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 2)
+        p1.add_attribute(radius, 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 2)
 
         p1 = self.particles[2]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 3)
+        p1.add_attribute(radius, 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 3)
 
         p1 = self.particles[3]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 4)
+        p1.add_attribute(radius, 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 4)
 
         p1 = self.particles[4]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 3)
-        p1.add_int("id", 5)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 3)
+        p1.add_attribute(IMP.IntKey("id"), 5)
 
         p1 = self.particles[5]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 3)
-        p1.add_int("id", 6)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 3)
+        p1.add_attribute(IMP.IntKey("id"), 6)
 
         self.atmsel = modeller.selection(self.modeller_model)
 
@@ -82,7 +84,7 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
 
         # set up exclusion volumes
         IMP.utils.set_up_exclusion_volumes(self.imp_model, self.particles,
-                                           "radius", rsrs)
+                                           radius, rsrs)
 
         max_distance = 10.0
 
@@ -92,7 +94,9 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
             particle_indexes.push_back(i)
 
         score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
-        rsrs.append(IMP.ProximityRestraint(self.imp_model, particle_indexes, "radius", max_distance, score_func_params))
+        rsrs.append(IMP.ProximityRestraint(self.imp_model, particle_indexes,
+                                           radius, max_distance,
+                                           score_func_params))
 
         # add restraints
         for i in range(len(rsrs)):
@@ -106,14 +110,19 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
         os.unlink('out_proximity.pdb')
 
         # min distances
+        model_data = self.imp_model.get_model_data()
         for i in range(len(coords)):
+            iidx = self.particles[i].get_attribute(radius)
             for j in range(i+1,len(coords)):
-                self.assert_(self.check_min_distance(coords[i], coords[j], self.particles[i].get_float("radius") + self.particles[j].get_float("radius") - 0.1), "min distance for any pair condition (" + str(i) + ", " + str(j) + ")")
+                jidx = self.particles[j].get_attribute(radius)
+                self.assert_(self.check_min_distance(coords[i], coords[j], model_data.get_value(iidx) + model_data.get_value(jidx) - 0.1), "min distance for any pair condition (" + str(i) + ", " + str(j) + ")")
 
         # max distances
         for i in range(len(coords)):
+            iidx = self.particles[i].get_attribute(radius)
             for j in range(i+1,len(coords)):
-                self.assert_(self.check_max_distance(coords[i], coords[j], max_distance - self.particles[i].get_float("radius") - self.particles[j].get_float("radius") + 0.1), "max distance for any pair condition (" + str(i) + ", " + str(j) + ")")
+                jidx = self.particles[j].get_attribute(radius)
+                self.assert_(self.check_max_distance(coords[i], coords[j], max_distance - model_data.get_value(iidx) - model_data.get_value(jidx) + 0.1), "max distance for any pair condition (" + str(i) + ", " + str(j) + ")")
 
 if __name__ == '__main__':
     unittest.main()

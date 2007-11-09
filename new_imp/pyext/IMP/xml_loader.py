@@ -69,7 +69,7 @@ def load_float(model, p_idx, attr_node):
         if n.nodeName == 'value':
             value = n.childNodes[0].nodeValue
 
-    p.add_float(str(name), float(value), bool(optimize))
+    p.add_attribute(IMP.FloatKey(str(name)), float(value), bool(optimize))
 
 
 def load_int(model, p_idx, attr_node):
@@ -82,8 +82,7 @@ def load_int(model, p_idx, attr_node):
     for n in attr_node.childNodes:
         if n.nodeName == 'value':
             value = n.childNodes[0].nodeValue
-
-    p.add_int(str(name), int(value))
+    p.add_attribute(IMP.IntKey(str(name)), int(value))
 
 
 def load_string(model, p_idx, attr_node):
@@ -97,7 +96,7 @@ def load_string(model, p_idx, attr_node):
         if n.nodeName == 'value':
             value = n.childNodes[0].nodeValue
 
-    p.add_string(str(name), str(value))
+    p.add_attribute(IMP.StringKey(name), str(value))
 
 
 def load_restraint_set(model, restraint_set_node, base_particle):
@@ -194,7 +193,8 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
         p1 = model.particles[int(pair[0])]
         p2 = model.particles[int(pair[1])]
         if distance_attribute != '':
-            distance = p1.get_float(distance_attribute) + p2.get_float(distance_attribute)
+            distance = p1.get_value(IMP.FloatKey(distance_attribute)) \
+                + p2.get_value(IMP.FloatKey(distance_attribute))
 
         score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
         model.restraints.append(IMP.DistanceRestraint(model, p1, p2, score_func_params))

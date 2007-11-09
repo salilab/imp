@@ -18,64 +18,65 @@ class ConnectivityTests(IMP.test.IMPTestCase):
             self.particles.append(IMP.utils.XYZParticle(self.imp_model,
                                                         0., 0., 0.))
         p1 = self.particles[0]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 1)
+
+        p1.add_attribute(IMP.FloatKey("radius"), 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 1)
 
         p1 = self.particles[1]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 2)
+        p1.add_attribute(IMP.FloatKey("radius"), 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 2)
 
         p1 = self.particles[2]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 3)
+        p1.add_attribute(IMP.FloatKey("radius"), 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 3)
 
         p1 = self.particles[3]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 4)
+        p1.add_attribute(IMP.FloatKey("radius"), 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 4)
 
         p1 = self.particles[4]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 5)
+        p1.add_attribute(IMP.FloatKey("radius"), 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 5)
 
         p1 = self.particles[5]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 6)
+        p1.add_attribute(IMP.FloatKey("radius"), 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 6)
 
         p1 = self.particles[6]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 7)
+        p1.add_attribute(IMP.FloatKey("radius"), 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 7)
 
         p1 = self.particles[7]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 3)
-        p1.add_int("id", 8)
+        p1.add_attribute(IMP.FloatKey("radius"), 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 3)
+        p1.add_attribute(IMP.IntKey("id"), 8)
 
         p1 = self.particles[8]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 3)
-        p1.add_int("id", 9)
+        p1.add_attribute(IMP.FloatKey("radius"), 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 3)
+        p1.add_attribute(IMP.IntKey("id"), 9)
 
         p1 = self.particles[9]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 3)
-        p1.add_int("id", 10)
+        p1.add_attribute(IMP.FloatKey("radius"), 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 3)
+        p1.add_attribute(IMP.IntKey("id"), 10)
 
         p1 = self.particles[10]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 3)
-        p1.add_int("id", 11)
+        p1.add_attribute(IMP.FloatKey("radius"), 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 3)
+        p1.add_attribute(IMP.IntKey("id"), 11)
 
         p1 = self.particles[11]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 3)
-        p1.add_int("id", 12)
+        p1.add_attribute(IMP.FloatKey("radius"), 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 3)
+        p1.add_attribute(IMP.IntKey("id"), 12)
 
         self.opt = IMP.ConjugateGradients()
 
@@ -100,14 +101,14 @@ class ConnectivityTests(IMP.test.IMPTestCase):
 
         # set up exclusion volumes
         IMP.utils.set_up_exclusion_volumes(self.imp_model, self.particles,
-                                           "radius", rsrs)
+                                           IMP.FloatKey("radius"), rsrs)
 
         # connect 3 proteins together
         particle_indexes.clear()
         for i in range(12):
             particle_indexes.push_back(i)
         rsrs.append(IMP.ConnectivityRestraint(self.imp_model, particle_indexes,
-                                              "protein", "radius",
+                                              IMP.IntKey("protein"), IMP.FloatKey("radius"),
                                               score_func_params_ub))
 
         # connect particles in protein1 together
@@ -115,7 +116,7 @@ class ConnectivityTests(IMP.test.IMPTestCase):
         for i in range(3):
             particle_indexes.push_back(i)
         rsrs.append(IMP.ConnectivityRestraint(self.imp_model, particle_indexes,
-                                              "id", "radius",
+                                              IMP.IntKey("id"), IMP.FloatKey("radius"),
                                               score_func_params_ub))
 
         # connect particles in protein2 together
@@ -123,7 +124,7 @@ class ConnectivityTests(IMP.test.IMPTestCase):
         for i in range(3, 7):
             particle_indexes.push_back(i)
         rsrs.append(IMP.ConnectivityRestraint(self.imp_model, particle_indexes,
-                                              "id", "radius",
+                                              IMP.IntKey("id"), IMP.FloatKey("radius"),
                                               score_func_params_ub))
 
         # connect particles in protein3 together
@@ -131,7 +132,7 @@ class ConnectivityTests(IMP.test.IMPTestCase):
         for i in range(7, 12):
             particle_indexes.push_back(i)
         rsrs.append(IMP.ConnectivityRestraint(self.imp_model, particle_indexes,
-                                              "id", "radius",
+                                              IMP.IntKey("id"), IMP.FloatKey("radius"),
                                               score_func_params_ub))
 
         # add restraints
@@ -145,11 +146,11 @@ class ConnectivityTests(IMP.test.IMPTestCase):
         for i in range(len(self.particles)):
             p = self.particles[i]
             icoord = (p.x(), p.y(), p.z())
-            irad = p.get_float("radius")
+            irad = p.get_value(IMP.FloatKey("radius"))
             for j in range(i+1,len(self.particles)):
                 p = self.particles[j]
                 jcoord = (p.x(), p.y(), p.z())
-                jrad = p.get_float("radius")
+                jrad = p.get_value(IMP.FloatKey("radius"))
                 self.assert_(self.check_min_distance(icoord, jcoord,
                                                      irad + jrad - 0.05),
                              "min distance for any pair condition")
@@ -161,13 +162,13 @@ class ConnectivityTests(IMP.test.IMPTestCase):
         for i in range(len(self.particles)):
             p = self.particles[i]
             icoord = (p.x(), p.y(), p.z())
-            irad = p.get_float("radius")
-            t1 = p.get_int("protein")
+            irad = p.get_value(IMP.FloatKey("radius"))
+            t1 = p.get_value(IMP.IntKey("protein"))
             for j in range(i+1,len(self.particles)):
                 p = self.particles[j]
                 jcoord = (p.x(), p.y(), p.z())
-                jrad = p.get_float("radius")
-                t2 = p.get_int("protein")
+                jrad = p.get_value(IMP.FloatKey("radius"))
+                t2 = p.get_value(IMP.IntKey("protein"))
                 d = self.get_distance(icoord, jcoord) - irad - jrad
                 if t1 == 1 and t2 == 2:
                     if d < d12:

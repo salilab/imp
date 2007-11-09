@@ -53,7 +53,7 @@ ParticleIndex Model::add_particle(Particle* particle)
 
   // add the particle to the model list of particles
   particles_.push_back(particle);
-  particle->set_model_data(model_data_);
+  particle->set_model(this);
 
   // return the particle index
   return particles_.size() - 1; 
@@ -230,14 +230,14 @@ void Model::save_state(void)
     // for each particle, output its current state
     FloatIndex fi;
     for (size_t i = 0; i < particles_.size(); i++) {
-      fi = particles_[i]->get_float_index("x");
-      fout << model_data_->get_float(fi) << " ";
+      fi = particles_[i]->get_attribute(FloatKey("x"));
+      fout << model_data_->get_value(fi) << " ";
 
-      fi = particles_[i]->get_float_index("y");
-      fout << model_data_->get_float(fi) << " ";
+      fi = particles_[i]->get_attribute(FloatKey("y"));
+      fout << model_data_->get_value(fi) << " ";
 
-      fi = particles_[i]->get_float_index("z");
-      fout << model_data_->get_float(fi) << std::endl;
+      fi = particles_[i]->get_attribute(FloatKey("z"));
+      fout << model_data_->get_value(fi) << std::endl;
     }
     if (!fout) {
       IMP_ERROR("Error writing to trajectory file. Trajectory is off. ");

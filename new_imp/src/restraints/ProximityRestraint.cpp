@@ -60,7 +60,7 @@ ProximityRestraint::ProximityRestraint(Model& model,
  */
 ProximityRestraint::ProximityRestraint(Model& model,
                                        std::vector<int>& particle_indexes,
-                                       const std::string attr_name,
+                                       FloatKey attr_name,
                                        const Float distance,
                                        BasicScoreFuncParams* score_func_params)
 {
@@ -75,8 +75,8 @@ ProximityRestraint::ProximityRestraint(Model& model,
     for (int j = i + 1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance between centers
       Float attri, attrj;
-      attri = model_data_->get_float(particles_[i]->get_float_index(attr_name));
-      attrj = model_data_->get_float(particles_[j]->get_float_index(attr_name));
+      attri = model_data_->get_value(particles_[i]->get_attribute(attr_name));
+      attrj = model_data_->get_value(particles_[j]->get_attribute(attr_name));
       actual_mean = distance - attri - attrj;
 
       // create the restraint

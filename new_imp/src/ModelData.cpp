@@ -48,7 +48,7 @@ FloatIndex ModelData::add_float(const Float value)
 /** \param[in] idx Index of the attribute.
     \param[in] value Value the attribute should be given.
  */
-void ModelData::set_float(const FloatIndex idx, const Float value)
+void ModelData::set_value(const FloatIndex idx, const Float value)
 {
   float_data_[idx.get_index()].value_ = value;
 }
@@ -125,7 +125,7 @@ IntIndex ModelData::add_int(const Int value)
 /** \param[in] idx Index of the attribute.
     \param[in] value Value the attribute should be given.
  */
-void ModelData::set_int(const IntIndex idx, const Int value)
+void ModelData::set_value(const IntIndex idx, const Int value)
 {
   int_data_[idx.get_index()] = value;
 }
@@ -154,7 +154,7 @@ StringIndex ModelData::add_string(const String value)
 /** \param[in] idx Index of the attribute.
     \param[in] value Value the attribute should be given.
  */
-void ModelData::set_string(const StringIndex idx, const String value)
+void ModelData::set_value(const StringIndex idx, const String value)
 {
   string_data_[idx.get_index()] = value;
 }

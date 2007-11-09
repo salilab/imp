@@ -6,6 +6,8 @@ import IMP.modeller_intf
 import IMP.utils
 import IMP.test
 
+radius = IMP.FloatKey("radius")
+
 class ProximityRestraintTests(IMP.test.IMPTestCase):
     """Test proximity restraints"""
 
@@ -32,24 +34,24 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
                                                                  self.imp_model,
                                                                  self.particles)
         p1 = self.particles[0]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 1)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 1)
 
         p1 = self.particles[1]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 2)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 2)
 
         p1 = self.particles[2]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 3)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 3)
 
         p1 = self.particles[3]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 4)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 4)
 
         self.atmsel = modeller.selection(self.modeller_model)
 
@@ -72,7 +74,7 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
 
         # set up exclusion volumes
         IMP.utils.set_up_exclusion_volumes(self.imp_model, self.particles,
-                                           "radius", rsrs, 0.1)
+                                           radius, rsrs, 0.1)
         max_distance = 4.0
 
         # set max distance for two most distant particles together
@@ -80,7 +82,9 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
         for i in range(4):
             particle_indexes.push_back(i)
         score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
-        rsrs.append(IMP.ProximityRestraint(self.imp_model, particle_indexes, "radius", max_distance, score_func_params_ub))
+        rsrs.append(IMP.ProximityRestraint(self.imp_model, particle_indexes,
+                                           radius, max_distance,
+                                           score_func_params_ub))
 
         # add restraints
         for i in range(len(rsrs)):
@@ -97,12 +101,12 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
         # min distances
         for i in range(len(coords)):
             for j in range(i+1,len(coords)):
-                self.assert_(self.check_min_distance(coords[i], coords[j], self.particles[i].get_float("radius") + self.particles[j].get_float("radius") - 0.1), "min distance for any pair condition (" + str(i) + ", " + str(j) + ")")
+                self.assert_(self.check_min_distance(coords[i], coords[j], self.particles[i].get_value(radius) + self.particles[j].get_value(radius) - 0.1), "min distance for any pair condition (" + str(i) + ", " + str(j) + ")")
 
         # max distances
         for i in range(len(coords)):
             for j in range(i+1,len(coords)):
-                self.assert_(self.check_max_distance(coords[i], coords[j], max_distance - self.particles[i].get_float("radius") - self.particles[j].get_float("radius") + 0.1), "max distance for any pair condition (" + str(i) + ", " + str(j) + ")")
+                self.assert_(self.check_max_distance(coords[i], coords[j], max_distance - self.particles[i].get_value(radius) - self.particles[j].get_value(radius) + 0.1), "max distance for any pair condition (" + str(i) + ", " + str(j) + ")")
 
 if __name__ == '__main__':
     unittest.main()

@@ -31,7 +31,7 @@ static Float get_score(Model &model, ModelData *model_data,
   int i, opt_var_cnt = float_indices.size();
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
-    model_data->set_float(float_indices[i], x[i]);
+    model_data->set_value(float_indices[i], x[i]);
   }
 
   /* get score */
@@ -221,20 +221,20 @@ Float ConjugateGradients::optimize(Model& model, int max_steps,
   int n = 0, i;
   ModelData* model_data = model.get_model_data();
 
-  OptFloatIndexIterator opt_float_iter;
+  OptFloatIndexIterator opt_value_iter;
 
-  opt_float_iter.reset(model_data);
+  opt_value_iter.reset(model_data);
   // determine n, the number of degrees of freedom
-  while (opt_float_iter.next()) {
+  while (opt_value_iter.next()) {
     n++;
-    float_indices.push_back(opt_float_iter.get());
+    float_indices.push_back(opt_value_iter.get());
   }
 
   x.resize(n);
   dx.resize(n);
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
-    x[i] = model_data->get_float(float_indices[i]);
+    x[i] = model_data->get_value(float_indices[i]);
   }
 
   // Initialize optimization variables
@@ -435,7 +435,7 @@ end:
   }
   // Set final model state
   for (i = 0; i < n; i++) {
-    model_data->set_float(float_indices[i], x[i]);
+    model_data->set_value(float_indices[i], x[i]);
   }
   return f;
 }

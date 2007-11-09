@@ -29,13 +29,13 @@ class IMPDLLEXPORT ConnectivityRestraint : public Restraint
 public:
   ConnectivityRestraint(Model& model,
                         std::vector<int>& particle_indexes,
-                        const std::string type,
+                        IntKey type,
                         BasicScoreFuncParams* score_func_params);
 
   ConnectivityRestraint(Model& model,
                         std::vector<int>& particle_indexes,
-                        const std::string type,
-                        const std::string attr_name,
+                        IntKey type,
+                        FloatKey attr_name,
                         BasicScoreFuncParams* score_func_params);
 
   virtual ~ConnectivityRestraint();
@@ -94,7 +94,7 @@ protected:
                       are equivalent.
    */
   void set_up(Model& model, std::vector<int>& particle_indexes,
-              const std::string type);
+              IntKey type);
 
   //! variables to determine the particle type
   std::vector<IntIndex> type_;

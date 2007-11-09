@@ -73,7 +73,7 @@ Float SteepestDescent::optimize (Model& model, int max_steps, Float threshold)
     for (int i = 0; i < opt_var_cnt; i++) {
       FloatIndex fi = float_indexes[0];
 
-      temp_vals[i] = model_data->get_float(float_indexes[i]);
+      temp_vals[i] = model_data->get_value(float_indexes[i]);
       temp_derivs[i] = model_data->get_deriv(float_indexes[i]);
     }
 
@@ -92,7 +92,7 @@ Float SteepestDescent::optimize (Model& model, int max_steps, Float threshold)
                 << temp_vals[i] - temp_derivs[i] * step_size << "  "
                 << temp_derivs[i]);
 
-        model_data->set_float(float_indexes[i],
+        model_data->set_value(float_indexes[i],
                               temp_vals[i] - temp_derivs[i] * step_size);
       }
 

@@ -6,6 +6,8 @@ import IMP
 import IMP.modeller_intf
 import IMP.test
 
+radius = IMP.FloatKey("radius")
+
 class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
     """Test exclusion volume restraints"""
 
@@ -32,64 +34,64 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
                                                                  self.imp_model,
                                                                  self.particles)
         p1 = self.particles[0]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 1)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 1)
 
         p1 = self.particles[1]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 2)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 2)
 
         p1 = self.particles[2]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 3)
+        p1.add_attribute(radius, 1.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 3)
 
         p1 = self.particles[3]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 4)
+        p1.add_attribute(radius, 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 4)
 
         p1 = self.particles[4]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 5)
+        p1.add_attribute(radius, 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 1)
+        p1.add_attribute(IMP.IntKey("id"), 5)
 
         p1 = self.particles[5]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 6)
+        p1.add_attribute(radius, 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 6)
 
         p1 = self.particles[6]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 7)
+        p1.add_attribute(radius, 1.5, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 7)
 
         p1 = self.particles[7]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 8)
+        p1.add_attribute(radius, 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 8)
 
         p1 = self.particles[8]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 9)
+        p1.add_attribute(radius, 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 9)
 
         p1 = self.particles[9]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 10)
+        p1.add_attribute(radius, 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 10)
 
         p1 = self.particles[10]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 11)
+        p1.add_attribute(radius, 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 11)
 
         p1 = self.particles[11]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 12)
+        p1.add_attribute(radius, 2.0, False)
+        p1.add_attribute(IMP.IntKey("protein"), 2)
+        p1.add_attribute(IMP.IntKey("id"), 12)
 
         self.atmsel = modeller.selection(self.modeller_model)
 
@@ -122,15 +124,15 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
 
         # connect the beads within the two proteins together
         for i in range(0, 4):
-            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], "radius", score_func_params_ub))
+            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], radius, score_func_params_ub))
 
         for i in range(5, 11):
-            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], "radius", score_func_params_ub))
+            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], radius, score_func_params_ub))
 
         # create the exclusion volume for each protein
         score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 0.0, 0.1)
-        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes1, "radius", score_func_params_lb))
-        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes2, "radius", score_func_params_lb))
+        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes1, radius, score_func_params_lb))
+        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes2, radius, score_func_params_lb))
 
         # add restraints
         for i in range(len(rsrs)):
@@ -146,12 +148,12 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
         # check min distances for intra-protein pairs
         for i in range(0, 4):
             for j in range(i+1, 5):
-                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_value(radius) - self.particles[j].get_value(radius)
                 self.assert_(d > -0.05, "particles "+str(i)+" and "+str(j)+" are too close together.")
 
         for i in range(5, 11):
             for j in range(i+1, 12):
-                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_value(radius) - self.particles[j].get_value(radius)
                 self.assert_(d > -0.05, "particles "+str(i)+" and "+str(j)+" are too close together.")
 
 
@@ -181,25 +183,25 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
         # connect the beads within the two proteins together
         score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
         for i in range(0, 4):
-            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], "radius", score_func_params_ub))
+            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], radius, score_func_params_ub))
 
         for i in range(5, 11):
-            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], "radius", score_func_params_ub))
+            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], radius, score_func_params_ub))
 
         # create the exclusion volume for each protein
         score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 0.0, 0.1)
-        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes1, "radius", score_func_params_lb))
-        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes2, "radius", score_func_params_lb))
+        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes1, radius, score_func_params_lb))
+        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes2, radius, score_func_params_lb))
 
         # connect the beads within the two proteins together
         # get 4 distinct pairs
         num_connects = 4
         particle_reuse = False
-        rsrs.append(IMP.PairConnectivityRestraint(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params_ub, num_connects, particle_reuse))
+        rsrs.append(IMP.PairConnectivityRestraint(self.imp_model, particle_indexes1, particle_indexes2, radius, score_func_params_ub, num_connects, particle_reuse))
 
         # create the exclusion volume for each protein
         score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 0.0, 0.1)
-        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes1, particle_indexes2, "radius", score_func_params_lb))
+        rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model, particle_indexes1, particle_indexes2, radius, score_func_params_lb))
 
         # add restraints
         for i in range(len(rsrs)):
@@ -215,7 +217,7 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
         # check min distances for intra-protein and inter-protein pairs
         for i in range(0, 11):
             for j in range(i+1, 12):
-                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_float("radius") - self.particles[j].get_float("radius")
+                d = self.get_distance(coords[i], coords[j]) - self.particles[i].get_value(radius) - self.particles[j].get_value(radius)
                 self.assert_(d > -0.05, "particles "+str(i)+" and "+str(j)+" are too close together.")
 
 if __name__ == '__main__':

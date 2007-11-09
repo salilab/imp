@@ -18,64 +18,68 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
             self.particles.append(IMP.utils.XYZParticle(self.imp_model,
                                                         0., 0., 0.))
         p1 = self.particles[0]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 1)
+        radkey= IMP.FloatKey("radius")
+        pkey=IMP.IntKey("protein")
+        idkey=IMP.IntKey("id")
+
+        p1.add_attribute(radkey, 1.0, False)
+        p1.add_attribute(pkey, 1)
+        p1.add_attribute(idkey, 1)
 
         p1 = self.particles[1]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 2)
+        p1.add_attribute(radkey, 1.0, False)
+        p1.add_attribute(pkey, 1)
+        p1.add_attribute(idkey, 2)
 
         p1 = self.particles[2]
-        p1.add_float("radius", 1.0, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 3)
+        p1.add_attribute(radkey, 1.0, False)
+        p1.add_attribute(pkey, 1)
+        p1.add_attribute(idkey, 3)
 
         p1 = self.particles[3]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 4)
+        p1.add_attribute(radkey, 1.5, False)
+        p1.add_attribute(pkey, 1)
+        p1.add_attribute(idkey, 4)
 
         p1 = self.particles[4]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 1)
-        p1.add_int("id", 5)
+        p1.add_attribute(radkey, 1.5, False)
+        p1.add_attribute(pkey, 1)
+        p1.add_attribute(idkey, 5)
 
         p1 = self.particles[5]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 6)
+        p1.add_attribute(radkey, 1.5, False)
+        p1.add_attribute(pkey, 2)
+        p1.add_attribute(idkey, 6)
 
         p1 = self.particles[6]
-        p1.add_float("radius", 1.5, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 7)
+        p1.add_attribute(radkey, 1.5, False)
+        p1.add_attribute(pkey, 2)
+        p1.add_attribute(idkey, 7)
 
         p1 = self.particles[7]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 8)
+        p1.add_attribute(radkey, 2.0, False)
+        p1.add_attribute(pkey, 2)
+        p1.add_attribute(idkey, 8)
 
         p1 = self.particles[8]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 9)
+        p1.add_attribute(radkey, 2.0, False)
+        p1.add_attribute(pkey, 2)
+        p1.add_attribute(idkey, 9)
 
         p1 = self.particles[9]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 10)
+        p1.add_attribute(radkey, 2.0, False)
+        p1.add_attribute(pkey, 2)
+        p1.add_attribute(idkey, 10)
 
         p1 = self.particles[10]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 11)
+        p1.add_attribute(radkey, 2.0, False)
+        p1.add_attribute(pkey, 2)
+        p1.add_attribute(idkey, 11)
 
         p1 = self.particles[11]
-        p1.add_float("radius", 2.0, False)
-        p1.add_int("protein", 2)
-        p1.add_int("id", 12)
+        p1.add_attribute(radkey, 2.0, False)
+        p1.add_attribute(pkey, 2)
+        p1.add_attribute(idkey, 12)
 
         self.opt = IMP.ConjugateGradients()
 
@@ -97,7 +101,7 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
         if use_python:
             # set up exclusion volumes using a Python loop:
             IMP.utils.set_up_exclusion_volumes(self.imp_model, self.particles,
-                                               "radius", rsrs)
+                                               IMP.FloatKey("radius"), rsrs)
         else:
             # use the C++ exclusion volume restraint:
             score_func_params = IMP.BasicScoreFuncParams("harmonic_lower_bound",
@@ -105,7 +109,7 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
             rsrs.append(IMP.ExclusionVolumeRestraint(self.imp_model,
                                                      particle_indexes1,
                                                      particle_indexes2,
-                                                     "radius",
+                                                     IMP.FloatKey("radius"),
                                                      score_func_params))
         # connect 2 proteins together by two beads
         particle_indexes1.clear()
@@ -124,7 +128,8 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
                                                      0.0, 0.1)
         rsrs.append(IMP.PairConnectivityRestraint(self.imp_model,
                                                   particle_indexes1,
-                                                  particle_indexes2, "radius",
+                                                  particle_indexes2,
+                                                  IMP.FloatKey("radius"),
                                                   score_func_params,
                                                   num_connects, particle_reuse))
 
@@ -142,10 +147,10 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
 
         for (i, pi) in enumerate(self.particles[0:5]):
             icoord = (pi.x(), pi.y(), pi.z())
-            irad = pi.get_float("radius")
+            irad = pi.get_value(IMP.FloatKey("radius"))
             for (j, pj) in enumerate(self.particles[5:12]):
                 jcoord = (pj.x(), pj.y(), pj.z())
-                jrad = pj.get_float("radius")
+                jrad = pj.get_value(IMP.FloatKey("radius"))
                 d = self.get_distance(icoord, jcoord) - irad - jrad
                 found = False
                 for k in range(num_connects):

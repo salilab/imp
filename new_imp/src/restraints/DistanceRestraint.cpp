@@ -40,14 +40,14 @@ DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
     \param[in] score_func_params Score function parameters for the restraint.
  */
 DistanceRestraint::DistanceRestraint(Model& model, Particle* p1, Particle* p2,
-                                     const std::string attr_name,
+                                     FloatKey attr_name,
                                      BasicScoreFuncParams* score_func_params)
 {
   model_data_ = model.get_model_data();
 
   // LogMsg(VERBOSE, "Construct distance restraint: " << attr_name);
-  Float mean = model_data_->get_float(p1->get_float_index(attr_name))
-               + model_data_->get_float(p2->get_float_index(attr_name));
+  Float mean = model_data_->get_value(p1->get_attribute(attr_name))
+               + model_data_->get_value(p2->get_attribute(attr_name));
 
   score_func_params->set_mean(mean);
   set_up(model, p1, p2, score_func_params);
@@ -65,14 +65,14 @@ void DistanceRestraint::set_up(Model& model, Particle* p1, Particle* p2,
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
   particles_.push_back(p1);
-  x1_ = p1->get_float_index(std::string("x"));
-  y1_ = p1->get_float_index(std::string("y"));
-  z1_ = p1->get_float_index(std::string("z"));
+  x1_ = p1->get_attribute(FloatKey("x"));
+  y1_ = p1->get_attribute(FloatKey("y"));
+  z1_ = p1->get_attribute(FloatKey("z"));
 
   particles_.push_back(p2);
-  x2_ = p2->get_float_index(std::string("x"));
-  y2_ = p2->get_float_index(std::string("y"));
-  z2_ = p2->get_float_index(std::string("z"));
+  x2_ = p2->get_attribute(FloatKey("x"));
+  y2_ = p2->get_attribute(FloatKey("y"));
+  z2_ = p2->get_attribute(FloatKey("z"));
 
   score_func_ = score_func_params->create_score_func();
 }
@@ -96,9 +96,9 @@ Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
   Float score;
 
   // we need deltas for calculating the distance and the derivatives
-  delta_x = model_data_->get_float(x1_) - model_data_->get_float(x2_);
-  delta_y = model_data_->get_float(y1_) - model_data_->get_float(y2_);
-  delta_z = model_data_->get_float(z1_) - model_data_->get_float(z2_);
+  delta_x = model_data_->get_value(x1_) - model_data_->get_value(x2_);
+  delta_y = model_data_->get_value(y1_) - model_data_->get_value(y2_);
+  delta_z = model_data_->get_value(z1_) - model_data_->get_value(z2_);
 
   // calculate the distance feature
   distance = sqrt(delta_x*delta_x + delta_y*delta_y + delta_z*delta_z);
@@ -162,17 +162,17 @@ void DistanceRestraint::show(std::ostream& out) const
 
   out << "version: " << version() << "  " << "last_modified_by: "
       << last_modified_by() << std::endl;
-  out << "  x1:" << model_data_->get_float(x1_);
-  out << "  y1:" << model_data_->get_float(y1_);
-  out << "  z1:" << model_data_->get_float(z1_) << std::endl;
+  out << "  x1:" << model_data_->get_value(x1_);
+  out << "  y1:" << model_data_->get_value(y1_);
+  out << "  z1:" << model_data_->get_value(z1_) << std::endl;
 
   out << "  dx1:" << model_data_->get_deriv(x1_);
   out << "  dy1:" << model_data_->get_deriv(y1_);
   out << "  dz1:" << model_data_->get_deriv(z1_) << std::endl;
 
-  out << "  x2:" << model_data_->get_float(x2_);
-  out << "  y2:" << model_data_->get_float(y2_);
-  out << "  z2:" << model_data_->get_float(z2_) << std::endl;
+  out << "  x2:" << model_data_->get_value(x2_);
+  out << "  y2:" << model_data_->get_value(y2_);
+  out << "  z2:" << model_data_->get_value(z2_) << std::endl;
 
   out << "  dx2:" << model_data_->get_deriv(x2_);
   out << "  dy2:" << model_data_->get_deriv(y2_);

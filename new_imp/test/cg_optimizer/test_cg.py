@@ -6,10 +6,10 @@ class WoodsFunc(IMP.Restraint):
     def __init__(self, model, particles):
         IMP.Restraint.__init__(self)
         self.model_data = model.get_model_data()
-        self.indices = [p.get_float_index("x") for p in particles]
+        self.indices = [p.get_attribute(IMP.FloatKey("x")) for p in particles]
 
     def evaluate(self, accum):
-        (x1, x2, x3, x4) = [self.model_data.get_float(i) for i in self.indices]
+        (x1, x2, x3, x4) = [self.model_data.get_value(i) for i in self.indices]
         a = x2 - x1 * x1
         b = x4 - x3 * x3
         e = 100.0 * a * a + (1.0 - x1) ** 2+ 90.0 * b * b + (1.0 - x3) ** 2 \
@@ -39,7 +39,7 @@ class CGOptimizerTests(IMP.test.IMPTestCase):
             p = IMP.Particle()
             model.add_particle(p)
             particles.append(p)
-            p.add_float("x", value, True)
+            p.add_attribute(IMP.FloatKey("x"), value, True)
         rsr = WoodsFunc(model, particles)
         model.add_restraint(rsr)
         model.set_up_trajectory('', False, False)
@@ -47,7 +47,7 @@ class CGOptimizerTests(IMP.test.IMPTestCase):
         e = opt.optimize(model, 100, 1e-5)
         model_data = model.get_model_data()
         for p in particles:
-            val = model_data.get_float(p.get_float_index("x"))
+            val = model_data.get_value(p.get_attribute(IMP.FloatKey("x")))
             self.assertAlmostEqual(val, 1.0, places=1)
         self.assertAlmostEqual(e, 0.0, places=2)
 
