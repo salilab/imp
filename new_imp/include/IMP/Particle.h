@@ -148,11 +148,11 @@ protected:
   bool is_active_;
 
   //! float attributes associated with the particle
-  std::map<FloatKey, FloatIndex> float_indexes_;
+  internal::AttributeTable<Float> float_indexes_;
   //! int attributes associated with the particle
-  std::map<IntKey, IntIndex> int_indexes_;
+  internal::AttributeTable<Int>  int_indexes_;
   //! string attributes associated with the particle
-  std::map<StringKey, StringIndex> string_indexes_;
+  internal::AttributeTable<String>  string_indexes_;
 };
 
 

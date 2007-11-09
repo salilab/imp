@@ -14,6 +14,61 @@
 namespace IMP
 {
 
+namespace internal {
+
+std::vector<AttributeKeyData> attribute_key_data;
+
+// These really should go in the header file,
+// but I can't throw exceptions from there
+
+template <class T>
+inline void AttributeTable<T>::insert(Key k, Value v)
+{
+  if (map_.size() <= k.get_index()) {
+    map_.resize(k.get_index()+1);
+  }
+  IMP_assert(map_[k.get_index()]== Value(),
+             "Trying to add attribute \"" << k.get_string()
+             << "\" twice");
+  map_[k.get_index()]= v;
+}
+
+template <class T>
+inline const typename AttributeTable<T>::Value
+    AttributeTable<T>::operator[](Key k) const
+{
+  IMP_check(k.get_index()< map_.size()
+            && map_[k.get_index()] != Value(),
+            "Attribute \"" << k.get_string()
+            << "\" not found in table.",
+            std::out_of_range(std::string("Invalid attribute \"")
+                              + k.get_string() + "\" requested"));
+  return map_[k.get_index()];
+}
+
+template <class T>
+inline bool AttributeTable<T>::contains(Key k) const
+{
+  return map_.size() < k.get_index()
+         && map_[k.get_index()] != Value();
+}
+
+template <class T>
+inline std::ostream &AttributeTable<T>::show(std::ostream &out,
+                                             const char *prefix) const
+{
+  for (unsigned int i=0; i< map_.size(); ++i) {
+    if (map_[i] != Value()) {
+      out << prefix << "\""
+      << Key::get_string(i) << "\": " << map_[i] << std::endl;
+    }
+  }
+  return out;
+}
+
+} /* namespace internal */
+
+
 //! Constructor
 Particle::Particle(): model_(NULL)
 {
@@ -38,7 +93,7 @@ Model* Particle::get_model(void) const
 }
 
 //! Set pointer to model particle data.
-/** This is called by the Model after the particle is added. 
+/** This is called by the Model after the particle is added.
     \param[in] md Pointer to a ModelData object.
  */
 void Particle::set_model(Model *md)
@@ -72,18 +127,11 @@ void Particle::add_attribute(FloatKey name, const Float value,
   FloatIndex fi;
 
   IMP_LOG(VERBOSE, "add_float: " << name);
-  IMP_assert(model_ != NULL, 
+  IMP_assert(model_ != NULL,
              "Particle must be added to Model before an attributes are added");
-  IMP_assert(!has_attribute(name), "Trying to add the name '" 
-             <<  name << "' twice. Particle state is " << *this);
-
-  // It may be better to manage strings only at the Particle level.
-  // You could create the Stat structure here or use an existing
-  // one if it already exists for a particular string, then pass
-  // a reference to it to the variable.
   fi = model_->get_model_data()->add_float(value);
 
-  float_indexes_[name] = fi;
+  float_indexes_.insert(name, fi);
   model_->get_model_data()->set_is_optimized(fi, is_optimized);
 }
 
@@ -94,7 +142,7 @@ void Particle::add_attribute(FloatKey name, const Float value,
  */
 bool Particle::has_attribute(FloatKey name) const
 {
-  return (float_indexes_.find(name) != float_indexes_.end());
+  return float_indexes_.contains(name);
 }
 
 
@@ -105,11 +153,7 @@ bool Particle::has_attribute(FloatKey name) const
  */
 FloatIndex Particle::get_attribute(FloatKey name) const
 {
-  IMP_check(has_attribute(name), "Unknown float attribute '" << name 
-            << "'. Particle state is " << *this, 
-            std::out_of_range(std::string("Unknown float attribute name ")
-                              + name.get_string()));
-  return float_indexes_.find(name)->second;
+  return float_indexes_[name];
 }
 
 
@@ -120,11 +164,9 @@ FloatIndex Particle::get_attribute(FloatKey name) const
 void Particle::add_attribute(IntKey name, const Int value)
 {
   IMP_LOG(VERBOSE, "add_int: " << name);
-  IMP_assert(model_ != NULL, 
+  IMP_assert(model_ != NULL,
              "Particle must be added to Model before an attributes are added");
-  IMP_assert(!has_attribute(name), "Trying to add the name '"
-             <<  name << "' twice. Particle state is " << *this);
-  int_indexes_[name] = model_->get_model_data()->add_int(value);
+  int_indexes_.insert(name, model_->get_model_data()->add_int(value));
 }
 
 
@@ -134,7 +176,7 @@ void Particle::add_attribute(IntKey name, const Int value)
  */
 bool Particle::has_attribute(IntKey name) const
 {
-  return (int_indexes_.find(name) != int_indexes_.end());
+  return int_indexes_.contains(name);
 }
 
 
@@ -145,28 +187,19 @@ bool Particle::has_attribute(IntKey name) const
  */
 IntIndex Particle::get_attribute(IntKey name) const
 {
-  IMP_check(has_attribute(name), "Unknown int attribute '" << name 
-            << "'. Particle state is " << *this, 
-            std::out_of_range(std::string("Unknown int attribute name")
-                              + name.get_string()));
-
-  return int_indexes_.find(name)->second;
+  return int_indexes_[name];
 }
 
 
 //! Add a String attribute to this particle.
 /** \param[in] name Name of the attribute being added.
-    \param[in] value Initial value of the attribute. 
+    \param[in] value Initial value of the attribute.
  */
 void Particle::add_attribute(StringKey name, const String value)
 {
-  IMP_assert(model_ != NULL, 
+  IMP_assert(model_ != NULL,
              "Particle must be added to Model before an attributes are added");
-  IMP_assert(!has_attribute(name), 
-             "Trying to add the name '" 
-             <<  name << "' twice. Particle state is " << *this);
-
-  string_indexes_[name] = model_->get_model_data()->add_string(value);
+  string_indexes_.insert(name, model_->get_model_data()->add_string(value));
 }
 
 
@@ -176,7 +209,7 @@ void Particle::add_attribute(StringKey name, const String value)
  */
 bool Particle::has_attribute(StringKey name) const
 {
-  return (string_indexes_.find(name) != string_indexes_.end());
+  return string_indexes_.contains(name);
 }
 
 
@@ -187,12 +220,7 @@ bool Particle::has_attribute(StringKey name) const
  */
 StringIndex Particle::get_attribute(StringKey name) const
 {
-  IMP_check(has_attribute(name), "Unknown string attribute '" << name 
-            << "'. Particle state is " << *this, 
-            std::out_of_range(std::string("Unknown string attribute name")
-                              + name.get_string()));
-
-  return string_indexes_.find(name)->second;
+  return string_indexes_[name];
 }
 
 
@@ -211,31 +239,13 @@ std::ostream& Particle::show(std::ostream& out) const
   out << std::endl;
 
   out << inset << inset << "float attributes:" << std::endl;
-  std::map<FloatKey, FloatIndex>::const_iterator iter2;
-  for (iter2 = float_indexes_.begin(); iter2 != float_indexes_.end(); ++iter2) {
-    out << inset << inset << inset << iter2->first << "  "
-        << model_->get_model_data()->get_value(iter2->second);
-    if (model_->get_model_data()->get_is_optimized(iter2->second)) {
-      out << " (optimized)" << std::endl;
-    } else {
-      out << std::endl;
-    }
-  }
+  float_indexes_.show(out, "    ");
 
   out << inset << inset << "int attributes:" << std::endl;
-  std::map<IntKey, IntIndex>::const_iterator iter3;
-  for (iter3 = int_indexes_.begin(); iter3 != int_indexes_.end(); ++iter3) {
-    out << inset << inset << inset << iter3->first << "  "
-        << model_->get_model_data()->get_value(iter3->second) << std::endl;
-  }
+  int_indexes_.show(out, "    ");
 
   out << inset << inset << "string attributes:" << std::endl;
-  std::map<StringKey, StringIndex>::const_iterator iter4;
-  for (iter4 = string_indexes_.begin(); iter4 != string_indexes_.end();
-       ++iter4) {
-    out << inset << inset << inset << iter4->first << "  "
-        << model_->get_model_data()->get_value(iter4->second) << std::endl;
-  }
+  string_indexes_.show(out, "    ");
   return out;
 }
 
