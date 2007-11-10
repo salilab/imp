@@ -93,7 +93,7 @@ void ModelData::set_is_optimized(const FloatIndex idx, bool is_optimized)
 
 
 //! Set all derivatives to zero.
-void ModelData::zero_derivatives(void)
+void ModelData::zero_derivatives()
 {
   for (size_t i = 0; i < float_data_.size(); i++) {
     float_data_[i].deriv_ = (Float) 0.0;
@@ -177,7 +177,7 @@ void OptFloatIndexIterator::reset(ModelData* model_data)
     make sure it is called by the next call to get().
     \return True if another optimizable variable is available.
  */
-bool OptFloatIndexIterator::next(void)
+bool OptFloatIndexIterator::next()
 {
   FloatIndex fi;
 
@@ -198,7 +198,7 @@ bool OptFloatIndexIterator::next(void)
 /** Should only be called if next() returned True.
     \return the index of the Float variable.
  */
-FloatIndex OptFloatIndexIterator::get(void) const
+FloatIndex OptFloatIndexIterator::get() const
 {
   FloatIndex fi;
 

@@ -37,7 +37,7 @@ public:
   //! Get pointer to all model particle data.
   /** \return pointer to all model particle data.
    */
-  ModelData* get_model_data(void) const;
+  ModelData* get_model_data() const;
 
   //! Add a particle to the model.
   /** \param[in] particle Pointer to new particle.
@@ -107,17 +107,17 @@ public:
   //! Save the state of the model to the trajectory file.
   /** Currently hardcoded for "x", "y" and "z" particle float attributes.
    */
-  void save_state(void);
+  void save_state();
 
   //! Show the model contents.
   /** \param[in] out Stream to write model description to.
    */
   void show (std::ostream& out = std::cout) const;
 
-  std::string version(void) const {
+  std::string version() const {
     return "0.5.0";
   }
-  std::string last_modified_by(void) const {
+  std::string last_modified_by() const {
     return "Bret Peterson";
   }
 
@@ -162,13 +162,13 @@ public:
       called by the next call to get().
       \return True if another particle is available.
    */
-  bool next(void);
+  bool next();
 
   //! Return the next particle.
   /** Should only be called if next() returned True.
       \return Pointer to the next particle, or null if out of bounds.
    */
-  Particle* get(void);
+  Particle* get();
 
 protected:
   int cur_;
@@ -194,13 +194,13 @@ public:
       make sure it is called by the next call to get().
       \return True if another restraint set is available.
    */
-  bool next(void);
+  bool next();
 
   //! Return the current restraint set.
   /** Should only be called if next() returned True.
       \return pointer to the restraint set, or null if out of bounds.
    */
-  Restraint* get(void);
+  Restraint* get();
 
 protected:
   int cur_;

@@ -35,7 +35,7 @@ Model::~Model ()
 //! Get pointer to all model particle data.
 /** \return pointer to all model particle data.
  */
-ModelData* Model::get_model_data(void) const
+ModelData* Model::get_model_data() const
 {
   return model_data_;
 }
@@ -211,7 +211,7 @@ void Model::set_up_trajectory(const std::string trajectory_path,
 //! Save the state of the model to the trajectory file.
 /** \warning Currently hardcoded for "x", "y" and "z" particle float attributes.
  */
-void Model::save_state(void)
+void Model::save_state()
 {
   if (!trajectory_on_) {
     return;
@@ -286,7 +286,7 @@ void ParticleIterator::reset(Model* model)
     called by the next call to get().
     \return True if another particle is available.
  */
-bool ParticleIterator::next(void)
+bool ParticleIterator::next()
 {
   cur_ += 1;
   if (cur_ >= (int) model_->particles_.size()) {
@@ -302,7 +302,7 @@ bool ParticleIterator::next(void)
 /** Should only be called if next() returned True.
     \return Pointer to the next particle, or null if out of bounds.
  */
-Particle* ParticleIterator::get(void)
+Particle* ParticleIterator::get()
 {
   if (cur_ >= (int) model_->particles_.size()) {
     return NULL;
@@ -328,7 +328,7 @@ void RestraintIterator::reset(Model* model)
     make sure it is called by the next call to get().
     \return True if another restraint set is available.
  */
-bool RestraintIterator::next(void)
+bool RestraintIterator::next()
 {
   cur_ += 1;
   if (cur_ >= (int) model_->restraints_.size()) {
@@ -344,7 +344,7 @@ bool RestraintIterator::next(void)
 /** Should only be called if next() returned True.
     \return pointer to the restraint set, or null if out of bounds.
  */ 
-Restraint* RestraintIterator::get(void)
+Restraint* RestraintIterator::get()
 {
   if (cur_ >= (int) model_->restraints_.size()) {
     return NULL;

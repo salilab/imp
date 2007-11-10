@@ -55,7 +55,7 @@ public:
   //! Get pointer to model particle data.
   /** \return all particle data in the model.
    */
-  Model* get_model(void) const {
+  Model* get_model() const {
     return model_;
   }
 
@@ -167,7 +167,7 @@ public:
       particles.
       \return true it the particle is active.
    */
-  bool get_is_active(void) const {
+  bool get_is_active() const {
     return is_active_;
   }
 

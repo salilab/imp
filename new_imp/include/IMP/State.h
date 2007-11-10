@@ -33,10 +33,10 @@ public:
   virtual void update() = 0;
 
   virtual void show(std::ostream& out = std::cout) const;
-  virtual std::string version(void) const {
+  virtual std::string version() const {
     return "unknown";
   }
-  virtual std::string last_modified_by(void) const {
+  virtual std::string last_modified_by() const {
     return "unknown";
   }
   //! Get the name of the restraint

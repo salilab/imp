@@ -33,10 +33,10 @@ public:
   //! Perform a single dynamics step.
   virtual void step();
 
-  virtual std::string version(void) const {
+  virtual std::string version() const {
     return "0.1";
   }
-  virtual std::string last_modified_by(void) const {
+  virtual std::string last_modified_by() const {
     return "Ben Webb";
   }
 

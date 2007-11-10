@@ -101,7 +101,7 @@ public:
   void set_is_optimized(const FloatIndex idx, bool is_optimized);
 
   //! Set all derivatives to zero.
-  void zero_derivatives(void);
+  void zero_derivatives();
 
   //! Add particle int attribute to the model.
   /** The returned index can be used for obtaining and setting the
@@ -158,7 +158,7 @@ protected:
   void add_to_deriv(const FloatIndex idx, const Float value);
 
   //! used by model to see if restraints need to check their particles
-  bool check_particles_active(void) {
+  bool check_particles_active() {
     return check_particles_active_;
   }
   void set_check_particles_active(bool check_particles_active) {
@@ -207,13 +207,13 @@ public:
       make sure it is called by the next call to get().
       \return True if another optimizable variable is available.
    */
-  bool next(void);
+  bool next();
 
   //! Return the current available optimizable Float variable.
   /** Should only be called if next() returned True.
       \return the index of the Float variable.
    */
-  FloatIndex get(void) const;
+  FloatIndex get() const;
 
 protected:
   int cur_;

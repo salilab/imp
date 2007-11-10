@@ -44,7 +44,7 @@ void Restraint::set_is_active(const bool is_active)
 //! Get whether the restraint is active. i.e. if it should be evaluated.
 /** \return true if the restraint is active.
  */
-bool Restraint::get_is_active(void) const
+bool Restraint::get_is_active() const
 {
   return is_active_ && are_particles_active_;
 }
@@ -70,7 +70,7 @@ void Restraint::show(std::ostream& out) const
 /** If not, inactivate self. Called when at least one model particle
     has been inactivated.
  */
-void Restraint::check_particles_active(void)
+void Restraint::check_particles_active()
 {
   are_particles_active_ = true;
   for (size_t i = 0; i < particles_.size(); i++) {
