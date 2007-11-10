@@ -18,6 +18,7 @@ def _check(context):
     context.env['EM_CPPPATH'] = srcpath
     context.env['EM_LIBPATH'] = srcpath
     context.env['EM_LIBS'] = ['em']
+    context.env['EM_EMPY'] = os.path.join(em, 'bin', 'empy.sh')
     context.Result(em)
     return True
 
@@ -25,7 +26,7 @@ def configure_check(env):
     custom_tests = {'CheckEMLib':_check}
     conf = env.Configure(custom_tests=custom_tests)
     if conf.CheckEMLib() is not True:
-        for suff in ('CPPPATH', 'LIBPATH', 'LIBS'):
+        for suff in ('CPPPATH', 'LIBPATH', 'LIBS', 'EMPY'):
             env['EM_' + suff] = ""
     conf.Finish()
 
