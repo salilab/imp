@@ -8,37 +8,39 @@ IMPParticlesAccessPoint::IMPParticlesAccessPoint(Model& model_,
     std::string radius_att_name_,
     std::string weight_att_name_)
 {
+
   model = &model_;
   particle_indexes =  particle_indexes_;
-  radius_att_name =  radius_att_name_;
-  weight_att_name  =  weight_att_name_;
+  create_keys(radius_att_name_,weight_att_name_);
 }
 
 
-void IMPParticlesAccessPoint::InitSingleAttIndexes(std::vector<int> &data,
-    const std::string &attribute_name)
-{
-  data.clear();
-  for (std::vector<int>::const_iterator it = particle_indexes.begin(); it != particle_indexes.end(); it++) {
-    data.push_back(model->get_particle(*it)->get_float_index(attribute_name).get_index());
+IMPParticlesAccessPoint::IMPParticlesAccessPoint(
+    const IMPParticlesAccessPoint &other) {
+  model = other.model;
+  for (unsigned int i=0;i<other.particle_indexes.size();i++) {
+    particle_indexes.push_back(other.particle_indexes[i]);
   }
+  radius_key=other.radius_key;
+  weight_key=other.weight_key;
+  x_key=other.x_key;
+  y_key=other.y_key;
+  z_key=other.z_key;
 }
 
 
-void IMPParticlesAccessPoint::InitAllAttIndexes()
-{
-  InitSingleAttIndexes(x_indexes,"X");
-  InitSingleAttIndexes(y_indexes,"Y");
-  InitSingleAttIndexes(z_indexes,"Z");
-  InitSingleAttIndexes(r_att_indexes,radius_att_name);
-  InitSingleAttIndexes(w_att_indexes,weight_att_name);
-}
-
-
-void IMPParticlesAccessPoint::ReSelect(std::vector<int>& particle_indexes_)
-{
+void IMPParticlesAccessPoint::ReSelect(std::vector<int>& particle_indexes_) {
   particle_indexes = particle_indexes_;
-  InitAllAttIndexes();
+}
+
+
+void IMPParticlesAccessPoint::create_keys(std::string radius_att_name_,
+                                          std::string weight_att_name_) {
+  radius_key = FloatKey(radius_att_name_.c_str());
+  weight_key = FloatKey(weight_att_name_.c_str());
+  x_key      = FloatKey(x_att_name);
+  y_key      = FloatKey(y_att_name);
+  z_key      = FloatKey(z_att_name);
 }
 
 

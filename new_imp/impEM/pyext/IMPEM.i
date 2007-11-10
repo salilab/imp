@@ -18,7 +18,10 @@
 namespace IMP {
   class Model;
   typedef float Float;
+  class FloatKey;
+  class DerivativeAccumulator;
   class Restraint;
 }
+
 %include "../IMPParticlesAccessPoint.h"
 %include "../EMFitRestraint.h"

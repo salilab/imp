@@ -1,18 +1,6 @@
 #ifndef _IMP_PARTICLES_ACCESS_POINT_H
 #define _IMP_PARTICLES_ACCESS_POINT_H
 
-/*
-  CLASS
-
-  KEYWORDS
-
-  AUTHORS
-  Keren Lasker (mailto: kerenl@salilab.org)
-
-
-  OVERVIEW TEXT
-
-*/
 #include <vector>
 #include <map>
 
@@ -23,62 +11,64 @@
 
 #include "ParticlesAccessPoint.h"
 
+
+
 namespace IMP
 {
-
+  #define x_att_name "x"
+  #define y_att_name "y"
+  #define z_att_name "z"
+  //!
 class IMPDLLEXPORT IMPParticlesAccessPoint : public ParticlesAccessPoint
 {
 
 public:
   IMPParticlesAccessPoint() {}
-
+  //! Constructor
+  /** /param[in] model 
+      /param[in] particle_indexes a vector that contains the indexes of the
+                                  particles.
+      /param[in] radius_att_name the attribute name of the radius
+      /param[in] weight_att_name the attribute name of the weight 
+   */
   IMPParticlesAccessPoint(Model& model,
                           std::vector<int>& particle_indexes,
                           std::string radius_att_name,
                           std::string weight_att_name);
 
+  //! copy constructor
+  IMPParticlesAccessPoint( const IMPParticlesAccessPoint &other);
 
-  void InitSingleAttIndexes(std::vector<int> &data,
-                            const std::string &attribute_name);
-  void InitAllAttIndexes();
   void ReSelect(std::vector<int>& particle_indexes);
 
-  int size() {
+  int get_size() const{
     return particle_indexes.size();
   }
-  int x_float_ind(int ind) {
-    return x_indexes[ind];
+  float get_x(int ind) const{
+    return model->get_particle(ind)->get_value(x_key);
   }
-  int y_float_ind(int ind) {
-    return y_indexes[ind];
+  float get_y(int ind) const{
+    return model->get_particle(ind)->get_value(y_key);
   }
-
-  int z_float_ind(int ind) {
-    return z_indexes[ind];
+  float get_z(int ind) const{
+    return model->get_particle(ind)->get_value(z_key);
   }
-
-  float x(int ind) {
-    return model->get_model_data()->get_float(x_indexes[ind]);
+  float get_r(int ind) const{
+    return model->get_particle(ind)->get_value(radius_key);
   }
-  float y(int ind) {
-    return model->get_model_data()->get_float(y_indexes[ind]);
+  float get_w(int ind) const{
+    return model->get_particle(ind)->get_value(weight_key);
   }
-  float z(int ind) {
-    return model->get_model_data()->get_float(z_indexes[ind]);
-  }
-  float r(int ind) {
-    return model->get_model_data()->get_float(r_att_indexes[ind]);
-  }
-  float w(int ind) {
-    return model->get_model_data()->get_float(w_att_indexes[ind]);
-  }
+  FloatKey get_x_key() const { return x_key;}
+  FloatKey get_y_key() const { return y_key;}
+  FloatKey get_z_key() const { return z_key;}
 private:
+
+  void create_keys(std::string radius_att_name_, std::string weight_att_name_);
+
   Model *model;
   std::vector<int> particle_indexes;
-  std::vector<int> x_indexes,y_indexes,z_indexes;
-  std::vector<int> r_att_indexes,w_att_indexes;
-  std::string radius_att_name,weight_att_name;
-
+  FloatKey radius_key,weight_key,x_key,y_key,z_key;
 };
 
 }
