@@ -47,22 +47,22 @@ public:
   //! Get whether the restraint is active. i.e. if it should be evaluated.
   /** \return true if the restraint is active.
    */
-  bool get_is_active(void) const;
+  bool get_is_active() const;
 
   //! Check if all necessary particles are still active.
   /** If not, inactivate self. Called when at least one model particle
       has been inactivated.
    */
-  virtual void check_particles_active(void);
+  virtual void check_particles_active();
 
   //! Show the current restraint.
   /** \param[in] out Stream to send restraint description to.
    */
   virtual void show(std::ostream& out) const;
 
-  virtual std::string version(void) const = 0;
+  virtual std::string version() const = 0;
 
-  virtual std::string last_modified_by(void) const = 0;
+  virtual std::string last_modified_by() const = 0;
 
   //! Get the name of the restraint
   const std::string& get_name() const {

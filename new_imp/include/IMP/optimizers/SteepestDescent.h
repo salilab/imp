@@ -36,10 +36,10 @@ public:
    */
   virtual Float optimize(Model& model, int max_steps, Float threshold=0.0);
 
-  virtual std::string version(void) {
+  virtual std::string version() {
     return "0.5.0";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by() {
     return "Bret Peterson";
   }
 

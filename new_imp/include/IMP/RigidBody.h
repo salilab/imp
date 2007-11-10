@@ -28,7 +28,7 @@ public:
   //! Get the number of particles in the rigid body.
   /** \return Number of particles in the body.
    */
-  int get_num_particles(void) const;
+  int get_num_particles() const;
 protected:
   int num_particles_;
 };

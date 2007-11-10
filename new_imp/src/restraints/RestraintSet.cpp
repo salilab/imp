@@ -90,7 +90,7 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
 //! Called when at least one particle has been inactivated.
 /** Check each restraint to see if it changes its active status.
  */
-void RestraintSet::check_particles_active(void)
+void RestraintSet::check_particles_active()
 {
   for (size_t i=0; i < restraints_.size(); i++) {
     restraints_[i]->check_particles_active();

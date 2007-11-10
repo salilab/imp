@@ -25,10 +25,10 @@ public:
   //! Optimize the model and return the final score.
   virtual Float optimize(Model& model, int max_steps, Float threshold=0.0) = 0;
 
-  virtual std::string version(void) const {
+  virtual std::string version() const {
     return "unknown";
   }
-  virtual std::string last_modified_by(void) const {
+  virtual std::string last_modified_by() const {
     return "unknown";
   }
 };

@@ -134,7 +134,7 @@ class IMPDLLEXPORT ScoreFuncParams
 public:
   ScoreFuncParams() {}
   virtual ~ScoreFuncParams() {}
-  virtual ScoreFunc* create_score_func(void) = 0;
+  virtual ScoreFunc* create_score_func() = 0;
 };
 
 
@@ -149,7 +149,7 @@ public:
   //! Create a new score function with the current set of parameters.
   /** \return pointer to score function.
    */
-  virtual ScoreFunc* create_score_func(void);
+  virtual ScoreFunc* create_score_func();
 
   //! Set the mean to use in calculating this score function.
   /** \param[in] mean Value for the mean.

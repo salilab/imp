@@ -55,7 +55,7 @@ protected:
   public:
     RestraintScore() {}
     ~RestraintScore() {}
-    void evaluate(void) {
+    void evaluate() {
       score_ = rsr_->evaluate(false);
     }
     bool operator<(const RestraintScore& rs) const {

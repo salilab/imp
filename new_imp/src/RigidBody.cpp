@@ -34,7 +34,7 @@ void RigidBody::set_num_particles(int num_particles)
 //! Get the number of particles in the rigid body.
 /** \return Number of particles in the body.
  */
-int RigidBody::get_num_particles(void) const
+int RigidBody::get_num_particles() const
 {
   return num_particles_;
 }

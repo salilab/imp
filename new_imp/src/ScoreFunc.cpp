@@ -188,7 +188,7 @@ void BasicScoreFuncParams::set_score_func_type(std::string score_func_type)
 //! Create a new score function with the current set of parameters.
 /** \return pointer to score function.
  */
-ScoreFunc* BasicScoreFuncParams::create_score_func(void)
+ScoreFunc* BasicScoreFuncParams::create_score_func()
 {
   if (score_func_type_ == "harmonic") {
     return new Harmonic(mean_, sd_);
