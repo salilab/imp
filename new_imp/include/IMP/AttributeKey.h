@@ -8,9 +8,11 @@
 #ifndef __IMP_ATTRIBUTE_KEY_H
 #define __IMP_ATTRIBUTE_KEY_H
 
+#include "Base_Types.h"
 #include "utility.h"
 #include "log.h"
 #include <map>
+#include <vector>
 
 
 namespace IMP
