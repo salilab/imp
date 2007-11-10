@@ -4,7 +4,7 @@
 
 #include "IMP/IMP_config.h"
 #include "IMP/Model.h"
-
+#include "IMP/restraints/Restraint.h"
 #include "DensityMap.h"
 #include "CoarseCC.h"
 #include "SampledDensityMap.h"
@@ -27,16 +27,16 @@ public:
 
   virtual ~EMFitRestraint();
 
-  virtual Float evaluate(bool calc_deriv);
+  virtual Float evaluate(DerivativeAccumulator *accum);
 
   //! status
-  virtual void show (std::ostream& out = std::cout) {
+  virtual void show (std::ostream& out = std::cout) const{
     // TODO - add implementation
   }
-  virtual std::string version(void) {
+  virtual std::string version(void) const{
     return "0.0.1";
   }
-  virtual std::string last_modified_by(void) {
+  virtual std::string last_modified_by(void) const{
     return "Keren";
   }
 
@@ -44,12 +44,12 @@ private:
 
   DensityMap *target_dens_map;
   SampledDensityMap *model_dens_map;
-  //! reference to the IMP environment
+  // reference to the IMP environment
   ModelData *model_data;
   float scalefac;
   int num_particles;
   IMPParticlesAccessPoint access_p;
-  //! derivaties
+  // derivatives
   vector<Float> dx,dy,dz;
 };
 
