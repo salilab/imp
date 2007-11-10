@@ -81,12 +81,20 @@ private:
 }
 
 //! A general exception for an error in IMP
-struct IMPDLLEXPORT ErrorException: public std::exception {
-
+class IMPDLLEXPORT ErrorException: public std::exception {
 };
 
-//! A an exception for an request for an invalid member of a container
-struct IMPDLLEXPORT IndexException: public std::exception {
+//! An exception for an invalid model state
+class IMPDLLEXPORT InvalidStateException : public std::exception {
+public:
+  //! just eat the string for now
+  template <class T>
+  InvalidStateException(T){}
+};
+
+//! An exception for a request for an invalid member of a container
+class IMPDLLEXPORT IndexException: public std::exception {
+public:
   //! just eat the string for now
   template <class T>
   IndexException(T){}

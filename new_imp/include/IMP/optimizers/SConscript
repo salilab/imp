@@ -1,7 +1,8 @@
 import os.path
 Import('env')
 
-files = ['ConjugateGradients.h', 'Optimizer.h', 'SteepestDescent.h']
+files = ['ConjugateGradients.h', 'Optimizer.h', 'SteepestDescent.h',
+         'MolecularDynamics.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'optimizers')

@@ -15,6 +15,7 @@
 #include "IMP/optimizers/Optimizer.h"
 #include "IMP/optimizers/SteepestDescent.h"
 #include "IMP/optimizers/ConjugateGradients.h"
+#include "IMP/optimizers/MolecularDynamics.h"
 #include "IMP/ScoreFunc.h"
 #include "IMP/restraints/RestraintSet.h"
 #include "IMP/RigidBody.h"

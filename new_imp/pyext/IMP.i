@@ -46,6 +46,7 @@ namespace std {
 %include "IMP/optimizers/Optimizer.h"
 %include "IMP/optimizers/SteepestDescent.h"
 %include "IMP/optimizers/ConjugateGradients.h"
+%include "IMP/optimizers/MolecularDynamics.h"
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/TorusRestraint.h"
 %include "IMP/restraints/CoordinateRestraint.h"

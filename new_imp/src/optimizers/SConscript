@@ -1,6 +1,7 @@
 Import('env')
 
-files = ['Optimizer.cpp', 'SteepestDescent.cpp', 'ConjugateGradients.cpp']
+files = ['Optimizer.cpp', 'SteepestDescent.cpp', 'ConjugateGradients.cpp',
+         'MolecularDynamics.cpp']
 
 files = [File(x) for x in files]
 Return('files')
