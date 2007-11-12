@@ -12,6 +12,8 @@
 #include "IMP/log.h"
 #include "IMP/Base_Types.h"
 #include "IMP/Particle.h"
+#include "IMP/decorators/HierarchyDecorator.h"
+#include "IMP/decorators/NameDecorator.h"
 #include "IMP/optimizers/Optimizer.h"
 #include "IMP/optimizers/SteepestDescent.h"
 #include "IMP/optimizers/ConjugateGradients.h"

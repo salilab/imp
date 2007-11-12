@@ -39,15 +39,55 @@ inline void AttributeTable<T>::insert(Key k, Value v)
 
 template <class T>
 inline std::ostream &AttributeTable<T>::show(std::ostream &out,
-                                             const char *prefix) const
+                                             const char *prefix,
+                                             ModelData *md) const
 {
   for (unsigned int i=0; i< map_.size(); ++i) {
     if (map_[i] != Value()) {
-      out << prefix << "\""
-      << Key::get_string(i) << "\": " << map_[i] << std::endl;
+      out << prefix
+          << Key::from_index(i) << ": index = " << map_[i];
+      if (md != NULL) {
+        out << ", value= " << md->get_value(map_[i]);
+      }
+      out << std::endl;
     }
   }
   return out;
+}
+
+void show_attributes(std::ostream &out) {
+  if (attribute_key_data.size() < attribute_table_index(Float())) {
+    out << "Float attributes are ";
+    for (unsigned int i=0; 
+         i< attribute_key_data[attribute_table_index(Float())].rmap.size();
+         ++i) {
+      out << "\"" 
+          << attribute_key_data[attribute_table_index(Float())].rmap[i]
+          << "\" ";
+    }
+    out << std::endl;
+  }
+  if (attribute_key_data.size() < attribute_table_index(Int())) {
+    out << "Int attributes are ";
+    for (unsigned int i=0; 
+         i< attribute_key_data[attribute_table_index(Int())].rmap.size();
+         ++i) {
+      out << "\"" 
+          << attribute_key_data[attribute_table_index(Int())].rmap[i]
+          << "\" ";
+    }
+  }
+  if (attribute_key_data.size() < attribute_table_index(String())) {
+    out << "String attributes are ";
+    for (unsigned int i=0; 
+         i< attribute_key_data[attribute_table_index(String())].rmap.size(); 
+         ++i) {
+      out << "\"" 
+          << attribute_key_data[attribute_table_index(String())].rmap[i]
+          << "\" ";
+    }
+    out << std::endl;
+  }
 }
 
 } /* namespace internal */
@@ -56,8 +96,18 @@ inline std::ostream &AttributeTable<T>::show(std::ostream &out,
 //! Constructor
 Particle::Particle(): model_(NULL)
 {
-  IMP_LOG(VERBOSE, "create particle");
+  IMP_LOG(VERBOSE, "create particle" << std::endl);
   is_active_ = true;
+}
+
+//! Constructor
+Particle::~Particle()
+{
+  IMP_LOG(VERBOSE, "destroy particle " << *this << std::endl);
+  IMP_assert(get_model() == NULL,
+             "Attemping to delete particle while it is still in a model.\n"
+             << " This probably reflects premature destruction"
+             << " of python references.\n");
 }
 
 
@@ -137,6 +187,7 @@ std::ostream& Particle::show(std::ostream& out) const
 {
   char* inset = "  ";
   out << std::endl;
+  out << "--"<< get_index() << "--" << std::endl;
   if (is_active_) {
     out << inset << inset << "active";
   } else {
@@ -144,15 +195,18 @@ std::ostream& Particle::show(std::ostream& out) const
   }
   out << std::endl;
 
-  out << inset << inset << "float attributes:" << std::endl;
-  float_indexes_.show(out, "    ");
+  if (get_model() != NULL ) {
+    out << inset << inset << "float attributes:" << std::endl;
+    float_indexes_.show(out, "    ", get_model()->get_model_data());
 
-  out << inset << inset << "int attributes:" << std::endl;
-  int_indexes_.show(out, "    ");
+    out << inset << inset << "int attributes:" << std::endl;
+    int_indexes_.show(out, "    ", get_model()->get_model_data());
 
-  out << inset << inset << "string attributes:" << std::endl;
-  string_indexes_.show(out, "    ");
+    out << inset << inset << "string attributes:" << std::endl;
+    string_indexes_.show(out, "    ", get_model()->get_model_data());
+  }
   return out;
 }
+
 
 }  // namespace IMP

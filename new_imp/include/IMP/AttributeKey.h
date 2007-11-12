@@ -39,6 +39,9 @@ inline unsigned int attribute_table_index(String)
   return 2;
 }
 
+// print a list of attributes used so far by the program
+void IMPDLLEXPORT show_attributes(std::ostream &out);
+
 extern IMPDLLEXPORT std::vector<AttributeKeyData> attribute_key_data;
 
 template <class T>
@@ -60,6 +63,8 @@ class AttributeKey
   friend class internal::AttributeTable<T>;
   int str_;
 
+  typedef T AttributeType;
+
   static internal::AttributeKeyData& data() {
     unsigned int i= internal::attribute_table_index(T());
     if ( internal::attribute_key_data.size() <= i) {
@@ -78,8 +83,13 @@ class AttributeKey
                << " vs " << data().rmap.size());
     return data().rmap[i];
   }
-public:
 
+  static AttributeKey<T> from_index(unsigned int i) {
+    AttributeKey<T> ret;
+    ret.str_=i;
+    return ret;
+  }
+public:
 
 
   typedef AttributeKey<T> This;
@@ -125,6 +135,7 @@ public:
 
 IMP_OUTPUT_OPERATOR_1(AttributeKey)
 
+class ModelData;
 
 namespace internal {
 
@@ -146,13 +157,17 @@ public:
   }
   void insert(Key k, Value v);
   bool contains(Key k) const {
-    return map_.size() > k.get_index()
+    return k.get_index() < map_.size()
            && map_[k.get_index()] != Value();
   }
-  std::ostream &show(std::ostream &out, const char *prefix="") const;
+  std::ostream &show(std::ostream &out, const char *prefix="",
+                     ModelData* md=NULL) const;
 };
 
 IMP_OUTPUT_OPERATOR_1(AttributeTable)
+
+
+
 
 }
 

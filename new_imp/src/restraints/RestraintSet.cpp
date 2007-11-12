@@ -24,10 +24,17 @@ RestraintSet::RestraintSet(const std::string& name)
 
 
 //! Destructor
+/** \todo Should reference count restraints correctly, to avoid deleting
+          restraints here which live in two or more RestraintSets.
+ */
 RestraintSet::~RestraintSet()
 {
-  IMP_LOG(VERBOSE, "Delete RestraintSet: beware of early Python calls to "
-                   "destructor.");
+  IMP_LOG(VERBOSE, "Delete RestraintSet");
+  for (unsigned int i=0; i< restraints_.size(); ++i) {
+    restraints_[i]->set_model(NULL);
+    delete restraints_[i];
+  }
+
 }
 
 

@@ -17,7 +17,7 @@ namespace IMP
 //! Constructor
 State::State(std::string name) : name_(name)
 {
-  model_data_=NULL;
+  model_=NULL;
   IMP_LOG(VERBOSE, "State constructed");
 }
 
@@ -32,9 +32,9 @@ State::~State()
 //! Give accesss to model particle data.
 /** \param[in] model_data All particle data in the model.
  */
-void State::set_model_data(ModelData* model_data)
+void State::set_model(Model* model)
 {
-  model_data_ = model_data;
+  model_ = model;
 }
 
 

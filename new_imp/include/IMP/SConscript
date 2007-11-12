@@ -13,3 +13,4 @@ env.Alias('install', inst)
 # Subdirectories
 SConscript('restraints/SConscript')
 SConscript('optimizers/SConscript')
+SConscript('decorators/SConscript')

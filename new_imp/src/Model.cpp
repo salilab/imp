@@ -29,6 +29,18 @@ Model::Model ()
 Model::~Model ()
 {
   IMP_LOG(VERBOSE,"Delete Model: beware of early Python calls to destructor.");
+  for (unsigned int i=0; i< particles_.size(); ++i) {
+    particles_[i]->set_model(NULL, ParticleIndex());
+    delete particles_[i];
+  }
+  for (unsigned int i=0; i< restraints_.size(); ++i) {
+    restraints_[i]->set_model(NULL);
+    delete restraints_[i];
+  }
+ for (unsigned int i=0; i< states_.size(); ++i) {
+    states_[i]->set_model(NULL);
+    delete states_[i];
+  }
 }
 
 
@@ -109,7 +121,7 @@ State* Model::get_state(StateIndex i) const
 */
 StateIndex Model::add_state(State* state)
 {
-  state->set_model_data(model_data_);
+  state->set_model(this);
   states_.push_back(state);
   return states_.size()-1;
 }
@@ -268,6 +280,7 @@ void Model::show(std::ostream& out) const
     restraints_[i]->show(out);
   }
 
+  internal::show_attributes(out);
 }
 
 //! Reset the iterator.

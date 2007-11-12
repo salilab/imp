@@ -7,11 +7,12 @@ env.Append(CPPPATH="#/include")
 # Subdirectories:
 restraints_files = SConscript('restraints/SConscript')
 optimizers_files = SConscript('optimizers/SConscript')
+decorators_files = SConscript('decorators/SConscript')
 
 # Source files
 files = ['ScoreFunc.cpp', 'Model.cpp', 'ModelData.cpp',
          'Particle.cpp', 'RigidBody.cpp', 'State.cpp',
-        ] + restraints_files + optimizers_files
+        ] + decorators_files + restraints_files + optimizers_files
 
 # Build the shared library:
 lib = env.SharedLibrary('imp', files)
