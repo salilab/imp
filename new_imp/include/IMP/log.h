@@ -1,5 +1,5 @@
 /**
- *  \file log.h     Logging and error reporting support.
+ *  \file log.h     \brief Logging and error reporting support.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -165,7 +165,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
     {std::ostream &IMP_STREAM= IMP::get_log_stream(level); expr;}
 
 
-//! Write an warning to a log.
+//! Write a warning to a log.
 /** \param[in] expr An expression to be output to the log. It is prefixed
                     by "WARNING"
  */
@@ -181,7 +181,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 
 
 
-//! Write an warning to a standard error.
+//! Write a warning to standard error.
 /** \param[in] expr An expression to be output to std::cerr. It is prefixed
                     by "ERROR"
  */
@@ -227,7 +227,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 #define IMP_assert(expr, message)
 #endif
 
-//! An runtime check for IMP.
+//! A runtime check for IMP.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
     \param[in] exception Throw the object constructed by this expression.
@@ -238,7 +238,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
     throw exception; \
   }
 
-//! An runtime failure for IMP.
+//! A runtime failure for IMP.
 /** \param[in] message Write this message if the assertion fails.
     \param[in] exception Throw the object constructed by this expression.
  */
