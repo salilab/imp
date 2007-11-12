@@ -46,6 +46,7 @@ public:
 
 
   Particle();
+  ~Particle();
 
   //! The index of this particle in the model
   ParticleIndex get_index() const {
@@ -65,7 +66,7 @@ public:
       \param[in] is_optimized Whether the attribute's value should be
                               optimizable.
    */
-  void add_attribute(FloatKey name, const Float value = 0.0,
+  void add_attribute(FloatKey name, const Float value,
                      const bool is_optimized = false);
 
   //! Does particle have a Float attribute with the given name.
@@ -107,7 +108,7 @@ public:
   /** \param[in] name Name of the attribute being added.
       \param[in] value Initial value of the attribute.
    */
-  void add_attribute(IntKey name, const Int value=0);
+  void add_attribute(IntKey name, const Int value);
 
   //! Does particle have an Int attribute with the given name.
   /** \param[in] name Name of the attribute being checked.
@@ -133,7 +134,7 @@ public:
   /** \param[in] name Name of the attribute being added.
       \param[in] value Initial value of the attribute.
    */
-  void add_attribute(StringKey name, const String value=String());
+  void add_attribute(StringKey name, const String value);
 
   //! Does particle have a String attribute with the given name.
   /** \param[in] name Name of the attribute being checked.

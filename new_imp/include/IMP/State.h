@@ -22,7 +22,7 @@ class Model;
 class IMPDLLEXPORT State : public boost::noncopyable
 {
   friend class Model;
-  void set_model_data(ModelData* model_data);
+  void set_model(Model* model);
 
 public:
   State(std::string name=std::string());
@@ -49,12 +49,12 @@ public:
   }
 
   //! return the stored model data
-  ModelData *get_model_data() const {
-    return model_data_;
+  Model *get_model() const {
+    return model_;
   }
 protected:
   // all of the particle data
-  ModelData* model_data_;
+  Model* model_;
 
   std::string name_;
 };

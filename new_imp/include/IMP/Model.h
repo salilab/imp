@@ -118,7 +118,7 @@ public:
     return "0.5.0";
   }
   std::string last_modified_by() const {
-    return "Bret Peterson";
+    return "Daniel Russel";
   }
 
 protected:

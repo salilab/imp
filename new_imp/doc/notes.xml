@@ -81,7 +81,7 @@ was aliased to a new underlying type.</para>
 <sect1 id="model">
 <title>Model</title>
 
-<para>A model contains the particles and restraints that act on those
+<para>An <classname>IMP::Model</classname> contains the particles and restraints that act on those
 particles. It can be optimized with respect to the restraints and particles
 that it contains.</para>
 

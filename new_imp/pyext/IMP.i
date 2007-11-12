@@ -9,13 +9,20 @@
 #define IMP_COMPARISONS_1(f) bool operator==(const This &o) const ; bool operator<(const This &o) const; bool operator>(const This &o) const; bool operator!=(const This &o) const; bool operator<=(const This &o) const; bool operator>=(const This &o) const;
 #define IMP_OUTPUT_OPERATOR_1(f)
 #define IMP_OUTPUT_OPERATOR(f)
-#define IMP_HIDE(f)
 #define IMP_RESTRAINT(a,b) \
   virtual Float evaluate(DerivativeAccumulator *accum);\
   virtual void show(std::ostream &out) const;\
   virtual std::string version() const {return std::string(version_string);}\
   virtual std::string last_modified_by() const {return std::string(lmb_string);}
-
+#define IMP_DECORATOR_GET(a,b,c,d)
+#define IMP_DECORATOR(Name) public: Name(); \
+        typedef Name This;\
+        static Name create(Particle *p);\
+        static Name cast(Particle *p);\
+        bool operator==(const This &o) const ; \
+        bool operator!=(const This &o) const;\
+        Particle* get_particle() const;\
+        Model *get_model() const;
 
 %include "std_vector.i"
 %include "std_map.i"
@@ -26,6 +33,21 @@
 namespace std {
   %template(vectori) vector<int>;
   %template(vectorf) vector<float>;
+}
+
+namespace IMP {
+  %pythonprepend Model::add_particle %{
+        args[1].thisown=0
+  %}
+  %pythonprepend Model::add_restraint %{
+        args[1].thisown=0
+  %}
+  %pythonprepend Model::add_state %{
+        args[1].thisown=0
+  %}
+  %pythonprepend RestraintSet::add_restraint %{
+        args[1].thisown=0
+  %}
 }
 
 %feature("director");
@@ -41,8 +63,11 @@ namespace std {
 %include "IMP/restraints/Restraint.h"
 %include "IMP/restraints/RestraintSet.h"
 %include "IMP/State.h"
+%include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/Particle.h"
+%include "IMP/decorators/HierarchyDecorator.h"
+%include "IMP/decorators/NameDecorator.h"
 %include "IMP/optimizers/Optimizer.h"
 %include "IMP/optimizers/SteepestDescent.h"
 %include "IMP/optimizers/ConjugateGradients.h"

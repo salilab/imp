@@ -21,7 +21,7 @@ namespace IMP
 enum Log_Level {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
 
 //! The targets for IMP logging
-enum Log_Target {COUT, FILE};
+enum Log_Target {COUT, FILE, CERR};
 
 namespace internal {
 
@@ -40,6 +40,8 @@ public:
     if (is_output(l)) {
       if (target_== COUT) {
         return std::cout;
+      } else if (target_== CERR) {
+        return std::cerr;
       } else {
         return fstream_;
       }
@@ -90,6 +92,7 @@ public:
   //! just eat the string for now
   template <class T>
   InvalidStateException(T){}
+  InvalidStateException(){}
 };
 
 //! An exception for a request for an invalid member of a container
@@ -98,6 +101,7 @@ public:
   //! just eat the string for now
   template <class T>
   IndexException(T){}
+  IndexException(){}
 };
 
 //! Get the log object. This really shouldn't be called from C++.
