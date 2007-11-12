@@ -90,7 +90,7 @@ public:
   /** \return index in the list of children of the parent, or -1 if
                     it does not have a parent.
    */
-  unsigned int get_parent_index() const {
+  int get_parent_index() const {
     IMP_DECORATOR_GET(parent_index_key_, Int, return VALUE, return -1);
   }
 
