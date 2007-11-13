@@ -23,11 +23,16 @@ enum Log_Level {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
 //! The targets for IMP logging
 enum Log_Target {COUT, FILE, CERR};
 
-namespace internal {
-
 class IMPDLLEXPORT Log
 {
 public:
+  //! Get a reference to a singleton Log object.
+  static Log& get() {
+    if (!logpt_) {
+      logpt_ = new Log();
+    }
+    return *logpt_;
+  }
 
   Log_Level get_level() {
     return level_;
@@ -63,24 +68,18 @@ public:
     if (!fstream_) {
       std::cerr << "Error opening log file " << k << std::endl;
     }
-  };
-
-
-  Log()  :level_(SILENT), target_(COUT) {
-    static int count=0;
-    ++count;
-    assert(count==1);
   }
+
 private:
 
+  Log()  :level_(SILENT), target_(COUT) {}
   Log(const Log&) {}
 
   Log_Level level_;
   Log_Target target_;
   std::ofstream fstream_;
+  static Log *logpt_;
 };
-
-}
 
 //! A general exception for an error in IMP
 class IMPDLLEXPORT ErrorException: public std::exception {
@@ -104,29 +103,22 @@ public:
   IndexException(){}
 };
 
-//! Get the log object. This really shouldn't be called from C++.
-IMPDLLEXPORT inline internal::Log &get_log()
-{
-  static internal::Log l;
-  return l;
-}
-
 //! Set the current log level for IMP
 IMPDLLEXPORT inline void set_log_level(Log_Level l)
 {
-  get_log().set_level(l);
+  Log::get().set_level(l);
 }
 
 //! Set the target of logs
 IMPDLLEXPORT inline void set_log_target(Log_Target l)
 {
-  get_log().set_target(l);
+  Log::get().set_target(l);
 }
 
 //! Set the file name for the IMP log; must be called if a file is to be used.
 IMPDLLEXPORT inline void set_log_file(std::string l)
 {
-  get_log().set_filename(l);
+  Log::get().set_filename(l);
 }
 
 //! Determine whether a given log level should be output.
@@ -134,7 +126,7 @@ IMPDLLEXPORT inline void set_log_file(std::string l)
  */
 IMPDLLEXPORT inline bool is_log_output(Log_Level l)
 {
-  return get_log().is_output(l);
+  return Log::get().is_output(l);
 }
 
 
@@ -143,7 +135,7 @@ IMPDLLEXPORT inline bool is_log_output(Log_Level l)
  */
 IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 {
-  return get_log().get_stream(l);
+  return Log::get().get_stream(l);
 }
 
 } // namespace IMP
@@ -200,7 +192,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 
 
 //! Set the log level
-#define IMP_SET_LOG_LEVEL(level) IMP::Log::get_log()::set_level(level);
+#define IMP_SET_LOG_LEVEL(level) IMP::Log::get()::set_level(level);
 
 
 
