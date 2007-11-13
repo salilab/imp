@@ -27,8 +27,8 @@ libinst = e.Install(e['libdir'], lib)
 e.Alias('impEM-install', [libinst])
 
 # Subdirectories:
-SConscript('pyext/SConscript')
+pyext = SConscript('pyext/SConscript')
 test = SConscript('test/SConscript')
-e.Depends(test, lib)
+e.Depends(test, [pyext, lib])
 
 Return('lib')
