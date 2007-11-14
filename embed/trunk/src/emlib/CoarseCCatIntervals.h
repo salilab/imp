@@ -37,7 +37,7 @@ public:
     escore         EM score = scalefac * (1-CCC)
   */
   float evaluate(
-		 const DensityMap &em_map,
+		 DensityMap &em_map,
 		 SampledDensityMap &model_map,
 		 const ParticlesAccessPoint &access_p,
 		 std::vector<float> &dvx,std::vector<float>&dvy,std::vector<float>&dvz,

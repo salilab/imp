@@ -26,11 +26,11 @@ DensityMap::DensityMap(const DensityMap &other){
   }
   loc_calculated = other.loc_calculated;
   if (loc_calculated ) {
-  for (int i=0;i<header.nx*header.ny*header.nz;i++) {
-    x_loc[i] = other.x_loc[i];
-    y_loc[i] = other.y_loc[i];
-    z_loc[i] = other.z_loc[i];
-  }
+    for (int i=0;i<header.nx*header.ny*header.nz;i++) {
+      x_loc[i] = other.x_loc[i];
+      y_loc[i] = other.y_loc[i];
+      z_loc[i] = other.z_loc[i];
+    }
   }
 
   data_allocated = other.data_allocated;
@@ -60,10 +60,7 @@ DensityMap::~DensityMap() {
     if (z_loc != NULL)
       delete z_loc;
 
-  }
-
-
-
+}
 
 void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
   int nvox = nx*ny*nz;
@@ -84,8 +81,11 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
     std::cerr << " DensityMap::Read unable to read map encoded in file : " << filename << std::endl;
     throw 1;
   }
+  normalized = false;
+  calcRMS();
   calc_all_voxel2loc();
 }
+
 void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
   writer.Write(filename,data,header);
 }
@@ -108,7 +108,6 @@ float DensityMap::voxel2loc(const int &index,int dim) {
   //TODO - add error handling, dim is not 0,1,2
   return z_loc[index];
 }
-
 
 int DensityMap::loc2voxel(float x,float y,float z) const
 {
@@ -135,9 +134,6 @@ bool DensityMap::part_of_volume(float x,float y,float z) const
   }
 }
 
-
-
-
 void DensityMap::calc_all_voxel2loc() {
 
   if (loc_calculated) 
@@ -148,10 +144,7 @@ void DensityMap::calc_all_voxel2loc() {
   y_loc = new float[nvox];
   z_loc = new float[nvox];
 
-
-
   int ix=0,iy=0,iz=0;
-
   for (int ii=0;ii<nvox;ii++) {
     x_loc[ii] =  ix * header.Objectpixelsize + header.get_xorigin();
     y_loc[ii] =  iy * header.Objectpixelsize + header.get_yorigin();
@@ -170,8 +163,6 @@ void DensityMap::calc_all_voxel2loc() {
   }
   loc_calculated = true;
 }
-
-
 
 void DensityMap::std_normalize() {
   
@@ -200,8 +191,9 @@ void DensityMap::std_normalize() {
 
 float DensityMap::calcRMS() {
 
-  if (rms_calculated)
+  if (rms_calculated) {
     return header.rms;
+  }
 
   float max_value=-1e40, min_value=1e40;
   int  nvox = header.nx * header.ny * header.nz;
@@ -227,19 +219,15 @@ float DensityMap::calcRMS() {
   header.rms = stdval;
 
   return stdval;
-
 }
 
-
-
-  // data managment
+// data managment
 void DensityMap::reset_data() {
   for (int i=0;i<header.nx*header.ny*header.nz;i++) {
     data[i]=0.0;
   }
   normalized = false;
   rms_calculated = false;
-
 }
 
 

@@ -18,7 +18,7 @@ CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd){
 }
 
 float CoarseCCatIntervals::evaluate(
-				     const DensityMap &em_map, 
+				    DensityMap &em_map, 
 				     SampledDensityMap &model_map,
 				     const ParticlesAccessPoint &access_p,
 				     std::vector<float> &dvx,std::vector<float>&dvy,std::vector<float>&dvz,
@@ -34,7 +34,8 @@ float CoarseCCatIntervals::evaluate(
     // The base evaluate function adds the EM contiorbution to the existing derivates.
 
     stored_cc_ = CoarseCC::evaluate(
-			em_map,model_map,
+			em_map,
+			model_map,
 			access_p,
 			dvx,dvy,dvz,
 			scalefac,
