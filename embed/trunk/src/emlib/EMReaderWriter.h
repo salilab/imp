@@ -47,7 +47,7 @@ public:
     static const int MARKERX_OFFSET             = 20;
     static const int MARKERY_OFFSET             = 21;
     static const int LSWAP_OFFSET               = 22;
-    static const float scale                    = 1000.0;
+    static const float scale;
 
     void InitEMHeader(EMHeader &header) {
       header.magic                  = (int)magic;
