@@ -11,8 +11,11 @@
 class CoarseCCatIntervals : public CoarseCC {
 
 public:
+
   CoarseCCatIntervals(
 		      const int &ncd);
+
+  CoarseCCatIntervals();
 
 
 
@@ -47,11 +50,11 @@ public:
 
 
 protected:
-  //  unsigned long eval_interval_;                  // the interval size before recalculating the CC score
-  int calls_counter;          // counts the number of time the evalute function was called
+  void allocate_derivatives_array(int ncd);
+  int calls_counter;          //Number of times the evaluation has been called. The evaluation is only performed the first time and when calls_counter reaches eval_interval. Otherwise the stored_cc_ value is returned
   float stored_cc_ ;                        // Stored correlation value
   float *stored_dvx_,*stored_dvy_,*stored_dvz_; // Stored derivative terms
-
+  bool dv_memory_allocated; // This variable is true when memory for the terms storing the derivatives has been asigned
 };
 
 

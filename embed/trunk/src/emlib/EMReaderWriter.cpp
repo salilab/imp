@@ -1,7 +1,5 @@
 #include "EMReaderWriter.h"
 
-const float EMHeader::EMHeaderParse::scale = 1000.0;
-
 EMHeader::EMHeader(const DensityHeader &header) {
   nx=header.nx;
   ny=header.ny;

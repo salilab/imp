@@ -14,12 +14,13 @@ public:
   DensityHeader() {
     
     top_calculated=false;
-
+    // Initialize some of the parameters of the header
     nx=0;ny=0;nz=0; 
     data_type=5; 
     nxstart=1; nystart=1; nzstart=1;
     
     mx = nxstart + nx - 1; my = nystart + ny - 1; mz = nzstart + nz - 1;
+    xorigin=0.0; yorigin=0.0; zorigin =0.0;
     alpha=90. ; beta=90. ; gamma=90.;
     mapc =1; mapr=2; maps=3;
     ispg=0;

@@ -66,6 +66,10 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     throw 1;
   }	
 
+  // Take into account the possibility of a model map with zero rms
+  if(fabs(model_map.get_header()->rms-0.0)<EPS)
+    return 0.0; 
+
   bool same_origin = em_map.same_origin(model_map);
   int  nvox = em_header->nx*em_header->ny*em_header->nz;
   float ccc = 0.0;
@@ -87,23 +91,30 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
 
   else  { // Compute the CCC taking into account the different origins
 
-    float *xloc = model_map.get_x_loc();	
-    float *yloc = model_map.get_y_loc();	
-    float *zloc = model_map.get_z_loc();
     model_map.get_header_writable()->compute_xyz_top();
 
-    int j; // Index for em_data
+    // Given the same size of the maps and the dimension order, the difference between two positions in voxels is always the same
+    
+    // calculate the difference in voxels between the origin of the  model map and the origin of the em map.
+    float voxel_size = em_map.get_header()->Objectpixelsize;
+    const DensityHeader *em_header = em_map.get_header();
+    const DensityHeader *model_header = model_map.get_header();
+    int ivoxx_shift = (int)floor((model_header->get_xorigin() - em_header->get_xorigin())
+				 / voxel_size);
+    int ivoxy_shift = (int)floor((model_header->get_yorigin()-em_header->get_yorigin())
+				 / voxel_size);
+    int ivoxz_shift = (int)floor((model_header->get_zorigin()-em_header->get_zorigin())
+				 / voxel_size);
 
-    for (int i=0;i<nvox;i++) {
 
-      if (model_data[i] > voxel_data_threshold) { // If the voxel of the model is above the threshold
-	
-	// Check if the voxel belongs to the map volume, and only then compute the correlation
-	if(em_map.part_of_volume(xloc[i],yloc[i],zloc[i])) {
-	  // Get the voxel of the em_map that contains the coordinates of the model voxel
-
-	  j=em_map.loc2voxel(xloc[i],yloc[i],zloc[i]);
-	  ccc = ccc + em_data[j] * model_data[i];
+    int j; // Index for em data
+    int i; // Index for model data
+    // calculate the shift in index of the origin of model_map in em_map ( j can be negative)
+    j=ivoxz_shift * em_header->nx * em_header->ny + ivoxy_shift * em_header->nx + ivoxx_shift;
+    for (i=0;i<nvox;i++) {
+      if (model_data[i] > voxel_data_threshold) { // if the voxel of the model is above the threshold
+	if(j+i>=0 and j+i<nvox)  { // Check if the voxel belongs to the em map volume, and only then compute the correlation
+	  ccc = ccc + em_data[j+i] * model_data[i];
 	}
       }
     }
