@@ -44,6 +44,7 @@ public:
 
 
   //!normailze the density according to standard deviation (stdv). The mean is subtracted from the map, which is then divided by the stdv 
+  // Flag normalize is set to avoid repeated computation
   void std_normalize();
   
 
@@ -52,9 +53,10 @@ public:
 //! Calculate the location of a given voxel.
 /** \param[in] index The voxel index
     \param[in] dim   The dimesion of intereset ( between x:=0,y:=1,z:=2)
-    \return the location (in angstroms) of a given voxel. If the index is not part of the map, the function returns -1. 
+    \return the location (x,y,z) (in angstroms) of a given voxel. If the index is not part of the map, the function returns -1. 
 */
   float voxel2loc(const int &index,int dim);
+
 //! Calculate the voxel of a given location
 /** \param[in] x The position ( in angstroms) of the x coordinate
     \param[in] y The position ( in angstroms) of the y coordinate

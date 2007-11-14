@@ -7,6 +7,7 @@
 #include "ParticlesAccessPoint.h"
 #include <vector>
 #include "exp.h"
+#include "def.h"
 //!CoarseCC is responsible for performing coarse fitting between two density objects. The pixels involved are direves from the positions of N particles.
 class CoarseCC {
 
@@ -16,7 +17,7 @@ public:
   /**Routine for EM-score
 
   INPUT
-  em_map         exp EM map
+  em_map         exp EM map - note: correct RMSD and mean MUST be in the header!
   model_map      map for sampled model
   access_p       access point to the particles data ( location, radii, weight)
   dvx, dvy, dvz  partial derivatives of score with respect to model coordinates
@@ -28,17 +29,14 @@ public:
 */
   
   static float evaluate(
-			const DensityMap &data, 
+			DensityMap &data, 
 			SampledDensityMap &model_map,
 			const ParticlesAccessPoint &access_p,
 			std::vector<float> &dvx, std::vector<float>&dvy, std::vector<float>&dvz, 
 			float scalefac,
 			bool lderiv);
 
-
-
-
-  static void  calcDerivatives(
+  static void  calcDerivatives(const DensityMap &em_map,
 			       SampledDensityMap &model_map,
 			       const ParticlesAccessPoint &access_p,
 			       const float &scalefac,

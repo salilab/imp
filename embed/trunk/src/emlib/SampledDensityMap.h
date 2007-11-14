@@ -35,28 +35,19 @@ public:
   SampledDensityMap(const DensityHeader &header_);
 
   //! Generatea a sampled density map from the particles.
-
-  /*      INPUT
-
-      access_p : particles
-      resolution   : half width the Gaussian
-      voxel_size
-      sig_cutoff   : Choose what should be the sigma cutoff for accurate sampling. It is used in two functions;
-                     (i)  to determine the size of the grid dimensions
-                     (ii) to determine the voxels around the coords participating in the sampling procedure.
-      
-
-
+  /**
+      /param[in] access_p     access point to the particles ( locations, radius, weight)
+      /param[in] resolution   half width the Gaussian
+      /param[in] voxel_size
+      /param[in] sig_cutoff   Choose what should be the sigma cutoff for accurate sampling. It is used in two functions;
+                              (i)  to determine the size of the grid dimensions
+                              (ii) to determine the voxels around the coords participating in the sampling procedure.
    */
   SampledDensityMap(
 		    const ParticlesAccessPoint &access_p,
 		    float resolution,
 		    float voxel_size,
 		    int sig_cuttoff=3);
-
-
-
-
 
   //!Sampling beads on an EM grid
   /**  
@@ -65,23 +56,17 @@ public:
   void resample(
 		const ParticlesAccessPoint &access_p);
 		
-
-
   void calc_sampling_bounding_box  (const float &x,const float &y,const float &z,
 				    const float &kdist,
 				    int &iminx,int &iminy, int &iminz,
 				    int &imaxx,int &imaxy, int &imaxz) const;
+
   KernelParameters *get_kernel_params()  { return &kernel_params;}
 
 
 protected:
 
-  /**
-     Initialize needed parameters for sampling
-     convention: all parameters that start with r correspond to resolution.
-     e.g. rsig: sigma (in Gaussian Fct.) for resolution 
-  */
-
+  //! Initialize needed parameters for sampling convention: all parameters that start with r correspond to resolution. e.g. rsig: sigma (in Gaussian Fct.) for resolution 
   void calculate_particles_bounding_box(
 					const ParticlesAccessPoint &access_p,
 					std::vector<float> &lower_bound,

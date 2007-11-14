@@ -1,16 +1,16 @@
 #include "SampledDensityMap.h"
 
 
-SampledDensityMap::SampledDensityMap(const DensityHeader &header_) :  kernel_params(KernelParameters(header.get_resolution())){
-    header = header_;
-    //allocate the data
-    int nvox = header.nx*header.ny*header.nz;
-    data = new real[nvox]; 
-
-    
-    calc_all_voxel2loc();
-    header.compute_xyz_top();
-  }
+SampledDensityMap::SampledDensityMap(const DensityHeader &header_)  
+{
+  header = header_;
+  kernel_params = KernelParameters(header.get_resolution());
+  //allocate the data
+  int nvox = header.nx*header.ny*header.nz;
+  data = new real[nvox]; 
+  calc_all_voxel2loc();
+  header.compute_xyz_top();
+}
 
 void SampledDensityMap::calculate_particles_bounding_box(
 					 const ParticlesAccessPoint &access_p,
@@ -94,7 +94,6 @@ SampledDensityMap::SampledDensityMap(
 	     resolution,voxel_size,sig_cutoff);
   data = new real[header.nx*header.ny*header.nz];
 
-
   //set up the sampling parameters
   kernel_params = KernelParameters(resolution);
   
@@ -147,6 +146,7 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
 	    tmpz=z_loc[ivox] - access_p.get_z(ii);
 	    rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
 	    tmp = EXP(-rsq * params->get_inv_sigsq()); 
+	    //tmp = exp(-rsq * params->get_inv_sigsq());
 	    // if statement to ensure even sampling within the box
 	    if ( tmp>kernel_params.get_lim() )
 	      data[ivox]+= params->get_normfac() * access_p.get_w(ii) * tmp;
