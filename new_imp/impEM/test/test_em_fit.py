@@ -10,11 +10,7 @@ import IMP.utils
 class test_fitting(IMP.test.IMPTestCase):
     """Class to test pair connectivity restraints"""
 
-
-
     def load_density_map(self):
-
-
         xx=EM.SampledDensityMap()
         self.scene = EM.DensityMap()
         erw = EM.EMReaderWriter()
@@ -23,7 +19,6 @@ class test_fitting(IMP.test.IMPTestCase):
 
 
     def load_particles(self):
-
         radius_key = IMP.FloatKey("radius")
         weight_key = IMP.FloatKey("weight")
         protein_key = IMP.FloatKey("protein")
@@ -63,8 +58,6 @@ class test_fitting(IMP.test.IMPTestCase):
 
 
     def setUp(self):
-
-
         """Build test model and optimizer"""
         self.imp_model = IMP.Model()
 
@@ -84,11 +77,7 @@ class test_fitting(IMP.test.IMPTestCase):
 #        self.assertRaises(IOError, scene.Read, "/not/exist/foo", erw)
 
     def test_em_fit(self):
-        """Test pair connectivity restraint.
-           All particles in a single protein should be connected, and all
-           proteins should be connected, either directly or indirectly
-           through other proteins """
-
+        """Check that correlation of particles with their own density is 1"""
         rs = IMP.RestraintSet("em")
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)

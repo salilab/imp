@@ -21,7 +21,9 @@ namespace IMP {
   class FloatKey;
   class DerivativeAccumulator;
   class Restraint;
+  class Particle;
 }
 
+%include "ParticlesAccessPoint.h"
 %include "../IMPParticlesAccessPoint.h"
 %include "../EMFitRestraint.h"
