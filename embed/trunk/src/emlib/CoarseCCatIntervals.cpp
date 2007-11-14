@@ -4,7 +4,21 @@ CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd){
 
   calls_counter=0;    // Number of times the evaluation has been called. The evaluation is only performed the first time and when calls_counter reaches eval_interval. Otherwise the stored_cc_ value is returned
   stored_cc_ = 0.0;   
+  dv_memory_allocated = false;
+  allocate_derivatives_array(ncd);
+}
 
+CoarseCCatIntervals::CoarseCCatIntervals()
+{
+  calls_counter=0;  
+  stored_cc_ = 0.0;   
+  dv_memory_allocated=false;	  
+}
+ 
+
+void CoarseCCatIntervals::allocate_derivatives_array(int ncd) {
+  if (dv_memory_allocated) 
+    return;
   // Allocate memmory for the derivative terms if not done yet
   stored_dvx_=new float [ncd]; 
   stored_dvy_=new float [ncd]; 
@@ -15,6 +29,7 @@ CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd){
      stored_dvy_[i] = 0.0;
      stored_dvz_[i] = 0.0;
    }
+  dv_memory_allocated=true;
 }
 
 float CoarseCCatIntervals::evaluate(
@@ -44,6 +59,7 @@ float CoarseCCatIntervals::evaluate(
     calls_counter = 1;
 
     if (lderiv) { // sync the derivatives. Now remove the additional contributions ( currently stored in store_dv from the new values
+      allocate_derivatives_array(access_p.get_size());
       for(int i=0;i<access_p.get_size();i++) {
 	 stored_dvx_[i] = dvx[i];
 	 stored_dvy_[i] = dvy[i];

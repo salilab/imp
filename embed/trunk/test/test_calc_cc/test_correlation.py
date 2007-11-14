@@ -40,7 +40,7 @@ class cross_correlation_tests(unittest.TestCase):
 
                 
                 self.ccc = EM.CoarseCC()
-                self.ccc_intervals = EM.CoarseCCatIntervals(self.atoms.get_size())
+                self.ccc_intervals = EM.CoarseCCatIntervals()
 
 
         def calc_simple_correlation(self):

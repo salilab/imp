@@ -119,6 +119,7 @@ private:
   {
     return write(fn,grid);
   }	
+
   int write(const char *fn,const float *pt);
   int write_header(ofstream &s);
   int write_data(ofstream &s,const float *pt);

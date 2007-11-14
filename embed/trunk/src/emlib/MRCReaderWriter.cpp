@@ -8,7 +8,6 @@ int MRCReaderWriter::Read(const char *fn_in, real **data, DensityHeader &head)
   // Read file
   filename.assign(fn_in);
   read(data);
-
   // Translate header to DensityHeader
   header.ToDensityHeader(head);
   return 0;
@@ -84,7 +83,7 @@ int MRCReaderWriter::read_8_data(float *pt)
 	for(size_t i=0;i<n;i++)
 		pt[i]=(float)grid_8bit[i];
 	delete(grid_8bit);
-	cout << "MRC file read in 8-bit mode: grid " << header.nx << "x" << header.ny << "x" << header.nz << endl;
+	//	cout << "MRC file read in 8-bit mode: grid " << header.nx << "x" << header.ny << "x" << header.nz << endl;
 	return ierr;
 }
 
@@ -311,11 +310,11 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
   if(h.data_type==0) // data type not initialized
     mode = 2;
   if(h.data_type==1)
-    mode=0;
+    mode=0; // 8-bits
   else if(h.data_type==2)
-    mode=1;
-  else if(h.data_type==4)
-    mode=2;
+    mode=1;// 16-bits
+  else if(h.data_type==5)
+    mode=2;// 32-bits
 
   nxstart=h.nxstart ; nystart=h.nystart ; nzstart=h.nzstart; // number of first columns in map (default = 0)
   mx=h.mx ; my=h.my ; mz=h.mz; // Number of intervals along each dimension
@@ -359,7 +358,7 @@ int MRCHeader::ToDensityHeader(DensityHeader &h)
   else if(mode==1)
     h.data_type=2;
   else if(mode==2)
-    h.data_type=4;
+    h.data_type=5;
   h.nxstart=nxstart ; h.nystart=nystart ; h.nzstart=nzstart; // number of first columns in map (default = 0)
   h.mx=mx ; h.my=my ; h.mz=mz; // Number of intervals along each dimension
   h.xlen=xlen ; h.ylen=ylen ; h.zlen=zlen; // Cell dimensions (angstroms)

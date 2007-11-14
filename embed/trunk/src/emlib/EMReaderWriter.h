@@ -47,7 +47,11 @@ public:
     static const int MARKERX_OFFSET             = 20;
     static const int MARKERY_OFFSET             = 21;
     static const int LSWAP_OFFSET               = 22;
-    static const float scale;
+    float scale;
+    
+    // Using a static const float scale breaks gcc 4.0:
+    EMHeaderParse() : scale(1000.0) {}
+    
 
     void InitEMHeader(EMHeader &header) {
       header.magic                  = (int)magic;

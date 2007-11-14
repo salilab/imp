@@ -1,40 +1,6 @@
 #test that impEM is able to sample IMP particles on a grid.
-
-
-
 import unittest
 import EM,os,sys
-
-
-
-
-#implement the particle access point class
-class particles_provider( EM.ParticlesAccessPoint):
-	def Init(self):
-		self.x_=[9.0,12.0,4.0]
-		self.y_=[5.0,9.0,5.0]
-		self.z_=[5.0,4.0,5.0]
-		self.w_=[1.0,1.0,1.0]
-		self.r_=[1.0,1.0,1.0]
-		self.size_=3
-
-
-	def get_size(self):
-		return self.size_;
-	def get_x(self,ind):
-		return self.x_[ind];
-	def get_y(self,ind):
-		return self.y_[ind];
-
-	def get_z(self,ind):
-		return self.z_[ind];
-
-	def get_r(self,ind):
-		return self.r_[ind];
-
-	def get_w(self,ind):
-		return self.w_[ind];
-
 
 class test_sample_particles(unittest.TestCase):
 	"""test particles sampling  """
@@ -51,8 +17,10 @@ class test_sample_particles(unittest.TestCase):
 		self.scene.std_normalize()
 
 		
-		self.particles = particles_provider()
-		self.particles.Init()
+		self.particles = EM.particles_provider()
+		self.particles.append(9.,5.,5.,1.,1.)
+ 		self.particles.append(12.,9.,4.,1.,1.)
+ 		self.particles.append(4.,5.,5.,1.,1.)
 
 		self.particles_sampling = EM.SampledDensityMap(
 			self.particles,

@@ -10,6 +10,7 @@
 #include "MapReaderWriter.h"
 
 typedef float real;
+
 //! Class for handeling density maps.
 /*	- CONVENTIONS
 	1) IT IS ASSUMED THAT THE LOCATION OF A VOXEL IS AT THE LOWER XYZ VALUES THAT IT DEFINES AS A BOX.
@@ -139,8 +140,9 @@ protected:
   real *data; // the order is ZYX (Z-slowest)
   bool data_allocated;
 
+  // Locations for each of the voxels of the map (they are precomputed and each one is of size nvox, being nvox the size of the map)
   real *x_loc,*y_loc,*z_loc;
-  bool loc_calculated;
+  bool loc_calculated; // true if the locations have already been computed
 
   bool normalized;
   bool rms_calculated;
