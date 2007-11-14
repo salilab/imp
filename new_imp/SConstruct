@@ -8,7 +8,7 @@ from tools import *
 opts = Options()
 add_common_options(opts, "imp")
 opts.Add(PackageOption('em', 'Location of the emlib package',
-                       os.environ.get('EMINSTALL', False)))
+                       os.environ.get('EMBED', False)))
 env = MyEnvironment(options=opts, require_modeller=False,
                     tools=["default", "doxygen"],
                     toolpath=["../tools"])

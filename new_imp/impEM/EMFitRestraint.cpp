@@ -58,7 +58,7 @@ EMFitRestraint::EMFitRestraint(Model& model_,
 
 
   // normalize the target density data
-  target_dens_map->std_normalize();
+  //target_dens_map->std_normalize();
 
 
   //     IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << endl);
