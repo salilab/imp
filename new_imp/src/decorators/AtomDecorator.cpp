@@ -9,6 +9,7 @@
 #include <sstream>
 #include <IMP/log.h>
 #include <vector>
+#include <limits>
 
 namespace IMP
 {
