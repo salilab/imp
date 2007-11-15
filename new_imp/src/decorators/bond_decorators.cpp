@@ -42,13 +42,13 @@ static void bond_initialize_static_data()
   }
 }
 
-IMPDLLEXPORT void BondDecorator::initialize_static_data()
+void BondDecorator::initialize_static_data()
 {
   bond_initialize_static_data();
 }
 
 
-IMPDLLEXPORT void BondedDecorator::initialize_static_data()
+void BondedDecorator::initialize_static_data()
 {
   bond_initialize_static_data();
 }
