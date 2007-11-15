@@ -14,7 +14,7 @@ namespace IMP
 namespace internal {
 static void graph_add_edge_key(unsigned int i, const GraphData &d)
 {
-  while (!i < d.edge_keys_.size()) {
+  while (i >= d.edge_keys_.size()) {
     std::ostringstream oss;
     oss << d.prefix_ << " edge " << i;
     d.edge_keys_.push_back(IntKey(oss.str().c_str()));
