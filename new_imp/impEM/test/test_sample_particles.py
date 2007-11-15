@@ -4,6 +4,7 @@ import IMP.utils
 import IMPEM
 import EM
 import unittest
+import os
 
 def InitParticle(particles,p_ind_,x_,y_,z_,r_=0.0,w_=1.0,protein_=1):
     """InitParticle(particles_,p_ind_,x_,y_,z_,r_=0.0,w=1.0,protein_=1)
@@ -65,6 +66,7 @@ class SampleTests(unittest.TestCase):
         em_map.calcRMS()
         self.assert_(abs(em_map.get_header().rms - model_map.get_header().rms) < .000001,
                      "standard deviations of maps differ")
+        os.unlink("xxx.em")
 
 if __name__ == '__main__':
     unittest.main()
