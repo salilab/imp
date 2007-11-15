@@ -4,7 +4,9 @@
 
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
+#include <vector>
 
 class ParticlesAccessPoint {
 public:
@@ -24,7 +26,7 @@ public:
 
 class particles_provider : public ParticlesAccessPoint {
 public:
-	vector<float> x,y,z,radii,weights;
+	std::vector<float> x,y,z,radii,weights;
 	
 	~particles_provider(){}
 	particles_provider(void){}
@@ -47,11 +49,11 @@ public:
 
 	void read(const char *filename)
 	{
-		fstream fs;
+		std::fstream fs;
 		int i,ncd;
 		float x_,y_,z_,r_,w_;
 
-		fs.open(filename, fstream::in );
+		fs.open(filename, std::fstream::in );
 		if(!fs.fail())
 		{
 			fs >> ncd; // Read number of coordinates
