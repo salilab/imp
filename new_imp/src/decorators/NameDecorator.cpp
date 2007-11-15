@@ -17,7 +17,7 @@ StringKey NameDecorator::name_key_;
 
 
 
-void NameDecorator::show(std::ostream &out, int level) const
+void NameDecorator::show(std::ostream &out) const
 {
   out << get_name();
 

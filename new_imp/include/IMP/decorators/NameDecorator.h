@@ -17,34 +17,19 @@
 namespace IMP
 {
 
-//! A single name decorator.
+//! A simple decorator which controls the Particle name.
 class IMPDLLEXPORT NameDecorator
 {
-  IMP_DECORATOR(NameDecorator);
+  IMP_DECORATOR(NameDecorator, return p->has_attribute(name_key_),
+                {p->add_attribute(name_key_, "No Name");});
 protected:
   static bool keys_initialized_;
   static StringKey name_key_;
 
-  static bool has_required_attributes(Particle *p) {
-    return p->has_attribute(name_key_);
-  }
-  static void add_required_attributes(Particle *p) {
-    p->add_attribute(name_key_, "No Name");
-  }
-  static void initialize_static_data();
 public:
 
+  IMP_DECORATOR_GET_SET(name, name_key_, String, String);
 
-
-  void show(std::ostream &out, int level=0) const ;
-
-  void set_name(String nm) {
-    get_particle()->set_value(name_key_, nm);
-  }
-
-  const String get_name() const {
-    return get_particle()->get_value(name_key_);
-  }
 };
 
 IMP_OUTPUT_OPERATOR(NameDecorator);
