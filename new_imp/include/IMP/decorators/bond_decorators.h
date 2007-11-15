@@ -38,7 +38,7 @@ extern IMPDLLEXPORT  IntKey bond_order_key_;
 } // namespace internal
 
 //! A decorator for wrapping a particle representing a molecular bond
-class BondDecorator
+class IMPDLLEXPORT BondDecorator
 {
 
   IMP_DECORATOR(BondDecorator,
