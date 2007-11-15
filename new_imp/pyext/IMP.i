@@ -15,7 +15,11 @@
   virtual std::string version() const {return std::string(version_string);}\
   virtual std::string last_modified_by() const {return std::string(lmb_string);}
 #define IMP_DECORATOR_GET(a,b,c,d)
-#define IMP_DECORATOR(Name) public: Name(); \
+#define IMP_DECORATOR_GET_SET(n,a,t,r) r get_##n() const;\
+                                       void set_##n(t);
+#define IMP_DECORATOR_GET_SET_OPT(n,a,t,r,d) r get_##n() const;\
+                                       void set_##n(t);
+#define IMP_DECORATOR(Name, a,b) public: Name(); \
         typedef Name This;\
         static Name create(Particle *p);\
         static Name cast(Particle *p);\
@@ -23,6 +27,8 @@
         bool operator!=(const This &o) const;\
         Particle* get_particle() const;\
         Model *get_model() const;
+#define IMP_DECORATOR_ARRAY_DECL(a, b) 
+
 
 %include "std_vector.i"
 %include "std_map.i"
@@ -68,6 +74,9 @@ namespace IMP {
 %include "IMP/Particle.h"
 %include "IMP/decorators/HierarchyDecorator.h"
 %include "IMP/decorators/NameDecorator.h"
+%include "IMP/decorators/graph_base.h"
+%include "IMP/decorators/bond_decorators.h"
+%include "IMP/decorators/AtomDecorator.h"
 %include "IMP/optimizers/Optimizer.h"
 %include "IMP/optimizers/SteepestDescent.h"
 %include "IMP/optimizers/ConjugateGradients.h"

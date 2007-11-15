@@ -18,10 +18,10 @@
 namespace IMP
 {
 //! The log levels supported by IMP
-enum Log_Level {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
+enum LogLevel {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
 
 //! The targets for IMP logging
-enum Log_Target {COUT, FILE, CERR};
+enum LogTarget {COUT, FILE, CERR};
 
 class IMPDLLEXPORT Log
 {
@@ -34,14 +34,14 @@ public:
     return *logpt_;
   }
 
-  Log_Level get_level() {
+  LogLevel get_level() {
     return level_;
   }
-  void set_level(Log_Level l) {
+  void set_level(LogLevel l) {
     level_=l;
   }
 
-  std::ostream &get_stream(Log_Level l) {
+  std::ostream &get_stream(LogLevel l) {
     if (is_output(l)) {
       if (target_== COUT) {
         return std::cout;
@@ -53,14 +53,14 @@ public:
     } else return std::cout;
   }
 
-  bool is_output(Log_Level l) {
+  bool is_output(LogLevel l) {
     return l <= get_level();
   }
 
-  Log_Target get_target() {
+  LogTarget get_target() {
     return target_;
   }
-  void set_target(Log_Target k) {
+  void set_target(LogTarget k) {
     target_=k;
   }
   void set_filename(std::string k) {
@@ -75,8 +75,8 @@ private:
   Log()  :level_(SILENT), target_(COUT) {}
   Log(const Log&) {}
 
-  Log_Level level_;
-  Log_Target target_;
+  LogLevel level_;
+  LogTarget target_;
   std::ofstream fstream_;
   static Log *logpt_;
 };
@@ -104,15 +104,27 @@ public:
 };
 
 //! Set the current log level for IMP
-IMPDLLEXPORT inline void set_log_level(Log_Level l)
+IMPDLLEXPORT inline void set_log_level(LogLevel l)
 {
   Log::get().set_level(l);
 }
 
 //! Set the target of logs
-IMPDLLEXPORT inline void set_log_target(Log_Target l)
+IMPDLLEXPORT inline void set_log_target(LogTarget l)
 {
   Log::get().set_target(l);
+}
+
+//! Get the current log level for IMP
+IMPDLLEXPORT inline LogLevel get_log_level()
+{
+  return Log::get().get_level();
+}
+
+//! Get the target of logs
+IMPDLLEXPORT inline LogTarget get_log_target()
+{
+  return Log::get().get_target();
 }
 
 //! Set the file name for the IMP log; must be called if a file is to be used.
@@ -124,7 +136,7 @@ IMPDLLEXPORT inline void set_log_file(std::string l)
 //! Determine whether a given log level should be output.
 /** \note This probably should not be called in C++.
  */
-IMPDLLEXPORT inline bool is_log_output(Log_Level l)
+IMPDLLEXPORT inline bool is_log_output(LogLevel l)
 {
   return Log::get().is_output(l);
 }
@@ -133,10 +145,34 @@ IMPDLLEXPORT inline bool is_log_output(Log_Level l)
 //! The stream to output a particular log level to.
 /** \note This probably should not be called in C++.
  */
-IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
+IMPDLLEXPORT inline std::ostream& get_log_stream(LogLevel l)
 {
   return Log::get().get_stream(l);
 }
+
+
+//! A class to change and restore log state
+/**
+   To use, create an instance of this class which the log level you
+   want. When it goes out of scope, it will restore the old level.
+ */
+class IMPDLLEXPORT  SetLogState {
+public:
+  //! Construct it with the desired level and target
+  SetLogState(LogLevel l, LogTarget t= get_log_target()):
+    level_(get_log_level()), target_(get_log_target()) {
+    set_log_level(l);
+    set_log_target(t);
+  }
+  ~SetLogState() {
+    set_log_level(level_);
+    set_log_target(target_);
+  }
+ private:
+  LogLevel level_;
+  LogTarget target_;
+};
+
 
 } // namespace IMP
 
@@ -161,7 +197,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
 /** \param[in] expr An expression to be output to the log. It is prefixed
                     by "WARNING"
  */
-#define IMP_WARN(expr) if (IMP::get_log_output(IMP::WARNING)) \
+#define IMP_WARN(expr) if (IMP::is_log_output(IMP::WARNING)) \
     { IMP::get_log_stream(IMP::WARNING) << "WARNING  " << expr << std::flush;};
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
@@ -235,5 +271,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(Log_Level l)
     \param[in] exception Throw the object constructed by this expression.
  */
 #define IMP_failure(message, exception) {IMP_ERROR(message); throw exception;}
+
+
 
 #endif  /* __IMP_LOG_H */

@@ -14,9 +14,9 @@ class DecoratorTests(IMP.test.IMPTestCase):
         ppnd.set_name("root");
         for i in range(0,10):
             pc=IMP.Particle()
-            pc.thisown=0
+            pcd= IMP.HierarchyDecorator.create(pc)
             m.add_particle(pc)
-            ppd.add_child(pc)
+            ppd.add_child(pcd)
             pcnd= IMP.NameDecorator.create(pc)
             pcnd.set_name(str("child "+str(i)));
 

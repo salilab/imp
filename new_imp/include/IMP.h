@@ -14,6 +14,8 @@
 #include "IMP/Particle.h"
 #include "IMP/decorators/HierarchyDecorator.h"
 #include "IMP/decorators/NameDecorator.h"
+#include "IMP/decorators/AtomDecorator.h"
+#include "IMP/decorators/bond_decorators.h"
 #include "IMP/optimizers/Optimizer.h"
 #include "IMP/optimizers/SteepestDescent.h"
 #include "IMP/optimizers/ConjugateGradients.h"
@@ -31,5 +33,9 @@
 #include "IMP/restraints/ConnectivityRestraint.h"
 #include "IMP/restraints/PairConnectivityRestraint.h"
 #include "IMP/restraints/ExclusionVolumeRestraint.h"
+
+/**
+   \namespace IMP The IMP namespace.
+ */
 
 #endif  /* __IMP_H */

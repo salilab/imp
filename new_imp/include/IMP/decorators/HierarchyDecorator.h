@@ -21,42 +21,19 @@ namespace IMP
 //! A decorator for helping deal with a hierarchy.
 class IMPDLLEXPORT HierarchyDecorator
 {
-  IMP_DECORATOR(HierarchyDecorator);
+  IMP_DECORATOR(HierarchyDecorator, return true || p,  ++p);
+  IMP_DECORATOR_ARRAY_DECL(child, Int)
 protected:
   static bool keys_initialized_;
   static IntKey parent_key_;
   static IntKey parent_index_key_;
-  static IntKey num_children_key_;
-  static std::vector<IntKey> child_keys_;
 
-  static void generate_child_keys(unsigned int i);
-
-  static const IntKey get_child_key(unsigned int i) {
-    if (i >= child_keys_.size()) generate_child_keys(i);
-    return child_keys_[i];
-  }
-
-
-  static bool has_required_attributes(Particle *p) {
-    return true;
-  }
-  static void add_required_attributes(Particle *p) {
-
-  }
-  static void initialize_static_data() ;
 public:
-
-  //! Get the parent Particle* or NULL if it has no parent.
-  Particle *get_parent() const {
-    IMP_DECORATOR_GET(parent_key_, Int,
-                      return get_model()->get_particle(ParticleIndex(VALUE)),
-                      return NULL);
-  }
 
   //! Get a HierarchyDecorator wrapping the parent particle
   /** \return the parent particle, or HierarchyDecorator() if it has no parent.
     */
-  This get_parent_decorator() const {
+  This get_parent() const {
     IMP_DECORATOR_GET(parent_key_, Int,
                       return cast(get_model()->
                                   get_particle(ParticleIndex(VALUE))),
@@ -65,25 +42,17 @@ public:
 
   //! Get the number of children.
   unsigned int get_number_of_children() const {
-    IMP_DECORATOR_GET(num_children_key_, Int, return VALUE, return 0);
-  }
-
-  //!  Get a Particle* of the ith child or NULL if it does not have this parent
-  Particle *get_child(unsigned int i) const {
-    IMP_DECORATOR_GET(get_child_key(i), Int,
-                      return get_model()->get_particle(ParticleIndex(VALUE)),
-                      return NULL);
+    return internal_get_number_of_child();
   }
 
   //! Get a HierarchyDecorator of the ith child
-  /** \return decorator of the ith child, or HierarchyDecorator() if it
-              does not have this parent
+  /** \return decorator of the ith child, or thrown and IndexException if it
+              does not have this child
    */
-  This get_child_decorator(unsigned int i) const {
-    IMP_DECORATOR_GET(get_child_key(i), Int,
-                      return cast(get_model()->
-                                  get_particle(ParticleIndex(VALUE))),
-                      return This());
+  This get_child(unsigned int i) const {
+    return cast(get_model()->
+                get_particle(ParticleIndex(internal_get_child(i))));
+
   }
 
   //! Get the index of this particle in the list of children
@@ -100,9 +69,9 @@ public:
   }
 
   //! Add the particle as the last child.
-  void add_child(Particle *p);
+  unsigned int add_child(HierarchyDecorator hd);
 
-  void show(std::ostream &out, int level=0) const ;
+  void show(std::ostream &out, int level) const;
 
   //! Get the index of a specific child in this particle.
   /** This takes linear time.
@@ -128,7 +97,7 @@ void breadth_first_traversal(HierarchyDecorator d, const F& f)
     f(cur.get_particle());
     //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
     for (int i=0; i<cur.get_number_of_children(); ++i) {
-      stack.push_back(cur.get_child_decorator(i));
+      stack.push_back(cur.get_child(i));
     }
   } while (!stack.empty());
 }
@@ -147,7 +116,7 @@ void depth_first_traversal(HierarchyDecorator d, const F& f)
     f(cur.get_particle());
     //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
     for (unsigned int i=0; i< cur.get_number_of_children(); ++i) {
-      stack.push_back(cur.get_child_decorator(i));
+      stack.push_back(cur.get_child(i));
     }
   } while (!stack.empty());
 }
