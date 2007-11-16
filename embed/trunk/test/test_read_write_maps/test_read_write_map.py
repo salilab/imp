@@ -74,6 +74,7 @@ class test_read_write_maps(unittest.TestCase):
 
 	    scene.Read(in_filename,xrw)
 	    scene.Write(out_filename,xrw);
+            os.unlink(out_filename)
 
 	#todo - add assert functions
 
