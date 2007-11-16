@@ -13,18 +13,18 @@ def check_c_file(filename, errors):
     for (num, line) in enumerate(fh):
         line = line.rstrip('\r\n')
         if len(line) > 80:
-            errors.append('Line %d in %s is longer than 80 characters.' \
-                          % (num+1, filename))
+            errors.append('%s:%d: Line is longer than 80 characters.' \
+                          % (filename, num+1))
         if line.find('\t') >= 0:
-            errors.append('Line %d in %s contains tabs.' % (num+1, filename))
+            errors.append('%s:%d: Line contains tabs.' % (filename, num+1))
         if srch.match(line):
-            errors.append('Line %d in %s has trailing whitespace' \
-                          % (num+1, filename))
+            errors.append('%s:%d: Line has trailing whitespace' \
+                          % (filename, num+1))
         blank = (len(line) == 0)
         if blank and num == 0:
-            errors.append('File %s has leading blank line(s)' % filename)
+            errors.append('%s:1: File has leading blank line(s)' % filename)
     if blank:
-        errors.append('File %s has trailing blank line(s)' % filename)
+        errors.append('%s:1000: File has trailing blank line(s)' % filename)
 
 def check_python_file(filename, errors):
     """Check each modified Python file to make sure it adheres to the

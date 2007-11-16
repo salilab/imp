@@ -18,6 +18,11 @@ Help(opts.GenerateHelpText(env))
 Export('env', 'get_pyext_environment', 'get_sharedlib_environment',
        'invalidate_environment')
 
+# Check code for coding standards:
+standards = env.Command("standards", "SConstruct",
+                        "../tools/check-standards.py")
+env.AlwaysBuild(standards)
+
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')
 Export('bin')
