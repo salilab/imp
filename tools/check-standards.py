@@ -49,7 +49,8 @@ def get_all_files():
     for root, dirs, files in os.walk('.'):
         if '.sconf_temp' not in root and 'pyext' not in root:
             for f in files:
-                modfiles.append(os.path.join(root, f))
+                if not f.startswith('.'):
+                    modfiles.append(os.path.join(root, f))
     return modfiles
 
 def main():
