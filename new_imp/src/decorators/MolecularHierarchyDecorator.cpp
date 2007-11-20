@@ -7,32 +7,65 @@
  */
 
 #include <IMP/decorators/MolecularHierarchyDecorator.h>
+#include <IMP/decorators/NameDecorator.h>
+#include <IMP/decorators/AtomDecorator.h>
+#include <IMP/decorators/ResidueDecorator.h>
 #include <sstream>
 
 namespace IMP
 {
 
-bool MolecularHierarchyDecorator::keys_initialized_=false;
 IntKey MolecularHierarchyDecorator::type_key_;
 
-void MolecularHierarchyDecorator::show(std::ostream &out) const
+  void MolecularHierarchyDecorator::show(std::ostream &out,
+                                         std::string prefix) const
 {
-  P::show(out);
-  out << "Type is " << get_type_string() <<std::endl;
-}
-
-
-
-
-void MolecularHierarchyDecorator::initialize_static_data()
-{
-  if (keys_initialized_) {
-    return;
+  if (get_type() == ATOM) {
+    AtomDecorator ad= AtomDecorator::cast(get_particle());
+    if (ad != AtomDecorator()) {
+      ad.show(out, prefix);
+    }
+  } else if (get_type() == RESIDUE) {
+    ResidueDecorator ad= ResidueDecorator::cast(get_particle());
+    if (ad != ResidueDecorator()) {
+      ad.show(out, prefix);
+    }
   } else {
-    P::initialize_static_data();
-    type_key_=IntKey("molecular hierarchy type");
-    keys_initialized_=true;
+    out << prefix << get_type_string() <<std::endl;
+    NameDecorator nd= NameDecorator::cast(get_particle());
+    if (nd != NameDecorator()) {
+      out << prefix << "\"" <<  nd.get_name() << "\"" << std::endl;
+    }
   }
 }
+
+
+
+  IMP_DECORATOR_INITIALIZE(MolecularHierarchyDecorator,
+                           HierarchyDecorator,
+                           {
+                             type_key_=IntKey("molecular hierarchy type");
+                           })
+
+
+  namespace internal {
+    struct MHDMatchingType {
+      MHDMatchingType(MolecularHierarchyDecorator::Type t): t_(t){}
+      bool operator()(Particle *p) const {
+        MolecularHierarchyDecorator mhd= MolecularHierarchyDecorator::cast(p);
+        if (mhd== MolecularHierarchyDecorator()) return false;
+        else return mhd.get_type()==t_;
+      }
+      MolecularHierarchyDecorator::Type t_;
+    };
+  }
+
+ Particles get_particles(MolecularHierarchyDecorator mhd, 
+                         MolecularHierarchyDecorator::Type t) {
+   Particles out;
+   hierarchy_gather(mhd, internal::MHDMatchingType(t),
+                    std::back_inserter(out));
+   return out;
+ }
 
 } // namespace IMP

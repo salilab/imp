@@ -20,12 +20,12 @@ IntKey bond_order_key_;
 }
 
 
-void BondDecorator::show(std::ostream &) const
+  void BondDecorator::show(std::ostream &, std::string) const
 {
 
 }
 
-void BondedDecorator::show(std::ostream &) const
+  void BondedDecorator::show(std::ostream &, std::string) const
 {
 
 }
@@ -42,23 +42,32 @@ static void bond_initialize_static_data()
   }
 }
 
-void BondDecorator::initialize_static_data()
+  IMP_DECORATOR_INITIALIZE(BondDecorator, DecoratorBase,
+                           bond_initialize_static_data());
+
+
+  IMP_DECORATOR_INITIALIZE(BondedDecorator, DecoratorBase,
+                           bond_initialize_static_data());
+
+
+
+
+BondDecorator bond(BondedDecorator a, BondedDecorator b,
+                   Int t)
 {
-  bond_initialize_static_data();
-}
-
-
-void BondedDecorator::initialize_static_data()
-{
-  bond_initialize_static_data();
-}
-
-
-BondDecorator bond(BondedDecorator a, BondedDecorator b)
-{
-  ParticleIndex pi= internal::graph_connect(a.get_particle(), b.get_particle(),
+  Particle *p= internal::graph_connect(a.get_particle(), b.get_particle(),
                     internal::bond_graph_data_);
-  Particle *p= a.get_model()->get_particle(pi);
-  return BondDecorator::cast(p);
+  BondDecorator bd= BondDecorator::cast(p);
+  bd.set_type(t);
+  return bd;
 }
+
+Particles get_bonded(BondedDecorator a) {
+  Particles out;
+  internal::graph_connected_component(a.get_particle(), 
+                                      internal::bond_graph_data_, 
+                                      std::back_inserter(out));
+  return out;
+}
+
 }

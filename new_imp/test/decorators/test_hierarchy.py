@@ -22,7 +22,7 @@ class DecoratorTests(IMP.test.IMPTestCase):
 
         self.assertEqual(ppd.get_number_of_children(), 10,
                          "Number of children is not as expected")
-        IMP.assert_hierarchy(pp)
+        ppd.validate()
 
 
 if __name__ == '__main__':

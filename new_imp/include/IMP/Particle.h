@@ -16,18 +16,12 @@
 #include "restraints/Restraint.h"
 #include "boost/noncopyable.h"
 #include "utility.h"
-#include "AttributeKey.h"
+#include "Key.h"
+#include "AttributeTable.h"
 #include "DerivativeAccumulator.h"
 
 namespace IMP
 {
-
-//! The key used to identify Float attributes in a Particle
-typedef AttributeKey<Float> FloatKey;
-//! The key used to identify Int attributes in a Particle
-typedef AttributeKey<Int> IntKey;
-//! The key used to identify String attributes in a Particle
-typedef AttributeKey<String> StringKey;
 
 
 class Model;
