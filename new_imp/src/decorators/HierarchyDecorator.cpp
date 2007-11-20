@@ -13,12 +13,11 @@
 namespace IMP
 {
 IMP_DECORATOR_ARRAY_DEF(Hierarchy, child, Int);
-bool HierarchyDecorator::keys_initialized_=false;
 IntKey HierarchyDecorator::parent_key_;
 IntKey HierarchyDecorator::parent_index_key_;
 
 
-void HierarchyDecorator::assert_is_valid() const
+void HierarchyDecorator::validate_node() const
 {
   //get_particle()->get_model()->show(std::cerr);
   if (has_parent()) {
@@ -42,35 +41,14 @@ void HierarchyDecorator::assert_is_valid() const
              "too many actual")
 }
 
-void HierarchyDecorator::show(std::ostream &out) const {
-  return show(out, 0);
-}
-
-void HierarchyDecorator::show(std::ostream &out, int level) const
-{
-  assert_is_valid();
-
-  for (int i=0; i< level; ++i) {
-    out << " ";
-  }
-  if (get_number_of_children() != 0) {
-    out << "+";
-  } else {
-    out << " ";
+  void HierarchyDecorator::show(std::ostream &, std::string) const {
   }
 
-  NameDecorator nd= NameDecorator::cast(get_particle());
-  if (nd != NameDecorator()) {
-    out << nd.get_name();
-  } else {
-    out << "";
-  }
 
-  out << std::endl;
-  for (unsigned int index=0; index < get_number_of_children(); ++index) {
-    This hd= get_child(index);
-    hd.show(out, level+1);
-  }
+unsigned int count_hierarchy(HierarchyDecorator h) {
+  HierarchyCounter hc;
+  depth_first_traversal(h,hc);
+  return hc.get_count();
 }
 
 
@@ -78,28 +56,29 @@ void HierarchyDecorator::show(std::ostream &out, int level) const
 
 namespace internal {
 
-struct AssertHierarchy {
-  void operator()(Particle *p) const {
+  struct AssertHierarchy: public HierarchyVisitor{
+  bool visit(Particle *p) {
     HierarchyDecorator d= HierarchyDecorator::cast(p);
-    d.assert_is_valid();
+    d.validate_node();
+    return true;
   }
 };
 
 } // namespace internal
 
 
-void assert_hierarchy(Particle *p)
+void HierarchyDecorator::validate() const
 {
   //std::cerr << "Checking hierarchy" << std::endl;
-  HierarchyDecorator h= HierarchyDecorator::cast(p);
-  depth_first_traversal(h, internal::AssertHierarchy());
+  internal::AssertHierarchy ah;
+  depth_first_traversal(*this, ah);
 }
 
 
 int HierarchyDecorator::get_child_index(Particle *c) const
 {
   for (unsigned int i=0; i< get_number_of_children(); ++i ) {
-    if (get_child(i) == c) return i;
+    if (get_child(i) == HierarchyDecorator(c)) return i;
   }
   return -1;
 }
@@ -109,32 +88,68 @@ int HierarchyDecorator::get_child_index(Particle *c) const
 unsigned int HierarchyDecorator::add_child(HierarchyDecorator hd)
 {
   IMP_assert(hd.get_particle() != get_particle(),
-             "A particle can't be its own parent");
+             "A particle can't be its own child " << *this << std::endl 
+             << hd);
   //std::cerr << *get_particle() << std::endl;
   //std::cerr << *p << std::endl;
   //std::cerr << "changing " << std::endl;
-
+  //std::cerr << "before\n";
+  //show_hierarchy<NameDecorator>(*this, std::cerr);
   int pi= get_particle()->get_index().get_index();
   int ci= hd.get_particle()->get_index().get_index();
   int nc= internal_add_child(ci);
 
   hd.get_particle()->add_attribute(parent_index_key_, nc);
   hd.get_particle()->add_attribute(parent_key_, pi);
+  //std::cerr << "after\n";
+  //show_hierarchy<NameDecorator>(*this, std::cerr);
   return nc;
 }
 
 
+  IMP_DECORATOR_INITIALIZE(HierarchyDecorator, DecoratorBase,
+                           {
+                             parent_key_
+                               = IntKey("hierarchy_parent");
+                             parent_index_key_
+                               = IntKey("hiearchy_parent_index");
+                             IMP_DECORATOR_ARRAY_INIT(HierarchyDecorator,
+                                                      child, Int);
+                           })
 
-IMPDLLEXPORT void HierarchyDecorator::initialize_static_data()
-{
-  if (keys_initialized_) {
-    return;
-  } else {
-    parent_key_= IntKey("hierarchy_parent");
-    parent_index_key_= IntKey("hiearchy_parent_index");
-    IMP_DECORATOR_ARRAY_INIT(HierarchyDecorator, child, Int);
-    keys_initialized_=true;
+
+
+  IMPDLLEXPORT void breadth_first_traversal(HierarchyDecorator d, 
+                                            HierarchyVisitor &f) {
+  std::deque<HierarchyDecorator> stack;
+    stack.push_back(d);
+    //d.show(std::cerr);
+    do {
+      HierarchyDecorator cur= stack.front();
+      stack.pop_front();
+      if (f.visit(cur.get_particle())) {
+        //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
+        for (int i=cur.get_number_of_children()-1; i>=0; --i) {
+          stack.push_back(cur.get_child(i));
+        }
+      }
+    } while (!stack.empty());
   }
-}
+
+  IMPDLLEXPORT void depth_first_traversal(HierarchyDecorator d,
+                                          HierarchyVisitor &f){
+   std::vector<HierarchyDecorator> stack;
+    stack.push_back(d);
+    do {
+      HierarchyDecorator cur= stack.back();
+      stack.pop_back();
+      if (f.visit(cur.get_particle())) {
+        for (int i=cur.get_number_of_children()-1; i>=0; --i) {
+          stack.push_back(cur.get_child(i));
+        }
+      }
+    } while (!stack.empty());
+  }
+
 
 } // namespace IMP

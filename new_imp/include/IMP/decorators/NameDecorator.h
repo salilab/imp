@@ -11,19 +11,18 @@
 #include "../Particle.h"
 #include "../Model.h"
 #include "utility.h"
-#include <vector>
-#include <deque>
+#include "DecoratorBase.h"
 
 namespace IMP
 {
 
 //! A simple decorator which controls the Particle name.
-class IMPDLLEXPORT NameDecorator
+class IMPDLLEXPORT NameDecorator: public DecoratorBase
 {
-  IMP_DECORATOR(NameDecorator, return p->has_attribute(name_key_),
+  IMP_DECORATOR(NameDecorator, DecoratorBase,
+                return p->has_attribute(name_key_),
                 {p->add_attribute(name_key_, "No Name");});
 protected:
-  static bool keys_initialized_;
   static StringKey name_key_;
 
 public:

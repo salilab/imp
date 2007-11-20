@@ -3,7 +3,8 @@ Import('env')
 
 files = ['Base_Types.h', 'Index.h', 'ScoreFunc.h', 'Model.h',
          'Particle.h', 'State.h', 'IMP_config.h', 'ModelData.h', 'RigidBody.h',
-         'log.h', 'DerivativeAccumulator.h', 'AttributeKey.h', 'utility.h']
+         'log.h', 'DerivativeAccumulator.h', 'Key.h', 'AttributeTable.h',
+         'utility.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP')

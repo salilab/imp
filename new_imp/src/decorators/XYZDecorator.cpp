@@ -11,7 +11,6 @@
 namespace IMP
 {
 
-bool XYZDecorator::keys_initialized_=false;
 FloatKey XYZDecorator::x_key_;
 FloatKey XYZDecorator::y_key_;
 FloatKey XYZDecorator::z_key_;
@@ -19,9 +18,9 @@ FloatKey XYZDecorator::z_key_;
 
 
 
-void XYZDecorator::show(std::ostream &out) const
+  void XYZDecorator::show(std::ostream &out, std::string prefix) const
 {
-  out << "(" << get_x(), ", "
+  out << prefix << "(" << get_x()<< ", "
   << get_y() << ", " << get_z() <<")";
 
 }
@@ -29,16 +28,11 @@ void XYZDecorator::show(std::ostream &out) const
 
 
 
-
-void XYZDecorator::initialize_static_data()
-{
-  if (keys_initialized_) return;
-  else {
-    x_key_= FloatKey("x");
-    y_key_= FloatKey("y");
-    z_key_= FloatKey("z");
-    keys_initialized_=true;
-  }
-}
+  IMP_DECORATOR_INITIALIZE(XYZDecorator, DecoratorBase,
+                           {
+                             x_key_= FloatKey("x");
+                             y_key_= FloatKey("y");
+                             z_key_= FloatKey("z");
+                           })
 
 } // namespace IMP

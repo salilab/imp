@@ -27,7 +27,7 @@ static IntKey graph_get_edge_key(unsigned int i, const GraphData &d)
   return d.edge_keys_[i];
 }
 
-ParticleIndex graph_connect(Particle* a, Particle* b, const GraphData &d)
+Particle* graph_connect(Particle* a, Particle* b, const GraphData &d)
 {
   Model *m= a->get_model();
   Particle *p= new Particle();
@@ -55,24 +55,41 @@ ParticleIndex graph_connect(Particle* a, Particle* b, const GraphData &d)
     }
   }
 
-  return pi;
+  return a->get_model()->get_particle(pi);
 }
 
-ParticleIndex graph_get_edge(Particle* a, int i, const GraphData &d)
+Particle* graph_get_edge(Particle* a, int i, const GraphData &d)
 {
   IntKey nm= graph_get_edge_key(i, d);
-  return ParticleIndex(a->get_value(nm));
+  return a->get_model()->get_particle(ParticleIndex(a->get_value(nm)));
+}
+
+Particle* graph_get_neighbor(Particle* a, int i, const GraphData &d)
+{
+  IntKey nm= graph_get_edge_key(i, d);
+  Particle *edge= a->get_model()->get_particle(ParticleIndex(a->get_value(nm)));
+  if (graph_get_node(edge, 0, d) == a) {
+    return graph_get_node(edge, 1, d);
+  } else {
+    IMP_assert(graph_get_node(edge, 1, d) == a,
+               "Broken graph");
+    return graph_get_node(edge, 0, d);
+  }
 }
 
 unsigned int graph_get_number_of_edges(Particle *a, const GraphData &d)
 {
-  return a->get_value(d.num_edges_key_);
+  if (a->has_attribute(d.num_edges_key_)) {
+    return a->get_value(d.num_edges_key_);
+  } else {
+    return 0;
+  }
 }
 
-ParticleIndex graph_get_node(Particle *a, int i, const GraphData &d)
+Particle* graph_get_node(Particle *a, int i, const GraphData &d)
 {
   IMP_assert(i<2, "bad node requested");
-  return a->get_value(d.node_keys_[i]);
+  return a->get_model()->get_particle(a->get_value(d.node_keys_[i]));
 }
 
 bool graph_is_edge(Particle *a, const GraphData &d)
@@ -80,5 +97,7 @@ bool graph_is_edge(Particle *a, const GraphData &d)
   return a->has_attribute(d.node_keys_[0])
          && a->has_attribute(d.node_keys_[1]);
 }
+
+
 }
 } // namespace IMP

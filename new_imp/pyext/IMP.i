@@ -19,14 +19,13 @@
                                        void set_##n(t);
 #define IMP_DECORATOR_GET_SET_OPT(n,a,t,r,d) r get_##n() const;\
                                        void set_##n(t);
-#define IMP_DECORATOR(Name, a,b) public: Name(); \
+#define IMP_DECORATOR(Name, Parent, a,b) \
+        public:\
         typedef Name This;\
-        static Name create(Particle *p);\
-        static Name cast(Particle *p);\
-        bool operator==(const This &o) const ; \
-        bool operator!=(const This &o) const;\
-        Particle* get_particle() const;\
-        Model *get_model() const;
+                public: Name(); \
+                static Name create(Particle *p);\
+                static Name cast(Particle *p);\
+                void show(std::ostream &=std::cout, std::string pre="")
 #define IMP_DECORATOR_ARRAY_DECL(a, b) 
 
 
@@ -62,7 +61,7 @@ namespace IMP {
 %include "IMP/Base_Types.h"
 %include "IMP.h"
 %include "IMP/boost/noncopyable.h"
-%include "IMP/AttributeKey.h"
+%include "IMP/Key.h"
 %include "IMP/ScoreFunc.h"
 %include "IMP/ModelData.h"
 %include "IMP/DerivativeAccumulator.h"
@@ -72,8 +71,12 @@ namespace IMP {
 %include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/Particle.h"
+%include "IMP/decorators/DecoratorBase.h"
 %include "IMP/decorators/HierarchyDecorator.h"
+%include "IMP/decorators/MolecularHierarchyDecorator.h"
 %include "IMP/decorators/NameDecorator.h"
+%include "IMP/decorators/ResidueDecorator.h"
+%include "IMP/decorators/XYZDecorator.h"
 %include "IMP/decorators/graph_base.h"
 %include "IMP/decorators/bond_decorators.h"
 %include "IMP/decorators/AtomDecorator.h"
@@ -97,7 +100,12 @@ namespace IMP {
   %template(ParticleIndex) Index<ParticleTag>;
   %template(RestraintIndex) Index<RestraintTag>;
   %template(StateIndex) Index<StateTag>;
-  %template(FloatKey) AttributeKey<Float>;
-  %template(IntKey) AttributeKey<Int>;
-  %template(StringKey) AttributeKey<String>;
+  %template(FloatKey) Key<Float>;
+  %template(IntKey) Key<Int>;
+  %template(StringKey) Key<String>;
+  %template(AtomType) Key<AtomTypeTag>;
+  %template(ResidueType) Key<ResidueTypeTag>;     
+  %template(show_named_nierarchy) show<NameDecorator>;
+  %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
+  %template(ParticleVector) ::std::vector<Particle*>;       
 }

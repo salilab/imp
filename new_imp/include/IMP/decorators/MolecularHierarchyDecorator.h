@@ -23,6 +23,7 @@ namespace IMP
 class IMPDLLEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 {
   IMP_DECORATOR(MolecularHierarchyDecorator,
+                HierarchyDecorator,
                 return P::has_required_attributes(p)
                        && p->has_attribute(type_key_),
                 { P::add_required_attributes(p);
@@ -30,7 +31,6 @@ class IMPDLLEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
                 });
 protected:
   typedef HierarchyDecorator P;
-  static bool keys_initialized_;
   static IntKey type_key_;
 
 
@@ -75,6 +75,8 @@ public:
       return "molecule";
     case UNIVERSE:
       return "universe";
+    case UNIVERSES:
+      return "universes";
     default:
       IMP_assert(0, "Invalid MolecularHierarchyDecorator type");
       return std::string();
@@ -96,8 +98,32 @@ public:
     return P::add_child(o);
   }
 
+  //! Get a child
+  MolecularHierarchyDecorator get_child(unsigned int i) const {
+    HierarchyDecorator hd= P::get_child(i);
+    return cast(hd.get_particle());
+  }
+
+  //! Get the parent
+  MolecularHierarchyDecorator get_parent() const {
+    HierarchyDecorator hd= P::get_parent();
+    if (hd != HierarchyDecorator()) {
+      return MolecularHierarchyDecorator();
+    } else {
+      return cast(hd.get_particle());
+    }
+  }
+
 };
 
+
+
+  /**
+     Gather all the molecular particles of a certain level 
+     in the moleuclar hierarchy
+  */
+  IMPDLLEXPORT Particles get_particles(MolecularHierarchyDecorator mhd, 
+                                       MolecularHierarchyDecorator::Type t);
 } // namespace IMP
 
 #endif  /* __IMP_MOLECULAR_HIERARCHY_DECORATOR_H */

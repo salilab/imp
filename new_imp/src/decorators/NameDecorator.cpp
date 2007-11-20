@@ -11,29 +11,23 @@
 namespace IMP
 {
 
-bool NameDecorator::keys_initialized_=false;
 StringKey NameDecorator::name_key_;
 
 
 
 
-void NameDecorator::show(std::ostream &out) const
+void NameDecorator::show(std::ostream &out,std::string prefix) const
 {
-  out << get_name();
+  out << prefix << get_name();
 
 }
 
 
 
 
-
-void NameDecorator::initialize_static_data()
-{
-  if (keys_initialized_) return;
-  else {
-    name_key_= StringKey("name");
-    keys_initialized_=true;
-  }
-}
+IMP_DECORATOR_INITIALIZE(NameDecorator, DecoratorBase,
+                         {
+                           name_key_= StringKey("name");
+                         })
 
 } // namespace IMP

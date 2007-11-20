@@ -1,8 +1,8 @@
 Import('env')
 
 files = ['AtomDecorator.cpp', 'bond_decorators.cpp', 'graph_base.cpp',
-         'HierarchyDecorator.cpp', 'NameDecorator.cpp',
-         'MolecularHierarchyDecorator.cpp']
+         'HierarchyDecorator.cpp', 'NameDecorator.cpp', 'ResidueDecorator.cpp',
+         'MolecularHierarchyDecorator.cpp', 'XYZDecorator.cpp']
 
 files = [File(x) for x in files]
 Return('files')

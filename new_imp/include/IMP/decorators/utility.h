@@ -7,7 +7,8 @@
  */
 
 #ifndef __IMP_DECORATOR_UTILITY_H
-#define __IMP_DECORATOR_UTILITY_H
+#define __IMP_DECORATOR_UTILITY_H           
+
 
 //! Define the basic things needed by a Decorator.
 /** The key things this defines are a default constructor, a static create
@@ -15,6 +16,8 @@
     get_model() and comparisons. 
 
     \param[in] Name is the name of the decorator, such as NameDecorator
+    \param[in] Parent The class name for the parent of this class,
+    typically DecoratorBase
     \param[in] check_required is code which returns a bool which checks
     if a Particle *p has the required fields
     \param[in] add_required is code which adds the required fields
@@ -26,46 +29,62 @@
       AttributeKey instances. Ideally, this should internally make sure it
       is only done once.
  */
-#define IMP_DECORATOR(Name, check_required, add_required)               \
+#define IMP_DECORATOR(Name, Parent, check_required, add_required)       \
   protected:                                                            \
-  Particle *particle_;                                                  \
-  bool is_default() const {return particle_==NULL;}                     \
-  Name(Particle* p): particle_(p) {                                     \
-    IMP_assert(has_required_attributes(p),                              \
-               "This is not a hierarchy particle " << *p);              \
-  }                                                                     \
-  static void initialize_static_data();                                 \
+  static bool decorator_keys_initialized_;                              \
+  static void decorator_initialize_static_data();                       \
   static bool has_required_attributes(Particle *p) {                    \
+    if (!Parent::has_required_attributes(p)) return false;              \
     check_required;                                                     \
   }                                                                     \
   static void add_required_attributes(Particle *p) {                    \
+    Parent::add_required_attributes(p);                                 \
     add_required;                                                       \
+  }                                                                     \
+  friend class DecoratorBase;                                           \
+  Name(Particle* p): Parent(p) {                                        \
+    IMP_assert(has_required_attributes(p),                              \
+               "This is not a particle of type "                        \
+               << #Name << *p);                                         \
   }                                                                     \
 public:                                                                 \
  typedef Name This;                                                     \
  /** The default constructor. This is used as a null value */           \
- Name(): particle_(NULL){}                                              \
-/** Add the necessary attributes to p and return a decorator. */        \
+ Name(): Parent(){}                                                     \
+ /** Add the necessary attributes to p and return a decorator. */       \
  static Name create(Particle *p) {                                      \
-   initialize_static_data();                                            \
-   add_required_attributes(p);                                          \
-   return Name(p);                                                      \
+   return DecoratorBase::create<Name>(p);                               \
  }                                                                      \
- /** Check that p has the necessary attributes and return a decorator. */\
+  /** Check that p has the necessary attributes and return a decorator. */\
  static Name cast(Particle *p) {                                        \
-   initialize_static_data();                                            \
-   if (!has_required_attributes(p)) return Name();                      \
-   else return Name(p);                                                 \
+   return DecoratorBase::cast<Name>(p);                                 \
  }                                                                      \
- IMP_COMPARISONS_1(particle_)                                           \
- /** \return the particle wrapped by this decorator*/                   \
- Particle *get_particle() const {return particle_;}                     \
-/** \return the Model containing the particle */                        \
- Model *get_model() const {return particle_->get_model();}              \
-/** Write information about this decorator to out*/                     \
- void show(std::ostream &out) const;                                    \
-private:
+ /** Write information about this decorator to out. Each line should    \
+     prefixed by prefix*/                                               \
+ void show(std::ostream &out=std::cout,                                 \
+           std::string prefix=std::string()) const;   
 
+
+/**
+   Put this macro in to the .cpp with code to initialize the keys
+   used by the decorator. This will make sure that the keys are 
+   initialized before use and initialized exactly once.
+   \param[in] Name the name of the decorate
+   \param[in] Parent the name of the parent decorator to make sure its keys
+   are initalized
+   \param[in] work The list of statements to initialize the keys. 
+   this should probably look something like {a_key_=IntKey("Foo");...}
+ */
+#define IMP_DECORATOR_INITIALIZE(Name, Parent, work)\
+  bool Name::decorator_keys_initialized_=false;     \
+  void Name::decorator_initialize_static_data() {   \
+    if (decorator_keys_initialized_) return;        \
+    else {                                          \
+      Parent::decorator_initialize_static_data();   \
+      work;                                         \
+      decorator_keys_initialized_=true;             \
+    }                                               \
+  }
 
 //! Perform actions dependent on whether a particle has an attribute.
 /** A common pattern is to check if a particle has a particular attribute,
@@ -83,7 +102,7 @@ private:
 #define IMP_DECORATOR_GET(AttributeKey, Type, has_action, not_has_action) \
   if (get_particle()->has_attribute(AttributeKey)) {                    \
     Type VALUE =  get_particle()->get_value(AttributeKey);              \
-      has_action;                                                       \
+    has_action;                                                         \
   } else {                                                              \
     not_has_action;                                                     \
   }
@@ -117,7 +136,7 @@ private:
     return static_cast<ReturnType>(get_particle()->get_value(AttributeKey)); \
   }                                                                     \
   /** Set the attribute \param[in] t the value    */                    \
-  void set_##name(Type t) {                                             \
+  void set_##name(ReturnType t) {                                             \
     get_particle()->set_value(AttributeKey, t);                         \
   }
 
@@ -136,11 +155,12 @@ private:
                                   ReturnType, default_value)            \
   /** \return the attribute value*/                                     \
   ReturnType get_##name() const {                                       \
-    IMP_DECORATOR_GET(AttributeKey, Type, return ReturnType(VALUE),     \
+    IMP_DECORATOR_GET(AttributeKey, Type,                               \
+                      return static_cast<ReturnType>(VALUE),            \
                       return default_value);                            \
   }                                                                     \
   /** \param[in] t the value to set the attribute to*/                  \
-  void set_##name(Type t) {                                             \
+  void set_##name(ReturnType t) {                                       \
     IMP_DECORATOR_SET(AttributeKey, t);                                 \
   }
 
