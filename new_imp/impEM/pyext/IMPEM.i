@@ -5,9 +5,7 @@
 #include "../EMFitRestraint.h"
 %}
 
-/* Ignore shared object import/export stuff */
-#define IMPDLLEXPORT
-#define IMPDLLLOCAL
+%include "pyext/IMP_macros.i"
 
 %include "std_vector.i"
 %include "std_string.i"
@@ -20,10 +18,15 @@ namespace IMP {
   typedef float Float;
   class FloatKey;
   class DerivativeAccumulator;
-  class Restraint;
   class Particle;
 }
 
-%include "ParticlesAccessPoint.h"
+/* Get definitions of IMP base classes (but do not wrap; that is done by IMP) */
+%import "IMP/restraints/Restraint.h"
+
+/* Get definitions of EMLIB base classes (but do not wrap) */
+%import "ParticlesAccessPoint.h"
+
+/* Wrap our own classes */
 %include "../IMPParticlesAccessPoint.h"
 %include "../EMFitRestraint.h"
