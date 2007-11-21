@@ -190,6 +190,8 @@ namespace IMP
 
 IntKey AtomDecorator::element_key_;
 FloatKey AtomDecorator::charge_key_;
+  //FloatKey AtomDecorator::vdw_radius_key_;
+FloatKey AtomDecorator::mass_key_;
 IntKey AtomDecorator::type_key_;
 
 
@@ -203,12 +205,44 @@ void AtomDecorator::show(std::ostream &out, std::string prefix) const
 }
 
 
-  IMP_DECORATOR_INITIALIZE(AtomDecorator, XYZDecorator,
-                           {
-                             element_key_= IntKey("atom element");
-                             charge_key_= FloatKey("atom charge");
-                              type_key_ = IntKey("atom type");
-                           })
+void AtomDecorator::set_type(AtomType t) {
+  // ultimate the secondary info should be set from a 
+  // better source. But this is good enough for now. 
+  get_particle()->set_value(type_key_, t.get_index());
+  /*std::string str=t.get_string();
+  if (str.find("N") != std::string::npos) {
+    set_element(N);
+    set_van_der_waals_raidus(1.55);
+  } else if (str.find("O") != std::string::npos) {
+    set_element(O);
+    set_van_der_waals_raidus(1.52);
+  } else if (str.find("P") != std::string::npos) {
+    set_element(P);
+    set_van_der_waals_raidus(1.9);
+  } else if (str.find("C") != std::string::npos) {
+    set_element(C);
+    set_van_der_waals_raidus(1.7);
+  } else if (str.find("S") != std::string::npos) {
+    set_element(S);
+    set_van_der_waals_raidus(1.85);
+  } else if (str.find("OH") != std::string::npos) {
+    set_element(OH);
+  } else if (str.find("H2O") != std::string::npos) {
+    set_element(H2O);
+  } else if (str.find("H") != std::string::npos) {
+    set_element(H);
+    set_van_der_waals_radius(1.20);
+    }*/
+}
+
+IMP_DECORATOR_INITIALIZE(AtomDecorator, XYZDecorator,
+                         {
+                           element_key_= IntKey("atom element");
+                           charge_key_= FloatKey("atom charge");
+                           mass_key_= FloatKey("atom mass");
+                           //vdw_radius_key_= FloatKey("atom vdw radius");
+                           type_key_ = IntKey("atom type");
+                         })
 
   /*void AtomDecorator::set_element(std::string cp)
 {

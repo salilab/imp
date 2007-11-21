@@ -35,6 +35,8 @@ namespace IMP
 protected:
   static IntKey element_key_;
   static FloatKey charge_key_;
+  //static FloatKey vdw_radius_key_;
+  static FloatKey mass_key_;
   static IntKey type_key_;
 
  public:
@@ -43,9 +45,9 @@ protected:
      The enum just provides mapping from a name to an atomic number. It
      should probably be expanded to be complete at some point.
    */
-  /*enum Element {UNKNOWN_ELEMENT,
+  enum Element {UNKNOWN_ELEMENT=0, OH=-1, H2O=-2,
                 C=6,N=7,H=1, O=8, S=16,P=15,FE=26, PT=78
-                };*/
+  };
 
   //! The types of PDB atoms supported
   static AtomType AT_UNKNOWN, AT_N, AT_CA, AT_C, AT_O,
@@ -86,13 +88,17 @@ protected:
     return AtomType(get_particle()->get_value(type_key_));
   }
 
-  void set_type(AtomType t) {
-    return get_particle()->set_value(type_key_, t.get_index());
-  }
+  void set_type(AtomType t);
 
   IMP_DECORATOR_GET_SET_OPT(charge, charge_key_,
                             Float, Float, 0);
+  IMP_DECORATOR_GET_SET_OPT(element, element_key_,
+                            Int, Int, 0);
 
+  IMP_DECORATOR_GET_SET_OPT(mass, mass_key_,
+                            Float, Float, 0);
+  /*IMP_DECORATOR_GET_SET_OPT(van_der_waals_radius, vdw_radius_key_,
+    Float, Float, 0);*/
 
 
 
