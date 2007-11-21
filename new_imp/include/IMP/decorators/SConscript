@@ -3,8 +3,8 @@ Import('env')
 
 files = ['HierarchyDecorator.h', 'NameDecorator.h', 'utility.h', 'graph_base.h',
          'XYZDecorator.h', 'ResidueDecorator.h', 'AtomDecorator.h',
-         'MolecularHierarchyDecorator.h', 'bond_decorators.h']
-
+         'MolecularHierarchyDecorator.h', 'bond_decorators.h',
+         'DecoratorBase.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'decorators')

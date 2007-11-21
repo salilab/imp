@@ -32,8 +32,8 @@ def copy_atom(a, model):
     #IMP.NameDecorator.create(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
         ap.set_charge(a.charge)
-    #if (a.mass != 0):
-    #    ;
+    if (a.mass != 0):
+        ap.set_mass(a.mass)
     return p
 
 

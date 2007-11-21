@@ -55,7 +55,10 @@ public:                                                                 \
  static Name create(Particle *p) {                                      \
    return DecoratorBase::create<Name>(p);                               \
  }                                                                      \
-  /** Check that p has the necessary attributes and return a decorator. */\
+ /** Check that p has the necessary attributes and return a decorator.  \
+     \throws InvalidStateException if some required attributes are      \
+     missing                                                            \
+ */                                                                     \
  static Name cast(Particle *p) {                                        \
    return DecoratorBase::cast<Name>(p);                                 \
  }                                                                      \

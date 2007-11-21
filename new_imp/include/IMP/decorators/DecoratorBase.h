@@ -50,8 +50,11 @@ public:
   template <class D>
   static D cast(Particle *p) {
     D:: decorator_initialize_static_data();
-    if (!D::has_required_attributes(p)) return D();
-    else return D(p);
+    IMP_check(D::has_required_attributes(p),
+              "Attempting to cast a Particle which does not have"
+              " some required attributes",
+              InvalidStateException());
+    return D(p);
   }
 
   //! create a decorator of class D from the Particle
