@@ -44,7 +44,7 @@ class test_write_mrc(unittest.TestCase):
 
            resolution = 2.0
 	   voxel_size = 1.0
-	   em_map = EM.SampledDensityMap(self.particles_p,
+	   em_map = EM.SampledDensityMap(self.particles,
 					 resolution,voxel_size)
 	   em_map.calcRMS()
 	   self.rms = em_map.get_header().rms

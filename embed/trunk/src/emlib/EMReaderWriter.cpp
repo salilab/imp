@@ -42,7 +42,7 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
   header.data_type=type;
 
   for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
-  header.comments[0][i]=comment[i];
+    header.comments[0][i]=comment[i];
   }
 
   header.voltage=voltage;
