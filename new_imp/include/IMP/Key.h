@@ -121,6 +121,15 @@ public:
      This can be used to check for typos and similar keys.
    */
   static std::vector<String> get_all_strings();
+
+  //! Get the total number of keys of this type
+  /**
+     This is mostly for debugging to makes sure that there are no extra
+     keys created.
+   */
+  static unsigned int get_number_unique() {
+    return data().map.size();
+  }
 };
 
 IMP_OUTPUT_OPERATOR_1(Key)

@@ -10,6 +10,8 @@ class PDBReadTest(IMP.test.IMPTestCase):
     #    self.assertRaises(IMP.IOError,  read_pdb, 'fake_file.pdb', m)
     def test_hierarchy(self):
         """Check reading a pdb with one protein"""
+        i_num_res_type= IMP.ResidueType.get_number_unique()
+        i_num_atom_type= IMP.AtomType.get_number_unique()
         m = IMP.Model()
         p= IMP.pdb.read_pdb('modeller/single_protein.pdb', m)
         mp= IMP.MolecularHierarchyDecorator.cast(p)
@@ -18,8 +20,12 @@ class PDBReadTest(IMP.test.IMPTestCase):
         mp.validate()
         hc= IMP.HierarchyCounter()
         IMP.depth_first_traversal(mp, hc)
-        print str(hc.get_count())
-        self.assertEqual(1376, hc.get_count(),
+        f_num_res_type= IMP.ResidueType.get_number_unique()
+        f_num_atom_type= IMP.AtomType.get_number_unique()
+        #print str(hc.get_count())
+        self.assertEqual(i_num_res_type, f_num_res_type, "too many residue types")
+        self.assertEqual(i_num_atom_type, f_num_atom_type, "too many atom types")
+        self.assertEqual(1377, hc.get_count(),
                          "Wrong number of particles created")
     def test_bonds(self):
         """Check that the file loader produces bonds"""
