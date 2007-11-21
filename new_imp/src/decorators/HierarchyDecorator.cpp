@@ -107,49 +107,46 @@ unsigned int HierarchyDecorator::add_child(HierarchyDecorator hd)
 }
 
 
-  IMP_DECORATOR_INITIALIZE(HierarchyDecorator, DecoratorBase,
-                           {
-                             parent_key_
-                               = IntKey("hierarchy_parent");
-                             parent_index_key_
-                               = IntKey("hiearchy_parent_index");
-                             IMP_DECORATOR_ARRAY_INIT(HierarchyDecorator,
-                                                      child, Int);
-                           })
+IMP_DECORATOR_INITIALIZE(HierarchyDecorator, DecoratorBase,
+                         {
+                           parent_key_ = IntKey("hierarchy_parent");
+                           parent_index_key_ = IntKey("hiearchy_parent_index");
+                           IMP_DECORATOR_ARRAY_INIT(HierarchyDecorator,
+                                                    child, Int);
+                         })
 
 
-
-  IMPDLLEXPORT void breadth_first_traversal(HierarchyDecorator d, 
-                                            HierarchyVisitor &f) {
+void breadth_first_traversal(HierarchyDecorator d, HierarchyVisitor &f)
+{
   std::deque<HierarchyDecorator> stack;
-    stack.push_back(d);
-    //d.show(std::cerr);
-    do {
-      HierarchyDecorator cur= stack.front();
-      stack.pop_front();
-      if (f.visit(cur.get_particle())) {
-        //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
-        for (int i=cur.get_number_of_children()-1; i>=0; --i) {
-          stack.push_back(cur.get_child(i));
-        }
+  stack.push_back(d);
+  //d.show(std::cerr);
+  do {
+    HierarchyDecorator cur= stack.front();
+    stack.pop_front();
+    if (f.visit(cur.get_particle())) {
+      //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
+      for (int i=cur.get_number_of_children()-1; i>=0; --i) {
+        stack.push_back(cur.get_child(i));
       }
-    } while (!stack.empty());
-  }
+    }
+  } while (!stack.empty());
+}
 
-  IMPDLLEXPORT void depth_first_traversal(HierarchyDecorator d,
-                                          HierarchyVisitor &f){
-   std::vector<HierarchyDecorator> stack;
-    stack.push_back(d);
-    do {
-      HierarchyDecorator cur= stack.back();
-      stack.pop_back();
-      if (f.visit(cur.get_particle())) {
-        for (int i=cur.get_number_of_children()-1; i>=0; --i) {
-          stack.push_back(cur.get_child(i));
-        }
+void depth_first_traversal(HierarchyDecorator d, HierarchyVisitor &f)
+{
+  std::vector<HierarchyDecorator> stack;
+  stack.push_back(d);
+  do {
+    HierarchyDecorator cur= stack.back();
+    stack.pop_back();
+    if (f.visit(cur.get_particle())) {
+      for (int i=cur.get_number_of_children()-1; i>=0; --i) {
+        stack.push_back(cur.get_child(i));
       }
-    } while (!stack.empty());
-  }
+    }
+  } while (!stack.empty());
+}
 
 
 } // namespace IMP
