@@ -40,12 +40,37 @@ protected:
 public:
 
   //! The supported residue types
-  static ResidueType UNK,
-    GLY, ALA, VAL, LEU, ILE,
-    SER, THR, CYS, MET, PRO,
-    ASP, ASN, GLU, GLN, LYS,
-    ARG, HIS, PHE, TYR, TRP,
-    ACE, NH2, ADE, URA, CYT, GUA, THY;
+  /** \note each static must be on a separate line because of MSVC bug C2487:
+            see http://support.microsoft.com/kb/127900/
+   */
+  static ResidueType UNK;
+  static ResidueType GLY;
+  static ResidueType ALA;
+  static ResidueType VAL;
+  static ResidueType LEU;
+  static ResidueType ILE;
+  static ResidueType SER;
+  static ResidueType THR;
+  static ResidueType CYS;
+  static ResidueType MET;
+  static ResidueType PRO;
+  static ResidueType ASP;
+  static ResidueType ASN;
+  static ResidueType GLU;
+  static ResidueType GLN;
+  static ResidueType LYS;
+  static ResidueType ARG;
+  static ResidueType HIS;
+  static ResidueType PHE;
+  static ResidueType TYR;
+  static ResidueType TRP;
+  static ResidueType ACE;
+  static ResidueType NH2;
+  static ResidueType ADE;
+  static ResidueType URA;
+  static ResidueType CYT;
+  static ResidueType GUA;
+  static ResidueType THY;
 
   ResidueType get_type() const {
     return ResidueType(get_particle()->get_value(type_key_));
