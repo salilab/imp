@@ -101,7 +101,6 @@ public:
 IMP_OUTPUT_OPERATOR(BondedDecorator);
 
 
-
 BondedDecorator BondDecorator::get_atom(unsigned int i) const
 {
   Particle *p= graph_get_node(get_particle(), i,
@@ -115,15 +114,13 @@ BondedDecorator BondDecorator::get_atom(unsigned int i) const
     \param[in] t The type to use for the bond
     \return BondDecorator of the bond Particle.
  */
+IMPDLLEXPORT
+BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
 
-  IMPDLLEXPORT BondDecorator bond(BondedDecorator a, BondedDecorator b,
-                                  Int t);
 
-
-/**
-   Get all the particles connected to the current one via a path of bonds.
- */
-IMPDLLEXPORT Particles get_bonded(BondedDecorator a);
+//! Get all the particles connected to the current one via a path of bonds.
+IMPDLLEXPORT
+Particles get_bonded(BondedDecorator a);
 
 } // namespace IMP
 
