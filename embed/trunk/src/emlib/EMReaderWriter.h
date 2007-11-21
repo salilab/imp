@@ -87,13 +87,12 @@ public:
 
     }
     void Init(const EMHeader &header) {
-      magic    = header.magic;
-      type     = header.type;
+      magic    = (unsigned char)header.magic;
+      type     = (unsigned char)header.type;
       nx       = header.nx;
       ny       = header.ny;
       nz       = header.nz;
       strncpy(comment,header.comment, COMMENT_SIZE);
-
 
       emdata[VOLTAGE_OFFSET]              = (int)header.voltage;
       emdata[CS_OFFSET]                   = (int)(header.Cs*scale);
@@ -120,7 +119,7 @@ public:
       emdata[LSWAP_OFFSET]                = header.lswap;
       
     }
-
+    //actual information in the EM header
     unsigned char magic;
     unsigned char dummy[2];
     unsigned char type;
