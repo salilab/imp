@@ -47,13 +47,9 @@ public:
     static const int MARKERX_OFFSET             = 20;
     static const int MARKERY_OFFSET             = 21;
     static const int LSWAP_OFFSET               = 22;
-    float scale;
-    
-    // Using a static const float scale breaks gcc 4.0:
-    EMHeaderParse() : scale(1000.0) {}
-    
 
     void InitEMHeader(EMHeader &header) {
+      float scale = 1000.0;
       header.magic                  = (int)magic;
       header.type                   = (int)type;
       header.nx                     = nx;
@@ -93,7 +89,7 @@ public:
       ny       = header.ny;
       nz       = header.nz;
       strncpy(comment,header.comment, COMMENT_SIZE);
-
+      float scale=1000.0;
       emdata[VOLTAGE_OFFSET]              = (int)header.voltage;
       emdata[CS_OFFSET]                   = (int)(header.Cs*scale);
       emdata[APERTURE_OFFSET]             = (int)header.Aperture;
@@ -183,9 +179,6 @@ public:
   float MarkerX;
   float MarkerY;
   int lswap;
-
-
-
 };
 
 
