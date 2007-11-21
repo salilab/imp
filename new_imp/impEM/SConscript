@@ -8,7 +8,7 @@ emlib.configure_check(emenv)
 Export('emenv')
 
 # Make sure that all builds with this environment fail if EMLIB was not found:
-if emenv['EM_LIBS'] == '':
+if emenv['EM_LIBS'] == '' or emenv['MODELLER_LIBS'] == '':
     invalidate_environment(emenv, emlib.fail)
 
 # Get an environment suitable for building a shared library:
