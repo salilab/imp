@@ -129,7 +129,7 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model* model,
       dist_rsrs_.push_back(new DistanceRestraint(model,
                                                  get_particle(i),
                                                  get_particle(j),
-                                            score_func_params));
+                                                 score_func_params));
       idx++;
     }
   }
@@ -137,7 +137,7 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model* model,
 
 
 //! Destructor
-ExclusionVolumeRestraint::~ExclusionVolumeRestraint ()
+ExclusionVolumeRestraint::~ExclusionVolumeRestraint()
 {
   std::vector<DistanceRestraint*>::iterator rsr_iter;
 
@@ -186,8 +186,8 @@ void ExclusionVolumeRestraint::show(std::ostream& out) const
     out << "exclusion volume  restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: "
-      << last_modified_by() << std::endl;
+  out << "version: " << version() << "  ";
+  out << "last_modified_by: " << last_modified_by() << std::endl;
   out << "  num particles:" << num_particles_;
 }
 

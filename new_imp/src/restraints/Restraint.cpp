@@ -29,10 +29,10 @@ Restraint::Restraint(std::string name): name_(name)
 Restraint::~Restraint()
 {
   IMP_LOG(VERBOSE, "Restraint deleted");
- IMP_assert(get_model() == NULL,
+  IMP_assert(get_model() == NULL,
              "Attemping to delete restraint while it is still in a model.\n"
-            << " This probably reflects premature destruction"
-            << " of python references.\n");
+             << " This probably reflects premature destruction"
+             << " of python references.\n");
 }
 
 
