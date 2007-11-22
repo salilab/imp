@@ -47,10 +47,18 @@ def check_modified_file(filename, errors):
 def get_all_files():
     modfiles = []
     for root, dirs, files in os.walk('.'):
-        if '.sconf_temp' not in root and 'pyext' not in root:
+        if '.sconf_temp' not in root:
             for f in files:
                 if not f.startswith('.'):
                     modfiles.append(os.path.join(root, f))
+    excludes = ['./pyext/IMP_wrap.h', './pyext/IMP_wrap.cc',
+                './impEM/pyext/IMPEM_wrap.h', './impEM/pyext/IMPEM_wrap.cc',
+                './impEM/pyext/IMPEM.py', './pyext/IMP/__init__.py']
+    for ex in excludes:
+        try:
+            modfiles.remove(ex)
+        except ValueError:
+            pass
     return modfiles
 
 def main():
