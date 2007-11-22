@@ -8,15 +8,13 @@ import IMP.utils
 
 
 class test_fitting(IMP.test.IMPTestCase):
-    """Class to test pair connectivity restraints"""
+    """Class to test EM correlation restraint"""
 
     def load_density_map(self):
-        xx=EM.SampledDensityMap()
         self.scene = EM.DensityMap()
         erw = EM.EMReaderWriter()
         self.scene.Read("in.em",erw)
-        self.scene.get_header_writable().resolution = 2.0
-
+        self.scene.get_header_writable().set_resolution(3.)
 
     def load_particles(self):
         radius_key = IMP.FloatKey("radius")
@@ -28,11 +26,10 @@ class test_fitting(IMP.test.IMPTestCase):
         self.particles = []
         self.particle_indexes = IMP.vectori()
 
-        xx=EM.SampledDensityMap()
-
-        for p in range(3):
-            self.particles.append(IMP.utils.XYZParticle(self.imp_model,
-                                                        0., 0., 0.))
+        origin =  3.0
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 9.+origin, 9.+origin, 9.+origin))
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model,12.+origin, 3.+origin, 3.+origin))
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 3.+origin,12.+origin,12.+origin))
         p1 = self.particles[0]
         p1.add_attribute(radius_key, 1.0)
         p1.add_attribute(weight_key, 1.0)
@@ -55,15 +52,12 @@ class test_fitting(IMP.test.IMPTestCase):
 
         self.particle_indexes.push_back(3)
 
-
-
     def setUp(self):
         """Build test model and optimizer"""
         self.imp_model = IMP.Model()
 
         self.restraint_sets = []
         self.rsrs = []
-
 
         self.load_density_map()
         self.load_particles()
@@ -93,8 +87,8 @@ class test_fitting(IMP.test.IMPTestCase):
                                          "weight",
                                          1.0))
         score = rsrs[0].evaluate(None)
-
-        self.assert_(score > 0.05, "the correlation score is not correct")
+        print "EM score (1-CC) = "+str(score)
+        self.assert_(score < 0.05, "the correlation score is not correct")
 
 
 if __name__ == '__main__':
