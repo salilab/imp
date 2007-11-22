@@ -38,8 +38,8 @@ Particle::~Particle()
  */
 void Particle::set_model(Model *md, ParticleIndex pi)
 {
-  model_=md;
-  pi_=pi;
+  model_ = md;
+  pi_ = pi;
 }
 
 
@@ -108,7 +108,7 @@ std::ostream& Particle::show(std::ostream& out) const
 {
   char* inset = "  ";
   out << std::endl;
-  out << "--"<< get_index() << "--" << std::endl;
+  out << "--" << get_index() << "--" << std::endl;
   if (is_active_) {
     out << inset << inset << "active";
   } else {

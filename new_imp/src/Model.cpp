@@ -28,16 +28,16 @@ Model::Model()
 //! Destructor
 Model::~Model()
 {
-  IMP_LOG(VERBOSE,"Delete Model: beware of early Python calls to destructor.");
-  for (unsigned int i=0; i< particles_.size(); ++i) {
+  IMP_LOG(VERBOSE, "Delete Model: beware of early Python calls to destructor.");
+  for (unsigned int i = 0; i < particles_.size(); ++i) {
     particles_[i]->set_model(NULL, ParticleIndex());
     delete particles_[i];
   }
-  for (unsigned int i=0; i< restraints_.size(); ++i) {
+  for (unsigned int i = 0; i < restraints_.size(); ++i) {
     restraints_[i]->set_model(NULL);
     delete restraints_[i];
   }
-  for (unsigned int i=0; i< states_.size(); ++i) {
+  for (unsigned int i = 0; i < states_.size(); ++i) {
     states_[i]->set_model(NULL);
     delete states_[i];
   }
@@ -95,7 +95,7 @@ Particle* Model::get_particle(ParticleIndex idx) const
 RestraintIndex Model::add_restraint(Restraint* restraint_set)
 {
   restraints_.push_back(restraint_set);
-  RestraintIndex ri(restraints_.size()-1);
+  RestraintIndex ri(restraints_.size() - 1);
   restraint_set->set_model(this);
   return ri;
 }
@@ -123,7 +123,7 @@ StateIndex Model::add_state(State* state)
 {
   state->set_model(this);
   states_.push_back(state);
-  return states_.size()-1;
+  return states_.size() - 1;
 }
 
 
@@ -213,9 +213,9 @@ void Model::set_up_trajectory(const std::string trajectory_path,
     if (!fout.is_open()) {
       IMP_ERROR("Unable to initialize trajectory file: " << trajectory_path_
                 << ". Trajectory writing is off.");
-      trajectory_on_=false;
+      trajectory_on_ = false;
     } else {
-      frame_num_=0;
+      frame_num_ = 0;
     }
   }
 }
@@ -237,7 +237,7 @@ void Model::save_state()
   if (!fout.is_open()) {
     IMP_ERROR("Unable to open trajectory file: "
               << trajectory_path_ << ". Trajectory is off. ");
-    trajectory_on_=false;
+    trajectory_on_ = false;
   } else {
     fout << "FRAME " << frame_num_ << std::endl;
     frame_num_++;
@@ -254,7 +254,7 @@ void Model::save_state()
     }
     if (!fout) {
       IMP_ERROR("Error writing to trajectory file. Trajectory is off. ");
-      trajectory_on_=false;
+      trajectory_on_ = false;
     }
   }
 }
