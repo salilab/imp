@@ -6,8 +6,8 @@ import EM
 import unittest
 import os
 
-def InitParticle(particles,p_ind_,x_,y_,z_,r_=0.0,w_=1.0,protein_=1):
-    """InitParticle(particles_,p_ind_,x_,y_,z_,r_=0.0,w=1.0,protein_=1)
+def init_particle(particles,p_ind_,x_,y_,z_,r_=0.0,w_=1.0,protein_=1):
+    """init_particle(particles_,p_ind_,x_,y_,z_,r_=0.0,w=1.0,protein_=1)
     particles     IMP particles
     p_ind         particle indices
     x_            x coord
@@ -42,9 +42,9 @@ class SampleTests(unittest.TestCase):
         # - add the particles attributes ( other than X,Y,Z)
         rad = 1.0
         wei = 1.0
-        InitParticle(self.particles,0,9.0,9.0,9.0,rad,wei,1)
-        InitParticle(self.particles,1,12.0,3.0,3.0,rad,wei,1)
-        InitParticle(self.particles,2,3.0,12.0,12.0,rad,wei,1)
+        init_particle(self.particles,0,9.0,9.0,9.0,rad,wei,1)
+        init_particle(self.particles,1,12.0,3.0,3.0,rad,wei,1)
+        init_particle(self.particles,2,3.0,12.0,12.0,rad,wei,1)
         self.particle_indexes = IMP.vectori()
         self.particle_indexes.clear()
         for i in xrange(npart):
@@ -64,7 +64,8 @@ class SampleTests(unittest.TestCase):
         em_map = EM.DensityMap()
         em_map.Read("xxx.em",erw)
         em_map.calcRMS()
-        self.assert_(abs(em_map.get_header().rms - model_map.get_header().rms) < .000001,
+        self.assert_(abs(em_map.get_header().rms - \
+                         model_map.get_header().rms) < .000001,
                      "standard deviations of maps differ")
         os.unlink("xxx.em")
 
