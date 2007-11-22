@@ -30,7 +30,7 @@ RestraintSet::RestraintSet(const std::string& name)
 RestraintSet::~RestraintSet()
 {
   IMP_LOG(VERBOSE, "Delete RestraintSet");
-  for (unsigned int i=0; i< restraints_.size(); ++i) {
+  for (unsigned int i = 0; i < restraints_.size(); ++i) {
     restraints_[i]->set_model(NULL);
     delete restraints_[i];
   }
@@ -46,7 +46,7 @@ RestraintSet::RestraintIndex RestraintSet::add_restraint(Restraint* restraint)
 {
   restraints_.push_back(restraint);
   restraint->set_model(get_model());
-  return restraints_.size()-1;
+  return restraints_.size() - 1;
 }
 
 
@@ -80,7 +80,7 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
 
   score = (Float) 0.0;
   try {
-    for (size_t i=0; i < restraints_.size(); i++) {
+    for (size_t i = 0; i < restraints_.size(); i++) {
       if (restraints_[i]->get_is_active())
         score += restraints_[i]->evaluate(ouracc);
     }
@@ -99,7 +99,7 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
  */
 void RestraintSet::check_particles_active()
 {
-  for (size_t i=0; i < restraints_.size(); i++) {
+  for (size_t i = 0; i < restraints_.size(); i++) {
     restraints_[i]->check_particles_active();
   }
 }
@@ -112,7 +112,7 @@ void RestraintSet::check_particles_active()
 void RestraintSet::show(std::ostream& out) const
 {
   out << "restraint set " << get_name() << ":" << std::endl;
-  for (size_t i=0; i < restraints_.size(); i++) {
+  for (size_t i = 0; i < restraints_.size(); i++) {
     restraints_[i]->show(out);
   }
   out << "... end restraint set " << get_name() << std::endl;

@@ -96,14 +96,14 @@ Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
   delta_z = get_particle(0)->get_value(z_) - get_particle(1)->get_value(z_);
 
   // calculate the distance feature
-  distance = sqrt(delta_x*delta_x + delta_y*delta_y + delta_z*delta_z);
+  distance = sqrt(delta_x * delta_x + delta_y * delta_y + delta_z * delta_z);
 
   // if distance is too close to zero, set it to some non-zero value
   if (distance < DistanceRestraint::MIN_DISTANCE) {
     delta_x = std::rand(); // arbitrary move
     delta_y = std::rand(); // arbitrary move
     delta_z = std::rand(); // arbitrary move
-    distance = sqrt(delta_x*delta_x + delta_y*delta_y + delta_z*delta_z);
+    distance = sqrt(delta_x * delta_x + delta_y * delta_y + delta_z * delta_z);
 
     // normalize the random move, to the min disance
     delta_x = DistanceRestraint::MIN_DISTANCE * delta_x / distance;
