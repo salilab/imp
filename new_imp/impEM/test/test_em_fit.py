@@ -7,7 +7,7 @@ import IMP.test
 import IMP.utils
 
 
-class test_fitting(IMP.test.IMPTestCase):
+class FittingTest(IMP.test.IMPTestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_map(self):
@@ -27,9 +27,12 @@ class test_fitting(IMP.test.IMPTestCase):
         self.particle_indexes = IMP.vectori()
 
         origin =  3.0
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 9.+origin, 9.+origin, 9.+origin))
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model,12.+origin, 3.+origin, 3.+origin))
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 3.+origin,12.+origin,12.+origin))
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 9.+origin,
+                                                    9.+origin, 9.+origin))
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 12.+origin,
+                                                    3.+origin, 3.+origin))
+        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 3.+origin,
+                                                    12.+origin,12.+origin))
         p1 = self.particles[0]
         p1.add_attribute(radius_key, 1.0)
         p1.add_attribute(weight_key, 1.0)
@@ -80,12 +83,8 @@ class test_fitting(IMP.test.IMPTestCase):
 
         rsrs = []
 
-        rsrs.append(IMPEM.EMFitRestraint(self.imp_model,
-                                         self.particle_indexes,
-                                         self.scene,
-                                         "radius",
-                                         "weight",
-                                         1.0))
+        rsrs.append(IMPEM.EMFitRestraint(self.imp_model, self.particle_indexes,
+                                         self.scene, "radius", "weight", 1.0))
         score = rsrs[0].evaluate(None)
         print "EM score (1-CC) = "+str(score)
         self.assert_(score < 0.05, "the correlation score is not correct")
