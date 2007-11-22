@@ -116,7 +116,7 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model* model,
   // particle 1 indexes
   for (int i = 0; i < num_particles_ - 1; i++) {
     // particle 2 indexes (avoid duplicates and particle with itself)
-    for (int j = i+1; j < num_particles_; j++) {
+    for (int j = i + 1; j < num_particles_; j++) {
       // Use those radii to calculate the expected distance
       Float attri, attrj;
       attri = get_particle(i)->get_value(attr_name);

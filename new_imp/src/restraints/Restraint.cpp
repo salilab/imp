@@ -18,7 +18,7 @@ namespace IMP
 //! Constructor
 Restraint::Restraint(std::string name): name_(name)
 {
-  model_=NULL;
+  model_ = NULL;
   IMP_LOG(VERBOSE, "Restraint constructed");
   is_active_ = true; // active by default
   are_particles_active_ = true; // active by default

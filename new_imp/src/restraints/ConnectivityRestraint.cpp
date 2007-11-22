@@ -145,7 +145,7 @@ void ConnectivityRestraint::set_up(Model* model,
   particle_type_.resize(num_particles_);
 
   IMP_LOG(VERBOSE, "set up particle types");
-  type_=type;
+  type_ = type;
   // set up the particles, their position indexes, and their type indexes
   for (int i = 0; i < num_particles_; i++) {
     p1 = model->get_particle(particle_indexes[i]);
