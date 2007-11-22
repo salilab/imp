@@ -61,9 +61,9 @@ ConnectivityRestraint::ConnectivityRestraint(Model* model,
   }
 
   IMP_LOG(VERBOSE,
-         "Number of types: " << num_types_ << "  max_type_: " << max_type_ <<
-         "  num_restraints_: " << num_restraints_ << "  num_particles_: " <<
-         num_particles_ << std::endl);
+          "Number of types: " << num_types_ << "  max_type_: " << max_type_ <<
+          "  num_restraints_: " << num_restraints_ << "  num_particles_: " <<
+          num_particles_ << std::endl);
 }
 
 
@@ -118,9 +118,9 @@ ConnectivityRestraint::ConnectivityRestraint(Model* model,
   }
 
   IMP_LOG(VERBOSE,
-         "Number of types: " << num_types_ << "  max_type_: " << max_type_ <<
-         "  num_restraints_: " << num_restraints_ << "  num_particles_: " <<
-         num_particles_ << std::endl);
+          "Number of types: " << num_types_ << "  max_type_: " << max_type_ <<
+          "  num_restraints_: " << num_restraints_ << "  num_particles_: " <<
+          num_particles_ << std::endl);
 }
 
 
@@ -203,7 +203,7 @@ void ConnectivityRestraint::set_up(Model* model,
 }
 
 //! Destructor
-ConnectivityRestraint::~ConnectivityRestraint ()
+ConnectivityRestraint::~ConnectivityRestraint()
 {
   std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
 
@@ -323,8 +323,8 @@ void ConnectivityRestraint::show(std::ostream& out) const
     out << "connectivity restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: "
-      << last_modified_by() << std::endl;
+  out << "version: " << version() << "  ";
+  out << "last_modified_by: " << last_modified_by() << std::endl;
   out << "  num particles:" << num_particles_;
 }
 

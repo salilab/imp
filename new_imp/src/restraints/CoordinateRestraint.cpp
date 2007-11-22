@@ -136,10 +136,10 @@ void CoordinateRestraint::show(std::ostream& out) const
     out << "coordinate restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: "
-      << last_modified_by() << std::endl;
-  out << "  particles: " << get_particle(0)->get_index() 
-      << " and " << get_particle(0)->get_index();
+  out << "version: " << version() << "  ";
+  out << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "  particles: " << get_particle(0)->get_index();
+  out << " and " << get_particle(0)->get_index();
 
   out << "  axis:" << axis_;
 }

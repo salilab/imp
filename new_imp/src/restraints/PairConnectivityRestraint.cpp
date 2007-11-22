@@ -55,7 +55,7 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
         rs_iter->rsr_ = new DistanceRestraint(model,
                                               get_particle(i),
                                               get_particle(j),
-                                         score_func_params);
+                                              score_func_params);
 
         rs_iter->part1_idx_ = i;
         rs_iter->part2_idx_ = j;
@@ -66,9 +66,9 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
   }
 
   IMP_LOG(VERBOSE, idx <<
-         "  num_restraints_: " << num_restraints_ << "  num_particles1_: " <<
-         num_particles1_ << " num_particles2_:" << num_particles2_
-         << std::endl);
+          "  num_restraints_: " << num_restraints_ << "  num_particles1_: " <<
+          num_particles1_ << " num_particles2_:" << num_particles2_
+          << std::endl);
 }
 
 //! Set up a restraint using the given attribute for particle-particle distance.
@@ -130,9 +130,9 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
   }
 
   IMP_LOG(VERBOSE, idx <<
-         "  num_restraints_: " << num_restraints_ << "  num_particles1_: " <<
-         num_particles1_ << " num_particles2_:" << num_particles2_
-         << std::endl);
+          "  num_restraints_: " << num_restraints_ << "  num_particles1_: " <<
+          num_particles1_ << " num_particles2_:" << num_particles2_
+          << std::endl);
 }
 
 
@@ -267,10 +267,10 @@ void PairConnectivityRestraint::show(std::ostream& out) const
     out << "pair connectivity restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: "
-      << last_modified_by() << std::endl;
-  out << "  num particles1:" << num_particles1_ << "  num particles2:"
-      << num_particles2_;
+  out << "version: " << version() << "  ";
+  out << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "  num particles1:" << num_particles1_;
+  out << "  num particles2:" << num_particles2_;
   out << "  num restraints:" << num_restraints_;
   out << "  num restraints to apply:" << num_to_apply_;
 }

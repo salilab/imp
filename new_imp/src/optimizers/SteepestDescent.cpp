@@ -18,7 +18,7 @@ SteepestDescent::SteepestDescent()
 
 
 //! Destructor
-SteepestDescent::~SteepestDescent ()
+SteepestDescent::~SteepestDescent()
 {
 }
 
@@ -34,7 +34,7 @@ SteepestDescent::~SteepestDescent ()
    \param[in] threshold Terminate optimization when score drops to this value.
    \return score of the final state of the model.
  */
-Float SteepestDescent::optimize (Model& model, int max_steps, Float threshold)
+Float SteepestDescent::optimize(Model& model, int max_steps, Float threshold)
 {
   std::vector<Float> temp_vals;
   std::vector<Float> temp_derivs;

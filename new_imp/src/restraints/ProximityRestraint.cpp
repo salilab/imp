@@ -46,8 +46,8 @@ ProximityRestraint::ProximityRestraint(Model* model,
   }
 
   IMP_LOG(VERBOSE,
-         "Number of restraints: " << num_restraints_
-         << "  number of particles: " << num_particles_ << std::endl);
+          "Number of restraints: " << num_restraints_
+          << "  number of particles: " << num_particles_ << std::endl);
 }
 
 
@@ -202,8 +202,8 @@ Float ProximityRestraint::evaluate(DerivativeAccumulator *accum)
 
     score += dist_rsrs_[idx]->evaluate(accum);
     IMP_LOG(VERBOSE,
-           " " << i << " Applying Restraint: score: "
-           << score << std::endl);
+            " " << i << " Applying Restraint: score: "
+            << score << std::endl);
   }
 
   return score;
@@ -221,8 +221,8 @@ void ProximityRestraint::show(std::ostream& out) const
     out << "proximity restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  " << "last_modified_by: "
-      << last_modified_by() << std::endl;
+  out << "version: " << version() << "  ";
+  out << "last_modified_by: " << last_modified_by() << std::endl;
   out << "  num particles:" << num_particles_;
 }
 

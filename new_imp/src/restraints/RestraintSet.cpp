@@ -109,7 +109,7 @@ void RestraintSet::check_particles_active()
 //! Show the current restraint.
 /** \param[in] out Stream to send restraint description to.
  */
-void RestraintSet::show(std::ostream& out) const 
+void RestraintSet::show(std::ostream& out) const
 {
   out << "restraint set " << get_name() << ":" << std::endl;
   for (size_t i=0; i < restraints_.size(); i++) {
