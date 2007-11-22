@@ -11,7 +11,7 @@ namespace IMP
 {
 
 namespace internal {
-unsigned int next_attribute_table_index_=0;
+unsigned int next_attribute_table_index_ = 0;
 std::vector<KeyData> attribute_key_data;
 }
 

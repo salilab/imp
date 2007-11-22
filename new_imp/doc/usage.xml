@@ -48,7 +48,7 @@ For information on the low-level &IMP; code, see the
 <para>All C++ headers and code should be indented in 'Linux' style, with
 2-space indents. Do not use tabs. This is roughly the output of
 <ulink url="http://astyle.sourceforge.net/">Artistic Style</ulink> with
-the <parameter>--convert-tabs --style=linux --indent=spaces=2 --unpad=paren</parameter>
+the <parameter>--convert-tabs --style=linux --indent=spaces=2 --unpad=paren --pad=oper</parameter>
 parameters. Split lines if necessary to ensure that no line is longer than
 80 characters.
 </para>

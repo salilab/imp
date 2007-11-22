@@ -35,7 +35,7 @@ FloatIndex ModelData::add_float(const Float value)
   FloatIndex f_index;
   int size = float_data_.size();
 
-  float_data_.resize(size+1);
+  float_data_.resize(size + 1);
 
   f_index = FloatIndex(size);//.set_index(size);
   float_data_[f_index.get_index()].value_ = value;
@@ -113,9 +113,9 @@ IntIndex ModelData::add_int(const Int value)
   IntIndex i_index;
   int size = int_data_.size();
 
-  int_data_.resize(size+1);
+  int_data_.resize(size + 1);
 
-  i_index= IntIndex(size);
+  i_index = IntIndex(size);
   int_data_[i_index.get_index()] = value;
 
   return i_index;
@@ -142,9 +142,9 @@ StringIndex ModelData::add_string(const String value)
   StringIndex s_index;
   int size = string_data_.size();
 
-  string_data_.resize(size+1);
+  string_data_.resize(size + 1);
 
-  s_index= StringIndex(size);
+  s_index = StringIndex(size);
   string_data_[s_index.get_index()] = value;
 
   return s_index;
@@ -182,7 +182,7 @@ bool OptFloatIndexIterator::next()
   FloatIndex fi;
 
   do {
-    fi= FloatIndex(++cur_);
+    fi = FloatIndex(++cur_);
     if (cur_ >= (int) model_data_->float_data_.size()) {
       cur_--; // keep pointing at the last item
       return false;
@@ -202,7 +202,7 @@ FloatIndex OptFloatIndexIterator::get() const
 {
   FloatIndex fi;
 
-  fi= FloatIndex(cur_);
+  fi = FloatIndex(cur_);
   return fi;
 }
 

@@ -17,7 +17,7 @@ namespace IMP
 //! Constructor
 State::State(std::string name) : name_(name)
 {
-  model_=NULL;
+  model_ = NULL;
   IMP_LOG(VERBOSE, "State constructed");
 }
 
