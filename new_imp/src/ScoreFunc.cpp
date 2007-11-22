@@ -155,7 +155,7 @@ BasicScoreFuncParams::BasicScoreFuncParams(std::string score_func_type,
 
 
 //! Destructor
-BasicScoreFuncParams::~BasicScoreFuncParams ()
+BasicScoreFuncParams::~BasicScoreFuncParams()
 {
 }
 

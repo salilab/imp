@@ -7,7 +7,8 @@
 
 #include "IMP/log.h"
 
-namespace IMP {
+namespace IMP
+{
 
 /* Initialize singleton pointer to NULL */
 Log* Log::logpt_ = NULL;
