@@ -12,14 +12,14 @@ namespace IMP
 {
 
 //! Constructor
-ModelData::ModelData ()
+ModelData::ModelData()
 {
   check_particles_active_ = false;
 }
 
 
 //! Destructor
-ModelData::~ModelData ()
+ModelData::~ModelData()
 {
 }
 

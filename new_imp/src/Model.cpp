@@ -17,7 +17,7 @@ namespace IMP
 {
 
 //! Constructor
-Model::Model ()
+Model::Model()
 {
   model_data_ = new ModelData();
   frame_num_ = 0;
@@ -26,7 +26,7 @@ Model::Model ()
 
 
 //! Destructor
-Model::~Model ()
+Model::~Model()
 {
   IMP_LOG(VERBOSE,"Delete Model: beware of early Python calls to destructor.");
   for (unsigned int i=0; i< particles_.size(); ++i) {
@@ -37,7 +37,7 @@ Model::~Model ()
     restraints_[i]->set_model(NULL);
     delete restraints_[i];
   }
- for (unsigned int i=0; i< states_.size(); ++i) {
+  for (unsigned int i=0; i< states_.size(); ++i) {
     states_[i]->set_model(NULL);
     delete states_[i];
   }
@@ -69,7 +69,7 @@ ParticleIndex Model::add_particle(Particle* particle)
   particle->set_model(this, pi);
 
   // return the particle index
-  return pi; 
+  return pi;
 }
 
 
@@ -108,7 +108,7 @@ RestraintIndex Model::add_restraint(Restraint* restraint_set)
  */
 State* Model::get_state(StateIndex i) const
 {
-  IMP_check(i.get_index() < states_.size(), 
+  IMP_check(i.get_index() < states_.size(),
             "Out of range State requested",
             std::out_of_range("Invalid State requested"));
   return states_[i.get_index()];
@@ -134,7 +134,7 @@ StateIndex Model::add_state(State* state)
  */
 Restraint* Model::get_restraint(RestraintIndex i) const
 {
-  IMP_check(i.get_index() < restraints_.size(), 
+  IMP_check(i.get_index() < restraints_.size(),
             "Out of range restraint requested",
             std::out_of_range("Invalid restraint requested"));
   return restraints_[i.get_index()];
@@ -148,8 +148,8 @@ Float Model::evaluate(bool calc_derivs)
 {
   // One or more particles may have been activated or deactivated.
   // Check each restraint to see if it changes its active status.
-  IMP_LOG(VERBOSE, "Model evaluate (" << restraints_.size()
-                   << " restraint sets):");
+  IMP_LOG(VERBOSE,
+          "Model evaluate (" << restraints_.size() << " restraint sets):");
   if (model_data_->check_particles_active()) {
     for (size_t i = 0; i < restraints_.size(); i++) {
       restraints_[i]->check_particles_active();
@@ -173,8 +173,8 @@ Float Model::evaluate(bool calc_derivs)
   DerivativeAccumulator accum;
   DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
   for (size_t i = 0; i < restraints_.size(); i++) {
-    IMP_LOG(VERBOSE, "Evaluating restraint " << restraints_[i]->get_name()
-                     << ":");
+    IMP_LOG(VERBOSE,
+            "Evaluating restraint " << restraints_[i]->get_name() << ":");
     if (restraints_[i]->get_is_active()) {
       score += restraints_[i]->evaluate(accpt);
     }
@@ -235,7 +235,7 @@ void Model::save_state()
 
   fout.open(trajectory_path_.c_str(), std::ios_base::app);
   if (!fout.is_open()) {
-    IMP_ERROR("Unable to open trajectory file: " 
+    IMP_ERROR("Unable to open trajectory file: "
               << trajectory_path_ << ". Trajectory is off. ");
     trajectory_on_=false;
   } else {
@@ -267,8 +267,8 @@ void Model::show(std::ostream& out) const
   out << std::endl << std::endl;
   out << "** Model **" << std::endl;
 
-  out << "version: " << version() << "  " << "last_modified_by: "
-      << last_modified_by() << std::endl;
+  out << "version: " << version() << "  ";
+  out << "last_modified_by: " << last_modified_by() << std::endl;
   out << particles_.size() << " particles" << std::endl;
   for (size_t i = 0; i < particles_.size(); i++) {
     particles_[i]->show(out);
@@ -356,7 +356,7 @@ bool RestraintIterator::next()
 //! Return the current restraint set.
 /** Should only be called if next() returned True.
     \return pointer to the restraint set, or null if out of bounds.
- */ 
+ */
 Restraint* RestraintIterator::get()
 {
   if (cur_ >= (int) model_->restraints_.size()) {

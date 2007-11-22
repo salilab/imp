@@ -116,7 +116,7 @@ std::ostream& Particle::show(std::ostream& out) const
   }
   out << std::endl;
 
-  if (get_model() != NULL ) {
+  if (get_model() != NULL) {
     out << inset << inset << "float attributes:" << std::endl;
     float_indexes_.show(out, "    ", get_model()->get_model_data());
 
