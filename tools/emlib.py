@@ -32,9 +32,9 @@ def configure_check(env):
 
 def fail(env, target, source):
     print """
-  ERROR: emlib is required to build %s.
+  ERROR: emlib and Modeller are required to build %s.
 
-  You can set the directory where emlib is installed by using
-  'scons em=/opt/em' or similar.
+  You can set the directories where emlib and Modeller are installed by using
+  'scons em=/opt/em modeller=/opt/modeller' or similar.
 """ % target[0]
     return 1
