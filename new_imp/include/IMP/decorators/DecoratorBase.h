@@ -22,10 +22,10 @@ protected:
   bool is_default() const {
     return particle_==NULL;
   }
-  static bool has_required_attributes(Particle *p) {
+  static bool has_required_attributes(Particle *) {
     return true;
   }
-  static void add_required_attributes(Particle *p) {
+  static void add_required_attributes(Particle *) {
   }
   static void decorator_initialize_static_data() {}
 public:

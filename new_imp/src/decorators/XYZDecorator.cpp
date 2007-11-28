@@ -7,6 +7,7 @@
 
 #include <IMP/decorators/XYZDecorator.h>
 #include <sstream>
+#include <cmath>
 
 namespace IMP
 {
@@ -34,5 +35,14 @@ FloatKey XYZDecorator::z_key_;
                              y_key_= FloatKey("y");
                              z_key_= FloatKey("z");
                            })
+  namespace {
+    template <class T>
+    T d(T a, T b){T d=a-b; return d*d;}
+  }
 
+  Float distance(XYZDecorator a, XYZDecorator b){
+    double d2= d(a.get_x(), b.get_x()) + d(a.get_y(), b.get_y())
+      + d(a.get_z(), b.get_z());
+    return std::sqrt(d2);
+  }
 } // namespace IMP

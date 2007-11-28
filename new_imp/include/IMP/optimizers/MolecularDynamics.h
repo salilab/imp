@@ -16,29 +16,20 @@ namespace IMP
 {
 
 //! Simple molecular dynamics optimizer.
+/**
+   This optimizer uses the threshold as the temperature for some
+   reason or another.
+ */
 class IMPDLLEXPORT MolecularDynamics : public Optimizer
 {
 public:
   MolecularDynamics();
   virtual ~MolecularDynamics();
 
-  //! Optimize the model.
-  /** \param[in] model       Model that is being optimized.
-      \param[in] max_steps   Maximum number of iterations before aborting.
-      \param[in] temperature Fictional temperature.
-      \return score of the final state of the model.
-   */
-  virtual Float optimize(Model& model, int max_steps, Float temperature=300.0);
+  IMP_OPTIMIZER("0.1", "Ben Webb");
 
   //! Perform a single dynamics step.
   virtual void step();
-
-  virtual std::string version() const {
-    return "0.1";
-  }
-  virtual std::string last_modified_by() const {
-    return "Ben Webb";
-  }
 
 protected:
   //! Get the set of particles to use in this optimization.

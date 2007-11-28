@@ -34,7 +34,7 @@ SteepestDescent::~SteepestDescent()
    \param[in] threshold Terminate optimization when score drops to this value.
    \return score of the final state of the model.
  */
-Float SteepestDescent::optimize(Model& model, int max_steps, Float threshold)
+Float SteepestDescent::optimize(Model* model, int max_steps, Float threshold)
 {
   std::vector<Float> temp_vals;
   std::vector<Float> temp_derivs;
@@ -42,7 +42,7 @@ Float SteepestDescent::optimize(Model& model, int max_steps, Float threshold)
   Float last_score, new_score = 0.0;
   ModelData* model_data;
 
-  model_data = model.get_model_data();
+  model_data = model->get_model_data();
 
   // set up the indexes
   int opt_var_cnt = 0;
@@ -66,7 +66,7 @@ Float SteepestDescent::optimize(Model& model, int max_steps, Float threshold)
     int cnt = 0;
 
     // evaluate the last model state
-    last_score = model.evaluate(true);
+    last_score = model->evaluate(true);
     IMP_LOG(VERBOSE, "start score: " << last_score);
 
     // store the old values
@@ -97,7 +97,7 @@ Float SteepestDescent::optimize(Model& model, int max_steps, Float threshold)
       }
 
       // check the new model
-      new_score = model.evaluate(false);
+      new_score = model->evaluate(false);
       IMP_LOG(VERBOSE, "last score: " << last_score << "  new score: "
               << new_score << "  step size: " << step_size);
 

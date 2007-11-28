@@ -11,6 +11,7 @@
 #include "../IMP_config.h"
 #include "../Base_Types.h"
 #include "../Model.h"
+#include "../utility.h"
 
 namespace IMP
 {
@@ -22,15 +23,19 @@ public:
   Optimizer();
   virtual ~Optimizer();
 
-  //! Optimize the model and return the final score.
-  virtual Float optimize(Model& model, int max_steps, Float threshold=0.0) = 0;
-
-  virtual std::string version() const {
-    return "unknown";
-  }
-  virtual std::string last_modified_by() const {
-    return "unknown";
-  }
+  /** Optimize the model
+      \param[in] model The model to be optimized.
+      \param[in] max_steps The maximum number of steps to take.
+      \param[in] threshold Stop if the score goes below threshold.
+      \return The final score.
+   */       
+  virtual Float optimize(Model* model, int max_steps, 
+                         Float threshold=-std::numeric_limits<Float>::max())
+    = 0;
+  /** \return the current version*/
+  virtual std::string version() const =0;
+  /** \return the last person to modify this restraint */
+  virtual std::string last_modified_by() const=0;
 };
 
 } // namespace IMP
