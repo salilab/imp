@@ -86,10 +86,10 @@ void MolecularDynamics::step()
     \param[in] temperature Fictional temperature.
     \return score of the final state of the model.
  */
-Float MolecularDynamics::optimize(Model& model, int max_steps,
+Float MolecularDynamics::optimize(Model* model, int max_steps,
                                   Float temperature)
 {
-  setup_particles(model);
+  setup_particles(*model);
 
   for (int i = 0; i < max_steps; ++i) {
     step();

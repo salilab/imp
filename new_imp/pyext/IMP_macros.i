@@ -7,8 +7,14 @@
 #define IMP_RESTRAINT(a,b) \
    virtual Float evaluate(DerivativeAccumulator *accum);\
    virtual void show(std::ostream &out) const;\
-   virtual std::string version() const {return std::string(version_string);}\
-   virtual std::string last_modified_by() const {return std::string(lmb_string);}
+   virtual std::string version() const {return std::string(a);}\
+   virtual std::string last_modified_by() const {return std::string(b);}
+#define IMP_OPTIMIZER(a, b)                       \
+  virtual Float optimize(Model* model, int max_steps,                   \
+                         Float threshold=-std::numeric_limits<Float>::max());\
+  virtual std::string version() const {return std::string(a);};\
+  virtual std::string last_modified_by() const {return std::string(b);};
+
 #define IMP_DECORATOR_GET(a,b,c,d)
 #define IMP_DECORATOR_GET_SET(n,a,t,r) r get_##n() const;\
                                         void set_##n(t);

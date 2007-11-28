@@ -75,6 +75,25 @@ template <class L>                                                      \
   /** \return the last person to modify this restraint */               \
   virtual std::string last_modified_by() const {return std::string(lmb_string);}
 
+//! Define the basic things you need for an optimizer.
+/** These are: optimize, version, last_modified_by
+    \param[in] version_string The version string.
+    \param[in] lmb_string The name of the last modifier.
+*/
+#define IMP_OPTIMIZER(version_string, lmb_string)                       \
+  /** Optimize the model.                                               \
+      \param[in] model The model to be optimized.\                      \
+      \param[in] max_steps The maximum number of steps to take.         \
+      \param[in] threshold Stop if the score goes below threshold.      \
+      \return The final score.                                          \
+   */                                                                   \
+  virtual Float optimize(Model* model, int max_steps,                   \
+                         Float threshold=-std::numeric_limits<Float>::max()); \
+  /** \return the current version*/                                     \
+  virtual std::string version() const {return std::string(version_string);}\
+  /** \return the last person to modify this restraint */               \
+  virtual std::string last_modified_by() const {return std::string(lmb_string);}
+
 
 
 //! Use the swap_with member function to swap two objects

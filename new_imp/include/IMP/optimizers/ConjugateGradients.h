@@ -24,21 +24,8 @@ public:
   ConjugateGradients();
   virtual ~ConjugateGradients();
 
-  //! Optimize the model.
-  /** \param[in] model     Model that is being optimized.
-      \param[in] max_steps Maximum number of iterations before aborting.
-      \param[in] threshold Largest acceptable gradient-squared value
-                           for convergence.
-      \return score of the final state of the model.
-   */
-  virtual Float optimize(Model& model, int max_steps, Float threshold=0.0);
+  IMP_OPTIMIZER("0.1", "Ben Webb")
 
-  virtual std::string version() const {
-    return "0.1";
-  }
-  virtual std::string last_modified_by() const {
-    return "Ben Webb";
-  }
 };
 
 } // namespace IMP

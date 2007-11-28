@@ -206,20 +206,14 @@ ConjugateGradients::~ConjugateGradients()
 }
 
 
-//! Optimize the model.
-/** \param[in] model     Model that is being optimized.
-    \param[in] max_steps Maximum number of iterations before aborting.
-    \param[in] threshold Largest acceptable gradient-squared value
-                         for convergence.
-    \return score of the final state of the model.
- */
-Float ConjugateGradients::optimize(Model& model, int max_steps,
+
+Float ConjugateGradients::optimize(Model* model, int max_steps,
                                    Float threshold)
 {
   std::vector<FloatIndex> float_indices;
   std::vector<Float> x, dx;
   int n = 0, i;
-  ModelData* model_data = model.get_model_data();
+  ModelData* model_data = model->get_model_data();
 
   OptFloatIndexIterator opt_value_iter;
 
@@ -261,7 +255,7 @@ Float ConjugateGradients::optimize(Model& model, int max_steps,
      whether a Beale restart is being done. nrst=n means that this
      iteration is a restart iteration. */
 g20:
-  f = get_score(model, model_data, float_indices, x, dx);
+  f = get_score(*model, model_data, float_indices, x, dx);
   ifun++;
   nrst = n;
   // this is a gradient, not restart, direction:
@@ -304,7 +298,7 @@ g40:
   destimate = dx;
 
   /* Try to find a better score by linear search */
-  if (!line_search(x, dx, alpha, model, model_data, float_indices, ifun, f,
+  if (!line_search(x, dx, alpha, *model, model_data, float_indices, ifun, f,
                    dg, dg1, max_steps, search, estimate, destimate)) {
     /* If the line search failed, it was either because the maximum number
        of iterations was exceeded, or the minimum could not be found */
@@ -426,7 +420,7 @@ g40:
 end:
   // If the 'best current estimate' is better than the current state, return
   // that:
-  bestf = get_score(model, model_data, float_indices, estimate, destimate);
+  bestf = get_score(*model, model_data, float_indices, estimate, destimate);
   if (bestf < f) {
     for (i = 0; i < n; i++) {
       x[i] = estimate[i];

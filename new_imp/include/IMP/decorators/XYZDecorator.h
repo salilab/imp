@@ -67,6 +67,9 @@ namespace IMP
 
   IMP_OUTPUT_OPERATOR(XYZDecorator);
 
+  //! Compute the distance between a pair of particles
+  IMPDLLEXPORT Float distance(XYZDecorator a, XYZDecorator b);
+
 } // namespace IMP
 
 #endif  /* __IMP_XYZ_DECORATOR_H */
