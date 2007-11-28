@@ -5,6 +5,6 @@ files = ['noncopyable.h']
 
 
 # Install the include files:
-includedir = os.path.join(env['includedir'], 'IMP', 'decorators')
+includedir = os.path.join(env['includedir'], 'IMP', 'boost')
 inst = env.Install(includedir, files)
 env.Alias('install', inst)
