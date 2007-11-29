@@ -16,10 +16,11 @@ IMPSVNDIR=file:///cowbell1/svn/imp/trunk/
 
 TMPDIR=/var/tmp/modeller-build-$$
 MODINSTALL=/diva1/home/modeller/.${VER}-new
-IMPSRCTGZ=${MODINSTALL}/build/imp.tar.gz
+IMPSRCTGZ=${MODINSTALL}/build/sources/imp.tar.gz
 
 # Make build directory
-mkdir -m 0700 -p ${MODINSTALL}/build
+mkdir -m 0700 -p ${MODINSTALL}/build/sources
+mkdir -m 0755 -p ${MODINSTALL}/build/logs
 
 rm -rf ${TMPDIR}
 mkdir ${TMPDIR}
