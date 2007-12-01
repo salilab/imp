@@ -14,10 +14,10 @@ class test_sample_particles(unittest.TestCase):
 	def setUp(self):
 		 print 'start setup'
 		 """ create particles """
-		 self.particles_p = particles_provider()
-		 self.particles.append(9.,5.,5.,1.,1.)
-		 self.particles.append(12.,9.,4.,1.,1.)
-		 self.particles.append(4.,5.,5.,1.,1.)
+		 self.particles_p = EM.particles_provider()
+		 self.particles_p.append(9.,5.,5.,1.,1.)
+		 self.particles_p.append(12.,9.,4.,1.,1.)
+		 self.particles_p.append(4.,5.,5.,1.,1.)
 		 print 'after setup'
 
 	def test_sample(self):
