@@ -7,6 +7,10 @@
 
 %include "pyext/IMP_macros.i"
 
+/* Ignore shared object import/export stuff */
+#define EMDLLEXPORT
+#define EMDLLLOCAL
+
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"
