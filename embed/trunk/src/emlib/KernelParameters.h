@@ -65,10 +65,6 @@ KernelParameters() {
     }
     return radii2params[radii];
   }
-/** If we don't have powf(), emulate it with pow() */
-static float powf(float x, float y) {
-  return (float)pow((double)x, (double)y);
-}
 
   inline  float get_rsig() const  {return rsig;}
   inline float get_rsigsq() const {return rsigsq;}
