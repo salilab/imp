@@ -166,9 +166,10 @@ void  CoarseCC::calcDerivatives(const DensityMap &em_map,
       for (int ivoxy=iminy;ivoxy<=imaxy;ivoxy++) {
 	ivox = ivoxz * em_header->nx * em_header->ny + ivoxy * em_header->nx + iminx;
         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          rsq = powf(x_loc[ivox] - access_p.get_x(ii), 2)
-	    + powf(y_loc[ivox] - access_p.get_y(ii), 2)
-	    + powf(z_loc[ivox] - access_p.get_z(ii), 2);
+          float dx = x_loc[ivox] - access_p.get_x(ii);
+          float dy = y_loc[ivox] - access_p.get_y(ii);
+          float dz = z_loc[ivox] - access_p.get_z(ii);
+          rsq = dx * dx + dy * dy + dz * dz;
 	  //          rsq = exp(- rsq * params->get_inv_sigsq());
 	  rsq = EXP(- rsq * params->get_inv_sigsq());
 	  tmp = (access_p.get_x(ii)-x_loc[ivox]) * rsq;
