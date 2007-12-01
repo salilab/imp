@@ -56,6 +56,7 @@ class test_write_mrc(unittest.TestCase):
 		"""read map back in and check that rmsd is the same """
 		em_map = EM.DensityMap()
 		em_map.Read(out_filename,self.erw)
+                os.unlink(out_filename)
 		em_map.calcRMS()
 		rms2 = em_map.get_header().rms
 		print "RMSD of file = " + str(rms2)
@@ -91,6 +92,7 @@ class test_read_write_maps(unittest.TestCase):
 		self.assertEqual(65,scene.get_header().ny)
 		self.assertEqual(59,scene.get_header().nz)
 		scene.Write(out_filename,mrc_rw)
+                os.unlink(out_filename)
 	
 
 if __name__ == '__main__':
