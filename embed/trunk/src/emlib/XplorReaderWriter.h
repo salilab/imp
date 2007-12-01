@@ -2,6 +2,7 @@
 #define _XPLORREADER_H
 
 #include <math.h>
+#include "EM_config.h"
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
 #include <iostream>
@@ -11,7 +12,7 @@ using namespace std;
 
 
 
-class XplorHeader {
+class EMDLLEXPORT XplorHeader {
   
 public:
   XplorHeader() {}
@@ -49,7 +50,7 @@ public:
 };
 
 
-class XplorReaderWriter : public MapReaderWriter {
+class EMDLLEXPORT XplorReaderWriter : public MapReaderWriter {
 public:
   int Read(const char *filename, real **data, DensityHeader &header);
   void Write(const char *filename,const real *data, const DensityHeader &header );

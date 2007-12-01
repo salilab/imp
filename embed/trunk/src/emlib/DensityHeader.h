@@ -1,6 +1,7 @@
 #ifndef _DENSITYHEADER_H
 #define _DENSITYHEADER_H
 
+#include "EM_config.h"
 #include <iostream>
 #include <fstream>
 #include "def.h"
@@ -8,7 +9,7 @@
 
 // TODO - change so that the att will not be encoded but loaded from a conf file (Keren)
 
-class DensityHeader {
+class EMDLLEXPORT DensityHeader {
 
 public:
   DensityHeader() {

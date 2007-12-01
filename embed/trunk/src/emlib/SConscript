@@ -1,7 +1,10 @@
 Import('env','get_sharedlib_environment')
 # Get an environment suitable for building a shared library:
 print 'call get_sharedlib_environment'
-env = get_sharedlib_environment(env,  cplusplus=True)
+env = get_sharedlib_environment(env, 'EM_EXPORTS', cplusplus=True)
+
+# _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
+env.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
 
 # Source files
@@ -10,6 +13,7 @@ files = ('MapReaderWriter.cpp','DensityHeader.cpp','DensityMap.cpp','EMReaderWri
 
 # Build the shared library:
 lib = env.SharedLibrary('em', files)
+
 
 # Install the library:
 libinst = env.Install(env['libdir'], lib)

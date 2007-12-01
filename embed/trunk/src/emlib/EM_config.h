@@ -11,7 +11,7 @@
 
 /* Provide macros to mark functions and classes as exported from a DLL/.so */
 #ifdef _MSC_VER
-  #ifdef IMP_EXPORTS
+  #ifdef EM_EXPORTS
     #define EMDLLEXPORT __declspec(dllexport)
   #else
     #define EMDLLEXPORT __declspec(dllimport)

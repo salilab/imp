@@ -2,6 +2,7 @@
 #define _DENSITYMAP_H
 
 
+#include "EM_config.h"
 #include "DensityHeader.h"
 #include "Vector3.h"
 #include <iostream>
@@ -16,7 +17,7 @@ typedef float real;
 	1) IT IS ASSUMED THAT THE LOCATION OF A VOXEL IS AT THE LOWER XYZ VALUES THAT IT DEFINES AS A BOX.
 	This is important for function calc_all_voxel2loc() 
 */
-class DensityMap
+class EMDLLEXPORT DensityMap
 {
 public:
   /** 

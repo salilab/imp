@@ -16,6 +16,7 @@
 */
 
 
+#include "EM_config.h"
 #include "MapReaderWriter.h"
 #include <string>
 
@@ -27,7 +28,7 @@
 
 
 /** MRC header */
-class MRCHeader
+class EMDLLEXPORT MRCHeader
 {
 	public:	
 		int nx,ny,nz; // map size
@@ -84,7 +85,7 @@ class MRCHeader
 };
 
 
-class MRCReaderWriter : public MapReaderWriter
+class EMDLLEXPORT MRCReaderWriter : public MapReaderWriter
 {
 public:
   
@@ -134,8 +135,13 @@ private:
 
 
 
+EMDLLEXPORT
 int get_machine_stamp(void);
+
+EMDLLEXPORT
 int is_bigendian(void);
+
+EMDLLEXPORT
 void byte_swap(unsigned char *ch, int n_array);
 
 

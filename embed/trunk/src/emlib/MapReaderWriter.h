@@ -22,12 +22,13 @@
 
 
 
+#include "EM_config.h"
 #include "DensityHeader.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
 typedef float real;
-class MapReaderWriter {
+class EMDLLEXPORT MapReaderWriter {
 public:
 //   friend  ostream& operator<<(ostream& s, const MapReaderWriter &m) { // write the map
 //     m.Write(s);

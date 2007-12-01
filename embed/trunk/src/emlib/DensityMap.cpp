@@ -122,9 +122,9 @@ int DensityMap::loc2voxel(float x,float y,float z) const
 
 bool DensityMap::part_of_volume(float x,float y,float z) const
 {
-  if( x>=header.get_xorigin() and x<=header.get_top(0) and 
-      y>=header.get_yorigin() and y<=header.get_top(1) and
-      z>=header.get_zorigin() and z<=header.get_top(2) ) {
+  if( x>=header.get_xorigin() && x<=header.get_top(0) &&
+      y>=header.get_yorigin() && y<=header.get_top(1) &&
+      z>=header.get_zorigin() && z<=header.get_top(2) ) {
     return true;
 
   }
@@ -246,8 +246,8 @@ void DensityMap::reset_data() {
 
 bool DensityMap::same_origin  (const DensityMap &other) const{
     
-  if( fabs(get_header()->get_xorigin()-other.get_header()->get_xorigin())<EPS and 
-      fabs(get_header()->get_yorigin()-other.get_header()->get_yorigin())<EPS and
+  if( fabs(get_header()->get_xorigin()-other.get_header()->get_xorigin())<EPS &&
+      fabs(get_header()->get_yorigin()-other.get_header()->get_yorigin())<EPS &&
       fabs(get_header()->get_zorigin()-other.get_header()->get_zorigin())<EPS)
     return true;
   return false;
@@ -256,8 +256,8 @@ bool DensityMap::same_origin  (const DensityMap &other) const{
 }
 
 bool DensityMap::same_dimensions  (const DensityMap &other) const {
-  if(	get_header()->nx==other.get_header()->nx and 
-	get_header()->ny==other.get_header()->ny and
+  if(	get_header()->nx==other.get_header()->nx &&
+	get_header()->ny==other.get_header()->ny &&
 	get_header()->nz==other.get_header()->nz)
     return true;
   return false;

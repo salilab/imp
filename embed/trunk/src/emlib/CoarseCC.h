@@ -1,15 +1,15 @@
 #ifndef _COARSECC_H
 #define _COARSECC_H
 
-
+#include <vector>
+#include "EM_config.h"
+#include "exp.h"
 #include "DensityMap.h"
 #include "SampledDensityMap.h"
 #include "ParticlesAccessPoint.h"
-#include <vector>
-#include "exp.h"
 #include "def.h"
 //!CoarseCC is responsible for performing coarse fitting between two density objects. The pixels involved are direves from the positions of N particles.
-class CoarseCC {
+class EMDLLEXPORT CoarseCC {
 
 public:
 
