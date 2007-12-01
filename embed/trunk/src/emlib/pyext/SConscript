@@ -12,7 +12,7 @@ pyext = e.LoadableModule('_EM', 'em.i',
                          SWIGFLAGS='-python -c++ -naturalvar -IEMLIB',
                          CPPDEFINES={'_USE_MATH_DEFINES':1})
 # .py file should also be generated:
-pyem = File('em.py')
+pyem = File('EM.py')
 e.Depends(pyem, 'em.i')
 
 # Install the Python extension and any .py files:
