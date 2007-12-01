@@ -298,7 +298,8 @@ def get_pyext_environment(env, cplusplus=False):
 def invalidate_environment(env, fail_builder):
     """'Break' an environment, so that any builds with it use the fail_builder
        function (which should be an Action which terminates the build)"""
-    for var in ('SHLINKCOM', 'CCCOM', 'CXXCOM', 'SHCCCOM', 'SHCXXCOM'):
+    for var in ('SHLINKCOM', 'CCCOM', 'CXXCOM', 'SHCCCOM', 'SHCXXCOM',
+                'SWIGCOM'):
         env[var] = fail_builder
 
 def add_common_options(opts, package):
