@@ -21,7 +21,7 @@
 
   //compute the derivatives if required
   int ierr = 0;
-  if (lderiv > 0) {
+  if (lderiv) {
     CoarseCC::calcDerivatives(em_map,
 			      model_map,
 			      access_p,
@@ -50,7 +50,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
 
   //validity checks
   bool same_dimensions = em_map.same_dimensions(model_map);
-  if(not same_dimensions)   {
+  if (!same_dimensions)   {
     std::cerr << "CoarseCC::cross_correlation_coefficient >> This function cannot handle density maps of different size " << endl;
     std::cerr << "First map dimensions : " << em_header->nx << " x " << em_header->ny 
 	      << " x " << em_header->nz << std::endl;
@@ -59,7 +59,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     throw 1;
   }	
   bool same_voxel_size = em_map.same_voxel_size(model_map);
-  if(not same_voxel_size) {
+  if (!same_voxel_size) {
     std::cerr << "CoarseCC::cross_correlation_coefficient >> This function cannot handle density maps of different pixelsize " << endl;
     std::cerr << "First map pixelsize : " << em_header->Objectpixelsize << std::endl;
     std::cerr << "Second map pixelsize: " << model_header->Objectpixelsize << std::endl;
@@ -113,7 +113,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     j=ivoxz_shift * em_header->nx * em_header->ny + ivoxy_shift * em_header->nx + ivoxx_shift;
     for (i=0;i<nvox;i++) {
       if (model_data[i] > voxel_data_threshold) { // if the voxel of the model is above the threshold
-	if(j+i>=0 and j+i<nvox)  { // Check if the voxel belongs to the em map volume, and only then compute the correlation
+	if(j+i>=0 && j+i<nvox)  { // Check if the voxel belongs to the em map volume, and only then compute the correlation
 	  ccc = ccc + em_data[j+i] * model_data[i];
 	}
       }

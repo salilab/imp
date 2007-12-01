@@ -112,14 +112,13 @@ def MyEnvironment(options=None, *args, **kw):
     # Note: would like to check for 'help' here too, but that requires a
     # post 0.97 scons snapshot
     if not env.GetOption('clean'):
-        custom_tests = {'CheckGNUHash': CheckGNUHash
-   ###                     'CheckGCCVisibility': CheckGCCVisibility,
+        custom_tests = {'CheckGNUHash': CheckGNUHash,
+                        'CheckGCCVisibility': CheckGCCVisibility,
                         }
         conf = env.Configure(custom_tests = custom_tests)
         if sys == 'Linux':
             conf.CheckGNUHash()
-###        conf.CheckGCCVisibility()
-        # Check explicitly for False, since all checks will return Null if
+        conf.CheckGCCVisibility()
         conf.Finish()
     return env
 
@@ -132,7 +131,7 @@ def _fix_aix_cpp_link(env, cplusplus, linkflags):
         env[linkflags] = slflags.replace('-qmkshrobj -qsuppress=1501-218',
                                          '-shared')
 
-def get_sharedlib_environment(env, cplusplus=False):
+def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     """Get a modified environment suitable for building shared libraries
        (i.e. using gcc ELF visibility macros or MSVC dllexport/dllimport macros
        to mark dynamic symbols as exported or private). `cppdefine` should be
@@ -141,9 +140,8 @@ def get_sharedlib_environment(env, cplusplus=False):
        If `cplusplus` is True, additional configuration suitable for a C++
        shared library is done."""
     e = env.Copy()
-    e.Append(
+    e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CCFLAGS='${VIS_CCFLAGS}')
-    print '${VIS_CCFLAGS}'
 
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e

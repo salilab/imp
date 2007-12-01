@@ -7,8 +7,9 @@
 #include <fstream>
 #include <iomanip>
 #include <vector>
+#include "EM_config.h"
 
-class ParticlesAccessPoint {
+class EMDLLEXPORT ParticlesAccessPoint {
 public:
   // implmenets particle iterator
   virtual ~ParticlesAccessPoint(){}
@@ -24,7 +25,7 @@ public:
 
 
 
-class particles_provider : public ParticlesAccessPoint {
+class EMDLLEXPORT particles_provider : public ParticlesAccessPoint {
 public:
 	std::vector<float> x,y,z,radii,weights;
 	

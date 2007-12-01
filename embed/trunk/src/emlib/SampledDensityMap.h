@@ -1,20 +1,20 @@
 #ifndef _SAMPLEDDENSITYMAP_H
 #define _SAMPLEDDENSITYMAP_H
 
-
 #include <vector>
+#include "EM_config.h"
+#include "exp.h"
 #include "DensityMap.h"
 #include "DensityHeader.h"
 #include "def.h"
 #include "ParticlesAccessPoint.h"
 #include "KernelParameters.h"
-#include "exp.h"
 
 //an advantage of using const double over define is that it limits the use of pointers to effect the data:
 //#define PI 3.141592653589793238462643383
 //define could be manipulated with a const *int ptr declaration. 
 
-class SampledDensityMap: public DensityMap 
+class EMDLLEXPORT SampledDensityMap: public DensityMap 
 
 {
 

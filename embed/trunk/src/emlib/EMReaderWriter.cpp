@@ -196,17 +196,18 @@ int EMReaderWriter::ReadData(ifstream &file, real **data, const EMHeader &header
     }
 
 
-    char voxeldata[nvox*voxel_data_size];
-    file.read((char  *)&voxeldata,  voxel_data_size*nvox);
-    char tmp[voxel_data_size];
+    char *voxeldata = new char[nvox * voxel_data_size];
+    file.read(voxeldata,  voxel_data_size*nvox);
+    char *tmp = new char[voxel_data_size];
     for (int i=0;i<nvox;i++) {
       strncpy(tmp,&(voxeldata[i*voxel_data_size]),voxel_data_size);
       if (header.lswap==1) { 
 	swap(tmp,voxel_data_size);
       }
-      memcpy(&((*data)[i]),&tmp,voxel_data_size);
+      memcpy(&((*data)[i]),tmp,voxel_data_size);
     }
-    //    delete(voxeldata);
+    delete[] tmp;
+    delete[] voxeldata;
     
     return 0;
 }

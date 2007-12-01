@@ -15,6 +15,9 @@
 #include "../ParticlesAccessPoint.h"
 %}
 
+/* Ignore shared object import/export stuff */
+#define EMDLLEXPORT
+#define EMDLLLOCAL
 
 %include "std_common.i"
 %include "std_ios.i"

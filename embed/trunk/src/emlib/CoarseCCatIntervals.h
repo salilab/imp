@@ -4,11 +4,12 @@
 
 
 
+#include "EM_config.h"
 #include "CoarseCC.h"
 #include <vector>
 
 //!  Cross correlation coefficient calculator. Stored CCC and derivate values and recompute then every each X steps.
-class CoarseCCatIntervals : public CoarseCC {
+class EMDLLEXPORT CoarseCCatIntervals : public CoarseCC {
 
 public:
 

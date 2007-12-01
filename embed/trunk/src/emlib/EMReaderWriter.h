@@ -14,12 +14,13 @@
 
 */
 
+#include "EM_config.h"
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
 
 
 
-class EMHeader {
+class EMDLLEXPORT EMHeader {
 public:
   class EMHeaderParse {
   public:
@@ -182,7 +183,7 @@ public:
 };
 
 
-class EMReaderWriter : public MapReaderWriter {
+class EMDLLEXPORT EMReaderWriter : public MapReaderWriter {
 public:
   int Read(const char *filename, real **data, DensityHeader &header);
   void Write(const char* filename,const real *data, const DensityHeader &header );
