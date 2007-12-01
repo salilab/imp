@@ -8,6 +8,8 @@
 #ifndef __IMP_OPTIMIZER_H
 #define __IMP_OPTIMIZER_H
 
+#include <limits>
+
 #include "../IMP_config.h"
 #include "../Base_Types.h"
 #include "../Model.h"
