@@ -46,27 +46,28 @@ def _get_python_include(env):
 
 def checkEndian(context):
     context.Message("Checking endianess... ")
-    ret = context.TryRun("""
-    #include <stdio.h>
-    int main(int argc, char ** argv) {
-      union {
-        char array[4];
-        int integer;
-      } TestUnion;
-      TestUnion.array[0] = 'a';
-      TestUnion.array[1] = 'b';
-      TestUnion.array[2] = 'c';
-      TestUnion.array[3] = 'd';
-      if (TestUnion.integer == 0x64636261) {
-        printf("little");
-      } else if (TestUnion.integer == 0x61626364) {
-        printf("big");
-      } else {
-        printf("unknown");
-      }
-      return 0;
-    }
-    """, ".c")
+    text = """
+#include <stdio.h>
+int main(int argc, char ** argv) {
+  union {
+    char array[4];
+    int integer;
+  } TestUnion;
+  TestUnion.array[0] = 'a';
+  TestUnion.array[1] = 'b';
+  TestUnion.array[2] = 'c';
+  TestUnion.array[3] = 'd';
+  if (TestUnion.integer == 0x64636261) {
+    printf("little");
+  } else if (TestUnion.integer == 0x61626364) {
+    printf("big");
+  } else {
+    printf("unknown");
+  }
+  return 0;
+}
+"""
+    ret = context.TryRun(text, ".c")
     context.Result(ret[1])
     return ret[1]
 
