@@ -35,6 +35,8 @@ class WineEnvironment(Environment):
         self['ENV'] = posix_env['ENV']
         self['PYTHON'] = 'w32python'
         self['PATHSEP'] = ';'
+        # Use / rather than \ path separator:
+        self['LINKCOM'] = self['LINKCOM'].replace('.windows', '')
         # Make sure we get the same Windows C/C++ library as Modeller, and
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
