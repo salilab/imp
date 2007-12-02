@@ -44,6 +44,32 @@ def _get_python_include(env):
         import distutils.sysconfig
         return distutils.sysconfig.get_python_inc()
 
+def checkEndian(context):
+    context.Message("Checking endianess... ")
+    ret = context.TryRun("""
+    #include <stdio.h>
+    int main(int argc, char ** argv) {
+      union {
+        char array[4];
+        int integer;
+      } TestUnion;
+      TestUnion.array[0] = 'a';
+      TestUnion.array[1] = 'b';
+      TestUnion.array[2] = 'c';
+      TestUnion.array[3] = 'd';
+      if (TestUnion.integer == 0x64636261) {
+        printf("little");
+      } else if (TestUnion.integer == 0x61626364) {
+        printf("big");
+      } else {
+        printf("unknown");
+      }
+      return 0;
+    }
+    """, ".c")
+    context.Result(ret[1])
+    return ret[1]
+
 def CheckGNUHash(context):
     """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
     context.Message('Checking whether GNU_HASH linking should be disabled...')
@@ -114,11 +140,14 @@ def MyEnvironment(options=None, *args, **kw):
     if not env.GetOption('clean'):
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility,
+                        'checkEndian': checkEndian,
                         }
         conf = env.Configure(custom_tests = custom_tests)
         if sys == 'Linux':
             conf.CheckGNUHash()
         conf.CheckGCCVisibility()
+        if conf.checkEndian() == "little":
+            env.Append(CPPDEFINES="EM_LITTLE_ENDIAN")
         conf.Finish()
     return env
 

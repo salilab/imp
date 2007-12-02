@@ -25,7 +25,7 @@ typedef union
 	double d;
 	struct
 	{
-#ifdef LITTLE_ENDIAN
+#ifdef EM_LITTLE_ENDIAN
 		int j,i;
 #else
 		int i,j;
