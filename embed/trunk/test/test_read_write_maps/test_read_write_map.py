@@ -74,6 +74,14 @@ class test_read_write_maps(unittest.TestCase):
 	    xrw = EM.EMReaderWriter()
 
 	    scene.Read(in_filename,xrw)
+            header = scene.get_header()
+            self.assertEqual(header.nx, 55)
+            self.assertEqual(header.ny, 55)
+            self.assertEqual(header.nz, 55)
+            self.assertEqual(header.magic, 6)
+            self.assertEqual(header.voltage, 0.)
+            self.assertEqual(header.Cs, 0.)
+            self.assertEqual(header.Objectpixelsize, 1.)
 	    scene.Write(out_filename,xrw);
             os.unlink(out_filename)
 
