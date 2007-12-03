@@ -90,6 +90,15 @@ class test_read_write_maps(unittest.TestCase):
             self.assertEqual(header.Objectpixelsize, 1.)
             self.assertInTolerance(scene.calcRMS(), 404.5, 1.0)
 	    scene.Write(out_filename,xrw);
+
+            scene2 = EM.DensityMap()
+            scene2.Read(out_filename, xrw)
+            header2 = scene2.get_header()
+            self.assertEqual(header2.nx, header.nx)
+            self.assertEqual(header2.ny, header.ny)
+            self.assertEqual(header2.nz, header.nz)
+            self.assertEqual(header2.magic, header.magic)
+            self.assertInTolerance(scene2.calcRMS(), 404.5, 1.0)
             os.unlink(out_filename)
 
 	#todo - add assert functions

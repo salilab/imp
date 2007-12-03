@@ -105,23 +105,6 @@ void EMReaderWriter::Write(const char* filename,const real *data, const DensityH
 
 
 
-int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header ) {
-  
-  EMHeader::EMHeaderParse ehp;
-  ehp.Init(header);
-  
-  s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
-  if(s.bad())
-    {
-      cout << "EMReaderWriter::WriteHeader. Error writing header to file" << endl;
-      return 1;
-    }
-  return 0;
-}
-
-
-
-
 /* swap bytes */
 void swap(char *x, int size)
 {
@@ -153,6 +136,36 @@ void swap(char *x, int size)
   }
 }
  
+
+
+int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header ) {
+  
+  EMHeader::EMHeaderParse ehp;
+  ehp.Init(header);
+  
+#ifdef EM_LITTLE_ENDIAN
+  ehp.emdata[EMHeader::EMHeaderParse::LSWAP_OFFSET] = 0;
+#else
+  ehp.emdata[EMHeader::EMHeaderParse::LSWAP_OFFSET] = 1;
+  // byte-swap all ints in the header on big-endian machines:
+  swap((char *)&ehp.nx, sizeof(int));
+  swap((char *)&ehp.ny, sizeof(int));
+  swap((char *)&ehp.nz, sizeof(int));
+  for (int i = 0; i < 40; ++i) {
+    swap((char *)&ehp.emdata[i], sizeof(int));
+  }
+#endif
+
+  s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
+  if(s.bad())
+    {
+      cout << "EMReaderWriter::WriteHeader. Error writing header to file" << endl;
+      return 1;
+    }
+  return 0;
+}
+
+
 
 
 int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
