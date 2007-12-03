@@ -51,15 +51,10 @@ DensityMap& DensityMap::operator=(const DensityMap& other) {
 
 
 DensityMap::~DensityMap() {
-    if (data != NULL)
-      delete data;
-    if (x_loc != NULL)
-      delete x_loc;
-    if (y_loc != NULL)
-      delete y_loc;
-    if (z_loc != NULL)
-      delete z_loc;
-
+   delete[] data;
+   delete[] x_loc;
+   delete[] y_loc;
+   delete[] z_loc;
 }
 
 void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
@@ -237,7 +232,9 @@ void DensityMap::reset_data() {
     header.set_xorigin(x);header.set_yorigin(y);header.set_zorigin(z);
     header.compute_xyz_top(); // We have to compute the xmin,xmax, ... values again after changing the origin
     loc_calculated=false;
-    delete(x_loc);delete(y_loc);delete(z_loc);
+    delete[] x_loc;
+    delete[] y_loc;
+    delete[] z_loc;
     calc_all_voxel2loc();
   }
 
