@@ -225,7 +225,7 @@ int EMReaderWriter::ReadData(ifstream &file, real **data, const EMHeader &header
 #ifdef EM_LITTLE_ENDIAN
     bool need_swap = (header.lswap == 1);
 #else
-    bool need_swap = (header.lswap == 0);
+    bool need_swap = (header.lswap != 1);
 #endif
     for (int i=0;i<nvox;i++) {
       strncpy(tmp,&(voxeldata[i*voxel_data_size]),voxel_data_size);
