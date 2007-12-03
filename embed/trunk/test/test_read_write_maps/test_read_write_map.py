@@ -64,9 +64,12 @@ class test_write_mrc(unittest.TestCase):
 
 	
 class test_read_write_maps(unittest.TestCase):
-        def assertInTolerance(self, val, expected, tol):
+        def assertInTolerance(self, val, expected, tol, msg=None):
+            if msg == None:
+                msg = "%f differs from %f by more than %f" \
+                      % (val, expected, tol)
             diff = abs(val - expected)
-            self.assert_(diff < tol)
+            self.assert_(diff < tol, msg)
 
 	def test_em_read_write(self):
 	    """test em format read/write """
