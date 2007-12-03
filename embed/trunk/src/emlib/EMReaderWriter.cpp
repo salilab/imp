@@ -160,21 +160,15 @@ int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
   EMHeader::EMHeaderParse ehp;
   file.read((char *)&ehp, sizeof(EMHeader::EMHeaderParse));
 
-  // byte-swap all ints in the header if necessary:
-  int lswap = ehp.emdata[EMHeader::EMHeaderParse::LSWAP_OFFSET];
-#ifdef EM_LITTLE_ENDIAN
-  bool little_endian = true;
-#else
-  bool little_endian = false;
-#endif
-  if ((little_endian && lswap) || (!little_endian && !lswap)) {
-    swap((char *)&ehp.nx, sizeof(int));
-    swap((char *)&ehp.ny, sizeof(int));
-    swap((char *)&ehp.nz, sizeof(int));
-    for (int i = 0; i < 40; ++i) {
-      swap((char *)&ehp.emdata[i], sizeof(int));
-    }
+#ifndef EM_LITTLE_ENDIAN
+  // byte-swap all ints in the header on big-endian machines:
+  swap((char *)&ehp.nx, sizeof(int));
+  swap((char *)&ehp.ny, sizeof(int));
+  swap((char *)&ehp.nz, sizeof(int));
+  for (int i = 0; i < 40; ++i) {
+    swap((char *)&ehp.emdata[i], sizeof(int));
   }
+#endif
   
   ehp.InitEMHeader(header);
   header.Objectpixelsize = 1.0;
@@ -216,7 +210,7 @@ int EMReaderWriter::ReadData(ifstream &file, real **data, const EMHeader &header
     file.read(voxeldata,  voxel_data_size*nvox);
     char *tmp = new char[voxel_data_size];
 #ifdef EM_LITTLE_ENDIAN
-    bool need_swap = (header.lswap != 0);
+    bool need_swap = (header.lswap == 1);
 #else
     bool need_swap = (header.lswap == 0);
 #endif

@@ -88,7 +88,7 @@ class test_read_write_maps(unittest.TestCase):
             self.assertEqual(header.voltage, 0.)
             self.assertEqual(header.Cs, 0.)
             self.assertEqual(header.Objectpixelsize, 1.)
-            self.assertInTolerance(scene.calcRMS(), 404.4, 0.1)
+            self.assertInTolerance(scene.calcRMS(), 404.5, 1.0)
 	    scene.Write(out_filename,xrw);
             os.unlink(out_filename)
 
@@ -106,7 +106,7 @@ class test_read_write_maps(unittest.TestCase):
 		self.assertEqual(68,scene.get_header().nx)
 		self.assertEqual(65,scene.get_header().ny)
 		self.assertEqual(59,scene.get_header().nz)
-                self.assertInTolerance(scene.calcRMS(), 511.3, 0.1)
+                self.assertInTolerance(scene.calcRMS(), 511.0, 1.0)
 		scene.Write(out_filename,mrc_rw)
                 os.unlink(out_filename)
 	
