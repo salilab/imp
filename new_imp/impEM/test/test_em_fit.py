@@ -15,6 +15,10 @@ class FittingTest(IMP.test.IMPTestCase):
         erw = EM.EMReaderWriter()
         self.scene.Read("in.em",erw)
         self.scene.get_header_writable().set_resolution(3.)
+        header = self.scene.get_header()
+        self.assertEqual(header.nx, 27)
+        self.assertEqual(header.ny, 27)
+        self.assertEqual(header.nz, 27)
 
     def load_particles(self):
         radius_key = IMP.FloatKey("radius")
