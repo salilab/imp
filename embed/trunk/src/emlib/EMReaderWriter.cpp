@@ -168,6 +168,9 @@ int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
   bool little_endian = false;
 #endif
   if ((little_endian && lswap) || (!little_endian && !lswap)) {
+    swap((char *)&ehp.nx, sizeof(int));
+    swap((char *)&ehp.ny, sizeof(int));
+    swap((char *)&ehp.nz, sizeof(int));
     for (int i = 0; i < 40; ++i) {
       swap((char *)&ehp.emdata[i], sizeof(int));
     }
