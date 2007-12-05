@@ -7,6 +7,11 @@ e = emenv.Clone()
 # Custom builder to run unit tests:
 def builder_unit_test(target, source, env):
     (dir, script) = os.path.split(source[0].abspath)
+    # On Win32 systems, link the EM DLL into the same directory, so that loading
+    # the Python extension will pick it up:
+    if env['wine']:
+        env.Execute('ln -sf %s/libem.dll impEM/pyext/libem.dll' \
+                    % source[3].get_contents())
     app = "cd %s && %s %s %s %s -v > /dev/null" \
           % (dir, source[1].abspath, source[2].get_contents(), e['PYTHON'],
              script)
@@ -18,7 +23,8 @@ def builder_unit_test(target, source, env):
 
 e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
 
-source = ["run-all-tests.py", bin, e.Value(e['EM_EMPY'])]
+source = ["run-all-tests.py", bin, e.Value(e['EM_EMPY']),
+          e.Value(e['EM_LIBPATH'])]
 test = e.Test("test.passed", source)
 e.Alias("impEM-test", test)
 e.AlwaysBuild("test.passed")

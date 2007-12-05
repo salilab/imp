@@ -2,9 +2,9 @@
 #define _EMFITRESTRAINT_H
 
 
-#include "IMP/IMP_config.h"
 #include "IMP/Model.h"
 #include "IMP/restraints/Restraint.h"
+#include "IMPEM_config.h"
 #include "DensityMap.h"
 #include "CoarseCC.h"
 #include "SampledDensityMap.h"
@@ -14,7 +14,7 @@ namespace IMP
 {
 
 //! Calculate score based on fit to EM map
-class  IMPDLLEXPORT EMFitRestraint : public Restraint
+class IMPEMDLLEXPORT EMFitRestraint : public Restraint
 {
 public:
 
