@@ -73,7 +73,7 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
 
 int EMReaderWriter::Read(const char *filename, real **data, DensityHeader &header) {
   ifstream file;
-  file.open(filename,ifstream::in);
+  file.open(filename, ifstream::in | ifstream::binary);
   if (!file.good()) {
     cout << " the file " << filename << " was not found " << endl;
     return 1;
@@ -92,7 +92,7 @@ void EMReaderWriter::Write(const char* filename,const real *data, const DensityH
 
   
   
-  ofstream s(filename);
+  ofstream s(filename, ofstream::out | ofstream::binary);
   EMHeader header(header_);
   //init header data if not set
   if (header.type == 0) {
