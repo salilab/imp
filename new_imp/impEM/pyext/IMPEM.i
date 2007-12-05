@@ -10,6 +10,8 @@
 /* Ignore shared object import/export stuff */
 #define EMDLLEXPORT
 #define EMDLLLOCAL
+#define IMPEMDLLEXPORT
+#define IMPEMDLLLOCAL
 
 %include "std_vector.i"
 %include "std_string.i"

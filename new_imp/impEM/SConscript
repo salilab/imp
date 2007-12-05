@@ -12,7 +12,7 @@ if emenv['EM_LIBS'] == '' or emenv['MODELLER_LIBS'] == '':
     invalidate_environment(emenv, emlib.fail)
 
 # Get an environment suitable for building a shared library:
-e = get_sharedlib_environment(emenv, 'IMP_EXPORTS', cplusplus=True)
+e = get_sharedlib_environment(emenv, 'IMPEM_EXPORTS', cplusplus=True)
 
 e.Append(CPPPATH=['#/include', e['EM_CPPPATH']])
 e.Append(LIBPATH=['../src', e['EM_LIBPATH']], LIBS=['imp', e['EM_LIBS']])

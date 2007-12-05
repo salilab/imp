@@ -4,11 +4,11 @@
 #include <vector>
 #include <map>
 
-#include "IMP/IMP_config.h"
 #include "IMP/ModelData.h"
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
 
+#include "IMPEM_config.h"
 #include "ParticlesAccessPoint.h"
 
 
@@ -19,7 +19,7 @@ namespace IMP
   #define y_att_name "y"
   #define z_att_name "z"
   //!
-class IMPDLLEXPORT IMPParticlesAccessPoint : public ParticlesAccessPoint
+class IMPEMDLLEXPORT IMPParticlesAccessPoint : public ParticlesAccessPoint
 {
 
 public:
