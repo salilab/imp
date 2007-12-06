@@ -26,5 +26,5 @@
                  public: Name(); \
                  static Name create(Particle *p);\
                  static Name cast(Particle *p);\
-                 void show(std::ostream &=std::cout, std::string pre="")
+                 void show(std::ostream &out=std::cout, std::string pre="")
 #define IMP_DECORATOR_ARRAY_DECL(a, b)
