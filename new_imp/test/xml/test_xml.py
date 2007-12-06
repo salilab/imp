@@ -17,11 +17,8 @@ class XMLTests(IMP.test.IMPTestCase):
         model_data = self.imp_model.get_model_data()
 
         # test particles
-        p_iter = IMP.ParticleIterator()
-        p_iter.reset(self.imp_model)
         num_particles = 0
-        while p_iter.next():
-            p = p_iter.get()
+        for p in self.imp_model.get_particles():
             radius = p.get_value(IMP.FloatKey("radius"))
             protein = p.get_value(IMP.IntKey("protein"))
             num_particles = num_particles + 1

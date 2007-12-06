@@ -26,12 +26,10 @@ class TorusRestraintTests(IMP.test.IMPTestCase):
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
 
-        p_iter = IMP.ParticleIterator()
-        p_iter.reset(self.imp_model)
         score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
                                                      0.0, 0.1)
-        while p_iter.next():
-            r = IMP.TorusRestraint(self.imp_model, p_iter.get(), 50, 10,
+        for p in self.imp_model.get_particles():
+            r = IMP.TorusRestraint(self.imp_model, p, 50, 10,
                                    score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)

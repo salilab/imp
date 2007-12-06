@@ -28,3 +28,11 @@
                  static Name cast(Particle *p);\
                  void show(std::ostream &out=std::cout, std::string pre="")
 #define IMP_DECORATOR_ARRAY_DECL(a, b)
+#define IMP_CONTAINER(Ucname, lcname, IndexType)                      \
+  public:                                                              \
+  IndexType add_##lcname(Ucname *obj);                                 \
+  Ucname *get_##lcname(IndexType i) const ;                            \
+  unsigned int number_of_##lcname##s() const {return lcname##_vector_.size();} \
+const std::vector<Ucname*> &get_##lcname##s() const {\
+      return lcname##_vector_;}\
+

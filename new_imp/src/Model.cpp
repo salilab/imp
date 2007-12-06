@@ -29,10 +29,10 @@ Model::Model()
 Model::~Model()
 {
   IMP_LOG(VERBOSE, "Delete Model: beware of early Python calls to destructor.");
-  for (unsigned int i = 0; i < particles_.size(); ++i) {
-    particles_[i]->set_model(NULL, ParticleIndex());
-    delete particles_[i];
+  for (ParticleIterator it=particles_begin(); it != particles_end(); ++it) {
+    (*it)->set_model(NULL, ParticleIndex());
   }
+  IMP_CONTAINER_DELETE(Particle, particle);
   for (unsigned int i = 0; i < restraints_.size(); ++i) {
     restraints_[i]->set_model(NULL);
     delete restraints_[i];
@@ -52,40 +52,6 @@ ModelData* Model::get_model_data() const
   return model_data_;
 }
 
-//! Add a particle to the model.
-/** \param[in] particle Pointer to new particle.
-    \return index of particle within the model
- */
-ParticleIndex Model::add_particle(Particle* particle)
-{
-  // a particle needs access to the model_data for
-  // the model that it is a part of
-  // particle now gets model_data from its constructor
-  // particle->set_model_data(model_data_);
-
-  // add the particle to the model list of particles
-  particles_.push_back(particle);
-  ParticleIndex pi(particles_.size() - 1);
-  particle->set_model(this, pi);
-
-  // return the particle index
-  return pi;
-}
-
-
-
-//! Get a pointer to a particle in the model, or null if out of bounds.
-/** \param[in] idx  Index of particle
-    \return Pointer to the particle, or null if out of bounds.
- */
-Particle* Model::get_particle(ParticleIndex idx) const
-{
-  if ((idx < 0) || (idx >= particles_.size())) {
-    return NULL;
-  }
-
-  return particles_[idx.get_index()];
-}
 
 
 //! Add restraint set to the model.
@@ -100,6 +66,9 @@ RestraintIndex Model::add_restraint(Restraint* restraint_set)
   return ri;
 }
 
+
+IMP_CONTAINER_IMPL(Model, Particle, particle, ParticleIndex, 
+                  obj->set_model(this, index));
 
 //! Get state from the model.
 /** \param[in] i The StateIndex returned when adding.
@@ -241,16 +210,16 @@ void Model::save_state()
   } else {
     fout << "FRAME " << frame_num_ << std::endl;
     frame_num_++;
-    fout << particles_.size() << std::endl;
+    fout << number_of_particles() << std::endl;
 
     // for each particle, output its current state
     FloatIndex fi;
-    for (size_t i = 0; i < particles_.size(); i++) {
-      fout << particles_[i]->get_value(x) << " ";
+    for (ParticleIterator it=particles_begin(); it != particles_end(); ++it) {
+      fout << (*it)->get_value(x) << " ";
 
-      fout <<  particles_[i]->get_value(y) << " ";
+      fout << (*it)->get_value(y) << " ";
 
-      fout << particles_[i]->get_value(z) << " ";
+      fout << (*it)->get_value(z) << " ";
     }
     if (!fout) {
       IMP_ERROR("Error writing to trajectory file. Trajectory is off. ");
@@ -269,9 +238,10 @@ void Model::show(std::ostream& out) const
 
   out << "version: " << version() << "  ";
   out << "last_modified_by: " << last_modified_by() << std::endl;
-  out << particles_.size() << " particles" << std::endl;
-  for (size_t i = 0; i < particles_.size(); i++) {
-    particles_[i]->show(out);
+  out << number_of_particles() << " particles" << std::endl;
+  for (ParticleConstIterator it=particles_begin();
+       it != particles_end(); ++it) {
+    (*it)->show(out);
   }
 
   for (size_t i = 0; i < restraints_.size(); i++) {
@@ -283,88 +253,6 @@ void Model::show(std::ostream& out) const
   internal::show_attributes(out);
 }
 
-//! Reset the iterator.
-/** After the next call to next(), get() will return the first particle.
-    \param[in] model  The model that is being referenced.
- */
-void ParticleIterator::reset(Model* model)
-{
-  model_ = model;
-  cur_ = -1;
-}
-
-
-//! Move to the next particle.
-/** Check if another particle is available, and if so, make sure it is
-    called by the next call to get().
-    \return True if another particle is available.
- */
-bool ParticleIterator::next()
-{
-  cur_ += 1;
-  if (cur_ >= (int) model_->particles_.size()) {
-    cur_ = (int) model_->particles_.size();
-    return false;
-  }
-
-  return true;
-}
-
-
-//! Return the next particle.
-/** Should only be called if next() returned True.
-    \return Pointer to the next particle, or null if out of bounds.
- */
-Particle* ParticleIterator::get()
-{
-  if (cur_ >= (int) model_->particles_.size()) {
-    return NULL;
-  }
-
-  return model_->particles_[cur_];
-}
-
-
-//! Reset the iterator.
-/** After the next call to next(), get() will return the first restraint set.
-    \param[in] model The model that is being referenced.
- */
-void RestraintIterator::reset(Model* model)
-{
-  model_ = model;
-  cur_ = -1;
-}
-
-
-//! Move to the next restraint set if available.
-/** Check if another restraint set is available, and if so,
-    make sure it is called by the next call to get().
-    \return True if another restraint set is available.
- */
-bool RestraintIterator::next()
-{
-  cur_ += 1;
-  if (cur_ >= (int) model_->restraints_.size()) {
-    cur_ = (int) model_->restraints_.size();
-    return false;
-  }
-
-  return true;
-}
-
-
-//! Return the current restraint set.
-/** Should only be called if next() returned True.
-    \return pointer to the restraint set, or null if out of bounds.
- */
-Restraint* RestraintIterator::get()
-{
-  if (cur_ >= (int) model_->restraints_.size()) {
-    return NULL;
-  }
-
-  return model_->restraints_[cur_];
-}
 
 
 }  // namespace IMP
