@@ -27,13 +27,12 @@ class CoordinateTests(IMP.test.IMPTestCase):
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
 
-        p_iter = IMP.ParticleIterator()
-        p_iter.reset(self.imp_model)
+
         score_func_params = IMP.BasicScoreFuncParams("harmonic_lower_bound",
                                                      8.0, 0.1)
-        while p_iter.next():
+        for p in self.imp_model.get_particles():
             self.rsrs.append(IMP.CoordinateRestraint(self.imp_model,
-                                                     p_iter.get(),
+                                                     p,
                                                      "%s_AXIS" % coord.upper(),
                                                      score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
@@ -58,13 +57,11 @@ class CoordinateTests(IMP.test.IMPTestCase):
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
 
-        p_iter = IMP.ParticleIterator()
-        p_iter.reset(self.imp_model)
         score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
                                                      -8.0, 0.1)
-        while p_iter.next():
+        for p in self.imp_model.get_particles():
             self.rsrs.append(IMP.CoordinateRestraint(self.imp_model,
-                                                     p_iter.get(),
+                                                     p,
                                                      "%s_AXIS" % coord.upper(),
                                                      score_func_params))
             r = self.rsrs[len(self.rsrs)-1]
@@ -89,12 +86,10 @@ class CoordinateTests(IMP.test.IMPTestCase):
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
 
-        p_iter = IMP.ParticleIterator()
-        p_iter.reset(self.imp_model)
         score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
                                                      8.0, 0.1)
-        while p_iter.next():
-            r = IMP.CoordinateRestraint(self.imp_model, p_iter.get(),
+        for p in self.imp_model.get_particles():
+            r = IMP.CoordinateRestraint(self.imp_model, p,
                                         "XY_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
@@ -113,12 +108,11 @@ class CoordinateTests(IMP.test.IMPTestCase):
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
 
-        p_iter = IMP.ParticleIterator()
-        p_iter.reset(self.imp_model)
+
         score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
                                                      8.0, 0.1)
-        while p_iter.next():
-            r = IMP.CoordinateRestraint(self.imp_model, p_iter.get(),
+        for p in self.imp_model.get_particles():
+            r = IMP.CoordinateRestraint(self.imp_model, p,
                                         "XZ_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
@@ -137,12 +131,10 @@ class CoordinateTests(IMP.test.IMPTestCase):
         rs = self.restraint_sets[len(self.restraint_sets)-1]
         self.imp_model.add_restraint(rs)
 
-        p_iter = IMP.ParticleIterator()
-        p_iter.reset(self.imp_model)
         score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
                                                      8.0, 0.1)
-        while p_iter.next():
-            r = IMP.CoordinateRestraint(self.imp_model, p_iter.get(),
+        for p in self.imp_model.get_particles():
+            r = IMP.CoordinateRestraint(self.imp_model, p,
                                         "YZ_RADIAL", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)
@@ -161,12 +153,10 @@ class CoordinateTests(IMP.test.IMPTestCase):
         rs = self.restraint_sets[len(self.restraint_sets)-1]
         self.imp_model.add_restraint(rs)
 
-        p_iter = IMP.ParticleIterator()
-        p_iter.reset(self.imp_model)
         score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
                                                      8.0, 0.1)
-        while p_iter.next():
-            r = IMP.CoordinateRestraint(self.imp_model, p_iter.get(),
+        for p in self.imp_model.get_particles():
+            r = IMP.CoordinateRestraint(self.imp_model, p,
                                         "XYZ_SPHERE", score_func_params)
             self.rsrs.append(r)
             rs.add_restraint(r)

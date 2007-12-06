@@ -39,22 +39,8 @@ public:
    */
   ModelData* get_model_data() const;
 
-  //! Add a particle to the model.
-  /** \param[in] particle Pointer to new particle.
-      \return index of particle within the model
-   */
-  ParticleIndex add_particle(Particle* particle);
-
-  //! Get a pointer to a particle in the model, or null if out of bounds.
-  /** \param[in] idx  Index of particle
-      \return Pointer to the particle, or null if out of bounds.
-   */
-  Particle* get_particle(ParticleIndex idx) const;
-
-  //! Get the total number of particles in the model.
-  unsigned int number_of_particles() const {
-    return particles_.size();
-  }
+  IMP_CONTAINER(Particle, particle, ParticleIndex);
+ public:
 
   //! Add restraint set to the model.
   /** \param[in] restraint_set Pointer to the restraint set.
@@ -125,9 +111,6 @@ protected:
   //! all of the data associated with the particles
   ModelData* model_data_;
 
-  //! particles themselves
-  std::vector<Particle*> particles_;
-
   //! all base-level restraints and/or restraint sets of the model
   std::vector<Restraint*> restraints_;
 
@@ -145,74 +128,7 @@ protected:
 };
 
 
-//! Particle iterator; returns all Particles in the Model.
-class IMPDLLEXPORT ParticleIterator
-{
-public:
-  ParticleIterator() {}
 
-  //! Reset the iterator.
-  /** After the next call to next(), get() will return the first particle.
-      \param[in] model  The model that is being referenced.
-   */
-  void reset(Model* model);
-
-  //! Move to the next particle.
-  /** Check if another particle is available, and if so, make sure it is
-      called by the next call to get().
-      \return True if another particle is available.
-   */
-  bool next();
-
-  //! Return the next particle.
-  /** Should only be called if next() returned True.
-      \return Pointer to the next particle, or null if out of bounds.
-   */
-  Particle* get();
-
-protected:
-  int cur_;
-  Model* model_;
-};
-
-//! Restraint set iterator
-/** Returns all restraint sets in the Model.
- */
-class IMPDLLEXPORT RestraintIterator
-{
-public:
-  RestraintIterator() {}
-
-  //! Reset the iterator.
-  /** After the next call to next(), get() will return the first restraint set.
-      \param[in] model The model that is being referenced.
-   */
-  void reset(Model* model);
-
-  //! Move to the next restraint set if available.
-  /** Check if another restraint set is available, and if so,
-      make sure it is called by the next call to get().
-      \return True if another restraint set is available.
-   */
-  bool next();
-
-  //! Return the current restraint set.
-  /** Should only be called if next() returned True.
-      \return pointer to the restraint set, or null if out of bounds.
-   */
-  Restraint* get();
-
-protected:
-  int cur_;
-  Model* model_;
-};
-
-
-inline std::ostream &operator<<(std::ostream &out, const Model &s)
-{
-  s.show(out);
-  return out;
-}
 
 
 } // namespace IMP

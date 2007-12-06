@@ -44,7 +44,7 @@ class ModelTests(IMP.test.IMPTestCase):
         self.assertEqual(pi, IMP.ParticleIndex(0))
         self.assertEqual(m.number_of_particles(), 1)
         self.assertNotEqual(m.get_particle(IMP.ParticleIndex(0)), None)
-        self.assertEqual(m.get_particle(IMP.ParticleIndex(1)), None)
+        self.assertRaises(IndexError, m.get_particle, IMP.ParticleIndex(1))
 
 if __name__ == '__main__':
     unittest.main()
