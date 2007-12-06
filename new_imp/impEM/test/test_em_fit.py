@@ -42,10 +42,10 @@ class FittingTest(IMP.test.IMPTestCase):
         p1.add_attribute(weight_key, 1.0)
         p1.add_attribute(protein_key, 1)
         p1.add_attribute(id_key, 1)
-        self.particle_indexes.push_back(1)
+        self.particle_indexes.push_back(0)
 
         p1 = self.particles[1]
-        self.particle_indexes.push_back(2)
+        self.particle_indexes.push_back(1)
         p1.add_attribute(radius_key, 1.0)
         p1.add_attribute(weight_key, 1.0)
         p1.add_attribute(protein_key, 1)
@@ -57,7 +57,7 @@ class FittingTest(IMP.test.IMPTestCase):
         p1.add_attribute(protein_key, 1)
         p1.add_attribute(id_key, 3)
 
-        self.particle_indexes.push_back(3)
+        self.particle_indexes.push_back(2)
 
     def setUp(self):
         """Build test model and optimizer"""
