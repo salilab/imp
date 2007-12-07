@@ -26,18 +26,29 @@ public:
   virtual ~Optimizer();
 
   /** Optimize the model
-      \param[in] model The model to be optimized.
       \param[in] max_steps The maximum number of steps to take.
-      \param[in] threshold Stop if the score goes below threshold.
       \return The final score.
    */       
-  virtual Float optimize(Model* model, int max_steps, 
-                         Float threshold=-std::numeric_limits<Float>::max())
-    = 0;
+  virtual Float optimize(unsigned int max_steps) = 0;
   /** \return the current version*/
   virtual std::string version() const =0;
   /** \return the last person to modify this restraint */
   virtual std::string last_modified_by() const=0;
+
+  //! Get the model being optimized
+  Model *get_model() const {return model_;}
+
+  //! Set the model being optimized
+  /**
+     \note The model is not owned by the optimizer and so is not
+     deleted when the optimizer is deleted. Further, the Optimizer
+     does not prevent the model from being deleted when all python
+     references go away. 
+   */
+  void set_model(Model *m) {model_=m;}
+
+private:
+  Model *model_;
 };
 
 } // namespace IMP

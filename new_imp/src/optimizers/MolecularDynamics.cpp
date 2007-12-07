@@ -81,17 +81,14 @@ void MolecularDynamics::step()
 
 
 //! Optimize the model.
-/** \param[in] model       Model that is being optimized.
-    \param[in] max_steps   Maximum number of iterations before aborting.
-    \param[in] temperature Fictional temperature.
-    \return score of the final state of the model.
+/**     \param[in] max_steps   Maximum number of iterations before aborting.
+        \return score of the final state of the model.
  */
-Float MolecularDynamics::optimize(Model* model, int max_steps,
-                                  Float temperature)
+Float MolecularDynamics::optimize(unsigned  int max_steps)
 {
-  setup_particles(*model);
+  setup_particles(*get_model());
 
-  for (int i = 0; i < max_steps; ++i) {
+  for (unsigned int i = 0; i < max_steps; ++i) {
     step();
   }
   return 0.;

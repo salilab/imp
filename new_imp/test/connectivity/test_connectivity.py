@@ -79,6 +79,8 @@ class ConnectivityTests(IMP.test.IMPTestCase):
         p1.add_attribute(IMP.IntKey("id"), 12)
 
         self.opt = IMP.ConjugateGradients()
+        self.opt.set_threshold(1e-4)
+        self.opt.set_model(self.imp_model)
 
     def test_connectivity(self):
         """Test connectivity restraint.
@@ -140,7 +142,7 @@ class ConnectivityTests(IMP.test.IMPTestCase):
             rs.add_restraint(rsrs[i])
 
         self.randomize_particles(self.particles, 50.0)
-        self.opt.optimize(self.imp_model, 55, 1e-4)
+        self.opt.optimize(55)
 
         # min distances
         for i in range(len(self.particles)):

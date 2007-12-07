@@ -18,6 +18,8 @@ class TorusRestraintTests(IMP.test.IMPTestCase):
             self.particles.append(IMP.utils.XYZParticle(self.imp_model,
                                                         0., 0., 0.))
         self.opt = IMP.ConjugateGradients()
+        self.opt.set_model(self.imp_model);
+        self.opt.set_threshold(1e-4)
 
 
     def test_torus(self):
@@ -37,7 +39,7 @@ class TorusRestraintTests(IMP.test.IMPTestCase):
         # Randomize particle coordinates
         self.randomize_particles(self.particles, 50.0)
 
-        self.opt.optimize(self.imp_model, 50, 1e-4)
+        self.opt.optimize(50)
         for p in self.particles:
             coord = (p.x(), p.y(), p.z())
             self.assert_(self.check_in_torus(coord, 50, 10.001),

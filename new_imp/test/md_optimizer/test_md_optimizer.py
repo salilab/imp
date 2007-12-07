@@ -13,17 +13,19 @@ class MolecularDynamicsTests(IMP.test.IMPTestCase):
         self.particles.append(IMP.utils.XYZParticle(self.model,
                                                     -43.0, 65.0, 93.0))
         self.md = IMP.MolecularDynamics()
+        self.md.set_model(self.model)
+        #self.md.set_temperature(300)
 
     def test_non_xyz(self):
         """Should be unable to do MD on optimizable non-xyz attributes"""
         p = IMP.Particle()
         self.model.add_particle(p)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
-        self.assertRaises(ValueError, self.md.optimize, self.model, 50, 300.)
+        self.assertRaises(ValueError, self.md.optimize, 50)
 
     def test_basic_md(self):
         """Test basic MD"""
-        self.md.optimize(self.model, 0, 300.0)
+        self.md.optimize(0)
         keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
         for p in self.particles:
             for key in keys:

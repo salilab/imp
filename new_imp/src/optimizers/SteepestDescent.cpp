@@ -29,12 +29,10 @@ SteepestDescent::~SteepestDescent()
    If the score gets better, increase the step size if we are sufficiently
    far from a score of zero. If the score reaches the threshold, quit.
 
-   \param[in] model Model that is being optimized.
    \param[in] max_steps The maximum steps that should be take before giving up.
-   \param[in] threshold Terminate optimization when score drops to this value.
    \return score of the final state of the model.
  */
-Float SteepestDescent::optimize(Model* model, int max_steps, Float threshold)
+Float SteepestDescent::optimize(unsigned int max_steps)
 {
   std::vector<Float> temp_vals;
   std::vector<Float> temp_derivs;
@@ -42,7 +40,7 @@ Float SteepestDescent::optimize(Model* model, int max_steps, Float threshold)
   Float last_score, new_score = 0.0;
   ModelData* model_data;
 
-  model_data = model->get_model_data();
+  model_data = get_model()->get_model_data();
 
   // set up the indexes
   int opt_var_cnt = 0;
@@ -56,17 +54,17 @@ Float SteepestDescent::optimize(Model* model, int max_steps, Float threshold)
   }
 
   // ... and space for the old values
-  step_size = 0.01;
+  step_size_ = 0.01;
   temp_vals.resize(opt_var_cnt);
   temp_derivs.resize(opt_var_cnt);
 
-  for (int step = 0; step < max_steps; step++) {
+  for (unsigned int step = 0; step < max_steps; step++) {
     IMP_LOG(VERBOSE, "=== Step " << step << " ===");
     // model.show(std::cout);
     int cnt = 0;
 
     // evaluate the last model state
-    last_score = model->evaluate(true);
+    last_score = get_model()->evaluate(true);
     IMP_LOG(VERBOSE, "start score: " << last_score);
 
     // store the old values
@@ -89,27 +87,27 @@ Float SteepestDescent::optimize(Model* model, int max_steps, Float threshold)
       // step size
       for (int i = 0; i < opt_var_cnt; i++) {
         IMP_LOG(VERBOSE, i << " move: " << temp_vals[i] << " new: "
-                << temp_vals[i] - temp_derivs[i] * step_size << "  "
+                << temp_vals[i] - temp_derivs[i] * step_size_ << "  "
                 << temp_derivs[i]);
 
         model_data->set_value(float_indexes[i],
-                              temp_vals[i] - temp_derivs[i] * step_size);
+                              temp_vals[i] - temp_derivs[i] * step_size_);
       }
 
       // check the new model
-      new_score = model->evaluate(false);
+      new_score = get_model()->evaluate(false);
       IMP_LOG(VERBOSE, "last score: " << last_score << "  new score: "
-              << new_score << "  step size: " << step_size);
+              << new_score << "  step size: " << step_size_);
 
       // if the score is less than the threshold, we're done
-      if (new_score <= threshold)
+      if (new_score <= threshold_)
         return new_score;
 
       // if the score got better, we'll take it
       if (new_score < last_score) {
         done = true;
         if (move_bigger)
-          step_size *= 1.4;
+          step_size_ *= 1.4;
       }
 
       // if the score is the same, keep going one more time
@@ -117,7 +115,7 @@ Float SteepestDescent::optimize(Model* model, int max_steps, Float threshold)
         if (not_changing)
           done = true;
 
-        step_size *= 0.9;
+        step_size_ *= 0.9;
         not_changing = true;
       }
 
@@ -126,10 +124,10 @@ Float SteepestDescent::optimize(Model* model, int max_steps, Float threshold)
       else {
         not_changing = false;
         move_bigger = false;
-        step_size *= 0.71;
+        step_size_ *= 0.71;
       }
 
-      if (step_size == 0.0)
+      if (step_size_ == 0.0)
         return new_score;
     }
   }

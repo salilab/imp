@@ -28,8 +28,14 @@ public:
 
   IMP_OPTIMIZER("0.5", "Bret Peterson");
 
+  //! Set the minimum gradient threshold
+  void set_threshold(Float t) {threshold_=t;}
+  //! Set the step size
+  void set_step_size(Float t) {step_size_=t;}
+
 protected:
-  Float step_size;
+  Float step_size_;
+  Float threshold_;
 };
 
 } // namespace IMP
