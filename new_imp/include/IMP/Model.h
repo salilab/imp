@@ -27,8 +27,6 @@ namespace IMP
  */
 class IMPDLLEXPORT Model: public boost::noncopyable
 {
-  friend class ParticleIterator;
-  friend class RestraintIterator;
 
 public:
   Model();

@@ -26,7 +26,7 @@ namespace IMP
                            midline to the tube surface.
     \param[in] score_func_params Parameters for creating a score function.
  */
-TorusRestraint::TorusRestraint(Model& model, Particle* p1,
+TorusRestraint::TorusRestraint(Model& , Particle* p1,
                                const Float main_radius, const Float tube_radius,
                                BasicScoreFuncParams* score_func_params)
 {

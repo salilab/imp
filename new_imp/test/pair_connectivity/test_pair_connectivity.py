@@ -82,6 +82,8 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
         p1.add_attribute(idkey, 12)
 
         self.opt = IMP.ConjugateGradients()
+        self.opt.set_model(self.imp_model)
+        self.opt.set_threshold(1e-4)
 
     def _run_test_pair_connectivity(self, use_python):
         """Test pair connectivity restraint.
@@ -138,7 +140,7 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
             rs.add_restraint(rsrs[i])
 
         self.randomize_particles(self.particles, 50.0)
-        self.opt.optimize(self.imp_model, 55, 1e-4)
+        self.opt.optimize(55)
 
         # min distances
         min_dist = []

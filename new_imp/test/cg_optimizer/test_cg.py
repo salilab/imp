@@ -47,7 +47,9 @@ class CGOptimizerTests(IMP.test.IMPTestCase):
         model.add_restraint(rsr)
         model.set_up_trajectory('', False, False)
         opt = IMP.ConjugateGradients()
-        e = opt.optimize(model, 100, 1e-5)
+        opt.set_model(model)
+        opt.set_threshold(1e-5)
+        e = opt.optimize(100)
         model_data = model.get_model_data()
         for p in particles:
             val = p.get_value(IMP.FloatKey("x"))

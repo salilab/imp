@@ -17,6 +17,8 @@ class CoordinateTests(IMP.test.IMPTestCase):
             self.particles.append(IMP.utils.XYZParticle(self.imp_model,
                                                         0., 0., 0.))
         self.opt = IMP.ConjugateGradients()
+        self.opt.set_model(self.imp_model)
+        self.opt.set_threshold(1e-5)
 
 
     def _do_test_min(self, coord, mask):
@@ -26,7 +28,6 @@ class CoordinateTests(IMP.test.IMPTestCase):
         rs = IMP.RestraintSet("%s-min" % coord)
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
-
 
         score_func_params = IMP.BasicScoreFuncParams("harmonic_lower_bound",
                                                      8.0, 0.1)
@@ -38,7 +39,7 @@ class CoordinateTests(IMP.test.IMPTestCase):
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
-        self.opt.optimize(self.imp_model, 55, 1e-5)
+        self.opt.optimize(55)
         for p in self.particles:
             self.assert_(self.check_abs_pos(p, '>=', 7.999, *mask),
                          "%s-min condition" % coord)
@@ -67,7 +68,7 @@ class CoordinateTests(IMP.test.IMPTestCase):
             r = self.rsrs[len(self.rsrs)-1]
             rs.add_restraint(r)
 
-        self.opt.optimize(self.imp_model, 55, 1e-5)
+        self.opt.optimize(55)
         for p in self.particles:
             self.assert_(self.check_abs_pos(p, '<=', -7.9999, *mask),
                          "%s-max condition" % coord)
@@ -94,7 +95,8 @@ class CoordinateTests(IMP.test.IMPTestCase):
             self.rsrs.append(r)
             rs.add_restraint(r)
 
-        self.opt.optimize(self.imp_model, 55, 1e-5)
+        self.opt.optimize(55)
+
         for p in self.particles:
             self.assert_(self.check_abs_pos(p, '<=', 8.001, 1, 1, 0),
                          "xy_radial condition")
@@ -108,7 +110,6 @@ class CoordinateTests(IMP.test.IMPTestCase):
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
 
-
         score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
                                                      8.0, 0.1)
         for p in self.imp_model.get_particles():
@@ -117,7 +118,8 @@ class CoordinateTests(IMP.test.IMPTestCase):
             self.rsrs.append(r)
             rs.add_restraint(r)
 
-        self.opt.optimize(self.imp_model, 55, 1e-5)
+        self.opt.optimize(55)
+
         for p in self.particles:
             self.assert_(self.check_abs_pos(p, '<=', 8.001, 1, 0, 1),
                          "xz_radial condition")
@@ -139,7 +141,7 @@ class CoordinateTests(IMP.test.IMPTestCase):
             self.rsrs.append(r)
             rs.add_restraint(r)
 
-        self.opt.optimize(self.imp_model, 55, 1e-5)
+        self.opt.optimize(55)
         for p in self.particles:
             self.assert_(self.check_abs_pos(p, '<=', 8.001, 0, 1, 1),
                          "yz_radial condition")
@@ -161,7 +163,8 @@ class CoordinateTests(IMP.test.IMPTestCase):
             self.rsrs.append(r)
             rs.add_restraint(r)
 
-        self.opt.optimize(self.imp_model, 55, 1e-5)
+        self.opt.optimize(55)
+
         for p in self.particles:
             self.assert_(self.check_abs_pos(p, '<=', 8.001, 1, 1, 1),
                          "xyz_sphere condition")

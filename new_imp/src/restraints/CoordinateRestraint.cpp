@@ -25,7 +25,7 @@ namespace IMP
                     XYZ_SPHERE
     \param[in] score_func_params Parameters for creating a score function.
  */
-CoordinateRestraint::CoordinateRestraint(Model* model, Particle* p1,
+CoordinateRestraint::CoordinateRestraint(Model* , Particle* p1,
     const std::string axis, BasicScoreFuncParams* score_func_params)
 {
   add_particle(p1);

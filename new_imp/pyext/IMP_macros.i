@@ -10,8 +10,7 @@
    virtual std::string version() const {return std::string(a);}\
    virtual std::string last_modified_by() const {return std::string(b);}
 #define IMP_OPTIMIZER(a, b)                       \
-  virtual Float optimize(Model* model, int max_steps,                   \
-                         Float threshold=-std::numeric_limits<Float>::max());\
+  virtual Float optimize(unsigned int max_steps);\
   virtual std::string version() const {return std::string(a);};\
   virtual std::string last_modified_by() const {return std::string(b);};
 

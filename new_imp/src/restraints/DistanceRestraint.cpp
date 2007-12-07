@@ -58,7 +58,7 @@ DistanceRestraint::DistanceRestraint(Model* model, Particle* p1, Particle* p2,
     \param[in] p2 Pointer to second particle in distance restraint.
     \param[in] score_func_params Score function parameters for the restraint.
  */
-void DistanceRestraint::set_up(Model* model, Particle* p1, Particle* p2,
+void DistanceRestraint::set_up(Model* , Particle* p1, Particle* p2,
                                BasicScoreFuncParams* score_func_params)
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
