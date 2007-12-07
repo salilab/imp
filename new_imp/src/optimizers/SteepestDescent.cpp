@@ -12,7 +12,7 @@ namespace IMP
 {
 
 //! Constructor
-SteepestDescent::SteepestDescent()
+SteepestDescent::SteepestDescent() : step_size_(0.01), threshold_(0.)
 {
 }
 
@@ -53,8 +53,9 @@ Float SteepestDescent::optimize(unsigned int max_steps)
     opt_var_cnt++;
   }
 
+  Float current_step_size = step_size_;
+
   // ... and space for the old values
-  step_size_ = 0.01;
   temp_vals.resize(opt_var_cnt);
   temp_derivs.resize(opt_var_cnt);
 
@@ -87,17 +88,18 @@ Float SteepestDescent::optimize(unsigned int max_steps)
       // step size
       for (int i = 0; i < opt_var_cnt; i++) {
         IMP_LOG(VERBOSE, i << " move: " << temp_vals[i] << " new: "
-                << temp_vals[i] - temp_derivs[i] * step_size_ << "  "
+                << temp_vals[i] - temp_derivs[i] * current_step_size << "  "
                 << temp_derivs[i]);
 
         model_data->set_value(float_indexes[i],
-                              temp_vals[i] - temp_derivs[i] * step_size_);
+                              temp_vals[i] - temp_derivs[i]
+                                             * current_step_size);
       }
 
       // check the new model
       new_score = get_model()->evaluate(false);
       IMP_LOG(VERBOSE, "last score: " << last_score << "  new score: "
-              << new_score << "  step size: " << step_size_);
+              << new_score << "  step size: " << current_step_size);
 
       // if the score is less than the threshold, we're done
       if (new_score <= threshold_)
@@ -107,7 +109,7 @@ Float SteepestDescent::optimize(unsigned int max_steps)
       if (new_score < last_score) {
         done = true;
         if (move_bigger)
-          step_size_ *= 1.4;
+          current_step_size *= 1.4;
       }
 
       // if the score is the same, keep going one more time
@@ -115,7 +117,7 @@ Float SteepestDescent::optimize(unsigned int max_steps)
         if (not_changing)
           done = true;
 
-        step_size_ *= 0.9;
+        current_step_size *= 0.9;
         not_changing = true;
       }
 
@@ -124,10 +126,10 @@ Float SteepestDescent::optimize(unsigned int max_steps)
       else {
         not_changing = false;
         move_bigger = false;
-        step_size_ *= 0.71;
+        current_step_size *= 0.71;
       }
 
-      if (step_size_ == 0.0)
+      if (current_step_size == 0.0)
         return new_score;
     }
   }
