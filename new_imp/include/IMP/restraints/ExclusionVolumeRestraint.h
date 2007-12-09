@@ -15,7 +15,7 @@
 #include <list>
 
 #include "../IMP_config.h"
-#include "Restraint.h"
+#include "../Restraint.h"
 #include "DistanceRestraint.h"
 
 namespace IMP

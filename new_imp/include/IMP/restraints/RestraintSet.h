@@ -11,7 +11,7 @@
 #include <string>
 
 #include "../IMP_config.h"
-#include "Restraint.h"
+#include "../Restraint.h"
 
 namespace IMP
 {

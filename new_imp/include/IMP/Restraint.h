@@ -11,13 +11,13 @@
 #include <vector>
 #include <iostream>
 
-#include "../IMP_config.h"
-#include "../ModelData.h"
-#include "../ScoreFunc.h"
-#include "../DerivativeAccumulator.h"
-#include "../boost/noncopyable.h"
-#include "../utility.h"
-#include "../log.h"
+#include "IMP_config.h"
+#include "ModelData.h"
+#include "ScoreFunc.h"
+#include "DerivativeAccumulator.h"
+#include "boost/noncopyable.h"
+#include "utility.h"
+#include "log.h"
 
 namespace IMP
 {

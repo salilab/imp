@@ -10,10 +10,10 @@
 
 #include <limits>
 
-#include "../IMP_config.h"
-#include "../Base_Types.h"
-#include "../Model.h"
-#include "../utility.h"
+#include "IMP_config.h"
+#include "base_types.h"
+#include "Model.h"
+#include "utility.h"
 
 namespace IMP
 {

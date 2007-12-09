@@ -3,7 +3,7 @@
 
 
 #include "IMP/Model.h"
-#include "IMP/restraints/Restraint.h"
+#include "IMP/Restraint.h"
 #include "IMPEM_config.h"
 #include "DensityMap.h"
 #include "CoarseCC.h"

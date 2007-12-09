@@ -9,13 +9,14 @@
 #ifndef __IMP_HIERARCHY_DECORATOR_H
 #define __IMP_HIERARCHY_DECORATOR_H
 
-#include "../Particle.h"
-#include "../Model.h"
-#include "utility.h"
-#include "DecoratorBase.h"
 #include <limits>
 #include <vector>
 #include <deque>
+
+#include "../Particle.h"
+#include "../Model.h"
+#include "../DecoratorBase.h"
+#include "utility.h"
 
 namespace IMP
 {

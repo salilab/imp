@@ -10,7 +10,7 @@
 #include "IMP/Particle.h"
 #include "IMP/Model.h"
 #include "IMP/log.h"
-#include "IMP/restraints/Restraint.h"
+#include "IMP/Restraint.h"
 
 namespace IMP
 {

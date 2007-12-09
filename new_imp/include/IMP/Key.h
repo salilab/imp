@@ -8,11 +8,12 @@
 #ifndef __IMP_KEY_H
 #define __IMP_KEY_H
 
-#include "Base_Types.h"
-#include "utility.h"
-#include "log.h"
 #include <map>
 #include <vector>
+
+#include "base_types.h"
+#include "utility.h"
+#include "log.h"
 
 
 namespace IMP

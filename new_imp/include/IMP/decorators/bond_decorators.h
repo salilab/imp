@@ -11,8 +11,8 @@
 
 #include "../Particle.h"
 #include "../Model.h"
+#include "../DecoratorBase.h"
 #include "graph_base.h"
-#include "DecoratorBase.h"
 
 namespace IMP
 {

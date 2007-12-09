@@ -8,13 +8,14 @@
 #ifndef __IMP_XYZ_DECORATOR_H
 #define __IMP_XYZ_DECORATOR_H
 
-#include "../Particle.h"
-#include "../Model.h"
-#include "utility.h"
-#include "DecoratorBase.h"
 #include <vector>
 #include <deque>
 #include <limits>
+
+#include "../Particle.h"
+#include "../Model.h"
+#include "../DecoratorBase.h"
+#include "utility.h"
 
 namespace IMP
 {

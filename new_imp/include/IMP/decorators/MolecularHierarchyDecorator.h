@@ -9,11 +9,12 @@
 #ifndef __IMP_MOLECULAR_HIERARCHY_DECORATOR_H
 #define __IMP_MOLECULAR_HIERARCHY_DECORATOR_H
 
+#include <vector>
+#include <deque>
+
 #include "../Particle.h"
 #include "../Model.h"
 #include "utility.h"
-#include <vector>
-#include <deque>
 #include "HierarchyDecorator.h"
 
 namespace IMP
