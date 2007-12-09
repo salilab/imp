@@ -11,9 +11,9 @@
 #include <map>
 
 #include "IMP_config.h"
-#include "Base_Types.h"
+#include "base_types.h"
 #include "Model.h"
-#include "restraints/Restraint.h"
+#include "Restraint.h"
 #include "boost/noncopyable.h"
 #include "utility.h"
 #include "Key.h"

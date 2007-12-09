@@ -10,7 +10,7 @@
 
 #include "../IMP_config.h"
 #include "../Particle.h"
-#include "Optimizer.h"
+#include "../Optimizer.h"
 
 namespace IMP
 {

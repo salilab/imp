@@ -6,7 +6,7 @@
  */
 
 #include "IMP/log.h"
-#include "IMP/optimizers/Optimizer.h"
+#include "IMP/Optimizer.h"
 
 namespace IMP
 {

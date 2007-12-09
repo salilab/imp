@@ -11,7 +11,7 @@
 
 #include "IMP_config.h"
 #include "ModelData.h"
-#include "restraints/Restraint.h"
+#include "Restraint.h"
 #include "RigidBody.h"
 #include "State.h"
 #include "boost/noncopyable.h"

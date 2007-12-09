@@ -5,7 +5,7 @@
  *
  */
 
-#include <IMP/Base_Types.h>
+#include "IMP/base_types.h"
 
 namespace IMP
 {

@@ -10,7 +10,7 @@
 #define __IMP_SCORE_FUNC_H
 
 #include "IMP_config.h"
-#include "Base_Types.h"
+#include "base_types.h"
 
 namespace IMP
 {

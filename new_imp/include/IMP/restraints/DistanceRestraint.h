@@ -14,7 +14,7 @@
 #include "../IMP_config.h"
 #include "../ModelData.h"
 #include "../ScoreFunc.h"
-#include "Restraint.h"
+#include "../Restraint.h"
 
 
 namespace IMP

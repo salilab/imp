@@ -13,7 +13,7 @@
 #include <list>
 
 #include "../IMP_config.h"
-#include "Restraint.h"
+#include "../Restraint.h"
 
 namespace IMP
 {

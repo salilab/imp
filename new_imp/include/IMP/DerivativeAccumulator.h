@@ -10,7 +10,7 @@
 #define __IMP_DERIVATIVE_ACCUMULATOR_H
 
 #include "IMP_config.h"
-#include "Base_Types.h"
+#include "base_types.h"
 #include "ModelData.h"
 
 namespace IMP
