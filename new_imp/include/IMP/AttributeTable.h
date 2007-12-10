@@ -46,6 +46,7 @@ public:
   }
   std::ostream &show(std::ostream &out, const char *prefix="",
                      ModelData* md=NULL) const;
+  std::vector<Key> get_keys() const;
 };
 
 IMP_OUTPUT_OPERATOR_1(AttributeTable)
@@ -90,6 +91,19 @@ inline std::ostream &AttributeTable<T>::show(std::ostream &out,
   return out;
 }
 
+
+template <class T>
+inline std::vector<typename AttributeTable<T>::Key> 
+AttributeTable<T>::get_keys() const {
+  std::vector<Key> ret;
+   for (unsigned int i=0; i< map_.size(); ++i) {
+     if (map_[i] != Value()) {
+       ret.push_back(Key(i));
+     }
+   }
+   return ret;
+}
+
 inline void show_attributes(std::ostream &out)
 {
   if (attribute_key_data.size() < attribute_table_index(Float())) {
@@ -125,11 +139,11 @@ inline void show_attributes(std::ostream &out)
     out << std::endl;
   }
 
+} 
+
 
 } /* namespace internal */
 
-}
-
-}
+} /* namespace IMP */
 
 #endif  /* __IMP_ATTRIBUTE_TABLE_H */

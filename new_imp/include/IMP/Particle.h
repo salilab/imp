@@ -171,6 +171,31 @@ public:
    */
   std::ostream& show(std::ostream& out = std::cout) const;
 
+
+  //! Return a vector containing all the FloatKeys for the Particle
+  /**
+     This is for use in python mostly. C++ iterator will be added
+     at some point.
+
+     I would like to have a type-agnostic way of calling this 
+     to be used to writing generic functions in python. The only
+     ways I can think of doing this are to pass dummy arguments,
+     which seems inelegant.
+   */
+  std::vector<FloatKey> get_float_attributes() const {
+    return float_indexes_.get_keys();
+  }
+
+  //! See get_float_attributes
+  std::vector<IntKey> get_int_attributes() const {
+    return int_indexes_.get_keys();
+  }
+
+  //! See get_float_attributes
+  std::vector<StringKey> get_string_attributes() const {
+    return string_indexes_.get_keys();
+  }
+
 protected:
 
   template <class T>
