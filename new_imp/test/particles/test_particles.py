@@ -61,6 +61,22 @@ class ParticleTests(IMP.test.IMPTestCase):
         p.add_to_derivative(xkey, 10.0, da)
         self.assertEqual(p.get_derivative(xkey), 30.0)
 
+    def test_browsing(self):
+        """Test browsing of particle attributes"""
+        p=self.particles[0]
+        ict=0
+        fct=0
+        sct=0
+        for s in p.get_string_attributes():
+            sct += 1
+        for s in p.get_float_attributes():
+            fct += 1
+        for s in p.get_int_attributes():
+            ict += 1
+        self.assertEqual(ict, 2)
+        self.assertEqual(fct, 4)
+        self.assertEqual(sct, 2)
+
     def test_particles(self):
         """Test that particle attributes are available and correct"""
         for (i, p) in enumerate(self.particles):
