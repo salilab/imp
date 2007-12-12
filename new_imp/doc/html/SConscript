@@ -10,7 +10,7 @@ def action_docbook(target, source, env):
 def emit_docbook(target, source, env):
     outdir = os.path.dirname(target[0].path)
     # Temporary hacks: should parse XML directly:
-    for (nchap, nsect) in enumerate((2, 6)):
+    for (nchap, nsect) in enumerate((3, 6)):
         # Chapter:
         target.append(os.path.join('#' + outdir, 'ch%02d.html' % (nchap + 1)))
         for sec in range(nsect):
