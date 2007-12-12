@@ -40,6 +40,14 @@ For information on the low-level &IMP; code, see the
 <sect1 id="style">
 <title>Style guide</title>
 
+<para>
+To ensure code consistency and readability, certain conventions should be
+adhered to when writing code for &IMP;. Some of these conventions are
+automatically checked for by source control before allowing a new commit, and
+should also be checked yourself in new code by running
+<command>scons standards</command>.
+</para>
+
 <sect2>
 <title>C++ formatting</title>
 
@@ -181,6 +189,49 @@ script, available as part of the Python distribution.
 </para>
 
 </sect2>
+
+</sect1>
+
+<sect1 id="codereview">
+<title>Code review</title>
+
+<para>To ensure code quality, additions to the IMP kernel should be reviewed
+by the other developers. In general, this means posting a patch with some
+explanation of the changes (e.g. suitable for the source control logs) to the
+<email>imp-dev@salilab.org</email> mailing list. This is mandatory for
+changes that:</para>
+<itemizedlist>
+<listitem><para>Change the API (e.g. remove or rename existing methods or
+classes, change the arguments taken by existing methods, change the behavior
+of existing methods, change the return values or thrown exceptions of existing
+methods).</para></listitem>
+
+<listitem><para>Remove or modify existing test cases.</para></listitem>
+</itemizedlist>
+
+<para>For more minor changes, such as adding new tests, methods and/or classes
+(which may change the ABI but not the API), documentation updates, etc.
+review is not <emphasis>required</emphasis> but is recommended.</para>
+
+<para>Patches should contain a related set of changes. For example, a patch
+which adds a new method <methodname>foo</methodname>, a new testcase for
+<methodname>foo</methodname>, and some documentation for the
+<classname>SpecialVector</classname> class, should be split into two patches:
+one for the <methodname>foo</methodname> method and test, and the other for
+the <classname>SpecialVector</classname> documentation.</para>
+
+<para>New code in patches should also adhere to the
+<link linkend="style">coding style guidelines</link>.</para>
+
+<para><emphasis>Rationale:</emphasis>
+Other developers may have external applications and their own in-progress work
+which may be adversely affected by your changes. There may also be disagreement
+about a change, so discussing it on the mailing list first assures that a
+consensus is first reached, rather than other developers later reverting the
+change. It is much easier to review a patch if it is small and contains only
+relevant changes, and in addition it can generally be applied to source control
+virtually unchanged if the code is OK.
+</para>
 
 </sect1>
 
