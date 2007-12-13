@@ -209,30 +209,6 @@ void AtomDecorator::set_type(AtomType t) {
   // ultimate the secondary info should be set from a 
   // better source. But this is good enough for now. 
   get_particle()->set_value(type_key_, t.get_index());
-  /*std::string str=t.get_string();
-  if (str.find("N") != std::string::npos) {
-    set_element(N);
-    set_van_der_waals_raidus(1.55);
-  } else if (str.find("O") != std::string::npos) {
-    set_element(O);
-    set_van_der_waals_raidus(1.52);
-  } else if (str.find("P") != std::string::npos) {
-    set_element(P);
-    set_van_der_waals_raidus(1.9);
-  } else if (str.find("C") != std::string::npos) {
-    set_element(C);
-    set_van_der_waals_raidus(1.7);
-  } else if (str.find("S") != std::string::npos) {
-    set_element(S);
-    set_van_der_waals_raidus(1.85);
-  } else if (str.find("OH") != std::string::npos) {
-    set_element(OH);
-  } else if (str.find("H2O") != std::string::npos) {
-    set_element(H2O);
-  } else if (str.find("H") != std::string::npos) {
-    set_element(H);
-    set_van_der_waals_radius(1.20);
-    }*/
 }
 
 IMP_DECORATOR_INITIALIZE(AtomDecorator, XYZDecorator,
@@ -243,70 +219,5 @@ IMP_DECORATOR_INITIALIZE(AtomDecorator, XYZDecorator,
                            //vdw_radius_key_= FloatKey("atom vdw radius");
                            type_key_ = IntKey("atom type");
                          })
-
-  /*void AtomDecorator::set_element(std::string cp)
-{
-  if (std::strchr(cp.c_str(), 'C') != NULL) set_element(C);
-  else if (std::strchr(cp.c_str(),'N') != NULL) set_element( N);
-  else if (std::strchr(cp.c_str(),'S') != NULL) set_element( S);
-  else if (std::strchr(cp.c_str(),'O') != NULL) set_element( O);
-  else if (std::strchr(cp.c_str(),'H') != NULL) set_element( H);
-  else if (std::strstr(cp.c_str(),"FE") != NULL) set_element( FE);
-  else if (std::strstr(cp.c_str(),"P") != NULL) set_element( P);
-  else if (std::strstr(cp.c_str(),"PT") != NULL) set_element( PT);
-  else {
-    IMP_WARN("Unknown atom element string "<< cp.c_str() << std::endl);
-  }
-}
-
-std::string AtomDecorator::get_element_string(int e)
-{
-  switch (e) {
-  case C:
-    return "C";
-  case N:
-    return "N";
-  case H:
-    return "H";
-  case O:
-    return "O";
-  case S:
-    return "S";
-  case P:
-    return "P";
-  case FE:
-    return "FE";
-  case PT:
-    return "PT";
-  default:
-    std::ostringstream oss;
-    oss << "Element " << e;
-    return oss.str().c_str();
-  }
-}
-
-void AtomDecorator::set_type(std::string e)
-{
-  if (string_to_type_.find(e) != string_to_type_.end()) {
-    set_type(string_to_type_.find(e)->second);
-  } else {
-    IMP_WARN("Unknown type string "<<
-             e << " perhaps it is not space-padded");
-  }
-}
-
-std::string AtomDecorator::get_type_string(Int t)
-{
-  if (type_to_string_.find(t) != type_to_string_.end()) {
-    return type_to_string_.find(t)->second.c_str();
-  } else if (t== AT_UNKNOWN) {
-    return "Unknown";
-  } else {
-    IMP_failure("Unknown type passed for getting string",
-                IndexException("Unknown type"));
-    return "Unknown";
-  }
-
-}*/
 
 } // namespace IMP

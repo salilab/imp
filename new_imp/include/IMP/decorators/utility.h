@@ -33,16 +33,16 @@
   protected:                                                            \
   static bool decorator_keys_initialized_;                              \
   static void decorator_initialize_static_data();                       \
-  static bool has_required_attributes(Particle *p) {                    \
+  static bool has_required_attributes(::IMP::Particle *p) {             \
     if (!Parent::has_required_attributes(p)) return false;              \
     check_required;                                                     \
   }                                                                     \
-  static void add_required_attributes(Particle *p) {                    \
+  static void add_required_attributes(::IMP::Particle *p) {             \
     Parent::add_required_attributes(p);                                 \
     add_required;                                                       \
   }                                                                     \
   friend class DecoratorBase;                                           \
-  Name(Particle* p): Parent(p) {                                        \
+  Name(::IMP::Particle* p): Parent(p) {                                 \
     IMP_assert(has_required_attributes(p),                              \
                "This is not a particle of type "                        \
                << #Name << *p);                                         \
@@ -52,15 +52,15 @@ public:                                                                 \
  /** The default constructor. This is used as a null value */           \
  Name(): Parent(){}                                                     \
  /** Add the necessary attributes to p and return a decorator. */       \
- static Name create(Particle *p) {                                      \
-   return DecoratorBase::create<Name>(p);                               \
+ static Name create(::IMP::Particle *p) {                               \
+   return IMP::DecoratorBase::create<Name>(p);                          \
  }                                                                      \
  /** Check that p has the necessary attributes and return a decorator.  \
      \throws InvalidStateException if some required attributes are      \
      missing                                                            \
  */                                                                     \
- static Name cast(Particle *p) {                                        \
-   return DecoratorBase::cast<Name>(p);                                 \
+ static Name cast(::IMP::Particle *p) {                                 \
+   return IMP::DecoratorBase::cast<Name>(p);                            \
  }                                                                      \
  /** Write information about this decorator to out. Each line should    \
      prefixed by prefix*/                                               \
@@ -223,5 +223,6 @@ public:                                                                 \
 //! See IMP_DECORATOR_ARRAY_DECL
 #define IMP_DECORATOR_ARRAY_INIT(DecoratorType, name, Type)       \
   number_of_##name##_key_= IntKey(#DecoratorType " num " #name);
+
 
 #endif  /* __IMP_DECORATOR_UTILITY_H */

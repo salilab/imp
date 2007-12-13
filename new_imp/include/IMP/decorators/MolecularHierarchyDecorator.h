@@ -42,7 +42,7 @@ public:
       - UNIVERSES is a set of universes
       - TRAJECTORY is an ordered set of UNIVERSES
    */
-  enum Type {UNKNOWN=-1, ATOM, RESIDUE, NUCLEICACID,
+  enum Type {UNKNOWN=-1, ATOM, RESIDUE, NUCLEICACID, FRAGMENT,
              CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE,
              UNIVERSE, UNIVERSES, TRAJECTORY
             };

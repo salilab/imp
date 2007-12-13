@@ -24,46 +24,43 @@ namespace IMP
   class IMPDLLEXPORT XYZDecorator: public DecoratorBase
   {
     IMP_DECORATOR(XYZDecorator, DecoratorBase,
-                  return p->has_attribute(x_key_) && p->has_attribute(y_key_)
-                  && p->has_attribute(z_key_),
-                  { p->add_attribute(x_key_,
+                  return p->has_attribute(key_[0]) && p->has_attribute(key_[1])
+                  && p->has_attribute(key_[2]),
+                  { p->add_attribute(key_[0],
                                      std::numeric_limits<float>::infinity());
-                    p->add_attribute(y_key_,
+                    p->add_attribute(key_[1],
                                      std::numeric_limits<float>::infinity());
-                    p->add_attribute(z_key_,
+                    p->add_attribute(key_[2],
                                      std::numeric_limits<float>::infinity());
                   });
 
   protected:
-    static FloatKey x_key_;
-    static FloatKey y_key_;
-    static FloatKey z_key_;
+    static FloatKey key_[3];
 
   public:
-    IMP_DECORATOR_GET_SET(x, x_key_, Float, Float);
-    IMP_DECORATOR_GET_SET(y, y_key_, Float, Float);
-    IMP_DECORATOR_GET_SET(z, z_key_, Float, Float);
-
-    void set_coordinate(int i, Float v) {
-      switch (i) {
-      case 0: set_x(v); break;
-      case 1: set_y(v); break;
-      case 2: set_z(v); break;
-      default:
-        throw IndexException("invalid coordinate");
-      }
+    IMP_DECORATOR_GET_SET(x, key_[0], Float, Float);
+    IMP_DECORATOR_GET_SET(y, key_[1], Float, Float);
+    IMP_DECORATOR_GET_SET(z, key_[2], Float, Float);
+    //! set the ith coordinate
+    void set_coordinate(unsigned int i, Float v) {
+      get_particle()->set_value(get_coordinate_key(i), v);
     }
+    //! Get the ith coordinate
     Float get_coordinate(int i) const {
-      switch (i) {
-      case 0: return get_x();
-      case 1: return get_y();
-      case 2: return get_z();
-      default:
-        throw IndexException("invalid coordinate");
-        return 0;
-      }
+      return get_particle()->get_value(get_coordinate_key(i));
     }
-
+    //! Add something to the derivative of the ith coordinate
+    void add_to_coordinate_derivative(int i, Float v, 
+                                      DerivativeAccumulator &d) {
+      get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
+    }
+    //! Get a FloatKey to access the ith coordinate
+    static FloatKey get_coordinate_key(unsigned int i) {
+      decorator_initialize_static_data();
+      IMP_check(i <3, "Out of range coordinate",
+                IndexException("Out of range coordinate"));
+      return key_[i];
+    }
   };
 
   IMP_OUTPUT_OPERATOR(XYZDecorator);
