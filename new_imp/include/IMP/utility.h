@@ -69,7 +69,7 @@ template <class L>                                                      \
   /** evaluate the restraint*/                                          \
   virtual Float evaluate(DerivativeAccumulator *accum);                 \
   /** write information about the restraint to the stream*/             \
-  virtual void show(std::ostream &out) const;                           \
+  virtual void show(std::ostream &out=std::cout) const;                 \
   /** \return the current version*/                                     \
   virtual std::string version() const {return std::string(version_string);}\
   /** \return the last person to modify this restraint */               \
