@@ -10,10 +10,12 @@
 
 #include <vector>
 #include <iostream>
+#include <limits>
 
 #include "IMP_config.h"
-#include "ModelData.h"
+#include "Model.h"
 #include "ScoreFunc.h"
+#include "Particle.h"
 #include "DerivativeAccumulator.h"
 #include "boost/noncopyable.h"
 #include "utility.h"
@@ -27,8 +29,8 @@ class Model;
 //! Abstract class for representing restraints
 class IMPDLLEXPORT Restraint : public boost::noncopyable
 {
-
 public:
+  //! Initialize the Restraint and its model pointer
   Restraint(std::string name=std::string());
   virtual ~Restraint();
 
@@ -37,7 +39,7 @@ public:
                        derivatives.
       \return Current score.
    */
-  virtual Float evaluate(DerivativeAccumulator *accum) = 0;
+  virtual Float evaluate(DerivativeAccumulator *) = 0;
 
   //! Set whether the restraint is active i.e. if it should be evaluated.
   /** \param[in] is_active If true, the restraint is active.
@@ -58,7 +60,7 @@ public:
   //! Show the current restraint.
   /** \param[in] out Stream to send restraint description to.
    */
-  virtual void show(std::ostream& out) const;
+  virtual void show(std::ostream& out=std::cout) const;
 
   virtual std::string version() const = 0;
 
@@ -77,6 +79,7 @@ public:
   Particle *get_particle(unsigned int i) const;
 
   int add_particle(Particle *p) {
+    IMP_assert(p != NULL, "Can't add NULL particle");
     particles_.push_back(p);
     return particles_.size()-1;
   }
@@ -88,10 +91,10 @@ public:
     model_=model;
   }
 
-
-
   //! Return the model containing this restraint
   Model *get_model() const {
+    IMP_assert(model_ != NULL,
+               "get_model() called before set_model()");
     return model_;
   }
 
