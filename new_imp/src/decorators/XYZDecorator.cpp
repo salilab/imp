@@ -12,10 +12,7 @@
 namespace IMP
 {
 
-FloatKey XYZDecorator::x_key_;
-FloatKey XYZDecorator::y_key_;
-FloatKey XYZDecorator::z_key_;
-
+FloatKey XYZDecorator::key_[3];
 
 
 
@@ -31,9 +28,9 @@ FloatKey XYZDecorator::z_key_;
 
   IMP_DECORATOR_INITIALIZE(XYZDecorator, DecoratorBase,
                            {
-                             x_key_= FloatKey("x");
-                             y_key_= FloatKey("y");
-                             z_key_= FloatKey("z");
+                             key_[0]= FloatKey("x");
+                             key_[1]= FloatKey("y");
+                             key_[2]= FloatKey("z");
                            })
   namespace {
     template <class T>
