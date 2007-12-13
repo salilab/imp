@@ -223,6 +223,11 @@ the <classname>SpecialVector</classname> documentation.</para>
 <para>New code in patches should also adhere to the
 <link linkend="style">coding style guidelines</link>.</para>
 
+<para>If new methods and/or classes are added, it is
+<emphasis>strongly</emphasis> recommended that unit tests are added for these.
+(Even a simple call of each method with no checking of the return values or
+other effects is better than nothing.)</para>
+
 <para><emphasis>Rationale:</emphasis>
 Other developers may have external applications and their own in-progress work
 which may be adversely affected by your changes. There may also be disagreement
@@ -230,7 +235,9 @@ about a change, so discussing it on the mailing list first assures that a
 consensus is first reached, rather than other developers later reverting the
 change. It is much easier to review a patch if it is small and contains only
 relevant changes, and in addition it can generally be applied to source control
-virtually unchanged if the code is OK.
+virtually unchanged if the code is OK. Test cases also help to document the
+intent of code changes, as well as making sure that the new additions are not
+accidentally broken in future.
 </para>
 
 </sect1>
