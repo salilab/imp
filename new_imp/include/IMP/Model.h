@@ -11,7 +11,6 @@
 
 #include "IMP_config.h"
 #include "ModelData.h"
-#include "Restraint.h"
 #include "RigidBody.h"
 #include "State.h"
 #include "boost/noncopyable.h"
@@ -19,7 +18,8 @@
 namespace IMP
 {
 
-  class Particle;
+class Particle;
+class Restraint;
 
 //! Class for storing model, its restraints, constraints, and particles.
 /** All attribute data for particles is stored through indexing in the
@@ -27,7 +27,7 @@ namespace IMP
  */
 class IMPDLLEXPORT Model: public boost::noncopyable
 {
-
+  friend class Restraint;
 public:
   Model();
   ~Model();
@@ -38,38 +38,10 @@ public:
   ModelData* get_model_data() const;
 
   IMP_CONTAINER(Particle, particle, ParticleIndex);
+  IMP_CONTAINER(State, state, StateIndex);
+  IMP_CONTAINER(Restraint, restraint, RestraintIndex);
  public:
 
-  //! Add restraint set to the model.
-  /** \param[in] restraint_set Pointer to the restraint set.
-      \return the index of the newly-added restraint.
-   */
-  RestraintIndex add_restraint(Restraint* restraint_set);
-
-  //! Get restraint set from the model.
-  /** \param[in] i The RestraintIndex returned when adding.
-      \exception std::out_of_range restraint index is out of range.
-      \return pointer to the restraint.
-   */
-  Restraint* get_restraint(RestraintIndex i) const;
-
-  //! Add state to the model.
-  /** \param[in] state Pointer to the state.
-      \return the index of the newly-added state.
-   */
-  StateIndex add_state(State* state);
-
-  //! Get state from the model.
-  /** \param[in] i The StateIndex returned when adding.
-      \exception std::out_of_range state index is out of range.
-      \return pointer to the state.
-   */
-  State* get_state(StateIndex i) const;
-
-  //! Return the total number of restraints
-  unsigned int number_of_restraints() const {
-    return restraints_.size();
-  }
 
   //! Evaluate all of the restraints in the model and return the score.
   /** \param[in] calc_derivs If true, also evaluate the first derivatives.
@@ -108,16 +80,6 @@ public:
 protected:
   //! all of the data associated with the particles
   ModelData* model_data_;
-
-  //! all base-level restraints and/or restraint sets of the model
-  std::vector<Restraint*> restraints_;
-
-  // all base-level restraints and/or restraint sets of the model
-  std::vector<State*> states_;
-
-
-  //! sets of particles that move as a single rigid body
-  std::vector<RigidBody*> rigid_bodies_;
 
   //! trajectory file path
   std::string trajectory_path_;

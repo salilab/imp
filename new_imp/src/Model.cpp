@@ -10,6 +10,7 @@
 #include "IMP/ModelData.h"
 #include "IMP/Particle.h"
 #include "IMP/log.h"
+#include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
 #include "mystdexcept.h"
 
@@ -19,6 +20,7 @@ namespace IMP
 //! Constructor
 Model::Model()
 {
+  IMP_LOG(VERBOSE, "MEMORY: Model created " << this << std::endl);
   model_data_ = new ModelData();
   frame_num_ = 0;
   trajectory_on_ = false;
@@ -28,19 +30,10 @@ Model::Model()
 //! Destructor
 Model::~Model()
 {
-  IMP_LOG(VERBOSE, "Delete Model: beware of early Python calls to destructor.");
-  for (ParticleIterator it=particles_begin(); it != particles_end(); ++it) {
-    (*it)->set_model(NULL, ParticleIndex());
-  }
+  IMP_LOG(VERBOSE, "MEMORY: Model destroyed " << this << std::endl);
   IMP_CONTAINER_DELETE(Particle, particle);
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    restraints_[i]->set_model(NULL);
-    delete restraints_[i];
-  }
-  for (unsigned int i = 0; i < states_.size(); ++i) {
-    states_[i]->set_model(NULL);
-    delete states_[i];
-  }
+  IMP_CONTAINER_DELETE(State, state);
+  IMP_CONTAINER_DELETE(Restraint, restraint);
 }
 
 
@@ -52,62 +45,16 @@ ModelData* Model::get_model_data() const
   return model_data_;
 }
 
+IMP_CONTAINER_IMPL(Model, Restraint, restraint, RestraintIndex,
+                     obj->set_model(this));
 
 
-//! Add restraint set to the model.
-/** \param[in] restraint_set Pointer to the restraint set.
-    \return the index of the newly-added restraint.
- */
-RestraintIndex Model::add_restraint(Restraint* restraint_set)
-{
-  restraints_.push_back(restraint_set);
-  RestraintIndex ri(restraints_.size() - 1);
-  restraint_set->set_model(this);
-  return ri;
-}
+IMP_CONTAINER_IMPL(Model, Particle, particle, ParticleIndex,
+                   obj->set_model(this, index));
 
+IMP_CONTAINER_IMPL(Model, State, state, StateIndex,
+                     obj->set_model(this));
 
-IMP_CONTAINER_IMPL(Model, Particle, particle, ParticleIndex, 
-                  obj->set_model(this, index));
-
-//! Get state from the model.
-/** \param[in] i The StateIndex returned when adding.
-    \exception std::out_of_range state index is out of range.
-    \return pointer to the state.
- */
-State* Model::get_state(StateIndex i) const
-{
-  IMP_check(i.get_index() < states_.size(),
-            "Out of range State requested",
-            std::out_of_range("Invalid State requested"));
-  return states_[i.get_index()];
-}
-
-
-//! Add state to the model.
-/** \param[in] state Pointer to the state.
-    \return the index of the newly-added state.
-*/
-StateIndex Model::add_state(State* state)
-{
-  state->set_model(this);
-  states_.push_back(state);
-  return states_.size() - 1;
-}
-
-
-//! Get restraint set from the model.
-/** \param[in] i The RestraintIndex returned when adding.
-    \exception std::out_of_range restraint index is out of range.
-    \return pointer to the restraint.
- */
-Restraint* Model::get_restraint(RestraintIndex i) const
-{
-  IMP_check(i.get_index() < restraints_.size(),
-            "Out of range restraint requested",
-            std::out_of_range("Invalid restraint requested"));
-  return restraints_[i.get_index()];
-}
 
 //! Evaluate all of the restraints in the model and return the score.
 /** \param[in] calc_derivs If true, also evaluate the first derivatives.
@@ -118,38 +65,54 @@ Float Model::evaluate(bool calc_derivs)
   // One or more particles may have been activated or deactivated.
   // Check each restraint to see if it changes its active status.
   IMP_LOG(VERBOSE,
-          "Model evaluate (" << restraints_.size() << " restraint sets):");
+          "Model evaluate (" << number_of_restraints() << " restraints):"
+          << std::endl);
+
   if (model_data_->check_particles_active()) {
-    for (size_t i = 0; i < restraints_.size(); i++) {
-      restraints_[i]->check_particles_active();
+    IMP_LOG(VERBOSE,
+          "Checking for active particles " << std::flush);
+
+    for (RestraintIterator it = restraints_begin(); 
+         it != restraints_end(); ++it) {
+      (*it)->check_particles_active();
+      IMP_LOG(VERBOSE, "." << std::flush);
     }
 
     model_data_->set_check_particles_active(false);
+    IMP_LOG(VERBOSE, "done." << std::endl);
   }
 
   // If calcualting derivatives, first set all derivatives to zero
   if (calc_derivs)
     model_data_->zero_derivatives();
 
-  for (size_t i = 0; i < states_.size(); i++) {
-    IMP_LOG(VERBOSE, "Updating state " << states_[i]->get_name() << ":");
-    states_[i]->update();
+  IMP_LOG(VERBOSE,
+          "Updating States " << std::flush);
+  for (StateIterator it = states_begin(); it != states_end(); ++it) {
+    (*it)->update();
+    IMP_LOG(VERBOSE, "." << std::flush);
   }
+  IMP_LOG(VERBOSE, "done." << std::endl);
 
   // evaluate all of the active restraints to get score (and derivatives)
   // for current state of the model
   Float score = 0.0;
   DerivativeAccumulator accum;
   DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
-  for (size_t i = 0; i < restraints_.size(); i++) {
-    IMP_LOG(VERBOSE,
-            "Evaluating restraint " << restraints_[i]->get_name() << ":");
-    if (restraints_[i]->get_is_active()) {
-      score += restraints_[i]->evaluate(accpt);
-    }
 
-    IMP_LOG(VERBOSE, "Cumulative score: " << score);
+  IMP_LOG(VERBOSE,
+          "Evaluating restraints " << calc_derivs << std::endl);
+  for (RestraintIterator it = restraints_begin();
+       it != restraints_end(); ++it) {
+    IMP_LOG(VERBOSE, (*it)->get_name() << ": " << std::flush);
+    Float tscore=0;
+    if ((*it)->get_is_active()) {
+      tscore = (*it)->evaluate(accpt);
+    }
+    IMP_LOG(VERBOSE, tscore << std::endl);
+    score+= tscore;
   }
+  IMP_LOG(VERBOSE, "done." << std::endl);
 
   // if trajectory is on and we are calculating derivatives, save state in
   // trajectory file
@@ -158,7 +121,7 @@ Float Model::evaluate(bool calc_derivs)
   if (calc_derivs)
     save_state();
 
-  IMP_LOG(VERBOSE, "Final score: " << score);
+  IMP_LOG(VERBOSE, "Final score: " << score << std::endl);
   return score;
 }
 
@@ -239,15 +202,10 @@ void Model::show(std::ostream& out) const
   out << "version: " << version() << "  ";
   out << "last_modified_by: " << last_modified_by() << std::endl;
   out << number_of_particles() << " particles" << std::endl;
-  for (ParticleConstIterator it=particles_begin();
-       it != particles_end(); ++it) {
-    (*it)->show(out);
-  }
-
-  for (size_t i = 0; i < restraints_.size(); i++) {
-    out  << std::endl << "* Restraint *" << std::endl;
-
-    restraints_[i]->show(out);
+  out << "Restraints:" << std::endl;
+  for (RestraintConstIterator it = restraints_begin(); 
+       it != restraints_end(); ++it) {
+    out << (*it)->get_name() << std::endl;
   }
 
   internal::show_attributes(out);

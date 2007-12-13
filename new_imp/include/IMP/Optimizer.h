@@ -36,7 +36,12 @@ public:
   virtual std::string last_modified_by() const=0;
 
   //! Get the model being optimized
-  Model *get_model() const {return model_;}
+  Model *get_model() const {
+    IMP_assert(model_ != NULL, 
+               "get_model() called before set_model() "
+               << " this can crash python");
+    return model_;
+  }
 
   //! Set the model being optimized
   /**

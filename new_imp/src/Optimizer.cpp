@@ -14,13 +14,14 @@ namespace IMP
 //! Constructor
 Optimizer::Optimizer()
 {
-  IMP_LOG(VERBOSE, "Created optimizer");
+  IMP_LOG(VERBOSE, "MEMORY: Optimizer created " << this << std::endl);
 }
 
 
 //! Destructor
 Optimizer::~Optimizer()
 {
+  IMP_LOG(VERBOSE, "MEMORY: Optimizer destroyed " << this << std::endl);
 }
 
 }  // namespace IMP

@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include "IMP_config.h"
-#include "ModelData.h"
 #include "boost/noncopyable.h"
 
 namespace IMP
@@ -50,6 +49,8 @@ public:
 
   //! return the stored model data
   Model *get_model() const {
+    IMP_assert(model_ != NULL,
+               "Must call set_model before get_model on state");
     return model_;
   }
 protected:

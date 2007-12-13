@@ -19,7 +19,7 @@ namespace IMP
 Restraint::Restraint(std::string name): name_(name)
 {
   model_ = NULL;
-  IMP_LOG(VERBOSE, "Restraint constructed");
+  IMP_LOG(VERBOSE, "MEMORY: Restraint constructed " << this << std::endl);
   is_active_ = true; // active by default
   are_particles_active_ = true; // active by default
 }
@@ -28,11 +28,7 @@ Restraint::Restraint(std::string name): name_(name)
 //! Destructor
 Restraint::~Restraint()
 {
-  IMP_LOG(VERBOSE, "Restraint deleted");
-  IMP_assert(get_model() == NULL,
-             "Attemping to delete restraint while it is still in a model.\n"
-             << " This probably reflects premature destruction"
-             << " of python references.\n");
+  IMP_LOG(VERBOSE, "MEMORY: Restraint deleted " << this << std::endl);
 }
 
 
@@ -76,9 +72,11 @@ void Restraint::show(std::ostream& out) const
  */
 void Restraint::check_particles_active()
 {
+  IMP_assert(get_model() != NULL,
+             "Add Restraint to Model before calling check_particles_active");
   are_particles_active_ = true;
   for (size_t i = 0; i < particles_.size(); i++) {
-    if (!particles_[i]->get_is_active()) {
+    if (!get_particle(i)->get_is_active()) {
       are_particles_active_ = false;
       return;
     }

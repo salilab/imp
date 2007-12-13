@@ -17,18 +17,14 @@ namespace IMP
 //! Constructor
 Particle::Particle(): model_(NULL)
 {
-  IMP_LOG(VERBOSE, "create particle" << std::endl);
   is_active_ = true;
+  IMP_LOG(VERBOSE, "MEMORY: Particle created " << pi_ << std::endl);
 }
 
 //! Constructor
 Particle::~Particle()
 {
-  IMP_LOG(VERBOSE, "destroy particle " << *this << std::endl);
-  IMP_assert(get_model() == NULL,
-             "Attemping to delete particle while it is still in a model.\n"
-             << " This probably reflects premature destruction"
-             << " of python references.\n");
+  IMP_LOG(VERBOSE, "MEMORY: Particle deleted " << pi_ << std::endl);
 }
 
 
