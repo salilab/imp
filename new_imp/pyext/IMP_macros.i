@@ -6,7 +6,7 @@
 #define IMP_OUTPUT_OPERATOR(f)
 #define IMP_RESTRAINT(a,b) \
    virtual Float evaluate(DerivativeAccumulator *accum);\
-   virtual void show(std::ostream &out) const;\
+   virtual void show(std::ostream &out=std::cout) const;\
    virtual std::string version() const {return std::string(a);}\
    virtual std::string last_modified_by() const {return std::string(b);}
 #define IMP_OPTIMIZER(a, b)                       \
