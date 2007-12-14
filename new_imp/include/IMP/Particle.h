@@ -92,6 +92,12 @@ public:
   void add_to_derivative(FloatKey name, Float value,
                          const DerivativeAccumulator &da);
 
+  //! Set whether this float attribute is optimized
+  void set_is_optimized(FloatKey k, bool tf);
+
+  //! Return whether this float attribute is optimized
+  bool get_is_optimized(FloatKey k) const;
+
   //! Get the derivative of a specified Float.
   /** \param[in] name Name of the attribute being modified.
       \exception std::out_of_range attribute does not exist.
@@ -255,6 +261,18 @@ inline Float Particle::get_derivative(FloatKey name) const
 inline void Particle::set_value(FloatKey name, Float value)
 {
   set_value_t(float_indexes_.get_value(name), value);
+}
+
+inline bool Particle::get_is_optimized(FloatKey name) const
+{
+  return model_->get_model_data()
+    ->get_is_optimized(float_indexes_.get_value(name));
+}
+
+inline void Particle::set_is_optimized(FloatKey name, bool tf)
+{
+  model_->get_model_data()
+    ->set_is_optimized(float_indexes_.get_value(name), tf);
 }
 
 inline void Particle::add_to_derivative(FloatKey name, Float value,

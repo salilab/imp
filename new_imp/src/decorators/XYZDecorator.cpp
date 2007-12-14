@@ -11,12 +11,12 @@
 
 namespace IMP
 {
+// might as well initialize them statically
+  FloatKey XYZDecorator::key_[3]={FloatKey("x"), FloatKey("y"), FloatKey("z")};
 
-FloatKey XYZDecorator::key_[3];
 
 
-
-  void XYZDecorator::show(std::ostream &out, std::string prefix) const
+void XYZDecorator::show(std::ostream &out, std::string prefix) const
 {
   out << prefix << "(" << get_x()<< ", "
   << get_y() << ", " << get_z() <<")";
@@ -28,9 +28,6 @@ FloatKey XYZDecorator::key_[3];
 
   IMP_DECORATOR_INITIALIZE(XYZDecorator, DecoratorBase,
                            {
-                             key_[0]= FloatKey("x");
-                             key_[1]= FloatKey("y");
-                             key_[2]= FloatKey("z");
                            })
   namespace {
     template <class T>
