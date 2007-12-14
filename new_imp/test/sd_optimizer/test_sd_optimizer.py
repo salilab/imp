@@ -1,6 +1,7 @@
 import unittest
 import IMP.utils
 import IMP.test, IMP
+import random
 
 class SteepestDescentTests(IMP.test.IMPTestCase):
     """Test steepest descent optimizer"""
@@ -64,17 +65,12 @@ class SteepestDescentTests(IMP.test.IMPTestCase):
     def test_sd_optimizer2(self):
         """Test that optimizer spreads particles apart"""
 
-        self.particles[0].set_x(0.0)
-        self.particles[0].set_y(0.0)
-        self.particles[0].set_z(0.0)
-
-        self.particles[1].set_x(0.0)
-        self.particles[1].set_y(0.0)
-        self.particles[1].set_z(0.0)
-
-        self.particles[2].set_x(0.0)
-        self.particles[2].set_y(0.0)
-        self.particles[2].set_z(0.0)
+        # Start off with all particles in close proximity (but not actually
+        # colocated, as the derivative of zero distance is zero):
+        for p in self.particles:
+            p.set_x(random.uniform(-0.01, 0.01))
+            p.set_y(random.uniform(-0.01, 0.01))
+            p.set_z(random.uniform(-0.01, 0.01))
 
         self.steepest_descent.optimize(50)
 

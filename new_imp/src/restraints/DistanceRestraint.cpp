@@ -98,20 +98,6 @@ Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
   // calculate the distance feature
   distance = sqrt(delta_x * delta_x + delta_y * delta_y + delta_z * delta_z);
 
-  // if distance is too close to zero, set it to some non-zero value
-  if (distance < DistanceRestraint::MIN_DISTANCE) {
-    delta_x = std::rand(); // arbitrary move
-    delta_y = std::rand(); // arbitrary move
-    delta_z = std::rand(); // arbitrary move
-    distance = sqrt(delta_x * delta_x + delta_y * delta_y + delta_z * delta_z);
-
-    // normalize the random move, to the min disance
-    delta_x = DistanceRestraint::MIN_DISTANCE * delta_x / distance;
-    delta_y = DistanceRestraint::MIN_DISTANCE * delta_y / distance;
-    delta_z = DistanceRestraint::MIN_DISTANCE * delta_z / distance;
-    distance = DistanceRestraint::MIN_DISTANCE;
-  }
-
   // if needed, calculate the partial derivatives of the scores with respect
   // to the particle attributes
   if (accum) {
@@ -121,15 +107,21 @@ Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
     // calculate the score and feature derivative based on the distance feature
     score = (*score_func_)(distance, deriv);
 
-    dx = delta_x / distance * deriv;
+    if (distance >= DistanceRestraint::MIN_DISTANCE) {
+      dx = delta_x / distance * deriv;
+      dy = delta_y / distance * deriv;
+      dz = delta_z / distance * deriv;
+    } else {
+      // avoid division by zero
+      dx = dy = dz = 0.;
+    }
+
     get_particle(0)->add_to_derivative(x_, dx, *accum);
     get_particle(1)->add_to_derivative(x_, -dx, *accum);
 
-    dy = delta_y / distance * deriv;
     get_particle(0)->add_to_derivative(y_, dy, *accum);
     get_particle(1)->add_to_derivative(y_, -dy, *accum);
 
-    dz = delta_z / distance * deriv;
     get_particle(0)->add_to_derivative(z_, dz, *accum);
     get_particle(1)->add_to_derivative(z_, -dz, *accum);
   }
