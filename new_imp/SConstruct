@@ -28,13 +28,13 @@ bin = SConscript('bin/SConscript')
 Export('bin')
 src = SConscript('src/SConscript')
 SConscript('include/SConscript')
-pyext = SConscript('pyext/SConscript')
+(pyext, pymod) = SConscript('pyext/SConscript')
 SConscript('test/SConscript')
 SConscript('doc/SConscript')
 SConscript('impEM/SConscript')
 
 # bin script first requires libraries to be built:
-env.Depends(bin, [src, pyext])
+env.Depends(bin, [src, pyext, pymod])
 
 # Build the binaries by default:
 env.Default(bin)
