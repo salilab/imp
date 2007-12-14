@@ -99,6 +99,14 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
         particle_indexes1 = IMP.vectori()
         particle_indexes2 = IMP.vectori()
         rsrs = []
+        # connect 2 proteins together by two beads
+        particle_indexes1.clear()
+        for i in range(0, 5):
+            particle_indexes1.push_back(i)
+        particle_indexes2.clear()
+        for i in range(5, 12):
+            particle_indexes2.push_back(i)
+        num_connects = 3
 
         if use_python:
             # set up exclusion volumes using a Python loop:
@@ -113,14 +121,6 @@ class PairConnectivityRestraintTests(IMP.test.IMPTestCase):
                                                      particle_indexes2,
                                                      IMP.FloatKey("radius"),
                                                      score_func_params))
-        # connect 2 proteins together by two beads
-        particle_indexes1.clear()
-        for i in range(0, 5):
-            particle_indexes1.push_back(i)
-        particle_indexes2.clear()
-        for i in range(5, 12):
-            particle_indexes2.push_back(i)
-        num_connects = 3
 
         # it should work whether this is True or False
         # However, if it is False, the close pairs should all be between
