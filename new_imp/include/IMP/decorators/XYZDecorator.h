@@ -54,9 +54,22 @@ namespace IMP
                                       DerivativeAccumulator &d) {
       get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
     }
-    //! Get a FloatKey to access the ith coordinate
+    //! Get whether the coordinates are optimized
+    /**
+       Return true only if all of them are optimized. 
+     */
+    bool get_coordinates_are_optimized() const {
+      return get_particle()->get_is_optimized(get_coordinate_key(0))
+        && get_particle()->get_is_optimized(get_coordinate_key(1))
+        && get_particle()->get_is_optimized(get_coordinate_key(2));
+    }
+    //! Set whether the coordinates are optimized
+    void set_coordinates_are_optimized(bool tf) const {
+      get_particle()->set_is_optimized(get_coordinate_key(0), tf);
+      get_particle()->set_is_optimized(get_coordinate_key(1), tf);
+      get_particle()->set_is_optimized(get_coordinate_key(2), tf);
+    }
     static FloatKey get_coordinate_key(unsigned int i) {
-      decorator_initialize_static_data();
       IMP_check(i <3, "Out of range coordinate",
                 IndexException("Out of range coordinate"));
       return key_[i];
