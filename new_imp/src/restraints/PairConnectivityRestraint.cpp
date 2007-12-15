@@ -52,10 +52,11 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
                     std::out_of_range("Reached end of rsr_scores too early"));
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
+        ScoreFunc *sf = score_func_params->create_score_func();
         rs_iter->rsr_ = new DistanceRestraint(model,
                                               get_particle(i),
                                               get_particle(j),
-                                              score_func_params);
+                                              sf);
 
         rs_iter->part1_idx_ = i;
         rs_iter->part2_idx_ = j;
@@ -116,10 +117,11 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
                     std::out_of_range("Reached end of rsr_scores too early"));
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
+        ScoreFunc *sf = score_func_params->create_score_func();
         rs_iter->rsr_ = new DistanceRestraint(model,
                                               get_particle(i),
                                               get_particle(j),
-                                              score_func_params);
+                                              sf);
 
         rs_iter->part1_idx_ = i;
         rs_iter->part2_idx_ = j;

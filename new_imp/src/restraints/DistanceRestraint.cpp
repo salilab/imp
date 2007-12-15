@@ -22,44 +22,23 @@ const Float DistanceRestraint::MIN_DISTANCE = 0.0000001;
 /** \param[in] model Pointer to the model.
     \param[in] p1 Pointer to first particle in distance restraint.
     \param[in] p2 Pointer to second particle in distance restraint.
-    \param[in] score_func_params Score function parameters for the restraint.
+    \param[in] score_func Scoring function for the restraint.
  */
 DistanceRestraint::DistanceRestraint(Model* model, Particle* p1, Particle* p2,
-                                     BasicScoreFuncParams* score_func_params)
+                                     ScoreFunc* score_func)
 {
-  set_up(model, p1, p2, score_func_params);
-}
-
-//! Constructor - set up the restraint using a given attribute.
-/** \param[in] model Pointer to the model.
-    \param[in] p1 Pointer to first particle in distance restraint.
-    \param[in] p2 Pointer to second particle in distance restraint.
-    \param[in] attr_name Name of attribute to be used to determine the
-                         expected distance (e.g. "radius").
-    \param[in] score_func_params Score function parameters for the restraint.
- */
-DistanceRestraint::DistanceRestraint(Model* model, Particle* p1, Particle* p2,
-                                     FloatKey attr_name,
-                                     BasicScoreFuncParams* score_func_params)
-{
-
-  // LogMsg(VERBOSE, "Construct distance restraint: " << attr_name);
-  Float mean = p1->get_value(attr_name)
-               + p2->get_value(attr_name);
-
-  score_func_params->set_mean(mean);
-  set_up(model, p1, p2, score_func_params);
+  set_up(model, p1, p2, score_func);
 }
 
 
-//! Do set up for the distant restraint constructors.
+//! Do set up for the distance restraint constructors.
 /** \param[in] model Pointer to the model.
     \param[in] p1 Pointer to first particle in distance restraint.
     \param[in] p2 Pointer to second particle in distance restraint.
     \param[in] score_func_params Score function parameters for the restraint.
  */
 void DistanceRestraint::set_up(Model* , Particle* p1, Particle* p2,
-                               BasicScoreFuncParams* score_func_params)
+                               ScoreFunc* score_func)
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
   add_particle(p1);
@@ -69,13 +48,14 @@ void DistanceRestraint::set_up(Model* , Particle* p1, Particle* p2,
 
   add_particle(p2);
 
-  score_func_ = score_func_params->create_score_func();
+  score_func_ = score_func;
 }
 
 
 //! Destructor
 DistanceRestraint::~DistanceRestraint()
 {
+  delete score_func_;
 }
 
 

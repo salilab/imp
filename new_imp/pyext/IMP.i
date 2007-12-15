@@ -28,6 +28,9 @@ namespace IMP {
   %pythonprepend RestraintSet::add_restraint %{
         args[1].thisown=0
   %}
+  %pythonprepend DistanceRestraint::DistanceRestraint %{
+        args[3].thisown=0
+  %}
 }
 
 %feature("director");

@@ -87,10 +87,9 @@ def set_up_exclusion_volumes(model, particles, radius_name, rsrs, sd = 0.1):
         for j in range(i+1, len(particles)):
             mean = particles[i].get_value(radius_name) \
                    + particles[j].get_value(radius_name)
-            score_func_params = IMP.BasicScoreFuncParams("harmonic_lower_bound",
-                                                         mean, sd)
+            sf = IMP.HarmonicLowerBound(mean, sd)
             rsrs.append(IMP.DistanceRestraint(model, particles[i], particles[j],
-                                              score_func_params))
+                                              sf))
 
 
 def write_pdb(model, fname):

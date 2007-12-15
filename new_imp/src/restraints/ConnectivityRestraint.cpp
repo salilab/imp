@@ -50,10 +50,11 @@ ConnectivityRestraint::ConnectivityRestraint(Model* model,
           rs_iter->part2_type_ = particle_type_[j];
 
           // create the restraint
+          ScoreFunc *sf = score_func_params->create_score_func();
           rs_iter->rsr_ = new DistanceRestraint(model,
                                                 get_particle(i),
                                                 get_particle(j),
-                                                score_func_params);
+                                                sf);
           ++rs_iter;
         }
       }
@@ -107,10 +108,11 @@ ConnectivityRestraint::ConnectivityRestraint(Model* model,
           score_func_params->set_mean(actual_mean);
 
           // create the restraint
+          ScoreFunc *sf = score_func_params->create_score_func();
           rs_iter->rsr_ = new DistanceRestraint(model,
                                                 get_particle(i),
                                                 get_particle(j),
-                                                score_func_params);
+                                                sf);
           ++rs_iter;
         }
       }
