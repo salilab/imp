@@ -31,11 +31,13 @@ class SteepestDescentTests(IMP.test.IMPTestCase):
         p1.add_attribute(radkey, 3.0, False)
 
         # separate 3 particles by their radii
-        score_func_params = IMP.BasicScoreFuncParams("harmonic", 0.0, 0.1)
-
-        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[1], radkey, score_func_params))
-        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[1], self.particles[2], radkey, score_func_params))
-        self.rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[0], self.particles[2], radkey, score_func_params))
+        for pairs in ((0,1), (1,2), (0,2)):
+            p1 = self.particles[pairs[0]]
+            p2 = self.particles[pairs[1]]
+            mean = p1.get_value(radkey) + p2.get_value(radkey)
+            sf = IMP.Harmonic(mean, 0.1)
+            rsr = IMP.DistanceRestraint(self.imp_model, p1, p2, sf)
+            self.rsrs.append(rsr)
 
         # add restraints
         rs = IMP.RestraintSet("distance_rsrs")

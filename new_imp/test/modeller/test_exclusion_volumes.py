@@ -120,14 +120,20 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
         for i in range(5, 12):
             particle_indexes2.push_back(i)
 
-        score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
-
         # connect the beads within the two proteins together
         for i in range(0, 4):
-            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], radius, score_func_params_ub))
+            p1 = self.particles[i]
+            p2 = self.particles[i+1]
+            mean = p1.get_value(radius) + p2.get_value(radius)
+            sf = IMP.HarmonicUpperBound(mean, 0.1)
+            rsrs.append(IMP.DistanceRestraint(self.imp_model, p1, p2, sf))
 
         for i in range(5, 11):
-            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], radius, score_func_params_ub))
+            p1 = self.particles[i]
+            p2 = self.particles[i+1]
+            mean = p1.get_value(radius) + p2.get_value(radius)
+            sf = IMP.HarmonicUpperBound(mean, 0.1)
+            rsrs.append(IMP.DistanceRestraint(self.imp_model, p1, p2, sf))
 
         # create the exclusion volume for each protein
         score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 0.0, 0.1)
@@ -181,12 +187,19 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
             particle_indexes2.push_back(i)
 
         # connect the beads within the two proteins together
-        score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound", 0.0, 0.1)
         for i in range(0, 4):
-            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], radius, score_func_params_ub))
+            p1 = self.particles[i]
+            p2 = self.particles[i+1]
+            mean = p1.get_value(radius) + p2.get_value(radius)
+            sf = IMP.HarmonicUpperBound(mean, 0.1)
+            rsrs.append(IMP.DistanceRestraint(self.imp_model, p1, p2, sf))
 
         for i in range(5, 11):
-            rsrs.append(IMP.DistanceRestraint(self.imp_model, self.particles[i], self.particles[i+1], radius, score_func_params_ub))
+            p1 = self.particles[i]
+            p2 = self.particles[i+1]
+            mean = p1.get_value(radius) + p2.get_value(radius)
+            sf = IMP.HarmonicUpperBound(mean, 0.1)
+            rsrs.append(IMP.DistanceRestraint(self.imp_model, p1, p2, sf))
 
         # create the exclusion volume for each protein
         score_func_params_lb = IMP.BasicScoreFuncParams("harmonic_lower_bound", 0.0, 0.1)
@@ -197,6 +210,8 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
         # get 4 distinct pairs
         num_connects = 4
         particle_reuse = False
+        score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound",
+                                                        0.0, 0.1)
         rsrs.append(IMP.PairConnectivityRestraint(self.imp_model, particle_indexes1, particle_indexes2, radius, score_func_params_ub, num_connects, particle_reuse))
 
         # create the exclusion volume for each protein

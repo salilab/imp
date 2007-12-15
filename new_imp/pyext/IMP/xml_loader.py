@@ -197,7 +197,8 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
                 + p2.get_value(IMP.FloatKey(distance_attribute))
 
         score_func_params = get_basic_score_func_params(score_func_str, distance, sd)
-        model.restraints.append(IMP.DistanceRestraint(model, p1, p2, score_func_params))
+        sf = score_func_params.create_score_func()
+        model.restraints.append(IMP.DistanceRestraint(model, p1, p2, sf))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 

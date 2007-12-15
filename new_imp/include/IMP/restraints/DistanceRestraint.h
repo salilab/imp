@@ -28,30 +28,27 @@ public:
   static const Float MIN_DISTANCE;
 
   DistanceRestraint(Model* model, Particle* p1, Particle* p2,
-                    BasicScoreFuncParams* score_func_params);
-  DistanceRestraint(Model* model, Particle* p1, Particle* p2,
-                    FloatKey attr_name,
-                    BasicScoreFuncParams* score_func_params);
+                    ScoreFunc* score_func);
   virtual ~DistanceRestraint();
 
   IMP_RESTRAINT("0.5", "Daniel Russel")
 
 protected:
-  //! Do set up for the distant restraint constructors.
+  //! Do set up for the distance restraint constructors.
   /** \param[in] model Pointer to the model.
       \param[in] p1 Pointer to first particle in distance restraint.
       \param[in] p2 Pointer to second particle in distance restraint.
-      \param[in] score_func_params Score function parameters for the restraint.
+      \param[in] score_func Scoring function for the restraint.
    */
   void set_up(Model* model, Particle* p1, Particle* p2,
-              BasicScoreFuncParams* score_func_params);
+              ScoreFunc* score_func);
 
   //! variables used to determine the distance
   FloatKey x_, y_, z_;
 
   //! variables used to calculate the math form
   Float mean_, sd_;
-  //! math form for this restraint (typically one of the harmonics)
+  //! scoring function for this restraint
   ScoreFunc* score_func_;
 };
 
