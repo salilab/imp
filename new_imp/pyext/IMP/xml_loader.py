@@ -330,7 +330,7 @@ def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
         return
 
     # create a vector of particle indexes
-    particle_indexes = IMP.vectori()
+    particle_indexes = IMP.Ints()
     for p_idx in particle_list:
         particle_indexes.push_back(int(p_idx))
 
@@ -394,12 +394,12 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
         return
 
     # create a vector of particle indexes
-    particle_indexes1 = IMP.vectori()
+    particle_indexes1 = IMP.Ints()
     particle_indexes1.clear()
     for p_idx in particle_list1:
         particle_indexes1.push_back(int(p_idx))
 
-    particle_indexes2 = IMP.vectori()
+    particle_indexes2 = IMP.Ints()
     particle_indexes2.clear()
     for p_idx in particle_list2:
         particle_indexes2.push_back(int(p_idx))
@@ -448,7 +448,7 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
         return
 
     # create a vector of particle indexes
-    particle_indexes = IMP.vectori()
+    particle_indexes = IMP.Ints()
     for p_idx in particle_list:
         particle_indexes.push_back(int(p_idx))
 
@@ -490,14 +490,14 @@ def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
         return
 
     # create a vector of particle indexes
-    particle_indexes1 = IMP.vectori()
+    particle_indexes1 = IMP.Ints()
     particle_indexes1.clear()
     for p_idx in particle_list1:
         particle_indexes1.push_back(int(p_idx))
 
     score_func_params = get_basic_score_func_params("harmonic_lower_bound", 0.0, sd)
     if (num_lists == 2):
-        particle_indexes2 = IMP.vectori()
+        particle_indexes2 = IMP.Ints()
         particle_indexes2.clear()
         for p_idx in particle_list2:
             particle_indexes2.push_back(int(p_idx))

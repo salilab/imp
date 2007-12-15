@@ -59,7 +59,7 @@ class DerivativesTest(unittest.TestCase):
         init_particle(self.particles,2,3.0,12.0,12.0,rad,wei,1)
         IMP.modeller_intf.copy_imp_coords_to_modeller(self.particles,self.modeller_model.atoms)
         #modeller_model.write(file='xxx.pdb')
-        self.particle_indexes = IMP.vectori()
+        self.particle_indexes = IMP.Ints()
         self.particle_indexes.clear()
         for i in xrange(npart):
             self.particle_indexes.push_back(i)

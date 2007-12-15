@@ -93,7 +93,7 @@ score_func = IMP.Harmonic()
 
 # add connectivity restraints
 
-particle_indexes = IMP.vectori()
+particle_indexes = IMP.Ints()
 rsrs = []
 
 # connect 3 proteins together

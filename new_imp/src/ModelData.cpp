@@ -160,6 +160,15 @@ void ModelData::set_value(const StringIndex idx, const String value)
 }
 
 
+void ModelData::show(std::ostream &out) const {
+  out << "Float variables: " << std::endl;
+  for (unsigned int i=0; i< float_data_.size(); ++i) {
+    out << "  " << float_data_[i].value_ << " " << float_data_[i].deriv_ 
+        << (float_data_[i].is_optimized_?" optimized" : " not optimized")
+        << std::endl;
+  }
+}
+
 //! Reset the iterator.
 /** After the next call to next(), get() will return the first optimizable
     Float variable.

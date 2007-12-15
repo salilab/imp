@@ -1,5 +1,6 @@
 import re, math, unittest
 import random
+import IMP
 
 
 class IMPTestCase(unittest.TestCase):
@@ -8,9 +9,10 @@ class IMPTestCase(unittest.TestCase):
     def randomize_particles(self, particles, deviation):
         """Randomize the xyz coordinates of a list of particles"""
         for p in particles:
-            p.set_x(random.uniform(-deviation, deviation))
-            p.set_y(random.uniform(-deviation, deviation))
-            p.set_z(random.uniform(-deviation, deviation))
+            d= IMP.XYZDecorator.cast(p)
+            d.set_x(random.uniform(-deviation, deviation))
+            d.set_y(random.uniform(-deviation, deviation))
+            d.set_z(random.uniform(-deviation, deviation))
 
     def load_coordinates(self, pdb_file):
         """Load coordinates from a PDB file"""

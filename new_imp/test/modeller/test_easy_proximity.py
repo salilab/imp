@@ -69,7 +69,7 @@ class ProximityRestraintTests(IMP.test.IMPTestCase):
 
         # add proximity restraints
 
-        particle_indexes = IMP.vectori()
+        particle_indexes = IMP.Ints()
         rsrs = []
 
         # set up exclusion volumes

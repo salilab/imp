@@ -147,6 +147,8 @@ public:
     return string_data_[idx.get_index()];
   }
 
+
+  void show(std::ostream &out=std::cout) const;
 protected:
   ModelData();
   ~ModelData();
@@ -186,6 +188,8 @@ protected:
   //! flag set whenever a particle is activated or deactivated
   bool check_particles_active_;
 };
+
+IMP_OUTPUT_OPERATOR(ModelData);
 
 //! Optimizable variable iterator
 /** Returns all optimizable Floats in the ModelData.
