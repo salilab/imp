@@ -8,167 +8,63 @@ class CoordinateTests(IMP.test.IMPTestCase):
     """Test various absolute position restraints"""
 
     def setUp(self):
-        self.imp_model = IMP.Model()
-        self.particles = []
-        self.restraint_sets = []
-        self.rsrs = []
+        self.model = IMP.Model()
+        p= IMP.Particle()
+        self.pi= self.model.add_particle(p);
+        d= IMP.XYZDecorator.create(p)
+        d.set_coordinates_are_optimized(True)
+        pc= IMP.Particle()
+        self.pic= self.model.add_particle(pc);
+        dc= IMP.XYZDecorator.create(pc)
 
-        for p in range(12):
-            self.particles.append(IMP.utils.XYZParticle(self.imp_model,
-                                                        0., 0., 0.))
-        self.opt = IMP.ConjugateGradients()
-        self.opt.set_model(self.imp_model)
-        self.opt.set_threshold(1e-5)
+        self.opt = IMP.SteepestDescent()
+        self.opt.set_model(self.model)
+        #self.opt.set_threshold(1e-5)
 
 
-    def _do_test_min(self, coord, mask):
+    def _do_test(self, center, sf):
         """All coordinate values should be greater than the set minimum"""
-        self.randomize_particles(self.particles, 50.0)
 
-        rs = IMP.RestraintSet("%s-min" % coord)
-        self.restraint_sets.append(rs)
-        self.imp_model.add_restraint(rs)
-
-        score_func_params = IMP.BasicScoreFuncParams("harmonic_lower_bound",
-                                                     8.0, 0.1)
-        for p in self.imp_model.get_particles():
-            self.rsrs.append(IMP.CoordinateRestraint(self.imp_model,
-                                                     p,
-                                                     "%s_AXIS" % coord.upper(),
-                                                     score_func_params))
-            r = self.rsrs[len(self.rsrs)-1]
-            rs.add_restraint(r)
+        r= IMP.SphericalRestraint(self.model,
+                                  self.pi,
+                                  center[0], center[1], center[2],
+                                  sf)
+        ri=self.model.add_restraint(r)
 
         self.opt.optimize(55)
-        for p in self.particles:
-            self.assert_(self.check_abs_pos(p, '>=', 7.999, *mask),
-                         "%s-min condition" % coord)
-        rs.set_is_active(False)
+        self.model.get_restraint(ri).set_is_active(False)
 
-    def test_min(self):
-        """All coordinate values should be greater than the set minimum"""
-        for (coord, mask) in (('x', (1,0,0)), ('y', (0,1,0)), ('z', (0,0,1))):
-            self._do_test_min(coord, mask)
+    def _get_center(self):
+        v= IMP.Floats()
+        d= IMP.XYZDecorator.cast(self.model.get_particle(self.pic))
+        v.append(d.get_x())
+        v.append(d.get_y())
+        v.append(d.get_z())
+        return v
 
-    def _do_test_max(self, coord, mask):
-        """All coordinate values should be less than the set maximum"""
-        self.randomize_particles(self.particles, 50.0)
+    def test_in_ball(self):
+        """Testing that restraint keeps point in ball"""
+        self.randomize_particles(self.model.get_particles(), 50.0)
+        f= IMP.HarmonicUpperBound(10,.1)
+        c= self._get_center()
+        self._do_test(c, f)
+        pd= IMP.XYZDecorator.cast(self.model.get_particle(self.pi))
+        cd= IMP.XYZDecorator.cast(self.model.get_particle(self.pic))
+        d= IMP.distance(pd, cd)
+        self.assert_(d < 11)
 
-        rs = IMP.RestraintSet("%s-max" % coord)
-        self.restraint_sets.append(rs)
-        self.imp_model.add_restraint(rs)
+    def test_on_ball(self):
+        """Testing that restraint keeps point on sphere"""
+        self.randomize_particles(self.model.get_particles(), 50.0)
+        f= IMP.Harmonic(10,.1)
+        c= self._get_center()
+        self._do_test( c, f)
+        pd= IMP.XYZDecorator.cast(self.model.get_particle(self.pi))
+        cd= IMP.XYZDecorator.cast(self.model.get_particle(self.pic))
+        d= IMP.distance(pd, cd)
+        self.assert_(d < 11)
+        self.assert_(d > 9)
 
-        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
-                                                     -8.0, 0.1)
-        for p in self.imp_model.get_particles():
-            self.rsrs.append(IMP.CoordinateRestraint(self.imp_model,
-                                                     p,
-                                                     "%s_AXIS" % coord.upper(),
-                                                     score_func_params))
-            r = self.rsrs[len(self.rsrs)-1]
-            rs.add_restraint(r)
-
-        self.opt.optimize(55)
-        for p in self.particles:
-            self.assert_(self.check_abs_pos(p, '<=', -7.9999, *mask),
-                         "%s-max condition" % coord)
-        rs.set_is_active(False)
-
-    def test_max(self):
-        """All coordinate values should be less than the set maximum"""
-        for (coord, mask) in (('x', (1,0,0)), ('y', (0,1,0)), ('z', (0,0,1))):
-            self._do_test_max(coord, mask)
-
-    def test_xy_radial(self):
-        """All xy distances should be less than the set maximum"""
-        self.randomize_particles(self.particles, 50.0)
-
-        rs = IMP.RestraintSet("xy_radial")
-        self.restraint_sets.append(rs)
-        self.imp_model.add_restraint(rs)
-
-        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
-                                                     8.0, 0.1)
-        for p in self.imp_model.get_particles():
-            r = IMP.CoordinateRestraint(self.imp_model, p,
-                                        "XY_RADIAL", score_func_params)
-            self.rsrs.append(r)
-            rs.add_restraint(r)
-
-        self.opt.optimize(55)
-
-        for p in self.particles:
-            self.assert_(self.check_abs_pos(p, '<=', 8.001, 1, 1, 0),
-                         "xy_radial condition")
-        rs.set_is_active(False)
-
-    def test_xz_radial(self):
-        """All xz distances should be less than the set maximum"""
-        self.randomize_particles(self.particles, 50.0)
-
-        rs = IMP.RestraintSet("xz_radial")
-        self.restraint_sets.append(rs)
-        self.imp_model.add_restraint(rs)
-
-        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
-                                                     8.0, 0.1)
-        for p in self.imp_model.get_particles():
-            r = IMP.CoordinateRestraint(self.imp_model, p,
-                                        "XZ_RADIAL", score_func_params)
-            self.rsrs.append(r)
-            rs.add_restraint(r)
-
-        self.opt.optimize(55)
-
-        for p in self.particles:
-            self.assert_(self.check_abs_pos(p, '<=', 8.001, 1, 0, 1),
-                         "xz_radial condition")
-        rs.set_is_active(False)
-
-    def test_yz_radial(self):
-        """All yz distances should be less than the set maximum"""
-        self.randomize_particles(self.particles, 50.0)
-
-        self.restraint_sets.append(IMP.RestraintSet("yz_radial"))
-        rs = self.restraint_sets[len(self.restraint_sets)-1]
-        self.imp_model.add_restraint(rs)
-
-        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
-                                                     8.0, 0.1)
-        for p in self.imp_model.get_particles():
-            r = IMP.CoordinateRestraint(self.imp_model, p,
-                                        "YZ_RADIAL", score_func_params)
-            self.rsrs.append(r)
-            rs.add_restraint(r)
-
-        self.opt.optimize(55)
-        for p in self.particles:
-            self.assert_(self.check_abs_pos(p, '<=', 8.001, 0, 1, 1),
-                         "yz_radial condition")
-        rs.set_is_active(False)
-
-    def test_xyz_sphere(self):
-        """All xyz distances should be less than the set maximum"""
-        self.randomize_particles(self.particles, 50.0)
-
-        self.restraint_sets.append(IMP.RestraintSet("xyz_sphere"))
-        rs = self.restraint_sets[len(self.restraint_sets)-1]
-        self.imp_model.add_restraint(rs)
-
-        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
-                                                     8.0, 0.1)
-        for p in self.imp_model.get_particles():
-            r = IMP.CoordinateRestraint(self.imp_model, p,
-                                        "XYZ_SPHERE", score_func_params)
-            self.rsrs.append(r)
-            rs.add_restraint(r)
-
-        self.opt.optimize(55)
-
-        for p in self.particles:
-            self.assert_(self.check_abs_pos(p, '<=', 8.001, 1, 1, 1),
-                         "xyz_sphere condition")
-        rs.set_is_active(False)
 
 if __name__ == '__main__':
     unittest.main()

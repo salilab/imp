@@ -28,6 +28,12 @@ typedef std::string String;
 
 
 
+typedef std::vector<Float> Floats;
+typedef std::vector<Int> Ints;
+typedef std::vector<String> Strings;
+
+
+
 struct ParticleTag {};
 struct RestraintTag {};
 struct StateTag {};
@@ -45,6 +51,11 @@ class Particle;
    We need this to have a uniform return type for python.
  */
 typedef std::vector<Particle*> Particles; 
+
+typedef std::vector<ParticleIndex> ParticleIndexes;
+typedef std::vector<FloatIndex> FloatIndexes;
+typedef std::vector<IntIndex> IntIndexes;
+typedef std::vector<StringIndex> StringIndexes;
 // typedefs for the particle variable and attribute indexes
 // typedef DataIndex<Float> FloatIndex;
 // typedef DataIndex<Int> IntIndex;
@@ -80,7 +91,8 @@ typedef std::vector<Particle*> Particles;
     inline unsigned int attribute_table_index(Tag) {                    \
       return Name##_attribute_table_index_;                             \
     }                                                                   \
-  }
+  }                                                                     \
+  typedef std::vector<Name> Name##s;
 
 /**
    Declare static data necessary for a new key type.

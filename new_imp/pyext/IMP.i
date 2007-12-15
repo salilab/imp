@@ -10,10 +10,6 @@
 %include "IMP_macros.i"
 %include "IMP_exceptions.i"
 
-namespace std {
-  %template(vectori) vector<int>;
-  %template(vectorf) vector<float>;
-}
 
 namespace IMP {
   %pythonprepend Model::add_particle %{
@@ -30,6 +26,9 @@ namespace IMP {
   %}
   %pythonprepend DistanceRestraint::DistanceRestraint %{
         args[3].thisown=0
+  %}
+  %pythonprepend SphericalRestraint::SphericalRestraint %{
+        args[5].thisown=0
   %}
 }
 
@@ -64,7 +63,7 @@ namespace IMP {
 %include "IMP/optimizers/MolecularDynamics.h"
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/TorusRestraint.h"
-%include "IMP/restraints/CoordinateRestraint.h"
+%include "IMP/restraints/SphericalRestraint.h"
 %include "IMP/restraints/ProximityRestraint.h"
 %include "IMP/restraints/ConnectivityRestraint.h"
 %include "IMP/restraints/PairConnectivityRestraint.h"
@@ -89,4 +88,7 @@ namespace IMP {
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;
+  %template(Floats) ::std::vector<Float>;
+  %template(Strings) ::std::vector<String>;
+  %template(Ints) ::std::vector<Int>;
 }

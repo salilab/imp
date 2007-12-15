@@ -95,7 +95,7 @@ class ConnectivityTests(IMP.test.IMPTestCase):
 
         # add connectivity restraints
 
-        particle_indexes = IMP.vectori()
+        particle_indexes = IMP.Ints()
         rsrs = []
 
         score_func_params_ub = IMP.BasicScoreFuncParams("harmonic_upper_bound",

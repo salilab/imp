@@ -45,7 +45,7 @@ class SampleTests(unittest.TestCase):
         init_particle(self.particles,0,9.0,9.0,9.0,rad,wei,1)
         init_particle(self.particles,1,12.0,3.0,3.0,rad,wei,1)
         init_particle(self.particles,2,3.0,12.0,12.0,rad,wei,1)
-        self.particle_indexes = IMP.vectori()
+        self.particle_indexes = IMP.Ints()
         self.particle_indexes.clear()
         for i in xrange(npart):
             self.particle_indexes.push_back(i)

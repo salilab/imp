@@ -108,8 +108,8 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
 
         # add connectivity restraints
 
-        particle_indexes1 = IMP.vectori()
-        particle_indexes2 = IMP.vectori()
+        particle_indexes1 = IMP.Ints()
+        particle_indexes2 = IMP.Ints()
         rsrs = []
 
         # connect 2 proteins together by two beads
@@ -174,8 +174,8 @@ class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
 
         # add connectivity restraints
 
-        particle_indexes1 = IMP.vectori()
-        particle_indexes2 = IMP.vectori()
+        particle_indexes1 = IMP.Ints()
+        particle_indexes2 = IMP.Ints()
         rsrs = []
 
         # connect 2 proteins together by two beads

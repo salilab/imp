@@ -28,7 +28,7 @@ class FittingTest(IMP.test.IMPTestCase):
 
 
         self.particles = []
-        self.particle_indexes = IMP.vectori()
+        self.particle_indexes = IMP.Ints()
 
         origin =  3.0
         self.particles.append(IMP.utils.XYZParticle(self.imp_model, 9.+origin,
