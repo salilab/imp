@@ -11,8 +11,9 @@
 
 namespace IMP
 {
-// might as well initialize them statically
-  FloatKey XYZDecorator::key_[3]={FloatKey("x"), FloatKey("y"), FloatKey("z")};
+  // These aren't statically initialized, as that way they may be initialized
+  // before the table that caches them
+  FloatKey XYZDecorator::key_[3];
 
 
 
@@ -25,18 +26,23 @@ void XYZDecorator::show(std::ostream &out, std::string prefix) const
 
 
 
+IMP_DECORATOR_INITIALIZE(XYZDecorator, DecoratorBase,
+                         {
+                         key_[0] = FloatKey("x");
+                         key_[1] = FloatKey("y");
+                         key_[2] = FloatKey("z");
+                         })
 
-  IMP_DECORATOR_INITIALIZE(XYZDecorator, DecoratorBase,
-                           {
-                           })
-  namespace {
-    template <class T>
-    T d(T a, T b){T d=a-b; return d*d;}
-  }
+namespace {
+  template <class T>
+  T d(T a, T b){T d=a-b; return d*d;}
+}
 
-  Float distance(XYZDecorator a, XYZDecorator b){
-    double d2= d(a.get_x(), b.get_x()) + d(a.get_y(), b.get_y())
-      + d(a.get_z(), b.get_z());
-    return std::sqrt(d2);
-  }
+Float distance(XYZDecorator a, XYZDecorator b)
+{
+  double d2= d(a.get_x(), b.get_x()) + d(a.get_y(), b.get_y())
+    + d(a.get_z(), b.get_z());
+  return std::sqrt(d2);
+}
+
 } // namespace IMP
