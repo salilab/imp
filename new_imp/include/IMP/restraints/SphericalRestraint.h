@@ -31,7 +31,7 @@ public:
      \param[in] score_func The scoring function. It is deleted in the
                            destructor.
    */
-  SphericalRestraint(Model* model, ParticleIndex p,
+  SphericalRestraint(Model* model, Particle* p,
                      Float x, Float y, Float z,
                      ScoreFunc* score_func);
   virtual ~SphericalRestraint();
