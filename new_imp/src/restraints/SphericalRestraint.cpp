@@ -22,11 +22,11 @@ static const float MIN_DISTANCE_SQUARED=.001;
 
 
 
-SphericalRestraint::SphericalRestraint(Model* m, ParticleIndex p,
+SphericalRestraint::SphericalRestraint(Model*, Particle* p,
                                        Float x, Float y, Float z,
                                        ScoreFunc* score_func)
 {
-  add_particle(m->get_particle(p));
+  add_particle(p);
   center_[0]=x;
   center_[1]=y;
   center_[2]=z;

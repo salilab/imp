@@ -26,7 +26,7 @@ class CoordinateTests(IMP.test.IMPTestCase):
         """All coordinate values should be greater than the set minimum"""
 
         r= IMP.SphericalRestraint(self.model,
-                                  self.pi,
+                                  self.model.get_particle(self.pi),
                                   center[0], center[1], center[2],
                                   sf)
         ri=self.model.add_restraint(r)
