@@ -72,6 +72,7 @@ namespace IMP
       get_particle()->set_is_optimized(get_coordinate_key(1), tf);
       get_particle()->set_is_optimized(get_coordinate_key(2), tf);
     }
+  protected:
     static FloatKey get_coordinate_key(unsigned int i) {
       IMP_check(i <3, "Out of range coordinate",
                 IndexException("Out of range coordinate"));
