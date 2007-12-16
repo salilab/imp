@@ -24,8 +24,11 @@ namespace IMP
   class IMPDLLEXPORT XYZDecorator: public DecoratorBase
   {
     IMP_DECORATOR(XYZDecorator, DecoratorBase,
-                  return p->has_attribute(key_[0]) && p->has_attribute(key_[1])
-                  && p->has_attribute(key_[2]),
+                  {
+                    return p->has_attribute(key_[0])
+                      && p->has_attribute(key_[1])
+                      && p->has_attribute(key_[2]);
+                      },
                   { p->add_attribute(key_[0],
                                      std::numeric_limits<float>::infinity());
                     p->add_attribute(key_[1],

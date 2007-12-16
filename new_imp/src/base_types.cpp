@@ -13,6 +13,7 @@ namespace IMP
 namespace internal {
 unsigned int next_attribute_table_index_ = 0;
 std::vector<KeyData> attribute_key_data;
+double key_initialization_heuristic=0;
 }
 
 IMP_DEFINE_KEY_TYPE(IntKey, Int);
