@@ -22,6 +22,17 @@ namespace IMP
 
 namespace internal {
 
+#define IMP_KEY_INITIALIZATION_HEURISTIC 1234678
+
+/** This is a hack to try to catch people to initialize keys
+    before the cache table is initialized. Keys should be 
+    initialized in code that is called after main starts.
+
+    This symbol is initialized in the same translation unit as
+    the tables and so is unlikely to have the above value unless 
+    the tables have been initialized. 
+*/
+IMPDLLEXPORT extern double key_initialization_heuristic;
 
 struct KeyData {
   std::map<std::string, int> map;
@@ -77,6 +88,11 @@ public:
 
   //! Generate a key from the given string
   Key(const char *c) {
+    IMP_assert(internal::key_initialization_heuristic
+               == IMP_KEY_INITIALIZATION_HEURISTIC,
+               "Do not initialize keys statically. This can cause" 
+               << " serious problems due to the initialization order"
+               << " among translation units being undefined.");
     std::string sc(c);
     if (data().map.find(sc) == data().map.end()) {
 

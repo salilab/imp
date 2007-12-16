@@ -30,7 +30,8 @@ class AttributeTable
 public:
   typedef Index<T> Value;
   typedef Key<T> Key;
-  AttributeTable() {}
+  AttributeTable() { key_initialization_heuristic 
+      = IMP_KEY_INITIALIZATION_HEURISTIC;}
   const Value get_value(Key k) const {
     IMP_check(contains(k),
               "Attribute \"" << k.get_string()
