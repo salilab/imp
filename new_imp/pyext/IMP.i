@@ -84,7 +84,8 @@ namespace IMP {
   %template(ResidueType) Key<ResidueTypeTag>;     
   %template(show_named_nierarchy) show<NameDecorator>;
   %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
-  %template(ParticleVector) ::std::vector<Particle*>;       
+  %template(Particles) ::std::vector<Particle*>;       
+  %template(ParticleIndexes) ::std::vector<ParticleIndex>;       
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;
