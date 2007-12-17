@@ -193,4 +193,13 @@ private:                                                                \
   }                                           \
   lcname##_vector_.clear();
 
+
+namespace IMP {
+  //! Compute the square of a number
+  template <class T>
+  T square(T t) {
+    return t*t;
+  }
+}
+
 #endif  /* __IMP_UTILITY_H */
