@@ -21,11 +21,13 @@ namespace IMP
 {
 
 //! Distance restraint between two particles
+/**
+   \note If the particles are closer than a certain distance, then
+   the contributions to the derivatives are set to 0.
+ */
 class IMPDLLEXPORT DistanceRestraint : public Restraint
 {
 public:
-  //! particles must be at least this far apart to calculate the restraint
-  static const Float MIN_DISTANCE;
 
   DistanceRestraint(Model* model, Particle* p1, Particle* p2,
                     ScoreFunc* score_func);
@@ -43,11 +45,6 @@ protected:
   void set_up(Model* model, Particle* p1, Particle* p2,
               ScoreFunc* score_func);
 
-  //! variables used to determine the distance
-  FloatKey x_, y_, z_;
-
-  //! variables used to calculate the math form
-  Float mean_, sd_;
   //! scoring function for this restraint
   ScoreFunc* score_func_;
 };

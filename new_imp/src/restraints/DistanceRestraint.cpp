@@ -11,12 +11,13 @@
 #include "IMP/Model.h"
 #include "IMP/log.h"
 #include "IMP/restraints/DistanceRestraint.h"
+#include "IMP/decorators/XYZDecorator.h"
 
 namespace IMP
 {
 
 //! particles must be at least this far apart to calculate the restraint
-const Float DistanceRestraint::MIN_DISTANCE = 0.0000001;
+static const Float MIN_DISTANCE = 0.0000001;
 
 //! Constructor - set up the restraint using a given mean.
 /** \param[in] model Pointer to the model.
@@ -42,10 +43,6 @@ void DistanceRestraint::set_up(Model* , Particle* p1, Particle* p2,
 {
   // LogMsg(VERBOSE, "Set up distance restraint.");
   add_particle(p1);
-  x_ = FloatKey("x");
-  y_ = FloatKey("y");
-  z_ = FloatKey("z");
-
   add_particle(p2);
 
   score_func_ = score_func;
@@ -66,44 +63,33 @@ DistanceRestraint::~DistanceRestraint()
  */
 Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
 {
-  Float distance;
-  Float delta_x, delta_y, delta_z;
+  Float d2=0, delta[3];
   Float score;
 
-  // we need deltas for calculating the distance and the derivatives
-  delta_x = get_particle(0)->get_value(x_) - get_particle(1)->get_value(x_);
-  delta_y = get_particle(0)->get_value(y_) - get_particle(1)->get_value(y_);
-  delta_z = get_particle(0)->get_value(z_) - get_particle(1)->get_value(z_);
+  XYZDecorator d0= XYZDecorator::cast(get_particle(0));
+  XYZDecorator d1= XYZDecorator::cast(get_particle(1));
+  for (int i=0; i< 3; ++i ){
+    delta[i]= d0.get_coordinate(i)- d1.get_coordinate(i);
+    d2+= square(delta[i]);
+  }
 
-  // calculate the distance feature
-  distance = sqrt(delta_x * delta_x + delta_y * delta_y + delta_z * delta_z);
+  Float distance = std::sqrt(d2);
 
   // if needed, calculate the partial derivatives of the scores with respect
   // to the particle attributes
-  if (accum) {
-    Float dx, dy, dz;
+  // avoid division by zero if the distance is too small
+  if (accum && distance >= MIN_DISTANCE) {
     Float deriv;
 
     // calculate the score and feature derivative based on the distance feature
     score = (*score_func_)(distance, deriv);
 
-    if (distance >= DistanceRestraint::MIN_DISTANCE) {
-      dx = delta_x / distance * deriv;
-      dy = delta_y / distance * deriv;
-      dz = delta_z / distance * deriv;
-    } else {
-      // avoid division by zero
-      dx = dy = dz = 0.;
+    for (int i=0; i< 3; ++i ){
+      Float d= delta[i]/distance*deriv;
+      d0.add_to_coordinate_derivative(i, d, *accum);
+      d1.add_to_coordinate_derivative(i, -d, *accum);
     }
 
-    get_particle(0)->add_to_derivative(x_, dx, *accum);
-    get_particle(1)->add_to_derivative(x_, -dx, *accum);
-
-    get_particle(0)->add_to_derivative(y_, dy, *accum);
-    get_particle(1)->add_to_derivative(y_, -dy, *accum);
-
-    get_particle(0)->add_to_derivative(z_, dz, *accum);
-    get_particle(1)->add_to_derivative(z_, -dz, *accum);
   }
 
   else {
@@ -131,9 +117,6 @@ void DistanceRestraint::show(std::ostream& out) const
   out << "last_modified_by: " << last_modified_by() << std::endl;
   out << "  particles: " << get_particle(0)->get_index();
   out << " and " << get_particle(1)->get_index();
-
-  out << "  mean:" << mean_;
-  out << "  sd:" << sd_ << std::endl;
 }
 
 }  // namespace IMP
