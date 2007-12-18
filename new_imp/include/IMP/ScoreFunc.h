@@ -27,6 +27,7 @@ public:
   virtual ~ScoreFunc() {}
   virtual Float operator()(Float feature, Float& deriv) = 0;
   virtual Float operator()(Float feature) = 0;
+  virtual void show(std::ostream &out=std::cout) const =0;
 };
 
 
@@ -70,6 +71,11 @@ public:
    */
   Float harmonic(Float feature, Float& deriv);
 
+
+  void show(std::ostream &out=std::cout) const
+  {
+    out << "Harmonic: " << mean_ << " and " << sd_ << std::endl;
+  }
 protected:
   Float mean_;
   Float sd_;
@@ -98,6 +104,11 @@ public:
       \return Score
    */
   virtual Float operator()(Float feature, Float& deriv);
+
+  void show(std::ostream &out=std::cout) const
+  {
+    out << "HarmonicLB: " << mean_ << " and " << sd_ << std::endl;
+  }
 };
 
 
@@ -123,6 +134,11 @@ public:
       \return Score
    */
   virtual Float operator()(Float feature, Float& deriv);
+
+  void show(std::ostream &out=std::cout) const
+  {
+    out << "HarmonicLUB: " << mean_ << " and " << sd_ << std::endl;
+  }
 };
 
 

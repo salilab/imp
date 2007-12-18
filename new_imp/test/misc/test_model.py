@@ -6,11 +6,16 @@ class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
     def evaluate(self, accum):
         return 0.
+    def show(self, something):
+        print "I can't really show from python"
+
 
 class DummyState(IMP.State):
     """Dummy do-nothing state"""
     def update(self):
         pass
+    def show(self, something):
+        print "I can't really show from python"
 
 class ModelTests(IMP.test.IMPTestCase):
     def test_state(self):
@@ -22,6 +27,8 @@ class ModelTests(IMP.test.IMPTestCase):
         news = m.get_state(IMP.StateIndex(0))
         self.assert_(isinstance(news, IMP.State))
         self.assertRaises(IndexError, m.get_state, IMP.StateIndex(1));
+        for s in m.get_states():
+            s.show()
 
     def test_restraints(self):
         """Check restraint methods"""
@@ -34,6 +41,9 @@ class ModelTests(IMP.test.IMPTestCase):
         newr = m.get_restraint(IMP.RestraintIndex(0))
         self.assert_(isinstance(newr, IMP.Restraint))
         self.assertRaises(IndexError, m.get_restraint, IMP.RestraintIndex(1));
+        for s in m.get_restraints():
+            s.show()
+
 
     def test_particles(self):
         """Check particle methods"""
@@ -45,6 +55,14 @@ class ModelTests(IMP.test.IMPTestCase):
         self.assertEqual(m.number_of_particles(), 1)
         self.assertNotEqual(m.get_particle(IMP.ParticleIndex(0)), None)
         self.assertRaises(IndexError, m.get_particle, IMP.ParticleIndex(1))
+        for s in m.get_particles():
+            s.show()
+
+    def test_scoref(self):
+        """Check printing of scoring functions"""
+        s= IMP.Harmonic(0, 1)
+        s.show()
+
 
 if __name__ == '__main__':
     unittest.main()

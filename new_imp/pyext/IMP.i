@@ -85,6 +85,8 @@ namespace IMP {
   %template(show_named_nierarchy) show<NameDecorator>;
   %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
   %template(Particles) ::std::vector<Particle*>;       
+  %template(Restraints) ::std::vector<Restraint*>;       
+  %template(States) ::std::vector<State*>;       
   %template(ParticleIndexes) ::std::vector<ParticleIndex>;       
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
