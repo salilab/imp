@@ -39,6 +39,7 @@ class ParticleTests(IMP.test.IMPTestCase):
         self.assertRaises(IndexError, p1.get_value, IMP.FloatKey("notexist"))
         self.assertRaises(IndexError, p1.get_value, IMP.IntKey("notexist"))
         self.assertRaises(IndexError, p1.get_value, IMP.StringKey("notexist"))
+        self.assertRaises(IndexError, p1.add_attribute, IMP.FloatKey(), 0)
 
     def test_get_set_methods(self):
         """Test particle get_ and set_ methods"""

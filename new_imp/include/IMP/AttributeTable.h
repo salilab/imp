@@ -41,6 +41,8 @@ public:
   }
   void insert(Key k, Value v);
   bool contains(Key k) const {
+    IMP_check(k != Key(), "Can't search for default key",
+              IndexException("Bad index"));
     return k.get_index() < map_.size()
            && map_[k.get_index()] != Value();
   }
@@ -60,6 +62,9 @@ IMP_OUTPUT_OPERATOR_1(AttributeTable)
 template <class T>
 inline void AttributeTable<T>::insert(Key k, Value v)
 {
+  IMP_check(k != Key(),
+            "Can't insert default key",
+            IndexException("bad index"));
   IMP_assert(v != Value(),
              "Can't add attribute with no index");
   if (map_.size() <= k.get_index()) {
