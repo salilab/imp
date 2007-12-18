@@ -22,7 +22,7 @@ static const float MIN_DISTANCE_SQUARED=.001;
 
 
 
-SphericalRestraint::SphericalRestraint(Model*, Particle* p,
+SphericalRestraint::SphericalRestraint(Particle* p,
                                        Float x, Float y, Float z,
                                        ScoreFunc* score_func)
 {
@@ -79,9 +79,12 @@ void SphericalRestraint::show(std::ostream& out) const
     out << "Spherical restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  ";
-  out << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "  version: " << version() << "  ";
+  out << "  last_modified_by: " << last_modified_by() << std::endl;
   out << "  particle: " << get_particle(0)->get_index();
+  out << "  ";
+  score_func_->show(out);
+  out << std::endl;
   out << std::endl;
 }
 

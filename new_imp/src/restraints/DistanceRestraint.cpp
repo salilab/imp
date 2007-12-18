@@ -19,29 +19,9 @@ namespace IMP
 //! particles must be at least this far apart to calculate the restraint
 static const Float MIN_DISTANCE = 0.0000001;
 
-//! Constructor - set up the restraint using a given mean.
-/** \param[in] model Pointer to the model.
-    \param[in] p1 Pointer to first particle in distance restraint.
-    \param[in] p2 Pointer to second particle in distance restraint.
-    \param[in] score_func Scoring function for the restraint.
- */
-DistanceRestraint::DistanceRestraint(Model* model, Particle* p1, Particle* p2,
+DistanceRestraint::DistanceRestraint(Particle* p1, Particle* p2,
                                      ScoreFunc* score_func)
 {
-  set_up(model, p1, p2, score_func);
-}
-
-
-//! Do set up for the distance restraint constructors.
-/** \param[in] model Pointer to the model.
-    \param[in] p1 Pointer to first particle in distance restraint.
-    \param[in] p2 Pointer to second particle in distance restraint.
-    \param[in] score_func_params Score function parameters for the restraint.
- */
-void DistanceRestraint::set_up(Model* , Particle* p1, Particle* p2,
-                               ScoreFunc* score_func)
-{
-  // LogMsg(VERBOSE, "Set up distance restraint.");
   add_particle(p1);
   add_particle(p2);
 
@@ -100,7 +80,10 @@ Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
     score = (*score_func_)(distance);
   }
 
-  IMP_LOG(VERBOSE, "distance: " << distance << "   score: " << score);
+  IMP_LOG(VERBOSE, "For " << get_particle(0)->get_index() 
+          << " and " << get_particle(1)->get_index() 
+          << " distance: " << distance 
+          << " score: " << score << std::endl);
   return score;
 }
 
@@ -122,6 +105,7 @@ void DistanceRestraint::show(std::ostream& out) const
   out << " and " << get_particle(1)->get_index();
   out << "  ";
   score_func_->show(out);
+  out << std::endl;
 }
 
 }  // namespace IMP

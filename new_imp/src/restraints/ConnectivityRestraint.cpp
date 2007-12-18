@@ -51,8 +51,7 @@ ConnectivityRestraint::ConnectivityRestraint(Model* model,
 
           // create the restraint
           ScoreFunc *sf = score_func_params->create_score_func();
-          rs_iter->rsr_ = new DistanceRestraint(model,
-                                                get_particle(i),
+          rs_iter->rsr_ = new DistanceRestraint(get_particle(i),
                                                 get_particle(j),
                                                 sf);
           ++rs_iter;
@@ -109,8 +108,7 @@ ConnectivityRestraint::ConnectivityRestraint(Model* model,
 
           // create the restraint
           ScoreFunc *sf = score_func_params->create_score_func();
-          rs_iter->rsr_ = new DistanceRestraint(model,
-                                                get_particle(i),
+          rs_iter->rsr_ = new DistanceRestraint(get_particle(i),
                                                 get_particle(j),
                                                 sf);
           ++rs_iter;

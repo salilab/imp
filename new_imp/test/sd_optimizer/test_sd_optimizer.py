@@ -36,7 +36,7 @@ class SteepestDescentTests(IMP.test.IMPTestCase):
             p2 = self.particles[pairs[1]]
             mean = p1.get_value(radkey) + p2.get_value(radkey)
             sf = IMP.Harmonic(mean, 0.1)
-            rsr = IMP.DistanceRestraint(self.imp_model, p1, p2, sf)
+            rsr = IMP.DistanceRestraint(p1, p2, sf)
             self.rsrs.append(rsr)
 
         # add restraints

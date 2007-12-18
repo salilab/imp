@@ -35,7 +35,7 @@ class DistanceTests(IMP.test.IMPTestCase):
         for sf in (IMP.HarmonicUpperBound(mean, 0.1),
                    IMP.HarmonicLowerBound(mean, 0.1),
                    IMP.Harmonic(mean, 0.1)):
-            r = IMP.DistanceRestraint(self.imp_model, p1, p2, sf)
+            r = IMP.DistanceRestraint(p1, p2, sf)
             self.rsrs.append(r)
 
     def _make_restraints(self):
@@ -53,27 +53,27 @@ class DistanceTests(IMP.test.IMPTestCase):
         # all should be 0.0
         for fs in (IMP.HarmonicUpperBound(3.0, 0.1),
                    IMP.HarmonicLowerBound(3.0, 0.1), IMP.Harmonic(3.0, 0.1)):
-            r = IMP.DistanceRestraint(self.imp_model, self.particles[1],
+            r = IMP.DistanceRestraint(self.particles[1],
                                       self.particles[0], fs)
             self.rsrs.append(r)
 
         # exceed lower bound
         for fs in (IMP.HarmonicUpperBound(5.0, 0.1),
                    IMP.HarmonicLowerBound(5.0, 0.1), IMP.Harmonic(5.0, 0.1)):
-            r = IMP.DistanceRestraint(self.imp_model, self.particles[1],
+            r = IMP.DistanceRestraint(self.particles[1],
                                       self.particles[2], fs)
             self.rsrs.append(r)
 
         # exceed upper bound
         for fs in (IMP.HarmonicUpperBound(4.0, 0.1),
                    IMP.HarmonicLowerBound(4.0, 0.1), IMP.Harmonic(4.0, 0.1)):
-            r = IMP.DistanceRestraint(self.imp_model, self.particles[0],
+            r = IMP.DistanceRestraint(self.particles[0],
                                       self.particles[2], fs)
             self.rsrs.append(r)
 
     def test_show(self):
         """Test Restraint::show() method"""
-        r = IMP.DistanceRestraint(self.imp_model, self.particles[1],
+        r = IMP.DistanceRestraint(self.particles[1],
                                   self.particles[0], IMP.Harmonic(0.0, 0.1))
         r.show()
 
