@@ -118,13 +118,13 @@ public:
 };
 
 
+/**
+   Gather all the molecular particles of a certain level 
+   in the molecular hierarchy
+*/
+IMPDLLEXPORT Particles get_particles(MolecularHierarchyDecorator mhd, 
+                                     MolecularHierarchyDecorator::Type t);
 
-  /**
-     Gather all the molecular particles of a certain level 
-     in the moleuclar hierarchy
-  */
-  IMPDLLEXPORT Particles get_particles(MolecularHierarchyDecorator mhd, 
-                                       MolecularHierarchyDecorator::Type t);
 } // namespace IMP
 
 #endif  /* __IMP_MOLECULAR_HIERARCHY_DECORATOR_H */

@@ -13,10 +13,12 @@
 #include <cstdlib>
 #include <cassert>
 #include <string>
+
 #include "IMP_config.h"
 
 namespace IMP
 {
+
 //! The log levels supported by IMP
 enum LogLevel {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
 
@@ -82,11 +84,13 @@ private:
 };
 
 //! A general exception for an error in IMP
-class IMPDLLEXPORT ErrorException: public std::exception {
+class IMPDLLEXPORT ErrorException: public std::exception
+{
 };
 
 //! An exception for an invalid model state
-class IMPDLLEXPORT InvalidStateException : public std::exception {
+class IMPDLLEXPORT InvalidStateException : public std::exception
+{
 public:
   //! just eat the string for now
   template <class T>
@@ -95,7 +99,8 @@ public:
 };
 
 //! An exception for a request for an invalid member of a container
-class IMPDLLEXPORT IndexException: public std::exception {
+class IMPDLLEXPORT IndexException: public std::exception
+{
 public:
   //! just eat the string for now
   template <class T>
@@ -156,7 +161,8 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(LogLevel l)
    To use, create an instance of this class which the log level you
    want. When it goes out of scope, it will restore the old level.
  */
-class IMPDLLEXPORT  SetLogState {
+class IMPDLLEXPORT SetLogState
+{
 public:
   //! Construct it with the desired level and target
   SetLogState(LogLevel l, LogTarget t= get_log_target()):
@@ -168,7 +174,7 @@ public:
     set_log_level(level_);
     set_log_target(target_);
   }
- private:
+private:
   LogLevel level_;
   LogTarget target_;
 };

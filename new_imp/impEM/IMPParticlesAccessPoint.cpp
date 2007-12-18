@@ -16,7 +16,8 @@ IMPParticlesAccessPoint::IMPParticlesAccessPoint(Model& model_,
 
 
 IMPParticlesAccessPoint::IMPParticlesAccessPoint(
-    const IMPParticlesAccessPoint &other) {
+    const IMPParticlesAccessPoint &other)
+{
   model = other.model;
   for (unsigned int i=0;i<other.particle_indexes.size();i++) {
     particle_indexes.push_back(other.particle_indexes[i]);
@@ -29,13 +30,15 @@ IMPParticlesAccessPoint::IMPParticlesAccessPoint(
 }
 
 
-void IMPParticlesAccessPoint::ReSelect(std::vector<int>& particle_indexes_) {
+void IMPParticlesAccessPoint::ReSelect(std::vector<int>& particle_indexes_)
+{
   particle_indexes = particle_indexes_;
 }
 
 
 void IMPParticlesAccessPoint::create_keys(std::string radius_att_name_,
-                                          std::string weight_att_name_) {
+                                          std::string weight_att_name_)
+{
   radius_key = FloatKey(radius_att_name_.c_str());
   weight_key = FloatKey(weight_att_name_.c_str());
   x_key      = FloatKey(x_att_name);

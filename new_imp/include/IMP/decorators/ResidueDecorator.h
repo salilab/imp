@@ -13,10 +13,8 @@
 #include "../DecoratorBase.h"
 #include "utility.h"
 
-
 namespace IMP
 {
-
 
 
 //! A decorator for a residue.
@@ -25,7 +23,7 @@ namespace IMP
    dynamically. This can be easily done in an analogous manner when we
    need it. 
  */
-  class IMPDLLEXPORT ResidueDecorator: public DecoratorBase
+class IMPDLLEXPORT ResidueDecorator: public DecoratorBase
 {
   IMP_DECORATOR(ResidueDecorator, DecoratorBase,
                 return p->has_attribute(type_key_)

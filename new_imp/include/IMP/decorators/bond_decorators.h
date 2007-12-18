@@ -23,7 +23,8 @@ class BondedDecorator;
 
 
 
-namespace internal {
+namespace internal
+{
 
 extern IMPDLLEXPORT  GraphData bond_graph_data_;
 extern IMPDLLEXPORT  bool bond_keys_initialized_;
@@ -74,7 +75,7 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
 
 
 //! A decorator for a particle which has bonds.
-  class IMPDLLEXPORT BondedDecorator: public DecoratorBase
+class IMPDLLEXPORT BondedDecorator: public DecoratorBase
 {
   IMP_DECORATOR(BondedDecorator, DecoratorBase, return true, );
 

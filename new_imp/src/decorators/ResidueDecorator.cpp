@@ -5,11 +5,12 @@
  *
  */
 
-#include <IMP/decorators/ResidueDecorator.h>
-#include <IMP/decorators/AtomDecorator.h>
 #include <sstream>
-#include <IMP/log.h>
 #include <vector>
+
+#include "IMP/decorators/ResidueDecorator.h"
+#include "IMP/decorators/AtomDecorator.h"
+#include "IMP/log.h"
 
 namespace IMP
 {

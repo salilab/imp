@@ -25,8 +25,7 @@ protected:
   static bool has_required_attributes(Particle *) {
     return true;
   }
-  static void add_required_attributes(Particle *) {
-  }
+  static void add_required_attributes(Particle *) {}
   static void decorator_initialize_static_data() {}
 public:
   typedef DecoratorBase This;
@@ -70,6 +69,6 @@ public:
 
 };
 
-}
+} // namespace IMP
 
-#endif
+#endif  /* __IMP_DECORATOR_BASE_H */

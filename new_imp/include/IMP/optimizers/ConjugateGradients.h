@@ -27,7 +27,7 @@ public:
   IMP_OPTIMIZER("0.1", "Ben Webb");
   //! Set the threshold for the minimum gradient
   void set_threshold(Float t){ threshold_=t;}
- private:
+private:
   Float threshold_;
 };
 

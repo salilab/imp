@@ -79,7 +79,7 @@ public:
   //! The model the restraint is part of.
   /** \param[in] model The model.
    */
-  void set_model(Model* model){
+  void set_model(Model* model) {
     model_=model;
   }
 
@@ -135,14 +135,15 @@ private:
 IMP_OUTPUT_OPERATOR(Restraint);
 
 
-inline Particle *Restraint::get_particle(unsigned int i) const {
-    IMP_check(i < particles_.size(),
-              "There are only " << particles_.size()
-              << " but particle " << i << " was requested in restraint "
-              << *this,
-              IndexException("Not enough particles"));
-    return particles_[i];
-  }
+inline Particle *Restraint::get_particle(unsigned int i) const
+{
+  IMP_check(i < particles_.size(),
+            "There are only " << particles_.size()
+            << " but particle " << i << " was requested in restraint "
+            << *this,
+            IndexException("Not enough particles"));
+  return particles_[i];
+}
 
 } // namespace IMP
 

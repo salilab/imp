@@ -5,17 +5,17 @@
  *
  */
 
-#include <IMP/decorators/XYZDecorator.h>
 #include <sstream>
 #include <cmath>
 
+#include "IMP/decorators/XYZDecorator.h"
+
 namespace IMP
 {
-  // These aren't statically initialized, as that way they may be initialized
-  // before the table that caches them
-  FloatKey XYZDecorator::key_[3];
 
-
+// These aren't statically initialized, as that way they may be initialized
+// before the table that caches them
+FloatKey XYZDecorator::key_[3];
 
 void XYZDecorator::show(std::ostream &out, std::string prefix) const
 {

@@ -8,11 +8,11 @@
 #ifndef __IMP_ATTRIBUTE_TABLE_H
 #define __IMP_ATTRIBUTE_TABLE_H
 
+#include <map>
+#include <vector>
 #include "base_types.h"
 #include "utility.h"
 #include "log.h"
-#include <map>
-#include <vector>
 #include "ModelData.h"
 
 
@@ -21,7 +21,8 @@ namespace IMP
 
 class ModelData;
 
-namespace internal {
+namespace internal
+{
 
 template <class T>
 class AttributeTable
@@ -99,7 +100,8 @@ inline std::ostream &AttributeTable<T>::show(std::ostream &out,
 
 template <class T>
 inline std::vector<typename AttributeTable<T>::Key> 
-AttributeTable<T>::get_keys() const {
+AttributeTable<T>::get_keys() const
+{
   std::vector<Key> ret;
    for (unsigned int i=0; i< map_.size(); ++i) {
      if (map_[i] != Value()) {
@@ -147,8 +149,8 @@ inline void show_attributes(std::ostream &out)
 } 
 
 
-} /* namespace internal */
+} // namespace internal
 
-} /* namespace IMP */
+} // namespace IMP
 
 #endif  /* __IMP_ATTRIBUTE_TABLE_H */

@@ -10,11 +10,12 @@
 namespace IMP
 {
 
-namespace internal {
+namespace internal
+{
 
-struct InitCheck {
-  InitCheck()
-  {
+struct InitCheck
+{
+  InitCheck() {
     std::cout << "Initializing attribute table." << std::endl;
     key_initialization_heuristic = IMP_KEY_INITIALIZATION_HEURISTIC;
   }
@@ -34,4 +35,4 @@ IMP_DEFINE_KEY_TYPE(StringKey, String);
 IMP_DEFINE_KEY_TYPE(AtomType, AtomTypeTag);
 IMP_DEFINE_KEY_TYPE(ResidueType, ResidueTypeTag);
 
-}
+} // namespace IMP

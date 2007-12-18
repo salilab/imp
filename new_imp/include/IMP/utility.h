@@ -199,12 +199,16 @@ private:                                                                \
 //! Call the assert_is_valid method in the object base
 #define IMP_CHECK_OBJECT(obj) (obj)->assert_is_valid()
 
-namespace IMP {
-  //! Compute the square of a number
-  template <class T>
-  T square(T t) {
-    return t*t;
-  }
+namespace IMP
+{
+
+//! Compute the square of a number
+template <class T>
+T square(T t)
+{
+  return t*t;
 }
+
+} // namespace IMP
 
 #endif  /* __IMP_UTILITY_H */

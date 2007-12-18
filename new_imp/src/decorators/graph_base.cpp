@@ -5,13 +5,16 @@
  *
  */
 
-#include <IMP/decorators/graph_base.h>
 #include <sstream>
+
+#include "IMP/decorators/graph_base.h"
 
 namespace IMP
 {
 
-namespace internal {
+namespace internal
+{
+
 static void graph_add_edge_key(unsigned int i, const GraphData &d)
 {
   while (i >= d.edge_keys_.size()) {
@@ -98,6 +101,6 @@ bool graph_is_edge(Particle *a, const GraphData &d)
          && a->has_attribute(d.node_keys_[1]);
 }
 
+} // namespace internal
 
-}
 } // namespace IMP

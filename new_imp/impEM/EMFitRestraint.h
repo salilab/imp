@@ -30,13 +30,13 @@ public:
   virtual Float evaluate(DerivativeAccumulator *accum);
 
   //! status
-  virtual void show (std::ostream& out = std::cout) const{
+  virtual void show (std::ostream& out = std::cout) const {
     // TODO - add implementation
   }
-  virtual std::string version() const{
+  virtual std::string version() const {
     return "0.0.1";
   }
-  virtual std::string last_modified_by() const{
+  virtual std::string last_modified_by() const {
     return "Keren";
   }
 
