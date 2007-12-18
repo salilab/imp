@@ -72,8 +72,7 @@ public:
    */
   Float harmonic(Float feature, Float& deriv);
 
-  void show(std::ostream &out=std::cout) const
-  {
+  void show(std::ostream &out=std::cout) const {
     out << "Harmonic: " << mean_ << " and " << sd_ << std::endl;
   }
 
@@ -106,8 +105,7 @@ public:
    */
   virtual Float operator()(Float feature, Float& deriv);
 
-  void show(std::ostream &out=std::cout) const
-  {
+  void show(std::ostream &out=std::cout) const {
     out << "HarmonicLB: " << mean_ << " and " << sd_ << std::endl;
   }
 };
@@ -136,8 +134,7 @@ public:
    */
   virtual Float operator()(Float feature, Float& deriv);
 
-  void show(std::ostream &out=std::cout) const
-  {
+  void show(std::ostream &out=std::cout) const {
     out << "HarmonicLUB: " << mean_ << " and " << sd_ << std::endl;
   }
 };

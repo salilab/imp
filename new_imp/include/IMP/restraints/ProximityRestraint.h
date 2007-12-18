@@ -11,11 +11,11 @@
 #define __IMP_PROXIMITY_RESTRAINT_H
 
 #include <list>
+#include <vector>
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "DistanceRestraint.h"
-#include <vector>
 
 namespace IMP
 {

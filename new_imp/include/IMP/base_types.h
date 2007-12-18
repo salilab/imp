@@ -9,11 +9,12 @@
 #define __IMP_BASE_TYPES_H
 
 #include <string>
+#include <iostream>
+#include <vector>
 
 #include "IMP_config.h"
 #include "Index.h"
-#include <iostream>
-#include <vector>
+
 namespace IMP
 {
 
@@ -61,7 +62,7 @@ typedef std::vector<StringIndex> StringIndexes;
 // typedef DataIndex<Int> IntIndex;
 // typedef DataIndex<String> StringIndex;
 
-  template <class T> class Key;
+template <class T> class Key;
 
 
 /*
@@ -104,20 +105,20 @@ typedef std::vector<StringIndex> StringIndexes;
   }
 
 
-  //! The type used to identify float attributes in the Particles
-  IMP_DECLARE_KEY_TYPE(FloatKey, Float);
-  //! The type used to identify int attributes in the Particles
-  IMP_DECLARE_KEY_TYPE(IntKey, Int);
-  //! The type used to identify string attributes in the Particles
-  IMP_DECLARE_KEY_TYPE(StringKey, String);
+//! The type used to identify float attributes in the Particles
+IMP_DECLARE_KEY_TYPE(FloatKey, Float);
+//! The type used to identify int attributes in the Particles
+IMP_DECLARE_KEY_TYPE(IntKey, Int);
+//! The type used to identify string attributes in the Particles
+IMP_DECLARE_KEY_TYPE(StringKey, String);
 
-  struct AtomTypeTag{};
-  struct ResidueTypeTag{};
+struct AtomTypeTag{};
+struct ResidueTypeTag{};
 
-  //! The type used to identify atom types
-  IMP_DECLARE_KEY_TYPE(AtomType, AtomTypeTag);
-  //! The type used to identify residue types
-  IMP_DECLARE_KEY_TYPE(ResidueType, ResidueTypeTag);
+//! The type used to identify atom types
+IMP_DECLARE_KEY_TYPE(AtomType, AtomTypeTag);
+//! The type used to identify residue types
+IMP_DECLARE_KEY_TYPE(ResidueType, ResidueTypeTag);
 
 
 

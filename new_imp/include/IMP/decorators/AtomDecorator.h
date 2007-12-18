@@ -8,12 +8,13 @@
 #ifndef __IMP_ATOM_DECORATOR_H
 #define __IMP_ATOM_DECORATOR_H
 
+#include <vector>
+#include <deque>
+
 #include "../Particle.h"
 #include "../Model.h"
 #include "utility.h"
 #include "XYZDecorator.h"
-#include <vector>
-#include <deque>
 
 namespace IMP
 {
@@ -27,7 +28,7 @@ namespace IMP
    add_type(string) method which adds a string name and assigns it to the 
    next unused type int available.
  */
-  class IMPDLLEXPORT AtomDecorator: public XYZDecorator
+class IMPDLLEXPORT AtomDecorator: public XYZDecorator
 {
   IMP_DECORATOR(AtomDecorator, XYZDecorator,
                 return p->has_attribute(type_key_),
@@ -39,7 +40,7 @@ protected:
   static FloatKey mass_key_;
   static IntKey type_key_;
 
- public:
+public:
   //! The various elements currently supported
   /**
      The enum just provides mapping from a name to an atomic number.
@@ -228,16 +229,11 @@ protected:
 
   IMP_DECORATOR_GET_SET_OPT(mass, mass_key_,
                             Float, Float, 0);
-  /*IMP_DECORATOR_GET_SET_OPT(van_der_waals_radius, vdw_radius_key_,
-    Float, Float, 0);*/
-
-
-
 
 };
 
 IMP_OUTPUT_OPERATOR(AtomDecorator);
 
-}
+} // namespace IMP
 
 #endif  /* __IMP_ATOM_DECORATOR_H */

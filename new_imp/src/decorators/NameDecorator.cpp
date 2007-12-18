@@ -5,8 +5,9 @@
  *
  */
 
-#include <IMP/decorators/NameDecorator.h>
 #include <sstream>
+
+#include "IMP/decorators/NameDecorator.h"
 
 namespace IMP
 {

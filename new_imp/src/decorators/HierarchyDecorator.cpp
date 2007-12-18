@@ -6,12 +6,14 @@
  *
  */
 
-#include <IMP/decorators/HierarchyDecorator.h>
-#include <IMP/decorators/NameDecorator.h>
 #include <sstream>
+
+#include "IMP/decorators/HierarchyDecorator.h"
+#include "IMP/decorators/NameDecorator.h"
 
 namespace IMP
 {
+
 IMP_DECORATOR_ARRAY_DEF(Hierarchy, child, Int);
 IntKey HierarchyDecorator::parent_key_;
 IntKey HierarchyDecorator::parent_index_key_;
@@ -41,11 +43,13 @@ void HierarchyDecorator::validate_node() const
              "too many actual")
 }
 
-  void HierarchyDecorator::show(std::ostream &, std::string) const {
-  }
+void HierarchyDecorator::show(std::ostream &, std::string) const
+{
+}
 
 
-unsigned int count_hierarchy(HierarchyDecorator h) {
+unsigned int count_hierarchy(HierarchyDecorator h)
+{
   HierarchyCounter hc;
   depth_first_traversal(h,hc);
   return hc.get_count();
@@ -54,9 +58,11 @@ unsigned int count_hierarchy(HierarchyDecorator h) {
 
 
 
-namespace internal {
+namespace internal
+{
 
-  struct AssertHierarchy: public HierarchyVisitor{
+struct AssertHierarchy: public HierarchyVisitor
+{
   bool visit(Particle *p) {
     HierarchyDecorator d= HierarchyDecorator::cast(p);
     d.validate_node();

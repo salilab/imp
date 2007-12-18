@@ -88,9 +88,6 @@ protected:
 };
 
 
-
-
-
 } // namespace IMP
 
 #endif  /* __IMP_MODEL_H */

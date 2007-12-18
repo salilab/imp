@@ -8,12 +8,12 @@
 #ifndef __IMP_GRAPH_DECORATORS_H
 #define __IMP_GRAPH_DECORATORS_H
 
+#include <vector>
+#include <set>
 
 #include "../Particle.h"
 #include "../Model.h"
 #include "utility.h"
-#include <vector>
-#include <set>
 
 namespace IMP
 {
@@ -21,7 +21,8 @@ namespace IMP
 namespace internal
 {
 
-struct IMPDLLEXPORT GraphData {
+struct IMPDLLEXPORT GraphData
+{
   GraphData() {}
   GraphData(const char *prefix): prefix_(prefix) {
     node_keys_[0]=IntKey((prefix_+" node 0").c_str());
@@ -36,13 +37,13 @@ struct IMPDLLEXPORT GraphData {
 
 
 IMPDLLEXPORT Particle* graph_connect(Particle* a, Particle* b,
-                                         const GraphData &d);
+                                     const GraphData &d);
 
 IMPDLLEXPORT Particle* graph_get_edge(Particle* a, int i,
-                                          const GraphData &d);
+                                      const GraphData &d);
 
 IMPDLLEXPORT Particle* graph_get_neighbor(Particle* a, int i,
-                                              const GraphData &d);
+                                          const GraphData &d);
 
 IMPDLLEXPORT unsigned int graph_get_number_of_edges(Particle *a,
                                                     const GraphData &d);
@@ -53,7 +54,8 @@ IMPDLLEXPORT Particle* graph_get_node(Particle *a, int i,
 IMPDLLEXPORT bool graph_is_edge(Particle *a, const GraphData &d);
 
 template <class F>  
-F graph_traverse(Particle *start, F f, const GraphData &d) {
+F graph_traverse(Particle *start, F f, const GraphData &d)
+{
   std::set<Particle*> visited;
   std::vector<Particle*> queue;
   queue.push_back(start);
@@ -74,9 +76,11 @@ F graph_traverse(Particle *start, F f, const GraphData &d) {
 }
 
 template <class Oit>
-struct GraphGather {
+struct GraphGather
+{
   GraphGather(Oit out): out_(out){}
-  void operator()( Particle *p) {
+  void operator()( Particle *p)
+  {
     *out_=p;
     ++out_;
   }
@@ -86,8 +90,8 @@ struct GraphGather {
 };
 
 template <class Oit>
-void graph_connected_component(Particle* start, const GraphData &d,
-                               Oit out) {
+void graph_connected_component(Particle* start, const GraphData &d, Oit out)
+{
   graph_traverse(start, GraphGather<Oit>(out), d);
 }
 

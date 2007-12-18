@@ -167,7 +167,8 @@ void ModelData::set_value(const StringIndex idx, const String value)
 }
 
 
-void ModelData::show(std::ostream &out) const {
+void ModelData::show(std::ostream &out) const
+{
   out << "Float variables: " << std::endl;
   for (unsigned int i=0; i< float_data_.size(); ++i) {
     out << "  " << float_data_[i].value_ << " " << float_data_[i].deriv_ 

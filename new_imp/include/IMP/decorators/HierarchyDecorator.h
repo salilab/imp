@@ -196,7 +196,8 @@ F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
 /** The template argument NP is the decorator to use to print each node.
  */
 template <class PD>
-struct HierarchyPrinter {
+struct HierarchyPrinter
+{
   HierarchyPrinter(std::ostream &out,
                    unsigned int max_depth): out_(out), md_(max_depth) {}
   typedef unsigned int result_type;
@@ -246,7 +247,8 @@ std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
 //! A simple functor to count the number of particles in a hierarchy.
 /** This is a good example of a simple HierarchyVisitor.
  */
-struct HierarchyCounter: public HierarchyVisitor {
+struct HierarchyCounter: public HierarchyVisitor
+{
   HierarchyCounter(): ct_(0) {}
 
   //! Increment the counter
@@ -263,9 +265,12 @@ private:
   unsigned int ct_;
 };
 
-namespace internal {
+namespace internal
+{
+
 template <class F, class Out>
-struct Gather: public HierarchyVisitor {
+struct Gather: public HierarchyVisitor
+{
   Gather(F f, Out out): f_(f), out_(out) {}
   bool visit(Particle *p) {
     if (f_(p)) {

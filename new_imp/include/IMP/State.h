@@ -15,6 +15,7 @@
 
 namespace IMP
 {
+
 class Model;
 
 //! Shared state.

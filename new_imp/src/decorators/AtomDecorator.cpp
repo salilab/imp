@@ -5,11 +5,12 @@
  *
  */
 
-#include <IMP/decorators/AtomDecorator.h>
 #include <sstream>
-#include <IMP/log.h>
 #include <vector>
 #include <limits>
+
+#include "IMP/decorators/AtomDecorator.h"
+#include "IMP/log.h"
 
 namespace IMP
 {
@@ -25,7 +26,6 @@ namespace IMP
 
 IntKey AtomDecorator::element_key_;
 FloatKey AtomDecorator::charge_key_;
-  //FloatKey AtomDecorator::vdw_radius_key_;
 FloatKey AtomDecorator::mass_key_;
 IntKey AtomDecorator::type_key_;
 TYPE_DEF(N);
@@ -204,7 +204,8 @@ void AtomDecorator::show(std::ostream &out, std::string prefix) const
 }
 
 
-void AtomDecorator::set_type(AtomType t) {
+void AtomDecorator::set_type(AtomType t)
+{
   // ultimate the secondary info should be set from a 
   // better source. But this is good enough for now. 
   get_particle()->set_value(type_key_, t.get_index());

@@ -20,7 +20,8 @@ namespace IMP
 {
 
 
-namespace internal {
+namespace internal
+{
 
 #define IMP_KEY_INITIALIZATION_HEURISTIC 1234678
 
@@ -34,7 +35,8 @@ namespace internal {
 */
 IMPDLLEXPORT extern double key_initialization_heuristic;
 
-struct KeyData {
+struct KeyData
+{
   std::map<std::string, int> map;
   std::vector<std::string> rmap;
 };
@@ -47,13 +49,7 @@ void IMPDLLEXPORT show_attributes(std::ostream &out);
 
 extern IMPDLLEXPORT std::vector<KeyData> attribute_key_data;
 
-}
-
-
-
-
-
-
+} // namespace internal
 
 
 
@@ -78,7 +74,7 @@ class Key
   bool is_default() const;
 
 public:
-  static const std::string &get_string(int i) ;
+  static const std::string &get_string(int i);
 
   typedef Key<T> This;
 
@@ -152,12 +148,6 @@ public:
 IMP_OUTPUT_OPERATOR_1(Key)
 
 
-
-
-
-
-
-
 template <class T>
 inline internal::KeyData& Key<T>::data()
 {
@@ -207,6 +197,6 @@ std::vector<String> Key<T>::get_all_strings()
   return str;
 }
 
-}
+} // namespace IMP
 
 #endif  /* __IMP_KEY_H */

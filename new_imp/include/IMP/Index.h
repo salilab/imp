@@ -10,6 +10,7 @@
 
 #include "log.h"
 #include "utility.h"
+
 namespace IMP
 {
 
@@ -26,8 +27,7 @@ public:
     IMP_check(i >= 0, "Index initializer must be positive. " << i << " is not.",
               ErrorException());
   }
-  Index(): i_(-1) {
-  }
+  Index(): i_(-1) {}
   unsigned int get_index() const {
     IMP_check(i_ >= 0, "get_index() called on defaultly constructed Index",
               ErrorException());
