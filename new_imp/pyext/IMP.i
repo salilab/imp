@@ -34,10 +34,10 @@ namespace IMP {
 
 %feature("director");
 
+%include "IMP/Object.h"
 %include "IMP/Index.h"
 %include "IMP/base_types.h"
 %include "IMP.h"
-%include "IMP/boost/noncopyable.h"
 %include "IMP/Key.h"
 %include "IMP/ScoreFunc.h"
 %include "IMP/ModelData.h"

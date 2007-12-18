@@ -18,14 +18,14 @@ namespace IMP
 State::State(std::string name) : name_(name)
 {
   model_ = NULL;
-  IMP_LOG(VERBOSE, "State constructed");
+  IMP_LOG(VERBOSE, "State constructed " << name << std::endl);
 }
 
 
 //! Destructor
 State::~State()
 {
-  IMP_LOG(VERBOSE, "State deleted");
+  IMP_LOG(VERBOSE, "State deleted " << get_name() << std::endl);
 }
 
 

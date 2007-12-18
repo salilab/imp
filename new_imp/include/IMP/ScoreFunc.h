@@ -11,6 +11,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
+#include "Object.h"
 
 namespace IMP
 {
@@ -20,7 +21,7 @@ namespace IMP
     could be maintained for both the score calls and the score and partial
     derivative calls.
  */
-class IMPDLLEXPORT ScoreFunc
+class IMPDLLEXPORT ScoreFunc: public Object
 {
 public:
   ScoreFunc() {}
@@ -71,11 +72,11 @@ public:
    */
   Float harmonic(Float feature, Float& deriv);
 
-
   void show(std::ostream &out=std::cout) const
   {
     out << "Harmonic: " << mean_ << " and " << sd_ << std::endl;
   }
+
 protected:
   Float mean_;
   Float sd_;

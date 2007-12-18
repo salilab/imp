@@ -13,7 +13,7 @@
 #include "ModelData.h"
 #include "RigidBody.h"
 #include "State.h"
-#include "boost/noncopyable.h"
+#include "Object.h"
 
 namespace IMP
 {
@@ -25,7 +25,7 @@ class Restraint;
 /** All attribute data for particles is stored through indexing in the
     model_data_ structure.
  */
-class IMPDLLEXPORT Model: public boost::noncopyable
+class IMPDLLEXPORT Model: public Object
 {
   friend class Restraint;
 public:

@@ -19,7 +19,6 @@ namespace IMP
 Restraint::Restraint(std::string name): name_(name)
 {
   model_ = NULL;
-  IMP_LOG(VERBOSE, "MEMORY: Restraint constructed " << this << std::endl);
   is_active_ = true; // active by default
   are_particles_active_ = true; // active by default
 }
@@ -28,7 +27,6 @@ Restraint::Restraint(std::string name): name_(name)
 //! Destructor
 Restraint::~Restraint()
 {
-  IMP_LOG(VERBOSE, "MEMORY: Restraint deleted " << this << std::endl);
 }
 
 

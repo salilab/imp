@@ -32,15 +32,13 @@ ModelData::~ModelData()
  */
 FloatIndex ModelData::add_float(const Float value)
 {
-  FloatIndex f_index;
   int size = float_data_.size();
 
   float_data_.resize(size + 1);
 
-  f_index = FloatIndex(size);//.set_index(size);
-  float_data_[f_index.get_index()].value_ = value;
+  float_data_[size].value_ = value;
 
-  return f_index;
+  return FloatIndex(size);
 }
 
 
@@ -50,6 +48,8 @@ FloatIndex ModelData::add_float(const Float value)
  */
 void ModelData::set_value(const FloatIndex idx, const Float value)
 {
+  IMP_assert(idx.get_index() < float_data_.size(),
+             "Out of range float requested");
   float_data_[idx.get_index()].value_ = value;
 }
 
@@ -61,6 +61,8 @@ void ModelData::set_value(const FloatIndex idx, const Float value)
  */
 void ModelData::add_to_deriv(const FloatIndex idx, Float value)
 {
+  IMP_assert(idx.get_index() < float_data_.size(),
+             "Out of range float requested");
   float_data_[idx.get_index()].deriv_ += value;
 }
 
@@ -70,6 +72,8 @@ void ModelData::add_to_deriv(const FloatIndex idx, Float value)
  */
 Float ModelData::get_deriv(const FloatIndex idx) const
 {
+  IMP_assert(idx.get_index() < float_data_.size(),
+             "Out of range float requested");
   return float_data_[idx.get_index()].deriv_;
 }
 
@@ -79,6 +83,8 @@ Float ModelData::get_deriv(const FloatIndex idx) const
  */
 bool ModelData::get_is_optimized(const FloatIndex idx) const
 {
+  IMP_assert(idx.get_index() < float_data_.size(),
+             "Out of range float requested");
   return float_data_[idx.get_index()].is_optimized_;
 }
 
@@ -88,6 +94,8 @@ bool ModelData::get_is_optimized(const FloatIndex idx) const
  */
 void ModelData::set_is_optimized(const FloatIndex idx, bool is_optimized)
 {
+  IMP_assert(idx.get_index() < float_data_.size(),
+             "Out of range float requested");
   float_data_[idx.get_index()].is_optimized_ = is_optimized;
 }
 
@@ -110,15 +118,12 @@ void ModelData::zero_derivatives()
  */
 IntIndex ModelData::add_int(const Int value)
 {
-  IntIndex i_index;
   int size = int_data_.size();
 
   int_data_.resize(size + 1);
+  int_data_[size] = value;
 
-  i_index = IntIndex(size);
-  int_data_[i_index.get_index()] = value;
-
-  return i_index;
+  return IntIndex(size);
 }
 
 //! Set particle attribute value.
@@ -127,6 +132,8 @@ IntIndex ModelData::add_int(const Int value)
  */
 void ModelData::set_value(const IntIndex idx, const Int value)
 {
+  IMP_assert(idx.get_index() < int_data_.size(),
+             "Out of range int requested");
   int_data_[idx.get_index()] = value;
 }
 
@@ -139,15 +146,13 @@ void ModelData::set_value(const IntIndex idx, const Int value)
  */
 StringIndex ModelData::add_string(const String value)
 {
-  StringIndex s_index;
   int size = string_data_.size();
 
   string_data_.resize(size + 1);
 
-  s_index = StringIndex(size);
-  string_data_[s_index.get_index()] = value;
+  string_data_[size] = value;
 
-  return s_index;
+  return StringIndex(size);
 }
 
 //! Set particle attribute value.
@@ -156,6 +161,8 @@ StringIndex ModelData::add_string(const String value)
  */
 void ModelData::set_value(const StringIndex idx, const String value)
 {
+  IMP_assert(idx.get_index() < string_data_.size(),
+             "Out of range string requested");
   string_data_[idx.get_index()] = value;
 }
 

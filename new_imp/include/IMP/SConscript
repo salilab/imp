@@ -4,7 +4,8 @@ Import('env')
 files = ['base_types.h', 'Index.h', 'ScoreFunc.h', 'Model.h',
          'Particle.h', 'State.h', 'IMP_config.h', 'ModelData.h', 'RigidBody.h',
          'log.h', 'DerivativeAccumulator.h', 'Key.h', 'AttributeTable.h',
-         'utility.h', 'Restraint.h', 'Optimizer.h', 'DecoratorBase.h']
+         'utility.h', 'Restraint.h', 'Optimizer.h', 'DecoratorBase.h',
+         'Object.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP')
@@ -15,4 +16,3 @@ env.Alias('install', inst)
 SConscript('restraints/SConscript')
 SConscript('optimizers/SConscript')
 SConscript('decorators/SConscript')
-SConscript('boost/SConscript')

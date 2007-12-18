@@ -12,14 +12,16 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "Model.h"
+#include "Object.h"
 #include "utility.h"
 
 namespace IMP
 {
 
+class Model;
+
 //! Base class for all optimizers
-class IMPDLLEXPORT Optimizer
+class IMPDLLEXPORT Optimizer: public Object
 {
 public:
   Optimizer();

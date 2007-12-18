@@ -18,13 +18,11 @@ namespace IMP
 Particle::Particle(): model_(NULL)
 {
   is_active_ = true;
-  IMP_LOG(VERBOSE, "MEMORY: Particle created " << pi_ << std::endl);
 }
 
 //! Constructor
 Particle::~Particle()
 {
-  IMP_LOG(VERBOSE, "MEMORY: Particle deleted " << pi_ << std::endl);
 }
 
 
@@ -61,7 +59,6 @@ void Particle::set_is_active(const bool is_active)
 void Particle::add_attribute(FloatKey name, const Float value,
                              bool is_optimized)
 {
-  IMP_LOG(VERBOSE, "add_float: " << name);
   IMP_assert(model_ != NULL,
              "Particle must be added to Model before an attributes are added");
   float_indexes_.insert(name, model_->get_model_data()->add_float(value));
@@ -77,7 +74,6 @@ void Particle::add_attribute(FloatKey name, const Float value,
  */
 void Particle::add_attribute(IntKey name, const Int value)
 {
-  IMP_LOG(VERBOSE, "add_int: " << name);
   IMP_assert(model_ != NULL,
              "Particle must be added to Model before an attributes are added");
   int_indexes_.insert(name, model_->get_model_data()->add_int(value));

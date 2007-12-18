@@ -20,7 +20,6 @@ namespace IMP
 //! Constructor
 Model::Model()
 {
-  IMP_LOG(VERBOSE, "MEMORY: Model created " << this << std::endl);
   model_data_ = new ModelData();
   frame_num_ = 0;
   trajectory_on_ = false;
@@ -30,7 +29,6 @@ Model::Model()
 //! Destructor
 Model::~Model()
 {
-  IMP_LOG(VERBOSE, "MEMORY: Model destroyed " << this << std::endl);
   IMP_CONTAINER_DELETE(Particle, particle);
   IMP_CONTAINER_DELETE(State, state);
   IMP_CONTAINER_DELETE(Restraint, restraint);
@@ -89,6 +87,7 @@ Float Model::evaluate(bool calc_derivs)
   IMP_LOG(VERBOSE,
           "Updating States " << std::flush);
   for (StateIterator it = states_begin(); it != states_end(); ++it) {
+    IMP_CHECK_OBJECT(*it);
     (*it)->update();
     IMP_LOG(VERBOSE, "." << std::flush);
   }
@@ -104,6 +103,7 @@ Float Model::evaluate(bool calc_derivs)
           "Evaluating restraints " << calc_derivs << std::endl);
   for (RestraintIterator it = restraints_begin();
        it != restraints_end(); ++it) {
+    IMP_CHECK_OBJECT(*it);
     IMP_LOG(VERBOSE, (*it)->get_name() << ": " << std::flush);
     Float tscore=0;
     if ((*it)->get_is_active()) {
@@ -205,6 +205,7 @@ void Model::show(std::ostream& out) const
   out << "Restraints:" << std::endl;
   for (RestraintConstIterator it = restraints_begin(); 
        it != restraints_end(); ++it) {
+    IMP_CHECK_OBJECT(*it);
     out << (*it)->get_name() << std::endl;
   }
 
