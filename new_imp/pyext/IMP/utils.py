@@ -88,7 +88,7 @@ def set_up_exclusion_volumes(model, particles, radius_name, rsrs, sd = 0.1):
             mean = particles[i].get_value(radius_name) \
                    + particles[j].get_value(radius_name)
             sf = IMP.HarmonicLowerBound(mean, sd)
-            rsrs.append(IMP.DistanceRestraint(model, particles[i], particles[j],
+            rsrs.append(IMP.DistanceRestraint(particles[i], particles[j],
                                               sf))
 
 

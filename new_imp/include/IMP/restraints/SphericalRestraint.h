@@ -22,8 +22,8 @@ namespace IMP
 class IMPDLLEXPORT SphericalRestraint : public Restraint
 {
 public:
+  // Create the SphericalRestraint.
   /**
-     \param[in] model
      \param[in] p The particle to restrict.
      \param[in] x The x coordinate to take distance to.
      \param[in] y The y coordinate to take distance to.
@@ -31,7 +31,7 @@ public:
      \param[in] score_func The scoring function. It is deleted in the
                            destructor.
    */
-  SphericalRestraint(Model* model, Particle* p,
+  SphericalRestraint(Particle* p,
                      Float x, Float y, Float z,
                      ScoreFunc* score_func);
   virtual ~SphericalRestraint();

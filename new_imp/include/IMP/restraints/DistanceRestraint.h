@@ -28,23 +28,18 @@ namespace IMP
 class IMPDLLEXPORT DistanceRestraint : public Restraint
 {
 public:
-
-  DistanceRestraint(Model* model, Particle* p1, Particle* p2,
+  //! Create the distance restraint.
+  /** \param[in] p1 Pointer to first particle in distance restraint.
+      \param[in] p2 Pointer to second particle in distance restraint.
+      \param[in] score_func Scoring function for the restraint.
+   */
+  DistanceRestraint(Particle* p1, Particle* p2,
                     ScoreFunc* score_func);
   virtual ~DistanceRestraint();
 
   IMP_RESTRAINT("0.5", "Daniel Russel")
 
 protected:
-  //! Do set up for the distance restraint constructors.
-  /** \param[in] model Pointer to the model.
-      \param[in] p1 Pointer to first particle in distance restraint.
-      \param[in] p2 Pointer to second particle in distance restraint.
-      \param[in] score_func Scoring function for the restraint.
-   */
-  void set_up(Model* model, Particle* p1, Particle* p2,
-              ScoreFunc* score_func);
-
   //! scoring function for this restraint
   ScoreFunc* score_func_;
 };

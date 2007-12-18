@@ -17,7 +17,7 @@ class RestraintSetTests(IMP.test.IMPTestCase):
                                                     20.0, 74.0, -80.0))
 
         # separate particles by 5.0:
-        self.distrsr = IMP.DistanceRestraint(self.model, self.particles[0],
+        self.distrsr = IMP.DistanceRestraint(self.particles[0],
                                              self.particles[1],
                                              IMP.Harmonic(5.0, 0.1))
 

@@ -25,10 +25,10 @@ namespace IMP {
         args[1].thisown=0
   %}
   %pythonprepend DistanceRestraint::DistanceRestraint %{
-        args[3].thisown=0
+        args[2].thisown=0
   %}
   %pythonprepend SphericalRestraint::SphericalRestraint %{
-        args[5].thisown=0
+        args[4].thisown=0
   %}
 }
 
