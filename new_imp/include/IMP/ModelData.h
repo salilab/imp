@@ -79,6 +79,8 @@ public:
       \return value of particle float attribute.
    */
   Float get_value(const FloatIndex idx) const {
+    IMP_assert(idx.get_index() < float_data_.size(),
+               "Out of range index requested");
     return float_data_[idx.get_index()].value_;
   }
 
@@ -122,6 +124,8 @@ public:
       \return value of particle float attribute.
    */
   Int get_value(const IntIndex idx) const {
+    IMP_assert(idx.get_index() < int_data_.size(),
+               "Out of range int requested");
     return int_data_[idx.get_index()];
   }
 
@@ -144,6 +148,8 @@ public:
       \return value of particle string attribute.
    */
   String get_value(const StringIndex idx) const {
+   IMP_assert(idx.get_index() < string_data_.size(),
+               "Out of range string requested");
     return string_data_[idx.get_index()];
   }
 

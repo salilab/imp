@@ -15,8 +15,6 @@ namespace IMP
 //! Destructor
 Harmonic::~Harmonic()
 {
-  IMP_LOG(VERBOSE,
-          "Delete Harmonic: beware of early Python calls to destructor.");
 }
 
 //! Calculate harmonic score with respect to the given feature.
@@ -72,8 +70,6 @@ Float Harmonic::harmonic(Float feature, Float& deriv)
 //! Destructor
 HarmonicLowerBound::~HarmonicLowerBound()
 {
-  IMP_LOG(VERBOSE, "Delete HarmonicLowerBound: beware of early Python "
-          << "calls to destructor.");
 }
 
 //! Calculate lower-bound harmonic score with respect to the given feature.
@@ -109,8 +105,6 @@ Float HarmonicLowerBound::operator()(Float feature, Float& deriv)
 //! Destructor
 HarmonicUpperBound::~HarmonicUpperBound()
 {
-  IMP_LOG(VERBOSE, "Delete HarmonicUpperBound: beware of early Python "
-          << "calls to destructor.");
 }
 
 

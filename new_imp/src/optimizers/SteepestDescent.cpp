@@ -7,6 +7,7 @@
 
 #include "IMP/log.h"
 #include "IMP/optimizers/SteepestDescent.h"
+#include "IMP/Model.h"
 
 namespace IMP
 {

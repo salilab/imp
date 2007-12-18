@@ -11,14 +11,14 @@
 #include <iostream>
 
 #include "IMP_config.h"
-#include "boost/noncopyable.h"
+#include "Object.h"
 
 namespace IMP
 {
 class Model;
 
 //! Shared state.
-class IMPDLLEXPORT State : public boost::noncopyable
+class IMPDLLEXPORT State : public Object
 {
   friend class Model;
   void set_model(Model* model);

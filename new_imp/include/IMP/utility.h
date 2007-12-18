@@ -169,13 +169,16 @@ private:                                                                \
     IndexType index(lcname##_vector_.size());                           \
     lcname##_vector_.push_back(obj);                                    \
     init;                                                               \
+    IMP_CHECK_OBJECT(obj);                                              \
     return index;                                                       \
   }                                                                     \
   Ucname *Class::get_##lcname(IndexType i) const {                      \
     IMP_check(i.get_index() < lcname##_vector_.size(),                  \
               "Index " << i << " out of range",                         \
               IndexException(#Ucname));                                 \
-    return lcname##_vector_[i.get_index()];                             \
+    Ucname *r= lcname##_vector_[i.get_index()];                         \
+    IMP_CHECK_OBJECT(r);                                                \
+    return r;                                                           \
   }                                                                     \
 
 
@@ -193,6 +196,8 @@ private:                                                                \
   }                                           \
   lcname##_vector_.clear();
 
+//! Call the assert_is_valid method in the object base
+#define IMP_CHECK_OBJECT(obj) (obj)->assert_is_valid()
 
 namespace IMP {
   //! Compute the square of a number

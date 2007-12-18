@@ -14,7 +14,7 @@
 #include "base_types.h"
 #include "Model.h"
 #include "Restraint.h"
-#include "boost/noncopyable.h"
+#include "Object.h"
 #include "utility.h"
 #include "Key.h"
 #include "AttributeTable.h"
@@ -32,7 +32,7 @@ class Model;
     optimization. Removing particles and their attributes would cause
     problems in the way attribute values are indexed and should not be done.
  */
-class IMPDLLEXPORT Particle : public boost::noncopyable
+class IMPDLLEXPORT Particle : public Object
 {
   friend class Model;
 public:

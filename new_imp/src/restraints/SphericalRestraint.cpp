@@ -42,6 +42,7 @@ SphericalRestraint::~SphericalRestraint()
 
 Float SphericalRestraint::evaluate(DerivativeAccumulator *accum)
 {
+  IMP_CHECK_OBJECT(score_func_);
 
   Float d2=0;
   Float diff[3];

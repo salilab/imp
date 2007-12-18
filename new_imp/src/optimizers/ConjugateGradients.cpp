@@ -9,6 +9,7 @@
 
 #include "IMP/log.h"
 #include "IMP/optimizers/ConjugateGradients.h"
+#include "IMP/Model.h"
 
 namespace IMP
 {

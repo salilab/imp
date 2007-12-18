@@ -17,7 +17,7 @@
 #include "ScoreFunc.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
-#include "boost/noncopyable.h"
+#include "Object.h"
 #include "utility.h"
 #include "log.h"
 
@@ -27,7 +27,7 @@ namespace IMP
 class Model;
 
 //! Abstract class for representing restraints
-class IMPDLLEXPORT Restraint : public boost::noncopyable
+class IMPDLLEXPORT Restraint : public Object
 {
 public:
   //! Initialize the Restraint and its model pointer
@@ -76,14 +76,6 @@ public:
     name_=name;
   }
 
-  Particle *get_particle(unsigned int i) const;
-
-  int add_particle(Particle *p) {
-    IMP_assert(p != NULL, "Can't add NULL particle");
-    particles_.push_back(p);
-    return particles_.size()-1;
-  }
-
   //! The model the restraint is part of.
   /** \param[in] model The model.
    */
@@ -98,9 +90,28 @@ public:
     return model_;
   }
 
+ protected:
+  Particle *get_particle(unsigned int i) const;
+
+  int add_particle(Particle *p) {
+    IMP_assert(p != NULL, "Can't add NULL particle");
+    particles_.push_back(p);
+    return particles_.size()-1;
+  }
+
   //! Return the number of particles this restraint knows about
   unsigned int number_of_particles() const {
     return particles_.size();
+  }
+
+  //! Clear the internal list of particles
+  void clear_particles() {
+    return particles_.clear();
+  }
+
+  //! Replace the set of particles used by the restraint
+  void set_particles(const Particles &ps) {
+    particles_= ps;
   }
 
 private:

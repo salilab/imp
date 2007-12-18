@@ -63,6 +63,9 @@ DistanceRestraint::~DistanceRestraint()
  */
 Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
 {
+
+  IMP_CHECK_OBJECT(score_func_);
+
   Float d2=0, delta[3];
   Float score;
 

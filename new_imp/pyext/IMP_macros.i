@@ -23,8 +23,8 @@
          public:\
          typedef Name This;\
                  public: Name(); \
-                 static Name create(Particle *p);\
-                 static Name cast(Particle *p);\
+                 static Name create(::IMP::Particle *p);\
+                 static Name cast(::IMP::Particle *p);\
                  void show(std::ostream &out=std::cout, std::string pre="")
 #define IMP_DECORATOR_ARRAY_DECL(a, b)
 #define IMP_CONTAINER(Ucname, lcname, IndexType)                      \
