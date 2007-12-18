@@ -113,10 +113,12 @@ void DistanceRestraint::show(std::ostream& out) const
     out << "distance restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  ";
-  out << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "  version: " << version() << "  ";
+  out << "  last_modified_by: " << last_modified_by() << std::endl;
   out << "  particles: " << get_particle(0)->get_index();
   out << " and " << get_particle(1)->get_index();
+  out << "  ";
+  score_func_->show(out);
 }
 
 }  // namespace IMP
