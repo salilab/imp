@@ -15,7 +15,6 @@
 namespace IMP
 {
 
-//! Constructor
 Restraint::Restraint(std::string name): name_(name)
 {
   model_ = NULL;
@@ -30,27 +29,26 @@ Restraint::~Restraint()
 }
 
 
-//! Set whether the restraint is active i.e. if it should be evaluated.
-/** \param[in] is_active If true, the restraint is active.
- */
 void Restraint::set_is_active(const bool is_active)
 {
   is_active_ = is_active;
 }
 
 
-//! Get whether the restraint is active. i.e. if it should be evaluated.
-/** \return true if the restraint is active.
- */
 bool Restraint::get_is_active() const
 {
   return is_active_ && are_particles_active_;
 }
 
 
-//! Show the current restraint.
-/** \param[in] out Stream to send restraint description to.
- */
+void Restraint::set_model(Model* model)
+{
+  IMP_assert(model== NULL || particles_.empty() 
+             || model == particles_[0]->get_model(),
+             "Model* different from Particle Model*");
+  model_=model;
+}
+
 void Restraint::show(std::ostream& out) const
 {
   if (get_is_active()) {
@@ -64,10 +62,6 @@ void Restraint::show(std::ostream& out) const
 }
 
 
-//! Check if all necessary particles are still active.
-/** If not, inactivate self. Called when at least one model particle
-    has been inactivated.
- */
 void Restraint::check_particles_active()
 {
   IMP_assert(get_model() != NULL,

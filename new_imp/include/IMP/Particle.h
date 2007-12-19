@@ -13,7 +13,6 @@
 #include "IMP_config.h"
 #include "base_types.h"
 #include "Model.h"
-#include "Restraint.h"
 #include "Object.h"
 #include "utility.h"
 #include "Key.h"
