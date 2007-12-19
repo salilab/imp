@@ -13,7 +13,6 @@
 #include <limits>
 
 #include "IMP_config.h"
-#include "Model.h"
 #include "ScoreFunc.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
@@ -79,9 +78,7 @@ public:
   //! The model the restraint is part of.
   /** \param[in] model The model.
    */
-  void set_model(Model* model) {
-    model_=model;
-  }
+  void set_model(Model* model);
 
   //! Return the model containing this restraint
   Model *get_model() const {
@@ -96,6 +93,15 @@ public:
   int add_particle(Particle *p) {
     IMP_assert(p != NULL, "Can't add NULL particle");
     particles_.push_back(p);
+    IMP_assert(particles_[0]->get_model() == particles_.back()->get_model(),
+               "All particles in restraint must be from the same model.");
+    IMP_assert(particles_.back()->get_model()
+               ->get_particle(particles_.back()->get_index()) 
+               == particles_.back(),
+               "Model does not have pointer to particle.");
+    IMP_assert(model_== NULL || model_==particles_.back()->get_model(),
+               "Restraint model pointer and particle model pointer "
+               << "don't match.");
     return particles_.size()-1;
   }
 
