@@ -50,6 +50,11 @@ def _get_python_include(env):
         import distutils.sysconfig
         return distutils.sysconfig.get_python_inc()
 
+def _add_release_flags(env):
+    """Add compiler flags for release builds, if requested"""
+    if env.get('release', False):
+        env.Append(CPPDEFINES='NDEBUG')
+
 def CheckGNUHash(context):
     """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
     context.Message('Checking whether GNU_HASH linking should be disabled...')
@@ -181,6 +186,7 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -Werror -g -O3")
+    _add_release_flags(env)
 
     sys = platform.system()
     if sys == 'SunOS':
@@ -276,6 +282,12 @@ def get_pyext_environment(env, cplusplus=False):
             opt = opt.replace("-Wstrict-prototypes", "")
         e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
         e.Replace(CPPFLAGS=basecflags.split() + opt.split())
+
+        # Remove NDEBUG preprocessor stuff if defined (we do it ourselves for
+        # release builds)
+        if '-DNDEBUG' in e['CPPFLAGS']:
+            e['CPPFLAGS'].remove('-DNDEBUG')
+
         # Some gcc versions don't like the code that SWIG generates - but let
         # that go, because we have no control over it:
         try:
@@ -327,4 +339,7 @@ def add_common_options(opts, package):
                            os.environ.get('MODINSTALLSVN', False)))
     opts.Add(BoolOption('wine',
                         'Build using MS Windows tools via Wine emulation',
+                        False))
+    opts.Add(BoolOption('release',
+                        'Disable most runtime checks (e.g. for releases)',
                         False))

@@ -23,12 +23,12 @@ void HierarchyDecorator::validate_node() const
 {
   //get_particle()->get_model()->show(std::cerr);
   if (has_parent()) {
-    int i= get_parent_index();
-    IMP_assert(i >= 0, "The parent index must be positive if it is there");
+    IMP_assert(get_parent_index() >= 0,
+               "The parent index must be positive if it is there");
     This p= get_parent();
     IMP_assert(p.get_particle() != get_particle(),
                "A particle can't be its own parent " << *p.get_particle());
-    IMP_assert(p.get_child_index(get_particle()) == i,
+    IMP_assert(p.get_child_index(get_particle()) == get_parent_index(),
                "Incorrect parent index in particle "
                << *get_particle());
   }
