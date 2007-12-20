@@ -28,8 +28,7 @@ public:
   State(std::string name=std::string());
   virtual ~State();
 
-  // return the score for this restraint or set of restraints
-  // ... given the current state of the model
+  // Update the state given the current state of the model
   virtual void update() = 0;
 
   virtual void show(std::ostream& out = std::cout) const;
@@ -39,11 +38,11 @@ public:
   virtual std::string last_modified_by() const {
     return "unknown";
   }
-  //! Get the name of the restraint
+  //! Get the name of the state
   const std::string& get_name() const {
     return name_;
   }
-  //! Set the name of the restraint
+  //! Set the name of the state
   void set_name(const std::string &name) {
     name_=name;
   }
