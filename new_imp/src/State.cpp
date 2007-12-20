@@ -38,8 +38,8 @@ void State::set_model(Model* model)
 }
 
 
-//! Show the current restraint.
-/** \param[in] out Stream to send restraint description to.
+//! Show the state.
+/** \param[in] out Stream to send state description to.
  */
 void State::show(std::ostream& out) const
 {
