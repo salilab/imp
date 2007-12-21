@@ -12,7 +12,7 @@
 #include "IMP_config.h"
 #include "ModelData.h"
 #include "RigidBody.h"
-#include "State.h"
+#include "ScoreState.h"
 #include "Object.h"
 
 namespace IMP
@@ -38,7 +38,7 @@ public:
   ModelData* get_model_data() const;
 
   IMP_CONTAINER(Particle, particle, ParticleIndex);
-  IMP_CONTAINER(State, state, StateIndex);
+  IMP_CONTAINER(ScoreState, score_state, ScoreStateIndex);
   IMP_CONTAINER(Restraint, restraint, RestraintIndex);
  public:
 
