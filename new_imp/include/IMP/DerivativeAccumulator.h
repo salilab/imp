@@ -31,7 +31,8 @@ public:
   /** \param[in] value Value to add to the float attribute derivative.
    */
   Float operator()(const Float value) const {
-    IMP_assert(!std::isnan(value), "Can't set derivative to NaN.");
+    // x!=x when x==NaN (can only use std::isnan on gcc C99 systems)
+    IMP_assert(value == value, "Can't set derivative to NaN.");
     return value * weight_;
   }
 
