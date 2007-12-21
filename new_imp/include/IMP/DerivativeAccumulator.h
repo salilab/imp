@@ -12,6 +12,7 @@
 #include "IMP_config.h"
 #include "base_types.h"
 #include "ModelData.h"
+#include <cmath>
 
 namespace IMP
 {
@@ -30,6 +31,7 @@ public:
   /** \param[in] value Value to add to the float attribute derivative.
    */
   Float operator()(const Float value) const {
+    IMP_assert(!std::isnan(value), "Can't set derivative to NaN.");
     return value * weight_;
   }
 
