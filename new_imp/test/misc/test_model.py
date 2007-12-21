@@ -10,24 +10,26 @@ class DummyRestraint(IMP.Restraint):
         print "I can't really show from python"
 
 
-class DummyState(IMP.State):
-    """Dummy do-nothing state"""
+class DummyScoreState(IMP.ScoreState):
+    """Dummy do-nothing score state"""
     def update(self):
         pass
     def show(self, something):
         print "I can't really show from python"
 
 class ModelTests(IMP.test.IMPTestCase):
-    def test_state(self):
-        """Check state methods"""
+    def test_score_state(self):
+        """Check score state methods"""
         m = IMP.Model()
-        self.assertRaises(IndexError, m.get_state, IMP.StateIndex(0));
-        s = DummyState()
-        m.add_state(s)
-        news = m.get_state(IMP.StateIndex(0))
-        self.assert_(isinstance(news, IMP.State))
-        self.assertRaises(IndexError, m.get_state, IMP.StateIndex(1));
-        for s in m.get_states():
+        self.assertRaises(IndexError, m.get_score_state,
+                          IMP.ScoreStateIndex(0));
+        s = DummyScoreState()
+        m.add_score_state(s)
+        news = m.get_score_state(IMP.ScoreStateIndex(0))
+        self.assert_(isinstance(news, IMP.ScoreState))
+        self.assertRaises(IndexError, m.get_score_state,
+                          IMP.ScoreStateIndex(1));
+        for s in m.get_score_states():
             s.show()
 
     def test_restraints(self):

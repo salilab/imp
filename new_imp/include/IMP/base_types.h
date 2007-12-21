@@ -37,14 +37,14 @@ typedef std::vector<String> Strings;
 
 struct ParticleTag {};
 struct RestraintTag {};
-struct StateTag {};
+struct ScoreStateTag {};
 
 typedef Index<Int> IntIndex;
 typedef Index<Float> FloatIndex;
 typedef Index<String> StringIndex;
 typedef Index<ParticleTag> ParticleIndex;
 typedef Index<RestraintTag> RestraintIndex;
-typedef Index<StateTag> StateIndex;
+typedef Index<ScoreStateTag> ScoreStateIndex;
 
 class Particle;
 //! A class which is used for representing collections of particles

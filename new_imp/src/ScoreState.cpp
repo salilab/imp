@@ -1,5 +1,5 @@
 /**
- *  \file State.cpp \brief Shared state.
+ *  \file ScoreState.cpp \brief Shared score state.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
@@ -9,30 +9,30 @@
 
 #include "IMP/ModelData.h"
 #include "IMP/log.h"
-#include "IMP/State.h"
+#include "IMP/ScoreState.h"
 
 namespace IMP
 {
 
 //! Constructor
-State::State(std::string name) : name_(name)
+ScoreState::ScoreState(std::string name) : name_(name)
 {
   model_ = NULL;
-  IMP_LOG(VERBOSE, "State constructed " << name << std::endl);
+  IMP_LOG(VERBOSE, "ScoreState constructed " << name << std::endl);
 }
 
 
 //! Destructor
-State::~State()
+ScoreState::~ScoreState()
 {
-  IMP_LOG(VERBOSE, "State deleted " << get_name() << std::endl);
+  IMP_LOG(VERBOSE, "ScoreState deleted " << get_name() << std::endl);
 }
 
 
 //! Give accesss to model particle data.
 /** \param[in] model_data All particle data in the model.
  */
-void State::set_model(Model* model)
+void ScoreState::set_model(Model* model)
 {
   model_ = model;
 }
@@ -41,7 +41,7 @@ void State::set_model(Model* model)
 //! Show the state.
 /** \param[in] out Stream to send state description to.
  */
-void State::show(std::ostream& out) const
+void ScoreState::show(std::ostream& out) const
 {
   out << "unknown state:" << std::endl;
 

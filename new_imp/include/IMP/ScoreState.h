@@ -1,12 +1,12 @@
 /**
- *  \file State.h   \brief Shared state.
+ *  \file ScoreState.h   \brief Shared score state.
  *
  *  Copyright 2007 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef __IMP_STATE_H
-#define __IMP_STATE_H
+#ifndef __IMP_SCORE_STATE_H
+#define __IMP_SCORE_STATE_H
 
 #include <iostream>
 
@@ -18,15 +18,15 @@ namespace IMP
 
 class Model;
 
-//! Shared state.
-class IMPDLLEXPORT State : public Object
+//! Shared score state.
+class IMPDLLEXPORT ScoreState : public Object
 {
   friend class Model;
   void set_model(Model* model);
 
 public:
-  State(std::string name=std::string());
-  virtual ~State();
+  ScoreState(std::string name=std::string());
+  virtual ~ScoreState();
 
   // Update the state given the current state of the model
   virtual void update() = 0;
@@ -61,7 +61,7 @@ protected:
 };
 
 
-inline std::ostream &operator<<(std::ostream &out, const State &s)
+inline std::ostream &operator<<(std::ostream &out, const ScoreState &s)
 {
   s.show(out);
   return out;
@@ -69,4 +69,4 @@ inline std::ostream &operator<<(std::ostream &out, const State &s)
 
 } // namespace IMP
 
-#endif  /* __IMP_STATE_H */
+#endif  /* __IMP_SCORE_STATE_H */

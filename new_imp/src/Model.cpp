@@ -30,7 +30,7 @@ Model::Model()
 Model::~Model()
 {
   IMP_CONTAINER_DELETE(Particle, particle);
-  IMP_CONTAINER_DELETE(State, state);
+  IMP_CONTAINER_DELETE(ScoreState, score_state);
   IMP_CONTAINER_DELETE(Restraint, restraint);
 }
 
@@ -50,8 +50,8 @@ IMP_CONTAINER_IMPL(Model, Restraint, restraint, RestraintIndex,
 IMP_CONTAINER_IMPL(Model, Particle, particle, ParticleIndex,
                    obj->set_model(this, index));
 
-IMP_CONTAINER_IMPL(Model, State, state, StateIndex,
-                     obj->set_model(this));
+IMP_CONTAINER_IMPL(Model, ScoreState, score_state, ScoreStateIndex,
+                   obj->set_model(this));
 
 
 //! Evaluate all of the restraints in the model and return the score.
@@ -85,8 +85,9 @@ Float Model::evaluate(bool calc_derivs)
     model_data_->zero_derivatives();
 
   IMP_LOG(VERBOSE,
-          "Updating States " << std::flush);
-  for (StateIterator it = states_begin(); it != states_end(); ++it) {
+          "Updating ScoreStates " << std::flush);
+  for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
+       ++it) {
     IMP_CHECK_OBJECT(*it);
     (*it)->update();
     IMP_LOG(VERBOSE, "." << std::flush);

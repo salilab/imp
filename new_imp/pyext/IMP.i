@@ -18,7 +18,7 @@ namespace IMP {
   %pythonprepend Model::add_restraint %{
         args[1].thisown=0
   %}
-  %pythonprepend Model::add_state %{
+  %pythonprepend Model::add_score_state %{
         args[1].thisown=0
   %}
   %pythonprepend RestraintSet::add_restraint %{
@@ -44,7 +44,7 @@ namespace IMP {
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/Restraint.h"
 %include "IMP/restraints/RestraintSet.h"
-%include "IMP/State.h"
+%include "IMP/ScoreState.h"
 %include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/Particle.h"
@@ -76,7 +76,7 @@ namespace IMP {
   %template(StringIndex) Index<String>;
   %template(ParticleIndex) Index<ParticleTag>;
   %template(RestraintIndex) Index<RestraintTag>;
-  %template(StateIndex) Index<StateTag>;
+  %template(ScoreStateIndex) Index<ScoreStateTag>;
   %template(FloatKey) Key<Float>;
   %template(IntKey) Key<Int>;
   %template(StringKey) Key<String>;
@@ -86,7 +86,7 @@ namespace IMP {
   %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
   %template(Particles) ::std::vector<Particle*>;       
   %template(Restraints) ::std::vector<Restraint*>;       
-  %template(States) ::std::vector<State*>;       
+  %template(ScoreStates) ::std::vector<ScoreState*>;       
   %template(ParticleIndexes) ::std::vector<ParticleIndex>;       
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
