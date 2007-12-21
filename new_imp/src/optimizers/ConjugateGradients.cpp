@@ -10,6 +10,7 @@
 #include "IMP/log.h"
 #include "IMP/optimizers/ConjugateGradients.h"
 #include "IMP/Model.h"
+#include <limits>
 
 namespace IMP
 {
@@ -196,6 +197,7 @@ static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
 //! Constructor
 ConjugateGradients::ConjugateGradients()
 {
+  threshold_=std::numeric_limits<Float>::epsilon();
 }
 
 
