@@ -21,6 +21,9 @@ namespace IMP {
   %pythonprepend Model::add_score_state %{
         args[1].thisown=0
   %}
+  %pythonprepend Optimizer::add_optimizer_state %{
+        args[1].thisown=0
+  %}
   %pythonprepend RestraintSet::add_restraint %{
         args[1].thisown=0
   %}
@@ -45,6 +48,7 @@ namespace IMP {
 %include "IMP/Restraint.h"
 %include "IMP/restraints/RestraintSet.h"
 %include "IMP/ScoreState.h"
+%include "IMP/OptimizerState.h"
 %include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/Particle.h"
@@ -77,6 +81,7 @@ namespace IMP {
   %template(ParticleIndex) Index<ParticleTag>;
   %template(RestraintIndex) Index<RestraintTag>;
   %template(ScoreStateIndex) Index<ScoreStateTag>;
+  %template(OptimizerStateIndex) Index<OptimizerStateTag>;
   %template(FloatKey) Key<Float>;
   %template(IntKey) Key<Int>;
   %template(StringKey) Key<String>;
@@ -87,6 +92,7 @@ namespace IMP {
   %template(Particles) ::std::vector<Particle*>;       
   %template(Restraints) ::std::vector<Restraint*>;       
   %template(ScoreStates) ::std::vector<ScoreState*>;       
+  %template(OptimizerStates) ::std::vector<OptimizerState*>;       
   %template(ParticleIndexes) ::std::vector<ParticleIndex>;       
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;

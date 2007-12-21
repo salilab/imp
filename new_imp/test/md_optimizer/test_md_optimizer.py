@@ -30,13 +30,13 @@ class XTransRestraint(IMP.Restraint):
         return e
 
 
-class WriteTrajState(IMP.ScoreState):
+class WriteTrajState(IMP.OptimizerState):
     """Write system coordinates (trajectory) into a Python list"""
     def __init__(self, traj):
-        IMP.ScoreState.__init__(self)
+        IMP.OptimizerState.__init__(self)
         self.traj = traj
     def update(self):
-        model = self.get_model()
+        model = self.get_optimizer().get_model()
         self.traj.append([(p.get_value(xkey), p.get_value(ykey),
                            p.get_value(zkey), p.get_value(vxkey)) \
                            for p in model.get_particles()])
@@ -79,7 +79,7 @@ class MolecularDynamicsTests(IMP.test.IMPTestCase):
         start = [[p.get_value(xkey), p.get_value(ykey), p.get_value(zkey)] \
                  for p in self.model.get_particles()]
         state = WriteTrajState(traj)
-        self.model.add_score_state(state)
+        self.md.add_optimizer_state(state)
         self.md.set_time_step(timestep)
         self.md.optimize(50)
         return start, traj

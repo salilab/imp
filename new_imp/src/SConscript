@@ -11,8 +11,9 @@ decorators_files = SConscript('decorators/SConscript')
 
 # Source files
 files = ['base_types.cpp', 'ScoreFunc.cpp', 'Model.cpp', 'ModelData.cpp',
-         'Particle.cpp', 'RigidBody.cpp', 'ScoreState.cpp', 'Log.cpp',
-         'Restraint.cpp', 'Optimizer.cpp', 'Object.cpp'
+         'Particle.cpp', 'RigidBody.cpp', 'ScoreState.cpp',
+         'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
+         'Object.cpp'
         ] + decorators_files + restraints_files + optimizers_files
 
 # Build the shared library:
