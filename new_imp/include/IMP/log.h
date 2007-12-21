@@ -179,6 +179,19 @@ private:
   LogTarget target_;
 };
 
+namespace internal {
+  //! This is just here so you can catch errors more easily in the debugger
+  /**
+     Break on Log.cpp:19 to catch assertion failures.
+   */
+  IMPDLLEXPORT void assert_fail();
+
+  //! Here so you can catch check failures more easily in the debugger
+  /**
+     Break on Log.cpp:22 to catch check failures. 
+   */
+  IMPDLLEXPORT void check_fail();
+}
 
 } // namespace IMP
 
@@ -255,7 +268,7 @@ private:
 #define IMP_assert(expr, message) \
   if (!(expr)) { \
     IMP_ERROR(message); \
-    throw IMP::ErrorException(); \
+    IMP::internal::assert_fail();               \
   }
 #else
 #define IMP_assert(expr, message)

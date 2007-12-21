@@ -13,4 +13,13 @@ namespace IMP
 /* Initialize singleton pointer to NULL */
 Log* Log::logpt_ = NULL;
 
+
+namespace internal {
+  void assert_fail() {
+    throw ErrorException();
+  }
+
+  void check_fail() {
+  }
+}
 } // namespace IMP
