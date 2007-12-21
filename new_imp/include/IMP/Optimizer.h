@@ -14,6 +14,7 @@
 #include "base_types.h"
 #include "Object.h"
 #include "utility.h"
+#include "OptimizerState.h"
 
 namespace IMP
 {
@@ -54,8 +55,15 @@ public:
    */
   void set_model(Model *m) {model_=m;}
 
+  IMP_CONTAINER(OptimizerState, optimizer_state, OptimizerStateIndex);
+
+protected:
+  //! Update optimizer state, at each successful step
+  void update_state();
+
 private:
   Model *model_;
+
 };
 
 } // namespace IMP

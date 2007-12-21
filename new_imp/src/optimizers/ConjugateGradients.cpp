@@ -279,6 +279,7 @@ g20:
 
   /* Begin the major iteration loop. */
 g40:
+  update_state();
   /* Begin linear search. alpha is the steplength. */
 
   if (gradient_direction) {
@@ -431,6 +432,7 @@ end:
   for (i = 0; i < n; i++) {
     model_data->set_value(float_indices[i], x[i]);
   }
+  update_state();
   return f;
 }
 

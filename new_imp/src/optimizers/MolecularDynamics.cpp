@@ -137,6 +137,7 @@ Float MolecularDynamics::optimize(unsigned int max_steps)
   Float score = model->evaluate(true);
 
   for (unsigned int i = 0; i < max_steps; ++i) {
+    update_state();
     step();
     score = model->evaluate(true);
   }
