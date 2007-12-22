@@ -29,8 +29,8 @@ class Model;
 class IMPDLLEXPORT Restraint : public Object
 {
 public:
-  //! Initialize the Restraint and its model pointer
-  Restraint(std::string name=std::string());
+  //! Initialize the Restraint
+  Restraint();
   virtual ~Restraint();
 
   //! Return the score for this restraint for the current state of the model.
@@ -64,16 +64,6 @@ public:
   virtual std::string version() const = 0;
 
   virtual std::string last_modified_by() const = 0;
-
-  //! Get the name of the restraint
-  const std::string& get_name() const {
-    return name_;
-  }
-
-  //! Set the name of the restraint
-  void set_name(const std::string &name) {
-    name_=name;
-  }
 
   //! The model the restraint is part of.
   /** \param[in] model The model.
@@ -134,8 +124,6 @@ private:
   bool are_particles_active_;
 
   std::vector<Particle*> particles_;
-
-  std::string name_;
 };
 
 IMP_OUTPUT_OPERATOR(Restraint);

@@ -15,7 +15,7 @@
 namespace IMP
 {
 
-Restraint::Restraint(std::string name): name_(name)
+Restraint::Restraint()
 {
   model_ = NULL;
   is_active_ = true; // active by default
@@ -57,8 +57,8 @@ void Restraint::show(std::ostream& out) const
     out << "unknown restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << std::endl;
-  out << "last_modified_by: " << last_modified_by() << std::endl;
+  out << "  version: " << version() << std::endl;
+  out << "  last_modified_by: " << last_modified_by() << std::endl;
 }
 
 

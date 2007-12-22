@@ -35,18 +35,6 @@ class XMLTests(IMP.test.IMPTestCase):
         #restraint_sets = self.imp_model.get_restraints
         self.assertEqual(self.imp_model.number_of_restraints(), 3,
                          "xml file contains three restraint sets")
-        self.assertEqual(self.imp_model.get_restraint(IMP.RestraintIndex(0)).get_name(),
-                         'exclusion_volumes',
-                         "not expecting restraint set name: "
-                         + self.imp_model.get_restraint(IMP.RestraintIndex(0)).get_name())
-        self.assertEqual(self.imp_model.get_restraint(IMP.RestraintIndex(1)).get_name(),
-                         'torus',
-                         "not expecting restraint set name: "
-                         + self.imp_model.get_restraint(IMP.RestraintIndex(1)).get_name())
-        self.assertEqual(self.imp_model.get_restraint(IMP.RestraintIndex(2)).get_name(),
-                         'connections',
-                         "not expecting restraint set name: "
-                         + self.imp_model.get_restraint(IMP.RestraintIndex(2)).get_name())
 
         # test restraints
         score = self.imp_model.get_restraint(IMP.RestraintIndex(0)).evaluate(None)

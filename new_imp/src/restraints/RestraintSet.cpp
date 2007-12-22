@@ -10,6 +10,7 @@
 #include "IMP/log.h"
 #include "IMP/restraints/RestraintSet.h"
 #include "../mystdexcept.h"
+#include <utility>
 
 namespace IMP
 {
@@ -17,10 +18,12 @@ namespace IMP
 
 //! Constructor
 RestraintSet::RestraintSet(const std::string& name)
-    : Restraint(name), weight_(1.0)
+    : weight_(1.0)
 {
   IMP_LOG(VERBOSE, "Restraint set constructed");
+  name_=name;
 }
+
 
 
 //! Destructor
@@ -30,38 +33,14 @@ RestraintSet::RestraintSet(const std::string& name)
 RestraintSet::~RestraintSet()
 {
   IMP_LOG(VERBOSE, "Delete RestraintSet");
-  for (unsigned int i = 0; i < restraints_.size(); ++i) {
-    restraints_[i]->set_model(NULL);
-    delete restraints_[i];
-  }
+  IMP_CONTAINER_DELETE(Restraint, restraint);
 
 }
 
-
-//! Add restraint to the restraint set.
-/** \param[in] restraint The restraint to add to the restraint set.
-    \return the index of the newly-added restraint in the restraint set.
- */
-RestraintSet::RestraintIndex RestraintSet::add_restraint(Restraint* restraint)
-{
-  restraints_.push_back(restraint);
-  restraint->set_model(get_model());
-  return restraints_.size() - 1;
-}
+IMP_CONTAINER_IMPL(RestraintSet, Restraint, restraint, RestraintIndex, 
+                   obj->set_model(get_model()););
 
 
-//! Access a restraint in the restraint set.
-/** \param[in] i The RestraintIndex of the restraint to retrieve.
-    \exception std::out_of_range the index is out of range.
-    \return Pointer to the Restraint.
- */
-Restraint* RestraintSet::get_restraint(RestraintIndex i) const
-{
-  IMP_check(static_cast<unsigned int>(i) < restraints_.size(),
-            "Invalid restraint requested",
-            std::out_of_range("Invalid restraint"));
-  return restraints_[i];
-}
 
 //! Calculate the score for this restraint for the current model state.
 /** \param[in] accum If not NULL, use this object to accumulate partial first
@@ -70,25 +49,21 @@ Restraint* RestraintSet::get_restraint(RestraintIndex i) const
  */
 Float RestraintSet::evaluate(DerivativeAccumulator *accum)
 {
+  if (get_weight() == 0) return 0;
   Float score;
-
+  typedef std::auto_ptr<DerivativeAccumulator> DAP;
   // Use a local copy of the accumulator for our sub-restraints
-  DerivativeAccumulator *ouracc = NULL;
+  DAP ouracc;
   if (accum) {
-    ouracc = new DerivativeAccumulator(*accum, weight_);
+    ouracc = DAP(new DerivativeAccumulator(*accum, weight_));
   }
 
   score = (Float) 0.0;
-  try {
-    for (size_t i = 0; i < restraints_.size(); i++) {
-      if (restraints_[i]->get_is_active())
-        score += restraints_[i]->evaluate(ouracc);
+  for (RestraintIterator it= restraints_begin(); it != restraints_end(); ++it) {
+    if ((*it)->get_is_active()) {
+      score += (*it)->evaluate(ouracc.get());
     }
-  } catch (...) {
-    delete ouracc;
-    throw;
   }
-  delete ouracc;
 
   return score * weight_;
 }
@@ -99,8 +74,8 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
  */
 void RestraintSet::check_particles_active()
 {
-  for (size_t i = 0; i < restraints_.size(); i++) {
-    restraints_[i]->check_particles_active();
+  for (RestraintIterator it= restraints_begin(); it != restraints_end(); ++it) {
+    (*it)->check_particles_active();
   }
 }
 
@@ -111,11 +86,12 @@ void RestraintSet::check_particles_active()
  */
 void RestraintSet::show(std::ostream& out) const
 {
-  out << "restraint set " << get_name() << ":" << std::endl;
-  for (size_t i = 0; i < restraints_.size(); i++) {
-    restraints_[i]->show(out);
+  out << "restraint set " << name_ << ":..." << std::endl;
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+    (*it)->show(out);
   }
-  out << "... end restraint set " << get_name() << std::endl;
+  out << "... end restraint set " << name_ << std::endl;
 }
 
 

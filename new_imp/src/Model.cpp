@@ -105,7 +105,7 @@ Float Model::evaluate(bool calc_derivs)
   for (RestraintIterator it = restraints_begin();
        it != restraints_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
-    IMP_LOG(VERBOSE, (*it)->get_name() << ": " << std::flush);
+    IMP_LOG(VERBOSE, **it);
     Float tscore=0;
     if ((*it)->get_is_active()) {
       tscore = (*it)->evaluate(accpt);
@@ -203,12 +203,6 @@ void Model::show(std::ostream& out) const
   out << "version: " << version() << "  ";
   out << "last_modified_by: " << last_modified_by() << std::endl;
   out << number_of_particles() << " particles" << std::endl;
-  out << "Restraints:" << std::endl;
-  for (RestraintConstIterator it = restraints_begin(); 
-       it != restraints_end(); ++it) {
-    IMP_CHECK_OBJECT(*it);
-    out << (*it)->get_name() << std::endl;
-  }
 
   internal::show_attributes(out);
 }
