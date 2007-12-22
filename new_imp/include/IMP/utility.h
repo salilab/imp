@@ -164,7 +164,7 @@ private:                                                                \
    \param[in] init Code to modify the passed in object. The object is obj
    its index index.
  */
-#define IMP_CONTAINER_IMPL(Class, Ucname, lcname, IndexType, init)           \
+#define IMP_CONTAINER_IMPL(Class, Ucname, lcname, IndexType, init)      \
   IndexType Class::add_##lcname(Ucname *obj) {                          \
     IndexType index(lcname##_vector_.size());                           \
     lcname##_vector_.push_back(obj);                                    \
