@@ -2,7 +2,7 @@ import os.path
 Import('env')
 
 files = ['ConnectivityRestraint.h', 'ProximityRestraint.h',
-         'SphericalRestraint.h', 'DistanceRestraint.h',
+         'SphericalRestraint.h', 'DistanceRestraint.h', 'AngleRestraint.h',
          'RestraintSet.h', 'ExclusionVolumeRestraint.h', 'TorusRestraint.h',
          'PairConnectivityRestraint.h']
 
