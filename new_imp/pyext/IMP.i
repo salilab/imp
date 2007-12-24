@@ -30,6 +30,9 @@ namespace IMP {
   %pythonprepend DistanceRestraint::DistanceRestraint %{
         args[2].thisown=0
   %}
+  %pythonprepend AngleRestraint::AngleRestraint %{
+        args[3].thisown=0
+  %}
   %pythonprepend SphericalRestraint::SphericalRestraint %{
         args[4].thisown=0
   %}
@@ -52,6 +55,7 @@ namespace IMP {
 %include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/Particle.h"
+%include "IMP/Vector3D.h"
 %include "IMP/DecoratorBase.h"
 %include "IMP/decorators/HierarchyDecorator.h"
 %include "IMP/decorators/MolecularHierarchyDecorator.h"
@@ -66,6 +70,7 @@ namespace IMP {
 %include "IMP/optimizers/ConjugateGradients.h"
 %include "IMP/optimizers/MolecularDynamics.h"
 %include "IMP/restraints/DistanceRestraint.h"
+%include "IMP/restraints/AngleRestraint.h"
 %include "IMP/restraints/TorusRestraint.h"
 %include "IMP/restraints/SphericalRestraint.h"
 %include "IMP/restraints/ProximityRestraint.h"

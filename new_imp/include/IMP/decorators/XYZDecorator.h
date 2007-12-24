@@ -15,6 +15,7 @@
 #include "../Particle.h"
 #include "../Model.h"
 #include "../DecoratorBase.h"
+#include "../Vector3D.h"
 #include "utility.h"
 
 namespace IMP
@@ -70,6 +71,13 @@ public:
     get_particle()->set_is_optimized(get_coordinate_key(0), tf);
     get_particle()->set_is_optimized(get_coordinate_key(1), tf);
     get_particle()->set_is_optimized(get_coordinate_key(2), tf);
+  }
+
+  //! Get the vector from this particle to another
+  Vector3D get_vector_to(const XYZDecorator &b) const {
+    return Vector3D(b.get_coordinate(0) - get_coordinate(0),
+                    b.get_coordinate(1) - get_coordinate(1),
+                    b.get_coordinate(2) - get_coordinate(2));
   }
 protected:
   static FloatKey get_coordinate_key(unsigned int i) {
