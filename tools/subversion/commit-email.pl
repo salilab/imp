@@ -47,8 +47,8 @@ my ($sendmail, $smtp_server);
 # You should define exactly one of these two configuration variables,
 # leaving the other commented out, to select which method of sending
 # email should be used.
-#$sendmail = "/usr/sbin/sendmail";
-$smtp_server = "127.0.0.1";
+$sendmail = "/usr/sbin/sendmail";
+#$smtp_server = "127.0.0.1";
 
 # Svnlook path.
 my $svnlook = "/usr/bin/svnlook";
@@ -57,7 +57,7 @@ my $svnlook = "/usr/bin/svnlook";
 # prints the entire contents of the file.  If you want to save space
 # in the log and email messages by not printing the file, then set
 # $no_diff_deleted to 1.
-my $no_diff_deleted = 0;
+my $no_diff_deleted = 1;
 # By default, when a file is added to the repository, svnlook diff
 # prints the entire contents of the file.  If you want to save space
 # in the log and email messages by not printing the file, then set
