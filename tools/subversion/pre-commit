@@ -1,0 +1,85 @@
+#!/usr/bin/python
+
+import sys
+from subprocess import Popen, PIPE
+from reindent import Reindenter
+import re
+
+svnlook = "/usr/bin/svnlook"
+
+def get_modified_files(txn, repos):
+    """Get a list of all files modified or added in this transaction"""
+    modfiles = []
+    cmd = [svnlook, 'changed', '-t', txn, repos]
+    for line in Popen(cmd, shell=False, stdout=PIPE).stdout:
+        if len(line) > 4 and (line[0] == 'A' or line[0] == 'U'):
+            modfiles.append(line[4:].rstrip('\r\n'))
+    return modfiles
+
+def check_c_file(filename, txn, repos, errors):
+    """Check each modified C file to make sure it adheres to the standards"""
+    cmd = [svnlook, 'cat', '-t', txn, repos, filename]
+    pipe = Popen(cmd, shell=False, stdout=PIPE).stdout
+    srch = re.compile('\s+$')
+    blank = False
+    for (num, line) in enumerate(pipe):
+        line = line.rstrip('\r\n')
+        if len(line) > 80:
+            errors.append('Line %d in %s is longer than 80 characters.' \
+                          % (num+1, filename))
+        if line.find('\t') >= 0:
+            errors.append('Line %d in %s contains tabs.' % (num+1, filename))
+        if srch.match(line):
+            errors.append('Line %d in %s has trailing whitespace' \
+                          % (num+1, filename))
+        blank = (len(line) == 0)
+        if blank and num == 0:
+            errors.append('File %s has leading blank line(s)' % filename)
+    if blank:
+        errors.append('File %s has trailing blank line(s)' % filename)
+
+def check_python_file(filename, txn, repos, errors):
+    """Check each modified Python file to make sure it adheres to the
+       standards"""
+    cmd = [svnlook, 'cat', '-t', txn, repos, filename]
+    p1 = Popen(cmd, shell=False, stdout=PIPE).stdout
+    r = Reindenter(p1)
+    if r.run():
+        errors.append('Python file ' + filename + ' has odd indentation; ' \
+                      + 'please run through reindent.py first.')
+
+def check_modified_file(filename, txn, repos, errors):
+    """Check each modified file to make sure it adheres to the standards"""
+    if filename.endswith('.h') or filename.endswith('.cpp') \
+       or filename.endswith('.c'):
+        check_c_file(filename, txn, repos, errors)
+    elif filename.endswith('.py') or filename.endswith('SConscript') \
+         or filename.endswith('SConstruct'):
+        check_python_file(filename, txn, repos, errors)
+
+def check_logmsg_len(txn, repos, errors):
+    """Make sure a log message was supplied"""
+    cmd = [svnlook, 'log', '-t', txn, repos]
+    pipe = Popen(cmd, shell=False, stdout=PIPE).stdout
+    logmsg = pipe.readline().rstrip('\r\n')
+    if len(logmsg) < 10:
+        errors.append("Please provide a log message to describe " \
+                      + "what you changed.");
+
+def main(repos, txn):
+    errors = []
+
+    modfiles = get_modified_files(txn, repos)
+    for filename in modfiles:
+        check_modified_file(filename, txn, repos, errors)
+    check_logmsg_len(txn, repos, errors)
+
+    if len(errors) > 0:
+        sys.stderr.write("Change rejected by pre-commit for the " \
+                         + "following reasons:\n\n")
+        sys.stderr.write("\n".join(errors))
+        sys.stderr.write("\n")
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main(sys.argv[1], sys.argv[2])
