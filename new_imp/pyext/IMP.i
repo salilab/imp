@@ -33,6 +33,9 @@ namespace IMP {
   %pythonprepend AngleRestraint::AngleRestraint %{
         args[3].thisown=0
   %}
+  %pythonprepend DihedralRestraint::DihedralRestraint %{
+        args[4].thisown=0
+  %}
   %pythonprepend SphericalRestraint::SphericalRestraint %{
         args[4].thisown=0
   %}
@@ -71,6 +74,7 @@ namespace IMP {
 %include "IMP/optimizers/MolecularDynamics.h"
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/AngleRestraint.h"
+%include "IMP/restraints/DihedralRestraint.h"
 %include "IMP/restraints/TorusRestraint.h"
 %include "IMP/restraints/SphericalRestraint.h"
 %include "IMP/restraints/ProximityRestraint.h"

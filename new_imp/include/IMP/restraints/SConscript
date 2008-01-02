@@ -3,8 +3,8 @@ Import('env')
 
 files = ['ConnectivityRestraint.h', 'ProximityRestraint.h',
          'SphericalRestraint.h', 'DistanceRestraint.h', 'AngleRestraint.h',
-         'RestraintSet.h', 'ExclusionVolumeRestraint.h', 'TorusRestraint.h',
-         'PairConnectivityRestraint.h']
+         'DihedralRestraint.h', 'RestraintSet.h', 'ExclusionVolumeRestraint.h',
+         'TorusRestraint.h', 'PairConnectivityRestraint.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'restraints')

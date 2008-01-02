@@ -31,13 +31,21 @@ public:
     return vec_[i];
   }
 
-  //! Return the scalar product of two vectors.
+  //! \return the scalar product of two vectors.
   /** \param[in] vec2 The other vector to use in the product.
-      \return The scalar product.
     */
   Float scalar_product(const Vector3D &vec2) const {
     return vec_[0] * vec2.vec_[0] + vec_[1] * vec2.vec_[1]
            + vec_[2] * vec2.vec_[2];
+  }
+
+  //! \return the vector product of two vectors.
+  /** \param[in] vec2 The other vector to use in the product.
+    */
+  Vector3D vector_product(const Vector3D &vec2) const {
+    return Vector3D(vec_[1] * vec2.vec_[2] - vec_[2] * vec2.vec_[1],
+                    vec_[2] * vec2.vec_[0] - vec_[0] * vec2.vec_[2],
+                    vec_[0] * vec2.vec_[1] - vec_[1] * vec2.vec_[0]);
   }
 
   //! \return The magnitude of this vector.
