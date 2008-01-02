@@ -51,7 +51,9 @@ Float AngleRestraint::evaluate(DerivativeAccumulator *accum)
   Vector3D rkj = d1.get_vector_to(d2);
 
   Float scalar_product = rij.scalar_product(rkj);
-  Float mag_product = rij.magnitude() * rkj.magnitude();
+  Float mag_rij = rij.magnitude();
+  Float mag_rkj = rkj.magnitude();
+  Float mag_product = mag_rij * mag_rkj;
 
   // avoid division by zero
   Float cosangle = std::abs(mag_product) > 1e-12 ? scalar_product / mag_product
@@ -73,8 +75,8 @@ Float AngleRestraint::evaluate(DerivativeAccumulator *accum)
 
     Float sinangle = std::abs(std::sin(angle));
 
-    Float fact_ij = sinangle * rij.magnitude();
-    Float fact_kj = sinangle * rkj.magnitude();
+    Float fact_ij = sinangle * mag_rij;
+    Float fact_kj = sinangle * mag_rkj;
     // avoid division by zero
     fact_ij = std::max(static_cast<float>(1e-12), fact_ij);
     fact_kj = std::max(static_cast<float>(1e-12), fact_kj);

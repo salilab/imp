@@ -48,9 +48,14 @@ public:
                     vec_[0] * vec2.vec_[1] - vec_[1] * vec2.vec_[0]);
   }
 
+  //! \return The square of the magnitude of this vector.
+  Float squared_magnitude() const {
+    return vec_[0] * vec_[0] + vec_[1] * vec_[1] + vec_[2] * vec_[2];
+  }
+
   //! \return The magnitude of this vector.
   Float magnitude() const {
-    return std::sqrt(vec_[0] * vec_[0] + vec_[1] * vec_[1] + vec_[2] * vec_[2]);
+    return std::sqrt(squared_magnitude());
   }
 
   //! \return This vector normalized to unit length.
