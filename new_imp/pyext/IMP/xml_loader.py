@@ -240,7 +240,9 @@ def load_rsr_torus(model, rs_idx, rsr, base_particle):
     for p_idx in particle_list:
         p = model.particles[int(p_idx)]
         score_func_params = get_basic_score_func_params(score_func_str, 0.0, sd)
-        model.restraints.append(IMP.TorusRestraint(model, p, main_radius, tube_radius, score_func_params))
+        sf = score_func_params.create_score_func()
+        model.restraints.append(IMP.TorusRestraint(p, main_radius,
+                                                   tube_radius, sf))
         model.restraint_sets[rs_idx].add_restraint(model.restraints[len(model.restraints)-1])
 
 

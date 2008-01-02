@@ -28,11 +28,8 @@ class TorusRestraintTests(IMP.test.IMPTestCase):
         self.restraint_sets.append(rs)
         self.imp_model.add_restraint(rs)
 
-        score_func_params = IMP.BasicScoreFuncParams("harmonic_upper_bound",
-                                                     0.0, 0.1)
         for p in self.imp_model.get_particles():
-            r = IMP.TorusRestraint(self.imp_model, p, 50, 10,
-                                   score_func_params)
+            r = IMP.TorusRestraint(p, 50, 10, IMP.HarmonicUpperBound(0.0, 0.1))
             self.rsrs.append(r)
             rs.add_restraint(r)
 

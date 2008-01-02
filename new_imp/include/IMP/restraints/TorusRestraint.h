@@ -20,12 +20,19 @@ namespace IMP
 class IMPDLLEXPORT TorusRestraint : public Restraint
 {
 public:
-  TorusRestraint(Model& model, Particle* p1, const Float main_radius,
-                 const Float tube_radius,
-                 BasicScoreFuncParams* score_func_params);
+  /** \param[in] p1 Pointer to particle of the restraint.
+      \param[in] main_radius The main radius from the origin to the midline
+                             of the tube.
+      \param[in] tube_radius The tube radius is min distance from the tube
+                             midline to the tube surface.
+      \param[in] score_func  Scoring function for the torus feature (distance
+                             of the particle from the torus surface)
+   */
+  TorusRestraint(Particle* p1, const Float main_radius,
+                 const Float tube_radius, ScoreFunc* score_func);
   virtual ~TorusRestraint();
 
-  IMP_RESTRAINT("0.5", "Daniel Russel")
+  IMP_RESTRAINT("0.6", "Ben Webb")
 protected:
   //! variables used to determine the distance
   FloatKey x_, y_, z_;

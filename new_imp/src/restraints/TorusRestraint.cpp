@@ -15,20 +15,8 @@
 namespace IMP
 {
 
-//! Constructor - set up the values and indexes for this torus restraint.
-/** Expects coordinates to be labeled "x", "y", and "z" in the particles.
-
-    \param[in] model Pointer to the model.
-    \param[in] p1 Pointer to particle of the restraint.
-    \param[in] main_radius The main radius from the origin to the midline
-                           of the tube.
-    \param[in] tube_radius The tube radius is min distance from the tube
-                           midline to the tube surface.
-    \param[in] score_func_params Parameters for creating a score function.
- */
-TorusRestraint::TorusRestraint(Model& , Particle* p1,
-                               const Float main_radius, const Float tube_radius,
-                               BasicScoreFuncParams* score_func_params)
+TorusRestraint::TorusRestraint(Particle* p1, const Float main_radius,
+                               const Float tube_radius, ScoreFunc* score_func)
 {
   add_particle(p1);
   x_ = FloatKey("x");
@@ -37,13 +25,14 @@ TorusRestraint::TorusRestraint(Model& , Particle* p1,
 
   main_radius_ = main_radius;
   tube_radius_ = tube_radius;
-  score_func_ = score_func_params->create_score_func();
+  score_func_ = score_func;
 }
 
 
 //! Destructor
 TorusRestraint::~TorusRestraint()
 {
+  delete score_func_;
 }
 
 
@@ -54,6 +43,8 @@ TorusRestraint::~TorusRestraint()
  */
 Float TorusRestraint::evaluate(DerivativeAccumulator *accum)
 {
+  IMP_CHECK_OBJECT(score_func_);
+
   Float tube_center_x, tube_center_y;
   Float xy_distance_from_center;
   Float distance_from_tube_center;
