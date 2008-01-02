@@ -36,6 +36,9 @@ namespace IMP {
   %pythonprepend DihedralRestraint::DihedralRestraint %{
         args[4].thisown=0
   %}
+  %pythonprepend TorusRestraint::TorusRestraint %{
+        args[3].thisown=0
+  %}
   %pythonprepend SphericalRestraint::SphericalRestraint %{
         args[4].thisown=0
   %}
