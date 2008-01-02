@@ -85,16 +85,16 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
     // J. Mol. Biol. 234, 751-762 (1993)
     Vector3D vijkj = rij.vector_product(rkj);
     Vector3D vkjkl = rkj.vector_product(rkl);
-    Float sijkj = vijkj.magnitude();
-    Float skjkl = vkjkl.magnitude();
+    Float sijkj2 = vijkj.squared_magnitude();
+    Float skjkl2 = vkjkl.squared_magnitude();
     Float skj = rkj.magnitude();
     Float rijkj = rij.scalar_product(rkj);
     Float rkjkl = rkj.scalar_product(rkl);
 
-    Float fact0 = sijkj > 1e-8 ? skj / (sijkj * sijkj) : 0.0;
+    Float fact0 = sijkj2 > 1e-8 ? skj / sijkj2 : 0.0;
     Float fact1 = skj > 1e-8 ? rijkj / (skj * skj) : 0.0;
     Float fact2 = skj > 1e-8 ? rkjkl / (skj * skj) : 0.0;
-    Float fact3 = skjkl > 1e-8 ? -skj / (skjkl * skjkl) : 0.0;
+    Float fact3 = skjkl2 > 1e-8 ? -skj / skjkl2 : 0.0;
 
     for (int i = 0; i < 3; ++i) {
       Float derv0 = deriv * fact0 * vijkj.get_component(i);
