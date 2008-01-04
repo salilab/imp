@@ -41,7 +41,7 @@ ConnectivityRestraint::ConnectivityRestraint(Model* model,
     for (int j = i + 1; j < num_particles_; j++) {
       if (particle_type_[j] != particle_type_[i]) {
         if (rs_iter == rsr_scores_.end()) {
-          IMP_failure("Over ran the caculated number of restraints in "
+          IMP_failure("Over ran the calculated number of restraints in "
                       "ConnectivityRestraint",
                       std::out_of_range("Over ran the calculated number of "
                                         "restraints"));
@@ -91,7 +91,7 @@ ConnectivityRestraint::ConnectivityRestraint(Model* model,
     for (int j = i + 1; j < num_particles_; j++) {
       if (particle_type_[j] != particle_type_[i]) {
         if (rs_iter == rsr_scores_.end()) {
-          IMP_failure("Over ran the caculated number of restraints in "
+          IMP_failure("Over ran the calculated number of restraints in "
                       "ConnectivityRestraint",
                       std::out_of_range("Over ran the calculated number of "
                                         "restraints"));
