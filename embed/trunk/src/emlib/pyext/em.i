@@ -1,5 +1,8 @@
 %module (directors="1") EM
 
+/* Workaround for SWIG bug #1863647 */
+#define PySwigIterator EM_PySwigIterator
+
 %apply int *OUTPUT {int *ierr};
 
 %{
