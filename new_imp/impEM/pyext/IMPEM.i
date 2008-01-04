@@ -1,4 +1,8 @@
 %module(directors="1") IMPEM
+
+/* Workaround for SWIG bug #1863647 */
+#define PySwigIterator IMPEM_PySwigIterator
+
 %{
 #include "IMP.h"
 #include "../IMPParticlesAccessPoint.h"
