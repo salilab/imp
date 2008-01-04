@@ -4,7 +4,7 @@ import IMP
 import IMP.test
 import IMP.utils
 
-class ConnectivityTests(IMP.test.IMPTestCase):
+class ConnectivityTests(IMP.test.TestCase):
     """Class to test connectivity restraints"""
 
     def setUp(self):

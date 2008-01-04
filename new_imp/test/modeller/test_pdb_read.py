@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.pdb
 
-class PDBReadTest(IMP.test.IMPTestCase):
+class PDBReadTest(IMP.test.TestCase):
     #def test_open_error(self):
     #    """Check exception thrown on nonexistant file"""
     #    m=IMP.Model()

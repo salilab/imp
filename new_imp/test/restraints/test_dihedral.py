@@ -4,7 +4,7 @@ import IMP.test
 import IMP.utils
 import math
 
-class DihedralRestraintTests(IMP.test.IMPTestCase):
+class DihedralRestraintTests(IMP.test.TestCase):
     """Tests for dihedral restraints"""
 
     def _setup_particles(self, system_angle, scored_angle):

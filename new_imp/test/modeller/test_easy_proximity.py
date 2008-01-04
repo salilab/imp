@@ -8,7 +8,7 @@ import IMP.test
 
 radius = IMP.FloatKey("radius")
 
-class ProximityRestraintTests(IMP.test.IMPTestCase):
+class ProximityRestraintTests(IMP.test.TestCase):
     """Test proximity restraints"""
 
     def setUp(self):

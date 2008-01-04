@@ -3,7 +3,7 @@ import random
 import IMP
 
 
-class IMPTestCase(unittest.TestCase):
+class TestCase(unittest.TestCase):
     """Super class for IMP test cases"""
 
     def randomize_particles(self, particles, deviation):

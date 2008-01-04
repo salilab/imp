@@ -9,7 +9,7 @@ zkey = IMP.FloatKey("z")
 idkey = IMP.IntKey("id")
 radkey = IMP.FloatKey("radius")
 
-class ParticleTests(IMP.test.IMPTestCase):
+class ParticleTests(IMP.test.TestCase):
     """Test particles"""
 
     def setUp(self):

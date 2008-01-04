@@ -17,7 +17,7 @@ class DummyScoreState(IMP.ScoreState):
     def show(self, something):
         print "I can't really show from python"
 
-class ModelTests(IMP.test.IMPTestCase):
+class ModelTests(IMP.test.TestCase):
     def test_score_state(self):
         """Check score state methods"""
         m = IMP.Model()

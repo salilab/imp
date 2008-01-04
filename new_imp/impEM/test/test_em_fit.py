@@ -7,7 +7,7 @@ import IMP.test
 import IMP.utils
 
 
-class FittingTest(IMP.test.IMPTestCase):
+class FittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_map(self):

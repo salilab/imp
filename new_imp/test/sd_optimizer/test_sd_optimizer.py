@@ -3,7 +3,7 @@ import IMP.utils
 import IMP.test, IMP
 import random
 
-class SteepestDescentTests(IMP.test.IMPTestCase):
+class SteepestDescentTests(IMP.test.TestCase):
     """Test steepest descent optimizer"""
 
     def setUp(self):

@@ -2,7 +2,7 @@ import unittest
 import IMP.utils
 import IMP.test, IMP
 
-class RestraintSetTests(IMP.test.IMPTestCase):
+class RestraintSetTests(IMP.test.TestCase):
     """Test RestraintSets"""
 
     def setUp(self):
