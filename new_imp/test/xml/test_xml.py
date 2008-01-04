@@ -3,7 +3,7 @@ import os
 import IMP.test, IMP
 import IMP.xml_loader
 
-class XMLTests(IMP.test.IMPTestCase):
+class XMLTests(IMP.test.TestCase):
     """Test XML file loading"""
 
     def setUp(self):

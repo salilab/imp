@@ -42,7 +42,7 @@ class WriteTrajState(IMP.OptimizerState):
                            for p in model.get_particles()])
 
 
-class MolecularDynamicsTests(IMP.test.IMPTestCase):
+class MolecularDynamicsTests(IMP.test.TestCase):
     """Test molecular dynamics optimizer"""
 
     def setUp(self):

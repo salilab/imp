@@ -8,7 +8,7 @@ import IMP.test
 
 radius = IMP.FloatKey("radius")
 
-class ExclusionVolumeRestraintTests(IMP.test.IMPTestCase):
+class ExclusionVolumeRestraintTests(IMP.test.TestCase):
     """Test exclusion volume restraints"""
 
     def setUp(self):

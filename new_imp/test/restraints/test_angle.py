@@ -4,7 +4,7 @@ import IMP.test
 import IMP.utils
 import math
 
-class AngleRestraintTests(IMP.test.IMPTestCase):
+class AngleRestraintTests(IMP.test.TestCase):
     """Tests for angle restraints"""
 
     def _setup_particles(self, system_angle, scored_angle):

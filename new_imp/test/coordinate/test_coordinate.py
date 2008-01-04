@@ -4,7 +4,7 @@ import IMP
 import IMP.test
 import IMP.utils
 
-class CoordinateTests(IMP.test.IMPTestCase):
+class CoordinateTests(IMP.test.TestCase):
     """Test various absolute position restraints"""
 
     def setUp(self):
