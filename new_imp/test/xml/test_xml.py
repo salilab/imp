@@ -7,13 +7,19 @@ class XMLTests(IMP.test.TestCase):
     """Test XML file loading"""
 
     def setUp(self):
-        """set up IMP model by loading the xml document """
+        """Set up IMP model"""
         self.imp_model = IMP.Model()
-        self.doc = IMP.xml_loader.load_imp_model(self.imp_model,
-                                                     "xml/model.xml")
+
+    def test_invalid_xml(self):
+        """Check reading of invalid XML files"""
+        self.assertRaises(IMP.xml_loader.MalformedError,
+                          IMP.xml_loader.load_imp_model, self.imp_model,
+                          "xml/invalid.xml")
 
     def test_xml(self):
         """Check reading of XML files"""
+        self.doc = IMP.xml_loader.load_imp_model(self.imp_model,
+                                                 "xml/model.xml")
         model_data = self.imp_model.get_model_data()
 
         # test particles

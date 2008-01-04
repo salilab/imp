@@ -2,6 +2,10 @@ import xml.dom.minidom
 import IMP
 import IMP.utils
 
+class MalformedError(Exception):
+    """Exception class for malformed XML data"""
+    pass
+
 def load_imp_model(model, xml_file_path, base_particle = 0):
     """ Load imp model from given xml file """
     doc = xml.dom.minidom.parse(xml_file_path)
@@ -152,7 +156,7 @@ def load_restraint_set(model, restraint_set_node, base_particle):
 
 
 def load_rsr_distance(model, rs_idx, rsr, base_particle):
-    """ Load distance restraint set from the DOM """
+    """Load distance restraint from the DOM"""
 
     # process restraint parameters
 
@@ -160,12 +164,12 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
     distance_attribute = ''
     distance = None
     sd = 0.1
-    score_func = None
+    score_func_str = None
 
     # get the parameters
     for param in rsr.childNodes:
         if param.nodeName == 'particle_pairs':
-            particle_pairs = get_particle_pairs(param)
+            particle_pairs = _get_particle_pairs(param)
 
         elif param.nodeName == 'distance':
             distance = float(param.childNodes[0].nodeValue)
@@ -181,12 +185,10 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
 
     # make sure we have the needed parameters
     if score_func_str == None:
-        print "No score function specified."
-        return
+        raise MalformedError("No score function specified.")
 
     if distance == None and distance_attribute == '':
-        print "No distance specified."
-        return
+        raise MalformedError("No distance specified.")
 
     # add restraint for each particle pair in the list
     for pair in particle_pairs:
@@ -203,7 +205,7 @@ def load_rsr_distance(model, rs_idx, rsr, base_particle):
 
 
 def load_rsr_torus(model, rs_idx, rsr, base_particle):
-    """ Load torus restraint set from the DOM """
+    """Load torus restraint from the DOM"""
 
     # process restraint parameters
 
@@ -212,12 +214,12 @@ def load_rsr_torus(model, rs_idx, rsr, base_particle):
     sd = 0.1
     tube_radius = 5.0
     main_radius = 20.0
-    score_func = None
+    score_func_str = None
 
     # get the parameters
     for param in rsr.childNodes:
         if param.nodeName == 'particle_list':
-            particle_list = get_particle_list(param)
+            particle_list = _get_particle_list(param)
 
         elif param.nodeName == 'main_radius':
             main_radius = float(param.childNodes[0].nodeValue)
@@ -233,8 +235,7 @@ def load_rsr_torus(model, rs_idx, rsr, base_particle):
 
     # make sure we have the needed parameters
     if score_func_str == None:
-        print "No score function specified."
-        return
+        raise MalformedError("No score function specified.")
 
     # add restraint for each particle in the list
     for p_idx in particle_list:
@@ -247,7 +248,7 @@ def load_rsr_torus(model, rs_idx, rsr, base_particle):
 
 
 def load_rsr_coordinate(model, rs_idx, rsr, base_particle):
-    """ Load coordinate restraint set from the DOM """
+    """Load coordinate restraint from the DOM"""
     print "Load coordinate restraint"
 
     # process restraint parameters
@@ -256,12 +257,12 @@ def load_rsr_coordinate(model, rs_idx, rsr, base_particle):
     axis = 'X_AXIS'
     sd = 0.1
     distance = 10.0
-    score_func = None
+    score_func_str = None
 
     # get the parameters
     for param in rsr.childNodes:
         if param.nodeName == 'particle_list':
-            particle_list = get_particle_list(param)
+            particle_list = _get_particle_list(param)
 
         elif param.nodeName == 'axis_type':
             axis = str(param.childNodes[0].nodeValue)
@@ -277,8 +278,7 @@ def load_rsr_coordinate(model, rs_idx, rsr, base_particle):
 
     # make sure we have the needed parameters
     if score_func_str == None:
-        print "No score function specified."
-        return
+        raise MalformedError("No score function specified.")
 
     # add restraint for each particle in the list
     for p_idx in particle_list:
@@ -289,7 +289,7 @@ def load_rsr_coordinate(model, rs_idx, rsr, base_particle):
 
 
 def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
-    """ Load connectivity restraint set from the DOM """
+    """Load connectivity restraint from the DOM"""
     print "Load connectivity restraint"
 
     # process restraint parameters
@@ -299,12 +299,12 @@ def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
     type_attribute = 'protein'
     distance = None
     sd = 0.1
-    score_func = None
+    score_func_str = None
 
     # get the parameters
     for param in rsr.childNodes:
         if param.nodeName == 'particle_list':
-            particle_list = get_particle_list(param)
+            particle_list = _get_particle_list(param)
 
         elif param.nodeName == 'distance':
             distance = float(param.childNodes[0].nodeValue)
@@ -323,13 +323,11 @@ def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
 
     # make sure we have the needed parameters
     if score_func_str == None:
-        print "No score function specified."
-        return
+        raise MalformedError("No score function specified.")
 
     # make sure we have the needed parameters
     if distance == None and distance_attribute == '':
-        print "No distance specified."
-        return
+        raise MalformedError("No distance specified.")
 
     # create a vector of particle indexes
     particle_indexes = IMP.Ints()
@@ -348,7 +346,7 @@ def load_rsr_connectivity(model, rs_idx, rsr, base_particle):
 
 
 def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
-    """ Load pair connectivity restraint set from the DOM """
+    """Load pair connectivity restraint from the DOM"""
     print "Load  pair connectivity restraint"
 
     # process restraint parameters
@@ -357,18 +355,18 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
     distance_attribute = ''
     distance = None
     sd = 0.1
-    score_func = None
+    score_func_str = None
     num_lists = 0
     number_of_connects = 1
 
     # get the parameters
     for param in rsr.childNodes:
         if num_lists == 0 and param.nodeName == 'particle_list':
-            particle_list1 = get_particle_list(param)
+            particle_list1 = _get_particle_list(param)
             num_lists = 1
 
         elif param.nodeName == 'particle_list':
-            particle_list2 = get_particle_list(param)
+            particle_list2 = _get_particle_list(param)
 
         elif param.nodeName == 'distance':
             distance = float(param.childNodes[0].nodeValue)
@@ -387,13 +385,11 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
 
     # make sure we have the needed parameters
     if distance == None and distance_attribute == '':
-        print "No distance specified."
-        return
+        raise MalformedError("No distance specified.")
 
     # make sure we have the needed parameters
     if score_func_str == None:
-        print "No score function specified."
-        return
+        raise MalformedError("No score function specified.")
 
     # create a vector of particle indexes
     particle_indexes1 = IMP.Ints()
@@ -420,7 +416,7 @@ def load_rsr_pair_connectivity(model, rs_idx, rsr, base_particle):
 
 
 def load_rsr_proximity(model, rs_idx, rsr, base_particle):
-    """ Load proximity restraint set from the DOM """
+    """Load proximity restraint from the DOM"""
     print "Load proximity restraint"
 
     # process restraint parameters
@@ -428,12 +424,12 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
     # defaults
     distance = 5.0
     sd = 0.1
-    score_func = 'harmonic_upper_bound'
+    score_func_str = None
 
     # get the parameters
     for param in rsr.childNodes:
         if param.nodeName == 'particle_list':
-            particle_list = get_particle_list(param)
+            particle_list = _get_particle_list(param)
 
         elif param.nodeName == 'distance':
             distance = float(param.childNodes[0].nodeValue)
@@ -446,8 +442,7 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
 
     # make sure we have the needed parameters
     if score_func_str == None:
-        print "No score function specified."
-        return
+        raise MalformedError("No score function specified.")
 
     # create a vector of particle indexes
     particle_indexes = IMP.Ints()
@@ -462,7 +457,7 @@ def load_rsr_proximity(model, rs_idx, rsr, base_particle):
 
 
 def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
-    """ Load exclusion volume restraint set from the DOM """
+    """Load exclusion volume restraint from the DOM"""
     print "Load  exclusion volume restraint"
 
     # defaults
@@ -473,11 +468,11 @@ def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
     # get the parameters
     for param in rsr.childNodes:
         if num_lists == 0 and param.nodeName == 'particle_list':
-            particle_list1 = get_particle_list(param)
+            particle_list1 = _get_particle_list(param)
             num_lists = 1
 
         elif param.nodeName == 'particle_list':
-            particle_list2 = get_particle_list(param)
+            particle_list2 = _get_particle_list(param)
             num_lists = 2
 
         elif param.nodeName == 'sd':
@@ -488,8 +483,7 @@ def load_rsr_exclusion_volume(model, rs_idx, rsr, base_particle):
 
     # make sure we have the needed parameters
     if distance_attribute == '':
-        print "No distance specified."
-        return
+        raise MalformedError("No distance specified.")
 
     # create a vector of particle indexes
     particle_indexes1 = IMP.Ints()
@@ -526,7 +520,7 @@ def get_basic_score_func_params(score_func_str, mean=0.0, sd=0.1):
 #   (1, 3)
 # <all_pairs>3 4 5 6</all_pairs> all possible pairs from a list
 #   (3, 4) (3, 5) (3, 6) (4, 5) (4, 6) (5, 6)
-def get_particle_pairs(pairs_node):
+def _get_particle_pairs(pairs_node):
     """ Get a list of all particle pairs specified by the given node """
     pairs = []
     for pair_node in pairs_node.childNodes:
@@ -534,7 +528,7 @@ def get_particle_pairs(pairs_node):
             pairs.append(str(pair_node.childNodes[0].nodeValue).split())
 
         if pair_node.nodeName == 'all_pairs':
-            list = get_particle_list(pair_node)
+            list = _get_particle_list(pair_node)
             for i in range(0, len(list)-1):
                 for j in range(i+1, len(list)):
                     pairs.append((i, j))
@@ -543,6 +537,6 @@ def get_particle_pairs(pairs_node):
 
 
 # <particle_list>3 4 5 6</particle_list> list (3, 4, 5, 6)
-def get_particle_list(particle_list_node):
+def _get_particle_list(particle_list_node):
     """ Get a list of all particles specified by the given node """
     return str(particle_list_node.childNodes[0].nodeValue).split()
