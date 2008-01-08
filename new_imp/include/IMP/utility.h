@@ -138,10 +138,10 @@ template <class L>                                                      \
   unsigned int number_of_##lcname##s() const {                          \
     return lcname##_vector_.size();}                                    \
 /** \short Get a container of all the objects. 
-    This is for python as the container can be used like a python list*/\
+    This is for Python as the container can be used like a Python list*/\
 const std::vector<Ucname*> &get_##lcname##s() const {                   \
   return lcname##_vector_;}                                             \
-/** \short An iterator through the objects
+/** \short An iterator through the objects.
     The value type is a pointer.*/                                      \
  typedef std::vector<Ucname*>::iterator Ucname##Iterator;               \
 /** \short A const iterator through the objects. 
