@@ -155,9 +155,10 @@ def CheckModeller(context):
 
 def _modeller_check_failed(require_modeller):
     """Print an informative message if the Modeller check failed"""
-    msg = "  You can set the directory where MODELLER is installed by\n" + \
-          "  setting the MODINSTALLSVN environment variable, or with\n" + \
-          "  'scons modeller=/opt/modeller' or similar.\n"
+    msg = "  Use the modeller command line option (or options file) to\n" + \
+          "  set the directory where Modeller is installed\n" + \
+          "  (run 'scons -h' for help.)"
+
     print
     if require_modeller:
         print "ERROR: MODELLER is required to build this package\n\n" + msg

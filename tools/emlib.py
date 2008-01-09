@@ -34,7 +34,7 @@ def fail(env, target, source):
     print """
   ERROR: emlib and Modeller are required to build %s.
 
-  You can set the directories where emlib and Modeller are installed by using
-  'scons em=/opt/em modeller=/opt/modeller' or similar.
+  Use the em and modeller command line options (or options file) to set the
+  directories where emlib and Modeller are installed (run 'scons -h' for help.)
 """ % target[0]
     return 1
