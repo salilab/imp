@@ -2,9 +2,9 @@ Import('emenv', 'get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(emenv, cplusplus=True)
-e.Append(CPPPATH='#/include')
+e.Append(CPPPATH='#/kernel/include')
 e.Append(CPPPATH=e['EM_CPPPATH'])
-e.Append(LIBPATH=['../../src', '../'], LIBS=['imp', 'impem'])
+e.Append(LIBPATH=['#/kernel/src', '../'], LIBS=['imp', 'impem'])
 e.Append(LIBPATH=[e['EM_LIBPATH']], LIBS=[e['EM_LIBS']])
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
@@ -12,8 +12,8 @@ e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('_IMPEM', 'IMPEM.i',
-                         SWIGFLAGS='-python -c++ -naturalvar -Iinclude ' + \
-                                   '-IEM -I' + e['EM_CPPPATH'])
+                         SWIGFLAGS='-python -c++ -naturalvar -IEM ' + \
+                                   '-Ikernel/include -I' + e['EM_CPPPATH'])
 # .py file should also be generated:
 pymod = File('IMPEM.py')
 e.Depends(pymod, pyext)

@@ -47,7 +47,7 @@ by running (in the <filename>imp</filename> directory):
 
 <para>
 To compile, run <command>scons</command> in the
-<filename>imp/new_imp</filename> directory (it is also recommended that you run
+<filename>imp</filename> directory (it is also recommended that you run
 <command>scons test</command> to run all of the unit tests). To install, run
 <command>scons install</command>.
 </para>

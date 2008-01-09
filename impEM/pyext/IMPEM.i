@@ -9,7 +9,7 @@
 #include "../EMFitRestraint.h"
 %}
 
-%include "pyext/IMP_macros.i"
+%include "kernel/pyext/IMP_macros.i"
 
 /* Ignore shared object import/export stuff */
 #define EMDLLEXPORT
