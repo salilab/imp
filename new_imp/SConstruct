@@ -5,14 +5,25 @@ sys.path.append('../')
 from tools import *
 
 # Set up build environment:
-opts = Options()
+opts = Options('config.py', ARGUMENTS)
 add_common_options(opts, "imp")
 opts.Add(PackageOption('em', 'Location of the emlib package',
                        os.environ.get('EMBED', False)))
 env = MyEnvironment(options=opts, require_modeller=False,
                     tools=["default", "doxygen"],
                     toolpath=["../tools"])
+Help("""
+Available command-line options:
+(These can also be specified in regular Python syntax by creating a file
+called 'config.py' in this directory.)
+""")
 Help(opts.GenerateHelpText(env))
+
+Help("""
+Type: 'scons' to build the IMP kernel;
+      'scons test' to run the kernel unit tests;
+      'scons install' to install the kernel.
+""")
 
 # Make these objects available to SConscript files:
 Export('env', 'get_pyext_environment', 'get_sharedlib_environment',

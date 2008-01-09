@@ -2,6 +2,11 @@ from tools import emlib
 
 Import('env', 'get_sharedlib_environment', 'invalidate_environment')
 
+Help("""
+Type: 'scons impEM' to build and test the impEM extension module;
+      'scons impEM-install' to install it.
+""")
+
 # Get custom environment for building against EMLIB:
 emenv = env.Clone()
 emlib.configure_check(emenv)
