@@ -45,8 +45,6 @@ by running (in the <filename>imp</filename> directory):
 <command>svn update</command>
 </screen>
 
-To compile, set the <varname>MODINSTALLSVN</varname> environment variable to
-where you have &MODELLER; installed and run <command>scons</command> in the
 <para>
 To compile, run <command>scons</command> in the
 <filename>imp/new_imp</filename> directory (it is also recommended that you run
