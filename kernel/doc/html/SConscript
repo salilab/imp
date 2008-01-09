@@ -4,7 +4,7 @@ Import('env')
 
 # Build DocBook documentation:
 def action_docbook(target, source, env):
-    app = "cd doc && xmlto -o html xhtml manual.xml"
+    app = "cd kernel/doc && xmlto -o html xhtml manual.xml"
     return env.Execute(app)
 
 def emit_docbook(target, source, env):

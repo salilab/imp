@@ -1,7 +1,5 @@
 # Include IMP build utility functions:
 import os
-import sys
-sys.path.append('../')
 from tools import *
 
 # Set up build environment:
@@ -10,8 +8,7 @@ add_common_options(opts, "imp")
 opts.Add(PackageOption('em', 'Location of the emlib package',
                        os.environ.get('EMBED', False)))
 env = MyEnvironment(options=opts, require_modeller=False,
-                    tools=["default", "doxygen"],
-                    toolpath=["../tools"])
+                    tools=["default", "doxygen"], toolpath=["tools"])
 Help("""
 Available command-line options:
 (These can also be specified in regular Python syntax by creating a file
@@ -30,21 +27,16 @@ Export('env', 'get_pyext_environment', 'get_sharedlib_environment',
        'invalidate_environment')
 
 # Check code for coding standards:
-standards = env.Command("standards", "SConstruct",
-                        "../tools/check-standards.py")
+standards = env.Command("standards", "SConstruct", "tools/check-standards.py")
 env.AlwaysBuild(standards)
 
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')
 Export('bin')
-src = SConscript('src/SConscript')
-SConscript('include/SConscript')
-(pyext, pymod) = SConscript('pyext/SConscript')
-SConscript('test/SConscript')
-SConscript('doc/SConscript')
+(src, pyext, pymod) = SConscript('kernel/SConscript')
 SConscript('impEM/SConscript')
 
-# bin script first requires libraries to be built:
+# bin script first requires kernel libraries to be built:
 env.Depends(bin, [src, pyext, pymod])
 
 # Build the binaries by default:

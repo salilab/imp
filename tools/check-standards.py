@@ -51,10 +51,10 @@ def get_all_files():
             for f in files:
                 if not f.startswith('.'):
                     modfiles.append(os.path.join(root, f))
-    excludes = ['./pyext/IMP_wrap.h', './pyext/IMP_wrap.cc',
+    excludes = ['./kernel/pyext/IMP_wrap.h', './kernel/pyext/IMP_wrap.cc',
                 './impEM/pyext/IMPEM_wrap.h', './impEM/pyext/IMPEM_wrap.cc',
-                './impEM/pyext/IMPEM.py', './pyext/IMP.py',
-                './pyext/IMP/__init__.py']
+                './impEM/pyext/IMPEM.py', './kernel/pyext/IMP.py',
+                './kernel/pyext/IMP/__init__.py']
     for ex in excludes:
         try:
             modfiles.remove(ex)
