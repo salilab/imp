@@ -2,7 +2,7 @@
  *  \file decorators/utility.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

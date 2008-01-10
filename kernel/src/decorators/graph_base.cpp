@@ -1,7 +1,7 @@
 /**
  *  \file graph_base.cpp   \brief classes for implementing a graph.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

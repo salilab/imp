@@ -1,7 +1,7 @@
 /**
  *  \file TorusRestraint.h   \brief Score based on distance from torus interior
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

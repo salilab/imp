@@ -2,7 +2,7 @@
  *  \file MolecularHierarchyDecorator.h   \brief Decorator for helping deal with
  *                                               a hierarchy of molecules.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

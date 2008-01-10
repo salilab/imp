@@ -23,7 +23,7 @@
  *  thrown from public header files. Either hide these throws in the
  *  corresponding C++ code, or use IMP-specific exceptions.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

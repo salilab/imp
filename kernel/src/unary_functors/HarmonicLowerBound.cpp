@@ -1,7 +1,7 @@
 /**
  *  \file HarmonicLowerBound.cpp  \brief Harmonic lower bound functor.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

@@ -5,7 +5,7 @@
  *  minimum distance between all pairs of particles formed from one or two
  *  sets of particles.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

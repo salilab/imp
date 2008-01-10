@@ -2,7 +2,7 @@
  *  \file HierarchyDecorator.h     \brief Decorator for helping deal with
  *                                        a hierarchy.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

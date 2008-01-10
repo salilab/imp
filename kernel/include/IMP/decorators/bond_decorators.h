@@ -1,7 +1,7 @@
 /**
  *  \file bond_decorators.h     \brief Contains decorators for a bond
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
