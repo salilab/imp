@@ -4,7 +4,7 @@
  *  Restrict max distance between one or more pair of particles of any
  *  two sets of particles (e.g. rigid bodies).
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

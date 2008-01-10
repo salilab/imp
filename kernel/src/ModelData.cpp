@@ -1,7 +1,7 @@
 /**
  *  \file ModelData.cpp  \brief Storage for all model particle data.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

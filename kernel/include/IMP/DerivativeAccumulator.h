@@ -2,7 +2,7 @@
  *  \file DerivativeAccumulator.h   \brief Class for adding derivatives from
  *                                         restraints to the model.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 

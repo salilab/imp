@@ -1,7 +1,7 @@
 /**
  *  \file HarmonicLowerBound.h    \brief Harmonic lower bound functor.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
 #ifndef __IMP_HARMONIC_LOWER_BOUND_H

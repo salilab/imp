@@ -1,7 +1,7 @@
 /**
  *  \file ScoreFuncParams.h    \brief Factory for creating UnaryFunctors.
  *
- *  Copyright 2007 Sali Lab. All rights reserved.
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
 #ifndef __IMP_SCORE_FUNC_PARAMS_H
