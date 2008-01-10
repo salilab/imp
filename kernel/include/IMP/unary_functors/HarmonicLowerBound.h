@@ -17,7 +17,7 @@ class IMPDLLEXPORT HarmonicLowerBound : public Harmonic
 {
 public:
   HarmonicLowerBound(Float mean, Float sd) : Harmonic(mean, sd) {}
-  virtual ~HarmonicLowerBound();
+  virtual ~HarmonicLowerBound() {}
 
   //! Calculate lower-bound harmonic score with respect to the given feature.
   /** If the feature is greater than or equal to the mean, the score is zero.

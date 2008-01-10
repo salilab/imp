@@ -17,7 +17,7 @@ class IMPDLLEXPORT HarmonicUpperBound : public Harmonic
 {
 public:
   HarmonicUpperBound(Float mean, Float sd) : Harmonic(mean, sd) {}
-  virtual ~HarmonicUpperBound();
+  virtual ~HarmonicUpperBound() {}
 
   //! Calculate upper-bound harmonic score with respect to the given feature.
   /** If the feature is less than or equal to the mean, the score is zero.

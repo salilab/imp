@@ -11,18 +11,15 @@
 namespace IMP
 {
 
-//! Destructor
-Harmonic::~Harmonic()
-{
-}
-
 //! Calculate harmonic score with respect to the given feature.
 /** \param[in] feature Value of feature being tested.
     \return Score
  */
 Float Harmonic::operator()(Float feature)
 {
-  return harmonic(feature);
+  Float dummy;
+
+  return operator()(feature, dummy);
 }
 
 //! Calculate harmonic score and derivative with respect to the given feature.
@@ -32,30 +29,6 @@ Float Harmonic::operator()(Float feature)
     \return Score
  */
 Float Harmonic::operator()(Float feature, Float& deriv)
-{
-  return harmonic(feature, deriv);
-}
-
-//! Calculate harmonic score with respect to the given feature.
-/** Implemented to support lower and upper bound harmonics as well.
-    \param[in] feature Value of feature being tested.
-    \return Score
- */
-Float Harmonic::harmonic(Float feature)
-{
-  Float dummy;
-
-  return harmonic(feature, dummy);
-}
-
-//! Calculate harmonic score and derivative with respect to the given feature.
-/** Implemented to support lower and upper bound harmonics as well.
-    \param[in] feature Value of feature being tested.
-    \param[out] deriv Partial derivative of the score with respect to
-                      the feature value.
-    \return Score
- */
-Float Harmonic::harmonic(Float feature, Float& deriv)
 {
   Float e;
   Float sd;
