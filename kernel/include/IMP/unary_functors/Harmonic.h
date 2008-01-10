@@ -16,11 +16,9 @@ namespace IMP
 class IMPDLLEXPORT Harmonic : public UnaryFunctor
 {
 public:
-  Harmonic(Float mean, Float sd) {
-    mean_ = mean;
-    sd_ = sd;
-  }
-  virtual ~Harmonic();
+  Harmonic(Float mean, Float sd) : mean_(mean), sd_(sd) {}
+
+  virtual ~Harmonic() {}
 
   //! Calculate harmonic score with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
@@ -35,22 +33,6 @@ public:
       \return Score
    */
   virtual Float operator()(Float feature, Float& deriv);
-
-  //! Calculate harmonic score with respect to the given feature.
-  /** Implemented to support lower and upper bound harmonics as well.
-      \param[in] feature Value of feature being tested.
-      \return Score
-   */
-  Float harmonic(Float feature);
-
-  //! Calculate harmonic score and derivative with respect to the given feature.
-  /** Implemented to support lower and upper bound harmonics as well.
-      \param[in] feature Value of feature being tested.
-      \param[out] deriv Partial derivative of the score with respect to
-                        the feature value.
-      \return Score
-   */
-  Float harmonic(Float feature, Float& deriv);
 
   void show(std::ostream &out=std::cout) const {
     out << "Harmonic: " << mean_ << " and " << sd_ << std::endl;

@@ -11,12 +11,6 @@
 namespace IMP
 {
 
-//! Destructor
-HarmonicUpperBound::~HarmonicUpperBound()
-{
-}
-
-
 //! Calculate upper-bound harmonic score with respect to the given feature.
 /** If the feature is less than or equal to the mean, the score is zero.
     \param[in] feature Value of feature being tested.
@@ -24,10 +18,11 @@ HarmonicUpperBound::~HarmonicUpperBound()
  */
 Float HarmonicUpperBound::operator()(Float feature)
 {
-  if (feature <= mean_)
+  if (feature <= mean_) {
     return 0.0;
-  else
-    return harmonic(feature);
+  } else {
+    return Harmonic::operator()(feature);
+  }
 }
 
 
@@ -43,8 +38,9 @@ Float HarmonicUpperBound::operator()(Float feature, Float& deriv)
   if (feature <= mean_) {
     deriv = 0.0;
     return 0.0;
-  } else
-    return harmonic(feature, deriv);
+  } else {
+    return Harmonic::operator()(feature, deriv);
+  }
 }
 
 }  // namespace IMP
