@@ -13,7 +13,7 @@
 
 #include "../IMP_config.h"
 #include "../ModelData.h"
-#include "../ScoreFunc.h"
+#include "../UnaryFunctor.h"
 #include "../Restraint.h"
 
 
@@ -34,14 +34,14 @@ public:
       \param[in] score_func Scoring function for the restraint.
    */
   DistanceRestraint(Particle* p1, Particle* p2,
-                    ScoreFunc* score_func);
+                    UnaryFunctor* score_func);
   virtual ~DistanceRestraint();
 
   IMP_RESTRAINT("0.5", "Daniel Russel")
 
 protected:
   //! scoring function for this restraint
-  ScoreFunc* score_func_;
+  UnaryFunctor* score_func_;
 };
 
 } // namespace IMP

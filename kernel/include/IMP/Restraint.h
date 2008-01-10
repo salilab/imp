@@ -13,7 +13,6 @@
 #include <limits>
 
 #include "IMP_config.h"
-#include "ScoreFunc.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 #include "Object.h"

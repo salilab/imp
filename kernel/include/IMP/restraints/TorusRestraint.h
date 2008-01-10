@@ -11,6 +11,7 @@
 #include <list>
 
 #include "../IMP_config.h"
+#include "../ScoreFuncParams.h"
 #include "../Restraint.h"
 
 namespace IMP
@@ -29,7 +30,7 @@ public:
                              of the particle from the torus surface)
    */
   TorusRestraint(Particle* p1, const Float main_radius,
-                 const Float tube_radius, ScoreFunc* score_func);
+                 const Float tube_radius, UnaryFunctor* score_func);
   virtual ~TorusRestraint();
 
   IMP_RESTRAINT("0.6", "Ben Webb")
@@ -41,7 +42,7 @@ protected:
   //! radius of the torus tube
   Float tube_radius_;
   //! math form for this restraint (typically one of the harmonics)
-  ScoreFunc* score_func_;
+  UnaryFunctor* score_func_;
 };
 
 } // namespace IMP

@@ -13,6 +13,7 @@
 #include <list>
 
 #include "../IMP_config.h"
+#include "../UnaryFunctor.h"
 #include "../Restraint.h"
 
 namespace IMP
@@ -33,14 +34,14 @@ public:
    */
   SphericalRestraint(Particle* p,
                      Float x, Float y, Float z,
-                     ScoreFunc* score_func);
+                     UnaryFunctor* score_func);
   virtual ~SphericalRestraint();
 
   IMP_RESTRAINT("0.5", "Daniel Russel");
 
 protected:
   Float center_[3];
-  ScoreFunc* score_func_;
+  UnaryFunctor* score_func_;
 };
 
 } // namespace IMP
