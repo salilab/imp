@@ -1,0 +1,9 @@
+import os.path
+Import('env')
+
+files = ['Harmonic.h', 'HarmonicLowerBound.h', 'HarmonicUpperBound.h']
+
+# Install the include files:
+includedir = os.path.join(env['includedir'], 'IMP', 'unary_functors')
+inst = env.Install(includedir, files)
+env.Alias('install', inst)

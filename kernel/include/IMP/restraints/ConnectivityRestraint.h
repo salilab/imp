@@ -15,6 +15,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../ScoreFuncParams.h"
 #include "DistanceRestraint.h"
 
 namespace IMP

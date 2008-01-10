@@ -9,7 +9,7 @@
 #define __IMP_ANGLE_RESTRAINT_H
 
 #include "../IMP_config.h"
-#include "../ScoreFunc.h"
+#include "../UnaryFunctor.h"
 #include "../Restraint.h"
 
 
@@ -27,14 +27,14 @@ public:
       \param[in] score_func Scoring function for the restraint.
    */
   AngleRestraint(Particle* p1, Particle* p2, Particle* p3,
-                 ScoreFunc* score_func);
+                 UnaryFunctor* score_func);
   virtual ~AngleRestraint();
 
   IMP_RESTRAINT("0.1", "Ben Webb")
 
 protected:
   //! scoring function for this restraint
-  ScoreFunc* score_func_;
+  UnaryFunctor* score_func_;
 };
 
 } // namespace IMP

@@ -16,7 +16,8 @@ namespace IMP
 {
 
 TorusRestraint::TorusRestraint(Particle* p1, const Float main_radius,
-                               const Float tube_radius, ScoreFunc* score_func)
+                               const Float tube_radius,
+                               UnaryFunctor* score_func)
 {
   add_particle(p1);
   x_ = FloatKey("x");
