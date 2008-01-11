@@ -1,11 +1,11 @@
 /**
- *  \file HarmonicUpperBound.cpp  \brief Harmonic upper bound functor.
+ *  \file HarmonicUpperBound.cpp  \brief Harmonic upper bound function.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/unary_functors/HarmonicUpperBound.h"
+#include "IMP/unary_functions/HarmonicUpperBound.h"
 #include "IMP/log.h"
 
 namespace IMP

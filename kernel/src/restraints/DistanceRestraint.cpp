@@ -20,7 +20,7 @@ namespace IMP
 static const Float MIN_DISTANCE = 0.0000001;
 
 DistanceRestraint::DistanceRestraint(Particle* p1, Particle* p2,
-                                     UnaryFunctor* score_func)
+                                     UnaryFunction* score_func)
 {
   add_particle(p1);
   add_particle(p2);

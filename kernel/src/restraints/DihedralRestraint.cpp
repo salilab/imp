@@ -19,7 +19,7 @@ namespace IMP
 {
 
 DihedralRestraint::DihedralRestraint(Particle* p1, Particle* p2, Particle* p3,
-                                     Particle* p4, UnaryFunctor* score_func)
+                                     Particle* p4, UnaryFunction* score_func)
 {
   add_particle(p1);
   add_particle(p2);

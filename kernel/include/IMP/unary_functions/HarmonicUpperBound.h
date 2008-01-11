@@ -1,5 +1,5 @@
 /**
- *  \file HarmonicUpperBound.h    \brief Harmonic upper bound functor.
+ *  \file HarmonicUpperBound.h    \brief Harmonic upper bound function.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
@@ -12,7 +12,7 @@
 namespace IMP
 {
 
-//! Upper bound harmonic functor (non-zero when feature > mean)
+//! Upper bound harmonic function (non-zero when feature > mean)
 class IMPDLLEXPORT HarmonicUpperBound : public Harmonic
 {
 public:

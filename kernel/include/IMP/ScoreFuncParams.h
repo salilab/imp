@@ -1,5 +1,5 @@
 /**
- *  \file ScoreFuncParams.h    \brief Factory for creating UnaryFunctors.
+ *  \file ScoreFuncParams.h    \brief Factory for creating UnaryFunctions.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
@@ -9,12 +9,12 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "UnaryFunctor.h"
+#include "UnaryFunction.h"
 
 namespace IMP
 {
 
-//! Abstract class containing parameters for creating UnaryFunctor instances.
+//! Abstract class containing parameters for creating UnaryFunction instances.
 /** Also has factory method for creating those instances.
  */
 class IMPDLLEXPORT ScoreFuncParams
@@ -22,11 +22,11 @@ class IMPDLLEXPORT ScoreFuncParams
 public:
   ScoreFuncParams() {}
   virtual ~ScoreFuncParams() {}
-  virtual UnaryFunctor* create_score_func() = 0;
+  virtual UnaryFunction* create_score_func() = 0;
 };
 
 
-//! Basic mean+standard deviation parameter class for making UnaryFunctors.
+//! Basic mean+standard deviation parameter class for making UnaryFunctions.
 class IMPDLLEXPORT BasicScoreFuncParams : public ScoreFuncParams
 {
 public:
@@ -37,7 +37,7 @@ public:
   //! Create a new score function with the current set of parameters.
   /** \return pointer to score function.
    */
-  virtual UnaryFunctor* create_score_func();
+  virtual UnaryFunction* create_score_func();
 
   //! Set the mean to use in calculating this score function.
   /** \param[in] mean Value for the mean.
