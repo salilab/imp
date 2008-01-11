@@ -1,11 +1,11 @@
 /**
- *  \file Harmonic.cpp  \brief Harmonic functor.
+ *  \file Harmonic.cpp  \brief Harmonic function.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/unary_functors/Harmonic.h"
+#include "IMP/unary_functions/Harmonic.h"
 #include "IMP/log.h"
 
 namespace IMP

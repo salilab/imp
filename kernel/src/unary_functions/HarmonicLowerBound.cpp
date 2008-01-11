@@ -1,11 +1,11 @@
 /**
- *  \file HarmonicLowerBound.cpp  \brief Harmonic lower bound functor.
+ *  \file HarmonicLowerBound.cpp  \brief Harmonic lower bound function.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/unary_functors/HarmonicLowerBound.h"
+#include "IMP/unary_functions/HarmonicLowerBound.h"
 #include "IMP/log.h"
 
 namespace IMP

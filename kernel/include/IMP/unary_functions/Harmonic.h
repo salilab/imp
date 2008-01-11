@@ -1,5 +1,5 @@
 /**
- *  \file Harmonic.h    \brief Harmonic functor.
+ *  \file Harmonic.h    \brief Harmonic function.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
@@ -7,13 +7,13 @@
 #ifndef __IMP_HARMONIC_H
 #define __IMP_HARMONIC_H
 
-#include "../UnaryFunctor.h"
+#include "../UnaryFunction.h"
 
 namespace IMP
 {
 
-//! Harmonic functor (symmetric about the mean)
-class IMPDLLEXPORT Harmonic : public UnaryFunctor
+//! Harmonic function (symmetric about the mean)
+class IMPDLLEXPORT Harmonic : public UnaryFunction
 {
 public:
   Harmonic(Float mean, Float sd) : mean_(mean), sd_(sd) {}

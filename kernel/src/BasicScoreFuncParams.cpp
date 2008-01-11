@@ -1,14 +1,14 @@
 /**
- *  \file BasicScoreFuncParams.cpp  \brief Factory for creating UnaryFunctors.
+ *  \file BasicScoreFuncParams.cpp  \brief Factory for creating UnaryFunctions.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
 #include "IMP/ScoreFuncParams.h"
-#include "IMP/unary_functors/Harmonic.h"
-#include "IMP/unary_functors/HarmonicLowerBound.h"
-#include "IMP/unary_functors/HarmonicUpperBound.h"
+#include "IMP/unary_functions/Harmonic.h"
+#include "IMP/unary_functions/HarmonicLowerBound.h"
+#include "IMP/unary_functions/HarmonicUpperBound.h"
 #include "IMP/log.h"
 #include "mystdexcept.h"
 
@@ -59,7 +59,7 @@ void BasicScoreFuncParams::set_score_func_type(std::string score_func_type)
 //! Create a new score function with the current set of parameters.
 /** \return pointer to score function.
  */
-UnaryFunctor* BasicScoreFuncParams::create_score_func()
+UnaryFunction* BasicScoreFuncParams::create_score_func()
 {
   if (score_func_type_ == "harmonic") {
     return new Harmonic(mean_, sd_);

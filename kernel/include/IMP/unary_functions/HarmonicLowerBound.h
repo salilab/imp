@@ -1,5 +1,5 @@
 /**
- *  \file HarmonicLowerBound.h    \brief Harmonic lower bound functor.
+ *  \file HarmonicLowerBound.h    \brief Harmonic lower bound function.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
@@ -12,7 +12,7 @@
 namespace IMP
 {
 
-//! Lower bound harmonic functor (non-zero when feature < mean)
+//! Lower bound harmonic function (non-zero when feature < mean)
 class IMPDLLEXPORT HarmonicLowerBound : public Harmonic
 {
 public:
