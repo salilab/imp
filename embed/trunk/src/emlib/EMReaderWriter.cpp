@@ -78,6 +78,7 @@ int EMReaderWriter::Read(const char *filename, real **data, DensityHeader &heade
     cout << " the file " << filename << " was not found " << endl;
     return 1;
   }
+  file.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
   EMHeader eheader;
   ReadHeader(file,eheader);
   eheader.GenerateCommonHeader(header);
