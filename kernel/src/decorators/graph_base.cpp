@@ -37,29 +37,52 @@ Particle* graph_connect(Particle* a, Particle* b, const GraphData &d)
   ParticleIndex pi=m->add_particle(p);
   p->add_attribute(d.node_keys_[0], a->get_index().get_index());
   p->add_attribute(d.node_keys_[1], b->get_index().get_index());
-  {
-    int nc= graph_get_number_of_edges(a, d);
+  for (int i=0; i< 2; ++i) {
+    Particle *cp=((i==0)?a:b);
+    int nc= graph_get_number_of_edges(cp, d);
     IntKey nm=graph_get_edge_key(nc, d);
-    a->add_attribute(nm, p->get_index().get_index());
-    if (a->has_attribute(d.num_edges_key_)) {
-      a->set_value(d.num_edges_key_, nc+1);
+    if (!cp->has_attribute(nm)) {
+      cp->add_attribute(nm, p->get_index().get_index());
     } else {
-      a->add_attribute(d.num_edges_key_, nc+1);
+      cp->set_value(nm, p->get_index().get_index());
     }
-  }
-  {
-    int nc= graph_get_number_of_edges(b, d);
-    IntKey nm=graph_get_edge_key(nc, d);
-    b->add_attribute(nm, p->get_index().get_index());
-    if (b->has_attribute(d.num_edges_key_)) {
-      b->set_value(d.num_edges_key_, nc+1);
+    if (cp->has_attribute(d.num_edges_key_)) {
+      cp->set_value(d.num_edges_key_, nc+1);
     } else {
-      b->add_attribute(d.num_edges_key_, nc+1);
+      cp->add_attribute(d.num_edges_key_, nc+1);
     }
   }
 
   return a->get_model()->get_particle(pi);
 }
+
+void graph_disconnect(Particle* e, const GraphData &d)
+{
+  ParticleIndex pi=e->get_index();
+  Particle *p[2];
+  p[0]= graph_get_node(e, 0, d);
+  p[1]= graph_get_node(e, 1, d);
+  for (int i=0; i< 2; ++i) {
+    int shift=0;
+    Int nc= p[i]->get_value(d.num_edges_key_);
+    for (int j=0; j< nc; ++j) {
+      if (graph_get_edge(p[i], j, d) == e) {
+        IMP_assert(shift==0, "duplicate edges found in graph_base");
+        shift=-1;
+      } else {
+        Int v = p[i]->get_value(graph_get_edge_key(j, d));
+        p[i]->set_value(graph_get_edge_key(j+shift, d), v);
+      }
+    }
+    p[i]->set_value(graph_get_edge_key(nc-1, d), -1);
+    IMP_assert(shift==-1, "no edge found");
+    IMP_assert(nc > 0, "Too few edges");
+    p[i]->set_value(d.num_edges_key_, nc-1);
+  }
+  e->set_is_active(false);
+}
+
+
 
 Particle* graph_get_edge(Particle* a, int i, const GraphData &d)
 {

@@ -23,14 +23,28 @@ IntKey bond_order_key_;
 } // namespace internal
 
 
-void BondDecorator::show(std::ostream &, std::string) const
+void BondDecorator::show(std::ostream &out, std::string) const
 {
-
+  out << "Bond between " 
+      << get_bonded(0).get_particle()->get_index() << " and "
+      << get_bonded(1).get_particle()->get_index() 
+      << " of type " << get_type() << " and order " << get_order() 
+      << std::endl;
 }
 
-void BondedDecorator::show(std::ostream &, std::string) const
+void BondedDecorator::show(std::ostream &out, std::string) const
 {
-
+  out << "Particle " << get_particle()->get_index() 
+      << " is bonded to ";
+  for (unsigned int i=0; i< get_number_of_bonds(); ++i){
+    BondDecorator b= get_bond(i);
+    if (b.get_bonded(0) == *this) {
+      out << b.get_bonded(1).get_particle()->get_index();
+    } else  {
+      out << b.get_bonded(0).get_particle()->get_index();
+    }
+    out << " ";                              
+  }
 }
 
 static void bond_initialize_static_data()
@@ -38,7 +52,6 @@ static void bond_initialize_static_data()
   if (internal::bond_keys_initialized_) {
   } else {
     internal::bond_graph_data_= internal::GraphData("bond");
-    internal::bond_length_key_=FloatKey("bond length");
     internal::bond_type_key_= IntKey("bond type");
     internal::bond_order_key_=IntKey("bond order");
     internal::bond_keys_initialized_=true;
@@ -62,13 +75,18 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)
   return bd;
 }
 
-Particles get_bonded(BondedDecorator a)
-{
-  Particles out;
-  internal::graph_connected_component(a.get_particle(), 
-                                      internal::bond_graph_data_, 
-                                      std::back_inserter(out));
-  return out;
+void unbond(BondDecorator b) {
+  graph_disconnect(b.get_particle(), internal::bond_graph_data_);
+}
+
+BondDecorator get_bond(BondedDecorator a, BondedDecorator b) {
+  for (unsigned int i=0; i < a.get_number_of_bonds(); ++i) {
+    BondDecorator bd= a.get_bond(i);
+    if (bd.get_bonded(0) == b || bd.get_bonded(1) == b) {
+      return bd;
+    }
+  }
+  return BondDecorator();
 }
 
 } // namespace IMP

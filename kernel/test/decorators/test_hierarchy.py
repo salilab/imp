@@ -8,7 +8,6 @@ class DecoratorTests(IMP.test.TestCase):
         m = IMP.Model()
         pp=IMP.Particle()
         m.add_particle(pp)
-        pp.thisown=0
         ppd= IMP.HierarchyDecorator.cast(pp)
         ppnd= IMP.NameDecorator.create(pp)
         ppnd.set_name("root");

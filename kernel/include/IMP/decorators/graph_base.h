@@ -39,6 +39,9 @@ struct IMPDLLEXPORT GraphData
 IMPDLLEXPORT Particle* graph_connect(Particle* a, Particle* b,
                                      const GraphData &d);
 
+IMPDLLEXPORT void graph_disconnect(Particle* bond,
+                                   const GraphData &d);
+
 IMPDLLEXPORT Particle* graph_get_edge(Particle* a, int i,
                                       const GraphData &d);
 

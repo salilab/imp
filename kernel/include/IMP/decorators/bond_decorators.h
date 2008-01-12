@@ -28,7 +28,6 @@ namespace internal
 
 extern IMPDLLEXPORT  GraphData bond_graph_data_;
 extern IMPDLLEXPORT  bool bond_keys_initialized_;
-extern IMPDLLEXPORT  FloatKey bond_length_key_;
 extern IMPDLLEXPORT  IntKey bond_type_key_;
 extern IMPDLLEXPORT  IntKey bond_order_key_;
 
@@ -49,25 +48,19 @@ class IMPDLLEXPORT BondDecorator: public DecoratorBase
 public:
   //! The types a bond can have right now
   enum Type {UNKNOWN=-1,
-             COVALENT, HYDROGEN, DISULPHINE, SALT, PEPTIDE
+             COVALENT, HYDROGEN, DISULPHIDE, SALT, PEPTIDE
             };
 
   //! Get the atom i of the bond
   /** \param[in] i 0 or 1
       \return BondedDecorator for the atom in question
   */
-  BondedDecorator get_atom(unsigned int i) const ;
-
-
-  IMP_DECORATOR_GET_SET_OPT(length, internal::bond_length_key_, Float,
-                            Float, -1);
+  BondedDecorator get_bonded(unsigned int i) const ;
 
   IMP_DECORATOR_GET_SET_OPT(type, internal::bond_type_key_, Int, Int,
                             UNKNOWN);
 
   IMP_DECORATOR_GET_SET_OPT(order, internal::bond_order_key_, Int, Int, 1);
-
-
 };
 
 IMP_OUTPUT_OPERATOR(BondDecorator);
@@ -82,7 +75,7 @@ class IMPDLLEXPORT BondedDecorator: public DecoratorBase
 
 public:
 
-  int get_number_of_bonds() const {
+  unsigned int get_number_of_bonds() const {
     return graph_get_number_of_edges(get_particle(),
                                      internal::bond_graph_data_);
   }
@@ -102,7 +95,7 @@ public:
 IMP_OUTPUT_OPERATOR(BondedDecorator);
 
 
-BondedDecorator BondDecorator::get_atom(unsigned int i) const
+BondedDecorator BondDecorator::get_bonded(unsigned int i) const
 {
   Particle *p= graph_get_node(get_particle(), i,
                                    internal::bond_graph_data_);
@@ -118,10 +111,18 @@ BondedDecorator BondDecorator::get_atom(unsigned int i) const
 IMPDLLEXPORT
 BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
 
-
-//! Get all the particles connected to the current one via a path of bonds.
+//! Destroy the bond connecting to particles.
+/** \param[in] b The bond.
+ */
 IMPDLLEXPORT
-Particles get_bonded(BondedDecorator a);
+void unbond(BondDecorator b);
+
+//! Get the bond between two particles.
+/**
+   BondDecorator() is returned if the particles are not bonded.
+ */
+IMPDLLEXPORT
+BondDecorator get_bond(BondedDecorator a, BondedDecorator b);
 
 } // namespace IMP
 

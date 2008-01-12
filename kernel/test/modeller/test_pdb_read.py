@@ -36,9 +36,6 @@ class PDBReadTest(IMP.test.TestCase):
                                      IMP.MolecularHierarchyDecorator.ATOM);
         self.assertEqual(1221, all_atoms.size(),
                          "Wrong number of atoms found in protein")
-        cc= IMP.get_bonded(IMP.BondedDecorator.cast(all_atoms[0]))
-        self.assertEqual(cc.size(), all_atoms.size(),
-                         "All atoms in protein are not bonded")
 
 
 if __name__ == '__main__':
