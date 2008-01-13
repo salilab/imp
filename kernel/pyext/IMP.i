@@ -1,8 +1,5 @@
 %module(directors="1") IMP
 
-/* Workaround for SWIG bug #1863647 */
-#define PySwigIterator IMP_PySwigIterator
-
 %{
 #include "IMP.h"
 %}
