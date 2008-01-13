@@ -208,7 +208,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         Exit(1)
 
     # See _swig_postprocess class comments:
-    e.Append(_SWIGINCFLAGS='-DPySwigIterator=%s_PySwigIterator' % mod_prefix)
+    repl = '$SWIG -DPySwigIterator=%s_PySwigIterator ' % mod_prefix
+    e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
     e['SWIGCOM'] = [e['SWIGCOM'], _swig_postprocess(mod_prefix).builder]
 
     e['LDMODULEPREFIX'] = ''
