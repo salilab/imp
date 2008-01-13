@@ -242,8 +242,25 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
-def get_pyext_environment(env, cplusplus=False):
+# Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class is
+# renamed with a module-specific prefix, to avoid collisions when using
+# multiple modules
+class _swig_postprocess(object):
+    def __init__(self, modprefix):
+        self.modprefix = modprefix
+    def builder(self, source, target, env):
+        wrap_c = target[0].path
+        lines = file(wrap_c, 'r').readlines()
+        repl = '"swig::%s_PySwigIterator *"' % self.modprefix
+        fh = file(wrap_c, 'w')
+        for line in lines:
+            fh.write(line.replace('"swig::PySwigIterator *"', repl))
+        fh.close()
+        return 0
+
+def get_pyext_environment(env, mod_prefix, cplusplus=False):
     """Get a modified environment for building a Python extension.
+       `mod_prefix` should be a unique prefix for this module.
        If `cplusplus` is True, additional configuration suitable for a C++
        extension is done."""
     from platform import system
@@ -251,6 +268,13 @@ def get_pyext_environment(env, cplusplus=False):
     if 'swig' not in e['TOOLS'] and not env.GetOption('clean'):
         print "ERROR: SWIG could not be found. SWIG is needed to build."
         Exit(1)
+
+    if cplusplus:
+        # See _swig_postprocess class comments:
+        e.Append(_SWIGINCFLAGS='-DPySwigIterator=%s_PySwigIterator' \
+                 % mod_prefix)
+        e['SWIGCOM'] = [e['SWIGCOM'], _swig_postprocess(mod_prefix).builder]
+
     e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
     # import library (.lib file):

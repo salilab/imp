@@ -3,7 +3,7 @@ import os.path
 Import('env', 'get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
-e = get_pyext_environment(env, cplusplus=True)
+e = get_pyext_environment(env, 'IMP', cplusplus=True)
 e.Append(CPPPATH='#/kernel/include')
 e.Append(LIBPATH='../src', LIBS='imp')
 
