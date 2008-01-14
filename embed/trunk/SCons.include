@@ -72,8 +72,14 @@ int main(int argc, char ** argv) {
     ret = context.TryRun(text, ".c")
     if ret[0] == 0:
         context.env.Exit("Could not run endian check program")
-    context.Result(ret[1])
-    return ret[1]
+    # Workaround for dumb systems (e.g. wine) which insert stuff into stdout:
+    result = ret[1].split()[-1]
+    # Make sure we got a sensible result:
+    if result == 'little' or result == 'big' or result == 'unknown':
+        context.Result(result)
+        return result
+    else:
+        context.env.Exit("Got nonsensical endian: %s" % result)
 
 def CheckGNUHash(context):
     """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
