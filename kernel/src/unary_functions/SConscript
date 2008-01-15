@@ -1,6 +1,7 @@
 Import('env')
 
-files = ['Harmonic.cpp', 'HarmonicLowerBound.cpp', 'HarmonicUpperBound.cpp']
+files = ['Harmonic.cpp', 'HarmonicLowerBound.cpp', 'HarmonicUpperBound.cpp',
+         'OpenCubicSpline.cpp']
 
 files = [File(x) for x in files]
 Return('files')

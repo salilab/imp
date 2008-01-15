@@ -10,6 +10,8 @@
       throw;
     } catch (std::out_of_range &e) {
       SWIG_exception(SWIG_IndexError, e.what());
+    } catch (std::domain_error &e) {
+      SWIG_exception(SWIG_ValueError, e.what());
     } catch (IMP::IndexException &e) {
       SWIG_exception(SWIG_IndexError, e.what());
     } catch (IMP::InvalidStateException &e) {
