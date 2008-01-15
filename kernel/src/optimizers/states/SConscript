@@ -1,0 +1,6 @@
+Import('env')
+
+files = ['VRMLLogOptimizerState.cpp']
+
+files = [File(x) for x in files]
+Return('files')

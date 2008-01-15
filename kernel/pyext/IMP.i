@@ -81,6 +81,7 @@ namespace IMP {
 %include "IMP/optimizers/SteepestDescent.h"
 %include "IMP/optimizers/ConjugateGradients.h"
 %include "IMP/optimizers/MolecularDynamics.h"
+%include "IMP/optimizers/states/VRMLLogOptimizerState.h"
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/AngleRestraint.h"
 %include "IMP/restraints/DihedralRestraint.h"
