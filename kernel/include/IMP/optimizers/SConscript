@@ -7,3 +7,4 @@ files = ['ConjugateGradients.h', 'SteepestDescent.h', 'MolecularDynamics.h']
 includedir = os.path.join(env['includedir'], 'IMP', 'optimizers')
 inst = env.Install(includedir, files)
 env.Alias('install', inst)
+SConscript('states/SConscript')
