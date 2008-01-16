@@ -19,6 +19,7 @@
 #include "IMP/unary_functions/HarmonicLowerBound.h"
 #include "IMP/unary_functions/HarmonicUpperBound.h"
 #include "IMP/unary_functions/OpenCubicSpline.h"
+#include "IMP/unary_functions/Cosine.h"
 #include "IMP/ScoreFuncParams.h"
 #include "IMP/RigidBody.h"
 #include "IMP/ModelData.h"
