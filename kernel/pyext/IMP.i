@@ -54,6 +54,9 @@ namespace IMP {
   %}
 }
 
+/* Don't wrap internal functions */
+%ignore IMP::internal::evaluate_distance_pair_score;
+
 %feature("director");
 
 %include "IMP/Object.h"

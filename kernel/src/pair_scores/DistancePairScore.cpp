@@ -12,14 +12,19 @@
 namespace IMP
 {
 
-static const Float MIN_DISTANCE = .00001;
-
-DistancePairScore::DistancePairScore(UnaryFunction *f): f_(f){}
-
-Float DistancePairScore::evaluate(Particle *a, Particle *b,
-                                  DerivativeAccumulator *da)
+namespace internal
 {
-  IMP_CHECK_OBJECT(f_);
+
+static const Float MIN_DISTANCE = .00001;
+Float evaluate_distance_pair_score(Particle *a, Particle *b,
+                                   DerivativeAccumulator *da,
+                                   UnaryFunction *f,
+                                   Float offset,
+                                   Float scale)
+{
+  IMP_CHECK_OBJECT(f);
+  IMP_CHECK_OBJECT(a);
+  IMP_CHECK_OBJECT(b);
 
   Float d2 = 0, delta[3];
   Float score;
@@ -33,13 +38,15 @@ Float DistancePairScore::evaluate(Particle *a, Particle *b,
 
   Float distance = std::sqrt(d2);
 
+  Float shifted_distance = scale*(distance - offset);
+
   // if needed, calculate the partial derivatives of the scores with respect
   // to the particle attributes
   // avoid division by zero if the distance is too small
   if (da && distance >= MIN_DISTANCE) {
     Float deriv;
 
-    score = (*f_)(distance, deriv);
+    score = (*f)(shifted_distance, deriv);
 
     for (int i = 0; i < 3; ++i) {
       Float d = delta[i] / distance * deriv;
@@ -48,12 +55,22 @@ Float DistancePairScore::evaluate(Particle *a, Particle *b,
     }
   } else {
     // calculate the score based on the distance feature
-    score = (*f_)(distance);
+    score = (*f)(shifted_distance);
   }
 
   IMP_LOG(VERBOSE, "For " << a->get_index() << " and " << b->get_index()
           << " distance: " << distance << " score: " << score << std::endl);
   return score;
+}
+
+} // namespace internal
+
+DistancePairScore::DistancePairScore(UnaryFunction *f): f_(f){}
+
+Float DistancePairScore::evaluate(Particle *a, Particle *b,
+                                  DerivativeAccumulator *da)
+{
+  return internal::evaluate_distance_pair_score(a,b, da, f_.get(), 0,1);
 }
 
 void DistancePairScore::show(std::ostream &out) const
