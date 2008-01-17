@@ -43,6 +43,12 @@ namespace IMP {
   %pythonprepend SphericalRestraint::SphericalRestraint %{
         args[4].thisown=0
   %}
+  %pythonprepend DistancePairScore::DistancePairScore %{
+        args[1].thisown=0
+  %}
+  %pythonprepend SphericalDistancePairScore::SphericalDistancePairScore %{
+        args[1].thisown=0
+  %}
 }
 
 %feature("director");
