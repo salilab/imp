@@ -9,6 +9,7 @@ restraints_files = SConscript('restraints/SConscript')
 optimizers_files = SConscript('optimizers/SConscript')
 decorators_files = SConscript('decorators/SConscript')
 unary_functions_files = SConscript('unary_functions/SConscript')
+pair_scores_files = SConscript('pair_scores/SConscript')
 
 # Source files
 files = ['base_types.cpp', 'Model.cpp', 'ModelData.cpp',
@@ -16,7 +17,7 @@ files = ['base_types.cpp', 'Model.cpp', 'ModelData.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
          'Object.cpp', 'BasicScoreFuncParams.cpp'
         ] + decorators_files + restraints_files + optimizers_files \
-          + unary_functions_files
+          + unary_functions_files + pair_scores_files
 
 # Build the shared library:
 lib = env.SharedLibrary('imp', files)
