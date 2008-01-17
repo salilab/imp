@@ -49,6 +49,9 @@
 #include "IMP/restraints/ConnectivityRestraint.h"
 #include "IMP/restraints/PairConnectivityRestraint.h"
 #include "IMP/restraints/ExclusionVolumeRestraint.h"
+#include "IMP/restraints/NonbondedRestraint.h"
+#include "IMP/score_states/NonbondedListScoreState.h"
+#include "IMP/score_states/BondedListScoreState.h"
 
 /**
    \namespace IMP The IMP namespace.
