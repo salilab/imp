@@ -105,7 +105,7 @@ void VRMLLogOptimizerState::write(const Particles &pis, FloatKey rk,
       out << "  ]\n";
       out << "}\n";
 
-    } catch (InvalidStateException) {
+    } catch (InvalidStateException &e) {
       IMP_WARN("Particle " << pis[i] << " does not have "
                << " cartesian coordinates");
     }
