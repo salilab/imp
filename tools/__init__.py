@@ -269,7 +269,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         print "ERROR: SWIG could not be found. SWIG is needed to build."
         Exit(1)
 
-    if cplusplus:
+    if cplusplus and isinstance(e['SWIGCOM'], str):
         # See _swig_postprocess class comments:
         repl = '$SWIG -DPySwigIterator=%s_PySwigIterator ' % mod_prefix
         e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
