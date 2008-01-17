@@ -33,8 +33,7 @@ class TestNBL(IMP.test.TestCase):
         o= OnePair()
         r= IMP.NonbondedRestraint(s, o)
         m.add_restraint(r)
-        score= m.evaluate( None )
-        print score
+        score= m.evaluate(False)
         self.assertEqual(score, 45, "Wrong score")
 
 
