@@ -40,6 +40,41 @@
     return (field<= o.field);      \
   }
 
+//! Implement comparison in a class using field as the variable to compare
+/** The macro requires that This be defined as the type of the current class.
+ */
+#define IMP_COMPARISONS_2(f0, f1)                                       \
+  /** */ bool operator==(const This &o) const {                         \
+    return (f0== o.f0 && f1==o.f1);                                     \
+  }                                                                     \
+  /** */ bool operator!=(const This &o) const {                         \
+    return (f0!= o.f0 || f1 != o.f1);                                   \
+  }                                                                     \
+  /** */ bool operator<(const This &o) const {                          \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    if (f0< o.f0) return true;                                          \
+    else if (f0 > o.f0) return false;                                   \
+    else return f1 < o.f1;                                              \
+  }                                                                     \
+  /** */ bool operator>(const This &o) const {                          \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    if (f0 > o.f0) return true;                                         \
+    else if (f0 < o.f0) return false;                                   \
+    else return f1 > o.f1;                                              \
+  }                                                                     \
+  /** */ bool operator>=(const This &o) const {                         \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    return operator>(o) || operator==(o);                               \
+  }                                                                     \
+  /** */ bool operator<=(const This &o) const {                         \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    return operator<(o) || operator==(o);                               \
+  }
+
 //! Implement operator<< on class name, assuming it has one template argument
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
@@ -92,6 +127,31 @@ template <class L>                                                      \
   virtual std::string last_modified_by() const {return std::string(lmb_string);}
 
 
+//! Define the basics needed for an OptimizerState
+/**
+   This macro declares the required functions 
+   - void update()
+   - void show(std::ostream &out) const
+   and defines the functions
+   - version
+   - last_modified_by
+
+   \param[in] version_string The version.
+   \param[in] lmb_string The person who last modified it.
+*/
+#define IMP_OPTIMIZER_STATE(version_string, lmb_string)                 \
+  /** update the state*/                                                \
+  virtual void update();                                                \
+  /** write information about the state to the stream*/                 \
+  virtual void show(std::ostream &out=std::cout) const;                 \
+  /** \return the current version*/                                     \
+  virtual std::string version() const {return std::string(version_string);} \
+  /** \return the last person to modify this restraint */               \
+  virtual std::string last_modified_by() const {return std::string(lmb_string);}
+
+//! See IMP_OPTIMIZER_STATE
+#define IMP_SCORE_STATE(version_string, lmb_string)\
+  IMP_OPTIMIZER_STATE(version_string, lmb_string)
 
 //! Use the swap_with member function to swap two objects
 #define IMP_SWAP(name) \

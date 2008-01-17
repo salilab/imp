@@ -43,6 +43,9 @@ namespace IMP {
   %pythonprepend SphericalRestraint::SphericalRestraint %{
         args[4].thisown=0
   %}
+  %pythonprepend NonbondedRestraint::NonbondedRestraint %{
+        args[1].thisown=0
+  %}
   %pythonprepend DistancePairScore::DistancePairScore %{
         args[1].thisown=0
   %}
@@ -101,6 +104,9 @@ namespace IMP {
 %include "IMP/restraints/ConnectivityRestraint.h"
 %include "IMP/restraints/PairConnectivityRestraint.h"
 %include "IMP/restraints/ExclusionVolumeRestraint.h"
+%include "IMP/restraints/NonbondedRestraint.h"
+%include "IMP/score_states/BondedListScoreState.h"
+%include "IMP/score_states/NonbondedListScoreState.h"
 %include "IMP/RigidBody.h"
 
 namespace IMP {

@@ -35,3 +35,12 @@
 const std::vector<Ucname*> &get_##lcname##s() const {\
       return lcname##_vector_;}\
 
+ #define IMP_OPTIMIZER_STATE(version_string, lmb_string)                 \
+  virtual void update();                                                \
+  virtual void show(std::ostream &out=std::cout) const;                 \
+  virtual std::string version() const {return std::string(version_string);} \
+  virtual std::string last_modified_by() const {return std::string(lmb_string);}
+
+
+#define IMP_SCORE_STATE(version_string, lmb_string)\
+  IMP_OPTIMIZER_STATE(version_string, lmb_string)
