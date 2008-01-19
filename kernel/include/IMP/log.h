@@ -19,10 +19,18 @@
 namespace IMP
 {
 
+/** \defgroup log Logging
+    \defgroup assert Error checking and reporting
+ */
+
 //! The log levels supported by IMP
+/** \ingroup log
+ */
 enum LogLevel {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
 
 //! The targets for IMP logging
+/** \ingroup log
+ */
 enum LogTarget {COUT, FILE, CERR};
 
 class IMPDLLEXPORT Log
@@ -109,30 +117,40 @@ public:
 };
 
 //! Set the current log level for IMP
+/** \ingroup log
+ */
 IMPDLLEXPORT inline void set_log_level(LogLevel l)
 {
   Log::get().set_level(l);
 }
 
 //! Set the target of logs
+/** \ingroup log
+ */
 IMPDLLEXPORT inline void set_log_target(LogTarget l)
 {
   Log::get().set_target(l);
 }
 
 //! Get the current log level for IMP
+/** \ingroup log
+ */
 IMPDLLEXPORT inline LogLevel get_log_level()
 {
   return Log::get().get_level();
 }
 
 //! Get the target of logs
+/** \ingroup log
+ */
 IMPDLLEXPORT inline LogTarget get_log_target()
 {
   return Log::get().get_target();
 }
 
 //! Set the file name for the IMP log; must be called if a file is to be used.
+/** \ingroup log
+ */
 IMPDLLEXPORT inline void set_log_file(std::string l)
 {
   Log::get().set_filename(l);
@@ -140,6 +158,7 @@ IMPDLLEXPORT inline void set_log_file(std::string l)
 
 //! Determine whether a given log level should be output.
 /** \note This probably should not be called in C++.
+    \ingroup log
  */
 IMPDLLEXPORT inline bool is_log_output(LogLevel l)
 {
@@ -149,6 +168,7 @@ IMPDLLEXPORT inline bool is_log_output(LogLevel l)
 
 //! The stream to output a particular log level to.
 /** \note This probably should not be called in C++.
+    \ingroup log
  */
 IMPDLLEXPORT inline std::ostream& get_log_stream(LogLevel l)
 {
@@ -160,6 +180,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(LogLevel l)
 /**
    To use, create an instance of this class which the log level you
    want. When it goes out of scope, it will restore the old level.
+   \ingroup log
  */
 class IMPDLLEXPORT SetLogState
 {
@@ -183,12 +204,14 @@ namespace internal {
   //! This is just here so you can catch errors more easily in the debugger
   /**
      Break on Log.cpp:19 to catch assertion failures.
+     \ingroup assert
    */
   IMPDLLEXPORT void assert_fail();
 
   //! Here so you can catch check failures more easily in the debugger
   /**
-     Break on Log.cpp:22 to catch check failures. 
+     Break on Log.cpp:22 to catch check failures.
+     \ingroup assert
    */
   IMPDLLEXPORT void check_fail();
 }
@@ -200,6 +223,7 @@ namespace internal {
 //! Write an entry to a log.
 /** \param[in] level The IMP::Log_Level for the message
     \param[in] expr A stream expression to be sent to the output stream
+    \ingroup log
  */
 #define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
     { IMP::get_log_stream(level) << expr << std::flush;};
@@ -207,6 +231,7 @@ namespace internal {
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] level The IMP::Log_Level for the message
     \param[in] expr An expression which writes something to IMP_STREAM
+    \ingroup log
  */
 #define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
     {std::ostream &IMP_STREAM= IMP::get_log_stream(level); expr;}
@@ -215,6 +240,7 @@ namespace internal {
 //! Write a warning to a log.
 /** \param[in] expr An expression to be output to the log. It is prefixed
                     by "WARNING"
+    \ingroup log
  */
 #define IMP_WARN(expr) if (IMP::is_log_output(IMP::WARNING)) \
     { IMP::get_log_stream(IMP::WARNING) << "WARNING  " << expr << std::flush;};
@@ -222,6 +248,7 @@ namespace internal {
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] expr An expression which writes something to IMP_STREAM.
                     It is prefixed by "WARNING"
+    \ingroup log
  */
 #define IMP_WARN_WRITE(expr) if (IMP::is_log_output(IMP::WARNING)) \
     {std::ostream &IMP_STREAM= IMP::get_log_stream(IMP::Log::WARNING); expr;}
@@ -231,12 +258,14 @@ namespace internal {
 //! Write a warning to standard error.
 /** \param[in] expr An expression to be output to std::cerr. It is prefixed
                     by "ERROR"
+    \ingroup log
  */
 #define IMP_ERROR(expr) std::cerr << "ERROR: " << expr << std::endl;
 
 //! Write an entry to standard error; for objects with no operator<<.
 /** \param[in] expr An expression which writes something to IMP_STREAM.
                     It is prefixed by "ERROR"
+    \ingroup log
  */
 #define IMP_ERROR_WRITE(expr) { \
   std::ostream &IMP_STREAM = std::cerr; \
@@ -247,6 +276,8 @@ namespace internal {
 
 
 //! Set the log level
+/** \ingroup log
+ */
 #define IMP_SET_LOG_LEVEL(level) IMP::Log::get()::set_level(level);
 
 
@@ -264,6 +295,7 @@ namespace internal {
 
     \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
+    \ingroup assert
  */
 #define IMP_assert(expr, message) \
   if (!(expr)) { \
@@ -278,6 +310,7 @@ namespace internal {
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
     \param[in] exception Throw the object constructed by this expression.
+    \ingroup assert
  */
 #define IMP_check(expr, message, exception) \
   if (!(expr)) { \
@@ -288,6 +321,7 @@ namespace internal {
 //! A runtime failure for IMP.
 /** \param[in] message Write this message if the assertion fails.
     \param[in] exception Throw the object constructed by this expression.
+    \ingroup assert
  */
 #define IMP_failure(message, exception) {IMP_ERROR(message); throw exception;}
 
