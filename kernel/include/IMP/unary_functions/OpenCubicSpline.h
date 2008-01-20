@@ -32,7 +32,7 @@ public:
 
   //! Calculate score with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
-      \except std::domain_error Feature is out of defined range.
+      \exception std::domain_error Feature is out of defined range.
       \return Score
    */
   virtual Float operator()(Float feature);
@@ -41,7 +41,7 @@ public:
   /** \param[in] feature Value of feature being tested.
       \param[out] deriv Partial derivative of the score with respect to
                         the feature value.
-      \except std::domain_error Feature is out of defined range.
+      \exception std::domain_error Feature is out of defined range.
       \return Score
    */
   virtual Float operator()(Float feature, Float& deriv);
