@@ -33,9 +33,11 @@ Float Harmonic::operator()(Float feature, Float& deriv)
   Float e;
   Float sd;
 
-  sd = sd_ / 0.54318463; // correction factor to match Modeller
+  // convert standard deviation to force constant, by dividing by sqrt(RT/2)
+  // where T=297.15K and energy units are kcal/mol
+  sd = sd_ / 0.54318464;
   e = (feature - mean_) / sd;
-  deriv = e / sd * 2.0; // * 2.0 is correction factor to match Modeller
+  deriv = e / sd * 2.0;
   return e * e;
 }
 
