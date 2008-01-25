@@ -9,13 +9,10 @@
 #ifndef __IMP_NONBONDED_RESTRAINT_H
 #define __IMP_NONBONDED_RESTRAINT_H
 
-#include <vector>
 #include <iostream>
 
 #include "../IMP_config.h"
-#include "../ModelData.h"
 #include "../Restraint.h"
-
 
 namespace IMP
 {
@@ -32,8 +29,10 @@ public:
       of particles.
       \param[in] ps The pair score function to apply to the pairs. This 
       object is deleted upon destruction.
+      \param[in] max_dist Pairs beyond this distance may be dropped.
    */
-  NonbondedRestraint(NonbondedListScoreState *nbl, PairScore *ps);
+  NonbondedRestraint(NonbondedListScoreState *nbl, PairScore *ps,
+                     Float max_dist= std::numeric_limits<Float>::max());
   virtual ~NonbondedRestraint(){}
 
   IMP_RESTRAINT("0.5", "Daniel Russel");
@@ -41,6 +40,7 @@ public:
 protected:
   NonbondedListScoreState *nbl_;
   std::auto_ptr<PairScore> sf_;
+  Float max_dist_;
 };
 
 } // namespace IMP
