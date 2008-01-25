@@ -2,5 +2,7 @@ Import('env')
 
 files = ['NonbondedListScoreState.cpp', 'BipartiteNonbondedListScoreState.cpp']
 
-files = [File(x) for x in files]
+bonded_lists_files = SConscript('bonded_lists/SConscript')
+
+files = [File(x) for x in files] + bonded_lists_files
 Return('files')

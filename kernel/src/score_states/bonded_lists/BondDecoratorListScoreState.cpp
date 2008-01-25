@@ -1,0 +1,52 @@
+/**
+ *  \file BondDecoratorListScoreState.cpp
+ *  \brief Allow iteration through pairs of a set of atoms.
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ */
+
+#include "IMP/score_states/bonded_lists/BondDecoratorListScoreState.h"
+
+namespace IMP 
+{
+
+BondDecoratorListScoreState::BondDecoratorListScoreState(const Particles &ps) :
+    ps_(ps)
+{
+}
+
+void BondDecoratorListScoreState::update() {
+  bonds_.clear();
+  for (unsigned int i=0; i< ps_.size(); ++i) {
+    BondedDecorator di= BondedDecorator::cast(ps_[i]);
+    ParticleIndex pi= ps_[i]->get_index();
+    for (unsigned int j=0; j< di.get_number_of_bonds(); ++j) {
+      BondedDecorator dj= di.get_bonded(j);
+      if (di < dj) {
+        bonds_.push_back(di.get_bond(j));
+      }
+    }
+  }
+  IMP_LOG(VERBOSE, "Found " << bonds_.size() << " bonds"<< std::endl);
+}
+
+void BondDecoratorListScoreState::set_particles(const Particles &ps)
+{
+  ps_=ps;
+  bonds_.clear();
+}
+
+
+bool BondDecoratorListScoreState::are_bonded(Particle *a, Particle *b) const
+{
+  try {
+    BondedDecorator da= BondedDecorator::cast(a);
+    BondedDecorator db= BondedDecorator::cast(b);
+    return get_bond(da, db) != BondDecorator();
+  } catch (...) {
+    IMP_LOG(VERBOSE, "Exception thrown in are_bonded"<< std::endl);
+  }
+  return false;
+}
+
+} // namespace IMP

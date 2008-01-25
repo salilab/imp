@@ -30,6 +30,8 @@ extern IMPDLLEXPORT  GraphData bond_graph_data_;
 extern IMPDLLEXPORT  bool bond_keys_initialized_;
 extern IMPDLLEXPORT  IntKey bond_type_key_;
 extern IMPDLLEXPORT  IntKey bond_order_key_;
+extern IMPDLLEXPORT  FloatKey bond_length_key_;
+extern IMPDLLEXPORT  FloatKey bond_stiffness_key_;
 
 } // namespace internal
 
@@ -48,7 +50,8 @@ class IMPDLLEXPORT BondDecorator: public DecoratorBase
 public:
   //! The types a bond can have right now
   enum Type {UNKNOWN=-1,
-             COVALENT, HYDROGEN, DISULPHIDE, SALT, PEPTIDE
+             COVALENT, HYDROGEN, DISULPHIDE, SALT, PEPTIDE,
+             CUSTOM
             };
 
   //! Get the atom i of the bond
@@ -61,6 +64,11 @@ public:
                             UNKNOWN);
 
   IMP_DECORATOR_GET_SET_OPT(order, internal::bond_order_key_, Int, Int, 1);
+
+  IMP_DECORATOR_GET_SET_OPT(length, internal::bond_length_key_, Float, 
+                            Float, -1);
+  IMP_DECORATOR_GET_SET_OPT(stiffness, internal::bond_stiffness_key_, Float, 
+                            Float, -1);
 };
 
 IMP_OUTPUT_OPERATOR(BondDecorator);
@@ -81,7 +89,7 @@ public:
   }
 
 
-  //! Get a BondDecorator of the ith child
+  //! Get a BondDecorator of the ith bond
   /** \return decorator of the ith child, or throw and exception if there
               is no such bond
   */
@@ -90,12 +98,30 @@ public:
                                      internal::bond_graph_data_);
     return BondDecorator::cast(p);
   }
+
+  //! Get a BondedDecorator of the ith bonded particle
+  /** \return decorator of the ith child, or throw and exception if there
+              is no such bond
+
+      \note I don't entirely like having this here as it duplicates
+      functionality available otherwise, however it is such a fundamental
+      operation and kind of a pain to write. It also means that we 
+      could later pull the edge endpoints into the vertex if 
+      desired.
+  */
+  BondedDecorator get_bonded(unsigned int i) const {
+    Particle *p= graph_get_edge(get_particle(), i,
+                                     internal::bond_graph_data_);
+    BondDecorator bd= BondDecorator::cast(p);
+    if (bd.get_bonded(0) == *this) return bd.get_bonded(1);
+    else return bd.get_bonded(0);
+  }
 };
 
 IMP_OUTPUT_OPERATOR(BondedDecorator);
 
 
-BondedDecorator BondDecorator::get_bonded(unsigned int i) const
+inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
 {
   Particle *p= graph_get_node(get_particle(), i,
                                    internal::bond_graph_data_);
@@ -110,6 +136,25 @@ BondedDecorator BondDecorator::get_bonded(unsigned int i) const
  */
 IMPDLLEXPORT
 BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
+
+
+//! Connect the two wrapped particles by a custom bond.
+/** \param[in] a The first Particle as a BondedDecorator
+    \param[in] b The second Particle as a BondedDecorator
+    \param[in] length The length of the bond.
+    \param[in] stiffness The stiffness of the bond.
+    \return BondDecorator of the bond Particle.
+ */
+IMPDLLEXPORT
+inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b, 
+                          Float length, Float stiffness=-1) {
+  IMP_assert(length>=0, "Length must be positive");
+  BondDecorator bd=bond(a,b, BondDecorator::CUSTOM);
+  bd.set_length(length);
+  if (stiffness >=0) bd.set_stiffness(stiffness);
+  return bd;
+}
+
 
 //! Destroy the bond connecting to particles.
 /** \param[in] b The bond.
