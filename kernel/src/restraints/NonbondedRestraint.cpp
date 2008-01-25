@@ -17,7 +17,9 @@ namespace IMP
 {
 
 NonbondedRestraint::NonbondedRestraint(NonbondedListScoreState *nbl, 
-                                       PairScore *ps) : nbl_(nbl), sf_(ps)
+                                       PairScore *ps,
+                                       Float md) : nbl_(nbl), sf_(ps),
+                                                   max_dist_(md)
 {
 }
 
@@ -29,8 +31,9 @@ Float NonbondedRestraint::evaluate(DerivativeAccumulator *accum)
   IMP_CHECK_OBJECT(nbl_);
   Float score=0;
 
-  for (NonbondedListScoreState::NonbondedIterator it = nbl_->nonbonded_begin();
-       it != nbl_->nonbonded_end(); ++it) {
+  for (NonbondedListScoreState::NonbondedIterator it 
+         = nbl_->nonbonded_begin(max_dist_);
+       it != nbl_->nonbonded_end(max_dist_); ++it) {
     score += sf_->evaluate(it->first, it->second, accum);
   }
 
