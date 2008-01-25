@@ -1,6 +1,6 @@
 Import('env')
 
-files = ['NonbondedListScoreState.cpp']
+files = ['NonbondedListScoreState.cpp', 'BipartiteNonbondedListScoreState.cpp']
 
 files = [File(x) for x in files]
 Return('files')

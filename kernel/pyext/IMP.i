@@ -110,6 +110,7 @@ namespace IMP {
 %include "IMP/restraints/NonbondedRestraint.h"
 %include "IMP/score_states/BondedListScoreState.h"
 %include "IMP/score_states/NonbondedListScoreState.h"
+%include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 %include "IMP/RigidBody.h"
 
 namespace IMP {
