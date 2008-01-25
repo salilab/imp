@@ -19,39 +19,44 @@ namespace IMP
 class BondedListScoreState;
 
 //! This class maintains a list of non-bonded pairs.
-/** The distance cutoff is an optimization hint rather than a
-    strict cutoff. That is, the NonbondedListScoreState may
-    choose to ignore pairs above that cutoff, but may not.
- */
 class IMPDLLEXPORT NonbondedListScoreState: public ScoreState
 {
+ protected:
   Particles ps_;
   typedef std::vector<std::pair<Particle*, Particle*> > NBL;
   NBL nbl_;
-  float dist_cutoff_;
 
   void rescan();
-
+  void audit_particles(const Particles &ps) const;
+  void propagate_set_particles(const Particles &aps);
+  void propagate_update();
+  void add_if_nonbonded(Particle *a, Particle *b);
 public:
-  NonbondedListScoreState(const Particles &ps,
-                          float dist_cutoff
-                          = std::numeric_limits<Float>::max());
-  virtual ~NonbondedListScoreState() {}
-  IMP_CONTAINER(BondedListScoreState, bonded_list_score_state,
+  NonbondedListScoreState(const Particles &ps);
+  virtual ~NonbondedListScoreState();
+  IMP_CONTAINER(BondedListScoreState, bonded_list,
                 BondedListIndex);
+  // kind of evil hack to make the names better
+  // perhaps the macro should be made more flexible
+  typedef BondedListScoreStateIterator BondedListIterator;
 public:
   IMP_SCORE_STATE("0.5", "Daniel Russel");
 
   void set_particles(const Particles &ps);
 
-  //! This iterates through the pairs of non-bonded particles
-  /** \precondition update() must be called first for this to be valid.
-   */
   typedef NBL::const_iterator NonbondedIterator;
-  NonbondedIterator nonbonded_begin() const {
+
+  //! This iterates through the pairs of non-bonded particles
+  /** \param[in] cutoff The state may ignore pairs which are futher
+      apart than the cutoff.
+      \precondition update() must be called first for this to be valid.
+  */
+  NonbondedIterator nonbonded_begin(Float cutoff
+                                    =std::numeric_limits<Float>::max()) const {
     return nbl_.begin();
   }
-  NonbondedIterator nonbonded_end() const {
+  NonbondedIterator nonbonded_end(Float cutoff
+                                  =std::numeric_limits<Float>::max()) const {
     return nbl_.end();
   }
 };

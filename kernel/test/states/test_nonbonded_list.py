@@ -28,7 +28,7 @@ class TestNBL(IMP.test.TestCase):
             d.set_x(0)
             d.set_y(1)
             d.set_z(1)
-        s= IMP.NonbondedListScoreState(m.get_particles(), 100)
+        s= IMP.NonbondedListScoreState(m.get_particles())
         m.add_score_state(s)
         o= OnePair()
         r= IMP.NonbondedRestraint(s, o)
