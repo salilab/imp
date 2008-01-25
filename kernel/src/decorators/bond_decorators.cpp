@@ -19,6 +19,7 @@ bool bond_keys_initialized_=false;
 FloatKey bond_length_key_;
 IntKey bond_type_key_;
 IntKey bond_order_key_;
+FloatKey bond_stiffness_key_;
 
 } // namespace internal
 
@@ -54,6 +55,8 @@ static void bond_initialize_static_data()
     internal::bond_graph_data_= internal::GraphData("bond");
     internal::bond_type_key_= IntKey("bond type");
     internal::bond_order_key_=IntKey("bond order");
+    internal::bond_length_key_=FloatKey("bond length");
+    internal::bond_stiffness_key_=FloatKey("bond stiffness");
     internal::bond_keys_initialized_=true;
   }
 }

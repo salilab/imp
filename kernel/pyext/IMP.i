@@ -28,6 +28,9 @@ namespace IMP {
   %pythonprepend RestraintSet::add_restraint %{
         args[1].thisown=0
   %}
+  %pythonprepend NonbondedListScoreState::add_bonded_list %{
+        args[1].thisown=0
+  %}
   %pythonprepend DistanceRestraint::DistanceRestraint %{
         args[2].thisown=0
   %}
@@ -44,6 +47,9 @@ namespace IMP {
         args[4].thisown=0
   %}
   %pythonprepend NonbondedRestraint::NonbondedRestraint %{
+        args[1].thisown=0
+  %}
+  %pythonprepend BondDecoratorRestraint::BondDecoratorRestraint %{
         args[1].thisown=0
   %}
   %pythonprepend DistancePairScore::DistancePairScore %{
@@ -108,9 +114,11 @@ namespace IMP {
 %include "IMP/restraints/PairConnectivityRestraint.h"
 %include "IMP/restraints/ExclusionVolumeRestraint.h"
 %include "IMP/restraints/NonbondedRestraint.h"
+%include "IMP/restraints/BondDecoratorRestraint.h"
 %include "IMP/score_states/BondedListScoreState.h"
 %include "IMP/score_states/NonbondedListScoreState.h"
 %include "IMP/score_states/BipartiteNonbondedListScoreState.h"
+%include "IMP/score_states/bonded_lists/BondDecoratorListScoreState.h"
 %include "IMP/RigidBody.h"
 
 namespace IMP {
@@ -121,6 +129,7 @@ namespace IMP {
   %template(RestraintIndex) Index<RestraintTag>;
   %template(ScoreStateIndex) Index<ScoreStateTag>;
   %template(OptimizerStateIndex) Index<OptimizerStateTag>;
+  %template(BondeListIndex) Index<BondedListScoreState>;
   %template(FloatKey) Key<Float>;
   %template(IntKey) Key<Int>;
   %template(StringKey) Key<String>;

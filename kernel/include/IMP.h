@@ -50,9 +50,11 @@
 #include "IMP/restraints/PairConnectivityRestraint.h"
 #include "IMP/restraints/ExclusionVolumeRestraint.h"
 #include "IMP/restraints/NonbondedRestraint.h"
+#include "IMP/restraints/BondDecoratorRestraint.h"
 #include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 #include "IMP/score_states/NonbondedListScoreState.h"
 #include "IMP/score_states/BondedListScoreState.h"
+#include "IMP/score_states/bonded_lists/BondDecoratorListScoreState.h"
 
 /**
    \namespace IMP The IMP namespace.
