@@ -28,6 +28,10 @@ class XTransRestraint(IMP.Restraint):
                 p.add_to_derivative(ykey, 0.0, accum)
                 p.add_to_derivative(zkey, 0.0, accum)
         return e
+    def version(self):
+        return "0.5"
+    def last_modified_by(self):
+        return "Daniel Russel"
 
 
 class WriteTrajState(IMP.OptimizerState):

@@ -7,6 +7,10 @@ class WoodsFunc(IMP.Restraint):
         IMP.Restraint.__init__(self)
         self.particles= particles
         self.index= IMP.FloatKey("x")
+    def show(self, junk):
+        print "Woods function"
+    def last_modified_by(self):
+        return "Daniel Russel"
 
 
     def evaluate(self, accum):
