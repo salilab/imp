@@ -15,13 +15,13 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header_)
 void SampledDensityMap::calculate_particles_bounding_box(
 					 const ParticlesAccessPoint &access_p,
 					 std::vector<float> &lower_bound,
-					 std::vector<float> &upper_bound){
+					 std::vector<float> &upper_bound,
+					 float &maxradius){
   //read the points and determine the dimentions of the map
 
   lower_bound.insert(lower_bound.begin(),3,9999.9);
   upper_bound.insert(upper_bound.begin(),3,-9999.9);
-
-
+  maxradius = 0.;
   for ( int i=0;i<access_p.get_size();i++) {
 
     if (access_p.get_x(i) < lower_bound[0]) {
@@ -45,6 +45,9 @@ void SampledDensityMap::calculate_particles_bounding_box(
     if (access_p.get_z(i) > upper_bound[2]) {
       upper_bound[2]=access_p.get_z(i);
     }
+   if (access_p.get_r(i) > maxradius) {
+      maxradius = access_p.get_r(i);
+   }
   }
   
 }
@@ -53,6 +56,7 @@ void SampledDensityMap::calculate_particles_bounding_box(
 void SampledDensityMap::set_header(
 				   const std::vector<float> &lower_bound,
 				   const std::vector<float> &upper_bound,
+				   float maxradius,
 				   float resolution,
 				   float voxel_size,
 				   int sig_cutoff) {
@@ -60,12 +64,17 @@ void SampledDensityMap::set_header(
     header = DensityHeader();
     header.set_resolution(resolution);
     header.Objectpixelsize = voxel_size;
-    header.nx = int(ceil((1.0*(upper_bound[0]-lower_bound[0])+2*sig_cutoff*resolution)/voxel_size));
-    header.ny = int(ceil((1.0*(upper_bound[1]-lower_bound[1])+2*sig_cutoff*resolution)/voxel_size));
-    header.nz = int(ceil((1.0*(upper_bound[2]-lower_bound[2])+2*sig_cutoff*resolution)/voxel_size));
-    header.set_xorigin(lower_bound[0]-2*resolution);
-    header.set_yorigin(lower_bound[1]-2*resolution);
-    header.set_zorigin(lower_bound[2]-2*resolution);
+    header.nx = int(ceil(( 1.0*(upper_bound[0]-lower_bound[0]) + 
+                           2.*sig_cutoff*(resolution+maxradius))/voxel_size));
+    header.ny = int(ceil(( 1.0*(upper_bound[1]-lower_bound[1]) +
+                           2.*sig_cutoff*(resolution+maxradius))/voxel_size));
+    header.nz = int(ceil(( 1.0*(upper_bound[2]-lower_bound[2]) + 
+                           2.*sig_cutoff*(resolution+maxradius))/voxel_size));
+    header.set_xorigin(lower_bound[0]-sig_cutoff*(resolution + maxradius));
+    header.set_yorigin(lower_bound[1]-sig_cutoff*(resolution + maxradius));
+    header.set_zorigin(lower_bound[2]-sig_cutoff*(resolution + maxradius));
+
+
     header.xlen= header.nx*header.Objectpixelsize;
     header.ylen=header.ny*header.Objectpixelsize;
     header.zlen=header.nz*header.Objectpixelsize;
@@ -87,10 +96,10 @@ SampledDensityMap::SampledDensityMap(
 
 
   std::vector<float> lower_bound, upper_bound;
+  float maxradius;
+  calculate_particles_bounding_box(access_p,lower_bound,upper_bound, maxradius);
 
-  calculate_particles_bounding_box(access_p,lower_bound,upper_bound);
-
-  set_header(lower_bound,upper_bound,
+  set_header(lower_bound,upper_bound,maxradius,
 	     resolution,voxel_size,sig_cutoff);
   data = new real[header.nx*header.ny*header.nz];
 

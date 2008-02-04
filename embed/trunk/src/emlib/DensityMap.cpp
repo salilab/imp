@@ -60,6 +60,9 @@ DensityMap::~DensityMap() {
 void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
   int nvox = nx*ny*nz;
   data = new real[nvox];
+  for ( int i=0;i<nvox;i++) {
+    data[i]=0.0;
+  }
   header.nx=nx;
   header.ny=ny;
   header.nz=nz;

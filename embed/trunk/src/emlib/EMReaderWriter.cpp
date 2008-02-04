@@ -81,6 +81,12 @@ int EMReaderWriter::Read(const char *filename, real **data, DensityHeader &heade
   file.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
   EMHeader eheader;
   ReadHeader(file,eheader);
+  if (eheader.Objectpixelsize < EPS) {
+    eheader.Objectpixelsize = 1.;
+    cout << "Objectpixelsize == 0 " << endl;
+    cout << "  set Objectpixelsize = 1 to avoid trouble"<< endl;
+  }
+
   eheader.GenerateCommonHeader(header);
   ReadData(file, data, eheader);
   file.close();
@@ -185,7 +191,7 @@ int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
 #endif
   
   ehp.InitEMHeader(header);
-  header.Objectpixelsize = 1.0;
+  //header.Objectpixelsize = 1.0;
   return 0;
 }
 

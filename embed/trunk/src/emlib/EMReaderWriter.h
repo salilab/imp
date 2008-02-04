@@ -17,8 +17,7 @@
 #include "EM_config.h"
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
-
-
+#include "def.h"
 
 class EMDLLEXPORT EMHeader {
 public:

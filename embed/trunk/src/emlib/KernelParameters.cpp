@@ -2,7 +2,8 @@
 KernelParameters::Parameters::Parameters(float radii_,float rsigsq_,float timessig_,
 		       float sq2pi3_,float inv_rsigsq_, float rnormfac_, float rkdist_) {
   if (radii_ > EPS) { // to prevent calculation for particles with the same radius ( atoms)
-    vsig = 1./(sqrt(2.*log(2.))) * radii_; // volume sigma
+    //    vsig = 1./(sqrt(2.*log(2.))) * radii_; // volume sigma
+    vsig = 1./(sqrt(2.)) * radii_; // volume sigma
     vsigsq = vsig * vsig;
     inv_sigsq = rsigsq_ + vsigsq;
     sig = sqrt(inv_sigsq);
