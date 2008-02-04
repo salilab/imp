@@ -76,6 +76,7 @@ public:
     s << "user: " << v.user << std::endl;
     s <<"xorigin: " << v.xorigin << " yorigin: "<< v.yorigin <<" zorigin: "<< v.zorigin << std::endl;
     s <<"map: " << v.map << std::endl;
+    s << "Objectpixelsize: " << v.Objectpixelsize << std::endl;
     s<< "machinestamp: " << v.machinestamp << std::endl;
     s <<"rms: " << v.rms << std::endl;
     s<<"nlabl: " << v.nlabl <<std::endl;

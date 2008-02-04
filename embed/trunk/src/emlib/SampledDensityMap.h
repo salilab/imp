@@ -65,16 +65,25 @@ public:
 
 
 protected:
-
-  //! Initialize needed parameters for sampling convention: all parameters that start with r correspond to resolution. e.g. rsig: sigma (in Gaussian Fct.) for resolution 
+  //! Calculate the parameters of the particles bounding box 
+  /**
+      /param[in]  access_p     access point to the particles ( locations, radius, weight)
+      /param[out] lower_bound  the left-bottom point of the bounding box ( lower_bound[0] - x coordinate
+                                                                           lower_bound[1] - y coordinate
+                                                                           lower_bound[2] - z coordinate )
+      /param[out] upper_bound  the right-upper point of the bounding box
+      /param[out] maxradius    the maximum radius of all the particles in the model. 
+   */
   void calculate_particles_bounding_box(
 					const ParticlesAccessPoint &access_p,
 					std::vector<float> &lower_bound,
-					std::vector<float> &upper_bound);
+					std::vector<float> &upper_bound,	  
+					float &maxradius);
 
   void set_header(
 		  const std::vector<float> &lower_bound,
 		  const std::vector<float> &upper_bound,
+		  float maxradius,
 		  float resolution,
 		  float voxel_size,
 		  int sig_offset);

@@ -27,6 +27,7 @@ class MRCWriteTest(unittest.TestCase):
     def test_read(self):
         """read map back in and check that rmsd is the same """
         em_map = EM.DensityMap()
+        print out_filename
         em_map.Read(out_filename,self.erw)
         os.unlink(out_filename)
         em_map.calcRMS()
@@ -84,10 +85,11 @@ class ReadWriteMapsTests(unittest.TestCase):
         scene.Read(in_filename,mrc_rw)
 
         # Check header size
-        self.assertEqual(68,scene.get_header().nx)
-        self.assertEqual(65,scene.get_header().ny)
-        self.assertEqual(59,scene.get_header().nz)
-        self.assertInTolerance(scene.calcRMS(), 511.0, 1.0)
+        self.assertEqual(74,scene.get_header().nx)
+        self.assertEqual(71,scene.get_header().ny)
+        self.assertEqual(65,scene.get_header().nz)
+        print "rms: " + str(scene.calcRMS())
+        self.assertInTolerance(scene.calcRMS(), 0.00688, 1.0)
         scene.Write(out_filename,mrc_rw)
         os.unlink(out_filename)
 
