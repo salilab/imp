@@ -75,6 +75,45 @@
     return operator<(o) || operator==(o);                               \
   }
 
+//! Implement comparison in a class using field as the variable to compare
+/** The macro requires that This be defined as the type of the current class.
+ */
+#define IMP_COMPARISONS_3(f0, f1, f2)                                   \
+  /** */ bool operator==(const This &o) const {                         \
+    return (f0== o.f0 && f1==o.f1 && f2 == o.f2);                       \
+  }                                                                     \
+  /** */ bool operator!=(const This &o) const {                         \
+    return (f0!= o.f0 || f1 != o.f1 || f2 != o.f2);                     \
+  }                                                                     \
+  /** */ bool operator<(const This &o) const {                          \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    if (f0< o.f0) return true;                                          \
+    else if (f0 > o.f0) return false;                                   \
+    if (f1< o.f1) return true;                                          \
+    else if (f1 > o.f1) return false;                                   \
+    else return f2 < o.f2;                                              \
+  }                                                                     \
+  /** */ bool operator>(const This &o) const {                          \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    if (f0 > o.f0) return true;                                         \
+    else if (f0 < o.f0) return false;                                   \
+    if (f1 > o.f1) return true;                                         \
+    else if (f1 < o.f1) return false;                                   \
+    else return f2 > o.f2;                                              \
+  }                                                                     \
+  /** */ bool operator>=(const This &o) const {                         \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    return operator>(o) || operator==(o);                               \
+  }                                                                     \
+  /** */ bool operator<=(const This &o) const {                         \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    return operator<(o) || operator==(o);                               \
+  }
+
 //! Implement operator<< on class name, assuming it has one template argument
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
@@ -227,6 +266,10 @@ private:                                                                \
 #define IMP_CONTAINER_IMPL(Class, Ucname, lcname, IndexType, init)      \
   IndexType Class::add_##lcname(Ucname *obj) {                          \
     IndexType index(lcname##_vector_.size());                           \
+    for (unsigned int i=0; i< lcname##_vector_.size(); ++i) {           \
+      IMP_assert(lcname##_vector_[i] != obj, #Ucname                    \
+                 " can only be added once to container");               \
+    }                                                                   \
     lcname##_vector_.push_back(obj);                                    \
     init;                                                               \
     IMP_CHECK_OBJECT(obj);                                              \
