@@ -27,6 +27,8 @@ namespace IMP
 
     Documentation for the VRML file format can be found at
     http://www.cgl.ucsf.edu/chimera/docs/UsersGuide/bild.html
+
+    \ingroup log
  */
 class IMPDLLEXPORT VRMLLogOptimizerState : public OptimizerState
 {
