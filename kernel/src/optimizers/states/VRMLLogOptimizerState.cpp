@@ -24,7 +24,7 @@ VRMLLogOptimizerState::VRMLLogOptimizerState(std::string filename,
 
 void VRMLLogOptimizerState::update()
 {
-  if (skip_steps_ == 0 || call_number_ % skip_steps_ == 0) {
+  if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
     char buf[1000];
     sprintf(buf, filename_.c_str(), file_number_);
     ++file_number_;
@@ -39,8 +39,8 @@ void VRMLLogOptimizerState::write(std::string buf) const
   if (!out) {
     IMP_WARN("Error opening VRML log file " << buf);
   } else {
-    /*IMP_LOG(TERSE, "Writing " << pis_.size()
-      << " particles to file " << buf << "..." << std::flush);*/
+    IMP_LOG(VERBOSE, "Writing " << pis_.size()
+            << " particles to file " << buf << "..." << std::flush);
     write(pis_, radius_, r_, g_, b_, out);
     //IMP_LOG(TERSE, "done" << std::endl);
   }
