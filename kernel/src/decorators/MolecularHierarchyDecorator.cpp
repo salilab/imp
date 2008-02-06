@@ -21,6 +21,10 @@ IntKey MolecularHierarchyDecorator::type_key_;
 void MolecularHierarchyDecorator::show(std::ostream &out,
                                        std::string prefix) const
 {
+  if (is_default()) {
+    out << "NULL Molecular Hierarchy node";
+    return;
+  }
   if (get_type() == ATOM) {
     AtomDecorator ad= AtomDecorator::cast(get_particle());
     if (ad != AtomDecorator()) {

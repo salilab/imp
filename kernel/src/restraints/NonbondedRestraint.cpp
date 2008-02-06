@@ -27,7 +27,7 @@ NonbondedRestraint::NonbondedRestraint(NonbondedListScoreState *nbl,
 Float NonbondedRestraint::evaluate(DerivativeAccumulator *accum)
 {
 
-  IMP_CHECK_OBJECT(sf_);
+  IMP_CHECK_OBJECT(sf_.get());
   IMP_CHECK_OBJECT(nbl_);
   Float score=0;
 

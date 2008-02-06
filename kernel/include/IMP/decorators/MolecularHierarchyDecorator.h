@@ -21,6 +21,8 @@ namespace IMP
 {
 
 //! A decorator for helping deal with a hierarchy of molecules
+/** \ingroup hierarchy
+ */
 class IMPDLLEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 {
   IMP_DECORATOR(MolecularHierarchyDecorator,
@@ -108,7 +110,7 @@ public:
   //! Get the parent
   MolecularHierarchyDecorator get_parent() const {
     HierarchyDecorator hd= P::get_parent();
-    if (hd != HierarchyDecorator()) {
+    if (hd == HierarchyDecorator()) {
       return MolecularHierarchyDecorator();
     } else {
       return cast(hd.get_particle());
@@ -121,6 +123,7 @@ public:
 /**
    Gather all the molecular particles of a certain level 
    in the molecular hierarchy
+   \ingroup hierarchy
 */
 IMPDLLEXPORT Particles get_particles(MolecularHierarchyDecorator mhd, 
                                      MolecularHierarchyDecorator::Type t);

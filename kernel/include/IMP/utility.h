@@ -300,7 +300,10 @@ private:                                                                \
   lcname##_vector_.clear();
 
 //! Call the assert_is_valid method in the object base
-#define IMP_CHECK_OBJECT(obj) (obj)->assert_is_valid()
+#define IMP_CHECK_OBJECT(obj) do {              \
+    IMP_assert(obj != NULL, "NULL object");     \
+    (obj)->assert_is_valid();                   \
+  } while (false)
 
 namespace IMP
 {
