@@ -22,8 +22,14 @@ namespace IMP
 {
 
 
+/** \defgroup hierarchy Hierarchies of particles
+    These functions and classes aid in manipulating particles representing
+    molecules at multiple levels.
+ */
+
 //! A visitor for traversal of a hierarchy
 /** This works from both C++ and Python
+    \ingroup hierarchy
  */
 class IMPDLLEXPORT HierarchyVisitor
 {
@@ -39,6 +45,8 @@ public:
 
 
 //! A decorator for helping deal with a hierarchy.
+/** \ingroup hierarchy
+ */
 class IMPDLLEXPORT HierarchyDecorator: public DecoratorBase
 {
   IMP_DECORATOR(HierarchyDecorator, DecoratorBase, return true || p,  ++p);
@@ -111,15 +119,15 @@ IMP_OUTPUT_OPERATOR(HierarchyDecorator);
 
 //! Apply the visitor to each particle,  breadth first.
 /** \param[in] d The HierarchyDecorator for the tree in question
-    \param[in] f The functor to be applied. This is passed by value
-    \return A copy of the functor passed in. Use this if you care about
-            the functor state.
+    \param[in] v The visitor to be applied. This is passed by reference.
+    \ingroup hierarchy
  */
 IMPDLLEXPORT
 void breadth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
 
 //! Depth first traversal of the hierarchy
 /** See breadth_first_traversal and HierarchyVisitor for more information
+    \ingroup hierarchy
  */
 IMPDLLEXPORT
 void depth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
@@ -146,6 +154,8 @@ void depth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
 
     \return A copy of the functor passed in. Use this if you care about
            the functor state.
+
+    \ingroup hierarchy
  */
 template <class HD, class F>
 F breadth_first_traversal_with_data(HD d, F f, typename F::result_type i)
@@ -169,6 +179,7 @@ F breadth_first_traversal_with_data(HD d, F f, typename F::result_type i)
 
 //! Apply functor F to each particle, traversing the hierarchy depth first.
 /** See breadth_first_traversal for documentation.
+    \ingroup hierarchy
  */
 template <class HD, class F>
 F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
@@ -194,6 +205,7 @@ F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
 
 //! A simple visitor which pretty-prints the hierarchy
 /** The template argument NP is the decorator to use to print each node.
+    \ingroup hierarchy
  */
 template <class PD>
 struct HierarchyPrinter
@@ -233,6 +245,7 @@ struct HierarchyPrinter
 
 //! Print the hierarchy using a given decorator as to display each node
 /** The last argument limits how deep will be printed out.
+    \ingroup hierarchy
  */
 template <class ND>
 std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
@@ -246,6 +259,7 @@ std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
 
 //! A simple functor to count the number of particles in a hierarchy.
 /** This is a good example of a simple HierarchyVisitor.
+    \ingroup hierarchy
  */
 struct HierarchyCounter: public HierarchyVisitor
 {
@@ -290,6 +304,8 @@ struct Gather: public HierarchyVisitor
 } // namespace internal
 
 //! Gather all the Particle* in the hierarchy which meet some criteria
+/** \ingroup hierarchy
+ */
 template <class Out, class F>
 Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
 {

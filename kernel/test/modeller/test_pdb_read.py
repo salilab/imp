@@ -22,6 +22,12 @@ class PDBReadTest(IMP.test.TestCase):
         IMP.depth_first_traversal(mp, hc)
         f_num_res_type= IMP.ResidueType.get_number_unique()
         f_num_atom_type= IMP.AtomType.get_number_unique()
+        mpp= mp.get_parent()
+        self.assertEqual(mpp, IMP.MolecularHierarchyDecorator(),
+                         "Should not have a parent")
+        mpc= mp.get_child(0)
+        self.assertEqual(mpc.get_parent(), mp,
+                         "Should not have a parent")
         #print str(hc.get_count())
         self.assertEqual(i_num_res_type, f_num_res_type, "too many residue types")
         self.assertEqual(i_num_atom_type, f_num_atom_type, "too many atom types")
