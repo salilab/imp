@@ -19,7 +19,9 @@ public:
   virtual float get_z(int index)const=0;
   virtual float get_r(int index)const=0;
   virtual float get_w(int index)const=0;
-
+  virtual void set_x(unsigned int index, float xval)=0;
+  virtual void set_y(unsigned int index, float yval)=0;
+  virtual void set_z(unsigned int index, float zval)=0;
 };
 
 
@@ -83,6 +85,15 @@ public:
 	float get_z(int index)const {return z[index];}
 	float get_r(int index)const {return radii[index];}
 	float get_w(int index)const {return weights[index];}
+	void set_x(unsigned int index, float xval) { 
+          if ( (index < x.size()) && (index >= 0) ) x[index] = xval;
+	}
+ 	void set_y(unsigned int index, float yval) { 
+           if ( (index < y.size()) && (index >= 0) ) y[index] = yval;
+	}
+ 	void set_z(unsigned int index, float zval) { 
+           if ( (index < z.size()) && (index >= 0) ) z[index] = zval;
+	}
 };
 
 

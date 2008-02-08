@@ -76,8 +76,14 @@ public:
 */
   bool part_of_volume(float x,float y,float z) const;
 
-
-
+//! Gets the value of the voxel located at (x,y,z)
+/** \param[in] x The position ( in angstroms) of the x coordinate
+    \param[in] y The position ( in angstroms) of the y coordinate
+    \param[in] z The position ( in angstroms) of the z coordinate
+    \return the value of the voxel located at (x,y,z)
+    \exception std::out_of_range The point is not covered by the grid.
+*/
+  float get_value(float x,float y,float z) const;
 
   //! Sets the origin of the header
   void set_origin(float x,float y,float z);

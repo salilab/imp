@@ -75,6 +75,7 @@ void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
 
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   //TODO: we need to decide who does the allocation ( mapreaderwriter or density)? if we keep the current implementation ( mapreaderwriter ) we need to pass a pointer to data
+  std::cout<<"start" << std::endl;
   if (reader.Read(filename,&data,header) != 0) {
     std::cerr << " DensityMap::Read unable to read map encoded in file : " << filename << std::endl;
     throw 1;
@@ -82,6 +83,9 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   normalized = false;
   calcRMS();
   calc_all_voxel2loc();
+  std::cout<<"before computer top" << std::endl;
+  header.compute_xyz_top();
+  std::cout<<"after computer top" << std::endl;
 }
 
 void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
@@ -130,6 +134,10 @@ bool DensityMap::part_of_volume(float x,float y,float z) const
     return false;
 
   }
+}
+
+float DensityMap::get_value(float x,float y,float z) const{
+  return data[loc2voxel(x,y,z)];
 }
 
 void DensityMap::calc_all_voxel2loc() {
