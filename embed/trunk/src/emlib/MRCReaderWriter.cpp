@@ -177,7 +177,7 @@ int MRCReaderWriter::read_header(void)
 // Write a MRC file
 int MRCReaderWriter::write(const char *fn,const float *pt)
 {
-  ofstream s(fn);
+  ofstream s(fn, ofstream::out | ofstream::binary);
   if(!s.fail()) {
     // Write header
     if(write_header(s)==1) {
