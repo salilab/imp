@@ -183,6 +183,17 @@ void  CoarseCC::calcDerivatives(const DensityMap &em_map,
       }
     }
     //tmp = access_p.get_w(ii) * 2.*inv_sigsq * scalefac * normfac /(1.0*nvox * em_header->rms * model_header->rms);
+    // validate the the model and em maps have some content.
+    if (em_header->rms < EPS) {
+      std::cerr << "CoarseCC::calcDerivatives : EM map is empty !" << std::endl;
+      std::cerr << "Exit in CoarseCC::calcDerivatives " << std::endl;
+      throw 1; 
+    };
+    if (model_header->rms < EPS) {
+      std::cerr << "CoarseCC::calcDerivatives : Model map is empty !" << std::endl;
+      std::cerr << "Exit in CoarseCC::calcDerivatives " << std::endl;
+      throw 1; 
+    };
     tmp = access_p.get_w(ii) * 2.*params->get_inv_sigsq() * scalefac * params->get_normfac() /
       (1.0*nvox * em_header->rms * model_header->rms);
     dvx[ii] =  tdvx * tmp;
