@@ -93,6 +93,18 @@ class ReadWriteMapsTests(unittest.TestCase):
         scene.Write(out_filename,mrc_rw)
         os.unlink(out_filename)
 
+    def test_emheader(self):
+        """test correct I/O of EM header"""
+        in_filename =  os.path.abspath("data/cube.em")
+        print "read in "+in_filename + " ..."
+        scene = EM.DensityMap()
+        em_rw = EM.EMReaderWriter()
+        scene.Read(in_filename, em_rw)
+        pixsize = scene.get_header().Objectpixelsize
+        print "ObjectPixelsize = " + str(pixsize)
+        self.assertEqual(3.0 ,scene.get_header().Objectpixelsize)
+        self.assertEqual(300. ,scene.get_header().voltage)
+
 
 if __name__ == '__main__':
     unittest.main()
