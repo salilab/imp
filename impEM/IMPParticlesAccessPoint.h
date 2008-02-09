@@ -61,6 +61,16 @@ public:
   float get_w(int ind) const {
     return model->get_particle(ind)->get_value(weight_key);
   }
+  void set_x(unsigned int ind, float xval) {
+    model->get_particle(ind)->set_value(x_key,xval);
+  }
+  void set_y(unsigned int ind, float yval) {
+    model->get_particle(ind)->set_value(y_key,yval);
+  }
+  void set_z(unsigned int ind, float zval) {
+    model->get_particle(ind)->set_value(z_key,zval);
+  }
+
   FloatKey get_x_key() const { return x_key;}
   FloatKey get_y_key() const { return y_key;}
   FloatKey get_z_key() const { return z_key;}
