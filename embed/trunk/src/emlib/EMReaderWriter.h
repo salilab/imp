@@ -184,11 +184,11 @@ public:
 
 class EMDLLEXPORT EMReaderWriter : public MapReaderWriter {
 public:
-  int Read(const char *filename, real **data, DensityHeader &header);
-  void Write(const char* filename,const real *data, const DensityHeader &header );
+  int Read(const char *filename,  float **data, DensityHeader &header);
+  void Write(const char* filename,const float *data, const DensityHeader &header );
 protected:
   int ReadHeader(ifstream &file,EMHeader &header);
-  int ReadData(ifstream &file, real **data, const EMHeader &header);
+  int ReadData(ifstream &file, float **data, const EMHeader &header);
   int WriteHeader(ostream& s, const EMHeader &header );
 };
 

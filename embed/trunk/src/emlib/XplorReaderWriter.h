@@ -7,7 +7,6 @@
 #include "DensityHeader.h"
 #include <iostream>
 #include <iomanip>
-typedef float real;
 using namespace std;  
 
 
@@ -52,11 +51,11 @@ public:
 
 class EMDLLEXPORT XplorReaderWriter : public MapReaderWriter {
 public:
-  int Read(const char *filename, real **data, DensityHeader &header);
-  void Write(const char *filename,const real *data, const DensityHeader &header );
+  int Read(const char *filename, float **data, DensityHeader &header);
+  void Write(const char *filename,const float *data, const DensityHeader &header );
 protected:
   int ReadHeader(ifstream & XPLORstream,XplorHeader &header);
-  int  ReadMap(ifstream &XPLORstream,real *data, XplorHeader &header);
+  int  ReadMap(ifstream &XPLORstream,float *data, XplorHeader &header);
 
 };
 

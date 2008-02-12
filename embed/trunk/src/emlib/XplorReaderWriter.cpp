@@ -1,5 +1,5 @@
 #include "XplorReaderWriter.h"
-int XplorReaderWriter::Read(const char *filename,real **data, DensityHeader &header) {
+int XplorReaderWriter::Read(const char *filename,float **data, DensityHeader &header) {
 
   ifstream XPLORstream(filename);
   //header
@@ -9,9 +9,9 @@ int XplorReaderWriter::Read(const char *filename,real **data, DensityHeader &hea
 
   //data
   int size = xheader.extent[0]*xheader.extent[1]*xheader.extent[2];
-  *data =  new real[size];
+  *data =  new float[size];
   if (*data == NULL) {
-    cout << "XplorReader::Read can not allocated space for data - the requested size: " << size * sizeof(real) << endl;
+    cout << "XplorReader::Read can not allocated space for data - the requested size: " << size * sizeof(float) << endl;
     return -1;
   }
   ReadMap(XPLORstream, *data, xheader);
@@ -91,7 +91,7 @@ int XplorReaderWriter::ReadHeader(ifstream & XPLORstream, XplorHeader &header)
 }
 
 
-int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, real *data, XplorHeader &header)
+int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, float *data, XplorHeader &header)
 {
 
   //reading the map according to the grid order.
@@ -169,7 +169,7 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, real *data, XplorHeader &
 }
 
 
-void XplorReaderWriter::Write(const char *filename,const real *data, const DensityHeader &header_ )  {
+void XplorReaderWriter::Write(const char *filename,const float *data, const DensityHeader &header_ )  {
   XplorHeader header(header_);
 
 

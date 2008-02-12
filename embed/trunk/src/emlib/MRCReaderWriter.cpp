@@ -3,7 +3,7 @@
 
 
 // Reads an MRC file and translates the header to the general DensityHeader
-int MRCReaderWriter::Read(const char *fn_in, real **data, DensityHeader &head)
+int MRCReaderWriter::Read(const char *fn_in, float **data, DensityHeader &head)
 {
   // Read file
   filename.assign(fn_in);
@@ -15,7 +15,7 @@ int MRCReaderWriter::Read(const char *fn_in, real **data, DensityHeader &head)
 
 
 // Writes an MRC file from the data and the general DensityHeader
-void MRCReaderWriter::Write(const char *fn_out, const real *data, const DensityHeader &head)
+void MRCReaderWriter::Write(const char *fn_out, const float *data, const DensityHeader &head)
 {
 	// Translate DensityHeader to MRCHeader and write
 	header.FromDensityHeader(head);
@@ -39,7 +39,7 @@ int MRCReaderWriter::read(float **pt)
 	}
 		// Allocate memory
       size_t n = header.nx*header.ny*header.nz;
-      (*pt)= new float [n]; 
+      (*pt)= new float[n]; 
       // read 
       if(read_data(*pt)==1)
 	{
@@ -55,13 +55,18 @@ int MRCReaderWriter::read(float **pt)
 // Reads the grid of data from a MRC file
 int MRCReaderWriter::read_data(float *pt)
 {
-	if(header.mode==0)
-		return read_8_data(pt);
-	else if(header.mode==2)
-		return read_32_data(pt);
-	else
-	    cout << "MRCReaderWriter::read_data >> This routine can only read 8-bit or 32-bit MRC files. Unknown mode for " << filename << endl;
-    return 1;
+  if(header.mode==0) {
+    cout << " read8 data" << endl;
+    return read_8_data(pt);
+  }
+  else if(header.mode==2) {
+    cout << "read32 data" << endl;
+    return read_32_data(pt);
+  }
+  else {
+    cout << "MRCReaderWriter::read_data >> This routine can only read 8-bit or 32-bit MRC files. Unknown mode for " << filename << endl;
+  }
+  return 1;
 }
 
 

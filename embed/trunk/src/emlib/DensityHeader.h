@@ -33,9 +33,6 @@ public:
     magic=6;
   }
 
-
-
-
   // a copy constructor is not defined in a class, the compiler  itself defines one. This will ensure a shallow copy. 
   //If the class does not have pointer variables with dynamically allocated memory, then one need not worry about defining a 
   //copy constructor. It can be left to the compiler's discretion.
