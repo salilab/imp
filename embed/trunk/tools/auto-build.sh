@@ -6,34 +6,34 @@
 # Should be run on the SVN server (or some other system that can access SVN
 # readonly without a password) from a crontab, e.g.
 #
-# 10 1 * * * /cowbell1/home/ben/impEM/tools/auto-build.sh
+# 10 1 * * * /cowbell1/home/ben/embed/tools/auto-build.sh
 #
 # In this case, the build user is in the apache group, and so has readonly
 # access to the repositories.
 
 VER=SVN
-IMPSVNDIR=file:///cowbell1/svn/impEM/trunk/
+EMBEDSVNDIR=file:///cowbell1/svn/embed/trunk/
 
 TMPDIR=/var/tmp/modeller-build-$$
 MODINSTALL=/diva1/home/modeller/.${VER}-new
-IMPSRCTGZ=${MODINSTALL}/build/sources/impEM.tar.gz
+EMBEDSRCTGZ=${MODINSTALL}/build/sources/embed.tar.gz
 
 rm -rf ${TMPDIR}
 mkdir ${TMPDIR}
 cd ${TMPDIR}
 
 # Get top-most revision number (must be a nicer way of doing this?)
-rev=$(svn log -q --limit 1 ${IMPSVNDIR} |grep '^r' | cut -f 1 -d' ')
+rev=$(svn log -q --limit 1 ${EMBEDSVNDIR} |grep '^r' | cut -f 1 -d' ')
 
-# Get impEM code from SVN
-svn export -q -${rev} ${IMPSVNDIR} impEM
+# Get EMBED code from SVN
+svn export -q -${rev} ${EMBEDSVNDIR} embed
 
 # Write out a version file
-verfile="${MODINSTALL}/build/impEM-version"
+verfile="${MODINSTALL}/build/embed-version"
 echo "${rev}" > $verfile
 
 # Write out a tarball:
-tar -czf ${IMPSRCTGZ} impEM
+tar -czf ${EMBEDSRCTGZ} embed
 
 # Cleanup
 cd /
