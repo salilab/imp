@@ -27,7 +27,6 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-typedef float real;
 class EMDLLEXPORT MapReaderWriter {
 public:
 //   friend  ostream& operator<<(ostream& s, const MapReaderWriter &m) { // write the map
@@ -37,8 +36,8 @@ public:
 //     m.Read(s);
 //   }
  
-  virtual int Read(const char *filename, real **data, DensityHeader &header){return 0;}
-  virtual void Write(const char *filename, const real *data, const DensityHeader &header){}
+  virtual int Read(const char *filename, float **data, DensityHeader &header){return 0;}
+  virtual void Write(const char *filename, const float *data, const DensityHeader &header){}
   virtual ~MapReaderWriter() {}
 
 };

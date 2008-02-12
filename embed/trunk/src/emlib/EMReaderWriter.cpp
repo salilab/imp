@@ -71,7 +71,7 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
 }
 
 
-int EMReaderWriter::Read(const char *filename, real **data, DensityHeader &header) {
+int EMReaderWriter::Read(const char *filename, float **data, DensityHeader &header) {
   ifstream file;
   file.open(filename, ifstream::in | ifstream::binary);
   if (!file.good()) {
@@ -95,7 +95,7 @@ int EMReaderWriter::Read(const char *filename, real **data, DensityHeader &heade
 
 
 
-void EMReaderWriter::Write(const char* filename,const real *data, const DensityHeader &header_ ) {
+void EMReaderWriter::Write(const char* filename,const float *data, const DensityHeader &header_ ) {
 
   
   
@@ -106,7 +106,7 @@ void EMReaderWriter::Write(const char* filename,const real *data, const DensityH
     header.type = 5;
   }
   WriteHeader(s,header);
-  s.write((char *) data,sizeof(real)*header.nx*header.ny*header.nz);
+  s.write((char *) data,sizeof(float)*header.nx*header.ny*header.nz);
   s.close();
 }
 
@@ -196,14 +196,14 @@ int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
 }
 
 
-int EMReaderWriter::ReadData(ifstream &file, real **data, const EMHeader &header) {
+int EMReaderWriter::ReadData(ifstream &file, float **data, const EMHeader &header) {
 
     int nvox = header.nx*header.ny*header.nz;
 
     // allocate data
-    *data = new real[nvox];
+    *data = new float[nvox];
     if (*data == NULL) {
-      cout << "EMReaderWriter::ReadData can not allocated space for data - the requested size: " << nvox*sizeof(real) << endl;
+      cout << "EMReaderWriter::ReadData can not allocated space for data - the requested size: " << nvox*sizeof(float) << endl;
       return -1;
     }
 

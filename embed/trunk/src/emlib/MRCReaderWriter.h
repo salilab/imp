@@ -94,8 +94,8 @@ public:
     filename=fn;
   }
   
-  int Read(const char *fn_in, real **data, DensityHeader &head);
-  void Write(const char *fn_out, const real *data, const DensityHeader &head);
+  int Read(const char *fn_in, float **data, DensityHeader &head);
+  void Write(const char *fn_out, const float *data, const DensityHeader &head);
 
 
 private:

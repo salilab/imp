@@ -10,8 +10,6 @@
 #include <stdexcept>
 #include "MapReaderWriter.h"
 
-typedef float real;
-
 //! Class for handeling density maps.
 /*	- CONVENTIONS
 	1) IT IS ASSUMED THAT THE LOCATION OF A VOXEL IS AT THE LOWER XYZ VALUES THAT IT DEFINES AS A BOX.
@@ -42,7 +40,7 @@ public:
   void reset_data(); 
 
   //! Calculates RMSD and mean of a map values are stored in the header. The header stores whether map is normalized.
-  float calcRMS();
+  real calcRMS();
 
 
   //!normailze the density according to standard deviation (stdv). The mean is subtracted from the map, which is then divided by the stdv 
@@ -83,7 +81,7 @@ public:
     \return the value of the voxel located at (x,y,z)
     \exception std::out_of_range The point is not covered by the grid.
 */
-  float get_value(float x,float y,float z) const;
+  real get_value(float x,float y,float z) const;
 
   //! Sets the origin of the header
   void set_origin(float x,float y,float z);
@@ -112,7 +110,7 @@ public:
       throw 1;
     }
     return z_loc;}
-  float* get_data() const {return data;}
+  real* get_data() const {return data;}
 
 
 //! Checks if two maps have the same 
@@ -142,13 +140,15 @@ protected:
 
 
   void allocated_data();
+  void float2real(float *f_data,real **r_data);
+  void real2float(real *r_data,float **f_data);
 
   DensityHeader header;
   real *data; // the order is ZYX (Z-slowest)
   bool data_allocated;
 
   // Locations for each of the voxels of the map (they are precomputed and each one is of size nvox, being nvox the size of the map)
-  real *x_loc,*y_loc,*z_loc;
+  float *x_loc,*y_loc,*z_loc;
   bool loc_calculated; // true if the locations have already been computed
 
   bool normalized;

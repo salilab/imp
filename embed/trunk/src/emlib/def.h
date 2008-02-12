@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-typedef float real;
+typedef double real;
 const  double PI  = 4.0*atan(1.0);
 const  float EPS = 0.000001;
 

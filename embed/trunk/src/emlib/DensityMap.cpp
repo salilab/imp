@@ -18,9 +18,9 @@ DensityMap::DensityMap(const DensityMap &other){
   header = other.header;
   int size = header.nx*header.ny*header.nz;
   data = new real[size];
-  x_loc = new real[size];
-  y_loc = new real[size];
-  z_loc = new real[size];
+  x_loc = new float[size];
+  y_loc = new float[size];
+  z_loc = new float[size];
   for (int i=0;i<header.nx*header.ny*header.nz;i++) {
     data[i] = other.data[i];
   }
@@ -76,10 +76,13 @@ void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   //TODO: we need to decide who does the allocation ( mapreaderwriter or density)? if we keep the current implementation ( mapreaderwriter ) we need to pass a pointer to data
   std::cout<<"start" << std::endl;
-  if (reader.Read(filename,&data,header) != 0) {
+  float *f_data;
+  if (reader.Read(filename,&f_data,header) != 0) {
     std::cerr << " DensityMap::Read unable to read map encoded in file : " << filename << std::endl;
     throw 1;
   }
+  float2real(f_data,&data);
+  delete[] f_data;
   normalized = false;
   calcRMS();
   calc_all_voxel2loc();
@@ -88,8 +91,29 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   std::cout<<"after computer top" << std::endl;
 }
 
+void DensityMap::float2real(float *f_data,real **r_data) {
+  int size = header.nx*header.ny*header.ny;
+  (*r_data)= new real[size]; 
+  for (int i=0;i<size;i++){
+    (*r_data)[i]=(real)(f_data)[i];
+  }
+}
+
+void DensityMap::real2float(real *r_data,float **f_data) {
+  int size = header.nx*header.ny*header.ny;
+  (*f_data)= new float[size]; 
+  for (int i=0;i<size;i++){
+    (*f_data)[i]=(float)(r_data)[i];
+  }
+}
+
+
+
 void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
-  writer.Write(filename,data,header);
+  float *f_data;
+  real2float(data,&f_data);
+  writer.Write(filename,f_data,header);
+  delete[] f_data;
 }
 
 // void DensityMap::Write(const string &filename, MapReaderWriter &writer) {
@@ -136,7 +160,7 @@ bool DensityMap::part_of_volume(float x,float y,float z) const
   }
 }
 
-float DensityMap::get_value(float x,float y,float z) const{
+real DensityMap::get_value(float x,float y,float z) const{
   return data[loc2voxel(x,y,z)];
 }
 
@@ -195,16 +219,16 @@ void DensityMap::std_normalize() {
 
 
 
-float DensityMap::calcRMS() {
+real DensityMap::calcRMS() {
 
   if (rms_calculated) {
     return header.rms;
   }
 
-  float max_value=-1e40, min_value=1e40;
+  real max_value=-1e40, min_value=1e40;
   int  nvox = header.nx * header.ny * header.nz;
-  float meanval = .0;
-  float stdval = .0;
+  real meanval = .0;
+  real stdval = .0;
 
   for (int ii=0;ii<nvox;ii++) {
     meanval +=  data[ii];
