@@ -129,6 +129,7 @@ namespace IMP {
 %include "IMP/restraints/BondDecoratorRestraint.h"
 %include "IMP/restraints/ListRestraint.h"
 %include "IMP/score_states/BondedListScoreState.h"
+%include "IMP/score_states/MaxChangeScoreState.h"
 %include "IMP/score_states/NonbondedListScoreState.h"
 %include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 %include "IMP/score_states/bonded_lists/BondDecoratorListScoreState.h"

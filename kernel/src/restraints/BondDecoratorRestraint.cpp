@@ -33,6 +33,10 @@ Float BondDecoratorRestraint::evaluate(DerivativeAccumulator *accum)
     }
     if (s <0) s=1;
     try {
+      /*IMP_LOG(VERBOSE, "Bonded pair " 
+              << bd.get_bonded(0).get_particle()->get_index()
+              << " " << bd.get_bonded(1).get_particle()->get_index()
+              << " with length " << l << " and stiffness " << s << std::endl);*/
       sum+= 
         internal::evaluate_distance_pair_score(bd.get_bonded(0).get_particle(),
                                                bd.get_bonded(1).get_particle(),

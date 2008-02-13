@@ -26,20 +26,24 @@ class IMPDLLEXPORT BipartiteNonbondedListScoreState:
     public NonbondedListScoreState
 {
   typedef NonbondedListScoreState P;
-  Particles ps_;
+  std::auto_ptr<MaxChangeScoreState> mc_;
 
-  void rescan();
+  virtual void rescan(float cut);
   void set_particles(const Particles &ps0) {
     // hide the parent's version
   }
 public:
   BipartiteNonbondedListScoreState(const Particles &ps0,
-                                   const Particles &ps1);
+                                   const Particles &ps1,
+                                   float target_side);
   virtual ~BipartiteNonbondedListScoreState();
 
   IMP_SCORE_STATE("0.5", "Daniel Russel");
 
   void set_particles(const Particles &ps0, const Particles &ps1);
+  const Particles &get_particles() const {
+    return mc_->get_particles();
+  }
 };
 
 } // namespace IMP
