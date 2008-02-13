@@ -112,6 +112,7 @@ namespace IMP {
 %include "IMP/optimizers/ConjugateGradients.h"
 %include "IMP/optimizers/MolecularDynamics.h"
 %include "IMP/optimizers/states/VRMLLogOptimizerState.h"
+%include "IMP/optimizers/states/CMMLogOptimizerState.h"
 %include "IMP/pair_scores/DistancePairScore.h"
 %include "IMP/pair_scores/SphereDistancePairScore.h"
 %include "IMP/singleton_scores/DistanceToSingletonScore.h"
