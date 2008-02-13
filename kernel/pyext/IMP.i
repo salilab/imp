@@ -55,11 +55,14 @@ namespace IMP {
   %pythonprepend ListRestraint::ListRestraint %{
         args[1].thisown=0
   %}
+  %pythonprepend ConnectivityRestraint::ConnectivityRestraint %{
+        args[0].thisown=0
+  %}
   %pythonprepend DistancePairScore::DistancePairScore %{
         args[1].thisown=0
   %}
-  %pythonprepend SphericalDistancePairScore::SphericalDistancePairScore %{
-        args[1].thisown=0
+  %pythonprepend SphereDistancePairScore::SphereDistancePairScore %{
+        args[0].thisown=0
   %}
   %pythonprepend DistanceToSingletonScore::DistanceToSingletonScore %{
         args[1].thisown=0

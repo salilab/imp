@@ -7,313 +7,133 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
-
-#include <cmath>
-
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
 #include "IMP/log.h"
 #include "IMP/restraints/ConnectivityRestraint.h"
-#include "../mystdexcept.h"
+#include "IMP/PairScore.h"
+
+#include <cmath>
+#include <set>
 
 namespace IMP
 {
 
-//! Constructor using a given mean for particle-particle expected distance.
-/**
-    \param[in] model Pointer to the model.
-    \param[in] particle_indexes Vector of particle indices. \todo Should use
-               Particle pointers instead.
-    \param[in] type The attribute used to determine if particles are equivalent.
-    \param[in] score_func_params Parameters for creating a score function.
- */
-ConnectivityRestraint::ConnectivityRestraint(Model* model,
-    std::vector<int>& particle_indexes, IntKey type,
-    BasicScoreFuncParams* score_func_params)
+
+ConnectivityRestraint::ConnectivityRestraint(PairScore *ps): ps_(ps)
 {
-  std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
-
-  set_up(model, particle_indexes, type);
-
-  // set up the restraints
-  rs_iter = rsr_scores_.begin();
-  for (int i = 0; i < num_particles_ - 1; i++) {
-    for (int j = i + 1; j < num_particles_; j++) {
-      if (particle_type_[j] != particle_type_[i]) {
-        if (rs_iter == rsr_scores_.end()) {
-          IMP_failure("Over ran the calculated number of restraints in "
-                      "ConnectivityRestraint",
-                      std::out_of_range("Over ran the calculated number of "
-                                        "restraints"));
-        } else {
-          rs_iter->part1_type_ = particle_type_[i];
-          rs_iter->part2_type_ = particle_type_[j];
-
-          // create the restraint
-          UnaryFunction *sf = score_func_params->create_score_func();
-          rs_iter->rsr_ = new DistanceRestraint(get_particle(i),
-                                                get_particle(j),
-                                                sf);
-          ++rs_iter;
-        }
-      }
-    }
-  }
-
-  IMP_LOG(VERBOSE,
-          "Number of types: " << num_types_ << "  max_type_: " << max_type_ <<
-          "  num_restraints_: " << num_restraints_ << "  num_particles_: " <<
-          num_particles_ << std::endl);
+  clear_sets();
 }
 
 
-//! Constructor using a given attribute for particle-particle expected distance.
-/** \param[in] model Pointer to the model.
-    \param[in] particle_indexes Vector of particle indices. \todo Should use
-               Particle pointers instead.
-    \param[in] type The attribute used to determine if particles are equivalent.
-    \param[in] attr_name Name to get radii to calculate the mean distance.
-    \param[in] score_func_params Parameters for creating a score function.
- */
-ConnectivityRestraint::ConnectivityRestraint(Model* model,
-    std::vector<int>& particle_indexes, IntKey type,
-    FloatKey attr_name, BasicScoreFuncParams* score_func_params)
-{
-  std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
-
-  IMP_LOG(VERBOSE, "ConnectivityRestraint constructor");
-  set_up(model, particle_indexes, type);
-
-  // set up the restraints
-  Float actual_mean;
-  rs_iter = rsr_scores_.begin();
-  for (int i = 0; i < num_particles_ - 1; i++) {
-    for (int j = i + 1; j < num_particles_; j++) {
-      if (particle_type_[j] != particle_type_[i]) {
-        if (rs_iter == rsr_scores_.end()) {
-          IMP_failure("Over ran the calculated number of restraints in "
-                      "ConnectivityRestraint",
-                      std::out_of_range("Over ran the calculated number of "
-                                        "restraints"));
-        } else {
-          rs_iter->part1_type_ = particle_type_[i];
-          rs_iter->part2_type_ = particle_type_[j];
-
-          // Use those radii to calculate the expected distance
-          Float fi = get_particle(i)->get_value(attr_name);
-          Float fj = get_particle(j)->get_value(attr_name);
-          actual_mean = fi + fj;
-
-          score_func_params->set_mean(actual_mean);
-
-          // create the restraint
-          UnaryFunction *sf = score_func_params->create_score_func();
-          rs_iter->rsr_ = new DistanceRestraint(get_particle(i),
-                                                get_particle(j),
-                                                sf);
-          ++rs_iter;
-        }
-      }
-    }
-  }
-
-  IMP_LOG(VERBOSE,
-          "Number of types: " << num_types_ << "  max_type_: " << max_type_ <<
-          "  num_restraints_: " << num_restraints_ << "  num_particles_: " <<
-          num_particles_ << std::endl);
-}
-
-
-//! Set up initial values for the constructors.
-/** \param[in] model Pointer to the model.
-    \param[in] particle_indexes Vector of particle indices. \todo Should use
-               Particle pointers instead.
-    \param[in] type The attribute used to determine if particles are equivalent.
- */
-void ConnectivityRestraint::set_up(Model* model,
-                                   std::vector<int>& particle_indexes,
-                                   IntKey type)
-{
-  Particle* p1;
-
-  IMP_LOG(VERBOSE, "init ConnectivityRestraint");
-
-  //IMP_LOG(VERBOSE, "got model data " << model_data_);
-
-  /** number of particles in the restraint */
-  num_particles_ = particle_indexes.size();
-  particle_type_.resize(num_particles_);
-
-  IMP_LOG(VERBOSE, "set up particle types");
-  type_ = type;
-  // set up the particles, their position indexes, and their type indexes
-  for (int i = 0; i < num_particles_; i++) {
-    p1 = model->get_particle(particle_indexes[i]);
-    add_particle(p1);
-    //type_.push_back(p1->get_attribute(type));
-  }
-
-  IMP_LOG(VERBOSE, "Size of particles: " << number_of_particles()
-          << "  num_particles_: "
-          << num_particles_ << "  particle_type_: " << particle_type_.size());
-  IMP_LOG(VERBOSE, "Figure out number of types");
-  // figure out how many types there are
-  int next_type;
-  max_type_ = 0;
-  num_types_ = 0;
-  for (int i = 0; i < num_particles_; i++) {
-    next_type = get_particle(i)->get_value(type_);
-    if (max_type_ < next_type) {
-      max_type_ = next_type;
-    }
-
-    num_types_++;
-    particle_type_[i] = next_type;
-    // if this type already was used, decrement numbe of types
-    for (int j = 0; j < i; j++) {
-      if (particle_type_[j] == next_type) {
-        num_types_--;
-        break;
-      }
-    }
-  }
-
-  // types can range from 0 to max_type_ - 1
-  max_type_++;
-  IMP_LOG(VERBOSE, "Max types: " << max_type_);
-
-  IMP_LOG(VERBOSE, "Figure out number of restraints");
-  // figure out how many restraints there are
-  // Could use num_restraints = sum((S-si)si)) where is total number of
-  // particles and si is number of particles of type i (summed over all types)
-  num_restraints_ = num_particles_ * (num_particles_ - 1) / 2;
-  for (int i = 0; i < num_particles_ - 1; i++) {
-    for (int j = i + 1; j < num_particles_; j++) {
-      if (particle_type_[j] == particle_type_[i]) {
-        num_restraints_--;
-      }
-    }
-  }
-
-  IMP_LOG(VERBOSE, "Num restraints: " << num_restraints_);
-  // use number of restraints and number of types to set up some of the
-  // ... main arrays
-  tree_id_.resize(max_type_);
-  rsr_scores_.resize(num_restraints_);
-}
-
-//! Destructor
 ConnectivityRestraint::~ConnectivityRestraint()
 {
-  std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
-
-  for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
-    delete(rs_iter->rsr_);
-  }
 }
 
+struct Pair {
+  typedef Pair This;
+  Pair(){p_[0]=-1; p_[1]=-1;}
+  Pair(int a, int b){
+    p_[0]= std::min(a,b);
+    p_[1]= std::max(a,b);
+  }
+  int operator[](unsigned int i) const {
+    return p_[i];
+  }
+  bool is_default() const {
+    return p_[0] < 0 && p_[1] < 0;
+  }
+  IMP_COMPARISONS_2(p_[0], p_[1]);
+  int p_[2];
+};
 
-//! Evaluate this restraint and return the score.
-/** Calculate the distance restraints for the given particles. Use the smallest
-    restraints that will connect one particle of each type together (i.e. a
-    minimum spanning tree with nodes corresponding to particle types and the
-    edge weights corresponding to restraint violation scores).
+void ConnectivityRestraint::add_set(const Particles &ps)
+{
+  IMP_check(!ps.empty(), "Cannot add empty set to ConnectivityRestraint",
+            InvalidStateException("Empty set"));
+  unsigned int sz= ps.size();
+  Restraint::add_particles(ps);
+  set_offsets_.push_back(set_offsets_.back()+sz);
+}
 
-    \param[in] accum If not NULL, use this object to accumulate partial first
-                     derivatives.
-    \return score associated with this restraint for the given state of
-            the model.
- */
+void ConnectivityRestraint::clear_sets()
+{
+  set_offsets_.clear();
+  Restraint::clear_particles();
+  set_offsets_.push_back(0);
+}
+
 Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
 {
-  IMP_LOG(VERBOSE, "evaluate ConnectivityRestraint");
-
-  std::list<ConnectivityRestraint::RestraintScore>::iterator rs_iter;
-
-  // calculate the scores for all of the restraints
-  IMP_LOG(VERBOSE, "calculate restraint scores");
-  for (rs_iter = rsr_scores_.begin(); rs_iter != rsr_scores_.end(); ++rs_iter) {
-    rs_iter->evaluate();
-  }
-
-  // sort by the scores
-  rsr_scores_.sort();
-
-  // calculate the minmimum spanning tree
-  IMP_LOG(VERBOSE, "calc spanning tree");
-  int max_tree_id = 0;
-
-  // initially there are no trees
-  for (int i = 0; i < max_type_; i++) {
-    tree_id_[i] = 0;
-  }
-
-  // start with the lowest score_ edges and work our way up
-  Float score = 0.0;
-  int num_edges = 0;
-  int type1, type2;
-  for (rs_iter = rsr_scores_.begin();
-       (rs_iter != rsr_scores_.end()) && (num_edges < num_types_ - 1);
-       ++rs_iter) {
-    type1 = rs_iter->part1_type_;
-    type2 = rs_iter->part2_type_;
-
-    IMP_LOG(VERBOSE, "Test for " << type1 << " " << type2);
-    // if neither particle is in a tree, create a new tree
-    if (!tree_id_[type1] && !tree_id_[type2]) {
-      max_tree_id++;
-      tree_id_[type1] = max_tree_id;
-      tree_id_[type2] = max_tree_id;
-
-      num_edges++;
-      IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
-      score += rs_iter->rsr_->evaluate(accum);
-    }
-
-    // if only one particle is already in a tree, add the other particle
-    // to that tree
-    else if (!tree_id_[type1] || !tree_id_[type2]) {
-      if (tree_id_[type1]) {
-        tree_id_[type2] = tree_id_[type1];
-      } else {
-        tree_id_[type1] = tree_id_[type2];
-      }
-
-      num_edges++;
-      IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
-      score += rs_iter->rsr_->evaluate(accum);
-    }
-
-    // both particles are already in trees
-    // if they are already in the same tree, do nothing
-    // otherwise, merge the two trees
-    else {
-      if (tree_id_[type1] != tree_id_[type2]) {
-        int old_tree_num = tree_id_[type1];
-        int new_tree_num = tree_id_[type2];
-
-        for (int j = 0; j < max_type_; j++) {
-          if (tree_id_[j] == old_tree_num) {
-            tree_id_[j] = new_tree_num;
-          }
+  IMP_CHECK_OBJECT(ps_.get());
+  unsigned int num_sets= set_offsets_.size()-1;
+  typedef std::vector<std::pair<Pair, float> > Edges;
+  typedef std::map<Pair, Edges> EMap;
+  EMap edges;
+  for (unsigned int i=0; i< num_sets; ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      Pair cp(i,j);
+      for (unsigned int ii= set_offsets_[i]; ii != set_offsets_[i+1]; ++ii) {
+        for (unsigned int ij= set_offsets_[j]; ij != set_offsets_[j+1]; ++ij) {
+          Pair pp(ii, ij);
+          float d= ps_->evaluate(get_particle(ii), get_particle(ij), NULL);
+          edges[cp].push_back(std::make_pair(pp,d));
         }
-
-        num_edges++;
-        IMP_LOG(VERBOSE, "Evaluate for " << type1 << " " << type2);
-        score += rs_iter->rsr_->evaluate(accum);
       }
     }
   }
 
-  return score;
+  std::set<int> in;
+  in.insert(0);
+  Edges picked_edges;
+  while (in.size() != num_sets) {
+    float best=std::numeric_limits<float>::max();
+    Pair best_edge, best_sets;
+    IMP_assert(!edges.empty(), "No more edges :-(");
+    for (EMap::iterator it = edges.begin(); it != edges.end(); ++it) {
+      Pair pit= it->first;
+      /*IMP_LOG(VERBOSE, "Looking at edges between " << pit[0] << " " 
+        << pit[1] << std::endl);*/
+      IMP_assert(in.find(pit[0]) == in.end() 
+                 || in.find(pit[1]) == in.end(), 
+                 "Edge only involves already visited nodes");
+      if (in.find(pit[0]) == in.end() && in.find(pit[1]) == in.end()) {
+        // want to maintain a connected tree
+        continue;
+      }
+      for (unsigned int i=0; i< it->second.size(); ++i) {
+        if (it->second[i].second < best) {
+          best= it->second[i].second;
+          best_edge= it->second[i].first;
+          IMP_assert(best_edge != Pair(), "Bad pair");
+          best_sets= it->first;
+        }
+      }
+    }
+    int newi=best_sets[0];
+    if (in.find(newi) != in.end()) newi= best_sets[1];
+
+    IMP_LOG(VERBOSE, "Adding set " << newi << " with score " 
+            << best << std::endl);
+    picked_edges.push_back(std::make_pair(best_edge, best));
+    in.insert(newi);
+    IMP_assert(edges.find(best_sets) != edges.end(),
+               "Where did they go?");
+    /*IMP_LOG(VERBOSE, "Removing edges " << best_sets[0] << " " 
+      << best_sets[1] << std::endl);*/
+    edges.erase(best_sets);
+  }
+
+  float sum=0;
+  // could be more clever if accum is NULL
+  for (unsigned int i=0; i< picked_edges.size(); ++i) {
+    sum+= ps_->evaluate(get_particle(picked_edges[i].first[0]),
+                        get_particle(picked_edges[i].first[1]),
+                        accum);
+  }
+  return sum;
 }
 
-
-/**
-  Show the current restraint.
-
- \param[in] out Stream to send restraint description to.
- */
 
 void ConnectivityRestraint::show(std::ostream& out) const
 {
@@ -325,7 +145,6 @@ void ConnectivityRestraint::show(std::ostream& out) const
 
   out << "version: " << version() << "  ";
   out << "last_modified_by: " << last_modified_by() << std::endl;
-  out << "  num particles:" << num_particles_;
 }
 
 }  // namespace IMP
