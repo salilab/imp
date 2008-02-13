@@ -17,12 +17,14 @@ namespace IMP
 template <class V>
 class Grid3D;
 
-namespace internal
-{
-
 template <class GI>
 class GridIndexIterator;
 
+//! Represent an index into an infinite grid
+/** The index entries can be positive or negative and do not need to correspond
+    directly to cells in the grid. They get mapped on to actual grid cells
+    by various functions.
+ */
 class VirtualGridIndex
 {
   typedef VirtualGridIndex This;
@@ -31,6 +33,7 @@ class VirtualGridIndex
     return d_[0]==std::numeric_limits<int>::max();
   }
 public:
+  //! Create a grid cell from three arbitrary indexes
   VirtualGridIndex(int x, int y, int z) {
     d_[0]=x;
     d_[1]=y;
@@ -39,6 +42,7 @@ public:
   VirtualGridIndex() {
     d_[0]=d_[1]=d_[2]=std::numeric_limits<int>::max();
   }
+  //! Get the ith component (i=0,1,2)
   int operator[](unsigned int i) const {
     IMP_assert(i <3, "Bad i");
     return d_[i];
@@ -54,9 +58,14 @@ public:
 
 IMP_OUTPUT_OPERATOR(VirtualGridIndex);
 
+//! Iterate through grid cells in a cube
+/** The order of iteration is unspecified. 
+ */
 template <class GI>
 class GridIndexIterator
 {
+  template <class V>
+  friend class Grid3D;
   VirtualGridIndex lb_;
   VirtualGridIndex ub_;
   GI cur_;
@@ -64,18 +73,19 @@ class GridIndexIterator
   bool is_default() const {
     return false;
   }
-public:
-  typedef const GI& reference_type;
-  typedef const GI* pointer_type;
-  typedef GI value_type;
-  typedef std::forward_iterator_tag iterator_category;
-  typedef unsigned int difference_type;
   GridIndexIterator(VirtualGridIndex lb,
                     VirtualGridIndex ub): lb_(lb),
                                           ub_(ub), cur_(lb[0], lb[1], lb[2]) {
     IMP_assert(ub_.strictly_larger_than(lb_),
                "Invalid range in GridIndexIterator");
   }
+public:
+  typedef const GI& reference_type;
+  typedef const GI* pointer_type;
+  typedef GI value_type;
+  typedef std::forward_iterator_tag iterator_category;
+  typedef unsigned int difference_type;
+
   GridIndexIterator(){}
 
   IMP_COMPARISONS_1(cur_);
@@ -118,9 +128,11 @@ public:
   }
 };
 
-} // namespace internal
-
-class GridIndex: public internal::VirtualGridIndex
+//! Represent a real cell in a grid
+/** These indexes represent an actual cell in the grid with no mapping.
+    They can only be constructed by the grid. 
+ */
+class GridIndex: public VirtualGridIndex
 {
 public:
   GridIndex(): VirtualGridIndex() {
@@ -129,7 +141,7 @@ protected:
   template <class V>
   friend class Grid3D;
   template <class G>
-  friend class internal::GridIndexIterator;
+  friend class GridIndexIterator;
   GridIndex(int x, int y, int z): VirtualGridIndex(x,y,z) {
     IMP_check(x>=0 && y>=0 && z>=0, "Bad indexes in grid index",
               IndexException("Bad indexes in GridIndex"));
@@ -152,7 +164,7 @@ public:
   /** Such an index can refer to voxels outside of the grid
       or with negative indices.
    */
-  typedef internal::VirtualGridIndex VirtualIndex;
+  typedef VirtualGridIndex VirtualIndex;
 
 private:
   std::vector<VT> data_;
@@ -342,7 +354,7 @@ public:
   /** The iterator iterates though the valid indexes bounded
       by the VirtualIndex
    */
-  typedef internal::GridIndexIterator<Index> IndexIterator;
+  typedef GridIndexIterator<Index> IndexIterator;
   IndexIterator indexes_begin(VirtualIndex lb, 
                               VirtualIndex ub) const {
     std::pair<Index, VirtualIndex> bp= intersect(lb,ub);
