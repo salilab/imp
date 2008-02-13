@@ -52,10 +52,16 @@ namespace IMP {
   %pythonprepend BondDecoratorRestraint::BondDecoratorRestraint %{
         args[1].thisown=0
   %}
+  %pythonprepend ListRestraint::ListRestraint %{
+        args[1].thisown=0
+  %}
   %pythonprepend DistancePairScore::DistancePairScore %{
         args[1].thisown=0
   %}
   %pythonprepend SphericalDistancePairScore::SphericalDistancePairScore %{
+        args[1].thisown=0
+  %}
+  %pythonprepend DistanceToSingletonScore::DistanceToSingletonScore %{
         args[1].thisown=0
   %}
 }
@@ -86,6 +92,7 @@ namespace IMP {
 %include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/PairScore.h"
+%include "IMP/SingletonScore.h"
 %include "IMP/Particle.h"
 %include "IMP/Vector3D.h"
 %include "IMP/DecoratorBase.h"
@@ -104,6 +111,7 @@ namespace IMP {
 %include "IMP/optimizers/states/VRMLLogOptimizerState.h"
 %include "IMP/pair_scores/DistancePairScore.h"
 %include "IMP/pair_scores/SphereDistancePairScore.h"
+%include "IMP/singleton_scores/DistanceToSingletonScore.h"
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/AngleRestraint.h"
 %include "IMP/restraints/DihedralRestraint.h"
@@ -115,6 +123,7 @@ namespace IMP {
 %include "IMP/restraints/ExclusionVolumeRestraint.h"
 %include "IMP/restraints/NonbondedRestraint.h"
 %include "IMP/restraints/BondDecoratorRestraint.h"
+%include "IMP/restraints/ListRestraint.h"
 %include "IMP/score_states/BondedListScoreState.h"
 %include "IMP/score_states/NonbondedListScoreState.h"
 %include "IMP/score_states/BipartiteNonbondedListScoreState.h"
