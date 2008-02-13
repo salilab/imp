@@ -21,6 +21,9 @@ class NonbondedListScoreState;
 class PairScore;
 
 //! Restrain all pairs of non-bonded particles
+/**
+   \ingroup restraint
+ */
 class IMPDLLEXPORT NonbondedRestraint : public Restraint
 {
 public:

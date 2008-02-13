@@ -27,6 +27,8 @@ class UnaryFunction;
 
     The bond stiffness is assumed to be 1 if it is not specified in
     the bond. This can become a parameter eventually.
+
+    \ingroup bond
  */
 class IMPDLLEXPORT BondDecoratorRestraint : public Restraint
 {
@@ -36,7 +38,7 @@ public:
       of bonds.
       \param[in] f The UnaryFunction to apply to the particles.
    */
-  BondDecoratorRestraint(BondDecoratorListScoreState *nbl, UnaryFunction *f);
+  BondDecoratorRestraint(BondDecoratorListScoreState *bl, UnaryFunction *f);
   virtual ~BondDecoratorRestraint(){}
 
   IMP_RESTRAINT("0.5", "Daniel Russel");

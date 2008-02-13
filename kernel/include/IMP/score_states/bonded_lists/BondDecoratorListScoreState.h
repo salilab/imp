@@ -21,6 +21,7 @@ typedef Index<BondDecoratorListScoreState> BondDecoratorListIndex;
 //! Keep track of particles that are connected by BondDecorator bonds.
 /** We also may want to add lazy rescanning of bonds rather than doing
     it every update call and a faster lookup of bonds.
+    \ingroup bond
  */
 class IMPDLLEXPORT BondDecoratorListScoreState: public BondedListScoreState
 {
@@ -32,7 +33,6 @@ public:
    */
   BondDecoratorListScoreState(const Particles &ps);
   virtual ~BondDecoratorListScoreState(){}
-  //IMP_SCORE_STATE("0.5", "Daniel Russel");
 
   virtual void set_particles(const Particles &ps);
 
@@ -41,7 +41,7 @@ public:
   virtual void update();
 
   //! This iterates through the pairs of bonded particles
-  /** \precondition update() must be called first for this to be valid.
+  /** \note update() must be called first for this to be valid.
    */
   typedef std::vector<BondDecorator>::const_iterator BondIterator;
   BondIterator bonds_begin() const {

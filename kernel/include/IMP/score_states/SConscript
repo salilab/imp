@@ -2,7 +2,7 @@ import os.path
 Import('env')
 
 files = ['BondedListScoreState.h', 'NonbondedListScoreState.h',
-         'BipartiteNonbondedListScoreState.h']
+         'BipartiteNonbondedListScoreState.h', 'MaxChangeScoreState.h']
 
 
 # Install the include files:
