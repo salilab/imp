@@ -16,6 +16,8 @@ namespace IMP
 {
 
 //! Simple 3D vector class
+/** \ingroup helper
+ */
 class IMPDLLEXPORT Vector3D
 {
 public:
@@ -25,6 +27,9 @@ public:
     vec_[1] = y;
     vec_[2] = z;
   }
+
+  //! Default constructor
+  Vector3D() {}
 
   //! \return A single component of this vector (0-2).
   Float get_component(int i) const {
