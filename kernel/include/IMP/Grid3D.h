@@ -54,22 +54,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(VirtualGridIndex);
 
-class GridIndex: public VirtualGridIndex
-{
-public:
-  GridIndex(): VirtualGridIndex() {
-  }
-protected:
-  template <class V>
-  friend class IMP::Grid3D;
-  template <class G>
-  friend class GridIndexIterator;
-  GridIndex(int x, int y, int z): VirtualGridIndex(x,y,z) {
-    IMP_check(x>=0 && y>=0 && z>=0, "Bad indexes in grid index",
-              IndexException("Bad indexes in GridIndex"));
-  }
-};
-
 template <class GI>
 class GridIndexIterator
 {
@@ -136,6 +120,22 @@ public:
 
 } // namespace internal
 
+class GridIndex: public internal::VirtualGridIndex
+{
+public:
+  GridIndex(): VirtualGridIndex() {
+  }
+protected:
+  template <class V>
+  friend class Grid3D;
+  template <class G>
+  friend class internal::GridIndexIterator;
+  GridIndex(int x, int y, int z): VirtualGridIndex(x,y,z) {
+    IMP_check(x>=0 && y>=0 && z>=0, "Bad indexes in grid index",
+              IndexException("Bad indexes in GridIndex"));
+  }
+};
+
 /** \brief A voxel grid in 3D space.
     VT can be any class.
  */
@@ -147,7 +147,7 @@ public:
   typedef VT VoxelData;
 
   //! An index that refers to a real voxel
-  typedef internal::GridIndex Index;
+  typedef GridIndex Index;
   //! An index that refers to a voxel that may or may not exist
   /** Such an index can refer to voxels outside of the grid
       or with negative indices.
