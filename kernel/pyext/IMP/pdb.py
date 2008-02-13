@@ -28,7 +28,7 @@ def copy_atom(a, model):
     ap.set_z(a.z)
     hp= IMP.MolecularHierarchyDecorator.create(p)
     hp.set_type(IMP.MolecularHierarchyDecorator.ATOM)
-    ap.set_type(IMP.AtomType(a.type.name))
+    ap.set_type(IMP.AtomType(a.name))
     #IMP.NameDecorator.create(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
         ap.set_charge(a.charge)
