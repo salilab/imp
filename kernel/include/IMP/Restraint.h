@@ -24,6 +24,12 @@ namespace IMP
 
 class Model;
 
+/** \defgroup restraint General purpose restraints
+    Classes to define and help in defining restraints. The restraints
+    typically involve a Restraint which defines the set of tuples of Particles
+    and then various functions which are applied to the tuples.
+ */
+
 //! Abstract class for representing restraints
 class IMPDLLEXPORT Restraint : public Object
 {
@@ -37,7 +43,7 @@ public:
                        derivatives.
       \return Current score.
    */
-  virtual Float evaluate(DerivativeAccumulator *) = 0;
+  virtual Float evaluate(DerivativeAccumulator *accum) = 0;
 
   //! Set whether the restraint is active i.e. if it should be evaluated.
   /** \param[in] is_active If true, the restraint is active.
@@ -80,6 +86,7 @@ public:
   Particle *get_particle(unsigned int i) const;
 
   int add_particle(Particle *p) {
+    IMP_CHECK_OBJECT(p);
     IMP_assert(p != NULL, "Can't add NULL particle");
     particles_.push_back(p);
     IMP_assert(particles_[0]->get_model() == particles_.back()->get_model(),
@@ -104,9 +111,11 @@ public:
     return particles_.clear();
   }
 
-  //! Replace the set of particles used by the restraint
-  void set_particles(const Particles &ps) {
-    particles_= ps;
+  //! Add a bunch of particles together
+  /** This is a very common operation and the bulk add will be faster
+   */
+  void add_particles(const Particles &ps) {
+    particles_.insert(particles_.end(), ps.begin(), ps.end());
   }
 
 private:
