@@ -9,6 +9,7 @@
 #define __IMP_DECORATOR_BASE_H
 
 #include "Object.h"
+#include "Particle.h"
 
 namespace IMP
 {

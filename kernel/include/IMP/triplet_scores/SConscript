@@ -1,0 +1,9 @@
+import os.path
+Import('env')
+
+files = ['AngleTripletScore.h']
+
+# Install the include files:
+includedir = os.path.join(env['includedir'], 'IMP', 'triplet_scores')
+inst = env.Install(includedir, files)
+env.Alias('install', inst)

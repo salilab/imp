@@ -7,7 +7,7 @@ files = ['base_types.h', 'Index.h', 'Model.h',
          'Key.h', 'AttributeTable.h', 'utility.h', 'Restraint.h', 'Optimizer.h',
          'DecoratorBase.h', 'Object.h', 'Vector3D.h', 'ScoreFuncParams.h',
          'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h', 'macros.h',
-         'Grid3D.h']
+         'Grid3D.h', 'TripletScore.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP')
@@ -21,4 +21,5 @@ SConscript('decorators/SConscript')
 SConscript('unary_functions/SConscript')
 SConscript('pair_scores/SConscript')
 SConscript('singleton_scores/SConscript')
+SConscript('triplet_scores/SConscript')
 SConscript('score_states/SConscript')
