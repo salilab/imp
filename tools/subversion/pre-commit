@@ -21,10 +21,12 @@ def check_c_file(filename, txn, repos, errors):
     cmd = [svnlook, 'cat', '-t', txn, repos, filename]
     pipe = Popen(cmd, shell=False, stdout=PIPE).stdout
     srch = re.compile('\s+$')
+    url = re.compile('https?://')
     blank = False
     for (num, line) in enumerate(pipe):
         line = line.rstrip('\r\n')
-        if len(line) > 80:
+        # No way to split URLs, so let them exceed 80 characters:
+        if len(line) > 80 and not url.search(line):
             errors.append('Line %d in %s is longer than 80 characters.' \
                           % (num+1, filename))
         if line.find('\t') >= 0:

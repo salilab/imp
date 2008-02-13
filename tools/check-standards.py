@@ -9,10 +9,12 @@ def check_c_file(filename, errors):
     """Check each modified C file to make sure it adheres to the standards"""
     fh = file(filename, "r")
     srch = re.compile('\s+$')
+    url = re.compile('https?://')
     blank = False
     for (num, line) in enumerate(fh):
         line = line.rstrip('\r\n')
-        if len(line) > 80:
+        # No way to split URLs, so let them exceed 80 characters:
+        if len(line) > 80 and not url.search(line):
             errors.append('%s:%d: Line is longer than 80 characters.' \
                           % (filename, num+1))
         if line.find('\t') >= 0:
