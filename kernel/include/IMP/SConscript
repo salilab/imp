@@ -6,7 +6,7 @@ files = ['base_types.h', 'Index.h', 'Model.h',
          'ModelData.h', 'RigidBody.h', 'log.h', 'DerivativeAccumulator.h',
          'Key.h', 'AttributeTable.h', 'utility.h', 'Restraint.h', 'Optimizer.h',
          'DecoratorBase.h', 'Object.h', 'Vector3D.h', 'ScoreFuncParams.h',
-         'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h']
+         'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h', 'macros.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP')
