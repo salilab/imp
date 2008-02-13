@@ -9,12 +9,13 @@
 #define __IMP_ANGLE_RESTRAINT_H
 
 #include "../IMP_config.h"
-#include "../UnaryFunction.h"
 #include "../Restraint.h"
 
 
 namespace IMP
 {
+class AngleTripletScore;
+class UnaryFunction;
 
 //! Angle restraint between three particles
 class IMPDLLEXPORT AngleRestraint : public Restraint
@@ -28,13 +29,12 @@ public:
    */
   AngleRestraint(Particle* p1, Particle* p2, Particle* p3,
                  UnaryFunction* score_func);
-  virtual ~AngleRestraint();
+  virtual ~AngleRestraint(){}
 
-  IMP_RESTRAINT("0.1", "Ben Webb")
+  IMP_RESTRAINT("0.2", "Daniel Russel")
 
 protected:
-  //! scoring function for this restraint
-  UnaryFunction* score_func_;
+    std::auto_ptr<AngleTripletScore> sf_;
 };
 
 } // namespace IMP

@@ -55,6 +55,9 @@ namespace IMP {
   %pythonprepend ListRestraint::ListRestraint %{
         args[1].thisown=0
   %}
+  %pythonprepend ChainTripletRestraint::ChainTripletRestraint %{
+        args[0].thisown=0
+  %}
   %pythonprepend ConnectivityRestraint::ConnectivityRestraint %{
         args[0].thisown=0
   %}
@@ -66,6 +69,9 @@ namespace IMP {
   %}
   %pythonprepend DistanceToSingletonScore::DistanceToSingletonScore %{
         args[1].thisown=0
+  %}
+  %pythonprepend AngleTripletScore::AngleTripletScore %{
+        args[0].thisown=0
   %}
 }
 
@@ -96,6 +102,7 @@ namespace IMP {
 %include "IMP/Model.h"
 %include "IMP/PairScore.h"
 %include "IMP/SingletonScore.h"
+%include "IMP/TripletScore.h"
 %include "IMP/Particle.h"
 %include "IMP/Vector3D.h"
 %include "IMP/DecoratorBase.h"
@@ -116,8 +123,10 @@ namespace IMP {
 %include "IMP/pair_scores/DistancePairScore.h"
 %include "IMP/pair_scores/SphereDistancePairScore.h"
 %include "IMP/singleton_scores/DistanceToSingletonScore.h"
+%include "IMP/triplet_scores/AngleTripletScore.h"
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/AngleRestraint.h"
+%include "IMP/restraints/ChainTripletRestraint.h"
 %include "IMP/restraints/DihedralRestraint.h"
 %include "IMP/restraints/TorusRestraint.h"
 %include "IMP/restraints/SphericalRestraint.h"
