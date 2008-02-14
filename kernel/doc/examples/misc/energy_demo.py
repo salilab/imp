@@ -132,4 +132,5 @@ print atmsel.energy()
 mdl.write (file='out.pdb', model_format='PDB')
 
 IMP.utils.show_distances(particles)
-IMP.utils.show_particles(particles)
+for p in particles:
+    p.show()
