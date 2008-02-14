@@ -206,11 +206,15 @@ protected:
 
   template <class T>
   T get_value_t(Index<T> k) const {
+    IMP_check(get_is_active(), "get_value called on inactive Particle",
+              InactiveParticleException());
     return model_->get_model_data()->get_value(k);
   }
 
   template <class T>
   void set_value_t(Index<T> k, const T&v) {
+    IMP_check(get_is_active(), "set_value called on inactive Particle",
+              InactiveParticleException());
     model_->get_model_data()->set_value(k, v);
   }
 

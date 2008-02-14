@@ -109,6 +109,18 @@ public:
   InvalidStateException(T){}
   InvalidStateException(){}
 };
+//
+//! An exception for trying to access an inactive particle
+/** \ingroup assert
+ */
+class IMPDLLEXPORT InactiveParticleException : public std::exception
+{
+public:
+  //! just eat the string for now
+  template <class T>
+  InactiveParticleException(T){}
+  InactiveParticleException(){}
+};
 
 //! An exception for a request for an invalid member of a container
 /** \ingroup assert
