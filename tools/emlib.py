@@ -25,7 +25,8 @@ def _check(context):
 def configure_check(env):
     custom_tests = {'CheckEMLib':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    if conf.CheckEMLib() is not True:
+    if env.GetOption('clean') or env['OPTION_HELP'] \
+       or conf.CheckEMLib() is not True:
         for suff in ('CPPPATH', 'LIBPATH', 'LIBS', 'EMPY'):
             env['EM_' + suff] = ""
     conf.Finish()
