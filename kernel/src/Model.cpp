@@ -60,26 +60,6 @@ IMP_CONTAINER_IMPL(Model, ScoreState, score_state, ScoreStateIndex,
  */
 Float Model::evaluate(bool calc_derivs)
 {
-  // One or more particles may have been activated or deactivated.
-  // Check each restraint to see if it changes its active status.
-  IMP_LOG(VERBOSE,
-          "Model evaluate (" << number_of_restraints() << " restraints):"
-          << std::endl);
-
-  if (model_data_->check_particles_active()) {
-    IMP_LOG(VERBOSE,
-          "Checking for active particles " << std::flush);
-
-    for (RestraintIterator it = restraints_begin(); 
-         it != restraints_end(); ++it) {
-      (*it)->check_particles_active();
-      IMP_LOG(VERBOSE, "." << std::flush);
-    }
-
-    model_data_->set_check_particles_active(false);
-    IMP_LOG(VERBOSE, "done." << std::endl);
-  }
-
   // If calcualting derivatives, first set all derivatives to zero
   if (calc_derivs)
     model_data_->zero_derivatives();

@@ -41,11 +41,6 @@ public:
   //! Get weight for all restraints contained by this set.
   Float get_weight() { return weight_; }
 
-  //! Called when at least one particle has been inactivated.
-  /** Check each restraint to see if it changes its active status.
-   */
-  virtual void check_particles_active();
-
 protected:
 
   //! Weight for all restraints.

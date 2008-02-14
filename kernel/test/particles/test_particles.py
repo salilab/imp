@@ -33,6 +33,22 @@ class ParticleTests(IMP.test.TestCase):
         for i in range(0,6):
             p1.add_attribute(IMP.FloatKey("attr_" + str(i)), 3.5 * i, False)
 
+    def test_inactive(self):
+        """Check that operations fail on inactivated particles"""
+        p0 = self.particles[0]
+        p1 = self.particles[1]
+        r = IMP.DistanceRestraint(p0, p1, IMP.Harmonic(10.0, 0.1))
+        self.model.add_restraint(r)
+        p0.set_is_active(False)
+        self.assertRaises(ValueError, p0.get_value, xkey)
+        self.assertRaises(ValueError, p0.set_value, xkey, 0.0)
+        self.assertRaises(ValueError, self.model.evaluate, False)
+        # Making the particle active again should fix everything:
+        p0.set_is_active(True)
+        dummy = p0.get_value(xkey)
+        p0.set_value(xkey, 0.0)
+        self.model.evaluate(False)
+
     def test_bad_attributes(self):
         """Asking for non-existent attributes should cause an error"""
         p1 = self.particles[0]

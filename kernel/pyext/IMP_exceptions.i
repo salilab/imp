@@ -16,6 +16,8 @@
       SWIG_exception(SWIG_IndexError, e.what());
     } catch (IMP::InvalidStateException &e) {
       SWIG_exception(SWIG_ValueError, e.what());
+    } catch (IMP::InactiveParticleException &e) {
+      SWIG_exception(SWIG_ValueError, e.what());
     } catch (IMP::ErrorException &e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
     }   

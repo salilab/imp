@@ -60,12 +60,6 @@ public:
    */
   bool get_is_active() const;
 
-  //! Check if all necessary particles are still active.
-  /** If not, inactivate self. Called when at least one model particle
-      has been inactivated.
-   */
-  virtual void check_particles_active();
-
   //! Show the current restraint.
   /** \param[in] out Stream to send restraint description to.
    */
@@ -132,9 +126,6 @@ private:
       if it is not active, evaluate should not be called
    */
   bool is_active_;
-
-  //! true if all particles that restraint uses are active
-  bool are_particles_active_;
 
   std::vector<Particle*> particles_;
 };
