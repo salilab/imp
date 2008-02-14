@@ -2,7 +2,7 @@ Import('env')
 
 files = ['PairConnectivityRestraint.cpp',
          'ConnectivityRestraint.cpp', 'ProximityRestraint.cpp',
-         'SphericalRestraint.cpp', 'RestraintSet.cpp',
+         'RestraintSet.cpp',
          'DistanceRestraint.cpp', 'AngleRestraint.cpp', 'DihedralRestraint.cpp',
          'TorusRestraint.cpp', 'ExclusionVolumeRestraint.cpp',
          'NonbondedRestraint.cpp', 'BondDecoratorRestraint.cpp',

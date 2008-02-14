@@ -56,7 +56,6 @@
 #include "IMP/restraints/AngleRestraint.h"
 #include "IMP/restraints/DihedralRestraint.h"
 #include "IMP/restraints/TorusRestraint.h"
-#include "IMP/restraints/SphericalRestraint.h"
 #include "IMP/restraints/ProximityRestraint.h"
 #include "IMP/restraints/ConnectivityRestraint.h"
 #include "IMP/restraints/PairConnectivityRestraint.h"
