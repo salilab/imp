@@ -166,7 +166,7 @@ namespace IMP {
   %template(StringKey) Key<String>;
   %template(AtomType) Key<AtomTypeTag>;
   %template(ResidueType) Key<ResidueTypeTag>;     
-  %template(show_named_nierarchy) show<NameDecorator>;
+  %template(show_named_hierarchy) show<NameDecorator>;
   %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
   %template(Particles) ::std::vector<Particle*>;       
   %template(Restraints) ::std::vector<Restraint*>;       
