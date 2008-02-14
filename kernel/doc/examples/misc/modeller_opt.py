@@ -53,3 +53,6 @@ print atmsel.energy()
 IMP.modeller_intf.show_modeller_and_imp(atoms, particles)
 IMP.utils.show_distances(particles)
 IMP.utils.show_particles_pos(particles)
+for p in particles:
+    print 'particle'+str( p.get_index().get_index())
+    IMP.XYZDecorator.cast(p).show()

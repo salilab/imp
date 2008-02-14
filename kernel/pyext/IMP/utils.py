@@ -105,43 +105,6 @@ def write_pdb(model, fname):
         i = i + 1
     fp.close()
 
-
-def show_particles_pos(particles):
-    """Show IMP particles' positions"""
-    for i in range(0, len(particles)):
-        print 'particle', i,
-        print 'X', particles[i].x(),
-        print 'Y', particles[i].y(),
-        print 'Z', particles[i].z()
-
-
-def show_particles(particles):
-    """ Show IMP particle' attributes"""
-    for i in range(0, len(particles)):
-        print 'particle', i
-        print '  float attributes:'
-        float_attr_iter = IMP.FloatAttributeIterator()
-        float_attr_iter.reset(particles[i])
-        while float_attr_iter.next():
-            print '    ', float_attr_iter.get_key(), ": ", \
-                  float_attr_iter.get_value()
-
-        print '  int attributes:'
-        int_attr_iter = IMP.IntAttributeIterator()
-        int_attr_iter.reset(particles[i])
-        while int_attr_iter.next():
-            print '    ', int_attr_iter.get_key(), ": ", \
-                  int_attr_iter.get_value()
-
-        print '  string attributes:'
-        string_attr_iter = IMP.StringAttributeIterator()
-        string_attr_iter.reset(particles[i])
-        while string_attr_iter.next():
-            print '    ', string_attr_iter.get_key(), ": ", \
-                  string_attr_iter.get_value()
-        print
-
-
 def show_distances(particles):
     """Show distances using IMP particles"""
     for i in range(0, len(particles)):
