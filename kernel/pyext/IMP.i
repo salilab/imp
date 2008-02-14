@@ -149,7 +149,6 @@ namespace IMP {
 %include "IMP/score_states/NonbondedListScoreState.h"
 %include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 %include "IMP/score_states/bonded_lists/BondDecoratorListScoreState.h"
-%include "IMP/RigidBody.h"
 
 namespace IMP {
   %template(IntIndex) Index<Int>;

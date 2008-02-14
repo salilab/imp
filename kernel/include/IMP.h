@@ -22,7 +22,6 @@
 #include "IMP/unary_functions/OpenCubicSpline.h"
 #include "IMP/unary_functions/Cosine.h"
 #include "IMP/ScoreFuncParams.h"
-#include "IMP/RigidBody.h"
 #include "IMP/ModelData.h"
 #include "IMP/Model.h"
 #include "IMP/PairScore.h"

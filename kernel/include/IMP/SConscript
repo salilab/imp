@@ -3,7 +3,7 @@ Import('env')
 
 files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
          'Particle.h', 'ScoreState.h', 'OptimizerState.h', 'IMP_config.h',
-         'ModelData.h', 'RigidBody.h', 'log.h', 'DerivativeAccumulator.h',
+         'ModelData.h', 'log.h', 'DerivativeAccumulator.h',
          'Key.h', 'AttributeTable.h', 'utility.h', 'Restraint.h', 'Optimizer.h',
          'DecoratorBase.h', 'Object.h', 'Vector3D.h', 'ScoreFuncParams.h',
          'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h', 'macros.h',
