@@ -15,6 +15,8 @@ namespace IMP
 class UnaryFunction;
 
 //! A score on the distance between the surfaces of two spheres.
+/** \ingroup pairscore
+ */
 class IMPDLLEXPORT SphereDistancePairScore : public PairScore
 {
   std::auto_ptr<UnaryFunction> f_;

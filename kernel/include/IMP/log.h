@@ -91,12 +91,16 @@ private:
   static Log *logpt_;
 };
 
-//! A general exception for an error in IMP
+//! A general exception for an error in IMP.
+/** \ingroup assert
+ */
 class IMPDLLEXPORT ErrorException: public std::exception
 {
 };
 
 //! An exception for an invalid model state
+/** \ingroup assert
+ */
 class IMPDLLEXPORT InvalidStateException : public std::exception
 {
 public:
@@ -107,6 +111,8 @@ public:
 };
 
 //! An exception for a request for an invalid member of a container
+/** \ingroup assert
+ */
 class IMPDLLEXPORT IndexException: public std::exception
 {
 public:

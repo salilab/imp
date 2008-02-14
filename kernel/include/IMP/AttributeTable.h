@@ -47,8 +47,8 @@ public:
     return k.get_index() < map_.size()
            && map_[k.get_index()] != Value();
   }
-  std::ostream &show(std::ostream &out, const char *prefix="",
-                     ModelData* md=NULL) const;
+  void show(std::ostream &out, const char *prefix="",
+            ModelData* md=NULL) const;
   std::vector<Key> get_keys() const;
 };
 
@@ -80,21 +80,19 @@ inline void AttributeTable<T>::insert(Key k, Value v)
 
 
 template <class T>
-inline std::ostream &AttributeTable<T>::show(std::ostream &out,
-                                             const char *prefix,
-                                             ModelData *md) const
+inline void AttributeTable<T>::show(std::ostream &out,
+                                    const char *prefix,
+                                    ModelData *md) const
 {
   for (unsigned int i=0; i< map_.size(); ++i) {
     if (map_[i] != Value()) {
-      out << prefix
-      << Key(i) << ": index = " << map_[i];
+      out << prefix;
       if (md != NULL) {
-        out << ", value= " << md->get_value(map_[i]);
+        out << md->get_value(map_[i]);
       }
       out << std::endl;
     }
   }
-  return out;
 }
 
 

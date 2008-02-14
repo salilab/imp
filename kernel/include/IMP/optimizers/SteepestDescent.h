@@ -16,9 +16,10 @@ namespace IMP
 
 //! A simple steepest descent optimizer
  /** Follow the gradient based on the partial derivatives. Multiply by the
-      current step size. If the score gets worse, reduce the step size.
-      If the score gets better, increase the step size if we are sufficiently
-      far from a score of zero. If the score reaches the threshold, quit.
+     current step size. If the score gets worse, reduce the step size.
+     If the score gets better, increase the step size if we are sufficiently
+     far from a score of zero. If the score reaches the threshold, quit.
+     \ingroup optimizer
  */
 class IMPDLLEXPORT SteepestDescent : public Optimizer
 {

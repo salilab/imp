@@ -24,6 +24,7 @@ class Restraint;
 //! Class for storing model, its restraints, constraints, and particles.
 /** All attribute data for particles is stored through indexing in the
     model_data_ structure.
+    \ingroup kernel
  */
 class IMPDLLEXPORT Model: public Object
 {

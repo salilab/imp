@@ -27,6 +27,7 @@ namespace IMP
    mechanism for the types. This could be done by having an 
    add_type(string) method which adds a string name and assigns it to the 
    next unused type int available.
+   \ingroup hierarchy
  */
 class IMPDLLEXPORT AtomDecorator: public XYZDecorator
 {

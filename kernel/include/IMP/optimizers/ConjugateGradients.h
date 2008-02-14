@@ -17,6 +17,7 @@ namespace IMP
 //! Simple conjugate gradients optimizer.
 /** Algorithm is as per Shanno and Phua, ACM Transactions On Mathematical
     Software 6 (December 1980), 618-622
+    \ingroup optimizer
  */
 class IMPDLLEXPORT ConjugateGradients : public Optimizer
 {

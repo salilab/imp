@@ -18,6 +18,8 @@ namespace IMP
     where k is a force constant, n the periodicity, a the phase, and f the
     input value. This is most commonly used for dihedral angle restraints,
     e.g. in the CHARMM force field.
+
+    \ingroup unaryf
  */
 class IMPDLLEXPORT Cosine : public UnaryFunction
 {
