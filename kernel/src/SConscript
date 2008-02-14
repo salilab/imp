@@ -19,7 +19,7 @@ score_states_files = SConscript('score_states/SConscript')
 files = ['base_types.cpp', 'Model.cpp', 'ModelData.cpp',
          'Particle.cpp', 'RigidBody.cpp', 'ScoreState.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
-         'Object.cpp', 'BasicScoreFuncParams.cpp'
+         'Object.cpp', 'BasicScoreFuncParams.cpp', 'random.cpp'
         ] + decorators_files + restraints_files + optimizers_files \
           + unary_functions_files + pair_scores_files + singleton_scores_files \
           + triplet_scores_files + score_states_files

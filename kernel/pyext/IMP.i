@@ -73,6 +73,12 @@ namespace IMP {
   %pythonprepend AngleTripletScore::AngleTripletScore %{
         args[0].thisown=0
   %}
+  %pythonprepend MonteCarlo::add_mover %{
+        args[1].thisown=0
+  %}
+  %pythonprepend MonteCarlo::set_local_optimizer %{
+        args[1].thisown=0
+  %}
 }
 
 /* Don't wrap internal functions */
@@ -118,6 +124,11 @@ namespace IMP {
 %include "IMP/optimizers/SteepestDescent.h"
 %include "IMP/optimizers/ConjugateGradients.h"
 %include "IMP/optimizers/MolecularDynamics.h"
+%include "IMP/optimizers/Mover.h"
+%include "IMP/optimizers/MoverBase.h"
+%include "IMP/optimizers/MonteCarlo.h"
+%include "IMP/optimizers/movers/BallMover.h"
+%include "IMP/optimizers/movers/NormalMover.h"
 %include "IMP/optimizers/states/VRMLLogOptimizerState.h"
 %include "IMP/optimizers/states/CMMLogOptimizerState.h"
 %include "IMP/pair_scores/DistancePairScore.h"
@@ -152,6 +163,7 @@ namespace IMP {
   %template(RestraintIndex) Index<RestraintTag>;
   %template(ScoreStateIndex) Index<ScoreStateTag>;
   %template(OptimizerStateIndex) Index<OptimizerStateTag>;
+  %template(MoverIndex) Index<Mover>;
   %template(BondeListIndex) Index<BondedListScoreState>;
   %template(FloatKey) Key<Float>;
   %template(IntKey) Key<Int>;
