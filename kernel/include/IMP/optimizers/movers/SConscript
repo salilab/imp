@@ -1,0 +1,9 @@
+Import('env')
+import os.path
+files=[]
+files.append( 'BallMover.h' )
+files.append( 'DiscreteBallMover.h' )
+files.append( 'NormalMover.h' )
+includedir = os.path.join(env['includedir'], 'IMP', 'optimizers', 'movers' )
+inst = env.Install(includedir, files)
+env.Alias('install', inst)

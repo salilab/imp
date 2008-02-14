@@ -21,6 +21,8 @@
 <listitem><para>A <ulink url="http://subversion.tigris.org/">Subversion</ulink>
 (svn) client.</para></listitem>
 
+<listitem><para>The <ulink url="http://www.boost.org">Boost</ulink> C++ libraries, version 1.30 or later.</para></listitem>
+
 <listitem><para><ulink url="http://www.python.org">Python</ulink> 2.3 or
 later.</para></listitem>
 

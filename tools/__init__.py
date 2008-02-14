@@ -186,7 +186,7 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         pass
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
-        env.Append(CCFLAGS="-Wall -Werror -g -O3")
+        env.Append(CCFLAGS="-Wall -g -O3")
     _add_release_flags(env)
 
     sys = platform.system()
