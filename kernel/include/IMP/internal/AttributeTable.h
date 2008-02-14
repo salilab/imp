@@ -8,13 +8,13 @@
 #ifndef __IMP_ATTRIBUTE_TABLE_H
 #define __IMP_ATTRIBUTE_TABLE_H
 
+#include "../base_types.h"
+#include "../utility.h"
+#include "../log.h"
+#include "../ModelData.h"
+
 #include <map>
 #include <vector>
-#include "base_types.h"
-#include "utility.h"
-#include "log.h"
-#include "ModelData.h"
-
 
 namespace IMP
 {
@@ -24,6 +24,7 @@ class ModelData;
 namespace internal
 {
 
+/** \internal */
 template <class T>
 class AttributeTable
 {
@@ -56,9 +57,6 @@ IMP_OUTPUT_OPERATOR_1(AttributeTable)
 
 
 
-
-// These really should go in the header file,
-// but I can't throw exceptions from there
 
 template <class T>
 inline void AttributeTable<T>::insert(Key k, Value v)

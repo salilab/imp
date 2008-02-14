@@ -3,11 +3,11 @@ Import('env')
 
 files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
          'Particle.h', 'ScoreState.h', 'OptimizerState.h', 'IMP_config.h',
-         'ModelData.h', 'log.h', 'DerivativeAccumulator.h',
-         'Key.h', 'AttributeTable.h', 'utility.h', 'Restraint.h', 'Optimizer.h',
+         'log.h', 'DerivativeAccumulator.h', 'ModelData.h',
+         'Key.h', 'utility.h', 'Restraint.h', 'Optimizer.h',
          'DecoratorBase.h', 'Object.h', 'Vector3D.h', 'ScoreFuncParams.h',
          'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h', 'macros.h',
-         'Grid3D.h', 'TripletScore.h']
+         'TripletScore.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP')
@@ -18,6 +18,7 @@ env.Alias('install', inst)
 SConscript('restraints/SConscript')
 SConscript('optimizers/SConscript')
 SConscript('decorators/SConscript')
+SConscript('internal/SConscript')
 SConscript('unary_functions/SConscript')
 SConscript('pair_scores/SConscript')
 SConscript('singleton_scores/SConscript')

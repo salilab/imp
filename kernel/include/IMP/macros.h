@@ -8,7 +8,6 @@
 #ifndef __IMP_MACROS_H
 #define __IMP_MACROS_H
 
-
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
  */
@@ -212,24 +211,14 @@ template <class L>                                                      \
 
 
 
-//! Use this to add a container of IMP objects
-/**
-   Such a container adds public methods add_foo, get_foo, number_of_foo 
-   and a private type foo_iterator, with methods foo_begin, foo_end.
-   \param[in] Ucname The name of the type in uppercase
-   \param[in] lcname The name of the type in lower case
-   \param[in] IndexType The type to use for the index. This should be
-   an instantiation of Index<T> or something similar.
-
-   Eventually we can add removal and correctness checks.
+/** \internal
  */
-#define IMP_CONTAINER(Ucname, lcname, IndexType)                        \
-  public:                                                               \
+#define IMP_CONTAINER_CORE(Ucname, lcname, Data, IndexType, Container) \
   /** \short Add an object.
       \param[in] obj Pointer to the object
       \return index of object within the object
   */                                                                    \
-  IndexType add_##lcname(Ucname *obj);                                  \
+  IndexType add_##lcname(Data obj);                                     \
   /** \short Add several objects.
       \param[in] obj a vector of pointers
   */                                                                    \
@@ -237,28 +226,75 @@ template <class L>                                                      \
   /** \short Get object refered to by the index
       \throws IndexException if the index is out of range
    */                                                                   \
-  Ucname *get_##lcname(IndexType i) const ;                             \
+  Data get_##lcname(IndexType i) const {                                \
+    return lcname##_vector_[i];                                         \
+  }                                                                     \
   /** \short return the number of objects*/                             \
   unsigned int number_of_##lcname##s() const {                          \
     return lcname##_vector_.size();}                                    \
-/** \short Get a container of all the objects. 
-    This is for Python as the container can be used like a Python list*/\
-const std::vector<Ucname*> &get_##lcname##s() const {                   \
-  return lcname##_vector_;}                                             \
-/** \short An iterator through the objects.
-    The value type is a pointer.*/                                      \
- typedef std::vector<Ucname*>::iterator Ucname##Iterator;               \
-/** \short A const iterator through the objects. 
-    The value type is a pointer.*/                                      \
- typedef std::vector<Ucname*>::const_iterator Ucname##ConstIterator;    \
- Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}   \
- Ucname##Iterator lcname##s_end() {return lcname##_vector_.end();}       \
- Ucname##ConstIterator lcname##s_begin() const {                         \
-   return lcname##_vector_.begin();}                                    \
- Ucname##ConstIterator lcname##s_end() const {                           \
-   return lcname##_vector_.end();}                                      \
-private:                                                                \
- std::vector<Ucname*> lcname##_vector_;
+  /** \short Get a container of all the objects. 
+     This is for Python as the container can be used like a Python list*/\
+  const Ucname##s &get_##lcname##s() const {                             \
+    return static_cast< const Ucname##s &>(lcname##_vector_);}           \
+  /** \short An iterator through the objects.
+      The value type is a pointer.*/                                     \
+  typedef Container::iterator Ucname##Iterator;                          \
+  /** \short A const iterator through the objects. 
+      The value type is a pointer.*/                                     \
+  typedef Container::const_iterator Ucname##ConstIterator;               \
+  Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}  \
+  Ucname##Iterator lcname##s_end() {return lcname##_vector_.end();}      \
+  Ucname##ConstIterator lcname##s_begin() const {                        \
+    return lcname##_vector_.begin();}                                    \
+  Ucname##ConstIterator lcname##s_end() const {                          \
+    return lcname##_vector_.end();}                                      \
+  Container lcname##_vector_;
+
+/** \internal
+ */
+#define IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, IndexType, \
+                                Init_obj, Onchanged)                    \
+  IndexType Class::add_##lcname(Data obj) {                             \
+    unsigned int osz=lcname##_vector_.size();                           \
+    IndexType index(osz);                                               \
+    lcname##_vector_.push_back(obj);                                    \
+    Init_obj;                                                           \
+    Onchanged;                                                          \
+    return index;                                                       \
+  }                                                                     \
+  void Class::add_##lcname##s(const std::vector<Data> &objs) {          \
+    unsigned int osz= lcname##_vector_.size();                          \
+    lcname##_vector_.insert(lcname##_vector_.end(), objs.begin(),       \
+                            objs.end());                                \
+    for (unsigned int i=0; i< objs.size(); ++i) {                       \
+      Data obj= lcname##_vector_[osz+i];                                \
+      IndexType index(osz+i);                                           \
+      Init_obj;                                                         \
+    }                                                                   \
+    Onchanged;                                                          \
+  }
+
+//! Use this to add a container of IMP objects
+/**
+   Such a container adds public methods add_foo, get_foo, number_of_foo 
+   and a private type foo_iterator, with methods foo_begin, foo_end.
+   \param[in] Ucname The name of the type in uppercase
+   \param[in] lcname The name of the type in lower case
+   \param[in] Data The type of the data to store.
+   \param[in] Onchanged Code to get executed every time the container
+   changes
+   Eventually we can add removal and correctness checks.
+
+   Note that the type Ucnames must be declared and be a vector of
+   Data.
+ */
+#define IMP_LIST(Ucname, lcname, Data)                                  \
+  /** \short Clear the contents of the container */                     \
+  void clear_##lcname##s();                                             \
+  /** \short Remove any occurences of d from the container */           \
+  void erase_##lcname(Data d);                                          \
+  IMP_CONTAINER_CORE(Ucname, lcname, Data, unsigned int,                \
+                     IMP::internal::Vector<Data>)
 
 
 
@@ -267,47 +303,27 @@ private:                                                                \
    This code should go in a .cpp file. One macro for each IMP_CONTAINER.
    \param[in] init Code to modify the passed in object. The object is obj
    its index index.
+   \param[in] OnChanged Code to get executed when the container changes.
  */
-#define IMP_CONTAINER_IMPL(Class, Ucname, lcname, IndexType, init)      \
-  IndexType Class::add_##lcname(Ucname *obj) {                          \
-    IndexType index(lcname##_vector_.size());                           \
-    for (unsigned int i=0; i< lcname##_vector_.size(); ++i) {           \
-      IMP_assert(lcname##_vector_[i] != obj, #Ucname                    \
-                 " can only be added once to container");               \
-    }                                                                   \
-    lcname##_vector_.push_back(obj);                                    \
-    init;                                                               \
-    IMP_CHECK_OBJECT(obj);                                              \
-    return index;                                                       \
+#define IMP_LIST_IMPL(Class, Ucname, lcname, Data, init, OnChanged)     \
+  IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, unsigned int,\
+                          init, OnChanged)\
+  /** \short Clear the contents of the container */                     \
+  void Class::clear_##lcname##s(){                                      \
+    lcname##_vector_.clear();                                           \
+    OnChanged;                                                          \
   }                                                                     \
-  void Class::add_##lcname##s(const std::vector<Ucname*> &objs) {       \
-    for (unsigned int i=0; i< objs.size(); ++i) {                       \
-      add_##lcname(objs[i]);                                            \
+  /** \short Remove any occurences of d from the container */           \
+  void Class::erase_##lcname(Data d) {                                  \
+    for (Ucname##Iterator it= lcname##s_begin();                        \
+         it != lcname##s_end(); ++it) {                                 \
+      if (*it == d) {                                                   \
+        lcname##_vector_.erase(it); break;                              \
+      }                                                                 \
     }                                                                   \
-  }                                                                     \
-  Ucname *Class::get_##lcname(IndexType i) const {                      \
-    IMP_check(i.get_index() < lcname##_vector_.size(),                  \
-              "Index " << i << " out of range",                         \
-              IndexException(#Ucname));                                 \
-    Ucname *r= lcname##_vector_[i.get_index()];                         \
-    IMP_CHECK_OBJECT(r);                                                \
-    return r;                                                           \
+    OnChanged;                                                          \
   }                                                                     \
 
-
-//! Destroy the things in the container
-/**
-   Put this in the containing object desctructor when you use the
-   IMP_CONTAINER macro.
-   \param[in] Ucname the uppercase name
-   \param[in] lcname the lower case name
- */
-#define IMP_CONTAINER_DELETE(Ucname, lcname)  \
-  for (Ucname##Iterator it= lcname##s_begin(); \
-       it != lcname##s_end(); ++it) {          \
-    delete *it;                               \
-  }                                           \
-  lcname##_vector_.clear();
 
 
 //! Use this to add a set of IMP objects owned by the containing one
@@ -321,76 +337,25 @@ private:                                                                \
 
    Eventually we can add removal and correctness checks.
  */
-#define IMP_CHILDREN(Ucname, lcname, IndexType)                        \
-  public:                                                               \
-  /** \short Add an object.
-      \param[in] obj Pointer to the object
-      \return index of object within the object
-  */                                                                    \
-  IndexType add_##lcname(Ucname *obj);                                  \
-  /** \short Add several objects.
-      \param[in] obj a vector of pointers
-  */                                                                    \
-  void add_##lcname##s(const std::vector<Ucname*>& obj);                \
-  /** \short Get object refered to by the index
-      \throws IndexException if the index is out of range
-   */                                                                   \
-  Ucname *get_##lcname(IndexType i) const ;                             \
-  /** \short return the number of objects*/                             \
-  unsigned int number_of_##lcname##s() const {                          \
-    return lcname##_vector_.size();}                                    \
-/** \short Get a container of all the objects. 
-    This is for Python as the container can be used like a Python list*/\
-const std::vector<Ucname*> &get_##lcname##s() const {                   \
-  return lcname##_vector_;}                                             \
-/** \short An iterator through the objects.
-    The value type is a pointer.*/                                      \
-typedef std::vector<Ucname*>::iterator Ucname##Iterator;                \
-/** \short A const iterator through the objects. 
-    The value type is a pointer.*/                                      \
-typedef std::vector<Ucname*>::const_iterator Ucname##ConstIterator;     \
-Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}   \
-Ucname##Iterator lcname##s_end() {return lcname##_vector_.end();}       \
-Ucname##ConstIterator lcname##s_begin() const {                         \
-  return lcname##_vector_.begin();}                                     \
-Ucname##ConstIterator lcname##s_end() const {                           \
-  return lcname##_vector_.end();}                                       \
-private:                                                                \
-std::vector<std::auto_ptr<Ucname> > lcname##_vector_;
+#define IMP_CONTAINER(Ucname, lcname, IndexType)                \
+  typedef IMP::internal::ObjectContainer<Ucname, IndexType>     \
+  Ucname##Container;                                            \
+  IMP_CONTAINER_CORE(Ucname, lcname, Ucname*, IndexType,        \
+                     Ucname##Container)
 
 
 
 //! Use this to add a container of IMP objects
 /**
-   This code should go in a .cpp file. One macro for each IMP_CONTAINER.
+   This code should go in a .cpp file. One macro for each 
+   IMP_CONTAINER.
    \param[in] init Code to modify the passed in object. The object is obj
    its index index.
  */
-#define IMP_CHILDREN_IMPL(Class, Ucname, lcname, IndexType, init)      \
-  IndexType Class::add_##lcname(Ucname *obj) {                          \
-    IndexType index(lcname##_vector_.size());                           \
-    for (unsigned int i=0; i< lcname##_vector_.size(); ++i) {           \
-      IMP_assert(lcname##_vector_[i] != obj, #Ucname                    \
-                 " can only be added once to container");               \
-    }                                                                   \
-    lcname##_vector_.push_back(obj);                                    \
-    init;                                                               \
-    IMP_CHECK_OBJECT(obj);                                              \
-    return index;                                                       \
-  }                                                                     \
-  void Class::add_##lcname##s(const std::vector<Ucname*> &objs) {       \
-    for (unsigned int i=0; i< objs.size(); ++i) {                       \
-      add_##lcname(objs[i]);                                            \
-    }                                                                   \
-  }                                                                     \
-  Ucname *Class::get_##lcname(IndexType i) const {                      \
-    IMP_check(i.get_index() < lcname##_vector_.size(),                  \
-              "Index " << i << " out of range",                         \
-              IndexException(#Ucname));                                 \
-    Ucname *r= lcname##_vector_[i.get_index()];                         \
-    IMP_CHECK_OBJECT(r);                                                \
-    return r;                                                           \
-  }                                                                     \
+#define IMP_CONTAINER_IMPL(Class, Ucname, lcname, IndexType, init) \
+  IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Ucname*, IndexType,    \
+                          init,)
+
 
 
 //! Call the assert_is_valid method in the object base
@@ -398,5 +363,12 @@ std::vector<std::auto_ptr<Ucname> > lcname##_vector_;
     IMP_assert(obj != NULL, "NULL object");     \
     (obj)->assert_is_valid();                   \
   } while (false)
+
+
+// They use IMP_CHECK_OBJECT and so must be included at the end
+
+#include "internal/Vector.h"
+#include "internal/ObjectContainer.h"
+
 
 #endif  /* __IMP_MACROS_H */

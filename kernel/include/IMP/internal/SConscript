@@ -1,0 +1,10 @@
+import os.path
+Import('env')
+
+files = ['AttributeTable.h',  'graph_base.h',  'Grid3D.h', 'Vector.h',
+         'ObjectContainer.h']
+
+# Install the include files:
+includedir = os.path.join(env['includedir'], 'IMP', 'internal')
+inst = env.Install(includedir, files)
+env.Alias('install', inst)

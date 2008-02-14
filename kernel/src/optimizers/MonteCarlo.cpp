@@ -26,15 +26,12 @@ IMP_CONTAINER_IMPL(MonteCarlo, Mover, mover, MoverIndex,
 MonteCarlo::MonteCarlo(): temp_(1), 
                           prior_energy_(std::numeric_limits<Float>::max()),
                           stop_energy_(-std::numeric_limits<Float>::max()),
-                          cg_(NULL),
                           num_local_steps_(50),
                           stat_forward_steps_taken_(0),
                           stat_num_failures_(0){}
 
 MonteCarlo::~MonteCarlo()
 {
-  IMP_CONTAINER_DELETE(Mover, mover);
-  if (cg_ != NULL) delete cg_;
 }
 
 Float MonteCarlo::optimize(unsigned int max_steps)
@@ -55,10 +52,10 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       (*it)->propose_move(.5);
     }
     Float next_energy;
-    if (cg_ != NULL && num_local_steps_!= 0) {
+    if (cg_.get() != NULL && num_local_steps_!= 0) {
       IMP_LOG(VERBOSE,
               "MC Performing local optimization "<< std::flush);
-      IMP_CHECK_OBJECT(cg_);
+      IMP_CHECK_OBJECT(cg_.get());
       next_energy =cg_->optimize(num_local_steps_);
       IMP_LOG(VERBOSE, next_energy << " done "<< std::endl);
     } else {

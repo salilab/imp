@@ -8,10 +8,12 @@
 #ifndef __IMP_SCORE_STATE_H
 #define __IMP_SCORE_STATE_H
 
-#include <iostream>
-
 #include "IMP_config.h"
 #include "Object.h"
+#include "utility.h"
+
+#include <vector>
+#include <iostream>
 
 namespace IMP
 {
@@ -60,12 +62,9 @@ protected:
   std::string name_;
 };
 
+IMP_OUTPUT_OPERATOR(ScoreState);
 
-inline std::ostream &operator<<(std::ostream &out, const ScoreState &s)
-{
-  s.show(out);
-  return out;
-}
+typedef std::vector<ScoreState*> ScoreStates;
 
 } // namespace IMP
 

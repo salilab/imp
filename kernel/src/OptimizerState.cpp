@@ -5,9 +5,7 @@
  *
  */
 
-#include <cmath>
 
-#include "IMP/ModelData.h"
 #include "IMP/log.h"
 #include "IMP/OptimizerState.h"
 

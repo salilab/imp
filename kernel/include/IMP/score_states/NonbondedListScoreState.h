@@ -13,13 +13,14 @@
 #include "BondedListScoreState.h"
 #include "MaxChangeScoreState.h"
 #include "../ScoreState.h"
-#include "../Grid3D.h"
+#include "../internal/Grid3D.h"
 
 namespace IMP
 {
 
 class BondedListScoreState;
 class MaxChangeScoreState;
+typedef std::vector<BondedListScoreState*> BondedListScoreStates;
 
 //! This class maintains a list of non-bonded pairs.
 /** \ingroup restraint
@@ -32,7 +33,7 @@ protected:
   NBL nbl_;
   float last_cutoff_;
   bool grid_valid_;
-  typedef Grid3D<Particles> Grid;
+  typedef internal::Grid3D<Particles> Grid;
   Grid grid_;
   std::auto_ptr<MaxChangeScoreState> mc_;
 
@@ -51,55 +52,6 @@ protected:
                        const Grid::VirtualIndex& v,
                        float cut,
                        bool skip_lower);
-  /*class SingeParticleIterator {
-    void advance() {
-      if (curv_== Grid::IndexIterator()) return;
-      if (curp_== nbl_->get_grid().get_voxel(*curv_).end()) {
-        ++curv_;
-        if (curv_ != Grid::IndexIterator()) {
-          curp_= nbl_->get_grid().get_voxel(*curv_).begin();
-        }
-      }
-    }
-    void find() {
-      bool ok=false;
-      do {
-        ok=true;
-        if ( sl_ && i_ >= *curv_) {
-          ok=false;
-        } else if (curp_== nbl_->get_grid().get_voxel(*curv_).end()) {
-          ok=false;
-        } else if (nbl_->are_bonded(p_, *curp_)) {
-          ok=false;
-        }
-        if (!ok) advance();
-      } while (!ok);
-      if (nbl_->are_bonded(p_, 
-      return true;
-
-    }
-  public:
-    SingleParticleIterator(Particle *p, 
-                           const Grid::VirtualIndex& v,
-                           int ncells,
-                           bool skip_lower,
-                           NonbondedListScoreState *nbl): p_(p),
-                                                          i_(v),
-                                                          sl_(skip_lower),
-                                                          nbl_(nbl) {
-      Grid::VirtualIndex lc(i_[0]-ncells,
-                            i_[1]-ncells,
-                            i_[2]-ncells);
-      Grid::VirtualIndex uc(i_[0]+ncells,
-                            i_[1]+ncells,
-                            i_[2]+ncells);
-      curv_= nbl_->get_grid().indexes_begin(lc, uc);
-      endv_= nbl_->get_grid().indices_end(lc, uc);
-      curp_= nbl_->get_grid().get_voxel(*curv_);
-      find_next();
-    }
-    };*/
-
 public:
   /**
      \param[in] ps A list of particles to use.

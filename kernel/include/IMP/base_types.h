@@ -26,6 +26,12 @@ namespace IMP
     Classes and functions which are there to make your life easier.
  */
 
+/** \namespace internal
+    Implementation details.
+
+    \internal
+ */
+
 //! Basic floating-point value (could be float, double...)
 typedef float Float;
 

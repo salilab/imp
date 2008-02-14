@@ -27,6 +27,8 @@ class DerivativeAccumulator;
     in this structure. Float data is assumed to be potentially
     differentiable and is stored in a structure that can accomodate
     differentiation. Int and string data is stored directly in vectors.
+
+    \note ModelData should only be used in writing Optimizers.
  */
 class IMPDLLEXPORT ModelData
 {

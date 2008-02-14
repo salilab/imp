@@ -5,15 +5,14 @@
  *
  */
 
-#ifndef __IMP_GRAPH_DECORATORS_H
-#define __IMP_GRAPH_DECORATORS_H
+#ifndef __IMP_GRAPH_BASE_H
+#define __IMP_GRAPH_BASE_H
 
 #include <vector>
 #include <set>
 
 #include "../Particle.h"
 #include "../Model.h"
-#include "utility.h"
 
 namespace IMP
 {
@@ -21,6 +20,7 @@ namespace IMP
 namespace internal
 {
 
+/** \internal */
 struct IMPDLLEXPORT GraphData
 {
   GraphData() {}
@@ -35,27 +35,33 @@ struct IMPDLLEXPORT GraphData
   std::string prefix_;
 };
 
-
+/** \internal */
 IMPDLLEXPORT Particle* graph_connect(Particle* a, Particle* b,
                                      const GraphData &d);
 
+/** \internal */
 IMPDLLEXPORT void graph_disconnect(Particle* bond,
                                    const GraphData &d);
 
+/** \internal */
 IMPDLLEXPORT Particle* graph_get_edge(Particle* a, int i,
                                       const GraphData &d);
 
 IMPDLLEXPORT Particle* graph_get_neighbor(Particle* a, int i,
                                           const GraphData &d);
 
+/** \internal */
 IMPDLLEXPORT unsigned int graph_get_number_of_edges(Particle *a,
                                                     const GraphData &d);
 
+/** \internal */
 IMPDLLEXPORT Particle* graph_get_node(Particle *a, int i,
                                       const GraphData &d);
 
+/** \internal */
 IMPDLLEXPORT bool graph_is_edge(Particle *a, const GraphData &d);
 
+/** \internal */
 template <class F>  
 F graph_traverse(Particle *start, F f, const GraphData &d)
 {
@@ -78,6 +84,7 @@ F graph_traverse(Particle *start, F f, const GraphData &d)
   return f;
 }
 
+/** \internal */
 template <class Oit>
 struct GraphGather
 {
@@ -92,6 +99,7 @@ struct GraphGather
   Oit out_;
 };
 
+/** \internal */
 template <class Oit>
 void graph_connected_component(Particle* start, const GraphData &d, Oit out)
 {
@@ -102,4 +110,4 @@ void graph_connected_component(Particle* start, const GraphData &d, Oit out)
 
 } // namespace IMP
 
-#endif  /* __IMP_GRAPH_DECORATORS_H */
+#endif  /* __IMP_GRAPH_BASE_H */

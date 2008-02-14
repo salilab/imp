@@ -14,6 +14,7 @@ pair_scores_files = SConscript('pair_scores/SConscript')
 singleton_scores_files = SConscript('singleton_scores/SConscript')
 triplet_scores_files = SConscript('triplet_scores/SConscript')
 score_states_files = SConscript('score_states/SConscript')
+internal_files = SConscript('internal/SConscript')
 
 # Source files
 files = ['base_types.cpp', 'Model.cpp', 'ModelData.cpp',
@@ -22,7 +23,7 @@ files = ['base_types.cpp', 'Model.cpp', 'ModelData.cpp',
          'Object.cpp', 'BasicScoreFuncParams.cpp', 'random.cpp'
         ] + decorators_files + restraints_files + optimizers_files \
           + unary_functions_files + pair_scores_files + singleton_scores_files \
-          + triplet_scores_files + score_states_files
+          + triplet_scores_files + score_states_files + internal_files
 
 # Build the shared library:
 lib = env.SharedLibrary('imp', files)

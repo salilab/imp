@@ -12,7 +12,8 @@
 #include "../Particle.h"
 #include "../Model.h"
 #include "../DecoratorBase.h"
-#include "graph_base.h"
+#include "../internal/graph_base.h"
+#include "utility.h"
 
 namespace IMP
 {
@@ -26,7 +27,7 @@ class BondedDecorator;
 
 namespace internal
 {
-
+class GraphData;
 extern IMPDLLEXPORT  GraphData bond_graph_data_;
 extern IMPDLLEXPORT  bool bond_keys_initialized_;
 extern IMPDLLEXPORT  IntKey bond_type_key_;
