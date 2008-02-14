@@ -42,8 +42,8 @@ bool Restraint::get_is_active() const
 
 void Restraint::set_model(Model* model)
 {
-  IMP_assert(model== NULL || particles_.empty() 
-             || model == particles_[0]->get_model(),
+  IMP_assert(model== NULL || number_of_particles()==0
+             || model == get_particle(0)->get_model(),
              "Model* different from Particle Model*");
   model_=model;
 }
@@ -59,5 +59,15 @@ void Restraint::show(std::ostream& out) const
   out << "  version: " << version() << std::endl;
   out << "  last_modified_by: " << last_modified_by() << std::endl;
 }
+
+
+// The index line is to disable a warning
+IMP_LIST_IMPL(Restraint, Particle, particle, Particle*, {
+    IMP_assert(number_of_particles()==0 
+               || obj->get_model() == (*particles_begin())->get_model(),
+               "All particles in Restraint must belong to the "
+               "same Model.");
+    if (0) std::cout << index;
+  },);
 
 }  // namespace IMP

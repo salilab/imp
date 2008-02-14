@@ -29,9 +29,6 @@ Model::Model()
 //! Destructor
 Model::~Model()
 {
-  IMP_CONTAINER_DELETE(Particle, particle);
-  IMP_CONTAINER_DELETE(ScoreState, score_state);
-  IMP_CONTAINER_DELETE(Restraint, restraint);
 }
 
 
@@ -48,10 +45,10 @@ IMP_CONTAINER_IMPL(Model, Restraint, restraint, RestraintIndex,
 
 
 IMP_CONTAINER_IMPL(Model, Particle, particle, ParticleIndex,
-                   obj->set_model(this, index));
+                   {obj->set_model(this, index);});
 
 IMP_CONTAINER_IMPL(Model, ScoreState, score_state, ScoreStateIndex,
-                   obj->set_model(this));
+                   {obj->set_model(this);});
 
 
 //! Evaluate all of the restraints in the model and return the score.
@@ -60,6 +57,9 @@ IMP_CONTAINER_IMPL(Model, ScoreState, score_state, ScoreStateIndex,
  */
 Float Model::evaluate(bool calc_derivs)
 {
+  IMP_LOG(VERBOSE,
+          "Model evaluate (" << number_of_restraints() << " restraints):"
+          << std::endl);
   // If calcualting derivatives, first set all derivatives to zero
   if (calc_derivs)
     model_data_->zero_derivatives();

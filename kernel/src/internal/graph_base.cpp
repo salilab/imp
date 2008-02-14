@@ -7,7 +7,7 @@
 
 #include <sstream>
 
-#include "IMP/decorators/graph_base.h"
+#include "IMP/internal/graph_base.h"
 
 namespace IMP
 {

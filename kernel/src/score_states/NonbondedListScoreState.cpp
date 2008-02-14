@@ -7,7 +7,7 @@
 
 #include "IMP/score_states/NonbondedListScoreState.h"
 #include "IMP/decorators/XYZDecorator.h"
-#include "IMP/Grid3D.h"
+#include "IMP/internal/Grid3D.h"
 #include "IMP/score_states/MaxChangeScoreState.h"
 
 namespace IMP
@@ -28,7 +28,6 @@ NonbondedListScoreState::NonbondedListScoreState(const Particles &ps,
 
 NonbondedListScoreState::~NonbondedListScoreState()
 {
-  IMP_CONTAINER_DELETE(BondedListScoreState, bonded_list);
 }
 
 void NonbondedListScoreState::audit_particles(const Particles &ps) const
@@ -183,7 +182,8 @@ void NonbondedListScoreState::set_particles(const Particles &ps)
        bli != bonded_lists_end(); ++bli) {
     (*bli)->set_particles(ps);
   }
-  mc_->set_particles(ps);
+  mc_->clear_particles();
+  mc_->add_particles(ps);
   grid_valid_=false;
 }
 
@@ -205,5 +205,7 @@ void NonbondedListScoreState::show(std::ostream &out) const
 }
 
 IMP_CONTAINER_IMPL(NonbondedListScoreState, BondedListScoreState,
-                   bonded_list, BondedListIndex, );
+                   bonded_list, BondedListIndex, {
+                     if (0) std::cout <<*obj;
+                   });
 } // namespace IMP

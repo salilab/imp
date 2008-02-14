@@ -34,11 +34,8 @@ public:
 
   IMP_RESTRAINT("0.5", "Daniel Russel");
 
-  //! Set the list of particles
-  void set_particles(const Particles &ps) {
-    Restraint::clear_particles();
-    Restraint::add_particles(ps);
-  }
+  using Restraint::add_particles;
+  using Restraint::clear_particles;
 
 protected:
   std::auto_ptr<SingletonScore> ss_;

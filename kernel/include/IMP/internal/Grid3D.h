@@ -8,10 +8,13 @@
 #ifndef __IMP_GRID_3D_H
 #define __IMP_GRID_3D_H
 
-#include "base_types.h"
-#include "Vector3D.h"
+#include "../base_types.h"
+#include "../Vector3D.h"
 
 namespace IMP
+{
+
+namespace internal
 {
 
 template <class V>
@@ -24,6 +27,7 @@ class GridIndexIterator;
 /** The index entries can be positive or negative and do not need to correspond
     directly to cells in the grid. They get mapped on to actual grid cells
     by various functions.
+    \internal
  */
 class VirtualGridIndex
 {
@@ -59,7 +63,8 @@ public:
 IMP_OUTPUT_OPERATOR(VirtualGridIndex);
 
 //! Iterate through grid cells in a cube
-/** The order of iteration is unspecified. 
+/** The order of iteration is unspecified.
+    \internal
  */
 template <class GI>
 class GridIndexIterator
@@ -130,7 +135,8 @@ public:
 
 //! Represent a real cell in a grid
 /** These indexes represent an actual cell in the grid with no mapping.
-    They can only be constructed by the grid. 
+    They can only be constructed by the grid.
+    \internal
  */
 class GridIndex: public VirtualGridIndex
 {
@@ -150,6 +156,7 @@ protected:
 
 /** \brief A voxel grid in 3D space.
     VT can be any class.
+    \internal
  */
 template <class VT>
 class Grid3D
@@ -385,6 +392,7 @@ public:
   }
 };
 
+} // namespace internal
 
 } // namespace IMP
 

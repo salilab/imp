@@ -81,67 +81,19 @@ public:
     return model_;
   }
 
- protected:
-  Particle *get_particle(unsigned int i) const;
-
-  int add_particle(Particle *p) {
-    IMP_CHECK_OBJECT(p);
-    IMP_assert(p != NULL, "Can't add NULL particle");
-    particles_.push_back(p);
-    IMP_assert(particles_[0]->get_model() == particles_.back()->get_model(),
-               "All particles in restraint must be from the same model.");
-    IMP_assert(particles_.back()->get_model()
-               ->get_particle(particles_.back()->get_index()) 
-               == particles_.back(),
-               "Model does not have pointer to particle.");
-    IMP_assert(model_== NULL || model_==particles_.back()->get_model(),
-               "Restraint model pointer and particle model pointer "
-               << "don't match.");
-    return particles_.size()-1;
-  }
-
-  //! Return the number of particles this restraint knows about
-  unsigned int number_of_particles() const {
-    return particles_.size();
-  }
-
-  //! Clear the internal list of particles
-  void clear_particles() {
-    return particles_.clear();
-  }
-
-  //! Add a bunch of particles together
-  /** This is a very common operation and the bulk add will be faster
-   */
-  void add_particles(const Particles &ps) {
-    particles_.insert(particles_.end(), ps.begin(), ps.end());
-  }
+protected:
+  IMP_LIST(Particle, particle, Particle*)
 
 private:
-  //! all of the particle data
   Model* model_;
 
-  /** restraint is active if active_ AND particles_active_
-      true if restraint has not been deactivated
-      if it is not active, evaluate should not be called
+  /* True if restraint has not been deactivated.
+     If it is not active, evaluate should not be called
    */
   bool is_active_;
-
-  std::vector<Particle*> particles_;
 };
 
 IMP_OUTPUT_OPERATOR(Restraint);
-
-
-inline Particle *Restraint::get_particle(unsigned int i) const
-{
-  IMP_check(i < particles_.size(),
-            "There are only " << particles_.size()
-            << " but particle " << i << " was requested in restraint "
-            << *this,
-            IndexException("Not enough particles"));
-  return particles_[i];
-}
 
 } // namespace IMP
 

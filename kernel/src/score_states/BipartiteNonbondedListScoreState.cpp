@@ -7,7 +7,7 @@
 
 #include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 #include "IMP/decorators/XYZDecorator.h"
-#include "IMP/Grid3D.h"
+#include "IMP/internal/Grid3D.h"
 
 namespace IMP
 {
@@ -82,7 +82,8 @@ void BipartiteNonbondedListScoreState::set_particles(const Particles &ps0,
 {
   IMP_LOG(VERBOSE, "Setting bipartite particles " << ps0.size()
           << " and " << ps1.size() << std::endl);
-  mc_->set_particles(ps1);
+  mc_->clear_particles();
+  mc_->add_particles(ps1);
   P::set_particles(ps0);
   P::audit_particles(ps1);
   IMP_assert(ps0.size() == P::get_particles().size(),

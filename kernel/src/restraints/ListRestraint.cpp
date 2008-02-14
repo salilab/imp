@@ -18,7 +18,7 @@ namespace IMP
 ListRestraint::ListRestraint(const Particles &ps,
                              SingletonScore *s) : ss_(s)
 {
-  set_particles(ps);
+  add_particles(ps);
 }
 
 

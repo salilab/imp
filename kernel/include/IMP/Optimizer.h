@@ -20,6 +20,7 @@ namespace IMP
 {
 
 class Model;
+typedef std::vector<OptimizerState*> OptimizerStates;
 
 /** \defgroup optimizer Optimizers
     Optimizers of various sorts.

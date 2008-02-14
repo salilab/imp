@@ -6,7 +6,6 @@
  */
 
 
-#include "IMP/ModelData.h"
 #include "IMP/log.h"
 #include "IMP/restraints/RestraintSet.h"
 #include "../mystdexcept.h"
@@ -33,8 +32,6 @@ RestraintSet::RestraintSet(const std::string& name)
 RestraintSet::~RestraintSet()
 {
   IMP_LOG(VERBOSE, "Delete RestraintSet");
-  IMP_CONTAINER_DELETE(Restraint, restraint);
-
 }
 
 IMP_CONTAINER_IMPL(RestraintSet, Restraint, restraint, RestraintIndex, 

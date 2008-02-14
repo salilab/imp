@@ -1,6 +1,6 @@
 Import('env')
 
-files = ['AtomDecorator.cpp', 'bond_decorators.cpp', 'graph_base.cpp',
+files = ['AtomDecorator.cpp', 'bond_decorators.cpp',
          'HierarchyDecorator.cpp', 'NameDecorator.cpp', 'ResidueDecorator.cpp',
          'MolecularHierarchyDecorator.cpp', 'XYZDecorator.cpp']
 

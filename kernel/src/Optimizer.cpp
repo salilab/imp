@@ -22,7 +22,6 @@ Optimizer::Optimizer()
 Optimizer::~Optimizer()
 {
   IMP_LOG(VERBOSE, "MEMORY: Optimizer destroyed " << this << std::endl);
-  IMP_CONTAINER_DELETE(OptimizerState, optimizer_state);
 }
 
 //! Update optimizer state, at each successful step

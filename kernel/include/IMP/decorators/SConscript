@@ -1,7 +1,7 @@
 import os.path
 Import('env')
 
-files = ['HierarchyDecorator.h', 'NameDecorator.h', 'utility.h', 'graph_base.h',
+files = ['HierarchyDecorator.h', 'NameDecorator.h', 'utility.h',
          'XYZDecorator.h', 'ResidueDecorator.h', 'AtomDecorator.h',
          'MolecularHierarchyDecorator.h', 'bond_decorators.h', 'macros.h']
 

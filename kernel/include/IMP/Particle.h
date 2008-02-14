@@ -16,7 +16,7 @@
 #include "Object.h"
 #include "utility.h"
 #include "Key.h"
-#include "AttributeTable.h"
+#include "internal/AttributeTable.h"
 #include "DerivativeAccumulator.h"
 
 namespace IMP
