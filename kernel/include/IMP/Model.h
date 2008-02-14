@@ -11,7 +11,6 @@
 
 #include "IMP_config.h"
 #include "ModelData.h"
-#include "RigidBody.h"
 #include "ScoreState.h"
 #include "Object.h"
 
