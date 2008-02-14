@@ -1,5 +1,5 @@
 /**
- *  \file Base_Types.h    \brief Basic types used by IMP.
+ *  \file base_types.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
@@ -17,6 +17,14 @@
 
 namespace IMP
 {
+
+
+/** \defgroup kernel IMP Kernel
+    The core IMP types
+
+    \defgroup helper Miscellaneous helpers
+    Classes and functions which are there to make your life easier.
+ */
 
 //! Basic floating-point value (could be float, double...)
 typedef float Float;

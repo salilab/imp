@@ -30,6 +30,7 @@ class Model;
     Particles can be deactivated so that they no longer play a role in model
     optimization. Removing particles and their attributes would cause
     problems in the way attribute values are indexed and should not be done.
+    \ingroup kernel
  */
 class IMPDLLEXPORT Particle : public Object
 {
@@ -174,7 +175,7 @@ public:
   //! Show the particle
   /** \param[in] out Stream to write particle description to.
    */
-  std::ostream& show(std::ostream& out = std::cout) const;
+  void show(std::ostream& out = std::cout) const;
 
 
   //! Return a vector containing all the FloatKeys for the Particle
@@ -213,23 +214,23 @@ protected:
     model_->get_model_data()->set_value(k, v);
   }
 
-  //! Set pointer to model particle data.
-  /** This is called by the Model after the particle is added.
+  // Set pointer to model particle data.
+  /* This is called by the Model after the particle is added.
       \param[in] md Pointer to a ModelData object.
    */
   void set_model(Model *md, ParticleIndex pi);
 
-  //! all of the particle data
+  // all of the particle data
   Model* model_;
 
-  //! true if particle is active
+  // true if particle is active
   bool is_active_;
 
-  //! float attributes associated with the particle
+  // float attributes associated with the particle
   internal::AttributeTable<Float> float_indexes_;
-  //! int attributes associated with the particle
+  // int attributes associated with the particle
   internal::AttributeTable<Int>  int_indexes_;
-  //! string attributes associated with the particle
+  // string attributes associated with the particle
   internal::AttributeTable<String>  string_indexes_;
 
   ParticleIndex pi_;
@@ -278,7 +279,7 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
                                         const DerivativeAccumulator &da)
 {
   return model_->get_model_data()->add_to_deriv(float_indexes_.get_value(name),
-         da(value));
+                                                da(value));
 }
 
 inline bool Particle::has_attribute(IntKey name) const

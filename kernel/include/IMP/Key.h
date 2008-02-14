@@ -116,8 +116,8 @@ public:
 
   IMP_COMPARISONS_1(str_)
 
-  std::ostream &show(std::ostream &out) const {
-    return out << "\"" << get_string() << "\"";
+  void show(std::ostream &out = std::cout) const {
+    out << "\"" << get_string() << "\"";
   }
 
   unsigned int get_index() const {

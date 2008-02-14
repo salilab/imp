@@ -19,6 +19,7 @@ namespace IMP
 /** The particles to be optimized must be xyz particles; this optimizer
     assumes the score to be energy in kcal/mol, and the xyz coordinates to
     be in angstroms.
+    \ingroup optimizer
  */
 class IMPDLLEXPORT MolecularDynamics : public Optimizer
 {

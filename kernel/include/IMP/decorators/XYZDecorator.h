@@ -22,6 +22,8 @@ namespace IMP
 {
 
 //! A a decorator for a particle with x,y,z coordinates.
+/** \ingroup helper
+ */
 class IMPDLLEXPORT XYZDecorator: public DecoratorBase
 {
   IMP_DECORATOR(XYZDecorator, DecoratorBase,
@@ -90,6 +92,8 @@ protected:
 IMP_OUTPUT_OPERATOR(XYZDecorator);
 
 //! Compute the distance between a pair of particles
+/** \ingroup helper
+ */
 IMPDLLEXPORT Float distance(XYZDecorator a, XYZDecorator b);
 
 } // namespace IMP

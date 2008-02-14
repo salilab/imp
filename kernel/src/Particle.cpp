@@ -96,7 +96,7 @@ void Particle::add_attribute(StringKey name, const String value)
 //! Show the particle
 /** \param[in] out Stream to write particle description to.
  */
-std::ostream& Particle::show(std::ostream& out) const
+void Particle::show(std::ostream& out) const
 {
   char* inset = "  ";
   out << std::endl;
@@ -118,7 +118,6 @@ std::ostream& Particle::show(std::ostream& out) const
     out << inset << inset << "string attributes:" << std::endl;
     string_indexes_.show(out, "    ", get_model()->get_model_data());
   }
-  return out;
 }
 
 

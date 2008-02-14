@@ -58,8 +58,6 @@ Float evaluate_distance_pair_score(Particle *a, Particle *b,
     score = (*f)(shifted_distance);
   }
 
-  IMP_LOG(VERBOSE, "For " << a->get_index() << " and " << b->get_index()
-          << " distance: " << distance << " score: " << score << std::endl);
   return score;
 }
 

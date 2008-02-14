@@ -15,6 +15,11 @@
 
 namespace IMP
 {
+/** \ingroup restraint
+    \addtogroup pairscore Score functions on two particles
+    Score functions to by applied to a pair of particles. These can be
+    used to make more flexible restraints.
+ */
 
 //! Abstract score function for a pair of particles.
 class IMPDLLEXPORT PairScore : public Object

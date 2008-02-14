@@ -20,8 +20,9 @@ namespace IMP
 class BondDecorator;
 class BondedDecorator;
 
-
-
+/** \defgroup bond Creating and restraining bonds
+    A set of classes and functions for manipulating bonds.
+ */
 
 namespace internal
 {
@@ -39,6 +40,8 @@ extern IMPDLLEXPORT  FloatKey bond_stiffness_key_;
 /**
    As with AtomDecorator, the types of bonds will eventually be run-time
    expandible.
+
+   \ingroup bond Bonds
  */
 class IMPDLLEXPORT BondDecorator: public DecoratorBase
 {
@@ -76,6 +79,8 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
 
 
 //! A decorator for a particle which has bonds.
+/** \ingroup bond
+ */
 class IMPDLLEXPORT BondedDecorator: public DecoratorBase
 {
   IMP_DECORATOR(BondedDecorator, DecoratorBase, return true, );
@@ -133,6 +138,8 @@ inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
     \param[in] b The second Particle as a BondedDecorator
     \param[in] t The type to use for the bond
     \return BondDecorator of the bond Particle.
+
+    \ingroup bond
  */
 IMPDLLEXPORT
 BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
@@ -144,6 +151,8 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
     \param[in] length The length of the bond.
     \param[in] stiffness The stiffness of the bond.
     \return BondDecorator of the bond Particle.
+
+    \ingroup bond
  */
 IMPDLLEXPORT
 inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b, 
@@ -158,6 +167,7 @@ inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
 
 //! Destroy the bond connecting to particles.
 /** \param[in] b The bond.
+    \ingroup bond
  */
 IMPDLLEXPORT
 void unbond(BondDecorator b);
@@ -165,6 +175,7 @@ void unbond(BondDecorator b);
 //! Get the bond between two particles.
 /**
    BondDecorator() is returned if the particles are not bonded.
+   \ingroup bond
  */
 IMPDLLEXPORT
 BondDecorator get_bond(BondedDecorator a, BondedDecorator b);

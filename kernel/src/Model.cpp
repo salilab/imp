@@ -101,7 +101,9 @@ Float Model::evaluate(bool calc_derivs)
   DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
 
   IMP_LOG(VERBOSE,
-          "Evaluating restraints " << calc_derivs << std::endl);
+          "Evaluating restraints " 
+          << (calc_derivs?"with derivatives":"without derivatives")
+              << std::endl);
   for (RestraintIterator it = restraints_begin();
        it != restraints_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
@@ -110,7 +112,7 @@ Float Model::evaluate(bool calc_derivs)
     if ((*it)->get_is_active()) {
       tscore = (*it)->evaluate(accpt);
     }
-    IMP_LOG(VERBOSE, tscore << std::endl);
+    IMP_LOG(VERBOSE, "Restraint score is " << tscore << std::endl);
     score+= tscore;
   }
   IMP_LOG(VERBOSE, "done." << std::endl);

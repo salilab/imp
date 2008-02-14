@@ -21,6 +21,10 @@ namespace IMP
 
 class Model;
 
+/** \defgroup optimizer Optimizers
+    Optimizers of various sorts.
+  */
+
 //! Base class for all optimizers
 class IMPDLLEXPORT Optimizer: public Object
 {

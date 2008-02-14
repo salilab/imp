@@ -15,6 +15,8 @@ namespace IMP
 {
 
 //! Apply a function to the distance between two particles.
+/** \ingroup pairscore
+ */
 class IMPDLLEXPORT DistancePairScore : public PairScore
 {
   std::auto_ptr<UnaryFunction> f_;

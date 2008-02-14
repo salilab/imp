@@ -23,6 +23,11 @@ namespace IMP
 {
 
 class Model;
+/** \defgroup restraint General purpose restraints
+    Classes to define and help in defining restraints. The restraints
+    typically involve a Restraint which defines the set of tuples of Particles
+    and then various functions which are applied to the tuples.
+ */
 
 /** \defgroup restraint General purpose restraints
     Classes to define and help in defining restraints. The restraints

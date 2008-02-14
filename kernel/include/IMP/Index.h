@@ -33,13 +33,12 @@ public:
               ErrorException());
     return i_;
   }
-  std::ostream &show(std::ostream &out) const {
+  void show(std::ostream &out) const {
     if (!is_default()) {
       out << "(" << i_ << ")";
     } else {
       out << "(Invalid)";
     }
-    return out;
   }
   IMP_COMPARISONS_1(i_)
 

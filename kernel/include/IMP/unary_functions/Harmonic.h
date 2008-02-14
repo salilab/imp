@@ -12,7 +12,14 @@
 namespace IMP
 {
 
+/** \ingroup restraint
+    \addtogroup unaryf Unary Functions
+    Functions of a single variable. These are used by scoring functions.
+ */
+
 //! Harmonic function (symmetric about the mean)
+/** \ingroup unaryf
+ */
 class IMPDLLEXPORT Harmonic : public UnaryFunction
 {
 public:

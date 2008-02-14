@@ -22,6 +22,7 @@ namespace IMP
    As with the AtomDecorator, the types of residues may been to be expanded
    dynamically. This can be easily done in an analogous manner when we
    need it. 
+   \ingroup hierarchy
  */
 class IMPDLLEXPORT ResidueDecorator: public DecoratorBase
 {
