@@ -45,9 +45,6 @@ void Particle::set_model(Model *md, ParticleIndex pi)
 void Particle::set_is_active(const bool is_active)
 {
   is_active_ = is_active;
-
-  // indicate to restraints that a particle's active status may have changed
-  model_->get_model_data()->set_check_particles_active(true);
 }
 
 
