@@ -16,7 +16,7 @@ namespace IMP
 
 static void random_point_in_sphere(unsigned int D,
                                    Float radius,
-                                   Float v[])
+                                   std::vector<Float> v)
 {
   IMP_assert(radius > 0, "No volume there");
   ::boost::uniform_real<> rand(-radius, radius);
@@ -35,7 +35,7 @@ random_point_in_sphere(const std::vector<Float> &center,
                        Float radius)
 {
   IMP_assert(radius > 0, "No volume there");
-  Float v[center.size()];
+  std::vector<Float> v(center.size());
   random_point_in_sphere(center.size(), radius, v);
   std::vector<Float> r(center.size());
   for (unsigned int i = 0; i < center.size(); ++i) {

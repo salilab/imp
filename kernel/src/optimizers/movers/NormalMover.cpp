@@ -34,8 +34,9 @@ void NormalMover::generate_move(float scale)
     for (unsigned int j = 0; j < number_of_float_keys(); ++j) {
       float c = get_float(i, j);
       float r = mrng(u01);
-      IMP_assert(!std::isnan(r), "Bad random");
-      IMP_assert(!std::isnan(c), "Bad stored");
+      // Check for NaN (x!=x when x==NaN) (can only use std::isnan with C99)
+      IMP_assert(r == r, "Bad random");
+      IMP_assert(c == c, "Bad stored");
       propose_value(i, j, c + r);
     }
   }
