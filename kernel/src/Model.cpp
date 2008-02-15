@@ -18,9 +18,8 @@ namespace IMP
 {
 
 //! Constructor
-Model::Model()
+Model::Model(): model_data_(new ModelData())
 {
-  model_data_ = new ModelData();
   frame_num_ = 0;
   trajectory_on_ = false;
 }
@@ -37,7 +36,7 @@ Model::~Model()
  */
 ModelData* Model::get_model_data() const
 {
-  return model_data_;
+  return model_data_.get();
 }
 
 IMP_CONTAINER_IMPL(Model, Restraint, restraint, RestraintIndex,
