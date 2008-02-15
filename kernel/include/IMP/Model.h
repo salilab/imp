@@ -37,7 +37,9 @@ public:
   //! Get pointer to all model particle data.
   /** \return pointer to all model particle data.
    */
-  ModelData* get_model_data() const;
+  ModelData* get_model_data() const {
+    return model_data_.get();
+  }
 
   IMP_CONTAINER(Particle, particle, ParticleIndex);
   IMP_CONTAINER(ScoreState, score_state, ScoreStateIndex);
@@ -50,22 +52,6 @@ public:
       \return The score.
    */
   Float evaluate(bool calc_derivs);
-
-  //! Set up trajectory.
-  /** \param[in] trajectory_path Path to file where the trajectory will be
-                                 written.
-      \param[in] trajectory_on True if trajectory is to be written as model
-                               is optimized.
-      \param[in] clear_file True if trajectory file should be cleared now.
-  */
-  void set_up_trajectory(const std::string trajectory_path = "trajectory.txt",
-                         const bool trajectory_on = true,
-                         const bool clear_file = true);
-
-  //! Save the state of the model to the trajectory file.
-  /** Currently hardcoded for "x", "y" and "z" particle float attributes.
-   */
-  void save_state();
 
   //! Show the model contents.
   /** \param[in] out Stream to write model description to.
@@ -82,11 +68,6 @@ public:
 protected:
   //! all of the data associated with the particles
   std::auto_ptr<ModelData> model_data_;
-
-  //! trajectory file path
-  std::string trajectory_path_;
-  bool trajectory_on_;
-  int frame_num_;
 };
 
 

@@ -20,8 +20,6 @@ namespace IMP
 //! Constructor
 Model::Model(): model_data_(new ModelData())
 {
-  frame_num_ = 0;
-  trajectory_on_ = false;
 }
 
 
@@ -30,18 +28,8 @@ Model::~Model()
 {
 }
 
-
-//! Get pointer to all model particle data.
-/** \return pointer to all model particle data.
- */
-ModelData* Model::get_model_data() const
-{
-  return model_data_.get();
-}
-
 IMP_CONTAINER_IMPL(Model, Restraint, restraint, RestraintIndex,
                      obj->set_model(this));
-
 
 IMP_CONTAINER_IMPL(Model, Particle, particle, ParticleIndex,
                    {obj->set_model(this, index);});
@@ -50,10 +38,6 @@ IMP_CONTAINER_IMPL(Model, ScoreState, score_state, ScoreStateIndex,
                    {obj->set_model(this);});
 
 
-//! Evaluate all of the restraints in the model and return the score.
-/** \param[in] calc_derivs If true, also evaluate the first derivatives.
-    \return The score.
- */
 Float Model::evaluate(bool calc_derivs)
 {
   IMP_LOG(VERBOSE,
@@ -96,86 +80,10 @@ Float Model::evaluate(bool calc_derivs)
   }
   IMP_LOG(VERBOSE, "done." << std::endl);
 
-  // if trajectory is on and we are calculating derivatives, save state in
-  // trajectory file
-  // Arguably this should be done in the optimizer, but we would have to
-  // find a way to support this in Modeller
-  if (calc_derivs)
-    save_state();
-
   IMP_LOG(VERBOSE, "Final score: " << score << std::endl);
   return score;
 }
 
-
-//! Set up trajectory.
-/** \param[in] trajectory_path Path to file where the trajectory will be
-                               written.
-    \param[in] trajectory_on True if trajectory is to be written as model
-                             is optimized.
-    \param[in] clear_file True if trajectory file should be cleared now.
- */
-void Model::set_up_trajectory(const std::string trajectory_path,
-                              bool trajectory_on, bool clear_file)
-{
-  trajectory_path_ = trajectory_path;
-  trajectory_on_ = trajectory_on;
-
-  if (clear_file) {
-    std::ofstream fout;
-    fout.open(trajectory_path_.c_str(), std::ios_base::out);
-    if (!fout.is_open()) {
-      IMP_ERROR("Unable to initialize trajectory file: " << trajectory_path_
-                << ". Trajectory writing is off.");
-      trajectory_on_ = false;
-    } else {
-      frame_num_ = 0;
-    }
-  }
-}
-
-//! Save the state of the model to the trajectory file.
-/** \warning Currently hardcoded for "x", "y" and "z" particle float attributes.
- */
-void Model::save_state()
-{
-  if (!trajectory_on_) {
-    return;
-  }
-
-  std::ofstream fout;
-
-  FloatKey x("x"), y("y"), z("z");
-
-  fout.open(trajectory_path_.c_str(), std::ios_base::app);
-  if (!fout.is_open()) {
-    IMP_ERROR("Unable to open trajectory file: "
-              << trajectory_path_ << ". Trajectory is off. ");
-    trajectory_on_ = false;
-  } else {
-    fout << "FRAME " << frame_num_ << std::endl;
-    frame_num_++;
-    fout << number_of_particles() << std::endl;
-
-    // for each particle, output its current state
-    FloatIndex fi;
-    for (ParticleIterator it=particles_begin(); it != particles_end(); ++it) {
-      fout << (*it)->get_value(x) << " ";
-
-      fout << (*it)->get_value(y) << " ";
-
-      fout << (*it)->get_value(z) << " ";
-    }
-    if (!fout) {
-      IMP_ERROR("Error writing to trajectory file. Trajectory is off. ");
-      trajectory_on_ = false;
-    }
-  }
-}
-
-//! Show the model contents.
-/** \param[in] out Stream to write model description to.
- */
 void Model::show(std::ostream& out) const
 {
   out << std::endl << std::endl;

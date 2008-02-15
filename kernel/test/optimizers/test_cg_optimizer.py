@@ -49,7 +49,6 @@ class CGOptimizerTests(IMP.test.TestCase):
             p.add_attribute(IMP.FloatKey("x"), value, True)
         rsr = WoodsFunc(model, particles)
         model.add_restraint(rsr)
-        model.set_up_trajectory('', False, False)
         opt = IMP.ConjugateGradients()
         opt.set_model(model)
         opt.set_threshold(1e-5)
