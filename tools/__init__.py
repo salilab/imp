@@ -6,7 +6,7 @@ import sys
 from SCons.Script import *
 
 __all__ = ["add_common_options", "MyEnvironment", "get_pyext_environment",
-           "get_sharedlib_environment", "invalidate_environment", "emlib"]
+           "get_sharedlib_environment", "invalidate_environment", "embed"]
 
 import SCons
 _SWIGScanner = SCons.Scanner.ClassicCPP(
@@ -365,7 +365,7 @@ def add_common_options(opts, package):
                         '${prefix}/share/doc/%s' % package,
                         PathOption.PathAccept))
     opts.Add(PackageOption('modeller', 'Location of the MODELLER package',
-                           os.environ.get('MODINSTALLSVN', False)))
+                           'no'))
     opts.Add(BoolOption('wine',
                         'Build using MS Windows tools via Wine emulation',
                         False))

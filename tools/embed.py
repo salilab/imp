@@ -1,12 +1,12 @@
-"""Simple configure checks for emlib"""
+"""Simple configure checks for EMBED"""
 
 import os.path
 from SCons.Script import *
 
 def _check(context):
-    """Find EMLIB include and library directories"""
-    context.Message('Checking for EMLIB...')
-    em = context.env['em']
+    """Find EMBED include and library directories"""
+    context.Message('Checking for EMBED...')
+    em = context.env['embed']
     if em is False or em is 0:
         context.Result("not found")
         return False
@@ -23,19 +23,19 @@ def _check(context):
     return True
 
 def configure_check(env):
-    custom_tests = {'CheckEMLib':_check}
+    custom_tests = {'CheckEMBED':_check}
     conf = env.Configure(custom_tests=custom_tests)
     if env.GetOption('clean') or env['OPTION_HELP'] \
-       or conf.CheckEMLib() is not True:
+       or conf.CheckEMBED() is not True:
         for suff in ('CPPPATH', 'LIBPATH', 'LIBS', 'EMPY'):
             env['EM_' + suff] = ""
     conf.Finish()
 
 def fail(env, target, source):
     print """
-  ERROR: emlib and Modeller are required to build %s.
+  ERROR: EMBED and Modeller are required to build %s.
 
-  Use the em and modeller command line options (or options file) to set the
-  directories where emlib and Modeller are installed (run 'scons -h' for help.)
+  Use the embed and modeller command line options (or options file) to set the
+  directories where EMBED and Modeller are installed (run 'scons -h' for help.)
 """ % target[0]
     return 1
