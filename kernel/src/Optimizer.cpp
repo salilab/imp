@@ -25,7 +25,7 @@ Optimizer::~Optimizer()
 }
 
 //! Update optimizer state, at each successful step
-void Optimizer::update_state()
+void Optimizer::update_states()
 {
   IMP_LOG(VERBOSE,
           "Updating OptimizerStates " << std::flush);

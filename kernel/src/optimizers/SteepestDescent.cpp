@@ -90,7 +90,7 @@ Float SteepestDescent::optimize(unsigned int max_steps)
                               temp_vals[i] - temp_derivs[i]
                                              * current_step_size);
       }
-      update_state();
+      update_states();
 
       // check the new model
       new_score = get_model()->evaluate(false);

@@ -37,10 +37,7 @@ MonteCarlo::~MonteCarlo()
 Float MonteCarlo::optimize(unsigned int max_steps)
 {
   IMP_CHECK_OBJECT(this);
-  for (OptimizerStateIterator it= optimizer_states_begin(); 
-       it != optimizer_states_end(); ++it) {
-    (*it)->update();
-  }
+  update_states();
   prior_energy_ =get_model()->evaluate(0);
   IMP_LOG(VERBOSE, "MC Initial energy is " << prior_energy_ << std::endl);
   ::boost::uniform_real<> rand(0,1);
@@ -90,10 +87,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     if (accept) {
       ++stat_forward_steps_taken_;
       prior_energy_= next_energy;
-      for (OptimizerStateIterator it= optimizer_states_begin(); 
-           it != optimizer_states_end(); ++it) {
-        (*it)->update();
-      }
+      update_states();
     } else {
       ++stat_num_failures_;
     }
