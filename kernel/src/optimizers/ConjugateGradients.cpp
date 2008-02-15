@@ -211,19 +211,13 @@ ConjugateGradients::~ConjugateGradients()
 
 Float ConjugateGradients::optimize(unsigned int max_steps)
 {
-  std::vector<FloatIndex> float_indices;
   std::vector<Float> x, dx;
-  int n = 0, i;
+  int i;
   ModelData* model_data = get_model()->get_model_data();
 
-  OptFloatIndexIterator opt_value_iter;
-
-  opt_value_iter.reset(model_data);
-  // determine n, the number of degrees of freedom
-  while (opt_value_iter.next()) {
-    n++;
-    float_indices.push_back(opt_value_iter.get());
-  }
+  FloatIndexes float_indices(model_data->optimized_float_indexes_begin(),
+                             model_data->optimized_float_indexes_end());
+  int n = float_indices.size();
 
   x.resize(n);
   dx.resize(n);

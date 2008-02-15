@@ -46,13 +46,9 @@ void MolecularDynamics::setup_particles(Model& model)
       particles_.push_back(p);
     }
   }
-
-  OptFloatIndexIterator opt_value_iter;
-  unsigned nopt = 0;
-  opt_value_iter.reset(model.get_model_data());
-  while (opt_value_iter.next()) {
-    nopt++;
-  }
+  ModelData *md= model.get_model_data();
+  unsigned nopt = std::distance(md->optimized_float_indexes_begin(),
+                                md->optimized_float_indexes_end());
 
   if (particles_.size() * 3 != nopt) {
     throw InvalidStateException("Can only do MD on xyz particles");

@@ -11,6 +11,8 @@
 #include "IMP_config.h"
 #include "base_types.h"
 
+#include <boost/iterator/filter_iterator.hpp>
+#include <boost/iterator/counting_iterator.hpp>
 #include <vector>
 
 namespace IMP
@@ -37,15 +39,26 @@ class IMPDLLEXPORT ModelData
   friend class DerivativeAccumulator;
   friend class std::auto_ptr<ModelData>;
 
-  // variables
-  class FloatData
+  struct FloatData
   {
-  public:
     Float value_;
     Float deriv_;
     int stats_index_;
     bool is_optimized_;
   };
+
+  struct FloatIsOptimized
+  {
+    const ModelData *m_;
+  public:
+    FloatIsOptimized(const ModelData *m): m_(m){}
+    bool operator()(FloatIndex f) const {
+      return m_->get_is_optimized(f);
+    }
+  };
+
+  typedef boost::counting_iterator<FloatIndex, 
+    std::forward_iterator_tag, unsigned int> FloatIndexIterator;
 
 public:
 
@@ -143,6 +156,19 @@ public:
     return string_data_[idx.get_index()];
   }
 
+  typedef boost::filter_iterator<FloatIsOptimized,
+    FloatIndexIterator > OptimizedFloatIndexIterator;
+  OptimizedFloatIndexIterator optimized_float_indexes_begin() const {
+    return OptimizedFloatIndexIterator(FloatIsOptimized(this),
+                                       FloatIndexIterator(0),
+                                       FloatIndexIterator(float_data_.size()));
+  }
+  OptimizedFloatIndexIterator optimized_float_indexes_end() const {
+    return OptimizedFloatIndexIterator(FloatIsOptimized(this),
+                                       FloatIndexIterator(float_data_.size()),
+                                       FloatIndexIterator(float_data_.size()));
+  }
+
 
   void show(std::ostream &out=std::cout) const;
 protected:
@@ -164,45 +190,12 @@ protected:
 
   //! See float_data_.
   std::vector<Int> int_data_;
+
   //! See float_data_.
   std::vector<String> string_data_;
 };
 
 IMP_OUTPUT_OPERATOR(ModelData);
-
-//! Optimizable variable iterator
-/** Returns all optimizable Floats in the ModelData.
- */
-class IMPDLLEXPORT OptFloatIndexIterator
-{
-public:
-  OptFloatIndexIterator() {}
-
-  //! Reset the iterator.
-  /** After the next call to next(), get() will return the first optimizable
-      Float variable.
-      \param[in] model_data The model data that is being referenced.
-   */
-  void reset(ModelData* model_data);
-
-  //! Move to the next optimizable Float variable.
-  /** Check if another optimizable Float variable is available, and if so,
-      make sure it is called by the next call to get().
-      \return True if another optimizable variable is available.
-   */
-  bool next();
-
-  //! Return the current available optimizable Float variable.
-  /** Should only be called if next() returned True.
-      \return the index of the Float variable.
-   */
-  FloatIndex get() const;
-
-protected:
-  int cur_;
-  ModelData* model_data_;
-};
-
 
 } // namespace IMP
 
