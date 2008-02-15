@@ -81,8 +81,7 @@ public:
     return model_;
   }
 
-protected:
-  IMP_LIST(Particle, particle, Particle*)
+  IMP_LIST(protected, Particle, particle, Particle*)
 
 private:
   Model* model_;
