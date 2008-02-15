@@ -213,7 +213,9 @@ template <class L>                                                      \
 
 /** \internal
  */
-#define IMP_CONTAINER_CORE(Ucname, lcname, Data, IndexType, Container) \
+#define IMP_CONTAINER_CORE(protection, Ucname, lcname, Data, IndexType,\
+                           Container)                                  \
+  protection:                                                          \
   /** \short Add an object.
       \param[in] obj Pointer to the object
       \return index of object within the object
@@ -248,7 +250,10 @@ template <class L>                                                      \
     return lcname##_vector_.begin();}                                    \
   Ucname##ConstIterator lcname##s_end() const {                          \
     return lcname##_vector_.end();}                                      \
-  Container lcname##_vector_;
+ private:                                                                \
+  /** \internal */                                                       \
+  Container lcname##_vector_;                                            \
+ protection:
 
 /** \internal
  */
@@ -278,22 +283,23 @@ template <class L>                                                      \
 /**
    Such a container adds public methods add_foo, get_foo, number_of_foo 
    and a private type foo_iterator, with methods foo_begin, foo_end.
+   \param[in] protection The level of protection for the container.
    \param[in] Ucname The name of the type in uppercase
    \param[in] lcname The name of the type in lower case
    \param[in] Data The type of the data to store.
    \param[in] Onchanged Code to get executed every time the container
    changes
-   Eventually we can add removal and correctness checks.
 
-   Note that the type Ucnames must be declared and be a vector of
+   \note the type Ucnames must be declared and be a vector of
    Data.
  */
-#define IMP_LIST(Ucname, lcname, Data)                                  \
+#define IMP_LIST(protection, Ucname, lcname, Data)                      \
+  protection:                                                           \
   /** \short Clear the contents of the container */                     \
   void clear_##lcname##s();                                             \
   /** \short Remove any occurences of d from the container */           \
   void erase_##lcname(Data d);                                          \
-  IMP_CONTAINER_CORE(Ucname, lcname, Data, unsigned int,                \
+  IMP_CONTAINER_CORE(protection, Ucname, lcname, Data, unsigned int,    \
                      IMP::internal::Vector<Data>)
 
 
@@ -335,12 +341,17 @@ template <class L>                                                      \
    \param[in] IndexType The type to use for the index. This should be
    an instantiation of Index<T> or something similar.
 
-   Eventually we can add removal and correctness checks.
+   \note The type Ucnames must be declared and be a vector of
+   Data.
+   \note these containers are always public
  */
 #define IMP_CONTAINER(Ucname, lcname, IndexType)                \
+  private:                                                      \
+  /** \internal 
+      This is an implementation detail.*/                       \
   typedef IMP::internal::ObjectContainer<Ucname, IndexType>     \
   Ucname##Container;                                            \
-  IMP_CONTAINER_CORE(Ucname, lcname, Ucname*, IndexType,        \
+  IMP_CONTAINER_CORE(public, Ucname, lcname, Ucname*, IndexType,\
                      Ucname##Container)
 
 

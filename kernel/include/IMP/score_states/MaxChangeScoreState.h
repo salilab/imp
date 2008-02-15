@@ -25,8 +25,6 @@ class IMPDLLEXPORT MaxChangeScoreState: public ScoreState
   Particles ps_;
   float max_change_;
 public:
-  IMP_LIST(Particle, particle, Particle*);
-
   MaxChangeScoreState(const FloatKeys &keys):keys_(keys){}
   virtual ~MaxChangeScoreState(){}
 
@@ -38,6 +36,7 @@ public:
     return max_change_;
   }
 
+  IMP_LIST(public, Particle, particle, Particle*);
 };
 
 } // namespace IMP
