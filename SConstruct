@@ -1,13 +1,11 @@
 # Include IMP build utility functions:
-import os
 from tools import *
 from tools import boost
 
 # Set up build environment:
 opts = Options('config.py', ARGUMENTS)
 add_common_options(opts, "imp")
-opts.Add(PackageOption('em', 'Location of the emlib package',
-                       os.environ.get('EMBED', False)))
+opts.Add(PackageOption('embed', 'Location of the EMBED package', 'no'))
 env = MyEnvironment(options=opts, require_modeller=False,
                     tools=["default", "doxygen"], toolpath=["tools"])
 boost.configure_check(env, '1.30')
