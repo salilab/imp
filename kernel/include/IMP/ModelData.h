@@ -36,6 +36,7 @@ class IMPDLLEXPORT ModelData
   friend class Particle;
   friend class OptFloatIndexIterator;
   friend class DerivativeAccumulator;
+  friend class std::auto_ptr<ModelData>;
 
   // variables
   class FloatData

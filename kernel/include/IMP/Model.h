@@ -81,7 +81,7 @@ public:
 
 protected:
   //! all of the data associated with the particles
-  ModelData* model_data_;
+  std::auto_ptr<ModelData> model_data_;
 
   //! trajectory file path
   std::string trajectory_path_;
