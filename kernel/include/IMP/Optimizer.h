@@ -63,8 +63,8 @@ public:
   IMP_CONTAINER(OptimizerState, optimizer_state, OptimizerStateIndex);
 
 protected:
-  //! Update optimizer state, at each successful step
-  void update_state();
+  //! Update optimizer state, should be called at each successful step
+  void update_states();
 
 private:
   Model *model_;
