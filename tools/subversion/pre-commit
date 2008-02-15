@@ -64,7 +64,7 @@ def check_logmsg_len(txn, repos, errors):
     cmd = [svnlook, 'log', '-t', txn, repos]
     pipe = Popen(cmd, shell=False, stdout=PIPE).stdout
     logmsg = pipe.readline().rstrip('\r\n')
-    if len(logmsg) < 10:
+    if len(logmsg) < 8:
         errors.append("Please provide a log message to describe " \
                       + "what you changed.");
 
