@@ -17,7 +17,8 @@ namespace IMP
 
 //! Modify a set of continuous variables.
 /** The variables are perturbed within a ball of the 
-    given radius. 
+    given radius.
+    \ingroup mover
  */
 class IMPDLLEXPORT NormalMover :public MoverBase
 {

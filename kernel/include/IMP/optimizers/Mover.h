@@ -21,8 +21,14 @@ class MonteCarlo;
 class Mover;
 typedef Index<Mover> MoverIndex;
 
+/** \ingroup optimizer
+    \addtogroup mover Monte Carlo movers
+    Classes which move particles around. Currently used
+    for MonteCarlo optimization.
+ */
+
 //! A class to make a monte carlo move.
-/** You probably want to use MoverBase if you are implementing a Mover.  .
+/** You probably want to use MoverBase if you are implementing a Mover.
  */
 class IMPDLLEXPORT Mover: public Object
 {
