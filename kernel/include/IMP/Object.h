@@ -20,7 +20,7 @@ namespace IMP
 
     \note Do not use NDEBUG to remove check_value_ as that changes the memory
     layout and causes bad things to happen. It should get wrapped in some
-    sort of marco later.
+    sort of macro later.
  */
 class IMPDLLEXPORT Object
 {
