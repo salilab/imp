@@ -16,7 +16,7 @@ namespace IMP
 /** \ingroup unaryf
     \note there is no offset since that is not meaningful for optimization
  */
-class IMPDLLEXPORT Linear : public UnaryFunction
+class Linear : public UnaryFunction
 {
 public:
   Linear(Float slope) : slope_(slope) {}
