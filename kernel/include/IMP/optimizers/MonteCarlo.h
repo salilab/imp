@@ -23,6 +23,8 @@ typedef std::vector<Mover*> Movers;
     accepted or rejected based on the Metropolis criteria. Optionally, a
     number of local optimization steps are taken before the step is
     accepted or rejected.
+
+    \ingroup optimizer
  */
 class IMPDLLEXPORT MonteCarlo: public Optimizer
 {
