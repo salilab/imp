@@ -38,22 +38,15 @@ Float SteepestDescent::optimize(unsigned int max_steps)
 {
   std::vector<Float> temp_vals;
   std::vector<Float> temp_derivs;
-  std::vector<FloatIndex> float_indexes;
   Float last_score, new_score = 0.0;
-  ModelData* model_data;
-
-  model_data = get_model()->get_model_data();
+  ModelData* model_data = get_model()->get_model_data();
 
   // set up the indexes
-  int opt_var_cnt = 0;
 
-  OptFloatIndexIterator opt_float_iter;
 
-  opt_float_iter.reset(model_data);
-  while (opt_float_iter.next()) {
-    float_indexes.push_back(opt_float_iter.get());
-    opt_var_cnt++;
-  }
+  FloatIndexes float_indexes(model_data->optimized_float_indexes_begin(),
+                             model_data->optimized_float_indexes_end());
+  int opt_var_cnt = float_indexes.size();
 
   Float current_step_size = step_size_;
 

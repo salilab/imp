@@ -19,7 +19,7 @@ if emenv['EM_LIBS'] == '' or emenv['MODELLER_LIBS'] == '':
 # Get an environment suitable for building a shared library:
 e = get_sharedlib_environment(emenv, 'IMPEM_EXPORTS', cplusplus=True)
 
-e.Append(CPPPATH=['#/kernel/include', e['EM_CPPPATH']])
+e.Append(CPPPATH=['#/kernel/include', e['EM_CPPPATH'], e['BOOST_CPPPATH']])
 e.Append(LIBPATH=['#/kernel/src', e['EM_LIBPATH']], LIBS=['imp', e['EM_LIBS']])
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32

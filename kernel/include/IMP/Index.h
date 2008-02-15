@@ -23,11 +23,17 @@ class Index
 {
 public:
   typedef Index<L> This;
-  Index(int i): i_(i) {
+  //! Construct an index from a nonnegative int
+  Index(unsigned int i): i_(i) {
     IMP_check(i >= 0, "Index initializer must be positive. " << i << " is not.",
               ErrorException());
   }
+  //! Construct a default index
+  /** This can be used as a sentinal value */
   Index(): i_(-1) {}
+
+  //! Return an integer for this index
+  /** The integer is unique within the container */
   unsigned int get_index() const {
     IMP_check(i_ >= 0, "get_index() called on defaultly constructed Index",
               ErrorException());
@@ -42,7 +48,17 @@ public:
   }
   IMP_COMPARISONS_1(i_)
 
-private:
+#ifndef SWIG
+  //! This should be protected
+  /**
+     \note Really we only want this accessible from the iterators in
+     ModelData, but I can't get that to work. Don't use it.
+   */
+  void operator++() {
+    ++i_;
+  }
+#endif
+protected:
   bool is_default() const {
     return i_==-1;
   }
@@ -52,7 +68,6 @@ private:
 
 
 IMP_OUTPUT_OPERATOR_1(Index)
-
 
 } // namespace IMP
 
