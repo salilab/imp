@@ -8,11 +8,10 @@
 #ifndef __IMP_MODEL_DATA_H
 #define __IMP_MODEL_DATA_H
 
-#include <vector>
-#include <map>
-
 #include "IMP_config.h"
 #include "base_types.h"
+
+#include <vector>
 
 namespace IMP
 {
@@ -48,18 +47,6 @@ class IMPDLLEXPORT ModelData
     bool is_optimized_;
   };
 
-  //! variable statistics
-  /** intended for keeping track of change sizes during optimization
-      for efficiency issues (e.g. updates of neighborhoods)
-   */
-  class Statistics
-  {
-  public:
-    Float min_;
-    Float max_;
-    Float max_delta_;
-    Float min_delta_;
-  };
 public:
 
 
@@ -168,14 +155,6 @@ protected:
    */
   void add_to_deriv(const FloatIndex idx, const Float value);
 
-  //! used by model to see if restraints need to check their particles
-  bool check_particles_active() {
-    return check_particles_active_;
-  }
-  void set_check_particles_active(bool check_particles_active) {
-    check_particles_active_ = check_particles_active;
-  }
-
   //! particle variables and attributes
   /** these are stored outside of particles to allow
       restraints to get access them directly through
@@ -187,15 +166,6 @@ protected:
   std::vector<Int> int_data_;
   //! See float_data_.
   std::vector<String> string_data_;
-
-  //! float attribute state change statistics associated with a particular
-  //! name in some subset of particles
-  std::map<std::string, int> stat_indexes_;
-  //! See stat_indexes_.
-  std::vector<Statistics> float_stats_;
-
-  //! flag set whenever a particle is activated or deactivated
-  bool check_particles_active_;
 };
 
 IMP_OUTPUT_OPERATOR(ModelData);

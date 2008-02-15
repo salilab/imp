@@ -14,7 +14,6 @@ namespace IMP
 //! Constructor
 ModelData::ModelData()
 {
-  check_particles_active_ = false;
 }
 
 
