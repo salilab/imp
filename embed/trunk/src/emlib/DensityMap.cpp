@@ -92,7 +92,7 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
 }
 
 void DensityMap::float2real(float *f_data,real **r_data) {
-  int size = header.nx*header.ny*header.ny;
+  int size = header.nx*header.ny*header.nz;
   (*r_data)= new real[size]; 
   for (int i=0;i<size;i++){
     (*r_data)[i]=(real)(f_data)[i];
@@ -100,7 +100,7 @@ void DensityMap::float2real(float *f_data,real **r_data) {
 }
 
 void DensityMap::real2float(real *r_data,float **f_data) {
-  int size = header.nx*header.ny*header.ny;
+  int size = header.nx*header.ny*header.nz;
   (*f_data)= new float[size]; 
   for (int i=0;i<size;i++){
     (*f_data)[i]=(float)(r_data)[i];
