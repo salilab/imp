@@ -90,7 +90,6 @@ class ProximityRestraintTests(IMP.test.TestCase):
         for i in range(len(rsrs)):
             rs.add_restraint(rsrs[i])
 
-        self.imp_model.set_up_trajectory()
         self.atmsel.randomize_xyz(deviation=100.0)
         new_mdl = self.opt.optimize (self.atmsel, max_iterations=155, actions=None)
         self.modeller_model.write (file='out_proximity.pdb', model_format='PDB')
