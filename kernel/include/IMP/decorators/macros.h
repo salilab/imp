@@ -195,7 +195,8 @@ public:                                                                 \
   Type internal_get_##name(unsigned int i) const{                       \
     IMP_DECORATOR_GET(get_##name##_key(i), Type,                        \
                       return VALUE,                                     \
-                      throw IndexException(); return Type());           \
+                     throw IndexException("Particle missing attribute");\
+                      return Type());                                   \
   }                                                                     \
   int internal_add_##name(Type t);                                      \
   unsigned int internal_get_number_of_##name() const {                  \

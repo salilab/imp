@@ -8,13 +8,14 @@
 #ifndef __IMP_LOG_H
 #define __IMP_LOG_H
 
+#include "IMP_config.h"
+#include "exception.h"
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <cassert>
 #include <string>
-
-#include "IMP_config.h"
 
 namespace IMP
 {
@@ -91,48 +92,6 @@ private:
   static Log *logpt_;
 };
 
-//! A general exception for an error in IMP.
-/** \ingroup assert
- */
-class IMPDLLEXPORT ErrorException: public std::exception
-{
-};
-
-//! An exception for an invalid model state
-/** \ingroup assert
- */
-class IMPDLLEXPORT InvalidStateException : public std::exception
-{
-public:
-  //! just eat the string for now
-  template <class T>
-  InvalidStateException(T){}
-  InvalidStateException(){}
-};
-//
-//! An exception for trying to access an inactive particle
-/** \ingroup assert
- */
-class IMPDLLEXPORT InactiveParticleException : public std::exception
-{
-public:
-  //! just eat the string for now
-  template <class T>
-  InactiveParticleException(T){}
-  InactiveParticleException(){}
-};
-
-//! An exception for a request for an invalid member of a container
-/** \ingroup assert
- */
-class IMPDLLEXPORT IndexException: public std::exception
-{
-public:
-  //! just eat the string for now
-  template <class T>
-  IndexException(T){}
-  IndexException(){}
-};
 
 //! Set the current log level for IMP
 /** \ingroup log
@@ -218,21 +177,7 @@ private:
   LogTarget target_;
 };
 
-namespace internal {
-  //! This is just here so you can catch errors more easily in the debugger
-  /**
-     Break on Log.cpp:19 to catch assertion failures.
-     \ingroup assert
-   */
-  IMPDLLEXPORT void assert_fail();
 
-  //! Here so you can catch check failures more easily in the debugger
-  /**
-     Break on Log.cpp:22 to catch check failures.
-     \ingroup assert
-   */
-  IMPDLLEXPORT void check_fail();
-}
 
 } // namespace IMP
 
@@ -304,44 +249,6 @@ namespace internal {
 #define IMP_LOG(l,e)
 #define IMP_LOG_WRITE(l,e)
 #endif
-
-#ifndef NDEBUG
-
-//! An assertion for IMP. An IMP::ErrorException will be thrown.
-/** Since it is a debug-only check and no attempt should be made to
-    recover from it, the exception type cannot be specified.
-
-    \param[in] expr The assertion expression.
-    \param[in] message Write this message if the assertion fails.
-    \ingroup assert
- */
-#define IMP_assert(expr, message) \
-  if (!(expr)) { \
-    IMP_ERROR(message); \
-    IMP::internal::assert_fail();               \
-  }
-#else
-#define IMP_assert(expr, message)
-#endif
-
-//! A runtime check for IMP.
-/** \param[in] expr The assertion expression.
-    \param[in] message Write this message if the assertion fails.
-    \param[in] exception Throw the object constructed by this expression.
-    \ingroup assert
- */
-#define IMP_check(expr, message, exception) \
-  if (!(expr)) { \
-    IMP_ERROR(message); \
-    throw exception; \
-  }
-
-//! A runtime failure for IMP.
-/** \param[in] message Write this message if the assertion fails.
-    \param[in] exception Throw the object constructed by this expression.
-    \ingroup assert
- */
-#define IMP_failure(message, exception) {IMP_ERROR(message); throw exception;}
 
 
 

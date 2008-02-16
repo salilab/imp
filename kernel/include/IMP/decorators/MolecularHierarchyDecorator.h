@@ -93,11 +93,12 @@ public:
   unsigned int add_child(This o) {
     IMP_check(get_type() > o.get_type(),
               "Parent type must subsume child type",
-              InvalidStateException());
+              InvalidStateException("Type of hierarchy parent must be "\
+                                    "higher than type of child"));
     IMP_check(get_type() != UNKNOWN, "Parent must have known type",
-              InvalidStateException());
+              InvalidStateException("Hierarchy parent must have known type"));
     IMP_check(o.get_type() != UNKNOWN, "Child must have known type",
-              InvalidStateException());
+              InvalidStateException("Hierarchy child must have known type"));
     return P::add_child(o);
   }
 
