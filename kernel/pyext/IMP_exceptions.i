@@ -20,7 +20,9 @@
       SWIG_exception(SWIG_ValueError, e.what());
     } catch (IMP::ErrorException &e) {
       SWIG_exception(SWIG_RuntimeError, e.what());
-    }   
+    } catch (IMP::ValueException &e) {
+      SWIG_exception(SWIG_ValueError, e.what());
+    }
   /* SWIG_exception contains "goto fail" so make sure the label is defined */
   fail:
     return;

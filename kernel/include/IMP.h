@@ -15,6 +15,7 @@
 #include "IMP/Particle.h"
 #include "IMP/Optimizer.h"
 #include "IMP/Restraint.h"
+#include "IMP/exception.h"
 #include "IMP/UnaryFunction.h"
 #include "IMP/unary_functions/Harmonic.h"
 #include "IMP/unary_functions/HarmonicLowerBound.h"

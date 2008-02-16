@@ -59,7 +59,8 @@ public:
     IMP_check(D::has_required_attributes(p),
               "Attempting to cast a Particle which does not have"
               " some required attributes",
-              InvalidStateException());
+              InvalidStateException("Particle missing required attribues"\
+                                    " in cast"));
     return D(p);
   }
 

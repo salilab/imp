@@ -60,7 +60,7 @@ protected:
   }
   Particle *get_particle(unsigned int i) const {
     IMP_check(i< ps_.size(), "Bad index in MoverBase::get_particle",
-              IndexException());
+              IndexException("Particle index out of range in mover base"));
     return ps_[i];
   }
 
