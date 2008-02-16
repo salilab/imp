@@ -114,7 +114,9 @@ protected:
       \param[in] t The value to propose
    */
   void propose_value(unsigned int i, unsigned int j, Float t) {
-    get_particle(i)->set_value(fkeys_[j], t);
+    if (get_particle(i)->get_is_optimized(fkeys_[j])) {
+      get_particle(i)->set_value(fkeys_[j], t);
+    }
   }
   //! Propose a value
   /** \param[in] i The index of the particle.

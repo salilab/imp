@@ -1,6 +1,6 @@
 /**
  *  \file NormalMover.h    
- *  \brief A modifier which perturbs a point with a gaussian.
+ *  \brief A modifier which perturbs a point with a normal distribution.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
@@ -15,22 +15,33 @@
 namespace IMP
 {
 
-//! Modify a set of continuous variables.
-/** The variables are perturbed within a ball of the 
-    given radius.
-    \ingroup mover
+//! Modify a set of continuous variables using a normal distribution.
+/** \ingroup mover
  */
 class IMPDLLEXPORT NormalMover :public MoverBase
 {
 public:
-  NormalMover(const Particles &pis, const FloatKeys &vars,
-              Float stdev);
+  /** \param[in] ps The particles to perturb.
+      \param[in] vars The variables to use (normally the keys for x,y,z)
+      \param[in] sigma The standard deviation to use.
+   */
+  NormalMover(const Particles &ps, const FloatKeys &vars,
+              Float sigma);
   void set_particles(const Particles &ps) {
     MoverBase::clear_particles();
     MoverBase::add_particles(ps);
   }
+  void set_sigma(Float sigma) {
+    IMP_check(sigma > 0, "Sigma must be positive",
+              ValueException("Negative sigma"));
+    stddev_=sigma;
+  }
+  Float get_sigma() const {
+    return stddev_;
+  }
 protected:
-   virtual void generate_move(float f);
+  /** \internal */
+  virtual void generate_move(float f);
 private:
   Float stddev_;
 };

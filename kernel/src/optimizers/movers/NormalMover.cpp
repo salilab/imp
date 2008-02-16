@@ -17,12 +17,11 @@ NormalMover::NormalMover(const Particles &pis,
                          const FloatKeys &vars,
                          Float max)
 {
-  IMP_assert(max != 0, "Must have some width");
   add_particles(pis);
   for (unsigned int i = 0; i < vars.size(); ++i) {
     add_key(vars[i]);
   }
-  stddev_ = max;
+  set_sigma(max);
 }
 
 void NormalMover::generate_move(float scale)
