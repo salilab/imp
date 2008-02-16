@@ -1,5 +1,6 @@
 /**
- *  \file BallMover.h    \brief A modifier which perturbs a discrete variable.
+ *  \file BallMover.h
+ *  \brief A modifier which variables within a ball.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
@@ -23,13 +24,30 @@ namespace IMP
 class IMPDLLEXPORT BallMover :public MoverBase
 {
 public:
+  /** The attributes are perturbed within a pall whose dimensionality is 
+      given by the number of attributes and radius by the given value.
+     \param[in] ps The particles to perturb.
+     \param[in] vars The variables to use (normally the keys for x,y,z)
+     \param[in] radius The radius deviation to use.
+   */
   BallMover(const Particles &pis, const FloatKeys &vars,
-            Float max);
+            Float radius);
+  //!
+  void set_radius(Float radius) {
+    IMP_check(radius > 0, "The radius must be positive",
+              ValueException("Negative radius"));
+    radius_=radius;
+  }
+  //!
+  Float get_radius() const {
+    return radius_;
+  }
 protected:
+  /** \internal */
   void generate_move(float a);
 
 private:
-  Float max_step_;
+  Float radius_;
 };
 
 } // namespace IMP
