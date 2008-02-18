@@ -8,9 +8,10 @@
 #ifndef __IMP_VECTOR_3D_H
 #define __IMP_VECTOR_3D_H
 
-#include <cmath>
 #include "IMP_config.h"
 #include "base_types.h"
+
+#include <cmath>
 
 namespace IMP
 {
@@ -32,7 +33,8 @@ public:
   Vector3D() {}
 
   //! \return A single component of this vector (0-2).
-  Float get_component(int i) const {
+  Float get_component(unsigned int i) const {
+    IMP_assert(i < 3, "Invalid component of vector requested");
     return vec_[i];
   }
 
