@@ -49,7 +49,8 @@ void BipartiteNonbondedListScoreState::rebuild_nbl(float cut)
     XYZDecorator d= XYZDecorator::cast(p);
     internal::ParticleGrid::VirtualIndex index
       = grid_.get_virtual_index(Vector3D(d.get_x(), d.get_y(), d.get_z()));
-    //IMP_LOG(VERBOSE, "Index is " << index << std::endl);
+    IMP_LOG(VERBOSE, "Searching for " << p->get_index()
+            << " from cell " << index << std::endl);
     grid_.apply_to_nearby(f, index, cut, false);
   }
   IMP_LOG(VERBOSE, "Found " << P::size_nbl()

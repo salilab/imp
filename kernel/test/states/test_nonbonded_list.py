@@ -46,7 +46,6 @@ class TestNBL(IMP.test.TestCase):
 
     def test_bl(self):
         """Test the bonded list"""
-        return
         m= IMP.Model()
         bds=[]
         for i in range(0,10):

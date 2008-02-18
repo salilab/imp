@@ -43,7 +43,7 @@ public:
   typedef Grid::VirtualIndex VirtualIndex;
   typedef Grid::Index Index;
   Grid::VirtualIndex get_virtual_index(Vector3D pt) const {
-    return grid_.get_index(pt);
+    return grid_.get_virtual_index(pt);
   }
 
   //! Apply the function F to all particles near to the center
