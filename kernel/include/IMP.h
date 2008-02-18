@@ -67,7 +67,8 @@
 #include "IMP/score_states/MaxChangeScoreState.h"
 #include "IMP/score_states/NonbondedListScoreState.h"
 #include "IMP/score_states/BondedListScoreState.h"
-#include "IMP/score_states/bonded_lists/BondDecoratorListScoreState.h"
+#include "IMP/score_states/BondDecoratorListScoreState.h"
+#include "IMP/score_states/AllNonbondedListScoreState.h"
 
 /**
    \namespace IMP The IMP namespace.

@@ -5,7 +5,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/score_states/bonded_lists/BondDecoratorListScoreState.h"
+#include "IMP/score_states/BondDecoratorListScoreState.h"
 
 namespace IMP 
 {

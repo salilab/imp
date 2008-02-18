@@ -96,6 +96,7 @@ public:
   IMP_COMPARISONS_1(cur_);
 
   This operator++() {
+    IMP_assert(*this != GridIndexIterator(), "Incrementing invalid iterator");
     IMP_assert(cur_ >= lb_, "cur out of range");
     IMP_assert(cur_ < ub_, "cur out of range");
     int r[3];
@@ -121,14 +122,17 @@ public:
     return *this;
   }
   This operator++(int) {
+    IMP_assert(*this != GI(), "Incrementing invalid iterator");
     This o= *this;
     operator++;
     return o;
   }
   reference_type operator*() const {
+    IMP_assert(*this != GridIndexIterator(), "Dereferencing invalid iterator");
     return cur_;
   }
   pointer_type operator->() const {
+    IMP_assert(*this != GridIndexIterator(), "Dereferencing invalid iterator");
     return &cur_;
   }
 };
@@ -206,7 +210,8 @@ private:
     return IndexType(index[0], index[1], index[2]);
   }
 
-  int snap(int dim, int v) const {
+  int snap(unsigned int dim, int v) const {
+    IMP_assert(dim <3, "Invalid dim");
     if (v < 0) return 0;
     else if (v > d_[dim]) return d_[dim];
     else return v;
