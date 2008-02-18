@@ -11,6 +11,8 @@
 #include "../base_types.h"
 #include "../Vector3D.h"
 
+#include <limits>
+
 namespace IMP
 {
 
