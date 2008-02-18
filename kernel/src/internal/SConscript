@@ -1,6 +1,6 @@
 Import('env')
 
-files = ['graph_base.cpp']
+files = ['graph_base.cpp', 'ParticleGrid.cpp']
 
 files = [File(x) for x in files]
 Return('files')

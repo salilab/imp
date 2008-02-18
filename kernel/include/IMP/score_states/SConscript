@@ -2,12 +2,11 @@ import os.path
 Import('env')
 
 files = ['BondedListScoreState.h', 'NonbondedListScoreState.h',
-         'BipartiteNonbondedListScoreState.h', 'MaxChangeScoreState.h']
+         'BipartiteNonbondedListScoreState.h', 'MaxChangeScoreState.h',
+         'BondDecoratorListScoreState.h', 'AllNonbondedListScoreState.h']
 
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'score_states')
 inst = env.Install(includedir, files)
 env.Alias('install', inst)
-
-SConscript('bonded_lists/SConscript')

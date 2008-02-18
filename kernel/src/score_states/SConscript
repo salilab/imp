@@ -1,9 +1,8 @@
 Import('env')
 
 files = ['NonbondedListScoreState.cpp', 'BipartiteNonbondedListScoreState.cpp',
-         'MaxChangeScoreState.cpp']
+         'MaxChangeScoreState.cpp', 'BondDecoratorListScoreState.cpp',
+         'AllNonbondedListScoreState.cpp']
 
-bonded_lists_files = SConscript('bonded_lists/SConscript')
-
-files = [File(x) for x in files] + bonded_lists_files
+files = [File(x) for x in files]
 Return('files')

@@ -8,7 +8,7 @@
 
 #include "IMP/restraints/BondDecoratorRestraint.h"
 #include "IMP/UnaryFunction.h"
-#include "IMP/score_states/bonded_lists/BondDecoratorListScoreState.h"
+#include "IMP/score_states/BondDecoratorListScoreState.h"
 #include "IMP/decorators/bond_decorators.h"
 #include "IMP/pair_scores/DistancePairScore.h"
 

@@ -9,8 +9,8 @@
 #define __IMP_BOND_DECORATOR_LIST_SCORE_STATE_H
 
 #include <vector>
-#include "../BondedListScoreState.h"
-#include "../../decorators/bond_decorators.h"
+#include "BondedListScoreState.h"
+#include "../decorators/bond_decorators.h"
 
 namespace IMP
 {

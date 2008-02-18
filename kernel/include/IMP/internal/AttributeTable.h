@@ -37,8 +37,8 @@ public:
     IMP_check(contains(k),
               "Attribute \"" << k.get_string()
               << "\" not found in table.",
-              IndexException(std::string("Invalid attribute \"")
-                             + k.get_string() + "\" requested"));
+              IndexException((std::string("Invalid attribute \"")
+                              + k.get_string() + "\" requested").c_str()));
     return map_[k.get_index()];
   }
   void insert(Key k, Value v);

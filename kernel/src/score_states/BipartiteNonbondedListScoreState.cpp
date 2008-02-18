@@ -7,7 +7,7 @@
 
 #include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 #include "IMP/decorators/XYZDecorator.h"
-#include "IMP/internal/Grid3D.h"
+#include "IMP/score_states/MaxChangeScoreState.h"
 
 namespace IMP
 {
@@ -31,7 +31,7 @@ namespace IMP
 BipartiteNonbondedListScoreState
 ::BipartiteNonbondedListScoreState(const Particles &ps0,
                                    const Particles &ps1, float target):
-  NonbondedListScoreState(ps0, target)
+  grid_(target)
 {
   FloatKeys fks;
   fks.push_back(FloatKey("x"));
@@ -41,40 +41,21 @@ BipartiteNonbondedListScoreState
   set_particles(ps0, ps1);
 }
 
-BipartiteNonbondedListScoreState::~BipartiteNonbondedListScoreState()
+void BipartiteNonbondedListScoreState::rebuild_nbl(float cut)
 {
-}
-
-void BipartiteNonbondedListScoreState::rescan(float cut)
-{
-  if (P::last_cutoff_ >= cut) {
-    return;
-  }
-  P::last_cutoff_=cut;
-
-  /*for (Grid::IndexIterator it= P::grid_.all_indexes_begin(); 
-       it != P::grid_.all_indexes_end(); ++it) {
-    if (!P::grid_.get_voxel(*it).empty()) {
-      IMP_LOG(VERBOSE, "Voxel " << *it << ":");
-      for (unsigned int i=0; i< P::grid_.get_voxel(*it).size(); ++i) {
-        IMP_LOG(VERBOSE, " " << P::grid_.get_voxel(*it)[i]->get_index());
-      }
-      IMP_LOG(VERBOSE, std::endl);
-    }
-    }*/
-
-  nbl_.clear();
-  for (unsigned int i=0; i< get_particles().size(); ++i) {
-    Particle *p= get_particles()[i];
+  for (unsigned int i=0; i< mc_->get_particles().size(); ++i) {
+    Particle *p= mc_->get_particles()[i];
+    NonbondedListScoreState::AddToNBL f(this, p);
     XYZDecorator d= XYZDecorator::cast(p);
-    Grid::VirtualIndex index
-      = P::grid_.get_virtual_index(Vector3D(d.get_x(), d.get_y(), d.get_z()));
+    internal::ParticleGrid::VirtualIndex index
+      = grid_.get_virtual_index(Vector3D(d.get_x(), d.get_y(), d.get_z()));
     //IMP_LOG(VERBOSE, "Index is " << index << std::endl);
-    P::handle_particle(p, index, cut, false);
+    grid_.apply_to_nearby(f, index, cut, false);
   }
-  IMP_LOG(VERBOSE, "Found " << nbl_.size() << " bipartite nonbonded pairs" 
-          << " for " << P::get_particles().size() << " and " 
-          << get_particles().size() << " sized sets" << std::endl);
+  IMP_LOG(VERBOSE, "Found " << P::size_nbl()
+          << " bipartite nonbonded pairs" 
+          << " for " << mc_->get_particles().size() 
+          << " nongridded particles" << std::endl);
 }
 
 void BipartiteNonbondedListScoreState::set_particles(const Particles &ps0,
@@ -84,19 +65,23 @@ void BipartiteNonbondedListScoreState::set_particles(const Particles &ps0,
           << " and " << ps1.size() << std::endl);
   mc_->clear_particles();
   mc_->add_particles(ps1);
-  P::set_particles(ps0);
-  P::audit_particles(ps1);
-  IMP_assert(ps0.size() == P::get_particles().size(),
-             "Where did they go?");
-  IMP_assert(ps1.size() == get_particles().size(),
+  grid_.clear_particles();
+  grid_.add_particles(ps0);
+  Particles all(ps0);
+  all.insert(all.end(), ps1.begin(), ps1.end());
+  NonbondedListScoreState::propagate_particles(all);
+  /*IMP_assert(ps0.size() == P::get_particles().size(),
+    "Where did they go?");*/
+  IMP_assert(ps1.size() == mc_->get_particles().size(),
              "Where did we go?");
 }
 
 void BipartiteNonbondedListScoreState::update()
 {
-  P::update();
-  if (mc_->get_max() > P::target_voxel_side_) {
-    P::invalidate_nbl();
+  NonbondedListScoreState::update();
+  if (mc_->get_max() > grid_.get_voxel_size() 
+      || grid_.update()) {
+    NonbondedListScoreState::clear_nbl();
   }
 }
 
