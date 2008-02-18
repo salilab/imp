@@ -10,6 +10,7 @@
 
 #include <cassert>
 #include <string>
+#include <new>
 
 namespace IMP
 {
@@ -19,14 +20,43 @@ namespace IMP
  */
 class IMPDLLEXPORT Exception
 {
-  std::string message_;
+  struct refstring {
+    char message_[256];
+    int ct_;
+  };
+  refstring *str_;
 public:
   const char *what() const throw() {
-    return message_.c_str();
+    return str_? str_->message_: NULL;
   }
-  Exception(const std::string &message) : message_(message){}
-  Exception(const char *message): message_(message){}
-  ~Exception() throw() {}
+  Exception(const char *message) {
+    str_= new (std::nothrow) refstring();
+    if (str_ != NULL) {
+      str_->ct_=0;
+      std::strncpy(str_->message_, message, 255);
+      str_->message_[255]='\0';
+    }
+  }
+  ~Exception() throw() {
+    destroy();
+  }
+  Exception(const Exception &o) {copy(o);}
+  Exception &operator=(const Exception &o) {
+    destroy();
+    copy(o);
+    return *this;
+  }
+ private:
+  void destroy() {
+    if (str_ != NULL) {
+      --str_->ct_;
+      if (str_->ct_==0) delete str_;
+    }
+  }
+  void copy(const Exception &o) {
+    str_=o.str_;
+    if (str_!= NULL) ++str_->ct_;
+  }
 };
 
 //! A general exception for an error in IMP.
@@ -43,7 +73,6 @@ struct IMPDLLEXPORT ErrorException: public Exception
 class IMPDLLEXPORT InvalidStateException : public Exception
 {
 public:
-  InvalidStateException(std::string t): Exception(t){} 
   InvalidStateException(const char *t): Exception(t){}
 };
 
@@ -63,7 +92,6 @@ public:
 class IMPDLLEXPORT IndexException: public Exception
 {
 public:
-  IndexException(std::string t): Exception(t){} 
   IndexException(const char *t): Exception(t){}
 };
 
@@ -73,7 +101,6 @@ public:
 class IMPDLLEXPORT ValueException: public Exception
 {
 public:
-  ValueException(std::string t): Exception(t){} 
   ValueException(const char *t): Exception(t){}
 };
 
