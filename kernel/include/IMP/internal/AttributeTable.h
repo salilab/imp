@@ -85,6 +85,7 @@ inline void AttributeTable<T>::show(std::ostream &out,
   for (unsigned int i=0; i< map_.size(); ++i) {
     if (map_[i] != Value()) {
       out << prefix;
+      out << Key(i).get_string() << ": ";
       if (md != NULL) {
         out << md->get_value(map_[i]);
       }
