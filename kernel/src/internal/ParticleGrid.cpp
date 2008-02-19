@@ -24,7 +24,10 @@ ParticleGrid::ParticleGrid(float tvs): target_voxel_side_(tvs),
   fks.push_back(FloatKey("y"));
   fks.push_back(FloatKey("z"));
   mc_= std::auto_ptr<MaxChangeScoreState>(new MaxChangeScoreState(fks));
+}
 
+ParticleGrid::ParticleGrid(): target_voxel_side_(0), grid_valid_(0)
+{
 }
 
 void ParticleGrid::build_grid()

@@ -9,18 +9,17 @@
 #define __IMP_PARTICLE_GRID_H
 
 #include "Grid3D.h"
+#include "../score_states/MaxChangeScoreState.h"
 #include "../base_types.h"
 
 namespace IMP
 {
 
-class MaxChangeScoreState;
-
 namespace internal
 {
 
 /** \internal */
-class ParticleGrid
+class ParticleGrid: public Object
 {
   typedef internal::Grid3D<Particles> Grid;
   Grid grid_;
@@ -31,6 +30,7 @@ class ParticleGrid
   void build_grid();
   void audit_particles(const Particles &ps) const;
 public:
+  ParticleGrid();
   //! suggested grid edge size.
   ParticleGrid(Float sz);
 
@@ -38,6 +38,7 @@ public:
 
   void add_particles(const Particles &ps);
   void clear_particles();
+  const Particles& get_particles() const {return mc_->get_particles();}
   bool update();
 
   typedef Grid::VirtualIndex VirtualIndex;
@@ -59,7 +60,7 @@ public:
   template <class F>
   void apply_to_nearby(F f, const Grid::VirtualIndex &center,
                        float cut,
-                       bool skip_lower) {
+                       bool skip_lower) const {
     Grid::VirtualIndex lc, uc;
 
     if ( cut > target_voxel_side_*1000 ) {
@@ -99,7 +100,7 @@ public:
   }
 
   template <class F>
-  void apply_to_cell_pairs(F f, const Grid::Index &center) {
+  void apply_to_cell_pairs(F f, const Grid::Index &center) const {
     const Particles &ps= grid_.get_voxel(center);
     for (unsigned int i=0; i< ps.size(); ++i) {
       for (unsigned int j=0; j< i; ++j) {

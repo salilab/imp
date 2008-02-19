@@ -69,6 +69,7 @@
 #include "IMP/score_states/BondedListScoreState.h"
 #include "IMP/score_states/BondDecoratorListScoreState.h"
 #include "IMP/score_states/AllNonbondedListScoreState.h"
+#include "IMP/score_states/AllSphereNonbondedListScoreState.h"
 
 /**
    \namespace IMP The IMP namespace.

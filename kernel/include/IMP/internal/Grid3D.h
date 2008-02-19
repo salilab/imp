@@ -182,32 +182,28 @@ public:
 private:
   std::vector<VT> data_;
   int d_[3];
-  Vector3D min_, max_;
+  Vector3D min_;
   float edge_size_[3];
-
-  void update_sizes() {
-    for (unsigned int i=0; i< 3; ++i) {
-      // hack to try to handle roundoff errors
-      // I would like to find something more reliable
-      edge_size_[i]= 1.05*(max_.get_component(i)- min_.get_component(i))/d_[i];
-    }
-    /*IMP_LOG(VERBOSE, "Grid has " << d_[0] << "x" << d_[1]
-            << "x" << d_[2] << " voxels of size "
-            << edge_size_[0] << "x" << edge_size_[1] 
-            << "x" << edge_size_[2] << std::endl);*/
-  }
 
   unsigned int index(const Index &i) const {
     unsigned int ii= i[2]*d_[0]*d_[1] + i[1]*d_[0]+i[0];
-    IMP_assert(ii < data_.size(), "Invalid grid index");
+    IMP_assert(ii < data_.size(), "Invalid grid index "
+               << i[0] << " " << i[1] << " " << i[2]
+               << ": " << d_[0] << " " << d_[1] << " " << d_[2]);
     return ii;
   }
   template <class IndexType>
   IndexType get_index_t(Vector3D pt) const {
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
+      IMP_assert(d_[i] != 0, "Invalid grid in Index");
       float d= pt.get_component(i)- min_.get_component(i);
       index[i]= static_cast<int>(std::floor(d/edge_size_[i]));
+      IMP_assert(std::abs(index[i]) < 200000000,
+                 "Something is probably wrong " << d 
+                 << " " << pt.get_component(i)
+                 << " " << min_.get_component(i)
+                 << " " << edge_size_[i]);
     }
     return IndexType(index[0], index[1], index[2]);
   }
@@ -251,14 +247,30 @@ public:
       \param[in] def The default value for the voxels
    */
   Grid3D(int xd, int yd, int zd, 
-         Vector3D minc, Vector3D maxc,
+         Vector3D minc, Vector3D max,
          VoxelData def): data_(xd*yd*zd, def),
-                         min_(minc),
-                         max_(maxc) {
+                         min_(minc) {
     d_[0]=xd;
     d_[1]=yd;
     d_[2]=zd;
-    update_sizes();
+      /**
+       \todo Grid3D::update_sizes is a mess of hacks. Figure out a clean
+       implementation.
+     */
+    for (unsigned int i=0; i< 3; ++i) {
+      // hack to try to handle roundoff errors
+      // I would like to find something more reliable
+      if (d_[i]==1) {
+        // make sure that the total grid size is not vanishing
+        // this is probably not hte right thing to do
+        edge_size_[i]= std::max(1.05*(max.get_component(i)
+                                      - min_.get_component(i))/d_[i],
+                                1.0);
+      } else {
+        edge_size_[i]= 1.05*(max.get_component(i)
+                             - min_.get_component(i))/d_[i];
+      }
+    }
   }
 
   //! Initialize the grid
@@ -271,16 +283,22 @@ public:
          Vector3D minc, Vector3D maxc,
          VoxelData def) {
     min_=minc;
-    float mx[3];
     for (unsigned int i=0; i< 3; ++i ) {
+      IMP_assert(minc.get_component(i) <= maxc.get_component(i),
+                 "Min must not be larger than max");
       d_[i]= std::max(static_cast<int>(std::ceil((maxc.get_component(i)
-                            - minc.get_component(i))/ side)),
+                                                  - minc.get_component(i))
+                                                 / side)),
                       1);
-      mx[i]= d_[i]*side+ minc.get_component(i);
     }
     data_.resize(d_[0]*d_[1]*d_[2], def);
-    max_= Vector3D(mx[0], mx[1], mx[2]);
-    update_sizes();
+    for (unsigned int i=0; i< 3; ++i) {
+      edge_size_[i]=side;
+      // hack to make sure the grid is big enough.
+      while (edge_size_[i]*d_[i] < maxc.get_component(i)) {
+        edge_size_[i]*= 1.05;
+      }
+    }
   }
 
   //! An empty grid.
@@ -290,26 +308,16 @@ public:
     d_[2]=0;
   }
 
-  //! Set the max corner of the grid
-  void set_min(Vector3D m) {
-    min_=m;
-    update_sizes();
-  }
-
-  //! Set the min corner of the voxel grid
-  void set_max(Vector3D m) {
-    max_=m;
-    update_sizes();
-  }
-
   //! Get the min corner
   const Vector3D &get_min() const {
     return min_;
   }
 
   //! Get the max corner
-  const Vector3D &get_max() const {
-    return max_;
+  Vector3D get_max() const {
+    return Vector3D(d_[0]*edge_size_[0],
+                    d_[1]*edge_size_[1],
+                    d_[2]*edge_size_[2]);
   }
 
   //! Return the number of voxels in a certain direction
@@ -320,11 +328,12 @@ public:
 
   //! Return the index of the voxel containing the point.
   Index get_index(Vector3D pt) const {
+    VirtualIndex v= get_virtual_index(pt);
     for (unsigned int i=0; i< 3; ++i) {
-      if (pt.get_component(i) < min_.get_component(i)) return Index();
-      if (pt.get_component(i) > max_.get_component(i)) return Index();
+      if (v[i] < 0) return Index();
+      else if (v[i] >= d_[i]) return Index();
     }
-    return get_index_t<Index>(pt);
+    return Index(v[0], v[1], v[2]);
   }
 
   //! Return the index that would contain the voxel if the grid extended there

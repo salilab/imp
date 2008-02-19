@@ -73,8 +73,8 @@ protected:
       }
     }
     if (!found) {
-      /*IMP_LOG(VERBOSE, "Found pair " << a->get_index() 
-        << " " << b->get_index() << std::endl);*/
+      IMP_LOG(VERBOSE, "Found pair " << a->get_index() 
+        << " " << b->get_index() << std::endl);
       nbl_.push_back(std::make_pair(a, b));
     }
   }

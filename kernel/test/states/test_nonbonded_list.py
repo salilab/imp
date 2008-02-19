@@ -122,6 +122,69 @@ class TestNBL(IMP.test.TestCase):
         m.add_restraint(r)
         score= m.evaluate(False)
         self.assertEqual(score, 25, "Wrong score")
+    def test_spheres(self):
+        """Test the nonbonded list of spheres (num pairs)"""
+        m= IMP.Model()
+        rk= IMP.FloatKey("radius")
+        for i in range(0,10):
+            p= IMP.Particle()
+            m.add_particle(p)
+            d=IMP.XYZDecorator.create(p)
+            d.set_x(random.uniform(0,10))
+            d.set_y(random.uniform(0,10))
+            d.set_z(random.uniform(0,10))
+            p.add_attribute(rk, i, False)
+            d.set_coordinates_are_optimized(True)
+        s= IMP.AllSphereNonbondedListScoreState(m.get_particles(), rk)
+        m.add_score_state(s)
+        o= OnePair()
+        r= IMP.NonbondedRestraint(s, o, 15)
+        m.add_restraint(r)
+        score= m.evaluate(False)
+        self.assertEqual(score, 45, "Wrong score")
+    def test_spheres(self):
+        """Test the nonbonded list of spheres (collision detection)"""
+        m= IMP.Model()
+        rk= IMP.FloatKey("radius")
+        for i in range(0,10):
+            p= IMP.Particle()
+            m.add_particle(p)
+            d=IMP.XYZDecorator.create(p)
+            d.set_x(random.uniform(0,10))
+            d.set_y(random.uniform(0,10))
+            d.set_z(random.uniform(0,10))
+            p.add_attribute(rk, random.uniform(0,1000), False)
+            d.set_coordinates_are_optimized(True)
+        s= IMP.AllSphereNonbondedListScoreState(m.get_particles(), rk)
+        m.add_score_state(s)
+        sd= IMP.SphereDistancePairScore(IMP.HarmonicLowerBound(0,1),
+                                        rk)
+        r= IMP.NonbondedRestraint(s, sd, 1)
+        m.add_restraint(r)
+        score= m.evaluate(False)
+        opt= IMP.ConjugateGradients()
+        opt.set_model(m)
+        score =opt.optimize(10000)
+        print score
+        for p in m.get_particles():
+            dp= IMP.XYZDecorator.cast(p)
+            print ".sphere "+str(dp.get_x()) + " " + str(dp.get_y())\
+                + " " + str(dp.get_z()) + " " +str( p.get_value(rk))
+        for p in m.get_particles():
+            p.show()
+            dp= IMP.XYZDecorator.cast(p)
+            for q in m.get_particles():
+                dq= IMP.XYZDecorator.cast(q)
+                if (p.get_index() != q.get_index()):
+                    d = IMP.distance(dp,dq)
+                    rd= p.get_value(rk) + q.get_value(rk)
+                    if (rd > d):
+                        p.show()
+                        q.show()
+                        print d
+                        print rd
+                    self.assert_(rd <= d, "Some sphere are not repelled")
+
 
 if __name__ == '__main__':
     unittest.main()
