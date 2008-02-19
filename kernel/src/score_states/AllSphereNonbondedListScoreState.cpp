@@ -8,6 +8,8 @@
 #include "IMP/score_states/AllSphereNonbondedListScoreState.h"
 #include "IMP/decorators/XYZDecorator.h"
 
+#include <algorithm>
+
 namespace IMP
 {
 
