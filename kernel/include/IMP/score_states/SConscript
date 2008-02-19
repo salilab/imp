@@ -3,7 +3,8 @@ Import('env')
 
 files = ['BondedListScoreState.h', 'NonbondedListScoreState.h',
          'BipartiteNonbondedListScoreState.h', 'MaxChangeScoreState.h',
-         'BondDecoratorListScoreState.h', 'AllNonbondedListScoreState.h']
+         'BondDecoratorListScoreState.h', 'AllNonbondedListScoreState.h',
+         'AllSphereNonbondedListScoreState.h']
 
 
 # Install the include files:

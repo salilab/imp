@@ -2,7 +2,8 @@ Import('env')
 
 files = ['NonbondedListScoreState.cpp', 'BipartiteNonbondedListScoreState.cpp',
          'MaxChangeScoreState.cpp', 'BondDecoratorListScoreState.cpp',
-         'AllNonbondedListScoreState.cpp']
+         'AllNonbondedListScoreState.cpp',
+         'AllSphereNonbondedListScoreState.cpp']
 
 files = [File(x) for x in files]
 Return('files')

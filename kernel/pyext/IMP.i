@@ -147,6 +147,7 @@ namespace IMP {
 %include "IMP/score_states/MaxChangeScoreState.h"
 %include "IMP/score_states/NonbondedListScoreState.h"
 %include "IMP/score_states/AllNonbondedListScoreState.h"
+%include "IMP/score_states/AllSphereNonbondedListScoreState.h"
 %include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 %include "IMP/score_states/BondDecoratorListScoreState.h"
 
