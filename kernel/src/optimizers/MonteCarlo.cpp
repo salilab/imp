@@ -37,6 +37,13 @@ MonteCarlo::~MonteCarlo()
 Float MonteCarlo::optimize(unsigned int max_steps)
 {
   IMP_CHECK_OBJECT(this);
+  if (cg_.get() != NULL) {
+    IMP_CHECK_OBJECT(cg_.get());
+    IMP_check(cg_->get_model() == get_model(),
+               "The model used by the local optimizer does not match "\
+              " that used by the montecarlo optimizer",
+              InvalidStateException("Bad model pointer"));
+  }
   update_states();
   prior_energy_ =get_model()->evaluate(0);
   IMP_LOG(VERBOSE, "MC Initial energy is " << prior_energy_ << std::endl);
@@ -97,6 +104,12 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   return prior_energy_;
 }
 
+
+void MonteCarlo::set_local_optimizer(Optimizer* cg)
+{
+  cg_=std::auto_ptr<Optimizer>(cg);
+  cg_->set_model(get_model());
+}
 
 void MonteCarlo::show(std::ostream &out) const
 {

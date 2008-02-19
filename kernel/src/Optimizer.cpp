@@ -12,7 +12,7 @@ namespace IMP
 {
 
 //! Constructor
-Optimizer::Optimizer()
+Optimizer::Optimizer(): model_(NULL)
 {
   IMP_LOG(VERBOSE, "MEMORY: Optimizer created " << this << std::endl);
 }
