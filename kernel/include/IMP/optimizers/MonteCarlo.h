@@ -44,10 +44,8 @@ public:
   /** The number of local steps must be nonzero for the 
       local optimizer to be used.
    */
-  void set_local_optimizer(Optimizer* cg) {
-    cg_=std::auto_ptr<Optimizer>(cg);
-    cg_->set_model(get_model());
-  }
+  void set_local_optimizer(Optimizer* cg);
+
   //! Set the temperature for the Metropolis criteria
   void set_temperature(Float t) {
     IMP_assert(t>0, "Temperature must be positive");
