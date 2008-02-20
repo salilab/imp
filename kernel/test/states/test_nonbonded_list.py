@@ -183,7 +183,9 @@ class TestNBL(IMP.test.TestCase):
                         q.show()
                         print d
                         print rd
-                    self.assert_(rd <= d, "Some sphere are not repelled")
+                    # Allow a little extra, for imperfect optimization:
+                    self.assert_(rd <= d + 1e-3,
+                                 "Some spheres are not repelled")
 
 
 if __name__ == '__main__':
