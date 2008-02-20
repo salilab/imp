@@ -1,13 +1,13 @@
 /**
- *  \file ListRestraint.h   
+ *  \file SingletonListRestraint.h   
  *  \brief Apply a SingletonScore to each particle in a list.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef __IMP_LIST_RESTRAINT_H
-#define __IMP_LIST_RESTRAINT_H
+#ifndef __IMP_SINGLETON_LIST_RESTRAINT_H
+#define __IMP_SINGLETON_LIST_RESTRAINT_H
 
 #include <iostream>
 
@@ -22,15 +22,15 @@ class SingletonScore;
 //! Applies a SingletonScore to each Particle in a list.
 /** \ingroup restraint
  */
-class IMPDLLEXPORT ListRestraint : public Restraint
+class IMPDLLEXPORT SingletonListRestraint : public Restraint
 {
 public:
   //! Create the list restraint.
   /** \param[in] ps The list of particles to use in the restraint.
       \param[in] ss The function to apply to each particle.
    */
-  ListRestraint(const Particles &ps, SingletonScore *ss);
-  virtual ~ListRestraint(){}
+  SingletonListRestraint(const Particles &ps, SingletonScore *ss);
+  virtual ~SingletonListRestraint(){}
 
   IMP_RESTRAINT("0.5", "Daniel Russel");
 
@@ -43,4 +43,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_LIST_RESTRAINT_H */
+#endif  /* __IMP_SINGLETON_LIST_RESTRAINT_H */

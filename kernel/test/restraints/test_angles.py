@@ -53,7 +53,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         l2= self.create_particles(m, 2)
         l= One()
         t= IMP.AngleTripletScore(l)
-        r= IMP.ChainTripletRestraint(t)
+        r= IMP.TripletChainRestraint(t)
         r.add_chain(l0)
         r.add_chain(l1)
         r.add_chain(l2)

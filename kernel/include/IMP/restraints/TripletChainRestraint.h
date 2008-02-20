@@ -1,13 +1,13 @@
 /**
- *  \file ChainTripletRestraint.h   
+ *  \file TripletChainRestraint.h   
  *   \brief Restraint triplets of particles in chains.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef __IMP_CHAIN_TRIPLET_RESTRAINT_H
-#define __IMP_CHAIN_TRIPLET_RESTRAINT_H
+#ifndef __IMP_TRIPLET_CHAIN_RESTRAINT_H
+#define __IMP_TRIPLET_CHAIN_RESTRAINT_H
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
@@ -21,14 +21,14 @@ class TripletScore;
 //! Restrain each three consecutive particles in each chain.
 /** \ingroup restraint
  */
-class IMPDLLEXPORT ChainTripletRestraint : public Restraint
+class IMPDLLEXPORT TripletChainRestraint : public Restraint
 {
 public:
   //! Create the triplet restraint.
   /** \param[in] trip_score Triplet score to apply.
    */
-  ChainTripletRestraint(TripletScore* trip_score);
-  virtual ~ChainTripletRestraint(){}
+  TripletChainRestraint(TripletScore* trip_score);
+  virtual ~TripletChainRestraint(){}
 
   IMP_RESTRAINT("0.5", "Daniel Russel");
 
@@ -47,4 +47,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_CHAIN_TRIPLET_RESTRAINT_H */
+#endif  /* __IMP_TRIPLET_CHAIN_RESTRAINT_H */
