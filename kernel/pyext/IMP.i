@@ -7,6 +7,7 @@
 %include "std_vector.i"
 %include "std_map.i"
 %include "std_string.i"
+%include "std_pair.i"
 
 %include "IMP_macros.i"
 %include "IMP_exceptions.i"
@@ -50,6 +51,9 @@ namespace IMP {
         args[1].thisown=0
   %}
   %pythonprepend SingletonListRestraint::SingletonListRestraint %{
+        args[1].thisown=0
+  %}
+  %pythonprepend PairListRestraint::PairListRestraint %{
         args[1].thisown=0
   %}
   %pythonprepend TripletChainRestraint::TripletChainRestraint %{
@@ -142,6 +146,7 @@ namespace IMP {
 %include "IMP/restraints/NonbondedRestraint.h"
 %include "IMP/restraints/BondDecoratorRestraint.h"
 %include "IMP/restraints/SingletonListRestraint.h"
+%include "IMP/restraints/PairListRestraint.h"
 %include "IMP/restraints/RestraintSet.h"
 %include "IMP/score_states/BondedListScoreState.h"
 %include "IMP/score_states/MaxChangeScoreState.h"
@@ -160,7 +165,7 @@ namespace IMP {
   %template(ScoreStateIndex) Index<ScoreStateTag>;
   %template(OptimizerStateIndex) Index<OptimizerStateTag>;
   %template(MoverIndex) Index<Mover>;
-  %template(BondeListIndex) Index<BondedListScoreState>;
+  %template(BondedListIndex) Index<BondedListScoreState>;
   %template(FloatKey) Key<Float>;
   %template(IntKey) Key<Int>;
   %template(StringKey) Key<String>;
@@ -168,11 +173,13 @@ namespace IMP {
   %template(ResidueType) Key<ResidueTypeTag>;     
   %template(show_named_hierarchy) show<NameDecorator>;
   %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
-  %template(Particles) ::std::vector<Particle*>;       
-  %template(Restraints) ::std::vector<Restraint*>;       
-  %template(ScoreStates) ::std::vector<ScoreState*>;       
-  %template(OptimizerStates) ::std::vector<OptimizerState*>;       
-  %template(ParticleIndexes) ::std::vector<ParticleIndex>;       
+  %template(Particles) ::std::vector<Particle*>;
+  %template(ParticlePair) ::std::pair<IMP::Particle*, IMP::Particle*>;
+  %template(ParticlePairs) ::std::vector<ParticlePair>;
+  %template(Restraints) ::std::vector<Restraint*>;
+  %template(ScoreStates) ::std::vector<ScoreState*>;
+  %template(OptimizerStates) ::std::vector<OptimizerState*>;
+  %template(ParticleIndexes) ::std::vector<ParticleIndex>;
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;

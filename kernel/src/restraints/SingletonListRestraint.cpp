@@ -1,16 +1,16 @@
 /**
  *  \file SingletonListRestraint.cpp 
- *  \brief Apply a score fgunction toa list of particles.
+ *  \brief Apply a score function to a list of particles.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#include <cmath>
-
+#include "IMP/restraints/SingletonListRestraint.h"
 #include "IMP/SingletonScore.h"
 #include "IMP/log.h"
-#include "IMP/restraints/SingletonListRestraint.h"
+
+#include <cmath>
 
 namespace IMP
 {

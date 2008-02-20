@@ -26,7 +26,7 @@ class TestList(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
 
     def test_it(self):
-        """Test the singleton restraint"""
+        """Test the list restraint"""
         m= IMP.Model()
         for i in range(0,10):
             p= IMP.Particle()
