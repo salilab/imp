@@ -10,9 +10,9 @@
 namespace IMP 
 {
 
-BondDecoratorListScoreState::BondDecoratorListScoreState(const Particles &ps) :
-    ps_(ps)
+BondDecoratorListScoreState::BondDecoratorListScoreState(const Particles &ps)
 {
+  set_particles(ps);
 }
 
 void BondDecoratorListScoreState::update()
@@ -25,6 +25,9 @@ void BondDecoratorListScoreState::update()
     for (unsigned int j=0; j< di.get_number_of_bonds(); ++j) {
       BondedDecorator dj= di.get_bonded(j);
       if (! dj.get_particle()->get_is_active()) continue;
+      if (!std::binary_search(ps_.begin(), ps_.end(), dj.get_particle())) {
+        continue;
+      }
       if (di < dj) {
         bonds_.push_back(di.get_bond(j));
       }
@@ -36,6 +39,7 @@ void BondDecoratorListScoreState::update()
 void BondDecoratorListScoreState::set_particles(const Particles &ps)
 {
   ps_=ps;
+  std::sort(ps_.begin(), ps_.end());
   bonds_.clear();
 }
 
