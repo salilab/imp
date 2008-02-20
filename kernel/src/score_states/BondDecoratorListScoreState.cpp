@@ -7,6 +7,8 @@
 
 #include "IMP/score_states/BondDecoratorListScoreState.h"
 
+#include <algorithm>
+
 namespace IMP 
 {
 
