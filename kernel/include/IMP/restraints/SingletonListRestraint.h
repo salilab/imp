@@ -9,10 +9,10 @@
 #ifndef __IMP_SINGLETON_LIST_RESTRAINT_H
 #define __IMP_SINGLETON_LIST_RESTRAINT_H
 
-#include <iostream>
-
 #include "../IMP_config.h"
 #include "../Restraint.h"
+
+#include <iostream>
 
 namespace IMP
 {
@@ -30,7 +30,6 @@ public:
       \param[in] ss The function to apply to each particle.
    */
   SingletonListRestraint(const Particles &ps, SingletonScore *ss);
-  virtual ~SingletonListRestraint(){}
 
   IMP_RESTRAINT("0.5", "Daniel Russel");
 
