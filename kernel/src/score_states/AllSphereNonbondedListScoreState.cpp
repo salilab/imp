@@ -117,6 +117,7 @@ void AllSphereNonbondedListScoreState::cleanup(std::vector<Bin> &bins)
 
 void AllSphereNonbondedListScoreState::update()
 {
+  NonbondedListScoreState::update();
   bool bad=false;
   for (unsigned int i=0; i< bins_.size(); ++i) {
     if (bins_[i].grid->update()) bad=true;
