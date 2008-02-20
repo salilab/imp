@@ -50,6 +50,10 @@ public:
   BondIterator bonds_end() const {
     return bonds_.end();
   }
+
+  unsigned int number_of_bonds() const {
+    return bonds_.size();
+  }
 };
 
 } // namespace IMP
