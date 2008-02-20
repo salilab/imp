@@ -1,0 +1,30 @@
+Import('env', 'bin')
+
+# All example scripts:
+example_py = ['chain.py']
+
+import os.path
+
+e = env.Clone()
+
+# Custom builder to run unit tests:
+def builder_unit_test(target, source, env):
+    bin = source[0].abspath
+    for src in source[1:]:
+        (dir, script) = os.path.split(src.abspath)
+        app = "cd %s && %s %s %s > /dev/null" % (dir, bin, e['PYTHON'], script)
+        if env.Execute(app) != 0:
+            print "examples FAILED"
+            return 1
+    file(str(target[0]), 'w').write('PASSED\n')
+
+e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
+
+# Test all scripts:
+test = e.Test("examples.passed", bin + example_py)
+e.AlwaysBuild("examples.passed")
+
+# Install all scripts:
+docdir = os.path.join(env['docdir'], 'examples')
+e.Install(docdir, example_py)
+e.Alias('docinstall', docdir)
