@@ -49,10 +49,10 @@ namespace IMP {
   %pythonprepend BondDecoratorRestraint::BondDecoratorRestraint %{
         args[1].thisown=0
   %}
-  %pythonprepend ListRestraint::ListRestraint %{
+  %pythonprepend SingletonListRestraint::SingletonListRestraint %{
         args[1].thisown=0
   %}
-  %pythonprepend ChainTripletRestraint::ChainTripletRestraint %{
+  %pythonprepend TripletChainRestraint::TripletChainRestraint %{
         args[0].thisown=0
   %}
   %pythonprepend ConnectivityRestraint::ConnectivityRestraint %{
@@ -132,7 +132,7 @@ namespace IMP {
 %include "IMP/triplet_scores/AngleTripletScore.h"
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/AngleRestraint.h"
-%include "IMP/restraints/ChainTripletRestraint.h"
+%include "IMP/restraints/TripletChainRestraint.h"
 %include "IMP/restraints/DihedralRestraint.h"
 %include "IMP/restraints/TorusRestraint.h"
 %include "IMP/restraints/ProximityRestraint.h"
@@ -141,7 +141,7 @@ namespace IMP {
 %include "IMP/restraints/ExclusionVolumeRestraint.h"
 %include "IMP/restraints/NonbondedRestraint.h"
 %include "IMP/restraints/BondDecoratorRestraint.h"
-%include "IMP/restraints/ListRestraint.h"
+%include "IMP/restraints/SingletonListRestraint.h"
 %include "IMP/restraints/RestraintSet.h"
 %include "IMP/score_states/BondedListScoreState.h"
 %include "IMP/score_states/MaxChangeScoreState.h"

@@ -1,5 +1,5 @@
 /**
- *  \file ListRestraint.cpp 
+ *  \file SingletonListRestraint.cpp 
  *  \brief Apply a score fgunction toa list of particles.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -10,19 +10,19 @@
 
 #include "IMP/SingletonScore.h"
 #include "IMP/log.h"
-#include "IMP/restraints/ListRestraint.h"
+#include "IMP/restraints/SingletonListRestraint.h"
 
 namespace IMP
 {
 
-ListRestraint::ListRestraint(const Particles &ps,
-                             SingletonScore *s) : ss_(s)
+SingletonListRestraint::SingletonListRestraint(const Particles &ps,
+                                               SingletonScore *s) : ss_(s)
 {
   add_particles(ps);
 }
 
 
-Float ListRestraint::evaluate(DerivativeAccumulator *accum)
+Float SingletonListRestraint::evaluate(DerivativeAccumulator *accum)
 {
 
   IMP_CHECK_OBJECT(ss_.get());
@@ -37,7 +37,7 @@ Float ListRestraint::evaluate(DerivativeAccumulator *accum)
 }
 
 
-void ListRestraint::show(std::ostream& out) const
+void SingletonListRestraint::show(std::ostream& out) const
 {
   out << "List restraint with score function ";
   ss_->show(out);

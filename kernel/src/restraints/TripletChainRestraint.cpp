@@ -1,11 +1,11 @@
 /**
- *  \file ChainTripletRestraint.cpp \brief Triplet restraint.
+ *  \file TripletChainRestraint.cpp \brief Triplet restraint.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/restraints/ChainTripletRestraint.h"
+#include "IMP/restraints/TripletChainRestraint.h"
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/Particle.h"
 #include "IMP/Model.h"
@@ -18,13 +18,13 @@
 namespace IMP
 {
 
-ChainTripletRestraint::ChainTripletRestraint(TripletScore* ts)
+TripletChainRestraint::TripletChainRestraint(TripletScore* ts)
 {
   ts_ = std::auto_ptr<TripletScore>(ts);
   clear_chains();
 }
 
-void ChainTripletRestraint::add_chain(const Particles &ps)
+void TripletChainRestraint::add_chain(const Particles &ps)
 {
   if (ps.size() <3) {
     IMP_WARN("Adding a chain of length 2 or less to the AnglesRestraint"
@@ -36,7 +36,7 @@ void ChainTripletRestraint::add_chain(const Particles &ps)
   }
 }
 
-Float ChainTripletRestraint::evaluate(DerivativeAccumulator *accum)
+Float TripletChainRestraint::evaluate(DerivativeAccumulator *accum)
 {
   int cur_break=0;
   unsigned int i=2;
@@ -62,19 +62,19 @@ Float ChainTripletRestraint::evaluate(DerivativeAccumulator *accum)
   return score;
 }
 
-void ChainTripletRestraint::clear_chains() {
+void TripletChainRestraint::clear_chains() {
   Restraint::clear_particles();
   chain_splits_.clear();
   chain_splits_.push_back(0);
 }
 
 
-void ChainTripletRestraint::show(std::ostream& out) const
+void TripletChainRestraint::show(std::ostream& out) const
 {
   if (get_is_active()) {
-    out << "Chain triplet restraint (active):" << std::endl;
+    out << "Triplet chain restraint (active):" << std::endl;
   } else {
-    out << "Chain triplet restraint (inactive):" << std::endl;
+    out << "Triplet chain restraint (inactive):" << std::endl;
   }
 
   out << "  version: " << version() << "  ";
