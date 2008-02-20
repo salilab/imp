@@ -25,12 +25,17 @@ VRMLLogOptimizerState::VRMLLogOptimizerState(std::string filename,
 void VRMLLogOptimizerState::update()
 {
   if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
-    char buf[1000];
-    sprintf(buf, filename_.c_str(), file_number_);
-    ++file_number_;
-    write(buf);
+    write_next_file();
   }
   ++call_number_;
+}
+
+void VRMLLogOptimizerState::write_next_file()
+{
+  char buf[1000];
+  sprintf(buf, filename_.c_str(), file_number_);
+  ++file_number_;
+  write(buf);
 }
 
 void VRMLLogOptimizerState::write(std::string buf) const

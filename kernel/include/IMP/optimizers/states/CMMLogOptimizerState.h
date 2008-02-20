@@ -69,6 +69,10 @@ class IMPDLLEXPORT CMMLogOptimizerState : public OptimizerState
   void set_particles(const Particles &pis) {
     pis_=pis;
   }
+
+  //! force it to write the next file
+  void write_next_file();
+
   void write(std::string name) const;
 
   //! A helper function to just write a list of particles to a file
