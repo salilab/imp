@@ -8,12 +8,12 @@
 #ifndef __IMP_BASE_TYPES_H
 #define __IMP_BASE_TYPES_H
 
+#include "IMP_config.h"
+#include "Index.h"
+
 #include <string>
 #include <iostream>
 #include <vector>
-
-#include "IMP_config.h"
-#include "Index.h"
 
 namespace IMP
 {
@@ -67,7 +67,10 @@ class Particle;
 /**
    We need this to have a uniform return type for python.
  */
-typedef std::vector<Particle*> Particles; 
+typedef std::vector<Particle*> Particles;
+typedef std::pair<Particle*, Particle*> ParticlePair;
+typedef std::vector<ParticlePair> ParticlePairs;
+
 
 typedef std::vector<ParticleIndex> ParticleIndexes;
 typedef std::vector<FloatIndex> FloatIndexes;
