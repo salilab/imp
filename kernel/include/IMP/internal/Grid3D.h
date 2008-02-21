@@ -198,7 +198,9 @@ private:
     for (unsigned int i=0; i< 3; ++i ) {
       IMP_assert(d_[i] != 0, "Invalid grid in Index");
       float d= pt.get_component(i)- min_.get_component(i);
-      index[i]= static_cast<int>(std::floor(d/edge_size_[i]));
+      float fi= d/edge_size_[i];
+      index[i]= static_cast<int>(std::floor(fi));
+
       IMP_assert(std::abs(index[i]) < 200000000,
                  "Something is probably wrong " << d 
                  << " " << pt.get_component(i)
@@ -286,19 +288,14 @@ public:
     for (unsigned int i=0; i< 3; ++i ) {
       IMP_assert(minc.get_component(i) <= maxc.get_component(i),
                  "Min must not be larger than max");
-      d_[i]= std::max(static_cast<int>(std::ceil((maxc.get_component(i)
+      // add 10% to handle rounding errors
+      d_[i]= std::max(static_cast<int>(std::ceil(1.1*(maxc.get_component(i)
                                                   - minc.get_component(i))
                                                  / side)),
                       1);
+      edge_size_[i]= side;
     }
     data_.resize(d_[0]*d_[1]*d_[2], def);
-    for (unsigned int i=0; i< 3; ++i) {
-      edge_size_[i]=side;
-      // hack to make sure the grid is big enough.
-      while (edge_size_[i]*d_[i] < maxc.get_component(i)) {
-        edge_size_[i]*= 1.05;
-      }
-    }
   }
 
   //! An empty grid.
