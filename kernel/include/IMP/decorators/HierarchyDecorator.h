@@ -74,7 +74,7 @@ public:
   }
 
   //! Get a HierarchyDecorator of the ith child
-  /** \return decorator of the ith child, or thrown and IndexException if it
+  /** \return decorator of the ith child, or throw an IndexException if it
       does not have this child
    */
   This get_child(unsigned int i) const {

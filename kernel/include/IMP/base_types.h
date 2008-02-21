@@ -26,7 +26,7 @@ namespace IMP
     Classes and functions which are there to make your life easier.
  */
 
-/** \namespace internal
+/** \namespace IMP::internal
     Implementation details.
 
     \internal

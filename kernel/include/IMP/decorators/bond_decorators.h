@@ -96,7 +96,7 @@ public:
 
 
   //! Get a BondDecorator of the ith bond
-  /** \return decorator of the ith child, or throw and exception if there
+  /** \return decorator of the ith child, or throw an exception if there
               is no such bond
   */
   BondDecorator get_bond(unsigned int i) const {
@@ -106,7 +106,7 @@ public:
   }
 
   //! Get a BondedDecorator of the ith bonded particle
-  /** \return decorator of the ith child, or throw and exception if there
+  /** \return decorator of the ith child, or throw an exception if there
               is no such bond
 
       \note I don't entirely like having this here as it duplicates
@@ -116,8 +116,7 @@ public:
       desired.
   */
   BondedDecorator get_bonded(unsigned int i) const {
-    Particle *p= graph_get_edge(get_particle(), i,
-                                     internal::bond_graph_data_);
+    Particle *p= graph_get_edge(get_particle(), i, internal::bond_graph_data_);
     BondDecorator bd= BondDecorator::cast(p);
     if (bd.get_bonded(0) == *this) return bd.get_bonded(1);
     else return bd.get_bonded(0);
