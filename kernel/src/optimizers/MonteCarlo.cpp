@@ -18,7 +18,7 @@ namespace IMP
 {
 
 
-Mover::Mover(): opt_(NULL){};
+Mover::Mover() {};
 
 IMP_CONTAINER_IMPL(MonteCarlo, Mover, mover, MoverIndex,
                    obj->set_optimizer(this, index));
@@ -107,7 +107,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
 
 void MonteCarlo::set_local_optimizer(Optimizer* cg)
 {
-  cg_=std::auto_ptr<Optimizer>(cg);
+  cg_= cg;
   cg_->set_model(get_model());
 }
 

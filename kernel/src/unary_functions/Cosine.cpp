@@ -8,7 +8,6 @@
 #include <cmath>
 
 #include "IMP/unary_functions/Cosine.h"
-#include "../mystdexcept.h"
 
 namespace IMP
 {

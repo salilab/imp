@@ -11,6 +11,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/ObjectPointer.h"
 
 #include <iostream>
 
@@ -37,7 +38,7 @@ public:
   using Restraint::clear_particles;
 
 protected:
-  std::auto_ptr<SingletonScore> ss_;
+  internal::ObjectPointer<SingletonScore, true> ss_;
 };
 
 } // namespace IMP

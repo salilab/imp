@@ -87,10 +87,9 @@ namespace IMP {
 
 %feature("director");
 
-%include "IMP/Object.h"
+%include "IMP/internal/Object.h"
 %include "IMP/Index.h"
 %include "IMP/base_types.h"
-%include "IMP.h"
 %include "IMP/Key.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/unary_functions/Harmonic.h"

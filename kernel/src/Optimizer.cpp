@@ -7,12 +7,13 @@
 
 #include "IMP/log.h"
 #include "IMP/Optimizer.h"
+#include "IMP/OptimizerState.h"
 
 namespace IMP
 {
 
 //! Constructor
-Optimizer::Optimizer(): model_(NULL)
+Optimizer::Optimizer()
 {
   IMP_LOG(VERBOSE, "MEMORY: Optimizer created " << this << std::endl);
 }

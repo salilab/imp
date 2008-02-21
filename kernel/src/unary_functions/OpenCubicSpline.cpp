@@ -6,7 +6,6 @@
  */
 
 #include "IMP/unary_functions/OpenCubicSpline.h"
-#include "../mystdexcept.h"
 
 namespace IMP
 {
@@ -48,7 +47,7 @@ Float OpenCubicSpline::operator()(Float feature)
 {
   // check for feature in range
   if (feature < minrange_ || feature > maxrange_) {
-    throw std::domain_error("Value out of range for open cubic spline");
+    throw ValueException("Value out of range for open cubic spline");
   }
 
   // determine bin index and thus the cubic fragment to use:

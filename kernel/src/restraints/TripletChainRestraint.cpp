@@ -20,7 +20,7 @@ namespace IMP
 
 TripletChainRestraint::TripletChainRestraint(TripletScore* ts)
 {
-  ts_ = std::auto_ptr<TripletScore>(ts);
+  ts_ = ts;
   clear_chains();
 }
 

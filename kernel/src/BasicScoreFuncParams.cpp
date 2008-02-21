@@ -10,7 +10,6 @@
 #include "IMP/unary_functions/HarmonicLowerBound.h"
 #include "IMP/unary_functions/HarmonicUpperBound.h"
 #include "IMP/log.h"
-#include "mystdexcept.h"
 
 namespace IMP
 {
@@ -70,7 +69,7 @@ UnaryFunction* BasicScoreFuncParams::create_score_func()
   }
 
   IMP_check(0, "Unknown score function: " << score_func_type_,
-            std::out_of_range("Unknown score function"));
+            ValueException("Unknown score function"));
   return NULL;
 }
 

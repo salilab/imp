@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "Object.h"
+#include "internal/Object.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 
@@ -23,7 +23,7 @@ namespace IMP
  */
 
 //! Abstract score function for a triplet of particles.
-class IMPDLLEXPORT TripletScore : public Object
+class IMPDLLEXPORT TripletScore : public internal::Object
 {
 public:
   TripletScore() {}

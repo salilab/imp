@@ -11,7 +11,7 @@
 
 #include "IMP_config.h"
 #include "ScoreState.h"
-#include "Object.h"
+#include "internal/Object.h"
 #include "base_types.h"
 
 namespace IMP
@@ -27,7 +27,7 @@ typedef std::vector<Restraint*> Restraints;
     model_data_ structure.
     \ingroup kernel
  */
-class IMPDLLEXPORT Model: public Object
+class IMPDLLEXPORT Model: public internal::Object
 {
   friend class Restraint;
 public:

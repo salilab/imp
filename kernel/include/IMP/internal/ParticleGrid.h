@@ -11,6 +11,7 @@
 #include "Grid3D.h"
 #include "../score_states/MaxChangeScoreState.h"
 #include "../base_types.h"
+#include "ObjectPointer.h"
 
 namespace IMP
 {
@@ -19,11 +20,11 @@ namespace internal
 {
 
 /** \internal */
-class ParticleGrid: public Object
+class ParticleGrid: public internal::Object
 {
   typedef internal::Grid3D<Particles> Grid;
   Grid grid_;
-  std::auto_ptr<MaxChangeScoreState> mc_;
+  internal::ObjectPointer<MaxChangeScoreState, true> mc_;
   Float target_voxel_side_;
   bool grid_valid_;
 

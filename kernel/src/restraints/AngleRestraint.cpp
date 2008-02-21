@@ -18,7 +18,7 @@ AngleRestraint::AngleRestraint(Particle* p1, Particle* p2, Particle* p3,
   add_particle(p2);
   add_particle(p3);
 
-  sf_= std::auto_ptr<AngleTripletScore>(new AngleTripletScore(score_func));
+  sf_= new AngleTripletScore(score_func);
 }
 
 //! Calculate the score for this angle restraint.

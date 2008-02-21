@@ -13,6 +13,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/ObjectPointer.h"
 
 namespace IMP
 {
@@ -42,7 +43,7 @@ public:
 
 protected:
   NonbondedListScoreState *nbl_;
-  std::auto_ptr<PairScore> sf_;
+  internal::ObjectPointer<PairScore, true> sf_;
   Float max_dist_;
 };
 

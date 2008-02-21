@@ -8,16 +8,20 @@
 #ifndef __IMP_RESTRAINT_H
 #define __IMP_RESTRAINT_H
 
+#include "IMP_config.h"
+#include "DerivativeAccumulator.h"
+#include "Model.h"
+#include "Particle.h"
+#include "internal/Object.h"
+#include "internal/ObjectPointer.h"
+#include "log.h"
+#include "utility.h"
+
 #include <vector>
 #include <iostream>
 #include <limits>
 
-#include "IMP_config.h"
-#include "Particle.h"
-#include "DerivativeAccumulator.h"
-#include "Object.h"
-#include "utility.h"
-#include "log.h"
+
 
 namespace IMP
 {
@@ -30,7 +34,7 @@ class Model;
  */
 
 //! Abstract class for representing restraints
-class IMPDLLEXPORT Restraint : public Object
+class IMPDLLEXPORT Restraint : public internal::Object
 {
 public:
   //! Initialize the Restraint
@@ -70,15 +74,15 @@ public:
 
   //! Return the model containing this restraint
   Model *get_model() const {
-    IMP_assert(model_ != NULL,
+    IMP_assert(model_,
                "get_model() called before set_model()");
-    return model_;
+    return model_.get();
   }
 
   IMP_LIST(protected, Particle, particle, Particle*)
 
 private:
-  Model* model_;
+  internal::ObjectPointer<Model, false> model_;
 
   /* True if restraint has not been deactivated.
      If it is not active, evaluate should not be called

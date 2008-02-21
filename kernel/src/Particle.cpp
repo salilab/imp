@@ -8,14 +8,13 @@
 #include "IMP/Particle.h"
 #include "IMP/log.h"
 #include "IMP/Model.h"
-#include "mystdexcept.h"
 
 
 namespace IMP
 {
 
 //! Constructor
-Particle::Particle(): model_(NULL)
+Particle::Particle()
 {
   is_active_ = true;
 }
@@ -56,7 +55,7 @@ void Particle::set_is_active(const bool is_active)
 void Particle::add_attribute(FloatKey name, const Float value,
                              bool is_optimized)
 {
-  IMP_assert(model_ != NULL,
+  IMP_assert(model_ ,
              "Particle must be added to Model before an attributes are added");
   float_indexes_.insert(name, model_->get_model_data()->add_float(value));
 
@@ -71,7 +70,7 @@ void Particle::add_attribute(FloatKey name, const Float value,
  */
 void Particle::add_attribute(IntKey name, const Int value)
 {
-  IMP_assert(model_ != NULL,
+  IMP_assert(model_,
              "Particle must be added to Model before an attributes are added");
   int_indexes_.insert(name, model_->get_model_data()->add_int(value));
 }
@@ -83,7 +82,7 @@ void Particle::add_attribute(IntKey name, const Int value)
  */
 void Particle::add_attribute(StringKey name, const String value)
 {
-  IMP_assert(model_ != NULL,
+  IMP_assert(model_,
              "Particle must be added to Model before an attributes are added");
   string_indexes_.insert(name, model_->get_model_data()->add_string(value));
 }

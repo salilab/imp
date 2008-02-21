@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "Object.h"
+#include "internal/Object.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 
@@ -22,7 +22,7 @@ namespace IMP
  */
 
 //! Abstract score function for a pair of particles.
-class IMPDLLEXPORT PairScore : public Object
+class IMPDLLEXPORT PairScore : public internal::Object
 {
 public:
   PairScore() {}

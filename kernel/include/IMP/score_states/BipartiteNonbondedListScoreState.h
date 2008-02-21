@@ -28,7 +28,7 @@ class IMPDLLEXPORT BipartiteNonbondedListScoreState:
     public NonbondedListScoreState
 {
   typedef NonbondedListScoreState P;
-  std::auto_ptr<MaxChangeScoreState> mc_;
+  internal::ObjectPointer<MaxChangeScoreState, true> mc_;
   internal::ParticleGrid grid_;
 
   virtual void rebuild_nbl(float cut);

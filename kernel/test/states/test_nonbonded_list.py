@@ -79,26 +79,26 @@ class TestNBL(IMP.test.TestCase):
         """Test filtering based on distance in nonbonded list"""
         m= IMP.Model()
         ps=IMP.Particles()
-        for i in range(0,10):
+        for i in range(0,50):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
             ps.append(p)
-            if (i < 5):
+            if (i < 25):
                 d.set_x(random.uniform(0,10))
                 d.set_y(random.uniform(0,10))
                 d.set_z(random.uniform(0,10))
             else:
-                d.set_x(random.uniform(50,60))
-                d.set_y(random.uniform(50,60))
-                d.set_z(random.uniform(50,60))
+                d.set_x(random.uniform(60,70))
+                d.set_y(random.uniform(60,70))
+                d.set_z(random.uniform(60,70))
         s= IMP.AllNonbondedListScoreState(ps)
         m.add_score_state(s)
         o= OnePair()
         r= IMP.NonbondedRestraint(s, o, 15)
         m.add_restraint(r)
         score= m.evaluate(False)
-        self.assertEqual(score, 20, "Wrong score")
+        self.assertEqual(score, 1225, "Wrong score")
     def test_bi(self):
         """Test the bipartite nonbonded list and restraint which uses it"""
         m= IMP.Model()
@@ -122,7 +122,7 @@ class TestNBL(IMP.test.TestCase):
         m.add_restraint(r)
         score= m.evaluate(False)
         self.assertEqual(score, 25, "Wrong score")
-    def test_spheres(self):
+    def test_spheres2(self):
         """Test the nonbonded list of spheres (num pairs)"""
         m= IMP.Model()
         rk= IMP.FloatKey("radius")

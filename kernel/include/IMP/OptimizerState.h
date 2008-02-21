@@ -11,7 +11,9 @@
 #include <iostream>
 
 #include "IMP_config.h"
-#include "Object.h"
+#include "internal/Object.h"
+#include "internal/ObjectPointer.h"
+#include "Optimizer.h"
 
 namespace IMP
 {
@@ -19,7 +21,7 @@ namespace IMP
 class Optimizer;
 
 //! Shared optimizer state.
-class IMPDLLEXPORT OptimizerState : public Object
+class IMPDLLEXPORT OptimizerState : public internal::Object
 {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
@@ -49,13 +51,13 @@ public:
 
   //! return the stored optimizer
   Optimizer *get_optimizer() const {
-    IMP_assert(optimizer_ != NULL,
+    IMP_assert(optimizer_,
                "Must call set_optimizer before get_optimizer on state");
-    return optimizer_;
+    return optimizer_.get();
   }
 protected:
   //! Stored optimizer
-  Optimizer* optimizer_;
+  internal::ObjectPointer<Optimizer, false> optimizer_;
 
   std::string name_;
 };

@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "Object.h"
+#include "internal/Object.h"
 #include "DerivativeAccumulator.h"
 
 namespace IMP
@@ -24,7 +24,7 @@ class Particle;
  */
 
 //! Abstract score function for a single particle.
-class IMPDLLEXPORT SingletonScore : public Object
+class IMPDLLEXPORT SingletonScore : public internal::Object
 {
 public:
   SingletonScore() {}

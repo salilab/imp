@@ -79,7 +79,7 @@ private:
   Float temp_;
   Float prior_energy_;
   Float stop_energy_;
-  std::auto_ptr<Optimizer> cg_;
+  internal::ObjectPointer<Optimizer, true> cg_;
   unsigned int num_local_steps_;
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_num_failures_;

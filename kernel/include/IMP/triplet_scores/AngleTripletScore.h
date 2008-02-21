@@ -10,6 +10,7 @@
 
 #include "../TripletScore.h"
 #include "../UnaryFunction.h"
+#include "../internal/ObjectPointer.h"
 
 namespace IMP
 {
@@ -20,7 +21,7 @@ namespace IMP
  */
 class IMPDLLEXPORT AngleTripletScore : public TripletScore
 {
-  std::auto_ptr<UnaryFunction> f_;
+  internal::ObjectPointer<UnaryFunction, true> f_;
 public:
   AngleTripletScore(UnaryFunction *f);
   virtual ~AngleTripletScore(){}

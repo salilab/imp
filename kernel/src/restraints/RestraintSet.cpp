@@ -8,7 +8,6 @@
 
 #include "IMP/log.h"
 #include "IMP/restraints/RestraintSet.h"
-#include "../mystdexcept.h"
 #include <utility>
 
 namespace IMP

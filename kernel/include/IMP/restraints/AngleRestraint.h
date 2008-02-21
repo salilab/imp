@@ -10,6 +10,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/ObjectPointer.h"
 
 
 namespace IMP
@@ -34,7 +35,7 @@ public:
   IMP_RESTRAINT("0.2", "Daniel Russel")
 
 protected:
-    std::auto_ptr<AngleTripletScore> sf_;
+    internal::ObjectPointer<AngleTripletScore, true> sf_;
 };
 
 } // namespace IMP
