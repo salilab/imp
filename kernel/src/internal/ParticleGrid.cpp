@@ -23,7 +23,7 @@ ParticleGrid::ParticleGrid(float tvs): target_voxel_side_(tvs),
   fks.push_back(FloatKey("x"));
   fks.push_back(FloatKey("y"));
   fks.push_back(FloatKey("z"));
-  mc_= std::auto_ptr<MaxChangeScoreState>(new MaxChangeScoreState(fks));
+  mc_= new MaxChangeScoreState(fks);
 }
 
 ParticleGrid::ParticleGrid(): target_voxel_side_(0), grid_valid_(0)
@@ -45,6 +45,18 @@ void ParticleGrid::build_grid()
       if (d.get_coordinate(j)< mn[j]) mn[j]= d.get_coordinate(j);
       if (d.get_coordinate(j)> mx[j]) mx[j]= d.get_coordinate(j);
     }
+  }
+  if (!mc_->get_particles().empty()) {
+    // keep the grid size sane if things blow up
+    float maxdim= std::max(mx[0]-mn[0], std::max(mx[1]-mn[1], mx[2]-mn[2]));
+    float vx= std::pow(static_cast<float>(10.0*(maxdim*maxdim*maxdim
+                                                /mc_->get_particles().size())),
+                       .3333f);
+    if (vx > target_voxel_side_) {
+      IMP_LOG(VERBOSE, "Overroade target side of " << target_voxel_side_ 
+              << " with " << vx << std::endl);
+    }
+    target_voxel_side_= std::max(vx, target_voxel_side_);
   }
   grid_= Grid(target_voxel_side_,
              Vector3D(mn[0], mn[1], mn[2]),
