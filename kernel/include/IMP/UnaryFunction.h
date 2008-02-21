@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "Object.h"
+#include "internal/Object.h"
 
 namespace IMP
 {
@@ -18,7 +18,7 @@ namespace IMP
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
  */
-class IMPDLLEXPORT UnaryFunction : public Object
+class IMPDLLEXPORT UnaryFunction : public internal::Object
 {
 public:
   UnaryFunction() {}

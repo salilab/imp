@@ -13,7 +13,7 @@ namespace IMP
 {
 
 //! Constructor
-OptimizerState::OptimizerState(std::string name) : optimizer_(NULL), name_(name)
+OptimizerState::OptimizerState(std::string name) : name_(name)
 {
   IMP_LOG(VERBOSE, "OptimizerState constructed " << name << std::endl);
 }

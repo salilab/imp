@@ -12,14 +12,16 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "Object.h"
+#include "internal/Object.h"
 #include "utility.h"
-#include "OptimizerState.h"
+#include "Model.h"
+#include "internal/ObjectPointer.h"
 
 namespace IMP
 {
 
-class Model;
+class OptimizerState;
+
 typedef std::vector<OptimizerState*> OptimizerStates;
 
 /** \defgroup optimizer Optimizers
@@ -27,7 +29,7 @@ typedef std::vector<OptimizerState*> OptimizerStates;
   */
 
 //! Base class for all optimizers
-class IMPDLLEXPORT Optimizer: public Object
+class IMPDLLEXPORT Optimizer: public internal::Object
 {
 public:
   Optimizer();
@@ -45,10 +47,7 @@ public:
 
   //! Get the model being optimized
   Model *get_model() const {
-    IMP_assert(model_ != NULL, 
-               "get_model() called before set_model() "
-               << " this can crash python");
-    return model_;
+    return model_.get();
   }
 
   //! Set the model being optimized
@@ -67,7 +66,7 @@ protected:
   void update_states();
 
 private:
-  Model *model_;
+  internal::ObjectPointer<Model, false> model_;
 
 };
 

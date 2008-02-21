@@ -37,7 +37,7 @@ BipartiteNonbondedListScoreState
   fks.push_back(FloatKey("x"));
   fks.push_back(FloatKey("y"));
   fks.push_back(FloatKey("z"));
-  mc_= std::auto_ptr<MaxChangeScoreState>(new MaxChangeScoreState(fks));
+  mc_= new MaxChangeScoreState(fks);
   set_particles(ps0, ps1);
 }
 

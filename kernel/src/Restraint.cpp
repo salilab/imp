@@ -17,7 +17,6 @@ namespace IMP
 
 Restraint::Restraint()
 {
-  model_ = NULL;
   is_active_ = true; // active by default
 }
 
@@ -42,7 +41,7 @@ bool Restraint::get_is_active() const
 
 void Restraint::set_model(Model* model)
 {
-  IMP_assert(model== NULL || number_of_particles()==0
+  IMP_assert(model==NULL || number_of_particles()==0
              || model == get_particle(0)->get_model(),
              "Model* different from Particle Model*");
   model_=model;

@@ -11,6 +11,8 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/ObjectPointer.h"
+
 #include <vector>
 
 namespace IMP
@@ -41,7 +43,7 @@ public:
   void clear_chains();
 
 protected:
-  std::auto_ptr<TripletScore> ts_;
+  internal::ObjectPointer<TripletScore, true> ts_;
   std::vector<unsigned int> chain_splits_;
 };
 

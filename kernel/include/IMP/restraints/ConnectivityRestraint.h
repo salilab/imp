@@ -49,7 +49,7 @@ public:
 
 protected:
 
-  std::auto_ptr<PairScore> ps_;
+    internal::ObjectPointer<PairScore, true> ps_;
 
   //! The indices for the first particle in each set
   /** set_offset_[i] is the first index of set i and set_offset_[i+1] is 

@@ -13,6 +13,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/ObjectPointer.h"
 
 namespace IMP
 {
@@ -45,7 +46,7 @@ public:
 
 protected:
   BondDecoratorListScoreState *bl_;
-  std::auto_ptr<UnaryFunction> f_;
+  internal::ObjectPointer<UnaryFunction, true> f_;
 };
 
 } // namespace IMP

@@ -56,6 +56,10 @@ public:
       IMP_assert(*it != d, "IMP Containers can only have one copy of "
                  << " each object");
     }
+#ifndef NDEBUG
+    IMP_assert(!d->get_is_owned(), "Object already owned by another pointer");
+    d->set_is_owned(true);
+#endif
     Vector::push_back(d);
     return I(Vector::size()-1);
   }
@@ -68,6 +72,9 @@ public:
         IMP_assert(*it != *cc, "IMP Containers can only have one copy of "
                    << " each object");
       }
+      IMP_assert(!(*cc)->get_is_owned(),
+                 "Object already owned by another pointer");
+      (*cc)->set_is_owned(true);
     }
 #endif
     Vector::insert(c, b, e);

@@ -12,7 +12,6 @@
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
-#include "mystdexcept.h"
 
 namespace IMP
 {

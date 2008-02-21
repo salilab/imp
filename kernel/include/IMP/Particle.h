@@ -13,11 +13,12 @@
 #include "IMP_config.h"
 #include "base_types.h"
 #include "Model.h"
-#include "Object.h"
+#include "internal/Object.h"
 #include "utility.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
 #include "DerivativeAccumulator.h"
+#include "internal/ObjectPointer.h"
 
 namespace IMP
 {
@@ -32,7 +33,7 @@ class Model;
     problems in the way attribute values are indexed and should not be done.
     \ingroup kernel
  */
-class IMPDLLEXPORT Particle : public Object
+class IMPDLLEXPORT Particle : public internal::Object
 {
   friend class Model;
 public:
@@ -51,7 +52,7 @@ public:
   /** \return all particle data in the model.
    */
   Model* get_model() const {
-    return model_;
+    return model_.get();
   }
 
   //! Add a Float attribute to this particle.
@@ -225,7 +226,7 @@ protected:
   void set_model(Model *md, ParticleIndex pi);
 
   // all of the particle data
-  Model* model_;
+  internal::ObjectPointer<Model, false> model_;
 
   // true if particle is active
   bool is_active_;

@@ -9,6 +9,7 @@
 #define __IMP_SPHERE_DISTANCE_PAIR_SCORE_H
 
 #include "../PairScore.h"
+#include "../internal/ObjectPointer.h"
 
 namespace IMP
 {
@@ -19,7 +20,7 @@ class UnaryFunction;
  */
 class IMPDLLEXPORT SphereDistancePairScore : public PairScore
 {
-  std::auto_ptr<UnaryFunction> f_;
+  internal::ObjectPointer<UnaryFunction, true> f_;
   FloatKey radius_;
 public:
   SphereDistancePairScore(UnaryFunction *f, 

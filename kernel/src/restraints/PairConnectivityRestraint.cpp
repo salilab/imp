@@ -14,7 +14,6 @@
 #include "IMP/Particle.h"
 #include "IMP/log.h"
 #include "IMP/restraints/PairConnectivityRestraint.h"
-#include "../mystdexcept.h"
 
 namespace IMP
 {
@@ -49,7 +48,7 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
       // create the restraint
       if (rs_iter == rsr_scores_.end()) {
         IMP_failure("Reached end of rsr_scores too early.",
-                    std::out_of_range("Reached end of rsr_scores too early"));
+                    ValueException("Reached end of rsr_scores too early"));
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         UnaryFunction *sf = score_func_params->create_score_func();
@@ -113,7 +112,7 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
       // create the restraint
       if (rs_iter == rsr_scores_.end()) {
         IMP_failure("Reached end of rsr_scores too early.",
-                    std::out_of_range("Reached end of rsr_scores too early"));
+                    ValueException("Reached end of rsr_scores too early"));
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         UnaryFunction *sf = score_func_params->create_score_func();

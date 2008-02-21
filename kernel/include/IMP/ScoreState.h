@@ -9,7 +9,7 @@
 #define __IMP_SCORE_STATE_H
 
 #include "IMP_config.h"
-#include "Object.h"
+#include "internal/Object.h"
 #include "utility.h"
 
 #include <vector>
@@ -21,7 +21,7 @@ namespace IMP
 class Model;
 
 //! Shared score state.
-class IMPDLLEXPORT ScoreState : public Object
+class IMPDLLEXPORT ScoreState : public internal::Object
 {
   friend class Model;
   void set_model(Model* model);
