@@ -27,6 +27,26 @@ public:
 
   virtual ~Harmonic() {}
 
+  //! \return the mean of this function
+  Float get_mean() const {
+    return mean_;
+  }
+
+  //! \return the standard deviation of this function
+  Float get_sd() const {
+    return sd_;
+  }
+
+  //! Set the mean of this function
+  void set_mean(Float mean) {
+    mean_ = mean;
+  }
+
+  //! Set the standard deviation of this function
+  void set_sd(Float sd) {
+    sd_ = sd;
+  }
+
   //! Calculate harmonic score with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
       \return Score
