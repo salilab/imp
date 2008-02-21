@@ -29,8 +29,12 @@ void BondDecorator::show(std::ostream &out, std::string) const
   out << "Bond between " 
       << get_bonded(0).get_particle()->get_index() << " and "
       << get_bonded(1).get_particle()->get_index() 
-      << " of type " << get_type() << " and order " << get_order() 
-      << std::endl;
+      << " of type " << get_type() << " and order " << get_order();
+  if (get_particle()->has_attribute(internal::bond_length_key_)) {
+    out << " and length "
+        << get_particle()->get_value(internal::bond_length_key_);
+  }
+  out << std::endl;
 }
 
 void BondedDecorator::show(std::ostream &out, std::string) const
