@@ -64,8 +64,13 @@ Float ClosedCubicSpline::operator()(Float feature)
 
   // determine bin index and thus the cubic fragment to use:
   unsigned lowbin = static_cast<int>((feature - minrange_) / spacing_);
+  unsigned highbin = lowbin + 1;
+  unsigned npoints = values_.size();
   // enforce periodicity - wrap around from n to 1:
-  unsigned highbin = (lowbin == values_.size() - 1 ? 0 : lowbin + 1);
+  if (lowbin >= npoints - 1) {
+    lowbin = npoints - 1;
+    highbin = 0;
+  }
   Float lowfeature = minrange_ + lowbin * spacing_;
 
   Float b = (feature - lowfeature) / spacing_;
@@ -80,7 +85,13 @@ Float ClosedCubicSpline::operator()(Float feature)
 Float ClosedCubicSpline::operator()(Float feature, Float& deriv)
 {
   unsigned lowbin = static_cast<int>((feature - minrange_) / spacing_);
-  unsigned highbin = (lowbin == values_.size() - 1 ? 0 : lowbin + 1);
+  unsigned highbin = lowbin + 1;
+  unsigned npoints = values_.size();
+  // enforce periodicity - wrap around from n to 1:
+  if (lowbin >= npoints - 1) {
+    lowbin = npoints - 1;
+    highbin = 0;
+  }
   Float lowfeature = minrange_ + lowbin * spacing_;
 
   Float b = (feature - lowfeature) / spacing_;
