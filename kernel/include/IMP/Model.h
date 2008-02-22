@@ -10,7 +10,6 @@
 #define __IMP_MODEL_H
 
 #include "IMP_config.h"
-#include "ScoreState.h"
 #include "internal/Object.h"
 #include "base_types.h"
 
@@ -20,7 +19,9 @@ namespace IMP
 class Particle;
 class Restraint;
 class ModelData;
+class ScoreState;
 typedef std::vector<Restraint*> Restraints;
+typedef std::vector<ScoreState*> ScoreStates;
 
 //! Class for storing model, its restraints, constraints, and particles.
 /** All attribute data for particles is stored through indexing in the
