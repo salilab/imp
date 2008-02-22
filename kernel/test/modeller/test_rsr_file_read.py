@@ -68,6 +68,15 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         r = forms.factor(feature=features.angle(at[0], at[1], at[2]),
                           factor=100.0, group=physical.xy_distance)
         restraints.append(r)
+
+        # Test periodic splined restraint:
+        r = forms.spline(feature=features.dihedral(at[0], at[1], at[2], at[3]),
+                         open=False, low=0.0, high=6.2832, delta=1.2566,
+                         group=physical.xy_distance,
+                         lowderiv=0.0, highderiv=0.0,
+                         values=[100.0, 200.0, 300.0, 400.0, 300.0])
+        restraints.append(r)
+
         for r in restraints:
             modmodel.restraints.clear()
             modmodel.restraints.add(r)

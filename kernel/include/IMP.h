@@ -21,6 +21,7 @@
 #include "IMP/unary_functions/HarmonicLowerBound.h"
 #include "IMP/unary_functions/HarmonicUpperBound.h"
 #include "IMP/unary_functions/OpenCubicSpline.h"
+#include "IMP/unary_functions/ClosedCubicSpline.h"
 #include "IMP/unary_functions/Cosine.h"
 #include "IMP/unary_functions/Linear.h"
 #include "IMP/ScoreFuncParams.h"

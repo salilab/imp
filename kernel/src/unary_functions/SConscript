@@ -1,7 +1,7 @@
 Import('env')
 
 files = ['Harmonic.cpp', 'HarmonicLowerBound.cpp', 'HarmonicUpperBound.cpp',
-         'OpenCubicSpline.cpp', 'Cosine.cpp']
+         'OpenCubicSpline.cpp', 'ClosedCubicSpline.cpp', 'Cosine.cpp']
 
 files = [File(x) for x in files]
 Return('files')
