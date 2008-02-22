@@ -12,6 +12,7 @@
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
+#include "IMP/ScoreState.h"
 
 namespace IMP
 {

@@ -10,6 +10,8 @@
 
 #include "IMP_config.h"
 #include "internal/Object.h"
+#include "internal/ObjectPointer.h"
+#include "Model.h"
 #include "utility.h"
 
 #include <vector>
@@ -51,20 +53,18 @@ public:
 
   //! return the stored model data
   Model *get_model() const {
-    IMP_assert(model_ != NULL,
+    IMP_assert(model_,
                "Must call set_model before get_model on state");
-    return model_;
+    return model_.get();
   }
 protected:
   // all of the particle data
-  Model* model_;
+  internal::ObjectPointer<Model, false> model_;
 
   std::string name_;
 };
 
 IMP_OUTPUT_OPERATOR(ScoreState);
-
-typedef std::vector<ScoreState*> ScoreStates;
 
 } // namespace IMP
 
