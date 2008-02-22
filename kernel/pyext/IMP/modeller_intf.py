@@ -200,3 +200,124 @@ def show_modeller_and_imp(atoms, particles):
     print "IMP:"
     for (num, at) in enumerate(atoms):
         print "(", particles[num].x(), ", ", particles[num].y(), ", ", particles[num].z(), ") (", particles[num].dx(), ", ", particles[num].dy(), ", ", particles[num].dz(), ")"
+
+# Generators to create IMP UnaryFunction objects from Modeller parameters:
+def _HarmonicLowerBoundGenerator(parameters, modalities):
+    (mean, stdev) = parameters
+    return IMP.HarmonicLowerBound(mean, stdev)
+
+def _HarmonicUpperBoundGenerator(parameters, modalities):
+    (mean, stdev) = parameters
+    return IMP.HarmonicUpperBound(mean, stdev)
+
+def _HarmonicGenerator(parameters, modalities):
+    (mean, stdev) = parameters
+    return IMP.Harmonic(mean, stdev)
+
+def _CosineGenerator(parameters, modalities):
+    (phase, force_constant) = parameters
+    (periodicity,) = modalities
+    return IMP.Cosine(force_constant, periodicity, phase)
+
+def _LinearGenerator(parameters, modalities):
+    (scale,) = parameters
+    return IMP.Linear(scale)
+
+def _SplineGenerator(parameters, modalities):
+    (open, low, high, delta, lowderiv, highderiv) = parameters[:6]
+    if open < 0.0:
+        raise NotImplementedError("No support for closed cubic splines")
+    values = IMP.Floats()
+    for v in parameters[6:]:
+        values.append(v)
+    return IMP.OpenCubicSpline(values, low, delta)
+
+#: Mapping from Modeller math form number to a unary function generator
+_unary_func_generators = {
+    1: _HarmonicLowerBoundGenerator,
+    2: _HarmonicUpperBoundGenerator,
+    3: _HarmonicGenerator,
+    7: _CosineGenerator,
+    8: _LinearGenerator,
+    10: _SplineGenerator,
+}
+
+# Generators to make IMP Restraint objects from Modeller features
+def _DistanceRestraintGenerator(form, modalities, atoms, parameters):
+    unary_func_gen = _unary_func_generators[form]
+    return IMP.DistanceRestraint(atoms[0], atoms[1],
+                                 unary_func_gen(parameters, modalities))
+
+def _AngleRestraintGenerator(form, modalities, atoms, parameters):
+    unary_func_gen = _unary_func_generators[form]
+    return IMP.AngleRestraint(atoms[0], atoms[1], atoms[2],
+                              unary_func_gen(parameters, modalities))
+
+def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
+    unary_func_gen = _unary_func_generators[form]
+    return IMP.DihedralRestraint(atoms[0], atoms[1], atoms[2], atoms[3],
+                                 unary_func_gen(parameters, modalities))
+
+def _get_protein_atom_particles(protein):
+    """Given a protein particle, get the flattened list of all child atoms"""
+    atom_particles = []
+    protein = IMP.MolecularHierarchyDecorator.cast(protein)
+    for ichain in range(protein.get_number_of_children()):
+        chain = protein.get_child(ichain)
+        for ires in range(chain.get_number_of_children()):
+            residue = chain.get_child(ires)
+            for iatom in range(residue.get_number_of_children()):
+                atom = residue.get_child(iatom)
+                atom_particles.append(atom.get_particle())
+    return atom_particles
+
+def _load_restraints_line(line, atom_particles, rsr):
+    """Parse a single Modeller restraints file line"""
+    spl = line.split()
+    typ = spl.pop(0)
+    if typ == 'MODELLER5':
+        return
+    elif typ != 'R':
+        raise NotImplementedError("Only 'R' lines currently read from " + \
+                                  "Modeller restraints files")
+    form = int(spl.pop(0))
+    modalities = [int(spl.pop(0))]
+    features = [int(spl.pop(0))]
+    # Discard group
+    spl.pop(0)
+    natoms = [int(spl.pop(0))]
+    nparam = int(spl.pop(0))
+    nfeat = int(spl.pop(0))
+    for i in range(nfeat - 1):
+        modalities.append(int(spl.pop(0)))
+        features.append(int(spl.pop(0)))
+        natoms.append(int(spl.pop(0)))
+    atoms = [int(spl.pop(0)) for x in range(natoms[0])]
+    for i in range(len(atoms)):
+        atoms[i] = atom_particles[atoms[i] - 1]
+    parameters = [float(spl.pop(0)) for x in range(nparam)]
+    restraint_generators = {
+        1 : _DistanceRestraintGenerator,
+        2 : _AngleRestraintGenerator,
+        3 : _DihedralRestraintGenerator,
+    }
+    restraint_gen = restraint_generators[features[0]]
+    rsr.append(restraint_gen(form, modalities, atoms, parameters))
+
+
+def load_restraints_file(filename, protein):
+    """Load the specified Modeller restraints file and generate equivalent
+       IMP restraints on `protein` (a protein particle, as returned from
+       `pdb.read_pdb`). The Modeller restraints file is assumed to act on
+       the same PDB described by `protein`. The list of all restraints
+       is returned."""
+    atoms = _get_protein_atom_particles(protein)
+    fh = file(filename, 'r')
+    rsr = []
+    for line in fh:
+        try:
+            _load_restraints_line(line, atoms, rsr)
+        except Exception, err:
+            print "Cannot read restraints file line:\n" + line
+            raise
+    return rsr
