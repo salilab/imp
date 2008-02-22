@@ -73,7 +73,7 @@ def read_pdb(name, model):
             hcp.add_child(hrp)
             for atom in residue.atoms:
                 ap= copy_atom(atom, model)
-                atoms[atom._atom__get_index()]=ap
+                atoms[atom.index - 1]=ap
                 hap= IMP.MolecularHierarchyDecorator.cast(ap)
                 hrp.add_child(hap)
                 atoms[atom.index]=ap
