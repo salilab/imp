@@ -92,7 +92,8 @@ class ModellerRestraintsTests(IMP.test.TestCase):
             score = m.evaluate(True)
             rset.set_is_active(False)
             # Modeller and IMP should give the same score:
-            self.assertAlmostEqual(modenergy, score, places=3)
+            diff = abs(modenergy - score)
+            self.assert_(diff < 0.1)
 
 if __name__ == '__main__':
     unittest.main()
