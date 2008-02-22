@@ -51,8 +51,8 @@ Float OpenCubicSpline::operator()(Float feature)
   }
 
   // determine bin index and thus the cubic fragment to use:
-  int lowbin = static_cast<int>((feature - minrange_) / spacing_);
-  int highbin = lowbin + 1;
+  unsigned lowbin = static_cast<int>((feature - minrange_) / spacing_);
+  unsigned highbin = lowbin + 1;
   Float lowfeature = minrange_ + lowbin * spacing_;
 
   Float b = (feature - lowfeature) / spacing_;
@@ -66,8 +66,8 @@ Float OpenCubicSpline::operator()(Float feature)
 
 Float OpenCubicSpline::operator()(Float feature, Float& deriv)
 {
-  int lowbin = static_cast<int>((feature - minrange_) / spacing_);
-  int highbin = lowbin + 1;
+  unsigned lowbin = static_cast<int>((feature - minrange_) / spacing_);
+  unsigned highbin = lowbin + 1;
   Float lowfeature = minrange_ + lowbin * spacing_;
 
   Float b = (feature - lowfeature) / spacing_;

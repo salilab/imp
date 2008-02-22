@@ -225,12 +225,13 @@ def _LinearGenerator(parameters, modalities):
 
 def _SplineGenerator(parameters, modalities):
     (open, low, high, delta, lowderiv, highderiv) = parameters[:6]
-    if open < 0.0:
-        raise NotImplementedError("No support for closed cubic splines")
     values = IMP.Floats()
     for v in parameters[6:]:
         values.append(v)
-    return IMP.OpenCubicSpline(values, low, delta)
+    if open < 0.0:
+        return IMP.ClosedCubicSpline(values, low, delta)
+    else:
+        return IMP.OpenCubicSpline(values, low, delta)
 
 #: Mapping from Modeller math form number to a unary function generator
 _unary_func_generators = {
