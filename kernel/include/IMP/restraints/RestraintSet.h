@@ -39,7 +39,7 @@ public:
   void set_weight(Float weight) { weight_ = weight; }
 
   //! Get weight for all restraints contained by this set.
-  Float get_weight() { return weight_; }
+  Float get_weight() const { return weight_; }
 
 protected:
 
