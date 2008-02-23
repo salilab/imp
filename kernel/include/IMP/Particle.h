@@ -28,9 +28,12 @@ class Model;
 
 //! Class to handle individual model particles.
 /** This class contains particle methods and indexes to particle attributes.
-    Particles can be deactivated so that they no longer play a role in model
-    optimization. Removing particles and their attributes would cause
-    problems in the way attribute values are indexed and should not be done.
+    Particles cannot be deleted once they are added to a model, but they can
+    be deactivated (with their set_is_active method) after which they play no
+    role in the scoring (it is illegal to try to evaluate a restraint on an
+    inactive particle). To merely prevent a particle from moving during
+    optimization, mark all of its attributes as being non-optimizable
+    (set_is_optimized method).
     \ingroup kernel
  */
 class IMPDLLEXPORT Particle : public internal::Object
