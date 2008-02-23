@@ -16,7 +16,7 @@
 namespace IMP
 {
 
-//! Used to hold a set of related restraints
+//! Container used to hold a set of restraints
 /** \ingroup restraint
  */
 class IMPDLLEXPORT RestraintSet : public Restraint

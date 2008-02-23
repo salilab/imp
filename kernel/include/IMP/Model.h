@@ -23,9 +23,10 @@ class ScoreState;
 typedef std::vector<Restraint*> Restraints;
 typedef std::vector<ScoreState*> ScoreStates;
 
-//! Class for storing model, its restraints, constraints, and particles.
+//! Class for storing model, its restraints, and particles.
 /** All attribute data for particles is stored through indexing in the
     model_data_ structure.
+    Currently no suport for constraints (e.g. rigid bodies).
     \ingroup kernel
  */
 class IMPDLLEXPORT Model: public internal::Object

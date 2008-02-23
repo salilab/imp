@@ -5,7 +5,6 @@
   <!ENTITY MODELLER "<application>MODELLER</application>">
   <!ENTITY doxygen "doxygen/">
   <!ENTITY usage SYSTEM "usage.xml">
-  <!ENTITY notes SYSTEM "notes.xml">
 ]>
 <book lang="en">
 
@@ -35,7 +34,5 @@ California Institute for Quantitiative Biomedical Research
 </bookinfo>
 
 &usage;
-
-&notes;
 
 </book>

@@ -28,7 +28,10 @@ typedef std::vector<OptimizerState*> OptimizerStates;
     Optimizers of various sorts.
   */
 
-//! Base class for all optimizers
+//! Base class for all optimizers.
+/** \note There is currently no optimizer support for constraints
+    (e.g. rigid bodies).
+ */
 class IMPDLLEXPORT Optimizer: public internal::Object
 {
 public:
