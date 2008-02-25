@@ -12,6 +12,7 @@
 #include "DerivativeAccumulator.h"
 #include "Model.h"
 #include "Particle.h"
+#include "VersionInfo.h"
 #include "internal/Object.h"
 #include "internal/ObjectPointer.h"
 #include "log.h"
@@ -63,9 +64,8 @@ public:
    */
   virtual void show(std::ostream& out=std::cout) const;
 
-  virtual std::string version() const = 0;
-
-  virtual std::string last_modified_by() const = 0;
+  //! \return version and authorship information.
+  virtual VersionInfo get_version_info() const = 0;
 
   //! The model the restraint is part of.
   /** \param[in] model The model.

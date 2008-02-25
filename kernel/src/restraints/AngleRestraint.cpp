@@ -46,8 +46,7 @@ void AngleRestraint::show(std::ostream& out) const
     out << "angle restraint (inactive):" << std::endl;
   }
 
-  out << "  version: " << version() << "  ";
-  out << "  last_modified_by: " << last_modified_by() << std::endl;
+  get_version_info().show(out);
   out << "  particles: " << get_particle(0)->get_index();
   out << ", " << get_particle(1)->get_index();
   out << " and " << get_particle(2)->get_index();

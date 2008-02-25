@@ -13,6 +13,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
 
 namespace IMP
@@ -42,7 +43,7 @@ public:
   BondDecoratorRestraint(BondDecoratorListScoreState *bl, UnaryFunction *f);
   virtual ~BondDecoratorRestraint(){}
 
-  IMP_RESTRAINT("0.5", "Daniel Russel");
+  IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:
   BondDecoratorListScoreState *bl_;

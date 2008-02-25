@@ -12,6 +12,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 
 namespace IMP
 {
@@ -25,7 +26,7 @@ public:
   RestraintSet(const std::string& name=std::string());
   ~RestraintSet();
 
-  IMP_RESTRAINT("0.5", "Daniel Russel")
+  IMP_RESTRAINT(internal::kernel_version_info)
 
   IMP_CONTAINER(Restraint, restraint, RestraintIndex);
 

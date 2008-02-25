@@ -11,6 +11,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
 
 #include <vector>
@@ -32,7 +33,7 @@ public:
   TripletChainRestraint(TripletScore* trip_score);
   virtual ~TripletChainRestraint(){}
 
-  IMP_RESTRAINT("0.5", "Daniel Russel");
+  IMP_RESTRAINT(internal::kernel_version_info)
 
   //! Add a chain of particles
   /** Each three successive particles are restrained.

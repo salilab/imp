@@ -11,6 +11,7 @@
 #include "../IMP_config.h"
 #include "../UnaryFunction.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 
 
 namespace IMP
@@ -31,7 +32,7 @@ public:
                     UnaryFunction* score_func);
   virtual ~DihedralRestraint();
 
-  IMP_RESTRAINT("0.1", "Ben Webb")
+  IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:
   //! scoring function for this restraint

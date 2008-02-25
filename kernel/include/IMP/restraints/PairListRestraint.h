@@ -12,6 +12,7 @@
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "../Particle.h"
+#include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
 
 #include <iostream>
@@ -34,7 +35,7 @@ public:
   PairListRestraint(const ParticlePairs &ps, PairScore *ss);
   virtual ~PairListRestraint();
 
-  IMP_RESTRAINT("0.5", "Daniel Russel");
+  IMP_RESTRAINT(internal::kernel_version_info)
 
   void add_particle_pair(ParticlePair p);
   void clear_particle_pairs();

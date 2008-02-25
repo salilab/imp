@@ -11,6 +11,7 @@
 #include "../IMP_config.h"
 #include "../Particle.h"
 #include "../Optimizer.h"
+#include "../internal/kernel_version_info.h"
 
 namespace IMP
 {
@@ -27,7 +28,7 @@ public:
   MolecularDynamics();
   virtual ~MolecularDynamics();
 
-  IMP_OPTIMIZER("0.1", "Ben Webb");
+  IMP_OPTIMIZER(internal::kernel_version_info)
 
   //! Set time step in fs
   void set_time_step(Float t) { time_step_ = t; }

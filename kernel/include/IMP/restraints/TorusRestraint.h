@@ -13,6 +13,7 @@
 #include "../IMP_config.h"
 #include "../ScoreFuncParams.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 
 namespace IMP
 {
@@ -33,7 +34,8 @@ public:
                  const Float tube_radius, UnaryFunction* score_func);
   virtual ~TorusRestraint();
 
-  IMP_RESTRAINT("0.6", "Ben Webb")
+  IMP_RESTRAINT(internal::kernel_version_info)
+
 protected:
   //! variables used to determine the distance
   FloatKey x_, y_, z_;

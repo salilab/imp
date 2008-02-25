@@ -8,10 +8,8 @@ class IndexDiff(IMP.PairScore):
         d= (pa.get_index().get_index()- pb.get_index().get_index())
         print d
         return abs(d)
-    def last_modified_by(self):
-        return "Me"
-    def version(self):
-        return "0.5"
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
     def show(self, t):
         print "One Singleton"
 

@@ -1,6 +1,7 @@
 Import('env')
 
-files = ['graph_base.cpp', 'ParticleGrid.cpp', 'Object.cpp']
+files = ['graph_base.cpp', 'ParticleGrid.cpp', 'Object.cpp',
+         'kernel_version_info.cpp']
 
 files = [File(x) for x in files]
 Return('files')

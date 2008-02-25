@@ -9,6 +9,7 @@
 #define __IMP_MONTE_CARLO_H
 
 #include "../Optimizer.h"
+#include "../internal/kernel_version_info.h"
 #include "Mover.h"
 
 namespace IMP
@@ -32,7 +33,7 @@ public:
   MonteCarlo();
   ~MonteCarlo();
 
-  IMP_OPTIMIZER("Daniel Russel", "0.1");
+  IMP_OPTIMIZER(internal::kernel_version_info)
 
   IMP_CONTAINER(Mover, mover, MoverIndex);
 public:

@@ -9,8 +9,8 @@ class WoodsFunc(IMP.Restraint):
         self.index= IMP.FloatKey("x")
     def show(self, junk):
         print "Woods function"
-    def last_modified_by(self):
-        return "Daniel Russel"
+    def get_version_info(self):
+        return IMP.VersionInfo("Daniel Russel", "0.5")
 
 
     def evaluate(self, accum):

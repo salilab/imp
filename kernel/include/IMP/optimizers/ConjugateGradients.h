@@ -10,6 +10,7 @@
 
 #include "../IMP_config.h"
 #include "../Optimizer.h"
+#include "../internal/kernel_version_info.h"
 
 namespace IMP
 {
@@ -25,7 +26,8 @@ public:
   ConjugateGradients();
   virtual ~ConjugateGradients();
 
-  IMP_OPTIMIZER("0.1", "Ben Webb");
+  IMP_OPTIMIZER(internal::kernel_version_info)
+
   //! Set the threshold for the minimum gradient
   void set_threshold(Float t){ threshold_=t;}
 private:

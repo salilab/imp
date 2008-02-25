@@ -77,8 +77,7 @@ void TripletChainRestraint::show(std::ostream& out) const
     out << "Triplet chain restraint (inactive):" << std::endl;
   }
 
-  out << "  version: " << version() << "  ";
-  out << "  last_modified_by: " << last_modified_by() << std::endl;
+  get_version_info().show(out);
   out << "  " << chain_splits_.size()-1 << " chains" << std::endl;
   ts_->show(out);
   out << std::endl;

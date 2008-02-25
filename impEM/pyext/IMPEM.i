@@ -30,6 +30,7 @@ namespace IMP {
 
 /* Get definitions of IMP base classes (but do not wrap; that is done by IMP) */
 %import "IMP/internal/Object.h"
+%import "IMP/VersionInfo.h"
 %import "IMP/Restraint.h"
 
 /* Get definitions of EMLIB base classes (but do not wrap) */

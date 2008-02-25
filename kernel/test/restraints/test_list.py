@@ -6,10 +6,8 @@ class OneSingle(IMP.SingletonScore):
         IMP.SingletonScore.__init__(self)
     def evaluate(self, pa, da):
         return 1
-    def last_modified_by(self):
-        return "Me"
-    def version(self):
-        return "0.5"
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
     def show(self, t):
         print "One Singleton"
 

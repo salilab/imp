@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "IMP_config.h"
+#include "VersionInfo.h"
 #include "internal/Object.h"
 #include "internal/ObjectPointer.h"
 #include "Optimizer.h"
@@ -34,12 +35,12 @@ public:
   virtual void update() = 0;
 
   virtual void show(std::ostream& out = std::cout) const;
-  virtual std::string version() const {
-    return "unknown";
+
+  //! \return version and authorship information.
+  virtual VersionInfo get_version_info() const {
+    return VersionInfo("unknown", "unknown");
   }
-  virtual std::string last_modified_by() const {
-    return "unknown";
-  }
+
   //! Get the name of the state
   const std::string& get_name() const {
     return name_;

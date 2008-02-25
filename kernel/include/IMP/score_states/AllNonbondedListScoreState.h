@@ -9,6 +9,7 @@
 #define __IMP_ALL_NONBONDED_LIST_SCORE_STATE_H
 
 #include "NonbondedListScoreState.h"
+#include "../internal/kernel_version_info.h"
 
 #include <vector>
 #include <limits>
@@ -34,7 +35,7 @@ public:
    */
   AllNonbondedListScoreState(const Particles &ps, float tvs=1);
 
-  IMP_SCORE_STATE("0.5", "Daniel Russel");
+  IMP_SCORE_STATE(internal::kernel_version_info)
 
   void set_particles(const Particles &ps);
 };

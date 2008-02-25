@@ -89,8 +89,8 @@ void Model::show(std::ostream& out) const
   out << std::endl << std::endl;
   out << "** Model **" << std::endl;
 
-  out << "version: " << version() << "  ";
-  out << "last_modified_by: " << last_modified_by() << std::endl;
+  get_version_info().show(out);
+
   out << number_of_particles() << " particles" << std::endl;
 
   internal::show_attributes(out);

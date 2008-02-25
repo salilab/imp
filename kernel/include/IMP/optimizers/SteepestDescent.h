@@ -10,6 +10,7 @@
 
 #include "../IMP_config.h"
 #include "../Optimizer.h"
+#include "../internal/kernel_version_info.h"
 
 namespace IMP
 {
@@ -27,7 +28,7 @@ public:
   SteepestDescent();
   virtual ~SteepestDescent();
 
-  IMP_OPTIMIZER("0.5", "Bret Peterson");
+  IMP_OPTIMIZER(internal::kernel_version_info)
 
   //! Set the minimum gradient threshold
   void set_threshold(Float t) {threshold_=t;}

@@ -266,8 +266,7 @@ void PairConnectivityRestraint::show(std::ostream& out) const
     out << "pair connectivity restraint (inactive):" << std::endl;
   }
 
-  out << "version: " << version() << "  ";
-  out << "last_modified_by: " << last_modified_by() << std::endl;
+  get_version_info().show(out);
   out << "  num particles1:" << num_particles1_;
   out << "  num particles2:" << num_particles2_;
   out << "  num restraints:" << num_restraints_;
