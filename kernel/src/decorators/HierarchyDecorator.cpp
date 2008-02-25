@@ -40,7 +40,7 @@ void HierarchyDecorator::validate_node() const
   IMP_assert(!get_particle()->has_attribute(
                  get_child_key(get_number_of_children())),
              "Recorded and actual number of children don't match -- "
-             "too many actual")
+             "too many actual");
 }
 
 void HierarchyDecorator::show(std::ostream &, std::string) const

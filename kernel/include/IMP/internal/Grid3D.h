@@ -244,8 +244,8 @@ public:
   /** \param[in] xd The number of voxels in the x direction
       \param[in] yd The number of voxels in the y direction
       \param[in] zd The number of voxels in the z direction
-      \param[in] minc The min coordinate of the grid
-      \param[in] maxc The max coordinate of the grid
+      \param[in] minc The min point of the grid
+      \param[in] max The max point of the grid
       \param[in] def The default value for the voxels
    */
   Grid3D(int xd, int yd, int zd, 

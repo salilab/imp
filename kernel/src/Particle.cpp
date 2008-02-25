@@ -13,45 +13,28 @@
 namespace IMP
 {
 
-//! Constructor
 Particle::Particle()
 {
   is_active_ = true;
 }
 
-//! Constructor
 Particle::~Particle()
 {
 }
 
 
-//! Set pointer to model particle data.
-/** This is called by the Model after the particle is added.
-    \param[in] md Pointer to a ModelData object.
- */
 void Particle::set_model(Model *md, ParticleIndex pi)
 {
   model_ = md;
   pi_ = pi;
 }
 
-
-//! Set whether the particle is active.
-/** Restraints referencing the particle are only evaluated for 'active'
-    particles.
-    \param[in] is_active If true, the particle is active.
- */
 void Particle::set_is_active(const bool is_active)
 {
   is_active_ = is_active;
 }
 
 
-//! Add a Float attribute to this particle.
-/** \param[in] name Name of the attribute being added.
-    \param[in] value Initial value of the attribute.
-    \param[in] is_optimized Whether the attribute's value should be optimizable.
- */
 void Particle::add_attribute(FloatKey name, const Float value,
                              bool is_optimized)
 {
@@ -64,10 +47,6 @@ void Particle::add_attribute(FloatKey name, const Float value,
 }
 
 
-//! Add an Int attribute to this particle.
-/** \param[in] name Name of the attribute being added.
-    \param[in] value Initial value of the attribute.
- */
 void Particle::add_attribute(IntKey name, const Int value)
 {
   IMP_assert(model_,
@@ -76,10 +55,6 @@ void Particle::add_attribute(IntKey name, const Int value)
 }
 
 
-//! Add a String attribute to this particle.
-/** \param[in] name Name of the attribute being added.
-    \param[in] value Initial value of the attribute.
- */
 void Particle::add_attribute(StringKey name, const String value)
 {
   IMP_assert(model_,
@@ -89,9 +64,6 @@ void Particle::add_attribute(StringKey name, const String value)
 
 
 
-//! Show the particle
-/** \param[in] out Stream to write particle description to.
- */
 void Particle::show(std::ostream& out) const
 {
   char* inset = "  ";

@@ -20,7 +20,7 @@ namespace IMP
 
 class TripletScore;
 
-//! Restrain each three consecutive particles in each chain.
+//! Restrain each triplet of consecutive particles in each chain.
 /** \ingroup restraint
  */
 class IMPDLLEXPORT TripletChainRestraint : public Restraint

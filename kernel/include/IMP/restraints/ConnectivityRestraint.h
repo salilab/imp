@@ -22,13 +22,16 @@ namespace IMP
 {
 class PairScore;
 
-//! Connectivity restraint.
+//! Ensure that several sets of particles remain connected with one another.
 /** The restraint takes several sets (added using the add_set method)
-    and ensures that the sets of points are connected. More precisely, 
-    the restraint scores based on a minimum spanning tree on the set
-    of particles in the union of the sets. Edges between two particles 
-    from the same set have weight 0. Edges between two nodes from 
-    different sets have weights given by the PairScore for that pair.
+    and ensures that the sets of points are connected.
+
+    More precisely, the restraint scores based on a minimum spanning
+    tree on the set of particles in the union of the sets. Edges
+    between two particles from the same set have weight 0. Edges
+    between two nodes from different sets have weights given by the
+    PairScore for that pair. The edges within a set are ignored for
+    the purposes of computing derivatives.
 
     \ingroup restraint
  */
