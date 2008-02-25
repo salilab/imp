@@ -14,6 +14,7 @@
 #include "../../IMP_config.h"
 #include "../../base_types.h"
 #include "../../OptimizerState.h"
+#include "../../internal/kernel_version_info.h"
 
 namespace IMP
 {
@@ -37,15 +38,8 @@ class IMPDLLEXPORT VRMLLogOptimizerState : public OptimizerState
                         const Particles &pis=Particles());
   virtual ~VRMLLogOptimizerState(){}
 
-  virtual void update();
+  IMP_OPTIMIZER_STATE(internal::kernel_version_info)
 
-  virtual void show(std::ostream& out = std::cout) const;
-  virtual std::string version() const {
-    return "0.5";
-  }
-  virtual std::string last_modified_by() const {
-    return "Daniel Russel";
-  }
   //! Set the number of update calls to skip between writing files
   /** The first update call always writes a file.
    */

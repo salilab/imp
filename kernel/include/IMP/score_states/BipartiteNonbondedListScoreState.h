@@ -10,6 +10,7 @@
 
 #include "NonbondedListScoreState.h"
 #include "../internal/ParticleGrid.h"
+#include "../internal/kernel_version_info.h"
 
 #include <vector>
 #include <limits>
@@ -37,7 +38,7 @@ public:
                                    const Particles &ps1,
                                    float target_side);
 
-  IMP_SCORE_STATE("0.5", "Daniel Russel");
+  IMP_SCORE_STATE(internal::kernel_version_info)
 
   void set_particles(const Particles &ps0, const Particles &ps1);
 };

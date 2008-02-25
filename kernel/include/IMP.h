@@ -30,6 +30,7 @@
 #include "IMP/SingletonScore.h"
 #include "IMP/TripletScore.h"
 #include "IMP/Vector3D.h"
+#include "IMP/VersionInfo.h"
 #include "IMP/decorators/HierarchyDecorator.h"
 #include "IMP/decorators/MolecularHierarchyDecorator.h"
 #include "IMP/decorators/NameDecorator.h"

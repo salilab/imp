@@ -11,7 +11,9 @@
 
 #include "IMP_config.h"
 #include "internal/Object.h"
+#include "internal/kernel_version_info.h"
 #include "base_types.h"
+#include "VersionInfo.h"
 
 namespace IMP
 {
@@ -60,11 +62,9 @@ public:
    */
   void show (std::ostream& out = std::cout) const;
 
-  std::string version() const {
-    return "0.5.0";
-  }
-  std::string last_modified_by() const {
-    return "Daniel Russel";
+  //! \return version and authorship information.
+  VersionInfo get_version_info() const {
+    return internal::kernel_version_info;
   }
 
 protected:

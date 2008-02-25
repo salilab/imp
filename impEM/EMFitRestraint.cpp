@@ -107,5 +107,9 @@ Float EMFitRestraint::evaluate(DerivativeAccumulator *accum)
   return score;
 }
 
+void EMFitRestraint::show(std::ostream& out) const
+{
+  // TODO - add implementation
+}
 
 } // namespace IMP

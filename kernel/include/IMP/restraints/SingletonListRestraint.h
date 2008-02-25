@@ -11,6 +11,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
 
 #include <iostream>
@@ -32,7 +33,7 @@ public:
    */
   SingletonListRestraint(const Particles &ps, SingletonScore *ss);
 
-  IMP_RESTRAINT("0.5", "Daniel Russel");
+  IMP_RESTRAINT(internal::kernel_version_info)
 
   using Restraint::add_particles;
   using Restraint::clear_particles;

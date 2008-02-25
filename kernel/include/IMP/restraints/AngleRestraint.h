@@ -10,6 +10,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
 
 
@@ -32,7 +33,7 @@ public:
                  UnaryFunction* score_func);
   virtual ~AngleRestraint(){}
 
-  IMP_RESTRAINT("0.2", "Daniel Russel")
+  IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:
     internal::ObjectPointer<AngleTripletScore, true> sf_;

@@ -24,10 +24,8 @@ class WoodsFunc(IMP.Restraint):
             for (p,d) in zip(self.get_model().get_particles(), dx):
                 p.add_to_derivative(self.index, d, accum);
         return e
-    def version(self):
-        return "0.5";
-    def last_modified_by(self):
-        return "Daniel Russel"
+    def get_version_info(self):
+        return IMP.VersionInfo("Daniel Russel", "0.5")
     def show(self, fakestream):
         print "WoodsFunc"
 

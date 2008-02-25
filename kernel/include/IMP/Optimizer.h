@@ -12,6 +12,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
+#include "VersionInfo.h"
 #include "internal/Object.h"
 #include "utility.h"
 #include "Model.h"
@@ -43,10 +44,9 @@ public:
       \return The final score.
    */       
   virtual Float optimize(unsigned int max_steps) = 0;
-  /** \return the current version*/
-  virtual std::string version() const =0;
-  /** \return the last person to modify this restraint */
-  virtual std::string last_modified_by() const=0;
+
+  //! \return version and authorship information.
+  virtual VersionInfo get_version_info() const = 0;
 
   //! Get the model being optimized
   Model *get_model() const {

@@ -16,6 +16,7 @@
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "../ScoreFuncParams.h"
+#include "../internal/kernel_version_info.h"
 #include "DistanceRestraint.h"
 
 namespace IMP
@@ -45,7 +46,8 @@ public:
 
   virtual ~ProximityRestraint();
 
-  IMP_RESTRAINT("0.5", "Daniel Russel")
+  IMP_RESTRAINT(internal::kernel_version_info)
+
 protected:
   //! Internal set up for the constructors.
   /** \param[in] model Pointer to the model.

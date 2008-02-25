@@ -135,62 +135,51 @@ template <class L>                                                      \
   }
 
 //! Define the basic things you need for a Restraint.
-/** These are: show, evaluate, version, last_modified_by
-    \param[in] version_string The version string.
-    \param[in] lmb_string The name of the last modifier.
+/** These are: show, evaluate, get_version_info
+    \param[in] version_info The version info object to return.
 */
-#define IMP_RESTRAINT(version_string, lmb_string)                       \
+#define IMP_RESTRAINT(version_info)                       \
   /** evaluate the restraint*/                                          \
   virtual Float evaluate(DerivativeAccumulator *accum);                 \
   /** write information about the restraint to the stream*/             \
   virtual void show(std::ostream &out=std::cout) const;                 \
-  /** \return the current version*/                                     \
-  virtual std::string version() const {return std::string(version_string);}\
-  /** \return the last person to modify this restraint */               \
-  virtual std::string last_modified_by() const {return std::string(lmb_string);}
+  /** \return version and authorship information */                     \
+  virtual VersionInfo get_version_info() const { return version_info; }
 
 //! Define the basic things you need for an optimizer.
-/** These are: optimize, version, last_modified_by
-    \param[in] version_string The version string.
-    \param[in] lmb_string The name of the last modifier.
+/** These are: optimize, get_version_info
+    \param[in] version_info The version info object to return.
 */
-#define IMP_OPTIMIZER(version_string, lmb_string)                       \
+#define IMP_OPTIMIZER(version_info)                                     \
   /** \short Optimize the model.
       \param[in] max_steps The maximum number of steps to take.
       \return The final score.
    */                                                                   \
   virtual Float optimize(unsigned int max_steps);                       \
-  /** \return the current version*/                                     \
-  virtual std::string version() const {return std::string(version_string);}\
-  /** \return the last person to modify this restraint */               \
-  virtual std::string last_modified_by() const {return std::string(lmb_string);}
+  /** \return version and authorship information */                     \
+  virtual VersionInfo get_version_info() const { return version_info; }
 
 
 //! Define the basics needed for an OptimizerState
-/**
-   This macro declares the required functions 
-   - void update()
-   - void show(std::ostream &out) const
-   and defines the functions
-   - version
-   - last_modified_by
+/** This macro declares the required functions 
+    - void update()
+    - void show(std::ostream &out) const
+    and defines the function
+    - get_version_info
 
-   \param[in] version_string The version.
-   \param[in] lmb_string The person who last modified it.
+    \param[in] version_info The version info object to return.
 */
-#define IMP_OPTIMIZER_STATE(version_string, lmb_string)                 \
+#define IMP_OPTIMIZER_STATE(version_info)                               \
   /** update the state*/                                                \
   virtual void update();                                                \
   /** write information about the state to the stream*/                 \
   virtual void show(std::ostream &out=std::cout) const;                 \
-  /** \return the current version*/                                     \
-  virtual std::string version() const {return std::string(version_string);} \
-  /** \return the last person to modify this restraint */               \
-  virtual std::string last_modified_by() const {return std::string(lmb_string);}
+  /** \return version and authorship information */                     \
+  virtual VersionInfo get_version_info() const { return version_info; }
 
 //! See IMP_OPTIMIZER_STATE
-#define IMP_SCORE_STATE(version_string, lmb_string)\
-  IMP_OPTIMIZER_STATE(version_string, lmb_string)
+#define IMP_SCORE_STATE(version_info)\
+  IMP_OPTIMIZER_STATE(version_info)
 
 //! Use the swap_with member function to swap two objects
 #define IMP_SWAP(name) \

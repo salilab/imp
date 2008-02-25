@@ -55,8 +55,7 @@ void Restraint::show(std::ostream& out) const
     out << "unknown restraint (inactive):" << std::endl;
   }
 
-  out << "  version: " << version() << std::endl;
-  out << "  last_modified_by: " << last_modified_by() << std::endl;
+  get_version_info().show(out);
 }
 
 

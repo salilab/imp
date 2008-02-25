@@ -13,6 +13,7 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
 
 namespace IMP
@@ -39,7 +40,7 @@ public:
                      Float max_dist= std::numeric_limits<Float>::max());
   virtual ~NonbondedRestraint(){}
 
-  IMP_RESTRAINT("0.5", "Daniel Russel");
+  IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:
   NonbondedListScoreState *nbl_;

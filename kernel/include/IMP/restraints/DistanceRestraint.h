@@ -14,6 +14,7 @@
 #include "../IMP_config.h"
 #include "../pair_scores/DistancePairScore.h"
 #include "../Restraint.h"
+#include "../internal/kernel_version_info.h"
 
 
 namespace IMP
@@ -36,7 +37,7 @@ public:
                     UnaryFunction* score_func);
   virtual ~DistanceRestraint() {}
 
-  IMP_RESTRAINT("0.5", "Daniel Russel")
+  IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:
   //! scoring function for this restraint

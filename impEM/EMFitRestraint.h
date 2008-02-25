@@ -4,6 +4,7 @@
 
 #include "IMP/Model.h"
 #include "IMP/Restraint.h"
+#include "IMP/VersionInfo.h"
 #include "IMPEM_config.h"
 #include "DensityMap.h"
 #include "CoarseCC.h"
@@ -27,18 +28,7 @@ public:
 
   virtual ~EMFitRestraint();
 
-  virtual Float evaluate(DerivativeAccumulator *accum);
-
-  //! status
-  virtual void show (std::ostream& out = std::cout) const {
-    // TODO - add implementation
-  }
-  virtual std::string version() const {
-    return "0.0.1";
-  }
-  virtual std::string last_modified_by() const {
-    return "Keren";
-  }
+  IMP_RESTRAINT(VersionInfo("Keren", "0.0.1"))
 
 private:
 

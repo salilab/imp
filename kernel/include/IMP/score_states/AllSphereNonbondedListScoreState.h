@@ -10,6 +10,7 @@
 
 #include "NonbondedListScoreState.h"
 #include "../internal/ParticleGrid.h"
+#include "../internal/kernel_version_info.h"
 #include "MaxChangeScoreState.h"
 
 #include <vector>
@@ -65,7 +66,7 @@ public:
    */
   AllSphereNonbondedListScoreState(const Particles &ps, FloatKey radius);
   ~AllSphereNonbondedListScoreState();
-  IMP_SCORE_STATE("0.5", "Daniel Russel");
+  IMP_SCORE_STATE(internal::kernel_version_info)
 
   void set_particles(const Particles &ps);
 };

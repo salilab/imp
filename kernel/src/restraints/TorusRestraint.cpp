@@ -125,8 +125,7 @@ void TorusRestraint::show(std::ostream& out) const
     out << "torus restraint (inactive):" << std::endl;
   }
 
-  out << "  version: " << version() << "  ";
-  out << "  last_modified_by: " << last_modified_by() << std::endl;
+  get_version_info().show(out);
   out << "  particle: " << get_particle(0)->get_index() << "  ";
 
   out << "  main radius:" << main_radius_;

@@ -10,6 +10,7 @@
 
 #include "../ScoreState.h"
 #include "../internal/ParticleGrid.h"
+#include "../internal/kernel_version_info.h"
 #include "BondedListScoreState.h"
 
 #include <vector>
@@ -90,7 +91,7 @@ public:
   // perhaps the macro should be made more flexible
   typedef BondedListScoreStateIterator BondedListIterator;
 
-  IMP_SCORE_STATE("0.5", "Daniel Russel");
+  IMP_SCORE_STATE(internal::kernel_version_info)
 
   //! An iterator through nonbonded particles
   /** The value type is an std::pair<Particle*, Particle*> 
