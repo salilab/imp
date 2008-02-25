@@ -16,7 +16,9 @@
 namespace IMP
 {
 
-//! A simple decorator which controls the Particle name.
+//! A simple decorator which controls the Particle description.
+/** \ingroup helper
+ */
 class IMPDLLEXPORT NameDecorator: public DecoratorBase
 {
   IMP_DECORATOR(NameDecorator, DecoratorBase,

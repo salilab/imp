@@ -135,11 +135,13 @@ IMPDLLEXPORT void check_fail();
     \param[in] message Write this message if the assertion fails.
     \ingroup assert
  */
-#define IMP_assert(expr, message) \
-  if (!(expr)) { \
-    IMP_ERROR(message); \
-    IMP::internal::assert_fail();               \
-  }
+#define IMP_assert(expr, message)               \
+  do {                                          \
+    if (!(expr)) {                              \
+      IMP_ERROR(message);                       \
+      IMP::internal::assert_fail();             \
+    }                                           \
+  } while(false)
 #else
 #define IMP_assert(expr, message)
 #endif
@@ -151,10 +153,12 @@ IMPDLLEXPORT void check_fail();
     \ingroup assert
  */
 #define IMP_check(expr, message, exception) \
-  if (!(expr)) { \
-    IMP_ERROR(message); \
-    throw exception; \
-  }
+  do {                                      \
+    if (!(expr)) {                          \
+      IMP_ERROR(message);                   \
+      throw exception;                      \
+    }                                       \
+  } while (false)
 
 //! A runtime failure for IMP.
 /** \param[in] message Write this message if the assertion fails.

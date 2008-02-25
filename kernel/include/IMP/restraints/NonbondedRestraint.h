@@ -21,7 +21,7 @@ namespace IMP
 class NonbondedListScoreState;
 class PairScore;
 
-//! Restrain all pairs of non-bonded particles
+//! Apply a PairScore to all nonbonded pairs of particles
 /**
    \ingroup restraint
  */

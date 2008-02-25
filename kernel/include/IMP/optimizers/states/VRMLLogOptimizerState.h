@@ -91,9 +91,6 @@ protected:
   FloatKey r_, g_, b_;
 };
 
-
-IMP_OUTPUT_OPERATOR(VRMLLogOptimizerState);
-
 } // namespace IMP
 
 #endif  /* __IMP_VRML_LOG_STATE_H */

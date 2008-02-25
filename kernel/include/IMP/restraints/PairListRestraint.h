@@ -21,7 +21,7 @@ namespace IMP
 
 class PairScore;
 
-//! Applies a PairScore to each Particle in a list.
+//! Applies a PairScore to each pair of particles in a list.
 /** \ingroup restraint
  */
 class IMPDLLEXPORT PairListRestraint : public Restraint

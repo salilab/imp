@@ -16,7 +16,7 @@
 namespace IMP
 {
 
-//! Modify a set of continuous variables.
+//! Modify a set of continuous variables by perturbing them within a ball.
 /** The variables are perturbed within a ball of the 
     given radius.
     \ingroup mover
@@ -30,7 +30,7 @@ public:
      \param[in] vars The variables to use (normally the keys for x,y,z)
      \param[in] radius The radius deviation to use.
    */
-  BallMover(const Particles &pis, const FloatKeys &vars,
+  BallMover(const Particles &ps, const FloatKeys &vars,
             Float radius);
   //!
   void set_radius(Float radius) {

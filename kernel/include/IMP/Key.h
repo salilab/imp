@@ -96,7 +96,7 @@ public:
       data().map[sc]=sz;
       data().rmap.push_back(sc);
       str_= sz;
-      IMP_assert(data().rmap.size() == data().map.size(), "Unequal map sizes")
+      IMP_assert(data().rmap.size() == data().map.size(), "Unequal map sizes");
     } else {
       str_= data().map.find(sc)->second;
     }
@@ -104,7 +104,7 @@ public:
   };
 
   explicit Key(unsigned int i): str_(i) {
-    IMP_assert(data().rmap.size() > i, "There is no such attribute " << i)
+    IMP_assert(data().rmap.size() > i, "There is no such attribute " << i);
   }
 
   //! Turn a key into a pretty string

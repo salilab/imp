@@ -23,11 +23,11 @@ class Particle;
 class DerivativeAccumulator;
 
 
-//! Storage for all model particle data.
-/** All data for particles is stored through indexing of data
-    in this structure. Float data is assumed to be potentially
-    differentiable and is stored in a structure that can accomodate
-    differentiation. Int and string data is stored directly in vectors.
+//! The interface that optimizers use to access Particle attributes.
+/** All data for particles is stored in this structure. Float values
+    are all differentiable. Each Float value has an associated flag
+    saying whether it is optimized or not. Non-optimized values should
+    not be changed by the optimizer.
 
     \note ModelData should only be used in writing Optimizers.
  */

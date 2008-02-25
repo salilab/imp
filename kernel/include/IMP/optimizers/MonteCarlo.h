@@ -16,7 +16,7 @@ namespace IMP
 
 typedef std::vector<Mover*> Movers;
 
-//! Simple Monte Carlo optimizer.
+//! A Monte Carlo optimizer.
 /** The optimizer uses a set of Mover objects to propose steps. Currently
     each Mover is called at each Monte Carlo iteration. This may change in
     the future. The movers propose some modification, which is then

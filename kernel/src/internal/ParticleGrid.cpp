@@ -15,6 +15,7 @@ namespace IMP
 namespace internal
 {
 
+static const int target_cell_occupancy=10;
 
 ParticleGrid::ParticleGrid(float tvs): target_voxel_side_(tvs),
                                        grid_valid_(false)
@@ -49,8 +50,9 @@ void ParticleGrid::build_grid()
   if (!mc_->get_particles().empty()) {
     // keep the grid size sane if things blow up
     float maxdim= std::max(mx[0]-mn[0], std::max(mx[1]-mn[1], mx[2]-mn[2]));
-    float vx= std::pow(static_cast<float>(10.0*(maxdim*maxdim*maxdim
-                                                /mc_->get_particles().size())),
+    float vx= std::pow(static_cast<float>(target_cell_occupancy
+                                          *(maxdim*maxdim*maxdim
+                                            /mc_->get_particles().size())),
                        .3333f);
     if (vx > target_voxel_side_) {
       IMP_LOG(VERBOSE, "Overroade target side of " << target_voxel_side_ 

@@ -223,9 +223,6 @@ protected:
   }
 
   // Set pointer to model particle data.
-  /* This is called by the Model after the particle is added.
-      \param[in] md Pointer to a ModelData object.
-   */
   void set_model(Model *md, ParticleIndex pi);
 
   // all of the particle data

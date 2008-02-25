@@ -90,9 +90,6 @@ protected:
   FloatKey r_, g_, b_;
 };
 
-
-IMP_OUTPUT_OPERATOR(CMMLogOptimizerState);
-
 } // namespace IMP
 
 #endif  /* __IMP_CMM_LOG_OPTIMIZER_STATE_H */
