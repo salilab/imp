@@ -5,12 +5,13 @@ import IMP.test, IMP
 xkey = IMP.FloatKey('x')
 ykey = IMP.FloatKey('y')
 zkey = IMP.FloatKey('z')
+masskey = IMP.FloatKey('mass')
 vxkey = IMP.FloatKey('vx')
 
 # Conversion from derivatives (in kcal/mol/A) to acceleration (A/fs/fs)
-kcal2mod = 4.1868e-7
-# Mass of Carbon-12 (kg/mol)
-cmass = 0.012011
+kcal2mod = 4.1868e-4
+# Mass of Carbon-12 (g/mol)
+cmass = 12.011
 
 class XTransRestraint(IMP.Restraint):
     """Attempt to move the whole system along the x axis"""
@@ -54,9 +55,9 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         self.particles = []
         self.particles.append(IMP.utils.XYZParticle(self.model,
                                                     -43.0, 65.0, 93.0))
+        self.particles[-1].add_attribute(masskey, cmass, False)
         self.md = IMP.MolecularDynamics()
         self.md.set_model(self.model)
-        self.md.set_temperature(300)
 
     def _check_trajectory(self, coor, traj, timestep, vxfunc):
         """Check generated trajectory against that predicted using vxfunc"""
