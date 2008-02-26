@@ -17,9 +17,10 @@ namespace IMP
 {
 
 //! Simple molecular dynamics optimizer.
-/** The particles to be optimized must be xyz particles; this optimizer
-    assumes the score to be energy in kcal/mol, and the xyz coordinates to
-    be in angstroms.
+/** The particles to be optimized must have optimizable x,y,z attributes
+    and a non-optimizable mass attribute; this optimizer assumes the score
+    to be energy in kcal/mol, the xyz coordinates to be in angstroms, and
+    the mass to be in AMU (g/mol).
     \ingroup optimizer
  */
 class IMPDLLEXPORT MolecularDynamics : public Optimizer
@@ -33,15 +34,13 @@ public:
   //! Set time step in fs
   void set_time_step(Float t) { time_step_ = t; }
 
-  //! Set temperature in K
-  void set_temperature(Float t) { temperature_ = t; }
-
 protected:
   //! Perform a single dynamics step.
   virtual void step();
 
   //! Get the set of particles to use in this optimization.
-  /** Populates particles_, and gives each particle a velocity.
+  /** Populates particles_, and gives each particle velocity attributes if it
+      does not already have them.
       \param[in] model The model to optimize.
       \exception InvalidStateException The model does not contain only
                                        xyz particles.
@@ -51,11 +50,8 @@ protected:
   //! Time step in fs
   Float time_step_;
 
-  //! Temperature in K
-  Float temperature_;
-
-  //! Keys of the xyz coordinates
-  FloatKey xkey_, ykey_, zkey_;
+  //! Keys of the xyz coordinates and mass
+  FloatKey xkey_, ykey_, zkey_, masskey_;
 
   //! Keys of the xyz velocities
   FloatKey vxkey_, vykey_, vzkey_;
