@@ -33,9 +33,13 @@ def check_python_file(filename, errors):
        standards"""
     fh = file(filename, "r")
     r = Reindenter(fh)
-    if r.run():
-        errors.append('Python file ' + filename + ' has odd indentation; ' \
-                      + 'please run through reindent.py first.')
+    try:
+        if r.run():
+            errors.append('Python file ' + filename + ' has odd indentation; ' \
+                          + 'please run through reindent.py first.')
+    except Exception:
+        print >> sys.stderr, "reindent.py FAILED on %s:" % filename
+        raise
 
 def check_modified_file(filename, errors):
     """Check each modified file to make sure it adheres to the standards"""
