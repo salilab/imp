@@ -46,9 +46,13 @@ def check_python_file(filename, txn, repos, errors):
     cmd = [svnlook, 'cat', '-t', txn, repos, filename]
     p1 = Popen(cmd, shell=False, stdout=PIPE).stdout
     r = Reindenter(p1)
-    if r.run():
-        errors.append('Python file ' + filename + ' has odd indentation; ' \
-                      + 'please run through reindent.py first.')
+    try:
+        if r.run():
+            errors.append('Python file ' + filename + ' has odd indentation; ' \
+                          + 'please run through reindent.py first.')
+    except Exception:
+        print >> sys.stderr, "reindent.py FAILED on %s:" % filename
+        raise
 
 def check_modified_file(filename, txn, repos, errors):
     """Check each modified file to make sure it adheres to the standards"""
