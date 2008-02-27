@@ -14,7 +14,6 @@ EMFitRestraint::EMFitRestraint(Model& model_,
 {
 
   target_dens_map = &em_map_;
-  model_data = model_.get_model_data();
   scalefac = scale_;
   model_dens_map =   new SampledDensityMap(*em_map_.get_header());
 

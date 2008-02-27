@@ -5,10 +5,11 @@
  *
  */
 
-#include <cmath>
-
 #include "IMP/log.h"
 #include "IMP/optimizers/MolecularDynamics.h"
+#include "IMP/decorators/XYZDecorator.h"
+
+#include <cmath>
 
 namespace IMP
 {
@@ -16,6 +17,13 @@ namespace IMP
 //! Constructor
 MolecularDynamics::MolecularDynamics() : time_step_(4.0)
 {
+  cs_[0] = FloatKey("x");
+  cs_[1] = FloatKey("y");
+  cs_[2] = FloatKey("z");
+  masskey_ = FloatKey("mass");
+  vs_[0] = FloatKey("vx");
+  vs_[1] = FloatKey("vy");
+  vs_[2] = FloatKey("vz");
 }
 
 
@@ -24,49 +32,28 @@ MolecularDynamics::~MolecularDynamics()
 {
 }
 
+IMP_LIST_IMPL(MolecularDynamics, Particle, particle, Particle*,
+              {
+                if (0) std::cout << index;
+                for (unsigned int i=0; i< 3; ++i) {
+                  if (!obj->has_attribute(vs_[i])) {
+                    obj->add_attribute(vs_[i], 0.0, false);
+                  }
+                }
+              },);
 
-//! Get the set of particles to use in this optimization.
-/** Populates particles_, and gives each particle a velocity.
-    \param[in] model The model to optimize.
-    \exception InvalidStateException The model does not contain only
-                                     xyz particles.
- */
-void MolecularDynamics::setup_particles(Model& model)
+
+void MolecularDynamics::setup_particles()
 {
-  xkey_ = FloatKey("x");
-  ykey_ = FloatKey("y");
-  zkey_ = FloatKey("z");
-  masskey_ = FloatKey("mass");
+  clear_particles();
 
-  int npart = model.number_of_particles();
-  int i;
-  for (i = 0; i < npart; ++i) {
-    Particle *p = model.get_particle(i);
-    if (p->has_attribute(xkey_) && p->get_is_optimized(xkey_)
-        && p->has_attribute(ykey_) && p->get_is_optimized(ykey_)
-        && p->has_attribute(zkey_) && p->get_is_optimized(zkey_)
+  for (unsigned int i = 0; i < get_model()->number_of_particles(); ++i) {
+    Particle *p = get_model()->get_particle(i);
+    if (p->has_attribute(cs_[0]) && p->get_is_optimized(cs_[2])
+        && p->has_attribute(cs_[1]) && p->get_is_optimized(cs_[2])
+        && p->has_attribute(cs_[2]) && p->get_is_optimized(cs_[2])
         && p->has_attribute(masskey_) && !p->get_is_optimized(masskey_)) {
-      particles_.push_back(p);
-    }
-  }
-  ModelData *md= model.get_model_data();
-  unsigned nopt = std::distance(md->optimized_float_indexes_begin(),
-                                md->optimized_float_indexes_end());
-
-  if (particles_.size() * 3 != nopt) {
-    throw InvalidStateException("Can only do MD on xyz particles with mass");
-  }
-
-  vxkey_ = FloatKey("vx");
-  vykey_ = FloatKey("vy");
-  vzkey_ = FloatKey("vz");
-  FloatKey *derivs[3] = { &vxkey_, &vykey_, &vzkey_ };
-  for (i = 0; i < npart; ++i) {
-    Particle *p = model.get_particle(i);
-    for (int dind = 0; dind < 3; ++dind) {
-      if (!p->has_attribute(*derivs[dind])) {
-        p->add_attribute(*derivs[dind], 0.0, false);
-      }
+      add_particle(p);
     }
   }
 }
@@ -80,27 +67,27 @@ void MolecularDynamics::step()
   // in angstrom/fs/fs from raw derivatives
   static const Float deriv_to_acceleration = -4.1868e-4;
 
-  for (std::vector<Particle *>::iterator iter = particles_.begin();
-       iter != particles_.end(); ++iter) {
+  for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
     Particle *p = *iter;
-    Float x = p->get_value(xkey_);
-    Float y = p->get_value(ykey_);
-    Float z = p->get_value(zkey_);
+    Float x = p->get_value(cs_[0]);
+    Float y = p->get_value(cs_[1]);
+    Float z = p->get_value(cs_[2]);
     Float invmass = 1.0 / p->get_value(masskey_);
-    Float dvx = p->get_derivative(xkey_);
-    Float dvy = p->get_derivative(ykey_);
-    Float dvz = p->get_derivative(zkey_);
+    Float dvx = p->get_derivative(cs_[0]);
+    Float dvy = p->get_derivative(cs_[1]);
+    Float dvz = p->get_derivative(cs_[2]);
 
     // calculate velocity at t+(delta t/2) from that at t-(delta t/2)
-    Float vx = p->get_value(vxkey_);
-    Float vy = p->get_value(vykey_);
-    Float vz = p->get_value(vzkey_);
+    Float vx = p->get_value(vs_[0]);
+    Float vy = p->get_value(vs_[1]);
+    Float vz = p->get_value(vs_[2]);
     vx += dvx * deriv_to_acceleration * invmass * time_step_;
     vy += dvy * deriv_to_acceleration * invmass * time_step_;
     vz += dvz * deriv_to_acceleration * invmass * time_step_;
-    p->set_value(vxkey_, vx);
-    p->set_value(vykey_, vy);
-    p->set_value(vzkey_, vz);
+    p->set_value(vs_[0], vx);
+    p->set_value(vs_[1], vy);
+    p->set_value(vs_[2], vz);
 
     // get atomic shift
     Float dx = vx * time_step_;
@@ -111,9 +98,9 @@ void MolecularDynamics::step()
     x += dx;
     y += dy;
     z += dz;
-    p->set_value(xkey_, x);
-    p->set_value(ykey_, y);
-    p->set_value(zkey_, z);
+    p->set_value(cs_[0], x);
+    p->set_value(cs_[1], y);
+    p->set_value(cs_[2], z);
   }
 }
 
@@ -125,7 +112,7 @@ void MolecularDynamics::step()
 Float MolecularDynamics::optimize(unsigned int max_steps)
 {
   Model *model = get_model();
-  setup_particles(*model);
+  setup_particles();
 
   // get initial system score
   Float score = model->evaluate(true);

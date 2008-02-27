@@ -104,7 +104,7 @@ public:
   };
 
   explicit Key(unsigned int i): str_(i) {
-    IMP_assert(data().rmap.size() > i, "There is no such attribute " << i);
+    //IMP_assert(data().rmap.size() > i, "There is no such attribute " << i);
   }
 
   //! Turn a key into a pretty string
@@ -143,6 +143,24 @@ public:
   static unsigned int get_number_unique() {
     return data().map.size();
   }
+
+#ifndef SWIG
+  /** \todo These should be protected, I'll try to work how
+   */
+  This operator++() {
+    ++str_;
+    return *this;
+  }
+  This operator--() {
+    --str_;
+    return *this;
+  }
+  This operator+(int o) const {
+    This c=*this;
+    c.str_+= o;
+    return c;
+  }
+#endif
 };
 
 IMP_OUTPUT_OPERATOR_1(Key)

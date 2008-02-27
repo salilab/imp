@@ -7,7 +7,6 @@
  */
 
 #include "IMP/Model.h"
-#include "IMP/ModelData.h"
 #include "IMP/Particle.h"
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
@@ -18,7 +17,7 @@ namespace IMP
 {
 
 //! Constructor
-Model::Model(): model_data_(new ModelData())
+Model::Model()
 {
 }
 
@@ -44,8 +43,13 @@ Float Model::evaluate(bool calc_derivs)
           "Model evaluate (" << number_of_restraints() << " restraints):"
           << std::endl);
   // If calcualting derivatives, first set all derivatives to zero
-  if (calc_derivs)
-    model_data_->zero_derivatives();
+  if (calc_derivs) {
+    for (ParticleIterator pit = particles_begin();
+         pit != particles_end(); ++pit) {
+      (*pit)->zero_derivatives();
+    }
+
+  }
 
   IMP_LOG(VERBOSE,
           "Updating ScoreStates " << std::flush);

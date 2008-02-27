@@ -99,17 +99,17 @@ class MolecularDynamicsTests(IMP.test.TestCase):
                                lambda a: a + strength * delttm)
 
     def test_non_xyz(self):
-        """Should be unable to do MD on optimizable non-xyz attributes"""
+        """Should skip particles without xyz attributes"""
         p = IMP.Particle()
         self.model.add_particle(p)
         p.add_attribute(IMP.FloatKey("attr"), 0.0, True)
-        self.assertRaises(ValueError, self.md.optimize, 50)
+        self.md.optimize(100)
 
     def test_make_velocities(self):
         """Test that MD generates particle velocities"""
         self.md.optimize(0)
         keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
-        for p in self.particles:
+        for p in self.model.get_particles():
             for key in keys:
                 self.assert_(p.has_attribute(key))
 

@@ -54,9 +54,6 @@ struct RestraintTag {};
 struct ScoreStateTag {};
 struct OptimizerStateTag {};
 
-typedef Index<Int> IntIndex;
-typedef Index<Float> FloatIndex;
-typedef Index<String> StringIndex;
 typedef Index<ParticleTag> ParticleIndex;
 typedef Index<RestraintTag> RestraintIndex;
 typedef Index<ScoreStateTag> ScoreStateIndex;
@@ -73,13 +70,6 @@ typedef std::vector<ParticlePair> ParticlePairs;
 
 
 typedef std::vector<ParticleIndex> ParticleIndexes;
-typedef std::vector<FloatIndex> FloatIndexes;
-typedef std::vector<IntIndex> IntIndexes;
-typedef std::vector<StringIndex> StringIndexes;
-// typedefs for the particle variable and attribute indexes
-// typedef DataIndex<Float> FloatIndex;
-// typedef DataIndex<Int> IntIndex;
-// typedef DataIndex<String> StringIndex;
 
 template <class T> class Key;
 

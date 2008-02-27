@@ -17,7 +17,7 @@ score_states_files = SConscript('score_states/SConscript')
 internal_files = SConscript('internal/SConscript')
 
 # Source files
-files = ['base_types.cpp', 'Model.cpp', 'ModelData.cpp',
+files = ['base_types.cpp', 'Model.cpp',
          'Particle.cpp', 'ScoreState.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
          'BasicScoreFuncParams.cpp', 'random.cpp'

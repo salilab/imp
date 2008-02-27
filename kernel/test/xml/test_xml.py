@@ -20,7 +20,6 @@ class XMLTests(IMP.test.TestCase):
         """Check reading of XML files"""
         self.doc = IMP.xml_loader.load_imp_model(self.imp_model,
                                                  "xml/model.xml")
-        model_data = self.imp_model.get_model_data()
 
         # test particles
         num_particles = 0

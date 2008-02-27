@@ -5,13 +5,12 @@
  *
  */
 
-#include <cmath>
-
 #include "IMP/log.h"
 #include "IMP/optimizers/ConjugateGradients.h"
 #include "IMP/Model.h"
-#include "IMP/ModelData.h"
+
 #include <limits>
+#include <cmath>
 
 namespace IMP
 {
@@ -27,22 +26,22 @@ static const float eps = 1.2e-7;
     \param[out] dscore First derivatives for current state.
     \return The model score.
  */
-static Float get_score(Model &model, ModelData *model_data,
-                       std::vector<FloatIndex> float_indices,
-                       std::vector<Float> &x, std::vector<Float> &dscore)
+Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
+                                    std::vector<Float> &x,
+                                    std::vector<Float> &dscore)
 {
   int i, opt_var_cnt = float_indices.size();
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
-    model_data->set_value(float_indices[i], x[i]);
+    set_value(float_indices[i], x[i]);
   }
 
   /* get score */
-  Float score = model.evaluate(true);
+  Float score = get_model()->evaluate(true);
 
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
-    dscore[i] = model_data->get_deriv(float_indices[i]);
+    dscore[i] = get_derivative(float_indices[i]);
   }
   return score;
 }
@@ -62,12 +61,16 @@ static Float get_score(Model &model, ModelData *model_data,
     \return true if the line search succeeded, false if max_steps was exceeded
             or a minimum could not be found.
  */
-static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
-                        float &alpha, Model &model, ModelData *model_data,
-                        const std::vector<FloatIndex> &float_indices,
-                        int &ifun, float &f, float &dg, float &dg1,
-                        int max_steps, const std::vector<Float> &search,
-                        const std::vector<Float> &estimate)
+bool ConjugateGradients::line_search(std::vector<Float> &x,
+                                     std::vector<Float> &dx,
+                                     float &alpha,
+                                     const std::vector<FloatIndex>
+                                     &float_indices,
+                                     int &ifun, float &f,
+                                     float &dg, float &dg1,
+                                     int max_steps,
+                                     const std::vector<Float> &search,
+                                     const std::vector<Float> &estimate)
 {
   float ap, fp, dp, step, minf, u1, u2;
   int i, n, ncalls = ifun;
@@ -106,7 +109,7 @@ static bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
     }
 
     /* EVALUATE THE FUNCTION AT THE TRIAL POINT. */
-    f = get_score(model, model_data, float_indices, x, dx);
+    f = get_score(float_indices, x, dx);
 
     /* TEST IF THE MAXIMUM NUMBER OF FUNCTION CALLS HAVE BEEN USED. */
     if (++ifun > max_steps) {
@@ -213,17 +216,17 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
 {
   std::vector<Float> x, dx;
   int i;
-  ModelData* model_data = get_model()->get_model_data();
+  //ModelData* model_data = get_model()->get_model_data();
 
-  FloatIndexes float_indices(model_data->optimized_float_indexes_begin(),
-                             model_data->optimized_float_indexes_end());
+  FloatIndexes float_indices(float_indexes_begin(),
+                             float_indexes_end());
   int n = float_indices.size();
 
   x.resize(n);
   dx.resize(n);
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
-    x[i] = model_data->get_value(float_indices[i]);
+    x[i] = get_value(float_indices[i]);
   }
 
   // Initialize optimization variables
@@ -251,7 +254,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
      whether a Beale restart is being done. nrst=n means that this
      iteration is a restart iteration. */
 g20:
-  f = get_score(*get_model(), model_data, float_indices, x, dx);
+  f = get_score(float_indices, x, dx);
   ifun++;
   nrst = n;
   // this is a gradient, not restart, direction:
@@ -295,7 +298,7 @@ g40:
   destimate = dx;
 
   /* Try to find a better score by linear search */
-  if (!line_search(x, dx, alpha, *get_model(), model_data, float_indices,
+  if (!line_search(x, dx, alpha, float_indices,
                    ifun, f, dg, dg1, max_steps, search, estimate)) {
     /* If the line search failed, it was either because the maximum number
        of iterations was exceeded, or the minimum could not be found */
@@ -417,7 +420,7 @@ g40:
 end:
   // If the 'best current estimate' is better than the current state, return
   // that:
-  bestf = get_score(*get_model(), model_data, float_indices, estimate,
+  bestf = get_score(float_indices, estimate,
                     destimate);
   if (bestf < f) {
     for (i = 0; i < n; i++) {
@@ -427,7 +430,7 @@ end:
   }
   // Set final model state
   for (i = 0; i < n; i++) {
-    model_data->set_value(float_indices[i], x[i]);
+    set_value(float_indices[i], x[i]);
   }
   update_states();
   return f;

@@ -4,7 +4,6 @@
 #include <vector>
 #include <map>
 
-#include "IMP/ModelData.h"
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
 

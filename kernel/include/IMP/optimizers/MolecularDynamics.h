@@ -21,6 +21,9 @@ namespace IMP
     and a non-optimizable mass attribute; this optimizer assumes the score
     to be energy in kcal/mol, the xyz coordinates to be in angstroms, and
     the mass to be in AMU (g/mol).
+
+    Particles without optimized x,y,z and nonoptimized mass are skipped.
+
     \ingroup optimizer
  */
 class IMPDLLEXPORT MolecularDynamics : public Optimizer
@@ -34,30 +37,27 @@ public:
   //! Set time step in fs
   void set_time_step(Float t) { time_step_ = t; }
 
+  IMP_LIST(private, Particle, particle, Particle*);
+
 protected:
   //! Perform a single dynamics step.
   virtual void step();
 
   //! Get the set of particles to use in this optimization.
-  /** Populates particles_, and gives each particle velocity attributes if it
-      does not already have them.
-      \param[in] model The model to optimize.
-      \exception InvalidStateException The model does not contain only
-                                       xyz particles.
+  /** Scans for particles which have the necessary attributes to be
+      optimized. Particles without optimized x,y,z and nonoptimized
+      mass are skipped.
    */
-  void setup_particles(Model& model);
+  void setup_particles();
 
   //! Time step in fs
   Float time_step_;
 
   //! Keys of the xyz coordinates and mass
-  FloatKey xkey_, ykey_, zkey_, masskey_;
+  FloatKey cs_[3], masskey_;
 
   //! Keys of the xyz velocities
-  FloatKey vxkey_, vykey_, vzkey_;
-
-  //! Particles to optimize
-  std::vector<Particle *> particles_;
+  FloatKey vs_[3];
 };
 
 } // namespace IMP

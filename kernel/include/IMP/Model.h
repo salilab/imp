@@ -20,7 +20,6 @@ namespace IMP
 
 class Particle;
 class Restraint;
-class ModelData;
 class ScoreState;
 typedef std::vector<Restraint*> Restraints;
 typedef std::vector<ScoreState*> ScoreStates;
@@ -37,13 +36,6 @@ class IMPDLLEXPORT Model: public internal::Object
 public:
   Model();
   ~Model();
-
-  //! Get pointer to all model particle data.
-  /** \return pointer to all model particle data.
-   */
-  ModelData* get_model_data() const {
-    return model_data_.get();
-  }
 
   IMP_CONTAINER(Particle, particle, ParticleIndex);
   IMP_CONTAINER(ScoreState, score_state, ScoreStateIndex);
@@ -66,10 +58,6 @@ public:
   VersionInfo get_version_info() const {
     return internal::kernel_version_info;
   }
-
-protected:
-  //! all of the data associated with the particles
-  std::auto_ptr<ModelData> model_data_;
 };
 
 

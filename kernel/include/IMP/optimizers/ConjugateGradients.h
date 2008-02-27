@@ -31,6 +31,14 @@ public:
   //! Set the threshold for the minimum gradient
   void set_threshold(Float t){ threshold_=t;}
 private:
+
+  Float get_score(std::vector<FloatIndex> float_indices,
+                  std::vector<Float> &x, std::vector<Float> &dscore);
+  bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
+                   float &alpha, const std::vector<FloatIndex> &float_indices,
+                   int &ifun, float &f, float &dg, float &dg1,
+                   int max_steps, const std::vector<Float> &search,
+                   const std::vector<Float> &estimate);
   Float threshold_;
 };
 
