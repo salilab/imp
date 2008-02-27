@@ -8,8 +8,6 @@
 #ifndef __IMP_PARTICLE_H
 #define __IMP_PARTICLE_H
 
-#include <map>
-
 #include "IMP_config.h"
 #include "base_types.h"
 #include "Model.h"
@@ -20,10 +18,34 @@
 #include "DerivativeAccumulator.h"
 #include "internal/ObjectPointer.h"
 
+#include <limits>
+
 namespace IMP
 {
+#ifndef SWIG
+namespace internal
+{
 
+struct IMPDLLEXPORT FloatData
+{
+  bool is_optimized;
+  Float value;
+  Float derivative;
+  FloatData(Float v, bool opt): is_optimized(opt), value(v), derivative(0){}
+  FloatData():is_optimized(false), value(std::numeric_limits<Float>::max()),
+              derivative(std::numeric_limits<Float>::max()){}
+};
 
+inline std::ostream &operator<<(std::ostream &out, const FloatData &d)
+{
+  out << d.value << ": " << d.derivative;
+  if (d.is_optimized) out << "(opt)";
+  return out;
+}
+
+} // namespace internal
+
+#endif
 class Model;
 
 //! Class to handle individual model particles.
@@ -184,10 +206,9 @@ public:
 
   //! Return a vector containing all the FloatKeys for the Particle
   /**
-     This is for use in python mostly. C++ iterator will be added
-     at some point.
+     This is for use in python mostly. C++ users should use the iterators.
 
-     I would like to have a type-agnostic way of calling this 
+     \todo I would like to have a type-agnostic way of calling this 
      to be used to writing generic functions in python. The only
      ways I can think of doing this are to pass dummy arguments,
      which seems inelegant.
@@ -206,21 +227,42 @@ public:
     return string_indexes_.get_keys();
   }
 
+  //! An iterator through the keys of the float attributes of this particle
+  typedef internal::AttributeTable<Float, 
+    internal::FloatData>::AttributeKeyIterator
+    FloatKeyIterator;
+  //! Iterate through the keys of float attributes of the particle
+  FloatKeyIterator float_keys_begin() const {
+    return float_indexes_.attribute_keys_begin();
+  }
+  FloatKeyIterator float_keys_end() const {
+    return float_indexes_.attribute_keys_end();
+  }
+
+  //! An iterator through the keys of the int attributes of this particle
+  typedef internal::AttributeTable<Int, Int>
+    ::AttributeKeyIterator IntKeyIterator;
+  //! Iterate through the keys of int attributes of the particle
+  IntKeyIterator int_keys_begin() const {
+    return int_indexes_.attribute_keys_begin();
+  }
+  IntKeyIterator int_keys_end() const {
+    return int_indexes_.attribute_keys_end();
+  }
+
+  //! An iterator through the keys of the string attributes of this particle
+  typedef internal::AttributeTable<String, String>
+    ::AttributeKeyIterator StringKeyIterator;
+  //! Iterate through the keys of string attributes of the particle
+  StringKeyIterator string_keys_begin() const {
+    return string_indexes_.attribute_keys_begin();
+  }
+  StringKeyIterator string_keys_end() const {
+    return string_indexes_.attribute_keys_end();
+  }
+
 protected:
-
-  template <class T>
-  T get_value_t(Index<T> k) const {
-    IMP_check(get_is_active(), "get_value called on inactive Particle",
-              InactiveParticleException());
-    return model_->get_model_data()->get_value(k);
-  }
-
-  template <class T>
-  void set_value_t(Index<T> k, const T&v) {
-    IMP_check(get_is_active(), "set_value called on inactive Particle",
-              InactiveParticleException());
-    model_->get_model_data()->set_value(k, v);
-  }
+  void zero_derivatives();
 
   // Set pointer to model particle data.
   void set_model(Model *md, ParticleIndex pi);
@@ -232,11 +274,11 @@ protected:
   bool is_active_;
 
   // float attributes associated with the particle
-  internal::AttributeTable<Float> float_indexes_;
+  internal::AttributeTable<Float, internal::FloatData> float_indexes_;
   // int attributes associated with the particle
-  internal::AttributeTable<Int>  int_indexes_;
+  internal::AttributeTable<Int, Int>  int_indexes_;
   // string attributes associated with the particle
-  internal::AttributeTable<String>  string_indexes_;
+  internal::AttributeTable<String, String>  string_indexes_;
 
   ParticleIndex pi_;
 };
@@ -255,40 +297,52 @@ inline bool Particle::has_attribute(FloatKey name) const
 
 inline Float Particle::get_value(FloatKey name) const
 {
-  return get_value_t(float_indexes_.get_value(name));
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  return float_indexes_.get_value(name).value;
 }
 
 inline Float Particle::get_derivative(FloatKey name) const
 {
-  return model_->get_model_data()->get_deriv(float_indexes_.get_value(name));
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  return float_indexes_.get_value(name).derivative;
 }
 
 inline void Particle::set_value(FloatKey name, Float value)
 {
-  set_value_t(float_indexes_.get_value(name), value);
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  IMP_assert(value==value, "Can't set value to NaN");
+  float_indexes_.get_value(name).value= value;
 }
 
 inline bool Particle::get_is_optimized(FloatKey name) const
 {
-  return model_->get_model_data()
-    ->get_is_optimized(float_indexes_.get_value(name));
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  return float_indexes_.get_value(name).is_optimized;
 }
 
 inline void Particle::set_is_optimized(FloatKey name, bool tf)
 {
-  model_->get_model_data()
-    ->set_is_optimized(float_indexes_.get_value(name), tf);
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  float_indexes_.get_value(name).is_optimized=tf;
 }
 
 inline void Particle::add_to_derivative(FloatKey name, Float value,
                                         const DerivativeAccumulator &da)
 {
-  return model_->get_model_data()->add_to_deriv(float_indexes_.get_value(name),
-                                                da(value));
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  float_indexes_.get_value(name).derivative+= da(value);
 }
 
 inline bool Particle::has_attribute(IntKey name) const
 {
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
   return int_indexes_.contains(name);
 }
 
@@ -296,17 +350,23 @@ inline bool Particle::has_attribute(IntKey name) const
 
 inline Int Particle::get_value(IntKey name) const
 {
-  return get_value_t(int_indexes_.get_value(name));
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  return int_indexes_.get_value(name);
 }
 
 
 inline void Particle::set_value(IntKey name, Int value)
 {
-  return set_value_t(int_indexes_.get_value(name), value);
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  int_indexes_.get_value(name)= value;
 }
 
 inline bool Particle::has_attribute(StringKey name) const
 {
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
   return string_indexes_.contains(name);
 }
 
@@ -314,12 +374,16 @@ inline bool Particle::has_attribute(StringKey name) const
 
 inline String Particle::get_value(StringKey name) const
 {
-  return get_value_t(string_indexes_.get_value(name));
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  return string_indexes_.get_value(name);
 }
 
 inline void Particle::set_value(StringKey name, String value)
 {
-  return set_value_t(string_indexes_.get_value(name), value);
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            ValueException("Don't touch inactive particles"));
+  string_indexes_.get_value(name)= value;
 }
 
 } // namespace IMP

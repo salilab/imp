@@ -110,7 +110,6 @@ class ProximityRestraintTests(IMP.test.TestCase):
         os.unlink('out_proximity.pdb')
 
         # min distances
-        model_data = self.imp_model.get_model_data()
         for i in range(len(coords)):
             irad = self.particles[i].get_value(radius)
             for j in range(i+1,len(coords)):

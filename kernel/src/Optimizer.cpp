@@ -12,20 +12,18 @@
 namespace IMP
 {
 
-//! Constructor
 Optimizer::Optimizer()
 {
   IMP_LOG(VERBOSE, "MEMORY: Optimizer created " << this << std::endl);
 }
 
 
-//! Destructor
 Optimizer::~Optimizer()
 {
   IMP_LOG(VERBOSE, "MEMORY: Optimizer destroyed " << this << std::endl);
 }
 
-//! Update optimizer state, at each successful step
+
 void Optimizer::update_states()
 {
   IMP_LOG(VERBOSE,
@@ -38,6 +36,7 @@ void Optimizer::update_states()
   }
   IMP_LOG(VERBOSE, "done." << std::endl);
 }
+
 
 IMP_CONTAINER_IMPL(Optimizer, OptimizerState, optimizer_state,
                    OptimizerStateIndex, obj->set_optimizer(this));

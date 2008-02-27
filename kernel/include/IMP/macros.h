@@ -124,6 +124,17 @@ template <class L>                                                      \
     return out;                                                         \
   }
 
+//! Implement operator<< on class name, assuming it has two template arguments
+/** class name should also define the method std::ostream &show(std::ostream&)
+ */
+#define IMP_OUTPUT_OPERATOR_2(name) /** write to a stream*/             \
+  template <class L, class M>                                           \
+  inline std::ostream& operator<<(std::ostream &out, const name<L, M> &i) \
+  {                                                                     \
+    i.show(out);                                                        \
+    return out;                                                         \
+  }
+
 //! Implement operator<< on class name
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
@@ -144,7 +155,7 @@ template <class L>                                                      \
   /** write information about the restraint to the stream*/             \
   virtual void show(std::ostream &out=std::cout) const;                 \
   /** \return version and authorship information */                     \
-  virtual VersionInfo get_version_info() const { return version_info; }
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Define the basic things you need for an optimizer.
 /** These are: optimize, get_version_info
@@ -157,7 +168,7 @@ template <class L>                                                      \
    */                                                                   \
   virtual Float optimize(unsigned int max_steps);                       \
   /** \return version and authorship information */                     \
-  virtual VersionInfo get_version_info() const { return version_info; }
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 
 //! Define the basics needed for an OptimizerState
@@ -175,7 +186,7 @@ template <class L>                                                      \
   /** write information about the state to the stream*/                 \
   virtual void show(std::ostream &out=std::cout) const;                 \
   /** \return version and authorship information */                     \
-  virtual VersionInfo get_version_info() const { return version_info; }
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! See IMP_OPTIMIZER_STATE
 #define IMP_SCORE_STATE(version_info)\
@@ -301,8 +312,8 @@ template <class L>                                                      \
    \param[in] OnChanged Code to get executed when the container changes.
  */
 #define IMP_LIST_IMPL(Class, Ucname, lcname, Data, init, OnChanged)     \
-  IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, unsigned int,\
-                          init, OnChanged)\
+  IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, unsigned int,    \
+                          init, OnChanged)                              \
   /** \short Clear the contents of the container */                     \
   void Class::clear_##lcname##s(){                                      \
     lcname##_vector_.clear();                                           \

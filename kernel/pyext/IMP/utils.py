@@ -16,7 +16,6 @@ class XYZParticle(IMP.Particle):
             XYZParticle._xkey = IMP.FloatKey("x")
             XYZParticle._ykey = IMP.FloatKey("y")
             XYZParticle._zkey = IMP.FloatKey("z")
-        self.model_data = self.get_model().get_model_data()
         if x is not None:
             self.add_attribute(self._xkey, x, True)
         if y is not None:

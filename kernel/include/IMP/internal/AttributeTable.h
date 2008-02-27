@@ -11,26 +11,34 @@
 #include "../base_types.h"
 #include "../utility.h"
 #include "../log.h"
-#include "../ModelData.h"
 
-#include <map>
+#include <boost/iterator/filter_iterator.hpp>
+#include <boost/iterator/counting_iterator.hpp>
+
 #include <vector>
 
 namespace IMP
 {
 
-class ModelData;
 
 namespace internal
 {
 
 /** \internal */
-template <class T>
+template <class T, class VT>
 class AttributeTable
 {
-  std::vector<Index<T> > map_;
+  struct Bin
+  {
+    bool first;
+    VT second;
+    Bin(): first(false){}
+  };
+  typedef AttributeTable<T, VT> This;
+  typedef std::vector<Bin > Map;
+  Map map_;
 public:
-  typedef Index<T> Value;
+  typedef VT Value;
   typedef Key<T> Key;
   AttributeTable() {} 
   const Value get_value(Key k) const {
@@ -39,73 +47,100 @@ public:
               << "\" not found in table.",
               IndexException((std::string("Invalid attribute \"")
                               + k.get_string() + "\" requested").c_str()));
-    return map_[k.get_index()];
+    return map_[k.get_index()].second;
+  }
+
+  Value& get_value(Key k) {
+    IMP_check(contains(k),
+              "Attribute \"" << k.get_string()
+              << "\" not found in table.",
+              IndexException((std::string("Invalid attribute \"")
+                              + k.get_string() + "\" requested").c_str()));
+    return map_[k.get_index()].second;
   }
   void insert(Key k, Value v);
   bool contains(Key k) const {
     IMP_check(k != Key(), "Can't search for default key",
               IndexException("Bad index"));
     return k.get_index() < map_.size()
-           && map_[k.get_index()] != Value();
+           && map_[k.get_index()].first;
   }
-  void show(std::ostream &out, const char *prefix="",
-            ModelData* md=NULL) const;
+  void show(std::ostream &out, const char *prefix="") const;
   std::vector<Key> get_keys() const;
+
+  class IsAttribute
+  {
+    const This *map_;
+  public:
+    IsAttribute(): map_(NULL){}
+    IsAttribute(const This *map): map_(map) {}
+    bool operator()(Key k) const {
+      return map_->contains(k);
+    }
+  };
+
+  typedef boost::counting_iterator<Key, boost::random_access_traversal_tag,
+                                   std::size_t> KeyIterator;
+  typedef boost::filter_iterator<IsAttribute, KeyIterator> AttributeKeyIterator;
+
+  AttributeKeyIterator attribute_keys_begin() const {
+    return AttributeKeyIterator(IsAttribute(this),
+                                KeyIterator(Key(0U)),
+                                KeyIterator(Key(map_.size())));
+  }
+  AttributeKeyIterator attribute_keys_end() const {
+    return AttributeKeyIterator(IsAttribute(this),
+                                KeyIterator(Key(map_.size())),
+                                KeyIterator(Key(map_.size())));
+  }
+
+
 };
 
-IMP_OUTPUT_OPERATOR_1(AttributeTable)
+IMP_OUTPUT_OPERATOR_2(AttributeTable)
 
 
 
 
-template <class T>
-inline void AttributeTable<T>::insert(Key k, Value v)
+template <class T, class VT>
+inline void AttributeTable<T, VT>::insert(Key k, Value v)
 {
   IMP_check(k != Key(),
             "Can't insert default key",
             IndexException("bad index"));
-  IMP_assert(v != Value(),
-             "Can't add attribute with no index");
   if (map_.size() <= k.get_index()) {
     map_.resize(k.get_index()+1);
   }
-  IMP_assert(map_[k.get_index()]== Value(),
+  IMP_assert(!map_[k.get_index()].first,
              "Trying to add attribute \"" << k.get_string()
              << "\" twice");
-  map_[k.get_index()]= v;
+  map_[k.get_index()].second= v;
+  map_[k.get_index()].first= true;
   IMP_assert(contains(k), "Something is broken");
 }
 
 
-template <class T>
-inline void AttributeTable<T>::show(std::ostream &out,
-                                    const char *prefix,
-                                    ModelData *md) const
+  template <class T, class VT>
+  inline void AttributeTable<T, VT>::show(std::ostream &out,
+                                          const char *prefix) const
 {
   for (unsigned int i=0; i< map_.size(); ++i) {
-    if (map_[i] != Value()) {
+    if (map_[i].first) {
       out << prefix;
       out << Key(i).get_string() << ": ";
-      if (md != NULL) {
-        out << md->get_value(map_[i]);
-      }
+      out << map_[i].second;
       out << std::endl;
     }
   }
 }
 
 
-template <class T>
-inline std::vector<typename AttributeTable<T>::Key> 
-AttributeTable<T>::get_keys() const
+template <class T, class VT>
+inline std::vector<typename AttributeTable<T, VT>::Key> 
+  AttributeTable<T, VT>::get_keys() const
 {
-  std::vector<Key> ret;
-   for (unsigned int i=0; i< map_.size(); ++i) {
-     if (map_[i] != Value()) {
-       ret.push_back(Key(i));
-     }
-   }
-   return ret;
+  std::vector<Key> ret(attribute_keys_begin(), attribute_keys_end());
+  return ret;
 }
 
 inline void show_attributes(std::ostream &out)

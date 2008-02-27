@@ -40,10 +40,7 @@ void Particle::add_attribute(FloatKey name, const Float value,
 {
   IMP_assert(model_ ,
              "Particle must be added to Model before an attributes are added");
-  float_indexes_.insert(name, model_->get_model_data()->add_float(value));
-
-  model_->get_model_data()->set_is_optimized(float_indexes_.get_value(name),
-                                             is_optimized);
+  float_indexes_.insert(name, internal::FloatData(value, is_optimized));
 }
 
 
@@ -51,7 +48,7 @@ void Particle::add_attribute(IntKey name, const Int value)
 {
   IMP_assert(model_,
              "Particle must be added to Model before an attributes are added");
-  int_indexes_.insert(name, model_->get_model_data()->add_int(value));
+  int_indexes_.insert(name, value);
 }
 
 
@@ -59,9 +56,16 @@ void Particle::add_attribute(StringKey name, const String value)
 {
   IMP_assert(model_,
              "Particle must be added to Model before an attributes are added");
-  string_indexes_.insert(name, model_->get_model_data()->add_string(value));
+  string_indexes_.insert(name, value);
 }
 
+
+void Particle::zero_derivatives()
+{
+  for (FloatKeyIterator it= float_keys_begin(); it != float_keys_end(); ++it) {
+    float_indexes_.get_value(*it).derivative=0;
+  }
+}
 
 
 void Particle::show(std::ostream& out) const
@@ -78,13 +82,13 @@ void Particle::show(std::ostream& out) const
 
   if (get_model() != NULL) {
     out << inset << inset << "float attributes:" << std::endl;
-    float_indexes_.show(out, "    ", get_model()->get_model_data());
+    float_indexes_.show(out, "    ");
 
     out << inset << inset << "int attributes:" << std::endl;
-    int_indexes_.show(out, "    ", get_model()->get_model_data());
+    int_indexes_.show(out, "    ");
 
     out << inset << inset << "string attributes:" << std::endl;
-    string_indexes_.show(out, "    ", get_model()->get_model_data());
+    string_indexes_.show(out, "    ");
   }
 }
 

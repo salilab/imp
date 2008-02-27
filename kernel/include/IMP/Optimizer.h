@@ -16,6 +16,7 @@
 #include "internal/Object.h"
 #include "utility.h"
 #include "Model.h"
+#include "Particle.h"
 #include "internal/ObjectPointer.h"
 
 namespace IMP
@@ -68,10 +69,135 @@ protected:
   //! Update optimizer state, should be called at each successful step
   void update_states();
 
+  //! An index to an optimized particle attribute
+  class FloatIndexInderator;
+  struct FloatIndex
+  {
+    /**
+       \todo mac gcc breaks on the protection and friends here
+     */
+    friend class Optimizer;
+    friend class FloatIndexIterator;
+    Model::ParticleIterator p_;
+    Particle::FloatKeyIterator fk_;
+    FloatIndex(Model::ParticleIterator p): p_(p){}
+  public:
+    FloatIndex() {}
+  };
+
+
+  //! An interator through the optimized attributes
+  /** The value type is an FloatIndex
+   */
+  class FloatIndexIterator
+   {
+    typedef FloatIndexIterator This;
+    Model::ParticleIterator pe_;
+    mutable FloatIndex i_;
+
+    void search_valid() const {
+      while (i_.fk_ == (*i_.p_)->float_keys_end()
+             || !(*i_.p_)->get_is_optimized(*i_.fk_)) {
+        if (i_.fk_ == (*i_.p_)->float_keys_end()) {
+          ++i_.p_;
+          if (i_.p_== pe_) return;
+          else {
+            i_.fk_= (*i_.p_)->float_keys_begin();
+          }
+        } else {
+          ++i_.fk_;
+        }
+      }
+      IMP_assert(i_.p_ != pe_, "Should have just returned");
+      IMP_assert(i_.fk_ != (*i_.p_)->float_keys_end(),
+                 "Broken iterator end");
+      IMP_assert((*i_.p_)->get_is_optimized(*i_.fk_),
+                   "Why did the loop end?");
+    }
+    void find_next() const {
+      ++i_.fk_;
+      search_valid();
+    }
+  public:
+    FloatIndexIterator(Model::ParticleIterator pc,
+                       Model::ParticleIterator pe): pe_(pe), i_(pc) {
+      if (pc != pe) {
+        i_.fk_= (*pc)->float_keys_begin();
+        search_valid();
+      }
+    }
+    typedef FloatIndex value_type;
+    typedef FloatIndex& reference;
+    typedef FloatIndex* pointer;
+    typedef std::forward_iterator_tag iterator_category;
+    typedef int difference_type;
+
+    const This &operator++() {
+      find_next();
+      return *this;
+    }
+    reference operator*() const {
+      IMP_assert((*i_.p_)->get_is_optimized(*i_.fk_),
+                 "The iterator is broken");
+      return i_;
+    }
+    pointer operator->() const {
+      return &i_;
+    }
+    bool operator==(const This &o) const {
+      if (i_.p_ != o.i_.p_) return false;
+      if (i_.p_== pe_) return o.i_.p_ ==pe_;
+      else return i_.fk_ == o.i_.fk_;
+    }
+    bool operator!=(const This &o) const {
+      return !operator==(o);
+    }
+  };
+
+  //! Iterate through the optimized attributes
+  FloatIndexIterator float_indexes_begin() {
+    return FloatIndexIterator(model_->particles_begin(),
+                              model_->particles_end());
+  }
+
+  FloatIndexIterator float_indexes_end() {
+    return FloatIndexIterator(model_->particles_end(),
+                                  model_->particles_end());
+  }
+
+  //! Set the value of an optimized attribute
+  /** The attribute must be optimized or an ErrorException is thrown.
+   */
+  void set_value(FloatIndex fi, Float v) {
+    IMP_assert(fi.p_ != model_->particles_end(), 
+               "Out of range FloatIndex in Optimizer");
+    IMP_assert((*fi.p_)->get_is_optimized(*fi.fk_),
+               "Keep your mits off unoptimized attributes "
+               << (*fi.p_)->get_index() << " " << *fi.fk_ << std::endl);
+    (*fi.p_)->set_value(*fi.fk_, v);
+  }
+
+  //! Get the value of an optimized attribute
+  Float get_value(FloatIndex fi) const {
+    IMP_assert(fi.p_ != model_->particles_end(), 
+               "Out of range FloatIndex in Optimizer");
+    return (*fi.p_)->get_value(*fi.fk_);
+  }
+
+  //! Get the derivative of an optimized attribute
+  Float get_derivative(FloatIndex fi) const {
+    IMP_assert(fi.p_ != model_->particles_end(), 
+               "Out of range FloatIndex in Optimizer");
+    return (*fi.p_)->get_derivative(*fi.fk_);
+  }
+
+  typedef std::vector<FloatIndex> FloatIndexes;
+
 private:
   internal::ObjectPointer<Model, false> model_;
-
 };
+
+
 
 } // namespace IMP
 

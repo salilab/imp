@@ -8,7 +8,6 @@
 #include "IMP/log.h"
 #include "IMP/optimizers/SteepestDescent.h"
 #include "IMP/Model.h"
-#include "IMP/ModelData.h"
 
 namespace IMP
 {
@@ -39,13 +38,12 @@ Float SteepestDescent::optimize(unsigned int max_steps)
   std::vector<Float> temp_vals;
   std::vector<Float> temp_derivs;
   Float last_score, new_score = 0.0;
-  ModelData* model_data = get_model()->get_model_data();
 
   // set up the indexes
 
 
-  FloatIndexes float_indexes(model_data->optimized_float_indexes_begin(),
-                             model_data->optimized_float_indexes_end());
+  FloatIndexes float_indexes(float_indexes_begin(),
+                             float_indexes_end());
   int opt_var_cnt = float_indexes.size();
 
   Float current_step_size = step_size_;
@@ -67,8 +65,8 @@ Float SteepestDescent::optimize(unsigned int max_steps)
     for (int i = 0; i < opt_var_cnt; i++) {
       FloatIndex fi = float_indexes[0];
 
-      temp_vals[i] = model_data->get_value(float_indexes[i]);
-      temp_derivs[i] = model_data->get_deriv(float_indexes[i]);
+      temp_vals[i] = get_value(float_indexes[i]);
+      temp_derivs[i] = get_derivative(float_indexes[i]);
     }
 
     bool done = false;
@@ -86,9 +84,8 @@ Float SteepestDescent::optimize(unsigned int max_steps)
                 << temp_vals[i] - temp_derivs[i] * current_step_size << "  "
                 << temp_derivs[i]);
 
-        model_data->set_value(float_indexes[i],
-                              temp_vals[i] - temp_derivs[i]
-                                             * current_step_size);
+        set_value(float_indexes[i], temp_vals[i] - temp_derivs[i]
+                                    * current_step_size);
       }
       update_states();
 

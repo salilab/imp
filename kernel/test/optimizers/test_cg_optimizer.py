@@ -53,7 +53,6 @@ class CGOptimizerTests(IMP.test.TestCase):
         opt.set_model(model)
         opt.set_threshold(1e-5)
         e = opt.optimize(100)
-        model_data = model.get_model_data()
         for p in particles:
             val = p.get_value(IMP.FloatKey("x"))
             self.assertAlmostEqual(val, 1.0, places=1)

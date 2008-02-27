@@ -158,9 +158,6 @@ namespace IMP {
 %include "IMP/score_states/BondDecoratorListScoreState.h"
 
 namespace IMP {
-  %template(IntIndex) Index<Int>;
-  %template(FloatIndex) Index<Float>;
-  %template(StringIndex) Index<String>;
   %template(ParticleIndex) Index<ParticleTag>;
   %template(RestraintIndex) Index<RestraintTag>;
   %template(ScoreStateIndex) Index<ScoreStateTag>;

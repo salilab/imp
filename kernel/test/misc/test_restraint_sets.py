@@ -28,7 +28,6 @@ class RestraintSetTests(IMP.test.TestCase):
 
     def test_weights(self):
         """Test that sets can be weighted"""
-        model_data = self.model.get_model_data()
         e1 = self.model.evaluate(True)
         d1 = self.particles[0].get_derivative(IMP.FloatKey("x"))
         self.rset.set_weight(0.5)

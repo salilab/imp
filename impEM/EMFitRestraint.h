@@ -35,7 +35,6 @@ private:
   DensityMap *target_dens_map;
   SampledDensityMap *model_dens_map;
   // reference to the IMP environment
-  ModelData *model_data;
   float scalefac;
   int num_particles;
   IMPParticlesAccessPoint access_p;
