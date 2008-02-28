@@ -6,8 +6,10 @@
  */
 
 #include "IMP/log.h"
+#include "IMP/random.h"
 #include "IMP/optimizers/MolecularDynamics.h"
 #include "IMP/decorators/XYZDecorator.h"
+#include <boost/random/normal_distribution.hpp>
 
 #include <cmath>
 
@@ -15,7 +17,7 @@ namespace IMP
 {
 
 //! Constructor
-MolecularDynamics::MolecularDynamics() : time_step_(4.0)
+MolecularDynamics::MolecularDynamics() : time_step_(4.0), degrees_of_freedom_(0)
 {
   cs_[0] = FloatKey("x");
   cs_[1] = FloatKey("y");
@@ -45,6 +47,7 @@ IMP_LIST_IMPL(MolecularDynamics, Particle, particle, Particle*,
 
 void MolecularDynamics::setup_particles()
 {
+  degrees_of_freedom_ = 0;
   clear_particles();
 
   for (unsigned int i = 0; i < get_model()->number_of_particles(); ++i) {
@@ -54,6 +57,7 @@ void MolecularDynamics::setup_particles()
         && p->has_attribute(cs_[2]) && p->get_is_optimized(cs_[2])
         && p->has_attribute(masskey_) && !p->get_is_optimized(masskey_)) {
       add_particle(p);
+      degrees_of_freedom_ += 3;
     }
   }
 }
@@ -123,6 +127,60 @@ Float MolecularDynamics::optimize(unsigned int max_steps)
     score = model->evaluate(true);
   }
   return score;
+}
+
+Float MolecularDynamics::get_kinetic_energy() const
+{
+  // Conversion factor to get energy in kcal/mol from velocities in A/fs and
+  // mass in g/mol
+  static const Float conversion = 1.0 / 4.1868e-4;
+
+  Float ekinetic = 0.;
+  for (ParticleConstIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    Particle *p = *iter;
+    Float vx = p->get_value(vs_[0]);
+    Float vy = p->get_value(vs_[1]);
+    Float vz = p->get_value(vs_[2]);
+    Float mass = p->get_value(masskey_);
+
+    ekinetic += mass * (vx * vx + vy * vy + vz * vz);
+  }
+  return 0.5 * ekinetic * conversion;
+}
+
+Float MolecularDynamics::get_kinetic_temperature(Float ekinetic) const
+{
+  if (degrees_of_freedom_ == 0) {
+    return 0.;
+  } else {
+    // E = (n/2)kT  n=degrees of freedom, k = Boltzmann constant
+    // Boltzmann constant, in kcal/mol
+    const Float boltzmann = 8.31441 / 4186.8;
+    return 2.0 * ekinetic / (degrees_of_freedom_ * boltzmann);
+  }
+}
+
+void MolecularDynamics::assign_velocities(Float temperature)
+{
+  // gas constant for mass in g/mol
+  static const Float gas_constant = 8.31441e-7;
+
+  setup_particles();
+  Float mean = 0.0;
+  boost::uniform_01<RandomNumberGenerator> u01(random_number_generator);
+
+  for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    Particle *p = *iter;
+    Float mass = p->get_value(masskey_);
+    Float stddev = std::sqrt(gas_constant * temperature / mass);
+    boost::normal_distribution<Float> mrng(mean, stddev);
+
+    for (int i = 0; i < 3; ++i) {
+      p->set_value(vs_[i], mrng(u01));
+    }
+  }
 }
 
 } // namespace IMP

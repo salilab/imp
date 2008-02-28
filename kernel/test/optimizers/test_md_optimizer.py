@@ -113,5 +113,26 @@ class MolecularDynamicsTests(IMP.test.TestCase):
             for key in keys:
                 self.assert_(p.has_attribute(key))
 
+    def test_temperature(self):
+        """Check temperature"""
+        # Averages for temperature only make sense if we have a comparatively
+        # large number of particles:
+        for i in range(100):
+            self.particles.append(IMP.utils.XYZParticle(self.model,
+                                                        -43.0, 65.0, 93.0))
+            self.particles[-1].add_attribute(masskey, cmass, False)
+        # Initial temperature should be zero:
+        ekinetic = self.md.get_kinetic_energy()
+        tkinetic = self.md.get_kinetic_temperature(ekinetic)
+        self.assertEqual(ekinetic, 0.0)
+        self.assertEqual(tkinetic, 0.0)
+        # After assigning T=100K, kinetic temp should be 100K:
+        self.md.assign_velocities(100.0)
+        ekinetic = self.md.get_kinetic_energy()
+        tkinetic = self.md.get_kinetic_temperature(ekinetic)
+        self.assertNotEqual(ekinetic, 0.0)
+        diff = abs(tkinetic - 100.0)
+        self.assert_(diff < 10.0)
+
 if __name__ == '__main__':
     unittest.main()
