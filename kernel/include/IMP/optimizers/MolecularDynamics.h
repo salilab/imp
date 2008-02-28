@@ -32,10 +32,21 @@ public:
   MolecularDynamics();
   virtual ~MolecularDynamics();
 
+  //! \return the current kinetic energy of the system, in kcal/mol
+  Float get_kinetic_energy() const;
+
+  //! \return the current kinetic temperature of the system
+  /** \param[in] ekinetic kinetic energy, e.g. from get_kinetic_energy()
+   */
+  Float get_kinetic_temperature(Float ekinetic) const;
+
   IMP_OPTIMIZER(internal::kernel_version_info)
 
   //! Set time step in fs
   void set_time_step(Float t) { time_step_ = t; }
+
+  //! Assign velocities representative of the given temperature
+  void assign_velocities(Float temperature);
 
   IMP_LIST(private, Particle, particle, Particle*);
 
@@ -58,6 +69,9 @@ protected:
 
   //! Keys of the xyz velocities
   FloatKey vs_[3];
+
+  //! Number of degrees of freedom in the system
+  int degrees_of_freedom_;
 };
 
 } // namespace IMP
