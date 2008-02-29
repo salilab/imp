@@ -113,6 +113,13 @@ class MolecularDynamicsTests(IMP.test.TestCase):
             for key in keys:
                 self.assert_(p.has_attribute(key))
 
+    def _check_temperature(self, desired, tolerance):
+        """Check the temperature of the system"""
+        ekinetic = self.md.get_kinetic_energy()
+        tkinetic = self.md.get_kinetic_temperature(ekinetic)
+        diff = abs(tkinetic - desired)
+        self.assert_(diff < tolerance)
+
     def test_temperature(self):
         """Check temperature"""
         # Averages for temperature only make sense if we have a comparatively
@@ -129,10 +136,26 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         # After assigning T=100K, kinetic temp should be 100K:
         self.md.assign_velocities(100.0)
         ekinetic = self.md.get_kinetic_energy()
-        tkinetic = self.md.get_kinetic_temperature(ekinetic)
         self.assertNotEqual(ekinetic, 0.0)
-        diff = abs(tkinetic - 100.0)
-        self.assert_(diff < 10.0)
+        self._check_temperature(100.0, 10.0)
+
+    def test_rescaling(self):
+        """Test thermostatting by velocity rescaling"""
+        for i in range(100):
+            self.particles.append(IMP.utils.XYZParticle(self.model,
+                                                        -43.0, 65.0, 93.0))
+            self.particles[-1].add_attribute(masskey, cmass, False)
+        self.md.assign_velocities(100.0)
+        scaler = IMP.VelocityScalingOptimizerState(
+                             IMP.Particles(self.particles), 298.0, 10)
+        self.md.add_optimizer_state(scaler)
+        self.md.optimize(10)
+        # Temperature should have been rescaled to 298.0 at some point:
+        self._check_temperature(298.0, 0.1)
+        # Also check immediate rescaling:
+        scaler.set_temperature(50.0)
+        scaler.rescale_velocities()
+        self._check_temperature(50.0, 0.1)
 
 if __name__ == '__main__':
     unittest.main()
