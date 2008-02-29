@@ -98,6 +98,17 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         self._check_trajectory(start, traj, timestep,
                                lambda a: a + strength * delttm)
 
+    def test_velocity_cap(self):
+        """Check that velocity capping works"""
+        timestep = 4.0
+        strength = 5000.0
+        r = XTransRestraint(strength)
+        self.model.add_restraint(r)
+        self.md.set_velocity_cap(0.3)
+        (start, traj) = self._optimize_model(timestep)
+        # At this strength, velocity at each step should be greater than the cap
+        self._check_trajectory(start, traj, timestep, lambda a: -0.3)
+
     def test_non_xyz(self):
         """Should skip particles without xyz attributes"""
         p = IMP.Particle()

@@ -17,7 +17,9 @@ namespace IMP
 {
 
 //! Constructor
-MolecularDynamics::MolecularDynamics() : time_step_(4.0), degrees_of_freedom_(0)
+MolecularDynamics::MolecularDynamics() :
+    time_step_(4.0), degrees_of_freedom_(0),
+    velocity_cap_(std::numeric_limits<Float>::max())
 {
   cs_[0] = FloatKey("x");
   cs_[1] = FloatKey("y");
@@ -74,37 +76,24 @@ void MolecularDynamics::step()
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
     Particle *p = *iter;
-    Float x = p->get_value(cs_[0]);
-    Float y = p->get_value(cs_[1]);
-    Float z = p->get_value(cs_[2]);
     Float invmass = 1.0 / p->get_value(masskey_);
-    Float dvx = p->get_derivative(cs_[0]);
-    Float dvy = p->get_derivative(cs_[1]);
-    Float dvz = p->get_derivative(cs_[2]);
+    for (unsigned i = 0; i < 3; ++i) {
+      Float coord = p->get_value(cs_[i]);
+      Float dcoord = p->get_derivative(cs_[i]);
 
-    // calculate velocity at t+(delta t/2) from that at t-(delta t/2)
-    Float vx = p->get_value(vs_[0]);
-    Float vy = p->get_value(vs_[1]);
-    Float vz = p->get_value(vs_[2]);
-    vx += dvx * deriv_to_acceleration * invmass * time_step_;
-    vy += dvy * deriv_to_acceleration * invmass * time_step_;
-    vz += dvz * deriv_to_acceleration * invmass * time_step_;
-    p->set_value(vs_[0], vx);
-    p->set_value(vs_[1], vy);
-    p->set_value(vs_[2], vz);
+      // calculate velocity at t+(delta t/2) from that at t-(delta t/2)
+      Float velocity = p->get_value(vs_[i]);
+      velocity += dcoord * deriv_to_acceleration * invmass * time_step_;
 
-    // get atomic shift
-    Float dx = vx * time_step_;
-    Float dy = vy * time_step_;
-    Float dz = vz * time_step_;
+      cap_velocity_component(velocity);
+      p->set_value(vs_[i], velocity);
 
-    // calculate position at t+(delta t) from that at t
-    x += dx;
-    y += dy;
-    z += dz;
-    p->set_value(cs_[0], x);
-    p->set_value(cs_[1], y);
-    p->set_value(cs_[2], z);
+      // get atomic shift
+      Float shift = velocity * time_step_;
+
+      // calculate position at t+(delta t) from that at t
+      p->set_value(cs_[i], coord + shift);
+    }
   }
 }
 

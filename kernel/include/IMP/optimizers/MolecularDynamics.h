@@ -45,6 +45,14 @@ public:
   //! Set time step in fs
   void set_time_step(Float t) { time_step_ = t; }
 
+  //! Set maximum velocity in A/fs
+  /** At each dynamics time step, the absolute value of each velocity
+      component is capped at this value. This prevents spurious strong forces
+      (occasionally encountered with frustrated conformations) from causing
+      large oscillations in the system.
+   */
+  void set_velocity_cap(Float velocity_cap) { velocity_cap_ = velocity_cap; }
+
   //! Assign velocities representative of the given temperature
   void assign_velocities(Float temperature);
 
@@ -61,6 +69,15 @@ protected:
    */
   void setup_particles();
 
+  //! Cap a velocity component to the maximum value.
+  inline void cap_velocity_component(Float &vel) {
+    if (vel >= 0.0) {
+      vel = std::min(vel, velocity_cap_);
+    } else {
+      vel = std::max(vel, -velocity_cap_);
+    }
+  }
+
   //! Time step in fs
   Float time_step_;
 
@@ -72,6 +89,9 @@ protected:
 
   //! Number of degrees of freedom in the system
   int degrees_of_freedom_;
+
+  //! Maximum absolute value of a single velocity component
+  Float velocity_cap_;
 };
 
 } // namespace IMP
