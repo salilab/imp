@@ -1,7 +1,8 @@
 import os.path
 Import('env')
 
-files = ['VRMLLogOptimizerState.h', 'CMMLogOptimizerState.h']
+files = ['VRMLLogOptimizerState.h', 'CMMLogOptimizerState.h',
+         'VelocityScalingThermostat.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'optimizers', 'states')

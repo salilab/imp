@@ -1,6 +1,7 @@
 Import('env')
 
-files = ['VRMLLogOptimizerState.cpp', 'CMMLogOptimizerState.cpp']
+files = ['VRMLLogOptimizerState.cpp', 'CMMLogOptimizerState.cpp',
+         'VelocityScalingOptimizerState.cpp']
 
 files = [File(x) for x in files]
 Return('files')
