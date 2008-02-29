@@ -81,8 +81,11 @@ protected:
   //! Time step in fs
   Float time_step_;
 
-  //! Keys of the xyz coordinates and mass
-  FloatKey cs_[3], masskey_;
+  //! Keys of the xyz coordinates
+  FloatKey cs_[3];
+
+  //! Key of the mass attribute
+  FloatKey masskey_;
 
   //! Keys of the xyz velocities
   FloatKey vs_[3];
