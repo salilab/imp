@@ -148,7 +148,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         self.md.assign_velocities(100.0)
         ekinetic = self.md.get_kinetic_energy()
         self.assertNotEqual(ekinetic, 0.0)
-        self._check_temperature(100.0, 10.0)
+        self._check_temperature(100.0, 20.0)
 
     def test_rescaling(self):
         """Test thermostatting by velocity rescaling"""

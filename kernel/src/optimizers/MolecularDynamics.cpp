@@ -54,8 +54,8 @@ void MolecularDynamics::setup_particles()
 
   for (unsigned int i = 0; i < get_model()->number_of_particles(); ++i) {
     Particle *p = get_model()->get_particle(i);
-    if (p->has_attribute(cs_[0]) && p->get_is_optimized(cs_[2])
-        && p->has_attribute(cs_[1]) && p->get_is_optimized(cs_[2])
+    if (p->has_attribute(cs_[0]) && p->get_is_optimized(cs_[0])
+        && p->has_attribute(cs_[1]) && p->get_is_optimized(cs_[1])
         && p->has_attribute(cs_[2]) && p->get_is_optimized(cs_[2])
         && p->has_attribute(masskey_) && !p->get_is_optimized(masskey_)) {
       add_particle(p);
