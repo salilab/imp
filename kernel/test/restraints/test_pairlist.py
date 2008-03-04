@@ -36,7 +36,7 @@ class TestPairList(IMP.test.TestCase):
                 ps.append(IMP.ParticlePair(p, last))
             last= p
         os= IndexDiff()
-        s= IMP.PairListRestraint(ps, os)
+        s= IMP.PairListRestraint(os, ps)
         m.add_restraint(s)
         score= m.evaluate(False)
         print str(score)

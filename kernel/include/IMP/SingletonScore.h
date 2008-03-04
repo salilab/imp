@@ -24,6 +24,9 @@ class Particle;
  */
 
 //! Abstract score function for a single particle.
+/** SingletonScores should take a UnaryFunction as their first
+    argument if such is needed.
+*/
 class IMPDLLEXPORT SingletonScore : public internal::Object
 {
 public:

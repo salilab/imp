@@ -74,9 +74,8 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model* model,
 
       // create the restraint
       UnaryFunction *sf = score_func_params->create_score_func();
-      dist_rsrs_.push_back(new DistanceRestraint(get_particle(i),
-                                                 get_particle(j),
-                                                 sf));
+      dist_rsrs_.push_back(new DistanceRestraint(sf, get_particle(i),
+                                                 get_particle(j)));
     }
   }
 }
@@ -127,9 +126,8 @@ ExclusionVolumeRestraint::ExclusionVolumeRestraint(Model* model,
 
       // create the restraint
       UnaryFunction *sf = score_func_params->create_score_func();
-      dist_rsrs_.push_back(new DistanceRestraint(get_particle(i),
-                                                 get_particle(j),
-                                                 sf));
+      dist_rsrs_.push_back(new DistanceRestraint(sf, get_particle(i),
+                                                 get_particle(j)));
       idx++;
     }
   }

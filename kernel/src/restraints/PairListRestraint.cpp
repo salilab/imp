@@ -15,8 +15,8 @@
 namespace IMP
 {
 
-PairListRestraint::PairListRestraint(const ParticlePairs &ps,
-                                     PairScore *s) : ss_(s)
+PairListRestraint::PairListRestraint(PairScore *s,
+                                     const ParticlePairs &ps) : ss_(s)
 {
   add_particle_pairs(ps);
 }

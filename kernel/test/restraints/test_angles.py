@@ -36,7 +36,7 @@ class AngleRestraintTests(IMP.test.TestCase):
             print str(i)
             l= One()
             self.stupid_hack.append(l)
-            r= IMP.AngleRestraint(ps[i-2],ps[i-1], ps[i], l)
+            r= IMP.AngleRestraint(l, ps[i-2],ps[i-1], ps[i])
             s.add_restraint(r)
             #print r.evaluate(None)
             #print r.thisown

@@ -39,9 +39,8 @@ ProximityRestraint::ProximityRestraint(Model* model,
       // create the restraint
 
       UnaryFunction *sf = score_func_params->create_score_func();
-      dist_rsrs_[idx] = new DistanceRestraint(get_particle(i),
-                                              get_particle(j),
-                                              sf);
+      dist_rsrs_[idx] = new DistanceRestraint(sf, get_particle(i),
+                                              get_particle(j));
       idx++;
     }
   }
@@ -84,9 +83,8 @@ ProximityRestraint::ProximityRestraint(Model* model,
       IMP_LOG(VERBOSE, i << " " << j << " add distance: " << actual_mean);
       score_func_params->set_mean(actual_mean);
       UnaryFunction *sf = score_func_params->create_score_func();
-      dist_rsrs_[idx] = new DistanceRestraint(get_particle(i),
-                                              get_particle(j),
-                                              sf);
+      dist_rsrs_[idx] = new DistanceRestraint(sf, get_particle(i),
+                                              get_particle(j));
       idx++;
     }
   }

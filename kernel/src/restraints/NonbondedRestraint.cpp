@@ -16,8 +16,8 @@
 namespace IMP
 {
 
-NonbondedRestraint::NonbondedRestraint(NonbondedListScoreState *nbl, 
-                                       PairScore *ps,
+NonbondedRestraint::NonbondedRestraint(PairScore *ps,
+                                       NonbondedListScoreState *nbl, 
                                        Float md) : nbl_(nbl), sf_(ps),
                                                    max_dist_(md)
 {

@@ -246,18 +246,18 @@ _unary_func_generators = {
 # Generators to make IMP Restraint objects from Modeller features
 def _DistanceRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.DistanceRestraint(atoms[0], atoms[1],
-                                 unary_func_gen(parameters, modalities))
+    return IMP.DistanceRestraint(unary_func_gen(parameters, modalities),
+                                 atoms[0], atoms[1])
 
 def _AngleRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.AngleRestraint(atoms[0], atoms[1], atoms[2],
-                              unary_func_gen(parameters, modalities))
+    return IMP.AngleRestraint(unary_func_gen(parameters, modalities),
+                              atoms[0], atoms[1], atoms[2])
 
 def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.DihedralRestraint(atoms[0], atoms[1], atoms[2], atoms[3],
-                                 unary_func_gen(parameters, modalities))
+    return IMP.DihedralRestraint(unary_func_gen(parameters, modalities),
+                                 atoms[0], atoms[1], atoms[2], atoms[3])
 
 def _get_protein_atom_particles(protein):
     """Given a protein particle, get the flattened list of all child atoms"""

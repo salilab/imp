@@ -52,9 +52,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         UnaryFunction *sf = score_func_params->create_score_func();
-        rs_iter->rsr_ = new DistanceRestraint(get_particle(i),
-                                              get_particle(j),
-                                              sf);
+        rs_iter->rsr_ = new DistanceRestraint(sf, get_particle(i),
+                                              get_particle(j));
 
         rs_iter->part1_idx_ = i;
         rs_iter->part2_idx_ = j;
@@ -116,9 +115,8 @@ PairConnectivityRestraint::PairConnectivityRestraint(Model* model,
       } else {
         IMP_LOG(VERBOSE, "Adding possible restraint: " << i << " " << j);
         UnaryFunction *sf = score_func_params->create_score_func();
-        rs_iter->rsr_ = new DistanceRestraint(get_particle(i),
-                                              get_particle(j),
-                                              sf);
+        rs_iter->rsr_ = new DistanceRestraint(sf, get_particle(i),
+                                              get_particle(j));
 
         rs_iter->part1_idx_ = i;
         rs_iter->part2_idx_ = j;

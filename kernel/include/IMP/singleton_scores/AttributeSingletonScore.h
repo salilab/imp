@@ -24,7 +24,7 @@ class IMPDLLEXPORT AttributeSingletonScore : public SingletonScore
   internal::ObjectPointer<UnaryFunction, true> f_;
   FloatKey k_;
 public:
-  AttributeSingletonScore(FloatKey k, UnaryFunction *f);
+  AttributeSingletonScore(UnaryFunction *f, FloatKey k);
   virtual ~AttributeSingletonScore(){}
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da);

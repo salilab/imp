@@ -29,10 +29,10 @@ class IMPDLLEXPORT PairListRestraint : public Restraint
 {
 public:
   //! Create the list restraint.
-  /** \param[in] ps The list of particle pairs to use in the restraint.
-      \param[in] ss The function to apply to each particle.
+  /** \param[in] ss The function to apply to each particle.
+      \param[in] ps The list of particle pairs to use in the restraints
    */
-  PairListRestraint(const ParticlePairs &ps, PairScore *ss);
+  PairListRestraint(PairScore *ss, const ParticlePairs &ps=ParticlePairs());
   virtual ~PairListRestraint();
 
   IMP_RESTRAINT(internal::kernel_version_info)

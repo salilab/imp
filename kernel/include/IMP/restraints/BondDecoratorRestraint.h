@@ -36,11 +36,11 @@ class IMPDLLEXPORT BondDecoratorRestraint : public Restraint
 {
 public:
   //! Create the bond restraint.
-  /** \param[in] bl The BondDecoratorListScoreState to use to get the list
+  /** \param[in] f The UnaryFunction to apply to the particles.
+      \param[in] bl The BondDecoratorListScoreState to use to get the list
       of bonds.
-      \param[in] f The UnaryFunction to apply to the particles.
    */
-  BondDecoratorRestraint(BondDecoratorListScoreState *bl, UnaryFunction *f);
+  BondDecoratorRestraint(UnaryFunction *f, BondDecoratorListScoreState *bl);
   virtual ~BondDecoratorRestraint(){}
 
   IMP_RESTRAINT(internal::kernel_version_info)

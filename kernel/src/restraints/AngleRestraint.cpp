@@ -11,8 +11,8 @@
 namespace IMP
 {
 
-AngleRestraint::AngleRestraint(Particle* p1, Particle* p2, Particle* p3,
-                               UnaryFunction* score_func)
+AngleRestraint::AngleRestraint(UnaryFunction* score_func,
+                               Particle* p1, Particle* p2, Particle* p3)
 {
   add_particle(p1);
   add_particle(p2);

@@ -15,8 +15,9 @@
 namespace IMP
 {
 
-SingletonListRestraint::SingletonListRestraint(const Particles &ps,
-                                               SingletonScore *s) : ss_(s)
+SingletonListRestraint::SingletonListRestraint(SingletonScore *s,
+                                               const Particles &ps):
+  ss_(s)
 {
   add_particles(ps);
 }

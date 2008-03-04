@@ -18,18 +18,18 @@ class DihedralRestraintTests(IMP.test.TestCase):
         particles.append(IMP.utils.XYZParticle(model, 0.0, 0.0, 0.0))
         particles.append(IMP.utils.XYZParticle(model, math.cos(system_angle),
                                                math.sin(system_angle), 0.0))
-        r = IMP.DistanceRestraint(particles[0], particles[1],
-                                  IMP.Harmonic(1.0, 0.1))
+        r = IMP.DistanceRestraint(IMP.Harmonic(1.0, 0.1),
+                                  particles[0], particles[1])
         model.add_restraint(r)
-        r = IMP.DistanceRestraint(particles[1], particles[2],
-                                  IMP.Harmonic(1.0, 0.1))
+        r = IMP.DistanceRestraint(IMP.Harmonic(1.0, 0.1),
+                                  particles[1], particles[2])
         model.add_restraint(r)
-        r = IMP.DistanceRestraint(particles[2], particles[3],
-                                  IMP.Harmonic(1.0, 0.1))
+        r = IMP.DistanceRestraint(IMP.Harmonic(1.0, 0.1),
+                                  particles[2], particles[3])
         model.add_restraint(r)
-        rsr = IMP.DihedralRestraint(particles[0], particles[1], particles[2],
-                                    particles[3],
-                                    IMP.Harmonic(scored_angle, 0.1))
+        rsr = IMP.DihedralRestraint(IMP.Harmonic(scored_angle, 0.1),
+                                    particles[0], particles[1], particles[2],
+                                    particles[3])
         model.add_restraint(rsr)
         return model, rsr
 

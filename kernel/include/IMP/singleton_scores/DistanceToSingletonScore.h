@@ -25,7 +25,7 @@ class IMPDLLEXPORT DistanceToSingletonScore : public SingletonScore
   internal::ObjectPointer<UnaryFunction, true> f_;
   Vector3D pt_;
 public:
-  DistanceToSingletonScore(const Vector3D& pt, UnaryFunction *f);
+  DistanceToSingletonScore(UnaryFunction *f, const Vector3D& pt);
   virtual ~DistanceToSingletonScore(){}
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da);
