@@ -41,7 +41,7 @@ class IMPDLLEXPORT XYZDecorator: public DecoratorBase
                 });
 
 protected:
-  static FloatKey key_[3];
+  static FloatKeys key_;
 
 public:
   IMP_DECORATOR_GET_SET(x, key_[0], Float, Float);
@@ -81,6 +81,21 @@ public:
                     b.get_coordinate(1) - get_coordinate(1),
                     b.get_coordinate(2) - get_coordinate(2));
   }
+
+  //! Get a vector containing the keys for x,y,z
+  /** This is quite handy for initializing movers and things.
+   */
+  const FloatKeys get_xyz_keys() const {
+    decorator_initialize_static_data();
+    return key_;
+  }
+
+  //! Generate random coordinates in a sphere centered at the vector
+  void randomize_in_sphere(const Vector3D &center, float radius);
+
+  //! Generate random coordinates in a box defined by the vectors
+  void randomize_in_box(const Vector3D &lower_corner,
+                        const Vector3D &upper_corner);
 protected:
   static FloatKey get_coordinate_key(unsigned int i) {
     IMP_check(i <3, "Out of range coordinate",

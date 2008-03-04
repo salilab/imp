@@ -31,9 +31,8 @@ class TestNBL(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
-            d.set_x(random.uniform(0,10))
-            d.set_y(random.uniform(0,10))
-            d.set_z(random.uniform(0,10))
+            d.randomize_in_box(IMP.Vector3D(0,0,0),
+                               IMP.Vector3D(10,10,10));
         s= IMP.AllNonbondedListScoreState(m.get_particles())
         m.add_score_state(s)
         o= OnePair()
@@ -83,13 +82,11 @@ class TestNBL(IMP.test.TestCase):
             d=IMP.XYZDecorator.create(p)
             ps.append(p)
             if (i < 25):
-                d.set_x(random.uniform(0,10))
-                d.set_y(random.uniform(0,10))
-                d.set_z(random.uniform(0,10))
+                d.randomize_in_box(IMP.Vector3D(0,0,0),
+                                   IMP.Vector3D(10,10,10));
             else:
-                d.set_x(random.uniform(60,70))
-                d.set_y(random.uniform(60,70))
-                d.set_z(random.uniform(60,70))
+                d.randomize_in_box(IMP.Vector3D(60,60,60),
+                                   IMP.Vector3D(70,70,70));
         s= IMP.AllNonbondedListScoreState(ps)
         m.add_score_state(s)
         o= OnePair()
@@ -106,9 +103,8 @@ class TestNBL(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
-            d.set_x(random.uniform(0,10))
-            d.set_y(random.uniform(0,10))
-            d.set_z(random.uniform(0,10))
+            d.randomize_in_box(IMP.Vector3D(0,0,0),
+                               IMP.Vector3D(10,10,10));
             if (i < 5):
                 ps0.append(p)
             else:
@@ -128,9 +124,8 @@ class TestNBL(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
-            d.set_x(random.uniform(0,10))
-            d.set_y(random.uniform(0,10))
-            d.set_z(random.uniform(0,10))
+            d.randomize_in_box(IMP.Vector3D(0,0,0),
+                               IMP.Vector3D(10,10,10));
             p.add_attribute(rk, i, False)
             d.set_coordinates_are_optimized(True)
         s= IMP.AllSphereNonbondedListScoreState(m.get_particles(), rk)
@@ -148,9 +143,8 @@ class TestNBL(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
-            d.set_x(random.uniform(0,10))
-            d.set_y(random.uniform(0,10))
-            d.set_z(random.uniform(0,10))
+            d.randomize_in_box(IMP.Vector3D(0,0,0),
+                               IMP.Vector3D(10,10,10));
             p.add_attribute(rk, random.uniform(0,1000), False)
             d.set_coordinates_are_optimized(True)
         s= IMP.AllSphereNonbondedListScoreState(m.get_particles(), rk)
