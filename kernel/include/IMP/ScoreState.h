@@ -24,6 +24,14 @@ namespace IMP
 class Model;
 
 //! Shared score state.
+/** ScoreStates should be used to generate state that needs to be
+    updated every time Particle attributes change. 
+
+    ScoreStates can change the state of particles and restraints.
+    However, optimizers may not pick up new particles or changes
+    to whether particular attributes are optimized or not.
+
+ */
 class IMPDLLEXPORT ScoreState : public internal::Object
 {
   friend class Model;
@@ -36,6 +44,9 @@ public:
   // Update the state given the current state of the model
   virtual void update() = 0;
 
+  //! Show the ScoreState
+  /** The output of show may take several lines and should end in a newline.
+   */
   virtual void show(std::ostream& out = std::cout) const;
 
   //! \return version and authorship information.

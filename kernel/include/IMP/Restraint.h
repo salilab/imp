@@ -61,6 +61,7 @@ public:
 
   //! Show the current restraint.
   /** \param[in] out Stream to send restraint description to.
+      The output of show may take several lines and should end in a newline.
    */
   virtual void show(std::ostream& out=std::cout) const;
 
