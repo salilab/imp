@@ -85,7 +85,7 @@ public:
   //! Get a vector containing the keys for x,y,z
   /** This is quite handy for initializing movers and things.
    */
-  const FloatKeys get_xyz_keys() const {
+  static const FloatKeys get_xyz_keys() {
     decorator_initialize_static_data();
     return key_;
   }
