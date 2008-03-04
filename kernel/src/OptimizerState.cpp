@@ -13,16 +13,16 @@ namespace IMP
 {
 
 //! Constructor
-OptimizerState::OptimizerState(std::string name) : name_(name)
+OptimizerState::OptimizerState() 
 {
-  IMP_LOG(VERBOSE, "OptimizerState constructed " << name << std::endl);
+  IMP_LOG(VERBOSE, "OptimizerState constructed " << std::endl);
 }
 
 
 //! Destructor
 OptimizerState::~OptimizerState()
 {
-  IMP_LOG(VERBOSE, "OptimizerState deleted " << get_name() << std::endl);
+  IMP_LOG(VERBOSE, "OptimizerState deleted " << std::endl);
 }
 
 

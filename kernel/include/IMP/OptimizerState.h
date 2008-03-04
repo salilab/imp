@@ -22,32 +22,30 @@ namespace IMP
 class Optimizer;
 
 //! Shared optimizer state.
+/** The OptimizerState update method is called each time the Optimizer commits
+    to a new set of coordinates.
+ */
 class IMPDLLEXPORT OptimizerState : public internal::Object
 {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
 
 public:
-  OptimizerState(std::string name=std::string());
+  OptimizerState();
   virtual ~OptimizerState();
 
   // Update the state given the current state of the optimizer
   virtual void update() = 0;
 
+  //! Show the OptimizerState
+  /** Show can print out multiple lines and should end 
+      in a newline.
+  */
   virtual void show(std::ostream& out = std::cout) const;
 
   //! \return version and authorship information.
   virtual VersionInfo get_version_info() const {
     return VersionInfo("unknown", "unknown");
-  }
-
-  //! Get the name of the state
-  const std::string& get_name() const {
-    return name_;
-  }
-  //! Set the name of the state
-  void set_name(const std::string &name) {
-    name_=name;
   }
 
   //! return the stored optimizer
@@ -59,8 +57,6 @@ public:
 protected:
   //! Stored optimizer
   internal::ObjectPointer<Optimizer, false> optimizer_;
-
-  std::string name_;
 };
 
 
