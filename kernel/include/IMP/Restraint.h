@@ -35,6 +35,12 @@ class Model;
  */
 
 //! Abstract class for representing restraints
+/** Restraints should take their score function or UnaryFunction
+    as the first argument. Restraints which act on large numbers of
+    particles should allow the particle list to be skipped in the
+    constructor and should provide methods so that the set of particles
+    can be modified after construction.
+ */
 class IMPDLLEXPORT Restraint : public internal::Object
 {
 public:

@@ -22,6 +22,9 @@ namespace IMP
  */
 
 //! Abstract score function for a pair of particles.
+/** PairScores should take a UnaryFunction as their first
+    argument if such is needed.
+*/
 class IMPDLLEXPORT PairScore : public internal::Object
 {
 public:

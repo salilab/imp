@@ -17,8 +17,8 @@
 namespace IMP
 {
 
-DistanceRestraint::DistanceRestraint(Particle* p1, Particle* p2,
-                                     UnaryFunction* score_func) :
+DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
+                                     Particle* p1, Particle* p2) :
     dp_(score_func)
 {
   add_particle(p1);

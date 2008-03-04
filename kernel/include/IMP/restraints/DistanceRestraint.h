@@ -29,12 +29,12 @@ class IMPDLLEXPORT DistanceRestraint : public Restraint
 {
 public:
   //! Create the distance restraint.
-  /** \param[in] p1 Pointer to first particle in distance restraint.
+  /** \param[in] score_func Scoring function for the restraint.
+      \param[in] p1 Pointer to first particle in distance restraint.
       \param[in] p2 Pointer to second particle in distance restraint.
-      \param[in] score_func Scoring function for the restraint.
    */
-  DistanceRestraint(Particle* p1, Particle* p2,
-                    UnaryFunction* score_func);
+  DistanceRestraint(UnaryFunction* score_func,
+                    Particle* p1, Particle* p2);
   virtual ~DistanceRestraint() {}
 
   IMP_RESTRAINT(internal::kernel_version_info)

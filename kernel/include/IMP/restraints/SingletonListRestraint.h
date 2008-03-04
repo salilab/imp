@@ -28,10 +28,11 @@ class IMPDLLEXPORT SingletonListRestraint : public Restraint
 {
 public:
   //! Create the list restraint.
-  /** \param[in] ps The list of particles to use in the restraint.
-      \param[in] ss The function to apply to each particle.
+  /** \param[in] ss The function to apply to each particle.
+      \param[in] ps The list of particles to use in the restraint.
    */
-  SingletonListRestraint(const Particles &ps, SingletonScore *ss);
+  SingletonListRestraint(SingletonScore *ss,
+                         const Particles &ps=Particles());
 
   IMP_RESTRAINT(internal::kernel_version_info)
 

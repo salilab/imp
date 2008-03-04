@@ -12,9 +12,9 @@
 namespace IMP
 {
 
-AttributeSingletonScore::AttributeSingletonScore(FloatKey k,
-                                                 UnaryFunction *f): f_(f),
-                                                                    k_(k){}
+AttributeSingletonScore::AttributeSingletonScore(UnaryFunction *f,
+                                                 FloatKey k): f_(f),
+                                                              k_(k){}
 
 Float AttributeSingletonScore::evaluate(Particle *b,
                                         DerivativeAccumulator *da)

@@ -66,9 +66,9 @@ Float evaluate_distance_to_singleton_score(const Vector3D &v,
 
 } // namespace internal
 
-DistanceToSingletonScore::DistanceToSingletonScore(const Vector3D &v,
-                                                   UnaryFunction *f): f_(f),
-                                                                      pt_(v){}
+DistanceToSingletonScore::DistanceToSingletonScore(UnaryFunction *f,
+                                                   const Vector3D &v): f_(f),
+                                                                       pt_(v){}
 
 Float DistanceToSingletonScore::evaluate(Particle *b,
                                          DerivativeAccumulator *da)

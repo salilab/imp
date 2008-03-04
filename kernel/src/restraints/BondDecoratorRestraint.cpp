@@ -15,9 +15,10 @@
 namespace IMP
 {
 
-BondDecoratorRestraint::BondDecoratorRestraint(BondDecoratorListScoreState *s,
-                                               UnaryFunction *f): bl_(s),
-                                                                  f_(f){}
+BondDecoratorRestraint
+::BondDecoratorRestraint(UnaryFunction *f,
+                         BondDecoratorListScoreState *s): bl_(s),
+                                                          f_(f){}
 
 Float BondDecoratorRestraint::evaluate(DerivativeAccumulator *accum)
 {

@@ -33,28 +33,28 @@ namespace IMP {
         args[1].thisown=0
   %}
   %pythonprepend DistanceRestraint::DistanceRestraint %{
-        args[2].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend AngleRestraint::AngleRestraint %{
-        args[3].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend DihedralRestraint::DihedralRestraint %{
-        args[4].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend TorusRestraint::TorusRestraint %{
         args[3].thisown=0
   %}
   %pythonprepend NonbondedRestraint::NonbondedRestraint %{
-        args[1].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend BondDecoratorRestraint::BondDecoratorRestraint %{
-        args[1].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend SingletonListRestraint::SingletonListRestraint %{
-        args[1].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend PairListRestraint::PairListRestraint %{
-        args[1].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend TripletChainRestraint::TripletChainRestraint %{
         args[0].thisown=0
@@ -63,16 +63,16 @@ namespace IMP {
         args[0].thisown=0
   %}
   %pythonprepend DistancePairScore::DistancePairScore %{
-        args[1].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend SphereDistancePairScore::SphereDistancePairScore %{
         args[0].thisown=0
   %}
   %pythonprepend DistanceToSingletonScore::DistanceToSingletonScore %{
-        args[1].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend AttributeSingletonScore::AttributeSingletonScore %{
-        args[1].thisown=0
+        args[0].thisown=0
   %}
   %pythonprepend AngleTripletScore::AngleTripletScore %{
         args[0].thisown=0

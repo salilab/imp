@@ -23,6 +23,9 @@ namespace IMP
  */
 
 //! Abstract score function for a triplet of particles.
+/** TripletScores should take a UnaryFunction as their first
+    argument if such is needed.
+*/
 class IMPDLLEXPORT TripletScore : public internal::Object
 {
 public:
