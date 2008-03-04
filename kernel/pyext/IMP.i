@@ -71,6 +71,9 @@ namespace IMP {
   %pythonprepend DistanceToSingletonScore::DistanceToSingletonScore %{
         args[1].thisown=0
   %}
+  %pythonprepend AttributeSingletonScore::AttributeSingletonScore %{
+        args[1].thisown=0
+  %}
   %pythonprepend AngleTripletScore::AngleTripletScore %{
         args[0].thisown=0
   %}
@@ -138,6 +141,7 @@ namespace IMP {
 %include "IMP/pair_scores/DistancePairScore.h"
 %include "IMP/pair_scores/SphereDistancePairScore.h"
 %include "IMP/singleton_scores/DistanceToSingletonScore.h"
+%include "IMP/singleton_scores/AttributeSingletonScore.h"
 %include "IMP/triplet_scores/AngleTripletScore.h"
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/AngleRestraint.h"
