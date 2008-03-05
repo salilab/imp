@@ -151,6 +151,12 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         ekinetic = self.md.get_kinetic_energy()
         self.assertNotEqual(ekinetic, 0.0)
         self._check_temperature(100.0, 20.0)
+        # Make sure that the random number generator is working properly;
+        # we should get different values each time we assign velocities
+        # (NOT the case with r452 or earlier):
+        self.md.assign_velocities(100.0)
+        ekinetic2 = self.md.get_kinetic_energy()
+        self.assertNotEqual(ekinetic, ekinetic2)
 
     def test_rescaling(self):
         """Test thermostatting by velocity rescaling"""

@@ -157,7 +157,6 @@ void MolecularDynamics::assign_velocities(Float temperature)
 
   setup_particles();
   Float mean = 0.0;
-  boost::uniform_01<RandomNumberGenerator> u01(random_number_generator);
 
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
@@ -165,9 +164,12 @@ void MolecularDynamics::assign_velocities(Float temperature)
     Float mass = p->get_value(masskey_);
     Float stddev = std::sqrt(gas_constant * temperature / mass);
     boost::normal_distribution<Float> mrng(mean, stddev);
+    boost::variate_generator<RandomNumberGenerator&,
+                             boost::normal_distribution<Float> >
+        sampler(random_number_generator, mrng);
 
     for (int i = 0; i < 3; ++i) {
-      p->set_value(vs_[i], mrng(u01));
+      p->set_value(vs_[i], sampler());
     }
   }
 }
