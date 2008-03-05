@@ -129,13 +129,15 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         ekinetic = self.md.get_kinetic_energy()
         tkinetic = self.md.get_kinetic_temperature(ekinetic)
         diff = abs(tkinetic - desired)
-        self.assert_(diff < tolerance)
+        self.assert_(diff < tolerance,
+                     "Temperature %f does not match expected %f within %f" \
+                     % (tkinetic, desired, tolerance))
 
     def test_temperature(self):
         """Check temperature"""
         # Averages for temperature only make sense if we have a comparatively
         # large number of particles:
-        for i in range(100):
+        for i in range(500):
             self.particles.append(IMP.utils.XYZParticle(self.model,
                                                         -43.0, 65.0, 93.0))
             self.particles[-1].add_attribute(masskey, cmass, False)
