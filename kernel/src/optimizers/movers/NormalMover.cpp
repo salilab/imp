@@ -26,13 +26,15 @@ NormalMover::NormalMover(const Particles &pis,
 
 void NormalMover::generate_move(float scale)
 {
-  std::vector<Float> center(number_of_float_keys());
-  boost::uniform_01<RandomNumberGenerator> u01(random_number_generator);
   boost::normal_distribution<double> mrng(0, stddev_);
+  boost::variate_generator<RandomNumberGenerator&,
+                           boost::normal_distribution<double> >
+                          sampler(random_number_generator, mrng);
+
   for (unsigned int i = 0; i < number_of_particles(); ++i) {
     for (unsigned int j = 0; j < number_of_float_keys(); ++j) {
       float c = get_float(i, j);
-      float r = mrng(u01);
+      float r = sampler();
       // Check for NaN (x!=x when x==NaN) (can only use std::isnan with C99)
       IMP_assert(r == r, "Bad random");
       IMP_assert(c == c, "Bad stored");
