@@ -6,11 +6,12 @@
  */
 
 #include "IMP/random.h"
-#include <cstdlib>
+#include <ctime>
 
 namespace IMP
 {
 
-::boost::rand48 random_number_generator(static_cast<int>(std::time(NULL)));  
+::boost::rand48 random_number_generator(
+                       static_cast<boost::uint64_t>(std::time(NULL)));  
 
 } // namespace IMP
