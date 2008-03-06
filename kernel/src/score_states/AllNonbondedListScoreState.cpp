@@ -41,6 +41,30 @@ void AllNonbondedListScoreState::rebuild_nbl(float cut)
   IMP_LOG(VERBOSE, "Found " << NonbondedListScoreState::size_nbl()
           << " nonbonded pairs" 
           << std::endl);
+
+#ifndef NDEBUG
+  Particles ps= grid_.get_particles();
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    XYZDecorator di= XYZDecorator::cast(ps[i]);
+    for (unsigned int j=0; j< i; ++j) {
+      XYZDecorator dj= XYZDecorator::cast(ps[j]);
+      if (distance(di, dj) <= cut && !are_bonded(ps[i], ps[j]) ) {
+        bool found=false;
+        for (NonbondedIterator nit= nbl_.begin();
+             nit != nbl_.end(); ++nit) {
+          if (nit->first == ps[i] && nit->second == ps[j]
+              || nit->first == ps[j] && nit->second == ps[i]) {
+            IMP_assert(!found, "Entry is in list twice");
+            found=true;
+          }
+        }
+        IMP_assert(found, "Nonbonded list is missing " 
+                   << ps[i]->get_index() << " " << di 
+                   << " and " << ps[j]->get_index() << " " << dj << std::endl);
+      }
+    }
+  }
+#endif
 }
 
 void AllNonbondedListScoreState::set_particles(const Particles &ps)
@@ -56,6 +80,7 @@ void AllNonbondedListScoreState::update()
   if (grid_.update()) {
     NonbondedListScoreState::clear_nbl();
   }
+  IMP_LOG(VERBOSE, grid_);
 }
 
 void AllNonbondedListScoreState::show(std::ostream &out) const

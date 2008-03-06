@@ -108,6 +108,20 @@ void ParticleGrid::audit_particles(const Particles &ps) const
   }
 }
 
+
+void ParticleGrid::show(std::ostream &out) const
+{
+  for (Grid::IndexIterator it= grid_.all_indexes_begin();
+       it != grid_.all_indexes_end(); ++it) {
+    out << *it << ": ";
+    //Grid::Index 
+    for (unsigned int i=0; i< grid_.get_voxel(*it).size(); ++i) {
+      out << grid_.get_voxel(*it)[i]->get_index() << " ";
+    }
+    out << std::endl;
+  }
+}
+
 } // namespace internal
 
 } // namespace IMP

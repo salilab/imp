@@ -42,6 +42,8 @@ public:
   const Particles& get_particles() const {return mc_->get_particles();}
   bool update();
 
+  void show(std::ostream &out) const;
+
   typedef Grid::VirtualIndex VirtualIndex;
   typedef Grid::Index Index;
   Grid::VirtualIndex get_virtual_index(Vector3D pt) const {
@@ -148,6 +150,8 @@ public:
       if (curp_== grid_->get_voxel(*cvoxel_).end()) {
         ++cvoxel_;
         find_voxel();
+      } else {
+        temp_= std::make_pair(*curp_, *cvoxel_);
       }
     }
 
@@ -177,6 +181,8 @@ public:
                                  &grid_);
   }
 };
+
+IMP_OUTPUT_OPERATOR(ParticleGrid);
 
 } // namespace internal
 
