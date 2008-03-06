@@ -13,6 +13,8 @@
 namespace IMP
 {
 
+static unsigned int min_grid_size=20;
+
 AllSphereNonbondedListScoreState
 ::AllSphereNonbondedListScoreState(const Particles &ps, FloatKey radius):
   rk_(radius)
@@ -59,29 +61,40 @@ void AllSphereNonbondedListScoreState::repartition_points(const Particles &ps,
     if ( r > maxr) maxr=r;
     if ( r > 0 && r < minr) minr=r;
   }
-  float curr=minr;
+  float curr=minr*2;
   Floats cuts;
   do {
     cuts.push_back(curr);
     curr *= 2;
   } while (curr < maxr);
-  cuts.push_back(maxr);
+  cuts.push_back(2*maxr);
 
   std::vector<Particles> ops(cuts.size());
   for (unsigned int i=0; i< ps.size(); ++i) {
     float r= ps[i]->get_value(rk_);
     for (unsigned int j=0; ; ++j) {
-      if (cuts[j] >= r) {
+      IMP_assert(j< cuts.size(), "Internal error in ASNBLSS");
+      if (cuts[j] > r) {
         ops[j].push_back(ps[i]);
         break;
       }
     }
   }
-
+  // consolidate
+  for (unsigned int i=1; i< ops.size(); ++i) {
+    if (ops[i-1].size() + ops[i].size() < min_grid_size) {
+      ops[i].insert(ops[i].end(), ops[i-1].begin(), ops[i-1].end());
+      ops[i-1].clear();
+    }
+  }
   for (unsigned int i=0; i< cuts.size(); ++i) {
     if (ops[i].empty()) continue;
     out.push_back(Bin());
-    out.back().rmax= cuts[i];
+    float rmax=0;
+    for (unsigned int j=0; j< ops[i].size(); ++j) {
+      rmax= std::max(rmax, ops[i][j]->get_value(rk_));
+    }
+    out.back().rmax= rmax;
     internal::ParticleGrid *pg 
       = new internal::ParticleGrid(side_from_r(out.back().rmax));
     out.back().grid= pg;
@@ -90,7 +103,7 @@ void AllSphereNonbondedListScoreState::repartition_points(const Particles &ps,
   IMP_LOG(VERBOSE, "Created " << out.size() << " grids" << std::endl);
   for (unsigned int i=0; i< out.size(); ++i) {
     IMP_LOG(VERBOSE, out[i].rmax
-            << ": " << out[i].grid->get_particles().size() << std::endl);
+            << ": " << *out[i].grid << std::endl);
   }
 
 #ifndef NDEBUG
@@ -121,6 +134,7 @@ void AllSphereNonbondedListScoreState::update()
   bool bad=false;
   for (unsigned int i=0; i< bins_.size(); ++i) {
     if (bins_[i].grid->update()) bad=true;
+    IMP_LOG(VERBOSE, bins_[i].rmax << std::endl << *bins_[i].grid << std::endl);
   }
   if (bad) {
     IMP_LOG(VERBOSE, "Destroying nbl in Sphere list"<< std::endl);
@@ -186,6 +200,37 @@ void AllSphereNonbondedListScoreState::rebuild_nbl(Float cut)
       last_index=it->second;
     }
   }
+
+#ifndef NDEBUG
+  Particles ps;
+  for (unsigned int i=0; i< bins_.size(); ++i) {
+    if (bins_[i].grid) {
+      ps.insert(ps.end(), bins_[i].grid->get_particles().begin(),
+                bins_[i].grid->get_particles().end());
+    }
+  }
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    XYZDecorator di= XYZDecorator::cast(ps[i]);
+    for (unsigned int j=0; j< i; ++j) {
+      XYZDecorator dj= XYZDecorator::cast(ps[j]);
+      if (distance(di, dj) - ps[i]->get_value(rk_) - ps[j]->get_value(rk_)
+          <= cut && !are_bonded(ps[i], ps[j])) {
+        bool found=false;
+        for (NonbondedIterator nit= nbl_.begin();
+             nit != nbl_.end(); ++nit) {
+          if (nit->first == ps[i] && nit->second == ps[j]
+              || nit->first == ps[j] && nit->second == ps[i]) {
+            IMP_assert(!found, "Entry is in list twice");
+            found=true;
+          }
+        }
+        IMP_assert(found, "Nonbonded list is missing " 
+                   << ps[i]->get_index() << " " << di 
+                   << " and " << ps[j]->get_index() << " " << dj << std::endl);
+      }
+    }
+  }
+#endif
 }
 
 

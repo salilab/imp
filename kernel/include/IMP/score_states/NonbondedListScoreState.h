@@ -27,10 +27,12 @@ typedef std::vector<BondedListScoreState*> BondedListScoreStates;
 class IMPDLLEXPORT NonbondedListScoreState: public ScoreState
 {
 private:
+protected:
+  // made protected for debugging code, do not use otherwise
   typedef std::vector<std::pair<Particle*, Particle*> > NBL;
   NBL nbl_;
   float last_cutoff_;
-protected:
+
 
   unsigned int size_nbl() const {return nbl_.size();}
 
@@ -60,20 +62,23 @@ protected:
     }
   };
 
+  bool are_bonded(Particle *a, Particle *b) const {
+    for (BondedListConstIterator bli= bonded_lists_begin();
+         bli != bonded_lists_end(); ++bli) {
+      if ((*bli)->are_bonded(a, b)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   //! tell the bonded lists what particles to pay attention to
   void propagate_particles(const Particles &ps);
 
   void add_to_nbl(Particle *a, Particle *b) {
     if (!a->get_is_active() || !b->get_is_active()) return;
-    bool found=false;
-    for (BondedListIterator bli= bonded_lists_begin();
-         bli != bonded_lists_end(); ++bli) {
-      if ((*bli)->are_bonded(a, b)) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
+
+    if (!are_bonded(a,b)) {
       IMP_LOG(VERBOSE, "Found pair " << a->get_index() 
         << " " << b->get_index() << std::endl);
       nbl_.push_back(std::make_pair(a, b));
@@ -90,6 +95,7 @@ public:
   // kind of evil hack to make the names better
   // perhaps the macro should be made more flexible
   typedef BondedListScoreStateIterator BondedListIterator;
+  typedef BondedListScoreStateConstIterator BondedListConstIterator;
 
   IMP_SCORE_STATE(internal::kernel_version_info)
 
