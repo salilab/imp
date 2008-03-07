@@ -13,9 +13,9 @@ class Vector3DTests(IMP.test.TestCase):
     def test_component(self):
         """Check Vector3D components"""
         v = IMP.Vector3D(1.0, 2.0, 3.0)
-        self.assertEqual(v.get_component(0), 1.0)
-        self.assertEqual(v.get_component(1), 2.0)
-        self.assertEqual(v.get_component(2), 3.0)
+        self.assertEqual(v[0], 1.0)
+        self.assertEqual(v[1], 2.0)
+        self.assertEqual(v[2], 3.0)
 
     def test_scalar_product(self):
         """Check Vector3D scalar product"""
@@ -32,8 +32,8 @@ class Vector3DTests(IMP.test.TestCase):
         v21 = v2.vector_product(v1)
         expected_v12 = (1.0, 28.0, -19.0)
         for i in range(3):
-            self.assertEqual(v12.get_component(i), -v21.get_component(i))
-            self.assertEqual(v12.get_component(i), expected_v12[i])
+            self.assertEqual(v12[i], -v21[i])
+            self.assertEqual(v12[i], expected_v12[i])
 
     def test_difference(self):
         """Check Vector3D difference"""
@@ -42,7 +42,7 @@ class Vector3DTests(IMP.test.TestCase):
         diff = v1.difference(v2)
         expected_diff = (-9.0, 1.0, 1.0)
         for i in range(3):
-            self.assertEqual(diff.get_component(i), expected_diff[i])
+            self.assertEqual(diff[i], expected_diff[i])
 
 if __name__ == '__main__':
     unittest.main()

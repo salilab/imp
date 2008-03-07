@@ -88,8 +88,8 @@ namespace IMP {
 /* Don't wrap internal functions */
 %ignore IMP::internal::evaluate_distance_pair_score;
 
-/* Don't try to wrap things that we can't wrap */
-%ignore IMP::Vector3D::operator[];
+/* Map C++ operators to equivalent Python methods */
+%rename(__getitem__) IMP::Vector3D::operator[];
 
 %feature("director");
 
