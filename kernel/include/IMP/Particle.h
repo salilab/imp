@@ -336,6 +336,7 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
+  IMP_assert(value==value, "Can't add NaN to derivative");
   float_indexes_.get_value(name).derivative+= da(value);
 }
 
