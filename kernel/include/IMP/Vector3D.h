@@ -39,8 +39,6 @@ public:
   }
 
   //! \return A single component of this vector (0-2).
-  /** This is more usual notation for C++. Not useful for Python.
-   */
   Float operator[](unsigned int i) const {
     return get_component(i);
   }
@@ -85,15 +83,11 @@ public:
     return Vector3D(vec_[0] / mag, vec_[1] / mag, vec_[2] / mag);
   }
 
-  //! for C++
+  //! \return Difference between two vectors.
   Vector3D operator-(const Vector3D &o) const {
     return Vector3D(operator[](0)-o[0],
                     operator[](1)-o[1],
                     operator[](2)-o[2]);
-  }
-  //! for python
-  Vector3D difference(const Vector3D &o) const {
-    return operator-(o);
   }
 private:
   Float vec_[3];
