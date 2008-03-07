@@ -28,6 +28,10 @@ rev=$(svn log -q --limit 1 ${IMPSVNDIR} |grep '^r' | cut -f 1 -d' ')
 # Get IMP code from SVN
 svn export -q -${rev} ${IMPSVNDIR} imp
 
+# Put version number, date and revision into relevant files
+DATE=`date +'%Y/%m/%d'`
+(cd imp/kernel/doc/internal && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}, ${DATE}, ${rev}#" < doxygen.conf > .dox && mv .dox doxygen.conf)
+
 # Write out a version file
 verfile="${MODINSTALL}/build/imp-version"
 echo "${rev}" > $verfile
