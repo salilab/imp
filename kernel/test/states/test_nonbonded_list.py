@@ -119,6 +119,8 @@ class TestNBL(IMP.test.TestCase):
         self.assertEqual(score, 25, "Wrong score")
     def test_spheres2(self):
         """Test the nonbonded list of spheres (num pairs)"""
+        # This uses the internal checks of the nonbonded list to
+        # verify correctness
         m= IMP.Model()
         rk= IMP.FloatKey("radius")
         for i in range(0,100):
