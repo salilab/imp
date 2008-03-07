@@ -58,7 +58,7 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
   Vector3D v1 = rij.vector_product(rkj);
   Vector3D v2 = rkj.vector_product(rkl);
   Float scalar_product = v1.scalar_product(v2);
-  Float mag_product = v1.magnitude() * v2.magnitude();
+  Float mag_product = v1.get_magnitude() * v2.get_magnitude();
 
   // avoid division by zero
   Float cosangle = std::abs(mag_product) > 1e-12
@@ -86,9 +86,9 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
     // J. Mol. Biol. 234, 751-762 (1993)
     Vector3D vijkj = rij.vector_product(rkj);
     Vector3D vkjkl = rkj.vector_product(rkl);
-    Float sijkj2 = vijkj.squared_magnitude();
-    Float skjkl2 = vkjkl.squared_magnitude();
-    Float skj = rkj.magnitude();
+    Float sijkj2 = vijkj.get_squared_magnitude();
+    Float skjkl2 = vkjkl.get_squared_magnitude();
+    Float skj = rkj.get_magnitude();
     Float rijkj = rij.scalar_product(rkj);
     Float rkjkl = rkj.scalar_product(rkl);
 

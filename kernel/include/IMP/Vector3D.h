@@ -53,6 +53,11 @@ public:
            + vec_[2] * vec2.vec_[2];
   }
 
+  //! scalar product
+  Float operator*(const Vector3D &o) const {
+    return scalar_product(o);
+  }
+
   //! \return the vector product of two vectors.
   /** \param[in] vec2 The other vector to use in the product.
    */
@@ -63,23 +68,33 @@ public:
   }
 
   //! \return The square of the magnitude of this vector.
-  Float squared_magnitude() const {
+  Float get_squared_magnitude() const {
     return vec_[0] * vec_[0] + vec_[1] * vec_[1] + vec_[2] * vec_[2];
   }
 
   //! \return The magnitude of this vector.
-  Float magnitude() const {
-    return std::sqrt(squared_magnitude());
+  Float get_magnitude() const {
+    return std::sqrt(get_squared_magnitude());
   }
 
   //! \return This vector normalized to unit length.
   Vector3D get_unit_vector() const {
-    Float mag = magnitude();
+    Float mag = get_magnitude();
     // avoid division by zero
     mag = std::max(mag, static_cast<Float>(1e-12));
     return Vector3D(vec_[0] / mag, vec_[1] / mag, vec_[2] / mag);
   }
 
+  //! for C++
+  Vector3D operator-(const Vector3D &o) const {
+    return Vector3D(operator[](0)-o[0],
+                    operator[](1)-o[1],
+                    operator[](2)-o[2]);
+  }
+  //! for python
+  Vector3D difference(const Vector3D &o) const {
+    return operator-(o);
+  }
 private:
   Float vec_[3];
 };

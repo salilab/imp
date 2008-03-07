@@ -82,6 +82,13 @@ public:
                     b.get_coordinate(2) - get_coordinate(2));
   }
 
+  //! Convert it to a vector.
+  /** Somewhat suspect based on wanting a Point/Vector differentiation
+      but we don't have points */
+  Vector3D get_vector() const {
+    return Vector3D(get_x(), get_y(), get_z());
+  }
+
   //! Get a vector containing the keys for x,y,z
   /** This is quite handy for initializing movers and things.
    */
