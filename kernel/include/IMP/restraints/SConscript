@@ -1,10 +1,9 @@
 import os.path
 Import('env')
 
-files = ['ConnectivityRestraint.h', 'ProximityRestraint.h',
+files = ['ConnectivityRestraint.h',
          'DistanceRestraint.h', 'AngleRestraint.h',
-         'DihedralRestraint.h', 'RestraintSet.h', 'ExclusionVolumeRestraint.h',
-         'TorusRestraint.h', 'PairConnectivityRestraint.h',
+         'DihedralRestraint.h', 'RestraintSet.h',
          'NonbondedRestraint.h', 'BondDecoratorRestraint.h',
          'SingletonListRestraint.h', 'PairListRestraint.h',
          'TripletChainRestraint.h']
