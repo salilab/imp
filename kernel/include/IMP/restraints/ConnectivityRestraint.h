@@ -15,7 +15,6 @@
 
 #include "../IMP_config.h"
 #include "../Restraint.h"
-#include "../ScoreFuncParams.h"
 #include "../internal/kernel_version_info.h"
 #include "DistanceRestraint.h"
 
