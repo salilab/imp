@@ -19,6 +19,7 @@ Help(opts.GenerateHelpText(env))
 Help("""
 Type: 'scons' to build the IMP kernel;
       'scons test' to run the kernel unit tests;
+      'scons examples' to run the kernel examples;
       'scons install' to install the kernel.
 """)
 
