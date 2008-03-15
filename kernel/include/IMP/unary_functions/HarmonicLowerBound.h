@@ -18,7 +18,7 @@ namespace IMP
 class IMPDLLEXPORT HarmonicLowerBound : public Harmonic
 {
 public:
-  HarmonicLowerBound(Float mean, Float sd) : Harmonic(mean, sd) {}
+  HarmonicLowerBound(Float mean, Float k) : Harmonic(mean, k) {}
   virtual ~HarmonicLowerBound() {}
 
   //! Calculate lower-bound harmonic score with respect to the given feature.
@@ -26,7 +26,13 @@ public:
       \param[in] feature Value of feature being tested.
       \return Score
   */
-  virtual Float operator()(Float feature);
+  virtual Float operator()(Float feature) {
+    if (feature >= Harmonic::get_mean()) {
+      return 0.0;
+    } else {
+      return Harmonic::operator()(feature);
+    }
+  }
 
   //! Calculate lower-bound harmonic score and derivative for a feature.
   /** If the feature is greater than or equal to the mean, the score is zero.
@@ -35,10 +41,18 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float operator()(Float feature, Float& deriv);
+  virtual Float operator()(Float feature, Float& deriv) {
+    if (feature >= Harmonic::get_mean()) {
+      deriv = 0.0;
+      return 0.0;
+    } else {
+      return Harmonic::operator()(feature, deriv);
+    }
+  }
 
   void show(std::ostream &out=std::cout) const {
-    out << "HarmonicLB: " << mean_ << " and " << sd_ << std::endl;
+    out << "HarmonicLB: " << Harmonic::get_mean() 
+        << " and " << Harmonic::get_k() << std::endl;
   }
 };
 

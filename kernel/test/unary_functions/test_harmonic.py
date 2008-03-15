@@ -9,11 +9,11 @@ class HarmonicTests(IMP.test.TestCase):
         """Test Harmonic accessors"""
         func = IMP.Harmonic(10.0, 1.0)
         self.assertEqual(func.get_mean(), 10.0)
-        self.assertEqual(func.get_sd(), 1.0)
+        self.assertEqual(func.get_k(), 1.0)
         func.set_mean(5.0)
-        func.set_sd(2.0)
+        func.set_k(2.0)
         self.assertEqual(func.get_mean(), 5.0)
-        self.assertEqual(func.get_sd(), 2.0)
+        self.assertEqual(func.get_k(), 2.0)
 
     def test_show(self):
         """Check Harmonic::show() method"""
