@@ -23,7 +23,7 @@ namespace IMP
     from the mean.
     \ingroup unaryf
  */
-class IMPDLLEXPORT Harmonic : public UnaryFunction
+class Harmonic : public UnaryFunction
 {
 public:
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
