@@ -15,7 +15,7 @@ namespace IMP
 //! Lower bound harmonic function (non-zero when feature < mean)
 /** \ingroup unaryf
  */
-class IMPDLLEXPORT HarmonicLowerBound : public Harmonic
+class HarmonicLowerBound : public Harmonic
 {
 public:
   HarmonicLowerBound(Float mean, Float k) : Harmonic(mean, k) {}
