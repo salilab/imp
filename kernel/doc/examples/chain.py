@@ -43,11 +43,11 @@ bli= nbl.add_bonded_list(bl)
 # Set up excluded volume
 ps= IMP.SphereDistancePairScore(IMP.HarmonicLowerBound(0,1),
                                 rk)
-evr= IMP.NonbondedRestraint(nbl, ps, 1)
+evr= IMP.NonbondedRestraint(ps, nbl, 1)
 evri= m.add_restraint(evr)
 
 # Restraint for bonds
-br= IMP.BondDecoratorRestraint(bl, IMP.Harmonic(0,1))
+br= IMP.BondDecoratorRestraint(IMP.Harmonic(0,1), bl)
 bri= m.add_restraint(br)
 
 # Just for fun to make the chain straight (angles in radians)
@@ -61,9 +61,8 @@ ari= m.add_restraint(ar)
 p= IMP.ParticlePair(chain[0], chain[-1])
 pps= IMP.ParticlePairs()
 pps.append(p)
-cr= IMP.PairListRestraint(pps,
-                          IMP.SphereDistancePairScore(IMP.Harmonic(3,1),
-                                                      rk))
+cr= IMP.PairListRestraint(IMP.SphereDistancePairScore(IMP.Harmonic(3,1), rk),
+                          pps)
 cri=m.add_restraint(cr)
 
 # Set up optimizer
