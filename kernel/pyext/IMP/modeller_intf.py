@@ -204,15 +204,18 @@ def show_modeller_and_imp(atoms, particles):
 # Generators to create IMP UnaryFunction objects from Modeller parameters:
 def _HarmonicLowerBoundGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    return IMP.HarmonicLowerBound(mean, stdev)
+    k = IMP.Harmonic.k_from_standard_deviation(stdev)
+    return IMP.HarmonicLowerBound(mean, k)
 
 def _HarmonicUpperBoundGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    return IMP.HarmonicUpperBound(mean, stdev)
+    k = IMP.Harmonic.k_from_standard_deviation(stdev)
+    return IMP.HarmonicUpperBound(mean, k)
 
 def _HarmonicGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    return IMP.Harmonic(mean, stdev)
+    k = IMP.Harmonic.k_from_standard_deviation(stdev)
+    return IMP.Harmonic(mean, k)
 
 def _CosineGenerator(parameters, modalities):
     (phase, force_constant) = parameters

@@ -26,7 +26,13 @@ public:
       \param[in] feature Value of feature being tested.
       \return Score
    */
-  virtual Float operator()(Float feature);
+  virtual Float operator()(Float feature) {
+    if (feature <= Harmonic::get_mean()) {
+      return 0.0;
+    } else {
+      return Harmonic::operator()(feature);
+    }
+  }
 
   //! Calculate upper-bound harmonic score and derivative for a feature.
   /** If the feature is less than or equal to the mean, the score is zero.
@@ -35,10 +41,18 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float operator()(Float feature, Float& deriv);
+  virtual Float operator()(Float feature, Float& deriv) {
+    if (feature <= Harmonic::get_mean()) {
+      deriv = 0.0;
+      return 0.0;
+    } else {
+      return Harmonic::operator()(feature, deriv);
+    }
+  }
 
   void show(std::ostream &out=std::cout) const {
-    out << "HarmonicLUB: " << mean_ << " and " << sd_ << std::endl;
+    out << "HarmonicUB: " << Harmonic::get_mean() 
+        << " and " << Harmonic::get_k() << std::endl;
   }
 };
 
