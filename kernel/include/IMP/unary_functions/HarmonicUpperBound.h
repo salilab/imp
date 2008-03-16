@@ -18,7 +18,7 @@ namespace IMP
 class HarmonicUpperBound : public Harmonic
 {
 public:
-  HarmonicUpperBound(Float mean, Float sd) : Harmonic(mean, sd) {}
+  HarmonicUpperBound(Float mean, Float k) : Harmonic(mean, k) {}
   virtual ~HarmonicUpperBound() {}
 
   //! Calculate upper-bound harmonic score with respect to the given feature.
