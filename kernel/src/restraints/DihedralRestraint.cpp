@@ -80,7 +80,7 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 
   if (accum) {
     Float deriv;
-    score = (*score_func_)(angle, deriv);
+    score = score_func_->evaluate_deriv(angle, deriv);
 
     // method for derivative calculation from van Schaik et al.
     // J. Mol. Biol. 234, 751-762 (1993)
@@ -109,7 +109,7 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
       d3.add_to_coordinate_derivative(i, derv3, *accum);
     }
   } else {
-    score = (*score_func_)(angle);
+    score = score_func_->evaluate(angle);
   }
   return score;
 }

@@ -54,9 +54,9 @@ public:
   /** \param[in] feature Value of feature being tested.
       \return Score
    */
-  virtual Float operator()(Float feature) {
+  virtual Float evaluate(Float feature) {
     Float d;
-    return operator()(feature, d);
+    return evaluate_deriv(feature, d);
   }
 
   //! Calculate harmonic score and derivative with respect to the given feature.
@@ -65,7 +65,7 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float operator()(Float feature, Float& deriv) {
+  virtual Float evaluate_deriv(Float feature, Float& deriv) {
     Float e = (feature - mean_);
     deriv = k_ * e;
     return 0.5 * k_ * e * e;

@@ -7,8 +7,10 @@ import math
 class One(IMP.UnaryFunction):
     def __init__(self):
         IMP.UnaryFunction.__init__(self)
-    def __call__(self, *args):
-        return 1
+    def evaluate(self, val):
+        return 1.0
+    def evaluate_deriv(self, val):
+        return 1.0, 0.0
     def show(self, *args):
         print "identity"
 

@@ -23,11 +23,11 @@ public:
 
   virtual ~Linear() {}
 
-  virtual Float operator()(Float feature) { return feature*slope_;}
+  virtual Float evaluate(Float feature) { return feature*slope_; }
 
-  virtual Float operator()(Float feature, Float& deriv) {
+  virtual Float evaluate_deriv(Float feature, Float& deriv) {
     deriv= slope_;
-    return operator()(feature);
+    return evaluate(feature);
   }
 
   void show(std::ostream &out=std::cout) const {

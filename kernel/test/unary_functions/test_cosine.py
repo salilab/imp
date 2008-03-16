@@ -21,9 +21,13 @@ class CosineTests(IMP.test.TestCase):
                     func = IMP.Cosine(force_constant, periodicity, phase)
                     for i in range(15):
                         val = -math.pi + math.pi * 15.0 / (i + 1.0)
-                        diff = func(val) - _cosfunc(val, force_constant,
-                                                    periodicity, phase)[0]
-                        self.assert_(abs(diff) < 0.1)
+                        expscore, expderiv = _cosfunc(val, force_constant,
+                                                      periodicity, phase)
+                        score, deriv = func.evaluate_deriv(val)
+                        scoreonly = func.evaluate(val)
+                        self.assertEqual(score, scoreonly)
+                        self.assert_(abs(expscore - score) < 0.1)
+                        self.assert_(abs(expderiv - deriv) < 0.1)
 
     def test_show(self):
         """Check Cosine::show() method"""

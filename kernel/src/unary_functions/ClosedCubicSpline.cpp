@@ -55,7 +55,7 @@ ClosedCubicSpline::ClosedCubicSpline(const std::vector<Float> &values,
 }
 
 
-Float ClosedCubicSpline::operator()(Float feature)
+Float ClosedCubicSpline::evaluate(Float feature)
 {
   // check for feature in range
   if (feature < minrange_ || feature > maxrange_) {
@@ -82,7 +82,7 @@ Float ClosedCubicSpline::operator()(Float feature)
            * (spacing_ * spacing_) / 6.;
 }
 
-Float ClosedCubicSpline::operator()(Float feature, Float& deriv)
+Float ClosedCubicSpline::evaluate_deriv(Float feature, Float& deriv)
 {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   size_t highbin = lowbin + 1;
@@ -102,7 +102,7 @@ Float ClosedCubicSpline::operator()(Float feature, Float& deriv)
           - (3. * a * a - 1.) * sixthspacing * second_derivs_[lowbin]
           + (3. * b * b - 1.) * sixthspacing * second_derivs_[highbin];
 
-  return operator()(feature);
+  return evaluate(feature);
 }
 
 }  // namespace IMP

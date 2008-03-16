@@ -26,11 +26,11 @@ public:
       \param[in] feature Value of feature being tested.
       \return Score
   */
-  virtual Float operator()(Float feature) {
+  virtual Float evaluate(Float feature) {
     if (feature >= Harmonic::get_mean()) {
       return 0.0;
     } else {
-      return Harmonic::operator()(feature);
+      return Harmonic::evaluate(feature);
     }
   }
 
@@ -41,12 +41,12 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float operator()(Float feature, Float& deriv) {
+  virtual Float evaluate_deriv(Float feature, Float& deriv) {
     if (feature >= Harmonic::get_mean()) {
       deriv = 0.0;
       return 0.0;
     } else {
-      return Harmonic::operator()(feature, deriv);
+      return Harmonic::evaluate_deriv(feature, deriv);
     }
   }
 

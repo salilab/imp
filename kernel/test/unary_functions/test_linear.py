@@ -11,7 +11,12 @@ class LinearTests(IMP.test.TestCase):
             func = IMP.Linear(slope)
             for i in range(15):
                 val = -10.0 + 3.5 * i
-                diff = func(val) - val * slope
+                scoreonly = func.evaluate(val)
+                score, deriv = func.evaluate_deriv(val)
+                self.assertEqual(score, scoreonly)
+                diff = score - val * slope
+                self.assert_(abs(diff) < 0.001)
+                diff = deriv - slope
                 self.assert_(abs(diff) < 0.001)
 
     def test_show(self):
