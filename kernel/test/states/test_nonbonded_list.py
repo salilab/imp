@@ -15,8 +15,10 @@ class OnePair(IMP.PairScore):
 class OneScore(IMP.UnaryFunction):
     def __init__(self):
         IMP.UnaryFunction.__init__(self)
-    def __call__(self, *args):
+    def evaluate(self, feat):
         return 100
+    def evaluate_deriv(self, feat):
+        return 100, 0.0
     def show(self, *args):
         print "One score"
 
@@ -65,7 +67,7 @@ class TestNBL(IMP.test.TestCase):
         o= OnePair()
         r= IMP.NonbondedRestraint(o, s, 10)
         os=OneScore()
-        print os(6)
+        print os.evaluate(6)
         br= IMP.BondDecoratorRestraint(os, b)
         m.add_restraint(r)
         m.add_restraint(br)

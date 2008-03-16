@@ -14,8 +14,10 @@ class OneSingle(IMP.SingletonScore):
 class Linear(IMP.UnaryFunction):
     def __init__(self):
         IMP.UnaryFunction.__init__(self)
-    def __call__(self, *args):
-        return args[0]
+    def evaluate(self, feat):
+        return feat
+    def evaluate_deriv(self, feat):
+        return feat, 1.0
     def show(self, *args):
         print "identity"
 

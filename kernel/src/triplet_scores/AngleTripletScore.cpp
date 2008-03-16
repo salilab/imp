@@ -46,7 +46,7 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
 
   if (da) {
     Float deriv;
-    score = (*f_)(angle, deriv);
+    score = f_->evaluate_deriv(angle, deriv);
 
     Vector3D unit_rij = rij.get_unit_vector();
     Vector3D unit_rkj = rkj.get_unit_vector();
@@ -69,7 +69,7 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
       d2.add_to_coordinate_derivative(i, derv2, *da);
     }
   } else {
-    score = (*f_)(angle);
+    score = f_->evaluate(angle);
   }
   return score;
 }

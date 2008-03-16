@@ -50,7 +50,7 @@ Float evaluate_distance_to_singleton_score(const Vector3D &v,
   if (da && distance >= MIN_DISTANCE) {
     Float deriv;
 
-    score = (*f)(shifted_distance, deriv);
+    score = f->evaluate_deriv(shifted_distance, deriv);
 
     for (int i = 0; i < 3; ++i) {
       Float d = delta[i] / distance * deriv;
@@ -58,7 +58,7 @@ Float evaluate_distance_to_singleton_score(const Vector3D &v,
     }
   } else {
     // calculate the score based on the distance feature
-    score = (*f)(shifted_distance);
+    score = f->evaluate(shifted_distance);
   }
 
   return score;

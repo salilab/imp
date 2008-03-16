@@ -23,8 +23,8 @@ class IMPDLLEXPORT UnaryFunction : public internal::Object
 public:
   UnaryFunction() {}
   virtual ~UnaryFunction() {}
-  virtual Float operator()(Float feature, Float& deriv) = 0;
-  virtual Float operator()(Float feature) = 0;
+  virtual Float evaluate(Float feature) = 0;
+  virtual Float evaluate_deriv(Float feature, Float& deriv) = 0;
   virtual void show(std::ostream &out=std::cout) const = 0;
 };
 

@@ -6,7 +6,7 @@ import math
 
 def _testfunc(val):
     """Simple function and its first derivative"""
-    return 2.0 + val * val + 3.0 * val + 1.0, 4.0 * val + 3.0;
+    return val * val + 3.0 * val + 1.0, 2.0 * val + 3.0;
 
 def _periodic_testfunc(val):
     """Simple periodic function and its first derivative"""
@@ -23,14 +23,14 @@ class CubicSplineTests(IMP.test.TestCase):
         floats.append(0.)
         open_spline = IMP.OpenCubicSpline(floats, 10.0, 5.0)
         closed_spline = IMP.ClosedCubicSpline(floats, 10.0, 5.0)
-        self.assertEqual(open_spline(10.0), 0.0)
-        self.assertEqual(open_spline(20.0), 0.0)
-        self.assertRaises(ValueError, open_spline, 9.9)
-        self.assertRaises(ValueError, open_spline, 20.1)
-        self.assertEqual(closed_spline(10.0), 0.0)
-        self.assertEqual(closed_spline(25.0), 0.0)
-        self.assertRaises(ValueError, open_spline, 9.9)
-        self.assertRaises(ValueError, open_spline, 25.1)
+        self.assertEqual(open_spline.evaluate(10.0), 0.0)
+        self.assertEqual(open_spline.evaluate(20.0), 0.0)
+        self.assertRaises(ValueError, open_spline.evaluate, 9.9)
+        self.assertRaises(ValueError, open_spline.evaluate, 20.1)
+        self.assertEqual(closed_spline.evaluate(10.0), 0.0)
+        self.assertEqual(closed_spline.evaluate(25.0), 0.0)
+        self.assertRaises(ValueError, open_spline.evaluate, 9.9)
+        self.assertRaises(ValueError, open_spline.evaluate, 25.1)
 
     def test_interpolate(self):
         """Test that spline-interpolated values are correct"""
@@ -50,12 +50,14 @@ class CubicSplineTests(IMP.test.TestCase):
         spline = spline_func(floats, minrange, spline_spacing)
 
         # Now test the spline against the test function for intermediate points
-        # todo: also test derivatives: but this will have to wait for
-        # operator()(Float, Float &) support in the Python interface
         for i in range(30):
             val = minrange + test_spacing * i
-            diff = spline(val) - test_func(val)[0]
-            self.assert_(abs(diff) < 0.1)
+            scoreonly = spline.evaluate(val)
+            score, deriv = spline.evaluate_deriv(val)
+            self.assertEqual(score, scoreonly)
+            expscore, expderiv = test_func(val)
+            self.assert_(abs(score - expscore) < 0.1)
+            self.assert_(abs(deriv - expderiv) < 0.6)
 
     def test_show(self):
         """Check cubic spline show() methods"""

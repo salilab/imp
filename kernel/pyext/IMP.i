@@ -12,6 +12,9 @@
 %include "IMP_macros.i"
 %include "IMP_exceptions.i"
 
+/* Return derivatives from unary functions */
+%include "typemaps.i"
+%apply double &OUTPUT { IMP::Float& deriv };
 
 namespace IMP {
   %pythonprepend Model::add_particle %{
