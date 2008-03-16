@@ -6,6 +6,14 @@ import IMP
 class TestCase(unittest.TestCase):
     """Super class for IMP test cases"""
 
+    def assertInTolerance(self, num1, num2, tolerance, msg=None):
+        """Assert that the difference between num1 and num2 is less than
+           tolerance"""
+        diff = abs(num1 - num2)
+        if msg is None:
+            msg = "%f != %f within %g" % (num1, num2, tolerance)
+        self.assert_(diff < tolerance, msg)
+
     def randomize_particles(self, particles, deviation):
         """Randomize the xyz coordinates of a list of particles"""
         for p in particles:

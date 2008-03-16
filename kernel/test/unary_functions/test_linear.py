@@ -14,10 +14,8 @@ class LinearTests(IMP.test.TestCase):
                 scoreonly = func.evaluate(val)
                 score, deriv = func.evaluate_deriv(val)
                 self.assertEqual(score, scoreonly)
-                diff = score - val * slope
-                self.assert_(abs(diff) < 0.001)
-                diff = deriv - slope
-                self.assert_(abs(diff) < 0.001)
+                self.assertInTolerance(score, val * slope, 0.001)
+                self.assertInTolerance(deriv, slope, 0.001)
 
     def test_show(self):
         """Check Linear::show() method"""
