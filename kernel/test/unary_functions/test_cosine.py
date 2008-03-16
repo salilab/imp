@@ -26,8 +26,8 @@ class CosineTests(IMP.test.TestCase):
                         score, deriv = func.evaluate_deriv(val)
                         scoreonly = func.evaluate(val)
                         self.assertEqual(score, scoreonly)
-                        self.assert_(abs(expscore - score) < 0.1)
-                        self.assert_(abs(expderiv - deriv) < 0.1)
+                        self.assertInTolerance(expscore, score, 0.1)
+                        self.assertInTolerance(expderiv, deriv, 0.1)
 
     def test_show(self):
         """Check Cosine::show() method"""
