@@ -8,6 +8,8 @@
 #ifndef __IMP_VECTOR_H
 #define __IMP_VECTOR_H
 
+#include "../exception.h"
+
 #include <vector>
 
 namespace IMP
