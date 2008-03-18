@@ -8,8 +8,12 @@
 #ifndef __IMP_EXCEPTION_H
 #define __IMP_EXCEPTION_H
 
+#include "log.h"
+#include "IMP_config.h"
+
 #include <cassert>
 #include <string>
+#include <iostream>
 #include <new>
 
 namespace IMP
