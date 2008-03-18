@@ -12,6 +12,7 @@
 #include "../log.h"
 #include "Object.h"
 #include "../macros.h"
+#include "../exception.h"
 #include <boost/static_assert.hpp>
 
 
@@ -89,6 +90,9 @@ public:
     return o_;
   }
   void operator=(O* o) {
+    IMP_check(!OWNS || !o || !o->get_is_owned(),
+              "Cannot add the same object to multiple containers.",
+              ValueException("Cannot add the same object more than once"));
     if (OWNS) delete o_;
     o_=o;
   }
