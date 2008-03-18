@@ -33,19 +33,25 @@ Float BondDecoratorRestraint::evaluate(DerivativeAccumulator *accum)
       continue;
     }
     if (s <0) s=1;
+    Particle *pa=NULL, *pb=NULL;
     try {
       /*IMP_LOG(VERBOSE, "Bonded pair " 
               << bd.get_bonded(0).get_particle()->get_index()
               << " " << bd.get_bonded(1).get_particle()->get_index()
               << " with length " << l << " and stiffness " << s << std::endl);*/
+      pa = bd.get_bonded(0).get_particle();
+      pb = bd.get_bonded(1).get_particle();
+    } catch (const IndexException &e) {
+      IMP_WARN("Problem processing bond: " << bd << std::endl);
+      IMP_WARN(e.what() << std::endl);
+    }
+    if (pa && pb) {
       sum+= 
-        internal::evaluate_distance_pair_score(bd.get_bonded(0).get_particle(),
-                                               bd.get_bonded(1).get_particle(),
+        internal::evaluate_distance_pair_score(pa,
+                                               pb,
                                                accum,
                                                f_.get(),
                                                l, s);
-    } catch (...) {
-      IMP_WARN("Problem processing bond: " << bd << std::endl);
     }
   }
   return sum;
