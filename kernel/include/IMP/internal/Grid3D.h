@@ -197,14 +197,14 @@ private:
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
       IMP_assert(d_[i] != 0, "Invalid grid in Index");
-      float d= pt.get_component(i)- min_.get_component(i);
+      float d = pt[i] - min_[i];
       float fi= d/edge_size_[i];
       index[i]= static_cast<int>(std::floor(fi));
 
       IMP_assert(std::abs(index[i]) < 200000000,
                  "Something is probably wrong " << d 
-                 << " " << pt.get_component(i)
-                 << " " << min_.get_component(i)
+                 << " " << pt[i]
+                 << " " << min_[i]
                  << " " << edge_size_[i]);
     }
     return IndexType(index[0], index[1], index[2]);
@@ -264,13 +264,10 @@ public:
       // I would like to find something more reliable
       if (d_[i]==1) {
         // make sure that the total grid size is not vanishing
-        // this is probably not hte right thing to do
-        edge_size_[i]= std::max(1.05*(max.get_component(i)
-                                      - min_.get_component(i))/d_[i],
-                                1.0);
+        // this is probably not the right thing to do
+        edge_size_[i]= std::max(1.05*(max[i] - min_[i])/d_[i], 1.0);
       } else {
-        edge_size_[i]= 1.05*(max.get_component(i)
-                             - min_.get_component(i))/d_[i];
+        edge_size_[i]= 1.05*(max[i] - min_[i])/d_[i];
       }
     }
   }
@@ -286,11 +283,9 @@ public:
          VoxelData def) {
     min_=minc;
     for (unsigned int i=0; i< 3; ++i ) {
-      IMP_assert(minc.get_component(i) <= maxc.get_component(i),
-                 "Min must not be larger than max");
+      IMP_assert(minc[i] <= maxc[i], "Min must not be larger than max");
       // add 10% to handle rounding errors
-      d_[i]= std::max(static_cast<int>(std::ceil(1.1*(maxc.get_component(i)
-                                                  - minc.get_component(i))
+      d_[i]= std::max(static_cast<int>(std::ceil(1.1*(maxc[i] - minc[i])
                                                  / side)),
                       1);
       edge_size_[i]= side;
@@ -364,9 +359,9 @@ public:
 
   //! Return a point at the center of the voxel
   Vector3D get_center(VirtualIndex gi) const {
-    return Vector3D(edge_size_[0]*(.5f+ gi[0]) + min_.get_component(0),
-                    edge_size_[1]*(.5f+ gi[1]) + min_.get_component(1),
-                    edge_size_[2]*(.5f+ gi[2]) + min_.get_component(2));
+    return Vector3D(edge_size_[0]*(.5f+ gi[0]) + min_[0],
+                    edge_size_[1]*(.5f+ gi[1]) + min_[1],
+                    edge_size_[2]*(.5f+ gi[2]) + min_[2]);
   }
 
 

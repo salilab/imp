@@ -98,8 +98,8 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
     Float fact3 = skjkl2 > 1e-8 ? -skj / skjkl2 : 0.0;
 
     for (int i = 0; i < 3; ++i) {
-      Float derv0 = deriv * fact0 * vijkj.get_component(i);
-      Float derv3 = deriv * fact3 * vkjkl.get_component(i);
+      Float derv0 = deriv * fact0 * vijkj[i];
+      Float derv3 = deriv * fact3 * vkjkl[i];
       Float derv1 = (fact1 - 1.0) * derv0 - fact2 * derv3;
       Float derv2 = (fact2 - 1.0) * derv3 - fact1 * derv0;
 

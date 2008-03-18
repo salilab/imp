@@ -33,14 +33,9 @@ public:
   Vector3D() {}
 
   //! \return A single component of this vector (0-2).
-  Float get_component(unsigned int i) const {
+  Float operator[](unsigned int i) const {
     IMP_assert(i < 3, "Invalid component of vector requested");
     return vec_[i];
-  }
-
-  //! \return A single component of this vector (0-2).
-  Float operator[](unsigned int i) const {
-    return get_component(i);
   }
 
   //! \return the scalar product of two vectors.
