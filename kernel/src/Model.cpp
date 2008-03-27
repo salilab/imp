@@ -39,9 +39,8 @@ IMP_CONTAINER_IMPL(Model, ScoreState, score_state, ScoreStateIndex,
 
 Float Model::evaluate(bool calc_derivs)
 {
-  IMP_LOG(VERBOSE,
-          "Model evaluate (" << number_of_restraints() << " restraints):"
-          << std::endl);
+  IMP_LOG(TERSE,
+          "Begin Model::evaluate" << std::endl);
   // If calcualting derivatives, first set all derivatives to zero
   if (calc_derivs) {
     for (ParticleIterator pit = particles_begin();
@@ -51,15 +50,15 @@ Float Model::evaluate(bool calc_derivs)
 
   }
 
-  IMP_LOG(VERBOSE,
-          "Updating ScoreStates " << std::flush);
+  IMP_LOG(TERSE,
+          "Begin update ScoreStates " << std::endl);
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
     (*it)->update();
     IMP_LOG(VERBOSE, "." << std::flush);
   }
-  IMP_LOG(VERBOSE, "done." << std::endl);
+  IMP_LOG(TERSE, "End update ScoreStates." << std::endl);
 
   // evaluate all of the active restraints to get score (and derivatives)
   // for current state of the model
@@ -67,37 +66,40 @@ Float Model::evaluate(bool calc_derivs)
   DerivativeAccumulator accum;
   DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
 
-  IMP_LOG(VERBOSE,
-          "Evaluating restraints " 
+  IMP_LOG(TERSE,
+          "Begin evaluate restraints " 
           << (calc_derivs?"with derivatives":"without derivatives")
-              << std::endl);
+          << std::endl);
   for (RestraintIterator it = restraints_begin();
        it != restraints_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
-    IMP_LOG(VERBOSE, **it);
+    IMP_LOG(TERSE, "Evaluate restraint "
+            << std::endl << **it);
     Float tscore=0;
     if ((*it)->get_is_active()) {
       tscore = (*it)->evaluate(accpt);
     }
-    IMP_LOG(VERBOSE, "Restraint score is " << tscore << std::endl);
+    IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
     score+= tscore;
   }
-  IMP_LOG(VERBOSE, "done." << std::endl);
+  IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
 
-  IMP_LOG(VERBOSE, "Final score: " << score << std::endl);
+  IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
   return score;
 }
 
 void Model::show(std::ostream& out) const
 {
   out << std::endl << std::endl;
-  out << "** Model **" << std::endl;
+  out << "Model:" << std::endl;
 
   get_version_info().show(out);
 
   out << number_of_particles() << " particles" << std::endl;
+  out << number_of_restraints() << " restraints" << std::endl;
+  out << number_of_score_states() << " score states" << std::endl;
 
-  internal::show_attributes(out);
+  out << std::endl;
 }
 
 
