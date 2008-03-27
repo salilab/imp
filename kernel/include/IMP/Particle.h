@@ -38,8 +38,10 @@ struct IMPDLLEXPORT FloatData
 
 inline std::ostream &operator<<(std::ostream &out, const FloatData &d)
 {
-  out << d.value << ": " << d.derivative;
-  if (d.is_optimized) out << "(opt)";
+  out << d.value;
+  if (d.is_optimized) {
+    out << " (" << d.derivative << ")";
+  }
   return out;
 }
 
@@ -200,6 +202,9 @@ public:
 
   //! Show the particle
   /** \param[in] out Stream to write particle description to.
+
+      All the attributes are shown. In addition, the deriviatives of the
+      optimized attributes are printed.
    */
   void show(std::ostream& out = std::cout) const;
 
@@ -336,7 +341,7 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  IMP_assert(value==value, "Can't add NaN to derivative");
+  IMP_assert(value==value, "Can't add NaN to derivative in particle " << *this);
   float_indexes_.get_value(name).derivative+= da(value);
 }
 
