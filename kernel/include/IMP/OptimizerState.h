@@ -8,13 +8,13 @@
 #ifndef __IMP_OPTIMIZER_STATE_H
 #define __IMP_OPTIMIZER_STATE_H
 
-#include <iostream>
-
 #include "IMP_config.h"
 #include "VersionInfo.h"
 #include "internal/Object.h"
 #include "internal/ObjectPointer.h"
 #include "Optimizer.h"
+
+#include <iostream>
 
 namespace IMP
 {
@@ -23,7 +23,15 @@ class Optimizer;
 
 //! Shared optimizer state.
 /** The OptimizerState update method is called each time the Optimizer commits
-    to a new set of coordinates.
+    to a new set of coordinates. Optimizer states may change the values of
+    particle attributes. However, changes to whether an attribute is optimized
+    or not may not be picked up by the Optimizer until the next call to 
+    optimize.
+
+    \note When logging is VERBOSE, state should print enough information
+    in evaluate to reproduce the the entire flow of data in update. When
+    logging is TERSE the restraint should print out only a constant number
+    of lines per update call.
  */
 class IMPDLLEXPORT OptimizerState : public internal::Object
 {
@@ -59,12 +67,7 @@ protected:
   internal::ObjectPointer<Optimizer, false> optimizer_;
 };
 
-
-inline std::ostream &operator<<(std::ostream &out, const OptimizerState &s)
-{
-  s.show(out);
-  return out;
-}
+IMP_OUTPUT_OPERATOR(OptimizerState);
 
 } // namespace IMP
 
