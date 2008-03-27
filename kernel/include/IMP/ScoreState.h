@@ -15,7 +15,6 @@
 #include "VersionInfo.h"
 #include "utility.h"
 
-#include <vector>
 #include <iostream>
 
 namespace IMP
@@ -30,6 +29,11 @@ class Model;
     ScoreStates can change the state of particles and restraints.
     However, optimizers may not pick up new particles or changes
     to whether particular attributes are optimized or not.
+
+    \note When logging is VERBOSE, state should print enough information
+    in evaluate to reproduce the the entire flow of data in update. When
+    logging is TERSE the restraint should print out only a constant number
+    of lines per update call.
 
  */
 class IMPDLLEXPORT ScoreState : public internal::Object
