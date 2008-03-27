@@ -24,7 +24,11 @@ namespace IMP
 namespace internal
 {
 
-/** \internal */
+/** \internal 
+    If memory becomes a problem then either use a char table to look up
+    actual entries or use perfect hashing. 
+    http://burtleburtle.net/bob/hash/perfect.html
+ */
 template <class T, class VT>
 class AttributeTable
 {
