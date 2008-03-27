@@ -20,11 +20,8 @@ static const int target_cell_occupancy=10;
 ParticleGrid::ParticleGrid(float tvs): target_voxel_side_(tvs),
                                        grid_valid_(false)
 {
-  FloatKeys fks;
-  fks.push_back(FloatKey("x"));
-  fks.push_back(FloatKey("y"));
-  fks.push_back(FloatKey("z"));
-  mc_= new MaxChangeScoreState(fks);
+  IMP_assert(tvs >0, "Target voxel edge size must be positive");
+  mc_= new MaxChangeScoreState(XYZDecorator::get_xyz_keys());
 }
 
 ParticleGrid::ParticleGrid(): target_voxel_side_(0), grid_valid_(0)
