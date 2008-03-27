@@ -40,6 +40,14 @@ class Model;
     particles should allow the particle list to be skipped in the
     constructor and should provide methods so that the set of particles
     can be modified after construction.
+
+    \note When logging is VERBOSE, restraints should print enough information
+    in evaluate to reproduce the the entire flow of data in evaluate. When
+    logging is TERSE the restraint should print out only a constant number of
+    lines per evaluate call.
+
+    \note Physical restraints should use the units of kcal/mol for restraint
+    values and kcal/mol/A for derivatives.
  */
 class IMPDLLEXPORT Restraint : public internal::Object
 {
