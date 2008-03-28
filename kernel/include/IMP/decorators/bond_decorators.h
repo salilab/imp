@@ -129,7 +129,7 @@ IMP_OUTPUT_OPERATOR(BondedDecorator);
 inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
 {
   Particle *p= graph_get_node(get_particle(), i,
-                                   internal::bond_graph_data_);
+                              internal::bond_graph_data_);
   return BondedDecorator::cast(p);
 }
 
