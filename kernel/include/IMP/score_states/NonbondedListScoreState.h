@@ -22,17 +22,18 @@ namespace IMP
 typedef std::vector<BondedListScoreState*> BondedListScoreStates;
 
 //! A base class for classes that maintain a list of non-bonded pairs.
-/** \ingroup restraint
+/** 
  */
 class IMPDLLEXPORT NonbondedListScoreState: public ScoreState
 {
 private:
+  FloatKey rk_;
+
 protected:
   // made protected for debugging code, do not use otherwise
   typedef std::vector<std::pair<Particle*, Particle*> > NBL;
   NBL nbl_;
   float last_cutoff_;
-
 
   unsigned int size_nbl() const {return nbl_.size();}
 
@@ -46,22 +47,6 @@ protected:
     nbl_.clear();
   }
 
-  struct AddToNBL;
-  friend struct AddToNBL;
-
-  struct AddToNBL{
-    NonbondedListScoreState *state_;
-    Particle *p_;
-    AddToNBL(NonbondedListScoreState *s, Particle *p): state_(s),
-                                                             p_(p){}
-    void operator()(Particle *p) {
-      operator()(p_, p);
-    }
-    void operator()(Particle *a, Particle *b) {
-      state_->add_to_nbl(a,b);
-    }
-  };
-
   bool are_bonded(Particle *a, Particle *b) const {
     for (BondedListConstIterator bli= bonded_lists_begin();
          bli != bonded_lists_end(); ++bli) {
@@ -71,6 +56,23 @@ protected:
     }
     return false;
   }
+
+  struct AddToNBL;
+  friend struct AddToNBL;
+
+  // these should be two separate classes, but they are not
+  struct AddToNBL{
+    NonbondedListScoreState *state_;
+    Particle *p_;
+    AddToNBL(NonbondedListScoreState *s, Particle *p): state_(s),
+                                                       p_(p){}
+    void operator()(Particle *p) {
+      operator()(p_, p);
+    }
+    void operator()(Particle *a, Particle *b) {
+      state_->add_to_nbl(a,b);
+    }
+  };
 
   //! tell the bonded lists what particles to pay attention to
   void propagate_particles(const Particles &ps);
@@ -82,13 +84,28 @@ protected:
       IMP_LOG(VERBOSE, "Found pair " << a->get_index() 
         << " " << b->get_index() << std::endl);
       nbl_.push_back(std::make_pair(a, b));
+    } else {
+      IMP_LOG(VERBOSE, "Pair " << a->get_index()
+              << " and " << b->get_index() << " rejected on bond" 
+              <<std::endl);
+    }
+  }
+
+  Float get_radius(Particle *a) const {
+    if (rk_ != FloatKey() && a->has_attribute(rk_)) {
+      return a->get_value(rk_);
+    } else {
+      return 0;
     }
   }
 
 public:
   /**
    */
-  NonbondedListScoreState();
+  NonbondedListScoreState(FloatKey rk);
+
+  FloatKey get_radius_key() const {return rk_;}
+  void set_radius_key(FloatKey rk) {rk_=rk;} 
 
   IMP_CONTAINER(BondedListScoreState, bonded_list,
                 BondedListIndex);

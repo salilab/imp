@@ -18,20 +18,31 @@ namespace IMP
 {
 
 //! Keeps track of the maximum change of a set of attributes.
+/** The score state maintains a list of particle and a list of
+    float attribute keys and keeps track of the maximum amount
+    any of these have changed since the last time reset was called.
+
+ */
 class IMPDLLEXPORT MaxChangeScoreState: public ScoreState
 {
   FloatKeys keys_;
-  std::vector<std::vector<float> > orig_;
+  std::vector<Floats > orig_;
   Particles ps_;
   float max_change_;
 public:
-  MaxChangeScoreState(const FloatKeys &keys):keys_(keys){}
+  //! Track the changes with the specified keys.
+  MaxChangeScoreState(const FloatKeys &keys,
+                      const Particles &ps= Particles()):keys_(keys){
+    add_particles(ps);
+  }
   virtual ~MaxChangeScoreState(){}
 
   virtual void update();
 
+  //! Measure differences from the current value.
   void reset();
 
+  //! Return the maximum amount any attribute has changed.
   float get_max() const {
     return max_change_;
   }

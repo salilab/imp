@@ -19,7 +19,7 @@ BondDecoratorListScoreState::BondDecoratorListScoreState(const Particles &ps)
 
 void BondDecoratorListScoreState::update()
 {
-  IMP_LOG(VERBOSE, "Updating BondDecoratorList for "
+  IMP_LOG(TERSE, "Updating BondDecoratorList for "
           << ps_.size() << " particles" << std::endl);
   bonds_.clear();
   for (unsigned int i=0; i< ps_.size(); ++i) {
@@ -35,11 +35,12 @@ void BondDecoratorListScoreState::update()
         continue;
       }
       if (di < dj) {
+        IMP_LOG(VERBOSE, "Found bond " << di.get_bond(j) << std::endl);
         bonds_.push_back(di.get_bond(j));
       }
     }
   }
-  IMP_LOG(VERBOSE, "Found " << bonds_.size() << " bonds"<< std::endl);
+  IMP_LOG(TERSE, "Found " << bonds_.size() << " bonds"<< std::endl);
 }
 
 void BondDecoratorListScoreState::set_particles(const Particles &ps)

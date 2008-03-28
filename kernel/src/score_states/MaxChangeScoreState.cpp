@@ -19,11 +19,16 @@ void MaxChangeScoreState::update()
   max_change_=0;
   for (unsigned int i=0; i < orig_.size(); ++i) {
     for (unsigned int j=0; j < keys_.size(); ++j) {
+      IMP_LOG(VERBOSE, "Particle " << ps_[i]->get_index() 
+              << " and attribute " << keys_[j]
+              << " moved " << std::abs(ps_[i]->get_value(keys_[j])
+                                       - orig_[i][j]) << std::endl);
       max_change_= std::max(max_change_,
                             std::abs(ps_[i]->get_value(keys_[j])
                                      - orig_[i][j]));
     }
   }
+  IMP_LOG(TERSE, "MaxChange update got " << max_change_ << std::endl); 
 }
 
 
