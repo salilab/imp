@@ -33,14 +33,17 @@ class TestNBL(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
+            d.set_coordinates_are_optimized(True)
             d.randomize_in_box(IMP.Vector3D(0,0,0),
                                IMP.Vector3D(10,10,10));
-        s= IMP.AllNonbondedListScoreState(m.get_particles())
+        s= IMP.AllNonbondedListScoreState(IMP.FloatKey(),
+                                          m.get_particles())
         m.add_score_state(s)
         o= OnePair()
         r= IMP.NonbondedRestraint(o, s, 15)
         m.add_restraint(r)
         score= m.evaluate(False)
+        print score
         self.assertEqual(score, 4950, "Wrong score")
 
     def test_bl(self):
@@ -51,6 +54,7 @@ class TestNBL(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
+            d.set_coordinates_are_optimized(True)
             d.set_x(0)
             d.set_y(10)
             d.set_z(10)
@@ -60,7 +64,8 @@ class TestNBL(IMP.test.TestCase):
             pts.append(p)
         for i in range(1,100):
             IMP.custom_bond(bds[i-1], bds[i], 1, .1)
-        s= IMP.AllNonbondedListScoreState(pts, 1)
+        s= IMP.AllNonbondedListScoreState(IMP.FloatKey(),
+                                          pts)
         b= IMP.BondDecoratorListScoreState(pts)
         s.add_bonded_list(b)
         m.add_score_state(s)
@@ -84,19 +89,21 @@ class TestNBL(IMP.test.TestCase):
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
             ps.append(p)
+            d.set_coordinates_are_optimized(True)
             if (i < 25):
                 d.randomize_in_box(IMP.Vector3D(0,0,0),
                                    IMP.Vector3D(10,10,10));
             else:
                 d.randomize_in_box(IMP.Vector3D(60,60,60),
                                    IMP.Vector3D(70,70,70));
-        s= IMP.AllNonbondedListScoreState(ps)
+        s= IMP.AllNonbondedListScoreState(IMP.FloatKey(), ps)
         m.add_score_state(s)
         o= OnePair()
         r= IMP.NonbondedRestraint(o, s, 15)
         m.add_restraint(r)
         score= m.evaluate(False)
         self.assertEqual(score, 1225, "Wrong score")
+
     def test_bi(self):
         """Test the bipartite nonbonded list and restraint which uses it"""
         m= IMP.Model()
@@ -106,13 +113,15 @@ class TestNBL(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
+            d.set_coordinates_are_optimized(True)
             d.randomize_in_box(IMP.Vector3D(0,0,0),
                                IMP.Vector3D(10,10,10));
             if (i < 5):
                 ps0.append(p)
             else:
                 ps1.append(p)
-        s= IMP.BipartiteNonbondedListScoreState(ps0, ps1, 1000)
+        s= IMP.QuadraticBipartiteNonbondedListScoreState(IMP.FloatKey(),
+                                                         ps0, ps1)
         m.add_score_state(s)
         o= OnePair()
         r= IMP.NonbondedRestraint(o, s, 15)
@@ -120,7 +129,7 @@ class TestNBL(IMP.test.TestCase):
         score= m.evaluate(False)
         self.assertEqual(score, 25, "Wrong score")
     def test_spheres2(self):
-        """Test the nonbonded list of spheres (num pairs)"""
+        """Test the (quadratic and optimized) nonbonded lists of spheres (num pairs)"""
         m= IMP.Model()
         rk= IMP.FloatKey("radius")
         for i in range(0,100):
@@ -131,7 +140,32 @@ class TestNBL(IMP.test.TestCase):
                                IMP.Vector3D(10,10,10));
             p.add_attribute(rk, i, False)
             d.set_coordinates_are_optimized(True)
-        s= IMP.AllSphereNonbondedListScoreState(m.get_particles(), rk)
+        s= IMP.AllNonbondedListScoreState(rk,
+                                          m.get_particles())
+        s2= IMP.QuadraticAllNonbondedListScoreState(rk, m.get_particles())
+        m.add_score_state(s)
+        m.add_score_state(s2)
+        o= OnePair()
+        o2= OnePair()
+        r= IMP.NonbondedRestraint(o, s, 15)
+        r2= IMP.NonbondedRestraint(o2, s2, 15)
+        m.add_restraint(r)
+        m.add_restraint(r2)
+        score= m.evaluate(False)
+        self.assertEqual(score, 2*4950, "Wrong score")
+    def test_spheres3(self):
+        """Test the quadratic nonbonded list of spheres (num pairs)"""
+        m= IMP.Model()
+        rk= IMP.FloatKey("radius")
+        for i in range(0,100):
+            p= IMP.Particle()
+            m.add_particle(p)
+            d=IMP.XYZDecorator.create(p)
+            d.randomize_in_box(IMP.Vector3D(0,0,0),
+                               IMP.Vector3D(10,10,10));
+            p.add_attribute(rk, i, False)
+            d.set_coordinates_are_optimized(True)
+        s= IMP.QuadraticAllNonbondedListScoreState(rk, m.get_particles())
         m.add_score_state(s)
         o= OnePair()
         r= IMP.NonbondedRestraint(o, s, 15)
@@ -262,7 +296,7 @@ class TestNBL(IMP.test.TestCase):
             print ".sphere "+str(d.get_x())+ " " + str(d.get_y())\
                 + " " + str(d.get_z()) + " " + str(p.get_value(rk))
 
-        s= IMP.AllSphereNonbondedListScoreState(m.get_particles(), rk)
+        s= IMP.AllNonbondedListScoreState(rk, m.get_particles())
         m.add_score_state(s)
         sd= IMP.SphereDistancePairScore(IMP.HarmonicLowerBound(0,1),
                                         rk)
@@ -283,7 +317,7 @@ class TestNBL(IMP.test.TestCase):
                                IMP.Vector3D(20,20,20));
             p.add_attribute(rk, random.uniform(0,100), False)
             d.set_coordinates_are_optimized(True)
-        s= IMP.AllSphereNonbondedListScoreState(m.get_particles(), rk)
+        s= IMP.AllNonbondedListScoreState(rk, m.get_particles())
         m.add_score_state(s)
         sd= IMP.SphereDistancePairScore(IMP.HarmonicLowerBound(0,1),
                                         rk)

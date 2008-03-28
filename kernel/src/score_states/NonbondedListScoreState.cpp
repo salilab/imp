@@ -13,7 +13,7 @@
 namespace IMP
 {
 
-NonbondedListScoreState::NonbondedListScoreState()
+NonbondedListScoreState::NonbondedListScoreState(FloatKey rk): rk_(rk)
 {
   last_cutoff_=-1;
 }
