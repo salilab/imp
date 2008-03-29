@@ -34,7 +34,7 @@ for p in m.get_particles():
     p.show()
 
 # Set up the nonbonded list
-nbl= IMP.AllSphereNonbondedListScoreState(chain, rk)
+nbl= IMP.AllNonbondedListScoreState(rk, chain)
 nbli= m.add_score_state(nbl)
 # This ScoreState uses the bonds constructed above to restrain
 bl= IMP.BondDecoratorListScoreState(chain)
