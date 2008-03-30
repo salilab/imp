@@ -4,8 +4,8 @@ Import('env')
 files = ['BondedListScoreState.h', 'NonbondedListScoreState.h',
          'BipartiteNonbondedListScoreState.h', 'MaxChangeScoreState.h',
          'BondDecoratorListScoreState.h', 'AllNonbondedListScoreState.h',
-         'QuadraticBipartiteNonbondedListScoreState.h'
-         'QuadraticAllNonbondedListScoreState.h'
+         'QuadraticBipartiteNonbondedListScoreState.h',
+         'QuadraticAllNonbondedListScoreState.h',
          'QuadraticNonbondedListScoreState.h']
 
 # Install the include files:
