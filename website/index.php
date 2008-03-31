@@ -12,7 +12,8 @@
 <p>Our broad goal is to contribute to a comprehensive structural
 characterization of biomolecules ranging in size and complexity from small
 peptides to large macromolecular assemblies, such as the ribosome and the
-nuclear pore complex (NPC). Detailed structural characterization of assemblies
+<a href="/npc.html">nuclear pore complex (NPC)</a>.
+Detailed structural characterization of assemblies
 is generally impossible by any single existing experimental or computational
 method. We suggest that this barrier can be overcome by hybrid approaches
 that integrate data from diverse biochemical and biophysical experiments
