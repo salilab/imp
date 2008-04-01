@@ -26,9 +26,6 @@ namespace IMP
     \note The radius is currently assumed not to change. This could
     be fixed later.
 
-    \note Points whose coordinates are not optimized are assumed to 
-    stay that way (and vice versa, although that direction doesn't
-    matter so much).
     \todo The structure is slightly dumb about rebuilding and will 
     rebuild the whole list of any of the grids become invalidated.
     This could be improved as each piece is computed separately (so
@@ -50,7 +47,6 @@ protected:
     Bin(const Bin &o): grid(o.grid), rmax(o.rmax){}
   };
   std::vector<Bin> bins_;
-  std::vector<Bin> fixed_bins_;
 
   //! \internal
   void rebuild_nbl(Float cut);

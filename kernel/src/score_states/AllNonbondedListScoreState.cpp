@@ -26,7 +26,6 @@ AllNonbondedListScoreState
 AllNonbondedListScoreState::~AllNonbondedListScoreState()
 {
   cleanup(bins_);
-  cleanup(fixed_bins_);
 }
 
 float AllNonbondedListScoreState::side_from_r(float r) const {
@@ -39,23 +38,8 @@ float AllNonbondedListScoreState::side_from_r(float r) const {
 void AllNonbondedListScoreState::set_particles(const Particles &ps)
 {
   NonbondedListScoreState::clear_nbl();
-  // split into moving and fixed and call repartition twice
-  Particles moving, fixed;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    XYZDecorator d= XYZDecorator::cast(ps[i]);
-    if (d.get_coordinates_are_optimized()) {
-      moving.push_back(ps[i]);
-    } else {
-      fixed.push_back(ps[i]);
-    }
-  }
   cleanup(bins_);
-  cleanup(fixed_bins_);
-  repartition_points(moving, bins_);
-  repartition_points(fixed, fixed_bins_);
-  for (unsigned int i=0; i< fixed_bins_.size(); ++i) {
-    fixed_bins_[i].grid->update();
-  }
+  repartition_points(ps, bins_);
 }
 
 void AllNonbondedListScoreState::repartition_points(const Particles &ps,
@@ -183,16 +167,11 @@ void AllNonbondedListScoreState::generate_nbl(const Bin &particle_bin,
 
 void AllNonbondedListScoreState::rebuild_nbl(Float cut)
 {
-  IMP_LOG(TERSE, "Rebuilding NBL with " << bins_.size() << " dynamic and "
-          << fixed_bins_.size() << " fixed " 
+  IMP_LOG(TERSE, "Rebuilding NBL with " << bins_.size() << " bins" 
           << " and cutoff " << cut << std::endl);
   for (unsigned int i=0; i< bins_.size(); ++i) {
     for (unsigned int j=i+1; j< bins_.size(); ++j) {
       generate_nbl(bins_[i], bins_[j], cut);
-    }
-
-    for (unsigned int j=0; j< fixed_bins_.size(); ++j) {
-      generate_nbl(bins_[i], fixed_bins_[j], cut);
     }
 
     // same code as AllNonbonded. Would be nice to consolidate

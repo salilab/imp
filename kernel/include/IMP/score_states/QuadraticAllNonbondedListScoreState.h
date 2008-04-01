@@ -19,10 +19,7 @@ namespace IMP
 {
 
 //! This class maintains a list of non-bonded pairs of spheres
-/** \note Points whose coordinates are not optimized are assumed to 
-    stay that way and are pairs involving only fixed points are skipped
-
-    \note QuadraticBipartiteNonbondedListScoreState is basically an
+/** \note QuadraticBipartiteNonbondedListScoreState is basically an
     implementation detail for performance analysis and should not
     be used by end users.
  */
@@ -30,7 +27,6 @@ class IMPDLLEXPORT QuadraticAllNonbondedListScoreState:
     public QuadraticNonbondedListScoreState
 {
   typedef QuadraticNonbondedListScoreState P;
-  Particles fixed_;
 
   //! \internal
   void rebuild_nbl(Float cut);
