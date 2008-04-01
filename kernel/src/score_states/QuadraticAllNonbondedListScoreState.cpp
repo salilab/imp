@@ -27,17 +27,7 @@ QuadraticAllNonbondedListScoreState::~QuadraticAllNonbondedListScoreState()
 
 void QuadraticAllNonbondedListScoreState::set_particles(const Particles &ps)
 {
-  Particles moving;
-  fixed_.clear();
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    XYZDecorator d= XYZDecorator::cast(ps[i]);
-    if (d.get_coordinates_are_optimized()) {
-      moving.push_back(ps[i]);
-    } else {
-      fixed_.push_back(ps[i]);
-    }
-  }
-  P::set_particles(moving);
+  P::set_particles(ps);
 }
 
 
@@ -52,9 +42,6 @@ void QuadraticAllNonbondedListScoreState::rebuild_nbl(Float cut)
   IMP_LOG(TERSE, "Rebuilding QNBL with cutoff " << cut << std::endl);
   const Particles &moving= P::get_particles();
   for (unsigned int j=0; j< moving.size(); ++j) {
-    for (unsigned int i=0; i< fixed_.size(); ++i) {
-      P::handle_nbl_pair(fixed_[i], moving[j], cut);
-    }
     for (unsigned int i=0; i< j; ++i) {
       P::handle_nbl_pair(moving[i], moving[j], cut);
     }

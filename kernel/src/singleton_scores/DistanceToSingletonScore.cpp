@@ -30,11 +30,7 @@ Float evaluate_distance_to_singleton_score(const Vector3D &v,
   Float score;
 
   XYZDecorator d1 = XYZDecorator::cast(b);
-  if (!d1.get_coordinates_are_optimized()) {
-    IMP_WARN("DistanceToSingletonScore called on non optimized particle"
-             << b->get_index() <<std::endl);
-    return 0;
-  }
+
   for (int i = 0; i < 3; ++i) {
     delta[i] = v[i] - d1.get_coordinate(i);
     d2 += square(delta[i]);
