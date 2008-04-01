@@ -45,8 +45,13 @@ public:
   ScoreState(std::string name=std::string());
   virtual ~ScoreState();
 
-  // Update the state given the current state of the model
+  //! Update the state given the current state of the model.
+  /** This is also called prior to every calculation of the model score.
+   */
   virtual void update() = 0;
+
+  //! Do any necessary updates after the model score is calculated.
+  virtual void after_evaluate() {}
 
   //! Show the ScoreState
   /** The output of show may take several lines and should end in a newline.
