@@ -21,8 +21,8 @@ const MKSUnit<-23, 2, 1, -1, -2>  KB(1.3806503);
 const Kelvin T(297.15);
 
 
-const ExponentialNumber<3> JoulesPerKiloCalorie(4.1868);
-const ExponentialNumber<-4> KiloCaloriesPerJoule(2.388459);
+const ExponentialNumber<3> JOULES_PER_KCAL(4.1868);
+const ExponentialNumber<-4> KCALS_PER_JOULE(2.388459);
 
 } // namespace internal
 

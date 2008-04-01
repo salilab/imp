@@ -39,9 +39,9 @@ class ExponentialNumber
     v_=o.v_;
     float factor= std::pow(10.0, static_cast<double>(diff));
     v_*=factor;
-    IMP_assert((get_normalized_value() -o.get_normalized_value())
-               <= .09 * std::max(get_normalized_value(),
-                                o.get_normalized_value()),
+    IMP_assert(std::abs(get_normalized_value() -o.get_normalized_value())
+               <= .09 * std::abs(std::max(get_normalized_value(),
+                                          o.get_normalized_value())),
                "Mismatch after scaling");
   }
   bool is_default() const {
@@ -395,8 +395,8 @@ public:
 // want it for conversions
 extern IMPDLLEXPORT const ExponentialNumber<23> NA;
 
-extern IMPDLLEXPORT const ExponentialNumber<3> JoulesPerKiloCalorie;
-extern IMPDLLEXPORT const ExponentialNumber<-4> KiloCaloriesPerJoule;
+extern IMPDLLEXPORT const ExponentialNumber<3> JOULES_PER_KCAL;
+extern IMPDLLEXPORT const ExponentialNumber<-4> KCALS_PER_JOULE;
 
 
 /** \function convert_to_kcal Convert from MKS units to kcal units
@@ -409,20 +409,15 @@ template <int EXP>
 KCalPerMolUnit<EXP+19, 1, 0>
 convert_to_kcal(MKSUnit<EXP, 2, 1, 0, -2> j) {
   return KCalPerMolUnit<EXP+19, 1, 0>(j.get_exponential_value()
-                                      *KiloCaloriesPerJoule*NA);
+                                      *KCALS_PER_JOULE*NA);
 }
 
 template <int EXP>
 KCalPerMolUnit<EXP+9, 1, -1>
 convert_to_kcal(MKSUnit<EXP, 1, 1, 0, -2> j) {
-  std::cout << j.get_exponential_value() << "*"
-            << KiloCaloriesPerJoule << "*" 
-            << NA
-            << "*" << internal::ExponentialNumber<-10>(1) << std::endl;
   internal::ExponentialNumber<EXP+9> en(j.get_exponential_value()
-                                        *KiloCaloriesPerJoule*NA
+                                        *KCALS_PER_JOULE*NA
                                         *internal::ExponentialNumber<-10>(1));
-  std::cout << "en is " << en << std::endl;
   return KCalPerMolUnit<EXP+9, 1, -1>(en);
 }
 
@@ -430,14 +425,14 @@ template <int EXP>
 MKSUnit<EXP-20, 2,1,0,-2>
 convert_to_mks(KCalPerMolUnit<EXP, 1, 0> o) {
   return MKSUnit<EXP-20, 2,1,0,-2>(o.get_exponential_value()
-                                   *JoulesPerKiloCalorie/NA);
+                                   *JOULES_PER_KCAL/NA);
 }
 
 template <int EXP>
 MKSUnit<EXP-10, 1,1,0,-2>
 convert_to_mks(KCalPerMolUnit<EXP, 1, -1> o) {
   return MKSUnit<EXP-10, 1,1,0,-2>(o.get_exponential_value()
-                                   *JoulesPerKiloCalorie/NA
+                                   *JOULES_PER_KCAL/NA
                                    *internal::ExponentialNumber<10>(1));
 }
 
