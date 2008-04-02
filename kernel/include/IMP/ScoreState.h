@@ -12,6 +12,7 @@
 #include "internal/Object.h"
 #include "internal/ObjectPointer.h"
 #include "Model.h"
+#include "DerivativeAccumulator.h"
 #include "VersionInfo.h"
 #include "utility.h"
 
@@ -51,7 +52,10 @@ public:
   virtual void update() = 0;
 
   //! Do any necessary updates after the model score is calculated.
-  virtual void after_evaluate() {}
+  /** \param[in] accpt The object used to scale derivatives in the score
+                       calculation, or NULL if derivatives were not requested.
+   */
+  virtual void after_evaluate(DerivativeAccumulator *accpt) {}
 
   //! Show the ScoreState
   /** The output of show may take several lines and should end in a newline.

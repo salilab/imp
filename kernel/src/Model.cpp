@@ -89,7 +89,7 @@ Float Model::evaluate(bool calc_derivs)
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
-    (*it)->after_evaluate();
+    (*it)->after_evaluate(accpt);
     IMP_LOG(VERBOSE, "." << std::flush);
   }
   IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);

@@ -14,7 +14,10 @@ class LoggingRestraint(IMP.Restraint):
         return IMP.VersionInfo("Ben Webb", "0.1")
 
     def evaluate(self, accum):
-        self.log.append('restraint')
+        if accum:
+            self.log.append('restraint-deriv')
+        else:
+            self.log.append('restraint-score')
         return 0.0
 
 class LoggingScoreState(IMP.ScoreState):
@@ -27,7 +30,7 @@ class LoggingScoreState(IMP.ScoreState):
     def update(self):
         self.log.append('update')
 
-    def after_evaluate(self):
+    def after_evaluate(self, accum):
         self.log.append('after_evaluate')
 
 class TestScoreState(IMP.test.TestCase):
@@ -42,7 +45,10 @@ class TestScoreState(IMP.test.TestCase):
         ss = LoggingScoreState(log)
         model.add_score_state(ss)
         model.evaluate(False)
-        self.assertEqual(log, ['update', 'restraint', 'after_evaluate'])
+        self.assertEqual(log, ['update', 'restraint-score', 'after_evaluate'])
+        log[:] = []
+        model.evaluate(True)
+        self.assertEqual(log, ['update', 'restraint-deriv', 'after_evaluate'])
 
     def test_score_state_show(self):
         """Test ScoreState::show()"""
