@@ -92,7 +92,7 @@ namespace IMP {
 %ignore IMP::internal::evaluate_distance_pair_score;
 
 /* Map C++ operators to equivalent Python methods */
-%rename(__getitem__) IMP::Vector3D::operator[];
+%rename(__getitem__) IMP::Vector3D::operator[] const;
 
 %feature("director");
 
