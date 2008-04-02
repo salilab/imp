@@ -13,12 +13,12 @@ class DistanceTests(IMP.test.TestCase):
         self.rsrs = []
 
         # create particles 0 - 1
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
-                                                    -3.0, 0.0, 0.0))
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
-                                                    0.0, 0.0, 0.0))
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
-                                                    4.0, 0.0, 0.0))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         -3.0, 0.0, 0.0))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         0.0, 0.0, 0.0))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         4.0, 0.0, 0.0))
 
         p1 = self.particles[0]
         self.radkey= IMP.FloatKey("radius")

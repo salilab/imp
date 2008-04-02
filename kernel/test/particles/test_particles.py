@@ -20,8 +20,8 @@ class ParticleTests(IMP.test.TestCase):
 
         # create particles 0 - 11
         for i in range(0,12):
-            self.particles.append(IMP.utils.XYZParticle(self.model,
-                                                        i*2, i*3, i*4))
+            self.particles.append(self.create_point_particle(self.model,
+                                                             i*2, i*3, i*4))
             p1 = self.particles[i]
             p1.add_attribute(radkey, 1.5 * i, False)
             p1.add_attribute(idkey, i)

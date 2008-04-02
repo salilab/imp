@@ -14,6 +14,16 @@ class TestCase(unittest.TestCase):
             msg = "%f != %f within %g" % (num1, num2, tolerance)
         self.assert_(diff < tolerance, msg)
 
+    def create_point_particle(self, model, x, y, z):
+        """Make a particle with optimizable x, y and z attributes, and
+           add it to the model."""
+        p = IMP.Particle()
+        model.add_particle(p)
+        p.add_attribute(IMP.FloatKey("x"), x, True)
+        p.add_attribute(IMP.FloatKey("y"), y, True)
+        p.add_attribute(IMP.FloatKey("z"), z, True)
+        return p
+
     def randomize_particles(self, particles, deviation):
         """Randomize the xyz coordinates of a list of particles"""
         for p in particles:
@@ -131,9 +141,12 @@ class TestCase(unittest.TestCase):
 
     def particle_distance(self, particles, idx0, idx1):
         """Return distance between two given particles"""
-        dx = particles[idx0].x() - particles[idx1].x()
-        dy = particles[idx0].y() - particles[idx1].y()
-        dz = particles[idx0].z() - particles[idx1].z()
+        dx = particles[idx0].get_value(IMP.FloatKey("x")) -\
+             particles[idx1].get_value(IMP.FloatKey("x"))
+        dy = particles[idx0].get_value(IMP.FloatKey("y")) -\
+             particles[idx1].get_value(IMP.FloatKey("y"))
+        dz = particles[idx0].get_value(IMP.FloatKey("z")) -\
+             particles[idx1].get_value(IMP.FloatKey("z"))
         return math.sqrt(dx*dx + dy*dy + dz*dz)
 
     def check_min_distance(self, pointA, pointB, dist):
