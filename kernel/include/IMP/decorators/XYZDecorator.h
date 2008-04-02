@@ -55,6 +55,10 @@ public:
   Float get_coordinate(int i) const {
     return get_particle()->get_value(get_coordinate_key(i));
   }
+  //! Get the ith coordinate derivative
+  Float get_coordinate_derivative(int i) const {
+    return get_particle()->get_derivative(get_coordinate_key(i));
+  }
   //! Add something to the derivative of the ith coordinate
   void add_to_coordinate_derivative(int i, Float v, 
                                     DerivativeAccumulator &d) {
