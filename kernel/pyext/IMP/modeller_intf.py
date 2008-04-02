@@ -156,24 +156,38 @@ def move_rigid_body_expr(model, expr, dx, dy, dz, mdl):
 
 def init_imp_from_modeller(model, particles, atoms):
     """Init IMP particles from Modeller atoms"""
+    xk= IMP.FloatKey("x")
+    yk= IMP.FloatKey("y")
+    zk= IMP.FloatKey("z")
     for (num, at) in enumerate(atoms):
-        particles.append(IMP.utils.XYZParticle(model, at.x, at.y, at.z))
+        p = IMP.Particle()
+        model.add_particle(p)
+        p.add_attribute(xk, at.x, True)
+        p.add_attribute(yk, at.y, True)
+        p.add_attribute(zk, at.z, True)
+        particles.append(p)
 
 
 def copy_imp_coords_to_modeller(particles, atoms):
     """Copy atom coordinates from IMP to Modeller"""
+    xkey = IMP.FloatKey("x")
+    ykey = IMP.FloatKey("y")
+    zkey = IMP.FloatKey("z")
     for (num, at) in enumerate(atoms):
-        at.x = particles[num].x()
-        at.y = particles[num].y()
-        at.z = particles[num].z()
+        at.x = particles[num].get_value(xkey)
+        at.y = particles[num].get_value(ykey)
+        at.z = particles[num].get_value(zkey)
 
 
 def copy_modeller_coords_to_imp(atoms, particles):
     """Copy atom coordinates from Modeller to IMP"""
+    xkey = IMP.FloatKey("x")
+    ykey = IMP.FloatKey("y")
+    zkey = IMP.FloatKey("z")
     for (num, at) in enumerate(atoms):
-        particles[num].set_x(at.x)
-        particles[num].set_y(at.y)
-        particles[num].set_z(at.z)
+        particles[num].set_value(xkey, at.x)
+        particles[num].set_value(ykey, at.y)
+        particles[num].set_value(zkey, at.z)
 
 
 def add_modeller_derivs_to_imp(atoms, particles):
@@ -186,10 +200,13 @@ def add_modeller_derivs_to_imp(atoms, particles):
 
 def get_imp_derivs(particles, dvx, dvy, dvz):
     """Move atom derivatives from IMP to Modeller"""
+    xkey = IMP.FloatKey("x")
+    ykey = IMP.FloatKey("y")
+    zkey = IMP.FloatKey("z")
     for idx in range(0, len(dvx)):
-        dvx[idx] = particles[idx].dx()
-        dvy[idx] = particles[idx].dy()
-        dvz[idx] = particles[idx].dz()
+        dvx[idx] = particles[idx].get_derivative(xkey)
+        dvy[idx] = particles[idx].get_derivative(ykey)
+        dvz[idx] = particles[idx].get_derivative(zkey)
 
 
 def show_modeller_and_imp(atoms, particles):

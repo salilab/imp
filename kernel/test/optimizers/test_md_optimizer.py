@@ -53,8 +53,8 @@ class MolecularDynamicsTests(IMP.test.TestCase):
 
         self.model = IMP.Model()
         self.particles = []
-        self.particles.append(IMP.utils.XYZParticle(self.model,
-                                                    -43.0, 65.0, 93.0))
+        self.particles.append(self.create_point_particle(self.model,
+                                                         -43.0, 65.0, 93.0))
         self.particles[-1].add_attribute(masskey, cmass, False)
         self.md = IMP.MolecularDynamics()
         self.md.set_model(self.model)
@@ -138,8 +138,8 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         # Averages for temperature only make sense if we have a comparatively
         # large number of particles:
         for i in range(500):
-            self.particles.append(IMP.utils.XYZParticle(self.model,
-                                                        -43.0, 65.0, 93.0))
+            self.particles.append(self.create_point_particle(self.model,
+                                                             -43.0, 65.0, 93.0))
             self.particles[-1].add_attribute(masskey, cmass, False)
         # Initial temperature should be zero:
         ekinetic = self.md.get_kinetic_energy()
@@ -161,8 +161,8 @@ class MolecularDynamicsTests(IMP.test.TestCase):
     def test_rescaling(self):
         """Test thermostatting by velocity rescaling"""
         for i in range(100):
-            self.particles.append(IMP.utils.XYZParticle(self.model,
-                                                        -43.0, 65.0, 93.0))
+            self.particles.append(self.create_point_particle(self.model,
+                                                             -43.0, 65.0, 93.0))
             self.particles[-1].add_attribute(masskey, cmass, False)
         self.md.assign_velocities(100.0)
         scaler = IMP.VelocityScalingOptimizerState(

@@ -22,10 +22,10 @@ def init_particle(particles,p_ind_,x_,y_,z_,r_=0.0,w_=1.0,protein_=1):
     p1.add_attribute(IMP.FloatKey("radius"), r_, False)
     p1.add_attribute(IMP.FloatKey("weight"), w_)
     p1.add_attribute(IMP.IntKey("id"), p_ind_)
-    particles[p_ind_].set_x(x_)
-    particles[p_ind_].set_y(y_)
-    particles[p_ind_].set_z(z_)
     p1.add_attribute(IMP.IntKey("protein"), protein_)
+    p1.set_value(IMP.FloatKey("x"), x_)
+    p1.set_value(IMP.FloatKey("y"), y_)
+    p1.set_value(IMP.FloatKey("z"), z_)
 
 class DerivativesTest(unittest.TestCase):
     """check the agreement of numerical and analytical

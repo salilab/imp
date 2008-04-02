@@ -11,10 +11,10 @@ class RestraintSetTests(IMP.test.TestCase):
         self.particles = []
 
         # create particles
-        self.particles.append(IMP.utils.XYZParticle(self.model,
-                                                    -43.0, 65.0, 93.0))
-        self.particles.append(IMP.utils.XYZParticle(self.model,
-                                                    20.0, 74.0, -80.0))
+        self.particles.append(self.create_point_particle(self.model,
+                                                         -43.0, 65.0, 93.0))
+        self.particles.append(self.create_point_particle(self.model,
+                                                         20.0, 74.0, -80.0))
 
         # separate particles by 5.0:
         self.distrsr = IMP.DistanceRestraint(IMP.Harmonic(5.0, 0.1),

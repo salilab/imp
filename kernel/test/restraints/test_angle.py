@@ -13,10 +13,12 @@ class AngleRestraintTests(IMP.test.TestCase):
            `scored_angle`."""
         model = IMP.Model()
         particles = IMP.Particles()
-        particles.append(IMP.utils.XYZParticle(model, -1.0, 0.0, 0.0))
-        particles.append(IMP.utils.XYZParticle(model, 0.0, 0.0, 0.0))
-        particles.append(IMP.utils.XYZParticle(model, -math.cos(system_angle),
-                                               math.sin(system_angle), 0.0))
+        particles.append(self.create_point_particle(model, -1.0, 0.0, 0.0))
+        particles.append(self.create_point_particle(model, 0.0, 0.0, 0.0))
+        particles.append(self.create_point_particle(model,
+                                                    -math.cos(system_angle),
+                                                    math.sin(system_angle),
+                                                    0.0))
         k = IMP.Harmonic.k_from_standard_deviation(0.1)
         r = IMP.DistanceRestraint(IMP.Harmonic(1.0, k),particles[0], particles[1])
         model.add_restraint(r)

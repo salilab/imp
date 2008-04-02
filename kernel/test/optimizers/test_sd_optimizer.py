@@ -1,7 +1,6 @@
 import unittest
 import IMP.utils
 import IMP.test, IMP
-import random
 
 class SteepestDescentTests(IMP.test.TestCase):
     """Test steepest descent optimizer"""
@@ -15,12 +14,12 @@ class SteepestDescentTests(IMP.test.TestCase):
         self.rsrs = []
 
         # create particles 0 - 1
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
-                                                    -43.0, 65.0, 93.0))
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
-                                                    20.0, 74.0, -80.0))
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model,
-                                                    4.0, -39.0, 26.0))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         -43.0, 65.0, 93.0))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         20.0, 74.0, -80.0))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         4.0, -39.0, 26.0))
         radkey= IMP.FloatKey("radius")
 
         p1 = self.particles[0]
@@ -69,10 +68,7 @@ class SteepestDescentTests(IMP.test.TestCase):
 
         # Start off with all particles in close proximity (but not actually
         # colocated, as the derivative of zero distance is zero):
-        for p in self.particles:
-            p.set_x(random.uniform(-0.01, 0.01))
-            p.set_y(random.uniform(-0.01, 0.01))
-            p.set_z(random.uniform(-0.01, 0.01))
+        self.randomize_particles(self.particles, .01)
 
         self.steepest_descent.optimize(50)
 

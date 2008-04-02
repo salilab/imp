@@ -31,12 +31,15 @@ class FittingTest(IMP.test.TestCase):
         self.particle_indexes = IMP.Ints()
 
         origin =  3.0
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 9.+origin,
-                                                    9.+origin, 9.+origin))
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 12.+origin,
-                                                    3.+origin, 3.+origin))
-        self.particles.append(IMP.utils.XYZParticle(self.imp_model, 3.+origin,
-                                                    12.+origin,12.+origin))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         9.+origin, 9.+origin,
+                                                         9.+origin))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         12.+origin, 3.+origin,
+                                                         3.+origin))
+        self.particles.append(self.create_point_particle(self.imp_model,
+                                                         3.+origin, 12.+origin,
+                                                         12.+origin))
         p1 = self.particles[0]
         p1.add_attribute(radius_key, 1.0)
         p1.add_attribute(weight_key, 1.0)
