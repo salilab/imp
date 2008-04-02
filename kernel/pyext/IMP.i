@@ -91,9 +91,6 @@ namespace IMP {
 /* Don't wrap internal functions */
 %ignore IMP::internal::evaluate_distance_pair_score;
 
-/* Map C++ operators to equivalent Python methods */
-%rename(__getitem__) IMP::Vector3D::operator[] const;
-
 %feature("director");
 
 %include "IMP/internal/Object.h"
@@ -119,7 +116,7 @@ namespace IMP {
 %include "IMP/SingletonScore.h"
 %include "IMP/TripletScore.h"
 %include "IMP/Particle.h"
-%include "IMP/Vector3D.h"
+%include "Vector3D.i"
 %include "IMP/DecoratorBase.h"
 %include "IMP/decorators/HierarchyDecorator.h"
 %include "IMP/decorators/MolecularHierarchyDecorator.h"

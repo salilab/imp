@@ -16,6 +16,8 @@ class Vector3DTests(IMP.test.TestCase):
         self.assertEqual(v[0], 1.0)
         self.assertEqual(v[1], 2.0)
         self.assertEqual(v[2], 3.0)
+        v[0] = 10.0
+        self.assertEqual(v[0], 10.0)
 
     def test_scalar_product(self):
         """Check Vector3D scalar product"""
