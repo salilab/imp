@@ -38,6 +38,12 @@ public:
     return vec_[i];
   }
 
+  //! \return A single component of this vector (0-2).
+  Float& operator[](unsigned int i) {
+    IMP_assert(i < 3, "Invalid component of vector requested");
+    return vec_[i];
+  }
+
   //! \return the scalar product of two vectors.
   /** \param[in] vec2 The other vector to use in the product.
    */
