@@ -20,8 +20,6 @@ namespace internal
 
 // make them doubles so we don't have to worry about digits
 
-//! Pi?
-static const double PI=M_PI;
 //! Avagadro's number
 extern IMPDLLEXPORT const ExponentialNumber<23> NA;
 //! Boltzmann constant in J/K
