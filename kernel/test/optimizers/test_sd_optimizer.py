@@ -2,6 +2,8 @@ import unittest
 import IMP.utils
 import IMP.test, IMP
 
+radkey = IMP.FloatKey("radius")
+
 class SteepestDescentTests(IMP.test.TestCase):
     """Test steepest descent optimizer"""
 
@@ -20,8 +22,6 @@ class SteepestDescentTests(IMP.test.TestCase):
                                                          20.0, 74.0, -80.0))
         self.particles.append(self.create_point_particle(self.imp_model,
                                                          4.0, -39.0, 26.0))
-        radkey= IMP.FloatKey("radius")
-
         p1 = self.particles[0]
         p1.add_attribute(radkey, 1.0, False)
         p1 = self.particles[1]
@@ -56,10 +56,11 @@ class SteepestDescentTests(IMP.test.TestCase):
         self.steepest_descent.optimize(50)
 
         for i in range(0, 2):
+            pi = self.particles[i]
             for j in range(i+1, 3):
-                dist = self.particle_distance(self.particles, i, j) \
-                       - self.particles[i].get_value(IMP.FloatKey("radius")) \
-                       - self.particles[j].get_value(IMP.FloatKey("radius"))
+                pj = self.particles[j]
+                dist = self.particle_distance(pi, pj) \
+                       - pi.get_value(radkey) - pj.get_value(radkey)
                 self.assertAlmostEqual(0.0, dist, places=2)
 
 
@@ -73,10 +74,11 @@ class SteepestDescentTests(IMP.test.TestCase):
         self.steepest_descent.optimize(50)
 
         for i in range(0, 2):
+            pi = self.particles[i]
             for j in range(i+1, 3):
-                dist = self.particle_distance(self.particles, i, j) \
-                       - self.particles[i].get_value(IMP.FloatKey("radius")) \
-                       - self.particles[j].get_value(IMP.FloatKey("radius"))
+                pj = self.particles[j]
+                dist = self.particle_distance(pi, pj) \
+                       - pi.get_value(radkey) - pj.get_value(radkey)
                 self.assertAlmostEqual(0.0, dist, places=2)
 
 

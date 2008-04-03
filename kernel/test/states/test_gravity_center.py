@@ -49,8 +49,7 @@ class TestGravityCenter(IMP.test.TestCase):
         opt.set_model(model)
         opt.set_threshold(1e-7)
         e = opt.optimize(100)
-        ps = (cen1, cen2)
-        dist = self.particle_distance(ps, 0, 1)
+        dist = self.particle_distance(cen1, cen2)
         self.assertInTolerance(0.2, dist, 1e-3)
 
 if __name__ == '__main__':
