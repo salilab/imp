@@ -13,6 +13,7 @@
 #include <sstream>
 #include <cmath>
 #include <iomanip>
+#include <limits>
 
 namespace IMP
 {
