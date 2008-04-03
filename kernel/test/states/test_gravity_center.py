@@ -43,7 +43,7 @@ class TestGravityCenter(IMP.test.TestCase):
         model = IMP.Model()
         (ps1, cen1, gc1) = self._make_gravity_center(model, 10.0, 20.0, 30.0)
         (ps2, cen2, gc2) = self._make_gravity_center(model, 0.0, 0.0, 0.0)
-        r = IMP.DistanceRestraint(IMP.Harmonic(0.2, 100.0), cen1, cen2)
+        r = IMP.DistanceRestraint(IMP.Harmonic(0.2, 7000.0), cen1, cen2)
         model.add_restraint(r)
         opt = IMP.ConjugateGradients()
         opt.set_model(model)
