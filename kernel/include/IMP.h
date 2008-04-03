@@ -72,6 +72,7 @@
 #include "IMP/score_states/QuadraticBipartiteNonbondedListScoreState.h"
 #include "IMP/score_states/QuadraticAllNonbondedListScoreState.h"
 #include "IMP/score_states/QuadraticNonbondedListScoreState.h"
+#include "IMP/score_states/GravityCenterScoreState.h"
 
 
 /**
