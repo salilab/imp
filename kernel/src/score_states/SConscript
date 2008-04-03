@@ -5,7 +5,7 @@ files = ['NonbondedListScoreState.cpp',
          'AllNonbondedListScoreState.cpp',
          'QuadraticBipartiteNonbondedListScoreState.cpp',
          'QuadraticAllNonbondedListScoreState.cpp',
-         'QuadraticNonbondedListScoreState.cpp']
+         'QuadraticNonbondedListScoreState.cpp', 'GravityCenterScoreState.cpp']
 
 files = [File(x) for x in files]
 Return('files')

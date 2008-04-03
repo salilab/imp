@@ -1,0 +1,66 @@
+/**
+ *  \file GravityCenterScoreState.cpp
+ *  \brief Set particle to match the gravity center of one or more particles.
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ */
+
+#include "IMP/score_states/GravityCenterScoreState.h"
+#include "IMP/decorators/XYZDecorator.h"
+#include "IMP/Vector3D.h"
+
+namespace IMP
+{
+
+IMP_LIST_IMPL(GravityCenterScoreState, Particle, particle, Particle*,
+              {if (0) std::cout << *obj << index;}, set_position());
+
+void GravityCenterScoreState::set_position()
+{
+  Vector3D cvect(0.0, 0.0, 0.0);
+
+  for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    XYZDecorator d = XYZDecorator::cast(*iter);
+    for (int i = 0; i < 3; ++i) {
+      cvect[i] += d.get_coordinate(i);
+    }
+  }
+
+  size_t nchildren = number_of_particles();
+  if (nchildren > 0) {
+    for (int i = 0; i < 3; ++i) {
+      cvect[i] /= nchildren;
+    }
+  }
+  XYZDecorator d = XYZDecorator::cast(center_);
+  d.set_coordinates_are_optimized(false);
+  for (int i = 0; i < 3; ++i) {
+    d.set_coordinate(i, cvect[i]);
+  }
+}
+
+void GravityCenterScoreState::
+transform_derivatives(DerivativeAccumulator *accpt)
+{
+  size_t nchildren = number_of_particles();
+  if (nchildren > 0) {
+    XYZDecorator d = XYZDecorator::cast(center_);
+    Vector3D deriv;
+    // divide derivatives equally between all children
+    for (int i = 0; i < 3; ++i) {
+      deriv[i] = d.get_coordinate_derivative(i) / nchildren;
+    }
+
+    for (ParticleIterator iter = particles_begin();
+         iter != particles_end(); ++iter) {
+      XYZDecorator d = XYZDecorator::cast(*iter);
+      for (int i = 0; i < 3; ++i) {
+        d.add_to_coordinate_derivative(i, deriv[i], *accpt);
+      }
+    }
+  }
+}
+
+
+} // namespace IMP

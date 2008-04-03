@@ -6,7 +6,7 @@ files = ['BondedListScoreState.h', 'NonbondedListScoreState.h',
          'BondDecoratorListScoreState.h', 'AllNonbondedListScoreState.h',
          'QuadraticBipartiteNonbondedListScoreState.h',
          'QuadraticAllNonbondedListScoreState.h',
-         'QuadraticNonbondedListScoreState.h']
+         'QuadraticNonbondedListScoreState.h', 'GravityCenterScoreState.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'score_states')
