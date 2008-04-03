@@ -420,17 +420,14 @@ g40:
 end:
   // If the 'best current estimate' is better than the current state, return
   // that:
-  bestf = get_score(float_indices, estimate,
-                    destimate);
+  bestf = get_score(float_indices, estimate, destimate);
   if (bestf < f) {
-    for (i = 0; i < n; i++) {
-      x[i] = estimate[i];
-    }
     f = bestf;
-  }
-  // Set final model state
-  for (i = 0; i < n; i++) {
-    set_value(float_indices[i], x[i]);
+  } else {
+    // Otherwise, restore the current state x (note that we already have the
+    // state x and its derivatives dx, so it's rather inefficient to
+    // recalculate the score here, but it's cleaner)
+    f = get_score(float_indices, x, dx);
   }
   update_states();
   return f;
