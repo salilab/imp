@@ -18,19 +18,23 @@ IMP_LIST_IMPL(GravityCenterScoreState, Particle, particle, Particle*,
 void GravityCenterScoreState::set_position()
 {
   Vector3D cvect(0.0, 0.0, 0.0);
+  bool do_weighting = (weightkey_ != FloatKey());
 
+  Float total_weight = 0.;
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
-    XYZDecorator d = XYZDecorator::cast(*iter);
+    Particle *p = *iter;
+    XYZDecorator d = XYZDecorator::cast(p);
+    Float weight = do_weighting ? p->get_value(weightkey_) : 1.0;
+    total_weight += weight;
     for (int i = 0; i < 3; ++i) {
-      cvect[i] += d.get_coordinate(i);
+      cvect[i] += d.get_coordinate(i) * weight;
     }
   }
 
-  size_t nchildren = number_of_particles();
-  if (nchildren > 0) {
+  if (total_weight != 0.0) {
     for (int i = 0; i < 3; ++i) {
-      cvect[i] /= nchildren;
+      cvect[i] /= total_weight;
     }
   }
   XYZDecorator d = XYZDecorator::cast(center_);
