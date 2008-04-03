@@ -3,6 +3,9 @@ import IMP
 import IMP.test
 
 masskey = IMP.FloatKey("mass")
+xkey = IMP.FloatKey("x")
+ykey = IMP.FloatKey("y")
+zkey = IMP.FloatKey("z")
 
 class TestGravityCenter(IMP.test.TestCase):
     """Tests for GravityCenterScoreState"""
@@ -41,9 +44,6 @@ class TestGravityCenter(IMP.test.TestCase):
                                                          30.0, weighted)
             gc.update()
             # The gravity center's xyz should not be optimizable:
-            xkey = IMP.FloatKey("x")
-            ykey = IMP.FloatKey("y")
-            zkey = IMP.FloatKey("z")
             self.assertEqual(center.get_is_optimized(xkey), False)
             self.assertEqual(center.get_is_optimized(ykey), False)
             self.assertEqual(center.get_is_optimized(zkey), False)
@@ -57,6 +57,8 @@ class TestGravityCenter(IMP.test.TestCase):
         model = IMP.Model()
         (ps1, cen1, gc1) = self._make_gravity_center(model, 10.0, 20.0, 30.0,
                                                      False)
+        # Should still work if some particles are fixed:
+        ps1[0].set_is_optimized(xkey, False)
         (ps2, cen2, gc2) = self._make_gravity_center(model, 0.0, 0.0, 0.0,
                                                      True)
         r = IMP.DistanceRestraint(IMP.Harmonic(0.2, 7000.0), cen1, cen2)
@@ -67,6 +69,7 @@ class TestGravityCenter(IMP.test.TestCase):
         e = opt.optimize(100)
         dist = self.particle_distance(cen1, cen2)
         self.assertInTolerance(0.2, dist, 1e-3)
+        self.assertEqual(ps1[0].get_value(xkey), 9.0)
 
 if __name__ == '__main__':
     unittest.main()
