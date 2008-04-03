@@ -32,12 +32,12 @@ class TestCase(unittest.TestCase):
             d.set_y(random.uniform(-deviation, deviation))
             d.set_z(random.uniform(-deviation, deviation))
 
-    def particle_distance(self, particles, idx0, idx1):
+    def particle_distance(self, p1, p2):
         """Return distance between two given particles"""
-        dx = particles[idx0].get_value(IMP.FloatKey("x")) -\
-             particles[idx1].get_value(IMP.FloatKey("x"))
-        dy = particles[idx0].get_value(IMP.FloatKey("y")) -\
-             particles[idx1].get_value(IMP.FloatKey("y"))
-        dz = particles[idx0].get_value(IMP.FloatKey("z")) -\
-             particles[idx1].get_value(IMP.FloatKey("z"))
+        xkey = IMP.FloatKey("x")
+        ykey = IMP.FloatKey("y")
+        zkey = IMP.FloatKey("z")
+        dx = p1.get_value(xkey) - p2.get_value(xkey)
+        dy = p1.get_value(ykey) - p2.get_value(ykey)
+        dz = p1.get_value(zkey) - p2.get_value(zkey)
         return math.sqrt(dx*dx + dy*dy + dz*dz)
