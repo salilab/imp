@@ -16,6 +16,16 @@
 %include "typemaps.i"
 %apply double &OUTPUT { IMP::Float& deriv };
 
+%pythoncode %{
+def check_particle(p, a):
+   if (not p.get_is_active()):
+      raise ValueError("Inactive Particle")
+   if (type(a)() == a):
+      raise IndexError("Cannot use default Index")
+   if (not p.has_attribute(a)):
+      raise IndexError("Particle does not have attribute")
+%}
+
 namespace IMP {
   %pythonprepend Model::add_particle %{
         args[1].thisown=0
@@ -85,6 +95,34 @@ namespace IMP {
   %}
   %pythonprepend MonteCarlo::set_local_optimizer %{
         args[1].thisown=0
+  %}
+  %pythonprepend Particle::get_value %{
+        check_particle(args[0], args[1])
+  %}
+  %pythonprepend Particle::get_is_optimized %{
+        check_particle(args[0], args[1])
+  %}
+  %pythonprepend Particle::set_is_optimized %{
+        check_particle(args[0], args[1])
+  %}
+  %pythonprepend Particle::set_value %{
+        check_particle(args[0], args[1])
+  %}
+  %pythonprepend Particle::add_to_derivative %{
+        check_particle(args[0], args[1])
+  %}
+  %pythonprepend Particle::get_derivative %{
+        check_particle(args[0], args[1])
+  %}
+  %pythonprepend Particle::add_attribute %{
+        # special case since we don't want to check that the attribute is there
+        if (not args[0].get_is_active()):
+           raise ValueError("Inactive Particle")
+        elif (type(args[1])() == args[1]):
+           raise IndexError("Cannot use default Index")
+        elif (args[0].has_attribute(args[1])):
+           raise IndexError("Particle already has attribute")
+
   %}
 }
 
