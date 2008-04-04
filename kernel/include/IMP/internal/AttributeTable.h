@@ -46,26 +46,21 @@ public:
   typedef Key<T> Key;
   AttributeTable() {} 
   const Value get_value(Key k) const {
-    IMP_check(contains(k),
+    IMP_assert(contains(k),
               "Attribute \"" << k.get_string()
-              << "\" not found in table.",
-              IndexException((std::string("Invalid attribute \"")
-                              + k.get_string() + "\" requested").c_str()));
+              << "\" not found in table.");
     return map_[k.get_index()].second;
   }
 
   Value& get_value(Key k) {
-    IMP_check(contains(k),
+    IMP_assert(contains(k),
               "Attribute \"" << k.get_string()
-              << "\" not found in table.",
-              IndexException((std::string("Invalid attribute \"")
-                              + k.get_string() + "\" requested").c_str()));
+              << "\" not found in table.");
     return map_[k.get_index()].second;
   }
   void insert(Key k, Value v);
   bool contains(Key k) const {
-    IMP_check(k != Key(), "Can't search for default key",
-              IndexException("Bad index"));
+    IMP_assert(k != Key(), "Can't search for default key");
     return k.get_index() < map_.size()
            && map_[k.get_index()].first;
   }
@@ -109,9 +104,8 @@ IMP_OUTPUT_OPERATOR_2(AttributeTable)
 template <class T, class VT>
 inline void AttributeTable<T, VT>::insert(Key k, Value v)
 {
-  IMP_check(k != Key(),
-            "Can't insert default key",
-            IndexException("bad index"));
+  IMP_assert(k != Key(),
+            "Can't insert default key");
   if (map_.size() <= k.get_index()) {
     map_.resize(k.get_index()+1);
   }
