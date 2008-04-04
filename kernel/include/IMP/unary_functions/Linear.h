@@ -14,16 +14,17 @@ namespace IMP
 
 //! Linear function
 /** \ingroup unaryf
-    \note there is no offset since that is not meaningful for optimization
+    \note The offset is not meaningful for optimization, but does
+    make the displayed energies nicer.
  */
 class Linear : public UnaryFunction
 {
 public:
-  Linear(Float slope) : slope_(slope) {}
+  Linear(Float slope, Float offset=0) : slope_(slope), offset_(offset) {}
 
   virtual ~Linear() {}
 
-  virtual Float evaluate(Float feature) { return feature*slope_; }
+  virtual Float evaluate(Float feature) { return (feature-offset_)*slope_; }
 
   virtual Float evaluate_deriv(Float feature, Float& deriv) {
     deriv= slope_;
@@ -31,11 +32,11 @@ public:
   }
 
   void show(std::ostream &out=std::cout) const {
-    out << "Linear: " << slope_ << std::endl;
+    out << "Linear: " << slope_ << ", " << offset_ << std::endl;
   }
 
 protected:
-  Float slope_;
+  Float slope_, offset_;
 };
 
 } // namespace IMP

@@ -7,15 +7,16 @@ class LinearTests(IMP.test.TestCase):
 
     def test_values(self):
         """Test that linear values are correct"""
-        for slope in (0.0, -5.0, 3.5):
-            func = IMP.Linear(slope)
-            for i in range(15):
-                val = -10.0 + 3.5 * i
-                scoreonly = func.evaluate(val)
-                score, deriv = func.evaluate_deriv(val)
-                self.assertEqual(score, scoreonly)
-                self.assertInTolerance(score, val * slope, 0.001)
-                self.assertInTolerance(deriv, slope, 0.001)
+        for offset in (0.0, -1.0):
+            for slope in (0.0, -5.0, 3.5):
+                func = IMP.Linear(slope, offset)
+                for i in range(15):
+                    val = -10.0 + 3.5 * i
+                    scoreonly = func.evaluate(val)
+                    score, deriv = func.evaluate_deriv(val)
+                    self.assertEqual(score, scoreonly)
+                    self.assertInTolerance(score, (val - offset) * slope, 0.001)
+                    self.assertInTolerance(deriv, slope, 0.001)
 
     def test_show(self):
         """Check Linear::show() method"""
