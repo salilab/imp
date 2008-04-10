@@ -181,7 +181,7 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         env['PYTHON'] = 'python'
         env['PATHSEP'] = os.path.pathsep
     try:
-        env['SHLINKFLAGS'].remove('-no_archive')
+        env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace('-no_archive', '')
     except ValueError:
         pass
     env.Prepend(SCANNERS = _SWIGScanner)
