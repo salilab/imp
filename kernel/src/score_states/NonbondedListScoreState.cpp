@@ -48,5 +48,5 @@ void NonbondedListScoreState::show(std::ostream &out) const
 IMP_CONTAINER_IMPL(NonbondedListScoreState, BondedListScoreState,
                    bonded_list, BondedListIndex, {
                      if (0) std::cout <<*obj;
-                   });
+                   },,);
 } // namespace IMP

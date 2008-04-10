@@ -27,36 +27,13 @@ void Particle::set_model(Model *md, ParticleIndex pi)
 {
   model_ = md;
   pi_ = pi;
+  IMP_assert(model_==NULL || model_->get_particle(pi_)== this,
+             "Set_model called with inconsistent data");
 }
 
 void Particle::set_is_active(const bool is_active)
 {
   is_active_ = is_active;
-}
-
-
-void Particle::add_attribute(FloatKey name, const Float value,
-                             bool is_optimized)
-{
-  IMP_assert(model_ ,
-             "Particle must be added to Model before an attributes are added");
-  float_indexes_.insert(name, internal::FloatData(value, is_optimized));
-}
-
-
-void Particle::add_attribute(IntKey name, const Int value)
-{
-  IMP_assert(model_,
-             "Particle must be added to Model before an attributes are added");
-  int_indexes_.insert(name, value);
-}
-
-
-void Particle::add_attribute(StringKey name, const String value)
-{
-  IMP_assert(model_,
-             "Particle must be added to Model before an attributes are added");
-  string_indexes_.insert(name, value);
 }
 
 

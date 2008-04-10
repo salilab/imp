@@ -31,6 +31,7 @@ InitCheck init_check_;
 IMP_DEFINE_KEY_TYPE(IntKey, Int);
 IMP_DEFINE_KEY_TYPE(FloatKey, Float);
 IMP_DEFINE_KEY_TYPE(StringKey, String);
+IMP_DEFINE_KEY_TYPE(ParticleKey, Particle);
 
 IMP_DEFINE_KEY_TYPE(AtomType, AtomTypeTag);
 IMP_DEFINE_KEY_TYPE(ResidueType, ResidueTypeTag);

@@ -45,6 +45,15 @@ inline std::ostream &operator<<(std::ostream &out, const FloatData &d)
   return out;
 }
 
+template <class It>
+void check_particles_active(It b, It e, std::string msg)
+{
+  for (It c= b; c != e; ++c) {
+    IMP_check((*c)->get_is_active(), msg,
+              InactiveParticleException(msg));
+  }
+}
+
 } // namespace internal
 
 #endif
@@ -60,7 +69,7 @@ class Model;
     (set_is_optimized method).
     \ingroup kernel
  */
-class IMPDLLEXPORT Particle : public internal::Object
+class IMPDLLEXPORT Particle : public internal::RefCountedObject
 {
   friend class Model;
 public:
@@ -184,6 +193,34 @@ public:
    */
   void set_value(StringKey name, String value);
 
+
+  //! Add a Particle attribute to this particle.
+  /** \param[in] name Name of the attribute being added.
+      \param[in] value Initial value of the attribute.
+   */
+  void add_attribute(ParticleKey name, Particle* value);
+
+  //! Does particle have a Particle attribute with the given name.
+  /** \param[in] name Name of the attribute being checked.
+      \return true if Particle attribute exists in this particle.
+   */
+  bool has_attribute(ParticleKey name) const;
+
+  //! Get the specified Particle for this particle.
+  /** \param[in] name Name of the attribute being retrieved.
+      \exception std::out_of_range attribute does not exist.
+      \return value of the attribute.
+   */
+  Particle* get_value(ParticleKey name) const;
+
+  //! Set the specified Particle for this particle.
+  /** \param[in] name Name of the attribute being set.
+      \param[in] value Value of the attribute being set.
+      \exception std::out_of_range attribute does not exist.
+   */
+  void set_value(ParticleKey name, Particle* value);
+
+
   //! Set whether the particle is active.
   /** Restraints referencing the particle are only evaluated for 'active'
       particles.
@@ -232,6 +269,12 @@ public:
     return string_indexes_.get_keys();
   }
 
+  //! See get_particle_attributes
+  std::vector<ParticleKey> get_particle_attributes() const {
+    return particle_indexes_.get_keys();
+  }
+
+
   //! An iterator through the keys of the float attributes of this particle
   typedef internal::AttributeTable<Float, 
     internal::FloatData>::AttributeKeyIterator
@@ -266,6 +309,19 @@ public:
     return string_indexes_.attribute_keys_end();
   }
 
+  //! An iterator through the keys of the Particle attributes of this particle
+  typedef internal::AttributeTable<Particle*,
+    internal::ObjectPointer<Particle, true> >
+    ::AttributeKeyIterator ParticleKeyIterator;
+  //! Iterate through the keys of Particle attributes of the particle
+  ParticleKeyIterator particle_keys_begin() const {
+    return particle_indexes_.attribute_keys_begin();
+  }
+  ParticleKeyIterator particle_keys_end() const {
+    return particle_indexes_.attribute_keys_end();
+  }
+
+
 protected:
   void zero_derivatives();
 
@@ -284,6 +340,9 @@ protected:
   internal::AttributeTable<Int, Int>  int_indexes_;
   // string attributes associated with the particle
   internal::AttributeTable<String, String>  string_indexes_;
+  // particle attributes associated with the particle
+  internal::AttributeTable<Particle*, internal::ObjectPointer<Particle,true> >
+    particle_indexes_;
 
   ParticleIndex pi_;
 };
@@ -391,6 +450,65 @@ inline void Particle::set_value(StringKey name, String value)
             InactiveParticleException());
   string_indexes_.get_value(name)= value;
 }
+
+
+inline bool Particle::has_attribute(ParticleKey name) const
+{
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            InactiveParticleException());
+  return particle_indexes_.contains(name);
+}
+
+
+
+inline Particle* Particle::get_value(ParticleKey name) const
+{
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            InactiveParticleException());
+  return particle_indexes_.get_value(name).get();
+}
+
+
+inline void Particle::set_value(ParticleKey name, Particle* value)
+{
+  IMP_check(get_is_active(), "Do not touch inactive particles",
+            InactiveParticleException());
+  particle_indexes_.get_value(name)= value;
+}
+
+
+void inline Particle::add_attribute(FloatKey name, const Float value,
+                                    bool is_optimized)
+{
+  IMP_assert(model_ ,
+             "Particle must be added to Model before attributes are added");
+  float_indexes_.insert(name, internal::FloatData(value, is_optimized));
+}
+
+
+void inline Particle::add_attribute(IntKey name, const Int value)
+{
+  IMP_assert(model_,
+             "Particle must be added to Model before attributes are added");
+  int_indexes_.insert(name, value);
+}
+
+
+void inline Particle::add_attribute(StringKey name, const String value)
+{
+  IMP_assert(model_,
+             "Particle must be added to Model before attributes are added");
+  string_indexes_.insert(name, value);
+}
+
+void inline Particle::add_attribute(ParticleKey name, Particle* value)
+{
+  IMP_assert(model_,
+             "Particle must be added to Model before attributes are added");
+  particle_indexes_.insert(name,
+                           internal::ObjectPointer<Particle, true>(value));
+}
+
 
 } // namespace IMP
 
