@@ -20,11 +20,11 @@ static void graph_add_edge_key(unsigned int i, const GraphData &d)
   while (i >= d.edge_keys_.size()) {
     std::ostringstream oss;
     oss << d.prefix_ << " edge " << i;
-    d.edge_keys_.push_back(IntKey(oss.str().c_str()));
+    d.edge_keys_.push_back(ParticleKey(oss.str().c_str()));
   }
 }
 
-static IntKey graph_get_edge_key(unsigned int i, const GraphData &d)
+static ParticleKey graph_get_edge_key(unsigned int i, const GraphData &d)
 {
   if (i >= d.edge_keys_.size()) graph_add_edge_key(i, d);
   return d.edge_keys_[i];
@@ -35,16 +35,16 @@ Particle* graph_connect(Particle* a, Particle* b, const GraphData &d)
   Model *m= a->get_model();
   Particle *p= new Particle();
   ParticleIndex pi=m->add_particle(p);
-  p->add_attribute(d.node_keys_[0], a->get_index().get_index());
-  p->add_attribute(d.node_keys_[1], b->get_index().get_index());
+  p->add_attribute(d.node_keys_[0], a);
+  p->add_attribute(d.node_keys_[1], b);
   for (int i=0; i< 2; ++i) {
     Particle *cp=((i==0)?a:b);
     int nc= graph_get_number_of_edges(cp, d);
-    IntKey nm=graph_get_edge_key(nc, d);
+    ParticleKey nm=graph_get_edge_key(nc, d);
     if (!cp->has_attribute(nm)) {
-      cp->add_attribute(nm, p->get_index().get_index());
+      cp->add_attribute(nm, p);
     } else {
-      cp->set_value(nm, p->get_index().get_index());
+      cp->set_value(nm, p);
     }
     if (cp->has_attribute(d.num_edges_key_)) {
       cp->set_value(d.num_edges_key_, nc+1);
@@ -70,30 +70,31 @@ void graph_disconnect(Particle* e, const GraphData &d)
         IMP_assert(shift==0, "duplicate edges found in graph_base");
         shift=-1;
       } else {
-        Int v = p[i]->get_value(graph_get_edge_key(j, d));
+        Particle* v = p[i]->get_value(graph_get_edge_key(j, d));
         p[i]->set_value(graph_get_edge_key(j+shift, d), v);
       }
     }
-    p[i]->set_value(graph_get_edge_key(nc-1, d), -1);
+    p[i]->set_value(graph_get_edge_key(nc-1, d), NULL);
     IMP_assert(shift==-1, "no edge found");
     IMP_assert(nc > 0, "Too few edges");
     p[i]->set_value(d.num_edges_key_, nc-1);
   }
   e->set_is_active(false);
+  e->get_model()->remove_particle(e->get_index());
 }
 
 
 
 Particle* graph_get_edge(Particle* a, int i, const GraphData &d)
 {
-  IntKey nm= graph_get_edge_key(i, d);
-  return a->get_model()->get_particle(ParticleIndex(a->get_value(nm)));
+  ParticleKey nm= graph_get_edge_key(i, d);
+  return a->get_value(nm);
 }
 
 Particle* graph_get_neighbor(Particle* a, int i, const GraphData &d)
 {
-  IntKey nm= graph_get_edge_key(i, d);
-  Particle *edge= a->get_model()->get_particle(ParticleIndex(a->get_value(nm)));
+  ParticleKey nm= graph_get_edge_key(i, d);
+  Particle *edge= a->get_value(nm);
   if (graph_get_node(edge, 0, d) == a) {
     return graph_get_node(edge, 1, d);
   } else {
@@ -115,7 +116,7 @@ unsigned int graph_get_number_of_edges(Particle *a, const GraphData &d)
 Particle* graph_get_node(Particle *a, int i, const GraphData &d)
 {
   IMP_assert(i<2, "bad node requested");
-  return a->get_model()->get_particle(a->get_value(d.node_keys_[i]));
+  return a->get_value(d.node_keys_[i]);
 }
 
 bool graph_is_edge(Particle *a, const GraphData &d)
