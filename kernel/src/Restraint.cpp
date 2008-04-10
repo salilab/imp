@@ -60,7 +60,7 @@ void Restraint::show(std::ostream& out) const
 
 
 // The index line is to disable a warning
-IMP_LIST_IMPL(Restraint, Particle, particle, Particle*, {
+IMP_LIST_IMPL(Restraint, Particle, particle,Particle*,  {
     IMP_assert(number_of_particles()==0 
                || obj->get_model() == (*particles_begin())->get_model(),
                "All particles in Restraint must belong to the "

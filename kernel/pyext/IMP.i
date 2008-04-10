@@ -27,9 +27,6 @@ def check_particle(p, a):
 %}
 
 namespace IMP {
-  %pythonprepend Model::add_particle %{
-        args[1].thisown=0
-  %}
   %pythonprepend Model::add_restraint %{
         args[1].thisown=0
   %}
@@ -126,12 +123,17 @@ namespace IMP {
   %}
 }
 
+%feature("ref")   Particle "$this->ref();"
+%feature("unref") Particle "$this->unref(); if (! $this->get_has_ref()) delete $this;"
+
+
 /* Don't wrap internal functions */
 %ignore IMP::internal::evaluate_distance_pair_score;
 
 %feature("director");
 
 %include "IMP/internal/Object.h"
+%include "IMP/internal/RefCountedObject.h"
 %include "IMP/Index.h"
 %include "IMP/base_types.h"
 %include "IMP/VersionInfo.h"

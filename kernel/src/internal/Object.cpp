@@ -7,7 +7,7 @@
  */
 
 #include "IMP/internal/Object.h"
-#include "IMP/exception.h"
+#include "IMP/internal/RefCountedObject.h"
 
 namespace IMP
 {
@@ -15,10 +15,12 @@ namespace IMP
 namespace internal
 {
 
+unsigned int RefCountedObject::live_objects_=0;
+
 Object::Object()
 {
   check_value_=111111111;
-  is_owned_=false;
+  count_=0;
 }
 
 Object::~Object()

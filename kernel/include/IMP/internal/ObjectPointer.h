@@ -13,8 +13,9 @@
 #include "Object.h"
 #include "../macros.h"
 #include "../exception.h"
-#include <boost/static_assert.hpp>
 
+#include <boost/static_assert.hpp>
+#include <boost/type_traits.hpp>
 
 namespace IMP
 {
@@ -26,16 +27,16 @@ namespace internal
 /** The pointer is NULL initialized and checks accesses to throw an exception
     rather than core dump on an invalid access. 
     \param[in] O The type of IMP::Object-derived object to point to
-    \param[in] OWNS Whether this pointer own the object. If it does, the object
-    is destroyed when the pointer is. If OWNS is true, the pointer is non
-    copyable.
-
+    \param[in] RC If true, the pointer is refcounted.
  */
-template <class O, bool OWNS>
+template <class O, bool RC>
 class ObjectPointer
 {
-  typedef ObjectPointer<O, OWNS> This;
+  typedef ObjectPointer<O, RC> This;
   O* o_;
+
+  // Enforce that ref counted objects are ref counted
+  BOOST_STATIC_ASSERT((RC || !boost::is_base_of<RefCountedObject, O>::value));
 
   void audit() const {
     IMP_assert(o_ != NULL, "Pointer is NULL");
@@ -47,27 +48,34 @@ class ObjectPointer
   }
   typedef bool (This::*unspecified_bool)() const;
 
+  void ref() {
+    if (RC && o_) o_->ref();
+  }
+
+  void unref() {
+    if (RC && o_) {
+      o_->unref();
+      if (!o_->get_has_ref()) delete o_;
+    }
+  }
+
 public:
   ObjectPointer(const ObjectPointer &o): o_(o.o_) {
-    BOOST_STATIC_ASSERT(!OWNS);
+    ref();
   }
   ObjectPointer& operator=(const ObjectPointer &o){
-    BOOST_STATIC_ASSERT(!OWNS);
+    unref();
     o_=o.o_;
+    ref();
     return *this;
   }
   ObjectPointer(): o_(NULL) {}
   explicit ObjectPointer(O* o): o_(o) {
     IMP_assert(o != NULL, "Can't initialize with NULL pointer");
-#ifndef NDEBUG
-    if (OWNS) {
-      IMP_assert(!o->get_is_owned(), "Object already owned by another pointer");
-      o->set_is_owned(true);
-    }
-#endif
+    ref();
   }
   ~ObjectPointer(){
-    if (OWNS) delete o_;
+    unref();
   }
   const O& operator*() const {
     audit();
@@ -90,11 +98,9 @@ public:
     return o_;
   }
   void operator=(O* o) {
-    IMP_check(!OWNS || !o || !o->get_is_owned(),
-              "Cannot add the same object to multiple containers.",
-              ValueException("Cannot add the same object more than once"));
-    if (OWNS) delete o_;
+    unref();
     o_=o;
+    ref();
   }
   IMP_COMPARISONS_1(o_);
 

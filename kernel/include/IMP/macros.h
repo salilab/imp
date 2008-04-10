@@ -225,19 +225,17 @@ template <class L>                                                      \
       \param[in] obj a vector of pointers
   */                                                                    \
   void add_##lcname##s(const std::vector<Ucname*>& obj);                \
+  /** \short Clear the contents of the container */                     \
+  void clear_##lcname##s();                                             \
+  /** \short return the number of objects*/                             \
+  unsigned int number_of_##lcname##s() const {                          \
+    return lcname##_vector_.size();}                                    \
   /** \short Get object refered to by the index
       \throws IndexException if the index is out of range
    */                                                                   \
   Data get_##lcname(IndexType i) const {                                \
     return lcname##_vector_[i];                                         \
   }                                                                     \
-  /** \short return the number of objects*/                             \
-  unsigned int number_of_##lcname##s() const {                          \
-    return lcname##_vector_.size();}                                    \
-  /** \short Get a container of all the objects. 
-     This is for Python as the container can be used like a Python list*/\
-  const Ucname##s &get_##lcname##s() const {                             \
-    return static_cast< const Ucname##s &>(lcname##_vector_);}           \
   /** \short An iterator through the objects.
       The value type is a pointer.*/                                     \
   typedef Container::iterator Ucname##Iterator;                          \
@@ -260,11 +258,10 @@ template <class L>                                                      \
 #define IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, IndexType, \
                                 Init_obj, Onchanged)                    \
   IndexType Class::add_##lcname(Data obj) {                             \
-    unsigned int osz=lcname##_vector_.size();                           \
-    IndexType index(osz);                                               \
-    lcname##_vector_.push_back(obj);                                    \
+    IndexType index= lcname##_vector_.push_back(obj);                   \
     Init_obj;                                                           \
     Onchanged;                                                          \
+    if (false) std::cout << index;                                      \
     return index;                                                       \
   }                                                                     \
   void Class::add_##lcname##s(const std::vector<Data> &objs) {          \
@@ -275,9 +272,16 @@ template <class L>                                                      \
       Data obj= lcname##_vector_[osz+i];                                \
       IndexType index(osz+i);                                           \
       Init_obj;                                                         \
+      if (false) std::cout << *obj << index;                                  \
     }                                                                   \
     Onchanged;                                                          \
-  }
+  }                                                                     \
+  /** \short Clear the contents of the container */                     \
+  void Class::clear_##lcname##s(){                                      \
+    lcname##_vector_.clear();                                           \
+    Onchanged;                                                          \
+  }                                                                     \
+
 
 //! Use this to add a container of IMP objects
 /**
@@ -295,10 +299,13 @@ template <class L>                                                      \
  */
 #define IMP_LIST(protection, Ucname, lcname, Data)                      \
   protection:                                                           \
-  /** \short Clear the contents of the container */                     \
-  void clear_##lcname##s();                                             \
   /** \short Remove any occurences of d from the container */           \
   void erase_##lcname(Data d);                                          \
+  /** \short Get a container of all the objects. 
+     This is for Python as the container can be used like a Python list*/\
+  const Ucname##s &get_##lcname##s() const {                             \
+    return static_cast< const Ucname##s &>(lcname##_vector_);           \
+  }                                                                     \
   IMP_CONTAINER_CORE(protection, Ucname, lcname, Data, unsigned int,    \
                      IMP::internal::Vector<Data>)
 
@@ -314,12 +321,7 @@ template <class L>                                                      \
 #define IMP_LIST_IMPL(Class, Ucname, lcname, Data, init, OnChanged)     \
   IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, unsigned int,    \
                           init, OnChanged)                              \
-  /** \short Clear the contents of the container */                     \
-  void Class::clear_##lcname##s(){                                      \
-    lcname##_vector_.clear();                                           \
-    OnChanged;                                                          \
-  }                                                                     \
-  /** \short Remove any occurences of d from the container */           \
+ /** \short Remove any occurences of d from the container */           \
   void Class::erase_##lcname(Data d) {                                  \
     for (Ucname##Iterator it= lcname##s_begin();                        \
          it != lcname##s_end(); ++it) {                                 \
@@ -344,15 +346,25 @@ template <class L>                                                      \
    \note The type Ucnames must be declared and be a vector of
    Data.
    \note these containers are always public
- */
-#define IMP_CONTAINER(Ucname, lcname, IndexType)                \
-  private:                                                      \
-  /** \internal 
-      This is an implementation detail.*/                       \
-  typedef IMP::internal::ObjectContainer<Ucname, IndexType>     \
-  Ucname##Container;                                            \
-  IMP_CONTAINER_CORE(public, Ucname, lcname, Ucname*, IndexType,\
-                     Ucname##Container)
+*/
+#define IMP_CONTAINER(Ucname, lcname, IndexType)            \
+  public:                                                   \
+  void remove_##lcname(IndexType i) ;                       \
+  /** \short Get object refered to by the index
+      \throws IndexException if the index is out of range
+  */                                                                    \
+  Ucname##s get_##lcname##s() const {                                   \
+    Ucname##s ret( lcname##_vector_.begin(),                            \
+                   lcname##_vector_.end());                             \
+    return ret;                                                         \
+  }                                                                     \
+private:                                                                \
+/** \internal 
+    This is an implementation detail.*/                                 \
+typedef IMP::internal::ObjectContainer<Ucname, IndexType>               \
+Ucname##Container;                                                      \
+IMP_CONTAINER_CORE(public, Ucname, lcname, Ucname*, IndexType,          \
+                   Ucname##Container)
 
 
 
@@ -362,10 +374,19 @@ template <class L>                                                      \
    IMP_CONTAINER.
    \param[in] init Code to modify the passed in object. The object is obj
    its index index.
+   \param[in] onremove Code to execute when an object is removed. The object
+   being removed is obj.
  */
-#define IMP_CONTAINER_IMPL(Class, Ucname, lcname, IndexType, init) \
+#define IMP_CONTAINER_IMPL(Class, Ucname, lcname, IndexType, init,      \
+onchanged, onremove)                                                    \
+  void Class::remove_##lcname(IndexType i) {                            \
+    Ucname* obj= lcname##_vector_[i];                                   \
+    onremove;                                                           \
+    lcname##_vector_.remove(i);                                         \
+    if (false) std::cout << *obj;                                       \
+  }                                                                     \
   IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Ucname*, IndexType,    \
-                          init,)
+                          init,onchanged)
 
 
 

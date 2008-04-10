@@ -10,6 +10,7 @@
 
 #include "IMP_config.h"
 #include "Index.h"
+#include "internal/Vector.h"
 
 #include <string>
 #include <iostream>
@@ -62,7 +63,9 @@ typedef Index<OptimizerStateTag> OptimizerStateIndex;
 class Particle;
 //! A class which is used for representing collections of particles
 /**
-   We need this to have a uniform return type for python.
+   We need this to have a uniform return type for python. 
+   \todo It would be nice to use internal::Vector instead, but that
+   is not as pretty for Python.
  */
 typedef std::vector<Particle*> Particles;
 typedef std::pair<Particle*, Particle*> ParticlePair;
@@ -113,6 +116,7 @@ template <class T> class Key;
     Name##_attribute_table_index_=next_attribute_table_index_++;        \
   }
 
+class Particle;
 
 //! The type used to identify float attributes in the Particles
 IMP_DECLARE_KEY_TYPE(FloatKey, Float);
@@ -120,6 +124,9 @@ IMP_DECLARE_KEY_TYPE(FloatKey, Float);
 IMP_DECLARE_KEY_TYPE(IntKey, Int);
 //! The type used to identify string attributes in the Particles
 IMP_DECLARE_KEY_TYPE(StringKey, String);
+//! The type used to identify a particle attribute in the Particles
+IMP_DECLARE_KEY_TYPE(ParticleKey, Particle*)
+
 
 struct AtomTypeTag{};
 struct ResidueTypeTag{};

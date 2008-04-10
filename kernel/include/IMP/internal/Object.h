@@ -10,6 +10,7 @@
 #define __IMP_OBJECT_H
 
 #include "../log.h"
+#include "../exception.h"
 
 namespace IMP
 {
@@ -24,6 +25,10 @@ namespace internal
     \note Do not use NDEBUG to remove check_value_ as that changes the memory
     layout and causes bad things to happen. It should get wrapped in some
     sort of macro later.
+
+    \note This has ref and unref methods to simplifity ObjectContainer.
+    For Object, the reference count can be at most 1.
+
     \internal
  */
 class IMPDLLEXPORT Object
@@ -36,14 +41,26 @@ public:
   //! Throw an assertion if the object has been freed
   void assert_is_valid() const;
 
-  bool get_is_owned() const {return is_owned_;}
-  void set_is_owned(bool tf) {is_owned_=tf;}
+  bool get_has_ref() const {return count_ != 0;}
+  void ref() {
+    assert_is_valid();
+    IMP_assert(count_== 0,
+               "Non-reference counted objects can only belong to "      \
+               "one container.");
+    ++count_;
+  }
+  void unref() {
+    assert_is_valid();
+    IMP_assert(count_ ==1, "Too many unrefs on object");
+    --count_;
+  }
+ protected:
+  int count_;
 private:
   Object(const Object &o){}
   const internal::Object& operator=(const Object &o) {return *this;}
 
   double check_value_;
-  bool is_owned_;
 };
 
 } // namespace internal

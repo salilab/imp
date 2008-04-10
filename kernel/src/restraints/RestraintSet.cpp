@@ -34,7 +34,7 @@ RestraintSet::~RestraintSet()
 }
 
 IMP_CONTAINER_IMPL(RestraintSet, Restraint, restraint, RestraintIndex, 
-                   obj->set_model(get_model()););
+                   obj->set_model(get_model());,,);
 
 
 

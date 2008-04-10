@@ -39,6 +39,6 @@ void Optimizer::update_states()
 
 
 IMP_CONTAINER_IMPL(Optimizer, OptimizerState, optimizer_state,
-                   OptimizerStateIndex, obj->set_optimizer(this));
+                   OptimizerStateIndex, obj->set_optimizer(this),,);
 
 }  // namespace IMP

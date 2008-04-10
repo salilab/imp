@@ -21,7 +21,7 @@ namespace IMP
 class IMPDLLEXPORT DecoratorBase
 {
 protected:
-  internal::ObjectPointer<Particle, false> particle_;
+  internal::ObjectPointer<Particle, true> particle_;
   DecoratorBase(Particle *p): particle_(p) {}
   bool is_default() const {
     return !particle_;
