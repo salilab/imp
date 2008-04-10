@@ -50,9 +50,9 @@ public:
 class IMPDLLEXPORT HierarchyDecorator: public DecoratorBase
 {
   IMP_DECORATOR(HierarchyDecorator, DecoratorBase, return true || p,  ++p);
-  IMP_DECORATOR_ARRAY_DECL(child, Int)
+  IMP_DECORATOR_ARRAY_DECL(child, Particle, Particle*, NULL)
 protected:
-  static IntKey parent_key_;
+  static ParticleKey parent_key_;
   static IntKey parent_index_key_;
 
 public:
@@ -62,14 +62,14 @@ public:
       if it has no parent.
    */
   This get_parent() const {
-    IMP_DECORATOR_GET(parent_key_, Int,
-                      return cast(get_model()->
-                                  get_particle(ParticleIndex(VALUE))),
+    IMP_DECORATOR_GET(parent_key_, Particle*,
+                      return VALUE,
                       return This());
   }
 
   //! Get the number of children.
   unsigned int get_number_of_children() const {
+    // defined by the array macro
     return internal_get_number_of_child();
   }
 
@@ -78,8 +78,8 @@ public:
       does not have this child
    */
   This get_child(unsigned int i) const {
-    return cast(get_model()->
-                get_particle(ParticleIndex(internal_get_child(i))));
+    // defined by the array macro
+    return cast(internal_get_child(i));
 
   }
 
