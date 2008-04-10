@@ -7,6 +7,7 @@
  */
 
 #include "IMP/internal/Object.h"
+#include "IMP/exception.h"
 
 namespace IMP
 {

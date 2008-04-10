@@ -9,7 +9,6 @@
 #define __IMP_LOG_H
 
 #include "IMP_config.h"
-#include "exception.h"
 
 #include <iostream>
 #include <fstream>

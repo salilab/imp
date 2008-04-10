@@ -10,6 +10,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
+#include "macros.h"
 
 #include <cmath>
 
@@ -90,9 +91,16 @@ public:
                     operator[](1)-o[1],
                     operator[](2)-o[2]);
   }
+
+  void show(std::ostream &out) const {
+    out << "(" << operator[](0) << ", " << operator[](1) << ", "
+        << operator[](2) << ")";
+  }
 private:
   Float vec_[3];
 };
+
+IMP_OUTPUT_OPERATOR(Vector3D);
 
 } // namespace IMP
 
