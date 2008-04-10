@@ -183,20 +183,20 @@ public:                                                                 \
 
    - unsigned int internal_get_number_of_name() const 
  */
-#define IMP_DECORATOR_ARRAY_DECL(name, Type)                            \
+#define IMP_DECORATOR_ARRAY_DECL(name, TypeName, Type, Default)         \
   protected:                                                            \
   static IntKey number_of_##name##_key_;                                \
-  static std::vector<Type##Key> name##_keys_;                           \
+  static std::vector<TypeName##Key> name##_keys_;                       \
   static void generate_##name##_keys(unsigned int i);                   \
-  static const Type##Key get_##name##_key(unsigned int i) {             \
+  static const TypeName##Key get_##name##_key(unsigned int i) {         \
     if (i >= name##_keys_.size()) generate_##name##_keys(i);            \
     return name##_keys_[i];                                             \
   }                                                                     \
   Type internal_get_##name(unsigned int i) const{                       \
     IMP_DECORATOR_GET(get_##name##_key(i), Type,                        \
                       return VALUE,                                     \
-                     throw IndexException("Particle missing attribute");\
-                      return Type());                                   \
+                      throw IndexException("Particle missing attribute"); \
+                      return Default);                                 \
   }                                                                     \
   int internal_add_##name(Type t);                                      \
   unsigned int internal_get_number_of_##name() const {                  \
@@ -205,15 +205,15 @@ public:                                                                 \
   }                                                                     \
 
 //! See IMP_DECORATOR_ARRAY_DECL
-#define IMP_DECORATOR_ARRAY_DEF(DecoratorType, name, Type)              \
+#define IMP_DECORATOR_ARRAY_DEF(DecoratorType, name, TypeName, Type)   \
   IntKey DecoratorType##Decorator::number_of_##name##_key_;             \
-  std::vector<Type##Key> DecoratorType##Decorator::name##_keys_;        \
+  std::vector<TypeName##Key> DecoratorType##Decorator::name##_keys_;    \
   void DecoratorType##Decorator::generate_##name##_keys(unsigned int i) \
   {                                                                     \
     while (!(i < name##_keys_.size())) {                                \
       std::ostringstream oss;                                           \
       oss << #DecoratorType " " #name " " << name##_keys_.size();       \
-      name##_keys_.push_back(Type##Key(oss.str().c_str()));             \
+      name##_keys_.push_back(TypeName##Key(oss.str().c_str()));         \
     }                                                                   \
   }                                                                     \
   int DecoratorType##Decorator::internal_add_##name(Type t) {           \
@@ -224,7 +224,7 @@ public:                                                                 \
   }
 
 //! See IMP_DECORATOR_ARRAY_DECL
-#define IMP_DECORATOR_ARRAY_INIT(DecoratorType, name, Type)       \
+#define IMP_DECORATOR_ARRAY_INIT(DecoratorType, name, TypeName, Type)   \
   number_of_##name##_key_= IntKey(#DecoratorType " num " #name);
 
 
