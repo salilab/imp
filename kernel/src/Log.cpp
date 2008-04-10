@@ -6,6 +6,7 @@
  */
 
 #include "IMP/log.h"
+#include "IMP/exception.h"
 
 namespace IMP
 {
