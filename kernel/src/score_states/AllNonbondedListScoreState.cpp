@@ -28,12 +28,21 @@ AllNonbondedListScoreState::~AllNonbondedListScoreState()
   cleanup(bins_);
 }
 
-float AllNonbondedListScoreState::side_from_r(float r) const {
+float AllNonbondedListScoreState::side_from_r(float r) const
+{
   if (r==0) return 1;
   else return r*1.6;
 }
 
-
+Particles AllNonbondedListScoreState::get_particles() const
+{
+  Particles ret;
+  for (unsigned int i=0; i< bins_.size(); ++i) {
+    ret.insert(ret.end(), bins_[i].grid->get_particles().begin(),
+               bins_[i].grid->get_particles().end());
+  }
+  return ret;
+}
 
 void AllNonbondedListScoreState::set_particles(const Particles &ps)
 {
@@ -41,6 +50,49 @@ void AllNonbondedListScoreState::set_particles(const Particles &ps)
   cleanup(bins_);
   repartition_points(ps, bins_);
 }
+
+void AllNonbondedListScoreState::add_particles(const Particles &ps)
+{
+  if (bins_.empty()) set_particles(ps);
+  else {
+#ifndef NDEBUG
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      for (unsigned int j=0; j< bins_.size(); ++j) {
+        for (unsigned int k=0; k< bins_[j].grid->get_particles().size(); ++k) {
+          IMP_assert(ps[i] != bins_[j].grid->get_particles()[k],
+                     "Can't add a particle that is already there");
+
+          IMP_assert(ps[i]->get_index() 
+                     != bins_[j].grid->get_particles()[k]->get_index(),
+                     "Same particle index, different particles.");
+        }
+      }
+    }
+#endif
+
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      float r= P::get_radius(ps[i]);
+      bool found=false;
+      for (unsigned int j=0; j< bins_.size(); ++j) {
+        if (bins_[j].rmax >= r) {
+          found=true;
+          IMP_LOG(VERBOSE, "Adding particle "
+                  << ps[i]->get_index() << " to bin " << j << std::endl);
+          bins_[j].grid->add_particle(ps[i]);
+          break;
+        }
+      }
+      if (!found) {
+        bins_.back().rmax=r;
+        bins_.back().grid->add_particle(ps[i]);
+      }
+    }
+  }
+  IMP_LOG(TERSE, "Destroying nbl in  list due to additions"<< std::endl);
+  NonbondedListScoreState::clear_nbl();
+}
+
+
 
 void AllNonbondedListScoreState::repartition_points(const Particles &ps,
                                                     std::vector<Bin> &out)
@@ -127,14 +179,15 @@ void AllNonbondedListScoreState::cleanup(std::vector<Bin> &bins)
 
 void AllNonbondedListScoreState::update()
 {
+  IMP_LOG(TERSE, "Updating nonbonded list"<< std::endl);
   NonbondedListScoreState::update();
   bool bad=false;
   for (unsigned int i=0; i< bins_.size(); ++i) {
-    if (bins_[i].grid->update()) bad=true;
+    bad = bins_[i].grid->update() || bad;
     IMP_LOG(VERBOSE, bins_[i].rmax << std::endl << *bins_[i].grid << std::endl);
   }
   if (bad) {
-    IMP_LOG(VERBOSE, "Destroying nbl in  list"<< std::endl);
+    IMP_LOG(TERSE, "Destroying nbl in  list"<< std::endl);
     NonbondedListScoreState::clear_nbl();
   }
 } 
@@ -174,7 +227,6 @@ void AllNonbondedListScoreState::rebuild_nbl(Float cut)
       generate_nbl(bins_[i], bins_[j], cut);
     }
 
-    // same code as AllNonbonded. Would be nice to consolidate
     internal::ParticleGrid::Index last_index;
     for (internal::ParticleGrid::ParticleVoxelIterator it
            = bins_[i].grid->particle_voxels_begin();
@@ -197,31 +249,35 @@ void AllNonbondedListScoreState::rebuild_nbl(Float cut)
   IMP_LOG(TERSE, "NBL has " << P::nbl_.size() << " pairs" << std::endl);
 
 #ifndef NDEBUG
-  Particles ps;
-  for (unsigned int i=0; i< bins_.size(); ++i) {
-    if (bins_[i].grid) {
-      ps.insert(ps.end(), bins_[i].grid->get_particles().begin(),
-                bins_[i].grid->get_particles().end());
+  {
+    Particles ps;
+    for (unsigned int i=0; i< bins_.size(); ++i) {
+      if (bins_[i].grid) {
+        ps.insert(ps.end(), bins_[i].grid->get_particles().begin(),
+                  bins_[i].grid->get_particles().end());
+      }
     }
-  }
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    XYZDecorator di= XYZDecorator::cast(ps[i]);
-    for (unsigned int j=0; j< i; ++j) {
-      XYZDecorator dj= XYZDecorator::cast(ps[j]);
-      if (distance(di, dj) - P::get_radius(ps[i]) - P::get_radius(ps[j])
-          <= cut && !are_bonded(ps[i], ps[j])) {
-        bool found=false;
-        for (NonbondedIterator nit= nbl_.begin();
-             nit != nbl_.end(); ++nit) {
-          if (nit->first == ps[i] && nit->second == ps[j]
-              || nit->first == ps[j] && nit->second == ps[i]) {
-            IMP_assert(!found, "Entry is in list twice");
-            found=true;
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      XYZDecorator di= XYZDecorator::cast(ps[i]);
+      for (unsigned int j=0; j< i; ++j) {
+        XYZDecorator dj= XYZDecorator::cast(ps[j]);
+        IMP_assert(ps[i] != ps[j], "Duplicate particles in grid");
+        if (distance(di, dj) - P::get_radius(ps[i]) - P::get_radius(ps[j])
+            <= cut && !are_bonded(ps[i], ps[j])) {
+          bool found=false;
+          for (NonbondedIterator nit= nbl_.begin();
+               nit != nbl_.end(); ++nit) {
+            if (nit->first == ps[i] && nit->second == ps[j]
+                || nit->first == ps[j] && nit->second == ps[i]) {
+              IMP_assert(!found, "Entry is in list twice");
+              found=true;
+            }
           }
+          IMP_assert(found, "Nonbonded list is missing " 
+                     << ps[i]->get_index() << " " << di 
+                     << " and " << ps[j]->get_index() << " " 
+                     << dj << std::endl);
         }
-        IMP_assert(found, "Nonbonded list is missing " 
-                   << ps[i]->get_index() << " " << di 
-                   << " and " << ps[j]->get_index() << " " << dj << std::endl);
       }
     }
   }

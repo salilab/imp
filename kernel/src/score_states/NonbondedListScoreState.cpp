@@ -31,6 +31,18 @@ void NonbondedListScoreState::propagate_particles(const Particles&ps)
   }
 }
 
+namespace internal
+{
+
+struct HasInactive
+{
+  bool operator()(ParticlePair pp) const {
+    return !pp.first->get_is_active() || !pp.second->get_is_active();
+  }
+};
+
+} // namespace internal
+
 void NonbondedListScoreState::update()
 {
   IMP_LOG(VERBOSE, "Updating non-bonded list" << std::endl);
@@ -38,6 +50,10 @@ void NonbondedListScoreState::update()
        bli != bonded_lists_end(); ++bli) {
     (*bli)->update();
   }
+
+  // if the list is not deleted, we need to scan for inactive particles
+  nbl_.erase(std::remove_if(nbl_.begin(), nbl_.end(), internal::HasInactive()),
+             nbl_.end());
 }
 
 void NonbondedListScoreState::show(std::ostream &out) const

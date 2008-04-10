@@ -7,25 +7,54 @@
 
 
 #include "IMP/score_states/MaxChangeScoreState.h"
+#include "IMP/internal/utility.h"
+
+#include <algorithm>
+#include <sstream>
 
 namespace IMP
 {
 
+MaxChangeScoreState::MaxChangeScoreState(const FloatKeys &keys,
+                                         const Particles &ps): keys_(keys)
+{
+  add_particles(ps);
+  origkeys_.resize(keys_.size());
+  std::ostringstream oss;
+  oss << " MCSS base " << this;
+  for (unsigned int i=0; i< keys_.size(); ++i) {
+    origkeys_[i]= FloatKey((keys_[i].get_string()+oss.str()).c_str());
+  }
+}
+
+
 IMP_LIST_IMPL(MaxChangeScoreState, Particle, particle, Particle*,
-              {if (0) std::cout << *obj << index;}, {reset();});
+              {for (unsigned int i=0; i< keys_.size(); ++i) {
+                  IMP_check(obj->has_attribute(keys_[i]),
+                            "Particle missing needed attribute",
+                            ValueException("Particle missing attribute"));
+                };
+                for (unsigned int i=0; i< origkeys_.size(); ++i) {
+                  obj->add_attribute(origkeys_[i],
+                                     obj->get_value(keys_[i]), false);
+                }
+              }, {reset();});
 
 void MaxChangeScoreState::update()
 {
   max_change_=0;
-  for (unsigned int i=0; i < orig_.size(); ++i) {
+  // get rid of inactive particles and their stored values
+  internal::remove_inactive_particles(particle_vector_);
+  for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
+    (*it)->assert_is_valid();
     for (unsigned int j=0; j < keys_.size(); ++j) {
-      IMP_LOG(VERBOSE, "Particle " << ps_[i]->get_index() 
+      Float v= (*it)->get_value(keys_[j]);
+      Float ov= (*it)->get_value(origkeys_[j]);
+      IMP_LOG(VERBOSE, "Particle " << (*it)->get_index() 
               << " and attribute " << keys_[j]
-              << " moved " << std::abs(ps_[i]->get_value(keys_[j])
-                                       - orig_[i][j]) << std::endl);
+              << " moved " << std::abs(v - ov) << std::endl);
       max_change_= std::max(max_change_,
-                            std::abs(ps_[i]->get_value(keys_[j])
-                                     - orig_[i][j]));
+                            std::abs(v-ov));
     }
   }
   IMP_LOG(TERSE, "MaxChange update got " << max_change_ << std::endl); 
@@ -34,10 +63,9 @@ void MaxChangeScoreState::update()
 
 void MaxChangeScoreState::reset()
 {
-  orig_.resize(ps_.size(), std::vector<float>(keys_.size(), 0));
-  for (unsigned int i=0; i < orig_.size(); ++i) {
+  for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
     for (unsigned int j=0; j < keys_.size(); ++j) {
-      orig_[i][j]=-ps_[i]->get_value(keys_[j]);
+      (*it)->set_value(origkeys_[j], (*it)->get_value(keys_[j]));
     }
   }
   max_change_=0;

@@ -48,6 +48,9 @@ protected:
   }
 
   bool are_bonded(Particle *a, Particle *b) const {
+    IMP_assert(a->get_is_active() && b->get_is_active(),
+               "Inactive particles should have been removed"
+               << a << " and " << b);
     for (BondedListConstIterator bli= bonded_lists_begin();
          bli != bonded_lists_end(); ++bli) {
       if ((*bli)->are_bonded(a, b)) {
@@ -78,7 +81,8 @@ protected:
   void propagate_particles(const Particles &ps);
 
   void add_to_nbl(Particle *a, Particle *b) {
-    if (!a->get_is_active() || !b->get_is_active()) return;
+    IMP_assert(a->get_is_active() && b->get_is_active(),
+               "Inactive particles should have been stripped");
 
     if (!are_bonded(a,b)) {
       IMP_LOG(VERBOSE, "Found pair " << a->get_index() 
