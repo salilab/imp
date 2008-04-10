@@ -8,6 +8,7 @@
 #include "IMP/score_states/MaxChangeScoreState.h"
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/internal/ParticleGrid.h"
+#include "IMP/internal/utility.h"
 
 namespace IMP
 {
@@ -30,7 +31,7 @@ ParticleGrid::ParticleGrid(): target_voxel_side_(0), grid_valid_(0)
 
 void ParticleGrid::build_grid()
 {
-  IMP_LOG(VERBOSE, "Creating nonbonded grid..." << std::flush);
+  IMP_LOG(TERSE, "Creating nonbonded grid..." << std::flush);
   float mn[3]= {std::numeric_limits<float>::max(),
                 std::numeric_limits<float>::max(),
                 std::numeric_limits<float>::max()};
@@ -68,7 +69,7 @@ void ParticleGrid::build_grid()
   }
   grid_valid_=true;
   mc_->reset();
-  IMP_LOG(VERBOSE, "done." << std::endl);
+  IMP_LOG(TERSE, "done." << std::endl);
 }
 
 
@@ -76,6 +77,39 @@ void ParticleGrid::add_particles(const Particles &ps)
 {
   audit_particles(ps);
   mc_->add_particles(ps);
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (grid_valid_) {
+      add_particle_to_grid(ps[i]);
+    }
+  }
+}
+
+void ParticleGrid::add_particle(Particle *p)
+{
+  Particles ps(1, p);
+  audit_particles(ps);
+  mc_->add_particle(p);
+
+  if (grid_valid_) {
+    add_particle_to_grid(p);
+  }
+}
+
+void ParticleGrid::add_particle_to_grid(Particle *p)
+{
+  IMP_assert(grid_valid_, "Bad call of add particle to grid");
+  XYZDecorator d= XYZDecorator::cast(p);
+  Vector3D v(d.get_x(), d.get_y(), d.get_z());
+  Grid::VirtualIndex vi= grid_.get_virtual_index(v);
+  Grid::Index gi= grid_.get_index(vi);
+  if (gi== Grid::Index()) {
+    IMP_LOG(TERSE, "Adding particle off grid invalidates it "
+            << v << " " << vi << std::endl);
+    grid_valid_=false;
+    grid_ = Grid();
+  } else {
+    grid_.get_voxel(gi).push_back(p);
+  }
 }
 
 void ParticleGrid::clear_particles()
@@ -85,11 +119,30 @@ void ParticleGrid::clear_particles()
 
 bool ParticleGrid::update()
 {
+  bool ret;
   if (!grid_valid_ || mc_->get_max() > target_voxel_side_) {
+    IMP_LOG(TERSE, "Rebuilding particle grid\n");
     build_grid();
-    return true;
+    ret= true;
+  } else {
+    IMP_LOG(TERSE, "Removing inactive particles\n");
+    for (Grid::DataIterator dit= grid_.data_begin(); dit != grid_.data_end();
+         ++dit) {
+      remove_inactive_particles(*dit);
+    }
+    ret= false;
   }
-  return false;
+  unsigned int ssz=0;
+  for (Grid::DataIterator dit= grid_.data_begin(); dit != grid_.data_end();
+       ++dit) {
+    ssz+= dit->size();
+  }
+  // do this last since it has the ref counts
+  mc_->update();
+
+  IMP_assert(ssz== mc_->number_of_particles(), "Particle mismatch in PG");
+
+  return ret;
 }
 
 void ParticleGrid::audit_particles(const Particles &ps) const

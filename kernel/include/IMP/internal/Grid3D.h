@@ -398,6 +398,15 @@ public:
                                     d_[1],
                                     d_[2]));
   }
+
+  //! Iterate through all the cells
+  typedef typename std::vector<VT>::iterator DataIterator;
+  DataIterator data_begin() { return data_.begin();}
+  DataIterator data_end() { return data_.end();}
+  typedef typename std::vector<VT>::iterator DataConstIterator;
+  DataConstIterator data_begin() const { return data_.begin();}
+  DataConstIterator data_end() const { return data_.end();}
+
 };
 
 } // namespace internal

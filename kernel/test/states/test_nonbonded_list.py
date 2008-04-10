@@ -45,6 +45,10 @@ class TestNBL(IMP.test.TestCase):
         score= m.evaluate(False)
         print score
         self.assertEqual(score, 4950, "Wrong score")
+        m.remove_particle(IMP.ParticleIndex(3))
+        score= m.evaluate(False)
+        print score
+        self.assertEqual(score, 4851, "Wrong score with removal")
 
     def test_bl(self):
         """Test the bonded list"""
@@ -82,27 +86,52 @@ class TestNBL(IMP.test.TestCase):
 
     def test_distfilt(self):
         """Test filtering based on distance in nonbonded list"""
+        IMP.set_log_level(IMP.TERSE)
         m= IMP.Model()
         ps=IMP.Particles()
-        for i in range(0,50):
+        for i in range(0,200):
             p= IMP.Particle()
             m.add_particle(p)
             d=IMP.XYZDecorator.create(p)
             ps.append(p)
             d.set_coordinates_are_optimized(True)
-            if (i < 25):
+            if (i < 100):
                 d.randomize_in_box(IMP.Vector3D(0,0,0),
                                    IMP.Vector3D(10,10,10));
             else:
-                d.randomize_in_box(IMP.Vector3D(60,60,60),
-                                   IMP.Vector3D(70,70,70));
+                d.randomize_in_box(IMP.Vector3D(160,160,160),
+                                   IMP.Vector3D(170,170,170));
         s= IMP.AllNonbondedListScoreState(IMP.FloatKey(), ps)
         m.add_score_state(s)
         o= OnePair()
         r= IMP.NonbondedRestraint(o, s, 15)
         m.add_restraint(r)
         score= m.evaluate(False)
-        self.assertEqual(score, 1225, "Wrong score")
+        self.assertEqual(score, 9900, "Wrong score")
+
+        m.remove_particle(IMP.ParticleIndex(3))
+        self.assert_(not ps[3].get_is_active(), "Particle not inactive")
+        ps=None
+        score= m.evaluate(False)
+        print score
+        self.assertEqual(score, 9801, "Wrong score with removal")
+
+        for p in s.get_particles():
+            self.assert_(p.get_is_active(), "Inactive particle not removed")
+
+        p= IMP.Particle()
+        m.add_particle(p)
+        print "Index is " +str(p.get_index().get_index())
+        d=IMP.XYZDecorator.create(p)
+        d.set_coordinates_are_optimized(True)
+        d.randomize_in_box(IMP.Vector3D(0,0,0),
+                           IMP.Vector3D(10,10,10));
+        nps= IMP.Particles([p])
+        s.add_particles(nps)
+        score= m.evaluate(False)
+        print score
+        self.assertEqual(score, 9900, "Wrong score after insert")
+
 
     def test_bi(self):
         """Test the bipartite nonbonded list and restraint which uses it"""

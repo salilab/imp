@@ -70,6 +70,15 @@ public:
   IMP_SCORE_STATE(internal::kernel_version_info)
 
   void set_particles(const Particles &ps);
+
+  //! Add a few particles to the nonbonded list
+  /** Note that this invalidates the nonbonded list.
+      \todo We could just add newly created pairs to the nonbonded list.
+   */
+  void add_particles(const Particles &ps);
+
+  //! Return a list of all the particles used
+  Particles get_particles() const;
 };
 
 } // namespace IMP

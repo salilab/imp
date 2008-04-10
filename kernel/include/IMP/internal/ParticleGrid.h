@@ -22,6 +22,7 @@ namespace internal
 /** \internal */
 class ParticleGrid: public internal::Object
 {
+  // don't need ref counting since mc_ has the same set of points
   typedef internal::Grid3D<Particles> Grid;
   Grid grid_;
   internal::ObjectPointer<MaxChangeScoreState, true> mc_;
@@ -30,6 +31,7 @@ class ParticleGrid: public internal::Object
 
   void build_grid();
   void audit_particles(const Particles &ps) const;
+  void add_particle_to_grid(Particle *p);
 public:
   ParticleGrid();
   //! suggested grid edge size.
@@ -38,6 +40,7 @@ public:
   Float get_voxel_size() const {return target_voxel_side_;}
 
   void add_particles(const Particles &ps);
+  void add_particle(Particle *p);
   void clear_particles();
   const Particles& get_particles() const {return mc_->get_particles();}
   bool update();

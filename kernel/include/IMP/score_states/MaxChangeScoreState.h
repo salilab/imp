@@ -26,15 +26,14 @@ namespace IMP
 class IMPDLLEXPORT MaxChangeScoreState: public ScoreState
 {
   FloatKeys keys_;
-  std::vector<Floats > orig_;
+  FloatKeys origkeys_;
   Particles ps_;
   float max_change_;
 public:
   //! Track the changes with the specified keys.
   MaxChangeScoreState(const FloatKeys &keys,
-                      const Particles &ps= Particles()):keys_(keys){
-    add_particles(ps);
-  }
+                      const Particles &ps= Particles());
+
   virtual ~MaxChangeScoreState(){}
 
   virtual void update();
