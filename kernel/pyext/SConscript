@@ -5,7 +5,7 @@ Import('env', 'get_pyext_environment')
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(env, 'IMP', cplusplus=True)
 e.Append(CPPPATH=['#/kernel/include', e['BOOST_CPPPATH']])
-e.Append(LIBPATH='../src', LIBS='imp')
+e.Append(LIBPATH=['../src'], LIBS='imp')
 
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('_IMP', 'IMP.i',
