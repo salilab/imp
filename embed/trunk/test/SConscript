@@ -2,7 +2,7 @@ Import('env', 'bin')
 
 import os
 
-e = env.Copy()
+e = env.Clone()
 
 # Custom builder to run unit tests:
 def builder_unit_test(target, source, env):

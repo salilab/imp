@@ -179,7 +179,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
        library (by convention something of the form FOO_EXPORTS).
        If `cplusplus` is True, additional configuration suitable for a C++
        shared library is done."""
-    e = env.Copy()
+    e = env.Clone()
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CCFLAGS='${VIS_CCFLAGS}')
 
@@ -208,7 +208,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
        If `cplusplus` is True, additional configuration suitable for a C++
        extension is done."""
     from platform import system
-    e = env.Copy()
+    e = env.Clone()
     if 'swig' not in e['TOOLS']:
         print "ERROR: SWIG could not be found. SWIG is needed to build."
         Exit(1)
