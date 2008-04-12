@@ -10,6 +10,8 @@
 #include "IMP/internal/Grid3D.h"
 #include "IMP/score_states/MaxChangeScoreState.h"
 
+#include <algorithm>
+
 namespace IMP
 {
 
