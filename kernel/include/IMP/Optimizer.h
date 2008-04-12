@@ -179,7 +179,9 @@ protected:
 
   //! Get the value of an optimized attribute
   Float get_value(FloatIndex fi) const {
-    IMP_assert(fi.p_ != model_->particles_end(), 
+    /* cast to const needed here to help MSVC */
+    IMP_assert(static_cast<Model::ParticleConstIterator>(fi.p_)
+               != model_->particles_end(), 
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_value(*fi.fk_);
   }
