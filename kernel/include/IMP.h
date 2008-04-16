@@ -63,6 +63,7 @@
 #include "IMP/restraints/SingletonListRestraint.h"
 #include "IMP/restraints/PairListRestraint.h"
 #include "IMP/restraints/TripletChainRestraint.h"
+#include "IMP/restraints/PairChainRestraint.h"
 #include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 #include "IMP/score_states/MaxChangeScoreState.h"
 #include "IMP/score_states/NonbondedListScoreState.h"

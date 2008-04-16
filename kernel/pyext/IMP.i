@@ -69,6 +69,9 @@ namespace IMP {
   %pythonprepend TripletChainRestraint::TripletChainRestraint %{
         args[0].thisown=0
   %}
+  %pythonprepend PairChainRestraint::PairChainRestraint %{
+        args[0].thisown=0
+  %}
   %pythonprepend ConnectivityRestraint::ConnectivityRestraint %{
         args[0].thisown=0
   %}
@@ -185,6 +188,7 @@ namespace IMP {
 %include "IMP/restraints/DistanceRestraint.h"
 %include "IMP/restraints/AngleRestraint.h"
 %include "IMP/restraints/TripletChainRestraint.h"
+%include "IMP/restraints/PairChainRestraint.h"
 %include "IMP/restraints/DihedralRestraint.h"
 %include "IMP/restraints/ConnectivityRestraint.h"
 %include "IMP/restraints/NonbondedRestraint.h"
