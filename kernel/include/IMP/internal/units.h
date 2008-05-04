@@ -400,8 +400,11 @@ extern IMPDLLEXPORT const ExponentialNumber<3> JOULES_PER_KCAL;
 extern IMPDLLEXPORT const ExponentialNumber<-4> KCALS_PER_JOULE;
 
 
-/** \function convert_to_kcal Convert from MKS units to kcal units
-    \function convert_to_mks Convert from KCal units to MKS units.
+/** \fn convert_to_kcal
+    \brief Convert from MKS units to kcal units
+
+    \fn convert_to_mks
+    \brief Convert from kcal units to MKS units.
 
     These don't yet work for arbitrary units since it is kind of
     annoying to get right and there are not equivalents for everything.
