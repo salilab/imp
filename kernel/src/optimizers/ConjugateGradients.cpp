@@ -214,6 +214,9 @@ ConjugateGradients::~ConjugateGradients()
 
 Float ConjugateGradients::optimize(unsigned int max_steps)
 {
+  IMP_check(get_model(),
+            "Must set the model on the optimizer before optimizing",
+            ValueException("Must set the model before optimizing"));
   std::vector<Float> x, dx;
   int i;
   //ModelData* model_data = get_model()->get_model_data();
