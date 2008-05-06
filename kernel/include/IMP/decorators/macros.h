@@ -44,15 +44,17 @@
     add_required;                                                       \
   }                                                                     \
   friend class DecoratorBase;                                           \
-  Name(::IMP::Particle* p): Parent(p) {                                 \
-    IMP_assert(has_required_attributes(p),                              \
-               "This is not a particle of type "                        \
-               << #Name << *p);                                         \
-  }                                                                     \
 public:                                                                 \
  typedef Name This;                                                     \
- /** The default constructor. This is used as a null value */           \
+ /** \short The default constructor. This is used as a null value */    \
  Name(): Parent(){}                                                     \
+ /** \short Construct from a Particle which has all needed attributes */\
+ Name(::IMP::Particle *p): Parent(p) {                                  \
+   if (!decorator_keys_initialized_) decorator_initialize_static_data();\
+   IMP_assert(has_required_attributes(p),                               \
+              "Particle missing required attributes for decorator"      \
+              << #Name << *p << std::endl);                             \
+ }                                                                      \
  /** Add the necessary attributes to p and return a decorator. */       \
  static Name create(::IMP::Particle *p) {                               \
    return IMP::DecoratorBase::create<Name>(p);                          \
