@@ -77,7 +77,7 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)
 {
   Particle *p= internal::graph_connect(a.get_particle(), b.get_particle(),
                     internal::bond_graph_data_);
-  BondDecorator bd= BondDecorator::cast(p);
+  BondDecorator bd(p);
   bd.set_type(t);
   return bd;
 }
