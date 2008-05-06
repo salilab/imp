@@ -102,7 +102,7 @@ public:
   BondDecorator get_bond(unsigned int i) const {
     Particle *p= graph_get_edge(get_particle(), i,
                                      internal::bond_graph_data_);
-    return BondDecorator::cast(p);
+    return BondDecorator(p);
   }
 
   //! Get a BondedDecorator of the ith bonded particle
@@ -117,7 +117,7 @@ public:
   */
   BondedDecorator get_bonded(unsigned int i) const {
     Particle *p= graph_get_edge(get_particle(), i, internal::bond_graph_data_);
-    BondDecorator bd= BondDecorator::cast(p);
+    BondDecorator bd(p);
     if (bd.get_bonded(0) == *this) return bd.get_bonded(1);
     else return bd.get_bonded(0);
   }
@@ -130,7 +130,7 @@ inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
 {
   Particle *p= graph_get_node(get_particle(), i,
                               internal::bond_graph_data_);
-  return BondedDecorator::cast(p);
+  return BondedDecorator(p);
 }
 
 //! Connect the two wrapped particles by a bond.
