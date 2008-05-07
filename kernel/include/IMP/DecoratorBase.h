@@ -55,11 +55,10 @@ public:
   static D cast(Particle *p) {
     IMP_CHECK_OBJECT(p);
     D:: decorator_initialize_static_data();
-    IMP_check(D::has_required_attributes(p),
-              "Attempting to cast a Particle which does not have"
-              " some required attributes",
-              InvalidStateException("Particle missing required attribues"\
-                                    " in cast"));
+    if (!D::has_required_attributes(p)) {
+      throw InvalidStateException("Particle missing required attribues"\
+                                  " in cast");
+    }
     return D(p);
   }
 
