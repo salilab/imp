@@ -38,6 +38,7 @@ public:
 
   using Restraint::add_particles;
   using Restraint::clear_particles;
+  using Restraint::set_particles;
 
 protected:
   internal::ObjectPointer<SingletonScore, true> ss_;
