@@ -12,8 +12,18 @@
 namespace IMP
 {
 
+GravityCenterScoreState::GravityCenterScoreState(Particle *center,
+                                                 FloatKey weightkey,
+                                                 const Particles &ps) 
+  : center_(center), weightkey_(weightkey)
+{
+  XYZDecorator::cast(center);
+  add_particles(ps);
+}
+
+// check that the particle is an xyz particle
 IMP_LIST_IMPL(GravityCenterScoreState, Particle, particle, Particle*,
-              {if (0) std::cout << *obj << index;}, set_position());
+              XYZDecorator::cast(obj), set_position());
 
 void GravityCenterScoreState::set_position()
 {
@@ -24,7 +34,7 @@ void GravityCenterScoreState::set_position()
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
     Particle *p = *iter;
-    XYZDecorator d = XYZDecorator::cast(p);
+    XYZDecorator d(p);
     Float weight = do_weighting ? p->get_value(weightkey_) : 1.0;
     total_weight += weight;
     for (int i = 0; i < 3; ++i) {
@@ -37,7 +47,7 @@ void GravityCenterScoreState::set_position()
       cvect[i] /= total_weight;
     }
   }
-  XYZDecorator d = XYZDecorator::cast(center_);
+  XYZDecorator d(center_);
   d.set_coordinates_are_optimized(false);
   for (int i = 0; i < 3; ++i) {
     d.set_coordinate(i, cvect[i]);
@@ -49,7 +59,8 @@ transform_derivatives(DerivativeAccumulator *accpt)
 {
   size_t nchildren = number_of_particles();
   if (nchildren > 0) {
-    XYZDecorator d = XYZDecorator::cast(center_);
+    // we know center is OK since update was called
+    XYZDecorator d(center_);
     Vector3D deriv;
     // divide derivatives equally between all children
     for (int i = 0; i < 3; ++i) {
