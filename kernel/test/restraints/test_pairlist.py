@@ -13,14 +13,6 @@ class IndexDiff(IMP.PairScore):
     def show(self, t):
         print "One Singleton"
 
-class Linear(IMP.UnaryFunction):
-    def __init__(self):
-        IMP.UnaryFunction.__init__(self)
-    def __call__(self, *args):
-        return args[0]
-    def show(self, *args):
-        print "identity"
-
 class TestPairList(IMP.test.TestCase):
     def setUp(self):
         IMP.set_log_level(IMP.VERBOSE)
