@@ -15,7 +15,6 @@ chain= IMP.Particles()
 for i in range(0,20):
     p= IMP.Particle()
     pi= m.add_particle(p)
-    chain.append(p)
     d= IMP.XYZDecorator.create(p)
     d.set_x(random.uniform(0,10))
     d.set_y(random.uniform(0,10))
@@ -27,6 +26,7 @@ for i in range(0,20):
         bp= IMP.BondedDecorator.create(p)
         bpr= IMP.BondedDecorator.cast(chain.back())
         b= IMP.custom_bond(bp, bpr, 1.5*radius, 10)
+    chain.append(p)
 
 # If you want to inspect the particles
 # Notice that each bond is a particle
