@@ -33,6 +33,15 @@ Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
   int i, opt_var_cnt = float_indices.size();
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
+    IMP_check(x[i] == x[i], "Got NaN in CG",
+              ValueException("Got NaN in CG"));
+    if (std::abs(x[i] - get_value(float_indices[i])) > max_change_) {
+      if (x[i] < get_value(float_indices[i])) {
+        x[i] = get_value(float_indices[i]) - max_change_;
+      } else {
+        x[i] = get_value(float_indices[i]) + max_change_;
+      }
+    }
     set_value(float_indices[i], x[i]);
   }
 
@@ -42,6 +51,10 @@ Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
     dscore[i] = get_derivative(float_indices[i]);
+    IMP_check(dscore[i] == dscore[i] && dscore[i]
+              != std::numeric_limits<Float>::infinity()
+              && dscore[i] != - std::numeric_limits<Float>::infinity(),
+              "Bad input to CG", ValueException("Bad input to CG"));
   }
   return score;
 }
@@ -202,6 +215,7 @@ bool ConjugateGradients::line_search(std::vector<Float> &x,
 ConjugateGradients::ConjugateGradients()
 {
   threshold_=std::numeric_limits<Float>::epsilon();
+  max_change_ = std::numeric_limits<Float>::max() / 100.0;
 }
 
 
@@ -230,6 +244,9 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
     x[i] = get_value(float_indices[i]);
+    IMP_check(x[i] == x[i] && x[i] != std::numeric_limits<Float>::infinity()
+              && x[i] != - std::numeric_limits<Float>::infinity(),
+              "Bad input to CG", ValueException("Bad input to CG"));
   }
 
   // Initialize optimization variables

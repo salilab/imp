@@ -30,6 +30,9 @@ public:
 
   //! Set the threshold for the minimum gradient
   void set_threshold(Float t){ threshold_=t;}
+
+  //! Limit how far anything can change each time step
+  void set_max_change(Float t) { max_change_ = t; }
 private:
 
   Float get_score(std::vector<FloatIndex> float_indices,
@@ -40,6 +43,7 @@ private:
                    int max_steps, const std::vector<Float> &search,
                    const std::vector<Float> &estimate);
   Float threshold_;
+  Float max_change_;
 };
 
 } // namespace IMP
