@@ -28,8 +28,11 @@ void BondDecorator::show(std::ostream &out, std::string) const
 {
   out << "Bond between " 
       << get_bonded(0).get_particle()->get_index() << " and "
-      << get_bonded(1).get_particle()->get_index() 
-      << " of type " << get_type() << " and order " << get_order();
+      << get_bonded(1).get_particle()->get_index();
+  if (get_type() != CUSTOM) {
+    out << " of type " << get_type();
+  }
+  if (get_order() != 1) out << " and order " << get_order();
   if (get_particle()->has_attribute(internal::bond_length_key_)) {
     out << " and length "
         << get_particle()->get_value(internal::bond_length_key_);
@@ -75,6 +78,10 @@ IMP_DECORATOR_INITIALIZE(BondedDecorator, DecoratorBase,
 
 BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)
 {
+  IMP_check(a.get_particle() != b.get_particle(),
+            "The endpoints of a bond must be disjoint",
+            ValueException("The endpoints must be disjoint"));
+
   Particle *p= internal::graph_connect(a.get_particle(), b.get_particle(),
                     internal::bond_graph_data_);
   BondDecorator bd(p);
