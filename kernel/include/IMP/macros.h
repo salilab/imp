@@ -306,6 +306,10 @@ template <class L>                                                      \
   const Ucname##s &get_##lcname##s() const {                             \
     return static_cast< const Ucname##s &>(lcname##_vector_);           \
   }                                                                     \
+  void set_##lcname##s(const Ucname##s &ps) {                           \
+    clear_##lcname##s();                                                \
+    add_##lcname##s(ps);                                                \
+  }                                                                     \
   IMP_CONTAINER_CORE(protection, Ucname, lcname, Data, unsigned int,    \
                      IMP::internal::Vector<Data>)
 
