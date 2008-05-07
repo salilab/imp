@@ -58,6 +58,13 @@ public:
     return scalar_product(o);
   }
 
+  //! product with scalar
+  Vector3D operator*(Float s) const {
+    return Vector3D(operator[](0) * s, 
+                    operator[](1) * s,
+                    operator[](2) * s); 
+  }
+
   //! \return the vector product of two vectors.
   /** \param[in] vec2 The other vector to use in the product.
    */
@@ -92,6 +99,13 @@ public:
                     operator[](2)-o[2]);
   }
 
+  //! \return Sum of two vectors.
+  Vector3D operator+(const Vector3D &o) const {
+    return Vector3D(operator[](0) + o[0],
+                    operator[](1) + o[1],
+                    operator[](2) + o[2]);
+  }
+
   void show(std::ostream &out) const {
     out << "(" << operator[](0) << ", " << operator[](1) << ", "
         << operator[](2) << ")";
@@ -101,6 +115,14 @@ private:
 };
 
 IMP_OUTPUT_OPERATOR(Vector3D);
+
+
+//! product with scalar
+inline Vector3D operator*(Float s, const Vector3D &o) {
+  return Vector3D(o[0]*s, 
+                  o[1]*s,
+                  o[2]*s); 
+}
 
 } // namespace IMP
 
