@@ -35,10 +35,7 @@ public:
       \param[in] ps Original particles used to calculate the center.
    */
   GravityCenterScoreState(Particle *center, FloatKey weightkey=FloatKey(),
-                          const Particles &ps= Particles()) 
-      : center_(center), weightkey_(weightkey) {
-    add_particles(ps);
-  }
+                          const Particles &ps= Particles());
   virtual ~GravityCenterScoreState() {}
 
   //! Set the position of the center particle from the original points.
@@ -59,7 +56,6 @@ protected:
   void transform_derivatives(DerivativeAccumulator *accpt);
 
   Particle *center_;
-  Particles ps_;
   FloatKey weightkey_;
 
   IMP_LIST(public, Particle, particle, Particle*);
