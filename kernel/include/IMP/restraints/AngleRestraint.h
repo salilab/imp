@@ -12,11 +12,10 @@
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
-
+#include "../triplet_scores/AngleTripletScore.h"
 
 namespace IMP
 {
-class AngleTripletScore;
 class UnaryFunction;
 
 //! Angle restraint between three particles

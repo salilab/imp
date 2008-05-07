@@ -10,10 +10,10 @@
 
 #include "../PairScore.h"
 #include "../internal/ObjectPointer.h"
+#include "../UnaryFunction.h"
 
 namespace IMP
 {
-class UnaryFunction;
 
 //! A score on the distance between the surfaces of two spheres.
 /** \ingroup pairscore

@@ -13,13 +13,12 @@
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
+#include "../PairScore.h"
 
 #include <vector>
 
 namespace IMP
 {
-
-class PairScore;
 
 //! Restrain each pair of consecutive particles in each chain.
 /** \ingroup restraint
