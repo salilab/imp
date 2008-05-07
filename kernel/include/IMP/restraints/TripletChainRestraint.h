@@ -13,13 +13,12 @@
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
+#include "../TripletScore.h"
 
 #include <vector>
 
 namespace IMP
 {
-
-class TripletScore;
 
 //! Restrain each triplet of consecutive particles in each chain.
 /** \ingroup restraint

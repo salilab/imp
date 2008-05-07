@@ -14,13 +14,12 @@
 #include "../Particle.h"
 #include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
+#include "../PairScore.h"
 
 #include <iostream>
 
 namespace IMP
 {
-
-class PairScore;
 
 //! Applies a PairScore to each pair of particles in a list.
 /** \ingroup restraint

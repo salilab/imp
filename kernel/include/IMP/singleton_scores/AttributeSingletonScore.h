@@ -10,11 +10,10 @@
 
 #include "../SingletonScore.h"
 #include "../internal/ObjectPointer.h"
+#include "../UnaryFunction.h"
 
 namespace IMP
 {
-
-class UnaryFunction;
 
 //! Apply a function to an attribute.
 /** \ingroup singleton

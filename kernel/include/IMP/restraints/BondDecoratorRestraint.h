@@ -15,12 +15,12 @@
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
+#include "../UnaryFunction.h"
 
 namespace IMP
 {
 
 class BondDecoratorListScoreState;
-class UnaryFunction;
 
 //! Restrain all pairs of non-bonded particles
 /** This restraint currently only works for bonds which have their 

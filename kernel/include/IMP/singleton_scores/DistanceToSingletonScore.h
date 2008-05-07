@@ -11,11 +11,10 @@
 #include "../SingletonScore.h"
 #include "../Vector3D.h"
 #include "../internal/ObjectPointer.h"
+#include "../UnaryFunction.h"
 
 namespace IMP
 {
-
-class UnaryFunction;
 
 //! Apply a function to the distance to a fixed point.
 /** \ingroup singleton

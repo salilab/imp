@@ -13,13 +13,12 @@
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
+#include "../SingletonScore.h"
 
 #include <iostream>
 
 namespace IMP
 {
-
-class SingletonScore;
 
 //! Applies a SingletonScore to each Particle in a list.
 /** \ingroup restraint
