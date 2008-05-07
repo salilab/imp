@@ -24,14 +24,16 @@ NormalMover::NormalMover(const Particles &pis,
   set_sigma(max);
 }
 
-void NormalMover::generate_move(float scale)
+void NormalMover::generate_move(float probability)
 {
+  boost::uniform_real<> rand(0,1);
   boost::normal_distribution<double> mrng(0, stddev_);
   boost::variate_generator<RandomNumberGenerator&,
                            boost::normal_distribution<double> >
                           sampler(random_number_generator, mrng);
 
   for (unsigned int i = 0; i < number_of_particles(); ++i) {
+    if (rand(random_number_generator) > probability) continue; 
     for (unsigned int j = 0; j < number_of_float_keys(); ++j) {
       float c = get_float(i, j);
       float r = sampler();

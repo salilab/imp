@@ -26,8 +26,10 @@ IMP_CONTAINER_IMPL(MonteCarlo, Mover, mover, MoverIndex,
 MonteCarlo::MonteCarlo(): temp_(1), 
                           prior_energy_(std::numeric_limits<Float>::max()),
                           stop_energy_(-std::numeric_limits<Float>::max()),
+                          probability_(1),
                           num_local_steps_(50),
                           stat_forward_steps_taken_(0),
+                          stat_upward_steps_taken_(0),
                           stat_num_failures_(0){}
 
 MonteCarlo::~MonteCarlo()
@@ -53,7 +55,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
       IMP_LOG(VERBOSE, "MC Trying move " << **it << std::endl);
       IMP_CHECK_OBJECT(*it);
-      (*it)->propose_move(.5);
+      (*it)->propose_move(probability_);
     }
     Float next_energy;
     if (cg_.get() != NULL && num_local_steps_!= 0) {
@@ -75,6 +77,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
               << std::endl);
       if (e > r) {
         accept=true;
+        ++stat_upward_steps_taken_;
       }
     }
     IMP_LOG(VERBOSE,  "MC Prior energy is " << prior_energy_

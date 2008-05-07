@@ -66,6 +66,18 @@ public:
   int get_local_steps() const {
     return num_local_steps_;
   }
+  //! Set the probability of each move being made
+  /** Make this low if the space is rough and there are many particles.
+      The movers should make each individual move with this probability.
+      That is, a NormalMover with 100 particles will move each particle
+      with probability p.
+   */
+  void set_move_probability(Float p) {
+    IMP_check(p > 0 && p <= 1, "Not a valid probability",
+              ValueException("Not a probability"));
+    probability_=p;
+  }
+
   //! Take this many steps of the local optimizer for each MC step
   void set_local_steps(unsigned int n) {
     num_local_steps_=n;
@@ -74,15 +86,21 @@ public:
   unsigned int get_number_of_forward_steps() const {
     return stat_forward_steps_taken_;
   }
+  //! Return how many times the optimizer has stepped to higher energy
+  unsigned int get_number_of_upward_steps() const {
+    return stat_upward_steps_taken_;
+  }
 
   void show(std::ostream &out= std::cout) const;
 private:
   Float temp_;
   Float prior_energy_;
   Float stop_energy_;
+  Float probability_;
   internal::ObjectPointer<Optimizer, true> cg_;
   unsigned int num_local_steps_;
   unsigned int stat_forward_steps_taken_;
+  unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
 };
 
