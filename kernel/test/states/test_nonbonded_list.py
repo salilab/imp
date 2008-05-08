@@ -45,7 +45,8 @@ class TestNBL(IMP.test.TestCase):
         score= m.evaluate(False)
         print score
         self.assertEqual(score, 4950, "Wrong score")
-        m.remove_particle(IMP.ParticleIndex(3))
+        p = m.get_particle(IMP.ParticleIndex(3))
+        p.set_is_active(False)
         score= m.evaluate(False)
         print score
         self.assertEqual(score, 4851, "Wrong score with removal")
@@ -109,15 +110,11 @@ class TestNBL(IMP.test.TestCase):
         score= m.evaluate(False)
         self.assertEqual(score, 9900, "Wrong score")
 
-        m.remove_particle(IMP.ParticleIndex(3))
-        self.assert_(not ps[3].get_is_active(), "Particle not inactive")
+        ps[3].set_is_active(False)
         ps=None
         score= m.evaluate(False)
         print score
         self.assertEqual(score, 9801, "Wrong score with removal")
-
-        for p in s.get_particles():
-            self.assert_(p.get_is_active(), "Inactive particle not removed")
 
         p= IMP.Particle()
         m.add_particle(p)
