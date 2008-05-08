@@ -8,46 +8,116 @@
 #ifndef __IMP_KEY_H
 #define __IMP_KEY_H
 
+#include "macros.h"
+#include "exception.h"
+
 #include <map>
 #include <vector>
 
-#include "base_types.h"
-#include "utility.h"
-#include "log.h"
+
+/**
+   \internal
+   \page keys How Keys work in IMP
+
+   The keys in IMP maintain a cached mapping between strings and indexes.
+   This mapping is global--that is all IMP Models and Particles in the
+   same program use the same mapping.
+
+   The mapping uses a static table which is defined with the
+   IMP_DEFINE_KEY_TYPE macro. As a result, the macro must be used in exactly
+   one .o. If it appears more than once or that .o is linked in multiple times,
+   then bad things can happen.
+
+   Since the order of initialization of static data is undefined
+   between .os, it is important that no other static data not in the
+   same .o uses the key data. Specifically, typedes defined by
+   IMP_DECLARE_KEY_TYPE should never be statically initialized. While
+   this is annoying, statically initializing them would be bad
+   practice anyway, as unused attribute keys would still be mapped to
+   indices and would make the set of indices less dense.
+ */
+
+// Swig chokes on the specialization
+#ifndef SWIG
+//! \internal
+#define IMP_KEY_DATA_HOLDER(Name, Tag)                                  \
+  namespace internal {                                                  \
+  template <>                                                           \
+  struct IMPDLLEXPORT KeyDataHolder<Tag> {                              \
+    static KeyData data;                                                \
+  };                                                                    \
+  }
+#else
+#define IMP_KEY_DATA_HOLDER(Name, Tag)
+#endif
+
+
+/**
+   Define a new key type. There must be an accompanying IMP_DEFINE_KEY_TYPE
+   located in some .o file. This macro should be used in the IMP namespace.
+
+   It defines two public types Name, which is an instantiation of Key and
+   Names which is a vector of Name.
+
+   \param[in] Name The name for the new type.
+   \param[in] Tag A class which is unique for this type. For attributes
+   use the type of the attributes. For other Keys, declare an empty
+   class with a unique name and use it.
+ */
+#define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
+  IMP_KEY_DATA_HOLDER(Name, Tag);                                       \
+  typedef Key<Tag> Name;                                                \
+  typedef std::vector<Name> Name##s
+
+
+/** This must occur in exactly one .o in the internal namespace. Should 
+ be used in the IMP namespace.*/
+#define IMP_DEFINE_KEY_TYPE(Name, Tag)                  \
+  namespace internal {                                  \
+    KeyData KeyDataHolder<Tag>::data;                   \
+  }
 
 
 namespace IMP
 {
 
-
 namespace internal
 {
 
-#define IMP_KEY_INITIALIZATION_HEURISTIC 1234678
-
-/** This is a hack to try to catch people to initialize keys
-    before the cache table is initialized. Keys should be 
-    initialized in code that is called after main starts.
-
-    This symbol is initialized in the same translation unit as
-    the tables and so is unlikely to have the above value unless 
-    the tables have been initialized. 
-*/
-IMPDLLEXPORT extern double key_initialization_heuristic;
-
-struct KeyData
+/** The data concerning a particular type of key.
+    \internal
+ */
+struct IMPDLLEXPORT KeyData
 {
-  std::map<std::string, int> map;
-  std::vector<std::string> rmap;
+  typedef std::map<std::string, int> Map;
+  typedef std::vector<std::string> RMap;
+
+  void show(std::ostream &out= std::cout) const;
+  KeyData();
+  void assert_is_initialized() const;
+  unsigned int add_key(std::string str) {
+    unsigned int i= map_.size();
+    map_[str]=i;
+    rmap_.push_back(str);
+    return i;
+  }
+
+  const Map &get_map() const {return map_;}
+  const RMap &get_rmap() const {return rmap_;}
+
+private:
+  double heuristic_;
+  Map map_;
+  RMap rmap_;
+
 };
 
-IMPDLLEXPORT extern unsigned int next_attribute_table_index_;
+/** A dummy class. Actual keys types create specializations
 
-
-// print a list of attributes used so far by the program
-void IMPDLLEXPORT show_attributes(std::ostream &out);
-
-extern IMPDLLEXPORT std::vector<KeyData> attribute_key_data;
+    \internal
+*/
+template <class T>
+struct KeyDataHolder {};
 
 } // namespace internal
 
@@ -69,9 +139,10 @@ class Key
 
   typedef T Type;
 
-  static internal::KeyData& data();
-
   bool is_default() const;
+
+  static const internal::KeyData::Map& get_map();
+  static const internal::KeyData::RMap& get_rmap();
 
 public:
   static const std::string &get_string(int i);
@@ -79,32 +150,21 @@ public:
   typedef Key<T> This;
 
   //! make a default (uninitalized) key
-  Key():str_(-1) {}
+  Key(): str_(-1) {}
 
 
   //! Generate a key from the given string
   Key(const char *c) {
-    IMP_assert(internal::key_initialization_heuristic
-               == IMP_KEY_INITIALIZATION_HEURISTIC,
-               "Do not initialize keys statically. This can cause" 
-               << " serious problems due to the initialization order"
-               << " among translation units being undefined.");
     std::string sc(c);
-    if (data().map.find(sc) == data().map.end()) {
-
-      int sz= data().map.size();
-      data().map[sc]=sz;
-      data().rmap.push_back(sc);
-      str_= sz;
-      IMP_assert(data().rmap.size() == data().map.size(), "Unequal map sizes");
+    if (get_map().find(sc) == get_map().end()) {
+      str_= internal::KeyDataHolder<T>::data.add_key(sc);
     } else {
-      str_= data().map.find(sc)->second;
-    }
-    //str_=c;
-  };
+      str_= get_map().find(sc)->second;
+    }    
+  }
 
   explicit Key(unsigned int i): str_(i) {
-    //IMP_assert(data().rmap.size() > i, "There is no such attribute " << i);
+    //IMP_assert(get_rmap().size() > i, "There is no such attribute " << i);
   }
 
   //! Turn a key into a pretty string
@@ -133,7 +193,7 @@ public:
   /**
      This can be used to check for typos and similar keys.
    */
-  static std::vector<String> get_all_strings();
+  static std::vector<std::string> get_all_strings();
 
   //! Get the total number of keys of this type
   /**
@@ -141,7 +201,7 @@ public:
      keys created.
    */
   static unsigned int get_number_unique() {
-    return data().map.size();
+    return get_map().size();
   }
 
 #ifndef SWIG
@@ -167,13 +227,15 @@ IMP_OUTPUT_OPERATOR_1(Key)
 
 
 template <class T>
-inline internal::KeyData& Key<T>::data()
+inline const internal::KeyData::Map& Key<T>::get_map()
 {
-  unsigned int i= internal::attribute_table_index(T());
-  if ( internal::attribute_key_data.size() <= i) {
-    internal::attribute_key_data.resize(i+1);
-  }
-  return internal::attribute_key_data[i];
+  return internal::KeyDataHolder<T>::data.get_map();
+}
+
+template <class T>
+inline const internal::KeyData::RMap& Key<T>::get_rmap()
+{
+  return internal::KeyDataHolder<T>::data.get_rmap();
 }
 
 template <class T>
@@ -186,30 +248,25 @@ template <class T>
 inline const std::string &Key<T>::get_string(int i)
 {
   IMP_assert(static_cast<unsigned int>(i)
-             < data().rmap.size(),
+             < get_rmap().size(),
              "Corrupted "  << " Key " << i
-             << " vs " << data().rmap.size());
-  return data().rmap[i];
+             << " vs " << get_rmap().size());
+  return get_rmap()[i];
 }
 
 
 template <class T>
 inline void Key<T>::show_all(std::ostream &out)
 {
-  const internal::KeyData &d= data();
-  for (std::map<std::string, int>::const_iterator it= d.map.begin();
-       it != d.map.end(); ++it) {
-    out << "\"" << it->first << "\" ";
-  }
+  internal::KeyDataHolder<T>::data.show(out);
 }
 
 template <class T>
-std::vector<String> Key<T>::get_all_strings()
+std::vector<std::string> Key<T>::get_all_strings()
 {
-  std::vector<String> str;
-  const internal::KeyData &d= data();
-  for (std::map<std::string, int>::const_iterator it= d.map.begin();
-       it != d.map.end(); ++it) {
+  std::vector<std::string> str;
+  for (internal::KeyData::Map::const_iterator it= get_map().begin();
+       it != get_map().end(); ++it) {
     str.push_back(it->first);
   }
   return str;

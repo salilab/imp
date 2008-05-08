@@ -8,16 +8,20 @@
 #ifndef __IMP_ATOM_DECORATOR_H
 #define __IMP_ATOM_DECORATOR_H
 
-#include <vector>
-#include <deque>
-
+#include "../base_types.h"
 #include "../Particle.h"
 #include "../Model.h"
 #include "utility.h"
 #include "XYZDecorator.h"
 
+#include <vector>
+#include <deque>
+
 namespace IMP
 {
+
+struct AtomTypeTag{};
+IMP_DECLARE_KEY_TYPE(AtomType, AtomTypeTag);
 
 
 //! A decorator for a particle representing an atom.

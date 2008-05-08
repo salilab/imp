@@ -135,12 +135,12 @@ namespace IMP {
 
 %feature("director");
 
+%include "IMP/Key.h"
 %include "IMP/internal/Object.h"
 %include "IMP/internal/RefCountedObject.h"
 %include "IMP/Index.h"
 %include "IMP/base_types.h"
 %include "IMP/VersionInfo.h"
-%include "IMP/Key.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/unary_functions/Harmonic.h"
 %include "IMP/unary_functions/HarmonicLowerBound.h"
@@ -217,6 +217,7 @@ namespace IMP {
   %template(FloatKey) Key<Float>;
   %template(IntKey) Key<Int>;
   %template(StringKey) Key<String>;
+  %template(ParticleKey) Key<Particle*>;
   %template(AtomType) Key<AtomTypeTag>;
   %template(ResidueType) Key<ResidueTypeTag>;     
   %template(show_named_hierarchy) show<NameDecorator>;
@@ -231,6 +232,7 @@ namespace IMP {
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;
+  %template(ParticleKeys) ::std::vector<ParticleKey>;
   %template(Floats) ::std::vector<Float>;
   %template(Strings) ::std::vector<String>;
   %template(Ints) ::std::vector<Int>;

@@ -8,8 +8,8 @@
 #ifndef __IMP_INDEX_H
 #define __IMP_INDEX_H
 
-#include "log.h"
-#include "utility.h"
+#include "macros.h"
+#include "exception.h"
 
 namespace IMP
 {

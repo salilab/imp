@@ -5,17 +5,18 @@
  *
  */
 
-#include <sstream>
-#include <vector>
-
+#include "IMP/base_types.h"
 #include "IMP/decorators/ResidueDecorator.h"
 #include "IMP/decorators/AtomDecorator.h"
 #include "IMP/log.h"
 
+#include <sstream>
+#include <vector>
+
 namespace IMP
 {
 
-
+IMP_DEFINE_KEY_TYPE(ResidueType, ResidueTypeTag);
 
 IntKey ResidueDecorator::type_key_;
 IntKey ResidueDecorator::index_key_;

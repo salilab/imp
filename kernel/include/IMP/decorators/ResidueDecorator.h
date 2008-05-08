@@ -8,6 +8,7 @@
 #ifndef __IMP_RESIDUE_DECORATOR_H
 #define __IMP_RESIDUE_DECORATOR_H
 
+#include "../base_types.h"
 #include "../Particle.h"
 #include "../Model.h"
 #include "../DecoratorBase.h"
@@ -15,6 +16,9 @@
 
 namespace IMP
 {
+
+struct ResidueTypeTag{};
+IMP_DECLARE_KEY_TYPE(ResidueType, ResidueTypeTag);
 
 
 //! A decorator for a residue.
