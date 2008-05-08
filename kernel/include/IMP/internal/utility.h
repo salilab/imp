@@ -26,22 +26,15 @@ struct IMPDLLEXPORT IsInactiveParticle
   }
 };
 
-//! Remove all particles from a range in a container
-inline void remove_inactive_particles(Particles &ps,
-                                      Particles::iterator b,
-                                      Particles::iterator e)
-{
-  ps.erase(std::remove_if(b, e, internal::IsInactiveParticle()), e);
-  for (Particles::iterator c= b; c!= e; ++c) {
-    (*c)->assert_is_valid();
-    IMP_assert((*c)->get_is_active(), "Did not remove inactive particle");
-  }
-}
-
 //! Remove all the inactive particles from a vector of particles
 inline void remove_inactive_particles(Particles &ps)
 {
-  remove_inactive_particles(ps, ps.begin(), ps.end());
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          internal::IsInactiveParticle()), ps.end());
+  for (Particles::iterator c = ps.begin(); c != ps.end(); ++c) {
+    (*c)->assert_is_valid();
+    IMP_assert((*c)->get_is_active(), "Did not remove inactive particle");
+  }
 }
 
 } // namespace internal
