@@ -291,8 +291,6 @@ template <class L>                                                      \
    \param[in] Ucname The name of the type in uppercase
    \param[in] lcname The name of the type in lower case
    \param[in] Data The type of the data to store.
-   \param[in] Onchanged Code to get executed every time the container
-   changes
 
    \note the type Ucnames must be declared and be a vector of
    Data.
@@ -378,6 +376,7 @@ IMP_CONTAINER_CORE(public, Ucname, lcname, Ucname*, IndexType,          \
    IMP_CONTAINER.
    \param[in] init Code to modify the passed in object. The object is obj
    its index index.
+   \param[in] onchanged Code to execute when the container is changed.
    \param[in] onremove Code to execute when an object is removed. The object
    being removed is obj.
  */

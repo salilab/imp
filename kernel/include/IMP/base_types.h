@@ -10,11 +10,11 @@
 
 #include "IMP_config.h"
 #include "Index.h"
-#include "internal/Vector.h"
+#include "Key.h"
 
 #include <string>
-#include <iostream>
 #include <vector>
+#include <map>
 
 namespace IMP
 {
@@ -74,48 +74,6 @@ typedef std::vector<ParticlePair> ParticlePairs;
 
 typedef std::vector<ParticleIndex> ParticleIndexes;
 
-template <class T> class Key;
-
-
-/*
-
-  NOTE: for stupid and obscure C++-related reasons, the key
-  declarations must go here. 
-
-  In detail, the index function declarations must appear before the data()
-  function which uses them.
-
- */
-
-/**
-   Define a new key type. There must be an accompanying IMP_DEFINE_KEY_TYPE.
-   \note This macro should only be used down in this file after the 
-
-   \param[in] Name The name for the new type.
-   \param[in] Tag A class which is unique for this type. For attributes
-   use the type of the attributes. For other Keys, declare an empty
-   class with a unique name and use it. 
- */
-#define IMP_DECLARE_KEY_TYPE(Name, Tag)                             \
-  typedef Key<Tag> Name;                                            \
-  namespace internal {                                              \
-    IMPDLLEXPORT extern unsigned int next_attribute_table_index_;   \
-    IMPDLLEXPORT extern const unsigned int Name##_attribute_table_index_; \
-    inline unsigned int attribute_table_index(Tag) {                    \
-      return Name##_attribute_table_index_;                             \
-    }                                                                   \
-  }                                                                     \
-  typedef std::vector<Name> Name##s;
-
-/**
-   Declare static data necessary for a new key type.
- */
-#define IMP_DEFINE_KEY_TYPE(Name, Tag)                                  \
-  namespace internal {                                                  \
-    const unsigned int                                                  \
-    Name##_attribute_table_index_=next_attribute_table_index_++;        \
-  }
-
 class Particle;
 
 //! The type used to identify float attributes in the Particles
@@ -125,21 +83,9 @@ IMP_DECLARE_KEY_TYPE(IntKey, Int);
 //! The type used to identify string attributes in the Particles
 IMP_DECLARE_KEY_TYPE(StringKey, String);
 //! The type used to identify a particle attribute in the Particles
-IMP_DECLARE_KEY_TYPE(ParticleKey, Particle*)
-
-
-struct AtomTypeTag{};
-struct ResidueTypeTag{};
-
-//! The type used to identify atom types
-IMP_DECLARE_KEY_TYPE(AtomType, AtomTypeTag);
-//! The type used to identify residue types
-IMP_DECLARE_KEY_TYPE(ResidueType, ResidueTypeTag);
-
-
+IMP_DECLARE_KEY_TYPE(ParticleKey, Particle*);
 
 } // namespace IMP
 
-#include "Key.h"
 
 #endif  /* __IMP_BASE_TYPES_H */
