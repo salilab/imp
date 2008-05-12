@@ -31,12 +31,15 @@ MaxChangeScoreState::MaxChangeScoreState(const FloatKeys &keys,
 IMP_LIST_IMPL(MaxChangeScoreState, Particle, particle, Particle*,
               {for (unsigned int i=0; i< keys_.size(); ++i) {
                   IMP_check(obj->has_attribute(keys_[i]),
-                            "Particle missing needed attribute",
+                            "Particle missing needed attribute " << keys_[i]
+                            << obj,
                             ValueException("Particle missing attribute"));
                 };
                 for (unsigned int i=0; i< origkeys_.size(); ++i) {
-                  obj->add_attribute(origkeys_[i],
-                                     obj->get_value(keys_[i]), false);
+                  if (!obj->has_attribute(origkeys_[i])) {
+                    obj->add_attribute(origkeys_[i],
+                                       obj->get_value(keys_[i]), false);
+                  }
                 }
               }, {reset();});
 
