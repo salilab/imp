@@ -78,7 +78,7 @@ class TestList(IMP.test.TestCase):
         dist2 = (d.get_x()-5)**2+(d.get_y()-5)**2+(d.get_y()-5)**2
         print "Final"
         d.show()
-        self.assert_(dist2 < 100, "Enclosing sphere not enclosing")
+        self.assert_(dist2 < 100.01, "Enclosing sphere not enclosing")
 
 if __name__ == '__main__':
     unittest.main()
