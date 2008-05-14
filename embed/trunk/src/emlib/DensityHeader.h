@@ -42,7 +42,7 @@ public:
   /** \param[in] ind The dimension index x:=0,y:=1,z:=2
       \return the coordinate value in angstroms
    */
-  real get_top(int ind) const 
+  emreal get_top(int ind) const 
   { 
     if (!top_calculated) {
       std::cerr << " DensityHeader::get_top  the top coordinates of the map have not been setup yet " << std::endl;

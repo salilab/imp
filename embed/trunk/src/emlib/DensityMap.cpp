@@ -17,7 +17,7 @@ DensityMap::DensityMap(const DensityMap &other){
 
   header = other.header;
   int size = header.nx*header.ny*header.nz;
-  data = new real[size];
+  data = new emreal[size];
   x_loc = new float[size];
   y_loc = new float[size];
   z_loc = new float[size];
@@ -59,7 +59,7 @@ DensityMap::~DensityMap() {
 
 void DensityMap::CreateVoidMap(const int &nx,const int &ny,const int &nz) {
   int nvox = nx*ny*nz;
-  data = new real[nvox];
+  data = new emreal[nvox];
   for ( int i=0;i<nvox;i++) {
     data[i]=0.0;
   }
@@ -91,15 +91,15 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   std::cout<<"after computer top" << std::endl;
 }
 
-void DensityMap::float2real(float *f_data,real **r_data) {
+void DensityMap::float2real(float *f_data, emreal **r_data) {
   int size = header.nx*header.ny*header.nz;
-  (*r_data)= new real[size]; 
+  (*r_data)= new emreal[size]; 
   for (int i=0;i<size;i++){
-    (*r_data)[i]=(real)(f_data)[i];
+    (*r_data)[i]=(emreal)(f_data)[i];
   }
 }
 
-void DensityMap::real2float(real *r_data,float **f_data) {
+void DensityMap::real2float(emreal *r_data, float **f_data) {
   int size = header.nx*header.ny*header.nz;
   (*f_data)= new float[size]; 
   for (int i=0;i<size;i++){
@@ -160,7 +160,7 @@ bool DensityMap::part_of_volume(float x,float y,float z) const
   }
 }
 
-real DensityMap::get_value(float x,float y,float z) const{
+emreal DensityMap::get_value(float x,float y,float z) const{
   return data[loc2voxel(x,y,z)];
 }
 
@@ -219,16 +219,16 @@ void DensityMap::std_normalize() {
 
 
 
-real DensityMap::calcRMS() {
+emreal DensityMap::calcRMS() {
 
   if (rms_calculated) {
     return header.rms;
   }
 
-  real max_value=-1e40, min_value=1e40;
+  emreal max_value=-1e40, min_value=1e40;
   int  nvox = header.nx * header.ny * header.nz;
-  real meanval = .0;
-  real stdval = .0;
+  emreal meanval = .0;
+  emreal stdval = .0;
 
   for (int ii=0;ii<nvox;ii++) {
     meanval +=  data[ii];
