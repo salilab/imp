@@ -34,10 +34,8 @@ public:
       object is deleted upon destruction.
       \param[in] nbl The non-bonded list to use to get the list
       of particles.
-      \param[in] max_dist Pairs beyond this distance may be dropped.
    */
-  NonbondedRestraint(PairScore *ps, NonbondedListScoreState *nbl,
-                     Float max_dist= std::numeric_limits<Float>::max());
+  NonbondedRestraint(PairScore *ps, NonbondedListScoreState *nbl);
   virtual ~NonbondedRestraint(){}
 
   IMP_RESTRAINT(internal::kernel_version_info)
@@ -45,7 +43,6 @@ public:
 protected:
   NonbondedListScoreState *nbl_;
   internal::ObjectPointer<PairScore, true> sf_;
-  Float max_dist_;
 };
 
 } // namespace IMP

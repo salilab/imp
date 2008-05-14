@@ -45,6 +45,8 @@ public:
 
   IMP_RESTRAINT(internal::kernel_version_info)
 
+  void set_function(UnaryFunction *f) {f_=f;}
+
 protected:
   BondDecoratorListScoreState *bl_;
   internal::ObjectPointer<UnaryFunction, true> f_;

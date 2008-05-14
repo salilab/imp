@@ -72,9 +72,6 @@
 #include "IMP/score_states/BondedListScoreState.h"
 #include "IMP/score_states/BondDecoratorListScoreState.h"
 #include "IMP/score_states/AllNonbondedListScoreState.h"
-#include "IMP/score_states/QuadraticBipartiteNonbondedListScoreState.h"
-#include "IMP/score_states/QuadraticAllNonbondedListScoreState.h"
-#include "IMP/score_states/QuadraticNonbondedListScoreState.h"
 #include "IMP/score_states/GravityCenterScoreState.h"
 #include "IMP/score_states/CoverBondsScoreState.h"
 
