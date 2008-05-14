@@ -96,6 +96,10 @@ public:
     return ExponentialNumber<OEXP+EXP>(v_*o.v_);
   }
 
+  This operator-() const {
+    return This(-v_);
+  }
+
   void show(std::ostream &out) const {
     std::ios::fmtflags of = out.flags();
     out << setiosflags(std::ios::fixed) << v_;
@@ -180,6 +184,17 @@ public:
   bool operator<(MKSUnit<OEXP, M, KG, K, S> o) const {
     return v_ < o.v_;
   }
+
+  //! MKS units can be compared if their types match
+  template <int OEXP>
+  bool operator<=(MKSUnit<OEXP, M, KG, K, S> o) const {
+    return v_ <= o.v_;
+  }
+  //! MKS units can be compared if their types match
+  template <int OEXP>
+  bool operator>=(MKSUnit<OEXP, M, KG, K, S> o) const {
+    return v_ >= o.v_;
+  }
   //! only works with matching types
   template <int OEXP>
   bool operator>(MKSUnit<OEXP, M, KG, K, S> o) const {
@@ -228,6 +243,10 @@ public:
     return This(v_-o.v_);
   }
 
+  This operator-() const {
+    return This(-v_);
+  }
+
   //! Get a string version of the name of the units
   std::string get_name() const {
     int m=M;
@@ -273,6 +292,22 @@ MKSUnit<EXP*2, M*2, KG*2, K*2, S*2>
 square(MKSUnit<EXP, M, KG, K, S> o)
 {
   return MKSUnit<EXP*2, M*2, KG*2, K*2, S*2>(IMP::square(o.get_value()));
+}
+
+//! They have to be the same EXP to make the return type make sense
+template <int EXP, int M, int KG, int K, int S>
+MKSUnit<EXP, M, KG, K, S>
+min(MKSUnit<EXP, M, KG, K, S> a, MKSUnit<EXP, M, KG, K, S> b) {
+  if (a<b) return a;
+  else return b;
+}
+
+//! They have to be the same EXP to make the return type make sense
+template <int EXP, int M, int KG, int K, int S>
+MKSUnit<EXP, M, KG, K, S>
+max(MKSUnit<EXP, M, KG, K, S> a, MKSUnit<EXP, M, KG, K, S> b) {
+  if (a>b) return a;
+  else return b;
 }
 
 typedef MKSUnit<-10, 1, 0, 0, 0> Angstrom;
@@ -334,6 +369,9 @@ public:
   //! Get the value ignoring the exponent
   double get_value() const {return v_.get_value();}
 
+  This operator-() const {
+    return This(-v_);
+  }
 
   //! Get the value ignoring the exponent
   V get_exponential_value() const {return v_;}

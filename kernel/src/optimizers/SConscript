@@ -3,8 +3,9 @@ Import('env')
 states_files = SConscript('states/SConscript')
 movers_files = SConscript('movers/SConscript')
 
-files = [ 'SteepestDescent.cpp', 'ConjugateGradients.cpp',
-         'MolecularDynamics.cpp', 'MonteCarlo.cpp', 'MoverBase.cpp']+states_files +movers_files
+files = ['SteepestDescent.cpp', 'ConjugateGradients.cpp',
+         'MolecularDynamics.cpp', 'MonteCarlo.cpp', 'MoverBase.cpp',
+         'BrownianDynamics.cpp'] + states_files + movers_files
 
 files = [File(x) for x in files]
 Return('files')

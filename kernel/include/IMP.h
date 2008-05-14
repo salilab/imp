@@ -40,6 +40,7 @@
 #include "IMP/optimizers/SteepestDescent.h"
 #include "IMP/optimizers/ConjugateGradients.h"
 #include "IMP/optimizers/MolecularDynamics.h"
+#include "IMP/optimizers/BrownianDynamics.h"
 #include "IMP/optimizers/MonteCarlo.h"
 #include "IMP/optimizers/Mover.h"
 #include "IMP/optimizers/MoverBase.h"
