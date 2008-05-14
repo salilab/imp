@@ -28,6 +28,9 @@ extern IMPDLLEXPORT const MKSUnit<-23, 2, 1, -1, -2>  KB;
 //! the default temperature
 extern IMPDLLEXPORT const Kelvin T;
 
+//! Pi
+static const double PI = 3.1415926535897931;
+
 } // namespace internal
 
 } // namespace IMP
