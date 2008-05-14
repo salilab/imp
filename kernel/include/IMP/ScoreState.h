@@ -47,13 +47,13 @@ public:
   virtual ~ScoreState();
 
   //! Update if needed
-  /** The do_before_evaluate method will be called if the iteration
+  /** The protected do_before_evaluate method will be called if the iteration
       count has not yet been seen.
    */
   void before_evaluate(unsigned int iteration);
 
   //! Do post evaluation work if needed
-  /** The do_after_evaluate method will be called if needed.
+  /** The protected do_after_evaluate method will be called if needed.
    */
   void after_evaluate(unsigned int iteration,
                       DerivativeAccumulator *accpt);

@@ -190,7 +190,7 @@ template <class L>                                                      \
 
 //! Define the basics needed for a ScoreState
 /** This macro declares the required functions 
-    - void do_before_update()
+    - void do_before_evaluate()
     - void show(std::ostream &out) const
     and defines the function
     - get_version_info
@@ -198,9 +198,10 @@ template <class L>                                                      \
     \param[in] version_info The version info object to return.
 */
 #define IMP_SCORE_STATE(version_info)                                   \
-public:                                                                 \
+protected:                                                              \
   /** update the state*/                                                \
  virtual void do_before_evaluate();                                     \
+public:                                                                 \
  /** write information about the state to the stream */                 \
  virtual void show(std::ostream &out=std::cout) const;                  \
   /** \return version and authorship information */                     \

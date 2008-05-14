@@ -38,20 +38,20 @@ public:
                           const Particles &ps= Particles());
   virtual ~GravityCenterScoreState() {}
 
-  //! Set the position of the center particle from the original points.
-  void set_position();
+  //! Update the position of the center particle from the original points.
+  void update_position();
 
   IMP_SCORE_STATE(internal::kernel_version_info);
+
+protected:
+  //! Back-transform any forces on the center particle to the original points.
+  void transform_derivatives(DerivativeAccumulator *accpt);
 
   void do_after_evaluate(DerivativeAccumulator *accpt) {
     if (accpt) {
       transform_derivatives(accpt);
     }
   }
-
-protected:
-  //! Back-transform any forces on the center particle to the original points.
-  void transform_derivatives(DerivativeAccumulator *accpt);
 
   Particle *center_;
   FloatKey weightkey_;
