@@ -21,15 +21,16 @@ GravityCenterScoreState::GravityCenterScoreState(Particle *center,
   add_particles(ps);
 }
 
-void GravityCenterScoreState::do_before_evaluate() {
-  set_position();
+void GravityCenterScoreState::do_before_evaluate()
+{
+  update_position();
 }
 
 // check that the particle is an xyz particle
 IMP_LIST_IMPL(GravityCenterScoreState, Particle, particle, Particle*,
-              XYZDecorator::cast(obj), set_position());
+              XYZDecorator::cast(obj), update_position());
 
-void GravityCenterScoreState::set_position()
+void GravityCenterScoreState::update_position()
 {
   Vector3D cvect(0.0, 0.0, 0.0);
   bool do_weighting = (weightkey_ != FloatKey());
