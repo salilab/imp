@@ -2,7 +2,8 @@ import os.path
 Import('env')
 
 files = ['Harmonic.h', 'HarmonicLowerBound.h', 'HarmonicUpperBound.h',
-         'OpenCubicSpline.h', 'ClosedCubicSpline.h', 'Cosine.h', 'Linear.h']
+         'OpenCubicSpline.h', 'ClosedCubicSpline.h', 'Cosine.h', 'Linear.h',
+         'WormLikeChain.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'unary_functions')

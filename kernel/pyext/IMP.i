@@ -149,6 +149,7 @@ namespace IMP {
 %include "IMP/unary_functions/ClosedCubicSpline.h"
 %include "IMP/unary_functions/Cosine.h"
 %include "IMP/unary_functions/Linear.h"
+%include "IMP/unary_functions/WormLikeChain.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/Restraint.h"
 %include "IMP/ScoreState.h"

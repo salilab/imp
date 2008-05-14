@@ -41,3 +41,25 @@ class TestCase(unittest.TestCase):
         dy = p1.get_value(ykey) - p2.get_value(ykey)
         dz = p1.get_value(zkey) - p2.get_value(zkey)
         return math.sqrt(dx*dx + dy*dy + dz*dz)
+
+    def check_unary_function_deriv(self, func, lb, ub, step):
+        """Check the unary function func's derivatives against numerical
+           approximations between lb and ub"""
+        for f in [lb + i * step for i in range(1, int((ub-lb)/step))]:
+            (v,d)= func.evaluate_deriv(f)
+            # Simple finite difference approximation
+            offset= step/1024
+            vmn= func.evaluate(f-offset)
+            vmx= func.evaluate(f+offset)
+            da= (vmx-vmn)/(2*offset)
+            self.assertInTolerance(d, da, abs(.1 *d)+.0001)
+
+    def check_unary_function_min(self, func, lb, ub, step, expected_fmin):
+        """Make sure that the minimum of the unary function func over the
+           range between lb and ub is at expected_fmin"""
+        fmin, vmin = lb, func.evaluate(lb)
+        for f in [lb + i * step for i in range(1, int((ub-lb)/step))]:
+            v = func.evaluate(f)
+            if v < vmin:
+                fmin, vmin = f, v
+        self.assertInTolerance(fmin, expected_fmin, step)
