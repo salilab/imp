@@ -34,7 +34,7 @@ for p in m.get_particles():
     p.show()
 
 # Set up the nonbonded list
-nbl= IMP.AllNonbondedListScoreState(rk, chain)
+nbl= IMP.AllNonbondedListScoreState(1, rk, chain)
 nbli= m.add_score_state(nbl)
 # This ScoreState uses the bonds constructed above to restrain
 bl= IMP.BondDecoratorListScoreState(chain)
@@ -43,7 +43,7 @@ bli= nbl.add_bonded_list(bl)
 # Set up excluded volume
 ps= IMP.SphereDistancePairScore(IMP.HarmonicLowerBound(0,1),
                                 rk)
-evr= IMP.NonbondedRestraint(ps, nbl, 1)
+evr= IMP.NonbondedRestraint(ps, nbl)
 evri= m.add_restraint(evr)
 
 # Restraint for bonds

@@ -25,9 +25,6 @@ class IMPDLLEXPORT BondedListScoreState: public ScoreState
   BondedListScoreState(){}
   virtual ~BondedListScoreState(){}
 
-  //! Set the set of particles used
-  virtual void set_particles(const Particles &ps)=0;
-
   //! Return true if the two particles are bonded
   virtual bool are_bonded(Particle *a, Particle *b) const =0;
 };

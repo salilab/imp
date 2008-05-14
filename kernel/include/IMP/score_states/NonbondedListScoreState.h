@@ -9,9 +9,11 @@
 #define __IMP_NONBONDED_LIST_SCORE_STATE_H
 
 #include "../ScoreState.h"
-#include "../internal/ParticleGrid.h"
 #include "../internal/kernel_version_info.h"
+#include "../decorators/XYZDecorator.h"
 #include "BondedListScoreState.h"
+
+#include <boost/iterator/filter_iterator.hpp>
 
 #include <vector>
 #include <limits>
@@ -19,34 +21,53 @@
 namespace IMP
 {
 
+namespace internal
+{
+class NBLAddPairIfNonbonded;
+class NBLAddIfNonbonded;
+}
+
 typedef std::vector<BondedListScoreState*> BondedListScoreStates;
 
-//! A base class for classes that maintain a list of non-bonded pairs.
-/** 
+//! An abstract base class for classes that maintain a list of non-bonded pairs.
+/** \note If no value for the radius key is specified, all radii are
+    considered to be zero.
  */
 class IMPDLLEXPORT NonbondedListScoreState: public ScoreState
 {
 private:
   FloatKey rk_;
-
-protected:
-  // made protected for debugging code, do not use otherwise
+  //! the distance cutoff to count a pair as adjacent
+  float cutoff_;
+  /** How much to add to the size of particles to allow particles to move
+      without rebuilding the list */
+  Float slack_;
+  //! An estimate of what the slack should be next time the list is recomputed
+  Float next_slack_;
+  int num_steps_;
+  bool nbl_is_valid_;
+  int number_of_rebuilds_;
+  int number_of_updates_;
   typedef std::vector<std::pair<Particle*, Particle*> > NBL;
   NBL nbl_;
-  float last_cutoff_;
+
+protected:
+
+  Float get_slack() const {return slack_;}
+  Float get_cutoff() const {return cutoff_;}
 
   unsigned int size_nbl() const {return nbl_.size();}
 
   //! rebuild the nonbonded list
-  /** \internal
+  /** This is used by classes which inherit from this to rebuild the NBL
+
+      \internal
    */
-  virtual void rebuild_nbl(float cut)=0;
+  virtual void rebuild_nbl()=0;
 
-  void clear_nbl() {
-    last_cutoff_=-1;
-    nbl_.clear();
-  }
 
+
+  //! Return true if two particles are bonded
   bool are_bonded(Particle *a, Particle *b) const {
     IMP_assert(a->get_is_active() && b->get_is_active(),
                "Inactive particles should have been removed"
@@ -59,28 +80,13 @@ protected:
     }
     return false;
   }
+  friend struct internal::NBLAddPairIfNonbonded;
+  friend struct internal::NBLAddIfNonbonded;
 
-  struct AddToNBL;
-  friend struct AddToNBL;
 
-  // these should be two separate classes, but they are not
-  struct AddToNBL{
-    NonbondedListScoreState *state_;
-    Particle *p_;
-    AddToNBL(NonbondedListScoreState *s, Particle *p): state_(s),
-                                                       p_(p){}
-    void operator()(Particle *p) {
-      operator()(p_, p);
-    }
-    void operator()(Particle *a, Particle *b) {
-      state_->add_to_nbl(a,b);
-    }
-  };
 
-  //! tell the bonded lists what particles to pay attention to
-  void propagate_particles(const Particles &ps);
-
-  void add_to_nbl(Particle *a, Particle *b) {
+  //! Add the pair to the nbl if the particles are not bonded
+  void add_if_nonbonded(Particle *a, Particle *b) {
     IMP_assert(a->get_is_active() && b->get_is_active(),
                "Inactive particles should have been stripped");
 
@@ -95,70 +101,158 @@ protected:
     }
   }
 
-  Float get_radius(Particle *a) const {
-    if (rk_ != FloatKey() && a->has_attribute(rk_)) {
-      return a->get_value(rk_);
-    } else {
-      return 0;
+  struct GetRadius
+  {
+    FloatKey rk_;
+    GetRadius(FloatKey rk): rk_(rk){
     }
+    GetRadius(){}
+    Float operator() (Particle *a) const {
+      if (rk_ != FloatKey() && a->has_attribute(rk_)) {
+        return a->get_value(rk_);
+      } else {
+        return 0;
+      }
+    }
+  };
+
+  //! Check if the bounding boxes of the spheres overlap
+  void add_if_box_overlap(Particle *a, Particle *b) {
+    BoxesOverlap bo= boxes_overlap_object(slack_+ cutoff_);
+    if (!bo(a, b)) {
+      IMP_LOG(VERBOSE, "Pair " << a->get_index()
+              << " and " << b->get_index() << " rejected on coordinate "
+              << std::endl);
+    }
+    IMP_LOG(VERBOSE, "Adding pair " << a->get_index()
+            << " and " << b->get_index() << std::endl);
+    add_if_nonbonded(a, b); 
   }
 
-public:
-  /**
+  GetRadius get_radius_object() const {
+    return GetRadius(rk_);
+  }
+
+  //! \return true if the nbl was invalidated by a move of mc
+  /** rebuild_cost is an estimate of the rebuilding cost used
+      to try to get the slack right. The units are that of
+      evaluating a distance
    */
-  NonbondedListScoreState(FloatKey rk);
+  bool update(Float mc, Float rebuild_cost);
+
+  //! \return a list of all the particles in in with a radius field
+  Particles particles_with_radius(const Particles &in) const;
+
+
+  //! \return true if the nbl is valid
+  bool get_nbl_is_valid() const {return nbl_is_valid_;}
+
+  void set_nbl_is_valid(bool tf);
+
+  struct BoxesOverlap
+  {
+    GetRadius gr_;
+    Float slack_;
+    BoxesOverlap(GetRadius rk, Float sl): gr_(rk), slack_(sl){}
+    BoxesOverlap(){}
+    bool operator()(Particle *a, Particle *b) const {
+      XYZDecorator da(a);
+      XYZDecorator db(b);
+      float ra= gr_(a);
+      float rb= gr_(b);
+      for (unsigned int i=0; i< 3; ++i) {
+        float delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
+        if (delta -ra -rb > slack_) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    bool operator()(std::pair<Particle *, Particle *> p) const {
+      return operator()(p.first, p.second);
+    }
+  };
+
+  BoxesOverlap boxes_overlap_object(float cut) const {
+    return BoxesOverlap(get_radius_object(), cut);
+  }
+public:
+  NonbondedListScoreState(Float cutoff, FloatKey rk);
+  ~NonbondedListScoreState();
 
   FloatKey get_radius_key() const {return rk_;}
   void set_radius_key(FloatKey rk) {rk_=rk;} 
 
   IMP_CONTAINER(BondedListScoreState, bonded_list,
                 BondedListIndex);
+
   // kind of evil hack to make the names better
   // perhaps the macro should be made more flexible
   typedef BondedListScoreStateIterator BondedListIterator;
   typedef BondedListScoreStateConstIterator BondedListConstIterator;
 
-  IMP_SCORE_STATE(internal::kernel_version_info)
+  virtual void show(std::ostream &out=std::cout) const;
+  virtual IMP::VersionInfo get_version_info() const {
+    return internal::kernel_version_info;
+  }
 
   //! An iterator through nonbonded particles
-  /** The value type is an std::pair<Particle*, Particle*> 
+  /** The value type is an ParticlePair. 
    */
-  typedef NBL::const_iterator NonbondedIterator;
+  typedef boost::filter_iterator<BoxesOverlap,
+    NBL::const_iterator> NonbondedIterator;
 
-  //! This iterates through the pairs of non-bonded particles
-  /** \param[in] cutoff The state may ignore pairs which are futher
-      apart than the cutoff.
-      \note that this is highly unsafe and iteration can only be
-      done once at a time. I will fix that eventually.
-
-      \note The distance cutoff is the l2 norm between the 3D coordinates
-      of the Particles. It ignore any size that may be associated with
-      the particles.
-  */
-  NonbondedIterator nonbonded_begin(Float cutoff
-                                    =std::numeric_limits<Float>::max()) {
-    IMP_assert(last_cutoff_== cutoff || last_cutoff_==-1,
-               "Bad things are happening with the iterators in "
-               << "NonbondedListScoreState");
-    if (last_cutoff_ < cutoff) {
-      IMP_LOG(VERBOSE, "Rebuilding NBL cutoff " << cutoff << std::endl);
-      clear_nbl();
-      rebuild_nbl(cutoff);
-      last_cutoff_=cutoff;
-    }
-    return nbl_.begin();
+  //! Iterates through the pairs of non-bonded particles
+  NonbondedIterator nonbonded_begin() const {
+    IMP_check(get_nbl_is_valid(), "Must call update first",
+              ValueException("Must call update first"));
+    return NonbondedIterator(boxes_overlap_object(cutoff_),
+                             nbl_.begin(), nbl_.end());
   }
-  NonbondedIterator nonbonded_end(Float cutoff
-                                  =std::numeric_limits<Float>::max()) {
-    if (last_cutoff_ < cutoff) {
-      IMP_LOG(VERBOSE, "Rebuilding NBL cutoff " << cutoff << std::endl);
-      clear_nbl();
-      rebuild_nbl(cutoff);
-      last_cutoff_=cutoff;
-    }
-    return nbl_.end();
+  NonbondedIterator nonbonded_end() const {
+    IMP_check(get_nbl_is_valid(), "Must call update first",
+              ValueException("Must call update first"));
+    return NonbondedIterator(boxes_overlap_object(cutoff_),
+                             nbl_.end(), nbl_.end());
+  }
+
+
+  unsigned int number_of_nonbonded() const {
+    IMP_check(get_nbl_is_valid(), "Must call update first",
+              ValueException("Must call update first"));
+    return nbl_.size();
+  }
+
+  void show_statistics(std::ostream &out=std::cout) const;
+
+};
+
+
+namespace internal
+{
+
+struct NBLAddPairIfNonbonded
+{
+  NonbondedListScoreState *state_;
+  NBLAddPairIfNonbonded(NonbondedListScoreState *s): state_(s){}
+  void operator()(Particle *a, Particle *b) {
+    state_->add_if_nonbonded(a,b);
   }
 };
+
+struct NBLAddIfNonbonded
+{
+  NonbondedListScoreState *state_;
+  Particle *p_;
+  NBLAddIfNonbonded(NonbondedListScoreState *s, Particle *p): state_(s),
+                                                           p_(p){}
+  void operator()(Particle *p) {
+    state_->add_if_nonbonded(p_, p);
+  }
+};
+
+} // namespace internal
 
 } // namespace IMP
 
