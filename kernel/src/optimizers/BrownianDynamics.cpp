@@ -284,7 +284,7 @@ BrownianDynamics::estimate_D_from_radius(internal::Angstrom r) const
             << std::endl;
   std::cout << "ret pre conv " << (kt/(internal::Scalar(6* internal::PI)*etar))
   << std::endl;*/
-  internal::Cm2PerSecond ret( kt()/(internal::Scalar(6* M_PI)*etar));
+  internal::Cm2PerSecond ret( kt()/(internal::Scalar(6* internal::PI)*etar));
   //std::cout << "ret " << ret << std::endl;
   return ret;
 }
