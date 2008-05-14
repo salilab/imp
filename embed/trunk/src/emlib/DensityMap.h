@@ -40,7 +40,7 @@ public:
   void reset_data(); 
 
   //! Calculates RMSD and mean of a map values are stored in the header. The header stores whether map is normalized.
-  real calcRMS();
+  emreal calcRMS();
 
 
   //!normailze the density according to standard deviation (stdv). The mean is subtracted from the map, which is then divided by the stdv 
@@ -81,7 +81,7 @@ public:
     \return the value of the voxel located at (x,y,z)
     \exception std::out_of_range The point is not covered by the grid.
 */
-  real get_value(float x,float y,float z) const;
+  emreal get_value(float x,float y,float z) const;
 
   //! Sets the origin of the header
   void set_origin(float x,float y,float z);
@@ -110,7 +110,7 @@ public:
       throw 1;
     }
     return z_loc;}
-  real* get_data() const {return data;}
+    emreal* get_data() const {return data;}
 
 
 //! Checks if two maps have the same 
@@ -140,11 +140,11 @@ protected:
 
 
   void allocated_data();
-  void float2real(float *f_data,real **r_data);
-  void real2float(real *r_data,float **f_data);
+  void float2real(float *f_data, emreal **r_data);
+  void real2float(emreal *r_data, float **f_data);
 
   DensityHeader header;
-  real *data; // the order is ZYX (Z-slowest)
+  emreal *data; // the order is ZYX (Z-slowest)
   bool data_allocated;
 
   // Locations for each of the voxels of the map (they are precomputed and each one is of size nvox, being nvox the size of the map)

@@ -7,7 +7,7 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header_)
   kernel_params = KernelParameters(header.get_resolution());
   //allocate the data
   int nvox = header.nx*header.ny*header.nz;
-  data = new real[nvox]; 
+  data = new emreal[nvox]; 
   calc_all_voxel2loc();
   header.compute_xyz_top();
 }
@@ -101,7 +101,7 @@ SampledDensityMap::SampledDensityMap(
 
   set_header(lower_bound,upper_bound,maxradius,
 	     resolution,voxel_size,sig_cutoff);
-  data = new real[header.nx*header.ny*header.nz];
+  data = new emreal[header.nx*header.ny*header.nz];
 
   //set up the sampling parameters
   kernel_params = KernelParameters(resolution);

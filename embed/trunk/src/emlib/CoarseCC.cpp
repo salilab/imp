@@ -45,8 +45,8 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     model_map.calcRMS();
   }
 
-  const real *em_data = em_map.get_data();
-  const real *model_data = model_map.get_data();
+  const emreal *em_data = em_map.get_data();
+  const emreal *model_data = model_map.get_data();
 
   //validity checks
   bool same_dimensions = em_map.same_dimensions(model_map);
@@ -148,7 +148,7 @@ void  CoarseCC::calcDerivatives(const DensityMap &em_map,
   const float *y_loc = model_map.get_y_loc();
   const float *z_loc = model_map.get_z_loc();
 
-  const real *em_data = em_map.get_data();
+  const emreal *em_data = em_map.get_data();
 
   float lim = (model_map.get_kernel_params())->get_lim();
   //lim = 0.00000001;
