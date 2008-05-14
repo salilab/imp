@@ -10,57 +10,112 @@
 <para>In order to obtain and compile &IMP;, you will need:</para>
 
 <itemizedlist>
-<listitem><para>A recent version of
-<ulink url="http://www.swig.org">SWIG</ulink> (1.3.33 or later recommended).
+<listitem><para>
+<ulink url="http://www.swig.org">SWIG</ulink> (1.3.33 or later).
 </para></listitem>
 
-<listitem><para>A recent version of
-<ulink url="http://www.scons.org">scons</ulink> (0.97 or later recommended).
+<listitem><para>
+<ulink url="http://www.scons.org">scons</ulink> (0.97 or later).
 </para></listitem>
 
-<listitem><para>A <ulink url="http://subversion.tigris.org/">Subversion</ulink>
-(svn) client.</para></listitem>
-
-<listitem><para>The <ulink url="http://www.boost.org">Boost</ulink> C++ libraries, version 1.30 or later.</para></listitem>
+<listitem><para><ulink url="http://www.boost.org">Boost</ulink> (1.34 or later).
+At the moment &IMP; only uses the Boost headers (not the libraries), so
+installing these headers in <filename>/usr/local/include/boost</filename>
+should suffice.</para></listitem>
 
 <listitem><para><ulink url="http://www.python.org">Python</ulink> 2.3 or
 later.</para></listitem>
 
-<listitem><para>If you want to use &IMP; with &MODELLER; (optional), you should
-use version 9v2 or later.</para></listitem>
+<listitem><para>A <ulink url="http://subversion.tigris.org/">Subversion</ulink>
+(svn) client to access the repository.</para></listitem>
 
 </itemizedlist>
+
+<sect3 id="mac">
+<title>Mac</title>
+<para> Mac users should use one of the available collections of Unix tools,
+either <ulink url="http://www.macports.org/">MacPorts</ulink> or
+<ulink url="http://www.finkproject.org/">Fink</ulink>. These both include SWIG,
+scons, Subversion and Boost. At the moment Fink does not have a binary
+installer for Mac OS 10.5, so MacPorts is preferred.</para>
+
+<para>Do not install any C++ headers in <filename>/usr/include</filename> on
+your Mac as the compiler assumes any such headers are C headers. Extra headers
+not owned by MacPorts or Fink should be placed in
+<filename>/usr/local/include</filename>.</para>
+</sect3>
+
+<sect3 id="windows">
+<title>Windows</title>
+<para> Windows users should probably install
+<ulink url="http://www.cygwin.org/">Cygwin</ulink>, but we don't have any of
+those yet, so we don't really know.</para>
+
+</sect3>
+
 </sect2>
 
+<sect2 id="optionallibs">
+<title>Optional dependencies</title>
+
+<itemizedlist>
+<listitem><para>If you want to use &IMP; with &MODELLER; (optional), you should
+use version 9v2 or later.</para></listitem>
+</itemizedlist>
+
+</sect2>
+
+<sect2 id="gettingbuilding">
+<title>Getting and building IMP</title>
 <para>
-You can get the current &IMP; code by running the following:
-</para>
+If you have Subversion installed you can get the current &IMP; code by running
+the following:
 <screen>
 <command>svn co https://svn.salilab.org/imp/trunk imp</command>
 </screen>
+</para>
+<para>
+To build &IMP;, in the <filename>imp</filename> directory type:
+<screen>
+<command>scons</command>
+</screen>
+</para>
+<para>
+Finally, to use &IMP; within Python, type the following in the
+<filename>imp</filename> directory:
+<screen>
+<command>bin/imppy.sh python</command>
+</screen>
+</para>
 
 <para>
-If you already have a copy of &IMP;, you can update it to the current code
-by running (in the <filename>imp</filename> directory):
-</para>
+Some other useful commands:
+<itemizedlist>
+
+<listitem>If you have checked out a copy of &IMP;, you can update it to the
+current code by typing
 <screen>
 <command>svn update</command>
+</screen></listitem>
+
+<listitem> To install &IMP; into <filename>install_dir</filename>, type
+<screen>
+<command>scons install prefix=install_dir</command>
 </screen>
-
-<para>
-To compile, run <command>scons</command> in the
-<filename>imp</filename> directory (it is also recommended that you run
-<command>scons test</command> to run all of the unit tests). To install, run
-<command>scons install</command>.
-</para>
-
-<para>
+Note that installation does not currently work on Mac OS.
+</listitem>
+<listitem>
 If you want to use &IMP; with &MODELLER;, set the <command>scons</command>
 <varname>modeller</varname> variable to the directory where you have
-&MODELLER; installed, e.g. <command>scons modeller=~/modinstall</command>.
+&MODELLER; installed, e.g. <screen><command>scons modeller=~/modinstall</command> </screen>
 Type <command>scons -h</command> to get help on this and other command-line
 options.
+</listitem>
+
+</itemizedlist>
 </para>
+
+</sect2>
 
 </sect1>
 
