@@ -199,7 +199,6 @@ namespace IMP {
 %include "IMP/restraints/PairListRestraint.h"
 %include "IMP/restraints/RestraintSet.h"
 %include "IMP/score_states/BondedListScoreState.h"
-%include "IMP/score_states/ChainBondedListScoreState.h"
 %include "IMP/score_states/MaxChangeScoreState.h"
 %include "IMP/score_states/NonbondedListScoreState.h"
 %include "IMP/score_states/AllNonbondedListScoreState.h"
