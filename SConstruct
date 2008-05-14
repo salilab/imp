@@ -1,14 +1,16 @@
 # Include IMP build utility functions:
 from tools import *
-from tools import boost
+from tools import boost, cgal
 
 # Set up build environment:
 opts = Options('config.py', ARGUMENTS)
 add_common_options(opts, "imp")
 opts.Add(PackageOption('embed', 'Location of the EMBED package', 'no'))
+opts.Add(PackageOption('cgal', 'Location of the CGAL package', True))
 env = MyEnvironment(options=opts, require_modeller=False,
                     tools=["default", "doxygen"], toolpath=["tools"])
 boost.configure_check(env, '1.30')
+cgal.configure_check(env)
 Help("""
 Available command-line options:
 (These can also be specified in regular Python syntax by creating a file
