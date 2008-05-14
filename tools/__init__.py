@@ -187,6 +187,16 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -g -O3")
+    if env.get('include', None) is not None:
+        env['include'] = [os.path.abspath(x) for x in \
+                          env['include'].split(os.path.pathsep)]
+        env.Prepend(CPPPATH=env['include'])
+    if env.get('lib', None) is not None:
+        env['lib'] = [os.path.abspath(x) for x in \
+                      env['lib'].split(os.path.pathsep)]
+        env.Prepend(LIBPATH=env['lib'])
+    else:
+        env['lib'] = []
     _add_release_flags(env)
 
     sys = platform.system()
@@ -372,3 +382,9 @@ def add_common_options(opts, package):
     opts.Add(BoolOption('release',
                         'Disable most runtime checks (e.g. for releases)',
                         False))
+    opts.Add(PathOption('include', 'Include search path ' + \
+                        '(e.g. "/usr/local/include:/opt/local/include")', None,
+                        PathOption.PathAccept))
+    opts.Add(PathOption('lib', 'Library search path ' + \
+                        '(e.g. "/usr/local/lib:/opt/local/lib")', None,
+                        PathOption.PathAccept))
