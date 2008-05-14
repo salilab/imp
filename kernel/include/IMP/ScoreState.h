@@ -46,16 +46,18 @@ public:
   ScoreState(std::string name=std::string());
   virtual ~ScoreState();
 
-  //! Update the state given the current state of the model.
-  /** This is also called prior to every calculation of the model score.
+  //! Update if needed
+  /** The do_before_evaluate method will be called if the iteration
+      count has not yet been seen.
    */
-  virtual void update() = 0;
+  void before_evaluate(unsigned int iteration);
 
-  //! Do any necessary updates after the model score is calculated.
-  /** \param[in] accpt The object used to scale derivatives in the score
-                       calculation, or NULL if derivatives were not requested.
+  //! Do post evaluation work if needed
+  /** The do_after_evaluate method will be called if needed.
    */
-  virtual void after_evaluate(DerivativeAccumulator *accpt) {}
+  void after_evaluate(unsigned int iteration,
+                      DerivativeAccumulator *accpt);
+
 
   //! Show the ScoreState
   /** The output of show may take several lines and should end in a newline.
@@ -82,10 +84,44 @@ public:
                "Must call set_model before get_model on state");
     return model_.get();
   }
+
 protected:
+  //! Update the state given the current state of the model.
+  /** This is also called prior to every calculation of the model score.
+      It should be implemented by ScoreStates in order to provide functionality.
+
+      \note This can't have the same name as the public function due to the 
+      way C++ handles overloading and name lookups--if only one is implemented
+      in the child class it will only find that one.
+   */
+  virtual void do_before_evaluate() = 0;
+
+  //! Do any necessary updates after the model score is calculated.
+  /** \param[in] accpt The object used to scale derivatives in the score
+                       calculation, or NULL if derivatives were not requested.
+   */
+  virtual void do_after_evaluate(DerivativeAccumulator *accpt) {}
+
+  //! Get the current iteration count value.
+  /** The value is updated before update() is called
+   */
+  unsigned int get_before_evaluate_iteration() const {
+    return update_iteration_;
+  }
+
+  //! Get the current after_evaluate iteration count value.
+  /** The value is updated before after_evaluate() is called
+   */
+  unsigned int get_after_evaluate_iteration() const {
+    return after_iteration_;
+  }
+
+ private:
+
+  unsigned int update_iteration_;
+  unsigned int after_iteration_;
   // all of the particle data
   internal::ObjectPointer<Model, false> model_;
-
   std::string name_;
 };
 

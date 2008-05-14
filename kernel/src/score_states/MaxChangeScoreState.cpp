@@ -43,7 +43,7 @@ IMP_LIST_IMPL(MaxChangeScoreState, Particle, particle, Particle*,
                 }
               }, {reset();});
 
-void MaxChangeScoreState::update()
+void MaxChangeScoreState::do_before_evaluate()
 {
   max_change_=0;
   // get rid of inactive particles and their stored values

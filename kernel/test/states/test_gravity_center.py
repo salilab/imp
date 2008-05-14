@@ -42,7 +42,7 @@ class TestGravityCenter(IMP.test.TestCase):
         for weighted in (False, True):
             (ps, center, gc) = self._make_gravity_center(model, 10.0, 20.0,
                                                          30.0, weighted)
-            gc.update()
+            gc.do_before_evaluate()
             # The gravity center's xyz should not be optimizable:
             self.assertEqual(center.get_is_optimized(xkey), False)
             self.assertEqual(center.get_is_optimized(ykey), False)

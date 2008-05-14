@@ -27,10 +27,10 @@ class LoggingScoreState(IMP.ScoreState):
         IMP.ScoreState.__init__(self)
         self.log = log
 
-    def update(self):
+    def do_before_evaluate(self):
         self.log.append('update')
 
-    def after_evaluate(self, accum):
+    def do_after_evaluate(self, accum):
         self.log.append('after_evaluate')
 
 class TestScoreState(IMP.test.TestCase):

@@ -177,10 +177,10 @@ void AllNonbondedListScoreState::cleanup(std::vector<Bin> &bins)
   bins.clear();
 }
 
-void AllNonbondedListScoreState::update()
+void AllNonbondedListScoreState::do_before_evaluate()
 {
   IMP_LOG(TERSE, "Updating nonbonded list"<< std::endl);
-  NonbondedListScoreState::update();
+  NonbondedListScoreState::do_before_evaluate();
   bool bad=false;
   for (unsigned int i=0; i< bins_.size(); ++i) {
     bad = bins_[i].grid->update() || bad;

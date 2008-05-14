@@ -9,6 +9,7 @@
 #include "IMP/ScoreState.h"
 
 #include <cmath>
+#include <limits>
 
 namespace IMP
 {
@@ -16,10 +17,28 @@ namespace IMP
 //! Constructor
 ScoreState::ScoreState(std::string name) : name_(name)
 {
+  update_iteration_= std::numeric_limits<unsigned int>::max();
+  after_iteration_= std::numeric_limits<unsigned int>::max();
   model_ = NULL;
   IMP_LOG(VERBOSE, "ScoreState constructed " << name << std::endl);
 }
 
+
+void ScoreState::before_evaluate(unsigned int iter) {
+  if (update_iteration_ != iter) {
+    update_iteration_= iter;
+    do_before_evaluate();
+  }
+}
+
+
+  void ScoreState::after_evaluate(unsigned int iter,
+                                  DerivativeAccumulator *da) {
+  if (after_iteration_ != iter) {
+    after_iteration_= iter;
+    do_after_evaluate(da);
+  }
+}
 
 //! Destructor
 ScoreState::~ScoreState()

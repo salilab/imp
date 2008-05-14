@@ -42,8 +42,8 @@ class IMPDLLEXPORT QuadraticNonbondedListScoreState:
   QuadraticNonbondedListScoreState(FloatKey radius);
   ~QuadraticNonbondedListScoreState();
 
- public:
-  void update();
+public:
+  void do_before_evaluate();
 };
 
 } // namespace IMP

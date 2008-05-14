@@ -19,6 +19,7 @@ namespace IMP
 //! Constructor
 Model::Model()
 {
+  iteration_ = 0;
 }
 
 
@@ -59,7 +60,7 @@ Float Model::evaluate(bool calc_derivs)
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
-    (*it)->update();
+    (*it)->before_evaluate(iteration_);
     IMP_LOG(VERBOSE, "." << std::flush);
   }
   IMP_LOG(TERSE, "End update ScoreStates." << std::endl);
@@ -93,12 +94,14 @@ Float Model::evaluate(bool calc_derivs)
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
-    (*it)->after_evaluate(accpt);
+    (*it)->after_evaluate(iteration_, accpt);
     IMP_LOG(VERBOSE, "." << std::flush);
   }
   IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
 
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
+
+  ++iteration_;
   return score;
 }
 

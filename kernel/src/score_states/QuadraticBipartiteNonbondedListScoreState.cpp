@@ -53,9 +53,9 @@ void QuadraticBipartiteNonbondedListScoreState
   na_= ps0.size();
 }
 
-void QuadraticBipartiteNonbondedListScoreState::update()
+void QuadraticBipartiteNonbondedListScoreState::do_before_evaluate()
 {
-  P::update();
+  P::do_before_evaluate();
 }
 
 void QuadraticBipartiteNonbondedListScoreState::show(std::ostream &out) const

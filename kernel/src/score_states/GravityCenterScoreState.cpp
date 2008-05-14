@@ -21,6 +21,10 @@ GravityCenterScoreState::GravityCenterScoreState(Particle *center,
   add_particles(ps);
 }
 
+void GravityCenterScoreState::do_before_evaluate() {
+  set_position();
+}
+
 // check that the particle is an xyz particle
 IMP_LIST_IMPL(GravityCenterScoreState, Particle, particle, Particle*,
               XYZDecorator::cast(obj), set_position());
@@ -77,5 +81,9 @@ transform_derivatives(DerivativeAccumulator *accpt)
   }
 }
 
+void GravityCenterScoreState::show(std::ostream &out) const
+{
+  out << "GravityCenter" << std::endl;
+}
 
 } // namespace IMP
