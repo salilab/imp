@@ -55,6 +55,30 @@ class TestList(IMP.test.TestCase):
         e= m.evaluate(False)
         self.assertEqual(e,5, "Wrong distance in score")
 
+    def test_ss2(self):
+        """Test the enclosing sphere """
+        m= IMP.Model()
+        p= IMP.Particle()
+        m.add_particle(p)
+        d=IMP.XYZDecorator.create(p)
+        d.set_x(100)
+        d.set_y(1)
+        d.set_z(1)
+        d.set_coordinates_are_optimized(True)
+        v= IMP.Vector3D(5,5,5)
+        h= IMP.HarmonicUpperBound(10, 10)
+        s= IMP.DistanceToSingletonScore(h, v)
+        r= IMP.SingletonListRestraint(s, m.get_particles())
+        m.add_restraint(r)
+        e= m.evaluate(False)
+        o= IMP.ConjugateGradients()
+        o.set_model(m)
+        o.optimize(100)
+        d= IMP.XYZDecorator.cast(m.get_particle(IMP.ParticleIndex(0)))
+        dist2 = (d.get_x()-5)**2+(d.get_y()-5)**2+(d.get_y()-5)**2
+        print "Final"
+        d.show()
+        self.assert_(dist2 < 100, "Enclosing sphere not enclosing")
 
 if __name__ == '__main__':
     unittest.main()
