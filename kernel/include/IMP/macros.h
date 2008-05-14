@@ -188,9 +188,24 @@ template <class L>                                                      \
   /** \return version and authorship information */                     \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
-//! See IMP_OPTIMIZER_STATE
-#define IMP_SCORE_STATE(version_info)\
-  IMP_OPTIMIZER_STATE(version_info)
+//! Define the basics needed for a ScoreState
+/** This macro declares the required functions 
+    - void do_before_update()
+    - void show(std::ostream &out) const
+    and defines the function
+    - get_version_info
+
+    \param[in] version_info The version info object to return.
+*/
+#define IMP_SCORE_STATE(version_info)                                   \
+public:                                                                 \
+  /** update the state*/                                                \
+ virtual void do_before_evaluate();                                     \
+ /** write information about the state to the stream */                 \
+ virtual void show(std::ostream &out=std::cout) const;                  \
+  /** \return version and authorship information */                     \
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+
 
 //! Use the swap_with member function to swap two objects
 #define IMP_SWAP(name) \

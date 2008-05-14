@@ -17,7 +17,7 @@ BondDecoratorListScoreState::BondDecoratorListScoreState(const Particles &ps)
   set_particles(ps);
 }
 
-void BondDecoratorListScoreState::update()
+void BondDecoratorListScoreState::do_before_evaluate()
 {
   IMP_LOG(TERSE, "Updating BondDecoratorList for "
           << ps_.size() << " particles" << std::endl);

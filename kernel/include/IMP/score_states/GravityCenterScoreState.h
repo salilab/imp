@@ -41,11 +41,9 @@ public:
   //! Set the position of the center particle from the original points.
   void set_position();
 
-  void update() {
-    set_position();
-  }
+  IMP_SCORE_STATE(internal::kernel_version_info);
 
-  void after_evaluate(DerivativeAccumulator *accpt) {
+  void do_after_evaluate(DerivativeAccumulator *accpt) {
     if (accpt) {
       transform_derivatives(accpt);
     }

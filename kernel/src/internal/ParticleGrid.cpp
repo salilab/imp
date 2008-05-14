@@ -138,7 +138,7 @@ bool ParticleGrid::update()
     ssz+= dit->size();
   }
   // do this last since it has the ref counts
-  mc_->update();
+  mc_->do_before_evaluate();
 
   IMP_assert(ssz== mc_->number_of_particles(), "Particle mismatch in PG");
 

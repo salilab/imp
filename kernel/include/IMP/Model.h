@@ -33,6 +33,7 @@ typedef std::vector<ScoreState*> ScoreStates;
 class IMPDLLEXPORT Model: public internal::Object
 {
   friend class Restraint;
+  unsigned int iteration_;
 public:
   Model();
   ~Model();

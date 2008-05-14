@@ -38,8 +38,6 @@ public:
 
   virtual bool are_bonded(Particle *a, Particle *b) const;
 
-  virtual void update();
-
   //! This iterates through the pairs of bonded particles
   /** \note update() must be called first for this to be valid.
    */
@@ -54,6 +52,9 @@ public:
   unsigned int number_of_bonds() const {
     return bonds_.size();
   }
+
+protected:
+  virtual void do_before_evaluate();
 };
 
 } // namespace IMP

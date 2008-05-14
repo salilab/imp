@@ -31,9 +31,9 @@ void QuadraticAllNonbondedListScoreState::set_particles(const Particles &ps)
 }
 
 
-void QuadraticAllNonbondedListScoreState::update()
+void QuadraticAllNonbondedListScoreState::do_before_evaluate()
 { 
-  P::update();
+  P::do_before_evaluate();
 }
 
 

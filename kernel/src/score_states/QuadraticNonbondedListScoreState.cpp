@@ -25,10 +25,10 @@ QuadraticNonbondedListScoreState::~QuadraticNonbondedListScoreState()
 }
 
 
-void QuadraticNonbondedListScoreState::update()
+void QuadraticNonbondedListScoreState::do_before_evaluate()
 {
   // placeholder to do tuning of slack
-  NonbondedListScoreState::update();
+  NonbondedListScoreState::do_before_evaluate();
   if (mc_->get_max() > slack_) {
     NonbondedListScoreState::clear_nbl();    
     mc_->reset();

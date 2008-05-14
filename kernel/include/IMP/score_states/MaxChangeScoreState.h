@@ -36,7 +36,7 @@ public:
 
   virtual ~MaxChangeScoreState(){}
 
-  virtual void update();
+  virtual void do_before_evaluate();
 
   //! Measure differences from the current value.
   void reset();

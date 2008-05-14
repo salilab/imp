@@ -45,12 +45,12 @@ struct HasInactive
 
 } // namespace internal
 
-void NonbondedListScoreState::update()
+void NonbondedListScoreState::do_before_evaluate()
 {
   IMP_LOG(VERBOSE, "Updating non-bonded list" << std::endl);
   for (BondedListScoreStateIterator bli= bonded_lists_begin();
        bli != bonded_lists_end(); ++bli) {
-    (*bli)->update();
+    (*bli)->before_evaluate(ScoreState::get_before_evaluate_iteration());
   }
 
   // if the list is not deleted, we need to scan for inactive particles
