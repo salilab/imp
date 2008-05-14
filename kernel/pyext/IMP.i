@@ -208,6 +208,7 @@ namespace IMP {
 %include "IMP/score_states/QuadraticBipartiteNonbondedListScoreState.h"
 %include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 %include "IMP/score_states/GravityCenterScoreState.h"
+%include "IMP/score_states/CoverBondsScoreState.h"
 
 namespace IMP {
   %template(ParticleIndex) Index<ParticleTag>;

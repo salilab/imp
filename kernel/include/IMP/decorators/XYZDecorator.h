@@ -51,6 +51,13 @@ public:
   void set_coordinate(unsigned int i, Float v) {
     get_particle()->set_value(get_coordinate_key(i), v);
   }
+  //! set all coordinates from a vector
+  void set_coordinates(const Vector3D &v) {
+    set_x(v[0]);
+    set_y(v[1]);
+    set_z(v[2]);
+  }
+
   //! Get the ith coordinate
   Float get_coordinate(int i) const {
     return get_particle()->get_value(get_coordinate_key(i));
