@@ -3,6 +3,7 @@ Import('env', 'get_sharedlib_environment')
 # Get an environment suitable for building a shared library:
 env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
 env.Append(CPPPATH=["#/kernel/include", env['BOOST_CPPPATH']])
+env.Append(LIBS=env['CGAL_LIBS'])
 
 # Subdirectories:
 restraints_files = SConscript('restraints/SConscript')
