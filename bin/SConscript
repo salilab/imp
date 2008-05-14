@@ -12,6 +12,11 @@ def builder_script_file(target, source, env):
             line = "MODPY=" + source[2].get_contents()
         elif line.endswith("@PATHSEP@"):
             line = "PATHSEP=\"" + source[3].get_contents() + "\""
+        elif line.endswith("@EXTRALIB@"):
+            line = "EXTRALIB="
+            cont = source[4].get_contents()
+            if len(cont) > 0:
+                line += '"' + cont + source[3].get_contents() + '"'
         print >> outfile, line
     outfile.close()
     infile.close()
@@ -22,5 +27,6 @@ env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
 bin = env.ScriptFile("imppy.sh",
                      ["imppy.sh.in", env.Value(env.Dir('#').abspath),
                       env.Value(env['MODELLER_MODPY']),
-                      env.Value(env['PATHSEP'])])
+                      env.Value(env['PATHSEP']),
+                      env.Value(env['PATHSEP'].join(env['lib']))])
 Return('bin')
