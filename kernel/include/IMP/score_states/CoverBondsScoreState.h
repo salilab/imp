@@ -9,12 +9,11 @@
 #define __IMP_COVER_BONDS_SCORE_STATE_H
 
 #include "../ScoreState.h"
+#include "BondDecoratorListScoreState.h"
 #include "../internal/kernel_version_info.h"
 
 namespace IMP
 {
-
-class BondDecoratorListScoreState;
 
 //! This class sets the position and radius of each bond to cover the endpoints.
 /** For each bond in the list of particles set the x,y,z to be the

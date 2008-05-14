@@ -9,14 +9,13 @@
 #define __IMP_ALL_NONBONDED_LIST_SCORE_STATE_H
 
 #include "NonbondedListScoreState.h"
+#include "MaxChangeScoreState.h"
 #include "../internal/kernel_version_info.h"
 #include "../internal/Vector.h"
 
 
 namespace IMP
 {
-
-class MaxChangeScoreState;
 
 namespace internal
 {
