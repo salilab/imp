@@ -108,6 +108,28 @@ public:
   ValueException(const char *t): Exception(t){}
 };
 
+//! Determine the level of runtime checks performed
+/** NONE means that minimial checks are used. CHEAP
+    means that only constant time checks are performed
+    and with EXPENSIVE non-linear time checks will be run.
+ */
+enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
+
+
+//! Control runtime checks in the code
+/** The default level of checks is CHEAP.
+ */
+IMPDLLEXPORT void set_check_level(CheckLevel tf);
+
+//! Get the current audit mode
+IMPDLLEXPORT CheckLevel get_check_level();
+
+
+#define IMP_BEGIN_CHECK(level)\
+  if (level <= ::IMP::get_check_level()) { do {} while(false)
+
+#define IMP_END_CHECK } do {} while(false)
+
 
 namespace internal
 {
@@ -134,6 +156,7 @@ IMPDLLEXPORT void check_fail();
 //! An assertion for IMP. An IMP::ErrorException will be thrown.
 /** Since it is a debug-only check and no attempt should be made to
     recover from it, the exception type cannot be specified.
+    \note if the code is compiled with NDEBUG, this is a noop.
 
     \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
@@ -141,7 +164,7 @@ IMPDLLEXPORT void check_fail();
  */
 #define IMP_assert(expr, message)               \
   do {                                          \
-    if (!(expr)) {                              \
+    if (IMP::get_check_level() >= IMP::EXPENSIVE && !(expr)) {  \
       IMP_ERROR(message);                       \
       IMP::internal::assert_fail();             \
     }                                           \
@@ -158,7 +181,7 @@ IMPDLLEXPORT void check_fail();
  */
 #define IMP_check(expr, message, exception) \
   do {                                      \
-    if (!(expr)) {                          \
+    if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {  \
       IMP_ERROR(message);                   \
       throw exception;                      \
     }                                       \

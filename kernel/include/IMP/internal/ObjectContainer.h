@@ -104,13 +104,15 @@ public:
     return Vector::operator[](get_index(i));
   }
   I push_back(O* d) {
-    IMP_CHECK_OBJECT(d);
     ref(d);
+    IMP_BEGIN_CHECK(EXPENSIVE);
+    IMP_CHECK_OBJECT(d);
     for (typename Vector::const_iterator it= Vector::begin();
          it != Vector::end(); ++it) {
       IMP_assert(*it != d, "IMP Containers can only have one copy of "
                  << " each object");
     }
+    IMP_END_CHECK;
     if (free_.empty()) {
       Vector::push_back(d);
       unsigned int idx= Vector::size()-1;
@@ -124,7 +126,7 @@ public:
   }
   template <class It>
   void insert(iterator c, It b, It e) {
-#ifndef NDEBUG
+    IMP_BEGIN_CHECK(EXPENSIVE);
     for (It cc= b; cc != e; ++cc) {
       IMP_CHECK_OBJECT(*cc);
       for (typename Vector::const_iterator it= Vector::begin(); 
@@ -132,8 +134,8 @@ public:
         IMP_assert(*it != *cc, "IMP Containers can only have one copy of "
                    << " each object");
       }
-   }
-#endif
+    }
+    IMP_END_CHECK;
     for (It cc= b; cc != e; ++cc) {
       ref(*cc);
     }
