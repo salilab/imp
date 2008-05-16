@@ -25,10 +25,14 @@ Particle::~Particle()
 
 void Particle::set_model(Model *md, ParticleIndex pi)
 {
+  IMP_check(model_==NULL || md==NULL,
+            "Set_model called for particle already in model",
+            ValueException("Cannot transfer particles directly"));
   model_ = md;
   pi_ = pi;
-  IMP_assert(model_==NULL || model_->get_particle(pi_)== this,
-             "Set_model called with inconsistent data");
+  IMP_check(model_==NULL || model_->get_particle(pi_)== this,
+            "Set_model called with inconsistent data",
+            ValueException("Cannot transfer particles directly"));
 }
 
 void Particle::set_is_active(const bool is_active)

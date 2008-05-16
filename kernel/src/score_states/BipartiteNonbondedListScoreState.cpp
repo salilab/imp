@@ -100,9 +100,9 @@ void BipartiteNonbondedListScoreState::do_before_evaluate()
     mc1_->reset();
     mcr_->reset();
   }
-  IMP_BEGIN_CHECK(EXPENSIVE);
-  check_nbl();
-  IMP_END_CHECK;
+  IMP_IF_CHECK(EXPENSIVE) {
+    check_nbl();
+  }
 }
 
 void BipartiteNonbondedListScoreState::process_sets(const Particles &p0,

@@ -21,6 +21,12 @@ SphereDistancePairScore::SphereDistancePairScore(UnaryFunction *f,
 Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
                                         DerivativeAccumulator *da)
 {
+  IMP_check(a->has_attribute(radius_), "Particle " << a->get_index() 
+            << "missing radius in SphereDistancePairScore",
+            ValueException("Missing radius"));
+  IMP_check(b->has_attribute(radius_), "Particle " << b->get_index() 
+            << "missing radius in SphereDistancePairScore",
+            ValueException("Missing radius"));
   Float ra = a->get_value(radius_);
   Float rb = b->get_value(radius_);
   return internal::evaluate_distance_pair_score(a,b, da, f_.get(), 

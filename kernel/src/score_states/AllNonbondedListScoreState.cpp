@@ -95,9 +95,9 @@ void AllNonbondedListScoreState::do_before_evaluate()
   if (P::update(mc, cost)) {
     mc_->reset();
   }
-  IMP_BEGIN_CHECK(EXPENSIVE);
-  check_nbl();
-  IMP_END_CHECK;
+  IMP_IF_CHECK(EXPENSIVE) {
+    check_nbl();
+  }
 }
 
 

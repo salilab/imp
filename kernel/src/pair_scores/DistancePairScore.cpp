@@ -29,14 +29,13 @@ Float evaluate_distance_pair_score(Particle *a, Particle *b,
   Float d2 = 0, delta[3];
   Float score;
 
-  IMP_BEGIN_CHECK(CHEAP);
-  XYZDecorator::cast(a);
-  XYZDecorator::cast(b);
-  IMP_END_CHECK;
+  IMP_IF_CHECK(CHEAP) {
+    XYZDecorator::cast(a);
+    XYZDecorator::cast(b);
+  }
 
   XYZDecorator d0(a);
   XYZDecorator d1(b);
-
   for (int i = 0; i < 3; ++i) {
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
     d2 += square(delta[i]);
