@@ -125,11 +125,9 @@ IMPDLLEXPORT void set_check_level(CheckLevel tf);
 IMPDLLEXPORT CheckLevel get_check_level();
 
 
-#define IMP_BEGIN_CHECK(level)\
-  if (level <= ::IMP::get_check_level()) { do {} while(false)
 
-#define IMP_END_CHECK } do {} while(false)
-
+#define IMP_IF_CHECK(level)\
+  if (level <= ::IMP::get_check_level())
 
 namespace internal
 {

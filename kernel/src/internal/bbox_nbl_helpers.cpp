@@ -9,6 +9,10 @@
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/score_states/NonbondedListScoreState.h"
 
+/* compile the CGAL code with NDEBUG since it doesn't have the 
+   same level of control over errors as IMP
+*/
+#define NDEBUG
 #ifdef IMP_USE_CGAL
 #include <CGAL/box_intersection_d.h>
 #include <vector>

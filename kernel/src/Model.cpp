@@ -101,6 +101,20 @@ Float Model::evaluate(bool calc_derivs)
 
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
 
+  for (ParticleIterator pit= particles_begin();
+       pit != particles_end(); ++pit) {
+    for (Particle::FloatKeyIterator fkit = (*pit)->float_keys_begin();
+         fkit != (*pit)->float_keys_end(); ++fkit) {
+      Float v= (*pit)->get_value(*fkit);
+      IMP_check(v==v, "NaN found in particle " << (*pit)->get_index()
+                << " attribute " << *fkit,
+                ValueException("NaN found"));
+      Float d= (*pit)->get_derivative(*fkit);
+      IMP_check(d==d, "NaN found in particle derivative " << (*pit)->get_index()
+                << " attribute " << *fkit,
+                ValueException("NaN found"));
+    }
+  }
   ++iteration_;
   return score;
 }

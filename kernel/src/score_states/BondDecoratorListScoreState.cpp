@@ -24,7 +24,7 @@ void BondDecoratorListScoreState::do_before_evaluate()
   bonds_.clear();
   for (unsigned int i=0; i< ps_.size(); ++i) {
     if (!ps_[i]->get_is_active()) continue;
-    BondedDecorator di= BondedDecorator::cast(ps_[i]);
+    BondedDecorator di(ps_[i]);
     ParticleIndex pi= ps_[i]->get_index();
     for (unsigned int j=0; j< di.get_number_of_bonds(); ++j) {
       BondedDecorator dj= di.get_bonded(j);
