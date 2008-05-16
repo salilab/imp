@@ -27,15 +27,15 @@ class IMPDLLEXPORT MaxChangeScoreState: public ScoreState
 {
   FloatKeys keys_;
   FloatKeys origkeys_;
-  Particles ps_;
   float max_change_;
-  virtual void do_before_evaluate();
 public:
   //! Track the changes with the specified keys.
   MaxChangeScoreState(const FloatKeys &keys,
                       const Particles &ps= Particles());
 
   virtual ~MaxChangeScoreState(){}
+
+  IMP_SCORE_STATE(internal::kernel_version_info);
 
   //! Measure differences from the current value.
   void reset();

@@ -74,4 +74,9 @@ void MaxChangeScoreState::reset()
   max_change_=0;
 }
 
+void MaxChangeScoreState::show(std::ostream &out) const
+{
+  out << "MaxChangeScoreState" << std::endl;
+}
+
 } // namespace IMP
