@@ -8,6 +8,7 @@
 #define __IMP_HARMONIC_H
 
 #include "../UnaryFunction.h"
+#include "../utility.h"
 
 namespace IMP
 {
