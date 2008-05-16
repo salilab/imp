@@ -64,6 +64,7 @@ class FittingTest(IMP.test.TestCase):
 
     def setUp(self):
         """Build test model and optimizer"""
+        IMP.test.TestCase.setUp(self)
         self.imp_model = IMP.Model()
 
         self.restraint_sets = []
