@@ -4,6 +4,7 @@ import os.path
 
 class TestBL(IMP.test.TestCase):
     def setUp(self):
+        IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
 
     def _testit(self, rk, r,g,b, pref):

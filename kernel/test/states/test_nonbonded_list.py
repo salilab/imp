@@ -24,6 +24,7 @@ class OneScore(IMP.UnaryFunction):
 
 class TestNBL(IMP.test.TestCase):
     def setUp(self):
+        IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
         self.rk= IMP.FloatKey("radius")
 

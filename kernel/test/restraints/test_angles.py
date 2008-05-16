@@ -18,6 +18,8 @@ class One(IMP.UnaryFunction):
 class AngleRestraintTests(IMP.test.TestCase):
     """Tests for angle restraints"""
     def setUp(self):
+        IMP.test.TestCase.setUp(self)
+
         # for some reason objects get destroyed even though
         # python doesn't own them
         self.stupid_hack=[]

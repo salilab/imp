@@ -14,6 +14,7 @@ class ParticleTests(IMP.test.TestCase):
 
     def setUp(self):
         """Build a set of test particles"""
+        IMP.test.TestCase.setUp(self)
 
         self.model = IMP.Model()
         self.particles = []

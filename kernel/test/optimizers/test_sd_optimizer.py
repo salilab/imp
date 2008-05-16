@@ -9,6 +9,7 @@ class SteepestDescentTests(IMP.test.TestCase):
 
     def setUp(self):
         """set up distance restraints and create optimizer """
+        IMP.test.TestCase.setUp(self)
 
         self.imp_model = IMP.Model()
         self.particles = []
