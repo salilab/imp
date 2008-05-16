@@ -31,6 +31,7 @@ class WoodsFunc(IMP.Restraint):
 
 class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):
+        IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
         self.xkey= IMP.FloatKey("x")
         self.rsrs=[]

@@ -6,6 +6,15 @@ import IMP
 class TestCase(unittest.TestCase):
     """Super class for IMP test cases"""
 
+    def setUp(self):
+        self.__check_level = IMP.get_check_level()
+        # Turn on expensive runtime checks while running the test suite:
+        IMP.set_check_level(IMP.EXPENSIVE)
+
+    def tearDown(self):
+        # Restore original check level
+        IMP.set_check_level(self.__check_level)
+
     def assertInTolerance(self, num1, num2, tolerance, msg=None):
         """Assert that the difference between num1 and num2 is less than
            tolerance"""

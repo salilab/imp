@@ -7,6 +7,8 @@ class RestraintSetTests(IMP.test.TestCase):
 
     def setUp(self):
         """Set up distance restraints"""
+        IMP.test.TestCase.setUp(self)
+
         self.model = IMP.Model()
         self.particles = []
 

@@ -23,6 +23,7 @@ class Linear(IMP.UnaryFunction):
 
 class TestList(IMP.test.TestCase):
     def setUp(self):
+        IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.VERBOSE)
 
     def test_it(self):

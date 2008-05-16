@@ -15,6 +15,7 @@ class IndexDiff(IMP.PairScore):
 
 class TestPairList(IMP.test.TestCase):
     def setUp(self):
+        IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.VERBOSE)
 
     def test_it(self):

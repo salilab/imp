@@ -50,6 +50,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
 
     def setUp(self):
         """Set up particles and optimizer"""
+        IMP.test.TestCase.setUp(self)
 
         self.model = IMP.Model()
         self.particles = []

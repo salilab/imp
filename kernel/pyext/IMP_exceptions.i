@@ -1,5 +1,12 @@
 /* IMP exception handling */
 
+/* Runtime check functions from exception.h */
+namespace IMP
+{
+enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
+void set_check_level(CheckLevel tf);
+CheckLevel get_check_level();
+}
 
 %{
   /* Code to convert C++ exceptions into scripting language errors. Saves

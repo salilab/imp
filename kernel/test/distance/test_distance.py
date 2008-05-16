@@ -7,6 +7,7 @@ class DistanceTests(IMP.test.TestCase):
 
     def setUp(self):
         """Set up model and particles"""
+        IMP.test.TestCase.setUp(self)
 
         self.imp_model = IMP.Model()
         self.particles = IMP.Particles()
