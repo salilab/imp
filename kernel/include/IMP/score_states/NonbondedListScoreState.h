@@ -42,14 +42,17 @@ private:
   /** How much to add to the size of particles to allow particles to move
       without rebuilding the list */
   Float slack_;
-  //! An estimate of what the slack should be next time the list is recomputed
-  Float next_slack_;
-  int num_steps_;
   bool nbl_is_valid_;
   int number_of_rebuilds_;
   int number_of_updates_;
-  typedef std::vector<std::pair<Particle*, Particle*> > NBL;
-  NBL nbl_;
+  int number_of_overflows_;
+  //! The maximum allowable size for the NBL
+  /** An exception will be thrown if the list exceeds this size.
+   */
+  unsigned int max_nbl_size_;
+  ParticlePairs nbl_;
+
+  struct NBLTooLargeException{};
 
 protected:
 
@@ -93,7 +96,11 @@ protected:
     if (!are_bonded(a,b)) {
       IMP_LOG(VERBOSE, "Found pair " << a->get_index() 
         << " " << b->get_index() << std::endl);
-      nbl_.push_back(std::make_pair(a, b));
+      if (nbl_.size() <  max_nbl_size_) {
+        nbl_.push_back(std::make_pair(a, b));
+      } else {
+        throw NBLTooLargeException();
+      }
     } else {
       IMP_LOG(VERBOSE, "Pair " << a->get_index()
               << " and " << b->get_index() << " rejected on bond" 
@@ -184,6 +191,29 @@ public:
   FloatKey get_radius_key() const {return rk_;}
   void set_radius_key(FloatKey rk) {rk_=rk;} 
 
+  //! Set the maximum allowable size for the NBL
+  /** The NBL will keep reducing the slack and trying to
+      rebuild until it can make the list smaller than this.
+   */
+  void set_max_size(unsigned int mx) {
+    max_nbl_size_= mx;
+  }
+
+
+  //! Set the slack used when generating the NBL
+  /** The slack allows the the NBL to non be rebuilt every step
+      making the process more efficient. However, too large
+      a value can result in the NBL being excessively large.
+
+      A good guideline is that it should be the maximum amount
+      a particle coordinate would change in 20 steps or so.
+   */
+  void set_slack(float slack) {
+    IMP_check(slack>= 0, "Slack must be nonnegative",
+              ValueException("Negative slack"));
+    slack_=slack;
+  }
+
   IMP_CONTAINER(BondedListScoreState, bonded_list,
                 BondedListIndex);
 
@@ -201,7 +231,7 @@ public:
   /** The value type is an ParticlePair. 
    */
   typedef boost::filter_iterator<BoxesOverlap,
-    NBL::const_iterator> NonbondedIterator;
+    ParticlePairs::const_iterator> NonbondedIterator;
 
   //! Iterates through the pairs of non-bonded particles
   NonbondedIterator nonbonded_begin() const {
@@ -217,6 +247,9 @@ public:
                              nbl_.end(), nbl_.end());
   }
 
+  const ParticlePairs get_nonbonded() const {
+    return nbl_;
+  }
 
   unsigned int number_of_nonbonded() const {
     IMP_check(get_nbl_is_valid(), "Must call update first",

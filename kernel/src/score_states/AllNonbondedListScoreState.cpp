@@ -94,6 +94,7 @@ void AllNonbondedListScoreState::do_before_evaluate()
   }
   if (P::update(mc, cost)) {
     mc_->reset();
+    mcr_->reset();
   }
   IMP_IF_CHECK(EXPENSIVE) {
     check_nbl();
@@ -334,7 +335,9 @@ void AllNonbondedListScoreState::check_nbl() const
                    << " " << gr(ps[i])
                    << " and " << ps[j]->get_index() << " " 
                    << dj << gr(ps[j]) 
-                   << " size is " << number_of_nonbonded() << std::endl);
+                   << " size is " << number_of_nonbonded() 
+                   << " distance is " << distance(di, dj) 
+                   << " max is " << mc_->get_max() << std::endl);
       }
     }
   }
