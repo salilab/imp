@@ -53,7 +53,9 @@ def _get_python_include(env):
 def _add_release_flags(env):
     """Add compiler flags for release builds, if requested"""
     if env.get('release', False):
-        env.Append(CPPDEFINES='NDEBUG')
+        env.Append(CPPDEFINES=['NDEBUG'])
+        if env['CC'] == 'gcc':
+            env.Append(CCFLAGS=['-O3'])
 
 def CheckGNUHash(context):
     """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
@@ -186,7 +188,7 @@ def MyEnvironment(options=None, require_modeller=True, *args, **kw):
         pass
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
-        env.Append(CCFLAGS="-Wall -g -O3")
+        env.Append(CCFLAGS="-Wall -g")
     if env.get('include', None) is not None:
         env['include'] = [os.path.abspath(x) for x in \
                           env['include'].split(os.path.pathsep)]
