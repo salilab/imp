@@ -7,26 +7,27 @@ import random
 # another.
 
 #IMP.set_log_level(IMP.VERBOSE)
+np=20
 radius =1.0
 rk= IMP.FloatKey("radius")
 m= IMP.Model()
 # The particles in the chain
 chain= IMP.Particles()
-for i in range(0,20):
+for i in range(0,np):
     p= IMP.Particle()
     pi= m.add_particle(p)
     d= IMP.XYZDecorator.create(p)
-    d.set_x(random.uniform(0,10))
-    d.set_y(random.uniform(0,10))
-    d.set_z(random.uniform(0,10))
+    d.randomize_in_box(IMP.Vector3D(0,0,0),
+                       IMP.Vector3D(10,10,10))
     d.set_coordinates_are_optimized(True)
     p.add_attribute(rk, radius, False)
-    # create a bond between successive particles
-    if (i != 0):
-        bp= IMP.BondedDecorator.create(p)
-        bpr= IMP.BondedDecorator.cast(chain.back())
-        b= IMP.custom_bond(bp, bpr, 1.5*radius, 10)
     chain.append(p)
+
+# create a bond between successive particles
+for i in range(1, len(chain)):
+    bp= IMP.BondedDecorator.create(chain[i])
+    bpr= IMP.BondedDecorator.cast(chain[i-1])
+    b= IMP.custom_bond(bp, bpr, 1.5*radius, 10)
 
 # If you want to inspect the particles
 # Notice that each bond is a particle
