@@ -37,11 +37,11 @@ NonbondedListScoreState
                                         cutoff_(cut),
                                         nbl_is_valid_(false)
 {
-  slack_=20;
-  next_slack_=slack_;
-  num_steps_=1;
+  slack_=cutoff_;
   number_of_updates_=1;
   number_of_rebuilds_=0;
+  number_of_overflows_=0;
+  max_nbl_size_= std::numeric_limits<unsigned int>::max();
 }
 
 
@@ -55,7 +55,9 @@ void NonbondedListScoreState::show_statistics(std::ostream &out) const
 {
   out << "Nonbonded list averaged " 
       << static_cast<Float>(number_of_updates_)
-      / number_of_rebuilds_ << " steps between rebuilds" << std::endl;
+      / number_of_rebuilds_ << " steps between rebuilds"
+      << " and overflowed " <<  number_of_overflows_ 
+      << " times" << std::endl;
 }
 
 
@@ -96,47 +98,26 @@ bool NonbondedListScoreState::update(Float mc, Float rebuild_cost)
     (*bli)->before_evaluate(ScoreState::get_before_evaluate_iteration());
   }
 
-  if (nbl_is_valid_) {
-    /*std::cout << "Rate is " << rate << " target is " << target_steps
-              << " so slack is " << target_slack << " mc " << mc
-              << " nbl " << nbl_.size() << " cost " 
-              << rebuild_cost << std::endl;*/
-    if (mc > slack_) {
-      /*    Float rate= std::pow(static_cast<Float>(nbl_.size()),
-            .333f)/ num_steps_;
-            Float target_steps= .6*std::pow(rebuild_cost, .25f)
-            *std::pow(rate, -.75f);
-            Float target_slack= (target_steps+1)*mc/num_steps_;
-            next_slack_= target_slack*.5 + .5*next_slack_;
-      */
-
-      /*std::cout << "Killing nbl because " << mc << " 
-        << slack_ << " " << next_slack_ 
-        << " " << num_steps_ << std::endl;*/
-      if (num_steps_ < 50) {
-        //slack_= next_slack_;
-      }
-      num_steps_=1;
-      //next_slack_= std::max(2.0*mc, 2.0*slack_);
-      set_nbl_is_valid(false);
-      ++number_of_rebuilds_;
-      slack_=next_slack_;
-    /*} else if (num_steps_ > 100) {
-      //next_slack_=slack_/2.0;
-      slack_=next_slack_;
-      num_steps_=1;
-      set_nbl_is_valid(false);
-      ++number_of_rebuilds_;*/
-    } else {
-      ++num_steps_;
-      //next_slack_= next_slack_*.98;
-    }
-  }
-
   bool rebuilt=false;
-  if (!get_nbl_is_valid()) {
-    rebuild_nbl();
-    rebuilt=true;
+  if (mc > slack_ || !get_nbl_is_valid()) {
+    unsigned int rebuild_attempts=0;
+    do {
+      try {
+        ++rebuild_attempts;
+        ++number_of_rebuilds_;
+        set_nbl_is_valid(false);
+        rebuild_nbl();
+        rebuilt=true;
+      } catch (NBLTooLargeException &) {
+        slack_= slack_/2.0;
+        ++number_of_overflows_;
+        if (number_of_rebuilds_==100) {
+          IMP_WARN("Can't rebuild NBL with given max NBL size of "
+                   << max_nbl_size_ << std::endl);
+          throw ValueException("Bad NBL max size");
+        }
+      }
+    } while (!rebuilt);
   } else {
     nbl_.erase(std::remove_if(nbl_.begin(), nbl_.end(), 
                               internal::HasInactive()),
@@ -154,7 +135,7 @@ void NonbondedListScoreState::set_nbl_is_valid(bool tf)
 {
   nbl_is_valid_= tf;
   if (!nbl_is_valid_) {
-    NBL empty;
+    ParticlePairs empty;
     // free memory to make sure it shrinks
     std::swap(empty, nbl_);
   }
