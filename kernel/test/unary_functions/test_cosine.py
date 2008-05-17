@@ -25,7 +25,7 @@ class CosineTests(IMP.test.TestCase):
                                                       periodicity, phase)
                         score, deriv = func.evaluate_deriv(val)
                         scoreonly = func.evaluate(val)
-                        self.assertEqual(score, scoreonly)
+                        self.assertInTolerance(score, scoreonly, 1e-4)
                         self.assertInTolerance(expscore, score, 0.1)
                         self.assertInTolerance(expderiv, deriv, 0.1)
 
