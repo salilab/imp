@@ -68,7 +68,7 @@ class AttributeTable
 
 public:
   typedef VT Value;
-  typedef Key<T> Key;
+  typedef KeyBase<T> Key;
   AttributeTable(): size_(0){}
   AttributeTable(const This &o): size_(0) {
     //std::cout << "Copy constructor called from " << o.map_ << std::endl;

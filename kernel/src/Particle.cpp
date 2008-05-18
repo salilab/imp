@@ -51,7 +51,7 @@ void Particle::zero_derivatives()
 
 void Particle::show(std::ostream& out) const
 {
-  char* inset = "  ";
+  const char* inset = "  ";
   out << std::endl;
   out << "--" << get_index() << "--" << std::endl;
   if (is_active_) {

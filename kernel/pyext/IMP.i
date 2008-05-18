@@ -214,12 +214,12 @@ namespace IMP {
   %template(OptimizerStateIndex) Index<OptimizerStateTag>;
   %template(MoverIndex) Index<Mover>;
   %template(BondedListIndex) Index<BondedListScoreState>;
-  %template(FloatKey) Key<Float>;
-  %template(IntKey) Key<Int>;
-  %template(StringKey) Key<String>;
-  %template(ParticleKey) Key<Particle*>;
-  %template(AtomType) Key<AtomTypeTag>;
-  %template(ResidueType) Key<ResidueTypeTag>;     
+  %template(FloatKey) KeyBase<Float>;
+  %template(IntKey) KeyBase<Int>;
+  %template(StringKey) KeyBase<String>;
+  %template(ParticleKey) KeyBase<Particle*>;
+  %template(AtomType) KeyBase<AtomTypeTag>;
+  %template(ResidueType) KeyBase<ResidueTypeTag>;     
   %template(show_named_hierarchy) show<NameDecorator>;
   %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
   %template(Particles) ::std::vector<Particle*>;
