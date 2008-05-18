@@ -1,4 +1,6 @@
 #include "XplorReaderWriter.h"
+#include <cstdlib>
+
 int XplorReaderWriter::Read(const char *filename,float **data, DensityHeader &header) {
 
   ifstream XPLORstream(filename);

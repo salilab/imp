@@ -4,6 +4,7 @@
 #include "EM_config.h"
 #include <iostream>
 #include <fstream>
+#include <cstring>
 #include "def.h"
 
 
