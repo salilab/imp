@@ -344,7 +344,7 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
   for(int i=0;i<nlabl;i++)
     strcpy(labels[i],h.comments[i]);
   // Fill empty coments with null character
-  char *c="\0";
+  const char *c="\0";
   empty.resize(MRC_LABEL_SIZE,*c);
   for(int i=nlabl;i<MRC_NUM_LABELS;i++)
     strcpy(labels[i],empty.c_str());
@@ -389,7 +389,8 @@ int MRCHeader::ToDensityHeader(DensityHeader &h)
 
 
   // Fill empty coments with null character
-  char *c="\0";empty.resize(MRC_LABEL_SIZE,*c);
+  const char *c="\0";
+  empty.resize(MRC_LABEL_SIZE,*c);
   for(int i=h.nlabl;i<MRC_NUM_LABELS;i++) 
     strcpy(h.comments[i],empty.c_str());
   return 0;
