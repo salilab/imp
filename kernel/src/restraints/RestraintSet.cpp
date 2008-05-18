@@ -8,6 +8,7 @@
 
 #include "IMP/log.h"
 #include "IMP/restraints/RestraintSet.h"
+#include <memory>
 #include <utility>
 
 namespace IMP

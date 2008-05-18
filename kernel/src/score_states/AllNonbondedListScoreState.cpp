@@ -324,8 +324,8 @@ void AllNonbondedListScoreState::check_nbl() const
         bool found=false;
         for (NonbondedIterator nit= P::nonbonded_begin();
              nit != P::nonbonded_end(); ++nit) {
-          if (nit->first == ps[i] && nit->second == ps[j]
-              || nit->first == ps[j] && nit->second == ps[i]) {
+          if ((nit->first == ps[i] && nit->second == ps[j])
+              || (nit->first == ps[j] && nit->second == ps[i])) {
             IMP_assert(!found, "Entry is in list twice");
             found=true;
           }

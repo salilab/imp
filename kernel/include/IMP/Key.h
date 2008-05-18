@@ -56,7 +56,7 @@
    Define a new key type. There must be an accompanying IMP_DEFINE_KEY_TYPE
    located in some .o file. This macro should be used in the IMP namespace.
 
-   It defines two public types Name, which is an instantiation of Key and
+   It defines two public types Name, which is an instantiation of KeyBase and
    Names which is a vector of Name.
 
    \param[in] Name The name for the new type.
@@ -66,7 +66,7 @@
  */
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
   IMP_KEY_DATA_HOLDER(Name, Tag);                                       \
-  typedef Key<Tag> Name;                                                \
+  typedef KeyBase<Tag> Name;                                                \
   typedef std::vector<Name> Name##s
 
 
@@ -133,7 +133,7 @@ struct KeyDataHolder {};
     get linking to work with static members of the template class.
  */
 template <class T>
-class Key
+class KeyBase
 {
   int str_;
 
@@ -147,14 +147,14 @@ class Key
 public:
   static const std::string &get_string(int i);
 
-  typedef Key<T> This;
+  typedef KeyBase<T> This;
 
   //! make a default (uninitalized) key
-  Key(): str_(-1) {}
+  KeyBase(): str_(-1) {}
 
 
   //! Generate a key from the given string
-  Key(const char *c) {
+  KeyBase(const char *c) {
     std::string sc(c);
     if (get_map().find(sc) == get_map().end()) {
       str_= internal::KeyDataHolder<T>::data.add_key(sc);
@@ -163,7 +163,7 @@ public:
     }    
   }
 
-  explicit Key(unsigned int i): str_(i) {
+  explicit KeyBase(unsigned int i): str_(i) {
     //IMP_assert(get_rmap().size() > i, "There is no such attribute " << i);
   }
 
@@ -223,29 +223,29 @@ public:
 #endif
 };
 
-IMP_OUTPUT_OPERATOR_1(Key)
+IMP_OUTPUT_OPERATOR_1(KeyBase)
 
 
 template <class T>
-inline const internal::KeyData::Map& Key<T>::get_map()
+inline const internal::KeyData::Map& KeyBase<T>::get_map()
 {
   return internal::KeyDataHolder<T>::data.get_map();
 }
 
 template <class T>
-inline const internal::KeyData::RMap& Key<T>::get_rmap()
+inline const internal::KeyData::RMap& KeyBase<T>::get_rmap()
 {
   return internal::KeyDataHolder<T>::data.get_rmap();
 }
 
 template <class T>
-inline bool Key<T>::is_default() const
+inline bool KeyBase<T>::is_default() const
 {
   return str_==-1;
 }
 
 template <class T>
-inline const std::string &Key<T>::get_string(int i)
+inline const std::string &KeyBase<T>::get_string(int i)
 {
   IMP_assert(static_cast<unsigned int>(i)
              < get_rmap().size(),
@@ -256,13 +256,13 @@ inline const std::string &Key<T>::get_string(int i)
 
 
 template <class T>
-inline void Key<T>::show_all(std::ostream &out)
+inline void KeyBase<T>::show_all(std::ostream &out)
 {
   internal::KeyDataHolder<T>::data.show(out);
 }
 
 template <class T>
-std::vector<std::string> Key<T>::get_all_strings()
+std::vector<std::string> KeyBase<T>::get_all_strings()
 {
   std::vector<std::string> str;
   for (internal::KeyData::Map::const_iterator it= get_map().begin();

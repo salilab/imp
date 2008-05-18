@@ -12,6 +12,7 @@
 #include "IMP_config.h"
 
 #include <cassert>
+#include <cstring>
 #include <string>
 #include <iostream>
 #include <new>
