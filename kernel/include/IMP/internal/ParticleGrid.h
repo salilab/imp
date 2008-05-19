@@ -157,9 +157,9 @@ public:
       return &temp_;
     }
     bool operator==(const ParticleVoxelIterator &o) const {
-      return cvoxel_== o.cvoxel_ && (cvoxel_ == evoxel_ 
-                                     && (o.cvoxel_ == o.evoxel_ 
-                                         || curp_ == o.curp_));
+      return cvoxel_ == o.cvoxel_
+             && ((cvoxel_ == evoxel_ && o.cvoxel_ == o.evoxel_)
+                 || curp_ == o.curp_);
     }
     bool operator!=(const ParticleVoxelIterator &o) const {
       return !operator==(o);
