@@ -112,6 +112,12 @@ class FittingTest(IMP.test.TestCase):
                                 IMPEM.EMFitRestraint))
         self.assert_(IMPEM.EMFitRestraint.cast(r2) is None)
 
+    def test_get_methods(self):
+        """Check EMFitRestraint's get methods"""
+        r1 = IMPEM.EMFitRestraint(self.imp_model, self.particle_indexes,
+                                  self.scene, "radius", "weight", 1.0)
+        self.assert_(isinstance(r1.get_model_dens_map(), EM.SampledDensityMap))
+
 
 if __name__ == '__main__':
     unittest.main()
