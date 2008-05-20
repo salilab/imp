@@ -97,6 +97,21 @@ class FittingTest(IMP.test.TestCase):
         print "EM score (1-CC) = "+str(score)
         self.assert_(score < 0.05, "the correlation score is not correct")
 
+    def test_cast(self):
+        """Make sure that we can cast Restraint* to EMFitRestraint*"""
+        m = self.imp_model
+        r1 = IMPEM.EMFitRestraint(m, self.particle_indexes,
+                                  self.scene, "radius", "weight", 1.0)
+        sf = IMP.Harmonic(10.0, 0.1)
+        r2 = IMP.DistanceRestraint(sf, self.particles[0], self.particles[1])
+        m.add_restraint(r1)
+        m.add_restraint(r2)
+        r1 = m.get_restraint(IMP.RestraintIndex(0))
+        r2 = m.get_restraint(IMP.RestraintIndex(1))
+        self.assert_(isinstance(IMPEM.EMFitRestraint.cast(r1),
+                                IMPEM.EMFitRestraint))
+        self.assert_(IMPEM.EMFitRestraint.cast(r2) is None)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -39,3 +39,12 @@ namespace IMP {
 /* Wrap our own classes */
 %include "../IMPParticlesAccessPoint.h"
 %include "../EMFitRestraint.h"
+
+/* Allow runtime casting of Restraint* objects to EMFitRestraint* */
+namespace IMP {
+  %extend EMFitRestraint {
+    static EMFitRestraint* cast(Restraint *r) {
+      return dynamic_cast<IMP::EMFitRestraint *>(r);
+    }
+  }
+}
