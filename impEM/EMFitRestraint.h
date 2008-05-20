@@ -28,6 +28,11 @@ public:
 
   virtual ~EMFitRestraint();
 
+  //! \return the predicted density map of the model
+  SampledDensityMap *get_model_dens_map() {
+    return model_dens_map;
+  }
+
   IMP_RESTRAINT(VersionInfo("Keren", "0.0.1"))
 
 private:
