@@ -10,6 +10,7 @@
 
 #include "Mover.h"
 #include "../Particle.h"
+#include "../macros.h"
 
 #include <vector>
 
@@ -28,9 +29,6 @@ class IMPDLLEXPORT MoverBase: public Mover
 {
   std::vector<Floats> floats_;
   std::vector<Ints> ints_;
-  FloatKeys fkeys_;
-  IntKeys ikeys_;
-  Particles ps_;
 public:
   virtual void accept_move(){}
   virtual void reject_move();
@@ -39,59 +37,24 @@ public:
    */
   virtual void propose_move(float f);
 
+  IMP_LIST(public, Particle, particle, Particle*);
+  IMP_LIST(public, FloatKey, float_key, FloatKey);
+  IMP_LIST(public, IntKey, int_key, IntKey);
+
 protected:
   //! implement this method to propose a move
   /** See NormalMover for a simple example.
    */
   virtual void generate_move(float f)=0;
 
-  //! Add to the set of particles being controlled
-  void add_particles(const Particles &ps) {
-    ps_.insert(ps_.end(), ps.begin(), ps.end());
-  }
-  //! Clear the set of particles being controlled
-  void clear_particles() {
-    ps_.clear();
-  }
-
-  //! Get the number of particles
-  unsigned int number_of_particles() const {
-    return ps_.size();
-  }
-  Particle *get_particle(unsigned int i) const {
-    IMP_check(i< ps_.size(), "Bad index in MoverBase::get_particle",
-              IndexException("Particle index out of range in mover base"));
-    return ps_[i];
-  }
-
-  //! Add an attribute
-  unsigned int add_key(FloatKey k) {
-    fkeys_.push_back(k); 
-    return fkeys_.size()-1;
-  }
-  //! Add an attribute
-  unsigned int add_key(IntKey k) {
-    ikeys_.push_back(k); 
-    return ikeys_.size()-1;
-  }
-
-  unsigned int number_of_float_keys() const {return fkeys_.size();}
-  unsigned int number_of_int_keys() const {return ikeys_.size();}
-
-
-
   //! Get the value of a controlled attribute
   /** \param [in] i The index of the particle.
       \param [in] j The index of the attribute.
    */
   Float get_float(unsigned int i, unsigned int j) const {
-    IMP_assert(i < ps_.size(),
-               "Out of range controlled attribute in guard");
-    IMP_assert(j < fkeys_.size(),
-               "Out of range controlled attribute in guard");
-    IMP_assert(ps_.size() == floats_.size(),
+    IMP_assert(number_of_particles() == floats_.size(),
                "Only call get_float from within generate_proposal");
-    return get_particle(i)->get_value(fkeys_[j]);
+    return get_particle(i)->get_value(get_float_key(j));
   }
 
   //! Get an int attribute value
@@ -99,23 +62,19 @@ protected:
       \param [in] j The index of the attribute.
    */
   Int get_int(unsigned int i, unsigned int j) const {
-    IMP_assert(i < ps_.size(),
-               "Out of range controlled attribute in guard");
-    IMP_assert(j < ikeys_.size(),
-               "Out of range controlled attribute in guard");
-    IMP_assert(ps_.size() == ints_.size(),
-               "Only call get_float from within generate_proposal");
-
-    return get_particle(i)->get_value(ikeys_[j]);
+    IMP_assert(number_of_particles() == ints_.size(),
+               "Only call get_int from within generate_proposal");
+    return get_particle(i)->get_value(get_int_key(j));
   }
+
   //! Propose a value
   /** \param[in] i The index of the particle.
       \param[in] j The index of the key
       \param[in] t The value to propose
    */
   void propose_value(unsigned int i, unsigned int j, Float t) {
-    if (get_particle(i)->get_is_optimized(fkeys_[j])) {
-      get_particle(i)->set_value(fkeys_[j], t);
+    if (get_particle(i)->get_is_optimized(get_float_key(j))) {
+      get_particle(i)->set_value(get_float_key(j), t);
     }
   }
   //! Propose a value
@@ -124,7 +83,7 @@ protected:
       \param[in] t The value to propose
    */
   void propose_value(unsigned int i, unsigned int j, Int t) {
-    get_particle(i)->set_value(ikeys_[j], t);
+    get_particle(i)->set_value(get_int_key(j), t);
   }
 
   MoverBase(){}

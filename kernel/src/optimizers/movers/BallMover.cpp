@@ -46,14 +46,12 @@ random_point_in_sphere(const std::vector<Float> &center,
 
 
 
-BallMover::BallMover(const Particles &pis,
-                     const FloatKeys &vars,
-                     Float max)
+BallMover::BallMover(const FloatKeys &vars,
+                     Float max,
+                     const Particles &pis)
 {
   add_particles(pis);
-  for (unsigned int i = 0; i < vars.size(); ++i) {
-    add_key(vars[i]);
-  }
+  add_float_keys(vars);
   set_radius(max);
 }
 
