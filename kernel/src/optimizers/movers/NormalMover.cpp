@@ -13,14 +13,12 @@
 namespace IMP
 {
 
-NormalMover::NormalMover(const Particles &pis,
-                         const FloatKeys &vars,
-                         Float max)
+NormalMover::NormalMover(const FloatKeys &vars,
+                         Float max,
+                         const Particles &pis)
 {
   add_particles(pis);
-  for (unsigned int i = 0; i < vars.size(); ++i) {
-    add_key(vars[i]);
-  }
+  add_float_keys(vars);
   set_sigma(max);
 }
 

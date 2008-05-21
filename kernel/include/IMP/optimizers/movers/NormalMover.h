@@ -21,16 +21,13 @@ namespace IMP
 class IMPDLLEXPORT NormalMover :public MoverBase
 {
 public:
-  /** \param[in] ps The particles to perturb.
-      \param[in] vars The variables to use (normally the keys for x,y,z)
+  /** \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] sigma The standard deviation to use.
+      \param[in] ps The particles to perturb.
    */
-  NormalMover(const Particles &ps, const FloatKeys &vars,
-              Float sigma);
-  void set_particles(const Particles &ps) {
-    MoverBase::clear_particles();
-    MoverBase::add_particles(ps);
-  }
+  NormalMover(const FloatKeys &vars,
+              Float sigma, const Particles &ps=Particles());
+
   void set_sigma(Float sigma) {
     IMP_check(sigma > 0, "Sigma must be positive",
               ValueException("Negative sigma"));

@@ -26,12 +26,12 @@ class IMPDLLEXPORT BallMover :public MoverBase
 public:
   /** The attributes are perturbed within a pall whose dimensionality is 
       given by the number of attributes and radius by the given value.
-     \param[in] ps The particles to perturb.
      \param[in] vars The variables to use (normally the keys for x,y,z)
      \param[in] radius The radius deviation to use.
+     \param[in] ps The particles to perturb.
    */
-  BallMover(const Particles &ps, const FloatKeys &vars,
-            Float radius);
+  BallMover(const FloatKeys &vars,
+            Float radius, const Particles &ps);
   //!
   void set_radius(Float radius) {
     IMP_check(radius > 0, "The radius must be positive",
