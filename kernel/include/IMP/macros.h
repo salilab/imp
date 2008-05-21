@@ -240,7 +240,7 @@ public:                                                                 \
   /** \short Add several objects.
       \param[in] obj a vector of pointers
   */                                                                    \
-  void add_##lcname##s(const std::vector<Ucname*>& obj);                \
+  void add_##lcname##s(const std::vector<Data>& obj);                   \
   /** \short Clear the contents of the container */                     \
   void clear_##lcname##s();                                             \
   /** \short return the number of objects*/                             \
@@ -277,7 +277,7 @@ public:                                                                 \
     IndexType index= lcname##_vector_.push_back(obj);                   \
     Init_obj;                                                           \
     Onchanged;                                                          \
-    if (false) std::cout << index;                                      \
+    if (false) {index=index; obj=obj;};                                 \
     return index;                                                       \
   }                                                                     \
   void Class::add_##lcname##s(const std::vector<Data> &objs) {          \
@@ -288,7 +288,7 @@ public:                                                                 \
       Data obj= lcname##_vector_[osz+i];                                \
       IndexType index(osz+i);                                           \
       Init_obj;                                                         \
-      if (false) std::cout << *obj << index;                                  \
+      if (false) {obj=obj; index=index;}                                \
     }                                                                   \
     Onchanged;                                                          \
   }                                                                     \
