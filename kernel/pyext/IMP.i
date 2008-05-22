@@ -133,7 +133,15 @@ namespace IMP {
 /* Don't wrap internal functions */
 %ignore IMP::internal::evaluate_distance_pair_score;
 
-%feature("director");
+/* Make selected classes extensible in Python */
+%feature("director") IMP::UnaryFunction;
+%feature("director") IMP::Restraint;
+%feature("director") IMP::ScoreState;
+%feature("director") IMP::OptimizerState;
+%feature("director") IMP::SingletonScore;
+%feature("director") IMP::PairScore;
+%feature("director") IMP::TripletScore;
+%feature("director") IMP::Optimizer;
 
 %include "IMP/Key.h"
 %include "IMP/internal/Object.h"
