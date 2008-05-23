@@ -27,4 +27,18 @@ CheckLevel get_check_level()
   return check_mode;
 }
 
+namespace internal
+{
+
+void assert_fail()
+{
+  throw ErrorException();
+}
+
+void check_fail()
+{
+}
+
+} // namespace internal
+
 } // namespace IMP

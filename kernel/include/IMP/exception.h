@@ -134,13 +134,13 @@ namespace internal
 {
 
 //! This is just here so you can catch errors more easily in the debugger
-/** Break on Log.cpp:19 to catch assertion failures.
+/** Break on exception.cpp:31 to catch assertion failures.
     \ingroup assert
  */
 IMPDLLEXPORT void assert_fail();
 
 //! Here so you can catch check failures more easily in the debugger
-/** Break on Log.cpp:22 to catch check failures.
+/** Break on exception.cpp:35 to catch check failures.
     \ingroup assert
  */
 IMPDLLEXPORT void check_fail();
@@ -178,12 +178,13 @@ IMPDLLEXPORT void check_fail();
     \param[in] exception Throw the object constructed by this expression.
     \ingroup assert
  */
-#define IMP_check(expr, message, exception) \
-  do {                                      \
+#define IMP_check(expr, message, exception)                 \
+  do {                                                      \
     if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {  \
-      IMP_ERROR(message);                   \
-      throw exception;                      \
-    }                                       \
+      IMP_ERROR(message);                                   \
+      IMP::internal::check_fail();                          \
+      throw exception;                                      \
+    }                                                       \
   } while (false)
 
 //! A runtime failure for IMP.
