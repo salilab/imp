@@ -33,30 +33,37 @@ class Vector: public std::vector<D>
 public:
   typedef std::vector<D> P;
   Vector(){}
+
   template <class It>
   Vector(It b, It e) {
     insert(P::end(), b, e);
   }
+
   Vector(const P &p) {
     insert(P::end(), p.begin(), p.end());
   }
+
   ~Vector(){clear();}
+
   const D& operator[](unsigned int i) const {
     IMP_check(i < P::size(),
               "Index " << i << " out of range",
               IndexException(""));
     return P::operator[](i);
   }
+
   D& operator[](unsigned int i) {
     IMP_check(i < P::size(),
               "Index " << i << " out of range",
               IndexException(""));
     return P::operator[](i);
   }
+
   void erase(typename P::iterator it) {
     unref(*it);
     P::erase(it);
   }
+
   void erase(typename P::iterator b,
              typename P::iterator e) {
     for (typename P::iterator c= b; c != e; ++c) {
@@ -64,21 +71,25 @@ public:
     }
     P::erase(b,e);
   }
+
   unsigned int push_back(D d) {
     ref(d);
     P::push_back(d);
     return P::size()-1;
   }
+
   void pop_back() {
     unref(P::back());
     P::pop_back();
   }
+
   void clear() {
     for (typename P::iterator it= P::begin(); it != P::end(); ++it) {
       unref(*it);
     }
     P::clear();
   }
+
   template <class It>
   void insert(typename P::iterator it, It b, It e) {
     for (It c= b; c != e; ++c) {
