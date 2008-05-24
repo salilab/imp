@@ -75,6 +75,7 @@ Float Model::evaluate(bool calc_derivs)
           "Begin evaluate restraints " 
           << (calc_derivs?"with derivatives":"without derivatives")
           << std::endl);
+
   for (RestraintIterator it = restraints_begin();
        it != restraints_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
@@ -87,34 +88,23 @@ Float Model::evaluate(bool calc_derivs)
     IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
     score+= tscore;
   }
+
   IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
 
   IMP_LOG(TERSE,
           "Begin after_evaluate of ScoreStates " << std::endl);
+
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
     (*it)->after_evaluate(iteration_, accpt);
     IMP_LOG(VERBOSE, "." << std::flush);
   }
+
   IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
 
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
 
-  for (ParticleIterator pit= particles_begin();
-       pit != particles_end(); ++pit) {
-    for (Particle::FloatKeyIterator fkit = (*pit)->float_keys_begin();
-         fkit != (*pit)->float_keys_end(); ++fkit) {
-      Float v= (*pit)->get_value(*fkit);
-      IMP_check(v==v, "NaN found in particle " << (*pit)->get_index()
-                << " attribute " << *fkit,
-                ValueException("NaN found"));
-      Float d= (*pit)->get_derivative(*fkit);
-      IMP_check(d==d, "NaN found in particle derivative " << (*pit)->get_index()
-                << " attribute " << *fkit,
-                ValueException("NaN found"));
-    }
-  }
   ++iteration_;
   return score;
 }

@@ -74,7 +74,7 @@ void graph_disconnect(Particle* e, const GraphData &d)
         p[i]->set_value(graph_get_edge_key(j+shift, d), v);
       }
     }
-    p[i]->set_value(graph_get_edge_key(nc-1, d), NULL);
+    p[i]->remove_attribute(graph_get_edge_key(nc-1, d));
     IMP_assert(shift==-1, "no edge found");
     IMP_assert(nc > 0, "Too few edges");
     p[i]->set_value(d.num_edges_key_, nc-1);

@@ -26,25 +26,6 @@ namespace IMP
 namespace internal
 {
 
-struct IMPDLLEXPORT FloatData
-{
-  bool is_optimized;
-  Float value;
-  Float derivative;
-  FloatData(Float v, bool opt): is_optimized(opt), value(v), derivative(0){}
-  FloatData():is_optimized(false), value(std::numeric_limits<Float>::max()),
-              derivative(std::numeric_limits<Float>::max()){}
-};
-
-inline std::ostream &operator<<(std::ostream &out, const FloatData &d)
-{
-  out << d.value;
-  if (d.is_optimized) {
-    out << " (" << d.derivative << ")";
-  }
-  return out;
-}
-
 template <class It>
 void check_particles_active(It b, It e, std::string msg)
 {
@@ -61,17 +42,29 @@ class Model;
 
 //! Class to handle individual model particles.
 /** This class contains particle methods and indexes to particle attributes.
-    Particles cannot be deleted once they are added to a model, but they can
-    be deactivated (with their set_is_active method) after which they play no
-    role in the scoring (it is illegal to try to evaluate a restraint on an
-    inactive particle). To merely prevent a particle from moving during
+    To merely prevent a particle from moving during
     optimization, mark all of its attributes as being non-optimizable
     (set_is_optimized method).
+
     \ingroup kernel
  */
 class IMPDLLEXPORT Particle : public internal::RefCountedObject
 {
   friend class Model;
+
+ typedef internal::AttributeTable<internal::FloatAttributeTableTraits> 
+   FloatTable;
+ typedef internal::AttributeTable<internal::FloatAttributeTableTraits> 
+   DerivativeTable;
+ typedef internal::AttributeTable<internal::BoolAttributeTableTraits> 
+   OptimizedTable;
+ typedef internal::AttributeTable<internal::IntAttributeTableTraits>  
+   IntTable;
+  typedef internal::AttributeTable<internal::StringAttributeTableTraits>
+    StringTable;
+  typedef internal::AttributeTable<internal::ParticleAttributeTableTraits>
+    ParticleTable;
+
 public:
 
 
@@ -99,6 +92,12 @@ public:
    */
   void add_attribute(FloatKey name, const Float value,
                      const bool is_optimized = false);
+
+  //! Remove a Float attribute from this particle.
+  /** \param[in] name Name of the attribute being added.
+   */
+  void remove_attribute(FloatKey name);
+
 
   //! Does particle have a Float attribute with the given name.
   /** \param[in] name Name of the attribute being checked.
@@ -147,6 +146,11 @@ public:
    */
   void add_attribute(IntKey name, const Int value);
 
+  //! Remove a Int attribute from this particle.
+  /** \param[in] name Name of the attribute being added.
+   */
+  void remove_attribute(IntKey name);
+
   //! Does particle have an Int attribute with the given name.
   /** \param[in] name Name of the attribute being checked.
       \return true if Int attribute exists in this particle.
@@ -172,6 +176,12 @@ public:
       \param[in] value Initial value of the attribute.
    */
   void add_attribute(StringKey name, const String value);
+
+  //! Remove a String attribute from this particle.
+  /** \param[in] name Name of the attribute being added.
+   */
+  void remove_attribute(StringKey name);
+
 
   //! Does particle have a String attribute with the given name.
   /** \param[in] name Name of the attribute being checked.
@@ -199,6 +209,11 @@ public:
       \param[in] value Initial value of the attribute.
    */
   void add_attribute(ParticleKey name, Particle* value);
+
+  //! Remove a Particle attribute from this particle.
+  /** \param[in] name Name of the attribute being added.
+   */
+  void remove_attribute(ParticleKey name);
 
   //! Does particle have a Particle attribute with the given name.
   /** \param[in] name Name of the attribute being checked.
@@ -256,71 +271,77 @@ public:
      which seems inelegant.
    */
   std::vector<FloatKey> get_float_attributes() const {
-    return float_indexes_.get_keys();
+    return floats_.get_keys();
   }
 
   //! See get_float_attributes
   std::vector<IntKey> get_int_attributes() const {
-    return int_indexes_.get_keys();
+    return ints_.get_keys();
   }
 
   //! See get_float_attributes
   std::vector<StringKey> get_string_attributes() const {
-    return string_indexes_.get_keys();
+    return strings_.get_keys();
   }
 
   //! See get_particle_attributes
   std::vector<ParticleKey> get_particle_attributes() const {
-    return particle_indexes_.get_keys();
+    return particles_.get_keys();
   }
 
 
   //! An iterator through the keys of the float attributes of this particle
-  typedef internal::AttributeTable<Float, 
-    internal::FloatData>::AttributeKeyIterator
+  typedef FloatTable::AttributeKeyIterator
     FloatKeyIterator;
   //! Iterate through the keys of float attributes of the particle
   FloatKeyIterator float_keys_begin() const {
-    return float_indexes_.attribute_keys_begin();
+    return floats_.attribute_keys_begin();
   }
   FloatKeyIterator float_keys_end() const {
-    return float_indexes_.attribute_keys_end();
+    return floats_.attribute_keys_end();
   }
 
+  //! An iterator through the keys of the derivative attributes of this particle
+  typedef OptimizedTable::AttributeKeyIterator
+    OptimizedKeyIterator;
+  //! Iterate through the keys of float attributes of the particle
+  OptimizedKeyIterator optimized_keys_begin() const {
+    return optimizeds_.attribute_keys_begin();
+  }
+  OptimizedKeyIterator optimized_keys_end() const {
+    return optimizeds_.attribute_keys_end();
+  }
+
+
   //! An iterator through the keys of the int attributes of this particle
-  typedef internal::AttributeTable<Int, Int>
-    ::AttributeKeyIterator IntKeyIterator;
+  typedef IntTable::AttributeKeyIterator IntKeyIterator;
   //! Iterate through the keys of int attributes of the particle
   IntKeyIterator int_keys_begin() const {
-    return int_indexes_.attribute_keys_begin();
+    return ints_.attribute_keys_begin();
   }
   IntKeyIterator int_keys_end() const {
-    return int_indexes_.attribute_keys_end();
+    return ints_.attribute_keys_end();
   }
 
   //! An iterator through the keys of the string attributes of this particle
-  typedef internal::AttributeTable<String, String>
-    ::AttributeKeyIterator StringKeyIterator;
+  typedef StringTable::AttributeKeyIterator StringKeyIterator;
   //! Iterate through the keys of string attributes of the particle
   StringKeyIterator string_keys_begin() const {
-    return string_indexes_.attribute_keys_begin();
+    return strings_.attribute_keys_begin();
   }
   StringKeyIterator string_keys_end() const {
-    return string_indexes_.attribute_keys_end();
+    return strings_.attribute_keys_end();
   }
 
   //! An iterator through the keys of the Particle attributes of this particle
-  typedef internal::AttributeTable<Particle*,
-    internal::ObjectPointer<Particle, true> >
-    ::AttributeKeyIterator ParticleKeyIterator;
+  typedef ParticleTable::AttributeKeyIterator ParticleKeyIterator;
   //! Iterate through the keys of Particle attributes of the particle
   ParticleKeyIterator particle_keys_begin() const {
-    return particle_indexes_.attribute_keys_begin();
+    return particles_.attribute_keys_begin();
   }
   ParticleKeyIterator particle_keys_end() const {
-    return particle_indexes_.attribute_keys_end();
+    return particles_.attribute_keys_end();
   }
-
 
 protected:
   void zero_derivatives();
@@ -335,14 +356,18 @@ protected:
   bool is_active_;
 
   // float attributes associated with the particle
-  internal::AttributeTable<Float, internal::FloatData> float_indexes_;
+  FloatTable floats_;
+  // float attributes associated with the particle
+  FloatTable derivatives_;
+  // Whether a given float is optimized or not
+  OptimizedTable optimizeds_;
+
   // int attributes associated with the particle
-  internal::AttributeTable<Int, Int>  int_indexes_;
+  IntTable ints_;
   // string attributes associated with the particle
-  internal::AttributeTable<String, String>  string_indexes_;
+  StringTable  strings_;
   // particle attributes associated with the particle
-  internal::AttributeTable<Particle*, internal::ObjectPointer<Particle,true> >
-    particle_indexes_;
+  ParticleTable particles_;
 
   ParticleIndex pi_;
 };
@@ -354,7 +379,7 @@ IMP_OUTPUT_OPERATOR(Particle)
 
 inline bool Particle::has_attribute(FloatKey name) const
 {
-  return float_indexes_.contains(name);
+  return floats_.contains(name);
 }
 
 
@@ -363,36 +388,45 @@ inline Float Particle::get_value(FloatKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return float_indexes_.get_value(name).value;
+  return floats_.get_value(name);
 }
 
 inline Float Particle::get_derivative(FloatKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return float_indexes_.get_value(name).derivative;
+  return derivatives_.get_value(name);
 }
 
 inline void Particle::set_value(FloatKey name, Float value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  IMP_assert(value==value, "Can't set value to NaN");
-  float_indexes_.get_value(name).value= value;
+  floats_.set_value(name, value);
 }
 
 inline bool Particle::get_is_optimized(FloatKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return float_indexes_.get_value(name).is_optimized;
+  IMP_check(floats_.contains(name), "get_is_optimized called "
+            << "with invalid attribute" << name,
+            IndexException("Invalid float attribute"));
+  return optimizeds_.contains(name);
 }
 
 inline void Particle::set_is_optimized(FloatKey name, bool tf)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  float_indexes_.get_value(name).is_optimized=tf;
+  IMP_check(floats_.contains(name), "set_is_optimized called "
+            << "with invalid attribute" << name,
+            IndexException("Invalid float attribute"));
+  if (tf) {
+    optimizeds_.insert_always(name, true);
+  } else {
+    optimizeds_.remove_always(name);
+  }
 }
 
 inline void Particle::add_to_derivative(FloatKey name, Float value,
@@ -401,14 +435,14 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
   IMP_assert(value==value, "Can't add NaN to derivative in particle " << *this);
-  float_indexes_.get_value(name).derivative+= da(value);
+  derivatives_.set_value(name, derivatives_.get_value(name)+ da(value));
 }
 
 inline bool Particle::has_attribute(IntKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return int_indexes_.contains(name);
+  return ints_.contains(name);
 }
 
 
@@ -417,7 +451,7 @@ inline Int Particle::get_value(IntKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return int_indexes_.get_value(name);
+  return ints_.get_value(name);
 }
 
 
@@ -425,14 +459,14 @@ inline void Particle::set_value(IntKey name, Int value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  int_indexes_.get_value(name)= value;
+  ints_.set_value(name, value);
 }
 
 inline bool Particle::has_attribute(StringKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return string_indexes_.contains(name);
+  return strings_.contains(name);
 }
 
 
@@ -441,14 +475,14 @@ inline String Particle::get_value(StringKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return string_indexes_.get_value(name);
+  return strings_.get_value(name);
 }
 
 inline void Particle::set_value(StringKey name, String value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  string_indexes_.get_value(name)= value;
+  strings_.set_value(name, value);
 }
 
 
@@ -456,7 +490,7 @@ inline bool Particle::has_attribute(ParticleKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return particle_indexes_.contains(name);
+  return particles_.contains(name);
 }
 
 
@@ -465,7 +499,7 @@ inline Particle* Particle::get_value(ParticleKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  return particle_indexes_.get_value(name).get();
+  return particles_.get_value(name).get();
 }
 
 
@@ -473,7 +507,7 @@ inline void Particle::set_value(ParticleKey name, Particle* value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException());
-  particle_indexes_.get_value(name)= value;
+  particles_.set_value(name, internal::ObjectPointer<Particle, true>(value));
 }
 
 
@@ -482,7 +516,18 @@ void inline Particle::add_attribute(FloatKey name, const Float value,
 {
   IMP_assert(model_ ,
              "Particle must be added to Model before attributes are added");
-  float_indexes_.insert(name, internal::FloatData(value, is_optimized));
+  floats_.insert(name, value);
+  derivatives_.insert(name, 0);
+  if (is_optimized) {
+    optimizeds_.insert(name, true);
+  }
+}
+
+void inline Particle::remove_attribute(FloatKey name)
+{
+  floats_.remove(name);
+  derivatives_.remove(name);
+  optimizeds_.remove_always(name);
 }
 
 
@@ -490,7 +535,12 @@ void inline Particle::add_attribute(IntKey name, const Int value)
 {
   IMP_assert(model_,
              "Particle must be added to Model before attributes are added");
-  int_indexes_.insert(name, value);
+  ints_.insert(name, value);
+}
+
+void inline Particle::remove_attribute(IntKey name)
+{
+  ints_.remove(name);
 }
 
 
@@ -498,17 +548,27 @@ void inline Particle::add_attribute(StringKey name, const String value)
 {
   IMP_assert(model_,
              "Particle must be added to Model before attributes are added");
-  string_indexes_.insert(name, value);
+  strings_.insert(name, value);
+}
+
+void inline Particle::remove_attribute(StringKey name)
+{
+  strings_.remove(name);
 }
 
 void inline Particle::add_attribute(ParticleKey name, Particle* value)
 {
   IMP_assert(model_,
              "Particle must be added to Model before attributes are added");
-  particle_indexes_.insert(name,
+  particles_.insert(name,
                            internal::ObjectPointer<Particle, true>(value));
 }
 
+
+void inline Particle::remove_attribute(ParticleKey name)
+{
+  particles_.remove(name);
+}
 
 } // namespace IMP
 

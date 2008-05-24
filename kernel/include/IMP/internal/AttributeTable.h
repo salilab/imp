@@ -11,12 +11,14 @@
 #include "../base_types.h"
 #include "../utility.h"
 #include "../log.h"
+#include "ObjectPointer.h"
 
 #include <boost/iterator/filter_iterator.hpp>
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/scoped_array.hpp>
 
 #include <vector>
+#include <limits>
 
 namespace IMP
 {
@@ -25,24 +27,105 @@ namespace IMP
 namespace internal
 {
 
+struct FloatAttributeTableTraits
+{
+  typedef Float Value;
+  typedef KeyBase<Float> Key;
+  static Float get_invalid() {
+    if (std::numeric_limits<Float>::has_quiet_NaN) {
+      return std::numeric_limits<Float>::quiet_NaN();
+    } else if (std::numeric_limits<Float>::has_infinity) {
+      return std::numeric_limits<Float>::infinity();
+    } else {
+      return std::numeric_limits<Float>::max();
+    }
+  }
+  static bool get_is_valid(Float f) {
+    if (std::numeric_limits<Float>::has_quiet_NaN) {
+      return f==f;
+    } else {
+      return f!= get_invalid();
+    }
+  }
+};
+
+struct IntAttributeTableTraits
+{
+  typedef Int Value;
+  typedef KeyBase<Int> Key;
+  static Int get_invalid() {
+    return std::numeric_limits<Int>::max();
+  }
+  static bool get_is_valid(Int f) {
+    return f!= get_invalid();
+  }
+};
+
+struct BoolAttributeTableTraits
+{
+  typedef bool Value;
+  typedef KeyBase<Float> Key;
+  static bool get_invalid() {
+    return false;
+  }
+  static bool get_is_valid(Int f) {
+    return f;
+  }
+};
+
+struct StringAttributeTableTraits
+{
+  typedef String Value;
+  typedef KeyBase<String> Key;
+  static Value get_invalid() {
+    return "This is an invalid string in IMP";
+  }
+  static bool get_is_valid(String f) {
+    return f!= get_invalid();
+  }
+};
+
+struct ParticleAttributeTableTraits
+{
+  typedef internal::ObjectPointer<Particle,true> Value;
+  typedef KeyBase<Particle*> Key;
+  static Value get_invalid() {
+    return Value();
+  }
+  static bool get_is_valid(Value f) {
+    return f!= Value();
+  }
+};
+
 /** \internal 
     If memory becomes a problem then either use a char table to look up
     actual entries or use perfect hashing. 
     http://burtleburtle.net/bob/hash/perfect.html
+
+    Actuall Cuckoo hashing is probably a better bet as that gets
+    high occupancy without large tables for the hash function.
+
+    \note This version of the table uses certain values of the data
+    to singal that the entry is invalid. Setting an entry to these
+    values is a checked error. The values are specified by the
+    Traits::invalid entry.
  */
-template <class T, class VT>
+template <class Traits>
 class AttributeTable
 {
-  typedef AttributeTable<T, VT> This;
-  struct Bin
-  {
-    bool first;
-    VT second;
-    Bin(): first(false){}
-  };
-  typedef boost::scoped_array<Bin> Map; 
+  typedef AttributeTable<Traits> This;
+
+  typedef boost::scoped_array<typename Traits::Value> Map; 
   Map map_;
   unsigned int size_;
+
+  typename Traits::Value* new_array(unsigned int asz) const {
+    typename Traits::Value* ret= new typename Traits::Value[asz];
+    for (unsigned int i=0; i< asz; ++i) {
+      ret[i]= Traits::get_invalid();
+    }
+    return ret;
+  }
 
   void copy_from(unsigned int len, const Map &o) {
     IMP_assert(map_, "Internal error in attribute table");
@@ -60,15 +143,25 @@ class AttributeTable
       map_.reset();
     } else {
       size_=std::max(nlen, 6U);
-      map_.reset(new Bin[size_]);
+      map_.reset(new_array(size_));
       copy_from(olen, o);
     }
     //std::cout << " to " << size_ << " " << map_ << std::endl;
   }
 
+  void check_contains(typename Traits::Key k) const {
+    IMP_assert(size_ > k.get_index(),
+               "Attribute \"" << k.get_string()
+               << "\" not found in table.");
+    IMP_check(Traits::get_is_valid(map_[k.get_index()]),
+              "Attribute \"" << k.get_string()
+              << "\" not found in table.",
+              IndexException("Invalid attribute"));
+  }
+
 public:
-  typedef VT Value;
-  typedef KeyBase<T> Key;
+  typedef typename Traits::Value Value;
+  typedef typename Traits::Key Key;
   AttributeTable(): size_(0){}
   AttributeTable(const This &o): size_(0) {
     //std::cout << "Copy constructor called from " << o.map_ << std::endl;
@@ -87,28 +180,43 @@ public:
     return *this;
   }
   const Value get_value(Key k) const {
-    IMP_assert(contains(k),
-              "Attribute \"" << k.get_string()
-              << "\" not found in table.");
-    return map_[k.get_index()].second;
+    check_contains(k);
+    return map_[k.get_index()];
   }
 
 
-  Value& get_value(Key k) {
-    IMP_assert(contains(k),
-              "Attribute \"" << k.get_string()
-              << "\" not found in table.");
-    return map_[k.get_index()].second;
+  void set_value(Key k, Value v) {
+    check_contains(k);
+    IMP_check(Traits::get_is_valid(v),
+              "Cannot set value of attribute to " << v,
+              ValueException("Invalid value for attribute"));
+    map_[k.get_index()] = v;
   }
 
 
-  void insert(Key k, Value v);
+  void insert(Key k, Value v) {
+    IMP_assert(!contains(k),
+               "Trying to add attribute \"" << k.get_string()
+               << "\" twice");
+    insert_always(k, v);
+  }
+
+  void insert_always(Key k, Value v);
+
+  void remove(Key k) {
+    check_contains(k);
+    map_[k.get_index()]= Traits::get_invalid();
+  }
+
+  void remove_always(Key k) {
+    map_[k.get_index()]= Traits::get_invalid();
+  }
 
 
   bool contains(Key k) const {
     IMP_assert(k != Key(), "Can't search for default key");
     return k.get_index() < size_
-           && map_[k.get_index()].first;
+      && Traits::get_is_valid(map_[k.get_index()]);
   }
 
 
@@ -143,57 +251,52 @@ public:
                                 KeyIterator(Key(size_)));
   }
 
-
-  unsigned int get_heap_memory_usage() const {
-    return size_*sizeof(Bin);
-  }
-
 };
 
-IMP_OUTPUT_OPERATOR_2(AttributeTable)
+IMP_OUTPUT_OPERATOR_1(AttributeTable)
 
 
 
 
-template <class T, class VT>
-inline void AttributeTable<T, VT>::insert(Key k, Value v)
+template <class Traits>
+inline void AttributeTable<Traits>::insert_always(Key k, Value v)
 {
   /*std::cout << "Insert " << k << " in v of size " 
     << size_ << " " << map_ << " " << k.get_index() << std::endl;*/
   IMP_assert(k != Key(),
             "Can't insert default key");
+  IMP_check(Traits::get_is_valid(v),
+            "Trying to insert invalid value for attribute " 
+            << v << " into attribute " << k,
+            ValueException("Invalid attribute value"));
   if (size_ <= k.get_index()) {
-    boost::scoped_array<Bin> old;
+    boost::scoped_array<Value> old;
     swap(old, map_);
     realloc(size_, old, k.get_index()+1);
   }
-  IMP_assert(!map_[k.get_index()].first,
-             "Trying to add attribute \"" << k.get_string()
-             << "\" twice");
-  map_[k.get_index()].second= v;
-  map_[k.get_index()].first= true;
-  IMP_assert(contains(k), "Something is broken");
+  map_[k.get_index()]= v;
 }
 
 
-  template <class T, class VT>
-  inline void AttributeTable<T, VT>::show(std::ostream &out,
-                                          const char *prefix) const
+
+template <class Traits>
+inline void AttributeTable<Traits>::show(std::ostream &out,
+                                        const char *prefix) const
 {
   for (unsigned int i=0; i< size_; ++i) {
-    if (map_[i].first) {
+    if (Traits::get_is_valid(map_[i])) {
       out << prefix;
       out << Key(i).get_string() << ": ";
-      out << map_[i].second;
+      out << map_[i];
       out << std::endl;
     }
   }
 }
 
 
-template <class T, class VT>
-inline std::vector<typename AttributeTable<T, VT>::Key> 
-  AttributeTable<T, VT>::get_keys() const
+template <class Traits>
+inline std::vector<typename Traits::Key> 
+  AttributeTable<Traits>::get_keys() const
 {
   std::vector<Key> ret(attribute_keys_begin(), attribute_keys_end());
   return ret;
