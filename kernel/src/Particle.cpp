@@ -44,7 +44,7 @@ void Particle::set_is_active(const bool is_active)
 void Particle::zero_derivatives()
 {
   for (FloatKeyIterator it= float_keys_begin(); it != float_keys_end(); ++it) {
-    float_indexes_.get_value(*it).derivative=0;
+    derivatives_.set_value(*it, 0);
   }
 }
 
@@ -63,13 +63,17 @@ void Particle::show(std::ostream& out) const
 
   if (get_model() != NULL) {
     out << inset << inset << "float attributes:" << std::endl;
-    float_indexes_.show(out, "    ");
+    floats_.show(out, "    ");
 
     out << inset << inset << "int attributes:" << std::endl;
-    int_indexes_.show(out, "    ");
+    ints_.show(out, "    ");
 
     out << inset << inset << "string attributes:" << std::endl;
-    string_indexes_.show(out, "    ");
+    strings_.show(out, "    ");
+
+    out << inset << inset << "particle attributes:" << std::endl;
+    particles_.show(out, "    ");
+
   }
 }
 

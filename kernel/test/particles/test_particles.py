@@ -68,6 +68,28 @@ class ParticleTests(IMP.test.TestCase):
         p.set_is_active(False)
         self.assertEqual(p.get_is_active(), False)
 
+    def _test_add_remove(self, p, ak, v):
+        p.add_attribute(ak, v)
+        self.assert_(p.has_attribute(ak))
+        p.remove_attribute(ak)
+        self.assert_(not p.has_attribute(ak))
+
+    def test_remove_attributes(self):
+        """Test that attributes can be removed"""
+        p=self.particles[0]
+        fk= IMP.FloatKey("to_remove")
+        p.add_attribute(fk, 0, False)
+        self.assert_(p.has_attribute(fk))
+        self.assert_(not p.get_is_optimized(fk))
+        p.set_is_optimized(fk, True)
+        self.assert_(p.get_is_optimized(fk))
+        p.set_is_optimized(fk, False)
+        self.assert_(not p.get_is_optimized(fk))
+        self._test_add_remove(p, IMP.FloatKey("something"), 1.0)
+        self._test_add_remove(p, IMP.StringKey("something"), "Hello")
+        self._test_add_remove(p, IMP.IntKey("something"), 1)
+        self._test_add_remove(p, IMP.ParticleKey("something"), p)
+
     def test_derivatives(self):
         """Test get/set of derivatives"""
         p = self.particles[0]

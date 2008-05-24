@@ -70,7 +70,6 @@ protected:
   void update_states();
 
   //! An index to an optimized particle attribute
-  class FloatIndexInderator;
   struct FloatIndex
   {
     /**
@@ -79,7 +78,7 @@ protected:
     friend class Optimizer;
     friend class FloatIndexIterator;
     Model::ParticleIterator p_;
-    Particle::FloatKeyIterator fk_;
+    Particle::OptimizedKeyIterator fk_;
     FloatIndex(Model::ParticleIterator p): p_(p){}
   public:
     FloatIndex() {}
@@ -96,20 +95,19 @@ protected:
     mutable FloatIndex i_;
 
     void search_valid() const {
-      while (i_.fk_ == (*i_.p_)->float_keys_end()
-             || !(*i_.p_)->get_is_optimized(*i_.fk_)) {
-        if (i_.fk_ == (*i_.p_)->float_keys_end()) {
+      while (i_.fk_ == (*i_.p_)->optimized_keys_end()) {
+        if (i_.fk_ == (*i_.p_)->optimized_keys_end()) {
           ++i_.p_;
           if (i_.p_== pe_) return;
           else {
-            i_.fk_= (*i_.p_)->float_keys_begin();
+            i_.fk_= (*i_.p_)->optimized_keys_begin();
           }
         } else {
           ++i_.fk_;
         }
       }
       IMP_assert(i_.p_ != pe_, "Should have just returned");
-      IMP_assert(i_.fk_ != (*i_.p_)->float_keys_end(),
+      IMP_assert(i_.fk_ != (*i_.p_)->optimized_keys_end(),
                  "Broken iterator end");
       IMP_assert((*i_.p_)->get_is_optimized(*i_.fk_),
                    "Why did the loop end?");
@@ -122,7 +120,7 @@ protected:
     FloatIndexIterator(Model::ParticleIterator pc,
                        Model::ParticleIterator pe): pe_(pe), i_(pc) {
       if (pc != pe) {
-        i_.fk_= (*pc)->float_keys_begin();
+        i_.fk_= (*pc)->optimized_keys_begin();
         search_valid();
       }
     }
@@ -162,7 +160,7 @@ protected:
 
   FloatIndexIterator float_indexes_end() {
     return FloatIndexIterator(model_->particles_end(),
-                                  model_->particles_end());
+                              model_->particles_end());
   }
 
   //! Set the value of an optimized attribute
