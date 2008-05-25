@@ -12,7 +12,7 @@ class TestBL(IMP.test.TestCase):
         m= IMP.Model()
         o= IMP.SteepestDescent()
         o.set_model(m)
-        nm="/tmp/"+pref+"vrmltest%03d.vrml"
+        nm = pref + "vrmltest%03d.vrml"
         p0= IMP.Particle()
         m.add_particle(p0)
         d0= IMP.XYZDecorator.create(p0)
@@ -36,8 +36,8 @@ class TestBL(IMP.test.TestCase):
         o.add_optimizer_state(a)
         a.update()
 
-        self.assert_(os.path.isfile("/tmp/"+pref+"vrmltest000.vrml"))
-        os.remove("/tmp/"+pref+"vrmltest000.vrml")
+        os.remove(pref + "vrmltest000.vrml")
+
     def test_1(self):
         """Testing the VRML log"""
         self._testit(IMP.FloatKey("radius"),
@@ -57,7 +57,12 @@ class TestBL(IMP.test.TestCase):
         m= IMP.Model()
         o= IMP.SteepestDescent()
         o.set_model(m)
-        nm="/tmp/"+"skip"+"vrmltest%03d.vrml"
+        nm = "skip" + "vrmltest%03d.vrml"
+        # Possible clean up from any previous failed runs:
+        try:
+            os.remove("skip" + "vrmltest002.cmm")
+        except OSError:
+            pass
         p0= IMP.Particle()
         m.add_particle(p0)
         d0= IMP.XYZDecorator.create(p0)
@@ -79,12 +84,9 @@ class TestBL(IMP.test.TestCase):
         o.add_optimizer_state(a)
         o.optimize(11)
 
-        self.assert_(os.path.isfile("/tmp/"+"skip"+"vrmltest000.vrml"))
-        self.assert_(os.path.isfile("/tmp/"+"skip"+"vrmltest001.vrml"))
-        self.assert_(not os.path.isfile("/tmp/"+"skip"+"vrmltest002.vrml"))
-        os.remove("/tmp/"+"skip"+"vrmltest000.vrml")
-        os.remove("/tmp/"+"skip"+"vrmltest001.vrml")
-        if os.path.isfile("/tmp/"+"skip"+"vrmltest002.vrml"):
-            os.remove("/tmp/"+"skip"+"vrmltest002.vrml")
+        os.remove("skip" + "vrmltest000.vrml")
+        os.remove("skip" + "vrmltest001.vrml")
+        self.assert_(not os.path.isfile("skip" + "vrmltest002.vrml"))
+
 if __name__ == '__main__':
     unittest.main()

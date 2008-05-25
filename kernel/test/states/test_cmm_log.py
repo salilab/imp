@@ -12,7 +12,7 @@ class TestBL(IMP.test.TestCase):
         m= IMP.Model()
         o= IMP.SteepestDescent()
         o.set_model(m)
-        nm="/tmp/"+pref+"cmmtest%03d.cmm"
+        nm = pref + "cmmtest%03d.cmm"
         p0= IMP.Particle()
         m.add_particle(p0)
         d0= IMP.XYZDecorator.create(p0)
@@ -36,8 +36,8 @@ class TestBL(IMP.test.TestCase):
         o.add_optimizer_state(a)
         a.update()
 
-        self.assert_(os.path.isfile("/tmp/"+pref+"cmmtest000.cmm"))
-        os.remove("/tmp/"+pref+"cmmtest000.cmm")
+        os.remove(pref + "cmmtest000.cmm")
+
     def test_1(self):
         """Testing the CMM log"""
         self._testit(IMP.FloatKey("radius"),
@@ -57,7 +57,12 @@ class TestBL(IMP.test.TestCase):
         m= IMP.Model()
         o= IMP.SteepestDescent()
         o.set_model(m)
-        nm="/tmp/"+"skip"+"cmmtest%03d.cmm"
+        nm = "skip" + "cmmtest%03d.cmm"
+        # Possible clean up from any previous failed runs:
+        try:
+            os.remove("skip" + "cmmtest002.cmm")
+        except OSError:
+            pass
         p0= IMP.Particle()
         m.add_particle(p0)
         d0= IMP.XYZDecorator.create(p0)
@@ -77,13 +82,10 @@ class TestBL(IMP.test.TestCase):
         m.add_restraint(r);
         o.add_optimizer_state(a)
         o.optimize(11)
-        self.assert_(os.path.isfile("/tmp/"+"skip"+"cmmtest000.cmm"))
-        self.assert_(os.path.isfile("/tmp/"+"skip"+"cmmtest001.cmm"))
-        self.assert_(not os.path.isfile("/tmp/"+"skip"+"cmmtest002.cmm"))
-        os.remove("/tmp/"+"skip"+"cmmtest000.cmm")
-        os.remove("/tmp/"+"skip"+"cmmtest001.cmm")
-        if os.path.isfile("/tmp/"+"skip"+"cmmtest002.cmm"):
-            os.remove("/tmp/"+"skip"+"cmmtest002.cmm")
+        os.remove("skip" + "cmmtest000.cmm")
+        os.remove("skip" + "cmmtest001.cmm")
+        self.assert_(not os.path.isfile("skip" + "cmmtest002.cmm"))
         print "4"
+
 if __name__ == '__main__':
     unittest.main()
