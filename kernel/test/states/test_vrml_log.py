@@ -84,7 +84,7 @@ class TestBL(IMP.test.TestCase):
         self.assert_(not os.path.isfile("/tmp/"+"skip"+"vrmltest002.vrml"))
         os.remove("/tmp/"+"skip"+"vrmltest000.vrml")
         os.remove("/tmp/"+"skip"+"vrmltest001.vrml")
-        if (os.path.isfile("/tmp/"+"skip"+"vrmltest002.vrml")):
+        if os.path.isfile("/tmp/"+"skip"+"vrmltest002.vrml"):
             os.remove("/tmp/"+"skip"+"vrmltest002.vrml")
 if __name__ == '__main__':
     unittest.main()

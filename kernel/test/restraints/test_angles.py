@@ -73,7 +73,8 @@ class AngleRestraintTests(IMP.test.TestCase):
         diff = ss-rs
         print ss
         print rs
-        if (diff <0): diff=-diff
+        if diff < 0:
+            diff = -diff
         self.assert_(diff < .001, "The restraints are not equal")
 
 

@@ -25,7 +25,7 @@ class TestPairList(IMP.test.TestCase):
         for i in range(0,10):
             p= IMP.Particle()
             m.add_particle(p)
-            if (i %2 == 1):
+            if i % 2 == 1:
                 ps.append(IMP.ParticlePair(p, last))
             last= p
         os= IndexDiff()
