@@ -82,7 +82,7 @@ class TestBL(IMP.test.TestCase):
         self.assert_(not os.path.isfile("/tmp/"+"skip"+"cmmtest002.cmm"))
         os.remove("/tmp/"+"skip"+"cmmtest000.cmm")
         os.remove("/tmp/"+"skip"+"cmmtest001.cmm")
-        if (os.path.isfile("/tmp/"+"skip"+"cmmtest002.cmm")):
+        if os.path.isfile("/tmp/"+"skip"+"cmmtest002.cmm"):
             os.remove("/tmp/"+"skip"+"cmmtest002.cmm")
         print "4"
 if __name__ == '__main__':

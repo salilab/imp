@@ -14,7 +14,7 @@ class ConnectivityTests(IMP.test.TestCase):
                 da= IMP.XYZDecorator.cast(pa)
                 db= IMP.XYZDecorator.cast(pb)
                 d= IMP.distance(da,db)
-                if (d < md):
+                if d < md:
                     md=d
         return md
 
@@ -37,13 +37,13 @@ class ConnectivityTests(IMP.test.TestCase):
             m.add_particle(p)
             d= IMP.XYZDecorator.create(p)
             d.set_coordinates_are_optimized(True)
-            if (i %3 == 0):
+            if i % 3 == 0:
                 p0.append(p)
                 p.add_attribute(rk, 1);
-            elif (i %3 == 1):
+            elif i % 3 == 1:
                 p1.append(p)
                 p.add_attribute(rk, 2);
-            else :
+            else:
                 p2.append(p)
                 p.add_attribute(rk, 3);
         p= IMP.Particle()

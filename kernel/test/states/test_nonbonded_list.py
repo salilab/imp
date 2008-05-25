@@ -260,10 +260,10 @@ class TestNBL(IMP.test.TestCase):
             dp= IMP.XYZDecorator.cast(p)
             for q in m.get_particles():
                 dq= IMP.XYZDecorator.cast(q)
-                if (p.get_index() != q.get_index()):
+                if p.get_index() != q.get_index():
                     d = IMP.distance(dp,dq)
                     rd= p.get_value(self.rk) + q.get_value(self.rk)
-                    if (rd > d):
+                    if rd > d:
                         p.show()
                         q.show()
                         print d
