@@ -52,6 +52,22 @@ class IMPDLLEXPORT Particle : public internal::RefCountedObject
 {
   friend class Model;
 
+  /* This has to be declared here since boost 1.35 wants the full
+     definition of Particle to be available when the ObjectPointer
+     is declared.
+  */
+  struct ParticleAttributeTableTraits
+  {
+    typedef internal::ObjectPointer<Particle, true> Value;
+    typedef KeyBase<Particle*> Key;
+    static Value get_invalid() {
+      return Value();
+    }
+    static bool get_is_valid(Value f) {
+      return f!= Value();
+    }
+  };
+
  typedef internal::AttributeTable<internal::FloatAttributeTableTraits> 
    FloatTable;
  typedef internal::AttributeTable<internal::FloatAttributeTableTraits> 
@@ -62,7 +78,7 @@ class IMPDLLEXPORT Particle : public internal::RefCountedObject
    IntTable;
   typedef internal::AttributeTable<internal::StringAttributeTableTraits>
     StringTable;
-  typedef internal::AttributeTable<internal::ParticleAttributeTableTraits>
+  typedef internal::AttributeTable<ParticleAttributeTableTraits>
     ParticleTable;
 
 public:
