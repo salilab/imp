@@ -85,17 +85,7 @@ struct StringAttributeTableTraits
   }
 };
 
-struct ParticleAttributeTableTraits
-{
-  typedef internal::ObjectPointer<Particle,true> Value;
-  typedef KeyBase<Particle*> Key;
-  static Value get_invalid() {
-    return Value();
-  }
-  static bool get_is_valid(Value f) {
-    return f!= Value();
-  }
-};
+// The traits for the particle class are declared in the Particle.h
 
 /** \internal 
     If memory becomes a problem then either use a char table to look up
