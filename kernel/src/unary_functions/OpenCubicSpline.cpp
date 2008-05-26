@@ -27,7 +27,7 @@ OpenCubicSpline::OpenCubicSpline(const std::vector<Float> &values,
   tmp[0] = 0.;
 
   Float doublespacing = spacing + spacing;
-  for (int i = 1; i < npoints; ++i) {
+  for (int i = 1; i < npoints - 1; ++i) {
     Float m = 0.5 * second_derivs_[i - 1] + 2.;
     second_derivs_[i] = -0.5 / m;
     tmp[i] = (6. * ((values_[i + 1] - values_[i]) / spacing_
