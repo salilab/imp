@@ -543,7 +543,9 @@ void inline Particle::remove_attribute(FloatKey name)
 {
   floats_.remove(name);
   derivatives_.remove(name);
-  optimizeds_.remove_always(name);
+  if (optimizeds_.contains(name)) {
+    optimizeds_.remove_always(name);
+  }
 }
 
 
