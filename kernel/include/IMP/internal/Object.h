@@ -9,7 +9,6 @@
 #ifndef __IMP_OBJECT_H
 #define __IMP_OBJECT_H
 
-#include "../log.h"
 #include "../exception.h"
 
 namespace IMP
@@ -42,24 +41,27 @@ public:
   void assert_is_valid() const;
 
   bool get_has_ref() const {return count_ != 0;}
+
   void ref() {
     assert_is_valid();
-    IMP_assert(count_== 0,
-               "Non-reference counted objects can only belong to "      \
-               "one container.");
     ++count_;
   }
+
   void unref() {
     assert_is_valid();
-    IMP_assert(count_ ==1, "Too many unrefs on object");
+    IMP_assert(count_ !=0, "Too many unrefs on object");
     --count_;
   }
- protected:
-  int count_;
+
+  unsigned int get_ref_count() const {
+    return count_;
+  }
+
 private:
   Object(const Object &o){}
   const internal::Object& operator=(const Object &o) {return *this;}
 
+  int count_;
   double check_value_;
 };
 

@@ -7,15 +7,23 @@ import IMP.test
 class RefCountTests(IMP.test.TestCase):
     """Test refcounting of particles"""
 
+    def setUp(self):
+        IMP.test.TestCase.setUp(self)
+        IMP.set_log_level(IMP.VERBOSE)
+        self.basenum= IMP.RefCountedObject.get_number_of_live_objects()
+        print "The base number of objects is " + str(self.basenum)
+
     def _check_number(self, expected):
         print "Expected "+str(expected)\
-            + " got " + str(IMP.RefCountedObject.get_number_of_live_objects())
-        self.assertEqual(IMP.RefCountedObject.get_number_of_live_objects(),
+            + " got " + str(IMP.RefCountedObject.get_number_of_live_objects()
+                            - self.basenum)
+        self.assertEqual(IMP.RefCountedObject.get_number_of_live_objects() - self.basenum,
                          expected,
                          "wrong number of particles")
 
-    def _test_simple(self):
+    def __test_simple(self):
         """Check that ref counting of particles works within python"""
+        # swig is broken so this needs to be skipped
         self._check_number(0)
 
         p= IMP.Particle()
@@ -33,7 +41,7 @@ class RefCountTests(IMP.test.TestCase):
         m=1
         self._check_number(0)
 
-    def _test_removal(self):
+    def test_removal(self):
         """Check that ref counting works with removing particles"""
         self._check_number(0)
         m= IMP.Model()
@@ -47,7 +55,7 @@ class RefCountTests(IMP.test.TestCase):
         self._check_number(0)
 
     # This test does not work since swig refcounting is broken
-    def _test_round_trip(self):
+    def __test_round_trip(self):
         """test that tracking survives the round trip"""
 
         print "test that the round trip object doesn't delete it"
@@ -101,24 +109,30 @@ class RefCountTests(IMP.test.TestCase):
         self._check_number(0)
 
 
-    def _test_shared(self):
-        """Check that ref counting works shared particles"""
+    def test_shared(self):
+        """Check that ref counting works with shared particles"""
         print "max change"
         self._check_number(0)
         m= IMP.Model()
         p= IMP.Particle()
+        print "Add particle"
         pi= m.add_particle(p)
+        d= IMP.XYZDecorator.create(p)
+        d=0
         mc= IMP.MaxChangeScoreState(IMP.XYZDecorator.get_xyz_keys())
+        print "Add particle to mc"
         mc.add_particle(p)
         self._check_number(1)
+        print "Remove from model"
         m.remove_particle(pi)
         self._check_number(1)
         p=1
         self._check_number(1)
+        print "Remove from mc"
         mc.clear_particles()
         self._check_number(0)
 
-    def _test_skip(self):
+    def test_skip(self):
         """Check that removed particles are skipped"""
         print "skipped"
         m= IMP.Model()

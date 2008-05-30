@@ -9,6 +9,7 @@
 #define __IMP_OBJECT_CONTAINER_H
 
 #include "Object.h"
+#include "RefCountedObject.h"
 
 #include <boost/iterator/filter_iterator.hpp>
 
@@ -31,8 +32,9 @@ namespace internal
     couldn't get the casts to work out right.
  */
 template <class O, class I>
-class ObjectContainer: public std::vector<O*>
+class ObjectContainer
 {
+  std::vector<O*> data_;
   std::vector<int> free_;
   struct OK {
     bool operator()(const O*a) const {
@@ -44,108 +46,111 @@ class ObjectContainer: public std::vector<O*>
   unsigned int get_index(II i) const {return i.get_index();}
   unsigned int get_index(unsigned int i) const {return i;}
 
-  void ref(O*o) {
-    if (o) o->ref();
-  }
-
-  void unref(O* o) {
-    if (o) {
-      o->unref();
-      if (!o->get_has_ref()) {
-        delete o;
-      }
-    }
-  }
   // hide it
-  void erase(){}
-public:
   typedef std::vector<O*> Vector;
-  using Vector::size;
-  using Vector::empty;
+public:
+
   ObjectContainer(){}
   ~ObjectContainer() {
     clear();
   }
 
+  bool empty() const {
+    return data_.empty() || data_.size() == free_.size();
+  }
+  unsigned int size() const {
+    return data_.size() - free_.size();
+  }
+
   void clear() {
-    for (typename Vector::iterator it= Vector::begin(); 
-         it != Vector::end(); ++it) {
-      unref(*it);
+    for (typename Vector::iterator it= data_.begin(); 
+         it != data_.end(); ++it) {
+      O* t= *it;
+      *it=NULL;
+      if (t) disown(t);
     }
     free_.clear();
-    Vector::clear();
+    data_.clear();
   }
 
   typedef boost::filter_iterator<OK, typename Vector::iterator> iterator;
-  iterator begin() {return iterator(Vector::begin(), Vector::end());}
-  iterator end() {return iterator(Vector::end(), Vector::end());}
+  iterator begin() {return iterator(data_.begin(), data_.end());}
+  iterator end() {return iterator(data_.end(), data_.end());}
 
   typedef boost::filter_iterator<OK, typename Vector::const_iterator>
   const_iterator;
   const_iterator begin() const {
-    return const_iterator(Vector::begin(), Vector::end());
+    return const_iterator(data_.begin(), data_.end());
   }
   const_iterator end() const {
-    return const_iterator(Vector::end(), Vector::end());
+    return const_iterator(data_.end(), data_.end());
   }
 
   void remove(I i) {
     unsigned int id= get_index(i);
-    IMP_assert(Vector::operator[](id) != NULL, "Nothing there to remove");
-    unref(Vector::operator[](id));
-    Vector::operator[](id)=NULL;
+    IMP_assert(id < data_.size(),
+               "Trying to remove invalid element in container");
+    IMP_assert(data_[id] != NULL, "Nothing there to remove");
+    O* t= data_[id];
     free_.push_back(id);
+    data_[id]=NULL;
+    disown(t);
   }
 
   O* operator[](I i) const {
-    IMP_check(get_index(i) < Vector::size(),
+    IMP_check(get_index(i) < data_.size(),
               "Index " << i << " out of range",
               IndexException("Out of range"));
-    IMP_assert(Vector::operator[](get_index(i)) != NULL,
+    IMP_assert(data_.operator[](get_index(i)) != NULL,
                "Attempting to access invalid slot in container");
-    return Vector::operator[](get_index(i));
+    return data_[get_index(i)];
   }
+
   I push_back(O* d) {
     IMP_CHECK_OBJECT(d);
-    ref(d);
+    own(d);
     IMP_IF_CHECK(EXPENSIVE) {
-      for (typename Vector::const_iterator it= Vector::begin();
-           it != Vector::end(); ++it) {
+      for (typename Vector::const_iterator it= data_.begin();
+           it != data_.end(); ++it) {
         IMP_assert(*it != d, "IMP Containers can only have one copy of "
                    << " each object");
       }
     }
     if (free_.empty()) {
-      Vector::push_back(d);
-      unsigned int idx= Vector::size()-1;
+      data_.push_back(d);
+      unsigned int idx= data_.size()-1;
       return I(idx);
     } else {
       unsigned int i= free_.back();
       free_.pop_back();
-      Vector::operator[](i)= d;
+      data_[i]= d;
       return I(i);
     }
   }
+
   template <class It>
   void insert(iterator c, It b, It e) {
+    IMP_assert(c== end(), "Insert position is ignored in ObjectContainer");
     IMP_IF_CHECK(EXPENSIVE) {
       for (It cc= b; cc != e; ++cc) {
         IMP_CHECK_OBJECT(*cc);
-        for (typename Vector::const_iterator it= Vector::begin(); 
-             it != Vector::end(); ++it) {
+        for (typename Vector::const_iterator it= data_.begin(); 
+             it != data_.end(); ++it) {
           IMP_assert(*it != *cc, "IMP Containers can only have one copy of "
                      << " each object");
         }
       }
     }
     for (It cc= b; cc != e; ++cc) {
-      ref(*cc);
+      own(*cc);
     }
     while (!free_.empty()) {
-      push_back(*b);
+      int i= free_.back();
+      free_.pop_back();
+      data_[i]= *b;
       ++b;
     }
-    Vector::insert(c.base(), b, e);
+    data_.insert(data_.end(), b, e);
   }
 
 };
