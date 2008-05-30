@@ -165,7 +165,7 @@ class TestNBL(IMP.test.TestCase):
         score= m.evaluate(False)
         self.assertEqual(score, 2*190, "Wrong score")
 
-        ps[3].set_is_active(False)
+        m.remove_particle(ps[3].get_index())
         self.assert_(not ps[3].get_is_active(), "Particle not inactive")
         ps=None
         score= m.evaluate(False)

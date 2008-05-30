@@ -11,6 +11,7 @@
 
 #include "../log.h"
 #include "Object.h"
+#include "RefCountedObject.h"
 #include "../macros.h"
 #include "../exception.h"
 
@@ -35,6 +36,16 @@ class ObjectPointer
   typedef ObjectPointer<O, RC> This;
   O* o_;
 
+  void set_pointer(O* p) {
+    if (RC) {
+      if (o_) disown(o_);
+      if (p) own(p);
+      o_=p;
+    } else {
+      o_=p;
+    }
+  }
+
   // Enforce that ref counted objects are ref counted
   BOOST_STATIC_ASSERT((RC || !boost::is_base_of<RefCountedObject, O>::value));
 
@@ -48,34 +59,21 @@ class ObjectPointer
   }
   typedef bool (This::*unspecified_bool)() const;
 
-  void ref() {
-    if (RC && o_) o_->ref();
-  }
-
-  void unref() {
-    if (RC && o_) {
-      o_->unref();
-      if (!o_->get_has_ref()) delete o_;
-    }
-  }
-
 public:
-  ObjectPointer(const ObjectPointer &o): o_(o.o_) {
-    ref();
+  ObjectPointer(const ObjectPointer &o): o_(NULL) {
+    set_pointer(o.o_);
   }
   ObjectPointer& operator=(const ObjectPointer &o){
-    unref();
-    o_=o.o_;
-    ref();
+    set_pointer(o.o_);
     return *this;
   }
   ObjectPointer(): o_(NULL) {}
-  explicit ObjectPointer(O* o): o_(o) {
-    IMP_assert(o != NULL, "Can't initialize with NULL pointer");
-    ref();
+  explicit ObjectPointer(O* o): o_(NULL) {
+    IMP_assert(o, "Can't initialize with NULL pointer");
+    set_pointer(o);
   }
   ~ObjectPointer(){
-    unref();
+    set_pointer(NULL);
   }
   const O& operator*() const {
     audit();
@@ -98,9 +96,7 @@ public:
     return o_;
   }
   void operator=(O* o) {
-    unref();
-    o_=o;
-    ref();
+    set_pointer(o);
   }
   IMP_COMPARISONS_1(o_);
 
