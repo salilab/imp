@@ -199,7 +199,9 @@ public:
   }
 
   void remove_always(Key k) {
-    map_[k.get_index()]= Traits::get_invalid();
+    if (k.get_index() < size_) {
+      map_[k.get_index()]= Traits::get_invalid();
+    }
   }
 
 

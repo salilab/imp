@@ -265,6 +265,9 @@ public:
       \return true it the particle is active.
    */
   bool get_is_active() const {
+    IMP_IF_CHECK(EXPENSIVE) {
+      assert_is_valid();
+    }
     return is_active_;
   }
 
@@ -543,9 +546,7 @@ void inline Particle::remove_attribute(FloatKey name)
 {
   floats_.remove(name);
   derivatives_.remove(name);
-  if (optimizeds_.contains(name)) {
-    optimizeds_.remove_always(name);
-  }
+  optimizeds_.remove_always(name);
 }
 
 
