@@ -15,11 +15,11 @@
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
 #include "../internal/ObjectPointer.h"
+#include "../score_states/NonbondedListScoreState.h"
 
 namespace IMP
 {
 
-class NonbondedListScoreState;
 class PairScore;
 
 //! Apply a PairScore to all nonbonded pairs of particles
@@ -41,7 +41,7 @@ public:
   IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:
-  NonbondedListScoreState *nbl_;
+  internal::ObjectPointer<NonbondedListScoreState, true> nbl_;
   internal::ObjectPointer<PairScore, true> sf_;
 };
 

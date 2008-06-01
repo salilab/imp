@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "internal/Object.h"
+#include "internal/RefCountedObject.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 
@@ -25,7 +25,7 @@ namespace IMP
 /** PairScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPDLLEXPORT PairScore : public internal::Object
+class IMPDLLEXPORT PairScore : public internal::RefCountedObject
 {
 public:
   PairScore() {}
@@ -35,6 +35,8 @@ public:
                          DerivativeAccumulator *da) = 0;
   virtual void show(std::ostream &out=std::cout) const = 0;
 };
+
+IMP_OUTPUT_OPERATOR(PairScore);
 
 } // namespace IMP
 

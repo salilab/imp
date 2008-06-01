@@ -10,7 +10,7 @@
 
 #include "IMP_config.h"
 #include "VersionInfo.h"
-#include "internal/Object.h"
+#include "internal/RefCountedObject.h"
 #include "internal/ObjectPointer.h"
 #include "Optimizer.h"
 

@@ -49,7 +49,7 @@ class Model;
     \note Physical restraints should use the units of kcal/mol for restraint
     values and kcal/mol/A for derivatives.
  */
-class IMPDLLEXPORT Restraint : public internal::Object
+class IMPDLLEXPORT Restraint : public internal::RefCountedObject
 {
 public:
   //! Initialize the Restraint

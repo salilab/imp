@@ -4,7 +4,8 @@ files = ['ConnectivityRestraint.cpp', 'RestraintSet.cpp',
          'DistanceRestraint.cpp', 'AngleRestraint.cpp', 'DihedralRestraint.cpp',
          'NonbondedRestraint.cpp', 'BondDecoratorRestraint.cpp',
          'SingletonListRestraint.cpp', 'PairListRestraint.cpp',
-         'TripletChainRestraint.cpp', 'PairChainRestraint.cpp']
+         'TripletChainRestraint.cpp', 'PairChainRestraint.cpp',
+         'ConstantRestraint.cpp']
 
 files = [File(x) for x in files]
 Return('files')

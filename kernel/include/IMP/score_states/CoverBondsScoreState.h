@@ -11,6 +11,7 @@
 #include "../ScoreState.h"
 #include "BondDecoratorListScoreState.h"
 #include "../internal/kernel_version_info.h"
+#include "../internal/ObjectPointer.h"
 
 namespace IMP
 {
@@ -29,7 +30,7 @@ namespace IMP
  */
 class IMPDLLEXPORT CoverBondsScoreState: public ScoreState
 {
-  internal::ObjectPointer<BondDecoratorListScoreState, false> bl_;
+  internal::ObjectPointer<BondDecoratorListScoreState, true> bl_;
   FloatKey rk_;
 public:
   /** Get the list of bonds from the BondDecoratorListScoreState. This list is

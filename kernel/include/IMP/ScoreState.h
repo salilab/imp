@@ -9,7 +9,7 @@
 #define __IMP_SCORE_STATE_H
 
 #include "IMP_config.h"
-#include "internal/Object.h"
+#include "internal/RefCountedObject.h"
 #include "internal/ObjectPointer.h"
 #include "Model.h"
 #include "DerivativeAccumulator.h"
@@ -37,7 +37,7 @@ class Model;
     of lines per update call.
 
  */
-class IMPDLLEXPORT ScoreState : public internal::Object
+class IMPDLLEXPORT ScoreState : public internal::RefCountedObject
 {
   friend class Model;
   void set_model(Model* model);

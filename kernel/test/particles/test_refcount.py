@@ -122,14 +122,17 @@ class RefCountTests(IMP.test.TestCase):
         mc= IMP.MaxChangeScoreState(IMP.XYZDecorator.get_xyz_keys())
         print "Add particle to mc"
         mc.add_particle(p)
-        self._check_number(1)
+        # also have the score state now
+        self._check_number(2)
         print "Remove from model"
         m.remove_particle(pi)
-        self._check_number(1)
+        self._check_number(2)
         p=1
-        self._check_number(1)
+        self._check_number(2)
         print "Remove from mc"
         mc.clear_particles()
+        self._check_number(1)
+        mc=0
         self._check_number(0)
 
     def test_skip(self):
@@ -143,6 +146,20 @@ class RefCountTests(IMP.test.TestCase):
         m.remove_particle(pi)
         ps= m.get_particles()
         self.assertEqual(len(ps), 0, "Should no particles particle")
+
+    def test_restraints(self):
+        m= IMP.Model()
+        r= IMP.ConstantRestraint(1)
+        s= IMP.RestraintSet()
+        m.add_restraint(s)
+        m.add_restraint(r)
+        s.add_restraint(r)
+        m.evaluate(False)
+        r=0
+        s=0
+        m=0
+        self._check_number(0)
+
 
 
 if __name__ == '__main__':

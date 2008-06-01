@@ -166,7 +166,7 @@ void own(O* o)
     // no checks
   } else {
     IMP_check(!o->get_has_ref(), "Trying to own already owned but "
-              << "non-reference-counted object.",
+              << "non-reference-counted object: " << *o,
               ValueException("Already owned object"));
   }
   o->ref();

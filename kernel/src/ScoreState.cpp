@@ -19,7 +19,6 @@ ScoreState::ScoreState(std::string name) : name_(name)
 {
   update_iteration_= std::numeric_limits<unsigned int>::max();
   after_iteration_= std::numeric_limits<unsigned int>::max();
-  model_ = NULL;
   IMP_LOG(VERBOSE, "ScoreState constructed " << name << std::endl);
 }
 

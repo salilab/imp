@@ -5,8 +5,6 @@
  *
  */
 
-#include <cmath>
-
 #include "IMP/Particle.h"
 #include "IMP/Model.h"
 #include "IMP/log.h"

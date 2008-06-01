@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "internal/Object.h"
+#include "internal/RefCountedObject.h"
 
 namespace IMP
 {
@@ -18,7 +18,7 @@ namespace IMP
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
  */
-class IMPDLLEXPORT UnaryFunction : public internal::Object
+class IMPDLLEXPORT UnaryFunction : public internal::RefCountedObject
 {
 public:
   UnaryFunction() {}
@@ -40,6 +40,8 @@ public:
 
   virtual void show(std::ostream &out=std::cout) const = 0;
 };
+
+IMP_OUTPUT_OPERATOR(UnaryFunction);
 
 } // namespace IMP
 
