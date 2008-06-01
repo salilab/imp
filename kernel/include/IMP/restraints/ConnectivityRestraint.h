@@ -11,8 +11,6 @@
 #ifndef __IMP_CONNECTIVITY_RESTRAINT_H
 #define __IMP_CONNECTIVITY_RESTRAINT_H
 
-#include <list>
-
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"

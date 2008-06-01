@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "internal/Object.h"
+#include "internal/RefCountedObject.h"
 #include "DerivativeAccumulator.h"
 
 namespace IMP
@@ -27,7 +27,7 @@ class Particle;
 /** SingletonScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPDLLEXPORT SingletonScore : public internal::Object
+class IMPDLLEXPORT SingletonScore : public internal::RefCountedObject
 {
 public:
   SingletonScore() {}
@@ -37,6 +37,8 @@ public:
                          DerivativeAccumulator *da) = 0;
   virtual void show(std::ostream &out=std::cout) const = 0;
 };
+
+IMP_OUTPUT_OPERATOR(SingletonScore);
 
 } // namespace IMP
 

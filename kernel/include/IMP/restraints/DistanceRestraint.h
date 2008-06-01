@@ -8,14 +8,12 @@
 #ifndef __IMP_DISTANCE_RESTRAINT_H
 #define __IMP_DISTANCE_RESTRAINT_H
 
-#include <vector>
-#include <iostream>
-
 #include "../IMP_config.h"
 #include "../pair_scores/DistancePairScore.h"
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
 
+#include <iostream>
 
 namespace IMP
 {

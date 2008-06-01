@@ -56,6 +56,7 @@
 #include "IMP/singleton_scores/AttributeSingletonScore.h"
 #include "IMP/triplet_scores/AngleTripletScore.h"
 #include "IMP/restraints/RestraintSet.h"
+#include "IMP/restraints/ConstantRestraint.h"
 #include "IMP/restraints/DistanceRestraint.h"
 #include "IMP/restraints/AngleRestraint.h"
 #include "IMP/restraints/DihedralRestraint.h"

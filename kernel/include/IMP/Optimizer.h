@@ -63,6 +63,10 @@ public:
    */
   void set_model(Model *m) {model_=m;}
 
+  virtual void show(std::ostream &out= std::cout) const {
+    out << "Some optimizer" << std::endl;
+  }
+
   IMP_CONTAINER(OptimizerState, optimizer_state, OptimizerStateIndex);
 
 protected:
@@ -197,7 +201,7 @@ private:
   internal::ObjectPointer<Model, false> model_;
 };
 
-
+IMP_OUTPUT_OPERATOR(Optimizer);
 
 } // namespace IMP
 

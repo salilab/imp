@@ -42,7 +42,8 @@ bool Restraint::get_is_active() const
 void Restraint::set_model(Model* model)
 {
   IMP_assert(model==NULL || number_of_particles()==0
-             || model == get_particle(0)->get_model(),
+             || model == get_particle(0)->get_model()
+             || (model_ && model_.get() == model),
              "Model* different from Particle Model*");
   model_=model;
 }
@@ -65,7 +66,6 @@ IMP_LIST_IMPL(Restraint, Particle, particle,Particle*,  {
                || obj->get_model() == (*particles_begin())->get_model(),
                "All particles in Restraint must belong to the "
                "same Model.");
-    if (0) std::cout << index;
   },);
 
 }  // namespace IMP

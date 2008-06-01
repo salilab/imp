@@ -61,6 +61,8 @@ public:
   }
 };
 
+IMP_OUTPUT_OPERATOR(Model);
+
 
 } // namespace IMP
 

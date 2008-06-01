@@ -6,7 +6,8 @@ files = ['ConnectivityRestraint.h',
          'DihedralRestraint.h', 'RestraintSet.h',
          'NonbondedRestraint.h', 'BondDecoratorRestraint.h',
          'SingletonListRestraint.h', 'PairListRestraint.h',
-         'TripletChainRestraint.h', 'PairChainRestraint.h']
+         'TripletChainRestraint.h', 'PairChainRestraint.h',
+         'ConstantRestraint.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'restraints')
