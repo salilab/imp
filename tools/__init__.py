@@ -44,7 +44,9 @@ class WineEnvironment(Environment):
 
 def _get_python_include(env):
     """Get the directory containing Python.h"""
-    if env['wine']:
+    if env['python_include']:
+        return env['python_include']
+    elif env['wine']:
         return '/usr/lib/w32comp/w32python/2.5/include/'
     else:
         import distutils.sysconfig
@@ -376,6 +378,10 @@ def add_common_options(opts, package):
     opts.Add(PathOption('docdir', 'Documentation installation directory',
                         '${prefix}/share/doc/%s' % package,
                         PathOption.PathAccept))
+    opts.Add(PackageOption('python_include',
+                           'Directory holding Python include files ' + \
+                           '(if unspecified, distutils location is used)',
+                           'no'))
     opts.Add(PackageOption('modeller', 'Location of the MODELLER package',
                            'no'))
     opts.Add(BoolOption('wine',
