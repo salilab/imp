@@ -24,9 +24,10 @@ for i in range(0,np):
     chain.append(p)
 
 # create a bond between successive particles
+IMP.BondedDecorator.create(chain[0])
 for i in range(1, len(chain)):
-    bp= IMP.BondedDecorator.create(chain[i])
-    bpr= IMP.BondedDecorator.cast(chain[i-1])
+    bp= IMP.BondedDecorator.cast(chain[i-1])
+    bpr= IMP.BondedDecorator.create(chain[i])
     b= IMP.custom_bond(bp, bpr, 1.5*radius, 10)
 
 # If you want to inspect the particles
