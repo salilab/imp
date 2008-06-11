@@ -56,7 +56,7 @@ public:
     IMP_CHECK_OBJECT(p);
     D:: decorator_initialize_static_data();
     if (!D::has_required_attributes(p)) {
-      throw InvalidStateException("Particle missing required attribues"\
+      throw InvalidStateException("Particle missing required attributes"\
                                   " in cast");
     }
     return D(p);
