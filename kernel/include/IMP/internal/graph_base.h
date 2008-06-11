@@ -13,6 +13,7 @@
 
 #include "../Particle.h"
 #include "../Model.h"
+#include "ArrayOnAttributesHelper.h"
 
 namespace IMP
 {
@@ -21,23 +22,32 @@ namespace internal
 {
 
 /** \internal */
-struct IMPDLLEXPORT GraphData
+struct IMPDLLEXPORT GraphData:
+    public ArrayOnAttributesHelper<ParticleKey, Particle*>
 {
-  GraphData() {}
-  GraphData(const char *prefix): prefix_(prefix) {
-    node_keys_[0]=ParticleKey((prefix_+" node 0").c_str());
-    node_keys_[1]=ParticleKey((prefix_+" node 1").c_str());
-    num_edges_key_= IntKey((prefix_+" num edges").c_str());
+  typedef ArrayOnAttributesHelper<ParticleKey, Particle*> P;
+  GraphData(): P("") {}
+  GraphData(std::string prefix): P(prefix) {
+    node_keys_[0]=ParticleKey((P::get_prefix()+" node 0").c_str());
+    node_keys_[1]=ParticleKey((P::get_prefix()+" node 1").c_str());
+    P::initialize();
   }
   ParticleKey node_keys_[2];
-  IntKey num_edges_key_;
-  mutable std::vector<ParticleKey> edge_keys_;
-  std::string prefix_;
 };
+
+
+/** \internal */
+IMPDLLEXPORT void graph_initialize_node(Particle* a,
+                                        const GraphData &d);
+
+/** \internal */
+IMPDLLEXPORT bool graph_is_node(Particle* a,
+                                const GraphData &d);
+
 
 /** \internal */
 IMPDLLEXPORT Particle* graph_connect(Particle* a, Particle* b,
-                                     const GraphData &d);
+                                     GraphData &d);
 
 /** \internal */
 IMPDLLEXPORT void graph_disconnect(Particle* bond,

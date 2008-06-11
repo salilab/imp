@@ -6,18 +6,21 @@
  *
  */
 
-#include <sstream>
-
 #include "IMP/decorators/HierarchyDecorator.h"
 #include "IMP/decorators/NameDecorator.h"
+
+#include <sstream>
 
 namespace IMP
 {
 
-IMP_DECORATOR_ARRAY_DEF(Hierarchy, child, Particle, Particle*);
-ParticleKey HierarchyDecorator::parent_key_;
-IntKey HierarchyDecorator::parent_index_key_;
-
+IMP_DECORATOR_ARRAY_DEF(HierarchyDecorator, child,
+                        internal::ChildArrayTraits);
+namespace internal
+{
+ParticleKey ChildArrayTraits::parent_key_;
+IntKey ChildArrayTraits::parent_index_key_;
+}
 
 void HierarchyDecorator::validate_node() const
 {
@@ -32,15 +35,6 @@ void HierarchyDecorator::validate_node() const
                "Incorrect parent index in particle "
                << *get_particle());
   }
-  for (unsigned int i=0; i< get_number_of_children(); ++i) {
-    IMP_assert(get_particle()->has_attribute(get_child_key(i)),
-               "Recorded and actual number of children don't match -- "
-               "too few actual");
-  }
-  IMP_assert(!get_particle()->has_attribute(
-                 get_child_key(get_number_of_children())),
-             "Recorded and actual number of children don't match -- "
-             "too many actual");
 }
 
 void HierarchyDecorator::show(std::ostream &, std::string) const
@@ -81,42 +75,23 @@ void HierarchyDecorator::validate() const
 }
 
 
-int HierarchyDecorator::get_child_index(Particle *c) const
+int HierarchyDecorator::get_child_index(HierarchyDecorator c) const
 {
   for (unsigned int i=0; i< get_number_of_children(); ++i ) {
-    if (get_child(i) == HierarchyDecorator(c)) return i;
+    if (get_child(i) == c) return i;
   }
   return -1;
 }
 
 
-
-unsigned int HierarchyDecorator::add_child(HierarchyDecorator hd)
-{
-  IMP_assert(hd.get_particle() != get_particle(),
-             "A particle can't be its own child " << *this << std::endl 
-             << hd);
-  //std::cerr << *get_particle() << std::endl;
-  //std::cerr << *p << std::endl;
-  //std::cerr << "changing " << std::endl;
-  //std::cerr << "before\n";
-  //show_hierarchy<NameDecorator>(*this, std::cerr);
-  int nc= internal_add_child(hd.get_particle());
-
-  hd.get_particle()->add_attribute(parent_index_key_, nc);
-  hd.get_particle()->add_attribute(parent_key_, get_particle());
-  //std::cerr << "after\n";
-  //show_hierarchy<NameDecorator>(*this, std::cerr);
-  return nc;
-}
-
-
 IMP_DECORATOR_INITIALIZE(HierarchyDecorator, DecoratorBase,
                          {
-                           parent_key_ = ParticleKey("hierarchy_parent");
-                           parent_index_key_ = IntKey("hiearchy_parent_index");
+                           internal::ChildArrayTraits::parent_key_ 
+                             = ParticleKey("hierarchy_parent");
+                           internal::ChildArrayTraits::parent_index_key_ 
+                             = IntKey("hiearchy_parent_index");
                            IMP_DECORATOR_ARRAY_INIT(HierarchyDecorator,
-                                                    child, Particle, Particle*);
+                                                    child);
                          })
 
 

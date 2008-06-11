@@ -46,6 +46,8 @@ class Model;
     optimization, mark all of its attributes as being non-optimizable
     (set_is_optimized method).
 
+    A particle may only belong to one model.
+
     \ingroup kernel
  */
 class IMPDLLEXPORT Particle : public internal::RefCountedObject
@@ -368,7 +370,6 @@ protected:
   // Set pointer to model particle data.
   void set_model(Model *md, ParticleIndex pi);
 
-  // all of the particle data
   internal::ObjectPointer<Model, false> model_;
 
   // true if particle is active

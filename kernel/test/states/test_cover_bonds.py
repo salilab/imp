@@ -19,8 +19,9 @@ class TestBondCover(IMP.test.TestCase):
                                IMP.Vector3D(10,10,10))
             ps.append(p)
         bds= []
+        bb= IMP.BondedDecorator.create(ps[0])
         for i in range(1,n):
-            ba= IMP.BondedDecorator.create(ps[i-1])
+            ba= IMP.BondedDecorator.cast(ps[i-1])
             bb= IMP.BondedDecorator.create(ps[i])
             bds.append(IMP.custom_bond(ba, bb, 10, 1))
         bl= IMP.BondDecoratorListScoreState(ps)

@@ -43,8 +43,14 @@ def copy_bonds(pdb, atoms, model):
         mab= b[1]
         pa=atoms[maa.index]
         pb=atoms[mab.index]
-        ba= IMP.BondedDecorator.create(pa);
-        bb= IMP.BondedDecorator.create(pb);
+        if IMP.BondedDecorator.is_instance_of(pa):
+            ba= IMP.BondedDecorator.cast(pa)
+        else:
+            ba= IMP.BondedDecorator.create(pa)
+        if IMP.BondedDecorator.is_instance_of(pb):
+            bb= IMP.BondedDecorator.cast(pb)
+        else:
+            bb= IMP.BondedDecorator.create(pb)
         bp= IMP.bond(ba, bb, IMP.BondDecorator.COVALENT)
 
 def read_pdb(name, model):
