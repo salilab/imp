@@ -14,20 +14,27 @@ class EMDLLEXPORT CoarseCC {
 public:
 
 
-  /**Routine for EM-score
-
-  INPUT
-  em_map         exp EM map - note: correct RMSD and mean MUST be in the header!
-  model_map      map for sampled model
-  access_p       access point to the particles data ( location, radii, weight)
-  dvx, dvy, dvz  partial derivatives of score with respect to model coordinates
-  scalefac       scaling factor of EM-score
-  lderiv         derivatives ON/OFF
-  ierr           error+
-  OUTPUT
-  escore         EM score = scalefac * (1-CCC)
-*/
-  
+  //! Evaluates the value of the cross correlation term.
+  /** This function has a special behavior, as it does not return the true
+      cross correlation coefficient ccc, but the value:
+      scalefac*(1-ccc)
+      The reason why is to use this term as part of an scoring function that
+      is better the lower the term. If you want the cross correlation
+      coefficient, use cross_correlation_coefficient() instead.
+      \param em_map DensityMap class containing the EM map. note: correct RMSD
+             and mean MUST be in the header!
+      \param model_map SampledDensityMap class prepared to contain the
+             simulated EM map for the model.
+      \param access_p ParticlesAccessPoint class with the particles data
+             (location, radii, weight)
+      \param dvx vector to contain the xpartial derivatives
+      \param dvy vector to contain the y partial derivatives
+      \param dvz vector to contain the z partial derivatives
+      \param scalefactor scale factor to apply to the value of the cross
+             correlation term
+      \param lderiv if true, the derivatives of the term are computed
+      \return the value of the cross correlation term: scalefac*(1-ccc)
+   */
   static float evaluate(
 			DensityMap &data, 
 			SampledDensityMap &model_map,
