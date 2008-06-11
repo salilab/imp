@@ -48,14 +48,14 @@ public:
   const D& operator[](unsigned int i) const {
     IMP_check(i < P::size(),
               "Index " << i << " out of range",
-              IndexException(""));
+              IndexException);
     return P::operator[](i);
   }
 
   D& operator[](unsigned int i) {
     IMP_check(i < P::size(),
               "Index " << i << " out of range",
-              IndexException(""));
+              IndexException);
     return P::operator[](i);
   }
 

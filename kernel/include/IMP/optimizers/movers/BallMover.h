@@ -35,7 +35,7 @@ public:
   //!
   void set_radius(Float radius) {
     IMP_check(radius > 0, "The radius must be positive",
-              ValueException("Negative radius"));
+              ValueException);
     radius_=radius;
   }
   //!

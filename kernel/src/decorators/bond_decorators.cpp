@@ -80,7 +80,7 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)
 {
   IMP_check(a.get_particle() != b.get_particle(),
             "The endpoints of a bond must be disjoint",
-            ValueException("The endpoints must be disjoint"));
+            ValueException);
 
   Particle *p= internal::graph_connect(a.get_particle(), b.get_particle(),
                     internal::bond_graph_data_);

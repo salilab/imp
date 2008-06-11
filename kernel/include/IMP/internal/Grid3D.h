@@ -156,7 +156,7 @@ protected:
   friend class GridIndexIterator;
   GridIndex(int x, int y, int z): VirtualGridIndex(x,y,z) {
     IMP_check(x>=0 && y>=0 && z>=0, "Bad indexes in grid index",
-              IndexException("Bad indexes in GridIndex"));
+              IndexException);
   }
 };
 

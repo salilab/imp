@@ -113,7 +113,7 @@ ResidueDecorator get_residue(MolecularHierarchyDecorator mhd,
             || mhd.get_type() == MolecularHierarchyDecorator::CHAIN
             || mhd.get_type() == MolecularHierarchyDecorator::NUCLEOTIDE,
             "Invalid type of MolecularHierarchyDecorator passed to get_residue",
-            ValueException("Bad val"));
+            ValueException);
   MatchResidueIndex mi(index);
   HierarchyDecorator hd= hierarchy_find(mhd, mi);
   if (hd== HierarchyDecorator()) {
@@ -129,14 +129,14 @@ MolecularHierarchyDecorator
 create_fragment(const MolecularHierarchyDecorators &ps)
 {
   IMP_check(!ps.empty(), "Need some particles",
-            ValueException(""));
+            ValueException);
   MolecularHierarchyDecorator parent= ps[0].get_parent();
   unsigned int index= ps[0].get_parent_index();
   IMP_IF_CHECK(CHEAP) {
     for (unsigned int i=0; i< ps.size(); ++i) {
       IMP_check(ps[i].get_parent() == parent,
                 "Parents don't match",
-                ValueException(""));
+                ValueException);
     }
   }
 

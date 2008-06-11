@@ -30,7 +30,7 @@ public:
 
   void set_sigma(Float sigma) {
     IMP_check(sigma > 0, "Sigma must be positive",
-              ValueException("Negative sigma"));
+              ValueException);
     stddev_=sigma;
   }
   Float get_sigma() const {

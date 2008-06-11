@@ -53,7 +53,7 @@ struct Pair
 void ConnectivityRestraint::add_set(const Particles &ps)
 {
   IMP_check(!ps.empty(), "Cannot add empty set to ConnectivityRestraint",
-            InvalidStateException("Empty set"));
+            InvalidStateException);
   unsigned int sz= ps.size();
   Restraint::add_particles(ps);
   set_offsets_.push_back(set_offsets_.back()+sz);
@@ -92,8 +92,7 @@ Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
                     << tag_weight  << " as a marker, so the distance function "
                     << " should not return it. This can be fixed if you "
                     << " complain.",
-                    ValueException("Tag weight matches distance in"\
-                                   " ConnectivityRestraint"));
+                    ValueException);
           IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
                   << get_particle(ii)->get_index() << " and "
                   << get_particle(ij)->get_index() << " with weight "

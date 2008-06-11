@@ -210,7 +210,7 @@ public:
    */
   void set_slack(float slack) {
     IMP_check(slack>= 0, "Slack must be nonnegative",
-              ValueException("Negative slack"));
+              ValueException);
     slack_=slack;
   }
 
@@ -236,13 +236,13 @@ public:
   //! Iterates through the pairs of non-bonded particles
   NonbondedIterator nonbonded_begin() const {
     IMP_check(get_nbl_is_valid(), "Must call update first",
-              ValueException("Must call update first"));
+              ValueException);
     return NonbondedIterator(boxes_overlap_object(cutoff_),
                              nbl_.begin(), nbl_.end());
   }
   NonbondedIterator nonbonded_end() const {
     IMP_check(get_nbl_is_valid(), "Must call update first",
-              ValueException("Must call update first"));
+              ValueException);
     return NonbondedIterator(boxes_overlap_object(cutoff_),
                              nbl_.end(), nbl_.end());
   }
@@ -253,7 +253,7 @@ public:
 
   unsigned int number_of_nonbonded() const {
     IMP_check(get_nbl_is_valid(), "Must call update first",
-              ValueException("Must call update first"));
+              ValueException);
     return nbl_.size();
   }
 

@@ -33,7 +33,7 @@ IMP_LIST_IMPL(MaxChangeScoreState, Particle, particle, Particle*,
                   IMP_check(obj->has_attribute(keys_[i]),
                             "Particle missing needed attribute " << keys_[i]
                             << obj,
-                            ValueException("Particle missing attribute"));
+                            ValueException);
                 };
                 for (unsigned int i=0; i< origkeys_.size(); ++i) {
                   if (!obj->has_attribute(origkeys_[i])) {

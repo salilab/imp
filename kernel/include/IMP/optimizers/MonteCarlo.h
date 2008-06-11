@@ -74,7 +74,7 @@ public:
    */
   void set_move_probability(Float p) {
     IMP_check(p > 0 && p <= 1, "Not a valid probability",
-              ValueException("Not a probability"));
+              ValueException);
     probability_=p;
   }
 

@@ -70,7 +70,7 @@ BrownianDynamics::BrownianDynamics(FloatKey dkey) :
 {
   IMP_check(dkey_ != FloatKey(), "BrownianDynamics needs a valid key for the "
             << "diffusion coefficient",
-            ValueException("Bad diffusion coef key"));
+            ValueException);
 }
 
 
@@ -170,7 +170,7 @@ bool BrownianDynamics::propose_step(std::vector<Vector3D>& new_pos)
     IMP_check(D.get_value() > 0
               && D.get_value() < std::numeric_limits<Float>::max(),
               "Bad diffusion coefficient on particle " << p->get_index(),
-              ValueException(""));
+              ValueException);
     unit::Angstrom sigma(compute_sigma_from_D(D));
     IMP_IF_CHECK(EXPENSIVE) {
       unit::Angstrom osigma(sqrt(2.0*D*cur_dt_));
@@ -179,7 +179,7 @@ bool BrownianDynamics::propose_step(std::vector<Vector3D>& new_pos)
                  "Sigma computations don't match " << sigma 
                  << " " 
                 << sqrt(2.0*D*cur_dt_),
-                ErrorException());
+                ErrorException);
     }
     IMP_LOG(VERBOSE, p->get_index() << ": sigma is " 
             << sigma << std::endl);
@@ -240,7 +240,7 @@ bool BrownianDynamics::propose_step(std::vector<Vector3D>& new_pos)
 Float BrownianDynamics::optimize(unsigned int max_steps)
 {
  IMP_check(get_model() != NULL, "Must set model before calling optimize",
-           ValueException(""));
+           ValueException);
   setup_particles();
   IMP_LOG(TERSE, "Running brownian dynamics on " << get_particles().size() 
           << " particles with a step of " << cur_dt_ << std::endl);
@@ -277,7 +277,7 @@ void BrownianDynamics::take_step() {
 void BrownianDynamics::simulate(float max_time)
 {
   IMP_check(get_model() != NULL, "Must set model before calling simulate",
-            ValueException(""));
+            ValueException);
   setup_particles();
   unit::Femtosecond mt(max_time);
   num_const_dt_=0;

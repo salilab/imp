@@ -30,13 +30,22 @@ CheckLevel get_check_level()
 namespace internal
 {
 
-void assert_fail()
+// The error message is already in the exception
+bool print_exceptions=false;
+
+void assert_fail(const char *msg)
 {
-  throw ErrorException();
+  if (print_exceptions) {
+    IMP_ERROR(msg);
+  }
+  throw ErrorException(msg);
 }
 
-void check_fail()
+void check_fail(const char *msg)
 {
+  if (print_exceptions) {
+    IMP_ERROR(msg);
+  }
 }
 
 } // namespace internal

@@ -117,7 +117,7 @@ public:
 protected:
   static FloatKey get_coordinate_key(unsigned int i) {
     IMP_check(i <3, "Out of range coordinate",
-              IndexException("Out of range coordinate"));
+              IndexException);
     return key_[i];
   }
 };

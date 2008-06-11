@@ -34,7 +34,7 @@ Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
     IMP_check(x[i] == x[i], "Got NaN in CG",
-              ValueException("Got NaN in CG"));
+              ValueException);
     if (std::abs(x[i] - get_value(float_indices[i])) > max_change_) {
       if (x[i] < get_value(float_indices[i])) {
         x[i] = get_value(float_indices[i]) - max_change_;
@@ -54,7 +54,7 @@ Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
     IMP_check(dscore[i] == dscore[i] && dscore[i]
               != std::numeric_limits<Float>::infinity()
               && dscore[i] != - std::numeric_limits<Float>::infinity(),
-              "Bad input to CG", ValueException("Bad input to CG"));
+              "Bad input to CG", ValueException);
   }
   return score;
 }
@@ -230,7 +230,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
 {
   IMP_check(get_model(),
             "Must set the model on the optimizer before optimizing",
-            ValueException("Must set the model before optimizing"));
+            ValueException);
   std::vector<Float> x, dx;
   int i;
   //ModelData* model_data = get_model()->get_model_data();
@@ -246,7 +246,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
     x[i] = get_value(float_indices[i]);
     IMP_check(x[i] == x[i] && x[i] != std::numeric_limits<Float>::infinity()
               && x[i] != - std::numeric_limits<Float>::infinity(),
-              "Bad input to CG", ValueException("Bad input to CG"));
+              "Bad input to CG", ValueException);
   }
 
   // Initialize optimization variables

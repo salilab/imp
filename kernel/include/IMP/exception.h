@@ -16,6 +16,7 @@
 #include <string>
 #include <iostream>
 #include <new>
+#include <sstream>
 
 namespace IMP
 {
@@ -69,7 +70,7 @@ public:
  */
 struct IMPDLLEXPORT ErrorException: public Exception
 {
-  ErrorException(): Exception("Fatal error"){}
+  ErrorException(const char *msg="Fatal error"): Exception(msg){}
 };
 
 //! An exception for an invalid model state
@@ -87,8 +88,9 @@ public:
 class IMPDLLEXPORT InactiveParticleException : public Exception
 {
 public:
-  InactiveParticleException(): 
-    Exception("Attempting to use inactive particle"){} 
+  InactiveParticleException(const char *msg
+                            ="Attempting to use inactive particle"): 
+    Exception(msg){} 
 };
 
 //! An exception for a request for an invalid member of a container
@@ -137,13 +139,13 @@ namespace internal
 /** Break on exception.cpp:31 to catch assertion failures.
     \ingroup assert
  */
-IMPDLLEXPORT void assert_fail();
+IMPDLLEXPORT void assert_fail(const char *msg);
 
 //! Here so you can catch check failures more easily in the debugger
 /** Break on exception.cpp:35 to catch check failures.
     \ingroup assert
  */
-IMPDLLEXPORT void check_fail();
+IMPDLLEXPORT void check_fail(const char *msg);
 
 } // namespace internal
 
@@ -161,12 +163,15 @@ IMPDLLEXPORT void check_fail();
     \param[in] message Write this message if the assertion fails.
     \ingroup assert
  */
-#define IMP_assert(expr, message)               \
-  do {                                          \
-    if (IMP::get_check_level() >= IMP::EXPENSIVE && !(expr)) {  \
-      IMP_ERROR(message);                       \
-      IMP::internal::assert_fail();             \
-    }                                           \
+#define IMP_assert(expr, message)                                       \
+  do {                                                                  \
+    if (IMP::get_check_level() >= IMP::EXPENSIVE && !(expr)) {          \
+      std::ostringstream oss;                                           \
+      oss << message << std::endl                                       \
+          << "  File \"" << __FILE__ << "\", line " << __LINE__         \
+          << std::endl;                                                 \
+      IMP::internal::assert_fail(oss.str().c_str());                    \
+    }                                                                   \
   } while(false)
 #else
 #define IMP_assert(expr, message)
@@ -175,16 +180,18 @@ IMPDLLEXPORT void check_fail();
 //! A runtime check for IMP.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
-    \param[in] exception Throw the object constructed by this expression.
+    \param[in] ExceptionType Throw an exception of this type. The exception
+    must be constructable from a char *.
     \ingroup assert
  */
-#define IMP_check(expr, message, exception)                 \
-  do {                                                      \
-    if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {  \
-      IMP_ERROR(message);                                   \
-      IMP::internal::check_fail();                          \
-      throw exception;                                      \
-    }                                                       \
+#define IMP_check(expr, message, ExceptionType)                         \
+  do {                                                                  \
+    if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {              \
+      std::ostringstream oss;                                           \
+      oss << message << std::endl;                                      \
+      IMP::internal::check_fail(oss.str().c_str());                     \
+      throw ExceptionType(oss.str().c_str());                           \
+    }                                                                   \
   } while (false)
 
 //! A runtime failure for IMP.

@@ -44,7 +44,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     IMP_check(cg_->get_model() == get_model(),
                "The model used by the local optimizer does not match "\
               " that used by the montecarlo optimizer",
-              InvalidStateException("Bad model pointer"));
+              InvalidStateException);
   }
   update_states();
   prior_energy_ =get_model()->evaluate(0);
