@@ -40,19 +40,20 @@ public:
       \return Energy in kcal/mol
    */
   virtual Float evaluate(Float lf) {
-    static const internal::PicoJoule zero=eval(internal::Angstrom(0));
-    internal::Angstrom l(lf);
-    if (l < internal::Angstrom(0)) l=internal::Angstrom(0);
-    internal::PicoJoule ret;
+    static const unit::Picojoule zero=eval(unit::Angstrom(0));
+    unit::Angstrom l(lf);
+    if (l < unit::Angstrom(0)) l=unit::Angstrom(0);
+    unit::Picojoule ret;
     if (l < cutoff()) {
       ret= (eval(l) - zero);
     } else {
-      internal::PicoJoule springterm=(l-cutoff())*cderiv(cutoff());
+      unit::Picojoule springterm=(l-cutoff())*cderiv(cutoff());
       ret= (eval(cutoff())+ springterm -zero);
     }
-    /*std::cout << "Return is " << ret <<" " << l << " " << lp_ << " " 
-      << lmax_ << std::endl;*/
-    return internal::KCalPerMol(convert_to_kcal(ret)).get_value();
+    std::cout << "Return is " << ret <<" " << l << " " << lp_ << " " 
+              << lmax_ << std::endl;
+    unit::YoctoKilocalorie zc= convert_J_to_Cal(ret);
+    return (zc*unit::ATOMS_PER_MOL).get_value();
   }
 
   //! Calculate the WormLikeChain energy given the length
@@ -61,9 +62,9 @@ public:
       \return Score
    */
   virtual Float evaluate_deriv(Float fl, Float& deriv) {
-    internal::Angstrom l(fl);
-    if (l < internal::Angstrom(0)) l=internal::Angstrom(0);
-    internal::PicoNewton doubled;
+    unit::Angstrom l(fl);
+    if (l < unit::Angstrom(0)) l=unit::Angstrom(0);
+    unit::Piconewton doubled;
     if (l < cutoff()) {
       doubled= cderiv(l);
     } else {
@@ -74,8 +75,9 @@ public:
     }
     //std::cout << "Force is " << doubled << " for length " << l << std::endl;
     // convert from picoNewton
-    deriv = internal::KCalPerAMol(internal::convert_to_kcal(doubled))
-      .get_value();
+    unit::YoctoKilocaloriePerAngstrom du= unit::convert_J_to_Cal(doubled);
+
+    deriv = (du*unit::ATOMS_PER_MOL).get_value();
     //std::cout << "Which converts to " << d << std::endl;
     return evaluate(fl);
   }
@@ -86,28 +88,28 @@ public:
 
 protected:
   //! \note named to avoid clash with 'deriv' argument
-  internal::PicoNewton cderiv(internal::Angstrom l) const {
-    internal::PicoNewton pn= internal::KB*internal::T
-      /lp_*(internal::Scalar(.25)/ square(internal::Scalar(1)-l/lmax_)
-            -internal::Scalar(.25)+l/lmax_);
+  unit::Piconewton cderiv(unit::Angstrom l) const {
+    unit::Piconewton pn= internal::KB*internal::T
+      /lp_*(.25/ square(1.0-(l/lmax_).get_normalized_value())
+            -.25+(l/lmax_).to_scalar());
      return pn;
   }
 
-  internal::PicoJoule eval(internal::Angstrom m) const {
-    internal::PicoJoule J
-      =  internal::KB*internal::T/lp_*(internal::Scalar(.25)*square(lmax_)
+  unit::Picojoule eval(unit::Angstrom m) const {
+    unit::Picojoule J
+      =  internal::KB*internal::T/lp_*(.25*square(lmax_)
                                        /(lmax_-m)
-                                       -m*internal::Scalar(.25) 
-                                       +internal::Scalar(.5)*square(m)
+                                       -m*.25
+                                       +.5*square(m)
                                        /lmax_);
     return J;
   }
 
-  internal::Angstrom cutoff() const {
-    return internal::Scalar(.99)*lmax_;
+  unit::Angstrom cutoff() const {
+    return .99*lmax_;
   }
 
-  internal::Angstrom lmax_, lp_;
+  unit::Angstrom lmax_, lp_;
 };
 
 } // namespace IMP
