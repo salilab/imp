@@ -40,17 +40,20 @@ public:
   BrownianDynamics(FloatKey dkey= FloatKey("D"));
   virtual ~BrownianDynamics();
 
-  IMP_OPTIMIZER(internal::kernel_version_info)
+  IMP_OPTIMIZER(internal::kernel_version_info);
+
+  //! Simulate until the given time in fs
+  void simulate(float time_in_fs);
 
   //! Set the max step that should be allowed in angstroms
   /** The timestep is shrunk if any particles are moved more than this */
   void set_max_step(Float a) {
-    set_max_step(internal::Angstrom(a));
+    set_max_step(unit::Angstrom(a));
   }
 
   //! Set time step in fs
   void set_time_step(Float t) {
-    set_time_step(internal::FemtoSecond(t));
+    set_time_step(unit::Femtosecond(t));
   }
 
   //! Time step in fs
@@ -64,33 +67,37 @@ public:
   }
 
 
-  void set_temperature(Float t) { set_temperature(internal::Kelvin(t)); }
+  void set_temperature(Float t) { set_temperature(unit::Kelvin(t)); }
   Float get_temperature() const { return get_temperature_units().get_value(); }
 
   FloatKey get_d_key() const { return dkey_; }
 
-  //! Estimate the diffusion coeffient from the mass in kD
-  /** This method does not do anything fancy, but is OK for large
-      globular proteins.
+  //! Estimate the radius of a protein from the mass
+  /** Proteins are assumed to be spherical. The density is estimated 
+      using the formula from 
+      <http://www.proteinscience.org/cgi/content/full/13/10/2825>
 
-      Note that it depends on temperature and so can't be static.
+      The formula is:
+      density= 1.410+ 0.145 exp(-M/13) g/cm^3
    */
-  Float estimate_radius_from_mass(Float mass_in_kd) const {
-    return estimate_radius_from_mass_units(mass_in_kd).get_value();
+  static Float estimate_radius_from_mass(Float mass_in_kd) {
+    return
+ estimate_radius_from_mass_units(unit::Kilodalton(mass_in_kd)).get_value();
   }
 
   //! Return the expected distance moved for a particle with a given D
   /** The units on D are cm^2/sec and the return has units of Angstroms.
    */
   Float compute_sigma_from_D(Float D) const {
-    return compute_sigma_from_D(internal::Cm2PerSecond(D)).get_value();
+    unit::SquareCentimeterPerSecond du(D);
+    return compute_sigma_from_D(du).get_value();
   }
 
   //! Estimate the diffusion coefficient from the radius in Angstroms
   /** This depends on the temperature.
    */
   Float estimate_D_from_radius(Float radius_in_angstroms) const {
-    internal::Angstrom r(radius_in_angstroms);
+    unit::Angstrom r(radius_in_angstroms);
     return estimate_D_from_radius(r).get_value();
   }
 
@@ -98,7 +105,8 @@ public:
   /** This value is in KCal/A/mol
    */
   Float get_force_scale_from_D(Float D) const {
-    return get_force_scale_from_D(internal::Cm2PerSecond(D)).get_value();
+    unit::SquareCentimeterPerSecond du(D);
+    return get_force_scale_from_D(du).get_value();
   }
 
   //! Get the current time in femtoseconds
@@ -108,7 +116,7 @@ public:
 
   //! Set the current time in femtoseconds
   void set_current_time(Float fs) {
-    set_current_time( internal::FemtoSecond(fs));
+    set_current_time( unit::Femtosecond(fs));
   }
 
   //! Return a histogram of timesteps
@@ -122,9 +130,12 @@ public:
   IMP_LIST(private, Particle, particle, Particle*);
 
 protected:
+
   //! Perform a single dynamics step.
   //  \return true if the initial step size was OK
   bool step();
+
+  void take_step();
 
   /** Propose a single step, this will be accepted if all moves are
       small enough.
@@ -132,45 +143,49 @@ protected:
    */
   bool propose_step(std::vector<Vector3D> &proposal);
 
-  internal::FemtoJoule kt() const;
+  unit::Femtojoule kt() const;
 
   void setup_particles();
 
-  void set_max_step(internal::Angstrom a) {
+  void set_max_step(unit::Angstrom a) {
     max_change_= a;
   }
 
-  void set_time_step(internal::FemtoSecond t);
+  void set_time_step(unit::Femtosecond t);
 
-  internal::FemtoSecond get_time_step_units() const {return max_dt_;}
+  unit::Femtosecond get_time_step_units() const {return max_dt_;}
 
-  internal::FemtoSecond get_last_time_step_units() const {return cur_dt_;}
+  unit::Femtosecond get_last_time_step_units() const {return cur_dt_;}
 
-  void set_temperature(internal::Kelvin t) { T_=t;}
+  void set_temperature(unit::Kelvin t) { T_=t;}
 
-  internal::Kelvin get_temperature_units() const { return T_;}
+  unit::Kelvin get_temperature_units() const { return T_;}
 
-  internal::Angstrom estimate_radius_from_mass_units(Float mass_in_kd) const;
+  static unit::Angstrom
+    estimate_radius_from_mass_units(unit::Kilodalton mass_in_kd);
 
-  internal::Angstrom compute_sigma_from_D(internal::Cm2PerSecond D) const;
+  unit::Angstrom
+    compute_sigma_from_D(unit::SquareCentimeterPerSecond D) const;
 
-  internal::Cm2PerSecond
-  estimate_D_from_radius(internal::Angstrom radius) const;
+  unit::SquareCentimeterPerSecond
+    estimate_D_from_radius(unit::Angstrom radius) const;
 
-  internal::KCalPerAMol get_force_scale_from_D(internal::Cm2PerSecond D) const;
+  unit::KilocaloriePerAngstromPerMol
+    get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const;
 
-  internal::FemtoSecond get_current_time_units() const {
+  unit::Femtosecond get_current_time_units() const {
     return cur_time_;
   }
 
   //! Set the current time in femtoseconds
-  void set_current_time(internal::FemtoSecond fs) {
+  void set_current_time(unit::Femtosecond fs) {
     cur_time_= fs;
   }
 
-  internal::Angstrom max_change_;
-  internal::FemtoSecond max_dt_, cur_dt_, cur_time_;
-  internal::Kelvin T_;
+  unsigned int num_const_dt_;
+  unit::Angstrom max_change_;
+  unit::Femtosecond max_dt_, cur_dt_, cur_time_;
+  unit::Kelvin T_;
 
   FloatKey dkey_;
 

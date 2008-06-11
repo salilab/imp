@@ -21,15 +21,19 @@ namespace internal
 // make them doubles so we don't have to worry about digits
 
 //! Avagadro's number
-extern IMPDLLEXPORT const ExponentialNumber<23> NA;
+extern IMPDLLEXPORT const unit::ExponentialNumber<23> NA;
+
 //! Boltzmann constant in J/K
-extern IMPDLLEXPORT const MKSUnit<-23, 2, 1, -1, -2>  KB;
+extern IMPDLLEXPORT const
+unit::Shift<unit::Divide<unit::Joule, unit::Kelvin>::type, -23>::type KB;
 
 //! the default temperature
-extern IMPDLLEXPORT const Kelvin T;
+extern IMPDLLEXPORT const unit::Kelvin T;
 
 //! Pi
 static const double PI = 3.1415926535897931;
+
+extern IMPDLLEXPORT const unit::ExponentialNumber<3> JOULES_PER_KILOCALORIE;
 
 } // namespace internal
 

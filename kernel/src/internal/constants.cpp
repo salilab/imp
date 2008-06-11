@@ -13,16 +13,15 @@ namespace IMP
 namespace internal
 {
 
-const ExponentialNumber<23> NA(6.02214179);
-
+const unit::ExponentialNumber<23> NA(6.02214179);
 // definition of KB
-const MKSUnit<-23, 2, 1, -1, -2>  KB(1.3806503);
+const unit::Shift<unit::Divide<unit::Joule, unit::Kelvin>::type, -23>::type
+KB(1.3806503);
 
-const Kelvin T(297.15);
+const unit::Kelvin T(297.15);
 
 
-const ExponentialNumber<3> JOULES_PER_KCAL(4.1868);
-const ExponentialNumber<-4> KCALS_PER_JOULE(2.388459);
+const unit::ExponentialNumber<3> JOULES_PER_KILOCALORIE(4.1868);
 
 } // namespace internal
 

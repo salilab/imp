@@ -5,7 +5,7 @@ files = ['AttributeTable.h',  'graph_base.h',  'Grid3D.h', 'Vector.h',
          'Object.h', 'ObjectPointer.h', 'ObjectContainer.h', 'ParticleGrid.h',
          'kernel_version_info.h', 'constants.h', 'units.h',
          'RefCountedObject.h', 'utility.h', 'bbox_nbl_helpers.h',
-         'ArrayOnAttributesHelper.h']
+         'ArrayOnAttributesHelper.h', 'Unit.h', 'ExponentialNumber.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'internal')
