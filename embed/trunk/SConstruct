@@ -8,7 +8,9 @@ add_common_options(opts, "em")
 
 
 # # Get Modeller and Python locations, and set up a build environment:
-env = MyEnvironment(options=opts)
+env = MyEnvironment(options=opts, tools=["default", "doxygen"],
+                    toolpath=["tools"])
+
 
 
 # # Make these objects available to SConscript files:
@@ -22,7 +24,7 @@ Export('bin')
 
 src, pyext = SConscript('src/emlib/SConscript')
 SConscript('test/SConscript')
-#SConscript('doc/SConscript')
+SConscript('doc/SConscript')
 
 
 # bin script first requires libraries to be built:
