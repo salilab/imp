@@ -16,11 +16,35 @@
 #include "../Particle.h"
 #include "../Model.h"
 #include "../DecoratorBase.h"
+#include "../internal/ArrayOnAttributesHelper.h"
 #include "utility.h"
 
 namespace IMP
 {
 
+class HierarchyDecorator;
+
+namespace internal
+{
+
+// needs to be external to keep swig happy
+struct IMPDLLEXPORT ChildArrayTraits
+{
+  static ParticleKey parent_key_;
+  static IntKey parent_index_key_;
+
+  typedef ParticleKey Key;
+  typedef Particle* Value;
+  typedef HierarchyDecorator ExternalType;
+  static void on_add(Particle * p, HierarchyDecorator d, unsigned int i) ;
+  static void on_change(Particle *, HierarchyDecorator d, unsigned int oi,
+                        unsigned int ni) ;
+  static void on_remove(Particle *, HierarchyDecorator d) ;
+  static Particle *get_value(HierarchyDecorator d) ;
+  static unsigned int get_index(Particle *, HierarchyDecorator d);
+};
+
+} // namespace internal
 
 /** \defgroup hierarchy Hierarchies of particles
     These functions and classes aid in manipulating particles representing
@@ -49,12 +73,14 @@ public:
  */
 class IMPDLLEXPORT HierarchyDecorator: public DecoratorBase
 {
-  IMP_DECORATOR(HierarchyDecorator, DecoratorBase, return true || p,  ++p);
-  IMP_DECORATOR_ARRAY_DECL(child, Particle, Particle*, NULL)
-protected:
-  static ParticleKey parent_key_;
-  static IntKey parent_index_key_;
 
+  friend class internal::ChildArrayTraits;
+
+  IMP_DECORATOR_ARRAY_DECL(public, child, children, internal::ChildArrayTraits)
+
+  IMP_DECORATOR(HierarchyDecorator, DecoratorBase,
+                return has_required_attributes_for_child(p),
+                add_required_attributes_for_child(p));
 public:
 
   //! Get a HierarchyDecorator wrapping the parent particle
@@ -62,25 +88,9 @@ public:
       if it has no parent.
    */
   This get_parent() const {
-    IMP_DECORATOR_GET(parent_key_, Particle*,
+    IMP_DECORATOR_GET(internal::ChildArrayTraits::parent_key_, Particle*,
                       return VALUE,
                       return This());
-  }
-
-  //! Get the number of children.
-  unsigned int get_number_of_children() const {
-    // defined by the array macro
-    return internal_get_number_of_child();
-  }
-
-  //! Get a HierarchyDecorator of the ith child
-  /** \return decorator of the ith child, or throw an IndexException if it
-      does not have this child
-   */
-  This get_child(unsigned int i) const {
-    // defined by the array macro
-    return cast(internal_get_child(i));
-
   }
 
   //! Get the index of this particle in the list of children
@@ -88,22 +98,23 @@ public:
       it does not have a parent.
    */
   int get_parent_index() const {
-    IMP_DECORATOR_GET(parent_index_key_, Int, return VALUE, return -1);
+    IMP_DECORATOR_GET(internal::ChildArrayTraits::parent_index_key_,
+                      Int, return VALUE, return -1);
   }
 
   //! Return true if it has a parent.
   bool has_parent() const {
-    return get_particle()->has_attribute(parent_key_);
+    return get_particle()->has_attribute(
+                   internal::ChildArrayTraits::parent_key_);
   }
-
-  //! Add the particle as the last child.
-  unsigned int add_child(HierarchyDecorator hd);
 
   //! Get the index of a specific child in this particle.
   /** This takes linear time.
+      \note This is mostly useful for debugging as you can always call 
+      get_parent_index() on the child.
       \return the index, or -1 if there is no such child.
    */
-  int get_child_index(Particle *c) const;
+  int get_child_index(HierarchyDecorator c) const;
 
   //! Do some simple validity checks on this node in the hierarchy
   void validate_node() const;
@@ -313,6 +324,67 @@ Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
   depth_first_traversal(h, gather);
   return gather.get_out();
 }
+
+
+//! Find the first node which matches some criteria
+/** \ingroup hierarchy
+ */
+template <class HD, class F>
+HD hierarchy_find(HD h, F f)
+{
+  if (f(h.get_particle())) return h;
+  std::vector<HD> stack;
+  stack.push_back(h);
+  //d.show(std::cerr);
+  do {
+    HD cur= stack.back();
+    stack.pop_back();
+
+    for (int i=cur.get_number_of_children()-1; i>=0; --i) {
+      HD hd= cur.get_child(i);
+      if (f(hd.get_particle())) {
+        return hd;
+      } else {
+        stack.push_back(hd);
+      }
+    }
+  } while (!stack.empty());
+  return HD();
+}
+
+namespace internal
+{
+
+inline void ChildArrayTraits::on_add(Particle * p,
+                                     HierarchyDecorator d,
+                                     unsigned int i) {
+  d.get_particle()->add_attribute(parent_key_, p);
+  d.get_particle()->add_attribute(parent_index_key_, i);
+}
+
+inline void ChildArrayTraits::on_change(Particle *,
+                                        HierarchyDecorator d,
+                                        unsigned int oi,
+                                        unsigned int ni) {
+  d.get_particle()->set_value(parent_index_key_, ni);
+}
+
+inline void ChildArrayTraits::on_remove(Particle *,
+                                        HierarchyDecorator d) {
+  d.get_particle()->remove_attribute(parent_index_key_); 
+  d.get_particle()->remove_attribute(parent_key_);
+}
+
+inline Particle *ChildArrayTraits::get_value(HierarchyDecorator d) {
+  return d.get_particle();
+}
+
+inline unsigned int ChildArrayTraits::get_index(Particle *,
+                                                HierarchyDecorator d) {
+  return d.get_parent_index();
+}
+
+} // namespace internal
 
 } // namespace IMP
 

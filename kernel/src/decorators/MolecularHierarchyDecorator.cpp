@@ -53,7 +53,7 @@ IMP_DECORATOR_INITIALIZE(MolecularHierarchyDecorator,
                          })
 
 
-namespace internal
+namespace
 {
 
 struct MHDMatchingType
@@ -78,9 +78,81 @@ Particles get_particles(MolecularHierarchyDecorator mhd,
                         MolecularHierarchyDecorator::Type t)
 {
   Particles out;
-  hierarchy_gather(mhd, internal::MHDMatchingType(t),
+  hierarchy_gather(mhd, MHDMatchingType(t),
                    std::back_inserter(out));
   return out;
 }
+
+
+namespace
+{
+
+struct MatchResidueIndex
+{
+  unsigned int index_;
+  MatchResidueIndex(unsigned int i): index_(i) {}
+  bool operator()(Particle *p) const {
+    MolecularHierarchyDecorator mhd(p);
+    if (mhd.get_type() == MolecularHierarchyDecorator::RESIDUE
+        || mhd.get_type() == MolecularHierarchyDecorator::NUCLEICACID) {
+      ResidueDecorator rd(p);
+      return (rd.get_index() == index_);
+    } else {
+      return false;
+    }
+  }
+};
+
+} // namespace
+
+
+ResidueDecorator get_residue(MolecularHierarchyDecorator mhd,
+                                        unsigned int index)
+{
+  IMP_check(mhd.get_type() == MolecularHierarchyDecorator::PROTEIN
+            || mhd.get_type() == MolecularHierarchyDecorator::CHAIN
+            || mhd.get_type() == MolecularHierarchyDecorator::NUCLEOTIDE,
+            "Invalid type of MolecularHierarchyDecorator passed to get_residue",
+            ValueException("Bad val"));
+  MatchResidueIndex mi(index);
+  HierarchyDecorator hd= hierarchy_find(mhd, mi);
+  if (hd== HierarchyDecorator()) {
+    return ResidueDecorator();
+  } else {
+    return ResidueDecorator(hd.get_particle());
+  }
+}
+
+
+
+MolecularHierarchyDecorator
+create_fragment(const MolecularHierarchyDecorators &ps)
+{
+  IMP_check(!ps.empty(), "Need some particles",
+            ValueException(""));
+  MolecularHierarchyDecorator parent= ps[0].get_parent();
+  unsigned int index= ps[0].get_parent_index();
+  IMP_IF_CHECK(CHEAP) {
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      IMP_check(ps[i].get_parent() == parent,
+                "Parents don't match",
+                ValueException(""));
+    }
+  }
+
+  Particle *fp= new Particle();
+  parent.get_particle()->get_model()->add_particle(fp);
+  MolecularHierarchyDecorator fd= MolecularHierarchyDecorator::create(fp);
+  fd.set_type(MolecularHierarchyDecorator::FRAGMENT);
+
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    parent.remove_child(ps[i]);
+    fd.add_child(ps[i]);
+  }
+
+  parent.add_child_at(fd, index);
+  return fd;
+}
+
 
 } // namespace IMP

@@ -8,13 +8,13 @@ class DecoratorTests(IMP.test.TestCase):
         m = IMP.Model()
         pp=IMP.Particle()
         m.add_particle(pp)
-        ppd= IMP.HierarchyDecorator.cast(pp)
+        ppd= IMP.HierarchyDecorator.create(pp)
         ppnd= IMP.NameDecorator.create(pp)
         ppnd.set_name("root");
         for i in range(0,10):
             pc=IMP.Particle()
-            pcd= IMP.HierarchyDecorator.create(pc)
             m.add_particle(pc)
+            pcd= IMP.HierarchyDecorator.create(pc)
             ppd.add_child(pcd)
             pcnd= IMP.NameDecorator.create(pc)
             pcnd.set_name(str("child "+str(i)));

@@ -84,7 +84,9 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
  */
 class IMPDLLEXPORT BondedDecorator: public DecoratorBase
 {
-  IMP_DECORATOR(BondedDecorator, DecoratorBase, return true, );
+  IMP_DECORATOR(BondedDecorator, DecoratorBase,
+                return internal::graph_is_node(p, internal::bond_graph_data_), 
+                graph_initialize_node(p, internal::bond_graph_data_));
 
 
 public:

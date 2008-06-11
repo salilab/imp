@@ -33,6 +33,9 @@ class PDBReadTest(IMP.test.TestCase):
         self.assertEqual(i_num_atom_type, f_num_atom_type, "too many atom types")
         self.assertEqual(1377, hc.get_count(),
                          "Wrong number of particles created")
+        rd= IMP.get_residue(mp, 29)
+        self.assertEqual(rd.get_index(), 29);
+
     def test_bonds(self):
         """Check that the file loader produces bonds"""
         m = IMP.Model()

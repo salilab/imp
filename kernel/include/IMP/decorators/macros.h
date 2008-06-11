@@ -7,8 +7,9 @@
  */
 
 #ifndef __IMP_DECORATOR_MACROS_H
-#define __IMP_DECORATOR_MACROS_H           
+#define __IMP_DECORATOR_MACROS_H
 
+#include <sstream>
 
 //! Define the basic things needed by a Decorator.
 /** The key things this defines are a default constructor, a static create
@@ -65,6 +66,9 @@ public:                                                                 \
  */                                                                     \
  static Name cast(::IMP::Particle *p) {                                 \
    return IMP::DecoratorBase::cast<Name>(p);                            \
+ }                                                                      \
+ static bool is_instance_of(::IMP::Particle *p) {                       \
+ return has_required_attributes(p);                                     \
  }                                                                      \
  /** Write information about this decorator to out. Each line should    \
      prefixed by prefix*/                                               \
@@ -177,57 +181,84 @@ public:                                                                 \
    This macro should go in the header and IMP_DECORATOR_ARRAY_CPP into the .cpp
    and IMP_DECORATOR_ARRAY_INIT in the initialize_static_data function
 
-   To use the array, use functions 
+   The macro defines a set of functions for using the array:
+   - get_name(unsigned int)
 
-   - Type internal_get_name(unsigned int i) 
+   - get_number_of_name()
 
-   - void internal_add_name(Type) 
+   - add_name(Traits::ExternalType)
 
-   - unsigned int internal_get_number_of_name() const 
+   - add_name_at(Traits::ExternalType, unsigned int)
+
+   - remove_name(unsigned int)
+
+   in addition it defines the private methods
+   - has_required_attributes_for_name(Particle *)
+
+   - add_required_attributes_for_name(Particle *)
  */
-#define IMP_DECORATOR_ARRAY_DECL(name, TypeName, Type, Default)         \
-  protected:                                                            \
-  static IntKey number_of_##name##_key_;                                \
-  static std::vector<TypeName##Key> name##_keys_;                       \
-  static void generate_##name##_keys(unsigned int i);                   \
-  static const TypeName##Key get_##name##_key(unsigned int i) {         \
-    if (i >= name##_keys_.size()) generate_##name##_keys(i);            \
-    return name##_keys_[i];                                             \
-  }                                                                     \
-  Type internal_get_##name(unsigned int i) const{                       \
-    IMP_DECORATOR_GET(get_##name##_key(i), Type,                        \
-                      return VALUE,                                     \
-                      throw IndexException("Particle missing attribute"); \
-                      return Default);                                 \
-  }                                                                     \
-  int internal_add_##name(Type t);                                      \
-  unsigned int internal_get_number_of_##name() const {                  \
-    IMP_DECORATOR_GET(number_of_##name##_key_,                          \
-                      Int, return VALUE, return 0);                     \
-  }                                                                     \
+#define IMP_DECORATOR_ARRAY_DECL(protection, name, plural, Traits)      \
+private:                                                                \
+ static internal::ArrayOnAttributesHelper<Traits::Key,                  \
+                                          Traits::Value> name##_data_;  \
+ static bool has_required_attributes_for_##name(Particle *p) {          \
+   return name##_data_.has_required_attributes(p);                      \
+ }                                                                      \
+ static void add_required_attributes_for_##name(Particle *p) {          \
+   return name##_data_.add_required_attributes(p);                      \
+ }                                                                      \
+protection:                                                             \
+ /** \brief Get the ith member*/                                        \
+ Traits::ExternalType get_##name(unsigned int i) const {                \
+   return Traits::ExternalType(name##_data_.get_value(get_particle(), i)); \
+ }                                                                      \
+ /** \brief Get the total number of them*/                              \
+ unsigned int get_number_of_##plural() const {                          \
+   return name##_data_.get_size(get_particle());                        \
+ }                                                                      \
+ /** \brief Add t at the end */                                         \
+ unsigned int add_##name(Traits::ExternalType t) {                      \
+   unsigned int i= name##_data_.push_back(get_particle(),               \
+                                          Traits::get_value(t));        \
+   Traits::on_add(get_particle(), t, i);                                \
+   return i;                                                            \
+ }                                                                      \
+ /** Add t at a certain position */                                     \
+ void add_##name##_at(Traits::ExternalType t, unsigned int idx) {       \
+   name##_data_.insert(get_particle(),                                  \
+                       idx,                                             \
+                       Traits::get_value(t));                           \
+   Traits::on_add(get_particle(), t, idx);                              \
+   for (unsigned int i= idx+1; i < get_number_of_##plural(); ++i) {     \
+     Traits::on_change(get_particle(),                                  \
+                       name##_data_.get_value( get_particle(), i),      \
+                       i-1, i);                                         \
+   }                                                                    \
+ }                                                                      \
+ /** Remove t from the array */                                         \
+ void remove_##name(Traits::ExternalType t) {                           \
+   unsigned int idx= Traits::get_index(get_particle(), t);               \
+   Traits::on_remove(get_particle(), t);                                \
+   name##_data_.erase(get_particle(),                                   \
+                      idx);                                             \
+   for (unsigned int i= idx; i < get_number_of_##plural(); ++i) {       \
+     Traits::on_change(get_particle(),                                  \
+                       name##_data_.get_value(get_particle(), i),       \
+                       i+1, i);                                         \
+   }                                                                    \
+ }
 
 //! See IMP_DECORATOR_ARRAY_DECL
-#define IMP_DECORATOR_ARRAY_DEF(DecoratorType, name, TypeName, Type)   \
-  IntKey DecoratorType##Decorator::number_of_##name##_key_;             \
-  std::vector<TypeName##Key> DecoratorType##Decorator::name##_keys_;    \
-  void DecoratorType##Decorator::generate_##name##_keys(unsigned int i) \
-  {                                                                     \
-    while (!(i < name##_keys_.size())) {                                \
-      std::ostringstream oss;                                           \
-      oss << #DecoratorType " " #name " " << name##_keys_.size();       \
-      name##_keys_.push_back(TypeName##Key(oss.str().c_str()));         \
-    }                                                                   \
-  }                                                                     \
-  int DecoratorType##Decorator::internal_add_##name(Type t) {           \
-    int nc= internal_get_number_of_##name();                            \
-    get_particle()->add_attribute(get_##name##_key(nc), t);             \
-    IMP_DECORATOR_SET(number_of_##name##_key_, nc+1);                   \
-    return nc;                                                          \
-  }
+#define IMP_DECORATOR_ARRAY_DEF(DecoratorType, name, Traits)            \
+  internal::ArrayOnAttributesHelper<Traits::Key,                        \
+                                    Traits::Value>                      \
+  DecoratorType::name##_data_(std::string(#name)+ " " #DecoratorType);
+
+
 
 //! See IMP_DECORATOR_ARRAY_DECL
-#define IMP_DECORATOR_ARRAY_INIT(DecoratorType, name, TypeName, Type)   \
-  number_of_##name##_key_= IntKey(#DecoratorType " num " #name);
+#define IMP_DECORATOR_ARRAY_INIT(DecoratorType, name)   \
+  name##_data_.initialize();
 
 
 #endif  /* __IMP_DECORATOR_MACROS_H */
