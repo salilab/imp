@@ -30,7 +30,7 @@ void XYZDecorator::randomize_in_sphere(const Vector3D &center,
                                        float radius)
 {
   IMP_check(radius > 0, "Radius in randomize must be postive",
-            ValueException("Radius must be positive"));
+            ValueException);
   Vector3D min(center[0]-radius, center[1]-radius, center[2]-radius);
   Vector3D max(center[0]+radius, center[1]+radius, center[2]+radius);
   float norm;
@@ -49,7 +49,7 @@ void XYZDecorator::randomize_in_box(const Vector3D &min,
 {
   for (unsigned int i=0; i< 3; ++i) {
     IMP_check(min[i] < max[i], "Box for randomize must be non-empty",
-              ValueException("Box must be non-empty"));
+              ValueException);
     ::boost::uniform_real<> rand(min[i], max[i]);
     set_coordinate(i, rand(random_number_generator));
   }

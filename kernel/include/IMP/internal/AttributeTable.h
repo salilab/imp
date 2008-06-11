@@ -146,7 +146,7 @@ class AttributeTable
     IMP_check(Traits::get_is_valid(map_[k.get_index()]),
               "Attribute \"" << k.get_string()
               << "\" not found in table.",
-              IndexException("Invalid attribute"));
+              IndexException);
   }
 
 public:
@@ -179,7 +179,7 @@ public:
     check_contains(k);
     IMP_check(Traits::get_is_valid(v),
               "Cannot set value of attribute to " << v,
-              ValueException("Invalid value for attribute"));
+              ValueException);
     map_[k.get_index()] = v;
   }
 
@@ -260,7 +260,7 @@ inline void AttributeTable<Traits>::insert_always(Key k, Value v)
   IMP_check(Traits::get_is_valid(v),
             "Trying to insert invalid value for attribute " 
             << v << " into attribute " << k,
-            ValueException("Invalid attribute value"));
+            ValueException);
   if (size_ <= k.get_index()) {
     boost::scoped_array<Value> old;
     swap(old, map_);

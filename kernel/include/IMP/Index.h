@@ -26,7 +26,7 @@ public:
   //! Construct an index from a nonnegative int
   Index(unsigned int i): i_(i) {
     IMP_check(i >= 0, "Index initializer must be positive. " << i << " is not.",
-              ErrorException());
+              IndexException);
   }
   //! Construct a default index
   /** This can be used as a sentinal value */
@@ -36,7 +36,7 @@ public:
   /** The integer is unique within the container */
   unsigned int get_index() const {
     IMP_check(i_ >= 0, "get_index() called on defaultly constructed Index",
-              ErrorException());
+              ValueException);
     return i_;
   }
   void show(std::ostream &out) const {

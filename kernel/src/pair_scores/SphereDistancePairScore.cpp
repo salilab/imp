@@ -23,10 +23,10 @@ Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
 {
   IMP_check(a->has_attribute(radius_), "Particle " << a->get_index() 
             << "missing radius in SphereDistancePairScore",
-            ValueException("Missing radius"));
+            ValueException);
   IMP_check(b->has_attribute(radius_), "Particle " << b->get_index() 
             << "missing radius in SphereDistancePairScore",
-            ValueException("Missing radius"));
+            ValueException);
   Float ra = a->get_value(radius_);
   Float rb = b->get_value(radius_);
   return internal::evaluate_distance_pair_score(a,b, da, f_.get(), 

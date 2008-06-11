@@ -39,10 +39,10 @@ struct ArrayOnAttributesHelper {
 
   Value get_value(const Particle *p, unsigned int i) const {
     IMP_check(keys_.size() > i, "Out of range attribute in array",
-              IndexException("out of range"));
+              IndexException);
     IMP_check(static_cast<unsigned int>(p->get_value(num_key_)) > i,
               "Out of range attribute in array",
-              IndexException("out of range"));
+              IndexException);
     return p->get_value(keys_[i]);
   }
 
@@ -50,9 +50,9 @@ struct ArrayOnAttributesHelper {
                  unsigned int i,
                  Value v) const {
     IMP_check(keys_.size() > i, "Out of range attribute in array",
-              IndexException("out of range"));
+              IndexException);
     IMP_check(p->get_value(num_key_) > i, "Out of range attribute in array",
-              IndexException("out of range"));
+              IndexException);
     p->set_value(keys_[i], v);
   }
 
@@ -70,7 +70,7 @@ struct ArrayOnAttributesHelper {
               Value v) {
     unsigned int osz= p->get_value(num_key_);
     IMP_check(loc <= osz, "Attribute array must be contiguous",
-              IndexException("out of range"));
+              IndexException);
     for (unsigned int i=loc; i < osz; ++i) {
       Key k= get_key(i);
       Value t= p->get_value(k);
@@ -87,7 +87,7 @@ struct ArrayOnAttributesHelper {
              unsigned int loc) const {
     unsigned int osz= p->get_value(num_key_);
     IMP_check(loc <= osz, "Can only erase values in array",
-              IndexException("out of range"));
+              IndexException);
     for (unsigned int i=loc+1; i < osz; ++i) {
       Key k= keys_[i];
       Key kl= keys_[i-1];

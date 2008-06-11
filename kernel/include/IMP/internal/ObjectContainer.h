@@ -46,8 +46,32 @@ class ObjectContainer
   unsigned int get_index(II i) const {return i.get_index();}
   unsigned int get_index(unsigned int i) const {return i;}
 
+  void check_unique(O* o) {
+    IMP_CHECK_OBJECT(o);
+    for (typename Vector::const_iterator it= data_.begin();
+         it != data_.end(); ++it) {
+      IMP_assert(*it != o, "IMP Containers can only have one copy of "
+                 << " each object");
+    }
+  }
+
+  template <class It>
+  void check_all_unique(It b, It e) {
+    for (It cc= b; cc != e; ++cc) {
+      check_unique(*cc);
+    }
+  }
+
+  I fill_free(O *o) {
+    unsigned int i= free_.back();
+    free_.pop_back();
+    data_[i]= o;
+    return I(i);
+  }
+
   // hide it
   typedef std::vector<O*> Vector;
+
 public:
 
   ObjectContainer(){}
@@ -100,31 +124,22 @@ public:
   O* operator[](I i) const {
     IMP_check(get_index(i) < data_.size(),
               "Index " << i << " out of range",
-              IndexException("Out of range"));
+              IndexException);
     IMP_assert(data_.operator[](get_index(i)) != NULL,
                "Attempting to access invalid slot in container");
     return data_[get_index(i)];
   }
 
   I push_back(O* d) {
-    IMP_CHECK_OBJECT(d);
     own(d);
     IMP_IF_CHECK(EXPENSIVE) {
-      for (typename Vector::const_iterator it= data_.begin();
-           it != data_.end(); ++it) {
-        IMP_assert(*it != d, "IMP Containers can only have one copy of "
-                   << " each object");
-      }
+      check_unique(d);
     }
     if (free_.empty()) {
       data_.push_back(d);
-      unsigned int idx= data_.size()-1;
-      return I(idx);
+      return I(data_.size()-1);
     } else {
-      unsigned int i= free_.back();
-      free_.pop_back();
-      data_[i]= d;
-      return I(i);
+      return fill_free(d);
     }
   }
 
@@ -132,22 +147,13 @@ public:
   void insert(iterator c, It b, It e) {
     IMP_assert(c== end(), "Insert position is ignored in ObjectContainer");
     IMP_IF_CHECK(EXPENSIVE) {
-      for (It cc= b; cc != e; ++cc) {
-        IMP_CHECK_OBJECT(*cc);
-        for (typename Vector::const_iterator it= data_.begin(); 
-             it != data_.end(); ++it) {
-          IMP_assert(*it != *cc, "IMP Containers can only have one copy of "
-                     << " each object");
-        }
-      }
+      check_all_unique(b,e);
     }
     for (It cc= b; cc != e; ++cc) {
       own(*cc);
     }
     while (!free_.empty()) {
-      int i= free_.back();
-      free_.pop_back();
-      data_[i]= *b;
+      fill_free(*b);
       ++b;
     }
     data_.insert(data_.end(), b, e);
