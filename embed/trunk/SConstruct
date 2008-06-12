@@ -32,6 +32,3 @@ env.Depends(bin, [src, pyext])
 
 # Build the binaries by default:
 env.Default(bin)
-
-
-
