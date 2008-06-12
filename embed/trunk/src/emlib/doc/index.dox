@@ -1,0 +1,15 @@
+/**
+  \mainpage EMBED Documentation
+  
+  \section intro Introduction
+  
+    This is the internal documentation for EMBED.
+  
+  \section links Links
+
+    For additional information, see the
+    <a href="https://salilab.org/internal/wiki/EMBED">EMBED wiki page</a>.
+  
+  \section further Further miscellaneous documentation
+    - \ref standards
+ */
