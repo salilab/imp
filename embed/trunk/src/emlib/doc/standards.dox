@@ -5,4 +5,6 @@
   conventions should be adhered to when writing EMBED code. For consistency,
   EMBED uses the same coding standards as IMP, which are documented in
   the <a href="https://salilab.org/imp/doc/ch01s03.html">IMP manual</a>.
+
+  To check the code against some of the coding standards, run 'scons standards'.
 */
