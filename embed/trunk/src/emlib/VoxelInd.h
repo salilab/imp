@@ -61,7 +61,8 @@ public:
   bool operator<(const VoxelInd &v2) const{
     int max_grid_size = 256;
     long v1_index = v[0]*max_grid_size*max_grid_size + v[1]*max_grid_size+ v[2];
-    long v2_index = v2[0]*max_grid_size*max_grid_size + v2[1]*max_grid_size+ v2[2];
+    long v2_index = v2[0]*max_grid_size*max_grid_size
+                     + v2[1]*max_grid_size+ v2[2];
     if (v1_index<v2_index)
       return true;
     return false;
@@ -70,7 +71,7 @@ public:
     return s << v[0] << ' ' << v[1] << ' ' << v[2];
   }
 
-  
+
 
 private:
   int v[3]; // the oder is ZYX

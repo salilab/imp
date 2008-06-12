@@ -10,23 +10,28 @@
 
 
 //! calculates and stores gaussian kernel parameters. 
-class KernelParameters {
+class KernelParameters
+{
 public:
-  /**                                                                        
-   \brief calculates and stores kernel parameters as a function of a specific radius. The parameters are:
-   vsig, 
-   vsigsq, square of vsig
-   inv_sigsq, the inverse of sigma square
-   sig, the sigma
-   kdist, the kernel distance (= elements for summation)
-   normfac, normalization factor
-  */
-  class Parameters {
+  //! Calculates kernel parameters as a function of a specific radius.
+  /** The parameters are:
+      vsig, 
+      vsigsq, square of vsig
+      inv_sigsq, the inverse of sigma square
+      sig, the sigma
+      kdist, the kernel distance (= elements for summation)
+      normfac, normalization factor
+   */
+  class Parameters
+  {
   public:
     Parameters(float radii_,float rsigsq_,float timessig_,
-	       float sq2pi3_,float inv_rsigsq_, float rnormfac_, float rkdist_);
+               float sq2pi3_,float inv_rsigsq_, float rnormfac_, float rkdist_);
     friend std::ostream & operator<<(std::ostream& s, const Parameters &other) {
-      s << "vsig : " << other.vsig << " vsigsq: " << other.vsigsq << " inv_sigsq: " << other.inv_sigsq << " sig: " << other.sig << " kdist: " << other.kdist << " normfac: " << other.normfac << std::endl;
+      s << "vsig : " << other.vsig << " vsigsq: " << other.vsigsq
+        << " inv_sigsq: " << other.inv_sigsq << " sig: " << other.sig
+        << " kdist: " << other.kdist << " normfac: " << other.normfac
+        << std::endl;
       return s;
     }
     inline float get_vsig() const { return vsig;}
@@ -38,29 +43,33 @@ public:
   protected:
     float vsig,vsigsq,inv_sigsq,sig,kdist,normfac;
   };
-KernelParameters() {
-  initialized=false;
+
+  KernelParameters() {
+    initialized=false;
   }
 
   KernelParameters(float resolution_) {
     init(resolution_);
     initialized=true;
   }
-  
+
   void set_params(float radii) {
-    std::map<float ,const KernelParameters::Parameters *>::iterator iter = radii2params.find(radii);
-    if (iter !=  radii2params.end()) {
+    std::map<float, const KernelParameters::Parameters *>::iterator iter
+         = radii2params.find(radii);
+    if (iter != radii2params.end()) {
       throw 1;
     }
-    radii2params[radii]=new Parameters(radii,rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist);
+    radii2params[radii] = new Parameters(radii, rsigsq, timessig, sq2pi3,
+                                         inv_rsigsq, rnormfac, rkdist);
   }
 
-  const KernelParameters::Parameters* find_params(float radii)  {
+  const KernelParameters::Parameters* find_params(float radii) {
     if (!initialized) {
       throw 1;
     }
-    std::map<float ,const KernelParameters::Parameters *>::iterator iter = radii2params.find(radii);
-    if (iter ==  radii2params.end()) {
+    std::map<float, const KernelParameters::Parameters *>::iterator iter
+        = radii2params.find(radii);
+    if (iter == radii2params.end()) {
       throw 1;
     }
     return radii2params[radii];
