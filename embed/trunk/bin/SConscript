@@ -19,6 +19,6 @@ env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
 
 bin = env.ScriptFile("empy.sh",
                      ["empy.sh.in", env.Value(env.Dir('#').abspath),
-		     env.Value(env['PATHSEP'])
-		     ])
+                     env.Value(env['PATHSEP'])
+                     ])
 Return('bin')

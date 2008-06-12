@@ -8,8 +8,12 @@
 #include "SampledDensityMap.h"
 #include "ParticlesAccessPoint.h"
 #include "def.h"
-//!CoarseCC is responsible for performing coarse fitting between two density objects. The pixels involved are direves from the positions of N particles.
-class EMDLLEXPORT CoarseCC {
+
+//! Responsible for performing coarse fitting between two density objects.
+/** The pixels involved are derived from the positions of N particles.
+ */
+class EMDLLEXPORT CoarseCC
+{
 
 public:
 
@@ -35,52 +39,44 @@ public:
       \param lderiv if true, the derivatives of the term are computed
       \return the value of the cross correlation term: scalefac*(1-ccc)
    */
-  static float evaluate(
-			DensityMap &data, 
-			SampledDensityMap &model_map,
-			const ParticlesAccessPoint &access_p,
-			std::vector<float> &dvx, std::vector<float>&dvy, std::vector<float>&dvz, 
-			float scalefac,
-			bool lderiv);
+  static float evaluate(DensityMap &data, SampledDensityMap &model_map,
+                        const ParticlesAccessPoint &access_p,
+                        std::vector<float> &dvx, std::vector<float>&dvy,
+                        std::vector<float>&dvz, float scalefac, bool lderiv);
 
-  static void  calcDerivatives(const DensityMap &em_map,
-			       SampledDensityMap &model_map,
-			       const ParticlesAccessPoint &access_p,
-			       const float &scalefac,
-			       std::vector<float> &dvx, std::vector<float>&dvy, std::vector<float>&dvz, 
-			       int &ierr
-			       );
+  static void calcDerivatives(const DensityMap &em_map,
+                              SampledDensityMap &model_map,
+                              const ParticlesAccessPoint &access_p,
+                              const float &scalefac,
+                              std::vector<float> &dvx, std::vector<float>&dvy,
+                              std::vector<float>&dvz, int &ierr);
 
 
 
-  //! Correlation between em density and density of a model moddens
-  //! threshold can be specified that is checked in moddens to reduce
-  //! elements of summation
-  //!This is not the local CC function
-  /**
-     \param[in] em_map               the target map ( experimentally determined)
-     \param[in] model_map            the sampled density map of the model
-     \param[in] voxel_data_threshold voxels with value lower than threshold in model_map are not summed
-     \param[in] recalc_ccnormfac determines wheather the model_map should be normalized prior to the correlation calculation.                recalc_ccnormfac==false is faster, but potentially innacurate
-     \return the cross correlation coefficient value between two density maps
-     comments:
-     Frido:
-     I am pretty sure what causes the subtle difference:
-     the corr routine requires that the mean is subtracted from the em-density. we did not do that, yet.
-
-*/
-  static float cross_correlation_coefficient (const DensityMap &em_map,
-		     DensityMap &model_map,
-		     float voxel_data_threshold, // avoid calculating correlation on voxels below the threshold.
-		     bool recalc_ccnormfac = true);
-  
-
-
-protected:
-
-
+  /** Correlation between em density and density of a model moddens
+      threshold can be specified that is checked in moddens to reduce
+      elements of summation
+      \note This is not the local CC function
+      \param[in] em_map               the target map (experimentally determined)
+      \param[in] model_map            the sampled density map of the model
+      \param[in] voxel_data_threshold voxels with value lower than threshold
+                 in model_map are not summed (avoid calculating correlation on
+                 voxels below the threshold)
+      \param[in] recalc_ccnormfac determines wheather the model_map should be
+                 normalized prior to the correlation calculation. false is
+                 faster, but potentially innacurate
+      \return the cross correlation coefficient value between two density maps
+      comments:
+      Frido:
+      I am pretty sure what causes the subtle difference:
+      the corr routine requires that the mean is subtracted from the
+      em-density. we did not do that, yet.
+   */
+  static float cross_correlation_coefficient(const DensityMap &em_map,
+                                             DensityMap &model_map,
+                                             float voxel_data_threshold,
+                                             bool recalc_ccnormfac = true);
 };
 
 
 #endif //_COARSECC_H
-

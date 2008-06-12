@@ -8,54 +8,56 @@
 #include "CoarseCC.h"
 #include <vector>
 
-//!  Cross correlation coefficient calculator. Stored CCC and derivate values and recompute then every each X steps.
-class EMDLLEXPORT CoarseCCatIntervals : public CoarseCC {
+//! Cross correlation coefficient calculator.
+/** Store CCC and derivative values and recompute then every X steps.
+ */
+class EMDLLEXPORT CoarseCCatIntervals : public CoarseCC
+{
 
 public:
 
-  CoarseCCatIntervals(
-		      const int &ncd);
+  CoarseCCatIntervals(const int &ncd);
 
   CoarseCCatIntervals();
 
 
 
 
-  /*
+  /** \param[in] em_map         exp EM map
+      \param[in] model_map      map for sampled model
+      \param[in] cdx, cdy, cdz  coordinates of models
+      \param[in] dvx, dvy, dvz  partial derivatives of score with respect
+                 to model coordinates
+      \param[in] ncd            number of coord
+      \param[in] radius         radii of beads
+      \param[in] wei            weights of beads
+      \param[in] scalefac       scaling factor of EM-score
+      \param[in] lderiv         derivatives ON/OFF
+      \param[inout] ierr        error
+      \param[in] calc           true - recalculate the CC , false - calc only
+                 if end of interval
 
-    INPUT
-    
-    em_map         exp EM map
-    model_map      map for sampled model
-    cdx, cdy, cdz  coordinates of models
-    dvx, dvy, dvz  partial derivatives of score with respect to model coordinates
-    ncd            number of coord
-    radius         radii of beads
-    wei            weights of beads
-    scalefac       scaling factor of EM-score
-    lderiv         derivatives ON/OFF
-    ierr           error
-    calc           true - recalculate the CC , false - calc only if end of interval
-
-    OUTPUT
-    escore         EM score = scalefac * (1-CCC)
-  */
-  float evaluate(
-		 DensityMap &em_map,
-		 SampledDensityMap &model_map,
-		 const ParticlesAccessPoint &access_p,
-		 std::vector<float> &dvx,std::vector<float>&dvy,std::vector<float>&dvz,
-		 float scalefac,
-		 bool lderiv,
-		 unsigned long eval_interval );
+      \param[out] escore         EM score = scalefac * (1-CCC)
+   */
+  float evaluate(DensityMap &em_map, SampledDensityMap &model_map,
+                 const ParticlesAccessPoint &access_p,
+                 std::vector<float> &dvx, std::vector<float>&dvy,
+                 std::vector<float>&dvz, float scalefac, bool lderiv,
+                 unsigned long eval_interval);
 
 
 protected:
   void allocate_derivatives_array(int ncd);
-  int calls_counter;          //Number of times the evaluation has been called. The evaluation is only performed the first time and when calls_counter reaches eval_interval. Otherwise the stored_cc_ value is returned
-  float stored_cc_ ;                        // Stored correlation value
-  float *stored_dvx_,*stored_dvy_,*stored_dvz_; // Stored derivative terms
-  bool dv_memory_allocated; // This variable is true when memory for the terms storing the derivatives has been asigned
+  //! Number of times the evaluation has been called.
+  /** The evaluation is only performed the first time and when calls_counter
+      reaches eval_interval. Otherwise the stored_cc_ value is returned */
+  int calls_counter;
+  //! Stored correlation value
+  float stored_cc_ ;
+  //! Stored derivative terms
+  float *stored_dvx_,*stored_dvy_,*stored_dvz_;
+  // true when memory for the terms storing the derivatives has been assigned
+  bool dv_memory_allocated;
 };
 
 
