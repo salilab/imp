@@ -27,16 +27,17 @@ AUTHORS
 CHANGES LOG
 <UL>
 <LI> 23/08/2004 - Oranit Dror:<BR>
-Adding the '==' operator and the 'getPerpendicularVector' and 'getUnitVector' methods
+Adding the '==' operator and the 'getPerpendicularVector' and 'getUnitVector'
+methods
 </LI>
 </UL>
 
 GOALS
   Since most of the work on protein structure is done in 3D space, a fast,
   well designed 3D vector class was in place. Knowing the dimension is 3
-  allows for a fast, loopless implemetation of Vector3 and Matrix3 to be 
+  allows for a fast, loopless implemetation of Vector3 and Matrix3 to be
   written.
-  
+
 USAGE
   Many 3D vector operations are supplied including vector addition and 
   subtraction, dot-product mult., multiplication by scalar, distance and 
@@ -99,15 +100,15 @@ public:
     c[1] = x[1];
     c[2] = x[2];
   }
-  
+
   //// initialize using 3 double precision coordinates in array. 
   Vector3(const double x[3]) {
     c[0] = x[0];
     c[1] = x[1];
     c[2] = x[2];
   }
-  
-  
+
+
   // GROUP: Inspection.
 
   //// Returns position (redundant function)
@@ -117,7 +118,7 @@ public:
   real x() const {
     return c[0];
   }
-  
+
   real y() const {
     return c[1];
   }
@@ -131,7 +132,7 @@ public:
   real x(const unsigned short coord) const {
     return c[coord-1];
   }
-  
+
   ////
   // Returns true if the vector is the zero vector <br>
   // Author: Oranit Dror (oranit@tau.ac.il)
@@ -157,7 +158,7 @@ public:
     c[1]=v[1];
     c[2]=v[2];
   }
-  
+
   //// Return Vector3's distance from origin.
   real norm() const {
     return sqrt(norm2());
@@ -261,8 +262,8 @@ public:
   //// Returns vector that is vertical to both vectors.
   friend Vector3 operator&(const Vector3& p1, const Vector3& p2) {
     return Vector3(p1.c[1]*p2.c[2]-p1.c[2]*p2.c[1],
-		   p1.c[2]*p2.c[0]-p1.c[0]*p2.c[2],
-		   p1.c[0]*p2.c[1]-p1.c[1]*p2.c[0]);
+                   p1.c[2]*p2.c[0]-p1.c[0]*p2.c[2],
+                   p1.c[0]*p2.c[1]-p1.c[1]*p2.c[0]);
   }
 
   //// Returns distance between 2 Vector3s (similar to dist).
@@ -277,7 +278,7 @@ public:
       angle=-1;
     else
       if(angle>1)
-	angle=1;
+        angle=1;
     return acos(angle);
   }
 
@@ -330,13 +331,3 @@ private:
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-

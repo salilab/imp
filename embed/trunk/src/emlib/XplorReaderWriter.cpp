@@ -1,8 +1,9 @@
 #include "XplorReaderWriter.h"
 #include <cstdlib>
 
-int XplorReaderWriter::Read(const char *filename,float **data, DensityHeader &header) {
-
+int XplorReaderWriter::Read(const char *filename, float **data,
+                            DensityHeader &header)
+{
   ifstream XPLORstream(filename);
   //header
   XplorHeader xheader;
@@ -13,7 +14,8 @@ int XplorReaderWriter::Read(const char *filename,float **data, DensityHeader &he
   int size = xheader.extent[0]*xheader.extent[1]*xheader.extent[2];
   *data =  new float[size];
   if (*data == NULL) {
-    cout << "XplorReader::Read can not allocated space for data - the requested size: " << size * sizeof(float) << endl;
+    cout << "XplorReader::Read can not allocated space for data - the "
+         << "requested size: " << size * sizeof(float) << endl;
     return -1;
   }
   ReadMap(XPLORstream, *data, xheader);
@@ -24,7 +26,7 @@ int XplorReaderWriter::Read(const char *filename,float **data, DensityHeader &he
 
 int XplorReaderWriter::ReadHeader(ifstream & XPLORstream, XplorHeader &header)
 {
- 
+
   char line[300];
   int lineWidht = 300;
 
@@ -33,7 +35,7 @@ int XplorReaderWriter::ReadHeader(ifstream & XPLORstream, XplorHeader &header)
       XPLORstream.getline(line,lineWidht);
     }
   char* lineBreaker;
-  
+
   XPLORstream.getline(line,lineWidht);
 
   int div,mod,result;
@@ -44,13 +46,13 @@ int XplorReaderWriter::ReadHeader(ifstream & XPLORstream, XplorHeader &header)
       div = (int)(floor(j/3.0));
       mod = j - 3 * div;
       if (mod == 0) {
-	header.grid[div]=result;
+        header.grid[div]=result;
       }
       else if (mod == 1) {
-	header.orig[div]=result;
+        header.orig[div]=result;
       }
       else // mod == 2
-	header.top[div]=result;
+        header.top[div]=result;
       lineBreaker = strtok (NULL," ");
   }
   for(int j=0;j<3;j++) {
@@ -88,12 +90,13 @@ int XplorReaderWriter::ReadHeader(ifstream & XPLORstream, XplorHeader &header)
   //  we do not use this data. We use the user input for the grid order.
   //////////////
   XPLORstream.getline(line,lineWidht);
-    
+
   return 0;
 }
 
 
-int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, float *data, XplorHeader &header)
+int XplorReaderWriter::ReadMap(ifstream &XPLORstream, float *data,
+                               XplorHeader &header)
 {
 
   //reading the map according to the grid order.
@@ -109,7 +112,7 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, float *data, XplorHeader 
       header.top[i]=-9999;
     }
 
-  
+
   int counter,densNum;
   bool keep;
   char dens[12];
@@ -117,53 +120,51 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, float *data, XplorHeader 
 
   while (!XPLORstream.eof()) {
     XPLORstream.getline(line,lineWidht);
-    if (!status) // status = false means that we moved a section
-      {
-	status = true;
-      }
-    else {
+    if (!status) {// status = false means that we moved a section
+      status = true;
+    } else {
       // each line have strlen/12 density values.
       // We iterater through the line
-      
+
       counter = 0;
       keep = true;
       densNum = strlen(line)/12;
-      
-      while ((counter <densNum) && keep) {
-	strncpy(dens,line+(counter*12),12);
-	counter ++;
-	density = atof(dens);   
-	data[x+y*header.extent[0]+z*header.extent[0]*header.extent[1]] = density;
-	if (x<header.orig[0])
-	  header.orig[0]=x;
-	if (y<header.orig[1])
-	  header.orig[1]=y;
-	if (z<header.orig[2])
-	  header.orig[2]=z;
-	if (x>header.top[0])
-	  header.top[0]=x;
-	if (y>header.top[1])
-	  header.top[1]=y;
-	if (z>header.top[2])
-	  header.top[2]=z;
 
-	x++;
-	if (x >= header.extent[0] ) {
-	  x=0;
-	  y++;
-	  if ( y>= header.extent[1])
-	    keep = false;
-	}
-		
+      while ((counter <densNum) && keep) {
+        strncpy(dens,line+(counter*12),12);
+        counter++;
+        density = atof(dens);   
+        data[x + y*header.extent[0]
+             + z*header.extent[0]*header.extent[1]] = density;
+        if (x<header.orig[0])
+          header.orig[0]=x;
+        if (y<header.orig[1])
+          header.orig[1]=y;
+        if (z<header.orig[2])
+          header.orig[2]=z;
+        if (x>header.top[0])
+          header.top[0]=x;
+        if (y>header.top[1])
+          header.top[1]=y;
+        if (z>header.top[2])
+          header.top[2]=z;
+
+        x++;
+        if (x >= header.extent[0]) {
+          x=0;
+          y++;
+          if (y >= header.extent[1])
+            keep = false;
+        }
+
       } // while counter < densNum
-	 
-	     
+
+
       if (y >= header.extent[1]) {
-	x=0;
-	y=0;
-	z++;
-	
-	status=false;
+        x=0;
+        y=0;
+        z++;
+        status=false;
       }
     } //else
   }
@@ -171,19 +172,23 @@ int  XplorReaderWriter::ReadMap(ifstream &XPLORstream, float *data, XplorHeader 
 }
 
 
-void XplorReaderWriter::Write(const char *filename,const float *data, const DensityHeader &header_ )  {
+void XplorReaderWriter::Write(const char *filename,const float *data,
+                              const DensityHeader &header_ )
+{
   XplorHeader header(header_);
 
 
   ofstream s(filename);
 
-  s <<endl << "       2"<<endl << "REMARKS file name = ??? " << endl << "REMARKS Date ...... created by em lib " << endl;
+  s <<endl << "       2"<<endl << "REMARKS file name = ??? " << endl
+    << "REMARKS Date ...... created by em lib " << endl;
   s.setf(ios::right, ios::adjustfield);
   s.width(8);
   for (int i =0;i<3;i++){
   s << setw(8)<<header.grid[i]<<
     setw(8)<<floor(header.translateGrid[i]/header.voxelsize[i])<<
-    setw(8)<<floor(header.translateGrid[i]/header.voxelsize[i])+header.extent[i]-1;
+    setw(8)<<floor(header.translateGrid[i]/header.voxelsize[i])
+             +header.extent[i]-1;
   }
   s<<endl;
   for (int i =0;i<3;i++){
@@ -203,12 +208,13 @@ void XplorReaderWriter::Write(const char *filename,const float *data, const Dens
     s<<setw(8)<<k<<endl;
     for(int j=0;j<  header.extent[1];j++) {
       for(int i=0;i< header.extent[0];i++) {
-	s<< scientific << setprecision(5)<<setw(12)<<data[i+j*header.extent[0]+k*header.extent[0]*header.extent[1]];
-	counter++;
-	if (counter == 6) {
-	  counter = 0;
-	  s << endl;
-	}
+        s << scientific << setprecision(5) << setw(12)
+          << data[i + j*header.extent[0] + k*header.extent[0]*header.extent[1]];
+        counter++;
+        if (counter == 6) {
+          counter = 0;
+          s << endl;
+        }
       }
     }
   }
