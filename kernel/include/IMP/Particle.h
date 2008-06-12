@@ -22,7 +22,7 @@
 
 namespace IMP
 {
-#ifndef SWIG
+
 namespace internal
 {
 
@@ -37,7 +37,6 @@ void check_particles_active(It b, It e, std::string msg)
 
 } // namespace internal
 
-#endif
 class Model;
 
 //! Class to handle individual model particles.

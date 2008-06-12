@@ -132,6 +132,7 @@ namespace IMP {
 
 /* Don't wrap internal functions */
 %ignore IMP::internal::evaluate_distance_pair_score;
+%ignore IMP::internal::check_particles_active;
 
 /* Make selected classes extensible in Python */
 %feature("director") IMP::UnaryFunction;
