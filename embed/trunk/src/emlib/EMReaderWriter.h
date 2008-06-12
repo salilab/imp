@@ -19,9 +19,11 @@
 #include "DensityHeader.h"
 #include "def.h"
 
-class EMDLLEXPORT EMHeader {
+class EMDLLEXPORT EMHeader
+{
 public:
-  class EMHeaderParse {
+  class EMHeaderParse
+  {
   public:
     static const int COMMENT_SIZE               = 80;
     static const int VOLTAGE_OFFSET             = 0;
@@ -61,17 +63,21 @@ public:
       header.Cs                     = (float)emdata[CS_OFFSET]/scale;
       header.Aperture               = (float)emdata[APERTURE_OFFSET];
       header.Magnification          = (float)emdata[MAGNIFICATION_OFFSET];
-      header.Postmagnification      = (float)emdata[POSTMAGNIFICATION_OFFSET]/scale;
+      header.Postmagnification      = (float)emdata[POSTMAGNIFICATION_OFFSET]
+                                      /scale;
       header.Exposuretime           = (float)emdata[EXPOSURETIME_OFFSET];
-      header.Objectpixelsize        = (float)emdata[OBJECTPIXELSIZE_OFFSET]/scale;
+      header.Objectpixelsize        = (float)emdata[OBJECTPIXELSIZE_OFFSET]
+                                      /scale;
       header.Microscope             = (float)emdata[MICROSCOPE_OFFSET];
       header.Pixelsize              = (float)emdata[PIXELSIZE_OFFSET]/scale;
       header.CCDArea                = (float)emdata[CCDAREA_OFFSET]/scale;
       header.Defocus                = (float)emdata[DEFOCUS_OFFSET];
       header.Astigmatism            = (float)emdata[ASTIGAMATISM_OFFSET]/scale;
       header.AstigmatismAngle       = (float)emdata[ASTIGAMATISMANGLE_OFFSET];
-      header.FocusIncrement         = (float)emdata[FOCUSINCREMENT_OFFSET]/scale;
-      header.CountsPerElectron      = (float)emdata[COUNTSPERELECTRON_OFFSET]/scale;
+      header.FocusIncrement         = (float)emdata[FOCUSINCREMENT_OFFSET]
+                                      /scale;
+      header.CountsPerElectron      = (float)emdata[COUNTSPERELECTRON_OFFSET]
+                                      /scale;
       header.Intensity              = (float)emdata[INTENSITY_OFFSET]/scale;
       header.EnergySlitwidth        = (float)emdata[ENERGYSLITWIDTH_OFFSET];
       header.EnergyOffset           = (float)emdata[ENERGYOFFSET_OFFSET];
@@ -94,17 +100,21 @@ public:
       emdata[CS_OFFSET]                   = (int)(header.Cs*scale);
       emdata[APERTURE_OFFSET]             = (int)header.Aperture;
       emdata[MAGNIFICATION_OFFSET]        = (int)header.Magnification;
-      emdata[POSTMAGNIFICATION_OFFSET]    = (int)(header.Postmagnification * scale);
+      emdata[POSTMAGNIFICATION_OFFSET]    = (int)(header.Postmagnification
+                                                  * scale);
       emdata[EXPOSURETIME_OFFSET]         = (int)header.Exposuretime ;
-      emdata[OBJECTPIXELSIZE_OFFSET]      = (int)(header.Objectpixelsize * scale);
+      emdata[OBJECTPIXELSIZE_OFFSET]      = (int)(header.Objectpixelsize
+                                                  * scale);
       emdata[MICROSCOPE_OFFSET]           = (int)header.Microscope;
       emdata[PIXELSIZE_OFFSET]            = (int)(header.Pixelsize * scale);
       emdata[CCDAREA_OFFSET]              = (int)(header.CCDArea * scale);
       emdata[DEFOCUS_OFFSET]              = (int)header.Defocus;
       emdata[ASTIGAMATISM_OFFSET]         = (int)(header.Astigmatism   * scale);
       emdata[ASTIGAMATISMANGLE_OFFSET]    = (int)header.AstigmatismAngle;
-      emdata[FOCUSINCREMENT_OFFSET]       = (int)(header.FocusIncrement  * scale);
-      emdata[COUNTSPERELECTRON_OFFSET]    = (int)(header.FocusIncrement * scale);
+      emdata[FOCUSINCREMENT_OFFSET]       = (int)(header.FocusIncrement
+                                                  * scale);
+      emdata[COUNTSPERELECTRON_OFFSET]    = (int)(header.FocusIncrement
+                                                  * scale);
       emdata[INTENSITY_OFFSET]            = (int)(header.Intensity * scale);
       emdata[ENERGYSLITWIDTH_OFFSET]      = (int)header.EnergySlitwidth;
       emdata[ENERGYOFFSET_OFFSET]         = (int)header.EnergyOffset ;
@@ -113,7 +123,7 @@ public:
       emdata[MARKERX_OFFSET]              = (int)header.MarkerX;
       emdata[MARKERY_OFFSET]              = (int)header.MarkerY;
       emdata[LSWAP_OFFSET]                = header.lswap;
-      
+
     }
     //actual information in the EM header
     unsigned char magic;
@@ -149,7 +159,7 @@ public:
       "Microscope  " << h.Microscope << endl <<
       "pixel-size:  " << h.Pixelsize << endl;
   }
-  
+
 
   //attributes
   int magic;
@@ -182,14 +192,16 @@ public:
 };
 
 
-class EMDLLEXPORT EMReaderWriter : public MapReaderWriter {
+class EMDLLEXPORT EMReaderWriter : public MapReaderWriter
+{
 public:
-  int Read(const char *filename,  float **data, DensityHeader &header);
-  void Write(const char* filename,const float *data, const DensityHeader &header );
+  int Read(const char *filename, float **data, DensityHeader &header);
+  void Write(const char* filename, const float *data,
+             const DensityHeader &header);
 protected:
-  int ReadHeader(ifstream &file,EMHeader &header);
+  int ReadHeader(ifstream &file, EMHeader &header);
   int ReadData(ifstream &file, float **data, const EMHeader &header);
-  int WriteHeader(ostream& s, const EMHeader &header );
+  int WriteHeader(ostream& s, const EMHeader &header);
 };
 
 

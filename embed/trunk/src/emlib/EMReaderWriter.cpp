@@ -71,7 +71,9 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
 }
 
 
-int EMReaderWriter::Read(const char *filename, float **data, DensityHeader &header) {
+int EMReaderWriter::Read(const char *filename, float **data,
+                         DensityHeader &header)
+{
   ifstream file;
   file.open(filename, ifstream::in | ifstream::binary);
   if (!file.good()) {
@@ -95,10 +97,9 @@ int EMReaderWriter::Read(const char *filename, float **data, DensityHeader &head
 
 
 
-void EMReaderWriter::Write(const char* filename,const float *data, const DensityHeader &header_ ) {
-
-  
-  
+void EMReaderWriter::Write(const char* filename,const float *data,
+                           const DensityHeader &header_ )
+{
   ofstream s(filename, ofstream::out | ofstream::binary);
   EMHeader header(header_);
   //init header data if not set
@@ -142,14 +143,15 @@ void swap(char *x, int size)
       break;
   }
 }
- 
 
 
-int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header ) {
-  
+
+int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header)
+{
+
   EMHeader::EMHeaderParse ehp;
   ehp.Init(header);
-  
+
 #ifdef EM_LITTLE_ENDIAN
   ehp.emdata[EMHeader::EMHeaderParse::LSWAP_OFFSET] = 0;
 #else
@@ -166,7 +168,8 @@ int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header ) {
   s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
   if(s.bad())
     {
-      cout << "EMReaderWriter::WriteHeader. Error writing header to file" << endl;
+      cout << "EMReaderWriter::WriteHeader. Error writing header to file"
+           << endl;
       return 1;
     }
   return 0;
@@ -189,39 +192,45 @@ int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
     swap((char *)&ehp.emdata[i], sizeof(int));
   }
 #endif
-  
+
   ehp.InitEMHeader(header);
   //header.Objectpixelsize = 1.0;
   return 0;
 }
 
 
-int EMReaderWriter::ReadData(ifstream &file, float **data, const EMHeader &header) {
+int EMReaderWriter::ReadData(ifstream &file, float **data,
+                             const EMHeader &header)
+{
 
     int nvox = header.nx*header.ny*header.nz;
 
     // allocate data
     *data = new float[nvox];
     if (*data == NULL) {
-      cout << "EMReaderWriter::ReadData can not allocated space for data - the requested size: " << nvox*sizeof(float) << endl;
+      cout << "EMReaderWriter::ReadData can not allocated space for data - "
+           << "the requested size: " << nvox*sizeof(float) << endl;
       return -1;
     }
 
 
-    //a density of a single voxel can be reprented in 1 to 4 bytes. header.type provides this information.
+    // a density of a single voxel can be reprented in 1 to 4 bytes.
+    // header.type provides this information.
     // 1 : byte 
     int voxel_data_size;
-    if ( header.type == 1 ) {
+    switch(header.type) {
+    case 1:
       voxel_data_size =sizeof(unsigned char);
-    }
-    else if ( header.type == 2 ) {
-	voxel_data_size =sizeof(int);
-    }
-    else if ( header.type == 5 ) {
-	voxel_data_size =sizeof(float);
-    }
-    else {
-      cout << "EMReaderWriter::ReadData the requested data type " << header.type << " is not implemented " << endl;
+      break;
+    case 2:
+      voxel_data_size =sizeof(int);
+      break;
+    case 5:
+        voxel_data_size =sizeof(float);
+      break;
+    default:
+      cout << "EMReaderWriter::ReadData the requested data type "
+           << header.type << " is not implemented " << endl;
       return -1;
     }
 
@@ -237,15 +246,12 @@ int EMReaderWriter::ReadData(ifstream &file, float **data, const EMHeader &heade
     for (int i=0;i<nvox;i++) {
       strncpy(tmp,&(voxeldata[i*voxel_data_size]),voxel_data_size);
       if (need_swap) {
-	swap(tmp,voxel_data_size);
+        swap(tmp,voxel_data_size);
       }
       memcpy(&((*data)[i]),tmp,voxel_data_size);
     }
     delete[] tmp;
     delete[] voxeldata;
-    
+
     return 0;
 }
-
-
-
