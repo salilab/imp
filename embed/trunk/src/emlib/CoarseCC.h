@@ -8,7 +8,7 @@
 #include "SampledDensityMap.h"
 #include "ParticlesAccessPoint.h"
 #include "def.h"
-#include "ErrorHandeling.h"
+#include "ErrorHandling.h"
 //! Responsible for performing coarse fitting between two density objects.
 /** The pixels involved are derived from the positions of N particles.
  */
