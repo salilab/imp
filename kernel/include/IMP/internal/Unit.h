@@ -52,7 +52,14 @@ std::string get_unit_name(int o) {
 }
 
 // for stupid line length limits
-using namespace boost::mpl;
+using boost::mpl::transform;
+using boost::mpl::minus;
+using boost::mpl::plus;
+using boost::mpl::divides;
+using boost::mpl::multiplies;
+using boost::mpl::int_;
+using boost::mpl::vector_c;
+using boost::mpl::at;
 using namespace boost::mpl::placeholders;
 
 
@@ -149,7 +156,8 @@ template <class InputVector>
 struct Normalize
 {
   typedef typename DoNormalize<InputVector,
-                               size<InputVector>::type::value > ::type type;
+                               boost::mpl::size<InputVector>::type::value >
+      ::type type;
 };
 
 // Recursive type to print out the unit names and powers
