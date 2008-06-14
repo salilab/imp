@@ -74,20 +74,21 @@ void EMHeader::GenerateCommonHeader(DensityHeader &header) {
 int EMReaderWriter::Read(const char *filename, float **data,
                          DensityHeader &header)
 {
-  ifstream file;
-  file.open(filename, ifstream::in | ifstream::binary);
+  std::ifstream file;
+  file.open(filename, std::ifstream::in | std::ifstream::binary);
   if (!file.good()) {
-    cout << " the file " << filename << " was not found " << endl;
+    std::cout << " the file " << filename << " was not found " << std::endl;
     return 1;
   }
-  file.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
+  file.exceptions(std::ifstream::eofbit | std::ifstream::failbit
+                  | std::ifstream::badbit);
   EMHeader eheader;
   ReadHeader(file,eheader);
 
   if (eheader.Objectpixelsize < EPS) {
     eheader.Objectpixelsize = 1.;
-    cout << "Objectpixelsize == 0 " << endl;
-    cout << "  set Objectpixelsize = 1 to avoid trouble"<< endl;
+    std::cout << "Objectpixelsize == 0 " << std::endl;
+    std::cout << "  set Objectpixelsize = 1 to avoid trouble"<< std::endl;
   }
   eheader.GenerateCommonHeader(header);
   ReadData(file, data, eheader);
@@ -98,9 +99,9 @@ int EMReaderWriter::Read(const char *filename, float **data,
 
 
 void EMReaderWriter::Write(const char* filename,const float *data,
-                           const DensityHeader &header_ )
+                           const DensityHeader &header_)
 {
-  ofstream s(filename, ofstream::out | ofstream::binary);
+  std::ofstream s(filename, std::ofstream::out | std::ofstream::binary);
   EMHeader header(header_);
   //init header data if not set
   if (header.type == 0) {
@@ -146,7 +147,7 @@ void swap(char *x, int size)
 
 
 
-int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header)
+int EMReaderWriter::WriteHeader(std::ostream& s, const EMHeader &header)
 {
 
   EMHeader::EMHeaderParse ehp;
@@ -168,8 +169,8 @@ int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header)
   s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
   if(s.bad())
     {
-      cout << "EMReaderWriter::WriteHeader. Error writing header to file"
-           << endl;
+      std::cout << "EMReaderWriter::WriteHeader. Error writing header to file"
+                << std::endl;
       return 1;
     }
   return 0;
@@ -178,7 +179,8 @@ int EMReaderWriter::WriteHeader(ostream& s, const EMHeader &header)
 
 
 
-int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
+int EMReaderWriter::ReadHeader(std::ifstream &file, EMHeader &header)
+{
 
   EMHeader::EMHeaderParse ehp;
   file.read((char *)&ehp, sizeof(EMHeader::EMHeaderParse));
@@ -199,7 +201,7 @@ int EMReaderWriter::ReadHeader(ifstream &file, EMHeader &header) {
 }
 
 
-int EMReaderWriter::ReadData(ifstream &file, float **data,
+int EMReaderWriter::ReadData(std::ifstream &file, float **data,
                              const EMHeader &header)
 {
 
@@ -208,8 +210,9 @@ int EMReaderWriter::ReadData(ifstream &file, float **data,
     // allocate data
     *data = new float[nvox];
     if (*data == NULL) {
-      cout << "EMReaderWriter::ReadData can not allocated space for data - "
-           << "the requested size: " << nvox*sizeof(float) << endl;
+      std::cout << "EMReaderWriter::ReadData can not allocated space "
+                << "for data - the requested size: "
+                << nvox*sizeof(float) << std::endl;
       return -1;
     }
 
@@ -229,8 +232,8 @@ int EMReaderWriter::ReadData(ifstream &file, float **data,
         voxel_data_size =sizeof(float);
       break;
     default:
-      cout << "EMReaderWriter::ReadData the requested data type "
-           << header.type << " is not implemented " << endl;
+      std::cout << "EMReaderWriter::ReadData the requested data type "
+                << header.type << " is not implemented " << std::endl;
       return -1;
     }
 

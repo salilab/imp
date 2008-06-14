@@ -37,8 +37,8 @@ namespace std {
 /* Explicitly ignore some stuff to prevent SWIG warning about it */
 %ignore DensityMap::operator =;
 %ignore operator<<(std::ostream&, const DensityHeader &);
-%ignore operator<<(ostream&, const EMHeader &);
-%ignore operator<<(ostream&, const MRCHeader &);
+%ignore operator<<(std::ostream&, const EMHeader &);
+%ignore operator<<(std::ostream&, const MRCHeader &);
 
 %include "../def.h"
 %include "../MapReaderWriter.h"

@@ -7,9 +7,6 @@
 #include "DensityHeader.h"
 #include <iostream>
 #include <iomanip>
-using namespace std;  
-
-
 
 class EMDLLEXPORT XplorHeader
 {
@@ -69,8 +66,8 @@ public:
   void Write(const char *filename, const float *data,
              const DensityHeader &header );
 protected:
-  int ReadHeader(ifstream & XPLORstream,XplorHeader &header);
-  int ReadMap(ifstream &XPLORstream, float *data, XplorHeader &header);
+  int ReadHeader(std::ifstream & XPLORstream, XplorHeader &header);
+  int ReadMap(std::ifstream &XPLORstream, float *data, XplorHeader &header);
 
 };
 

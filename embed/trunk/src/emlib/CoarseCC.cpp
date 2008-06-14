@@ -3,8 +3,8 @@
 float CoarseCC::evaluate(DensityMap &em_map,
                          SampledDensityMap &model_map,
                          const ParticlesAccessPoint &access_p,
-                         vector<float> &dvx, vector<float>&dvy,
-                         vector<float>&dvz, float scalefac, bool lderiv)
+                         std::vector<float> &dvx, std::vector<float>&dvy,
+                         std::vector<float>&dvz, float scalefac, bool lderiv)
 {
    em_map.calcRMS();
    //resample the map for the particle provided
@@ -52,7 +52,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
   bool same_dimensions = em_map.same_dimensions(model_map);
   if (!same_dimensions)   {
     std::cerr << "CoarseCC::cross_correlation_coefficient >> This function "
-              << "cannot handle density maps of different size " << endl;
+              << "cannot handle density maps of different size " << std::endl;
     std::cerr << "First map dimensions : " << em_header->nx << " x "
               << em_header->ny << " x " << em_header->nz << std::endl;
     std::cerr << "Second map dimensions: " << model_header->nx << " x "
@@ -62,7 +62,8 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
   bool same_voxel_size = em_map.same_voxel_size(model_map);
   if (!same_voxel_size) {
     std::cerr << "CoarseCC::cross_correlation_coefficient >> This function "
-              << "cannot handle density maps of different pixelsize " << endl;
+              << "cannot handle density maps of different pixelsize "
+              << std::endl;
     std::cerr << "First map pixelsize : " << em_header->Objectpixelsize
               << std::endl;
     std::cerr << "Second map pixelsize: " << model_header->Objectpixelsize
@@ -131,10 +132,10 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     ccc = (ccc-nvox*em_header->dmean*model_header->dmean)
           /(nvox*em_header->rms * model_header->rms);
 
-    cout << " ccc : " << ccc << " voxel# " << nvox
-         << " norm factors (map,model) " << em_header->rms 
-         << "  " <<  model_header->rms << " means(map,model) "
-         << em_header->dmean << " " << model_header->dmean << endl;
+    std::cout << " ccc : " << ccc << " voxel# " << nvox
+              << " norm factors (map,model) " << em_header->rms 
+              << "  " <<  model_header->rms << " means(map,model) "
+              << em_header->dmean << " " << model_header->dmean << std::endl;
   }
   return ccc;
 }
@@ -143,8 +144,8 @@ void CoarseCC::calcDerivatives(const DensityMap &em_map,
                                SampledDensityMap &model_map,
                                const ParticlesAccessPoint &access_p,
                                const float &scalefac,
-                               vector<float> &dvx, vector<float>&dvy,
-                               vector<float>&dvz, int &ierr)
+                               std::vector<float> &dvx, std::vector<float>&dvy,
+                               std::vector<float>&dvz, int &ierr)
 {
 
   ierr=0;

@@ -6,10 +6,6 @@
 #include <iostream>
 #include <math.h>
 
-using std::istream;
-using std::ostream; //using namespace std;
-using std::endl;
-
 /* 
 CLASS 
   Vector3
@@ -308,13 +304,13 @@ public:
   }
 
   //// Outputs coordinates delimited by single space.
-  friend ostream& operator<<(ostream& s, const Vector3 &v) {
+  friend std::ostream& operator<<(std::ostream& s, const Vector3 &v) {
     return s << v.c[0] << ' ' << v.c[1] << ' ' << v.c[2];
   }
 
 
   //// Inputs coordinates delimited by single space.
-  friend istream& operator>>(istream& s, Vector3 &v) {
+  friend std::istream& operator>>(std::istream& s, Vector3 &v) {
     return s >> v.c[0] >> v.c[1] >> v.c[2];
   }
 

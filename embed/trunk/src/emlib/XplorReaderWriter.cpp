@@ -4,7 +4,7 @@
 int XplorReaderWriter::Read(const char *filename, float **data,
                             DensityHeader &header)
 {
-  ifstream XPLORstream(filename);
+  std::ifstream XPLORstream(filename);
   //header
   XplorHeader xheader;
   ReadHeader(XPLORstream,xheader);
@@ -14,8 +14,8 @@ int XplorReaderWriter::Read(const char *filename, float **data,
   int size = xheader.extent[0]*xheader.extent[1]*xheader.extent[2];
   *data =  new float[size];
   if (*data == NULL) {
-    cout << "XplorReader::Read can not allocated space for data - the "
-         << "requested size: " << size * sizeof(float) << endl;
+    std::cout << "XplorReader::Read can not allocated space for data - the "
+              << "requested size: " << size * sizeof(float) << std::endl;
     return -1;
   }
   ReadMap(XPLORstream, *data, xheader);
@@ -24,7 +24,8 @@ int XplorReaderWriter::Read(const char *filename, float **data,
 } 
 
 
-int XplorReaderWriter::ReadHeader(ifstream & XPLORstream, XplorHeader &header)
+int XplorReaderWriter::ReadHeader(std::ifstream & XPLORstream,
+                                  XplorHeader &header)
 {
 
   char line[300];
@@ -95,7 +96,7 @@ int XplorReaderWriter::ReadHeader(ifstream & XPLORstream, XplorHeader &header)
 }
 
 
-int XplorReaderWriter::ReadMap(ifstream &XPLORstream, float *data,
+int XplorReaderWriter::ReadMap(std::ifstream &XPLORstream, float *data,
                                XplorHeader &header)
 {
 
@@ -178,46 +179,48 @@ void XplorReaderWriter::Write(const char *filename,const float *data,
   XplorHeader header(header_);
 
 
-  ofstream s(filename);
+  std::ofstream s(filename);
 
-  s <<endl << "       2"<<endl << "REMARKS file name = ??? " << endl
-    << "REMARKS Date ...... created by em lib " << endl;
-  s.setf(ios::right, ios::adjustfield);
+  s << std::endl << "       2" << std::endl << "REMARKS file name = ??? "
+    << std::endl << "REMARKS Date ...... created by em lib " << std::endl;
+  s.setf(std::ios::right, std::ios::adjustfield);
   s.width(8);
   for (int i =0;i<3;i++){
-  s << setw(8)<<header.grid[i]<<
-    setw(8)<<floor(header.translateGrid[i]/header.voxelsize[i])<<
-    setw(8)<<floor(header.translateGrid[i]/header.voxelsize[i])
-             +header.extent[i]-1;
+  s << std::setw(8)<<header.grid[i]<<
+    std::setw(8) << floor(header.translateGrid[i]/header.voxelsize[i])<<
+    std::setw(8) << floor(header.translateGrid[i]/header.voxelsize[i])
+                    +header.extent[i]-1;
   }
-  s<<endl;
+  s << std::endl;
   for (int i =0;i<3;i++){
-    s<< scientific << setprecision(5)<<setw(12)<<header.cellsize[i];
+    s << std::scientific << std::setprecision(5) << std::setw(12)
+      << header.cellsize[i];
   }
   for (int i =0;i<3;i++){
-    s<< scientific << setprecision(5)<<setw(12)<<header.cellangle[i];
+    s << std::scientific << std::setprecision(5) << std::setw(12)
+      << header.cellangle[i];
   }
-  s << endl << "XYZ" << endl; // Z is the slowest
+  s << std::endl << "XYZ" << std::endl; // Z is the slowest
   int counter = 0;
   for(int k=0;k<header.extent[2];k++) { 
     if (counter != 0){
-      s << endl;
+      s << std::endl;
       counter=0;
     }
 
-    s<<setw(8)<<k<<endl;
+    s << std::setw(8) << k << std::endl;
     for(int j=0;j<  header.extent[1];j++) {
       for(int i=0;i< header.extent[0];i++) {
-        s << scientific << setprecision(5) << setw(12)
+        s << std::scientific << std::setprecision(5) << std::setw(12)
           << data[i + j*header.extent[0] + k*header.extent[0]*header.extent[1]];
         counter++;
         if (counter == 6) {
           counter = 0;
-          s << endl;
+          s << std::endl;
         }
       }
     }
   }
-  s<<endl << "  -9999" << endl;
+  s << std::endl << "  -9999" << std::endl;
   s.close();
 }

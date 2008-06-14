@@ -17,10 +17,6 @@
 
 #include <iostream>
 #include <iomanip>
-using std::istream;
-using std::ios;
-
-using namespace std;
 
 class VoxelInd {
 public:
