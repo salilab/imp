@@ -44,7 +44,7 @@ private:
   int num_particles_;
   IMPParticlesAccessPoint access_p_;
   // derivatives
-  vector<Float> dx_, dy_ ,dz_;
+  std::vector<Float> dx_, dy_ , dz_;
 };
 
 
