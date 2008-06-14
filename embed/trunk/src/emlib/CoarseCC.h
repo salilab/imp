@@ -8,7 +8,7 @@
 #include "SampledDensityMap.h"
 #include "ParticlesAccessPoint.h"
 #include "def.h"
-
+#include "ErrorHandeling.h"
 //! Responsible for performing coarse fitting between two density objects.
 /** The pixels involved are derived from the positions of N particles.
  */
@@ -25,18 +25,18 @@ public:
       The reason why is to use this term as part of an scoring function that
       is better the lower the term. If you want the cross correlation
       coefficient, use cross_correlation_coefficient() instead.
-      \param em_map DensityMap class containing the EM map. note: correct RMSD
-             and mean MUST be in the header!
-      \param model_map SampledDensityMap class prepared to contain the
+      \param[in] em_map DensityMap class containing the EM map. note: 
+             correct RMSD and mean MUST be in the header!
+      \param[in] model_map SampledDensityMap class prepared to contain the
              simulated EM map for the model.
-      \param access_p ParticlesAccessPoint class with the particles data
+      \param[in] access_p ParticlesAccessPoint class with the particles data
              (location, radii, weight)
-      \param dvx vector to contain the xpartial derivatives
-      \param dvy vector to contain the y partial derivatives
-      \param dvz vector to contain the z partial derivatives
-      \param scalefactor scale factor to apply to the value of the cross
+      \param[in] dvx vector to contain the xpartial derivatives
+      \param[in] dvy vector to contain the y partial derivatives
+      \param[in] dvz vector to contain the z partial derivatives
+      \param[in] scalefactor scale factor to apply to the value of the cross
              correlation term
-      \param lderiv if true, the derivatives of the term are computed
+      \param[in] lderiv if true, the derivatives of the term are computed
       \return the value of the cross correlation term: scalefac*(1-ccc)
    */
   static float evaluate(DensityMap &data, SampledDensityMap &model_map,
@@ -44,7 +44,26 @@ public:
                         std::vector<float> &dvx, std::vector<float>&dvy,
                         std::vector<float>&dvz, float scalefac, bool lderiv);
 
-  static void calcDerivatives(const DensityMap &em_map,
+
+/*!
+ Computes the derivatives of the cross correlation term scalefac*(1-ccc) at each
+ voxel of the map.
+ \param[in] em_map DensityMap class containing the EM map. note: correct RMS and
+            mean MUST be in the header!
+ \param[in] model_map SampledDensityMap class prepared to contain the simulated 
+            EM map for the model.
+ \param[in] access_p ParticlesAccessPoint class with the particles data 
+            (location, radii, weight)
+ \param[in] scalefactor scale factor to apply to the value of the cross 
+                        correlation term
+ \param[out] dvx vector to contain the x partial derivatives
+ \param[out] dvy vector to contain the y partial derivatives
+ \param[out] dvz vector to contain the z partial derivatives
+ \param[out] ierr
+ \return the function stores the values of the partial derivatives in 
+         the vectors
+*/
+  static void calc_derivatives(const DensityMap &em_map,
                               SampledDensityMap &model_map,
                               const ParticlesAccessPoint &access_p,
                               const float &scalefac,
@@ -53,9 +72,9 @@ public:
 
 
 
-  /** Correlation between em density and density of a model moddens
-      threshold can be specified that is checked in moddens to reduce
-      elements of summation
+  /** Cross correlation coefficient between the em density and the density of a 
+      model. moddens threshold can be specified that is checked in moddens to 
+      reduce elements of summation
       \note This is not the local CC function
       \param[in] em_map               the target map (experimentally determined)
       \param[in] model_map            the sampled density map of the model
