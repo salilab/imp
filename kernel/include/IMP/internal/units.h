@@ -33,7 +33,7 @@ namespace unit
 namespace internal
 {
 
-struct IMPDLLEXPORT AtomsPerMol {};
+struct AtomsPerMol {};
 
 
 struct MDEnergyTag;

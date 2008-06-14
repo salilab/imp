@@ -14,6 +14,9 @@ namespace internal
 {
 
 const unit::ExponentialNumber<23> NA(6.02214179);
+
+const unit::internal::AtomsPerMol unit::ATOMS_PER_MOL;
+
 // definition of KB
 const unit::Shift<unit::Divide<unit::Joule, unit::Kelvin>::type, -23>::type
 KB(1.3806503);
