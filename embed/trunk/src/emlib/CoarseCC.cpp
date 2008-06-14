@@ -1,4 +1,5 @@
 #include "CoarseCC.h"
+#include  <math.h>
 /*Correlation function  */
 float CoarseCC::evaluate(DensityMap &em_map,
                          SampledDensityMap &model_map,
@@ -26,7 +27,7 @@ float CoarseCC::evaluate(DensityMap &em_map,
   //compute the derivatives if required
   int ierr = 0;
   if (lderiv) {
-    CoarseCC::calcDerivatives(em_map, model_map, access_p, scalefac,
+    CoarseCC::calc_derivatives(em_map, model_map, access_p, scalefac,
                               dvx, dvy, dvz, ierr);
   }
   return escore;
@@ -51,24 +52,26 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
   //validity checks
   bool same_dimensions = em_map.same_dimensions(model_map);
   if (!same_dimensions)   {
-    std::cerr << "CoarseCC::cross_correlation_coefficient >> This function "
+    std::ostringstream msg;
+    msg << "CoarseCC::cross_correlation_coefficient >> This function "
               << "cannot handle density maps of different size " << std::endl;
-    std::cerr << "First map dimensions : " << em_header->nx << " x "
+    msg << "First map dimensions : " << em_header->nx << " x "
               << em_header->ny << " x " << em_header->nz << std::endl;
-    std::cerr << "Second map dimensions: " << model_header->nx << " x "
+    msg << "Second map dimensions: " << model_header->nx << " x "
               << model_header->ny << " x " << model_header->nz << std::endl;
-    throw 1;
+    throw std::logic_error(msg.str().c_str());
   }
   bool same_voxel_size = em_map.same_voxel_size(model_map);
   if (!same_voxel_size) {
-    std::cerr << "CoarseCC::cross_correlation_coefficient >> This function "
+    std::ostringstream msg;
+    msg << "CoarseCC::cross_correlation_coefficient >> This function "
               << "cannot handle density maps of different pixelsize "
               << std::endl;
-    std::cerr << "First map pixelsize : " << em_header->Objectpixelsize
+    msg << "First map pixelsize : " << em_header->Objectpixelsize
               << std::endl;
-    std::cerr << "Second map pixelsize: " << model_header->Objectpixelsize
+    msg << "Second map pixelsize: " << model_header->Objectpixelsize
               << std::endl;
-    throw 1;
+    throw std::logic_error(msg.str().c_str());
   }
 
   // Take into account the possibility of a model map with zero rms
@@ -132,15 +135,15 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     ccc = (ccc-nvox*em_header->dmean*model_header->dmean)
           /(nvox*em_header->rms * model_header->rms);
 
-    std::cout << " ccc : " << ccc << " voxel# " << nvox
-              << " norm factors (map,model) " << em_header->rms 
-              << "  " <<  model_header->rms << " means(map,model) "
-              << em_header->dmean << " " << model_header->dmean << std::endl;
+    //    std::cout << " ccc : " << ccc << " voxel# " << nvox
+    //          << " norm factors (map,model) " << em_header->rms 
+    //          << "  " <<  model_header->rms << " means(map,model) "
+    //          << em_header->dmean << " " << model_header->dmean << std::endl;
   }
   return ccc;
 }
 
-void CoarseCC::calcDerivatives(const DensityMap &em_map,
+void CoarseCC::calc_derivatives(const DensityMap &em_map,
                                SampledDensityMap &model_map,
                                const ParticlesAccessPoint &access_p,
                                const float &scalefac,
@@ -167,6 +170,7 @@ void CoarseCC::calcDerivatives(const DensityMap &em_map,
 
   int nvox = em_header->nx * em_header->ny * em_header->nz;
   int ivox;
+  // Compute the derivatives
   for (int ii=0; ii<access_p.get_size(); ii++) {
     const KernelParameters::Parameters *params =
         model_map.get_kernel_params()->find_params(access_p.get_r(ii));
@@ -188,15 +192,15 @@ void CoarseCC::calcDerivatives(const DensityMap &em_map,
           rsq = dx * dx + dy * dy + dz * dz;
           rsq = EXP(- rsq * params->get_inv_sigsq());
           tmp = (access_p.get_x(ii)-x_loc[ivox]) * rsq;
-          if (abs(tmp) > lim) {
+          if (std::abs(tmp) > lim) {
             tdvx += tmp * em_data[ivox];
           }
           tmp = (access_p.get_y(ii)-y_loc[ivox]) * rsq;
-          if (abs(tmp) > lim) {
+          if (std::abs(tmp) > lim) {
             tdvy += tmp * em_data[ivox];
           }
           tmp = (access_p.get_z(ii)-z_loc[ivox]) * rsq;
-          if (abs(tmp) > lim) {
+          if (std::abs(tmp) > lim) {
             tdvz += tmp * em_data[ivox];
           }
           ivox++;
@@ -205,16 +209,17 @@ void CoarseCC::calcDerivatives(const DensityMap &em_map,
     }
     // validate the the model and em maps have some content.
     if (em_header->rms < EPS) {
-      std::cerr << "CoarseCC::calcDerivatives : EM map is empty !" << std::endl;
-      std::cerr << "Exit in CoarseCC::calcDerivatives " << std::endl;
-      throw 1; 
-    };
+      std::ostringstream msg;
+      msg << "CoarseCC::calc_derivatives : EM map is empty !" << std::endl;
+      msg << "Exit in CoarseCC::calc_derivatives " << std::endl;
+      throw std::logic_error(msg.str().c_str()); 
+    }
     if (model_header->rms < EPS) {
-      std::cerr << "CoarseCC::calcDerivatives : Model map is empty !"
-                << std::endl;
-      std::cerr << "Exit in CoarseCC::calcDerivatives " << std::endl;
-      throw 1; 
-    };
+      std::ostringstream msg;
+      msg << "CoarseCC::calc_derivatives : Model map is empty !"
+      << std::endl<< "Exit in CoarseCC::calc_derivatives " << std::endl;
+      throw std::logic_error(msg.str().c_str()); 
+    }
     tmp = access_p.get_w(ii) * 2.*params->get_inv_sigsq() * scalefac
           * params->get_normfac() /
           (1.0*nvox * em_header->rms * model_header->rms);
