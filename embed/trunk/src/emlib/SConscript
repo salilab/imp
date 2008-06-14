@@ -8,7 +8,7 @@ env.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
 
 # Source files
-files = ('MapReaderWriter.cpp','DensityHeader.cpp','DensityMap.cpp','EMReaderWriter.cpp','XplorReaderWriter.cpp','MRCReaderWriter.cpp','KernelParameters.cpp','SampledDensityMap.cpp','CoarseCC.cpp','CoarseCCatIntervals.cpp')
+files = ('ErrorHandling.cpp','MapReaderWriter.cpp','DensityHeader.cpp','DensityMap.cpp','EMReaderWriter.cpp','XplorReaderWriter.cpp','MRCReaderWriter.cpp','KernelParameters.cpp','SampledDensityMap.cpp','CoarseCC.cpp','CoarseCCatIntervals.cpp')
 
 
 # Build the shared library:
