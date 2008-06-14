@@ -28,12 +28,12 @@ void MRCReaderWriter::Write(const char *fn_out, const float *data,
 // Reads an MRC file
 int MRCReaderWriter::read(float **pt)
 {
-  fs.open(filename.c_str(), fstream::in | fstream::binary);
+  fs.open(filename.c_str(), std::fstream::in | std::fstream::binary);
   if (!fs.fail()) {
     // Read header
     if (read_header()==1) {
-      cout << "MRCReaderWriter::read >> Error reading MRC header of file "
-           << filename << endl;
+      std::cout << "MRCReaderWriter::read >> Error reading MRC header of file "
+                << filename << std::endl;
       return 1;
     }
     // Allocate memory
@@ -41,8 +41,8 @@ int MRCReaderWriter::read(float **pt)
     (*pt)= new float[n]; 
     // read 
     if (read_data(*pt) == 1) {
-      cout << "MRCReaderWriter::read >> Error reading MRC data of file "
-           << filename << endl;
+      std::cout << "MRCReaderWriter::read >> Error reading MRC data of file "
+                << filename << std::endl;
       return 1;
     }
   }
@@ -55,16 +55,17 @@ int MRCReaderWriter::read(float **pt)
 int MRCReaderWriter::read_data(float *pt)
 {
   if(header.mode==0) {
-    cout << " read8 data" << endl;
+    std::cout << " read8 data" << std::endl;
     return read_8_data(pt);
   }
   else if(header.mode==2) {
-    cout << "read32 data" << endl;
+    std::cout << "read32 data" << std::endl;
     return read_32_data(pt);
   }
   else {
-    cout << "MRCReaderWriter::read_data >> This routine can only read 8-bit "
-         << "or 32-bit MRC files. Unknown mode for " << filename << endl;
+    std::cout << "MRCReaderWriter::read_data >> This routine can only read "
+              << "8-bit or 32-bit MRC files. Unknown mode for " << filename
+              << std::endl;
   }
   return 1;
 }
@@ -116,8 +117,8 @@ int MRCReaderWriter::read_32_data(float *pt)
     unsigned char *ch = (unsigned char *)pt;
     byte_swap(ch, n);
   }
-  cout << "MRC file read in 32-bit mode: grid " << header.nx << "x"
-       << header.ny << "x" << header.nz << endl;
+  std::cout << "MRC file read in 32-bit mode: grid " << header.nx << "x"
+            << header.ny << "x" << header.nz << std::endl;
   return ierr;
 }
 
@@ -141,10 +142,10 @@ int MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
 int MRCReaderWriter::seek_to_data(void)
 {
   int ierr=0;
-  fs.seekg(sizeof(MRCHeader)+header.nsymbt,ios::beg );
+  fs.seekg(sizeof(MRCHeader)+header.nsymbt, std::ios::beg);
   if(fs.fail()) {
-    cout << "MRCReaderWriter::seek_to_data. Cannot find MRC data in file "
-         << filename << endl;
+    std::cout << "MRCReaderWriter::seek_to_data. Cannot find MRC data in file "
+              << filename << std::endl;
     ierr=1;
   }
 
@@ -167,10 +168,11 @@ int MRCReaderWriter::read_header(void)
     header.machinestamp = machinestamp;
   }
   if (header.mapc != 1 || header.mapr != 2 || header.maps != 3) {
-    cout << "MRCReaderWriter::read_header. Non-standard MRC file: "
-         << "column, row, section indices are not (1,2,3) but are ("
-         << header.mapc << "," << header.mapr << "," << header.maps << ")."
-         << " Resulting density data may be incorrectly oriented." << endl;
+    std::cout << "MRCReaderWriter::read_header. Non-standard MRC file: "
+              << "column, row, section indices are not (1,2,3) but are ("
+              << header.mapc << "," << header.mapr << "," << header.maps << ")."
+              << " Resulting density data may be incorrectly oriented."
+              << std::endl;
   }
   return 0;
 }
@@ -180,18 +182,18 @@ int MRCReaderWriter::read_header(void)
 // Write a MRC file
 int MRCReaderWriter::write(const char *fn,const float *pt)
 {
-  ofstream s(fn, ofstream::out | ofstream::binary);
+  std::ofstream s(fn, std::ofstream::out | std::ofstream::binary);
   if(!s.fail()) {
     // Write header
     if(write_header(s)==1) {
-      cout << "MRCReaderWriter::write. Error writing MRC header to file "
-           << fn << endl;
+      std::cout << "MRCReaderWriter::write. Error writing MRC header to file "
+                << fn << std::endl;
       return 1;
     }
     // Write values
     if(write_data(s,pt)==1) {
-      cout << "MRCReaderWriter::write. Error writing MRC data to file "
-           << fn << endl;
+      std::cout << "MRCReaderWriter::write. Error writing MRC data to file "
+                << fn << std::endl;
       return 1;
     }
   }
@@ -203,7 +205,7 @@ int MRCReaderWriter::write(const char *fn,const float *pt)
 
 
 /* Writes the MRC header to a file */
-int MRCReaderWriter::write_header(ofstream &s)
+int MRCReaderWriter::write_header(std::ofstream &s)
 {
   int wordsize=4; 
   s.write((char *) &header.nx,wordsize);
@@ -240,8 +242,8 @@ int MRCReaderWriter::write_header(ofstream &s)
   s.write((char *) &header.nlabl,wordsize);
   s.write((char *) &header.labels,sizeof(char)*MRC_NUM_LABELS*MRC_LABEL_SIZE);
   if(s.bad()) {
-    cout << "MRCReaderWriter::write_header. Error writing MRC header to file"
-         << endl;
+    std::cout << "MRCReaderWriter::write_header. Error writing MRC header "
+              << "to file" << std::endl;
     return 1;
   }
 
@@ -250,17 +252,17 @@ int MRCReaderWriter::write_header(ofstream &s)
 }
 
 /* Writes the grid of values of an EM map to a MRC file */
-int MRCReaderWriter::write_data(ofstream &s,const float *pt)
+int MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
 {
 
   s.write((char *)pt,sizeof(float)*header.nx * header.ny * header.nz);
   if(s.bad()){
-    cout << "MRCReaderWriter::write_header. Error writing MRC data to file"
-         << endl;
+    std::cout << "MRCReaderWriter::write_header. Error writing MRC data to file"
+              << std::endl;
     return 1;
   }
-  cout << "MRC file written: grid " << header.nx << "x" << header.ny
-       << "x" << header.nz << endl;
+  std::cout << "MRC file written: grid " << header.nx << "x" << header.ny
+            << "x" << header.nz << std::endl;
   return 0;
 
 
@@ -311,7 +313,7 @@ void byte_swap(unsigned char *ch, int n_array)
 // Translate DensityHeader to MRCHeader
 int MRCHeader::FromDensityHeader(const DensityHeader &h)
 {
-  string empty;
+  std::string empty;
 
   nz=h.nz;   ny=h.ny;  nx=h.nx; // map size
   // mode
@@ -363,7 +365,7 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
 // Translate MRCHeader to DensityHeader
 int MRCHeader::ToDensityHeader(DensityHeader &h)
 {
-  string empty;
+  std::string empty;
   h.nz=nz; h.ny=ny; h.nx=nx; // map size
   // mode
   if(mode==0)

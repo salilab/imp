@@ -144,20 +144,20 @@ public:
 
 
   //// Outputs coordinates delimited by single space.
-  friend ostream& operator<<(ostream& s, const EMHeader &h) {
-    return s <<"size : " << h.nx << "  " << h.ny << "  " << h.nz << endl << 
-      "magic: " << h.magic << endl << 
-      "type:  " << h.type <<  endl << 
-      " comment : " << h.comment <<  endl << 
-      " voltage : " << h.voltage <<  endl << 
-      "cs: " << h.Cs << endl <<
-      "aperture: " << h.Aperture<< endl <<
-      "Magnification " << h.Magnification<< endl <<
-      " Postmagnification "<< h.Postmagnification << endl <<
-      " Exposuretime  " << h.Exposuretime << endl <<
-      "Objectpixelsize  " << h.Objectpixelsize << endl <<
-      "Microscope  " << h.Microscope << endl <<
-      "pixel-size:  " << h.Pixelsize << endl;
+  friend std::ostream& operator<<(std::ostream& s, const EMHeader &h) {
+    return s <<"size : " << h.nx << "  " << h.ny << "  " << h.nz
+      << std::endl << "magic: " << h.magic << std::endl << 
+      "type:  " << h.type <<  std::endl << 
+      " comment : " << h.comment <<  std::endl << 
+      " voltage : " << h.voltage <<  std::endl << 
+      "cs: " << h.Cs << std::endl <<
+      "aperture: " << h.Aperture<< std::endl <<
+      "Magnification " << h.Magnification<< std::endl <<
+      " Postmagnification "<< h.Postmagnification << std::endl <<
+      " Exposuretime  " << h.Exposuretime << std::endl <<
+      "Objectpixelsize  " << h.Objectpixelsize << std::endl <<
+      "Microscope  " << h.Microscope << std::endl <<
+      "pixel-size:  " << h.Pixelsize << std::endl;
   }
 
 
@@ -199,9 +199,9 @@ public:
   void Write(const char* filename, const float *data,
              const DensityHeader &header);
 protected:
-  int ReadHeader(ifstream &file, EMHeader &header);
-  int ReadData(ifstream &file, float **data, const EMHeader &header);
-  int WriteHeader(ostream& s, const EMHeader &header);
+  int ReadHeader(std::ifstream &file, EMHeader &header);
+  int ReadData(std::ifstream &file, float **data, const EMHeader &header);
+  int WriteHeader(std::ostream& s, const EMHeader &header);
 };
 
 

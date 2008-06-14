@@ -26,7 +26,6 @@
 #include "DensityHeader.h"
 #include <iostream>
 #include <fstream>
-using namespace std;
 
 class EMDLLEXPORT MapReaderWriter
 {

@@ -60,31 +60,32 @@ public:
   int ToDensityHeader(DensityHeader &h);
 
   //! Outputs coordinates delimited by single space.
-  friend ostream& operator<<(ostream& s, const MRCHeader &v) {
-    s<< "nx: " << v.nx << " ny: " << v.ny << " nz: " << v.nz <<endl;
-    s<<"mode: " << v.mode << endl;
+  friend std::ostream& operator<<(std::ostream& s, const MRCHeader &v) {
+    s<< "nx: " << v.nx << " ny: " << v.ny << " nz: " << v.nz << std::endl;
+    s<<"mode: " << v.mode << std::endl;
     s <<"nxstart: " << v.nxstart << " nystart: " << v.nystart <<" nzstart: "
-      << v.nzstart << endl;
-    s<<"mx: "<< v.mx <<" my:" << v.my << " mz: " << v.mz << endl;
-    s<< "xlen: " << v.xlen <<" ylen: " << v.ylen <<" zlen: " << v.zlen << endl;
+      << v.nzstart << std::endl;
+    s<<"mx: "<< v.mx <<" my:" << v.my << " mz: " << v.mz << std::endl;
+    s << "xlen: " << v.xlen <<" ylen: " << v.ylen <<" zlen: " << v.zlen
+      << std::endl;
     s <<"alpha : " << v.alpha << " beta: " << v.beta <<" gamma: "<< v.gamma
-      << endl;
+      << std::endl;
     s << "mapc : " << v.mapc << " mapr: " << v.mapr <<" maps: " << v.maps
-      << endl;
+      << std::endl;
     s << "dmin: " << v.dmin << " dmax: " << v.dmax << " dmean: " << v.dmean
-      << endl;
-    s <<"ispg: " << v.ispg << endl;
-    s <<"nsymbt: " << v.nsymbt << endl;
-    s << "user: " << v.user << endl;
+      << std::endl;
+    s <<"ispg: " << v.ispg << std::endl;
+    s <<"nsymbt: " << v.nsymbt << std::endl;
+    s << "user: " << v.user << std::endl;
     s << "xorigin: " << v.xorigin << " yorigin: "<< v.yorigin
-      << " zorigin: "<< v.zorigin << endl;
-    s <<"map: " << v.map << endl;
-    s<< "machinestamp: " << v.machinestamp << endl;
-    s <<"rms: " << v.rms << endl;
-    s<<"nlabl: " << v.nlabl <<endl;
-    s <<"labels : " << v.labels << endl;
+      << " zorigin: "<< v.zorigin << std::endl;
+    s <<"map: " << v.map << std::endl;
+    s<< "machinestamp: " << v.machinestamp << std::endl;
+    s <<"rms: " << v.rms << std::endl;
+    s<<"nlabl: " << v.nlabl << std::endl;
+    s <<"labels : " << v.labels << std::endl;
     for(int i=0;i<v.nlabl;i++)
-      s <<"labels[" << i << "] = ->" <<  v.labels[i] << "<-" << endl;
+      s <<"labels[" << i << "] = ->" <<  v.labels[i] << "<-" << std::endl;
     return s;
   }
 
@@ -130,12 +131,12 @@ private:
   }
 
   int write(const char *fn,const float *pt);
-  int write_header(ofstream &s);
-  int write_data(ofstream &s,const float *pt);
+  int write_header(std::ofstream &s);
+  int write_data(std::ofstream &s, const float *pt);
 
 
-  string filename; // Name of the file
-  fstream fs;  // file stream for the file read
+  std::string filename; // Name of the file
+  std::fstream fs;  // file stream for the file read
   MRCHeader header; // The header of the file
   // The grid of data. The data is stored in the grid with the convention
   // that the order of indexes is z,y,x
