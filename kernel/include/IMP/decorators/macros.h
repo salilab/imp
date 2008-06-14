@@ -68,7 +68,8 @@ public:                                                                 \
    return IMP::DecoratorBase::cast<Name>(p);                            \
  }                                                                      \
  static bool is_instance_of(::IMP::Particle *p) {                       \
- return has_required_attributes(p);                                     \
+   decorator_initialize_static_data();                                  \
+   return has_required_attributes(p);                                   \
  }                                                                      \
  /** Write information about this decorator to out. Each line should    \
      prefixed by prefix*/                                               \
