@@ -14,7 +14,7 @@ class SampleParticlesTest(unittest.TestCase):
     def setUp(self):
         print 'start setup'
         """ create particles """
-        self.particles_p = EM.particles_provider()
+        self.particles_p = EM.ParticlesProvider()
         self.particles_p.append(9.,5.,5.,1.,1.)
         self.particles_p.append(12.,9.,4.,1.,1.)
         self.particles_p.append(4.,5.,5.,1.,1.)

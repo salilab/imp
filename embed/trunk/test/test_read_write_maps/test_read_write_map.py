@@ -9,7 +9,7 @@ class MRCWriteTest(unittest.TestCase):
     """Test MRC write function on sampled map"""
     def setUp(self):
         """ create particles """
-        self.particles = EM.particles_provider()
+        self.particles = EM.ParticlesProvider()
         self.particles.append(9.,5.,5.,1.,1.)
         self.particles.append(12.,9.,4.,1.,1.)
         self.particles.append(4.,5.,5.,1.,1.)
