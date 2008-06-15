@@ -28,7 +28,7 @@ public:
   }
 
   //! The size of the map is determined by the header and the data is allocated.
-  SampledDensityMap(const DensityHeader &header_);
+  SampledDensityMap(const DensityHeader &header);
 
   //! Generatea a sampled density map from the particles.
   /** /param[in] access_p     access point to the particles (locations,
@@ -55,7 +55,7 @@ public:
                                   int &iminx,int &iminy, int &iminz,
                                   int &imaxx,int &imaxy, int &imaxz) const;
 
-  KernelParameters *get_kernel_params()  { return &kernel_params;}
+  KernelParameters *get_kernel_params()  { return &kernel_params_;}
 
 
 protected:
@@ -84,7 +84,7 @@ protected:
   int lower_voxel_shift(const float &loc, const float &kdist,
                         const float &orig, int ndim) const {
     int imin;
-    imin = (int)floor(((loc-kdist-orig) / header.Objectpixelsize));
+    imin = (int)floor(((loc-kdist-orig) / header_.Objectpixelsize));
     //bookkeeping
     if (imin < 0) 
       imin = 0;
@@ -97,16 +97,16 @@ protected:
   int upper_voxel_shift(const float &loc, const float &kdist,
                         const float &orig, int ndim) const {
     int imax;
-    imax = (int)floor(((loc+kdist-orig) / header.Objectpixelsize));
+    imax = (int)floor(((loc+kdist-orig) / header_.Objectpixelsize));
     //bookkeeping
     if (imax < 0) imax = 0;
     if (imax > ndim-1) imax = ndim-1;
     return imax;
   }
 
-
-  //kernel handeling
-  KernelParameters kernel_params;
+protected:
+  //! kernel handling
+  KernelParameters kernel_params_;
 };
 
 
