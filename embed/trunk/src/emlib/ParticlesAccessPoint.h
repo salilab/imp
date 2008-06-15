@@ -28,15 +28,13 @@ public:
 
 
 
-class EMDLLEXPORT particles_provider : public ParticlesAccessPoint
+class EMDLLEXPORT ParticlesProvider : public ParticlesAccessPoint
 {
 public:
-  std::vector<float> x,y,z,radii,weights;
-
-  ~particles_provider(){}
-  particles_provider(void){}
+  ~ParticlesProvider(){}
+  ParticlesProvider(void){}
   // The constructor reads the file
-  particles_provider(const char *filename) {
+  ParticlesProvider(const char *filename) {
     read(filename);
   }
 
@@ -44,50 +42,53 @@ public:
   void translate(float xo,float yo,float zo) {
     int n = get_size();
     for (int i=0;i<n;i++) {
-      x[i]+=xo;y[i]+=yo;z[i]+=zo;
+      x_[i] += xo; y_[i] += yo; z_[i] += zo;
     }
   }
 
   void read(const char *filename) {
     std::fstream fs;
     int i,ncd;
-    float x_,y_,z_,r_,w_;
+    float x, y, z, r, w;
 
     fs.open(filename, std::fstream::in );
     if(!fs.fail()) {
       fs >> ncd; // Read number of coordinates
       // Get values
       for (i=0;i<ncd;i++) {
-        fs >> x_ >> y_ >> z_ >> r_ >> w_;
-        append(x_,y_,z_,r_,w_);
+        fs >> x >> y >> z >> r >> w;
+        append(x, y, z, r, w);
       }
     }
     fs.close();
   }
 
-  void append(float x_,float y_,float z_,float r_,float w_) {
-    x.push_back(x_);
-    y.push_back(y_);
-    z.push_back(z_);
-    radii.push_back(r_);
-    weights.push_back(w_);
+  void append(float x, float y, float z, float r, float w) {
+    x_.push_back(x);
+    y_.push_back(y);
+    z_.push_back(z);
+    radii_.push_back(r);
+    weights_.push_back(w);
   }
 
-  int get_size() const {return x.size();}
-  float get_x(int index)const {return x[index];}
-  float get_y(int index)const {return y[index];}
-  float get_z(int index)const {return z[index];}
-  float get_r(int index)const {return radii[index];}
-  float get_w(int index)const {return weights[index];}
+  int get_size() const {return x_.size();}
+  float get_x(int index)const {return x_[index];}
+  float get_y(int index)const {return y_[index];}
+  float get_z(int index)const {return z_[index];}
+  float get_r(int index)const {return radii_[index];}
+  float get_w(int index)const {return weights_[index];}
   void set_x(unsigned int index, float xval) { 
-     if ( (index < x.size()) && (index >= 0) ) x[index] = xval;
+     if (index < x_.size() && index >= 0) x_[index] = xval;
   }
   void set_y(unsigned int index, float yval) { 
-    if ( (index < y.size()) && (index >= 0) ) y[index] = yval;
+    if (index < y_.size() && index >= 0) y_[index] = yval;
   }
   void set_z(unsigned int index, float zval) { 
-    if ( (index < z.size()) && (index >= 0) ) z[index] = zval;
+    if (index < z_.size() && index >= 0) z_[index] = zval;
   }
+
+protected:
+  std::vector<float> x_, y_, z_, radii_, weights_;
 };
 
 
