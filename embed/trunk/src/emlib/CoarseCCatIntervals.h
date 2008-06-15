@@ -51,13 +51,13 @@ protected:
   //! Number of times the evaluation has been called.
   /** The evaluation is only performed the first time and when calls_counter
       reaches eval_interval. Otherwise the stored_cc_ value is returned */
-  int calls_counter;
+  int calls_counter_;
   //! Stored correlation value
   float stored_cc_ ;
   //! Stored derivative terms
   float *stored_dvx_,*stored_dvy_,*stored_dvz_;
   // true when memory for the terms storing the derivatives has been assigned
-  bool dv_memory_allocated;
+  bool dv_memory_allocated_;
 };
 
 

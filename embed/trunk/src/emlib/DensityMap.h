@@ -46,7 +46,7 @@ public:
       Flag normalize is set to avoid repeated computation */
   void std_normalize();
 
-  inline bool is_normalized() const {return normalized;}
+  inline bool is_normalized() const {return normalized_;}
 
   //! Calculate the location of a given voxel.
   /** \param[in] index The voxel index
@@ -88,36 +88,36 @@ public:
 
 
   // inspection functions
-  const DensityHeader *get_header()const {return &header;}
-  DensityHeader *get_header_writable() {return &header;}
+  const DensityHeader *get_header()const {return &header_;}
+  DensityHeader *get_header_writable() {return &header_;}
 
   float* get_x_loc() const {
-    if (!loc_calculated) {
+    if (!loc_calculated_) {
       std::cerr << "DensityMap::get_x_loc ask for x location although it "
                 << "has not been calculated " << std::endl;
       throw 1;
     }
-    return x_loc;
+    return x_loc_;
   }
   float* get_y_loc() const {
-    if (!loc_calculated) {
+    if (!loc_calculated_) {
       std::cerr << "DensityMap::get_x_loc ask for x location although it "
                 << "has not been calculated " << std::endl;
       throw 1;
     }
-    return y_loc;
+    return y_loc_;
   }
 
   float* get_z_loc() const {
-    if (!loc_calculated) {
+    if (!loc_calculated_) {
       std::cerr << "DensityMap::get_x_loc ask for x location although it "
                 << "has not been calculated " << std::endl;
       throw 1;
     }
-    return z_loc;
+    return z_loc_;
   }
 
-  emreal* get_data() const {return data;}
+  emreal* get_data() const {return data_;}
 
   //! Checks if two maps have the same 
   /** \param[in] other the map to compare with
@@ -151,17 +151,18 @@ protected:
   void float2real(float *f_data, emreal **r_data);
   void real2float(emreal *r_data, float **f_data);
 
-  DensityHeader header;
-  emreal *data; // the order is ZYX (Z-slowest)
-  bool data_allocated;
+  DensityHeader header_;
+  emreal *data_; // the order is ZYX (Z-slowest)
+  bool data_allocated_;
 
   //! Locations for each of the voxels of the map (they are precomputed and
   //! each one is of size nvox, being nvox the size of the map)
-  float *x_loc,*y_loc,*z_loc;
-  bool loc_calculated; // true if the locations have already been computed
+  float *x_loc_, *y_loc_, *z_loc_;
+  //! true if the locations have already been computed
+  bool loc_calculated_;
 
-  bool normalized;
-  bool rms_calculated;
+  bool normalized_;
+  bool rms_calculated_;
 
 };
 
