@@ -3,7 +3,7 @@ Import('emenv', 'get_pyext_environment')
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(emenv, 'IMPEM', cplusplus=True)
 e.Append(CPPPATH=['#/kernel/include', e['EM_CPPPATH'], e['BOOST_CPPPATH']])
-e.Append(LIBPATH=['#/kernel/src', '../'], LIBS=['imp', 'impem'])
+e.Append(LIBPATH=['#/kernel/src', '#/impEM/src'], LIBS=['imp', 'impem'])
 e.Append(LIBPATH=[e['EM_LIBPATH']], LIBS=[e['EM_LIBS']])
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32

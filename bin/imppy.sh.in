@@ -5,7 +5,7 @@ MODPY=@MODPY@
 PATHSEP=@PATHSEP@
 EXTRALIB=@EXTRALIB@
 
-LLP="${EXTRALIB}${TOPDIR}/kernel/src${PATHSEP}${TOPDIR}/impEM"
+LLP="${EXTRALIB}${TOPDIR}/kernel/src${PATHSEP}${TOPDIR}/impEM/src"
 if test -z "${LD_LIBRARY_PATH}"; then
   LD_LIBRARY_PATH=${LLP}
 else
