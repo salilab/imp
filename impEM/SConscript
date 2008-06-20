@@ -1,42 +1,25 @@
 from tools import embed
 
-Import('env', 'get_sharedlib_environment', 'invalidate_environment')
+Import('env', 'invalidate_environment')
 
 Help("""
 Type: 'scons impEM' to build and test the impEM extension module;
       'scons impEM-install' to install it.
 """)
 
-# Get custom environment for building against EMLIB:
+# Get custom environment for building against EMBED:
 emenv = env.Clone()
 embed.configure_check(emenv)
 Export('emenv')
 
-# Make sure that all builds with this environment fail if EMLIB was not found:
+# Make sure that all builds with this environment fail if EMBED was not found:
 if emenv['EM_LIBS'] == '' or emenv['MODELLER_LIBS'] == '':
     invalidate_environment(emenv, embed.fail)
 
-# Get an environment suitable for building a shared library:
-e = get_sharedlib_environment(emenv, 'IMPEM_EXPORTS', cplusplus=True)
-
-e.Append(CPPPATH=['#/kernel/include', e['EM_CPPPATH'], e['BOOST_CPPPATH']])
-e.Append(LIBPATH=['#/kernel/src', e['EM_LIBPATH']], LIBS=['imp', e['EM_LIBS']])
-
-# _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
-e.Append(CPPDEFINES='_USE_MATH_DEFINES')
-
-files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp')
-
-# Build the shared library:
-lib = e.SharedLibrary('impem', files)
-
-# Install the library:
-libinst = e.Install(e['libdir'], lib)
-e.Alias('impEM-install', [libinst])
-
 # Subdirectories:
+lib = SConscript('src/SConscript')
 pyext = SConscript('pyext/SConscript')
 test = SConscript('test/SConscript')
-e.Depends(test, [pyext, lib])
+emenv.Depends(test, [pyext, lib])
 
 Return('lib')
