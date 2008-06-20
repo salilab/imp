@@ -12,6 +12,7 @@ decorators_files = SConscript('decorators/SConscript')
 unary_functions_files = SConscript('unary_functions/SConscript')
 score_states_files = SConscript('score_states/SConscript')
 pair_scores_files = SConscript('pair_scores/SConscript')
+particle_refiners_files = SConscript('particle_refiners/SConscript')
 singleton_scores_files = SConscript('singleton_scores/SConscript')
 triplet_scores_files = SConscript('triplet_scores/SConscript')
 score_states_files = SConscript('score_states/SConscript')
@@ -21,10 +22,11 @@ internal_files = SConscript('internal/SConscript')
 files = ['base_types.cpp', 'Model.cpp',
          'Particle.cpp', 'ScoreState.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
-         'random.cpp', 'Key.cpp', 'exception.cpp'
+         'random.cpp', 'Key.cpp', 'exception.cpp', 'ParticleRefiner.cpp'
         ] + decorators_files + restraints_files + optimizers_files \
           + unary_functions_files + pair_scores_files + singleton_scores_files \
-          + triplet_scores_files + score_states_files + internal_files
+          + triplet_scores_files + score_states_files + internal_files \
+          + particle_refiners_files
 
 # Build the shared library:
 lib = env.SharedLibrary('imp', files)

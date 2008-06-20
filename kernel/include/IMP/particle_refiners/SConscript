@@ -1,0 +1,9 @@
+Import('env')
+import os.path
+
+files=['BondCoverParticleRefiner.h', 'ChildrenParticleRefiner.h']
+
+# Install the include files
+includedir = os.path.join(env['includedir'], 'IMP', 'particle_refiners')
+inst = env.Install(includedir, files)
+env.Alias('install', inst)
