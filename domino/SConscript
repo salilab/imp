@@ -1,0 +1,12 @@
+Help("""
+Type: 'scons domino' to build and test the domino extension module;
+      'scons domino-install' to install it.
+""")
+
+# Subdirectories:
+lib = SConscript('src/SConscript')
+#pyext = SConscript('pyext/SConscript')
+test = SConscript('test/SConscript')
+#emenv.Depends(test, [pyext, lib])
+
+Return('lib')

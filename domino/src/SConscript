@@ -1,0 +1,18 @@
+Import('env', 'get_sharedlib_environment')
+
+# Get an environment suitable for building a shared library:
+e = get_sharedlib_environment(env, 'DOMINO_EXPORTS', cplusplus=True)
+
+e.Append(CPPPATH=['#/kernel/include'])
+e.Append(LIBPATH=['#/kernel/src'], LIBS=['imp'])
+
+files = ()
+
+# Build the shared library:
+lib = e.SharedLibrary('domino', files)
+
+# Install the library:
+libinst = e.Install(e['libdir'], lib)
+e.Alias('domino-install', [libinst])
+
+Return('lib')

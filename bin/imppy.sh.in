@@ -5,7 +5,7 @@ MODPY=@MODPY@
 PATHSEP=@PATHSEP@
 EXTRALIB=@EXTRALIB@
 
-LLP="${EXTRALIB}${TOPDIR}/kernel/src${PATHSEP}${TOPDIR}/impEM/src"
+LLP="${EXTRALIB}${TOPDIR}/kernel/src${PATHSEP}${TOPDIR}/impEM/src${PATHSEP}${TOPDIR}/domino/src"
 if test -z "${LD_LIBRARY_PATH}"; then
   LD_LIBRARY_PATH=${LLP}
 else
@@ -22,7 +22,7 @@ else
   LIBPATH=${LIBPATH}${PATHSEP}${LLP}
 fi
 
-PP=${TOPDIR}/kernel/pyext${PATHSEP}${TOPDIR}/impEM/pyext
+PP=${TOPDIR}/kernel/pyext${PATHSEP}${TOPDIR}/impEM/pyext${PATHSEP}${TOPDIR}/domino/pyext
 if test -z "${PYTHONPATH}"; then
   PYTHONPATH=${PP}
 else
