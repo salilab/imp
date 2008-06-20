@@ -143,6 +143,7 @@ namespace IMP {
 %feature("director") IMP::PairScore;
 %feature("director") IMP::TripletScore;
 %feature("director") IMP::Optimizer;
+%feature("director") IMP::ParticleRefiner;
 
 %include "IMP/Key.h"
 %include "IMP/internal/Object.h"
@@ -178,6 +179,9 @@ namespace IMP {
 %include "IMP/decorators/XYZDecorator.h"
 %include "IMP/decorators/bond_decorators.h"
 %include "IMP/decorators/AtomDecorator.h"
+%include "IMP/ParticleRefiner.h"
+%include "IMP/particle_refiners/BondCoverParticleRefiner.h"
+%include "IMP/particle_refiners/ChildrenParticleRefiner.h"
 %include "IMP/Optimizer.h"
 %include "IMP/optimizers/SteepestDescent.h"
 %include "IMP/optimizers/ConjugateGradients.h"

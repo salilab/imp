@@ -2,25 +2,6 @@ import unittest
 import IMP, IMP.test
 import random
 
-class OnePair(IMP.PairScore):
-    def __init__(self):
-        IMP.PairScore.__init__(self)
-    def evaluate(self, pa, pb, da):
-        return 1
-    def get_version_info(self):
-        return IMP.VersionInfo("Me", "0.5")
-    def show(self, t):
-        print "One Pair"
-
-class OneScore(IMP.UnaryFunction):
-    def __init__(self):
-        IMP.UnaryFunction.__init__(self)
-    def evaluate(self, feat):
-        return 100
-    def evaluate_deriv(self, feat):
-        return 100, 0.0
-    def show(self, *args):
-        print "One score"
 
 class TestNBL(IMP.test.TestCase):
     def setUp(self):
@@ -83,22 +64,9 @@ class TestNBL(IMP.test.TestCase):
         self.do_test_bi_update(ss)
 
     def make_spheres(self, m, num, lbv, ubv, minr, maxr):
-        ps=self.make_particles(m, num, lbv, ubv)
+        ps=self.create_particles_in_box(m, num, lbv, ubv)
         for p in ps:
             p.add_attribute(self.rk, random.uniform(minr, maxr), False)
-        return ps
-
-    def make_particles(self, m, num, lbv, ubv):
-        ps=IMP.Particles()
-        lb=IMP.Vector3D(lbv[0],lbv[1],lbv[2])
-        ub=IMP.Vector3D(ubv[0],ubv[1],ubv[2])
-        for i in range(0, num):
-            p= IMP.Particle()
-            m.add_particle(p)
-            d=IMP.XYZDecorator.create(p)
-            d.set_coordinates_are_optimized(True)
-            d.randomize_in_box(lb, ub)
-            ps.append(p)
         return ps
 
     def do_test_update(self, ss):
@@ -111,7 +79,7 @@ class TestNBL(IMP.test.TestCase):
         s=eval(ss)
         s.set_particles(m.get_particles())
         m.add_score_state(s)
-        o= OnePair()
+        o= IMP.test.ConstPairScore(1)
         r= IMP.NonbondedRestraint(o, s)
         m.add_restraint(r)
         # use the internal checks
@@ -135,9 +103,9 @@ class TestNBL(IMP.test.TestCase):
         b= IMP.BondDecoratorListScoreState(pts)
         s.add_bonded_list(b)
         m.add_score_state(s)
-        o= OnePair()
+        o= IMP.test.ConstPairScore(1)
         r= IMP.NonbondedRestraint(o, s)
-        os=OneScore()
+        os=IMP.test.ConstUnaryFunction(100)
         print os.evaluate(6)
         br= IMP.BondDecoratorRestraint(os, b)
         m.add_restraint(r)
@@ -151,15 +119,15 @@ class TestNBL(IMP.test.TestCase):
         #IMP.set_log_level(IMP.TERSE)
         m= IMP.Model()
         ps=IMP.Particles()
-        ps= self.make_particles(m, 20, [0,0,0], [10,10,10])
-        pts= self.make_particles(m, 20, [160,160,160], [170,170,170])
+        ps= self.create_particles_in_box(m, 20, [0,0,0], [10,10,10])
+        pts= self.create_particles_in_box(m, 20, [160,160,160], [170,170,170])
         for p in pts:
             ps.append(p)
         md=15
         s=eval(ss)
         s.set_particles(ps)
         m.add_score_state(s)
-        o= OnePair()
+        o= IMP.test.ConstPairScore(1)
         r= IMP.NonbondedRestraint(o, s)
         m.add_restraint(r)
         score= m.evaluate(False)
@@ -200,7 +168,7 @@ class TestNBL(IMP.test.TestCase):
         #                                              ps0, ps1)
         s.set_particles(ps0, ps1)
         m.add_score_state(s)
-        o= OnePair()
+        o= IMP.test.ConstPairScore(1)
         r= IMP.NonbondedRestraint(o, s)
         m.add_restraint(r)
         score= m.evaluate(False)
@@ -218,7 +186,7 @@ class TestNBL(IMP.test.TestCase):
         #                                              ps0, ps1)
         s.set_particles(ps0, ps1)
         m.add_score_state(s)
-        o= OnePair()
+        o= IMP.test.ConstPairScore(1)
         r= IMP.NonbondedRestraint(o, s)
         m.add_restraint(r)
         for i in range(0,20):

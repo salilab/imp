@@ -207,6 +207,29 @@ public:                                                                 \
   /** \return version and authorship information */                     \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
+//! Define the basics needed for a particle refiner
+/** This macro declares the following functions
+    - bool can_refine(Particle*) const;
+    - void cleanup(Particle *a, Particles &b,
+                   DerivativeAccumulator *da);
+    - void show(std::ostream &out) const;
+    - Particles refine(Particle *) const;
+
+    \param[in] version_info The version info object to return
+
+ */
+#define IMP_PARTICLE_REFINER(version_info)                              \
+  public:                                                               \
+  /** Return if the particle can be refined*/                           \
+  virtual bool get_can_refine(Particle*) const;                         \
+  /** Write information about the state to the stream */                \
+  virtual void show(std::ostream &out) const;                           \
+  /** Destroy any created particles and propagate derivatives */        \
+  virtual void cleanup_refined(Particle *a, Particles &b,               \
+                       DerivativeAccumulator *da=0);                    \
+  /** Return a list of particles which refines the passed particle.*/   \
+  virtual Particles get_refined(Particle *);                            \
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Use the swap_with member function to swap two objects
 #define IMP_SWAP(name) \

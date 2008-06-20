@@ -1,0 +1,4 @@
+files=['BondCoverParticleRefiner.cpp', 'ChildrenParticleRefiner.cpp']
+
+files = [File(x) for x in files]
+Return('files')
