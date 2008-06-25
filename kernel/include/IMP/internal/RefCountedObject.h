@@ -21,8 +21,7 @@ namespace internal
 {
 
 //! Common base class for ref counted objects.
-/** Currently the only ref counted objects are particles.
-    This class acts as a tag rather than providing any functionality.
+/** This class acts as a tag rather than providing any functionality.
 
    \internal
  */
@@ -104,8 +103,6 @@ template <class O>
 void unref(O o)
 {
   BOOST_STATIC_ASSERT(!boost::is_pointer<O>::value);
-  /*IMP_LOG(VERBOSE, "NonUnRef called with nonpointer for "
-    << o << std::endl);*/
 }
 
 
@@ -114,17 +111,12 @@ template <class O>
 void ref(O o)
 {
   BOOST_STATIC_ASSERT(!boost::is_pointer<O>::value);
-  /*IMP_LOG(VERBOSE, "NonRef count called with nonpointer for "
-    << o << std::endl);*/
 }
 
 //! Can be called on any object and will only unref it if appropriate
 template <class O>
 void unref(O* o)
 {
-  /*IMP_LOG(VERBOSE, "Unref count called with " 
-          << (boost::is_base_of<RefCountedObject, O >::value)
-          << " for " << o << std::endl);*/
   UnRef<(boost::is_base_of<RefCountedObject, O >::value)>::eval(o);
 }
 
@@ -133,9 +125,6 @@ void unref(O* o)
 template <class O>
 void ref(O* o)
 {
-  /*IMP_LOG(VERBOSE, "Ref called with " 
-          << (boost::is_base_of<RefCountedObject, O >::value)
-          << " for " << o << std::endl);*/
   Ref<(boost::is_base_of<RefCountedObject, O >::value)>::eval(o);
 }
 
