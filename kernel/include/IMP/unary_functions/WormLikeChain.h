@@ -31,7 +31,11 @@ public:
   /** \param[in] l_max maximum length of the chain in angstroms
       \param[in] lp persistence length in angstroms
    */
-  WormLikeChain(Float l_max, Float lp) : lmax_(l_max), lp_(lp) {}
+  WormLikeChain(Float l_max, Float lp) : lmax_(l_max), lp_(lp) {
+    IMP_check(l_max > lp, "The persistence length should be less "
+              << "than the total length for this model",
+              ValueException);
+  }
 
   virtual ~WormLikeChain() {}
 
