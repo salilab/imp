@@ -43,7 +43,7 @@ Float RefineOncePairScore::evaluate(Particle *a, Particle *b,
   }
 
   for (unsigned int i=0; i< 2; ++i) {
-    if (ps[i].size() != 1 || ps[i].size()==1 && ps[i][0] != p[i]) {
+    if (ps[i].size() != 1 || (ps[i].size()==1 && ps[i][0] != p[i])) {
       IMP_LOG(VERBOSE, "Refining " << p[i]->get_index()
               << " resulted in " << ps[i].size() << " particles"
               << std::endl);
