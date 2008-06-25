@@ -78,8 +78,15 @@ namespace IMP {
   %pythonprepend DistancePairScore::DistancePairScore %{
         args[0].thisown=0
   %}
+  %pythonprepend BondCoverPairScore::BondCoverPairScore %{
+        args[0].thisown=0
+  %}
   %pythonprepend SphereDistancePairScore::SphereDistancePairScore %{
         args[0].thisown=0
+  %}
+  %pythonprepend RefineOncePairScore::RefineOncePairScore %{
+        args[0].thisown=0
+        args[1].thisown=0
   %}
   %pythonprepend DistanceToSingletonScore::DistanceToSingletonScore %{
         args[0].thisown=0
@@ -94,6 +101,9 @@ namespace IMP {
         args[1].thisown=0
   %}
   %pythonprepend MonteCarlo::set_local_optimizer %{
+        args[1].thisown=0
+  %}
+  %pythonprepend VRMLLogOptimizerState::add_particle_refiner %{
         args[1].thisown=0
   %}
   %pythonprepend Particle::get_value %{
@@ -167,6 +177,7 @@ namespace IMP {
 %include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/PairScore.h"
+%include "IMP/ParticleRefiner.h"
 %include "IMP/SingletonScore.h"
 %include "IMP/TripletScore.h"
 %include "IMP/Particle.h"
@@ -196,7 +207,10 @@ namespace IMP {
 %include "IMP/optimizers/states/CMMLogOptimizerState.h"
 %include "IMP/optimizers/states/VelocityScalingOptimizerState.h"
 %include "IMP/pair_scores/DistancePairScore.h"
+%include "IMP/pair_scores/RefineOncePairScore.h"
 %include "IMP/pair_scores/SphereDistancePairScore.h"
+%include "IMP/particle_refiners/BondCoverParticleRefiner.h"
+%include "IMP/particle_refiners/ChildrenParticleRefiner.h"
 %include "IMP/singleton_scores/DistanceToSingletonScore.h"
 %include "IMP/singleton_scores/AttributeSingletonScore.h"
 %include "IMP/triplet_scores/AngleTripletScore.h"

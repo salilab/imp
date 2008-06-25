@@ -1,7 +1,8 @@
 import os.path
 Import('env')
 
-files = ['DistancePairScore.h', 'SphereDistancePairScore.h']
+files = ['DistancePairScore.h', 'SphereDistancePairScore.h',
+         'RefineOncePairScore.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'pair_scores')
