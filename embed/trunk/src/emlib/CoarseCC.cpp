@@ -7,21 +7,19 @@ float CoarseCC::evaluate(DensityMap &em_map,
                          std::vector<float> &dvx, std::vector<float>&dvy,
                          std::vector<float>&dvz, float scalefac, bool lderiv)
 {
-   em_map.calcRMS();
-   //resample the map for the particle provided
-   // TODO(frido): rename: resample -> sample
-   model_map.resample(access_p);
-   //determine a threshold for calculating the CC
-   // This function adequately computes the dmin value, the safest value
-   // for the threshold
-   model_map.calcRMS();
-
-  float threshold=model_map.get_header()->dmin-EPS;
-
+  em_map.calcRMS();
+  //resample the map for the particle provided
+  // TODO(frido): rename: resample -> sample
+  model_map.resample(access_p);
+  //determine a threshold for calculating the CC
+  model_map.calcRMS();   // This function adequately computes the dmin value,
+                          // the safest value for the threshold
+  emreal voxel_data_threshold=model_map.get_header()->dmin-EPS;
   // here we ask not to recalculate the rms ( already calculated)
-  float escore = cross_correlation_coefficient(em_map, model_map, threshold,
-                                               false);
-  //  cout <<"escore : "<< escore << endl;
+  float escore = cross_correlation_coefficient(em_map, model_map, 
+voxel_data_threshold,false); 
+  //  std::cout <<" CoarseCC::evaluate >> cross_correlation_coefficient : "<< 
+  //escore << endl;
   escore = scalefac * (1. - escore);
 
   //compute the derivatives if required
@@ -80,7 +78,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
 
   bool same_origin = em_map.same_origin(model_map);
   int  nvox = em_header->nx*em_header->ny*em_header->nz;
-  float ccc = 0.0;
+  emreal ccc = 0.0;
 
   if(same_origin){ // Fastest version
     for (int i=0;i<nvox;i++) {
