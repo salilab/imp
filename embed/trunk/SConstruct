@@ -3,18 +3,19 @@ execfile('SCons.include')
 
 # Set up build environment:
 
-opts = Options()
+opts = Options('config.py', ARGUMENTS)
 add_common_options(opts, "em")
+
+# # Get Modeller and Python locations, and set up a build environment:
+env = MyEnvironment(options=opts, tools=["default", "doxygen"],
+                    toolpath=["tools"])
+Help(opts.GenerateHelpText(env))
+
 Help("""
 Type: 'scons' to build the EMBED library;
       'scons test' to run the test cases;
       'scons standards' to check the code against the standards.
 """)
-
-# # Get Modeller and Python locations, and set up a build environment:
-env = MyEnvironment(options=opts, tools=["default", "doxygen"],
-                    toolpath=["tools"])
-
 
 
 # # Make these objects available to SConscript files:
