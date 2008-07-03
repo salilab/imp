@@ -31,6 +31,14 @@ public:
     return evaluate(feature);
   }
 
+  void set_slope(Float f) {
+    slope_=f;
+  }
+
+  void set_offset(Float f) {
+    offset_=f;
+  }
+
   void show(std::ostream &out=std::cout) const {
     out << "Linear: " << slope_ << ", " << offset_ << std::endl;
   }

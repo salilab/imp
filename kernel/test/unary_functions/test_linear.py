@@ -18,6 +18,15 @@ class LinearTests(IMP.test.TestCase):
                     self.assertInTolerance(score, (val - offset) * slope, 0.001)
                     self.assertInTolerance(deriv, slope, 0.001)
 
+    def test_accessors(self):
+        """Test Linear accessors"""
+        func = IMP.Linear(0, 0)
+        self.assertEqual(func.evaluate(1), 0)
+        func.set_slope(10)
+        self.assertEqual(func.evaluate(1), 10)
+        func.set_offset(5)
+        self.assertEqual(func.evaluate(1), -40)
+
     def test_show(self):
         """Check Linear::show() method"""
         func = IMP.Linear(1.0)
