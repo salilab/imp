@@ -69,6 +69,8 @@ public:
   static ResidueType TRP;
   static ResidueType ACE;
   static ResidueType NH2;
+  /* Code currently depends on all indices above ADE.get_index()
+     being nucleic acid */
   static ResidueType ADE;
   static ResidueType URA;
   static ResidueType CYT;
@@ -83,6 +85,13 @@ public:
     return get_particle()->set_value(type_key_, t.get_index());
   }
 
+  bool get_is_amino_acid() const {
+    return !get_is_nucleic_acid();
+  }
+
+  bool get_is_nucleic_acid() const {
+    return get_type().get_index() >= ADE.get_index();
+  }
   //! The residues index in the chain
   IMP_DECORATOR_GET_SET(index, index_key_,
                         Int, unsigned int);

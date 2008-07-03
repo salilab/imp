@@ -282,7 +282,7 @@ def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
 def _get_protein_atom_particles(protein):
     """Given a protein particle, get the flattened list of all child atoms"""
     atom_particles = []
-    protein = IMP.MolecularHierarchyDecorator.cast(protein)
+    #protein = IMP.MolecularHierarchyDecorator.cast(protein)
     for ichain in range(protein.get_number_of_children()):
         chain = protein.get_child(ichain)
         for ires in range(chain.get_number_of_children()):
