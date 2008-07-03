@@ -8,8 +8,6 @@
 #ifndef __IMP_OPTIMIZER_H
 #define __IMP_OPTIMIZER_H
 
-#include <limits>
-
 #include "IMP_config.h"
 #include "base_types.h"
 #include "VersionInfo.h"
@@ -18,6 +16,8 @@
 #include "Model.h"
 #include "Particle.h"
 #include "internal/ObjectPointer.h"
+
+#include <limits>
 
 namespace IMP
 {
