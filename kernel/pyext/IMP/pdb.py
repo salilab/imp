@@ -9,10 +9,15 @@ def copy_residue(r, model):
     p=IMP.Particle()
     model.add_particle(p)
     hp= IMP.MolecularHierarchyDecorator.create(p)
-    hp.set_type(IMP.MolecularHierarchyDecorator.RESIDUE)
     rp= IMP.ResidueDecorator.create(p)
     rp.set_type(IMP.ResidueType(r.name))
     rp.set_index(r.index)
+    if rp.get_is_amino_acid():
+        hp.set_type(IMP.MolecularHierarchyDecorator.RESIDUE)
+    elif rp.get_is_nucleic_acid():
+        hp.set_type(IMP.MolecularHierarchyDecorator.NUCLEICACID)
+    else:
+        hp.set_type(IMP.MolecularHierrchyDecorator.MOLECULE)
     IMP.NameDecorator.create(p).set_name(str("residue "+r.num));
     return p
 
@@ -59,6 +64,7 @@ def read_pdb(name, model):
     e = modeller.environ()
     e.libs.topology.read('${LIB}/top_heav.lib')
     e.libs.parameters.read('${LIB}/par.lib')
+    e.io.hetatm=True
     pdb = modeller.scripts.complete_pdb(e, name)
     pp= IMP.Particle()
     model.add_particle(pp)
@@ -70,7 +76,8 @@ def read_pdb(name, model):
         cp=IMP.Particle()
         model.add_particle(cp)
         hcp= IMP.MolecularHierarchyDecorator.create(cp)
-        hcp.set_type(IMP.MolecularHierarchyDecorator.CHAIN)
+        # We don't really know the type yet
+        hcp.set_type(IMP.MolecularHierarchyDecorator.FRAGMENT)
         hpp.add_child(hcp)
         IMP.NameDecorator.create(cp).set_name(chain.name)
         for residue in chain.residues:
@@ -83,5 +90,14 @@ def read_pdb(name, model):
                 hap= IMP.MolecularHierarchyDecorator.cast(ap)
                 hrp.add_child(hap)
                 atoms[atom.index]=ap
+            lastres=hrp
+        # set the type for real
+        if lastres.get_type() == IMP.MolecularHierarchyDecorator.RESIDUE:
+            hcp.set_type(IMP.MolecularHierarchyDecorator.CHAIN)
+        elif lastres.get_type() ==\
+                IMP.MolecularHierarchyDecorator.NUCLEICACID:
+            hcp.set_type(IMP.MolecularHierarchyDecorator.NUCLEOTIDE)
+        else:
+            hcp.set_type(IMP.MolecularHierarchyDecorator.MOLECULE)
     copy_bonds(pdb,atoms, model)
-    return hpp.get_particle()
+    return hpp
