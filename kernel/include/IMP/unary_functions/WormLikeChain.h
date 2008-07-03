@@ -93,7 +93,7 @@ public:
 protected:
   //! \note named to avoid clash with 'deriv' argument
   unit::Piconewton cderiv(unit::Angstrom l) const {
-    unit::Piconewton pn= internal::KB*internal::T
+    unit::Piconewton pn= internal::KB*internal::DEFAULT_TEMPERATURE
       /lp_*(.25/ square(1.0-(l/lmax_).get_normalized_value())
             -.25+(l/lmax_).to_scalar());
      return pn;
@@ -101,7 +101,7 @@ protected:
 
   unit::Picojoule eval(unit::Angstrom m) const {
     unit::Picojoule J
-      =  internal::KB*internal::T/lp_*(.25*square(lmax_)
+      =  internal::KB*internal::DEFAULT_TEMPERATURE/lp_*(.25*square(lmax_)
                                        /(lmax_-m)
                                        -m*.25
                                        +.5*square(m)
