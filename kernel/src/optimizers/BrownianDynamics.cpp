@@ -66,7 +66,7 @@ static MillipascalSecond eta(unit::Kelvin T)
 
 BrownianDynamics::BrownianDynamics(FloatKey dkey) :
   max_change_(10), max_dt_(1e7), cur_dt_(max_dt_), cur_time_(0),
-  T_(300.0), dkey_(dkey)
+  T_(internal::DEFAULT_TEMPERATURE), dkey_(dkey)
 {
   IMP_check(dkey_ != FloatKey(), "BrownianDynamics needs a valid key for the "
             << "diffusion coefficient",

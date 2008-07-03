@@ -28,7 +28,7 @@ extern IMPDLLEXPORT const
 unit::Shift<unit::Divide<unit::Joule, unit::Kelvin>::type, -23>::type KB;
 
 //! the default temperature
-extern IMPDLLEXPORT const unit::Kelvin T;
+extern IMPDLLEXPORT const unit::Kelvin DEFAULT_TEMPERATURE;
 
 //! Pi
 static const double PI = 3.1415926535897931;
