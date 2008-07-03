@@ -42,6 +42,9 @@ namespace IMP {
   %pythonprepend NonbondedListScoreState::add_bonded_list %{
         args[1].thisown=0
   %}
+  %pythonprepend TunnelRestraint::TunnelRestraint %{
+        args[0].thisown=0
+  %}
   %pythonprepend DistanceRestraint::DistanceRestraint %{
         args[0].thisown=0
   %}
@@ -234,6 +237,7 @@ namespace IMP {
 %include "IMP/restraints/RestraintSet.h"
 %include "IMP/restraints/SingletonListRestraint.h"
 %include "IMP/restraints/TripletChainRestraint.h"
+%include "IMP/restraints/TunnelRestraint.h"
 
 namespace IMP {
   %template(ParticleIndex) Index<ParticleTag>;
