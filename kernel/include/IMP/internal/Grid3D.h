@@ -255,13 +255,9 @@ public:
     d_[0]=xd;
     d_[1]=yd;
     d_[2]=zd;
-      /**
-       \todo Grid3D::update_sizes is a mess of hacks. Figure out a clean
-       implementation.
-     */
     for (unsigned int i=0; i< 3; ++i) {
       // hack to try to handle roundoff errors
-      // I would like to find something more reliable
+      //! \todo I would like to find something more reliable
       if (d_[i]==1) {
         // make sure that the total grid size is not vanishing
         // this is probably not the right thing to do
