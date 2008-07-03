@@ -338,7 +338,7 @@ template <class Tag, int EXP, class Units>
 Unit<Tag, EXP/2, typename internal::Sqrt<Units>::type >
 sqrt(Unit<Tag, EXP, Units> o) {
   return Unit<Tag, EXP/2, typename internal::Sqrt<Units>::type >
-    (ExponentialNumber<EXP/2>(std::sqrt(o.get_normalized_value())));
+    (ExponentialNumber<EXP/2>(std::sqrt(o.get_value())));
 }
 
 /** \internal
