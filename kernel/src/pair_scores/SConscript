@@ -1,7 +1,7 @@
 Import('env')
 
 files = ['DistancePairScore.cpp', 'SphereDistancePairScore.cpp',
-         'RefineOncePairScore.cpp']
+         'RefineOncePairScore.cpp', 'TypedPairScore.cpp']
 
 files = [File(x) for x in files]
 Return('files')
