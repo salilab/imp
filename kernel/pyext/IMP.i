@@ -109,6 +109,9 @@ namespace IMP {
   %pythonprepend VRMLLogOptimizerState::add_particle_refiner %{
         args[1].thisown=0
   %}
+  %pythonprepend TypedPairScore::set_pair_score %{
+        args[0].thisown=0
+  %}
   %pythonprepend Particle::get_value %{
         check_particle(args[0], args[1])
   %}
@@ -212,6 +215,7 @@ namespace IMP {
 %include "IMP/pair_scores/DistancePairScore.h"
 %include "IMP/pair_scores/RefineOncePairScore.h"
 %include "IMP/pair_scores/SphereDistancePairScore.h"
+%include "IMP/pair_scores/TypedPairScore.h"
 %include "IMP/particle_refiners/BondCoverParticleRefiner.h"
 %include "IMP/particle_refiners/ChildrenParticleRefiner.h"
 %include "IMP/singleton_scores/DistanceToSingletonScore.h"
