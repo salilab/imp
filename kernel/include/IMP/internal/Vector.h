@@ -9,8 +9,9 @@
 #define __IMP_VECTOR_H
 
 #include "../exception.h"
-#include "Object.h"
-#include "RefCountedObject.h"
+#include "../Object.h"
+#include "../RefCountedObject.h"
+#include "ref_counting.h"
 
 #include <vector>
 

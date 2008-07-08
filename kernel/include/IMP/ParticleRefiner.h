@@ -10,7 +10,7 @@
 #include "IMP_config.h"
 #include "base_types.h"
 #include "VersionInfo.h"
-#include "internal/RefCountedObject.h"
+#include "RefCountedObject.h"
 
 namespace IMP
 {
@@ -22,7 +22,7 @@ class DerivativeAccumulator;
 /** The job of this class is to take a single particle and, if 
     appropriate, return a list of particles.
 */
-class IMPDLLEXPORT ParticleRefiner : public internal::RefCountedObject
+class IMPDLLEXPORT ParticleRefiner : public RefCountedObject
 {
 public:
   ParticleRefiner() {}

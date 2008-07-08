@@ -10,8 +10,8 @@
 
 #include "../IMP_config.h"
 #include "../base_types.h"
-#include "../internal/Object.h"
-#include "../internal/ObjectPointer.h"
+#include "../Object.h"
+#include "../Pointer.h"
 #include "../Optimizer.h"
 
 #include <vector>
@@ -32,7 +32,7 @@ typedef Index<Mover> MoverIndex;
 //! A class to make a monte carlo move.
 /** You probably want to use MoverBase if you are implementing a Mover.
  */
-class IMPDLLEXPORT Mover: public internal::Object
+class IMPDLLEXPORT Mover: public Object
 {
   friend class MonteCarlo;
   void set_optimizer(Optimizer *c, MoverIndex i) {
@@ -40,7 +40,7 @@ class IMPDLLEXPORT Mover: public internal::Object
     index_=i;
   }
 
-  internal::ObjectPointer<Optimizer, false> opt_;
+  Pointer<Optimizer> opt_;
   MoverIndex index_;
 public:
   Mover();

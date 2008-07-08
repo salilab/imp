@@ -9,8 +9,8 @@
 #define __IMP_SCORE_STATE_H
 
 #include "IMP_config.h"
-#include "internal/RefCountedObject.h"
-#include "internal/ObjectPointer.h"
+#include "RefCountedObject.h"
+#include "Pointer.h"
 #include "Model.h"
 #include "DerivativeAccumulator.h"
 #include "VersionInfo.h"
@@ -37,7 +37,7 @@ class Model;
     of lines per update call.
 
  */
-class IMPDLLEXPORT ScoreState : public internal::RefCountedObject
+class IMPDLLEXPORT ScoreState : public RefCountedObject
 {
   friend class Model;
   void set_model(Model* model);
@@ -121,7 +121,7 @@ protected:
   unsigned int update_iteration_;
   unsigned int after_iteration_;
   // all of the particle data
-  internal::ObjectPointer<Model, false> model_;
+  Pointer<Model> model_;
   std::string name_;
 };
 

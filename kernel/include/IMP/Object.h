@@ -9,12 +9,9 @@
 #ifndef __IMP_OBJECT_H
 #define __IMP_OBJECT_H
 
-#include "../exception.h"
+#include "exception.h"
 
 namespace IMP
-{
-
-namespace internal
 {
 
 //! Common base class for IMP objects.
@@ -59,13 +56,11 @@ public:
 
 private:
   Object(const Object &o){}
-  const internal::Object& operator=(const Object &o) {return *this;}
+  const Object& operator=(const Object &o) {return *this;}
 
   int count_;
   double check_value_;
 };
-
-} // namespace internal
 
 } // namespace IMP
 

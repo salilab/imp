@@ -9,7 +9,7 @@
 #define __IMP_ATTRIBUTE_SINGLETON_SCORE_H
 
 #include "../SingletonScore.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 #include "../UnaryFunction.h"
 
 namespace IMP
@@ -20,7 +20,7 @@ namespace IMP
  */
 class IMPDLLEXPORT AttributeSingletonScore : public SingletonScore
 {
-  internal::ObjectPointer<UnaryFunction, true> f_;
+  Pointer<UnaryFunction> f_;
   FloatKey k_;
 public:
   AttributeSingletonScore(UnaryFunction *f, FloatKey k);

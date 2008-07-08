@@ -97,7 +97,7 @@ private:
   Float prior_energy_;
   Float stop_energy_;
   Float probability_;
-  internal::ObjectPointer<Optimizer, true> cg_;
+  Pointer<Optimizer> cg_;
   unsigned int num_local_steps_;
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_upward_steps_taken_;

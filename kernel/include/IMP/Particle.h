@@ -11,12 +11,12 @@
 #include "IMP_config.h"
 #include "base_types.h"
 #include "Model.h"
-#include "internal/Object.h"
+#include "Object.h"
 #include "utility.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
 #include "DerivativeAccumulator.h"
-#include "internal/ObjectPointer.h"
+#include "Pointer.h"
 
 #include <limits>
 
@@ -49,17 +49,17 @@ class Model;
 
     \ingroup kernel
  */
-class IMPDLLEXPORT Particle : public internal::RefCountedObject
+class IMPDLLEXPORT Particle : public RefCountedObject
 {
   friend class Model;
 
   /* This has to be declared here since boost 1.35 wants the full
-     definition of Particle to be available when the ObjectPointer
+     definition of Particle to be available when the Pointer
      is declared.
   */
   struct ParticleAttributeTableTraits
   {
-    typedef internal::ObjectPointer<Particle, true> Value;
+    typedef Pointer<Particle> Value;
     typedef KeyBase<Particle*> Key;
     static Value get_invalid() {
       return Value();
@@ -369,7 +369,7 @@ protected:
   // Set pointer to model particle data.
   void set_model(Model *md, ParticleIndex pi);
 
-  internal::ObjectPointer<Model, false> model_;
+  Pointer<Model> model_;
 
   // true if particle is active
   bool is_active_;
@@ -526,7 +526,7 @@ inline void Particle::set_value(ParticleKey name, Particle* value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
-  particles_.set_value(name, internal::ObjectPointer<Particle, true>(value));
+  particles_.set_value(name, Pointer<Particle>(value));
 }
 
 
@@ -580,7 +580,7 @@ void inline Particle::add_attribute(ParticleKey name, Particle* value)
   IMP_assert(model_,
              "Particle must be added to Model before attributes are added");
   particles_.insert(name,
-                           internal::ObjectPointer<Particle, true>(value));
+                           Pointer<Particle>(value));
 }
 
 

@@ -8,8 +8,8 @@
 #ifndef __IMP_DECORATOR_BASE_H
 #define __IMP_DECORATOR_BASE_H
 
-#include "internal/Object.h"
-#include "internal/ObjectPointer.h"
+#include "Object.h"
+#include "Pointer.h"
 #include "Particle.h"
 
 namespace IMP
@@ -21,7 +21,7 @@ namespace IMP
 class IMPDLLEXPORT DecoratorBase
 {
 protected:
-  internal::ObjectPointer<Particle, true> particle_;
+  Pointer<Particle> particle_;
   DecoratorBase(Particle *p): particle_(p) {}
   bool is_default() const {
     return !particle_;

@@ -20,7 +20,7 @@ internal_files = SConscript('internal/SConscript')
 
 # Source files
 files = ['base_types.cpp', 'Model.cpp',
-         'Particle.cpp', 'ScoreState.cpp',
+         'Particle.cpp', 'ScoreState.cpp', 'Object.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
          'random.cpp', 'Key.cpp', 'exception.cpp', 'ParticleRefiner.cpp'
         ] + decorators_files + restraints_files + optimizers_files \

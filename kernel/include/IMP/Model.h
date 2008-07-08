@@ -10,7 +10,7 @@
 #define __IMP_MODEL_H
 
 #include "IMP_config.h"
-#include "internal/Object.h"
+#include "Object.h"
 #include "internal/kernel_version_info.h"
 #include "base_types.h"
 #include "VersionInfo.h"
@@ -30,7 +30,7 @@ typedef std::vector<ScoreState*> ScoreStates;
     Currently no suport for constraints (e.g. rigid bodies).
     \ingroup kernel
  */
-class IMPDLLEXPORT Model: public internal::Object
+class IMPDLLEXPORT Model: public Object
 {
   friend class Restraint;
   unsigned int iteration_;

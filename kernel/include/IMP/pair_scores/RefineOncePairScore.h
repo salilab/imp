@@ -11,7 +11,7 @@
 #include "../PairScore.h"
 #include "../UnaryFunction.h"
 #include "../ParticleRefiner.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 
 namespace IMP
 {
@@ -24,8 +24,8 @@ namespace IMP
  */
 class IMPDLLEXPORT RefineOncePairScore : public PairScore
 {
-  internal::ObjectPointer<ParticleRefiner, true> r_;
-  internal::ObjectPointer<PairScore, true> f_;
+  Pointer<ParticleRefiner> r_;
+  Pointer<PairScore> f_;
 
 public:
   /** \param[in] r The ParticleRefiner to call on each particle

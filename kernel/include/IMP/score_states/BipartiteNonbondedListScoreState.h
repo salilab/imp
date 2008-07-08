@@ -43,7 +43,7 @@ class IMPDLLEXPORT BipartiteNonbondedListScoreState:
   };
 protected:
   Algorithm a_;
-  internal::ObjectPointer<MaxChangeScoreState, true> mc0_, mc1_, mcr_;
+  Pointer<MaxChangeScoreState> mc0_, mc1_, mcr_;
 
   void process_sets(const Particles &p0,
                     const Particles &p1);

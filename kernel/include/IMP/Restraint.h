@@ -13,8 +13,8 @@
 #include "Model.h"
 #include "Particle.h"
 #include "VersionInfo.h"
-#include "internal/Object.h"
-#include "internal/ObjectPointer.h"
+#include "Object.h"
+#include "Pointer.h"
 #include "log.h"
 #include "utility.h"
 
@@ -52,7 +52,7 @@ class Model;
     \note Physical restraints should use the units of kcal/mol for restraint
     values and kcal/mol/A for derivatives.
  */
-class IMPDLLEXPORT Restraint : public internal::RefCountedObject
+class IMPDLLEXPORT Restraint : public RefCountedObject
 {
 public:
   //! Initialize the Restraint
@@ -100,7 +100,7 @@ public:
   IMP_LIST(protected, Particle, particle, Particle*)
 
 private:
-  internal::ObjectPointer<Model, false> model_;
+  Pointer<Model> model_;
 
   /* True if restraint has not been deactivated.
      If it is not active, evaluate should not be called

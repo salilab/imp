@@ -39,7 +39,7 @@ class IMPDLLEXPORT TunnelRestraint : public Restraint
   Vector3D center_;
   Float height_;
   Float radius_;
-  internal::ObjectPointer<UnaryFunction, true> f_;
+  Pointer<UnaryFunction> f_;
   FloatKey rk_;
 public:
   TunnelRestraint(UnaryFunction* f, FloatKey rk);

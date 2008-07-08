@@ -8,8 +8,9 @@
 #ifndef __IMP_OBJECT_CONTAINER_H
 #define __IMP_OBJECT_CONTAINER_H
 
-#include "Object.h"
-#include "RefCountedObject.h"
+#include "../Object.h"
+#include "../RefCountedObject.h"
+#include "ref_counting.h"
 
 #include <boost/iterator/filter_iterator.hpp>
 

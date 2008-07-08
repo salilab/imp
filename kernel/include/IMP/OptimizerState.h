@@ -10,8 +10,8 @@
 
 #include "IMP_config.h"
 #include "VersionInfo.h"
-#include "internal/RefCountedObject.h"
-#include "internal/ObjectPointer.h"
+#include "RefCountedObject.h"
+#include "Pointer.h"
 #include "Optimizer.h"
 
 #include <iostream>
@@ -33,7 +33,7 @@ class Optimizer;
     logging is TERSE the restraint should print out only a constant number
     of lines per update call.
  */
-class IMPDLLEXPORT OptimizerState : public internal::Object
+class IMPDLLEXPORT OptimizerState : public Object
 {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
@@ -64,7 +64,7 @@ public:
   }
 protected:
   //! Stored optimizer
-  internal::ObjectPointer<Optimizer, false> optimizer_;
+  Pointer<Optimizer> optimizer_;
 };
 
 IMP_OUTPUT_OPERATOR(OptimizerState);

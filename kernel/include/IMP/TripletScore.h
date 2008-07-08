@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "internal/RefCountedObject.h"
+#include "RefCountedObject.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 
@@ -26,7 +26,7 @@ namespace IMP
 /** TripletScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPDLLEXPORT TripletScore : public internal::RefCountedObject
+class IMPDLLEXPORT TripletScore : public RefCountedObject
 {
 public:
   TripletScore() {}
