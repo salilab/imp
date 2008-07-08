@@ -12,7 +12,7 @@
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 #include "../SingletonScore.h"
 
 #include <iostream>
@@ -40,7 +40,7 @@ public:
   using Restraint::set_particles;
 
 protected:
-  internal::ObjectPointer<SingletonScore, true> ss_;
+  Pointer<SingletonScore> ss_;
 };
 
 } // namespace IMP

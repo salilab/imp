@@ -162,8 +162,8 @@ namespace IMP {
 %feature("director") IMP::ParticleRefiner;
 
 %include "IMP/Key.h"
-%include "IMP/internal/Object.h"
-%include "IMP/internal/RefCountedObject.h"
+%include "IMP/Object.h"
+%include "IMP/RefCountedObject.h"
 %include "IMP/Index.h"
 %include "IMP/base_types.h"
 %include "IMP/VersionInfo.h"

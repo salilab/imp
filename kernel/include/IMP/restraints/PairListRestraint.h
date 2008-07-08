@@ -13,7 +13,7 @@
 #include "../Restraint.h"
 #include "../Particle.h"
 #include "../internal/kernel_version_info.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 #include "../PairScore.h"
 
 #include <iostream>
@@ -41,7 +41,7 @@ public:
   void add_particle_pairs(const ParticlePairs &ps);
 
 protected:
-  internal::ObjectPointer<PairScore, true> ss_;
+  Pointer<PairScore> ss_;
 };
 
 } // namespace IMP

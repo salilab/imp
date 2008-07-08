@@ -6,13 +6,10 @@
  *
  */
 
-#include "IMP/internal/Object.h"
-#include "IMP/internal/RefCountedObject.h"
+#include "IMP/Object.h"
+#include "IMP/RefCountedObject.h"
 
 namespace IMP
-{
-
-namespace internal
 {
 
 unsigned int RefCountedObject::live_objects_=0;
@@ -34,7 +31,5 @@ void Object::assert_is_valid() const
   IMP_assert(check_value_==111111111,
              "Previously freed object is not valid: " << this);
 }
-
-} //namespace internal
 
 } // namespace IMP

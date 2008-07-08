@@ -50,7 +50,7 @@ public:
 
 protected:
 
-    internal::ObjectPointer<PairScore, true> ps_;
+    Pointer<PairScore> ps_;
 
   //! The indices for the first particle in each set
   /** set_offset_[i] is the first index of set i and set_offset_[i+1] is 

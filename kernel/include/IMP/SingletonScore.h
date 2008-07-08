@@ -9,7 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
-#include "internal/RefCountedObject.h"
+#include "RefCountedObject.h"
 #include "DerivativeAccumulator.h"
 
 namespace IMP
@@ -27,7 +27,7 @@ class Particle;
 /** SingletonScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPDLLEXPORT SingletonScore : public internal::RefCountedObject
+class IMPDLLEXPORT SingletonScore : public RefCountedObject
 {
 public:
   SingletonScore() {}

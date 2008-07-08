@@ -50,7 +50,7 @@ public:
   };
 protected:
   Algorithm a_;
-  internal::ObjectPointer<MaxChangeScoreState, true> mc_, mcr_;
+  Pointer<MaxChangeScoreState> mc_, mcr_;
 
   void check_nbl() const;
 

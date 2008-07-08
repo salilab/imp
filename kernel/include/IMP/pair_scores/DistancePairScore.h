@@ -10,7 +10,7 @@
 
 #include "../PairScore.h"
 #include "../UnaryFunction.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 
 namespace IMP
 {
@@ -20,7 +20,7 @@ namespace IMP
  */
 class IMPDLLEXPORT DistancePairScore : public PairScore
 {
-  internal::ObjectPointer<UnaryFunction, true> f_;
+  Pointer<UnaryFunction> f_;
 public:
   DistancePairScore(UnaryFunction *f);
   virtual ~DistancePairScore(){}

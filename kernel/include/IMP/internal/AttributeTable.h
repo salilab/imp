@@ -11,7 +11,7 @@
 #include "../base_types.h"
 #include "../utility.h"
 #include "../log.h"
-#include "ObjectPointer.h"
+#include "../Pointer.h"
 
 #include <boost/iterator/filter_iterator.hpp>
 #include <boost/iterator/counting_iterator.hpp>

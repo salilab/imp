@@ -14,7 +14,7 @@
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 #include "../score_states/NonbondedListScoreState.h"
 
 namespace IMP
@@ -41,8 +41,8 @@ public:
   IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:
-  internal::ObjectPointer<NonbondedListScoreState, true> nbl_;
-  internal::ObjectPointer<PairScore, true> sf_;
+  Pointer<NonbondedListScoreState> nbl_;
+  Pointer<PairScore> sf_;
 };
 
 } // namespace IMP

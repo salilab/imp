@@ -10,7 +10,7 @@
 
 #include "../SingletonScore.h"
 #include "../Vector3D.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 #include "../UnaryFunction.h"
 
 namespace IMP
@@ -21,7 +21,7 @@ namespace IMP
  */
 class IMPDLLEXPORT DistanceToSingletonScore : public SingletonScore
 {
-  internal::ObjectPointer<UnaryFunction, true> f_;
+  Pointer<UnaryFunction> f_;
   Vector3D pt_;
 public:
   DistanceToSingletonScore(UnaryFunction *f, const Vector3D& pt);

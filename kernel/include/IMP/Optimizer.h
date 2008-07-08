@@ -11,11 +11,11 @@
 #include "IMP_config.h"
 #include "base_types.h"
 #include "VersionInfo.h"
-#include "internal/Object.h"
+#include "Object.h"
 #include "utility.h"
 #include "Model.h"
 #include "Particle.h"
-#include "internal/ObjectPointer.h"
+#include "Pointer.h"
 
 #include <limits>
 
@@ -34,7 +34,7 @@ typedef std::vector<OptimizerState*> OptimizerStates;
 /** \note There is currently no optimizer support for constraints
     (e.g. rigid bodies).
  */
-class IMPDLLEXPORT Optimizer: public internal::Object
+class IMPDLLEXPORT Optimizer: public Object
 {
 public:
   Optimizer();
@@ -198,7 +198,7 @@ protected:
   typedef std::vector<FloatIndex> FloatIndexes;
 
 private:
-  internal::ObjectPointer<Model, false> model_;
+  Pointer<Model> model_;
 };
 
 IMP_OUTPUT_OPERATOR(Optimizer);

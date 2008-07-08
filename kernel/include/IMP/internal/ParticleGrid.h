@@ -11,7 +11,7 @@
 #include "Grid3D.h"
 #include "../score_states/MaxChangeScoreState.h"
 #include "../base_types.h"
-#include "ObjectPointer.h"
+#include "../Pointer.h"
 
 namespace IMP
 {
@@ -20,7 +20,7 @@ namespace internal
 {
 
 /** \internal */
-class ParticleGrid: public internal::Object
+class ParticleGrid: public Object
 {
   // don't need ref counting since mc_ has the same set of points
   typedef internal::Grid3D<Particles> Grid;

@@ -12,7 +12,7 @@
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 #include "../TripletScore.h"
 
 #include <vector>
@@ -43,7 +43,7 @@ public:
   void clear_chains();
 
 protected:
-  internal::ObjectPointer<TripletScore, true> ts_;
+  Pointer<TripletScore> ts_;
   std::vector<unsigned int> chain_splits_;
 };
 

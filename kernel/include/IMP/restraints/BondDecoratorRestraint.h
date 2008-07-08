@@ -14,7 +14,7 @@
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 #include "../UnaryFunction.h"
 
 namespace IMP
@@ -49,7 +49,7 @@ public:
 
 protected:
   BondDecoratorListScoreState *bl_;
-  internal::ObjectPointer<UnaryFunction, true> f_;
+  Pointer<UnaryFunction> f_;
 };
 
 } // namespace IMP

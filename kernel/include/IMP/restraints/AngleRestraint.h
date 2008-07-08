@@ -11,7 +11,7 @@
 #include "../IMP_config.h"
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
-#include "../internal/ObjectPointer.h"
+#include "../Pointer.h"
 #include "../triplet_scores/AngleTripletScore.h"
 
 namespace IMP
@@ -35,7 +35,7 @@ public:
   IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:
-    internal::ObjectPointer<AngleTripletScore, true> sf_;
+    Pointer<AngleTripletScore> sf_;
 };
 
 } // namespace IMP
