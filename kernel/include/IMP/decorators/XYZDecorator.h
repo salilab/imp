@@ -71,6 +71,13 @@ public:
                                     DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
+  //! Add something to the derivative of the coordinates
+  void add_to_coordinates_derivative(const Vector3D& v, 
+                                     DerivativeAccumulator &d) {
+    add_to_coordinate_derivative(0, v[0], d);
+    add_to_coordinate_derivative(1, v[1], d);
+    add_to_coordinate_derivative(2, v[2], d);
+  }
   //! Get whether the coordinates are optimized
   /** \return true only if all of them are optimized. 
     */
