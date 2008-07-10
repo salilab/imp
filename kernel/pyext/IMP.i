@@ -81,6 +81,9 @@ namespace IMP {
   %pythonprepend DistancePairScore::DistancePairScore %{
         args[0].thisown=0
   %}
+  %pythonprepend TransformedDistancePairScore::TransformedDistancePairScore %{
+        args[0].thisown=0
+  %}
   %pythonprepend BondCoverPairScore::BondCoverPairScore %{
         args[0].thisown=0
   %}
@@ -216,6 +219,7 @@ namespace IMP {
 %include "IMP/pair_scores/RefineOncePairScore.h"
 %include "IMP/pair_scores/SphereDistancePairScore.h"
 %include "IMP/pair_scores/TypedPairScore.h"
+%include "IMP/pair_scores/TransformedDistancePairScore.h"
 %include "IMP/particle_refiners/BondCoverParticleRefiner.h"
 %include "IMP/particle_refiners/ChildrenParticleRefiner.h"
 %include "IMP/singleton_scores/DistanceToSingletonScore.h"

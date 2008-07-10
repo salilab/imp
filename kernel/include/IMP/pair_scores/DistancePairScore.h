@@ -29,20 +29,6 @@ public:
   virtual void show(std::ostream &out=std::cout) const;
 };
 
-namespace internal
-{
-
-//! An internal helper function for evaluating distance potentials
-/** The function applies f to scale*(distance-offset).
- */
-Float evaluate_distance_pair_score(Particle *a, Particle *b,
-                                   DerivativeAccumulator *da,
-                                   UnaryFunction *f,
-                                   Float offset,
-                                   Float scale);
-
-} // namespace internal
-
 } // namespace IMP
 
 #endif  /* __IMP_DISTANCE_PAIR_SCORE_H */

@@ -60,6 +60,7 @@
 #include "IMP/pair_scores/SphereDistancePairScore.h"
 #include "IMP/pair_scores/RefineOncePairScore.h"
 #include "IMP/pair_scores/TypedPairScore.h"
+#include "IMP/pair_scores/TransformedDistancePairScore.h"
 #include "IMP/singleton_scores/DistanceToSingletonScore.h"
 #include "IMP/singleton_scores/AttributeSingletonScore.h"
 #include "IMP/triplet_scores/AngleTripletScore.h"

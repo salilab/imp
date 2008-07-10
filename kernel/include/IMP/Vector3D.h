@@ -65,6 +65,20 @@ public:
                     operator[](2) * s); 
   }
 
+  //! divide by a scalar
+  Vector3D operator/(Float s) const {
+    return Vector3D(operator[](0) / s, 
+                    operator[](1) / s,
+                    operator[](2) / s); 
+  }
+
+  //! negation
+  Vector3D operator-() const {
+    return Vector3D(-operator[](0), 
+                    -operator[](1),
+                    -operator[](2)); 
+  }
+
   //! \return the vector product of two vectors.
   /** \param[in] vec2 The other vector to use in the product.
    */
@@ -106,7 +120,7 @@ public:
                     operator[](2) + o[2]);
   }
 
-  void show(std::ostream &out) const {
+  void show(std::ostream &out=std::cout) const {
     out << "(" << operator[](0) << ", " << operator[](1) << ", "
         << operator[](2) << ")";
   }

@@ -11,6 +11,9 @@
 #include "IMP/score_states/BondDecoratorListScoreState.h"
 #include "IMP/decorators/bond_decorators.h"
 #include "IMP/pair_scores/DistancePairScore.h"
+#include "IMP/internal/evaluate_distance_pair_score.h"
+#include "IMP/decorators/XYZDecorator.h"
+#include <boost/lambda/lambda.hpp>
 
 namespace IMP
 {
@@ -47,11 +50,11 @@ Float BondDecoratorRestraint::evaluate(DerivativeAccumulator *accum)
     }
     if (pa && pb) {
       sum+= 
-        internal::evaluate_distance_pair_score(pa,
-                                               pb,
+        internal::evaluate_distance_pair_score(XYZDecorator(pa),
+                                               XYZDecorator(pb),
                                                accum,
                                                f_.get(),
-                                               l, s);
+                                               s*(boost::lambda::_1-l));
     }
   }
   return sum;
