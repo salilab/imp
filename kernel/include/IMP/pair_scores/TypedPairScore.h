@@ -27,8 +27,8 @@ public:
   //! Constructor.
   /** \param[in] typekey The IntKey used to denote the type of each particle.
       \param[in] allow_invalid_types Desired behavior for particle pairs that
-                 have types not covered by set_pair_score. If true, the score
-                 for these pairs is zero. If false, evaluate() raises
+                 have types not covered by set_pair_score(). If true, the score
+                 returned for these pairs is zero. If false, evaluate() raises
                  a ValueException.
    */
   TypedPairScore(IntKey typekey, bool allow_invalid_types=true)
