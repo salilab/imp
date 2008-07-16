@@ -64,7 +64,7 @@ void BondDecoratorRestraint::show(std::ostream& out) const
 {
   out << "Bond decorator restraint with unary function ";
   f_->show(out);
-  out << " on " << bl_->number_of_bonds() << " bonds";
+  out << " on " << bl_->get_number_of_bonds() << " bonds";
   out << std::endl;
 }
 

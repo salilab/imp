@@ -251,7 +251,7 @@ public:
     return nbl_;
   }
 
-  unsigned int number_of_nonbonded() const {
+  unsigned int get_number_of_nonbonded() const {
     IMP_check(get_nbl_is_valid(), "Must call update first",
               ValueException);
     return nbl_.size();

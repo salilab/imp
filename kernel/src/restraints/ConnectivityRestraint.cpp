@@ -76,7 +76,7 @@ Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
     boost::property<boost::edge_weight_t, float> > Graph;
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
-  Graph g(Restraint::number_of_particles());
+  Graph g(Restraint::get_number_of_particles());
 
   const float tag_weight= -std::numeric_limits<float>::max();
   for (unsigned int i=0; i< num_sets; ++i) {

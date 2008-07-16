@@ -30,7 +30,7 @@ Float SingletonListRestraint::evaluate(DerivativeAccumulator *accum)
 
   Float score=0;
 
-  for (unsigned int i=0; i< number_of_particles(); ++i) {
+  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
     score += ss_->evaluate(get_particle(i), accum);
   }
 

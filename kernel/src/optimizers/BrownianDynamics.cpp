@@ -92,7 +92,7 @@ void BrownianDynamics::setup_particles()
 {
   clear_particles();
   FloatKeys xyzk=XYZDecorator::get_xyz_keys();
-  for (unsigned int i = 0; i < get_model()->number_of_particles(); ++i) {
+  for (unsigned int i = 0; i < get_model()->get_number_of_particles(); ++i) {
     Particle *p = get_model()->get_particle(i);
     if (p->has_attribute(xyzk[0]) && p->get_is_optimized(xyzk[0])
         && p->has_attribute(xyzk[1]) && p->get_is_optimized(xyzk[1])
@@ -118,14 +118,14 @@ void BrownianDynamics::setup_particles()
 
 bool BrownianDynamics::step()
 {
-  std::vector<Vector3D> new_pos(number_of_particles());
+  std::vector<Vector3D> new_pos(get_number_of_particles());
   bool noshrink=true;
   while (!propose_step(new_pos)) {
     cur_dt_= cur_dt_/2.0;
     noshrink=false;
   }
 
-  for (unsigned int i=0; i< number_of_particles(); ++i) {
+  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
     XYZDecorator d(get_particle(i));
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, new_pos[i][j]);
@@ -143,7 +143,7 @@ bool BrownianDynamics::propose_step(std::vector<Vector3D>& new_pos)
   IMP_LOG(VERBOSE, "dt is " << cur_dt_ << std::endl);
 
 
-  for (unsigned int i=0; i< number_of_particles(); ++i) {
+  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
     Particle *p= get_particle(i);
     XYZDecorator d(p);
     IMP_IF_CHECK(CHEAP) {

@@ -85,14 +85,14 @@ void BipartiteNonbondedListScoreState::do_before_evaluate()
   Float cost;
   switch (a_){
   case QUADRATIC:
-    cost= 10*mc0_->number_of_particles()* mc1_->number_of_particles();
+    cost= 10*mc0_->get_number_of_particles()* mc1_->get_number_of_particles();
     break;
   case BBOX:
-    cost= 1000*(mcr_->number_of_particles());
+    cost= 1000 * mcr_->get_number_of_particles();
     break;
   default:
     IMP_assert(0, "Bad algorithm");
-    cost= 1000*(mcr_->number_of_particles());
+    cost= 1000 * mcr_->get_number_of_particles();
   }
 
   if (P::update(mc+ mcr_->get_max(), cost)) {
@@ -133,7 +133,7 @@ void BipartiteNonbondedListScoreState::rebuild_nbl()
           << P::get_cutoff() << " and slack " << P::get_slack() << std::endl);
   process_sets(mc0_->get_particles(),  mc1_->get_particles());
   P::set_nbl_is_valid(true);
-  IMP_LOG(TERSE, "NBL has " << P::number_of_nonbonded()
+  IMP_LOG(TERSE, "NBL has " << P::get_number_of_nonbonded()
           << " pairs" << std::endl);
 }
 
@@ -214,7 +214,7 @@ void BipartiteNonbondedListScoreState::check_nbl() const
                    << " " << gr(ps0[i])
                    << " and " << ps1[j]->get_index() << " " 
                    << dj << gr(ps1[j]) 
-                   << " size is " << number_of_nonbonded() << std::endl);
+                   << " size is " << get_number_of_nonbonded() << std::endl);
       }
     }
   }

@@ -50,7 +50,7 @@ public:
     return bonds_.end();
   }
 
-  unsigned int number_of_bonds() const {
+  unsigned int get_number_of_bonds() const {
     return bonds_.size();
   }
 

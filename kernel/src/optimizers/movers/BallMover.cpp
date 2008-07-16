@@ -57,13 +57,13 @@ BallMover::BallMover(const FloatKeys &vars,
 
 void BallMover::generate_move(float scale)
 {
-  std::vector<Float> center(number_of_float_keys());
-  for (unsigned int i = 0; i < number_of_particles(); ++i) {
-    for (unsigned int j = 0; j < number_of_float_keys(); ++j) {
+  std::vector<Float> center(get_number_of_float_keys());
+  for (unsigned int i = 0; i < get_number_of_particles(); ++i) {
+    for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
       center[j] = get_float(i, j);
     }
     std::vector<Float> npos = random_point_in_sphere(center, scale * radius_);
-    for (unsigned int j = 0; j < number_of_float_keys(); ++j) {
+    for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
       propose_value(i, j, npos[j]);
     }
   }
