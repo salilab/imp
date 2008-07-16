@@ -52,7 +52,7 @@ void MolecularDynamics::setup_particles()
   degrees_of_freedom_ = 0;
   clear_particles();
 
-  for (unsigned int i = 0; i < get_model()->number_of_particles(); ++i) {
+  for (unsigned int i = 0; i < get_model()->get_number_of_particles(); ++i) {
     Particle *p = get_model()->get_particle(i);
     if (p->has_attribute(cs_[0]) && p->get_is_optimized(cs_[0])
         && p->has_attribute(cs_[1]) && p->get_is_optimized(cs_[1])

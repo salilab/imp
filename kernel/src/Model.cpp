@@ -116,9 +116,9 @@ void Model::show(std::ostream& out) const
 
   get_version_info().show(out);
 
-  out << number_of_particles() << " particles" << std::endl;
-  out << number_of_restraints() << " restraints" << std::endl;
-  out << number_of_score_states() << " score states" << std::endl;
+  out << get_number_of_particles() << " particles" << std::endl;
+  out << get_number_of_restraints() << " restraints" << std::endl;
+  out << get_number_of_score_states() << " score states" << std::endl;
 
   out << std::endl;
 }

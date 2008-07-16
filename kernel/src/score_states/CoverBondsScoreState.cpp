@@ -84,7 +84,7 @@ void CoverBondsScoreState::after_evaluate(DerivativeAccumulator *dva)
 
 void CoverBondsScoreState::show(std::ostream &out) const
 {
-  out << "CoverBondsScoreState on " << bl_->number_of_bonds()
+  out << "CoverBondsScoreState on " << bl_->get_number_of_bonds()
       << " bonds " << std::endl;
 }
 

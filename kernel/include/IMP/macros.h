@@ -267,7 +267,7 @@ public:                                                                 \
   /** \short Clear the contents of the container */                     \
   void clear_##lcname##s();                                             \
   /** \short return the number of objects*/                             \
-  unsigned int number_of_##lcname##s() const {                          \
+  unsigned int get_number_of_##lcname##s() const {                          \
     return lcname##_vector_.size();}                                    \
   /** \short Get object refered to by the index
       \throws IndexException if the index is out of range
@@ -324,7 +324,7 @@ public:                                                                 \
 
 //! Use this to add a container of IMP objects
 /**
-   Such a container adds public methods add_foo, get_foo, number_of_foo 
+   Such a container adds public methods add_foo, get_foo, get_number_of_foo 
    and a private type foo_iterator, with methods foo_begin, foo_end.
    \param[in] protection The level of protection for the container.
    \param[in] Ucname The name of the type in uppercase
@@ -377,7 +377,7 @@ public:                                                                 \
 
 //! Use this to add a set of IMP objects owned by the containing one
 /**
-   Such a container adds public methods add_foo, get_foo, number_of_foo 
+   Such a container adds public methods add_foo, get_foo, get_number_of_foo 
    and a private type foo_iterator, with methods foo_begin, foo_end.
    \param[in] Ucname The name of the type in uppercase
    \param[in] lcname The name of the type in lower case

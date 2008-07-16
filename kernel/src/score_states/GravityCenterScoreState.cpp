@@ -62,7 +62,7 @@ void GravityCenterScoreState::update_position()
 void GravityCenterScoreState::
 transform_derivatives(DerivativeAccumulator *accpt)
 {
-  size_t nchildren = number_of_particles();
+  size_t nchildren = get_number_of_particles();
   if (nchildren > 0) {
     // we know center is OK since update was called
     XYZDecorator d(center_);

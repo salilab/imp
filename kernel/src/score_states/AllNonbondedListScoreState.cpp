@@ -79,18 +79,18 @@ void AllNonbondedListScoreState::do_before_evaluate()
   Float cost;
   switch (a_){
   case QUADRATIC:
-    cost = 10 * square(mc_->number_of_particles());
+    cost = 10 * square(mc_->get_number_of_particles());
     break;
   case BBOX:
-    cost = 1000 * mc_->number_of_particles();
+    cost = 1000 * mc_->get_number_of_particles();
     break;
   case GRID:
     // completely made up
-    cost = 2000 * mc_->number_of_particles();
+    cost = 2000 * mc_->get_number_of_particles();
     break;
   default:
     IMP_failure("Bad algorithm", ErrorException());
-    cost = 10 * mc_->number_of_particles();
+    cost = 10 * mc_->get_number_of_particles();
   }
   if (P::update(mc, cost)) {
     mc_->reset();
@@ -124,7 +124,7 @@ void AllNonbondedListScoreState::rebuild_nbl()
     IMP_failure("Bad algorithm in AllNBL::rebuild", ErrorException());
   }
   set_nbl_is_valid(true);
-  IMP_LOG(TERSE, "NBL has " << P::number_of_nonbonded()
+  IMP_LOG(TERSE, "NBL has " << P::get_number_of_nonbonded()
           << " pairs" << std::endl);
 }
 
@@ -335,7 +335,7 @@ void AllNonbondedListScoreState::check_nbl() const
                    << " " << gr(ps[i])
                    << " and " << ps[j]->get_index() << " " 
                    << dj << gr(ps[j]) 
-                   << " size is " << number_of_nonbonded() 
+                   << " size is " << get_number_of_nonbonded() 
                    << " distance is " << distance(di, dj) 
                    << " max is " << mc_->get_max() << std::endl);
       }
