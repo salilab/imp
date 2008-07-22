@@ -18,7 +18,7 @@ class SampleParticlesTest(unittest.TestCase):
         self.particles_p.append(9.,5.,5.,1.,1.)
         self.particles_p.append(12.,9.,4.,1.,1.)
         self.particles_p.append(4.,5.,5.,1.,1.)
-        print 'after setup'
+        print 'after setup SampleParticlesTest'
 
     def test_sample(self):
         """ test that the sampling works """

@@ -7,7 +7,7 @@
 #include "Vector3.h"
 #include <iostream>
 #include <iomanip>
-#include <stdexcept>
+#include "ErrorHandling.h"
 #include "MapReaderWriter.h"
 
 //! Class for handling density maps.
@@ -41,9 +41,9 @@ public:
   emreal calcRMS();
 
 
-  //! Normailze the density according to standard deviation (stdv).
-  /** The mean is subtracted from the map, which is then divided by the stdv 
-      Flag normalize is set to avoid repeated computation */
+  //! Normailze the density voxles according to standard deviation (stdv).
+  /** The mean is subtracted from the map, which is then divided by the stdv.
+      The normalization flag is set to avoid repeated computation */
   void std_normalize();
 
   inline bool is_normalized() const {return normalized_;}
@@ -60,7 +60,7 @@ public:
   /** \param[in] x The position ( in angstroms) of the x coordinate
       \param[in] y The position ( in angstroms) of the y coordinate
       \param[in] z The position ( in angstroms) of the z coordinate
-      \exception std::out_of_range The point is not covered by the grid.
+      \exception  EMBED_OutOfRange  The point is not covered by the grid.
       \return the voxel index of a given position. If the position is out of
               the boundaries of the map, the function returns -1.
    */
@@ -84,42 +84,62 @@ public:
   emreal get_value(float x,float y,float z) const;
 
   //! Sets the origin of the header
+  /**
+    \param x the new x
+    \param y the new y
+    \param z the new z
+  */
   void set_origin(float x,float y,float z);
 
 
   // inspection functions
   const DensityHeader *get_header()const {return &header_;}
+  //! Returns a pointer to the header of the map in a writable version
   DensityHeader *get_header_writable() {return &header_;}
 
+  //! Returns the x-location of the map
+  /**
+  \exception EMBED_OutOfRange The locations have not been calculated.
+  */
   float* get_x_loc() const {
     if (!loc_calculated_) {
-      std::cerr << "DensityMap::get_x_loc ask for x location although it "
-                << "has not been calculated " << std::endl;
-      throw 1;
+      std::ostringstream msg;
+      msg << " DensityMap::get_x_loc >> "
+      "x location requested before being calculated \n";
+      throw EMBED_LogicError(msg.str().c_str());
     }
     return x_loc_;
   }
+  //! Returns the y-location of the map
+  /**
+  \exception EMBED_OutOfRange The locations have not been calculated.
+  */
   float* get_y_loc() const {
     if (!loc_calculated_) {
-      std::cerr << "DensityMap::get_x_loc ask for x location although it "
-                << "has not been calculated " << std::endl;
-      throw 1;
+      std::ostringstream msg;
+      msg << " DensityMap::get_y_loc >> "
+      "y location requested before being calculated \n";
+      throw EMBED_LogicError(msg.str().c_str());
     }
     return y_loc_;
   }
-
+  //! Returns the z-location of the map
+  /**
+  \exception EMBED_OutOfRange The locations have not been calculated.
+  */
   float* get_z_loc() const {
     if (!loc_calculated_) {
-      std::cerr << "DensityMap::get_x_loc ask for x location although it "
-                << "has not been calculated " << std::endl;
-      throw 1;
+      std::ostringstream msg;
+      msg << " DensityMap::get_z_loc >> "
+      "z location requested before being calculated \n";
+      throw EMBED_LogicError(msg.str().c_str());
     }
     return z_loc_;
   }
 
   emreal* get_data() const {return data_;}
 
-  //! Checks if two maps have the same 
+  //! Checks if two maps have the same origin
   /** \param[in] other the map to compare with
       \return true if the two maps have the same origin
    */
@@ -140,7 +160,7 @@ public:
 
 protected:
 
-  //! Calculate the coordinates that correspond to all voxels.
+  //! Calculates the coordinates that correspond to all voxels.
   /** Can be precomputed to make corr faster.  
       \todo which is a better design - have it public or call it from voxel2loc?
    */
@@ -151,7 +171,7 @@ protected:
   void float2real(float *f_data, emreal **r_data);
   void real2float(emreal *r_data, float **f_data);
 
-  DensityHeader header_;
+  DensityHeader header_; // holds all the info about the map
   emreal *data_; // the order is ZYX (Z-slowest)
   bool data_allocated_;
 

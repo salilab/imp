@@ -6,7 +6,7 @@
 #include <fstream>
 #include <cstring>
 #include "def.h"
-
+#include "ErrorHandling.h"
 
 /** \todo change so that the att will not be encoded but loaded from
     a conf file (Keren) */
@@ -148,14 +148,23 @@ public:
   float MarkerY;//Marker_Y coordinate
   int lswap;
 
+  //! Returns the resolution of the map
   inline float get_resolution() { return resolution;}
+  //! Sets the resolution of the map
   void set_resolution(float resolution_) { resolution=resolution_;}
+  //! Returns the origin on the map (x-coordiante)
   inline float get_xorigin() const {return xorigin;}
+  //! Returns the origin on the map (y-coordiante)
   inline float get_yorigin() const {return yorigin;}
+  //! Returns the origin on the map (z-coordiante)
   inline float get_zorigin() const {return zorigin;}
+  //! Sets the origin on the map (x-coordiante)
   inline void set_xorigin(float x)  {xorigin=x; top_calculated=false;}
+  //! Sets the origin on the map (y-coordiante)
   inline void set_yorigin(float y)  {yorigin=y; top_calculated=false;}
+  //! Sets the origin on the map (z-coordiante)
   inline void set_zorigin(float z)  {zorigin=z; top_calculated=false;}
+  //! True if the top coodinates (bounding-box) are calculated
   inline bool is_top_calculated() const { return top_calculated;}
 
 protected:
