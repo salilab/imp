@@ -128,4 +128,70 @@ void depth_first_traversal(HierarchyDecorator d, HierarchyVisitor &f)
 }
 
 
+
+namespace
+{
+
+struct MHDMatchingLeaves
+{
+  bool operator()(Particle *p) const {
+    HierarchyDecorator mhd(p);
+    return mhd.get_number_of_children()==0;
+  }
+};
+
+} // namespace
+
+
+Particles
+hierarchy_get_leaves(HierarchyDecorator mhd)
+{
+  Particles out;
+  hierarchy_gather(mhd, MHDMatchingLeaves(),
+                   std::back_inserter(out));
+  return out;
+}
+
+BondDecorators hierarchy_get_internal_bonds(HierarchyDecorator mhd)
+{
+  Particles ps= hierarchy_get_all_descendants(mhd);
+  std::set<Particle*> sps(ps.begin(), ps.end());
+  BondDecorators ret;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (IMP::BondedDecorator::is_instance_of(ps[i])){
+      IMP::BondedDecorator b(ps[i]);
+      for (unsigned int i=0; i< b.get_number_of_bonds(); ++i) {
+        Particle *op= b.get_bonded(i).get_particle();
+        if (op < ps[i] 
+            && sps.find(op) != sps.end()) {
+          ret.push_back(b.get_bond(i));
+        }
+      }
+    }
+  }
+  return ret;
+}
+
+
+namespace
+{
+
+struct MHDMatchingAll
+{
+  bool operator()(Particle *) const {
+    return true;
+  }
+};
+
+} // namespace
+
+Particles
+hierarchy_get_all_descendants(HierarchyDecorator mhd)
+{
+  Particles out;
+  hierarchy_gather(mhd, MHDMatchingAll(),
+                   std::back_inserter(out));
+  return out;
+}
+
 } // namespace IMP

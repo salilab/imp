@@ -6,12 +6,13 @@
  *
  */
 
-#include <sstream>
-
 #include "IMP/decorators/MolecularHierarchyDecorator.h"
 #include "IMP/decorators/NameDecorator.h"
 #include "IMP/decorators/AtomDecorator.h"
 #include "IMP/decorators/ResidueDecorator.h"
+
+#include <sstream>
+#include <set>
 
 namespace IMP
 {
@@ -72,10 +73,10 @@ struct MHDMatchingType
   MolecularHierarchyDecorator::Type t_;
 };
 
-} // namespace internal
+} // namespace
 
-Particles get_particles(MolecularHierarchyDecorator mhd, 
-                        MolecularHierarchyDecorator::Type t)
+Particles molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd, 
+                                          MolecularHierarchyDecorator::Type t)
 {
   Particles out;
   hierarchy_gather(mhd, MHDMatchingType(t),
@@ -106,8 +107,9 @@ struct MatchResidueIndex
 } // namespace
 
 
-ResidueDecorator get_residue(MolecularHierarchyDecorator mhd,
-                                        unsigned int index)
+ResidueDecorator
+molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
+                                unsigned int index)
 {
   IMP_check(mhd.get_type() == MolecularHierarchyDecorator::PROTEIN
             || mhd.get_type() == MolecularHierarchyDecorator::CHAIN

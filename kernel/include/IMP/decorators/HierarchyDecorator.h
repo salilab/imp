@@ -9,15 +9,16 @@
 #ifndef __IMP_HIERARCHY_DECORATOR_H
 #define __IMP_HIERARCHY_DECORATOR_H
 
-#include <limits>
-#include <vector>
-#include <deque>
-
 #include "../Particle.h"
 #include "../Model.h"
 #include "../DecoratorBase.h"
 #include "../internal/ArrayOnAttributesHelper.h"
 #include "utility.h"
+#include "bond_decorators.h"
+
+#include <limits>
+#include <vector>
+#include <deque>
 
 namespace IMP
 {
@@ -326,6 +327,76 @@ Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
 }
 
 
+namespace internal
+{
+
+template <class K, class V>
+struct MatchAttribute
+{
+  K k_;
+  V v_;
+  MatchAttribute(K k, V v): k_(k), v_(v){}
+  bool operator()(Particle *o) {
+    if (!o->has_attribute(k_)) return false;
+    else return o->get_value(k_) == v_;
+  }
+};
+
+} // namespace internal
+
+//! Gather all the Particle* in the hierarchy which match on an attribute
+/** \ingroup hierarchy
+ */
+template <class Out, class K, class V>
+Out hierarchy_gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
+{
+  internal::Gather<internal::MatchAttribute<K, V>,Out>
+    gather(internal::MatchAttribute<K,V>(k,v),
+           out);
+  depth_first_traversal(h, gather);
+  return gather.get_out();
+}
+
+
+namespace internal
+{
+
+template <class K0, class V0, class K1, class V1>
+struct MatchAttributes
+{
+  K0 k0_;
+  V0 v0_;
+  K1 k1_;
+  V1 v1_;
+  MatchAttributes(K0 k0, V0 v0,
+                  K1 k1, V1 v1): k0_(k0), v0_(v0),
+                                 k1_(k1), v1_(v1){}
+  bool operator()(Particle *o) {
+    if (!o->has_attribute(k0_)) return false;
+    else if (o->get_value(k0_) != v0_) return false;
+    else if (!o->has_attribute(k1_)) return false;
+    else if (o->get_value(k1_) != v1_) return false;
+    return true;
+  }
+};
+
+} // namespace internal
+
+//! Gather all the Particle* in the hierarchy which match on two attributes
+/** \ingroup hierarchy
+ */
+template <class Out, class K0, class V0, class K1, class V1>
+Out hierarchy_gather_by_attributes(HierarchyDecorator h, K0 k0,
+                                   V0 v0, K1 k1, V1 v1, Out out)
+{
+  internal::Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
+    gather(internal::MatchAttributes<K0,V0, K1, V1>(k0,v0, k1, v1),
+           out);
+  depth_first_traversal(h, gather);
+  return gather.get_out();
+}
+
+
 //! Find the first node which matches some criteria
 /** \ingroup hierarchy
  */
@@ -351,6 +422,21 @@ HD hierarchy_find(HD h, F f)
   } while (!stack.empty());
   return HD();
 }
+
+
+
+//! Get all the leaves of the bit of hierarchy
+IMPDLLEXPORT Particles
+hierarchy_get_leaves(HierarchyDecorator mhd);
+
+//! Get the bonds internal to this tree
+IMPDLLEXPORT BondDecorators
+hierarchy_get_internal_bonds(HierarchyDecorator mhd);
+
+//! Get all the particles in the subtree
+IMPDLLEXPORT Particles
+hierarchy_get_all_descendants(HierarchyDecorator mhd);
+
 
 namespace internal
 {

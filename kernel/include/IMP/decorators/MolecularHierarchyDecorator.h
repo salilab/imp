@@ -16,6 +16,7 @@
 #include "../Model.h"
 #include "utility.h"
 #include "HierarchyDecorator.h"
+#include "bond_decorators.h"
 
 namespace IMP
 {
@@ -43,8 +44,8 @@ public:
       - TRAJECTORY is an ordered set of UNIVERSES
    */
   enum Type {UNKNOWN=-1, ATOM, RESIDUE, NUCLEICACID, FRAGMENT,
-             CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE,
-             UNIVERSE, UNIVERSES, TRAJECTORY
+             CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE, ASSEMBLY,
+             COLLECTION, UNIVERSE, UNIVERSES, TRAJECTORY
             };
 
   Type get_type() const {
@@ -76,10 +77,16 @@ public:
       return "nucleotide";
     case MOLECULE:
       return "molecule";
+    case ASSEMBLY:
+      return "assembly";
+    case COLLECTION:
+      return "collection";
     case UNIVERSE:
       return "universe";
     case UNIVERSES:
       return "universes";
+    case TRAJECTORY:
+      return "trajectory";
     default:
       IMP_assert(0, "Invalid MolecularHierarchyDecorator type");
       return std::string();
@@ -132,6 +139,12 @@ public:
     }
   }
 
+
+  static IntKey get_type_key() {
+    decorator_initialize_static_data();
+    return type_key_;
+  }
+
 };
 
 typedef std::vector<MolecularHierarchyDecorator> MolecularHierarchyDecorators;
@@ -142,8 +155,9 @@ typedef std::vector<MolecularHierarchyDecorator> MolecularHierarchyDecorators;
    in the molecular hierarchy
    \ingroup hierarchy
 */
-IMPDLLEXPORT Particles get_particles(MolecularHierarchyDecorator mhd, 
-                                     MolecularHierarchyDecorator::Type t);
+IMPDLLEXPORT Particles
+molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd, 
+                                MolecularHierarchyDecorator::Type t);
 
 class ResidueDecorator;
 
@@ -160,8 +174,8 @@ class ResidueDecorator;
     \ingroup hierarchy
  */
 IMPDLLEXPORT ResidueDecorator
-get_residue(MolecularHierarchyDecorator mhd,
-            unsigned int index);
+molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
+                                unsigned int index);
 
 
 //! Create a fragment containing the specified nodes
