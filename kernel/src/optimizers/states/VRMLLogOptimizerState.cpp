@@ -17,9 +17,10 @@ namespace IMP
 
 VRMLLogOptimizerState::VRMLLogOptimizerState(std::string filename,
                                              const Particles &pis) :
-    pis_(pis), filename_(filename), file_number_(0), call_number_(0),
+    filename_(filename), file_number_(0), call_number_(0),
     skip_steps_(0)
 {
+  set_particles(pis);
 }
 
 void VRMLLogOptimizerState::update()
@@ -44,12 +45,16 @@ void VRMLLogOptimizerState::write(std::string buf) const
   if (!out) {
     IMP_WARN("Error opening VRML log file " << buf);
   } else {
-    IMP_LOG(VERBOSE, "Writing " << pis_.size()
+    IMP_LOG(VERBOSE, "Writing " << get_number_of_particles()
             << " particles to file " << buf << "..." << std::flush);
-    write(pis_, radius_, r_, g_, b_, out);
+    write(out, get_particles());
     //IMP_LOG(TERSE, "done" << std::endl);
   }
 }
+
+IMP_LIST_IMPL(VRMLLogOptimizerState, Particle, particle, Particle*, ,);
+IMP_CONTAINER_IMPL(VRMLLogOptimizerState, ParticleRefiner, particle_refiner,
+                   ParticleRefinerIndex ,,,);
 
 static Float snap(Float f)
 {
@@ -58,32 +63,50 @@ static Float snap(Float f)
   return f;
 }
 
-void VRMLLogOptimizerState::write(const Particles &pis, FloatKey rk,
-                                  FloatKey r, FloatKey g, FloatKey b,
-                                  std::ostream &out)
+void VRMLLogOptimizerState::set_color(int c, Vector3D v) {
+  colors_[c]= Vector3D(snap(v[0]),
+                       snap(v[1]),
+                       snap(v[2]));
+}
+
+void VRMLLogOptimizerState::write(std::ostream &out, const Particles &ps) const
 {
   out << "#VRML V2.0 utf8\n";
   out << "Group {\n";
   out << "children [\n";
 
-  for (unsigned int i = 0; i < pis.size(); ++i) {
+  for (Particles::const_iterator it = ps.begin(); it != ps.end(); ++it) {
+    Particle *p = *it;
+    bool wasrefined=false;
+    for (ParticleRefinerConstIterator prit= particle_refiners_begin(); 
+         prit != particle_refiners_end(); ++prit) {
+      if ((*prit)->get_can_refine(p)) {
+        Particles refined= (*prit)->get_refined(p);
+        write(out, refined);
+        (*prit)->cleanup_refined(p, refined, NULL);
+        wasrefined=true;
+        break;
+      }
+    }
+    if (wasrefined) continue;
     try {
-      Particle *p = pis[i];
       XYZDecorator xyz = XYZDecorator::cast(p);
       float x = xyz.get_x();
       float y = xyz.get_y();
       float z = xyz.get_z();
       Float rv = -1, gv = -1, bv = -1;
-      if (r != FloatKey() && b != FloatKey() && g != FloatKey()
-          && p->has_attribute(r) && p->has_attribute(g)
-          && p->has_attribute(b)) {
-        rv = snap(p->get_value(r));
-        gv = snap(p->get_value(g));
-        bv = snap(p->get_value(b));
+      if (color_ != IntKey()
+          && p->has_attribute(color_)) {
+        int cv = p->get_value(color_);
+        if (colors_.find(cv) != colors_.end()) {
+          rv= colors_.find(cv)->second[0];
+          gv= colors_.find(cv)->second[1];
+          bv= colors_.find(cv)->second[2];
+        }
       }
       Float radius = .1;
-      if (rk != FloatKey() && p->has_attribute(rk)) {
-        radius = p->get_value(rk);
+      if (radius_ != FloatKey() && p->has_attribute(radius_)) {
+        radius = p->get_value(radius_);
         //oss << ".sphere " << x << " " << y << " " << z << " " << r << "\n";
       }
 
@@ -111,7 +134,7 @@ void VRMLLogOptimizerState::write(const Particles &pis, FloatKey rk,
       out << "}\n";
 
     } catch (InvalidStateException &e) {
-      IMP_WARN("Particle " << pis[i] << " does not have "
+      IMP_WARN("Particle " << p << " does not have "
                << " cartesian coordinates");
     }
   }

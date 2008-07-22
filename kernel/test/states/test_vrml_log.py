@@ -7,7 +7,7 @@ class TestBL(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
 
-    def _testit(self, rk, r,g,b, pref):
+    def _testit(self, rk, pref):
         """Test logging to a VRML file"""
         m= IMP.Model()
         o= IMP.SteepestDescent()
@@ -24,15 +24,11 @@ class TestBL(IMP.test.TestCase):
         p1= IMP.Particle()
         m.add_particle(p1)
         d1= IMP.XYZDecorator.create(p1)
-        p1.add_attribute(r, 1.0, False)
-        p1.add_attribute(g, 0.0, False)
-        p1.add_attribute(b, 0.0, False)
         d1.set_x(1)
         d1.set_y(1)
         d1.set_z(1)
         a= IMP.VRMLLogOptimizerState(nm, IMP.Particles([p0,p1]))
-        a.set_radius(rk)
-        a.set_color(r, g, b)
+        a.set_radius_key(rk)
         o.add_optimizer_state(a)
         a.update()
 
@@ -41,16 +37,11 @@ class TestBL(IMP.test.TestCase):
     def test_1(self):
         """Testing the VRML log"""
         self._testit(IMP.FloatKey("radius"),
-                     IMP.FloatKey("red"),
-                     IMP.FloatKey("green"),
-                     IMP.FloatKey("blue"), "test1")
+                     "test1")
 
     def test_2(self):
         """Testing the VRML log with new attribute names"""
         self._testit(IMP.FloatKey("another_radius"),
-                     IMP.FloatKey("red5"),
-                     IMP.FloatKey("green5"),
-                     IMP.FloatKey("blue5"),
                      "test1")
     def test_skip(self):
         """Test skipping steps in the VRML log"""
