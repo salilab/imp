@@ -14,7 +14,12 @@
 #include "../../IMP_config.h"
 #include "../../base_types.h"
 #include "../../OptimizerState.h"
+#include "../../ParticleRefiner.h"
 #include "../../internal/kernel_version_info.h"
+#include "../../Vector3D.h"
+
+#include <boost/tuple/tuple.hpp>
+#include <map>
 
 namespace IMP
 {
@@ -50,39 +55,40 @@ class IMPDLLEXPORT VRMLLogOptimizerState : public OptimizerState
   //! The float key to use for the radius
   /** Particles without such an attribute are drawn as fixed sized markers.
    */
-  void set_radius(FloatKey k) {
+  void set_radius_key(FloatKey k) {
     radius_=k;
   }
-  //! The three color components
-  /** Color values should be between 0 and 1. They will be snapped if needed.
-   */
-  void set_color(FloatKey r, FloatKey g, FloatKey b) {
-    r_=r; g_=g; b_=b;
+
+  //! The integer key to use for the color.
+  void set_color_key(IntKey k) {
+    color_=k;
   }
 
-  //! Set the particles to use.
-  void set_particles(const Particles &pis) {
-    pis_=pis;
-  }
+  //! Set the RGB color to use for a given particle color value.
+  /** \param[in] c  Value of the particle's color IntKey.
+      \param[in] v  Color as an RGB vector. Color values should be between 0
+                    and 1. They will be snapped if needed.
+   */
+  void set_color(int c, Vector3D v);
+
+  IMP_LIST(public, Particle, particle, Particle*);
+  IMP_CONTAINER(ParticleRefiner, particle_refiner, ParticleRefinerIndex);
+
   //! Force it to write the next file
   void write_next_file();
 
   void write(std::string name) const;
 
-  //! A helper function to just write a list of particles to a file
-  static void write(const Particles &pis,
-                    FloatKey radius, FloatKey r,
-                    FloatKey g, FloatKey b,
-                    std::ostream &out);
-
 protected:
-  Particles pis_;
+  //! A helper function to just write a list of particles to a file
+  void write(std::ostream &out, const Particles &ps) const;
   std::string filename_;
   int file_number_;
   int call_number_;
   int skip_steps_;
   FloatKey radius_;
-  FloatKey r_, g_, b_;
+  IntKey color_;
+  std::map<int, Vector3D > colors_;
 };
 
 } // namespace IMP
