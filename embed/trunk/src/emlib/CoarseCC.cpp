@@ -23,10 +23,9 @@ voxel_data_threshold,false);
   escore = scalefac * (1. - escore);
 
   //compute the derivatives if required
-  int ierr = 0;
   if (lderiv) {
     CoarseCC::calc_derivatives(em_map, model_map, access_p, scalefac,
-                              dvx, dvy, dvz, ierr);
+                              dvx, dvy, dvz);
   }
   return escore;
 }
@@ -52,24 +51,22 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
   if (!same_dimensions)   {
     std::ostringstream msg;
     msg << "CoarseCC::cross_correlation_coefficient >> This function "
-              << "cannot handle density maps of different size " << std::endl;
-    msg << "First map dimensions : " << em_header->nx << " x "
-              << em_header->ny << " x " << em_header->nz << std::endl;
-    msg << "Second map dimensions: " << model_header->nx << " x "
+       << "cannot handle density maps of different size\n"<<
+    "First map dimensions : " << em_header->nx << " x "
+       << em_header->ny << " x " << em_header->nz << std::endl <<
+    "Second map dimensions: " << model_header->nx << " x "
               << model_header->ny << " x " << model_header->nz << std::endl;
-    throw std::logic_error(msg.str().c_str());
+    throw EMBED_LogicError(msg.str().c_str());
   }
   bool same_voxel_size = em_map.same_voxel_size(model_map);
   if (!same_voxel_size) {
     std::ostringstream msg;
     msg << "CoarseCC::cross_correlation_coefficient >> This function "
-              << "cannot handle density maps of different pixelsize "
-              << std::endl;
-    msg << "First map pixelsize : " << em_header->Objectpixelsize
-              << std::endl;
-    msg << "Second map pixelsize: " << model_header->Objectpixelsize
-              << std::endl;
-    throw std::logic_error(msg.str().c_str());
+    << "cannot handle density maps of different pixelsize "
+    << std::endl << "First map pixelsize : " << em_header->Objectpixelsize
+    << std::endl << "Second map pixelsize: " << model_header->Objectpixelsize
+    << std::endl;
+    throw EMBED_LogicError(msg.str().c_str());
   }
 
   // Take into account the possibility of a model map with zero rms
@@ -146,11 +143,8 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
                                const ParticlesAccessPoint &access_p,
                                const float &scalefac,
                                std::vector<float> &dvx, std::vector<float>&dvy,
-                               std::vector<float>&dvz, int &ierr)
+                               std::vector<float>&dvz)
 {
-
-  ierr=0;
-
   float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
 
@@ -168,6 +162,21 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
 
   int nvox = em_header->nx * em_header->ny * em_header->nz;
   int ivox;
+
+
+  // validate that the model and em maps are not emtpy
+  if (em_header->rms < EPS) {
+      std::ostringstream msg;
+      msg << "CoarseCC::calcDerivatives : EM map is empty ! em_header->rms = "
+          << em_header->rms <<  std::endl;
+      throw EMBED_LogicError(msg.str().c_str());
+  }
+  if (model_header->rms < EPS) {
+  std::ostringstream msg;
+  msg << "CoarseCC::calcDerivatives : Model map is empty ! "
+    "model_header->rms = " << em_header->rms <<  std::endl;
+  throw EMBED_LogicError(msg.str().c_str());
+  }
   // Compute the derivatives
   for (int ii=0; ii<access_p.get_size(); ii++) {
     const KernelParameters::Parameters *params =
@@ -204,19 +213,6 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
           ivox++;
         }
       }
-    }
-    // validate the the model and em maps have some content.
-    if (em_header->rms < EPS) {
-      std::ostringstream msg;
-      msg << "CoarseCC::calc_derivatives : EM map is empty !" << std::endl;
-      msg << "Exit in CoarseCC::calc_derivatives " << std::endl;
-      throw std::logic_error(msg.str().c_str()); 
-    }
-    if (model_header->rms < EPS) {
-      std::ostringstream msg;
-      msg << "CoarseCC::calc_derivatives : Model map is empty !"
-      << std::endl<< "Exit in CoarseCC::calc_derivatives " << std::endl;
-      throw std::logic_error(msg.str().c_str()); 
     }
     tmp = access_p.get_w(ii) * 2.*params->get_inv_sigsq() * scalefac
           * params->get_normfac() /

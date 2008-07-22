@@ -59,16 +59,20 @@ public:
  \param[out] dvx vector to contain the x partial derivatives
  \param[out] dvy vector to contain the y partial derivatives
  \param[out] dvz vector to contain the z partial derivatives
- \param[out] ierr
  \return the function stores the values of the partial derivatives in 
          the vectors
+*/
+/* comments: Javi to Frido:
+I am pretty sure what causes the subtle difference:
+the corr routine requires that the mean is subtracted from the em-density.
+we did not do that, yet.
 */
   static void calc_derivatives(const DensityMap &em_map,
                               SampledDensityMap &model_map,
                               const ParticlesAccessPoint &access_p,
                               const float &scalefac,
                               std::vector<float> &dvx, std::vector<float>&dvy,
-                              std::vector<float>&dvz, int &ierr);
+                              std::vector<float>&dvz);
 
 
 

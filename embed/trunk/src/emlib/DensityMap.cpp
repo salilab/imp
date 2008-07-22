@@ -6,7 +6,9 @@ DensityMap::DensityMap()
   loc_calculated_ = false;
   normalized_ = false;
   rms_calculated_ = false;
-  x_loc_ = y_loc_ = z_loc_ = NULL;
+  x_loc_ = NULL;
+  y_loc_ = NULL;
+  z_loc_ = NULL;
   data_ = NULL;
 }
 
@@ -75,21 +77,14 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader)
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
   // we need to pass a pointer to data_
-  std::cout<<"start" << std::endl;
   float *f_data;
-  if (reader.Read(filename, &f_data, header_) != 0) {
-    std::cerr << " DensityMap::Read unable to read map encoded in file : "
-              << filename << std::endl;
-    throw 1;
-  }
+  reader.Read(filename, &f_data, header_);
   float2real(f_data, &data_);
   delete[] f_data;
   normalized_ = false;
   calcRMS();
   calc_all_voxel2loc();
-  std::cout<<"before computer top" << std::endl;
   header_.compute_xyz_top();
-  std::cout<<"after computer top" << std::endl;
 }
 
 void DensityMap::float2real(float *f_data, emreal **r_data)
@@ -137,9 +132,11 @@ float DensityMap::voxel2loc(const int &index, int dim)
 
 int DensityMap::loc2voxel(float x,float y,float z) const
 {
-  if (!part_of_volume(x,y,z))
-    throw std::out_of_range("the point is not part of the grid");
-
+  if (!part_of_volume(x,y,z)) {
+    std::ostringstream msg;
+    msg << " DensityMap::loc2voxel >> The point is not part of the grid \n";
+    throw EMBED_OutOfRange(msg.str().c_str());
+  }
   int ivoxx=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
   int ivoxy=(int)floor((y-header_.get_yorigin())/header_.Objectpixelsize);
   int ivoxz=(int)floor((z-header_.get_zorigin())/header_.Objectpixelsize);
@@ -254,7 +251,7 @@ emreal DensityMap::calcRMS()
   return stdval;
 }
 
-// data managment
+//!  Set the density voxels to zero and reset the managment flags.
 void DensityMap::reset_data()
 {
   for (int i = 0; i < header_.nx * header_.ny * header_.nz; i++) {

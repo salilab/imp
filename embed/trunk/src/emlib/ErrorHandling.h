@@ -3,63 +3,88 @@
 
 #include "EM_config.h"
 #include <string>
-#include <exception>
-#include <stdexcept>
 #include <iostream>
 #include <sstream>
 #include <cstring>
 
+#define LEN_MSG 1024 // Length allowed for text in the error messages
 
-//! Exception to throw when a variable has a wrong value
-class EMDLLEXPORT EMBED_WrongValue: public std::exception
+//!  Base EMBED Exception
+class EMDLLEXPORT EMBED_Exception
 {
 public:
-  virtual ~EMBED_WrongValue() throw() {};
-
-  //! Constructor
-  /** \param[in] var string with the name of the variable that failed
-      \param[in] value value of the variable that failed
-   */
-  EMBED_WrongValue(std::string variable, float val);
-
-  //! Error message
-  virtual const char* what() const throw() {
-    std::ostringstream msg;
-    msg << "Wrong value with variable: " << var_ << " " << value_;
-    return msg.str().c_str();
+  const char *what() const throw() {
+    return str_? str_->message_: NULL;
   }
 
-protected:
-  //! Stores the name of the variable that failed
-  std::string var_;
-  //! Stores the value that made it fail
-  float value_;
+  EMBED_Exception(const char *message) {
+    str_= new (std::nothrow) refstring();
+    if (str_ != NULL) {
+     str_->ct_=0;
+     std::strncpy(str_->message_, message, LEN_MSG-1);
+     str_->message_[LEN_MSG-1]='\0';
+    }
+  }
+
+  ~EMBED_Exception() throw() {
+    destroy();
+  }
+
+  EMBED_Exception(const EMBED_Exception &o) {copy(o);}
+  EMBED_Exception &operator=(const EMBED_Exception &o) {
+    destroy();
+    copy(o);
+    return *this;
+  }
+ protected:
+  void destroy() {
+    if (str_ != NULL) {
+      --str_->ct_;
+      if (str_->ct_==0) delete str_;
+    }
+  }
+  void copy(const EMBED_Exception &o) {
+    str_=o.str_;
+    if (str_!= NULL) ++str_->ct_;
+  }
+
+ private:
+  struct refstring {
+    char message_[LEN_MSG];
+    int ct_;
+  };
+  refstring *str_;
 };
 
-
-//! Exception to throw when there are I/O problems
-class EMDLLEXPORT EMBED_IOException: public std::exception
-{
+//! Exception to throw when a variable has a wrong value
+class EMDLLEXPORT EMBED_WrongValue: public EMBED_Exception {
+// Using EMDLLEXPORT is necessary to make the object public when compiled in a
+// dynamic share object in SWIG
 public:
+  EMBED_WrongValue(const char *msg): EMBED_Exception(msg){}
+};
+
+ //! Exception to throw when there are I/O problems
+class EMDLLEXPORT EMBED_IOException: public EMBED_Exception {
+// Using EMDLLEXPORT is necessary to make the object public when compiled in a
+// dynamic share object in SWIG
+ public:
   virtual ~EMBED_IOException() throw() {};
-
-  //! Constructor
-  /** \param[in] s string used as text when function what() is called. 
-   */
-  EMBED_IOException(std::string s);
-
-  //! Error message
-  /** \return the error message
-   */
-  virtual const char* what() const throw() {
-    std::ostringstream msg;
-    msg << txt_;
-    return msg.str().c_str();
-  }
-
-protected:
-  //! Text to be printed when the what() function is called
-  std::string txt_;
+  EMBED_IOException(const char *msg): EMBED_Exception(msg){}
+};
+//! Exception to throw when there is an error in the logic of the program
+class EMDLLEXPORT EMBED_LogicError: public EMBED_Exception {
+// Using EMDLLEXPORT is necessary to make the object public when compiled in a
+// dynamic share object in SWIG
+public:
+  EMBED_LogicError(const char *msg): EMBED_Exception(msg){}
+};
+//! Exception to throw when there are values out of range
+class EMDLLEXPORT EMBED_OutOfRange: public EMBED_Exception {
+// Using EMDLLEXPORT is necessary to make the object public when compiled in a
+// dynamic share object in SWIG
+public:
+  EMBED_OutOfRange(const char *msg): EMBED_Exception(msg){}
 };
 
 #endif //_ERRORHANDLING_H

@@ -52,19 +52,14 @@ float CoarseCCatIntervals::evaluate(DensityMap &em_map,
 
   // If the function requires to be evaluated
   if  (calls_counter_ % eval_interval == 0) {
-
-    // we should sync the derivatives. store_dv holds the EM contribution of
-    // the derivatives.  The base evaluate function adds the EM contribution
-    // to the existing derivatives.
-
+    // The base evaluate function calculates the derivates of the EM term.
     stored_cc_ = CoarseCC::evaluate(em_map, model_map, access_p, dvx, dvy, dvz,
                                     scalefac, lderiv);
 
     calls_counter_ = 1;
 
     if (lderiv) {
-      // sync the derivatives. Now remove the additional contributions
-      // (currently stored in store_dv) from the new values
+      // sync the derivatives.
       allocate_derivatives_array(access_p.get_size());
       for (int i=0;i<access_p.get_size();i++) {
         stored_dvx_[i] = dvx[i];
@@ -73,8 +68,7 @@ float CoarseCCatIntervals::evaluate(DensityMap &em_map,
       }
     }
   }
-  // If the function does not require to evaluate, return the previously
-  // stored CCC and add the derivatives to the general terms
+  // If the evaluation was not required, return the previously stored values
   else {
     for (int i=0;i<access_p.get_size();i++) {
       if (lderiv) {
