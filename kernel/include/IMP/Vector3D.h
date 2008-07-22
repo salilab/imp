@@ -124,6 +124,15 @@ public:
     out << "(" << operator[](0) << ", " << operator[](1) << ", "
         << operator[](2) << ")";
   }
+
+  bool operator<(const Vector3D &o) const {
+    for (unsigned int i=0; i< 3; ++i) {
+      if (operator[](i) < o[i]) return true;
+      else if (operator[](i) > o[i]) return false;
+    }
+    return false;
+  }
+
 private:
   Float vec_[3];
 };
