@@ -192,12 +192,12 @@ namespace IMP {
 %include "IMP/Particle.h"
 %include "Vector3D.i"
 %include "IMP/DecoratorBase.h"
+%include "IMP/decorators/bond_decorators.h"
 %include "IMP/decorators/HierarchyDecorator.h"
 %include "IMP/decorators/MolecularHierarchyDecorator.h"
 %include "IMP/decorators/NameDecorator.h"
 %include "IMP/decorators/ResidueDecorator.h"
 %include "IMP/decorators/XYZDecorator.h"
-%include "IMP/decorators/bond_decorators.h"
 %include "IMP/decorators/AtomDecorator.h"
 %include "IMP/ParticleRefiner.h"
 %include "IMP/particle_refiners/BondCoverParticleRefiner.h"
@@ -269,6 +269,8 @@ namespace IMP {
   %template(ScoreStates) ::std::vector<ScoreState*>;
   %template(OptimizerStates) ::std::vector<OptimizerState*>;
   %template(ParticleIndexes) ::std::vector<ParticleIndex>;
+  %template(BondDecorators) ::std::vector<BondDecorator>;
+  %template(MolecularHiearchyDecorators) ::std::vector<MolecularHierarchyDecorator>;
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;

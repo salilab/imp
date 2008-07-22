@@ -128,6 +128,8 @@ public:
 IMP_OUTPUT_OPERATOR(BondedDecorator);
 
 
+typedef std::vector<BondDecorator> BondDecorators;
+
 inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
 {
   Particle *p= graph_get_node(get_particle(), i,
