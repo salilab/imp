@@ -1,7 +1,7 @@
 #include "XplorReaderWriter.h"
 #include <cstdlib>
 
-int XplorReaderWriter::Read(const char *filename, float **data,
+void XplorReaderWriter::Read(const char *filename, float **data,
                             DensityHeader &header)
 {
   std::ifstream XPLORstream(filename);
@@ -14,13 +14,13 @@ int XplorReaderWriter::Read(const char *filename, float **data,
   int size = xheader.extent[0]*xheader.extent[1]*xheader.extent[2];
   *data =  new float[size];
   if (*data == NULL) {
-    std::cout << "XplorReader::Read can not allocated space for data - the "
-              << "requested size: " << size * sizeof(float) << std::endl;
-    return -1;
+    std::ostringstream msg;
+    msg << "XplorReader::Read can not allocated space for data - the "
+     << "requested size: " << size * sizeof(float) << std::endl;
+    throw EMBED_IOException(msg.str().c_str());
   }
   ReadMap(XPLORstream, *data, xheader);
   XPLORstream.close();
-  return 0;
 } 
 
 

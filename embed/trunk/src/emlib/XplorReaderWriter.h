@@ -7,7 +7,7 @@
 #include "DensityHeader.h"
 #include <iostream>
 #include <iomanip>
-
+#include "ErrorHandling.h"
 class EMDLLEXPORT XplorHeader
 {
 public:
@@ -62,7 +62,7 @@ public:
 class EMDLLEXPORT XplorReaderWriter : public MapReaderWriter
 {
 public:
-  int Read(const char *filename, float **data, DensityHeader &header);
+  void Read(const char *filename, float **data, DensityHeader &header);
   void Write(const char *filename, const float *data,
              const DensityHeader &header );
 protected:

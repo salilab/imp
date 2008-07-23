@@ -56,8 +56,8 @@ public:
   int nlabl; // Number of labels being used
   char labels[MRC_NUM_LABELS][MRC_LABEL_SIZE]; // text labels
 public:
-  int FromDensityHeader(const DensityHeader &h);
-  int ToDensityHeader(DensityHeader &h);
+  void FromDensityHeader(const DensityHeader &h);
+  void ToDensityHeader(DensityHeader &h);
 
   //! Outputs coordinates delimited by single space.
   friend std::ostream& operator<<(std::ostream& s, const MRCHeader &v) {
@@ -102,8 +102,9 @@ public:
   MRCReaderWriter(char *fn) {
     filename=fn;
   }
-
-  int Read(const char *fn_in, float **data, DensityHeader &head);
+  //! Reads an MRC file and translates the header to the general DensityHeader 
+  void Read(const char *fn_in, float **data, DensityHeader &head);
+  //! Writes an MRC file from the data and the general DensityHeader
   void Write(const char *fn_out, const float *data, const DensityHeader &head);
 
 
@@ -112,27 +113,27 @@ private:
 
   // By default the data are read into the grid of the class, but an external
   // pointer to another grid can be specified
-  int read(void) {
-    return read(&grid);
+  void read(void) {
+    read(&grid);
   }
-  int read(float **pt);
+  void read(float **pt);
 
-  // read the header
-  int read_header(void);
-  // read different modes
-  int read_data(float *pt);
-  int read_8_data(float *pt);
-  int read_32_data(float *pt);
-  int read_grid(void *pt,size_t size,size_t n);
-  int seek_to_data(void);
+  //! read the header
+  void read_header(void);
+  //! read different modes
+  void read_data(float *pt);
+  void read_8_data(float *pt);
+  void read_32_data(float *pt);
+  void read_grid(void *pt,size_t size,size_t n);
+  void seek_to_data(void);
   // Write functions
-  int write(const char *fn) {
+  void write(const char *fn) {
     return write(fn,grid);
   }
 
-  int write(const char *fn,const float *pt);
-  int write_header(std::ofstream &s);
-  int write_data(std::ofstream &s, const float *pt);
+  void write(const char *fn,const float *pt);
+  void write_header(std::ofstream &s);
+  void write_data(std::ofstream &s, const float *pt);
 
 
   std::string filename; // Name of the file
@@ -147,12 +148,16 @@ private:
 
 
 EMDLLEXPORT
+//!Returns a CCP4 convention machine stamp: 0x11110000 for big endian, 
+//!or 0x44440000 for little endian 
 int get_machine_stamp(void);
 
 EMDLLEXPORT
+//! Returns true if this machine is big endian
 int is_bigendian(void);
 
 EMDLLEXPORT
+//! Swaps the byte order in an array of 32-bit ints
 void byte_swap(unsigned char *ch, int n_array);
 
 

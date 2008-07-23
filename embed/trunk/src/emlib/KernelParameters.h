@@ -7,21 +7,14 @@
 #include <iostream>
 #include <iomanip>
 #include "def.h"
-
+#include "ErrorHandling.h"
 
 //! calculates and stores gaussian kernel parameters. 
+//! as a function of a specufuc radius
 class KernelParameters
 {
 public:
   //! Calculates kernel parameters as a function of a specific radius.
-  /** The parameters are:
-      vsig, 
-      vsigsq, square of vsig
-      inv_sigsq, the inverse of sigma square
-      sig, the sigma
-      kdist, the kernel distance (= elements for summation)
-      normfac, normalization factor
-   */
   class Parameters
   {
   public:
@@ -34,14 +27,31 @@ public:
         << std::endl;
       return s;
     }
+    //! Gets the value of vsig parameter
     inline float get_vsig() const { return vsig;}
+    //! Gets the value of vsig square parameter
     inline float get_vsigsq() const { return vsigsq;}
+    //! Gets the value of the inverse of the sigma square 
     inline float get_inv_sigsq() const { return inv_sigsq;}
+    //! Gets the value of sig parameter
     inline float get_sig() const { return sig;}
+    //! Gets the value of kdist parameter
     inline float get_kdist() const { return kdist;}
+    //! Gets the value of normfac parameter
     inline float get_normfac() const { return normfac;}
   protected:
-    float vsig,vsigsq,inv_sigsq,sig,kdist,normfac;
+    //! vsig
+    float vsig;
+    //! square of vsig
+    float vsigsq;
+    //! the inverse of sigma square
+    float inv_sigsq;
+    //! the sigma
+    float sig;
+    //! the kernel distance (= elements for summation)
+    float kdist;
+    //! normalization factor
+    float normfac;
   };
 
   KernelParameters() {
@@ -53,38 +63,54 @@ public:
     initialized=true;
   }
 
-  void set_params(float radii) {
-    std::map<float, const KernelParameters::Parameters *>::iterator iter
-         = radii2params.find(radii);
-    if (iter != radii2params.end()) {
-      throw 1;
-    }
-    radii2params[radii] = new Parameters(radii, rsigsq, timessig, sq2pi3,
-                                         inv_rsigsq, rnormfac, rkdist);
-  }
+  //! Sets the parameters that depend on the radius of a given particle.
+  /** The other variables of the parameters
+    (rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist) must have been set.
+    \param[in] radius the radius
+  */
+  void set_params(float radii);
 
-  const KernelParameters::Parameters* find_params(float radii) {
+  //! Finds the precomputed parameters given a particle radius.
+  /**
+    \param[in] raidus the radius
+    \exception if the parameters of the radius have not been set
+  */
+  const KernelParameters::Parameters* find_params(float radius) {
     if (!initialized) {
-      throw 1;
+      std::ostringstream msg;
+      msg << " KernelParameters::find_params >> "
+      "The Kernel Parameters are not initialized\n";
+      std::cout<<msg.str().c_str()<<std::endl;
+      throw EMBED_LogicError(msg.str().c_str());
     }
     std::map<float, const KernelParameters::Parameters *>::iterator iter
-        = radii2params.find(radii);
+        = radii2params.find(radius);
     if (iter == radii2params.end()) {
-      throw 1;
+      std::ostringstream msg;
+      msg << " KernelParameters::find_params >> "
+      "The parameters for the radius " << radius << " have not been set\n";
+      std::cout<<msg.str().c_str()<<std::endl;
+      throw EMBED_LogicError(msg.str().c_str());
     }
-    return radii2params[radii];
+    return radii2params[radius];
   }
 
+  //! Gets the value of rsig parameter
   inline  float get_rsig() const  {return rsig;}
+  //! Gets the value of rsig square parameter
   inline float get_rsigsq() const {return rsigsq;}
+  //! Gets the value of timessig parameter
   inline float get_timessig() const {return timessig;}
+  //! Gets the value of sq2pi3 parameter
   inline float get_sq2pi3() const {return sq2pi3;}
+  //! Gets the value of inv_rsigsq parameter
   inline float get_inv_rsigsq() const {return inv_rsigsq;}
+  //! Gets the value of rnormfac parameter
   inline float get_rnormfac() const {return rnormfac;}
+  //! Gets the value of rkdist parameter
   inline float get_rkdist() const {return rkdist;}
+  //! Gets the value of lim parameter
   inline float get_lim() const {return lim;}
-
-
 protected:
   float rsig,rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist,lim;
   bool initialized;

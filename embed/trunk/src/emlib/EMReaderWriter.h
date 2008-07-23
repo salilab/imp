@@ -18,6 +18,7 @@
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
 #include "def.h"
+#include "ErrorHandling.h"
 
 class EMDLLEXPORT EMHeader
 {
@@ -195,17 +196,47 @@ public:
 class EMDLLEXPORT EMReaderWriter : public MapReaderWriter
 {
 public:
-  int Read(const char *filename, float **data, DensityHeader &header);
+ //! Reads a density file in EM format and stores the information
+ /**
+  \param[in] filename name of the file to read
+  \param[in] data pointer to the data
+  \param[in] header DensityHeader() to store the header information
+  \exception EMBED_IOException in case that the filename was not found
+  */
+  void Read(const char *filename, float **data, DensityHeader &header);
+  //! Writes a density file in EM format with the header information
+  /**
+     \param[in] filename name of the file to read
+     \param[in] data pointer to the data
+     \param[in] header DensityHeader() with the header information
+  */
   void Write(const char* filename, const float *data,
              const DensityHeader &header);
 protected:
-  int ReadHeader(std::ifstream &file, EMHeader &header);
-  int ReadData(std::ifstream &file, float **data, const EMHeader &header);
-  int WriteHeader(std::ostream& s, const EMHeader &header);
+  //! Reads the header
+  //! Reads the data
+  /**
+  \param file ifstream of the file to read
+  \param header EMHeader to store the header information
+  */
+  void ReadHeader(std::ifstream &file, EMHeader &header);
+  //! Reads the data
+  /**
+  \param file ifstream of the file to read
+  \param data pointer to store the data
+  \param header EMHeader() to store the header information
+  \exception EMBED_IOException if the data allocation had failed
+  \exception  EMBED_IOException is the requested data type is not implemented
+  */
+  void ReadData(std::ifstream &file, float **data, const EMHeader &header);
+  //! Writes the header
+  /**
+  \param[in] file ofstream of the file to write
+  \param[in] header EMHeader() with the header information
+  \exception EMBED_IOException if the writing operation had failed.
+  */
+  void WriteHeader(std::ostream& s, const EMHeader &header);
 };
-
-
-
 
 
 #endif //_EMREADWRITE_H
