@@ -1,19 +1,14 @@
 #include "MRCReaderWriter.h"
 
-
-// Reads an MRC file and translates the header to the general DensityHeader
-int MRCReaderWriter::Read(const char *fn_in, float **data, DensityHeader &head)
+void MRCReaderWriter::Read(const char *fn_in, float **data, DensityHeader &head)
 {
   // Read file
   filename.assign(fn_in);
   read(data);
   // Translate header to DensityHeader
   header.ToDensityHeader(head);
-  return 0;
 }
 
-
-// Writes an MRC file from the data and the general DensityHeader
 void MRCReaderWriter::Write(const char *fn_out, const float *data,
                             const DensityHeader &head)
 {
@@ -23,87 +18,61 @@ void MRCReaderWriter::Write(const char *fn_out, const float *data,
   write(fn_out,data);
 }
 
-
-
-// Reads an MRC file
-int MRCReaderWriter::read(float **pt)
+void MRCReaderWriter::read(float **pt)
 {
   fs.open(filename.c_str(), std::fstream::in | std::fstream::binary);
   if (!fs.fail()) {
     // Read header
-    if (read_header()==1) {
-      std::cout << "MRCReaderWriter::read >> Error reading MRC header of file "
-                << filename << std::endl;
-      return 1;
-    }
+    read_header();
     // Allocate memory
     size_t n = header.nx*header.ny*header.nz;
     (*pt)= new float[n]; 
-    // read 
-    if (read_data(*pt) == 1) {
-      std::cout << "MRCReaderWriter::read >> Error reading MRC data of file "
-                << filename << std::endl;
-      return 1;
-    }
+    read_data(*pt);
   }
+  // TODO - add exception
   fs.close();
-  return 0;
 }
 
-
-// Reads the grid of data from a MRC file
-int MRCReaderWriter::read_data(float *pt)
+void MRCReaderWriter::read_data(float *pt)
 {
   if(header.mode==0) {
-    std::cout << " read8 data" << std::endl;
     return read_8_data(pt);
   }
   else if(header.mode==2) {
-    std::cout << "read32 data" << std::endl;
     return read_32_data(pt);
   }
   else {
-    std::cout << "MRCReaderWriter::read_data >> This routine can only read "
-              << "8-bit or 32-bit MRC files. Unknown mode for " << filename
-              << std::endl;
+    std::ostringstream msg;
+    msg << "MRCReaderWriter::read_data >> This routine can only read "
+    << "8-bit or 32-bit MRC files. Unknown mode for " << filename <<  "\n";
+    throw EMBED_IOException(msg.str().c_str());
   }
-  return 1;
 }
 
 
-
-
 /** Read the density data of a 8-bit MRC file */
-int MRCReaderWriter::read_8_data(float *pt)
+void MRCReaderWriter::read_8_data(float *pt)
 {
-  int ierr;
-  if (seek_to_data()!= 0)
-    return 1;
-
+  seek_to_data();
   size_t n = header.nx*header.ny*header.nz;
   unsigned char *grid_8bit= new unsigned char [n]; // memory
-  ierr=read_grid(grid_8bit,sizeof(unsigned char), n);
-  if(ierr==1)
-    return ierr; // There is an error
+  read_grid(grid_8bit,sizeof(unsigned char), n);
   // Transfer to floats
   for(size_t i=0;i<n;i++)
     pt[i]=(float)grid_8bit[i];
   delete(grid_8bit);
-  return ierr;
+  std::cout << "MRC file read in 8-bit mode: grid "
+  << header.nx << "x" << header.ny << "x" << header.nz << "\n";
 }
 
 
 /** Read the density data of a 32-bit MRC file */
-int MRCReaderWriter::read_32_data(float *pt)
+void MRCReaderWriter::read_32_data(float *pt)
 {
-  int needswap,ierr;
-  if (seek_to_data() != 0)
-    return 1;
-
-  size_t n=header.nx*header.ny*header.nz; // size of the grid
-  ierr=read_grid(pt,sizeof(float), n);
-  if(ierr==1)
-    return ierr; // There is an error
+  int needswap;
+  seek_to_data();
+  size_t n = header.nx*header.ny*header.nz; // size of the grid
+  read_grid(pt,sizeof(float), n);
   // Check for the necessity of changing the endian
   needswap = 0;
   for(size_t i=0;i<n;i++)
@@ -119,47 +88,42 @@ int MRCReaderWriter::read_32_data(float *pt)
   }
   std::cout << "MRC file read in 32-bit mode: grid " << header.nx << "x"
             << header.ny << "x" << header.nz << std::endl;
-  return ierr;
 }
 
-/* Read the actual MRC grid data from a file 
-   pt - pointer to store the grid
-   size - size of the data to read
-   n - size of the grid (nx * ny * nz)
-*/
-int MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
+void MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
 {
   fs.read((char *)pt,size*n);
   size_t val = fs.gcount();
-  if (val != size*n) // If the values read are not the amount requested
-    return 1; // There is an error
-  else
-    return 0; // Good
+  if (val != size*n) { // If the values read are not the amount requested
+    std::ostringstream msg;
+    msg << "MRCReaderWriter::read_grid >> The values read "
+                           "are not the amount requested \n";
+    throw EMBED_IOException(msg.str().c_str());
+  }
 }
 
-
-/** Position the file pointer at the start of the MRC data section */
-int MRCReaderWriter::seek_to_data(void)
+void MRCReaderWriter::seek_to_data(void)
 {
-  int ierr=0;
   fs.seekg(sizeof(MRCHeader)+header.nsymbt, std::ios::beg);
   if(fs.fail()) {
-    std::cout << "MRCReaderWriter::seek_to_data. Cannot find MRC data in file "
-              << filename << std::endl;
-    ierr=1;
-  }
-
-  return ierr;
+    std::ostringstream msg;
+     msg << "MRCReaderWriter::seek_to_data. Cannot find MRC data in file "
+      << filename <<  "\n";
+    throw EMBED_IOException(msg.str().c_str());
+   }
 }
 
-
-// Read header of a MRC file and stores it into the proper class */ 
-int MRCReaderWriter::read_header(void)
+void  MRCReaderWriter::read_header(void)
 {
   // Read header
   fs.read((char *) &header,sizeof(MRCHeader));
-  if(fs.gcount()!=sizeof(MRCHeader))
-    return 1;
+  if(fs.gcount()!=sizeof(MRCHeader)) {
+    std::ostringstream msg;
+    msg << "MRCReaderWriter::read_header >> Error reading MRC header of file: "
+     << filename <<  "\n";
+   throw EMBED_IOException(msg.str().c_str());
+  }
+
   // Check for endian
   unsigned char *ch = (unsigned char *) &header;
   if ((ch[0] == 0 && ch[1] == 0) + is_bigendian() == 1) {
@@ -168,44 +132,27 @@ int MRCReaderWriter::read_header(void)
     header.machinestamp = machinestamp;
   }
   if (header.mapc != 1 || header.mapr != 2 || header.maps != 3) {
-    std::cout << "MRCReaderWriter::read_header. Non-standard MRC file: "
-              << "column, row, section indices are not (1,2,3) but are ("
-              << header.mapc << "," << header.mapr << "," << header.maps << ")."
-              << " Resulting density data may be incorrectly oriented."
-              << std::endl;
+    std::ostringstream msg;
+    msg << "MRCReaderWriter::read_header >> Error reading MRC header of file: "
+     << filename <<  "\nNon-standard MRC file: column, row, section indices " 
+     <<"are not (1,2,3) but (" << header.mapc << "," << header.mapr << 
+     "," << header.maps << ")." << 
+     " Resulting density data may be incorrectly oriented.\n";
+    throw EMBED_IOException(msg.str().c_str());
   }
-  return 0;
 }
 
-
-
-// Write a MRC file
-int MRCReaderWriter::write(const char *fn,const float *pt)
+void MRCReaderWriter::write(const char *fn,const float *pt)
 {
   std::ofstream s(fn, std::ofstream::out | std::ofstream::binary);
   if(!s.fail()) {
-    // Write header
-    if(write_header(s)==1) {
-      std::cout << "MRCReaderWriter::write. Error writing MRC header to file "
-                << fn << std::endl;
-      return 1;
-    }
-    // Write values
-    if(write_data(s,pt)==1) {
-      std::cout << "MRCReaderWriter::write. Error writing MRC data to file "
-                << fn << std::endl;
-      return 1;
-    }
+    write_header(s);
+    write_data(s,pt);
   }
   s.close();
-  return 0;
 }
 
-
-
-
-/* Writes the MRC header to a file */
-int MRCReaderWriter::write_header(std::ofstream &s)
+void MRCReaderWriter::write_header(std::ofstream &s)
 {
   int wordsize=4; 
   s.write((char *) &header.nx,wordsize);
@@ -242,30 +189,24 @@ int MRCReaderWriter::write_header(std::ofstream &s)
   s.write((char *) &header.nlabl,wordsize);
   s.write((char *) &header.labels,sizeof(char)*MRC_NUM_LABELS*MRC_LABEL_SIZE);
   if(s.bad()) {
-    std::cout << "MRCReaderWriter::write_header. Error writing MRC header "
-              << "to file" << std::endl;
-    return 1;
+    std::ostringstream msg;
+    msg << "MRCReaderWriter::write_header >> Error writing MRC header\n";
+    throw EMBED_IOException(msg.str().c_str());
   }
-
-  return 0;
-
 }
 
 /* Writes the grid of values of an EM map to a MRC file */
-int MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
+void MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
 {
 
   s.write((char *)pt,sizeof(float)*header.nx * header.ny * header.nz);
   if(s.bad()){
-    std::cout << "MRCReaderWriter::write_header. Error writing MRC data to file"
-              << std::endl;
-    return 1;
+    std::ostringstream msg;
+    msg << "MRCReaderWriter::write_data >> Error writing MRC data.\n";
+    throw EMBED_IOException(msg.str().c_str());
   }
   std::cout << "MRC file written: grid " << header.nx << "x" << header.ny
             << "x" << header.nz << std::endl;
-  return 0;
-
-
 }
 
 
@@ -281,9 +222,6 @@ int get_machine_stamp(void)
   return retval;
 }
 
-
-
-/** Returns true if this machine is big endian */
 int is_bigendian(void)
 {
   static const int ival = 50;
@@ -308,10 +246,7 @@ void byte_swap(unsigned char *ch, int n_array)
   }
 }
 
-
-
-// Translate DensityHeader to MRCHeader
-int MRCHeader::FromDensityHeader(const DensityHeader &h)
+void MRCHeader::FromDensityHeader(const DensityHeader &h)
 {
   std::string empty;
 
@@ -334,9 +269,13 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
   alpha=h.alpha ; beta=h.beta ; gamma=h.gamma; // Cell angles (degrees)
   /* Axes corresponding to columns (mapc), rows (mapr) and sections (maps)
      (1,2,3 for x,y,z) */
-  mapc=h.mapc ; mapr=h.mapr ; maps=h.maps; 
+  mapc=h.mapc;
+  mapr=h.mapr;
+  maps=h.maps; 
   /* Minimum, maximum and mean density value */
-  dmin=h.dmin ; dmax=h.dmax ; dmean=h.dmean; 
+  dmin=h.dmin;
+  dmax=h.dmax;
+  dmean=h.dmean; 
   ispg=h.ispg; // Sapce group number 0 or 1 (default 0) 
   nsymbt=h.nsymbt; // Number of bytes used for symmetry data (0 or 80)
 
@@ -358,12 +297,9 @@ int MRCHeader::FromDensityHeader(const DensityHeader &h)
   empty.resize(MRC_LABEL_SIZE,*c);
   for(int i=nlabl;i<MRC_NUM_LABELS;i++)
     strcpy(labels[i],empty.c_str());
-
-  return 0;
 }
 
-// Translate MRCHeader to DensityHeader
-int MRCHeader::ToDensityHeader(DensityHeader &h)
+void MRCHeader::ToDensityHeader(DensityHeader &h)
 {
   std::string empty;
   h.nz=nz; h.ny=ny; h.nx=nx; // map size
@@ -381,9 +317,13 @@ int MRCHeader::ToDensityHeader(DensityHeader &h)
   h.alpha=alpha ; h.beta=beta ; h.gamma=gamma; // Cell angles (degrees)
   /* Axes corresponding to columns (mapc), rows (mapr) and sections (maps)
      (1,2,3 for x,y,z) */
-  h.mapc=mapc ; h.mapr=mapr ; h.maps=maps; 
+  h.mapc=mapc;
+  h.mapr=mapr;
+  h.maps=maps; 
   /* Minimum, maximum and mean density value */
-  h.dmin=dmin ; h.dmax=dmax ; h.dmean=dmean; 
+  h.dmin=dmin;
+  h.dmax=dmax;
+  h.dmean=dmean; 
   h.ispg=ispg; // Sapce group number 0 or 1 (default 0) 
   h.nsymbt=nsymbt; // Number of bytes used for symmetry data (0 or 80)
   // extra space used for anything - 0 by default
@@ -407,5 +347,4 @@ int MRCHeader::ToDensityHeader(DensityHeader &h)
   empty.resize(MRC_LABEL_SIZE,*c);
   for(int i=h.nlabl;i<MRC_NUM_LABELS;i++) 
     strcpy(h.comments[i],empty.c_str());
-  return 0;
 }

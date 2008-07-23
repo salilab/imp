@@ -37,3 +37,25 @@ void KernelParameters::init(float resolution_)
   lim = exp(-0.5 * (timessig - EPS) * (timessig - EPS));
 
 }
+
+
+
+void KernelParameters::set_params(float radius) {
+  if (!initialized) {
+       std::ostringstream msg;
+        msg << " KernelParameters::set_params >> "
+              "The Kernel Parameters are not initialized \n";
+        throw EMBED_LogicError(msg.str().c_str());
+      }
+  std::map<float ,const KernelParameters::Parameters *>::iterator iter = 
+                   radii2params.find(radius);
+  if (iter !=  radii2params.end()) {
+    std::ostringstream msg;
+    msg << " KernelParameters::set_params >> "
+     "The Kernel Parameters for the radius " << radius 
+     << " have already been calculated \n";
+    throw EMBED_LogicError(msg.str().c_str());
+  }
+  radii2params[radius]=new Parameters(radius,rsigsq,timessig,sq2pi3,
+                                          inv_rsigsq,rnormfac,rkdist);
+}

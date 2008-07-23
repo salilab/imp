@@ -100,7 +100,6 @@ SampledDensityMap::SampledDensityMap(const ParticlesAccessPoint &access_p,
 
   //set up the sampling parameters
   kernel_params_ = KernelParameters(resolution);
-
   resample(access_p);
 
 }
@@ -112,9 +111,9 @@ SampledDensityMap::SampledDensityMap(const ParticlesAccessPoint &access_p,
 
 void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
 {
+
   reset_data();
   calc_all_voxel2loc();
-
 
   // TODO - probably the top is not set
 
@@ -133,7 +132,7 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
     try {
       params = kernel_params_.find_params(access_p.get_r(ii));
     }
-    catch (int code){
+    catch (EMBED_LogicError){
       kernel_params_.set_params(access_p.get_r(ii));
       params = kernel_params_.find_params(access_p.get_r(ii));
     }
@@ -141,7 +140,6 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
     calc_sampling_bounding_box(access_p.get_x(ii), access_p.get_y(ii),
                                access_p.get_z(ii), params->get_kdist(),
                                iminx, iminy, iminz, imaxx, imaxy, imaxz);
-
     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       znxny=ivoxz * nxny;
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {

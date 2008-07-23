@@ -30,9 +30,8 @@
 class EMDLLEXPORT MapReaderWriter
 {
 public:
-  virtual int Read(const char *filename, float **data, DensityHeader &header) {
-    return 0;
-  }
+  virtual void Read(const char *filename, float **data, DensityHeader &header) 
+  {}
   virtual void Write(const char *filename, const float *data,
                      const DensityHeader &header) {}
   virtual ~MapReaderWriter() {}

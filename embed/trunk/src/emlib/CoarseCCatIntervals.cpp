@@ -45,9 +45,8 @@ float CoarseCCatIntervals::evaluate(DensityMap &em_map,
                                     std::vector<float> &dvy,
                                     std::vector<float> &dvz,
                                     float scalefac, bool lderiv,
-                         // the interval size before recalculating the CC score
-                                    unsigned long eval_interval)
-{
+                                    unsigned long eval_interval) {
+// eval_interval is the interval size before recalculating the CC score
 
 
   // If the function requires to be evaluated
