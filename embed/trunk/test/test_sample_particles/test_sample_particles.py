@@ -3,10 +3,8 @@
 
 
 import unittest
-import EM,os,sys
-
-out_filename = os.path.abspath("sample_particles/aa.em")
-
+import EM
+import os
 
 class SampleParticlesTest(unittest.TestCase):
     """test particles sampling  """
@@ -24,6 +22,8 @@ class SampleParticlesTest(unittest.TestCase):
         """ test that the sampling works """
         resolution = 2.0
         voxel_size = 1.0
+        out_filename = "aa.em"
+
         scene = EM.SampledDensityMap(self.particles_p,
                                      resolution,voxel_size)
 
@@ -31,6 +31,8 @@ class SampleParticlesTest(unittest.TestCase):
 
         erw = EM.EMReaderWriter()
         scene.Write(out_filename,erw)
+        # make sure that the output file is created
+        os.unlink(out_filename)
 
 
         # the mean and std are not correct
