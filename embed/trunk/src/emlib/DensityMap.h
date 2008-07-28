@@ -156,8 +156,13 @@ public:
       \return true if the two maps have the same voxel size
    */
   bool same_voxel_size(const DensityMap &other) const;
-
-
+  //! Calculates the centroid of all the voxels with 
+  //! density above a given threshold
+  /** \param[in] threshold the input threshold
+  */
+  Vector3 get_centroid(emreal threshold=0.0);
+  //! Returns the the value of the voxel with the highest density.
+  emreal get_max_value() const;
 protected:
 
   //! Calculates the coordinates that correspond to all voxels.
