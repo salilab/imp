@@ -1,5 +1,5 @@
 #include "DensityMap.h"
-
+#include <climits>
 
 DensityMap::DensityMap()
 {
@@ -116,7 +116,7 @@ void DensityMap::Write(const char *filename, MapReaderWriter &writer)
 }
 
 
-float DensityMap::voxel2loc(const int &index, int dim)
+float DensityMap::voxel2loc(const int &index, int dim) 
 {
   if (!loc_calculated_) 
     calc_all_voxel2loc();
@@ -303,4 +303,45 @@ bool DensityMap::same_voxel_size(const DensityMap &other) const
           - other.get_header()->Objectpixelsize) < EPS)
     return true;
   return false;
+}
+
+Vector3 DensityMap::get_centroid(emreal threshold)  {
+  emreal max_val = get_max_value(); 
+  if (threshold >= max_val) {
+    std::ostringstream msg;
+    msg << "DensityMap::get_centroid >> The input threshold with value " << 
+    threshold << " is higher than the maximum density in the map " <<  
+      max_val << std::endl;
+    throw EMBED_WrongValue(msg.str().c_str());
+  }
+  float x_centroid = 0.0;
+  float y_centroid = 0.0;
+  float z_centroid = 0.0;
+  int counter = 0;
+  int nvox = header_.nx*header_.ny*header_.nz;
+  for (int i=0;i<nvox;i++) {
+    if (data_[i] <= threshold) {
+      continue;
+    }
+    x_centroid += voxel2loc(i,0);
+    y_centroid += voxel2loc(i,1);
+    z_centroid += voxel2loc(i,2);
+    counter += 1;
+  }
+  //counter will not be 0 since we checked that threshold is within 
+  //the map densities.
+  x_centroid /= counter;
+  y_centroid /= counter;
+  z_centroid /= counter;
+  return Vector3(x_centroid,y_centroid,z_centroid);
+}
+emreal DensityMap::get_max_value() const{
+  float max_val = -1.0 * INT_MAX;
+  int nvox = header_.nx*header_.ny*header_.nz;
+  for (int i=0;i<nvox;i++) {
+    if (data_[i] > max_val) {
+      max_val = data_[i];
+    }
+  }
+  return max_val;
 }
