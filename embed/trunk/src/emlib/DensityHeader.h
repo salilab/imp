@@ -158,6 +158,24 @@ public:
   inline float get_yorigin() const {return yorigin;}
   //! Returns the origin on the map (z-coordiante)
   inline float get_zorigin() const {return zorigin;}
+  //! Returns the origin on the map 
+  /**
+  \param[in] i the relevant coordinate (0:x, 1:y, 2:z)
+  \exception EMBED_WrongValue if the value of i is out of range.
+  */
+  inline float get_origin(int i) const {
+    if (not (i>=0 && i<3)) {
+      std::ostringstream msg;
+      msg << "DensityHeader::get_origin >> the input parameter i is out of"
+      <<" range , should be between 0-2 and the value is " << i << "\n";
+      throw EMBED_WrongValue(msg.str().c_str());
+    }
+    switch (i) {
+      case 0: return get_xorigin();
+      case 1: return get_yorigin();
+      default: return get_zorigin();
+    }
+  }
   //! Sets the origin on the map (x-coordiante)
   inline void set_xorigin(float x)  {xorigin=x; top_calculated=false;}
   //! Sets the origin on the map (y-coordiante)
