@@ -164,7 +164,7 @@ public:
   \exception EMBED_WrongValue if the value of i is out of range.
   */
   inline float get_origin(int i) const {
-    if (not (i>=0 && i<3)) {
+    if (! (i>=0 && i<3)) {
       std::ostringstream msg;
       msg << "DensityHeader::get_origin >> the input parameter i is out of"
       <<" range , should be between 0-2 and the value is " << i << "\n";
