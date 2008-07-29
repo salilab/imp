@@ -36,8 +36,10 @@ later.</para></listitem>
 <para> Mac users should use one of the available collections of Unix tools,
 either <ulink url="http://www.macports.org/">MacPorts</ulink> or
 <ulink url="http://www.finkproject.org/">Fink</ulink>. These both include SWIG,
-scons, Subversion and Boost. At the moment Fink does not have a binary
-installer for Mac OS 10.5, so MacPorts is preferred.</para>
+scons, Subversion and Boost (for example, to install Boost with MacPorts, use
+the command <command>sudo port install boost</command>). At the moment Fink
+does not have a binary installer for Mac OS 10.5, so MacPorts is
+preferred.</para>
 
 <para>Do not install any C++ headers in <filename>/usr/include</filename> on
 your Mac as the compiler assumes any such headers are C headers. Extra headers
