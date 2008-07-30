@@ -48,7 +48,7 @@ public:
       be overridden in a subclass to automatically set the type of a particle,
       e.g. from other particle attributes such as an atom or residue name.
    */
-  virtual void set_particle_type(Particle *p) {}
+  virtual void set_particle_type(Particle *p) const {}
 
   //! Set the PairScore to delegate to for a given pair of particle types.
   /** \param[in] ps PairScore to use at evaluate time.
