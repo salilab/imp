@@ -39,7 +39,7 @@ class TestList(IMP.test.TestCase):
         d.set_z(1)
         d.set_coordinates_are_optimized(True)
         v= IMP.Vector3D(3,1,5)
-        l= IMP.Linear(1, 0)
+        l= IMP.Linear(0, 1)
         s= IMP.DistanceToSingletonScore(l, v)
         r= IMP.SingletonListRestraint(s, m.get_particles())
         m.add_restraint(r)
