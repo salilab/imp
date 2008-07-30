@@ -11,16 +11,6 @@ class OneSingle(IMP.SingletonScore):
     def show(self, t):
         print "One Singleton"
 
-class Linear(IMP.UnaryFunction):
-    def __init__(self):
-        IMP.UnaryFunction.__init__(self)
-    def evaluate(self, feat):
-        return feat
-    def evaluate_deriv(self, feat):
-        return feat, 1.0
-    def show(self, *args):
-        print "identity"
-
 class TestList(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -49,7 +39,7 @@ class TestList(IMP.test.TestCase):
         d.set_z(1)
         d.set_coordinates_are_optimized(True)
         v= IMP.Vector3D(3,1,5)
-        l= Linear()
+        l= IMP.Linear(1, 0)
         s= IMP.DistanceToSingletonScore(l, v)
         r= IMP.SingletonListRestraint(s, m.get_particles())
         m.add_restraint(r)
