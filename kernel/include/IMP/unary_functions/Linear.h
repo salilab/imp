@@ -20,7 +20,7 @@ namespace IMP
 class Linear : public UnaryFunction
 {
 public:
-  Linear(Float slope, Float offset=0) : slope_(slope), offset_(offset) {}
+  Linear(Float offset, Float slope) : slope_(slope), offset_(offset) {}
 
   virtual ~Linear() {}
 

@@ -9,7 +9,7 @@ class LinearTests(IMP.test.TestCase):
         """Test that linear values are correct"""
         for offset in (0.0, -1.0):
             for slope in (0.0, -5.0, 3.5):
-                func = IMP.Linear(slope, offset)
+                func = IMP.Linear(offset, slope)
                 for i in range(15):
                     val = -10.0 + 3.5 * i
                     scoreonly = func.evaluate(val)
@@ -29,7 +29,7 @@ class LinearTests(IMP.test.TestCase):
 
     def test_show(self):
         """Check Linear::show() method"""
-        func = IMP.Linear(1.0)
+        func = IMP.Linear(0, 1.0)
         func.show()
 
 if __name__ == '__main__':

@@ -241,7 +241,7 @@ def _CosineGenerator(parameters, modalities):
 
 def _LinearGenerator(parameters, modalities):
     (scale,) = parameters
-    return IMP.Linear(scale)
+    return IMP.Linear(0, scale)
 
 def _SplineGenerator(parameters, modalities):
     (open, low, high, delta, lowderiv, highderiv) = parameters[:6]
