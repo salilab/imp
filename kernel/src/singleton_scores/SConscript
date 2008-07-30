@@ -1,6 +1,7 @@
 Import('env')
 
-files = ['DistanceToSingletonScore.cpp', 'AttributeSingletonScore.cpp']
+files = ['DistanceToSingletonScore.cpp', 'AttributeSingletonScore.cpp',
+         'TunnelSingletonScore.cpp']
 
 files = [File(x) for x in files]
 Return('files')
