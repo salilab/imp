@@ -113,7 +113,7 @@ namespace IMP {
         args[1].thisown=0
   %}
   %pythonprepend TypedPairScore::set_pair_score %{
-        args[0].thisown=0
+        args[1].thisown=0
   %}
   %pythonprepend Particle::get_value %{
         check_particle(args[0], args[1])
