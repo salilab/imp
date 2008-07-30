@@ -5,10 +5,10 @@ import IMP.utils
 import math
 
 class TunnelTest(IMP.test.TestCase):
-    """Tests for tunnel restraints"""
+    """Tests for tunnel scores"""
 
     def test_score(self):
-        """Test derivatives and score of tunnel restraint"""
+        """Test derivatives and score of tunnel score"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         p= IMP.Particle()
@@ -17,13 +17,14 @@ class TunnelTest(IMP.test.TestCase):
         rk= IMP.FloatKey("radiusk")
         p.add_attribute(rk, 1, False)
         f= IMP.HarmonicLowerBound(0, 1)
-        tr= IMP.TunnelRestraint(f, rk)
-        tr.set_height(10)
-        tr.set_radius(5)
-        tr.set_center(IMP.Vector3D(10,10,10))
-        tr.add_particle(p)
-        tr.set_coordinate(2)
-        m.add_restraint(tr)
+        tss= IMP.TunnelSingletonScore(f, rk)
+        tss.set_height(10)
+        tss.set_radius(5)
+        tss.set_center(IMP.Vector3D(10,10,10))
+        tss.set_coordinate(2)
+        sl= IMP.SingletonListRestraint(tss)
+        sl.add_particle(p)
+        m.add_restraint(sl)
         m.evaluate(True)
         d.set_coordinates(IMP.Vector3D(10,10,10))
         self.assertEqual(m.evaluate(True), 0)

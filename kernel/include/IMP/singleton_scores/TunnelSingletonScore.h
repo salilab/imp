@@ -1,19 +1,19 @@
 /**
- *  \file TunnelRestraint.h    \brief Tunnel restraint.
- *
- *  Just return a constant.
+ *  \file TunnelSingletonScore.h
+ *  \brief Score particles with respect to a tunnel.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef __IMP_TUNNEL_RESTRAINT_H
-#define __IMP_TUNNEL_RESTRAINT_H
+#ifndef __IMP_TUNNEL_SINGLETON_SCORE_H
+#define __IMP_TUNNEL_SINGLETON_SCORE_H
 
 #include "../IMP_config.h"
-#include "../Restraint.h"
+#include "../SingletonScore.h"
 #include "../Vector3D.h"
 #include "../UnaryFunction.h"
+#include "../Pointer.h"
 #include "../internal/kernel_version_info.h"
 
 namespace IMP
@@ -21,9 +21,9 @@ namespace IMP
 
 class PairScore;
 
-//! Restrain particles to a tunnel.
+//! Score particles with respect to a tunnel.
 /** Particles with x,y,z coordinates and an optional radius are
-    prevented from being in a volume destribed by a slab from
+    prevented from being in a volume described by a slab from
     (center[i]-height) to (center+height) on the ith coordinate with a
     tunnel of radius r centered at center. To set which coordinate
     is used use the get/set _coordinate functions.
@@ -33,7 +33,7 @@ class PairScore;
 
     \ingroup restraint
  */
-class IMPDLLEXPORT TunnelRestraint : public Restraint
+class IMPDLLEXPORT TunnelSingletonScore : public SingletonScore
 {
   int coordinate_;
   Vector3D center_;
@@ -42,18 +42,18 @@ class IMPDLLEXPORT TunnelRestraint : public Restraint
   Pointer<UnaryFunction> f_;
   FloatKey rk_;
 public:
-  TunnelRestraint(UnaryFunction* f, FloatKey rk);
+  TunnelSingletonScore(UnaryFunction* f, FloatKey r);
 
-  void set_center(Vector3D c){
+  void set_center(Vector3D c) {
     center_=c;
   }
-  void set_height(Float h){
+  void set_height(Float h) {
     IMP_check(h >= 0,
               "Height can't be negative",
               ValueException);
     height_=h;
   }
-  void set_radius(Float h){
+  void set_radius(Float h) {
     IMP_check(h >= 0,
               "Radius can't be negative",
               ValueException);
@@ -69,15 +69,10 @@ public:
     return coordinate_;
   }
 
-  using Restraint::add_particles;
-  using Restraint::add_particle;
-  using Restraint::set_particles;
-  using Restraint::clear_particles;
-  using Restraint::erase_particle;
-
-  IMP_RESTRAINT(internal::kernel_version_info)
+  virtual Float evaluate(Particle *a, DerivativeAccumulator *da);
+  virtual void show(std::ostream &out=std::cout) const;
 };
 
 } // namespace IMP
 
-#endif  /* __IMP_TUNNEL_RESTRAINT_H */
+#endif  /* __IMP_TUNNEL_SINGLETON_SCORE_H */

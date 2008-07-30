@@ -36,6 +36,7 @@ public:
   IMP_RESTRAINT(internal::kernel_version_info)
 
   using Restraint::add_particles;
+  using Restraint::add_particle;
   using Restraint::clear_particles;
   using Restraint::set_particles;
 

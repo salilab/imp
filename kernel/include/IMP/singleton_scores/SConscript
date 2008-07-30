@@ -1,7 +1,8 @@
 import os.path
 Import('env')
 
-files = ['DistanceToSingletonScore.h', 'AttributeSingletonScore.h']
+files = ['DistanceToSingletonScore.h', 'AttributeSingletonScore.h',
+         'TunnelSingletonScore.h']
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'singleton_scores')

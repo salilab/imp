@@ -42,9 +42,6 @@ namespace IMP {
   %pythonprepend NonbondedListScoreState::add_bonded_list %{
         args[1].thisown=0
   %}
-  %pythonprepend TunnelRestraint::TunnelRestraint %{
-        args[0].thisown=0
-  %}
   %pythonprepend DistanceRestraint::DistanceRestraint %{
         args[0].thisown=0
   %}
@@ -98,6 +95,9 @@ namespace IMP {
         args[0].thisown=0
   %}
   %pythonprepend AttributeSingletonScore::AttributeSingletonScore %{
+        args[0].thisown=0
+  %}
+  %pythonprepend TunnelSingletonScore::TunnelSingletonScore %{
         args[0].thisown=0
   %}
   %pythonprepend AngleTripletScore::AngleTripletScore %{
@@ -224,6 +224,7 @@ namespace IMP {
 %include "IMP/particle_refiners/ChildrenParticleRefiner.h"
 %include "IMP/singleton_scores/DistanceToSingletonScore.h"
 %include "IMP/singleton_scores/AttributeSingletonScore.h"
+%include "IMP/singleton_scores/TunnelSingletonScore.h"
 %include "IMP/triplet_scores/AngleTripletScore.h"
 %include "IMP/score_states/BondedListScoreState.h"
 %include "IMP/score_states/MaxChangeScoreState.h"
@@ -245,7 +246,6 @@ namespace IMP {
 %include "IMP/restraints/RestraintSet.h"
 %include "IMP/restraints/SingletonListRestraint.h"
 %include "IMP/restraints/TripletChainRestraint.h"
-%include "IMP/restraints/TunnelRestraint.h"
 
 namespace IMP {
   %template(ParticleIndex) Index<ParticleTag>;
