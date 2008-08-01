@@ -121,24 +121,27 @@ public:
   }
 
   //! Accumulate the vector
-  void operator+=(const Vector3D &o) {
+  Vector3D& operator+=(const Vector3D &o) {
     vec_[0] += o[0];
     vec_[1] += o[1];
     vec_[2] += o[2];
+    return *this;
   }
 
   //! Rescale the vector
-  void operator/=(Float f) {
+  Vector3D& operator/=(Float f) {
     vec_[0] /= f;
     vec_[1] /= f;
     vec_[2] /= f;
+    return *this;
   }
 
   //! Rescale the vector
-  void operator*=(Float f) {
+  Vector3D& operator*=(Float f) {
     vec_[0] *= f;
     vec_[1] *= f;
     vec_[2] *= f;
+    return *this;
   }
 
   void show(std::ostream &out=std::cout) const {
