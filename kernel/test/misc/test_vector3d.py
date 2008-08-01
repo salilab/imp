@@ -72,5 +72,16 @@ class Vector3DTests(IMP.test.TestCase):
             self.assertEqual(prod[i], expected_prod[i])
             self.assertEqual(v1[i], expected_prod[i])
 
+    def test_scalar_division(self):
+        """Check Vector3D division by a scalar"""
+        v1 = IMP.Vector3D(3.0, 6.0, 9.0)
+        s1 = 3.0
+        prod = v1 / s1
+        v1 /= s1
+        expected_prod = (1.0, 2.0, 3.0)
+        for i in range(3):
+            self.assertEqual(prod[i], expected_prod[i])
+            self.assertEqual(v1[i], expected_prod[i])
+
 if __name__ == '__main__':
     unittest.main()
