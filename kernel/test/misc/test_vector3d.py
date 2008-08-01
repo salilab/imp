@@ -44,27 +44,33 @@ class Vector3DTests(IMP.test.TestCase):
         v1 = IMP.Vector3D(1.0, 2.0, 3.0)
         v2 = IMP.Vector3D(10.0, 1.0, 2.0)
         diff = v1 - v2
+        v1 -= v2
         expected_diff = (-9.0, 1.0, 1.0)
         for i in range(3):
             self.assertEqual(diff[i], expected_diff[i])
+            self.assertEqual(v1[i], expected_diff[i])
 
     def test_addition(self):
         """Check Vector3D addition"""
         v1 = IMP.Vector3D(1.0, 2.0, 3.0)
         v2 = IMP.Vector3D(10.0, 1.0, 2.0)
         sum = v1 + v2
+        v1 += v2
         expected_sum = (11.0, 3.0, 5.0)
         for i in range(3):
             self.assertEqual(sum[i], expected_sum[i])
+            self.assertEqual(v1[i], expected_sum[i])
 
     def test_scalar_multiplication(self):
         """Check Vector3D multiplication by a scalar"""
         v1 = IMP.Vector3D(1.0, 2.0, 3.0)
         s1 = 3.0
         prod = v1 * s1
+        v1 *= s1
         expected_prod = (3.0, 6.0, 9.0)
         for i in range(3):
             self.assertEqual(prod[i], expected_prod[i])
+            self.assertEqual(v1[i], expected_prod[i])
 
 if __name__ == '__main__':
     unittest.main()
