@@ -53,9 +53,15 @@ class Vector3DTests(IMP.test.TestCase):
     def test_addition(self):
         """Check Vector3D addition"""
         v1 = IMP.Vector3D(1.0, 2.0, 3.0)
+        idv1 = id(v1)
+        cppobj = str(v1.this)
         v2 = IMP.Vector3D(10.0, 1.0, 2.0)
         sum = v1 + v2
         v1 += v2
+        # Inplace addition should not change the Python object identity:
+        self.assertEqual(id(v1), idv1)
+        # The underlying C++ object pointer should be unchanged too:
+        self.assertEqual(str(v1.this), cppobj)
         expected_sum = (11.0, 3.0, 5.0)
         for i in range(3):
             self.assertEqual(sum[i], expected_sum[i])
@@ -64,9 +70,12 @@ class Vector3DTests(IMP.test.TestCase):
     def test_scalar_multiplication(self):
         """Check Vector3D multiplication by a scalar"""
         v1 = IMP.Vector3D(1.0, 2.0, 3.0)
+        idv1 = id(v1)
         s1 = 3.0
         prod = v1 * s1
         v1 *= s1
+        # Inplace multiplication should not change the Python object identity:
+        self.assertEqual(id(v1), idv1)
         expected_prod = (3.0, 6.0, 9.0)
         for i in range(3):
             self.assertEqual(prod[i], expected_prod[i])
@@ -75,9 +84,12 @@ class Vector3DTests(IMP.test.TestCase):
     def test_scalar_division(self):
         """Check Vector3D division by a scalar"""
         v1 = IMP.Vector3D(3.0, 6.0, 9.0)
+        idv1 = id(v1)
         s1 = 3.0
         prod = v1 / s1
         v1 /= s1
+        # Inplace division should not change the Python object identity:
+        self.assertEqual(id(v1), idv1)
         expected_prod = (1.0, 2.0, 3.0)
         for i in range(3):
             self.assertEqual(prod[i], expected_prod[i])
