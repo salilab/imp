@@ -14,17 +14,17 @@
 /* C++ inplace operators return nothing, but Python expects them to
    return the original Python object */
 namespace IMP {
-  %feature("shadow") Vector3D::operator+= %{
+  %feature("shadow") Vector3D::operator+=(const Vector3D &) %{
     def __iadd__(self, *args):
         $action(self, *args)
         return self
   %}
-  %feature("shadow") Vector3D::operator*= %{
+  %feature("shadow") Vector3D::operator*=(Float) %{
     def __imul__(self, *args):
         $action(self, *args)
         return self
   %}
-  %feature("shadow") Vector3D::operator/= %{
+  %feature("shadow") Vector3D::operator/=(Float) %{
     def __idiv__(self, *args):
         $action(self, *args)
         return self
