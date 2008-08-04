@@ -76,7 +76,7 @@ void bipartite_bbox_scan(const Particles &ps0, const Particles &ps1,
   CGAL::box_intersection_d( boxes0.begin(), boxes0.end(), 
                             boxes1.begin(), boxes1.end(), ap);
 #else
-  IMP_failure( "IMP built without CGAL support.", ErrorException());
+  IMP_failure( "IMP built without CGAL support.", ErrorException);
 #endif
 }
 
@@ -91,7 +91,7 @@ void bbox_scan(const Particles &ps,
 
   CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), ap);
 #else
-  IMP_failure("IMP built without CGAL support.", ErrorException());
+  IMP_failure("IMP built without CGAL support.", ErrorException);
 #endif
 }
 

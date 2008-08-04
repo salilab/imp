@@ -195,10 +195,15 @@ IMPDLLEXPORT void check_fail(const char *msg);
   } while (false)
 
 //! A runtime failure for IMP.
-/** \param[in] message Write this message if the assertion fails.
-    \param[in] exception Throw the object constructed by this expression.
+/** \param[in] message Failure message to write.
+    \param[in] ExceptionType Throw an exception of this type. The exception
+    must be constructable from a char *.
     \ingroup assert
  */
-#define IMP_failure(message, exception) {IMP_ERROR(message); throw exception;}
+#define IMP_failure(message, ExceptionType) { \
+    std::ostringstream oss;                                             \
+    oss << message << std::endl;                                        \
+    IMP::internal::check_fail(oss.str().c_str());                       \
+    throw ExceptionType(oss.str().c_str());}
 
 #endif  /* __IMP_EXCEPTION_H */
