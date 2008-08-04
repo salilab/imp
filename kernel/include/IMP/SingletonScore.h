@@ -34,7 +34,7 @@ public:
   virtual ~SingletonScore() {}
   //! Compute the score for the particle and the derivative if needed.
   virtual Float evaluate(Particle *a,
-                         DerivativeAccumulator *da) = 0;
+                         DerivativeAccumulator *da) const = 0;
   virtual void show(std::ostream &out=std::cout) const = 0;
 };
 

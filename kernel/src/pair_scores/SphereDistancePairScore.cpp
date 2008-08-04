@@ -29,7 +29,7 @@ struct Shift
 };
 
 Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
-                                        DerivativeAccumulator *da)
+                                        DerivativeAccumulator *da) const
 {
   IMP_check(a->has_attribute(radius_), "Particle " << a->get_index() 
             << "missing radius in SphereDistancePairScore",

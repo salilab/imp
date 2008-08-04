@@ -22,7 +22,7 @@ struct Identity
 };
 
 Float DistancePairScore::evaluate(Particle *a, Particle *b,
-                                  DerivativeAccumulator *da)
+                                  DerivativeAccumulator *da) const
 {
   return internal::evaluate_distance_pair_score(XYZDecorator(a),
                                                 XYZDecorator(b),

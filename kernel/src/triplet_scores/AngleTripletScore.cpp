@@ -15,7 +15,7 @@ namespace IMP
 AngleTripletScore::AngleTripletScore(UnaryFunction *f): f_(f){}
 
 Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
-                                  DerivativeAccumulator *da)
+                                  DerivativeAccumulator *da) const
 {
   IMP_CHECK_OBJECT(f_.get());
   IMP_CHECK_OBJECT(a);

@@ -26,7 +26,7 @@ public:
   AngleTripletScore(UnaryFunction *f);
   virtual ~AngleTripletScore(){}
   virtual Float evaluate(Particle *a, Particle *b, Particle *c,
-                         DerivativeAccumulator *da);
+                         DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
 

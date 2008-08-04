@@ -34,7 +34,7 @@ public:
   RefineOncePairScore(ParticleRefiner *r, PairScore *f);
   virtual ~RefineOncePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da);
+                         DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
 

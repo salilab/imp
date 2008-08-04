@@ -27,7 +27,7 @@ public:
   DistanceToSingletonScore(UnaryFunction *f, const Vector3D& pt);
   virtual ~DistanceToSingletonScore(){}
   virtual Float evaluate(Particle *a,
-                         DerivativeAccumulator *da);
+                         DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
 

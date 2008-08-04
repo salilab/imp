@@ -20,7 +20,7 @@ RefineOncePairScore::RefineOncePairScore(ParticleRefiner *r,
                                          PairScore *f): r_(r), f_(f) {}
 
 Float RefineOncePairScore::evaluate(Particle *a, Particle *b,
-                                    DerivativeAccumulator *da)
+                                    DerivativeAccumulator *da) const
 {
   Particle* p[2]={a,b};
   Particles ps[2];

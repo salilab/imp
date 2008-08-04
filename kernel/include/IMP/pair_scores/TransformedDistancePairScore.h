@@ -36,7 +36,7 @@ public:
   TransformedDistancePairScore(UnaryFunction *f);
   virtual ~TransformedDistancePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da);
+                         DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 
   void set_rotation(float r00, float r01, float r02,
