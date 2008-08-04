@@ -39,7 +39,7 @@ public:
   /** \param[in] feature Value of feature being tested.
       \return Score
    */
-  virtual Float evaluate(Float feature);
+  virtual Float evaluate(Float feature) const;
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
@@ -47,7 +47,7 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float evaluate_deriv(Float feature, Float& deriv);
+  virtual Float evaluate_deriv(Float feature, Float& deriv) const;
 
   void show(std::ostream &out=std::cout) const {
     out << "Cosine function with force " << force_constant_

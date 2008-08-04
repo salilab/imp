@@ -26,7 +26,7 @@ public:
       \param[in] feature Value of feature being tested.
       \return Score
    */
-  virtual Float evaluate(Float feature) {
+  virtual Float evaluate(Float feature) const {
     if (feature <= Harmonic::get_mean()) {
       return 0.0;
     } else {
@@ -41,7 +41,7 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float evaluate_deriv(Float feature, Float& deriv) {
+  virtual Float evaluate_deriv(Float feature, Float& deriv) const {
     if (feature <= Harmonic::get_mean()) {
       deriv = 0.0;
       return 0.0;

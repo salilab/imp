@@ -43,7 +43,7 @@ public:
   /** \param[in] l Current length in Angstroms
       \return Energy in kcal/mol
    */
-  virtual Float evaluate(Float lf) {
+  virtual Float evaluate(Float lf) const {
     static const unit::Picojoule zero=eval(unit::Angstrom(0));
     unit::Angstrom l(lf);
     if (l < unit::Angstrom(0)) l=unit::Angstrom(0);
@@ -65,7 +65,7 @@ public:
       \param[out] deriv force in kcal/angstrom mol
       \return Score
    */
-  virtual Float evaluate_deriv(Float fl, Float& deriv) {
+  virtual Float evaluate_deriv(Float fl, Float& deriv) const {
     unit::Angstrom l(fl);
     if (l < unit::Angstrom(0)) l=unit::Angstrom(0);
     unit::Piconewton doubled;

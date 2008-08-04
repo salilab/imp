@@ -43,7 +43,7 @@ OpenCubicSpline::OpenCubicSpline(const std::vector<Float> &values,
 }
 
 
-Float OpenCubicSpline::evaluate(Float feature)
+Float OpenCubicSpline::evaluate(Float feature) const
 {
   // check for feature in range
   if (feature < minrange_ || feature > maxrange_) {
@@ -66,7 +66,7 @@ Float OpenCubicSpline::evaluate(Float feature)
            * (spacing_ * spacing_) / 6.;
 }
 
-Float OpenCubicSpline::evaluate_deriv(Float feature, Float& deriv)
+Float OpenCubicSpline::evaluate_deriv(Float feature, Float& deriv) const
 {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   // handle the case where feature ~= maxrange

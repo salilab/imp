@@ -28,7 +28,7 @@ public:
   /** \param[in] feature Value of feature being tested.
       \return Score
    */
-  virtual Float evaluate(Float feature) = 0;
+  virtual Float evaluate(Float feature) const = 0;
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
@@ -36,7 +36,7 @@ public:
                         given feaure.
       \return Score
    */
-  virtual Float evaluate_deriv(Float feature, Float& deriv) = 0;
+  virtual Float evaluate_deriv(Float feature, Float& deriv) const = 0;
 
   virtual void show(std::ostream &out=std::cout) const = 0;
 };

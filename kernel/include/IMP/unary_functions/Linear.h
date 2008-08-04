@@ -24,9 +24,11 @@ public:
 
   virtual ~Linear() {}
 
-  virtual Float evaluate(Float feature) { return (feature-offset_)*slope_; }
+  virtual Float evaluate(Float feature) const {
+    return (feature-offset_)*slope_;
+  }
 
-  virtual Float evaluate_deriv(Float feature, Float& deriv) {
+  virtual Float evaluate_deriv(Float feature, Float& deriv) const {
     deriv= slope_;
     return evaluate(feature);
   }
