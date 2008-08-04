@@ -123,7 +123,7 @@ void BipartiteNonbondedListScoreState::process_sets(const Particles &p0,
     break;
   default:
     IMP_failure("Can't find algorithm in BipartiteNonbondedListScoreState",
-                ErrorException());
+                ErrorException);
   }
 }
 

@@ -89,7 +89,7 @@ void AllNonbondedListScoreState::do_before_evaluate()
     cost = 2000 * mc_->get_number_of_particles();
     break;
   default:
-    IMP_failure("Bad algorithm", ErrorException());
+    IMP_failure("Bad algorithm", ErrorException);
     cost = 10 * mc_->get_number_of_particles();
   }
   if (P::update(mc, cost)) {
@@ -121,7 +121,7 @@ void AllNonbondedListScoreState::rebuild_nbl()
                         internal::NBLAddPairIfNonbonded(this));
 
   } else {
-    IMP_failure("Bad algorithm in AllNBL::rebuild", ErrorException());
+    IMP_failure("Bad algorithm in AllNBL::rebuild", ErrorException);
   }
   set_nbl_is_valid(true);
   IMP_LOG(TERSE, "NBL has " << P::get_number_of_nonbonded()
