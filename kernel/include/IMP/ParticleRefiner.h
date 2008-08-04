@@ -34,7 +34,7 @@ public:
   //! Refine the passed particle into a set of particles.
   /** As a precondition can_refine_particle(a) should be true.
    */
-  virtual Particles get_refined(Particle *a);
+  virtual Particles get_refined(Particle *a) const;
 
   //! Cleanup after refining
   /** If da is non-NULL then the derivatives should be propagated
@@ -43,7 +43,7 @@ public:
       can be destroyed if they are temporary.
    */
   virtual void cleanup_refined(Particle *a, Particles &b,
-                               DerivativeAccumulator *da=0) {}
+                               DerivativeAccumulator *da=0) const {}
   virtual void show(std::ostream &out=std::cout) const {
     out << "ParticleRefiner base" << std::endl;
   };
