@@ -55,7 +55,7 @@ ClosedCubicSpline::ClosedCubicSpline(const std::vector<Float> &values,
 }
 
 
-Float ClosedCubicSpline::evaluate(Float feature)
+Float ClosedCubicSpline::evaluate(Float feature) const
 {
   // check for feature in range
   if (feature < minrange_ || feature > maxrange_) {
@@ -82,7 +82,7 @@ Float ClosedCubicSpline::evaluate(Float feature)
            * (spacing_ * spacing_) / 6.;
 }
 
-Float ClosedCubicSpline::evaluate_deriv(Float feature, Float& deriv)
+Float ClosedCubicSpline::evaluate_deriv(Float feature, Float& deriv) const
 {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   size_t highbin = lowbin + 1;

@@ -35,7 +35,7 @@ public:
       \exception ValueException Feature is out of defined range.
       \return Score
    */
-  virtual Float evaluate(Float feature);
+  virtual Float evaluate(Float feature) const;
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
@@ -44,7 +44,7 @@ public:
       \exception ValueException Feature is out of defined range.
       \return Score
    */
-  virtual Float evaluate_deriv(Float feature, Float& deriv);
+  virtual Float evaluate_deriv(Float feature, Float& deriv) const;
 
   void show(std::ostream &out=std::cout) const {
     out << "Open cubic spline of " << values_.size() << " values from "
