@@ -27,7 +27,7 @@ DistanceToSingletonScore::DistanceToSingletonScore(UnaryFunction *f,
                                                                        pt_(v){}
 
 Float DistanceToSingletonScore::evaluate(Particle *b,
-                                         DerivativeAccumulator *da)
+                                         DerivativeAccumulator *da) const
 {
   return internal::evaluate_distance_pair_score(XYZDecorator(b),
                                                 StaticD(pt_), da,

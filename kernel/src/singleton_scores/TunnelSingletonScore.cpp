@@ -23,7 +23,8 @@ TunnelSingletonScore::TunnelSingletonScore(UnaryFunction *f, FloatKey r) :
 
 
 
-Float TunnelSingletonScore::evaluate(Particle *p, DerivativeAccumulator *accum)
+Float TunnelSingletonScore::evaluate(Particle *p,
+                                     DerivativeAccumulator *accum) const
 {
   Float ret=0;
   XYZDecorator d(p);

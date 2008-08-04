@@ -83,7 +83,7 @@ struct TransformParticle
 };
 
 Float TransformedDistancePairScore::evaluate(Particle *a, Particle *b,
-                                             DerivativeAccumulator *da)
+                                             DerivativeAccumulator *da) const
 {
   TransformParticle tb(r_,ri_, tc_,c_,b);
   IMP_LOG(VERBOSE, "Transformed particle is " 

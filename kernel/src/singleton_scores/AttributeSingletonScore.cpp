@@ -17,7 +17,7 @@ AttributeSingletonScore::AttributeSingletonScore(UnaryFunction *f,
                                                               k_(k){}
 
 Float AttributeSingletonScore::evaluate(Particle *b,
-                                        DerivativeAccumulator *da)
+                                        DerivativeAccumulator *da) const
 {
   if (da) {
     Float d;

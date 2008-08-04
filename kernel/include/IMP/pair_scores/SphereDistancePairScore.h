@@ -27,7 +27,7 @@ public:
                           FloatKey radius=FloatKey("radius"));
   virtual ~SphereDistancePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,
-                         DerivativeAccumulator *da);
+                         DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
 

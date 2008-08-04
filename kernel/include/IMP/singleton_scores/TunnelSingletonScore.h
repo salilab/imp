@@ -69,7 +69,7 @@ public:
     return coordinate_;
   }
 
-  virtual Float evaluate(Particle *a, DerivativeAccumulator *da);
+  virtual Float evaluate(Particle *a, DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
 

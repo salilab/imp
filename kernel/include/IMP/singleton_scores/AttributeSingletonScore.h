@@ -26,7 +26,7 @@ public:
   AttributeSingletonScore(UnaryFunction *f, FloatKey k);
   virtual ~AttributeSingletonScore(){}
   virtual Float evaluate(Particle *a,
-                         DerivativeAccumulator *da);
+                         DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
 

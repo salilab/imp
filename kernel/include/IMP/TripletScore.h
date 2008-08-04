@@ -33,7 +33,7 @@ public:
   virtual ~TripletScore() {}
   //! Compute the score for the triplet and the derivative if needed.
   virtual Float evaluate(Particle *a, Particle *b, Particle *c,
-                         DerivativeAccumulator *da) = 0;
+                         DerivativeAccumulator *da) const = 0;
   virtual void show(std::ostream &out=std::cout) const = 0;
 };
 

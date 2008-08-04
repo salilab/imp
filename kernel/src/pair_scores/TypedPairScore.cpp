@@ -11,7 +11,7 @@ namespace IMP
 {
 
 Float TypedPairScore::evaluate(Particle *a, Particle *b,
-                               DerivativeAccumulator *da)
+                               DerivativeAccumulator *da) const
 {
   if (!a->has_attribute(typekey_)) {
     set_particle_type(a);
@@ -22,7 +22,7 @@ Float TypedPairScore::evaluate(Particle *a, Particle *b,
   Int atype = a->get_value(typekey_);
   Int btype = b->get_value(typekey_);
 
-  ScoreMap::iterator psit =
+  ScoreMap::const_iterator psit =
       score_map_.find(std::pair<Int,Int>(std::min(atype, btype),
                                          std::max(atype, btype)));
   if (psit == score_map_.end()) {
