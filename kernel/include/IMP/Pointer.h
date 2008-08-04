@@ -103,8 +103,8 @@ public:
     return !o_;
   }
 
-  operator unspecified_bool() const {
-    return o_ ? &This::operator! : 0;
+  operator O*() const {
+    return o_;
   }
 };
 
