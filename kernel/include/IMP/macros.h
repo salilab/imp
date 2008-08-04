@@ -226,9 +226,9 @@ public:                                                                 \
   virtual void show(std::ostream &out) const;                           \
   /** Destroy any created particles and propagate derivatives */        \
   virtual void cleanup_refined(Particle *a, Particles &b,               \
-                       DerivativeAccumulator *da=0);                    \
+                               DerivativeAccumulator *da=0) const;      \
   /** Return a list of particles which refines the passed particle.*/   \
-  virtual Particles get_refined(Particle *);                            \
+  virtual Particles get_refined(Particle *) const;                      \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Use the swap_with member function to swap two objects

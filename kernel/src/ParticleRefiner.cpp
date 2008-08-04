@@ -12,7 +12,7 @@ namespace IMP
 
 ParticleRefiner::~ParticleRefiner(){}
 
-Particles ParticleRefiner::get_refined(Particle *p) {
+Particles ParticleRefiner::get_refined(Particle *p) const {
   throw ErrorException("Can't refine");
   return Particles();
 }

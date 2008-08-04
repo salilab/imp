@@ -23,7 +23,7 @@ bool ChildrenParticleRefiner::get_can_refine(Particle *p) const
 
 }
 
-Particles ChildrenParticleRefiner::get_refined(Particle *p)
+Particles ChildrenParticleRefiner::get_refined(Particle *p) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
   HierarchyDecorator d(p);
@@ -38,7 +38,7 @@ Particles ChildrenParticleRefiner::get_refined(Particle *p)
 
 void ChildrenParticleRefiner::cleanup_refined(Particle *,
                                               Particles &,
-                                              DerivativeAccumulator *)
+                                              DerivativeAccumulator *) const
 {
   // This space left intentionally blank
 }

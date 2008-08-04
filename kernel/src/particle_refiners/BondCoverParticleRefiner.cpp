@@ -35,7 +35,7 @@ bool BondCoverParticleRefiner::get_can_refine(Particle *p) const
 /* n (4/3) pi (d/(2n))^3 = v
    n^2= (4/3) pi (d/2)^3 / v
  */
-Particles BondCoverParticleRefiner::get_refined(Particle *p)
+Particles BondCoverParticleRefiner::get_refined(Particle *p) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
 
@@ -107,7 +107,7 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p)
 
 void BondCoverParticleRefiner::cleanup_refined(Particle *p,
                                                Particles &ps,
-                                               DerivativeAccumulator *da)
+                                               DerivativeAccumulator *da) const
 {
   IMP_assert(get_can_refine(p), "Cleanup called with non-refinable particle");
   BondDecorator bd(p);
