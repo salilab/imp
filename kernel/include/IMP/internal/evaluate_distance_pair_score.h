@@ -43,7 +43,7 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
   if (da && distance >= MIN_DISTANCE) {
     Float deriv;
 
-    score = f->evaluate_deriv(shifted_distance, deriv);
+    score = f->evaluate_with_derivative(shifted_distance, deriv);
 
     Vector3D d= delta/distance *deriv;
     d0.add_to_coordinates_derivative(d, *da);

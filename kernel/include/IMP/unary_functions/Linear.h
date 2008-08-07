@@ -28,7 +28,7 @@ public:
     return (feature-offset_)*slope_;
   }
 
-  virtual Float evaluate_deriv(Float feature, Float& deriv) const {
+  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const {
     deriv= slope_;
     return evaluate(feature);
   }

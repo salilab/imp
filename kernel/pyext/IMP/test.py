@@ -55,7 +55,7 @@ class TestCase(unittest.TestCase):
         """Check the unary function func's derivatives against numerical
            approximations between lb and ub"""
         for f in [lb + i * step for i in range(1, int((ub-lb)/step))]:
-            (v,d)= func.evaluate_deriv(f)
+            (v,d)= func.evaluate_with_derivative(f)
             # Simple finite difference approximation
             offset= step/1024
             vmn= func.evaluate(f-offset)
@@ -117,7 +117,7 @@ class ConstUnaryFunction(IMP.UnaryFunction):
         self.v=v
     def evaluate(self, feat):
         return self.v
-    def evaluate_deriv(self, feat):
+    def evaluate_with_derivative(self, feat):
         return self.v, 0.0
     def show(self, *args):
         print "ConstUF with value "+str(self.v)

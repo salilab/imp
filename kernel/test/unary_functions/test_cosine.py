@@ -23,7 +23,7 @@ class CosineTests(IMP.test.TestCase):
                         val = -math.pi + math.pi * 15.0 / (i + 1.0)
                         expscore, expderiv = _cosfunc(val, force_constant,
                                                       periodicity, phase)
-                        score, deriv = func.evaluate_deriv(val)
+                        score, deriv = func.evaluate_with_derivative(val)
                         scoreonly = func.evaluate(val)
                         self.assertInTolerance(score, scoreonly, 1e-4)
                         self.assertInTolerance(expscore, score, 0.1)

@@ -82,7 +82,8 @@ Float ClosedCubicSpline::evaluate(Float feature) const
            * (spacing_ * spacing_) / 6.;
 }
 
-Float ClosedCubicSpline::evaluate_deriv(Float feature, Float& deriv) const
+Float ClosedCubicSpline::evaluate_with_derivative(Float feature,
+                                                  Float& deriv) const
 {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   size_t highbin = lowbin + 1;

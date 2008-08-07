@@ -21,7 +21,7 @@ class HarmonicTests(IMP.test.TestCase):
         for i in range(15):
             val = 5.0 + i
             expscore, expderiv = _harmonicfunc(val, mean, force_constant)
-            score, deriv = func.evaluate_deriv(val)
+            score, deriv = func.evaluate_with_derivative(val)
             scoreonly = func.evaluate(val)
             self.assertEqual(score, scoreonly)
             self.assertInTolerance(expscore, score, 0.1)

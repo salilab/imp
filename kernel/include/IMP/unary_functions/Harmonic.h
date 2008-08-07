@@ -57,7 +57,7 @@ public:
    */
   virtual Float evaluate(Float feature) const {
     Float d;
-    return evaluate_deriv(feature, d);
+    return evaluate_with_derivative(feature, d);
   }
 
   //! Calculate harmonic score and derivative with respect to the given feature.
@@ -66,7 +66,7 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float evaluate_deriv(Float feature, Float& deriv) const {
+  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const {
     Float e = (feature - mean_);
     deriv = k_ * e;
     return 0.5 * k_ * e * e;

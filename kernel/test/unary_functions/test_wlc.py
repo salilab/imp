@@ -12,7 +12,7 @@ class WLCTests(IMP.test.TestCase):
         self.check_unary_function_min(wlc, 0, 250, .5, 0)
         self.check_unary_function_deriv(wlc, 0, 250, .5)
 
-        self.assert_(wlc.evaluate_deriv(180)[1] > 4.2)
+        self.assert_(wlc.evaluate_with_derivative(180)[1] > 4.2)
 
 if __name__ == '__main__':
     unittest.main()

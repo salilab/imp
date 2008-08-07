@@ -41,12 +41,12 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float evaluate_deriv(Float feature, Float& deriv) const {
+  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const {
     if (feature >= Harmonic::get_mean()) {
       deriv = 0.0;
       return 0.0;
     } else {
-      return Harmonic::evaluate_deriv(feature, deriv);
+      return Harmonic::evaluate_with_derivative(feature, deriv);
     }
   }
 
