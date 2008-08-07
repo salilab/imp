@@ -65,7 +65,7 @@ public:
       \param[out] deriv force in kcal/angstrom mol
       \return Score
    */
-  virtual Float evaluate_deriv(Float fl, Float& deriv) const {
+  virtual Float evaluate_with_derivative(Float fl, Float& deriv) const {
     unit::Angstrom l(fl);
     if (l < unit::Angstrom(0)) l=unit::Angstrom(0);
     unit::Piconewton doubled;

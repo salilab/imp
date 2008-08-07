@@ -36,7 +36,7 @@ public:
                         given feaure.
       \return Score
    */
-  virtual Float evaluate_deriv(Float feature, Float& deriv) const = 0;
+  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const = 0;
 
   virtual void show(std::ostream &out=std::cout) const = 0;
 };

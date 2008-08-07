@@ -9,7 +9,7 @@ class One(IMP.UnaryFunction):
         IMP.UnaryFunction.__init__(self)
     def evaluate(self, val):
         return 1.0
-    def evaluate_deriv(self, val):
+    def evaluate_with_derivative(self, val):
         return 1.0, 0.0
     def show(self, *args):
         print "identity"

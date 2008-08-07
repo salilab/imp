@@ -80,7 +80,7 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 
   if (accum) {
     Float deriv;
-    score = score_func_->evaluate_deriv(angle, deriv);
+    score = score_func_->evaluate_with_derivative(angle, deriv);
 
     // method for derivative calculation from van Schaik et al.
     // J. Mol. Biol. 234, 751-762 (1993)

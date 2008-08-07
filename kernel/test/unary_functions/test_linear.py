@@ -13,7 +13,7 @@ class LinearTests(IMP.test.TestCase):
                 for i in range(15):
                     val = -10.0 + 3.5 * i
                     scoreonly = func.evaluate(val)
-                    score, deriv = func.evaluate_deriv(val)
+                    score, deriv = func.evaluate_with_derivative(val)
                     self.assertEqual(score, scoreonly)
                     self.assertInTolerance(score, (val - offset) * slope, 0.001)
                     self.assertInTolerance(deriv, slope, 0.001)

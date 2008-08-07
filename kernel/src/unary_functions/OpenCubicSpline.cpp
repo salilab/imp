@@ -66,7 +66,8 @@ Float OpenCubicSpline::evaluate(Float feature) const
            * (spacing_ * spacing_) / 6.;
 }
 
-Float OpenCubicSpline::evaluate_deriv(Float feature, Float& deriv) const
+Float OpenCubicSpline::evaluate_with_derivative(Float feature,
+                                                Float& deriv) const
 {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   // handle the case where feature ~= maxrange

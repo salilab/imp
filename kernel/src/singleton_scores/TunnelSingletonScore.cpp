@@ -58,7 +58,7 @@ Float TunnelSingletonScore::evaluate(Particle *p,
       // look below if changed
       Float dist= -std::min(std::min(rd, hdu), hdd) - radius;
       if (accum) {
-        score= f_->evaluate_deriv(dist, deriv_scalar);
+        score= f_->evaluate_with_derivative(dist, deriv_scalar);
       } else {
         score= f_->evaluate(dist);
       }

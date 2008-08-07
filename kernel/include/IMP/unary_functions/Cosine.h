@@ -47,7 +47,7 @@ public:
                         the feature value.
       \return Score
    */
-  virtual Float evaluate_deriv(Float feature, Float& deriv) const;
+  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const;
 
   void show(std::ostream &out=std::cout) const {
     out << "Cosine function with force " << force_constant_

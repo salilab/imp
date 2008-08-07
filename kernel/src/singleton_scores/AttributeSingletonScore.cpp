@@ -21,7 +21,7 @@ Float AttributeSingletonScore::evaluate(Particle *b,
 {
   if (da) {
     Float d;
-    float r= f_->evaluate_deriv(b->get_value(k_), d);
+    float r= f_->evaluate_with_derivative(b->get_value(k_), d);
     b->add_to_derivative(k_, d, *da);
     return r;
   } else {
