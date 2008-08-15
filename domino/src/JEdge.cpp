@@ -9,49 +9,49 @@
 namespace IMP
 {
 
-JEdge::JEdge(JNode *source_, JNode *target_)
+JEdge::JEdge(JNode *source, JNode *target)
 {
-  if (source_->get_node_index() < target_->get_node_index()) {
-    source = source_;
-    target = target_;
+  if (source->get_node_index() < target->get_node_index()) {
+    source_ = source;
+    target_ = target;
   } else {
-    target = source_;
-    source = target_;
+    target_ = source;
+    source_ = target;
   }
 }
 
 const std::map<std::string, float> * JEdge::get_old_separators(JNode *n) const
 {
-  if (source->get_node_index() == n->get_node_index()) {
-    return &source_old_score_separators;
+  if (source_->get_node_index() == n->get_node_index()) {
+    return &source_old_score_separators_;
   }
-  return &target_old_score_separators;
+  return &target_old_score_separators_;
 }
 
 const std::map<std::string, float> * JEdge::get_new_separators(JNode *n) const
 {
-  if (source->get_node_index() == n->get_node_index()) {
-    return &source_new_score_separators;
+  if (source_->get_node_index() == n->get_node_index()) {
+    return &source_new_score_separators_;
   }
-  return &target_new_score_separators;
+  return &target_new_score_separators_;
 }
 
 void JEdge::init_separators()
 {
   //get the set of interacing particles
   Particles *intersection_set = new Particles();
-  source->get_intersection(*target, *intersection_set);
-  source->populate_states_of_particles(*intersection_set, &separators);
-  source_old_score_separators = std::map<std::string, float>();
-  target_old_score_separators = std::map<std::string, float>();
-  source_new_score_separators = std::map<std::string, float>();
-  target_new_score_separators = std::map<std::string, float>();;
-  for (std::map<std::string, CombState *>::iterator e  =  separators.begin();
-       e != separators.end(); e++) {
-    source_old_score_separators[e->first] = 0.0;
-    target_old_score_separators[e->first] = 0.0;
-    source_new_score_separators[e->first] = 0.0;
-    target_new_score_separators[e->first] = 0.0;
+  source_->get_intersection(*target_, *intersection_set);
+  source_->populate_states_of_particles(*intersection_set, &separators_);
+  source_old_score_separators_ = std::map<std::string, float>();
+  target_old_score_separators_ = std::map<std::string, float>();
+  source_new_score_separators_ = std::map<std::string, float>();
+  target_new_score_separators_ = std::map<std::string, float>();
+  for (std::map<std::string, CombState *>::iterator e = separators_.begin();
+       e != separators_.end(); e++) {
+    source_old_score_separators_[e->first] = 0.0;
+    target_old_score_separators_[e->first] = 0.0;
+    source_new_score_separators_[e->first] = 0.0;
+    target_new_score_separators_[e->first] = 0.0;
   }
 }
 
@@ -59,22 +59,22 @@ void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
 {
   JNode *fn, *tn;
   std::map<std::string, float> *fnoss, *tnoss, *fnnss, *tnnss;
-  fn = source;
-  tn = target;
-  fnoss = &source_old_score_separators;
-  tnoss = &target_old_score_separators;
-  fnnss = &source_new_score_separators;
-  tnnss = &target_new_score_separators;
-  if (!(source->get_node_index() == from_node->get_node_index())) {
-    tn = source;
-    fn = target;
-    tnoss = &source_old_score_separators;
-    fnoss = &target_old_score_separators;
-    tnnss = &source_new_score_separators;
-    fnnss = &target_new_score_separators;
+  fn = source_;
+  tn = target_;
+  fnoss = &source_old_score_separators_;
+  tnoss = &target_old_score_separators_;
+  fnnss = &source_new_score_separators_;
+  tnnss = &target_new_score_separators_;
+  if (!(source_->get_node_index() == from_node->get_node_index())) {
+    tn = source_;
+    fn = target_;
+    tnoss = &source_old_score_separators_;
+    fnoss = &target_old_score_separators_;
+    tnnss = &source_new_score_separators_;
+    fnnss = &target_new_score_separators_;
   }
-  for (std::map<std::string, CombState *>::iterator e  =  separators.begin();
-       e != separators.end(); e++) {
+  for (std::map<std::string, CombState *>::iterator e = separators_.begin();
+       e != separators_.end(); e++) {
     std::vector<CombState *> min_p_all;
     //marginalize over all particles except for those that are part
     //of the separator.
@@ -92,36 +92,38 @@ void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
 CombState * JEdge::get_separator(const CombState &other_comb) const
 {
   std::cout << " JEdge::get_separator an edge between nodes "
-            << source->get_node_index() << "  " << target->get_node_index()
+            << source_->get_node_index() << "  " << target_->get_node_index()
             << std::endl;
   std::string key = generate_key(other_comb);
   std::cout << " JEdge::get_separator start2 " << key << std::endl;
-  std::cout << " JEdge::get_separator start33 " << separators.size()
+  std::cout << " JEdge::get_separator start33 " << separators_.size()
             << std::endl;
-  std::cout << " JEdge::get_separator start333 " << separators.begin()->first
+  std::cout << " JEdge::get_separator start333 " << separators_.begin()->first
             << std::endl;
   std::stringstream error_message;
   error_message << " JEdge::get_separator a combination with index  : "
                 << key << " is not part of the edge separators" ;
-  IMP_assert(separators.find(key) != separators.end(), error_message.str());
+  IMP_assert(separators_.find(key) != separators_.end(), error_message.str());
   std::cout << " JEdge::get_separator start3 " << std::endl;
-  return separators.find(key)->second;
+  return separators_.find(key)->second;
 }
 
 const std::string JEdge::generate_key(const CombState &other_comb) const
 {
   Particles *intersection_set = new Particles();
-  source->get_intersection(*target, *intersection_set);
+  source_->get_intersection(*target_, *intersection_set);
   return other_comb.partial_key(intersection_set);
 }
 
 void JEdge::show(std::ostream& out) const
 {
-  out << "=========================JEdge bewteen  " << source->get_node_index();
-  out << " and " << target->get_node_index() << " separator keys and values : ";
-  out << std::endl;
-  for (std::map<std::string, CombState *>::const_iterator it =
-         separators.begin();it != separators.end(); it++) {
+  out << "=========================JEdge bewteen  "
+      << source_->get_node_index();
+  out << " and " << target_->get_node_index()
+      << " separator keys and values : " << std::endl;
+  for (std::map<std::string,
+                CombState *>::const_iterator it = separators_.begin();
+       it != separators_.end(); it++) {
     out << "(" << it->first << " , " << it->second->get_total_score() << ") ";
   }
   out << std::endl;
