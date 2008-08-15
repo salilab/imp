@@ -61,8 +61,8 @@ public:
       \param[in] states_      the dataset to be filled with states.
    */
   void populate_states_of_particles(const Particles &particles_,
-                                    std::map<std::string, CombState *> *states_)
-  const;
+                                    std::map<std::string,
+                                             CombState *> *states_) const;
   void realize(Restraint *r, float weight);
 
   //! Finds the minimum combination in the node.
