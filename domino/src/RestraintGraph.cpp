@@ -108,7 +108,7 @@ void RestraintGraph::set_sampling_space(const DiscreteSampler &ds_)
   }
   for (std::map<Pair, JEdge *>::iterator it = edge_data.begin();
        it != edge_data.end(); it++) {
-    it->second->init_seperators();
+    it->second->init_separators();
   }
 }
 
@@ -206,12 +206,12 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
       continue;
     }
     JNode *child_data = node_data[*child_it];
-    //get the seperator that corresponds to the father's minimum state.
+    //get the separator that corresponds to the father's minimum state.
     JEdge *e = get_edge(father_ind, *child_it);
-    CombState *min_father_seperator = e->get_seperator(*min_comb);
-    min_father_seperator->show();
+    CombState *min_father_separator = e->get_separator(*min_comb);
+    min_father_separator->show();
     std::vector<CombState *> child_min_state;
-    child_min_state = child_data->min_marginalize(*min_father_seperator);
+    child_min_state = child_data->min_marginalize(*min_father_separator);
     std::vector<CombState*>::const_iterator it = child_min_state.begin();
     bool passed = false;
     while ((it != child_min_state.end()) and not passed) {
@@ -226,7 +226,7 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
                 << " states " << std::endl;
       throw 1;
     }
-    //TODO - should we free here min_father_seperator  and child_min_state
+    //TODO - should we free here min_father_separator  and child_min_state
     distribute_minimum(*child_it, min_comb);
   }
 }
@@ -280,12 +280,12 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
   //minimize over all sub-configurations in  v that do not involve the w
   JEdge *e = edge_data[get_edge_key(w,v)];
   e->min_marginalize(v_data, w_data);
-  //now update the to_node according to the new seperators
+  //now update the to_node according to the new separators
   Particles intersection_set;
   v_data->get_intersection(*w_data, intersection_set);
 
-  w_data->update_potentials(*(e->get_old_seperators(w_data)),
-                            *(e->get_new_seperators(w_data)),
+  w_data->update_potentials(*(e->get_old_separators(w_data)),
+                            *(e->get_new_separators(w_data)),
                             intersection_set);
 }
 

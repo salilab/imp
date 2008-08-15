@@ -167,7 +167,7 @@ void JNode::realize(Restraint *r, float weight)
   }
 }
 
-//! Return the optimal score for the seperator, for the given seperator
+//! Return the optimal score for the separator, for the given separator
 //! find the optimal combination of the rest of the components.
 std::vector<CombState *> JNode::min_marginalize(const CombState &s,
                                                 bool move2state_)
@@ -177,10 +177,10 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
   min_comb = std::vector<CombState *>();
   for (std::map<std::string, CombState *>::iterator it =  comb_states.begin();
        it != comb_states.end(); it++) {
-    //  std::cout<<"JNode::min_marginilize log2" <<std::endl;
+    //  std::cout<<"JNode::min_marginalize log2" <<std::endl;
     if (it->second->is_part(s)) {
       // #TODO: too expensive , should be the other way around -
-      //build all combination acfroding to seperator.comb_key
+      // build all combinations according to separator.comb_key
       if (it->second->get_total_score() < min_score) {
         min_score = it->second->get_total_score();
       }
@@ -195,9 +195,9 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
       }
     }
   }
-  std::cout << "JNode::min_marginilize min_score " << min_score << std::endl;
+  std::cout << "JNode::min_marginalize min_score " << min_score << std::endl;
   std::stringstream error_message;
-  error_message << "JNode::min_marginilize couldn't marg over seperator:";
+  error_message << "JNode::min_marginalize couldn't marg over separator:";
   s.show(error_message);
   IMP_assert(min_score < INT_MAX, error_message.str());
   if (move2state_) {
@@ -207,19 +207,19 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
 }
 
 void JNode::update_potentials(
-  const std::map<std::string, float> &old_score_seperators,
-  const std::map<std::string, float> &new_score_seperators,
+  const std::map<std::string, float> &old_score_separators,
+  const std::map<std::string, float> &new_score_separators,
   const Particles &intersection_particles)
 {
   for (std::map<std::string, CombState *>::iterator it = comb_states.begin();
        it != comb_states.end(); it++) {
     std::string s_key = it->second->partial_key(&intersection_particles);
-    //seperator_comb=v.comb_key.intersection_by_feature_key(edge_data.s_ij)
-    // s_key=seperator_comb.key()
+    //separator_comb=v.comb_key.intersection_by_feature_key(edge_data.s_ij)
+    // s_key=separator_comb.key()
     //TODO - add validation tests
     //check if the node is the from or to of the edge:
-    it->second->update_total_score(old_score_seperators.find(s_key)->second,
-                                   new_score_seperators.find(s_key)->second);
+    it->second->update_total_score(old_score_separators.find(s_key)->second,
+                                   new_score_separators.find(s_key)->second);
   }
 }
 
