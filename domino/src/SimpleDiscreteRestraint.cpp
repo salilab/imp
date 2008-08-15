@@ -1,0 +1,85 @@
+/**
+ *  \file SimpleDiscreteRestraint.h
+ *  \brief Simple restraint for testing
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ */
+
+#include "SimpleDiscreteRestraint.h"
+
+namespace IMP
+{
+
+void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
+{
+  std::ifstream myfile(restraint_filename.c_str());
+  char line[1024];
+  std::vector<std::string> v;
+  std::pair<int, int> last_key;
+  while (myfile.getline(line, 1024)) {
+    v.clear();
+    char *pch = strtok(line, "|");
+    while (pch != NULL) {
+      v.push_back(std::string(pch));
+      pch = strtok(NULL, "|");
+    }
+    if (v.size() == 2) {
+      last_key = std::pair<int, int>(atoi(v[0].c_str()), atoi(v[1].c_str()));
+      states2values[last_key] = std::map<std::pair<int, int>, float>();
+    } else if (v.size() == 3)  {
+      states2values[last_key][std::pair<int,int>(atoi(v[0].c_str()),
+                                                 atoi(v[1].c_str()))]
+          = atof(v[2].c_str());
+    } else {
+      std::cout << "SimpleDiscreteRestraint::load_restraints the line : "
+                << line << " is of the wrong format" << std::endl;
+      throw(1);
+    }
+  }
+}
+
+SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model& model_,
+    std::string restraint_filename, Particle * p1_, Particle *p2_)
+{
+  load_restraints(restraint_filename);
+  Int p1_ind = p1_->get_index().get_index();
+  Int p2_ind = p2_->get_index().get_index();
+  if (p1_ind < p2_ind) {
+    p1 = p1_;
+    p2 = p2_;
+    add_particle(p1);
+    add_particle(p2);
+    key = std::pair<int, int>(p1_ind, p2_ind);
+  } else {
+    p1 = p2_;
+    p2 = p1_;
+    add_particle(p2);
+    add_particle(p1);
+    key = std::pair<int, int>(p2_ind, p1_ind);
+  }
+  model = &model_;
+}
+
+Float SimpleDiscreteRestraint::evaluate(DerivativeAccumulator *accum)
+{
+  //build state key
+  int a1 = int(p1->get_value(IMP::FloatKey(KEY_OPT)));
+  int a2 = int(p2->get_value(IMP::FloatKey(KEY_OPT)));
+  return states2values[key][std::pair<int,int>(a1,a2)];
+}
+
+void SimpleDiscreteRestraint::show(std::ostream& out) const
+{
+  std::cout << "=========" << std::endl;
+  if (get_is_active()) {
+    out << "simple discrete restraint (active):" << std::endl;
+  } else {
+    out << "simple discrete restraint (inactive):" << std::endl;
+  }
+  get_version_info().show(out);
+  out << "  particles: " << get_particle(0)->get_index();
+  out << " and " << get_particle(1)->get_index();
+  out << std::endl;
+}
+
+} // namespace IMP

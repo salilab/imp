@@ -1,5 +1,5 @@
 /*
- *  domino_config.h
+ *  \file domino_config.h
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
