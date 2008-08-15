@@ -38,7 +38,9 @@ bin = SConscript('bin/SConscript')
 Export('bin')
 (src, pyext, pymod) = SConscript('kernel/SConscript')
 SConscript('impEM/SConscript')
-SConscript('domino/SConscript')
+
+# Uncomment when DOMINO code compiles with latest kernel:
+#SConscript('domino/SConscript')
 
 # bin script first requires kernel libraries to be built:
 env.Depends(bin, [src, pyext, pymod])

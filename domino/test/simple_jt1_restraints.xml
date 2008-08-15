@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<restraints>
+<restraint p1='0' p2='1'>
+<state s_p1='0' s_p2='0' val='0.5'></state>
+<state s_p1='0' s_p2='1' val='-1.0'></state>
+<state s_p1='1' s_p2='0' val='0.8'></state>
+<state s_p1='1' s_p2='1' val='4.0'></state>
+<state s_p1='2' s_p2='0' val='-1.0'></state>
+<state s_p1='2' s_p2='1' val='3.0'></state>
+</restraint>
+<restraint p1='0' p2='2'>
+<state s_p1='0' s_p2='0' val='2.3'></state>
+<state s_p1='0' s_p2='1' val='-2.2'></state>
+<state s_p1='0' s_p2='2' val='-1.0'></state>
+<state s_p1='1' s_p2='0' val='4.1'></state>
+<state s_p1='1' s_p2='1' val='1.0'></state>
+<state s_p1='1' s_p2='2' val='1.1'></state>
+<state s_p1='2' s_p2='0' val='5.1'></state>
+<state s_p1='2' s_p2='1' val='-3.4'></state>
+<state s_p1='2' s_p2='2' val='3.2'></state>
+</restraint>
+<restraint p1='0' p2='3'>
+<state s_p1='0' s_p2='0' val='-0.3'></state>
+<state s_p1='0' s_p2='1' val='1.1'></state>
+<state s_p1='1' s_p2='0' val='-0.65'></state>
+<state s_p1='1' s_p2='1' val='3.7'></state>
+<state s_p1='2' s_p2='0' val='1.3'></state>
+<state s_p1='2' s_p2='1' val='-4.1'></state>
+</restraint>
+<restraint p1='1' p2='3'>
+<state s_p1='0' s_p2='0' val='1.3'></state>
+<state s_p1='0' s_p2='1' val='-5.2'></state>
+<state s_p1='1' s_p2='0' val='4.6'></state>
+<state s_p1='1' s_p2='1' val='-10.0'></state>
+</restraint>
+<restraint p1='2' p2='3'>
+<state s_p1='0' s_p2='0' val='1.2'></state>
+<state s_p1='0' s_p2='1' val='2.1'></state>
+<state s_p1='1' s_p2='0' val='-5.3'></state>
+<state s_p1='1' s_p2='1' val='-9.0'></state>
+<state s_p1='2' s_p2='0' val='-1.1'></state>
+<state s_p1='2' s_p2='1' val='3.4'></state>
+</restraint>
+<restraint p1='3' p2='4'>
+<state s_p1='0' s_p2='0' val='-0.4'></state>
+<state s_p1='0' s_p2='1' val='1.2'></state>
+<state s_p1='0' s_p2='2' val='-1.0'></state>
+<state s_p1='1' s_p2='0' val='-2.1'></state>
+<state s_p1='1' s_p2='1' val='3.1'></state>
+<state s_p1='1' s_p2='2' val='1.15'></state>
+</restraint>
+</restraints>

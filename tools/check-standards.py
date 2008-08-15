@@ -60,7 +60,9 @@ def get_all_files():
     excludes = ['./kernel/pyext/IMP_wrap.h', './kernel/pyext/IMP_wrap.cc',
                 './impEM/pyext/IMPEM_wrap.h', './impEM/pyext/IMPEM_wrap.cc',
                 './impEM/pyext/IMPEM.py', './kernel/pyext/IMP.py',
-                './kernel/pyext/IMP/__init__.py']
+                './kernel/pyext/IMP/__init__.py',
+                './domino/pyext/DOMINO_wrap.h', './domino/pyext/DOMINO_wrap.cc',
+                './domino/pyext/DOMINO.py']
     for ex in excludes:
         try:
             modfiles.remove(ex)

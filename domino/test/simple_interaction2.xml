@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data>
+<components>
+<component id="0"/>
+<component id="1"/>
+<component id="2"/>
+<component id="3"/>
+<component id="4"/>
+<component id="5"/>
+<component id="6"/>
+<component id="7"/>
+</components>
+<interactions>
+<interaction compA="0" compB="1"/>
+<interaction compA="0" compB="3"/>
+<interaction compA="1" compB="4"/>
+<interaction compA="2" compB="6"/>
+<interaction compA="2" compB="7"/>
+<interaction compA="3" compB="4"/>
+<interaction compA="4" compB="5"/>
+<interaction compA="4" compB="6"/>
+<interaction compA="6" compB="7"/>
+</interactions>
+</data>
+
+
