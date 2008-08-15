@@ -95,13 +95,13 @@ public:
       bool move2state_ = false);
 
   //! Update the potentials
-  /** /param[in] old_score_seperators
-      /param[in] new_score_seperators
+  /** /param[in] old_score_separators
+      /param[in] new_score_separators
       /param[in] intersection_particles
    */
   void update_potentials(
-    const std::map<std::string, float>  &old_score_seperators,
-    const std::map<std::string, float>  &new_score_seperators,
+    const std::map<std::string, float>  &old_score_separators,
+    const std::map<std::string, float>  &new_score_separators,
     const Particles &intersection_particles);
   const DiscreteSampler* get_sampler() {
     return ds;

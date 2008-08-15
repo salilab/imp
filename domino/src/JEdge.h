@@ -16,10 +16,10 @@
 namespace IMP
 {
 
-class DOMINODLLEXPORT Seperator
+class DOMINODLLEXPORT Separator
 {
 public:
-  Seperator(const std::string &comb_key_) {
+  Separator(const std::string &comb_key_) {
     comb_key = comb_key_;
     score = 0.0;
   }
@@ -40,7 +40,7 @@ public:
   JEdge(JNode *source_, JNode *target_);
   //! Init the separator. Set a table with all of the combinations of states of
   //! the nodes that are found both with source and target
-  void init_seperators();
+  void init_separators();
   //! Update the scores of the combination in to_node based on from_node.
   /** /param[in] from_node the distributing node
       /param[in] to_node   the updated node
@@ -56,12 +56,12 @@ public:
   //! Get the edge separator that is contained in the other_comb
   /** /param[in] other_comb a combination that contains the particles that
                  build the separator.
-      /param[out] a seperator
+      /param[out] a separator
    */
-  CombState *get_seperator(const CombState &other_comb) const;
+  CombState *get_separator(const CombState &other_comb) const;
 
-  const std::map<std::string, float> * get_old_seperators(JNode *n) const;
-  const std::map<std::string, float> * get_new_seperators(JNode *n) const;
+  const std::map<std::string, float> * get_old_separators(JNode *n) const;
+  const std::map<std::string, float> * get_new_separators(JNode *n) const;
 
 
   void show(std::ostream& out) const;
@@ -70,17 +70,17 @@ protected:
   //! and the edge separators
   /** /param[in] other_comb a combination that contains the particles that
                  build the separator.
-      /param[out] a seperator key
+      /param[out] a separator key
    */
   const std::string generate_key(const CombState &other_comb) const;
 
   JNode *source;
   JNode *target;
-  std::map<std::string, CombState *> seperators;
-  std::map<std::string, float>  source_old_score_seperators;
-  std::map<std::string, float>  target_old_score_seperators;
-  std::map<std::string, float>  source_new_score_seperators;
-  std::map<std::string, float>  target_new_score_seperators;
+  std::map<std::string, CombState *> separators;
+  std::map<std::string, float>  source_old_score_separators;
+  std::map<std::string, float>  target_old_score_separators;
+  std::map<std::string, float>  source_new_score_separators;
+  std::map<std::string, float>  target_new_score_separators;
 };
 
 } // namespace IMP
