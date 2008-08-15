@@ -1,4 +1,8 @@
-import networkx  as NX  # import networkx after pylab
+# Prevent matplotlib (used by networkx) from trying to open the display:
+import matplotlib
+matplotlib.use('Agg')
+
+import networkx as NX
 import sys
 import IMP
 
