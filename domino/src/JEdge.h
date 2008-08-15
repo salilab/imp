@@ -19,25 +19,25 @@ namespace IMP
 class DOMINODLLEXPORT Separator
 {
 public:
-  Separator(const std::string &comb_key_) {
-    comb_key = comb_key_;
-    score = 0.0;
+  Separator(const std::string &comb_key) {
+    comb_key_ = comb_key;
+    score_ = 0.0;
   }
   void update(float new_score) {
-    score = new_score;
+    score_ = new_score;
   }
   void show(std::ostream& out = std::cout) const {
-    out << "key: " << comb_key << " score: " << score;
+    out << "key: " << comb_key_ << " score: " << score_;
   }
 protected:
-  std::string comb_key;
-  float score;
+  std::string comb_key_;
+  float score_;
 };
 
 class DOMINODLLEXPORT JEdge
 {
 public:
-  JEdge(JNode *source_, JNode *target_);
+  JEdge(JNode *source, JNode *target);
   //! Init the separator. Set a table with all of the combinations of states of
   //! the nodes that are found both with source and target
   void init_separators();
@@ -47,10 +47,10 @@ public:
    */
   void min_marginalize(JNode *from_node, JNode *to_node);
   JNode *get_source() const {
-    return source;
+    return source_;
   }
   JNode *get_target() const {
-    return target;
+    return target_;
   }
 
   //! Get the edge separator that is contained in the other_comb
@@ -74,13 +74,13 @@ protected:
    */
   const std::string generate_key(const CombState &other_comb) const;
 
-  JNode *source;
-  JNode *target;
-  std::map<std::string, CombState *> separators;
-  std::map<std::string, float>  source_old_score_separators;
-  std::map<std::string, float>  target_old_score_separators;
-  std::map<std::string, float>  source_new_score_separators;
-  std::map<std::string, float>  target_new_score_separators;
+  JNode *source_;
+  JNode *target_;
+  std::map<std::string, CombState *> separators_;
+  std::map<std::string, float>  source_old_score_separators_;
+  std::map<std::string, float>  target_old_score_separators_;
+  std::map<std::string, float>  source_new_score_separators_;
+  std::map<std::string, float>  target_new_score_separators_;
 };
 
 } // namespace IMP
