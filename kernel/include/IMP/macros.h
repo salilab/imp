@@ -391,14 +391,6 @@ public:                                                                 \
 #define IMP_CONTAINER(Ucname, lcname, IndexType)            \
   public:                                                   \
   void remove_##lcname(IndexType i) ;                       \
-  /** \short Get object refered to by the index
-      \throws IndexException if the index is out of range
-  */                                                                    \
-  Ucname##s get_##lcname##s() const {                                   \
-    Ucname##s ret( lcname##_vector_.begin(),                            \
-                   lcname##_vector_.end());                             \
-    return ret;                                                         \
-  }                                                                     \
 private:                                                                \
 /** \internal 
     This is an implementation detail.*/                                 \

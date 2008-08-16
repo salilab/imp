@@ -143,6 +143,10 @@ namespace IMP {
            raise IndexError("Particle already has attribute")
 
   %}
+
+  IMP_CONTAINER_SWIG(Model, Particle, particle);
+  IMP_CONTAINER_SWIG(Model, ScoreState, score_state);
+  IMP_CONTAINER_SWIG(Model, Restraint, restraint);
 }
 
 %feature("ref")   Particle "$this->ref();"
