@@ -40,6 +40,8 @@ public:
   using Restraint::clear_particles;
   using Restraint::set_particles;
 
+  virtual ParticlesList get_interacting_particles() const;
+
 protected:
   Pointer<SingletonScore> ss_;
 };

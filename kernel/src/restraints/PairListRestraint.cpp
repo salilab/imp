@@ -59,6 +59,16 @@ void PairListRestraint::add_particle_pairs(const ParticlePairs &ps)
   }
 }
 
+ParticlesList PairListRestraint::get_interacting_particles() const
+{
+  ParticlesList ret(get_number_of_particles()/2);
+  for (unsigned int i=0; 2*i< get_number_of_particles(); ++i) {
+    ret[i]= Particles(2);
+    ret[i][0]= get_particle(i*2);
+    ret[i][1]= get_particle(i*2+1);
+  }
+  return ret;
+}
 
 void PairListRestraint::show(std::ostream& out) const
 {

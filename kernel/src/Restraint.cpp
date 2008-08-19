@@ -59,6 +59,10 @@ void Restraint::show(std::ostream& out) const
   get_version_info().show(out);
 }
 
+ParticlesList Restraint::get_interacting_particles() const
+{
+  return ParticlesList(1, Particles(particles_begin(), particles_end()));
+}
 
 // The index line is to disable a warning
 IMP_LIST_IMPL(Restraint, Particle, particle,Particle*,  {

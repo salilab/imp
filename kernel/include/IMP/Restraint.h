@@ -27,6 +27,8 @@
 namespace IMP
 {
 
+typedef std::vector<Particles> ParticlesList;
+
 class Model;
 /** \defgroup restraint General purpose restraints
     Classes to define and help in defining restraints. The restraints
@@ -96,6 +98,18 @@ public:
                "get_model() called before set_model()");
     return model_.get();
   }
+
+  //! Return a list of sets of particles that are restrained by this restraint
+  /** This function returns a list of sets of particles that are
+      interacting within this restraint. Particles can appear in more
+      than one set. However, if two particles never appear in the same
+      set, then changing one of the particles should not change the
+      derivatives of the other particle.
+
+      The default implementation returns a single set containing all
+      particles stored in this restraint.
+   */
+  virtual ParticlesList get_interacting_particles() const;
 
   IMP_LIST(protected, Particle, particle, Particle*)
 

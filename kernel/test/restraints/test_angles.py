@@ -48,8 +48,7 @@ class AngleRestraintTests(IMP.test.TestCase):
             #print s.evaluate(None)
         print s.evaluate(None)
 
-    def test_score(self):
-        """Check score of chain triples restraints"""
+    def _make_triplet_chain(self):
         IMP.set_log_level(IMP.VERBOSE)
         m=IMP.Model()
         l0= self.create_particles(m, 3)
@@ -58,12 +57,17 @@ class AngleRestraintTests(IMP.test.TestCase):
         l= One()
         t= IMP.AngleTripletScore(l)
         r= IMP.TripletChainRestraint(t)
+        m.add_restraint(r)
+        return m, l0, l1, l2, l, r
+
+    def test_score(self):
+        """Check score of chain triples restraints"""
+        model, l0, l1, l2, l, r = self._make_triplet_chain()
         r.add_chain(l0)
         r.add_chain(l1)
         r.add_chain(l2)
-        m.add_restraint(r)
         s= IMP.RestraintSet("angle restraints")
-        m.add_restraint(s)
+        model.add_restraint(s)
         print "creating angle restraints"
         self.create_angle_r(s, l0)
         self.create_angle_r(s, l1)
@@ -77,6 +81,18 @@ class AngleRestraintTests(IMP.test.TestCase):
             diff = -diff
         self.assert_(diff < .001, "The restraints are not equal")
 
+    def test_interacting_particles(self):
+        """Check TripletChainRestraint::get_interacting_particles()"""
+        model, l0, l1, l2, l, r = self._make_triplet_chain()
+        r.add_chain(l1)
+        ipar = r.get_interacting_particles()
+        # Should return a set of triplets from the chain l1:
+        self.assertEqual(len(ipar), 8)
+        self.assertEqual(len(ipar), len(l1) - 2)
+        for n, val in enumerate(ipar):
+            self.assertEqual(len(val), 3)
+            for i in range(3):
+                self.assertEqual(val[i], l1[n + 2 - i])
 
 if __name__ == '__main__':
     unittest.main()

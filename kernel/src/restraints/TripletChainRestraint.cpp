@@ -62,12 +62,24 @@ Float TripletChainRestraint::evaluate(DerivativeAccumulator *accum)
   return score;
 }
 
-void TripletChainRestraint::clear_chains() {
+void TripletChainRestraint::clear_chains()
+{
   Restraint::clear_particles();
   chain_splits_.clear();
   chain_splits_.push_back(0);
 }
 
+ParticlesList TripletChainRestraint::get_interacting_particles() const
+{
+  ParticlesList ret(get_number_of_particles()-2);
+  for (unsigned int i=2; i< get_number_of_particles(); ++i) {
+    ret[i-2]= Particles(3);
+    ret[i-2][0]= get_particle(i);
+    ret[i-2][1]= get_particle(i-1);
+    ret[i-2][2]= get_particle(i-2);
+  }
+  return ret;
+}
 
 void TripletChainRestraint::show(std::ostream& out) const
 {

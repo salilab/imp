@@ -61,12 +61,23 @@ Float PairChainRestraint::evaluate(DerivativeAccumulator *accum)
   return score;
 }
 
-void PairChainRestraint::clear_chains() {
+void PairChainRestraint::clear_chains()
+{
   Restraint::clear_particles();
   chain_splits_.clear();
   chain_splits_.push_back(0);
 }
 
+ParticlesList PairChainRestraint::get_interacting_particles() const
+{
+  ParticlesList ret(get_number_of_particles()-1);
+  for (unsigned int i=1; i< get_number_of_particles(); ++i) {
+    ret[i-1]= Particles(2);
+    ret[i-1][0]= get_particle(i);
+    ret[i-1][1]= get_particle(i-1);
+  }
+  return ret;
+}
 
 void PairChainRestraint::show(std::ostream& out) const
 {

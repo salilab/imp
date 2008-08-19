@@ -37,6 +37,14 @@ Float SingletonListRestraint::evaluate(DerivativeAccumulator *accum)
   return score;
 }
 
+ParticlesList SingletonListRestraint::get_interacting_particles() const
+{
+  ParticlesList ret(get_number_of_particles());
+  for( unsigned int i=0; i< get_number_of_particles(); ++i) {
+    ret[i]= Particles(1, get_particle(i));
+  }
+  return ret;
+}
 
 void SingletonListRestraint::show(std::ostream& out) const
 {

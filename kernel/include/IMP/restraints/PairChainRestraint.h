@@ -42,6 +42,8 @@ public:
   //! Clear all the stored chains
   void clear_chains();
 
+  virtual ParticlesList get_interacting_particles() const;
+
 protected:
   Pointer<PairScore> ts_;
   std::vector<unsigned int> chain_splits_;

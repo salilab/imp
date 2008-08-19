@@ -40,6 +40,7 @@ public:
   void clear_particle_pairs();
   void add_particle_pairs(const ParticlePairs &ps);
 
+  virtual ParticlesList get_interacting_particles() const;
 protected:
   Pointer<PairScore> ss_;
 };

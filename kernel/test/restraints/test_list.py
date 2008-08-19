@@ -28,6 +28,22 @@ class TestList(IMP.test.TestCase):
         score= m.evaluate(False)
         self.assertEqual(score, 10, "Wrong score")
 
+    def test_interacting_particles(self):
+        """Test SingletonListRestraint::get_interacting_particles()"""
+        m= IMP.Model()
+        for i in range(0,10):
+            p= IMP.Particle()
+            m.add_particle(p)
+        os= OneSingle()
+        s= IMP.SingletonListRestraint(os, m.get_particles())
+        m.add_restraint(s)
+        ipar = s.get_interacting_particles()
+        # Should return a one-element set for each particle:
+        self.assertEqual(len(ipar), 10)
+        for n, val in enumerate(ipar):
+            self.assertEqual(len(val), 1)
+            self.assertEqual(val[0], m.get_particle(IMP.ParticleIndex(n)))
+
     def test_ss(self):
         """Test the distanceto score"""
         m= IMP.Model()

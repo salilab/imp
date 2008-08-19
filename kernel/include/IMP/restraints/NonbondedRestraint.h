@@ -38,6 +38,8 @@ public:
   NonbondedRestraint(PairScore *ps, NonbondedListScoreState *nbl);
   virtual ~NonbondedRestraint(){}
 
+  virtual ParticlesList get_interacting_particles() const;
+
   IMP_RESTRAINT(internal::kernel_version_info)
 
 protected:

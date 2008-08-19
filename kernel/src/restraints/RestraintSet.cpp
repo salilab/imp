@@ -65,6 +65,16 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
   return score * weight_;
 }
 
+ParticlesList RestraintSet::get_interacting_particles() const
+{
+  ParticlesList ret;
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+    ParticlesList c= (*it)->get_interacting_particles();
+    ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
 
 //! Show the current restraint.
 /** \param[in] out Stream to send restraint description to.
