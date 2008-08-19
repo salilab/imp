@@ -32,6 +32,8 @@ public:
   TripletChainRestraint(TripletScore* trip_score);
   virtual ~TripletChainRestraint(){}
 
+  virtual ParticlesList get_interacting_particles() const;
+
   IMP_RESTRAINT(internal::kernel_version_info)
 
   //! Add a chain of particles

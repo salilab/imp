@@ -48,6 +48,11 @@ Float NonbondedRestraint::evaluate(DerivativeAccumulator *accum)
   return score;
 }
 
+ParticlesList NonbondedRestraint::get_interacting_particles() const
+{
+  IMP_failure("Not implemented yet because not needed", ErrorException);
+  return ParticlesList();
+}
 
 void NonbondedRestraint::show(std::ostream& out) const
 {

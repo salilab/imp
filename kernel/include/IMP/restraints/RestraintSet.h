@@ -42,6 +42,8 @@ public:
   //! Get weight for all restraints contained by this set.
   Float get_weight() const { return weight_; }
 
+  virtual ParticlesList get_interacting_particles() const;
+
 protected:
 
   //! Weight for all restraints.
