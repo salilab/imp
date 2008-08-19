@@ -50,6 +50,21 @@ class ParticleTests(IMP.test.TestCase):
         p0.set_value(xkey, 0.0)
         self.model.evaluate(False)
 
+    def test_equality(self):
+        """Check particle identity"""
+        p0 = self.particles[0]
+        p1 = self.particles[1]
+        self.assert_(p0 != p1)
+        self.assert_(p0 == p0)
+        # Different SWIG proxies for the same underlying Particle should
+        # report equality:
+        m_p0 = self.model.get_particle(IMP.ParticleIndex(0))
+        self.assert_(m_p0 == p0)
+        # Even particles with equal attributes should not count as equal:
+        p0 = self.create_point_particle(self.model, 0, 0, 0)
+        p1 = self.create_point_particle(self.model, 0, 0, 0)
+        self.assert_(p0 != p1)
+
     def test_bad_attributes(self):
         """Asking for non-existent attributes should cause an error"""
         p1 = self.particles[0]
