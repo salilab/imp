@@ -193,7 +193,7 @@ namespace IMP {
 %include "IMP/ParticleRefiner.h"
 %include "IMP/SingletonScore.h"
 %include "IMP/TripletScore.h"
-%include "IMP/Particle.h"
+%include "Particle.i"
 %include "Vector3D.i"
 %include "IMP/DecoratorBase.h"
 %include "IMP/decorators/bond_decorators.h"
@@ -267,6 +267,7 @@ namespace IMP {
   %template(show_named_hierarchy) show<NameDecorator>;
   %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
   %template(Particles) ::std::vector<Particle*>;
+  %template(ParticlesList) ::std::vector<Particles>;
   %template(ParticlePair) ::std::pair<IMP::Particle*, IMP::Particle*>;
   %template(ParticlePairs) ::std::vector<ParticlePair>;
   %template(Restraints) ::std::vector<Restraint*>;
