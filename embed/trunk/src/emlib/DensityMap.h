@@ -162,7 +162,13 @@ public:
   */
   Vector3 get_centroid(emreal threshold=0.0);
   //! Returns the the value of the voxel with the highest density.
-  emreal get_max_value() const;
+  emreal get_max_value() const;  
+  //! Sums two grids.
+  //! The result is kept in the map.
+  //! The two maps should have the same dimensions and the same voxelsize
+  /** \param[in] other the other map
+   */
+  void add(const DensityMap &other);
 protected:
 
   //! Calculates the coordinates that correspond to all voxels.
