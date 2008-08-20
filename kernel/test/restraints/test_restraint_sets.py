@@ -58,5 +58,16 @@ class RestraintSetTests(IMP.test.TestCase):
             for a, b in zip(pipar, pdistrsr[0]):
                 self.assertEqual(a, b)
 
+    def test_restraints(self):
+        """Check access to RestraintSet's restraints"""
+        r = self.rset
+        rsrs = r.get_restraints()
+        self.assertEqual(len(rsrs), len(self.distrsr))
+        for n, val in enumerate(self.distrsr):
+            self.assertEqual(r.get_restraint(IMP.RestraintIndex(n)).this,
+                             val.this)
+            self.assertEqual(rsrs[n], val.this)
+        self.assertRaises(IndexError, r.get_restraint, IMP.RestraintIndex(2))
+
 if __name__ == '__main__':
     unittest.main()

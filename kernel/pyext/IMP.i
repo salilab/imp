@@ -147,6 +147,7 @@ namespace IMP {
   IMP_CONTAINER_SWIG(Model, Particle, particle);
   IMP_CONTAINER_SWIG(Model, ScoreState, score_state);
   IMP_CONTAINER_SWIG(Model, Restraint, restraint);
+  IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint);
 }
 
 %feature("ref")   Particle "$this->ref();"
@@ -184,7 +185,7 @@ namespace IMP {
 %include "IMP/unary_functions/Linear.h"
 %include "IMP/unary_functions/WormLikeChain.h"
 %include "IMP/DerivativeAccumulator.h"
-%include "IMP/Restraint.h"
+%include "Restraint.i"
 %include "IMP/ScoreState.h"
 %include "IMP/OptimizerState.h"
 %include "IMP/log.h"
