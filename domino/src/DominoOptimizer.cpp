@@ -19,7 +19,7 @@ DominoOptimizer::DominoOptimizer(Model *m)
 void DominoOptimizer::realize_rec(RestraintSet *rs, Float weight)
 {
   std::cout << "DominoOptimizer::realize_rec number of restraints "
-            << rs->get_restraints().size() << " with weight : " << weight
+            << rs->get_number_of_restraints() << " with weight : " << weight
             << std::endl;
   for (Model::RestraintIterator it = rs->restraints_begin();
        it != rs->restraints_end(); it++) {
