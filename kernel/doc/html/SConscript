@@ -2,31 +2,8 @@ import os.path
 
 Import('env')
 
-# Build DocBook documentation:
-def action_docbook(target, source, env):
-    app = "cd kernel/doc && xmlto -o html xhtml manual.xml"
-    return env.Execute(app)
-
-def emit_docbook(target, source, env):
-    outdir = os.path.dirname(target[0].path)
-    # Temporary hacks: should parse XML directly:
-    for (nchap, nsect) in enumerate((3,)):
-        # Chapter:
-        target.append(os.path.join('#' + outdir, 'ch%02d.html' % (nchap + 1)))
-        for sec in range(nsect):
-            # Section:
-            secname = 'ch%02ds%02d.html' % (nchap + 1, sec + 2)
-            target.append(os.path.join('#' + outdir, secname))
-    for xml in ('usage.xml',):
-        source.append(os.path.join('..', xml))
-    return target, source
-
-builder_docbook = Builder(action=action_docbook, emitter=emit_docbook)
-
-env.Append(BUILDERS = {'Docbook': builder_docbook})
-
-docbook = env.Docbook("index.html", "../manual.xml")
+docbook = env.DocBook("index.html", "../manual.xml")
 
 docdir = env['docdir']
-env.Install(docdir, docbook)
+env.DocBookInstall(os.path.join(docdir, 'index.html'), docbook)
 env.Alias('docinstall', docdir)
