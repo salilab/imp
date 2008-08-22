@@ -15,6 +15,9 @@
 namespace IMP
 {
 
+namespace em
+{
+
 #define X_ATT_NAME "x"
 #define Y_ATT_NAME "y"
 #define Z_ATT_NAME "z"
@@ -102,6 +105,8 @@ private:
   std::vector<int> particle_indexes_;
   FloatKey radius_key_, weight_key_, x_key_, y_key_, z_key_;
 };
+
+} // namespace em
 
 } // namespace IMP
 

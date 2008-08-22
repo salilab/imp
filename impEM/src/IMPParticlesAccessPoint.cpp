@@ -3,6 +3,9 @@
 namespace IMP
 {
 
+namespace em
+{
+
 IMPParticlesAccessPoint::IMPParticlesAccessPoint(Model& model,
     std::vector<int>& particle_indexes,
     std::string radius_att_name,
@@ -46,5 +49,6 @@ void IMPParticlesAccessPoint::create_keys(std::string radius_att_name,
   z_key_      = FloatKey(Z_ATT_NAME);
 }
 
+}   // namespace em
 
 }   // namespace IMP

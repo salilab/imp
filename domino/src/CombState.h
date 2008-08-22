@@ -19,6 +19,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 class CombState
 {
 public:
@@ -60,6 +63,8 @@ protected:
   // the state is state number  data[p] from the assigned states.
   float total_score;
 };
+
+} // namespace domino
 
 } // namespace IMP
 

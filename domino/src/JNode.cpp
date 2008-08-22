@@ -12,6 +12,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 //TODO: for all the intersection operations the sets should be sorted,
 //make sure that in the initialization of the nodes the number of
 //nodes come sorted.
@@ -253,5 +256,7 @@ std::vector<CombState *>* JNode::find_minimum(bool move2state_) const
   }
   return min_combs;
 }
+
+} // namespace domino
 
 } // namespace IMP

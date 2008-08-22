@@ -14,6 +14,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 RestraintGraph::RestraintGraph()
 {
   infered = false;
@@ -320,5 +323,7 @@ void RestraintGraph::move_model2global_minimum() const
   CombState *best_state = *(min_combs->begin());
   move_model2state_rec(root, *best_state);
 }
+
+} // namespace domino
 
 } // namespace IMP

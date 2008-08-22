@@ -4,6 +4,8 @@
 namespace IMP
 {
 
+namespace em
+{
 
 EMFitRestraint::EMFitRestraint(Model& model,
                                std::vector<int>& particle_indexes,
@@ -106,5 +108,7 @@ void EMFitRestraint::show(std::ostream& out) const
 {
   // TODO - add implementation
 }
+
+} // namespace em
 
 } // namespace IMP

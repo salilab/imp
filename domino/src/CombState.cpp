@@ -11,6 +11,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 CombState::CombState()
 {
   total_score = 0.0;
@@ -128,5 +131,7 @@ void CombState::combine(CombState *other)
     }
   }
 }
+
+} // namespace domino
 
 } // namespace IMP

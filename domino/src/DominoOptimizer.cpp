@@ -9,6 +9,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 DominoOptimizer::DominoOptimizer(Model *m)
 {
   ds_ = NULL;
@@ -74,5 +77,7 @@ Float DominoOptimizer::optimize(unsigned int max_steps)
   g_->move_model2global_minimum();
   return g_->get_minimum_score();
 }
+
+} // namespace domino
 
 } // namespace IMP

@@ -21,6 +21,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 class DOMINODLLEXPORT SimpleDiscreteRestraint : public Restraint
 {
 public:
@@ -37,6 +40,8 @@ protected:
   std::map<std::pair<int, int>, std::map<std::pair<int, int>,
            float> > states2values; // should be static and in a different class
 };
+
+} // namespace domino
 
 } // namespace IMP
 

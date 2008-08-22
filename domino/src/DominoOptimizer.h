@@ -17,6 +17,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 //! An exact inference optimizer.
 /** \ingroup optimize
  */
@@ -64,6 +67,8 @@ protected:
   DiscreteSampler *ds_;
   RestraintGraph *g_;
 };
+
+} // namespace domino
 
 } // namespace IMP
 

@@ -35,9 +35,11 @@
 
 /* Allow runtime casting of Restraint* objects to EMFitRestraint* */
 namespace IMP {
-  %extend EMFitRestraint {
-    static EMFitRestraint* cast(Restraint *r) {
-      return dynamic_cast<IMP::EMFitRestraint *>(r);
+  namespace em {
+    %extend EMFitRestraint {
+      static EMFitRestraint* cast(Restraint *r) {
+        return dynamic_cast<IMP::em::EMFitRestraint *>(r);
+      }
     }
   }
 }

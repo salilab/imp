@@ -18,6 +18,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 class DOMINODLLEXPORT OptimizationWorkFlow
 {
 public:
@@ -105,6 +108,8 @@ protected:
   RestraintGraph rest_g;
   Model *m; // the particles model.
 };
+
+} // namespace domino
 
 } // namespace IMP
 
