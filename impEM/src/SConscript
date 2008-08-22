@@ -12,7 +12,7 @@ e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp')
 
 # Build the shared library:
-lib = e.SharedLibrary('impem', files)
+lib = e.SharedLibrary('imp_em', files)
 
 # Install the library:
 libinst = e.Install(e['libdir'], lib)
