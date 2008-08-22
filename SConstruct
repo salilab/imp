@@ -8,7 +8,8 @@ add_common_options(opts, "imp")
 opts.Add(PackageOption('embed', 'Location of the EMBED package', 'no'))
 opts.Add(PackageOption('cgal', 'Location of the CGAL package', True))
 env = MyEnvironment(options=opts, require_modeller=False,
-                    tools=["default", "doxygen"], toolpath=["tools"])
+                    tools=["default", "doxygen", "docbook"],
+                    toolpath=["tools"])
 boost.configure_check(env, '1.30')
 cgal.configure_check(env)
 Help("""
