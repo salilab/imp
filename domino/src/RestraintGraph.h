@@ -26,6 +26,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 template < typename TimeMap > class dfs_time_visitor :
       public boost::default_dfs_visitor
 {
@@ -176,6 +179,8 @@ protected:
   bool infered;
   std::vector<CombState *> *min_combs;
 };
+
+} // namespace domino
 
 } // namespace IMP
 

@@ -17,6 +17,10 @@
 
 namespace IMP
 {
+
+namespace domino
+{
+
 class DOMINODLLEXPORT SimpleDiscreteSpace
 {
 public:
@@ -95,6 +99,8 @@ public:
 protected:
   std::map<const Particle *, SimpleDiscreteSpace *> data;
 };
+
+} // namespace domino
 
 } // namespace IMP
 

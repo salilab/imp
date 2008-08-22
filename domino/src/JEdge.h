@@ -16,6 +16,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 class DOMINODLLEXPORT Separator
 {
 public:
@@ -82,6 +85,8 @@ protected:
   std::map<std::string, float>  source_new_score_separators_;
   std::map<std::string, float>  target_new_score_separators_;
 };
+
+} // namespace domino
 
 } // namespace IMP
 

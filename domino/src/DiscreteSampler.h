@@ -14,6 +14,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 //! Holds the states of a single particle
 class DOMINODLLEXPORT DiscreteSampler
 {
@@ -34,6 +37,8 @@ public:
   virtual void change_mapping(const Particles &orig_particles,
                               const Particles &shuffled_particles) {}
 };
+
+} // namespace domino
 
 } // namespace IMP
 

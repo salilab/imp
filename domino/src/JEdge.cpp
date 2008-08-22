@@ -9,6 +9,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 JEdge::JEdge(JNode *source, JNode *target)
 {
   if (source->get_node_index() < target->get_node_index()) {
@@ -128,5 +131,7 @@ void JEdge::show(std::ostream& out) const
   }
   out << std::endl;
 }
+
+} // namespace domino
 
 } // namespace IMP

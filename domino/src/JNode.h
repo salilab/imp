@@ -22,6 +22,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 //! Handles all functionalities of a junction tree node.
 /** Holds multiple particles, their states and the current marginalization
     state.
@@ -124,6 +127,8 @@ protected:
   std::map<std::string, CombState *> comb_states;
   const DiscreteSampler *ds;
 };
+
+} // namespace domino
 
 } // namespace IMP
 

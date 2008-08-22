@@ -14,6 +14,9 @@
 namespace IMP
 {
 
+namespace em
+{
+
 //! Calculate score based on fit to EM map
 class IMPEMDLLEXPORT EMFitRestraint : public Restraint
 {
@@ -48,8 +51,8 @@ private:
 };
 
 
+} // namespace em
 
-} //  namespace IMP
-
+} // namespace IMP
 
 #endif /* _EMFITRESTRAINT_H */

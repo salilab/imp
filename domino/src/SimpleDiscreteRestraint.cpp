@@ -10,6 +10,9 @@
 namespace IMP
 {
 
+namespace domino
+{
+
 void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
 {
   std::ifstream myfile(restraint_filename.c_str());
@@ -81,5 +84,7 @@ void SimpleDiscreteRestraint::show(std::ostream& out) const
   out << " and " << get_particle(1)->get_index();
   out << std::endl;
 }
+
+} // namespace domino
 
 } // namespace IMP
