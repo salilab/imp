@@ -26,21 +26,11 @@
 %feature("director") DiscreteSampler;
 %feature("director") DiscreteSet;
 
-namespace IMP {
-  typedef float Float;
-  typedef int Int;
-  class FloatKey;
-  class Particle;
-  class Particles;
-  class DerivativeAccumulator;
-}
-/* Get definitions of IMP base classes (but do not wrap; that is done by IMP) */
-%import "IMP/VersionInfo.h"
-%import "IMP/Restraint.h"
-%import "IMP/Object.h"
-%import "IMP/restraints/RestraintSet.h"
-%import "IMP/DerivativeAccumulator.h"
+/* Get definitions of kernel base classes (but do not wrap) */
+%import "kernel/pyext/IMP.i"
 
+/* Don't use the exception handlers defined in the kernel */
+%exception;
 
 /* Wrap our own classes */
 %include "../src/DiscreteSampler.h"
