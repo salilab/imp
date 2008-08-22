@@ -20,21 +20,14 @@
 
 %feature("director");
 
-namespace IMP {
-  class Model;
-  typedef float Float;
-  class FloatKey;
-  class DerivativeAccumulator;
-  class Particle;
-}
+/* Get definitions of kernel base classes (but do not wrap) */
+%import "kernel/pyext/IMP.i"
 
-/* Get definitions of IMP base classes (but do not wrap; that is done by IMP) */
-%import "IMP/Object.h"
-%import "IMP/VersionInfo.h"
-%import "IMP/Restraint.h"
-
-/* Get definitions of EMLIB base classes (but do not wrap) */
+/* Get definitions of EMBED base classes (but do not wrap) */
 %import "ParticlesAccessPoint.h"
+
+/* Don't use the exception handlers defined in the kernel */
+%exception;
 
 /* Wrap our own classes */
 %include "../src/IMPParticlesAccessPoint.h"
