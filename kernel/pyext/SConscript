@@ -5,22 +5,26 @@ Import('env', 'get_pyext_environment')
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(env, 'IMP', cplusplus=True)
 e.Append(CPPPATH=['#/kernel/include', e['BOOST_CPPPATH']])
-e.Append(LIBPATH=['../src'], LIBS='imp')
+e.Append(LIBPATH=['#/build/libs'], LIBS='imp')
 
 # Build the Python extension from SWIG interface file:
-pyext = e.LoadableModule('_IMP', 'IMP.i',
+pyext = e.LoadableModule('#/build/libs/_IMP', 'IMP.i',
                          SWIGFLAGS='-python -c++ -naturalvar -Ikernel/include')
-# IMP.py file should also be generated; copy to IMP subdirectory:
-pymod_gen = File('IMP.py')
-e.Depends(pymod_gen, pyext)
-pymod = File('IMP/__init__.py')
-e.Command(pymod, pymod_gen, Copy(pymod.path, pymod_gen.path))
+# .py file should also be generated:
+gen_pymod = File('IMP.py')
+e.Depends(gen_pymod, pyext)
+# Place in libs directory:
+pymod = e.InstallAs('#/build/libs/IMP/__init__.py', gen_pymod)
+# Install
+pydir = os.path.join(env['pythondir'], 'IMP')
+pyinst = env.Install(pydir, pymod)
+env.Alias('install', pyinst)
 
 # Install the Python extension:
 libinst = e.Install(e['pyextdir'], pyext)
 e.Alias('install', libinst)
 
 # Subdirectories
-SConscript('IMP/SConscript')
+pyfiles = SConscript('IMP/SConscript')
 
-Return('pyext', 'pymod')
+Return('pyext', 'pymod', 'pyfiles')

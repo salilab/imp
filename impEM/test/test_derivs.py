@@ -3,7 +3,7 @@ import modeller
 import IMP
 import sys
 import IMP.modeller_intf
-import IMPEM
+import IMP.em
 import EM
 import unittest
 from os import unlink
@@ -74,7 +74,7 @@ class DerivativesTest(unittest.TestCase):
            5. calculate derivatives """
         resolution=3.
         voxel_size=1.
-        access_p = IMPEM.IMPParticlesAccessPoint(self.imp_model,
+        access_p = IMP.em.IMPParticlesAccessPoint(self.imp_model,
                                   self.particle_indexes, "radius", "weight")
         model_map = EM.SampledDensityMap(access_p, resolution, voxel_size)
         erw = EM.EMReaderWriter()
@@ -91,7 +91,7 @@ class DerivativesTest(unittest.TestCase):
         em_map.get_header_writable().set_zorigin(zorigin)
         em_map.get_header_writable().set_resolution(resolution)
         ind_emrsr = []
-        ind_emrsr.append(IMPEM.EMFitRestraint(self.imp_model,
+        ind_emrsr.append(IMP.em.EMFitRestraint(self.imp_model,
                                            self.particle_indexes,
                                            em_map,
                                            "radius",

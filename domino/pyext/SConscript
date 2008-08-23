@@ -3,22 +3,24 @@ Import('env','get_pyext_environment')
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(env,'DOMINO',cplusplus=True)
 e.Append(CPPPATH=['#/kernel/include', e['BOOST_CPPPATH']])
-e.Append(LIBPATH=['#/kernel/src','#/domino/src'], LIBS=['imp','imp_domino'])
+e.Append(LIBPATH=['#/build/libs'], LIBS=['imp','imp_domino'])
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
 e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
 # Build the Python extension from SWIG interface file:
-pyext = e.LoadableModule('_DOMINO', 'DOMINO.i',
+pyext = e.LoadableModule('#/build/libs/_IMP_domino', 'DOMINO.i',
                          SWIGFLAGS='-python -c++ -naturalvar -IDOMINO ' + \
                                    '-Ikernel/include ')
 # .py file should also be generated:
-pymod = File('DOMINO.py')
-e.Depends(pymod, pyext)
+gen_pymod = File('IMP_domino.py')
+e.Depends(gen_pymod, pyext)
+# Place in libs directory:
+pymod = e.InstallAs('#/build/libs/IMP/domino/__init__.py', gen_pymod)
 
 # Install the Python extension and module:
 libinst = e.Install(e['pyextdir'], pyext)
 pyinst = e.Install(e['pythondir'], pymod)
 e.Alias('domino-install', [libinst, pyinst])
 
-Return('pyext')
+Return('pyext', 'pymod')
