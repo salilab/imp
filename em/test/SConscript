@@ -26,7 +26,7 @@ e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
 source = ["run-all-tests.py", bin, e.Value(e['EM_EMPY']),
           e.Value(e['EM_LIBPATH'])]
 test = e.Test("test.passed", source)
-e.Alias("impEM-test", test)
+e.Alias("em-test", test)
 e.AlwaysBuild("test.passed")
 
 Return('test')

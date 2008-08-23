@@ -24,6 +24,6 @@ pymod = e.InstallAs('#/build/libs/IMP/em/__init__.py', gen_pymod)
 # Install the Python extension and module:
 libinst = e.Install(e['pyextdir'], pyext)
 pyinst = e.Install(os.path.join(e['pythondir'], 'IMP', 'em'), pymod)
-e.Alias('impEM-install', [libinst, pyinst])
+e.Alias('em-install', [libinst, pyinst])
 
 Return('pyext', 'pymod')
