@@ -33,6 +33,8 @@ e.Alias("test", test)
 e.AlwaysBuild("test.passed")
 
 # Only IMP (no Modeller) tests:
-test = e.Test("imptest.passed", ["run-imp-tests.py", bin])
-e.Alias("imptest", test)
+imptest = e.Test("imptest.passed", ["run-imp-tests.py", bin])
+e.Alias("imptest", imptest)
 e.AlwaysBuild("imptest.passed")
+
+Return('test', 'imptest')

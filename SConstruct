@@ -37,14 +37,14 @@ env.AlwaysBuild(standards)
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')
 Export('bin')
-(src, pyext, pymod) = SConscript('kernel/SConscript')
+(src, pyext) = SConscript('kernel/SConscript')
 SConscript('impEM/SConscript')
 
 # Uncomment when DOMINO code compiles with latest kernel:
 #SConscript('domino/SConscript')
 
 # bin script first requires kernel libraries to be built:
-env.Depends(bin, [src, pyext, pymod])
+env.Depends(bin, [src, pyext])
 
 # Build the binaries by default:
 env.Default(bin)

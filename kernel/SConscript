@@ -3,8 +3,9 @@ Import('env')
 # Subdirectories:
 src = SConscript('src/SConscript')
 SConscript('include/SConscript')
-(pyext, pymod) = SConscript('pyext/SConscript')
-SConscript('test/SConscript')
+pyext = SConscript('pyext/SConscript')
+test = SConscript('test/SConscript')
+env.Depends(test, pyext)
 SConscript('doc/SConscript')
 
-Return('src', 'pyext', 'pymod')
+Return('src', 'pyext')

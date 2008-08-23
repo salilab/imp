@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import sys
 import IMP.utils
-import IMPEM
+import IMP.em
 import EM
 import unittest
 import os
@@ -39,7 +39,7 @@ class SampleTests(IMP.test.TestCase):
         """Check that reading a map back in preserves the stdevs"""
         resolution=3.
         voxel_size=1.
-        access_p = IMPEM.IMPParticlesAccessPoint(self.imp_model,
+        access_p = IMP.em.IMPParticlesAccessPoint(self.imp_model,
                                   self.particle_indexes, "radius", "weight")
         model_map = EM.SampledDensityMap(access_p, resolution, voxel_size)
         model_map.calcRMS()

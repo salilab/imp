@@ -1,0 +1,9 @@
+Files under this directory (even pure Python modules) are built from sources
+elsewhere within IMP. Do not edit them here - any changes you make will be
+overwritten!
+
+The libs directory contains Python modules (both pure Python, in the IMP
+subdirectory, and C++ extensions, as _IMP_foo.so in the top-level directory)
+and the IMP C++ libraries (as libimp_foo.so in the top-level directory).
+Rationale: Windows searches for C++ dynamic libraries in the same directory
+as C++ Python extensions.
