@@ -16,6 +16,6 @@ lib = e.SharedLibrary('#/build/libs/imp_em', files)
 
 # Install the library:
 libinst = e.Install(e['libdir'], lib)
-e.Alias('impEM-install', [libinst])
+e.Alias('em-install', [libinst])
 
 Return('lib')

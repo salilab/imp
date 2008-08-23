@@ -38,7 +38,7 @@ env.AlwaysBuild(standards)
 bin = SConscript('bin/SConscript')
 Export('bin')
 (src, pyext) = SConscript('kernel/SConscript')
-SConscript('impEM/SConscript')
+SConscript('em/SConscript')
 
 # Uncomment when DOMINO code compiles with latest kernel:
 #SConscript('domino/SConscript')

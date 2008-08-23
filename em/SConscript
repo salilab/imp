@@ -3,8 +3,8 @@ from tools import embed
 Import('env', 'invalidate_environment')
 
 Help("""
-Type: 'scons impEM' to build and test the impEM extension module;
-      'scons impEM-install' to install it.
+Type: 'scons em' to build and test the em extension module;
+      'scons em-install' to install it.
 """)
 
 # Get custom environment for building against EMBED:
