@@ -9,7 +9,7 @@
 #ifndef __IMP_RESTRAINT_GRAPH_H
 #define __IMP_RESTRAINT_GRAPH_H
 
-#include "domino_config.h"
+#include "domino_exports.h"
 #include "IMP/Model.h"
 #include "IMP/Restraint.h"
 #include "IMP/restraints/RestraintSet.h"
@@ -54,7 +54,7 @@ public:
 // hierarchy will have its own state.
 typedef std::pair<unsigned int, unsigned int> Pair;
 
-class DOMINODLLEXPORT RestraintGraph
+class IMPDOMINOEXPORT RestraintGraph
 {
 public:
   RestraintGraph();

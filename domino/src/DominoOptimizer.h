@@ -7,7 +7,7 @@
 #ifndef __IMP_DOMINO_OPTIMIZER_H
 #define __IMP_DOMINO_OPTIMIZER_H
 
-#include "domino_config.h"
+#include "domino_exports.h"
 #include "IMP/Optimizer.h"
 #include "IMP/Restraint.h"
 #include "IMP/Model.h"
@@ -23,7 +23,7 @@ namespace domino
 //! An exact inference optimizer.
 /** \ingroup optimize
  */
-class DOMINODLLEXPORT DominoOptimizer : public Optimizer
+class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
 {
 public:
   DominoOptimizer(Model *m);

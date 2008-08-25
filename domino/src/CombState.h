@@ -7,7 +7,7 @@
 #ifndef __IMP_COMB_STATE_H
 #define __IMP_COMB_STATE_H
 
-#include "domino_config.h"
+#include "domino_exports.h"
 #include "IMP/Particle.h"
 #include "IMP/Restraint.h"
 #include "IMP/restraints/RestraintSet.h"

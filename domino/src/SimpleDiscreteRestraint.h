@@ -8,7 +8,7 @@
 #ifndef __IMP_SIMPLE_DISCRETE_RESTRAINT_H
 #define __IMP_SIMPLE_DISCRETE_RESTRAINT_H
 
-#include "domino_config.h"
+#include "domino_exports.h"
 #include "IMP/Model.h"
 #include "IMP/Restraint.h"
 #include "IMP/VersionInfo.h"
@@ -24,7 +24,7 @@ namespace IMP
 namespace domino
 {
 
-class DOMINODLLEXPORT SimpleDiscreteRestraint : public Restraint
+class IMPDOMINOEXPORT SimpleDiscreteRestraint : public Restraint
 {
 public:
   SimpleDiscreteRestraint(Model& model_, std::string restraint_filename,
