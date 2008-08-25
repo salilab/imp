@@ -9,9 +9,9 @@
 #define __IMP_SIMPLE_DISCRETE_RESTRAINT_H
 
 #include "domino_exports.h"
+#include "domino_version_info.h"
 #include "IMP/Model.h"
 #include "IMP/Restraint.h"
-#include "IMP/VersionInfo.h"
 
 #include <string>
 #include <climits>
@@ -31,7 +31,7 @@ public:
                           Particle *p1, Particle *p2);
 
   virtual ~SimpleDiscreteRestraint() {};
-  IMP_RESTRAINT(VersionInfo("Keren", "0.0.1"))
+  IMP_RESTRAINT(internal::domino_version_info)
 protected:
   void load_restraints(std::string restraint_filename);
   Model *model;
