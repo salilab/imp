@@ -5,7 +5,7 @@ import re
 import sys
 from SCons.Script import *
 
-__all__ = ["add_common_options", "MyEnvironment", "get_pyext_environment",
+__all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
            "get_sharedlib_environment", "invalidate_environment", "embed"]
 
 import SCons
@@ -172,16 +172,16 @@ def _modeller_check_failed(require_modeller):
         print "  functionality will be missing.\n\n" + msg
 
 
-def MyEnvironment(options=None, require_modeller=True, *args, **kw):
+def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     """Create an environment suitable for building IMP modules"""
     import platform
-    # First make a dummy environment in order to evaluate all options, since
+    # First make a dummy environment in order to evaluate all variables, since
     # env['wine'] will tell us which 'real' environment to create:
-    env = Environment(tools=[], options=options)
+    env = Environment(tools=[], variables=variables)
     if env['wine']:
-        env = WineEnvironment(options=options, *args, **kw)
+        env = WineEnvironment(variables=variables, *args, **kw)
     else:
-        env = Environment(options=options, *args, **kw)
+        env = Environment(variables=variables, *args, **kw)
         env['PYTHON'] = 'python'
         env['PATHSEP'] = os.path.pathsep
     try:
@@ -359,40 +359,41 @@ def invalidate_environment(env, fail_builder):
                 'SWIGCOM'):
         env[var] = fail_builder
 
-def add_common_options(opts, package):
-    """Add common options to an SCons Options object."""
-    opts.Add(PathOption('prefix', 'Top-level installation directory', '/usr',
-                        PathOption.PathAccept))
-    opts.Add(PathOption('datadir', 'Data file installation directory',
-                        '${prefix}/share/%s' % package, PathOption.PathAccept))
-    opts.Add(PathOption('libdir', 'Shared library installation directory',
-                        '${prefix}/lib', PathOption.PathAccept))
-    opts.Add(PathOption('includedir', 'Include file installation directory',
-                        '${prefix}/include', PathOption.PathAccept))
-    opts.Add(PathOption('pythondir', 'Python module installation directory',
-                        '${prefix}/lib/python%d.%d/site-packages' \
-                        % sys.version_info[0:2], PathOption.PathAccept))
-    opts.Add(PathOption('pyextdir',
-                        'Python extension module installation directory',
-                        '${pythondir}', PathOption.PathAccept))
-    opts.Add(PathOption('docdir', 'Documentation installation directory',
-                        '${prefix}/share/doc/%s' % package,
-                        PathOption.PathAccept))
-    opts.Add(PackageOption('python_include',
-                           'Directory holding Python include files ' + \
-                           '(if unspecified, distutils location is used)',
-                           'no'))
-    opts.Add(PackageOption('modeller', 'Location of the MODELLER package',
-                           'no'))
-    opts.Add(BoolOption('wine',
-                        'Build using MS Windows tools via Wine emulation',
-                        False))
-    opts.Add(BoolOption('release',
-                        'Disable most runtime checks (e.g. for releases)',
-                        False))
-    opts.Add(PathOption('include', 'Include search path ' + \
-                        '(e.g. "/usr/local/include:/opt/local/include")', None,
-                        PathOption.PathAccept))
-    opts.Add(PathOption('lib', 'Library search path ' + \
-                        '(e.g. "/usr/local/lib:/opt/local/lib")', None,
-                        PathOption.PathAccept))
+def add_common_variables(vars, package):
+    """Add common variables to an SCons Variables object."""
+    vars.Add(PathVariable('prefix', 'Top-level installation directory', '/usr',
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('datadir', 'Data file installation directory',
+                          '${prefix}/share/%s' % package,
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('libdir', 'Shared library installation directory',
+                          '${prefix}/lib', PathVariable.PathAccept))
+    vars.Add(PathVariable('includedir', 'Include file installation directory',
+                          '${prefix}/include', PathVariable.PathAccept))
+    vars.Add(PathVariable('pythondir', 'Python module installation directory',
+                          '${prefix}/lib/python%d.%d/site-packages' \
+                          % sys.version_info[0:2], PathVariable.PathAccept))
+    vars.Add(PathVariable('pyextdir',
+                          'Python extension module installation directory',
+                          '${pythondir}', PathVariable.PathAccept))
+    vars.Add(PathVariable('docdir', 'Documentation installation directory',
+                          '${prefix}/share/doc/%s' % package,
+                          PathVariable.PathAccept))
+    vars.Add(PackageVariable('python_include',
+                             'Directory holding Python include files ' + \
+                             '(if unspecified, distutils location is used)',
+                             'no'))
+    vars.Add(PackageVariable('modeller', 'Location of the MODELLER package',
+                             'no'))
+    vars.Add(BoolVariable('wine',
+                          'Build using MS Windows tools via Wine emulation',
+                          False))
+    vars.Add(BoolVariable('release',
+                          'Disable most runtime checks (e.g. for releases)',
+                          False))
+    vars.Add(PathVariable('include', 'Include search path ' + \
+                          '(e.g. "/usr/local/include:/opt/local/include")',
+                          None, PathVariable.PathAccept))
+    vars.Add(PathVariable('lib', 'Library search path ' + \
+                          '(e.g. "/usr/local/lib:/opt/local/lib")', None,
+                          PathVariable.PathAccept))
