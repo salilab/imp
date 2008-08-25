@@ -7,7 +7,7 @@
 #ifndef __IMP_SIMPLE_DISCRETE_SPACE_H
 #define __IMP_SIMPLE_DISCRETE_SPACE_H
 
-#include "domino_config.h"
+#include "domino_exports.h"
 #include "IMP/Particle.h"
 #include "DiscreteSampler.h"
 #include <map>
@@ -21,7 +21,7 @@ namespace IMP
 namespace domino
 {
 
-class DOMINODLLEXPORT SimpleDiscreteSpace
+class IMPDOMINOEXPORT SimpleDiscreteSpace
 {
 public:
   SimpleDiscreteSpace(int number_of_states) {
@@ -58,7 +58,7 @@ protected:
 
 };
 
-class DOMINODLLEXPORT SimpleDiscreteSampler : public DiscreteSampler
+class IMPDOMINOEXPORT SimpleDiscreteSampler : public DiscreteSampler
 {
 public:
   SimpleDiscreteSampler() {

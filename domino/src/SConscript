@@ -6,6 +6,9 @@ e = get_sharedlib_environment(env, 'DOMINO_EXPORTS', cplusplus=True)
 e.Append(CPPPATH=['#/kernel/include', e['BOOST_CPPPATH']])
 e.Append(LIBPATH=['#/build/libs'], LIBS=['imp'])
 
+# Generate exports header
+e.IMPModuleExports('domino_exports.h', e.Value('domino'))
+
 files = ('CombState.cpp', 'JNode.cpp', 'JEdge.cpp', 'RestraintGraph.cpp',
          'DominoOptimizer.cpp', 'SimpleDiscreteRestraint.cpp')
 

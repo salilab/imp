@@ -9,7 +9,7 @@
 
 #include "JNode.h"
 #include "CombState.h"
-#include "domino_config.h"
+#include "domino_exports.h"
 #include "IMP/Restraint.h"
 
 //todo - can make it more general
@@ -19,7 +19,7 @@ namespace IMP
 namespace domino
 {
 
-class DOMINODLLEXPORT Separator
+class IMPDOMINOEXPORT Separator
 {
 public:
   Separator(const std::string &comb_key) {
@@ -37,7 +37,7 @@ protected:
   float score_;
 };
 
-class DOMINODLLEXPORT JEdge
+class IMPDOMINOEXPORT JEdge
 {
 public:
   JEdge(JNode *source, JNode *target);

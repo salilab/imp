@@ -7,7 +7,7 @@
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
 
-#include "IMPEM_config.h"
+#include "em_exports.h"
 #include "ParticlesAccessPoint.h"
 
 
@@ -23,7 +23,7 @@ namespace em
 #define Z_ATT_NAME "z"
 
 //!
-class IMPEMDLLEXPORT IMPParticlesAccessPoint : public ParticlesAccessPoint
+class IMPEMEXPORT IMPParticlesAccessPoint : public ParticlesAccessPoint
 {
 
 public:

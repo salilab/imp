@@ -7,7 +7,7 @@
 #ifndef __IMP_DISCRETE_SAMPLER_H
 #define __IMP_DISCRETE_SAMPLER_H
 
-#include "domino_config.h"
+#include "domino_exports.h"
 #include "IMP/Particle.h"
 #include <vector>
 
@@ -18,7 +18,7 @@ namespace domino
 {
 
 //! Holds the states of a single particle
-class DOMINODLLEXPORT DiscreteSampler
+class IMPDOMINOEXPORT DiscreteSampler
 {
 public:
   virtual ~DiscreteSampler() {};

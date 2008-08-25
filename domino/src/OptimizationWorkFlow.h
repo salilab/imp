@@ -11,9 +11,8 @@
 
 #include "DiscreteSampler.h"
 #include "RestraintGraph.h"
-#include "IMP/IMP_config.h"
 #include "IMP/Model.h"
-#include "domino_config.h"
+#include "domino_exports.h"
 
 namespace IMP
 {
@@ -21,7 +20,7 @@ namespace IMP
 namespace domino
 {
 
-class DOMINODLLEXPORT OptimizationWorkFlow
+class IMPDOMINOEXPORT OptimizationWorkFlow
 {
 public:
   OptimizationWorkFlow() {

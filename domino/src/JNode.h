@@ -8,7 +8,7 @@
 #ifndef __IMP_JNODE_H
 #define __IMP_JNODE_H
 
-#include "domino_config.h"
+#include "domino_exports.h"
 #include "IMP/Particle.h"
 #include "IMP/Restraint.h"
 #include "IMP/restraints/RestraintSet.h"
@@ -29,7 +29,7 @@ namespace domino
 /** Holds multiple particles, their states and the current marginalization
     state.
  */
-class DOMINODLLEXPORT JNode
+class IMPDOMINOEXPORT JNode
 {
 public:
   //! Constructor
