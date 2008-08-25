@@ -6,13 +6,18 @@ from tools import boost, cgal
 EnsureSConsVersion(0, 98)
 
 # Set up build environment:
-opts = Options('config.py', ARGUMENTS)
-add_common_options(opts, "imp")
-opts.Add(PackageOption('embed', 'Location of the EMBED package', 'no'))
-opts.Add(PackageOption('cgal', 'Location of the CGAL package', True))
-env = MyEnvironment(options=opts, require_modeller=False,
+vars = Variables('config.py')
+add_common_variables(vars, "imp")
+vars.Add(PackageVariable('embed', 'Location of the EMBED package', 'no'))
+vars.Add(PackageVariable('cgal', 'Location of the CGAL package', True))
+env = MyEnvironment(variables=vars, require_modeller=False,
                     tools=["default", "doxygen", "docbook", "imp_module"],
                     toolpath=["tools"])
+unknown = vars.UnknownVariables()
+if unknown:
+    print "Unknown variables: ", unknown.keys()
+    print "Use 'scons -h' to get a list of the accepted variables."
+    Exit(1)
 boost.configure_check(env, '1.30')
 cgal.configure_check(env)
 Help("""
@@ -20,7 +25,7 @@ Available command-line options:
 (These can also be specified in regular Python syntax by creating a file
 called 'config.py' in this directory.)
 """)
-Help(opts.GenerateHelpText(env))
+Help(vars.GenerateHelpText(env))
 
 Help("""
 Type: 'scons' to build the IMP kernel;
