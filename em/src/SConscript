@@ -9,10 +9,14 @@ e.Append(LIBPATH=['#/build/libs', e['EM_LIBPATH']], LIBS=['imp', e['EM_LIBS']])
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
 e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
-# Generate exports header
+# Generate exports header and version information
 e.IMPModuleExports('em_exports.h', e.Value('em'))
+ver_cpp, ver_h = e.IMPModuleVersionInfo(('em_version_info.cpp',
+                                         'em_version_info.h'),
+                                        (e.Value('em'), e.Value('Keren Lasker'),
+                                         e.Value('SVN')))
 
-files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp')
+files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp', ver_cpp)
 
 # Build the shared library:
 lib = e.SharedLibrary('#/build/libs/imp_em', files)

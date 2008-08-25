@@ -8,6 +8,7 @@
 #define __IMP_DOMINO_OPTIMIZER_H
 
 #include "domino_exports.h"
+#include "domino_version_info.h"
 #include "IMP/Optimizer.h"
 #include "IMP/Restraint.h"
 #include "IMP/Model.h"
@@ -27,7 +28,7 @@ class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
 {
 public:
   DominoOptimizer(Model *m);
-  IMP_OPTIMIZER(internal::kernel_version_info)
+  IMP_OPTIMIZER(internal::domino_version_info)
 public:
   void show(std::ostream &out = std::cout) const {
     out << "DOMINO optimizer" << std::endl;

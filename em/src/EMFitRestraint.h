@@ -6,6 +6,7 @@
 #include "IMP/Restraint.h"
 #include "IMP/VersionInfo.h"
 #include "em_exports.h"
+#include "em_version_info.h"
 #include "DensityMap.h"
 #include "CoarseCC.h"
 #include "SampledDensityMap.h"
@@ -36,7 +37,7 @@ public:
     return model_dens_map_;
   }
 
-  IMP_RESTRAINT(VersionInfo("Keren", "0.0.1"))
+  IMP_RESTRAINT(internal::em_version_info)
 
 private:
 
