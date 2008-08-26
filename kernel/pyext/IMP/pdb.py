@@ -58,14 +58,17 @@ def copy_bonds(pdb, atoms, model):
             bb= IMP.BondedDecorator.create(pb)
         bp= IMP.bond(ba, bb, IMP.BondDecorator.COVALENT)
 
-def read_pdb(name, model):
-    """Construct a MolecularHierarchyDecorator from a pdb file."""
-    """The highest level hierarchy node is a PROTEIN."""
+def read_pdb(name, model, special_patches=None):
+    """Construct a MolecularHierarchyDecorator from a pdb file.
+       The highest level hierarchy node is a PROTEIN. `special_patches`
+       can be a function that applies patches (e.g. nucleic acid termini)
+       to the Modeller model."""
     e = modeller.environ()
     e.libs.topology.read('${LIB}/top_heav.lib')
     e.libs.parameters.read('${LIB}/par.lib')
     e.io.hetatm=True
-    pdb = modeller.scripts.complete_pdb(e, name)
+    pdb = modeller.scripts.complete_pdb(e, name,
+                                        special_patches=special_patches)
     pp= IMP.Particle()
     model.add_particle(pp)
     hpp= IMP.MolecularHierarchyDecorator.create(pp)
@@ -86,7 +89,6 @@ def read_pdb(name, model):
             hcp.add_child(hrp)
             for atom in residue.atoms:
                 ap= copy_atom(atom, model)
-                atoms[atom.index - 1]=ap
                 hap= IMP.MolecularHierarchyDecorator.cast(ap)
                 hrp.add_child(hap)
                 atoms[atom.index]=ap
