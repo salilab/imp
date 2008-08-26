@@ -18,7 +18,10 @@ namespace domino
 {
 
 //! Holds the states of a single particle
-class IMPDOMINOEXPORT DiscreteSampler
+/** \note Since this class is header-only, we must not mark it for
+          export with IMPDOMINOEXPORT.
+ */
+class DiscreteSampler
 {
 public:
   virtual ~DiscreteSampler() {};

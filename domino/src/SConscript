@@ -1,7 +1,7 @@
 Import('env', 'get_sharedlib_environment')
 
 # Get an environment suitable for building a shared library:
-e = get_sharedlib_environment(env, 'DOMINO_EXPORTS', cplusplus=True)
+e = get_sharedlib_environment(env, 'IMPDOMINO_EXPORTS', cplusplus=True)
 
 e.Append(CPPPATH=['#/kernel/include', e['BOOST_CPPPATH']])
 e.Append(LIBPATH=['#/build/libs'], LIBS=['imp'])
