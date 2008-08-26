@@ -27,94 +27,30 @@ def check_particle(p, a):
 %}
 
 namespace IMP {
-  %pythonprepend Model::add_restraint %{
-        args[1].thisown=0
-  %}
-  %pythonprepend Model::add_score_state %{
-        args[1].thisown=0
-  %}
-  %pythonprepend Optimizer::add_optimizer_state %{
-        args[1].thisown=0
-  %}
-  %pythonprepend RestraintSet::add_restraint %{
-        args[1].thisown=0
-  %}
-  %pythonprepend NonbondedListScoreState::add_bonded_list %{
-        args[1].thisown=0
-  %}
-  %pythonprepend DistanceRestraint::DistanceRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend AngleRestraint::AngleRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend DihedralRestraint::DihedralRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend TorusRestraint::TorusRestraint %{
-        args[3].thisown=0
-  %}
-  %pythonprepend NonbondedRestraint::NonbondedRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend BondDecoratorRestraint::BondDecoratorRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend SingletonListRestraint::SingletonListRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend PairListRestraint::PairListRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend TripletChainRestraint::TripletChainRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend PairChainRestraint::PairChainRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend ConnectivityRestraint::ConnectivityRestraint %{
-        args[0].thisown=0
-  %}
-  %pythonprepend DistancePairScore::DistancePairScore %{
-        args[0].thisown=0
-  %}
-  %pythonprepend TransformedDistancePairScore::TransformedDistancePairScore %{
-        args[0].thisown=0
-  %}
-  %pythonprepend BondCoverPairScore::BondCoverPairScore %{
-        args[0].thisown=0
-  %}
-  %pythonprepend SphereDistancePairScore::SphereDistancePairScore %{
-        args[0].thisown=0
-  %}
-  %pythonprepend RefineOncePairScore::RefineOncePairScore %{
-        args[0].thisown=0
-        args[1].thisown=0
-  %}
-  %pythonprepend DistanceToSingletonScore::DistanceToSingletonScore %{
-        args[0].thisown=0
-  %}
-  %pythonprepend AttributeSingletonScore::AttributeSingletonScore %{
-        args[0].thisown=0
-  %}
-  %pythonprepend TunnelSingletonScore::TunnelSingletonScore %{
-        args[0].thisown=0
-  %}
-  %pythonprepend AngleTripletScore::AngleTripletScore %{
-        args[0].thisown=0
-  %}
-  %pythonprepend MonteCarlo::add_mover %{
-        args[1].thisown=0
-  %}
-  %pythonprepend MonteCarlo::set_local_optimizer %{
-        args[1].thisown=0
-  %}
-  %pythonprepend VRMLLogOptimizerState::add_particle_refiner %{
-        args[1].thisown=0
-  %}
-  %pythonprepend TypedPairScore::set_pair_score %{
-        args[1].thisown=0
-  %}
+  // need to special case particle so can't add this to macro
+  IMP_OWN_FIRST_CONSTRUCTOR(DistanceRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(AngleRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(DihedralRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(TorusRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(NonbondedRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(BondDecoratorRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(SingletonListRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(TripletChainRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(ConnectivityRestraint)
+  IMP_OWN_FIRST_CONSTRUCTOR(DistancePairScore)
+  IMP_OWN_FIRST_CONSTRUCTOR(TransformedDistancePairScore)
+  IMP_OWN_FIRST_CONSTRUCTOR(BondCoverPairScore)
+  IMP_OWN_FIRST_CONSTRUCTOR(SphereDistancePairScore)
+  IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RefineOncePairScore)
+  IMP_OWN_FIRST_CONSTRUCTOR(DistanceToSingletonScore)
+  IMP_OWN_FIRST_CONSTRUCTOR(AttributeSingletonScore)
+  IMP_OWN_FIRST_CONSTRUCTOR(TunnelSingletonScore)
+  IMP_OWN_FIRST_CONSTRUCTOR(AngleTripletScore)
+  IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
+  IMP_SET_OBJECT(TypedPairScore, set_pair_score)
+
   %pythonprepend Particle::get_value %{
         check_particle(args[0], args[1])
   %}
@@ -144,10 +80,17 @@ namespace IMP {
 
   %}
 
-  IMP_CONTAINER_SWIG(Model, Particle, particle);
+  // special case since particles are ref counted
+  %extend Model {
+    Particles get_particles() const {
+      IMP::Particles ret(self->particles_begin(), self->particles_end());
+      return ret;
+    }
+  }
   IMP_CONTAINER_SWIG(Model, ScoreState, score_state);
   IMP_CONTAINER_SWIG(Model, Restraint, restraint);
   IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint);
+  IMP_CONTAINER_SWIG(Optimizer, OptimizerState, optimizer_state);
 }
 
 %feature("ref")   Particle "$this->ref();"

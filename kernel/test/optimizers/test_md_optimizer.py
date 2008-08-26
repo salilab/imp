@@ -159,6 +159,18 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         ekinetic2 = self.md.get_kinetic_energy()
         self.assertNotEqual(ekinetic, ekinetic2)
 
+    def test_get_optimizer_states(self):
+        """Test get_optimizer_states() method"""
+        wrtraj = WriteTrajState([])
+        scaler = IMP.VelocityScalingOptimizerState(
+                             IMP.Particles(self.particles), 298.0, 10)
+        self.md.add_optimizer_state(wrtraj)
+        self.md.add_optimizer_state(scaler)
+        m = self.md.get_optimizer_states()
+        self.assertEqual(len(m), 2)
+        for a in m:
+            self.assert_(isinstance(a, IMP.OptimizerState))
+
     def test_rescaling(self):
         """Test thermostatting by velocity rescaling"""
         for i in range(100):
