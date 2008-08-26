@@ -48,8 +48,12 @@ class PDBReadTest(IMP.test.TestCase):
 
     def test_dna(self):
         """Check reading a dna with one chain"""
+        def na_patches(mdl):
+            """Nucleic acid terminal patches."""
+            mdl.patch('5TER', mdl.residues[0])
+            mdl.patch('3TER', mdl.residues[-1])
         m = IMP.Model()
-        mp= IMP.pdb.read_pdb('modeller/single_dna.pdb', m)
+        mp= IMP.pdb.read_pdb('modeller/single_dna.pdb', m, na_patches)
         print "done reading"
         #IMP.show_molecular_hierarchy(mp)
         #mp= IMP.MolecularHierarchyDecorator.cast(p)
