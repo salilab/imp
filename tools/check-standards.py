@@ -53,16 +53,15 @@ def check_modified_file(filename, errors):
 def get_all_files():
     modfiles = []
     for root, dirs, files in os.walk('.'):
-        if '.sconf_temp' not in root:
+        if '.sconf_temp' not in root and not root.startswith('./build/'):
             for f in files:
                 if not f.startswith('.'):
                     modfiles.append(os.path.join(root, f))
     excludes = ['./kernel/pyext/IMP_wrap.h', './kernel/pyext/IMP_wrap.cc',
-                './impEM/pyext/IMPEM_wrap.h', './impEM/pyext/IMPEM_wrap.cc',
-                './impEM/pyext/IMPEM.py', './kernel/pyext/IMP.py',
-                './kernel/pyext/IMP/__init__.py',
+                './em/pyext/IMPEM_wrap.h', './impEM/pyext/IMPEM_wrap.cc',
+                './em/pyext/IMP_em.py', './kernel/pyext/IMP.py',
                 './domino/pyext/DOMINO_wrap.h', './domino/pyext/DOMINO_wrap.cc',
-                './domino/pyext/DOMINO.py']
+                './domino/pyext/IMP_domino.py']
     for ex in excludes:
         try:
             modfiles.remove(ex)
