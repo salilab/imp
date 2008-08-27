@@ -25,7 +25,7 @@ class Optimizer;
 /** The OptimizerState update method is called each time the Optimizer commits
     to a new set of coordinates. Optimizer states may change the values of
     particle attributes. However, changes to whether an attribute is optimized
-    or not may not be picked up by the Optimizer until the next call to 
+    or not may not be picked up by the Optimizer until the next call to
     optimize.
 
     \note When logging is VERBOSE, state should print enough information
@@ -46,7 +46,7 @@ public:
   virtual void update() = 0;
 
   //! Show the OptimizerState
-  /** Show can print out multiple lines and should end 
+  /** Show can print out multiple lines and should end
       in a newline.
   */
   virtual void show(std::ostream& out = std::cout) const;

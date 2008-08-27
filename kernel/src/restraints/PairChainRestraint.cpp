@@ -42,7 +42,7 @@ Float PairChainRestraint::evaluate(DerivativeAccumulator *accum)
   unsigned int i=1;
   float score=0;
   while (i < Restraint::get_number_of_particles()) {
-    /*IMP_LOG(VERBOSE, "Chain eval on " 
+    /*IMP_LOG(VERBOSE, "Chain eval on "
             << Restraint::get_particle(i-2)->get_index()
             << Restraint::get_particle(i-1)->get_index()
             << Restraint::get_particle(i)->get_index()
@@ -57,7 +57,7 @@ Float PairChainRestraint::evaluate(DerivativeAccumulator *accum)
     } else {
       ++i;
     }
-  } 
+  }
   return score;
 }
 

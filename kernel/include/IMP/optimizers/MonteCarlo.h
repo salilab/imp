@@ -42,7 +42,7 @@ public:
     return cg_.get();
   }
   //! Set the local optimizer
-  /** The number of local steps must be nonzero for the 
+  /** The number of local steps must be nonzero for the
       local optimizer to be used.
    */
   void set_local_optimizer(Optimizer* cg);

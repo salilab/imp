@@ -14,7 +14,7 @@
 //! Define the basic things needed by a Decorator.
 /** The key things this defines are a default constructor, a static create
     function, a static cast function, a method get_particle(), a method
-    get_model() and comparisons. 
+    get_model() and comparisons.
 
     \param[in] Name is the name of the decorator, such as NameDecorator
     \param[in] Parent The class name for the parent of this class,
@@ -74,17 +74,17 @@ public:                                                                 \
  /** Write information about this decorator to out. Each line should    \
      prefixed by prefix*/                                               \
  void show(std::ostream &out=std::cout,                                 \
-           std::string prefix=std::string()) const;   
+           std::string prefix=std::string()) const;
 
 
 /**
    Put this macro in to the .cpp with code to initialize the keys
-   used by the decorator. This will make sure that the keys are 
+   used by the decorator. This will make sure that the keys are
    initialized before use and initialized exactly once.
    \param[in] Name the name of the decorate
    \param[in] Parent the name of the parent decorator to make sure its keys
    are initalized
-   \param[in] work The list of statements to initialize the keys. 
+   \param[in] work The list of statements to initialize the keys.
    this should probably look something like {a_key_=IntKey("Foo");...}
  */
 #define IMP_DECORATOR_INITIALIZE(Name, Parent, work)\
@@ -137,7 +137,7 @@ public:                                                                 \
    This macros defines methods to get an set a particular attribute.
 
    \param[in] name The lower case name of the attribute
-   \param[in] AttributeKey The AttributeKey object controlling 
+   \param[in] AttributeKey The AttributeKey object controlling
                            the attribute.
    \param[in] Type The type of the attribute (upper case).
    \param[in] ReturnType The type to return from the get.
@@ -157,7 +157,7 @@ public:                                                                 \
    See IMP_DECORATOR_GET_SET.
 
    \param[in] name The lower case name of the attribute
-   \param[in] AttributeKey The AttributeKey object controlling 
+   \param[in] AttributeKey The AttributeKey object controlling
                            the attribute.
    \param[in] Type The type of the attribute (upper case).
    \param[in] ReturnType The type to return from the get.

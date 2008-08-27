@@ -27,7 +27,7 @@ namespace IMP
 /** \ingroup log
     VERBOSE prints very large amounts of information. It should be enough
     to allow the computational flow to be understood.
-    TERSE prints a few lines per restraint or per state each time 
+    TERSE prints a few lines per restraint or per state each time
     the score is evaluated.
     WARNING prints only warnings.
  */

@@ -31,7 +31,7 @@ def check_c_file(filename, txn, repos, errors):
                           % (num+1, filename))
         if line.find('\t') >= 0:
             errors.append('Line %d in %s contains tabs.' % (num+1, filename))
-        if srch.match(line):
+        if srch.search(line):
             errors.append('Line %d in %s has trailing whitespace' \
                           % (num+1, filename))
         blank = (len(line) == 0)

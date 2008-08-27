@@ -67,19 +67,19 @@ public:
     return get_particle()->get_derivative(get_coordinate_key(i));
   }
   //! Add something to the derivative of the ith coordinate
-  void add_to_coordinate_derivative(int i, Float v, 
+  void add_to_coordinate_derivative(int i, Float v,
                                     DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
   //! Add something to the derivative of the coordinates
-  void add_to_coordinates_derivative(const Vector3D& v, 
+  void add_to_coordinates_derivative(const Vector3D& v,
                                      DerivativeAccumulator &d) {
     add_to_coordinate_derivative(0, v[0], d);
     add_to_coordinate_derivative(1, v[1], d);
     add_to_coordinate_derivative(2, v[2], d);
   }
   //! Get whether the coordinates are optimized
-  /** \return true only if all of them are optimized. 
+  /** \return true only if all of them are optimized.
     */
   bool get_coordinates_are_optimized() const {
     return get_particle()->get_is_optimized(get_coordinate_key(0))

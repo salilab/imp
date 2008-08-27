@@ -1,5 +1,5 @@
 /**
- *  \file AngleTripletScore.h    
+ *  \file AngleTripletScore.h
  *  \brief A Score on the angle between three of particles.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

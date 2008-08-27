@@ -1,5 +1,5 @@
 /**
- *  \file TypedPairScore.h    
+ *  \file TypedPairScore.h
  *  \brief Delegate to another PairScore depending on particle types.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file TripletChainRestraint.h   
+ *  \file TripletChainRestraint.h
  *   \brief Restraint triplets of particles in chains.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

@@ -18,8 +18,8 @@
 namespace IMP
 {
 typedef
-unit::Shift<unit::Multiply<unit::Pascal, 
-                           unit::Second>::type, 
+unit::Shift<unit::Multiply<unit::Pascal,
+                           unit::Second>::type,
             -3>::type MillipascalSecond;
 
 static MillipascalSecond eta(unit::Kelvin T)
@@ -55,7 +55,7 @@ static MillipascalSecond eta(unit::Kelvin T)
         float f= ((T - points[i-1].first)
                   /(points[i].first - points[i-1].first))
           .get_normalized_value();
-        MillipascalSecond ret= 
+        MillipascalSecond ret=
           (1.0-f) *points[i-1].second + f*points[i].second;
         return ret;
       }
@@ -112,7 +112,7 @@ void BrownianDynamics::setup_particles()
   if step is xi*radius^2/(3pi E) for some E=1
   then the motion per step should be sqrt(2kT/(pi E))
 
-  T* is 
+  T* is
  */
 
 
@@ -176,12 +176,12 @@ bool BrownianDynamics::propose_step(std::vector<Vector3D>& new_pos)
       unit::Angstrom osigma(sqrt(2.0*D*cur_dt_));
       IMP_check(sigma - osigma
                  <= .01* sigma,
-                 "Sigma computations don't match " << sigma 
-                 << " " 
+                 "Sigma computations don't match " << sigma
+                 << " "
                 << sqrt(2.0*D*cur_dt_),
                 ErrorException);
     }
-    IMP_LOG(VERBOSE, p->get_index() << ": sigma is " 
+    IMP_LOG(VERBOSE, p->get_index() << ": sigma is "
             << sigma << std::endl);
     boost::normal_distribution<double> mrng(0, sigma.get_value());
     boost::variate_generator<RandomNumberGenerator&,
@@ -206,12 +206,12 @@ bool BrownianDynamics::propose_step(std::vector<Vector3D>& new_pos)
       delta[j]=dr;
     }
     //unit::Angstrom max_motion= unit::Scalar(4)*sigma;
-    /*std::cout << "delta is " << delta << " mag is " 
+    /*std::cout << "delta is " << delta << " mag is "
       << delta.get_magnitude() << " sigma " << sigma << std::endl;*/
 
     IMP_LOG(VERBOSE, "For particle " << p->get_index()
             << " delta is " << delta[0] << " " << delta[1] << " " << delta[2]
-            << " from a force of " 
+            << " from a force of "
             << "[" << d.get_coordinate_derivative(0)
             << ", " << d.get_coordinate_derivative(1)
             << ", " << d.get_coordinate_derivative(2) << "]" << std::endl);
@@ -242,7 +242,7 @@ Float BrownianDynamics::optimize(unsigned int max_steps)
  IMP_check(get_model() != NULL, "Must set model before calling optimize",
            ValueException);
   setup_particles();
-  IMP_LOG(TERSE, "Running brownian dynamics on " << get_particles().size() 
+  IMP_LOG(TERSE, "Running brownian dynamics on " << get_particles().size()
           << " particles with a step of " << cur_dt_ << std::endl);
   setup_particles();
   for (unsigned int i = 0; i < max_steps; ++i) {
@@ -299,7 +299,7 @@ BrownianDynamics
 {
   //unit::KG kg= convert_to_mks(mass_in_kd)
   unit::Kilodalton kd(mass_in_kd);
-  unit::GramPerCubicCentimeter p= unit::GramPerCubicCentimeter(1.410) 
+  unit::GramPerCubicCentimeter p= unit::GramPerCubicCentimeter(1.410)
     + unit::GramPerCubicCentimeter(0.145)* exp(-mass_in_kd.get_value()/13);
 
   unit::Kilogram m= convert_to_mks(kd);
@@ -321,7 +321,7 @@ BrownianDynamics::estimate_D_from_radius(unit::Angstrom r) const
   MillipascalSecond e=eta(T_);
   //unit::MKSUnit<-13, 0, 1, 0, -1> etar( e*r);
   /*std::cout << e << " " << etar << " " << kt << std::endl;
-  std::cout << "scalar etar " << (unit::Scalar(6*unit::PI)*etar) 
+  std::cout << "scalar etar " << (unit::Scalar(6*unit::PI)*etar)
             << std::endl;
   std::cout << "ret pre conv " << (kt/(unit::Scalar(6* unit::PI)*etar))
   << std::endl;*/

@@ -172,7 +172,7 @@ template <class L>                                                      \
 
 
 //! Define the basics needed for an OptimizerState
-/** This macro declares the required functions 
+/** This macro declares the required functions
     - void update()
     - void show(std::ostream &out) const
     and defines the function
@@ -189,7 +189,7 @@ template <class L>                                                      \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Define the basics needed for a ScoreState
-/** This macro declares the required functions 
+/** This macro declares the required functions
     - void do_before_evaluate()
     - void show(std::ostream &out) const
     and defines the function
@@ -278,7 +278,7 @@ public:                                                                 \
   /** \short An iterator through the objects.
       The value type is a pointer.*/                                     \
   typedef Container::iterator Ucname##Iterator;                          \
-  /** \short A const iterator through the objects. 
+  /** \short A const iterator through the objects.
       The value type is a pointer.*/                                     \
   typedef Container::const_iterator Ucname##ConstIterator;               \
   Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}  \
@@ -324,7 +324,7 @@ public:                                                                 \
 
 //! Use this to add a container of IMP objects
 /**
-   Such a container adds public methods add_foo, get_foo, get_number_of_foo 
+   Such a container adds public methods add_foo, get_foo, get_number_of_foo
    and a private type foo_iterator, with methods foo_begin, foo_end.
    \param[in] protection The level of protection for the container.
    \param[in] Ucname The name of the type in uppercase
@@ -338,7 +338,7 @@ public:                                                                 \
   protection:                                                           \
   /** \short Remove any occurences of d from the container */           \
   void erase_##lcname(Data d);                                          \
-  /** \short Get a container of all the objects. 
+  /** \short Get a container of all the objects.
      This is for Python as the container can be used like a Python list*/\
   const Ucname##s &get_##lcname##s() const {                             \
     return static_cast< const Ucname##s &>(lcname##_vector_);           \
@@ -377,7 +377,7 @@ public:                                                                 \
 
 //! Use this to add a set of IMP objects owned by the containing one
 /**
-   Such a container adds public methods add_foo, get_foo, get_number_of_foo 
+   Such a container adds public methods add_foo, get_foo, get_number_of_foo
    and a private type foo_iterator, with methods foo_begin, foo_end.
    \param[in] Ucname The name of the type in uppercase
    \param[in] lcname The name of the type in lower case
@@ -392,7 +392,7 @@ public:                                                                 \
   public:                                                   \
   void remove_##lcname(IndexType i) ;                       \
 private:                                                                \
-/** \internal 
+/** \internal
     This is an implementation detail.*/                                 \
 typedef IMP::internal::ObjectContainer<Ucname, IndexType>               \
 Ucname##Container;                                                      \
@@ -403,7 +403,7 @@ IMP_CONTAINER_CORE(public, Ucname, lcname, Ucname*, IndexType,          \
 
 //! Use this to add a container of IMP objects
 /**
-   This code should go in a .cpp file. One macro for each 
+   This code should go in a .cpp file. One macro for each
    IMP_CONTAINER.
    \param[in] init Code to modify the passed in object. The object is obj
    its index index.

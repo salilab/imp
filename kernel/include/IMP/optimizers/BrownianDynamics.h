@@ -20,7 +20,7 @@ namespace IMP
 
 //! Simple Brownian dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
-    and a non-optimizable "Stokes radius"; this optimizer assumes 
+    and a non-optimizable "Stokes radius"; this optimizer assumes
     the score to be energy in kcal/mol, the xyz coordinates to be in
     angstroms and the diffusion coefficent be in cm^2/s
 
@@ -73,8 +73,8 @@ public:
   FloatKey get_d_key() const { return dkey_; }
 
   //! Estimate the radius of a protein from the mass
-  /** Proteins are assumed to be spherical. The density is estimated 
-      using the formula from 
+  /** Proteins are assumed to be spherical. The density is estimated
+      using the formula from
       <http://www.proteinscience.org/cgi/content/full/13/10/2825>
 
       The formula is:

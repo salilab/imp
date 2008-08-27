@@ -31,17 +31,17 @@ struct Shift
 Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
                                         DerivativeAccumulator *da) const
 {
-  IMP_check(a->has_attribute(radius_), "Particle " << a->get_index() 
+  IMP_check(a->has_attribute(radius_), "Particle " << a->get_index()
             << "missing radius in SphereDistancePairScore",
             ValueException);
-  IMP_check(b->has_attribute(radius_), "Particle " << b->get_index() 
+  IMP_check(b->has_attribute(radius_), "Particle " << b->get_index()
             << "missing radius in SphereDistancePairScore",
             ValueException);
   Float ra = a->get_value(radius_);
   Float rb = b->get_value(radius_);
   return internal::evaluate_distance_pair_score(XYZDecorator(a),
                                                 XYZDecorator(b),
-                                                da, f_.get(), 
+                                                da, f_.get(),
                                                 boost::lambda::_1-(ra+rb));
 }
 

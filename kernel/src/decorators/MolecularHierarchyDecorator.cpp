@@ -75,7 +75,7 @@ struct MHDMatchingType
 
 } // namespace
 
-Particles molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd, 
+Particles molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd,
                                           MolecularHierarchyDecorator::Type t)
 {
   Particles out;

@@ -56,7 +56,7 @@ public:
   /** \param[in] cutoff The distance cutoff to use.
       \param[in] radius The key to use to get the radius
       \param[in] a Which algorithm to use. The default is the best.
-   */ 
+   */
   BipartiteNonbondedListScoreState(Float cutoff, FloatKey radius,
                                    Algorithm a=DEFAULT);
   /** \param[in] cutoff The distance cutoff to use.
@@ -64,7 +64,7 @@ public:
       \param[in] ps0 The first set.
       \param[in] ps1 The second set.
       \param[in] a Which algorithm to use. The default is the best.
-   */ 
+   */
   BipartiteNonbondedListScoreState(Float cutoff,
                                    FloatKey radius,
                                    const Particles &ps0,

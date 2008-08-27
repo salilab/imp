@@ -285,7 +285,7 @@ public:
   /**
      This is for use in python mostly. C++ users should use the iterators.
 
-     \todo I would like to have a type-agnostic way of calling this 
+     \todo I would like to have a type-agnostic way of calling this
      to be used to writing generic functions in python. The only
      ways I can think of doing this are to pass dummy arguments,
      which seems inelegant.

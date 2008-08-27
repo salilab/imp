@@ -80,7 +80,7 @@ struct Multiply
 
 template <class UA>
 struct Sqrt
-{ 
+{
   typedef typename transform<UA, divides<_1, int_<2> > >::type type;
 };
 
@@ -202,7 +202,7 @@ template <int O, int SZ, class Units>
 struct IsNoUnits
 {
   typedef IsNoUnits<O+1, SZ, Units> Next;
-  static const bool value= Next::value 
+  static const bool value= Next::value
     && !(boost::mpl::at<Units, typename boost::mpl::int_<O> >::type::value);
 };
 
@@ -285,15 +285,15 @@ public:
 
 
   template <int OEXP, class OUnits>
-  Unit<Tag, OEXP+EXP, 
+  Unit<Tag, OEXP+EXP,
        typename internal::Multiply<Units, OUnits>::type >
   operator*(Unit<Tag, OEXP, OUnits> o) const {
-    return Unit<Tag, OEXP+EXP, 
+    return Unit<Tag, OEXP+EXP,
       typename internal::Multiply<Units, OUnits>::type >(v_*o.v_);
   }
 
   template <int OEXP, class OUnits>
-  Unit<Tag, EXP-OEXP, 
+  Unit<Tag, EXP-OEXP,
        typename internal::Divide<Units, OUnits>::type >
   operator/(Unit<Tag, OEXP, OUnits> o) const {
     return Unit<Tag, EXP-OEXP,
@@ -395,7 +395,7 @@ struct Multiply
                        typename U1::Tag>::type::value));
   typedef typename internal::Multiply<typename U0::Units,
                                       typename U1::Units>::type raw_units;
-  typedef typename internal::Normalize<raw_units>::type units;       
+  typedef typename internal::Normalize<raw_units>::type units;
   typedef Unit<typename U0::Tag, U0::EXP + U1::EXP,
                          units > type;
 };
@@ -420,7 +420,7 @@ struct Exchange
   typedef typename internal::Divide<typename U::Units,
                                     typename R::Units>::type Div;
   typedef typename internal::Multiply<Div, typename A::Units>::type Mul;
-  typedef typename internal::Normalize<Mul>::type units;       
+  typedef typename internal::Normalize<Mul>::type units;
   typedef Unit<typename U::Tag,
                U::EXP - R::EXP + A::EXP  +DEXP,
                units> type;

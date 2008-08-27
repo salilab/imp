@@ -1,5 +1,5 @@
 /**
- *  \file PairChainRestraint.h   
+ *  \file PairChainRestraint.h
  *  \brief Restrain pairs of particles in chains.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file ref_counting.h     
+ *  \file ref_counting.h
  *  \brief Helpers to handle reference counting.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -36,7 +36,7 @@ struct Ref<true>
 {
   template <class O>
   static void eval(O* o) {
-    IMP_LOG(VERBOSE, "Refing particle " << o->get_index() 
+    IMP_LOG(VERBOSE, "Refing particle " << o->get_index()
             << o->get_ref_count() << std::endl);
     o->assert_is_valid();
     o->ref();
@@ -104,7 +104,7 @@ void ref(O* o)
 template <class O>
 void disown(O* o)
 {
-  /*IMP_LOG(VERBOSE, "Disown called with " 
+  /*IMP_LOG(VERBOSE, "Disown called with "
           << (boost::is_base_of<RefCountedObject, O >::value)
           << " for " << o << " " << o->get_ref_count() << std::endl);*/
   o->unref();

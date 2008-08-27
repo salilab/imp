@@ -1,5 +1,5 @@
 /**
- *  \file PairListRestraint.h   
+ *  \file PairListRestraint.h
  *  \brief Apply a PairScore to each particle pair in a list.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

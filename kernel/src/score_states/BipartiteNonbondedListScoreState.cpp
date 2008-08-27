@@ -209,11 +209,11 @@ void BipartiteNonbondedListScoreState::check_nbl() const
             found=true;
           }
         }
-        IMP_assert(found, "Nonbonded list is missing " 
-                   << ps0[i]->get_index() << " " << di 
+        IMP_assert(found, "Nonbonded list is missing "
+                   << ps0[i]->get_index() << " " << di
                    << " " << gr(ps0[i])
-                   << " and " << ps1[j]->get_index() << " " 
-                   << dj << gr(ps1[j]) 
+                   << " and " << ps1[j]->get_index() << " "
+                   << dj << gr(ps1[j])
                    << " size is " << get_number_of_nonbonded() << std::endl);
       }
     }

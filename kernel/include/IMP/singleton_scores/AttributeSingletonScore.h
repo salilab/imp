@@ -1,5 +1,5 @@
 /**
- *  \file AttributeSingletonScore.h    
+ *  \file AttributeSingletonScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

@@ -24,7 +24,7 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 /**
    As with the AtomDecorator, the types of residues may been to be expanded
    dynamically. This can be easily done in an analogous manner when we
-   need it. 
+   need it.
    \ingroup hierarchy
  */
 class IMPDLLEXPORT ResidueDecorator: public DecoratorBase

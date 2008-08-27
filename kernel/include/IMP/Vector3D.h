@@ -60,23 +60,23 @@ public:
 
   //! product with scalar
   Vector3D operator*(Float s) const {
-    return Vector3D(operator[](0) * s, 
+    return Vector3D(operator[](0) * s,
                     operator[](1) * s,
-                    operator[](2) * s); 
+                    operator[](2) * s);
   }
 
   //! divide by a scalar
   Vector3D operator/(Float s) const {
-    return Vector3D(operator[](0) / s, 
+    return Vector3D(operator[](0) / s,
                     operator[](1) / s,
-                    operator[](2) / s); 
+                    operator[](2) / s);
   }
 
   //! negation
   Vector3D operator-() const {
-    return Vector3D(-operator[](0), 
+    return Vector3D(-operator[](0),
                     -operator[](1),
-                    -operator[](2)); 
+                    -operator[](2));
   }
 
   //! \return the vector product of two vectors.
@@ -166,9 +166,9 @@ IMP_OUTPUT_OPERATOR(Vector3D);
 
 //! product with scalar
 inline Vector3D operator*(Float s, const Vector3D &o) {
-  return Vector3D(o[0]*s, 
+  return Vector3D(o[0]*s,
                   o[1]*s,
-                  o[2]*s); 
+                  o[2]*s);
 }
 
 } // namespace IMP

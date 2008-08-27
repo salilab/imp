@@ -25,7 +25,7 @@ namespace internal
 //! A container which holds objects
 /** The container owns the objects and deletes them when it is destroyed.
     All accesses are bounds checked and objects are checked to make
-    sure they are still OK. This should only be used through the 
+    sure they are still OK. This should only be used through the
     IMP_CONTAINER macros.
     \internal
 
@@ -88,7 +88,7 @@ public:
   }
 
   void clear() {
-    for (typename Vector::iterator it= data_.begin(); 
+    for (typename Vector::iterator it= data_.begin();
          it != data_.end(); ++it) {
       O* t= *it;
       *it=NULL;

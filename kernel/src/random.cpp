@@ -12,6 +12,6 @@ namespace IMP
 {
 
 ::boost::rand48 random_number_generator(
-                       static_cast<boost::uint64_t>(std::time(NULL)));  
+                       static_cast<boost::uint64_t>(std::time(NULL)));
 
 } // namespace IMP

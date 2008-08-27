@@ -1,5 +1,5 @@
 /**
- *  \file NonbondedRestraint.h   
+ *  \file NonbondedRestraint.h
  *  \brief Apply a PairScore to all nonbonded pairs.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -30,7 +30,7 @@ class IMPDLLEXPORT NonbondedRestraint : public Restraint
 {
 public:
   //! Create the nonbonded restraint.
-  /** \param[in] ps The pair score function to apply to the pairs. This 
+  /** \param[in] ps The pair score function to apply to the pairs. This
       object is deleted upon destruction.
       \param[in] nbl The non-bonded list to use to get the list
       of particles.

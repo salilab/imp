@@ -1,5 +1,5 @@
 /**
- *  \file NonbondedRestraint.cpp 
+ *  \file NonbondedRestraint.cpp
  *  \brief A nonbonded restraint.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -17,7 +17,7 @@ namespace IMP
 {
 
 NonbondedRestraint::NonbondedRestraint(PairScore *ps,
-                                       NonbondedListScoreState *nbl) 
+                                       NonbondedListScoreState *nbl)
   : nbl_(nbl), sf_(ps)
 {
 }
@@ -33,12 +33,12 @@ Float NonbondedRestraint::evaluate(DerivativeAccumulator *accum)
           << std::distance(nbl_->nonbonded_begin(),
                            nbl_->nonbonded_end())
           << " pairs" << std::endl);
-  for (NonbondedListScoreState::NonbondedIterator it 
+  for (NonbondedListScoreState::NonbondedIterator it
          = nbl_->nonbonded_begin();
        it != nbl_->nonbonded_end(); ++it) {
     float thisscore = sf_->evaluate(it->first, it->second, accum);
     if (thisscore != 0) {
-      IMP_LOG(VERBOSE, "Pair " << it->first->get_index() 
+      IMP_LOG(VERBOSE, "Pair " << it->first->get_index()
               << " and " << it->second->get_index() << " have score "
               << thisscore << std::endl);
     }

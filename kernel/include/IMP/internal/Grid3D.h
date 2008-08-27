@@ -202,7 +202,7 @@ private:
       index[i]= static_cast<int>(std::floor(fi));
 
       IMP_assert(std::abs(index[i]) < 200000000,
-                 "Something is probably wrong " << d 
+                 "Something is probably wrong " << d
                  << " " << pt[i]
                  << " " << min_[i]
                  << " " << edge_size_[i]);
@@ -221,7 +221,7 @@ private:
     return Index(snap(0, v[0]),
                  snap(1, v[1]),
                  snap(2, v[2]));
-  } 
+  }
   std::pair<Index, VirtualIndex> empty_range() const {
     return std::make_pair(Index(0,0,0), VirtualIndex(0,0,0));
   }
@@ -248,7 +248,7 @@ public:
       \param[in] max The max point of the grid
       \param[in] def The default value for the voxels
    */
-  Grid3D(int xd, int yd, int zd, 
+  Grid3D(int xd, int yd, int zd,
          Vector3D minc, Vector3D max,
          VoxelData def): data_(xd*yd*zd, def),
                          min_(minc) {
@@ -274,7 +274,7 @@ public:
       \param[in] maxc A lower bound for the max coordinate of the grid
       \param[in] def The default value for the voxels
    */
-  Grid3D(float side, 
+  Grid3D(float side,
          Vector3D minc, Vector3D maxc,
          VoxelData def) {
     min_=minc;
@@ -366,7 +366,7 @@ public:
       by the VirtualIndex
    */
   typedef GridIndexIterator<Index> IndexIterator;
-  IndexIterator indexes_begin(VirtualIndex lb, 
+  IndexIterator indexes_begin(VirtualIndex lb,
                               VirtualIndex ub) const {
     std::pair<Index, VirtualIndex> bp= intersect(lb,ub);
     if (bp.first== bp.second) {
@@ -376,7 +376,7 @@ public:
       return IndexIterator(bp.first, bp.second);
     }
   }
-  IndexIterator indexes_end(VirtualIndex, 
+  IndexIterator indexes_end(VirtualIndex,
                             VirtualIndex) const {
     //IMP_assert(lb <= ub, "empty range");
     return IndexIterator();
@@ -384,13 +384,13 @@ public:
 
   IndexIterator all_indexes_begin() const {
     return indexes_begin(VirtualIndex(0,0,0),
-                         VirtualIndex(d_[0], 
+                         VirtualIndex(d_[0],
                                       d_[1],
                                       d_[2]));
   }
   IndexIterator all_indexes_end() const {
     return indexes_end(VirtualIndex(0,0,0),
-                       VirtualIndex(d_[0], 
+                       VirtualIndex(d_[0],
                                     d_[1],
                                     d_[2]));
   }

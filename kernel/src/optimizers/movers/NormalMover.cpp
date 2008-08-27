@@ -31,7 +31,7 @@ void NormalMover::generate_move(float probability)
                           sampler(random_number_generator, mrng);
 
   for (unsigned int i = 0; i < get_number_of_particles(); ++i) {
-    if (rand(random_number_generator) > probability) continue; 
+    if (rand(random_number_generator) > probability) continue;
     for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
       float c = get_float(i, j);
       float r = sampler();

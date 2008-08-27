@@ -61,18 +61,18 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
     Float err= vt-v;
     if (err > 0) {
       if (last_error < err) {
-        IMP_LOG(VERBOSE, "adding to the number of spheres " << ns 
+        IMP_LOG(VERBOSE, "adding to the number of spheres " << ns
                 << " " << err << " " << last_error << std::endl);
         ++ns;
         r= d/(2.0*ns);
         vt= 4.0/3.0*internal::PI*r*square(r)*ns;
       } else {
-        IMP_LOG(VERBOSE, "Leaving the number of spheres " << ns 
+        IMP_LOG(VERBOSE, "Leaving the number of spheres " << ns
                 << " " << err << " " << last_error << std::endl);
       }
       break;
     } else {
-      IMP_LOG(VERBOSE, "Subtracting from the number of spheres " << ns 
+      IMP_LOG(VERBOSE, "Subtracting from the number of spheres " << ns
               << " " << err << std::endl);
       if (ns ==1) break;
       --ns;
@@ -80,7 +80,7 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
     }
   }
 
-  IMP_LOG(VERBOSE, "Refining bond with length " << d << " into " 
+  IMP_LOG(VERBOSE, "Refining bond with length " << d << " into "
           << ns << " particles" << std::endl);
 
   Vector3D vb= d0.get_vector();
@@ -90,7 +90,7 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
   IMP_LOG(VERBOSE, "Resulting volume is " << vt
           << " (" << 4.0/3.0*internal::PI*f*square(f)*nsf << ")"
           << " with target of " << v << std::endl);
-  IMP_LOG(VERBOSE, "Base coordinate is " << vb << " and unit vector is " 
+  IMP_LOG(VERBOSE, "Base coordinate is " << vb << " and unit vector is "
           << ud << std::endl);
   for (unsigned int i=0; i< ns; ++i) {
     Particle *np= new Particle();
@@ -143,7 +143,7 @@ void BondCoverParticleRefiner::cleanup_refined(Particle *p,
 void BondCoverParticleRefiner::show(std::ostream &out) const
 {
   out << "BondCoverParticleRefiner:\n"
-      << "radius key: " << rk_ 
+      << "radius key: " << rk_
       << "\nvolume key: " << vk_ << std::endl;
 }
 

@@ -1,5 +1,5 @@
 /**
- *  \file NormalMover.h    
+ *  \file NormalMover.h
  *  \brief A modifier which perturbs a point with a normal distribution.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

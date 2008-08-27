@@ -89,7 +89,7 @@ Float EMFitRestraint::evaluate(DerivativeAccumulator *accum)
                              access_p_, dx_, dy_, dz_, scalefac_, calc_deriv);
 
   // now update the derivatives
-  if (calc_deriv) { 
+  if (calc_deriv) {
     for (int ii = 0; ii < access_p_.get_size(); ++ii) {
       get_particle(ii)->add_to_derivative(access_p_.get_x_key(), dx_[ii],
                                           *accum);

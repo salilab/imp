@@ -23,7 +23,7 @@ Mover::Mover() {};
 IMP_CONTAINER_IMPL(MonteCarlo, Mover, mover, MoverIndex,
                    obj->set_optimizer(this, index),,);
 
-MonteCarlo::MonteCarlo(): temp_(1), 
+MonteCarlo::MonteCarlo(): temp_(1),
                           prior_energy_(std::numeric_limits<Float>::max()),
                           stop_energy_(-std::numeric_limits<Float>::max()),
                           probability_(1),
@@ -73,7 +73,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       Float diff= next_energy- prior_energy_;
       Float e= std::exp(-diff/temp_);
       Float r= rand(random_number_generator);
-      IMP_LOG(VERBOSE, diff << " " << temp_ << " " << e << " " << r 
+      IMP_LOG(VERBOSE, diff << " " << temp_ << " " << e << " " << r
               << std::endl);
       if (e > r) {
         accept=true;
@@ -116,7 +116,7 @@ void MonteCarlo::set_local_optimizer(Optimizer* cg)
 
 void MonteCarlo::show(std::ostream &out) const
 {
-  out << "MonteCarlo +" << stat_forward_steps_taken_ 
+  out << "MonteCarlo +" << stat_forward_steps_taken_
       << " -" << stat_num_failures_ << std::endl;
 }
 

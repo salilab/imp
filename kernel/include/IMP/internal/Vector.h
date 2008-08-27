@@ -24,8 +24,8 @@ namespace internal
 {
 
 //! A vector with bounds checking
-/** This class is designed to be used from the IMP_LIST macro and 
-    is not really designed to be used independently. 
+/** This class is designed to be used from the IMP_LIST macro and
+    is not really designed to be used independently.
     \internal
  */
 template <class D>

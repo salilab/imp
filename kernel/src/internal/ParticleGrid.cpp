@@ -54,7 +54,7 @@ void ParticleGrid::build_grid(const Particles &ps)
                                             /ps.size())),
                        .3333f);
     if (vx > target_voxel_side_) {
-      IMP_LOG(VERBOSE, "Overroade target side of " << target_voxel_side_ 
+      IMP_LOG(VERBOSE, "Overroade target side of " << target_voxel_side_
               << " with " << vx << std::endl);
     }
     target_voxel_side_= std::max(vx, target_voxel_side_);
@@ -79,8 +79,8 @@ void ParticleGrid::audit_particles(const Particles &ps) const
     try {
       XYZDecorator d= XYZDecorator::cast(ps[i]);
     } catch (...) {
-      IMP_WARN("Particle " << ps[i]->get_index() 
-               << " does not have x,y,z coordinates " 
+      IMP_WARN("Particle " << ps[i]->get_index()
+               << " does not have x,y,z coordinates "
                << " but was passed to the NonbondedListScoreState.\n");
     }
   }
@@ -92,7 +92,7 @@ void ParticleGrid::show(std::ostream &out) const
   for (Grid::IndexIterator it= grid_.all_indexes_begin();
        it != grid_.all_indexes_end(); ++it) {
     out << *it << ": ";
-    //Grid::Index 
+    //Grid::Index
     for (unsigned int i=0; i< grid_.get_voxel(*it).size(); ++i) {
       out << grid_.get_voxel(*it)[i]->get_index() << " ";
     }

@@ -14,7 +14,7 @@ namespace IMP
 
 GravityCenterScoreState::GravityCenterScoreState(Particle *center,
                                                  FloatKey weightkey,
-                                                 const Particles &ps) 
+                                                 const Particles &ps)
   : center_(center), weightkey_(weightkey)
 {
   XYZDecorator::cast(center);

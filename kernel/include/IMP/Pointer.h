@@ -27,7 +27,7 @@ namespace IMP
     rather than core dump on an invalid access. These should be used to hold
     all pointers to IMP objects in C++ code.
 
-    The pointer will be ref counted if the object is one which should be ref 
+    The pointer will be ref counted if the object is one which should be ref
     counted (that is, if the object inherits from RefCountedObject).
 
     \param[in] O The type of IMP::Object-derived object to point to

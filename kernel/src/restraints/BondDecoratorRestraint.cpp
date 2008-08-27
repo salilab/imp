@@ -1,5 +1,5 @@
 /**
- *  \file BondDecoratorRestraint.cpp 
+ *  \file BondDecoratorRestraint.cpp
  *  \brief A bond restraint.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -38,7 +38,7 @@ Float BondDecoratorRestraint::evaluate(DerivativeAccumulator *accum)
     if (s <0) s=1;
     Particle *pa=NULL, *pb=NULL;
     try {
-      /*IMP_LOG(VERBOSE, "Bonded pair " 
+      /*IMP_LOG(VERBOSE, "Bonded pair "
               << bd.get_bonded(0).get_particle()->get_index()
               << " " << bd.get_bonded(1).get_particle()->get_index()
               << " with length " << l << " and stiffness " << s << std::endl);*/
@@ -49,7 +49,7 @@ Float BondDecoratorRestraint::evaluate(DerivativeAccumulator *accum)
       IMP_WARN(e.what() << std::endl);
     }
     if (pa && pb) {
-      sum+= 
+      sum+=
         internal::evaluate_distance_pair_score(XYZDecorator(pa),
                                                XYZDecorator(pb),
                                                accum,

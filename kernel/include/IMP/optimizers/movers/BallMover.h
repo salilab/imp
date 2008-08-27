@@ -17,14 +17,14 @@ namespace IMP
 {
 
 //! Modify a set of continuous variables by perturbing them within a ball.
-/** The variables are perturbed within a ball of the 
+/** The variables are perturbed within a ball of the
     given radius.
     \ingroup mover
  */
 class IMPDLLEXPORT BallMover :public MoverBase
 {
 public:
-  /** The attributes are perturbed within a pall whose dimensionality is 
+  /** The attributes are perturbed within a pall whose dimensionality is
       given by the number of attributes and radius by the given value.
      \param[in] vars The variables to use (normally the keys for x,y,z)
      \param[in] radius The radius deviation to use.

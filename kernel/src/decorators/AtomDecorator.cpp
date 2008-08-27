@@ -204,8 +204,8 @@ void AtomDecorator::show(std::ostream &out, std::string prefix) const
 
 void AtomDecorator::set_type(AtomType t)
 {
-  // ultimate the secondary info should be set from a 
-  // better source. But this is good enough for now. 
+  // ultimate the secondary info should be set from a
+  // better source. But this is good enough for now.
   get_particle()->set_value(type_key_, t.get_index());
 }
 

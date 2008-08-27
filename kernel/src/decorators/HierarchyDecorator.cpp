@@ -86,9 +86,9 @@ int HierarchyDecorator::get_child_index(HierarchyDecorator c) const
 
 IMP_DECORATOR_INITIALIZE(HierarchyDecorator, DecoratorBase,
                          {
-                           internal::ChildArrayTraits::parent_key_ 
+                           internal::ChildArrayTraits::parent_key_
                              = ParticleKey("hierarchy_parent");
-                           internal::ChildArrayTraits::parent_index_key_ 
+                           internal::ChildArrayTraits::parent_index_key_
                              = IntKey("hiearchy_parent_index");
                            IMP_DECORATOR_ARRAY_INIT(HierarchyDecorator,
                                                     child);
@@ -162,7 +162,7 @@ BondDecorators hierarchy_get_internal_bonds(HierarchyDecorator mhd)
       IMP::BondedDecorator b(ps[i]);
       for (unsigned int i=0; i< b.get_number_of_bonds(); ++i) {
         Particle *op= b.get_bonded(i).get_particle();
-        if (op < ps[i] 
+        if (op < ps[i]
             && sps.find(op) != sps.end()) {
           ret.push_back(b.get_bond(i));
         }
