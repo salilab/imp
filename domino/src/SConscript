@@ -19,6 +19,7 @@ files = ('CombState.cpp', 'JNode.cpp', 'JEdge.cpp', 'RestraintGraph.cpp',
 
 # Build the shared library:
 lib = e.SharedLibrary('#/build/libs/imp_domino', files)
+e.Alias('domino', lib)
 
 # Install the library:
 libinst = e.Install(e['libdir'], lib)
