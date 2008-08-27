@@ -262,4 +262,7 @@ protection:                                                             \
   name##_data_.initialize();
 
 
+#define IMP_ATOM_TYPE_INDEX 8974343
+#define IMP_RESIDUE_TYPE_INDEX 90784334
+
 #endif  /* __IMP_DECORATOR_MACROS_H */

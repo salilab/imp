@@ -27,10 +27,15 @@ namespace IMP
 namespace internal
 {
 
-struct FloatAttributeTableTraits
+template <class T, class K >
+struct DefaultTraits
 {
-  typedef Float Value;
-  typedef KeyBase<Float> Key;
+  typedef T Value;
+  typedef K Key;
+};
+
+struct FloatAttributeTableTraits: public DefaultTraits<Float, FloatKey>
+{
   static Float get_invalid() {
     if (std::numeric_limits<Float>::has_quiet_NaN) {
       return std::numeric_limits<Float>::quiet_NaN();
@@ -44,15 +49,13 @@ struct FloatAttributeTableTraits
     if (std::numeric_limits<Float>::has_quiet_NaN) {
       return f==f;
     } else {
-      return f!= get_invalid();
+      return f != get_invalid();
     }
   }
 };
 
-struct IntAttributeTableTraits
+struct IntAttributeTableTraits: public DefaultTraits<Int, IntKey>
 {
-  typedef Int Value;
-  typedef KeyBase<Int> Key;
   static Int get_invalid() {
     return std::numeric_limits<Int>::max();
   }
@@ -61,10 +64,8 @@ struct IntAttributeTableTraits
   }
 };
 
-struct BoolAttributeTableTraits
+struct BoolAttributeTableTraits: public DefaultTraits<bool, FloatKey>
 {
-  typedef bool Value;
-  typedef KeyBase<Float> Key;
   static bool get_invalid() {
     return false;
   }
@@ -73,10 +74,8 @@ struct BoolAttributeTableTraits
   }
 };
 
-struct StringAttributeTableTraits
+struct StringAttributeTableTraits: public DefaultTraits<String, StringKey>
 {
-  typedef String Value;
-  typedef KeyBase<String> Key;
   static Value get_invalid() {
     return "This is an invalid string in IMP";
   }
@@ -87,9 +86,9 @@ struct StringAttributeTableTraits
 
 // The traits for the particle class are declared in the Particle.h
 
-/** \internal 
+/** \internal
     If memory becomes a problem then either use a char table to look up
-    actual entries or use perfect hashing. 
+    actual entries or use perfect hashing.
     http://burtleburtle.net/bob/hash/perfect.html
 
     Actuall Cuckoo hashing is probably a better bet as that gets
@@ -105,42 +104,11 @@ class AttributeTable
 {
   typedef AttributeTable<Traits> This;
 
-  typedef boost::scoped_array<typename Traits::Value> Map; 
+  typedef std::vector<typename Traits::Value> Map;
   Map map_;
-  unsigned int size_;
-
-  typename Traits::Value* new_array(unsigned int asz) const {
-    typename Traits::Value* ret= new typename Traits::Value[asz];
-    for (unsigned int i=0; i< asz; ++i) {
-      ret[i]= Traits::get_invalid();
-    }
-    return ret;
-  }
-
-  void copy_from(unsigned int len, const Map &o) {
-    IMP_assert(map_, "Internal error in attribute table");
-    IMP_assert(size_ >= len, "Table too small");
-    //std::cout << "Copy from " << o << " to " << map_ << std::endl;
-    for (unsigned int i=0; i< len; ++i) {
-      map_[i]= o[i];
-    }
-  }
-
-  void realloc(unsigned int olen, const Map &o, unsigned int nlen) {
-    //std::cout << "Realloc from " << size_ << " " << map_ << " ";
-    if (nlen==0) {
-      size_=0;
-      map_.reset();
-    } else {
-      size_=std::max(nlen, 6U);
-      map_.reset(new_array(size_));
-      copy_from(olen, o);
-    }
-    //std::cout << " to " << size_ << " " << map_ << std::endl;
-  }
 
   void check_contains(typename Traits::Key k) const {
-    IMP_assert(size_ > k.get_index(),
+    IMP_assert(map_.size() > k.get_index(),
                "Attribute \"" << k.get_string()
                << "\" not found in table.");
     IMP_check(Traits::get_is_valid(map_[k.get_index()]),
@@ -149,26 +117,18 @@ class AttributeTable
               IndexException);
   }
 
+  void clear() {
+    map_.clear();
+  }
+
 public:
   typedef typename Traits::Value Value;
   typedef typename Traits::Key Key;
-  AttributeTable(): size_(0){}
-  AttributeTable(const This &o): size_(0) {
-    //std::cout << "Copy constructor called from " << o.map_ << std::endl;
-    realloc(o.size_, o.map_, o.size_);
-  }
+  AttributeTable(){}
   ~AttributeTable() {
-    //std::cout << "Deleting " << map_ << std::endl; 
+    //std::cout << "Deleting " << map_ << std::endl;
   }
-  This &operator=(const This &o) {
-    //std::cout << "Operator= called from " << o.map_ << std::endl;
-    if (&o == this) {
-      //std::cout << "Self assignment" << std::endl;
-      return *this;
-    }
-    realloc(o.size_, o.map_, o.size_);
-    return *this;
-  }
+
   const Value get_value(Key k) const {
     check_contains(k);
     return map_[k.get_index()];
@@ -183,6 +143,11 @@ public:
     map_[k.get_index()] = v;
   }
 
+  void set_values(Value v) {
+    for (unsigned int i=0; i< map_.size(); ++i) {
+      map_[i]=v;
+    }
+  }
 
   void insert(Key k, Value v) {
     IMP_assert(!contains(k),
@@ -195,24 +160,27 @@ public:
 
   void remove(Key k) {
     check_contains(k);
-    map_[k.get_index()]= Traits::get_invalid();
+    remove_always(k);
   }
 
   void remove_always(Key k) {
-    if (k.get_index() < size_) {
+    IMP_assert(k != Key(), "Can't remove invalid key");
+    if (k.get_index() < map_.size()) {
       map_[k.get_index()]= Traits::get_invalid();
+      while (!map_.empty()
+             && map_.back()== Traits::get_invalid()) map_.pop_back();
     }
   }
 
 
   bool contains(Key k) const {
     IMP_assert(k != Key(), "Can't search for default key");
-    return k.get_index() < size_
+    return k.get_index() < map_.size()
       && Traits::get_is_valid(map_[k.get_index()]);
   }
 
 
-  void show(std::ostream &out, const char *prefix="") const;
+  void show(std::ostream &out, const std::string prefix="") const;
 
 
   std::vector<Key> get_keys() const;
@@ -228,19 +196,26 @@ public:
     }
   };
 
-  typedef boost::counting_iterator<Key, boost::random_access_traversal_tag,
-                                   std::size_t> KeyIterator;
+  typedef boost::counting_iterator<Key, boost::forward_traversal_tag,
+                                   unsigned int> KeyIterator;
   typedef boost::filter_iterator<IsAttribute, KeyIterator> AttributeKeyIterator;
 
   AttributeKeyIterator attribute_keys_begin() const {
+    KeyIterator b(0U);
+    KeyIterator e(map_.size());
+    IMP_assert(std::distance(b,e)
+               == map_.size(), "Something is broken with the iterators");
+    IMP_assert(std::distance(AttributeKeyIterator(IsAttribute(this), b,e),
+                             AttributeKeyIterator(IsAttribute(this), e,e))
+                             <= map_.size(), "Broken in filter");
     return AttributeKeyIterator(IsAttribute(this),
                                 KeyIterator(Key(0U)),
-                                KeyIterator(Key(size_)));
+                                KeyIterator(Key(map_.size())));
   }
   AttributeKeyIterator attribute_keys_end() const {
     return AttributeKeyIterator(IsAttribute(this),
-                                KeyIterator(Key(size_)),
-                                KeyIterator(Key(size_)));
+                                KeyIterator(Key(map_.size())),
+                                KeyIterator(Key(map_.size())));
   }
 
 };
@@ -253,19 +228,20 @@ IMP_OUTPUT_OPERATOR_1(AttributeTable)
 template <class Traits>
 inline void AttributeTable<Traits>::insert_always(Key k, Value v)
 {
-  /*std::cout << "Insert " << k << " in v of size " 
+  /*std::cout << "Insert " << k << " in v of size "
     << size_ << " " << map_ << " " << k.get_index() << std::endl;*/
   IMP_assert(k != Key(),
             "Can't insert default key");
   IMP_check(Traits::get_is_valid(v),
-            "Trying to insert invalid value for attribute " 
+            "Trying to insert invalid value for attribute "
             << v << " into attribute " << k,
             ValueException);
-  if (size_ <= k.get_index()) {
-    boost::scoped_array<Value> old;
-    swap(old, map_);
-    realloc(size_, old, k.get_index()+1);
-  }
+  typename Map::size_type val
+    =static_cast<typename Map::size_type>(k.get_index());
+  IMP_assert(val <1000, "Bad key index");
+  map_.resize(std::max(map_.size(),
+                       val+1),
+              Traits::get_invalid());
   map_[k.get_index()]= v;
 }
 
@@ -273,9 +249,9 @@ inline void AttributeTable<Traits>::insert_always(Key k, Value v)
 
 template <class Traits>
 inline void AttributeTable<Traits>::show(std::ostream &out,
-                                        const char *prefix) const
+                                         const std::string prefix) const
 {
-  for (unsigned int i=0; i< size_; ++i) {
+  for (unsigned int i=0; i< map_.size(); ++i) {
     if (Traits::get_is_valid(map_[i])) {
       out << prefix;
       out << Key(i).get_string() << ": ";
@@ -287,12 +263,12 @@ inline void AttributeTable<Traits>::show(std::ostream &out,
 
 
 template <class Traits>
-inline std::vector<typename Traits::Key> 
+inline std::vector<typename Traits::Key>
   AttributeTable<Traits>::get_keys() const
 {
   std::vector<Key> ret(attribute_keys_begin(), attribute_keys_end());
   return ret;
-} 
+}
 
 
 } // namespace internal

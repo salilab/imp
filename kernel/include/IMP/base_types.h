@@ -14,7 +14,6 @@
 
 #include <string>
 #include <vector>
-#include <map>
 
 namespace IMP
 {
@@ -63,7 +62,7 @@ typedef Index<OptimizerStateTag> OptimizerStateIndex;
 class Particle;
 //! A class which is used for representing collections of particles
 /**
-   We need this to have a uniform return type for python. 
+   We need this to have a uniform return type for python.
    \todo It would be nice to use internal::Vector instead, but that
    is not as pretty for Python.
  */
@@ -77,13 +76,13 @@ typedef std::vector<ParticleIndex> ParticleIndexes;
 class Particle;
 
 //! The type used to identify float attributes in the Particles
-IMP_DECLARE_KEY_TYPE(FloatKey, Float);
+IMP_DECLARE_KEY_TYPE(FloatKey, 0);
 //! The type used to identify int attributes in the Particles
-IMP_DECLARE_KEY_TYPE(IntKey, Int);
+IMP_DECLARE_KEY_TYPE(IntKey, 1);
 //! The type used to identify string attributes in the Particles
-IMP_DECLARE_KEY_TYPE(StringKey, String);
+IMP_DECLARE_KEY_TYPE(StringKey, 2);
 //! The type used to identify a particle attribute in the Particles
-IMP_DECLARE_KEY_TYPE(ParticleKey, Particle*);
+IMP_DECLARE_KEY_TYPE(ParticleKey, 3);
 
 } // namespace IMP
 

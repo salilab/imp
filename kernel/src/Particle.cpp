@@ -43,17 +43,15 @@ void Particle::set_is_active(const bool is_active)
 
 void Particle::zero_derivatives()
 {
-  for (FloatKeyIterator it= float_keys_begin(); it != float_keys_end(); ++it) {
-    derivatives_.set_value(*it, 0);
-  }
+  derivatives_.set_values(0);
 }
 
 
 void Particle::show(std::ostream& out) const
 {
-  const char* inset = "  ";
+  const std::string inset("  ");
   out << std::endl;
-  out << "--" << get_index() << "--" << std::endl;
+  out << "Particle: " << get_index() << std::endl;
   if (is_active_) {
     out << inset << inset << "active";
   } else {
@@ -62,17 +60,23 @@ void Particle::show(std::ostream& out) const
   out << std::endl;
 
   if (get_model() != NULL) {
-    out << inset << inset << "float attributes:" << std::endl;
-    floats_.show(out, "    ");
+    out << inset << "float attributes:" << std::endl;
+    floats_.show(out, inset+inset);
 
-    out << inset << inset << "int attributes:" << std::endl;
-    ints_.show(out, "    ");
+    out << inset << "float derivatives:" << std::endl;
+    derivatives_.show(out, inset+inset);
 
-    out << inset << inset << "string attributes:" << std::endl;
-    strings_.show(out, "    ");
+    out << inset << "optimizeds:" << std::endl;
+    optimizeds_.show(out, inset+inset);
 
-    out << inset << inset << "particle attributes:" << std::endl;
-    particles_.show(out, "    ");
+    out << inset << "int attributes:" << std::endl;
+    ints_.show(out, inset+inset);
+
+    out << inset << "string attributes:" << std::endl;
+    strings_.show(out, inset+inset);
+
+    out << inset << "particle attributes:" << std::endl;
+    particles_.show(out, inset+inset);
 
   }
 }

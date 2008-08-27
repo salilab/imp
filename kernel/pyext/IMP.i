@@ -11,6 +11,7 @@
 
 %include "IMP_macros.i"
 %include "IMP_exceptions.i"
+%include "IMP_keys.i"
 
 %include "typemaps.i"
 
@@ -124,11 +125,10 @@ namespace IMP {
 %feature("director") IMP::Optimizer;
 %feature("director") IMP::ParticleRefiner;
 
-%include "IMP/Key.h"
+%include "IMP/base_types.h"
 %include "IMP/Object.h"
 %include "IMP/RefCountedObject.h"
 %include "IMP/Index.h"
-%include "IMP/base_types.h"
 %include "IMP/VersionInfo.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/unary_functions/Harmonic.h"
@@ -214,12 +214,6 @@ namespace IMP {
   %template(OptimizerStateIndex) Index<OptimizerStateTag>;
   %template(MoverIndex) Index<Mover>;
   %template(BondedListIndex) Index<BondedListScoreState>;
-  %template(FloatKey) KeyBase<Float>;
-  %template(IntKey) KeyBase<Int>;
-  %template(StringKey) KeyBase<String>;
-  %template(ParticleKey) KeyBase<Particle*>;
-  %template(AtomType) KeyBase<AtomTypeTag>;
-  %template(ResidueType) KeyBase<ResidueTypeTag>;     
   %template(show_named_hierarchy) show<NameDecorator>;
   %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
   %template(Particles) ::std::vector<Particle*>;

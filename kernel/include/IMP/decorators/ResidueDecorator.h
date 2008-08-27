@@ -17,8 +17,7 @@
 namespace IMP
 {
 
-struct ResidueTypeTag{};
-IMP_DECLARE_KEY_TYPE(ResidueType, ResidueTypeTag);
+IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
 
 //! A decorator for a residue.

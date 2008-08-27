@@ -21,12 +21,10 @@
 
    The keys in IMP maintain a cached mapping between strings and indexes.
    This mapping is global--that is all IMP Models and Particles in the
-   same program use the same mapping.
-
-   The mapping uses a static table which is defined with the
-   IMP_DEFINE_KEY_TYPE macro. As a result, the macro must be used in exactly
-   one .o. If it appears more than once or that .o is linked in multiple times,
-   then bad things can happen.
+   same program use the same mapping for each type of key. The type of
+   the key is determined by an integer which should be unique for
+   each type. If the integer is not unique, everything works, just
+   more memory is wasted and types are interconvertible
 
    Since the order of initialization of static data is undefined
    between .os, it is important that no other static data not in the
@@ -37,45 +35,32 @@
    indices and would make the set of indices less dense.
  */
 
-// Swig chokes on the specialization
-#ifndef SWIG
-//! \internal
-#define IMP_KEY_DATA_HOLDER(Name, Tag)                                  \
-  namespace internal {                                                  \
-  template <>                                                           \
-  struct IMPDLLEXPORT KeyDataHolder<Tag> {                              \
-    static KeyData data;                                                \
-  };                                                                    \
-  }
-#else
-#define IMP_KEY_DATA_HOLDER(Name, Tag)
-#endif
-
 
 /**
-   Define a new key type. There must be an accompanying IMP_DEFINE_KEY_TYPE
-   located in some .o file. This macro should be used in the IMP namespace.
+   Define a new key type.
 
    It defines two public types Name, which is an instantiation of KeyBase and
    Names which is a vector of Name.
 
    \param[in] Name The name for the new type.
-   \param[in] Tag A class which is unique for this type. For attributes
-   use the type of the attributes. For other Keys, declare an empty
-   class with a unique name and use it.
+   \param[in] Tag A (hopefully) unique integer to define this key type.
+
+   \note We define a new class rather than use a typedef since SWIG has a
+   bug dealing with names that start with ::. A fix has been commited to SVN
+   for swig.
+
+   \note The name in the typedef would have to start with ::IMP so it
+   could be used out of the IMP namespace.
  */
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
-  IMP_KEY_DATA_HOLDER(Name, Tag);                                       \
-  typedef KeyBase<Tag> Name;                                                \
-  typedef std::vector<Name> Name##s
-
-
-/** This must occur in exactly one .o in the internal namespace. Should 
- be used in the IMP namespace.*/
-#define IMP_DEFINE_KEY_TYPE(Name, Tag)                  \
-  namespace internal {                                  \
-    KeyData KeyDataHolder<Tag>::data;                   \
-  }
+  struct Name: public ::IMP::KeyBase<Tag> {                             \
+  typedef ::IMP::KeyBase<Tag> P;                                        \
+  typedef Name This;                                                    \
+  Name(){};                                                             \
+  Name(unsigned int i): P(i){}                                          \
+  Name(const char *nm): P(nm){}                                         \
+};                                                                      \
+typedef std::vector<Name> Name##s
 
 
 namespace IMP
@@ -84,7 +69,9 @@ namespace IMP
 namespace internal
 {
 
-/** The data concerning a particular type of key.
+
+
+/** The data concerning keys.
     \internal
  */
 struct IMPDLLEXPORT KeyData
@@ -109,15 +96,9 @@ private:
   double heuristic_;
   Map map_;
   RMap rmap_;
-
 };
 
-/** A dummy class. Actual keys types create specializations
-
-    \internal
-*/
-template <class T>
-struct KeyDataHolder {};
+IMPDLLEXPORT extern std::map<unsigned int, KeyData> key_data;
 
 } // namespace internal
 
@@ -132,22 +113,45 @@ struct KeyDataHolder {};
     attribute_table_index. Yes, this is an evil hack, but I couldn't
     get linking to work with static members of the template class.
  */
-template <class T>
+template <int ID>
 class KeyBase
 {
   int str_;
 
-  typedef T Type;
+  static const internal::KeyData::Map& get_map()
+  {
+    return IMP::internal::key_data[ID].get_map();
+  }
+  static const internal::KeyData::RMap& get_rmap() {
+    return IMP::internal::key_data[ID].get_rmap();
+  }
 
-  bool is_default() const;
 
-  static const internal::KeyData::Map& get_map();
-  static const internal::KeyData::RMap& get_rmap();
-
+  static unsigned int find_index(std::string sc) {
+    if (get_map().find(sc) == get_map().end()) {
+      return IMP::internal::key_data[ID].add_key(sc);
+    } else {
+      return get_map().find(sc)->second;
+    }
+  }
+protected:
+ bool is_default() const;
 public:
-  static const std::string &get_string(int i);
+  static const std::string get_string(int i)
+  {
+    if (static_cast<unsigned int>(i)
+        < get_rmap().size()) {
+      return get_rmap()[i];
+    } else {
+      IMP_WARN("Corrupted Key Table asking for key " << i
+                  << " with a table of size " << get_rmap().size());
+      std::ostringstream oss;
+      oss<< "Invalid index " << i;
+      return oss.str();
+    }
+  }
 
-  typedef KeyBase<T> This;
+  typedef KeyBase<ID> This;
 
   //! make a default (uninitalized) key
   KeyBase(): str_(-1) {}
@@ -155,16 +159,12 @@ public:
 
   //! Generate a key from the given string
   KeyBase(const char *c) {
-    std::string sc(c);
-    if (get_map().find(sc) == get_map().end()) {
-      str_= internal::KeyDataHolder<T>::data.add_key(sc);
-    } else {
-      str_= get_map().find(sc)->second;
-    }    
+    str_= find_index(c);
   }
 
   explicit KeyBase(unsigned int i): str_(i) {
-    //IMP_assert(get_rmap().size() > i, "There is no such attribute " << i);
+    IMP_assert(str_ >= 0, "Invalid initializer " << i);
+    // cannot check here as we need a past end iterator
   }
 
   //! Turn a key into a pretty string
@@ -223,46 +223,28 @@ public:
 #endif
 };
 
-IMP_OUTPUT_OPERATOR_1(KeyBase)
 
-
-template <class T>
-inline const internal::KeyData::Map& KeyBase<T>::get_map()
-{
-  return internal::KeyDataHolder<T>::data.get_map();
+template <int ID>
+std::ostream &operator<<(std::ostream &out, KeyBase<ID> k) {
+  k.show(out);
+  return out;
 }
 
-template <class T>
-inline const internal::KeyData::RMap& KeyBase<T>::get_rmap()
-{
-  return internal::KeyDataHolder<T>::data.get_rmap();
-}
-
-template <class T>
-inline bool KeyBase<T>::is_default() const
+template <int ID>
+inline bool KeyBase<ID>::is_default() const
 {
   return str_==-1;
 }
 
-template <class T>
-inline const std::string &KeyBase<T>::get_string(int i)
+
+template <int ID>
+inline void KeyBase<ID>::show_all(std::ostream &out)
 {
-  IMP_assert(static_cast<unsigned int>(i)
-             < get_rmap().size(),
-             "Corrupted "  << " Key " << i
-             << " vs " << get_rmap().size());
-  return get_rmap()[i];
+  internal::key_data[ID].show(out);
 }
 
-
-template <class T>
-inline void KeyBase<T>::show_all(std::ostream &out)
-{
-  internal::KeyDataHolder<T>::data.show(out);
-}
-
-template <class T>
-std::vector<std::string> KeyBase<T>::get_all_strings()
+template <int ID>
+std::vector<std::string> KeyBase<ID>::get_all_strings()
 {
   std::vector<std::string> str;
   for (internal::KeyData::Map::const_iterator it= get_map().begin();

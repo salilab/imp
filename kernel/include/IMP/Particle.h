@@ -60,7 +60,7 @@ class IMPDLLEXPORT Particle : public RefCountedObject
   struct ParticleAttributeTableTraits
   {
     typedef Pointer<Particle> Value;
-    typedef KeyBase<Particle*> Key;
+    typedef ParticleKey Key;
     static Value get_invalid() {
       return Value();
     }
@@ -69,13 +69,13 @@ class IMPDLLEXPORT Particle : public RefCountedObject
     }
   };
 
- typedef internal::AttributeTable<internal::FloatAttributeTableTraits> 
+ typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
    FloatTable;
- typedef internal::AttributeTable<internal::FloatAttributeTableTraits> 
+ typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
    DerivativeTable;
- typedef internal::AttributeTable<internal::BoolAttributeTableTraits> 
+ typedef internal::AttributeTable<internal::BoolAttributeTableTraits>
    OptimizedTable;
- typedef internal::AttributeTable<internal::IntAttributeTableTraits>  
+ typedef internal::AttributeTable<internal::IntAttributeTableTraits>
    IntTable;
   typedef internal::AttributeTable<internal::StringAttributeTableTraits>
     StringTable;
