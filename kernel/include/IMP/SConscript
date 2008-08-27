@@ -8,7 +8,10 @@ files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
          'DecoratorBase.h', 'Vector3D.h',
          'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h', 'macros.h',
          'TripletScore.h', 'exception.h', 'VersionInfo.h',
-         'Object.h', 'Pointer.h', 'RefCountedObject.h']
+         'Object.h', 'Pointer.h', 'RefCountedObject.h', 'ParticleRefiner.h']
+
+# Place in build directory:
+env.Install('#/build/include/IMP', files)
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP')

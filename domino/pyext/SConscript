@@ -2,7 +2,7 @@ Import('env','get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(env,'DOMINO',cplusplus=True)
-e.Append(CPPPATH=['#/kernel/include', e['BOOST_CPPPATH']])
+e.Append(CPPPATH=['#/build/include', e['BOOST_CPPPATH']])
 e.Append(LIBPATH=['#/build/libs'], LIBS=['imp','imp_domino'])
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
@@ -11,7 +11,7 @@ e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('#/build/libs/_IMP_domino', 'DOMINO.i',
                          SWIGFLAGS='-python -c++ -naturalvar -IDOMINO ' + \
-                                   '-Ikernel/include ')
+                                   '-Ibuild/include ')
 # .py file should also be generated:
 gen_pymod = File('IMP_domino.py')
 e.Depends(gen_pymod, pyext)

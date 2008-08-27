@@ -9,6 +9,9 @@ files = ['ConnectivityRestraint.h',
          'TripletChainRestraint.h', 'PairChainRestraint.h',
          'ConstantRestraint.h']
 
+# Place in build directory:
+env.Install('#/build/include/IMP/restraints', files)
+
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'restraints')
 inst = env.Install(includedir, files)

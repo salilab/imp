@@ -2,8 +2,8 @@
 
 %{
 #include "IMP.h"
-#include "../src/IMPParticlesAccessPoint.h"
-#include "../src/EMFitRestraint.h"
+#include "IMP/em/IMPParticlesAccessPoint.h"
+#include "IMP/em/EMFitRestraint.h"
 %}
 
 %include "kernel/pyext/IMP_macros.i"
@@ -30,8 +30,8 @@
 %exception;
 
 /* Wrap our own classes */
-%include "../src/IMPParticlesAccessPoint.h"
-%include "../src/EMFitRestraint.h"
+%include "IMP/em/IMPParticlesAccessPoint.h"
+%include "IMP/em/EMFitRestraint.h"
 
 /* Allow runtime casting of Restraint* objects to EMFitRestraint* */
 namespace IMP {

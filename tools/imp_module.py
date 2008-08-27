@@ -5,9 +5,10 @@
    env.IMPModuleExports('foo_exports.h', env.Value('foo'))
    generates exports macros for the 'foo' module.
 
-   The IMPModuleVersionInfo Builder generates a header and source file to
+   The IMPModuleVersionInfo Builder generates a source file and header to
    return version information, e.g.
-   env.IMPModuleVersionInfo(('foo_version_info.cpp', 'foo_version_info.h'),
+   env.IMPModuleVersionInfo(('src/foo_version_info.cpp',
+                             'include/foo_version_info.h'),
                             (env.Value('foo'), env.Value('Me'),
                              env.Value('1.0')))
    generates version information for the 'foo' module.
@@ -86,7 +87,7 @@ def action_version_info(target, source, env):
 #include \"%(module)s_exports.h\"
 """ % {'module':module, 'MODULE':module.upper()}
 
-    print >> cpp, '#include "%s_version_info.h"\n' % module
+    print >> cpp, '#include "IMP/%s/%s_version_info.h"\n' % (module, module)
 
     for f in (h, cpp):
         for namespace in ('IMP', module, 'internal'):

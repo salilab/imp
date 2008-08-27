@@ -2,13 +2,12 @@
 
 %{
 #include "IMP.h"
-#include "../src/DiscreteSampler.h"
-#include "../src/RestraintGraph.h"
-#include "../src/OptimizationWorkFlow.h"
-#include "../src/SimpleDiscreteSpace.h"
-#include "../src/DominoOptimizer.h"
-/*#include "../src/DominoMCOptimizer.h"*/
-#include "../src/SimpleDiscreteRestraint.h"
+#include "IMP/domino/DiscreteSampler.h"
+#include "IMP/domino/RestraintGraph.h"
+#include "IMP/domino/OptimizationWorkFlow.h"
+#include "IMP/domino/SimpleDiscreteSpace.h"
+#include "IMP/domino/DominoOptimizer.h"
+#include "IMP/domino/SimpleDiscreteRestraint.h"
 %}
 
 %include "kernel/pyext/IMP_macros.i"
@@ -33,10 +32,9 @@
 %exception;
 
 /* Wrap our own classes */
-%include "../src/DiscreteSampler.h"
-%include "../src/RestraintGraph.h"
-%include "../src/OptimizationWorkFlow.h"
-%include "../src/SimpleDiscreteSpace.h"
-%include "../src/DominoOptimizer.h"
-/*%include "../src/DominoMCOptimizer.h"*/
-%include "../src/SimpleDiscreteRestraint.h"
+%include "IMP/domino/DiscreteSampler.h"
+%include "IMP/domino/RestraintGraph.h"
+%include "IMP/domino/OptimizationWorkFlow.h"
+%include "IMP/domino/SimpleDiscreteSpace.h"
+%include "IMP/domino/DominoOptimizer.h"
+%include "IMP/domino/SimpleDiscreteRestraint.h"

@@ -1,18 +1,10 @@
-Import('env', 'get_sharedlib_environment')
+Import('env', 'get_sharedlib_environment', 'ver_cpp')
 
 # Get an environment suitable for building a shared library:
 e = get_sharedlib_environment(env, 'IMPDOMINO_EXPORTS', cplusplus=True)
 
-e.Append(CPPPATH=['#/kernel/include', e['BOOST_CPPPATH']])
+e.Append(CPPPATH=['#/build/include', e['BOOST_CPPPATH']])
 e.Append(LIBPATH=['#/build/libs'], LIBS=['imp'])
-
-# Generate exports header and version information
-e.IMPModuleExports('domino_exports.h', e.Value('domino'))
-ver_cpp, ver_h = e.IMPModuleVersionInfo(('domino_version_info.cpp',
-                                         'domino_version_info.h'),
-                                        (e.Value('domino'),
-                                         e.Value('Keren Lasker'),
-                                         e.Value('SVN')))
 
 files = ('CombState.cpp', 'JNode.cpp', 'JEdge.cpp', 'RestraintGraph.cpp',
          'DominoOptimizer.cpp', 'SimpleDiscreteRestraint.cpp', ver_cpp)

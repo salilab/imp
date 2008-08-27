@@ -5,7 +5,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "SimpleDiscreteRestraint.h"
+#include "IMP/domino/SimpleDiscreteRestraint.h"
 
 namespace IMP
 {

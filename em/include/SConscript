@@ -1,0 +1,15 @@
+import os
+Import('ver_h', 'emenv')
+
+# Generate exports header
+exp_h = emenv.IMPModuleExports('em_exports.h', emenv.Value('em'))
+
+headers = ('EMFitRestraint.h', 'IMPParticlesAccessPoint.h', exp_h, ver_h)
+
+# Place in build directory:
+emenv.Install('#/build/include/IMP/em', headers)
+
+# Install the include files:
+includedir = os.path.join(emenv['includedir'], 'IMP', 'em')
+inst = emenv.Install(includedir, headers)
+emenv.Alias('em-install', inst)

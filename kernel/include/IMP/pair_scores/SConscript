@@ -5,6 +5,9 @@ files = ['DistancePairScore.h', 'SphereDistancePairScore.h',
          'RefineOncePairScore.h', 'TypedPairScore.h',
          'TransformedDistancePairScore.h']
 
+# Place in build directory:
+env.Install('#/build/include/IMP/pair_scores', files)
+
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'pair_scores')
 inst = env.Install(includedir, files)

@@ -1,10 +1,20 @@
+Import('env')
+
 Help("""
 Type: 'scons domino' to build and test the domino extension module;
       'scons domino-install' to install it.
 """)
 
+# Generate version information
+ver_cpp, ver_h = \
+    env.IMPModuleVersionInfo(('src/domino_version_info.cpp',
+                              'include/domino_version_info.h'),
+                             (env.Value('domino'), env.Value('Keren Lasker'),
+                              env.Value('SVN')))
+
 # Subdirectories:
-lib = SConscript('src/SConscript')
+lib = SConscript('src/SConscript', exports='ver_cpp')
+SConscript('include/SConscript', exports='ver_h')
 pyext = SConscript('pyext/SConscript')
 #test = SConscript('test/SConscript')
 #emenv.Depends(test, [pyext, lib])

@@ -5,7 +5,7 @@
  *
  */
 
-#include "JNode.h"
+#include "IMP/domino/JNode.h"
 #include <numeric>
 #include <climits>
 

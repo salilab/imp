@@ -1,20 +1,13 @@
-Import('emenv', 'get_sharedlib_environment')
+Import('emenv', 'get_sharedlib_environment', 'ver_cpp')
 
 # Get an environment suitable for building a shared library:
 e = get_sharedlib_environment(emenv, 'IMPEM_EXPORTS', cplusplus=True)
 
-e.Append(CPPPATH=['#/kernel/include', e['EM_CPPPATH'], e['BOOST_CPPPATH']])
+e.Append(CPPPATH=['#/build/include', e['EM_CPPPATH'], e['BOOST_CPPPATH']])
 e.Append(LIBPATH=['#/build/libs', e['EM_LIBPATH']], LIBS=['imp', e['EM_LIBS']])
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
 e.Append(CPPDEFINES='_USE_MATH_DEFINES')
-
-# Generate exports header and version information
-e.IMPModuleExports('em_exports.h', e.Value('em'))
-ver_cpp, ver_h = e.IMPModuleVersionInfo(('em_version_info.cpp',
-                                         'em_version_info.h'),
-                                        (e.Value('em'), e.Value('Keren Lasker'),
-                                         e.Value('SVN')))
 
 files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp', ver_cpp)
 

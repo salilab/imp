@@ -5,6 +5,9 @@ files = ['Harmonic.h', 'HarmonicLowerBound.h', 'HarmonicUpperBound.h',
          'OpenCubicSpline.h', 'ClosedCubicSpline.h', 'Cosine.h', 'Linear.h',
          'WormLikeChain.h']
 
+# Place in build directory:
+env.Install('#/build/include/IMP/unary_functions', files)
+
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'unary_functions')
 inst = env.Install(includedir, files)
