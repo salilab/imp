@@ -17,6 +17,7 @@ namespace IMP
 
 Restraint::Restraint()
 {
+  model_=NULL;
   is_active_ = true; // active by default
 }
 
@@ -24,6 +25,12 @@ Restraint::Restraint()
 //! Destructor
 Restraint::~Restraint()
 {
+  if (!was_owned_) {
+    // can't use virtual functions in the destructor
+    std::cerr << "Restraint " << this << " is being destroyed "
+              << "without ever having been added to a model."
+              << std::endl;
+  }
 }
 
 
@@ -43,9 +50,10 @@ void Restraint::set_model(Model* model)
 {
   IMP_assert(model==NULL || get_number_of_particles()==0
              || model == get_particle(0)->get_model()
-             || (model_ && model_.get() == model),
+             || (model_ && model_ == model),
              "Model* different from Particle Model*");
   model_=model;
+  was_owned_=true;
 }
 
 void Restraint::show(std::ostream& out) const

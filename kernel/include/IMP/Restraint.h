@@ -43,7 +43,7 @@ class Model;
     constructor and should provide methods so that the set of particles
     can be modified after construction.
 
-    A restraint can be added to the model multiple times or to multiple 
+    A restraint can be added to the model multiple times or to multiple
     restraint sets in the same model.
 
     \note When logging is VERBOSE, restraints should print enough information
@@ -53,6 +53,13 @@ class Model;
 
     \note Physical restraints should use the units of kcal/mol for restraint
     values and kcal/mol/A for derivatives.
+
+    \note Restraints will print a warning message if they are destroyed
+    without ever having been added to a model as this is an easy mistake
+    to make. To disable this warning for a particular restraint, call
+    set_was_owned(true).
+
+    \ingroup kernel
  */
 class IMPDLLEXPORT Restraint : public RefCountedObject
 {
@@ -96,7 +103,14 @@ public:
   Model *get_model() const {
     IMP_assert(model_,
                "get_model() called before set_model()");
-    return model_.get();
+    return model_;
+  }
+
+  /** A warning is printed if a restraint is destroyed
+      without ever having belonged to a restraint set or a model.
+   */
+  void set_was_owned(bool tf) {
+    was_owned_=tf;
   }
 
   //! Return a list of sets of particles that are restrained by this restraint
@@ -114,12 +128,20 @@ public:
   IMP_LIST(protected, Particle, particle, Particle*)
 
 private:
-  Pointer<Model> model_;
+  /* This pointer should never be ref counted as Model has a
+     pointer to this object. Not that Model is refcounted yet.
+   */
+  Model *model_;
 
   /* True if restraint has not been deactivated.
      If it is not active, evaluate should not be called
    */
   bool is_active_;
+
+  /* keep track of whether the restraint ever was in a model.
+     Give warnings on destruction if it was not.
+   */
+  bool was_owned_;
 };
 
 IMP_OUTPUT_OPERATOR(Restraint);

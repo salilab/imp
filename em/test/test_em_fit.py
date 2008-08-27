@@ -83,17 +83,10 @@ class FittingTest(IMP.test.TestCase):
 
     def test_em_fit(self):
         """Check that correlation of particles with their own density is 1"""
-        rs = IMP.RestraintSet("em")
-        self.restraint_sets.append(rs)
-        self.imp_model.add_restraint(rs)
-
-        # add connectivity restraints
-
-        rsrs = []
-
-        rsrs.append(IMP.em.EMFitRestraint(self.imp_model, self.particle_indexes,
-                                          self.scene, "radius", "weight", 1.0))
-        score = rsrs[0].evaluate(None)
+        r = IMP.em.EMFitRestraint(self.imp_model, self.particle_indexes,
+                                  self.scene, "radius", "weight", 1.0)
+        self.imp_model.add_restraint(r)
+        score = self.imp_model.evaluate(False)
         print "EM score (1-CC) = "+str(score)
         self.assert_(score < 0.05, "the correlation score is not correct")
 
@@ -116,6 +109,7 @@ class FittingTest(IMP.test.TestCase):
         """Check EMFitRestraint's get methods"""
         r1 = IMP.em.EMFitRestraint(self.imp_model, self.particle_indexes,
                                    self.scene, "radius", "weight", 1.0)
+        r1.set_was_owned(True)
         self.assert_(isinstance(r1.get_model_dens_map(), EM.SampledDensityMap))
 
 
