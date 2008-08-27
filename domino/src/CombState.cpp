@@ -4,7 +4,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "CombState.h"
+#include "IMP/domino/CombState.h"
 #include <numeric>
 #include <climits>
 

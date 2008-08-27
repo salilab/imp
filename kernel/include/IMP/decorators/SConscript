@@ -5,6 +5,9 @@ files = ['HierarchyDecorator.h', 'NameDecorator.h', 'utility.h',
          'XYZDecorator.h', 'ResidueDecorator.h', 'AtomDecorator.h',
          'MolecularHierarchyDecorator.h', 'bond_decorators.h', 'macros.h']
 
+# Place in build directory:
+env.Install('#/build/include/IMP/decorators', files)
+
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP', 'decorators')
 inst = env.Install(includedir, files)

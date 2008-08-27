@@ -4,7 +4,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "DominoOptimizer.h"
+#include "IMP/domino/DominoOptimizer.h"
 
 namespace IMP
 {

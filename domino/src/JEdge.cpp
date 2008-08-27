@@ -4,7 +4,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "JEdge.h"
+#include "IMP/domino/JEdge.h"
 
 namespace IMP
 {

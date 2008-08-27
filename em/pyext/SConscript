@@ -4,7 +4,7 @@ Import('emenv', 'get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(emenv, 'IMPEM', cplusplus=True)
-e.Append(CPPPATH=['#/kernel/include', e['EM_CPPPATH'], e['BOOST_CPPPATH']])
+e.Append(CPPPATH=['#/build/include', e['EM_CPPPATH'], e['BOOST_CPPPATH']])
 e.Append(LIBPATH=['#/build/libs'], LIBS=['imp', 'imp_em'])
 e.Append(LIBPATH=[e['EM_LIBPATH']], LIBS=[e['EM_LIBS']])
 
@@ -14,7 +14,7 @@ e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('#/build/libs/_IMP_em', 'IMPEM.i',
                          SWIGFLAGS='-python -c++ -naturalvar -IEM ' + \
-                                   '-Ikernel/include -I' + e['EM_CPPPATH'])
+                                   '-Ibuild/include -I' + e['EM_CPPPATH'])
 # .py file should also be generated:
 gen_pymod = File('IMP_em.py')
 e.Depends(gen_pymod, pyext)

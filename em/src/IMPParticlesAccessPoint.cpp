@@ -1,4 +1,4 @@
-#include "IMPParticlesAccessPoint.h"
+#include "IMP/em/IMPParticlesAccessPoint.h"
 
 namespace IMP
 {

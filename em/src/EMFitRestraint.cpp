@@ -1,5 +1,5 @@
 #include "IMP/log.h"
-#include "EMFitRestraint.h"
+#include "IMP/em/EMFitRestraint.h"
 
 namespace IMP
 {

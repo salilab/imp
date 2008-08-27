@@ -2,6 +2,9 @@ Import('env')
 
 files = ['IMP.h']
 
+# Place in build directory:
+env.Install('#/build/include', files)
+
 # Install the include files:
 includedir = env['includedir']
 inst = env.Install(includedir, files)

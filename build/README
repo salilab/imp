@@ -7,3 +7,6 @@ subdirectory, and C++ extensions, as _IMP_foo.so in the top-level directory)
 and the IMP C++ libraries (as libimp_foo.so in the top-level directory).
 Rationale: Windows searches for C++ dynamic libraries in the same directory
 as C++ Python extensions.
+
+The include directory contains all public header files under the IMP
+subdirectory. Modules are in named subdirectories under that.

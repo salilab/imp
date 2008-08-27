@@ -6,7 +6,7 @@
  *
  */
 
-#include "RestraintGraph.h"
+#include "IMP/domino/RestraintGraph.h"
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
