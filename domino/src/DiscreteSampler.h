@@ -7,7 +7,6 @@
 #ifndef __IMP_DISCRETE_SAMPLER_H
 #define __IMP_DISCRETE_SAMPLER_H
 
-#include "domino_exports.h"
 #include "IMP/Particle.h"
 #include <vector>
 
@@ -28,11 +27,11 @@ public:
 
   virtual void show(std::ostream& out = std::cout) const {}
   virtual Float get_state_val(const Particle &p, unsigned int i,
-                              FloatKey key) const;
-  virtual unsigned int get_space_size(const Particle &p) const;
+                              FloatKey key) const = 0;
+  virtual unsigned int get_space_size(const Particle &p) const = 0;
   virtual FloatKey get_attribute(const Particle &p,
-                                 unsigned int att_index) const;
-  virtual unsigned int get_number_of_attributes(const Particle &p) const;
+                                 unsigned int att_index) const = 0;
+  virtual unsigned int get_number_of_attributes(const Particle &p) const = 0;
   virtual void show_space(const Particle &p,
                           std::ostream& out = std::cout) const {}
   //! Shallow copy of the sampler instance
