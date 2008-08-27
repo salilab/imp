@@ -9,6 +9,7 @@
 #define __IMP_EVALUATE_DISTANCE_PAIR_SCORE_H
 
 #include "../Vector3D.h"
+#include <boost/tuple/tuple.hpp>
 
 namespace IMP
 {
@@ -43,7 +44,7 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
   if (da && distance >= MIN_DISTANCE) {
     Float deriv;
 
-    score = f->evaluate_with_derivative(shifted_distance, deriv);
+    boost::tie(score, deriv) = f->evaluate_with_derivative(shifted_distance);
 
     Vector3D d= delta/distance *deriv;
     d0.add_to_coordinates_derivative(d, *da);

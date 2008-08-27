@@ -82,8 +82,8 @@ Float ClosedCubicSpline::evaluate(Float feature) const
            * (spacing_ * spacing_) / 6.;
 }
 
-Float ClosedCubicSpline::evaluate_with_derivative(Float feature,
-                                                  Float& deriv) const
+FloatPair
+ClosedCubicSpline::evaluate_with_derivative(Float feature) const
 {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   size_t highbin = lowbin + 1;
@@ -99,11 +99,11 @@ Float ClosedCubicSpline::evaluate_with_derivative(Float feature,
   Float a = 1. - b;
   float sixthspacing = spacing_ / 6.;
 
-  deriv = (values_[highbin] - values_[lowbin]) / spacing_
+  Float deriv = (values_[highbin] - values_[lowbin]) / spacing_
           - (3. * a * a - 1.) * sixthspacing * second_derivs_[lowbin]
           + (3. * b * b - 1.) * sixthspacing * second_derivs_[highbin];
 
-  return evaluate(feature);
+  return std::make_pair(evaluate(feature), deriv);
 }
 
 }  // namespace IMP

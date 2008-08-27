@@ -8,7 +8,7 @@
 
 #include "IMP/singleton_scores/TunnelSingletonScore.h"
 #include "IMP/decorators/XYZDecorator.h"
-
+#include <boost/tuple/tuple.hpp>
 namespace IMP
 {
 
@@ -58,7 +58,7 @@ Float TunnelSingletonScore::evaluate(Particle *p,
       // look below if changed
       Float dist= -std::min(std::min(rd, hdu), hdd) - radius;
       if (accum) {
-        score= f_->evaluate_with_derivative(dist, deriv_scalar);
+        boost::tie(score, deriv_scalar)= f_->evaluate_with_derivative(dist);
       } else {
         score= f_->evaluate(dist);
       }

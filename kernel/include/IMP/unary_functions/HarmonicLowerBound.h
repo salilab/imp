@@ -37,16 +37,13 @@ public:
   //! Calculate lower-bound harmonic score and derivative for a feature.
   /** If the feature is greater than or equal to the mean, the score is zero.
       \param[in] feature Value of feature being tested.
-      \param[out] deriv Partial derivative of the score with respect to
-                        the feature value.
       \return Score
    */
-  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const {
+  virtual FloatPair evaluate_with_derivative(Float feature) const {
     if (feature >= Harmonic::get_mean()) {
-      deriv = 0.0;
-      return 0.0;
+      return std::make_pair(0.0f, 0.0f);
     } else {
-      return Harmonic::evaluate_with_derivative(feature, deriv);
+      return Harmonic::evaluate_with_derivative(feature);
     }
   }
 

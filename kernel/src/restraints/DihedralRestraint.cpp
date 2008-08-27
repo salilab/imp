@@ -15,6 +15,8 @@
 #include "IMP/restraints/DihedralRestraint.h"
 #include "IMP/decorators/XYZDecorator.h"
 
+#include <boost/tuple/tuple.hpp>
+
 namespace IMP
 {
 
@@ -80,7 +82,7 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 
   if (accum) {
     Float deriv;
-    score = score_func_->evaluate_with_derivative(angle, deriv);
+    boost::tie(score, deriv) = score_func_->evaluate_with_derivative(angle);
 
     // method for derivative calculation from van Schaik et al.
     // J. Mol. Biol. 234, 751-762 (1993)

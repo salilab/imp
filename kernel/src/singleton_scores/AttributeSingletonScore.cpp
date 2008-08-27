@@ -8,7 +8,7 @@
 #include "IMP/singleton_scores/AttributeSingletonScore.h"
 #include "IMP/UnaryFunction.h"
 #include "IMP/Particle.h"
-
+#include <boost/tuple/tuple.hpp>
 namespace IMP
 {
 
@@ -20,8 +20,8 @@ Float AttributeSingletonScore::evaluate(Particle *b,
                                         DerivativeAccumulator *da) const
 {
   if (da) {
-    Float d;
-    float r= f_->evaluate_with_derivative(b->get_value(k_), d);
+    Float d, r;
+    boost::tie(d,r) = f_->evaluate_with_derivative(b->get_value(k_));
     b->add_to_derivative(k_, d, *da);
     return r;
   } else {

@@ -25,7 +25,7 @@ public:
       \param[in] minrange Feature value at first spline point
       \param[in] spacing  Distance (in feature space) between points
    */
-  OpenCubicSpline(const std::vector<Float> &values, Float minrange,
+  OpenCubicSpline(const Floats &values, Float minrange,
                   Float spacing);
 
   virtual ~OpenCubicSpline() {}
@@ -39,12 +39,10 @@ public:
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
-      \param[out] deriv Partial derivative of the score with respect to
-                        the feature value.
       \exception ValueException Feature is out of defined range.
       \return Score
    */
-  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const;
+  virtual FloatPair evaluate_with_derivative(Float feature) const;
 
   void show(std::ostream &out=std::cout) const {
     out << "Open cubic spline of " << values_.size() << " values from "
