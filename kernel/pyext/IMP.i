@@ -12,7 +12,6 @@
 %include "IMP_macros.i"
 %include "IMP_exceptions.i"
 
-/* Return derivatives from unary functions */
 %include "typemaps.i"
 
 namespace IMP {
