@@ -13,6 +13,7 @@
 #include "../Model.h"
 #include "utility.h"
 #include "XYZDecorator.h"
+#include "macros.h"
 
 #include <vector>
 #include <deque>
@@ -20,8 +21,7 @@
 namespace IMP
 {
 
-struct AtomTypeTag{};
-IMP_DECLARE_KEY_TYPE(AtomType, AtomTypeTag);
+IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 
 
 //! A decorator for a particle representing an atom.

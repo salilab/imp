@@ -15,8 +15,6 @@
 namespace IMP
 {
 
-IMP_DEFINE_KEY_TYPE(AtomType, AtomTypeTag);
-
 #define TYPE_INIT(STR) AT_##STR= AtomType(#STR);
 #define TYPE_INIT2(NAME, STR) AT_##NAME = AtomType(#STR);
 

@@ -31,6 +31,9 @@ void KeyData::show(std::ostream &out) const
   }
 }
 
+
+std::map<unsigned int, KeyData> key_data;
+
 } // namespace internal
 
 } // namespace IMP

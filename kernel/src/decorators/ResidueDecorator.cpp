@@ -16,8 +16,6 @@
 namespace IMP
 {
 
-IMP_DEFINE_KEY_TYPE(ResidueType, ResidueTypeTag);
-
 IntKey ResidueDecorator::type_key_;
 IntKey ResidueDecorator::index_key_;
 
