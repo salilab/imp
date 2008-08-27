@@ -19,7 +19,7 @@ class Particle;
 class DerivativeAccumulator;
 
 //! Abstract class to implement hierarchical methods.
-/** The job of this class is to take a single particle and, if 
+/** The job of this class is to take a single particle and, if
     appropriate, return a list of particles.
 */
 class IMPDLLEXPORT ParticleRefiner : public RefCountedObject

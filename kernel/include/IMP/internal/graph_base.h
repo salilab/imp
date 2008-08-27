@@ -72,7 +72,7 @@ IMPDLLEXPORT Particle* graph_get_node(Particle *a, int i,
 IMPDLLEXPORT bool graph_is_edge(Particle *a, const GraphData &d);
 
 /** \internal */
-template <class F>  
+template <class F>
 F graph_traverse(Particle *start, F f, const GraphData &d)
 {
   std::set<Particle*> visited;

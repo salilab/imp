@@ -15,7 +15,7 @@ namespace IMP
 {
 
 //! Cover a bond with a constant volume set of spheres.
-/** Perhaps I want to add various custom bond types so that 
+/** Perhaps I want to add various custom bond types so that
     this will only expand some custom bonds. Currently any
     particle which is an instance of BondDecorator is expanded.
 */

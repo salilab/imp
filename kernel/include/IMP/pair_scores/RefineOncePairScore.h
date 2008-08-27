@@ -1,5 +1,5 @@
 /**
- *  \file RefineOncePairScore.h    
+ *  \file RefineOncePairScore.h
  *  \brief Refine particles at most once with a ParticleRefiner.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

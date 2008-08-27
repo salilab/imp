@@ -104,7 +104,7 @@ void AllNonbondedListScoreState::do_before_evaluate()
 
 void AllNonbondedListScoreState::rebuild_nbl()
 {
-  IMP_LOG(TERSE, "Rebuilding AllNBL with cutoff " 
+  IMP_LOG(TERSE, "Rebuilding AllNBL with cutoff "
           << P::get_cutoff() << " and slack " << P::get_slack() << std::endl);
   if (a_== QUADRATIC) {
     const Particles &moving= mc_->get_particles();
@@ -330,13 +330,13 @@ void AllNonbondedListScoreState::check_nbl() const
             found=true;
           }
         }
-        IMP_assert(found, "Nonbonded list is missing " 
-                   << ps[i]->get_index() << " " << di 
+        IMP_assert(found, "Nonbonded list is missing "
+                   << ps[i]->get_index() << " " << di
                    << " " << gr(ps[i])
-                   << " and " << ps[j]->get_index() << " " 
-                   << dj << gr(ps[j]) 
-                   << " size is " << get_number_of_nonbonded() 
-                   << " distance is " << distance(di, dj) 
+                   << " and " << ps[j]->get_index() << " "
+                   << dj << gr(ps[j])
+                   << " size is " << get_number_of_nonbonded()
+                   << " distance is " << distance(di, dj)
                    << " max is " << mc_->get_max() << std::endl);
       }
     }

@@ -89,8 +89,8 @@ class IMPDLLEXPORT InactiveParticleException : public Exception
 {
 public:
   InactiveParticleException(const char *msg
-                            ="Attempting to use inactive particle"): 
-    Exception(msg){} 
+                            ="Attempting to use inactive particle"):
+    Exception(msg){}
 };
 
 //! An exception for a request for an invalid member of a container

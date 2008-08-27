@@ -69,9 +69,9 @@ public:
 
   IMP_DECORATOR_GET_SET_OPT(order, internal::bond_order_key_, Int, Int, 1);
 
-  IMP_DECORATOR_GET_SET_OPT(length, internal::bond_length_key_, Float, 
+  IMP_DECORATOR_GET_SET_OPT(length, internal::bond_length_key_, Float,
                             Float, -1);
-  IMP_DECORATOR_GET_SET_OPT(stiffness, internal::bond_stiffness_key_, Float, 
+  IMP_DECORATOR_GET_SET_OPT(stiffness, internal::bond_stiffness_key_, Float,
                             Float, -1);
 };
 
@@ -85,7 +85,7 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
 class IMPDLLEXPORT BondedDecorator: public DecoratorBase
 {
   IMP_DECORATOR(BondedDecorator, DecoratorBase,
-                return internal::graph_is_node(p, internal::bond_graph_data_), 
+                return internal::graph_is_node(p, internal::bond_graph_data_),
                 graph_initialize_node(p, internal::bond_graph_data_));
 
 
@@ -113,8 +113,8 @@ public:
 
       \note I don't entirely like having this here as it duplicates
       functionality available otherwise, however it is such a fundamental
-      operation and kind of a pain to write. It also means that we 
-      could later pull the edge endpoints into the vertex if 
+      operation and kind of a pain to write. It also means that we
+      could later pull the edge endpoints into the vertex if
       desired.
   */
   BondedDecorator get_bonded(unsigned int i) const {
@@ -159,7 +159,7 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
     \ingroup bond
  */
 IMPDLLEXPORT
-inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b, 
+inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
                           Float length, Float stiffness=-1) {
   IMP_assert(length>=0, "Length must be positive");
   BondDecorator bd=bond(a,b, BondDecorator::CUSTOM);

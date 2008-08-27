@@ -151,12 +151,12 @@ typedef std::vector<MolecularHierarchyDecorator> MolecularHierarchyDecorators;
 
 
 /**
-   Gather all the molecular particles of a certain level 
+   Gather all the molecular particles of a certain level
    in the molecular hierarchy
    \ingroup hierarchy
 */
 IMPDLLEXPORT Particles
-molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd, 
+molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd,
                                 MolecularHierarchyDecorator::Type t);
 
 class ResidueDecorator;

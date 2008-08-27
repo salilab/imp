@@ -1,5 +1,5 @@
 /**
- *  \file TransformedDistancePairScore.h    
+ *  \file TransformedDistancePairScore.h
  *  \brief A Score on the distance between a pair of particles.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

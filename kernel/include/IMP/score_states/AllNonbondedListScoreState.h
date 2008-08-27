@@ -73,7 +73,7 @@ public:
   /** \param[in] cutoff The distance cutoff to use.
       \param[in] radius The key to use to get the radius
       \param[in] a Which algorithm to use. The default is the best.
-   */ 
+   */
   AllNonbondedListScoreState(Float cutoff,
                              FloatKey radius,
                              Algorithm a= DEFAULT);
@@ -81,7 +81,7 @@ public:
       \param[in] radius The key to use to get the radius
       \param[in] ps A list of particles to use.
       \param[in] a Which algorithm to use. The default is the best.
-   */ 
+   */
   AllNonbondedListScoreState(Float cutoff,
                              FloatKey radius,
                              const Particles &ps,

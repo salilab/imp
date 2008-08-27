@@ -19,7 +19,7 @@ def check_c_file(filename, errors):
                           % (filename, num+1))
         if line.find('\t') >= 0:
             errors.append('%s:%d: Line contains tabs.' % (filename, num+1))
-        if srch.match(line):
+        if srch.search(line):
             errors.append('%s:%d: Line has trailing whitespace' \
                           % (filename, num+1))
         blank = (len(line) == 0)

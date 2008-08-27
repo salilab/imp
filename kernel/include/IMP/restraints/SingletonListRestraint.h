@@ -1,5 +1,5 @@
 /**
- *  \file SingletonListRestraint.h   
+ *  \file SingletonListRestraint.h
  *  \brief Apply a SingletonScore to each particle in a list.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

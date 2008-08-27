@@ -1,5 +1,5 @@
 /**
- *  \file PairListRestraint.cpp 
+ *  \file PairListRestraint.cpp
  *  \brief Apply a score function to a list of pairs of particles.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

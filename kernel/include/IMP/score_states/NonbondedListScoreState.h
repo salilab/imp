@@ -94,7 +94,7 @@ protected:
                "Inactive particles should have been stripped");
 
     if (!are_bonded(a,b)) {
-      IMP_LOG(VERBOSE, "Found pair " << a->get_index() 
+      IMP_LOG(VERBOSE, "Found pair " << a->get_index()
         << " " << b->get_index() << std::endl);
       if (nbl_.size() <  max_nbl_size_) {
         nbl_.push_back(std::make_pair(a, b));
@@ -103,7 +103,7 @@ protected:
       }
     } else {
       IMP_LOG(VERBOSE, "Pair " << a->get_index()
-              << " and " << b->get_index() << " rejected on bond" 
+              << " and " << b->get_index() << " rejected on bond"
               <<std::endl);
     }
   }
@@ -133,7 +133,7 @@ protected:
     }
     IMP_LOG(VERBOSE, "Adding pair " << a->get_index()
             << " and " << b->get_index() << std::endl);
-    add_if_nonbonded(a, b); 
+    add_if_nonbonded(a, b);
   }
 
   GetRadius get_radius_object() const {
@@ -189,7 +189,7 @@ public:
   ~NonbondedListScoreState();
 
   FloatKey get_radius_key() const {return rk_;}
-  void set_radius_key(FloatKey rk) {rk_=rk;} 
+  void set_radius_key(FloatKey rk) {rk_=rk;}
 
   //! Set the maximum allowable size for the NBL
   /** The NBL will keep reducing the slack and trying to
@@ -228,7 +228,7 @@ public:
   }
 
   //! An iterator through nonbonded particles
-  /** The value type is an ParticlePair. 
+  /** The value type is an ParticlePair.
    */
   typedef boost::filter_iterator<BoxesOverlap,
     ParticlePairs::const_iterator> NonbondedIterator;

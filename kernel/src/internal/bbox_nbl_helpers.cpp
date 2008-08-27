@@ -9,7 +9,7 @@
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/score_states/NonbondedListScoreState.h"
 
-/* compile the CGAL code with NDEBUG since it doesn't have the 
+/* compile the CGAL code with NDEBUG since it doesn't have the
    same level of control over errors as IMP
 */
 #define NDEBUG
@@ -73,14 +73,14 @@ void bipartite_bbox_scan(const Particles &ps0, const Particles &ps1,
   copy_particles_to_boxes(ps0, rk, slack, cutoff, boxes0);
   copy_particles_to_boxes(ps1, rk, slack, cutoff, boxes1);
 
-  CGAL::box_intersection_d( boxes0.begin(), boxes0.end(), 
+  CGAL::box_intersection_d( boxes0.begin(), boxes0.end(),
                             boxes1.begin(), boxes1.end(), ap);
 #else
   IMP_failure( "IMP built without CGAL support.", ErrorException);
 #endif
 }
 
-void bbox_scan(const Particles &ps, 
+void bbox_scan(const Particles &ps,
                FloatKey rk, Float slack, Float cutoff,
                const NBLAddPairIfNonbonded &ap)
 {

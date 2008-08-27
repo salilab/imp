@@ -79,10 +79,10 @@ public:
                             center[1]+ncells,
                             center[2]+ncells);
     }
-    //IMP_LOG(VERBOSE, "Iteration bounds are " << lc << " and " 
+    //IMP_LOG(VERBOSE, "Iteration bounds are " << lc << " and "
     // << uc << std::endl);
     for (Grid::IndexIterator cur= grid_.indexes_begin(lc, uc);
-         cur != grid_.indexes_end(lc, uc); 
+         cur != grid_.indexes_end(lc, uc);
          ++cur){
       if ( skip_lower && center >= *cur) continue;
       if (grid_.get_voxel(*cur).empty()) continue;

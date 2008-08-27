@@ -1,5 +1,5 @@
 /**
- *  \file CMMLogOptimizerState.h   
+ *  \file CMMLogOptimizerState.h
  *  \brief A state which writes a series of CMM files.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -20,7 +20,7 @@ namespace IMP
 {
 
 //! A state that writes a series of CMM files.
-/** The State writes a series of files generated from a 
+/** The State writes a series of files generated from a
     printf-style format string. These files contain spheres
     and points for a set of particles. The particles must have
     x,y,z coordinates (as defined by XYZDecorator) and

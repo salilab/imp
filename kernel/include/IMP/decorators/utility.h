@@ -7,7 +7,7 @@
  */
 
 #ifndef __IMP_DECORATOR_UTILITY_H
-#define __IMP_DECORATOR_UTILITY_H           
+#define __IMP_DECORATOR_UTILITY_H
 
 #include "macros.h"
 

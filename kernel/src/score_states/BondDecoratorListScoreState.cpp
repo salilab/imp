@@ -9,7 +9,7 @@
 
 #include <algorithm>
 
-namespace IMP 
+namespace IMP
 {
 
 BondDecoratorListScoreState::BondDecoratorListScoreState(const Particles &ps)

@@ -29,11 +29,11 @@ class IMPEMEXPORT IMPParticlesAccessPoint : public ParticlesAccessPoint
 public:
   IMPParticlesAccessPoint() {}
   //! Constructor
-  /** \param[in] model 
+  /** \param[in] model
       \param[in] particle_indexes a vector that contains the indexes of the
                                   particles.
       \param[in] radius_att_name the attribute name of the radius
-      \param[in] weight_att_name the attribute name of the weight 
+      \param[in] weight_att_name the attribute name of the weight
    */
   IMPParticlesAccessPoint(Model& model,
                           std::vector<int>& particle_indexes,
@@ -91,7 +91,7 @@ public:
       \exception std::out_of_range vec_pos is out of range
       For example if particle_indexes vector is [4,5,6] then
       vec_pos2particle_ind(0) returns 4
-   */  
+   */
   int vec_pos2particle_ind(int vec_pos) const {
     IMP_assert(((unsigned int)vec_pos) < particle_indexes_.size(),
                "the requested vec_pos " << vec_pos << " is out of range" );

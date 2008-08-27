@@ -20,7 +20,7 @@ namespace IMP
     and the outputs in kcal/mol (/angstrom).
 
     \note The actual worm like chain force blows up as the extension approaches
-    the maximum. Since that makes optimization problematic, we 
+    the maximum. Since that makes optimization problematic, we
     just linearly extend the force after 99% of maximum.
     \ingroup unaryf
  */
@@ -54,7 +54,7 @@ public:
       unit::Picojoule springterm=(l-cutoff())*cderiv(cutoff());
       ret= (eval(cutoff())+ springterm -zero);
     }
-    std::cout << "Return is " << ret <<" " << l << " " << lp_ << " " 
+    std::cout << "Return is " << ret <<" " << l << " " << lp_ << " "
               << lmax_ << std::endl;
     unit::YoctoKilocalorie zc= convert_J_to_Cal(ret);
     return (zc*unit::ATOMS_PER_MOL).get_value();
@@ -72,7 +72,7 @@ public:
     } else {
       doubled= cderiv(cutoff());
       IMP_LOG(VERBOSE, "Overstretched " << cderiv(cutoff()) << " " << doubled
-              << " " << l << " " << lmax_ << " " << cutoff() 
+              << " " << l << " " << lmax_ << " " << cutoff()
               << std::endl);
     }
     //std::cout << "Force is " << doubled << " for length " << l << std::endl;

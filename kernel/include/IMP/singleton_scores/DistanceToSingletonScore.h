@@ -1,5 +1,5 @@
 /**
- *  \file DistanceToSingletonScore.h    
+ *  \file DistanceToSingletonScore.h
  *  \brief A Score on the distance to a fixed point.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

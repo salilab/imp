@@ -30,12 +30,12 @@ void CoverBondsScoreState::do_before_evaluate()
     BondDecorator bd= *it;
     BondedDecorator pa= bd.get_bonded(0);
     BondedDecorator pb= bd.get_bonded(1);
-    IMP_LOG(VERBOSE, "Processing bond between " 
-            << pa.get_particle()->get_index() 
+    IMP_LOG(VERBOSE, "Processing bond between "
+            << pa.get_particle()->get_index()
             << " and " << pb.get_particle()->get_index() << std::endl);
     XYZDecorator da(pa.get_particle());
     XYZDecorator db(pb.get_particle());
-    IMP_LOG(VERBOSE, "Endpoints are " << da << " and " 
+    IMP_LOG(VERBOSE, "Endpoints are " << da << " and "
             << db << std::endl);
     Vector3D diff= da.get_vector_to(db);
     float len= diff.get_magnitude();

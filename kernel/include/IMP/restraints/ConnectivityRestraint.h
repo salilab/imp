@@ -53,7 +53,7 @@ protected:
     Pointer<PairScore> ps_;
 
   //! The indices for the first particle in each set
-  /** set_offset_[i] is the first index of set i and set_offset_[i+1] is 
+  /** set_offset_[i] is the first index of set i and set_offset_[i+1] is
       the first index not in i. It is always defined if i is valid.
    */
   std::vector<unsigned int> set_offsets_;

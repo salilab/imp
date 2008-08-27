@@ -43,7 +43,7 @@ public:
   /** Optimize the model
       \param[in] max_steps The maximum number of steps to take.
       \return The final score.
-   */       
+   */
   virtual Float optimize(unsigned int max_steps) = 0;
 
   //! \return version and authorship information.
@@ -59,7 +59,7 @@ public:
      \note The model is not owned by the optimizer and so is not
      deleted when the optimizer is deleted. Further, the Optimizer
      does not prevent the model from being deleted when all python
-     references go away. 
+     references go away.
    */
   void set_model(Model *m) {model_=m;}
 
@@ -171,7 +171,7 @@ protected:
   /** The attribute must be optimized or an ErrorException is thrown.
    */
   void set_value(FloatIndex fi, Float v) {
-    IMP_assert(fi.p_ != model_->particles_end(), 
+    IMP_assert(fi.p_ != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     IMP_assert((*fi.p_)->get_is_optimized(*fi.fk_),
                "Keep your mits off unoptimized attributes "
@@ -183,14 +183,14 @@ protected:
   Float get_value(FloatIndex fi) const {
     /* cast to const needed here to help MSVC */
     IMP_assert(static_cast<Model::ParticleConstIterator>(fi.p_)
-               != model_->particles_end(), 
+               != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_value(*fi.fk_);
   }
 
   //! Get the derivative of an optimized attribute
   Float get_derivative(FloatIndex fi) const {
-    IMP_assert(fi.p_ != model_->particles_end(), 
+    IMP_assert(fi.p_ != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_derivative(*fi.fk_);
   }

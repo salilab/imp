@@ -26,7 +26,7 @@ namespace unit
 {
 
 /** This helper class implements a floating point number
-    with an extra exponent. The actual value is the number 
+    with an extra exponent. The actual value is the number
     times 10^EXP. I needed this since I was running out of bits
     in the exponent when converting between vastly different units.
     It also means that you can have a type for both nanometer

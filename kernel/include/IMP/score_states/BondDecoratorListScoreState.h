@@ -29,7 +29,7 @@ class IMPDLLEXPORT BondDecoratorListScoreState: public BondedListScoreState
   std::vector<BondDecorator> bonds_;
   Particles ps_;
 public:
-  //! Find bonds amongst the following points. 
+  //! Find bonds amongst the following points.
   /** \param [in] ps The set of particles to use.
    */
   BondDecoratorListScoreState(const Particles &ps= Particles());

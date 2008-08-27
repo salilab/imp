@@ -111,7 +111,7 @@ public:
 
   //! Get the index of a specific child in this particle.
   /** This takes linear time.
-      \note This is mostly useful for debugging as you can always call 
+      \note This is mostly useful for debugging as you can always call
       get_parent_index() on the child.
       \return the index, or -1 if there is no such child.
    */
@@ -457,7 +457,7 @@ inline void ChildArrayTraits::on_change(Particle *,
 
 inline void ChildArrayTraits::on_remove(Particle *,
                                         HierarchyDecorator d) {
-  d.get_particle()->remove_attribute(parent_index_key_); 
+  d.get_particle()->remove_attribute(parent_index_key_);
   d.get_particle()->remove_attribute(parent_key_);
 }
 

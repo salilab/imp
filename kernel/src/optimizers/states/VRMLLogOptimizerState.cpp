@@ -78,7 +78,7 @@ void VRMLLogOptimizerState::write(std::ostream &out, const Particles &ps) const
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); ++it) {
     Particle *p = *it;
     bool wasrefined=false;
-    for (ParticleRefinerConstIterator prit= particle_refiners_begin(); 
+    for (ParticleRefinerConstIterator prit= particle_refiners_begin();
          prit != particle_refiners_end(); ++prit) {
       if ((*prit)->get_can_refine(p)) {
         Particles refined= (*prit)->get_refined(p);

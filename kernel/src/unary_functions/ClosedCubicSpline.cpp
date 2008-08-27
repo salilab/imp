@@ -76,7 +76,7 @@ Float ClosedCubicSpline::evaluate(Float feature) const
   Float b = (feature - lowfeature) / spacing_;
   Float a = 1. - b;
 
-  return a * values_[lowbin] + b * values_[highbin] 
+  return a * values_[lowbin] + b * values_[highbin]
          + ((a * (a * a - 1.)) * second_derivs_[lowbin]
             + (b * (b * b - 1.)) * second_derivs_[highbin])
            * (spacing_ * spacing_) / 6.;

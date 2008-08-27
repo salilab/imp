@@ -53,14 +53,14 @@ void MaxChangeScoreState::do_before_evaluate()
     for (unsigned int j=0; j < keys_.size(); ++j) {
       Float v= (*it)->get_value(keys_[j]);
       Float ov= (*it)->get_value(origkeys_[j]);
-      IMP_LOG(VERBOSE, "Particle " << (*it)->get_index() 
+      IMP_LOG(VERBOSE, "Particle " << (*it)->get_index()
               << " and attribute " << keys_[j]
               << " moved " << std::abs(v - ov) << std::endl);
       max_change_= std::max(max_change_,
                             std::abs(v-ov));
     }
   }
-  IMP_LOG(TERSE, "MaxChange update got " << max_change_ << std::endl); 
+  IMP_LOG(TERSE, "MaxChange update got " << max_change_ << std::endl);
 }
 
 

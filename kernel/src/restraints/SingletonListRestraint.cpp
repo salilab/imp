@@ -1,5 +1,5 @@
 /**
- *  \file SingletonListRestraint.cpp 
+ *  \file SingletonListRestraint.cpp
  *  \brief Apply a score function to a list of particles.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

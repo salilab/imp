@@ -86,12 +86,12 @@ Float TransformedDistancePairScore::evaluate(Particle *a, Particle *b,
                                              DerivativeAccumulator *da) const
 {
   TransformParticle tb(r_,ri_, tc_,c_,b);
-  IMP_LOG(VERBOSE, "Transformed particle is " 
+  IMP_LOG(VERBOSE, "Transformed particle is "
           << tb.get_coordinate(0) << " " << tb.get_coordinate(1)
           << " " << tb.get_coordinate(2) << std::endl);
   return internal::evaluate_distance_pair_score(XYZDecorator(a),
                                                 tb,
-                                                da, f_.get(), 
+                                                da, f_.get(),
                                                 boost::lambda::_1);
 }
 

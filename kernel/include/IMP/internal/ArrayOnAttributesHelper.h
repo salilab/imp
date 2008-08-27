@@ -1,5 +1,5 @@
 /**
- *  \file ArrayOnAttributesHelper.h   
+ *  \file ArrayOnAttributesHelper.h
  *  \brief Various methods for managing an array of attributes
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -117,7 +117,7 @@ private:
       std::ostringstream oss;
       oss << prefix_ << keys_.size();
       keys_.push_back(Key(oss.str().c_str()));
-    }   
+    }
     return keys_[i];
   }
 

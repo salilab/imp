@@ -48,7 +48,7 @@ public:
   }
 
   void show(std::ostream &out=std::cout) const {
-    out << "HarmonicLB: " << Harmonic::get_mean() 
+    out << "HarmonicLB: " << Harmonic::get_mean()
         << " and " << Harmonic::get_k() << std::endl;
   }
 };

@@ -53,10 +53,10 @@ NonbondedListScoreState::~NonbondedListScoreState()
 
 void NonbondedListScoreState::show_statistics(std::ostream &out) const
 {
-  out << "Nonbonded list averaged " 
+  out << "Nonbonded list averaged "
       << static_cast<Float>(number_of_updates_)
       / number_of_rebuilds_ << " steps between rebuilds"
-      << " and overflowed " <<  number_of_overflows_ 
+      << " and overflowed " <<  number_of_overflows_
       << " times" << std::endl;
 }
 
@@ -119,7 +119,7 @@ bool NonbondedListScoreState::update(Float mc, Float rebuild_cost)
       }
     } while (!rebuilt);
   } else {
-    nbl_.erase(std::remove_if(nbl_.begin(), nbl_.end(), 
+    nbl_.erase(std::remove_if(nbl_.begin(), nbl_.end(),
                               internal::HasInactive()),
                nbl_.end());
   }

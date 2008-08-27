@@ -1,5 +1,5 @@
 /**
- *  \file BondDecoratorRestraint.h   
+ *  \file BondDecoratorRestraint.h
  *  \brief Apply a UnaryFunction to all bonded pairs.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -23,7 +23,7 @@ namespace IMP
 class BondDecoratorListScoreState;
 
 //! Restrain all pairs of non-bonded particles
-/** This restraint currently only works for bonds which have their 
+/** This restraint currently only works for bonds which have their
     length set explicitly. Eventually we should add a table for standard
     molecular bonds.
 

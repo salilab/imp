@@ -1,5 +1,5 @@
 /**
- *  \file SphereDistancePairScore.h    
+ *  \file SphereDistancePairScore.h
  *  \brief A score on the distance between the surfaces of two spheres.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -23,7 +23,7 @@ class IMPDLLEXPORT SphereDistancePairScore : public PairScore
   Pointer<UnaryFunction> f_;
   FloatKey radius_;
 public:
-  SphereDistancePairScore(UnaryFunction *f, 
+  SphereDistancePairScore(UnaryFunction *f,
                           FloatKey radius=FloatKey("radius"));
   virtual ~SphereDistancePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,

@@ -26,7 +26,7 @@ FloatKey bond_stiffness_key_;
 
 void BondDecorator::show(std::ostream &out, std::string) const
 {
-  out << "Bond between " 
+  out << "Bond between "
       << get_bonded(0).get_particle()->get_index() << " and "
       << get_bonded(1).get_particle()->get_index();
   if (get_type() != CUSTOM) {
@@ -42,7 +42,7 @@ void BondDecorator::show(std::ostream &out, std::string) const
 
 void BondedDecorator::show(std::ostream &out, std::string) const
 {
-  out << "Particle " << get_particle()->get_index() 
+  out << "Particle " << get_particle()->get_index()
       << " is bonded to ";
   for (unsigned int i=0; i< get_number_of_bonds(); ++i){
     BondDecorator b= get_bond(i);
@@ -51,7 +51,7 @@ void BondedDecorator::show(std::ostream &out, std::string) const
     } else  {
       out << b.get_bonded(0).get_particle()->get_index();
     }
-    out << " ";                              
+    out << " ";
   }
 }
 

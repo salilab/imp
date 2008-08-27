@@ -72,7 +72,7 @@ Float Model::evaluate(bool calc_derivs)
   DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
 
   IMP_LOG(TERSE,
-          "Begin evaluate restraints " 
+          "Begin evaluate restraints "
           << (calc_derivs?"with derivatives":"without derivatives")
           << std::endl);
 

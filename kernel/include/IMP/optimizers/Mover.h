@@ -47,7 +47,7 @@ public:
   virtual ~Mover(){};
 
   //! propose a modification
-  /** \param[in] size A number between 0 and 1 used to scale the proposed 
+  /** \param[in] size A number between 0 and 1 used to scale the proposed
       moves. This number can be either used to scale a continuous move
       or affect the probability of a discrete move.
    */

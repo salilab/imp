@@ -97,8 +97,8 @@ Float TunnelSingletonScore::evaluate(Particle *p,
 
 void TunnelSingletonScore::show(std::ostream& out) const
 {
-  out << "Tunnel score :" << *f_ 
-      << " " << center_ << " " << height_ << " " 
+  out << "Tunnel score :" << *f_
+      << " " << center_ << " " << height_ << " "
       << coordinate_ << std::endl;
 }
 

@@ -25,7 +25,7 @@ class Model;
 
 //! Shared score state.
 /** ScoreStates should be used to generate state that needs to be
-    updated every time Particle attributes change. 
+    updated every time Particle attributes change.
 
     ScoreStates can change the state of particles and restraints.
     However, optimizers may not pick up new particles or changes
@@ -90,7 +90,7 @@ protected:
   /** This is also called prior to every calculation of the model score.
       It should be implemented by ScoreStates in order to provide functionality.
 
-      \note This can't have the same name as the public function due to the 
+      \note This can't have the same name as the public function due to the
       way C++ handles overloading and name lookups--if only one is implemented
       in the child class it will only find that one.
    */

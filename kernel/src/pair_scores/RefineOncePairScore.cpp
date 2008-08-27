@@ -16,7 +16,7 @@
 namespace IMP
 {
 
-RefineOncePairScore::RefineOncePairScore(ParticleRefiner *r, 
+RefineOncePairScore::RefineOncePairScore(ParticleRefiner *r,
                                          PairScore *f): r_(r), f_(f) {}
 
 Float RefineOncePairScore::evaluate(Particle *a, Particle *b,
