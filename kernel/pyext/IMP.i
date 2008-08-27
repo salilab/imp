@@ -14,7 +14,16 @@
 
 /* Return derivatives from unary functions */
 %include "typemaps.i"
-%apply double &OUTPUT { IMP::Float& deriv };
+
+namespace IMP {
+  %typemap(out) std::pair<Float,Float> {
+     PyObject *tup= PyTuple_New(2);
+     PyTuple_SetItem(tup, 0, PyFloat_FromDouble($1.first));
+     PyTuple_SetItem(tup, 1, PyFloat_FromDouble($1.second));
+     $result= tup;
+  }
+}
+
 
 %pythoncode %{
 def check_particle(p, a):

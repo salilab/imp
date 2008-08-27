@@ -56,20 +56,17 @@ public:
       \return Score
    */
   virtual Float evaluate(Float feature) const {
-    Float d;
-    return evaluate_with_derivative(feature, d);
+    return evaluate_with_derivative(feature).first;
   }
 
   //! Calculate harmonic score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
-      \param[out] deriv Partial derivative of the score with respect to
-                        the feature value.
       \return Score
    */
-  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const {
+  virtual FloatPair evaluate_with_derivative(Float feature) const {
     Float e = (feature - mean_);
-    deriv = k_ * e;
-    return 0.5 * k_ * e * e;
+    Float deriv = k_ * e;
+    return std::make_pair(0.5 * k_ * e * e, deriv);
   }
 
   void show(std::ostream &out=std::cout) const {

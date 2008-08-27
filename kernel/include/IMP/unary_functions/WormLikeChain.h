@@ -62,10 +62,8 @@ public:
 
   //! Calculate the WormLikeChain energy given the length
   /** \param[in] l Current length in angstroms
-      \param[out] deriv force in kcal/angstrom mol
-      \return Score
    */
-  virtual Float evaluate_with_derivative(Float fl, Float& deriv) const {
+  virtual FloatPair evaluate_with_derivative(Float fl) const {
     unit::Angstrom l(fl);
     if (l < unit::Angstrom(0)) l=unit::Angstrom(0);
     unit::Piconewton doubled;
@@ -81,9 +79,9 @@ public:
     // convert from picoNewton
     unit::YoctoKilocaloriePerAngstrom du= unit::convert_J_to_Cal(doubled);
 
-    deriv = (du*unit::ATOMS_PER_MOL).get_value();
+    Float deriv = (du*unit::ATOMS_PER_MOL).get_value();
     //std::cout << "Which converts to " << d << std::endl;
-    return evaluate(fl);
+    return std::make_pair(evaluate(fl), deriv);
   }
 
   void show(std::ostream &out=std::cout) const {

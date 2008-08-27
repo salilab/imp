@@ -18,11 +18,11 @@ Float Cosine::evaluate(Float feature) const
          - force_constant_ * std::cos(periodicity_ * feature + phase_);
 }
 
-Float Cosine::evaluate_with_derivative(Float feature, Float& deriv) const
+FloatPair Cosine::evaluate_with_derivative(Float feature) const
 {
-  deriv = force_constant_ * periodicity_
-          * std::sin(periodicity_ * feature + phase_);
-  return evaluate(feature);
+  Float deriv = force_constant_ * periodicity_
+    * std::sin(periodicity_ * feature + phase_);
+  return std::make_pair(evaluate(feature), deriv);
 }
 
 }  // namespace IMP

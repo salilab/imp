@@ -28,9 +28,8 @@ public:
     return (feature-offset_)*slope_;
   }
 
-  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const {
-    deriv= slope_;
-    return evaluate(feature);
+  virtual FloatPair evaluate_with_derivative(Float feature) const {
+    return std::make_pair(evaluate(feature), slope_);
   }
 
   void set_slope(Float f) {

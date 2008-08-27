@@ -8,7 +8,7 @@
 #include "IMP/triplet_scores/AngleTripletScore.h"
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/UnaryFunction.h"
-
+#include <boost/tuple/tuple.hpp>
 namespace IMP
 {
 
@@ -46,7 +46,7 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
 
   if (da) {
     Float deriv;
-    score = f_->evaluate_with_derivative(angle, deriv);
+    boost::tie(score, deriv) = f_->evaluate_with_derivative(angle);
 
     Vector3D unit_rij = rij.get_unit_vector();
     Vector3D unit_rkj = rkj.get_unit_vector();

@@ -40,12 +40,10 @@ public:
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
-      \param[out] deriv Partial derivative of the score with respect to
-                        the feature value.
       \exception ValueException Feature is out of defined range.
       \return Score
    */
-  virtual Float evaluate_with_derivative(Float feature, Float& deriv) const;
+  virtual FloatPair evaluate_with_derivative(Float feature) const;
 
   void show(std::ostream &out=std::cout) const {
     out << "Closed cubic spline of " << values_.size() << " values from "
