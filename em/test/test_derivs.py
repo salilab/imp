@@ -2,7 +2,7 @@
 import modeller
 import IMP
 import sys
-import IMP.modeller_intf
+import IMP.modeller
 import IMP.em
 import EM
 import unittest
@@ -44,12 +44,12 @@ class DerivativesTest(unittest.TestCase):
         self.particles = []
         #add IMP Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
-        t.append(IMP.modeller_intf.IMPRestraints(self.imp_model, self.particles))
+        t.append(IMP.modeller.IMPRestraints(self.imp_model, self.particles))
         self.em_rs = IMP.RestraintSet("em")
         self.imp_model.add_restraint(self.em_rs)
         ## -  create a set of three particles in imp
         npart = 3
-        self.modeller_model = IMP.modeller_intf.create_particles(npart,
+        self.modeller_model = IMP.modeller.create_particles(npart,
                                   self.env, self.imp_model, self.particles)
         # - add the particles attributes ( other than X,Y,Z)
         rad = 1.0
@@ -57,7 +57,7 @@ class DerivativesTest(unittest.TestCase):
         init_particle(self.particles,0,9.0,9.0,9.0,rad,wei,1)
         init_particle(self.particles,1,12.0,3.0,3.0,rad,wei,1)
         init_particle(self.particles,2,3.0,12.0,12.0,rad,wei,1)
-        IMP.modeller_intf.copy_imp_coords_to_modeller(self.particles,self.modeller_model.atoms)
+        IMP.modeller.copy_imp_coords_to_modeller(self.particles,self.modeller_model.atoms)
         #modeller_model.write(file='xxx.pdb')
         self.particle_indexes = IMP.Ints()
         self.particle_indexes.clear()

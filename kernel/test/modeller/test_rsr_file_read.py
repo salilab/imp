@@ -4,7 +4,7 @@ from modeller import *
 import IMP
 import IMP.test
 import IMP.pdb
-import IMP.modeller_intf
+import IMP.modeller
 
 class ModellerRestraintsTests(IMP.test.TestCase):
 
@@ -83,7 +83,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
             modmodel.restraints.write(file='test.rsr')
             modenergy = selection(modmodel).energy()[0]
 
-            rsrs = IMP.modeller_intf.load_restraints_file('test.rsr', protein)
+            rsrs = IMP.modeller.load_restraints_file('test.rsr', protein)
             os.unlink('test.rsr')
             rset = IMP.RestraintSet()
             m.add_restraint(rset)

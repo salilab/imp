@@ -1,10 +1,35 @@
 """Interface between IMP and MODELLER."""
 
-import modeller
-import modeller.optimizers
 import math
+import imp
 import IMP
 import IMP.utils
+
+def _import_modeller_optimizers():
+    """Do the equivalent of "import modeller.optimizers".
+       (We can't do the regular import because Python tries a relative import
+       first, and that would load ourselves.) This is an absolute import. Once
+       we can require that everybody uses Python 2.6, this should no longer
+       be required."""
+    modeller = _import_module("modeller", "modeller", None)
+    optimizers = _import_module("optimizers", "modeller.optimizers", modeller)
+    modeller.optimizers = optimizers
+    return modeller
+
+def _import_module(partname, fqname, parent):
+    """Import a single Python module, possibly from a parent."""
+    fp, pathname, description = imp.find_module(partname,
+                                                parent and parent.__path__)
+    try:
+        m = imp.load_module(fqname, fp, pathname, description)
+    finally:
+        # imp module requires that we explicitly close fp, even on exception
+        if fp:
+            fp.close()
+    return m
+
+modeller = _import_modeller_optimizers()
+
 
 class IMPRestraints(modeller.terms.energy_term):
     """A Modeller restraint using all defined IMP restraints. Useful if you want
