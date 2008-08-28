@@ -1,7 +1,32 @@
 """pdb reader"""
 
 import IMP
-import modeller.scripts
+import imp
+
+def _import_modeller_scripts():
+    """Do the equivalent of "import modeller.scripts".
+       (We can't do the regular import because Python tries a relative import
+       first, and that would load the modeller module in IMP.) This is an
+       absolute import. Once we can require that everybody uses Python 2.6,
+       this should no longer be required."""
+    modeller = _import_module("modeller", "modeller", None)
+    scripts = _import_module("scripts", "modeller.scripts", modeller)
+    modeller.scripts = scripts
+    return modeller
+
+def _import_module(partname, fqname, parent):
+    """Import a single Python module, possibly from a parent."""
+    fp, pathname, description = imp.find_module(partname,
+                                                parent and parent.__path__)
+    try:
+        m = imp.load_module(fqname, fp, pathname, description)
+    finally:
+        # imp module requires that we explicitly close fp, even on exception
+        if fp:
+            fp.close()
+    return m
+
+modeller = _import_modeller_scripts()
 
 def copy_residue(r, model):
     """Copy residue information from modeller to imp"""

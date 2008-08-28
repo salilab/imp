@@ -3,7 +3,7 @@ import os.path
 Import('env')
 
 # Python files
-files = ['modeller_intf.py', 'test.py', 'pdb.py', 'utils.py']
+files = ['modeller.py', 'test.py', 'pdb.py', 'utils.py']
 
 # Install in lib directory:
 pymod = env.Install('#/build/libs/IMP/', files)
