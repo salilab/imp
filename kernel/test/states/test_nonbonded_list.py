@@ -86,7 +86,8 @@ class TestNBL(IMP.test.TestCase):
         for i in range(0,10):
             score= m.evaluate(False)
             for d in ds:
-                d.randomize_in_sphere(d.get_vector(), 2.0)
+                d.set_coordinates(IMP.random_vector_in_sphere(d.get_vector(),
+                                                              2.0))
 
     def do_test_bl(self, ss):
         """Test the bond decorator list"""
@@ -148,8 +149,8 @@ class TestNBL(IMP.test.TestCase):
         print "Index is " +str(p.get_index().get_index())
         d=IMP.XYZDecorator.create(p)
         d.set_coordinates_are_optimized(True)
-        d.randomize_in_box(IMP.Vector3D(0,0,0),
-                           IMP.Vector3D(10,10,10));
+        d.set_coordinates(IMP.random_vector_in_box(IMP.Vector3D(0,0,0),
+                                                   IMP.Vector3D(10,10,10)))
         nps= IMP.Particles([p])
         s.add_particles(nps)
         score= m.evaluate(False)
@@ -193,10 +194,12 @@ class TestNBL(IMP.test.TestCase):
             score= m.evaluate(False)
             for p in ps0:
                 d= IMP.XYZDecorator.cast(p)
-                d.randomize_in_sphere(d.get_vector(), 1)
+                d.set_coordinates(IMP.random_vector_in_sphere(d.get_vector(),
+                                                              1))
             for p in ps1:
                 d= IMP.XYZDecorator.cast(p)
-                d.randomize_in_sphere(d.get_vector(), 1)
+                d.set_coordinates(IMP.random_vector_in_sphere(d.get_vector(),
+                                                              1))
 
 
     def do_test_spheres(self, ss):

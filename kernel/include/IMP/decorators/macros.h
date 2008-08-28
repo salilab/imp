@@ -261,6 +261,15 @@ protection:                                                             \
 #define IMP_DECORATOR_ARRAY_INIT(DecoratorType, name)   \
   name##_data_.initialize();
 
+//! add a method to get a key
+/** One has to make sure to call the
+    decorator_initialize_static_data method first
+ */
+#define IMP_DECORATOR_GET_KEY(KeyType, key_name, variable_name)\
+  static KeyType get_##key_name() {                            \
+  decorator_initialize_static_data();                          \
+  return variable_name;                                        \
+  }
 
 #define IMP_ATOM_TYPE_INDEX 8974343
 #define IMP_RESIDUE_TYPE_INDEX 90784334

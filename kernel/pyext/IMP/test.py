@@ -84,7 +84,7 @@ class TestCase(unittest.TestCase):
             p= IMP.Particle()
             model.add_particle(p)
             d= IMP.XYZDecorator.create(p)
-            d.randomize_in_box(lbv, ubv)
+            d.set_coordinates(IMP.random_vector_in_box(lbv, ubv))
             ps.append(p)
             d.set_coordinates_are_optimized(True)
         return ps

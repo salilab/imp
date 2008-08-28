@@ -15,8 +15,8 @@ class TestBondCover(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d= IMP.XYZDecorator.create(p)
-            d.randomize_in_box(IMP.Vector3D(0,0,0),
-                               IMP.Vector3D(10,10,10))
+            d.set_coordinates(IMP.random_vector_in_box(IMP.Vector3D(0,0,0),
+                                                       IMP.Vector3D(10,10,10)))
             ps.append(p)
         bds= []
         bb= IMP.BondedDecorator.create(ps[0])
