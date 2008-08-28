@@ -17,8 +17,8 @@ for i in range(0,np):
     p= IMP.Particle()
     pi= m.add_particle(p)
     d= IMP.XYZDecorator.create(p)
-    d.randomize_in_box(IMP.Vector3D(0,0,0),
-                       IMP.Vector3D(10,10,10))
+    d.set_coordinates(IMP.random_vector_in_box(IMP.Vector3D(0,0,0),
+                                               IMP.Vector3D(10,10,10)))
     d.set_coordinates_are_optimized(True)
     p.add_attribute(rk, radius, False)
     chain.append(p)

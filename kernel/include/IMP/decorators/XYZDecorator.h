@@ -8,15 +8,12 @@
 #ifndef __IMP_XYZ_DECORATOR_H
 #define __IMP_XYZ_DECORATOR_H
 
-#include <vector>
-#include <deque>
-#include <limits>
-
-#include "../Particle.h"
-#include "../Model.h"
 #include "../DecoratorBase.h"
 #include "../Vector3D.h"
 #include "utility.h"
+
+#include <vector>
+#include <limits>
 
 namespace IMP
 {
@@ -107,20 +104,20 @@ public:
     return Vector3D(get_x(), get_y(), get_z());
   }
 
+  //! Get the vector of derivatives.
+  /** Somewhat suspect based on wanting a Point/Vector differentiation
+      but we don't have points */
+  Vector3D get_derivative_vector() const {
+    return Vector3D(get_coordinate_derivative(0),
+                    get_coordinate_derivative(1),
+                    get_coordinate_derivative(2));
+  }
+
   //! Get a vector containing the keys for x,y,z
   /** This is quite handy for initializing movers and things.
    */
-  static const FloatKeys get_xyz_keys() {
-    decorator_initialize_static_data();
-    return key_;
-  }
+  IMP_DECORATOR_GET_KEY(FloatKeys, xyz_keys, key_)
 
-  //! Generate random coordinates in a sphere centered at the vector
-  void randomize_in_sphere(const Vector3D &center, float radius);
-
-  //! Generate random coordinates in a box defined by the vectors
-  void randomize_in_box(const Vector3D &lower_corner,
-                        const Vector3D &upper_corner);
 protected:
   static FloatKey get_coordinate_key(unsigned int i) {
     IMP_check(i <3, "Out of range coordinate",

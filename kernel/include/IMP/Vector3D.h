@@ -11,6 +11,7 @@
 #include "IMP_config.h"
 #include "base_types.h"
 #include "macros.h"
+#include "exception.h"
 
 #include <cmath>
 
@@ -22,7 +23,11 @@ namespace IMP
  */
 class IMPDLLEXPORT Vector3D
 {
+  bool is_default() const {return false;}
 public:
+  // public for swig
+  typedef Vector3D This;
+
   //! Initialize the vector from separate x,y,z values.
   Vector3D(Float x, Float y, Float z) {
     vec_[0] = x;
@@ -32,6 +37,8 @@ public:
 
   //! Default constructor
   Vector3D() {}
+
+  IMP_COMPARISONS_3(vec_[0], vec_[1], vec_[2]);
 
   //! \return A single component of this vector (0-2).
   Float operator[](unsigned int i) const {
@@ -149,14 +156,6 @@ public:
         << operator[](2) << ")";
   }
 
-  bool operator<(const Vector3D &o) const {
-    for (unsigned int i=0; i< 3; ++i) {
-      if (operator[](i) < o[i]) return true;
-      else if (operator[](i) > o[i]) return false;
-    }
-    return false;
-  }
-
 private:
   Float vec_[3];
 };
@@ -169,6 +168,47 @@ inline Vector3D operator*(Float s, const Vector3D &o) {
   return Vector3D(o[0]*s,
                   o[1]*s,
                   o[2]*s);
+}
+
+//! Generate a random vector in a box with uniform density
+IMPDLLEXPORT Vector3D
+random_vector_in_box(const Vector3D &lb=Vector3D(0,0,0),
+                     const Vector3D &ub=Vector3D(10,10,10));
+
+//! Generate a random vector in a sphere with uniform density
+IMPDLLEXPORT Vector3D
+random_vector_in_sphere(const Vector3D &center=Vector3D(0,0,0),
+                        Float radius=1);
+
+//! Generate a random vector on a sphere with uniform density
+IMPDLLEXPORT Vector3D
+random_vector_on_sphere(const Vector3D &center=Vector3D(0,0,0),
+                        Float radius=1);
+
+struct SpacesIO
+{
+  const Vector3D &v_;
+  SpacesIO(const Vector3D &v): v_(v){}
+};
+
+
+inline std::ostream &operator<<(std::ostream &out, const SpacesIO &s)
+{
+  out << s.v_[0] << " " << s.v_[1] << " " << s.v_[2];
+  return out;
+}
+
+struct CommasIO
+{
+  const Vector3D &v_;
+  CommasIO(const Vector3D &v): v_(v){}
+};
+
+
+inline std::ostream &operator<<(std::ostream &out, const CommasIO &s)
+{
+  out << s.v_[0] << ", " << s.v_[1] << ", " << s.v_[2];
+  return out;
 }
 
 } // namespace IMP
