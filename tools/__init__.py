@@ -4,6 +4,7 @@ import os.path
 import re
 import sys
 from SCons.Script import *
+from hierarchy import InstallHierarchy
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
            "get_sharedlib_environment", "invalidate_environment", "embed"]
@@ -188,6 +189,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace('-no_archive', '')
     except ValueError:
         pass
+    env.AddMethod(hierarchy.InstallHierarchy)
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -g")

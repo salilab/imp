@@ -1,6 +1,3 @@
-import os.path
-Import('env')
-
 files = ['AttributeTable.h',  'graph_base.h',  'Grid3D.h', 'Vector.h',
          'ref_counting.h', 'ObjectContainer.h', 'ParticleGrid.h',
          'kernel_version_info.h', 'constants.h', 'units.h',
@@ -8,10 +5,5 @@ files = ['AttributeTable.h',  'graph_base.h',  'Grid3D.h', 'Vector.h',
          'ArrayOnAttributesHelper.h', 'Unit.h', 'ExponentialNumber.h',
          'evaluate_distance_pair_score.h']
 
-# Place in build directory:
-env.Install('#/build/include/IMP/internal', files)
-
-# Install the include files:
-includedir = os.path.join(env['includedir'], 'IMP', 'internal')
-inst = env.Install(includedir, files)
-env.Alias('install', inst)
+files = [File(f) for f in files]
+Return('files')

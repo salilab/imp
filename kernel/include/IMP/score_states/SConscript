@@ -1,15 +1,7 @@
-import os.path
-Import('env')
-
 files = ['BondedListScoreState.h', 'NonbondedListScoreState.h',
          'BipartiteNonbondedListScoreState.h', 'MaxChangeScoreState.h',
          'BondDecoratorListScoreState.h', 'AllNonbondedListScoreState.h',
          'GravityCenterScoreState.h', 'CoverBondsScoreState.h']
 
-# Place in build directory:
-env.Install('#/build/include/IMP/score_states', files)
-
-# Install the include files:
-includedir = os.path.join(env['includedir'], 'IMP', 'score_states')
-inst = env.Install(includedir, files)
-env.Alias('install', inst)
+files = [File(f) for f in files]
+Return('files')
