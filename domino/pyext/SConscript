@@ -10,8 +10,8 @@ e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('#/build/libs/_IMP_domino', 'DOMINO.i',
-                         SWIGFLAGS='-python -c++ -naturalvar -IDOMINO ' + \
-                                   '-Ibuild/include ')
+                         SWIGPATH='#/build/include',
+                         SWIGFLAGS='-python -c++ -naturalvar')
 # .py file should also be generated:
 gen_pymod = File('IMP_domino.py')
 e.Depends(gen_pymod, pyext)

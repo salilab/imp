@@ -13,8 +13,8 @@ e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('#/build/libs/_IMP_em', 'IMPEM.i',
-                         SWIGFLAGS='-python -c++ -naturalvar -IEM ' + \
-                                   '-Ibuild/include -I' + e['EM_CPPPATH'])
+                         SWIGPATH=['#/build/include', e['EM_CPPPATH']],
+                         SWIGFLAGS='-python -c++ -naturalvar')
 # .py file should also be generated:
 gen_pymod = File('IMP_em.py')
 e.Depends(gen_pymod, pyext)
