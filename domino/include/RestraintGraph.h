@@ -57,13 +57,16 @@ typedef std::pair<unsigned int, unsigned int> Pair;
 class IMPDOMINOEXPORT RestraintGraph
 {
 public:
-  RestraintGraph();
+  //! Constructor
+  /** \param[in] filename the file holds the graph structure (nodes and edges)
+   */
+  RestraintGraph(const std::string & filename, Model *mdl);
   //    void clear_states();
   void set_model(IMP::Model *m_);
   void initialize_graph(int number_of_nodes);
-
+  void parse_jt_file(const std::string &filename, Model *mdl);
   void move_model2global_minimum() const;
-
+  CombState * get_minimum_comb() const;
   //! Creates a new node and add it to the graph
   /** \param[in] node_index the index of the node
       \param[in] particles  the particles that are part of the node
@@ -102,7 +105,7 @@ public:
    */
   void show_sampling_space(std::ostream& out = std::cout) const;
 
-  float move_model2state(unsigned int state_index) const;
+  //  float move_model2state(unsigned int state_index) const;
 
   Float get_minimum_score() const {
     std::stringstream err_msg;
@@ -111,7 +114,7 @@ public:
     IMP_assert(infered, err_msg.str());
     return (*(min_combs->begin()))->get_total_score();
   }
-
+  void clear();
 protected:
   //! Determine a DFS
   /** \param[in]  root_ind the index of the node from which the DFS starts
@@ -164,6 +167,7 @@ protected:
                                   boost::property<boost::edge_weight_t,
                                                   boost::vecS> > Graph;
   Pair get_edge_key(unsigned int node1_ind, unsigned int node2_ind) const;
+ protected:
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
   std::map<Pair, JEdge *> edge_data;

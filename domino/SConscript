@@ -16,7 +16,7 @@ ver_cpp, ver_h = \
 lib = SConscript('src/SConscript', exports='ver_cpp')
 SConscript('include/SConscript', exports='ver_h')
 pyext = SConscript('pyext/SConscript')
-#test = SConscript('test/SConscript')
+test = SConscript('test/SConscript')
 #emenv.Depends(test, [pyext, lib])
 
 Return('lib')

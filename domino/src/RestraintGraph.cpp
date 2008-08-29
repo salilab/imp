@@ -1,10 +1,10 @@
 /**
- *  \file RestraintGraph.cpp
- *  \brief creates a MRF from a set of particles and restraints
- *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
- *
- */
+*  \file RestraintGraph.cpp
+*  \brief creates a MRF from a set of particles and restraints
+*
+*  Copyright 2007-8 Sali Lab. All rights reserved.
+*
+*/
 
 #include "IMP/domino/RestraintGraph.h"
 #include <algorithm>
@@ -13,13 +13,101 @@
 
 namespace IMP
 {
-
 namespace domino
 {
-
-RestraintGraph::RestraintGraph()
+  void RestraintGraph::parse_jt_file(const std::string &filename, Model *mdl)
+  {
+    // for fast access to particle by its name, create a map
+    std::map<std::string, Particle *> p_map;
+    for (Model::ParticleIterator it = mdl->particles_begin();
+         it != mdl->particles_end(); it++ ) {
+      p_map[(*it)->get_value(IMP::StringKey("name"))] = *it;
+    }
+    // load the nodes and edges
+    std::ifstream myfile(filename.c_str());
+    char line[1024];
+    unsigned int number_of_nodes=0;
+    unsigned int status = 0;
+    std::vector<std::string> v;
+    std::stringstream err_msg;
+    while (myfile.getline(line, 1024) and (status != 2)) {
+      v.clear();
+      char *pch = strtok(line, " ");
+      while (pch != NULL) {
+        v.push_back(std::string(pch));
+        pch = strtok(NULL, " ");
+      }
+      if (status == 0) {
+        if (v[0] == "nodes:") {
+          status = 1;
+        }
+        else {
+          err_msg.clear();
+          err_msg << "RestraintGraph::parse_jt_file wrong file format:";
+          IMP_assert(true, err_msg.str());
+        }
+      }
+      else if (status==1) {
+        if  (v[0]=="edges:") {
+          status=2;
+        }
+        else {
+          number_of_nodes++;
+        }
+      }
+    }
+    initialize_graph(number_of_nodes);
+    std::pair<int, int> last_key;
+    status = 0;
+    unsigned int node_index = 0;
+    // move back to the beginning of the file
+    myfile.seekg (0);
+    while (myfile.getline(line, 1024)) {
+      v.clear();
+      char *pch = strtok(line, " ");
+      while (pch != NULL) {
+        v.push_back(std::string(pch));
+        pch = strtok(NULL, " ");
+      }
+      if (status == 0) {
+        if (v[0] == "nodes:") {
+          status = 1;
+        }
+        else {
+          err_msg.clear();
+          err_msg << "RestraintGraph::parse_jt_file wrong file format:";
+          IMP_assert(true, err_msg.str());
+        }
+      }
+      else if (status==1) {
+        if  (v[0]=="edges:") {
+          status=2;
+        }
+        else {
+          Particles ps;
+          for(std::vector<std::string>::iterator it =  v.begin();
+              it != v.end(); it++) {
+            ps.push_back(p_map[*it]);
+          }
+          add_node(node_index, ps);
+          node_index = node_index+1;
+        }
+      }
+      else if (status ==2) {
+        if (v.size() != 2) {
+          err_msg.clear();
+          err_msg << "RestraintGraph::parse_jt_file wrong format of edge line:";
+          IMP_assert(true, err_msg.str());
+        }
+        add_edge(atoi(v[0].c_str()),atoi(v[1].c_str()));
+      }
+    }
+  }
+RestraintGraph::RestraintGraph(const std::string &filename, Model *mdl)
 {
+  parse_jt_file(filename, mdl);
   infered = false;
+  min_combs = new std::vector<CombState *>();
 }
 
 void RestraintGraph::set_model(IMP::Model *m_)
@@ -109,6 +197,7 @@ void RestraintGraph::set_sampling_space(const DiscreteSampler &ds_)
     JNode *j = node_data[vi];
     j->init_sampling(ds_);
   }
+  //  std::cout<<"size of edge data: " << edge_data.size() << std::endl;
   for (std::map<Pair, JEdge *>::iterator it = edge_data.begin();
        it != edge_data.end(); it++) {
     it->second->init_separators();
@@ -141,13 +230,21 @@ JNode * RestraintGraph::get_node(const Particles &p)
 
 void RestraintGraph::initialize_potentials(Restraint &r, Float weight)
 {
-  JNode *jn = get_node(r.get_particles());
+  Particles r_particles;
+  ParticlesList pl = r.get_interacting_particles();
+  for(ParticlesList::iterator it1 = pl.begin();
+      it1 != pl.end(); it1++){
+    for(Particles::iterator it2 = it1->begin(); it2 != it1->end(); it2++) {
+      r_particles.push_back(*it2);
+     }
+  }
+  JNode *jn = get_node(r_particles);
   if (jn == NULL) {
     std::cout << "PROBLEM - no node - the restraint : ";
     r.show(std::cout);
     std::cout << " between particles: ";
-    for (Particles::const_iterator ii = r.particles_begin();
-         ii < r.particles_end();ii++) {
+    for (Particles::const_iterator ii = r_particles.begin();
+         ii < r_particles.end();ii++) {
       std::cout << (*ii)->get_index().get_index() << ","
                 << (*ii)->get_value(IMP::StringKey("name")) << " :: ";
     }
@@ -189,12 +286,15 @@ void  RestraintGraph::infer()
   dfs_order(root);
   collect_evidence(root);
   distribute_evidence(root);
-  min_combs = node_data[root]->find_minimum();
+  //min_combs = node_data[root]->find_minimum();
+  std::vector<CombState *>*  temp_min_combs = node_data[root]->find_minimum();
   // distribute the minimu combinations and return the final full comb state.
-  CombState *min_comb = *(min_combs->begin());
+  CombState *min_comb = *(temp_min_combs->begin());
   distribute_minimum(root, min_comb);
   std::cout << "==THE MINIMUM COMBINATION: ============== " << std::endl;
   min_comb->show();
+  min_combs->push_back(min_comb);
+  delete temp_min_combs;
   infered = true;
 }
 
@@ -212,7 +312,6 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
     //get the separator that corresponds to the father's minimum state.
     JEdge *e = get_edge(father_ind, *child_it);
     CombState *min_father_separator = e->get_separator(*min_comb);
-    min_father_separator->show();
     std::vector<CombState *> child_min_state;
     child_min_state = child_data->min_marginalize(*min_father_separator);
     std::vector<CombState*>::const_iterator it = child_min_state.begin();
@@ -299,10 +398,10 @@ void RestraintGraph::move_model2state_rec(unsigned int father_ind,
        it != node_data.end(); it++) {
     CombState *node_state = best_state.get_partial(*((*it)->get_particles()));
     (*it)->move2state(*node_state);
-    free(node_state);
+    delete(node_state);
   }
 }
-
+  /*
 float RestraintGraph::move_model2state(unsigned int state_index) const
 {
   std::stringstream err_msg;
@@ -313,7 +412,7 @@ float RestraintGraph::move_model2state(unsigned int state_index) const
   move_model2state_rec(root, *best_state);
   return best_state->get_total_score();
 }
-
+  */
 void RestraintGraph::move_model2global_minimum() const
 {
   std::stringstream err_msg;
@@ -323,7 +422,29 @@ void RestraintGraph::move_model2global_minimum() const
   CombState *best_state = *(min_combs->begin());
   move_model2state_rec(root, *best_state);
 }
-
+CombState *RestraintGraph::get_minimum_comb() const
+{
+  std::stringstream err_msg;
+  err_msg << "RestraintGraph::move_model2global_minimum the "
+          << "graph has not been infered";
+  IMP_assert(infered, err_msg.str());
+  CombState *best_state = *(min_combs->begin());
+  move_model2state_rec(root, *best_state);
+  CombState *return_comb = new CombState(*best_state);
+  return return_comb;
+}
+void RestraintGraph::clear() {
+  for(std::map<Pair, JEdge *>::iterator it = edge_data.begin();
+      it != edge_data.end();it++) {
+    it->second->clear();
+  }
+  for(std::vector<JNode *>::iterator it = node_data.begin();
+      it != node_data.end();it++) {
+    (*it)->clear();
+  }
+  infered = false;
+  min_combs->clear();
+}
 } // namespace domino
 
 } // namespace IMP
