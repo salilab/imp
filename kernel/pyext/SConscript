@@ -9,7 +9,8 @@ e.Append(LIBPATH=['#/build/libs'], LIBS='imp')
 
 # Build the Python extension from SWIG interface file:
 pyext = e.LoadableModule('#/build/libs/_IMP', 'IMP.i',
-                         SWIGFLAGS='-python -c++ -naturalvar -Ibuild/include')
+                         SWIGPATH='#/build/include',
+                         SWIGFLAGS='-python -c++ -naturalvar')
 # .py file should also be generated:
 gen_pymod = File('IMP.py')
 e.Depends(gen_pymod, pyext)
