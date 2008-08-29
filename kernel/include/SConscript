@@ -1,14 +1,10 @@
 Import('env')
 
-files = ['IMP.h']
-
-# Place in build directory:
-env.Install('#/build/include', files)
+# Subdirectories
+files = SConscript('IMP/SConscript')
 
 # Install the include files:
 includedir = env['includedir']
-inst = env.Install(includedir, files)
+inst = env.InstallHierarchy(includedir, 'IMP',
+                            'IMP, an Integrative Modeling Platform.', files)
 env.Alias('install', inst)
-
-# Subdirectories
-SConscript('IMP/SConscript')

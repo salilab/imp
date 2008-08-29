@@ -1,15 +1,7 @@
-import os.path
-Import('env')
-
 files = ['ConjugateGradients.h', 'SteepestDescent.h', 'MolecularDynamics.h',
          'MoverBase.h', 'MonteCarlo.h', 'Mover.h', 'BrownianDynamics.h']
 
-# Place in build directory:
-env.Install('#/build/include/IMP/optimizers', files)
-
-# Install the include files:
-includedir = os.path.join(env['includedir'], 'IMP', 'optimizers')
-inst = env.Install(includedir, files)
-env.Alias('install', inst)
-SConscript('states/SConscript')
-SConscript('movers/SConscript')
+files = [File(f) for f in files] \
+        + SConscript('states/SConscript') \
+        + SConscript('movers/SConscript')
+Return('files')

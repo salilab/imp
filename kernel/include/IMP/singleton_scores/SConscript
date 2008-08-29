@@ -1,13 +1,5 @@
-import os.path
-Import('env')
-
 files = ['DistanceToSingletonScore.h', 'AttributeSingletonScore.h',
          'TunnelSingletonScore.h']
 
-# Place in build directory:
-env.Install('#/build/include/IMP/singleton_scores', files)
-
-# Install the include files:
-includedir = os.path.join(env['includedir'], 'IMP', 'singleton_scores')
-inst = env.Install(includedir, files)
-env.Alias('install', inst)
+files = [File(f) for f in files]
+Return('files')

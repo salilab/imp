@@ -1,6 +1,3 @@
-import os.path
-Import('env')
-
 files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
          'Particle.h', 'ScoreState.h', 'OptimizerState.h', 'IMP_config.h',
          'log.h', 'DerivativeAccumulator.h',
@@ -10,22 +7,17 @@ files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
          'TripletScore.h', 'exception.h', 'VersionInfo.h',
          'Object.h', 'Pointer.h', 'RefCountedObject.h', 'ParticleRefiner.h']
 
-# Place in build directory:
-env.Install('#/build/include/IMP', files)
-
-# Install the include files:
-includedir = os.path.join(env['includedir'], 'IMP')
-inst = env.Install(includedir, files)
-env.Alias('install', inst)
-
 # Subdirectories
-SConscript('restraints/SConscript')
-SConscript('optimizers/SConscript')
-SConscript('decorators/SConscript')
-SConscript('internal/SConscript')
-SConscript('unary_functions/SConscript')
-SConscript('pair_scores/SConscript')
-SConscript('singleton_scores/SConscript')
-SConscript('triplet_scores/SConscript')
-SConscript('score_states/SConscript')
-SConscript('particle_refiners/SConscript')
+files = [File(f) for f in files] \
+        + SConscript('restraints/SConscript') \
+        + SConscript('optimizers/SConscript') \
+        + SConscript('decorators/SConscript') \
+        + SConscript('internal/SConscript') \
+        + SConscript('unary_functions/SConscript') \
+        + SConscript('pair_scores/SConscript') \
+        + SConscript('singleton_scores/SConscript') \
+        + SConscript('triplet_scores/SConscript') \
+        + SConscript('score_states/SConscript') \
+        + SConscript('particle_refiners/SConscript')
+
+Return('files')
