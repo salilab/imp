@@ -65,9 +65,8 @@ public:
 
   const std::map<std::string, float> * get_old_separators(JNode *n) const;
   const std::map<std::string, float> * get_new_separators(JNode *n) const;
-
-
-  void show(std::ostream& out) const;
+  void show(std::ostream& out=std::cout) const;
+  void clear();
 protected:
   //! Get the combination key for the intersection between the other_comb
   //! and the edge separators

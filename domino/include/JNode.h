@@ -107,25 +107,26 @@ public:
     const std::map<std::string, float>  &new_score_separators,
     const Particles &intersection_particles);
   const DiscreteSampler* get_sampler() {
-    return ds;
+    return ds_;
   }
   long number_of_states() const {
     long number_of_states = 1;
     for (Particles::const_iterator it = particles.begin();
          it != particles.end(); it++) {
-      number_of_states *=  ds->get_space_size(**it);
+      number_of_states *=  ds_->get_space_size(**it);
     }
     return number_of_states;
   }
   //! Move the system to the state encoded in the class
   void move2state(const CombState &cs) const;
+  void clear();
 protected:
-  std::vector<Int> sorted_particle_indexes; // needed for calculating
+  std::vector<Int> sorted_particle_indexes_; // needed for calculating
                                             // intersections with other nodes.
   Particles particles; //the particles that are part of the node
   unsigned int node_ind;
   std::map<std::string, CombState *> comb_states;
-  const DiscreteSampler *ds;
+  const DiscreteSampler *ds_;
 };
 
 } // namespace domino

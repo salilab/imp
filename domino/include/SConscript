@@ -5,9 +5,9 @@ Import('ver_h', 'env')
 exp_h = env.IMPModuleExports('domino_exports.h', env.Value('domino'))
 
 files = ('CombState.h', 'JNode.h', 'SimpleDiscreteRestraint.h',
-         'DiscreteSampler.h', 'OptimizationWorkFlow.h',
-         'SimpleDiscreteSpace.h', 'DominoOptimizer.h', 'RestraintGraph.h',
-         'JEdge.h', exp_h, ver_h)
+         'DiscreteSampler.h','SimpleDiscreteSpace.h', 'DominoOptimizer.h',
+         'RestraintGraph.h','JEdge.h', exp_h, ver_h)
+
 
 # Install the include files:
 includedir = os.path.join(env['includedir'], 'IMP')

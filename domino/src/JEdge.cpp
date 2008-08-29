@@ -21,6 +21,11 @@ JEdge::JEdge(JNode *source, JNode *target)
     target_ = source;
     source_ = target;
   }
+  separators_ =   std::map<std::string, CombState *>();
+  source_old_score_separators_ =   std::map<std::string, float>();
+  target_old_score_separators_ =   std::map<std::string, float>();
+  source_new_score_separators_ =   std::map<std::string, float>();
+  target_new_score_separators_ =   std::map<std::string, float> ();
 }
 
 const std::map<std::string, float> * JEdge::get_old_separators(JNode *n) const
@@ -56,6 +61,7 @@ void JEdge::init_separators()
     source_new_score_separators_[e->first] = 0.0;
     target_new_score_separators_[e->first] = 0.0;
   }
+  delete intersection_set;
 }
 
 void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
@@ -84,8 +90,8 @@ void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
     min_p_all = fn->min_marginalize(*(e->second));
     CombState *min_p = min_p_all[0];
     //      (*fnmp)[e->first]=min_p;
-    std::cout << "JEdge::min_marginalize for separator : " << e->first
-              <<  " : the optimal from combination is : " << min_p << std::endl;
+    //    std::cout << "JEdge::min_marginalize for separator : " << e->first
+    //    <<  " : the optimal from combination is : " << min_p << std::endl;
     (*tnoss)[e->first] = (*tnnss)[e->first];
     (*tnnss)[e->first] = min_p->get_total_score();
     // I think that we should release min_p here - it was allocated
@@ -94,20 +100,14 @@ void JEdge::min_marginalize(JNode *from_node, JNode *to_node)
 }
 CombState * JEdge::get_separator(const CombState &other_comb) const
 {
-  std::cout << " JEdge::get_separator an edge between nodes "
+  /*std::cout << " JEdge::get_separator an edge between nodes "
             << source_->get_node_index() << "  " << target_->get_node_index()
-            << std::endl;
+            << std::endl;*/
   std::string key = generate_key(other_comb);
-  std::cout << " JEdge::get_separator start2 " << key << std::endl;
-  std::cout << " JEdge::get_separator start33 " << separators_.size()
-            << std::endl;
-  std::cout << " JEdge::get_separator start333 " << separators_.begin()->first
-            << std::endl;
   std::stringstream error_message;
   error_message << " JEdge::get_separator a combination with index  : "
                 << key << " is not part of the edge separators" ;
   IMP_assert(separators_.find(key) != separators_.end(), error_message.str());
-  std::cout << " JEdge::get_separator start3 " << std::endl;
   return separators_.find(key)->second;
 }
 
@@ -115,7 +115,9 @@ const std::string JEdge::generate_key(const CombState &other_comb) const
 {
   Particles *intersection_set = new Particles();
   source_->get_intersection(*target_, *intersection_set);
-  return other_comb.partial_key(intersection_set);
+  std::string key = other_comb.partial_key(intersection_set);
+  delete (intersection_set);
+  return key;
 }
 
 void JEdge::show(std::ostream& out) const
@@ -131,7 +133,17 @@ void JEdge::show(std::ostream& out) const
   }
   out << std::endl;
 }
-
+void JEdge::clear() {
+  for(std::map<std::string, CombState *>::iterator it =  separators_.begin();
+    it != separators_.end(); it++) {
+    delete(it->second);
+  }
+  separators_.clear();
+  source_old_score_separators_.clear();
+  target_old_score_separators_.clear();
+  source_new_score_separators_.clear();
+  target_new_score_separators_.clear();
+}
 } // namespace domino
 
 } // namespace IMP

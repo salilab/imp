@@ -6,8 +6,9 @@ e = get_sharedlib_environment(env, 'IMPDOMINO_EXPORTS', cplusplus=True)
 e.Append(CPPPATH=['#/build/include', e['BOOST_CPPPATH']])
 e.Append(LIBPATH=['#/build/libs'], LIBS=['imp'])
 
-files = ('CombState.cpp', 'JNode.cpp', 'JEdge.cpp', 'RestraintGraph.cpp',
-         'DominoOptimizer.cpp', 'SimpleDiscreteRestraint.cpp', ver_cpp)
+files = ('CombState.cpp', 'JNode.cpp', 'JEdge.cpp',
+         'RestraintGraph.cpp', 'DominoOptimizer.cpp',
+         'SimpleDiscreteRestraint.cpp', ver_cpp)
 
 # Build the shared library:
 lib = e.SharedLibrary('#/build/libs/imp_domino', files)

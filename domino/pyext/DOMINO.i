@@ -3,8 +3,8 @@
 %{
 #include "IMP.h"
 #include "IMP/domino/DiscreteSampler.h"
+#include "IMP/domino/CombState.h"
 #include "IMP/domino/RestraintGraph.h"
-#include "IMP/domino/OptimizationWorkFlow.h"
 #include "IMP/domino/SimpleDiscreteSpace.h"
 #include "IMP/domino/DominoOptimizer.h"
 #include "IMP/domino/SimpleDiscreteRestraint.h"
@@ -13,6 +13,8 @@
 %include "kernel/pyext/IMP_macros.i"
 
 /* Ignore shared object import/export stuff */
+#define DOMINODLLEXPORT
+#define DOMINODLLLOCAL
 #define IMPDOMINOEXPORT
 #define IMPDOMINOLOCAL
 
@@ -33,8 +35,9 @@
 
 /* Wrap our own classes */
 %include "IMP/domino/DiscreteSampler.h"
+%include "IMP/domino/CombState.h"
 %include "IMP/domino/RestraintGraph.h"
-%include "IMP/domino/OptimizationWorkFlow.h"
 %include "IMP/domino/SimpleDiscreteSpace.h"
 %include "IMP/domino/DominoOptimizer.h"
 %include "IMP/domino/SimpleDiscreteRestraint.h"
+
