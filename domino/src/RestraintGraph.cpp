@@ -120,7 +120,7 @@ void RestraintGraph::initialize_graph(int number_of_nodes)
   // TODO: here you need the check if the graph has already been initialize
   // - and if so clear everything.
   g = Graph(number_of_nodes);
-  node_data = std::vector<JNode *>(number_of_nodes, NULL);
+  node_data = std::vector<JNode *>(number_of_nodes, (JNode *)NULL);
   edge_data = std::map<Pair, JEdge *>();
 }
 
