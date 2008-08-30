@@ -1,10 +1,13 @@
 import sys
 sys.path.append("./probstat_0.912/build/lib.linux-x86_64-2.5")
-import AnnotationEnumeration
+try:
+    import AnnotationEnumeration
+except ImportError:
+    AnnotationEnumeration = None
 import unittest
 import IMP.utils
 import IMP.test, IMP
-import DOMINO
+import IMP.domino
 import JT
 from xml.dom import minidom , Node
 
@@ -51,7 +54,7 @@ class DOMINOTests(IMP.test.TestCase):
     def __jt_setup(self):
         self.jt = JT.JT()
         self.jt.init_graph("simple_jt1.txt",self.mdl,self.particles)
-        self.d_opt = DOMINO.DominoOptimizer(self.mdl)
+        self.d_opt = IMP.domino.DominoOptimizer(self.mdl)
         print dir(self.d_opt)
         self.d_opt.initialize_jt_graph(self.jt.number_of_nodes())
         for i in xrange(self.jt.number_of_nodes()):
@@ -64,7 +67,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.mdl = IMP.Model()
         self.particles = IMP.Particles()
         self.sampling_spaces=[]
-        self.discrete_sampler = DOMINO.SimpleDiscreteSampler()
+        self.discrete_sampler = IMP.domino.SimpleDiscreteSampler()
         for i in xrange(5):
             new_p = IMP.Particle()
             self.mdl.add_particle(new_p)
@@ -74,7 +77,7 @@ class DOMINOTests(IMP.test.TestCase):
             number_of_states=3
             if i==1 or i==3:
                 number_of_states=2
-            self.sampling_spaces.append(DOMINO.SimpleDiscreteSpace(
+            self.sampling_spaces.append(IMP.domino.SimpleDiscreteSpace(
                                                            number_of_states))
             self.discrete_sampler.add_space(new_p,self.sampling_spaces[-1])
 #           print self.discrete_sampler.show()
@@ -82,17 +85,17 @@ class DOMINOTests(IMP.test.TestCase):
         self.all_restraints=[]
         r = self.all_restraints
         name = "simple_jt1_restraints.txt"
-        r.append(DOMINO.SimpleDiscreteRestraint(self.mdl, name,
+        r.append(IMP.domino.SimpleDiscreteRestraint(self.mdl, name,
                                           self.particles[0], self.particles[1]))
-        r.append(DOMINO.SimpleDiscreteRestraint(self.mdl, name,
+        r.append(IMP.domino.SimpleDiscreteRestraint(self.mdl, name,
                                           self.particles[0], self.particles[2]))
-        r.append(DOMINO.SimpleDiscreteRestraint(self.mdl, name,
+        r.append(IMP.domino.SimpleDiscreteRestraint(self.mdl, name,
                                           self.particles[0], self.particles[3]))
-        r.append(DOMINO.SimpleDiscreteRestraint(self.mdl, name,
+        r.append(IMP.domino.SimpleDiscreteRestraint(self.mdl, name,
                                           self.particles[1], self.particles[3]))
-        r.append(DOMINO.SimpleDiscreteRestraint(self.mdl, name,
+        r.append(IMP.domino.SimpleDiscreteRestraint(self.mdl, name,
                                           self.particles[3], self.particles[4]))
-        r.append(DOMINO.SimpleDiscreteRestraint(self.mdl, name,
+        r.append(IMP.domino.SimpleDiscreteRestraint(self.mdl, name,
                                           self.particles[2], self.particles[3]))
 
     def test_global_min(self):
