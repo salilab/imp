@@ -2,11 +2,6 @@ from tools import embed
 
 Import('env', 'invalidate_environment')
 
-Help("""
-Type: 'scons em' to build and test the em extension module;
-      'scons em-install' to install it.
-""")
-
 # Get custom environment for building against EMBED:
 emenv = env.Clone()
 embed.configure_check(emenv)
@@ -16,16 +11,9 @@ Export('emenv')
 if emenv['EM_LIBS'] == '' or emenv['MODELLER_LIBS'] == '':
     invalidate_environment(emenv, embed.fail)
 
-# Generate version information
-ver_cpp, ver_h = \
-    emenv.IMPModuleVersionInfo(('src/em_version_info.cpp',
-                                'include/em_version_info.h'),
-                               (emenv.Value('em'), emenv.Value('Keren Lasker'),
-                                emenv.Value('SVN')))
-
 # Subdirectories:
-lib = SConscript('src/SConscript', exports='ver_cpp')
-SConscript('include/SConscript', exports='ver_h')
+lib = SConscript('src/SConscript')
+SConscript('include/SConscript')
 pyext = SConscript('pyext/SConscript')
 test = SConscript('test/SConscript')
 emenv.Depends(test, [pyext, lib])

@@ -1,20 +1,12 @@
-Import('env', 'get_sharedlib_environment', 'ver_cpp')
+Import('env')
 
-# Get an environment suitable for building a shared library:
-e = get_sharedlib_environment(env, 'IMPDOMINO_EXPORTS', cplusplus=True)
-
-e.Append(CPPPATH=['#/build/include', e['BOOST_CPPPATH']])
-e.Append(LIBPATH=['#/build/libs'], LIBS=['imp'])
+e = env.IMPSharedLibraryEnvironment()
 
 files = ('CombState.cpp', 'JNode.cpp', 'JEdge.cpp',
          'RestraintGraph.cpp', 'DominoOptimizer.cpp',
-         'SimpleDiscreteRestraint.cpp', ver_cpp)
+         'SimpleDiscreteRestraint.cpp')
 
-# Build the shared library:
-lib = e.SharedLibrary('#/build/libs/imp_domino', files)
-
-# Install the library:
-libinst = e.Install(e['libdir'], lib)
-e.Alias('domino-install', [libinst])
+# Build and install the shared library:
+lib, libinst = e.IMPSharedLibrary(files, install=True)
 
 Return('lib')

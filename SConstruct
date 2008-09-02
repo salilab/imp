@@ -46,8 +46,10 @@ env.AlwaysBuild(standards)
 bin = SConscript('bin/SConscript')
 Export('bin')
 (src, pyext) = SConscript('kernel/SConscript')
-SConscript('em/SConscript')
-SConscript('domino/SConscript')
+env.IMPModule('em', author='Keren Lasker', version='SVN',
+              description='Interface to the EMBED package.')
+env.IMPModule('domino', author='Keren Lasker', version='SVN',
+              description='DOMINO optimizer.')
 
 # bin script first requires kernel libraries to be built:
 env.Depends(bin, [src, pyext])
