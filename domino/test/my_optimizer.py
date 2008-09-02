@@ -4,7 +4,6 @@ try:
 except ImportError:
     pass
 import IMP.domino
-import JT
 import IMP
 
 class my_optimizer:
