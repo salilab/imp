@@ -1,8 +1,8 @@
 import sys
 try:
-    import AnnotationEnumeration
-except:
-    None
+    import annotation_enumeration
+except ImportError:
+    pass
 import IMP.domino
 import JT
 import IMP
@@ -26,7 +26,7 @@ class my_optimizer:
         l=[] #number of states of each component
         for p in self.particles:
             l.append(self.discrete_sampler.get_space_size(p))
-        ae = AnnotationEnumeration.CombinationIterator(l)
+        ae = annotation_enumeration.CombinationIterator(l)
         min_score = sys.maxint
         min_comb = None
         for a in ae:
