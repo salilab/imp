@@ -17,7 +17,6 @@ gen_pymod = File('IMP_domino.py')
 e.Depends(gen_pymod, pyext)
 # Place in libs directory:
 pymod = e.InstallAs('#/build/libs/IMP/domino/__init__.py', gen_pymod)
-e.Alias('domino', (pymod, pyext))
 
 # Install the Python extension and module:
 libinst = e.Install(e['pyextdir'], pyext)
