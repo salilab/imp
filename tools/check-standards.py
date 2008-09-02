@@ -31,6 +31,11 @@ def check_c_file(filename, errors):
 def check_python_file(filename, errors):
     """Check each modified Python file to make sure it adheres to the
        standards"""
+    temptest = re.compile('\s+def\s+temp_hide_test.*')
+    for (num, line) in enumerate(file(filename, "r")):
+        if temptest.match(line):
+            errors.append('%s:%d: Test case has the temp_hide_ prefix' \
+                          % (filename, num+1))
     fh = file(filename, "r")
     r = Reindenter(fh)
     try:

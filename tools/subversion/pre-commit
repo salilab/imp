@@ -44,6 +44,11 @@ def check_python_file(filename, txn, repos, errors):
     """Check each modified Python file to make sure it adheres to the
        standards"""
     cmd = [svnlook, 'cat', '-t', txn, repos, filename]
+    temptest = re.compile('\s+def\s+temp_hide_test.*')
+    for (num, line) in enumerate(Popen(cmd, shell=False, stdout=PIPE).stdout):
+        if temptest.match(line):
+            errors.append('%s:%d: Test case has the temp_hide_ prefix' \
+                          % (filename, num+1))
     p1 = Popen(cmd, shell=False, stdout=PIPE).stdout
     r = Reindenter(p1)
     try:
