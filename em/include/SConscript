@@ -1,13 +1,6 @@
-import os
-Import('ver_h', 'emenv')
+Import('emenv')
 
-# Generate exports header
-exp_h = emenv.IMPModuleExports('em_exports.h', emenv.Value('em'))
-
-files = ('EMFitRestraint.h', 'IMPParticlesAccessPoint.h', exp_h, ver_h)
+files = ('EMFitRestraint.h', 'IMPParticlesAccessPoint.h')
 
 # Install the include files:
-includedir = os.path.join(emenv['includedir'], 'IMP')
-inst = emenv.InstallHierarchy(includedir, 'em',
-                              'Interface to the EMBED package', files)
-emenv.Alias('em-install', inst)
+emenv.IMPHeaders(files)

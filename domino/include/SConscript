@@ -1,15 +1,8 @@
-import os
-Import('ver_h', 'env')
-
-# Generate exports header
-exp_h = env.IMPModuleExports('domino_exports.h', env.Value('domino'))
+Import('env')
 
 files = ('CombState.h', 'JNode.h', 'SimpleDiscreteRestraint.h',
          'DiscreteSampler.h','SimpleDiscreteSpace.h', 'DominoOptimizer.h',
-         'RestraintGraph.h','JEdge.h', exp_h, ver_h)
-
+         'RestraintGraph.h','JEdge.h')
 
 # Install the include files:
-includedir = os.path.join(env['includedir'], 'IMP')
-inst = env.InstallHierarchy(includedir, 'domino', 'DOMINIO optimizer.', files)
-env.Alias('domino-install', inst)
+env.IMPHeaders(files)
