@@ -97,6 +97,9 @@ public:
   std::vector<CombState *> min_marginalize(const CombState &s,
       bool move2state_ = false);
 
+
+  unsigned int get_node_ind() const {return node_ind;}
+
   //! Update the potentials
   /** /param[in] old_score_separators
       /param[in] new_score_separators
