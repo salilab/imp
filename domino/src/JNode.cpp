@@ -186,7 +186,6 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
   min_comb = std::vector<CombState *>();
   for (std::map<std::string, CombState *>::iterator it =  comb_states.begin();
        it != comb_states.end(); it++) {
-    //  std::cout<<"JNode::min_marginalize log2" <<std::endl;
     if (it->second->is_part(s)) {
       // #TODO: too expensive , should be the other way around -
       // build all combinations according to separator.comb_key
@@ -252,10 +251,6 @@ std::vector<CombState *>* JNode::find_minimum(bool move2state_) const
       min_combs->push_back(it->second);
     }
   }
-  std::cout << "JNode::find_minimum the minimum value for node with index : ";
-  std::cout << node_ind << " is: " << min_val
-            << " and the number of combinations with ";
-  std::cout << " this value is: " << min_combs->size() << std::endl;
   if (move2state_) {
     move2state(**(min_combs->begin()));
   }
