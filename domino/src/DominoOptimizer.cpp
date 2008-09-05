@@ -20,9 +20,6 @@ namespace domino
 
   void DominoOptimizer::realize_rec(RestraintSet *rs, Float weight)
   {
-    /*std::cout << "DominoOptimizer::realize_rec number of restraints "
-            << rs->get_number_of_restraints() << " with weight : " << weight
-            << std::endl;*/
   for (Model::RestraintIterator it = rs->restraints_begin();
   it != rs->restraints_end(); it++) {
     Restraint *r = *it;
@@ -64,7 +61,6 @@ void DominoOptimizer::initialize_jt_graph(int number_of_nodes) {
 
 Float DominoOptimizer::optimize(unsigned int max_steps)
 {
-  g_->clear();
   Model *opt_mdl = get_model();
   std::stringstream error_message;
   error_message << "DominoOptimizer::optimize the sampling space was not set";
@@ -73,6 +69,7 @@ Float DominoOptimizer::optimize(unsigned int max_steps)
   error_message << "DominoOptimizer::optimize the model was not set";
   IMP_assert(opt_mdl != NULL, error_message.str());
   //init all the potentials
+  g_->clear();
   set_sampling_space(ds_);
   // now infer the minimum
   g_->infer();
