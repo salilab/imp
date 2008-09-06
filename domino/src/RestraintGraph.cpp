@@ -197,11 +197,11 @@ void RestraintGraph::set_sampling_space(const DiscreteSampler &ds_)
     JNode *j = node_data[vi];
     j->init_sampling(ds_);
   }
-  //  std::cout<<"size of edge data: " << edge_data.size() << std::endl;
   for (std::map<Pair, JEdge *>::iterator it = edge_data.begin();
        it != edge_data.end(); it++) {
     it->second->init_separators();
   }
+  infered=false;
 }
 
 void RestraintGraph::show_sampling_space(std::ostream& out) const
@@ -240,16 +240,17 @@ void RestraintGraph::initialize_potentials(Restraint &r, Float weight)
   }
   JNode *jn = get_node(r_particles);
   if (jn == NULL) {
-    std::cout << "PROBLEM - no node - the restraint : ";
-    r.show(std::cout);
-    std::cout << " between particles: ";
+    std::cerr << "PROBLEM - no node - the restraint : ";
+    r.show(std::cerr);
+    std::cerr << " between particles: ";
     for (Particles::const_iterator ii = r_particles.begin();
          ii < r_particles.end();ii++) {
-      std::cout << (*ii)->get_index().get_index() << ","
+      std::cerr << (*ii)->get_index().get_index() << ","
                 << (*ii)->get_value(IMP::StringKey("name")) << " :: ";
     }
-    std::cout << " has not been realized." << std::endl;
-  } else {
+    std::cerr << " has not been realized." << std::endl;
+  }
+  else {
     jn->realize(&r, weight);
   }
 }
@@ -278,6 +279,7 @@ void RestraintGraph::dfs_order(unsigned int root_ind)
 
 void  RestraintGraph::infer()
 {
+  min_combs->clear();
   std::stringstream err_msg;
   err_msg << "RestraintGraph::infer the graph has already been infered."
           << " Please reset the graph before calling infer";
@@ -289,13 +291,14 @@ void  RestraintGraph::infer()
   //min_combs = node_data[root]->find_minimum();
   std::vector<CombState *>*  temp_min_combs = node_data[root]->find_minimum();
   // distribute the minimu combinations and return the final full comb state.
-  CombState *min_comb = *(temp_min_combs->begin());
+  CombState *min_comb = new CombState(**(temp_min_combs->begin()));
   distribute_minimum(root, min_comb);
   std::cout << "==THE MINIMUM COMBINATION: ============== " << std::endl;
   min_comb->show();
   min_combs->push_back(min_comb);
   delete temp_min_combs;
   infered = true;
+  move_model2global_minimum();
 }
 
 void RestraintGraph::distribute_minimum(unsigned int father_ind,
@@ -324,7 +327,7 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
       it++;
     }
     if (!passed) {
-      std::cout << " could not combine any of the " << child_min_state.size()
+      std::cerr << " could not combine any of the " << child_min_state.size()
                 << " states " << std::endl;
       throw 1;
     }
@@ -376,7 +379,6 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
                 << " are not neighbors. Can not perform the update" ;
   IMP_assert(edge_data.find(get_edge_key(w, v)) != edge_data.end(),
              error_message.str());
-
   JNode *w_data = node_data[w];
   JNode *v_data = node_data[v];
   //minimize over all sub-configurations in  v that do not involve the w
@@ -385,7 +387,6 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
   //now update the to_node according to the new separators
   Particles intersection_set;
   v_data->get_intersection(*w_data, intersection_set);
-
   w_data->update_potentials(*(e->get_old_separators(w_data)),
                             *(e->get_new_separators(w_data)),
                             intersection_set);
@@ -428,10 +429,7 @@ CombState *RestraintGraph::get_minimum_comb() const
   err_msg << "RestraintGraph::move_model2global_minimum the "
           << "graph has not been infered";
   IMP_assert(infered, err_msg.str());
-  CombState *best_state = *(min_combs->begin());
-  move_model2state_rec(root, *best_state);
-  CombState *return_comb = new CombState(*best_state);
-  return return_comb;
+  return *(min_combs->begin());
 }
 void RestraintGraph::clear() {
   for(std::map<Pair, JEdge *>::iterator it = edge_data.begin();
