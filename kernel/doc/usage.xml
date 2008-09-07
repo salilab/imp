@@ -15,10 +15,10 @@
 </para></listitem>
 
 <listitem><para>
-<ulink url="http://www.scons.org">scons</ulink> (0.97 or later).
+<ulink url="http://www.scons.org">scons</ulink> (0.98 or later).
 </para></listitem>
 
-<listitem><para><ulink url="http://www.boost.org">Boost</ulink> (1.34 or later).
+<listitem><para><ulink url="http://www.boost.org">Boost</ulink> (1.30 or later).
 At the moment &IMP; only uses the Boost headers (not the libraries), so
 installing these headers in <filename>/usr/local/include/boost</filename>
 should suffice.</para></listitem>
