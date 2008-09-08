@@ -279,7 +279,6 @@ void RestraintGraph::dfs_order(unsigned int root_ind)
 
 void  RestraintGraph::infer()
 {
-  show();
   min_combs->clear();
   std::stringstream err_msg;
   err_msg << "RestraintGraph::infer the graph has already been infered."
