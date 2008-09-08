@@ -18,57 +18,67 @@ namespace domino
 //TODO: for all the intersection operations the sets should be sorted,
 //make sure that in the initialization of the nodes the number of
 //nodes come sorted.
-JNode::JNode(const Particles &p_, int node_ind_): ds_(NULL)
+JNode::JNode(const Particles &p, int node_ind): ds_(NULL)
 {
-  node_ind = node_ind_;
+  node_ind_ = node_ind;
   //enter the particles by the order of their indexes.
   sorted_particle_indexes_ = std::vector<Int>();
-  for (Particles::const_iterator it = p_.begin(); it != p_.end(); it++) {
-    particles.push_back(*it);
+  particles_ = Particles();
+  for (Particles::const_iterator it = p.begin(); it != p.end(); it++) {
+    particles_.push_back(*it);
     sorted_particle_indexes_.push_back((*it)->get_index().get_index());
   }
   std::sort(sorted_particle_indexes_.begin(), sorted_particle_indexes_.end());
-  comb_states = std::map<std::string, CombState *>();
+  comb_states_ = std::map<std::string, CombState *>();
 }
 
 void JNode::init_sampling(const DiscreteSampler &ds)
 {
   ds_ = &ds;
-  populate_states_of_particles(particles, &comb_states);
+  populate_states_of_particles(particles_, &comb_states_);
 }
 
-void JNode::populate_states_of_particles(const Particles &particles_,
+CombState* JNode::get_state(unsigned int index, bool move2state_) const {
+  //TODO - think about a better implementation
+  std::map<std::string, CombState *>::const_iterator it = comb_states_.begin();
+  for (unsigned int i = 0;i < index;i++) {
+    ++it;
+  }
+  if (move2state_) {
+    move2state(*(it->second));
+  }
+  return it->second;
+}
+
+
+void JNode::populate_states_of_particles(const Particles &particles,
                                          std::map<std::string,
                                          CombState *> *states_) const
 {
-  long number_of_states = 1;
-  for (Particles::const_iterator it = particles_.begin();
-       it != particles_.end(); it++) {
-    number_of_states *=  ds_->get_space_size(**it);
-  }
+  long num_states = number_of_states();
   long global_iterator, global_index;
   CombState *calc_state_;
-  for (long state_index = 0;state_index < number_of_states; state_index++) {
+  for (long state_index = 0;state_index < num_states; state_index++) {
     calc_state_ = new CombState();
-    global_iterator = number_of_states;
+    global_iterator = num_states;
     global_index = state_index;
-    for (Particles::const_iterator it = particles_.begin();
-         it != particles_.end(); it++) {
+    for (Particles::const_iterator it = particles.begin();
+         it != particles.end(); it++) {
       Particle* p = *it;
       long sample_size = ds_->get_space_size(**it);
       global_iterator /= sample_size;
       calc_state_->add_data_item(p, global_index / global_iterator);
       global_index -= (global_index / global_iterator) * global_iterator;
     }
-    (*states_)[calc_state_->partial_key(&particles_)] = calc_state_;
+    (*states_)[calc_state_->partial_key(&particles)] = calc_state_;
   } // state_index iteration
 }
 
 void JNode::show_sampling_space(std::ostream& out) const
 {
-  out << std::endl << " sampling space of JNode with index: " << node_ind;
-  for (Particles::const_iterator pi = particles.begin();
-       pi != particles.end(); pi++) {
+  out << std::endl << " sampling space of JNode with index: " << node_ind_;
+  for (Particles::const_iterator pi = particles_.begin();
+       pi != particles_.end(); pi++) {
     out << std::endl << " states for particle name : " <<
     (*pi)->get_value(IMP::StringKey("name")) << ":" << std::endl;
     ds_->show_space(**pi, out);
@@ -77,16 +87,16 @@ void JNode::show_sampling_space(std::ostream& out) const
 
 void JNode::show(std::ostream& out) const
 {
-  out << "=========================JNode  " <<  " node_index: " << node_ind
+  out << "=========================JNode  " <<  " node_index: " << node_ind_
       << std::endl;
   out << "particle_indices: " << std::endl;
-  for (Particles::const_iterator it = particles.begin(); it !=
-       particles.end(); it++) {
+  for (Particles::const_iterator it = particles_.begin(); it !=
+       particles_.end(); it++) {
     out << (*it)->get_value(IMP::StringKey("name")) << " || " ;
   }
   out << std::endl << "==combinations: " << std::endl;
   for (std::map<std::string, CombState *>::const_iterator it =
-         comb_states.begin(); it != comb_states.end(); it++) {
+         comb_states_.begin(); it != comb_states_.end(); it++) {
     out << " (" << it->first << " , " << it->second->get_total_score() << ") ";
   }
   out << std::endl;
@@ -123,8 +133,8 @@ void JNode::get_intersection(const JNode &other, Particles &in) const
   //TODO - do this more efficient
   for (std::vector<unsigned int>::const_iterator it = inter_indexes.begin();
        it != inter_indexes.end(); it++) {
-    for (Particles::const_iterator pi = particles.begin();
-         pi != particles.end(); pi++) {
+    for (Particles::const_iterator pi = particles_.begin();
+         pi != particles_.end(); pi++) {
       if (*it == (*pi)->get_index().get_index()) {
         in.push_back(*pi);
       }
@@ -162,8 +172,8 @@ void JNode::realize(Restraint *r, float weight)
       r_particles.push_back(*it2);
      }
   }
-  for (std::map<std::string, CombState *>::iterator it =  comb_states.begin();
-       it != comb_states.end(); it++) {
+  for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
+       it != comb_states_.end(); it++) {
     std::string partial_key = it->second->partial_key(&(r_particles));
     if (result_cache.find(partial_key) == result_cache.end()) {
       move2state(*(it->second));
@@ -184,8 +194,8 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
   float min_score = INT_MAX;
   std::vector<CombState *> min_comb;
   min_comb = std::vector<CombState *>();
-  for (std::map<std::string, CombState *>::iterator it =  comb_states.begin();
-       it != comb_states.end(); it++) {
+  for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
+       it != comb_states_.end(); it++) {
     if (it->second->is_part(s)) {
       // #TODO: too expensive , should be the other way around -
       // build all combinations according to separator.comb_key
@@ -195,8 +205,8 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
     }
   }
 
-  for (std::map<std::string, CombState *>::iterator it = comb_states.begin();
-       it != comb_states.end(); it++) {
+  for (std::map<std::string, CombState *>::iterator it = comb_states_.begin();
+       it != comb_states_.end(); it++) {
     if (it->second->is_part(s)) {
       if (it->second->get_total_score() ==  min_score) {
         min_comb.push_back(it->second);
@@ -218,8 +228,8 @@ void JNode::update_potentials(
   const std::map<std::string, float> &new_score_separators,
   const Particles &intersection_particles)
 {
-  for (std::map<std::string, CombState *>::iterator it = comb_states.begin();
-       it != comb_states.end(); it++) {
+  for (std::map<std::string, CombState *>::iterator it = comb_states_.begin();
+       it != comb_states_.end(); it++) {
     std::string s_key = it->second->partial_key(&intersection_particles);
     //separator_comb=v.comb_key.intersection_by_feature_key(edge_data.s_ij)
     // s_key=separator_comb.key()
@@ -234,9 +244,8 @@ std::vector<CombState *>* JNode::find_minimum(bool move2state_) const
 {
   //find the value of the minimum
   float min_val = INT_MAX;
-  for (std::map<std::string,
-                CombState *>::const_iterator it = comb_states.begin();
-       it != comb_states.end(); it++) {
+  for (std::map<std::string,CombState *>::const_iterator it=
+    comb_states_.begin();it != comb_states_.end(); it++) {
     if (it->second->get_total_score() < min_val) {
       min_val = it->second->get_total_score();
     }
@@ -245,8 +254,8 @@ std::vector<CombState *>* JNode::find_minimum(bool move2state_) const
   //iterate over all the nodes again and find all combinations that reach
   //the global minimum
   for (std::map<std::string,
-                CombState *>::const_iterator it = comb_states.begin();
-       it != comb_states.end(); it++) {
+                CombState *>::const_iterator it = comb_states_.begin();
+       it != comb_states_.end(); it++) {
     if (it->second->get_total_score() ==  min_val) {
       min_combs->push_back(it->second);
     }
@@ -257,11 +266,11 @@ std::vector<CombState *>* JNode::find_minimum(bool move2state_) const
   return min_combs;
 }
 void JNode::clear() {
-  for(std::map<std::string, CombState *>::iterator it =  comb_states.begin();
-      it != comb_states.end();it++) {
+  for(std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
+      it != comb_states_.end();it++) {
     delete(it->second);
   }
-  comb_states.clear();
+  comb_states_.clear();
   ds_=NULL;
 }
 } // namespace domino

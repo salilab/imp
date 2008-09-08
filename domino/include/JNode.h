@@ -36,7 +36,7 @@ public:
   /** \param [in] p_    a vector of IMP particles that are part of the node
       \param [in] node_ind_  The index of the JNode
    */
-  JNode(const Particles &p_, int node_ind_);
+  JNode(const Particles &p, int node_ind);
   ~JNode() {
     //    free(opt_state);
   }
@@ -74,31 +74,18 @@ public:
    */
   std::vector<CombState *> * find_minimum(bool move2state_ = false) const;
 
-  CombState* get_state(unsigned int index, bool move2state_ = false) const {
-    //TODO - think about a better implementation
-    std::map<std::string, CombState *>::const_iterator it = comb_states.begin();
-    for (unsigned int i = 0;i < index;i++) {
-      ++it;
-    }
-    if (move2state_) {
-      move2state(*(it->second));
-    }
-    return it->second;
-  }
+  CombState* get_state(unsigned int index, bool move2state_ = false) const;
 
   void show(std::ostream& out = std::cout) const;
   void show_sampling_space(std::ostream& out = std::cout) const;
   unsigned int get_node_index() const {
-    return node_ind;
+    return node_ind_;
   }
   const Particles *get_particles() const {
-    return &particles;
+    return &particles_;
   }
   std::vector<CombState *> min_marginalize(const CombState &s,
       bool move2state_ = false);
-
-
-  unsigned int get_node_ind() const {return node_ind;}
 
   //! Update the potentials
   /** /param[in] old_score_separators
@@ -114,8 +101,8 @@ public:
   }
   long number_of_states() const {
     long number_of_states = 1;
-    for (Particles::const_iterator it = particles.begin();
-         it != particles.end(); it++) {
+    for (Particles::const_iterator it = particles_.begin();
+         it != particles_.end(); it++) {
       number_of_states *=  ds_->get_space_size(**it);
     }
     return number_of_states;
@@ -126,9 +113,9 @@ public:
 protected:
   std::vector<Int> sorted_particle_indexes_; // needed for calculating
                                             // intersections with other nodes.
-  Particles particles; //the particles that are part of the node
-  unsigned int node_ind;
-  std::map<std::string, CombState *> comb_states;
+  Particles particles_; //the particles that are part of the node
+  unsigned int node_ind_;
+  std::map<std::string, CombState *> comb_states_;
   const DiscreteSampler *ds_;
 };
 
