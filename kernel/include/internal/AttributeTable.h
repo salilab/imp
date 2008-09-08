@@ -167,8 +167,14 @@ public:
     IMP_assert(k != Key(), "Can't remove invalid key");
     if (k.get_index() < map_.size()) {
       map_[k.get_index()]= Traits::get_invalid();
-      while (!map_.empty()
-             && map_.back()== Traits::get_invalid()) map_.pop_back();
+      // Cleanup loop. Changed in r709 from a simple pop_back() loop, since that
+      // crashed MSVC builds - possibly a hidden corruption bug elsewhere
+      // in the code (as that code appears valid).
+      long i = map_.size() - 1;
+      while (i >= 0 && map_[i] == Traits::get_invalid()) {
+        --i;
+      }
+      map_.erase(map_.begin() + i + 1, map_.end());
     }
   }
 
