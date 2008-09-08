@@ -279,6 +279,7 @@ void RestraintGraph::dfs_order(unsigned int root_ind)
 
 void  RestraintGraph::infer()
 {
+  show();
   min_combs->clear();
   std::stringstream err_msg;
   err_msg << "RestraintGraph::infer the graph has already been infered."
@@ -290,6 +291,9 @@ void  RestraintGraph::infer()
   distribute_evidence(root);
   //min_combs = node_data[root]->find_minimum();
   std::vector<CombState *>*  temp_min_combs = node_data[root]->find_minimum();
+  err_msg.clear();
+  err_msg << "RestraintGraph::infer the number of minimum solutions is 0";
+  IMP_assert(temp_min_combs->size()>0, err_msg.str());
   // distribute the minimu combinations and return the final full comb state.
   CombState *min_comb = new CombState(**(temp_min_combs->begin()));
   distribute_minimum(root, min_comb);
