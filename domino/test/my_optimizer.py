@@ -2,7 +2,7 @@ import sys
 try:
     import annotation_enumeration
 except ImportError:
-    pass
+    annotation_enumeration = None
 import IMP.domino
 import IMP
 
@@ -22,6 +22,9 @@ class my_optimizer:
         self.init_sampling_space()
         self.init_restraints(restraints_filename)
     def exhaustive_search(self):
+        if not annotation_enumeration:
+            raise NotImplementedError("Test skipped: " + \
+                                      "probstat module unavailable")
         l=[] #number of states of each component
         for p in self.particles:
             l.append(self.discrete_sampler.get_space_size(p))
