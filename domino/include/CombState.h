@@ -162,16 +162,18 @@ public:
     return data;
   }
   void move2state(DiscreteSampler *ds) const {
-  Particle *p;
-  for (std::map<Particle *, unsigned int>::const_iterator it =  data.begin();
-       it != data.end();it++){
-    p = it->first;
-    for (unsigned int i = 0; i < ds->get_number_of_attributes(*p); i++) {
-      p->set_value(ds->get_attribute(*p, i),
-                   ds->get_state_val(*p,it->second, ds->get_attribute(*p, i)));
+    Particle *p;
+    FloatKey att;
+    Float val;
+    for (std::map<Particle *, unsigned int>::const_iterator it =  data.begin();
+      it != data.end();it++){
+      p = it->first;
+      for (unsigned int i = 0; i < ds->get_number_of_attributes(*p); i++) {
+        att = ds->get_attribute(*p, i);
+        val = ds->get_state_val(*p,it->second,att );
+        p->set_value(att,val);
+      }
     }
-  }
-
   }
 protected:
   std::map<Particle *, unsigned int> data; //data[p] = for particle p
