@@ -30,7 +30,7 @@ namespace domino
     unsigned int status = 0;
     std::vector<std::string> v;
     std::stringstream err_msg;
-    while (myfile.getline(line, 1024) and (status != 2)) {
+    while (myfile.getline(line, 1024) && status != 2) {
       v.clear();
       char *pch = strtok(line, " ");
       while (pch != NULL) {
@@ -322,7 +322,7 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
     child_min_state = child_data->min_marginalize(*min_father_separator);
     std::vector<CombState*>::const_iterator it = child_min_state.begin();
     bool passed = false;
-    while ((it != child_min_state.end()) and not passed) {
+    while (it != child_min_state.end() && !passed) {
       try {
         min_comb->combine(*it);
         passed = true;

@@ -21,7 +21,7 @@ namespace IMP
 namespace domino
 {
 
-class IMPDOMINOEXPORT SimpleDiscreteSpace
+class SimpleDiscreteSpace
 {
 public:
   SimpleDiscreteSpace(int number_of_states) {
@@ -58,7 +58,7 @@ protected:
 
 };
 
-class IMPDOMINOEXPORT SimpleDiscreteSampler : public DiscreteSampler
+class SimpleDiscreteSampler : public DiscreteSampler
 {
 public:
   SimpleDiscreteSampler() {
