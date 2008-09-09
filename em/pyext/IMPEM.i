@@ -18,7 +18,8 @@
 %include "std_string.i"
 %include "std_except.i"
 
-%feature("director");
+/* Make selected classes extensible in Python */
+%feature("director") IMP::em::IMPParticlesAccessPoint;
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
