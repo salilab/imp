@@ -37,7 +37,7 @@ class my_optimizer:
                 opt_val = int(self.discrete_sampler.get_state_val(
                                p,a[i],self.discrete_sampler.get_attribute(p,0)))
                 p.set_value(IMP.FloatKey("OPT"),opt_val)
-            score = self.mdl.evaluate(None)
+            score = self.mdl.evaluate(False)
             if score < min_score:
                 min_score = score
                 min_comb = a
