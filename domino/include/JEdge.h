@@ -45,8 +45,8 @@ public:
   //! the nodes that are found both with source and target
   void init_separators();
   //! Update the scores of the combination in to_node based on from_node.
-  /** /param[in] from_node the distributing node
-      /param[in] to_node   the updated node
+  /** \param[in] from_node the distributing node
+      \param[in] to_node   the updated node
    */
   void min_marginalize(JNode *from_node, JNode *to_node);
   JNode *get_source() const {
@@ -57,9 +57,9 @@ public:
   }
 
   //! Get the edge separator that is contained in the other_comb
-  /** /param[in] other_comb a combination that contains the particles that
+  /** \param[in] other_comb a combination that contains the particles that
                  build the separator.
-      /param[out] a separator
+      \param[out] a separator
    */
   CombState *get_separator(const CombState &other_comb) const;
 
@@ -70,9 +70,9 @@ public:
 protected:
   //! Get the combination key for the intersection between the other_comb
   //! and the edge separators
-  /** /param[in] other_comb a combination that contains the particles that
+  /** \param[in] other_comb a combination that contains the particles that
                  build the separator.
-      /param[out] a separator key
+      \param[out] a separator key
    */
   const std::string generate_key(const CombState &other_comb) const;
 

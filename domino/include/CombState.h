@@ -107,7 +107,7 @@ public:
   }
 
   //! Checks if the other state is part of this state
-  /** /param[in] other the other state
+  /** \param[in] other the other state
    */
   bool is_part(const CombState &other) const {
   for (std::map<Particle *,
@@ -137,7 +137,7 @@ public:
   }
 
   //! Combine the combination encoded in other
-  /** /param[in] other the other combination
+  /** \param[in] other the other combination
    */
   void combine(CombState *other) {
   for (std::map<Particle *,
