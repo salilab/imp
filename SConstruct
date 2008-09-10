@@ -45,6 +45,7 @@ env.AlwaysBuild(standards)
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')
 Export('bin')
+SConscript('doc/SConscript')
 (src, pyext) = SConscript('kernel/SConscript')
 env.IMPModule('em', author='Keren Lasker', version='SVN',
               description='Interface to the EMBED package.')
