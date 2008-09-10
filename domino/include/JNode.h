@@ -69,8 +69,8 @@ public:
   void realize(Restraint *r, float weight);
 
   //! Finds the minimum combination in the node.
-  /** /param[in]   move2state     true if the model should move to the new state
-      /return all of the combinations that reach the global minimum
+  /** \param[in]   move2state     true if the model should move to the new state
+      \return all of the combinations that reach the global minimum
    */
   std::vector<CombState *> * find_minimum(bool move2state_ = false) const;
 
@@ -88,9 +88,9 @@ public:
       bool move2state_ = false);
 
   //! Update the potentials
-  /** /param[in] old_score_separators
-      /param[in] new_score_separators
-      /param[in] intersection_particles
+  /** \param[in] old_score_separators
+      \param[in] new_score_separators
+      \param[in] intersection_particles
    */
   void update_potentials(
     const std::map<std::string, float>  &old_score_separators,
