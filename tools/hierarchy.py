@@ -8,13 +8,14 @@ from SCons.Script import Action, Entry
 def _build_header(target, source, env):
     fname = target[0].path
     module = env['IMP_MODULE']
+    description = env['IMP_MODULE_DESCRIPTION']
     if module == 'IMP':
         guard = "__IMP_H"
     else:
         guard = "__IMP_%s_H" % module.upper()
     fh = file(fname, 'w')
     print >> fh, "/**\n *  \\file %s   \\brief %s\n *" \
-             % (os.path.basename(fname), env['IMP_MODULE_DESCRIPTION'])
+             % (os.path.basename(fname), description)
     print >> fh, " *  Copyright 2007-8 Sali Lab. All rights reserved."
     print >> fh, " *\n */\n"
     print >> fh, "#ifndef %s\n#define %s\n" % (guard, guard)
@@ -24,6 +25,9 @@ def _build_header(target, source, env):
         if not src.startswith('internal'):
             print >> fh, '#include "%s/%s"' % (module, src)
     print >> fh, "\n#endif  /* %s */" % guard
+    if module != 'IMP':
+        print >> fh, "\n/**\n  \\namespace IMP::%s " % module
+        print >> fh, "  \\brief %s\n */" % description
 
 def _make_nodes(files):
     nodes = []
