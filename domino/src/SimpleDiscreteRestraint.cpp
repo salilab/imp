@@ -34,9 +34,10 @@ void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
                                                  atoi(v[1].c_str()))]
           = atof(v[2].c_str());
     } else {
-      std::cout << "SimpleDiscreteRestraint::load_restraints the line : "
-                << line << " is of the wrong format" << std::endl;
-      throw(1);
+      std::ostringstream msg;
+      msg << "SimpleDiscreteRestraint::load_restraints the line : "
+          << line << " is of the wrong format";
+      IMP_failure(msg.str().c_str(), ErrorException);
     }
   }
 }

@@ -11,6 +11,7 @@
 %}
 
 %include "kernel/pyext/IMP_macros.i"
+%include "kernel/pyext/IMP_exceptions.i"
 
 /* Ignore shared object import/export stuff */
 #define DOMINODLLEXPORT
@@ -27,9 +28,6 @@
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
-
-/* Don't use the exception handlers defined in the kernel */
-%exception;
 
 /* Wrap our own classes */
 %include "IMP/domino/DiscreteSampler.h"
