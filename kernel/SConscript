@@ -6,6 +6,5 @@ SConscript('include/SConscript')
 pyext = SConscript('pyext/SConscript')
 test = SConscript('test/SConscript')
 env.Depends(test, pyext)
-SConscript('doc/SConscript')
 
 Return('src', 'pyext')
