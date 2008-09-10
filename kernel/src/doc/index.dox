@@ -10,6 +10,8 @@
 
     See also the IMP
     <a href="https://salilab.org/imp/doc/">online manual</a>.
-  
-  \namespace IMP The IMP namespace.
+ */
+ 
+/**
+  \namespace IMP \brief The IMP kernel.
  */
