@@ -27,6 +27,9 @@ namespace domino
 class IMPDOMINOEXPORT SimpleDiscreteRestraint : public Restraint
 {
 public:
+  //! Constructor.
+  /** \exception ErrorException the restraint file is of an invalid format.
+   */
   SimpleDiscreteRestraint(Model& model_, std::string restraint_filename,
                           Particle *p1, Particle *p2);
 
