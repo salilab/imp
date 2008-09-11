@@ -3,6 +3,8 @@ Import('env')
 import os.path
 
 dox = env.Doxygen("doxygen.conf")
+# Force the population of the build/include/ directory with generated headers
+env.Depends(dox, '#/build/include')
 
 docdir = os.path.join(env['docdir'], 'doxygen')
 
