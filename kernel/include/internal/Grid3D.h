@@ -25,11 +25,10 @@ class Grid3D;
 template <class GI>
 class GridIndexIterator;
 
-//! Represent an index into an infinite grid
-/** The index entries can be positive or negative and do not need to correspond
-    directly to cells in the grid. They get mapped on to actual grid cells
-    by various functions.
-    \internal
+// Represent an index into an infinite grid
+/* The index entries can be positive or negative and do not need to correspond
+   directly to cells in the grid. They get mapped on to actual grid cells
+   by various functions.
  */
 class VirtualGridIndex
 {
@@ -64,9 +63,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(VirtualGridIndex);
 
-//! Iterate through grid cells in a cube
-/** The order of iteration is unspecified.
-    \internal
+// Iterate through grid cells in a cube
+/* The order of iteration is unspecified.
  */
 template <class GI>
 class GridIndexIterator
@@ -139,10 +137,9 @@ public:
   }
 };
 
-//! Represent a real cell in a grid
-/** These indexes represent an actual cell in the grid with no mapping.
-    They can only be constructed by the grid.
-    \internal
+// Represent a real cell in a grid
+/* These indexes represent an actual cell in the grid with no mapping.
+   They can only be constructed by the grid.
  */
 class GridIndex: public VirtualGridIndex
 {
@@ -160,9 +157,8 @@ protected:
   }
 };
 
-/** \brief A voxel grid in 3D space.
-    VT can be any class.
-    \internal
+// A voxel grid in 3D space.
+/* VT can be any class.
  */
 template <class VT>
 class Grid3D
