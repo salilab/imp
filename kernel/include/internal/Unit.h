@@ -179,7 +179,7 @@ struct PrintUnits
   }
 };
 
-//! Terminate the recursion
+//! \internal Terminate the recursion
 template <class Tag, int O, class Units>
 struct PrintUnits<Tag, O, O, Units >
 {
@@ -187,7 +187,7 @@ struct PrintUnits<Tag, O, O, Units >
 };
 
 
-//! Specializaton for singleton units
+//! \internal Specializaton for singleton units
 template <class Tag, int O>
 struct PrintUnits<Tag, O, O, boost::mpl::vector_c<int> >
 {
@@ -220,10 +220,7 @@ struct IsNoUnits<O, O, Units >
 
 
 
-//! A base class for units
-/**
-   \internal
- */
+//! \internal A base class for units
 template <class TagT, int EXPT, class UnitsT>
 class Unit
 {
@@ -331,8 +328,7 @@ typedef boost::mpl::vector_c<int> SingletonUnit;
 
 
 
-/** need to be careful of integer division
-    \internal
+/** \internal need to be careful of integer division
  */
 template <class Tag, int EXP, class Units>
 Unit<Tag, EXP/2, typename internal::Sqrt<Units>::type >

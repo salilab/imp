@@ -71,8 +71,7 @@ namespace internal
 
 
 
-/** The data concerning keys.
-    \internal
+/** \internal The data concerning keys.
  */
 struct IMPDLLEXPORT KeyData
 {

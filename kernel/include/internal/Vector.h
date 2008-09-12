@@ -23,10 +23,9 @@ class Particle;
 namespace internal
 {
 
-//! A vector with bounds checking
-/** This class is designed to be used from the IMP_LIST macro and
-    is not really designed to be used independently.
-    \internal
+// A vector with bounds checking
+/* This class is designed to be used from the IMP_LIST macro and
+   is not really designed to be used independently.
  */
 template <class D>
 class Vector: public std::vector<D>

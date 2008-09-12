@@ -22,15 +22,14 @@ namespace IMP
 namespace internal
 {
 
-//! A container which holds objects
-/** The container owns the objects and deletes them when it is destroyed.
-    All accesses are bounds checked and objects are checked to make
-    sure they are still OK. This should only be used through the
-    IMP_CONTAINER macros.
-    \internal
+// A container which holds objects
+/* The container owns the objects and deletes them when it is destroyed.
+   All accesses are bounds checked and objects are checked to make
+   sure they are still OK. This should only be used through the
+   IMP_CONTAINER macros.
 
-    \note I want the base class to be protected, but for some reason I
-    couldn't get the casts to work out right.
+   \note I want the base class to be protected, but for some reason I
+   couldn't get the casts to work out right.
  */
 template <class O, class I>
 class ObjectContainer

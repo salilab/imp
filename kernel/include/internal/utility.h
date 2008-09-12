@@ -18,7 +18,7 @@ namespace IMP
 namespace internal
 {
 
-//! return true if a passed particle is inactive
+//! \internal \return true if a passed particle is inactive
 struct IMPDLLEXPORT IsInactiveParticle
 {
   bool operator()(Particle *p) const {

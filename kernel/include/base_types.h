@@ -26,10 +26,7 @@ namespace IMP
     Classes and functions which are there to make your life easier.
  */
 
-/** \namespace IMP::internal
-    Implementation details.
-
-    \internal
+/** \internal \namespace IMP::internal Implementation details.
  */
 
 //! Basic floating-point value (could be float, double...)
