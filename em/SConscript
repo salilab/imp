@@ -1,6 +1,6 @@
 from tools import embed
 
-Import('env', 'invalidate_environment')
+Import('env')
 
 # Get custom environment for building against EMBED:
 emenv = env.Clone()
@@ -9,7 +9,7 @@ Export('emenv')
 
 # Make sure that all builds with this environment fail if EMBED was not found:
 if emenv['EM_LIBS'] == '' or emenv['MODELLER_LIBS'] == '':
-    invalidate_environment(emenv, embed.fail)
+    emenv.invalidate(embed.fail)
 
 # Subdirectories:
 lib = SConscript('src/SConscript')

@@ -7,7 +7,7 @@ from SCons.Script import *
 from hierarchy import InstallHierarchy
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
-           "get_sharedlib_environment", "invalidate_environment", "embed"]
+           "get_sharedlib_environment", "embed"]
 
 import SCons
 _SWIGScanner = SCons.Scanner.ClassicCPP(
@@ -353,13 +353,6 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
-
-def invalidate_environment(env, fail_builder):
-    """'Break' an environment, so that any builds with it use the fail_builder
-       function (which should be an Action which terminates the build)"""
-    for var in ('SHLINKCOM', 'CCCOM', 'CXXCOM', 'SHCCCOM', 'SHCXXCOM',
-                'SWIGCOM'):
-        env[var] = fail_builder
 
 def add_common_variables(vars, package):
     """Add common variables to an SCons Variables object."""

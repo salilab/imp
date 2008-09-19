@@ -199,11 +199,20 @@ def IMPModuleTest(env, target, source, **keys):
     env.AlwaysBuild(target)
     return test
 
+def invalidate(env, fail_builder):
+    """'Break' an environment, so that any builds with it use the fail_builder
+       function (which should be an Action which terminates the build)"""
+    for var in ('SHLINKCOM', 'CCCOM', 'CXXCOM', 'SHCCCOM', 'SHCXXCOM',
+                'SWIGCOM'):
+        env[var] = fail_builder
+    env['INVALIDATED'] = True
+
 def IMPModule(env, module, author, version, description):
     """Set up an IMP module. The module's SConscript gets its own
        customized environment ('env') in which the following pseudo-builders
-       are available: IMPSharedLibraryEnvironment,
-       IMPPythonExtensionEnvironment, IMPHeaders and IMPModuleTest."""
+       or methods are available: IMPSharedLibraryEnvironment,
+       IMPPythonExtensionEnvironment, IMPHeaders, IMPModuleTest
+       and invalidate."""
     env = env.Clone()
     exports = Builder(action=action_exports)
     version_info = Builder(action=action_version_info)
@@ -235,9 +244,11 @@ Type: 'scons %(module)s' to build and test the %(module)s extension module;
     env.AddMethod(IMPPythonExtensionEnvironment)
     env.AddMethod(IMPHeaders)
     env.AddMethod(IMPModuleTest)
+    env.AddMethod(invalidate)
     env.Append(BUILDERS={'_IMPModuleTest': Builder(action=_action_unit_test,
                                                    emitter=_emit_unit_test)})
     env['TEST_ENVSCRIPT'] = None
+    env['INVALIDATED'] = False
     return env.SConscript('%s/SConscript' % module, exports='env')
 
 def generate(env):
