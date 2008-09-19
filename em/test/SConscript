@@ -1,32 +1,14 @@
-Import('emenv', 'bin')
-
+Import('emenv')
 import os
 
-e = emenv.Clone()
-
-# Custom builder to run unit tests:
-def builder_unit_test(target, source, env):
-    (dir, script) = os.path.split(source[0].abspath)
+test = emenv.IMPModuleTest("test.passed", "run-all-tests.py",
+                           TEST_ENVSCRIPT=emenv['EM_EMPY'])
+if emenv['wine']:
     # On Win32 systems, link the EM DLL into the libs directory, so that loading
     # the Python extension will pick it up:
-    if env['wine']:
-        env.Execute('ln -sf %s/libem.dll build/libs/libem.dll' \
-                    % source[3].get_contents())
-    app = "cd %s && %s %s %s %s -v > /dev/null" \
-          % (dir, source[1].abspath, source[2].get_contents(), e['PYTHON'],
-             script)
-    if env.Execute(app) == 0:
-        file(str(target[0]), 'w').write('PASSED\n')
-    else:
-        print "unit tests FAILED"
-        return 1
-
-e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
-
-source = ["run-all-tests.py", bin, e.Value(e['EM_EMPY']),
-          e.Value(e['EM_LIBPATH'])]
-test = e.Test("test.passed", source)
-e.Alias("em-test", test)
-e.AlwaysBuild("test.passed")
+    emdll = emenv.Command('#/build/libs/libem.dll',
+                          os.path.join(emenv['EM_LIBPATH'], 'libem.dll'),
+                          "ln -sf $SOURCE $TARGET")
+    emenv.Depends(test, emdll)
 
 Return('test')

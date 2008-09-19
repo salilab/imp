@@ -170,11 +170,40 @@ def IMPPythonExtensionEnvironment(env):
     env.AddMethod(IMPPythonExtension)
     return env
 
+def _action_unit_test(target, source, env):
+    (dir, script) = os.path.split(source[0].path)
+    app = "cd %s && %s %s %s -v > /dev/null" \
+          % (dir, " ".join([x.abspath for x in source[1:]]),
+             env['PYTHON'], script)
+    if env.Execute(app) == 0:
+        file(str(target[0]), 'w').write('PASSED\n')
+    else:
+        print "unit tests FAILED"
+        return 1
+
+def _emit_unit_test(target, source, env):
+    source.append('#/bin/imppy.sh')
+    if env['TEST_ENVSCRIPT']:
+        source.append(env['TEST_ENVSCRIPT'])
+    return target, source
+
+def IMPModuleTest(env, target, source, **keys):
+    """Pseudo-builder to run tests for an IMP module. The single target is
+       generally a simple output file, e.g. 'test.passed', while the single
+       source is a Python script to run (usually run-all-tests.py).
+       If the TEST_ENVSCRIPT construction variable is set, it is a shell
+       script to run to set up the environment to run the test script.
+       A convenience alias for the tests is added, and they are always run."""
+    test = env._IMPModuleTest(target, source, **keys)
+    env.Alias("%s-test" % env['IMP_MODULE'], test)
+    env.AlwaysBuild(target)
+    return test
+
 def IMPModule(env, module, author, version, description):
     """Set up an IMP module. The module's SConscript gets its own
        customized environment ('env') in which the following pseudo-builders
        are available: IMPSharedLibraryEnvironment,
-       IMPPythonExtensionEnvironment and IMP.Headers."""
+       IMPPythonExtensionEnvironment, IMPHeaders and IMPModuleTest."""
     env = env.Clone()
     exports = Builder(action=action_exports)
     version_info = Builder(action=action_version_info)
@@ -205,6 +234,10 @@ Type: 'scons %(module)s' to build and test the %(module)s extension module;
     env.AddMethod(IMPSharedLibraryEnvironment)
     env.AddMethod(IMPPythonExtensionEnvironment)
     env.AddMethod(IMPHeaders)
+    env.AddMethod(IMPModuleTest)
+    env.Append(BUILDERS={'_IMPModuleTest': Builder(action=_action_unit_test,
+                                                   emitter=_emit_unit_test)})
+    env['TEST_ENVSCRIPT'] = None
     return env.SConscript('%s/SConscript' % module, exports='env')
 
 def generate(env):
