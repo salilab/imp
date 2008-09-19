@@ -68,6 +68,20 @@ def check_modified_file(filename, txn, repos, errors):
          or filename.endswith('SConstruct'):
         check_python_file(filename, txn, repos, errors)
 
+def is_symlink(filename, txn, repos, errors):
+    """Return True if the given filename is a symlink. Also report an error
+       if a symlink also has the executable bit set, since this can trigger
+       Subversion bug #2344."""
+    cmd = [svnlook, 'proplist', '-v', '-t', txn, repos, filename]
+    res = Popen(cmd, shell=False, stdout=PIPE).stdout.read()
+    symlink = "svn:special" in res
+    executable = "svn:executable" in res
+    if symlink and executable:
+        errors.append('You have set the svn:executable property on the ' \
+                      + 'symlink ' + filename + '; please remove it, since ' \
+                      + 'this can trigger SVN bug #2344.')
+    return symlink
+
 def check_logmsg_len(txn, repos, errors):
     """Make sure a log message was supplied"""
     cmd = [svnlook, 'log', '-t', txn, repos]
@@ -82,7 +96,10 @@ def main(repos, txn):
 
     modfiles = get_modified_files(txn, repos)
     for filename in modfiles:
-        check_modified_file(filename, txn, repos, errors)
+        # Don't check symlinks, since they are not stored as true symlinks in
+        # the SVN transaction, so the files aren't valid C++, Python etc.
+        if not is_symlink(filename, txn, repos, errors):
+            check_modified_file(filename, txn, repos, errors)
     check_logmsg_len(txn, repos, errors)
 
     if len(errors) > 0:
