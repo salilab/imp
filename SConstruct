@@ -35,8 +35,7 @@ Type: 'scons' to build the IMP kernel;
 """)
 
 # Make these objects available to SConscript files:
-Export('env', 'get_pyext_environment', 'get_sharedlib_environment',
-       'invalidate_environment')
+Export('env', 'get_pyext_environment', 'get_sharedlib_environment')
 
 # Check code for coding standards:
 standards = env.Command("standards", "SConstruct", "tools/check-standards.py")
