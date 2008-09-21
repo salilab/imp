@@ -111,7 +111,8 @@ def IMPSharedLibrary(env, files, install=True):
                             list(files) + [env['VER_CPP']])
     if install:
         libinst = env.Install(env['libdir'], lib)
-        env.Alias('%s-install' % module, [libinst])
+        for alias in ('%s-install' % module, 'modules-install'):
+            env.Alias(alias, [libinst])
         return lib, libinst
     else:
         return lib
@@ -136,7 +137,8 @@ def IMPHeaders(env, files):
     inst = InstallHierarchy(env, includedir, env['IMP_MODULE'],
                             env['IMP_MODULE_DESCRIPTION'],
                             list(files) + [env['EXP_H'], env['VER_H']])
-    env.Alias('%s-install' % module, inst)
+    for alias in ('%s-install' % module, 'modules-install'):
+        env.Alias(alias, inst)
     return inst
 
 def IMPPythonExtension(env, swig_interface):
@@ -154,7 +156,8 @@ def IMPPythonExtension(env, swig_interface):
     # Install the Python extension and module:
     libinst = env.Install(env['pyextdir'], pyext)
     pyinst = env.Install(os.path.join(env['pythondir'], 'IMP', module), pymod)
-    env.Alias('%s-install' % module, [libinst, pyinst])
+    for alias in ('%s-install' % module, 'modules-install'):
+        env.Alias(alias, [libinst, pyinst])
     return pyext, pymod
 
 def IMPPythonExtensionEnvironment(env):
@@ -224,7 +227,7 @@ def IMPModule(env, module, author, version, description):
     env.Append(CPPPATH=['#/build/include', env['BOOST_CPPPATH']])
     env.Append(LIBPATH=['#/build/libs'], LIBS=['imp'])
     env.Help("""
-Type: 'scons %(module)s' to build and test the %(module)s extension module;
+Type: 'scons modules/%(module)s' to build and test the %(module)s extension module;
       'scons %(module)s-test' to just test it;
       'scons %(module)s-install' to install it.
 """ % {'module':module})
