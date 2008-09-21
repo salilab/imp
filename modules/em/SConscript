@@ -1,21 +1,20 @@
 from tools import embed
 
 Import('env')
+Export('env')
 
-# Get custom environment for building against EMBED:
-emenv = env.Clone()
-embed.configure_check(emenv)
-Export('emenv')
+# Modify our environment for building against EMBED:
+embed.configure_check(env)
 
 # Make sure that all builds with this environment fail if EMBED was not found:
-if emenv['EM_LIBS'] == '' or emenv['MODELLER_LIBS'] == '':
-    emenv.invalidate(embed.fail)
+if env['EM_LIBS'] == '' or env['MODELLER_LIBS'] == '':
+    env.invalidate(embed.fail)
 
 # Subdirectories:
 lib = SConscript('src/SConscript')
 SConscript('include/SConscript')
 pyext = SConscript('pyext/SConscript')
 test = SConscript('test/SConscript')
-emenv.Depends(test, [pyext, lib])
+env.Depends(test, [pyext, lib])
 
 Return('lib')

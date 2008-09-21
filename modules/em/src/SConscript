@@ -1,6 +1,6 @@
-Import('emenv')
+Import('env')
 
-e = emenv.IMPSharedLibraryEnvironment()
+e = env.IMPSharedLibraryEnvironment()
 
 e.Append(CPPPATH=e['EM_CPPPATH'])
 e.Append(LIBPATH=e['EM_LIBPATH'], LIBS=e['EM_LIBS'])
