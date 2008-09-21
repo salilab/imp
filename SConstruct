@@ -31,7 +31,9 @@ Help("""
 Type: 'scons' to build the IMP kernel;
       'scons test' to run the kernel unit tests;
       'scons examples' to run the kernel examples;
-      'scons install' to install the kernel.
+      'scons install' to install the kernel;
+      'scons modules' to build and test all extension modules;
+      'scons modules-install' to install all extension modules.
 """)
 
 # Make these objects available to SConscript files:
@@ -46,10 +48,7 @@ bin = SConscript('bin/SConscript')
 Export('bin')
 SConscript('doc/SConscript')
 (src, pyext) = SConscript('kernel/SConscript')
-env.IMPModule('em', author='Keren Lasker', version='SVN',
-              description='Interface to the EMBED package.')
-env.IMPModule('domino', author='Keren Lasker', version='SVN',
-              description='DOMINO optimizer.')
+SConscript('modules/SConscript')
 
 # bin script first requires kernel libraries to be built:
 env.Depends(bin, [src, pyext])
