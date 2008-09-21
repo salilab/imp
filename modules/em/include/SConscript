@@ -1,6 +1,6 @@
-Import('emenv')
+Import('env')
 
 files = ('EMFitRestraint.h', 'IMPParticlesAccessPoint.h')
 
 # Install the include files:
-emenv.IMPHeaders(files)
+env.IMPHeaders(files)

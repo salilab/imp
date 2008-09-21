@@ -1,14 +1,14 @@
-Import('emenv')
+Import('env')
 import os
 
-test = emenv.IMPModuleTest("test.passed", "run-all-tests.py",
-                           TEST_ENVSCRIPT=emenv['EM_EMPY'])
-if emenv['wine']:
+test = env.IMPModuleTest("test.passed", "run-all-tests.py",
+                         TEST_ENVSCRIPT=env['EM_EMPY'])
+if env['wine']:
     # On Win32 systems, link the EM DLL into the libs directory, so that loading
     # the Python extension will pick it up:
-    emdll = emenv.Command('#/build/libs/libem.dll',
-                          os.path.join(emenv['EM_LIBPATH'], 'libem.dll'),
-                          "ln -sf $SOURCE $TARGET")
-    emenv.Depends(test, emdll)
+    emdll = env.Command('#/build/libs/libem.dll',
+                        os.path.join(env['EM_LIBPATH'], 'libem.dll'),
+                        "ln -sf $SOURCE $TARGET")
+    env.Depends(test, emdll)
 
 Return('test')
