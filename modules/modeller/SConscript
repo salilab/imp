@@ -1,0 +1,20 @@
+Import('env')
+Export('env')
+
+def modeller_fail(env, target, source):
+    print """
+  ERROR: Modeller is required to build %s.
+
+  Use the modeller command line option (or options file) to set the
+  directory where Modeller is installed (run 'scons -h' for help.)
+""" % target[0]
+    return 1
+
+# Make sure that builds with this environment fail if MODELLER was not found:
+if env['MODELLER_EXETYPE'] == '':
+    env.invalidate(modeller_fail)
+
+# Subdirectories:
+pyext = SConscript('pyext/SConscript')
+test = SConscript('test/SConscript')
+env.Depends(test, pyext)

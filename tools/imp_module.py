@@ -141,6 +141,16 @@ def IMPHeaders(env, files):
         env.Alias(alias, inst)
     return inst
 
+def IMPPython(env, files):
+    """Install the given Python files for this IMP module."""
+    from tools.hierarchy import InstallPythonHierarchy
+    module = env['IMP_MODULE']
+    pydir = os.path.join(env['pythondir'], 'IMP')
+    inst, lib = InstallPythonHierarchy(env, pydir, env['IMP_MODULE'], files)
+    for alias in ('%s-install' % module, 'modules-install'):
+        env.Alias(alias, inst)
+    return lib
+
 def IMPPythonExtension(env, swig_interface):
     """Build and install an IMP module's Python extension and the associated
        wrapper file from a SWIG interface file. This is only available from
@@ -202,20 +212,23 @@ def IMPModuleTest(env, target, source, **keys):
     env.AlwaysBuild(target)
     return test
 
-def invalidate(env, fail_builder):
-    """'Break' an environment, so that any builds with it use the fail_builder
+def invalidate(env, fail_action):
+    """'Break' an environment, so that any builds with it use the fail_action
        function (which should be an Action which terminates the build)"""
     for var in ('SHLINKCOM', 'CCCOM', 'CXXCOM', 'SHCCCOM', 'SHCXXCOM',
                 'SWIGCOM'):
-        env[var] = fail_builder
+        env[var] = fail_action
+    env.Append(BUILDERS={'_IMPModuleTest': Builder(action=fail_action)})
     env['INVALIDATED'] = True
 
-def IMPModule(env, module, author, version, description):
+def IMPModule(env, module, author, version, description, cpp=True):
     """Set up an IMP module. The module's SConscript gets its own
        customized environment ('env') in which the following pseudo-builders
-       or methods are available: IMPSharedLibraryEnvironment,
-       IMPPythonExtensionEnvironment, IMPHeaders, IMPModuleTest
-       and invalidate."""
+       or methods are available: IMPPython, IMPModuleTest, invalidate.
+       and invalidate. If `cpp` is True, necessary C++ headers are also
+       automatically generated, and these additional methods are available:
+       IMPSharedLibraryEnvironment, IMPPythonExtensionEnvironment, IMPHeaders.
+    """
     env = env.Clone()
     exports = Builder(action=action_exports)
     version_info = Builder(action=action_version_info)
@@ -231,21 +244,25 @@ Type: 'scons modules/%(module)s' to build and test the %(module)s extension modu
       'scons %(module)s-test' to just test it;
       'scons %(module)s-install' to install it.
 """ % {'module':module})
-    # Generate version information
-    env['VER_CPP'], env['VER_H'] = \
-        env.IMPModuleVersionInfo(('%s/src/%s_version_info.cpp' % (module,
-                                                                  module),
-                                  '%s/include/%s_version_info.h' % (module,
-                                                                    module)),
-                                 (env.Value(module), env.Value(author),
-                                  env.Value(version)))
-    # Generate exports header
-    env['EXP_H'] = env.IMPModuleExports('%s/include/%s_exports.h' % (module,
-                                                                     module),
-                                        env.Value(module))
-    env.AddMethod(IMPSharedLibraryEnvironment)
-    env.AddMethod(IMPPythonExtensionEnvironment)
-    env.AddMethod(IMPHeaders)
+
+    if cpp:
+        # Generate version information
+        env['VER_CPP'], env['VER_H'] = \
+            env.IMPModuleVersionInfo(('%s/src/%s_version_info.cpp' % (module,
+                                                                      module),
+                                      '%s/include/%s_version_info.h' \
+                                         % (module, module)),
+                                     (env.Value(module), env.Value(author),
+                                      env.Value(version)))
+        # Generate exports header
+        env['EXP_H'] = env.IMPModuleExports('%s/include/%s_exports.h' \
+                                            % (module, module),
+                                            env.Value(module))
+        env.AddMethod(IMPSharedLibraryEnvironment)
+        env.AddMethod(IMPPythonExtensionEnvironment)
+        env.AddMethod(IMPHeaders)
+
+    env.AddMethod(IMPPython)
     env.AddMethod(IMPModuleTest)
     env.AddMethod(invalidate)
     env.Append(BUILDERS={'_IMPModuleTest': Builder(action=_action_unit_test,

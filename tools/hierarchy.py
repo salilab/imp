@@ -72,3 +72,27 @@ def InstallHierarchy(env, dir, module, description, sources):
         gen_heads.append(t)
     targets.append(gen_heads[0])
     return targets
+
+
+def InstallPythonHierarchy(env, dir, module, sources):
+    """Given a set of Python files, install them all under `dir`. They are
+       placed in the `module` subdirectory (common prefix is stripped from the
+       filenames). A list of all installed files is returned, suitable for an
+       'install' alias, plus another list of the files in the build
+       directory."""
+    insttargets = []
+    libtargets = []
+    sources = _make_nodes(sources)
+    prefix = len(os.path.commonprefix([f.path for f in sources]))
+    if module != 'IMP':
+        libdir = os.path.join('#/build/libs', 'IMP')
+    else:
+        libdir = '#/build/libs'
+    for f in sources:
+        src = f.path[prefix:]
+        dest = os.path.join(dir, module, os.path.dirname(src))
+        insttargets.append(env.Install(dest, f))
+        # Also place the file in the build directory:
+        dest = os.path.join(libdir, module, os.path.dirname(src))
+        libtargets.append(env.Install(dest, f))
+    return insttargets, libtargets

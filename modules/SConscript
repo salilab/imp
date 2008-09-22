@@ -2,5 +2,9 @@ Import('env')
 
 env.IMPModule('em', author='Keren Lasker', version='SVN',
               description='Interface to the EMBED package.')
+
 env.IMPModule('domino', author='Keren Lasker', version='SVN',
               description='DOMINO optimizer.')
+
+env.IMPModule('modeller', author='Ben Webb', version='SVN',
+              description='Interface to the MODELLER package.', cpp=False)
