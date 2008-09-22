@@ -1,7 +1,7 @@
 import unittest
 import IMP
 import IMP.test
-import IMP.pdb
+import IMP.modeller
 
 class PDBReadTest(IMP.test.TestCase):
     #def test_open_error(self):
@@ -13,7 +13,7 @@ class PDBReadTest(IMP.test.TestCase):
         i_num_res_type= IMP.ResidueType.get_number_unique()
         i_num_atom_type= IMP.AtomType.get_number_unique()
         m = IMP.Model()
-        mp= IMP.pdb.read_pdb('modeller/single_protein.pdb', m)
+        mp= IMP.modeller.read_pdb('single_protein.pdb', m)
         #mp= IMP.MolecularHierarchyDecorator.cast(p)
         #mp.show()
         #IMP.show_molecular_hierarchy(mp)
@@ -39,7 +39,7 @@ class PDBReadTest(IMP.test.TestCase):
     def test_bonds(self):
         """Check that the file loader produces bonds"""
         m = IMP.Model()
-        mp= IMP.pdb.read_pdb('modeller/single_protein.pdb', m)
+        mp= IMP.modeller.read_pdb('single_protein.pdb', m)
         #mp= IMP.MolecularHierarchyDecorator.cast(p)
         all_atoms= IMP.molecular_hierarchy_get_by_type(mp,
                              IMP.MolecularHierarchyDecorator.ATOM);
@@ -53,7 +53,7 @@ class PDBReadTest(IMP.test.TestCase):
             mdl.patch('5TER', mdl.residues[0])
             mdl.patch('3TER', mdl.residues[-1])
         m = IMP.Model()
-        mp= IMP.pdb.read_pdb('modeller/single_dna.pdb', m, na_patches)
+        mp= IMP.modeller.read_pdb('single_dna.pdb', m, na_patches)
         print "done reading"
         #IMP.show_molecular_hierarchy(mp)
         #mp= IMP.MolecularHierarchyDecorator.cast(p)
