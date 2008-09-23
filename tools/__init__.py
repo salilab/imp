@@ -335,10 +335,12 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
 
         # Some gcc versions don't like the code that SWIG generates - but let
         # that go, because we have no control over it:
-        try:
-            e['CCFLAGS'].remove('-Werror')
-        except ValueError:
-            pass
+        for (var, f) in (('CCFLAGS', '-Werror'), ('CPPFLAGS', '-Wall'),
+                         ('CCFLAGS', '-Wall')):
+            try:
+                e[var].remove(f)
+            except ValueError:
+                pass
         # AIX tries to use the C compiler rather than g++, so hardcode it here:
         if platform == 'aix' and cplusplus:
             ldshared = ldshared.replace(' cc_r', ' g++')
