@@ -8,3 +8,8 @@ env.IMPModule('domino', author='Keren Lasker', version='SVN',
 
 env.IMPModule('modeller', author='Ben Webb', version='SVN',
               description='Interface to the MODELLER package.', cpp=False)
+
+# We currently do not have a scanner to automatically determine dependencies
+# for Python scripts, so manually add inter-module dependencies for the Python
+# test cases here (C++ dependencies *are* handled automatically)
+env.Depends('em/test/test.passed', '#/build/libs/IMP/modeller/')
