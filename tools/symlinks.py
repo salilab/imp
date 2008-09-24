@@ -8,7 +8,7 @@ def _linkFunc(dest, source, env):
     if os.path.isdir(source):
         raise SCons.Errors.UserError("Source must be a file, not a directory")
     else:
-        if os.path.exists(dest):
+        if os.path.lexists(dest):
             os.unlink(dest)
         os.symlink(os.path.abspath(source), dest)
     return 0
