@@ -3,7 +3,6 @@ import os
 from modeller import *
 import IMP
 import IMP.test
-import IMP.pdb
 import IMP.modeller
 
 class ModellerRestraintsTests(IMP.test.TestCase):
@@ -22,7 +21,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         modmodel.read(file='test.pdb')
 
         m = IMP.Model()
-        protein = IMP.pdb.read_pdb('test.pdb', m)
+        protein = IMP.modeller.read_pdb('test.pdb', m)
         os.unlink('test.pdb')
 
         at = modmodel.atoms
