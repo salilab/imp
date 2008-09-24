@@ -4,7 +4,8 @@ import os.path
 import re
 import sys
 from SCons.Script import *
-from hierarchy import InstallHierarchy
+import hierarchy
+import symlinks
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
            "get_sharedlib_environment", "embed"]
@@ -189,6 +190,8 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace('-no_archive', '')
     except ValueError:
         pass
+    env.AddMethod(symlinks.LinkInstall)
+    env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
     env.Prepend(SCANNERS = _SWIGScanner)
     if env['CC'] == 'gcc':

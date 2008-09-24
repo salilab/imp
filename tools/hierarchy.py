@@ -61,7 +61,7 @@ def InstallHierarchy(env, dir, module, description, sources):
         targets.append(env.Install(dest, f))
         # Also place the header in the build directory:
         dest = os.path.join(incdir, module, os.path.dirname(src))
-        env.Install(dest, f)
+        env.LinkInstall(dest, f)
 
     gen_heads = []
     for d in (dir, incdir):
@@ -94,5 +94,5 @@ def InstallPythonHierarchy(env, dir, module, sources):
         insttargets.append(env.Install(dest, f))
         # Also place the file in the build directory:
         dest = os.path.join(libdir, module, os.path.dirname(src))
-        libtargets.append(env.Install(dest, f))
+        libtargets.append(env.LinkInstall(dest, f))
     return insttargets, libtargets
