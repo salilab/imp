@@ -30,8 +30,8 @@ svn export -q -${rev} ${IMPSVNDIR} imp
 
 # Put version number, date and revision into relevant files
 DATE=`date +'%Y/%m/%d'`
-(cd imp/kernel/doc/internal && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}, ${DATE}, ${rev}#" < doxygen.conf > .dox && mv .dox doxygen.conf)
-(cd imp/kernel/doc && sed -e "s#</title>#</title><subtitle>Documentation for nightly build ${VER}, ${DATE}, ${rev}</subtitle>#" < manual.xml > .man && mv .man manual.xml)
+(cd imp/doc/internal && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}, ${DATE}, ${rev}#" < doxygen.conf > .dox && mv .dox doxygen.conf)
+(cd imp/doc && sed -e "s#</title>#</title><subtitle>Documentation for nightly build ${VER}, ${DATE}, ${rev}</subtitle>#" < manual.xml > .man && mv .man manual.xml)
 
 # Write out a version file
 verfile="${MODINSTALL}/build/imp-version"
