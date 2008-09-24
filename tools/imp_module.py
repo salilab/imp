@@ -161,7 +161,8 @@ def IMPPythonExtension(env, swig_interface):
     gen_pymod = File('IMP_%s.py' % module)
     env.Depends(gen_pymod, pyext)
     # Place in libs directory:
-    pymod = env.InstallAs('#/build/libs/IMP/%s/__init__.py' % module, gen_pymod)
+    pymod = env.LinkInstallAs('#/build/libs/IMP/%s/__init__.py' % module,
+                              gen_pymod)
 
     # Install the Python extension and module:
     libinst = env.Install(env['pyextdir'], pyext)

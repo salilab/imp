@@ -15,7 +15,7 @@ pyext = e.LoadableModule('#/build/libs/_IMP', 'IMP.i',
 gen_pymod = File('IMP.py')
 e.Depends(gen_pymod, pyext)
 # Place in libs directory:
-pymod = e.InstallAs('#/build/libs/IMP/__init__.py', gen_pymod)
+pymod = e.LinkInstallAs('#/build/libs/IMP/__init__.py', gen_pymod)
 # Install
 pydir = os.path.join(env['pythondir'], 'IMP')
 pyinst = env.Install(pydir, pymod)

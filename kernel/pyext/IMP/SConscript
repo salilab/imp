@@ -6,7 +6,7 @@ Import('env')
 files = ['test.py', 'utils.py']
 
 # Install in lib directory:
-pymod = env.Install('#/build/libs/IMP/', files)
+pymod = env.LinkInstall('#/build/libs/IMP/', files)
 
 pydir = os.path.join(env['pythondir'], 'IMP')
 pyinst = env.Install(pydir, files)
