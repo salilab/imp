@@ -55,23 +55,26 @@ def check_modified_file(filename, errors):
          or filename.endswith('SConstruct'):
         check_python_file(filename, errors)
 
+def file_matches_re(pathname, excludes):
+    for e in excludes:
+        if e.match(pathname):
+            return True
+    return False
+
 def get_all_files():
     modfiles = []
+    excludes = ['\.\/kernel\/pyext\/IMP_wrap\.[h|cc]',
+                '\.\/kernel\/pyext\/IMP\.py',
+                '\.\/modules\/\w+\/pyext\/\w+_wrap\.[h|cc]',
+                '\.\/modules\/\w+\/pyext\/IMP_\w+\.py']
+    excludes = [re.compile(x) for x in excludes]
     for root, dirs, files in os.walk('.'):
         if '.sconf_temp' not in root and not root.startswith('./build/'):
             for f in files:
                 if not f.startswith('.'):
-                    modfiles.append(os.path.join(root, f))
-    excludes = ['./kernel/pyext/IMP_wrap.h', './kernel/pyext/IMP_wrap.cc',
-                './em/pyext/IMPEM_wrap.h', './impEM/pyext/IMPEM_wrap.cc',
-                './em/pyext/IMP_em.py', './kernel/pyext/IMP.py',
-                './domino/pyext/DOMINO_wrap.h', './domino/pyext/DOMINO_wrap.cc',
-                './domino/pyext/IMP_domino.py']
-    for ex in excludes:
-        try:
-            modfiles.remove(ex)
-        except ValueError:
-            pass
+                    pathname = os.path.join(root, f)
+                    if not file_matches_re(pathname, excludes):
+                        modfiles.append(pathname)
     return modfiles
 
 def main():
