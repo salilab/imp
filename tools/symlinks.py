@@ -14,7 +14,14 @@ def _linkFunc(dest, source, env):
             os.unlink(dest)
         except OSError:
             pass
-        os.symlink(os.path.abspath(source), dest)
+        if os.path.isabs(source) or os.path.isabs(dest):
+            os.symlink(os.path.abspath(source), dest)
+        else:
+            # If both paths are relative to top-level directory, figure out how
+            # to get from dest to the top level, then make a relative symlink:
+            updirs = len(os.path.normpath(dest).split(os.path.sep)) - 1
+            uppath = os.path.sep.join([os.path.pardir] * updirs)
+            os.symlink(os.path.join(uppath, source), dest)
     return 0
 
 def LinkInstall(env, target, source, **keys):
