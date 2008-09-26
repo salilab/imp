@@ -179,11 +179,11 @@ def DoxyEmitter(source, target, env):
     """Doxygen Doxyfile emitter"""
     # possible output formats and their default values and output locations
     output_formats = {
-       "HTML": ("YES", "html"),
-       "LATEX": ("YES", "latex"),
-       "RTF": ("NO", "rtf"),
-       "MAN": ("YES", "man"),
-       "XML": ("NO", "xml"),
+       "HTML": ("YES", "html", "index.html"),
+       "LATEX": ("YES", "latex", None),
+       "RTF": ("NO", "rtf", None),
+       "MAN": ("YES", "man", None),
+       "XML": ("NO", "xml", None),
     }
 
     data = DoxyfileParse(source[0].get_contents())
@@ -197,7 +197,17 @@ def DoxyEmitter(source, target, env):
     # add our output locations
     for (k, v) in output_formats.items():
         if data.get("GENERATE_" + k, v[0]) == "YES":
-            targets.append(env.Dir( os.path.join(out_dir, data.get(k + "_OUTPUT", v[1]))) )
+            dirname = os.path.join(out_dir, data.get(k + "_OUTPUT", v[1]))
+            dir = env.Dir(dirname)
+            # Since scons currently doesn't handle directory targets well,
+            # work around this by defining a single known "always installed"
+            # file (e.g. index.html) as the target:
+            if v[2]:
+                f = env.File(os.path.join(dirname, v[2]))
+                targets.append(f)
+                env.Clean(f, dir)
+            else:
+                targets.append(dir)
 
     # add the tag file if neccessary:
     tagfile = data.get("GENERATE_TAGFILE", "")
@@ -210,10 +220,6 @@ def DoxyEmitter(source, target, env):
     # don't clobber targets
     for node in targets:
         env.Precious(node)
-
-    # set up cleaning stuff
-    for node in targets:
-        env.Clean(node, node)
 
     return (targets, source)
 
