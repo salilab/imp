@@ -30,7 +30,7 @@ files = ['base_types.cpp', 'Model.cpp',
           + particle_refiners_files
 
 # Build the shared library:
-lib = env.SharedLibrary('#/build/libs/imp', files)
+lib = env.SharedLibrary('#/build/lib/imp', files)
 
 # Install the library:
 libinst = env.Install(env['libdir'], lib)

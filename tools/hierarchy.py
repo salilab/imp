@@ -85,9 +85,9 @@ def InstallPythonHierarchy(env, dir, module, sources):
     sources = _make_nodes(sources)
     prefix = len(os.path.commonprefix([f.path for f in sources]))
     if module != 'IMP':
-        libdir = os.path.join('#/build/libs', 'IMP')
+        libdir = os.path.join('#/build/lib', 'IMP')
     else:
-        libdir = '#/build/libs'
+        libdir = '#/build/lib'
     for f in sources:
         src = f.path[prefix:]
         dest = os.path.join(dir, module, os.path.dirname(src))
