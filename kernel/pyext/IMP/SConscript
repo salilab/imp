@@ -11,5 +11,6 @@ pymod = env.LinkInstall('#/build/libs/IMP/', files)
 pydir = os.path.join(env['pythondir'], 'IMP')
 pyinst = env.Install(pydir, files)
 env.Alias('install', pyinst)
+env.Alias('kernel-install', pyinst)
 
 Return('pymod')

@@ -28,12 +28,17 @@ called 'config.py' in this directory.)
 Help(vars.GenerateHelpText(env))
 
 Help("""
-Type: 'scons' to build the IMP kernel;
-      'scons test' to run the kernel unit tests;
-      'scons examples' to run the kernel examples;
-      'scons install' to install the kernel;
-      'scons modules' to build and test all extension modules;
-      'scons modules-install' to install all extension modules.
+Type: 'scons' to build the IMP kernel and all configured modules (i.e. those
+              with no unmet dependencies);
+      'scons test' to run unit tests for the kernel and all configured modules;
+      'scons install' to install the kernel and all configured modules;
+      'scons examples' to run the examples;
+
+Other useful targets:
+      'kernel-test', 'kernel-install' to test or install the kernel;
+      'modules-test', 'modules-install' to test or install ALL modules (even
+          attempt to do so for those not configured);
+      'foo-test', 'foo-install' to test or install the module 'foo'.
 """)
 
 # Make these objects available to SConscript files:

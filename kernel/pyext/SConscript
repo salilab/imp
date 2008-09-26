@@ -20,10 +20,12 @@ pymod = e.LinkInstallAs('#/build/libs/IMP/__init__.py', gen_pymod)
 pydir = os.path.join(env['pythondir'], 'IMP')
 pyinst = env.Install(pydir, pymod)
 env.Alias('install', pyinst)
+env.Alias('kernel-install', pyinst)
 
 # Install the Python extension:
 libinst = e.Install(e['pyextdir'], pyext)
 e.Alias('install', libinst)
+e.Alias('kernel-install', libinst)
 
 # Subdirectories
 pyfiles = SConscript('IMP/SConscript')
