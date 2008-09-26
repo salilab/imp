@@ -5,7 +5,7 @@ MODPY=@MODPY@
 PATHSEP=@PATHSEP@
 EXTRALIB=@EXTRALIB@
 
-LLP="${EXTRALIB}${TOPDIR}/build/libs"
+LLP="${EXTRALIB}${TOPDIR}/build/lib"
 if test -z "${LD_LIBRARY_PATH}"; then
   LD_LIBRARY_PATH=${LLP}
 else
@@ -22,7 +22,7 @@ else
   LIBPATH=${LIBPATH}${PATHSEP}${LLP}
 fi
 
-PP="${EXTRALIB}${TOPDIR}/build/libs"
+PP="${EXTRALIB}${TOPDIR}/build/lib"
 if test -z "${PYTHONPATH}"; then
   PYTHONPATH=${PP}
 else

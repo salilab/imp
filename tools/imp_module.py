@@ -135,7 +135,7 @@ def IMPSharedLibrary(env, files, install=True):
        shared library. This is only available from within an environment
        created by `IMPSharedLibraryEnvironment`."""
     module = env['IMP_MODULE']
-    lib = env.SharedLibrary('#/build/libs/imp_%s' % module,
+    lib = env.SharedLibrary('#/build/lib/imp_%s' % module,
                             list(files) + [env['VER_CPP']])
     if install:
         libinst = env.Install(env['libdir'], lib)
@@ -183,12 +183,12 @@ def IMPPythonExtension(env, swig_interface):
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
     module = env['IMP_MODULE']
-    pyext = env.LoadableModule('#/build/libs/_IMP_%s' % module, swig_interface)
+    pyext = env.LoadableModule('#/build/lib/_IMP_%s' % module, swig_interface)
     # .py file should also be generated:
     gen_pymod = File('IMP_%s.py' % module)
     env.Depends(gen_pymod, pyext)
-    # Place in libs directory:
-    pymod = env.LinkInstallAs('#/build/libs/IMP/%s/__init__.py' % module,
+    # Place in lib directory:
+    pymod = env.LinkInstallAs('#/build/lib/IMP/%s/__init__.py' % module,
                               gen_pymod)
 
     # Install the Python extension and module:
@@ -276,7 +276,7 @@ def IMPModule(env, module, author, version, description, cpp=True):
     env['IMP_MODULE'] = module
     env['IMP_MODULE_DESCRIPTION'] = description
     env.Append(CPPPATH=['#/build/include', env['BOOST_CPPPATH']])
-    env.Append(LIBPATH=['#/build/libs'], LIBS=['imp'])
+    env.Append(LIBPATH=['#/build/lib'], LIBS=['imp'])
 
     if cpp:
         # Generate version information
