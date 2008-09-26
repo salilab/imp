@@ -34,6 +34,7 @@ lib = env.SharedLibrary('#/build/libs/imp', files)
 
 # Install the library:
 libinst = env.Install(env['libdir'], lib)
+env.Alias('kernel-install', [libinst])
 env.Alias('install', [libinst])
 
 Return('lib')

@@ -19,6 +19,7 @@ e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
 
 test = e.Test("test.passed", ["run-all-tests.py", bin])
 e.Alias("test", test)
+e.Alias("kernel-test", test)
 e.AlwaysBuild("test.passed")
 
 Return('test')

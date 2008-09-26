@@ -102,6 +102,34 @@ extern IMP%(MODULE)sEXPORT VersionInfo %(module)s_version_info;""" \
 
     print >> h, "\n#endif  /* __IMP_%s_VERSION_INFO_H */" % module.upper()
 
+def _add_all_alias(aliases, env, name):
+    """Add an 'all' alias `name` to the list of aliases, but only if the
+       environment has been validated (i.e. this module is OK to build)."""
+    if env['VALIDATED'] is None:
+        print "Module environment not correctly set up - you must call\n" + \
+              "either env.validate() or env.invalidate() in the " + \
+              "module SConscript"
+        env.Exit(1)
+    if env['VALIDATED']:
+        aliases.append(name)
+
+def _get_module_install_aliases(env):
+    """Get a list of all 'install' aliases for this module"""
+    aliases = ['%s-install' % env['IMP_MODULE'], 'modules-install']
+    _add_all_alias(aliases, env, 'install')
+    return aliases
+
+def _get_module_test_aliases(env):
+    """Get a list of all 'test' aliases for this module"""
+    aliases = ['%s-test' % env['IMP_MODULE'], 'modules-test']
+    _add_all_alias(aliases, env, 'test')
+    return aliases
+
+def _add_module_default_alias(env, targets):
+    """Add the default alias for this module, to build the given targets."""
+    if env['VALIDATED']:
+        env.Default(targets)
+
 def IMPSharedLibrary(env, files, install=True):
     """Build, and optionally also install, an IMP module's C++
        shared library. This is only available from within an environment
@@ -111,7 +139,7 @@ def IMPSharedLibrary(env, files, install=True):
                             list(files) + [env['VER_CPP']])
     if install:
         libinst = env.Install(env['libdir'], lib)
-        for alias in ('%s-install' % module, 'modules-install'):
+        for alias in _get_module_install_aliases(env):
             env.Alias(alias, [libinst])
         return lib, libinst
     else:
@@ -132,23 +160,22 @@ def IMPHeaders(env, files):
     """Install the given header files, plus any auto-generated files for this
        IMP module."""
     from tools.hierarchy import InstallHierarchy
-    module = env['IMP_MODULE']
     includedir = os.path.join(env['includedir'], 'IMP')
     inst = InstallHierarchy(env, includedir, env['IMP_MODULE'],
                             env['IMP_MODULE_DESCRIPTION'],
                             list(files) + [env['EXP_H'], env['VER_H']])
-    for alias in ('%s-install' % module, 'modules-install'):
+    for alias in _get_module_install_aliases(env):
         env.Alias(alias, inst)
     return inst
 
 def IMPPython(env, files):
     """Install the given Python files for this IMP module."""
     from tools.hierarchy import InstallPythonHierarchy
-    module = env['IMP_MODULE']
     pydir = os.path.join(env['pythondir'], 'IMP')
     inst, lib = InstallPythonHierarchy(env, pydir, env['IMP_MODULE'], files)
-    for alias in ('%s-install' % module, 'modules-install'):
+    for alias in _get_module_install_aliases(env):
         env.Alias(alias, inst)
+    _add_module_default_alias(env, lib)
     return lib
 
 def IMPPythonExtension(env, swig_interface):
@@ -167,8 +194,9 @@ def IMPPythonExtension(env, swig_interface):
     # Install the Python extension and module:
     libinst = env.Install(env['pyextdir'], pyext)
     pyinst = env.Install(os.path.join(env['pythondir'], 'IMP', module), pymod)
-    for alias in ('%s-install' % module, 'modules-install'):
+    for alias in _get_module_install_aliases(env):
         env.Alias(alias, [libinst, pyinst])
+    _add_module_default_alias(env, [pyext, pymod])
     return pyext, pymod
 
 def IMPPythonExtensionEnvironment(env):
@@ -209,7 +237,8 @@ def IMPModuleTest(env, target, source, **keys):
        script to run to set up the environment to run the test script.
        A convenience alias for the tests is added, and they are always run."""
     test = env._IMPModuleTest(target, source, **keys)
-    env.Alias("%s-test" % env['IMP_MODULE'], test)
+    for alias in _get_module_test_aliases(env):
+        env.Alias(alias, test)
     env.AlwaysBuild(target)
     return test
 
@@ -220,15 +249,23 @@ def invalidate(env, fail_action):
                 'SWIGCOM'):
         env[var] = fail_action
     env.Append(BUILDERS={'_IMPModuleTest': Builder(action=fail_action)})
-    env['INVALIDATED'] = True
+    env['VALIDATED'] = False
+
+def validate(env):
+    """Confirm that a module's environment is OK for builds."""
+    module = env['IMP_MODULE']
+    env['VALIDATED'] = True
 
 def IMPModule(env, module, author, version, description, cpp=True):
     """Set up an IMP module. The module's SConscript gets its own
        customized environment ('env') in which the following pseudo-builders
-       or methods are available: IMPPython, IMPModuleTest, invalidate.
+       or methods are available: IMPPython, IMPModuleTest, validate
        and invalidate. If `cpp` is True, necessary C++ headers are also
        automatically generated, and these additional methods are available:
        IMPSharedLibraryEnvironment, IMPPythonExtensionEnvironment, IMPHeaders.
+       Either validate or invalidate must be called in the module's top-level
+       SConscript before setting up any builders, to indicate whether the
+       module's necessary dependencies have been met.
     """
     env = env.Clone()
     exports = Builder(action=action_exports)
@@ -240,11 +277,6 @@ def IMPModule(env, module, author, version, description, cpp=True):
     env['IMP_MODULE_DESCRIPTION'] = description
     env.Append(CPPPATH=['#/build/include', env['BOOST_CPPPATH']])
     env.Append(LIBPATH=['#/build/libs'], LIBS=['imp'])
-    env.Help("""
-Type: 'scons modules/%(module)s' to build and test the %(module)s extension module;
-      'scons %(module)s-test' to just test it;
-      'scons %(module)s-install' to install it.
-""" % {'module':module})
 
     if cpp:
         # Generate version information
@@ -265,11 +297,12 @@ Type: 'scons modules/%(module)s' to build and test the %(module)s extension modu
 
     env.AddMethod(IMPPython)
     env.AddMethod(IMPModuleTest)
+    env.AddMethod(validate)
     env.AddMethod(invalidate)
     env.Append(BUILDERS={'_IMPModuleTest': Builder(action=_action_unit_test,
                                                    emitter=_emit_unit_test)})
     env['TEST_ENVSCRIPT'] = None
-    env['INVALIDATED'] = False
+    env['VALIDATED'] = None
     return env.SConscript('%s/SConscript' % module, exports='env')
 
 def generate(env):

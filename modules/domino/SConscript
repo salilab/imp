@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+# No dependent libraries, so this module can always be built:
+env.validate()
+
 # Subdirectories:
 lib = SConscript('src/SConscript')
 SConscript('include/SConscript')

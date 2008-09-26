@@ -9,6 +9,8 @@ embed.configure_check(env)
 # Make sure that all builds with this environment fail if EMBED was not found:
 if env['EM_LIBS'] == '' or env['MODELLER_LIBS'] == '':
     env.invalidate(embed.fail)
+else:
+    env.validate()
 
 # Subdirectories:
 lib = SConscript('src/SConscript')

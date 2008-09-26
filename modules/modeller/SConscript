@@ -13,6 +13,8 @@ def modeller_fail(env, target, source):
 # Make sure that builds with this environment fail if MODELLER was not found:
 if env['MODELLER_EXETYPE'] == '':
     env.invalidate(modeller_fail)
+else:
+    env.validate()
 
 # Subdirectories:
 pyext = SConscript('pyext/SConscript')

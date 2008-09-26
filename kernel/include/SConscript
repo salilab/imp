@@ -26,4 +26,5 @@ files = [File(f) for f in files] \
 includedir = env['includedir']
 inst = env.InstallHierarchy(includedir, 'IMP',
                             'IMP, an Integrative Modeling Platform.', files)
+env.Alias('kernel-install', inst)
 env.Alias('install', inst)
