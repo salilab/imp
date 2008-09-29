@@ -1,6 +1,7 @@
 import unittest
 import IMP
 import IMP.test
+import IMP.misc
 
 rk = IMP.FloatKey("radius")
 
@@ -25,7 +26,7 @@ class TestBondCover(IMP.test.TestCase):
             bb= IMP.BondedDecorator.create(ps[i])
             bds.append(IMP.custom_bond(ba, bb, 10, 1))
         bl= IMP.BondDecoratorListScoreState(ps)
-        ss= IMP.CoverBondsScoreState(bl, rk)
+        ss= IMP.misc.CoverBondsScoreState(bl, rk)
         m.add_score_state(bl)
         m.add_score_state(ss)
         return [m, ps, bds]

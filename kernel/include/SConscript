@@ -19,8 +19,7 @@ files = [File(f) for f in files] \
         + SConscript('pair_scores/SConscript') \
         + SConscript('singleton_scores/SConscript') \
         + SConscript('triplet_scores/SConscript') \
-        + SConscript('score_states/SConscript') \
-        + SConscript('particle_refiners/SConscript')
+        + SConscript('score_states/SConscript')
 
 # Install the include files:
 includedir = env['includedir']

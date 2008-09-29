@@ -8,10 +8,13 @@
 #ifndef __IMP_BOND_COVER_PARTICLE_REFINER_H
 #define __IMP_BOND_COVER_PARTICLE_REFINER_H
 
-#include "../internal/kernel_version_info.h"
-#include "../ParticleRefiner.h"
+#include "misc_version_info.h"
+#include "IMP/ParticleRefiner.h"
 
 namespace IMP
+{
+
+namespace misc
 {
 
 //! Cover a bond with a constant volume set of spheres.
@@ -19,7 +22,7 @@ namespace IMP
     this will only expand some custom bonds. Currently any
     particle which is an instance of BondDecorator is expanded.
 */
-class IMPDLLEXPORT BondCoverParticleRefiner : public ParticleRefiner
+class IMPMISCEXPORT BondCoverParticleRefiner : public ParticleRefiner
 {
   FloatKey rk_;
   FloatKey vk_;
@@ -29,8 +32,10 @@ public:
 
   virtual ~BondCoverParticleRefiner() {}
 
-  IMP_PARTICLE_REFINER(internal::kernel_version_info);
+  IMP_PARTICLE_REFINER(internal::misc_version_info);
 };
+
+} // namespace misc
 
 } // namespace IMP
 

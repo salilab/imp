@@ -1,4 +1,0 @@
-files=['BondCoverParticleRefiner.h', 'ChildrenParticleRefiner.h']
-
-files = [File(f) for f in files]
-Return('files')

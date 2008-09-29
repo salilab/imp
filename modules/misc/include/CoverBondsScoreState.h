@@ -8,12 +8,15 @@
 #ifndef __IMP_COVER_BONDS_SCORE_STATE_H
 #define __IMP_COVER_BONDS_SCORE_STATE_H
 
-#include "../ScoreState.h"
-#include "BondDecoratorListScoreState.h"
-#include "../internal/kernel_version_info.h"
-#include "../Pointer.h"
+#include "IMP/ScoreState.h"
+#include "IMP/Pointer.h"
+#include "IMP/score_states/BondDecoratorListScoreState.h"
+#include "misc_version_info.h"
 
 namespace IMP
+{
+
+namespace misc
 {
 
 //! This class sets the position and radius of each bond to cover the endpoints.
@@ -28,7 +31,7 @@ namespace IMP
     This is designed to be used in conjunction with a bonded list. Make sure
     it is updated first.
  */
-class IMPDLLEXPORT CoverBondsScoreState: public ScoreState
+class IMPMISCEXPORT CoverBondsScoreState: public ScoreState
 {
   Pointer<BondDecoratorListScoreState> bl_;
   FloatKey rk_;
@@ -40,12 +43,14 @@ public:
                        FloatKey rk=FloatKey("radius"));
   ~CoverBondsScoreState();
 
-  IMP_SCORE_STATE(internal::kernel_version_info);
+  IMP_SCORE_STATE(internal::misc_version_info);
 
   //! apply the derivatives to the endpoints
   void after_evaluate(DerivativeAccumulator *accpt);
 
 };
+
+} // namespace misc
 
 } // namespace IMP
 

@@ -1,6 +1,7 @@
 import unittest
 import IMP
 import IMP.test
+import IMP.misc
 import IMP.utils
 import math
 
@@ -17,7 +18,7 @@ class TunnelTest(IMP.test.TestCase):
         rk= IMP.FloatKey("radiusk")
         p.add_attribute(rk, 1, False)
         f= IMP.HarmonicLowerBound(0, 1)
-        tss= IMP.TunnelSingletonScore(f, rk)
+        tss= IMP.misc.TunnelSingletonScore(f, rk)
         tss.set_height(10)
         tss.set_radius(5)
         tss.set_center(IMP.Vector3D(10,10,10))

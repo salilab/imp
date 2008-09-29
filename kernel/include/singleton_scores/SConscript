@@ -1,5 +1,4 @@
-files = ['DistanceToSingletonScore.h', 'AttributeSingletonScore.h',
-         'TunnelSingletonScore.h']
+files = ['DistanceToSingletonScore.h', 'AttributeSingletonScore.h']
 
 files = [File(f) for f in files]
 Return('files')

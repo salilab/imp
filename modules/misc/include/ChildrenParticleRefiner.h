@@ -8,24 +8,29 @@
 #ifndef __IMP_CHILDREN_PARTICLE_REFINER_H
 #define __IMP_CHILDREN_PARTICLE_REFINER_H
 
-#include "../ParticleRefiner.h"
-#include "../internal/kernel_version_info.h"
+#include "IMP/ParticleRefiner.h"
+#include "misc_version_info.h"
 
 namespace IMP
+{
+
+namespace misc
 {
 
 //! Return the hierarchy children of a particle.
 /** Derivatives are not propagated back to parent or anything.
 */
-class IMPDLLEXPORT ChildrenParticleRefiner : public ParticleRefiner
+class IMPMISCEXPORT ChildrenParticleRefiner : public ParticleRefiner
 {
 public:
   ChildrenParticleRefiner();
 
   virtual ~ChildrenParticleRefiner() {}
 
-  IMP_PARTICLE_REFINER(internal::kernel_version_info);
+  IMP_PARTICLE_REFINER(internal::misc_version_info);
 };
+
+} // namespace misc
 
 } // namespace IMP
 

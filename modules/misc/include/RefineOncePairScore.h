@@ -8,12 +8,16 @@
 #ifndef __IMP_REFINE_ONCE_PAIR_SCORE_H
 #define __IMP_REFINE_ONCE_PAIR_SCORE_H
 
-#include "../PairScore.h"
-#include "../UnaryFunction.h"
-#include "../ParticleRefiner.h"
-#include "../Pointer.h"
+#include "IMP/PairScore.h"
+#include "IMP/UnaryFunction.h"
+#include "IMP/Pointer.h"
+#include "IMP/ParticleRefiner.h"
+#include "misc_exports.h"
 
 namespace IMP
+{
+
+namespace misc
 {
 
 //! Refine the input particles at most once with the ParticleRefiner.
@@ -22,7 +26,7 @@ namespace IMP
 
     \ingroup pairscore
  */
-class IMPDLLEXPORT RefineOncePairScore : public PairScore
+class IMPMISCEXPORT RefineOncePairScore : public PairScore
 {
   Pointer<ParticleRefiner> r_;
   Pointer<PairScore> f_;
@@ -37,6 +41,8 @@ public:
                          DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
+
+} // namespace misc
 
 } // namespace IMP
 

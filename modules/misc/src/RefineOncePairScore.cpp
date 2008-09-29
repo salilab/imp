@@ -6,7 +6,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/pair_scores/RefineOncePairScore.h"
+#include "IMP/misc/RefineOncePairScore.h"
 #include "IMP/decorators/bond_decorators.h"
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/internal/constants.h"
@@ -14,6 +14,9 @@
 #include <cmath>
 
 namespace IMP
+{
+
+namespace misc
 {
 
 RefineOncePairScore::RefineOncePairScore(ParticleRefiner *r,
@@ -59,5 +62,7 @@ void RefineOncePairScore::show(std::ostream &out) const
   f_->show(out);
   r_->show(out);
 }
+
+} // namespace misc
 
 } // namespace IMP
