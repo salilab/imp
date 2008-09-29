@@ -1,6 +1,5 @@
 files = ['DistancePairScore.h', 'SphereDistancePairScore.h',
-         'RefineOncePairScore.h', 'TypedPairScore.h',
-         'TransformedDistancePairScore.h']
+         'TypedPairScore.h', 'TransformedDistancePairScore.h']
 
 files = [File(f) for f in files]
 Return('files')

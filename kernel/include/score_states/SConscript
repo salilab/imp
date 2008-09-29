@@ -1,7 +1,7 @@
 files = ['BondedListScoreState.h', 'NonbondedListScoreState.h',
          'BipartiteNonbondedListScoreState.h', 'MaxChangeScoreState.h',
          'BondDecoratorListScoreState.h', 'AllNonbondedListScoreState.h',
-         'GravityCenterScoreState.h', 'CoverBondsScoreState.h']
+         'GravityCenterScoreState.h']
 
 files = [File(f) for f in files]
 Return('files')

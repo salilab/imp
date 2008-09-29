@@ -9,14 +9,16 @@
 #ifndef __IMP_TUNNEL_SINGLETON_SCORE_H
 #define __IMP_TUNNEL_SINGLETON_SCORE_H
 
-#include "../IMP_config.h"
-#include "../SingletonScore.h"
-#include "../Vector3D.h"
-#include "../UnaryFunction.h"
-#include "../Pointer.h"
-#include "../internal/kernel_version_info.h"
+#include "IMP/SingletonScore.h"
+#include "IMP/Vector3D.h"
+#include "IMP/UnaryFunction.h"
+#include "IMP/Pointer.h"
+#include "misc_exports.h"
 
 namespace IMP
+{
+
+namespace misc
 {
 
 class PairScore;
@@ -33,7 +35,7 @@ class PairScore;
 
     \ingroup restraint
  */
-class IMPDLLEXPORT TunnelSingletonScore : public SingletonScore
+class IMPMISCEXPORT TunnelSingletonScore : public SingletonScore
 {
   int coordinate_;
   Vector3D center_;
@@ -72,6 +74,8 @@ public:
   virtual Float evaluate(Particle *a, DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
+
+} // namespace misc
 
 } // namespace IMP
 

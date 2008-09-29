@@ -7,11 +7,14 @@
 #ifndef __IMP_WORM_LIKE_CHAIN_H
 #define __IMP_WORM_LIKE_CHAIN_H
 
-#include "../UnaryFunction.h"
-#include "../internal/constants.h"
-#include "../internal/units.h"
+#include "IMP/UnaryFunction.h"
+#include "IMP/internal/constants.h"
+#include "IMP/internal/units.h"
 
 namespace IMP
+{
+
+namespace misc
 {
 
 //! Worm-like-chain energy for polymer chains
@@ -91,7 +94,7 @@ public:
 protected:
   //! \note named to avoid clash with 'deriv' argument
   unit::Piconewton cderiv(unit::Angstrom l) const {
-    unit::Piconewton pn= internal::KB*internal::DEFAULT_TEMPERATURE
+    unit::Piconewton pn= IMP::internal::KB*IMP::internal::DEFAULT_TEMPERATURE
       /lp_*(.25/ square(1.0-(l/lmax_).get_normalized_value())
             -.25+(l/lmax_).to_scalar());
      return pn;
@@ -99,7 +102,8 @@ protected:
 
   unit::Picojoule eval(unit::Angstrom m) const {
     unit::Picojoule J
-      =  internal::KB*internal::DEFAULT_TEMPERATURE/lp_*(.25*square(lmax_)
+      =  IMP::internal::KB *
+         IMP::internal::DEFAULT_TEMPERATURE/lp_*(.25*square(lmax_)
                                        /(lmax_-m)
                                        -m*.25
                                        +.5*square(m)
@@ -113,6 +117,8 @@ protected:
 
   unit::Angstrom lmax_, lp_;
 };
+
+} // namespace misc
 
 } // namespace IMP
 

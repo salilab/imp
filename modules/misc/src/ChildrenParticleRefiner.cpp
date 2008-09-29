@@ -5,10 +5,13 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/particle_refiners/ChildrenParticleRefiner.h"
+#include "IMP/misc/ChildrenParticleRefiner.h"
 #include "IMP/decorators/HierarchyDecorator.h"
 
 namespace IMP
+{
+
+namespace misc
 {
 
 ChildrenParticleRefiner::ChildrenParticleRefiner()
@@ -47,5 +50,7 @@ void ChildrenParticleRefiner::show(std::ostream &out) const
 {
   out << "ChildrenParticleRefiner" << std::endl;
 }
+
+} // namespace misc
 
 } // namespace IMP

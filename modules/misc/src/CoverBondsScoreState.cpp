@@ -5,12 +5,15 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/score_states/CoverBondsScoreState.h"
+#include "IMP/misc/CoverBondsScoreState.h"
 #include "IMP/score_states/BondDecoratorListScoreState.h"
 #include "IMP/decorators/bond_decorators.h"
 #include "IMP/decorators/XYZDecorator.h"
 
 namespace IMP
+{
+
+namespace misc
 {
 
 
@@ -87,5 +90,7 @@ void CoverBondsScoreState::show(std::ostream &out) const
   out << "CoverBondsScoreState on " << bl_->get_number_of_bonds()
       << " bonds " << std::endl;
 }
+
+} // namespace misc
 
 } // namespace IMP

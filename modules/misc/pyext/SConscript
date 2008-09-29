@@ -1,0 +1,9 @@
+Import('env')
+
+# Get a modified build environment suitable for building Python extensions:
+e = env.IMPPythonExtensionEnvironment()
+
+# Build the Python extension from SWIG interface file:
+pyext, pymod = e.IMPPythonExtension('misc.i')
+
+Return('pyext', 'pymod')

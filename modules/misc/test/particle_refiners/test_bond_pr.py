@@ -1,6 +1,7 @@
 import unittest
 import IMP
 import IMP.test
+import IMP.misc
 
 rk = IMP.FloatKey("radius")
 
@@ -13,7 +14,7 @@ class Test(IMP.test.TestCase):
         ps= self.create_particles_in_box(m)
         bds= self.create_chain(ps, 10)
         bl= IMP.BondDecoratorListScoreState(ps)
-        ss= IMP.CoverBondsScoreState(bl, rk)
+        ss= IMP.misc.CoverBondsScoreState(bl, rk)
         m.add_score_state(bl)
         m.add_score_state(ss)
         return [m, ps, bds]
@@ -25,7 +26,7 @@ class Test(IMP.test.TestCase):
         [m,ps, bds]= self._set_up_stuff(8)
         vk= IMP.FloatKey("volume")
         rk= IMP.FloatKey("radius")
-        bc= IMP.BondCoverParticleRefiner(rk, vk)
+        bc= IMP.misc.BondCoverParticleRefiner(rk, vk)
         for p in ps:
             self.assert_(not bc.get_can_refine(p))
         for b in bds:

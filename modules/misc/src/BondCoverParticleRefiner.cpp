@@ -5,7 +5,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/particle_refiners/BondCoverParticleRefiner.h"
+#include "IMP/misc/BondCoverParticleRefiner.h"
 #include "IMP/decorators/bond_decorators.h"
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/internal/constants.h"
@@ -13,6 +13,9 @@
 #include <cmath>
 
 namespace IMP
+{
+
+namespace misc
 {
 
 BondCoverParticleRefiner::BondCoverParticleRefiner(FloatKey rk,
@@ -51,13 +54,13 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
   XYZDecorator d1(e1.get_particle());
   Float d= distance(d0, d1);
 
-  float nsf=std::sqrt(internal::PI * d*square(d)/(6.0 * v));
+  float nsf=std::sqrt(IMP::internal::PI * d*square(d)/(6.0 * v));
   unsigned int ns= static_cast<unsigned int>(std::ceil(nsf) )+1;
   Float r, vt;
   Float last_error=-4*v;
   for(int i=0; i< 5; ++i) {
     r= d/(2.0*ns);
-    vt= 4.0/3.0*internal::PI*r*square(r)*ns;
+    vt= 4.0/3.0*IMP::internal::PI*r*square(r)*ns;
     Float err= vt-v;
     if (err > 0) {
       if (last_error < err) {
@@ -65,7 +68,7 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
                 << " " << err << " " << last_error << std::endl);
         ++ns;
         r= d/(2.0*ns);
-        vt= 4.0/3.0*internal::PI*r*square(r)*ns;
+        vt= 4.0/3.0*IMP::internal::PI*r*square(r)*ns;
       } else {
         IMP_LOG(VERBOSE, "Leaving the number of spheres " << ns
                 << " " << err << " " << last_error << std::endl);
@@ -88,7 +91,7 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
   Particles ret;
   Float f= d/(2.0*nsf);
   IMP_LOG(VERBOSE, "Resulting volume is " << vt
-          << " (" << 4.0/3.0*internal::PI*f*square(f)*nsf << ")"
+          << " (" << 4.0/3.0*IMP::internal::PI*f*square(f)*nsf << ")"
           << " with target of " << v << std::endl);
   IMP_LOG(VERBOSE, "Base coordinate is " << vb << " and unit vector is "
           << ud << std::endl);
@@ -146,5 +149,7 @@ void BondCoverParticleRefiner::show(std::ostream &out) const
       << "radius key: " << rk_
       << "\nvolume key: " << vk_ << std::endl;
 }
+
+} // namespace misc
 
 } // namespace IMP

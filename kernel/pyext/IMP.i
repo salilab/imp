@@ -50,12 +50,9 @@ namespace IMP {
   IMP_OWN_FIRST_CONSTRUCTOR(ConnectivityRestraint)
   IMP_OWN_FIRST_CONSTRUCTOR(DistancePairScore)
   IMP_OWN_FIRST_CONSTRUCTOR(TransformedDistancePairScore)
-  IMP_OWN_FIRST_CONSTRUCTOR(BondCoverPairScore)
   IMP_OWN_FIRST_CONSTRUCTOR(SphereDistancePairScore)
-  IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RefineOncePairScore)
   IMP_OWN_FIRST_CONSTRUCTOR(DistanceToSingletonScore)
   IMP_OWN_FIRST_CONSTRUCTOR(AttributeSingletonScore)
-  IMP_OWN_FIRST_CONSTRUCTOR(TunnelSingletonScore)
   IMP_OWN_FIRST_CONSTRUCTOR(AngleTripletScore)
   IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
   IMP_SET_OBJECT(TypedPairScore, set_pair_score)
@@ -138,7 +135,6 @@ namespace IMP {
 %include "IMP/unary_functions/ClosedCubicSpline.h"
 %include "IMP/unary_functions/Cosine.h"
 %include "IMP/unary_functions/Linear.h"
-%include "IMP/unary_functions/WormLikeChain.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "Restraint.i"
 %include "IMP/ScoreState.h"
@@ -159,9 +155,6 @@ namespace IMP {
 %include "IMP/decorators/ResidueDecorator.h"
 %include "IMP/decorators/XYZDecorator.h"
 %include "IMP/decorators/AtomDecorator.h"
-%include "IMP/ParticleRefiner.h"
-%include "IMP/particle_refiners/BondCoverParticleRefiner.h"
-%include "IMP/particle_refiners/ChildrenParticleRefiner.h"
 %include "IMP/Optimizer.h"
 %include "IMP/optimizers/SteepestDescent.h"
 %include "IMP/optimizers/ConjugateGradients.h"
@@ -176,15 +169,11 @@ namespace IMP {
 %include "IMP/optimizers/states/CMMLogOptimizerState.h"
 %include "IMP/optimizers/states/VelocityScalingOptimizerState.h"
 %include "IMP/pair_scores/DistancePairScore.h"
-%include "IMP/pair_scores/RefineOncePairScore.h"
 %include "IMP/pair_scores/SphereDistancePairScore.h"
 %include "IMP/pair_scores/TypedPairScore.h"
 %include "IMP/pair_scores/TransformedDistancePairScore.h"
-%include "IMP/particle_refiners/BondCoverParticleRefiner.h"
-%include "IMP/particle_refiners/ChildrenParticleRefiner.h"
 %include "IMP/singleton_scores/DistanceToSingletonScore.h"
 %include "IMP/singleton_scores/AttributeSingletonScore.h"
-%include "IMP/singleton_scores/TunnelSingletonScore.h"
 %include "IMP/triplet_scores/AngleTripletScore.h"
 %include "IMP/score_states/BondedListScoreState.h"
 %include "IMP/score_states/MaxChangeScoreState.h"
@@ -193,7 +182,6 @@ namespace IMP {
 %include "IMP/score_states/BondDecoratorListScoreState.h"
 %include "IMP/score_states/BipartiteNonbondedListScoreState.h"
 %include "IMP/score_states/GravityCenterScoreState.h"
-%include "IMP/score_states/CoverBondsScoreState.h"
 %include "IMP/restraints/AngleRestraint.h"
 %include "IMP/restraints/BondDecoratorRestraint.h"
 %include "IMP/restraints/ConnectivityRestraint.h"
