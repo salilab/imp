@@ -43,9 +43,15 @@ public:
       str_->message_[255]='\0';
     }
   }
-  ~Exception() throw() {
-    destroy();
-  }
+  /** \note By making the destructor virtual and providing an implementation in
+      each derived class, we force a strong definition of the exception object
+      in the kernel DSO. This allows exceptions to be passed between DSOs.
+
+      \todo Should probably have a macro for exception classes to make sure this
+      is always done correctly.
+   */
+  virtual ~Exception() throw();
+
   Exception(const Exception &o) {copy(o);}
   Exception &operator=(const Exception &o) {
     destroy();
@@ -71,6 +77,7 @@ public:
 struct IMPDLLEXPORT ErrorException: public Exception
 {
   ErrorException(const char *msg="Fatal error"): Exception(msg){}
+  ~ErrorException() throw();
 };
 
 //! An exception for an invalid model state
@@ -80,6 +87,7 @@ class IMPDLLEXPORT InvalidStateException : public Exception
 {
 public:
   InvalidStateException(const char *t): Exception(t){}
+  ~InvalidStateException() throw();
 };
 
 //! An exception for trying to access an inactive particle
@@ -91,6 +99,7 @@ public:
   InactiveParticleException(const char *msg
                             ="Attempting to use inactive particle"):
     Exception(msg){}
+  ~InactiveParticleException() throw();
 };
 
 //! An exception for a request for an invalid member of a container
@@ -100,6 +109,7 @@ class IMPDLLEXPORT IndexException: public Exception
 {
 public:
   IndexException(const char *t): Exception(t){}
+  ~IndexException() throw();
 };
 
 //! An exception for a passing an out of range value
@@ -109,6 +119,7 @@ class IMPDLLEXPORT ValueException: public Exception
 {
 public:
   ValueException(const char *t): Exception(t){}
+  ~ValueException() throw();
 };
 
 //! Determine the level of runtime checks performed

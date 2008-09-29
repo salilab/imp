@@ -27,6 +27,31 @@ CheckLevel get_check_level()
   return check_mode;
 }
 
+Exception::~Exception() throw()
+{
+  destroy();
+}
+
+ErrorException::~ErrorException() throw()
+{
+}
+
+InvalidStateException::~InvalidStateException() throw()
+{
+}
+
+InactiveParticleException::~InactiveParticleException() throw()
+{
+}
+
+IndexException::~IndexException() throw()
+{
+}
+
+ValueException::~ValueException() throw()
+{
+}
+
 namespace internal
 {
 
