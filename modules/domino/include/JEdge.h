@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_JEDGE_H
-#define __IMP_JEDGE_H
+#ifndef __IMPDOMINO_JEDGE_H
+#define __IMPDOMINO_JEDGE_H
 
 #include "JNode.h"
 #include "CombState.h"
@@ -89,4 +89,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_JEDGE_H */
+#endif  /* __IMPDOMINO_JEDGE_H */

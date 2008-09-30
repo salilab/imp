@@ -6,9 +6,8 @@
  *
  */
 
-#ifndef _EMFITRESTRAINT_H
-#define _EMFITRESTRAINT_H
-
+#ifndef __IMPEM_EM_FIT_RESTRAINT_H
+#define __IMPEM_EM_FIT_RESTRAINT_H
 
 #include "IMP/Model.h"
 #include "IMP/Restraint.h"
@@ -64,4 +63,4 @@ private:
 
 } // namespace IMP
 
-#endif /* _EMFITRESTRAINT_H */
+#endif  /* __IMPEM_EM_FIT_RESTRAINT_H */

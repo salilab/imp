@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef _IMP_PARTICLES_ACCESS_POINT_H
-#define _IMP_PARTICLES_ACCESS_POINT_H
+#ifndef __IMPEM_IMP_PARTICLES_ACCESS_POINT_H
+#define __IMPEM_IMP_PARTICLES_ACCESS_POINT_H
 
 #include <vector>
 #include <map>
@@ -118,4 +118,4 @@ private:
 
 } // namespace IMP
 
-#endif /* _IMP_PARTICLES_ACCESS_POINT_H */
+#endif  /* __IMPEM_IMP_PARTICLES_ACCESS_POINT_H */

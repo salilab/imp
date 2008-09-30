@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_BOND_COVER_PARTICLE_REFINER_H
-#define __IMP_BOND_COVER_PARTICLE_REFINER_H
+#ifndef __IMPMISC_BOND_COVER_PARTICLE_REFINER_H
+#define __IMPMISC_BOND_COVER_PARTICLE_REFINER_H
 
 #include "misc_version_info.h"
 #include "IMP/ParticleRefiner.h"
@@ -39,4 +39,4 @@ public:
 
 } // namespace IMP
 
-#endif  /* __IMP_BOND_COVER_PARTICLE_REFINER_H */
+#endif  /* __IMPMISC_BOND_COVER_PARTICLE_REFINER_H */

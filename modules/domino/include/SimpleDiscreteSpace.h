@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_SIMPLE_DISCRETE_SPACE_H
-#define __IMP_SIMPLE_DISCRETE_SPACE_H
+#ifndef __IMPDOMINO_SIMPLE_DISCRETE_SPACE_H
+#define __IMPDOMINO_SIMPLE_DISCRETE_SPACE_H
 
 #include "domino_exports.h"
 #include "IMP/Particle.h"
@@ -104,4 +104,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_SIMPLE_DISCRETE_SPACE_H */
+#endif  /* __IMPDOMINO_SIMPLE_DISCRETE_SPACE_H */

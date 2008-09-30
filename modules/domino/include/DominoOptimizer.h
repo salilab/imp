@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_DOMINO_OPTIMIZER_H
-#define __IMP_DOMINO_OPTIMIZER_H
+#ifndef __IMPDOMINO_DOMINO_OPTIMIZER_H
+#define __IMPDOMINO_DOMINO_OPTIMIZER_H
 
 #include "domino_exports.h"
 #include "domino_version_info.h"
@@ -65,4 +65,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_DOMINO_OPTIMIZER_H */
+#endif  /* __IMPDOMINO_DOMINO_OPTIMIZER_H */

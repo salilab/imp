@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_OPTIMIZATION_WORK_FLOW_H
-#define __IMP_OPTIMIZATION_WORK_FLOW_H
+#ifndef __IMPDOMINO_OPTIMIZATION_WORK_FLOW_H
+#define __IMPDOMINO_OPTIMIZATION_WORK_FLOW_H
 
 #include "DiscreteSampler.h"
 #include "RestraintGraph.h"
@@ -112,4 +112,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_OPTIMIZATION_WORK_FLOW_H */
+#endif  /* __IMPDOMINO_OPTIMIZATION_WORK_FLOW_H */
