@@ -220,13 +220,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         env['MODELLER_' + mod] = ''
     for mod in ('CPPPATH', 'LIBPATH', 'LIBS'):
         env['MODELLER_' + mod] = []
-    # GetOption('help') requires a post 0.97 scons snapshot, so avoid an
-    # exception on older versions:
-    try:
-        env['OPTION_HELP'] = env.GetOption('help')
-    except Exception, e:
-        env['OPTION_HELP'] = False
-    if not env.GetOption('clean') and not env['OPTION_HELP']:
+    if not env.GetOption('clean') and not env.GetOption('help'):
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility,
                         'CheckModeller': CheckModeller}

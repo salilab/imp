@@ -41,7 +41,7 @@ def configure_check(env, version):
     custom_tests = {'CheckBoost':_check}
     conf = env.Configure(custom_tests=custom_tests)
     env['BOOST_CPPPATH'] = ''
-    if not env.GetOption('clean') and not env['OPTION_HELP'] \
+    if not env.GetOption('clean') and not env.GetOption('help') \
        and conf.CheckBoost(version) is 0:
         Exit("Boost version >= %s is required to build IMP" % version)
     conf.Finish()
