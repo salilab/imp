@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_VRML_LOG_STATE_H
-#define __IMP_VRML_LOG_STATE_H
+#ifndef __IMP_VRML_LOG_OPTIMIZER_STATE_H
+#define __IMP_VRML_LOG_OPTIMIZER_STATE_H
 
 #include <iostream>
 
@@ -93,4 +93,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_VRML_LOG_STATE_H */
+#endif  /* __IMP_VRML_LOG_OPTIMIZER_STATE_H */
