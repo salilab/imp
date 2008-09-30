@@ -1,3 +1,11 @@
+/**
+ *  \file EMFitRestraint.cpp
+ *  \brief Calculate score based on fit to EM map.
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *
+ */
+
 #ifndef _EMFITRESTRAINT_H
 #define _EMFITRESTRAINT_H
 
