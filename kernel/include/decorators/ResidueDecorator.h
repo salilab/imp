@@ -26,6 +26,7 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
    dynamically. This can be easily done in an analogous manner when we
    need it.
    \ingroup hierarchy
+   \ingroup decorators
  */
 class IMPDLLEXPORT ResidueDecorator: public DecoratorBase
 {

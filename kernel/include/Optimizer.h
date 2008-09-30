@@ -31,8 +31,12 @@ typedef std::vector<OptimizerState*> OptimizerStates;
   */
 
 //! Base class for all optimizers.
-/** \note There is currently no optimizer support for constraints
-    (e.g. rigid bodies).
+/** The Optimizer maintains a list of OptimizerStates which are
+    updated each time the conformation is changed.
+
+    The optimizers have one key method Optimizer::optimize which takes
+    the number of steps to perform. The optimizers can have other
+    stopping conditions as appropriate.
  */
 class IMPDLLEXPORT Optimizer: public Object
 {

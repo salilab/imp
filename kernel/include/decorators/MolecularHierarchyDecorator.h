@@ -23,6 +23,7 @@ namespace IMP
 
 //! A decorator for helping deal with a hierarchy of molecules
 /** \ingroup hierarchy
+    \ingroup decorators
  */
 class IMPDLLEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 {
@@ -154,6 +155,7 @@ typedef std::vector<MolecularHierarchyDecorator> MolecularHierarchyDecorators;
    Gather all the molecular particles of a certain level
    in the molecular hierarchy
    \ingroup hierarchy
+   \relates MolecularHierarchyDecorator
 */
 IMPDLLEXPORT Particles
 molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd,
@@ -172,6 +174,7 @@ class ResidueDecorator;
     most proteins consist of a few contiguous blocks of indices.
 
     \ingroup hierarchy
+    \relates MolecularHierarchyDecorator
  */
 IMPDLLEXPORT ResidueDecorator
 molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
@@ -185,6 +188,8 @@ molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
     removed). The particles become children of the frament.
 
     \throw ValueException If all the particles do not have the same parent.
+
+    \relates MolecularHierarchyDecorator
  */
 IMPDLLEXPORT MolecularHierarchyDecorator
 create_fragment(const MolecularHierarchyDecorators &ps);

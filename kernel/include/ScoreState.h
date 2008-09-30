@@ -31,6 +31,14 @@ class Model;
     However, optimizers may not pick up new particles or changes
     to whether particular attributes are optimized or not.
 
+    The ScoreState base class has an iteration counter built in
+    so that a given score state will only be updated once per
+    Model::evaluate call, even if many other ScoreStates ask that
+    it be updated. To use this projection mechanism, inherit from
+    ScoreState and provide implementations of do_before_evaluate()
+    and do_after_evaluate(). Or, better yet, use the IMP_SCORESTATE
+    macro.
+
     \note When logging is VERBOSE, state should print enough information
     in evaluate to reproduce the the entire flow of data in update. When
     logging is TERSE the restraint should print out only a constant number

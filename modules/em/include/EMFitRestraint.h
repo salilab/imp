@@ -26,6 +26,9 @@ namespace em
 {
 
 //! Calculate score based on fit to EM map
+/** \ingroup exp_restraint
+
+ */
 class IMPEMEXPORT EMFitRestraint : public Restraint
 {
 public:

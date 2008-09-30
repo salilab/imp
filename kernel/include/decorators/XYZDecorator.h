@@ -20,6 +20,7 @@ namespace IMP
 
 //! A a decorator for a particle with x,y,z coordinates.
 /** \ingroup helper
+    \ingroup decorators
  */
 class IMPDLLEXPORT XYZDecorator: public DecoratorBase
 {
@@ -130,6 +131,7 @@ IMP_OUTPUT_OPERATOR(XYZDecorator);
 
 //! Compute the distance between a pair of particles
 /** \ingroup helper
+    \relates XYZDecorator
  */
 IMPDLLEXPORT Float distance(XYZDecorator a, XYZDecorator b);
 

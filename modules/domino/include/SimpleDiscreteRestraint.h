@@ -23,7 +23,9 @@ namespace IMP
 
 namespace domino
 {
-
+/**
+   \ingroup restraint
+ */
 class IMPDOMINOEXPORT SimpleDiscreteRestraint : public Restraint
 {
 public:

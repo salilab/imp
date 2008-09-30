@@ -31,6 +31,7 @@ class BondDecoratorListScoreState;
     the bond. This can become a parameter eventually.
 
     \ingroup bond
+    \ingroupd restraint
  */
 class IMPDLLEXPORT BondDecoratorRestraint : public Restraint
 {

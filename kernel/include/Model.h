@@ -25,13 +25,13 @@ typedef std::vector<Restraint*> Restraints;
 typedef std::vector<ScoreState*> ScoreStates;
 
 //! Class for storing model, its restraints, and particles.
-/** All attribute data for particles is stored through indexing in the
-    model_data_ structure.
-    Currently no suport for constraints (e.g. rigid bodies).
+/** The Model maintains a standard IMP container for each of Particle,
+    ScoreState and Restraint object types.
     \ingroup kernel
  */
 class IMPDLLEXPORT Model: public Object
 {
+ private:
   friend class Restraint;
   unsigned int iteration_;
 public:
@@ -47,6 +47,9 @@ public:
   //! Evaluate all of the restraints in the model and return the score.
   /** \param[in] calc_derivs If true, also evaluate the first derivatives.
       \return The score.
+
+      All of the stored ScoreState objects are updated before the
+      restraints are evaluated.
    */
   Float evaluate(bool calc_derivs);
 

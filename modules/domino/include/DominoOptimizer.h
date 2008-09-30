@@ -21,7 +21,7 @@ namespace domino
 {
 
 //! An exact inference optimizer.
-/** \ingroup optimize
+/** \ingroup optimizer
  */
 class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
 {
