@@ -1,3 +1,11 @@
+/**
+ *  \file IMPParticlesAccessPoint.cpp
+ *  \brief Provision of EMBED structural data using the IMP framework.
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *
+ */
+
 #ifndef _IMP_PARTICLES_ACCESS_POINT_H
 #define _IMP_PARTICLES_ACCESS_POINT_H
 

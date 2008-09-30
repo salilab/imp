@@ -4,6 +4,15 @@ import sys
 import os.path
 from reindent import Reindenter
 import re
+try:
+    import cpp_format
+except ImportError:
+    cpp_format = None
+    print "Cannot conduct additional C++ format checks without the Python "
+    print "Pygments (http://pygments.org/) library: please install."
+    print "Continuing anyway, but some checks will be postponed " + \
+          "to 'svn ci' time..."
+    print
 
 def check_c_file(filename, errors):
     """Check each modified C file to make sure it adheres to the standards"""
@@ -46,11 +55,18 @@ def check_python_file(filename, errors):
         print >> sys.stderr, "reindent.py FAILED on %s:" % filename
         raise
 
+def get_file(filename):
+    return (file(filename, 'r'), filename)
+
 def check_modified_file(filename, errors):
     """Check each modified file to make sure it adheres to the standards"""
     if filename.endswith('.h') or filename.endswith('.cpp') \
        or filename.endswith('.c'):
         check_c_file(filename, errors)
+        if cpp_format and filename.endswith('.h'):
+            cpp_format.check_header_file(get_file(filename), errors)
+        elif cpp_format and filename.endswith('.cpp'):
+            cpp_format.check_cpp_file(get_file(filename), errors)
     elif filename.endswith('.py') or filename.endswith('SConscript') \
          or filename.endswith('SConstruct'):
         check_python_file(filename, errors)

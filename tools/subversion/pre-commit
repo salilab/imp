@@ -4,6 +4,7 @@ import sys
 from subprocess import Popen, PIPE
 from reindent import Reindenter
 import re
+import cpp_format
 
 svnlook = "/usr/bin/svnlook"
 
@@ -59,11 +60,20 @@ def check_python_file(filename, txn, repos, errors):
         print >> sys.stderr, "reindent.py FAILED on %s:" % filename
         raise
 
+def get_file(filename, txn, repos):
+    cmd = [svnlook, 'cat', '-t', txn, repos, filename]
+    pipe = Popen(cmd, shell=False, stdout=PIPE).stdout
+    return (pipe, filename)
+
 def check_modified_file(filename, txn, repos, errors):
     """Check each modified file to make sure it adheres to the standards"""
     if filename.endswith('.h') or filename.endswith('.cpp') \
        or filename.endswith('.c'):
         check_c_file(filename, txn, repos, errors)
+        if filename.endswith('.h'):
+            cpp_format.check_header_file(get_file(filename, txn, repos), errors)
+        elif filename.endswith('.cpp'):
+            cpp_format.check_cpp_file(get_file(filename, txn, repos), errors)
     elif filename.endswith('.py') or filename.endswith('SConscript') \
          or filename.endswith('SConstruct'):
         check_python_file(filename, txn, repos, errors)
