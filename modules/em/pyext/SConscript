@@ -10,6 +10,6 @@ e.Append(LIBPATH=[e['EM_LIBPATH']], LIBS=[e['EM_LIBS']])
 e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
 # Build the Python extension from SWIG interface file:
-pyext, pymod = e.IMPPythonExtension('IMPEM.i')
+pyext, pymod = e.IMPPythonExtension('em.i')
 
 Return('pyext', 'pymod')
