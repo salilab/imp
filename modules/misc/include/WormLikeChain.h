@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_WORM_LIKE_CHAIN_H
-#define __IMP_WORM_LIKE_CHAIN_H
+#ifndef __IMPMISC_WORM_LIKE_CHAIN_H
+#define __IMPMISC_WORM_LIKE_CHAIN_H
 
 #include "IMP/UnaryFunction.h"
 #include "IMP/internal/constants.h"
@@ -122,4 +122,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_WORM_LIKE_CHAIN_H */
+#endif  /* __IMPMISC_WORM_LIKE_CHAIN_H */

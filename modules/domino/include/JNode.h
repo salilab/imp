@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_JNODE_H
-#define __IMP_JNODE_H
+#ifndef __IMPDOMINO_JNODE_H
+#define __IMPDOMINO_JNODE_H
 
 #include "domino_exports.h"
 #include "IMP/Particle.h"
@@ -123,4 +123,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_JNODE_H */
+#endif  /* __IMPDOMINO_JNODE_H */

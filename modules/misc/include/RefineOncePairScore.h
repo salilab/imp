@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_REFINE_ONCE_PAIR_SCORE_H
-#define __IMP_REFINE_ONCE_PAIR_SCORE_H
+#ifndef __IMPMISC_REFINE_ONCE_PAIR_SCORE_H
+#define __IMPMISC_REFINE_ONCE_PAIR_SCORE_H
 
 #include "IMP/PairScore.h"
 #include "IMP/UnaryFunction.h"
@@ -46,4 +46,4 @@ public:
 
 } // namespace IMP
 
-#endif  /* __IMP_REFINE_ONCE_PAIR_SCORE_H */
+#endif  /* __IMPMISC_REFINE_ONCE_PAIR_SCORE_H */

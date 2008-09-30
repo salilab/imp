@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_RESTRAINT_GRAPH_H
-#define __IMP_RESTRAINT_GRAPH_H
+#ifndef __IMPDOMINO_RESTRAINT_GRAPH_H
+#define __IMPDOMINO_RESTRAINT_GRAPH_H
 
 #include "domino_exports.h"
 #include "IMP/Model.h"
@@ -188,4 +188,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_RESTRAINT_GRAPH_H */
+#endif  /* __IMPDOMINO_RESTRAINT_GRAPH_H */

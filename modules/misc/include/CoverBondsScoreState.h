@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_COVER_BONDS_SCORE_STATE_H
-#define __IMP_COVER_BONDS_SCORE_STATE_H
+#ifndef __IMPMISC_COVER_BONDS_SCORE_STATE_H
+#define __IMPMISC_COVER_BONDS_SCORE_STATE_H
 
 #include "IMP/ScoreState.h"
 #include "IMP/Pointer.h"
@@ -54,4 +54,4 @@ public:
 
 } // namespace IMP
 
-#endif  /* __IMP_COVER_BONDS_SCORE_STATE_H */
+#endif  /* __IMPMISC_COVER_BONDS_SCORE_STATE_H */

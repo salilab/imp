@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_TUNNEL_SINGLETON_SCORE_H
-#define __IMP_TUNNEL_SINGLETON_SCORE_H
+#ifndef __IMPMISC_TUNNEL_SINGLETON_SCORE_H
+#define __IMPMISC_TUNNEL_SINGLETON_SCORE_H
 
 #include "IMP/SingletonScore.h"
 #include "IMP/Vector3D.h"
@@ -79,4 +79,4 @@ public:
 
 } // namespace IMP
 
-#endif  /* __IMP_TUNNEL_SINGLETON_SCORE_H */
+#endif  /* __IMPMISC_TUNNEL_SINGLETON_SCORE_H */

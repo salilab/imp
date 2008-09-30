@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_DISCRETE_SAMPLER_H
-#define __IMP_DISCRETE_SAMPLER_H
+#ifndef __IMPDOMINO_DISCRETE_SAMPLER_H
+#define __IMPDOMINO_DISCRETE_SAMPLER_H
 
 #include "IMP/Particle.h"
 #include <vector>
@@ -43,4 +43,4 @@ public:
 
 } // namespace IMP
 
-#endif  /* __IMP_DISCRETE_SAMPLER_H */
+#endif  /* __IMPDOMINO_DISCRETE_SAMPLER_H */

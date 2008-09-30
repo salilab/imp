@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_SIMPLE_DISCRETE_RESTRAINT_H
-#define __IMP_SIMPLE_DISCRETE_RESTRAINT_H
+#ifndef __IMPDOMINO_SIMPLE_DISCRETE_RESTRAINT_H
+#define __IMPDOMINO_SIMPLE_DISCRETE_RESTRAINT_H
 
 #include "domino_exports.h"
 #include "domino_version_info.h"
@@ -48,4 +48,4 @@ protected:
 
 } // namespace IMP
 
-#endif  /* __IMP_SIMPLE_DISCRETE_RESTRAINT_H */
+#endif  /* __IMPDOMINO_SIMPLE_DISCRETE_RESTRAINT_H */
