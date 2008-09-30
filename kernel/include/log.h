@@ -16,8 +16,7 @@
 #include <cassert>
 #include <string>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 /** \defgroup log Logging
     \defgroup assert Error checking and reporting
@@ -181,10 +180,6 @@ private:
   LogTarget target_;
 };
 
-
-
-} // namespace IMP
-
 #ifndef IMP_DISABLE_LOGGING
 
 //! Write an entry to a log.
@@ -254,6 +249,6 @@ private:
 #define IMP_LOG_WRITE(l,e)
 #endif
 
-
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_LOG_H */

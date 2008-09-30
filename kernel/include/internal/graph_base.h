@@ -15,8 +15,7 @@
 #include "../Model.h"
 #include "ArrayOnAttributesHelper.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -118,6 +117,6 @@ void graph_connected_component(Particle* start, const GraphData &d, Oit out)
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_GRAPH_BASE_H */

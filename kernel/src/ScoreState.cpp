@@ -11,8 +11,7 @@
 #include <cmath>
 #include <limits>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Constructor
 ScoreState::ScoreState(std::string name) : name_(name)
@@ -65,5 +64,4 @@ void ScoreState::show(std::ostream& out) const
   get_version_info().show(out);
 }
 
-
-}  // namespace IMP
+IMP_END_NAMESPACE

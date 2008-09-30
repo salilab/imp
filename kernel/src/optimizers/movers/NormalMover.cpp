@@ -10,8 +10,7 @@
 #include "IMP/optimizers/movers/NormalMover.h"
 #include "IMP/random.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 NormalMover::NormalMover(const FloatKeys &vars,
                          Float max,
@@ -43,4 +42,4 @@ void NormalMover::generate_move(float probability)
   }
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

@@ -15,8 +15,8 @@
 
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
+
 typedef
 unit::Shift<unit::Multiply<unit::Pascal,
                            unit::Second>::type,
@@ -348,5 +348,4 @@ unit::KilocaloriePerAngstromPerMol BrownianDynamics
   return unit::operator*(unit::ATOMS_PER_MOL,yc);
 }
 
-
-} // namespace IMP
+IMP_END_NAMESPACE

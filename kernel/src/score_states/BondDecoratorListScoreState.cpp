@@ -9,8 +9,7 @@
 
 #include <algorithm>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 BondDecoratorListScoreState::BondDecoratorListScoreState(const Particles &ps)
 {
@@ -63,4 +62,4 @@ bool BondDecoratorListScoreState::are_bonded(Particle *a, Particle *b) const
   return false;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

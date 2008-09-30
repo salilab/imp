@@ -11,8 +11,7 @@
 
 #include <sstream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 IMP_DECORATOR_ARRAY_DEF(HierarchyDecorator, child,
                         internal::ChildArrayTraits);
@@ -194,4 +193,4 @@ hierarchy_get_all_descendants(HierarchyDecorator mhd)
   return out;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

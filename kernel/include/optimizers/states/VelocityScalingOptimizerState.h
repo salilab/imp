@@ -14,8 +14,7 @@
 #include "../../OptimizerState.h"
 #include "../../internal/kernel_version_info.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Maintains temperature during molecular dynamics by velocity scaling.
 /** This OptimizerState, when used with the MolecularDynamics optimizer,
@@ -59,6 +58,6 @@ protected:
   FloatKey vs_[3];
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_VELOCITY_SCALING_OPTIMIZER_STATE_H */

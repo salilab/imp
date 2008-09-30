@@ -12,8 +12,7 @@
 #include "../internal/kernel_version_info.h"
 #include "Mover.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 typedef std::vector<Mover*> Movers;
 
@@ -106,6 +105,6 @@ private:
 
 IMP_OUTPUT_OPERATOR(MonteCarlo);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_MONTE_CARLO_H */

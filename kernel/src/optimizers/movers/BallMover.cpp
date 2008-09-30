@@ -9,8 +9,7 @@
 #include "IMP/optimizers/movers/BallMover.h"
 #include "IMP/random.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 // These functions probably should be exposed at some point
 
@@ -69,4 +68,4 @@ void BallMover::generate_move(float scale)
   }
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

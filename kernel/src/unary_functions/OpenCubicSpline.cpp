@@ -7,8 +7,7 @@
 
 #include "IMP/unary_functions/OpenCubicSpline.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 OpenCubicSpline::OpenCubicSpline(const std::vector<Float> &values,
                                  Float minrange, Float spacing) :
@@ -85,4 +84,4 @@ FloatPair OpenCubicSpline::evaluate_with_derivative(Float feature) const
   return std::make_pair(evaluate(feature), deriv);
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

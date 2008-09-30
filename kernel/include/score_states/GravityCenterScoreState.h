@@ -14,8 +14,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Set particle position to match the gravity center of one or more particles.
 /** The center particle will be assigned an XYZ position corresponding to the
@@ -59,6 +58,6 @@ protected:
   IMP_LIST(public, Particle, particle, Particle*);
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_GRAVITY_CENTER_SCORE_STATE_H */

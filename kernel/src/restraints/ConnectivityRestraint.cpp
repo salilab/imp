@@ -18,9 +18,7 @@
 
 #include <limits>
 
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps): ps_(ps)
 {
@@ -137,4 +135,4 @@ void ConnectivityRestraint::show(std::ostream& out) const
   get_version_info().show(out);
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

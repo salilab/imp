@@ -8,8 +8,7 @@
 #include "IMP/restraints/AngleRestraint.h"
 #include "IMP/triplet_scores/AngleTripletScore.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 AngleRestraint::AngleRestraint(UnaryFunction* score_func,
                                Particle* p1, Particle* p2, Particle* p3)
@@ -55,4 +54,4 @@ void AngleRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

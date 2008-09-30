@@ -7,8 +7,7 @@
 
 #include "IMP/internal/constants.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -28,4 +27,4 @@ const unit::ExponentialNumber<3> JOULES_PER_KILOCALORIE(4.1868);
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE

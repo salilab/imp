@@ -16,8 +16,8 @@
 #include "../internal/kernel_version_info.h"
 #include "DistanceRestraint.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
+
 class PairScore;
 
 //! Ensure that several sets of particles remain connected with one another.
@@ -59,6 +59,6 @@ protected:
   std::vector<unsigned int> set_offsets_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif /* __IMP_CONNECTIVITY_RESTRAINT_H */

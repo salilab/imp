@@ -9,8 +9,7 @@
 #include "IMP/optimizers/states/VelocityScalingOptimizerState.h"
 #include "IMP/optimizers/MolecularDynamics.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 VelocityScalingOptimizerState::VelocityScalingOptimizerState(
     const Particles &pis, Float temperature, unsigned skip_steps) :
@@ -55,4 +54,4 @@ void VelocityScalingOptimizerState::show(std::ostream &out) const
       << skip_steps_ << " steps" << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

@@ -13,8 +13,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class BondDecoratorListScoreState;
 typedef Index<BondDecoratorListScoreState> BondDecoratorListIndex;
@@ -58,6 +57,6 @@ protected:
   virtual void do_before_evaluate();
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BOND_DECORATOR_LIST_SCORE_STATE_H */

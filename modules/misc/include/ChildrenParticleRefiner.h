@@ -11,11 +11,7 @@
 #include "IMP/ParticleRefiner.h"
 #include "misc_version_info.h"
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 //! Return the hierarchy children of a particle.
 /** Derivatives are not propagated back to parent or anything.
@@ -30,8 +26,6 @@ public:
   IMP_PARTICLE_REFINER(internal::misc_version_info);
 };
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE
 
 #endif  /* __IMPMISC_CHILDREN_PARTICLE_REFINER_H */

@@ -9,8 +9,7 @@
 
 #include "../UnaryFunction.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Cosine function.
 /** This evaluates the function
@@ -59,6 +58,6 @@ protected:
   Float phase_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_COSINE_H */

@@ -15,8 +15,7 @@
 #include "IMP/decorators/XYZDecorator.h"
 #include <boost/lambda/lambda.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 BondDecoratorRestraint
 ::BondDecoratorRestraint(UnaryFunction *f,
@@ -68,4 +67,4 @@ void BondDecoratorRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

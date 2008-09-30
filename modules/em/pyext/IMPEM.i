@@ -11,8 +11,7 @@
 /* Ignore shared object import/export stuff */
 #define EMDLLEXPORT
 #define EMDLLLOCAL
-#define IMPEMEXPORT
-#define IMPEMLOCAL
+%include "em_exports.i"
 
 %include "std_vector.i"
 %include "std_string.i"

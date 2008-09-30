@@ -9,8 +9,7 @@
 
 #include "../UnaryFunction.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Open cubic spline function.
 /** This function is defined by evenly-spaced spline values over a finite
@@ -59,6 +58,6 @@ protected:
   Float maxderiv_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_OPEN_CUBIC_SPLINE_H */

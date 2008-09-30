@@ -12,8 +12,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 PairListRestraint::PairListRestraint(PairScore *s,
                                      const ParticlePairs &ps) : ss_(s)
@@ -77,4 +76,4 @@ void PairListRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

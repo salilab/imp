@@ -13,11 +13,7 @@
 #include "IMP/Restraint.h"
 
 //todo - can make it more general
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 class IMPDOMINOEXPORT Separator
 {
@@ -85,8 +81,6 @@ protected:
   std::map<std::string, float>  target_new_score_separators_;
 };
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_JEDGE_H */

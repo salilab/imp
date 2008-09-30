@@ -17,8 +17,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Restrain each pair of consecutive particles in each chain.
 /** \ingroup restraint
@@ -49,6 +48,6 @@ protected:
   std::vector<unsigned int> chain_splits_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_PAIR_CHAIN_RESTRAINT_H */

@@ -13,8 +13,7 @@
 #include "../DecoratorBase.h"
 #include "utility.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A simple decorator which controls the Particle description.
 /** \ingroup helper
@@ -36,6 +35,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(NameDecorator);
 
-}
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_NAME_DECORATOR_H */

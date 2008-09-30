@@ -13,8 +13,7 @@
 #include <iostream>
 #include <string>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Version and authorship of IMP objects
 class IMPDLLEXPORT VersionInfo
@@ -42,6 +41,6 @@ protected:
   std::string author_, version_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_VERSION_INFO_H */

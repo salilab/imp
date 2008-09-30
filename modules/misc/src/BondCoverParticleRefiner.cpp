@@ -12,11 +12,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 BondCoverParticleRefiner::BondCoverParticleRefiner(FloatKey rk,
                                                    FloatKey vk): rk_(rk),
@@ -150,6 +146,4 @@ void BondCoverParticleRefiner::show(std::ostream &out) const
       << "\nvolume key: " << vk_ << std::endl;
 }
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE

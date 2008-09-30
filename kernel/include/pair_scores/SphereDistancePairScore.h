@@ -12,8 +12,7 @@
 #include "../Pointer.h"
 #include "../UnaryFunction.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A score on the distance between the surfaces of two spheres.
 /** \ingroup pairscore
@@ -31,6 +30,6 @@ public:
   virtual void show(std::ostream &out=std::cout) const;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_SPHERE_DISTANCE_PAIR_SCORE_H */

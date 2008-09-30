@@ -15,8 +15,7 @@
 #include <vector>
 #include <limits>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A a decorator for a particle with x,y,z coordinates.
 /** \ingroup helper
@@ -135,6 +134,6 @@ IMP_OUTPUT_OPERATOR(XYZDecorator);
  */
 IMPDLLEXPORT Float distance(XYZDecorator a, XYZDecorator b);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_XYZ_DECORATOR_H */

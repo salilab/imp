@@ -18,8 +18,7 @@
 
 #include <iostream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class Model;
 
@@ -135,6 +134,6 @@ protected:
 
 IMP_OUTPUT_OPERATOR(ScoreState);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_SCORE_STATE_H */

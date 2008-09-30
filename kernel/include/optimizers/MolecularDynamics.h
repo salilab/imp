@@ -13,8 +13,7 @@
 #include "../Optimizer.h"
 #include "../internal/kernel_version_info.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Simple molecular dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
@@ -97,6 +96,6 @@ protected:
   Float velocity_cap_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_MOLECULAR_DYNAMICS_H */

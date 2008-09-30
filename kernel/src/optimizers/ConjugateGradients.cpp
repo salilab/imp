@@ -12,8 +12,7 @@
 #include <limits>
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Estimate of limit of machine precision
 static const float eps = 1.2e-7;
@@ -453,4 +452,4 @@ end:
   return f;
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

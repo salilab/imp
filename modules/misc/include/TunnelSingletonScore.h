@@ -15,11 +15,7 @@
 #include "IMP/Pointer.h"
 #include "misc_exports.h"
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 class PairScore;
 
@@ -75,8 +71,6 @@ public:
   virtual void show(std::ostream &out=std::cout) const;
 };
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE
 
 #endif  /* __IMPMISC_TUNNEL_SINGLETON_SCORE_H */

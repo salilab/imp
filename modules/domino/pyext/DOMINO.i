@@ -13,11 +13,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 
-/* Ignore shared object import/export stuff */
-#define DOMINODLLEXPORT
-#define DOMINODLLLOCAL
-#define IMPDOMINOEXPORT
-#define IMPDOMINOLOCAL
+%include "domino_exports.i"
 
 %include "std_vector.i"
 %include "std_string.i"

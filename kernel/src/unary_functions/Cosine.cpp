@@ -9,8 +9,7 @@
 
 #include "IMP/unary_functions/Cosine.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 Float Cosine::evaluate(Float feature) const
 {
@@ -25,4 +24,4 @@ FloatPair Cosine::evaluate_with_derivative(Float feature) const
   return std::make_pair(evaluate(feature), deriv);
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

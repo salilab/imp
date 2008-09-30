@@ -9,8 +9,7 @@
 #include "IMP/Object.h"
 #include "IMP/RefCountedObject.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 unsigned int RefCountedObject::live_objects_=0;
 
@@ -32,4 +31,4 @@ void Object::assert_is_valid() const
              "Previously freed object is not valid: " << this);
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

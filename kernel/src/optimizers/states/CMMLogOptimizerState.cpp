@@ -12,8 +12,7 @@
 #include "IMP/optimizers/states/CMMLogOptimizerState.h"
 #include "IMP/decorators/XYZDecorator.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 CMMLogOptimizerState::CMMLogOptimizerState(std::string filename,
                                              const Particles &pis) :
@@ -111,4 +110,4 @@ void CMMLogOptimizerState::show(std::ostream &out) const
   out << "Writing CMM files " << filename_ << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

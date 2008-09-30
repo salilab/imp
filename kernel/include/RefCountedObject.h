@@ -14,8 +14,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Common base class for ref counted objects.
 /** This class acts as a tag rather than providing any functionality.
@@ -45,6 +44,6 @@ public:
   }
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_REF_COUNTED_OBJECT_H */

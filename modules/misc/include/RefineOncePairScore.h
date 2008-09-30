@@ -14,11 +14,7 @@
 #include "IMP/ParticleRefiner.h"
 #include "misc_exports.h"
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 //! Refine the input particles at most once with the ParticleRefiner.
 /** Each passed particle is refined once before the resulting pairs
@@ -42,8 +38,6 @@ public:
   virtual void show(std::ostream &out=std::cout) const;
 };
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE
 
 #endif  /* __IMPMISC_REFINE_ONCE_PAIR_SCORE_H */

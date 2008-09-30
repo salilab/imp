@@ -12,8 +12,7 @@
 #include "../Pointer.h"
 #include "../UnaryFunction.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Apply a function to an attribute.
 /** \ingroup singleton
@@ -30,6 +29,6 @@ public:
   virtual void show(std::ostream &out=std::cout) const;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_ATTRIBUTE_SINGLETON_SCORE_H */

@@ -10,8 +10,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 // These aren't statically initialized, as that way they may be initialized
 // before the table that caches them
@@ -36,4 +35,4 @@ Float distance(XYZDecorator a, XYZDecorator b)
   return (a.get_vector()-b.get_vector()).get_magnitude();
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

@@ -13,8 +13,7 @@
 #include "../base_types.h"
 #include "../Pointer.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -181,6 +180,6 @@ IMP_OUTPUT_OPERATOR(ParticleGrid);
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_PARTICLE_GRID_H */

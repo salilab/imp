@@ -12,8 +12,7 @@
 #include "../UnaryFunction.h"
 #include "../Pointer.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Apply a function to the distance between two particles.
 /** \ingroup pairscore
@@ -29,6 +28,6 @@ public:
   virtual void show(std::ostream &out=std::cout) const;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_DISTANCE_PAIR_SCORE_H */

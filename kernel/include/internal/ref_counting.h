@@ -15,8 +15,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -135,6 +134,6 @@ void own(O* o)
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_REF_COUNTING_H */

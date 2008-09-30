@@ -13,8 +13,7 @@
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Constructor
 Model::Model()
@@ -123,6 +122,4 @@ void Model::show(std::ostream& out) const
   out << std::endl;
 }
 
-
-
-}  // namespace IMP
+IMP_END_NAMESPACE

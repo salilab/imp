@@ -12,8 +12,8 @@
 #include "../Index.h"
 #include "../Particle.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
+
 class BondedListScoreState;
 //! Used to identify the BondedListScoreState in the NonbondedListScoreState
 typedef Index<BondedListScoreState> BondedListIndex;
@@ -29,6 +29,6 @@ class IMPDLLEXPORT BondedListScoreState: public ScoreState
   virtual bool are_bonded(Particle *a, Particle *b) const =0;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BONDED_LIST_SCORE_STATE_H */

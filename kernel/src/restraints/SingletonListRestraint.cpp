@@ -12,8 +12,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 SingletonListRestraint::SingletonListRestraint(SingletonScore *s,
                                                const Particles &ps):
@@ -53,4 +52,4 @@ void SingletonListRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

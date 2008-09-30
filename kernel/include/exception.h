@@ -18,8 +18,8 @@
 #include <new>
 #include <sstream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
+
 //! The general base class for IMP exceptions
 /** This way we can catch IMP exceptions without getting memory allocation
     errors and everything. And it enforces having a description.
@@ -160,9 +160,6 @@ IMPDLLEXPORT void check_fail(const char *msg);
 
 } // namespace internal
 
-} // namespace IMP
-
-
 #ifndef NDEBUG
 
 //! An assertion for IMP. An IMP::ErrorException will be thrown.
@@ -216,5 +213,7 @@ IMPDLLEXPORT void check_fail(const char *msg);
     oss << message << std::endl;                                        \
     IMP::internal::check_fail(oss.str().c_str());                       \
     throw ExceptionType(oss.str().c_str());}
+
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_EXCEPTION_H */

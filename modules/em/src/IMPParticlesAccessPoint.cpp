@@ -8,11 +8,7 @@
 
 #include "IMP/em/IMPParticlesAccessPoint.h"
 
-namespace IMP
-{
-
-namespace em
-{
+IMPEM_BEGIN_NAMESPACE
 
 IMPParticlesAccessPoint::IMPParticlesAccessPoint(Model& model,
     std::vector<int>& particle_indexes,
@@ -57,6 +53,4 @@ void IMPParticlesAccessPoint::create_keys(std::string radius_att_name,
   z_key_      = FloatKey(Z_ATT_NAME);
 }
 
-}   // namespace em
-
-}   // namespace IMP
+IMPEM_END_NAMESPACE

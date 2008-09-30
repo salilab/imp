@@ -10,8 +10,7 @@
 #include "IMP/internal/ParticleGrid.h"
 #include "IMP/internal/utility.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -102,4 +101,4 @@ void ParticleGrid::show(std::ostream &out) const
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE

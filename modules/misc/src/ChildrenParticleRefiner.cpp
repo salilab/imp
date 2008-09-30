@@ -8,11 +8,7 @@
 #include "IMP/misc/ChildrenParticleRefiner.h"
 #include "IMP/decorators/HierarchyDecorator.h"
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 ChildrenParticleRefiner::ChildrenParticleRefiner()
 {
@@ -51,6 +47,4 @@ void ChildrenParticleRefiner::show(std::ostream &out) const
   out << "ChildrenParticleRefiner" << std::endl;
 }
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE

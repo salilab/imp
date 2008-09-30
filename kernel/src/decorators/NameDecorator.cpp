@@ -9,8 +9,7 @@
 
 #include "IMP/decorators/NameDecorator.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 StringKey NameDecorator::name_key_;
 
@@ -31,4 +30,4 @@ IMP_DECORATOR_INITIALIZE(NameDecorator, DecoratorBase,
                            name_key_= StringKey("name");
                          })
 
-} // namespace IMP
+IMP_END_NAMESPACE

@@ -16,8 +16,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -163,6 +162,6 @@ public:
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_OBJECT_CONTAINER_H */

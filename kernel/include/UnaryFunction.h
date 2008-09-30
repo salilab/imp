@@ -11,8 +11,7 @@
 #include "base_types.h"
 #include "RefCountedObject.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 typedef std::pair<Float, Float> FloatPair;
 
@@ -47,6 +46,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(UnaryFunction);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_UNARY_FUNCTION_H */

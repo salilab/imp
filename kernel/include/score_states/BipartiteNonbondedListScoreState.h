@@ -12,9 +12,7 @@
 #include "../internal/kernel_version_info.h"
 #include "MaxChangeScoreState.h"
 
-
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! This class maintains a list of non-bonded pairs of spheres between two sets
 /** To iterate through the list of pairs use the NonbondedListScoreState::begin,
@@ -87,6 +85,6 @@ public:
   void set_algorithm(Algorithm a);
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BIPARTITE_NONBONDED_LIST_SCORE_STATE_H */

@@ -11,9 +11,7 @@
 #include <memory>
 #include <utility>
 
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 //! Constructor
 RestraintSet::RestraintSet(const std::string& name)
@@ -89,5 +87,4 @@ void RestraintSet::show(std::ostream& out) const
   out << "... end restraint set " << name_ << std::endl;
 }
 
-
-}  // namespace IMP
+IMP_END_NAMESPACE

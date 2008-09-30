@@ -12,8 +12,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Turn the default into an actual algorithm and work around missing algorithms
 /** This cannot be shared with AllNBL because that one has grid and this does
@@ -220,4 +219,4 @@ void BipartiteNonbondedListScoreState::check_nbl() const
   }
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

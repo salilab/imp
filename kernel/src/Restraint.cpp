@@ -12,8 +12,7 @@
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 Restraint::Restraint()
 {
@@ -80,4 +79,4 @@ IMP_LIST_IMPL(Restraint, Particle, particle,Particle*,  {
                "same Model.");
   },);
 
-}  // namespace IMP
+IMP_END_NAMESPACE

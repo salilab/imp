@@ -9,11 +9,7 @@
 #include <numeric>
 #include <climits>
 
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 //TODO: for all the intersection operations the sets should be sorted,
 //make sure that in the initialization of the nodes the number of
@@ -273,6 +269,5 @@ void JNode::clear() {
   comb_states_.clear();
   ds_=NULL;
 }
-} // namespace domino
 
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE

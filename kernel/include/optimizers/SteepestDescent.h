@@ -12,8 +12,7 @@
 #include "../Optimizer.h"
 #include "../internal/kernel_version_info.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A simple steepest descent optimizer
  /** Follow the gradient based on the partial derivatives. Multiply by the
@@ -40,6 +39,6 @@ protected:
   Float threshold_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_STEEPEST_DESCENT_H */

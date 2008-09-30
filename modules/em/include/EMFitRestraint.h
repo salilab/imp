@@ -19,11 +19,7 @@
 #include "SampledDensityMap.h"
 #include "IMPParticlesAccessPoint.h"
 
-namespace IMP
-{
-
-namespace em
-{
+IMPEM_BEGIN_NAMESPACE
 
 //! Calculate score based on fit to EM map
 /** \ingroup exp_restraint
@@ -61,9 +57,6 @@ private:
   std::vector<Float> dx_, dy_ , dz_;
 };
 
-
-} // namespace em
-
-} // namespace IMP
+IMPEM_END_NAMESPACE
 
 #endif  /* __IMPEM_EM_FIT_RESTRAINT_H */

@@ -13,8 +13,7 @@
 #include "../MonteCarlo.h"
 #include "../MoverBase.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Modify a set of continuous variables by perturbing them within a ball.
 /** The variables are perturbed within a ball of the
@@ -50,6 +49,6 @@ private:
   Float radius_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BALL_MOVER_H */

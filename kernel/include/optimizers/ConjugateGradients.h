@@ -12,8 +12,7 @@
 #include "../Optimizer.h"
 #include "../internal/kernel_version_info.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Simple conjugate gradients optimizer.
 /** Algorithm is as per Shanno and Phua, ACM Transactions On Mathematical
@@ -46,6 +45,6 @@ private:
   Float max_change_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_CONJUGATE_GRADIENTS_H */

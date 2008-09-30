@@ -13,8 +13,7 @@
 #include <sstream>
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 IntKey ResidueDecorator::type_key_;
 IntKey ResidueDecorator::index_key_;
@@ -91,5 +90,4 @@ IMP_DECORATOR_INITIALIZE(ResidueDecorator, DecoratorBase,
                            TYPE_INIT(THY);
                          })
 
-
-} // namespace IMP
+IMP_END_NAMESPACE

@@ -7,8 +7,7 @@
 
 #include "IMP/exception.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 static CheckLevel check_mode =
 #ifdef NDEBUG
@@ -75,4 +74,4 @@ void check_fail(const char *msg)
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE

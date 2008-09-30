@@ -15,8 +15,7 @@
 
 #include <iostream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Distance restraint between two particles
 /**
@@ -42,6 +41,6 @@ protected:
   DistancePairScore dp_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_DISTANCE_RESTRAINT_H */

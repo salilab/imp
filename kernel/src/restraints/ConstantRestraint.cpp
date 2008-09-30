@@ -7,8 +7,7 @@
 
 #include "IMP/restraints/ConstantRestraint.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 ConstantRestraint::ConstantRestraint(Float v) : v_(v){}
 
@@ -24,4 +23,4 @@ void ConstantRestraint::show(std::ostream& out) const
   out << "Constant restraint :" << v_ << std::endl;
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

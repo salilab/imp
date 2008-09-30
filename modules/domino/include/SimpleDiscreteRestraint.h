@@ -18,11 +18,8 @@
 
 #define KEY_OPT "OPT"
 
-namespace IMP
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
-namespace domino
-{
 /**
    \ingroup restraint
  */
@@ -46,8 +43,6 @@ protected:
            float> > states2values; // should be static and in a different class
 };
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_SIMPLE_DISCRETE_RESTRAINT_H */

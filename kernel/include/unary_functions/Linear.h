@@ -9,8 +9,7 @@
 
 #include "../UnaryFunction.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Linear function
 /** \ingroup unaryf
@@ -48,6 +47,6 @@ protected:
   Float slope_, offset_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_LINEAR_H */

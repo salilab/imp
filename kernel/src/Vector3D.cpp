@@ -12,8 +12,7 @@
 
 #include <boost/random/uniform_real.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 Vector3D random_vector_in_box(const Vector3D &min, const Vector3D &max)
 {
@@ -63,4 +62,4 @@ Vector3D random_vector_on_sphere(const Vector3D &center, Float radius)
   return center+ up*radius;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

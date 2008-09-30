@@ -17,10 +17,7 @@
 #include <sstream>
 #include <algorithm>
 
-namespace IMP
-{
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 class CombState
 {
@@ -181,9 +178,6 @@ protected:
   float total_score;
 };
 
-
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_COMB_STATE_H */

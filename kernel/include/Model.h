@@ -15,8 +15,7 @@
 #include "base_types.h"
 #include "VersionInfo.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class Particle;
 class Restraint;
@@ -66,7 +65,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(Model);
 
-
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_MODEL_H */

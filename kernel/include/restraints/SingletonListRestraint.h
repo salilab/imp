@@ -17,8 +17,7 @@
 
 #include <iostream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Applies a SingletonScore to each Particle in a list.
 /** \ingroup restraint
@@ -46,6 +45,6 @@ protected:
   Pointer<SingletonScore> ss_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_SINGLETON_LIST_RESTRAINT_H */

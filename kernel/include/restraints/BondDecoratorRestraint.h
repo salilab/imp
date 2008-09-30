@@ -17,8 +17,7 @@
 #include "../Pointer.h"
 #include "../UnaryFunction.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class BondDecoratorListScoreState;
 
@@ -53,6 +52,6 @@ protected:
   Pointer<UnaryFunction> f_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BOND_DECORATOR_RESTRAINT_H */

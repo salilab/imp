@@ -11,8 +11,7 @@
 #include "IMP/internal/evaluate_distance_pair_score.h"
 #include <boost/lambda/lambda.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 DistancePairScore::DistancePairScore(UnaryFunction *f): f_(f){}
 
@@ -36,4 +35,4 @@ void DistancePairScore::show(std::ostream &out) const
   f_->show(out);
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

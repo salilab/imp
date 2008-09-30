@@ -13,8 +13,8 @@
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
+
 /**
    \ingroup restraint
    \addtogroup tripletscore Score functions on three particles
@@ -39,6 +39,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(TripletScore);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_TRIPLET_SCORE_H */

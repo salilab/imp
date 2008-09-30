@@ -17,8 +17,7 @@
 #include "../Pointer.h"
 #include "../score_states/NonbondedListScoreState.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class PairScore;
 
@@ -47,6 +46,6 @@ protected:
   Pointer<PairScore> sf_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_NONBONDED_RESTRAINT_H */

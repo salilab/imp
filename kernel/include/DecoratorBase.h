@@ -12,8 +12,7 @@
 #include "Pointer.h"
 #include "Particle.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 /** \defgroup decorators Decorators
 
@@ -120,6 +119,6 @@ public:
 
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_DECORATOR_BASE_H */

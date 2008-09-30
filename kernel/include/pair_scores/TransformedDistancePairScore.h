@@ -13,8 +13,7 @@
 #include "../Pointer.h"
 #include "../Vector3D.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 /** \brief  Apply a function to the distance between two particles
     after transforming the first
@@ -46,6 +45,6 @@ public:
   void set_center(float t0, float t1, float t2);
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_TRANSFORMED_DISTANCE_PAIR_SCORE_H */

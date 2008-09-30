@@ -16,8 +16,7 @@
 #include <iomanip>
 #include <limits>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -124,6 +123,6 @@ std::ostream &operator<<(std::ostream &out, ExponentialNumber<E> o)
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_EXPONENTIAL_NUMBER_H */

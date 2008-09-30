@@ -12,8 +12,7 @@
 #include "VersionInfo.h"
 #include "RefCountedObject.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class Particle;
 class DerivativeAccumulator;
@@ -56,6 +55,6 @@ typedef Index<ParticleRefiner> ParticleRefinerIndex;
 
 IMP_OUTPUT_OPERATOR(ParticleRefiner);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_PARTICLE_REFINER_H */

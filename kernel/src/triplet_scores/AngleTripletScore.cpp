@@ -9,8 +9,8 @@
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/UnaryFunction.h"
 #include <boost/tuple/tuple.hpp>
-namespace IMP
-{
+
+IMP_BEGIN_NAMESPACE
 
 AngleTripletScore::AngleTripletScore(UnaryFunction *f): f_(f){}
 
@@ -78,4 +78,4 @@ void AngleTripletScore::show(std::ostream &out) const
   f_->show(out);
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

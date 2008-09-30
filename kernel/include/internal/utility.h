@@ -12,8 +12,7 @@
 
 #include <algorithm>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -39,6 +38,6 @@ inline void remove_inactive_particles(Particles &ps)
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_INTERNAL_UTILITY_H */

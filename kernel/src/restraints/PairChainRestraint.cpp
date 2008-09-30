@@ -15,8 +15,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 PairChainRestraint::PairChainRestraint(PairScore* ts)
 {
@@ -93,4 +92,4 @@ void PairChainRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

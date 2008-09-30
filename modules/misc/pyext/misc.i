@@ -8,9 +8,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 
-/* Ignore shared object import/export stuff */
-#define IMPMISCEXPORT
-#define IMPMISCLOCAL
+%include "misc_exports.i"
 
 %include "std_vector.i"
 %include "std_string.i"

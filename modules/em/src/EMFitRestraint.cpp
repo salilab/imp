@@ -9,11 +9,7 @@
 #include "IMP/log.h"
 #include "IMP/em/EMFitRestraint.h"
 
-namespace IMP
-{
-
-namespace em
-{
+IMPEM_BEGIN_NAMESPACE
 
 EMFitRestraint::EMFitRestraint(Model& model,
                                std::vector<int>& particle_indexes,
@@ -117,6 +113,4 @@ void EMFitRestraint::show(std::ostream& out) const
   // TODO - add implementation
 }
 
-} // namespace em
-
-} // namespace IMP
+IMPEM_END_NAMESPACE

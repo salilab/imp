@@ -12,8 +12,7 @@
 #include "IMP/decorators/AtomDecorator.h"
 #include "IMP/log.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 #define TYPE_INIT(STR) AT_##STR= AtomType(#STR);
 #define TYPE_INIT2(NAME, STR) AT_##NAME = AtomType(#STR);
@@ -383,4 +382,4 @@ IMP_DECORATOR_INITIALIZE(AtomDecorator, XYZDecorator,
                            TYPE_INIT(UNKNOWN);
                          })
 
-} // namespace IMP
+IMP_END_NAMESPACE

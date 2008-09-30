@@ -11,11 +11,7 @@
 #include <vector>
 #include "domino_exports.h"
 
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 //! Holds the states of a single particle
 /** \note Since this class is header-only, we must not mark it for
@@ -39,8 +35,6 @@ public:
                           std::ostream& out = std::cout) const {}
 };
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_DISCRETE_SAMPLER_H */

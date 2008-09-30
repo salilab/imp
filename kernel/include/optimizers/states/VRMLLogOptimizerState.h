@@ -21,8 +21,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <map>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A state that writes a series of VRML files.
 /** The State writes a series of files generated from a
@@ -91,6 +90,6 @@ protected:
   std::map<int, Vector3D > colors_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_VRML_LOG_OPTIMIZER_STATE_H */

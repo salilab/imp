@@ -13,10 +13,7 @@
 #include <cmath>
 #include <boost/random/uniform_real.hpp>
 
-
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 Mover::Mover() {};
 
@@ -120,4 +117,4 @@ void MonteCarlo::show(std::ostream &out) const
       << " -" << stat_num_failures_ << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

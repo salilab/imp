@@ -20,8 +20,7 @@
 
 #include <limits>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -630,6 +629,6 @@ void inline Particle::remove_attribute(ParticleKey name)
   particles_.remove(name);
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_PARTICLE_H */
