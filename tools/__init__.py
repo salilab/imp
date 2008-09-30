@@ -225,7 +225,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
                         'CheckGCCVisibility': CheckGCCVisibility,
                         'CheckModeller': CheckModeller}
         conf = env.Configure(custom_tests = custom_tests)
-        if sys == 'Linux':
+        if sys == 'Linux' and env['linksysv']:
             conf.CheckGNUHash()
         conf.CheckGCCVisibility()
         # Check explicitly for False, since all checks will return Null if
@@ -385,6 +385,9 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('release',
                           'Disable most runtime checks (e.g. for releases)',
                           False))
+    vars.Add(BoolVariable('linksysv',
+                          'Link with old-style SysV, not GNU hash, for ' + \
+                          'binary compatibility', False))
     vars.Add(PathVariable('include', 'Include search path ' + \
                           '(e.g. "/usr/local/include:/opt/local/include")',
                           None, PathVariable.PathAccept))
