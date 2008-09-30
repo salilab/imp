@@ -7,6 +7,6 @@ e = env.IMPPythonExtensionEnvironment()
 e.Append(CPPDEFINES='_USE_MATH_DEFINES')
 
 # Build the Python extension from SWIG interface file:
-pyext, pymod = e.IMPPythonExtension('DOMINO.i')
+pyext, pymod = e.IMPPythonExtension('domino.i')
 
 Return('pyext', 'pymod')
