@@ -13,8 +13,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Constructor
 MolecularDynamics::MolecularDynamics() :
@@ -174,4 +173,4 @@ void MolecularDynamics::assign_velocities(Float temperature)
   }
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

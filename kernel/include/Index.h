@@ -11,8 +11,7 @@
 #include "macros.h"
 #include "exception.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A simple class for defining typechecked indices.
 /** Non-default instances of Index are well ordered.
@@ -69,6 +68,6 @@ protected:
 
 IMP_OUTPUT_OPERATOR_1(Index)
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_INDEX_H */

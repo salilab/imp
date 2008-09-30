@@ -9,8 +9,8 @@
 #include "IMP/UnaryFunction.h"
 #include "IMP/Particle.h"
 #include <boost/tuple/tuple.hpp>
-namespace IMP
-{
+
+IMP_BEGIN_NAMESPACE
 
 AttributeSingletonScore::AttributeSingletonScore(UnaryFunction *f,
                                                  FloatKey k): f_(f),
@@ -36,4 +36,4 @@ void AttributeSingletonScore::show(std::ostream &out) const
   out << " on " << k_;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

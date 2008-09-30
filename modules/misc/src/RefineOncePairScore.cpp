@@ -13,11 +13,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 RefineOncePairScore::RefineOncePairScore(ParticleRefiner *r,
                                          PairScore *f): r_(r), f_(f) {}
@@ -63,6 +59,4 @@ void RefineOncePairScore::show(std::ostream &out) const
   r_->show(out);
 }
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE

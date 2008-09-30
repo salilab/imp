@@ -13,8 +13,7 @@
 #include "IMP/restraints/NonbondedRestraint.h"
 #include "IMP/score_states/NonbondedListScoreState.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 NonbondedRestraint::NonbondedRestraint(PairScore *ps,
                                        NonbondedListScoreState *nbl)
@@ -61,4 +60,4 @@ void NonbondedRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

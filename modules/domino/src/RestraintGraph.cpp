@@ -11,10 +11,8 @@
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
 
-namespace IMP
-{
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
+
   void RestraintGraph::parse_jt_file(const std::string &filename, Model *mdl)
   {
     // for fast access to particle by its name, create a map
@@ -103,6 +101,7 @@ namespace domino
       }
     }
   }
+
 RestraintGraph::RestraintGraph(const std::string &filename, Model *mdl)
 {
   parse_jt_file(filename, mdl);
@@ -446,6 +445,5 @@ void RestraintGraph::clear() {
   infered = false;
   min_combs->clear();
 }
-} // namespace domino
 
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE

@@ -15,8 +15,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Simple 3D vector class
 /** \ingroup helper
@@ -211,6 +210,6 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO &s)
   return out;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_VECTOR_3D_H */

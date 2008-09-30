@@ -10,11 +10,7 @@
 #include "IMP/decorators/XYZDecorator.h"
 #include <boost/tuple/tuple.hpp>
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 TunnelSingletonScore::TunnelSingletonScore(UnaryFunction *f, FloatKey r) :
     f_(f), rk_(r)
@@ -106,6 +102,4 @@ void TunnelSingletonScore::show(std::ostream& out) const
       << coordinate_ << std::endl;
 }
 
-}  // namespace misc
-
-}  // namespace IMP
+IMPMISC_END_NAMESPACE

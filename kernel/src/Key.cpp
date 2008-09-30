@@ -8,8 +8,7 @@
 #include "IMP/Key.h"
 #include "IMP/exception.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -36,4 +35,4 @@ std::map<unsigned int, KeyData> key_data;
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE

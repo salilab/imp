@@ -19,8 +19,7 @@
 
 #include <limits>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class OptimizerState;
 
@@ -207,6 +206,6 @@ private:
 
 IMP_OUTPUT_OPERATOR(Optimizer);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_OPTIMIZER_H */

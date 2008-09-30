@@ -15,8 +15,7 @@
 
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 TripletChainRestraint::TripletChainRestraint(TripletScore* ts)
 {
@@ -95,4 +94,4 @@ void TripletChainRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

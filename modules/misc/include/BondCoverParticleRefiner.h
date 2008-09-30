@@ -11,11 +11,7 @@
 #include "misc_version_info.h"
 #include "IMP/ParticleRefiner.h"
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 //! Cover a bond with a constant volume set of spheres.
 /** Perhaps I want to add various custom bond types so that
@@ -35,8 +31,6 @@ public:
   IMP_PARTICLE_REFINER(internal::misc_version_info);
 };
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE
 
 #endif  /* __IMPMISC_BOND_COVER_PARTICLE_REFINER_H */

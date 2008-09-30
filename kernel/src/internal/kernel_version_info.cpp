@@ -7,8 +7,7 @@
 
 #include "IMP/internal/kernel_version_info.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -17,4 +16,4 @@ VersionInfo kernel_version_info("IMP kernel developers", "SVN");
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE

@@ -20,8 +20,7 @@
 #include <vector>
 #include <deque>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class HierarchyDecorator;
 
@@ -490,6 +489,6 @@ inline unsigned int ChildArrayTraits::get_index(Particle *,
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_HIERARCHY_DECORATOR_H */

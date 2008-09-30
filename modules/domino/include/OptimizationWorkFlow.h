@@ -14,11 +14,7 @@
 #include "IMP/Model.h"
 #include "domino_exports.h"
 
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 class IMPDOMINOEXPORT OptimizationWorkFlow
 {
@@ -108,8 +104,6 @@ protected:
   Model *m; // the particles model.
 };
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_OPTIMIZATION_WORK_FLOW_H */

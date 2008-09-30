@@ -14,8 +14,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Keeps track of the maximum change of a set of attributes.
 /** The score state maintains a list of particle and a list of
@@ -48,6 +47,6 @@ public:
   IMP_LIST(public, Particle, particle, Particle*);
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_MAX_CHANGE_SCORE_STATE_H */

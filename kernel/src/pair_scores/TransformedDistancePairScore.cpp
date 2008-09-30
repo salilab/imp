@@ -12,9 +12,7 @@
 #include "IMP/internal/evaluate_distance_pair_score.h"
 #include <boost/lambda/lambda.hpp>
 
-
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 static void inverse(float r00, float r01, float r02,
                     float r10, float r11, float r12,
@@ -138,4 +136,4 @@ void TransformedDistancePairScore::show(std::ostream &out) const
   f_->show(out);
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

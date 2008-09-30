@@ -13,9 +13,7 @@
 #include "../internal/kernel_version_info.h"
 #include "../internal/Vector.h"
 
-
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -101,6 +99,6 @@ public:
   void set_algorithm(Algorithm a);
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_ALL_NONBONDED_LIST_SCORE_STATE_H */

@@ -7,7 +7,6 @@
 
 #include "IMP/base_types.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
-} // namespace IMP
+IMP_END_NAMESPACE

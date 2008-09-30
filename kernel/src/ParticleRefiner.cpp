@@ -7,8 +7,7 @@
 
 #include "IMP/ParticleRefiner.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 ParticleRefiner::~ParticleRefiner(){}
 
@@ -17,4 +16,4 @@ Particles ParticleRefiner::get_refined(Particle *p) const {
   return Particles();
 }
 
-}
+IMP_END_NAMESPACE

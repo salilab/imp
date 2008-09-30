@@ -10,8 +10,7 @@
 
 #include "../VersionInfo.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -21,6 +20,6 @@ extern IMPDLLEXPORT VersionInfo kernel_version_info;
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_KERNEL_VERSION_INFO_H */

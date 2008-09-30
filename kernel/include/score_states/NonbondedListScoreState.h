@@ -18,8 +18,7 @@
 #include <vector>
 #include <limits>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -287,6 +286,6 @@ struct NBLAddIfNonbonded
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_NONBONDED_LIST_SCORE_STATE_H */

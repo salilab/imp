@@ -8,10 +8,9 @@
 #include "IMP/log.h"
 #include "IMP/exception.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 /* Initialize singleton pointer to NULL */
 Log* Log::logpt_ = NULL;
 
-} // namespace IMP
+IMP_END_NAMESPACE

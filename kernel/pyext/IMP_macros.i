@@ -1,6 +1,13 @@
 #define IMPDLLEXPORT
 #define IMPDLLLOCAL
 
+#define IMP_BEGIN_NAMESPACE \
+namespace IMP \
+{
+
+#define IMP_END_NAMESPACE \
+} /* namespace IMP */
+
 %define IMP_OWN_FIRST_CONSTRUCTOR(Ucname)
 %pythonprepend Ucname::Ucname %{
         args[0].thisown=0

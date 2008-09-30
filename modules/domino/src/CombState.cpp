@@ -8,9 +8,6 @@
 #include <numeric>
 #include <climits>
 
-namespace IMP
-{
-namespace domino
-{
-} // namespace domino
-} // namespace IMP
+IMPDOMINO_BEGIN_NAMESPACE
+
+IMPDOMINO_END_NAMESPACE

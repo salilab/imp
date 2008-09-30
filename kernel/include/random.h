@@ -11,8 +11,7 @@
 #include <boost/random.hpp>
 #include "base_types.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 typedef ::boost::rand48 RandomNumberGenerator;
 //! A shared random number generator
@@ -22,6 +21,6 @@ typedef ::boost::rand48 RandomNumberGenerator;
  */
 extern IMPDLLEXPORT RandomNumberGenerator random_number_generator;
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_RANDOM_H */

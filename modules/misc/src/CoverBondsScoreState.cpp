@@ -10,12 +10,7 @@
 #include "IMP/decorators/bond_decorators.h"
 #include "IMP/decorators/XYZDecorator.h"
 
-namespace IMP
-{
-
-namespace misc
-{
-
+IMPMISC_BEGIN_NAMESPACE
 
 CoverBondsScoreState::CoverBondsScoreState(BondDecoratorListScoreState *bl,
                                            FloatKey rk): bl_(bl), rk_(rk)
@@ -91,6 +86,4 @@ void CoverBondsScoreState::show(std::ostream &out) const
       << " bonds " << std::endl;
 }
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE

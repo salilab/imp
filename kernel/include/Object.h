@@ -11,8 +11,7 @@
 
 #include "exception.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Common base class for IMP objects.
 /** Currently this just makes the object noncopyable and adds heuristic checks
@@ -62,6 +61,6 @@ private:
   double check_value_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_OBJECT_H */

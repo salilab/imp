@@ -6,22 +6,19 @@
 
 #include "IMP/domino/DominoOptimizer.h"
 
-namespace IMP
-{
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
-  DominoOptimizer::DominoOptimizer(std::string jt_filename, Model *m)
-  {
-    ds_ = NULL;
-    g_ = new RestraintGraph(jt_filename, m);
-    set_model(m);
-  }
+DominoOptimizer::DominoOptimizer(std::string jt_filename, Model *m)
+{
+  ds_ = NULL;
+  g_ = new RestraintGraph(jt_filename, m);
+  set_model(m);
+}
 
-  void DominoOptimizer::realize_rec(RestraintSet *rs, Float weight)
-  {
+void DominoOptimizer::realize_rec(RestraintSet *rs, Float weight)
+{
   for (Model::RestraintIterator it = rs->restraints_begin();
-  it != rs->restraints_end(); it++) {
+       it != rs->restraints_end(); it++) {
     Restraint *r = *it;
     // if it is a restraint set
     RestraintSet *rs_child = dynamic_cast< RestraintSet*>(r);
@@ -55,7 +52,8 @@ void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
   }
 }
 
-void DominoOptimizer::initialize_jt_graph(int number_of_nodes) {
+void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
+{
   g_->initialize_graph(number_of_nodes);
 }
 
@@ -79,7 +77,8 @@ Float DominoOptimizer::optimize(unsigned int max_steps)
 }
 
 void DominoOptimizer::add_jt_node(int node_index,
-   std::vector<Int>  &particles_ind, Model &m){
+                                  std::vector<Int> &particles_ind, Model &m)
+{
   Particles particles = Particles();
   for  (std::vector<Int>::const_iterator it =particles_ind.begin();
    it != particles_ind.end(); it++) {
@@ -88,9 +87,9 @@ void DominoOptimizer::add_jt_node(int node_index,
   g_->add_node(node_index,particles);
 }
 
-void DominoOptimizer::add_jt_edge(int node1_ind, int node2_ind) {
+void DominoOptimizer::add_jt_edge(int node1_ind, int node2_ind)
+{
   g_->add_edge(node1_ind, node2_ind);
 }
 
-} // namespace domino
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE

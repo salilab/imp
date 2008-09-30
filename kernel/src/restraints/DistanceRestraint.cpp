@@ -12,8 +12,7 @@
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/pair_scores/DistancePairScore.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
                                      Particle* p1, Particle* p2) :
@@ -53,4 +52,4 @@ void DistanceRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

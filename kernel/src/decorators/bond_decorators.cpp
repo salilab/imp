@@ -7,9 +7,7 @@
 
 #include "IMP/decorators/bond_decorators.h"
 
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -103,4 +101,4 @@ BondDecorator get_bond(BondedDecorator a, BondedDecorator b) {
   return BondDecorator();
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

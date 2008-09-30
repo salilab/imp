@@ -10,8 +10,7 @@
 #include "../UnaryFunction.h"
 #include "../utility.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 /** \ingroup restraint
     \addtogroup unaryf Unary Functions
@@ -94,6 +93,6 @@ private:
   Float k_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_HARMONIC_H */

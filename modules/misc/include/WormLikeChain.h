@@ -11,11 +11,7 @@
 #include "IMP/internal/constants.h"
 #include "IMP/internal/units.h"
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 //! Worm-like-chain energy for polymer chains
 /** This function implements one polymer force/extension curve. It
@@ -118,8 +114,6 @@ protected:
   unit::Angstrom lmax_, lp_;
 };
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE
 
 #endif  /* __IMPMISC_WORM_LIKE_CHAIN_H */

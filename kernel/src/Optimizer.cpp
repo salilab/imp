@@ -9,8 +9,7 @@
 #include "IMP/Optimizer.h"
 #include "IMP/OptimizerState.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 Optimizer::Optimizer()
 {
@@ -41,4 +40,4 @@ void Optimizer::update_states()
 IMP_CONTAINER_IMPL(Optimizer, OptimizerState, optimizer_state,
                    OptimizerStateIndex, obj->set_optimizer(this),,);
 
-}  // namespace IMP
+IMP_END_NAMESPACE

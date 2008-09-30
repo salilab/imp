@@ -6,11 +6,7 @@
 
 #include "IMP/domino/JEdge.h"
 
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 JEdge::JEdge(JNode *source, JNode *target)
 {
@@ -144,6 +140,5 @@ void JEdge::clear() {
   source_new_score_separators_.clear();
   target_new_score_separators_.clear();
 }
-} // namespace domino
 
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE

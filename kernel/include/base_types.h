@@ -15,9 +15,7 @@
 #include <string>
 #include <vector>
 
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 /** \defgroup kernel IMP Kernel
     The core IMP types
@@ -81,7 +79,6 @@ IMP_DECLARE_KEY_TYPE(StringKey, 2);
 //! The type used to identify a particle attribute in the Particles
 IMP_DECLARE_KEY_TYPE(ParticleKey, 3);
 
-} // namespace IMP
-
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BASE_TYPES_H */

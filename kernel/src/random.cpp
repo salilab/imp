@@ -8,10 +8,9 @@
 #include "IMP/random.h"
 #include <ctime>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 ::boost::rand48 random_number_generator(
                        static_cast<boost::uint64_t>(std::time(NULL)));
 
-} // namespace IMP
+IMP_END_NAMESPACE

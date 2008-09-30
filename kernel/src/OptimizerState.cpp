@@ -9,8 +9,7 @@
 #include "IMP/log.h"
 #include "IMP/OptimizerState.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Constructor
 OptimizerState::OptimizerState()
@@ -45,5 +44,4 @@ void OptimizerState::show(std::ostream& out) const
   get_version_info().show(out);
 }
 
-
-}  // namespace IMP
+IMP_END_NAMESPACE

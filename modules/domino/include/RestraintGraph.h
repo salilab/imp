@@ -23,11 +23,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
 
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 template < typename TimeMap > class dfs_time_visitor :
       public boost::default_dfs_visitor
@@ -184,8 +180,6 @@ protected:
   std::vector<CombState *> *min_combs;
 };
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_RESTRAINT_GRAPH_H */

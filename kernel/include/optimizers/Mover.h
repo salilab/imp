@@ -16,8 +16,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class MonteCarlo;
 class Mover;
@@ -76,6 +75,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(Mover);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_MOVER_H */

@@ -12,9 +12,7 @@
 #include "../UnaryFunction.h"
 #include "../Pointer.h"
 
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 //! Apply a function to the angle between three particles.
 /** \ingroup triplet
@@ -30,6 +28,6 @@ public:
   virtual void show(std::ostream &out=std::cout) const;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_ANGLE_TRIPLET_SCORE_H */

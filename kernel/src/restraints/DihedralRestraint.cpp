@@ -17,8 +17,7 @@
 
 #include <boost/tuple/tuple.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
                                      Particle* p1, Particle* p2, Particle* p3,
@@ -138,4 +137,4 @@ void DihedralRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-}  // namespace IMP
+IMP_END_NAMESPACE

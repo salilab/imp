@@ -11,8 +11,7 @@
 #include "IMP/internal/evaluate_distance_pair_score.h"
 #include <boost/lambda/lambda.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 struct StaticD
 {
@@ -40,4 +39,4 @@ void DistanceToSingletonScore::show(std::ostream &out) const
   f_->show(out);
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

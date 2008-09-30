@@ -18,8 +18,7 @@
 #include <vector>
 #endif
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -97,4 +96,4 @@ void bbox_scan(const Particles &ps,
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE

@@ -5,15 +5,20 @@ from SCons.Script import Builder, File
 
 def action_exports(target, source, env):
     """The IMPModuleExports Builder generates a header file used to mark
-       classes and functions for export, e.g.
-       env.IMPModuleExports('foo_exports.h', env.Value('foo'))
+       classes and functions for export and a corresponding SWIG interface, e.g.
+       env.IMPModuleExports(('foo_exports.h', 'foo_exports.i'),
+                            env.Value('foo'))
        generates exports macros for the 'foo' module."""
     name = source[0].get_contents()
-    out = file(target[0].abspath, 'w')
-    print >> out, """/*
+    h = file(target[0].abspath, 'w')
+    i = file(target[1].abspath, 'w')
+    vars = {'name':name, 'NAME':name.upper(),
+            'filename':os.path.basename(target[0].abspath),
+            'namespace':'IMP::' + name, 'NAMESPACE':'IMP' + name.upper()}
+    print >> h, """/*
  * \\file %(filename)s
  * \\brief Provide macros to mark functions and classes as exported
- *        from a DLL/.so
+ *        from a DLL/.so, and to set up namespaces
  *
  * When building the module, IMP%(NAME)s_EXPORTS should be defined, and when
  * using the module externally, it should not be. Classes and functions
@@ -24,6 +29,10 @@ def action_exports(target, source, env):
  * The Windows build environment requires applications to mark exports in
  * this way; we use the same markings to set the visibility of ELF symbols
  * if we have compiler support.
+ *
+ * All code in this module should live in the %(namespace)s namespace.
+ * This is simply achieved by wrapping things with the
+ * %(NAMESPACE)s_BEGIN_NAMESPACE and %(NAMESPACE)s_END_NAMESPACE macros.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
@@ -48,10 +57,29 @@ def action_exports(target, source, env):
 #define IMP%(NAME)sLOCAL
 #endif
 #endif
+""" % vars
 
-#endif  /* __IMP%(NAME)s_EXPORTS_H */""" \
-    % {'name':name, 'NAME':name.upper(),
-       'filename':os.path.basename(target[0].abspath)}
+    print >> i, """/* Ignore shared object exports macros */
+#define IMP%(NAME)sEXPORT
+#define IMP%(NAME)sLOCAL
+""" % vars
+
+    for out in (i, h):
+        print >> out, """#define %(NAMESPACE)s_BEGIN_NAMESPACE \\
+namespace IMP \\
+{ \\
+\\
+namespace %(name)s \\
+{
+
+#define %(NAMESPACE)s_END_NAMESPACE \\
+} /* namespace %(name)s */ \\
+\\
+} /* namespace IMP */""" % vars
+
+    print >> h, """
+#endif  /* __IMP%(NAME)s_EXPORTS_H */""" % vars
+
 
 def action_version_info(target, source, env):
     """The IMPModuleVersionInfo Builder generates a source file and header to
@@ -86,8 +114,8 @@ def action_version_info(target, source, env):
     print >> cpp, '#include "IMP/%s/%s_version_info.h"\n' % (module, module)
 
     for f in (h, cpp):
-        for namespace in ('IMP', module, 'internal'):
-            print >> f, "namespace %s\n{\n" % namespace
+        print >> f, "IMP%s_BEGIN_NAMESPACE" % module.upper()
+        print >> f, "\nnamespace internal\n{\n"
 
     print >> h, """//! Version and authorship of the %(module)s module.
 extern IMP%(MODULE)sEXPORT VersionInfo %(module)s_version_info;""" \
@@ -97,8 +125,8 @@ extern IMP%(MODULE)sEXPORT VersionInfo %(module)s_version_info;""" \
               % (module, author, version)
 
     for f in (h, cpp):
-        for namespace in ('internal', module, 'IMP'):
-            print >> f, "\n} // namespace %s" % namespace
+        print >> f, "\n} // namespace internal\n"
+        print >> f, "IMP%s_END_NAMESPACE" % module.upper()
 
     print >> h, "\n#endif  /* __IMP%s_VERSION_INFO_H */" % module.upper()
 
@@ -287,9 +315,11 @@ def IMPModule(env, module, author, version, description, cpp=True):
                                          % (module, module)),
                                      (env.Value(module), env.Value(author),
                                       env.Value(version)))
-        # Generate exports header
-        env['EXP_H'] = env.IMPModuleExports('%s/include/%s_exports.h' \
-                                            % (module, module),
+        # Generate exports header and SWIG equivalent
+        env['EXP_H'] = env.IMPModuleExports(('%s/include/%s_exports.h' \
+                                             % (module, module),
+                                             '%s/pyext/%s_exports.i' \
+                                             % (module, module)),
                                             env.Value(module))
         env.AddMethod(IMPSharedLibraryEnvironment)
         env.AddMethod(IMPPythonExtensionEnvironment)

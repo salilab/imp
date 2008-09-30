@@ -18,8 +18,7 @@
 #include "HierarchyDecorator.h"
 #include "bond_decorators.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A decorator for helping deal with a hierarchy of molecules
 /** \ingroup hierarchy
@@ -194,7 +193,6 @@ molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
 IMPDLLEXPORT MolecularHierarchyDecorator
 create_fragment(const MolecularHierarchyDecorators &ps);
 
-
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_MOLECULAR_HIERARCHY_DECORATOR_H */

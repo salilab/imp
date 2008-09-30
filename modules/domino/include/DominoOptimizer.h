@@ -15,10 +15,7 @@
 #include "IMP/restraints/RestraintSet.h"
 #include "RestraintGraph.h"
 
-namespace IMP
-{
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 //! An exact inference optimizer.
 /** \ingroup optimizer
@@ -61,8 +58,6 @@ protected:
   RestraintGraph *g_;
 };
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_DOMINO_OPTIMIZER_H */

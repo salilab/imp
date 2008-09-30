@@ -13,8 +13,7 @@
 #include "base_types.h"
 #include <cmath>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Class for adding derivatives from restraints to the model.
 class IMPDLLEXPORT DerivativeAccumulator
@@ -39,6 +38,6 @@ protected:
   Float weight_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_DERIVATIVE_ACCUMULATOR_H */

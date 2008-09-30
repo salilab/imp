@@ -14,8 +14,8 @@
 #include "../Pointer.h"
 #include "../triplet_scores/AngleTripletScore.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
+
 class UnaryFunction;
 
 //! Angle restraint between three particles
@@ -38,6 +38,6 @@ protected:
     Pointer<AngleTripletScore> sf_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_ANGLE_RESTRAINT_H */

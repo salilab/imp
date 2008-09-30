@@ -16,8 +16,7 @@
 
 #include <iostream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class Optimizer;
 
@@ -69,6 +68,6 @@ protected:
 
 IMP_OUTPUT_OPERATOR(OptimizerState);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_OPTIMIZER_STATE_H */

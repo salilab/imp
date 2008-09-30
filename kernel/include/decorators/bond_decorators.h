@@ -15,8 +15,7 @@
 #include "../internal/graph_base.h"
 #include "utility.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class BondDecorator;
 class BondedDecorator;
@@ -193,6 +192,6 @@ void unbond(BondDecorator b);
 IMPDLLEXPORT
 BondDecorator get_bond(BondedDecorator a, BondedDecorator b);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BOND_DECORATORS_H */

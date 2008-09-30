@@ -16,8 +16,7 @@
 #include <cmath>
 #include <limits>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -226,6 +225,6 @@ convert_to_Dalton(Unit<internal::MKSTag, EXP, Mass> d) {
 
 namespace unit= internal::unit;
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_UNITS_H */

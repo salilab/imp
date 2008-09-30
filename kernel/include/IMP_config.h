@@ -27,4 +27,11 @@
 #endif
 #endif
 
+#define IMP_BEGIN_NAMESPACE \
+namespace IMP \
+{
+
+#define IMP_END_NAMESPACE \
+} /* namespace IMP */
+
 #endif  /* __IMP_CONFIG_H */

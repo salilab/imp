@@ -14,8 +14,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A class to help implement movers
 /** This class helps in implementing Movers by allowing changes to be easily
@@ -90,6 +89,6 @@ protected:
   ~MoverBase(){}
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_MOVER_BASE_H */

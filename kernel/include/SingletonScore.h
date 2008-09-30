@@ -12,8 +12,7 @@
 #include "RefCountedObject.h"
 #include "DerivativeAccumulator.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class Particle;
 
@@ -40,6 +39,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonScore);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_SINGLETON_SCORE_H */

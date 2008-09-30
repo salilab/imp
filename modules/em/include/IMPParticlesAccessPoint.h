@@ -18,13 +18,7 @@
 #include "em_exports.h"
 #include "ParticlesAccessPoint.h"
 
-
-
-namespace IMP
-{
-
-namespace em
-{
+IMPEM_BEGIN_NAMESPACE
 
 #define X_ATT_NAME "x"
 #define Y_ATT_NAME "y"
@@ -114,8 +108,6 @@ private:
   FloatKey radius_key_, weight_key_, x_key_, y_key_, z_key_;
 };
 
-} // namespace em
-
-} // namespace IMP
+IMPEM_END_NAMESPACE
 
 #endif  /* __IMPEM_IMP_PARTICLES_ACCESS_POINT_H */

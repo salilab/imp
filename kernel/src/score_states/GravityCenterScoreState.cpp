@@ -9,8 +9,7 @@
 #include "IMP/decorators/XYZDecorator.h"
 #include "IMP/Vector3D.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 GravityCenterScoreState::GravityCenterScoreState(Particle *center,
                                                  FloatKey weightkey,
@@ -87,4 +86,4 @@ void GravityCenterScoreState::show(std::ostream &out) const
   out << "GravityCenter" << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

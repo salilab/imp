@@ -10,8 +10,7 @@
 
 #include "macros.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Compute the square of a number
 template <class T>
@@ -20,6 +19,6 @@ T square(T t)
   return t*t;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_UTILITY_H */

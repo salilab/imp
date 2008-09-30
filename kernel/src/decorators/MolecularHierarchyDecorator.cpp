@@ -14,8 +14,7 @@
 #include <sstream>
 #include <set>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 IntKey MolecularHierarchyDecorator::type_key_;
 
@@ -156,5 +155,4 @@ create_fragment(const MolecularHierarchyDecorators &ps)
   return fd;
 }
 
-
-} // namespace IMP
+IMP_END_NAMESPACE

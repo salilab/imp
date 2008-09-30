@@ -15,8 +15,7 @@
 #include "../internal/kernel_version_info.h"
 #include "../Vector3D.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Simple Brownian dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
@@ -192,6 +191,6 @@ protected:
   std::vector<int> time_steps_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BROWNIAN_DYNAMICS_H */

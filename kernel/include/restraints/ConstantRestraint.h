@@ -14,8 +14,8 @@
 #include "../Restraint.h"
 #include "../internal/kernel_version_info.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
+
 class PairScore;
 
 //! Return a constant value.
@@ -33,6 +33,6 @@ public:
   IMP_RESTRAINT(internal::kernel_version_info)
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif /* __IMP_CONSTANT_RESTRAINT_H */

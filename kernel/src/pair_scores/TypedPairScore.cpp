@@ -7,8 +7,7 @@
 
 #include "IMP/pair_scores/TypedPairScore.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 Float TypedPairScore::evaluate(Particle *a, Particle *b,
                                DerivativeAccumulator *da) const
@@ -42,4 +41,4 @@ void TypedPairScore::show(std::ostream &out) const
   out << "TypedPairScore with type key " << typekey_;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

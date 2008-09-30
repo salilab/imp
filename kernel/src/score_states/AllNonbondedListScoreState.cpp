@@ -14,9 +14,7 @@
 
 #include <vector>
 
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 //! Turn the default into an actual algorithm and work around missing algorithms
 static AllNonbondedListScoreState::Algorithm
@@ -343,4 +341,4 @@ void AllNonbondedListScoreState::check_nbl() const
   }
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

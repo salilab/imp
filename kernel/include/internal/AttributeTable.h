@@ -20,9 +20,7 @@
 #include <vector>
 #include <limits>
 
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -279,6 +277,6 @@ inline std::vector<typename Traits::Key>
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_ATTRIBUTE_TABLE_H */

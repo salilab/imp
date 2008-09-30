@@ -7,11 +7,7 @@
 
 #include "IMP/domino/SimpleDiscreteRestraint.h"
 
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
 {
@@ -86,6 +82,4 @@ void SimpleDiscreteRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE

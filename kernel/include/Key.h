@@ -14,6 +14,7 @@
 #include <map>
 #include <vector>
 
+IMP_BEGIN_NAMESPACE
 
 /**
    \internal
@@ -62,13 +63,8 @@
 };                                                                      \
 typedef std::vector<Name> Name##s
 
-
-namespace IMP
-{
-
 namespace internal
 {
-
 
 
 /** \internal The data concerning keys.
@@ -253,6 +249,6 @@ std::vector<std::string> KeyBase<ID>::get_all_strings()
   return str;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_KEY_H */

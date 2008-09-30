@@ -9,8 +9,7 @@
 
 #include "Harmonic.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Upper bound harmonic function (non-zero when feature > mean)
 /** \ingroup unaryf
@@ -53,6 +52,6 @@ public:
   }
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_HARMONIC_UPPER_BOUND_H */

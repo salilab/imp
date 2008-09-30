@@ -9,8 +9,7 @@
 
 #include "../UnaryFunction.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Closed cubic spline function.
 /** This function is defined by evenly-spaced spline values over a finite
@@ -58,6 +57,6 @@ protected:
   Float spacing_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_CLOSED_CUBIC_SPLINE_H */

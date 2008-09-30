@@ -12,8 +12,7 @@
 #include "../../IMP_config.h"
 #include "../MoverBase.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Modify a set of continuous variables using a normal distribution.
 /** \ingroup mover
@@ -43,6 +42,6 @@ private:
   Float stddev_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_NORMAL_MOVER_H */

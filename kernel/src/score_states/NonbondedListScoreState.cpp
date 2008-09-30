@@ -12,9 +12,7 @@
 
 #include <algorithm>
 
-namespace IMP
-{
-
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -146,4 +144,4 @@ IMP_CONTAINER_IMPL(NonbondedListScoreState, BondedListScoreState,
                      if (0) std::cout <<*obj;
                    },,);
 
-} // namespace IMP
+IMP_END_NAMESPACE

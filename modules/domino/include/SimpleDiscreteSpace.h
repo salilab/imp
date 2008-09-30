@@ -15,11 +15,7 @@
 
 #define KEY_OPT "OPT"
 
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 class SimpleDiscreteSpace
 {
@@ -100,8 +96,6 @@ protected:
   std::map<const Particle *, SimpleDiscreteSpace *> data;
 };
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_SIMPLE_DISCRETE_SPACE_H */

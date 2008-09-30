@@ -12,8 +12,7 @@
 #include <algorithm>
 #include <sstream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 MaxChangeScoreState::MaxChangeScoreState(const FloatKeys &keys,
                                          const Particles &ps): keys_(keys)
@@ -79,4 +78,4 @@ void MaxChangeScoreState::show(std::ostream &out) const
   out << "MaxChangeScoreState" << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

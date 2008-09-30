@@ -14,8 +14,7 @@
 #include "../DecoratorBase.h"
 #include "utility.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
@@ -99,6 +98,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(ResidueDecorator);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_RESIDUE_DECORATOR_H */

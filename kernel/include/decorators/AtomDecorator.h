@@ -18,8 +18,7 @@
 #include <vector>
 #include <deque>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 
@@ -240,6 +239,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(AtomDecorator);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_ATOM_DECORATOR_H */

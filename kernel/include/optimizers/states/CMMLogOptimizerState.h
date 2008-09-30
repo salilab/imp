@@ -16,8 +16,7 @@
 #include "../../OptimizerState.h"
 #include "../../internal/kernel_version_info.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A state that writes a series of CMM files.
 /** The State writes a series of files generated from a
@@ -84,6 +83,6 @@ protected:
   FloatKey r_, g_, b_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_CMM_LOG_OPTIMIZER_STATE_H */

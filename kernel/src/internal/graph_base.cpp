@@ -9,8 +9,7 @@
 
 #include "IMP/internal/graph_base.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -100,4 +99,4 @@ bool graph_is_edge(Particle *a, const GraphData &d)
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE

@@ -10,8 +10,7 @@
 
 #include "../PairScore.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Delegate to another PairScore depending on particle types.
 /** Each particle is given an integer type, which is used at evaluate time
@@ -72,6 +71,6 @@ protected:
   bool allow_invalid_types_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_TYPED_PAIR_SCORE_H */

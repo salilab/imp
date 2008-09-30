@@ -13,8 +13,8 @@
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
+
 /** \ingroup restraint
     \addtogroup pairscore Score functions on two particles
     Score functions to by applied to a pair of particles. These can be
@@ -38,6 +38,6 @@ public:
 
 IMP_OUTPUT_OPERATOR(PairScore);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_PAIR_SCORE_H */

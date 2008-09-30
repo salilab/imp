@@ -13,11 +13,7 @@
 #include "IMP/score_states/BondDecoratorListScoreState.h"
 #include "misc_version_info.h"
 
-namespace IMP
-{
-
-namespace misc
-{
+IMPMISC_BEGIN_NAMESPACE
 
 //! This class sets the position and radius of each bond to cover the endpoints.
 /** For each bond in the list of particles set the x,y,z to be the
@@ -50,8 +46,6 @@ public:
 
 };
 
-} // namespace misc
-
-} // namespace IMP
+IMPMISC_END_NAMESPACE
 
 #endif  /* __IMPMISC_COVER_BONDS_SCORE_STATE_H */

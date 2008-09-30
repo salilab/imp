@@ -19,11 +19,7 @@
 #include <sstream>
 #include <algorithm>
 
-namespace IMP
-{
-
-namespace domino
-{
+IMPDOMINO_BEGIN_NAMESPACE
 
 //! Handles all functionalities of a junction tree node.
 /** Holds multiple particles, their states and the current marginalization
@@ -119,8 +115,6 @@ protected:
   const DiscreteSampler *ds_;
 };
 
-} // namespace domino
-
-} // namespace IMP
+IMPDOMINO_END_NAMESPACE
 
 #endif  /* __IMPDOMINO_JNODE_H */

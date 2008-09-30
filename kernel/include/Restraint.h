@@ -22,10 +22,7 @@
 #include <iostream>
 #include <limits>
 
-
-
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 typedef std::vector<Particles> ParticlesList;
 
@@ -151,6 +148,6 @@ private:
 
 IMP_OUTPUT_OPERATOR(Restraint);
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_RESTRAINT_H */

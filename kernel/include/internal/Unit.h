@@ -30,9 +30,7 @@
 #include <iomanip>
 #include <cmath>
 
-
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -427,6 +425,6 @@ struct Exchange
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_UNIT_H */

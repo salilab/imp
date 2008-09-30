@@ -19,8 +19,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! A pointer to an IMP::Object
 /** The pointer is NULL initialized and checks accesses to throw an exception
@@ -108,6 +107,6 @@ public:
   }
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_POINTER_H */

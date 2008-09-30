@@ -18,8 +18,7 @@
 
 #include <iostream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Applies a PairScore to each pair of particles in a list.
 /** \ingroup restraint
@@ -45,6 +44,6 @@ protected:
   Pointer<PairScore> ss_;
 };
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_PAIR_LIST_RESTRAINT_H */

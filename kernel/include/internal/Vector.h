@@ -15,8 +15,7 @@
 
 #include <vector>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 class Particle;
 
@@ -105,6 +104,6 @@ public:
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_VECTOR_H */

@@ -11,8 +11,7 @@
 #include "../Vector3D.h"
 #include <boost/tuple/tuple.hpp>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -59,6 +58,6 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_EVALUATE_DISTANCE_PAIR_SCORE_H */

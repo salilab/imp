@@ -12,8 +12,7 @@
 #include "../base_types.h"
 #include "../Particle.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -36,6 +35,6 @@ void bipartite_bbox_scan(const Particles &ps0, const Particles &ps1,
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_BBOX_NBL_HELPERS_H */

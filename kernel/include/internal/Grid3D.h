@@ -13,8 +13,7 @@
 
 #include <limits>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -403,6 +402,6 @@ public:
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_GRID_3D_H */

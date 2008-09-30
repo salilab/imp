@@ -9,9 +9,7 @@
 #include "IMP/log.h"
 #include "IMP/Model.h"
 
-
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 Particle::Particle()
 {
@@ -81,5 +79,4 @@ void Particle::show(std::ostream& out) const
   }
 }
 
-
-}  // namespace IMP
+IMP_END_NAMESPACE

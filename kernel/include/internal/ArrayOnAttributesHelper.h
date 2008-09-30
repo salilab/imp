@@ -14,8 +14,7 @@
 #include <string>
 #include <sstream>
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 namespace internal
 {
@@ -129,6 +128,6 @@ private:
 
 } // namespace internal
 
-} // namespace IMP
+IMP_END_NAMESPACE
 
 #endif  /* __IMP_ARRAY_ON_ATTRIBUTES_HELPER_H */

@@ -12,8 +12,7 @@
 #include "IMP/optimizers/states/VRMLLogOptimizerState.h"
 #include "IMP/decorators/XYZDecorator.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 VRMLLogOptimizerState::VRMLLogOptimizerState(std::string filename,
                                              const Particles &pis) :
@@ -147,4 +146,4 @@ void VRMLLogOptimizerState::show(std::ostream &out) const
   out << "Writing VRML files " << filename_ << std::endl;
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

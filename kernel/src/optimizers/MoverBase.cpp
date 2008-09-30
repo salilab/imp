@@ -7,8 +7,7 @@
 
 #include "IMP/optimizers/MoverBase.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 IMP_LIST_IMPL(MoverBase, Particle, particle, Particle*,,);
 IMP_LIST_IMPL(MoverBase, FloatKey, float_key, FloatKey,,);
@@ -48,4 +47,4 @@ void MoverBase::reject_move()
   }
 }
 
-} // namespace IMP
+IMP_END_NAMESPACE

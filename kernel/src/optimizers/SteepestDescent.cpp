@@ -9,8 +9,7 @@
 #include "IMP/optimizers/SteepestDescent.h"
 #include "IMP/Model.h"
 
-namespace IMP
-{
+IMP_BEGIN_NAMESPACE
 
 //! Constructor
 SteepestDescent::SteepestDescent() : step_size_(0.01), threshold_(0.)
@@ -130,5 +129,4 @@ Float SteepestDescent::optimize(unsigned int max_steps)
   return new_score;
 }
 
-
-}  // namespace IMP
+IMP_END_NAMESPACE
