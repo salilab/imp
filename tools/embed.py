@@ -25,7 +25,7 @@ def _check(context):
 def configure_check(env):
     custom_tests = {'CheckEMBED':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    if env.GetOption('clean') or env['OPTION_HELP'] \
+    if env.GetOption('clean') or env.GetOption('help') \
        or conf.CheckEMBED() is not True:
         for suff in ('CPPPATH', 'LIBPATH', 'LIBS', 'EMPY'):
             env['EM_' + suff] = ""

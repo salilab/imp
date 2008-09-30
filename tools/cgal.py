@@ -27,6 +27,6 @@ def configure_check(env):
     env['CGAL_LIBS'] = ''
     custom_tests = {'CheckCGAL':_check}
     conf = env.Configure(custom_tests=custom_tests)
-    if not env.GetOption('clean') and not env['OPTION_HELP']:
+    if not env.GetOption('clean') and not env.GetOption('help'):
         conf.CheckCGAL()
     conf.Finish()
