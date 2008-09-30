@@ -42,7 +42,8 @@ extern IMPDLLEXPORT  FloatKey bond_stiffness_key_;
    As with AtomDecorator, the types of bonds will eventually be run-time
    expandible.
 
-   \ingroup bond Bonds
+   \ingroup bond
+   \ingroup decorators
  */
 class IMPDLLEXPORT BondDecorator: public DecoratorBase
 {
@@ -81,6 +82,7 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
 
 //! A decorator for a particle which has bonds.
 /** \ingroup bond
+    \ingroup decorators
  */
 class IMPDLLEXPORT BondedDecorator: public DecoratorBase
 {
@@ -144,6 +146,8 @@ inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
     \return BondDecorator of the bond Particle.
 
     \ingroup bond
+    \relates BondDecorator
+    \relates BondedDecorator
  */
 IMPDLLEXPORT
 BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
@@ -157,6 +161,8 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
     \return BondDecorator of the bond Particle.
 
     \ingroup bond
+    \relates BondDecorator
+    \relates BondedDecorator
  */
 IMPDLLEXPORT
 inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
@@ -172,14 +178,17 @@ inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
 //! Destroy the bond connecting to particles.
 /** \param[in] b The bond.
     \ingroup bond
+    \relates BondDecorator
+    \relates BondedDecorator
  */
 IMPDLLEXPORT
 void unbond(BondDecorator b);
 
 //! Get the bond between two particles.
-/**
-   BondDecorator() is returned if the particles are not bonded.
-   \ingroup bond
+/** BondDecorator() is returned if the particles are not bonded.
+    \ingroup bond
+    \relates BondDecorator
+    \relates BondedDecorator
  */
 IMPDLLEXPORT
 BondDecorator get_bond(BondedDecorator a, BondedDecorator b);

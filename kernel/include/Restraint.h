@@ -36,6 +36,11 @@ class Model;
     and then various functions which are applied to the tuples.
  */
 
+/** \defgroup exp_restraint Experimental restraints
+    These are restraints which directly use various types of experimental
+    data.
+ */
+
 //! Abstract class for representing restraints
 /** Restraints should take their score function or UnaryFunction
     as the first argument. Restraints which act on large numbers of

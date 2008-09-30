@@ -55,6 +55,7 @@ struct IMPDLLEXPORT ChildArrayTraits
 //! A visitor for traversal of a hierarchy
 /** This works from both C++ and Python
     \ingroup hierarchy
+    \ingroup decorators
  */
 class IMPDLLEXPORT HierarchyVisitor
 {
@@ -133,6 +134,7 @@ IMP_OUTPUT_OPERATOR(HierarchyDecorator);
 /** \param[in] d The HierarchyDecorator for the tree in question
     \param[in] v The visitor to be applied. This is passed by reference.
     \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 IMPDLLEXPORT
 void breadth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
@@ -140,6 +142,7 @@ void breadth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
 //! Depth first traversal of the hierarchy
 /** See breadth_first_traversal and HierarchyVisitor for more information
     \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 IMPDLLEXPORT
 void depth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
@@ -168,6 +171,7 @@ void depth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
            the functor state.
 
     \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 template <class HD, class F>
 F breadth_first_traversal_with_data(HD d, F f, typename F::result_type i)
@@ -192,6 +196,7 @@ F breadth_first_traversal_with_data(HD d, F f, typename F::result_type i)
 //! Apply functor F to each particle, traversing the hierarchy depth first.
 /** See breadth_first_traversal for documentation.
     \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 template <class HD, class F>
 F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
@@ -218,6 +223,7 @@ F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
 //! A simple visitor which pretty-prints the hierarchy
 /** The template argument NP is the decorator to use to print each node.
     \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 template <class PD>
 struct HierarchyPrinter
@@ -258,6 +264,7 @@ struct HierarchyPrinter
 //! Print the hierarchy using a given decorator as to display each node
 /** The last argument limits how deep will be printed out.
     \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 template <class ND>
 std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
@@ -272,6 +279,7 @@ std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
 //! A simple functor to count the number of particles in a hierarchy.
 /** This is a good example of a simple HierarchyVisitor.
     \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 struct HierarchyCounter: public HierarchyVisitor
 {
@@ -317,6 +325,7 @@ struct Gather: public HierarchyVisitor
 
 //! Gather all the Particle* in the hierarchy which meet some criteria
 /** \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 template <class Out, class F>
 Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
@@ -346,6 +355,7 @@ struct MatchAttribute
 
 //! Gather all the Particle* in the hierarchy which match on an attribute
 /** \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 template <class Out, class K, class V>
 Out hierarchy_gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
@@ -384,6 +394,7 @@ struct MatchAttributes
 
 //! Gather all the Particle* in the hierarchy which match on two attributes
 /** \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 template <class Out, class K0, class V0, class K1, class V1>
 Out hierarchy_gather_by_attributes(HierarchyDecorator h, K0 k0,
@@ -399,6 +410,7 @@ Out hierarchy_gather_by_attributes(HierarchyDecorator h, K0 k0,
 
 //! Find the first node which matches some criteria
 /** \ingroup hierarchy
+    \relates HierarchyDecorator
  */
 template <class HD, class F>
 HD hierarchy_find(HD h, F f)
@@ -426,14 +438,20 @@ HD hierarchy_find(HD h, F f)
 
 
 //! Get all the leaves of the bit of hierarchy
+/**     \relates HierarchyDecorator
+ */
 IMPDLLEXPORT Particles
 hierarchy_get_leaves(HierarchyDecorator mhd);
 
 //! Get the bonds internal to this tree
+/**     \relates HierarchyDecorator
+ */
 IMPDLLEXPORT BondDecorators
 hierarchy_get_internal_bonds(HierarchyDecorator mhd);
 
 //! Get all the particles in the subtree
+/**     \relates HierarchyDecorator
+ */
 IMPDLLEXPORT Particles
 hierarchy_get_all_descendants(HierarchyDecorator mhd);
 

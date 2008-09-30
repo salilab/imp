@@ -32,6 +32,7 @@ IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
    add_type(string) method which adds a string name and assigns it to the
    next unused type int available.
    \ingroup hierarchy
+   \ingroup decorators
  */
 class IMPDLLEXPORT AtomDecorator: public XYZDecorator
 {
