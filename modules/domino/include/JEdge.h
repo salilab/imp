@@ -10,7 +10,8 @@
 #include "JNode.h"
 #include "CombState.h"
 #include "domino_exports.h"
-#include "IMP/Restraint.h"
+
+#include <IMP/Restraint.h>
 
 //todo - can make it more general
 IMPDOMINO_BEGIN_NAMESPACE

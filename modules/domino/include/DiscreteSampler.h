@@ -7,9 +7,11 @@
 #ifndef __IMPDOMINO_DISCRETE_SAMPLER_H
 #define __IMPDOMINO_DISCRETE_SAMPLER_H
 
-#include "IMP/Particle.h"
-#include <vector>
 #include "domino_exports.h"
+
+#include <IMP/Particle.h>
+
+#include <vector>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

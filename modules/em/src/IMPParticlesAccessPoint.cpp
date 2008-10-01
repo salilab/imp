@@ -6,7 +6,7 @@
  *
  */
 
-#include "IMP/em/IMPParticlesAccessPoint.h"
+#include <IMP/em/IMPParticlesAccessPoint.h>
 
 IMPEM_BEGIN_NAMESPACE
 

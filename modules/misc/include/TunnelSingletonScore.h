@@ -9,11 +9,12 @@
 #ifndef __IMPMISC_TUNNEL_SINGLETON_SCORE_H
 #define __IMPMISC_TUNNEL_SINGLETON_SCORE_H
 
-#include "IMP/SingletonScore.h"
-#include "IMP/Vector3D.h"
-#include "IMP/UnaryFunction.h"
-#include "IMP/Pointer.h"
 #include "misc_exports.h"
+
+#include <IMP/SingletonScore.h>
+#include <IMP/Vector3D.h>
+#include <IMP/UnaryFunction.h>
+#include <IMP/Pointer.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

@@ -5,7 +5,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/domino/SimpleDiscreteRestraint.h"
+#include <IMP/domino/SimpleDiscreteRestraint.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

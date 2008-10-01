@@ -8,10 +8,12 @@
 #ifndef __IMPMISC_COVER_BONDS_SCORE_STATE_H
 #define __IMPMISC_COVER_BONDS_SCORE_STATE_H
 
-#include "IMP/ScoreState.h"
-#include "IMP/Pointer.h"
-#include "IMP/score_states/BondDecoratorListScoreState.h"
+#include "misc_exports.h"
 #include "misc_version_info.h"
+
+#include <IMP/ScoreState.h>
+#include <IMP/Pointer.h>
+#include <IMP/score_states/BondDecoratorListScoreState.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

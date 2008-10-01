@@ -9,14 +9,14 @@
 #ifndef __IMPEM_IMP_PARTICLES_ACCESS_POINT_H
 #define __IMPEM_IMP_PARTICLES_ACCESS_POINT_H
 
-#include <vector>
-#include <map>
-
-#include "IMP/Model.h"
-#include "IMP/Particle.h"
-
 #include "em_exports.h"
 #include "ParticlesAccessPoint.h"
+
+#include <IMP/Model.h>
+#include <IMP/Particle.h>
+
+#include <vector>
+#include <map>
 
 IMPEM_BEGIN_NAMESPACE
 

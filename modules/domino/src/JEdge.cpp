@@ -4,7 +4,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/domino/JEdge.h"
+#include <IMP/domino/JEdge.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

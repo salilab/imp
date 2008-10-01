@@ -8,11 +8,12 @@
 #ifndef __IMPMISC_REFINE_ONCE_PAIR_SCORE_H
 #define __IMPMISC_REFINE_ONCE_PAIR_SCORE_H
 
-#include "IMP/PairScore.h"
-#include "IMP/UnaryFunction.h"
-#include "IMP/Pointer.h"
-#include "IMP/ParticleRefiner.h"
 #include "misc_exports.h"
+
+#include <IMP/PairScore.h>
+#include <IMP/UnaryFunction.h>
+#include <IMP/Pointer.h>
+#include <IMP/ParticleRefiner.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

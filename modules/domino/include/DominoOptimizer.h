@@ -9,11 +9,12 @@
 
 #include "domino_exports.h"
 #include "domino_version_info.h"
-#include "IMP/Optimizer.h"
-#include "IMP/Restraint.h"
-#include "IMP/Model.h"
-#include "IMP/restraints/RestraintSet.h"
 #include "RestraintGraph.h"
+
+#include <IMP/Optimizer.h>
+#include <IMP/Restraint.h>
+#include <IMP/Model.h>
+#include <IMP/restraints/RestraintSet.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

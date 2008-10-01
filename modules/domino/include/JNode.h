@@ -9,12 +9,14 @@
 #define __IMPDOMINO_JNODE_H
 
 #include "domino_exports.h"
-#include "IMP/Particle.h"
-#include "IMP/Restraint.h"
-#include "IMP/restraints/RestraintSet.h"
-#include "IMP/decorators/XYZDecorator.h"
 #include "DiscreteSampler.h"
 #include "CombState.h"
+
+#include <IMP/Particle.h>
+#include <IMP/Restraint.h>
+#include <IMP/restraints/RestraintSet.h>
+#include <IMP/decorators/XYZDecorator.h>
+
 #include <vector>
 #include <sstream>
 #include <algorithm>
