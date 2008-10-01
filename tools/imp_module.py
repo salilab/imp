@@ -334,7 +334,7 @@ def IMPModule(env, module, author, version, description, cpp=True):
                                              % (module, module),
                                              '%s/pyext/%s_exports.i' \
                                              % (module, module)),
-                                            env.Value(module))
+                                            env.Value(module))[0]
         env.AddMethod(IMPSharedLibraryEnvironment)
         env.AddMethod(IMPPythonExtensionEnvironment)
         env.AddMethod(IMPHeaders)
