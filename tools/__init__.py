@@ -5,6 +5,7 @@ import re
 import sys
 from SCons.Script import *
 import hierarchy
+import pyscanner
 import symlinks
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
@@ -190,10 +191,11 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace('-no_archive', '')
     except ValueError:
         pass
+    env['PYTHONPATH'] = '#/build/lib'
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
-    env.Prepend(SCANNERS = _SWIGScanner)
+    env.Prepend(SCANNERS = [_SWIGScanner, pyscanner.PythonScanner])
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS="-Wall -g")
     if env.get('include', None) is not None:

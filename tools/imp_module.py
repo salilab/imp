@@ -1,7 +1,7 @@
 """Tools and Builders for IMP modules. See `IMPModule` for more information."""
 
 import os.path
-from SCons.Script import Builder, File
+from SCons.Script import Builder, File, Action
 
 def action_exports(target, source, env):
     """The IMPModuleExports Builder generates a header file used to mark
@@ -242,8 +242,11 @@ def IMPPythonExtensionEnvironment(env):
 
 def _action_unit_test(target, source, env):
     (dir, script) = os.path.split(source[0].path)
+    scripts = [File('#/bin/imppy.sh')]
+    if env['TEST_ENVSCRIPT']:
+        scripts.append(File(env['TEST_ENVSCRIPT']))
     app = "cd %s && %s %s %s -v > /dev/null" \
-          % (dir, " ".join([x.abspath for x in source[1:]]),
+          % (dir, " ".join([x.abspath for x in scripts]),
              env['PYTHON'], script)
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
@@ -251,7 +254,16 @@ def _action_unit_test(target, source, env):
         print "unit tests FAILED"
         return 1
 
+def _print_unit_test(target, source, env):
+    return "IMPModuleTest('%s')" % source[0]
+
 def _emit_unit_test(target, source, env):
+    # Add all test_*.py scripts to sources
+    for dirpath, dirnames, filenames in os.walk('.'):
+        for f in filenames:
+            if f.startswith('test_') and f.endswith('.py'):
+                source.append(os.path.join(dirpath, f))
+    # Add environment scripts to sources
     source.append('#/bin/imppy.sh')
     if env['TEST_ENVSCRIPT']:
         source.append(env['TEST_ENVSCRIPT'])
@@ -261,6 +273,8 @@ def IMPModuleTest(env, target, source, **keys):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
+       Right now, the assumption is made that run-all-tests.py executes
+       all files called test_*.py in the current directory and subdirectories.
        If the TEST_ENVSCRIPT construction variable is set, it is a shell
        script to run to set up the environment to run the test script.
        A convenience alias for the tests is added, and they are always run."""
@@ -329,8 +343,10 @@ def IMPModule(env, module, author, version, description, cpp=True):
     env.AddMethod(IMPModuleTest)
     env.AddMethod(validate)
     env.AddMethod(invalidate)
-    env.Append(BUILDERS={'_IMPModuleTest': Builder(action=_action_unit_test,
-                                                   emitter=_emit_unit_test)})
+    env.Append(BUILDERS={'_IMPModuleTest': \
+                         Builder(action=Action(_action_unit_test,
+                                               _print_unit_test),
+                                 emitter=_emit_unit_test)})
     env['TEST_ENVSCRIPT'] = None
     env['VALIDATED'] = None
     return env.SConscript('%s/SConscript' % module, exports='env')
