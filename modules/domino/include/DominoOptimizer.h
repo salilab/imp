@@ -8,7 +8,7 @@
 #define __IMPDOMINO_DOMINO_OPTIMIZER_H
 
 #include "domino_exports.h"
-#include "domino_version_info.h"
+#include "internal/domino_version_info.h"
 #include "RestraintGraph.h"
 
 #include <IMP/Optimizer.h>

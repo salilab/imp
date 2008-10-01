@@ -9,7 +9,7 @@
 #define __IMPMISC_COVER_BONDS_SCORE_STATE_H
 
 #include "misc_exports.h"
-#include "misc_version_info.h"
+#include "internal/misc_version_info.h"
 
 #include <IMP/ScoreState.h>
 #include <IMP/Pointer.h>

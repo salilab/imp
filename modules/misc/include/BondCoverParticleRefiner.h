@@ -9,7 +9,7 @@
 #define __IMPMISC_BOND_COVER_PARTICLE_REFINER_H
 
 #include "misc_exports.h"
-#include "misc_version_info.h"
+#include "internal/misc_version_info.h"
 
 #include <IMP/ParticleRefiner.h>
 
