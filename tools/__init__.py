@@ -229,7 +229,8 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         conf = env.Configure(custom_tests = custom_tests)
         if sys == 'Linux' and env['linksysv']:
             conf.CheckGNUHash()
-        conf.CheckGCCVisibility()
+        if sys != 'win32' and not env['wine']:
+            conf.CheckGCCVisibility()
         # Check explicitly for False, since all checks will return Null if
         # configure has been disabled
         if conf.CheckModeller() is False:
