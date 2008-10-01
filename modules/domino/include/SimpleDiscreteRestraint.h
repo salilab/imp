@@ -10,8 +10,9 @@
 
 #include "domino_exports.h"
 #include "domino_version_info.h"
-#include "IMP/Model.h"
-#include "IMP/Restraint.h"
+
+#include <IMP/Model.h>
+#include <IMP/Restraint.h>
 
 #include <string>
 #include <climits>

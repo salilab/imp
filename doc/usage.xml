@@ -270,6 +270,39 @@ Avoids namespace pollution, and removes any ambiguity.
 </sect2>
 
 <sect2>
+<title>Includes</title>
+<para>Always import headers for the current module first, followed by headers
+for any dependent modules (e.g. the kernel), and finally any system headers.
+Use angle brackets and the full name of the header (with IMP/ prefix).
+For example,
+</para>
+<informalexample><programlisting>
+#include &lt;IMP/mymodule/MyClass.h&gt;
+#include &lt;IMP/mymodule/MyOtherClass.h&gt;
+
+#include &lt;IMP/KernelBaseClass.h&gt;
+
+#include &lt;math&gt;
+</programlisting></informalexample>
+
+<para><emphasis>Rationale:</emphasis>
+This makes any dependencies in your code obvious, and by including standard
+headers <emphasis>after</emphasis> IMP headers, any missing includes in the
+headers themselves show up early (rather than being masked by other headers
+you include). Adding the IMP prefix and using angle brackets reduces the
+likelihood that uninstalled rogue headers in the source code directory are
+used, which could break the build.
+</para>
+
+<para>For simplicity, to include a header from the same module within another
+header, you can use a relative path (i.e. without the IMP/ prefix) and use
+double quotes rather than angle brackets. This makes it obvious to the reader
+that the include is from the same module. Since headers are staged to a build
+directory, there is no danger of including an uninstalled header this way.
+</para>
+</sect2>
+
+<sect2>
 <title>Python formatting</title>
 <para>All Python code should conform to the
 <ulink url="http://www.python.org/dev/peps/pep-0008/">Python style

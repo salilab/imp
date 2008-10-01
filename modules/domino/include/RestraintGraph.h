@@ -10,12 +10,13 @@
 #define __IMPDOMINO_RESTRAINT_GRAPH_H
 
 #include "domino_exports.h"
-#include "IMP/Model.h"
-#include "IMP/Restraint.h"
-#include "IMP/restraints/RestraintSet.h"
 #include "JNode.h"
 #include "JEdge.h"
 #include "DiscreteSampler.h"
+
+#include <IMP/Model.h>
+#include <IMP/Restraint.h>
+#include <IMP/restraints/RestraintSet.h>
 
 #include <vector>
 #include <map>

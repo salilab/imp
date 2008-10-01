@@ -107,11 +107,12 @@ def action_version_info(target, source, env):
     print >> h, """#ifndef __IMP%(MODULE)s_VERSION_INFO_H
 #define __IMP%(MODULE)s_VERSION_INFO_H
 
+#include "%(module)s_exports.h"
+
 #include <IMP/VersionInfo.h>
-#include \"%(module)s_exports.h\"
 """ % {'module':module, 'MODULE':module.upper()}
 
-    print >> cpp, '#include "IMP/%s/%s_version_info.h"\n' % (module, module)
+    print >> cpp, '#include <IMP/%s/%s_version_info.h>\n' % (module, module)
 
     for f in (h, cpp):
         print >> f, "IMP%s_BEGIN_NAMESPACE" % module.upper()

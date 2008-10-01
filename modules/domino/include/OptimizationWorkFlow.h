@@ -11,8 +11,9 @@
 
 #include "DiscreteSampler.h"
 #include "RestraintGraph.h"
-#include "IMP/Model.h"
 #include "domino_exports.h"
+
+#include <IMP/Model.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

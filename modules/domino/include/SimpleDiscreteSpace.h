@@ -8,8 +8,10 @@
 #define __IMPDOMINO_SIMPLE_DISCRETE_SPACE_H
 
 #include "domino_exports.h"
-#include "IMP/Particle.h"
 #include "DiscreteSampler.h"
+
+#include <IMP/Particle.h>
+
 #include <map>
 #include <sstream>
 

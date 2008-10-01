@@ -5,10 +5,10 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/misc/CoverBondsScoreState.h"
-#include "IMP/score_states/BondDecoratorListScoreState.h"
-#include "IMP/decorators/bond_decorators.h"
-#include "IMP/decorators/XYZDecorator.h"
+#include <IMP/misc/CoverBondsScoreState.h>
+#include <IMP/score_states/BondDecoratorListScoreState.h>
+#include <IMP/decorators/bond_decorators.h>
+#include <IMP/decorators/XYZDecorator.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/misc/ChildrenParticleRefiner.h"
-#include "IMP/decorators/HierarchyDecorator.h"
+#include <IMP/misc/ChildrenParticleRefiner.h>
+#include <IMP/decorators/HierarchyDecorator.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

@@ -7,9 +7,11 @@
 #ifndef __IMPMISC_WORM_LIKE_CHAIN_H
 #define __IMPMISC_WORM_LIKE_CHAIN_H
 
-#include "IMP/UnaryFunction.h"
-#include "IMP/internal/constants.h"
-#include "IMP/internal/units.h"
+#include "misc_exports.h"
+
+#include <IMP/UnaryFunction.h>
+#include <IMP/internal/constants.h>
+#include <IMP/internal/units.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

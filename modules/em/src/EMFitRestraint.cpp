@@ -6,8 +6,9 @@
  *
  */
 
-#include "IMP/log.h"
-#include "IMP/em/EMFitRestraint.h"
+#include <IMP/em/EMFitRestraint.h>
+
+#include <IMP/log.h>
 
 IMPEM_BEGIN_NAMESPACE
 

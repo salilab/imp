@@ -8,8 +8,10 @@
 #ifndef __IMPMISC_CHILDREN_PARTICLE_REFINER_H
 #define __IMPMISC_CHILDREN_PARTICLE_REFINER_H
 
-#include "IMP/ParticleRefiner.h"
+#include "misc_exports.h"
 #include "misc_version_info.h"
+
+#include <IMP/ParticleRefiner.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

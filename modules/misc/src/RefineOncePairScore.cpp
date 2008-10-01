@@ -6,10 +6,10 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/misc/RefineOncePairScore.h"
-#include "IMP/decorators/bond_decorators.h"
-#include "IMP/decorators/XYZDecorator.h"
-#include "IMP/internal/constants.h"
+#include <IMP/misc/RefineOncePairScore.h>
+#include <IMP/decorators/bond_decorators.h>
+#include <IMP/decorators/XYZDecorator.h>
+#include <IMP/internal/constants.h>
 
 #include <cmath>
 

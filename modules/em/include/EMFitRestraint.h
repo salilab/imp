@@ -9,15 +9,16 @@
 #ifndef __IMPEM_EM_FIT_RESTRAINT_H
 #define __IMPEM_EM_FIT_RESTRAINT_H
 
-#include "IMP/Model.h"
-#include "IMP/Restraint.h"
-#include "IMP/VersionInfo.h"
 #include "em_exports.h"
 #include "em_version_info.h"
 #include "DensityMap.h"
 #include "CoarseCC.h"
 #include "SampledDensityMap.h"
 #include "IMPParticlesAccessPoint.h"
+
+#include <IMP/Model.h>
+#include <IMP/Restraint.h>
+#include <IMP/VersionInfo.h>
 
 IMPEM_BEGIN_NAMESPACE
 

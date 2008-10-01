@@ -6,8 +6,9 @@
  *
  */
 
-#include "IMP/misc/TunnelSingletonScore.h"
-#include "IMP/decorators/XYZDecorator.h"
+#include <IMP/misc/TunnelSingletonScore.h>
+#include <IMP/decorators/XYZDecorator.h>
+
 #include <boost/tuple/tuple.hpp>
 
 IMPMISC_BEGIN_NAMESPACE
