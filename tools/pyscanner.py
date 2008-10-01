@@ -40,6 +40,9 @@ def _find_python_module(env, modname, dirs):
     return modules
 
 def _scanfile(node, env, path):
+    # If file does not yet exist, we cannot scan it:
+    if not os.path.exists(node.path):
+        return []
     # Get directory of input file (for relative imports)
     dir = os.path.dirname(node.path)
     dirs = FindPathDirs('PYTHONPATH')(env) + (Dir(dir),)
