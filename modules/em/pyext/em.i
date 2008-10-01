@@ -2,8 +2,7 @@
 
 %{
 #include "IMP.h"
-#include "IMP/em/IMPParticlesAccessPoint.h"
-#include "IMP/em/EMFitRestraint.h"
+#include "IMP/em.h"
 %}
 
 %include "kernel/pyext/IMP_macros.i"
