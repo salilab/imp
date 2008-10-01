@@ -19,4 +19,3 @@ else:
 # Subdirectories:
 pyext = SConscript('pyext/SConscript')
 test = SConscript('test/SConscript')
-env.Depends(test, pyext)

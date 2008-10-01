@@ -11,8 +11,3 @@ env.IMPModule('modeller', author='Ben Webb', version='SVN',
 
 env.IMPModule('misc', author='IMP developers', version='SVN',
               description='Miscellaneous and/or experimental features.')
-
-# We currently do not have a scanner to automatically determine dependencies
-# for Python scripts, so manually add inter-module dependencies for the Python
-# test cases here (C++ dependencies *are* handled automatically)
-env.Depends('em/test/test.passed', '#/build/lib/IMP/modeller/')
