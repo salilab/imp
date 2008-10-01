@@ -84,8 +84,8 @@ namespace %(name)s \\
 def action_version_info(target, source, env):
     """The IMPModuleVersionInfo Builder generates a source file and header to
        return version information, e.g.
-       env.IMPModuleVersionInfo(('src/foo_version_info.cpp',
-                                 'include/foo_version_info.h'),
+       env.IMPModuleVersionInfo(('src/internal/foo_version_info.cpp',
+                                 'include/internal/foo_version_info.h'),
                                 (env.Value('foo'), env.Value('Me'),
                                  env.Value('1.0')))
        generates version information for the 'foo' module."""
@@ -107,12 +107,13 @@ def action_version_info(target, source, env):
     print >> h, """#ifndef __IMP%(MODULE)s_VERSION_INFO_H
 #define __IMP%(MODULE)s_VERSION_INFO_H
 
-#include "%(module)s_exports.h"
+#include "../%(module)s_exports.h"
 
 #include <IMP/VersionInfo.h>
 """ % {'module':module, 'MODULE':module.upper()}
 
-    print >> cpp, '#include <IMP/%s/%s_version_info.h>\n' % (module, module)
+    print >> cpp, '#include <IMP/%s/internal/%s_version_info.h>\n' \
+                  % (module, module)
 
     for f in (h, cpp):
         print >> f, "IMP%s_BEGIN_NAMESPACE" % module.upper()
@@ -324,12 +325,10 @@ def IMPModule(env, module, author, version, description, cpp=True):
     if cpp:
         # Generate version information
         env['VER_CPP'], env['VER_H'] = \
-            env.IMPModuleVersionInfo(('%s/src/%s_version_info.cpp' % (module,
-                                                                      module),
-                                      '%s/include/%s_version_info.h' \
-                                         % (module, module)),
-                                     (env.Value(module), env.Value(author),
-                                      env.Value(version)))
+            env.IMPModuleVersionInfo(
+                 ('%s/src/internal/%s_version_info.cpp' % (module, module),
+                  '%s/include/internal/%s_version_info.h' % (module, module)),
+                 (env.Value(module), env.Value(author), env.Value(version)))
         # Generate exports header and SWIG equivalent
         env['EXP_H'] = env.IMPModuleExports(('%s/include/%s_exports.h' \
                                              % (module, module),
