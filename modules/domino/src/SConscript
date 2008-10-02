@@ -7,6 +7,4 @@ files = ('CombState.cpp', 'JNode.cpp', 'JEdge.cpp',
          'SimpleDiscreteRestraint.cpp')
 
 # Build and install the shared library:
-lib, libinst = e.IMPSharedLibrary(files, install=True)
-
-Return('lib')
+e.IMPSharedLibrary(files, install=True)

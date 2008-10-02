@@ -5,9 +5,7 @@ Export('env')
 env.validate()
 
 # Subdirectories:
-lib = SConscript('src/SConscript')
+SConscript('src/SConscript')
 SConscript('include/SConscript')
-pyext = SConscript('pyext/SConscript')
-test = SConscript('test/SConscript')
-
-Return('lib')
+SConscript('pyext/SConscript')
+SConscript('test/SConscript')

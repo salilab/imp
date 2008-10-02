@@ -3,6 +3,4 @@ Import('env')
 files = ('__init__.py',)
 
 # Install the Python files:
-pymod = env.IMPPython(files)
-
-Return('pymod')
+env.IMPPython(files)

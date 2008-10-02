@@ -10,5 +10,3 @@ if env['wine']:
                         os.path.join(env['EM_LIBPATH'], 'libem.dll'),
                         "ln -sf $SOURCE $TARGET")
     env.Depends(test, emdll)
-
-Return('test')
