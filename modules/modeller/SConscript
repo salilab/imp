@@ -17,5 +17,5 @@ else:
     env.validate()
 
 # Subdirectories:
-pyext = SConscript('pyext/SConscript')
-test = SConscript('test/SConscript')
+SConscript('pyext/SConscript')
+SConscript('test/SConscript')

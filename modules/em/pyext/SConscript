@@ -3,13 +3,5 @@ Import('env')
 # Get a modified build environment suitable for building Python extensions:
 e = env.IMPPythonExtensionEnvironment()
 
-e.Append(CPPPATH=e['EM_CPPPATH'], SWIGPATH=e['EM_CPPPATH'])
-e.Append(LIBPATH=[e['EM_LIBPATH']], LIBS=[e['EM_LIBS']])
-
-# _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
-e.Append(CPPDEFINES='_USE_MATH_DEFINES')
-
 # Build the Python extension from SWIG interface file:
-pyext, pymod = e.IMPPythonExtension('em.i')
-
-Return('pyext', 'pymod')
+e.IMPPythonExtension('em.i')

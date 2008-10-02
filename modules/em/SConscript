@@ -12,10 +12,14 @@ if env['EM_LIBS'] == '' or env['MODELLER_LIBS'] == '':
 else:
     env.validate()
 
-# Subdirectories:
-lib = SConscript('src/SConscript')
-SConscript('include/SConscript')
-pyext = SConscript('pyext/SConscript')
-test = SConscript('test/SConscript')
+env.Append(CPPPATH=env['EM_CPPPATH'], SWIGPATH=env['EM_CPPPATH'])
+env.Append(LIBPATH=env['EM_LIBPATH'], LIBS=env['EM_LIBS'])
 
-Return('lib')
+# _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
+env.Append(CPPDEFINES='_USE_MATH_DEFINES')
+
+# Subdirectories:
+SConscript('src/SConscript')
+SConscript('include/SConscript')
+SConscript('pyext/SConscript')
+SConscript('test/SConscript')

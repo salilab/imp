@@ -2,15 +2,7 @@ Import('env')
 
 e = env.IMPSharedLibraryEnvironment()
 
-e.Append(CPPPATH=e['EM_CPPPATH'])
-e.Append(LIBPATH=e['EM_LIBPATH'], LIBS=e['EM_LIBS'])
-
-# _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
-e.Append(CPPDEFINES='_USE_MATH_DEFINES')
-
 files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp')
 
 # Build and install the shared library:
-lib, libinst = e.IMPSharedLibrary(files, install=True)
-
-Return('lib')
+e.IMPSharedLibrary(files, install=True)
