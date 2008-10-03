@@ -1,0 +1,144 @@
+#!/usr/bin/python
+
+"""Generate or update SConscript files for the src and include directories of
+   an IMP module.
+"""
+
+import os
+import sys
+import getopt
+import shutil
+
+class SConscriptGenerator:
+    def __init__(self, dir, extension, prefix, suffix, excludes, force, backup):
+        self.dir, self.extension = dir, extension
+        self.prefix, self.suffix, self.excludes = prefix, suffix, excludes
+        self.force, self.backup = force, backup
+        self.script_name = "SConscript"
+
+    def make(self):
+        if not os.path.exists(self.dir):
+            print "There is no %s subdirectory under the current directory." \
+                  % self.dir
+            print "You should run this script within an IMP module directory,"
+            print "e.g. in modules/core/ or kernel/"
+            sys.exit(1)
+        else:
+            print "Generating SConscript files for %s directory" % self.dir
+            self.scandir(self.dir)
+
+    def open_file(self, dir):
+        fname = os.path.join(dir, self.script_name)
+        if os.path.exists(fname):
+            if self.backup:
+                bkp = fname + '.bak'
+                shutil.move(fname, bkp)
+                print "%s backed up as %s" % (fname, bkp)
+            elif not self.force:
+                print "\nFile %s already exists - will not overwrite." % fname
+                print "\nPlease rerun with the -f option to force an overwrite,"
+                print "or the -b option to backup the original file."
+                sys.exit(1)
+        return file(fname, 'w')
+
+    def exclude_file(self, filename):
+        return filename in self.excludes
+
+    def scandir(self, dir, top=True):
+        files = os.listdir(dir)
+        subdirs = [x for x in files if os.path.isdir(os.path.join(dir, x)) \
+                                       and x != '.svn']
+        subdirs.sort()
+        srcs = [x for x in files if x.endswith(self.extension) \
+                                    and not self.exclude_file(x)]
+        srcs.sort()
+    
+        subdirs = [x for x in subdirs if self.scandir(os.path.join(dir, x),
+                                                      top=False)]
+        if len(subdirs) + len(srcs) > 0:
+            self.write_output(dir, subdirs, srcs, top)
+        return len(srcs) > 0
+
+    def write_output(self, dir, subdirs, srcs, top):
+        f = self.open_file(dir)
+        if top:
+            print >> f, "Import('env')\n" + self.prefix
+        print >> f, "files = ["
+        print >> f, "\n".join([" " * 9 + "'%s'," % x for x in srcs])
+        print >> f, "        ]",
+        if top:
+            if len(subdirs) > 0:
+                sep = "\\\n" + " " * 8 + "+ "
+                print >> f, sep.join([''] + ["SConscript('%s/SConscript')" \
+                                             % x for x in subdirs])
+            else:
+                print >> f
+            print >> f, self.suffix
+        else:
+            print >> f, "\n\nfiles = [File(x) for x in files]"
+            print >> f, "Return('files')"
+
+
+def usage():
+    print "Usage: %s [-h] [-f|-b]\n" % sys.argv[0]
+    print "Generate or update SConscript files for the src and include"
+    print "directories of an IMP module.\n"
+    print """Options:
+  -h, --help
+     Print detailed help screen
+
+  -f, --force
+     If SConscript files already exist, force an overwrite with new versions
+
+  -b, --backup
+     If SConscript files already exist, back them up (with a .bak extension)
+"""
+
+
+def get_options():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hfb",
+                                   ["help", "force", "backup"])
+    except getopt.GetoptError, err:
+        print str(err)
+        usage()
+        sys.exit(3)
+    force = backup = False
+    for o, a in opts:
+        if o in ("-h", "--help"):
+            usage()
+            sys.exit(1)
+        elif o in ("-f", "--force"):
+            force = True
+        elif o in ("-b", "--backup"):
+            backup = True
+    if force and backup:
+        usage()
+        sys.exit(1)
+    return force, backup
+
+
+def main():
+    force, backup = get_options()
+    module = os.path.basename(os.getcwd())
+    if module == 'kernel':
+        cpp_excludes = h_excludes = []
+    else:
+        h_excludes = ['%s_version_info.h' % module, '%s_exports.h' % module]
+        cpp_excludes = ['%s_version_info.cpp' % module]
+
+    g = SConscriptGenerator('src', '.cpp',
+                            "e = env.IMPSharedLibraryEnvironment()\n",
+                            "\n# Build and install the shared library:\n" + \
+                            "e.IMPSharedLibrary(files, install=True)",
+                            cpp_excludes, force, backup)
+    g.make()
+
+    g = SConscriptGenerator('include', '.h', "",
+                            "\n# Install the include files:\n" + \
+                            "env.IMPHeaders(files)", h_excludes, force, backup)
+    g.make()
+
+
+if __name__ == '__main__':
+    main()
