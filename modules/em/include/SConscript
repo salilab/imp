@@ -1,6 +1,9 @@
 Import('env')
 
-files = ('EMFitRestraint.h', 'IMPParticlesAccessPoint.h')
+files = [
+         'EMFitRestraint.h',
+         'IMPParticlesAccessPoint.h',
+        ]
 
 # Install the include files:
 env.IMPHeaders(files)

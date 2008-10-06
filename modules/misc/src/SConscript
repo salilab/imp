@@ -1,10 +1,13 @@
 Import('env')
-
 e = env.IMPSharedLibraryEnvironment()
 
-files = ('BondCoverParticleRefiner.cpp', 'RefineOncePairScore.cpp',
-         'ChildrenParticleRefiner.cpp', 'TunnelSingletonScore.cpp',
-         'CoverBondsScoreState.cpp')
+files = [
+         'BondCoverParticleRefiner.cpp',
+         'ChildrenParticleRefiner.cpp',
+         'CoverBondsScoreState.cpp',
+         'RefineOncePairScore.cpp',
+         'TunnelSingletonScore.cpp',
+        ]
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)

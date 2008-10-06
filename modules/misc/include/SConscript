@@ -1,8 +1,13 @@
 Import('env')
 
-files = ('BondCoverParticleRefiner.h', 'RefineOncePairScore.h',
-         'ChildrenParticleRefiner.h', 'TunnelSingletonScore.h',
-         'CoverBondsScoreState.h', 'WormLikeChain.h')
+files = [
+         'BondCoverParticleRefiner.h',
+         'ChildrenParticleRefiner.h',
+         'CoverBondsScoreState.h',
+         'RefineOncePairScore.h',
+         'TunnelSingletonScore.h',
+         'WormLikeChain.h',
+        ]
 
 # Install the include files:
 env.IMPHeaders(files)
