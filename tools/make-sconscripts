@@ -65,10 +65,10 @@ class SConscriptGenerator:
             print >> f, "Import('env')\n" + self.prefix
         print >> f, "files = ["
         print >> f, "\n".join([" " * 9 + "'%s'," % x for x in srcs])
-        print >> f, "        ]",
+        f.write("        ]")
         if top:
             if len(subdirs) > 0:
-                sep = "\\\n" + " " * 8 + "+ "
+                sep = " \\\n" + " " * 8 + "+ "
                 print >> f, sep.join([''] + ["SConscript('%s/SConscript')" \
                                              % x for x in subdirs])
             else:
