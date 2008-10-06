@@ -1,8 +1,15 @@
 Import('env')
 
-files = ('CombState.h', 'JNode.h', 'SimpleDiscreteRestraint.h',
-         'DiscreteSampler.h','SimpleDiscreteSpace.h', 'DominoOptimizer.h',
-         'RestraintGraph.h','JEdge.h')
+files = [
+         'CombState.h',
+         'DiscreteSampler.h',
+         'DominoOptimizer.h',
+         'JEdge.h',
+         'JNode.h',
+         'RestraintGraph.h',
+         'SimpleDiscreteRestraint.h',
+         'SimpleDiscreteSpace.h',
+        ]
 
 # Install the include files:
 env.IMPHeaders(files)

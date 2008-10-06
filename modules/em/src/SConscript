@@ -1,8 +1,10 @@
 Import('env')
-
 e = env.IMPSharedLibraryEnvironment()
 
-files = ('IMPParticlesAccessPoint.cpp', 'EMFitRestraint.cpp')
+files = [
+         'EMFitRestraint.cpp',
+         'IMPParticlesAccessPoint.cpp',
+        ]
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)

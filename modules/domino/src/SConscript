@@ -1,10 +1,14 @@
 Import('env')
-
 e = env.IMPSharedLibraryEnvironment()
 
-files = ('CombState.cpp', 'JNode.cpp', 'JEdge.cpp',
-         'RestraintGraph.cpp', 'DominoOptimizer.cpp',
-         'SimpleDiscreteRestraint.cpp')
+files = [
+         'CombState.cpp',
+         'DominoOptimizer.cpp',
+         'JEdge.cpp',
+         'JNode.cpp',
+         'RestraintGraph.cpp',
+         'SimpleDiscreteRestraint.cpp',
+        ]
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)
