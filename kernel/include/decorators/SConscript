@@ -1,6 +1,0 @@
-files = ['HierarchyDecorator.h', 'NameDecorator.h', 'utility.h',
-         'XYZDecorator.h', 'ResidueDecorator.h', 'AtomDecorator.h',
-         'MolecularHierarchyDecorator.h', 'bond_decorators.h', 'macros.h']
-
-files = [File(f) for f in files]
-Return('files')

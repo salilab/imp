@@ -13,6 +13,7 @@
 #include "RestraintGraph.h"
 #include "domino_exports.h"
 
+#include <IMP/core/RestraintSet.h>
 #include <IMP/Model.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -74,7 +75,7 @@ public:
   //! Initalize potentials according to the input restraint set.
   /** \param[in] rs  the restraint set
    */
-  void initialize_potentials(const RestraintSet &rs) {
+  void initialize_potentials(const IMP::core::RestraintSet &rs) {
     for (Model::RestraintConstIterator it = rs.restraints_begin();
          it != rs.restraints_end(); it++) {
       rest_g.initialize_potentials(**it, rs.get_weight());

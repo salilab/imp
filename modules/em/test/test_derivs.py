@@ -45,8 +45,6 @@ class DerivativesTest(unittest.TestCase):
         #add IMP Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.imp_model, self.particles))
-        self.em_rs = IMP.RestraintSet("em")
-        self.imp_model.add_restraint(self.em_rs)
         ## -  create a set of three particles in imp
         npart = 3
         self.modeller_model = IMP.modeller.create_particles(npart,
@@ -97,7 +95,7 @@ class DerivativesTest(unittest.TestCase):
                                            "radius",
                                            "weight",
                                            1.0))
-        self.em_rs.add_restraint(ind_emrsr[0])
+        self.imp_model.add_restraint(ind_emrsr[0])
         print("EM-score score: "+str(self.atmsel.energy()) )
         self.atmsel.randomize_xyz(1.0)
         nviol = self.atmsel.debug_function(debug_function_cutoff=(.010, 0.010, 0.01),

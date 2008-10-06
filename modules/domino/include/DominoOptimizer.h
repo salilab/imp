@@ -11,10 +11,11 @@
 #include "internal/domino_version_info.h"
 #include "RestraintGraph.h"
 
+#include <IMP/core/RestraintSet.h>
+
 #include <IMP/Optimizer.h>
 #include <IMP/Restraint.h>
 #include <IMP/Model.h>
-#include <IMP/restraints/RestraintSet.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -53,7 +54,7 @@ protected:
    */
   void add_jt_edge(int node1_ind, int node2_ind);
 
-  void realize_rec(RestraintSet *rs, Float weight);
+  void realize_rec(IMP::core::RestraintSet *rs, Float weight);
   void initialize_jt_graph(int number_of_nodes);
   DiscreteSampler *ds_;
   RestraintGraph *g_;

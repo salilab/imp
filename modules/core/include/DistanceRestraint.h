@@ -1,0 +1,47 @@
+/**
+ *  \file DistanceRestraint.h   \brief Distance restraint between two particles.
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *
+ */
+
+#ifndef __IMPCORE_DISTANCE_RESTRAINT_H
+#define __IMPCORE_DISTANCE_RESTRAINT_H
+
+#include "core_exports.h"
+#include "internal/core_version_info.h"
+#include "DistancePairScore.h"
+
+#include <IMP/Restraint.h>
+
+#include <iostream>
+
+IMPCORE_BEGIN_NAMESPACE
+
+//! Distance restraint between two particles
+/**
+   \note If the particles are closer than a certain distance, then
+   the contributions to the derivatives are set to 0.
+ */
+class IMPCOREEXPORT DistanceRestraint : public Restraint
+{
+public:
+  //! Create the distance restraint.
+  /** \param[in] score_func Scoring function for the restraint.
+      \param[in] p1 Pointer to first particle in distance restraint.
+      \param[in] p2 Pointer to second particle in distance restraint.
+   */
+  DistanceRestraint(UnaryFunction* score_func,
+                    Particle* p1, Particle* p2);
+  virtual ~DistanceRestraint() {}
+
+  IMP_RESTRAINT(internal::core_version_info)
+
+protected:
+  //! scoring function for this restraint
+  DistancePairScore dp_;
+};
+
+IMPCORE_END_NAMESPACE
+
+#endif  /* __IMPCORE_DISTANCE_RESTRAINT_H */

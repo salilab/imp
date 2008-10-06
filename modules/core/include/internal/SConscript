@@ -1,0 +1,11 @@
+files = [
+         'ArrayOnAttributesHelper.h',
+         'Grid3D.h',
+         'ParticleGrid.h',
+         'bbox_nbl_helpers.h',
+         'evaluate_distance_pair_score.h',
+         'graph_base.h',
+        ]
+
+files = [File(x) for x in files]
+Return('files')

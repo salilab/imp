@@ -1,5 +1,0 @@
-files = ['VRMLLogOptimizerState.h', 'CMMLogOptimizerState.h',
-         'VelocityScalingOptimizerState.h']
-
-files = [File(f) for f in files]
-Return('files')

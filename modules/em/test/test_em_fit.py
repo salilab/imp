@@ -5,7 +5,7 @@ import EM
 import IMP.em
 import IMP.test
 import IMP.utils
-
+import IMP.core
 
 class FittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
@@ -73,7 +73,7 @@ class FittingTest(IMP.test.TestCase):
         self.load_density_map()
         self.load_particles()
 
-        self.opt = IMP.ConjugateGradients()
+        self.opt = IMP.core.ConjugateGradients()
 
     def test_load_nonexistent_file(self):
         """Check that load of nonexistent file is handled cleanly"""
@@ -95,8 +95,9 @@ class FittingTest(IMP.test.TestCase):
         m = self.imp_model
         r1 = IMP.em.EMFitRestraint(m, self.particle_indexes,
                                    self.scene, "radius", "weight", 1.0)
-        sf = IMP.Harmonic(10.0, 0.1)
-        r2 = IMP.DistanceRestraint(sf, self.particles[0], self.particles[1])
+        sf = IMP.core.Harmonic(10.0, 0.1)
+        r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
+                                        self.particles[1])
         m.add_restraint(r1)
         m.add_restraint(r2)
         r1 = m.get_restraint(IMP.RestraintIndex(0))

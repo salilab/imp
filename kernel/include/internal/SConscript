@@ -1,9 +1,7 @@
-files = ['AttributeTable.h',  'graph_base.h',  'Grid3D.h', 'Vector.h',
-         'ref_counting.h', 'ObjectContainer.h', 'ParticleGrid.h',
+files = ['AttributeTable.h', 'Vector.h',
+         'ref_counting.h', 'ObjectContainer.h',
          'kernel_version_info.h', 'constants.h', 'units.h',
-         'utility.h', 'bbox_nbl_helpers.h',
-         'ArrayOnAttributesHelper.h', 'Unit.h', 'ExponentialNumber.h',
-         'evaluate_distance_pair_score.h']
+         'utility.h', 'Unit.h', 'ExponentialNumber.h']
 
 files = [File(f) for f in files]
 Return('files')

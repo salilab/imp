@@ -11,15 +11,7 @@ files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
 
 # Subdirectories
 files = [File(f) for f in files] \
-        + SConscript('restraints/SConscript') \
-        + SConscript('optimizers/SConscript') \
-        + SConscript('decorators/SConscript') \
-        + SConscript('internal/SConscript') \
-        + SConscript('unary_functions/SConscript') \
-        + SConscript('pair_scores/SConscript') \
-        + SConscript('singleton_scores/SConscript') \
-        + SConscript('triplet_scores/SConscript') \
-        + SConscript('score_states/SConscript')
+        + SConscript('internal/SConscript')
 
 # Install the include files:
 includedir = env['includedir']

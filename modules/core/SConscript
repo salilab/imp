@@ -1,0 +1,17 @@
+from tools import cgal
+
+Import('env')
+Export('env')
+
+# Link against CGAL if present:
+cgal.configure_check(env)
+env.Append(LIBS=env['CGAL_LIBS'])
+
+# No dependent libraries, so this module can always be built:
+env.validate()
+
+# Subdirectories:
+SConscript('src/SConscript')
+SConscript('include/SConscript')
+SConscript('pyext/SConscript')
+SConscript('test/SConscript')

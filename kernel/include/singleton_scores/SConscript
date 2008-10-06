@@ -1,4 +1,0 @@
-files = ['DistanceToSingletonScore.h', 'AttributeSingletonScore.h']
-
-files = [File(f) for f in files]
-Return('files')

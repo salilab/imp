@@ -11,9 +11,9 @@
 #include "misc_exports.h"
 #include "internal/misc_version_info.h"
 
+#include <IMP/core/BondDecoratorListScoreState.h>
 #include <IMP/ScoreState.h>
 #include <IMP/Pointer.h>
-#include <IMP/score_states/BondDecoratorListScoreState.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
@@ -31,13 +31,13 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT CoverBondsScoreState: public ScoreState
 {
-  Pointer<BondDecoratorListScoreState> bl_;
+  Pointer<IMP::core::BondDecoratorListScoreState> bl_;
   FloatKey rk_;
 public:
   /** Get the list of bonds from the BondDecoratorListScoreState. This list is
       not owned and update is not called on this list automatically.
    */
-  CoverBondsScoreState(BondDecoratorListScoreState *bl,
+  CoverBondsScoreState(IMP::core::BondDecoratorListScoreState *bl,
                        FloatKey rk=FloatKey("radius"));
   ~CoverBondsScoreState();
 

@@ -3,18 +3,8 @@ Import('env', 'get_sharedlib_environment')
 # Get an environment suitable for building a shared library:
 env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
 env.Append(CPPPATH=["#/build/include", env['BOOST_CPPPATH']])
-env.Append(LIBS=env['CGAL_LIBS'])
 
 # Subdirectories:
-restraints_files = SConscript('restraints/SConscript')
-optimizers_files = SConscript('optimizers/SConscript')
-decorators_files = SConscript('decorators/SConscript')
-unary_functions_files = SConscript('unary_functions/SConscript')
-score_states_files = SConscript('score_states/SConscript')
-pair_scores_files = SConscript('pair_scores/SConscript')
-singleton_scores_files = SConscript('singleton_scores/SConscript')
-triplet_scores_files = SConscript('triplet_scores/SConscript')
-score_states_files = SConscript('score_states/SConscript')
 internal_files = SConscript('internal/SConscript')
 
 # Source files
@@ -23,9 +13,7 @@ files = ['base_types.cpp', 'Model.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
          'random.cpp', 'Key.cpp', 'exception.cpp', 'ParticleRefiner.cpp',
          'Vector3D.cpp'
-        ] + decorators_files + restraints_files + optimizers_files \
-          + unary_functions_files + pair_scores_files + singleton_scores_files \
-          + triplet_scores_files + score_states_files + internal_files
+        ] + internal_files
 
 # Build the shared library:
 lib = env.SharedLibrary('#/build/lib/imp', files)

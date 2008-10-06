@@ -1,7 +1,0 @@
-Import('env')
-
-files = ['DistancePairScore.cpp', 'SphereDistancePairScore.cpp',
-         'TypedPairScore.cpp', 'TransformedDistancePairScore.cpp']
-
-files = [File(x) for x in files]
-Return('files')

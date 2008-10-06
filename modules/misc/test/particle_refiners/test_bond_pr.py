@@ -2,18 +2,28 @@ import unittest
 import IMP
 import IMP.test
 import IMP.misc
+import IMP.core
 
 rk = IMP.FloatKey("radius")
 
 class Test(IMP.test.TestCase):
     """Tests for bond refiner"""
 
+    def create_chain(self, ps, length=1, stiffness=1):
+        bds= []
+        IMP.core.BondedDecorator.create(ps[0])
+        for i in range(1,len(ps)):
+            ba= IMP.core.BondedDecorator.cast(ps[i-1])
+            bb= IMP.core.BondedDecorator.create(ps[i])
+            bds.append(IMP.core.custom_bond(ba, bb, length, stiffness))
+        return bds
+
     def _set_up_stuff(self, n):
         # return [model, particles, bonds]
         m= IMP.Model()
         ps= self.create_particles_in_box(m)
         bds= self.create_chain(ps, 10)
-        bl= IMP.BondDecoratorListScoreState(ps)
+        bl= IMP.core.BondDecoratorListScoreState(ps)
         ss= IMP.misc.CoverBondsScoreState(bl, rk)
         m.add_score_state(bl)
         m.add_score_state(ss)
@@ -34,8 +44,8 @@ class Test(IMP.test.TestCase):
             self.assert_(bc.get_can_refine(b.get_particle()))
             rps= bc.get_refined(b.get_particle())
 
-            d0= IMP.XYZDecorator.cast(b.get_bonded(0).get_particle())
-            d1= IMP.XYZDecorator.cast(b.get_bonded(1).get_particle())
+            d0= IMP.core.XYZDecorator.cast(b.get_bonded(0).get_particle())
+            d1= IMP.core.XYZDecorator.cast(b.get_bonded(1).get_particle())
 
             vol=0.0
             print "Bond from "
@@ -46,7 +56,7 @@ class Test(IMP.test.TestCase):
             for p in rps:
                 r= p.get_value(rk)
                 print "Cover particle is has radius "+str(r)
-                dc= IMP.XYZDecorator.cast(p)
+                dc= IMP.core.XYZDecorator.cast(p)
                 dc.show()
                 print
                 v= 4.0/3.0 * 3.14 * r**3

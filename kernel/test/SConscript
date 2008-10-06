@@ -17,7 +17,9 @@ def builder_unit_test(target, source, env):
 
 e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
 
-test = e.Test("test.passed", ["run-all-tests.py", bin])
+test = e.Test("test.passed", ["run-all-tests.py", bin,
+                              # Make sure we depend on IMP.core being built:
+                              "particles/test_refcount.py"])
 e.Alias("test", test)
 e.Alias("kernel-test", test)
 e.AlwaysBuild("test.passed")

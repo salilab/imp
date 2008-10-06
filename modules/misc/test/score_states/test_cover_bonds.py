@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.misc
+import IMP.core
 
 rk = IMP.FloatKey("radius")
 
@@ -15,17 +16,17 @@ class TestBondCover(IMP.test.TestCase):
         for i in range(0,n):
             p= IMP.Particle()
             m.add_particle(p)
-            d= IMP.XYZDecorator.create(p)
+            d= IMP.core.XYZDecorator.create(p)
             d.set_coordinates(IMP.random_vector_in_box(IMP.Vector3D(0,0,0),
                                                        IMP.Vector3D(10,10,10)))
             ps.append(p)
         bds= []
-        bb= IMP.BondedDecorator.create(ps[0])
+        bb= IMP.core.BondedDecorator.create(ps[0])
         for i in range(1,n):
-            ba= IMP.BondedDecorator.cast(ps[i-1])
-            bb= IMP.BondedDecorator.create(ps[i])
-            bds.append(IMP.custom_bond(ba, bb, 10, 1))
-        bl= IMP.BondDecoratorListScoreState(ps)
+            ba= IMP.core.BondedDecorator.cast(ps[i-1])
+            bb= IMP.core.BondedDecorator.create(ps[i])
+            bds.append(IMP.core.custom_bond(ba, bb, 10, 1))
+        bl= IMP.core.BondDecoratorListScoreState(ps)
         ss= IMP.misc.CoverBondsScoreState(bl, rk)
         m.add_score_state(bl)
         m.add_score_state(ss)
@@ -43,9 +44,9 @@ class TestBondCover(IMP.test.TestCase):
             b.get_particle().show()
             ba= b.get_bonded(0)
             bb= b.get_bonded(1)
-            da= IMP.XYZDecorator.cast(ba.get_particle())
-            db= IMP.XYZDecorator.cast(bb.get_particle())
-            dc= IMP.XYZDecorator.cast(b.get_particle())
+            da= IMP.core.XYZDecorator.cast(ba.get_particle())
+            db= IMP.core.XYZDecorator.cast(bb.get_particle())
+            dc= IMP.core.XYZDecorator.cast(b.get_particle())
             center= [(da.get_x()+ db.get_x()) /2.0,
                      (da.get_y()+ db.get_y()) /2.0,
                      (da.get_z()+ db.get_z()) /2.0]

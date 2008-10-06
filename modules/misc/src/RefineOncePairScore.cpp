@@ -7,8 +7,9 @@
  */
 
 #include <IMP/misc/RefineOncePairScore.h>
-#include <IMP/decorators/bond_decorators.h>
-#include <IMP/decorators/XYZDecorator.h>
+
+#include <IMP/core/bond_decorators.h>
+#include <IMP/core/XYZDecorator.h>
 #include <IMP/internal/constants.h>
 
 #include <cmath>

@@ -6,7 +6,8 @@
  */
 
 #include <IMP/misc/ChildrenParticleRefiner.h>
-#include <IMP/decorators/HierarchyDecorator.h>
+
+#include <IMP/core/HierarchyDecorator.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
@@ -17,15 +18,15 @@ ChildrenParticleRefiner::ChildrenParticleRefiner()
 
 bool ChildrenParticleRefiner::get_can_refine(Particle *p) const
 {
-  if (!HierarchyDecorator::is_instance_of(p)) return false;
-  return HierarchyDecorator(p).get_number_of_children() != 0;
+  if (!core::HierarchyDecorator::is_instance_of(p)) return false;
+  return core::HierarchyDecorator(p).get_number_of_children() != 0;
 
 }
 
 Particles ChildrenParticleRefiner::get_refined(Particle *p) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
-  HierarchyDecorator d(p);
+  core::HierarchyDecorator d(p);
   Particles ps(d.get_number_of_children());
   for (unsigned int i=0; i< d.get_number_of_children(); ++i){
     ps[i]= d.get_child(i).get_particle();

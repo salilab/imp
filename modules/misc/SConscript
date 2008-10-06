@@ -4,6 +4,8 @@ Export('env')
 # No dependent libraries, so this module can always be built:
 env.validate()
 
+env.Append(LIBS=['imp_core'])
+
 # Subdirectories:
 SConscript('src/SConscript')
 SConscript('include/SConscript')

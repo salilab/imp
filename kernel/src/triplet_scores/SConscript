@@ -1,6 +1,0 @@
-Import('env')
-
-files = ['AngleTripletScore.cpp']
-
-files = [File(x) for x in files]
-Return('files')

@@ -1,6 +1,0 @@
-Import('env')
-
-files = ['OpenCubicSpline.cpp', 'ClosedCubicSpline.cpp', 'Cosine.cpp']
-
-files = [File(x) for x in files]
-Return('files')
