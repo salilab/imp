@@ -60,11 +60,5 @@ class ModelTests(IMP.test.TestCase):
         for s in m.get_particles():
             s.show()
 
-    def test_scoref(self):
-        """Check printing of scoring functions"""
-        s= IMP.Harmonic(0, 1)
-        s.show()
-
-
 if __name__ == '__main__':
     unittest.main()

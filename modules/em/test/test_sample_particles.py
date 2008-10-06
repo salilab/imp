@@ -16,8 +16,6 @@ class SampleTests(IMP.test.TestCase):
         #init IMP model ( the environment)
         self.imp_model = IMP.Model()
         self.particles = []
-        self.em_rs = IMP.RestraintSet("em")
-        self.imp_model.add_restraint(self.em_rs)
         ## -  create a set of three particles in imp
         npart = 3
         for i, (x,y,z) in enumerate(((9.0, 9.0, 9.0),

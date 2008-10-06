@@ -3,6 +3,8 @@ import IMP
 import IMP.utils
 import IMP.test
 
+# We probably shouldn't require IMP.core to test the kernel; temporary hack
+import IMP.core
 
 class RefCountTests(IMP.test.TestCase):
     """Test refcounting of particles"""
@@ -117,9 +119,9 @@ class RefCountTests(IMP.test.TestCase):
         p= IMP.Particle()
         print "Add particle"
         pi= m.add_particle(p)
-        d= IMP.XYZDecorator.create(p)
+        d= IMP.core.XYZDecorator.create(p)
         d=0
-        mc= IMP.MaxChangeScoreState(IMP.XYZDecorator.get_xyz_keys())
+        mc= IMP.core.MaxChangeScoreState(IMP.core.XYZDecorator.get_xyz_keys())
         print "Add particle to mc"
         mc.add_particle(p)
         # also have the score state now
@@ -149,8 +151,8 @@ class RefCountTests(IMP.test.TestCase):
 
     def test_restraints(self):
         m= IMP.Model()
-        r= IMP.ConstantRestraint(1)
-        s= IMP.RestraintSet()
+        r= IMP.core.ConstantRestraint(1)
+        s= IMP.core.RestraintSet()
         m.add_restraint(s)
         m.add_restraint(r)
         s.add_restraint(r)

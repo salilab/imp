@@ -14,8 +14,6 @@
 
 #include <IMP/Particle.h>
 #include <IMP/Restraint.h>
-#include <IMP/restraints/RestraintSet.h>
-#include <IMP/decorators/XYZDecorator.h>
 
 #include <vector>
 #include <sstream>

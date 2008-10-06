@@ -6,8 +6,10 @@
  */
 
 #include <IMP/misc/BondCoverParticleRefiner.h>
-#include <IMP/decorators/bond_decorators.h>
-#include <IMP/decorators/XYZDecorator.h>
+
+#include <IMP/core/bond_decorators.h>
+#include <IMP/core/XYZDecorator.h>
+
 #include <IMP/internal/constants.h>
 
 #include <cmath>
@@ -26,7 +28,7 @@ BondCoverParticleRefiner::BondCoverParticleRefiner(FloatKey rk,
 
 bool BondCoverParticleRefiner::get_can_refine(Particle *p) const
 {
-  if (!BondDecorator::is_instance_of(p)) return false;
+  if (!core::BondDecorator::is_instance_of(p)) return false;
   return (p->has_attribute(vk_));
 
 }
@@ -39,15 +41,15 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
 
   Float v= p->get_value(vk_);
-  BondDecorator bd(p);
-  BondedDecorator e0= bd.get_bonded(0);
-  BondedDecorator e1= bd.get_bonded(1);
+  core::BondDecorator bd(p);
+  core::BondedDecorator e0= bd.get_bonded(0);
+  core::BondedDecorator e1= bd.get_bonded(1);
   IMP_IF_CHECK(CHEAP) {
-    XYZDecorator::cast(e0.get_particle());
-    XYZDecorator::cast(e1.get_particle());
+    core::XYZDecorator::cast(e0.get_particle());
+    core::XYZDecorator::cast(e1.get_particle());
   }
-  XYZDecorator d0(e0.get_particle());
-  XYZDecorator d1(e1.get_particle());
+  core::XYZDecorator d0(e0.get_particle());
+  core::XYZDecorator d1(e1.get_particle());
   Float d= distance(d0, d1);
 
   float nsf=std::sqrt(IMP::internal::PI * d*square(d)/(6.0 * v));
@@ -94,7 +96,7 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
   for (unsigned int i=0; i< ns; ++i) {
     Particle *np= new Particle();
     p->get_model()->add_particle(np);
-    XYZDecorator d= XYZDecorator::create(np);
+    core::XYZDecorator d= core::XYZDecorator::create(np);
     d.set_coordinates(vb+ (1+2*i)*r* ud);
     np->add_attribute(rk_, r, false);
     ret.push_back(np);
@@ -109,20 +111,20 @@ void BondCoverParticleRefiner::cleanup_refined(Particle *p,
                                                DerivativeAccumulator *da) const
 {
   IMP_assert(get_can_refine(p), "Cleanup called with non-refinable particle");
-  BondDecorator bd(p);
-  BondedDecorator e0= bd.get_bonded(0);
-  BondedDecorator e1= bd.get_bonded(1);
+  core::BondDecorator bd(p);
+  core::BondedDecorator e0= bd.get_bonded(0);
+  core::BondedDecorator e1= bd.get_bonded(1);
   IMP_IF_CHECK(CHEAP) {
-    XYZDecorator::cast(e0.get_particle());
-    XYZDecorator::cast(e1.get_particle());
+    core::XYZDecorator::cast(e0.get_particle());
+    core::XYZDecorator::cast(e1.get_particle());
   }
-  XYZDecorator d0(e0.get_particle());
-  XYZDecorator d1(e1.get_particle());
+  core::XYZDecorator d0(e0.get_particle());
+  core::XYZDecorator d1(e1.get_particle());
 
   if (da) {
     for (unsigned int i=0; i< ps.size(); ++i) {
       Float w= (i+.5)/ (ps.size()+1);
-      XYZDecorator d(ps[i]);
+      core::XYZDecorator d(ps[i]);
       DerivativeAccumulator da0(*da, w);
       DerivativeAccumulator da1(*da, 1-w);
       for (unsigned int i=0; i< 3; ++i) {

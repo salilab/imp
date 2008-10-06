@@ -1,10 +1,9 @@
 namespace IMP {
   %extend Particle {
-    %pythoncode {
-      def __eq__(self, other):
-          """Particles are equal only if they are the same particle.
-             This gives the same behavior as the C++ code."""
-          return hasattr(other, 'this') and self.this == other.this
+    // Two particles count as equal in Python only if their memory
+    // addresses are the same
+    bool __eq__(const Particle *other) {
+      return self == other;
     }
   }
 }

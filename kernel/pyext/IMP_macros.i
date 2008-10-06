@@ -43,7 +43,7 @@ namespace IMP \
 /* Add additional IMP_CONTAINER methods for scripting languages */
 %define IMP_CONTAINER_SWIG(type, Ucname, lcname)
 %extend type {
-  Ucname##s get_##lcname##s() const {
+  IMP::Ucname##s get_##lcname##s() const {
     IMP::Ucname##s ret(self->lcname##s_begin(), self->lcname##s_end());
     return ret;
   }
@@ -53,4 +53,3 @@ IMP_ADD_OBJECTS(type, add_##lcname##s)
 %enddef
 
 %include "IMP/macros.h"
-%include "IMP/decorators/macros.h"

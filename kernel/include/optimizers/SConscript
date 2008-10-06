@@ -1,7 +1,0 @@
-files = ['ConjugateGradients.h', 'SteepestDescent.h', 'MolecularDynamics.h',
-         'MoverBase.h', 'MonteCarlo.h', 'Mover.h', 'BrownianDynamics.h']
-
-files = [File(f) for f in files] \
-        + SConscript('states/SConscript') \
-        + SConscript('movers/SConscript')
-Return('files')

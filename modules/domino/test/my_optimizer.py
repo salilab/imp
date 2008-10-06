@@ -4,6 +4,7 @@ try:
 except ImportError:
     annotation_enumeration = None
 import IMP.domino
+import IMP.core
 import IMP
 
 class my_optimizer:
@@ -48,7 +49,7 @@ class my_optimizer:
         self.d_opt = IMP.domino.DominoOptimizer(jt_filename,self.mdl)
 
     def init_restraints(self,restraints_filename):
-        self.all_restraints.append(IMP.RestraintSet("simple"))
+        self.all_restraints.append(IMP.core.RestraintSet("simple"))
         self.mdl.add_restraint(self.all_restraints[0])
         pair_restraints=[]
         for line in open(restraints_filename):

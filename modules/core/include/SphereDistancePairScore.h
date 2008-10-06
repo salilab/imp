@@ -1,0 +1,37 @@
+/**
+ *  \file SphereDistancePairScore.h
+ *  \brief A score on the distance between the surfaces of two spheres.
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ */
+
+#ifndef __IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
+#define __IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
+
+#include "core_exports.h"
+
+#include <IMP/PairScore.h>
+#include <IMP/Pointer.h>
+#include <IMP/UnaryFunction.h>
+
+IMPCORE_BEGIN_NAMESPACE
+
+//! A score on the distance between the surfaces of two spheres.
+/** \ingroup pairscore
+ */
+class IMPCOREEXPORT SphereDistancePairScore : public PairScore
+{
+  Pointer<UnaryFunction> f_;
+  FloatKey radius_;
+public:
+  SphereDistancePairScore(UnaryFunction *f,
+                          FloatKey radius=FloatKey("radius"));
+  virtual ~SphereDistancePairScore(){}
+  virtual Float evaluate(Particle *a, Particle *b,
+                         DerivativeAccumulator *da) const;
+  virtual void show(std::ostream &out=std::cout) const;
+};
+
+IMPCORE_END_NAMESPACE
+
+#endif  /* __IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H */

@@ -1,5 +1,0 @@
-files = ['Harmonic.h', 'HarmonicLowerBound.h', 'HarmonicUpperBound.h',
-         'OpenCubicSpline.h', 'ClosedCubicSpline.h', 'Cosine.h', 'Linear.h']
-
-files = [File(f) for f in files]
-Return('files')

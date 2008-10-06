@@ -6,14 +6,16 @@
  */
 
 #include <IMP/misc/CoverBondsScoreState.h>
-#include <IMP/score_states/BondDecoratorListScoreState.h>
-#include <IMP/decorators/bond_decorators.h>
-#include <IMP/decorators/XYZDecorator.h>
+
+#include <IMP/core/BondDecoratorListScoreState.h>
+#include <IMP/core/bond_decorators.h>
+#include <IMP/core/XYZDecorator.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
-CoverBondsScoreState::CoverBondsScoreState(BondDecoratorListScoreState *bl,
-                                           FloatKey rk): bl_(bl), rk_(rk)
+CoverBondsScoreState
+::CoverBondsScoreState(core::BondDecoratorListScoreState *bl,
+                       FloatKey rk): bl_(bl), rk_(rk)
 {
 }
 
@@ -23,28 +25,28 @@ CoverBondsScoreState::~CoverBondsScoreState()
 
 void CoverBondsScoreState::do_before_evaluate()
 {
-  for (BondDecoratorListScoreState::BondIterator it= bl_->bonds_begin();
+  for (core::BondDecoratorListScoreState::BondIterator it= bl_->bonds_begin();
        it != bl_->bonds_end(); ++it) {
-    BondDecorator bd= *it;
-    BondedDecorator pa= bd.get_bonded(0);
-    BondedDecorator pb= bd.get_bonded(1);
+    core::BondDecorator bd= *it;
+    core::BondedDecorator pa= bd.get_bonded(0);
+    core::BondedDecorator pb= bd.get_bonded(1);
     IMP_LOG(VERBOSE, "Processing bond between "
             << pa.get_particle()->get_index()
             << " and " << pb.get_particle()->get_index() << std::endl);
-    XYZDecorator da(pa.get_particle());
-    XYZDecorator db(pb.get_particle());
+    core::XYZDecorator da(pa.get_particle());
+    core::XYZDecorator db(pb.get_particle());
     IMP_LOG(VERBOSE, "Endpoints are " << da << " and "
             << db << std::endl);
     Vector3D diff= da.get_vector_to(db);
     float len= diff.get_magnitude();
     Vector3D cv= da.get_vector() + .5*diff;
 
-    XYZDecorator dxyz;
+    core::XYZDecorator dxyz;
     // slightly evil
     try {
-      dxyz= XYZDecorator::cast(bd.get_particle());
+      dxyz= core::XYZDecorator::cast(bd.get_particle());
     } catch (const InvalidStateException &ve) {
-      dxyz= XYZDecorator::create(bd.get_particle());
+      dxyz= core::XYZDecorator::create(bd.get_particle());
     }
     dxyz.set_coordinates(cv);
 
@@ -60,9 +62,9 @@ void CoverBondsScoreState::do_before_evaluate()
 void CoverBondsScoreState::after_evaluate(DerivativeAccumulator *dva)
 {
   if (dva) {
-    for (BondDecoratorListScoreState::BondIterator it= bl_->bonds_begin();
+    for (core::BondDecoratorListScoreState::BondIterator it= bl_->bonds_begin();
          it != bl_->bonds_end(); ++it) {
-      XYZDecorator d(it->get_particle());
+      core::XYZDecorator d(it->get_particle());
       Vector3D deriv;
       // divide derivatives equally between endpoints
       for (int i = 0; i < 3; ++i) {
@@ -70,8 +72,8 @@ void CoverBondsScoreState::after_evaluate(DerivativeAccumulator *dva)
       }
 
       for (int i=0; i< 2; ++i) {
-        BondedDecorator bd= it->get_bonded(i);
-        XYZDecorator d(bd.get_particle());
+        core::BondedDecorator bd= it->get_bonded(i);
+        core::XYZDecorator d(bd.get_particle());
         for (int i = 0; i < 3; ++i) {
           d.add_to_coordinate_derivative(i, deriv[i], *dva);
         }

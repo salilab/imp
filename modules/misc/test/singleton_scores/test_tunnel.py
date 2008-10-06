@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.misc
 import IMP.utils
+import IMP.core
 import math
 
 class TunnelTest(IMP.test.TestCase):
@@ -14,16 +15,16 @@ class TunnelTest(IMP.test.TestCase):
         m= IMP.Model()
         p= IMP.Particle()
         m.add_particle(p)
-        d= IMP.XYZDecorator.create(p)
+        d= IMP.core.XYZDecorator.create(p)
         rk= IMP.FloatKey("radiusk")
         p.add_attribute(rk, 1, False)
-        f= IMP.HarmonicLowerBound(0, 1)
+        f= IMP.core.HarmonicLowerBound(0, 1)
         tss= IMP.misc.TunnelSingletonScore(f, rk)
         tss.set_height(10)
         tss.set_radius(5)
         tss.set_center(IMP.Vector3D(10,10,10))
         tss.set_coordinate(2)
-        sl= IMP.SingletonListRestraint(tss)
+        sl= IMP.core.SingletonListRestraint(tss)
         sl.add_particle(p)
         m.add_restraint(sl)
         m.evaluate(True)

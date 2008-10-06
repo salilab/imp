@@ -15,13 +15,13 @@ DominoOptimizer::DominoOptimizer(std::string jt_filename, Model *m)
   set_model(m);
 }
 
-void DominoOptimizer::realize_rec(RestraintSet *rs, Float weight)
+void DominoOptimizer::realize_rec(core::RestraintSet *rs, Float weight)
 {
   for (Model::RestraintIterator it = rs->restraints_begin();
        it != rs->restraints_end(); it++) {
     Restraint *r = *it;
     // if it is a restraint set
-    RestraintSet *rs_child = dynamic_cast< RestraintSet*>(r);
+    core::RestraintSet *rs_child = dynamic_cast< core::RestraintSet*>(r);
     if (rs_child) {
       realize_rec(rs_child, weight*rs->get_weight());
     } else {
@@ -42,7 +42,7 @@ void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
        it != opt_mdl->restraints_end(); it++) {
     r = *it;
     if (r != NULL) {
-      RestraintSet *rs_child = dynamic_cast< RestraintSet*>(r);
+      core::RestraintSet *rs_child = dynamic_cast< core::RestraintSet*>(r);
       if (rs_child) {
         realize_rec(rs_child, 1.0);
       } else {

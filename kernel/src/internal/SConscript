@@ -1,7 +1,6 @@
 Import('env')
 
-files = ['graph_base.cpp', 'ParticleGrid.cpp',
-         'kernel_version_info.cpp', 'constants.cpp', 'bbox_nbl_helpers.cpp']
+files = ['kernel_version_info.cpp', 'constants.cpp']
 
 files = [File(x) for x in files]
 Return('files')

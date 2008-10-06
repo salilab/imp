@@ -3,6 +3,9 @@ import IMP
 import IMP.utils
 import IMP.test
 
+# We probably shouldn't require IMP.core to test the kernel; temporary hack
+import IMP.core
+
 xkey = IMP.FloatKey("x")
 ykey = IMP.FloatKey("y")
 zkey = IMP.FloatKey("z")
@@ -38,7 +41,7 @@ class ParticleTests(IMP.test.TestCase):
         """Check that operations fail on inactivated particles"""
         p0 = self.particles[0]
         p1 = self.particles[1]
-        r = IMP.DistanceRestraint(IMP.Harmonic(10.0, 0.1), p0, p1)
+        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(10.0, 0.1), p0, p1)
         self.model.add_restraint(r)
         p0.set_is_active(False)
         self.assertRaises(ValueError, p0.get_value, xkey)

@@ -35,11 +35,14 @@ class TestCase(unittest.TestCase):
 
     def randomize_particles(self, particles, deviation):
         """Randomize the xyz coordinates of a list of particles"""
+        # Note: cannot use XYZDecorator here since that pulls in IMP.core
+        xkey = IMP.FloatKey("x")
+        ykey = IMP.FloatKey("y")
+        zkey = IMP.FloatKey("z")
         for p in particles:
-            d= IMP.XYZDecorator.cast(p)
-            d.set_x(random.uniform(-deviation, deviation))
-            d.set_y(random.uniform(-deviation, deviation))
-            d.set_z(random.uniform(-deviation, deviation))
+            p.set_value(xkey, random.uniform(-deviation, deviation))
+            p.set_value(ykey, random.uniform(-deviation, deviation))
+            p.set_value(zkey, random.uniform(-deviation, deviation))
 
     def particle_distance(self, p1, p2):
         """Return distance between two given particles"""
@@ -81,22 +84,10 @@ class TestCase(unittest.TestCase):
         ubv=IMP.Vector3D(ub[0],ub[1],ub[2])
         ps= IMP.Particles()
         for i in range(0,num):
-            p= IMP.Particle()
-            model.add_particle(p)
-            d= IMP.XYZDecorator.create(p)
-            d.set_coordinates(IMP.random_vector_in_box(lbv, ubv))
+            v = IMP.random_vector_in_box(lbv, ubv)
+            p = self.create_point_particle(model, v[0], v[1], v[2])
             ps.append(p)
-            d.set_coordinates_are_optimized(True)
         return ps
-
-    def create_chain(self, ps, length=1, stiffness=1):
-        bds= []
-        IMP.BondedDecorator.create(ps[0])
-        for i in range(1,len(ps)):
-            ba= IMP.BondedDecorator.cast(ps[i-1])
-            bb= IMP.BondedDecorator.create(ps[i])
-            bds.append(IMP.custom_bond(ba, bb, length, stiffness))
-        return bds
 
 
 class ConstPairScore(IMP.PairScore):

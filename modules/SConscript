@@ -11,3 +11,6 @@ env.IMPModule('modeller', author='Ben Webb', version='SVN',
 
 env.IMPModule('misc', author='IMP developers', version='SVN',
               description='Miscellaneous and/or experimental features.')
+
+env.IMPModule('core', author='IMP developers', version='SVN',
+              description='General purpose features of broad utility.')

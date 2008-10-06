@@ -3,6 +3,7 @@ import os
 from modeller import *
 import IMP
 import IMP.test
+import IMP.core
 import IMP.modeller
 
 class ModellerRestraintsTests(IMP.test.TestCase):
@@ -84,7 +85,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
 
             rsrs = IMP.modeller.load_restraints_file('test.rsr', protein)
             os.unlink('test.rsr')
-            rset = IMP.RestraintSet()
+            rset = IMP.core.RestraintSet()
             m.add_restraint(rset)
             for rsr in rsrs:
                 rset.add_restraint(rsr)

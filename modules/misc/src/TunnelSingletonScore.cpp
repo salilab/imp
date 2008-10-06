@@ -7,7 +7,8 @@
  */
 
 #include <IMP/misc/TunnelSingletonScore.h>
-#include <IMP/decorators/XYZDecorator.h>
+
+#include <IMP/core/XYZDecorator.h>
 
 #include <boost/tuple/tuple.hpp>
 
@@ -28,7 +29,7 @@ Float TunnelSingletonScore::evaluate(Particle *p,
                                      DerivativeAccumulator *accum) const
 {
   Float ret=0;
-  XYZDecorator d(p);
+  core::XYZDecorator d(p);
   Float radius=0;
   if (rk_ != FloatKey() && p->has_attribute(rk_)) {
     radius = p->get_value(rk_);

@@ -4,6 +4,7 @@ import math
 import imp
 import IMP
 import IMP.utils
+import IMP.core
 
 def _import_modeller_scripts_optimizers():
     """Do the equivalent of "import modeller.scripts, modeller.optimizers".
@@ -248,27 +249,27 @@ def show_modeller_and_imp(atoms, particles):
 # Generators to create IMP UnaryFunction objects from Modeller parameters:
 def _HarmonicLowerBoundGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    k = IMP.Harmonic.k_from_standard_deviation(stdev)
-    return IMP.HarmonicLowerBound(mean, k)
+    k = IMP.core.Harmonic.k_from_standard_deviation(stdev)
+    return IMP.core.HarmonicLowerBound(mean, k)
 
 def _HarmonicUpperBoundGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    k = IMP.Harmonic.k_from_standard_deviation(stdev)
-    return IMP.HarmonicUpperBound(mean, k)
+    k = IMP.core.Harmonic.k_from_standard_deviation(stdev)
+    return IMP.core.HarmonicUpperBound(mean, k)
 
 def _HarmonicGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    k = IMP.Harmonic.k_from_standard_deviation(stdev)
-    return IMP.Harmonic(mean, k)
+    k = IMP.core.Harmonic.k_from_standard_deviation(stdev)
+    return IMP.core.Harmonic(mean, k)
 
 def _CosineGenerator(parameters, modalities):
     (phase, force_constant) = parameters
     (periodicity,) = modalities
-    return IMP.Cosine(force_constant, periodicity, phase)
+    return IMP.core.Cosine(force_constant, periodicity, phase)
 
 def _LinearGenerator(parameters, modalities):
     (scale,) = parameters
-    return IMP.Linear(0, scale)
+    return IMP.core.Linear(0, scale)
 
 def _SplineGenerator(parameters, modalities):
     (open, low, high, delta, lowderiv, highderiv) = parameters[:6]
@@ -276,9 +277,9 @@ def _SplineGenerator(parameters, modalities):
     for v in parameters[6:]:
         values.append(v)
     if open < 0.0:
-        return IMP.ClosedCubicSpline(values, low, delta)
+        return IMP.core.ClosedCubicSpline(values, low, delta)
     else:
-        return IMP.OpenCubicSpline(values, low, delta)
+        return IMP.core.OpenCubicSpline(values, low, delta)
 
 #: Mapping from Modeller math form number to a unary function generator
 _unary_func_generators = {
@@ -293,23 +294,23 @@ _unary_func_generators = {
 # Generators to make IMP Restraint objects from Modeller features
 def _DistanceRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.DistanceRestraint(unary_func_gen(parameters, modalities),
-                                 atoms[0], atoms[1])
+    return IMP.core.DistanceRestraint(unary_func_gen(parameters, modalities),
+                                      atoms[0], atoms[1])
 
 def _AngleRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.AngleRestraint(unary_func_gen(parameters, modalities),
-                              atoms[0], atoms[1], atoms[2])
+    return IMP.core.AngleRestraint(unary_func_gen(parameters, modalities),
+                                   atoms[0], atoms[1], atoms[2])
 
 def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
     unary_func_gen = _unary_func_generators[form]
-    return IMP.DihedralRestraint(unary_func_gen(parameters, modalities),
-                                 atoms[0], atoms[1], atoms[2], atoms[3])
+    return IMP.core.DihedralRestraint(unary_func_gen(parameters, modalities),
+                                      atoms[0], atoms[1], atoms[2], atoms[3])
 
 def _get_protein_atom_particles(protein):
     """Given a protein particle, get the flattened list of all child atoms"""
     atom_particles = []
-    #protein = IMP.MolecularHierarchyDecorator.cast(protein)
+    #protein = IMP.core.MolecularHierarchyDecorator.cast(protein)
     for ichain in range(protein.get_number_of_children()):
         chain = protein.get_child(ichain)
         for ires in range(chain.get_number_of_children()):
@@ -376,17 +377,17 @@ def copy_residue(r, model):
     #print "residue "+str(r)
     p=IMP.Particle()
     model.add_particle(p)
-    hp= IMP.MolecularHierarchyDecorator.create(p)
-    rp= IMP.ResidueDecorator.create(p)
-    rp.set_type(IMP.ResidueType(r.name))
+    hp= IMP.core.MolecularHierarchyDecorator.create(p)
+    rp= IMP.core.ResidueDecorator.create(p)
+    rp.set_type(IMP.core.ResidueType(r.name))
     rp.set_index(r.index)
     if rp.get_is_amino_acid():
-        hp.set_type(IMP.MolecularHierarchyDecorator.RESIDUE)
+        hp.set_type(IMP.core.MolecularHierarchyDecorator.RESIDUE)
     elif rp.get_is_nucleic_acid():
-        hp.set_type(IMP.MolecularHierarchyDecorator.NUCLEICACID)
+        hp.set_type(IMP.core.MolecularHierarchyDecorator.NUCLEICACID)
     else:
-        hp.set_type(IMP.MolecularHierrchyDecorator.MOLECULE)
-    IMP.NameDecorator.create(p).set_name(str("residue "+r.num));
+        hp.set_type(IMP.core.MolecularHierrchyDecorator.MOLECULE)
+    IMP.core.NameDecorator.create(p).set_name(str("residue "+r.num));
     return p
 
 
@@ -395,14 +396,14 @@ def copy_atom(a, model):
     #print "atom "+str(a)
     p=IMP.Particle()
     model.add_particle(p)
-    ap= IMP.AtomDecorator.create(p)
+    ap= IMP.core.AtomDecorator.create(p)
     ap.set_x(a.x)
     ap.set_y(a.y)
     ap.set_z(a.z)
-    hp= IMP.MolecularHierarchyDecorator.create(p)
-    hp.set_type(IMP.MolecularHierarchyDecorator.ATOM)
-    ap.set_type(IMP.AtomType(a.name))
-    #IMP.NameDecorator.create(p).set_name(str("atom "+a._atom__get_num()));
+    hp= IMP.core.MolecularHierarchyDecorator.create(p)
+    hp.set_type(IMP.core.MolecularHierarchyDecorator.ATOM)
+    ap.set_type(IMP.core.AtomType(a.name))
+    #IMP.core.NameDecorator.create(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
         ap.set_charge(a.charge)
     if (a.mass != 0):
@@ -416,15 +417,15 @@ def copy_bonds(pdb, atoms, model):
         mab= b[1]
         pa=atoms[maa.index]
         pb=atoms[mab.index]
-        if IMP.BondedDecorator.is_instance_of(pa):
-            ba= IMP.BondedDecorator.cast(pa)
+        if IMP.core.BondedDecorator.is_instance_of(pa):
+            ba= IMP.core.BondedDecorator.cast(pa)
         else:
-            ba= IMP.BondedDecorator.create(pa)
-        if IMP.BondedDecorator.is_instance_of(pb):
-            bb= IMP.BondedDecorator.cast(pb)
+            ba= IMP.core.BondedDecorator.create(pa)
+        if IMP.core.BondedDecorator.is_instance_of(pb):
+            bb= IMP.core.BondedDecorator.cast(pb)
         else:
-            bb= IMP.BondedDecorator.create(pb)
-        bp= IMP.bond(ba, bb, IMP.BondDecorator.COVALENT)
+            bb= IMP.core.BondedDecorator.create(pb)
+        bp= IMP.core.bond(ba, bb, IMP.core.BondDecorator.COVALENT)
 
 def read_pdb(name, model, special_patches=None):
     """Construct a MolecularHierarchyDecorator from a pdb file.
@@ -439,35 +440,35 @@ def read_pdb(name, model, special_patches=None):
                                         special_patches=special_patches)
     pp= IMP.Particle()
     model.add_particle(pp)
-    hpp= IMP.MolecularHierarchyDecorator.create(pp)
-    hpp.set_type(IMP.MolecularHierarchyDecorator.PROTEIN)
-    IMP.NameDecorator.create(pp).set_name(name)
+    hpp= IMP.core.MolecularHierarchyDecorator.create(pp)
+    hpp.set_type(IMP.core.MolecularHierarchyDecorator.PROTEIN)
+    IMP.core.NameDecorator.create(pp).set_name(name)
     atoms={}
     for chain in pdb.chains:
         cp=IMP.Particle()
         model.add_particle(cp)
-        hcp= IMP.MolecularHierarchyDecorator.create(cp)
+        hcp= IMP.core.MolecularHierarchyDecorator.create(cp)
         # We don't really know the type yet
-        hcp.set_type(IMP.MolecularHierarchyDecorator.FRAGMENT)
+        hcp.set_type(IMP.core.MolecularHierarchyDecorator.FRAGMENT)
         hpp.add_child(hcp)
-        IMP.NameDecorator.create(cp).set_name(chain.name)
+        IMP.core.NameDecorator.create(cp).set_name(chain.name)
         for residue in chain.residues:
             rp= copy_residue(residue, model)
-            hrp= IMP.MolecularHierarchyDecorator.cast(rp)
+            hrp= IMP.core.MolecularHierarchyDecorator.cast(rp)
             hcp.add_child(hrp)
             for atom in residue.atoms:
                 ap= copy_atom(atom, model)
-                hap= IMP.MolecularHierarchyDecorator.cast(ap)
+                hap= IMP.core.MolecularHierarchyDecorator.cast(ap)
                 hrp.add_child(hap)
                 atoms[atom.index]=ap
             lastres=hrp
         # set the type for real
-        if lastres.get_type() == IMP.MolecularHierarchyDecorator.RESIDUE:
-            hcp.set_type(IMP.MolecularHierarchyDecorator.CHAIN)
+        if lastres.get_type() == IMP.core.MolecularHierarchyDecorator.RESIDUE:
+            hcp.set_type(IMP.core.MolecularHierarchyDecorator.CHAIN)
         elif lastres.get_type() ==\
-                IMP.MolecularHierarchyDecorator.NUCLEICACID:
-            hcp.set_type(IMP.MolecularHierarchyDecorator.NUCLEOTIDE)
+                IMP.core.MolecularHierarchyDecorator.NUCLEICACID:
+            hcp.set_type(IMP.core.MolecularHierarchyDecorator.NUCLEOTIDE)
         else:
-            hcp.set_type(IMP.MolecularHierarchyDecorator.MOLECULE)
+            hcp.set_type(IMP.core.MolecularHierarchyDecorator.MOLECULE)
     copy_bonds(pdb,atoms, model)
     return hpp
