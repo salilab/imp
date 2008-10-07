@@ -18,7 +18,6 @@ def _check(context):
     }
     """, '.cpp')
     if ret:
-        context.env.Append(CPPDEFINES='IMP_USE_CGAL')
         context.env['CGAL_LIBS'] = ['CGAL']
     context.Result(ret)
     return ret
