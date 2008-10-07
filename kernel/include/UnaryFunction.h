@@ -25,7 +25,7 @@ class IMPDLLEXPORT UnaryFunction : public RefCountedObject
 {
 public:
   UnaryFunction() {}
-  virtual ~UnaryFunction() {}
+  virtual ~UnaryFunction();
 
   //! Calculate score with respect to the given feature.
   /** \param[in] feature Value of feature being tested.

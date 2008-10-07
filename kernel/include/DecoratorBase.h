@@ -61,7 +61,7 @@ d.get_foo_key()
 /** A base class for decorators. Implementers of decorators should
     just inherit from this and then use the IMP_DECORATOR macro
 */
-class IMPDLLEXPORT DecoratorBase
+class DecoratorBase
 {
 protected:
   Pointer<Particle> particle_;

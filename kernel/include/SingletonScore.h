@@ -30,7 +30,7 @@ class IMPDLLEXPORT SingletonScore : public RefCountedObject
 {
 public:
   SingletonScore() {}
-  virtual ~SingletonScore() {}
+  virtual ~SingletonScore();
   //! Compute the score for the particle and the derivative if needed.
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const = 0;
