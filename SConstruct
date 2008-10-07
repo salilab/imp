@@ -1,6 +1,6 @@
 # Include IMP build utility functions:
 from tools import *
-from tools import boost
+from tools import boost, cgal
 
 # We need scons 0.98 or later
 EnsureSConsVersion(0, 98)
@@ -19,6 +19,7 @@ if unknown:
     print "Use 'scons -h' to get a list of the accepted variables."
     Exit(1)
 boost.configure_check(env, '1.30')
+cgal.configure_check(env)
 Help("""
 Available command-line options:
 (These can also be specified in regular Python syntax by creating a file
