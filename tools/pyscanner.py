@@ -62,4 +62,4 @@ def _scanfile(node, env, path):
                                                    dirs))
     return modules
 
-PythonScanner = Scanner(function=_scanfile, skeys=['.py'])
+PythonScanner = Scanner(function=_scanfile, skeys=['.py'], recursive=True)
