@@ -141,7 +141,9 @@ def DoxySourceScan(node, env, path):
                         pattern_check = reduce(lambda x, y: x or bool(fnmatch(filename, y)), file_patterns, False)
                         exclude_check = reduce(lambda x, y: x and fnmatch(filename, y), exclude_patterns, True)
 
-                        if pattern_check and not exclude_check:
+                        # 'exists' check avoids adding dangling symlinks
+                        if pattern_check and not exclude_check \
+                           and os.path.exists(filename):
                             sources.append(filename)
             else:
                 for pattern in file_patterns:
