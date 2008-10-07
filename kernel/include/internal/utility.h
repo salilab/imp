@@ -18,7 +18,7 @@ namespace internal
 {
 
 //! \internal \return true if a passed particle is inactive
-struct IMPDLLEXPORT IsInactiveParticle
+struct IsInactiveParticle
 {
   bool operator()(Particle *p) const {
     return !p->get_is_active();

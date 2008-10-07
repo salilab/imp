@@ -29,7 +29,7 @@ class IMPDLLEXPORT PairScore : public RefCountedObject
 {
 public:
   PairScore() {}
-  virtual ~PairScore() {}
+  virtual ~PairScore();
   //! Compute the score for the pair and the derivative if needed.
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const = 0;

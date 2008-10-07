@@ -12,7 +12,8 @@ files = ['base_types.cpp', 'Model.cpp',
          'Particle.cpp', 'ScoreState.cpp', 'Object.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
          'random.cpp', 'Key.cpp', 'exception.cpp', 'ParticleRefiner.cpp',
-         'Vector3D.cpp'
+         'Vector3D.cpp', 'UnaryFunction.cpp', 'PairScore.cpp',
+         'SingletonScore.cpp', 'TripletScore.cpp'
         ] + internal_files
 
 # Build the shared library:
