@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_REF_COUNTED_OBJECT_H
-#define __IMP_REF_COUNTED_OBJECT_H
+#ifndef IMP_REF_COUNTED_OBJECT_H
+#define IMP_REF_COUNTED_OBJECT_H
 
 #include "Object.h"
 
@@ -46,4 +46,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_REF_COUNTED_OBJECT_H */
+#endif  /* IMP_REF_COUNTED_OBJECT_H */

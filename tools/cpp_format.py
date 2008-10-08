@@ -58,7 +58,7 @@ def header_guard_ok(scan, guard_prefix, guard_suffix):
 
 def get_header_guard(filename):
     """Get prefix and suffix for header guard"""
-    guard_prefix = "__IMP"
+    guard_prefix = "IMP"
     module = 'IMP'
     m = re.search('modules\/(\w+)\/', filename)
     if m:

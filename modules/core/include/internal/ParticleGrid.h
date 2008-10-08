@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_PARTICLE_GRID_H
-#define __IMPCORE_PARTICLE_GRID_H
+#ifndef IMPCORE_PARTICLE_GRID_H
+#define IMPCORE_PARTICLE_GRID_H
 
 #include "../core_exports.h"
 #include "../MaxChangeScoreState.h"
@@ -184,4 +184,4 @@ IMP_OUTPUT_OPERATOR(ParticleGrid);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_PARTICLE_GRID_H */
+#endif  /* IMPCORE_PARTICLE_GRID_H */

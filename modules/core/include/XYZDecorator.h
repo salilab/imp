@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_XYZ_DECORATOR_H
-#define __IMPCORE_XYZ_DECORATOR_H
+#ifndef IMPCORE_XYZ_DECORATOR_H
+#define IMPCORE_XYZ_DECORATOR_H
 
 #include "core_exports.h"
 #include "utility.h"
@@ -138,4 +138,4 @@ IMPCOREEXPORT Float distance(XYZDecorator a, XYZDecorator b);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_XYZ_DECORATOR_H */
+#endif  /* IMPCORE_XYZ_DECORATOR_H */

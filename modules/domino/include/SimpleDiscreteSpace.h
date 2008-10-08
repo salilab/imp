@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPDOMINO_SIMPLE_DISCRETE_SPACE_H
-#define __IMPDOMINO_SIMPLE_DISCRETE_SPACE_H
+#ifndef IMPDOMINO_SIMPLE_DISCRETE_SPACE_H
+#define IMPDOMINO_SIMPLE_DISCRETE_SPACE_H
 
 #include "domino_exports.h"
 #include "DiscreteSampler.h"
@@ -100,4 +100,4 @@ protected:
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* __IMPDOMINO_SIMPLE_DISCRETE_SPACE_H */
+#endif  /* IMPDOMINO_SIMPLE_DISCRETE_SPACE_H */

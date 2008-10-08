@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_BOND_DECORATOR_RESTRAINT_H
-#define __IMPCORE_BOND_DECORATOR_RESTRAINT_H
+#ifndef IMPCORE_BOND_DECORATOR_RESTRAINT_H
+#define IMPCORE_BOND_DECORATOR_RESTRAINT_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -54,4 +54,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_BOND_DECORATOR_RESTRAINT_H */
+#endif  /* IMPCORE_BOND_DECORATOR_RESTRAINT_H */

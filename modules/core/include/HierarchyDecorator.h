@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_HIERARCHY_DECORATOR_H
-#define __IMPCORE_HIERARCHY_DECORATOR_H
+#ifndef IMPCORE_HIERARCHY_DECORATOR_H
+#define IMPCORE_HIERARCHY_DECORATOR_H
 
 #include "core_exports.h"
 #include "utility.h"
@@ -493,4 +493,4 @@ inline unsigned int ChildArrayTraits::get_index(Particle *,
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_HIERARCHY_DECORATOR_H */
+#endif  /* IMPCORE_HIERARCHY_DECORATOR_H */

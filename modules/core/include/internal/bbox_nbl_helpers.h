@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_BBOX_NBL_HELPERS_H
-#define __IMPCORE_BBOX_NBL_HELPERS_H
+#ifndef IMPCORE_BBOX_NBL_HELPERS_H
+#define IMPCORE_BBOX_NBL_HELPERS_H
 
 #include "../core_exports.h"
 
@@ -39,4 +39,4 @@ void bipartite_bbox_scan(const Particles &ps0, const Particles &ps1,
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_BBOX_NBL_HELPERS_H */
+#endif  /* IMPCORE_BBOX_NBL_HELPERS_H */

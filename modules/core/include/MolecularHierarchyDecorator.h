@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_MOLECULAR_HIERARCHY_DECORATOR_H
-#define __IMPCORE_MOLECULAR_HIERARCHY_DECORATOR_H
+#ifndef IMPCORE_MOLECULAR_HIERARCHY_DECORATOR_H
+#define IMPCORE_MOLECULAR_HIERARCHY_DECORATOR_H
 
 #include "core_exports.h"
 #include "utility.h"
@@ -197,4 +197,4 @@ create_fragment(const MolecularHierarchyDecorators &ps);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_MOLECULAR_HIERARCHY_DECORATOR_H */
+#endif  /* IMPCORE_MOLECULAR_HIERARCHY_DECORATOR_H */

@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_SINGLETON_LIST_RESTRAINT_H
-#define __IMPCORE_SINGLETON_LIST_RESTRAINT_H
+#ifndef IMPCORE_SINGLETON_LIST_RESTRAINT_H
+#define IMPCORE_SINGLETON_LIST_RESTRAINT_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -48,4 +48,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_SINGLETON_LIST_RESTRAINT_H */
+#endif  /* IMPCORE_SINGLETON_LIST_RESTRAINT_H */

@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPMISC_CHILDREN_PARTICLE_REFINER_H
-#define __IMPMISC_CHILDREN_PARTICLE_REFINER_H
+#ifndef IMPMISC_CHILDREN_PARTICLE_REFINER_H
+#define IMPMISC_CHILDREN_PARTICLE_REFINER_H
 
 #include "misc_exports.h"
 #include "internal/misc_version_info.h"
@@ -30,4 +30,4 @@ public:
 
 IMPMISC_END_NAMESPACE
 
-#endif  /* __IMPMISC_CHILDREN_PARTICLE_REFINER_H */
+#endif  /* IMPMISC_CHILDREN_PARTICLE_REFINER_H */

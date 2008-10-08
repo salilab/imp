@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_NORMAL_MOVER_H
-#define __IMPCORE_NORMAL_MOVER_H
+#ifndef IMPCORE_NORMAL_MOVER_H
+#define IMPCORE_NORMAL_MOVER_H
 
 #include "core_exports.h"
 #include "MoverBase.h"
@@ -44,4 +44,4 @@ private:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_NORMAL_MOVER_H */
+#endif  /* IMPCORE_NORMAL_MOVER_H */

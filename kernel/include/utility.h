@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_UTILITY_H
-#define __IMP_UTILITY_H
+#ifndef IMP_UTILITY_H
+#define IMP_UTILITY_H
 
 #include "macros.h"
 
@@ -21,4 +21,4 @@ T square(T t)
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_UTILITY_H */
+#endif  /* IMP_UTILITY_H */

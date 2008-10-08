@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_ATOM_DECORATOR_H
-#define __IMPCORE_ATOM_DECORATOR_H
+#ifndef IMPCORE_ATOM_DECORATOR_H
+#define IMPCORE_ATOM_DECORATOR_H
 
 #include "core_exports.h"
 #include "utility.h"
@@ -243,4 +243,4 @@ IMP_OUTPUT_OPERATOR(AtomDecorator);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_ATOM_DECORATOR_H */
+#endif  /* IMPCORE_ATOM_DECORATOR_H */

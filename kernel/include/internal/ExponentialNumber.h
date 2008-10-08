@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_EXPONENTIAL_NUMBER_H
-#define __IMP_EXPONENTIAL_NUMBER_H
+#ifndef IMP_EXPONENTIAL_NUMBER_H
+#define IMP_EXPONENTIAL_NUMBER_H
 
 #include "../macros.h"
 
@@ -125,4 +125,4 @@ std::ostream &operator<<(std::ostream &out, ExponentialNumber<E> o)
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_EXPONENTIAL_NUMBER_H */
+#endif  /* IMP_EXPONENTIAL_NUMBER_H */

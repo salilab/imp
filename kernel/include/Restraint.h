@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_RESTRAINT_H
-#define __IMP_RESTRAINT_H
+#ifndef IMP_RESTRAINT_H
+#define IMP_RESTRAINT_H
 
 #include "IMP_config.h"
 #include "DerivativeAccumulator.h"
@@ -150,4 +150,4 @@ IMP_OUTPUT_OPERATOR(Restraint);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_RESTRAINT_H */
+#endif  /* IMP_RESTRAINT_H */

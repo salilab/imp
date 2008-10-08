@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_OPEN_CUBIC_SPLINE_H
-#define __IMPCORE_OPEN_CUBIC_SPLINE_H
+#ifndef IMPCORE_OPEN_CUBIC_SPLINE_H
+#define IMPCORE_OPEN_CUBIC_SPLINE_H
 
 #include "core_exports.h"
 #include <IMP/UnaryFunction.h>
@@ -61,4 +61,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_OPEN_CUBIC_SPLINE_H */
+#endif  /* IMPCORE_OPEN_CUBIC_SPLINE_H */

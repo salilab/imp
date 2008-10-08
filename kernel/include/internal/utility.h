@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_INTERNAL_UTILITY_H
-#define __IMP_INTERNAL_UTILITY_H
+#ifndef IMP_INTERNAL_UTILITY_H
+#define IMP_INTERNAL_UTILITY_H
 
 #include "../IMP_config.h"
 
@@ -40,4 +40,4 @@ inline void remove_inactive_particles(Particles &ps)
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_INTERNAL_UTILITY_H */
+#endif  /* IMP_INTERNAL_UTILITY_H */

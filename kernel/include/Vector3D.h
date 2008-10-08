@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_VECTOR_3D_H
-#define __IMP_VECTOR_3D_H
+#ifndef IMP_VECTOR_3D_H
+#define IMP_VECTOR_3D_H
 
 #include "IMP_config.h"
 #include "base_types.h"
@@ -212,4 +212,4 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO &s)
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_VECTOR_3D_H */
+#endif  /* IMP_VECTOR_3D_H */

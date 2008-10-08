@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_MOLECULAR_DYNAMICS_H
-#define __IMPCORE_MOLECULAR_DYNAMICS_H
+#ifndef IMPCORE_MOLECULAR_DYNAMICS_H
+#define IMPCORE_MOLECULAR_DYNAMICS_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -99,4 +99,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_MOLECULAR_DYNAMICS_H */
+#endif  /* IMPCORE_MOLECULAR_DYNAMICS_H */

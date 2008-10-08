@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_HARMONIC_LOWER_BOUND_H
-#define __IMPCORE_HARMONIC_LOWER_BOUND_H
+#ifndef IMPCORE_HARMONIC_LOWER_BOUND_H
+#define IMPCORE_HARMONIC_LOWER_BOUND_H
 
 #include "core_exports.h"
 #include "Harmonic.h"
@@ -55,4 +55,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_HARMONIC_LOWER_BOUND_H */
+#endif  /* IMPCORE_HARMONIC_LOWER_BOUND_H */

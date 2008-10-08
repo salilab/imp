@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_DECORATOR_MACROS_H
-#define __IMPCORE_DECORATOR_MACROS_H
+#ifndef IMPCORE_DECORATOR_MACROS_H
+#define IMPCORE_DECORATOR_MACROS_H
 
 #include <sstream>
 
@@ -274,4 +274,4 @@ protection:                                                             \
 #define IMP_ATOM_TYPE_INDEX 8974343
 #define IMP_RESIDUE_TYPE_INDEX 90784334
 
-#endif  /* __IMPCORE_DECORATOR_MACROS_H */
+#endif  /* IMPCORE_DECORATOR_MACROS_H */

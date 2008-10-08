@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_ATTRIBUTE_TABLE_H
-#define __IMP_ATTRIBUTE_TABLE_H
+#ifndef IMP_ATTRIBUTE_TABLE_H
+#define IMP_ATTRIBUTE_TABLE_H
 
 #include "../base_types.h"
 #include "../utility.h"
@@ -279,4 +279,4 @@ inline std::vector<typename Traits::Key>
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_ATTRIBUTE_TABLE_H */
+#endif  /* IMP_ATTRIBUTE_TABLE_H */

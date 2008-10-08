@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_LOG_H
-#define __IMP_LOG_H
+#ifndef IMP_LOG_H
+#define IMP_LOG_H
 
 #include "IMP_config.h"
 
@@ -251,4 +251,4 @@ private:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_LOG_H */
+#endif  /* IMP_LOG_H */

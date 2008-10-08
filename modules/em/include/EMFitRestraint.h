@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPEM_EM_FIT_RESTRAINT_H
-#define __IMPEM_EM_FIT_RESTRAINT_H
+#ifndef IMPEM_EM_FIT_RESTRAINT_H
+#define IMPEM_EM_FIT_RESTRAINT_H
 
 #include "em_exports.h"
 #include "internal/em_version_info.h"
@@ -60,4 +60,4 @@ private:
 
 IMPEM_END_NAMESPACE
 
-#endif  /* __IMPEM_EM_FIT_RESTRAINT_H */
+#endif  /* IMPEM_EM_FIT_RESTRAINT_H */

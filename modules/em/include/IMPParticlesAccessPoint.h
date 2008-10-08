@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPEM_IMP_PARTICLES_ACCESS_POINT_H
-#define __IMPEM_IMP_PARTICLES_ACCESS_POINT_H
+#ifndef IMPEM_IMP_PARTICLES_ACCESS_POINT_H
+#define IMPEM_IMP_PARTICLES_ACCESS_POINT_H
 
 #include "em_exports.h"
 #include "ParticlesAccessPoint.h"
@@ -110,4 +110,4 @@ private:
 
 IMPEM_END_NAMESPACE
 
-#endif  /* __IMPEM_IMP_PARTICLES_ACCESS_POINT_H */
+#endif  /* IMPEM_IMP_PARTICLES_ACCESS_POINT_H */

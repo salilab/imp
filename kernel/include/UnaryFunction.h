@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_UNARY_FUNCTION_H
-#define __IMP_UNARY_FUNCTION_H
+#ifndef IMP_UNARY_FUNCTION_H
+#define IMP_UNARY_FUNCTION_H
 
 #include "IMP_config.h"
 #include "base_types.h"
@@ -48,4 +48,4 @@ IMP_OUTPUT_OPERATOR(UnaryFunction);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_UNARY_FUNCTION_H */
+#endif  /* IMP_UNARY_FUNCTION_H */

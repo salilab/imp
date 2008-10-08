@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_RANDOM_H
-#define __IMP_RANDOM_H
+#ifndef IMP_RANDOM_H
+#define IMP_RANDOM_H
 
 #include <boost/random.hpp>
 #include "base_types.h"
@@ -23,4 +23,4 @@ extern IMPDLLEXPORT RandomNumberGenerator random_number_generator;
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_RANDOM_H */
+#endif  /* IMP_RANDOM_H */

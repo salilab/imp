@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_CONFIG_H
-#define __IMP_CONFIG_H
+#ifndef IMP_CONFIG_H
+#define IMP_CONFIG_H
 
 /* Provide macros to mark functions and classes as exported from a DLL/.so */
 #ifdef _MSC_VER
@@ -34,4 +34,4 @@ namespace IMP \
 #define IMP_END_NAMESPACE \
 } /* namespace IMP */
 
-#endif  /* __IMP_CONFIG_H */
+#endif  /* IMP_CONFIG_H */

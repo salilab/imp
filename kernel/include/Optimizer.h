@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_OPTIMIZER_H
-#define __IMP_OPTIMIZER_H
+#ifndef IMP_OPTIMIZER_H
+#define IMP_OPTIMIZER_H
 
 #include "IMP_config.h"
 #include "base_types.h"
@@ -208,4 +208,4 @@ IMP_OUTPUT_OPERATOR(Optimizer);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_OPTIMIZER_H */
+#endif  /* IMP_OPTIMIZER_H */

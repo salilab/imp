@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPDOMINO_COMB_STATE_H
-#define __IMPDOMINO_COMB_STATE_H
+#ifndef IMPDOMINO_COMB_STATE_H
+#define IMPDOMINO_COMB_STATE_H
 
 #include "domino_exports.h"
 #include "DiscreteSampler.h"
@@ -179,4 +179,4 @@ protected:
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* __IMPDOMINO_COMB_STATE_H */
+#endif  /* IMPDOMINO_COMB_STATE_H */

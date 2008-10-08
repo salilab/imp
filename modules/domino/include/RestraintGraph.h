@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPDOMINO_RESTRAINT_GRAPH_H
-#define __IMPDOMINO_RESTRAINT_GRAPH_H
+#ifndef IMPDOMINO_RESTRAINT_GRAPH_H
+#define IMPDOMINO_RESTRAINT_GRAPH_H
 
 #include "domino_exports.h"
 #include "JNode.h"
@@ -182,4 +182,4 @@ protected:
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* __IMPDOMINO_RESTRAINT_GRAPH_H */
+#endif  /* IMPDOMINO_RESTRAINT_GRAPH_H */

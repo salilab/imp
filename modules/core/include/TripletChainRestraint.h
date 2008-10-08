@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_TRIPLET_CHAIN_RESTRAINT_H
-#define __IMPCORE_TRIPLET_CHAIN_RESTRAINT_H
+#ifndef IMPCORE_TRIPLET_CHAIN_RESTRAINT_H
+#define IMPCORE_TRIPLET_CHAIN_RESTRAINT_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -51,4 +51,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_TRIPLET_CHAIN_RESTRAINT_H */
+#endif  /* IMPCORE_TRIPLET_CHAIN_RESTRAINT_H */

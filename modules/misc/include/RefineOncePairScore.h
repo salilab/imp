@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPMISC_REFINE_ONCE_PAIR_SCORE_H
-#define __IMPMISC_REFINE_ONCE_PAIR_SCORE_H
+#ifndef IMPMISC_REFINE_ONCE_PAIR_SCORE_H
+#define IMPMISC_REFINE_ONCE_PAIR_SCORE_H
 
 #include "misc_exports.h"
 
@@ -41,4 +41,4 @@ public:
 
 IMPMISC_END_NAMESPACE
 
-#endif  /* __IMPMISC_REFINE_ONCE_PAIR_SCORE_H */
+#endif  /* IMPMISC_REFINE_ONCE_PAIR_SCORE_H */

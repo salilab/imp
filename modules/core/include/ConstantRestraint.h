@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __IMPCORE_CONSTANT_RESTRAINT_H
-#define __IMPCORE_CONSTANT_RESTRAINT_H
+#ifndef IMPCORE_CONSTANT_RESTRAINT_H
+#define IMPCORE_CONSTANT_RESTRAINT_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -35,4 +35,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif /* __IMPCORE_CONSTANT_RESTRAINT_H */
+#endif /* IMPCORE_CONSTANT_RESTRAINT_H */

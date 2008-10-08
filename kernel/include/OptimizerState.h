@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_OPTIMIZER_STATE_H
-#define __IMP_OPTIMIZER_STATE_H
+#ifndef IMP_OPTIMIZER_STATE_H
+#define IMP_OPTIMIZER_STATE_H
 
 #include "IMP_config.h"
 #include "VersionInfo.h"
@@ -70,4 +70,4 @@ IMP_OUTPUT_OPERATOR(OptimizerState);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_OPTIMIZER_STATE_H */
+#endif  /* IMP_OPTIMIZER_STATE_H */

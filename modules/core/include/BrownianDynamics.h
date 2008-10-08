@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_BROWNIAN_DYNAMICS_H
-#define __IMPCORE_BROWNIAN_DYNAMICS_H
+#ifndef IMPCORE_BROWNIAN_DYNAMICS_H
+#define IMPCORE_BROWNIAN_DYNAMICS_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -194,4 +194,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_BROWNIAN_DYNAMICS_H */
+#endif  /* IMPCORE_BROWNIAN_DYNAMICS_H */

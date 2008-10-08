@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_OBJECT_H
-#define __IMP_OBJECT_H
+#ifndef IMP_OBJECT_H
+#define IMP_OBJECT_H
 
 #include "exception.h"
 
@@ -63,4 +63,4 @@ private:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_OBJECT_H */
+#endif  /* IMP_OBJECT_H */

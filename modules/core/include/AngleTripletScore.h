@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_ANGLE_TRIPLET_SCORE_H
-#define __IMPCORE_ANGLE_TRIPLET_SCORE_H
+#ifndef IMPCORE_ANGLE_TRIPLET_SCORE_H
+#define IMPCORE_ANGLE_TRIPLET_SCORE_H
 
 #include "core_exports.h"
 
@@ -32,4 +32,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_ANGLE_TRIPLET_SCORE_H */
+#endif  /* IMPCORE_ANGLE_TRIPLET_SCORE_H */

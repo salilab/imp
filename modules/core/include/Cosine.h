@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_COSINE_H
-#define __IMPCORE_COSINE_H
+#ifndef IMPCORE_COSINE_H
+#define IMPCORE_COSINE_H
 
 #include "core_exports.h"
 #include <IMP/UnaryFunction.h>
@@ -61,4 +61,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_COSINE_H */
+#endif  /* IMPCORE_COSINE_H */

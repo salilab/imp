@@ -10,9 +10,9 @@ def _build_header(target, source, env):
     module = env['IMP_MODULE']
     description = env['IMP_MODULE_DESCRIPTION']
     if module == 'IMP':
-        guard = "__IMP_H"
+        guard = "IMP_H"
     else:
-        guard = "__IMP_%s_H" % module.upper()
+        guard = "IMP_%s_H" % module.upper()
     fh = file(fname, 'w')
     print >> fh, "/**\n *  \\file %s   \\brief %s\n *" \
              % (os.path.basename(fname), description)

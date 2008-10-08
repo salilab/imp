@@ -38,8 +38,8 @@ def action_exports(target, source, env):
  *
  */
 
-#ifndef __IMP%(NAME)s_EXPORTS_H
-#define __IMP%(NAME)s_EXPORTS_H
+#ifndef IMP%(NAME)s_EXPORTS_H
+#define IMP%(NAME)s_EXPORTS_H
 
 #ifdef _MSC_VER
 #ifdef IMP%(NAME)s_EXPORTS
@@ -78,7 +78,7 @@ namespace %(name)s \\
 } /* namespace IMP */""" % vars
 
     print >> h, """
-#endif  /* __IMP%(NAME)s_EXPORTS_H */""" % vars
+#endif  /* IMP%(NAME)s_EXPORTS_H */""" % vars
 
 
 def action_version_info(target, source, env):
@@ -104,8 +104,8 @@ def action_version_info(target, source, env):
  */
 """ % {'module':module, 'ext':ext}
 
-    print >> h, """#ifndef __IMP%(MODULE)s_VERSION_INFO_H
-#define __IMP%(MODULE)s_VERSION_INFO_H
+    print >> h, """#ifndef IMP%(MODULE)s_VERSION_INFO_H
+#define IMP%(MODULE)s_VERSION_INFO_H
 
 #include "../%(module)s_exports.h"
 
@@ -130,7 +130,7 @@ extern IMP%(MODULE)sEXPORT VersionInfo %(module)s_version_info;""" \
         print >> f, "\n} // namespace internal\n"
         print >> f, "IMP%s_END_NAMESPACE" % module.upper()
 
-    print >> h, "\n#endif  /* __IMP%s_VERSION_INFO_H */" % module.upper()
+    print >> h, "\n#endif  /* IMP%s_VERSION_INFO_H */" % module.upper()
 
 def _add_all_alias(aliases, env, name):
     """Add an 'all' alias `name` to the list of aliases, but only if the

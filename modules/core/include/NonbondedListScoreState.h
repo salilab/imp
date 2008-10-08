@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_NONBONDED_LIST_SCORE_STATE_H
-#define __IMPCORE_NONBONDED_LIST_SCORE_STATE_H
+#ifndef IMPCORE_NONBONDED_LIST_SCORE_STATE_H
+#define IMPCORE_NONBONDED_LIST_SCORE_STATE_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -290,4 +290,4 @@ struct NBLAddIfNonbonded
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_NONBONDED_LIST_SCORE_STATE_H */
+#endif  /* IMPCORE_NONBONDED_LIST_SCORE_STATE_H */

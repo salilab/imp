@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_BOND_DECORATOR_LIST_SCORE_STATE_H
-#define __IMPCORE_BOND_DECORATOR_LIST_SCORE_STATE_H
+#ifndef IMPCORE_BOND_DECORATOR_LIST_SCORE_STATE_H
+#define IMPCORE_BOND_DECORATOR_LIST_SCORE_STATE_H
 
 #include "core_exports.h"
 #include "BondedListScoreState.h"
@@ -60,4 +60,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_BOND_DECORATOR_LIST_SCORE_STATE_H */
+#endif  /* IMPCORE_BOND_DECORATOR_LIST_SCORE_STATE_H */

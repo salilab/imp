@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_RESIDUE_DECORATOR_H
-#define __IMPCORE_RESIDUE_DECORATOR_H
+#ifndef IMPCORE_RESIDUE_DECORATOR_H
+#define IMPCORE_RESIDUE_DECORATOR_H
 
 #include "core_exports.h"
 #include "utility.h"
@@ -102,4 +102,4 @@ IMP_OUTPUT_OPERATOR(ResidueDecorator);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_RESIDUE_DECORATOR_H */
+#endif  /* IMPCORE_RESIDUE_DECORATOR_H */

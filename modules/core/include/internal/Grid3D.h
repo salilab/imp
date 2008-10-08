@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_GRID_3D_H
-#define __IMPCORE_GRID_3D_H
+#ifndef IMPCORE_GRID_3D_H
+#define IMPCORE_GRID_3D_H
 
 #include "../core_exports.h"
 
@@ -406,4 +406,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_GRID_3D_H */
+#endif  /* IMPCORE_GRID_3D_H */

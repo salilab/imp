@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_MOVER_H
-#define __IMPCORE_MOVER_H
+#ifndef IMPCORE_MOVER_H
+#define IMPCORE_MOVER_H
 
 #include "core_exports.h"
 
@@ -78,4 +78,4 @@ IMP_OUTPUT_OPERATOR(Mover);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_MOVER_H */
+#endif  /* IMPCORE_MOVER_H */

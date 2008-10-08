@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_BASE_TYPES_H
-#define __IMP_BASE_TYPES_H
+#ifndef IMP_BASE_TYPES_H
+#define IMP_BASE_TYPES_H
 
 #include "IMP_config.h"
 #include "Index.h"
@@ -81,4 +81,4 @@ IMP_DECLARE_KEY_TYPE(ParticleKey, 3);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_BASE_TYPES_H */
+#endif  /* IMP_BASE_TYPES_H */

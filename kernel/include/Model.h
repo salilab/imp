@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_MODEL_H
-#define __IMP_MODEL_H
+#ifndef IMP_MODEL_H
+#define IMP_MODEL_H
 
 #include "IMP_config.h"
 #include "Object.h"
@@ -67,4 +67,4 @@ IMP_OUTPUT_OPERATOR(Model);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_MODEL_H */
+#endif  /* IMP_MODEL_H */

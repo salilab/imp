@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef __IMPCORE_CONNECTIVITY_RESTRAINT_H
-#define __IMPCORE_CONNECTIVITY_RESTRAINT_H
+#ifndef IMPCORE_CONNECTIVITY_RESTRAINT_H
+#define IMPCORE_CONNECTIVITY_RESTRAINT_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -61,4 +61,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif /* __IMPCORE_CONNECTIVITY_RESTRAINT_H */
+#endif /* IMPCORE_CONNECTIVITY_RESTRAINT_H */
