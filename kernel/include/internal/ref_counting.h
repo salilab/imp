@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_REF_COUNTING_H
-#define __IMP_REF_COUNTING_H
+#ifndef IMP_REF_COUNTING_H
+#define IMP_REF_COUNTING_H
 
 #include "../Object.h"
 #include "../RefCountedObject.h"
@@ -136,4 +136,4 @@ void own(O* o)
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_REF_COUNTING_H */
+#endif  /* IMP_REF_COUNTING_H */

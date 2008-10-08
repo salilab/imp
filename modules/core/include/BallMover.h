@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_BALL_MOVER_H
-#define __IMPCORE_BALL_MOVER_H
+#ifndef IMPCORE_BALL_MOVER_H
+#define IMPCORE_BALL_MOVER_H
 
 #include "core_exports.h"
 #include "MonteCarlo.h"
@@ -51,4 +51,4 @@ private:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_BALL_MOVER_H */
+#endif  /* IMPCORE_BALL_MOVER_H */

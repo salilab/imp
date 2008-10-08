@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_POINTER_H
-#define __IMP_POINTER_H
+#ifndef IMP_POINTER_H
+#define IMP_POINTER_H
 
 #include "log.h"
 #include "Object.h"
@@ -109,4 +109,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_POINTER_H */
+#endif  /* IMP_POINTER_H */

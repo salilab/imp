@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_UNIT_H
-#define __IMP_UNIT_H
+#ifndef IMP_UNIT_H
+#define IMP_UNIT_H
 
 
 #include "ExponentialNumber.h"
@@ -427,4 +427,4 @@ struct Exchange
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_UNIT_H */
+#endif  /* IMP_UNIT_H */

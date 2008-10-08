@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_VERSION_INFO_H
-#define __IMP_VERSION_INFO_H
+#ifndef IMP_VERSION_INFO_H
+#define IMP_VERSION_INFO_H
 
 #include "IMP_config.h"
 
@@ -43,4 +43,4 @@ protected:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_VERSION_INFO_H */
+#endif  /* IMP_VERSION_INFO_H */

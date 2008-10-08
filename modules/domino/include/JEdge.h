@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPDOMINO_JEDGE_H
-#define __IMPDOMINO_JEDGE_H
+#ifndef IMPDOMINO_JEDGE_H
+#define IMPDOMINO_JEDGE_H
 
 #include "JNode.h"
 #include "CombState.h"
@@ -84,4 +84,4 @@ protected:
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* __IMPDOMINO_JEDGE_H */
+#endif  /* IMPDOMINO_JEDGE_H */

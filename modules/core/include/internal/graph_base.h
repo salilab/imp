@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_GRAPH_BASE_H
-#define __IMPCORE_GRAPH_BASE_H
+#ifndef IMPCORE_GRAPH_BASE_H
+#define IMPCORE_GRAPH_BASE_H
 
 #include "../core_exports.h"
 #include "ArrayOnAttributesHelper.h"
@@ -122,4 +122,4 @@ void graph_connected_component(Particle* start, const GraphData &d, Oit out)
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_GRAPH_BASE_H */
+#endif  /* IMPCORE_GRAPH_BASE_H */

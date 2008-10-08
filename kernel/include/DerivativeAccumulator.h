@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMP_DERIVATIVE_ACCUMULATOR_H
-#define __IMP_DERIVATIVE_ACCUMULATOR_H
+#ifndef IMP_DERIVATIVE_ACCUMULATOR_H
+#define IMP_DERIVATIVE_ACCUMULATOR_H
 
 #include "IMP_config.h"
 #include "base_types.h"
@@ -40,4 +40,4 @@ protected:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_DERIVATIVE_ACCUMULATOR_H */
+#endif  /* IMP_DERIVATIVE_ACCUMULATOR_H */

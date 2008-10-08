@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPDOMINO_JNODE_H
-#define __IMPDOMINO_JNODE_H
+#ifndef IMPDOMINO_JNODE_H
+#define IMPDOMINO_JNODE_H
 
 #include "domino_exports.h"
 #include "DiscreteSampler.h"
@@ -117,4 +117,4 @@ protected:
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* __IMPDOMINO_JNODE_H */
+#endif  /* IMPDOMINO_JNODE_H */

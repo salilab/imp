@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_SCORE_STATE_H
-#define __IMP_SCORE_STATE_H
+#ifndef IMP_SCORE_STATE_H
+#define IMP_SCORE_STATE_H
 
 #include "IMP_config.h"
 #include "RefCountedObject.h"
@@ -136,4 +136,4 @@ IMP_OUTPUT_OPERATOR(ScoreState);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_SCORE_STATE_H */
+#endif  /* IMP_SCORE_STATE_H */

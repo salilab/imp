@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_PARTICLE_REFINER_H
-#define __IMP_PARTICLE_REFINER_H
+#ifndef IMP_PARTICLE_REFINER_H
+#define IMP_PARTICLE_REFINER_H
 
 #include "IMP_config.h"
 #include "base_types.h"
@@ -57,4 +57,4 @@ IMP_OUTPUT_OPERATOR(ParticleRefiner);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_PARTICLE_REFINER_H */
+#endif  /* IMP_PARTICLE_REFINER_H */

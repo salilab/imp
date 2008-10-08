@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
-#define __IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
+#ifndef IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
+#define IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 
 #include <IMP/Vector3D.h>
 
@@ -61,4 +61,4 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H */
+#endif  /* IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H */

@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_VECTOR_H
-#define __IMP_VECTOR_H
+#ifndef IMP_VECTOR_H
+#define IMP_VECTOR_H
 
 #include "../exception.h"
 #include "../Object.h"
@@ -106,4 +106,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_VECTOR_H */
+#endif  /* IMP_VECTOR_H */

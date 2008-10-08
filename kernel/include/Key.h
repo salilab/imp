@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_KEY_H
-#define __IMP_KEY_H
+#ifndef IMP_KEY_H
+#define IMP_KEY_H
 
 #include "macros.h"
 #include "exception.h"
@@ -251,4 +251,4 @@ std::vector<std::string> KeyBase<ID>::get_all_strings()
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_KEY_H */
+#endif  /* IMP_KEY_H */

@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_INDEX_H
-#define __IMP_INDEX_H
+#ifndef IMP_INDEX_H
+#define IMP_INDEX_H
 
 #include "macros.h"
 #include "exception.h"
@@ -70,4 +70,4 @@ IMP_OUTPUT_OPERATOR_1(Index)
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_INDEX_H */
+#endif  /* IMP_INDEX_H */

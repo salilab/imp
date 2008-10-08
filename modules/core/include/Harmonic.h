@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_HARMONIC_H
-#define __IMPCORE_HARMONIC_H
+#ifndef IMPCORE_HARMONIC_H
+#define IMPCORE_HARMONIC_H
 
 #include "core_exports.h"
 #include <IMP/UnaryFunction.h>
@@ -96,4 +96,4 @@ private:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_HARMONIC_H */
+#endif  /* IMPCORE_HARMONIC_H */

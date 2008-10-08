@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_MOVER_BASE_H
-#define __IMPCORE_MOVER_BASE_H
+#ifndef IMPCORE_MOVER_BASE_H
+#define IMPCORE_MOVER_BASE_H
 
 #include "core_exports.h"
 #include "Mover.h"
@@ -93,4 +93,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_MOVER_BASE_H */
+#endif  /* IMPCORE_MOVER_BASE_H */

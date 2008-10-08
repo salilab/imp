@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_PAIR_LIST_RESTRAINT_H
-#define __IMPCORE_PAIR_LIST_RESTRAINT_H
+#ifndef IMPCORE_PAIR_LIST_RESTRAINT_H
+#define IMPCORE_PAIR_LIST_RESTRAINT_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -47,4 +47,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_PAIR_LIST_RESTRAINT_H */
+#endif  /* IMPCORE_PAIR_LIST_RESTRAINT_H */

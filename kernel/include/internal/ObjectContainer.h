@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_OBJECT_CONTAINER_H
-#define __IMP_OBJECT_CONTAINER_H
+#ifndef IMP_OBJECT_CONTAINER_H
+#define IMP_OBJECT_CONTAINER_H
 
 #include "../Object.h"
 #include "../RefCountedObject.h"
@@ -164,4 +164,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_OBJECT_CONTAINER_H */
+#endif  /* IMP_OBJECT_CONTAINER_H */

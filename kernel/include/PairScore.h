@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_PAIR_SCORE_H
-#define __IMP_PAIR_SCORE_H
+#ifndef IMP_PAIR_SCORE_H
+#define IMP_PAIR_SCORE_H
 
 #include "IMP_config.h"
 #include "base_types.h"
@@ -40,4 +40,4 @@ IMP_OUTPUT_OPERATOR(PairScore);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_PAIR_SCORE_H */
+#endif  /* IMP_PAIR_SCORE_H */

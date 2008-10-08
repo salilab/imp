@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPMISC_WORM_LIKE_CHAIN_H
-#define __IMPMISC_WORM_LIKE_CHAIN_H
+#ifndef IMPMISC_WORM_LIKE_CHAIN_H
+#define IMPMISC_WORM_LIKE_CHAIN_H
 
 #include "misc_exports.h"
 
@@ -118,4 +118,4 @@ protected:
 
 IMPMISC_END_NAMESPACE
 
-#endif  /* __IMPMISC_WORM_LIKE_CHAIN_H */
+#endif  /* IMPMISC_WORM_LIKE_CHAIN_H */

@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_DECORATOR_BASE_H
-#define __IMP_DECORATOR_BASE_H
+#ifndef IMP_DECORATOR_BASE_H
+#define IMP_DECORATOR_BASE_H
 
 #include "Object.h"
 #include "Pointer.h"
@@ -121,4 +121,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_DECORATOR_BASE_H */
+#endif  /* IMP_DECORATOR_BASE_H */

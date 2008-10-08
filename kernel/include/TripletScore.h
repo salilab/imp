@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMP_TRIPLET_SCORE_H
-#define __IMP_TRIPLET_SCORE_H
+#ifndef IMP_TRIPLET_SCORE_H
+#define IMP_TRIPLET_SCORE_H
 
 #include "IMP_config.h"
 #include "base_types.h"
@@ -41,4 +41,4 @@ IMP_OUTPUT_OPERATOR(TripletScore);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_TRIPLET_SCORE_H */
+#endif  /* IMP_TRIPLET_SCORE_H */

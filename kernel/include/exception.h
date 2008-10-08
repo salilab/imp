@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_EXCEPTION_H
-#define __IMP_EXCEPTION_H
+#ifndef IMP_EXCEPTION_H
+#define IMP_EXCEPTION_H
 
 #include "log.h"
 #include "IMP_config.h"
@@ -216,4 +216,4 @@ IMPDLLEXPORT void check_fail(const char *msg);
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_EXCEPTION_H */
+#endif  /* IMP_EXCEPTION_H */

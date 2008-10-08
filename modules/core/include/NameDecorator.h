@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_NAME_DECORATOR_H
-#define __IMPCORE_NAME_DECORATOR_H
+#ifndef IMPCORE_NAME_DECORATOR_H
+#define IMPCORE_NAME_DECORATOR_H
 
 #include "core_exports.h"
 #include "utility.h"
@@ -39,4 +39,4 @@ IMP_OUTPUT_OPERATOR(NameDecorator);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_NAME_DECORATOR_H */
+#endif  /* IMPCORE_NAME_DECORATOR_H */

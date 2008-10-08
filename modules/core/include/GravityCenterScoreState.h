@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_GRAVITY_CENTER_SCORE_STATE_H
-#define __IMPCORE_GRAVITY_CENTER_SCORE_STATE_H
+#ifndef IMPCORE_GRAVITY_CENTER_SCORE_STATE_H
+#define IMPCORE_GRAVITY_CENTER_SCORE_STATE_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -63,4 +63,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_GRAVITY_CENTER_SCORE_STATE_H */
+#endif  /* IMPCORE_GRAVITY_CENTER_SCORE_STATE_H */

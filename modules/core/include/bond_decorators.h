@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_BOND_DECORATORS_H
-#define __IMPCORE_BOND_DECORATORS_H
+#ifndef IMPCORE_BOND_DECORATORS_H
+#define IMPCORE_BOND_DECORATORS_H
 
 #include "core_exports.h"
 #include "utility.h"
@@ -194,4 +194,4 @@ BondDecorator get_bond(BondedDecorator a, BondedDecorator b);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_BOND_DECORATORS_H */
+#endif  /* IMPCORE_BOND_DECORATORS_H */

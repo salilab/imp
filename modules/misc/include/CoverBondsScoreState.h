@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPMISC_COVER_BONDS_SCORE_STATE_H
-#define __IMPMISC_COVER_BONDS_SCORE_STATE_H
+#ifndef IMPMISC_COVER_BONDS_SCORE_STATE_H
+#define IMPMISC_COVER_BONDS_SCORE_STATE_H
 
 #include "misc_exports.h"
 #include "internal/misc_version_info.h"
@@ -50,4 +50,4 @@ public:
 
 IMPMISC_END_NAMESPACE
 
-#endif  /* __IMPMISC_COVER_BONDS_SCORE_STATE_H */
+#endif  /* IMPMISC_COVER_BONDS_SCORE_STATE_H */

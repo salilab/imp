@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_VRML_LOG_OPTIMIZER_STATE_H
-#define __IMPCORE_VRML_LOG_OPTIMIZER_STATE_H
+#ifndef IMPCORE_VRML_LOG_OPTIMIZER_STATE_H
+#define IMPCORE_VRML_LOG_OPTIMIZER_STATE_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -92,4 +92,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_VRML_LOG_OPTIMIZER_STATE_H */
+#endif  /* IMPCORE_VRML_LOG_OPTIMIZER_STATE_H */

@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_CONJUGATE_GRADIENTS_H
-#define __IMPCORE_CONJUGATE_GRADIENTS_H
+#ifndef IMPCORE_CONJUGATE_GRADIENTS_H
+#define IMPCORE_CONJUGATE_GRADIENTS_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -48,4 +48,4 @@ private:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_CONJUGATE_GRADIENTS_H */
+#endif  /* IMPCORE_CONJUGATE_GRADIENTS_H */

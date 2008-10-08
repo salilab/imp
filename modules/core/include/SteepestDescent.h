@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_STEEPEST_DESCENT_H
-#define __IMPCORE_STEEPEST_DESCENT_H
+#ifndef IMPCORE_STEEPEST_DESCENT_H
+#define IMPCORE_STEEPEST_DESCENT_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -42,4 +42,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_STEEPEST_DESCENT_H */
+#endif  /* IMPCORE_STEEPEST_DESCENT_H */

@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMPCORE_MONTE_CARLO_H
-#define __IMPCORE_MONTE_CARLO_H
+#ifndef IMPCORE_MONTE_CARLO_H
+#define IMPCORE_MONTE_CARLO_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -109,4 +109,4 @@ IMP_OUTPUT_OPERATOR(MonteCarlo);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_MONTE_CARLO_H */
+#endif  /* IMPCORE_MONTE_CARLO_H */

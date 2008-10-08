@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef __IMPCORE_CMM_LOG_OPTIMIZER_STATE_H
-#define __IMPCORE_CMM_LOG_OPTIMIZER_STATE_H
+#ifndef IMPCORE_CMM_LOG_OPTIMIZER_STATE_H
+#define IMPCORE_CMM_LOG_OPTIMIZER_STATE_H
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
@@ -86,4 +86,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_CMM_LOG_OPTIMIZER_STATE_H */
+#endif  /* IMPCORE_CMM_LOG_OPTIMIZER_STATE_H */

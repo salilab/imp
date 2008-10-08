@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
-#define __IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
+#ifndef IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
+#define IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
 
 #include "core_exports.h"
 
@@ -34,4 +34,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H */
+#endif  /* IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H */

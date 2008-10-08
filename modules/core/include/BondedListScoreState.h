@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_BONDED_LIST_SCORE_STATE_H
-#define __IMPCORE_BONDED_LIST_SCORE_STATE_H
+#ifndef IMPCORE_BONDED_LIST_SCORE_STATE_H
+#define IMPCORE_BONDED_LIST_SCORE_STATE_H
 
 #include "core_exports.h"
 
@@ -33,4 +33,4 @@ class IMPCOREEXPORT BondedListScoreState: public ScoreState
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_BONDED_LIST_SCORE_STATE_H */
+#endif  /* IMPCORE_BONDED_LIST_SCORE_STATE_H */

@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_PARTICLE_H
-#define __IMP_PARTICLE_H
+#ifndef IMP_PARTICLE_H
+#define IMP_PARTICLE_H
 
 #include "IMP_config.h"
 #include "base_types.h"
@@ -631,4 +631,4 @@ void inline Particle::remove_attribute(ParticleKey name)
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_PARTICLE_H */
+#endif  /* IMP_PARTICLE_H */

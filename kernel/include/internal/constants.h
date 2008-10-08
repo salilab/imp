@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_CONSTANTS_H
-#define __IMP_CONSTANTS_H
+#ifndef IMP_CONSTANTS_H
+#define IMP_CONSTANTS_H
 
 #include "units.h"
 
@@ -38,4 +38,4 @@ extern IMPDLLEXPORT const unit::ExponentialNumber<3> JOULES_PER_KILOCALORIE;
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_CONSTANTS_H */
+#endif  /* IMP_CONSTANTS_H */

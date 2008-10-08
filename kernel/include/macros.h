@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_MACROS_H
-#define __IMP_MACROS_H
+#ifndef IMP_MACROS_H
+#define IMP_MACROS_H
 
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
@@ -437,4 +437,4 @@ onchanged, onremove)                                                    \
 #include "internal/ObjectContainer.h"
 
 
-#endif  /* __IMP_MACROS_H */
+#endif  /* IMP_MACROS_H */

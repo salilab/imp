@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPDOMINO_DOMINO_OPTIMIZER_H
-#define __IMPDOMINO_DOMINO_OPTIMIZER_H
+#ifndef IMPDOMINO_DOMINO_OPTIMIZER_H
+#define IMPDOMINO_DOMINO_OPTIMIZER_H
 
 #include "domino_exports.h"
 #include "internal/domino_version_info.h"
@@ -62,4 +62,4 @@ protected:
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* __IMPDOMINO_DOMINO_OPTIMIZER_H */
+#endif  /* IMPDOMINO_DOMINO_OPTIMIZER_H */

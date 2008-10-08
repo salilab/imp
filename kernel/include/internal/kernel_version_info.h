@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef __IMP_KERNEL_VERSION_INFO_H
-#define __IMP_KERNEL_VERSION_INFO_H
+#ifndef IMP_KERNEL_VERSION_INFO_H
+#define IMP_KERNEL_VERSION_INFO_H
 
 #include "../VersionInfo.h"
 
@@ -22,4 +22,4 @@ extern IMPDLLEXPORT VersionInfo kernel_version_info;
 
 IMP_END_NAMESPACE
 
-#endif  /* __IMP_KERNEL_VERSION_INFO_H */
+#endif  /* IMP_KERNEL_VERSION_INFO_H */

@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_TYPED_PAIR_SCORE_H
-#define __IMPCORE_TYPED_PAIR_SCORE_H
+#ifndef IMPCORE_TYPED_PAIR_SCORE_H
+#define IMPCORE_TYPED_PAIR_SCORE_H
 
 #include "core_exports.h"
 
@@ -75,4 +75,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_TYPED_PAIR_SCORE_H */
+#endif  /* IMPCORE_TYPED_PAIR_SCORE_H */

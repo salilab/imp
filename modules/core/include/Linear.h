@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_LINEAR_H
-#define __IMPCORE_LINEAR_H
+#ifndef IMPCORE_LINEAR_H
+#define IMPCORE_LINEAR_H
 
 #include "core_exports.h"
 #include <IMP/UnaryFunction.h>
@@ -50,4 +50,4 @@ protected:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_LINEAR_H */
+#endif  /* IMPCORE_LINEAR_H */

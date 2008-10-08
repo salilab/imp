@@ -5,8 +5,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef __IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
-#define __IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
+#ifndef IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
+#define IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
 
 #include "core_exports.h"
 
@@ -33,4 +33,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* __IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H */
+#endif  /* IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H */
