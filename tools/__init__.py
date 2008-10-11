@@ -106,7 +106,21 @@ def CheckModeller(context):
     if modeller is False or modeller is 0:
         context.Result("not found")
         return False
-    modbin = "%s/bin/modSVN" % modeller
+    # Find MODELLER script
+    moddir = "%s/bin" % modeller
+    try:
+        files = os.listdir(moddir)
+    except OSError, e:
+        context.Result("could not find MODELLER directory %s: %s" % (moddir, e))
+        return False
+    files.sort()
+    r = re.compile('mod(SVN|\d+v\d+)$')
+    files = [f for f in files if r.match(f)]
+    if len(files) == 0:
+        context.Result("could not find MODELLER script in %s" % moddir)
+        return False
+    # Last matching entry is probably the latest version:
+    modbin = os.path.join(moddir, files[-1])
     try:
         (fhin, fhout, fherr) = os.popen3(modbin + " -")
         print >> fhin, "print 'EXE type: ', info.exe_type"
