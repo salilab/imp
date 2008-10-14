@@ -53,6 +53,7 @@ bin = SConscript('bin/SConscript')
 Export('bin')
 SConscript('doc/SConscript')
 (src, pyext) = SConscript('kernel/SConscript')
+SConscript('build/SConscript')
 SConscript('modules/SConscript')
 
 # bin script first requires kernel libraries to be built:
