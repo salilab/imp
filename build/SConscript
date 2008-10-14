@@ -1,0 +1,41 @@
+import os
+import shutil
+
+Import('env')
+
+def cleanup(target, source, env):
+    cleanup_dir(Dir('#/build/include').path)
+    cleanup_dir(Dir('#/build/lib').path)
+
+def cleanup_dir(dir):
+    """Clean up any files in `dir` that exist on disk but are not known to
+       SCons. These are typically obsolete headers or libraries."""
+    for dirpath, dirnames, filenames in os.walk(dir, topdown=True):
+        # Don't descend into dot-directories or source control
+        for n, d in enumerate(dirnames[:]):
+            if d.startswith('.') or d == 'CVS':
+                del dirnames[n]
+        memory = dict.fromkeys(Glob(os.path.join(dirpath, '*'),
+                                    ondisk=False, strings=True))
+        for d in dirnames:
+            filename = os.path.join(dirpath, d)
+            if filename not in memory:
+                print "Cleanup of directory in build directory: %s" \
+                      % filename
+                shutil.rmtree(filename, ignore_errors=True)
+        for d in filenames:
+            filename = os.path.join(dirpath, d)
+            # Don't delete .pyc files unless no corresponding .py is present
+            if filename not in memory and \
+               (not filename.endswith('.pyc') or filename[:-1] not in memory):
+                print "Cleanup of file in build directory: %s" % filename
+                try:
+                    os.unlink(filename)
+                except OSError:
+                    pass
+    return 0
+
+build_cleanup = env.Command("build_cleanup", None, cleanup)
+Alias('build-cleanup', build_cleanup)
+
+Return('build_cleanup')
