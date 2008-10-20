@@ -152,10 +152,20 @@ depend on the <filename>core</filename> module).
 There are also two "general purpose" modules: the <filename>misc</filename>
 module, which contains miscellaneous features which are
 generally <emphasis>not</emphasis> used by other modules, and
-the <filename>core</filename> module, which contains general-purpose features
-and upon which many other modules depend. The <filename>misc</filename> module
-can be used for features that do not neatly fit into a specialized module,
-such as code that implements proposed new methodologies.
+the <filename>core</filename> module, which contains features expected to be
+used by almost everybody, and upon which many other modules depend.
+The <filename>misc</filename> module can be used for features that do not
+neatly fit into a specialized module, such as code that implements proposed
+new methodologies.
+</para>
+
+<para>
+It is also possible to create your IMP modules outside of IMP itself. This
+is ideal if you have different licensing requirements, your code is very
+experimental, or you do not want to share your source code, for example.
+Of course, if you go down this route, you must do your own book keeping to
+make sure that the IMP kernel and any modules you depend on are correctly built
+before your own.
 </para>
 </sect1>
 
@@ -233,7 +243,7 @@ any need to rename classes between C++ and Python to ensure clean Python code.
 <sect3>
 <title>Exceptions</title>
 <para>Exceptions are classes, so name as for classes, above. Do not use
-exception specfications, but do document the possible exceptions thrown by
+exception specifications, but do document the possible exceptions thrown by
 a function with the Doxygen <command>\exception</command> command.
 </para>
 
@@ -297,6 +307,11 @@ syntax.</para>
 Avoids namespace pollution, and removes any ambiguity.
 </para>
 
+<para>Use the provided macros such as <code>IMP_BEGIN_NAMESPACE</code> and
+<code>IMP_END_NAMESPACE</code> to begin and end the namespace for the kernel
+or a module.
+</para>
+
 </sect2>
 
 <sect2>
@@ -347,14 +362,50 @@ script, available as part of the Python distribution.
 
 </sect1>
 
-<sect1 id="codereview">
-<title>Code review</title>
+<sect1 id="adding-code">
+<title>Adding code to IMP</title>
 
-<para>To ensure code quality, additions to the IMP kernel should be reviewed
-by the other developers. In general, this means posting a patch with some
-explanation of the changes (e.g. suitable for the source control logs) to the
-<email>imp-dev@salilab.org</email> mailing list. This is mandatory for
-changes that:</para>
+<sect2 id="choose-module">
+<title>Choosing a module for your code</title>
+
+<para>
+By far the easiest way to contribute to IMP is to create a module for your
+specific problem domain. For example, restraints and optimizers specific to
+ligands could go in a <filename>ligand</filename> module. Please contact Ben
+to have a new module created. If you feel your code doesn't belong in its
+own module, you can add it to the <filename>misc</filename> module instead.
+If you feel your new functionality is of use to everybody and should live in the
+<filename>core</filename> module, you should request this on the IMP mailing
+list and have it approved by Ben, who has the final say on where code should
+end up. This is partly to prevent the <filename>core</filename> module from
+becoming too bloated with specialized code.
+</para>
+
+<para>
+Code should generally <emphasis>not</emphasis> be moved from one
+module to another, unless there is an exceptionally good reason to do so. If
+for some reason you do want to move things between modules, ask Ben to do it.
+</para>
+</sect2>
+
+<sect2 id="define-interfaces">
+<title>Defining your interfaces</title>
+
+<para>
+Before you sit down and write your new code or change existing code, you
+should think about the interfaces. These are the classes and their methods,
+without any implementation. It is recommended that you discuss these
+interfaces on the <email>imp-dev@salilab.org</email> mailing list before you
+proceed with implementation, so that you do not duplicate work, others can
+make valuable suggestions or point out problems, and people are made aware of
+your contribution. If you want to add to or change the interfaces in the
+kernel or the <filename>core</filename> module, this discussion is
+mandatory, since potentially everybody could be affected by your changes. Any
+issues raised by users with changes to the kernel or <filename>core</filename>
+must be resolved to their satisfaction before the changes are made. For clarity,
+the following should be considered changes that warrant discussion:
+</para>
+
 <itemizedlist>
 <listitem><para>Change the API (e.g. remove or rename existing methods or
 classes, change the arguments taken by existing methods, change the behavior
@@ -364,9 +415,24 @@ methods).</para></listitem>
 <listitem><para>Remove or modify existing test cases.</para></listitem>
 </itemizedlist>
 
-<para>For more minor changes, such as adding new tests, methods and/or classes
-(which may change the ABI but not the API), documentation updates, etc.
-review is not <emphasis>required</emphasis> but is recommended.</para>
+<para>
+Conversely, changes in internal implementation or documentation to any module,
+or changes in the interfaces of your own modules or the
+<filename>misc</filename> module, do not need to be announced, and neither does
+the addition of new methods to existing classes, although it may be helpful
+to tell people about such changes.
+</para>
+
+</sect2>
+
+<sect2 id="patches">
+<title>Creating a patch</title>
+
+<para>
+Generally speaking, to add code to IMP, your changes should be made to your
+checkout of the IMP repository, and then a patch generated by using the
+<command>svn di</command> command.
+</para>
 
 <para>Patches should contain a related set of changes. For example, a patch
 which adds a new method <methodname>foo</methodname>, a new testcase for
@@ -384,16 +450,96 @@ the <classname>SpecialVector</classname> documentation.</para>
 other effects is better than nothing.)</para>
 
 <para><emphasis>Rationale:</emphasis>
-Other developers may have external applications and their own in-progress work
-which may be adversely affected by your changes. There may also be disagreement
-about a change, so discussing it on the mailing list first assures that a
-consensus is first reached, rather than other developers later reverting the
-change. It is much easier to review a patch if it is small and contains only
-relevant changes, and in addition it can generally be applied to source control
-virtually unchanged if the code is OK. Test cases also help to document the
+It is much easier for others to understand your patch's changes if it is small
+and contains only relevant changes. Test cases also help to document the
 intent of code changes, as well as making sure that the new additions are not
 accidentally broken in future.
 </para>
+
+</sect2>
+
+<sect2 id="commit-patch">
+<title>Committing a patch</title>
+
+<para>
+Once your patch is complete and you have run the testcases to make sure you
+didn't break anything, and reviewed the patch to check your work, it can be
+committed to the source control system, provided that any interface changes
+have <link linkend="define-interfaces">been discussed</link> if required.
+How this is done depends on whether you have commit rights for the affected
+module(s). If you do, you can simply use <command>svn ci</command>. If you do
+not, send the patch to the owner of the module for integration, with a brief
+description of your changes for the source control logs:
+</para>
+
+<sect3 id="kernel-ci">
+<title>IMP kernel</title>
+<para>
+All changes to the IMP kernel, since they affect everybody, must be approved
+by Ben. Send your patch to <email>imp-dev@salilab.org</email> for integration.
+</para>
+</sect3>
+
+<sect3 id="core-misc-ci">
+<title>core and misc modules</title>
+<para>
+Anybody can commit to these modules after approval; ask Ben to get your
+account activated.
+</para>
+</sect3>
+
+<sect3 id="other-ci">
+<title>Other modules</title>
+<para>
+Domain-specific modules all have a responsible owner, and it is up to them
+whether they want to allow others commit rights. Email them and ask for
+commit rights (a sysadmin can add these), or send them your patch for
+integration. If in doubt, post it on the <email>imp-dev@salilab.org</email>
+mailing list.
+</para>
+</sect3>
+
+</sect2>
+
+<sect2 id="code-maturity">
+<title>Code maturity</title>
+<para>
+IMP is a work shared by many developers, and they would prefer not to have
+spend time working around problems introduced by others elsewhere in the code.
+Therefore, it is expected that any code committed to IMP should at least
+compile. Any test cases you write for your code should also be expected to
+pass, or at least if they do not, you should quickly fix things so that they
+do. (As a rule of thumb, your changes should not break the nightly builds
+for more than 3 consecutive days; if they do, your changes risk being reverted.)
+</para>
+
+<para>
+It is fine to add code to IMP that is not yet fully complete or ready for
+others to use (provided that it compiles and tests, as above). However, any
+such classes or methods should be marked in their Doxygen comments as
+immature.
+</para>
+
+</sect2>
+
+<sect2 id="bugs">
+<title>Finding and fixing bugs in IMP</title>
+<para>
+If you find a bug in IMP, please report it on the
+<ulink url="https://salilab.org/imp/bugs/">IMP bug tracker</ulink>. This will
+ensure it does not get lost. The best way to report a bug is to provide a
+short script file that demonstrates the problem.
+</para>
+
+<para>
+If you create a patch which fixes a bug, please cite the bug ID in the commit
+log for that patch. The patch should also include a testcase which triggers
+the bug, so that we can ensure your fix for the bug does not break in future.
+In many cases, the demonstration script in the bug report can be trivially
+adapted into a test case.
+</para>
+
+</sect2>
 
 </sect1>
 
