@@ -68,6 +68,7 @@ namespace IMP {
 %include "IMP/core/NameDecorator.h"
 %include "IMP/core/ResidueDecorator.h"
 %include "IMP/core/XYZDecorator.h"
+%include "IMP/core/XYZRDecorator.h"
 %include "IMP/core/AtomDecorator.h"
 %include "IMP/core/Cosine.h"
 %include "IMP/core/Harmonic.h"
@@ -114,6 +115,7 @@ namespace IMP {
 %include "IMP/core/SphereDistancePairScore.h"
 %include "IMP/core/TypedPairScore.h"
 %include "IMP/core/TransformedDistancePairScore.h"
+%include "IMP/core/model_io.h"
 
 namespace IMP {
   namespace core {

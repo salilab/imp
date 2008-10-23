@@ -52,8 +52,10 @@ files = [
          'VRMLLogOptimizerState.h',
          'VelocityScalingOptimizerState.h',
          'XYZDecorator.h',
+         'XYZRDecorator.h',
          'bond_decorators.h',
          'macros.h',
+         'model_io.h',
          'utility.h',
         ] \
         + SConscript('internal/SConscript')
