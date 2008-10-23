@@ -44,7 +44,7 @@ public:
     out << "Linear: " << slope_ << ", " << offset_ << std::endl;
   }
 
-protected:
+private:
   Float slope_, offset_;
 };
 

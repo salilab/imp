@@ -44,7 +44,7 @@ public:
 
   virtual ParticlesList get_interacting_particles() const;
 
-protected:
+private:
 
   //! Weight for all restraints.
   Float weight_;

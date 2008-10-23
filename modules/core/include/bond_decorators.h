@@ -36,6 +36,9 @@ extern IMPCOREEXPORT  FloatKey bond_stiffness_key_;
 
 } // namespace internal
 
+
+class BondedDecorator;
+
 //! A decorator for wrapping a particle representing a molecular bond
 /**
    As with AtomDecorator, the types of bonds will eventually be run-time
@@ -46,7 +49,11 @@ extern IMPCOREEXPORT  FloatKey bond_stiffness_key_;
  */
 class IMPCOREEXPORT BondDecorator: public DecoratorBase
 {
+  friend class BondedDecorator;
 
+  /* Do not initialize the attributes as we don't want people
+     creating bonds directly.
+  */
   IMP_DECORATOR(BondDecorator, DecoratorBase,
                 return internal::graph_is_edge(p, internal::bond_graph_data_),
                );

@@ -34,25 +34,18 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ConnectivityRestraint : public Restraint
 {
+  Pointer<PairScore> ps_;
 public:
   ConnectivityRestraint(PairScore* ps);
 
-  //!
   using Restraint::add_particle;
-  //!
   using Restraint::add_particles;
-  //!
   using Restraint::clear_particles;
-  //!
   using Restraint::set_particles;
 
   virtual ~ConnectivityRestraint();
 
   IMP_RESTRAINT(internal::core_version_info)
-
-protected:
-
-    Pointer<PairScore> ps_;
 };
 
 IMPCORE_END_NAMESPACE

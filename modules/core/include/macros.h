@@ -1,5 +1,5 @@
 /**
- *  \file macros.h    \brief Various important macros
+ *  \file core/macros.h    \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -31,47 +31,56 @@
       is only done once.
  */
 #define IMP_DECORATOR(Name, Parent, check_required, add_required)       \
-  protected:                                                            \
+  private:                                                              \
   static bool decorator_keys_initialized_;                              \
+protected:                                                              \
+ /** goes away once DecoratorBase patched */                            \
+ static bool has_required_attributes(::IMP::Particle *p) {              \
+   return is_instance_of(p);                                            \
+ }                                                                      \
+ /** Initialize the data needed for these decorators */                 \
   static void decorator_initialize_static_data();                       \
-  static bool has_required_attributes(::IMP::Particle *p) {             \
-    if (!Parent::has_required_attributes(p)) return false;              \
-    check_required;                                                     \
-  }                                                                     \
   static void add_required_attributes(::IMP::Particle *p) {             \
-    if (!Parent::has_required_attributes(p)) {                          \
+    if (!internal::parent_instance<Parent>(p)) {                        \
       Parent::add_required_attributes(p);                               \
     }                                                                   \
     add_required;                                                       \
   }                                                                     \
   friend class DecoratorBase;                                           \
 public:                                                                 \
+/** \note Should be private but SWIG accesses it through the comparison
+    macros*/                                                            \
  typedef Name This;                                                     \
  /** \short The default constructor. This is used as a null value */    \
  Name(): Parent(){}                                                     \
  /** \short Construct from a Particle which has all needed attributes */\
  Name(::IMP::Particle *p): Parent(p) {                                  \
-   if (!decorator_keys_initialized_) decorator_initialize_static_data();\
-   IMP_assert(has_required_attributes(p),                               \
-              "Particle missing required attributes for decorator"      \
+   IMP_assert(decorator_keys_initialized_,                              \
+              #Name "::create or ::cast must be called before the "     \
+              << "constructor is used.");                               \
+   IMP_assert(is_instance_of(p),                                        \
+              "Particle missing required attributes for decorator "     \
               << #Name << *p << std::endl);                             \
  }                                                                      \
  /** Add the necessary attributes to p and return a decorator. */       \
  static Name create(::IMP::Particle *p) {                               \
    return IMP::DecoratorBase::create<Name>(p);                          \
  }                                                                      \
- /** Check that p has the necessary attributes and return a decorator.  \
-     \throws InvalidStateException if some required attributes are      \
-     missing                                                            \
+ /** Check that p has the necessary attributes and return a decorator.
+     \throws InvalidStateException if some required attributes are
+     missing
  */                                                                     \
  static Name cast(::IMP::Particle *p) {                                 \
    return IMP::DecoratorBase::cast<Name>(p);                            \
  }                                                                      \
+/** Check if the particle has the needed attributes for a
+    cast to succeed */                                                  \
  static bool is_instance_of(::IMP::Particle *p) {                       \
    decorator_initialize_static_data();                                  \
-   return has_required_attributes(p);                                   \
+   if (!internal::parent_instance<Parent>(p)) return false;             \
+   check_required;                                                      \
  }                                                                      \
- /** Write information about this decorator to out. Each line should    \
+ /** Write information about this decorator to out. Each line should
      prefixed by prefix*/                                               \
  void show(std::ostream &out=std::cout,                                 \
            std::string prefix=std::string()) const;
@@ -187,18 +196,17 @@ public:                                                                 \
 
    - get_number_of_name()
 
-   - add_name(Traits::ExternalType)
+   - add_name(ExternalType)
 
-   - add_name_at(Traits::ExternalType, unsigned int)
+   - add_name_at(ExternalType, unsigned int)
 
    - remove_name(unsigned int)
 
    in addition it defines the private methods
-   - has_required_attributes_for_name(Particle *)
-
    - add_required_attributes_for_name(Particle *)
  */
-#define IMP_DECORATOR_ARRAY_DECL(protection, name, plural, Traits)      \
+#define IMP_DECORATOR_ARRAY_DECL(protection, name, plural, Traits,      \
+                                 ExternalType)                          \
 private:                                                                \
  static internal::ArrayOnAttributesHelper<Traits::Key,                  \
                                           Traits::Value> name##_data_;  \
@@ -210,22 +218,22 @@ private:                                                                \
  }                                                                      \
 protection:                                                             \
  /** \brief Get the ith member*/                                        \
- Traits::ExternalType get_##name(unsigned int i) const {                \
-   return Traits::ExternalType(name##_data_.get_value(get_particle(), i)); \
+ ExternalType get_##name(unsigned int i) const {                        \
+   return ExternalType(name##_data_.get_value(get_particle(), i));      \
  }                                                                      \
  /** \brief Get the total number of them*/                              \
  unsigned int get_number_of_##plural() const {                          \
    return name##_data_.get_size(get_particle());                        \
  }                                                                      \
  /** \brief Add t at the end */                                         \
- unsigned int add_##name(Traits::ExternalType t) {                      \
+ unsigned int add_##name(ExternalType t) {                              \
    unsigned int i= name##_data_.push_back(get_particle(),               \
                                           Traits::get_value(t));        \
    Traits::on_add(get_particle(), t, i);                                \
    return i;                                                            \
  }                                                                      \
  /** Add t at a certain position */                                     \
- void add_##name##_at(Traits::ExternalType t, unsigned int idx) {       \
+ void add_##name##_at(ExternalType t, unsigned int idx) {               \
    name##_data_.insert(get_particle(),                                  \
                        idx,                                             \
                        Traits::get_value(t));                           \
@@ -237,7 +245,7 @@ protection:                                                             \
    }                                                                    \
  }                                                                      \
  /** Remove t from the array */                                         \
- void remove_##name(Traits::ExternalType t) {                           \
+ void remove_##name(ExternalType t) {                                   \
    unsigned int idx= Traits::get_index(get_particle(), t);               \
    Traits::on_remove(get_particle(), t);                                \
    name##_data_.erase(get_particle(),                                   \
@@ -273,5 +281,6 @@ protection:                                                             \
 
 #define IMP_ATOM_TYPE_INDEX 8974343
 #define IMP_RESIDUE_TYPE_INDEX 90784334
+
 
 #endif  /* IMPCORE_DECORATOR_MACROS_H */

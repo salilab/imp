@@ -32,6 +32,7 @@ public:
               ValueException);
     stddev_=sigma;
   }
+  /** */
   Float get_sigma() const {
     return stddev_;
   }

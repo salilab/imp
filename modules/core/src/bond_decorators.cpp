@@ -67,11 +67,13 @@ static void bond_initialize_static_data()
 }
 
 IMP_DECORATOR_INITIALIZE(BondDecorator, DecoratorBase,
-                         bond_initialize_static_data());
+                         {
+                           bond_initialize_static_data();
+                         });
 
 
 IMP_DECORATOR_INITIALIZE(BondedDecorator, DecoratorBase,
-                         bond_initialize_static_data());
+                         BondDecorator::decorator_initialize_static_data());
 
 
 BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)

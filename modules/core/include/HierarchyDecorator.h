@@ -37,7 +37,6 @@ struct IMPCOREEXPORT ChildArrayTraits
 
   typedef ParticleKey Key;
   typedef Particle* Value;
-  typedef HierarchyDecorator ExternalType;
   static void on_add(Particle * p, HierarchyDecorator d, unsigned int i) ;
   static void on_change(Particle *, HierarchyDecorator d, unsigned int oi,
                         unsigned int ni) ;
@@ -79,14 +78,14 @@ class IMPCOREEXPORT HierarchyDecorator: public DecoratorBase
 
   friend class internal::ChildArrayTraits;
 
-  IMP_DECORATOR_ARRAY_DECL(public, child, children, internal::ChildArrayTraits)
+  IMP_DECORATOR_ARRAY_DECL(public, child, children, internal::ChildArrayTraits,
+                           HierarchyDecorator)
 
   IMP_DECORATOR(HierarchyDecorator, DecoratorBase,
                 return has_required_attributes_for_child(p),
                 add_required_attributes_for_child(p));
 public:
 
-  //! Get a HierarchyDecorator wrapping the parent particle
   /** \return the parent particle, or HierarchyDecorator()
       if it has no parent.
    */
@@ -105,7 +104,7 @@ public:
                       Int, return VALUE, return -1);
   }
 
-  //! Return true if it has a parent.
+  /** Return true if the parent is not empty */
   bool has_parent() const {
     return get_particle()->has_attribute(
                    internal::ChildArrayTraits::parent_key_);

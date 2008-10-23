@@ -42,7 +42,7 @@ public:
 
   virtual ParticlesList get_interacting_particles() const;
 
-protected:
+private:
   Pointer<SingletonScore> ss_;
 };
 
