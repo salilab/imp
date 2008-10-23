@@ -47,7 +47,9 @@ files = [
          'VRMLLogOptimizerState.cpp',
          'VelocityScalingOptimizerState.cpp',
          'XYZDecorator.cpp',
+         'XYZRDecorator.cpp',
          'bond_decorators.cpp',
+         'model_io.cpp',
         ] \
         + SConscript('internal/SConscript')
 
