@@ -84,12 +84,12 @@ public:
     //std::cout << "Which converts to " << d << std::endl;
     return std::make_pair(evaluate(fl), deriv);
   }
-
+  /** */
   void show(std::ostream &out=std::cout) const {
     out << "WormLikeChain " << lmax_ << " " << lp_ << std::endl;
   }
 
-protected:
+private:
   unit::Piconewton cderiv(unit::Angstrom l) const {
     unit::Piconewton pn= IMP::internal::KB*IMP::internal::DEFAULT_TEMPERATURE
       /lp_*(.25/ square(1.0-(l/lmax_).get_normalized_value())

@@ -41,34 +41,45 @@ class IMPMISCEXPORT TunnelSingletonScore : public SingletonScore
   Pointer<UnaryFunction> f_;
   FloatKey rk_;
 public:
+  /** */
   TunnelSingletonScore(UnaryFunction* f, FloatKey r);
 
+  //! Set the center of the tunnel
   void set_center(Vector3D c) {
     center_=c;
   }
+  /** Set height of slab */
   void set_height(Float h) {
     IMP_check(h >= 0,
               "Height can't be negative",
               ValueException);
     height_=h;
   }
+  /** */
   void set_radius(Float h) {
     IMP_check(h >= 0,
               "Radius can't be negative",
               ValueException);
     radius_=h;
   }
+  //! set the index of the coordinate of the cylinder axis
+  /**
+      \throw ValueException if i>=3
+   */
   void set_coordinate(unsigned int i) {
     IMP_check(i < 3,
               "Invalid coordinate value",
               ValueException);
     coordinate_=i;
   }
+  //! Return the index of the coordinate of the cylinder axis
   unsigned int get_coordinate() const {
     return coordinate_;
   }
 
+  /** */
   virtual Float evaluate(Particle *a, DerivativeAccumulator *da) const;
+  /** */
   virtual void show(std::ostream &out=std::cout) const;
 };
 

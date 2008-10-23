@@ -24,7 +24,9 @@ class IMPMISCEXPORT BondCoverParticleRefiner : public ParticleRefiner
 {
   FloatKey rk_;
   FloatKey vk_;
-public:
+ public:
+  /** Cover the bond with spheres. Their volumes will add up to the number
+      given in the vk field of the bond and their radii will be set using rk */
   BondCoverParticleRefiner(FloatKey rk,
                            FloatKey vk);
 
