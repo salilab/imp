@@ -33,9 +33,12 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   RefineOncePairScore(ParticleRefiner *r, PairScore *f);
+  /** */
   virtual ~RefineOncePairScore(){}
+  /** */
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const;
+  /** */
   virtual void show(std::ostream &out=std::cout) const;
 };
 
