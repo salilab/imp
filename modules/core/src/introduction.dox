@@ -1,0 +1,304 @@
+/**
+\page introduction An Introduction to IMP
+
+
+\section i0 Architecture
+ 
+  - Representation: IMP::Particle objects store data
+  - Scoring:
+    - \ref restraint "General purpose restraints" are components for assembling general restraints. 
+    - \ref exp_restraint "Experimental restraints" are restraints that directly incorporate experimental data.
+    - IMP::ScoreState objects compute shared structure and invariants
+    - IMP::SingletonScore, IMP::PairScore and IMP::TripletScore objects evaluate a score on a set of particles
+  - IMP::Optimizer object optimize the Particles with respect to the Restraints
+
+
+  - The IMP::Model ties everything together
+
+
+
+
+
+\section i5 Other important bits
+There is good \ref log "logging support":
+\code
+IMP::set_log_level(IMP.VERBOSE)
+IMP_LOG(TERSE, "Something interesting has occurred with variable " 
+                 << var << std::endl);
+\endcode
+
+\ref assert "Error reporting/checking" which can be controlled at runtime
+\code
+IMP::set_check_level(IMP.EXPENSIVE)
+IMP_check(boolean_condition, "An error has occurred with value "
+                             << some_value,
+                             ExceptionType)
+\endcode
+
+The control functions are accessible from Python, but the check and log macros are not.
+
+Saving state
+\verbatim
+IMP.core.write(my_imp_model, "somefile")
+IMP.core.read("somefile", my_imp_model)
+\endverbatim
+
+
+
+\section i6 Examples
+The following examples all are in python and C++ The following code is ommitted from the examples:
+\verbatim
+import IMP
+import IMP.core
+m= IMP.Model()
+ps= IMP.Particles()
+for i in range(0,100)
+    p= IMP.Particle()
+    m.add_particle(p)
+    d= IMP.core.XYZDecorator.create(p)
+    d.set_coordinates_are_optimized(True)
+    d.set_coordinates(IMP.random_vector_in_box())
+    d.set_radius(1.0)
+\endverbatim
+
+\code
+#include <IMP.h>
+#include <IMP/core.h>
+
+IMP::Pointer<IMP::Model> m= new IMP::Model();
+IMP::Particles ps;
+for (int i=0; i< 100; ++i) {
+    ps.push_back(new IMP::Particle());
+    m->add_particles(ps.back());
+    d= IMP::core::XYZRDecorator::create(ps.back());
+    d.set_coordinates_are_optimized(true);
+    d.set_coordinates(IMP::random_vector_in_box());
+    d.set_radius(1.0);
+}
+
+\endcode
+
+
+
+
+
+\section i7 Restraint some distances
+
+Restrain the distance between the first two particles.
+
+\verbatim
+uf= IMP.core.Harmonic(0,1)
+df= IMP.core.SphereDistancePairScore(uf)
+r= IMP.core.PairRestraint(df, ps[0], ps[1])
+m.add_restraint(r)
+\endverbatim
+
+
+\code
+IMP::core::Harmonic *uf= new IMP::core::Harmonic(0,1)
+IMP::core::SphereDistancePairScore *df= new IMP::core::SphereDistancePairScore(uf)
+IMP::core::PairRestraint* r= new IMP::core::PairRestraint(df, ps[0], ps[1])
+m->add_restraint(r)
+\endcode
+
+Won't the "auto" keyword make things simpler...
+
+
+
+
+\section i8 Preventing collisions
+The NonbondedList maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The HarmonicLowerBound forces the spheres apart.
+\verbatim
+nbl= IMP.core.AllNonbondedListSoreState(min_distance)
+nbl.set_particles(ps)
+m.add_score_state(nbl)
+h= IMP.core.HarmonicLowerBound(0,1)
+sd= IMP.core.SphereDistancePairScore(h)
+nbr= IMP.core.NonbondedRestraint(sd, nbl)
+m.add_restraint(nbr)
+\endverbatim
+
+\code
+IMP::core::AllNonbondedListSoreState *nbl= new IMP::core::AllNonbondedListSoreState(min_distance);
+nbl->set_particles(ps);
+m->add_score_state(nbl);
+IMP::core::HarmonicLowerBound* h= new IMP::core::HarmonicLowerBound(0,1);
+IMP::core::SphereDistancePairScore *sd= new IMP::core::SphereDistancePairScore(h);
+IMP::core::NonbondedRestraint* nbr= new IMP::core::NonbondedRestraint(sd, nbl);
+m->add_restraint(nbr);
+\endcode
+
+
+
+
+
+
+
+\section i9 Restraining bonds
+
+Load a protein and restrain all the bonds to have the correct length. Bond angles is a bit trickier at the moment.
+
+\verbatim
+prot= IMP.modeller.read_pdb("some.pdb")
+bds= IMP.core.get_internal_bonds(prot)
+bl= IMP.core.BondDecoratorListScoreState(bds)
+nbl.add_bonded_list(bl)
+h= IMP.core.Harmonic(0,1)
+br= IMP.core.BondDecoratorListRestraint(h, bl)
+m.add_restraint(br)
+\endverbatim
+
+\code
+// Currently you can't read a pdb from C++
+IMP::core::MolecularHiearchyDecorator prot=???;
+IMP::core::BondDecorators bds= IMP::core::get_internal_bonds(prot);
+IMP::core::BondDecoratorListScoreState *bl= new IMP::core::BondDecoratorListScoreState(bds);
+nbl->add_bonded_list(bl);
+IMP::core::Harmonic *h= new IMP::core::Harmonic(0,1);
+IMP::core::BondDecoratorListRestraint *br= new IMP::core::BondDecoratorListRestraint(h, bl);
+m->add_restraint(br);
+\endcode
+
+
+
+
+
+
+
+\section i10 Simple optimization setup
+A basic setup for optimizing a model.
+\verbatim
+m= IMP::Model()
+particles = setup_model(m)
+fname= "/tmp/best_scoring_config.yaml"
+best_score=1000000
+o= IMP.ConjugateGradients()
+o.set_model(m)
+for i in range(0,1000):
+    randomize(particles)
+    score=o.optimize(1000)
+    if score < best_score:
+       IMP::core::write_yaml(m, fname)
+       best_score= score
+IMP::core::read_yaml(fname, m)
+\endverbatim
+
+\code
+IMP::Pointer<IMP::Model> m= new IMP::Model();
+IMP::Particles particles = setup_model(m);
+
+std::string best;
+float best_score=std::numeric_limits<IMP::Float>::infinity();
+
+IMP.ConjugateGradients o;
+o.set_model(m)
+for (int i=0; i< 100; ++i) {
+    randomize(particles)
+    IMP::Float score=o.optimize(1000)
+    if (score < best_score) {
+       std::ostringstream oss;
+       IMP::core::write_yaml(m, oss);
+       best_score= score;
+    }
+}
+std::istringstream iss(best_score);
+IMP::core::read_yaml(iss, m);
+\endcode
+
+\section i11 Writing a simple restraint
+This is actually an IMP::SingletonListRestraint.
+
+\code
+class IMPDLLEXPORT MyRestraint: public Restraint {
+      Pointer<SingletonScore> ss_;
+public:
+        MyRestraint(SingletonScore *ss): ss_(ss){}
+        IMP_RESTRAINT(my_version_info);
+        using Restraint::add_particle;
+        using Restraint::set_particles;
+};
+
+Float MyRestraint::evaluate(DerivativeAccumulator *da) {
+      Float accum=0;
+      for (Restraint::ParticleIterator it = Restraint::particles_begin(); it != Restraint::particles_end(); ++it) {
+          accum += ss_->evaluate(*it, da);
+       }
+       return accum;
+}
+Float MyRestraint::show(std::ostream &out) const {
+      out << "MyRestraint on " << Restraint::get_number_of_particles() << " particles" << std::endl;
+}
+
+ParticlesList
+MyRestraint::get_interacting_particles() const
+{
+  ParticlesList ret(Restraint::get_number_of_particles());
+  for( unsigned int i=0;
+i< Restraint::get_number_of_particles(); ++i) {
+    ret[i]= Particles(1, Restraint::get_particle(i));
+  }
+  return ret;
+}
+
+\endcode
+
+
+\section i12 Available functionality
+
+Look through the types inherited from these methods to get an idea of the functionality available.
+
+- IMP::DecoratorBase
+- IMP::Restraint
+- IMP::SingletonScore
+- IMP::PairScore
+- IMP::TripletScore
+- and check out the modules page for an orthogonal view
+
+
+
+
+\section i13 C++ vs Python
+
+Most code maps trivially from one to the other as you can see in the example.
+- have to declare variables in C++
+- need to know about smart pointers (use IMP::Pointer to store pointers)
+- memory management is a bit of a mess in Python
+- a few things can only be done in one language or the other (pdb files in python)
+
+Debugging is much easier in C++.
+- hard to inspect objects in python
+
+Easier to experiment in Python.
+- we don't have good doc strings though and no str(foo)
+
+Recommendations:
+- write restraints and decorators in C++
+- never inherit from a C++ object in Python: the python wrapper we use does not manage memory properly.
+
+
+\section i14 Conventions to be aware of
+
+We attempted to be very uniform in naming:
+- classes are CamelCase
+- methods_use_underscores
+- methods start with add_, remove_, get_, set_ as appropriate
+- If there is an object of type Foo, then Foos is a collection of that object
+- Things that maintain a list of objects of type Foo all have at type FooIndex and methods
+\verbatim
+Foo get_foo(FooIndex)
+FooIndex add_foo(Foo)
+void add_foos(Foos)
+void remove_foo(FooIndex)
+etc.
+\endverbatim
+- Particles are passed around as pointers (rather than indexes).
+
+
+
+
+\section i15 Getting started
+
+Check out the wiki page to get started with IMP
+https://salilab.org/imp/wiki/
+
+*/
