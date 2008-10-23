@@ -116,16 +116,16 @@ void TransformedDistancePairScore::set_rotation(float r00, float r01, float r02,
           << ri_[2] << std::endl);
 }
 
-void TransformedDistancePairScore::set_translation(float t0, float t1, float t2)
+void TransformedDistancePairScore::set_translation(const Vector3D &v)
 {
-  tc_= Vector3D(t0, t1, t2) + c_;
+  tc_= v + c_;
 }
 
 
-void TransformedDistancePairScore::set_center(float t0, float t1, float t2)
+void TransformedDistancePairScore::set_center(const Vector3D &c)
 {
   tc_= tc_-c_;
-  c_= Vector3D(t0, t1, t2);
+  c_= c;
   tc_= tc_+c_;
 }
 
