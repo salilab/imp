@@ -20,16 +20,15 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Ensure that several sets of particles remain connected with one another.
-/** The restraint takes several sets (added using the add_set method)
-    and ensures that the sets of points are connected.
+//! Ensure that a set of particles remains connected with one another.
+/** The restraint takes several particles and ensures that they remain
+    connected. If you wish to restraint the connectivity of sets of
+    particles (i.e. each protein is represented using a set of balls)
+    use an appropriate PairScore which calls a ParticleRefiner (such
+    as ClosestPairPairScore).
 
     More precisely, the restraint scores based on a minimum spanning
-    tree on the set of particles in the union of the sets. Edges
-    between two particles from the same set have weight 0. Edges
-    between two nodes from different sets have weights given by the
-    PairScore for that pair. The edges within a set are ignored for
-    the purposes of computing derivatives.
+    tree on the points defined by the particles.
 
     \ingroup restraint
  */
@@ -38,11 +37,14 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint
 public:
   ConnectivityRestraint(PairScore* ps);
 
-  //! Add a new set of particles.
-  void add_set(const Particles &ps);
-
-  //! Clear all the sets and start over
-  void clear_sets();
+  //!
+  using Restraint::add_particle;
+  //!
+  using Restraint::add_particles;
+  //!
+  using Restraint::clear_particles;
+  //!
+  using Restraint::set_particles;
 
   virtual ~ConnectivityRestraint();
 
@@ -51,12 +53,6 @@ public:
 protected:
 
     Pointer<PairScore> ps_;
-
-  //! The indices for the first particle in each set
-  /** set_offset_[i] is the first index of set i and set_offset_[i+1] is
-      the first index not in i. It is always defined if i is valid.
-   */
-  std::vector<unsigned int> set_offsets_;
 };
 
 IMPCORE_END_NAMESPACE

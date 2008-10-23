@@ -8,17 +8,6 @@ import IMP.utils
 class ConnectivityTests(IMP.test.TestCase):
     """Class to test connectivity restraints"""
 
-    def min_distance(self, psa, psb):
-        md=100
-        for pa in psa:
-            for pb in psb:
-                da= IMP.core.XYZDecorator.cast(pa)
-                db= IMP.core.XYZDecorator.cast(pb)
-                d= IMP.core.distance(da,db)
-                if d < md:
-                    md=d
-        return md
-
     def test_connectivity(self):
         """Test connectivity restraint.
            All particles in a single protein should be connected, and all
@@ -27,33 +16,8 @@ class ConnectivityTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
 
-        rk= IMP.FloatKey("radius")
-
-        p0=IMP.Particles()
-        p1=IMP.Particles()
-        p2=IMP.Particles()
-        p3=IMP.Particles()
-        for i in range(13):
-            p= IMP.Particle()
-            m.add_particle(p)
-            d= IMP.core.XYZDecorator.create(p)
-            d.set_coordinates_are_optimized(True)
-            if i % 3 == 0:
-                p0.append(p)
-                p.add_attribute(rk, 1);
-            elif i % 3 == 1:
-                p1.append(p)
-                p.add_attribute(rk, 2);
-            else:
-                p2.append(p)
-                p.add_attribute(rk, 3);
-        p= IMP.Particle()
-        m.add_particle(p)
-        d= IMP.core.XYZDecorator.create(p)
-        d.set_coordinates_are_optimized(True)
-        p3.append(p)
-        p.add_attribute(rk, 1);
-
+        ps= self.create_particles_in_box(m,4)
+        ds= map(lambda p: IMP.core.XYZDecorator.cast(p), ps)
         o = IMP.core.ConjugateGradients()
         o.set_threshold(1e-4)
         o.set_model(m)
@@ -61,27 +25,25 @@ class ConnectivityTests(IMP.test.TestCase):
 
         # add connectivity restraints
 
-        ub = IMP.core.HarmonicUpperBound(0.0, 0.1)
-        ss= IMP.core.SphereDistancePairScore(ub)
+        ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
+        ss= IMP.core.DistancePairScore(ub)
         r= IMP.core.ConnectivityRestraint(ss)
         m.add_restraint(r)
-        r.add_set(p0)
-        r.add_set(p1)
-        r.add_set(p2)
-        r.add_set(p3)
+        r.add_particles(ps)
         o.optimize(1000)
-        d01= self.min_distance(p0, p1)
-        d02= self.min_distance(p0, p2)
-        d12= self.min_distance(p1, p2)
-        d03= self.min_distance(p0, p3)
-        d13= self.min_distance(p1, p3)
-        d23= self.min_distance(p2, p3)
-        ok01= (d01 < 3.5)
-        ok02= (d02 < 4.5)
-        ok12= (d12 < 5.5)
-        ok03= (d03 < 2.5)
-        ok13= (d13 < 3.5)
-        ok23= (d23 < 4.5)
+        d01= IMP.core.distance(ds[0], ds[1])
+        d02= IMP.core.distance(ds[0], ds[2])
+        d03= IMP.core.distance(ds[0], ds[3])
+        d12= IMP.core.distance(ds[1], ds[2])
+        d13= IMP.core.distance(ds[1], ds[3])
+        d23= IMP.core.distance(ds[2], ds[3])
+
+        ok01= (d01 < 1.2)
+        ok02= (d02 < 1.2)
+        ok12= (d12 < 1.2)
+        ok03= (d03 < 1.2)
+        ok13= (d13 < 1.2)
+        ok23= (d23 < 1.2)
         print ok01
         print ok02
         print ok12
