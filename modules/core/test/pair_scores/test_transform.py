@@ -16,7 +16,7 @@ class DistanceTests(IMP.test.TestCase):
         m.add_particle(p1)
         d1= IMP.core.XYZDecorator.create(p1)
         tps= IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0,1))
-        tps.set_translation(0,1,0)
+        tps.set_translation(IMP.Vector3D(0,1,0))
         tps.set_rotation(1, 0, 0,
                          0, 1, 0,
                          0, 0, 1)
@@ -24,10 +24,10 @@ class DistanceTests(IMP.test.TestCase):
         d1.set_coordinates(IMP.Vector3D(2,2,4))
         self.assertEqual(tps.evaluate(p0, p1, None), 0)
         self.assert_(tps.evaluate(p1, p0, None) != 0)
-        tps.set_center(10,13,4)
+        tps.set_center(IMP.Vector3D(10,13,4))
         self.assertEqual(tps.evaluate(p0, p1, None), 0)
         self.assert_(tps.evaluate(p1, p0, None) != 0)
-        tps.set_center(0,0,0)
+        tps.set_center(IMP.Vector3D(0,0,0))
         print "test rotation"
         tps.set_rotation(0, 0,-1,
                          0, 1, 0,
@@ -35,7 +35,7 @@ class DistanceTests(IMP.test.TestCase):
         d1.set_coordinates(IMP.Vector3D(4, 2, -2))
         self.assertEqual(tps.evaluate(p0, p1, None), 0)
         self.assert_(tps.evaluate(p1, p0, None) != 0)
-        tps.set_translation(0,0,0)
+        tps.set_translation(IMP.Vector3D(0,0,0))
         tps.set_rotation(0,-1, 0,
                          1, 0, 0,
                          0, 0, 1)
@@ -72,7 +72,7 @@ class DistanceTests(IMP.test.TestCase):
         d0.set_coordinates_are_optimized(True)
         d1.set_coordinates_are_optimized(True)
         tps= IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0,1))
-        tps.set_translation(0,1,0)
+        tps.set_translation(IMP.Vector3D(0,1,0))
         tps.set_rotation(1, 0, 0,
                          0, 0,-1,
                          0, 1, 0)

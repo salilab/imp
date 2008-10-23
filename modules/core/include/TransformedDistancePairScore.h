@@ -38,13 +38,17 @@ public:
   virtual ~TransformedDistancePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const;
+
   virtual void show(std::ostream &out=std::cout) const;
 
+  /** Set the rotation matrix.*/
   void set_rotation(float r00, float r01, float r02,
                     float r10, float r11, float r12,
                     float r20, float r21, float r22);
-  void set_translation(float t0, float t1, float t2);
-  void set_center(float t0, float t1, float t2);
+
+  void set_translation(const Vector3D &v);
+
+  void set_center(const Vector3D &c);
 };
 
 IMPCORE_END_NAMESPACE
