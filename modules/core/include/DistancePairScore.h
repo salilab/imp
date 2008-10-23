@@ -27,6 +27,7 @@ public:
   virtual ~DistancePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const;
+
   virtual void show(std::ostream &out=std::cout) const;
 };
 

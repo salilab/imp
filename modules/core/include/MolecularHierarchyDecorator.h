@@ -28,16 +28,13 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 {
-  IMP_DECORATOR(MolecularHierarchyDecorator,
-                HierarchyDecorator,
-                return P::has_required_attributes(p)
-                       && p->has_attribute(type_key_),
-                {p->add_attribute(type_key_, UNKNOWN);});
-protected:
   typedef HierarchyDecorator P;
   static IntKey type_key_;
 
-
+  IMP_DECORATOR(MolecularHierarchyDecorator,
+                HierarchyDecorator,
+                return p->has_attribute(type_key_),
+                {p->add_attribute(type_key_, UNKNOWN);});
 public:
 
   //! The various values for levels of the hierarchy
@@ -49,11 +46,11 @@ public:
              CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE, ASSEMBLY,
              COLLECTION, UNIVERSE, UNIVERSES, TRAJECTORY
             };
-
+  /** */
   Type get_type() const {
     return Type(get_particle()->get_value(type_key_));
   }
-
+  /** */
   void set_type(Type t) {
     get_particle()->set_value(type_key_, t);
   }
@@ -125,13 +122,13 @@ public:
     P::add_child_at(o, i);
   }
 
-  //! Get a child
+  /** */
   MolecularHierarchyDecorator get_child(unsigned int i) const {
     HierarchyDecorator hd= P::get_child(i);
     return cast(hd.get_particle());
   }
 
-  //! Get the parent
+  /** */
   MolecularHierarchyDecorator get_parent() const {
     HierarchyDecorator hd= P::get_parent();
     if (hd == HierarchyDecorator()) {
@@ -141,7 +138,7 @@ public:
     }
   }
 
-
+  /** */
   static IntKey get_type_key() {
     decorator_initialize_static_data();
     return type_key_;
@@ -149,6 +146,7 @@ public:
 
 };
 
+/** */
 typedef std::vector<MolecularHierarchyDecorator> MolecularHierarchyDecorators;
 
 

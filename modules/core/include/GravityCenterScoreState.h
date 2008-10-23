@@ -45,7 +45,7 @@ public:
 
   IMP_SCORE_STATE(internal::core_version_info);
 
-protected:
+private:
   //! Back-transform any forces on the center particle to the original points.
   void transform_derivatives(DerivativeAccumulator *accpt);
 

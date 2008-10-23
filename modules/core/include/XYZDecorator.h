@@ -25,6 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT XYZDecorator: public DecoratorBase
 {
+  static FloatKeys key_;
   IMP_DECORATOR(XYZDecorator, DecoratorBase,
                 {
                   return p->has_attribute(key_[0])
@@ -38,9 +39,6 @@ class IMPCOREEXPORT XYZDecorator: public DecoratorBase
                   p->add_attribute(key_[2],
                                    std::numeric_limits<float>::infinity());
                 });
-
-protected:
-  static FloatKeys key_;
 
 public:
   IMP_DECORATOR_GET_SET(x, key_[0], Float, Float);
@@ -120,7 +118,7 @@ public:
    */
   IMP_DECORATOR_GET_KEY(FloatKeys, xyz_keys, key_)
 
-protected:
+private:
   static FloatKey get_coordinate_key(unsigned int i) {
     IMP_check(i <3, "Out of range coordinate",
               IndexException);

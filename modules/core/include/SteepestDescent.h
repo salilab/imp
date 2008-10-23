@@ -35,7 +35,7 @@ public:
   //! Set the step size
   void set_step_size(Float t) {step_size_=t;}
 
-protected:
+private:
   Float step_size_;
   Float threshold_;
 };

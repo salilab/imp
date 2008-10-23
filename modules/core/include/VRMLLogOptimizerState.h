@@ -76,9 +76,10 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
   //! Force it to write the next file
   void write_next_file();
 
+  /** Write to a file with the given name */
   void write(std::string name) const;
 
-protected:
+private:
   //! A helper function to just write a list of particles to a file
   void write(std::ostream &out, const Particles &ps) const;
   std::string filename_;

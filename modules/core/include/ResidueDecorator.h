@@ -31,15 +31,15 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
  */
 class IMPCOREEXPORT ResidueDecorator: public DecoratorBase
 {
+  static IntKey type_key_;
+  static IntKey index_key_;
+
   IMP_DECORATOR(ResidueDecorator, DecoratorBase,
                 return p->has_attribute(type_key_)
                        && p->has_attribute(index_key_),
                 { p->add_attribute(type_key_, -1);
                   p->add_attribute(index_key_, -1);
                 });
-protected:
-  static IntKey type_key_;
-  static IntKey index_key_;
 
 public:
 

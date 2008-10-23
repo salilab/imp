@@ -9,10 +9,7 @@
 
 #include <sstream>
 
-IMPCORE_BEGIN_NAMESPACE
-
-namespace internal
-{
+IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 IMPDLLEXPORT void graph_initialize_node(Particle* a,
                                         const GraphData &d)
@@ -97,6 +94,10 @@ bool graph_is_edge(Particle *a, const GraphData &d)
          && a->has_attribute(d.node_keys_[1]);
 }
 
-} // namespace internal
+void graph_initialize_edge(Particle *a, const GraphData &d)
+{
+  a->add_attribute(d.node_keys_[0], NULL);
+  a->add_attribute(d.node_keys_[1], NULL);
+}
 
-IMPCORE_END_NAMESPACE
+IMPCORE_END_INTERNAL_NAMESPACE

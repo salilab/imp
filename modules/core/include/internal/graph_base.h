@@ -74,6 +74,9 @@ IMPCOREEXPORT Particle* graph_get_node(Particle *a, int i,
 IMPCOREEXPORT bool graph_is_edge(Particle *a, const GraphData &d);
 
 /** \internal */
+IMPCOREEXPORT void graph_initialize_edge(Particle *a, const GraphData &d);
+
+/** \internal */
 template <class F>
 F graph_traverse(Particle *start, F f, const GraphData &d)
 {

@@ -21,8 +21,6 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT XYZRDecorator: public XYZDecorator
 {
-
-protected:
   FloatKey my_radius_;
 public:
   /**

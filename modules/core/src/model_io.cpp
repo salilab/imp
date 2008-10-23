@@ -1,5 +1,5 @@
 /**
- *  \file yaml.cpp   \brief YAML io support.
+ *  \file model_io.cpp   \brief YAML io support.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
