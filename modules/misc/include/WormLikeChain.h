@@ -41,7 +41,7 @@ public:
   virtual ~WormLikeChain() {}
 
   //! Calculate the WormLikeChain energy given the length
-  /** \param[in] l Current length in Angstroms
+  /** \param[in] lf Current length in Angstroms
       \return Energy in kcal/mol
    */
   virtual Float evaluate(Float lf) const {
@@ -62,7 +62,7 @@ public:
   }
 
   //! Calculate the WormLikeChain energy given the length
-  /** \param[in] l Current length in angstroms
+  /** \param[in] fl Current length in angstroms
    */
   virtual FloatPair evaluate_with_derivative(Float fl) const {
     unit::Angstrom l(fl);
@@ -90,7 +90,6 @@ public:
   }
 
 protected:
-  //! \note named to avoid clash with 'deriv' argument
   unit::Piconewton cderiv(unit::Angstrom l) const {
     unit::Piconewton pn= IMP::internal::KB*IMP::internal::DEFAULT_TEMPERATURE
       /lp_*(.25/ square(1.0-(l/lmax_).get_normalized_value())
