@@ -6,6 +6,7 @@
  */
 
 #include <IMP/core/internal/graph_base.h>
+#include <IMP/core/macros.h>
 
 #include <sstream>
 
