@@ -55,6 +55,7 @@ public:                                                                 \
  Name(): Parent(){}                                                     \
  /** \short Construct from a Particle which has all needed attributes */\
  Name(::IMP::Particle *p): Parent(p) {                                  \
+   decorator_initialize_static_data();                                  \
    IMP_assert(decorator_keys_initialized_,                              \
               #Name "::create or ::cast must be called before the "     \
               << "constructor is used.");                               \
