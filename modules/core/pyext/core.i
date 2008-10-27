@@ -48,6 +48,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(TripletChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
+    IMP_CONTAINER_SWIG(LowestNRestraintSet, Restraint, restraint)
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
 
@@ -89,6 +90,7 @@ namespace IMP {
 %include "IMP/core/GravityCenterScoreState.h"
 %include "IMP/core/DistanceRestraint.h"
 %include "IMP/core/RestraintSet.h"
+%include "IMP/core/LowestNRestraintSet.h"
 %include "IMP/core/ConnectivityRestraint.h"
 %include "IMP/core/BondDecoratorRestraint.h"
 %include "IMP/core/NonbondedRestraint.h"

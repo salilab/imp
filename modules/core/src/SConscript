@@ -24,6 +24,7 @@ files = [
          'DistanceToSingletonScore.cpp',
          'GravityCenterScoreState.cpp',
          'HierarchyDecorator.cpp',
+         'LowestNRestraintSet.cpp',
          'MaxChangeScoreState.cpp',
          'MolecularDynamics.cpp',
          'MolecularHierarchyDecorator.cpp',
