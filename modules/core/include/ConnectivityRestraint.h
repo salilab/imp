@@ -25,10 +25,22 @@ IMPCORE_BEGIN_NAMESPACE
     connected. If you wish to restraint the connectivity of sets of
     particles (i.e. each protein is represented using a set of balls)
     use an appropriate PairScore which calls a ParticleRefiner (such
-    as ClosestPairPairScore).
+    as LowestRefinedPairScore).
 
-    More precisely, the restraint scores based on a minimum spanning
-    tree on the points defined by the particles.
+    \code
+    Particles hs; // put the HierarchyDecorator
+                  // defined-parents of all the proteins here
+    IMP::PairScore *ps; // your favorite PairScore
+    IMP::ParticleRefiner *cps= new IMP::misc::ChildrenParticleRefiner();
+    IMP::PairScore *lrps = IMP::misc::LowestRefinedPairScore(cps,ps);
+    IMP::core::ConnectivityRestraint *cr
+    = new IMP::core::ConnectivityRestraint(lrps);
+    cr->set_particles(hs);
+    \endcode
+
+    More precisely, the restraint scores by computing the MST on the complete
+    graph connecting all the particles. The edge weights are given by
+    the value of the PairScore for the two endpoints of the edge.
 
     \ingroup restraint
  */
