@@ -20,6 +20,7 @@
 namespace IMP::misc {
   IMP_OWN_FIRST_CONSTRUCTOR(BondCoverPairScore)
   IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RefineOncePairScore)
+  IMP_OWN_FIRST_SECOND_CONSTRUCTOR(LowestRefinedPairScore)
   IMP_OWN_FIRST_CONSTRUCTOR(TunnelSingletonScore)
 }
 
@@ -30,3 +31,4 @@ namespace IMP::misc {
 %include "IMP/misc/RefineOncePairScore.h"
 %include "IMP/misc/TunnelSingletonScore.h"
 %include "IMP/misc/CoverBondsScoreState.h"
+%include "IMP/misc/LowestRefinedPairScore.h"
