@@ -15,7 +15,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Constructor
 RestraintSet::RestraintSet(const std::string& name)
     : weight_(1.0)
 {
@@ -25,10 +24,6 @@ RestraintSet::RestraintSet(const std::string& name)
 
 
 
-//! Destructor
-/** \todo Should reference count restraints correctly, to avoid deleting
-          restraints here which live in two or more RestraintSets.
- */
 RestraintSet::~RestraintSet()
 {
   IMP_LOG(VERBOSE, "Delete RestraintSet");
@@ -38,12 +33,6 @@ IMP_CONTAINER_IMPL(RestraintSet, Restraint, restraint, RestraintIndex,
                    obj->set_model(get_model());,,);
 
 
-
-//! Calculate the score for this restraint for the current model state.
-/** \param[in] accum If not NULL, use this object to accumulate partial first
-                     derivatives.
-    \return Current score.
- */
 Float RestraintSet::evaluate(DerivativeAccumulator *accum)
 {
   if (get_weight() == 0) return 0;
@@ -76,9 +65,6 @@ ParticlesList RestraintSet::get_interacting_particles() const
   return ret;
 }
 
-//! Show the current restraint.
-/** \param[in] out Stream to send restraint description to.
- */
 void RestraintSet::show(std::ostream& out) const
 {
   out << "restraint set " << name_ << ":..." << std::endl;
