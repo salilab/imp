@@ -28,6 +28,7 @@ files = [
          'HarmonicUpperBound.h',
          'HierarchyDecorator.h',
          'Linear.h',
+         'LowestNRestraintSet.h',
          'MaxChangeScoreState.h',
          'MolecularDynamics.h',
          'MolecularHierarchyDecorator.h',
