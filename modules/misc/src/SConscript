@@ -5,6 +5,7 @@ files = [
          'BondCoverParticleRefiner.cpp',
          'ChildrenParticleRefiner.cpp',
          'CoverBondsScoreState.cpp',
+         'LowestRefinedPairScore.cpp',
          'RefineOncePairScore.cpp',
          'TunnelSingletonScore.cpp',
         ]

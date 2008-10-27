@@ -4,6 +4,7 @@ files = [
          'BondCoverParticleRefiner.h',
          'ChildrenParticleRefiner.h',
          'CoverBondsScoreState.h',
+         'LowestRefinedPairScore.h',
          'RefineOncePairScore.h',
          'TunnelSingletonScore.h',
          'WormLikeChain.h',
