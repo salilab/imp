@@ -53,7 +53,12 @@ MS find_minimal_set(It b, It e, unsigned int n) {
 
 Float LowestNRestraintSet::evaluate(DerivativeAccumulator *accum)
 {
-  MS bestn= find_minimal_set(restraints_begin(), restraints_end(), n_);
+  /* hack for visual studio since it does not seem to be able to
+     convert the nonconst iterator to a const one */
+  const LowestNRestraintSet *const_this
+    = static_cast<const LowestNRestraintSet*>(this);
+  MS bestn= find_minimal_set(const_this->restraints_begin(),
+                             const_this->restraints_end(), n_);
 
   float score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {
