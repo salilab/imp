@@ -18,8 +18,6 @@
 
 IMPMISC_BEGIN_NAMESPACE
 
-class PairScore;
-
 //! Score particles with respect to a tunnel.
 /** Particles with x,y,z coordinates and an optional radius are
     prevented from being in a volume described by a slab from
