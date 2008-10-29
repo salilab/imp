@@ -8,6 +8,7 @@
 #ifndef IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 #define IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 
+#include <IMP/utility.h>
 #include <IMP/Vector3D.h>
 
 #include <boost/tuple/tuple.hpp>
