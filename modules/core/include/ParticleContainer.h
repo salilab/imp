@@ -55,6 +55,8 @@ public:
 
   virtual void show(std::ostream &out = std::cout) const;
 
+  virtual VersionInfo get_version_info() const=0;
+
   //!
   typedef internal::IndexingIterator<Accessor> ParticleIterator;
   //!
@@ -75,5 +77,11 @@ public:
 IMP_OUTPUT_OPERATOR(ParticleContainer);
 
 IMPCORE_END_NAMESPACE
+
+#define IMP_PARTICLE_CONTAINER(version_info)                      \
+  bool get_contains_particle(Particle* p) const;                      \
+  unsigned int get_number_of_particles() const;                   \
+  Particle* get_particle(unsigned int i) const;                       \
+  IMP::VersionInfo get_version_info() const { return version_info; }
 
 #endif  /* IMPCORE_PARTICLE_CONTAINER_H */
