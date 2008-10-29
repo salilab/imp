@@ -12,6 +12,7 @@
 
 #include "core_exports.h"
 #include "ParticlePairContainer.h"
+#include "internal/core_version_info.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -30,6 +31,10 @@ public:
   virtual bool get_contains_particle_pair(ParticlePair vt) const;
 
   IMP_LIST(public, ParticlePair, particle_pair, ParticlePair);
+
+  IMP::VersionInfo get_version_info() const {
+    return internal::core_version_info;
+  }
 
   //!
   virtual void show(std::ostream &out = std::cout) const;
