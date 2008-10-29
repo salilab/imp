@@ -70,6 +70,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(TripletChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(BondDecoratorSingletonScore)
     /* these two create a memory leak.
        We need to check if the object inherits from ref counted or
        object first */
@@ -152,6 +153,8 @@ namespace IMP {
 %include "IMP/core/ParticlePairContainer.h"
 %include "IMP/core/ListParticlePairContainer.h"
 %include "IMP/core/ParticlePairsRestraint.h"
+%include "IMP/core/BondDecoratorSingletonScore.h"
+%include "IMP/core/BondDecoratorParticlePairContainer.h"
 
 namespace IMP {
   namespace core {
