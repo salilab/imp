@@ -1,9 +1,11 @@
 files = [
          'ArrayOnAttributesHelper.h',
          'Grid3D.h',
+         'IndexingIterator.h',
          'MinimalSet.h',
          'ParticleGrid.h',
          'bbox_nbl_helpers.h',
+         'container_helpers.h',
          'evaluate_distance_pair_score.h',
          'graph_base.h',
         ]

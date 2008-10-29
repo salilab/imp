@@ -20,6 +20,29 @@ namespace IMP {
   }
 }
 
+
+/* Add additional IMPCORE_CONTAINER methods for scripting languages
+   when the plural container is in the core namespace. */
+%define IMPCORE_CONTAINER_SWIG(type, Ucname, lcname)
+%extend type {
+  IMP::core::Ucname##s get_##lcname##s() const {
+    IMP::core::Ucname##s ret(self->lcname##s_begin(), self->lcname##s_end());
+    return ret;
+  }
+}
+IMP_ADD_OBJECT(type, add_##lcname)
+IMP_ADD_OBJECTS(type, add_##lcname##s)
+%enddef
+
+/** This should go back into IMP_macros.i */
+%define IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(Ucname)
+%pythonprepend Ucname::Ucname %{
+        if len(args) >= 1: args[0].thisown=0
+        if len(args) >= 2: args[1].thisown=0
+%}
+%enddef
+
+
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
 %import "kernel/pyext/IMP_keys.i"
@@ -47,13 +70,18 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(TripletChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
+    /* these two create a memory leak.
+       We need to check if the object inherits from ref counted or
+       object first */
+    IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ParticlesRestraint)
+    IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ParticlePairsRestraint)
+
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
     IMP_CONTAINER_SWIG(LowestNRestraintSet, Restraint, restraint)
+    IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
 
-    IMP_ADD_OBJECT(MonteCarlo, add_mover)
-    IMP_ADD_OBJECTS(MonteCarlo, add_movers)
     IMP_ADD_OBJECT(NonbondedListScoreState, add_bonded_list)
     IMP_ADD_OBJECTS(NonbondedListScoreState, add_bonded_lists)
   }
@@ -118,6 +146,12 @@ namespace IMP {
 %include "IMP/core/TypedPairScore.h"
 %include "IMP/core/TransformedDistancePairScore.h"
 %include "IMP/core/model_io.h"
+%include "IMP/core/ParticleContainer.h"
+%include "IMP/core/ListParticleContainer.h"
+%include "IMP/core/ParticlesRestraint.h"
+%include "IMP/core/ParticlePairContainer.h"
+%include "IMP/core/ListParticlePairContainer.h"
+%include "IMP/core/ParticlePairsRestraint.h"
 
 namespace IMP {
   namespace core {
@@ -126,5 +160,6 @@ namespace IMP {
     %template(MoverIndex) ::IMP::Index<Mover>;
     %template(BondedListIndex) ::IMP::Index<BondedListScoreState>;
     %template(BondDecorators) ::std::vector<BondDecorator>;
+    %template(Movers) ::std::vector<Mover*>;
   }
 }
