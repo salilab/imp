@@ -76,6 +76,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(Mover);
 
+typedef std::vector<Mover*> Movers;
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_MOVER_H */
