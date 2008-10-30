@@ -72,9 +72,16 @@ public:
       ParticleIterator(Accessor(const_cast<ParticleContainer*>(this)),
                         get_number_of_particles());
     }
+
+  /** \todo patch ref_counting.h so this is not needed.
+   */
+  unsigned int get_index() const {return -1;}
 };
 
 IMP_OUTPUT_OPERATOR(ParticleContainer);
+
+typedef std::vector<ParticleContainer*> ParticleContainers;
+typedef Index<ParticleContainer> ParticleContainerIndex;
 
 IMPCORE_END_NAMESPACE
 
@@ -82,6 +89,7 @@ IMPCORE_END_NAMESPACE
   bool get_contains_particle(Particle* p) const;                      \
   unsigned int get_number_of_particles() const;                   \
   Particle* get_particle(unsigned int i) const;                       \
+  void show(std::ostream &out= std::cout) const;                   \
   IMP::VersionInfo get_version_info() const { return version_info; }
 
 #endif  /* IMPCORE_PARTICLE_CONTAINER_H */

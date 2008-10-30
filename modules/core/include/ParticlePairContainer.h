@@ -72,9 +72,16 @@ public:
       ParticlePairIterator(Accessor(const_cast<ParticlePairContainer*>(this)),
                         get_number_of_particle_pairs());
     }
+
+  /** \todo patch ref_counting.h so this is not needed.
+   */
+  unsigned int get_index() const {return -1;}
 };
 
 IMP_OUTPUT_OPERATOR(ParticlePairContainer);
+
+typedef std::vector<ParticlePairContainer*> ParticlePairContainers;
+typedef Index<ParticlePairContainer> ParticlePairContainerIndex;
 
 IMPCORE_END_NAMESPACE
 
@@ -82,6 +89,7 @@ IMPCORE_END_NAMESPACE
   bool get_contains_particle_pair(ParticlePair p) const;                      \
   unsigned int get_number_of_particle_pairs() const;                   \
   ParticlePair get_particle_pair(unsigned int i) const;                       \
+  void show(std::ostream &out= std::cout) const;                   \
   IMP::VersionInfo get_version_info() const { return version_info; }
 
 #endif  /* IMPCORE_PARTICLE_PAIR_CONTAINER_H */
