@@ -68,7 +68,7 @@ struct TransformParticle
                                   tc_(tc), c_(c), d_(p){}
 
   Float get_coordinate(unsigned int i) const {
-    return (d_.get_vector()-c_)*r_[i] + tc_[i];
+    return (d_.get_coordinates()-c_)*r_[i] + tc_[i];
   }
 
   void add_to_coordinates_derivative(const Vector3D& f,

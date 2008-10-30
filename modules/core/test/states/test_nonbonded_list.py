@@ -87,7 +87,7 @@ class TestNBL(IMP.test.TestCase):
         for i in range(0,10):
             score= m.evaluate(False)
             for d in ds:
-                d.set_coordinates(IMP.random_vector_in_sphere(d.get_vector(),
+                d.set_coordinates(IMP.random_vector_in_sphere(d.get_coordinates(),
                                                               2.0))
 
     def do_test_bl(self, ss):
@@ -195,11 +195,11 @@ class TestNBL(IMP.test.TestCase):
             score= m.evaluate(False)
             for p in ps0:
                 d= IMP.core.XYZDecorator.cast(p)
-                d.set_coordinates(IMP.random_vector_in_sphere(d.get_vector(),
+                d.set_coordinates(IMP.random_vector_in_sphere(d.get_coordinates(),
                                                               1))
             for p in ps1:
                 d= IMP.core.XYZDecorator.cast(p)
-                d.set_coordinates(IMP.random_vector_in_sphere(d.get_vector(),
+                d.set_coordinates(IMP.random_vector_in_sphere(d.get_coordinates(),
                                                               1))
 
 

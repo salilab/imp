@@ -84,7 +84,7 @@ Particles BondCoverParticleRefiner::get_refined(Particle *p) const
   IMP_LOG(VERBOSE, "Refining bond with length " << d << " into "
           << ns << " particles" << std::endl);
 
-  Vector3D vb= d0.get_vector();
+  Vector3D vb= d0.get_coordinates();
   Vector3D ud= d0.get_vector_to(d1).get_unit_vector();
   Particles ret;
   Float f= d/(2.0*nsf);

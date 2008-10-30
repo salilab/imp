@@ -100,7 +100,7 @@ public:
   //! Convert it to a vector.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  Vector3D get_vector() const {
+  Vector3D get_coordinates() const {
     return Vector3D(get_x(), get_y(), get_z());
   }
 
