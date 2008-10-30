@@ -27,9 +27,9 @@ namespace {
       b_(b), e_(e){}
     bool operator()(ParticlePair vt) const {
       for (It c=b_; c != e_; ++c) {
-        if ((*c)->get_contains_particle_pair(vt)) return false;
+        if ((*c)->get_contains_particle_pair(vt)) return true;
       }
-      return true;
+      return false;
     }
   };
 
@@ -42,6 +42,7 @@ FilteredListParticlePairContainer
 FilteredListParticlePairContainer::~FilteredListParticlePairContainer(){}
 
 void FilteredListParticlePairContainer::add_particle_pair(ParticlePair vt) {
+  IMP_CHECK_OBJECT(this);
   // For VC which can't convert the iterators
   const FilteredListParticlePairContainer *cthis=
     const_cast<const FilteredListParticlePairContainer*>(this);
@@ -66,6 +67,7 @@ FilteredListParticlePairContainer
 }
 
 void FilteredListParticlePairContainer::show(std::ostream &out) const {
+  IMP_CHECK_OBJECT(this);
   out << "FilteredListParticlePairContainer with "
       << get_number_of_particle_pairs()
       << " particle_pairs." << std::endl;
