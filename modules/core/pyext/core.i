@@ -52,25 +52,24 @@ namespace IMP {
     %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
     %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
 
-    IMP_OWN_FIRST_CONSTRUCTOR(DistancePairScore)
-    IMP_OWN_FIRST_CONSTRUCTOR(TransformedDistancePairScore)
-    IMP_OWN_FIRST_CONSTRUCTOR(SphereDistancePairScore)
-    IMP_SET_OBJECT(TypedPairScore, set_pair_score)
-
-    IMP_OWN_FIRST_CONSTRUCTOR(DistanceToSingletonScore)
-    IMP_OWN_FIRST_CONSTRUCTOR(AttributeSingletonScore)
-    IMP_OWN_FIRST_CONSTRUCTOR(AngleTripletScore)
     IMP_OWN_FIRST_CONSTRUCTOR(AngleRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(DistanceRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(DihedralRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(ConnectivityRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(NonbondedRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(AngleTripletScore)
+    IMP_OWN_FIRST_CONSTRUCTOR(AttributeSingletonScore)
     IMP_OWN_FIRST_CONSTRUCTOR(BondDecoratorRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(SingletonListRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(TripletChainRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(BondDecoratorSingletonScore)
+    IMP_OWN_FIRST_CONSTRUCTOR(ConnectivityRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(DihedralRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(DistancePairScore)
+    IMP_OWN_FIRST_CONSTRUCTOR(DistanceRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(DistanceToSingletonScore)
+    IMP_OWN_FIRST_CONSTRUCTOR(NonbondedRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(SingletonListRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(SphereDistancePairScore)
+    IMP_OWN_FIRST_CONSTRUCTOR(TransformedDistancePairScore)
+    IMP_OWN_FIRST_CONSTRUCTOR(TripletChainRestraint)
+
     /* these two create a memory leak.
        We need to check if the object inherits from ref counted or
        object first */
@@ -82,6 +81,8 @@ namespace IMP {
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
+    IMP_SET_OBJECT(TypedPairScore, set_pair_score)
+
 
     IMP_ADD_OBJECT(NonbondedListScoreState, add_bonded_list)
     IMP_ADD_OBJECTS(NonbondedListScoreState, add_bonded_lists)
@@ -91,70 +92,75 @@ namespace IMP {
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
 
-/* Wrap our own classes */
-%include "IMP/core/bond_decorators.h"
-%include "IMP/core/HierarchyDecorator.h"
-%include "IMP/core/MolecularHierarchyDecorator.h"
-%include "IMP/core/NameDecorator.h"
-%include "IMP/core/ResidueDecorator.h"
+/* Wrap our own base classes */
+%include "IMP/core/Mover.h"
+%include "IMP/core/MoverBase.h"
+%include "IMP/core/ParticleContainer.h"
+%include "IMP/core/ParticlePairContainer.h"
 %include "IMP/core/XYZDecorator.h"
-%include "IMP/core/XYZRDecorator.h"
+
+%include "IMP/core/BondedListScoreState.h"
+%include "IMP/core/NonbondedListScoreState.h"
+
+/* Wrap the classes that are passed as arguments to others */
+%include "IMP/core/bond_decorators.h"
+
+/* Wrap the final classes */
+%include "IMP/core/AllNonbondedListScoreState.h"
+%include "IMP/core/AngleRestraint.h"
+%include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AtomDecorator.h"
+%include "IMP/core/AttributeSingletonScore.h"
+%include "IMP/core/BallMover.h"
+%include "IMP/core/BipartiteNonbondedListScoreState.h"
+%include "IMP/core/BondDecoratorListScoreState.h"
+%include "IMP/core/BondDecoratorParticlePairContainer.h"
+%include "IMP/core/BondDecoratorRestraint.h"
+%include "IMP/core/BondDecoratorSingletonScore.h"
+%include "IMP/core/BrownianDynamics.h"
+%include "IMP/core/CMMLogOptimizerState.h"
+%include "IMP/core/ClosedCubicSpline.h"
+%include "IMP/core/ConjugateGradients.h"
+%include "IMP/core/ConnectivityRestraint.h"
+%include "IMP/core/ConstantRestraint.h"
 %include "IMP/core/Cosine.h"
+%include "IMP/core/DihedralRestraint.h"
+%include "IMP/core/DistancePairScore.h"
+%include "IMP/core/DistanceRestraint.h"
+%include "IMP/core/DistanceToSingletonScore.h"
+%include "IMP/core/GravityCenterScoreState.h"
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
-%include "IMP/core/OpenCubicSpline.h"
-%include "IMP/core/ClosedCubicSpline.h"
+%include "IMP/core/HierarchyDecorator.h"
 %include "IMP/core/Linear.h"
-%include "IMP/core/DistanceToSingletonScore.h"
-%include "IMP/core/AttributeSingletonScore.h"
-%include "IMP/core/AngleTripletScore.h"
-%include "IMP/core/BondedListScoreState.h"
-%include "IMP/core/MaxChangeScoreState.h"
-%include "IMP/core/NonbondedListScoreState.h"
-%include "IMP/core/AllNonbondedListScoreState.h"
-%include "IMP/core/BondDecoratorListScoreState.h"
-%include "IMP/core/BipartiteNonbondedListScoreState.h"
-%include "IMP/core/GravityCenterScoreState.h"
-%include "IMP/core/DistanceRestraint.h"
-%include "IMP/core/RestraintSet.h"
+%include "IMP/core/ListParticleContainer.h"
+%include "IMP/core/ListParticlePairContainer.h"
 %include "IMP/core/LowestNRestraintSet.h"
-%include "IMP/core/ConnectivityRestraint.h"
-%include "IMP/core/BondDecoratorRestraint.h"
+%include "IMP/core/MaxChangeScoreState.h"
+%include "IMP/core/MolecularDynamics.h"
+%include "IMP/core/MolecularHierarchyDecorator.h"
+%include "IMP/core/MonteCarlo.h"
+%include "IMP/core/NameDecorator.h"
 %include "IMP/core/NonbondedRestraint.h"
+%include "IMP/core/NormalMover.h"
+%include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/PairChainRestraint.h"
 %include "IMP/core/PairListRestraint.h"
-%include "IMP/core/SingletonListRestraint.h"
-%include "IMP/core/TripletChainRestraint.h"
-%include "IMP/core/AngleRestraint.h"
-%include "IMP/core/ConstantRestraint.h"
-%include "IMP/core/DihedralRestraint.h"
-%include "IMP/core/SteepestDescent.h"
-%include "IMP/core/ConjugateGradients.h"
-%include "IMP/core/MolecularDynamics.h"
-%include "IMP/core/BrownianDynamics.h"
-%include "IMP/core/Mover.h"
-%include "IMP/core/MoverBase.h"
-%include "IMP/core/MonteCarlo.h"
-%include "IMP/core/BallMover.h"
-%include "IMP/core/NormalMover.h"
-%include "IMP/core/VRMLLogOptimizerState.h"
-%include "IMP/core/CMMLogOptimizerState.h"
-%include "IMP/core/VelocityScalingOptimizerState.h"
-%include "IMP/core/DistancePairScore.h"
-%include "IMP/core/SphereDistancePairScore.h"
-%include "IMP/core/TypedPairScore.h"
-%include "IMP/core/TransformedDistancePairScore.h"
-%include "IMP/core/model_io.h"
-%include "IMP/core/ParticleContainer.h"
-%include "IMP/core/ListParticleContainer.h"
-%include "IMP/core/ParticlesRestraint.h"
-%include "IMP/core/ParticlePairContainer.h"
-%include "IMP/core/ListParticlePairContainer.h"
 %include "IMP/core/ParticlePairsRestraint.h"
-%include "IMP/core/BondDecoratorSingletonScore.h"
-%include "IMP/core/BondDecoratorParticlePairContainer.h"
+%include "IMP/core/ParticlesRestraint.h"
+%include "IMP/core/ResidueDecorator.h"
+%include "IMP/core/RestraintSet.h"
+%include "IMP/core/SingletonListRestraint.h"
+%include "IMP/core/SphereDistancePairScore.h"
+%include "IMP/core/SteepestDescent.h"
+%include "IMP/core/TransformedDistancePairScore.h"
+%include "IMP/core/TripletChainRestraint.h"
+%include "IMP/core/TypedPairScore.h"
+%include "IMP/core/VRMLLogOptimizerState.h"
+%include "IMP/core/VelocityScalingOptimizerState.h"
+%include "IMP/core/XYZRDecorator.h"
+%include "IMP/core/model_io.h"
 
 namespace IMP {
   namespace core {
