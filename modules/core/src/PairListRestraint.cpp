@@ -19,6 +19,9 @@ PairListRestraint::PairListRestraint(PairScore *s,
                                      const ParticlePairs &ps) : ss_(s)
 {
   add_particle_pairs(ps);
+  IMP_LOG(SILENT, "PairListRestraint is now deprecated. "
+          << "You should start shifting to ParticlePairsRestraint"
+          << std::endl);
 }
 
 PairListRestraint::~PairListRestraint()
