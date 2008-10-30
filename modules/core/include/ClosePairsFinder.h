@@ -32,7 +32,7 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
   Float distance_;
  protected:
   Float get_radius(Particle *p) const {
-    if (rk_ && p->has_attribute(rk_)) {
+    if (rk_ != FloatKey() && p->has_attribute(rk_)) {
       return p->get_value(rk_);
     } else {
       return 0;
