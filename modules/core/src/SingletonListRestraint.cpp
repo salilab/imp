@@ -20,6 +20,9 @@ SingletonListRestraint::SingletonListRestraint(SingletonScore *s,
   ss_(s)
 {
   add_particles(ps);
+  IMP_LOG(SILENT, "SingletonListRestraint is now deprecated. "
+          << "You should start shifting to ParticlesRestraint"
+          << std::endl);
 }
 
 
