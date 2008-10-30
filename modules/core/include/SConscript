@@ -13,6 +13,7 @@ files = [
          'BondDecoratorRestraint.h',
          'BondDecoratorSingletonScore.h',
          'BondedListScoreState.h',
+         'BoxSweepClosePairsFinder.h',
          'BrownianDynamics.h',
          'CMMLogOptimizerState.h',
          'ClosePairsFinder.h',
