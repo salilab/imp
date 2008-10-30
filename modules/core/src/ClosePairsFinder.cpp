@@ -18,8 +18,8 @@ ClosePairsFinder::~ClosePairsFinder(){}
 
 namespace {
   struct TestAndAdd{
-    Pointer<FilteredListParticlePairContainer> out_;
-    Pointer<ParticleContainer> a_, b_;
+    FilteredListParticlePairContainer *out_;
+    ParticleContainer *a_, *b_;
     TestAndAdd(ParticleContainer *a, ParticleContainer *b,
                FilteredListParticlePairContainer *out): out_(out),
                                                         a_(a), b_(b){}
@@ -34,8 +34,8 @@ namespace {
 
 void ClosePairsFinder
 ::add_close_pairs(ParticleContainer *ca,
-                     ParticleContainer *cb,
-                     FilteredListParticlePairContainer *out) {
+                  ParticleContainer *cb,
+                  FilteredListParticlePairContainer *out) {
 
   Pointer<FilteredListParticlePairContainer>
     lppc(new FilteredListParticlePairContainer());
