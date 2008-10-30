@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! A container that pretents to contain all bonds.
+//! A container that pretends to contain all bonds.
 /** This is to be used with a NonBondedList to exclude all bonded pairs.
  */
 class IMPCOREEXPORT BondDecoratorParticlePairContainer :
@@ -27,8 +27,6 @@ public:
   virtual ~BondDecoratorParticlePairContainer();
 
   IMP_PARTICLE_PAIR_CONTAINER(internal::core_version_info)
-
-  virtual void show(std::ostream &out = std::cout) const;
 };
 
 
