@@ -124,6 +124,7 @@ namespace IMP {
 %include "IMP/core/BondDecoratorParticlePairContainer.h"
 %include "IMP/core/BondDecoratorRestraint.h"
 %include "IMP/core/BondDecoratorSingletonScore.h"
+%include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/BrownianDynamics.h"
 %include "IMP/core/CMMLogOptimizerState.h"
 %include "IMP/core/ClosedCubicSpline.h"

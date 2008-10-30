@@ -13,6 +13,7 @@ files = [
          'BondDecoratorParticlePairContainer.cpp',
          'BondDecoratorRestraint.cpp',
          'BondDecoratorSingletonScore.cpp',
+         'BoxSweepClosePairsFinder.cpp',
          'BrownianDynamics.cpp',
          'CMMLogOptimizerState.cpp',
          'ClosePairsFinder.cpp',
