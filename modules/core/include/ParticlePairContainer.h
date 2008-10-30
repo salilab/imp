@@ -35,7 +35,8 @@ class IMPCOREEXPORT ParticlePairContainer : public RefCountedObject
     IMP_COMPARISONS_1(o_);
   private:
     bool is_default() const { return false;}
-    Pointer<ParticlePairContainer> o_;
+    // This should be ref counted, but swig memory management is broken
+    ParticlePairContainer* o_;
   };
 
 public:
