@@ -48,6 +48,7 @@ files = [
          'ParticlePairContainer.cpp',
          'ParticlePairsRestraint.cpp',
          'ParticlesRestraint.cpp',
+         'QuadraticClosePairsFinder.cpp',
          'ResidueDecorator.cpp',
          'RestraintSet.cpp',
          'SingletonListRestraint.cpp',

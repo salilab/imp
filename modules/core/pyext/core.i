@@ -158,6 +158,7 @@ namespace IMP {
 %include "IMP/core/PairListRestraint.h"
 %include "IMP/core/ParticlePairsRestraint.h"
 %include "IMP/core/ParticlesRestraint.h"
+%include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/ResidueDecorator.h"
 %include "IMP/core/RestraintSet.h"
 %include "IMP/core/SingletonListRestraint.h"

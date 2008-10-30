@@ -53,6 +53,7 @@ files = [
          'ParticlePairContainer.h',
          'ParticlePairsRestraint.h',
          'ParticlesRestraint.h',
+         'QuadraticClosePairsFinder.h',
          'ResidueDecorator.h',
          'RestraintSet.h',
          'SingletonListRestraint.h',
