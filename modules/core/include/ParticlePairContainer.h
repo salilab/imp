@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! A shared container for particle_pairs
 /** Stores a searchable shared collection of particle_pairs.
  */
-class IMPCOREEXPORT ParticlePairContainer : public Object
+class IMPCOREEXPORT ParticlePairContainer : public RefCountedObject
 {
   struct Accessor {
     typedef Accessor This;
