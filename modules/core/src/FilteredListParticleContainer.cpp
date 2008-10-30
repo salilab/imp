@@ -42,8 +42,11 @@ FilteredListParticleContainer
 FilteredListParticleContainer::~FilteredListParticleContainer(){}
 
 void FilteredListParticleContainer::add_particle(Particle* vt) {
-  if (!Found(particle_containers_begin(),
-             particle_containers_end())(vt)) {
+  // For VC which can't convert the iterators
+  const FilteredListParticleContainer *cthis=
+    const_cast<const FilteredListParticleContainer*>(this);
+  if (!Found(cthis->particle_containers_begin(),
+             cthis->particle_containers_end())(vt)) {
     data_.insert(std::upper_bound(data_.begin(),
                                   data_.end(), vt), vt);
   }
