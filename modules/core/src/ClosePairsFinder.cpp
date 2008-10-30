@@ -1,20 +1,20 @@
 /**
- *  \file ProximityFinder.cpp
- *  \brief Algorithm base class to find proximal pairs.
+ *  \file ClosePairsFinder.cpp
+ *  \brief Algorithm base class to find close pairs.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/core/ProximityFinder.h"
+#include "IMP/core/ClosePairsFinder.h"
 #include "IMP/core/ListParticleContainer.h"
 #include <algorithm>
 
 IMPCORE_BEGIN_NAMESPACE
 
-ProximityFinder::ProximityFinder(){}
+ClosePairsFinder::ClosePairsFinder(){}
 
-ProximityFinder::~ProximityFinder(){}
+ClosePairsFinder::~ClosePairsFinder(){}
 
 namespace {
   struct TestAndAdd{
@@ -32,8 +32,8 @@ namespace {
   };
 }
 
-void ProximityFinder
-::add_proximal_pairs(ParticleContainer *ca,
+void ClosePairsFinder
+::add_close_pairs(ParticleContainer *ca,
                      ParticleContainer *cb,
                      FilteredListParticlePairContainer *out) {
 
@@ -44,17 +44,17 @@ void ProximityFinder
     Particles ps(ca->particles_begin(), ca->particles_end());
     ps.insert(ps.end(), cb->particles_begin(), cb->particles_end());
     lpc->add_particles(ps);
-    add_proximal_pairs(lpc, lppc);
+    add_close_pairs(lpc, lppc);
   }
   std::for_each(lppc->particle_pairs_begin(),
                 lppc->particle_pairs_end(),
                 TestAndAdd(ca, cb, out));
 }
 
-void ProximityFinder
-::add_proximal_pairs(ParticleContainer *c,
+void ClosePairsFinder
+::add_close_pairs(ParticleContainer *c,
                      FilteredListParticlePairContainer *out) {
-  add_proximal_pairs(c, c, out);
+  add_close_pairs(c, c, out);
 }
 
 

@@ -97,11 +97,11 @@ namespace IMP {
 %ignore IMP::core::internal::ChildArrayTraits;
 
 /* Wrap our own base classes */
+%include "IMP/core/ClosePairsFinder.h"
 %include "IMP/core/Mover.h"
 %include "IMP/core/MoverBase.h"
 %include "IMP/core/ParticleContainer.h"
 %include "IMP/core/ParticlePairContainer.h"
-%include "IMP/core/ProximityFinder.h"
 %include "IMP/core/XYZDecorator.h"
 
 %include "IMP/core/BondedListScoreState.h"
