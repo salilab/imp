@@ -36,6 +36,7 @@ ListParticleContainer::get_contains_particle(Particle* vt) const {
 }
 
 void ListParticleContainer::show(std::ostream &out) const {
+  IMP_CHECK_OBJECT(this);
   out << "ListParticleContainer with " << get_number_of_particles()
       << " particles." << std::endl;
 }
