@@ -54,6 +54,11 @@ public:
     return This(a_, i_+i);
   }
 
+  const This& operator+=(unsigned int i) {
+    i_+= i;
+    return *this;
+  }
+
   unsigned int operator-(const This &o) const {
     IMP_assert(a_== o.a_, "Don't subtract iterators from different containers");
     return i_- o.i_;
