@@ -32,7 +32,7 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
   Float distance_;
  protected:
   Float get_radius(Particle *p) const {
-    if (rk_ != FloatKey() && p->has_attribute(rk_)) {
+    if (rk_ != FloatKey()) {
       return p->get_value(rk_);
     } else {
       return 0;
@@ -46,10 +46,10 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
   //! Compute all nearby pairs of particles in pc
   /** All pairs of distinct particles, p0, p1, taken from pc such that
       distance(XYZRDecorator(p0, get_radius()), XYZRDecorator(p1, get_radius()))
-      is less than get_distance(). Any particle without radius is assumed
-      to have a radius of 0. Other pairs can be added too. */
+      is less than get_distance(). If radius_key is FloatKey() all radii
+      are assumed to be 0. Other pairs can be added too. */
   void add_close_pairs(ParticleContainer *pc,
-                          FilteredListParticlePairContainer *out);
+                       FilteredListParticlePairContainer *out);
 
   //!
   /** \brief Compute all nearby pairs of particles with the first taken from
