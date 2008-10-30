@@ -39,7 +39,7 @@ void CoverBondsScoreState::do_before_evaluate()
             << db << std::endl);
     Vector3D diff= da.get_vector_to(db);
     float len= diff.get_magnitude();
-    Vector3D cv= da.get_vector() + .5*diff;
+    Vector3D cv= da.get_coordinates() + .5*diff;
 
     core::XYZDecorator dxyz;
     // slightly evil

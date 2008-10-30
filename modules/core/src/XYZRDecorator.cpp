@@ -70,7 +70,7 @@ void set_enclosing_sphere(const Particles &v,
   Vector3D c(0,0,0);
   for (unsigned int i=0; i< v.size(); ++i) {
     XYZDecorator d(v[i]);
-    c+= d.get_vector();
+    c+= d.get_coordinates();
   }
   c/=v.size();
   out.set_coordinates(c);

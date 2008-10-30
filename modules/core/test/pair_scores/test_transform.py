@@ -84,9 +84,9 @@ class DistanceTests(IMP.test.TestCase):
         cg.optimize(100)
         d0.show()
         d1.show()
-        vt= IMP.Vector3D(d1.get_vector()*IMP.Vector3D(1,0,0)+0,
-                         d1.get_vector()*IMP.Vector3D(0,0,-1)+1,
-                         d1.get_vector()*IMP.Vector3D(0,1,0)+0)
+        vt= IMP.Vector3D(d1.get_coordinates()*IMP.Vector3D(1,0,0)+0,
+                         d1.get_coordinates()*IMP.Vector3D(0,0,-1)+1,
+                         d1.get_coordinates()*IMP.Vector3D(0,1,0)+0)
         print "trans"
         print str(vt[0]) + " " + str(vt[1])+" " + str(vt[2])
         self.assertEqual(vt[0], d0.get_coordinate(0))

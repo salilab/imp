@@ -67,7 +67,7 @@ Float TunnelSingletonScore::evaluate(Particle *p,
 
       // kind if evil
       if (dist== -rd -radius) {
-        Vector3D v= (d.get_vector() - center_).get_unit_vector();
+        Vector3D v= (d.get_coordinates() - center_).get_unit_vector();
         for (int i=0; i< 2; ++i) {
           int oc= (i+coordinate_+1)%3;
           deriv[oc]= v[oc]*deriv_scalar;
