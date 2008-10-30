@@ -36,6 +36,7 @@ ListParticlePairContainer::get_contains_particle_pair(ParticlePair vt) const {
 }
 
 void ListParticlePairContainer::show(std::ostream &out) const {
+  IMP_CHECK_OBJECT(this);
   out << "ListParticlePairContainer with " << get_number_of_particle_pairs()
       << " particle_pairs." << std::endl;
 }
