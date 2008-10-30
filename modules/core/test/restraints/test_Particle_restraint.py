@@ -62,5 +62,23 @@ class ParticleContainerTest(IMP.test.TestCase):
         r.add_particle(self.create_particle(m))
         self.assertEqual(m.evaluate(False), 11)
 
+    def test_filter(self):
+        """Testing FilteredListParticleContainer"""
+        IMP.set_log_level(IMP.VERBOSE)
+        m= IMP.Model()
+        c= IMP.core.FilteredListParticleContainer()
+        f= IMP.core.ListParticleContainer()
+        c.add_particle_container(f)
+        for i in range(0,10):
+            f.add_particle(self.create_particle(m))
+        print "done 1"
+        for i in range(0,10):
+            c.add_particle(self.create_particle(m))
+        print "done 2"
+        for p in f.get_particles():
+            c.add_particle(p)
+        self.assertEqual(c.get_number_of_particles(), 10)
+        print "all done"
+
 if __name__ == '__main__':
     unittest.main()

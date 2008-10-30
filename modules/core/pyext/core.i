@@ -79,6 +79,10 @@ namespace IMP {
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
     IMP_CONTAINER_SWIG(LowestNRestraintSet, Restraint, restraint)
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
+    IMPCORE_CONTAINER_SWIG(FilteredListParticleContainer,
+    ParticleContainer, particle_container)
+    IMPCORE_CONTAINER_SWIG(FilteredListParticlePairContainer,
+    ParticlePairContainer, particle_pair_container)
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
     IMP_SET_OBJECT(TypedPairScore, set_pair_score)
@@ -97,13 +101,16 @@ namespace IMP {
 %include "IMP/core/MoverBase.h"
 %include "IMP/core/ParticleContainer.h"
 %include "IMP/core/ParticlePairContainer.h"
+%include "IMP/core/ProximityFinder.h"
 %include "IMP/core/XYZDecorator.h"
 
 %include "IMP/core/BondedListScoreState.h"
 %include "IMP/core/NonbondedListScoreState.h"
 
-/* Wrap the classes that are passed as arguments to others */
+/* Must be included before HierarchyDecorator.h since it is not easy
+   to predeclare a typedef (for BondDecorators) */ 
 %include "IMP/core/bond_decorators.h"
+
 
 /* Wrap the final classes */
 %include "IMP/core/AllNonbondedListScoreState.h"
@@ -128,6 +135,8 @@ namespace IMP {
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"
 %include "IMP/core/DistanceToSingletonScore.h"
+%include "IMP/core/FilteredListParticleContainer.h"
+%include "IMP/core/FilteredListParticlePairContainer.h"
 %include "IMP/core/GravityCenterScoreState.h"
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
@@ -162,6 +171,7 @@ namespace IMP {
 %include "IMP/core/XYZRDecorator.h"
 %include "IMP/core/model_io.h"
 
+
 namespace IMP {
   namespace core {
     %template(show_named_hierarchy) show<NameDecorator>;
@@ -170,5 +180,9 @@ namespace IMP {
     %template(BondedListIndex) ::IMP::Index<BondedListScoreState>;
     %template(BondDecorators) ::std::vector<BondDecorator>;
     %template(Movers) ::std::vector<Mover*>;
+    %template(ParticleContainers) ::std::vector<ParticleContainer*>;
+    %template(ParticlePairContainers) ::std::vector<ParticlePairContainer*>;
+    %template(ParticleContainerIndex) ::IMP::Index<ParticleContainer>;
+    %template(ParticlePairContainerIndex) ::IMP::Index<ParticlePairContainer>;
   }
 }
