@@ -16,6 +16,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+// for SWIG
+class BondDecorator;
+class BondedDecorator;
+
 class BondDecoratorListScoreState;
 typedef Index<BondDecoratorListScoreState> BondDecoratorListIndex;
 
