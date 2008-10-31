@@ -107,7 +107,7 @@ public:
   //! Get the vector of derivatives.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  Vector3D get_derivative_vector() const {
+  Vector3D get_derivatives() const {
     return Vector3D(get_coordinate_derivative(0),
                     get_coordinate_derivative(1),
                     get_coordinate_derivative(2));
