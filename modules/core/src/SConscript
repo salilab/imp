@@ -34,6 +34,7 @@ files = [
          'ListParticlePairContainer.cpp',
          'LowestNRestraintSet.cpp',
          'MaxChangeScoreState.cpp',
+         'MaximumChangeScoreState.cpp',
          'MolecularDynamics.cpp',
          'MolecularHierarchyDecorator.cpp',
          'MonteCarlo.cpp',

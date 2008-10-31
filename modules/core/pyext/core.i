@@ -62,6 +62,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(DistancePairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(DistanceRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(DistanceToSingletonScore)
+    IMP_OWN_FIRST_CONSTRUCTOR(MaximumChangeScoreState)
     IMP_OWN_FIRST_CONSTRUCTOR(NonbondedRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
@@ -148,6 +149,7 @@ namespace IMP {
 %include "IMP/core/ListParticlePairContainer.h"
 %include "IMP/core/LowestNRestraintSet.h"
 %include "IMP/core/MaxChangeScoreState.h"
+%include "IMP/core/MaximumChangeScoreState.h"
 %include "IMP/core/MolecularDynamics.h"
 %include "IMP/core/MolecularHierarchyDecorator.h"
 %include "IMP/core/MonteCarlo.h"
