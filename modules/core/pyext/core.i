@@ -42,6 +42,15 @@ IMP_ADD_OBJECTS(type, add_##lcname##s)
 %}
 %enddef
 
+/** This should go back into IMP_macros.i */
+%define IMPCORE_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(Ucname)
+%pythonprepend Ucname::Ucname %{
+        if len(args) >= 1: args[0].thisown=0
+        if len(args) >= 2: args[1].thisown=0
+        if len(args) >= 3: args[2].thisown=0
+%}
+%enddef
+
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
@@ -76,6 +85,8 @@ namespace IMP {
        object first */
     IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ParticlesRestraint)
     IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ParticlePairsRestraint)
+    IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ClosePairsScoreState)
+    IMPCORE_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(CloseBipartitePairsScoreState)
 
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
     IMP_CONTAINER_SWIG(LowestNRestraintSet, Restraint, restraint)
@@ -129,6 +140,8 @@ namespace IMP {
 %include "IMP/core/BrownianDynamics.h"
 %include "IMP/core/CMMLogOptimizerState.h"
 %include "IMP/core/ClosedCubicSpline.h"
+%include "IMP/core/ClosePairsScoreState.h"
+%include "IMP/core/CloseBipartitePairsScoreState.h"
 %include "IMP/core/ConjugateGradients.h"
 %include "IMP/core/ConnectivityRestraint.h"
 %include "IMP/core/ConstantRestraint.h"
