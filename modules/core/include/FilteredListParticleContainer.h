@@ -39,6 +39,10 @@ public:
   //! Add vt if one of the referenced containers already contains it
   void add_particle(Particle* vt);
 
+  void clear_particles() {
+    data_.clear();
+  }
+
   IMP_CONTAINER(ParticleContainer, particle_container,
                 ParticleContainerIndex);
 };
