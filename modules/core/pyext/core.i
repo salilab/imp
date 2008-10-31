@@ -153,6 +153,7 @@ namespace IMP {
 %include "IMP/core/FilteredListParticleContainer.h"
 %include "IMP/core/FilteredListParticlePairContainer.h"
 %include "IMP/core/GravityCenterScoreState.h"
+%include "IMP/core/GridClosePairsFinder.h"
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
