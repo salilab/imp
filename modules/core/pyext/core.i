@@ -98,7 +98,8 @@ namespace IMP {
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
     IMP_SET_OBJECT(TypedPairScore, set_pair_score)
-
+    IMP_SET_OBJECT(ClosePairsScoreState, set_close_pairs_finder)
+    IMP_SET_OBJECT(CloseBipartitePairsScoreState, set_close_pairs_finder)
 
     IMP_ADD_OBJECT(NonbondedListScoreState, add_bonded_list)
     IMP_ADD_OBJECTS(NonbondedListScoreState, add_bonded_lists)
