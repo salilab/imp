@@ -79,7 +79,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(SphereDistancePairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(TransformedDistancePairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(TripletChainRestraint)
-
+    IMP_OWN_FIRST_CONSTRUCTOR(VRMLLogOptimizerState)
     /* these two create a memory leak.
        We need to check if the object inherits from ref counted or
        object first */
@@ -99,11 +99,14 @@ namespace IMP {
     ParticlePairContainer, particle_pair_container)
     IMPCORE_CONTAINER_SWIG(ParticleContainerSet,
     ParticleContainer, particle_container)
+    IMP_CONTAINER_SWIG(VRMLLogOptimizerState,
+    ParticleRefiner, particle_refiner)
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
     IMP_SET_OBJECT(TypedPairScore, set_pair_score)
     IMP_SET_OBJECT(ClosePairsScoreState, set_close_pairs_finder)
     IMP_SET_OBJECT(CloseBipartitePairsScoreState, set_close_pairs_finder)
+    IMP_SET_OBJECT(VRMLLogOptimizerState, set_particle_container)
 
     IMP_ADD_OBJECT(NonbondedListScoreState, add_bonded_list)
     IMP_ADD_OBJECTS(NonbondedListScoreState, add_bonded_lists)

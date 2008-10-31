@@ -14,74 +14,28 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-VRMLLogOptimizerState::VRMLLogOptimizerState(std::string filename,
-                                             const Particles &pis) :
+VRMLLogOptimizerState::VRMLLogOptimizerState(ParticleContainer *pc,
+                                             std::string filename) :
     filename_(filename), file_number_(0), call_number_(0),
-    skip_steps_(0)
+    skip_steps_(0), pc_(pc)
 {
-  set_particles(pis);
 }
 
-void VRMLLogOptimizerState::update()
-{
-  if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
-    write_next_file();
-  }
-  ++call_number_;
-}
-
-void VRMLLogOptimizerState::write_next_file()
-{
-  char buf[1000];
-  sprintf(buf, filename_.c_str(), file_number_);
-  ++file_number_;
-  write(buf);
-}
-
-void VRMLLogOptimizerState::write(std::string buf) const
-{
-  std::ofstream out(buf.c_str());
-  if (!out) {
-    IMP_WARN("Error opening VRML log file " << buf);
-  } else {
-    IMP_LOG(VERBOSE, "Writing " << get_number_of_particles()
-            << " particles to file " << buf << "..." << std::flush);
-    write(out, get_particles());
-    //IMP_LOG(TERSE, "done" << std::endl);
-  }
-}
-
-IMP_LIST_IMPL(VRMLLogOptimizerState, Particle, particle, Particle*, ,);
-IMP_CONTAINER_IMPL(VRMLLogOptimizerState, ParticleRefiner, particle_refiner,
-                   ParticleRefinerIndex ,,,);
-
-static Float snap(Float f)
-{
-  if (f < 0) return 0;
-  if (f > 1) return 1;
-  return f;
-}
-
-void VRMLLogOptimizerState::set_color(int c, Vector3D v) {
-  colors_[c]= Vector3D(snap(v[0]),
-                       snap(v[1]),
-                       snap(v[2]));
-}
-
-void VRMLLogOptimizerState::write(std::ostream &out, const Particles &ps) const
+template <class It>
+void VRMLLogOptimizerState::write(std::ostream &out, It b, It e) const
 {
   out << "#VRML V2.0 utf8\n";
   out << "Group {\n";
   out << "children [\n";
 
-  for (Particles::const_iterator it = ps.begin(); it != ps.end(); ++it) {
-    Particle *p = *it;
+  for (It c=b; c != e; ++c) {
+    Particle *p = *c;
     bool wasrefined=false;
     for (ParticleRefinerConstIterator prit= particle_refiners_begin();
          prit != particle_refiners_end(); ++prit) {
       if ((*prit)->get_can_refine(p)) {
         Particles refined= (*prit)->get_refined(p);
-        write(out, refined);
+        write(out, refined.begin(), refined.end());
         (*prit)->cleanup_refined(p, refined, NULL);
         wasrefined=true;
         break;
@@ -140,6 +94,53 @@ void VRMLLogOptimizerState::write(std::ostream &out, const Particles &ps) const
   out << "]\n";
   out << "}\n";
 }
+
+
+void VRMLLogOptimizerState::update()
+{
+  if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
+    write_next_file();
+  }
+  ++call_number_;
+}
+
+void VRMLLogOptimizerState::write_next_file()
+{
+  char buf[1000];
+  sprintf(buf, filename_.c_str(), file_number_);
+  ++file_number_;
+  write(buf);
+}
+
+void VRMLLogOptimizerState::write(std::string buf) const
+{
+  std::ofstream out(buf.c_str());
+  if (!out) {
+    IMP_WARN("Error opening VRML log file " << buf);
+  } else {
+    IMP_LOG(VERBOSE, "Writing " << pc_->get_number_of_particles()
+            << " particles to file " << buf << "..." << std::flush);
+    write(out, pc_->particles_begin(), pc_->particles_end());
+    //IMP_LOG(TERSE, "done" << std::endl);
+  }
+}
+
+IMP_CONTAINER_IMPL(VRMLLogOptimizerState, ParticleRefiner, particle_refiner,
+                   ParticleRefinerIndex ,,,);
+
+static Float snap(Float f)
+{
+  if (f < 0) return 0;
+  if (f > 1) return 1;
+  return f;
+}
+
+void VRMLLogOptimizerState::set_color(int c, Vector3D v) {
+  colors_[c]= Vector3D(snap(v[0]),
+                       snap(v[1]),
+                       snap(v[2]));
+}
+
 
 void VRMLLogOptimizerState::show(std::ostream &out) const
 {
