@@ -11,6 +11,7 @@
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
+#include "ParticleContainer.h"
 
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
@@ -38,8 +39,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
 {
  public:
-  VRMLLogOptimizerState(std::string filename,
-                        const Particles &pis=Particles());
+  VRMLLogOptimizerState(ParticleContainer *pc,
+                        std::string filename);
   virtual ~VRMLLogOptimizerState(){}
 
   IMP_OPTIMIZER_STATE(internal::core_version_info)
@@ -70,7 +71,10 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
    */
   void set_color(int c, Vector3D v);
 
-  IMP_LIST(public, Particle, particle, Particle*);
+  void set_particle_container(ParticleContainer *pc) {
+    pc_=pc;
+  }
+
   IMP_CONTAINER(ParticleRefiner, particle_refiner, ParticleRefinerIndex);
 
   //! Force it to write the next file
@@ -81,7 +85,8 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
 
 private:
   //! A helper function to just write a list of particles to a file
-  void write(std::ostream &out, const Particles &ps) const;
+  template <class It>
+  void write(std::ostream &out, It b, It e) const;
   std::string filename_;
   int file_number_;
   int call_number_;
@@ -89,6 +94,7 @@ private:
   FloatKey radius_;
   IntKey color_;
   std::map<int, Vector3D > colors_;
+  Pointer<ParticleContainer> pc_;
 };
 
 IMPCORE_END_NAMESPACE
