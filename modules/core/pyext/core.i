@@ -95,6 +95,10 @@ namespace IMP {
     ParticleContainer, particle_container)
     IMPCORE_CONTAINER_SWIG(FilteredListParticlePairContainer,
     ParticlePairContainer, particle_pair_container)
+    IMPCORE_CONTAINER_SWIG(ParticlePairContainerSet,
+    ParticlePairContainer, particle_pair_container)
+    IMPCORE_CONTAINER_SWIG(ParticleContainerSet,
+    ParticleContainer, particle_container)
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
     IMP_SET_OBJECT(TypedPairScore, set_pair_score)
@@ -174,6 +178,8 @@ namespace IMP {
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/PairChainRestraint.h"
 %include "IMP/core/PairListRestraint.h"
+%include "IMP/core/ParticleContainerSet.h"
+%include "IMP/core/ParticlePairContainerSet.h"
 %include "IMP/core/ParticlePairsRestraint.h"
 %include "IMP/core/ParticlesRestraint.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
