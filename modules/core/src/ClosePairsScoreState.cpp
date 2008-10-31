@@ -7,7 +7,7 @@
 
 
 #include <IMP/core/ClosePairsScoreState.h>
-#include <IMP/core/QuadraticClosePairsFinder.h>
+#include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/core/BoxSweepClosePairsFinder.h>
 
 #include <algorithm>
@@ -41,7 +41,7 @@ void ClosePairsScoreState::initialize() {
   if (BoxSweepClosePairsFinder::get_is_implemented()) {
     set_close_pairs_finder(new BoxSweepClosePairsFinder());
   } else {
-    set_close_pairs_finder(new QuadraticClosePairsFinder());
+    set_close_pairs_finder(new GridClosePairsFinder());
   }
 }
 
