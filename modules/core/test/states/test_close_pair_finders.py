@@ -17,10 +17,10 @@ class TestBL(IMP.test.TestCase):
     def do_test_one(self, cpf):
         IMP.set_log_level(IMP.TERSE)
         dist= random.uniform(0,2)
-        cpf.set_distance(dist)
+        #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
         rk= IMP.FloatKey("boo")
-        cpf.set_radius_key(rk)
+        #cpf.set_radius_key(rk)
         m=IMP.Model()
         ps= self.create_particles_in_box(m, 30)
         for i in range(0, len(ps)):
@@ -30,7 +30,7 @@ class TestBL(IMP.test.TestCase):
         pc.show()
         out= IMP.core.FilteredListParticlePairContainer()
         out.show()
-        cpf.add_close_pairs(pc, out)
+        cpf.add_close_pairs(pc, dist, rk, out)
         print "done " + str(out.get_number_of_particle_pairs())
         out.show()
         pc.show()
@@ -55,7 +55,7 @@ class TestBL(IMP.test.TestCase):
         pc2= IMP.core.ListParticleContainer(ps2)
         out= IMP.core.FilteredListParticlePairContainer()
 
-        cpf.add_close_pairs(pc, pc2, out)
+        cpf.add_close_pairs(pc, pc2, dist, rk, out)
         print "done bipartite " + str(out.get_number_of_particle_pairs())
         for i in range(0, len(ps)):
             for j in range(0,len(ps2)):
