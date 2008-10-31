@@ -25,6 +25,8 @@ IMPCORE_BEGIN_NAMESPACE
     float attribute keys and keeps track of the Maximumimum amount
     any of these have changed since the last time reset was called.
 
+    Adding a new particle to the container without calling reset()
+    results in a max change of std::numeric_limits<Float>::max().
  */
 class IMPCOREEXPORT MaximumChangeScoreState: public ScoreState
 {
@@ -53,6 +55,7 @@ public:
 
   void set_particle_container(ParticleContainer *pc) {
     pc_=pc;
+    reset();
   }
   ParticleContainer *get_particle_container() const {
     return pc_;

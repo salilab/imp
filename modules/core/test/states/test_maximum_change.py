@@ -31,7 +31,15 @@ class TestBL(IMP.test.TestCase):
             d.set_coordinates(d.get_coordinates()+v)
         print "evaluating again"
         m.evaluate(False)
-        self.assertEqual(mmax, mc.get_maximum_change())
+        self.assertInTolerance(mmax, mc.get_maximum_change(),
+                           2*mc.get_maximum_change())
+
+        ps2= self.create_particles_in_box(m,1)
+        pc.add_particle(ps2[0])
+        m.evaluate(False)
+        print mc.get_maximum_change()
+        self.assert_( mc.get_maximum_change() > 100000)
+
 
 
 
