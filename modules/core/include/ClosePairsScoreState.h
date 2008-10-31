@@ -37,7 +37,16 @@ class ClosePairsFinder;
 
     Here is a simple example of using this for a nonbonded list
     \verbatim
+    pc= IMP.core.ListParticleContainer()
+    # put are particles in pc. All have radii defined by the default key
+    cpss= IMP.core.ClosePairsScoreState(pc)
+    m.add_score_state(cpss)
 
+    lb= IMP.core.HarmonicLowerBound(0,1)
+    sd= IMP.core.SphereDistancePairScore(lb)
+    r= IMP.core.ParticlePairsRestraint(sd,
+                 cpss.get_close_pairs_container())
+    m.add_restraint(r)
     \endverbatim
 
     \todo Need a mechanism to allow small updates to the set of particles.
