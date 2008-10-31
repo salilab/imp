@@ -31,6 +31,7 @@ files = [
          'FilteredListParticleContainer.h',
          'FilteredListParticlePairContainer.h',
          'GravityCenterScoreState.h',
+         'GridClosePairsFinder.h',
          'Harmonic.h',
          'HarmonicLowerBound.h',
          'HarmonicUpperBound.h',
