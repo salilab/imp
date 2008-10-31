@@ -78,16 +78,16 @@ void ClosePairsScoreState::do_before_evaluate()
   IMP_CHECK_OBJECT(out_);
   IMP_CHECK_OBJECT(f_);
   if (!xyzc_) {
-    std::cout << "Virgin ss" << std::endl;
+    //std::cout << "Virgin ss" << std::endl;
     xyzc_ =new MaximumChangeScoreState(in_, XYZDecorator::get_xyz_keys());
     if (rk_ != FloatKey()) {
       rc_= new MaximumChangeScoreState(in_, FloatKeys(1, rk_));
     }
-    std::cout << "adding pairs" << std::endl;
+    //std::cout << "adding pairs" << std::endl;
     out_->clear_particle_pairs();
     f_->add_close_pairs(in_, distance_+slack_,
                         rk_, out_);
-    std::cout << "done"<< std::endl;
+    //std::cout << "done"<< std::endl;
     return;
   } else {
     xyzc_->before_evaluate(ScoreState::get_before_evaluate_iteration());
