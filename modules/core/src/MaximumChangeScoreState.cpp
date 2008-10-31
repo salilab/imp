@@ -33,11 +33,8 @@ void MaximumChangeScoreState::do_before_evaluate()
     (*it)->assert_is_valid();
     ParticleIndex pi=(*it)->get_index();
     if (orig_values_.find(pi) == orig_values_.end()) {
-      orig_values_[pi]=AT();
-      for (unsigned int i=0; i< keys_.size(); ++i) {
-        orig_values_[pi].insert(keys_[i],
-                                (*it)->get_value(keys_[i]));
-      }
+      maximum_change_= std::numeric_limits<Float>::max();
+      break;
     } else {
       for (unsigned int j=0; j < keys_.size(); ++j) {
         Float v= (*it)->get_value(keys_[j]);
@@ -55,6 +52,16 @@ void MaximumChangeScoreState::reset()
 {
   maximum_change_=0;
   orig_values_.clear();
+  for (ParticleContainer::ParticleIterator it= pc_->particles_begin();
+       it != pc_->particles_end(); ++it) {
+    (*it)->assert_is_valid();
+    ParticleIndex pi=(*it)->get_index();
+    orig_values_[pi]=AT();
+    for (unsigned int i=0; i< keys_.size(); ++i) {
+      orig_values_[pi].insert(keys_[i],
+                              (*it)->get_value(keys_[i]));
+    }
+  }
 }
 
 void MaximumChangeScoreState::show(std::ostream &out) const
