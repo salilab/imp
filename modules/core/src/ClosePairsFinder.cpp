@@ -32,9 +32,12 @@ namespace {
   };
 }
 
+/*
 void ClosePairsFinder
 ::add_close_pairs(ParticleContainer *ca,
                   ParticleContainer *cb,
+                  Float distance,
+                  FloatKey radius_key,
                   FilteredListParticlePairContainer *out) {
 
   Pointer<FilteredListParticlePairContainer>
@@ -44,7 +47,7 @@ void ClosePairsFinder
     Particles ps(ca->particles_begin(), ca->particles_end());
     ps.insert(ps.end(), cb->particles_begin(), cb->particles_end());
     lpc->add_particles(ps);
-    add_close_pairs(lpc, lppc);
+    add_close_pairs(lpc, distance, radius_key, lppc);
   }
   std::for_each(lppc->particle_pairs_begin(),
                 lppc->particle_pairs_end(),
@@ -53,9 +56,15 @@ void ClosePairsFinder
 
 void ClosePairsFinder
 ::add_close_pairs(ParticleContainer *c,
-                     FilteredListParticlePairContainer *out) {
-  add_close_pairs(c, c, out);
+                  Float distance,
+                  FloatKey radius_key,
+                  FilteredListParticlePairContainer *out) {
+  add_close_pairs(c, c, distance, radius_key, out);
 }
+*/
 
+void ClosePairsFinder::show(std::ostream &out) const {
+  out << "ClosePairsFinder" << std::endl;
+}
 
 IMPCORE_END_NAMESPACE

@@ -82,11 +82,13 @@ BoxSweepClosePairsFinder::~BoxSweepClosePairsFinder(){}
 void BoxSweepClosePairsFinder
 ::add_close_pairs(ParticleContainer *ca,
                   ParticleContainer *cb,
-                  FilteredListParticlePairContainer *out) {
+                  Float distance,
+                  FloatKey radius_key,
+                  FilteredListParticlePairContainer *out) const {
 #ifdef IMP_USE_CGAL
   std::vector<NBLBbox> boxes0, boxes1;
-  copy_particles_to_boxes(ca, get_radius_key(), get_distance(), boxes0);
-  copy_particles_to_boxes(cb, get_radius_key(), get_distance(), boxes1);
+  copy_particles_to_boxes(ca, rk, distance, boxes0);
+  copy_particles_to_boxes(cb, rk, distance, boxes1);
 
   CGAL::box_intersection_d( boxes0.begin(), boxes0.end(),
                             boxes1.begin(), boxes1.end(), AddToList(out));
@@ -97,10 +99,12 @@ void BoxSweepClosePairsFinder
 
 void BoxSweepClosePairsFinder
 ::add_close_pairs(ParticleContainer *c,
-                  FilteredListParticlePairContainer *out) {
+                  Float distance,
+                  FloatKey radius_key,
+                  FilteredListParticlePairContainer *out) const {
 #ifdef IMP_USE_CGAL
   std::vector<NBLBbox> boxes;
-  copy_particles_to_boxes(c, get_radius_key(), get_distance(), boxes);
+  copy_particles_to_boxes(c, rk, distance, boxes);
 
 
   CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), AddToList(out));

@@ -23,17 +23,15 @@ class ParticleContainer;
 
 //! A base class for algorithms to find spatial proximities
 /** In general, the algorithm should make sure it returns all
-    pairs of appropriate objects which are within get_distance()
+    pairs of appropriate objects which are within distance
     of one another (including the radius).
  */
 class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
 {
-  FloatKey rk_;
-  Float distance_;
  protected:
-  Float get_radius(Particle *p) const {
-    if (rk_ != FloatKey()) {
-      return p->get_value(rk_);
+  Float get_radius(Particle *p, FloatKey rk) const {
+    if (rk != FloatKey()) {
+      return p->get_value(rk);
     } else {
       return 0;
     }
@@ -45,11 +43,13 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
 
   //! Compute all nearby pairs of particles in pc
   /** All pairs of distinct particles, p0, p1, taken from pc such that
-      distance(XYZRDecorator(p0, get_radius()), XYZRDecorator(p1, get_radius()))
-      is less than get_distance(). If radius_key is FloatKey() all radii
+      distance(XYZRDecorator(p0, radius_key), XYZRDecorator(p1, radius_key))
+      is less than distance. If radius_key is FloatKey() all radii
       are assumed to be 0. Other pairs can be added too. */
-  void add_close_pairs(ParticleContainer *pc,
-                       FilteredListParticlePairContainer *out);
+  virtual void add_close_pairs(ParticleContainer *pc,
+                       Float distance,
+                       FloatKey radius_key,
+                       FilteredListParticlePairContainer *out) const =0;
 
   //!
   /** \brief Compute all nearby pairs of particles with the first taken from
@@ -58,24 +58,16 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
       See evaluate(ParticleContainer* for more
       details.
   */
-  void add_close_pairs(ParticleContainer *pca,
-                          ParticleContainer *pcb,
-                          FilteredListParticlePairContainer *out);
+  virtual void add_close_pairs(ParticleContainer *pca,
+                       ParticleContainer *pcb,
+                       Float distance,
+                       FloatKey radius_key,
+                       FilteredListParticlePairContainer *out) const =0;
 
-  FloatKey get_radius_key() const {
-    return rk_;
-  }
-  void set_radius_key(FloatKey rk) {
-    rk_=rk;
-  }
-
-  Float get_distance() const {
-    return distance_;
-  }
-  void set_distance(Float distance) {
-    distance_=distance;
-  }
+  void show(std::ostream &out=std::cout) const;
 };
+
+IMP_OUTPUT_OPERATOR(ClosePairsFinder);
 
 IMPCORE_END_NAMESPACE
 

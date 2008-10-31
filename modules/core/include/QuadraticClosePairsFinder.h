@@ -22,13 +22,19 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
   ~QuadraticClosePairsFinder();
 
   void add_close_pairs(ParticleContainer *pc,
-                       FilteredListParticlePairContainer *out);
+                       Float distance,
+                       FloatKey radius_key,
+                       FilteredListParticlePairContainer *out) const;
 
   void add_close_pairs(ParticleContainer *pca,
                        ParticleContainer *pcb,
-                       FilteredListParticlePairContainer *out);
+                       Float distance,
+                       FloatKey radius_key,
+                       FilteredListParticlePairContainer *out) const;
 
-  bool get_are_close(Particle *a, Particle *b) const;
+  bool get_are_close(Particle *a, Particle *b,
+                     Float distance,
+                     FloatKey radius_key) const;
 };
 
 IMPCORE_END_NAMESPACE
