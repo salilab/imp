@@ -8,6 +8,7 @@
 
 #include <IMP/core/ClosePairsScoreState.h>
 #include <IMP/core/QuadraticClosePairsFinder.h>
+#include <IMP/core/BoxSweepClosePairsFinder.h>
 
 #include <algorithm>
 #include <sstream>
@@ -37,7 +38,11 @@ ClosePairsScoreState::ClosePairsScoreState(ParticleContainer *pc,
 void ClosePairsScoreState::initialize() {
   distance_=0;
   slack_=1;
-  set_close_pairs_finder(new QuadraticClosePairsFinder());
+  if (BoxSweepClosePairsFinder::get_is_implemented()) {
+    set_close_pairs_finder(new BoxSweepClosePairsFinder());
+  } else {
+    set_close_pairs_finder(new QuadraticClosePairsFinder());
+  }
 }
 
 void ClosePairsScoreState::set_distance(Float d) {
