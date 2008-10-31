@@ -61,7 +61,7 @@ public:
    */
   void set_slack(Float s);
 
-  ParticlePairContainer* get_close_pairs_container() const {
+  FilteredListParticlePairContainer* get_close_pairs_container() const {
     return out_;
   }
 
