@@ -38,6 +38,7 @@ files = [
          'ListParticlePairContainer.h',
          'LowestNRestraintSet.h',
          'MaxChangeScoreState.h',
+         'MaximumChangeScoreState.h',
          'MolecularDynamics.h',
          'MolecularHierarchyDecorator.h',
          'MonteCarlo.h',
