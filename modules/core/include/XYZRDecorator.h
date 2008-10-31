@@ -54,7 +54,9 @@ public:
    */
   static XYZRDecorator create(Particle *p,
                               FloatKey radius_key= FloatKey("radius")) {
-    XYZDecorator::create(p);
+    if (!XYZDecorator::is_instance_of(p)) {
+      XYZDecorator::create(p);
+    }
     p->add_attribute(radius_key, 0, false);
     return XYZRDecorator(p, radius_key);
   }
