@@ -30,7 +30,7 @@ bonds= IMP.core.ListParticleContainer()
 for i in range(1, chain.get_number_of_particles()):
     bp= IMP.core.BondedDecorator.cast(chain.get_particle(i-1))
     bpr= IMP.core.BondedDecorator.create(chain.get_particle(i))
-    b= IMP.core.custom_bond(bp, bpr, 1.5*radius, 10)gd
+    b= IMP.core.custom_bond(bp, bpr, 1.5*radius, 10)
     bonds.add_particle(b.get_particle())
 
 # If you want to inspect the particles
