@@ -13,7 +13,7 @@ radius =1.0
 rk= IMP.FloatKey("radius")
 m= IMP.Model()
 # The particles in the chain
-chain= IMP.Particles()
+chain= IMP.core.ListParticleContainer()
 for i in range(0,np):
     p= IMP.Particle()
     pi= m.add_particle(p)
@@ -22,14 +22,16 @@ for i in range(0,np):
                                                IMP.Vector3D(10,10,10)))
     d.set_coordinates_are_optimized(True)
     p.add_attribute(rk, radius, False)
-    chain.append(p)
+    chain.add_particle(p)
 
 # create a bond between successive particles
-IMP.core.BondedDecorator.create(chain[0])
-for i in range(1, len(chain)):
-    bp= IMP.core.BondedDecorator.cast(chain[i-1])
-    bpr= IMP.core.BondedDecorator.create(chain[i])
-    b= IMP.core.custom_bond(bp, bpr, 1.5*radius, 10)
+IMP.core.BondedDecorator.create(chain.get_particle(0))
+bonds= IMP.core.ListParticleContainer()
+for i in range(1, chain.get_number_of_particles()):
+    bp= IMP.core.BondedDecorator.cast(chain.get_particle(i-1))
+    bpr= IMP.core.BondedDecorator.create(chain.get_particle(i))
+    b= IMP.core.custom_bond(bp, bpr, 1.5*radius, 10)gd
+    bonds.add_particle(b.get_particle())
 
 # If you want to inspect the particles
 # Notice that each bond is a particle
@@ -37,30 +39,25 @@ for p in m.get_particles():
     p.show()
 
 # Set up the nonbonded list
-nbl= IMP.core.AllNonbondedListScoreState(1, rk, chain)
+nbl= IMP.core.ClosePairsScoreState(chain)
 nbli= m.add_score_state(nbl)
-# This ScoreState uses the bonds constructed above to restrain
-bl= IMP.core.BondDecoratorListScoreState(chain)
-bli= nbl.add_bonded_list(bl)
+# Exclude bonds from closest pairs
+fl= nbl.get_close_pairs_container()
+fl.add_particle_pair_container(IMP.core.BondDecoratorParticlePairContainer())
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1), rk)
-evr= IMP.core.NonbondedRestraint(ps, nbl)
+evr= IMP.core.ParticlePairsRestraint(ps, fl)
 evri= m.add_restraint(evr)
 
 # Restraint for bonds
-br= IMP.core.BondDecoratorRestraint(IMP.core.Harmonic(0,1), bl)
+bss= IMP.core.BondDecoratorSingletonScore(IMP.core.Harmonic(0,1))
+br= IMP.core.ParticlesRestraint(bss, bonds)
 bri= m.add_restraint(br)
-
-# Just for fun to make the chain straight (angles in radians)
-ats= IMP.core.AngleTripletScore(IMP.core.Harmonic(3.1415, .1))
-ar= IMP.core.TripletChainRestraint(ats)
-ar.add_chain(chain)
-ari= m.add_restraint(ar)
 
 # Tie the ends of the chain
 # We cound have used a bond instead
-p= IMP.ParticlePair(chain[0], chain[-1])
+p= IMP.ParticlePair(chain.get_particle(0), chain.get_particle(chain.get_number_of_particles()-1))
 pps= IMP.ParticlePairs()
 pps.append(p)
 cr= IMP.core.PairListRestraint(
@@ -73,7 +70,7 @@ o.set_model(m)
 
 # Write the progression of states as the system is optimized to
 # the files state.000.vrml, state.001.vrml etc.
-vrml= IMP.core.VRMLLogOptimizerState("state.%03d.vrml", chain)
+vrml= IMP.core.VRMLLogOptimizerState(chain, "state.%03d.vrml")
 vrml.set_radius_key(rk)
 vrml.update()
 vrml.set_skip_steps(100)
