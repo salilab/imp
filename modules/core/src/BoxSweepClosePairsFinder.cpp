@@ -87,8 +87,8 @@ void BoxSweepClosePairsFinder
                   FilteredListParticlePairContainer *out) const {
 #ifdef IMP_USE_CGAL
   std::vector<NBLBbox> boxes0, boxes1;
-  copy_particles_to_boxes(ca, rk, distance, boxes0);
-  copy_particles_to_boxes(cb, rk, distance, boxes1);
+  copy_particles_to_boxes(ca, radius_key, distance, boxes0);
+  copy_particles_to_boxes(cb, radius_key, distance, boxes1);
 
   CGAL::box_intersection_d( boxes0.begin(), boxes0.end(),
                             boxes1.begin(), boxes1.end(), AddToList(out));
@@ -104,7 +104,7 @@ void BoxSweepClosePairsFinder
                   FilteredListParticlePairContainer *out) const {
 #ifdef IMP_USE_CGAL
   std::vector<NBLBbox> boxes;
-  copy_particles_to_boxes(c, rk, distance, boxes);
+  copy_particles_to_boxes(c, radius_key, distance, boxes);
 
 
   CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), AddToList(out));
