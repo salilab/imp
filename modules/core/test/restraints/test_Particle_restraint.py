@@ -64,6 +64,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         for i in range(0,10):
             c.add_particle(self.create_particle(m))
             r= IMP.core.ParticlesRestraint(self.create_particle_score(), c)
+            r.set_was_owned(True)
         m.add_restraint(r)
         self.assertEqual(m.evaluate(False), 10)
         c.add_particle(self.create_particle(m))
