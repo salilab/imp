@@ -26,7 +26,6 @@ bool BondDecoratorParticlePairContainer
   BondedDecorator ba(pp.first);
   BondedDecorator bb(pp.second);
   BondDecorator bd=get_bond(ba, bb);
-  std::cout << bd << std::endl;
   return bd != BondDecorator();
 }
 
