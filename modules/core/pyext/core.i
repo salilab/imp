@@ -198,6 +198,7 @@ namespace IMP {
 %include "IMP/core/VelocityScalingOptimizerState.h"
 %include "IMP/core/XYZRDecorator.h"
 %include "IMP/core/model_io.h"
+%include "IMP/core/deprecation.h"
 
 
 namespace IMP {
