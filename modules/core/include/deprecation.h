@@ -28,8 +28,9 @@ IMPCORE_END_NAMESPACE
  */
 #define IMP_DEPRECATED(old_classname, replacement_classname)           \
   if (::IMP::core::internal::get_print_deprecation_message(#old_classname)) { \
-    IMP_LOG(WARNING, "Class " << #old_classname << " is deprecated "    \
-            << "and should not be used. Use the class "                 \
+    IMP_LOG(WARNING, "WARNING: Class " << #old_classname                \
+            << " is deprecated "                                        \
+            << "and should not be used.\nUse the class "                \
             << #replacement_classname << " instead." << std::endl);     \
     ::IMP::core::internal::set_printed_deprecation_message(#old_classname,\
                                                            true);       \
