@@ -74,6 +74,7 @@ files = [
          'XYZDecorator.h',
          'XYZRDecorator.h',
          'bond_decorators.h',
+         'deprecation.h',
          'macros.h',
          'model_io.h',
          'utility.h',
