@@ -20,10 +20,6 @@ ListParticlePairContainer::ListParticlePairContainer(const ParticlePairs &ps){
 
 ListParticlePairContainer::~ListParticlePairContainer(){}
 
-
-/**
-  \todo make this more efficient. Probably requires changing the macros.
- */
 IMP_LIST_IMPL(ListParticlePairContainer, ParticlePair,
               particle_pair, ParticlePair,, {
                 std::sort(particle_pairs_begin(), particle_pairs_end());
