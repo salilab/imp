@@ -169,9 +169,6 @@ class ResidueDecorator;
     \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
     \return MolecularHierarchyDecorator() if that residue is not found.
 
-    \todo We can make this method much more clever in its search since
-    most proteins consist of a few contiguous blocks of indices.
-
     \ingroup hierarchy
     \relates MolecularHierarchyDecorator
  */
