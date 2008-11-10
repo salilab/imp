@@ -26,11 +26,6 @@ IMPCORE_BEGIN_NAMESPACE
 
     Particles without optimized x,y,z and nonoptimized D are skipped.
 
-    \todo Currently dynamic time steps are handled by scaling back dt
-    if forces are too high at the current position. It would be better
-    to scale back the time step if the forces will be too high at the
-    next position.
-
     \ingroup optimizer
  */
 class IMPCOREEXPORT BrownianDynamics : public Optimizer
