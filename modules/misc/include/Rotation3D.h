@@ -14,32 +14,32 @@
 IMPMISC_BEGIN_NAMESPACE
 
 //! 3D rotation class.
-/** \ingroup helper
+/** Holds a 3-dimensional rotation compactly using a quaternions (4 numbers).
+    For a given axis and angle, one can easily construct the corresponding
+    quaternion, and conversely, for a given quaternion one can easily read
+    off the axis and the angle.
+    Another advantage is robustness to rounding errors.
+    The quaternions representation does not harm the performance too much.
 */
 
 class IMPMISCEXPORT Rotation3D {
 public:
   Rotation3D(){
  }
-  //! Initialize a rotation in x-y-z order from three Euler angles
-  /** \param[in] xr Rotation around the X axis
-      \param[in] yr Rotation around the Y axis
-      \param[in] zr Rotation around the Z axis
+  //! Initialize a rotation in x-y-z order from three angles
+  /** \param[in] xr Rotation around the X axis in radians
+      \param[in] yr Rotation around the Y axis in radians
+      \param[in] zr Rotation around the Z axis in radians
   */
   Rotation3D(Float xr, Float yr, Float zr) {
     init_angles(xr,yr,zr);
   }
-  //! Initialize a rotation in x-y-z order from three identical Euler angles
+  //! Initialize a rotation in x-y-z order from three identical angles
   /** \param[in] e_angle Rotation around first the X axis, Y axis and Z axis
+                 in radians
   */
   Rotation3D(Float e_angle){
     init_angles(e_angle, e_angle, e_angle);
-  }
-  //! Initialize a rotation in x-y-z order from three Euler angles
-  /** \param[in] v  A vector that holds three Euler angles (x-y-z order)
-  */
-  Rotation3D(const Vector3D &v){
-    init_angles(v[0],v[1],v[2]);
   }
   Matrix3D get_matrix() const {
   const Float a = quat_[0];
