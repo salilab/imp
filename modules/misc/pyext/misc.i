@@ -32,3 +32,8 @@ namespace IMP::misc {
 %include "IMP/misc/TunnelSingletonScore.h"
 %include "IMP/misc/CoverBondsScoreState.h"
 %include "IMP/misc/LowestRefinedPairScore.h"
+%include "IMP/misc/Matrix3D.h"
+%include "IMP/misc/Rotation3D.h"
+%include "IMP/misc/Transformation3D.h"
+%include "IMP/misc/ParticleFunction.h"
+%include "IMP/misc/TransformationFunction.h"
