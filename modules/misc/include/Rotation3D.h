@@ -19,26 +19,28 @@ IMPMISC_BEGIN_NAMESPACE
 
 class IMPMISCEXPORT Rotation3D {
 public:
-  //! Initialize a rotation in x-y-z order from three angles
+  Rotation3D(){
+ }
+  //! Initialize a rotation in x-y-z order from three Euler angles
   /** \param[in] xr Rotation around the X axis
       \param[in] yr Rotation around the Y axis
       \param[in] zr Rotation around the Z axis
   */
   Rotation3D(Float xr, Float yr, Float zr) {
-    Float cx = cos(xr);  Float cy = cos(yr);  Float cz = cos(zr);
-    Float sx = sin(xr);  Float sy = sin(yr);  Float sz = sin(zr);
-    Float m00 = cz*cy;
-    Float m11 = -sy*sx*sz + cx*cz;
-    Float m22 = cy*cx;
-    quat_[0] = sqrt(1+m00+m11+m22)/2.0;
-    quat_[1] = sqrt(1+m00-m11-m22)/2.0;
-    quat_[2] = sqrt(1-m00+m11-m22)/2.0;
-    quat_[3] = sqrt(1-m00-m11+m22)/2.0;
-    if (cy*sx + sy*cx*sz + sx*cz < 0.0) quat_[1] = -quat_[1];
-    if (sz*sx - sy*cx*cz - sy < 0.0)    quat_[2] = -quat_[2];
-    if (sz*cy + sy*sx*cz + sz*cx < 0.0) quat_[3] = -quat_[3];
+    init_angles(xr,yr,zr);
   }
-
+  //! Initialize a rotation in x-y-z order from three identical Euler angles
+  /** \param[in] e_angle Rotation around first the X axis, Y axis and Z axis
+  */
+  Rotation3D(Float e_angle){
+    init_angles(e_angle, e_angle, e_angle);
+  }
+  //! Initialize a rotation in x-y-z order from three Euler angles
+  /** \param[in] v  A vector that holds three Euler angles (x-y-z order)
+  */
+  Rotation3D(const Vector3D &v){
+    init_angles(v[0],v[1],v[2]);
+  }
   Matrix3D get_matrix() const {
   const Float a = quat_[0];
   const Float b = quat_[1];
@@ -76,7 +78,22 @@ public:
     return atan2(matrix21(), matrix11());
   }
 
-protected:
+private:
+  void init_angles(Float xr, Float yr, Float zr) {
+    Float cx = cos(xr);  Float cy = cos(yr);  Float cz = cos(zr);
+    Float sx = sin(xr);  Float sy = sin(yr);  Float sz = sin(zr);
+    Float m00 = cz*cy;
+    Float m11 = -sy*sx*sz + cx*cz;
+    Float m22 = cy*cx;
+    quat_[0] = sqrt(1+m00+m11+m22)/2.0;
+    quat_[1] = sqrt(1+m00-m11-m22)/2.0;
+    quat_[2] = sqrt(1-m00+m11-m22)/2.0;
+    quat_[3] = sqrt(1-m00-m11+m22)/2.0;
+    if (cy*sx + sy*cx*sz + sx*cz < 0.0) quat_[1] = -quat_[1];
+    if (sz*sx - sy*cx*cz - sy < 0.0)    quat_[2] = -quat_[2];
+    if (sz*cy + sy*sx*cz + sz*cx < 0.0) quat_[3] = -quat_[3];
+  }
+
   Float matrix11() const {
     return sqr(quat_[0]) + sqr(quat_[1]) - sqr(quat_[2]) - sqr(quat_[3]);
   }
