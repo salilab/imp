@@ -5,7 +5,12 @@ files = [
          'ChildrenParticleRefiner.h',
          'CoverBondsScoreState.h',
          'LowestRefinedPairScore.h',
+         'Matrix3D.h',
+         'ParticleFunction.h',
          'RefineOncePairScore.h',
+         'Rotation3D.h',
+         'Transformation3D.h',
+         'TransformationFunction.h',
          'TunnelSingletonScore.h',
          'WormLikeChain.h',
         ]

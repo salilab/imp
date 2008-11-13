@@ -6,7 +6,10 @@ files = [
          'ChildrenParticleRefiner.cpp',
          'CoverBondsScoreState.cpp',
          'LowestRefinedPairScore.cpp',
+         'Matrix3D.cpp',
          'RefineOncePairScore.cpp',
+         'Rotation3D.cpp',
+         'Transformation3D.cpp',
          'TunnelSingletonScore.cpp',
         ]
 
