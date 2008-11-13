@@ -21,8 +21,8 @@ class RigidTransformationTests(IMP.test.TestCase):
         v2_t = t.transform(self.v2)
         v1_t_res=IMP.Vector3D(-62.517,86.209, 41.139)
         v2_t_res=IMP.Vector3D( 41.767, 1.621,-53.381)
-        self.assertEqual(v1_t.dist(v1_t_res)<0.01,True)
-        self.assertEqual(v2_t.dist(v2_t_res)<0.01,True)
+        self.assertEqual((v1_t- v1_t_res).get_magnitude() < 0.01,True)
+        self.assertEqual((v2_t- v2_t_res).get_magnitude() < 0.01,True)
 
 if __name__ == '__main__':
     unittest.main()

@@ -38,7 +38,7 @@ class ParticleTrasnformationTests(IMP.test.TestCase):
         for i in xrange(4):
             xyz = IMP.core.XYZDecorator.cast(self.particles[i]);
             v = xyz.get_coordinates();
-            self.assertEqual(v.dist(tp[i])<0.01,True)
+            self.assertEqual((v-tp[i]).get_magnitude()<0.01,True)
 
 if __name__ == '__main__':
     unittest.main()
