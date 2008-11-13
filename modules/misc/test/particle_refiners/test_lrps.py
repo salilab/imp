@@ -25,7 +25,7 @@ class Test(IMP.test.TestCase):
             p= IMP.Particle()
             m.add_particle(p)
             d= IMP.core.XYZDecorator.create(p)
-            d.set_coordinates(IMP.random_vector_in_box())
+            d.set_coordinates(IMP.random_vector_in_unit_box())
             ds[i%2].append(d)
             hp= IMP.core.HierarchyDecorator.create(p)
             hpp[i%2].add_child(hp)
