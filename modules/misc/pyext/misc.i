@@ -24,9 +24,6 @@ namespace IMP::misc {
   IMP_OWN_FIRST_CONSTRUCTOR(TunnelSingletonScore)
 }
 
-namespace IMP {
-  class Vector3D;
-}
 
 /* Wrap our own classes */
 %include "IMP/misc/WormLikeChain.h"
