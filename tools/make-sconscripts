@@ -42,7 +42,7 @@ class SConscriptGenerator:
         return file(fname, 'w')
 
     def exclude_file(self, filename):
-        return filename in self.excludes
+        return filename in self.excludes or filename.startswith('.')
 
     def scandir(self, dir, top=True):
         files = os.listdir(dir)
