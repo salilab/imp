@@ -1,5 +1,4 @@
 files = [
-         '._IndexingIterator.h',
          'ArrayOnAttributesHelper.h',
          'Grid3D.h',
          'IndexingIterator.h',
