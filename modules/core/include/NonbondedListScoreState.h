@@ -98,7 +98,7 @@ protected:
       IMP_LOG(VERBOSE, "Found pair " << a->get_index()
         << " " << b->get_index() << std::endl);
       if (nbl_.size() <  max_nbl_size_) {
-        nbl_.push_back(std::make_pair(a, b));
+        nbl_.push_back(ParticlePair(a, b));
       } else {
         throw NBLTooLargeException();
       }
@@ -177,7 +177,7 @@ protected:
       return true;
     }
 
-    bool operator()(std::pair<Particle *, Particle *> p) const {
+    bool operator()(ParticlePair p) const {
       return operator()(p.first, p.second);
     }
   };
