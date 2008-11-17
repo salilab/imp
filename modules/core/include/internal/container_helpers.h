@@ -14,6 +14,8 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
 
+#include <boost/tuple/tuple.hpp>
+
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 template <class P>
@@ -30,6 +32,10 @@ struct ContainerTraits<Particle> {
                         DerivativeAccumulator *ac) {
     return ss->evaluate(p, ac);
   }
+  /*static void apply(SingletonModifier *ss,
+                     Particle *p) {
+    ss->apply(p);
+    }*/
 };
 
 template <>
@@ -46,7 +52,34 @@ struct ContainerTraits<ParticlePair> {
                         DerivativeAccumulator *ac) {
     return ss->evaluate(p.first, p.second, ac);
   }
+  /*static void apply(PairModifier *ss,
+                     const ParticlePair &p) {
+    ss->apply(p.first, p.second);
+    } */
 };
+
+/*template <>
+struct ContainerTraits<ParticleTriplet> {
+  static const bool is_singleton=false;
+  static Particles create_set(ParticleTriplet p) {
+    Particles ret;
+    ret.push_back(p.first);
+    ret.push_back(p.second);
+    ret.push_back(p.third);
+    return ret;
+  }
+  static Float evaluate(TripletScore *ss,
+                        ParticleTriplet p,
+                        DerivativeAccumulator *ac) {
+    return ss->evaluate(p.first, p.second, p.third, ac);
+  }
+  static void apply(TripletModifier *ss,
+                     const ParticleTriplet &p) {
+    ss->apply(p.first, p.second, p.third);
+  }
+
+};*/
+
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

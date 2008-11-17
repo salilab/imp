@@ -15,8 +15,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ClosePairsScoreState::ClosePairsScoreState(ParticleContainer *pc,
-                                     FilteredListParticlePairContainer* out,
+ClosePairsScoreState::ClosePairsScoreState(SingletonContainer *pc,
+                                     FilteredListPairContainer* out,
                                            FloatKey rk)
 {
   in_=pc;
@@ -25,11 +25,11 @@ ClosePairsScoreState::ClosePairsScoreState(ParticleContainer *pc,
   initialize();
 }
 
-ClosePairsScoreState::ClosePairsScoreState(ParticleContainer *pc,
+ClosePairsScoreState::ClosePairsScoreState(SingletonContainer *pc,
                                            FloatKey rk)
 {
   in_=pc;
-  out_=new FilteredListParticlePairContainer();
+  out_=new FilteredListPairContainer();
   rk_=rk;
   initialize();
 }
@@ -53,11 +53,11 @@ void ClosePairsScoreState::set_slack(Float d) {
   slack_=d;
 }
 
-void ClosePairsScoreState::set_particle_container(ParticleContainer *pc) {
+void ClosePairsScoreState::set_singleton_container(SingletonContainer *pc) {
   // needs to be first for the case of assigning the pc that is already there
   in_=pc;
-  xyzc_->set_particle_container(in_);
-  if (rc_) rc_->set_particle_container(in_);
+  xyzc_->set_singleton_container(in_);
+  if (rc_) rc_->set_singleton_container(in_);
 }
 
 void ClosePairsScoreState::set_close_pairs_finder(ClosePairsFinder *f) {

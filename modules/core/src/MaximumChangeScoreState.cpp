@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-MaximumChangeScoreState::MaximumChangeScoreState(ParticleContainer *pc,
+MaximumChangeScoreState::MaximumChangeScoreState(SingletonContainer *pc,
                                                  const FloatKeys &keys):
   keys_(keys), pc_(pc)
 {
@@ -28,7 +28,7 @@ void MaximumChangeScoreState::do_before_evaluate()
 {
   IMP_CHECK_OBJECT(pc_);
   maximum_change_=0;
-  for (ParticleContainer::ParticleIterator it= pc_->particles_begin();
+  for (SingletonContainer::ParticleIterator it= pc_->particles_begin();
        it != pc_->particles_end(); ++it) {
     (*it)->assert_is_valid();
     ParticleIndex pi=(*it)->get_index();
@@ -52,7 +52,7 @@ void MaximumChangeScoreState::reset()
 {
   maximum_change_=0;
   orig_values_.clear();
-  for (ParticleContainer::ParticleIterator it= pc_->particles_begin();
+  for (SingletonContainer::ParticleIterator it= pc_->particles_begin();
        it != pc_->particles_end(); ++it) {
     (*it)->assert_is_valid();
     ParticleIndex pi=(*it)->get_index();

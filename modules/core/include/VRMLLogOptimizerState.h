@@ -11,7 +11,7 @@
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
-#include "ParticleContainer.h"
+#include "SingletonContainer.h"
 
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
@@ -39,7 +39,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
 {
  public:
-  VRMLLogOptimizerState(ParticleContainer *pc,
+  VRMLLogOptimizerState(SingletonContainer *pc,
                         std::string filename);
   virtual ~VRMLLogOptimizerState(){}
 
@@ -71,7 +71,7 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
    */
   void set_color(int c, Vector3D v);
 
-  void set_particle_container(ParticleContainer *pc) {
+  void set_singleton_container(SingletonContainer *pc) {
     pc_=pc;
   }
 
@@ -94,7 +94,7 @@ private:
   FloatKey radius_;
   IntKey color_;
   std::map<int, Vector3D > colors_;
-  Pointer<ParticleContainer> pc_;
+  Pointer<SingletonContainer> pc_;
 };
 
 IMPCORE_END_NAMESPACE

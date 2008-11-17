@@ -14,7 +14,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-VRMLLogOptimizerState::VRMLLogOptimizerState(ParticleContainer *pc,
+VRMLLogOptimizerState::VRMLLogOptimizerState(SingletonContainer *pc,
                                              std::string filename) :
     filename_(filename), file_number_(0), call_number_(0),
     skip_steps_(0), pc_(pc)

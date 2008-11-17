@@ -13,7 +13,7 @@ class TestBL(IMP.test.TestCase):
         for p in ps:
             d= IMP.core.XYZDecorator(p)
             vs.append(d.get_coordinates())
-        pc= IMP.core.ListParticleContainer(ps)
+        pc= IMP.core.ListSingletonContainer(ps)
         print "initing"
         mc= IMP.core.MaximumChangeScoreState(pc,
                                              IMP.core.XYZDecorator.get_xyz_keys())

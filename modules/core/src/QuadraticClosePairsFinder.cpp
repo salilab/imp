@@ -16,14 +16,14 @@ QuadraticClosePairsFinder::QuadraticClosePairsFinder(){}
 QuadraticClosePairsFinder::~QuadraticClosePairsFinder(){}
 
 void QuadraticClosePairsFinder
-::add_close_pairs(ParticleContainer *ca,
-                  ParticleContainer *cb,
+::add_close_pairs(SingletonContainer *ca,
+                  SingletonContainer *cb,
                   Float distance,
                   FloatKey radius_key,
-                  FilteredListParticlePairContainer *out) const {
-  for (ParticleContainer::ParticleIterator it = ca->particles_begin();
+                  FilteredListPairContainer *out) const {
+  for (SingletonContainer::ParticleIterator it = ca->particles_begin();
        it != ca->particles_end(); ++it) {
-    for (ParticleContainer::ParticleIterator it2 = cb->particles_begin();
+    for (SingletonContainer::ParticleIterator it2 = cb->particles_begin();
          it2 != cb->particles_end(); ++it2) {
       if (get_are_close(*it, *it2, distance, radius_key)) {
         out->add_particle_pair(ParticlePair(*it, *it2));
@@ -33,15 +33,15 @@ void QuadraticClosePairsFinder
 }
 
 void QuadraticClosePairsFinder
-::add_close_pairs(ParticleContainer *c,
+::add_close_pairs(SingletonContainer *c,
                   Float distance,
                   FloatKey radius_key,
-                  FilteredListParticlePairContainer *out) const {
+                  FilteredListPairContainer *out) const {
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles." << std::endl);
-  for (ParticleContainer::ParticleIterator it = c->particles_begin();
+  for (SingletonContainer::ParticleIterator it = c->particles_begin();
        it != c->particles_end(); ++it) {
-    for (ParticleContainer::ParticleIterator it2 = c->particles_begin();
+    for (SingletonContainer::ParticleIterator it2 = c->particles_begin();
        it2 != it; ++it2) {
       if (get_are_close(*it, *it2, distance, radius_key)) {
         out->add_particle_pair(ParticlePair(*it, *it2));

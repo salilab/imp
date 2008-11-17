@@ -10,16 +10,16 @@
 
 #include "core_exports.h"
 #include "XYZRDecorator.h"
-#include "ParticleContainer.h"
-#include "FilteredListParticlePairContainer.h"
+#include "SingletonContainer.h"
+#include "FilteredListPairContainer.h"
 
 #include <IMP/RefCountedObject.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 // to make SWIG happy
-class FilteredListParticlePairContainer;
-class ParticleContainer;
+class FilteredListPairContainer;
+class SingletonContainer;
 
 //! A base class for algorithms to find spatial proximities
 /** In general, the algorithm should make sure it returns all
@@ -46,23 +46,23 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
       distance(XYZRDecorator(p0, radius_key), XYZRDecorator(p1, radius_key))
       is less than distance. If radius_key is FloatKey() all radii
       are assumed to be 0. Other pairs can be added too. */
-  virtual void add_close_pairs(ParticleContainer *pc,
+  virtual void add_close_pairs(SingletonContainer *pc,
                        Float distance,
                        FloatKey radius_key,
-                       FilteredListParticlePairContainer *out) const =0;
+                       FilteredListPairContainer *out) const =0;
 
   //!
   /** \brief Compute all nearby pairs of particles with the first taken from
       pca and the second from pcb.
 
-      See evaluate(ParticleContainer* for more
+      See evaluate(SingletonContainer* for more
       details.
   */
-  virtual void add_close_pairs(ParticleContainer *pca,
-                       ParticleContainer *pcb,
+  virtual void add_close_pairs(SingletonContainer *pca,
+                       SingletonContainer *pcb,
                        Float distance,
                        FloatKey radius_key,
-                       FilteredListParticlePairContainer *out) const =0;
+                       FilteredListPairContainer *out) const =0;
 
   void show(std::ostream &out=std::cout) const;
 };

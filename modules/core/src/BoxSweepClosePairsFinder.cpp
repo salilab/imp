@@ -47,7 +47,7 @@ struct NBLBbox
   operator Particle*() {return d_.get_particle();}
 };
 
-static void copy_particles_to_boxes(const ParticleContainer *ps,
+static void copy_particles_to_boxes(const SingletonContainer *ps,
                                     FloatKey rk, Float distance,
                                     std::vector<NBLBbox> &boxes)
 {
@@ -64,8 +64,8 @@ static void copy_particles_to_boxes(const ParticleContainer *ps,
 }
 
 struct AddToList {
-  FilteredListParticlePairContainer *out_;
-  AddToList(FilteredListParticlePairContainer *out): out_(out){}
+  FilteredListPairContainer *out_;
+  AddToList(FilteredListPairContainer *out): out_(out){}
   void operator()(Particle *a, Particle *b) {
     out_->add_particle_pair(ParticlePair(a,b));
   }
@@ -80,11 +80,11 @@ BoxSweepClosePairsFinder::BoxSweepClosePairsFinder(){}
 BoxSweepClosePairsFinder::~BoxSweepClosePairsFinder(){}
 
 void BoxSweepClosePairsFinder
-::add_close_pairs(ParticleContainer *ca,
-                  ParticleContainer *cb,
+::add_close_pairs(SingletonContainer *ca,
+                  SingletonContainer *cb,
                   Float distance,
                   FloatKey radius_key,
-                  FilteredListParticlePairContainer *out) const {
+                  FilteredListPairContainer *out) const {
 #ifdef IMP_USE_CGAL
   std::vector<NBLBbox> boxes0, boxes1;
   copy_particles_to_boxes(ca, radius_key, distance, boxes0);
@@ -98,10 +98,10 @@ void BoxSweepClosePairsFinder
 }
 
 void BoxSweepClosePairsFinder
-::add_close_pairs(ParticleContainer *c,
+::add_close_pairs(SingletonContainer *c,
                   Float distance,
                   FloatKey radius_key,
-                  FilteredListParticlePairContainer *out) const {
+                  FilteredListPairContainer *out) const {
 #ifdef IMP_USE_CGAL
   std::vector<NBLBbox> boxes;
   copy_particles_to_boxes(c, radius_key, distance, boxes);

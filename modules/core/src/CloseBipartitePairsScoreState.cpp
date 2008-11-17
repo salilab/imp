@@ -15,9 +15,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 CloseBipartitePairsScoreState
-::CloseBipartitePairsScoreState(ParticleContainer *pc0,
-                                ParticleContainer *pc1,
-                                FilteredListParticlePairContainer* out,
+::CloseBipartitePairsScoreState(SingletonContainer *pc0,
+                                SingletonContainer *pc1,
+                                FilteredListPairContainer* out,
                                            FloatKey rk)
 {
   in_[0]=pc0;
@@ -28,13 +28,13 @@ CloseBipartitePairsScoreState
 }
 
 CloseBipartitePairsScoreState
-::CloseBipartitePairsScoreState(ParticleContainer *pc0,
-                                ParticleContainer *pc1,
+::CloseBipartitePairsScoreState(SingletonContainer *pc0,
+                                SingletonContainer *pc1,
                                            FloatKey rk)
 {
   in_[0]=pc0;
   in_[1]=pc1;
-  out_=new FilteredListParticlePairContainer();
+  out_=new FilteredListPairContainer();
   rk_=rk;
   initialize();
 }
@@ -62,14 +62,14 @@ void CloseBipartitePairsScoreState::clear() {
 }
 
 void CloseBipartitePairsScoreState
-::set_first_particle_container(ParticleContainer *pc) {
+::set_first_singleton_container(SingletonContainer *pc) {
   // needs to be first for the case of assigning the pc that is already there
   in_[0]=pc;
   clear();
 }
 
 void CloseBipartitePairsScoreState
-::set_second_particle_container(ParticleContainer *pc) {
+::set_second_singleton_container(SingletonContainer *pc) {
   in_[1]=pc;
   clear();
 }
