@@ -29,9 +29,9 @@ class TestCPFL(IMP.test.TestCase):
         ps= self.create_particles_in_box(m, 200)
         for i in range(0, len(ps)):
             ps[i].add_attribute(rk, random.uniform(0,1))
-        pc= IMP.core.ListParticleContainer(ps)
+        pc= IMP.core.ListSingletonContainer(ps)
         pc.show()
-        out= IMP.core.FilteredListParticlePairContainer()
+        out= IMP.core.FilteredListPairContainer()
         out.show()
         cpf.add_close_pairs(pc, dist, rk, out)
         print "done " + str(out.get_number_of_particle_pairs())
@@ -54,8 +54,8 @@ class TestCPFL(IMP.test.TestCase):
         ps2= self.create_particles_in_box(m, 200)
         for i in range(0, len(ps2)):
             ps2[i].add_attribute(rk, random.uniform(0,2))
-        pc2= IMP.core.ListParticleContainer(ps2)
-        out= IMP.core.FilteredListParticlePairContainer()
+        pc2= IMP.core.ListSingletonContainer(ps2)
+        out= IMP.core.FilteredListPairContainer()
 
         cpf.add_close_pairs(pc, pc2, dist, rk, out)
         print "done bipartite " + str(out.get_number_of_particle_pairs())

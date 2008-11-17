@@ -11,14 +11,14 @@
 #include "core_exports.h"
 #include "MaximumChangeScoreState.h"
 #include "ClosePairsFinder.h"
-#include "ParticleContainer.h"
-#include "FilteredListParticlePairContainer.h"
+#include "SingletonContainer.h"
+#include "FilteredListPairContainer.h"
 #include <IMP/ScoreState.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 // for SWIG
-class FilteredListParticlePairContainer;
+class FilteredListPairContainer;
 class MaximumChangeScoreState;
 class ClosePairsFinder;
 
@@ -32,8 +32,8 @@ class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState
   Pointer<MaximumChangeScoreState> xyzc_[2];
   Pointer<MaximumChangeScoreState> rc_[2];
   Pointer<ClosePairsFinder> f_;
-  Pointer<ParticleContainer> in_[2];
-  Pointer<FilteredListParticlePairContainer> out_;
+  Pointer<SingletonContainer> in_[2];
+  Pointer<FilteredListPairContainer> out_;
   Float distance_, slack_;
   FloatKey rk_;
 
@@ -41,13 +41,13 @@ class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState
   void clear();
 public:
   // rk needs to be there so that we don't get an error for missing attributs
-  CloseBipartitePairsScoreState(ParticleContainer *in0,
-                                ParticleContainer *in1,
+  CloseBipartitePairsScoreState(SingletonContainer *in0,
+                                SingletonContainer *in1,
                        FloatKey rk= XYZRDecorator::get_default_radius_key());
   // rk needs to be there so that we don't get an error for missing attributs
-  CloseBipartitePairsScoreState(ParticleContainer *in0,
-                                ParticleContainer *in1,
-                       FilteredListParticlePairContainer *out,
+  CloseBipartitePairsScoreState(SingletonContainer *in0,
+                                SingletonContainer *in1,
+                       FilteredListPairContainer *out,
                        FloatKey rk= XYZRDecorator::get_default_radius_key());
 
   virtual ~CloseBipartitePairsScoreState();
@@ -61,24 +61,24 @@ public:
    */
   void set_slack(Float s);
 
-  FilteredListParticlePairContainer* get_close_pairs_container() const {
+  FilteredListPairContainer* get_close_pairs_container() const {
     return out_;
   }
 
   //! Set the first container to get particles from
-  void set_first_particle_container(ParticleContainer *pc);
+  void set_first_singleton_container(SingletonContainer *pc);
 
   //! Set the first container to get particles from
-  void set_second_particle_container(ParticleContainer *pc);
+  void set_second_singleton_container(SingletonContainer *pc);
 
 
   //! Get the container with the set of particles
-  ParticleContainer* get_first_particle_container() const {
+  SingletonContainer* get_first_singleton_container() const {
     return in_[0];
   }
 
   //! Get the container with the set of particles
-  ParticleContainer* get_second_particle_container() const {
+  SingletonContainer* get_second_singleton_container() const {
     return in_[1];
   }
 

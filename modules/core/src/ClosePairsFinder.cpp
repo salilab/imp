@@ -7,7 +7,7 @@
  */
 
 #include "IMP/core/ClosePairsFinder.h"
-#include "IMP/core/ListParticleContainer.h"
+#include "IMP/core/ListSingletonContainer.h"
 #include <algorithm>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -18,10 +18,10 @@ ClosePairsFinder::~ClosePairsFinder(){}
 
 namespace {
   struct TestAndAdd{
-    FilteredListParticlePairContainer *out_;
-    ParticleContainer *a_, *b_;
-    TestAndAdd(ParticleContainer *a, ParticleContainer *b,
-               FilteredListParticlePairContainer *out): out_(out),
+    FilteredListPairContainer *out_;
+    SingletonContainer *a_, *b_;
+    TestAndAdd(SingletonContainer *a, SingletonContainer *b,
+               FilteredListPairContainer *out): out_(out),
                                                         a_(a), b_(b){}
     void operator()(ParticlePair p) {
       if (a_->get_contains_particle(p.first)
@@ -34,16 +34,16 @@ namespace {
 
 /*
 void ClosePairsFinder
-::add_close_pairs(ParticleContainer *ca,
-                  ParticleContainer *cb,
+::add_close_pairs(SingletonContainer *ca,
+                  SingletonContainer *cb,
                   Float distance,
                   FloatKey radius_key,
-                  FilteredListParticlePairContainer *out) {
+                  FilteredListPairContainer *out) {
 
-  Pointer<FilteredListParticlePairContainer>
-    lppc(new FilteredListParticlePairContainer());
+  Pointer<FilteredListPairContainer>
+    lppc(new FilteredListPairContainer());
   {
-    Pointer<ListParticleContainer> lpc(new ListParticleContainer());
+    Pointer<ListSingletonContainer> lpc(new ListSingletonContainer());
     Particles ps(ca->particles_begin(), ca->particles_end());
     ps.insert(ps.end(), cb->particles_begin(), cb->particles_end());
     lpc->add_particles(ps);
@@ -55,10 +55,10 @@ void ClosePairsFinder
 }
 
 void ClosePairsFinder
-::add_close_pairs(ParticleContainer *c,
+::add_close_pairs(SingletonContainer *c,
                   Float distance,
                   FloatKey radius_key,
-                  FilteredListParticlePairContainer *out) {
+                  FilteredListPairContainer *out) {
   add_close_pairs(c, c, distance, radius_key, out);
 }
 */

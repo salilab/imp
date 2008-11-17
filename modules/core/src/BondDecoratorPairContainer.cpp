@@ -1,22 +1,22 @@
 /**
- *  \file BondDecoratorParticlePairContainer.cpp
+ *  \file BondDecoratorPairContainer.cpp
  *  \brief A fake container that returns true if a pair of particles are bonded
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/core/BondDecoratorParticlePairContainer.h"
+#include "IMP/core/BondDecoratorPairContainer.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
-BondDecoratorParticlePairContainer
-::BondDecoratorParticlePairContainer(){
+BondDecoratorPairContainer
+::BondDecoratorPairContainer(){
 }
 
-BondDecoratorParticlePairContainer::~BondDecoratorParticlePairContainer(){}
+BondDecoratorPairContainer::~BondDecoratorPairContainer(){}
 
-bool BondDecoratorParticlePairContainer
+bool BondDecoratorPairContainer
 ::get_contains_particle_pair(ParticlePair pp) const {
   if (!BondedDecorator::is_instance_of(pp.first)
       || ! BondedDecorator::is_instance_of(pp.second)) {
@@ -29,21 +29,21 @@ bool BondDecoratorParticlePairContainer
   return bd != BondDecorator();
 }
 
-unsigned int BondDecoratorParticlePairContainer
+unsigned int BondDecoratorPairContainer
 ::get_number_of_particle_pairs() const {
   return 0;
 }
 
-ParticlePair BondDecoratorParticlePairContainer
+ParticlePair BondDecoratorPairContainer
 ::get_particle_pair(unsigned int i) const {
-  throw InvalidStateException("BondDecoratorParticlePairContainer does" \
+  throw InvalidStateException("BondDecoratorPairContainer does" \
                               " not contain any pairs");
   return ParticlePair();
 }
 
 
-void BondDecoratorParticlePairContainer::show(std::ostream &out) const {
-  out << "BondDecoratorParticlePairContainer" << std::endl;
+void BondDecoratorPairContainer::show(std::ostream &out) const {
+  out << "BondDecoratorPairContainer" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

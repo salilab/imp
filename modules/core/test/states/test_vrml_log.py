@@ -28,7 +28,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_x(1)
         d1.set_y(1)
         d1.set_z(1)
-        pc= IMP.core.ListParticleContainer(IMP.Particles([p0,p1]))
+        pc= IMP.core.ListSingletonContainer(IMP.Particles([p0,p1]))
         a= IMP.core.VRMLLogOptimizerState(pc, nm)
         a.set_radius_key(rk)
         o.add_optimizer_state(a)
@@ -70,7 +70,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_x(1)
         d1.set_y(1)
         d1.set_z(1)
-        pc= IMP.core.ListParticleContainer(IMP.Particles([p0,p1]))
+        pc= IMP.core.ListSingletonContainer(IMP.Particles([p0,p1]))
         a= IMP.core.VRMLLogOptimizerState(pc, nm)
         a.set_skip_steps(20) # kind of a hack
         r= IMP.core.DistanceRestraint(IMP.core.Harmonic(0,10), p0, p1);

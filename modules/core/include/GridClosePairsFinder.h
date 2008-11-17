@@ -21,16 +21,16 @@ class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
   GridClosePairsFinder();
   ~GridClosePairsFinder();
 
-  void add_close_pairs(ParticleContainer *pc,
+  void add_close_pairs(SingletonContainer *pc,
                        Float distance,
                        FloatKey radius_key,
-                       FilteredListParticlePairContainer *out) const;
+                       FilteredListPairContainer *out) const;
 
-  void add_close_pairs(ParticleContainer *pca,
-                       ParticleContainer *pcb,
+  void add_close_pairs(SingletonContainer *pca,
+                       SingletonContainer *pcb,
                        Float distance,
                        FloatKey radius_key,
-                       FilteredListParticlePairContainer *out) const;
+                       FilteredListPairContainer *out) const;
 };
 
 IMPCORE_END_NAMESPACE

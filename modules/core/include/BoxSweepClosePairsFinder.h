@@ -24,16 +24,16 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
   BoxSweepClosePairsFinder();
   ~BoxSweepClosePairsFinder();
 
-  void add_close_pairs(ParticleContainer *pc,
+  void add_close_pairs(SingletonContainer *pc,
                        Float distance,
                        FloatKey radius_key,
-                       FilteredListParticlePairContainer *out) const;
+                       FilteredListPairContainer *out) const;
 
-  void add_close_pairs(ParticleContainer *pca,
-                       ParticleContainer *pcb,
+  void add_close_pairs(SingletonContainer *pca,
+                       SingletonContainer *pcb,
                        Float distance,
                        FloatKey radius_key,
-                       FilteredListParticlePairContainer *out) const;
+                       FilteredListPairContainer *out) const;
 
   //! Return true if the needed libraries have been found.
   static bool get_is_implemented();

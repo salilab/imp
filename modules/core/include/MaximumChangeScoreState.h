@@ -10,7 +10,7 @@
 
 #include "core_exports.h"
 #include "internal/core_version_info.h"
-#include "ParticleContainer.h"
+#include "SingletonContainer.h"
 
 #include <IMP/ScoreState.h>
 #include <IMP/Index.h>
@@ -35,10 +35,10 @@ class IMPCOREEXPORT MaximumChangeScoreState: public ScoreState
   FloatKeys keys_;
   std::map<ParticleIndex, AT> orig_values_;
   float maximum_change_;
-  Pointer<ParticleContainer> pc_;
+  Pointer<SingletonContainer> pc_;
 public:
   //! Track the changes with the specified keys.
-  MaximumChangeScoreState(ParticleContainer *pc,
+  MaximumChangeScoreState(SingletonContainer *pc,
                           const FloatKeys &keys);
 
   virtual ~MaximumChangeScoreState();
@@ -53,11 +53,11 @@ public:
     return maximum_change_;
   }
 
-  void set_particle_container(ParticleContainer *pc) {
+  void set_singleton_container(SingletonContainer *pc) {
     pc_=pc;
     reset();
   }
-  ParticleContainer *get_particle_container() const {
+  SingletonContainer *get_singleton_container() const {
     return pc_;
   }
 

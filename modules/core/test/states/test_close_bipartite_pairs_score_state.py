@@ -19,8 +19,8 @@ class TestBL(IMP.test.TestCase):
         m.evaluate(False)
         rk= cpss.get_radius_key()
         d= cpss.get_distance()
-        pc0= cpss.get_first_particle_container()
-        pc1= cpss.get_second_particle_container()
+        pc0= cpss.get_first_singleton_container()
+        pc1= cpss.get_second_singleton_container()
         out= cpss.get_close_pairs_container()
         print "list is " + str(out.get_number_of_particle_pairs())
         for i in range(0, pc0.get_number_of_particles()):
@@ -36,8 +36,8 @@ class TestBL(IMP.test.TestCase):
         ps0= self.create_particles_in_box(m, 30)
         ps1= self.create_particles_in_box(m, 30)
         # test rebuilding under move, set input and change radius
-        pc0= IMP.core.ListParticleContainer(ps0)
-        pc1= IMP.core.ListParticleContainer(ps1)
+        pc0= IMP.core.ListSingletonContainer(ps0)
+        pc1= IMP.core.ListSingletonContainer(ps1)
         print "creat cpss "+str(pc0)
         #IMP.set_log_level(IMP.VERBOSE)
         nrk=IMP.FloatKey()

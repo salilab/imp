@@ -14,6 +14,7 @@
 %include "std_string.i"
 %include "std_except.i"
 
+
 namespace IMP {
   namespace core {
     %include "IMP/core/macros.h"
@@ -55,6 +56,8 @@ IMP_ADD_OBJECTS(type, add_##lcname##s)
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
 %import "kernel/pyext/IMP_keys.i"
+%include "singleton_containers.i"
+%include "pair_containers.i"
 
 namespace IMP {
   namespace core {
@@ -80,34 +83,22 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(TransformedDistancePairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(TripletChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(VRMLLogOptimizerState)
-    /* these two create a memory leak.
-       We need to check if the object inherits from ref counted or
-       object first */
-    IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ParticlesRestraint)
-    IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ParticlePairsRestraint)
+    IMP_CONTAINER_SWIG(VRMLLogOptimizerState,
+    ParticleRefiner, particle_refiner)
     IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ClosePairsScoreState)
     IMPCORE_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(CloseBipartitePairsScoreState)
-
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
     IMP_CONTAINER_SWIG(LowestNRestraintSet, Restraint, restraint)
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
-    IMPCORE_CONTAINER_SWIG(FilteredListParticleContainer,
-    ParticleContainer, particle_container)
-    IMPCORE_CONTAINER_SWIG(FilteredListParticlePairContainer,
-    ParticlePairContainer, particle_pair_container)
-    IMPCORE_CONTAINER_SWIG(ParticlePairContainerSet,
-    ParticlePairContainer, particle_pair_container)
-    IMPCORE_CONTAINER_SWIG(ParticleContainerSet,
-    ParticleContainer, particle_container)
-    IMP_CONTAINER_SWIG(VRMLLogOptimizerState,
-    ParticleRefiner, particle_refiner)
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
     IMP_SET_OBJECT(TypedPairScore, set_pair_score)
     IMP_SET_OBJECT(ClosePairsScoreState, set_close_pairs_finder)
     IMP_SET_OBJECT(CloseBipartitePairsScoreState, set_close_pairs_finder)
-    IMP_SET_OBJECT(VRMLLogOptimizerState, set_particle_container)
-
+    IMP_SET_OBJECT(VRMLLogOptimizerState, set_singleton_container)
+    //IMP_CONTAINER_SWIG(FilteredListSingletonContainer, Particle, singleton)
+    //IMP_CONTAINER_SWIG(ListSingletonContainer, Particle, singleton)
+    
     IMP_ADD_OBJECT(NonbondedListScoreState, add_bonded_list)
     IMP_ADD_OBJECTS(NonbondedListScoreState, add_bonded_lists)
   }
@@ -120,8 +111,9 @@ namespace IMP {
 %include "IMP/core/ClosePairsFinder.h"
 %include "IMP/core/Mover.h"
 %include "IMP/core/MoverBase.h"
-%include "IMP/core/ParticleContainer.h"
-%include "IMP/core/ParticlePairContainer.h"
+// should go to kernel
+%include "IMP/core/SingletonContainer.h"
+%include "IMP/core/PairContainer.h"
 %include "IMP/core/XYZDecorator.h"
 
 %include "IMP/core/BondedListScoreState.h"
@@ -141,7 +133,7 @@ namespace IMP {
 %include "IMP/core/BallMover.h"
 %include "IMP/core/BipartiteNonbondedListScoreState.h"
 %include "IMP/core/BondDecoratorListScoreState.h"
-%include "IMP/core/BondDecoratorParticlePairContainer.h"
+%include "IMP/core/BondDecoratorPairContainer.h"
 %include "IMP/core/BondDecoratorRestraint.h"
 %include "IMP/core/BondDecoratorSingletonScore.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
@@ -158,8 +150,6 @@ namespace IMP {
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"
 %include "IMP/core/DistanceToSingletonScore.h"
-%include "IMP/core/FilteredListParticleContainer.h"
-%include "IMP/core/FilteredListParticlePairContainer.h"
 %include "IMP/core/GravityCenterScoreState.h"
 %include "IMP/core/GridClosePairsFinder.h"
 %include "IMP/core/Harmonic.h"
@@ -167,8 +157,6 @@ namespace IMP {
 %include "IMP/core/HarmonicUpperBound.h"
 %include "IMP/core/HierarchyDecorator.h"
 %include "IMP/core/Linear.h"
-%include "IMP/core/ListParticleContainer.h"
-%include "IMP/core/ListParticlePairContainer.h"
 %include "IMP/core/LowestNRestraintSet.h"
 %include "IMP/core/MaxChangeScoreState.h"
 %include "IMP/core/MaximumChangeScoreState.h"
@@ -179,12 +167,6 @@ namespace IMP {
 %include "IMP/core/NonbondedRestraint.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
-%include "IMP/core/PairChainRestraint.h"
-%include "IMP/core/PairListRestraint.h"
-%include "IMP/core/ParticleContainerSet.h"
-%include "IMP/core/ParticlePairContainerSet.h"
-%include "IMP/core/ParticlePairsRestraint.h"
-%include "IMP/core/ParticlesRestraint.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/ResidueDecorator.h"
 %include "IMP/core/RestraintSet.h"
@@ -192,13 +174,30 @@ namespace IMP {
 %include "IMP/core/SphereDistancePairScore.h"
 %include "IMP/core/SteepestDescent.h"
 %include "IMP/core/TransformedDistancePairScore.h"
-%include "IMP/core/TripletChainRestraint.h"
 %include "IMP/core/TypedPairScore.h"
 %include "IMP/core/VRMLLogOptimizerState.h"
 %include "IMP/core/VelocityScalingOptimizerState.h"
 %include "IMP/core/XYZRDecorator.h"
 %include "IMP/core/model_io.h"
 %include "IMP/core/deprecation.h"
+%include "IMP/core/PairChainRestraint.h"
+%include "IMP/core/PairListRestraint.h"
+%include "IMP/core/TripletChainRestraint.h"
+
+%include "IMP/core/ListPairContainer.h"
+%include "IMP/core/PairsRestraint.h"
+%include "IMP/core/FilteredListSingletonContainer.h"
+%include "IMP/core/FilteredListPairContainer.h"
+//%include "IMP/core/PairsScoreState.h"
+%include "IMP/core/SingletonsRestraint.h"
+%include "IMP/core/ListSingletonContainer.h"
+%include "IMP/core/PairContainerSet.h"
+//%include "IMP/core/PairModifier.h"
+%include "IMP/core/SingletonContainerSet.h"
+//%include "IMP/core/SingletonModifier.h"
+//%include "IMP/core/SingletonsScoreState.h"
+
+
 
 
 namespace IMP {
@@ -209,9 +208,9 @@ namespace IMP {
     %template(BondedListIndex) ::IMP::Index<BondedListScoreState>;
     %template(BondDecorators) ::std::vector<BondDecorator>;
     %template(Movers) ::std::vector<Mover*>;
-    %template(ParticleContainers) ::std::vector<ParticleContainer*>;
-    %template(ParticlePairContainers) ::std::vector<ParticlePairContainer*>;
-    %template(ParticleContainerIndex) ::IMP::Index<ParticleContainer>;
-    %template(ParticlePairContainerIndex) ::IMP::Index<ParticlePairContainer>;
+    %template(SingletonContainers) ::std::vector<SingletonContainer*>;
+    %template(PairContainers) ::std::vector<PairContainer*>;
+    %template(SingletonContainerIndex) ::IMP::Index<SingletonContainer>;
+    %template(PairContainerIndex) ::IMP::Index<PairContainer>;
   }
 }
