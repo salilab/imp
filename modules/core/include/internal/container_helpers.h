@@ -32,10 +32,11 @@ struct ContainerTraits<Particle> {
                         DerivativeAccumulator *ac) {
     return ss->evaluate(p, ac);
   }
-  /*static void apply(SingletonModifier *ss,
-                     Particle *p) {
+  template <class SM>
+  static void apply(SM *ss,
+                    Particle *p) {
     ss->apply(p);
-    }*/
+  }
 };
 
 template <>
@@ -52,10 +53,11 @@ struct ContainerTraits<ParticlePair> {
                         DerivativeAccumulator *ac) {
     return ss->evaluate(p.first, p.second, ac);
   }
-  /*static void apply(PairModifier *ss,
-                     const ParticlePair &p) {
+  template <class PM>
+  static void apply(PM *ss,
+                    const ParticlePair &p) {
     ss->apply(p.first, p.second);
-    } */
+  }
 };
 
 /*template <>

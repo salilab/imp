@@ -104,6 +104,15 @@ namespace IMP {
   }
 }
 
+
+%feature("director") IMP::core::SingletonContainer;
+%feature("director") IMP::core::PairContainer;
+
+// for kernel
+%feature("director") IMP::core::SingletonModifier;
+%feature("director") IMP::core::PairModifier;
+
+
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
 
@@ -114,8 +123,10 @@ namespace IMP {
 // should go to kernel
 %include "IMP/core/SingletonContainer.h"
 %include "IMP/core/PairContainer.h"
-%include "IMP/core/XYZDecorator.h"
+%include "IMP/core/SingletonModifier.h"
+%include "IMP/core/PairModifier.h"
 
+%include "IMP/core/XYZDecorator.h"
 %include "IMP/core/BondedListScoreState.h"
 %include "IMP/core/NonbondedListScoreState.h"
 
@@ -188,14 +199,12 @@ namespace IMP {
 %include "IMP/core/PairsRestraint.h"
 %include "IMP/core/FilteredListSingletonContainer.h"
 %include "IMP/core/FilteredListPairContainer.h"
-//%include "IMP/core/PairsScoreState.h"
+%include "IMP/core/PairsScoreState.h"
 %include "IMP/core/SingletonsRestraint.h"
 %include "IMP/core/ListSingletonContainer.h"
 %include "IMP/core/PairContainerSet.h"
-//%include "IMP/core/PairModifier.h"
 %include "IMP/core/SingletonContainerSet.h"
-//%include "IMP/core/SingletonModifier.h"
-//%include "IMP/core/SingletonsScoreState.h"
+%include "IMP/core/SingletonsScoreState.h"
 
 
 
