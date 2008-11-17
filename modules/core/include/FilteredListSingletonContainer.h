@@ -17,6 +17,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+// for swig
+
+
 //! Store a list of Particles filtered by other lists
 /** This class stores a list of Particles and a list of
     SingletonContainers with the invariant that none of the

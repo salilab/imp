@@ -17,6 +17,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+// for swig
+
+
 //! Store a list of ParticlePairs filtered by other lists
 /** This class stores a list of ParticlePairs and a list of
     PairContainers with the invariant that none of the
