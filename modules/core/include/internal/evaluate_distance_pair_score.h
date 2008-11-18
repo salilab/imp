@@ -8,58 +8,65 @@
 #ifndef IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 #define IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 
+#include "../macros.h"
+
 #include <IMP/utility.h>
 #include <IMP/Vector3D.h>
 
 #include <boost/tuple/tuple.hpp>
 
-IMPCORE_BEGIN_NAMESPACE
+IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-namespace internal
-{
-
-template <class W0, class W1, class SD>
-Float evaluate_distance_pair_score(W0 d0, W1 d1,
-                                   DerivativeAccumulator *da,
-                                   UnaryFunction *f, SD sd)
-{
+template <class SD>
+Float compute_distance_pair_score(const Vector3D &delta,
+                                  const UnaryFunction *f,
+                                  Vector3D *d,
+                                  SD sd) {
   static const Float MIN_DISTANCE = .00001;
-  IMP_CHECK_OBJECT(f);
-
-  Float d2 = 0;
-  Vector3D delta;
-  Float score;
-
-  for (int i = 0; i < 3; ++i) {
-    delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
-    d2 += square(delta[i]);
-  }
-
-  Float distance = std::sqrt(d2);
-
-  Float shifted_distance = sd(distance); //scale*(distance - offset);
+  Float distance= delta.get_magnitude();
+  Float shifted_distance = sd(distance);
 
   // if needed, calculate the partial derivatives of the scores with respect
   // to the particle attributes
   // avoid division by zero if the distance is too small
-  if (da && distance >= MIN_DISTANCE) {
-    Float deriv;
-
+  Float score, deriv;
+  if (d && distance >= MIN_DISTANCE) {
     boost::tie(score, deriv) = f->evaluate_with_derivative(shifted_distance);
 
-    Vector3D d= delta/distance *deriv;
-    d0.add_to_coordinates_derivative(d, *da);
-    d1.add_to_coordinates_derivative(-d, *da);
+    *d= delta/distance *deriv;
   } else {
     // calculate the score based on the distance feature
     score = f->evaluate(shifted_distance);
+  }
+  return score;
+}
+
+
+template <class W0, class W1, class SD>
+Float evaluate_distance_pair_score(W0 d0, W1 d1,
+                                   DerivativeAccumulator *da,
+                                   const UnaryFunction *f, SD sd)
+{
+  IMP_CHECK_OBJECT(f);
+
+  Vector3D delta;
+
+  for (int i = 0; i < 3; ++i) {
+    delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
+  }
+
+  Vector3D d;
+  Float score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd);
+
+
+  if (da) {
+    d0.add_to_coordinates_derivative(d, *da);
+    d1.add_to_coordinates_derivative(-d, *da);
   }
 
   return score;
 }
 
-} // namespace internal
-
-IMPCORE_END_NAMESPACE
+IMPCORE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H */
