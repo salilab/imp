@@ -42,6 +42,9 @@ public:
 
   //!
   virtual void show(std::ostream &out = std::cout) const=0;
+
+  //!
+  virtual VersionInfo get_version_info() const = 0;
 };
 
 IMP_OUTPUT_OPERATOR(PairModifier)
@@ -60,6 +63,19 @@ IMPCOREEXPORT inline void apply(PairModifier* f,
   apply(f, ps.begin(), ps.end());
 }
 
+//! Apply a PairModifier to each in the ParticlePairs
+IMPCOREEXPORT inline void apply(PairModifier* f,
+                                PairContainer *ps) {
+  apply(f, ps->particle_pairs_begin(), ps->particle_pairs_end());
+}
+
+
 IMPCORE_END_NAMESPACE
+
+//! Define the functions needed for a PairModifier
+#define IMP_PAIR_MODIFIER(version) \
+VersionInfo get_version_info() const {return version;}\
+void show(std::ostream &out= std::cout) const;\
+void apply(Particle *a, Particle *b);
 
 #endif  /* IMPCORE_PAIR_MODIFIER_H */
