@@ -42,6 +42,9 @@ public:
 
   //!
   virtual void show(std::ostream &out = std::cout) const=0;
+
+  //!
+  virtual VersionInfo get_version_info() const = 0;
 };
 
 IMP_OUTPUT_OPERATOR(GroupnameModifier)
@@ -60,6 +63,19 @@ IMPCOREEXPORT inline void apply(GroupnameModifier* f,
   apply(f, ps.begin(), ps.end());
 }
 
+//! Apply a GroupnameModifier to each in the Classnames
+IMPCOREEXPORT inline void apply(GroupnameModifier* f,
+                                GroupnameContainer *ps) {
+  apply(f, ps->classnames_begin(), ps->classnames_end());
+}
+
+
 IMPCORE_END_NAMESPACE
+
+//! Define the functions needed for a GroupnameModifier
+#define IMP_GROUPNAME_MODIFIER(version) \
+VersionInfo get_version_info() const {return version;}\
+void show(std::ostream &out= std::cout) const;\
+void apply(ClassnameArguments);
 
 #endif  /* IMPCORE_GROUPNAME_MODIFIER_H */
