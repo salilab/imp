@@ -1,0 +1,79 @@
+#!/usr/bin/python
+import sys
+import os
+
+def filter(name, value, scorename, args, infile):
+    cname= name.title().replace(' ', '')
+    ucname= name.upper().replace(' ', '_') 
+    lcname= name.lower().replace(' ', '_')
+    return infile.replace("CLASSNAME", ucname)\
+        .replace("ClassnameArguments", args)\
+        .replace("Classname", cname) \
+        .replace("classname", lcname) \
+        .replace("Value", value) \
+        .replace("Groupname", scorename) \
+        .replace("GROUPNAME", scorename.upper()) \
+        .replace("groupname", scorename.lower())
+
+
+def make_one(name, value, multi, args):
+    path= os.path.dirname(os.path.dirname(sys.argv[0]))
+    cname= name.title().replace(' ', '')
+    lcvalue= value.lower().replace(' ', '_').replace('*','')
+    lcname= multi.lower().replace(' ', '_')
+
+    print "Creating class "+cname + "Container"
+    
+  
+
+    for p in (("include/"+multi + "Container.h",
+               path+"/tools/container_templates/container.hpp"),
+              ("src/"+multi + "Container.cpp",
+               path+"/tools/container_templates/container.cc"),
+              ("include/List"+multi + "Container.h",
+               path+"/tools/container_templates/list.hpp"),
+              ("src/List"+multi + "Container.cpp",
+               path+"/tools/container_templates/list.cc"),
+              ("include/"+multi + "sRestraint.h",
+               path+"/tools/container_templates/restraint.hpp"),
+              ("src/"+multi + "sRestraint.cpp",
+               path+"/tools/container_templates/restraint.cc"),
+              ("include/FilteredList"+multi + "Container.h",
+               path+"/tools/container_templates/filter.hpp"),
+              ("src/FilteredList"+multi + "Container.cpp",
+               path+"/tools/container_templates/filter.cc"),
+              ("include/"+multi + "ContainerSet.h",
+               path+"/tools/container_templates/set.hpp"),
+              ("src/"+multi + "ContainerSet.cpp",
+               path+"/tools/container_templates/set.cc"),
+              ("include/"+multi + "sScoreState.h",
+               path+"/tools/container_templates/state.hpp"),
+              ("src/"+multi + "sScoreState.cpp",
+               path+"/tools/container_templates/state.cc"),
+              ("include/"+multi + "Modifier.h",
+               path+"/tools/container_templates/function.hpp"),
+              ("src/"+multi + "Modifier.cpp",
+               path+"/tools/container_templates/function.cc"),
+              ("test/restraints/test_"+cname + "_restraint.py",
+               path+"/tools/container_templates/test.py"),
+              ("pyext/"+lcname+"_containers.i",
+               path+"/tools/container_templates/swig.i"),
+              ("test/states/test_"+cname + "_state.py",
+               path+"/tools/container_templates/test_state.py"),
+              ):
+        ofile= open(p[0], 'w')
+        ifile= open(p[1], 'r')
+        contents= ifile.read()
+        print "writing " + p[0]
+        ofile.write(filter(name, value, multi, args, contents))
+
+def main():
+    make_one("particle", "Particle*", "Singleton", "Particle *a")
+    make_one("particle pair", "ParticlePair", "Pair", "Particle *a, Particle *b")
+    #make_one("particle triplet", "ParticleTriplet", "Triplet", "Particle *a, Particle *b, Particle *c")
+
+  
+
+
+if __name__ == '__main__':
+    main()
