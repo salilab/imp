@@ -64,12 +64,12 @@ class TestBL(IMP.test.TestCase):
 
         for p in ps0:
             d= IMP.core.XYZRDecorator.cast(p)
-            d.set_coordinates(IMP.random_vector_in_box())
+            d.set_coordinates(IMP.random_vector_in_unit_box())
         self._compare_lists(m, cpss)
 
         for p in ps1:
             d= IMP.core.XYZRDecorator.cast(p)
-            d.set_coordinates(IMP.random_vector_in_box())
+            d.set_coordinates(IMP.random_vector_in_unit_box())
         self._compare_lists(m, cpss)
 
         print "changing radius"

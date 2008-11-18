@@ -60,6 +60,10 @@ IMP_ADD_OBJECTS(type, add_##lcname##s)
 %include "pair_containers.i"
 
 namespace IMP {
+  typedef VectorD<3> Vector3D;
+}
+
+namespace IMP {
   namespace core {
     %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
     %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;

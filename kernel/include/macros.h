@@ -8,6 +8,39 @@
 #ifndef IMP_MACROS_H
 #define IMP_MACROS_H
 
+//! Implement comparison in a class using a compare function
+/** The macro requires that This be defined as the type of the current class.
+    The compare function should take a const This & and return -1, 0, 1 as
+    appropriate.
+ */
+#define IMP_COMPARISONS                                                 \
+  /** */ bool operator==(const This &o) const {                         \
+    return (compare(o) == 0);                                           \
+  }                                                                     \
+  /** */ bool operator!=(const This &o) const {                         \
+    return (compare(o) != 0);                                           \
+  }                                                                     \
+  /** */ bool operator<(const This &o) const {                          \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    return (compare(o) <0);                                             \
+  }                                                                     \
+  /** */ bool operator>(const This &o) const {                          \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    return (compare(o) > 0);                                            \
+  }                                                                     \
+  /** */ bool operator>=(const This &o) const {                         \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    return !(compare(o) < 0);                                           \
+  }                                                                     \
+  /** */ bool operator<=(const This &o) const {                         \
+    IMP_assert(!is_default() && !o.is_default(),                        \
+               "Ordering with uninitialized index is undefined");       \
+    return !(compare(o) > 0);                                           \
+  }
+
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
  */

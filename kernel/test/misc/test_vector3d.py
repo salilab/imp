@@ -94,6 +94,11 @@ class Vector3DTests(IMP.test.TestCase):
         for i in range(3):
             self.assertEqual(prod[i], expected_prod[i])
             self.assertEqual(v1[i], expected_prod[i])
+    def test_generators(self):
+        """Check the Vector3D generators"""
+        # test calling since it is a bit non-trivial in SWIG
+        v= IMP.random_vector_in_unit_sphere()
+        v= IMP.random_vector_in_sphere(IMP.Vector3D(0,0,0), 1)
 
 if __name__ == '__main__':
     unittest.main()

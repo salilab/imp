@@ -59,7 +59,7 @@ class TestBL(IMP.test.TestCase):
 
         for p in ps:
             d= IMP.core.XYZRDecorator.cast(p)
-            d.set_coordinates(IMP.random_vector_in_box())
+            d.set_coordinates(IMP.random_vector_in_unit_box())
         self._compare_lists(m, cpss)
         print "changing radius"
         cpss.set_radius_key(IMP.core.XYZDecorator.get_xyz_keys()[0])
