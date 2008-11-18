@@ -25,20 +25,23 @@ SingletonsScoreState::~SingletonsScoreState(){}
 
 void SingletonsScoreState::do_before_evaluate()
 {
-  IMP_LOG(TERSE, "Begin SingletonsScoreState::evaluate" << std::endl);
+  if (!f_) return;
+  IMP_LOG(TERSE, "Begin SingletonsScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  for (SingletonContainer::ParticleIterator
-       it= c_->particles_begin();
-       it != c_->particles_end(); ++it) {
-    IMP_LOG(VERBOSE, "Applying"<< std::endl);
-
-    // Need the .get for template matching
-    internal::ContainerTraits<Particle>::apply(f_.get(), *it);
-  }
-  IMP_LOG(TERSE, "End SingletonsScoreState::evaluate" << std::endl);
+  apply(f_.get(), c_.get());
+  IMP_LOG(TERSE, "End SingletonsScoreState::update" << std::endl);
 }
 
+void SingletonsScoreState::do_after_evaluate()
+{
+  if (!af_) return;
+  IMP_LOG(TERSE, "Begin SingletonsScoreState::after_evaluate" << std::endl);
+  IMP_CHECK_OBJECT(af_);
+  IMP_CHECK_OBJECT(c_);
+  apply(af_.get(), c_.get());
+  IMP_LOG(TERSE, "End SingletonsScoreState::after_evaluate" << std::endl);
+}
 
 void SingletonsScoreState::show(std::ostream &out) const {
   out << "SingletonsScoreState base" << std::endl;
