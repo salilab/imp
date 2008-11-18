@@ -17,6 +17,10 @@
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
 
+namespace IMP {
+  typedef VectorD<3> Vector3D;
+}
+
 namespace IMP::misc {
   IMP_OWN_FIRST_CONSTRUCTOR(BondCoverPairScore)
   IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RefineOncePairScore)
