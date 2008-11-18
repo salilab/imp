@@ -42,6 +42,9 @@ public:
 
   //!
   virtual void show(std::ostream &out = std::cout) const=0;
+
+  //!
+  virtual VersionInfo get_version_info() const = 0;
 };
 
 IMP_OUTPUT_OPERATOR(SingletonModifier)
@@ -60,6 +63,19 @@ IMPCOREEXPORT inline void apply(SingletonModifier* f,
   apply(f, ps.begin(), ps.end());
 }
 
+//! Apply a SingletonModifier to each in the Particles
+IMPCOREEXPORT inline void apply(SingletonModifier* f,
+                                SingletonContainer *ps) {
+  apply(f, ps->particles_begin(), ps->particles_end());
+}
+
+
 IMPCORE_END_NAMESPACE
+
+//! Define the functions needed for a SingletonModifier
+#define IMP_SINGLETON_MODIFIER(version) \
+VersionInfo get_version_info() const {return version;}\
+void show(std::ostream &out= std::cout) const;\
+void apply(Particle *a);
 
 #endif  /* IMPCORE_SINGLETON_MODIFIER_H */
