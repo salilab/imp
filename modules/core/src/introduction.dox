@@ -43,6 +43,11 @@ IMP.core.write(my_imp_model, "somefile")
 IMP.core.read("somefile", my_imp_model)
 \endverbatim
 
+\verbatim
+IMP::core::write(my_imp_model, "somefile");
+IMP::core::read("somefile", my_imp_model);
+\endverbatim
+
 
 
 \section i6 Examples
@@ -51,7 +56,7 @@ The following examples all are in python and C++ The following code is ommitted 
 import IMP
 import IMP.core
 m= IMP.Model()
-ps= IMP.Particles()
+ps= IMP.core.SingletonContainer()
 for i in range(0,100)
     p= IMP.Particle()
     m.add_particle(p)
@@ -59,6 +64,7 @@ for i in range(0,100)
     d.set_coordinates_are_optimized(True)
     d.set_coordinates(IMP.random_vector_in_box())
     d.set_radius(1.0)
+    ps.add_particle(p)
 \endverbatim
 
 \code
@@ -66,11 +72,12 @@ for i in range(0,100)
 #include <IMP/core.h>
 
 IMP::Pointer<IMP::Model> m= new IMP::Model();
-IMP::Particles ps;
+IMP::core::SingletonContainer ps;
 for (int i=0; i< 100; ++i) {
-    ps.push_back(new IMP::Particle());
-    m->add_particles(ps.back());
-    d= IMP::core::XYZRDecorator::create(ps.back());
+    IMP::Particle* p=new IMP::Particle();
+    ps->add_particle(p);
+    m->add_particles(p);
+    IMP::core::XYZRDecorator d= IMP::core::XYZRDecorator::create(p);
     d.set_coordinates_are_optimized(true);
     d.set_coordinates(IMP::random_vector_in_box());
     d.set_radius(1.0);
@@ -89,42 +96,39 @@ Restrain the distance between the first two particles.
 \verbatim
 uf= IMP.core.Harmonic(0,1)
 df= IMP.core.SphereDistancePairScore(uf)
-r= IMP.core.PairRestraint(df, ps[0], ps[1])
+r= IMP.core.PairsRestraint(df, ps.get_particle(0), ps.get_particle(1))
 m.add_restraint(r)
 \endverbatim
 
 
 \code
-IMP::core::Harmonic *uf= new IMP::core::Harmonic(0,1)
-IMP::core::SphereDistancePairScore *df= new IMP::core::SphereDistancePairScore(uf)
-IMP::core::PairRestraint* r= new IMP::core::PairRestraint(df, ps[0], ps[1])
-m->add_restraint(r)
+IMP::core::Harmonic *uf= new IMP::core::Harmonic(0,1);
+IMP::core::SphereDistancePairScore *df= new IMP::core::SphereDistancePairScore(uf);
+IMP::core::PairRestraint* r= new IMP::core::PairRestraint(df, ps->get_particle(0), ps->get_particle(1));
+m->add_restraint(r);
 \endcode
-
-Won't the "auto" keyword make things simpler...
-
 
 
 
 \section i8 Preventing collisions
-The NonbondedList maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The HarmonicLowerBound forces the spheres apart.
+The ClosePairsScoreState maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The HarmonicLowerBound forces the spheres apart.
 \verbatim
-nbl= IMP.core.AllNonbondedListSoreState(min_distance)
-nbl.set_particles(ps)
+nbl= IMP.core.ClosePairsScoreState(ps)
+nbl.set_distance(min_distance)
 m.add_score_state(nbl)
-h= IMP.core.HarmonicLowerBound(0,1)
+h= IMP.core.HarmonicLowerBound(0,min_distance)
 sd= IMP.core.SphereDistancePairScore(h)
-nbr= IMP.core.NonbondedRestraint(sd, nbl)
+nbr= IMP.core.PairsRestraint(sd, nbl.get_close_pairs_container())
 m.add_restraint(nbr)
 \endverbatim
 
 \code
-IMP::core::AllNonbondedListSoreState *nbl= new IMP::core::AllNonbondedListSoreState(min_distance);
-nbl->set_particles(ps);
+IMP::core::ClosePairsScoreState *nbl= new IMP::core::ClosePairsScoreState(ps);
+nbl->set_distance(min_distance)
 m->add_score_state(nbl);
 IMP::core::HarmonicLowerBound* h= new IMP::core::HarmonicLowerBound(0,1);
 IMP::core::SphereDistancePairScore *sd= new IMP::core::SphereDistancePairScore(h);
-IMP::core::NonbondedRestraint* nbr= new IMP::core::NonbondedRestraint(sd, nbl);
+IMP::core::SingletonsRestraint* nbr= new IMP::core::SingletonsRestraint(sd, nbl->get_close_pairs_container());
 m->add_restraint(nbr);
 \endcode
 
@@ -141,21 +145,21 @@ Load a protein and restrain all the bonds to have the correct length. Bond angle
 \verbatim
 prot= IMP.modeller.read_pdb("some.pdb")
 bds= IMP.core.get_internal_bonds(prot)
-bl= IMP.core.BondDecoratorListScoreState(bds)
-nbl.add_bonded_list(bl)
+bl= IMP.core.BondDecoratorSingletonContainer(bds)
 h= IMP.core.Harmonic(0,1)
-br= IMP.core.BondDecoratorListRestraint(h, bl)
+bs= IMP.core.BondDecoratorSingletonScore(h)
+br= IMP.core.SingletonsRestraint(bs, bl)
 m.add_restraint(br)
 \endverbatim
 
 \code
 // Currently you can't read a pdb from C++
-IMP::core::MolecularHiearchyDecorator prot=???;
+IMP::core::MolecularHierarchyDecorator prot=???;
 IMP::core::BondDecorators bds= IMP::core::get_internal_bonds(prot);
-IMP::core::BondDecoratorListScoreState *bl= new IMP::core::BondDecoratorListScoreState(bds);
-nbl->add_bonded_list(bl);
+IMP::core::BondDecoratorSingletonContainer *bl= new IMP::core::BondDecoratorSingletonContainer(bds);
 IMP::core::Harmonic *h= new IMP::core::Harmonic(0,1);
-IMP::core::BondDecoratorListRestraint *br= new IMP::core::BondDecoratorListRestraint(h, bl);
+IMP::core::BondDecoratorSingletonScore* bs= new IMP::core::BondDecoratorSingletonScore(h);
+IMP::core::SingletonsRestraint *br= new IMP::core::SingletonsRestraint(bs, bl);
 m->add_restraint(br);
 \endcode
 
@@ -190,54 +194,52 @@ IMP::Particles particles = setup_model(m);
 std::string best;
 float best_score=std::numeric_limits<IMP::Float>::infinity();
 
-IMP.ConjugateGradients o;
+IMP::core::ConjugateGradients o;
 o.set_model(m)
 for (int i=0; i< 100; ++i) {
     randomize(particles)
     IMP::Float score=o.optimize(1000)
     if (score < best_score) {
        std::ostringstream oss;
-       IMP::core::write_yaml(m, oss);
+       IMP::core::write(m, oss);
+       best=oss.str();
        best_score= score;
     }
 }
 std::istringstream iss(best_score);
-IMP::core::read_yaml(iss, m);
+IMP::core::read(iss, m);
 \endcode
 
 \section i11 Writing a simple restraint
-This is actually an IMP::SingletonListRestraint.
+This is actually an IMP::core::SingletonsRestraint. You really wouldn't want to write such a think in Python, although you can.
 
 \code
-class IMPDLLEXPORT MyRestraint: public Restraint {
-      Pointer<SingletonScore> ss_;
+class IMPDLLEXPORT MyRestraint: public IMP::Restraint {
+      IMP::Pointer<IMP::SingletonScore> ss_;
+      IMP::Pointer<IMP::core::SingletonContainer> sc_;
 public:
-        MyRestraint(SingletonScore *ss): ss_(ss){}
+        MyRestraint(IMP::SingletonScore *ss,
+                    IMP::core::SingletonContainer *sc): ss_(ss),
+                                                        sc_(sc){}
         IMP_RESTRAINT(my_version_info);
-        using Restraint::add_particle;
-        using Restraint::set_particles;
 };
 
-Float MyRestraint::evaluate(DerivativeAccumulator *da) {
-      Float accum=0;
-      for (Restraint::ParticleIterator it = Restraint::particles_begin(); it != Restraint::particles_end(); ++it) {
+IMP::Float MyRestraint::evaluate(IMP::DerivativeAccumulator *da) {
+      IMP::Float accum=0;
+      for (IMP::core::SingletonContainer::ParticlesIterator it = sc_->particles_begin(); 
+           it != sc_->particles_end(); ++it) {
           accum += ss_->evaluate(*it, da);
        }
        return accum;
 }
-Float MyRestraint::show(std::ostream &out) const {
-      out << "MyRestraint on " << Restraint::get_number_of_particles() << " particles" << std::endl;
+IMP::Float MyRestraint::show(std::ostream &out) const {
+      out << "MyRestraint on " << sc_->get_number_of_particles() << " particles" << std::endl;
 }
 
-ParticlesList
+IMP::ParticlesList
 MyRestraint::get_interacting_particles() const
 {
-  ParticlesList ret(Restraint::get_number_of_particles());
-  for( unsigned int i=0;
-i< Restraint::get_number_of_particles(); ++i) {
-    ret[i]= Particles(1, Restraint::get_particle(i));
-  }
-  return ret;
+       return IMP::ParticlesList();
 }
 
 \endcode
