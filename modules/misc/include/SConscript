@@ -1,9 +1,7 @@
 Import('env')
 
 files = [
-         'BondCoverParticleRefiner.h',
          'ChildrenParticleRefiner.h',
-         'CoverBondsScoreState.h',
          'LowestRefinedPairScore.h',
          'Matrix3D.h',
          'ParticleFunction.h',
