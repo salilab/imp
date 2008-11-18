@@ -26,18 +26,35 @@ class PairContainer;
 class PairModifier;
 
 //! Apply a PairFunction to a PairContainer to maintain an invariant
-/**
+/** \ingroup restraint
  */
 class IMPCOREEXPORT PairsScoreState : public ScoreState
 {
   Pointer<PairModifier> f_;
+  Pointer<PairModifier> af_;
   Pointer<PairContainer> c_;
 public:
+  /** \param[in] f The PairModifier to apply to all elements
+       before evaluate.
+      \param[in] c The Container to hold the elements to process
+   */
   PairsScoreState(PairModifier *f, PairContainer *c);
+
+  //! Apply this modifier to all the elements after an evaluate
+  void set_after_evaluate_modifier(PairModifier* f) {
+    af_=f;
+  }
+
+  //! Apply this modifier to all the elements before an evaluate
+  void set_before_evaluate_modifier(PairModifier* f) {
+    f_=f;
+  }
 
   virtual ~PairsScoreState();
 
   IMP_SCORE_STATE(internal::core_version_info)
+
+  void do_after_evaluate();
 };
 
 
