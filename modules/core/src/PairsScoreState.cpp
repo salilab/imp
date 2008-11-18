@@ -25,20 +25,23 @@ PairsScoreState::~PairsScoreState(){}
 
 void PairsScoreState::do_before_evaluate()
 {
-  IMP_LOG(TERSE, "Begin PairsScoreState::evaluate" << std::endl);
+  if (!f_) return;
+  IMP_LOG(TERSE, "Begin PairsScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  for (PairContainer::ParticlePairIterator
-       it= c_->particle_pairs_begin();
-       it != c_->particle_pairs_end(); ++it) {
-    IMP_LOG(VERBOSE, "Applying"<< std::endl);
-
-    // Need the .get for template matching
-    internal::ContainerTraits<ParticlePair>::apply(f_.get(), *it);
-  }
-  IMP_LOG(TERSE, "End PairsScoreState::evaluate" << std::endl);
+  apply(f_.get(), c_.get());
+  IMP_LOG(TERSE, "End PairsScoreState::update" << std::endl);
 }
 
+void PairsScoreState::do_after_evaluate()
+{
+  if (!af_) return;
+  IMP_LOG(TERSE, "Begin PairsScoreState::after_evaluate" << std::endl);
+  IMP_CHECK_OBJECT(af_);
+  IMP_CHECK_OBJECT(c_);
+  apply(af_.get(), c_.get());
+  IMP_LOG(TERSE, "End PairsScoreState::after_evaluate" << std::endl);
+}
 
 void PairsScoreState::show(std::ostream &out) const {
   out << "PairsScoreState base" << std::endl;
