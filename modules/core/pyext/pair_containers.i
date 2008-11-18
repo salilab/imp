@@ -8,6 +8,8 @@ namespace IMP {
     IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(PairsScoreState)
     IMPCORE_CONTAINER_SWIG(FilteredListPairContainer, PairContainer, pair_container)
     IMP_SET_OBJECT(PairsRestraint, set_pair_container)
+    IMP_SET_OBJECT(PairsScoreState, set_before_evaluate_modifier)
+    IMP_SET_OBJECT(PairsScoreState, set_after_evaluate_modifier)
     IMPCORE_CONTAINER_SWIG(PairContainerSet, PairContainer, pair_container)
 
     }
