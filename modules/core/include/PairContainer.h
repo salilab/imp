@@ -21,6 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! A shared container for particle_pairs
 /** Stores a searchable shared collection of particle_pairs.
+    \ingroup restraints
  */
 class IMPCOREEXPORT PairContainer : public RefCountedObject
 {
