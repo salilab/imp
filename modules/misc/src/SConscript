@@ -2,9 +2,7 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
-         'BondCoverParticleRefiner.cpp',
          'ChildrenParticleRefiner.cpp',
-         'CoverBondsScoreState.cpp',
          'LowestRefinedPairScore.cpp',
          'Matrix3D.cpp',
          'RefineOncePairScore.cpp',
