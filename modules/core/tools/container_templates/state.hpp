@@ -31,13 +31,30 @@ class GroupnameModifier;
 class IMPCOREEXPORT GroupnamesScoreState : public ScoreState
 {
   Pointer<GroupnameModifier> f_;
+  Pointer<GroupnameModifier> af_;
   Pointer<GroupnameContainer> c_;
 public:
+  /** \param[in] f The GroupnameModifier to apply to all elements
+       before evaluate.
+      \param[in] c The Container to hold the elements to process
+   */
   GroupnamesScoreState(GroupnameModifier *f, GroupnameContainer *c);
+
+  //! Apply this modifier to all the elements after an evaluate
+  void set_after_evaluate_modifier(GroupnameModifier* f) {
+    af_=f;
+  }
+
+  //! Apply this modifier to all the elements before an evaluate
+  void set_before_evaluate_modifier(GroupnameModifier* f) {
+    f_=f;
+  }
 
   virtual ~GroupnamesScoreState();
 
   IMP_SCORE_STATE(internal::core_version_info)
+
+  void do_after_evaluate();
 };
 
 
