@@ -9,6 +9,7 @@ files = [
          'AttributeSingletonScore.cpp',
          'BallMover.cpp',
          'BipartiteNonbondedListScoreState.cpp',
+         'BondBondPairScore.cpp',
          'BondDecoratorListScoreState.cpp',
          'BondDecoratorPairContainer.cpp',
          'BondDecoratorRestraint.cpp',

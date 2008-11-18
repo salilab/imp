@@ -80,6 +80,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(DistanceToSingletonScore)
     IMP_OWN_FIRST_CONSTRUCTOR(MaximumChangeScoreState)
     IMP_OWN_FIRST_CONSTRUCTOR(NonbondedRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(BondBondPairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(SingletonListRestraint)
@@ -151,6 +152,7 @@ namespace IMP {
 %include "IMP/core/BondDecoratorPairContainer.h"
 %include "IMP/core/BondDecoratorRestraint.h"
 %include "IMP/core/BondDecoratorSingletonScore.h"
+%include "IMP/core/BondBondPairScore.h"
 %include "IMP/core/CoverBondSingletonModifier.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/BrownianDynamics.h"

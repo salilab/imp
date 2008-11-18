@@ -8,6 +8,7 @@ files = [
          'AttributeSingletonScore.h',
          'BallMover.h',
          'BipartiteNonbondedListScoreState.h',
+         'BondBondPairScore.h',
          'BondDecoratorListScoreState.h',
          'BondDecoratorPairContainer.h',
          'BondDecoratorRestraint.h',
