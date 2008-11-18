@@ -26,18 +26,35 @@ class SingletonContainer;
 class SingletonModifier;
 
 //! Apply a SingletonFunction to a SingletonContainer to maintain an invariant
-/**
+/** \ingroup restraint
  */
 class IMPCOREEXPORT SingletonsScoreState : public ScoreState
 {
   Pointer<SingletonModifier> f_;
+  Pointer<SingletonModifier> af_;
   Pointer<SingletonContainer> c_;
 public:
+  /** \param[in] f The SingletonModifier to apply to all elements
+       before evaluate.
+      \param[in] c The Container to hold the elements to process
+   */
   SingletonsScoreState(SingletonModifier *f, SingletonContainer *c);
+
+  //! Apply this modifier to all the elements after an evaluate
+  void set_after_evaluate_modifier(SingletonModifier* f) {
+    af_=f;
+  }
+
+  //! Apply this modifier to all the elements before an evaluate
+  void set_before_evaluate_modifier(SingletonModifier* f) {
+    f_=f;
+  }
 
   virtual ~SingletonsScoreState();
 
   IMP_SCORE_STATE(internal::core_version_info)
+
+  void do_after_evaluate();
 };
 
 
