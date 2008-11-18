@@ -22,17 +22,17 @@
 \section i5 Other important bits
 There is good \ref log "logging support":
 \code
-IMP::set_log_level(IMP.VERBOSE)
+IMP::set_log_level(IMP.VERBOSE);
 IMP_LOG(TERSE, "Something interesting has occurred with variable " 
                  << var << std::endl);
 \endcode
 
 \ref assert "Error reporting/checking" which can be controlled at runtime
 \code
-IMP::set_check_level(IMP.EXPENSIVE)
+IMP::set_check_level(IMP.EXPENSIVE);
 IMP_check(boolean_condition, "An error has occurred with value "
                              << some_value,
-                             ExceptionType)
+                             ExceptionType);
 \endcode
 
 The control functions are accessible from Python, but the check and log macros are not.
