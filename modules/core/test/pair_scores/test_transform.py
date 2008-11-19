@@ -52,11 +52,11 @@ class DistanceTests(IMP.test.TestCase):
         print d1.get_coordinate_derivative(1)
         print d1.get_coordinate_derivative(2)
         self.assert_(d0.get_coordinate_derivative(0) > 0)
-        self.assert_(d0.get_coordinate_derivative(1) == 0)
-        self.assert_(d0.get_coordinate_derivative(2) == 0)
+        self.assertInTolerance(d0.get_coordinate_derivative(1), 0, .1)
+        self.assertInTolerance(d0.get_coordinate_derivative(2), 0, .1)
         self.assert_(d1.get_coordinate_derivative(1) > 0)
-        self.assert_(d1.get_coordinate_derivative(0) == 0)
-        self.assert_(d1.get_coordinate_derivative(2) == 0)
+        self.assertInTolerance(d1.get_coordinate_derivative(0), 0, .1)
+        self.assertInTolerance(d1.get_coordinate_derivative(2), 0, .1)
     def test_symmetry2(self):
         """Test the transform pair score optimization"""
         IMP.set_log_level(IMP.VERBOSE)
@@ -89,9 +89,9 @@ class DistanceTests(IMP.test.TestCase):
                          d1.get_coordinates()*IMP.Vector3D(0,1,0)+0)
         print "trans"
         print str(vt[0]) + " " + str(vt[1])+" " + str(vt[2])
-        self.assertEqual(vt[0], d0.get_coordinate(0))
-        self.assertEqual(vt[1], d0.get_coordinate(1))
-        self.assertEqual(vt[2], d0.get_coordinate(2))
+        self.assertInTolerance(vt[0], d0.get_coordinate(0), .1)
+        self.assertInTolerance(vt[1], d0.get_coordinate(1), .1)
+        self.assertInTolerance(vt[2], d0.get_coordinate(2), .1)
 
 if __name__ == '__main__':
     unittest.main()
