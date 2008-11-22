@@ -211,7 +211,7 @@ IMP::core::read(iss, m);
 \endcode
 
 \section i11 Writing a simple restraint
-This is actually an IMP::core::SingletonsRestraint. You really wouldn't want to write such a think in Python, although you can.
+This is actually an IMP::core::SingletonsRestraint. You really wouldn't want to write such a thing in Python, although you can.
 
 \code
 class IMPDLLEXPORT MyRestraint: public IMP::Restraint {
