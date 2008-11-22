@@ -20,8 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** The score is based on the difference between the stored length
     and the actual length and scaled by the stiffness. That is
     stiffness * (distance-bond_length)
-
-    \ingroup singletonscore
+    \ingroup bond
  */
 class IMPCOREEXPORT BondDecoratorSingletonScore : public SingletonScore
 {

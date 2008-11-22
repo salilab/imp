@@ -21,8 +21,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Restrain each pair of consecutive particles in each chain.
-/** \ingroup restraint
- */
+/** */
 class IMPCOREEXPORT PairChainRestraint : public Restraint
 {
 public:

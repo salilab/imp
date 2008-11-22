@@ -17,6 +17,7 @@ IMPMISC_BEGIN_NAMESPACE
 
 //! Return the hierarchy children of a particle.
 /** Derivatives are not propagated back to parent or anything.
+    \ingroup hierarchy
 */
 class IMPMISCEXPORT ChildrenParticleRefiner : public ParticleRefiner
 {

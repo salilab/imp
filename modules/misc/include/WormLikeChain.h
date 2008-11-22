@@ -23,7 +23,6 @@ IMPMISC_BEGIN_NAMESPACE
     \note The actual worm like chain force blows up as the extension approaches
     the maximum. Since that makes optimization problematic, we
     just linearly extend the force after 99% of maximum.
-    \ingroup unaryf
  */
 class WormLikeChain : public UnaryFunction
 {

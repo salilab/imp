@@ -18,8 +18,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a function to the distance to a fixed point.
-/** \ingroup singleton
- */
+/** */
 class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
 {
   Pointer<UnaryFunction> f_;

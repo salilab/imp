@@ -13,8 +13,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Linear function
-/** \ingroup unaryf
-    \note The offset is not meaningful for optimization, but does
+/** \note The offset is not meaningful for optimization, but does
     make the displayed energies nicer.
  */
 class Linear : public UnaryFunction

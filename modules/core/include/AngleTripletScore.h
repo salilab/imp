@@ -17,8 +17,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a function to the angle between three particles.
-/** \ingroup triplet
- */
+/** */
 class IMPCOREEXPORT AngleTripletScore : public TripletScore
 {
   Pointer<UnaryFunction> f_;

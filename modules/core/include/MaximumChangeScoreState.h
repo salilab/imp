@@ -27,6 +27,8 @@ IMPCORE_BEGIN_NAMESPACE
 
     Adding a new particle to the container without calling reset()
     results in a max change of std::numeric_limits<Float>::max().
+
+    \ingroup restraint
  */
 class IMPCOREEXPORT MaximumChangeScoreState: public ScoreState
 {

@@ -15,8 +15,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Modify a set of continuous variables using a normal distribution.
-/** \ingroup mover
- */
+/** */
 class IMPCOREEXPORT NormalMover :public MoverBase
 {
 public:

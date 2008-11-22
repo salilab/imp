@@ -26,6 +26,7 @@ class ClosePairsFinder;
 /** See the documentation for ClosePairsScoreState first. The only
     difference from that case is that pairs with one particle
     from each of two containers are reportedhere.
+    \ingroup restraint
  */
 class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState
 {

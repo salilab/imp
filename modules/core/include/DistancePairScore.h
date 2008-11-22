@@ -17,8 +17,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a function to the distance between two particles.
-/** \ingroup pairscore
- */
+/** */
 class IMPCOREEXPORT DistancePairScore : public PairScore
 {
   Pointer<UnaryFunction> f_;
