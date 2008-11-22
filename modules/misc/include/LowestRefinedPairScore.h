@@ -19,8 +19,6 @@ IMPMISC_BEGIN_NAMESPACE
 
 //! Refine both particles with the refiner and score on the lowest pair.
 /** Score on the lowest of the pairs defined by refining the two particles.
-
-    \ingroup pairscore
  */
 class IMPMISCEXPORT LowestRefinedPairScore : public PairScore
 {

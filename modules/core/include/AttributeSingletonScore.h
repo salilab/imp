@@ -17,8 +17,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a function to an attribute.
-/** \ingroup singleton
- */
+/** */
 class IMPCOREEXPORT AttributeSingletonScore : public SingletonScore
 {
   Pointer<UnaryFunction> f_;

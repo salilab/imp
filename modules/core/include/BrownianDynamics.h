@@ -124,7 +124,7 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*);
 
-protected:
+private:
 
   //! Perform a single dynamics step.
   //  \return true if the initial step size was OK

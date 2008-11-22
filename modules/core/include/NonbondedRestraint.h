@@ -22,9 +22,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a PairScore to all nonbonded pairs of particles
-/**
-   \ingroup restraint
- */
+/** */
 class IMPCOREEXPORT NonbondedRestraint : public Restraint
 {
 public:

@@ -15,9 +15,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! A a decorator for a particle with x,y,z coordinates and a radius.
-/** \ingroup helper
-    \ingroup decorators
+//! A decorator for a particle with x,y,z coordinates and a radius.
+/** \ingroup decorators
  */
 class IMPCOREEXPORT XYZRDecorator: public XYZDecorator
 {
@@ -84,14 +83,12 @@ public:
 IMP_OUTPUT_OPERATOR(XYZRDecorator);
 
 //! Compute the distance between a pair of particles
-/** \ingroup helper
-    \ingroup uncommitted
+/** \relates XYZRDecorator
  */
 IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
 
 //! Set the coordinates and radius of the last to enclose the list
-/** \ingroup helper
-    \param[in] v The vector of XYZR objects to enclose
+/** \param[in] v The vector of XYZR objects to enclose
     \param[out] b The one whose values should be set
 
     \note this takes a Particles object rather than a vector of
@@ -99,7 +96,8 @@ IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
     different things to one another. Well, you can cast vectors
     of decorators in C++, but you can't in python without adding
     explicit support.
-    \ingroup uncommitted
+
+    \relates XYZRDecorator
  */
 IMPCOREEXPORT void set_enclosing_sphere(const Particles &v,
                                        XYZRDecorator b);

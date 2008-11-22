@@ -22,8 +22,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Applies a PairScore to each pair of particles in a list.
-/** \ingroup restraint
- */
+/** */
 class IMPCOREEXPORT PairListRestraint : public Restraint
 {
 public:

@@ -27,8 +27,6 @@ IMPMISC_BEGIN_NAMESPACE
 
     Note that the UnaryFunction should look like a lower bound with 0
     meaning that the particle is just touching the tunnel.
-
-    \ingroup restraint
  */
 class IMPMISCEXPORT TunnelSingletonScore : public SingletonScore
 {

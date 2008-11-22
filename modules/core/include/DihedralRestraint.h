@@ -34,8 +34,7 @@ public:
   IMP_RESTRAINT(internal::core_version_info)
 
 protected:
-  //! scoring function for this restraint
-  UnaryFunction* score_func_;
+    Pointer<UnaryFunction> score_func_;
 };
 
 IMPCORE_END_NAMESPACE

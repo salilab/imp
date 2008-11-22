@@ -52,6 +52,8 @@ class ClosePairsFinder;
     \todo Need a mechanism to allow small updates to the set of particles.
     It is not clear how to accomplish this. Perhaps MaximumChangeScoreState
     could keep track of newly added particles. It can do that.
+
+    \ingroup restraint
  */
 class IMPCOREEXPORT ClosePairsScoreState : public ScoreState
 {

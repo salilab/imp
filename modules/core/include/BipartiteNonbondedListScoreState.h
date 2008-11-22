@@ -22,8 +22,6 @@ IMPCORE_BEGIN_NAMESPACE
     The radius key can be the default key.
 
     Changes in coordinates and radii are handled properly.
-
-    \ingroup restraint
  */
 class IMPCOREEXPORT BipartiteNonbondedListScoreState:
     public NonbondedListScoreState

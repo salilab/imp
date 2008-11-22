@@ -13,16 +13,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** \ingroup restraint
-    \addtogroup unaryf Unary Functions
-    Functions of a single variable. These are used by scoring functions.
- */
-
 //! Harmonic function (symmetric about the mean)
 /** This is a simple score modeling an harmonic oscillator. The score is
     0.5 * k * x * x, where k is the 'force constant' and x is the distance
     from the mean.
-    \ingroup unaryf
  */
 class Harmonic : public UnaryFunction
 {
