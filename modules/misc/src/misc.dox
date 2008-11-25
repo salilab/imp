@@ -9,6 +9,10 @@ from IMP.core.
 
 The defined classes and functions can be found in the IMP::misc namespace.
 
+\section authors Authors
+
+Daniel Russel, Keren Lasker and Ben Webb
+
 \section publications Publications
 
 IMP.misc is covered by the main IMP publications.
