@@ -8,21 +8,9 @@ import random
 # another.
 
 #IMP.set_log_level(IMP.VERBOSE)
-np=20
-radius =1.0
-rk= IMP.FloatKey("radius")
 m= IMP.Model()
 # The particles in the chain
-chain= IMP.core.ListSingletonContainer()
-for i in range(0,np):
-    p= IMP.Particle()
-    pi= m.add_particle(p)
-    d= IMP.core.XYZDecorator.create(p)
-    d.set_coordinates(IMP.random_vector_in_box(IMP.Vector3D(0,0,0),
-                                               IMP.Vector3D(10,10,10)))
-    d.set_coordinates_are_optimized(True)
-    p.add_attribute(rk, radius, False)
-    chain.add_particle(p)
+chain= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 1.0))
 
 # create a bond between successive particles
 IMP.core.BondedDecorator.create(chain.get_particle(0))
@@ -30,7 +18,7 @@ bonds= IMP.core.ListSingletonContainer()
 for i in range(1, chain.get_number_of_particles()):
     bp= IMP.core.BondedDecorator.cast(chain.get_particle(i-1))
     bpr= IMP.core.BondedDecorator.create(chain.get_particle(i))
-    b= IMP.core.custom_bond(bp, bpr, 1.5*radius, 10)
+    b= IMP.core.custom_bond(bp, bpr, 1.5, 10)
     bonds.add_particle(b.get_particle())
 
 # If you want to inspect the particles
@@ -46,7 +34,7 @@ fl= nbl.get_close_pairs_container()
 fl.add_pair_container(IMP.core.BondDecoratorPairContainer())
 
 # Set up excluded volume
-ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1), rk)
+ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
 evr= IMP.core.PairsRestraint(ps, fl)
 evri= m.add_restraint(evr)
 
@@ -61,7 +49,7 @@ p= IMP.ParticlePair(chain.get_particle(0), chain.get_particle(chain.get_number_o
 pps= IMP.core.ListPairContainer()
 pps.add_particle_pair(p)
 cr= IMP.core.PairsRestraint(
-           IMP.core.SphereDistancePairScore(IMP.core.Harmonic(3,1), rk), pps)
+           IMP.core.SphereDistancePairScore(IMP.core.Harmonic(3,1)), pps)
 cri=m.add_restraint(cr)
 
 # Set up optimizer
@@ -71,7 +59,6 @@ o.set_model(m)
 # Write the progression of states as the system is optimized to
 # the files state.000.vrml, state.001.vrml etc.
 vrml= IMP.core.VRMLLogOptimizerState(chain, "state.%03d.vrml")
-vrml.set_radius_key(rk)
 vrml.update()
 vrml.set_skip_steps(100)
 o.add_optimizer_state(vrml)
