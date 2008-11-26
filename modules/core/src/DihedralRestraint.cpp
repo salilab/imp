@@ -35,7 +35,6 @@ DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
 //! Destructor
 DihedralRestraint::~DihedralRestraint()
 {
-  delete score_func_;
 }
 
 
