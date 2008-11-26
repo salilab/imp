@@ -19,9 +19,9 @@ IMPCORE_BEGIN_NAMESPACE
 /** To iterate through the list of pairs use the NonbondedListScoreState::begin,
     NonbondedListScoreState::end functions.
 
-    The radius key can be the default key.
+    The radius key can be the default key. In that case the radius is ignored.
 
-    Changes in coordinates and radii are handled properly.
+    Changes in bost coordinates and radii are handled properly.
  */
 class IMPCOREEXPORT BipartiteNonbondedListScoreState:
     public NonbondedListScoreState
