@@ -1,7 +1,8 @@
 Import('env', 'bin')
 
 # All example scripts:
-example_py = ['chain.py', 'connectivity_restraint.py']
+example_py = ['chain.py', 'connectivity_restraint.py',
+              'nonbonded_interactions.py' ]
 
 import os.path
 
