@@ -36,18 +36,7 @@ class ClosePairsFinder;
     The default distance is 0 and default slack is 1.
 
     Here is a simple example of using this for a nonbonded list
-    \verbatim
-    pc= IMP.core.ListSingletonContainer()
-    # put are particles in pc. All have radii defined by the default key
-    cpss= IMP.core.ClosePairsScoreState(pc)
-    m.add_score_state(cpss)
-
-    lb= IMP.core.HarmonicLowerBound(0,1)
-    sd= IMP.core.SphereDistancePairScore(lb)
-    r= IMP.core.ParticlePairsRestraint(sd,
-                 cpss.get_close_pairs_container())
-    m.add_restraint(r)
-    \endverbatim
+    \verbinclude nonbonded_interactions.py
 
     \todo Need a mechanism to allow small updates to the set of particles.
     It is not clear how to accomplish this. Perhaps MaximumChangeScoreState
