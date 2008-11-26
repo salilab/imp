@@ -84,4 +84,27 @@ void set_enclosing_sphere(const Particles &v,
 #endif
 }
 
+
+Particles create_xyzr_particles(Model *m,
+                                unsigned int num,
+                                Float radius,
+                                Float box_side) {
+  Particles ret;
+  for (unsigned int i=0; i< num; ++i) {
+    Particle *p= new Particle();
+    m->add_particle(p);
+    XYZRDecorator d= XYZRDecorator::create(p);
+    d.set_coordinates(random_vector_in_box(Vector3D(-box_side,
+                                                    -box_side,
+                                                    -box_side),
+                                           Vector3D(box_side,
+                                                    box_side,
+                                                    box_side)));
+    d.set_radius(radius);
+    d.set_coordinates_are_optimized(true);
+    ret.push_back(p);
+  }
+  return ret;
+}
+
 IMPCORE_END_NAMESPACE

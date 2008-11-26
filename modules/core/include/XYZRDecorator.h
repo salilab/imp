@@ -102,6 +102,19 @@ IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
 IMPCOREEXPORT void set_enclosing_sphere(const Particles &v,
                                        XYZRDecorator b);
 
+//! Create a set of particles which random coordinates
+/** This function is mostly to be used to keep demo code brief.
+    \param[in] m The model to add them to.
+    \param[in] num The number of particles to create.
+    \param[in] radius The radius to give them.
+    \param[in] box_side The particles have coordinates from -box_side
+    to box_side.
+ */
+IMPCOREEXPORT Particles create_xyzr_particles(Model *m,
+                                              unsigned int num,
+                                              Float radius,
+                                              Float box_side=10);
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_XYZR_DECORATOR_H */
