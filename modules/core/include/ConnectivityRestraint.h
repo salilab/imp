@@ -27,16 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
     use an appropriate PairScore which calls a ParticleRefiner (such
     as LowestRefinedPairScore).
 
-    \code
-    Particles hs; // put the HierarchyDecorator
-                  // defined-parents of all the proteins here
-    IMP::PairScore *ps; // your favorite PairScore
-    IMP::ParticleRefiner *cps= new IMP::misc::ChildrenParticleRefiner();
-    IMP::PairScore *lrps = IMP::misc::LowestRefinedPairScore(cps,ps);
-    IMP::core::ConnectivityRestraint *cr
-    = new IMP::core::ConnectivityRestraint(lrps);
-    cr->set_particles(hs);
-    \endcode
+    \verbinclude connectivity_restraint.py
 
     More precisely, the restraint scores by computing the MST on the complete
     graph connecting all the particles. The edge weights are given by
