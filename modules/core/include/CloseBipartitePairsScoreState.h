@@ -23,9 +23,11 @@ class MaximumChangeScoreState;
 class ClosePairsFinder;
 
 //! Maintains a list of spatially close pairs of particles between two sets
-/** See the documentation for ClosePairsScoreState first. The only
-    difference from that case is that pairs with one particle
-    from each of two containers are reportedhere.
+/** See ClosePairsScoreState for a general overview of the ClosePairs classes.
+    The only difference from that case is that only pairs with one particle
+    from each of two containers are reported here.
+
+    \verbinclude bipartite_nonbonded_interactions.py
     \ingroup restraint
  */
 class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState
