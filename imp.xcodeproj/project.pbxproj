@@ -172,7 +172,6 @@
 		930321A50ED65D5700C34FCC /* PairsRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PairsRestraint.cpp; sourceTree = "<group>"; };
 		930321A60ED65D5700C34FCC /* PairsScoreState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PairsScoreState.cpp; sourceTree = "<group>"; };
 		930321A70ED65D5700C34FCC /* PropagateBondDerivativesSingletonModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PropagateBondDerivativesSingletonModifier.cpp; sourceTree = "<group>"; };
-		930321A80ED65D5700C34FCC /* ProximityFinder.os */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = ProximityFinder.os; sourceTree = "<group>"; };
 		930321A90ED65D5700C34FCC /* QuadraticClosePairsFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadraticClosePairsFinder.cpp; sourceTree = "<group>"; };
 		930321AA0ED65D5700C34FCC /* ResidueDecorator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResidueDecorator.cpp; sourceTree = "<group>"; };
 		930321AB0ED65D5700C34FCC /* RestraintSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RestraintSet.cpp; sourceTree = "<group>"; };
@@ -687,7 +686,6 @@
 				930321A50ED65D5700C34FCC /* PairsRestraint.cpp */,
 				930321A60ED65D5700C34FCC /* PairsScoreState.cpp */,
 				930321A70ED65D5700C34FCC /* PropagateBondDerivativesSingletonModifier.cpp */,
-				930321A80ED65D5700C34FCC /* ProximityFinder.os */,
 				930321A90ED65D5700C34FCC /* QuadraticClosePairsFinder.cpp */,
 				930321AA0ED65D5700C34FCC /* ResidueDecorator.cpp */,
 				930321AB0ED65D5700C34FCC /* RestraintSet.cpp */,
