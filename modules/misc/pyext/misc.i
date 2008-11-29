@@ -1,8 +1,9 @@
 %module(directors="1") IMP_misc
 
 %{
-#include "IMP.h"
 #include "IMP/misc.h"
+#include "IMP/core.h"
+#include "IMP.h"
 %}
 
 %include "kernel/pyext/IMP_macros.i"
@@ -16,6 +17,7 @@
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
+%import "modules/core/pyext/core.i"
 
 namespace IMP {
   typedef VectorD<3> Vector3D;
