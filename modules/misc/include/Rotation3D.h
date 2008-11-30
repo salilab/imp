@@ -9,122 +9,98 @@
 #define IMPMISC_ROTATION_3D_H
 
 #include "misc_exports.h"
-
-#include "Matrix3D.h"
+#include "IMP/Vector3D.h"
+#include <iostream>
 IMPMISC_BEGIN_NAMESPACE
 
 //! 3D rotation class.
-/** Holds a 3-dimensional rotation compactly using a quaternions (4 numbers).
-    For a given axis and angle, one can easily construct the corresponding
-    quaternion, and conversely, for a given quaternion one can easily read
-    off the axis and the angle.
-    Another advantage is robustness to rounding errors.
-    The quaternions representation does not harm the performance too much.
+/** Holds a three dimensional rotation compactly using a quaternion (4 numbers).
+    Advantages using quaternion:
+    1. Easy convertion between axis/angle to quaternion reprsentation
+    2. Robustness to rounding errors.
+    3. Is not subject to "Gimbal lock" (i.e. attempts to rotate an
+       object fail to appear as expected, due to the order in which the
+       rotations are performed) like Euler angles.
+    4. Can be interpolated
+    5. The quaternions representation does not harm the performance too much.
+    http://www.euclideanspace.com/maths/algebra/matrix/orthogonal/rotation/index.htm
+
+    Currently the rotation can be initialized from either:
+    XYZ Euler angles
+    Rotation Matrix
+    Quaternion
 */
 
 class IMPMISCEXPORT Rotation3D {
 public:
-  Rotation3D(){
- }
-  //! Initialize a rotation in x-y-z order from three angles
-  /** \param[in] xr Rotation around the X axis in radians
+  Rotation3D():a_(0.0),b_(0.0),c_(0.0),d_(0.0) {}
+  Rotation3D(Float a, Float b, Float c, Float d){
+    a_=a;b_=b;c_=c;d_=d;
+  }
+    //! Rotation by vector multiplication
+  Vector3D mult(const Vector3D &o) const {
+    return Vector3D((a_*a_+b_*b_-c_*c_-d_*d_)*o[0] +
+                         2*(b_*c_-a_*d_)*o[1] + 2*(b_*d_+a_*c_)*o[2],
+                     2*(b_*c_+a_*d_)*o[0] +
+                         (a_*a_-b_*b_+c_*c_-d_*d_)*o[1] + 2*(c_*d_-a_*b_)*o[2],
+                     2*(b_*d_-a_*c_)*o[0] +
+                         2*(c_*d_+a_*b_)*o[1] + (a_*a_-b_*b_-c_*c_+d_*d_)*o[2]);
+  }
+  void show(std::ostream& out = std::cout) const {
+    out <<a_<<"|"<<b_<<"|"<<c_<<"|"<<d_<<'\n';
+  }
+private:
+  Float a_,b_,c_,d_;
+};
+
+
+//! Initialize a rotation in x-y-z order from three angles
+/** \param[in] xr Rotation around the X axis in radians
       \param[in] yr Rotation around the Y axis in radians
       \param[in] zr Rotation around the Z axis in radians
-  */
-  Rotation3D(Float xr, Float yr, Float zr) {
-    init_angles(xr,yr,zr);
-  }
-  //! Initialize a rotation in x-y-z order from three identical angles
-  /** \param[in] e_angle Rotation around first the X axis, Y axis and Z axis
-                 in radians
-  */
-  Rotation3D(Float e_angle){
-    init_angles(e_angle, e_angle, e_angle);
-  }
-  Matrix3D get_matrix() const {
-  const Float a = quat_[0];
-  const Float b = quat_[1];
-  const Float c = quat_[2];
-  const Float d = quat_[3];
-  return Matrix3D(a*a+b*b-c*c-d*d, 2*(b*c-a*d)    , 2*(b*d+a*c),
-                  2*(b*c+a*d)    , a*a-b*b+c*c-d*d, 2*(c*d-a*b),
-                  2*(b*d-a*c)    , 2*(c*d+a*b)    , a*a-b*b-c*c+d*d);
-  }
-  //! Rotation by vector multiplication
-  Vector3D operator*(const Vector3D &o) const {
-  const Float a = quat_[0];
-  const Float b = quat_[1];
-  const Float c = quat_[2];
-  const Float d = quat_[3];
-  return Vector3D((a*a+b*b-c*c-d*d)*o[0] + 2*(b*c-a*d)*o[1] + 2*(b*d+a*c)*o[2],
-                  2*(b*c+a*d)*o[0] + (a*a-b*b+c*c-d*d)*o[1] + 2*(c*d-a*b)*o[2],
-                  2*(b*d-a*c)*o[0] + 2*(c*d+a*b)*o[1] + (a*a-b*b-c*c+d*d)*o[2]);
-  }
-  //! Returns the rotation around the x-axis for a rotational matrix assuming
-  //! rotations are performed in the order of x-y-z.
-  Float rotX() const{
-    return atan2(matrix32(), matrix33());
-  }
+      \note The three rotations are represented in the original (fixed)
+            coordinate frame. http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+*/
+inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
+{
+  Float a,b,c,d;
+  Float cx = cos(xr);  Float cy = cos(yr);  Float cz = cos(zr);
+  Float sx = sin(xr);  Float sy = sin(yr);  Float sz = sin(zr);
+  Float m00 = cz*cy;
+  Float m11 = -sy*sx*sz + cx*cz;
+  Float m22 = cy*cx;
+  a = sqrt(1+m00+m11+m22)/2.0;
+  b = sqrt(1+m00-m11-m22)/2.0;
+  c = sqrt(1-m00+m11-m22)/2.0;
+  d = sqrt(1-m00-m11+m22)/2.0;
+  if (cy*sx + sy*cx*sz + sx*cz < 0.0) b = -b;
+  if (sz*sx - sy*cx*cz - sy < 0.0)    c = -c;
+  if (sz*cy + sy*sx*cz + sz*cx < 0.0) d = -d;
+  return Rotation3D(a,b,c,d);
+}
 
-  //! Returns the rotation around the y-axis for a rotational matrix assuming
-  //! rotations are performed in the order of x-y-z.
-  Float rotY() const{
-    return atan2(matrix31(), sqrt(sqr(matrix21())+sqr(matrix11())));
-  }
+inline Rotation3D rotation_from_mat(Float m11,Float m12,Float m13,
+                                    Float m21,Float m22,Float m23,
+                                    Float m31,Float m32,Float m33) {
+  Float a,b,c,d;
+  a = fabs(1+m11+m22+m33)/4;
+  b = fabs(1+m11-m22-m33)/4;
+  c = fabs(1-m11+m22-m33)/4;
+  d = fabs(1-m11-m22+m33)/4;
 
-  //! Returns the rotation around the z-axis for a rotational matrix assuming
-  //! rotations are performed in the order of x-y-z.
-  Float rotZ() const{
-    return atan2(matrix21(), matrix11());
-  }
+  // make sure quat is normalized.
+  Float sum = a+b+c+d;
+  a = sqrt(a/sum);
+  b = sqrt(b/sum);
+  c = sqrt(c/sum);
+  d = sqrt(d/sum);
 
-private:
-  void init_angles(Float xr, Float yr, Float zr) {
-    Float cx = cos(xr);  Float cy = cos(yr);  Float cz = cos(zr);
-    Float sx = sin(xr);  Float sy = sin(yr);  Float sz = sin(zr);
-    Float m00 = cz*cy;
-    Float m11 = -sy*sx*sz + cx*cz;
-    Float m22 = cy*cx;
-    quat_[0] = sqrt(1+m00+m11+m22)/2.0;
-    quat_[1] = sqrt(1+m00-m11-m22)/2.0;
-    quat_[2] = sqrt(1-m00+m11-m22)/2.0;
-    quat_[3] = sqrt(1-m00-m11+m22)/2.0;
-    if (cy*sx + sy*cx*sz + sx*cz < 0.0) quat_[1] = -quat_[1];
-    if (sz*sx - sy*cx*cz - sy < 0.0)    quat_[2] = -quat_[2];
-    if (sz*cy + sy*sx*cz + sz*cx < 0.0) quat_[3] = -quat_[3];
-  }
-
-  Float matrix11() const {
-    return sqr(quat_[0]) + sqr(quat_[1]) - sqr(quat_[2]) - sqr(quat_[3]);
-  }
-  Float matrix12() const {
-    return 2*(quat_[1]*quat_[2] - quat_[0]*quat_[3]);
-  }
-  Float matrix13()  const{
-    return 2*(quat_[2]*quat_[3] + quat_[0]*quat_[2]);
-  }
-  Float matrix21() const {
-    return 2*(quat_[1]*quat_[2] + quat_[0]*quat_[3]);
-  }
-  Float matrix22() const {
-    return sqr(quat_[0]) - sqr(quat_[1]) + sqr(quat_[2]) - sqr(quat_[3]);
-  }
-  Float matrix23() const {
-    return 2*(quat_[2]*quat_[3] - quat_[0]*quat_[1]);
-  }
-  Float matrix31() const {
-    return 2*(quat_[1]*quat_[3] - quat_[0]*quat_[2]);
-  }
-  Float matrix32() const {
-    return 2*(quat_[2]*quat_[3] + quat_[0]*quat_[1]);
-  }
-  Float matrix33() const {
-    return sqr(quat_[0]) - sqr(quat_[1]) - sqr(quat_[2]) + sqr(quat_[3]);
-  }
-
-private:
-  Float sqr(Float a)const{return a*a;}
-  Float quat_[4];
-};
+  if (m32-m23 < 0.0) b=-b;
+  if (m13-m31 < 0.0) c=-c;
+  if (m21-m12 < 0.0) d=-d;
+}
+/*
+Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}
+*/
 IMPMISC_END_NAMESPACE
 #endif  /* IMPMISC_ROTATION_3D_H */

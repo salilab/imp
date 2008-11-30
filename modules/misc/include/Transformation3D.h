@@ -23,24 +23,23 @@ class IMPMISCEXPORT Transformation3D
 public:
   // public for swig
   typedef Transformation3D This;
-  Transformation3D():rot_(1.0),trans_(){
+  Transformation3D():rot_(),trans_(){
   }
-
   Transformation3D(const Rotation3D& r, const Vector3D& t)
-    : rot_(r.get_matrix()), trans_(t){}
+    : rot_(r), trans_(t){}
   //! transform
   Vector3D transform(const Vector3D &o) const {
-    return (rot_ * o) + trans_;
+    return rot_.mult(o) + trans_;
   }
   Vector3D get_trans()const{return trans_;}
-  Matrix3D get_mat()const{return rot_;}
+  //  Matrix3D get_mat()const{return rot_;}
   void show(std::ostream& out = std::cout) const {
     rot_.show(out);
     out<<" || "<<trans_<<"\n";
   }
 private:
   Vector3D trans_; //tranlation
-  Matrix3D rot_;  //rotation
+  Rotation3D rot_;  //rotation
 };
 
 IMPMISC_END_NAMESPACE

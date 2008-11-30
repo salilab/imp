@@ -4,11 +4,11 @@ e = env.IMPSharedLibraryEnvironment()
 files = [
          'ChildrenParticleRefiner.cpp',
          'LowestRefinedPairScore.cpp',
-         'Matrix3D.cpp',
          'RefineOncePairScore.cpp',
          'Rotation3D.cpp',
          'Transformation3D.cpp',
          'TunnelSingletonScore.cpp',
+         'Rotation3D.cpp','Transformation3D.cpp'
         ]
 
 # Build and install the shared library:

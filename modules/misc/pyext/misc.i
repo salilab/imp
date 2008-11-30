@@ -1,10 +1,10 @@
 %module(directors="1") IMP_misc
 
 %{
-#include "IMP/misc.h"
-#include "IMP/core.h"
 #include "IMP.h"
+#include "IMP/misc.h"
 %}
+
 
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
@@ -17,7 +17,6 @@
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
-%import "modules/core/pyext/core.i"
 
 namespace IMP {
   typedef VectorD<3> Vector3D;
@@ -37,8 +36,6 @@ namespace IMP::misc {
 %include "IMP/misc/RefineOncePairScore.h"
 %include "IMP/misc/TunnelSingletonScore.h"
 %include "IMP/misc/LowestRefinedPairScore.h"
-%include "IMP/misc/Matrix3D.h"
 %include "IMP/misc/Rotation3D.h"
 %include "IMP/misc/Transformation3D.h"
-%include "IMP/misc/ParticleFunction.h"
 %include "IMP/misc/TransformationFunction.h"
