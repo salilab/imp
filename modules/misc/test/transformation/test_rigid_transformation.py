@@ -16,7 +16,8 @@ class RigidTransformationTests(IMP.test.TestCase):
 
     def test_transformation(self):
         """Check that the rotation function is ok"""
-        t=IMP.misc.Transformation3D(IMP.misc.Rotation3D(0.2,0.8,-0.4),IMP.Vector3D(20.0,-12.4,18.6))
+        rt = IMP.misc.rotation_from_fixed_xyz(0.2,0.8,-0.4)
+        t=IMP.misc.Transformation3D(rt,IMP.Vector3D(20.0,-12.4,18.6))
         v1_t = t.transform(self.v1)
         v2_t = t.transform(self.v2)
         v1_t_res=IMP.Vector3D(-62.517,86.209, 41.139)

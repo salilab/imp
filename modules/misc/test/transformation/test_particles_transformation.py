@@ -27,7 +27,8 @@ class ParticleTrasnformationTests(IMP.test.TestCase):
                                                          82.603,46.874,76.53))
     def test_transformation(self):
         """Test the TransformationFunction class"""
-        t=IMP.misc.Transformation3D(IMP.misc.Rotation3D(0.2,0.8,-0.4),IMP.Vector3D(20.0,-12.4,18.6))
+        r = IMP.misc.rotation_from_fixed_xyz(0.2,0.8,-0.4)
+        t=IMP.misc.Transformation3D(r,IMP.Vector3D(20.0,-12.4,18.6))
         tf=IMP.misc.TransformationFunction(t)
         r = tf.apply(self.particles)
         tp=[]
