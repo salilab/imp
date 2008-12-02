@@ -1,0 +1,9 @@
+Import('env')
+e = env.IMPSharedLibraryEnvironment()
+
+files = [
+         'saxs.cpp',
+        ]
+
+# Build and install the shared library:
+e.IMPSharedLibrary(files, install=True)
