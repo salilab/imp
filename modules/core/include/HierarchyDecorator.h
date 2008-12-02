@@ -106,7 +106,29 @@ public:
 
 IMP_OUTPUT_OPERATOR(HierarchyDecorator);
 
-
+//! Collect the matching visiting nodes into a container.
+/** A node is collected if the function evaluates true.
+ */
+template <class F, class Out>
+struct Gather: public HierarchyVisitor
+{
+  //! initialize with the function and the container
+  Gather(F f, Out out): f_(f), out_(out) {}
+  bool visit(Particle *p) {
+    if (f_(p)) {
+      *out_=p;
+      ++out_;
+    }
+    return true;
+  }
+  //! Return the container
+  Out get_out() const {
+    return out_;
+  }
+private:
+  F f_;
+  Out out_;
+};
 
 //! Apply the visitor to each particle,  breadth first.
 /** \param[in] d The HierarchyDecorator for the tree in question
@@ -277,30 +299,6 @@ private:
   unsigned int ct_;
 };
 
-namespace internal
-{
-
-template <class F, class Out>
-struct Gather: public HierarchyVisitor
-{
-  Gather(F f, Out out): f_(f), out_(out) {}
-  bool visit(Particle *p) {
-    if (f_(p)) {
-      *out_=p;
-      ++out_;
-    }
-    return true;
-  }
-  Out get_out() const {
-    return out_;
-  }
-  F f_;
-  Out out_;
-
-};
-
-} // namespace internal
-
 //! Gather all the Particle* in the hierarchy which meet some criteria
 /** \ingroup hierarchy
     \relates HierarchyDecorator
@@ -308,7 +306,7 @@ struct Gather: public HierarchyVisitor
 template <class Out, class F>
 Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
 {
-  internal::Gather<F,Out> gather(f,out);
+  Gather<F,Out> gather(f,out);
   depth_first_traversal(h, gather);
   return gather.get_out();
 }
@@ -320,7 +318,7 @@ Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
 template <class Out, class K, class V>
 Out hierarchy_gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
 {
-  internal::Gather<internal::MatchAttribute<K, V>,Out>
+  Gather<internal::MatchAttribute<K, V>,Out>
     gather(internal::MatchAttribute<K,V>(k,v),
            out);
   depth_first_traversal(h, gather);
@@ -338,7 +336,7 @@ template <class Out, class K0, class V0, class K1, class V1>
 Out hierarchy_gather_by_attributes(HierarchyDecorator h, K0 k0,
                                    V0 v0, K1 k1, V1 v1, Out out)
 {
-  internal::Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
+  Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
     gather(internal::MatchAttributes<K0,V0, K1, V1>(k0,v0, k1, v1),
            out);
   depth_first_traversal(h, gather);

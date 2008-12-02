@@ -38,7 +38,17 @@ class IMPCOREEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 public:
 
   //! The various values for levels of the hierarchy
-  /** - UNIVERSE is all the molecules in existance at once.
+  /** - ATOM (0) an atom
+      - RESIDUE (1) a residue
+      - NUCLEICACID (2) a nucleic acid
+      - FRAGMENT (3) an arbitrary fragment
+      - CHAIN (4) a chain of a protein
+      - PROTEIN (5) a protein
+      - NUCLEOTIDE (6) a nucleotide
+      - MOLECULE (7) an arbitrary molecule
+      - ASSEMBLY (8) an assembly
+      - COLLECTION (9) a group of assemblies
+      - UNIVERSE is all the molecules in existance at once.
       - UNIVERSES is a set of universes
       - TRAJECTORY is an ordered set of UNIVERSES
    */
