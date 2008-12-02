@@ -3,6 +3,7 @@ e = env.IMPSharedLibraryEnvironment()
 
 files = [
          'AllNonbondedListScoreState.cpp',
+         'AllPairsPairContainer.cpp',
          'AngleRestraint.cpp',
          'AngleTripletScore.cpp',
          'AtomDecorator.cpp',
@@ -37,9 +38,12 @@ files = [
          'HierarchyDecorator.cpp',
          'ListPairContainer.cpp',
          'ListSingletonContainer.cpp',
-         'LowestNRestraintSet.cpp',
          'MaxChangeScoreState.cpp',
          'MaximumChangeScoreState.cpp',
+         'MaximumPairScoreRestraint.cpp',
+         'MaximumSingletonScoreRestraint.cpp',
+         'MinimumPairScoreRestraint.cpp',
+         'MinimumSingletonScoreRestraint.cpp',
          'MolecularDynamics.cpp',
          'MolecularHierarchyDecorator.cpp',
          'MonteCarlo.cpp',

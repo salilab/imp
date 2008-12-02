@@ -2,6 +2,7 @@ Import('env')
 
 files = [
          'AllNonbondedListScoreState.h',
+         'AllPairsPairContainer.h',
          'AngleRestraint.h',
          'AngleTripletScore.h',
          'AtomDecorator.h',
@@ -41,9 +42,12 @@ files = [
          'Linear.h',
          'ListPairContainer.h',
          'ListSingletonContainer.h',
-         'LowestNRestraintSet.h',
          'MaxChangeScoreState.h',
          'MaximumChangeScoreState.h',
+         'MaximumPairScoreRestraint.h',
+         'MaximumSingletonScoreRestraint.h',
+         'MinimumPairScoreRestraint.h',
+         'MinimumSingletonScoreRestraint.h',
          'MolecularDynamics.h',
          'MolecularHierarchyDecorator.h',
          'MonteCarlo.h',

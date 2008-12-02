@@ -68,6 +68,7 @@ namespace IMP {
     %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
     %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
 
+    IMP_OWN_FIRST_CONSTRUCTOR(AllPairsPairContainer)
     IMP_OWN_FIRST_CONSTRUCTOR(AngleRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(AngleTripletScore)
     IMP_OWN_FIRST_CONSTRUCTOR(AttributeSingletonScore)
@@ -93,7 +94,6 @@ namespace IMP {
     IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ClosePairsScoreState)
     IMPCORE_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(CloseBipartitePairsScoreState)
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
-    IMP_CONTAINER_SWIG(LowestNRestraintSet, Restraint, restraint)
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
 
     IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
@@ -142,6 +142,7 @@ namespace IMP {
 
 /* Wrap the final classes */
 %include "IMP/core/AllNonbondedListScoreState.h"
+%include "IMP/core/AllPairsPairContainer.h"
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AtomDecorator.h"
@@ -175,7 +176,6 @@ namespace IMP {
 %include "IMP/core/HarmonicUpperBound.h"
 %include "IMP/core/HierarchyDecorator.h"
 %include "IMP/core/Linear.h"
-%include "IMP/core/LowestNRestraintSet.h"
 %include "IMP/core/MaxChangeScoreState.h"
 %include "IMP/core/MaximumChangeScoreState.h"
 %include "IMP/core/MolecularDynamics.h"
@@ -213,6 +213,10 @@ namespace IMP {
 %include "IMP/core/PairContainerSet.h"
 %include "IMP/core/SingletonContainerSet.h"
 %include "IMP/core/SingletonsScoreState.h"
+%include "IMP/core/MinimumSingletonScoreRestraint.h"
+%include "IMP/core/MinimumPairScoreRestraint.h"
+%include "IMP/core/MaximumSingletonScoreRestraint.h"
+%include "IMP/core/MaximumPairScoreRestraint.h"
 
 
 
