@@ -256,9 +256,7 @@
 		930322060ED65D5700C34FCC /* state.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = state.hpp; sourceTree = "<group>"; };
 		930322070ED65D5700C34FCC /* swig.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.interfacer; path = swig.i; sourceTree = "<group>"; };
 		930322080ED65D5700C34FCC /* test.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test.py; sourceTree = "<group>"; };
-		930322090ED65D5700C34FCC /* test.py.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.py.bak; sourceTree = "<group>"; };
 		9303220A0ED65D5700C34FCC /* test_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_state.py; sourceTree = "<group>"; };
-		9303220B0ED65D5700C34FCC /* test_state.py.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_state.py.bak; sourceTree = "<group>"; };
 		9303220C0ED65D5700C34FCC /* make-container */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "make-container"; sourceTree = "<group>"; };
 		9303220F0ED65D5700C34FCC /* CombState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CombState.h; sourceTree = "<group>"; };
 		930322100ED65D5700C34FCC /* DiscreteSampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscreteSampler.h; sourceTree = "<group>"; };
@@ -449,12 +447,8 @@
 		930322F10ED65D5700C34FCC /* test.passed */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.passed; sourceTree = "<group>"; };
 		930322F40ED65D5700C34FCC /* chain.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = chain.py; sourceTree = "<group>"; };
 		930322F50ED65D5700C34FCC /* connectivity_restraint.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = connectivity_restraint.py; sourceTree = "<group>"; };
-		930322F60ED65D5700C34FCC /* connectivity_restraint.py.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = connectivity_restraint.py.bak; sourceTree = "<group>"; };
 		930322F70ED65D5700C34FCC /* examples.passed */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = examples.passed; sourceTree = "<group>"; };
 		930322F80ED65D5700C34FCC /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
-		930322F90ED65D5700C34FCC /* state.000.vrml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = state.000.vrml; sourceTree = "<group>"; };
-		930322FA0ED65D5700C34FCC /* state.001.vrml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = state.001.vrml; sourceTree = "<group>"; };
-		930322FB0ED65D5700C34FCC /* state.002.vrml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = state.002.vrml; sourceTree = "<group>"; };
 		930326440ED65D5900C34FCC /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		930326450ED65D5900C34FCC /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
 		930326470ED65D5900C34FCC /* doxygen.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = doxygen.conf; sourceTree = "<group>"; };
@@ -462,6 +456,22 @@
 		9303298B0ED65D5A00C34FCC /* manual.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = manual.xml; sourceTree = "<group>"; };
 		9303298C0ED65D5A00C34FCC /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
 		9303298D0ED65D5A00C34FCC /* usage.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = usage.xml; sourceTree = "<group>"; };
+		932B78BE0EE41C0400CA3BDE /* max.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = max.hpp; sourceTree = "<group>"; };
+		932B78C00EE41C0400CA3BDE /* min.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = min.hpp; sourceTree = "<group>"; };
+		932B78C30EE4211B00CA3BDE /* max.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = max.cc; sourceTree = "<group>"; };
+		932B78C40EE4211B00CA3BDE /* min.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = min.cc; sourceTree = "<group>"; };
+		932B78C90EE4215B00CA3BDE /* MinimumPairScoreRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MinimumPairScoreRestraint.h; sourceTree = "<group>"; };
+		932B78CA0EE4215B00CA3BDE /* MinimumSingletonScoreRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MinimumSingletonScoreRestraint.h; sourceTree = "<group>"; };
+		932B78CD0EE4217600CA3BDE /* MinimumPairScoreRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MinimumPairScoreRestraint.cpp; sourceTree = "<group>"; };
+		932B78CE0EE4217600CA3BDE /* MinimumSingletonScoreRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MinimumSingletonScoreRestraint.cpp; sourceTree = "<group>"; };
+		932B79930EE42F6000CA3BDE /* bipartite_nonbonded_interactions.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = bipartite_nonbonded_interactions.py; sourceTree = "<group>"; };
+		932B79940EE42F6000CA3BDE /* nonbonded_interactions.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = nonbonded_interactions.py; sourceTree = "<group>"; };
+		932B79950EE42F6000CA3BDE /* xyzdecorator.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = xyzdecorator.py; sourceTree = "<group>"; };
+		932B79960EE42F6000CA3BDE /* xyzrdecorator.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = xyzrdecorator.py; sourceTree = "<group>"; };
+		932B799B0EE42F7E00CA3BDE /* restrain_diameter.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = restrain_diameter.py; sourceTree = "<group>"; };
+		932B799E0EE4307500CA3BDE /* AllPairsPairContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllPairsPairContainer.h; sourceTree = "<group>"; };
+		932B79A10EE4308500CA3BDE /* AllPairsPairContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AllPairsPairContainer.cpp; sourceTree = "<group>"; };
+		932B79D80EE4351E00CA3BDE /* test_all_pairs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_all_pairs.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -504,6 +514,9 @@
 		930320FD0ED65D5700C34FCC /* include */ = {
 			isa = PBXGroup;
 			children = (
+				932B799E0EE4307500CA3BDE /* AllPairsPairContainer.h */,
+				932B78C90EE4215B00CA3BDE /* MinimumPairScoreRestraint.h */,
+				932B78CA0EE4215B00CA3BDE /* MinimumSingletonScoreRestraint.h */,
 				930320FE0ED65D5700C34FCC /* AllNonbondedListScoreState.h */,
 				930320FF0ED65D5700C34FCC /* AngleRestraint.h */,
 				930321000ED65D5700C34FCC /* AngleTripletScore.h */,
@@ -626,6 +639,9 @@
 		930321660ED65D5700C34FCC /* src */ = {
 			isa = PBXGroup;
 			children = (
+				932B79A10EE4308500CA3BDE /* AllPairsPairContainer.cpp */,
+				932B78CD0EE4217600CA3BDE /* MinimumPairScoreRestraint.cpp */,
+				932B78CE0EE4217600CA3BDE /* MinimumSingletonScoreRestraint.cpp */,
 				930321670ED65D5700C34FCC /* AllNonbondedListScoreState.cpp */,
 				930321680ED65D5700C34FCC /* AngleRestraint.cpp */,
 				930321690ED65D5700C34FCC /* AngleTripletScore.cpp */,
@@ -798,6 +814,7 @@
 		930321D10ED65D5700C34FCC /* restraints */ = {
 			isa = PBXGroup;
 			children = (
+				932B79D80EE4351E00CA3BDE /* test_all_pairs.py */,
 				930321D20ED65D5700C34FCC /* test_angle.py */,
 				930321D30ED65D5700C34FCC /* test_angles.py */,
 				930321D40ED65D5700C34FCC /* test_dihedral.py */,
@@ -861,6 +878,8 @@
 		930321F80ED65D5700C34FCC /* container_templates */ = {
 			isa = PBXGroup;
 			children = (
+				932B78C30EE4211B00CA3BDE /* max.cc */,
+				932B78C40EE4211B00CA3BDE /* min.cc */,
 				930321F90ED65D5700C34FCC /* container.cc */,
 				930321FA0ED65D5700C34FCC /* container.hpp */,
 				930321FB0ED65D5700C34FCC /* filter.cc */,
@@ -875,11 +894,11 @@
 				930322040ED65D5700C34FCC /* set.hpp */,
 				930322050ED65D5700C34FCC /* state.cc */,
 				930322060ED65D5700C34FCC /* state.hpp */,
+				932B78BE0EE41C0400CA3BDE /* max.hpp */,
+				932B78C00EE41C0400CA3BDE /* min.hpp */,
 				930322070ED65D5700C34FCC /* swig.i */,
 				930322080ED65D5700C34FCC /* test.py */,
-				930322090ED65D5700C34FCC /* test.py.bak */,
 				9303220A0ED65D5700C34FCC /* test_state.py */,
-				9303220B0ED65D5700C34FCC /* test_state.py.bak */,
 			);
 			path = container_templates;
 			sourceTree = "<group>";
@@ -1401,14 +1420,15 @@
 		930322F30ED65D5700C34FCC /* examples */ = {
 			isa = PBXGroup;
 			children = (
+				932B799B0EE42F7E00CA3BDE /* restrain_diameter.py */,
+				932B79930EE42F6000CA3BDE /* bipartite_nonbonded_interactions.py */,
+				932B79940EE42F6000CA3BDE /* nonbonded_interactions.py */,
+				932B79950EE42F6000CA3BDE /* xyzdecorator.py */,
+				932B79960EE42F6000CA3BDE /* xyzrdecorator.py */,
 				930322F40ED65D5700C34FCC /* chain.py */,
 				930322F50ED65D5700C34FCC /* connectivity_restraint.py */,
-				930322F60ED65D5700C34FCC /* connectivity_restraint.py.bak */,
 				930322F70ED65D5700C34FCC /* examples.passed */,
 				930322F80ED65D5700C34FCC /* SConscript */,
-				930322F90ED65D5700C34FCC /* state.000.vrml */,
-				930322FA0ED65D5700C34FCC /* state.001.vrml */,
-				930322FB0ED65D5700C34FCC /* state.002.vrml */,
 			);
 			path = examples;
 			sourceTree = "<group>";
@@ -1489,6 +1509,19 @@
 			passBuildSettingsInEnvironment = 1;
 			productName = xcode;
 		};
+		932B7A1F0EE43BA600CA3BDE /* standards */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION) standards";
+			buildConfigurationList = 932B7A200EE43BA600CA3BDE /* Build configuration list for PBXLegacyTarget "standards" */;
+			buildPhases = (
+			);
+			buildToolPath = scons;
+			dependencies = (
+			);
+			name = standards;
+			passBuildSettingsInEnvironment = 1;
+			productName = xcode;
+		};
 		D28A88AD04BDD90700651E21 /* all */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "$(ACTION) -j 2";
@@ -1518,6 +1551,7 @@
 				9311D7EA0ECCDC1600EEFF45 /* test */,
 				9311D8020ECCEA4B00EEFF45 /* clean */,
 				930320F10ED65CC100C34FCC /* doc */,
+				932B7A1F0EE43BA600CA3BDE /* standards */,
 			);
 		};
 /* End PBXProject section */
@@ -1650,6 +1684,32 @@
 			};
 			name = Release;
 		};
+		932B7A210EE43BA600CA3BDE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = standards;
+			};
+			name = Debug;
+		};
+		932B7A220EE43BA600CA3BDE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = xcode;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1694,6 +1754,15 @@
 			buildConfigurations = (
 				9311D8040ECCEA4B00EEFF45 /* Debug */,
 				9311D8050ECCEA4B00EEFF45 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		932B7A200EE43BA600CA3BDE /* Build configuration list for PBXLegacyTarget "standards" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				932B7A210EE43BA600CA3BDE /* Debug */,
+				932B7A220EE43BA600CA3BDE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
