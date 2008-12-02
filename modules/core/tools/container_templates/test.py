@@ -33,7 +33,9 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def create_particle(self,m):
         p= IMP.Particle()
         m.add_particle(p)
-        p.add_attribute(IMP.FloatKey("thekey"), 1)
+        d=IMP.core.XYZDecorator.create(p)
+        d.set_coordinates(IMP.random_vector_in_unit_box())
+        p.add_attribute(IMP.FloatKey("thekey"), d.get_x())
         return p
 
     def create_particle_pair(self,m):
@@ -43,8 +45,8 @@ class ClassnameContainerTest(IMP.test.TestCase):
         m.add_particle(p1)
         d0= IMP.core.XYZDecorator.create(p0)
         d1= IMP.core.XYZDecorator.create(p1)
-        d0.set_coordinates(IMP.Vector3D(0,0,1))
-        d1.set_coordinates(IMP.Vector3D(0,0,0))
+        d0.set_coordinates(IMP.random_vector_in_unit_box())
+        d1.set_coordinates(IMP.random_vector_in_unit_box())
         return IMP.ParticlePair(p0,p1)
 
     def same_particle(self, a, b):
@@ -58,11 +60,11 @@ class ClassnameContainerTest(IMP.test.TestCase):
             + str(b[1].get_index().get_index())
         return self.same_particle(a[0], b[0]) and self.same_particle(a[1], b[1])
 
-    def create_particle_score(self):
+    def create_singleton_score(self):
         uf= IMP.core.Linear(0,1)
         return IMP.core.AttributeSingletonScore(uf,IMP.FloatKey("thekey"))
 
-    def create_particle_pair_score(self):
+    def create_pair_score(self):
         uf= IMP.core.Linear(0,1)
         return IMP.core.DistancePairScore(uf)
 
@@ -70,15 +72,21 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def test_restraint(self):
         """Test the GroupnamesRestraint"""
         m= IMP.Model()
+        gs=self.create_groupname_score()
         c= IMP.core.ListGroupnameContainer()
+        f=0
         for i in range(0,10):
-            c.add_classname(self.create_classname(m))
-            r= IMP.core.GroupnamesRestraint(self.create_classname_score(), c)
+            p=self.create_classname(m)
+            f= f+ evaluate_groupname_score(gs, p)
+            c.add_classname(p)
+            r= IMP.core.GroupnamesRestraint(gs, c)
             r.set_was_owned(True)
         m.add_restraint(r)
-        self.assertEqual(m.evaluate(False), 10)
-        c.add_classname(self.create_classname(m))
-        self.assertEqual(m.evaluate(False), 11)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        p=self.create_classname(m)
+        f= f+ evaluate_groupname_score(gs, p)
+        c.add_classname(p)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
 
     def test_min_restraint(self):
         """Test the MinimumGroupnameScoreRestraint"""
@@ -87,7 +95,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         for i in range(0,10):
             c.add_classname(self.create_classname(m))
         print c.get_number_of_classnames()
-        d= IMP.core.DistanceGroupnameScore(IMP.core.Linear(0,1))
+        d= self.create_groupname_score()
         r= IMP.core.MinimumGroupnameScoreRestraint(d, c)
         self.assert_(not d.thisown)
         self.assert_(not c.thisown)
@@ -116,7 +124,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         for i in range(0,10):
             c.add_classname(self.create_classname(m))
         print c.get_number_of_classnames()
-        d= IMP.core.DistancePairScore(IMP.core.Linear(0,1))
+        d= self.create_groupname_score()
         r= IMP.core.MaximumGroupnameScoreRestraint(d, c)
         self.assert_(not d.thisown)
         self.assert_(not c.thisown)
@@ -130,11 +138,11 @@ class ClassnameContainerTest(IMP.test.TestCase):
             ps= c.get_classname(i)
             cm= evaluate_groupname_score(d, ps)
             ms.append(cm)
-        print ms
         ms.sort()
+        print ms
         mt=0;
         for i in range(0, 4):
-            mt = mt+ ms[-i]
+            mt = mt+ ms[-i-1]
         print mt
         self.assertInTolerance(mt, f, .1*f)
 
@@ -142,14 +150,20 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def test_container(self):
         """Test backwards compatibility on GroupnamesRestraint"""
         m= IMP.Model()
-        r= IMP.core.GroupnamesRestraint(self.create_classname_score())
+        gs=self.create_groupname_score()
+        r= IMP.core.GroupnamesRestraint(gs)
         m.add_restraint(r)
 
+        f=0
         for i in range(0,10):
-            r.add_classname(self.create_classname(m))
-        self.assertEqual(m.evaluate(False), 10)
-        r.add_classname(self.create_classname(m))
-        self.assertEqual(m.evaluate(False), 11)
+            p=self.create_classname(m)
+            r.add_classname(p)
+            f= f+evaluate_groupname_score(gs, p)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        p=self.create_classname(m)
+        f= f+ evaluate_groupname_score(gs, p)
+        r.add_classname(p)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
 
     def test_filter(self):
         """Testing FilteredListGroupnameContainer"""
@@ -200,7 +214,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         ret.sort(groupname_cmp)
         #print ret
         cs.sort(groupname_cmp)
-        #print cs
+        #rint cs
         for i in range(0, len(ret)):
             self.assertEqual(groupname_cmp(ret[i], cs[i]), 0)
         self.assertEqual(c.get_number_of_classnames(), len(cs))

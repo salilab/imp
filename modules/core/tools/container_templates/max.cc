@@ -36,8 +36,12 @@ namespace {
 
       if (bestn.can_insert(score)) {
         bestn.insert(score, it);
+        IMP_LOG(VERBOSE, "Accepeted score " << score << std::endl);
+      } else {
+        IMP_LOG(VERBOSE, "Rejected score " << score << std::endl);
       }
     }
+    IMP_LOG_WRITE(VERBOSE, bestn.show(IMP_STREAM));
     return bestn;
   }
 }
