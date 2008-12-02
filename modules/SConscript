@@ -3,6 +3,9 @@ Import('env')
 env.IMPModule('em', author='Keren Lasker', version='SVN',
               description='Interface to the EMBED package.')
 
+env.IMPModule('saxs', author='Seung Joong Kim', version='SVN',
+              description='Small Angle X-ray Scattering methods.')
+
 env.IMPModule('domino', author='Keren Lasker', version='SVN',
               description='DOMINO optimizer.')
 
