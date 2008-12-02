@@ -28,6 +28,7 @@ IMP_LIST_IMPL(ListSingletonContainer, Particle,
 
 bool
 ListSingletonContainer::get_contains_particle(Particle* vt) const {
+  IMP_CHECK_OBJECT(this);
   return std::binary_search(particles_begin(), particles_end(), vt);
 }
 
