@@ -25,8 +25,15 @@ IMPCORE_BEGIN_NAMESPACE
     GroupnameContainers with the invariant that none of the
     GroupnameContainers contain any of the Classnames stored.
 
+    \note Currently the filter is only applied upon addition
+    of a Value to the container. So adding more sets to the
+    filter afterwards won't remove objects. Nor will changing
+    the filtering sets.
+
     \note The indexes can change when particles are inserted
     as the list is maintained in sorted order.
+
+    \verbinclude groupname_filtered_container.py
  */
 class IMPCOREEXPORT FilteredListGroupnameContainer
   : public GroupnameContainer
@@ -39,7 +46,7 @@ public:
 
   IMP_GROUPNAME_CONTAINER(internal::core_version_info);
 
-  //! Add vt if one of the referenced containers already contains it
+  //! Add vt if none of the referenced containers already contains it
   void add_classname(Value vt);
 
   void clear_classnames() {
