@@ -10,6 +10,7 @@
 #define IMPCORE_ARRAY_ON_ATTRIBUTES_HELPER_H
 
 #include "../core_exports.h"
+#include "../macros.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
@@ -17,10 +18,7 @@
 #include <string>
 #include <sstream>
 
-IMPCORE_BEGIN_NAMESPACE
-
-namespace internal
-{
+IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 template <class KeyT, class ValueT>
 struct ArrayOnAttributesHelper {
@@ -129,8 +127,6 @@ private:
   std::string prefix_;
 };
 
-} // namespace internal
-
-IMPCORE_END_NAMESPACE
+IMPCORE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPCORE_ARRAY_ON_ATTRIBUTES_HELPER_H */
