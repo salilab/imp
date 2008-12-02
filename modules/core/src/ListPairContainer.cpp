@@ -28,6 +28,7 @@ IMP_LIST_IMPL(ListPairContainer, ParticlePair,
 
 bool
 ListPairContainer::get_contains_particle_pair(ParticlePair vt) const {
+  IMP_CHECK_OBJECT(this);
   return std::binary_search(particle_pairs_begin(), particle_pairs_end(), vt);
 }
 
