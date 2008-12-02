@@ -12,6 +12,7 @@
 #include "core_exports.h"
 #include "utility.h"
 #include "bond_decorators.h"
+#include "internal/hierarchy_helpers.h"
 #include "internal/ArrayOnAttributesHelper.h"
 
 #include <IMP/Particle.h>
@@ -23,29 +24,6 @@
 #include <deque>
 
 IMPCORE_BEGIN_NAMESPACE
-
-class HierarchyDecorator;
-
-namespace internal
-{
-
-// needs to be external to keep swig happy
-struct IMPCOREEXPORT ChildArrayTraits
-{
-  static ParticleKey parent_key_;
-  static IntKey parent_index_key_;
-
-  typedef ParticleKey Key;
-  typedef Particle* Value;
-  static void on_add(Particle * p, HierarchyDecorator d, unsigned int i) ;
-  static void on_change(Particle *, HierarchyDecorator d, unsigned int oi,
-                        unsigned int ni) ;
-  static void on_remove(Particle *, HierarchyDecorator d) ;
-  static Particle *get_value(HierarchyDecorator d) ;
-  static unsigned int get_index(Particle *, HierarchyDecorator d);
-};
-
-} // namespace internal
 
 /** \defgroup hierarchy Hierarchies of particles
     These functions and classes aid in manipulating particles representing
@@ -335,24 +313,6 @@ Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
   return gather.get_out();
 }
 
-
-namespace internal
-{
-
-template <class K, class V>
-struct MatchAttribute
-{
-  K k_;
-  V v_;
-  MatchAttribute(K k, V v): k_(k), v_(v){}
-  bool operator()(Particle *o) {
-    if (!o->has_attribute(k_)) return false;
-    else return o->get_value(k_) == v_;
-  }
-};
-
-} // namespace internal
-
 //! Gather all the Particle* in the hierarchy which match on an attribute
 /** \ingroup hierarchy
     \relates HierarchyDecorator
@@ -368,29 +328,7 @@ Out hierarchy_gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
 }
 
 
-namespace internal
-{
 
-template <class K0, class V0, class K1, class V1>
-struct MatchAttributes
-{
-  K0 k0_;
-  V0 v0_;
-  K1 k1_;
-  V1 v1_;
-  MatchAttributes(K0 k0, V0 v0,
-                  K1 k1, V1 v1): k0_(k0), v0_(v0),
-                                 k1_(k1), v1_(v1){}
-  bool operator()(Particle *o) {
-    if (!o->has_attribute(k0_)) return false;
-    else if (o->get_value(k0_) != v0_) return false;
-    else if (!o->has_attribute(k1_)) return false;
-    else if (o->get_value(k1_) != v1_) return false;
-    return true;
-  }
-};
-
-} // namespace internal
 
 //! Gather all the Particle* in the hierarchy which match on two attributes
 /** \ingroup hierarchy
@@ -454,41 +392,6 @@ hierarchy_get_internal_bonds(HierarchyDecorator mhd);
  */
 IMPCOREEXPORT Particles
 hierarchy_get_all_descendants(HierarchyDecorator mhd);
-
-
-namespace internal
-{
-
-inline void ChildArrayTraits::on_add(Particle * p,
-                                     HierarchyDecorator d,
-                                     unsigned int i) {
-  d.get_particle()->add_attribute(parent_key_, p);
-  d.get_particle()->add_attribute(parent_index_key_, i);
-}
-
-inline void ChildArrayTraits::on_change(Particle *,
-                                        HierarchyDecorator d,
-                                        unsigned int oi,
-                                        unsigned int ni) {
-  d.get_particle()->set_value(parent_index_key_, ni);
-}
-
-inline void ChildArrayTraits::on_remove(Particle *,
-                                        HierarchyDecorator d) {
-  d.get_particle()->remove_attribute(parent_index_key_);
-  d.get_particle()->remove_attribute(parent_key_);
-}
-
-inline Particle *ChildArrayTraits::get_value(HierarchyDecorator d) {
-  return d.get_particle();
-}
-
-inline unsigned int ChildArrayTraits::get_index(Particle *,
-                                                HierarchyDecorator d) {
-  return d.get_parent_index();
-}
-
-} // namespace internal
 
 IMPCORE_END_NAMESPACE
 

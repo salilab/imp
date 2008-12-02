@@ -11,6 +11,7 @@
 #include "core_exports.h"
 #include "utility.h"
 #include "internal/graph_base.h"
+#include "internal/bond_helpers.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
@@ -24,18 +25,6 @@ class BondedDecorator;
 /** \defgroup bond Creating and restraining bonds
     A set of classes and functions for manipulating bonds.
  */
-
-namespace internal
-{
-extern IMPCOREEXPORT internal::GraphData bond_graph_data_;
-extern IMPCOREEXPORT  bool bond_keys_initialized_;
-extern IMPCOREEXPORT  IntKey bond_type_key_;
-extern IMPCOREEXPORT  IntKey bond_order_key_;
-extern IMPCOREEXPORT  FloatKey bond_length_key_;
-extern IMPCOREEXPORT  FloatKey bond_stiffness_key_;
-
-} // namespace internal
-
 
 class BondedDecorator;
 

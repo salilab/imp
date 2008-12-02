@@ -5,10 +5,12 @@ files = [
          'MinimalSet.h',
          'ParticleGrid.h',
          'bbox_nbl_helpers.h',
+         'bond_helpers.h',
          'container_helpers.h',
          'deprecation.h',
          'evaluate_distance_pair_score.h',
          'graph_base.h',
+         'hierarchy_helpers.h',
         ]
 
 files = [File(x) for x in files]
