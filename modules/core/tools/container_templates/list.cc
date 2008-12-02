@@ -28,6 +28,7 @@ IMP_LIST_IMPL(ListGroupnameContainer, Classname,
 
 bool
 ListGroupnameContainer::get_contains_classname(Value vt) const {
+  IMP_CHECK_OBJECT(this);
   return std::binary_search(classnames_begin(), classnames_end(), vt);
 }
 
