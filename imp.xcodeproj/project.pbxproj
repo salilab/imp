@@ -472,6 +472,19 @@
 		932B799E0EE4307500CA3BDE /* AllPairsPairContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllPairsPairContainer.h; sourceTree = "<group>"; };
 		932B79A10EE4308500CA3BDE /* AllPairsPairContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AllPairsPairContainer.cpp; sourceTree = "<group>"; };
 		932B79D80EE4351E00CA3BDE /* test_all_pairs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_all_pairs.py; sourceTree = "<group>"; };
+		936CE36E0EE4E8A900781151 /* saxs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saxs.h; sourceTree = "<group>"; };
+		936CE36F0EE4E8A900781151 /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
+		936CE3710EE4E8A900781151 /* saxs.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.interfacer; path = saxs.i; sourceTree = "<group>"; };
+		936CE3720EE4E8A900781151 /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
+		936CE3730EE4E8A900781151 /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
+		936CE3760EE4E8A900781151 /* saxs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = saxs.cpp; sourceTree = "<group>"; };
+		936CE3770EE4E8A900781151 /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
+		936CE3790EE4E8A900781151 /* run-all-tests.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "run-all-tests.py"; sourceTree = "<group>"; };
+		936CE37A0EE4E8A900781151 /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
+		936CE37B0EE4E8A900781151 /* single_dna.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = single_dna.pdb; sourceTree = "<group>"; };
+		936CE37C0EE4E8A900781151 /* single_protein.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = single_protein.pdb; sourceTree = "<group>"; };
+		936CE37D0EE4E8A900781151 /* test_init_saxs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_init_saxs.py; sourceTree = "<group>"; };
+		936CE37E0EE4E8A900781151 /* test_saxs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_saxs.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -488,6 +501,7 @@
 		930320FB0ED65D5700C34FCC /* modules */ = {
 			isa = PBXGroup;
 			children = (
+				936CE36B0EE4E8A900781151 /* saxs */,
 				930320FC0ED65D5700C34FCC /* core */,
 				9303220D0ED65D5700C34FCC /* domino */,
 				930322360ED65D5700C34FCC /* em */,
@@ -1465,6 +1479,74 @@
 			children = (
 			);
 			path = html;
+			sourceTree = "<group>";
+		};
+		936CE36B0EE4E8A900781151 /* saxs */ = {
+			isa = PBXGroup;
+			children = (
+				936CE36C0EE4E8A900781151 /* include */,
+				936CE3700EE4E8A900781151 /* pyext */,
+				936CE3730EE4E8A900781151 /* SConscript */,
+				936CE3740EE4E8A900781151 /* src */,
+				936CE3780EE4E8A900781151 /* test */,
+			);
+			path = saxs;
+			sourceTree = "<group>";
+		};
+		936CE36C0EE4E8A900781151 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				936CE36D0EE4E8A900781151 /* internal */,
+				936CE36E0EE4E8A900781151 /* saxs.h */,
+				936CE36F0EE4E8A900781151 /* SConscript */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		936CE36D0EE4E8A900781151 /* internal */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
+		936CE3700EE4E8A900781151 /* pyext */ = {
+			isa = PBXGroup;
+			children = (
+				936CE3710EE4E8A900781151 /* saxs.i */,
+				936CE3720EE4E8A900781151 /* SConscript */,
+			);
+			path = pyext;
+			sourceTree = "<group>";
+		};
+		936CE3740EE4E8A900781151 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				936CE3750EE4E8A900781151 /* internal */,
+				936CE3760EE4E8A900781151 /* saxs.cpp */,
+				936CE3770EE4E8A900781151 /* SConscript */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		936CE3750EE4E8A900781151 /* internal */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
+		936CE3780EE4E8A900781151 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				936CE3790EE4E8A900781151 /* run-all-tests.py */,
+				936CE37A0EE4E8A900781151 /* SConscript */,
+				936CE37B0EE4E8A900781151 /* single_dna.pdb */,
+				936CE37C0EE4E8A900781151 /* single_protein.pdb */,
+				936CE37D0EE4E8A900781151 /* test_init_saxs.py */,
+				936CE37E0EE4E8A900781151 /* test_saxs.py */,
+			);
+			path = test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
