@@ -20,7 +20,7 @@ IMPMISC_BEGIN_NAMESPACE
 //! This class transforms a vector of particles
 /**
  */
-class IMPMISCEXPORT TransformationFunction : public ParticleFunction
+class TransformationFunction : public ParticleFunction
 {
 public:
   TransformationFunction(Transformation3D t)
