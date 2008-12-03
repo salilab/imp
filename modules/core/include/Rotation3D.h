@@ -115,5 +115,8 @@ inline Rotation3D rotation_from_mat(Float m11,Float m12,Float m13,
 /*
 Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}
 */
+
+IMP_OUTPUT_OPERATOR(Rotation3D)
+
 IMPCORE_END_NAMESPACE
 #endif  /* IMPCORE_ROTATION_3D_H */
