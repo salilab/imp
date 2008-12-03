@@ -5,20 +5,20 @@
  *
  */
 
-#ifndef IMPMISC_MATRIX_3D_H
-#define IMPMISC_MATRIX_3D_H
+#ifndef IMPCORE_MATRIX_3D_H
+#define IMPCORE_MATRIX_3D_H
 
-#include "misc_exports.h"
+#include "core_exports.h"
 
 #include "IMP/Vector3D.h"
 #include <math.h>
 
-IMPMISC_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 //! 3D matrix class.
 /** \ingroup helper
 */
-class IMPMISCEXPORT Matrix3D
+class IMPCOREEXPORT Matrix3D
 {
 public:
   //! Default constructor. All cells of the matrix are 0
@@ -92,5 +92,5 @@ private:
   Vector3D  vrow[3];     // 3 columns of the matrix are held in 3 vectors
 };
 
-IMPMISC_END_NAMESPACE
-#endif  /* IMPMISC_MATRIX_3D_H */
+IMPCORE_END_NAMESPACE
+#endif  /* IMPCORE_MATRIX_3D_H */

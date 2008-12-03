@@ -4,9 +4,9 @@
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
-#include "IMP/misc/Transformation3D.h"
+#include "IMP/core/Transformation3D.h"
 #include "IMP/core/XYZDecorator.h"
 
-IMPMISC_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
-IMPMISC_END_NAMESPACE
+IMPCORE_END_NAMESPACE

@@ -5,13 +5,13 @@
  *
  */
 
-#ifndef IMPMISC_ROTATION_3D_H
-#define IMPMISC_ROTATION_3D_H
+#ifndef IMPCORE_ROTATION_3D_H
+#define IMPCORE_ROTATION_3D_H
 
-#include "misc_exports.h"
+#include "core_exports.h"
 #include "IMP/Vector3D.h"
 #include <iostream>
-IMPMISC_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 //! 3D rotation class.
 /** Holds a three dimensional rotation compactly using a quaternion (4 numbers).
@@ -31,7 +31,7 @@ IMPMISC_BEGIN_NAMESPACE
     Quaternion
 */
 
-class IMPMISCEXPORT Rotation3D {
+class IMPCOREEXPORT Rotation3D {
 public:
   Rotation3D():a_(0.0),b_(0.0),c_(0.0),d_(0.0) {}
   Rotation3D(Float a, Float b, Float c, Float d){
@@ -103,5 +103,5 @@ inline Rotation3D rotation_from_mat(Float m11,Float m12,Float m13,
 /*
 Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}
 */
-IMPMISC_END_NAMESPACE
-#endif  /* IMPMISC_ROTATION_3D_H */
+IMPCORE_END_NAMESPACE
+#endif  /* IMPCORE_ROTATION_3D_H */

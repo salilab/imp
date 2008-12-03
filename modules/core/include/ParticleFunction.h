@@ -5,14 +5,14 @@
  *
  */
 
-#ifndef IMPMISC_PARTICLE_FUNCTION_H
-#define IMPMISC_PARTICLE_FUNCTION_H
+#ifndef IMPCORE_PARTICLE_FUNCTION_H
+#define IMPCORE_PARTICLE_FUNCTION_H
 
-#include "misc_exports.h"
+#include "core_exports.h"
 
 #include <IMP/Particle.h>
 
-IMPMISC_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 //! Virtual class for applying a function on Particles
 /**
@@ -27,6 +27,6 @@ public:
   virtual void apply(Particles ps){}
 };
 
-IMPMISC_END_NAMESPACE
+IMPCORE_END_NAMESPACE
 
-#endif /* IMPMISC_PARTICLE_FUNCTION_H */
+#endif /* IMPCORE_PARTICLE_FUNCTION_H */

@@ -5,20 +5,20 @@
  *
  */
 
-#ifndef IMPMISC_TRANSFORMATION_3D_H
-#define IMPMISC_TRANSFORMATION_3D_H
+#ifndef IMPCORE_TRANSFORMATION_3D_H
+#define IMPCORE_TRANSFORMATION_3D_H
 
-#include "misc_exports.h"
+#include "core_exports.h"
 
 #include "IMP/Vector3D.h"
-#include "IMP/misc/Rotation3D.h"
+#include "IMP/core/Rotation3D.h"
 
-IMPMISC_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 //! Simple 3D transformation class
 /** \ingroup helper
 */
-class IMPMISCEXPORT Transformation3D
+class IMPCOREEXPORT Transformation3D
 {
 public:
   // public for swig
@@ -42,6 +42,6 @@ private:
   Rotation3D rot_;  //rotation
 };
 
-IMPMISC_END_NAMESPACE
+IMPCORE_END_NAMESPACE
 
-#endif  /* IMPMISC_TRANSFORMATION_3D_H */
+#endif  /* IMPCORE_TRANSFORMATION_3D_H */

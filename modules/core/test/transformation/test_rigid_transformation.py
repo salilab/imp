@@ -2,7 +2,6 @@ import unittest
 import IMP
 import IMP.utils
 import IMP.test
-import IMP.misc
 
 class RigidTransformationTests(IMP.test.TestCase):
     """Test particles"""
@@ -16,8 +15,8 @@ class RigidTransformationTests(IMP.test.TestCase):
 
     def test_transformation(self):
         """Check that the rotation function is ok"""
-        rt = IMP.misc.rotation_from_fixed_xyz(0.2,0.8,-0.4)
-        t=IMP.misc.Transformation3D(rt,IMP.Vector3D(20.0,-12.4,18.6))
+        rt = IMP.core.rotation_from_fixed_xyz(0.2,0.8,-0.4)
+        t=IMP.core.Transformation3D(rt,IMP.Vector3D(20.0,-12.4,18.6))
         v1_t = t.transform(self.v1)
         v2_t = t.transform(self.v2)
         v1_t_res=IMP.Vector3D(-62.517,86.209, 41.139)
