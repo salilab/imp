@@ -21,7 +21,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Applies a SingletonScore to each Particle in a list.
-/** */
+/**     \deprecated Use a ParticleRestraint instead.
+*/
 class IMPCOREEXPORT SingletonListRestraint : public Restraint
 {
 public:

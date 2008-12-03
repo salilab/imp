@@ -21,7 +21,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Restrain each triplet of consecutive particles in each chain.
-/**
+/** \deprecated Use a TripletContainer instead
  */
 class IMPCOREEXPORT TripletChainRestraint : public Restraint
 {

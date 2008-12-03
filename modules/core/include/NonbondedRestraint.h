@@ -22,7 +22,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a PairScore to all nonbonded pairs of particles
-/** */
+/**    \deprecated Use a ParticlePairsRestraint instead with a
+   ClosePairsScoreState.
+*/
 class IMPCOREEXPORT NonbondedRestraint : public Restraint
 {
 public:

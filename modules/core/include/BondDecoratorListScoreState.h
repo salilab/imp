@@ -26,7 +26,7 @@ typedef Index<BondDecoratorListScoreState> BondDecoratorListIndex;
 //! Keep track of particles that are connected by BondDecorator bonds.
 /** We also may want to add lazy rescanning of bonds rather than doing
     it every update call and a faster lookup of bonds.
-    \ingroup bond
+    \deprecated Use a BondDecoratorPairContainer instead
  */
 class IMPCOREEXPORT BondDecoratorListScoreState: public BondedListScoreState
 {
