@@ -16,15 +16,17 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Simple 3D transformation class
-/** \ingroup helper
+/**
 */
 class IMPCOREEXPORT Transformation3D
 {
 public:
   // public for swig
   typedef Transformation3D This;
+  //! construct and invalid transformation
   Transformation3D(){
   }
+  /** basic constructor*/
   Transformation3D(const Rotation3D& r, const Vector3D& t)
     : trans_(t), rot_(r){}
   ~Transformation3D();
@@ -32,7 +34,12 @@ public:
   Vector3D transform(const Vector3D &o) const {
     return rot_.rotate(o) + trans_;
   }
-  Vector3D get_trans()const{return trans_;}
+  //! get the rotation part
+  const Rotation3D& get_rotation() const {
+    return rot_;
+  }
+  //! Get the translation part
+  const Vector3D& get_translation()const{return trans_;}
   //  Matrix3D get_mat()const{return rot_;}
   void show(std::ostream& out = std::cout) const {
     rot_.show(out);
@@ -42,6 +49,8 @@ private:
   Vector3D trans_; //tranlation
   Rotation3D rot_;  //rotation
 };
+
+IMP_OUTPUT_OPERATOR(Transformation3D)
 
 IMPCORE_END_NAMESPACE
 
