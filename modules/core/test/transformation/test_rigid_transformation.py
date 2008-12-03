@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.utils
 import IMP.test
+import IMP.core
 
 class RigidTransformationTests(IMP.test.TestCase):
     """Test particles"""
