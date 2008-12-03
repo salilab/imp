@@ -17,7 +17,7 @@ IMPMISC_BEGIN_NAMESPACE
 //! Virtual class for applying a function on Particles
 /**
  */
-class IMPMISCEXPORT ParticleFunction
+class ParticleFunction
 {
 public:
   //! Initialize the particle function
