@@ -7,4 +7,12 @@
 #include "IMP/core/Rotation3D.h"
 IMPCORE_BEGIN_NAMESPACE
 
+Rotation3D::~Rotation3D() {
+}
+
+Rotation3D Rotation3D::get_inverse() const {
+  Rotation3D ret(a_, -b_, -c_, -d_);
+  return ret;
+}
+
 IMPCORE_END_NAMESPACE
