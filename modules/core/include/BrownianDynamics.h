@@ -25,9 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
     angstroms and the diffusion coefficent be in cm^2/s
 
     Particles without optimized x,y,z and nonoptimized D are skipped.
-
-    \ingroup optimizer
- */
+  */
 class IMPCOREEXPORT BrownianDynamics : public Optimizer
 {
 public:
