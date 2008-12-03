@@ -9,4 +9,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+Transformation3D::~Transformation3D(){}
+
 IMPCORE_END_NAMESPACE

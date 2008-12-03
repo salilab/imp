@@ -23,13 +23,14 @@ class IMPCOREEXPORT Transformation3D
 public:
   // public for swig
   typedef Transformation3D This;
-  Transformation3D():rot_(),trans_(){
+  Transformation3D(){
   }
   Transformation3D(const Rotation3D& r, const Vector3D& t)
-    : rot_(r), trans_(t){}
+    : trans_(t), rot_(r){}
+  ~Transformation3D();
   //! transform
   Vector3D transform(const Vector3D &o) const {
-    return rot_.mult(o) + trans_;
+    return rot_.rotate(o) + trans_;
   }
   Vector3D get_trans()const{return trans_;}
   //  Matrix3D get_mat()const{return rot_;}
