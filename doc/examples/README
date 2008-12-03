@@ -1,1 +1,4 @@
-Our examples are divided into two categories. \ref simple_examples "Simple examples", which demonstrate a single class or decorator and \ref large_examples "Large examples" which demonstrate a variety of classes working together.
+Our examples are divided into three categories:
+- \ref simple_examples "Simple examples", which demonstrate a single class or decorator
+- \ref large_examples "Large examples" which demonstrate a variety of classes working together
+- \ref fragments "Fragments" which are little bits of code that illustrate using a particular function.
