@@ -48,8 +48,8 @@ IMPCOREEXPORT void write(Model *m,
     \ingroup helpers
     \ingroup yaml
  */
-IMPDLLEXPORT void write(Model *m,
-                        std::string out);
+IMPCOREEXPORT void write(Model *m,
+                         std::string out);
 
 //! Write Model to a string
 /** \note This method is here for python users since we don't have stream
@@ -57,7 +57,7 @@ IMPDLLEXPORT void write(Model *m,
     \ingroup helpers
     \ingroup yaml
  */
-IMPDLLEXPORT std::string write(Model *m);
+IMPCOREEXPORT std::string write(Model *m);
 
 //! Read the Model from a stream
 /** The model must already have particles matching all read particles.
@@ -76,8 +76,7 @@ IMPDLLEXPORT std::string write(Model *m);
     \ingroup helpers
     \ingroup yaml
 */
-IMPDLLEXPORT void read(std::istream &in,
-                       Model *m);
+IMPCOREEXPORT void read(std::istream &in, Model *m);
 
 //! Read model from a file
 /**
@@ -86,8 +85,7 @@ IMPDLLEXPORT void read(std::istream &in,
    \ingroup helpers
    \ingroup yaml
 */
-IMPDLLEXPORT void read(std::string in,
-                       Model *m);
+IMPCOREEXPORT void read(std::string in, Model *m);
 
 //! Read as Model from a string
 /**
@@ -96,8 +94,7 @@ IMPDLLEXPORT void read(std::string in,
    \ingroup helpers
    \ingroup yaml
 */
-IMPDLLEXPORT void read_from_string(std::string in,
-                                   Model *m);
+IMPCOREEXPORT void read_from_string(std::string in, Model *m);
 
 IMPCORE_END_NAMESPACE
 
