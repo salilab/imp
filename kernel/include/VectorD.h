@@ -25,7 +25,7 @@ IMP_BEGIN_NAMESPACE
 /** \ingroup helper
  */
 template <unsigned int D>
-class IMPDLLEXPORT VectorD
+class VectorD
 {
   bool is_default() const {return false;}
 public:
@@ -252,7 +252,7 @@ VectorD<D> constant_vector(Float s) {
 
 //! Generate a random vector in a box with uniform density
 template <unsigned int D>
-IMPDLLEXPORT VectorD<D>
+VectorD<D>
 random_vector_in_box(const VectorD<D> &lb,
                      const VectorD<D> &ub) {
   VectorD<D> ret;
@@ -267,7 +267,7 @@ random_vector_in_box(const VectorD<D> &lb,
 
 //! Generate a random vector in a box with uniform density
 template <unsigned int D>
-IMPDLLEXPORT VectorD<D>
+VectorD<D>
 random_vector_in_unit_box() {
   return random_vector_in_box(VectorD<D>(0,0,0),
                               VectorD<D>(1,1,1));
@@ -275,7 +275,7 @@ random_vector_in_unit_box() {
 
 //! Generate a random vector in a sphere with uniform density
 template <unsigned int D>
-IMPDLLEXPORT VectorD<D>
+VectorD<D>
 random_vector_in_sphere(const VectorD<D> &center,
                         Float radius){
   IMP_check(radius > 0, "Radius in randomize must be postive",
@@ -295,14 +295,14 @@ random_vector_in_sphere(const VectorD<D> &center,
 
 //! Generate a random vector in a unit sphere with uniform density
 template <unsigned int D>
-IMPDLLEXPORT VectorD<D>
+VectorD<D>
 random_vector_in_unit_sphere(){
   return random_vector_in_sphere(VectorD<D>(0,0,0), 1);
 }
 
 //! Generate a random vector on a sphere with uniform density
 template <unsigned int D>
-IMPDLLEXPORT VectorD<D>
+VectorD<D>
 random_vector_on_sphere(const VectorD<D> &center,
                         Float radius) {
   // could be made general
@@ -326,7 +326,7 @@ random_vector_on_sphere(const VectorD<D> &center,
 
 //! Generate a random vector on a sphere with uniform density
 template <unsigned int D>
-IMPDLLEXPORT VectorD<D>
+VectorD<D>
 random_vector_on_unit_sphere() {
   return random_vector_on_sphere(VectorD<D>(0,0,0), 1);
 }
