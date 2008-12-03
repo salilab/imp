@@ -24,12 +24,12 @@ struct Segment {
 };
 
 // for testing
-IMPDLLEXPORT
+IMPCOREEXPORT
 Segment shortest_segment(const Segment &s,
                          const Vector3D &p);
 
 // for testing
-IMPDLLEXPORT
+IMPCOREEXPORT
 Segment shortest_segment(const Segment &sa,
                         const Segment &sb);
 
