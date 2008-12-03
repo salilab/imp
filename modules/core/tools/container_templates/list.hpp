@@ -23,6 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ListGroupnameContainer : public GroupnameContainer
 {
 public:
+  //! construct and pass an initial set of classnames
   ListGroupnameContainer(const Classnames &ps= Classnames());
 
   virtual ~ListGroupnameContainer();
@@ -36,7 +37,6 @@ public:
     return internal::core_version_info;
   }
 
-  //!
   virtual void show(std::ostream &out = std::cout) const;
 };
 

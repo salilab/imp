@@ -51,39 +51,42 @@ public:
       bounds of your particular container.
    */
   virtual bool get_contains_classname(Value p) const =0;
-  //!
+  //! return the number of classnames in the container
+  /** \note this isn't always constant time
+   */
   virtual unsigned int get_number_of_classnames() const =0;
-  //!
+
+  //! get one classname
   virtual Value get_classname(unsigned int i) const=0;
 
+  //! print information about the container
   virtual void show(std::ostream &out = std::cout) const;
 
+  //! provide information about who implemeneted the container
   virtual VersionInfo get_version_info() const=0;
 
-  //!
+  //! An iterator through the contents of the container
   typedef internal::IndexingIterator<Accessor> ClassnameIterator;
-  //!
+  //! begin iterating through the classnames
   ClassnameIterator classnames_begin() const {
     // Since I can't make the count mutable in Object
     return
       ClassnameIterator(Accessor(const_cast<GroupnameContainer*>(this)),
                         0);
   }
-  //!
+  //! iterate through the classnames
   ClassnameIterator classnames_end() const {
     return
       ClassnameIterator(Accessor(const_cast<GroupnameContainer*>(this)),
                         get_number_of_classnames());
     }
-
-  /** \todo patch ref_counting.h so this is not needed.
-   */
-  unsigned int get_index() const {return -1;}
 };
 
 IMP_OUTPUT_OPERATOR(GroupnameContainer);
 
+//! A collection of containers
 typedef std::vector<GroupnameContainer*> GroupnameContainers;
+//! The index to use when this container is store in another object
 typedef Index<GroupnameContainer> GroupnameContainerIndex;
 
 IMPCORE_END_NAMESPACE

@@ -32,6 +32,8 @@ class IMPCOREEXPORT MinimumGroupnameScoreRestraint
   Pointer<GroupnameContainer> c_;
   unsigned int n_;
 public:
+  /** n is the number of minimumal scores to use.
+   */
   MinimumGroupnameScoreRestraint(GroupnameScore *f,
                                  GroupnameContainer *c,
                                  unsigned int n=1);

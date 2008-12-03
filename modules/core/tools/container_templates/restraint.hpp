@@ -55,9 +55,17 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info);
 
+  /** \note This can only be used if the container is a ListGroupnameContainer
+  */
   void add_classnames(const Classnames &ps);
+  /** \note This can only be used if the container is a ListGroupnameContainer
+   */
   void set_classnames(const Classnames &ps);
+  /** \note This can only be used if the container is a ListGroupnameContainer
+  */
   void add_classname(Value v);
+  /** \note This can only be used if the container is a ListGroupnameContainer
+  */
   void clear_classnames();
 
   //! Get the container used to store Particles

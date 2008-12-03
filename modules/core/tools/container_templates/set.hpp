@@ -24,6 +24,7 @@ class IMPCOREEXPORT GroupnameContainerSet
   : public GroupnameContainer
 {
 public:
+  //! Construct and empty set
   GroupnameContainerSet();
 
   virtual ~GroupnameContainerSet();
