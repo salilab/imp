@@ -1,1 +1,1 @@
-This example shows how to restrain the diameter of a set of points.
+An example restraining the diameter of a set of points. That is, the restraint penalizes conformations where there are two point more than a certain distance from one another.

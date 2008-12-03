@@ -1,1 +1,1 @@
-This example shows how to set up restraints based on proximities, such as excluded volume.
+This example shows how to set up an excluded volume restraint for a set of XYZRDecorator-style particles.

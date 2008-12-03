@@ -1,1 +1,1 @@
-This is a simple example using the XYZDecorator.
+This is a simple example using the XYZDecorator to set the coordinates of some particles and compute the distance between them.
