@@ -1,4 +1,4 @@
 Our examples are divided into three categories:
 - \ref simple_examples "Simple examples", which demonstrate a single class or decorator
-- \ref large_examples "Large examples" which demonstrate a variety of classes working together
-- \ref fragments "Fragments" which are little bits of code that illustrate using a particular function.
+- \ref using_experimental_data "Experimental examples" which demonstrate a variety of classes working together to go from experimental data to a structure
+- \ref fragments "Fragments" which are little bits of code that illustrate using a particular piece of \imp but can't be run on their own.

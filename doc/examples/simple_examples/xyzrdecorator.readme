@@ -1,1 +1,1 @@
-This is a simple example using the XYZRDecorator.
+This is a simple example using the XYZRDecorator to set the coordinates and radius of a particle and compute distances between the resulting spheres.
