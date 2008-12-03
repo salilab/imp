@@ -8,7 +8,7 @@
 #include <IMP/core/BipartiteNonbondedListScoreState.h>
 #include <IMP/core/internal/bbox_nbl_helpers.h>
 #include <IMP/core/XYZDecorator.h>
-
+#include <IMP/core/deprecation.h>
 #include <IMP/internal/utility.h>
 
 #include <vector>
@@ -55,6 +55,9 @@ BipartiteNonbondedListScoreState
   mc0_= new MaxChangeScoreState(XYZDecorator::get_xyz_keys());
   mc1_= new MaxChangeScoreState(XYZDecorator::get_xyz_keys());
   mcr_= new MaxChangeScoreState(ks);
+
+  IMP_DEPRECATED(BipartiteNonbondedListScoreState,
+                 CloseBipartitePairsScoreState);
 }
 
 BipartiteNonbondedListScoreState
