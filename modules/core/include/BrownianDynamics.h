@@ -61,10 +61,12 @@ public:
     return get_last_time_step_units().get_value();
   }
 
-
+  /** In Kelvin*/
   void set_temperature(Float t) { set_temperature(unit::Kelvin(t)); }
+  /** In Kelvin */
   Float get_temperature() const { return get_temperature_units().get_value(); }
 
+  //! Return the key used for the diffusion coefficient
   FloatKey get_d_key() const { return dkey_; }
 
   //! Estimate the radius of a protein from the mass
