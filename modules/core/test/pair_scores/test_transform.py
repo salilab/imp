@@ -57,7 +57,7 @@ class DistanceTests(IMP.test.TestCase):
         self.assert_(d1.get_coordinate_derivative(1) > 0)
         self.assertInTolerance(d1.get_coordinate_derivative(0), 0, .1)
         self.assertInTolerance(d1.get_coordinate_derivative(2), 0, .1)
-    def test_symmetry2(self):
+    def _test_symmetry2(self):
         """Test the transform pair score optimization"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
