@@ -98,6 +98,7 @@ inline Rotation3D rotation_from_mat(Float m11,Float m12,Float m13,
   if (m32-m23 < 0.0) b=-b;
   if (m13-m31 < 0.0) c=-c;
   if (m21-m12 < 0.0) d=-d;
+  return Rotation3D(a,b,c,d);
 }
 /*
 Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}
