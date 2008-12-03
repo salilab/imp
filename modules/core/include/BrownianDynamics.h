@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT BrownianDynamics : public Optimizer
 {
 public:
-  //! \param[in] radkey The key for the Stokes radius
+  //! \param[in] dkey The key for the diffusion coefficient
   BrownianDynamics(FloatKey dkey= FloatKey("D"));
   virtual ~BrownianDynamics();
 
