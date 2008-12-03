@@ -54,6 +54,7 @@ public:
 
   IMP_SCORE_STATE(internal::core_version_info)
 
+  //! Update the state by applying the modifier
   void do_after_evaluate();
 };
 

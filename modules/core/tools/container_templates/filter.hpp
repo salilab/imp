@@ -17,9 +17,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-// for swig
-
-
 //! Store a list of Classnames filtered by other lists
 /** This class stores a list of Classnames and a list of
     GroupnameContainers with the invariant that none of the
@@ -40,6 +37,7 @@ class IMPCOREEXPORT FilteredListGroupnameContainer
 {
   std::vector<Value> data_;
 public:
+  //! cannot pass a Groupnames on construction
   FilteredListGroupnameContainer();
 
   virtual ~FilteredListGroupnameContainer();
@@ -49,6 +47,7 @@ public:
   //! Add vt if none of the referenced containers already contains it
   void add_classname(Value vt);
 
+  //! remove all objects from the container
   void clear_classnames() {
     data_.clear();
   }
