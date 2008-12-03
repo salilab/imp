@@ -5,18 +5,18 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPMISC_TRANSFORMATION_FUNCTION_H
-#define IMPMISC_TRANSFORMATION_FUNCTION_H
+#ifndef IMPCORE_TRANSFORMATION_FUNCTION_H
+#define IMPCORE_TRANSFORMATION_FUNCTION_H
 
-#include "misc_exports.h"
+#include "core_exports.h"
 
-#include <IMP/misc/ParticleFunction.h>
-#include "IMP/misc/Transformation3D.h"
+#include <IMP/core/ParticleFunction.h>
+#include "IMP/core/Transformation3D.h"
 #include "IMP/core/MolecularHierarchyDecorator.h"
 #include "IMP/core/XYZDecorator.h"
 #include <iostream>
 
-IMPMISC_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 //! This class transforms a vector of particles
 /**
  */
@@ -46,5 +46,5 @@ private:
   Transformation3D t_;
 };
 
-IMPMISC_END_NAMESPACE
-#endif /* IMPMISC_TRANSFORMATION_FUNCTION_H */
+IMPCORE_END_NAMESPACE
+#endif /* IMPCORE_TRANSFORMATION_FUNCTION_H */
