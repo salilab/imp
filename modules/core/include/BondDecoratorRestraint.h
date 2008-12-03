@@ -28,6 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     The bond stiffness is assumed to be 1 if it is not specified in
     the bond. This can become a parameter eventually.
+    \deprecated Use SingletonsRestraint or PairsRestraint instead.
  */
 class IMPCOREEXPORT BondDecoratorRestraint : public Restraint
 {

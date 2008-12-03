@@ -21,6 +21,9 @@ class BondedListScoreState;
 typedef Index<BondedListScoreState> BondedListIndex;
 
 //! This abstract class maintains a list of bonded pairs.
+/** \deprecated Use a ParticlePairContainer of some sort instead.
+
+ */
 class IMPCOREEXPORT BondedListScoreState: public ScoreState
 {
  public:

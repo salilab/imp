@@ -26,6 +26,8 @@ IMPCORE_BEGIN_NAMESPACE
 
     Changes in coordinates and radii are handled properly unless grid is used,
     then changes in radii may not be handled properly.
+
+    \deprecated Use a ClosePairsScoreState instead.
  */
 class IMPCOREEXPORT AllNonbondedListScoreState: public NonbondedListScoreState
 {

@@ -24,6 +24,8 @@ IMPCORE_BEGIN_NAMESPACE
     float attribute keys and keeps track of the maximum amount
     any of these have changed since the last time reset was called.
 
+    \deprecated Use a MaximumChangeScoreState instead.
+
  */
 class IMPCOREEXPORT MaxChangeScoreState: public ScoreState
 {

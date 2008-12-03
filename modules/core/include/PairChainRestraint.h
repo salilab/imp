@@ -21,7 +21,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Restrain each pair of consecutive particles in each chain.
-/** */
+/** \deprecated Use a ParticlePairsRestraint instead.
+ */
 class IMPCOREEXPORT PairChainRestraint : public Restraint
 {
 public:

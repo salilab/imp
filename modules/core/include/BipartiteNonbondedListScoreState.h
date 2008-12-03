@@ -22,6 +22,8 @@ IMPCORE_BEGIN_NAMESPACE
     The radius key can be the default key. In that case the radius is ignored.
 
     Changes in bost coordinates and radii are handled properly.
+
+    \deprecated Use CloseBipartitePairsScoreState instead.
  */
 class IMPCOREEXPORT BipartiteNonbondedListScoreState:
     public NonbondedListScoreState
