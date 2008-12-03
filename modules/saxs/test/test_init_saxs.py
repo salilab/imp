@@ -1,6 +1,7 @@
 # script to calculate SAXS spectrum of a model
 from modeller import *
 from modeller.scripts import complete_pdb
+import os
 
 env=environ()
 env.libs.topology.read(file='$(LIB)/top_heav.lib')
@@ -27,6 +28,8 @@ saxs.ini_saxs(atmsel=atmsel, s_min= 0.009, s_max=0.325, maxs=100, nmesh=505,
 mdl.env.edat.saxsdata.append(saxs)
 mdl.saxs_intens(saxsd=saxs, filename='i_s.txt', fitflag=False)
 saxs.saxs_read(filename='i_s.txt')
+# Cleanup
+os.unlink('i_s.txt')
 # create some restraints
 #mdl.restraints.make(atmsel, restraint_type='stereo', spline_on_site=False)
 #edat = atmsel.energy()
