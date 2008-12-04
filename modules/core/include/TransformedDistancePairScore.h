@@ -1,6 +1,7 @@
 /**
  *  \file TransformedDistancePairScore.h
- *  \brief A Score on the distance between a pair of particles.
+ *  \brief A score on the distance between a pair of particles
+ *  after transforming one.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
@@ -9,6 +10,7 @@
 #define IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H
 
 #include "core_exports.h"
+#include "Transformation3D.h"
 
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
@@ -17,38 +19,34 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+// for swig
+class Transformation3D;
+
 /** \brief  Apply a function to the distance between two particles
     after transforming the first
 
     Apply a transform to the second particle and then apply the unary
     function to the distance between the transformed particle and the
     second. This can be used to implement symmetry restraints.
-
-    The second particle, x, is transformed as R*(x-center)+ translation+center
-
-    \ingroup pairscore
  */
 class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
 {
   Pointer<UnaryFunction> f_;
-  Vector3D tc_, c_;
-  Vector3D r_[3], ri_[3];
-public:
-  TransformedDistancePairScore(UnaryFunction *f);
+  Transformation3D t_;
+  Rotation3D ri_;
+ public:
+  /** Initialize it/*/
+  TransformedDistancePairScore(UnaryFunction *f,
+                               const Transformation3D &transformation);
   virtual ~TransformedDistancePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const;
 
   virtual void show(std::ostream &out=std::cout) const;
 
-  /** Set the rotation matrix.*/
-  void set_rotation(float r00, float r01, float r02,
-                    float r10, float r11, float r12,
-                    float r20, float r21, float r22);
+  /** Set the transformation object.*/
+  void set_transformation(const Transformation3D &rot);
 
-  void set_translation(const Vector3D &v);
-
-  void set_center(const Vector3D &c);
 };
 
 IMPCORE_END_NAMESPACE
