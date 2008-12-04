@@ -9,7 +9,7 @@
 #define IMPCORE_XYZ_DECORATOR_H
 
 #include "core_exports.h"
-#include "utility.h"
+#include "internal/utility.h"
 
 #include <IMP/DecoratorBase.h>
 #include <IMP/Vector3D.h>

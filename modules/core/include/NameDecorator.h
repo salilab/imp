@@ -9,7 +9,7 @@
 #define IMPCORE_NAME_DECORATOR_H
 
 #include "core_exports.h"
-#include "utility.h"
+#include "internal/utility.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
