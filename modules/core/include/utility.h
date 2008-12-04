@@ -6,27 +6,44 @@
  *
  */
 
-#ifndef IMPCORE_DECORATOR_UTILITY_H
-#define IMPCORE_DECORATOR_UTILITY_H
+#ifndef IMPCORE_UTILITY_H
+#define IMPCORE_UTILITY_H
 
 #include "macros.h"
-
-// All below can go away once decoratorbase is updated
 #include "core_exports.h"
-#include <IMP/DecoratorBase.h>
+#include <IMP/base_types.h>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
-/** Stupid hack since I can't change the kernel. This should go away
- and the calls to it above should be replace by P::is_instance_of*/
-template <class T> inline bool parent_instance(::IMP::Particle *p) {
-  return T::is_instance_of(p);
-}
-/** inline is needed, much to my surprise.
+#ifdef __GNUC__
+#include <cmath>
+#endif
+
+
+IMPCORE_BEGIN_NAMESPACE
+
+//! Return true if a number is NaN
+/** With certain compiler settings the compiler can optimize
+    out a!=a (and certain intel chips had issues with it too).
  */
-template <>
-inline bool parent_instance<DecoratorBase>(::IMP::Particle *p) {
-  return true;
+inline bool is_nan(const float& a) {
+#ifdef __GNUC__
+  return std::isnan(a);
+#else
+  return a != a;
+#endif
 }
-IMPCORE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_DECORATOR_UTILITY_H */
+//! Return true if a number is NaN
+/** With certain compiler settings the compiler can optimize
+    out a!=a (and certain intel chips had issues with it too).
+ */
+inline bool is_nan(const double& a) {
+#ifdef __GNUC__
+  return std::isnan(a);
+#else
+  return a != a;
+#endif
+}
+
+IMPCORE_END_NAMESPACE
+
+#endif  /* IMPCORE_UTILITY_H */
