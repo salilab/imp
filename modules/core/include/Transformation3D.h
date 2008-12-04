@@ -52,6 +52,18 @@ private:
 
 IMP_OUTPUT_OPERATOR(Transformation3D)
 
+//! Compute the transformation resulting from rotating around some point
+/** This computes the Transformation3D that results when you rotate space
+    around the specified point.
+
+    The transformation is rot(x-center)+center
+    \relates Transformation3D
+ */
+
+IMPCOREEXPORT Transformation3D
+transformation_from_rotation_around_vector(const Rotation3D &rot,
+                                           const Vector3D &center);
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_TRANSFORMATION_3D_H */
