@@ -11,6 +11,9 @@ Rotation3D::~Rotation3D() {
 }
 
 Rotation3D Rotation3D::get_inverse() const {
+  IMP_check(a_ != 0 || b_ != 0 || c_ != 0 || d_ != 0,
+            "Attempting to invert uninitialized rotation",
+            InvalidStateException);
   Rotation3D ret(a_, -b_, -c_, -d_);
   return ret;
 }

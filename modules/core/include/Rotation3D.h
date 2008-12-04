@@ -30,7 +30,6 @@ IMPCORE_BEGIN_NAMESPACE
     Rotation Matrix
     Quaternion
 */
-
 class IMPCOREEXPORT Rotation3D {
 public:
   Rotation3D():a_(0.0),b_(0.0),c_(0.0),d_(0.0) {}
@@ -44,6 +43,9 @@ public:
   ~Rotation3D();
   //! Rotate a vector around the origin
   Vector3D rotate(const Vector3D &o) const {
+    IMP_check(a_ != 0 || b_ != 0 || c_ != 0 || d_ != 0,
+              "Attempting to apply uninitialized rotation",
+              InvalidStateException);
     return Vector3D((a_*a_+b_*b_-c_*c_-d_*d_)*o[0] +
                          2*(b_*c_-a_*d_)*o[1] + 2*(b_*d_+a_*c_)*o[2],
                      2*(b_*c_+a_*d_)*o[0] +
@@ -60,6 +62,11 @@ private:
   Float a_,b_,c_,d_;
 };
 
+
+//! Return a rotation that does not do anything
+inline Rotation3D identity_rotation() {
+  return Rotation3D(1,0,0,0);
+}
 
 //! Initialize a rotation in x-y-z order from three angles
 /** \param[in] xr Rotation around the X axis in radians
@@ -91,9 +98,9 @@ inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
 /**
    \relates Rotation3D
  */
-inline Rotation3D rotation_from_mat(Float m11,Float m12,Float m13,
-                                    Float m21,Float m22,Float m23,
-                                    Float m31,Float m32,Float m33) {
+inline Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
+                                       Float m21,Float m22,Float m23,
+                                       Float m31,Float m32,Float m33) {
   Float a,b,c,d;
   a = fabs(1+m11+m22+m33)/4;
   b = fabs(1+m11-m22-m33)/4;
@@ -112,6 +119,7 @@ inline Rotation3D rotation_from_mat(Float m11,Float m12,Float m13,
   if (m21-m12 < 0.0) d=-d;
   return Rotation3D(a,b,c,d);
 }
+
 /*
 Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}
 */
