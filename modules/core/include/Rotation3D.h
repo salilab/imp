@@ -32,7 +32,11 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT Rotation3D {
 public:
+  //! Create an invalid rotation
   Rotation3D():a_(0.0),b_(0.0),c_(0.0),d_(0.0) {}
+  //! Create a rotation from a quaternion
+  /** \throw ValueException if the rotation is not a rotation matrix.
+   */
   Rotation3D(Float a, Float b, Float c, Float d){
     IMP_check(std::abs(square(a)+square(b)+square(c)+square(d) - 1.0) < .05,
               "Attempting to construct a rotation from a non-quaternion value."
@@ -96,29 +100,12 @@ inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
 
 //! Generate a Rotation3D object from a rotation matrix
 /**
+   \throw ValueException if the rotation is not a rotation matrix.
    \relates Rotation3D
  */
-inline Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
-                                       Float m21,Float m22,Float m23,
-                                       Float m31,Float m32,Float m33) {
-  Float a,b,c,d;
-  a = fabs(1+m11+m22+m33)/4;
-  b = fabs(1+m11-m22-m33)/4;
-  c = fabs(1-m11+m22-m33)/4;
-  d = fabs(1-m11-m22+m33)/4;
-
-  // make sure quat is normalized.
-  Float sum = a+b+c+d;
-  a = sqrt(a/sum);
-  b = sqrt(b/sum);
-  c = sqrt(c/sum);
-  d = sqrt(d/sum);
-
-  if (m32-m23 < 0.0) b=-b;
-  if (m13-m31 < 0.0) c=-c;
-  if (m21-m12 < 0.0) d=-d;
-  return Rotation3D(a,b,c,d);
-}
+IMPDLLEXPORT Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
+                                             Float m21,Float m22,Float m23,
+                                             Float m31,Float m32,Float m33);
 
 /*
 Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}
