@@ -11,6 +11,7 @@ files = [
          'evaluate_distance_pair_score.h',
          'graph_base.h',
          'hierarchy_helpers.h',
+         'utility.h',
         ]
 
 files = [File(x) for x in files]
