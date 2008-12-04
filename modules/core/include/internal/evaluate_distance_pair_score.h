@@ -37,6 +37,7 @@ Float compute_distance_pair_score(const Vector3D &delta,
   } else {
     // calculate the score based on the distance feature
     score = f->evaluate(shifted_distance);
+    if (d) *d= Vector3D(0,0,0);
   }
   return score;
 }
