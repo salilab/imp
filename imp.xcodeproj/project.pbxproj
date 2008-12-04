@@ -60,7 +60,6 @@
 		930321310ED65D5700C34FCC /* Linear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Linear.h; sourceTree = "<group>"; };
 		930321320ED65D5700C34FCC /* ListPairContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListPairContainer.h; sourceTree = "<group>"; };
 		930321330ED65D5700C34FCC /* ListSingletonContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListSingletonContainer.h; sourceTree = "<group>"; };
-		930321340ED65D5700C34FCC /* LowestNRestraintSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LowestNRestraintSet.h; sourceTree = "<group>"; };
 		930321350ED65D5700C34FCC /* macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macros.h; sourceTree = "<group>"; };
 		930321360ED65D5700C34FCC /* MaxChangeScoreState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaxChangeScoreState.h; sourceTree = "<group>"; };
 		930321370ED65D5700C34FCC /* MaximumChangeScoreState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaximumChangeScoreState.h; sourceTree = "<group>"; };
@@ -151,7 +150,6 @@
 		930321900ED65D5700C34FCC /* introduction.dox */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = introduction.dox; sourceTree = "<group>"; };
 		930321910ED65D5700C34FCC /* ListPairContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ListPairContainer.cpp; sourceTree = "<group>"; };
 		930321920ED65D5700C34FCC /* ListSingletonContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ListSingletonContainer.cpp; sourceTree = "<group>"; };
-		930321930ED65D5700C34FCC /* LowestNRestraintSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LowestNRestraintSet.cpp; sourceTree = "<group>"; };
 		930321940ED65D5700C34FCC /* MaxChangeScoreState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaxChangeScoreState.cpp; sourceTree = "<group>"; };
 		930321950ED65D5700C34FCC /* MaximumChangeScoreState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaximumChangeScoreState.cpp; sourceTree = "<group>"; };
 		930321960ED65D5700C34FCC /* model_io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_io.cpp; sourceTree = "<group>"; };
@@ -485,6 +483,12 @@
 		936CE37C0EE4E8A900781151 /* single_protein.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = single_protein.pdb; sourceTree = "<group>"; };
 		936CE37D0EE4E8A900781151 /* test_init_saxs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_init_saxs.py; sourceTree = "<group>"; };
 		936CE37E0EE4E8A900781151 /* test_saxs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_saxs.py; sourceTree = "<group>"; };
+		93F60A460EE89D6400DFF8A8 /* MaximumPairScoreRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaximumPairScoreRestraint.h; sourceTree = "<group>"; };
+		93F60A470EE89D6400DFF8A8 /* MaximumSingletonScoreRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaximumSingletonScoreRestraint.h; sourceTree = "<group>"; };
+		93F60A480EE89D6400DFF8A8 /* Rotation3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rotation3D.h; sourceTree = "<group>"; };
+		93F60A490EE89D6400DFF8A8 /* Transformation3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transformation3D.h; sourceTree = "<group>"; };
+		93F60A4A0EE89D8C00DFF8A8 /* Rotation3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rotation3D.cpp; sourceTree = "<group>"; };
+		93F60A4B0EE89D8C00DFF8A8 /* Transformation3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Transformation3D.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -528,6 +532,10 @@
 		930320FD0ED65D5700C34FCC /* include */ = {
 			isa = PBXGroup;
 			children = (
+				93F60A460EE89D6400DFF8A8 /* MaximumPairScoreRestraint.h */,
+				93F60A470EE89D6400DFF8A8 /* MaximumSingletonScoreRestraint.h */,
+				93F60A480EE89D6400DFF8A8 /* Rotation3D.h */,
+				93F60A490EE89D6400DFF8A8 /* Transformation3D.h */,
 				932B799E0EE4307500CA3BDE /* AllPairsPairContainer.h */,
 				932B78C90EE4215B00CA3BDE /* MinimumPairScoreRestraint.h */,
 				932B78CA0EE4215B00CA3BDE /* MinimumSingletonScoreRestraint.h */,
@@ -574,7 +582,6 @@
 				930321310ED65D5700C34FCC /* Linear.h */,
 				930321320ED65D5700C34FCC /* ListPairContainer.h */,
 				930321330ED65D5700C34FCC /* ListSingletonContainer.h */,
-				930321340ED65D5700C34FCC /* LowestNRestraintSet.h */,
 				930321350ED65D5700C34FCC /* macros.h */,
 				930321360ED65D5700C34FCC /* MaxChangeScoreState.h */,
 				930321370ED65D5700C34FCC /* MaximumChangeScoreState.h */,
@@ -653,6 +660,8 @@
 		930321660ED65D5700C34FCC /* src */ = {
 			isa = PBXGroup;
 			children = (
+				93F60A4A0EE89D8C00DFF8A8 /* Rotation3D.cpp */,
+				93F60A4B0EE89D8C00DFF8A8 /* Transformation3D.cpp */,
 				932B79A10EE4308500CA3BDE /* AllPairsPairContainer.cpp */,
 				932B78CD0EE4217600CA3BDE /* MinimumPairScoreRestraint.cpp */,
 				932B78CE0EE4217600CA3BDE /* MinimumSingletonScoreRestraint.cpp */,
@@ -695,7 +704,6 @@
 				930321900ED65D5700C34FCC /* introduction.dox */,
 				930321910ED65D5700C34FCC /* ListPairContainer.cpp */,
 				930321920ED65D5700C34FCC /* ListSingletonContainer.cpp */,
-				930321930ED65D5700C34FCC /* LowestNRestraintSet.cpp */,
 				930321940ED65D5700C34FCC /* MaxChangeScoreState.cpp */,
 				930321950ED65D5700C34FCC /* MaximumChangeScoreState.cpp */,
 				930321960ED65D5700C34FCC /* model_io.cpp */,
