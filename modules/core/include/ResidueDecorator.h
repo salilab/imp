@@ -9,7 +9,7 @@
 #define IMPCORE_RESIDUE_DECORATOR_H
 
 #include "core_exports.h"
-#include "utility.h"
+#include "internal/utility.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
