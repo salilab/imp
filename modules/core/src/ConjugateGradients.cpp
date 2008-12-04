@@ -6,16 +6,41 @@
  */
 
 #include <IMP/core/ConjugateGradients.h>
+#include <IMP/core/utility.h>
+#include <IMP/core/model_io.h>
 #include <IMP/log.h>
 #include <IMP/Model.h>
 
 #include <limits>
 #include <cmath>
 
+#define IMP_CHECK_VALUE(n) IMP_IF_CHECK(CHEAP) {        \
+    if (!is_good_value(n)) {                         \
+      IMP_LOG(TERSE, #n << " is " << n << std::endl);   \
+      failure();                                        \
+    }                                                   \
+  }
+
 IMPCORE_BEGIN_NAMESPACE
 
 //! Estimate of limit of machine precision
-static const float eps = 1.2e-7;
+static const double eps = 1.2e-7;
+
+template <class NT>
+bool is_good_value(const NT &f) {
+  if (is_nan(f) || std::abs(f) > std::numeric_limits<NT>::max() /1024.0f) {
+    IMP_LOG(VERBOSE, "Bad value found in CG: " << f << std::endl);
+    return false;
+  }
+  else return true;
+}
+
+void ConjugateGradients::failure() {
+  IMP_LOG(TERSE, "Failure in ConjugateGradients. The Model is:\n");
+  IMP_LOG_WRITE(TERSE, write(get_model(), IMP_STREAM));
+  throw ValueException("Failure in ConjugateGradients");
+}
+
 
 //! Get the score for a given model state.
 /** \param[in] model The model to score.
@@ -32,8 +57,7 @@ Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
   int i, opt_var_cnt = float_indices.size();
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
-    IMP_check(x[i] == x[i], "Got NaN in CG",
-              ValueException);
+    IMP_CHECK_VALUE(x[i])
     if (std::abs(x[i] - get_value(float_indices[i])) > max_change_) {
       if (x[i] < get_value(float_indices[i])) {
         x[i] = get_value(float_indices[i]) - max_change_;
@@ -50,9 +74,7 @@ Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
     dscore[i] = get_derivative(float_indices[i]);
-    IMP_check(dscore[i] == dscore[i] && dscore[i]
-              != std::numeric_limits<Float>::infinity()
-              && dscore[i] != - std::numeric_limits<Float>::infinity(),
+    IMP_check(is_good_value(dscore[i]),
               "Bad input to CG", ValueException);
   }
   return score;
@@ -75,16 +97,16 @@ Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
  */
 bool ConjugateGradients::line_search(std::vector<Float> &x,
                                      std::vector<Float> &dx,
-                                     float &alpha,
+                                     NT &alpha,
                                      const std::vector<FloatIndex>
                                      &float_indices,
-                                     int &ifun, float &f,
-                                     float &dg, float &dg1,
+                                     int &ifun, NT &f,
+                                     NT &dg, NT &dg1,
                                      int max_steps,
                                      const std::vector<Float> &search,
                                      const std::vector<Float> &estimate)
 {
-  float ap, fp, dp, step, minf, u1, u2;
+  NT ap, fp, dp, step, minf, u1, u2;
   int i, n, ncalls = ifun;
 
   n = float_indices.size();
@@ -108,7 +130,7 @@ bool ConjugateGradients::line_search(std::vector<Float> &x,
 
   /* BEGIN THE LINEAR SEARCH ITERATION. */
   while (true) {
-    float dal, at;
+    NT dal, at;
 
     /* TEST FOR FAILURE OF THE LINEAR SEARCH. */
     if (alpha * step <= eps) {
@@ -131,6 +153,7 @@ bool ConjugateGradients::line_search(std::vector<Float> &x,
     /* COMPUTE THE DERIVATIVE OF F AT ALPHA. */
     dal = 0.0;
     for (i = 0; i < n; i++) {
+      IMP_CHECK_VALUE(dx[i]);
       dal += dx[i] * search[i];
     }
 
@@ -167,7 +190,6 @@ bool ConjugateGradients::line_search(std::vector<Float> &x,
     }
     u2 = sqrt(u2);
     at = alpha - (alpha - ap) * (dal + u2 - u1) / (dal - dp + 2. * u2);
-
     /* TEST WHETHER THE LINE MINIMUM HAS BEEN BRACKETED. */
     if (dal / dp <= 0.) {
 
@@ -251,8 +273,8 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
   // Initialize optimization variables
   int ifun = 0;
   int nrst, nflag = 0;
-  float dg1, xsq, dxsq, alpha, step, u1, u2, u3, u4;
-  float f = 0., dg = 1., w1 = 0., w2 = 0., rtst, bestf;
+  NT dg1, xsq, dxsq, alpha, step, u1, u2, u3, u4;
+  NT f = 0., dg = 1., w1 = 0., w2 = 0., rtst, bestf;
   bool gradient_direction;
 
   // dx holds the gradient at x

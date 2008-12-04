@@ -35,11 +35,16 @@ public:
   void set_max_change(Float t) { max_change_ = t; }
 private:
 
+  typedef Float NT;
+
+  // Handle optimization failing badly
+  void failure();
+
   Float get_score(std::vector<FloatIndex> float_indices,
                   std::vector<Float> &x, std::vector<Float> &dscore);
   bool line_search(std::vector<Float> &x, std::vector<Float> &dx,
-                   float &alpha, const std::vector<FloatIndex> &float_indices,
-                   int &ifun, float &f, float &dg, float &dg1,
+                   NT &alpha, const std::vector<FloatIndex> &float_indices,
+                   int &ifun, NT &f, NT &dg, NT &dg1,
                    int max_steps, const std::vector<Float> &search,
                    const std::vector<Float> &estimate);
   Float threshold_;
