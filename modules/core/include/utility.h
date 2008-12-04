@@ -25,7 +25,8 @@ IMPCORE_BEGIN_NAMESPACE
     out a!=a (and certain intel chips had issues with it too).
  */
 inline bool is_nan(const float& a) {
-#ifdef __GNUC__
+// Not all gcc versions include C99 math
+#if defined(_GLIBCXX_USE_C99_MATH) && defined(__GNUC__)
   return std::isnan(a);
 #else
   return a != a;
@@ -37,7 +38,7 @@ inline bool is_nan(const float& a) {
     out a!=a (and certain intel chips had issues with it too).
  */
 inline bool is_nan(const double& a) {
-#ifdef __GNUC__
+#if defined(_GLIBCXX_USE_C99_MATH) && defined(__GNUC__)
   return std::isnan(a);
 #else
   return a != a;
