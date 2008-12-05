@@ -15,10 +15,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
-IMP_BEGIN_NAMESPACE
-
-namespace internal
-{
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <bool REF>
 struct Ref
@@ -35,7 +32,7 @@ struct Ref<true>
 {
   template <class O>
   static void eval(O* o) {
-    IMP_LOG(VERBOSE, "Refing particle " << o->get_index()
+    IMP_LOG(VERBOSE, "Refing object with count "
             << o->get_ref_count() << std::endl);
     o->assert_is_valid();
     o->ref();
@@ -57,8 +54,8 @@ struct UnRef<true>
 {
   template <class O>
   static void eval(O *o) {
-    IMP_LOG(VERBOSE, "Unrefing particle " << o->get_index()
-            << " " << o->get_ref_count() << std::endl);
+    IMP_LOG(VERBOSE, "Unrefing object with count "
+            << o->get_ref_count() << std::endl);
     o->assert_is_valid();
     o->unref();
     if (!o->get_has_ref()) {
@@ -132,8 +129,6 @@ void own(O* o)
 }
 
 
-} // namespace internal
-
-IMP_END_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_REF_COUNTING_H */

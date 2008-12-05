@@ -1,5 +1,5 @@
 /**
- *  \File VectorD.h   \brief Simple D vector class.
+ *  \file VectorD.h   \brief Simple D vector class.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
@@ -87,8 +87,6 @@ public:
   }
 
   //! \return the scalar product of two vectors.
-  /** \param[in] vec2 The other vector to use in the product.
-   */
   Float scalar_product(const This &o) const {
     Float ret=0;
     for (unsigned int i=0; i< D; ++i) {
@@ -130,8 +128,6 @@ public:
   }
 
   //! \return the vector product of two vectors.
-  /** \param[in] vec2 The other vector to use in the product.
-   */
   VectorD vector_product(const VectorD &vec2) const {
     BOOST_STATIC_ASSERT(D==3);
     return VectorD(vec_[1] * vec2.vec_[2] - vec_[2] * vec2.vec_[1],
