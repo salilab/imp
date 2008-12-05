@@ -5,6 +5,6 @@ for b in bds:
     ps.append(b.get_particle())
 bl= IMP.core.ListSingletonContainer(ps)
 h= IMP.core.Harmonic(0,1)
-bs= IMP.core.BondDecoratorSingletonScore(h)
+bs= IMP.core.BondSingletonScore(h)
 br= IMP.core.SingletonsRestraint(bs, bl)
 m.add_restraint(br)

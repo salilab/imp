@@ -19,7 +19,7 @@ nbl= IMP.core.ClosePairsScoreState(ps)
 m.add_score_state(nbl)
 # Exclude bonds from closest pairs
 fl= nbl.get_close_pairs_container()
-fl.add_pair_container(IMP.core.BondDecoratorPairContainer())
+fl.add_pair_container(IMP.core.BondPairContainer())
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
