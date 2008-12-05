@@ -139,7 +139,11 @@ IMPDLLEXPORT void set_check_level(CheckLevel tf);
 IMPDLLEXPORT CheckLevel get_check_level();
 
 
-
+//! Execute the code block if a certain level checks are on
+/**
+   The next code block (delimited by { }) is executed if
+   get_check_level() <= level.
+ */
 #define IMP_IF_CHECK(level)\
   if (level <= ::IMP::get_check_level())
 

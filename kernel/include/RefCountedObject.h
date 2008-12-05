@@ -41,6 +41,7 @@ protected:
   // never hold pointers to it directly
   virtual ~RefCountedObject() {
     IMP_assert(!get_has_ref(), "Deleting object which still has references");
+    IMP_LOG(VERBOSE, "Deleting ref counted object " << this << std::endl);
     --live_objects_;
   }
 
