@@ -1,0 +1,235 @@
+/**\page simple_examples Simple Examples
+
+The examples here each illustrate the usage of a small piece of the IMP library or how to do a particular common task.
+
+\section bipartite_nonbonded_interactions Bipartite Nonbonded Interactions
+
+This example shows how set up excluded volume interactions between two sets of particles.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#C00000">import</font> <font color="#000000">IMP</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font>
+
+<font color="#008000"># This example addes a restraint on bipartite nonbonded interactions
+</font><font color="#008000"># after excluding a set of bonded interactions.
+</font>
+<font color="#000000">m</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Model</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#008000"># The set of particles
+</font><font color="#000000">ps0</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ListSingletonContainer</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">create_xyzr_particles</font><font color="#0000C0">(</font><font color="#000000">m</font><font color="#0000C0">,</font> <font color="#0080C0">20</font><font color="#0000C0">,</font> <font color="#0080C0">1.0</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">ps1</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ListSingletonContainer</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">create_xyzr_particles</font><font color="#0000C0">(</font><font color="#000000">m</font><font color="#0000C0">,</font> <font color="#0080C0">20</font><font color="#0000C0">,</font> <font color="#0080C0">2.0</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+
+<font color="#008000"># Set up the nonbonded list
+</font><font color="#000000">nbl</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">CloseBipartitePairsScoreState</font><font color="#0000C0">(</font><font color="#000000">ps0</font><font color="#0000C0">,</font> <font color="#000000">ps1</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_score_state</font><font color="#0000C0">(</font><font color="#000000">nbl</font><font color="#0000C0">)</font>
+
+<font color="#008000"># Set up excluded volume
+</font><font color="#000000">ps</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">SphereDistancePairScore</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HarmonicLowerBound</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">,</font><font color="#0080C0">1</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">evr</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">PairsRestraint</font><font color="#0000C0">(</font><font color="#000000">ps</font><font color="#0000C0">,</font> <font color="#000000">nbl</font><font color="#0000C0">.</font><font color="#000000">get_close_pairs_container</font><font color="#0000C0">(</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">evri</font><font color="#0000C0">=</font> <font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_restraint</font><font color="#0000C0">(</font><font color="#000000">evr</font><font color="#0000C0">)</font>
+
+<font color="#008000"># Set up optimizer
+</font><font color="#000000">o</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ConjugateGradients</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">o</font><font color="#0000C0">.</font><font color="#000000">set_model</font><font color="#0000C0">(</font><font color="#000000">m</font><font color="#0000C0">)</font>
+
+<font color="#000000">o</font><font color="#0000C0">.</font><font color="#000000">optimize</font><font color="#0000C0">(</font><font color="#0080C0">1000</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
+\section connectivity_restraint Connectivity Restraint
+
+This example shows how to use the ConnectivityRestraint to ensure that all the particles end up in a connected conformation following the optimization.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#C00000">import</font> <font color="#000000">IMP</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">misc</font>
+<font color="#000000">m</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Model</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+
+<font color="#008000"># Put the parent particles for each molecule
+</font><font color="#000000">hs</font><font color="#0000C0">=</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Particles</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+
+<font color="#008000"># create the molecules
+</font><font color="#C00000">for</font> <font color="#000000">i</font> <font color="#C00000">in</font> <font color="#000000">range</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">,</font><font color="#0080C0">10</font><font color="#0000C0">)</font><font color="#0000C0">:</font>
+    <font color="#000000">p</font><font color="#0000C0">=</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Particle</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+    <font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_particle</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">)</font>
+    <font color="#000000">d</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">)</font>
+    <font color="#000000">d</font><font color="#0000C0">.</font><font color="#000000">set_type</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">PROTEIN</font><font color="#0000C0">)</font>
+    <font color="#C00000">for</font> <font color="#000000">j</font> <font color="#C00000">in</font> <font color="#000000">range</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">,</font><font color="#0080C0">5</font><font color="#0000C0">)</font><font color="#0000C0">:</font>
+        <font color="#000000">p</font><font color="#0000C0">=</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Particle</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+        <font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_particle</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">)</font>
+        <font color="#000000">cd</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">)</font>
+        <font color="#000000">cd</font><font color="#0000C0">.</font><font color="#000000">set_type</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">FRAGMENT</font><font color="#0000C0">)</font>
+        <font color="#000000">d</font><font color="#0000C0">.</font><font color="#000000">add_child</font><font color="#0000C0">(</font><font color="#000000">cd</font><font color="#0000C0">)</font>
+        <font color="#000000">xd</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZRDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">)</font>
+        <font color="#000000">xd</font><font color="#0000C0">.</font><font color="#000000">set_coordinates</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Vector3D</font><font color="#0000C0">(</font><font color="#0080C0">3</font><font color="#0000C0">*</font><font color="#000000">i</font><font color="#0000C0">,</font><font color="#000000">j</font><font color="#0000C0">,</font><font color="#0080C0">0</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+        <font color="#000000">xd</font><font color="#0000C0">.</font><font color="#000000">set_radius</font><font color="#0000C0">(</font><font color="#0080C0">1</font><font color="#0000C0">)</font>
+    <font color="#000000">hs</font><font color="#0000C0">.</font><font color="#000000">append</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">)</font>
+
+<font color="#000000">ps</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">SphereDistancePairScore</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HarmonicUpperBound</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">,</font><font color="#0080C0">1</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">cps</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">misc</font><font color="#0000C0">.</font><font color="#000000">ChildrenParticleRefiner</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">lrps</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">misc</font><font color="#0000C0">.</font><font color="#000000">LowestRefinedPairScore</font><font color="#0000C0">(</font><font color="#000000">cps</font><font color="#0000C0">,</font><font color="#000000">ps</font><font color="#0000C0">)</font>
+<font color="#000000">cr</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ConnectivityRestraint</font><font color="#0000C0">(</font><font color="#000000">lrps</font><font color="#0000C0">)</font>
+<font color="#000000">cr</font><font color="#0000C0">.</font><font color="#000000">set_particles</font><font color="#0000C0">(</font><font color="#000000">hs</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_restraint</font><font color="#0000C0">(</font><font color="#000000">cr</font><font color="#0000C0">)</font>
+
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">evaluate</font><font color="#0000C0">(</font><font color="#000000">False</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
+\section molecular_hierarchy Molecular Hierarchy
+
+In this example, we read a protein from a PDB file and set the center and radius of each residue to enclose the atoms in that residue.
+
+Then a second copy of the protein is loaded and they are both added to an assembly.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#C00000">import</font> <font color="#000000">IMP</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">modeller</font>
+
+<font color="#000000">m</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Model</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">mp0</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">modeller</font><font color="#0000C0">.</font><font color="#000000">read_pdb</font><font color="#0000C0">(</font><font color="#004080">'single_protein.pdb'</font><font color="#0000C0">,</font> <font color="#000000">m</font><font color="#0000C0">)</font>
+<font color="#008000"># get the 16th residue
+</font><font color="#000000">r16</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">molecular_hierarchy_get_residue</font><font color="#0000C0">(</font><font color="#000000">mp0</font><font color="#0000C0">,</font> <font color="#0080C0">16</font><font color="#0000C0">)</font>
+<font color="#000000">r16</font><font color="#0000C0">.</font><font color="#000000">show</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+
+<font color="#000000">atoms</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">molecular_hierarchy_get_by_type</font><font color="#0000C0">(</font><font color="#000000">mp0</font><font color="#0000C0">,</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">ATOM</font><font color="#0000C0">)</font>
+<font color="#C00000">print</font> <font color="#000000">len</font><font color="#0000C0">(</font><font color="#000000">atoms</font><font color="#0000C0">)</font>
+
+<font color="#008000">#get the residues
+</font><font color="#000000">residues</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">molecular_hierarchy_get_by_type</font><font color="#0000C0">(</font><font color="#000000">mp0</font><font color="#0000C0">,</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">RESIDUE</font><font color="#0000C0">)</font>
+<font color="#008000"># set the coordinates and radius of each residue to enclose its atoms
+</font><font color="#C00000">for</font> <font color="#000000">r</font> <font color="#C00000">in</font> <font color="#000000">residues</font><font color="#0000C0">:</font>
+    <font color="#000000">d</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZRDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">r</font><font color="#0000C0">)</font>
+    <font color="#000000">atoms</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">molecular_hierarchy_get_by_type</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">(</font><font color="#000000">r</font><font color="#0000C0">)</font><font color="#0000C0">,</font>
+                                                    <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">ATOM</font><font color="#0000C0">)</font>
+    <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">set_enclosing_sphere</font><font color="#0000C0">(</font><font color="#000000">atoms</font><font color="#0000C0">,</font> <font color="#000000">d</font><font color="#0000C0">)</font>
+
+<font color="#008000"># load another copy
+</font><font color="#000000">mp1</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">modeller</font><font color="#0000C0">.</font><font color="#000000">read_pdb</font><font color="#0000C0">(</font><font color="#004080">'single_protein.pdb'</font><font color="#0000C0">,</font> <font color="#000000">m</font><font color="#0000C0">)</font>
+
+<font color="#000000">p</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Particle</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_particle</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">)</font>
+<font color="#000000">rmp</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">)</font>
+<font color="#000000">rmp</font><font color="#0000C0">.</font><font color="#000000">set_type</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">MolecularHierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">ASSEMBLY</font><font color="#0000C0">)</font>
+<font color="#000000">rmp</font><font color="#0000C0">.</font><font color="#000000">add_child</font><font color="#0000C0">(</font><font color="#000000">mp0</font><font color="#0000C0">)</font>
+<font color="#000000">rmp</font><font color="#0000C0">.</font><font color="#000000">add_child</font><font color="#0000C0">(</font><font color="#000000">mp1</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
+\section nonbonded_interactions Nonbonded Interactions
+
+This example shows how to set up an excluded volume restraint for a set of XYZRDecorator-style particles.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#C00000">import</font> <font color="#000000">IMP</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font>
+
+<font color="#008000"># This example addes a restraint on nonbonded interactions
+</font><font color="#008000"># after excluding a set of bonded interactions.
+</font>
+<font color="#000000">m</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Model</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#008000"># The set of particles
+</font><font color="#000000">ps</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ListSingletonContainer</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">create_xyzr_particles</font><font color="#0000C0">(</font><font color="#000000">m</font><font color="#0000C0">,</font> <font color="#0080C0">20</font><font color="#0000C0">,</font> <font color="#0080C0">1.0</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+
+<font color="#008000"># create a bond between two particles
+</font><font color="#000000">bonds</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ListSingletonContainer</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">bd0</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">BondedDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">ps</font><font color="#0000C0">.</font><font color="#000000">get_particle</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">bd1</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">BondedDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">ps</font><font color="#0000C0">.</font><font color="#000000">get_particle</font><font color="#0000C0">(</font><font color="#0080C0">1</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">bonds</font><font color="#0000C0">.</font><font color="#000000">add_particle</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">custom_bond</font><font color="#0000C0">(</font><font color="#000000">bd0</font><font color="#0000C0">,</font> <font color="#000000">bd1</font><font color="#0000C0">,</font> <font color="#0080C0">2.0</font><font color="#0000C0">)</font><font color="#0000C0">.</font><font color="#000000">get_particle</font><font color="#0000C0">(</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+
+<font color="#008000"># Set up the nonbonded list
+</font><font color="#000000">nbl</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ClosePairsScoreState</font><font color="#0000C0">(</font><font color="#000000">ps</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_score_state</font><font color="#0000C0">(</font><font color="#000000">nbl</font><font color="#0000C0">)</font>
+<font color="#008000"># Exclude bonds from closest pairs
+</font><font color="#000000">fl</font><font color="#0000C0">=</font> <font color="#000000">nbl</font><font color="#0000C0">.</font><font color="#000000">get_close_pairs_container</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">fl</font><font color="#0000C0">.</font><font color="#000000">add_pair_container</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">BondDecoratorPairContainer</font><font color="#0000C0">(</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+
+<font color="#008000"># Set up excluded volume
+</font><font color="#000000">ps</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">SphereDistancePairScore</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HarmonicLowerBound</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">,</font><font color="#0080C0">1</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">evr</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">PairsRestraint</font><font color="#0000C0">(</font><font color="#000000">ps</font><font color="#0000C0">,</font> <font color="#000000">fl</font><font color="#0000C0">)</font>
+<font color="#000000">evri</font><font color="#0000C0">=</font> <font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_restraint</font><font color="#0000C0">(</font><font color="#000000">evr</font><font color="#0000C0">)</font>
+
+<font color="#008000"># Set up optimizer
+</font><font color="#000000">o</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ConjugateGradients</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">o</font><font color="#0000C0">.</font><font color="#000000">set_model</font><font color="#0000C0">(</font><font color="#000000">m</font><font color="#0000C0">)</font>
+
+<font color="#000000">o</font><font color="#0000C0">.</font><font color="#000000">optimize</font><font color="#0000C0">(</font><font color="#0080C0">1000</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
+\section restrain_diameter Restrain Diameter
+
+An example restraining the diameter of a set of points. That is, the restraint penalizes conformations where there are two point more than a certain distance from one another.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#C00000">import</font> <font color="#000000">IMP</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font>
+
+<font color="#008000"># This example restraints the diameter of a set of particles to be smaller than 10
+</font>
+<font color="#000000">diameter</font><font color="#0000C0">=</font><font color="#0080C0">10</font>
+<font color="#000000">m</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Model</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">lc</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ListSingletonContainer</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">create_xyzr_particles</font><font color="#0000C0">(</font><font color="#000000">m</font><font color="#0000C0">,</font> <font color="#0080C0">20</font><font color="#0000C0">,</font> <font color="#0080C0">1.0</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#008000"># create a list of all pairs of particles from lc
+</font><font color="#000000">ps</font> <font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">AllPairsPairContainer</font><font color="#0000C0">(</font><font color="#000000">lc</font><font color="#0000C0">)</font>
+
+<font color="#000000">h</font><font color="#0000C0">=</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HarmonicUpperBound</font><font color="#0000C0">(</font><font color="#000000">diameter</font><font color="#0000C0">,</font><font color="#0080C0">1</font><font color="#0000C0">)</font>
+<font color="#000000">d</font><font color="#0000C0">=</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">DistancePairScore</font><font color="#0000C0">(</font><font color="#000000">h</font><font color="#0000C0">)</font>
+<font color="#008000"># apply d to each pair from ps
+</font><font color="#000000">r</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">PairsRestraint</font><font color="#0000C0">(</font><font color="#000000">d</font><font color="#0000C0">,</font> <font color="#000000">ps</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_restraint</font><font color="#0000C0">(</font><font color="#000000">r</font><font color="#0000C0">)</font>
+
+<font color="#008000"># Set up optimizer
+</font><font color="#000000">o</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">ConjugateGradients</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">o</font><font color="#0000C0">.</font><font color="#000000">set_model</font><font color="#0000C0">(</font><font color="#000000">m</font><font color="#0000C0">)</font>
+
+<font color="#000000">o</font><font color="#0000C0">.</font><font color="#000000">optimize</font><font color="#0000C0">(</font><font color="#0080C0">100</font><font color="#0000C0">)</font>
+
+<font color="#C00000">for</font> <font color="#000000">i</font> <font color="#C00000">in</font> <font color="#000000">range</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">,</font> <font color="#000000">ps</font><font color="#0000C0">.</font><font color="#000000">get_number_of_particle_pairs</font><font color="#0000C0">(</font><font color="#0000C0">)</font><font color="#0000C0">)</font><font color="#0000C0">:</font>
+    <font color="#000000">p</font><font color="#0000C0">=</font> <font color="#000000">ps</font><font color="#0000C0">.</font><font color="#000000">get_particle_pair</font><font color="#0000C0">(</font><font color="#000000">i</font><font color="#0000C0">)</font>
+    <font color="#C00000">print</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">distance</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZDecorator</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">[</font><font color="#0080C0">0</font><font color="#0000C0">]</font><font color="#0000C0">)</font><font color="#0000C0">,</font>
+                            <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZDecorator</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">[</font><font color="#0080C0">1</font><font color="#0000C0">]</font><font color="#0000C0">)</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
+\section xyzdecorator Xyzdecorator
+
+This is a simple example using the XYZDecorator to set the coordinates of some particles and compute the distance between them.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#C00000">import</font> <font color="#000000">IMP</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font>
+
+<font color="#000000">m</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Model</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">p0</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Particle</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_particle</font><font color="#0000C0">(</font><font color="#000000">p0</font><font color="#0000C0">)</font>
+<font color="#000000">d0</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p0</font><font color="#0000C0">)</font>
+<font color="#000000">d0</font><font color="#0000C0">.</font><font color="#000000">set_coordinates</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Vector3D</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">,</font><font color="#0080C0">1</font><font color="#0000C0">,</font><font color="#0080C0">2</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">p1</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Particle</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_particle</font><font color="#0000C0">(</font><font color="#000000">p1</font><font color="#0000C0">)</font>
+<font color="#000000">d1</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p1</font><font color="#0000C0">)</font>
+<font color="#000000">d1</font><font color="#0000C0">.</font><font color="#000000">set_coordinates</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Vector3D</font><font color="#0000C0">(</font><font color="#0080C0">3</font><font color="#0000C0">,</font><font color="#0080C0">4</font><font color="#0000C0">,</font><font color="#0080C0">5</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+
+<font color="#C00000">print</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">distance</font><font color="#0000C0">(</font><font color="#000000">d0</font><font color="#0000C0">,</font> <font color="#000000">d1</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
+\section xyzrdecorator Xyzrdecorator
+
+This is a simple example using the XYZRDecorator to set the coordinates and radius of a particle and compute distances between the resulting spheres.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#C00000">import</font> <font color="#000000">IMP</font>
+<font color="#C00000">import</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font>
+
+<font color="#000000">m</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Model</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">p0</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Particle</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_particle</font><font color="#0000C0">(</font><font color="#000000">p0</font><font color="#0000C0">)</font>
+<font color="#000000">d0</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZRDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p0</font><font color="#0000C0">)</font>
+<font color="#000000">d0</font><font color="#0000C0">.</font><font color="#000000">set_coordinates</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Vector3D</font><font color="#0000C0">(</font><font color="#0080C0">0</font><font color="#0000C0">,</font><font color="#0080C0">1</font><font color="#0000C0">,</font><font color="#0080C0">2</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">d0</font><font color="#0000C0">.</font><font color="#000000">set_radius</font><font color="#0000C0">(</font><font color="#0080C0">1.0</font><font color="#0000C0">)</font>
+<font color="#000000">p1</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Particle</font><font color="#0000C0">(</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_particle</font><font color="#0000C0">(</font><font color="#000000">p1</font><font color="#0000C0">)</font>
+<font color="#000000">d1</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZRDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p1</font><font color="#0000C0">)</font>
+<font color="#000000">d1</font><font color="#0000C0">.</font><font color="#000000">set_coordinates</font><font color="#0000C0">(</font><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">Vector3D</font><font color="#0000C0">(</font><font color="#0080C0">3</font><font color="#0000C0">,</font><font color="#0080C0">4</font><font color="#0000C0">,</font><font color="#0080C0">5</font><font color="#0000C0">)</font><font color="#0000C0">)</font>
+<font color="#000000">d1</font><font color="#0000C0">.</font><font color="#000000">set_radius</font><font color="#0000C0">(</font><font color="#0080C0">2.0</font><font color="#0000C0">)</font>
+
+<font color="#C00000">print</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">distance</font><font color="#0000C0">(</font><font color="#000000">d0</font><font color="#0000C0">,</font> <font color="#000000">d1</font><font color="#0000C0">)</font>
+
+<font color="#008000"># use them as XYZDecorator particles
+</font><font color="#000000">xd0</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZDecorator</font><font color="#0000C0">.</font><font color="#000000">cast</font><font color="#0000C0">(</font><font color="#000000">p0</font><font color="#0000C0">)</font>
+<font color="#000000">xd1</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">XYZDecorator</font><font color="#0000C0">.</font><font color="#000000">cast</font><font color="#0000C0">(</font><font color="#000000">p1</font><font color="#0000C0">)</font>
+
+<font color="#008000"># distance without radii
+</font><font color="#C00000">print</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">distance</font><font color="#0000C0">(</font><font color="#000000">xd0</font><font color="#0000C0">,</font> <font color="#000000">xd1</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
+*/

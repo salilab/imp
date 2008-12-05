@@ -1,0 +1,44 @@
+/** \page decorators Decorators
+Decorators wrap particles in order to provide a higher level interface to
+manipulate the attributes of the particle. They can be used to
+- maintain invariants: e.g. each of the particles have all of x,y,z coordinates
+- add functionality: e.g. you can get the coordinates as an IMP::Vector3D
+- provide uniform names for attributes: so you don't use "x" some places
+and "X" other places
+- cache keys since those can be expensive to create
+
+\note In general, you should not access particle attributes except
+through decorators
+
+To see a list of all available decorators, look at the IMP::DecoratorBase
+page.
+
+
+The general usage of the decorators is quite simple
+- Create a decorator around a particle which does not have the needed
+attributes. This adds the attributes.
+\verbatim
+d= IMP.core.MyDecorator.create(p)
+\endverbatim
+- Cast a particle which has the required attributes to a decorator,
+checking that it has the attributes
+\verbatim
+d= IMP.core.MyDecorator.cast(p)
+\endverbatim
+- Wrap a particle which is known to have the required attributes in a
+decorator. No checks are necessarily made
+\verbatim
+d= IMP.core.MyDecorator(p)
+\endverbatim
+- Access and manipulate attributes or groups of attributes through
+methods like
+\verbatim
+x=d.get_foo()
+d.set_foo(1.0)
+\endverbatim
+- When needed, access the keys used by the decorator through methods like
+\verbatim
+d.get_foo_key()
+\endverbatim
+ */
+

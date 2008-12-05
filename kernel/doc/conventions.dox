@@ -1,0 +1,116 @@
+/** 
+    \page coding_conventions IMP coding conventions
+
+    To ensure code consistency and readability, certain conventions should be
+    adhered to when writing code for \imp. Some of these conventions are
+    automatically checked for by source control before allowing a new commit, and
+    should also be checked yourself in new code by running
+    \command{scons standards}
+
+    \section indent Indentation
+
+    All C++ headers and code should
+    be indented in 'Linux' style, with 2-space indents. Do not use
+    tabs. This is roughly the output of Artistic Style run like
+    \command{astyle --convert-tabs --style=linux --indent=spaces=2 --unpad=paren --pad=oper}
+    Split lines if necessary to ensure that
+    no line is longer than 80 characters.
+
+    All Python code should conform to the Python style guide
+    (http://www.python.org/dev/peps/pep-0008/). In essence this
+    translates to 4-space indents, no tabs, and similar class, method
+    and variable naming to the C++ code. You can ensure that your
+    Python code is correctly indented by using the
+    \command{tools/reindent.py} script, available as part of the \imp
+    distribution.
+
+
+    \section docs Documentation
+
+    Format to allow Doxygen automated documentation creation. If
+    possible, and appropriate, specify both a 'brief' description and
+    a more detailed one (in which parameters, return values, and
+    exceptions are documented). Use \c //! for the one-line brief
+    description and \c /** ... * / for the multi-line detailed
+    description (put the closing * / on a new line, so that these
+    comments are always multi-line (Doxygen will not accept both a
+    'brief' comment and a one-line detailed comment). All header and
+    source files should have a starting comment header, using the
+    \b \\file command to document the purpose of the file.
+
+    For example:
+    \verbatim
+    //! Calculates the square root.
+    /** \param[in] the_value Calculate the square root of this value.
+        \exception ValueException if value is out of range (negative).
+        \return the square root of the given value.
+      */
+    \endverbatim
+
+    Python code should provide python doc strings.
+
+
+    \section names Names
+    - Class names should be in \c CamelCase
+    - method names and variables should be \c separated_by_underscores
+    - member variables should \c end_in_an_underscore_
+    - member methods that get a value should begin with \c set_
+    - member methods which return a value should begin with \c get_
+
+    \b Rational: This makes it easier to tell between class names and
+    function names where this is ambiguous (particularly an issue with
+    the Python interface). The Python guys also mandate CamelCase for
+    their class names, so this avoids any need to rename classes
+    between C++ and Python to ensure clean Python code.
+
+    \section errors Errors
+    Classes and methods should use IMP exceptions to report errors. See
+    IMP::Exception for a list of existing exceptions. See \ref assert for
+    a list of functions to aid in error reporting and detection.
+    \note Do not use exception specifications. Instead document the exceptions
+    in Doxygen using the \c \\exception command.
+
+    \section namespaces Namespaces
+    Never use \c using \c namespace outside of a function, instead explicitly
+    provide the namespace.
+    
+    Use the provided \c IMPMODULE_BEGIN_NAMESPACE, \c IMPMODULE_END_NAMESPACE,
+    \c IMPMODULE_BEGIN_INTERNAL_NAMESPACE and \c IMPMODULE_END_INTERNAL_NAMESPACE
+    macros to put declarations in a namespace appropriate for module \c MODULE.
+    Leave \c MODULE blank for the kernel.
+
+    \section include Including Files
+    Include files from the local module first, then files from the other \imp
+    modules and kernel and finally outside includes.
+    \code
+    #include <IMP/mymodule/mymodule_exports.h>
+    #include <IMP/mymodlule/MyRestraint.h>
+    #include <IMP/Restraint.h>
+    #include <vector>
+    \endcode
+
+    For simplicity, to include a header from the same module within
+    another header, you can use a relative path (i.e. without the IMP/
+    prefix) and use double quotes rather than angle brackets. This
+    makes it obvious to the reader that the include is from the same
+    module. Since headers are staged to a build directory, there is no
+    danger of including an uninstalled header this way.
+
+    \b Rational: This makes any dependencies in your code obvious, and
+    by including standard headers \e after IMP headers, any missing
+    includes in the headers themselves show up early (rather than
+    being masked by other headers you include). Adding the IMP prefix
+    and using angle brackets reduces the likelihood that uninstalled
+    rogue headers in the source code directory are used, which could
+    break the build.
+
+
+    \section testing Testing
+
+    Each class and method should have one or more associated tests in the
+    \c test directory if its module. These tests should try, as much as possible
+    to provide independent verification of the correctness of the C++ code. In
+    addition, classes and methods should use the IMP_check and IMP_assert macros
+    to check the correctness of arguments and invariants internally and report
+    errors when problems are detected.
+*/
