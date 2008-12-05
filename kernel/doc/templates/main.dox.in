@@ -1,0 +1,24 @@
+/**
+  \mainpage IMP API reference
+  
+  \section intro Introduction
+  
+    This is the API reference for IMP, an Integrative Modeling Platform. If you are
+    new to \imp, you should probably first check out
+    \ref introduction "the introduction" first. After that use
+    the 'Data Structures' tab to browse all of the IMP classes. Look at the various
+    pages under the 'Related Pages' and "Modules" tab to see overviews of various
+    parts of \imp and examples.
+
+    \note The 'Modules' tab has nothing to do with modules in IMP. The entries in the
+    tab are groups of functionality which can cut across modules.
+  
+  \section links Links
+
+    See also the IMP
+    <a href="https://salilab.org/imp/wiki/front_page/">wiki page</a>.
+ */
+ 
+/**
+  \namespace IMP \brief The IMP kernel.
+ */
