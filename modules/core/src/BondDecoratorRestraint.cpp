@@ -12,7 +12,7 @@
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/core/bond_decorators.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
-
+#include <IMP/core/deprecation.h>
 #include <IMP/UnaryFunction.h>
 
 #include <boost/lambda/lambda.hpp>
@@ -22,7 +22,9 @@ IMPCORE_BEGIN_NAMESPACE
 BondDecoratorRestraint
 ::BondDecoratorRestraint(UnaryFunction *f,
                          BondDecoratorListScoreState *s): bl_(s),
-                                                          f_(f){}
+                                                          f_(f){
+  IMP_DEPRECATED(BondDecoratorRestraint, ParticlesRestraint);
+}
 
 Float BondDecoratorRestraint::evaluate(DerivativeAccumulator *accum)
 {

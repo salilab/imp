@@ -7,6 +7,7 @@
 
 #include <IMP/core/PairChainRestraint.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/core/deprecation.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
@@ -22,6 +23,7 @@ PairChainRestraint::PairChainRestraint(PairScore* ts)
 {
   ts_ = ts;
   clear_chains();
+  IMP_DEPRECATED(PairChainRestraint, ParticlePairsRestraint);
 }
 
 void PairChainRestraint::add_chain(const Particles &ps)

@@ -10,6 +10,7 @@
 #include <IMP/core/internal/ParticleGrid.h>
 #include <IMP/core/internal/bbox_nbl_helpers.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/core/deprecation.h>
 
 #include <IMP/internal/utility.h>
 
@@ -53,6 +54,8 @@ AllNonbondedListScoreState::AllNonbondedListScoreState(Float cut,
   mc_= new MaxChangeScoreState(XYZDecorator::get_xyz_keys());
   mcr_= new MaxChangeScoreState(ks);
   add_particles(ps);
+
+  IMP_DEPRECATED(AllNonbondeListScoreState, ClosePairsScoreState);
 }
 
 AllNonbondedListScoreState::AllNonbondedListScoreState(Float cut,
@@ -64,6 +67,7 @@ AllNonbondedListScoreState::AllNonbondedListScoreState(Float cut,
   ks.push_back(rk);
   mc_= new MaxChangeScoreState(XYZDecorator::get_xyz_keys());
   mcr_= new MaxChangeScoreState(ks);
+  IMP_DEPRECATED(AllNonbondeListScoreState, ClosePairsScoreState);
 }
 
 AllNonbondedListScoreState::~AllNonbondedListScoreState()
