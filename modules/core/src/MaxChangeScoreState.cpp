@@ -7,6 +7,7 @@
 
 
 #include <IMP/core/MaxChangeScoreState.h>
+#include <IMP/core/deprecation.h>
 
 #include <IMP/internal/utility.h>
 
@@ -25,6 +26,7 @@ MaxChangeScoreState::MaxChangeScoreState(const FloatKeys &keys,
   for (unsigned int i=0; i< keys_.size(); ++i) {
     origkeys_[i]= FloatKey((keys_[i].get_string()+oss.str()).c_str());
   }
+  IMP_DEPRECATED(MaxChangeScoreState, MaximumChangeScoreState);
 }
 
 

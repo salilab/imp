@@ -8,6 +8,7 @@
 
 #include <IMP/core/NonbondedRestraint.h>
 #include <IMP/core/NonbondedListScoreState.h>
+#include <IMP/core/deprecation.h>
 
 #include <IMP/PairScore.h>
 #include <IMP/log.h>
@@ -20,6 +21,7 @@ NonbondedRestraint::NonbondedRestraint(PairScore *ps,
                                        NonbondedListScoreState *nbl)
   : nbl_(nbl), sf_(ps)
 {
+  IMP_DEPRECATED(NonbondedRestraint, ParticlePairsRestraint);
 }
 
 

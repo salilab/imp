@@ -14,6 +14,7 @@ IMPCORE_BEGIN_NAMESPACE
 BondDecoratorListScoreState::BondDecoratorListScoreState(const Particles &ps)
 {
   set_particles(ps);
+  IMP_DEPRECATED(BondDecoratorListScoreState, BondDecoratorPairContainer);
 }
 
 void BondDecoratorListScoreState::do_before_evaluate()
