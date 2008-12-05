@@ -78,9 +78,8 @@ namespace IMP {
   IMP_CONTAINER_SWIG(Optimizer, OptimizerState, optimizer_state)
 }
 
-%feature("ref")   Particle "$this->ref();"
-%feature("unref") Particle "$this->unref(); if (! $this->get_has_ref()) delete $this;"
-
+%feature("ref")   Particle "IMP::internal::own($this);"
+%feature("unref") Particle "IMP::internal::disown($this);"
 
 /* Don't wrap internal functions */
 %ignore IMP::internal::check_particles_active;

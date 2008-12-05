@@ -464,6 +464,26 @@ onchanged, onremove)                                                    \
   } while (false)
 
 
+#ifndef SWIG
+//! Declare a protected destructor and get the friends right
+/** The destructor is unprotected for SWIG since if it is protected
+    SWIG does not wrap the python proxy distruction and so does not
+    dereference the ref counted pointer. Swig also gets confused
+    on template friends.
+ */
+#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
+  protected:                                                    \
+  template <class T> friend void IMP::internal::disown(T*);     \
+  friend class IMP::internal::UnRef<true>;                      \
+  virtual ~Classname();
+#else
+#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
+  protected:                                                    \
+  virtual ~Classname();
+
+#endif
+
+
 // They use IMP_CHECK_OBJECT and so must be included at the end
 
 #include "internal/Vector.h"

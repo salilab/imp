@@ -51,7 +51,6 @@ class IMPDLLEXPORT ScoreState : public RefCountedObject
 
 public:
   ScoreState(std::string name=std::string());
-  virtual ~ScoreState();
 
   //! Update if needed
   /** The protected do_before_evaluate method will be called if the iteration
@@ -92,6 +91,7 @@ public:
     return model_.get();
   }
 
+  IMP_REF_COUNTED_DESTRUCTOR(ScoreState)
 protected:
   //! Update the state given the current state of the model.
   /** This is also called prior to every calculation of the model score.

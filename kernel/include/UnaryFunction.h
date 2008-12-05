@@ -25,7 +25,6 @@ class IMPDLLEXPORT UnaryFunction : public RefCountedObject
 {
 public:
   UnaryFunction() {}
-  virtual ~UnaryFunction();
 
   //! Calculate score with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
@@ -42,6 +41,8 @@ public:
   virtual FloatPair evaluate_with_derivative(Float feature) const = 0;
 
   virtual void show(std::ostream &out=std::cout) const = 0;
+
+  IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction)
 };
 
 IMP_OUTPUT_OPERATOR(UnaryFunction);

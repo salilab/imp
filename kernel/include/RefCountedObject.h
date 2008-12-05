@@ -32,16 +32,18 @@ protected:
   }
 
 public:
+  static unsigned int get_number_of_live_objects() {
+    // for debugging purposes only
+    return live_objects_;
+  }
 
+protected:
+  // never hold pointers to it directly
   virtual ~RefCountedObject() {
     IMP_assert(!get_has_ref(), "Deleting object which still has references");
     --live_objects_;
   }
 
-  static unsigned int get_number_of_live_objects() {
-    // for debugging purposes only
-    return live_objects_;
-  }
 };
 
 IMP_END_NAMESPACE

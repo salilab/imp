@@ -29,11 +29,11 @@ class IMPDLLEXPORT PairScore : public RefCountedObject
 {
 public:
   PairScore() {}
-  virtual ~PairScore();
   //! Compute the score for the pair and the derivative if needed.
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const = 0;
   virtual void show(std::ostream &out=std::cout) const = 0;
+  IMP_REF_COUNTED_DESTRUCTOR(PairScore)
 };
 
 IMP_OUTPUT_OPERATOR(PairScore);

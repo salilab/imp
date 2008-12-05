@@ -44,8 +44,6 @@ class IMPCOREEXPORT PairContainer : public RefCountedObject
 public:
   PairContainer();
 
-  virtual ~PairContainer();
-
   //!
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
@@ -80,6 +78,8 @@ public:
       ParticlePairIterator(Accessor(const_cast<PairContainer*>(this)),
                         get_number_of_particle_pairs());
     }
+
+  IMP_REF_COUNTED_DESTRUCTOR(PairContainer)
 };
 
 IMP_OUTPUT_OPERATOR(PairContainer);

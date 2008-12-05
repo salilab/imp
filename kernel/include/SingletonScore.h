@@ -30,11 +30,11 @@ class IMPDLLEXPORT SingletonScore : public RefCountedObject
 {
 public:
   SingletonScore() {}
-  virtual ~SingletonScore();
   //! Compute the score for the particle and the derivative if needed.
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const = 0;
   virtual void show(std::ostream &out=std::cout) const = 0;
+  IMP_REF_COUNTED_DESTRUCTOR(SingletonScore)
 };
 
 IMP_OUTPUT_OPERATOR(SingletonScore);
