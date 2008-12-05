@@ -15,6 +15,31 @@
 
 %include "typemaps.i"
 
+%ignore IMP::ParticlePair::operator[];
+%ignore IMP::ParticleTriplet::operator[];
+%extend IMP::ParticlePair {
+  Particle* __getitem__(unsigned int index) const {
+    return self->operator[](index);
+  }
+  void __setitem__(unsigned int index, Particle* val) {
+    self->operator[](index) = val;
+  }
+  int __len__() const {
+      return 2;
+  }
+}
+%extend IMP::ParticleTriplet {
+  Particle* __getitem__(unsigned int index) const {
+    return self->operator[](index);
+  }
+  void __setitem__(unsigned int index, Particle* val) {
+    self->operator[](index) = val;
+  }
+  int __len__() const {
+      return 3;
+  }
+}  
+
 namespace IMP {
   %typemap(out) std::pair<Float,Float> {
      PyObject *tup= PyTuple_New(2);
@@ -123,8 +148,8 @@ namespace IMP {
   %template(OptimizerStateIndex) Index<OptimizerStateTag>;
   %template(Particles) ::std::vector<Particle*>;
   %template(ParticlesList) ::std::vector<Particles>;
-  %template(ParticlePair) ::std::pair<IMP::Particle*, IMP::Particle*>;
   %template(ParticlePairs) ::std::vector<ParticlePair>;
+  %template(ParticleTriplets) ::std::vector<ParticleTriplet>;
   %template(Restraints) ::std::vector<IMP::Restraint*>;
   %template(ScoreStates) ::std::vector<ScoreState*>;
   %template(OptimizerStates) ::std::vector<OptimizerState*>;

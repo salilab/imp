@@ -10,6 +10,7 @@
 #include "IMP_config.h"
 #include "base_types.h"
 #include "RefCountedObject.h"
+#include "Pointer.h"
 
 IMP_BEGIN_NAMESPACE
 

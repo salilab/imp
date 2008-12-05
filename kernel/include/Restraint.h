@@ -17,6 +17,7 @@
 #include "Pointer.h"
 #include "log.h"
 #include "utility.h"
+#include "container_macros.h"
 
 #include <vector>
 #include <iostream>

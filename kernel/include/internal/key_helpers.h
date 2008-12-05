@@ -9,6 +9,7 @@
 #define IMP_INTERNAL_KEY_HELPERS_H
 
 #include "../IMP_config.h"
+#include <vector>
 #include <map>
 
 IMP_BEGIN_INTERNAL_NAMESPACE

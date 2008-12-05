@@ -9,6 +9,7 @@
 
 #include "IMP_config.h"
 #include "base_types.h"
+#include "Particle.h"
 #include "VersionInfo.h"
 #include "RefCountedObject.h"
 

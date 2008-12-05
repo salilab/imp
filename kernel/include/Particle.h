@@ -613,6 +613,87 @@ void inline Particle::remove_attribute(ParticleKey name)
   particles_.remove(name);
 }
 
+
+//! A class to store a pair of particles.
+/** \note These do not due ref counting currently. SWIG prevents
+    use of Pointer<Particle> as the storage type without some
+    gynmastics.
+ */
+class ParticlePair {
+  bool is_default() const {return false;}
+public:
+  typedef ParticlePair This;
+  Particle *first, *second;
+  ParticlePair(): first(NULL), second(NULL){}
+  ParticlePair(Particle *a, Particle *b):
+  first(a), second(b) {}
+  IMP_COMPARISONS_2(first, second)
+  Particle * operator[](unsigned int i) const {
+    switch (i) {
+      case 0:
+        return first;
+      case 1:
+        return second;
+      default:
+        throw IndexException("Invalid member of pair");
+    }
+  }
+  Particle *& operator[](unsigned int i) {
+    switch (i) {
+      case 0:
+        return first;
+      case 1:
+        return second;
+      default:
+        throw IndexException("Invalid member of pair");
+    }
+  }
+
+};
+
+typedef std::vector<ParticlePair> ParticlePairs;
+
+
+
+//! Store three particles
+class ParticleTriplet {
+  bool is_default() const {return false;}
+public:
+  typedef ParticleTriplet This;
+  Particle *first, *second, *third;
+  ParticleTriplet(): first(NULL), second(NULL), third(NULL){}
+  ParticleTriplet(Particle *a, Particle *b, Particle *c):
+  first(a), second(b), third(c) {}
+  IMP_COMPARISONS_3(first, second, third)
+  Particle *operator[](unsigned int i) const {
+    switch (i) {
+      case 0:
+        return first;
+      case 1:
+        return second;
+      case 2:
+        return third;
+      default:
+        throw IndexException("Invalid member of triplet");
+    };
+  }
+  Particle *&operator[](unsigned int i) {
+    switch (i) {
+      case 0:
+        return first;
+      case 1:
+        return second;
+      case 2:
+        return third;
+      default:
+        throw IndexException("Invalid member of triplet");
+    };
+  }
+
+};
+
+typedef std::vector<ParticleTriplet> ParticleTriplets;
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_PARTICLE_H */
