@@ -11,7 +11,9 @@
 
 #include "IMP_config.h"
 #include "Object.h"
+#include "Particle.h"
 #include "internal/kernel_version_info.h"
+#include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
 

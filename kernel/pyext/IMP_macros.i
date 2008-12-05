@@ -53,3 +53,4 @@ IMP_ADD_OBJECTS(type, add_##lcname##s)
 %enddef
 
 %include "IMP/macros.h"
+%include "IMP/container_macros.h"

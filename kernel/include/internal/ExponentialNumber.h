@@ -10,6 +10,7 @@
 #define IMP_EXPONENTIAL_NUMBER_H
 
 #include "../macros.h"
+#include "../base_types.h"
 
 #include <iostream>
 #include <cmath>

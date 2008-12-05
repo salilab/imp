@@ -48,11 +48,13 @@ struct OptimizerStateTag {};
 typedef Index<ParticleTag> ParticleIndex;
 //! Index to access a Restraint in a container in an object
 typedef Index<RestraintTag> RestraintIndex;
+typedef std::vector<ParticleIndex> ParticleIndexes;
 //! Index to access a ScoreState in a container in an object
 typedef Index<ScoreStateTag> ScoreStateIndex;
 //! Index to access a OptimizerState in a container in an object
 typedef Index<OptimizerStateTag> OptimizerStateIndex;
 
+/* This needs to be here so that both Model and Particle can use Particles */
 class Particle;
 //! A class which is used for representing collections of particles
 /**
@@ -61,15 +63,6 @@ class Particle;
    is not as pretty for Python.
  */
 typedef std::vector<Particle*> Particles;
-//! The standard way of storing a pair of Particles
-typedef std::pair<Particle*, Particle*> ParticlePair;
-//! A collection of ParticlePair
-typedef std::vector<ParticlePair> ParticlePairs;
-
-//! A collection of ParticleIndex
-typedef std::vector<ParticleIndex> ParticleIndexes;
-
-class Particle;
 
 //! The type used to identify float attributes in the Particles
 IMP_DECLARE_KEY_TYPE(FloatKey, 0);
