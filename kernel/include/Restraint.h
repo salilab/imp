@@ -27,16 +27,6 @@ IMP_BEGIN_NAMESPACE
 typedef std::vector<Particles> ParticlesList;
 
 class Model;
-/** \defgroup restraint General purpose restraints
-    Classes to define and help in defining restraints. The restraints
-    typically involve a Restraint which defines the set of tuples of Particles
-    and then various functions which are applied to the tuples.
- */
-
-/** \defgroup exp_restraint Experimental restraints
-    These are restraints which directly use various types of experimental
-    data.
- */
 
 //! Abstract class for representing restraints
 /** Restraints should take their score function or UnaryFunction
@@ -60,13 +50,10 @@ class Model;
     without ever having been added to a model as this is an easy mistake
     to make. To disable this warning for a particular restraint, call
     set_was_owned(true).
-
-    \ingroup kernel
  */
 class IMPDLLEXPORT Restraint : public RefCountedObject
 {
 public:
-  //! Initialize the Restraint
   Restraint();
   ~Restraint();
 

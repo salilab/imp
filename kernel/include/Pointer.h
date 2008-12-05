@@ -58,50 +58,64 @@ class Pointer
   typedef bool (This::*unspecified_bool)() const;
 
 public:
+  /** copy constructor */
   Pointer(const Pointer &o): o_(NULL) {
     set_pointer(o.o_);
   }
+  /** copy from another */
   Pointer& operator=(const Pointer &o){
     set_pointer(o.o_);
     return *this;
   }
+  //! initialize to NULL
   Pointer(): o_(NULL) {}
+  /** initialize from a pointer */
   explicit Pointer(O* o): o_(NULL) {
     IMP_assert(o, "Can't initialize with NULL pointer");
     set_pointer(o);
   }
+  /** drop control of the object */
   ~Pointer(){
     set_pointer(NULL);
   }
+  /** it's a pointer */
   const O& operator*() const {
     audit();
     return *o_;
   }
+  /** it's a pointer */
   O& operator*()  {
     audit();
     return *o_;
   }
+  /** it's a pointer */
   const O* operator->() const {
     audit();
     return o_;
   }
+  /** it's a pointer */
   O* operator->() {
     audit();
     return o_;
   }
+  //! get the raw pointer
   O* get() const {
     audit();
     return o_;
   }
+  //! Set it from a possibly NULL pointer.
   void operator=(O* o) {
     set_pointer(o);
   }
+
   IMP_COMPARISONS_1(o_);
 
+  //! Return true if the pointer is not NULL
   bool operator!() const {
     return !o_;
   }
 
+  //! convert to the raw pointer
   operator O*() const {
     return o_;
   }

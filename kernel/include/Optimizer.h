@@ -25,10 +25,6 @@ class OptimizerState;
 
 typedef std::vector<OptimizerState*> OptimizerStates;
 
-/** \defgroup optimizer Optimizers
-    Optimizers of various sorts.
-  */
-
 //! Base class for all optimizers.
 /** The Optimizer maintains a list of OptimizerStates which are
     updated each time the conformation is changed.
@@ -66,6 +62,8 @@ public:
    */
   void set_model(Model *m) {model_=m;}
 
+  //! Print info about the optimizer state
+  /** It should end in a newline */
   virtual void show(std::ostream &out= std::cout) const {
     out << "Some optimizer" << std::endl;
   }

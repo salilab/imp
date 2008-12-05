@@ -59,8 +59,6 @@ class Model;
     \note In general, Particles should only be used through
     \ref decorators "Decorators" as these provide a nice and more reliable
     interface.
-
-    \ingroup kernel
  */
 class IMPDLLEXPORT Particle : public RefCountedObject
 {

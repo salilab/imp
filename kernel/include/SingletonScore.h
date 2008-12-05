@@ -16,12 +16,6 @@ IMP_BEGIN_NAMESPACE
 
 class Particle;
 
-/** \ingroup restraint
-    \addtogroup singleton Score functions on one particle
-    Score functions to be applied to a single particle. These can be
-    used to make more flexible restraints.
- */
-
 //! Abstract score function for a single particle.
 /** SingletonScores should take a UnaryFunction as their first
     argument if such is needed.
@@ -33,6 +27,9 @@ public:
   //! Compute the score for the particle and the derivative if needed.
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const = 0;
+  //! Print information about the SingletonScore to a stream.
+  /** Should end in a newline.
+   */
   virtual void show(std::ostream &out=std::cout) const = 0;
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore)
 };

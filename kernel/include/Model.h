@@ -26,15 +26,16 @@ typedef std::vector<ScoreState*> ScoreStates;
 //! Class for storing model, its restraints, and particles.
 /** The Model maintains a standard IMP container for each of Particle,
     ScoreState and Restraint object types.
-    \ingroup kernel
  */
 class IMPDLLEXPORT Model: public Object
 {
- private:
+private:
   friend class Restraint;
   unsigned int iteration_;
 public:
+  //!
   Model();
+  //!
   ~Model();
 
   IMP_CONTAINER(Particle, particle, ParticleIndex);

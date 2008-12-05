@@ -95,7 +95,7 @@ class KeyBase
       return get_map().find(sc)->second;
     }
   }
-protected:
+private:
  bool is_default() const;
 public:
   static const std::string get_string(int i)

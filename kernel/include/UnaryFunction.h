@@ -18,8 +18,6 @@ typedef std::pair<Float, Float> FloatPair;
 //! Abstract single variable functor class for score functions.
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
-
-    \ingroup kernel
  */
 class IMPDLLEXPORT UnaryFunction : public RefCountedObject
 {
@@ -40,6 +38,9 @@ public:
    */
   virtual FloatPair evaluate_with_derivative(Float feature) const = 0;
 
+  //! Print information about the UnaryFunction to a stream.
+  /** Should end in a newline.
+    */
   virtual void show(std::ostream &out=std::cout) const = 0;
 
   IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction)

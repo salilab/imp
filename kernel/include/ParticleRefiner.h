@@ -42,6 +42,8 @@ public:
    */
   virtual void cleanup_refined(Particle *a, Particles &b,
                                DerivativeAccumulator *da=0) const {}
+  //! Print information about the refiner
+  /** It should end in a new line. */
   virtual void show(std::ostream &out=std::cout) const {
     out << "ParticleRefiner base" << std::endl;
   };

@@ -22,8 +22,6 @@
 IMP_BEGIN_NAMESPACE
 
 //! Simple D vector class
-/** \ingroup helper
- */
 template <unsigned int D>
 class VectorD
 {
