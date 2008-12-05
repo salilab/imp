@@ -22,20 +22,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-namespace internal
-{
-
-template <class It>
-void check_particles_active(It b, It e, std::string msg)
-{
-  for (It c= b; c != e; ++c) {
-    IMP_check((*c)->get_is_active(), msg,
-              InactiveParticleException);
-  }
-}
-
-} // namespace internal
-
 class Model;
 
 //! Class to handle individual model particles.

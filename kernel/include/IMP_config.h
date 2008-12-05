@@ -34,4 +34,14 @@ namespace IMP \
 #define IMP_END_NAMESPACE \
 } /* namespace IMP */
 
+#define IMP_BEGIN_INTERNAL_NAMESPACE \
+IMP_BEGIN_NAMESPACE \
+namespace internal \
+{
+
+#define IMP_END_INTERNAL_NAMESPACE \
+} /* namespace internal */ \
+IMP_END_NAMESPACE
+
+
 #endif  /* IMP_CONFIG_H */

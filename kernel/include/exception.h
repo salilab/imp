@@ -143,9 +143,6 @@ IMPDLLEXPORT CheckLevel get_check_level();
 #define IMP_IF_CHECK(level)\
   if (level <= ::IMP::get_check_level())
 
-namespace internal
-{
-
 //! This is just here so you can catch errors more easily in the debugger
 /** Break on exception.cpp:31 to catch assertion failures.
     \ingroup assert
@@ -157,8 +154,6 @@ IMPDLLEXPORT void assert_fail(const char *msg);
     \ingroup assert
  */
 IMPDLLEXPORT void check_fail(const char *msg);
-
-} // namespace internal
 
 #ifndef NDEBUG
 
@@ -178,7 +173,7 @@ IMPDLLEXPORT void check_fail(const char *msg);
       oss << message << std::endl                                       \
           << "  File \"" << __FILE__ << "\", line " << __LINE__         \
           << std::endl;                                                 \
-      IMP::internal::assert_fail(oss.str().c_str());                    \
+      IMP::assert_fail(oss.str().c_str());                              \
     }                                                                   \
   } while(false)
 #else
@@ -197,7 +192,7 @@ IMPDLLEXPORT void check_fail(const char *msg);
     if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {              \
       std::ostringstream oss;                                           \
       oss << message << std::endl;                                      \
-      IMP::internal::check_fail(oss.str().c_str());                     \
+      IMP::check_fail(oss.str().c_str());                               \
       throw ExceptionType(oss.str().c_str());                           \
     }                                                                   \
   } while (false)
@@ -211,7 +206,7 @@ IMPDLLEXPORT void check_fail(const char *msg);
 #define IMP_failure(message, ExceptionType) { \
     std::ostringstream oss;                                             \
     oss << message << std::endl;                                        \
-    IMP::internal::check_fail(oss.str().c_str());                       \
+    IMP::check_fail(oss.str().c_str());                                 \
     throw ExceptionType(oss.str().c_str());}
 
 IMP_END_NAMESPACE

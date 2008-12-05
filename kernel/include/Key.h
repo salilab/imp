@@ -10,6 +10,7 @@
 
 #include "macros.h"
 #include "exception.h"
+#include "internal/key_helpers.h"
 
 #include <map>
 #include <vector>
@@ -62,41 +63,6 @@ IMP_BEGIN_NAMESPACE
   Name(const char *nm): P(nm){}                                         \
 };                                                                      \
 typedef std::vector<Name> Name##s
-
-namespace internal
-{
-
-
-/** \internal The data concerning keys.
- */
-struct IMPDLLEXPORT KeyData
-{
-  typedef std::map<std::string, int> Map;
-  typedef std::vector<std::string> RMap;
-
-  void show(std::ostream &out= std::cout) const;
-  KeyData();
-  void assert_is_initialized() const;
-  unsigned int add_key(std::string str) {
-    unsigned int i= map_.size();
-    map_[str]=i;
-    rmap_.push_back(str);
-    return i;
-  }
-
-  const Map &get_map() const {return map_;}
-  const RMap &get_rmap() const {return rmap_;}
-
-private:
-  double heuristic_;
-  Map map_;
-  RMap rmap_;
-};
-
-IMPDLLEXPORT extern std::map<unsigned int, KeyData> key_data;
-
-} // namespace internal
-
 
 
 //! A base class for  Keys

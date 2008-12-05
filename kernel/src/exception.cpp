@@ -51,11 +51,14 @@ ValueException::~ValueException() throw()
 {
 }
 
-namespace internal
+namespace
 {
 
 // The error message is already in the exception
 bool print_exceptions=false;
+
+
+}
 
 void assert_fail(const char *msg)
 {
@@ -71,7 +74,5 @@ void check_fail(const char *msg)
     IMP_ERROR(msg);
   }
 }
-
-} // namespace internal
 
 IMP_END_NAMESPACE
