@@ -23,6 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ListPairContainer : public PairContainer
 {
 public:
+  //! construct and pass an initial set of particle_pairs
   ListPairContainer(const ParticlePairs &ps= ParticlePairs());
 
   virtual ~ListPairContainer();
@@ -36,7 +37,6 @@ public:
     return internal::core_version_info;
   }
 
-  //!
   virtual void show(std::ostream &out = std::cout) const;
 };
 

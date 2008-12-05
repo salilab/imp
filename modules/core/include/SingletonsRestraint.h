@@ -55,9 +55,17 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info);
 
+  /** \note This can only be used if the container is a ListSingletonContainer
+  */
   void add_particles(const Particles &ps);
+  /** \note This can only be used if the container is a ListSingletonContainer
+   */
   void set_particles(const Particles &ps);
+  /** \note This can only be used if the container is a ListSingletonContainer
+  */
   void add_particle(Particle* v);
+  /** \note This can only be used if the container is a ListSingletonContainer
+  */
   void clear_particles();
 
   //! Get the container used to store Particles

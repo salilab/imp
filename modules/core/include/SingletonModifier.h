@@ -31,19 +31,17 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT SingletonModifier : public RefCountedObject
 {
 public:
-  //!
   SingletonModifier();
 
-  //!
   virtual ~SingletonModifier();
 
-  //!
+  /** Apply the function to a single value*/
   virtual void apply(Particle *a)=0;
 
-  //!
+  /** Print out information about the function, ending in a newline.*/
   virtual void show(std::ostream &out = std::cout) const=0;
 
-  //!
+  /** return information about the authors */
   virtual VersionInfo get_version_info() const = 0;
 };
 

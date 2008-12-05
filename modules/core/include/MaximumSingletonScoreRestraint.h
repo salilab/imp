@@ -32,6 +32,8 @@ class IMPCOREEXPORT MaximumSingletonScoreRestraint
   Pointer<SingletonContainer> c_;
   unsigned int n_;
 public:
+  /** n is the number of minimumal scores to use.
+   */
   MaximumSingletonScoreRestraint(SingletonScore *f,
                                  SingletonContainer *c,
                                  unsigned int n=1);

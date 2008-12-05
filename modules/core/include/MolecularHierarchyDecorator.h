@@ -38,7 +38,8 @@ class IMPCOREEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 public:
 
   //! The various values for levels of the hierarchy
-  /** - ATOM (0) an atom
+  /**
+      - ATOM (0) an atom
       - RESIDUE (1) a residue
       - NUCLEICACID (2) a nucleic acid
       - FRAGMENT (3) an arbitrary fragment
