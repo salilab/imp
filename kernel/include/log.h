@@ -8,7 +8,7 @@
 #ifndef IMP_LOG_H
 #define IMP_LOG_H
 
-#include "IMP_config.h"
+#include "config.h"
 
 #include <iostream>
 #include <fstream>

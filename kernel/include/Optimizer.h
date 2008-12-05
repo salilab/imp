@@ -8,7 +8,7 @@
 #ifndef IMP_OPTIMIZER_H
 #define IMP_OPTIMIZER_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "base_types.h"
 #include "VersionInfo.h"
 #include "Object.h"

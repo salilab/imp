@@ -7,7 +7,7 @@
 #ifndef IMP_PARTICLE_REFINER_H
 #define IMP_PARTICLE_REFINER_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "base_types.h"
 #include "Particle.h"
 #include "VersionInfo.h"

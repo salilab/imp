@@ -8,7 +8,7 @@
 #ifndef IMP_VECTOR_D_H
 #define IMP_VECTOR_D_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "base_types.h"
 #include "macros.h"
 #include "exception.h"

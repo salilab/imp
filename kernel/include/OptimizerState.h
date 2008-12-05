@@ -8,7 +8,7 @@
 #ifndef IMP_OPTIMIZER_STATE_H
 #define IMP_OPTIMIZER_STATE_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "VersionInfo.h"
 #include "RefCountedObject.h"
 #include "Pointer.h"

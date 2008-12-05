@@ -8,7 +8,7 @@
 #ifndef IMP_INTERNAL_UTILITY_H
 #define IMP_INTERNAL_UTILITY_H
 
-#include "../IMP_config.h"
+#include "../config.h"
 
 #include <algorithm>
 

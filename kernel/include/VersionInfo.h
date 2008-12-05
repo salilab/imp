@@ -8,7 +8,7 @@
 #ifndef IMP_VERSION_INFO_H
 #define IMP_VERSION_INFO_H
 
-#include "IMP_config.h"
+#include "config.h"
 
 #include <iostream>
 #include <string>

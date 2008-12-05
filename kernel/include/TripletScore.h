@@ -7,7 +7,7 @@
 #ifndef IMP_TRIPLET_SCORE_H
 #define IMP_TRIPLET_SCORE_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "base_types.h"
 #include "RefCountedObject.h"
 #include "Particle.h"

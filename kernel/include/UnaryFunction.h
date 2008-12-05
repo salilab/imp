@@ -7,7 +7,7 @@
 #ifndef IMP_UNARY_FUNCTION_H
 #define IMP_UNARY_FUNCTION_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "base_types.h"
 #include "RefCountedObject.h"
 #include "Pointer.h"

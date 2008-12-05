@@ -9,7 +9,7 @@
 #define IMP_EXCEPTION_H
 
 #include "log.h"
-#include "IMP_config.h"
+#include "config.h"
 
 #include <cassert>
 #include <cstring>

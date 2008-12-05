@@ -9,7 +9,7 @@
 #ifndef IMP_MODEL_H
 #define IMP_MODEL_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "Object.h"
 #include "Particle.h"
 #include "internal/kernel_version_info.h"

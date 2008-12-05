@@ -9,7 +9,7 @@
 #ifndef IMP_DERIVATIVE_ACCUMULATOR_H
 #define IMP_DERIVATIVE_ACCUMULATOR_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "base_types.h"
 #include <cmath>
 
