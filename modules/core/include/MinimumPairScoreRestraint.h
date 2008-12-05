@@ -32,6 +32,8 @@ class IMPCOREEXPORT MinimumPairScoreRestraint
   Pointer<PairContainer> c_;
   unsigned int n_;
 public:
+  /** n is the number of minimumal scores to use.
+   */
   MinimumPairScoreRestraint(PairScore *f,
                                  PairContainer *c,
                                  unsigned int n=1);

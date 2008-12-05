@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     \note The indexes can change when particles are inserted
     as the list is maintained in sorted order.
 
-    \verbinclude groupname_filtered_container.py
+    \verbinclude simple_examples/groupname_filtered_container.py
  */
 class IMPCOREEXPORT FilteredListGroupnameContainer
   : public GroupnameContainer

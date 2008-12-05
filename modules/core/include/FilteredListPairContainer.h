@@ -17,31 +17,37 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-// for swig
-
-
 //! Store a list of ParticlePairs filtered by other lists
 /** This class stores a list of ParticlePairs and a list of
     PairContainers with the invariant that none of the
     PairContainers contain any of the ParticlePairs stored.
 
+    \note Currently the filter is only applied upon addition
+    of a ParticlePair to the container. So adding more sets to the
+    filter afterwards won't remove objects. Nor will changing
+    the filtering sets.
+
     \note The indexes can change when particles are inserted
     as the list is maintained in sorted order.
+
+    \verbinclude simple_examples/pair_filtered_container.py
  */
 class IMPCOREEXPORT FilteredListPairContainer
   : public PairContainer
 {
   std::vector<ParticlePair> data_;
 public:
+  //! cannot pass a Pairs on construction
   FilteredListPairContainer();
 
   virtual ~FilteredListPairContainer();
 
   IMP_PAIR_CONTAINER(internal::core_version_info);
 
-  //! Add vt if one of the referenced containers already contains it
+  //! Add vt if none of the referenced containers already contains it
   void add_particle_pair(ParticlePair vt);
 
+  //! remove all objects from the container
   void clear_particle_pairs() {
     data_.clear();
   }

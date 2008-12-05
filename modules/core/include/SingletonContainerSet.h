@@ -24,6 +24,7 @@ class IMPCOREEXPORT SingletonContainerSet
   : public SingletonContainer
 {
 public:
+  //! Construct and empty set
   SingletonContainerSet();
 
   virtual ~SingletonContainerSet();

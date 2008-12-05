@@ -23,6 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ListSingletonContainer : public SingletonContainer
 {
 public:
+  //! construct and pass an initial set of particles
   ListSingletonContainer(const Particles &ps= Particles());
 
   virtual ~ListSingletonContainer();
@@ -36,7 +37,6 @@ public:
     return internal::core_version_info;
   }
 
-  //!
   virtual void show(std::ostream &out = std::cout) const;
 };
 

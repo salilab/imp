@@ -55,9 +55,17 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info);
 
+  /** \note This can only be used if the container is a ListPairContainer
+  */
   void add_particle_pairs(const ParticlePairs &ps);
+  /** \note This can only be used if the container is a ListPairContainer
+   */
   void set_particle_pairs(const ParticlePairs &ps);
+  /** \note This can only be used if the container is a ListPairContainer
+  */
   void add_particle_pair(ParticlePair v);
+  /** \note This can only be used if the container is a ListPairContainer
+  */
   void clear_particle_pairs();
 
   //! Get the container used to store Particles

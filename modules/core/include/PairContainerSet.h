@@ -24,6 +24,7 @@ class IMPCOREEXPORT PairContainerSet
   : public PairContainer
 {
 public:
+  //! Construct and empty set
   PairContainerSet();
 
   virtual ~PairContainerSet();

@@ -6,6 +6,7 @@
  */
 
 #include <IMP/core/BondDecoratorListScoreState.h>
+#include <IMP/core/deprecation.h>
 
 #include <algorithm>
 

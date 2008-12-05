@@ -51,39 +51,42 @@ public:
       bounds of your particular container.
    */
   virtual bool get_contains_particle(Particle* p) const =0;
-  //!
+  //! return the number of particles in the container
+  /** \note this isn't always constant time
+   */
   virtual unsigned int get_number_of_particles() const =0;
-  //!
+
+  //! get one particle
   virtual Particle* get_particle(unsigned int i) const=0;
 
+  //! print information about the container
   virtual void show(std::ostream &out = std::cout) const;
 
+  //! provide information about who implemeneted the container
   virtual VersionInfo get_version_info() const=0;
 
-  //!
+  //! An iterator through the contents of the container
   typedef internal::IndexingIterator<Accessor> ParticleIterator;
-  //!
+  //! begin iterating through the particles
   ParticleIterator particles_begin() const {
     // Since I can't make the count mutable in Object
     return
       ParticleIterator(Accessor(const_cast<SingletonContainer*>(this)),
                         0);
   }
-  //!
+  //! iterate through the particles
   ParticleIterator particles_end() const {
     return
       ParticleIterator(Accessor(const_cast<SingletonContainer*>(this)),
                         get_number_of_particles());
     }
-
-  /** \todo patch ref_counting.h so this is not needed.
-   */
-  unsigned int get_index() const {return -1;}
 };
 
 IMP_OUTPUT_OPERATOR(SingletonContainer);
 
+//! A collection of containers
 typedef std::vector<SingletonContainer*> SingletonContainers;
+//! The index to use when this container is store in another object
 typedef Index<SingletonContainer> SingletonContainerIndex;
 
 IMPCORE_END_NAMESPACE
