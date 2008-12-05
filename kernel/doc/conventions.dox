@@ -57,7 +57,7 @@
     - member methods that get a value should begin with \c set_
     - member methods which return a value should begin with \c get_
 
-    \b Rational: This makes it easier to tell between class names and
+    \b Rationale: This makes it easier to tell between class names and
     function names where this is ambiguous (particularly an issue with
     the Python interface). The Python guys also mandate CamelCase for
     their class names, so this avoids any need to rename classes
@@ -96,7 +96,7 @@
     module. Since headers are staged to a build directory, there is no
     danger of including an uninstalled header this way.
 
-    \b Rational: This makes any dependencies in your code obvious, and
+    \b Rationale: This makes any dependencies in your code obvious, and
     by including standard headers \e after IMP headers, any missing
     includes in the headers themselves show up early (rather than
     being masked by other headers you include). Adding the IMP prefix
