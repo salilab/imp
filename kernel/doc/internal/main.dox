@@ -1,0 +1,10 @@
+/**
+  \mainpage IMP Internal API reference
+  
+   This page is the main page for the internal \imp documentation. This
+   documentation should be used by developers of \imp modules as it includes
+   documentation of the \c .cpp files as well as the internal and static
+   namespaces. You probably want the API documentation instead, unless you
+   know what you are doing.
+ */
+ 
