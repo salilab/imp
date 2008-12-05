@@ -1,5 +1,5 @@
 /*
- *  IMP_config.h
+ *  config.h
  *  IMP
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

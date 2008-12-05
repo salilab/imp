@@ -8,7 +8,7 @@
 #ifndef IMP_RESTRAINT_H
 #define IMP_RESTRAINT_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "DerivativeAccumulator.h"
 #include "Model.h"
 #include "Particle.h"

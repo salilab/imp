@@ -8,7 +8,7 @@
 #ifndef IMP_BASE_TYPES_H
 #define IMP_BASE_TYPES_H
 
-#include "IMP_config.h"
+#include "config.h"
 #include "Index.h"
 #include "Key.h"
 

@@ -8,7 +8,7 @@
 #ifndef IMP_INTERNAL_KEY_HELPERS_H
 #define IMP_INTERNAL_KEY_HELPERS_H
 
-#include "../IMP_config.h"
+#include "../config.h"
 #include <vector>
 #include <map>
 
