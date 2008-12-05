@@ -68,7 +68,7 @@ class IMPDLLEXPORT Restraint : public RefCountedObject
 public:
   //! Initialize the Restraint
   Restraint();
-  virtual ~Restraint();
+  ~Restraint();
 
   //! Return the score for this restraint for the current state of the model.
   /** \param[in] accum If not NULL, use this object to accumulate partial first
@@ -128,6 +128,8 @@ public:
   virtual ParticlesList get_interacting_particles() const;
 
   IMP_LIST(protected, Particle, particle, Particle*)
+
+    //IMP_REF_COUNTED_DESTRUCTOR(Restraint)
 
 private:
   /* This pointer should never be ref counted as Model has a

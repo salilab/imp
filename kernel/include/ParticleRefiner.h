@@ -25,7 +25,6 @@ class IMPDLLEXPORT ParticleRefiner : public RefCountedObject
 {
 public:
   ParticleRefiner() {}
-  virtual ~ParticleRefiner();
   //! Return true if this refiner can refine that particle
   /** This should not throw, so be careful what fields are touched.
    */
@@ -48,6 +47,8 @@ public:
   };
 
   virtual IMP::VersionInfo get_version_info() const =0;
+
+  IMP_REF_COUNTED_DESTRUCTOR(ParticleRefiner)
 };
 
 typedef std::vector<ParticleRefiner*> ParticleRefiners;

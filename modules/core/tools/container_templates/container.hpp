@@ -44,8 +44,6 @@ class IMPCOREEXPORT GroupnameContainer : public RefCountedObject
 public:
   GroupnameContainer();
 
-  virtual ~GroupnameContainer();
-
   //!
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
@@ -80,6 +78,8 @@ public:
       ClassnameIterator(Accessor(const_cast<GroupnameContainer*>(this)),
                         get_number_of_classnames());
     }
+
+  IMP_REF_COUNTED_DESTRUCTOR(GroupnameContainer)
 };
 
 IMP_OUTPUT_OPERATOR(GroupnameContainer);

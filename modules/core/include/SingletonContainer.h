@@ -44,8 +44,6 @@ class IMPCOREEXPORT SingletonContainer : public RefCountedObject
 public:
   SingletonContainer();
 
-  virtual ~SingletonContainer();
-
   //!
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
@@ -80,6 +78,8 @@ public:
       ParticleIterator(Accessor(const_cast<SingletonContainer*>(this)),
                         get_number_of_particles());
     }
+
+  IMP_REF_COUNTED_DESTRUCTOR(SingletonContainer)
 };
 
 IMP_OUTPUT_OPERATOR(SingletonContainer);

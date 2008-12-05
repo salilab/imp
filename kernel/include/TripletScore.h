@@ -30,11 +30,12 @@ class IMPDLLEXPORT TripletScore : public RefCountedObject
 {
 public:
   TripletScore() {}
-  virtual ~TripletScore();
   //! Compute the score for the triplet and the derivative if needed.
   virtual Float evaluate(Particle *a, Particle *b, Particle *c,
                          DerivativeAccumulator *da) const = 0;
   virtual void show(std::ostream &out=std::cout) const = 0;
+
+  IMP_REF_COUNTED_DESTRUCTOR(TripletScore)
 };
 
 IMP_OUTPUT_OPERATOR(TripletScore);

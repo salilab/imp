@@ -39,7 +39,6 @@ class IMPDLLEXPORT OptimizerState : public Object
 
 public:
   OptimizerState();
-  virtual ~OptimizerState();
 
   // Update the state given the current state of the optimizer
   virtual void update() = 0;
@@ -61,6 +60,7 @@ public:
                "Must call set_optimizer before get_optimizer on state");
     return optimizer_.get();
   }
+  IMP_REF_COUNTED_DESTRUCTOR(OptimizerState)
 protected:
   //! Stored optimizer
   Pointer<Optimizer> optimizer_;
