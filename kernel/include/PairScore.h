@@ -15,12 +15,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-/** \ingroup restraint
-    \addtogroup pairscore Score functions on two particles
-    Score functions to by applied to a pair of particles. These can be
-    used to make more flexible restraints.
- */
-
 //! Abstract score function for a pair of particles.
 /** PairScores should take a UnaryFunction as their first
     argument if such is needed.
@@ -32,6 +26,8 @@ public:
   //! Compute the score for the pair and the derivative if needed.
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const = 0;
+  //! Print information for the PairScore.
+  /** Should end in a newline. */
   virtual void show(std::ostream &out=std::cout) const = 0;
   IMP_REF_COUNTED_DESTRUCTOR(PairScore)
 };

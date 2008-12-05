@@ -19,9 +19,11 @@ IMP_BEGIN_NAMESPACE
 class IMPDLLEXPORT DerivativeAccumulator
 {
 public:
+  //! the weight is one by default
   DerivativeAccumulator(Float weight=1.0)
       : weight_(weight) {}
 
+  //! The weight is multiplied by the new weight
   DerivativeAccumulator(const DerivativeAccumulator &copy, Float weight=1.0)
       : weight_(copy.weight_ * weight) {}
 
@@ -34,7 +36,7 @@ public:
     return value * weight_;
   }
 
-protected:
+private:
   Float weight_;
 };
 

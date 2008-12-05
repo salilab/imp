@@ -38,6 +38,7 @@ public:
               ValueException);
     return i_;
   }
+  //!
   void show(std::ostream &out) const {
     if (!is_default()) {
       out << "(" << i_ << ")";
@@ -57,7 +58,7 @@ public:
     ++i_;
   }
 #endif
-protected:
+private:
   bool is_default() const {
     return i_==-1;
   }

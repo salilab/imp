@@ -17,6 +17,7 @@
 
 IMP_BEGIN_NAMESPACE
 
+//! A location in 3D
 typedef VectorD<3> Vector3D;
 
 IMP_END_NAMESPACE

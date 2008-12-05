@@ -22,7 +22,6 @@ public:
   VersionInfo(std::string author, std::string version) : author_(author),
                                                          version_(version) {}
 
-  //! Default constructor
   VersionInfo() : author_("unknown"), version_("unknown") {}
 
   //! \return author of this object.
@@ -37,7 +36,7 @@ public:
     out << "author: " << author_ << std::endl;
   }
 
-protected:
+private:
   std::string author_, version_;
 };
 

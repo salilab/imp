@@ -17,13 +17,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-/** \defgroup kernel IMP Kernel
-    The core IMP types
-
-    \defgroup helper Miscellaneous helpers
-    Classes and functions which are there to make your life easier.
- */
-
 /** \internal \namespace IMP::internal Implementation details.
  */
 
@@ -37,9 +30,11 @@ typedef int Int;
 typedef std::string String;
 
 
-
+//! Standard way to pass a bunch of Float values
 typedef std::vector<Float> Floats;
+//! Standard way to pass a bunch of Int values
 typedef std::vector<Int> Ints;
+//! Standard way to pass a bunch of String values
 typedef std::vector<String> Strings;
 
 
@@ -49,9 +44,13 @@ struct RestraintTag {};
 struct ScoreStateTag {};
 struct OptimizerStateTag {};
 
+//! Index to access a Particle in a container in an object
 typedef Index<ParticleTag> ParticleIndex;
+//! Index to access a Restraint in a container in an object
 typedef Index<RestraintTag> RestraintIndex;
+//! Index to access a ScoreState in a container in an object
 typedef Index<ScoreStateTag> ScoreStateIndex;
+//! Index to access a OptimizerState in a container in an object
 typedef Index<OptimizerStateTag> OptimizerStateIndex;
 
 class Particle;
@@ -62,10 +61,12 @@ class Particle;
    is not as pretty for Python.
  */
 typedef std::vector<Particle*> Particles;
+//! The standard way of storing a pair of Particles
 typedef std::pair<Particle*, Particle*> ParticlePair;
+//! A collection of ParticlePair
 typedef std::vector<ParticlePair> ParticlePairs;
 
-
+//! A collection of ParticleIndex
 typedef std::vector<ParticleIndex> ParticleIndexes;
 
 class Particle;
