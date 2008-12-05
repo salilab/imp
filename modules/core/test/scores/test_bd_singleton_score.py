@@ -17,7 +17,7 @@ class DistanceTests(IMP.test.TestCase):
         b0= IMP.core.BondedDecorator.create(p0)
         b1= IMP.core.BondedDecorator.create(p1)
         b= IMP.core.custom_bond(b0, b1, 3,2)
-        ss= IMP.core.BondDecoratorSingletonScore(IMP.core.Linear(0,1))
+        ss= IMP.core.BondSingletonScore(IMP.core.Linear(0,1))
 
         d0.set_coordinates(IMP.Vector3D(0,0,0))
         d1.set_coordinates(IMP.Vector3D(0,0,3))

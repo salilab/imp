@@ -73,7 +73,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(AngleTripletScore)
     IMP_OWN_FIRST_CONSTRUCTOR(AttributeSingletonScore)
     IMP_OWN_FIRST_CONSTRUCTOR(BondDecoratorRestraint)
-    IMP_OWN_FIRST_CONSTRUCTOR(BondDecoratorSingletonScore)
+    IMP_OWN_FIRST_CONSTRUCTOR(BondSingletonScore)
     IMP_OWN_FIRST_CONSTRUCTOR(ConnectivityRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(DihedralRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(DistancePairScore)
@@ -150,9 +150,9 @@ namespace IMP {
 %include "IMP/core/BallMover.h"
 %include "IMP/core/BipartiteNonbondedListScoreState.h"
 %include "IMP/core/BondDecoratorListScoreState.h"
-%include "IMP/core/BondDecoratorPairContainer.h"
+%include "IMP/core/BondPairContainer.h"
 %include "IMP/core/BondDecoratorRestraint.h"
-%include "IMP/core/BondDecoratorSingletonScore.h"
+%include "IMP/core/BondSingletonScore.h"
 %include "IMP/core/BondBondPairScore.h"
 %include "IMP/core/CoverBondSingletonModifier.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"

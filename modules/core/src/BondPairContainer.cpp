@@ -6,17 +6,17 @@
  *
  */
 
-#include "IMP/core/BondDecoratorPairContainer.h"
+#include "IMP/core/BondPairContainer.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
-BondDecoratorPairContainer
-::BondDecoratorPairContainer(){
+BondPairContainer
+::BondPairContainer(){
 }
 
-BondDecoratorPairContainer::~BondDecoratorPairContainer(){}
+BondPairContainer::~BondPairContainer(){}
 
-bool BondDecoratorPairContainer
+bool BondPairContainer
 ::get_contains_particle_pair(ParticlePair pp) const {
   if (!BondedDecorator::is_instance_of(pp.first)
       || ! BondedDecorator::is_instance_of(pp.second)) {
@@ -29,21 +29,21 @@ bool BondDecoratorPairContainer
   return bd != BondDecorator();
 }
 
-unsigned int BondDecoratorPairContainer
+unsigned int BondPairContainer
 ::get_number_of_particle_pairs() const {
   return 0;
 }
 
-ParticlePair BondDecoratorPairContainer
+ParticlePair BondPairContainer
 ::get_particle_pair(unsigned int i) const {
-  throw InvalidStateException("BondDecoratorPairContainer does" \
+  throw InvalidStateException("BondPairContainer does" \
                               " not contain any pairs");
   return ParticlePair();
 }
 
 
-void BondDecoratorPairContainer::show(std::ostream &out) const {
-  out << "BondDecoratorPairContainer" << std::endl;
+void BondPairContainer::show(std::ostream &out) const {
+  out << "BondPairContainer" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

@@ -1,12 +1,12 @@
 /**
- *  \file BondDecoratorSingletonScore.h
+ *  \file BondSingletonScore.h
  *  \brief A Score on the distance between a the two particles in a bond.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_BOND_DECORATOR_SINGLETON_SCORE_H
-#define IMPCORE_BOND_DECORATOR_SINGLETON_SCORE_H
+#ifndef IMPCORE_BOND_SINGLETON_SCORE_H
+#define IMPCORE_BOND_SINGLETON_SCORE_H
 
 #include "core_exports.h"
 
@@ -22,12 +22,12 @@ IMPCORE_BEGIN_NAMESPACE
     stiffness * (distance-bond_length)
     \ingroup bond
  */
-class IMPCOREEXPORT BondDecoratorSingletonScore : public SingletonScore
+class IMPCOREEXPORT BondSingletonScore : public SingletonScore
 {
   Pointer<UnaryFunction> f_;
 public:
-  BondDecoratorSingletonScore(UnaryFunction *f);
-  virtual ~BondDecoratorSingletonScore(){}
+  BondSingletonScore(UnaryFunction *f);
+  virtual ~BondSingletonScore(){}
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
@@ -35,4 +35,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_BOND_DECORATOR_SINGLETON_SCORE_H */
+#endif  /* IMPCORE_BOND_SINGLETON_SCORE_H */

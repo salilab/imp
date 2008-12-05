@@ -5,7 +5,7 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/core/BondDecoratorSingletonScore.h"
+#include "IMP/core/BondSingletonScore.h"
 #include "IMP/core/internal/evaluate_distance_pair_score.h"
 #include "IMP/core/bond_decorators.h"
 #include "IMP/core/XYZDecorator.h"
@@ -13,10 +13,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-BondDecoratorSingletonScore::BondDecoratorSingletonScore(UnaryFunction *f):
+BondSingletonScore::BondSingletonScore(UnaryFunction *f):
                                                               f_(f){}
 
-Float BondDecoratorSingletonScore::evaluate(Particle *b,
+Float BondSingletonScore::evaluate(Particle *b,
                                             DerivativeAccumulator *da) const
 {
   IMP_IF_CHECK(EXPENSIVE) {
@@ -47,9 +47,9 @@ Float BondDecoratorSingletonScore::evaluate(Particle *b,
                                            s*(boost::lambda::_1-l));
 }
 
-void BondDecoratorSingletonScore::show(std::ostream &out) const
+void BondSingletonScore::show(std::ostream &out) const
 {
-  out << "BondDecoratorSingletonScore using ";
+  out << "BondSingletonScore using ";
   f_->show(out);
   out << std::endl;
 }

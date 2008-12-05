@@ -31,7 +31,7 @@ nbl= IMP.core.ClosePairsScoreState(chain)
 nbli= m.add_score_state(nbl)
 # Exclude bonds from closest pairs
 fl= nbl.get_close_pairs_container()
-fl.add_pair_container(IMP.core.BondDecoratorPairContainer())
+fl.add_pair_container(IMP.core.BondPairContainer())
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
@@ -39,7 +39,7 @@ evr= IMP.core.PairsRestraint(ps, fl)
 evri= m.add_restraint(evr)
 
 # Restraint for bonds
-bss= IMP.core.BondDecoratorSingletonScore(IMP.core.Harmonic(0,1))
+bss= IMP.core.BondSingletonScore(IMP.core.Harmonic(0,1))
 br= IMP.core.SingletonsRestraint(bss, bonds)
 bri= m.add_restraint(br)
 
