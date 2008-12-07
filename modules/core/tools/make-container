@@ -62,11 +62,11 @@ def make_one(name, value, multi, args):
                path+"/tools/container_templates/max.hpp"),
               ("src/Maximum"+multi + "ScoreRestraint.cpp",
                path+"/tools/container_templates/max.cc"),
-              ("test/restraints/test_"+cname + "_restraint.py",
+              ("test/containers/test_"+cname + "_restraint.py",
                path+"/tools/container_templates/test.py"),
               ("pyext/"+lcname+"_containers.i",
                path+"/tools/container_templates/swig.i"),
-              ("test/states/test_"+cname + "_state.py",
+              ("test/containers/test_"+cname + "_state.py",
                path+"/tools/container_templates/test_state.py"),
               ):
         ofile= open(p[0], 'w')
