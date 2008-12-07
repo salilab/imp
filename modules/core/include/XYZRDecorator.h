@@ -93,11 +93,14 @@ IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
 /** \param[in] v The vector of XYZR objects to enclose
     \param[out] b The one whose values should be set
 
-    \note this takes a Particles object rather than a vector of
+    \note This takes a Particles object rather than a vector of
     something else since you can't easily cast vectors of
     different things to one another. Well, you can cast vectors
     of decorators in C++, but you can't in python without adding
     explicit support.
+
+    \note This function produces tigher bounds if the CGAL library
+    is linked.
 
     \relates XYZRDecorator
  */
