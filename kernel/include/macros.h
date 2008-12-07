@@ -281,7 +281,20 @@ public:                                                                 \
   TC& operator=(const TC &o) {copy_from(o); return *this;}
 
 
-#ifndef SWIG
+
+#ifdef _MSC_VER
+// VC doesn't understand friends properly
+#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
+public:                                                         \
+virtual ~Classname();
+#else
+
+#ifdef SWIG
+// SWIG doesn't do friends right either, but we don't care as much
+#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
+protected:                                                      \
+    virtual ~Classname();
+#else
 //! Declare a protected destructor and get the friends right
 /** The destructor is unprotected for SWIG since if it is protected
     SWIG does not wrap the python proxy distruction and so does not
@@ -293,11 +306,7 @@ public:                                                                 \
   template <class T> friend void IMP::internal::disown(T*);     \
   friend class IMP::internal::UnRef<true>;                      \
   virtual ~Classname();
-#else
-#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
-  protected:                                                    \
-  virtual ~Classname();
-
-#endif
+#endif // SWIG
+#endif // _MSC_VER
 
 #endif  /* IMP_MACROS_H */
