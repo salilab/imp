@@ -1,0 +1,11 @@
+/** \namespace IMP::domino
+\brief IMP.domino provides a cool optimizer. 
+
+<b>Overview:</b> IMP.domino provides a cool optimizer.
+
+<b>Authors:</b> Keren Lasker.
+
+<b>Publications:</b> IMP.domino is covered by the main IMP publications.
+
+<b>License:</b> IMP.domino is licensed under the LGPL.
+*/

@@ -1,0 +1,11 @@
+/** \namespace IMP::saxs
+\brief IMP.saxs adds small angle x-ray scattering support to IMP. 
+
+<b>Overview:</b> IMP.saxs adds small angle x-ray scattering support to IMP.
+
+<b>Authors:</b> Seung Joong Kim
+
+<b>Publications:</b> IMP.saxs is covered by the main IMP publications.
+
+<b>License:</b> IMP.saxs is licensed under the LGPL.
+*/

@@ -1,0 +1,12 @@
+/** \namespace IMP::modeller
+\brief IMP.modeller contains functionality for integrating modeller with IMP. 
+
+<b>Overview:</b> IMP.modeller supports integration of modeller with IMP. It
+also provides PDB reading support.
+
+<b>Authors:</b> Daniel Russel and Ben Webb.
+
+<b>Publications:</b> Modeller is covered by blah.
+
+<b>License:</b> IMP.modeller is licensed under blah.
+*/
