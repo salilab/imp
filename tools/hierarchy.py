@@ -25,9 +25,6 @@ def _build_header(target, source, env):
         if not src.startswith('internal'):
             print >> fh, '#include "%s/%s"' % (module, src)
     print >> fh, "\n#endif  /* %s */" % guard
-    if module != 'IMP':
-        print >> fh, "\n/**\n  \\namespace IMP::%s " % module
-        print >> fh, "  \\brief %s\n */" % description
 
 def _make_nodes(files):
     nodes = []

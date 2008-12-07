@@ -1,0 +1,12 @@
+/** \namespace IMP::em
+\brief IMP.em allows density maps to be used as restraints. 
+
+<b>Overview:</b> IMP.em allows density maps to be used as restraints using
+the EMBED package (an external dependency).
+
+<b>Authors:</b> Keren Lasker and Friedrich Foerster.
+
+<b>Publications:</b> IMP.em is covered by the main IMP publications.
+
+<b>License:</b> IMP.em is licensed under the LGPL.
+*/
