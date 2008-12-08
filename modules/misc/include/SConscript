@@ -1,7 +1,6 @@
 Import('env')
 
 files = [
-         'ChildrenParticleRefiner.h',
          'LowestRefinedPairScore.h',
          'RefineOncePairScore.h',
          'TunnelSingletonScore.h',

@@ -18,6 +18,7 @@ files = [
          'BoxSweepClosePairsFinder.cpp',
          'BrownianDynamics.cpp',
          'CMMLogOptimizerState.cpp',
+         'ChildrenParticleRefiner.cpp',
          'CloseBipartitePairsScoreState.cpp',
          'ClosePairsFinder.cpp',
          'ClosePairsScoreState.cpp',

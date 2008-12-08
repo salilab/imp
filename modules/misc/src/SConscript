@@ -2,7 +2,6 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
-         'ChildrenParticleRefiner.cpp',
          'LowestRefinedPairScore.cpp',
          'RefineOncePairScore.cpp',
          'TunnelSingletonScore.cpp',
