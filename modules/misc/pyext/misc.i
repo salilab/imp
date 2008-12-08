@@ -32,7 +32,6 @@ namespace IMP::misc {
 
 /* Wrap our own classes */
 %include "IMP/misc/WormLikeChain.h"
-%include "IMP/misc/ChildrenParticleRefiner.h"
 %include "IMP/misc/RefineOncePairScore.h"
 %include "IMP/misc/TunnelSingletonScore.h"
 %include "IMP/misc/LowestRefinedPairScore.h"

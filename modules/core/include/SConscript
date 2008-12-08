@@ -18,6 +18,7 @@ files = [
          'BoxSweepClosePairsFinder.h',
          'BrownianDynamics.h',
          'CMMLogOptimizerState.h',
+         'ChildrenParticleRefiner.h',
          'CloseBipartitePairsScoreState.h',
          'ClosePairsFinder.h',
          'ClosePairsScoreState.h',

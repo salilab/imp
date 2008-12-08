@@ -5,11 +5,11 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include <IMP/misc/ChildrenParticleRefiner.h>
+#include <IMP/core/ChildrenParticleRefiner.h>
 
 #include <IMP/core/HierarchyDecorator.h>
 
-IMPMISC_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 ChildrenParticleRefiner::ChildrenParticleRefiner()
 {
@@ -48,4 +48,4 @@ void ChildrenParticleRefiner::show(std::ostream &out) const
   out << "ChildrenParticleRefiner" << std::endl;
 }
 
-IMPMISC_END_NAMESPACE
+IMPCORE_END_NAMESPACE

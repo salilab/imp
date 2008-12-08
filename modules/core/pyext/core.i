@@ -157,6 +157,7 @@ namespace IMP {
 %include "IMP/core/CoverBondSingletonModifier.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/BrownianDynamics.h"
+%include "IMP/core/ChildrenParticleRefiner.h"
 %include "IMP/core/CMMLogOptimizerState.h"
 %include "IMP/core/ClosedCubicSpline.h"
 %include "IMP/core/ClosePairsScoreState.h"

@@ -1,7 +1,6 @@
 import unittest
 import IMP
 import IMP.test
-import IMP.misc
 import IMP.core
 
 class Test(IMP.test.TestCase):
@@ -23,7 +22,7 @@ class Test(IMP.test.TestCase):
             hp= IMP.core.HierarchyDecorator.create(p)
             hpp.add_child(hp)
             c.append(p)
-        pr= IMP.misc.ChildrenParticleRefiner()
+        pr= IMP.core.ChildrenParticleRefiner()
         cs= pr.get_refined(pp)
         self.assertEqual(len(cs), len(c))
         for i in range(0, len(cs)):
