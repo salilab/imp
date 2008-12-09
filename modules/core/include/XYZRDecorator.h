@@ -24,6 +24,7 @@ class IMPCOREEXPORT XYZRDecorator: public XYZDecorator
 {
   FloatKey my_radius_;
 public:
+  XYZRDecorator(){}
   /**
      \param[in] p The particle to wrap.
      \param[in] radius_key The (optional) key name to use.
