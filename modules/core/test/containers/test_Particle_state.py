@@ -123,7 +123,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         k= IMP.IntKey("thevalue")
         f= SingletonTestModifier(k)
         print "apply"
-        s= IMP.core.SingletonsScoreState(f, c)
+        s= IMP.core.SingletonsScoreState(c, f, None)
         self.assert_( not f.thisown)
         self.assert_( not c.thisown)
         m.add_score_state(s)
