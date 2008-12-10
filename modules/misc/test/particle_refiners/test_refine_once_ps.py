@@ -11,7 +11,7 @@ class Test(IMP.test.TestCase):
 
 
     def test_rops(self):
-        """Make sure that bond cover coordinates are correct"""
+        """Checking refine once pair score"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         pp= IMP.Particle()
