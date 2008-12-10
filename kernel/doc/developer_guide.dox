@@ -7,7 +7,7 @@ Developers should familiarize themselves which the guidelines presented in this 
 
 \section policies Policies
 
-Code in the kernel or core must compile and all core and kernel tests must pass. Code checked into other modules should compile or be excluded from the build system and all enabled test should pass.
+Code in the IMP or IMP::core modules must compile and all IMP::core and IMP tests must pass. Code checked into other modules should compile or be excluded from the build system and all enabled test should pass.
 
 All code must follow the \ref coding_conventions "IMP coding conventions".
 
@@ -31,9 +31,9 @@ It is strongly recommended that all methods or classes be tested in unit tests. 
 
 \section modules Choosing a module for your code
 
-IMP is divided into models which group related functionality. Generally useful functionality should be added to the core or misc model, but large blocks of well defined functionality should probably go in their own model. Examples of appropriate units for a model include code for building restraints from a particular type of experimental data such as SAXS or Cry-EM. Please post to the <imp-dev@salilab.org> mailing list to discuss the placement of new code.
+IMP is divided into models which group related functionality. Generally useful functionality should be added to the core or misc model, but large blocks of well defined functionality should probably go in their own model. Examples of appropriate units for a module include code for building restraints from a particular type of experimental data such as IMP::saxs or a large piece of functionality such as IMP::domino. Please post to the <imp-dev@salilab.org> mailing list to discuss the placement of new code.
 
-Each module has a responsible owner or owners, and it is up to them whether they want to allow others commit to change code in their module. Email the imp-dev@salilab.org> mailing list to discuss such policies.
+Each module has a responsible owner or owners, and it is up to them whether they want to allow others commit to change code in their module. Email the <imp-dev@salilab.org> mailing list to discuss such policies.
 
 
 \section submission Submission of changes to IMP kernel or IMP.core
