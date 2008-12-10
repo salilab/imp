@@ -8,7 +8,7 @@
 #ifndef IMPCORE_CLOSE_PAIRS_FINDER_H
 #define IMPCORE_CLOSE_PAIRS_FINDER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "XYZRDecorator.h"
 #include "SingletonContainer.h"
 #include "FilteredListPairContainer.h"

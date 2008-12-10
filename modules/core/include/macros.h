@@ -283,26 +283,4 @@ protection:                                                             \
 #define IMP_ATOM_TYPE_INDEX 8974343
 #define IMP_RESIDUE_TYPE_INDEX 90784334
 
-
-
-
-
-// These belong in core_exports.h
-#define IMPCORE_BEGIN_INTERNAL_NAMESPACE        \
-namespace IMP                                   \
-{                                               \
-                                                \
-namespace core                                  \
-{                                               \
-                                                \
-namespace internal                              \
-{
-
-#define IMPCORE_END_INTERNAL_NAMESPACE          \
-} /* namespace internal */                      \
-                                                \
-} /* namespace core */                          \
-                                                \
-} /* namespace IMP */
-
 #endif  /* IMPCORE_DECORATOR_MACROS_H */

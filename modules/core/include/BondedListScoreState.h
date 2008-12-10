@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BONDED_LIST_SCORE_STATE_H
 #define IMPCORE_BONDED_LIST_SCORE_STATE_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/ScoreState.h>
 #include <IMP/Index.h>

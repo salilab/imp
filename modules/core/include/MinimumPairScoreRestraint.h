@@ -11,7 +11,7 @@
 #ifndef IMPCORE_MINIMUM_PAIR_SCORE_RESTRAINT_H
 #define IMPCORE_MINIMUM_PAIR_SCORE_RESTRAINT_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 #include "PairContainer.h"
 #include <IMP/Restraint.h>

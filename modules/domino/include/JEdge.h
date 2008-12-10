@@ -9,7 +9,7 @@
 
 #include "JNode.h"
 #include "CombState.h"
-#include "domino_exports.h"
+#include "config.h"
 
 #include <IMP/Restraint.h>
 

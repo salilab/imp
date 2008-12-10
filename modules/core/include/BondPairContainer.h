@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BOND_PAIR_CONTAINER_H
 #define IMPCORE_BOND_PAIR_CONTAINER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "PairContainer.h"
 #include "bond_decorators.h"
 #include "internal/core_version_info.h"

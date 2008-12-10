@@ -8,7 +8,7 @@
 #ifndef IMPCORE_CHILDREN_PARTICLE_REFINER_H
 #define IMPCORE_CHILDREN_PARTICLE_REFINER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 
 #include <IMP/ParticleRefiner.h>

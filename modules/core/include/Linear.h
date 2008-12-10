@@ -7,7 +7,7 @@
 #ifndef IMPCORE_LINEAR_H
 #define IMPCORE_LINEAR_H
 
-#include "core_exports.h"
+#include "config.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE

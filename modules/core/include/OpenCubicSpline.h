@@ -7,7 +7,7 @@
 #ifndef IMPCORE_OPEN_CUBIC_SPLINE_H
 #define IMPCORE_OPEN_CUBIC_SPLINE_H
 
-#include "core_exports.h"
+#include "config.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE

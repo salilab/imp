@@ -8,7 +8,7 @@
 #ifndef IMPCORE_NONBONDED_LIST_SCORE_STATE_H
 #define IMPCORE_NONBONDED_LIST_SCORE_STATE_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 #include "BondedListScoreState.h"
 #include "XYZDecorator.h"

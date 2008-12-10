@@ -8,7 +8,7 @@
 #ifndef IMPCORE_TYPED_PAIR_SCORE_H
 #define IMPCORE_TYPED_PAIR_SCORE_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/PairScore.h>
 

@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BOND_BOND_PAIR_SCORE_H
 #define IMPCORE_BOND_BOND_PAIR_SCORE_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/PairScore.h>
 #include <IMP/Vector3D.h>

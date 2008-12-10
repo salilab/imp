@@ -9,7 +9,7 @@
 #ifndef IMPCORE_BBOX_NBL_HELPERS_H
 #define IMPCORE_BBOX_NBL_HELPERS_H
 
-#include "../core_exports.h"
+#include "../config.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>

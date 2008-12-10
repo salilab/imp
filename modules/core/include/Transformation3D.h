@@ -8,7 +8,7 @@
 #ifndef IMPCORE_TRANSFORMATION_3D_H
 #define IMPCORE_TRANSFORMATION_3D_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include "IMP/Vector3D.h"
 #include "IMP/core/Rotation3D.h"

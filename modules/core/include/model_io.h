@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MODEL_IO_H
 #define IMPCORE_MODEL_IO_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>

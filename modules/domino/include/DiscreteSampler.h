@@ -7,7 +7,7 @@
 #ifndef IMPDOMINO_DISCRETE_SAMPLER_H
 #define IMPDOMINO_DISCRETE_SAMPLER_H
 
-#include "domino_exports.h"
+#include "config.h"
 
 #include <IMP/Particle.h>
 

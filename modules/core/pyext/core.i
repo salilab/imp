@@ -8,7 +8,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 
-%include "core_exports.i"
+%include "core_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

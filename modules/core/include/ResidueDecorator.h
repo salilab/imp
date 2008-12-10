@@ -8,7 +8,7 @@
 #ifndef IMPCORE_RESIDUE_DECORATOR_H
 #define IMPCORE_RESIDUE_DECORATOR_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/utility.h"
 
 #include <IMP/base_types.h>

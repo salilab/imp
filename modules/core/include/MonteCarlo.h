@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MONTE_CARLO_H
 #define IMPCORE_MONTE_CARLO_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 #include "Mover.h"
 

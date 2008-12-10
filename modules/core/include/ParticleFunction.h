@@ -8,7 +8,7 @@
 #ifndef IMPCORE_PARTICLE_FUNCTION_H
 #define IMPCORE_PARTICLE_FUNCTION_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/Particle.h>
 

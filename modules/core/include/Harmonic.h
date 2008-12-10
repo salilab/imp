@@ -7,7 +7,7 @@
 #ifndef IMPCORE_HARMONIC_H
 #define IMPCORE_HARMONIC_H
 
-#include "core_exports.h"
+#include "config.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
 

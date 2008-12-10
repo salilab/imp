@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BROWNIAN_DYNAMICS_H
 #define IMPCORE_BROWNIAN_DYNAMICS_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 
 #include <IMP/Particle.h>

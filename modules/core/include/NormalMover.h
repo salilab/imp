@@ -9,7 +9,7 @@
 #ifndef IMPCORE_NORMAL_MOVER_H
 #define IMPCORE_NORMAL_MOVER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "MoverBase.h"
 
 IMPCORE_BEGIN_NAMESPACE

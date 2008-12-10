@@ -7,7 +7,7 @@
 #ifndef IMPDOMINO_DOMINO_OPTIMIZER_H
 #define IMPDOMINO_DOMINO_OPTIMIZER_H
 
-#include "domino_exports.h"
+#include "config.h"
 #include "internal/domino_version_info.h"
 #include "RestraintGraph.h"
 

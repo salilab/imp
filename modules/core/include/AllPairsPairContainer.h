@@ -11,7 +11,7 @@
 #ifndef IMPCORE_ALL_PAIRS_PAIR_CONTAINER_H
 #define IMPCORE_ALL_PAIRS_PAIR_CONTAINER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "PairContainer.h"
 #include "SingletonContainer.h"
 #include "internal/core_version_info.h"

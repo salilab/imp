@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BOND_DECORATORS_H
 #define IMPCORE_BOND_DECORATORS_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/utility.h"
 #include "internal/graph_base.h"
 #include "internal/bond_helpers.h"

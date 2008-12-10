@@ -8,7 +8,7 @@
 #ifndef IMPCORE_ROTATION_3D_H
 #define IMPCORE_ROTATION_3D_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "IMP/Vector3D.h"
 #include <iostream>
 IMPCORE_BEGIN_NAMESPACE

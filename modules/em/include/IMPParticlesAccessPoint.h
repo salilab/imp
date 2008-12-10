@@ -9,7 +9,7 @@
 #ifndef IMPEM_IMP_PARTICLES_ACCESS_POINT_H
 #define IMPEM_IMP_PARTICLES_ACCESS_POINT_H
 
-#include "em_exports.h"
+#include "config.h"
 #include "ParticlesAccessPoint.h"
 
 #include <IMP/Model.h>
