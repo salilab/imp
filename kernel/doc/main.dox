@@ -31,8 +31,12 @@
     When programming with \imp, one of the more useful pages is the
     <a href="hierarchy.html">class hierarchy</a> as well as the module main
     pages:
-    - \ref impcore "IMP.core"
-    - \ref impmisc "IMP.misc"
+    - IMP
+    - IMP::core
+    - IMP::misc
+    - IMP::em
+    - IMP::domino
+    - IMP::saxs
 
     and finally
 
