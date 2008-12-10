@@ -15,9 +15,12 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-GroupnamesScoreState::GroupnamesScoreState(GroupnameModifier *f,
-                                           GroupnameContainer *c):
-  f_(f), c_(c){
+GroupnamesScoreState::GroupnamesScoreState(GroupnameContainer *c,
+                                           GroupnameModifier *before,
+                                           GroupnameModifier *after):
+  c_(c){
+    if (before) f_=before;
+    if (after) af_=after;
 }
 
 GroupnamesScoreState::~GroupnamesScoreState(){}
