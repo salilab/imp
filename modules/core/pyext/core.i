@@ -38,17 +38,17 @@ IMP_ADD_OBJECTS(type, add_##lcname##s)
 /** This should go back into IMP_macros.i */
 %define IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(Ucname)
 %pythonprepend Ucname::Ucname %{
-        if len(args) >= 1: args[0].thisown=0
-        if len(args) >= 2: args[1].thisown=0
+        if len(args) >= 1 and args[0] is not None: args[0].thisown=0
+        if len(args) >= 2 and args[1] is not None: args[1].thisown=0
 %}
 %enddef
 
 /** This should go back into IMP_macros.i */
 %define IMPCORE_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(Ucname)
 %pythonprepend Ucname::Ucname %{
-        if len(args) >= 1: args[0].thisown=0
-        if len(args) >= 2: args[1].thisown=0
-        if len(args) >= 3: args[2].thisown=0
+        if len(args) >= 1 and args[0] is not None: args[0].thisown=0
+        if len(args) >= 2 and args[1] is not None: args[1].thisown=0
+        if len(args) >= 3 and args[2] is not None: args[2].thisown=0
 %}
 %enddef
 
@@ -75,6 +75,10 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(BondDecoratorRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(BondSingletonScore)
     IMP_OWN_FIRST_CONSTRUCTOR(ConnectivityRestraint)
+    IMP_OWN_FIRST_CONSTRUCTOR(CoverRefinedSingletonModifier)
+    IMP_OWN_FIRST_CONSTRUCTOR(CentroidOfRefinedSingletonModifier)
+    IMP_OWN_FIRST_CONSTRUCTOR(DerivativesFromRefinedSingletonModifier)
+    IMP_OWN_FIRST_CONSTRUCTOR(DerivativesToRefinedSingletonModifier)
     IMP_OWN_FIRST_CONSTRUCTOR(DihedralRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(DistancePairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(DistanceRestraint)
@@ -150,13 +154,14 @@ namespace IMP {
 %include "IMP/core/BallMover.h"
 %include "IMP/core/BipartiteNonbondedListScoreState.h"
 %include "IMP/core/BondDecoratorListScoreState.h"
+%include "IMP/core/BondEndpointsParticleRefiner.h"
 %include "IMP/core/BondPairContainer.h"
 %include "IMP/core/BondDecoratorRestraint.h"
 %include "IMP/core/BondSingletonScore.h"
 %include "IMP/core/BondBondPairScore.h"
-%include "IMP/core/CoverBondSingletonModifier.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/BrownianDynamics.h"
+%include "IMP/core/CentroidOfRefinedSingletonModifier.h"
 %include "IMP/core/ChildrenParticleRefiner.h"
 %include "IMP/core/CMMLogOptimizerState.h"
 %include "IMP/core/ClosedCubicSpline.h"
@@ -166,6 +171,9 @@ namespace IMP {
 %include "IMP/core/ConnectivityRestraint.h"
 %include "IMP/core/ConstantRestraint.h"
 %include "IMP/core/Cosine.h"
+%include "IMP/core/CoverRefinedSingletonModifier.h"
+%include "IMP/core/DerivativesFromRefinedSingletonModifier.h"
+%include "IMP/core/DerivativesToRefinedSingletonModifier.h"
 %include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"
@@ -186,7 +194,6 @@ namespace IMP {
 %include "IMP/core/NonbondedRestraint.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
-%include "IMP/core/PropagateBondDerivativesSingletonModifier.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/ResidueDecorator.h"
 %include "IMP/core/RestraintSet.h"
@@ -234,6 +241,8 @@ namespace IMP {
     %template(BondDecorators) ::std::vector<BondDecorator>;
     %template(Movers) ::std::vector<Mover*>;
     %template(SingletonContainers) ::std::vector<SingletonContainer*>;
+    %template(XYZDecorators) ::std::vector<XYZDecorator>;
+    %template(XYZRDecorators) ::std::vector<XYZRDecorator>;
     %template(PairContainers) ::std::vector<PairContainer*>;
     %template(SingletonContainerIndex) ::IMP::Index<SingletonContainer>;
     %template(PairContainerIndex) ::IMP::Index<PairContainer>;
