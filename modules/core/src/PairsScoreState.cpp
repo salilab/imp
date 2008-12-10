@@ -15,9 +15,12 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-PairsScoreState::PairsScoreState(PairModifier *f,
-                                           PairContainer *c):
-  f_(f), c_(c){
+PairsScoreState::PairsScoreState(PairContainer *c,
+                                           PairModifier *before,
+                                           PairModifier *after):
+  c_(c){
+    if (before) f_=before;
+    if (after) af_=after;
 }
 
 PairsScoreState::~PairsScoreState(){}

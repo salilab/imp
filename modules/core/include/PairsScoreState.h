@@ -27,6 +27,9 @@ class PairModifier;
 
 //! Apply a PairFunction to a PairContainer to maintain an invariant
 /** \ingroup restraint
+    An example showing a how to use such a score state to maintain a cover
+    of the atoms of a protein by a sphere per residue.
+    \verbinclude simple_examples/cover_particles.py
  */
 class IMPCOREEXPORT PairsScoreState : public ScoreState
 {
@@ -38,7 +41,8 @@ public:
        before evaluate.
       \param[in] c The Container to hold the elements to process
    */
-  PairsScoreState(PairModifier *f, PairContainer *c);
+  PairsScoreState(PairContainer *c, PairModifier *before,
+                       PairModifier *after);
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(PairModifier* f) {
