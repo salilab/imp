@@ -123,7 +123,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         k= IMP.IntKey("thevalue")
         f= GroupnameTestModifier(k)
         print "apply"
-        s= IMP.core.GroupnamesScoreState(f, c)
+        s= IMP.core.GroupnamesScoreState(c, f, None)
         self.assert_( not f.thisown)
         self.assert_( not c.thisown)
         m.add_score_state(s)

@@ -27,6 +27,9 @@ class GroupnameModifier;
 
 //! Apply a GroupnameFunction to a GroupnameContainer to maintain an invariant
 /** \ingroup restraint
+    An example showing a how to use such a score state to maintain a cover
+    of the atoms of a protein by a sphere per residue.
+    \verbinclude simple_examples/cover_particles.py
  */
 class IMPCOREEXPORT GroupnamesScoreState : public ScoreState
 {
@@ -38,7 +41,8 @@ public:
        before evaluate.
       \param[in] c The Container to hold the elements to process
    */
-  GroupnamesScoreState(GroupnameModifier *f, GroupnameContainer *c);
+  GroupnamesScoreState(GroupnameContainer *c, GroupnameModifier *before,
+                       GroupnameModifier *after);
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(GroupnameModifier* f) {
