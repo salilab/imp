@@ -12,7 +12,7 @@
 #ifndef IMPCORE_PAIRS_SCORE_STATE_H
 #define IMPCORE_PAIRS_SCORE_STATE_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "PairContainer.h"
 #include "PairModifier.h"
 #include "internal/core_version_info.h"

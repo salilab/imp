@@ -8,7 +8,7 @@
 #ifndef IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
 #define IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/SingletonScore.h>
 #include <IMP/Vector3D.h>

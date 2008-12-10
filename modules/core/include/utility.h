@@ -10,7 +10,7 @@
 #define IMPCORE_UTILITY_H
 
 #include "macros.h"
-#include "core_exports.h"
+#include "config.h"
 #include <IMP/base_types.h>
 
 #ifdef __GNUC__

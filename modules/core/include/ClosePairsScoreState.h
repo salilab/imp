@@ -7,7 +7,7 @@
 #ifndef IMPCORE_CLOSE_PAIRS_SCORE_STATE_H
 #define IMPCORE_CLOSE_PAIRS_SCORE_STATE_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "MaximumChangeScoreState.h"
 #include "ClosePairsFinder.h"
 #include "SingletonContainer.h"

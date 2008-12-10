@@ -10,7 +10,7 @@
 #ifndef IMPCORE_LIST_SINGLETON_CONTAINER_H
 #define IMPCORE_LIST_SINGLETON_CONTAINER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "SingletonContainer.h"
 #include "internal/core_version_info.h"
 

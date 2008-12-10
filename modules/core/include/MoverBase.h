@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MOVER_BASE_H
 #define IMPCORE_MOVER_BASE_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "Mover.h"
 
 #include <IMP/Particle.h>

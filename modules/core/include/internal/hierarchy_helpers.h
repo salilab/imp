@@ -9,7 +9,7 @@
 #ifndef IMPCORE_INTERNAL_HIERARCHY_HELPERS_H
 #define IMPCORE_INTERNAL_HIERARCHY_HELPERS_H
 
-#include "../core_exports.h"
+#include "../config.h"
 #include "../macros.h"
 
 #include <IMP/base_types.h>

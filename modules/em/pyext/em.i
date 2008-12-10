@@ -10,7 +10,7 @@
 /* Ignore shared object import/export stuff */
 #define EMDLLEXPORT
 #define EMDLLLOCAL
-%include "em_exports.i"
+%include "em_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

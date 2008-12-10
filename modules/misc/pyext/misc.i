@@ -9,7 +9,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 
-%include "misc_exports.i"
+%include "misc_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

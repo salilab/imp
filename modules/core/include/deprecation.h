@@ -9,7 +9,7 @@
 #ifndef IMPCORE_DEPRECATION_H
 #define IMPCORE_DEPRECATION_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/deprecation.h"
 
 IMPCORE_BEGIN_NAMESPACE

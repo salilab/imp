@@ -13,7 +13,7 @@
 #include "../macros.h"
 
 // All below can go away once decoratorbase is updated
-#include "../core_exports.h"
+#include "../config.h"
 #include <IMP/DecoratorBase.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE

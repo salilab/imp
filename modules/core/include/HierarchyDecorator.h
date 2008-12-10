@@ -9,7 +9,7 @@
 #ifndef IMPCORE_HIERARCHY_DECORATOR_H
 #define IMPCORE_HIERARCHY_DECORATOR_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "utility.h"
 #include "bond_decorators.h"
 #include "internal/hierarchy_helpers.h"

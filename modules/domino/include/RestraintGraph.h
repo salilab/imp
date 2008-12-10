@@ -9,7 +9,7 @@
 #ifndef IMPDOMINO_RESTRAINT_GRAPH_H
 #define IMPDOMINO_RESTRAINT_GRAPH_H
 
-#include "domino_exports.h"
+#include "config.h"
 #include "JNode.h"
 #include "JEdge.h"
 #include "DiscreteSampler.h"

@@ -9,7 +9,7 @@
 #ifndef IMPMISC_TUNNEL_SINGLETON_SCORE_H
 #define IMPMISC_TUNNEL_SINGLETON_SCORE_H
 
-#include "misc_exports.h"
+#include "config.h"
 
 #include <IMP/SingletonScore.h>
 #include <IMP/Vector3D.h>

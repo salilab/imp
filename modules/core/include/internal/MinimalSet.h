@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_MINIMAL_SET_H
 #define IMPCORE_INTERNAL_MINIMAL_SET_H
 
-#include "../core_exports.h"
+#include "../config.h"
 #include "../macros.h"
 
 #include <utility>

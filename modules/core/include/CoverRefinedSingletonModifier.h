@@ -8,7 +8,7 @@
 #ifndef IMPCORE_COVER_REFINED_SINGLETON_MODIFIER_H
 #define IMPCORE_COVER_REFINED_SINGLETON_MODIFIER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 
 #include "SingletonModifier.h"

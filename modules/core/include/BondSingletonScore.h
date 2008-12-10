@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BOND_SINGLETON_SCORE_H
 #define IMPCORE_BOND_SINGLETON_SCORE_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>

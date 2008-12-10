@@ -8,7 +8,7 @@
 #ifndef IMPDOMINO_JNODE_H
 #define IMPDOMINO_JNODE_H
 
-#include "domino_exports.h"
+#include "config.h"
 #include "DiscreteSampler.h"
 #include "CombState.h"
 

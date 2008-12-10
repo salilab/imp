@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MATRIX_3D_H
 #define IMPCORE_MATRIX_3D_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include "IMP/Vector3D.h"
 #include <math.h>

@@ -9,7 +9,7 @@
 #ifndef IMPCORE_INTERNAL_DEPRECATION_H
 #define IMPCORE_INTERNAL_DEPRECATION_H
 
-#include "../core_exports.h"
+#include "../config.h"
 #include "../macros.h"
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE

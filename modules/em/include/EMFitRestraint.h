@@ -9,7 +9,7 @@
 #ifndef IMPEM_EM_FIT_RESTRAINT_H
 #define IMPEM_EM_FIT_RESTRAINT_H
 
-#include "em_exports.h"
+#include "config.h"
 #include "internal/em_version_info.h"
 #include "DensityMap.h"
 #include "CoarseCC.h"

@@ -8,7 +8,7 @@
 #ifndef IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
 #define IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>

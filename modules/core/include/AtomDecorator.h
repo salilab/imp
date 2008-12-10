@@ -8,7 +8,7 @@
 #ifndef IMPCORE_ATOM_DECORATOR_H
 #define IMPCORE_ATOM_DECORATOR_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "utility.h"
 #include "XYZDecorator.h"
 #include "macros.h"

@@ -9,7 +9,7 @@
 #ifndef IMPCORE_VELOCITY_SCALING_OPTIMIZER_STATE_H
 #define IMPCORE_VELOCITY_SCALING_OPTIMIZER_STATE_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 
 #include <IMP/base_types.h>

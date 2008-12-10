@@ -8,7 +8,7 @@
 #ifndef IMPCORE_GRID_3D_H
 #define IMPCORE_GRID_3D_H
 
-#include "../core_exports.h"
+#include "../config.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Vector3D.h>

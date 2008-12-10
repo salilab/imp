@@ -8,7 +8,7 @@
 #ifndef IMPCORE_MOVER_H
 #define IMPCORE_MOVER_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Object.h>

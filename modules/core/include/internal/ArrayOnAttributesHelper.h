@@ -9,7 +9,7 @@
 #ifndef IMPCORE_ARRAY_ON_ATTRIBUTES_HELPER_H
 #define IMPCORE_ARRAY_ON_ATTRIBUTES_HELPER_H
 
-#include "../core_exports.h"
+#include "../config.h"
 #include "../macros.h"
 
 #include <IMP/base_types.h>

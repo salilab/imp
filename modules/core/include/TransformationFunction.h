@@ -8,7 +8,7 @@
 #ifndef IMPCORE_TRANSFORMATION_FUNCTION_H
 #define IMPCORE_TRANSFORMATION_FUNCTION_H
 
-#include "core_exports.h"
+#include "config.h"
 
 #include <IMP/core/ParticleFunction.h>
 #include "IMP/core/Transformation3D.h"

@@ -8,7 +8,7 @@
 #ifndef IMPCORE_BOND_DECORATOR_LIST_SCORE_STATE_H
 #define IMPCORE_BOND_DECORATOR_LIST_SCORE_STATE_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "BondedListScoreState.h"
 #include "bond_decorators.h"
 

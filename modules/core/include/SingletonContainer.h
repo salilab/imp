@@ -10,7 +10,7 @@
 #ifndef IMPCORE_SINGLETON_CONTAINER_H
 #define IMPCORE_SINGLETON_CONTAINER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/IndexingIterator.h"
 #include "internal/container_helpers.h"
 #include <IMP/Particle.h>

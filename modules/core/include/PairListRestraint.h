@@ -9,7 +9,7 @@
 #ifndef IMPCORE_PAIR_LIST_RESTRAINT_H
 #define IMPCORE_PAIR_LIST_RESTRAINT_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 
 #include <IMP/Restraint.h>

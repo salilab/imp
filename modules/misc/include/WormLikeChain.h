@@ -7,7 +7,7 @@
 #ifndef IMPMISC_WORM_LIKE_CHAIN_H
 #define IMPMISC_WORM_LIKE_CHAIN_H
 
-#include "misc_exports.h"
+#include "config.h"
 
 #include <IMP/UnaryFunction.h>
 #include <IMP/internal/constants.h>

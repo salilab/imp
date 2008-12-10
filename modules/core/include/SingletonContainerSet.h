@@ -11,7 +11,7 @@
 #ifndef IMPCORE_SINGLETON_CONTAINER_SET_H
 #define IMPCORE_SINGLETON_CONTAINER_SET_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "SingletonContainer.h"
 #include "internal/core_version_info.h"
 

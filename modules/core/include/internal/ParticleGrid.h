@@ -8,7 +8,7 @@
 #ifndef IMPCORE_PARTICLE_GRID_H
 #define IMPCORE_PARTICLE_GRID_H
 
-#include "../core_exports.h"
+#include "../config.h"
 #include "../MaxChangeScoreState.h"
 #include "Grid3D.h"
 

@@ -8,7 +8,7 @@
 #ifndef IMPCORE_NAME_DECORATOR_H
 #define IMPCORE_NAME_DECORATOR_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/utility.h"
 
 #include <IMP/Particle.h>

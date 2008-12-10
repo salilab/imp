@@ -11,7 +11,7 @@
 #ifndef IMPCORE_FILTERED_LIST_PAIR_CONTAINER_H
 #define IMPCORE_FILTERED_LIST_PAIR_CONTAINER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "PairContainer.h"
 #include "internal/core_version_info.h"
 

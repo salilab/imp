@@ -9,7 +9,7 @@
 #ifndef IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H
 #define IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "Transformation3D.h"
 
 #include <IMP/PairScore.h>

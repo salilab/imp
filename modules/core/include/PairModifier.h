@@ -10,7 +10,7 @@
 #ifndef IMPCORE_PAIR_MODIFIER_H
 #define IMPCORE_PAIR_MODIFIER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
 #include "internal/container_helpers.h"
 #include "PairContainer.h"

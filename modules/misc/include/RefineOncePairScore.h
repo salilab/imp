@@ -8,7 +8,7 @@
 #ifndef IMPMISC_REFINE_ONCE_PAIR_SCORE_H
 #define IMPMISC_REFINE_ONCE_PAIR_SCORE_H
 
-#include "misc_exports.h"
+#include "config.h"
 
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>

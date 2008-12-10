@@ -7,7 +7,7 @@
 #ifndef IMPDOMINO_COMB_STATE_H
 #define IMPDOMINO_COMB_STATE_H
 
-#include "domino_exports.h"
+#include "config.h"
 #include "DiscreteSampler.h"
 
 #include <IMP/Particle.h>
