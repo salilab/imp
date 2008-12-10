@@ -15,9 +15,12 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-SingletonsScoreState::SingletonsScoreState(SingletonModifier *f,
-                                           SingletonContainer *c):
-  f_(f), c_(c){
+SingletonsScoreState::SingletonsScoreState(SingletonContainer *c,
+                                           SingletonModifier *before,
+                                           SingletonModifier *after):
+  c_(c){
+    if (before) f_=before;
+    if (after) af_=after;
 }
 
 SingletonsScoreState::~SingletonsScoreState(){}
