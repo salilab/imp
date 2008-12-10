@@ -17,9 +17,7 @@
 		930321050ED65D5700C34FCC /* bond_decorators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bond_decorators.h; sourceTree = "<group>"; };
 		930321060ED65D5700C34FCC /* BondBondPairScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondBondPairScore.h; sourceTree = "<group>"; };
 		930321070ED65D5700C34FCC /* BondDecoratorListScoreState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondDecoratorListScoreState.h; sourceTree = "<group>"; };
-		930321080ED65D5700C34FCC /* BondDecoratorPairContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondDecoratorPairContainer.h; sourceTree = "<group>"; };
 		930321090ED65D5700C34FCC /* BondDecoratorRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondDecoratorRestraint.h; sourceTree = "<group>"; };
-		9303210A0ED65D5700C34FCC /* BondDecoratorSingletonScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondDecoratorSingletonScore.h; sourceTree = "<group>"; };
 		9303210B0ED65D5700C34FCC /* BondedListScoreState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondedListScoreState.h; sourceTree = "<group>"; };
 		9303210C0ED65D5700C34FCC /* BoxSweepClosePairsFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoxSweepClosePairsFinder.h; sourceTree = "<group>"; };
 		9303210D0ED65D5700C34FCC /* BrownianDynamics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrownianDynamics.h; sourceTree = "<group>"; };
@@ -32,7 +30,6 @@
 		930321140ED65D5700C34FCC /* ConnectivityRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectivityRestraint.h; sourceTree = "<group>"; };
 		930321150ED65D5700C34FCC /* ConstantRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstantRestraint.h; sourceTree = "<group>"; };
 		930321160ED65D5700C34FCC /* Cosine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cosine.h; sourceTree = "<group>"; };
-		930321170ED65D5700C34FCC /* CoverBondSingletonModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverBondSingletonModifier.h; sourceTree = "<group>"; };
 		930321180ED65D5700C34FCC /* deprecation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = deprecation.h; sourceTree = "<group>"; };
 		930321190ED65D5700C34FCC /* DihedralRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DihedralRestraint.h; sourceTree = "<group>"; };
 		9303211A0ED65D5700C34FCC /* DistancePairScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DistancePairScore.h; sourceTree = "<group>"; };
@@ -81,7 +78,6 @@
 		930321470ED65D5700C34FCC /* PairModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PairModifier.h; sourceTree = "<group>"; };
 		930321480ED65D5700C34FCC /* PairsRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PairsRestraint.h; sourceTree = "<group>"; };
 		930321490ED65D5700C34FCC /* PairsScoreState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PairsScoreState.h; sourceTree = "<group>"; };
-		9303214A0ED65D5700C34FCC /* PropagateBondDerivativesSingletonModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropagateBondDerivativesSingletonModifier.h; sourceTree = "<group>"; };
 		9303214B0ED65D5700C34FCC /* QuadraticClosePairsFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadraticClosePairsFinder.h; sourceTree = "<group>"; };
 		9303214C0ED65D5700C34FCC /* ResidueDecorator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResidueDecorator.h; sourceTree = "<group>"; };
 		9303214D0ED65D5700C34FCC /* RestraintSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestraintSet.h; sourceTree = "<group>"; };
@@ -117,10 +113,7 @@
 		9303216E0ED65D5700C34FCC /* bond_decorators.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bond_decorators.cpp; sourceTree = "<group>"; };
 		9303216F0ED65D5700C34FCC /* BondBondPairScore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BondBondPairScore.cpp; sourceTree = "<group>"; };
 		930321700ED65D5700C34FCC /* BondDecoratorListScoreState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BondDecoratorListScoreState.cpp; sourceTree = "<group>"; };
-		930321710ED65D5700C34FCC /* BondDecoratorPairContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BondDecoratorPairContainer.cpp; sourceTree = "<group>"; };
-		930321720ED65D5700C34FCC /* BondDecoratorPairContainer.os */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = BondDecoratorPairContainer.os; sourceTree = "<group>"; };
 		930321730ED65D5700C34FCC /* BondDecoratorRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BondDecoratorRestraint.cpp; sourceTree = "<group>"; };
-		930321740ED65D5700C34FCC /* BondDecoratorSingletonScore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BondDecoratorSingletonScore.cpp; sourceTree = "<group>"; };
 		930321750ED65D5700C34FCC /* BoxSweepClosePairsFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BoxSweepClosePairsFinder.cpp; sourceTree = "<group>"; };
 		930321760ED65D5700C34FCC /* BrownianDynamics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BrownianDynamics.cpp; sourceTree = "<group>"; };
 		930321770ED65D5700C34FCC /* CloseBipartitePairsScoreState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CloseBipartitePairsScoreState.cpp; sourceTree = "<group>"; };
@@ -132,7 +125,6 @@
 		9303217D0ED65D5700C34FCC /* ConnectivityRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConnectivityRestraint.cpp; sourceTree = "<group>"; };
 		9303217E0ED65D5700C34FCC /* ConstantRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConstantRestraint.cpp; sourceTree = "<group>"; };
 		9303217F0ED65D5700C34FCC /* Cosine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cosine.cpp; sourceTree = "<group>"; };
-		930321800ED65D5700C34FCC /* CoverBondSingletonModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoverBondSingletonModifier.cpp; sourceTree = "<group>"; };
 		930321810ED65D5700C34FCC /* DihedralRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DihedralRestraint.cpp; sourceTree = "<group>"; };
 		930321820ED65D5700C34FCC /* DistancePairScore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DistancePairScore.cpp; sourceTree = "<group>"; };
 		930321830ED65D5700C34FCC /* DistanceRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DistanceRestraint.cpp; sourceTree = "<group>"; };
@@ -147,7 +139,6 @@
 		9303218D0ED65D5700C34FCC /* graph_base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = graph_base.cpp; sourceTree = "<group>"; };
 		9303218E0ED65D5700C34FCC /* ParticleGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleGrid.cpp; sourceTree = "<group>"; };
 		9303218F0ED65D5700C34FCC /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
-		930321900ED65D5700C34FCC /* introduction.dox */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = introduction.dox; sourceTree = "<group>"; };
 		930321910ED65D5700C34FCC /* ListPairContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ListPairContainer.cpp; sourceTree = "<group>"; };
 		930321920ED65D5700C34FCC /* ListSingletonContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ListSingletonContainer.cpp; sourceTree = "<group>"; };
 		930321940ED65D5700C34FCC /* MaxChangeScoreState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaxChangeScoreState.cpp; sourceTree = "<group>"; };
@@ -169,7 +160,6 @@
 		930321A40ED65D5700C34FCC /* PairModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PairModifier.cpp; sourceTree = "<group>"; };
 		930321A50ED65D5700C34FCC /* PairsRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PairsRestraint.cpp; sourceTree = "<group>"; };
 		930321A60ED65D5700C34FCC /* PairsScoreState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PairsScoreState.cpp; sourceTree = "<group>"; };
-		930321A70ED65D5700C34FCC /* PropagateBondDerivativesSingletonModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PropagateBondDerivativesSingletonModifier.cpp; sourceTree = "<group>"; };
 		930321A90ED65D5700C34FCC /* QuadraticClosePairsFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadraticClosePairsFinder.cpp; sourceTree = "<group>"; };
 		930321AA0ED65D5700C34FCC /* ResidueDecorator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResidueDecorator.cpp; sourceTree = "<group>"; };
 		930321AB0ED65D5700C34FCC /* RestraintSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RestraintSet.cpp; sourceTree = "<group>"; };
@@ -189,55 +179,6 @@
 		930321B90ED65D5700C34FCC /* VRMLLogOptimizerState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VRMLLogOptimizerState.cpp; sourceTree = "<group>"; };
 		930321BA0ED65D5700C34FCC /* XYZDecorator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XYZDecorator.cpp; sourceTree = "<group>"; };
 		930321BB0ED65D5700C34FCC /* XYZRDecorator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XYZRDecorator.cpp; sourceTree = "<group>"; };
-		930321BE0ED65D5700C34FCC /* test_connectivity.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_connectivity.py; sourceTree = "<group>"; };
-		930321C00ED65D5700C34FCC /* test_bonds.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_bonds.py; sourceTree = "<group>"; };
-		930321C10ED65D5700C34FCC /* test_hierarchy.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_hierarchy.py; sourceTree = "<group>"; };
-		930321C20ED65D5700C34FCC /* test_xyzr.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_xyzr.py; sourceTree = "<group>"; };
-		930321C40ED65D5700C34FCC /* test_distance.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_distance.py; sourceTree = "<group>"; };
-		930321C60ED65D5700C34FCC /* test_model_io.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_model_io.py; sourceTree = "<group>"; };
-		930321C80ED65D5700C34FCC /* test_cg_optimizer.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cg_optimizer.py; sourceTree = "<group>"; };
-		930321C90ED65D5700C34FCC /* test_mc.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_mc.py; sourceTree = "<group>"; };
-		930321CA0ED65D5700C34FCC /* test_md_optimizer.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_md_optimizer.py; sourceTree = "<group>"; };
-		930321CB0ED65D5700C34FCC /* test_sd_optimizer.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_sd_optimizer.py; sourceTree = "<group>"; };
-		930321CD0ED65D5700C34FCC /* test_bd_singleton_score.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_bd_singleton_score.py; sourceTree = "<group>"; };
-		930321CE0ED65D5700C34FCC /* test_cylinder.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cylinder.py; sourceTree = "<group>"; };
-		930321CF0ED65D5700C34FCC /* test_transform.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_transform.py; sourceTree = "<group>"; };
-		930321D00ED65D5700C34FCC /* test_typed_pair_score.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_typed_pair_score.py; sourceTree = "<group>"; };
-		930321D20ED65D5700C34FCC /* test_angle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_angle.py; sourceTree = "<group>"; };
-		930321D30ED65D5700C34FCC /* test_angles.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_angles.py; sourceTree = "<group>"; };
-		930321D40ED65D5700C34FCC /* test_dihedral.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_dihedral.py; sourceTree = "<group>"; };
-		930321D50ED65D5700C34FCC /* test_list.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_list.py; sourceTree = "<group>"; };
-		930321D60ED65D5700C34FCC /* test_lowest_n_restraints.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_lowest_n_restraints.py; sourceTree = "<group>"; };
-		930321D70ED65D5700C34FCC /* test_nonbonded_restraint.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_nonbonded_restraint.py; sourceTree = "<group>"; };
-		930321D80ED65D5700C34FCC /* test_pairchain.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_pairchain.py; sourceTree = "<group>"; };
-		930321D90ED65D5700C34FCC /* test_pairlist.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_pairlist.py; sourceTree = "<group>"; };
-		930321DA0ED65D5700C34FCC /* test_Particle_restraint.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_Particle_restraint.py; sourceTree = "<group>"; };
-		930321DB0ED65D5700C34FCC /* test_ParticlePair_restraint.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_ParticlePair_restraint.py; sourceTree = "<group>"; };
-		930321DC0ED65D5700C34FCC /* test_restraint_sets.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_restraint_sets.py; sourceTree = "<group>"; };
-		930321DD0ED65D5700C34FCC /* run-all-tests.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "run-all-tests.py"; sourceTree = "<group>"; };
-		930321DE0ED65D5700C34FCC /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
-		930321E00ED65D5700C34FCC /* test_bond_decorator_particle_pair_container.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_bond_decorator_particle_pair_container.py; sourceTree = "<group>"; };
-		930321E10ED65D5700C34FCC /* test_bond_decorator_particle_pair_container.py.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_bond_decorator_particle_pair_container.py.bak; sourceTree = "<group>"; };
-		930321E20ED65D5700C34FCC /* test_close_bipartite_pairs_score_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_close_bipartite_pairs_score_state.py; sourceTree = "<group>"; };
-		930321E30ED65D5700C34FCC /* test_close_bipartite_pairs_score_state.py.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_close_bipartite_pairs_score_state.py.bak; sourceTree = "<group>"; };
-		930321E40ED65D5700C34FCC /* test_close_pair_finders.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_close_pair_finders.py; sourceTree = "<group>"; };
-		930321E50ED65D5700C34FCC /* test_close_pair_finders.py.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_close_pair_finders.py.bak; sourceTree = "<group>"; };
-		930321E60ED65D5700C34FCC /* test_close_pairs_score_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_close_pairs_score_state.py; sourceTree = "<group>"; };
-		930321E70ED65D5700C34FCC /* test_close_pairs_score_state.py.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_close_pairs_score_state.py.bak; sourceTree = "<group>"; };
-		930321E80ED65D5700C34FCC /* test_cmm_log.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cmm_log.py; sourceTree = "<group>"; };
-		930321E90ED65D5700C34FCC /* test_cover_bonds.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cover_bonds.py; sourceTree = "<group>"; };
-		930321EA0ED65D5700C34FCC /* test_gravity_center.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_gravity_center.py; sourceTree = "<group>"; };
-		930321EB0ED65D5700C34FCC /* test_maximum_change.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_maximum_change.py; sourceTree = "<group>"; };
-		930321EC0ED65D5700C34FCC /* test_maximum_change.py.bak */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test_maximum_change.py.bak; sourceTree = "<group>"; };
-		930321ED0ED65D5700C34FCC /* test_nonbonded_list.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_nonbonded_list.py; sourceTree = "<group>"; };
-		930321EE0ED65D5700C34FCC /* test_Particle_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_Particle_state.py; sourceTree = "<group>"; };
-		930321EF0ED65D5700C34FCC /* test_ParticlePair_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_ParticlePair_state.py; sourceTree = "<group>"; };
-		930321F00ED65D5700C34FCC /* test_score_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_score_state.py; sourceTree = "<group>"; };
-		930321F10ED65D5700C34FCC /* test_vrml_log.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_vrml_log.py; sourceTree = "<group>"; };
-		930321F30ED65D5700C34FCC /* test_cosine.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cosine.py; sourceTree = "<group>"; };
-		930321F40ED65D5700C34FCC /* test_harmonic.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_harmonic.py; sourceTree = "<group>"; };
-		930321F50ED65D5700C34FCC /* test_linear.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_linear.py; sourceTree = "<group>"; };
-		930321F60ED65D5700C34FCC /* test_splines.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_splines.py; sourceTree = "<group>"; };
 		930321F90ED65D5700C34FCC /* container.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = container.cc; sourceTree = "<group>"; };
 		930321FA0ED65D5700C34FCC /* container.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = container.hpp; sourceTree = "<group>"; };
 		930321FB0ED65D5700C34FCC /* filter.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filter.cc; sourceTree = "<group>"; };
@@ -454,6 +395,56 @@
 		9303298B0ED65D5A00C34FCC /* manual.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = manual.xml; sourceTree = "<group>"; };
 		9303298C0ED65D5A00C34FCC /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
 		9303298D0ED65D5A00C34FCC /* usage.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = usage.xml; sourceTree = "<group>"; };
+		9321BEEC0EE89E5D00CA5604 /* CoverRefinedSingletonModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverRefinedSingletonModifier.h; sourceTree = "<group>"; };
+		9321BEF00EE89F6F00CA5604 /* CoverRefinedSingletonModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoverRefinedSingletonModifier.cpp; sourceTree = "<group>"; };
+		9321BEF30EE8A5E200CA5604 /* test_Particle_restraint.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_Particle_restraint.py; sourceTree = "<group>"; };
+		9321BEF40EE8A5E200CA5604 /* test_Particle_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_Particle_state.py; sourceTree = "<group>"; };
+		9321BEF50EE8A5E200CA5604 /* test_ParticlePair_restraint.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_ParticlePair_restraint.py; sourceTree = "<group>"; };
+		9321BEF60EE8A5E200CA5604 /* test_ParticlePair_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_ParticlePair_state.py; sourceTree = "<group>"; };
+		9321BEF80EE8A5E200CA5604 /* test_bonds.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_bonds.py; sourceTree = "<group>"; };
+		9321BEF90EE8A5E200CA5604 /* test_hierarchy.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_hierarchy.py; sourceTree = "<group>"; };
+		9321BEFA0EE8A5E200CA5604 /* test_xyzr.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_xyzr.py; sourceTree = "<group>"; };
+		9321BEFC0EE8A5E200CA5604 /* test_model_io.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_model_io.py; sourceTree = "<group>"; };
+		9321BEFF0EE8A5E200CA5604 /* test_cg_optimizer.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cg_optimizer.py; sourceTree = "<group>"; };
+		9321BF000EE8A5E200CA5604 /* test_mc.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_mc.py; sourceTree = "<group>"; };
+		9321BF010EE8A5E200CA5604 /* test_md_optimizer.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_md_optimizer.py; sourceTree = "<group>"; };
+		9321BF020EE8A5E200CA5604 /* test_sd_optimizer.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_sd_optimizer.py; sourceTree = "<group>"; };
+		9321BF050EE8A5E200CA5604 /* test_all_pairs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_all_pairs.py; sourceTree = "<group>"; };
+		9321BF060EE8A5E200CA5604 /* test_angle.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_angle.py; sourceTree = "<group>"; };
+		9321BF070EE8A5E200CA5604 /* test_angles.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_angles.py; sourceTree = "<group>"; };
+		9321BF080EE8A5E200CA5604 /* test_connectivity.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_connectivity.py; sourceTree = "<group>"; };
+		9321BF090EE8A5E200CA5604 /* test_dihedral.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_dihedral.py; sourceTree = "<group>"; };
+		9321BF0A0EE8A5E200CA5604 /* test_distance.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_distance.py; sourceTree = "<group>"; };
+		9321BF0B0EE8A5E200CA5604 /* test_list.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_list.py; sourceTree = "<group>"; };
+		9321BF0C0EE8A5E200CA5604 /* test_nonbonded_restraint.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_nonbonded_restraint.py; sourceTree = "<group>"; };
+		9321BF0D0EE8A5E200CA5604 /* test_pairchain.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_pairchain.py; sourceTree = "<group>"; };
+		9321BF0E0EE8A5E200CA5604 /* test_pairlist.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_pairlist.py; sourceTree = "<group>"; };
+		9321BF0F0EE8A5E200CA5604 /* test_restraint_sets.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_restraint_sets.py; sourceTree = "<group>"; };
+		9321BF100EE8A5E200CA5604 /* run-all-tests.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "run-all-tests.py"; sourceTree = "<group>"; };
+		9321BF110EE8A5E200CA5604 /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
+		9321BF130EE8A5E200CA5604 /* test_bd_singleton_score.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_bd_singleton_score.py; sourceTree = "<group>"; };
+		9321BF140EE8A5E200CA5604 /* test_cylinder.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cylinder.py; sourceTree = "<group>"; };
+		9321BF150EE8A5E200CA5604 /* test_transform.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_transform.py; sourceTree = "<group>"; };
+		9321BF160EE8A5E200CA5604 /* test_typed_pair_score.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_typed_pair_score.py; sourceTree = "<group>"; };
+		9321BF180EE8A5E200CA5604 /* test_bond_decorator_particle_pair_container.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_bond_decorator_particle_pair_container.py; sourceTree = "<group>"; };
+		9321BF190EE8A5E200CA5604 /* test_close_bipartite_pairs_score_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_close_bipartite_pairs_score_state.py; sourceTree = "<group>"; };
+		9321BF1A0EE8A5E200CA5604 /* test_close_pair_finders.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_close_pair_finders.py; sourceTree = "<group>"; };
+		9321BF1B0EE8A5E200CA5604 /* test_close_pairs_score_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_close_pairs_score_state.py; sourceTree = "<group>"; };
+		9321BF1C0EE8A5E200CA5604 /* test_cmm_log.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cmm_log.py; sourceTree = "<group>"; };
+		9321BF1D0EE8A5E200CA5604 /* test_cover_bonds.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cover_bonds.py; sourceTree = "<group>"; };
+		9321BF1E0EE8A5E200CA5604 /* test_gravity_center.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_gravity_center.py; sourceTree = "<group>"; };
+		9321BF1F0EE8A5E200CA5604 /* test_maximum_change.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_maximum_change.py; sourceTree = "<group>"; };
+		9321BF200EE8A5E200CA5604 /* test_nonbonded_list.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_nonbonded_list.py; sourceTree = "<group>"; };
+		9321BF210EE8A5E200CA5604 /* test_score_state.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_score_state.py; sourceTree = "<group>"; };
+		9321BF220EE8A5E200CA5604 /* test_vrml_log.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_vrml_log.py; sourceTree = "<group>"; };
+		9321BF240EE8A5E200CA5604 /* test_particles_transformation.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_particles_transformation.py; sourceTree = "<group>"; };
+		9321BF250EE8A5E200CA5604 /* test_rigid_transformation.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_rigid_transformation.py; sourceTree = "<group>"; };
+		9321BF260EE8A5E200CA5604 /* test_rotation.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_rotation.py; sourceTree = "<group>"; };
+		9321BF280EE8A5E200CA5604 /* test_cosine.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cosine.py; sourceTree = "<group>"; };
+		9321BF290EE8A5E200CA5604 /* test_harmonic.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_harmonic.py; sourceTree = "<group>"; };
+		9321BF2A0EE8A5E200CA5604 /* test_linear.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_linear.py; sourceTree = "<group>"; };
+		9321BF2B0EE8A5E200CA5604 /* test_splines.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_splines.py; sourceTree = "<group>"; };
+		9321BF410EE8A7CB00CA5604 /* test_cover_refiner.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_cover_refiner.py; sourceTree = "<group>"; };
 		932B78BE0EE41C0400CA3BDE /* max.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = max.hpp; sourceTree = "<group>"; };
 		932B78C00EE41C0400CA3BDE /* min.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = min.hpp; sourceTree = "<group>"; };
 		932B78C30EE4211B00CA3BDE /* max.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = max.cc; sourceTree = "<group>"; };
@@ -469,7 +460,6 @@
 		932B799B0EE42F7E00CA3BDE /* restrain_diameter.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = restrain_diameter.py; sourceTree = "<group>"; };
 		932B799E0EE4307500CA3BDE /* AllPairsPairContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllPairsPairContainer.h; sourceTree = "<group>"; };
 		932B79A10EE4308500CA3BDE /* AllPairsPairContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AllPairsPairContainer.cpp; sourceTree = "<group>"; };
-		932B79D80EE4351E00CA3BDE /* test_all_pairs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_all_pairs.py; sourceTree = "<group>"; };
 		936CE36E0EE4E8A900781151 /* saxs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = saxs.h; sourceTree = "<group>"; };
 		936CE36F0EE4E8A900781151 /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
 		936CE3710EE4E8A900781151 /* saxs.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.interfacer; path = saxs.i; sourceTree = "<group>"; };
@@ -483,6 +473,25 @@
 		936CE37C0EE4E8A900781151 /* single_protein.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = single_protein.pdb; sourceTree = "<group>"; };
 		936CE37D0EE4E8A900781151 /* test_init_saxs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_init_saxs.py; sourceTree = "<group>"; };
 		936CE37E0EE4E8A900781151 /* test_saxs.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_saxs.py; sourceTree = "<group>"; };
+		93919FA20EEC986D0089586F /* test_to_from_refined.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_to_from_refined.py; sourceTree = "<group>"; };
+		93919FA50EEC987D0089586F /* test_bond_refiner.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_bond_refiner.py; sourceTree = "<group>"; };
+		93919FA80EEC98BB0089586F /* BondEndpointsParticleRefiner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BondEndpointsParticleRefiner.cpp; sourceTree = "<group>"; };
+		93919FA90EEC98BB0089586F /* BondPairContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BondPairContainer.cpp; sourceTree = "<group>"; };
+		93919FAA0EEC98BB0089586F /* BondSingletonScore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BondSingletonScore.cpp; sourceTree = "<group>"; };
+		93919FAB0EEC98BB0089586F /* CentroidOfRefinedSingletonModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CentroidOfRefinedSingletonModifier.cpp; sourceTree = "<group>"; };
+		93919FAC0EEC98BB0089586F /* DerivativesFromRefinedSingletonModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DerivativesFromRefinedSingletonModifier.cpp; sourceTree = "<group>"; };
+		93919FAD0EEC98BB0089586F /* DerivativesToRefinedSingletonModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DerivativesToRefinedSingletonModifier.cpp; sourceTree = "<group>"; };
+		93919FAE0EEC98BB0089586F /* MaximumPairScoreRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaximumPairScoreRestraint.cpp; sourceTree = "<group>"; };
+		93919FAF0EEC98BB0089586F /* MaximumSingletonScoreRestraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaximumSingletonScoreRestraint.cpp; sourceTree = "<group>"; };
+		93919FB20EEC98DE0089586F /* BondEndpointsParticleRefiner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondEndpointsParticleRefiner.h; sourceTree = "<group>"; };
+		93919FB30EEC98DE0089586F /* BondPairContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondPairContainer.h; sourceTree = "<group>"; };
+		93919FB40EEC98DE0089586F /* BondSingletonScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BondSingletonScore.h; sourceTree = "<group>"; };
+		93919FB50EEC98DE0089586F /* CentroidOfRefinedSingletonModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CentroidOfRefinedSingletonModifier.h; sourceTree = "<group>"; };
+		93919FB60EEC98DE0089586F /* core_exports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core_exports.h; sourceTree = "<group>"; };
+		93919FB70EEC98DE0089586F /* DerivativesFromRefinedSingletonModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DerivativesFromRefinedSingletonModifier.h; sourceTree = "<group>"; };
+		93919FB80EEC98DE0089586F /* DerivativesToRefinedSingletonModifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DerivativesToRefinedSingletonModifier.h; sourceTree = "<group>"; };
+		93919FD80EEDA0A90089586F /* test_centroid.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_centroid.py; sourceTree = "<group>"; };
+		9391A0960EEF36640089586F /* test_children.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_children.py; sourceTree = "<group>"; };
 		93F60A460EE89D6400DFF8A8 /* MaximumPairScoreRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaximumPairScoreRestraint.h; sourceTree = "<group>"; };
 		93F60A470EE89D6400DFF8A8 /* MaximumSingletonScoreRestraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaximumSingletonScoreRestraint.h; sourceTree = "<group>"; };
 		93F60A480EE89D6400DFF8A8 /* Rotation3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rotation3D.h; sourceTree = "<group>"; };
@@ -522,8 +531,8 @@
 				930320FD0ED65D5700C34FCC /* include */,
 				9303215F0ED65D5700C34FCC /* pyext */,
 				930321650ED65D5700C34FCC /* SConscript */,
+				9321BEF10EE8A5E200CA5604 /* test */,
 				930321660ED65D5700C34FCC /* src */,
-				930321BC0ED65D5700C34FCC /* test */,
 				930321F70ED65D5700C34FCC /* tools */,
 			);
 			path = core;
@@ -532,6 +541,13 @@
 		930320FD0ED65D5700C34FCC /* include */ = {
 			isa = PBXGroup;
 			children = (
+				93919FB20EEC98DE0089586F /* BondEndpointsParticleRefiner.h */,
+				93919FB30EEC98DE0089586F /* BondPairContainer.h */,
+				93919FB40EEC98DE0089586F /* BondSingletonScore.h */,
+				93919FB50EEC98DE0089586F /* CentroidOfRefinedSingletonModifier.h */,
+				93919FB60EEC98DE0089586F /* core_exports.h */,
+				93919FB70EEC98DE0089586F /* DerivativesFromRefinedSingletonModifier.h */,
+				93919FB80EEC98DE0089586F /* DerivativesToRefinedSingletonModifier.h */,
 				93F60A460EE89D6400DFF8A8 /* MaximumPairScoreRestraint.h */,
 				93F60A470EE89D6400DFF8A8 /* MaximumSingletonScoreRestraint.h */,
 				93F60A480EE89D6400DFF8A8 /* Rotation3D.h */,
@@ -549,9 +565,7 @@
 				930321050ED65D5700C34FCC /* bond_decorators.h */,
 				930321060ED65D5700C34FCC /* BondBondPairScore.h */,
 				930321070ED65D5700C34FCC /* BondDecoratorListScoreState.h */,
-				930321080ED65D5700C34FCC /* BondDecoratorPairContainer.h */,
 				930321090ED65D5700C34FCC /* BondDecoratorRestraint.h */,
-				9303210A0ED65D5700C34FCC /* BondDecoratorSingletonScore.h */,
 				9303210B0ED65D5700C34FCC /* BondedListScoreState.h */,
 				9303210C0ED65D5700C34FCC /* BoxSweepClosePairsFinder.h */,
 				9303210D0ED65D5700C34FCC /* BrownianDynamics.h */,
@@ -564,7 +578,6 @@
 				930321140ED65D5700C34FCC /* ConnectivityRestraint.h */,
 				930321150ED65D5700C34FCC /* ConstantRestraint.h */,
 				930321160ED65D5700C34FCC /* Cosine.h */,
-				930321170ED65D5700C34FCC /* CoverBondSingletonModifier.h */,
 				930321180ED65D5700C34FCC /* deprecation.h */,
 				930321190ED65D5700C34FCC /* DihedralRestraint.h */,
 				9303211A0ED65D5700C34FCC /* DistancePairScore.h */,
@@ -603,7 +616,6 @@
 				930321470ED65D5700C34FCC /* PairModifier.h */,
 				930321480ED65D5700C34FCC /* PairsRestraint.h */,
 				930321490ED65D5700C34FCC /* PairsScoreState.h */,
-				9303214A0ED65D5700C34FCC /* PropagateBondDerivativesSingletonModifier.h */,
 				9303214B0ED65D5700C34FCC /* QuadraticClosePairsFinder.h */,
 				9303214C0ED65D5700C34FCC /* ResidueDecorator.h */,
 				9303214D0ED65D5700C34FCC /* RestraintSet.h */,
@@ -624,6 +636,7 @@
 				9303215C0ED65D5700C34FCC /* VRMLLogOptimizerState.h */,
 				9303215D0ED65D5700C34FCC /* XYZDecorator.h */,
 				9303215E0ED65D5700C34FCC /* XYZRDecorator.h */,
+				9321BEEC0EE89E5D00CA5604 /* CoverRefinedSingletonModifier.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -660,6 +673,14 @@
 		930321660ED65D5700C34FCC /* src */ = {
 			isa = PBXGroup;
 			children = (
+				93919FA80EEC98BB0089586F /* BondEndpointsParticleRefiner.cpp */,
+				93919FA90EEC98BB0089586F /* BondPairContainer.cpp */,
+				93919FAA0EEC98BB0089586F /* BondSingletonScore.cpp */,
+				93919FAB0EEC98BB0089586F /* CentroidOfRefinedSingletonModifier.cpp */,
+				93919FAC0EEC98BB0089586F /* DerivativesFromRefinedSingletonModifier.cpp */,
+				93919FAD0EEC98BB0089586F /* DerivativesToRefinedSingletonModifier.cpp */,
+				93919FAE0EEC98BB0089586F /* MaximumPairScoreRestraint.cpp */,
+				93919FAF0EEC98BB0089586F /* MaximumSingletonScoreRestraint.cpp */,
 				93F60A4A0EE89D8C00DFF8A8 /* Rotation3D.cpp */,
 				93F60A4B0EE89D8C00DFF8A8 /* Transformation3D.cpp */,
 				932B79A10EE4308500CA3BDE /* AllPairsPairContainer.cpp */,
@@ -675,10 +696,7 @@
 				9303216E0ED65D5700C34FCC /* bond_decorators.cpp */,
 				9303216F0ED65D5700C34FCC /* BondBondPairScore.cpp */,
 				930321700ED65D5700C34FCC /* BondDecoratorListScoreState.cpp */,
-				930321710ED65D5700C34FCC /* BondDecoratorPairContainer.cpp */,
-				930321720ED65D5700C34FCC /* BondDecoratorPairContainer.os */,
 				930321730ED65D5700C34FCC /* BondDecoratorRestraint.cpp */,
-				930321740ED65D5700C34FCC /* BondDecoratorSingletonScore.cpp */,
 				930321750ED65D5700C34FCC /* BoxSweepClosePairsFinder.cpp */,
 				930321760ED65D5700C34FCC /* BrownianDynamics.cpp */,
 				930321770ED65D5700C34FCC /* CloseBipartitePairsScoreState.cpp */,
@@ -690,7 +708,6 @@
 				9303217D0ED65D5700C34FCC /* ConnectivityRestraint.cpp */,
 				9303217E0ED65D5700C34FCC /* ConstantRestraint.cpp */,
 				9303217F0ED65D5700C34FCC /* Cosine.cpp */,
-				930321800ED65D5700C34FCC /* CoverBondSingletonModifier.cpp */,
 				930321810ED65D5700C34FCC /* DihedralRestraint.cpp */,
 				930321820ED65D5700C34FCC /* DistancePairScore.cpp */,
 				930321830ED65D5700C34FCC /* DistanceRestraint.cpp */,
@@ -701,7 +718,6 @@
 				930321880ED65D5700C34FCC /* GridClosePairsFinder.cpp */,
 				930321890ED65D5700C34FCC /* HierarchyDecorator.cpp */,
 				9303218A0ED65D5700C34FCC /* internal */,
-				930321900ED65D5700C34FCC /* introduction.dox */,
 				930321910ED65D5700C34FCC /* ListPairContainer.cpp */,
 				930321920ED65D5700C34FCC /* ListSingletonContainer.cpp */,
 				930321940ED65D5700C34FCC /* MaxChangeScoreState.cpp */,
@@ -723,7 +739,6 @@
 				930321A40ED65D5700C34FCC /* PairModifier.cpp */,
 				930321A50ED65D5700C34FCC /* PairsRestraint.cpp */,
 				930321A60ED65D5700C34FCC /* PairsScoreState.cpp */,
-				930321A70ED65D5700C34FCC /* PropagateBondDerivativesSingletonModifier.cpp */,
 				930321A90ED65D5700C34FCC /* QuadraticClosePairsFinder.cpp */,
 				930321AA0ED65D5700C34FCC /* ResidueDecorator.cpp */,
 				930321AB0ED65D5700C34FCC /* RestraintSet.cpp */,
@@ -743,6 +758,7 @@
 				930321B90ED65D5700C34FCC /* VRMLLogOptimizerState.cpp */,
 				930321BA0ED65D5700C34FCC /* XYZDecorator.cpp */,
 				930321BB0ED65D5700C34FCC /* XYZRDecorator.cpp */,
+				9321BEF00EE89F6F00CA5604 /* CoverRefinedSingletonModifier.cpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -757,135 +773,6 @@
 				9303218F0ED65D5700C34FCC /* SConscript */,
 			);
 			path = internal;
-			sourceTree = "<group>";
-		};
-		930321BC0ED65D5700C34FCC /* test */ = {
-			isa = PBXGroup;
-			children = (
-				930321BD0ED65D5700C34FCC /* connectivity */,
-				930321BF0ED65D5700C34FCC /* decorators */,
-				930321C30ED65D5700C34FCC /* distance */,
-				930321C50ED65D5700C34FCC /* io */,
-				930321C70ED65D5700C34FCC /* optimizers */,
-				930321CC0ED65D5700C34FCC /* pair_scores */,
-				930321D10ED65D5700C34FCC /* restraints */,
-				930321DD0ED65D5700C34FCC /* run-all-tests.py */,
-				930321DE0ED65D5700C34FCC /* SConscript */,
-				930321DF0ED65D5700C34FCC /* states */,
-				930321F20ED65D5700C34FCC /* unary_functions */,
-			);
-			path = test;
-			sourceTree = "<group>";
-		};
-		930321BD0ED65D5700C34FCC /* connectivity */ = {
-			isa = PBXGroup;
-			children = (
-				930321BE0ED65D5700C34FCC /* test_connectivity.py */,
-			);
-			path = connectivity;
-			sourceTree = "<group>";
-		};
-		930321BF0ED65D5700C34FCC /* decorators */ = {
-			isa = PBXGroup;
-			children = (
-				930321C00ED65D5700C34FCC /* test_bonds.py */,
-				930321C10ED65D5700C34FCC /* test_hierarchy.py */,
-				930321C20ED65D5700C34FCC /* test_xyzr.py */,
-			);
-			path = decorators;
-			sourceTree = "<group>";
-		};
-		930321C30ED65D5700C34FCC /* distance */ = {
-			isa = PBXGroup;
-			children = (
-				930321C40ED65D5700C34FCC /* test_distance.py */,
-			);
-			path = distance;
-			sourceTree = "<group>";
-		};
-		930321C50ED65D5700C34FCC /* io */ = {
-			isa = PBXGroup;
-			children = (
-				930321C60ED65D5700C34FCC /* test_model_io.py */,
-			);
-			path = io;
-			sourceTree = "<group>";
-		};
-		930321C70ED65D5700C34FCC /* optimizers */ = {
-			isa = PBXGroup;
-			children = (
-				930321C80ED65D5700C34FCC /* test_cg_optimizer.py */,
-				930321C90ED65D5700C34FCC /* test_mc.py */,
-				930321CA0ED65D5700C34FCC /* test_md_optimizer.py */,
-				930321CB0ED65D5700C34FCC /* test_sd_optimizer.py */,
-			);
-			path = optimizers;
-			sourceTree = "<group>";
-		};
-		930321CC0ED65D5700C34FCC /* pair_scores */ = {
-			isa = PBXGroup;
-			children = (
-				930321CD0ED65D5700C34FCC /* test_bd_singleton_score.py */,
-				930321CE0ED65D5700C34FCC /* test_cylinder.py */,
-				930321CF0ED65D5700C34FCC /* test_transform.py */,
-				930321D00ED65D5700C34FCC /* test_typed_pair_score.py */,
-			);
-			path = pair_scores;
-			sourceTree = "<group>";
-		};
-		930321D10ED65D5700C34FCC /* restraints */ = {
-			isa = PBXGroup;
-			children = (
-				932B79D80EE4351E00CA3BDE /* test_all_pairs.py */,
-				930321D20ED65D5700C34FCC /* test_angle.py */,
-				930321D30ED65D5700C34FCC /* test_angles.py */,
-				930321D40ED65D5700C34FCC /* test_dihedral.py */,
-				930321D50ED65D5700C34FCC /* test_list.py */,
-				930321D60ED65D5700C34FCC /* test_lowest_n_restraints.py */,
-				930321D70ED65D5700C34FCC /* test_nonbonded_restraint.py */,
-				930321D80ED65D5700C34FCC /* test_pairchain.py */,
-				930321D90ED65D5700C34FCC /* test_pairlist.py */,
-				930321DA0ED65D5700C34FCC /* test_Particle_restraint.py */,
-				930321DB0ED65D5700C34FCC /* test_ParticlePair_restraint.py */,
-				930321DC0ED65D5700C34FCC /* test_restraint_sets.py */,
-			);
-			path = restraints;
-			sourceTree = "<group>";
-		};
-		930321DF0ED65D5700C34FCC /* states */ = {
-			isa = PBXGroup;
-			children = (
-				930321E00ED65D5700C34FCC /* test_bond_decorator_particle_pair_container.py */,
-				930321E10ED65D5700C34FCC /* test_bond_decorator_particle_pair_container.py.bak */,
-				930321E20ED65D5700C34FCC /* test_close_bipartite_pairs_score_state.py */,
-				930321E30ED65D5700C34FCC /* test_close_bipartite_pairs_score_state.py.bak */,
-				930321E40ED65D5700C34FCC /* test_close_pair_finders.py */,
-				930321E50ED65D5700C34FCC /* test_close_pair_finders.py.bak */,
-				930321E60ED65D5700C34FCC /* test_close_pairs_score_state.py */,
-				930321E70ED65D5700C34FCC /* test_close_pairs_score_state.py.bak */,
-				930321E80ED65D5700C34FCC /* test_cmm_log.py */,
-				930321E90ED65D5700C34FCC /* test_cover_bonds.py */,
-				930321EA0ED65D5700C34FCC /* test_gravity_center.py */,
-				930321EB0ED65D5700C34FCC /* test_maximum_change.py */,
-				930321EC0ED65D5700C34FCC /* test_maximum_change.py.bak */,
-				930321ED0ED65D5700C34FCC /* test_nonbonded_list.py */,
-				930321EE0ED65D5700C34FCC /* test_Particle_state.py */,
-				930321EF0ED65D5700C34FCC /* test_ParticlePair_state.py */,
-				930321F00ED65D5700C34FCC /* test_score_state.py */,
-				930321F10ED65D5700C34FCC /* test_vrml_log.py */,
-			);
-			path = states;
-			sourceTree = "<group>";
-		};
-		930321F20ED65D5700C34FCC /* unary_functions */ = {
-			isa = PBXGroup;
-			children = (
-				930321F30ED65D5700C34FCC /* test_cosine.py */,
-				930321F40ED65D5700C34FCC /* test_harmonic.py */,
-				930321F50ED65D5700C34FCC /* test_linear.py */,
-				930321F60ED65D5700C34FCC /* test_splines.py */,
-			);
-			path = unary_functions;
 			sourceTree = "<group>";
 		};
 		930321F70ED65D5700C34FCC /* tools */ = {
@@ -1487,6 +1374,153 @@
 			children = (
 			);
 			path = html;
+			sourceTree = "<group>";
+		};
+		9321BEF10EE8A5E200CA5604 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				9321BEF20EE8A5E200CA5604 /* containers */,
+				9321BEF70EE8A5E200CA5604 /* decorators */,
+				9321BEFB0EE8A5E200CA5604 /* io */,
+				9321BEFD0EE8A5E200CA5604 /* modifiers */,
+				9321BEFE0EE8A5E200CA5604 /* optimizers */,
+				9321BF030EE8A5E200CA5604 /* refiners */,
+				9321BF040EE8A5E200CA5604 /* restraints */,
+				9321BF100EE8A5E200CA5604 /* run-all-tests.py */,
+				9321BF110EE8A5E200CA5604 /* SConscript */,
+				9321BF120EE8A5E200CA5604 /* scores */,
+				9321BF170EE8A5E200CA5604 /* states */,
+				9321BF230EE8A5E200CA5604 /* transforms */,
+				9321BF270EE8A5E200CA5604 /* unary_functions */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
+		9321BEF20EE8A5E200CA5604 /* containers */ = {
+			isa = PBXGroup;
+			children = (
+				9321BEF30EE8A5E200CA5604 /* test_Particle_restraint.py */,
+				9321BEF40EE8A5E200CA5604 /* test_Particle_state.py */,
+				9321BEF50EE8A5E200CA5604 /* test_ParticlePair_restraint.py */,
+				9321BEF60EE8A5E200CA5604 /* test_ParticlePair_state.py */,
+			);
+			path = containers;
+			sourceTree = "<group>";
+		};
+		9321BEF70EE8A5E200CA5604 /* decorators */ = {
+			isa = PBXGroup;
+			children = (
+				9321BEF80EE8A5E200CA5604 /* test_bonds.py */,
+				9321BEF90EE8A5E200CA5604 /* test_hierarchy.py */,
+				9321BEFA0EE8A5E200CA5604 /* test_xyzr.py */,
+			);
+			path = decorators;
+			sourceTree = "<group>";
+		};
+		9321BEFB0EE8A5E200CA5604 /* io */ = {
+			isa = PBXGroup;
+			children = (
+				9321BEFC0EE8A5E200CA5604 /* test_model_io.py */,
+			);
+			path = io;
+			sourceTree = "<group>";
+		};
+		9321BEFD0EE8A5E200CA5604 /* modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				93919FD80EEDA0A90089586F /* test_centroid.py */,
+				93919FA20EEC986D0089586F /* test_to_from_refined.py */,
+				9321BF410EE8A7CB00CA5604 /* test_cover_refiner.py */,
+			);
+			path = modifiers;
+			sourceTree = "<group>";
+		};
+		9321BEFE0EE8A5E200CA5604 /* optimizers */ = {
+			isa = PBXGroup;
+			children = (
+				9321BEFF0EE8A5E200CA5604 /* test_cg_optimizer.py */,
+				9321BF000EE8A5E200CA5604 /* test_mc.py */,
+				9321BF010EE8A5E200CA5604 /* test_md_optimizer.py */,
+				9321BF020EE8A5E200CA5604 /* test_sd_optimizer.py */,
+			);
+			path = optimizers;
+			sourceTree = "<group>";
+		};
+		9321BF030EE8A5E200CA5604 /* refiners */ = {
+			isa = PBXGroup;
+			children = (
+				93919FA50EEC987D0089586F /* test_bond_refiner.py */,
+				9391A0960EEF36640089586F /* test_children.py */,
+			);
+			path = refiners;
+			sourceTree = "<group>";
+		};
+		9321BF040EE8A5E200CA5604 /* restraints */ = {
+			isa = PBXGroup;
+			children = (
+				9321BF050EE8A5E200CA5604 /* test_all_pairs.py */,
+				9321BF060EE8A5E200CA5604 /* test_angle.py */,
+				9321BF070EE8A5E200CA5604 /* test_angles.py */,
+				9321BF080EE8A5E200CA5604 /* test_connectivity.py */,
+				9321BF090EE8A5E200CA5604 /* test_dihedral.py */,
+				9321BF0A0EE8A5E200CA5604 /* test_distance.py */,
+				9321BF0B0EE8A5E200CA5604 /* test_list.py */,
+				9321BF0C0EE8A5E200CA5604 /* test_nonbonded_restraint.py */,
+				9321BF0D0EE8A5E200CA5604 /* test_pairchain.py */,
+				9321BF0E0EE8A5E200CA5604 /* test_pairlist.py */,
+				9321BF0F0EE8A5E200CA5604 /* test_restraint_sets.py */,
+			);
+			path = restraints;
+			sourceTree = "<group>";
+		};
+		9321BF120EE8A5E200CA5604 /* scores */ = {
+			isa = PBXGroup;
+			children = (
+				9321BF130EE8A5E200CA5604 /* test_bd_singleton_score.py */,
+				9321BF140EE8A5E200CA5604 /* test_cylinder.py */,
+				9321BF150EE8A5E200CA5604 /* test_transform.py */,
+				9321BF160EE8A5E200CA5604 /* test_typed_pair_score.py */,
+			);
+			path = scores;
+			sourceTree = "<group>";
+		};
+		9321BF170EE8A5E200CA5604 /* states */ = {
+			isa = PBXGroup;
+			children = (
+				9321BF180EE8A5E200CA5604 /* test_bond_decorator_particle_pair_container.py */,
+				9321BF190EE8A5E200CA5604 /* test_close_bipartite_pairs_score_state.py */,
+				9321BF1A0EE8A5E200CA5604 /* test_close_pair_finders.py */,
+				9321BF1B0EE8A5E200CA5604 /* test_close_pairs_score_state.py */,
+				9321BF1C0EE8A5E200CA5604 /* test_cmm_log.py */,
+				9321BF1D0EE8A5E200CA5604 /* test_cover_bonds.py */,
+				9321BF1E0EE8A5E200CA5604 /* test_gravity_center.py */,
+				9321BF1F0EE8A5E200CA5604 /* test_maximum_change.py */,
+				9321BF200EE8A5E200CA5604 /* test_nonbonded_list.py */,
+				9321BF210EE8A5E200CA5604 /* test_score_state.py */,
+				9321BF220EE8A5E200CA5604 /* test_vrml_log.py */,
+			);
+			path = states;
+			sourceTree = "<group>";
+		};
+		9321BF230EE8A5E200CA5604 /* transforms */ = {
+			isa = PBXGroup;
+			children = (
+				9321BF240EE8A5E200CA5604 /* test_particles_transformation.py */,
+				9321BF250EE8A5E200CA5604 /* test_rigid_transformation.py */,
+				9321BF260EE8A5E200CA5604 /* test_rotation.py */,
+			);
+			path = transforms;
+			sourceTree = "<group>";
+		};
+		9321BF270EE8A5E200CA5604 /* unary_functions */ = {
+			isa = PBXGroup;
+			children = (
+				9321BF280EE8A5E200CA5604 /* test_cosine.py */,
+				9321BF290EE8A5E200CA5604 /* test_harmonic.py */,
+				9321BF2A0EE8A5E200CA5604 /* test_linear.py */,
+				9321BF2B0EE8A5E200CA5604 /* test_splines.py */,
+			);
+			path = unary_functions;
 			sourceTree = "<group>";
 		};
 		936CE36B0EE4E8A900781151 /* saxs */ = {
