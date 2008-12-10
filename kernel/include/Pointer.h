@@ -38,6 +38,7 @@ class Pointer
   O* o_;
 
   void set_pointer(O* p) {
+    if (p == o_) return;
     if (boost::is_base_of<RefCountedObject, O>::value) {
       if (o_) internal::disown(o_);
       if (p) internal::own(p);
