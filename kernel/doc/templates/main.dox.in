@@ -1,3 +1,6 @@
+/* WARNING: EDIT THE VERSION OF THIS PAGE IN kernel/doc/template, NOT THE
+   .dox PAGE IN kernel/doc.
+*/
 /**
   \mainpage IMP API reference
   
@@ -33,7 +36,7 @@
 
     and finally
 
-    - the <a href="https://salilab.org/imp/wiki/front_page/">IMP wiki page</a>
+    - the <a href="https://salilab.org/imp/wiki/">IMP wiki page</a>
 
     \note The 'Modules' tab has nothing to do with modules in IMP. The entries in the
     tab are groups of functionality which can cut across modules.
