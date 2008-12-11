@@ -11,7 +11,7 @@
 #include "config.h"
 
 #include <IMP/base_types.h>
-#include <IMP/Object.h>
+#include <IMP/RefCountedObject.h>
 #include <IMP/Pointer.h>
 #include <IMP/Optimizer.h>
 
@@ -27,7 +27,7 @@ typedef Index<Mover> MoverIndex;
 //! A class to make a monte carlo move.
 /** You probably want to use MoverBase if you are implementing a Mover.
  */
-class IMPCOREEXPORT Mover: public Object
+class IMPCOREEXPORT Mover: public RefCountedObject
 {
   friend class MonteCarlo;
   void set_optimizer(Optimizer *c, MoverIndex i) {
@@ -39,7 +39,6 @@ class IMPCOREEXPORT Mover: public Object
   MoverIndex index_;
 public:
   Mover();
-  virtual ~Mover(){};
 
   //! propose a modification
   /** \param[in] size A number between 0 and 1 used to scale the proposed
@@ -67,6 +66,8 @@ public:
   virtual void show(std::ostream&out= std::cout) const {
     out << "Mover doesn't implement show " << std::endl;
   }
+
+  IMP_REF_COUNTED_DESTRUCTOR(Mover)
 };
 
 IMP_OUTPUT_OPERATOR(Mover);
