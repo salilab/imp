@@ -16,7 +16,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Mover::Mover() {};
+Mover::Mover() {}
+
+Mover::~Mover(){}
+
 
 IMP_CONTAINER_IMPL(MonteCarlo, Mover, mover, MoverIndex,
                    obj->set_optimizer(this, index),,);
