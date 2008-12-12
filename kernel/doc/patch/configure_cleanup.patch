@@ -1,0 +1,416 @@
+Index: kernel/test/run-all-tests.py
+===================================================================
+--- kernel/test/run-all-tests.py	(revision 899)
++++ kernel/test/run-all-tests.py	(working copy)
+@@ -1 +1,21 @@
+-link ../../tools/run-all-tests.py
+\ No newline at end of file
++import unittest, sys, os, re
++
++def regressionTest():
++    """Run all tests in files called test_*.py in current directory and
++       subdirectories"""
++    path = os.path.abspath(os.path.dirname(sys.argv[0]))
++    modobjs = []
++    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
++        files = os.listdir(os.path.join(path, subdir))
++        test = re.compile("^test_.*\.py$", re.IGNORECASE)
++        files = filter(test.search, files)
++        modnames = [os.path.splitext(f)[0] for f in files]
++        sys.path.insert(0, subdir)
++        modobjs.extend([__import__(m) for m in modnames])
++        sys.path.pop(0)
++
++    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
++    return unittest.TestSuite(tests)
++
++if __name__ == "__main__":
++    unittest.main(defaultTest="regressionTest")
+Index: kernel/src/SConscript
+===================================================================
+--- kernel/src/SConscript	(revision 899)
++++ kernel/src/SConscript	(working copy)
+@@ -2,7 +2,7 @@
+ 
+ # Get an environment suitable for building a shared library:
+ env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
+-env.Append(CPPPATH=["#/build/include", env['BOOST_CPPPATH']])
++env.Prepend(CPPPATH=["#/build/include"])
+ 
+ # Subdirectories:
+ internal_files = SConscript('internal/SConscript')
+Index: kernel/pyext/SConscript
+===================================================================
+--- kernel/pyext/SConscript	(revision 899)
++++ kernel/pyext/SConscript	(working copy)
+@@ -4,13 +4,14 @@
+ 
+ # Get a modified build environment suitable for building Python extensions:
+ e = get_pyext_environment(env, 'IMP', cplusplus=True)
+-e.Append(CPPPATH=['#/build/include', e['BOOST_CPPPATH']])
++e.Append(CPPPATH=['#/build/include'])
+ e.Append(CPPDEFINES=['SWIG_WRAPPER'])
+ e.Append(LIBPATH=['#/build/lib'], LIBS='imp')
+ 
+ # Build the Python extension from SWIG interface file:
+ pyext = e.LoadableModule('#/build/lib/_IMP', 'IMP.i',
+-                         SWIGPATH='#/build/include',
++                         SWIGPATH=['#/build/include', env['CPPPATH'],
++                                   env['SWIGPATH']],
+                          SWIGFLAGS='-python -c++ -naturalvar')
+ # .py file should also be generated:
+ gen_pymod = File('IMP.py')
+Index: tools/imp_module.py
+===================================================================
+--- tools/imp_module.py	(revision 899)
++++ tools/imp_module.py	(working copy)
+@@ -220,7 +220,6 @@
+     # Place in lib directory:
+     pymod = env.LinkInstallAs('#/build/lib/IMP/%s/__init__.py' % module,
+                               gen_pymod)
+-
+     # Install the Python extension and module:
+     libinst = env.Install(env['pyextdir'], pyext)
+     pyinst = env.Install(os.path.join(env['pythondir'], 'IMP', module), pymod)
+@@ -236,8 +235,9 @@
+     from tools import get_pyext_environment
+     module = env['IMP_MODULE']
+     env = get_pyext_environment(env, 'IMP' + module.upper(), cplusplus=True)
++    env['LIBS']=[]
+     env.Append(LIBS=['imp_%s' % module])
+-    env.Append(SWIGPATH='#/build/include')
++    env.Prepend(SWIGPATH=['#/build/include',env['CPPPATH']])
+     env.Append(SWIGFLAGS='-python -c++ -naturalvar')
+     env.AddMethod(IMPPythonExtension)
+     return env
+@@ -319,8 +319,8 @@
+ 
+     env['IMP_MODULE'] = module
+     env['IMP_MODULE_DESCRIPTION'] = description
+-    env.Append(CPPPATH=['#/build/include', env['BOOST_CPPPATH']])
+-    env.Append(LIBPATH=['#/build/lib'], LIBS=['imp'])
++    env.Prepend(CPPPATH=['#/build/include'])
++    env.Prepend(LIBPATH=['#/build/lib'], LIBS=['imp'])
+ 
+     if cpp:
+         # Generate version information
+Index: tools/__init__.py
+===================================================================
+--- tools/__init__.py	(revision 899)
++++ tools/__init__.py	(working copy)
+@@ -212,6 +212,11 @@
+     env.Prepend(SCANNERS = [_SWIGScanner, pyscanner.PythonScanner])
+     if env['CC'] == 'gcc':
+         env.Append(CCFLAGS="-Wall -g")
++    if env.get('cxxflags', None) is not None:
++        env['CXXFLAGS'] = [env['cxxflags'].split(" ")]
++    if env.get('linkflags', None) is not None:
++        env['LINKFLAGS'] = [env['linkflags'].split(" ")]
++
+     if env.get('include', None) is not None:
+         env['include'] = [os.path.abspath(x) for x in \
+                           env['include'].split(os.path.pathsep)]
+@@ -219,11 +224,12 @@
+     if env.get('lib', None) is not None:
+         env['lib'] = [os.path.abspath(x) for x in \
+                       env['lib'].split(os.path.pathsep)]
++        # append/prepend must match other uses
+         env.Prepend(LIBPATH=env['lib'])
+     else:
+         env['lib'] = []
++
+     _add_release_flags(env)
+-
+     sys = platform.system()
+     if sys == 'SunOS':
+         # Find locally-installed libraries in /usr/local (e.g. for SWIG)
+@@ -272,7 +278,11 @@
+     e = env.Clone()
+     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
+              CCFLAGS='${VIS_CCFLAGS}')
+-
++    if e['PLATFORM'] is 'posix':
++        for p in e['LIBPATH']:
++            if p[0] is not '#':
++                # append/prepend must match other uses
++                e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
+     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
+     return e
+ 
+@@ -341,7 +351,11 @@
+             opt = opt.replace("-Wstrict-prototypes", "")
+         e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
+         e.Replace(CPPFLAGS=basecflags.split() + opt.split())
+-
++        if e['PLATFORM'] is 'posix':
++            for p in e['LIBPATH']:
++                if p[0] is not '#':
++                    # append/prepend must match other uses
++                    e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
+         # Remove NDEBUG preprocessor stuff if defined (we do it ourselves for
+         # release builds)
+         if '-DNDEBUG' in e['CPPFLAGS']:
+@@ -411,3 +425,9 @@
+     vars.Add(PathVariable('lib', 'Library search path ' + \
+                           '(e.g. "/usr/local/lib:/opt/local/lib")', None,
+                           PathVariable.PathAccept))
++    vars.Add(PathVariable('cxxflags', 'Extra cxx flags ' + \
++                          '(e.g. "-fno-rounding -DFOOBAR")',
++                          None, PathVariable.PathAccept))
++    vars.Add(PathVariable('linkflags', 'Extra link flags ' + \
++                          '(e.g. "-lefence")', None,
++                          PathVariable.PathAccept))
+Index: tools/cgal.py
+===================================================================
+--- tools/cgal.py	(revision 899)
++++ tools/cgal.py	(working copy)
+@@ -4,26 +4,24 @@
+ from SCons.Script import *
+ 
+ def _check(context):
+-    context.Message('Checking for CGAL ...')
+     cgal = context.env['cgal']
++    context.Message('Checking for CGAL ...')
+     if cgal is False or cgal is 0:
+         context.Result("disabled")
+         return False
+-
+-    ret = context.TryLink("""
+-    #include <CGAL/box_intersection_d.h>
+-    int main()
+-    {
+-        return 0;
+-    }
+-    """, '.cpp')
++    ret=SCons.SConf.CheckLibWithHeader(context, ['CGAL'],
++                                       'CGAL/basic.h',
++                                       'CXX',
++                                       'CGAL_assertion(1);',
++                                        autoadd=False)
+     if ret:
+         context.env['CGAL_LIBS'] = ['CGAL']
++        context.env.Append(CPPDEFINES='IMP_USE_CGAL')
+     context.Result(ret)
+     return ret
+ 
+ def configure_check(env):
+-    env['CGAL_LIBS'] = ''
++    env['CGAL_LIBS'] = ['']
+     custom_tests = {'CheckCGAL':_check}
+     conf = env.Configure(custom_tests=custom_tests)
+     if not env.GetOption('clean') and not env.GetOption('help'):
+Index: tools/boost.py
+===================================================================
+--- tools/boost.py	(revision 899)
++++ tools/boost.py	(working copy)
+@@ -17,30 +17,20 @@
+     context.Message('Checking for Boost version >= %s... ' % (version))
+     # Check some common locations for the boost headers, since there is no
+     # pkg-config script:
+-    for dir in ['', '/opt/local/include', '/sw/include', '/usr/local/include']:
+-        inc = os.path.join(dir, 'boost/version.hpp')
+-        ret = context.TryRun("""
+-        #include "%s"
++    ret = context.TryRun("""
++        #include <boost/version.hpp>
+ 
+         int main()
+         {
+             return BOOST_VERSION >= %d ? 0 : 1;
+         }
+-        """ % (inc, version_n), '.cpp')[0]
+-        if ret:
+-            context.env['BOOST_CPPPATH'] = dir
+-            if dir == '':
+-                context.Result(ret)
+-            else:
+-                context.Result(dir)
+-            return ret
++        """ % (version_n), '.cpp')[0]
+     context.Result(ret)
+     return ret
+ 
+ def configure_check(env, version):
+     custom_tests = {'CheckBoost':_check}
+     conf = env.Configure(custom_tests=custom_tests)
+-    env['BOOST_CPPPATH'] = ''
+     if not env.GetOption('clean') and not env.GetOption('help') \
+        and conf.CheckBoost(version) is 0:
+         Exit("Boost version >= %s is required to build IMP" % version)
+Index: SConstruct
+===================================================================
+--- SConstruct	(revision 899)
++++ SConstruct	(working copy)
+@@ -9,7 +9,7 @@
+ vars = Variables('config.py')
+ add_common_variables(vars, "imp")
+ vars.Add(PackageVariable('embed', 'Location of the EMBED package', 'no'))
+-vars.Add(PackageVariable('cgal', 'Location of the CGAL package', True))
++vars.Add(BoolVariable('cgal', 'Whether to use the CGAL library', True))
+ env = MyEnvironment(variables=vars, require_modeller=False,
+                     tools=["default", "doxygen", "docbook", "imp_module"],
+                     toolpath=["tools"])
+Index: bin/SConscript
+===================================================================
+--- bin/SConscript	(revision 899)
++++ bin/SConscript	(working copy)
+@@ -12,11 +12,6 @@
+             line = "MODPY=" + source[2].get_contents()
+         elif line.endswith("@PATHSEP@"):
+             line = "PATHSEP=\"" + source[3].get_contents() + "\""
+-        elif line.endswith("@EXTRALIB@"):
+-            line = "EXTRALIB="
+-            cont = source[4].get_contents()
+-            if len(cont) > 0:
+-                line += '"' + cont + source[3].get_contents() + '"'
+         print >> outfile, line
+     outfile.close()
+     infile.close()
+@@ -27,6 +22,5 @@
+ bin = env.ScriptFile("imppy.sh",
+                      ["imppy.sh.in", env.Value(env.Dir('#').abspath),
+                       env.Value(env['MODELLER_MODPY']),
+-                      env.Value(env['PATHSEP']),
+-                      env.Value(env['PATHSEP'].join(env['lib']))])
++                      env.Value(env['PATHSEP'])])
+ Return('bin')
+Index: bin/imppy.sh.in
+===================================================================
+--- bin/imppy.sh.in	(revision 899)
++++ bin/imppy.sh.in	(working copy)
+@@ -3,9 +3,8 @@
+ TOPDIR=@TOPDIR@
+ MODPY=@MODPY@
+ PATHSEP=@PATHSEP@
+-EXTRALIB=@EXTRALIB@
+ 
+-LLP="${EXTRALIB}${TOPDIR}/build/lib"
++LLP="${TOPDIR}/build/lib"
+ if test -z "${LD_LIBRARY_PATH}"; then
+   LD_LIBRARY_PATH=${LLP}
+ else
+Index: modules/em/test/run-all-tests.py
+===================================================================
+--- modules/em/test/run-all-tests.py	(revision 899)
++++ modules/em/test/run-all-tests.py	(working copy)
+@@ -1 +1,21 @@
+-link ../../../tools/run-all-tests.py
+\ No newline at end of file
++import unittest, sys, os, re
++
++def regressionTest():
++    """Run all tests in files called test_*.py in current directory and
++       subdirectories"""
++    path = os.path.abspath(os.path.dirname(sys.argv[0]))
++    modobjs = []
++    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
++        files = os.listdir(os.path.join(path, subdir))
++        test = re.compile("^test_.*\.py$", re.IGNORECASE)
++        files = filter(test.search, files)
++        modnames = [os.path.splitext(f)[0] for f in files]
++        sys.path.insert(0, subdir)
++        modobjs.extend([__import__(m) for m in modnames])
++        sys.path.pop(0)
++
++    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
++    return unittest.TestSuite(tests)
++
++if __name__ == "__main__":
++    unittest.main(defaultTest="regressionTest")
+Index: modules/modeller/test/run-all-tests.py
+===================================================================
+--- modules/modeller/test/run-all-tests.py	(revision 899)
++++ modules/modeller/test/run-all-tests.py	(working copy)
+@@ -1 +1,21 @@
+-link ../../../tools/run-all-tests.py
+\ No newline at end of file
++import unittest, sys, os, re
++
++def regressionTest():
++    """Run all tests in files called test_*.py in current directory and
++       subdirectories"""
++    path = os.path.abspath(os.path.dirname(sys.argv[0]))
++    modobjs = []
++    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
++        files = os.listdir(os.path.join(path, subdir))
++        test = re.compile("^test_.*\.py$", re.IGNORECASE)
++        files = filter(test.search, files)
++        modnames = [os.path.splitext(f)[0] for f in files]
++        sys.path.insert(0, subdir)
++        modobjs.extend([__import__(m) for m in modnames])
++        sys.path.pop(0)
++
++    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
++    return unittest.TestSuite(tests)
++
++if __name__ == "__main__":
++    unittest.main(defaultTest="regressionTest")
+Index: modules/domino/test/run-all-tests.py
+===================================================================
+--- modules/domino/test/run-all-tests.py	(revision 899)
++++ modules/domino/test/run-all-tests.py	(working copy)
+@@ -1 +1,21 @@
+-link ../../../tools/run-all-tests.py
+\ No newline at end of file
++import unittest, sys, os, re
++
++def regressionTest():
++    """Run all tests in files called test_*.py in current directory and
++       subdirectories"""
++    path = os.path.abspath(os.path.dirname(sys.argv[0]))
++    modobjs = []
++    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
++        files = os.listdir(os.path.join(path, subdir))
++        test = re.compile("^test_.*\.py$", re.IGNORECASE)
++        files = filter(test.search, files)
++        modnames = [os.path.splitext(f)[0] for f in files]
++        sys.path.insert(0, subdir)
++        modobjs.extend([__import__(m) for m in modnames])
++        sys.path.pop(0)
++
++    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
++    return unittest.TestSuite(tests)
++
++if __name__ == "__main__":
++    unittest.main(defaultTest="regressionTest")
+Index: modules/core/SConscript
+===================================================================
+--- modules/core/SConscript	(revision 899)
++++ modules/core/SConscript	(working copy)
+@@ -3,7 +3,7 @@
+ 
+ # Link against CGAL if present:
+ if env['CGAL_LIBS']:
+-    env.Append(LIBS=env['CGAL_LIBS'], CPPDEFINES='IMP_USE_CGAL')
++    env.Append(LIBS=env['CGAL_LIBS'])
+ 
+ # No dependent libraries, so this module can always be built:
+ env.validate()
+Index: modules/misc/test/run-all-tests.py
+===================================================================
+--- modules/misc/test/run-all-tests.py	(revision 899)
++++ modules/misc/test/run-all-tests.py	(working copy)
+@@ -1 +1,21 @@
+-link ../../../tools/run-all-tests.py
+\ No newline at end of file
++import unittest, sys, os, re
++
++def regressionTest():
++    """Run all tests in files called test_*.py in current directory and
++       subdirectories"""
++    path = os.path.abspath(os.path.dirname(sys.argv[0]))
++    modobjs = []
++    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
++        files = os.listdir(os.path.join(path, subdir))
++        test = re.compile("^test_.*\.py$", re.IGNORECASE)
++        files = filter(test.search, files)
++        modnames = [os.path.splitext(f)[0] for f in files]
++        sys.path.insert(0, subdir)
++        modobjs.extend([__import__(m) for m in modnames])
++        sys.path.pop(0)
++
++    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
++    return unittest.TestSuite(tests)
++
++if __name__ == "__main__":
++    unittest.main(defaultTest="regressionTest")

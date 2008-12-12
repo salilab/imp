@@ -1,0 +1,2 @@
+move the constructor owning macros from core.i to IMP.i as they are of general
+utility. These macros handle null and overloaded constructor arguments.
