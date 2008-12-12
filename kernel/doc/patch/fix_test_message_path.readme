@@ -1,0 +1,2 @@
+patch the run_all_tests script so that error messages are printed relative to
+the build root and so various programs such as emacs can parse them.

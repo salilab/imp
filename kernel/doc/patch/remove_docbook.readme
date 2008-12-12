@@ -1,0 +1,2 @@
+remove the docbook docs and move things around to make the documentation make
+more sense. All the docbook content has been moved to doxygen.

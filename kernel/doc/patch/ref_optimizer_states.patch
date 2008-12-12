@@ -1,0 +1,13 @@
+Index: kernel/include/OptimizerState.h
+===================================================================
+--- kernel/include/OptimizerState.h	(revision 1005)
++++ kernel/include/OptimizerState.h	(working copy)
+@@ -32,7 +32,7 @@
+     logging is TERSE the restraint should print out only a constant number
+     of lines per update call.
+  */
+-class IMPDLLEXPORT OptimizerState : public Object
++class IMPDLLEXPORT OptimizerState : public RefCountedObject
+ {
+   friend class Optimizer;
+   void set_optimizer(Optimizer* optimizer);

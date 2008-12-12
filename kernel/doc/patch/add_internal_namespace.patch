@@ -1,0 +1,55 @@
+Index: tools/imp_module.py
+===================================================================
+--- tools/imp_module.py	(revision 1001)
++++ tools/imp_module.py	(working copy)
+@@ -78,8 +78,19 @@
+ #define %(NAMESPACE)s_END_NAMESPACE \\
+ } /* namespace %(name)s */ \\
+ \\
+-} /* namespace IMP */""" % vars
++} /* namespace IMP */
+ 
++#define %(NAMESPACE)s_BEGIN_INTERNAL_NAMESPACE \\
++%(NAMESPACE)s_BEGIN_NAMESPACE \\
++\\
++namespace internal \\
++{
++
++#define %(NAMESPACE)s_END_INTERNAL_NAMESPACE \\
++} /* namespace internal */ \\
++\\
++%(NAMESPACE)s_END_NAMESPACE""" % vars
++
+     print >> h, """
+ #endif  /* IMP%(NAME)s_EXPORTS_H */""" % vars
+ 
+Index: modules/core/include/macros.h
+===================================================================
+--- modules/core/include/macros.h	(revision 1001)
++++ modules/core/include/macros.h	(working copy)
+@@ -284,25 +284,4 @@
+ #define IMP_RESIDUE_TYPE_INDEX 90784334
+ 
+ 
+-
+-
+-
+-// These belong in core_exports.h
+-#define IMPCORE_BEGIN_INTERNAL_NAMESPACE        \
+-namespace IMP                                   \
+-{                                               \
+-                                                \
+-namespace core                                  \
+-{                                               \
+-                                                \
+-namespace internal                              \
+-{
+-
+-#define IMPCORE_END_INTERNAL_NAMESPACE          \
+-} /* namespace internal */                      \
+-                                                \
+-} /* namespace core */                          \
+-                                                \
+-} /* namespace IMP */
+-
+ #endif  /* IMPCORE_DECORATOR_MACROS_H */
