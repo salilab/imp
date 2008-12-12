@@ -195,10 +195,15 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     # First make a dummy environment in order to evaluate all variables, since
     # env['wine'] will tell us which 'real' environment to create:
     env = Environment(tools=[], variables=variables)
+    newpath = env['ENV']['PATH']
+    if env.get('path', None) is not None:
+        newpath += os.path.pathsep + env['path']
     if env['wine']:
-        env = WineEnvironment(variables=variables, *args, **kw)
+        env = WineEnvironment(variables=variables, ENV = {'PATH': newpath},
+                              *args, **kw)
     else:
-        env = Environment(variables=variables, *args, **kw)
+        env = Environment(variables=variables, ENV = {'PATH': newpath},
+                          *args, **kw)
         env['PYTHON'] = 'python'
         env['PATHSEP'] = os.path.pathsep
     try:
@@ -410,4 +415,7 @@ def add_common_variables(vars, package):
                           None, PathVariable.PathAccept))
     vars.Add(PathVariable('lib', 'Library search path ' + \
                           '(e.g. "/usr/local/lib:/opt/local/lib")', None,
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('path', 'Extra executable path ' + \
+                          '(e.g. "/opt/local/bin/")', None,
                           PathVariable.PathAccept))
