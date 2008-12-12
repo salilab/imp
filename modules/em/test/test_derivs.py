@@ -1,6 +1,7 @@
 # test that derivatives agree with numerical ones
 import modeller
 import IMP
+import IMP.test
 import sys
 import IMP.modeller
 import IMP.em
@@ -27,15 +28,16 @@ def init_particle(particles,p_ind_,x_,y_,z_,r_=0.0,w_=1.0,protein_=1):
     p1.set_value(IMP.FloatKey("y"), y_)
     p1.set_value(IMP.FloatKey("z"), z_)
 
-class DerivativesTest(unittest.TestCase):
+class DerivativesTest(IMP.test.TestCase):
     """check the agreement of numerical and analytical
        derivatives"""
     def setUp(self):
         """initialize IMP and modeller environment
            create particles"""
+        IMP.test.TestCase.setUp(self)
         modeller.log.level= (0,0,0,0,1)
         self.env = modeller.environ()
-        self.env.io.atom_files_directory = '../data/'
+        self.env.io.atom_files_directory = self.get_test_file('../data/')
         self.env.edat.dynamic_sphere = False
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')

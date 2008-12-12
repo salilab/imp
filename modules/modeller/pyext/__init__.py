@@ -2,6 +2,7 @@
 
 import math
 import imp
+import os
 import IMP
 import IMP.utils
 import IMP.core
@@ -102,6 +103,7 @@ def create_particles(num_particles, env, model, particles):
         fp.write("ATOM  %5d  N   ALA     0       0.000   0.000   0.000  1.00  0.00           C  \n" % (i))
     fp.close()
     mdl = modeller.model(env, file='./temp_particles.pdb')
+    os.unlink('temp_particles.pdb')
     init_imp_from_modeller(model, particles, mdl.atoms)
     return mdl
 

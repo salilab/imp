@@ -259,13 +259,11 @@ def IMPPythonExtensionEnvironment(env):
     return env
 
 def _action_unit_test(target, source, env):
-    (dir, script) = os.path.split(source[0].path)
     scripts = [File('#/bin/imppy.sh')]
     if env['TEST_ENVSCRIPT']:
         scripts.append(File(env['TEST_ENVSCRIPT']))
-    app = "cd %s && %s %s %s -v > /dev/null" \
-          % (dir, " ".join([x.abspath for x in scripts]),
-             env['PYTHON'], script)
+    app = "%s %s %s -v > /dev/null" \
+          % (" ".join([x.path for x in scripts]), env['PYTHON'], source[0].path)
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
     else:
