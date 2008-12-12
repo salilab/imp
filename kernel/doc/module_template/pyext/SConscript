@@ -1,0 +1,5 @@
+Import('env')
+
+e = env.IMPPythonExtensionEnvironment()
+
+e.IMPPythonExtension('modulename.i')
