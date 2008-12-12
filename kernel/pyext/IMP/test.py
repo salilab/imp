@@ -1,4 +1,5 @@
 import re, math, unittest
+import os
 import random
 import IMP
 
@@ -14,6 +15,11 @@ class TestCase(unittest.TestCase):
     def tearDown(self):
         # Restore original check level
         IMP.set_check_level(self.__check_level)
+
+    def get_test_file(self, filename):
+        """Get the full name of a file in the top-level test directory."""
+        path = os.environ['TEST_DIRECTORY']
+        return os.path.join(path, filename)
 
     def assertInTolerance(self, num1, num2, tolerance, msg=None):
         """Assert that the difference between num1 and num2 is less than
