@@ -35,23 +35,6 @@ IMP_ADD_OBJECT(type, add_##lcname)
 IMP_ADD_OBJECTS(type, add_##lcname##s)
 %enddef
 
-/** This should go back into IMP_macros.i */
-%define IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(Ucname)
-%pythonprepend Ucname::Ucname %{
-        if len(args) >= 1 and args[0] is not None: args[0].thisown=0
-        if len(args) >= 2 and args[1] is not None: args[1].thisown=0
-%}
-%enddef
-
-/** This should go back into IMP_macros.i */
-%define IMPCORE_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(Ucname)
-%pythonprepend Ucname::Ucname %{
-        if len(args) >= 1 and args[0] is not None: args[0].thisown=0
-        if len(args) >= 2 and args[1] is not None: args[1].thisown=0
-        if len(args) >= 3 and args[2] is not None: args[2].thisown=0
-%}
-%enddef
-
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
@@ -95,8 +78,8 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(VRMLLogOptimizerState)
     IMP_CONTAINER_SWIG(VRMLLogOptimizerState,
     ParticleRefiner, particle_refiner)
-    IMPCORE_OWN_FIRST_SECOND_CONSTRUCTOR(ClosePairsScoreState)
-    IMPCORE_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(CloseBipartitePairsScoreState)
+    IMP_OWN_FIRST_SECOND_CONSTRUCTOR(ClosePairsScoreState)
+    IMP_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(CloseBipartitePairsScoreState)
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
 
