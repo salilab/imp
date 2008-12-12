@@ -54,6 +54,7 @@ IMP_BEGIN_NAMESPACE
    \note The name in the typedef would have to start with ::IMP so it
    could be used out of the IMP namespace.
  */
+#ifndef IMP_DOXYGEN
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
   struct Name: public ::IMP::KeyBase<Tag> {                             \
   typedef ::IMP::KeyBase<Tag> P;                                        \
@@ -63,7 +64,17 @@ IMP_BEGIN_NAMESPACE
   Name(const char *nm): P(nm){}                                         \
 };                                                                      \
 typedef std::vector<Name> Name##s
-
+#else
+#define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
+  struct Name: public ::IMP::KeyBase<ID> {                              \
+  typedef ::IMP::KeyBase<ID> P;                                         \
+  typedef Name This;                                                    \
+  Name(){};                                                             \
+  Name(unsigned int i): P(i){}                                          \
+  Name(const char *nm): P(nm){}                                         \
+};                                                                      \
+typedef std::vector<Name> Name##s
+#endif
 
 //! A base class for  Keys
 /** This class does internal caching of the strings to accelerate the
