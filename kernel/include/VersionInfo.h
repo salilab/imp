@@ -16,7 +16,7 @@
 IMP_BEGIN_NAMESPACE
 
 //! Version and authorship of IMP objects
-class IMPDLLEXPORT VersionInfo
+class IMPEXPORT VersionInfo
 {
 public:
   VersionInfo(std::string author, std::string version) : author_(author),

@@ -19,7 +19,7 @@ typedef ::boost::rand48 RandomNumberGenerator;
     provide a better seed or use a constant seed call
     random_number_generator.seed(x) with a 32 bit int or a 64 bit unsigned int.
  */
-extern IMPDLLEXPORT RandomNumberGenerator random_number_generator;
+extern IMPEXPORT RandomNumberGenerator random_number_generator;
 
 IMP_END_NAMESPACE
 

@@ -12,18 +12,18 @@
 /* Provide macros to mark functions and classes as exported from a DLL/.so */
 #ifdef _MSC_VER
 #ifdef IMP_EXPORTS
-#define IMPDLLEXPORT __declspec(dllexport)
+#define IMPEXPORT __declspec(dllexport)
 #else
-#define IMPDLLEXPORT __declspec(dllimport)
+#define IMPEXPORT __declspec(dllimport)
 #endif
-#define IMPDLLLOCAL
+#define IMPLOCAL
 #else
 #ifdef GCC_VISIBILITY
-#define IMPDLLEXPORT __attribute__ ((visibility("default")))
-#define IMPDLLLOCAL __attribute__ ((visibility("hidden")))
+#define IMPEXPORT __attribute__ ((visibility("default")))
+#define IMPLOCAL __attribute__ ((visibility("hidden")))
 #else
-#define IMPDLLEXPORT
-#define IMPDLLLOCAL
+#define IMPEXPORT
+#define IMPLOCAL
 #endif
 #endif
 

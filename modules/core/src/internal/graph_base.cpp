@@ -12,15 +12,13 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-IMPDLLEXPORT void graph_initialize_node(Particle* a,
-                                        const GraphData &d)
+void graph_initialize_node(Particle* a, const GraphData &d)
 {
   d.add_required_attributes(a);
 }
 
 /** \internal */
-IMPDLLEXPORT bool graph_is_node(Particle* a,
-                                const GraphData &d)
+bool graph_is_node(Particle* a, const GraphData &d)
 {
   return d.has_required_attributes(a);
 }

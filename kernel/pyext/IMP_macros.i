@@ -1,5 +1,5 @@
-#define IMPDLLEXPORT
-#define IMPDLLLOCAL
+#define IMPEXPORT
+#define IMPLOCAL
 
 #define IMP_BEGIN_NAMESPACE \
 namespace IMP \

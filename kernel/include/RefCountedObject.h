@@ -21,7 +21,7 @@ IMP_BEGIN_NAMESPACE
 
    \internal
  */
-class IMPDLLEXPORT RefCountedObject: public Object
+class IMPEXPORT RefCountedObject: public Object
 {
   typedef Object P;
   typedef RefCountedObject This;

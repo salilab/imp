@@ -20,7 +20,7 @@ typedef std::pair<Float, Float> FloatPair;
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
  */
-class IMPDLLEXPORT UnaryFunction : public RefCountedObject
+class IMPEXPORT UnaryFunction : public RefCountedObject
 {
 public:
   UnaryFunction() {}

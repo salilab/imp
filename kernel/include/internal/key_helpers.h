@@ -15,7 +15,7 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 /** \internal The data concerning keys.
   */
-struct IMPDLLEXPORT KeyData
+struct IMPEXPORT KeyData
 {
   typedef std::map<std::string, int> Map;
   typedef std::vector<std::string> RMap;
@@ -39,7 +39,7 @@ private:
   RMap rmap_;
 };
 
-IMPDLLEXPORT extern std::map<unsigned int, KeyData> key_data;
+IMPEXPORT extern std::map<unsigned int, KeyData> key_data;
 
 IMP_END_INTERNAL_NAMESPACE
 
