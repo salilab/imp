@@ -1,2 +1,0 @@
-check before for equality before copying an unprotected pointer into a
-protected one to avoid deleting the object
