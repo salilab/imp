@@ -1,0 +1,11 @@
+/** \namespace IMP::modulename
+\brief IMP.modulename does something. 
+
+<b>Overview:</b> IMP.modulename provides a cool optimizer.
+
+<b>Authors:</b> Someone.
+
+<b>Publications:</b> IMP.modulename is an internal module.
+
+<b>License:</b> IMP.modulename is not licensed for distribution.
+*/

@@ -1,0 +1,16 @@
+import os
+import os.path
+
+Import('env')
+penv = env.Clone()
+penv.Prepend(LIBS=["imp_modulename"])
+
+curdir= str(Dir("#/modules/modulename/bin"))
+files = [x for x in os.listdir(curdir) if x.endswith(".cpp")]
+
+
+all=[]
+for f in files:
+    all.append(penv.Program(f))
+
+Return('all')
