@@ -35,6 +35,10 @@ IMP is divided into models which group related functionality. Generally useful f
 
 Each module has a responsible owner or owners, and it is up to them whether they want to allow others commit to change code in their module. Email the <imp-dev@salilab.org> mailing list to discuss such policies.
 
+If you do not want to put your code into the IMP repository, you can just add a local module to IMP using the make-module script. This script creates a module and hooks it into the build system. You can then immediately add header, source and test files and have everything work. To use the script run
+\command{./kernel/doc/bin/make-module mymodulename}
+This will create a new module called "mymodulename".
+
 
 \section submission Submission of changes to IMP kernel or IMP.core
 
