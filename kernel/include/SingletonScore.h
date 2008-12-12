@@ -21,7 +21,7 @@ class Particle;
 /** SingletonScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPDLLEXPORT SingletonScore : public RefCountedObject
+class IMPEXPORT SingletonScore : public RefCountedObject
 {
 public:
   SingletonScore() {}

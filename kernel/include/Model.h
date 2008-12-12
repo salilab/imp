@@ -29,7 +29,7 @@ typedef std::vector<ScoreState*> ScoreStates;
 /** The Model maintains a standard IMP container for each of Particle,
     ScoreState and Restraint object types.
  */
-class IMPDLLEXPORT Model: public Object
+class IMPEXPORT Model: public Object
 {
 private:
   friend class Restraint;

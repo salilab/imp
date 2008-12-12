@@ -16,7 +16,7 @@ namespace internal
 {
 
 //! Version and authorship of the IMP kernel.
-extern IMPDLLEXPORT VersionInfo kernel_version_info;
+extern IMPEXPORT VersionInfo kernel_version_info;
 
 } // namespace internal
 

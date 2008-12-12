@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     \internal
  */
-class IMPDLLEXPORT Object
+class IMPEXPORT Object
 {
 protected:
   Object();

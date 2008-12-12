@@ -37,7 +37,7 @@ enum LogLevel {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
  */
 enum LogTarget {COUT, FILE, CERR};
 
-class IMPDLLEXPORT Log
+class IMPEXPORT Log
 {
 public:
   //! Get a reference to a singleton Log object.
@@ -99,7 +99,7 @@ private:
 //! Set the current log level for IMP
 /** \ingroup log
  */
-IMPDLLEXPORT inline void set_log_level(LogLevel l)
+IMPEXPORT inline void set_log_level(LogLevel l)
 {
   Log::get().set_level(l);
 }
@@ -107,7 +107,7 @@ IMPDLLEXPORT inline void set_log_level(LogLevel l)
 //! Set the target of logs
 /** \ingroup log
  */
-IMPDLLEXPORT inline void set_log_target(LogTarget l)
+IMPEXPORT inline void set_log_target(LogTarget l)
 {
   Log::get().set_target(l);
 }
@@ -115,7 +115,7 @@ IMPDLLEXPORT inline void set_log_target(LogTarget l)
 //! Get the current log level for IMP
 /** \ingroup log
  */
-IMPDLLEXPORT inline LogLevel get_log_level()
+IMPEXPORT inline LogLevel get_log_level()
 {
   return Log::get().get_level();
 }
@@ -123,7 +123,7 @@ IMPDLLEXPORT inline LogLevel get_log_level()
 //! Get the target of logs
 /** \ingroup log
  */
-IMPDLLEXPORT inline LogTarget get_log_target()
+IMPEXPORT inline LogTarget get_log_target()
 {
   return Log::get().get_target();
 }
@@ -131,7 +131,7 @@ IMPDLLEXPORT inline LogTarget get_log_target()
 //! Set the file name for the IMP log; must be called if a file is to be used.
 /** \ingroup log
  */
-IMPDLLEXPORT inline void set_log_file(std::string l)
+IMPEXPORT inline void set_log_file(std::string l)
 {
   Log::get().set_filename(l);
 }
@@ -140,7 +140,7 @@ IMPDLLEXPORT inline void set_log_file(std::string l)
 /** \note This probably should not be called in C++.
     \ingroup log
  */
-IMPDLLEXPORT inline bool is_log_output(LogLevel l)
+IMPEXPORT inline bool is_log_output(LogLevel l)
 {
   return Log::get().is_output(l);
 }
@@ -150,7 +150,7 @@ IMPDLLEXPORT inline bool is_log_output(LogLevel l)
 /** \note This probably should not be called in C++.
     \ingroup log
  */
-IMPDLLEXPORT inline std::ostream& get_log_stream(LogLevel l)
+IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
 {
   return Log::get().get_stream(l);
 }
@@ -162,7 +162,7 @@ IMPDLLEXPORT inline std::ostream& get_log_stream(LogLevel l)
    want. When it goes out of scope, it will restore the old level.
    \ingroup log
  */
-class IMPDLLEXPORT SetLogState
+class IMPEXPORT SetLogState
 {
 public:
   //! Construct it with the desired level and target

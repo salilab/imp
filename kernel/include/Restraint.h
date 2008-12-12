@@ -52,7 +52,7 @@ class Model;
     to make. To disable this warning for a particular restraint, call
     set_was_owned(true).
  */
-class IMPDLLEXPORT Restraint : public RefCountedObject
+class IMPEXPORT Restraint : public RefCountedObject
 {
 public:
   Restraint();

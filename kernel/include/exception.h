@@ -24,7 +24,7 @@ IMP_BEGIN_NAMESPACE
 /** This way we can catch IMP exceptions without getting memory allocation
     errors and everything. And it enforces having a description.
  */
-class IMPDLLEXPORT Exception
+class IMPEXPORT Exception
 {
   struct refstring {
     char message_[256];
@@ -74,7 +74,7 @@ public:
 //! A general exception for an error in IMP.
 /** \ingroup assert
  */
-struct IMPDLLEXPORT ErrorException: public Exception
+struct IMPEXPORT ErrorException: public Exception
 {
   ErrorException(const char *msg="Fatal error"): Exception(msg){}
   ~ErrorException() throw();
@@ -83,7 +83,7 @@ struct IMPDLLEXPORT ErrorException: public Exception
 //! An exception for an invalid model state
 /** \ingroup assert
  */
-class IMPDLLEXPORT InvalidStateException : public Exception
+class IMPEXPORT InvalidStateException : public Exception
 {
 public:
   InvalidStateException(const char *t): Exception(t){}
@@ -93,7 +93,7 @@ public:
 //! An exception for trying to access an inactive particle
 /** \ingroup assert
  */
-class IMPDLLEXPORT InactiveParticleException : public Exception
+class IMPEXPORT InactiveParticleException : public Exception
 {
 public:
   InactiveParticleException(const char *msg
@@ -105,7 +105,7 @@ public:
 //! An exception for a request for an invalid member of a container
 /** \ingroup assert
  */
-class IMPDLLEXPORT IndexException: public Exception
+class IMPEXPORT IndexException: public Exception
 {
 public:
   IndexException(const char *t): Exception(t){}
@@ -115,7 +115,7 @@ public:
 //! An exception for a passing an out of range value
 /** \ingroup assert
  */
-class IMPDLLEXPORT ValueException: public Exception
+class IMPEXPORT ValueException: public Exception
 {
 public:
   ValueException(const char *t): Exception(t){}
@@ -133,10 +133,10 @@ enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
 //! Control runtime checks in the code
 /** The default level of checks is CHEAP.
  */
-IMPDLLEXPORT void set_check_level(CheckLevel tf);
+IMPEXPORT void set_check_level(CheckLevel tf);
 
 //! Get the current audit mode
-IMPDLLEXPORT CheckLevel get_check_level();
+IMPEXPORT CheckLevel get_check_level();
 
 
 //! Execute the code block if a certain level checks are on
@@ -151,13 +151,13 @@ IMPDLLEXPORT CheckLevel get_check_level();
 /** Break on exception.cpp:31 to catch assertion failures.
     \ingroup assert
  */
-IMPDLLEXPORT void assert_fail(const char *msg);
+IMPEXPORT void assert_fail(const char *msg);
 
 //! Here so you can catch check failures more easily in the debugger
 /** Break on exception.cpp:35 to catch check failures.
     \ingroup assert
  */
-IMPDLLEXPORT void check_fail(const char *msg);
+IMPEXPORT void check_fail(const char *msg);
 
 #ifndef NDEBUG
 

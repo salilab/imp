@@ -33,7 +33,7 @@ typedef std::vector<OptimizerState*> OptimizerStates;
     the number of steps to perform. The optimizers can have other
     stopping conditions as appropriate.
  */
-class IMPDLLEXPORT Optimizer: public Object
+class IMPEXPORT Optimizer: public Object
 {
 public:
   Optimizer();

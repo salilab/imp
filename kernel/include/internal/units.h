@@ -22,8 +22,8 @@ namespace internal
 {
 
 // want it for conversions
-extern IMPDLLEXPORT const unit::ExponentialNumber<3> JOULES_PER_KILOCALORIE;
-extern IMPDLLEXPORT const unit::ExponentialNumber<23> NA;
+extern IMPEXPORT const unit::ExponentialNumber<3> JOULES_PER_KILOCALORIE;
+extern IMPEXPORT const unit::ExponentialNumber<23> NA;
 
 
 namespace unit
@@ -145,7 +145,7 @@ convert_J_to_Cal(Unit<internal::MKSTag, EXP, Units> i) {
 
 
 //! Marker constant to handle coversions
-extern const IMPDLLEXPORT internal::AtomsPerMol ATOMS_PER_MOL;
+extern const IMPEXPORT internal::AtomsPerMol ATOMS_PER_MOL;
 
 
 

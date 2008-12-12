@@ -44,7 +44,7 @@ class Model;
     of lines per update call.
 
  */
-class IMPDLLEXPORT ScoreState : public RefCountedObject
+class IMPEXPORT ScoreState : public RefCountedObject
 {
   friend class Model;
   void set_model(Model* model);

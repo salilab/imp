@@ -16,7 +16,7 @@
 IMP_BEGIN_NAMESPACE
 
 //! Class for adding derivatives from restraints to the model.
-class IMPDLLEXPORT DerivativeAccumulator
+class IMPEXPORT DerivativeAccumulator
 {
 public:
   //! the weight is one by default

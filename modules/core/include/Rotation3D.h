@@ -103,9 +103,9 @@ inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
    \throw ValueException if the rotation is not a rotation matrix.
    \relates Rotation3D
  */
-IMPDLLEXPORT Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
-                                             Float m21,Float m22,Float m23,
-                                             Float m31,Float m32,Float m33);
+IMPCOREEXPORT Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
+                                              Float m21,Float m22,Float m23,
+                                              Float m31,Float m32,Float m33);
 
 /*
 Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}

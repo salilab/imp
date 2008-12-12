@@ -60,7 +60,7 @@ class Model;
     \ref decorators "Decorators" as these provide a nice and more reliable
     interface.
  */
-class IMPDLLEXPORT Particle : public RefCountedObject
+class IMPEXPORT Particle : public RefCountedObject
 {
 private:
   friend class Model;

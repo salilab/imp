@@ -22,7 +22,7 @@ class DerivativeAccumulator;
 /** The job of this class is to take a single particle and, if
     appropriate, return a list of particles.
 */
-class IMPDLLEXPORT ParticleRefiner : public RefCountedObject
+class IMPEXPORT ParticleRefiner : public RefCountedObject
 {
 public:
   ParticleRefiner() {}
