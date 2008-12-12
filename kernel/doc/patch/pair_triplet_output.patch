@@ -1,0 +1,119 @@
+Only in kernel/src: base_types.cpp
+Only in kernel/include: base_types.h
+Only in kernel/src: base_types.os
+Only in kernel/include: config.h
+Only in kernel/include: container_macros.h
+Only in kernel/include: DecoratorBase.h
+Only in kernel/include: DerivativeAccumulator.h
+Only in kernel/src: exception.cpp
+Only in kernel/include: exception.h
+Only in kernel/src: exception.os
+Only in kernel/include: Index.h
+Common subdirectories: kernel/include/internal and kernel/src/internal
+Only in kernel/src: Key.cpp
+Only in kernel/include: Key.h
+Only in kernel/src: Key.os
+Only in kernel/src: Log.cpp
+Only in kernel/include: log.h
+Only in kernel/src: Log.os
+Only in kernel/include: macros.h
+Only in kernel/src: Model.cpp
+Only in kernel/include: Model.h
+Only in kernel/src: Model.os
+Only in kernel/src: Object.cpp
+Only in kernel/include: Object.h
+Only in kernel/src: Object.os
+Only in kernel/src: Optimizer.cpp
+Only in kernel/include: Optimizer.h
+Only in kernel/src: Optimizer.os
+Only in kernel/src: OptimizerState.cpp
+Only in kernel/include: OptimizerState.h
+Only in kernel/src: OptimizerState.os
+Only in kernel/src: PairScore.cpp
+Only in kernel/include: PairScore.h
+Only in kernel/src: PairScore.os
+Only in kernel/src: Particle.cpp
+Only in kernel/include: Particle.h
+Only in kernel/src: Particle.os
+Only in kernel/src: ParticleRefiner.cpp
+Only in kernel/include: ParticleRefiner.h
+Only in kernel/src: ParticleRefiner.os
+Only in kernel/include: Pointer.h
+Only in kernel/src: random.cpp
+Only in kernel/include: random.h
+Only in kernel/src: random.os
+Only in kernel/include: RefCountedObject.h
+Only in kernel/src: Restraint.cpp
+Only in kernel/include: Restraint.h
+Only in kernel/src: Restraint.os
+diff kernel/include/SConscript kernel/src/SConscript
+1c1
+< Import('env')
+---
+> Import('env', 'get_sharedlib_environment')
+3,22c3,27
+< files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
+<          'Particle.h', 'ScoreState.h', 'OptimizerState.h', 'config.h',
+<          'log.h', 'DerivativeAccumulator.h',
+<          'Key.h', 'utility.h', 'Restraint.h', 'Optimizer.h',
+<          'DecoratorBase.h', 'Vector3D.h', 'VectorD.h',
+<          'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h', 'macros.h',
+<          'TripletScore.h', 'exception.h', 'VersionInfo.h',
+<          'Object.h', 'Pointer.h', 'RefCountedObject.h', 'ParticleRefiner.h',
+<          'container_macros.h']
+< 
+< # Subdirectories
+< files = [File(f) for f in files] \
+<         + SConscript('internal/SConscript')
+< 
+< # Install the include files:
+< includedir = env['includedir']
+< inst = env.InstallHierarchy(includedir, 'IMP',
+<                             'IMP, an Integrative Modeling Platform.', files)
+< env.Alias('kernel-install', inst)
+< env.Alias('install', inst)
+---
+> # Get an environment suitable for building a shared library:
+> env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
+> env.Append(CPPPATH=["#/build/include", env['BOOST_CPPPATH']])
+> 
+> # Subdirectories:
+> internal_files = SConscript('internal/SConscript')
+> 
+> # Source files
+> files = ['base_types.cpp', 'Model.cpp',
+>          'Particle.cpp', 'ScoreState.cpp', 'Object.cpp',
+>          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
+>          'random.cpp', 'Key.cpp', 'exception.cpp', 'ParticleRefiner.cpp',
+>          'UnaryFunction.cpp', 'PairScore.cpp',
+>          'SingletonScore.cpp', 'TripletScore.cpp'
+>         ] + internal_files
+> 
+> # Build the shared library:
+> lib = env.SharedLibrary('#/build/lib/imp', files)
+> 
+> # Install the library:
+> libinst = env.Install(env['libdir'], lib)
+> env.Alias('kernel-install', [libinst])
+> env.Alias('install', [libinst])
+> 
+> Return('lib')
+Only in kernel/src: ScoreState.cpp
+Only in kernel/include: ScoreState.h
+Only in kernel/src: ScoreState.os
+Only in kernel/src: SingletonScore.cpp
+Only in kernel/include: SingletonScore.h
+Only in kernel/src: SingletonScore.os
+Common subdirectories: kernel/include/.svn and kernel/src/.svn
+Only in kernel/src: TripletScore.cpp
+Only in kernel/include: TripletScore.h
+Only in kernel/src: TripletScore.os
+Only in kernel/src: UnaryFunction.cpp
+Only in kernel/include: UnaryFunction.h
+Only in kernel/src: UnaryFunction.os
+Only in kernel/include: utility.h
+Only in kernel/include: Vector3D.h
+Only in kernel/src: Vector3D.os
+Only in kernel/include: VectorD.h
+Only in kernel/include: VectorD.h~
+Only in kernel/include: VersionInfo.h
