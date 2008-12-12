@@ -1,2 +1,0 @@
-Add an internal namespace macro to each module (and remove the existing ones
-from core)
