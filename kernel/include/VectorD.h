@@ -17,6 +17,7 @@
 
 #include <boost/random/uniform_real.hpp>
 
+#include <limits>
 #include <cmath>
 
 IMP_BEGIN_NAMESPACE
@@ -70,9 +71,13 @@ public:
   }
 
   //! Default constructor
-  VectorD() {}
-
-  IMP_COMPARISONS;
+  VectorD() {
+#ifndef NDEBUG
+    for (unsigned int i=0; i< D; ++i) {
+      vec_[i]= std::numeric_limits<Float>::quiet_NaN();
+    }
+#endif
+  }
 
   //! \return A single component of this vector (0-D).
   Float operator[](unsigned int i) const {
@@ -175,6 +180,14 @@ public:
   VectorD& operator+=(const VectorD &o) {
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] += o[i];
+    }
+    return *this;
+  }
+
+  //! Subtract in place
+  VectorD& operator-=(const VectorD &o) {
+    for (unsigned int i=0; i< D; ++i) {
+      vec_[i] -= o[i];
     }
     return *this;
   }
