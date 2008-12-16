@@ -1,4 +1,5 @@
-%module(directors="1") IMP_modulename
+%module(directors="1") IMP_es
+modulename
 
 %{
 #include "IMP.h"
@@ -17,17 +18,8 @@
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
-%import "kernel/pyext/IMP_keys.i"
 
-namespace IMP {
-  typedef VectorD<3> Vector3D;
-}
+IMP_CONSTRUCTOR_OWN_FIRST(MyRestraint)
 
-// turn off python memory management for RefCountedObjects
-namespace IMP {
-  namespace modulename {
-    IMP_OWN_FIRST_CONSTRUCTOR(MyRestraint)
-  }
-}
 /* Wrap our own classes */
 %include "IMP/modulename/MyRestraint.h"
