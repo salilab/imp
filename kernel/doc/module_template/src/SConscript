@@ -4,11 +4,13 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 curdir= str(Dir("#/modules/modulename/src"))
-files = [x for x in os.listdir(curdir) if x.endswith(".cpp")]
+files = [x for x in os.listdir(curdir) if x.endswith(".cpp")\
+      and not x.startswith(".")]
 for d in [x for x in os.listdir(curdir) if os.path.isdir(os.path.join(curdir, x))]:
     for f in [x for x in os.listdir(os.path.join(curdir, d))]:
         # for some reason version info is special cased
-        if f != "modulename_version_info.cpp" and f.endswith(".cpp"):
+        if f != "modulename_version_info.cpp" and f.endswith(".cpp")\
+        and not x.startswith("."):
             files.append(os.path.join(d,f))
 
 # Build and install the shared library:
