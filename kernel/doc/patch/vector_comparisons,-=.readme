@@ -1,0 +1,5 @@
+Remove comparisons on vectors.
+
+Fill vectors with NaNs in debug mode.
+
+Add -=.
