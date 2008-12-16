@@ -4,6 +4,7 @@
 %ignore IMP::VectorD::operator+=;
 %ignore IMP::VectorD::operator*=;
 %ignore IMP::VectorD::operator/=;
+%ignore IMP::VectorD::operator-=;
 
 /* Make sure that we return the original Python object from C++ inplace
    operators (not a new Python proxy around the same C++ object) */
@@ -23,6 +24,11 @@ namespace IMP {
         $action(self, *args)
         return self
   %}
+  %feature("shadow") VectorD::__isub__(const VectorD &) %{
+    def __isub__(self, *args):
+        $action(self, *args)
+        return self
+  %}
 }
 
 %extend IMP::VectorD {
@@ -37,6 +43,7 @@ namespace IMP {
   void __iadd__(const VectorD &o) { self->operator+=(o); }
   void __imul__(Float f) { self->operator*=(f); }
   void __idiv__(Float f) { self->operator/=(f); }
+  void __isub__(const VectorD &o) { self->operator-=(o); }
 };
 
 %include "IMP/VectorD.h"
