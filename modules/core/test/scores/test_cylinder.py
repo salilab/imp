@@ -16,16 +16,16 @@ class DistanceTests(IMP.test.TestCase):
         ss= IMP.core.shortest_segment(s,v)
         ss.first.show()
         ss.second.show()
-        self.assertEqual(ss.first, V(0, 1, 1))
-        self.assertEqual(ss.second, V(0, 0, 0))
+        self.assertInTolerance((ss.first-V(0, 1, 1)).get_magnitude(), 0, .1)
+        self.assertInTolerance((ss.second-V(0, 0, 0)).get_magnitude(), 0, .1)
         #self.assertEqual(
 
         s=S(V(.1,1,1), V(1,1,1))
         ss= IMP.core.shortest_segment(s,v)
         ss.first.show()
         ss.second.show()
-        self.assertEqual(ss.first, V(0.1, 1, 1))
-        self.assertEqual(ss.second, V(0, 0, 0))
+        self.assertInTolerance((ss.first-V(0.1, 1, 1)).get_magnitude(), 0, .1)
+        self.assertInTolerance((ss.second-V(0, 0, 0)).get_magnitude(), 0, .1)
         print "last"
         s=S(V(0,0,0), V(1,1,1))
         s2=S(V(1,0,0), V(0,1,1))
@@ -33,8 +33,8 @@ class DistanceTests(IMP.test.TestCase):
         print "show last"
         ss.first.show()
         ss.second.show()
-        self.assertEqual(ss.first, V(0.5, 0.5, .5))
-        self.assertEqual(ss.second, V(0.5, 0.5, 0.5))
+        self.assertInTolerance((ss.first-V(0.5, 0.5, .5)).get_magnitude(), 0, .1)
+        self.assertInTolerance((ss.second-V(0.5, 0.5, 0.5)).get_magnitude(), 0, .1)
 
 
     def test_random(self):
@@ -78,7 +78,10 @@ class DistanceTests(IMP.test.TestCase):
             v0.show(); print
             v1.show(); print
             vs.show(); print
-            if s0.first != ss.first != s0.second and s1.first != ss.second != s1.second:
+            if (s0.first- ss.first).get_magnitude() > .1 \
+                    and (s0.second- ss.first).get_magnitude() > .1 \
+                    and (s1.first- ss.second).get_magnitude() > .1 \
+                    and (s1.second- ss.second).get_magnitude() > .1:
                 self.assertInTolerance(v0*vs, 0, .1)
                 self.assertInTolerance(v1*vs, 0, .1)
             xyz00.set_coordinates(s0.first)
