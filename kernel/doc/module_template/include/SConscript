@@ -4,10 +4,12 @@ import os.path
 Import('env')
 
 curdir= str(Dir("#/modules/modulename/include"))
-files = [x for x in os.listdir(curdir) if x.endswith(".h") and x != "config.h"]
+files = [x for x in os.listdir(curdir) if x.endswith(".h") and x != "config.h"\
+      and not x.startswith(".")]
 for d in [x for x in os.listdir(curdir) if os.path.isdir(os.path.join(curdir, x))]:
     for f in [x for x in os.listdir(os.path.join(curdir, d))]:
-        if  f !="modulename_version_info.h" and f.endswith(".h"):
+        if  f !="modulename_version_info.h" and f.endswith(".h")\
+        and not f.startswith("."):
             files.append(os.path.join(d,f))
 
 # Install the include files:
