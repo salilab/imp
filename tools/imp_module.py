@@ -230,8 +230,9 @@ def IMPPythonExtension(env, swig_interface):
        within an environment created by `IMPPythonExtensionEnvironment`."""
     module = env['IMP_MODULE']
     swigcom = env['SWIGCOM']
-    repl = '$SWIG -interface _IMP_%s ' % module
-    swigcom[0] = swigcom[0].replace('$SWIG ', repl)
+    if isinstance(swigcom, list) and isinstance(swigcom[0], str):
+        repl = '$SWIG -interface _IMP_%s ' % module
+        swigcom[0] = swigcom[0].replace('$SWIG ', repl)
     pyext = env.LoadableModule('#/build/lib/_IMP_%s' % module, swig_interface,
                                SWIGCOM=swigcom)
     # Place the generated Python wrapper in lib directory:
