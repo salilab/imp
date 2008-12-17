@@ -237,6 +237,17 @@ public:
   IMP_DECORATOR_GET_SET_OPT(mass, mass_key_,
                             Float, Float, 0);
 
+  //! Get the key storing the type
+  static IntKey get_type_key() {
+    decorator_initialize_static_data();
+    return type_key_;
+  }
+
+  //! Get the key storing the type
+  static IntKey get_element_key() {
+    decorator_initialize_static_data();
+    return element_key_;
+  }
 };
 
 IMP_OUTPUT_OPERATOR(AtomDecorator);

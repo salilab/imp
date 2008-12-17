@@ -96,6 +96,18 @@ public:
   //! The residues index in the chain
   IMP_DECORATOR_GET_SET(index, index_key_,
                         Int, unsigned int);
+
+  //! Get the key storing the index
+  static IntKey get_index_key() {
+    decorator_initialize_static_data();
+    return index_key_;
+  }
+
+  //! Get the key storing the type
+  static IntKey get_type_key() {
+    decorator_initialize_static_data();
+    return type_key_;
+  }
 };
 
 IMP_OUTPUT_OPERATOR(ResidueDecorator);
