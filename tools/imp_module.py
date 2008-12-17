@@ -229,11 +229,13 @@ def IMPPythonExtension(env, swig_interface):
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
     module = env['IMP_MODULE']
-    pyext = env.LoadableModule('#/build/lib/_IMP_%s' % module, swig_interface)
-    # .py file should also be generated:
-    gen_pymod = File('IMP_%s.py' % module)
-    env.Depends(gen_pymod, pyext)
-    # Place in lib directory:
+    swigcom = env['SWIGCOM']
+    repl = '$SWIG -interface _IMP_%s ' % module
+    swigcom[0] = swigcom[0].replace('$SWIG ', repl)
+    pyext = env.LoadableModule('#/build/lib/_IMP_%s' % module, swig_interface,
+                               SWIGCOM=swigcom)
+    # Place the generated Python wrapper in lib directory:
+    gen_pymod = File('IMP.%s.py' % module)
     pymod = env.LinkInstallAs('#/build/lib/IMP/%s/__init__.py' % module,
                               gen_pymod)
 
@@ -251,7 +253,7 @@ def IMPPythonExtensionEnvironment(env):
        builder to actually build the extension."""
     from tools import get_pyext_environment
     module = env['IMP_MODULE']
-    env = get_pyext_environment(env, 'IMP' + module.upper(), cplusplus=True)
+    env = get_pyext_environment(env, module.upper(), cplusplus=True)
     env.Append(LIBS=['imp_%s' % module])
     env.Append(SWIGPATH='#/build/include')
     env.Append(SWIGFLAGS='-python -c++ -naturalvar')

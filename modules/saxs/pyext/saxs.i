@@ -1,4 +1,4 @@
-%module(directors="1") IMP_saxs
+%module(directors="1") "IMP.saxs"
 
 %{
 #include "IMP.h"

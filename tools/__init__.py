@@ -281,20 +281,37 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
-# Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class is
-# renamed with a module-specific prefix, to avoid collisions when using
-# multiple modules
+# 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class is
+#    renamed with a module-specific prefix, to avoid collisions when using
+#    multiple modules
+# 2. If module names contain '.' characters, SWIG emits these into the CPP
+#    macros used in the director header. Work around this by replacing them
+#    with '_'. A longer term fix is not to call our modules "IMP.foo" but
+#    to say %module(package=IMP) foo but this doesn't work in SWIG stable
+#    as of 1.3.36 (Python imports incorrectly come out as 'import foo'
+#    rather than 'import IMP.foo'). See also IMP bug #41 at
+#    https://salilab.org/imp/bugs/show_bug.cgi?id=41
 class _swig_postprocess(object):
     def __init__(self, modprefix):
         self.modprefix = modprefix
     def builder(self, source, target, env):
-        wrap_c = target[0].path
-        lines = file(wrap_c, 'r').readlines()
-        repl = '"swig::%s_PySwigIterator *"' % self.modprefix
-        fh = file(wrap_c, 'w')
-        for line in lines:
-            fh.write(line.replace('"swig::PySwigIterator *"', repl))
-        fh.close()
+        for t in target:
+            path = t.path
+            if path.endswith('.cc'):
+                lines = file(path, 'r').readlines()
+                repl = '"swig::IMP%s_PySwigIterator *"' % self.modprefix
+                fh = file(path, 'w')
+                for line in lines:
+                    fh.write(line.replace('"swig::PySwigIterator *"', repl))
+                fh.close()
+            elif path.endswith('.h'):
+                lines = file(path, 'r').readlines()
+                orig = 'SWIG_IMP.%s_WRAP_H_' % self.modprefix.lower()
+                repl = 'SWIG_IMP_%s_WRAP_H_' % self.modprefix
+                fh = file(path, 'w')
+                for line in lines:
+                    fh.write(line.replace(orig, repl))
+                fh.close()
         return 0
 
 def get_pyext_environment(env, mod_prefix, cplusplus=False):
@@ -310,7 +327,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
 
     if cplusplus and isinstance(e['SWIGCOM'], str):
         # See _swig_postprocess class comments:
-        repl = '$SWIG -DPySwigIterator=%s_PySwigIterator ' % mod_prefix
+        repl = '$SWIG -DPySwigIterator=IMP%s_PySwigIterator ' % mod_prefix
         e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
         e['SWIGCOM'] = [e['SWIGCOM'], _swig_postprocess(mod_prefix).builder]
 

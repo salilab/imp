@@ -1,4 +1,4 @@
-%module(directors="1") IMP_em
+%module(directors="1") "IMP.em"
 
 %{
 #include "IMP.h"

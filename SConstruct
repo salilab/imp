@@ -11,7 +11,8 @@ add_common_variables(vars, "imp")
 vars.Add(PackageVariable('embed', 'Location of the EMBED package', 'no'))
 vars.Add(PackageVariable('cgal', 'Location of the CGAL package', True))
 env = MyEnvironment(variables=vars, require_modeller=False,
-                    tools=["default", "doxygen", "docbook", "imp_module"],
+                    tools=["default", "doxygen", "docbook", "swig",
+                           "imp_module"],
                     toolpath=["tools"])
 unknown = vars.UnknownVariables()
 if unknown:
