@@ -1,5 +1,5 @@
 /*
- *  saxs.cpp
+ *  SaxsData.cpp
  *  imp
  *
  *  Created by sjkim on 12/1/08.
@@ -7,7 +7,7 @@
  *
  */
 
-#include <IMP/saxs/saxs.h>
+#include <IMP/saxs/SaxsData.h>
 #include <IMP/log.h>
 
 IMPSAXS_BEGIN_NAMESPACE

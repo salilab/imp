@@ -2,7 +2,7 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
-         'saxs.cpp',
+         'SaxsData.cpp',
         ]
 
 # Build and install the shared library:

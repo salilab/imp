@@ -23,4 +23,4 @@ namespace IMP::saxs {
 }
 
 /* Wrap our own classes */
-%include "IMP/saxs/saxs.h"
+%include "IMP/saxs/SaxsData.h"

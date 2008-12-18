@@ -1,7 +1,7 @@
 Import('env')
 
 files = [
-         'saxs.h',
+         'SaxsData.h',
         ]
 
 # Install the include files:
