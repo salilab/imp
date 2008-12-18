@@ -30,6 +30,7 @@ def tokenize_file(fh):
 
 def check_tokens(scan, filename, header, errors):
     check_comment_header(scan, filename, errors)
+    check_eol(scan, filename, errors)
     if header:
         check_header_start_end(scan, filename, errors)
 
@@ -37,6 +38,15 @@ def check_comment_header(scan, filename, errors):
     if len(scan) < 1 or scan[0][0] != token.Comment:
         errors.append('%s:1: First line should be a comment ' % filename + \
                       'with a copyright notice and a description of the file')
+
+def check_eol(scan, filename, errors):
+    if len(scan) > 0 and ((scan[-1][0] != token.Comment.Preproc \
+                           and scan[-1][0] != token.Text) \
+                          or scan[-1][1] != '\n'):
+        errors.append('%s:999: No end-of-line character at the ' % filename + \
+                      'end of the last line in the file')
+        # Add an EOL so other checks don't complain
+        scan.append((token.Text, '\n'))
 
 def have_header_guard(scan):
     return len(scan) >= 10 \
