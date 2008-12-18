@@ -15,14 +15,19 @@ class PDBReadTest(IMP.test.TestCase):
         mp= IMP.modeller.read_pdb(self.get_test_file('single_protein.pdb'), m)
 
         saxsdata = IMP.saxs.SaxsData(m, mp);
-        """saxsdata.ini_saxs(atmsel=atmsel, s_min= 0.009, s_max=0.325, maxs=100,
+        saxsdata.ini_saxs(0.009, 0.325, 100,
+            505, 15, 'heav',
+            '$(LIB)/formfactors-int_tab_solvation.lib',
+            'uniform', 0.0, 0.5, 0.0,
+            'real', False)
+"""
+        saxsdata.ini_saxs(atmsel=atmsel, s_min= 0.009, s_max=0.325, maxs=100,
             nmesh=505, natomtyp=15, represtyp='heav',
             filename='$(LIB)/formfactors-int_tab_solvation.lib',
             wswitch = 'uniform', s_low=0.0, s_hi=0.5, s_hybrid=0.0,
             spaceflag= 'real', use_lookup=False)
 """
-
-        """
+"""
         #i_num_res_type= IMP.core.ResidueType.get_number_unique()
         #i_num_atom_type= IMP.core.AtomType.get_number_unique()
 

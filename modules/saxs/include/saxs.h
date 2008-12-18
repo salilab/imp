@@ -34,7 +34,10 @@ public:
   SaxsData(Model &model, IMP::core::MolecularHierarchyDecorator &mp);
   virtual ~SaxsData();
 
-  void ini_saxs(void);
+  void ini_saxs(double s_min, double s_max, int maxs, int nmesh, int natomtyp,
+                char* represtyp, char* filename, char* wswitch, double s_low,
+                double s_hi, double s_hybrid, char* spaceflag, bool use_lookup);
+
   //void saxs_computeis(); // Computation in reciprocal space
   //void saxs_computepr(); // Faster computation in real space
   //void saxs_chi(); // SAXS score
@@ -53,6 +56,9 @@ private:
 
   /** maximum number of sampling point */
   int maxs_;
+
+  //! nmesh: actual number of frequencies (<= maxs)
+  int nmesh_;
 
   /** number of different atoms (correlates to file!) */
   int natomtyp_;
@@ -228,11 +234,17 @@ private:
   /** type of representation - 'allatm' or 'CA' */
   char represtyp_[LENF];
 
+  //! filename of the library for formfactors
+  char filename_[LENF];
+
   /** weighting scheme in frequency space */
   char wswitch_[LENF];
 
   /** filename of used formfactors */
   char formfac_file_[LENF];
+
+  //! error parameter
+  int ierr_;
 };
 
 IMPSAXS_END_NAMESPACE
