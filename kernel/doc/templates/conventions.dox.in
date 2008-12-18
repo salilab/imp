@@ -7,7 +7,7 @@
     To ensure code consistency and readability, certain conventions should be
     adhered to when writing code for \imp. Some of these conventions are
     automatically checked for by source control before allowing a new commit, and
-    should also be checked yourself in new code by running
+    can also be checked yourself in new code by running
     \command{scons standards}
 
     \section indent Indentation
@@ -59,12 +59,17 @@
     - member variables should \c end_in_an_underscore_
     - member methods that get a value should begin with \c set_
     - member methods which return a value should begin with \c get_
+    - all preprocessor symbols (things created by #define) must begin with \c IMP_
+
+    Do not use abbreviations in names.
 
     \b Rational: This makes it easier to tell between class names and
     function names where this is ambiguous (particularly an issue with
     the Python interface). The Python guys also mandate CamelCase for
     their class names, so this avoids any need to rename classes
-    between C++ and Python to ensure clean Python code.
+    between C++ and Python to ensure clean Python code. It is
+    especially important with preprocessor symbols since these have
+    file scope and so can change the meaning of other people's code.
 
     \section errors Errors
     Classes and methods should use IMP exceptions to report errors. See
@@ -102,10 +107,7 @@
     \b Rational: This makes any dependencies in your code obvious, and
     by including standard headers \e after IMP headers, any missing
     includes in the headers themselves show up early (rather than
-    being masked by other headers you include). Adding the IMP prefix
-    and using angle brackets reduces the likelihood that uninstalled
-    rogue headers in the source code directory are used, which could
-    break the build.
+    being masked by other headers you include).
 
 
     \section testing Testing
@@ -116,4 +118,36 @@
     addition, classes and methods should use the IMP_check and IMP_assert macros
     to check the correctness of arguments and invariants internally and report
     errors when problems are detected.
+
+    \section coding Good Coding Practices
+
+    - Never use the preprocessor to define constants. Use \c const
+      variables instead. Proprocessor symbols don't have scope or type
+      and so can have unexpected effects.
+
+    - Pass objects which inherit from IMP::Object or
+      IMP::RefCountedObject by pointer. Store pointers to such objects
+      using an IMP::Pointer to properly manage reference counting and
+      pointer initialization.
+
+    - Pass other objects by value or by \c const & (if the object is large)
+      and store copies of them.
+
+    - Never expose member variables on an object which has methods.
+
+    - Try to limit methods to having at most one argument of a given
+      type.  Otherwise it is easy to mix up the order of arguments and
+      the compiler will not catch it for you. Int and Float count as
+      equivalent types for this rule since the compiler will invisible
+      convert an Int into a Float.
+
+    - Do not copy and paste large blocks of code to create new
+      functionality.  Figure out a way to reuse the existing code by
+      pulling it into a function and adding extra parameters. When you
+      find bugs, you won't remember to fix them in all the copies of
+      the code.
+
+    - Clearly mark any file that is created by a script so that other
+      people know to edit the original file.
+
 */
