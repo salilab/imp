@@ -1,0 +1,22 @@
+Index: kernel/include/base_types.h
+===================================================================
+--- kernel/include/base_types.h	(revision 1041)
++++ kernel/include/base_types.h	(working copy)
+@@ -56,11 +56,13 @@
+ 
+ /* This needs to be here so that both Model and Particle can use Particles */
+ class Particle;
++
+ //! A class which is used for representing collections of particles
+-/**
+-   We need this to have a uniform return type for python.
+-   \todo It would be nice to use internal::Vector instead, but that
+-   is not as pretty for Python.
++/** Documentation for std::vector can be found at as part of the SGI
++    stl documentation, among other places
++    (http://www.sgi.com/tech/stl/Vector.html).
++
++    When used within Python, IMP::Particles acts like a Python list.
+  */
+ typedef std::vector<Particle*> Particles;
+ 
