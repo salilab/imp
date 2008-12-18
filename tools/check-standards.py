@@ -82,7 +82,7 @@ def get_all_files():
     excludes = ['\.\/kernel\/pyext\/IMP_wrap\.[h|cc]',
                 '\.\/kernel\/pyext\/IMP\.py',
                 '\.\/modules\/\w+\/pyext\/\w+_wrap\.[h|cc]',
-                '\.\/modules\/\w+\/pyext\/IMP_\w+\.py']
+                '\.\/modules\/\w+\/pyext\/IMP\.\w+\.py']
     excludes = [re.compile(x) for x in excludes]
     for root, dirs, files in os.walk('.'):
         if '.sconf_temp' not in root and not root.startswith('./build/'):
