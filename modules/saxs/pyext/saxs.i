@@ -17,15 +17,10 @@
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
-/*
-namespace IMP {
-  typedef VectorD<3> Vector3D;
-}
 
 namespace IMP::saxs {
-  IMP_OWN_FIRST_CONSTRUCTOR(BondCoverPairScore)
-  IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RefineOncePairScore)
-  IMP_OWN_FIRST_SECOND_CONSTRUCTOR(LowestRefinedPairScore)
-  IMP_OWN_FIRST_CONSTRUCTOR(TunnelSingletonScore)
+  IMP_OWN_FIRST_CONSTRUCTOR(SaxsData)
 }
-*/
+
+/* Wrap our own classes */
+%include "IMP/saxs/saxs.h"
