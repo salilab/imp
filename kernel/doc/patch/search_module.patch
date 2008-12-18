@@ -2985,7 +2985,7 @@ Index: modules/search/pyext/search.i
 --- modules/search/pyext/search.i	(revision 0)
 +++ modules/search/pyext/search.i	(revision 0)
 @@ -0,0 +1,44 @@
-+%module(directors="1") IMP_search
++%module(directors="1") "IMP.search"
 +
 +%{
 +#include "IMP.h"
@@ -3042,7 +3042,7 @@ Index: modules/search/README
 \ No newline at end of file
 Index: modules/SConscript
 ===================================================================
---- modules/SConscript	(revision 1038)
+--- modules/SConscript	(revision 1043)
 +++ modules/SConscript	(working copy)
 @@ -17,3 +17,6 @@
  
