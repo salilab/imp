@@ -15,7 +15,7 @@ class PDBReadTest(IMP.test.TestCase):
         mp= IMP.modeller.read_pdb(self.get_test_file('single_protein.pdb'), m)
 
         saxsdata = IMP.saxs.SaxsData(m, mp);
-        saxsdata.ini_saxs(0.009, 0.325, 100,
+        saxsdata.initialize(0.009, 0.325, 100,
             505, 15, 'heav',
             '$(LIB)/formfactors-int_tab_solvation.lib',
             'uniform', 0.0, 0.5, 0.0,

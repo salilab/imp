@@ -1,10 +1,8 @@
-/*
- *  SaxsData.cpp
- *  imp
+/**
+ *  \file SaxsData.cpp
+ *  \brief saxs data initilize cpp file.
  *
- *  Created by sjkim on 12/1/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
- *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
 #include <IMP/saxs/SaxsData.h>
@@ -14,13 +12,13 @@ IMPSAXS_BEGIN_NAMESPACE
 
 
 //! Constructor
-SaxsData::SaxsData(Model &model, IMP::core::MolecularHierarchyDecorator &mp) {
+SaxsData::SaxsData(Model *model, IMP::core::MolecularHierarchyDecorator mp) {
   //! Initialization of parameters
-  model_ = &model;
-  mp_ = &mp;
+  model_ = model;
+  mp_ = mp;
 
-  mp_->show();
-  mp_->validate();
+  mp_.show();
+  mp_.validate();
 
   Particles ps = IMP::core::molecular_hierarchy_get_by_type(mp,
                         IMP::core::MolecularHierarchyDecorator::ATOM);
@@ -180,22 +178,23 @@ CALL ini_saxs(saxsd, mdl, sel1, n_sel1, s_min, s_max, maxs,&
 END SUBROUTINE mod_saxs_ini_f
 */
 
-void SaxsData::ini_saxs(double s_min, double s_max, int maxs, int nmesh,
-                        int natomtyp, char* represtyp, char* filename,
-                        char* wswitch, double s_low, double s_hi,
-                        double s_hybrid, char* spaceflag, bool use_lookup) {
+void SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
+                          int natomtyp, std::string represtyp,
+                          std::string filename, std::string wswitch,
+                          double s_low, double s_hi, double s_hybrid,
+                          std::string spaceflag, bool use_lookup) {
   s_min_ = s_min;
   s_max_ = s_max;
   maxs_ = maxs;
   nmesh_= nmesh;
   natomtyp_ = natomtyp;
-  memcpy(represtyp_, represtyp, strlen(represtyp)+1);
-  memcpy(filename_, filename, strlen(filename)+1);
-  memcpy(wswitch_, wswitch, strlen(wswitch)+1);
+  represtyp_ = represtyp;
+  filename_ = filename;
+  wswitch_ = wswitch;
   s_hybrid_ = s_hybrid;
   s_low_ = s_low;
   s_hi_ = s_hi;
-  memcpy(spaceflag_, spaceflag, strlen(spaceflag)+1);
+  spaceflag_ = spaceflag;
   rho_solv_ = 0.334;
   use_lookup_ = use_lookup;
   nr_ = 5000;
@@ -208,19 +207,18 @@ void SaxsData::ini_saxs(double s_min, double s_max, int maxs, int nmesh,
   mixflag_ = false;
   pr_smooth_ = false;
 
-
   printf("s_min_ = %g\n", s_min_);
   printf("s_max_ = %g\n", s_max_);
   printf("maxs_ = %d\n", maxs_);
   printf("nmesh_= %d\n", nmesh_);
   printf("natomtyp_ = %d\n", natomtyp_);
-  printf("represtyp_ = %s\n", represtyp_);
-  printf("filename_ = %s\n", filename_);
-  printf("wswitch_ = %s\n", wswitch_);
+  std::cout << "represtyp_ = " << represtyp_ << std::endl;
+  std::cout << "filename_ = " << filename_ << std::endl;
+  std::cout << "wswitch_ = " << wswitch_ << std::endl;
   printf("s_low_ = %g\n", s_low_);
   printf("s_hi_ = %g\n", s_hi_);
   printf("s_hybrid_ = %g\n", s_hybrid_);
-  printf("spaceflag_ = %s\n", spaceflag_);
+  std::cout << "spaceflag_ = " << spaceflag_ << std::endl;
   printf("use_lookup_ = %d\n", use_lookup_);
   printf("rho_solv_ = %g\n", rho_solv_);
   printf("dr_ = %g\n", dr_);
