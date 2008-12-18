@@ -43,8 +43,11 @@ This will create a new module called "mymodulename".
 \section submission Submission of changes to IMP kernel or IMP.core
 
 In order to submit changes to the kernel or IMP.core, you should prepare a patch against the current svn version of IMP. To do that, make your changes to an up to date copy of IMP and then do
-\command{svn di > mypatch}
-to generate a description of the patch in the file "mypatch". You should then email this patch to the <imp-dev@salilab.org> mailing list along with a description of the changes..
+\command{svn diff paths/to/changed/files > kernel/doc/patch/mypatch.patch}
+to generate a description of the patch in the file "mypatch.patch". You should then create a description of the patch in kernel/doc/patch/mypatch.readme and commit the two files into the repository by doing
+\command{svn add kernel/doc/patch/mypatch*}
+\command{svn commit kernel/doc/patch/mypatch* -m "very brief description"}
+If the patch introduces API changes, then post a short description to the <imp-dev@salilab.org> mailing list.
 
 Patches should contain a related set of changes. For example, a patch which adds a new method foo, a new testcase for foo, and some documentation for the SpecialVector class, should be split into two patches: one for the foo method and test, and the other for the SpecialVector documentation.
 It is much easier for others to understand your patch's changes if it is small and contains only relevant changes. 
