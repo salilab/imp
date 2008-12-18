@@ -15,6 +15,7 @@ IMPSAXS_BEGIN_NAMESPACE
 
 //! Constructor
 SaxsData::SaxsData(Model &model, IMP::core::MolecularHierarchyDecorator &mp) {
+  //! Initialization of parameters
   model_ = &model;
   mp_ = &mp;
 
@@ -51,6 +52,17 @@ SaxsData::~SaxsData() {
 
 
 /** ini_saxs : Initialize saxsdata
+ ! ----------------------------------------------------------------------
+ !>   Initialization of SAXS data.
+ !!   In this routine the SAXS parameters are set, the sampling in reciprocal
+ !!   space is determined and the resulting scattering factors are computed.
+ !!   last change 04/10/06
+ !!   10/10/06 FF - note: sel1 and n_sel1 have to be called like that to be
+ !!                 passed correctly ...
+ !!   01/28/07 FF - set nr_exp and dr_exp in ini_saxs
+ !!   03/14/07 FF - included rolloff
+ ! ----------------------------------------------------------------------
+
  * atmsel: selection of atoms
  * s_min: minimum frequency in reciprocal space in A^-1
  * s_max: maximum frequency in reciprocal space in A^-1
@@ -85,7 +97,8 @@ SaxsData::~SaxsData() {
  * pr_smooth: smoothing of P(r)
  */
 
-/*     def ini_saxs(self, atmsel,
+/*
+ def ini_saxs(self, atmsel,
  filename='$(LIB)/formfactors-int_tab_solvation.lib',
  s_min=0.0, s_max=2.0, maxs=100, nmesh=100, natomtyp=15,
  represtyp='heav', wswitch='uniform', s_hybrid=0.0,
@@ -93,10 +106,10 @@ SaxsData::~SaxsData() {
  use_lookup=True, nr=5000, dr=0.1, nr_exp=300, dr_exp=1.0,
  use_offset=False, use_rolloff=False, use_conv=False,
  mixflag=False, pr_smooth=False):
- */
 
-/*(inds, mdl) = atmsel.get_atom_indices()
-return _modeller.mod_saxs_ini(self.modpt, mdl.modpt, inds, s_min,
+
+ (inds, mdl) = atmsel.get_atom_indices()
+ return _modeller.mod_saxs_ini(self.modpt, mdl.modpt, inds, s_min,
                               s_max, maxs, nmesh, natomtyp, represtyp,
                               filename, wswitch, s_hybrid, s_low, s_hi,
                               spaceflag, rho_solv, use_lookup, nr, dr,
@@ -167,8 +180,58 @@ CALL ini_saxs(saxsd, mdl, sel1, n_sel1, s_min, s_max, maxs,&
 END SUBROUTINE mod_saxs_ini_f
 */
 
-void SaxsData::ini_saxs(void) {
-  printf("ini_saxs!!\n");
+void SaxsData::ini_saxs(double s_min, double s_max, int maxs, int nmesh,
+                        int natomtyp, char* represtyp, char* filename,
+                        char* wswitch, double s_low, double s_hi,
+                        double s_hybrid, char* spaceflag, bool use_lookup) {
+  s_min_ = s_min;
+  s_max_ = s_max;
+  maxs_ = maxs;
+  nmesh_= nmesh;
+  natomtyp_ = natomtyp;
+  memcpy(represtyp_, represtyp, strlen(represtyp)+1);
+  memcpy(filename_, filename, strlen(filename)+1);
+  memcpy(wswitch_, wswitch, strlen(wswitch)+1);
+  s_hybrid_ = s_hybrid;
+  s_low_ = s_low;
+  s_hi_ = s_hi;
+  memcpy(spaceflag_, spaceflag, strlen(spaceflag)+1);
+  rho_solv_ = 0.334;
+  use_lookup_ = use_lookup;
+  nr_ = 5000;
+  dr_ = 0.1;
+  nr_exp_ = 300;
+  dr_exp_ = 1.0;
+  use_offset_ = false;
+  use_rolloff_ = false;
+  use_conv_ = false;
+  mixflag_ = false;
+  pr_smooth_ = false;
+
+
+  printf("s_min_ = %g\n", s_min_);
+  printf("s_max_ = %g\n", s_max_);
+  printf("maxs_ = %d\n", maxs_);
+  printf("nmesh_= %d\n", nmesh_);
+  printf("natomtyp_ = %d\n", natomtyp_);
+  printf("represtyp_ = %s\n", represtyp_);
+  printf("filename_ = %s\n", filename_);
+  printf("wswitch_ = %s\n", wswitch_);
+  printf("s_low_ = %g\n", s_low_);
+  printf("s_hi_ = %g\n", s_hi_);
+  printf("s_hybrid_ = %g\n", s_hybrid_);
+  printf("spaceflag_ = %s\n", spaceflag_);
+  printf("use_lookup_ = %d\n", use_lookup_);
+  printf("rho_solv_ = %g\n", rho_solv_);
+  printf("dr_ = %g\n", dr_);
+  printf("dr_exp_ = %g\n", dr_exp_);
+  printf("nr_exp_ = %d\n", nr_exp_);
+  printf("nr_ = %d\n", nr_);
+  printf("use_offset_ = %d\n", use_offset_);
+  printf("use_rolloff_ = %d\n", use_rolloff_);
+  printf("use_conv_ = %d\n", use_conv_);
+  printf("mixflag_ = %d\n", mixflag_);
+  printf("pr_smooth_ = %d\n", pr_smooth_);
 }
 
 IMPSAXS_END_NAMESPACE
