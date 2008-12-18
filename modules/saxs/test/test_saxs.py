@@ -3,22 +3,40 @@ import IMP
 import IMP.test
 import IMP.modeller
 import IMP.core
+import IMP.saxs
 
 class PDBReadTest(IMP.test.TestCase):
-    #def test_open_error(self):
-    #    """Check exception thrown on nonexistant file"""
-    #    m=IMP.Model()
-    #    self.assertRaises(IMP.IOError,  read_pdb, 'fake_file.pdb', m)
-    def test_hierarchy(self):
+
+    def test_saxs(self):
         """Check reading a pdb with one protein"""
-        i_num_res_type= IMP.core.ResidueType.get_number_unique()
-        i_num_atom_type= IMP.core.AtomType.get_number_unique()
         m = IMP.Model()
+
+        #mp = IMP.modeller.read_pdb('single_protein.pdb', m)
         mp= IMP.modeller.read_pdb(self.get_test_file('single_protein.pdb'), m)
-        #mp= IMP.core.MolecularHierarchyDecorator.cast(p)
-        #mp.show()
-        #IMP.core.show_molecular_hierarchy(mp)
+
+        saxsdata = IMP.saxs.SaxsData(m, mp);
+        """saxsdata.ini_saxs(atmsel=atmsel, s_min= 0.009, s_max=0.325, maxs=100,
+            nmesh=505, natomtyp=15, represtyp='heav',
+            filename='$(LIB)/formfactors-int_tab_solvation.lib',
+            wswitch = 'uniform', s_low=0.0, s_hi=0.5, s_hybrid=0.0,
+            spaceflag= 'real', use_lookup=False)
+"""
+
+        """
+        #i_num_res_type= IMP.core.ResidueType.get_number_unique()
+        #i_num_atom_type= IMP.core.AtomType.get_number_unique()
+
+        mp.show()
+        IMP.core.show_molecular_hierarchy(mp)
         mp.validate()
+
+        ps = IMP.core.molecular_hierarchy_get_by_type(mp, IMP.core.MolecularHierarchyDecorator.ATOM)
+
+        for p in ps:
+            d = IMP.core.XYZDecorator.cast(p)
+            d.show()
+            #d.get_coordinates().show()
+
         hc= IMP.core.HierarchyCounter()
         IMP.core.depth_first_traversal(mp, hc)
         f_num_res_type= IMP.core.ResidueType.get_number_unique()
@@ -36,45 +54,6 @@ class PDBReadTest(IMP.test.TestCase):
                          "Wrong number of particles created")
         rd= IMP.core.molecular_hierarchy_get_residue(mp, 29)
         self.assertEqual(rd.get_index(), 29);
-
-    def test_bonds(self):
-        """Check that the file loader produces bonds"""
-        m = IMP.Model()
-        mp= IMP.modeller.read_pdb(self.get_test_file('single_protein.pdb'), m)
-        #mp= IMP.core.MolecularHierarchyDecorator.cast(p)
-        all_atoms= IMP.core.molecular_hierarchy_get_by_type(mp,
-                             IMP.core.MolecularHierarchyDecorator.ATOM);
-        self.assertEqual(1221, len(all_atoms),
-                         "Wrong number of atoms found in protein")
-
-    def test_dna(self):
-        """Check reading a dna with one chain"""
-        def na_patches(mdl):
-            """Nucleic acid terminal patches."""
-            mdl.patch('5TER', mdl.residues[0])
-            mdl.patch('3TER', mdl.residues[-1])
-        m = IMP.Model()
-        mp= IMP.modeller.read_pdb(self.get_test_file('single_dna.pdb'),
-                                  m, na_patches)
-        print "done reading"
-        #IMP.core.show_molecular_hierarchy(mp)
-        #mp= IMP.core.MolecularHierarchyDecorator.cast(p)
-        #mp.show()
-        #IMP.core.show_molecular_hierarchy(mp)
-        mp.validate()
-        hc= IMP.core.HierarchyCounter()
-        IMP.core.depth_first_traversal(mp, hc)
-        mpp= mp.get_parent()
-        self.assertEqual(mpp, IMP.core.MolecularHierarchyDecorator(),
-                         "Should not have a parent")
-        mpc= mp.get_child(0)
-        self.assertEqual(mpc.get_parent(), mp,
-                         "Should not have a parent")
-        print str(hc.get_count())
-        self.assertEqual(3160, hc.get_count(),
-                         "Wrong number of particles created")
-        #rd= IMP.get_residue(mp, 29)
-        #self.assertEqual(rd.get_index(), 29);
-
+        """
 if __name__ == '__main__':
     unittest.main()
