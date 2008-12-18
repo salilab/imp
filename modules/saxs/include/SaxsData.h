@@ -1,12 +1,12 @@
 /**
- *  \file saxs.h
+ *  \file SaxsData.h
  *  \brief saxs initial header file.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPSAXS_SAXSDATA_H
-#define IMPSAXS_SAXSDATA_H
+#ifndef IMPSAXS_SAXS_DATA_H
+#define IMPSAXS_SAXS_DATA_H
 
 #include "config.h"
 #include "internal/saxs_version_info.h"
@@ -46,10 +46,10 @@ public:
   //void saxs_chi_deriv();   // Formulation in reciprocal space
   //void saxs_chi_real_deriv();  // Formulation in real space
 
+private:
   Model *model_;
   IMP::core::MolecularHierarchyDecorator *mp_;
 
-private:
   /** ----- sampling of reciprocal space ----------------------------------- */
   /** number of sampling points */
   int ns_;
@@ -249,4 +249,4 @@ private:
 
 IMPSAXS_END_NAMESPACE
 
-#endif  /* IMPSAXS_SAXSDATA_H */
+#endif  /* IMPSAXS_SAXS_DATA_H */
