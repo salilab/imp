@@ -6,6 +6,4 @@ a built in type is passed. Constructing the types directly could lead to
 obscure errors since the ordering of the keys could be changed if no
 decorators have been constructed when the type is constructor.
 
-A method is also added to Key to allow checking if a given key already exists.
-
 And some doc strings were added so methods show up.
