@@ -139,6 +139,11 @@ public:
     // cannot check here as we need a past end iterator
   }
 
+  //! Return true if there already is a key with that string
+  static bool get_key_exists(std::string sc) {
+    return get_map().find(sc) != get_map().end();
+  }
+
   //! Turn a key into a pretty string
   const std::string get_string() const {
     if (is_default()) return std::string("NULL");
@@ -152,6 +157,7 @@ public:
     out << "\"" << get_string() << "\"";
   }
 
+  //! Get a unique (with that type of key) int for the key
   unsigned int get_index() const {
     IMP_assert(!is_default(),
                "Cannot get index on defaultly constructed Key");
