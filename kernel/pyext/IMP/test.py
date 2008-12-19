@@ -18,7 +18,9 @@ class TestCase(unittest.TestCase):
 
     def get_test_file(self, filename):
         """Get the full name of a file in the top-level test directory."""
-        path = os.environ['TEST_DIRECTORY']
+        # If individual tests are run manually, assume they are in
+        # the current directory:
+        path = os.environ.get('TEST_DIRECTORY', '.')
         return os.path.join(path, filename)
 
     def assertInTolerance(self, num1, num2, tolerance, msg=None):
