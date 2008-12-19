@@ -30,12 +30,22 @@ void ScoreState::before_evaluate(unsigned int iter) {
 }
 
 
-  void ScoreState::after_evaluate(unsigned int iter,
-                                  DerivativeAccumulator *da) {
+void ScoreState::after_evaluate(unsigned int iter,
+                                DerivativeAccumulator *da) {
   if (after_iteration_ != iter) {
     after_iteration_= iter;
     do_after_evaluate(da);
   }
+}
+
+
+void ScoreState::before_evaluate() {
+  do_before_evaluate();
+}
+
+
+void ScoreState::after_evaluate(DerivativeAccumulator *da) {
+  do_after_evaluate(da);
 }
 
 //! Destructor

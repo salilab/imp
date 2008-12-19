@@ -58,11 +58,17 @@ public:
    */
   void before_evaluate(unsigned int iteration);
 
+  //! Force update of the structure.
+  void before_evaluate();
+
   //! Do post evaluation work if needed
   /** The protected do_after_evaluate method will be called if needed.
    */
   void after_evaluate(unsigned int iteration,
                       DerivativeAccumulator *accpt);
+
+  //! Force update of the structure
+  void after_evaluate(DerivativeAccumulator *accpt);
 
 
   //! Show the ScoreState
