@@ -17,3 +17,6 @@ env.IMPModule('misc', author='IMP developers', version='SVN',
 
 env.IMPModule('core', author='IMP developers', version='SVN',
               description='General purpose features of broad utility.')
+
+env.IMPModule('search', author='Daniel Russel', version='SVN',
+              description='General purpose features of broad utility.')
