@@ -1,0 +1,12 @@
+/** \namespace IMP::search
+\brief IMP.search provides structures to search lists of particles. 
+
+<b>Overview:</b> IMP.search provides structures to perform efficient searches
+over lists of particles.
+
+<b>Authors:</b> Daniel Russel.
+
+<b>Publications:</b> IMP.search is part of the main IMP package.
+
+<b>License:</b> IMP.index is covered by the LGPL.
+*/
