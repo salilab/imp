@@ -1,0 +1,89 @@
+#!/usr/bin/python
+import sys
+import os
+
+
+def make_one(n):
+    path= os.path.dirname(os.path.dirname(sys.argv[0]))
+    template_args=''
+    typedefs = ''
+    keyargs=''
+    valargs=''
+    valargs1=''
+    keyparams=''
+    valparams=''
+    valparams1=''
+    less=''
+    equal='return '
+    key_template_params=''
+    value_template_params=''
+    get_values=''
+    num= str(n)
+    for i in range(0, n):
+        if i != 0:
+            template_args= template_args+",\n"
+            keyargs = keyargs + ",\n                          "
+            valargs = valargs + ",\n                                 "
+            valparams = valparams + ", "
+            valargs1 = valargs1 + ",\n                                 "
+            valparams1 = valparams1 + ", "
+            keyparams = keyparams + ", "
+            less = less + "\n      else "
+            equal = equal + "\n           && "
+            key_template_params = key_template_params+ ",\n                                "
+            value_template_params = value_template_params+ ",\n                                "
+            get_values= get_values+",\n                  "
+            typedefs = typedefs + "\n  "
+        template_args = template_args+"class AttributeType"+str(i)
+        typedefs = typedefs + "typedef typename internal::GetKey<AttributeType"+str(i)+">::Key Key"+str(i)+";\n"
+        typedefs = typedefs + "  typedef AttributeType"+str(i)+" Value"+str(i)+";"
+        keyargs = keyargs + "Key"+str(i) +" k"+str(i)
+        keyparams = keyparams + " k"+str(i)
+        valargs = valargs + "Value"+str(i) +" v"+str(i)
+        valparams = valparams + " v"+str(i)
+        valargs1 = valargs1 + "Value"+str(i) +" vu"+str(i)
+        valparams1 = valparams1 + " vu"+str(i)
+        less = less +"""if (boost::get<"""+str(i)\
+            +""">(values) < boost::get<"""+str(i)+""">(o.values)) return true;
+      else if (boost::get<"""+str(i)+""">(values) > boost::get<"""\
+            +str(i)+""">(o.values)) return false;"""
+        equal = equal + "boost::get<"+str(i)+">(values) == boost::get<"+str(i)+">(o.values)"
+        key_template_params = key_template_params + "typename internal::GetKey<AttributeType"+str(i)+">::Key"
+        value_template_params = value_template_params + "AttributeType"+str(i)
+        get_values = get_values+ "p->get_value(boost::get<"+str(i) + ">(keys_))"
+    equal = equal +";"
+    less = less + "\n      return false;"
+    for p in (("include/AttributeMap"+str(n)+"ScoreState.h",
+               path+"/tools/templates/map.hpp"),
+              ("src/AttributeMap"+str(n)+"ScoreState.cpp",
+               path+"/tools/templates/map.cc")
+              ):
+        ofile= open(p[0], 'w')
+        ifile= open(p[1], 'r')
+        contents= ifile.read()
+        print "writing " + p[0]
+        ncontents= contents.replace("NUM", num)\
+            .replace("TEMPLATE_ARGS", template_args)\
+            .replace("TYPEDEFS", typedefs)\
+            .replace("KEYARGS", keyargs)\
+            .replace("KEYPARAMS", keyparams)\
+            .replace("VALARGS1", valargs1)\
+            .replace("VALPARAMS1", valparams1)\
+            .replace("VALARGS", valargs)\
+            .replace("VALPARAMS", valparams)\
+            .replace("LESS", less)\
+            .replace("EQUAL", equal)\
+            .replace("KEY_TEMPLATE_PARAMS", key_template_params)\
+            .replace("VALUE_TEMPLATE_PARAMS", value_template_params)\
+            .replace("GET_VALUES", get_values)
+        ofile.write(ncontents)
+
+def main():
+    for n in range(1, 5):
+        make_one(n)
+
+  
+
+
+if __name__ == '__main__':
+    main()
