@@ -1,3 +1,0 @@
-Add the start of a module to build search structures over particles. The
-various directories need to be added to the doxygen path, but since the older
-doc patch has not been committed, that bit can't be cleanly generated.
