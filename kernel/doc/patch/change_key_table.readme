@@ -1,0 +1,6 @@
+move the key table into a state variable in a function now that I am not
+trying to do fancy template stuff any more. This removes the initialization
+problems since you can only get the table by calling the function and it will
+be initialized the first time the function is called. As a result, keys can be
+statically initialized. This is still a bad thing to do in general, but for
+Residue and Atom types this is a good thing.
