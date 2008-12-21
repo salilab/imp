@@ -29,6 +29,16 @@ Such discussion is important so that
 
 It is strongly recommended that all methods or classes be tested in unit tests. These unit tests consist of python code in the modulename/test directory. Test cases also help to document the intent of code changes, as well as making sure that the new additions are not accidentally broken in future.
 
+\section testing Testing
+
+Each class and method should have one or more associated tests in the
+\c test directory if its module. These tests should try, as much as
+possible to provide independent verification of the correctness of the
+C++ code. In addition, classes and methods should use the IMP_check and
+IMP_assert macros to check the correctness of arguments and invariants
+internally and report errors when problems are detected.
+
+
 \section modules Choosing a module for your code
 
 IMP is divided into models which group related functionality. Generally useful functionality should be added to the core or misc model, but large blocks of well defined functionality should probably go in their own model. Examples of appropriate units for a module include code for building restraints from a particular type of experimental data such as IMP::saxs or a large piece of functionality such as IMP::domino. Please post to the <imp-dev@salilab.org> mailing list to discuss the placement of new code.
