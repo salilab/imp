@@ -67,7 +67,7 @@
     function names where this is ambiguous (particularly an issue with
     the Python interface). The Python guys also mandate CamelCase for
     their class names, so this avoids any need to rename classes
-    between C++ and Python to ensure clean Python code. It is
+    between C++ and Python to ensure clean Python code. Good naming is
     especially important with preprocessor symbols since these have
     file scope and so can change the meaning of other people's code.
 
@@ -75,17 +75,52 @@
     Classes and methods should use IMP exceptions to report errors. See
     IMP::Exception for a list of existing exceptions. See \ref assert for
     a list of functions to aid in error reporting and detection.
-    \note Do not use exception specifications. Instead document the exceptions
-    in Doxygen using the \c \\exception command.
+    \note Do not use exception specifications. Instead document the 
+    exceptions in Doxygen using the \c \\exception command.
 
-    \section namespaces Namespaces
-    Never use \c using \c namespace outside of a function, instead explicitly
-    provide the namespace.
+
+    \section coding Good Coding Practices
+
+    - Restraints and ScoreStates should generally use a
+      SingletonContainer (or other type of Container) to store the set of
+      Particles that they act on.
+
+    - Never use \c using \c namespace outside of a function, instead 
+      explicitly provide the namespace.
     
-    Use the provided \c IMPMODULE_BEGIN_NAMESPACE, \c IMPMODULE_END_NAMESPACE,
-    \c IMPMODULE_BEGIN_INTERNAL_NAMESPACE and \c IMPMODULE_END_INTERNAL_NAMESPACE
-    macros to put declarations in a namespace appropriate for module \c MODULE.
-    Leave \c MODULE blank for the kernel.
+	- Use the provided \c IMPMODULE_BEGIN_NAMESPACE,
+	  \c IMPMODULE_END_NAMESPACE, \c IMPMODULE_BEGIN_INTERNAL_NAMESPACE 
+	  and \c IMPMODULE_END_INTERNAL_NAMESPACE macros to put declarations 
+	  in a namespace appropriate for module \c MODULE.
+
+    - Never use the preprocessor to define constants. Use \c const
+      variables instead. Proprocessor symbols don't have scope or type
+      and so can have unexpected effects.
+
+    - Pass objects which inherit from IMP::Object or
+      IMP::RefCountedObject by pointer. Store pointers to such objects
+      using an IMP::Pointer to properly manage reference counting and
+      pointer initialization.
+
+    - Pass other objects by value or by \c const & (if the object is 
+      large) and store copies of them.
+
+    - Never expose member variables on an object which has methods.
+
+    - Try to limit methods to having at most one argument of a given
+      type.  Otherwise it is easy to mix up the order of arguments and
+      the compiler will not catch it for you. Int and Float count as
+      equivalent types for this rule since the compiler will invisible
+      convert an Int into a Float.
+
+    - Do not copy and paste large blocks of code to create new
+      functionality.  Figure out a way to reuse the existing code by
+      pulling it into a function and adding extra parameters. When you
+      find bugs, you won't remember to fix them in all the copies of
+      the code.
+
+    - Clearly mark any file that is created by a script so that other
+      people know to edit the original file.
 
     \section include Including Files
     Include files from the local module first, then files from the other \imp
@@ -108,46 +143,5 @@
     by including standard headers \e after IMP headers, any missing
     includes in the headers themselves show up early (rather than
     being masked by other headers you include).
-
-
-    \section testing Testing
-
-    Each class and method should have one or more associated tests in the
-    \c test directory if its module. These tests should try, as much as possible
-    to provide independent verification of the correctness of the C++ code. In
-    addition, classes and methods should use the IMP_check and IMP_assert macros
-    to check the correctness of arguments and invariants internally and report
-    errors when problems are detected.
-
-    \section coding Good Coding Practices
-
-    - Never use the preprocessor to define constants. Use \c const
-      variables instead. Proprocessor symbols don't have scope or type
-      and so can have unexpected effects.
-
-    - Pass objects which inherit from IMP::Object or
-      IMP::RefCountedObject by pointer. Store pointers to such objects
-      using an IMP::Pointer to properly manage reference counting and
-      pointer initialization.
-
-    - Pass other objects by value or by \c const & (if the object is large)
-      and store copies of them.
-
-    - Never expose member variables on an object which has methods.
-
-    - Try to limit methods to having at most one argument of a given
-      type.  Otherwise it is easy to mix up the order of arguments and
-      the compiler will not catch it for you. Int and Float count as
-      equivalent types for this rule since the compiler will invisible
-      convert an Int into a Float.
-
-    - Do not copy and paste large blocks of code to create new
-      functionality.  Figure out a way to reuse the existing code by
-      pulling it into a function and adding extra parameters. When you
-      find bugs, you won't remember to fix them in all the copies of
-      the code.
-
-    - Clearly mark any file that is created by a script so that other
-      people know to edit the original file.
 
 */
