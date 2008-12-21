@@ -1,9 +1,0 @@
-add methods to construct atom and residue types from pdb strings. These
-methods simply wrap the undocumented route of constructing the types directly
-from the strings, but they also ensure that the built in types are already
-constructed and throw an error message if a string that does not correspond to
-a built in type is passed. Constructing the types directly could lead to
-obscure errors since the ordering of the keys could be changed if no
-decorators have been constructed when the type is constructor.
-
-And some doc strings were added so methods show up.
