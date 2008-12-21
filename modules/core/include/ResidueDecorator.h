@@ -44,52 +44,85 @@ class IMPCOREEXPORT ResidueDecorator: public DecoratorBase
 public:
 
   //! The supported residue types
-  /** \note each static must be on a separate line because of MSVC bug C2487:
+  /* \note each static must be on a separate line because of MSVC bug C2487:
             see http://support.microsoft.com/kb/127900/
    */
+// figure out group command
+  /** Unknown residue */
   static ResidueType UNK;
+  /** glycein G*/
   static ResidueType GLY;
+  /** alanine A*/
   static ResidueType ALA;
+  /** valine V*/
   static ResidueType VAL;
+  /** leucine L*/
   static ResidueType LEU;
+  /** isoleucine I*/
   static ResidueType ILE;
+  /** serine S*/
   static ResidueType SER;
+  /** threonine T*/
   static ResidueType THR;
+  /** cystein C*/
   static ResidueType CYS;
+  /** metthionine M*/
   static ResidueType MET;
+  /** proline P*/
   static ResidueType PRO;
+  /** aspartic acid D*/
   static ResidueType ASP;
+  /** asparagine N*/
   static ResidueType ASN;
+  /** glutamine Q*/
   static ResidueType GLU;
+  /** glutamic acid E*/
   static ResidueType GLN;
+  /** lysine K*/
   static ResidueType LYS;
+  /** arginine N*/
   static ResidueType ARG;
+  /** histidine H*/
   static ResidueType HIS;
+  /** phynylaline F*/
   static ResidueType PHE;
+  /** tyrosine Y */
   static ResidueType TYR;
+  /** tryptophan W */
   static ResidueType TRP;
+  /** ACE */
   static ResidueType ACE;
+  /** end group */
   static ResidueType NH2;
   /* Code currently depends on all indices above ADE.get_index()
      being nucleic acid */
+  /** adenine */
   static ResidueType ADE;
+  /** uracil */
   static ResidueType URA;
+  /** cytosine */
   static ResidueType CYT;
+  /** guanine */
   static ResidueType GUA;
+  /** thymine */
   static ResidueType THY;
 
+  /** Return the ResidueType stored in the Particle */
   ResidueType get_type() const {
     return ResidueType(get_particle()->get_value(type_key_));
   }
 
+  /** set the ResidueType stored in the Particle */
   void set_type(ResidueType t) {
     return get_particle()->set_value(type_key_, t.get_index());
   }
 
+  /** Return true if the residue is an amino acid */
   bool get_is_amino_acid() const {
     return !get_is_nucleic_acid();
   }
 
+  /** Return true if the residue is a nucleic acid */
   bool get_is_nucleic_acid() const {
     return get_type().get_index() >= ADE.get_index();
   }
@@ -111,6 +144,14 @@ public:
 };
 
 IMP_OUTPUT_OPERATOR(ResidueDecorator);
+
+//! Return the residue type from the three letter code in the PDB
+/** The string should be capitalized, as in the PDB.
+    \throw ValueException if nm is invalid.
+    \relates ResidueDecorator
+    \relates ResidueType
+ */
+IMPCOREEXPORT ResidueType residue_type_from_pdb_string(std::string nm);
 
 IMPCORE_END_NAMESPACE
 

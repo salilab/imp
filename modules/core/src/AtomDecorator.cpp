@@ -15,11 +15,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-#define TYPE_INIT(STR) AT_##STR= AtomType(#STR);
-#define TYPE_INIT2(NAME, STR) AT_##NAME = AtomType(#STR);
-
-#define TYPE_DEF(STR) AtomType AtomDecorator::AT_##STR;
-#define TYPE_DEF2(NAME, STR) AtomType AtomDecorator::AT_##NAME;
+#define TYPE_DEF(STR) AtomType AtomDecorator::AT_##STR(#STR);
+#define TYPE_DEF2(NAME, STR) AtomType AtomDecorator::AT_##NAME(#STR);
 
 
 IntKey AtomDecorator::element_key_;
@@ -192,7 +189,14 @@ TYPE_DEF(H73);
 
 TYPE_DEF(UNKNOWN);
 
-
+AtomType atom_type_from_pdb_string(std::string nm) {
+  if (!AtomType::get_key_exists(nm)) {
+    std::ostringstream oss;
+    oss<< "AtomType " << nm << " does not exist.";
+    throw ValueException(oss.str().c_str());
+  }
+  return AtomType(nm.c_str());
+}
 
 void AtomDecorator::show(std::ostream &out, std::string prefix) const
 {
@@ -216,171 +220,6 @@ IMP_DECORATOR_INITIALIZE(AtomDecorator, XYZDecorator,
                            mass_key_= FloatKey("atom mass");
                            //vdw_radius_key_= FloatKey("atom vdw radius");
                            type_key_ = IntKey("atom type");
-                           TYPE_INIT(N);
-                           TYPE_INIT(H);
-                           TYPE_INIT(1H);
-                           TYPE_INIT(H1);
-                           TYPE_INIT(2H);
-                           TYPE_INIT(H2);
-                           TYPE_INIT(3H);
-                           TYPE_INIT(H3);
-                           TYPE_INIT(C);
-                           TYPE_INIT(O);
-                           TYPE_INIT(OXT);
-                           TYPE_INIT(CH3);
-
-                           TYPE_INIT(CA);
-                           TYPE_INIT(HA);
-                           TYPE_INIT(1HA);
-                           TYPE_INIT(2HA);
-
-                           TYPE_INIT(CB);
-                           TYPE_INIT(HB);
-                           TYPE_INIT(1HB);
-                           TYPE_INIT(2HB);
-                           TYPE_INIT(3HB);
-
-                           TYPE_INIT(CG);
-                           TYPE_INIT(CG1);
-                           TYPE_INIT(CG2);
-                           TYPE_INIT(HG);
-                           TYPE_INIT(1HG);
-                           TYPE_INIT(2HG);
-                           //TYPE_INIT(HG1",AtomDecorator::AT_HG1},
-                           TYPE_INIT(1HG1);
-                           TYPE_INIT(2HG1);
-                           TYPE_INIT(3HG1);
-                           TYPE_INIT(1HG2);
-                           TYPE_INIT(2HG2);
-                           TYPE_INIT(3HG2);
-                           TYPE_INIT(OG);
-                           TYPE_INIT(OG1);
-                           TYPE_INIT(SG);
-
-                           TYPE_INIT(CD);
-                           TYPE_INIT(CD1);
-                           TYPE_INIT(CD2);
-                           //TYPE_INIT(HD1",AtomDecorator::AT_HD1},
-                           //TYPE_INIT(HD2",AtomDecorator::AT_HD2},
-                           TYPE_INIT(HD);
-                           TYPE_INIT(1HD);
-                           TYPE_INIT(2HD);
-                           TYPE_INIT(3HD);
-                           TYPE_INIT(1HD1);
-                           TYPE_INIT(2HD1);
-                           TYPE_INIT(3HD1);
-                           TYPE_INIT(1HD2);
-                           TYPE_INIT(2HD2);
-                           TYPE_INIT(3HD2);
-                           TYPE_INIT(SD);
-                           TYPE_INIT(OD1);
-                           TYPE_INIT(OD2);
-                           TYPE_INIT(ND1);
-                           TYPE_INIT(ND2);
-
-                           TYPE_INIT(CE);
-                           TYPE_INIT(CE1);
-                           TYPE_INIT(CE2);
-                           TYPE_INIT(CE3);
-                           TYPE_INIT(HE);
-                           TYPE_INIT(1HE);
-                           TYPE_INIT(2HE);
-                           TYPE_INIT(3HE);
-                           //TYPE_INIT(HE1",AtomDecorator::AT_HE1},
-                           //TYPE_INIT(HE2",AtomDecorator::AT_HE2},
-                           //TYPE_INIT(HE3",AtomDecorator::AT_HE3},
-                           TYPE_INIT(1HE2);
-                           TYPE_INIT(2HE2);
-                           TYPE_INIT(OE1);
-                           TYPE_INIT(OE2);
-                           TYPE_INIT(NE);
-                           TYPE_INIT(NE1);
-                           TYPE_INIT(NE2);
-
-                           TYPE_INIT(CZ);
-                           TYPE_INIT(CZ2);
-                           TYPE_INIT(CZ3);
-                           TYPE_INIT(NZ);
-                           TYPE_INIT(HZ);
-                           TYPE_INIT(1HZ);
-                           TYPE_INIT(2HZ);
-                           TYPE_INIT(3HZ);
-                           //TYPE_INIT(HZ1",AtomDecorator::AT_HZ2},
-                           //TYPE_INIT(HZ2",AtomDecorator::AT_HZ2},
-                           //TYPE_INIT(HZ3",AtomDecorator::AT_HZ3},
-
-                           TYPE_INIT(CH2);
-                           TYPE_INIT(NH1);
-                           TYPE_INIT(NH2);
-                           TYPE_INIT(OH);
-                           TYPE_INIT(HH);
-
-                           TYPE_INIT(1HH1);
-                           TYPE_INIT(2HH1);
-                           TYPE_INIT(HH2);
-                           TYPE_INIT(1HH2);
-                           TYPE_INIT(2HH2);
-                           TYPE_INIT(2HH3);
-                           TYPE_INIT(3HH3);
-                           TYPE_INIT(1HH3);
-
-                           //TYPE_INIT(HH31);
-                           //TYPE_INIT(HH32);
-                           //TYPE_INIT(HH33);
-
-                           TYPE_INIT(P);
-                           TYPE_INIT(OP1);
-                           TYPE_INIT(OP2);
-                           TYPE_INIT2(O5p, O5*);
-                           TYPE_INIT2(C5p,C5*);
-                           TYPE_INIT2(H5pp, H5**);
-                           TYPE_INIT2(C4p, C4*);
-                           TYPE_INIT2(H4p, H4*);
-                           TYPE_INIT2(H5p, H5*);
-                           TYPE_INIT2(O4p, O4*);
-                           TYPE_INIT2(C1p, C1*);
-                           TYPE_INIT2(H1p, H1*);
-                           TYPE_INIT2(C3p, C3*);
-                           TYPE_INIT2(H3p, H3*);
-                           TYPE_INIT2(O3p, O3*);
-                           TYPE_INIT2(C2p, C2*);
-                           TYPE_INIT2(H2p, H2*);
-                           TYPE_INIT2(H2pp, H2**);
-                           TYPE_INIT2(O2p, O2*);
-                           TYPE_INIT2(HO2p, HO2*);
-                           TYPE_INIT(N9);
-                           TYPE_INIT(C8);
-                           TYPE_INIT(H8);
-                           TYPE_INIT(N7);
-                           TYPE_INIT(C5);
-                           TYPE_INIT(C4);
-                           TYPE_INIT(N3);
-                           TYPE_INIT(C2);
-                           TYPE_INIT(N1);
-                           TYPE_INIT(C6);
-                           TYPE_INIT(N6);
-                           TYPE_INIT(H61);
-                           TYPE_INIT(H62);
-                           TYPE_INIT(O6);
-
-                           TYPE_INIT(N2);
-                           TYPE_INIT(H21);
-                           TYPE_INIT(H22);
-
-                           TYPE_INIT(H6);
-                           TYPE_INIT(H5);
-                           TYPE_INIT(O2);
-                           TYPE_INIT(N4);
-                           TYPE_INIT(H41);
-                           TYPE_INIT(H42);
-
-                           TYPE_INIT(O4);
-                           TYPE_INIT(C7);
-                           TYPE_INIT(H71);
-                           TYPE_INIT(H72);
-                           TYPE_INIT(H73);
-
-                           TYPE_INIT(UNKNOWN);
                          })
 
 IMPCORE_END_NAMESPACE
