@@ -328,6 +328,7 @@ def IMPModule(env, module, author, version, description, cpp=True):
        SConscript before setting up any builders, to indicate whether the
        module's necessary dependencies have been met.
     """
+    env['IMP_MODULES_ALL'].append(module)
     env = env.Clone()
     config = Builder(action=action_config)
     version_info = Builder(action=action_version_info)
@@ -369,6 +370,7 @@ def IMPModule(env, module, author, version, description, cpp=True):
 
 def generate(env):
     """Add builders and construction variables for the IMP module tool."""
+    env['IMP_MODULES_ALL'] = []
     env.AddMethod(IMPModule)
 
 def exists(env):
