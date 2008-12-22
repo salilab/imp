@@ -31,7 +31,7 @@ IMP_DECORATOR_INITIALIZE(XYZDecorator, DecoratorBase,
 
 Float distance(XYZDecorator a, XYZDecorator b)
 {
-  return (a.get_coordinates()-b.get_coordinates()).get_magnitude();
+  return IMP::distance(a.get_coordinates(),b.get_coordinates());
 }
 
 IMPCORE_END_NAMESPACE
