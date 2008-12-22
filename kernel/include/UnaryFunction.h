@@ -33,9 +33,8 @@ public:
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
-      \param[out] deriv Partial derivative of the score with respect to the
-                        given feaure.
-      \return Score
+      \return a FloatPair containing the score and its partial derivative
+              with respect to the given feaure.
    */
   virtual FloatPair evaluate_with_derivative(Float feature) const = 0;
 
