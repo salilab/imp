@@ -649,10 +649,21 @@ public:
     }
   }
 
+  void show(std::ostream &out= std::cout) const {
+    out << "(";
+    if (first) out << first->get_index();
+    else out << "NULL";
+    out << ", ";
+    if (second) out << second->get_index();
+    else out << "NULL";
+    out << ")";
+  }
 };
 
 typedef std::vector<ParticlePair> ParticlePairs;
 
+
+IMP_OUTPUT_OPERATOR(ParticlePair);
 
 
 //! Store three particles
@@ -690,9 +701,26 @@ public:
     };
   }
 
+
+  void show(std::ostream &out= std::cout) const {
+    out << "(";
+    if (first) out << first->get_index();
+    else out << "NULL";
+    out << ", ";
+    if (second) out << second->get_index();
+    else out << "NULL";
+    out << ", ";
+    if (third) out << third->get_index();
+    else out << "NULL";
+    out << ")";
+  }
+
 };
 
 typedef std::vector<ParticleTriplet> ParticleTriplets;
+
+IMP_OUTPUT_OPERATOR(ParticleTriplet);
+
 
 IMP_END_NAMESPACE
 
