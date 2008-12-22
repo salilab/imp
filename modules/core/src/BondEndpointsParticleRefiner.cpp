@@ -6,8 +6,7 @@
  */
 
 #include <IMP/core/BondEndpointsParticleRefiner.h>
-
-#include <IMP/core/HierarchyDecorator.h>
+#include <IMP/core/bond_decorators.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
