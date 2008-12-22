@@ -554,13 +554,8 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = ../../build/include \
-                         ../../kernel/doc \
-                         ../../modules/core/doc \
-                         ../../modules/misc/doc \
-                         ../../modules/em/doc \
-                         ../../modules/domino/doc \
-                         ../../modules/modeller/doc \
-                         ../../modules/saxs/doc
+                         ../../modules/@ALL_MODULES@/doc \
+                         ../../kernel/doc
 
 
 # This tag can be used to specify the character encoding of the source files 
@@ -611,6 +606,7 @@ EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */tests/* \
                          */imp_wrap.* \
                          */internal/* \
+                         */module_template/* \
                          */imp2.py \
                          */.svn \
                          ._*
