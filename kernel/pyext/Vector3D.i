@@ -56,4 +56,6 @@ namespace IMP {
    %template(random_vector_on_unit_sphere) random_vector_on_unit_sphere<3>;
    %template(random_vector_in_unit_sphere) random_vector_in_unit_sphere<3>;
    %template(random_vector_in_unit_box) random_vector_in_unit_box<3>;
+   %template(get_distance) get_distance<3>;
+   %template(get_squared_distance) get_squared_distance<3>;
 }

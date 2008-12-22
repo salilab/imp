@@ -339,6 +339,23 @@ random_vector_on_unit_sphere() {
 }
 
 
+//! compute the squared distance between two vectors
+template <unsigned int D>
+Float get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
+  Float d, s = 0;
+  for (unsigned int i=0; i< D; ++i) {
+    d = v1[i] - v2[i];
+    s += d*d;
+  }
+  return s;
+}
+
+//! compute the distance between two vectors
+template <unsigned int D>
+Float get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
+  return std::sqrt(get_squared_distance(v1, v2));
+}
+
 template <unsigned int D>
 struct SpacesIO
 {

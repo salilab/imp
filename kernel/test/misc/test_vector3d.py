@@ -100,6 +100,14 @@ class Vector3DTests(IMP.test.TestCase):
         for i in range(3):
             self.assertEqual(prod[i], expected_prod[i])
             self.assertEqual(v1[i], expected_prod[i])
+
+    def test_distance(self):
+        """Check distance between two vectors"""
+        v1 = IMP.Vector3D(3.0, 6.0, 9.0)
+        v2 = IMP.Vector3D(1.0, 2.0, 3.0)
+        self.assertEqual(IMP.get_squared_distance(v1, v2), 56)
+        self.assertInTolerance(IMP.get_distance(v1, v2), 7.4833, 0.01)
+
     def test_generators(self):
         """Check the Vector3D generators"""
         # test calling since it is a bit non-trivial in SWIG
