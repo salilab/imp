@@ -1,5 +1,5 @@
 /**
- *  \file EMFitRestraint.cpp
+ *  \file EMFitRestraint.h
  *  \brief Calculate score based on fit to EM map.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
