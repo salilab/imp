@@ -39,7 +39,7 @@ private:
   RMap rmap_;
 };
 
-IMPEXPORT extern std::map<unsigned int, KeyData> key_data;
+IMPEXPORT KeyData& get_key_data(unsigned int index);
 
 IMP_END_INTERNAL_NAMESPACE
 

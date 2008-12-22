@@ -8,10 +8,7 @@
 #include "IMP/Key.h"
 #include "IMP/exception.h"
 
-IMP_BEGIN_NAMESPACE
-
-namespace internal
-{
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 static double heuristic_value=238471628;
 
@@ -30,9 +27,12 @@ void KeyData::show(std::ostream &out) const
   }
 }
 
+IMPEXPORT KeyData& get_key_data(unsigned int index) {
+  static std::map<unsigned int, KeyData> key_data;
+  if (key_data.find(index) == key_data.end()) {
+    IMP_LOG(TERSE, "Initializing keys with index " << index << std::endl);
+  }
+  return key_data[index];
+}
 
-std::map<unsigned int, KeyData> key_data;
-
-} // namespace internal
-
-IMP_END_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE

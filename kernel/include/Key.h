@@ -18,27 +18,6 @@
 IMP_BEGIN_NAMESPACE
 
 /**
-   \internal
-   \page keys How Keys work in IMP
-
-   The keys in IMP maintain a cached mapping between strings and indexes.
-   This mapping is global--that is all IMP Models and Particles in the
-   same program use the same mapping for each type of key. The type of
-   the key is determined by an integer which should be unique for
-   each type. If the integer is not unique, everything works, just
-   more memory is wasted and types are interconvertible
-
-   Since the order of initialization of static data is undefined
-   between .os, it is important that no other static data not in the
-   same .o uses the key data. Specifically, typedes defined by
-   IMP_DECLARE_KEY_TYPE should never be statically initialized. While
-   this is annoying, statically initializing them would be bad
-   practice anyway, as unused attribute keys would still be mapped to
-   indices and would make the set of indices less dense.
- */
-
-
-/**
    Define a new key type.
 
    It defines two public types Name, which is an instantiation of KeyBase and
@@ -84,6 +63,17 @@ typedef std::vector<Name> Name##s
     If you use this with a new type, you must add a new definition of
     attribute_table_index. Yes, this is an evil hack, but I couldn't
     get linking to work with static members of the template class.
+
+    The keys in IMP maintain a cached mapping between strings and indexes.
+    This mapping is global--that is all IMP Models and Particles in the
+    same program use the same mapping for each type of key. The type of
+    the key is determined by an integer which should be unique for
+    each type. If the integer is not unique, everything works, just
+    more memory is wasted and types are interconvertible
+
+    Keys used for storing attributes in particles should never be statically
+    initialized. While this is annoying, statically initializing them is bad,
+    as unused attribute keys can result in wasted memory in each particle.
  */
 template <int ID>
 class KeyBase
@@ -92,16 +82,16 @@ class KeyBase
 
   static const internal::KeyData::Map& get_map()
   {
-    return IMP::internal::key_data[ID].get_map();
+    return IMP::internal::get_key_data(ID).get_map();
   }
   static const internal::KeyData::RMap& get_rmap() {
-    return IMP::internal::key_data[ID].get_rmap();
+    return IMP::internal::get_key_data(ID).get_rmap();
   }
 
 
   static unsigned int find_index(std::string sc) {
     if (get_map().find(sc) == get_map().end()) {
-      return IMP::internal::key_data[ID].add_key(sc);
+      return IMP::internal::get_key_data(ID).add_key(sc);
     } else {
       return get_map().find(sc)->second;
     }
@@ -218,7 +208,7 @@ inline bool KeyBase<ID>::is_default() const
 template <int ID>
 inline void KeyBase<ID>::show_all(std::ostream &out)
 {
-  internal::key_data[ID].show(out);
+  internal::get_key_data(ID).show(out);
 }
 
 template <int ID>
