@@ -105,7 +105,7 @@
     - Pass other objects by value or by \c const & (if the object is 
       large) and store copies of them.
 
-    - Never expose member variables on an object which has methods.
+    - Never expose member variables in an object which has methods.
 
     - Try to limit methods to having at most one argument of a given
       type.  Otherwise it is easy to mix up the order of arguments and
@@ -122,9 +122,16 @@
     - Clearly mark any file that is created by a script so that other
       people know to edit the original file.
 
-    \section include Including Files
-    Include files from the local module first, then files from the other \imp
-    modules and kernel and finally outside includes.
+    - Always return a \c const value or \c const ref if you are not
+      providing write access. Returning a \c const copy means the compiler
+      which create an error if the caller tries to modify the return value
+      without creating a copy of the return value.
+
+    - Include files from the local module first, then files from the other \imp
+    modules and kernel and finally outside includes. This makes any dependencies 
+    in your code obvious, and by including standard headers \e after IMP headers,
+    any missing includes in the headers themselves show up early (rather than
+    being masked by other headers you include).
     \code
     #include <IMP/mymodule/mymodule_exports.h>
     #include <IMP/mymodlule/MyRestraint.h>
@@ -132,16 +139,18 @@
     #include <vector>
     \endcode
 
-    For simplicity, to include a header from the same module within
-    another header, you can use a relative path (i.e. without the IMP/
-    prefix) and use double quotes rather than angle brackets. This
-    makes it obvious to the reader that the include is from the same
-    module. Since headers are staged to a build directory, there is no
-    danger of including an uninstalled header this way.
+    - All classes should have a \c show method which takes an optional 
+      \c std::ostream and prints information about the object. In addition they
+      should have \c operator<< defined. This can be easily done using the
+      IMP_OUTPUT_OPERATOR macro.
 
-    \b Rational: This makes any dependencies in your code obvious, and
-    by including standard headers \e after IMP headers, any missing
-    includes in the headers themselves show up early (rather than
-    being masked by other headers you include).
+    - Use Int, Float, String rather than \c int, \c float, and \c std::string.
 
+    - Do not use nested classes in the API as SWIG can't wrap them properly.
+
+    - All access to particles should be through decorators. Use the provided
+      macros to help making the decorator.
+
+    - Delay initialization of keys until they are actually needed (since all initialized
+      keys take up memory within each particle, more or less).
 */
