@@ -28,11 +28,10 @@ struct IMPCOREEXPORT GraphData:
     public ArrayOnAttributesHelper<ParticleKey, Particle*>
 {
   typedef ArrayOnAttributesHelper<ParticleKey, Particle*> P;
-  GraphData(): P("") {}
+  GraphData() {}
   GraphData(std::string prefix): P(prefix) {
     node_keys_[0]=ParticleKey((P::get_prefix()+" node 0").c_str());
     node_keys_[1]=ParticleKey((P::get_prefix()+" node 1").c_str());
-    P::initialize();
   }
   ParticleKey node_keys_[2];
 };

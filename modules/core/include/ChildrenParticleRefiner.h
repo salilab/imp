@@ -10,10 +10,13 @@
 
 #include "config.h"
 #include "internal/core_version_info.h"
+#include "HierarchyDecorator.h"
 
 #include <IMP/ParticleRefiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
+
+class HierarchyTraits;
 
 //! Return the hierarchy children of a particle.
 /** \ingroup hierarchy
@@ -22,8 +25,12 @@ IMPCORE_BEGIN_NAMESPACE
 */
 class IMPCOREEXPORT ChildrenParticleRefiner : public ParticleRefiner
 {
+
+  HierarchyTraits traits_;
 public:
-  ChildrenParticleRefiner();
+  //! create a refiner for a particular type of hierarchy
+  ChildrenParticleRefiner(HierarchyTraits tr
+                          = internal::get_default_hierarchy_traits());
 
   virtual ~ChildrenParticleRefiner() {}
 
