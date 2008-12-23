@@ -11,15 +11,31 @@
 
 #include <sstream>
 
+IMPCORE_BEGIN_INTERNAL_NAMESPACE
+
+const HierarchyTraits& get_default_hierarchy_traits() {
+  static HierarchyTraits ret("hierarchy");
+  return ret;
+}
+
+IMPCORE_END_INTERNAL_NAMESPACE
+
 IMPCORE_BEGIN_NAMESPACE
 
-IMP_DECORATOR_ARRAY_DEF(HierarchyDecorator, child,
-                        internal::ChildArrayTraits);
-namespace internal
-{
-ParticleKey ChildArrayTraits::parent_key_;
-IntKey ChildArrayTraits::parent_index_key_;
+HierarchyTraits::HierarchyTraits(std::string name): P(name),
+                         parent_key_((name+"_parent").c_str()),
+                         parent_index_key_((name+"_parent_index").c_str()){
 }
+
+
+HierarchyDecorator::HierarchyDecorator(Particle *p,
+                                       HierarchyTraits traits): P(p),
+                                                                traits_(traits){
+}
+
+HierarchyDecorator::HierarchyDecorator(HierarchyTraits traits): traits_(traits){
+}
+
 
 void HierarchyDecorator::validate_node() const
 {
@@ -30,7 +46,7 @@ void HierarchyDecorator::validate_node() const
     This p= get_parent();
     IMP_assert(p.get_particle() != get_particle(),
                "A particle can't be its own parent " << *p.get_particle());
-    IMP_assert(p.get_child_index(get_particle()) == get_parent_index(),
+    IMP_assert(p.get_child_index(*this) == get_parent_index(),
                "Incorrect parent index in particle "
                << *get_particle());
   }
@@ -56,8 +72,10 @@ namespace internal
 
 struct AssertHierarchy: public HierarchyVisitor
 {
+  HierarchyTraits traits_;
+  AssertHierarchy(HierarchyTraits tr): traits_(tr){}
   bool visit(Particle *p) {
-    HierarchyDecorator d= HierarchyDecorator::cast(p);
+    HierarchyDecorator d= HierarchyDecorator::cast(p, traits_);
     d.validate_node();
     return true;
   }
@@ -69,29 +87,22 @@ struct AssertHierarchy: public HierarchyVisitor
 void HierarchyDecorator::validate() const
 {
   //std::cerr << "Checking hierarchy" << std::endl;
-  internal::AssertHierarchy ah;
+  internal::AssertHierarchy ah(traits_);
   depth_first_traversal(*this, ah);
 }
 
 
 int HierarchyDecorator::get_child_index(HierarchyDecorator c) const
 {
+  IMP_check(traits_.get_name() == c.traits_.get_name(),
+            "Attemping to mix hierarchy of type " << traits_.get_name()
+            << " with one of type " << c.traits_.get_name(),
+            InvalidStateException);
   for (unsigned int i=0; i< get_number_of_children(); ++i ) {
     if (get_child(i) == c) return i;
   }
   return -1;
 }
-
-
-IMP_DECORATOR_INITIALIZE(HierarchyDecorator, DecoratorBase,
-                         {
-                           internal::ChildArrayTraits::parent_key_
-                             = ParticleKey("hierarchy_parent");
-                           internal::ChildArrayTraits::parent_index_key_
-                             = IntKey("hiearchy_parent_index");
-                           IMP_DECORATOR_ARRAY_INIT(HierarchyDecorator,
-                                                    child);
-                         })
 
 
 void breadth_first_traversal(HierarchyDecorator d, HierarchyVisitor &f)
@@ -133,8 +144,10 @@ namespace
 
 struct MHDMatchingLeaves
 {
+  HierarchyTraits traits_;
+  MHDMatchingLeaves(HierarchyTraits tr): traits_(tr){}
   bool operator()(Particle *p) const {
-    HierarchyDecorator mhd(p);
+    HierarchyDecorator mhd(p, traits_);
     return mhd.get_number_of_children()==0;
   }
 };
@@ -146,7 +159,7 @@ Particles
 hierarchy_get_leaves(HierarchyDecorator mhd)
 {
   Particles out;
-  hierarchy_gather(mhd, MHDMatchingLeaves(),
+  hierarchy_gather(mhd, MHDMatchingLeaves(mhd.get_traits()),
                    std::back_inserter(out));
   return out;
 }

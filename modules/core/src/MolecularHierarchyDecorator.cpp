@@ -14,9 +14,27 @@
 #include <sstream>
 #include <set>
 
+
+IMPCORE_BEGIN_INTERNAL_NAMESPACE
+
+const HierarchyTraits& get_molecular_hierarchy_traits() {
+  static HierarchyTraits ret("molecular_hierarchy");
+  return ret;
+}
+
+IMPCORE_END_INTERNAL_NAMESPACE
+
+
 IMPCORE_BEGIN_NAMESPACE
 
 IntKey MolecularHierarchyDecorator::type_key_;
+
+void MolecularHierarchyDecorator::initialize_static_data() {
+  if (type_key_== IntKey()) {
+    type_key_= IntKey("molecular_hierarchy_type");
+  }
+}
+
 
 void MolecularHierarchyDecorator::show(std::ostream &out,
                                        std::string prefix) const
@@ -44,13 +62,6 @@ void MolecularHierarchyDecorator::show(std::ostream &out,
   }
 }
 
-
-
-IMP_DECORATOR_INITIALIZE(MolecularHierarchyDecorator,
-                         HierarchyDecorator,
-                         {
-                           type_key_=IntKey("molecular hierarchy type");
-                         })
 
 
 namespace
@@ -117,7 +128,7 @@ molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
             ValueException);
   MatchResidueIndex mi(index);
   HierarchyDecorator hd= hierarchy_find(mhd, mi);
-  if (hd== HierarchyDecorator()) {
+  if (hd== HierarchyDecorator(internal::get_molecular_hierarchy_traits())) {
     return ResidueDecorator();
   } else {
     return ResidueDecorator(hd.get_particle());
@@ -143,8 +154,8 @@ create_fragment(const MolecularHierarchyDecorators &ps)
 
   Particle *fp= new Particle();
   parent.get_particle()->get_model()->add_particle(fp);
-  MolecularHierarchyDecorator fd= MolecularHierarchyDecorator::create(fp);
-  fd.set_type(MolecularHierarchyDecorator::FRAGMENT);
+  MolecularHierarchyDecorator fd= MolecularHierarchyDecorator::create(fp,
+                                       MolecularHierarchyDecorator::FRAGMENT);
 
   for (unsigned int i=0; i< ps.size(); ++i) {
     parent.remove_child(ps[i]);

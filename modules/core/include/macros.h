@@ -186,6 +186,8 @@ public:                                                                 \
     IMP_DECORATOR_SET(AttributeKey, t);                                 \
   }
 
+              /* static internal::ArrayOnAttributesHelper<Traits::Key,  \
+                 Traits::Value> name##_data_;  */
 
 //! Define a set of attributes which form an array
 /**
@@ -205,70 +207,72 @@ public:                                                                 \
 
    in addition it defines the private methods
    - add_required_attributes_for_name(Particle *)
+
+   \param[in] protection Whether it should be public, protected or private
+   \param[in] name the name prefix to use, see the above method names
+   \param[in] plural the plural form of the name
+   \param[in] traits the traits object to use to manipulate things. This should
+   inherit from or implement the interface of internal::ArrayOnAttributesHelper
+   \param[in] ExternalType The name of the type to wrap the return type with.
+   \param[in] helper The internal::ArrayOnAttributesHelper instance to use.
  */
-#define IMP_DECORATOR_ARRAY_DECL(protection, name, plural, Traits,      \
-                                 ExternalType)                          \
+#define IMP_DECORATOR_ARRAY_DECL(protection, name, plural,              \
+                                 traits, ExternalType)                  \
 private:                                                                \
- static internal::ArrayOnAttributesHelper<Traits::Key,                  \
-                                          Traits::Value> name##_data_;  \
- static bool has_required_attributes_for_##name(Particle *p) {          \
-   return name##_data_.has_required_attributes(p);                      \
+ template <class T>                                                     \
+ static bool has_required_attributes_for_##name(Particle *p,            \
+                                                const T &traits) {      \
+  return traits.has_required_attributes(p);                             \
  }                                                                      \
- static void add_required_attributes_for_##name(Particle *p) {          \
-   return name##_data_.add_required_attributes(p);                      \
+ template <class T>                                                     \
+ static void add_required_attributes_for_##name(Particle *p,            \
+                                                const T &traits) {      \
+   return traits.add_required_attributes(p);                            \
  }                                                                      \
 protection:                                                             \
  /** \brief Get the ith member*/                                        \
  ExternalType get_##name(unsigned int i) const {                        \
-   return ExternalType(name##_data_.get_value(get_particle(), i));      \
+   return traits.wrap(traits.get_value(get_particle(), i));             \
  }                                                                      \
  /** \brief Get the total number of them*/                              \
  unsigned int get_number_of_##plural() const {                          \
-   return name##_data_.get_size(get_particle());                        \
+   return traits.get_size(get_particle());                              \
  }                                                                      \
  /** \brief Add t at the end */                                         \
  unsigned int add_##name(ExternalType t) {                              \
-   unsigned int i= name##_data_.push_back(get_particle(),               \
-                                          Traits::get_value(t));        \
-   Traits::on_add(get_particle(), t, i);                                \
+   traits.audit_value(t);                                               \
+   unsigned int i= traits.push_back(get_particle(),                     \
+                                    traits.get_value(t));               \
+   traits.on_add(get_particle(), t, i);                                 \
    return i;                                                            \
  }                                                                      \
  /** Add t at a certain position */                                     \
  void add_##name##_at(ExternalType t, unsigned int idx) {               \
-   name##_data_.insert(get_particle(),                                  \
-                       idx,                                             \
-                       Traits::get_value(t));                           \
-   Traits::on_add(get_particle(), t, idx);                              \
+   traits.audit_value(t);                                               \
+   traits.insert(get_particle(),                                        \
+                 idx,                                                   \
+                 traits.get_value(t));                                  \
+   traits.on_add(get_particle(), t, idx);                               \
    for (unsigned int i= idx+1; i < get_number_of_##plural(); ++i) {     \
-     Traits::on_change(get_particle(),                                  \
-                       name##_data_.get_value( get_particle(), i),      \
-                       i-1, i);                                         \
+     traits.on_change(get_particle(),                                   \
+                      traits.get_value( get_particle(), i),             \
+                      i-1, i);                                          \
    }                                                                    \
  }                                                                      \
  /** Remove t from the array */                                         \
  void remove_##name(ExternalType t) {                                   \
-   unsigned int idx= Traits::get_index(get_particle(), t);               \
-   Traits::on_remove(get_particle(), t);                                \
-   name##_data_.erase(get_particle(),                                   \
+   traits.audit_value(t);                                               \
+   unsigned int idx= traits.get_index(get_particle(), t);               \
+   traits.on_remove(get_particle(), t);                                 \
+   traits.erase(get_particle(),                                         \
                       idx);                                             \
    for (unsigned int i= idx; i < get_number_of_##plural(); ++i) {       \
-     Traits::on_change(get_particle(),                                  \
-                       name##_data_.get_value(get_particle(), i),       \
+     traits.on_change(get_particle(),                                   \
+                       traits.get_value(get_particle(), i),             \
                        i+1, i);                                         \
    }                                                                    \
  }
 
-//! See IMP_DECORATOR_ARRAY_DECL
-#define IMP_DECORATOR_ARRAY_DEF(DecoratorType, name, Traits)            \
-  internal::ArrayOnAttributesHelper<Traits::Key,                        \
-                                    Traits::Value>                      \
-  DecoratorType::name##_data_(std::string(#name)+ " " #DecoratorType);
-
-
-
-//! See IMP_DECORATOR_ARRAY_DECL
-#define IMP_DECORATOR_ARRAY_INIT(DecoratorType, name)   \
-  name##_data_.initialize();
 
 //! add a method to get a key
 /** One has to make sure to call the

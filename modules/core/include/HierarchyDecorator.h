@@ -30,6 +30,67 @@ IMPCORE_BEGIN_NAMESPACE
     molecules at multiple levels.
  */
 
+class HierarchyDecorator;
+
+//! Define the type for a type of hierarchy
+/** The hierarchy class is identified by the passed string so two
+    hierarchies created with the same initialization string will be
+    the same.
+*/
+class IMPCOREEXPORT HierarchyTraits:
+  public internal::ArrayOnAttributesHelper<ParticleKey, Particle*>
+{
+  friend class HierarchyDecorator;
+  typedef internal::ArrayOnAttributesHelper<ParticleKey, Particle*> P;
+
+  ParticleKey parent_key_;
+  IntKey parent_index_key_;
+
+  template <class HD>
+  void on_add(Particle * p, HD d, unsigned int i) {
+    d.get_particle()->add_attribute(parent_key_, p);
+    d.get_particle()->add_attribute(parent_index_key_, i);
+  }
+  void on_change(Particle *, Particle* p, unsigned int oi,
+                        unsigned int ni) {
+    p->set_value(parent_index_key_, ni);
+  }
+  template <class HD>
+  void on_remove(Particle *, HD d) {
+    d.get_particle()->remove_attribute(parent_index_key_);
+    d.get_particle()->remove_attribute(parent_key_);
+  }
+  template <class HD>
+  Particle *get_value(HD d) {
+    return d.get_particle();
+  }
+  template <class HD>
+  unsigned int get_index(Particle *, HD d) {
+    return d.get_parent_index();
+  }
+  // otherwise it is masked
+  using P::get_value;
+
+  template <class T>
+  void audit_value(T t) const {
+    IMP_check(t.get_hierarchy_type() == get_name(),
+              "Mixing hierarchies of type " << get_name()
+              << " and type " << t.get_hierarchy_type(),
+              ValueException);
+  }
+
+  const HierarchyDecorator wrap(Particle* p) const;
+
+public:
+  HierarchyTraits(std::string name);
+  std::string get_name() const {
+    return get_prefix();
+  }
+};
+
+
+
+
 //! A visitor for traversal of a hierarchy
 /** This works from both C++ and Python
     \ingroup hierarchy
@@ -48,29 +109,77 @@ public:
 };
 
 
+
+
+
+
 //! A decorator for helping deal with a hierarchy.
 /** \ingroup hierarchy
  */
 class IMPCOREEXPORT HierarchyDecorator: public DecoratorBase
 {
+  typedef DecoratorBase P;
+  HierarchyTraits traits_;
 
-  friend class internal::ChildArrayTraits;
-
-  IMP_DECORATOR_ARRAY_DECL(public, child, children, internal::ChildArrayTraits,
+  IMP_DECORATOR_ARRAY_DECL(public, child, children, traits_,
                            HierarchyDecorator)
-
-  IMP_DECORATOR(HierarchyDecorator, DecoratorBase,
-                return has_required_attributes_for_child(p),
-                add_required_attributes_for_child(p));
 public:
+
+  // swig gets unhappy if it is private
+  typedef HierarchyDecorator This;
+
+  //! Create a HiearchyDecorator on the Particle
+  /** A traits class can be specified if the default one is not desired.
+   */
+  HierarchyDecorator(Particle *p,
+                     HierarchyTraits traits
+                     =internal::get_default_hierarchy_traits());
+  //! null constructor
+  HierarchyDecorator(HierarchyTraits traits
+                     =internal::get_default_hierarchy_traits());
+
+  //! Cast a particle which has the needed attributes
+  static HierarchyDecorator cast(Particle *p,
+                                 HierarchyTraits traits
+                                 =internal::get_default_hierarchy_traits()) {
+    IMP_check(has_required_attributes_for_child(p, traits),
+              "Attempting to cast "
+              << " particle to HierarchyDecorator, but it is missing"
+              << " required traits.",
+              InvalidStateException);
+    return HierarchyDecorator(p, traits);
+  }
+
+  //! Add the needed attributes to a particle
+  static HierarchyDecorator create(Particle *p,
+                                   HierarchyTraits traits
+                                   =internal::get_default_hierarchy_traits()) {
+    add_required_attributes_for_child(p, traits);
+    return HierarchyDecorator(p, traits);
+  }
+
+  /** Check if the particle has the needed attributes for a
+   cast to succeed */
+  static bool is_instance_of(Particle *p,
+                             HierarchyTraits traits
+                             =internal::get_default_hierarchy_traits()){
+    return has_required_attributes_for_child(p, traits);
+  }
+
+
+  /** Write information about this decorator to out. Each line should
+   prefixed by prefix*/
+  void show(std::ostream &out=std::cout,
+            std::string prefix=std::string()) const;
+
 
   /** \return the parent particle, or HierarchyDecorator()
       if it has no parent.
    */
   This get_parent() const {
-    IMP_DECORATOR_GET(internal::ChildArrayTraits::parent_key_, Particle*,
-                      return VALUE,
-                      return This());
+    IMP_DECORATOR_GET(traits_.parent_key_, Particle*,
+                      return This(VALUE, traits_),
+                      return This(traits_));
   }
 
   //! Get the index of this particle in the list of children
@@ -78,14 +187,13 @@ public:
       it does not have a parent.
    */
   int get_parent_index() const {
-    IMP_DECORATOR_GET(internal::ChildArrayTraits::parent_index_key_,
+    IMP_DECORATOR_GET(traits_.parent_index_key_,
                       Int, return VALUE, return -1);
   }
 
   /** Return true if the parent is not empty */
   bool has_parent() const {
-    return get_particle()->has_attribute(
-                   internal::ChildArrayTraits::parent_key_);
+    return get_particle()->has_attribute(traits_.parent_key_);
   }
 
   //! Get the index of a specific child in this particle.
@@ -101,6 +209,15 @@ public:
 
   //! Do some validity checks on the subhierarchy
   void validate() const;
+
+  //! Return the string identifying this type of hierarchy
+  std::string get_hierarchy_type() const {
+    return traits_.get_name();
+  }
+
+  const HierarchyTraits& get_traits() const {
+    return traits_;
+  }
 };
 
 
@@ -129,6 +246,18 @@ private:
   F f_;
   Out out_;
 };
+
+
+inline const HierarchyDecorator HierarchyTraits::wrap(Particle* p) const {
+  return HierarchyDecorator(p, *this);
+}
+
+
+
+
+
+
+
 
 //! Apply the visitor to each particle,  breadth first.
 /** \param[in] d The HierarchyDecorator for the tree in question
@@ -229,18 +358,24 @@ template <class PD>
 struct HierarchyPrinter
 {
   HierarchyPrinter(std::ostream &out,
-                   unsigned int max_depth): out_(out), md_(max_depth) {}
+                   unsigned int max_depth,
+                   HierarchyTraits traits
+                   = internal::get_default_hierarchy_traits()): traits_(traits),
+                                                                out_(out),
+                                                                md_(max_depth)
+  {}
+
   typedef unsigned int result_type;
   int operator()(Particle *p, unsigned int depth) const {
     if (depth > md_) return depth+1;
 
-    HierarchyDecorator hd= HierarchyDecorator::cast(p);
+    HierarchyDecorator hd= HierarchyDecorator::cast(p, traits_);
     std::string prefix;
     for (unsigned int i=0; i< depth; ++i) {
       out_ << " ";
       prefix+=" ";
     }
-    if (hd == HierarchyDecorator() || hd.get_number_of_children()==0) {
+    if (hd == HierarchyDecorator(traits_) || hd.get_number_of_children()==0) {
       out_ << "-";
     } else {
       out_ << "+";
@@ -256,6 +391,7 @@ struct HierarchyPrinter
     out_ << std::endl;
     return depth+1;
   }
+  HierarchyTraits traits_;
   std::ostream &out_;
   unsigned int md_;
 };
@@ -271,7 +407,8 @@ std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
                    unsigned int max_depth
                    = std::numeric_limits<unsigned int>::max())
 {
-  depth_first_traversal_with_data(h, HierarchyPrinter<ND>(out, max_depth), 0);
+  depth_first_traversal_with_data(h, HierarchyPrinter<ND>(out, max_depth,
+                                                          h.get_traits()), 0);
   return out;
 }
 

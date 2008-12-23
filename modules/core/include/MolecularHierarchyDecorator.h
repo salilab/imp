@@ -30,11 +30,7 @@ class IMPCOREEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 {
   typedef HierarchyDecorator P;
   static IntKey type_key_;
-
-  IMP_DECORATOR(MolecularHierarchyDecorator,
-                HierarchyDecorator,
-                return p->has_attribute(type_key_),
-                {p->add_attribute(type_key_, UNKNOWN);});
+  static void initialize_static_data();
 public:
 
   //! The various values for levels of the hierarchy
@@ -57,6 +53,56 @@ public:
              CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE, ASSEMBLY,
              COLLECTION, UNIVERSE, UNIVERSES, TRAJECTORY
             };
+
+  // swig gets unhappy if it is private
+  typedef MolecularHierarchyDecorator This;
+
+  //! Create a HiearchyDecorator on the Particle
+  /** A traits class can be specified if the default one is not desired.
+   */
+  MolecularHierarchyDecorator(Particle *p):
+    P(p,internal::get_molecular_hierarchy_traits()){}
+
+  //! null constructor
+  MolecularHierarchyDecorator(): P(internal::get_molecular_hierarchy_traits()){}
+
+  //! cast a particle which has the needed attributes
+  static MolecularHierarchyDecorator cast(Particle *p) {
+    initialize_static_data();
+    HierarchyDecorator::cast(p, internal::get_molecular_hierarchy_traits());
+    IMP_check(p->has_attribute(type_key_), "Particle is missing attribute "
+              << type_key_,
+              InvalidStateException);
+    return MolecularHierarchyDecorator(p);
+  }
+
+  /** Create a MolecularHierarchyDecorator of level t by adding the needed
+      attributes. */
+  static MolecularHierarchyDecorator create(Particle *p,
+                                            Type t= UNKNOWN) {
+    initialize_static_data();
+    HierarchyDecorator::create(p, internal::get_molecular_hierarchy_traits());
+    p->add_attribute(type_key_, t);
+    return MolecularHierarchyDecorator(p);
+  }
+
+  /** Check if the particle has the needed attributes for a
+   cast to succeed */
+  static bool is_instance_of(Particle *p){
+    initialize_static_data();
+    return P::is_instance_of(p,
+                internal::get_molecular_hierarchy_traits())
+      && p->has_attribute(type_key_);
+  }
+
+
+  /** Write information about this decorator to out. Each line should
+   prefixed by prefix*/
+  void show(std::ostream &out=std::cout,
+            std::string prefix=std::string()) const;
+
+
+
   /** */
   Type get_type() const {
     return Type(get_particle()->get_value(type_key_));
@@ -142,7 +188,7 @@ public:
   /** */
   MolecularHierarchyDecorator get_parent() const {
     HierarchyDecorator hd= P::get_parent();
-    if (hd == HierarchyDecorator()) {
+    if (hd == HierarchyDecorator(internal::get_molecular_hierarchy_traits())) {
       return MolecularHierarchyDecorator();
     } else {
       return cast(hd.get_particle());

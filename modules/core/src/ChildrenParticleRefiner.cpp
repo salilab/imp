@@ -11,22 +11,23 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ChildrenParticleRefiner::ChildrenParticleRefiner()
+ChildrenParticleRefiner
+::ChildrenParticleRefiner(HierarchyTraits traits): traits_(traits)
 {
 }
 
 
 bool ChildrenParticleRefiner::get_can_refine(Particle *p) const
 {
-  if (!core::HierarchyDecorator::is_instance_of(p)) return false;
-  return core::HierarchyDecorator(p).get_number_of_children() != 0;
+  if (!core::HierarchyDecorator::is_instance_of(p, traits_)) return false;
+  return core::HierarchyDecorator(p, traits_).get_number_of_children() != 0;
 
 }
 
 Particles ChildrenParticleRefiner::get_refined(Particle *p) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
-  core::HierarchyDecorator d(p);
+  core::HierarchyDecorator d(p, traits_);
   Particles ps(d.get_number_of_children());
   for (unsigned int i=0; i< d.get_number_of_children(); ++i){
     ps[i]= d.get_child(i).get_particle();
