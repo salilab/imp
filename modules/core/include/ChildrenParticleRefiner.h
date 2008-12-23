@@ -11,6 +11,7 @@
 #include "config.h"
 #include "internal/core_version_info.h"
 #include "HierarchyDecorator.h"
+#include "MolecularHierarchyDecorator.h"
 
 #include <IMP/ParticleRefiner.h>
 
@@ -29,8 +30,10 @@ class IMPCOREEXPORT ChildrenParticleRefiner : public ParticleRefiner
   HierarchyTraits traits_;
 public:
   //! create a refiner for a particular type of hierarchy
+  /** In order to preserve backward compatiblity, the default traits is the
+      molecular hierarchy traits */
   ChildrenParticleRefiner(HierarchyTraits tr
-                          = internal::get_default_hierarchy_traits());
+                          = MolecularHierarchyDecorator::get_traits());
 
   virtual ~ChildrenParticleRefiner() {}
 

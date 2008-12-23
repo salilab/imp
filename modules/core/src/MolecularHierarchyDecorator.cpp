@@ -15,17 +15,12 @@
 #include <set>
 
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
-const HierarchyTraits& get_molecular_hierarchy_traits() {
+const HierarchyTraits& MolecularHierarchyDecorator::get_traits() {
   static HierarchyTraits ret("molecular_hierarchy");
   return ret;
 }
-
-IMPCORE_END_INTERNAL_NAMESPACE
-
-
-IMPCORE_BEGIN_NAMESPACE
 
 IntKey MolecularHierarchyDecorator::type_key_;
 
@@ -128,7 +123,7 @@ molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
             ValueException);
   MatchResidueIndex mi(index);
   HierarchyDecorator hd= hierarchy_find(mhd, mi);
-  if (hd== HierarchyDecorator(internal::get_molecular_hierarchy_traits())) {
+  if (hd== HierarchyDecorator(MolecularHierarchyDecorator::get_traits())) {
     return ResidueDecorator();
   } else {
     return ResidueDecorator(hd.get_particle());

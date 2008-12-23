@@ -5,6 +5,7 @@ Import('env', 'bin')
 example_py = [
       'chain.py',
       'simple_examples/bipartite_nonbonded_interactions.py',
+      'simple_examples/conditional_restraint.py',
       'simple_examples/connectivity_restraint.py',
       'simple_examples/cover_particles.py',
       'simple_examples/molecular_hierarchy.py',

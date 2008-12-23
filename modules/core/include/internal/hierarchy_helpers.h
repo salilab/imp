@@ -21,11 +21,6 @@ IMPCORE_END_NAMESPACE
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-
-IMPCOREEXPORT const HierarchyTraits& get_default_hierarchy_traits();
-
-IMPCOREEXPORT const HierarchyTraits& get_molecular_hierarchy_traits();
-
 template <class K, class V>
 struct MatchAttribute
 {

@@ -11,16 +11,12 @@
 
 #include <sstream>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
-const HierarchyTraits& get_default_hierarchy_traits() {
+const HierarchyTraits& HierarchyDecorator::get_default_traits() {
   static HierarchyTraits ret("hierarchy");
   return ret;
 }
-
-IMPCORE_END_INTERNAL_NAMESPACE
-
-IMPCORE_BEGIN_NAMESPACE
 
 HierarchyTraits::HierarchyTraits(std::string name): P(name),
                          parent_key_((name+"_parent").c_str()),
