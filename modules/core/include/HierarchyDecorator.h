@@ -37,8 +37,10 @@ class HierarchyDecorator;
     hierarchies created with the same initialization string will be
     the same.
 */
-class IMPCOREEXPORT HierarchyTraits:
-  public internal::ArrayOnAttributesHelper<ParticleKey, Particle*>
+class IMPCOREEXPORT HierarchyTraits
+#ifndef SWIG
+: public internal::ArrayOnAttributesHelper<ParticleKey, Particle*>
+#endif
 {
   friend class HierarchyDecorator;
   typedef internal::ArrayOnAttributesHelper<ParticleKey, Particle*> P;
@@ -133,15 +135,15 @@ public:
    */
   HierarchyDecorator(Particle *p,
                      HierarchyTraits traits
-                     =internal::get_default_hierarchy_traits());
+                     =HierarchyDecorator::get_default_traits());
   //! null constructor
   HierarchyDecorator(HierarchyTraits traits
-                     =internal::get_default_hierarchy_traits());
+                     =HierarchyDecorator::get_default_traits());
 
   //! Cast a particle which has the needed attributes
   static HierarchyDecorator cast(Particle *p,
                                  HierarchyTraits traits
-                                 =internal::get_default_hierarchy_traits()) {
+                                 =HierarchyDecorator::get_default_traits()) {
     IMP_check(has_required_attributes_for_child(p, traits),
               "Attempting to cast "
               << " particle to HierarchyDecorator, but it is missing"
@@ -153,7 +155,7 @@ public:
   //! Add the needed attributes to a particle
   static HierarchyDecorator create(Particle *p,
                                    HierarchyTraits traits
-                                   =internal::get_default_hierarchy_traits()) {
+                                   =HierarchyDecorator::get_default_traits()) {
     add_required_attributes_for_child(p, traits);
     return HierarchyDecorator(p, traits);
   }
@@ -162,7 +164,7 @@ public:
    cast to succeed */
   static bool is_instance_of(Particle *p,
                              HierarchyTraits traits
-                             =internal::get_default_hierarchy_traits()){
+                             =HierarchyDecorator::get_default_traits()){
     return has_required_attributes_for_child(p, traits);
   }
 
@@ -215,10 +217,14 @@ public:
     return traits_.get_name();
   }
 
+  //! Get the hierarchy traits used in this instance
   const HierarchyTraits& get_traits() const {
     return traits_;
   }
-};
+
+  //! Get the default hierarchy traits
+  static const HierarchyTraits& get_default_traits();
+  };
 
 
 IMP_OUTPUT_OPERATOR(HierarchyDecorator);
@@ -360,7 +366,7 @@ struct HierarchyPrinter
   HierarchyPrinter(std::ostream &out,
                    unsigned int max_depth,
                    HierarchyTraits traits
-                   = internal::get_default_hierarchy_traits()): traits_(traits),
+                   = HierarchyDecorator::get_default_traits()): traits_(traits),
                                                                 out_(out),
                                                                 md_(max_depth)
   {}

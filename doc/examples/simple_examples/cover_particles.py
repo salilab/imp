@@ -8,7 +8,7 @@ res= IMP.core.molecular_hierarchy_get_by_type(prot, IMP.core.MolecularHierarchyD
 rc= IMP.core.ListSingletonContainer(res)
 for p in res:
     IMP.core.XYZRDecorator.create(p)
-ref= IMP.core.ChildrenParticleRefiner()
+ref= IMP.core.ChildrenParticleRefiner(IMP.core.MolecularHierarchyDecorator.get_traits())
 cover= IMP.core.CoverRefinedSingletonModifier(ref)
 propd= IMP.core.DerivativesToRefinedSingletonModifier(ref)
 state=IMP.core.SingletonsScoreState(rc, cover, propd)

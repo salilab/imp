@@ -24,7 +24,7 @@ for i in range(0,10):
     hs.append(p)
 
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0,1))
-cps= IMP.core.ChildrenParticleRefiner()
+cps= IMP.core.ChildrenParticleRefiner(IMP.core.MolecularHierarchyDecorator.get_traits())
 lrps = IMP.misc.LowestRefinedPairScore(cps,ps)
 cr = IMP.core.ConnectivityRestraint(lrps)
 cr.set_particles(hs)
