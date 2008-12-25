@@ -1,16 +1,14 @@
-import os
-import os.path
-
 Import('env')
 
-curdir= str(Dir("#/modules/search/include"))
-files = [x for x in os.listdir(curdir) if x.endswith(".h") and x != "config.h"\
-      and not x.startswith(".")]
-for d in [x for x in os.listdir(curdir) if os.path.isdir(os.path.join(curdir, x))]:
-    for f in [x for x in os.listdir(os.path.join(curdir, d))]:
-        if  f !="search_version_info.h" and f.endswith(".h")\
-        and not f.startswith("."):
-            files.append(os.path.join(d,f))
+files= []
+
+hs= Glob("*.h")
+shs= Glob("*/*.h")
+for h in hs+shs:
+    s= h.rstr()
+    if not s.startswith(".") and not s.endswith("config.h")\
+      and not s.endswith("search.h") and not s.endswith("search_version_info.h"):
+        files.append(s)
 
 # Install the include files:
 env.IMPHeaders(files)
