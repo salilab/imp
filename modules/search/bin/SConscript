@@ -5,12 +5,10 @@ Import('env')
 penv = env.Clone()
 penv.Prepend(LIBS=["imp_search"])
 
-curdir= str(Dir("#/modules/search/bin"))
-files = [x for x in os.listdir(curdir) if x.endswith(".cpp")]
-
+fs = Glob("*.cpp")
 
 all=[]
-for f in files:
-    all.append(penv.Program(f))
+for f in fs:
+    all.append(penv.Program(f.rstr()))
 
 Return('all')
