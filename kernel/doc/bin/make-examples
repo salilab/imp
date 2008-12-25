@@ -151,7 +151,7 @@ def main():
     # process the files to html
     convert_to_html(tree, 'doc/examples', 'kernel/doc/examples_html')
     write_doxygen(tree, 'kernel/doc/examples', 'kernel/doc/examples_html')
-    write_sconscript(tree, 'doc/examples/SConscript')
+    #write_sconscript(tree, 'doc/examples/SConscript')
     process_dox('kernel/doc/templates', 'kernel/doc/examples_html', 'kernel/doc')
 
 if __name__ == '__main__':
