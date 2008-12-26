@@ -36,7 +36,7 @@ Index: modules/core/tools/container_templates/restraint.cc
        ::evaluate(ss_, *it, accum);
    }
  
-@@ -60,12 +60,12 @@
+@@ -60,12 +60,13 @@
  
  ParticlesList GroupnamesRestraint::get_interacting_particles() const
  {
@@ -47,7 +47,8 @@ Index: modules/core/tools/container_templates/restraint.cc
             = pc_->classnames_begin();
           it != pc_->classnames_end(); ++it) {
 -      ret.push_back(internal::ContainerTraits<Classname>::create_set(*it));
-+      ret.push_back(IMP::internal::ContainerTraits<Classname>::create_set(*it));
++      ret.push_back(IMP::internal
++                    ::ContainerTraits<Classname>::create_set(*it));
      }
      return ret;
    } else {
@@ -1908,7 +1909,7 @@ Index: modules/core/src/PairsRestraint.cpp
        ::evaluate(ss_, *it, accum);
    }
  
-@@ -60,12 +60,12 @@
+@@ -60,12 +60,13 @@
  
  ParticlesList PairsRestraint::get_interacting_particles() const
  {
@@ -1919,7 +1920,8 @@ Index: modules/core/src/PairsRestraint.cpp
             = pc_->particle_pairs_begin();
           it != pc_->particle_pairs_end(); ++it) {
 -      ret.push_back(internal::ContainerTraits<ParticlePair>::create_set(*it));
-+      ret.push_back(IMP::internal::ContainerTraits<ParticlePair>::create_set(*it));
++      ret.push_back(IMP::internal
++                    ::ContainerTraits<ParticlePair>::create_set(*it));
      }
      return ret;
    } else {
@@ -1957,7 +1959,7 @@ Index: modules/core/src/SingletonsRestraint.cpp
        ::evaluate(ss_, *it, accum);
    }
  
-@@ -60,12 +60,12 @@
+@@ -60,12 +60,13 @@
  
  ParticlesList SingletonsRestraint::get_interacting_particles() const
  {
@@ -1968,7 +1970,8 @@ Index: modules/core/src/SingletonsRestraint.cpp
             = pc_->particles_begin();
           it != pc_->particles_end(); ++it) {
 -      ret.push_back(internal::ContainerTraits<Particle>::create_set(*it));
-+      ret.push_back(IMP::internal::ContainerTraits<Particle>::create_set(*it));
++      ret.push_back(IMP::internal
++                    ::ContainerTraits<Particle>::create_set(*it));
      }
      return ret;
    } else {
@@ -2583,8 +2586,8 @@ Index: kernel/include/Model.h
      ScoreState and Restraint object types.
 +
 +    \note Think carefully about using the iterators over the entire set
-+	of Particles or Restraints. Most operations should be done using
-+	a user-passed set of Particles or Restraints instead.
++    of Particles or Restraints. Most operations should be done using
++    a user-passed set of Particles or Restraints instead.
   */
  class IMPEXPORT Model: public Object
  {
@@ -2718,14 +2721,185 @@ Index: kernel/include/Particle.h
  
  public:
  
--
--
 +  //! Construct a particle and add it to the Model
 +  Particle(Model *m);
-+  
+ 
+-
    Particle();
    ~Particle();
  
+Index: kernel/doc/patch/move_base_classes_to_kernel.patch
+===================================================================
+--- kernel/doc/patch/move_base_classes_to_kernel.patch	(revision 1092)
++++ kernel/doc/patch/move_base_classes_to_kernel.patch	(working copy)
+@@ -36,7 +36,7 @@
+        ::evaluate(ss_, *it, accum);
+    }
+  
+-@@ -60,12 +60,12 @@
++@@ -60,12 +60,13 @@
+  
+  ParticlesList GroupnamesRestraint::get_interacting_particles() const
+  {
+@@ -47,7 +47,8 @@
+             = pc_->classnames_begin();
+           it != pc_->classnames_end(); ++it) {
+ -      ret.push_back(internal::ContainerTraits<Classname>::create_set(*it));
+-+      ret.push_back(IMP::internal::ContainerTraits<Classname>::create_set(*it));
+++      ret.push_back(IMP::internal
+++                    ::ContainerTraits<Classname>::create_set(*it));
+      }
+      return ret;
+    } else {
+@@ -1908,7 +1909,7 @@
+        ::evaluate(ss_, *it, accum);
+    }
+  
+-@@ -60,12 +60,12 @@
++@@ -60,12 +60,13 @@
+  
+  ParticlesList PairsRestraint::get_interacting_particles() const
+  {
+@@ -1919,7 +1920,8 @@
+             = pc_->particle_pairs_begin();
+           it != pc_->particle_pairs_end(); ++it) {
+ -      ret.push_back(internal::ContainerTraits<ParticlePair>::create_set(*it));
+-+      ret.push_back(IMP::internal::ContainerTraits<ParticlePair>::create_set(*it));
+++      ret.push_back(IMP::internal
+++                    ::ContainerTraits<ParticlePair>::create_set(*it));
+      }
+      return ret;
+    } else {
+@@ -1957,7 +1959,7 @@
+        ::evaluate(ss_, *it, accum);
+    }
+  
+-@@ -60,12 +60,12 @@
++@@ -60,12 +60,13 @@
+  
+  ParticlesList SingletonsRestraint::get_interacting_particles() const
+  {
+@@ -1968,7 +1970,8 @@
+             = pc_->particles_begin();
+           it != pc_->particles_end(); ++it) {
+ -      ret.push_back(internal::ContainerTraits<Particle>::create_set(*it));
+-+      ret.push_back(IMP::internal::ContainerTraits<Particle>::create_set(*it));
+++      ret.push_back(IMP::internal
+++                    ::ContainerTraits<Particle>::create_set(*it));
+      }
+      return ret;
+    } else {
+@@ -2583,8 +2586,8 @@
+      ScoreState and Restraint object types.
+ +
+ +    \note Think carefully about using the iterators over the entire set
+-+	of Particles or Restraints. Most operations should be done using
+-+	a user-passed set of Particles or Restraints instead.
+++    of Particles or Restraints. Most operations should be done using
+++    a user-passed set of Particles or Restraints instead.
+   */
+  class IMPEXPORT Model: public Object
+  {
+@@ -2718,97 +2721,10 @@
+  
+  public:
+  
+--
+--
+ +  //! Construct a particle and add it to the Model
+ +  Particle(Model *m);
+-+  
++ 
++-
+    Particle();
+    ~Particle();
+  
+-Index: kernel/src/Particle.cpp
+-===================================================================
+---- kernel/src/Particle.cpp	(revision 1087)
+-+++ kernel/src/Particle.cpp	(working copy)
+-@@ -11,6 +11,13 @@
+- 
+- IMP_BEGIN_NAMESPACE
+- 
+-+Particle::Particle(Model *m)
+-+{
+-+  is_active_ = true;
+-+  m->add_particle(this);
+-+}
+-+
+-+
+- Particle::Particle()
+- {
+-   is_active_ = true;
+-Index: kernel/src/SConscript
+-===================================================================
+---- kernel/src/SConscript	(revision 1087)
+-+++ kernel/src/SConscript	(working copy)
+-@@ -13,7 +13,9 @@
+-          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
+-          'random.cpp', 'Key.cpp', 'exception.cpp', 'ParticleRefiner.cpp',
+-          'UnaryFunction.cpp', 'PairScore.cpp',
+--         'SingletonScore.cpp', 'TripletScore.cpp'
+-+         'SingletonScore.cpp', 'TripletScore.cpp',
+-+         'SingletonModifier.cpp', 'PairModifier.cpp',
+-+         'SingletonContainer.cpp', 'PairContainer.cpp'
+-         ] + internal_files
+- 
+- # Build the shared library:
+-Index: kernel/pyext/IMP/test.py
+-===================================================================
+---- kernel/pyext/IMP/test.py	(revision 1087)
+-+++ kernel/pyext/IMP/test.py	(working copy)
+-@@ -34,8 +34,7 @@
+-     def create_point_particle(self, model, x, y, z):
+-         """Make a particle with optimizable x, y and z attributes, and
+-            add it to the model."""
+--        p = IMP.Particle()
+--        model.add_particle(p)
+-+        p = IMP.Particle(model)
+-         p.add_attribute(IMP.FloatKey("x"), x, True)
+-         p.add_attribute(IMP.FloatKey("y"), y, True)
+-         p.add_attribute(IMP.FloatKey("z"), z, True)
+-Index: kernel/pyext/IMP.i
+-===================================================================
+---- kernel/pyext/IMP.i	(revision 1087)
+-+++ kernel/pyext/IMP.i	(working copy)
+-@@ -119,6 +119,11 @@
+- %feature("director") IMP::TripletScore;
+- %feature("director") IMP::Optimizer;
+- %feature("director") IMP::ParticleRefiner;
+-+%feature("director") IMP::SingletonContainer;
+-+%feature("director") IMP::PairContainer;
+-+%feature("director") IMP::SingletonModifier;
+-+%feature("director") IMP::PairModifier;
+-+    
+- 
+- %include "IMP/base_types.h"
+- %include "Vector3D.i"
+-@@ -140,6 +145,11 @@
+- %include "Particle.i"
+- %include "IMP/DecoratorBase.h"
+- %include "IMP/Optimizer.h"
+-+%include "IMP/SingletonContainer.h"
+-+%include "IMP/PairContainer.h"
+-+%include "IMP/SingletonModifier.h"
+-+%include "IMP/PairModifier.h"
+-+    
+- 
+- namespace IMP {
+-   %template(ParticleIndex) Index<ParticleTag>;
+-@@ -161,6 +171,10 @@
+-   %template(Floats) ::std::vector<Float>;
+-   %template(Strings) ::std::vector<String>;
+-   %template(Ints) ::std::vector<Int>;
+-+  %template(SingletonContainers) ::std::vector<SingletonContainer*>;
+-+  %template(PairContainers) ::std::vector<PairContainer*>;
+-+  %template(SingletonContainerIndex) ::IMP::Index<SingletonContainer>;
+-+  %template(PairContainerIndex) ::IMP::Index<PairContainer>;
+-   /*%template(Vector3D) VectorD<3>;
+-   %template(random_vector_on_sphere) random_vector_on_sphere<3>;
+-   %template(random_vector_in_sphere) random_vector_in_sphere<3>;
 Index: kernel/src/Particle.cpp
 ===================================================================
 --- kernel/src/Particle.cpp	(revision 1087)
