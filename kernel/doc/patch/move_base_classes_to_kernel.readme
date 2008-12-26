@@ -1,0 +1,3 @@
+The patch moves the *Modifier and *Container base classes to the kernel along
+with other base classes. It also incorates the other minor not yet
+checked in patches as it was not practical to generate separate patches.
