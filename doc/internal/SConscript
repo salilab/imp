@@ -2,7 +2,7 @@ Import('env')
 
 import os.path
 
-dox = env.Doxygen("doxygen.conf")
+dox = env.Doxygen("html/index.html", "doxygen.conf")
 # Force the population of the build/include/ directory with generated headers
 env.Depends(dox, '#/build/include')
 
