@@ -188,6 +188,11 @@ def DoxyEmitter(source, target, env):
        "XML": ("NO", "xml", None),
     }
 
+    # Keep existing targets (don't overwrite with default doxygen outputs) if
+    # the doxygen.conf does not exist yet (e.g. if it is auto-generated)
+    if not os.path.exists(source[0].path):
+        return (target, source)
+
     data = DoxyfileParse(source[0].get_contents())
 
     targets = []
