@@ -8,13 +8,13 @@
  *
  */
 
-#include "IMP/core/GroupnameModifier.h"
+#include "IMP/GroupnameModifier.h"
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 GroupnameModifier::GroupnameModifier(){
 }
 
 GroupnameModifier::~GroupnameModifier(){}
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE

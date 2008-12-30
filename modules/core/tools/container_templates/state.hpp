@@ -12,19 +12,19 @@
 #ifndef IMPCORE_GROUPNAMES_SCORE_STATE_H
 #define IMPCORE_GROUPNAMES_SCORE_STATE_H
 
-#include "core_exports.h"
-#include "GroupnameContainer.h"
-#include "GroupnameModifier.h"
+#include "config.h"
 #include "internal/core_version_info.h"
-
+#include <IMP/GroupnameContainer.h>
+#include <IMP/GroupnameModifier.h>
 #include <IMP/ScoreState.h>
 
-IMPCORE_BEGIN_NAMESPACE
-
+IMP_BEGIN_NAMESPACE
 // for swig
 class GroupnameContainer;
 class GroupnameModifier;
+IMP_END_NAMESPACE
 
+IMPCORE_BEGIN_NAMESPACE
 //! Apply a GroupnameFunction to a GroupnameContainer to maintain an invariant
 /** \ingroup restraint
     An example showing a how to use such a score state to maintain a cover
@@ -37,9 +37,11 @@ class IMPCOREEXPORT GroupnamesScoreState : public ScoreState
   Pointer<GroupnameModifier> af_;
   Pointer<GroupnameContainer> c_;
 public:
-  /** \param[in] f The GroupnameModifier to apply to all elements
+  /** \param[in] c The Container to hold the elements to process
+      \param[in] before The GroupnameModifier to apply to all elements
        before evaluate.
-      \param[in] c The Container to hold the elements to process
+      \param[in] after The GroupnameModifier to apply to all elements
+       after evaluate.
    */
   GroupnamesScoreState(GroupnameContainer *c, GroupnameModifier *before,
                        GroupnameModifier *after);

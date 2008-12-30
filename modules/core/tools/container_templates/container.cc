@@ -8,10 +8,10 @@
  *
  */
 
-#include "IMP/core/GroupnameContainer.h"
+#include "IMP/GroupnameContainer.h"
 
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 GroupnameContainer::GroupnameContainer(){}
 
@@ -22,4 +22,4 @@ void GroupnameContainer::show(std::ostream &out) const {
 }
 
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE
