@@ -10,20 +10,20 @@
 #ifndef IMPCORE_GROUPNAME_CONTAINER_H
 #define IMPCORE_GROUPNAME_CONTAINER_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/IndexingIterator.h"
 #include "internal/container_helpers.h"
-#include <IMP/Particle.h>
-#include <IMP/base_types.h>
-#include <IMP/Pointer.h>
+#include "Particle.h"
+#include "base_types.h"
+#include "Pointer.h"
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 //! A shared container for classnames
 /** Stores a searchable shared collection of classnames.
     \ingroup restraints
  */
-class IMPCOREEXPORT GroupnameContainer : public RefCountedObject
+class IMPEXPORT GroupnameContainer : public RefCountedObject
 {
   struct Accessor {
     typedef Accessor This;
@@ -89,7 +89,7 @@ typedef std::vector<GroupnameContainer*> GroupnameContainers;
 //! The index to use when this container is store in another object
 typedef Index<GroupnameContainer> GroupnameContainerIndex;
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE
 
 #define IMP_GROUPNAME_CONTAINER(version_info)                      \
   bool get_contains_classname(Value p) const;                      \

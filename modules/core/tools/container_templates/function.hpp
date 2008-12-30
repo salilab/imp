@@ -7,28 +7,25 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_GROUPNAME_MODIFIER_H
-#define IMPCORE_GROUPNAME_MODIFIER_H
+#ifndef IMP_GROUPNAME_MODIFIER_H
+#define IMP_GROUPNAME_MODIFIER_H
 
-#include "core_exports.h"
-#include "internal/core_version_info.h"
+#include "config.h"
+#include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
 #include "GroupnameContainer.h"
 
-#include <IMP/base_types.h>
+#include "base_types.h"
 
 IMP_BEGIN_NAMESPACE
 // to keep swig happy
 class Particle;
-IMP_END_NAMESPACE
-
-IMPCORE_BEGIN_NAMESPACE
 
 //! A base class for modifiers of Classnames
 /** The primary function of such a class is to change
     the passed particles.
  */
-class IMPCOREEXPORT GroupnameModifier : public RefCountedObject
+class IMPEXPORT GroupnameModifier : public RefCountedObject
 {
 public:
   GroupnameModifier();
@@ -56,19 +53,19 @@ void apply(GroupnameModifier* f, It b, It e) {
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-IMPCOREEXPORT inline void apply(GroupnameModifier* f,
+IMPEXPORT inline void apply(GroupnameModifier* f,
                                Classnames &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-IMPCOREEXPORT inline void apply(GroupnameModifier* f,
+IMPEXPORT inline void apply(GroupnameModifier* f,
                                 GroupnameContainer *ps) {
   apply(f, ps->classnames_begin(), ps->classnames_end());
 }
 
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE
 
 //! Define the functions needed for a GroupnameModifier
 #define IMP_GROUPNAME_MODIFIER(version) \
@@ -76,4 +73,4 @@ VersionInfo get_version_info() const {return version;}\
 void show(std::ostream &out= std::cout) const;\
 void apply(ClassnameArguments);
 
-#endif  /* IMPCORE_GROUPNAME_MODIFIER_H */
+#endif  /* IMP_GROUPNAME_MODIFIER_H */

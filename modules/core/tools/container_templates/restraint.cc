@@ -10,7 +10,7 @@
  */
 
 #include "IMP/core/GroupnamesRestraint.h"
-#include "IMP/core/internal/container_helpers.h"
+#include <IMP/internal/container_helpers.h>
 #include "IMP/core/ListGroupnameContainer.h"
 
 #include <IMP/GroupnameScore.h>
@@ -50,7 +50,7 @@ Float GroupnamesRestraint::evaluate(DerivativeAccumulator *accum)
   for (GroupnameContainer::ClassnameIterator
          it= pc_->classnames_begin();
        it != pc_->classnames_end(); ++it) {
-    score += internal::ContainerTraits<Classname>
+    score += IMP::internal::ContainerTraits<Classname>
       ::evaluate(ss_, *it, accum);
   }
 
@@ -60,12 +60,13 @@ Float GroupnamesRestraint::evaluate(DerivativeAccumulator *accum)
 
 ParticlesList GroupnamesRestraint::get_interacting_particles() const
 {
-  if (!internal::ContainerTraits<Classname>::is_singleton) {
+  if (!IMP::internal::ContainerTraits<Classname>::is_singleton) {
     ParticlesList ret;
     for (GroupnameContainer::ClassnameIterator it
            = pc_->classnames_begin();
          it != pc_->classnames_end(); ++it) {
-      ret.push_back(internal::ContainerTraits<Classname>::create_set(*it));
+      ret.push_back(IMP::internal
+                    ::ContainerTraits<Classname>::create_set(*it));
     }
     return ret;
   } else {

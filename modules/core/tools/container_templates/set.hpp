@@ -11,9 +11,9 @@
 #ifndef IMPCORE_GROUPNAME_CONTAINER_SET_H
 #define IMPCORE_GROUPNAME_CONTAINER_SET_H
 
-#include "core_exports.h"
-#include "GroupnameContainer.h"
+#include "config.h"
 #include "internal/core_version_info.h"
+#include <IMP/GroupnameContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

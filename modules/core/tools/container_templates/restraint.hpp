@@ -12,13 +12,13 @@
 #ifndef IMPCORE_GROUPNAMES_RESTRAINT_H
 #define IMPCORE_GROUPNAMES_RESTRAINT_H
 
-#include "core_exports.h"
+#include "config.h"
 #include "internal/core_version_info.h"
-#include "GroupnameContainer.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/GroupnameScore.h>
+#include <IMP/GroupnameContainer.h>
 
 #include <iostream>
 
