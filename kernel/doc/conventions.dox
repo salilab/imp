@@ -59,7 +59,7 @@
     - member variables should \c end_in_an_underscore_
     - member methods that get a value should begin with \c set_
     - member methods which return a value should begin with \c get_
-    - all preprocessor symbols (things created by #define) must begin with \c IMP_
+    - all preprocessor symbols (things created by \#define) must begin with \c IMP_
 
     Do not use abbreviations in names.
 

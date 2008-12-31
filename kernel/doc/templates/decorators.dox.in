@@ -43,5 +43,8 @@ d.set_foo(1.0)
 \verbatim
 d.get_foo_key()
 \endverbatim
+
+See the \ref decorator example for how to implement a simple
+decorator.
  */
 

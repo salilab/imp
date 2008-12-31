@@ -1,0 +1,2 @@
+These C++ examples show how to implement instances of Restraints, ScoreStates, Decorators
+and other basic types that should not be implemented in python.

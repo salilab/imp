@@ -2,3 +2,4 @@ Our examples are divided into three categories:
 - \ref simple_examples "Simple examples", which demonstrate a single class or decorator
 - \ref using_experimental_data "Experimental examples" which demonstrate a variety of classes working together to go from experimental data to a structure
 - \ref fragments "Fragments" which are little bits of code that illustrate using a particular piece of \imp but can't be run on their own.
+- \ref implementation "Implementation Examples" which illustrate how to add new Restraints, Decorators etc. to \IMP.

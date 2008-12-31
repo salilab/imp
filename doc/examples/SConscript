@@ -11,7 +11,6 @@ for py in allpys:
     s= py.rstr()
     if s.find("fragments") == -1:
         example_py.append(s)
-print example_py
 e = env.Clone()
 
 # Custom builder to run unit tests:
