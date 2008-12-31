@@ -1,0 +1,3 @@
+improve the kernel documentation a bit. This undoubtedly conflicts with some
+uncommitted patches as it hits many files. Hopefully patch will figure
+them all out.
