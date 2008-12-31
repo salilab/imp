@@ -23,6 +23,18 @@ scoreing conformation.
         <font color="#000000">best_score</font><font color="#0000C0">=</font> <font color="#000000">score</font>
 <font color="#000000">IMP</font><font color="#0000C0">:</font><font color="#0000C0">:</font><font color="#000000">core</font><font color="#0000C0">:</font><font color="#0000C0">:</font><font color="#000000">read</font><font color="#0000C0">(</font><font color="#000000">fname</font><font color="#0000C0">,</font> <font color="#000000">m</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
 
+\section custom_hierarchy Custom Hierarchy
+
+This example shows how to create and use a custom hierarchy of particles.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#000000">tr</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HierarchyTraits</font><font color="#0000C0">(</font><font color="#004080">"my hierarchy"</font><font color="#0000C0">)</font>
+<font color="#000000">pd</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">parent_particle</font><font color="#0000C0">,</font> <font color="#000000">tr</font><font color="#0000C0">)</font>
+<font color="#C00000">for</font> <font color="#000000">p</font> <font color="#C00000">in</font> <font color="#000000">children_particles</font><font color="#0000C0">:</font>
+  <font color="#000000">cd</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">,</font> <font color="#000000">tr</font><font color="#0000C0">)</font>
+  <font color="#000000">pd</font><font color="#0000C0">.</font><font color="#000000">add_child</font><font color="#0000C0">(</font><font color="#000000">cd</font><font color="#0000C0">)</font>
+<font color="#000000">pd</font><font color="#0000C0">.</font><font color="#000000">show</font><font color="#0000C0">(</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
 \section excluded_volume Excluded Volume
 
 Setup an excluded volume restraint between a bunch of particles with radius.
