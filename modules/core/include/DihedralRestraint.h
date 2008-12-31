@@ -33,7 +33,7 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info)
 
-protected:
+private:
     Pointer<UnaryFunction> score_func_;
 };
 

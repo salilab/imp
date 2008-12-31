@@ -25,7 +25,7 @@ public:
    */
   NormalMover(const FloatKeys &vars,
               Float sigma, const Particles &ps=Particles());
-
+  /** */
   void set_sigma(Float sigma) {
     IMP_check(sigma > 0, "Sigma must be positive",
               ValueException);

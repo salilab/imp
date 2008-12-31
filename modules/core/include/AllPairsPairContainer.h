@@ -12,9 +12,10 @@
 #define IMPCORE_ALL_PAIRS_PAIR_CONTAINER_H
 
 #include "config.h"
-#include "PairContainer.h"
-#include "SingletonContainer.h"
+
 #include "internal/core_version_info.h"
+#include <IMP/core/PairContainer.h>
+#include <IMP/core/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -32,6 +33,7 @@ class IMPCOREEXPORT AllPairsPairContainer : public PairContainer
   Pointer<SingletonContainer> c_;
   mutable int a_, b_;
 public:
+  //! Get the individual particles from the passed SingletonContainer
   AllPairsPairContainer(SingletonContainer *c);
 
   virtual ~AllPairsPairContainer();

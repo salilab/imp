@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! This class maintains a list of non-bonded pairs of spheres between two sets
+//! This class is deprecated use CloseBipartitePairsScoreState instead.
 /** To iterate through the list of pairs use the NonbondedListScoreState::begin,
     NonbondedListScoreState::end functions.
 

@@ -26,6 +26,8 @@ IMPCORE_BEGIN_NAMESPACE
     the center particle, and any forces on it will be back-transformed onto the
     points. Note that the xyz attributes of the center particle are not
     themselves optimizable, since they are derived from the original points.
+
+    \deprecated Use a CentroidOfRefinedSingletonModifier instead.
  */
 class IMPCOREEXPORT GravityCenterScoreState: public ScoreState
 {

@@ -12,16 +12,19 @@
 #include "config.h"
 #include "internal/core_version_info.h"
 
-#include "SingletonModifier.h"
 #include "XYZDecorator.h"
 #include <IMP/ParticleRefiner.h>
 #include <IMP/Pointer.h>
+#include <IMP/core/SingletonModifier.h>
+
 
 IMPCORE_BEGIN_NAMESPACE
 
 //! Set the coordinates of the particle to be the centoid of the particles.
 /** An exception is thrown if there are no refined particles. The weight
     FloatKey can be FloatKey and then all the weights will be equal.
+
+    \relates CoverRefinedSingletonModifier
  */
 class IMPCOREEXPORT CentroidOfRefinedSingletonModifier:
 public SingletonModifier

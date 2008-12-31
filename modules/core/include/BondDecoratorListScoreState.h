@@ -23,7 +23,7 @@ class BondedDecorator;
 class BondDecoratorListScoreState;
 typedef Index<BondDecoratorListScoreState> BondDecoratorListIndex;
 
-//! Keep track of particles that are connected by BondDecorator bonds.
+//! This class is deprecated use a BondDecoratorPairContainer instead.
 /** We also may want to add lazy rescanning of bonds rather than doing
     it every update call and a faster lookup of bonds.
     \deprecated Use a BondDecoratorPairContainer instead

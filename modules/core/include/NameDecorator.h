@@ -26,7 +26,7 @@ class IMPCOREEXPORT NameDecorator: public DecoratorBase
   IMP_DECORATOR(NameDecorator, DecoratorBase,
                 return p->has_attribute(name_key_),
                 {p->add_attribute(name_key_, "No Name");});
-protected:
+private:
   static StringKey name_key_;
 
 public:

@@ -47,7 +47,14 @@ public:
   /* \note each static must be on a separate line because of MSVC bug C2487:
             see http://support.microsoft.com/kb/127900/
    */
-// figure out group command
+  /** @name Residue Types
+
+   The standard residue types are provided. New types can be added simply by
+   creating an instance of ResidueType("my_residue_name"). Note that methods
+   such as get_is_amino_acid() will not work with user-added types.
+   */
+  /*@{*/
+
   /** Unknown residue */
   static ResidueType UNK;
   /** glycein G*/
@@ -106,6 +113,7 @@ public:
   static ResidueType GUA;
   /** thymine */
   static ResidueType THY;
+  /*@}*/
 
   /** Return the ResidueType stored in the Particle */
   ResidueType get_type() const {

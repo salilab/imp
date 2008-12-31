@@ -18,6 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
 {
  public:
+  /** */
   QuadraticClosePairsFinder();
   ~QuadraticClosePairsFinder();
 
@@ -31,7 +32,7 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
                        Float distance,
                        FloatKey radius_key,
                        FilteredListPairContainer *out) const;
-
+  //! Return true if the two particles are closer than distance.
   bool get_are_close(Particle *a, Particle *b,
                      Float distance,
                      FloatKey radius_key) const;

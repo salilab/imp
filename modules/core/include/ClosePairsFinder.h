@@ -10,10 +10,10 @@
 
 #include "config.h"
 #include "XYZRDecorator.h"
-#include "SingletonContainer.h"
 #include "FilteredListPairContainer.h"
 
 #include <IMP/RefCountedObject.h>
+#include <IMP/core/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -51,7 +51,6 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
                        FloatKey radius_key,
                        FilteredListPairContainer *out) const =0;
 
-  //!
   /** \brief Compute all nearby pairs of particles with the first taken from
       pca and the second from pcb.
 

@@ -30,18 +30,17 @@ public:
    */
   BallMover(const FloatKeys &vars,
             Float radius, const Particles &ps);
-  //!
+  /** */
   void set_radius(Float radius) {
     IMP_check(radius > 0, "The radius must be positive",
               ValueException);
     radius_=radius;
   }
-  //!
+  /** */
   Float get_radius() const {
     return radius_;
   }
 protected:
-  /** \internal */
   void generate_move(float a);
 
 private:

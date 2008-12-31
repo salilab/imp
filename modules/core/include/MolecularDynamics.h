@@ -29,6 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MolecularDynamics : public Optimizer
 {
 public:
+  /** */
   MolecularDynamics();
   virtual ~MolecularDynamics();
 
@@ -58,7 +59,7 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*);
 
-protected:
+private:
   //! Perform a single dynamics step.
   virtual void step();
 

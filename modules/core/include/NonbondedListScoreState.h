@@ -30,7 +30,7 @@ class NBLAddIfNonbonded;
 
 typedef std::vector<BondedListScoreState*> BondedListScoreStates;
 
-//! An abstract base class for classes that maintain a list of non-bonded pairs.
+//! This class is deprecated and should not be used. Use ClosePairsScoreState.
 /** \note If no value for the radius key is specified, all radii are
     considered to be zero.
  */

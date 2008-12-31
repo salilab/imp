@@ -18,7 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! A decorator for a particle with x,y,z coordinates and a radius.
 /** \ingroup decorators
     A simple example illustrating some of the functionality.
-    \verbinclude xyzdecorator.py
+    \verbinclude xyzrdecorator.py
  */
 class IMPCOREEXPORT XYZRDecorator: public XYZDecorator
 {

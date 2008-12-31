@@ -21,7 +21,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Restrain all pairs of non-bonded particles
+//! This class is deprecated, use SingletonsRestraint or PairsRestraint instead.
 /** This restraint currently only works for bonds which have their
     length set explicitly. Eventually we should add a table for standard
     molecular bonds.

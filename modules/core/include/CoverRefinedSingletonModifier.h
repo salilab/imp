@@ -11,11 +11,12 @@
 #include "config.h"
 #include "internal/core_version_info.h"
 
-#include "SingletonModifier.h"
-#include "SingletonContainer.h"
 #include "XYZRDecorator.h"
 #include <IMP/ParticleRefiner.h>
 #include <IMP/Pointer.h>
+#include <IMP/core/SingletonModifier.h>
+#include <IMP/core/SingletonContainer.h>
+
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
  of the atoms of a protein by a sphere per residue.
  \verbinclude simple_examples/cover_particles.py
 
- \note The particle passed must be both an XYZRDecorator.
+ \note The particle passed must be an XYZRDecorator with the given radius key.
  \note This used the set_enclosing_sphere function and so produces
   better results if the CGAL library is found.
  */
@@ -39,6 +40,8 @@ class IMPCOREEXPORT CoverRefinedSingletonModifier: public SingletonModifier
   FloatKey rk_;
   Float slack_;
 public:
+  //! Create with the given refiner and radius key
+  /** Slack is the amount added to the radius.*/
   CoverRefinedSingletonModifier(ParticleRefiner *ref,
                                 FloatKey rk
                                 =XYZRDecorator::get_default_radius_key(),
@@ -47,6 +50,7 @@ public:
 
   IMP_SINGLETON_MODIFIER(internal::core_version_info);
 
+  //! Set how nmuch extra to add to the radius.
   void set_slack(Float slack) {
     slack_=slack;
   }

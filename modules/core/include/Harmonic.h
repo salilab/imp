@@ -21,6 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 class Harmonic : public UnaryFunction
 {
 public:
+  /** Create with the given mean and the spring constant k */
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
 
   virtual ~Harmonic() {}
@@ -45,18 +46,10 @@ public:
     k_ = k;
   }
 
-  //! Calculate harmonic score with respect to the given feature.
-  /** \param[in] feature Value of feature being tested.
-      \return Score
-   */
   virtual Float evaluate(Float feature) const {
     return evaluate_with_derivative(feature).first;
   }
 
-  //! Calculate harmonic score and derivative with respect to the given feature.
-  /** \param[in] feature Value of feature being tested.
-      \return Score
-   */
   virtual FloatPair evaluate_with_derivative(Float feature) const {
     Float e = (feature - mean_);
     Float deriv = k_ * e;

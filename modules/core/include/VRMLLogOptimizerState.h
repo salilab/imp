@@ -11,7 +11,7 @@
 
 #include "config.h"
 #include "internal/core_version_info.h"
-#include "SingletonContainer.h"
+#include <IMP/core/SingletonContainer.h>
 
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
@@ -71,6 +71,7 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
    */
   void set_color(int c, Vector3D v);
 
+  //! Set the container containing the particles
   void set_singleton_container(SingletonContainer *pc) {
     pc_=pc;
   }

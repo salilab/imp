@@ -36,6 +36,9 @@ class HierarchyDecorator;
 /** The hierarchy class is identified by the passed string so two
     hierarchies created with the same initialization string will be
     the same.
+
+    This example shows how to make and use a custom hierarchy:
+    \verbinclude custom_hierarchy.py
 */
 class IMPCOREEXPORT HierarchyTraits
 #ifndef SWIG
@@ -84,7 +87,9 @@ class IMPCOREEXPORT HierarchyTraits
   const HierarchyDecorator wrap(Particle* p) const;
 
 public:
+  //! Create a HierarchyTraits with the given name
   HierarchyTraits(std::string name);
+  //! Get the name used to identify this traits.
   std::string get_name() const {
     return get_prefix();
   }

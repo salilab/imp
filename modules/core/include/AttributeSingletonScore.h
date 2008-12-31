@@ -17,12 +17,15 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a function to an attribute.
-/** */
+/** This Score scores a particle by passing an attribute value directly
+    to a UnaryFunction.
+ */
 class IMPCOREEXPORT AttributeSingletonScore : public SingletonScore
 {
   Pointer<UnaryFunction> f_;
   FloatKey k_;
 public:
+  //! Apply function f to attribete k
   AttributeSingletonScore(UnaryFunction *f, FloatKey k);
   virtual ~AttributeSingletonScore(){}
   virtual Float evaluate(Particle *a,

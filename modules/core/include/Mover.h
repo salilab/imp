@@ -21,6 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 class MonteCarlo;
 class Mover;
+//! An index to get moves
 typedef Index<Mover> MoverIndex;
 
 
@@ -59,6 +60,7 @@ public:
     IMP_CHECK_OBJECT(this);
     return opt_.get();
   }
+  //! Return the index of this Mover
   MoverIndex get_index() const {
     IMP_assert(index_!= MoverIndex(), "Call set_optimizer first");
     return index_;
@@ -72,6 +74,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Mover);
 
+//! A collection of Mover objects
 typedef std::vector<Mover*> Movers;
 
 IMPCORE_END_NAMESPACE

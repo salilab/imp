@@ -47,7 +47,6 @@ files = [
          'Linear.h',
          'ListPairContainer.h',
          'ListSingletonContainer.h',
-         'Matrix3D.h',
          'MaxChangeScoreState.h',
          'MaximumChangeScoreState.h',
          'MaximumPairScoreRestraint.h',
