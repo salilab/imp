@@ -18,12 +18,20 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a function to the distance to a fixed point.
-/** */
+/** A particle is scored based on the distance between it and a constant
+    point as passed to a UnaryFunction. This is useful for anchoring
+    constraining particles within a sphere.
+
+    To restrain a set of particles store in SingletonContainer pc in a sphere
+    do the following:
+    \verbinclude fragments/restrain_in_sphere.py
+ */
 class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
 {
   Pointer<UnaryFunction> f_;
   Vector3D pt_;
 public:
+  /** */
   DistanceToSingletonScore(UnaryFunction *f, const Vector3D& pt);
   virtual ~DistanceToSingletonScore(){}
   virtual Float evaluate(Particle *a,

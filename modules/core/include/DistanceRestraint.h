@@ -37,8 +37,7 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info)
 
-protected:
-  //! scoring function for this restraint
+private:
   DistancePairScore dp_;
 };
 

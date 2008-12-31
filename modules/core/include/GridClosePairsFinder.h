@@ -18,6 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
 {
  public:
+  /** */
   GridClosePairsFinder();
   ~GridClosePairsFinder();
 

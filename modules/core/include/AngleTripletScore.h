@@ -22,6 +22,7 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore
 {
   Pointer<UnaryFunction> f_;
 public:
+  //! Score the angle (in radius) using f
   AngleTripletScore(UnaryFunction *f);
   virtual ~AngleTripletScore(){}
   virtual Float evaluate(Particle *a, Particle *b, Particle *c,

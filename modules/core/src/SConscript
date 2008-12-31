@@ -43,7 +43,6 @@ files = [
          'HierarchyDecorator.cpp',
          'ListPairContainer.cpp',
          'ListSingletonContainer.cpp',
-         'Matrix3D.cpp',
          'MaxChangeScoreState.cpp',
          'MaximumChangeScoreState.cpp',
          'MaximumPairScoreRestraint.cpp',

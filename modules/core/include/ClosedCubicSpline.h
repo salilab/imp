@@ -31,18 +31,8 @@ public:
 
   virtual ~ClosedCubicSpline() {}
 
-  //! Calculate score with respect to the given feature.
-  /** \param[in] feature Value of feature being tested.
-      \exception ValueException Feature is out of defined range.
-      \return Score
-   */
   virtual Float evaluate(Float feature) const;
 
-  //! Calculate score and derivative with respect to the given feature.
-  /** \param[in] feature Value of feature being tested.
-      \exception ValueException Feature is out of defined range.
-      \return Score
-   */
   virtual FloatPair evaluate_with_derivative(Float feature) const;
 
   void show(std::ostream &out=std::cout) const {
@@ -50,7 +40,7 @@ public:
         << minrange_ << " to " << maxrange_ << std::endl;
   }
 
-protected:
+private:
   std::vector<Float> values_;
   std::vector<Float> second_derivs_;
   Float minrange_;

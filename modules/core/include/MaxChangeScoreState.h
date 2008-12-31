@@ -19,7 +19,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Keeps track of the maximum change of a set of attributes.
+//! This class is deprecated, use a MaximumChangeScoreState instead.
 /** The score state maintains a list of particle and a list of
     float attribute keys and keeps track of the maximum amount
     any of these have changed since the last time reset was called.

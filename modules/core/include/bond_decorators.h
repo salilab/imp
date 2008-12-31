@@ -26,8 +26,6 @@ class BondedDecorator;
     A set of classes and functions for manipulating bonds.
  */
 
-class BondedDecorator;
-
 //! A decorator for wrapping a particle representing a molecular bond
 /**
    As with AtomDecorator, the types of bonds will eventually be run-time
@@ -90,6 +88,7 @@ class IMPCOREEXPORT BondedDecorator: public DecoratorBase
 
 public:
 
+  /** */
   unsigned int get_number_of_bonds() const {
     return graph_get_number_of_edges(get_particle(),
                                      internal::bond_graph_data_);
@@ -126,7 +125,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(BondedDecorator);
 
-
+//! A collection of BondDecorators
 typedef std::vector<BondDecorator> BondDecorators;
 
 inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const

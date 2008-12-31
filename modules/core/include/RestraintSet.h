@@ -23,6 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT RestraintSet : public Restraint
 {
 public:
+  //! Create an empty set
   RestraintSet(const std::string& name=std::string());
   ~RestraintSet();
 

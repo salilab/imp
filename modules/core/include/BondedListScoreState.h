@@ -20,7 +20,7 @@ class BondedListScoreState;
 //! Used to identify the BondedListScoreState in the NonbondedListScoreState
 typedef Index<BondedListScoreState> BondedListIndex;
 
-//! This abstract class maintains a list of bonded pairs.
+//! This class is deprecated, use a ParticlePairContainer of some sort instead.
 /** \deprecated Use a ParticlePairContainer of some sort instead.
 
  */

@@ -20,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Return a constant value.
 /** This restraint is mostly for testing, but can also be used to make
-    the total score look nicer..
+    the total score look nicer.
 
     \ingroup restraint
  */
@@ -28,6 +28,7 @@ class IMPCOREEXPORT ConstantRestraint : public Restraint
 {
   Float v_;
 public:
+  //! Add v to the total score.
   ConstantRestraint(Float v);
 
   IMP_RESTRAINT(internal::core_version_info)

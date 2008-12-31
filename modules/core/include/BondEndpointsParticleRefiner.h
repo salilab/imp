@@ -22,6 +22,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT BondEndpointsParticleRefiner : public ParticleRefiner
 {
 public:
+  //! no arguments
   BondEndpointsParticleRefiner();
 
   virtual ~BondEndpointsParticleRefiner() {}

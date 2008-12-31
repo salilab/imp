@@ -12,8 +12,8 @@
 #define IMPCORE_FILTERED_LIST_SINGLETON_CONTAINER_H
 
 #include "config.h"
-#include "SingletonContainer.h"
 #include "internal/core_version_info.h"
+#include <IMP/core/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

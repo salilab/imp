@@ -26,6 +26,7 @@ class IMPCOREEXPORT BondSingletonScore : public SingletonScore
 {
   Pointer<UnaryFunction> f_;
 public:
+  //! Use f to penalize deviations in length
   BondSingletonScore(UnaryFunction *f);
   virtual ~BondSingletonScore(){}
   virtual Float evaluate(Particle *a,

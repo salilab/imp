@@ -25,6 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT VelocityScalingOptimizerState : public OptimizerState
 {
  public:
+  /** */
   VelocityScalingOptimizerState(const Particles &pis, Float temperature,
                                 unsigned skip_steps);
   virtual ~VelocityScalingOptimizerState() {}
@@ -49,7 +50,7 @@ class IMPCOREEXPORT VelocityScalingOptimizerState : public OptimizerState
   //! Rescale the velocities now
   void rescale_velocities() const;
 
-protected:
+private:
   Particles pis_;
   Float temperature_;
   unsigned skip_steps_;

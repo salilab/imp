@@ -24,6 +24,7 @@ class IMPCOREEXPORT SphereDistancePairScore : public PairScore
   Pointer<UnaryFunction> f_;
   FloatKey radius_;
 public:
+  /** */
   SphereDistancePairScore(UnaryFunction *f,
                           FloatKey radius=FloatKey("radius"));
   virtual ~SphereDistancePairScore(){}

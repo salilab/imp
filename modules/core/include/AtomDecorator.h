@@ -40,7 +40,7 @@ class IMPCOREEXPORT AtomDecorator: public XYZDecorator
   IMP_DECORATOR(AtomDecorator, XYZDecorator,
                 return p->has_attribute(type_key_),
                 { p->add_attribute(type_key_, AT_UNKNOWN.get_index()); });
-protected:
+private:
   static IntKey element_key_;
   static FloatKey charge_key_;
   //static FloatKey vdw_radius_key_;

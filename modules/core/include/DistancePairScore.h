@@ -22,6 +22,7 @@ class IMPCOREEXPORT DistancePairScore : public PairScore
 {
   Pointer<UnaryFunction> f_;
 public:
+  /** */
   DistancePairScore(UnaryFunction *f);
   virtual ~DistancePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,

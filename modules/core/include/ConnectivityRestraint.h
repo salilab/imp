@@ -39,6 +39,7 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint
 {
   Pointer<PairScore> ps_;
 public:
+  //! Use the given PairScore
   ConnectivityRestraint(PairScore* ps);
 
   using Restraint::add_particle;

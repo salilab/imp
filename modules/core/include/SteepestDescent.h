@@ -25,6 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT SteepestDescent : public Optimizer
 {
 public:
+  /** */
   SteepestDescent();
   virtual ~SteepestDescent();
 

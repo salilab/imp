@@ -10,9 +10,10 @@
 #include "config.h"
 #include "MaximumChangeScoreState.h"
 #include "ClosePairsFinder.h"
-#include "SingletonContainer.h"
 #include "FilteredListPairContainer.h"
 #include <IMP/ScoreState.h>
+
+#include <IMP/core/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -87,15 +88,19 @@ public:
     return in_;
   }
 
-
+  //! Set the algorithm used.
   void set_close_pairs_finder(ClosePairsFinder *f);
 
+  //! Set the key used to find the radius.
+  /** It can be FloatKey() in which case all radii are 0.*/
   void set_radius_key(FloatKey rk);
 
+  //! Get the key used to find the radius.
   FloatKey get_radius_key() const {
     return rk_;
   }
 
+  //! Get the distance threshold.
   Float get_distance() const {
     return distance_;
   }

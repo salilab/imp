@@ -21,6 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 {
  public:
+  //! no arguments
   BoxSweepClosePairsFinder();
   ~BoxSweepClosePairsFinder();
 

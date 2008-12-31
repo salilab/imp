@@ -40,7 +40,7 @@ public:
   }
   //! Get the translation part
   const Vector3D& get_translation()const{return trans_;}
-  //  Matrix3D get_mat()const{return rot_;}
+
   void show(std::ostream& out = std::cout) const {
     rot_.show(out);
     out<<" || "<<trans_<<"\n";

@@ -21,7 +21,7 @@ class HierarchyTraits;
 
 //! Return the hierarchy children of a particle.
 /** \ingroup hierarchy
-    A simple example using it
+    A simple example using is
     \verbinclude simple_examples/cover_particles.py
 */
 class IMPCOREEXPORT ChildrenParticleRefiner : public ParticleRefiner
@@ -29,9 +29,9 @@ class IMPCOREEXPORT ChildrenParticleRefiner : public ParticleRefiner
 
   HierarchyTraits traits_;
 public:
-  //! create a refiner for a particular type of hierarchy
+  //! Create a refiner for a particular type of hierarchy
   /** In order to preserve backward compatiblity, the default traits is the
-      molecular hierarchy traits */
+      molecular hierarchy traits. */
   ChildrenParticleRefiner(HierarchyTraits tr
                           = MolecularHierarchyDecorator::get_traits());
 

@@ -31,6 +31,7 @@ typedef std::vector<Mover*> Movers;
 class IMPCOREEXPORT MonteCarlo: public Optimizer
 {
 public:
+  /** */
   MonteCarlo();
   ~MonteCarlo();
 

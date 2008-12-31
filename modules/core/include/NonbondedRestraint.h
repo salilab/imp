@@ -21,7 +21,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Apply a PairScore to all nonbonded pairs of particles
+//! This class is deprecated. Use a ParticlePairsRestraint instead
 /**    \deprecated Use a ParticlePairsRestraint instead with a
    ClosePairsScoreState.
 */

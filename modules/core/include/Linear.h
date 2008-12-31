@@ -19,6 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
 class Linear : public UnaryFunction
 {
 public:
+  //! Create with the given offset and slope.
   Linear(Float offset, Float slope) : slope_(slope), offset_(offset) {}
 
   virtual ~Linear() {}
@@ -31,10 +32,12 @@ public:
     return std::make_pair(evaluate(feature), slope_);
   }
 
+  /** */
   void set_slope(Float f) {
     slope_=f;
   }
 
+  /** */
   void set_offset(Float f) {
     offset_=f;
   }
