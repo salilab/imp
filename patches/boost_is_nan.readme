@@ -1,0 +1,2 @@
+Use the boost isnan function when available. Also, parenticize the calls to
+isnan as that is a macro on some platforms (and boost says we should).
