@@ -379,7 +379,8 @@ def copy_residue(r, model):
     #print "residue "+str(r)
     p=IMP.Particle()
     model.add_particle(p)
-    hp= IMP.core.MolecularHierarchyDecorator.create(p)
+    hp= IMP.core.MolecularHierarchyDecorator.create(p,
+                                  IMP.core.MolecularHierarchyDecorator.RESIDUE )
     rp= IMP.core.ResidueDecorator.create(p)
     rp.set_type(IMP.core.ResidueType(r.name))
     rp.set_index(r.index)
@@ -402,8 +403,7 @@ def copy_atom(a, model):
     ap.set_x(a.x)
     ap.set_y(a.y)
     ap.set_z(a.z)
-    hp= IMP.core.MolecularHierarchyDecorator.create(p)
-    hp.set_type(IMP.core.MolecularHierarchyDecorator.ATOM)
+    hp= IMP.core.MolecularHierarchyDecorator.create(p, IMP.core.MolecularHierarchyDecorator.ATOM)
     ap.set_type(IMP.core.AtomType(a.name))
     #IMP.core.NameDecorator.create(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
@@ -442,16 +442,16 @@ def read_pdb(name, model, special_patches=None):
                                         special_patches=special_patches)
     pp= IMP.Particle()
     model.add_particle(pp)
-    hpp= IMP.core.MolecularHierarchyDecorator.create(pp)
-    hpp.set_type(IMP.core.MolecularHierarchyDecorator.PROTEIN)
+    hpp= IMP.core.MolecularHierarchyDecorator.create(pp,
+                    IMP.core.MolecularHierarchyDecorator.PROTEIN)
     IMP.core.NameDecorator.create(pp).set_name(name)
     atoms={}
     for chain in pdb.chains:
         cp=IMP.Particle()
         model.add_particle(cp)
-        hcp= IMP.core.MolecularHierarchyDecorator.create(cp)
+        hcp= IMP.core.MolecularHierarchyDecorator.create(cp,
+                                   IMP.core.MolecularHierarchyDecorator.FRAGMENT)
         # We don't really know the type yet
-        hcp.set_type(IMP.core.MolecularHierarchyDecorator.FRAGMENT)
         hpp.add_child(hcp)
         IMP.core.NameDecorator.create(cp).set_name(chain.name)
         for residue in chain.residues:
