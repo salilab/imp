@@ -19,6 +19,7 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT VersionInfo
 {
 public:
+  //! Create a VersionInfo object with the given author and version.
   VersionInfo(std::string author, std::string version) : author_(author),
                                                          version_(version) {}
 

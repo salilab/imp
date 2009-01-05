@@ -17,10 +17,6 @@ IMP_BEGIN_NAMESPACE
 /** Currently this just makes the object noncopyable and adds heuristic checks
     to make sure the memory has not been freed.
 
-    \note Do not use NDEBUG to remove check_value_ as that changes the memory
-    layout and causes bad things to happen. It should get wrapped in some
-    sort of macro later.
-
     \note This has ref and unref methods to simplifity ObjectContainer.
     For Object, the reference count can be at most 1.
 
@@ -58,6 +54,9 @@ private:
   const Object& operator=(const Object &o) {return *this;}
 
   int count_;
+  /* Do not use NDEBUG to remove check_value_ as that changes the memory
+   layout and causes bad things to happen. It should get wrapped in some
+   sort of macro later. */
   double check_value_;
 };
 

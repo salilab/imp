@@ -13,8 +13,6 @@
 #include "internal/ObjectContainer.h"
 #include "macros.h"
 
-/** \internal
- */
 #define IMP_CONTAINER_CORE(protection, Ucname, lcname, Data, IndexType,\
 Container)                                  \
 protection:                                                          \
@@ -44,19 +42,21 @@ typedef Container::iterator Ucname##Iterator;                          \
 /** \short A const iterator through the objects.
 The value type is a pointer.*/                                     \
 typedef Container::const_iterator Ucname##ConstIterator;               \
+/** Begin iterating through container */                               \
 Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}  \
+/** End iterating through container */                               \
 Ucname##Iterator lcname##s_end() {return lcname##_vector_.end();}      \
+/** Begin iterating through container */                               \
 Ucname##ConstIterator lcname##s_begin() const {                        \
 return lcname##_vector_.begin();}                                    \
+/** End iterating through container */                               \
 Ucname##ConstIterator lcname##s_end() const {                          \
 return lcname##_vector_.end();}                                      \
 private:                                                                \
-/** \internal */                                                       \
 Container lcname##_vector_;                                            \
 protection:
 
-/** \internal
- */
+
 #define IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, IndexType, \
 Init_obj, Onchanged)                    \
 IndexType Class::add_##lcname(Data obj) {                             \
@@ -78,20 +78,23 @@ if (false) {obj=obj; index=index;}                                \
 }                                                                   \
 Onchanged;                                                          \
 }                                                                     \
-/** \short Clear the contents of the container */                     \
 void Class::clear_##lcname##s(){                                      \
 lcname##_vector_.clear();                                           \
 Onchanged;                                                          \
 }                                                                     \
 
 
-//! Use this to add a container of IMP objects
-/**
+//! Use this to add a list of objects to a class.
+/** The difference between a IMP_LIST and IMP_CONTAINER is that an
+ IMP_CONTAINER uses Index objects to return access to the objects and this
+ container just uses ints.
+
  Such a container adds public methods add_foo, get_foo, get_number_of_foo
  and a private type foo_iterator, with methods foo_begin, foo_end.
- \param[in] protection The level of protection for the container.
- \param[in] Ucname The name of the type in uppercase
- \param[in] lcname The name of the type in lower case
+ \param[in] protection The level of protection for the container
+ (public, private).
+ \param[in] Ucname The name of the type of container in uppercase.
+ \param[in] lcname The name of the type of container in lower case.
  \param[in] Data The type of the data to store.
 
  \note the type Ucnames must be declared and be a vector of
@@ -99,6 +102,8 @@ Onchanged;                                                          \
  */
 #define IMP_LIST(protection, Ucname, lcname, Data)                      \
 protection:                                                           \
+/** @name Methods acting on a contained list*/                        \
+/*@{*/                                                                \
 /** \short Remove any occurences of d from the container */           \
 void erase_##lcname(Data d);                                          \
 /** \short Get a container of all the objects.
@@ -111,13 +116,21 @@ clear_##lcname##s();                                                \
 add_##lcname##s(ps);                                                \
 }                                                                     \
 IMP_CONTAINER_CORE(protection, Ucname, lcname, Data, unsigned int,    \
-IMP::internal::Vector<Data>)
+IMP::internal::Vector<Data>)                                          \
+/*@}*/                                                                \
 
 
 
-//! Use this to add a container of IMP objects
+
+//! This should go in a .cpp file for the respective class.
 /**
  This code should go in a .cpp file. One macro for each IMP_CONTAINER.
+ \param[in] The name of the class containing this container.
+ \param[in] protection The level of protection for the container
+ (public, private).
+ \param[in] Ucname The name of the type of container in uppercase.
+ \param[in] lcname The name of the type of container in lower case.
+ \param[in] Data The type of the data to store.
  \param[in] init Code to modify the passed in object. The object is obj
  its index index.
  \param[in] OnChanged Code to get executed when the container changes.
@@ -125,7 +138,6 @@ IMP::internal::Vector<Data>)
 #define IMP_LIST_IMPL(Class, Ucname, lcname, Data, init, OnChanged)     \
 IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, unsigned int,    \
 init, OnChanged)                              \
-/** \short Remove any occurences of d from the container */           \
 void Class::erase_##lcname(Data d) {                                  \
 for (Ucname##Iterator it= lcname##s_begin();                        \
 it != lcname##s_end(); ++it) {                                 \
@@ -152,15 +164,18 @@ OnChanged;                                                          \
  \note these containers are always public
  */
 #define IMP_CONTAINER(Ucname, lcname, IndexType)            \
-public:                                                   \
-void remove_##lcname(IndexType i) ;                       \
 private:                                                                \
-/** \internal
-This is an implementation detail.*/                                 \
+/* This is an implementation detail.*/                                 \
 typedef IMP::internal::ObjectContainer<Ucname, IndexType>               \
 Ucname##Container;                                                      \
+public:                                                   \
+/** @name Methods acting on a contained set of Objects*/               \
+/*@{*/                                                                \
+void remove_##lcname(IndexType i) ;                       \
 IMP_CONTAINER_CORE(public, Ucname, lcname, Ucname*, IndexType,          \
-Ucname##Container)
+Ucname##Container)                                                      \
+/*@}*/                                                               \
+
 
 
 

@@ -11,11 +11,14 @@
 
 #include "config.h"
 #include "base_types.h"
+#include "utility.h"
 #include <cmath>
 
 IMP_BEGIN_NAMESPACE
 
 //! Class for adding derivatives from restraints to the model.
+/** This class was created so that restraints can be weighted using
+    a RestraintSet and that the derivatives would be scaled appropriately */
 class IMPEXPORT DerivativeAccumulator
 {
 public:
@@ -32,7 +35,7 @@ public:
    */
   Float operator()(const Float value) const {
     // x!=x when x==NaN (can only use std::isnan on gcc C99 systems)
-    IMP_assert(value == value, "Can't set derivative to NaN.");
+    IMP_assert(!is_nan(value), "Can't set derivative to NaN.");
     return value * weight_;
   }
 

@@ -363,6 +363,16 @@ struct SpacesIO
   SpacesIO(const VectorD<D> &v): v_(v){}
 };
 
+//! Use this before outputing to delimited vector entries with a space
+/** std::cout << spaces_io(v);
+    produces "(1.0 2.0 3.0)"
+
+ */
+template <unsigned int D>
+SpacesIO<D> spaces_io(const VectorD<D> &v) {
+  return SpacesIO<D>(v);
+}
+
 template <unsigned int D>
 inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
 {
@@ -376,6 +386,16 @@ struct CommasIO
   const VectorD<D> &v_;
   CommasIO(const VectorD<D> &v): v_(v){}
 };
+
+//! Use this before outputing to delimited vector entries with a comma
+/** std::cout << commas_io(v);
+ produces "(1.0, 2.0, 3.0)"
+
+ */
+template <unsigned int D>
+CommasIO<D> commas_io(const VectorD<D> &v) {
+  return CommasIO<D>(v);
+}
 
 template <unsigned int D>
 inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)

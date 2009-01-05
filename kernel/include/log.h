@@ -9,6 +9,7 @@
 #define IMP_LOG_H
 
 #include "config.h"
+#include "internal/log_internal.h"
 
 #include <iostream>
 #include <fstream>
@@ -37,71 +38,12 @@ enum LogLevel {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
  */
 enum LogTarget {COUT, FILE, CERR};
 
-class IMPEXPORT Log
-{
-public:
-  //! Get a reference to a singleton Log object.
-  static Log& get() {
-    if (!logpt_) {
-      logpt_ = new Log();
-    }
-    return *logpt_;
-  }
-
-  LogLevel get_level() {
-    return level_;
-  }
-  void set_level(LogLevel l) {
-    level_=l;
-  }
-
-  std::ostream &get_stream(LogLevel l) {
-    if (is_output(l)) {
-      if (target_== COUT) {
-        return std::cout;
-      } else if (target_== CERR) {
-        return std::cerr;
-      } else {
-        return fstream_;
-      }
-    } else return std::cout;
-  }
-
-  bool is_output(LogLevel l) {
-    return l <= get_level();
-  }
-
-  LogTarget get_target() {
-    return target_;
-  }
-  void set_target(LogTarget k) {
-    target_=k;
-  }
-  void set_filename(std::string k) {
-    fstream_.open(k.c_str());
-    if (!fstream_) {
-      std::cerr << "Error opening log file " << k << std::endl;
-    }
-  }
-
-private:
-
-  Log()  :level_(SILENT), target_(COUT) {}
-  Log(const Log&) {}
-
-  LogLevel level_;
-  LogTarget target_;
-  std::ofstream fstream_;
-  static Log *logpt_;
-};
-
-
 //! Set the current log level for IMP
 /** \ingroup log
  */
 IMPEXPORT inline void set_log_level(LogLevel l)
 {
-  Log::get().set_level(l);
+  internal::Log::get().set_level(l);
 }
 
 //! Set the target of logs
@@ -109,7 +51,7 @@ IMPEXPORT inline void set_log_level(LogLevel l)
  */
 IMPEXPORT inline void set_log_target(LogTarget l)
 {
-  Log::get().set_target(l);
+  internal::Log::get().set_target(l);
 }
 
 //! Get the current log level for IMP
@@ -117,7 +59,7 @@ IMPEXPORT inline void set_log_target(LogTarget l)
  */
 IMPEXPORT inline LogLevel get_log_level()
 {
-  return Log::get().get_level();
+  return LogLevel(internal::Log::get().get_level());
 }
 
 //! Get the target of logs
@@ -125,7 +67,7 @@ IMPEXPORT inline LogLevel get_log_level()
  */
 IMPEXPORT inline LogTarget get_log_target()
 {
-  return Log::get().get_target();
+  return LogTarget(internal::Log::get().get_target());
 }
 
 //! Set the file name for the IMP log; must be called if a file is to be used.
@@ -133,7 +75,7 @@ IMPEXPORT inline LogTarget get_log_target()
  */
 IMPEXPORT inline void set_log_file(std::string l)
 {
-  Log::get().set_filename(l);
+  internal::Log::get().set_filename(l);
 }
 
 //! Determine whether a given log level should be output.
@@ -142,7 +84,7 @@ IMPEXPORT inline void set_log_file(std::string l)
  */
 IMPEXPORT inline bool is_log_output(LogLevel l)
 {
-  return Log::get().is_output(l);
+  return internal::Log::get().is_output(l);
 }
 
 
@@ -152,7 +94,7 @@ IMPEXPORT inline bool is_log_output(LogLevel l)
  */
 IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
 {
-  return Log::get().get_stream(l);
+  return internal::Log::get().get_stream(l);
 }
 
 

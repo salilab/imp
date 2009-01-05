@@ -76,6 +76,7 @@ public:
  */
 struct IMPEXPORT ErrorException: public Exception
 {
+  //! Create exception with an error message
   ErrorException(const char *msg="Fatal error"): Exception(msg){}
   ~ErrorException() throw();
 };
@@ -86,6 +87,7 @@ struct IMPEXPORT ErrorException: public Exception
 class IMPEXPORT InvalidStateException : public Exception
 {
 public:
+  //! Create exception with an error message
   InvalidStateException(const char *t): Exception(t){}
   ~InvalidStateException() throw();
 };
@@ -96,6 +98,7 @@ public:
 class IMPEXPORT InactiveParticleException : public Exception
 {
 public:
+  //! Create exception with an error message
   InactiveParticleException(const char *msg
                             ="Attempting to use inactive particle"):
     Exception(msg){}
@@ -108,6 +111,7 @@ public:
 class IMPEXPORT IndexException: public Exception
 {
 public:
+  //! Create exception with an error message
   IndexException(const char *t): Exception(t){}
   ~IndexException() throw();
 };
@@ -118,6 +122,7 @@ public:
 class IMPEXPORT ValueException: public Exception
 {
 public:
+  //! Create exception with an error message
   ValueException(const char *t): Exception(t){}
   ~ValueException() throw();
 };
