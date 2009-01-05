@@ -28,6 +28,10 @@ typedef std::vector<ScoreState*> ScoreStates;
 //! Class for storing model, its restraints, and particles.
 /** The Model maintains a standard IMP container for each of Particle,
     ScoreState and Restraint object types.
+
+    \note Think carefully about using the iterators over the entire set
+          of Particles or Restraints. Most operations should be done using
+          a user-passed set of Particles or Restraints instead.
  */
 class IMPEXPORT Model: public Object
 {
@@ -35,9 +39,10 @@ private:
   friend class Restraint;
   unsigned int iteration_;
 public:
-  //!
+  /** Construct an empty model */
   Model();
-  //!
+  /** Particles, ScoreStates and Restraints are ref-counted so they
+      will be deleted if no other Pointers to them are held. */
   ~Model();
 
   IMP_CONTAINER(Particle, particle, ParticleIndex);
