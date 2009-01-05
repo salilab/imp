@@ -196,6 +196,7 @@ protected:
     return (*fi.p_)->get_derivative(*fi.fk_);
   }
 
+  //! A collection of indexes
   typedef std::vector<FloatIndex> FloatIndexes;
 
 private:

@@ -49,11 +49,12 @@ public:
     out << "ParticleRefiner base" << std::endl;
   };
 
+  //! Get information about the author and version
   virtual IMP::VersionInfo get_version_info() const =0;
 
   IMP_REF_COUNTED_DESTRUCTOR(ParticleRefiner)
 };
-
+//! a collection of ParticleRefiner objects
 typedef std::vector<ParticleRefiner*> ParticleRefiners;
 typedef Index<ParticleRefiner> ParticleRefinerIndex;
 

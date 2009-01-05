@@ -25,6 +25,8 @@
 
 IMP_BEGIN_NAMESPACE
 
+//! Sets of Particles
+/** This is primarily used for representing lists of interacting particles */
 typedef std::vector<Particles> ParticlesList;
 
 class Model;
@@ -51,6 +53,8 @@ class Model;
     without ever having been added to a model as this is an easy mistake
     to make. To disable this warning for a particular restraint, call
     set_was_owned(true).
+
+    See the \ref restraint example for how to implement a simple restraint.
  */
 class IMPEXPORT Restraint : public RefCountedObject
 {

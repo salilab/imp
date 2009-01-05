@@ -6,11 +6,20 @@
  */
 
 #include "IMP/log.h"
+#include "IMP/internal/log_internal.h"
 #include "IMP/exception.h"
 
-IMP_BEGIN_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 /* Initialize singleton pointer to NULL */
 Log* Log::logpt_ = NULL;
 
-IMP_END_NAMESPACE
+Log &Log::get() {
+  if (!logpt_) {
+    logpt_ = new Log(TERSE, COUT);
+  }
+  return *logpt_;
+}
+
+
+IMP_END_INTERNAL_NAMESPACE

@@ -1,7 +1,8 @@
 files = ['AttributeTable.h', 'Vector.h',
          'ref_counting.h', 'ObjectContainer.h',
          'kernel_version_info.h', 'constants.h', 'units.h',
-         'utility.h', 'Unit.h', 'ExponentialNumber.h', 'key_helpers.h']
+         'utility.h', 'Unit.h', 'ExponentialNumber.h', 'key_helpers.h',
+         'log_internal.h']
 
 files = [File(f) for f in files]
 Return('files')
