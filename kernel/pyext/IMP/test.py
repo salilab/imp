@@ -34,8 +34,7 @@ class TestCase(unittest.TestCase):
     def create_point_particle(self, model, x, y, z):
         """Make a particle with optimizable x, y and z attributes, and
            add it to the model."""
-        p = IMP.Particle()
-        model.add_particle(p)
+        p = IMP.Particle(model)
         p.add_attribute(IMP.FloatKey("x"), x, True)
         p.add_attribute(IMP.FloatKey("y"), y, True)
         p.add_attribute(IMP.FloatKey("z"), z, True)

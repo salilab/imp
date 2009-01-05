@@ -1,2 +1,0 @@
-add a constructor to Particle to take a Model and change a few tests to use this
-constructor
