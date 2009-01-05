@@ -34,8 +34,7 @@ class RefCountTests(IMP.test.TestCase):
         self._check_number(0)
 
         m= IMP.Model()
-        p= IMP.Particle()
-        m.add_particle(p)
+        p= IMP.Particle(m)
         self._check_number(1)
 
         p=1
@@ -47,8 +46,8 @@ class RefCountTests(IMP.test.TestCase):
         """Check that ref counting works with removing particles"""
         self._check_number(0)
         m= IMP.Model()
-        p= IMP.Particle()
-        pi= m.add_particle(p)
+        p= IMP.Particle(m)
+        pi= p.get_index()
         self._check_number(1)
         m.remove_particle(pi)
         self._check_number(1)
@@ -86,10 +85,10 @@ class RefCountTests(IMP.test.TestCase):
         self._check_number(0)
         m= IMP.Model()
         print 7
-        p= IMP.Particle()
+        p= IMP.Particle(m)
         print p
         print 8
-        pi= m.add_particle(p)
+        pi= p.get_index()
         print 9
         p=None
         self._check_number(1)
@@ -141,8 +140,8 @@ class RefCountTests(IMP.test.TestCase):
         """Check that removed particles are skipped"""
         print "skipped"
         m= IMP.Model()
-        p= IMP.Particle()
-        pi= m.add_particle(p)
+        p= IMP.Particle(m)
+        pi= p.get_index()
         ps= m.get_particles()
         self.assertEqual(len(ps), 1, "Should only be 1 particle")
         m.remove_particle(pi)

@@ -11,6 +11,13 @@
 
 IMP_BEGIN_NAMESPACE
 
+Particle::Particle(Model *m)
+{
+  is_active_ = true;
+  m->add_particle(this);
+}
+
+
 Particle::Particle()
 {
   is_active_ = true;
