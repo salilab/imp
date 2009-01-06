@@ -136,9 +136,9 @@ def main():
     #print cxxtree
     # write doxygen file
     # process the files to html
-    convert_to_html(tree, 'doc/examples', 'kernel/doc/examples_html')
-    write_doxygen(tree, 'kernel/doc/examples', 'kernel/doc/examples_html')
-    process_dox('kernel/doc/templates', 'kernel/doc/examples_html', 'kernel/doc')
+    convert_to_html(tree, 'doc/examples', 'kernel/doc/inputs')
+    write_doxygen(tree, 'kernel/doc/inputs/examples', 'kernel/doc/inputs')
+    process_dox('kernel/doc/inputs', 'kernel/doc/inputs', 'kernel/doc/inputs')
 
 if __name__ == '__main__':
     main()
