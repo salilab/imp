@@ -35,3 +35,5 @@ e.AlwaysBuild("examples.passed")
 docdir = os.path.join(env['docdir'], 'examples')
 e.Install(docdir, example_py)
 e.Alias('docinstall', docdir)
+
+Return('test')
