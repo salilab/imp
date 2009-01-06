@@ -154,8 +154,8 @@ public:
   }
 
   }
-  const std::map<Particle *, unsigned int> & get_data() const {
-    return data;
+  const std::map<Particle *, unsigned int> * get_data() const {
+    return &data;
   }
   /*
   void move2state(DiscreteSampler *ds) const {
