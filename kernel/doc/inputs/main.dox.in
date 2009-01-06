@@ -3,22 +3,25 @@
 
  Welcome to the \imp documentation. If you are not familiar with \imp, you
  should read our \ref introduction "Introduction to IMP". For help installing
- \imp read the \wiki{installation, Installation Instructions}. 
+ \imp read the \wiki{installation, Installation Instructions}.
 
  The important documentation can be found in:
- - \wiki{FrontPage,IMP wiki}
- - \ref Examples "Examples"
  - \ref api "API Documentation"
+ - \ref Examples "Examples"
+ - \wiki{FrontPage,IMP wiki}
  - \wiki{FAQ, FAQ}
 
- If you encounter a bug, please report it in the
+ If you encounter a bug or would like a new feature, please report it in the
  <a href="https://salilab.org/imp/bugs/">Bug Tracker</a>.
 
- Information for developers and prospective developers can be found on the
- \ref developers "Developers page".
+ Information for developers and prospective contributes to \imp can be found
+ on the \ref developers "Developers page".
 
  */
  
 /**
-  \namespace IMP \brief The IMP kernel.
+  \namespace IMP \brief The IMP library.
+
+  All kernel and module classes and functions should be in this namespace or
+  a sub-namespace.
  */
