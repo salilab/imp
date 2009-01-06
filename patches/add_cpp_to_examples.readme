@@ -1,0 +1,1 @@
+make sure the .cpp example files are found by doxygen. if this patch is broken, just add *.cpp to the example glob.
