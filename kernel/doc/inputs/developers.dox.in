@@ -13,10 +13,8 @@
     - <a href="https://salilab.org/internal/imp/tests.html"><b>Daily build status</b></a>
     - \ref devguide "Developer guide"
     - \ilink{bugs}{Bug tracker}
-    - <a href="https://salilab.org/mailman/listinfo/imp-dev"><b>imp-dev</b></a>
-      email list. All developers should monitor this list. The discussions are
-      \ilink{archives/imp-dev}{archived}
-    - <a href="https://salilab.org/mailman/listinfo/imp-commits">
-      <b>imp-commits</b></a> is an email list which received notifications
+    - \impdev email list. All developers should monitor this list. The
+      discussions are \ilink{archives/imp-dev}{archived}
+    - \impcommit is an email list which received notifications
       of all changes made to the \imp svn.
 */

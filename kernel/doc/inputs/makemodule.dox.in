@@ -1,3 +1,42 @@
 /** \page make_module Making a module
 
+    This page describes how to create a new module in your local copy
+    of \imp. Creating such a module is the easiest way to get started
+    developing code for \imp.
+
+    To get started, first pick the name of your module. Here we will 
+    use \string{my_module}. The name should only contain letters, numbers and 
+    underscores.
+
+    Then do
+    \command{./kernel/doc/bin/make-module my_module}
+    to create the module.
+
+    You can use your new module in a variety of ways:
+    - add C++ code to your module by putting \string{.h} files
+      in \string{modules/my_module/include} and \string{.cpp} files in
+      \string{modules/my_module/src}. In order to use use your new functions and
+      classes in python, you must add a line 
+      \string{%include "IMP/my_module/myheader.h"} near the end of the file
+      \string{modules/my_module/pyext/my_module.i}.
+    - write C++ programs using IMP by creating \string{.cpp} files in
+      \string{modules/my_module/bin}. Each \string{.cpp} file placed there
+      is built into a separate executable.
+    - add python code to your library by putting a \string{.py} file in
+      \string{modules/my_module/pyext/my_module/}
+    - add python code to your library by by adding
+      \string{%pythoncode} blocks to \string{modules/my_module/pyext/my_module.i}.
+    - add test code to your library by putting \string{.py} files in
+      \string{modules/my_module/test} or a subdirectory.
+
+    Examples of all types of usage are included in the newly created
+    module.
+
+    If you feel your module is of interest to other \imp users and 
+    developers, post to the \impdev list to discuss adding
+    it to the repository.
+
+    If you document your code, running \command{scons doc} will build
+    documentation of all of the modules including yours. To access the
+    documentation, open \string{doc/html/index.html}.
 */

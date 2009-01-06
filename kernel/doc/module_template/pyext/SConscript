@@ -3,3 +3,8 @@ Import('env')
 e = env.IMPPythonExtensionEnvironment()
 
 e.IMPPythonExtension('modulename.i')
+
+files = (Glob('modulename/*.py'))
+
+# Install the Python files:
+env.IMPPython(files)

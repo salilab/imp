@@ -11,11 +11,9 @@ class GenericTest(IMP.test.TestCase):
     def test_myrestraint(self):
         """Checking MyRestraint"""
         m = IMP.Model()
-        p0= IMP.Particle()
-        m.add_particle(p0)
+        p0= IMP.Particle(m)
         d0= IMP.core.XYZDecorator.create(p0)
-        p1= IMP.Particle()
-        m.add_particle(p1)
+        p1= IMP.Particle(m)
         d1= IMP.core.XYZDecorator.create(p1)
         dps= IMP.core.DistancePairScore(IMP.core.Linear(0,1))
         r= IMP.modulename.MyRestraint(dps, p0, p1)
