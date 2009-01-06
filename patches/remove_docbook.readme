@@ -1,2 +1,6 @@
 remove the docbook docs and move things around to make the documentation make
 more sense. All the docbook content has been moved to doxygen.
+
+The updated patch adds a new alias needed to make the documentation work and
+fixes some issues with the dependencies. doc is now an alias and doc/examples
+is run as part of test.
