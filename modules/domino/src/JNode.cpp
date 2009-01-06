@@ -144,8 +144,8 @@ void JNode::get_intersection(const JNode &other, Particles &in) const
 void JNode::move2state(const CombState &cs) const
 {
   for (std::map<Particle *,
-                unsigned int>::const_iterator it = cs.get_data().begin();
-       it != cs.get_data().end(); it++) {
+                unsigned int>::const_iterator it = cs.get_data()->begin();
+       it != cs.get_data()->end(); it++) {
     Particle *p = it->first;
     for (unsigned int i = 0; i < ds_->get_number_of_attributes(p); i++) {
       p->set_value(ds_->get_attribute_key(p, i),
