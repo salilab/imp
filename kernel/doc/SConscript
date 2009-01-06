@@ -2,9 +2,9 @@ Import('env')
 
 import os.path
 
-dox = env.Doxygen("html/index.html", "doxygen.conf")
+dox = env.Doxygen("#/doc/html/index.html", "doxygen/doxygen.conf")
 # Force the population of the build/include/ directory with generated headers
-env.Depends(dox, '#/build/include')
+env.Depends(dox, ['#/build/include', 'doxygen/layout.xml'])
 
 docdir = os.path.join(env['docdir'], 'doxygen')
 
@@ -28,15 +28,10 @@ def generate_doxygen(target, source, env):
             outfile.write(line)
     infile.close()
     outfile.close()
-
-def generate_inputs(env):
-    env.Exec("./kernel/doc/bin/make-examples")
-env.Append(BUILDERS= {'GenerateInputs': Builder(action=generate_inputes)})
-gi= env.GenerateInputs()
-env.AlwaysBuild(gi)
-env.Depends(dox, gi)
+    env.Execute("./kernel/doc/bin/make-examples")
 
 env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
-env.GenerateDoxygen("doxygen.conf", "doxygen.conf.in")
+gd=env.GenerateDoxygen("doxygen/doxygen.conf", "doxygen/doxygen.conf.in")
+env.Depends(gd, Glob("inputs/*.in"))
 
 Return('dox')

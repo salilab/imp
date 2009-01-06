@@ -6,8 +6,9 @@
   
   \section intro Introduction
   
-    This is the API reference for \imp, an Integrative Modeling Platform. If you are
-    new to \imp, you should familiarize yourself with the following pages first:
+    This is the API reference for \imp, an Integrative Modeling Platform.
+    If you are new to \imp, you should familiarize yourself with the following
+    pages first:
     - \ref decorators "Using Decorators"
     - \ref log "Logging Support"
     - \ref assert "Error Reporting Facilities"

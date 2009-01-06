@@ -9,7 +9,7 @@
       <tab type="namespacemembers" visible="yes" title=""/>
     </tab>
     <tab type="hierarchy" visible="yes" title=""/>
-    <tab type="classindex" visible="no" title=""/> 
+    <tab type="classindex" visible="yes" title=""/> 
     <tab type="classes" visible="no" title="">
       <tab type="classes" visible="no" title=""/>
       <tab type="classmembers" visible="no" title=""/>
