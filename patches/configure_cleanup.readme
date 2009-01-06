@@ -13,10 +13,11 @@ Fifth, it make the python libraries only link against the corresponding C++ libr
 Finally, the patch adds the external lib search paths to the linked library rpaths on linux (and removes them from imppy.sh on all patforms). There are several reasons to do this
 - first the LD_LIBRARY_PATH used in the imppy.sh overrides the internal library search paths for other peoples libraries and can result in linking problems if there are multiple libraries on your system with the same name. For example, on my mac there are a large number of libJPEG.dylibs. Adding /opt/local/lib to the LD_LIBRARY_PATH causes the one located there to be used in preference to any found on the internal search paths of the platform SDK libraries and results in link failures.
 - second, it makes it more likely that IMP is linked against the same libraries at run time and compile time since the two sets of search paths are the same. Various of us have run into nasty problems with this.
-- on macos the full paths to properly built libraries are embedded in the library upon linking so we don't need LD_LIBRARY_PATH analogs except for getting python started.
+- on macos the full paths to properly built libraries are embedded in the
+library. The patch makes sure these paths are correct.
+- This means that, in general, you should no longer have to use imppy.sh on a
+mac as long as your PYTHONPATH is correct
 
 Another note, the build/lib directory is not added as an rpath since that would change once the libraries are installed (and once they are installed, things that link against the installed libraries are responsible to make sure that imp).
 
-
-I would like to be able to add to the path from the command line but can't figure out how to do it early enough that SWIG is found using the new path.
 

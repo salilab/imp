@@ -1,6 +1,6 @@
 Index: kernel/test/run-all-tests.py
 ===================================================================
---- kernel/test/run-all-tests.py	(revision 899)
+--- kernel/test/run-all-tests.py	(revision 1109)
 +++ kernel/test/run-all-tests.py	(working copy)
 @@ -1 +1,21 @@
 -link ../../tools/run-all-tests.py
@@ -28,25 +28,43 @@ Index: kernel/test/run-all-tests.py
 +    unittest.main(defaultTest="regressionTest")
 Index: kernel/src/SConscript
 ===================================================================
---- kernel/src/SConscript	(revision 899)
+--- kernel/src/SConscript	(revision 1109)
 +++ kernel/src/SConscript	(working copy)
-@@ -2,7 +2,7 @@
+@@ -1,3 +1,5 @@
++import sys
++
+ Import('env', 'get_sharedlib_environment')
  
  # Get an environment suitable for building a shared library:
+@@ -2,3 +4,3 @@
  env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
 -env.Append(CPPPATH=["#/build/include", env['BOOST_CPPPATH']])
 +env.Prepend(CPPPATH=["#/build/include"])
  
- # Subdirectories:
- internal_files = SConscript('internal/SConscript')
+@@ -21,6 +23,11 @@
+ 
+ # Install the library:
+ libinst = env.Install(env['libdir'], lib)
++if sys.platform == 'darwin':
++    env.AddPostAction (lib, "install_name_tool -id %s %s" \
++                           % (lib[0].abspath, lib[0].path))
++    env.AddPostAction (libinst, "install_name_tool -id %s %s" \
++                           % (libinst[0].abspath, libinst[0].path))
+ env.Alias('kernel-install', [libinst])
+ env.Alias('install', [libinst])
+ 
 Index: kernel/pyext/SConscript
 ===================================================================
---- kernel/pyext/SConscript	(revision 899)
+--- kernel/pyext/SConscript	(revision 1109)
 +++ kernel/pyext/SConscript	(working copy)
-@@ -4,13 +4,14 @@
+@@ -1,16 +1,18 @@
+ import os.path
++import sys
+ 
+ Import('env', 'get_pyext_environment')
  
  # Get a modified build environment suitable for building Python extensions:
- e = get_pyext_environment(env, 'IMP', cplusplus=True)
+ e = get_pyext_environment(env, '', cplusplus=True)
 -e.Append(CPPPATH=['#/build/include', e['BOOST_CPPPATH']])
 +e.Append(CPPPATH=['#/build/include'])
  e.Append(CPPDEFINES=['SWIG_WRAPPER'])
@@ -60,22 +78,78 @@ Index: kernel/pyext/SConscript
                           SWIGFLAGS='-python -c++ -naturalvar')
  # .py file should also be generated:
  gen_pymod = File('IMP.py')
+@@ -25,6 +27,11 @@
+ 
+ # Install the Python extension:
+ libinst = e.Install(e['pyextdir'], pyext)
++if sys.platform== 'darwin':
++    libdir= os.path.split(pyext[0].abspath)[0]
++    e.AddPostAction (libinst,\
++                     "install_name_tool -change %s/libimp.dylib %s/libimp.dylib %s" \
++                                   % (libdir, e['libdir'], libinst[0].path))
+ e.Alias('install', libinst)
+ e.Alias('kernel-install', libinst)
+ 
 Index: tools/imp_module.py
 ===================================================================
---- tools/imp_module.py	(revision 899)
+--- tools/imp_module.py	(revision 1109)
 +++ tools/imp_module.py	(working copy)
-@@ -220,7 +220,6 @@
-     # Place in lib directory:
+@@ -1,6 +1,7 @@
+ """Tools and Builders for IMP modules. See `IMPModule` for more information."""
+ 
+ import os.path
++import sys
+ from SCons.Script import Builder, File, Action
+ 
+ def action_config(target, source, env):
+@@ -176,6 +177,7 @@
+     if env['VALIDATED']:
+         env.Default(targets)
+ 
++
+ def IMPSharedLibrary(env, files, install=True):
+     """Build, and optionally also install, an IMP module's C++
+        shared library. This is only available from within an environment
+@@ -183,8 +185,20 @@
+     module = env['IMP_MODULE']
+     lib = env.SharedLibrary('#/build/lib/imp_%s' % module,
+                             list(files) + [env['VER_CPP']])
++    if sys.platform == 'darwin':
++        env.AddPostAction (lib, "install_name_tool -id %s %s" \
++                               % (lib[0].abspath, lib[0].path))
++        libdir= os.path.split(lib[0].abspath)[0]
+     if install:
+         libinst = env.Install(env['libdir'], lib)
++        if sys.platform == 'darwin':
++            env.AddPostAction (libinst, "install_name_tool -id %s %s" \
++                                   % (libinst[0].abspath, libinst[0].path))
++            instlibdir= os.path.split(libinst[0].abspath)[0]
++            env.AddPostAction (libinst, "install_name_tool -change %s/libimp.dylib %s/libimp.dylib %s" \
++                                   % (libdir, instlibdir, libinst[0].path))
++            env.AddPostAction (libinst, "install_name_tool -change %s/libimp_core.dylib %s/libimp_core.dylib %s" \
++                                   % (libdir, instlibdir, libinst[0].path))
+         for alias in _get_module_install_aliases(env):
+             env.Alias(alias, [libinst])
+         return lib, libinst
+@@ -239,9 +253,13 @@
+     gen_pymod = File('IMP.%s.py' % module)
      pymod = env.LinkInstallAs('#/build/lib/IMP/%s/__init__.py' % module,
                                gen_pymod)
 -
      # Install the Python extension and module:
      libinst = env.Install(env['pyextdir'], pyext)
++    if sys.platform== 'darwin':
++        libdir= os.path.split(pyext[0].abspath)[0]
++        env.AddPostAction (libinst, "install_name_tool -change %s/libimp_%s.dylib %s/libimp_%s.dylib %s" \
++                                   % (libdir, module,
++                                      env['libdir'], module, libinst[0].path))
      pyinst = env.Install(os.path.join(env['pythondir'], 'IMP', module), pymod)
-@@ -236,8 +235,9 @@
+     for alias in _get_module_install_aliases(env):
+         env.Alias(alias, [libinst, pyinst])
+@@ -255,8 +273,9 @@
      from tools import get_pyext_environment
      module = env['IMP_MODULE']
-     env = get_pyext_environment(env, 'IMP' + module.upper(), cplusplus=True)
+     env = get_pyext_environment(env, module.upper(), cplusplus=True)
 +    env['LIBS']=[]
      env.Append(LIBS=['imp_%s' % module])
 -    env.Append(SWIGPATH='#/build/include')
@@ -83,7 +157,7 @@ Index: tools/imp_module.py
      env.Append(SWIGFLAGS='-python -c++ -naturalvar')
      env.AddMethod(IMPPythonExtension)
      return env
-@@ -319,8 +319,8 @@
+@@ -337,8 +356,8 @@
  
      env['IMP_MODULE'] = module
      env['IMP_MODULE_DESCRIPTION'] = description
@@ -96,9 +170,9 @@ Index: tools/imp_module.py
          # Generate version information
 Index: tools/__init__.py
 ===================================================================
---- tools/__init__.py	(revision 899)
+--- tools/__init__.py	(revision 1109)
 +++ tools/__init__.py	(working copy)
-@@ -212,6 +212,11 @@
+@@ -217,6 +217,11 @@
      env.Prepend(SCANNERS = [_SWIGScanner, pyscanner.PythonScanner])
      if env['CC'] == 'gcc':
          env.Append(CCFLAGS="-Wall -g")
@@ -110,7 +184,7 @@ Index: tools/__init__.py
      if env.get('include', None) is not None:
          env['include'] = [os.path.abspath(x) for x in \
                            env['include'].split(os.path.pathsep)]
-@@ -219,11 +224,12 @@
+@@ -224,11 +229,12 @@
      if env.get('lib', None) is not None:
          env['lib'] = [os.path.abspath(x) for x in \
                        env['lib'].split(os.path.pathsep)]
@@ -124,7 +198,7 @@ Index: tools/__init__.py
      sys = platform.system()
      if sys == 'SunOS':
          # Find locally-installed libraries in /usr/local (e.g. for SWIG)
-@@ -272,7 +278,11 @@
+@@ -277,7 +283,11 @@
      e = env.Clone()
      e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
               CCFLAGS='${VIS_CCFLAGS}')
@@ -137,7 +211,7 @@ Index: tools/__init__.py
      _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
      return e
  
-@@ -341,7 +351,11 @@
+@@ -363,7 +373,11 @@
              opt = opt.replace("-Wstrict-prototypes", "")
          e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
          e.Replace(CPPFLAGS=basecflags.split() + opt.split())
@@ -150,7 +224,7 @@ Index: tools/__init__.py
          # Remove NDEBUG preprocessor stuff if defined (we do it ourselves for
          # release builds)
          if '-DNDEBUG' in e['CPPFLAGS']:
-@@ -411,3 +425,9 @@
+@@ -433,6 +447,12 @@
      vars.Add(PathVariable('lib', 'Library search path ' + \
                            '(e.g. "/usr/local/lib:/opt/local/lib")', None,
                            PathVariable.PathAccept))
@@ -160,9 +234,12 @@ Index: tools/__init__.py
 +    vars.Add(PathVariable('linkflags', 'Extra link flags ' + \
 +                          '(e.g. "-lefence")', None,
 +                          PathVariable.PathAccept))
+     vars.Add(PathVariable('path', 'Extra executable path ' + \
+                           '(e.g. "/opt/local/bin/")', None,
+                           PathVariable.PathAccept))
 Index: tools/cgal.py
 ===================================================================
---- tools/cgal.py	(revision 899)
+--- tools/cgal.py	(revision 1109)
 +++ tools/cgal.py	(working copy)
 @@ -4,26 +4,24 @@
  from SCons.Script import *
@@ -201,7 +278,7 @@ Index: tools/cgal.py
      if not env.GetOption('clean') and not env.GetOption('help'):
 Index: tools/boost.py
 ===================================================================
---- tools/boost.py	(revision 899)
+--- tools/boost.py	(revision 1109)
 +++ tools/boost.py	(working copy)
 @@ -17,30 +17,20 @@
      context.Message('Checking for Boost version >= %s... ' % (version))
@@ -239,7 +316,7 @@ Index: tools/boost.py
          Exit("Boost version >= %s is required to build IMP" % version)
 Index: SConstruct
 ===================================================================
---- SConstruct	(revision 899)
+--- SConstruct	(revision 1109)
 +++ SConstruct	(working copy)
 @@ -9,7 +9,7 @@
  vars = Variables('config.py')
@@ -248,11 +325,419 @@ Index: SConstruct
 -vars.Add(PackageVariable('cgal', 'Location of the CGAL package', True))
 +vars.Add(BoolVariable('cgal', 'Whether to use the CGAL library', True))
  env = MyEnvironment(variables=vars, require_modeller=False,
-                     tools=["default", "doxygen", "docbook", "imp_module"],
-                     toolpath=["tools"])
+                     tools=["default", "doxygen", "docbook", "swig",
+                            "imp_module"],
+Index: patches/configure_cleanup.patch
+===================================================================
+--- patches/configure_cleanup.patch	(revision 1109)
++++ patches/configure_cleanup.patch	(working copy)
+@@ -1,6 +1,6 @@
+ Index: kernel/test/run-all-tests.py
+ ===================================================================
+---- kernel/test/run-all-tests.py	(revision 899)
++--- kernel/test/run-all-tests.py	(revision 1109)
+ +++ kernel/test/run-all-tests.py	(working copy)
+ @@ -1 +1,21 @@
+ -link ../../tools/run-all-tests.py
+@@ -28,25 +28,43 @@
+ +    unittest.main(defaultTest="regressionTest")
+ Index: kernel/src/SConscript
+ ===================================================================
+---- kernel/src/SConscript	(revision 899)
++--- kernel/src/SConscript	(revision 1109)
+ +++ kernel/src/SConscript	(working copy)
+-@@ -2,7 +2,7 @@
++@@ -1,3 +1,5 @@
+++import sys
+++
++ Import('env', 'get_sharedlib_environment')
+  
+  # Get an environment suitable for building a shared library:
++@@ -2,3 +4,3 @@
+  env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
+ -env.Append(CPPPATH=["#/build/include", env['BOOST_CPPPATH']])
+ +env.Prepend(CPPPATH=["#/build/include"])
+  
+- # Subdirectories:
+- internal_files = SConscript('internal/SConscript')
++@@ -21,6 +23,11 @@
++ 
++ # Install the library:
++ libinst = env.Install(env['libdir'], lib)
+++if sys.platform == 'darwin':
+++    env.AddPostAction (lib, "install_name_tool -id %s %s" \
+++                           % (lib[0].abspath, lib[0].path))
+++    env.AddPostAction (libinst, "install_name_tool -id %s %s" \
+++                           % (libinst[0].abspath, libinst[0].path))
++ env.Alias('kernel-install', [libinst])
++ env.Alias('install', [libinst])
++ 
+ Index: kernel/pyext/SConscript
+ ===================================================================
+---- kernel/pyext/SConscript	(revision 899)
++--- kernel/pyext/SConscript	(revision 1109)
+ +++ kernel/pyext/SConscript	(working copy)
+-@@ -4,13 +4,14 @@
++@@ -1,16 +1,18 @@
++ import os.path
+++import sys
+  
++ Import('env', 'get_pyext_environment')
++ 
+  # Get a modified build environment suitable for building Python extensions:
+- e = get_pyext_environment(env, 'IMP', cplusplus=True)
++ e = get_pyext_environment(env, '', cplusplus=True)
+ -e.Append(CPPPATH=['#/build/include', e['BOOST_CPPPATH']])
+ +e.Append(CPPPATH=['#/build/include'])
+  e.Append(CPPDEFINES=['SWIG_WRAPPER'])
+@@ -60,22 +78,78 @@
+                           SWIGFLAGS='-python -c++ -naturalvar')
+  # .py file should also be generated:
+  gen_pymod = File('IMP.py')
++@@ -25,6 +27,11 @@
++ 
++ # Install the Python extension:
++ libinst = e.Install(e['pyextdir'], pyext)
+++if sys.platform== 'darwin':
+++    libdir= os.path.split(pyext[0].abspath)[0]
+++    e.AddPostAction (libinst,\
+++                     "install_name_tool -change %s/libimp.dylib %s/libimp.dylib %s" \
+++                                   % (libdir, e['libdir'], libinst[0].path))
++ e.Alias('install', libinst)
++ e.Alias('kernel-install', libinst)
++ 
+ Index: tools/imp_module.py
+ ===================================================================
+---- tools/imp_module.py	(revision 899)
++--- tools/imp_module.py	(revision 1109)
+ +++ tools/imp_module.py	(working copy)
+-@@ -220,7 +220,6 @@
+-     # Place in lib directory:
++@@ -1,6 +1,7 @@
++ """Tools and Builders for IMP modules. See `IMPModule` for more information."""
++ 
++ import os.path
+++import sys
++ from SCons.Script import Builder, File, Action
++ 
++ def action_config(target, source, env):
++@@ -176,6 +177,7 @@
++     if env['VALIDATED']:
++         env.Default(targets)
++ 
+++
++ def IMPSharedLibrary(env, files, install=True):
++     """Build, and optionally also install, an IMP module's C++
++        shared library. This is only available from within an environment
++@@ -183,8 +185,20 @@
++     module = env['IMP_MODULE']
++     lib = env.SharedLibrary('#/build/lib/imp_%s' % module,
++                             list(files) + [env['VER_CPP']])
+++    if sys.platform == 'darwin':
+++        env.AddPostAction (lib, "install_name_tool -id %s %s" \
+++                               % (lib[0].abspath, lib[0].path))
+++        libdir= os.path.split(lib[0].abspath)[0]
++     if install:
++         libinst = env.Install(env['libdir'], lib)
+++        if sys.platform == 'darwin':
+++            env.AddPostAction (libinst, "install_name_tool -id %s %s" \
+++                                   % (libinst[0].abspath, libinst[0].path))
+++            instlibdir= os.path.split(libinst[0].abspath)[0]
+++            env.AddPostAction (libinst, "install_name_tool -change %s/libimp.dylib %s/libimp.dylib %s" \
+++                                   % (libdir, instlibdir, libinst[0].path))
+++            env.AddPostAction (libinst, "install_name_tool -change %s/libimp_core.dylib %s/libimp_core.dylib %s" \
+++                                   % (libdir, instlibdir, libinst[0].path))
++         for alias in _get_module_install_aliases(env):
++             env.Alias(alias, [libinst])
++         return lib, libinst
++@@ -239,9 +253,13 @@
++     gen_pymod = File('IMP.%s.py' % module)
+      pymod = env.LinkInstallAs('#/build/lib/IMP/%s/__init__.py' % module,
+                                gen_pymod)
+ -
+      # Install the Python extension and module:
+      libinst = env.Install(env['pyextdir'], pyext)
+++    if sys.platform== 'darwin':
+++        libdir= os.path.split(pyext[0].abspath)[0]
+++        env.AddPostAction (libinst, "install_name_tool -change %s/libimp_%s.dylib %s/libimp_%s.dylib %s" \
+++                                   % (libdir, module,
+++                                      env['libdir'], module, libinst[0].path))
+      pyinst = env.Install(os.path.join(env['pythondir'], 'IMP', module), pymod)
+-@@ -236,8 +235,9 @@
++     for alias in _get_module_install_aliases(env):
++         env.Alias(alias, [libinst, pyinst])
++@@ -255,8 +273,9 @@
+      from tools import get_pyext_environment
+      module = env['IMP_MODULE']
+-     env = get_pyext_environment(env, 'IMP' + module.upper(), cplusplus=True)
++     env = get_pyext_environment(env, module.upper(), cplusplus=True)
+ +    env['LIBS']=[]
+      env.Append(LIBS=['imp_%s' % module])
+ -    env.Append(SWIGPATH='#/build/include')
+@@ -83,7 +157,7 @@
+      env.Append(SWIGFLAGS='-python -c++ -naturalvar')
+      env.AddMethod(IMPPythonExtension)
+      return env
+-@@ -319,8 +319,8 @@
++@@ -337,8 +356,8 @@
+  
+      env['IMP_MODULE'] = module
+      env['IMP_MODULE_DESCRIPTION'] = description
+@@ -96,9 +170,9 @@
+          # Generate version information
+ Index: tools/__init__.py
+ ===================================================================
+---- tools/__init__.py	(revision 899)
++--- tools/__init__.py	(revision 1109)
+ +++ tools/__init__.py	(working copy)
+-@@ -212,6 +212,11 @@
++@@ -217,6 +217,11 @@
+      env.Prepend(SCANNERS = [_SWIGScanner, pyscanner.PythonScanner])
+      if env['CC'] == 'gcc':
+          env.Append(CCFLAGS="-Wall -g")
+@@ -110,7 +184,7 @@
+      if env.get('include', None) is not None:
+          env['include'] = [os.path.abspath(x) for x in \
+                            env['include'].split(os.path.pathsep)]
+-@@ -219,11 +224,12 @@
++@@ -224,11 +229,12 @@
+      if env.get('lib', None) is not None:
+          env['lib'] = [os.path.abspath(x) for x in \
+                        env['lib'].split(os.path.pathsep)]
+@@ -124,7 +198,7 @@
+      sys = platform.system()
+      if sys == 'SunOS':
+          # Find locally-installed libraries in /usr/local (e.g. for SWIG)
+-@@ -272,7 +278,11 @@
++@@ -277,7 +283,11 @@
+      e = env.Clone()
+      e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
+               CCFLAGS='${VIS_CCFLAGS}')
+@@ -137,7 +211,7 @@
+      _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
+      return e
+  
+-@@ -341,7 +351,11 @@
++@@ -363,7 +373,11 @@
+              opt = opt.replace("-Wstrict-prototypes", "")
+          e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
+          e.Replace(CPPFLAGS=basecflags.split() + opt.split())
+@@ -150,7 +224,7 @@
+          # Remove NDEBUG preprocessor stuff if defined (we do it ourselves for
+          # release builds)
+          if '-DNDEBUG' in e['CPPFLAGS']:
+-@@ -411,3 +425,9 @@
++@@ -433,6 +447,12 @@
+      vars.Add(PathVariable('lib', 'Library search path ' + \
+                            '(e.g. "/usr/local/lib:/opt/local/lib")', None,
+                            PathVariable.PathAccept))
+@@ -160,9 +234,12 @@
+ +    vars.Add(PathVariable('linkflags', 'Extra link flags ' + \
+ +                          '(e.g. "-lefence")', None,
+ +                          PathVariable.PathAccept))
++     vars.Add(PathVariable('path', 'Extra executable path ' + \
++                           '(e.g. "/opt/local/bin/")', None,
++                           PathVariable.PathAccept))
+ Index: tools/cgal.py
+ ===================================================================
+---- tools/cgal.py	(revision 899)
++--- tools/cgal.py	(revision 1109)
+ +++ tools/cgal.py	(working copy)
+ @@ -4,26 +4,24 @@
+  from SCons.Script import *
+@@ -201,7 +278,7 @@
+      if not env.GetOption('clean') and not env.GetOption('help'):
+ Index: tools/boost.py
+ ===================================================================
+---- tools/boost.py	(revision 899)
++--- tools/boost.py	(revision 1109)
+ +++ tools/boost.py	(working copy)
+ @@ -17,30 +17,20 @@
+      context.Message('Checking for Boost version >= %s... ' % (version))
+@@ -239,7 +316,7 @@
+          Exit("Boost version >= %s is required to build IMP" % version)
+ Index: SConstruct
+ ===================================================================
+---- SConstruct	(revision 899)
++--- SConstruct	(revision 1109)
+ +++ SConstruct	(working copy)
+ @@ -9,7 +9,7 @@
+  vars = Variables('config.py')
+@@ -248,169 +325,5 @@
+ -vars.Add(PackageVariable('cgal', 'Location of the CGAL package', True))
+ +vars.Add(BoolVariable('cgal', 'Whether to use the CGAL library', True))
+  env = MyEnvironment(variables=vars, require_modeller=False,
+-                     tools=["default", "doxygen", "docbook", "imp_module"],
+-                     toolpath=["tools"])
+-Index: bin/SConscript
+-===================================================================
+---- bin/SConscript	(revision 899)
+-+++ bin/SConscript	(working copy)
+-@@ -12,11 +12,6 @@
+-             line = "MODPY=" + source[2].get_contents()
+-         elif line.endswith("@PATHSEP@"):
+-             line = "PATHSEP=\"" + source[3].get_contents() + "\""
+--        elif line.endswith("@EXTRALIB@"):
+--            line = "EXTRALIB="
+--            cont = source[4].get_contents()
+--            if len(cont) > 0:
+--                line += '"' + cont + source[3].get_contents() + '"'
+-         print >> outfile, line
+-     outfile.close()
+-     infile.close()
+-@@ -27,6 +22,5 @@
+- bin = env.ScriptFile("imppy.sh",
+-                      ["imppy.sh.in", env.Value(env.Dir('#').abspath),
+-                       env.Value(env['MODELLER_MODPY']),
+--                      env.Value(env['PATHSEP']),
+--                      env.Value(env['PATHSEP'].join(env['lib']))])
+-+                      env.Value(env['PATHSEP'])])
+- Return('bin')
+-Index: bin/imppy.sh.in
+-===================================================================
+---- bin/imppy.sh.in	(revision 899)
+-+++ bin/imppy.sh.in	(working copy)
+-@@ -3,9 +3,8 @@
+- TOPDIR=@TOPDIR@
+- MODPY=@MODPY@
+- PATHSEP=@PATHSEP@
+--EXTRALIB=@EXTRALIB@
+- 
+--LLP="${EXTRALIB}${TOPDIR}/build/lib"
+-+LLP="${TOPDIR}/build/lib"
+- if test -z "${LD_LIBRARY_PATH}"; then
+-   LD_LIBRARY_PATH=${LLP}
+- else
+-Index: modules/em/test/run-all-tests.py
+-===================================================================
+---- modules/em/test/run-all-tests.py	(revision 899)
+-+++ modules/em/test/run-all-tests.py	(working copy)
+-@@ -1 +1,21 @@
+--link ../../../tools/run-all-tests.py
+-\ No newline at end of file
+-+import unittest, sys, os, re
+-+
+-+def regressionTest():
+-+    """Run all tests in files called test_*.py in current directory and
+-+       subdirectories"""
+-+    path = os.path.abspath(os.path.dirname(sys.argv[0]))
+-+    modobjs = []
+-+    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
+-+        files = os.listdir(os.path.join(path, subdir))
+-+        test = re.compile("^test_.*\.py$", re.IGNORECASE)
+-+        files = filter(test.search, files)
+-+        modnames = [os.path.splitext(f)[0] for f in files]
+-+        sys.path.insert(0, subdir)
+-+        modobjs.extend([__import__(m) for m in modnames])
+-+        sys.path.pop(0)
+-+
+-+    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
+-+    return unittest.TestSuite(tests)
+-+
+-+if __name__ == "__main__":
+-+    unittest.main(defaultTest="regressionTest")
+-Index: modules/modeller/test/run-all-tests.py
+-===================================================================
+---- modules/modeller/test/run-all-tests.py	(revision 899)
+-+++ modules/modeller/test/run-all-tests.py	(working copy)
+-@@ -1 +1,21 @@
+--link ../../../tools/run-all-tests.py
+-\ No newline at end of file
+-+import unittest, sys, os, re
+-+
+-+def regressionTest():
+-+    """Run all tests in files called test_*.py in current directory and
+-+       subdirectories"""
+-+    path = os.path.abspath(os.path.dirname(sys.argv[0]))
+-+    modobjs = []
+-+    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
+-+        files = os.listdir(os.path.join(path, subdir))
+-+        test = re.compile("^test_.*\.py$", re.IGNORECASE)
+-+        files = filter(test.search, files)
+-+        modnames = [os.path.splitext(f)[0] for f in files]
+-+        sys.path.insert(0, subdir)
+-+        modobjs.extend([__import__(m) for m in modnames])
+-+        sys.path.pop(0)
+-+
+-+    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
+-+    return unittest.TestSuite(tests)
+-+
+-+if __name__ == "__main__":
+-+    unittest.main(defaultTest="regressionTest")
+-Index: modules/domino/test/run-all-tests.py
+-===================================================================
+---- modules/domino/test/run-all-tests.py	(revision 899)
+-+++ modules/domino/test/run-all-tests.py	(working copy)
+-@@ -1 +1,21 @@
+--link ../../../tools/run-all-tests.py
+-\ No newline at end of file
+-+import unittest, sys, os, re
+-+
+-+def regressionTest():
+-+    """Run all tests in files called test_*.py in current directory and
+-+       subdirectories"""
+-+    path = os.path.abspath(os.path.dirname(sys.argv[0]))
+-+    modobjs = []
+-+    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
+-+        files = os.listdir(os.path.join(path, subdir))
+-+        test = re.compile("^test_.*\.py$", re.IGNORECASE)
+-+        files = filter(test.search, files)
+-+        modnames = [os.path.splitext(f)[0] for f in files]
+-+        sys.path.insert(0, subdir)
+-+        modobjs.extend([__import__(m) for m in modnames])
+-+        sys.path.pop(0)
+-+
+-+    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
+-+    return unittest.TestSuite(tests)
+-+
+-+if __name__ == "__main__":
+-+    unittest.main(defaultTest="regressionTest")
+-Index: modules/core/SConscript
+-===================================================================
+---- modules/core/SConscript	(revision 899)
+-+++ modules/core/SConscript	(working copy)
+-@@ -3,7 +3,7 @@
+- 
+- # Link against CGAL if present:
+- if env['CGAL_LIBS']:
+--    env.Append(LIBS=env['CGAL_LIBS'], CPPDEFINES='IMP_USE_CGAL')
+-+    env.Append(LIBS=env['CGAL_LIBS'])
+- 
+- # No dependent libraries, so this module can always be built:
+- env.validate()
+-Index: modules/misc/test/run-all-tests.py
+-===================================================================
+---- modules/misc/test/run-all-tests.py	(revision 899)
+-+++ modules/misc/test/run-all-tests.py	(working copy)
+-@@ -1 +1,21 @@
+--link ../../../tools/run-all-tests.py
+-\ No newline at end of file
+-+import unittest, sys, os, re
+-+
+-+def regressionTest():
+-+    """Run all tests in files called test_*.py in current directory and
+-+       subdirectories"""
+-+    path = os.path.abspath(os.path.dirname(sys.argv[0]))
+-+    modobjs = []
+-+    for subdir in ['.'] + [x for x in os.listdir(path) if os.path.isdir(x)]:
+-+        files = os.listdir(os.path.join(path, subdir))
+-+        test = re.compile("^test_.*\.py$", re.IGNORECASE)
+-+        files = filter(test.search, files)
+-+        modnames = [os.path.splitext(f)[0] for f in files]
+-+        sys.path.insert(0, subdir)
+-+        modobjs.extend([__import__(m) for m in modnames])
+-+        sys.path.pop(0)
+-+
+-+    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
+-+    return unittest.TestSuite(tests)
+-+
+-+if __name__ == "__main__":
+-+    unittest.main(defaultTest="regressionTest")
++                     tools=["default", "doxygen", "docbook", "swig",
++                            "imp_module"],
 Index: bin/SConscript
 ===================================================================
---- bin/SConscript	(revision 899)
+--- bin/SConscript	(revision 1109)
 +++ bin/SConscript	(working copy)
 @@ -12,11 +12,6 @@
              line = "MODPY=" + source[2].get_contents()
@@ -276,7 +761,7 @@ Index: bin/SConscript
  Return('bin')
 Index: bin/imppy.sh.in
 ===================================================================
---- bin/imppy.sh.in	(revision 899)
+--- bin/imppy.sh.in	(revision 1109)
 +++ bin/imppy.sh.in	(working copy)
 @@ -3,9 +3,8 @@
  TOPDIR=@TOPDIR@
@@ -291,7 +776,7 @@ Index: bin/imppy.sh.in
  else
 Index: modules/em/test/run-all-tests.py
 ===================================================================
---- modules/em/test/run-all-tests.py	(revision 899)
+--- modules/em/test/run-all-tests.py	(revision 1109)
 +++ modules/em/test/run-all-tests.py	(working copy)
 @@ -1 +1,21 @@
 -link ../../../tools/run-all-tests.py
@@ -319,7 +804,7 @@ Index: modules/em/test/run-all-tests.py
 +    unittest.main(defaultTest="regressionTest")
 Index: modules/modeller/test/run-all-tests.py
 ===================================================================
---- modules/modeller/test/run-all-tests.py	(revision 899)
+--- modules/modeller/test/run-all-tests.py	(revision 1109)
 +++ modules/modeller/test/run-all-tests.py	(working copy)
 @@ -1 +1,21 @@
 -link ../../../tools/run-all-tests.py
@@ -347,7 +832,7 @@ Index: modules/modeller/test/run-all-tests.py
 +    unittest.main(defaultTest="regressionTest")
 Index: modules/domino/test/run-all-tests.py
 ===================================================================
---- modules/domino/test/run-all-tests.py	(revision 899)
+--- modules/domino/test/run-all-tests.py	(revision 1109)
 +++ modules/domino/test/run-all-tests.py	(working copy)
 @@ -1 +1,21 @@
 -link ../../../tools/run-all-tests.py
@@ -375,7 +860,7 @@ Index: modules/domino/test/run-all-tests.py
 +    unittest.main(defaultTest="regressionTest")
 Index: modules/core/SConscript
 ===================================================================
---- modules/core/SConscript	(revision 899)
+--- modules/core/SConscript	(revision 1109)
 +++ modules/core/SConscript	(working copy)
 @@ -3,7 +3,7 @@
  
@@ -388,7 +873,7 @@ Index: modules/core/SConscript
  env.validate()
 Index: modules/misc/test/run-all-tests.py
 ===================================================================
---- modules/misc/test/run-all-tests.py	(revision 899)
+--- modules/misc/test/run-all-tests.py	(revision 1109)
 +++ modules/misc/test/run-all-tests.py	(working copy)
 @@ -1 +1,21 @@
 -link ../../../tools/run-all-tests.py
