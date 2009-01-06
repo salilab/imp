@@ -1,41 +1,24 @@
 import unittest, sys, os, re
 
-testdir="modules/core/test/"
-
 def regressionTest():
     """Run all tests in files called test_*.py in current directory and
        subdirectories"""
-    if os.path.split(os.path.split(os.getcwd())[0])[0] == "kernel":
-        root = os.path.split(os.path.split(os.getcwd())[0])[0]
-        relpath= os.path.join(os.path.split(os.path.split(os.getcwd())[0])[1],\
-                                  os.path.split(os.getcwd())[1])
-    else:
-        root = os.path.split(os.path.split(os.path.split(os.getcwd())[0])[0])[0]
-        relpath= os.path.join(os.path.split(os.path.split(os.path.split(os.getcwd())[0])[0])[1],\
-                           os.path.split(os.path.split(os.getcwd())[0])[1],\
-                              os.path.split(os.getcwd())[1])
-    print root
-    print relpath
-    os.chdir(root)
-    subdirs = [os.path.join(relpath, x) for x in os.listdir(relpath) if os.path.isdir(os.path.join(relpath, x))]
-    print subdirs
-    modobjs=[]
-    for subdir in subdirs:
-        print subdir
-        files = [os.path.join(subdir, x) for x in os.listdir(subdir) if x.endswith(".py")]
-        print files
-        #print files
+    path = os.path.dirname(sys.argv[0])
+    if path == '':
+        path = '.'
+    # Tell test cases where to find any input files needed
+    os.environ['TEST_DIRECTORY'] = path
+    modobjs = []
+    for subdir in [''] + [x for x in os.listdir(path) \
+                          if os.path.isdir(os.path.join(path, x))]:
+        files = os.listdir(os.path.join(path, subdir))
+        test = re.compile("^test_.*\.py$", re.IGNORECASE)
+        files = filter(test.search, files)
         modnames = [os.path.splitext(f)[0] for f in files]
-        print modnames
-        sys.path.insert(0, subdir)
-        for m in modnames:
-            print m
-            nm= os.path.split(m)[1]
-            print nm
-            modobjs.append(__import__(nm))
+        sys.path.insert(0, os.path.join(path, subdir))
+        modobjs.extend([__import__(m) for m in modnames])
         sys.path.pop(0)
-    print "all done"
-    print modobjs
+
     tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
     return unittest.TestSuite(tests)
 

@@ -30,6 +30,9 @@ def copy_dir(source, dest, modname):
             output= fix_string(input, modname)
             file(xdpath, 'w').write(output)
 def main():
+    if len(sys.argv) != 2:
+        print("Usage: ./kernel/doc/bin/make-module module_name")
+        return
     modname= sys.argv[1]
     modpath=os.path.join("modules", modname)
     if os.path.isdir(modpath):
