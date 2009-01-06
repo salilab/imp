@@ -260,14 +260,6 @@ Recommendations:
 - never inherit from a C++ object in Python: the python wrapper we use does not manage memory properly.
 
 
-\section i14 Conventions to be aware of
-
-We have strict naming conventions. See \ref coding_conventions "our coding conventions page" for more information.
-
-- Particles are passed around as pointers (rather than indexes).
-
-
-
 
 \section i15 Getting started
 
@@ -275,5 +267,9 @@ The easiest way to get started developing with \imp is to use a local module.
 To do this run the \command{./kernel/doc/bin/make-module my_module} in the
 main \imp directory. This will create a new module in modules/my_module. See
 \ref make_module "Making a module" for more information.
+
+You should then read the
+ - \ref api "API documentation"
+ - and \ref coding_conventions "Coding conventions"
 
 */
