@@ -24,7 +24,7 @@ def generate_doxygen(target, source, env):
             # Expand out ALL_MODULES to a list of all modules, one per line
             for mod in env['IMP_MODULES_ALL']:
                 outfile.write(line.replace('@ALL_MODULES@', mod))
-        else if not line.startswith("#"):
+        elif not line.startswith("#"):
             outfile.write(line)
     infile.close()
     outfile.close()
