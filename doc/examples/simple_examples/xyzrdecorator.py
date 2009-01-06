@@ -2,13 +2,11 @@ import IMP
 import IMP.core
 
 m= IMP.Model()
-p0= IMP.Particle()
-m.add_particle(p0)
+p0= IMP.Particle(m)
 d0= IMP.core.XYZRDecorator.create(p0)
 d0.set_coordinates(IMP.Vector3D(0,1,2))
 d0.set_radius(1.0)
-p1= IMP.Particle()
-m.add_particle(p1)
+p1= IMP.Particle(m)
 d1= IMP.core.XYZRDecorator.create(p1)
 d1.set_coordinates(IMP.Vector3D(3,4,5))
 d1.set_radius(2.0)

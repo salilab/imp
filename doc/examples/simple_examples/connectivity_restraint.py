@@ -8,13 +8,11 @@ hs=IMP.Particles()
 
 # create the molecules
 for i in range(0,10):
-    p=IMP.Particle()
-    m.add_particle(p)
+    p=IMP.Particle(m)
     d= IMP.core.MolecularHierarchyDecorator.create(p)
     d.set_type(IMP.core.MolecularHierarchyDecorator.PROTEIN)
     for j in range(0,5):
-        p=IMP.Particle()
-        m.add_particle(p)
+        p=IMP.Particle(m)
         cd= IMP.core.MolecularHierarchyDecorator.create(p)
         cd.set_type(IMP.core.MolecularHierarchyDecorator.FRAGMENT)
         d.add_child(cd)
