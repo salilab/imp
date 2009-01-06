@@ -181,7 +181,7 @@ TAB_SIZE               = 2
 
 ALIASES                = "command{1}=\code \1 \endcode" \
                          "imp=\p IMP" \
-                         "wiki{2}=<a href=\"https://salilab.org/imp/wiki/\1/\"><b>\2</b></a>"
+                         "wiki{2}=<a href=\"https://salilab.org/imp/wiki/\1/\"><b>\2</b></a>" \
                          "ilink{2}=<a href=\"https://salilab.org/imp/\1/\"><b>\2</b></a>"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C 
