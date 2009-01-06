@@ -1,0 +1,19 @@
+/* WARNING: EDIT THE VERSION OF THIS PAGE IN kernel/doc/template, NOT THE
+   .dox PAGE IN kernel/doc.
+*/
+/**
+  \page deprecation Deprecated Functionaly
+  
+  From time to time, \imp is updated in ways that break backward compatibility.
+  In certain cases we will leave the old functionality in so as not to break
+  existing code which uses \imp. Such code is said to be "deprecated".
+
+  Deprecated classes are marked in a variety of ways:
+  - They are listed in the "Deprecated List" in the "Related Pages" tab.
+  - They are noted as deprecated in their documentation.
+  - They print an warning when an instance is constructed or the function
+    is called.
+
+  The warnings can be turned off using the IMP::core::set_print_deprecation_messages
+  function.
+*/

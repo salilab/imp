@@ -1,0 +1,42 @@
+/* WARNING: EDIT THE VERSION OF THIS PAGE IN kernel/doc/template, NOT THE
+   .dox PAGE IN kernel/doc.
+*/
+/**
+  \page api API Documentation
+  
+  \section intro Introduction
+  
+    This is the API reference for \imp, an Integrative Modeling Platform. If you are
+    new to \imp, you should familiarize yourself with the following pages first:
+    - \ref decorators "Using Decorators"
+    - \ref log "Logging Support"
+    - \ref assert "Error Reporting Facilities"
+    - \ref deprecation "Deprecated Functionality"
+
+    Then look through the examples which can be found at:
+    - \ref Examples "Examples"
+
+    There are a variety of useful base classes which are used to provide
+    most functionality. They are:
+    - IMP::Model
+    - IMP::Particle
+    - IMP::Restraint
+    - IMP::ScoreState
+    - IMP::Optimizer
+    - IMP::core::SingletonContainer, IMP::core::PairContainer
+    - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
+    - IMP::core::SingletonModifier, IMP::core::PairModifier, IMP::core::TripletModifier
+
+    When programming with \imp, one of the more useful pages is the
+    <a href="hierarchy.html">class hierarchy</a> as well as the module main
+    pages:
+    - IMP
+    - IMP::core
+    - IMP::misc
+    - IMP::em
+    - IMP::domino
+    - IMP::saxs
+
+    \note The 'Modules' tab has nothing to do with modules in IMP. The entries in the
+    tab are groups of functionality which can cut across modules.
+*/
