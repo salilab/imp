@@ -2,48 +2,23 @@
    .dox PAGE IN kernel/doc.
 */
 /**
-  \mainpage IMP API reference
-  
-  \section intro Introduction
-  
-    This is the API reference for \imp, an Integrative Modeling Platform. If you are
-    new to \imp, you should familiarize yourself with the following pages first:
-    - \ref introduction "An Introduction to IMP"
-    - \ref decorators "Using Decorators"
-    - \ref coding_conventions "IMP Coding Conventions"
-    - \ref log "Logging Support"
-    - \ref assert "Error Reporting Facilities"
+  \mainpage IMP Documentation
 
-    Then look through the examples which can be found at:
-    - \ref Examples "Examples"
+ Welcome to the \imp documentation. If you are not familiar with \imp, you
+ should first read the \wiki{installation, Installation Instructions}. You
+ should then read our \ref introduction "Introduction to IMP".
 
-    There are a variety of useful base classes which are used to provide
-    most functionality. They are:
-    - IMP::Model
-    - IMP::Particle
-    - IMP::Restraint
-    - IMP::ScoreState
-    - IMP::Optimizer
-    - IMP::core::SingletonContainer, IMP::core::PairContainer
-    - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
-    - IMP::core::SingletonModifier, IMP::core::PairModifier, IMP::core::TripletModifier
+ The important documentation can be found in:
+ - \wiki{FrontPage,IMP wiki}
+ - \ref Examples "Examples"
+ - \ref api "API Documentation"
+ - \wiki{FAQ, FAQ}
 
-    When programming with \imp, one of the more useful pages is the
-    <a href="hierarchy.html">class hierarchy</a> as well as the module main
-    pages:
-    - IMP
-    - IMP::core
-    - IMP::misc
-    - IMP::em
-    - IMP::domino
-    - IMP::saxs
+ If you encounter a bug, please report it in the
+ <a href="https://salilab.org/imp/bugs/">Bug Tracker</a>.
 
-    and finally
-
-    - the <a href="https://salilab.org/imp/wiki/">IMP wiki page</a>
-
-    \note The 'Modules' tab has nothing to do with modules in IMP. The entries in the
-    tab are groups of functionality which can cut across modules.
+ Information for developers can be found on the
+ \wiki{developers,Developers Page}.
 
  */
  

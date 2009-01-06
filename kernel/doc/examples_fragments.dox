@@ -31,8 +31,8 @@ This example shows how to create and use a custom hierarchy of particles.
 <pre><font face="Lucida,Courier New"><font color="#000000">tr</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HierarchyTraits</font><font color="#0000C0">(</font><font color="#004080">"my hierarchy"</font><font color="#0000C0">)</font>
 <font color="#000000">pd</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">parent_particle</font><font color="#0000C0">,</font> <font color="#000000">tr</font><font color="#0000C0">)</font>
 <font color="#C00000">for</font> <font color="#000000">p</font> <font color="#C00000">in</font> <font color="#000000">children_particles</font><font color="#0000C0">:</font>
-  <font color="#000000">cd</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">,</font> <font color="#000000">tr</font><font color="#0000C0">)</font>
-  <font color="#000000">pd</font><font color="#0000C0">.</font><font color="#000000">add_child</font><font color="#0000C0">(</font><font color="#000000">cd</font><font color="#0000C0">)</font>
+    <font color="#000000">cd</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HierarchyDecorator</font><font color="#0000C0">.</font><font color="#000000">create</font><font color="#0000C0">(</font><font color="#000000">p</font><font color="#0000C0">,</font> <font color="#000000">tr</font><font color="#0000C0">)</font>
+    <font color="#000000">pd</font><font color="#0000C0">.</font><font color="#000000">add_child</font><font color="#0000C0">(</font><font color="#000000">cd</font><font color="#0000C0">)</font>
 <font color="#000000">pd</font><font color="#0000C0">.</font><font color="#000000">show</font><font color="#0000C0">(</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
 
 \section excluded_volume Excluded Volume
@@ -86,6 +86,17 @@ Read and write a model in python.
 \htmlonly
 <pre><font face="Lucida,Courier New"><font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">write</font><font color="#0000C0">(</font><font color="#000000">my_imp_model</font><font color="#0000C0">,</font> <font color="#004080">"somefile"</font><font color="#0000C0">)</font>
 <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">read</font><font color="#0000C0">(</font><font color="#004080">"somefile"</font><font color="#0000C0">,</font> <font color="#000000">my_imp_model</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
+
+\section restrain_in_sphere Restrain In Sphere
+
+This fragment shows how to restrain a set of points stored in a SingletonContainer in a sphere of radius 'radius' centered around 'center'.
+
+\htmlonly
+<pre><font face="Lucida,Courier New"><font color="#000000">ub</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">HarmonicUpperBound</font><font color="#0000C0">(</font><font color="#000000">radius</font><font color="#0000C0">,</font> <font color="#000000">stiffness</font><font color="#0000C0">)</font>
+<font color="#000000">ss</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">DistanceToSingletonScore</font><font color="#0000C0">(</font><font color="#000000">ub</font><font color="#0000C0">,</font> <font color="#000000">center</font><font color="#0000C0">)</font>
+
+<font color="#000000">r</font><font color="#0000C0">=</font> <font color="#000000">IMP</font><font color="#0000C0">.</font><font color="#000000">core</font><font color="#0000C0">.</font><font color="#000000">SingletonsRestraint</font><font color="#0000C0">(</font><font color="#000000">ss</font><font color="#0000C0">,</font> <font color="#000000">pc</font><font color="#0000C0">)</font>
+<font color="#000000">m</font><font color="#0000C0">.</font><font color="#000000">add_restraint</font><font color="#0000C0">(</font><font color="#000000">r</font><font color="#0000C0">)</font><font color="#000000"></font></font></pre>\endhtmlonly
 
 \section setup Setup
 
