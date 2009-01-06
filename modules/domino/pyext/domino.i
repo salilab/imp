@@ -21,10 +21,9 @@
 %import "kernel/pyext/IMP.i"
 
 /* Wrap our own classes */
-%include "IMP/domino/DiscreteSampler.h"
 %include "IMP/domino/CombState.h"
+%include "IMP/domino/DiscreteSampler.h"
 %include "IMP/domino/RestraintGraph.h"
 %include "IMP/domino/SimpleDiscreteSpace.h"
 %include "IMP/domino/DominoOptimizer.h"
 %include "IMP/domino/SimpleDiscreteRestraint.h"
-

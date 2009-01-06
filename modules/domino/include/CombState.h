@@ -8,7 +8,7 @@
 #define IMPDOMINO_COMB_STATE_H
 
 #include "config.h"
-#include "DiscreteSampler.h"
+//#include "DiscreteSampler.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Restraint.h>
@@ -157,6 +157,7 @@ public:
   const std::map<Particle *, unsigned int> & get_data() const {
     return data;
   }
+  /*
   void move2state(DiscreteSampler *ds) const {
     Particle *p;
     FloatKey att;
@@ -171,6 +172,7 @@ public:
       }
     }
   }
+  */
 protected:
   std::map<Particle *, unsigned int> data; //data[p] = for particle p
   // the state is state number  data[p] from the assigned states.

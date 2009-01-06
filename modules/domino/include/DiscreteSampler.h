@@ -10,12 +10,13 @@
 #include "config.h"
 
 #include <IMP/Particle.h>
-
+#include "CombState.h"
 #include <vector>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-//! Holds the states of a single particle
+//! Holds the states of a single or a set of particles
+//! This interface is used by the DOMINO optimizer to get states of particles.
 /** \note Since this class is header-only, we must not mark it for
           export with IMPDOMINOEXPORT.
  */
@@ -23,18 +24,55 @@ class  DiscreteSampler
 {
 public:
   virtual ~DiscreteSampler(){};
-
+  //!
+  /**
+   */
   virtual void show(std::ostream& out = std::cout) const {}
-  virtual Float get_state_val(const Particle &p, unsigned int i,
+  //! Get a specific attribute value of one of the states
+  //! of a specific particle.
+  /**
+    \param[in] p    The particle
+    \param[in] i    The number of the state
+    \param[in] key  The key of the attribute
+    \return the value of attribute with key of the i'th state of the particle p.
+   */
+  virtual Float get_state_val(Particle *p, unsigned int i,
                               FloatKey key) const {return 0.0;}
-  virtual unsigned int get_space_size(const Particle &p) const {return 0;}
-  virtual FloatKey get_attribute(const Particle &p,
-                                 unsigned int att_index) const
+  //! Get the size of the sampling space of a spacific particle
+  /**
+    \param[in] p A pointer to a particle
+     \return the size of the sampling space of the particle
+   */
+  virtual unsigned int get_space_size(Particle *p) const {return 0;}
+  //! Get an attribute key
+  /**
+    \param[in] p a pointer to a particle
+    \param[in] att_num the number of the attribute
+    \return the key of the att_num attribute
+   */
+  virtual FloatKey get_attribute_key(Particle *p,
+                                 unsigned int att_num) const
                                  {return FloatKey();}
-  virtual unsigned int get_number_of_attributes(const Particle &p) const
+  //! Get the number of attributes of each state of a specific particle
+  /**
+    \param[in] p a pointer to a particle
+    \return the number of attributes for each state of p
+   */
+  virtual unsigned int get_number_of_attributes(Particle *p) const
                                                {return 0;}
-  virtual void show_space(const Particle &p,
+  //!
+  /**
+   */
+  virtual void show_space(Particle *p,
                           std::ostream& out = std::cout) const {}
+
+  //! Fill states as encoded in the node for the input subset of particles
+  /** \param[in] particles   a set of particles for which combinations
+                             of states should be generated.
+      \param[in] states      the dataset to be filled with states.
+   */
+  virtual void populate_states_of_particles(Particles *particles,
+              std::map<std::string, CombState *> *states) const{}
 };
 
 IMPDOMINO_END_NAMESPACE

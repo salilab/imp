@@ -59,9 +59,8 @@ public:
   /** \param[in] particles_   a set of particles
       \param[in] states_      the dataset to be filled with states.
    */
-  void populate_states_of_particles(const Particles &particles_,
-                                    std::map<std::string,
-                                             CombState *> *states_) const;
+  void populate_states_of_particles(Particles *particles,
+          std::map<std::string,CombState *> *states);
   void realize(Restraint *r, float weight);
 
   //! Finds the minimum combination in the node.
@@ -99,7 +98,7 @@ public:
     long number_of_states = 1;
     for (Particles::const_iterator it = particles_.begin();
          it != particles_.end(); it++) {
-      number_of_states *=  ds_->get_space_size(**it);
+      number_of_states *=  ds_->get_space_size(*it);
     }
     return number_of_states;
   }
