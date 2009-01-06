@@ -1,6 +1,3 @@
-/* WARNING: EDIT THE VERSION OF THIS PAGE IN kernel/doc/template, NOT THE
-   .dox PAGE IN kernel/doc.
-*/
 /**\page devguide Guide for Developers
 
 Developers should familiarize themselves which the guidelines presented in this page.

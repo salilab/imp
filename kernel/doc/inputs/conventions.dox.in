@@ -1,6 +1,3 @@
-/* WARNING: EDIT THE VERSION OF THIS PAGE IN kernel/doc/template, NOT THE
-   .dox PAGE IN kernel/doc.
-*/
 /** 
     \page coding_conventions IMP coding conventions
 

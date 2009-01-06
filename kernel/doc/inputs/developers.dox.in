@@ -1,0 +1,22 @@
+/** 
+    \page developers IMP Developers
+
+    \imp developers are divided into two categories:
+    - <b>contributers</b>, developers who write a module that is included in the \imp repository
+    - <b>core developers</b> who contribute code to the \imp kernel and core and help maintain the infrastructure.
+
+    Both classes of developers must follow the \ref coding_conventions "coding conventions" and be familiar with the contents of the \ref devguide "developers guide".
+
+    \section dev_links Useful Links
+    - \ref api "API documentation"
+    - \ref coding_conventions "Coding conventions"
+    - <a href="https://salilab.org/internal/imp/tests.html"><b>Daily build status</b></a>
+    - \ref devguide "Developer guide"
+    - \ilink{bugs}{Bug tracker}
+    - <a href="https://salilab.org/mailman/listinfo/imp-dev"><b>imp-dev</b></a>
+      email list. All developers should monitor this list. The discussions are
+      \ilink{archives/imp-dev}{archived}
+    - <a href="https://salilab.org/mailman/listinfo/imp-commits">
+      <b>imp-commits</b></a> is an email list which received notifications
+      of all changes made to the \imp svn.
+*/

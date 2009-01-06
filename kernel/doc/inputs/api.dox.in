@@ -1,6 +1,3 @@
-/* WARNING: EDIT THE VERSION OF THIS PAGE IN kernel/doc/template, NOT THE
-   .dox PAGE IN kernel/doc.
-*/
 /**
   \page api API Documentation
   
@@ -33,7 +30,7 @@
     - \ref bond "Code to create and manipulate bonds"
 
     When programming with \imp, one of the more useful pages is the
-    <a href="hierarchy.html">class hierarchy</a> as well as the module main
+    <a href="hierarchy.html"><b>class hierarchy</b></a> as well as the module main
     pages:
     - IMP
     - IMP::core
@@ -41,7 +38,4 @@
     - IMP::em
     - IMP::domino
     - IMP::saxs
-
-    \note The 'Modules' tab has nothing to do with modules in IMP. The entries in the
-    tab are groups of functionality which can cut across modules.
 */
