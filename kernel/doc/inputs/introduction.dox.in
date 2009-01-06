@@ -271,7 +271,9 @@ We have strict naming conventions. See \ref coding_conventions "our coding conve
 
 \section i15 Getting started
 
-Check out the wiki page to get started with IMP
-https://salilab.org/imp/wiki/ and check out the "Getting Started", "API Documentation" and "For Developers" links.
+The easiest way to get started developing with \imp is to use a local module.
+To do this run the \command{./kernel/doc/bin/make-module my_module} in the
+main \imp directory. This will create a new module in modules/my_module. See
+\ref make_module "Making a module" for more information.
 
 */

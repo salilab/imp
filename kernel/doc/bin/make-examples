@@ -132,13 +132,17 @@ def process_dox(inpath, htmlpath, outpath):
 
 def main():
     # return a list of tuples (path, description, ( (file, description),... ))
+    if not os.path.isdir("./kernel/doc/inputs/dox"):
+        os.mkdir("./kernel/doc/inputs/dox")
+    if not os.path.isdir("./kernel/doc/inputs/html"):
+        os.mkdir("./kernel/doc/inputs/html")
     tree=find_examples('doc/examples')
     #print cxxtree
     # write doxygen file
     # process the files to html
     convert_to_html(tree, 'doc/examples', 'kernel/doc/inputs/html')
-    write_doxygen(tree, 'kernel/doc/inputs/examples', 'kernel/doc/inputs/html')
-    process_dox('kernel/doc/inputs', 'kernel/doc/inputs/html', 'kernel/doc/inputs')
+    write_doxygen(tree, 'kernel/doc/inputs/dox/examples', 'kernel/doc/inputs/html')
+    process_dox('kernel/doc/inputs', 'kernel/doc/inputs/html', 'kernel/doc/inputs/dox')
 
 if __name__ == '__main__':
     main()
