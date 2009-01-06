@@ -27,6 +27,10 @@
     - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
     - IMP::core::SingletonModifier, IMP::core::PairModifier, IMP::core::TripletModifier
 
+    There are a few blocks of functionality that cut across modules. They are
+    - \ref hierarchy "Code to create and manipulate hierarchies"
+    - \ref bond "Code to create and manipulate bonds"
+
     When programming with \imp, one of the more useful pages is the
     <a href="hierarchy.html">class hierarchy</a> as well as the module main
     pages:
