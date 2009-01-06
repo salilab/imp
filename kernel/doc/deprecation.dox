@@ -2,7 +2,7 @@
    .dox PAGE IN kernel/doc.
 */
 /**
-  \page deprecation Deprecated Functionaly
+  \page deprecation Deprecated Functionality
   
   From time to time, \imp is updated in ways that break backward compatibility.
   In certain cases we will leave the old functionality in so as not to break

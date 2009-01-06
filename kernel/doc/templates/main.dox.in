@@ -5,8 +5,8 @@
   \mainpage IMP Documentation
 
  Welcome to the \imp documentation. If you are not familiar with \imp, you
- should first read the \wiki{installation, Installation Instructions}. You
- should then read our \ref introduction "Introduction to IMP".
+ should read our \ref introduction "Introduction to IMP". For help installing
+ \imp read the \wiki{installation, Installation Instructions}. 
 
  The important documentation can be found in:
  - \wiki{FrontPage,IMP wiki}
