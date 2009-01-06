@@ -76,24 +76,53 @@ public:
     }
     out << "=================================================== " << std::endl;
   }
-  Float get_state_val(const Particle &p, unsigned int i, FloatKey key) const {
-    return data.find(&p)->second->get_state_val(i, key);
+  Float get_state_val(Particle *p, unsigned int i, FloatKey key) const {
+    return data.find(p)->second->get_state_val(i, key);
   }
-  unsigned int get_space_size(const Particle &p) const {
-    return data.find(&p)->second->size();
+  unsigned int get_space_size(Particle *p) const {
+    return data.find(p)->second->size();
   }
-  FloatKey get_attribute(const Particle &p, unsigned int att_index) const {
-    return data.find(&p)->second->get_attributes()[att_index];
+  FloatKey get_attribute_key(Particle *p, unsigned int att_index) const {
+    return data.find(p)->second->get_attributes()[att_index];
   }
-  unsigned int get_number_of_attributes(const Particle &p) const {
-    return data.find(&p)->second->get_attributes().size();
+  unsigned int get_number_of_attributes(Particle *p) const {
+    return data.find(p)->second->get_attributes().size();
   }
-  void show_space(const Particle &p, std::ostream& out = std::cout) const {
-    data.find(&p)->second->show(out);
+  void show_space(Particle *p, std::ostream& out = std::cout) const {
+    data.find(p)->second->show(out);
   }
   void add_space(const Particle &p, SimpleDiscreteSpace &sds) {
     data[&p] = &sds;
   }
+
+  void populate_states_of_particles(Particles *particles,
+      std::map<std::string, CombState *> *states) const
+  {
+    Int num_states = 1;
+    for (Particles::const_iterator it = particles->begin();
+         it != particles->end(); it++) {
+      num_states *= data.find(*it)->second->size();
+    }
+    Int global_iterator, global_index;
+    CombState *calc_state;
+    Particle* p;
+    Int sample_size;
+    for (Int state_index = 0;state_index < num_states; state_index++) {
+      calc_state = new CombState();
+      global_iterator = num_states;
+      global_index = state_index;
+      for (Particles::const_iterator it = particles->begin();
+           it != particles->end(); it++) {
+        p = *it;
+        sample_size = data.find(p)->second->size();
+        global_iterator /= sample_size;
+        calc_state->add_data_item(p, global_index / global_iterator);
+        global_index -= (global_index / global_iterator) * global_iterator;
+      }
+      (*states)[calc_state->partial_key(particles)] = calc_state;
+    }
+  }
+
 protected:
   std::map<const Particle *, SimpleDiscreteSpace *> data;
 };

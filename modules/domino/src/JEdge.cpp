@@ -45,7 +45,7 @@ void JEdge::init_separators()
   //get the set of interacing particles
   Particles *intersection_set = new Particles();
   source_->get_intersection(*target_, *intersection_set);
-  source_->populate_states_of_particles(*intersection_set, &separators_);
+  source_->populate_states_of_particles(intersection_set, &separators_);
   source_old_score_separators_ = std::map<std::string, float>();
   target_old_score_separators_ = std::map<std::string, float>();
   source_new_score_separators_ = std::map<std::string, float>();

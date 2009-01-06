@@ -36,7 +36,7 @@ class my_optimizer:
             #move the model to state
             for i,p in enumerate(self.particles):
                 opt_val = int(self.discrete_sampler.get_state_val(
-                               p,a[i],self.discrete_sampler.get_attribute(p,0)))
+                               p,a[i],self.discrete_sampler.get_attribute_key(p,0)))
                 p.set_value(IMP.FloatKey("OPT"),opt_val)
             score = self.mdl.evaluate(False)
             if score < min_score:

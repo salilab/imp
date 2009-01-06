@@ -32,7 +32,7 @@ JNode::JNode(const Particles &p, int node_ind): ds_(NULL)
 void JNode::init_sampling(const DiscreteSampler &ds)
 {
   ds_ = &ds;
-  populate_states_of_particles(particles_, &comb_states_);
+  populate_states_of_particles(&particles_, &comb_states_);
 }
 
 CombState* JNode::get_state(unsigned int index, bool move2state_) const {
@@ -47,11 +47,13 @@ CombState* JNode::get_state(unsigned int index, bool move2state_) const {
   return it->second;
 }
 
-
-void JNode::populate_states_of_particles(const Particles &particles,
+void JNode::populate_states_of_particles(Particles *particles,
                                          std::map<std::string,
-                                         CombState *> *states_) const
+                                         CombState *> *states)
 {
+  ds_->populate_states_of_particles(particles, states);
+}
+/*
   long num_states = number_of_states();
   long global_iterator, global_index;
   CombState *calc_state_;
@@ -70,7 +72,7 @@ void JNode::populate_states_of_particles(const Particles &particles,
     (*states_)[calc_state_->partial_key(&particles)] = calc_state_;
   } // state_index iteration
 }
-
+*/
 void JNode::show_sampling_space(std::ostream& out) const
 {
   out << std::endl << " sampling space of JNode with index: " << node_ind_;
@@ -78,7 +80,7 @@ void JNode::show_sampling_space(std::ostream& out) const
        pi != particles_.end(); pi++) {
     out << std::endl << " states for particle name : " <<
     (*pi)->get_value(IMP::StringKey("name")) << ":" << std::endl;
-    ds_->show_space(**pi, out);
+    ds_->show_space(*pi, out);
   }
 }
 
@@ -145,9 +147,9 @@ void JNode::move2state(const CombState &cs) const
                 unsigned int>::const_iterator it = cs.get_data().begin();
        it != cs.get_data().end(); it++) {
     Particle *p = it->first;
-    for (unsigned int i = 0; i < ds_->get_number_of_attributes(*p); i++) {
-      p->set_value(ds_->get_attribute(*p, i),
-               ds_->get_state_val(*p, it->second, ds_->get_attribute(*p, i)));
+    for (unsigned int i = 0; i < ds_->get_number_of_attributes(p); i++) {
+      p->set_value(ds_->get_attribute_key(p, i),
+               ds_->get_state_val(p, it->second, ds_->get_attribute_key(p, i)));
     }
   }
 }
