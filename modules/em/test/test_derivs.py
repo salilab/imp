@@ -59,10 +59,6 @@ class DerivativesTest(IMP.test.TestCase):
         init_particle(self.particles,2,3.0,12.0,12.0,rad,wei,1)
         IMP.modeller.copy_imp_coords_to_modeller(self.particles,self.modeller_model.atoms)
         #modeller_model.write(file='xxx.pdb')
-        self.particle_indexes = IMP.Ints()
-        self.particle_indexes.clear()
-        for i in xrange(npart):
-            self.particle_indexes.push_back(i)
         self.atmsel = modeller.selection(self.modeller_model)
         print "initialization done ..."
 
@@ -74,8 +70,8 @@ class DerivativesTest(IMP.test.TestCase):
            5. calculate derivatives """
         resolution=3.
         voxel_size=1.
-        access_p = IMP.em.IMPParticlesAccessPoint(self.imp_model,
-                                  self.particle_indexes, "radius", "weight")
+        access_p = IMP.em.IMPParticlesAccessPoint(self.particles,
+                           IMP.FloatKey("radius"), IMP.FloatKey("weight"))
         model_map = EM.SampledDensityMap(access_p, resolution, voxel_size)
         erw = EM.EMReaderWriter()
         xorigin = model_map.get_header().get_xorigin()
@@ -91,12 +87,11 @@ class DerivativesTest(IMP.test.TestCase):
         em_map.get_header_writable().set_zorigin(zorigin)
         em_map.get_header_writable().set_resolution(resolution)
         ind_emrsr = []
-        ind_emrsr.append(IMP.em.EMFitRestraint(self.imp_model,
-                                           self.particle_indexes,
-                                           em_map,
-                                           "radius",
-                                           "weight",
-                                           1.0))
+        ind_emrsr.append(IMP.em.EMFitRestraint(self.particles,
+                                               em_map,
+                                               IMP.FloatKey("radius"),
+                                               IMP.FloatKey("weight"),
+                                               1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
         print("EM-score score: "+str(self.atmsel.energy()) )
         self.atmsel.randomize_xyz(1.0)

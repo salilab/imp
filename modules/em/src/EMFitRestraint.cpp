@@ -12,49 +12,29 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-EMFitRestraint::EMFitRestraint(Model& model,
-                               std::vector<int>& particle_indexes,
+EMFitRestraint::EMFitRestraint(const Particles &ps,
                                DensityMap &em_map,
-                               std::string radius_str,
-                               std::string weight_str,
+                               FloatKey radius_key,
+                               FloatKey weight_key,
                                float scale)
 {
-
   target_dens_map_ = &em_map;
   scalefac_ = scale;
   model_dens_map_ = new SampledDensityMap(*em_map.get_header());
-
-
-
-  /*  number of particles in the restraint */
-  num_particles_ = particle_indexes.size();
-
-
-  // set up the particles, their position indexes, and their type indexes
-  Particle* p1;
-  for (int i = 0; i < num_particles_; ++i) {
-    p1 = model.get_particle(particle_indexes[i]);
-    add_particle(p1);
-  }
-
+  add_particles(ps);
   //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after setting up particles "
   //                   << endl );
 
 
   // init the access_p
-  access_p_ = IMPParticlesAccessPoint(model, particle_indexes, radius_str,
-                                      weight_str);
-
-
+  access_p_ = IMPParticlesAccessPoint(ps, radius_key,weight_key);
    // initialize the derivatives
 
   //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit before initializing derivatives "
   //                   << endl);
-  dx_.insert(dx_.begin(), particle_indexes.size(), 0.0);
-  dy_.insert(dy_.begin(), particle_indexes.size(), 0.0);
-  dz_.insert(dz_.begin(), particle_indexes.size(), 0.0);
-
-
+  dx_.resize(get_number_of_particles(), 0.0);
+  dy_.resize(get_number_of_particles(), 0.0);
+  dz_.resize(get_number_of_particles(), 0.0);
 
   //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after initializing derivatives "
   //                   << endl);
@@ -66,8 +46,10 @@ EMFitRestraint::EMFitRestraint(Model& model,
 
   //     IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << endl);
   //  have an initial sampling of the model grid
-
+  std::cout<<"RSR_EM_Fit::RSR_EM_Fit after std norm:"<<std::endl;
+  std::cout<<model_dens_map_<<std::endl;
   model_dens_map_->resample(access_p_);
+  std::cout<<"RSR_EM_Fit::RSR_EM_Fit after resample " <<std::endl;
   // IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << endl);
 }
 
