@@ -16,8 +16,9 @@
     Split lines if necessary to ensure that
     no line is longer than 80 characters.
 
-    All Python code should conform to the Python style guide
-    (http://www.python.org/dev/peps/pep-0008/). In essence this
+    All Python code should conform to the
+    \external{www.python.org/dev/peps/pep-0008/, Python style guide}.
+    In essence this
     translates to 4-space indents, no tabs, and similar class, method
     and variable naming to the C++ code. You can ensure that your
     Python code is correctly indented by using the

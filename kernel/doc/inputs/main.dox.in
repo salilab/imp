@@ -3,7 +3,7 @@
 
  Welcome to the \imp documentation. If you are not familiar with \imp, you
  should read our \ref introduction "Introduction to IMP". For help installing
- \imp read the \wiki{installation, Installation Instructions}.
+ \imp read the \wiki{installation, installation instructions}.
 
  The important documentation can be found in:
  - \ref api "API Documentation"
@@ -12,7 +12,7 @@
  - \wiki{FAQ, FAQ}
 
  If you encounter a bug or would like a new feature, please report it in the
- <a href="https://salilab.org/imp/bugs/">Bug Tracker</a>.
+ \salilab{imp/bugs,Bug Tracker}.
 
  Information for developers and prospective contributes to \imp can be found
  on the \ref developers "Developers page".
@@ -25,7 +25,7 @@
  - replacements for the non-bonded lists: IMP::core::ClosePairsScoreState
    and IMP::core::CloseBipartitlePairsScoreState
 
- - <a href="https://salilab.org/imp/doc/doxygen/deprecated.html"><b>many existing classes</b></a> have been \ref deprecation "deprecated".
+ - \salilab{imp/doc/doxygen/deprecated.html,many existing classes} have been \ref deprecation "deprecated".
 
  */
  

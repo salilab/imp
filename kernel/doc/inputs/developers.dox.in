@@ -10,11 +10,11 @@
     \section dev_links Useful Links
     - \ref api "API documentation"
     - \ref coding_conventions "Coding conventions"
-    - <a href="https://salilab.org/internal/imp/tests.html"><b>Daily build status</b></a>
+    - \salilab{internal/imp/tests.html,Daily build status}
     - \ref devguide "Developer guide"
-    - \ilink{bugs}{Bug tracker}
+    - \salilab{imp/bugs,Bug tracker}
     - \impdev email list. All developers should monitor this list. The
-      discussions are \ilink{archives/imp-dev}{archived}
+      discussions are \salilab{imp/archives/imp-dev,archived}
     - \impcommit is an email list which received notifications
       of all changes made to the \imp svn.
 */
