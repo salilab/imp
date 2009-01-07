@@ -15,11 +15,11 @@ public:
   // implements particle iterator
   virtual ~ParticlesAccessPoint(){}
   virtual int get_size() const =0;
-  virtual float get_x(int index)const=0;
-  virtual float get_y(int index)const=0;
-  virtual float get_z(int index)const=0;
-  virtual float get_r(int index)const=0;
-  virtual float get_w(int index)const=0;
+  virtual float get_x(unsigned int index)const=0;
+  virtual float get_y(unsigned int index)const=0;
+  virtual float get_z(unsigned int index)const=0;
+  virtual float get_r(unsigned int index)const=0;
+  virtual float get_w(unsigned int index)const=0;
   virtual void set_x(unsigned int index, float xval)=0;
   virtual void set_y(unsigned int index, float yval)=0;
   virtual void set_z(unsigned int index, float zval)=0;
@@ -72,11 +72,11 @@ public:
   }
 
   int get_size() const {return x_.size();}
-  float get_x(int index)const {return x_[index];}
-  float get_y(int index)const {return y_[index];}
-  float get_z(int index)const {return z_[index];}
-  float get_r(int index)const {return radii_[index];}
-  float get_w(int index)const {return weights_[index];}
+  float get_x(unsigned int index)const {return x_[index];}
+  float get_y(unsigned int index)const {return y_[index];}
+  float get_z(unsigned int index)const {return z_[index];}
+  float get_r(unsigned int index)const {return radii_[index];}
+  float get_w(unsigned int index)const {return weights_[index];}
   void set_x(unsigned int index, float xval) { 
      if (index < x_.size() && index >= 0) x_[index] = xval;
   }
