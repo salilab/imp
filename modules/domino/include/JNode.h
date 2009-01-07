@@ -103,7 +103,7 @@ public:
     return number_of_states;
   }
   //! Move the system to the state encoded in the class
-  void move2state(const CombState &cs) const;
+  void move2state(CombState *cs) const;
   void clear();
 protected:
   std::vector<Int> sorted_particle_indexes_; // needed for calculating
