@@ -7,7 +7,7 @@
 
 
 #include <IMP/core/MaxChangeScoreState.h>
-#include <IMP/core/deprecation.h>
+#include <IMP/deprecation.h>
 
 #include <IMP/internal/utility.h>
 

@@ -189,7 +189,6 @@ namespace IMP {
 %include "IMP/core/VelocityScalingOptimizerState.h"
 %include "IMP/core/XYZRDecorator.h"
 %include "IMP/core/model_io.h"
-%include "IMP/core/deprecation.h"
 %include "IMP/core/PairChainRestraint.h"
 %include "IMP/core/PairListRestraint.h"
 %include "IMP/core/TripletChainRestraint.h"

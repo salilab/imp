@@ -8,7 +8,7 @@ files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
          'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h', 'macros.h',
          'TripletScore.h', 'exception.h', 'VersionInfo.h',
          'Object.h', 'Pointer.h', 'RefCountedObject.h', 'ParticleRefiner.h',
-         'container_macros.h']
+         'container_macros.h', 'deprecation.h']
 
 # Subdirectories
 files = [File(f) for f in files] \

@@ -7,7 +7,7 @@
 
 #include <IMP/core/PairChainRestraint.h>
 #include <IMP/core/XYZDecorator.h>
-#include <IMP/core/deprecation.h>
+#include <IMP/deprecation.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>

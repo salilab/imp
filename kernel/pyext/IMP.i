@@ -122,6 +122,7 @@ namespace IMP {
 
 %include "IMP/base_types.h"
 %include "Vector3D.i"
+%include "IMP/deprecation.h"
 %include "IMP/Object.h"
 %include "IMP/RefCountedObject.h"
 %include "IMP/Index.h"

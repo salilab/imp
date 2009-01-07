@@ -5,9 +5,9 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include <IMP/core/deprecation.h>
+#include <IMP/deprecation.h>
 #include <IMP/core/BondDecoratorListScoreState.h>
-#include <IMP/core/deprecation.h>
+#include <IMP/deprecation.h>
 
 #include <algorithm>
 

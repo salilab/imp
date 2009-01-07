@@ -8,7 +8,7 @@
 #include <IMP/core/BipartiteNonbondedListScoreState.h>
 #include <IMP/core/internal/bbox_nbl_helpers.h>
 #include <IMP/core/XYZDecorator.h>
-#include <IMP/core/deprecation.h>
+#include <IMP/deprecation.h>
 #include <IMP/internal/utility.h>
 
 #include <vector>
