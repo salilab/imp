@@ -1,6 +1,6 @@
 files = [
          'constants.cpp',
-         'kernel_version_info.cpp',
+         'kernel_version_info.cpp', 'deprecation.cpp'
         ]
 
 files = [File(x) for x in files]

@@ -1,7 +1,6 @@
 files = [
          'ParticleGrid.cpp',
          'bbox_nbl_helpers.cpp',
-         'deprecation.cpp',
          'graph_base.cpp',
         ]
 

@@ -8,7 +8,7 @@
 
 #include <IMP/core/NonbondedRestraint.h>
 #include <IMP/core/NonbondedListScoreState.h>
-#include <IMP/core/deprecation.h>
+#include <IMP/deprecation.h>
 
 #include <IMP/PairScore.h>
 #include <IMP/log.h>
