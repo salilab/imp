@@ -182,7 +182,7 @@ public:
 
   //// Treats vector like a real array. Acceptable indices 0, 1, 2. Other
   // indices may cause run-time errors. 
-  const real& operator[](const unsigned short coord) const{
+  const real& operator[](const unsigned int coord) const{
     return c[coord];
   }
 
