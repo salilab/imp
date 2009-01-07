@@ -37,8 +37,9 @@ class SampleTests(IMP.test.TestCase):
         """Check that reading a map back in preserves the stdevs"""
         resolution=3.
         voxel_size=1.
-        access_p = IMP.em.IMPParticlesAccessPoint(self.imp_model,
-                                  self.particle_indexes, "radius", "weight")
+        access_p = IMP.em.IMPParticlesAccessPoint(self.particles,
+                              IMP.FloatKey("radius"), IMP.FloatKey("weight"))
+
         model_map = EM.SampledDensityMap(access_p, resolution, voxel_size)
         model_map.calcRMS()
         erw = EM.EMReaderWriter()

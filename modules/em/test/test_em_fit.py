@@ -19,17 +19,14 @@ class FittingTest(IMP.test.TestCase):
         self.assertEqual(header.nx, 27)
         self.assertEqual(header.ny, 27)
         self.assertEqual(header.nz, 27)
-
     def load_particles(self):
-        radius_key = IMP.FloatKey("radius")
-        weight_key = IMP.FloatKey("weight")
+        self.radius_key = IMP.FloatKey("radius")
+        self.weight_key = IMP.FloatKey("weight")
         protein_key = IMP.FloatKey("protein")
         id_key = IMP.FloatKey("id")
 
 
         self.particles = []
-        self.particle_indexes = IMP.Ints()
-
         origin =  3.0
         self.particles.append(self.create_point_particle(self.imp_model,
                                                          9.+origin, 9.+origin,
@@ -41,27 +38,22 @@ class FittingTest(IMP.test.TestCase):
                                                          3.+origin, 12.+origin,
                                                          12.+origin))
         p1 = self.particles[0]
-        p1.add_attribute(radius_key, 1.0)
-        p1.add_attribute(weight_key, 1.0)
+        p1.add_attribute(self.radius_key, 1.0)
+        p1.add_attribute(self.weight_key, 1.0)
         p1.add_attribute(protein_key, 1)
         p1.add_attribute(id_key, 1)
-        self.particle_indexes.push_back(0)
 
         p1 = self.particles[1]
-        self.particle_indexes.push_back(1)
-        p1.add_attribute(radius_key, 1.0)
-        p1.add_attribute(weight_key, 1.0)
+        p1.add_attribute(self.radius_key, 1.0)
+        p1.add_attribute(self.weight_key, 1.0)
         p1.add_attribute(protein_key, 1)
         p1.add_attribute(id_key, 2)
 
         p1 = self.particles[2]
-        p1.add_attribute(radius_key, 1.0)
-        p1.add_attribute(weight_key, 1.0)
+        p1.add_attribute(self.radius_key, 1.0)
+        p1.add_attribute(self.weight_key, 1.0)
         p1.add_attribute(protein_key, 1)
         p1.add_attribute(id_key, 3)
-
-        self.particle_indexes.push_back(2)
-
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
@@ -83,8 +75,9 @@ class FittingTest(IMP.test.TestCase):
 
     def test_em_fit(self):
         """Check that correlation of particles with their own density is 1"""
-        r = IMP.em.EMFitRestraint(self.imp_model, self.particle_indexes,
-                                  self.scene, "radius", "weight", 1.0)
+        r = IMP.em.EMFitRestraint(self.particles,self.scene,
+                                  self.radius_key,
+                                  self.weight_key, 1.0)
         self.imp_model.add_restraint(r)
         score = self.imp_model.evaluate(False)
         print "EM score (1-CC) = "+str(score)
@@ -93,8 +86,9 @@ class FittingTest(IMP.test.TestCase):
     def test_cast(self):
         """Make sure that we can cast Restraint* to EMFitRestraint*"""
         m = self.imp_model
-        r1 = IMP.em.EMFitRestraint(m, self.particle_indexes,
-                                   self.scene, "radius", "weight", 1.0)
+        r1 = IMP.em.EMFitRestraint(self.particles,self.scene,
+                                   IMP.FloatKey("radius"),
+                                   IMP.FloatKey("weight"), 1.0)
         sf = IMP.core.Harmonic(10.0, 0.1)
         r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
                                         self.particles[1])
@@ -105,11 +99,11 @@ class FittingTest(IMP.test.TestCase):
         self.assert_(isinstance(IMP.em.EMFitRestraint.cast(r1),
                                 IMP.em.EMFitRestraint))
         self.assert_(IMP.em.EMFitRestraint.cast(r2) is None)
-
     def test_get_methods(self):
         """Check EMFitRestraint's get methods"""
-        r1 = IMP.em.EMFitRestraint(self.imp_model, self.particle_indexes,
-                                   self.scene, "radius", "weight", 1.0)
+        r1 = IMP.em.EMFitRestraint(self.particles,self.scene,
+                                   self.radius_key,
+                                   self.weight_key, 1.0)
         r1.set_was_owned(True)
         self.assert_(isinstance(r1.get_model_dens_map(), EM.SampledDensityMap))
 

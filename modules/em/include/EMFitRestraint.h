@@ -29,12 +29,18 @@ IMPEM_BEGIN_NAMESPACE
 class IMPEMEXPORT EMFitRestraint : public Restraint
 {
 public:
-
-  EMFitRestraint(Model& model,
-                 std::vector<int>& particle_indexes, //the selection
+  //! Constructor
+  /**
+    \param[in] ps The particles participating in the fitting score
+    \param[in] em_map  The density map used in the fitting score
+    \param[in] radius_key the name of the radius attribute of the particles
+    \param[in] weight_key the name of the weight attribute of the particles
+    \param[in] scale
+   */
+  EMFitRestraint(const Particles &ps,
                  DensityMap &em_map,
-                 std::string radius_str,
-                 std::string weight_str,
+                 FloatKey radius_key,
+                 FloatKey weight_key,
                  float scale);
 
   virtual ~EMFitRestraint();
@@ -52,7 +58,7 @@ private:
   SampledDensityMap *model_dens_map_;
   // reference to the IMP environment
   float scalefac_;
-  int num_particles_;
+  int num_particles_; // can it be removed ?
   IMPParticlesAccessPoint access_p_;
   // derivatives
   std::vector<Float> dx_, dy_ , dz_;
