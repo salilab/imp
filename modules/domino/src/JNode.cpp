@@ -42,7 +42,7 @@ CombState* JNode::get_state(unsigned int index, bool move2state_) const {
     ++it;
   }
   if (move2state_) {
-    move2state(*(it->second));
+    move2state(it->second);
   }
   return it->second;
 }
@@ -141,17 +141,9 @@ void JNode::get_intersection(const JNode &other, Particles &in) const
   }
 }
 
-void JNode::move2state(const CombState &cs) const
+void JNode::move2state(CombState *cs) const
 {
-  for (std::map<Particle *,
-                unsigned int>::const_iterator it = cs.get_data()->begin();
-       it != cs.get_data()->end(); it++) {
-    Particle *p = it->first;
-    for (unsigned int i = 0; i < ds_->get_number_of_attributes(p); i++) {
-      p->set_value(ds_->get_attribute_key(p, i),
-               ds_->get_state_val(p, it->second, ds_->get_attribute_key(p, i)));
-    }
-  }
+  ds_->move2state(cs);
 }
 
 void JNode::realize(Restraint *r, float weight)
@@ -175,7 +167,7 @@ void JNode::realize(Restraint *r, float weight)
        it != comb_states_.end(); it++) {
     std::string partial_key = it->second->partial_key(&(r_particles));
     if (result_cache.find(partial_key) == result_cache.end()) {
-      move2state(*(it->second));
+      move2state(it->second);
       score = r->evaluate(NULL) * weight;
       result_cache[partial_key] = score;
     } else {
@@ -217,7 +209,7 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
   s.show(error_message);
   IMP_assert(min_score < INT_MAX, error_message.str());
   if (move2state_) {
-    move2state(*(min_comb[0]));
+    move2state(min_comb[0]);
   }
   return min_comb;
 }
@@ -260,7 +252,7 @@ std::vector<CombState *>* JNode::find_minimum(bool move2state_) const
     }
   }
   if (move2state_) {
-    move2state(**(min_combs->begin()));
+    move2state(*(min_combs->begin()));
   }
   return min_combs;
 }

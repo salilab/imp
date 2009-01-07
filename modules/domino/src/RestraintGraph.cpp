@@ -401,7 +401,7 @@ void RestraintGraph::move_model2state_rec(unsigned int father_ind,
   for (std::vector<JNode *>::const_iterator it = node_data.begin();
        it != node_data.end(); it++) {
     CombState *node_state = best_state.get_partial(*((*it)->get_particles()));
-    (*it)->move2state(*node_state);
+    (*it)->move2state(node_state);
     delete(node_state);
   }
 }

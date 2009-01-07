@@ -73,6 +73,17 @@ public:
    */
   virtual void populate_states_of_particles(Particles *particles,
               std::map<std::string, CombState *> *states) const{}
+  void move2state(CombState *cs) const {
+    IMP::Particle *p;
+    for (std::map<Particle *,unsigned int>::const_iterator
+         it = cs->get_data()->begin();it != cs->get_data()->end(); it++) {
+      p = it->first;
+      for (unsigned int i = 0; i < get_number_of_attributes(p); i++) {
+        p->set_value(get_attribute_key(p, i),
+                     get_state_val(p, it->second, get_attribute_key(p, i)));
+      }
+    }
+  }
 };
 
 IMPDOMINO_END_NAMESPACE
