@@ -17,6 +17,16 @@
  Information for developers and prospective contributes to \imp can be found
  on the \ref developers "Developers page".
 
+ \section new What's new in IMP?
+
+ - a script to \ref make_module "create a new module" to help you get started
+   quickly.
+
+ - replacements for the non-bonded lists: IMP::core::ClosePairsScoreState
+   and IMP::core::CloseBipartitlePairsScoreState
+
+ - <a href="https://salilab.org/imp/doc/doxygen/deprecated.html"><b>many existing classes</b></a> have been \ref deprecation "deprecated".
+
  */
  
 /**
