@@ -251,6 +251,12 @@ void RestraintGraph::initialize_potentials(Restraint &r, Float weight)
     std::cerr << " has not been realized." << std::endl;
   }
   else {
+    std::cout<< "RestraintGraph::initialize_potentials restraint between : ";
+    for (Particles::const_iterator ii = r_particles.begin();
+         ii < r_particles.end();ii++) {
+      std::cout << (*ii)->get_value(IMP::StringKey("name")) << " :: ";
+    }
+    std::cout<<" is realized by node " << jn->get_node_index() << std::endl;
     jn->realize(&r, weight);
   }
 }
@@ -285,9 +291,14 @@ void  RestraintGraph::infer()
           << " Please reset the graph before calling infer";
   IMP_assert(infered == false, err_msg.str());
   root = 0;
+  std::cout <<"RestraintGraph::infer before dfs_order " << std::endl;
   dfs_order(root);
+  std::cout <<"RestraintGraph::infer before collect_evidence " << std::endl;
+  //show();
   collect_evidence(root);
+  std::cout <<"RestraintGraph::infer before distribute_evidence " << std::endl;
   distribute_evidence(root);
+  std::cout <<"RestraintGraph::infer after distribute_evidence " << std::endl;
   //min_combs = node_data[root]->find_minimum();
   std::vector<CombState *>*  temp_min_combs = node_data[root]->find_minimum();
   err_msg.clear();
@@ -374,6 +385,7 @@ void RestraintGraph::distribute_evidence(unsigned int father_ind)
 
 void RestraintGraph::update(unsigned int w, unsigned int v)
 {
+  std::cout<<"RestraintGraph::update start from "<< w <<" to " <<v<< std::endl;
   // update node with index w  based on node with index: v
   // check if there is an edge between w and v
   std::stringstream error_message;
@@ -386,13 +398,18 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
   JNode *v_data = node_data[v];
   //minimize over all sub-configurations in  v that do not involve the w
   JEdge *e = edge_data[get_edge_key(w,v)];
+  std::cout<<"RestraintGraph::update before min_marginalize"<< std::endl;
   e->min_marginalize(v_data, w_data);
+  std::cout<<"RestraintGraph::update before get_interaction"<< std::endl;
   //now update the to_node according to the new separators
   Particles intersection_set;
   v_data->get_intersection(*w_data, intersection_set);
+  std::cout<<"RestraintGraph::update before update potentials"<< std::endl;
   w_data->update_potentials(*(e->get_old_separators(w_data)),
                             *(e->get_new_separators(w_data)),
                             intersection_set);
+  std::cout<<"RestraintGraph::update end from "<< w <<" to "<<v<< std::endl;
+
 }
 
 void RestraintGraph::move_model2state_rec(unsigned int father_ind,
