@@ -50,7 +50,7 @@ def _get_python_include(env):
     if env['python_include']:
         return env['python_include']
     elif env['wine']:
-        return '/usr/lib/w32comp/w32python/2.5/include/'
+        return '/usr/lib/w32comp/w32python/2.6/include/'
     else:
         import distutils.sysconfig
         return distutils.sysconfig.get_python_inc()
@@ -341,8 +341,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # mslink tool complains
         e['SHLIBPREFIX'] = ''
         e['LDMODULESUFFIX'] = e['SHLIBSUFFIX'] = '.pyd'
-        # Directory containing python25.lib:
-        e.Append(LIBPATH=['/usr/lib/w32comp/w32python/2.5/lib/'])
+        # Directory containing python26.lib:
+        e.Append(LIBPATH=['/usr/lib/w32comp/w32python/2.6/lib/'])
     else:
         if platform == 'aix':
             # Make sure compilers are in the PATH, so that Python's script for
