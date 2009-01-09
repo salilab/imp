@@ -211,7 +211,7 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
   std::stringstream error_message;
   error_message<<"JNode::min_marginalize could not marginalize over separator:";
   s.show(error_message);
-  error_message << " in node with index : " << node_ind_ <<;
+  error_message << " in node with index : " << node_ind_;
   error_message << " the minimum score is : " << min_score << std::endl;
   IMP_assert(min_score < INT_MAX, error_message.str());
   if (move_to_state) {
