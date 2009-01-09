@@ -122,7 +122,8 @@ public:
 
   //  CombState* find_minimum() const;
   void show(std::ostream& out = std::cout) const {
-  out << "CombState combination: ";
+    out << "CombState combination: number of particles : ";
+    out << data.size() << " :: ";
   for (std::map<Particle *, unsigned int>::const_iterator it = data.begin();
        it != data.end(); it++) {
     out << it->first->get_value(IMP::StringKey("name"))  << "|"
