@@ -61,15 +61,17 @@ public:
    */
   void populate_states_of_particles(Particles *particles,
           std::map<std::string,CombState *> *states);
+  //! Adds the restraint values to all combinations
   void realize(Restraint *r, float weight);
 
   //! Finds the minimum combination in the node.
-  /** \param[in]   move2state     true if the model should move to the new state
+  /** \param[in]   move_to_state     true if the model should move to the new
+                                     state
       \return all of the combinations that reach the global minimum
    */
-  std::vector<CombState *> * find_minimum(bool move2state_ = false) const;
+  std::vector<CombState *> * find_minimum(bool move_to_state = false) const;
 
-  CombState* get_state(unsigned int index, bool move2state_ = false) const;
+  CombState* get_state(unsigned int index, bool move_to_state = false) const;
 
   void show(std::ostream& out = std::cout) const;
   void show_sampling_space(std::ostream& out = std::cout) const;
@@ -79,8 +81,15 @@ public:
   const Particles *get_particles() const {
     return &particles_;
   }
+  //! Return the optimal score for the separator, for the given separator
+  //! find the optimal combination of the rest of the components.
+  /**
+     \param[in] s a combination of some of the particles in the node
+     \param[in] move_to_state True if should move to the state with the
+                              minimum score.
+  */
   std::vector<CombState *> min_marginalize(const CombState &s,
-      bool move2state_ = false);
+      bool move_to_state = false);
 
   //! Update the potentials
   /** \param[in] old_score_separators
