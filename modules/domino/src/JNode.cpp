@@ -93,7 +93,8 @@ void JNode::show(std::ostream& out) const
        particles_.end(); it++) {
     out << (*it)->get_value(IMP::StringKey("name")) << " || " ;
   }
-  out << std::endl << "==combinations: " << std::endl;
+  out << std::endl << "==combinations ( " << comb_states_.size();
+  out << " ): " << std::endl;
   for (std::map<std::string, CombState *>::const_iterator it =
          comb_states_.begin(); it != comb_states_.end(); it++) {
     out << " (" << it->first << " , " << it->second->get_total_score() << ") ";
@@ -146,8 +147,11 @@ void JNode::move2state(CombState *cs) const
   ds_->move2state(cs);
 }
 
+
 void JNode::realize(Restraint *r, float weight)
 {
+  std::cout <<" realize restraint start in node with index ";
+  std::cout << node_ind_ << std::endl;
   std::map<std::string, float> temp_calculations;
   // stores calculated discrete values. It might be that each appears more
   // than once, since the node may contain more particles than the ones
@@ -163,9 +167,10 @@ void JNode::realize(Restraint *r, float weight)
       r_particles.push_back(*it2);
      }
   }
+  std::string partial_key;
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
        it != comb_states_.end(); it++) {
-    std::string partial_key = it->second->partial_key(&(r_particles));
+    partial_key = it->second->partial_key(&(r_particles));
     if (result_cache.find(partial_key) == result_cache.end()) {
       move2state(it->second);
       score = r->evaluate(NULL) * weight;
@@ -177,10 +182,8 @@ void JNode::realize(Restraint *r, float weight)
   }
 }
 
-//! Return the optimal score for the separator, for the given separator
-//! find the optimal combination of the rest of the components.
 std::vector<CombState *> JNode::min_marginalize(const CombState &s,
-                                                bool move2state_)
+                                                bool move_to_state)
 {
   float min_score = INT_MAX;
   std::vector<CombState *> min_comb;
@@ -196,6 +199,7 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
     }
   }
 
+  //get all of the combinations of the minimum score
   for (std::map<std::string, CombState *>::iterator it = comb_states_.begin();
        it != comb_states_.end(); it++) {
     if (it->second->is_part(s)) {
@@ -205,10 +209,12 @@ std::vector<CombState *> JNode::min_marginalize(const CombState &s,
     }
   }
   std::stringstream error_message;
-  error_message << "JNode::min_marginalize couldn't marg over separator:";
+  error_message<<"JNode::min_marginalize could not marginalize over separator:";
   s.show(error_message);
+  error_message << " in node with index : " << node_ind_ <<;
+  error_message << " the minimum score is : " << min_score << std::endl;
   IMP_assert(min_score < INT_MAX, error_message.str());
-  if (move2state_) {
+  if (move_to_state) {
     move2state(min_comb[0]);
   }
   return min_comb;
