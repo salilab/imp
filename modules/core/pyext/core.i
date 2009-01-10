@@ -192,6 +192,7 @@ namespace IMP {
 %include "IMP/core/PairChainRestraint.h"
 %include "IMP/core/PairListRestraint.h"
 %include "IMP/core/TripletChainRestraint.h"
+%include "IMP/core/TruncatedHarmonic.h"
 
 %include "IMP/core/ListPairContainer.h"
 %include "IMP/core/PairsRestraint.h"
@@ -228,5 +229,8 @@ namespace IMP {
     %template(PairContainers) ::std::vector<PairContainer*>;
     %template(SingletonContainerIndex) ::IMP::Index<SingletonContainer>;
     %template(PairContainerIndex) ::IMP::Index<PairContainer>;
+    %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
+    %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
+    %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
   }
 }

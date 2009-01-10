@@ -10,6 +10,7 @@ files = [
          'evaluate_distance_pair_score.h',
          'graph_base.h',
          'hierarchy_helpers.h',
+         'truncated_harmonic.h',
          'utility.h',
         ]
 
