@@ -75,7 +75,7 @@ public:
               std::map<std::string, CombState *> *states) const{}
   //! Set the attributes of the particles in the combination to the states
   //! indicated in the combination
-  virtual void move2state(CombState *cs) const {
+  virtual void move2state(const CombState *cs) const {
     IMP::Particle *p;
     for (std::map<Particle *,unsigned int>::const_iterator
          it = cs->get_data()->begin();it != cs->get_data()->end(); it++) {

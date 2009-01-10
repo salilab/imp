@@ -38,6 +38,10 @@ public:
   }
   DiscreteSampler *get_sampling_space() const {return ds_;}
   RestraintGraph  *get_graph() const {return g_;}
+  inline unsigned int get_number_of_solutions() const {
+      return num_of_solutions_;}
+  inline void set_number_of_solutions(unsigned int n){num_of_solutions_=n;}
+  void move_to_opt_comb(unsigned int i) const;
 protected:
   void clear(); //TODO implement!
   //! Creates a new node and add it to the graphs that take part in the
@@ -58,6 +62,7 @@ protected:
   void initialize_jt_graph(int number_of_nodes);
   DiscreteSampler *ds_;
   RestraintGraph *g_;
+  unsigned int num_of_solutions_;
 };
 
 IMPDOMINO_END_NAMESPACE
