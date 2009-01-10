@@ -13,6 +13,7 @@ DominoOptimizer::DominoOptimizer(std::string jt_filename, Model *m)
   ds_ = NULL;
   g_ = new RestraintGraph(jt_filename, m);
   set_model(m);
+  num_of_solutions_=1;
 }
 
 void DominoOptimizer::realize_rec(core::RestraintSet *rs, Float weight)
@@ -70,7 +71,7 @@ Float DominoOptimizer::optimize(unsigned int max_steps)
   g_->clear();
   set_sampling_space(ds_);
   // now infer the minimum
-  g_->infer();
+  g_->infer(num_of_solutions_);
   //move the model to the states that reach the global minimum
   g_->move_model2global_minimum();
   return g_->get_minimum_score();
@@ -92,4 +93,8 @@ void DominoOptimizer::add_jt_edge(int node1_ind, int node2_ind)
   g_->add_edge(node1_ind, node2_ind);
 }
 
+void DominoOptimizer::move_to_opt_comb(unsigned int i)  const {
+  const CombState *opt_s = g_->get_opt_combination(i);
+  ds_->move2state(opt_s);
+}
 IMPDOMINO_END_NAMESPACE

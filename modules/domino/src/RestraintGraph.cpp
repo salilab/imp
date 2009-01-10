@@ -106,22 +106,22 @@ IMPDOMINO_BEGIN_NAMESPACE
 RestraintGraph::RestraintGraph(const std::string &filename, Model *mdl)
 {
   parse_jt_file(filename, mdl);
-  infered = false;
-  min_combs = new std::vector<CombState *>();
+  infered_ = false;
+  min_combs_ = new std::vector<CombState *>();
 }
 
-void RestraintGraph::set_model(IMP::Model *m_)
-{
-  m = m_;
-}
+// void RestraintGraph::set_model(IMP::Model *m_)
+// {
+//   m = m_;
+// }
 
 void RestraintGraph::initialize_graph(int number_of_nodes)
 {
   // TODO: here you need the check if the graph has already been initialize
   // - and if so clear everything.
-  g = Graph(number_of_nodes);
-  node_data = std::vector<JNode *>(number_of_nodes, (JNode *)NULL);
-  edge_data = std::map<Pair, JEdge *>();
+  g_ = Graph(number_of_nodes);
+  node_data_ = std::vector<JNode *>(number_of_nodes, (JNode *)NULL);
+  edge_data_ = std::map<Pair, JEdge *>();
 }
 
 void RestraintGraph::add_node(unsigned int node_index,
@@ -129,10 +129,10 @@ void RestraintGraph::add_node(unsigned int node_index,
 {
   std::stringstream error_message;
   error_message << " RestraintGraph::add_node the input node_index: "
-                << node_index << " is out of range ( " << num_vertices(g)
+                << node_index << " is out of range ( " << num_vertices(g_)
                 << " ) " ;
-  IMP_assert(node_index < num_vertices(g), error_message.str());
-  node_data[node_index] = new JNode(particles,
+  IMP_assert(node_index < num_vertices(g_), error_message.str());
+  node_data_[node_index] = new JNode(particles,
                                     node_index);
 }
 
@@ -153,17 +153,17 @@ void RestraintGraph::add_edge(unsigned int node1_ind, unsigned int node2_ind)
 {
   std::stringstream error_message;
   error_message << " RestraintGraph::add_node the input node_index: "
-                << node1_ind << " is out of range ( " << num_vertices(g)
+                << node1_ind << " is out of range ( " << num_vertices(g_)
                 << " ) " ;
-  IMP_assert(node1_ind < num_vertices(g), error_message.str());
+  IMP_assert(node1_ind < num_vertices(g_), error_message.str());
   error_message.clear();
   error_message << " RestraintGraph::add_node the input node_index: "
-                << node2_ind << " is out of range ( " << num_vertices(g)
+                << node2_ind << " is out of range ( " << num_vertices(g_)
                 << " ) " ;
-  IMP_assert(node2_ind < num_vertices(g), error_message.str());
-  boost::add_edge(node1_ind, node2_ind, g);
-  edge_data[get_edge_key(node1_ind,node2_ind)] =
-    new JEdge(node_data[node1_ind], node_data[node2_ind]);
+  IMP_assert(node2_ind < num_vertices(g_), error_message.str());
+  boost::add_edge(node1_ind, node2_ind, g_);
+  edge_data_[get_edge_key(node1_ind,node2_ind)] =
+    new JEdge(node_data_[node1_ind], node_data_[node2_ind]);
 }
 
 void RestraintGraph::analyse(std::ostream &out) const
@@ -175,17 +175,17 @@ void RestraintGraph::show(std::ostream& out) const
 {
   out << "===========RestraintGraph=========" << std::endl;
   out << " Nodes: " << std::endl;
-  for (unsigned int vi = 0;vi < num_vertices(g);vi++) {
-    JNode *j = node_data[vi];
+  for (unsigned int vi = 0;vi < num_vertices(g_);vi++) {
+    JNode *j = node_data_[vi];
     j->show(out);
   }
   out << " Edges: " << std::endl;
   boost::graph_traits<Graph>::edge_iterator ei_begin, ei_end, ei;
-  tie(ei_begin, ei_end) = edges(g);
+  tie(ei_begin, ei_end) = edges(g_);
   for (ei = ei_begin; ei != ei_end; ei++) {
     out << *ei << std::endl;
-    edge_data.find(get_edge_key(source(*ei, g),
-                                target(*ei, g)))->second->show(out);
+    edge_data_.find(get_edge_key(source(*ei, g_),
+                                target(*ei, g_)))->second->show(out);
   }
   out << "==================================" << std::endl;
   out << "==================================" << std::endl;
@@ -193,21 +193,28 @@ void RestraintGraph::show(std::ostream& out) const
 
 void RestraintGraph::set_sampling_space(const DiscreteSampler &ds_)
 {
-  for (unsigned int vi = 0; vi < num_vertices(g); vi++) {
-    JNode *j = node_data[vi];
+  for (unsigned int vi = 0; vi < num_vertices(g_); vi++) {
+    JNode *j = node_data_[vi];
     j->init_sampling(ds_);
   }
-  for (std::map<Pair, JEdge *>::iterator it = edge_data.begin();
-       it != edge_data.end(); it++) {
+  for (std::map<Pair, JEdge *>::iterator it = edge_data_.begin();
+       it != edge_data_.end(); it++) {
     it->second->init_separators();
   }
-  infered=false;
+  clear_infered_data();
 }
-
+void RestraintGraph::clear_infered_data() {
+  infered_=false;
+  for(std::vector<CombState *>::iterator it = min_combs_->begin();
+      it != min_combs_->end();it++) {
+    delete *it;
+  }
+  min_combs_->clear();
+}
 void RestraintGraph::show_sampling_space(std::ostream& out) const
 {
-  for (unsigned int vi = 0; vi < num_vertices(g); vi++) {
-    JNode *j = node_data[vi];
+  for (unsigned int vi = 0; vi < num_vertices(g_); vi++) {
+    JNode *j = node_data_[vi];
     j->show_sampling_space(out);
   }
 }
@@ -215,8 +222,8 @@ void RestraintGraph::show_sampling_space(std::ostream& out) const
 JNode * RestraintGraph::get_node(const Particles &p)
 {
   std::vector<int> inter;
-  for (unsigned int vi = 0; vi < num_vertices(g); vi++) {
-    JNode *j = node_data[vi];
+  for (unsigned int vi = 0; vi < num_vertices(g_); vi++) {
+    JNode *j = node_data_[vi];
     if (j->is_part(p)) {
       return j;
     }
@@ -265,53 +272,59 @@ void RestraintGraph::dfs_order(unsigned int root_ind)
 {
   //http://www.boost.org/doc/libs/1_35_0/libs/graph/example/dfs-example.cpp
   typedef boost::graph_traits <Graph>::vertices_size_type size_type;
-  std::vector < size_type > dtime(num_vertices(g));
-  std::vector < size_type > ftime(num_vertices(g));
+  std::vector < size_type > dtime(num_vertices(g_));
+  std::vector < size_type > ftime(num_vertices(g_));
   size_type t = 0;
   dfs_time_visitor < size_type * >vis(&dtime[0], &ftime[0], t);
-  depth_first_search(g, visitor(vis));
+  depth_first_search(g_, visitor(vis));
   // use std::sort to order the vertices by their discover time
-  std::vector < size_type > discover_order(num_vertices(g));
-  boost::integer_range < size_type > r(0, num_vertices(g));
-  discover_time.insert(discover_time.begin(), num_vertices(g), 0);
+  std::vector < size_type > discover_order(num_vertices(g_));
+  boost::integer_range < size_type > r(0, num_vertices(g_));
+  discover_time.insert(discover_time.begin(), num_vertices(g_), 0);
   typedef size_type* Iiter;
   std::copy(r.begin(), r.end(), discover_order.begin());
   std::sort(discover_order.begin(), discover_order.end(),
             boost::indirect_cmp < Iiter, std::less < size_type > >(&dtime[0]));
-  for (unsigned int i = 0; i < num_vertices(g); ++i) {
+  for (unsigned int i = 0; i < num_vertices(g_); ++i) {
     discover_time[discover_order[i]] = i;
   }
 }
 
-void  RestraintGraph::infer()
+void  RestraintGraph::infer(unsigned int num_of_solutions)
 {
-  min_combs->clear();
+  std::cout << "RestraintGraph::infer number of solutions : ";
+  std::cout << num_of_solutions <<std::endl;
   std::stringstream err_msg;
   err_msg << "RestraintGraph::infer the graph has already been infered."
           << " Please reset the graph before calling infer";
-  IMP_assert(infered == false, err_msg.str());
-  root = 0;
+  IMP_assert(infered_ == false, err_msg.str());
+  root_ = 0;
   std::cout <<"RestraintGraph::infer before dfs_order " << std::endl;
-  dfs_order(root);
+  dfs_order(root_);
   std::cout <<"RestraintGraph::infer before collect_evidence " << std::endl;
   //show();
-  collect_evidence(root);
+  collect_evidence(root_);
   std::cout <<"RestraintGraph::infer before distribute_evidence " << std::endl;
-  distribute_evidence(root);
+  distribute_evidence(root_);
   std::cout <<"RestraintGraph::infer after distribute_evidence " << std::endl;
-  //min_combs = node_data[root]->find_minimum();
-  std::vector<CombState *>*  temp_min_combs = node_data[root]->find_minimum();
+  std::vector<CombState *>*  temp_min_combs =
+      node_data_[root_]->find_minimum(false,num_of_solutions);
   err_msg.clear();
   err_msg << "RestraintGraph::infer the number of minimum solutions is 0";
   IMP_assert(temp_min_combs->size()>0, err_msg.str());
   // distribute the minimu combinations and return the final full comb state.
-  CombState *min_comb = new CombState(**(temp_min_combs->begin()));
-  distribute_minimum(root, min_comb);
-  std::cout << "==THE MINIMUM COMBINATION: ============== " << std::endl;
-  min_comb->show();
-  min_combs->push_back(min_comb);
+  CombState *min_comb;
+  for(std::vector<CombState *>::iterator it =  temp_min_combs->begin();
+      it != temp_min_combs->end(); it++) {
+    min_comb = new CombState(**(it));
+    distribute_minimum(root_, min_comb);
+    std::cout << "====MINIMUM COMBINATION number " <<it-temp_min_combs->begin();
+    std::cout << " : ============== " << std::endl;
+    min_comb->show();
+    min_combs_->push_back(min_comb);
+  }
   delete temp_min_combs;
-  infered = true;
+  infered_ = true;
   move_model2global_minimum();
 }
 
@@ -319,13 +332,13 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
                                         CombState *min_comb)
 {
   boost::graph_traits<Graph>::adjacency_iterator adj_first, adj_last;
-  boost::tie(adj_first, adj_last) = adjacent_vertices(father_ind, g);
+  boost::tie(adj_first, adj_last) = adjacent_vertices(father_ind, g_);
   for (boost::graph_traits<Graph>::adjacency_iterator child_it = adj_first;
        child_it != adj_last;  child_it++) {
     if (!(discover_time[*child_it] > discover_time[father_ind])) {
       continue;
     }
-    JNode *child_data = node_data[*child_it];
+    JNode *child_data = node_data_[*child_it];
     //get the separator that corresponds to the father's minimum state.
     JEdge *e = get_edge(father_ind, *child_it);
     CombState *min_father_separator = e->get_separator(*min_comb);
@@ -354,7 +367,7 @@ unsigned int RestraintGraph::collect_evidence(unsigned int father_ind)
 {
   //go over all of the childs and collect evidence
   boost::graph_traits<Graph>::adjacency_iterator adj_first, adj_last;
-  boost::tie(adj_first, adj_last) = adjacent_vertices(father_ind, g);
+  boost::tie(adj_first, adj_last) = adjacent_vertices(father_ind, g_);
   for (boost::graph_traits<Graph>::adjacency_iterator child_it = adj_first;
        child_it != adj_last;  child_it++) {
     // if the child appears before the father in the dfs doscovery order,
@@ -370,7 +383,7 @@ unsigned int RestraintGraph::collect_evidence(unsigned int father_ind)
 void RestraintGraph::distribute_evidence(unsigned int father_ind)
 {
   boost::graph_traits<Graph>::adjacency_iterator adj_first, adj_last;
-  boost::tie(adj_first, adj_last) = adjacent_vertices(father_ind, g);
+  boost::tie(adj_first, adj_last) = adjacent_vertices(father_ind, g_);
   for (boost::graph_traits<Graph>::adjacency_iterator child_it = adj_first;
        child_it != adj_last; child_it++) {
     // if the child appears before the father in the dfs doscovery
@@ -392,12 +405,12 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
   error_message << " RestraintGraph::update the nodes with indexes : "
                 << w << " and " << v
                 << " are not neighbors. Can not perform the update" ;
-  IMP_assert(edge_data.find(get_edge_key(w, v)) != edge_data.end(),
+  IMP_assert(edge_data_.find(get_edge_key(w, v)) != edge_data_.end(),
              error_message.str());
-  JNode *w_data = node_data[w];
-  JNode *v_data = node_data[v];
+  JNode *w_data = node_data_[w];
+  JNode *v_data = node_data_[v];
   //minimize over all sub-configurations in  v that do not involve the w
-  JEdge *e = edge_data[get_edge_key(w,v)];
+  JEdge *e = edge_data_[get_edge_key(w,v)];
   std::cout<<"RestraintGraph::update before min_marginalize"<< std::endl;
   e->min_marginalize(v_data, w_data);
   std::cout<<"RestraintGraph::update before get_interaction"<< std::endl;
@@ -415,8 +428,8 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
 void RestraintGraph::move_model2state_rec(unsigned int father_ind,
                                           CombState &best_state) const
 {
-  for (std::vector<JNode *>::const_iterator it = node_data.begin();
-       it != node_data.end(); it++) {
+  for (std::vector<JNode *>::const_iterator it = node_data_.begin();
+       it != node_data_.end(); it++) {
     CombState *node_state = best_state.get_partial(*((*it)->get_particles()));
     (*it)->move2state(node_state);
     delete(node_state);
@@ -439,29 +452,41 @@ void RestraintGraph::move_model2global_minimum() const
   std::stringstream err_msg;
   err_msg << "RestraintGraph::move_model2global_minimum the "
           << "graph has not been infered";
-  IMP_assert(infered, err_msg.str());
-  CombState *best_state = *(min_combs->begin());
-  move_model2state_rec(root, *best_state);
+  IMP_assert(infered_, err_msg.str());
+  CombState *best_state = *(min_combs_->begin());
+  move_model2state_rec(root_, *best_state);
 }
 CombState *RestraintGraph::get_minimum_comb() const
 {
   std::stringstream err_msg;
   err_msg << "RestraintGraph::move_model2global_minimum the "
           << "graph has not been infered";
-  IMP_assert(infered, err_msg.str());
-  return *(min_combs->begin());
+  IMP_assert(infered_, err_msg.str());
+  return *(min_combs_->begin());
 }
 void RestraintGraph::clear() {
-  for(std::map<Pair, JEdge *>::iterator it = edge_data.begin();
-      it != edge_data.end();it++) {
+  for(std::map<Pair, JEdge *>::iterator it = edge_data_.begin();
+      it != edge_data_.end();it++) {
     it->second->clear();
   }
-  for(std::vector<JNode *>::iterator it = node_data.begin();
-      it != node_data.end();it++) {
+  for(std::vector<JNode *>::iterator it = node_data_.begin();
+      it != node_data_.end();it++) {
     (*it)->clear();
   }
-  infered = false;
-  min_combs->clear();
+  clear_infered_data();
 }
+
+const CombState *RestraintGraph::get_opt_combination(unsigned int i) const {
+  std::stringstream err_msg;
+  err_msg << "RestraintGraph::get_opt_combination no combinations have ";
+  err_msg <<" been infered";
+  IMP_assert(infered_, err_msg.str());
+  err_msg.clear();
+  err_msg << "RestraintGraph::get_opt_combination the requested combination";
+  err_msg <<" index is out of range " << i << " >= " << min_combs_->size();
+  IMP_assert(i<min_combs_->size(), err_msg.str());
+  return (*min_combs_)[i];
+}
+
 
 IMPDOMINO_END_NAMESPACE

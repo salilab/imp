@@ -58,7 +58,7 @@ public:
    */
   RestraintGraph(const std::string & filename, Model *mdl);
   //    void clear_states();
-  void set_model(IMP::Model *m_);
+  //void set_model(IMP::Model *m_);
   void initialize_graph(int number_of_nodes);
   void parse_jt_file(const std::string &filename, Model *mdl);
   void move_model2global_minimum() const;
@@ -81,12 +81,16 @@ public:
    */
   void initialize_potentials(Restraint &r, Float weight);
   unsigned int number_of_nodes() const {
-    return  num_vertices(g);
+    return  num_vertices(g_);
   }
   unsigned int number_of_edges() const {
-    return  num_edges(g);
+    return  num_edges(g_);
   }
-  void infer();
+  //! Find the top solutions
+  /**
+     /param[in] num_of_solutions the number of top solutions to report
+   */
+  void infer(unsigned int num_of_solutions=1);
 
   //! Show the restraint graph
   void show(std::ostream& out = std::cout) const;
@@ -107,10 +111,17 @@ public:
     std::stringstream err_msg;
     err_msg << "RestraintGraph::get_minimum_score the graph has not been"
             << " infered";
-    IMP_assert(infered, err_msg.str());
-    return (*(min_combs->begin()))->get_total_score();
+    IMP_assert(infered_, err_msg.str());
+    return (*(min_combs_->begin()))->get_total_score();
   }
   void clear();
+  //! Get an optimal combination of states
+  /**
+  \param[in] comb_num the number of best combinations.
+  \exception if no combinations have been infered or if i is out of range.
+  \return the i'th best combination
+   */
+  const CombState *get_opt_combination(unsigned int i) const;
 protected:
   //! Determine a DFS
   /** \param[in]  root_ind the index of the node from which the DFS starts
@@ -131,7 +142,7 @@ protected:
    */
   JNode * get_node(const Particles &p);
   JEdge* get_edge(unsigned int n1, unsigned int n2) const {
-    return edge_data.find(get_edge_key(n1, n2))->second;
+    return edge_data_.find(get_edge_key(n1, n2))->second;
   }
 
   //! Recursive Collect Evidence, father is the cluster that invoked
@@ -166,18 +177,21 @@ protected:
  protected:
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
-  std::map<Pair, JEdge *> edge_data;
-  std::vector<JNode *> node_data; // the i'th entry holds the i'th jnode.
-  Model *m;
-  Graph g;
+
+  void clear_infered_data();
+
+  std::map<Pair, JEdge *> edge_data_;
+  std::vector<JNode *> node_data_; // the i'th entry holds the i'th jnode.
+  //  Model *m_;
+  Graph g_;
   std::map<int, int> particle2node; //for quick graph building
   std::vector<int> node2particle;
   //inference support data structures
   std::vector<unsigned int> discover_time;
   // discover_order[i] , the discover time of node number i
-  unsigned int root;
-  bool infered;
-  std::vector<CombState *> *min_combs;
+  unsigned int root_;
+  bool infered_;
+  std::vector<CombState *> *min_combs_;
 };
 
 IMPDOMINO_END_NAMESPACE
