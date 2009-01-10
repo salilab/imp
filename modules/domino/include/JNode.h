@@ -69,7 +69,8 @@ public:
                                      state
       \return all of the combinations that reach the global minimum
    */
-  std::vector<CombState *> * find_minimum(bool move_to_state = false) const;
+  std::vector<CombState *> * find_minimum(bool move_to_state = false,
+                                          unsigned int num_of_solutions=1);
 
   CombState* get_state(unsigned int index, bool move_to_state = false) const;
 
