@@ -87,6 +87,7 @@ files = [
          'TransformationFunction.h',
          'TransformedDistancePairScore.h',
          'TripletChainRestraint.h',
+         'TruncatedHarmonic.h',
          'TypedPairScore.h',
          'VRMLLogOptimizerState.h',
          'VelocityScalingOptimizerState.h',
