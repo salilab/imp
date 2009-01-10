@@ -9,6 +9,7 @@
 
 #include <numeric>
 #include <climits>
+#include <algorithm>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -237,31 +238,35 @@ void JNode::update_potentials(
   }
 }
 
-std::vector<CombState *>* JNode::find_minimum(bool move2state_) const
+bool my_comp(const std::map<std::string,CombState *>::iterator &i1,
+             const std::map<std::string,CombState *>::iterator &i2) {
+  return (i1->second->get_total_score() < i2->second->get_total_score());
+}
+
+
+std::vector<CombState *>* JNode::find_minimum(bool move2state,
+                                              unsigned int num_of_solutions)
 {
-  //find the value of the minimum
-  float min_val = INT_MAX;
+  //sort all of the combinations of the node by their score
+  std::vector<std::pair<float,std::string> > all_states;
   for (std::map<std::string,CombState *>::const_iterator it=
     comb_states_.begin();it != comb_states_.end(); it++) {
-    if (it->second->get_total_score() < min_val) {
-      min_val = it->second->get_total_score();
-    }
+    all_states.push_back(
+       std::pair<float,std::string>(it->second->get_total_score(),it->first));
   }
+  std::sort(all_states.begin(),all_states.end());
   std::vector<CombState *>* min_combs = new std::vector<CombState *>;
-  //iterate over all the nodes again and find all combinations that reach
-  //the global minimum
-  for (std::map<std::string,
-                CombState *>::const_iterator it = comb_states_.begin();
-       it != comb_states_.end(); it++) {
-    if (it->second->get_total_score() ==  min_val) {
-      min_combs->push_back(it->second);
-    }
+  //allocate min_combs with the top best solutions
+  for(unsigned int i=0;i<num_of_solutions;i++) {
+    std::string key = all_states[i].second;
+    min_combs->push_back(comb_states_[key]);
   }
-  if (move2state_) {
+  if (move2state) {
     move2state(*(min_combs->begin()));
   }
   return min_combs;
 }
+
 void JNode::clear() {
   for(std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
       it != comb_states_.end();it++) {
