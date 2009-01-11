@@ -1,9 +1,0 @@
-import os.path
-
-Import('env')
-
-docbook = env.DocBook("index.html", "../manual.xml")
-
-docdir = env['docdir']
-env.DocBookInstall(os.path.join(docdir, 'index.html'), docbook)
-env.Alias('docinstall', docdir)

@@ -58,7 +58,7 @@ The control functions are accessible from Python, but the check and log macros a
 
 Saving state
 \htmlonly
-IMP_PYTHON(read_write)
+IMP_PYTHON(fragments/read_write)
 \endhtmlonly
 
 \verbatim
@@ -71,7 +71,7 @@ IMP::core::read("somefile", my_imp_model);
 \section i6 Examples
 The following examples all are in python and C++ The following code is ommitted from the examples:
 \htmlonly
-IMP_PYTHON(setup)
+IMP_PYTHON(fragments/setup)
 \endhtmlonly
 
 \code
@@ -101,7 +101,7 @@ for (int i=0; i< 100; ++i) {
 Restrain the distance between the first two particles.
 
 \htmlonly
-IMP_PYTHON(pair_restraint)
+IMP_PYTHON(fragments/pair_restraint)
 \endhtmlonly
 
 
@@ -117,7 +117,7 @@ m->add_restraint(r);
 \section i8 Preventing collisions
 The ClosePairsScoreState maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The HarmonicLowerBound forces the spheres apart.
 \htmlonly
-IMP_PYTHON(excluded_volume)
+IMP_PYTHON(fragments/excluded_volume)
 \endhtmlonly
 
 \code
@@ -141,7 +141,7 @@ m->add_restraint(nbr);
 Load a protein and restrain all the bonds to have the correct length. Bond angles is a bit trickier at the moment.
 
 \htmlonly
-IMP_PYTHON(load_protein_restrain_bonds)
+IMP_PYTHON(fragments/load_protein_restrain_bonds)
 \endhtmlonly
 
 \code
@@ -166,7 +166,7 @@ m->add_restraint(br);
 \section i10 Simple optimization setup
 A basic setup for optimizing a model.
 \htmlonly
-IMP_PYTHON(basic_optimization)
+IMP_PYTHON(fragments/basic_optimization)
 \endhtmlonly
 
 \code
