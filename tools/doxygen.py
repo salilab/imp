@@ -19,8 +19,34 @@
 
 import os
 import os.path
-import glob
 from fnmatch import fnmatch
+from SCons.Script import Glob, Dir
+import SCons.Node.FS
+
+def scons_walk(top):
+    """Like topdown os.walk, but using the SCons filesystem. This is
+       necessary in order to pick up dependencies on generated files."""
+    # Regular walk detects hidden files, but Glob does not:
+    names = Glob('#/' + top.path + '/*') + Glob('#/' + top.path + '/.*')
+    dirs, nondirs = [], []
+    for name in names:
+        if isinstance(name, SCons.Node.FS.Dir):
+            dirs.append(name)
+        else:
+            nondirs.append(name)
+    yield top, dirs, nondirs
+    for name in dirs:
+        for x in scons_walk(name):
+            yield x
+
+def dangling_symlink(filename):
+    """Return True if filename is a symlink and its destination does not exist.
+       Note: cannot just use exists(filename) because filename might be a
+       generated file which does not yet exist."""
+    if hasattr(os.path, 'lexists'):
+        if os.path.lexists(filename) and not os.path.exists(filename):
+            return True
+    return False
 
 def DoxyfileParse(file_contents):
     """
@@ -134,20 +160,18 @@ def DoxySourceScan(node, env, path):
             sources.append(node)
         elif os.path.isdir(node):
             if recursive:
-                for root, dirs, files in os.walk(node):
+                for root, dirs, files in scons_walk(Dir(node)):
                     for f in files:
-                        filename = os.path.join(root, f)
+                        filename = f.path
 
                         pattern_check = reduce(lambda x, y: x or bool(fnmatch(filename, y)), file_patterns, False)
                         exclude_check = reduce(lambda x, y: x and fnmatch(filename, y), exclude_patterns, True)
-
-                        # 'exists' check avoids adding dangling symlinks
                         if pattern_check and not exclude_check \
-                           and os.path.exists(filename):
+                           and not dangling_symlink(filename):
                             sources.append(filename)
             else:
                 for pattern in file_patterns:
-                    sources.extend(glob.glob("/".join([node, pattern])))
+                    sources.extend(Glob("#/" + "/".join([node, pattern])))
 
     # Add tagfiles to the list of source files:
     for node in data.get("TAGFILES", []):
