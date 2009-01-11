@@ -3,6 +3,7 @@
 import os.path
 import re
 import sys
+import popen2
 from SCons.Script import *
 import hierarchy
 import pyscanner
@@ -18,6 +19,19 @@ _SWIGScanner = SCons.Scanner.ClassicCPP(
     "CPPPATH",
     '^[ \t]*[%,#][ \t]*(?:include|import)[ \t]*(<|")([^>"]+)(>|")'
 )
+
+# Provide a portable way to use the popen2.Popen3 class (we need this rather
+# than the popen3() factory function so we can call wait() to get exit status,
+# and can't use subprocess just yet since that requires a newer Python).
+if hasattr(popen2, 'Popen3'):
+    MyPopen3 = popen2.Popen3
+else:
+    class MyPopen3(object):
+        def __init__(self, cmd, capturestderr):
+            (self.tochild, self.fromchild, self.childerr) \
+                = os.popen3(cmd, 't', -1)
+        def wait(self):
+            return 0
 
 class WineEnvironment(Environment):
     """Environment to build Windows binaries under Linux, by running the
@@ -122,21 +136,22 @@ def CheckModeller(context):
     # Last matching entry is probably the latest version:
     modbin = os.path.join(moddir, files[-1])
     try:
-        (fhin, fhout, fherr) = os.popen3(modbin + " -")
-        print >> fhin, "print 'EXE type: ', info.exe_type"
-        fhin.close()
+        p = MyPopen3(modbin + " -", True)
+        print >> p.tochild, "print 'EXE type: ', info.exe_type"
+        p.tochild.close()
     except IOError, e:
         context.Result("could not run MODELLER script %s: %s" % (modbin, e))
         return False
-    err = fherr.read()
+    err = p.childerr.read()
     exetype = None
-    for line in fhout:
+    for line in p.fromchild:
         if line.startswith("EXE type"):
             exetype=line[11:].rstrip('\r\n')
+    ret = p.wait()
     if exetype is None:
-        if err:
-            context.Result("could not run MODELLER script %s: %s" \
-                           % (modbin, err))
+        if err or ret != 0:
+            context.Result("could not run MODELLER script %s: %d, %s" \
+                           % (modbin, ret, err))
         else:
             context.Result("unknown error running MODELLER script %s" % modbin)
         return False
