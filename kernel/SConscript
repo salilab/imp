@@ -2,6 +2,7 @@ Import('env')
 
 # Subdirectories:
 src = SConscript('src/SConscript')
+SConscript('doc/SConscript')
 SConscript('include/SConscript')
 pyext = SConscript('pyext/SConscript')
 test = SConscript('test/SConscript')

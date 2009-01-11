@@ -3,8 +3,6 @@ Import('env')
 import os.path
 
 dox = env.Doxygen("html/index.html", "doxygen.conf")
-# Force the population of the build/include/ directory with generated headers
-env.Depends(dox, '#/build/include')
 
 docdir = os.path.join(env['docdir'], 'doxygen')
 
@@ -24,10 +22,13 @@ def generate_doxygen(target, source, env):
             # Expand out ALL_MODULES to a list of all modules, one per line
             for mod in env['IMP_MODULES_ALL']:
                 outfile.write(line.replace('@ALL_MODULES@', mod))
-        else:
+        elif not line.startswith('#'):
             outfile.write(line)
     infile.close()
     outfile.close()
 
 env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
 env.GenerateDoxygen("doxygen.conf", "doxygen.conf.in")
+
+examples = env.MakeExamples(".examples/examples.dox", None)
+env.AlwaysBuild(examples)

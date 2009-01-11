@@ -180,7 +180,13 @@ TAB_SIZE               = 2
 # You can put \n's in the value part of an alias to insert newlines.
 
 ALIASES                = "command{1}=\code \1 \endcode" \
-                         "imp=\p IMP"
+                         "salilab{2}=<a href=\"https://salilab.org/\1\"><b>\2</b></a>" \
+                         "external{2}=<a href=\"https://\1\"><b>\2</b></a>" \
+                         "imp=\p IMP" \
+                         "wiki{2}=<a href=\"https://salilab.org/imp/wiki/\1/\"><b>\2</b></a>" \
+                         "string{1}=<tt>\1</tt>" \
+                         "impdev=<a href=\"https://salilab.org/mailman/listinfo/imp-dev\"><b>imp-dev</b></a>" \
+                         "impcommit=<a href=\"https://salilab.org/mailman/listinfo/imp-commit\"><b>imp-commit</b></a>"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C 
 # sources only. Doxygen will then generate output that is more tailored for C. 
@@ -491,7 +497,7 @@ FILE_VERSION_FILTER    =
 # file name after the option, if omitted DoxygenLayout.xml will be used as the name 
 # of the layout file.
 
-LAYOUT_FILE            = 
+LAYOUT_FILE            =  layout.xml
 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -555,7 +561,8 @@ WARN_LOGFILE           =
 
 INPUT                  = ../../build/include \
                          ../../modules/@ALL_MODULES@/doc \
-                         ../../kernel/doc
+                         ../../kernel/doc \
+                         .
 
 
 # This tag can be used to specify the character encoding of the source files 
@@ -630,7 +637,8 @@ EXAMPLE_PATH           = ../examples
 # and *.h) to filter out the source-files in the directories. If left 
 # blank all files are included.
 
-EXAMPLE_PATTERNS       = *.py
+EXAMPLE_PATTERNS       = *.py \
+                         *.cpp
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be 
 # searched for input files to be used with the \include or \dontinclude 
@@ -773,13 +781,13 @@ HTML_FILE_EXTENSION    = .html
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard header.
 
-HTML_HEADER            = ../../kernel/doc/header.html
+HTML_HEADER            = header.html
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for 
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard footer.
 
-HTML_FOOTER            = ../../kernel/doc/footer.html
+HTML_FOOTER            = footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading 
 # style sheet that is used by each HTML page. It can be used to 
