@@ -8,6 +8,7 @@
 
 #include "config.h"
 #include "internal/saxs_version_info.h"
+#include "boost/multi_array.hpp"
 
 #include <IMP/Model.h>
 #include <IMP/core.h>
@@ -29,14 +30,21 @@ public:
   SaxsData(Model *model, IMP::core::MolecularHierarchyDecorator mp);
   virtual ~SaxsData();
 
-  void initialize(double s_min, double s_max, int maxs, int nmesh, int natomtyp,
-                  std::string represtyp, std::string filename,
-                  std::string wswitch, double s_low,
-                  double s_hi, double s_hybrid, std::string spaceflag,
-                  bool use_lookup);
+  virtual int initialize(double s_min, double s_max, int maxs, int nmesh,
+                  int natomtyp, std::string represtyp, std::string filename,
+                  std::string wswitch, double s_low, double s_hi,
+                  double s_hybrid, std::string spaceflag, bool use_lookup);
+
+  int saxs_formheavatm(void); //! formfactor heavy atom representation
+
+  // index of formfactor for atomtyp in restyp - heavy atom mode
+  int saxs_assformfac_heavat(std::string atmnam, std::string restyp);
+  int saxs_intensity(std::string filename, bool fitflag);
+
+  int saxs_computepr(void);   //! Faster computation in real space, compute P(r)
+  int saxs_pr2is(void);       //! compute I(s) from P(r)
 
   //void saxs_computeis(); // Computation in reciprocal space
-  //void saxs_computepr(); // Faster computation in real space
   //void saxs_chi(); // SAXS score
   //void saxs_scale(); // Scalining parameter and offset
   //void saxs_forces();  // Derivative of SAXS score ('forces')
@@ -46,6 +54,13 @@ public:
 private:
   Model *model_;
   IMP::core::MolecularHierarchyDecorator mp_;
+
+  //! number of particles and residues in pdb files
+  int num_particles_;
+  int num_residues_;
+
+  Particles ps_;
+  Particles residues_;
 
   //! ----- sampling of reciprocal space -----------------------------------
   //! number of sampling points
@@ -145,7 +160,12 @@ private:
 
   //! formfactors of scattering centers formfactor(natomtyp, maxs)
   //! original: struct mod_double2_array formfactor;
-  std::vector< std::vector<double> > formfactor_;
+  typedef boost::multi_array<double, 2> VECTOR2D_;
+  VECTOR2D_::extent_gen extents_;
+
+  //typedef array_type::index index;
+  //std::vector< std::vector<double> > formfactor_;
+  VECTOR2D_ formfactor_;
 
   /** ----- intensity and radial distribution function - EXPERIMENT ---------
       FF: later: extend to multiple f's
@@ -242,6 +262,8 @@ private:
 
   //! filename of used formfactors
   std::string formfac_file_;
+
+  std::vector<std::string> atmnam_;
 
   //! error parameter
   int ierr_;
