@@ -4,6 +4,41 @@ import os
 import random
 import IMP
 
+def _numerical_derivative(func, val, step):
+    """Calculate the derivative of the single-value function `func` at
+       point `val`. The derivative is calculated using simple finite
+       differences starting with the given `step`; Richardson extrapolation
+       is then used to extrapolate the derivative at step=0."""
+    maxsteps = 50
+    con = 1.4
+    safe = 2.0
+    err = 1.0e30
+    f1 = func(val + step)
+    f2 = func(val - step)
+    # create first element in triangular matrix d of derivatives
+    d = [[(f1 - f2) / (2.0 * step)]]
+    retval = None
+    for i in range(1, maxsteps):
+        d.append([0.] * (i + 1))
+        step /= con
+        f1 = func(val + step)
+        f2 = func(val - step)
+        d[i][0] = (f1 - f2) / (2.0 * step)
+        fac = con * con
+        for j in range(1, i + 1):
+            d[i][j] = (d[i][j-1] * fac - d[i-1][j-1]) / (fac - 1.)
+            fac *= con * con
+            errt = max(abs(d[i][j] - d[i][j-1]),
+                       abs(d[i][j] - d[i-1][j-1]))
+            if errt <= err:
+                err = errt
+                retval = d[i][j]
+        if abs(d[i][i] - d[i-1][i-1]) >= safe * err:
+            break
+    if retval is None:
+        raise ValueError("Cannot calculate numerical derivative")
+    return retval
+
 
 class TestCase(unittest.TestCase):
     """Super class for IMP test cases"""
@@ -79,11 +114,7 @@ class TestCase(unittest.TestCase):
            approximations between lb and ub"""
         for f in [lb + i * step for i in range(1, int((ub-lb)/step))]:
             (v,d)= func.evaluate_with_derivative(f)
-            # Simple finite difference approximation
-            offset= step/1024
-            vmn= func.evaluate(f-offset)
-            vmx= func.evaluate(f+offset)
-            da= (vmx-vmn)/(2*offset)
+            da = _numerical_derivative(func.evaluate, f, step / 10.)
             self.assertInTolerance(d, da, abs(.1 *d)+.0001)
 
     def check_unary_function_min(self, func, lb, ub, step, expected_fmin):
