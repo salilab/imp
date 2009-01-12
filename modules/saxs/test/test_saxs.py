@@ -12,14 +12,14 @@ class PDBReadTest(IMP.test.TestCase):
         m = IMP.Model()
 
         #mp = IMP.modeller.read_pdb('1A62.pdb', m)
-        mp = IMP.modeller.read_pdb('single_protein.pdb', m)
-        #mp= IMP.modeller.read_pdb(self.get_test_file('single_protein.pdb'), m)
+        #mp = IMP.modeller.read_pdb('single_protein.pdb', m)
+        mp= IMP.modeller.read_pdb(self.get_test_file('single_protein.pdb'), m)
         #IMP.core.show_molecular_hierarchy(mp)
 
         saxsdata = IMP.saxs.SaxsData(m, mp)
         saxsdata.initialize(0.009, 0.325, 100,
             505, 15, 'heav',
-            '/lyre1/home/sjkim/modeller/modlib/formfactors-int_tab_solvation.lib',
+            'formfactors-int_tab_solvation.lib',
             'uniform', 0.0, 0.5, 0.0,
             'real', False)
 
