@@ -16,6 +16,10 @@
     Split lines if necessary to ensure that
     no line is longer than 80 characters.
 
+    \b Rationale: Different users have different-sized windows or terminals,
+    and different tab settings, but everybody can read 80 column output without
+    tabs.
+
     All Python code should conform to the
     \external{www.python.org/dev/peps/pep-0008/, Python style guide}.
     In essence this
@@ -48,20 +52,21 @@
       */
     \endverbatim
 
-    Python code should provide python doc strings.
+    Python code should provide Python doc strings.
 
 
     \section names Names
-    - Class names should be in \c CamelCase
-    - method names and variables should be \c separated_by_underscores
-    - member variables should \c end_in_an_underscore_
-    - member methods that get a value should begin with \c set_
+    - Class names should be in \c CamelCase, for example 'class SpecialVector'
+    - method names and variables should be \c separated_by_underscores, for
+      example 'void SpecialVector::add_constant(int the_constant)'
+    - member variables should \c end_in_an_underscore_, for example 'int SpecialVector::int_member_'
+    - member methods that set a value should begin with \c set_
     - member methods which return a value should begin with \c get_
-    - all preprocessor symbols (things created by \#define) must begin with \c IMP_
+    - all preprocessor symbols (things created by \#define) must begin with \c IMP
 
     Do not use abbreviations in names.
 
-    \b Rational: This makes it easier to tell between class names and
+    \b Rationale: This makes it easier to tell between class names and
     function names where this is ambiguous (particularly an issue with
     the Python interface). The Python guys also mandate CamelCase for
     their class names, so this avoids any need to rename classes
@@ -74,7 +79,10 @@
     IMP::Exception for a list of existing exceptions. See \ref assert for
     a list of functions to aid in error reporting and detection.
     \note Do not use exception specifications. Instead document the 
-    exceptions in Doxygen using the \c \\exception command.
+    exceptions in Doxygen using the \c \\exception command. (Exception
+    specifications do not guarantee that only the listed exceptions will be
+    thrown, and actually hurt compiler optimizations in many cases. Many
+    libraries (such as Boost) advise against using them.)
 
 
     \section coding Good Coding Practices
@@ -83,8 +91,9 @@
       SingletonContainer (or other type of Container) to store the set of
       Particles that they act on.
 
-    - Never use \c using \c namespace outside of a function, instead 
-      explicitly provide the namespace.
+    - Never use '\c using \c namespace' outside of a function; instead 
+      explicitly provide the namespace. (This avoids namespace pollution, and
+      removes any ambiguity.)
     
 	- Use the provided \c IMPMODULE_BEGIN_NAMESPACE,
 	  \c IMPMODULE_END_NAMESPACE, \c IMPMODULE_BEGIN_INTERNAL_NAMESPACE 
@@ -108,7 +117,7 @@
     - Try to limit methods to having at most one argument of a given
       type.  Otherwise it is easy to mix up the order of arguments and
       the compiler will not catch it for you. Int and Float count as
-      equivalent types for this rule since the compiler will invisible
+      equivalent types for this rule since the compiler will invisibly
       convert an Int into a Float.
 
     - Do not copy and paste large blocks of code to create new
@@ -117,13 +126,18 @@
       find bugs, you won't remember to fix them in all the copies of
       the code.
 
+    - Don't derive a class from another class simply to reuse some code that
+      the base class provides - only do so if your derived class could make
+      sense when cast to the base class. As above, reuse existing code by
+      pulling it into a function.
+
     - Clearly mark any file that is created by a script so that other
       people know to edit the original file.
 
     - Always return a \c const value or \c const ref if you are not
       providing write access. Returning a \c const copy means the compiler
-      which create an error if the caller tries to modify the return value
-      without creating a copy of the return value.
+      will report an error if the caller tries to modify the return value
+      without creating a copy of it.
 
     - Include files from the local module first, then files from the other \imp
     modules and kernel and finally outside includes. This makes any dependencies 
@@ -144,7 +158,9 @@
 
     - Use Int, Float, String rather than \c int, \c float, and \c std::string.
 
-    - Do not use nested classes in the API as SWIG can't wrap them properly.
+    - Avoid using nested classes in the API as SWIG can't wrap them properly.
+      If you must use use nested classes, you will have to do more work to
+      provide a Python interface to your code.
 
     - All access to particles should be through decorators. Use the provided
       macros to help making the decorator.
