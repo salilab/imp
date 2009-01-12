@@ -244,7 +244,7 @@ bool my_comp(const std::map<std::string,CombState *>::iterator &i1,
 }
 
 
-std::vector<CombState *>* JNode::find_minimum(bool move2state,
+std::vector<CombState *>* JNode::find_minimum(bool move_to_state,
                                               unsigned int num_of_solutions)
 {
   //sort all of the combinations of the node by their score
@@ -261,7 +261,7 @@ std::vector<CombState *>* JNode::find_minimum(bool move2state,
     std::string key = all_states[i].second;
     min_combs->push_back(comb_states_[key]);
   }
-  if (move2state) {
+  if (move_to_state) {
     move2state(*(min_combs->begin()));
   }
   return min_combs;
