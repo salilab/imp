@@ -24,6 +24,7 @@ e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
 # Test all scripts:
 test = e.Test("examples.passed", bin + example_py)
 e.Alias("examples", test)
+e.Alias("test", test)
 e.AlwaysBuild("examples.passed")
 
 # Install all scripts:
