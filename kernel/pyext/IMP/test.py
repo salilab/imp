@@ -1,4 +1,5 @@
 import re, math, unittest
+import sys
 import os
 import random
 import IMP
@@ -16,12 +17,24 @@ class TestCase(unittest.TestCase):
         # Restore original check level
         IMP.set_check_level(self.__check_level)
 
-    def get_test_file(self, filename):
-        """Get the full name of a file in the top-level test directory."""
-        # If individual tests are run manually, assume they are in
-        # the current directory:
-        path = os.environ.get('TEST_DIRECTORY', '.')
-        return os.path.join(path, filename)
+    def get_input_file_name(self, filename):
+        """Get the full name of an input file in the top-level
+           test directory."""
+        # If we ran from run-all-tests.py, it set an env variable for us with
+        # the top-level test directory
+        if 'TEST_DIRECTORY' in os.environ:
+            top = os.environ['TEST_DIRECTORY']
+            return os.path.join(top, 'input', filename)
+        else:
+            # Otherwise, search up from the test's directory until we find
+            # the input directory
+            dirs = os.path.dirname(sys.argv[0]).split(os.path.sep)
+            for i in range(len(dirs), 0, -1):
+                input = os.path.sep.join(dirs[:i] + ['input'])
+                if os.path.isdir(input):
+                    return os.path.join(input, filename)
+        # If not found, default to the current working directory:
+        return os.path.join(path, 'input', filename)
 
     def assertInTolerance(self, num1, num2, tolerance, msg=None):
         """Assert that the difference between num1 and num2 is less than

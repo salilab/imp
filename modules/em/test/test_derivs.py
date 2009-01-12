@@ -37,7 +37,6 @@ class DerivativesTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         modeller.log.level= (0,0,0,0,1)
         self.env = modeller.environ()
-        self.env.io.atom_files_directory = self.get_test_file('../data/')
         self.env.edat.dynamic_sphere = False
         self.env.libs.topology.read(file='$(LIB)/top_heav.lib')
         self.env.libs.parameters.read(file='$(LIB)/par.lib')

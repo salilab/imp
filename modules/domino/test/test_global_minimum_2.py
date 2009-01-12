@@ -9,8 +9,9 @@ class DOMINOTests(IMP.test.TestCase):
         """Set up model and particles"""
         IMP.test.TestCase.setUp(self)
         self.sampler = my_optimizer.my_optimizer(
-                             self.get_test_file("simple_jt2.txt"),
-                             self.get_test_file("simple_jt2_restraints.txt"), 8)
+                          self.get_input_file_name("simple_jt2.txt"),
+                          self.get_input_file_name("simple_jt2_restraints.txt"),
+                          8)
         self.infered_score = self.sampler.optimize()
     def test_global_min(self):
         try:
