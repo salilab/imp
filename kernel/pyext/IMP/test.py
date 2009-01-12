@@ -34,7 +34,7 @@ class TestCase(unittest.TestCase):
                 if os.path.isdir(input):
                     return os.path.join(input, filename)
         # If not found, default to the current working directory:
-        return os.path.join(path, 'input', filename)
+        return os.path.join('input', filename)
 
     def assertInTolerance(self, num1, num2, tolerance, msg=None):
         """Assert that the difference between num1 and num2 is less than
