@@ -2,7 +2,7 @@ Import('env')
 
 import os.path
 
-dox = env.Doxygen("html/index.html", "doxygen.conf")
+dox = env.Doxygen("../html/index.html", "doxygen.conf")
 
 docdir = os.path.join(env['docdir'], 'doxygen')
 
