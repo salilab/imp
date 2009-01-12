@@ -1,2 +1,1 @@
 SConscript('doxygen/SConscript')
-SConscript('examples/SConscript')

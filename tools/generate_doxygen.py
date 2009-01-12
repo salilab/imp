@@ -7,7 +7,7 @@ import SCons.Node.FS
 import re
 import colorize_python
 
-_example_path = Dir('#/doc/examples')
+_example_path = Dir('#/examples')
 
 exre = re.compile('IMP_PYTHON\((.*)\)')
 
