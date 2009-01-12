@@ -3,7 +3,7 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 import SCons.Node.FS
 import os
 
-example_path = Dir('#/doc/examples')
+example_path = Dir('#/examples')
 
 def nice_name(string):
     return string.title().replace("_", " ").replace("Cxx", "C++")
