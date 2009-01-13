@@ -6,7 +6,6 @@ import sys
 import popen2
 from SCons.Script import *
 import hierarchy
-import pyscanner
 import generate_doxygen
 import make_examples
 import symlinks
@@ -231,7 +230,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
-    env.Prepend(SCANNERS = [_SWIGScanner, pyscanner.PythonScanner],
+    env.Prepend(SCANNERS = [_SWIGScanner],
                 BUILDERS = {'GenerateDoxFromIn':
                             generate_doxygen.GenerateDoxFromIn,
                             'MakeExamples': make_examples.MakeExamples})

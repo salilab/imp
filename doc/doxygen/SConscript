@@ -32,4 +32,3 @@ env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
 env.GenerateDoxygen("doxygen.conf", "doxygen.conf.in")
 
 examples = env.MakeExamples(".examples/examples.dox", None)
-env.AlwaysBuild(examples)

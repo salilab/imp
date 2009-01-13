@@ -1,6 +1,7 @@
 """Tools and Builders for IMP modules. See `IMPModule` for more information."""
 
 import os.path
+import pyscanner
 from SCons.Script import Builder, File, Action
 
 def action_config(target, source, env):
@@ -363,7 +364,8 @@ def IMPModule(env, module, author, version, description, cpp=True):
     env.Append(BUILDERS={'_IMPModuleTest': \
                          Builder(action=Action(_action_unit_test,
                                                _print_unit_test),
-                                 emitter=_emit_unit_test)})
+                                 emitter=_emit_unit_test,
+                                 source_scanner=pyscanner.PythonScanner)})
     env['TEST_ENVSCRIPT'] = None
     env['VALIDATED'] = None
     return env.SConscript('%s/SConscript' % module, exports='env')

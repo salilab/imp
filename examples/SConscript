@@ -1,3 +1,4 @@
+from tools import pyscanner
 import os.path
 
 Import('env', 'bin')
@@ -19,7 +20,8 @@ def builder_unit_test(target, source, env):
             return 1
     file(str(target[0]), 'w').write('PASSED\n')
 
-e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
+e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
+                                     source_scanner=pyscanner.PythonScanner)})
 
 # Test all scripts:
 test = e.Test("examples.passed", bin + example_py)
