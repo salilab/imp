@@ -115,7 +115,7 @@ class TestCase(unittest.TestCase):
         for f in [lb + i * step for i in range(1, int((ub-lb)/step))]:
             (v,d)= func.evaluate_with_derivative(f)
             da = _numerical_derivative(func.evaluate, f, step / 10.)
-            self.assertInTolerance(d, da, abs(.1 *d)+.0001)
+            self.assertInTolerance(d, da, max(abs(.1 *d), 0.01))
 
     def check_unary_function_min(self, func, lb, ub, step, expected_fmin):
         """Make sure that the minimum of the unary function func over the
