@@ -10,6 +10,7 @@ docdir = os.path.join(env['docdir'], 'doxygen')
 # use env.InstallAs() right now, due to scons bug #1751)
 env.Command(Dir(env.subst(docdir)), dox,
             "install -d $TARGET && install ${SOURCE.dir}/* $TARGET")
+env.Alias('docinstall', docdir)
 
 # Generate doxygen.conf from doxygen.conf.in
 def generate_doxygen(target, source, env):
