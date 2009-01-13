@@ -69,6 +69,12 @@ def _action_make_examples(target, source, env):
 def _emit_make_examples(target, source, env):
     tree = find_examples(example_path)
     dir = Dir(os.path.dirname(target[0].abspath))
+    source = []
+    for d in tree:
+        # Only add Python files as sources, since they are directly
+        # incorporated into the .dox files (not .cpp files, which are
+        # \include'd, and thus don't change the .dox files themselves)
+        source.extend([x[0] for x in d[2] if x[0].path.endswith('.py')])
     target = [dir.File(os.path.split(x[0].path)[1] + '.dox') for x in tree]
     return (target, source)
 

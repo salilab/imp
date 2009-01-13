@@ -30,11 +30,8 @@ def _action_generate_dox(target, source, env):
     return 0
 
 def _emit_generate_dox(target, source, env):
-#   Disable the emitter for now, since the Python scanner will currently pull
-#   in all of the IMP modules as dependencies (thinking we want to run these
-#   Python files)
-#   deps = exre.findall(source[0].get_contents())
-#   source.extend([_example_path.File(name + '.py') for name in deps])
+    deps = exre.findall(source[0].get_contents())
+    source.extend([_example_path.File(name + '.py') for name in deps])
     return (target, source)
 
 def _print_generate_dox(target, source, env):

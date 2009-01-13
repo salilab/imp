@@ -1,5 +1,6 @@
 Import('env', 'bin')
 
+from tools import pyscanner
 import os
 
 e = env.Clone()
@@ -14,7 +15,8 @@ def builder_unit_test(target, source, env):
         print "unit tests FAILED"
         return 1
 
-e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test)})
+e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
+                                     source_scanner=pyscanner.PythonScanner)})
 
 test = e.Test("test.passed", ["run-all-tests.py", bin,
                               # Make sure we depend on IMP.core being built:

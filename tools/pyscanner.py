@@ -2,6 +2,14 @@
    are auto-generated in some way (e.g. staged into a build directory, or
    using a tool such as SWIG.)
 
+   Note that different parts of the build 'use' Python files in different ways.
+   For example, the unit tests run the Python files, so any imports must exist
+   before the files can be used. On the other hand, the documentation merely
+   includes the Python files as text (not running them) and so does not need
+   the imports to be satisfied. Thus, this scanner is not added to the
+   environment's SCANNERS variable, but is added on a per-builder basis using
+   the Builder source_scanner argument.
+
    Note: right now the scan for imports is simplistic and could be caught out
    by 'import' within a multi-line string. Should really use the tokenize
    module to avoid this.
