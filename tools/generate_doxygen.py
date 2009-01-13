@@ -35,7 +35,7 @@ def _emit_generate_dox(target, source, env):
     return (target, source)
 
 def _print_generate_dox(target, source, env):
-    return "Generate '%s' from '%s')" % (target[0], source[0])
+    return "Generate '%s' from '%s'" % (target[0], source[0])
 
 GenerateDoxFromIn = Builder(action=Action(_action_generate_dox,
                                           _print_generate_dox),
