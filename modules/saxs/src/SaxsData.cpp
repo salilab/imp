@@ -8,6 +8,8 @@
 #include <IMP/saxs/SaxsData.h>
 #include <IMP/log.h>
 
+#include <boost/multi_array.hpp>
+
 IMPSAXS_BEGIN_NAMESPACE
 
 //! Constructor
@@ -258,7 +260,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
 
   //!------ compute frequency mesh
   s_[0] = s_min_;
-  for (int i=1; i<ns_; i++)
+  for (i=1; i<ns_; i++)
     s_[i] = mesh_density + s_[i-1];
 
   //!------ compute the weighting function
@@ -266,21 +268,21 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
     s_hybrid_ = 0.0;
     printf("ini_saxs: wswitch = <unity>\n");
     printf("          using w(s) = 1 for all s\n");
-    for (int i=0; i<ns_; i++)
+    for (i=0; i<ns_; i++)
       w_s_[i] = 1.0;
 
   } else if ( wswitch_ == "sq" ) {
     s_hybrid_ = 0.0;
     printf("ini_saxs: wswitch = <sq>\n");
     printf("          using w(s) = s^2\n");
-    for (int i=0; i<ns_; i++)
+    for (i=0; i<ns_; i++)
       w_s_[i] = s_[i];
 
   } else if ( wswitch_ == "hybrid" ) {
     printf("ini_saxs: wswitch = <hybrid>\n");
     printf("          using w(s) = %g", s_hybrid_*s_hybrid_);
     printf(" for s < %g, otherwise s^2\n", s_hybrid_);
-    for (int i=0; i<ns_; i++) {
+    for (i=0; i<ns_; i++) {
       if (s_[i] > s_hybrid_)
         w_s_[i] = s_[i];
       else
@@ -292,7 +294,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
     s_hybrid_ = 0.0;
     printf("ini_saxs: unknown wswitch\n");
     printf("          using w(s) = 1\n");
-    for (int i=0; i<ns_; i++)
+    for (i=0; i<ns_; i++)
       w_s_[i] = 1.0;
   }
 
@@ -459,12 +461,12 @@ int SaxsData::saxs_formheavatm(void) {
   //! .. Local Arrays
   int iat=0, is, isum, ncols, nh, iform;
   int ierr=0, eof=0;
-  double a[natomtyp_][5], b[natomtyp_][5];
-  double c[natomtyp_], excl_vol[natomtyp_];
   double s_waasmei;
-  double volr[natomtyp_];
   double dumvar;
   char temp[256];
+  boost::multi_array<double,2> a(boost::extents[natomtyp_][5]);
+  boost::multi_array<double,2> b(boost::extents[natomtyp_][5]);
+  std::vector<double> c(natomtyp_), excl_vol(natomtyp_), volr(natomtyp_);
 
   std::ifstream fh;
   const double PI = 4.0*atan(1.0);
@@ -908,7 +910,7 @@ int SaxsData::saxs_computepr(void) {
   std::vector<IMP::Vector3D> coordinates;
 
   // copy coordinates in advance, to avoid n^2 copy operations
-  for(unsigned int i=0; i<ps_.size(); i++) {
+  for(i=0; i<ps_.size(); i++) {
     IMP::core::XYZDecorator d = IMP::core::XYZDecorator::cast(ps_[i]);
     coordinates.push_back(d.get_coordinates());
   }
