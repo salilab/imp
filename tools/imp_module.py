@@ -338,7 +338,7 @@ def IMPModule(env, module, author, version, description, cpp=True):
 
     env['IMP_MODULE'] = module
     env['IMP_MODULE_DESCRIPTION'] = description
-    env.Prepend(CPPPATH=['#/build/include', env['BOOST_CPPPATH']])
+    env.Prepend(CPPPATH=['#/build/include'])
     env.Prepend(LIBPATH=['#/build/lib'], LIBS=['imp'])
 
     if cpp:
