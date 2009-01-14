@@ -93,18 +93,18 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
   IMP_CHECK_OBJECT(out_);
   IMP_CHECK_OBJECT(f_);
   if (!xyzc_[0]) {
-    std::cout << "Virgin ss" << std::endl;
+    IMP_LOG(TERSE, "Virgin ss" << std::endl);
     xyzc_[0] =new MaximumChangeScoreState(in_[0], XYZDecorator::get_xyz_keys());
     xyzc_[1] =new MaximumChangeScoreState(in_[1], XYZDecorator::get_xyz_keys());
     if (rk_ != FloatKey()) {
       rc_[0]= new MaximumChangeScoreState(in_[0], FloatKeys(1, rk_));
       rc_[1]= new MaximumChangeScoreState(in_[1], FloatKeys(1, rk_));
     }
-    std::cout << "adding pairs" << std::endl;
+    IMP_LOG(TERSE, "adding pairs" << std::endl);
     out_->clear_particle_pairs();
     f_->add_close_pairs(in_[0], in_[1], distance_+slack_,
                         rk_, out_);
-    std::cout << "done"<< std::endl;
+    IMP_LOG(TERSE, "done"<< std::endl);
     return;
   } else {
     xyzc_[0]->before_evaluate(ScoreState::get_before_evaluate_iteration());

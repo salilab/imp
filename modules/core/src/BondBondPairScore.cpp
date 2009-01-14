@@ -56,7 +56,7 @@ Segment shortest_segment(const Segment &sa,
 
   Vector3D vfirst = sa.first- sb.first;
 
-  std::cout << vfirst << " | " << va << " | " << vb << std::endl;
+  IMP_LOG(VERBOSE, vfirst << " | " << va << " | " << vb << std::endl);
 
   double dfb = vfirst*vb;
   double dab = vb*va;
@@ -103,7 +103,7 @@ Segment shortest_segment(const Segment &sa,
      rb= sb.second;
    }
 
-   std::cout << fa << " " << fb << std::endl;
+   IMP_LOG(VERBOSE, fa << " " << fb << std::endl);
 
    return Segment(ra, rb);
 }
