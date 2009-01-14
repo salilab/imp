@@ -37,7 +37,7 @@ Float DistanceToSingletonScore::evaluate(Particle *b,
 
 void DistanceToSingletonScore::show(std::ostream &out) const
 {
-  out << "DistanceToSingletScore using ";
+  out << "DistanceToSingletonScore using ";
   f_->show(out);
 }
 
