@@ -15,6 +15,6 @@
     - \salilab{imp/bugs/,Bug tracker}
     - \impdev email list. All developers should monitor this list. The
       discussions are \salilab{imp/archives/imp-dev/,archived}.
-    - \impcommit is an email list which receives notifications
+    - \impcommits is an email list which receives notifications
       of all changes made to the \imp SVN.
 */
