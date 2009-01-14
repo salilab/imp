@@ -2,7 +2,7 @@ Import('env', 'get_sharedlib_environment')
 
 # Get an environment suitable for building a shared library:
 env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
-env.Append(CPPPATH=["#/build/include", env['BOOST_CPPPATH']])
+env.Prepend(CPPPATH=["#/build/include", env['BOOST_CPPPATH']])
 
 # Subdirectories:
 internal_files = SConscript('internal/SConscript')
