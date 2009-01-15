@@ -9,6 +9,7 @@
 #define IMP_UTILITY_H
 
 #include "macros.h"
+#include "config.h"
 
 #include <boost/version.hpp>
 
