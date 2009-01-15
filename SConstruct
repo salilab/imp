@@ -9,7 +9,7 @@ EnsureSConsVersion(0, 98)
 vars = Variables('config.py')
 add_common_variables(vars, "imp")
 vars.Add(PackageVariable('embed', 'Location of the EMBED package', 'no'))
-vars.Add(PackageVariable('cgal', 'Location of the CGAL package', True))
+vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
 env = MyEnvironment(variables=vars, require_modeller=False,
                     tools=["default", "doxygen", "docbook", "swig",
                            "imp_module"],
