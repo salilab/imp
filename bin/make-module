@@ -1,0 +1,53 @@
+#!/usr/bin/python
+
+"""Add a new module to IMP.
+"""
+
+import os
+import sys
+import getopt
+import shutil
+import re
+
+
+def fix_string(input, modname):
+    return input.replace("modulename", modname)\
+        .replace("MODULENAME", modname.upper())\
+        .replace('.hpp', '.h')\
+        .replace('.cc', '.cpp')
+
+def copy_dir(source, dest, modname):
+    for x in os.listdir(source):
+        fx= fix_string(x, modname)
+        xspath= os.path.join(source, x)
+        xdpath= os.path.join(dest, fx)
+        print "handling "+ xspath +"->"+xdpath
+        if os.path.isdir(xspath):
+            os.mkdir(xdpath)
+            copy_dir(xspath, xdpath, modname)
+        else:
+            input= file(xspath, 'r').read()
+            output= fix_string(input, modname)
+            file(xdpath, 'w').write(output)
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: %s module_name" % sys.argv[0])
+        return
+    modname= sys.argv[1]
+    modpath=os.path.join("modules", modname)
+    if os.path.isdir(modpath):
+        print "Module already exists"
+        return
+    print "Creating a new module " + modname
+    os.mkdir(modpath)
+    copy_dir("kernel/doc/module_template", modpath, modname)
+    os.symlink(os.path.join("..", "..", "..", "tools", "run_all_tests.py"),
+               os.path.join(modpath, "test", "run_all_tests.py"))
+    sc= file("modules/SConscript", "a")
+    sc.write(fix_string("""
+env.IMPModule('modulename', author='somebody', version='SVN',
+              description='A private module.')""", modname))
+
+
+if __name__ == '__main__':
+    main()
