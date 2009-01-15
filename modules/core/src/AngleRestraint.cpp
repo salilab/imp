@@ -13,9 +13,9 @@ IMPCORE_BEGIN_NAMESPACE
 AngleRestraint::AngleRestraint(UnaryFunction* score_func,
                                Particle* p1, Particle* p2, Particle* p3)
 {
-  add_particle(p1);
-  add_particle(p2);
-  add_particle(p3);
+  p_[0]=p1;
+  p_[1]=p2;
+  p_[2]=p3;
 
   sf_= new AngleTripletScore(score_func);
 }
@@ -27,9 +27,7 @@ AngleRestraint::AngleRestraint(UnaryFunction* score_func,
  */
 Float AngleRestraint::evaluate(DerivativeAccumulator *accum)
 {
-  return sf_->evaluate(get_particle(0),
-                       get_particle(1),
-                       get_particle(2),
+  return sf_->evaluate(p_[0], p_[1], p_[2],
                        accum);
 }
 
@@ -46,9 +44,9 @@ void AngleRestraint::show(std::ostream& out) const
   }
 
   get_version_info().show(out);
-  out << "  particles: " << get_particle(0)->get_index();
-  out << ", " << get_particle(1)->get_index();
-  out << " and " << get_particle(2)->get_index();
+  out << "  particles: " << p_[0]->get_index();
+  out << ", " << p_[1]->get_index();
+  out << " and " << p_[2]->get_index();
   out << "  ";
   sf_->show(out);
   out << std::endl;

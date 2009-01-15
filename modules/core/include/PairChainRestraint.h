@@ -44,6 +44,8 @@ public:
 
   virtual ParticlesList get_interacting_particles() const;
 
+  IMP_LIST(public, Particle, particle, Particle*)
+
 protected:
   Pointer<PairScore> ts_;
   std::vector<unsigned int> chain_splits_;

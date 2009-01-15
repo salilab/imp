@@ -30,27 +30,29 @@ void TripletChainRestraint::add_chain(const Particles &ps)
     IMP_WARN("Adding a chain of length 2 or less to the AnglesRestraint"
              << " doesn't accomplish anything."<< std::endl);
   } else {
-    Restraint::add_particles(ps);
-    chain_splits_.back()= Restraint::get_number_of_particles();
-    chain_splits_.push_back(Restraint::get_number_of_particles());
+    add_particles(ps);
+    chain_splits_.back()= get_number_of_particles();
+    chain_splits_.push_back(get_number_of_particles());
   }
 }
+
+IMP_LIST_IMPL(TripletChainRestraint, Particle, particle, Particle*,,)
 
 Float TripletChainRestraint::evaluate(DerivativeAccumulator *accum)
 {
   int cur_break=0;
   unsigned int i=2;
   float score=0;
-  while (i < Restraint::get_number_of_particles()) {
+  while (i < get_number_of_particles()) {
     /*IMP_LOG(VERBOSE, "Chain eval on "
-            << Restraint::get_particle(i-2)->get_index()
-            << Restraint::get_particle(i-1)->get_index()
-            << Restraint::get_particle(i)->get_index()
+            << get_particle(i-2)->get_index()
+            << get_particle(i-1)->get_index()
+            << get_particle(i)->get_index()
             << " split is " << chain_splits_[cur_break]
             << std::endl);*/
-    score += ts_->evaluate(Restraint::get_particle(i-2),
-                           Restraint::get_particle(i-1),
-                           Restraint::get_particle(i),
+    score += ts_->evaluate(get_particle(i-2),
+                           get_particle(i-1),
+                           get_particle(i),
                            accum);
     if (chain_splits_[cur_break] == i) {
       i+=3;
@@ -64,7 +66,7 @@ Float TripletChainRestraint::evaluate(DerivativeAccumulator *accum)
 
 void TripletChainRestraint::clear_chains()
 {
-  Restraint::clear_particles();
+  clear_particles();
   chain_splits_.clear();
   chain_splits_.push_back(0);
 }

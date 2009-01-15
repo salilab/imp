@@ -34,8 +34,13 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info)
 
+  ParticlesList get_interacting_particles() const
+  {
+    return ParticlesList(1, Particles(p_, p_+3));
+  }
 protected:
-    Pointer<AngleTripletScore> sf_;
+  Pointer<AngleTripletScore> sf_;
+  Pointer<Particle> p_[3];
 };
 
 IMPCORE_END_NAMESPACE

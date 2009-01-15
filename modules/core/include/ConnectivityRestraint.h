@@ -42,10 +42,11 @@ public:
   //! Use the given PairScore
   ConnectivityRestraint(PairScore* ps);
 
-  using Restraint::add_particle;
-  using Restraint::add_particles;
-  using Restraint::clear_particles;
-  using Restraint::set_particles;
+  IMP_LIST(public, Particle, particle, Particle*)
+  ParticlesList get_interacting_particles() const
+  {
+    return ParticlesList(1, Particles(particles_begin(), particles_end()));
+  }
 
   virtual ~ConnectivityRestraint();
 

@@ -31,6 +31,13 @@ ConnectivityRestraint::~ConnectivityRestraint()
 {
 }
 
+IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,  {
+              IMP_assert(get_number_of_particles()==0
+                         || obj->get_model()
+                          == (*particles_begin())->get_model(),
+                         "All particles in Restraint must belong to the "
+                         "same Model.");
+              },);
 
 
 Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
@@ -42,9 +49,9 @@ Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
     boost::property<boost::edge_weight_t, float> > Graph;
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
-  Graph g(Restraint::get_number_of_particles());
+  Graph g(get_number_of_particles());
 
-  for (unsigned int i=0; i< Restraint::get_number_of_particles(); ++i) {
+  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
     for (unsigned int j=0; j<i; ++j) {
       float d= ps_->evaluate(get_particle(i), get_particle(j), NULL);
       IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "

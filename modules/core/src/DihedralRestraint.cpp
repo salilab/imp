@@ -23,10 +23,10 @@ DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
                                      Particle* p1, Particle* p2, Particle* p3,
                                      Particle* p4)
 {
-  add_particle(p1);
-  add_particle(p2);
-  add_particle(p3);
-  add_particle(p4);
+  p_[0]=p1;
+  p_[1]=p2;
+  p_[2]=p3;
+  p_[3]=p4;
 
   score_func_ = score_func;
 }
@@ -46,10 +46,10 @@ DihedralRestraint::~DihedralRestraint()
 Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 {
   IMP_CHECK_OBJECT(score_func_);
-  XYZDecorator d0 = XYZDecorator::cast(get_particle(0));
-  XYZDecorator d1 = XYZDecorator::cast(get_particle(1));
-  XYZDecorator d2 = XYZDecorator::cast(get_particle(2));
-  XYZDecorator d3 = XYZDecorator::cast(get_particle(3));
+  XYZDecorator d0 = XYZDecorator::cast(p_[0]);
+  XYZDecorator d1 = XYZDecorator::cast(p_[1]);
+  XYZDecorator d2 = XYZDecorator::cast(p_[2]);
+  XYZDecorator d3 = XYZDecorator::cast(p_[3]);
 
   Vector3D rij = d1.get_vector_to(d0);
   Vector3D rkj = d1.get_vector_to(d2);
@@ -127,10 +127,10 @@ void DihedralRestraint::show(std::ostream& out) const
   }
 
   get_version_info().show(out);
-  out << "  particles: " << get_particle(0)->get_index();
-  out << ", " << get_particle(1)->get_index();
-  out << ", " << get_particle(2)->get_index();
-  out << " and " << get_particle(3)->get_index();
+  out << "  particles: " << p_[0]->get_index();
+  out << ", " << p_[1]->get_index();
+  out << ", " << p_[2]->get_index();
+  out << " and " << p_[3]->get_index();
   out << "  ";
   score_func_->show(out);
   out << std::endl;

@@ -35,10 +35,16 @@ public:
                     Particle* p1, Particle* p2);
   virtual ~DistanceRestraint() {}
 
+  ParticlesList get_interacting_particles() const {
+    ParticlesList ret(1,Particles(p_, p_+2));
+    return ret;
+  }
+
   IMP_RESTRAINT(internal::core_version_info)
 
 private:
   DistancePairScore dp_;
+  Pointer<Particle> p_[2];
 };
 
 IMPCORE_END_NAMESPACE

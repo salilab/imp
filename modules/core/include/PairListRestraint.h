@@ -36,9 +36,7 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info)
 
-  void add_particle_pair(ParticlePair p);
-  void clear_particle_pairs();
-  void add_particle_pairs(const ParticlePairs &ps);
+  IMP_LIST(public, ParticlePair, particle_pair, ParticlePair)
 
   virtual ParticlesList get_interacting_particles() const;
 protected:

@@ -35,13 +35,9 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info)
 
-  using Restraint::add_particles;
-  using Restraint::add_particle;
-  using Restraint::clear_particles;
-  using Restraint::set_particles;
 
   virtual ParticlesList get_interacting_particles() const;
-
+  IMP_LIST(public, Particle, particle, Particle*)
 private:
   Pointer<SingletonScore> ss_;
 };
