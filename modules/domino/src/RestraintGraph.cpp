@@ -20,7 +20,9 @@ IMPDOMINO_BEGIN_NAMESPACE
     std::map<std::string, Particle *> p_map;
     for (Model::ParticleIterator it = mdl->particles_begin();
          it != mdl->particles_end(); it++ ) {
-      p_map[(*it)->get_value(IMP::StringKey("name"))] = *it;
+       if ((*it)->has_attribute(IMP::StringKey("name"))) {
+         p_map[(*it)->get_value(IMP::StringKey("name"))] = *it;
+       }
     }
     // load the nodes and edges
     std::ifstream myfile(filename.c_str());
