@@ -9,7 +9,7 @@
     underscores.
 
     Then do
-    \command{./kernel/doc/bin/make-module my_module}
+    \command{bin/make-module my_module}
     to create the module.
 
     You can use your new module in a variety of ways:
