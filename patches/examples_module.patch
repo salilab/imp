@@ -1,0 +1,900 @@
+Index: examples/implementation/unary_function.readme
+===================================================================
+--- examples/implementation/unary_function.readme	(revision 1186)
++++ examples/implementation/unary_function.readme	(working copy)
+@@ -1,2 +0,0 @@
+-Implementing a UnaryFunction is simply the matter of writing code to compute
+-the function and its derivative.
+\ No newline at end of file
+Index: examples/implementation/decorator.cpp
+===================================================================
+--- examples/implementation/decorator.cpp	(revision 1186)
++++ examples/implementation/decorator.cpp	(working copy)
+@@ -1,88 +0,0 @@
+-/**
+- *  \file MyDecorator.h     \brief Add a name to a particle.
+- *
+- *  Copyright 2007-8 Sali Lab. All rights reserved.
+- *
+- */
+-
+-#ifndef IMPMODULENAME_MY_DECORATOR_H
+-#define IMPMODULENAME_MY_DECORATOR_H
+-
+-#include "config.h"
+-
+-#include <IMP/Particle.h>
+-#include <IMP/Model.h>
+-#include <IMP/DecoratorBase.h>
+-
+-IMPMODULENAME_BEGIN_NAMESPACE
+-
+-//! A simple decorator which adds a name to a particle.
+-/** */
+-class IMPCOREEXPORT MyDecorator: public DecoratorBase
+-{
+-  static StringKey get_name_key();
+-
+-public:
+-  //! Create a decorator from a named particle without error checking.
+-  MyDecorator(Particle *p);
+-  //! Create a decorator from a named particle
+-  static MyDecorator cast(Particle *p) {
+-    IMP_assert( p->has_attribute(get_name_key()), "Particle " << p->get_index()
+-               << " missing required attributes.",
+-               InvalidStateException);
+-    return MyDecorator(p);
+-  }
+-
+-  //! Add a name to the particle
+-  static MyDecorator create(Particle *p, std::string name) {
+-    p->add_attribute(get_name_key(), name);
+-    MyDecorator ret(p);
+-    return ret;
+-  }
+-
+-  //! Set the name of the particle
+-  void set_name(std::string name) {
+-    get_particle()->set_attribute(get_name_key(), name);
+-  }
+-
+-  //! Get the name of the particle
+-  void get_name(std::string name) {
+-    get_particle()->get_attribute(get_name_key());
+-  }
+-
+-  // Print out information about the particle
+-  void show(std::ostream &out) const {
+-    out << "Particle named " << get_name() << std::endl;
+-  }
+-};
+-
+-// Make it so the C++ operator<< can be used.
+-IMP_OUTPUT_OPERATOR(MyDecorator);
+-
+-IMPMODULENAME_END_NAMESPACE
+-
+-#endif  /* IMPMODULENAME_MY_DECORATOR_H */
+-
+-
+-/**
+- *  \file MyDecorator.cpp   \brief Add a name to a particle.
+- *
+- *  Copyright 2007-8 Sali Lab. All rights reserved.
+- *
+- */
+-
+-#include <IMP/modulename/MyDecorator.h>
+-
+-IMPCORE_BEGIN_NAMESPACE
+-
+-MyDecorator::MyDecorator(Particle *p): DecoratorBase(p) {
+-}
+-
+-StringKey MyDecorator::get_name_key() {
+-  /* the compiler will make sure this is initialized the first time the
+-   method is called. */
+-  static StringKey mykey("my name");
+-  return mykey;
+-}
+-
+-IMPCORE_END_NAMESPACE
+Index: examples/implementation/unary_function.cpp
+===================================================================
+--- examples/implementation/unary_function.cpp	(revision 1186)
++++ examples/implementation/unary_function.cpp	(working copy)
+@@ -1,46 +0,0 @@
+-/**
+- *  \file Harmonic.h    \brief Harmonic function.
+- *
+- *  Copyright 2007-8 Sali Lab. All rights reserved.
+- */
+-
+-#ifndef IMPCORE_HARMONIC_H
+-#define IMPCORE_HARMONIC_H
+-
+-#include "config.h"
+-#include <IMP/UnaryFunction.h>
+-#include <IMP/utility.h>
+-
+-IMPCORE_BEGIN_NAMESPACE
+-
+-//! Harmonic function (symmetric about the mean)
+-class Harmonic : public UnaryFunction
+-{
+-public:
+-  /** Create with the given center and spring constant */
+-  Harmonic(Float center, Float k) : center_(center), k_(k) {}
+-
+-  virtual ~Harmonic() {}
+-
+-  virtual Float evaluate(Float feature) const {
+-    return .5*k*square(feature-center_);
+-  }
+-
+-  virtual FloatPair evaluate_with_derivative(Float feature) const {
+-    Float e = (feature - center_);
+-    Float deriv = k_ * e;
+-    return FloatPair(evaluate(feature), deriv);
+-  }
+-
+-  void show(std::ostream &out=std::cout) const {
+-    out << "Harmonic: " << center_ << " and " << k_ << std::endl;
+-  }
+-
+-private:
+-  Float center_;
+-  Float k_;
+-};
+-
+-IMPCORE_END_NAMESPACE
+-
+-#endif  /* IMPCORE_HARMONIC_H */
+Index: examples/implementation/restraint.readme
+===================================================================
+--- examples/implementation/restraint.readme	(revision 1186)
++++ examples/implementation/restraint.readme	(working copy)
+@@ -1 +0,0 @@
+-Implement a simple restraint which applies a PairScore to each ParticlePair in a ParticleContainer.
+\ No newline at end of file
+Index: examples/implementation/restraint.cpp
+===================================================================
+--- examples/implementation/restraint.cpp	(revision 1186)
++++ examples/implementation/restraint.cpp	(working copy)
+@@ -1,95 +0,0 @@
+-/**
+- *  \file MyRestraint.h   \brief A restraint on a list of particle pairs.
+- *
+- *  Copyright 2007-8 Sali Lab. All rights reserved.
+- *
+- */
+-
+-#ifndef IMPMODULENAME_MY_RESTRAINT_H
+-#define IMPMODULENAME_MY_RESTRAINT_H
+-
+-#include "config.h"
+-#include "internal/modulename_version_info.h"
+-#include <IMP/SingletonScore.h>
+-#include <IMP/Restraint.h>
+-#include <IMP/PairContainer.h>
+-
+-IMPMODULENAME_BEGIN_NAMESPACE
+-
+-//! Apply a PairScore to a list of particle pairs
+-/**
+- */
+-class IMPMODULENAMEEXPORT MyRestraint : public Restraint
+-{
+-  Pointer<PairContainer> pc_;
+-  Pointer<PairScore> f_;
+-public:
+-  //! Create the restraint.
+-  MyRestraint(PairScore* score_func,
+-              PairContainer *pc);
+-  virtual ~MyRestraint() {}
+-
+-  IMP_RESTRAINT(internal::modulename_version_info)
+-
+-  ParticlesList get_interacting_particles() const;
+-};
+-
+-IMPMODULENAME_END_NAMESPACE
+-
+-#endif  /* IMPCORE_DISTANCE_RESTRAINT_H */
+-
+-/**
+- *  \file MyRestraint.cpp \brief Restrain a list of particle pairs.
+- *
+- *  Copyright 2007-8 Sali Lab. All rights reserved.
+- *
+- */
+-
+-#include <IMP/modulename/MyRestraint.h>
+-#include <IMP/log.h>
+-
+-IMPMODULENAME_BEGIN_NAMESPACE
+-
+-MyRestraint::MyRestraint(PairScore* score_func,
+-                         PairContainer *pc) : pc_(pc),
+-                                           f_(score_func) {}
+-
+-PairsRestraint::~PairsRestraint() {}
+-
+-Float PairsRestraint::evaluate(DerivativeAccumulator *accum)
+-{
+-  Float score=0;
+-  for (PairContainer::ParticlePairIterator
+-       it= pc_->particle_pairs_begin();
+-       it != pc_->particle_pairs_end(); ++it) {
+-    score += f_->evaluate(it->first, it->second, accum);
+-  }
+-
+-  return score;
+-}
+-
+-// the interacting sets are pairs
+-ParticlesList PairsRestraint::get_interacting_particles() const
+-{
+-  ParticlesList ret;
+-  for (PairContainer::ParticlePairIterator it
+-       = pc_->particle_pairs_begin();
+-       it != pc_->particle_pairs_end(); ++it) {
+-    Particles s;
+-    s.push_back(it->first);
+-    s.push_back(it->second);
+-    ret.push_back(s);
+-  }
+-  return ret;
+-}
+-
+-void PairsRestraint::show(std::ostream& out) const
+-{
+-  out << "ContainerRestraint with score function ";
+-  ss_->show(out);
+-  out << " and container ";
+-  pc_->show(out);
+-  out << std::endl;
+-}
+-
+-IMPMODULENAME_END_NAMESPACE
+Index: examples/implementation/README
+===================================================================
+--- examples/implementation/README	(revision 1186)
++++ examples/implementation/README	(working copy)
+@@ -1,2 +0,0 @@
+-These C++ examples show how to implement instances of Restraints, ScoreStates, Decorators
+-and other basic types that should not be implemented in python.
+\ No newline at end of file
+Index: examples/implementation/decorator.readme
+===================================================================
+--- examples/implementation/decorator.readme	(revision 1186)
++++ examples/implementation/decorator.readme	(working copy)
+@@ -1 +0,0 @@
+-This decorator allows you to add and control a name in a Particle.
+\ No newline at end of file
+Index: examples/SConscript
+===================================================================
+--- examples/SConscript	(revision 1186)
++++ examples/SConscript	(working copy)
+@@ -7,24 +7,28 @@
+ example_py = [x for x in Glob("*.py") + Glob("*/*.py") \
+               if 'fragments' not in x.path]
+ 
++example_cpp = [x for x in Glob("*.cpp") + Glob("*/*.cpp") \
++              if 'fragments' not in x.path]
++
++
+ e = env.Clone()
+ 
+ # Custom builder to run unit tests:
+ def builder_unit_test(target, source, env):
+     bin = source[0].abspath
+     for src in source[1:]:
+-        (dir, script) = os.path.split(src.abspath)
+-        app = "cd %s && %s %s %s > /dev/null" % (dir, bin, e['PYTHON'], script)
+-        if env.Execute(app) != 0:
+-            print "examples FAILED"
+-            return 1
+-    file(str(target[0]), 'w').write('PASSED\n')
++            (dir, script) = os.path.split(src.abspath)
++            app = "cd %s && %s %s %s > /dev/null" % (dir, bin, e['PYTHON'], script)
++            if env.Execute(app) != 0:
++                print "examples FAILED"
++                return 1
++            file(str(target[0]), 'w').write('PASSED\n')
+ 
+ e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
+                                      source_scanner=pyscanner.PythonScanner)})
+ 
+ # Test all scripts:
+-test = e.Test("examples.passed", bin + example_py)
++test = e.Test("examples.passed", bin + example_py+example_cpp)
+ e.Alias("test", test)
+ e.AlwaysBuild("examples.passed")
+ 
+Index: examples/README
+===================================================================
+--- examples/README	(revision 1186)
++++ examples/README	(working copy)
+@@ -2,4 +2,4 @@
+ - \ref simple_examples "Simple examples", which demonstrate a single class or decorator
+ - \ref using_experimental_data "Experimental examples" which demonstrate a variety of classes working together to go from experimental data to a structure
+ - \ref fragments "Fragments" which are little bits of code that illustrate using a particular piece of \imp but can't be run on their own.
+-- \ref implementation "Implementation Examples" which illustrate how to add new Restraints, Decorators etc. to \imp.
+\ No newline at end of file
++- "Implementation Examples" which illustrate how to add new Restraints, Decorators etc. to \imp. These can be found in the IMP::examples module.
+\ No newline at end of file
+Index: doc/doxygen/doxygen.conf.in
+===================================================================
+--- doc/doxygen/doxygen.conf.in	(revision 1186)
++++ doc/doxygen/doxygen.conf.in	(working copy)
+@@ -560,6 +560,7 @@
+ # with spaces.
+ 
+ INPUT                  = ../../build/include \
++                         ../../modules/examples/src \
+                          ../../modules/@ALL_MODULES@/doc \
+                          ../../kernel/doc \
+                          .
+@@ -630,7 +631,9 @@
+ # directories that contain example code fragments that are included (see 
+ # the \include command).
+ 
+-EXAMPLE_PATH           = ../../examples
++EXAMPLE_PATH           = ../../examples \
++                         ../../modules/examples/include \
++                         ../../modules/examples/src
+ 
+ # If the value of the EXAMPLE_PATH tag contains directories, you can use the 
+ # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
+@@ -638,6 +641,7 @@
+ # blank all files are included.
+ 
+ EXAMPLE_PATTERNS       = *.py \
++                         *.h \
+                          *.cpp
+ 
+ # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be 
+@@ -698,7 +702,7 @@
+ # doxygen to hide any special comment blocks from generated source code 
+ # fragments. Normal C and C++ comments will always remain visible.
+ 
+-STRIP_CODE_COMMENTS    = YES
++STRIP_CODE_COMMENTS    = NO
+ 
+ # If the REFERENCED_BY_RELATION tag is set to YES 
+ # then for each documented function all documented 
+Index: kernel/test/run-all-tests.py
+===================================================================
+--- kernel/test/run-all-tests.py	(revision 1186)
++++ kernel/test/run-all-tests.py	(working copy)
+@@ -1 +1,26 @@
+-link ../../tools/run-all-tests.py
+\ No newline at end of file
++import unittest, sys, os, re
++
++def regressionTest():
++    """Run all tests in files called test_*.py in current directory and
++       subdirectories"""
++    path = os.path.dirname(sys.argv[0])
++    if path == '':
++        path = '.'
++    # Tell test cases where to find any input files needed
++    os.environ['TEST_DIRECTORY'] = path
++    modobjs = []
++    for subdir in [''] + [x for x in os.listdir(path) \
++                          if os.path.isdir(os.path.join(path, x))]:
++        files = os.listdir(os.path.join(path, subdir))
++        test = re.compile("^test_.*\.py$", re.IGNORECASE)
++        files = filter(test.search, files)
++        modnames = [os.path.splitext(f)[0] for f in files]
++        sys.path.insert(0, os.path.join(path, subdir))
++        modobjs.extend([__import__(m) for m in modnames])
++        sys.path.pop(0)
++
++    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
++    return unittest.TestSuite(tests)
++
++if __name__ == "__main__":
++    unittest.main(defaultTest="regressionTest")
+Index: kernel/include/UnaryFunction.h
+===================================================================
+--- kernel/include/UnaryFunction.h	(revision 1186)
++++ kernel/include/UnaryFunction.h	(working copy)
+@@ -19,6 +19,9 @@
+ //! Abstract single variable functor class for score functions.
+ /** These functors take a single feature value, and return a corresponding
+     score (and optionally also the first derivative).
++
++    See the IMP::examples::UnaryFunction example for how to implement a simple
++    unary function.
+  */
+ class IMPEXPORT UnaryFunction : public RefCountedObject
+ {
+Index: kernel/include/Restraint.h
+===================================================================
+--- kernel/include/Restraint.h	(revision 1186)
++++ kernel/include/Restraint.h	(working copy)
+@@ -54,7 +54,8 @@
+     to make. To disable this warning for a particular restraint, call
+     set_was_owned(true).
+ 
+-    See the \ref restraint example for how to implement a simple restraint.
++    See the IMP::examples::Restraint example for how to implement a simple
++    restraint.
+  */
+ class IMPEXPORT Restraint : public RefCountedObject
+ {
+Index: kernel/include/DecoratorBase.h
+===================================================================
+--- kernel/include/DecoratorBase.h	(revision 1186)
++++ kernel/include/DecoratorBase.h	(working copy)
+@@ -29,6 +29,9 @@
+ 
+     \note Remember that attribute keys should always be created lazily
+     (at the time of the first use), and not be created as static variables.
++
++    See the IMP::examples::Decorator example for how to implement a simple
++    decorator.
+ */
+ class DecoratorBase
+ {
+Index: kernel/doc/api.dox
+===================================================================
+--- kernel/doc/api.dox	(revision 1186)
++++ kernel/doc/api.dox	(working copy)
+@@ -12,7 +12,7 @@
+     - \ref deprecation "Deprecated Functionality"
+ 
+     Then look through the examples which can be found at:
+-    - \ref Examples "Examples"
++    - \ref examples "Examples"
+ 
+     There are a variety of useful base classes which are used to provide
+     most functionality. They are:
+Index: kernel/doc/decorators.dox
+===================================================================
+--- kernel/doc/decorators.dox	(revision 1186)
++++ kernel/doc/decorators.dox	(working copy)
+@@ -41,7 +41,7 @@
+ d.get_foo_key()
+ \endverbatim
+ 
+-See the \ref decorator example for how to implement a simple
++See the IMP::examples::Decorator example for how to implement a simple
+ decorator.
+  */
+ 
+Index: modules/SConscript
+===================================================================
+--- modules/SConscript	(revision 1186)
++++ modules/SConscript	(working copy)
+@@ -20,3 +20,6 @@
+ 
+ env.IMPModule('search', author='Daniel Russel', version='SVN',
+               description='Build search structures over particles.')
++
++env.IMPModule('examples', author='somebody', version='SVN',
++              description='A private module.')
+\ No newline at end of file
+Index: modules/examples/include/ExampleDecorator.h
+===================================================================
+--- modules/examples/include/ExampleDecorator.h	(revision 0)
++++ modules/examples/include/ExampleDecorator.h	(revision 0)
+@@ -0,0 +1,67 @@
++/**
++ *  \file ExampleDecorator.h     \brief Add a name to a particle.
++ *
++ *  Copyright 2007-8 Sali Lab. All rights reserved.
++ *
++ */
++
++#ifndef IMPEXAMPLES_EXAMPLE_DECORATOR_H
++#define IMPEXAMPLES_EXAMPLE_DECORATOR_H
++
++#include "config.h"
++
++#include <IMP/Particle.h>
++#include <IMP/Model.h>
++#include <IMP/DecoratorBase.h>
++
++IMPEXAMPLES_BEGIN_NAMESPACE
++
++//! A simple decorator which adds a name to a particle.
++/** The source code is as follows:
++    \include Decorator.h
++    \include Decorator.cpp
++*/
++class IMPEXAMPLESEXPORT ExampleDecorator: public DecoratorBase
++{
++  static StringKey get_name_key();
++
++public:
++  //! Create a decorator from a named particle without error checking.
++  ExampleDecorator(Particle *p);
++  //! Create a decorator from a named particle
++  static ExampleDecorator cast(Particle *p) {
++    IMP_check( p->has_attribute(get_name_key()), "Particle " << p->get_index()
++               << " missing required attributes.",
++               InvalidStateException);
++    return ExampleDecorator(p);
++  }
++
++  //! Add a name to the particle
++  static ExampleDecorator create(Particle *p, std::string name) {
++    p->add_attribute(get_name_key(), name);
++    ExampleDecorator ret(p);
++    return ret;
++  }
++
++  //! Set the name of the particle
++  void set_name(std::string name) {
++    get_particle()->set_value(get_name_key(), name);
++  }
++
++  //! Get the name of the particle
++  std::string get_name() const {
++    return get_particle()->get_value(get_name_key());
++  }
++
++  // Print out information about the particle
++  void show(std::ostream &out) const {
++    out << "Particle named " << get_name() << std::endl;
++  }
++};
++
++// Make it so the C++ operator<< can be used.
++IMP_OUTPUT_OPERATOR(ExampleDecorator);
++
++IMPEXAMPLES_END_NAMESPACE
++
++#endif  /* IMPEXAMPLES_EXAMPLE_DECORATOR_H */
+
+Property changes on: modules/examples/include/ExampleDecorator.h
+___________________________________________________________________
+Added: svn:mergeinfo
+
+Index: modules/examples/include/ExampleUnaryFunction.h
+===================================================================
+--- modules/examples/include/ExampleUnaryFunction.h	(revision 0)
++++ modules/examples/include/ExampleUnaryFunction.h	(revision 0)
+@@ -0,0 +1,53 @@
++/**
++ *  \file ExampleUnaryFunction.h
++ *  \brief A simple unary function.
++ *
++ *  Copyright 2007-8 Sali Lab. All rights reserved.
++ *
++ */
++
++
++#ifndef IMPEXAMPLES_EXAMPLE_UNARY_FUNCTION_H
++#define IMPEXAMPLES_EXAMPLE_UNARY_FUNCTION_H
++
++#include "config.h"
++#include <IMP/UnaryFunction.h>
++#include <IMP/utility.h>
++
++IMPEXAMPLES_BEGIN_NAMESPACE
++
++//! A simple unary function
++/** This one happens to be a harmonic.
++    The source code is as follows:
++    \include UnaryFunction.h
++ */
++class ExampleUnaryFunction : public UnaryFunction
++{
++public:
++  /** Create with the given center and spring constant */
++  ExampleUnaryFunction(Float center, Float k) : center_(center), k_(k) {}
++
++  virtual ~ExampleUnaryFunction() {}
++
++  virtual Float evaluate(Float feature) const {
++    return .5*k_*square(feature-center_);
++  }
++
++  virtual FloatPair evaluate_with_derivative(Float feature) const {
++    Float e = (feature - center_);
++    Float deriv = k_ * e;
++    return FloatPair(evaluate(feature), deriv);
++  }
++
++  void show(std::ostream &out=std::cout) const {
++    out << "Harmonic: " << center_ << " and " << k_ << std::endl;
++  }
++
++private:
++  Float center_;
++  Float k_;
++};
++
++IMPEXAMPLES_END_NAMESPACE
++
++#endif  /* IMPEXAMPLES_EXAMPLE_UNARY_FUNCTION_H */
+
+Property changes on: modules/examples/include/ExampleUnaryFunction.h
+___________________________________________________________________
+Added: svn:mergeinfo
+
+Index: modules/examples/include/MyRestraint.h
+===================================================================
+--- modules/examples/include/MyRestraint.h	(revision 1164)
++++ modules/examples/include/MyRestraint.h	(working copy)
+@@ -1,37 +0,0 @@
+-/**
+- *  \file MyRestraint.h   \brief A restraint on two particles.
+- *
+- *  Copyright 2007-8 Sali Lab. All rights reserved.
+- *
+- */
+-
+-#ifndef IMPEXAMPLES_MY_RESTRAINT_H
+-#define IMPEXAMPLES_MY_RESTRAINT_H
+-
+-#include "config.h"
+-#include "internal/examples_version_info.h"
+-#include <IMP/PairScore.h>
+-#include <IMP/Restraint.h>
+-
+-#include <iostream>
+-
+-IMPEXAMPLES_BEGIN_NAMESPACE
+-
+-//! Restrain a pair of particles
+-/**
+- */
+-class IMPEXAMPLESEXPORT MyRestraint : public Restraint
+-{
+-  Pointer<PairScore> ps_;
+-public:
+-  //! Create the restraint.
+-  MyRestraint(PairScore* score_func,
+-              Particle* p1, Particle* p2);
+-  virtual ~MyRestraint() {}
+-
+-  IMP_RESTRAINT(internal::examples_version_info)
+-};
+-
+-IMPEXAMPLES_END_NAMESPACE
+-
+-#endif  /* IMPCORE_DISTANCE_RESTRAINT_H */
+Index: modules/examples/include/ExampleRestraint.h
+===================================================================
+--- modules/examples/include/ExampleRestraint.h	(revision 0)
++++ modules/examples/include/ExampleRestraint.h	(revision 0)
+@@ -0,0 +1,46 @@
++/**
++ *  \file ExampleRestraint.h
++ *  \brief A restraint on a list of particle pairs.
++ *
++ *  Copyright 2007-8 Sali Lab. All rights reserved.
++ *
++ */
++
++#ifndef IMPEXAMPLES_EXAMPLE_RESTRAINT_H
++#define IMPEXAMPLES_EXAMPLE_RESTRAINT_H
++
++#include "config.h"
++#include "internal/examples_version_info.h"
++#include <IMP/SingletonScore.h>
++#include <IMP/Restraint.h>
++#include <IMP/core/PairContainer.h>
++
++IMPEXAMPLES_BEGIN_NAMESPACE
++
++//! Apply a PairScore to a list of particle pairs
++/** This restraint could be used, in conjunction with a
++    ClosePairsScoreState and a SphereDistancePairScore,
++    to prevent particles from interpenetrating.
++
++    The source code is as follows:
++    \include Restraint.h
++    \include Restraint.cpp
++ */
++class IMPEXAMPLESEXPORT ExampleRestraint : public Restraint
++{
++  Pointer<IMP::core::PairContainer> pc_;
++  Pointer<PairScore> f_;
++public:
++  //! Create the restraint.
++  ExampleRestraint(PairScore* score_func,
++                   IMP::core::PairContainer *pc);
++  virtual ~ExampleRestraint() {}
++
++  IMP_RESTRAINT(internal::examples_version_info)
++
++  ParticlesList get_interacting_particles() const;
++};
++
++IMPEXAMPLES_END_NAMESPACE
++
++#endif  /* IMPEXAMPLES_EXAMPLE_RESTRAINT_H */
+
+Property changes on: modules/examples/include/ExampleRestraint.h
+___________________________________________________________________
+Added: svn:mergeinfo
+
+Index: modules/examples/doc/examples.dox
+===================================================================
+--- modules/examples/doc/examples.dox	(revision 1164)
++++ modules/examples/doc/examples.dox	(working copy)
+@@ -1,11 +1,11 @@
+ /** \namespace IMP::examples
+-\brief IMP.examples does something. 
++\brief IMP.examples provides examples showing how to implement various types of objects and functionality. 
+ 
+-<b>Overview:</b> IMP.examples provides a cool optimizer.
++<b>Overview:</b> IMP.examples provides examples showing how to implement things.
+ 
+-<b>Authors:</b> Someone.
++<b>Authors:</b> Daniel Russel.
+ 
+-<b>Publications:</b> IMP.examples is an internal module.
++<b>Publications:</b> IMP.examples is part of the main \imp distribution.
+ 
+-<b>License:</b> IMP.examples is not licensed for distribution.
++<b>License:</b> IMP.examples is licensed under the BSD license.
+ */
+\ No newline at end of file
+Index: modules/examples/src/ExampleDecorator.cpp
+===================================================================
+--- modules/examples/src/ExampleDecorator.cpp	(revision 0)
++++ modules/examples/src/ExampleDecorator.cpp	(revision 0)
+@@ -0,0 +1,22 @@
++/**
++ *  \file ExampleDecorator.cpp   \brief Add a name to a particle.
++ *
++ *  Copyright 2007-8 Sali Lab. All rights reserved.
++ *
++ */
++
++#include <IMP/examples/ExampleDecorator.h>
++
++IMPEXAMPLES_BEGIN_NAMESPACE
++
++ExampleDecorator::ExampleDecorator(Particle *p): DecoratorBase(p) {
++}
++
++StringKey ExampleDecorator::get_name_key() {
++  /* the compiler will make sure this is initialized the first time the
++   method is called. */
++  static StringKey mykey("my name");
++  return mykey;
++}
++
++IMPEXAMPLES_END_NAMESPACE
+
+Property changes on: modules/examples/src/ExampleDecorator.cpp
+___________________________________________________________________
+Added: svn:mergeinfo
+
+Index: modules/examples/src/MyRestraint.cpp
+===================================================================
+--- modules/examples/src/MyRestraint.cpp	(revision 1164)
++++ modules/examples/src/MyRestraint.cpp	(working copy)
+@@ -1,40 +0,0 @@
+-/**
+- *  \file MyRestraint.cpp \brief Restraint between two particles.
+- *
+- *  Copyright 2007-8 Sali Lab. All rights reserved.
+- *
+- */
+-
+-#include <IMP/examples/MyRestraint.h>
+-#include <IMP/log.h>
+-
+-IMPEXAMPLES_BEGIN_NAMESPACE
+-
+-MyRestraint::MyRestraint(PairScore* score_func,
+-                         Particle* p1, Particle* p2) :
+-    ps_(score_func)
+-{
+-  add_particle(p1);
+-  add_particle(p2);
+-}
+-
+-Float MyRestraint::evaluate(DerivativeAccumulator *accum)
+-{
+-  IMP_LOG(VERBOSE, "Evaluating MyRestraint on "
+-          << get_particle(0)->get_index()
+-          << " and "
+-          << get_particle(1)->get_index() << std::endl);
+-  return ps_->evaluate(get_particle(0), get_particle(1), accum);
+-}
+-
+-
+-void MyRestraint::show(std::ostream& out) const
+-{
+-  out << "MyRestraint on "
+-      << get_particle(0)->get_index()
+-      << " and "
+-      << get_particle(1)->get_index()
+-      << " using " << *ps_ << std::endl;
+-}
+-
+-IMPEXAMPLES_END_NAMESPACE
+Index: modules/examples/src/ExampleRestraint.cpp
+===================================================================
+--- modules/examples/src/ExampleRestraint.cpp	(revision 0)
++++ modules/examples/src/ExampleRestraint.cpp	(revision 0)
+@@ -0,0 +1,56 @@
++/**
++ *  \file ExampleRestraint.cpp \brief Restrain a list of particle pairs.
++ *
++ *  Copyright 2007-8 Sali Lab. All rights reserved.
++ *
++ */
++
++#include <IMP/examples/ExampleRestraint.h>
++#include <IMP/log.h>
++
++IMPEXAMPLES_BEGIN_NAMESPACE
++
++ExampleRestraint::ExampleRestraint(PairScore* score_func,
++                                   IMP::core::PairContainer *pc) : pc_(pc),
++                                          f_(score_func) {}
++
++
++
++Float ExampleRestraint::evaluate(DerivativeAccumulator *accum)
++{
++  Float score=0;
++  for (IMP::core::PairContainer::ParticlePairIterator
++       it= pc_->particle_pairs_begin();
++       it != pc_->particle_pairs_end(); ++it) {
++    score += f_->evaluate(it->first, it->second, accum);
++  }
++
++  return score;
++}
++
++/* Return a list of interacting sets. In this case it is pairs
++   of particles so all the sets are of size 2. */
++ParticlesList ExampleRestraint::get_interacting_particles() const
++{
++  ParticlesList ret;
++  for (IMP::core::PairContainer::ParticlePairIterator it
++       = pc_->particle_pairs_begin();
++       it != pc_->particle_pairs_end(); ++it) {
++    Particles s;
++    s.push_back(it->first);
++    s.push_back(it->second);
++    ret.push_back(s);
++  }
++  return ret;
++}
++
++void ExampleRestraint::show(std::ostream& out) const
++{
++  out << "PairsRestraint with score function ";
++  f_->show(out);
++  out << " and container ";
++  pc_->show(out);
++  out << std::endl;
++}
++
++IMPEXAMPLES_END_NAMESPACE
+
+Property changes on: modules/examples/src/ExampleRestraint.cpp
+___________________________________________________________________
+Added: svn:mergeinfo
+
+Index: modules/examples/pyext/examples.i
+===================================================================
+--- modules/examples/pyext/examples.i	(revision 1164)
++++ modules/examples/pyext/examples.i	(working copy)
+@@ -27,9 +27,11 @@
+ 
+ namespace IMP {
+ namespace examples {
+-IMP_OWN_FIRST_CONSTRUCTOR(MyRestraint)
++IMP_OWN_FIRST_SECOND_CONSTRUCTOR(Restraint)
+ }
+ }
+ 
+ /* Wrap our own classes */
+-%include "IMP/examples/MyRestraint.h"
++%include "IMP/examples/ExampleRestraint.h"
++%include "IMP/examples/ExampleDecorator.h"
++%include "IMP/examples/ExampleUnaryFunction.h"
