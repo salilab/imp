@@ -1,0 +1,12 @@
+Index: bin/make-module
+===================================================================
+--- bin/make-module	(revision 1190)
++++ bin/make-module	(working copy)
+@@ -18,6 +18,7 @@
+ 
+ def copy_dir(source, dest, modname):
+     for x in os.listdir(source):
++        if x == ".svn": continue
+         fx= fix_string(x, modname)
+         xspath= os.path.join(source, x)
+         xdpath= os.path.join(dest, fx)
