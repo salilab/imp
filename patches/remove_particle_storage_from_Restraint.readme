@@ -1,0 +1,12 @@
+The posted patch to remove particle storage from the restraint base classe
+since that encourages bad habbits of using unstructured storage to hold
+structured sets and doesn't provide useful functionality.
+
+Existing restraints that use it need to have
+ParticlesList get_interacting_particles() const {
+  return ParticlesList(1, Particles(particles_begin(), particles_end()));
+}
+IMP_LIST(private, Particle, particle, Particle*)
+added to their header and
+
+IMP_LIST(RestraintName, Particle, particle, Particle*,,) added to their .cpp.
