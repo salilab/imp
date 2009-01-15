@@ -1,0 +1,14 @@
+The main purpose of this patch is to remove the ParticleIndex functionality
+since it complicates particle storage and provides no useful functionality
+and encourages bad habits (of passing indexes rather than particles).
+Instead particles are stored in a linked list enabling constant time removal
+with no extra complexity.
+
+The restraintIndex and ScoreState index typedefs are also removed as is
+the IMP_CONTAINER (IMP_LIST is used instead). The LIST/CONTAINER distincation
+does not make sense now that things are ref counted. 
+
+API changes:
+- no more particleIndex. Just call model.remove_particle(Particle*) instead
+- no more IMP_CONTAINER, use IMP_LIST instead
+- IMP_LIST_IMPL takes one extra argument, just add a comma at the end
