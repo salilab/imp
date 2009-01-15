@@ -3,7 +3,7 @@ Export('env')
 
 # Link against CGAL if present:
 if env['CGAL_LIBS']:
-    env.Append(LIBS=env['CGAL_LIBS'], CPPDEFINES='IMP_USE_CGAL')
+    env.Append(LIBS=env['CGAL_LIBS'])
 
 # No dependent libraries, so this module can always be built:
 env.validate()
