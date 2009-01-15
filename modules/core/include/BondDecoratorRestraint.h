@@ -45,6 +45,19 @@ public:
 
   void set_function(UnaryFunction *f) {f_=f;}
 
+  ParticlesList get_interacting_particles() const
+  {
+    ParticlesList ret;
+    for (BondDecoratorListScoreState::BondIterator bit= bl_->bonds_begin();
+         bit != bl_->bonds_end(); ++bit) {
+      Particles r;
+      r.push_back(bit->get_bonded(0).get_particle());
+      r.push_back(bit->get_bonded(1).get_particle());
+      ret.push_back(r);
+    }
+    return ret;
+  }
+
 protected:
   BondDecoratorListScoreState *bl_;
   Pointer<UnaryFunction> f_;

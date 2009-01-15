@@ -44,6 +44,7 @@ public:
   //! Clear all the stored chains
   void clear_chains();
 
+  IMP_LIST(private, Particle, particle, Particle*);
 protected:
   Pointer<TripletScore> ts_;
   std::vector<unsigned int> chain_splits_;

@@ -19,8 +19,8 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
                                      Particle* p1, Particle* p2) :
     dp_(score_func)
 {
-  add_particle(p1);
-  add_particle(p2);
+  p_[0]=p1;
+  p_[1]=p2;
 }
 
 //! Calculate the score for this distance restraint.
@@ -30,7 +30,7 @@ DistanceRestraint::DistanceRestraint(UnaryFunction* score_func,
  */
 Float DistanceRestraint::evaluate(DerivativeAccumulator *accum)
 {
-  return dp_.evaluate(get_particle(0), get_particle(1), accum);
+  return dp_.evaluate(p_[0], p_[1], accum);
 }
 
 
@@ -46,8 +46,8 @@ void DistanceRestraint::show(std::ostream& out) const
   }
 
   get_version_info().show(out);
-  out << "  particles: " << get_particle(0)->get_index();
-  out << " and " << get_particle(1)->get_index();
+  out << "  particles: " << p_[0]->get_index();
+  out << " and " << p_[1]->get_index();
   out << "  ";
   dp_.show(out);
   out << std::endl;
