@@ -7,8 +7,11 @@ files = [
          'JEdge.h',
          'JNode.h',
          'RestraintGraph.h',
+         'DiscreteSet.h',
+         'PermutationSampler.h',
          'SimpleDiscreteRestraint.h',
          'SimpleDiscreteSpace.h',
+         'SimpleDiscreteSampler.h',
         ]
 
 # Install the include files:

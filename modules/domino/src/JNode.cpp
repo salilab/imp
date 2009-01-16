@@ -54,26 +54,6 @@ void JNode::populate_states_of_particles(Particles *particles,
 {
   ds_->populate_states_of_particles(particles, states);
 }
-/*
-  long num_states = number_of_states();
-  long global_iterator, global_index;
-  CombState *calc_state_;
-  for (long state_index = 0;state_index < num_states; state_index++) {
-    calc_state_ = new CombState();
-    global_iterator = num_states;
-    global_index = state_index;
-    for (Particles::const_iterator it = particles.begin();
-         it != particles.end(); it++) {
-      Particle* p = *it;
-      long sample_size = ds_->get_space_size(**it);
-      global_iterator /= sample_size;
-      calc_state_->add_data_item(p, global_index / global_iterator);
-      global_index -= (global_index / global_iterator) * global_iterator;
-    }
-    (*states_)[calc_state_->partial_key(&particles)] = calc_state_;
-  } // state_index iteration
-}
-*/
 void JNode::show_sampling_space(std::ostream& out) const
 {
   out << std::endl << " sampling space of JNode with index: " << node_ind_;

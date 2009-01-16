@@ -7,6 +7,8 @@ files = [
          'JEdge.cpp',
          'JNode.cpp',
          'RestraintGraph.cpp',
+         'DiscreteSet.cpp',
+         'PermutationSampler.cpp',
          'SimpleDiscreteRestraint.cpp',
         ]
 
