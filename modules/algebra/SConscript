@@ -1,0 +1,10 @@
+Import('env')
+Export('env')
+
+env.validate()
+
+# Subdirectories:
+SConscript('src/SConscript')
+SConscript('include/SConscript')
+SConscript('pyext/SConscript')
+SConscript('test/SConscript')

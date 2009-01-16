@@ -4,8 +4,8 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
-#include "IMP/core/Rotation3D.h"
-IMPCORE_BEGIN_NAMESPACE
+#include "IMP/algebra/Rotation3D.h"
+IMPALGEBRA_BEGIN_NAMESPACE
 
 Rotation3D::~Rotation3D() {
 }
@@ -85,4 +85,4 @@ Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
   if (m21-m12 < 0.0) d=-d;
   return Rotation3D(a,b,c,d);
 }
-IMPCORE_END_NAMESPACE
+IMPALGEBRA_END_NAMESPACE

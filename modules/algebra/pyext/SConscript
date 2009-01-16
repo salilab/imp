@@ -1,0 +1,10 @@
+Import('env')
+
+e = env.IMPPythonExtensionEnvironment()
+
+e.IMPPythonExtension('algebra.i')
+
+files = (Glob('algebra/*.py'))
+
+# Install the Python files:
+env.IMPPython(files)

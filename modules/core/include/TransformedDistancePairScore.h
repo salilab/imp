@@ -10,12 +10,13 @@
 #define IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H
 
 #include "config.h"
-#include "Transformation3D.h"
 
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 #include <IMP/Vector3D.h>
+
+#include <IMP/algebra/Transformation3D.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -32,12 +33,13 @@ class Transformation3D;
 class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
 {
   Pointer<UnaryFunction> f_;
-  Transformation3D t_;
-  Rotation3D ri_;
+  IMP::algebra::Transformation3D t_;
+  IMP::algebra::Rotation3D ri_;
  public:
   /** Initialize it/*/
   TransformedDistancePairScore(UnaryFunction *f,
-                               const Transformation3D &transformation);
+                               const IMP::algebra::Transformation3D
+                                                           &transformation);
   virtual ~TransformedDistancePairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const;
@@ -45,7 +47,7 @@ class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
   virtual void show(std::ostream &out=std::cout) const;
 
   /** Set the transformation object.*/
-  void set_transformation(const Transformation3D &rot);
+  void set_transformation(const IMP::algebra::Transformation3D &rot);
 
 };
 

@@ -2,7 +2,7 @@ import unittest
 import IMP
 import IMP.utils
 import IMP.test
-import IMP.core
+import IMP.algebra
 import random
 
 class RigidTransformationTests(IMP.test.TestCase):
@@ -16,7 +16,7 @@ class RigidTransformationTests(IMP.test.TestCase):
         mag = mag**(.5)
         axis/= mag
         m/=mag
-        r= IMP.core.Rotation3D(m, axis[0], axis[1], axis[2])
+        r= IMP.algebra.Rotation3D(m, axis[0], axis[1], axis[2])
         ri= r.get_inverse()
         v= IMP.random_vector_in_unit_box()
         vt= r.rotate(v)

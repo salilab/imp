@@ -1,0 +1,12 @@
+/** \namespace IMP::algebra
+\brief IMP.algebra contains general purpose algebraic methods.
+
+<b>Overview:</b> IMP.algebra contains general purpose algebraic methods
+that are expected to be used by a wide variety of IMP users.
+
+<b>Authors:</b> Daniel Russel, Ben Webb, Javier Angel Velazquez-Muriel.
+
+<b>Publications:</b> IMP.algebra is covered by the main IMP publications.
+
+<b>License:</b> IMP.algebra is licensed under the LGPL.
+*/
