@@ -3,6 +3,7 @@ Import('env')
 files = [
          'DiscreteSampler.h',
          'CombState.h',
+         'combination.hpp',
          'DominoOptimizer.h',
          'JEdge.h',
          'JNode.h',
