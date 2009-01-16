@@ -5,20 +5,20 @@
  *
  */
 
-#ifndef IMPCORE_TRANSFORMATION_3D_H
-#define IMPCORE_TRANSFORMATION_3D_H
+#ifndef IMPALGEBRA_TRANSFORMATION_3D_H
+#define IMPALGEBRA_TRANSFORMATION_3D_H
 
 #include "config.h"
 
 #include "IMP/Vector3D.h"
-#include "IMP/core/Rotation3D.h"
+#include "IMP/algebra/Rotation3D.h"
 
-IMPCORE_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Simple 3D transformation class
 /**
 */
-class IMPCOREEXPORT Transformation3D
+class IMPALGEBRAEXPORT Transformation3D
 {
 public:
   // public for swig
@@ -60,10 +60,10 @@ IMP_OUTPUT_OPERATOR(Transformation3D)
     \relates Transformation3D
  */
 
-IMPCOREEXPORT Transformation3D
+IMPALGEBRAEXPORT Transformation3D
 transformation_from_rotation_around_vector(const Rotation3D &rot,
                                            const Vector3D &center);
 
-IMPCORE_END_NAMESPACE
+IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPCORE_TRANSFORMATION_3D_H */
+#endif  /* IMPALGEBRA_TRANSFORMATION_3D_H */

@@ -1,6 +1,7 @@
 import unittest
 import IMP.utils
 import IMP.core
+import IMP.algebra
 import IMP.test, IMP
 
 class ParticleTrasnformationTests(IMP.test.TestCase):
@@ -26,8 +27,8 @@ class ParticleTrasnformationTests(IMP.test.TestCase):
                                                          82.603,46.874,76.53))
     def test_transformation(self):
         """Test the TransformationFunction class"""
-        r = IMP.core.rotation_from_fixed_xyz(0.2,0.8,-0.4)
-        t=IMP.core.Transformation3D(r,IMP.Vector3D(20.0,-12.4,18.6))
+        r = IMP.algebra.rotation_from_fixed_xyz(0.2,0.8,-0.4)
+        t=IMP.algebra.Transformation3D(r,IMP.Vector3D(20.0,-12.4,18.6))
         tf=IMP.core.TransformationFunction(t)
         r = tf.apply(self.particles)
         tp=[]

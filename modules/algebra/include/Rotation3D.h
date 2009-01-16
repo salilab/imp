@@ -5,13 +5,13 @@
  *
  */
 
-#ifndef IMPCORE_ROTATION_3D_H
-#define IMPCORE_ROTATION_3D_H
+#ifndef IMPALGEBRA_ROTATION_3D_H
+#define IMPALGEBRA_ROTATION_3D_H
 
 #include "config.h"
 #include "IMP/Vector3D.h"
 #include <iostream>
-IMPCORE_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_NAMESPACE
 
 //! 3D rotation class.
 /** Holds a three dimensional rotation compactly using a quaternion (4 numbers).
@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     Rotation Matrix
     Quaternion
 */
-class IMPCOREEXPORT Rotation3D {
+class IMPALGEBRAEXPORT Rotation3D {
 public:
   //! Create an invalid rotation
   Rotation3D():a_(0.0),b_(0.0),c_(0.0),d_(0.0) {}
@@ -103,7 +103,7 @@ inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
    \throw ValueException if the rotation is not a rotation matrix.
    \relates Rotation3D
  */
-IMPCOREEXPORT Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
+IMPALGEBRAEXPORT Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
                                               Float m21,Float m22,Float m23,
                                               Float m31,Float m32,Float m33);
 
@@ -113,5 +113,5 @@ Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}
 
 IMP_OUTPUT_OPERATOR(Rotation3D)
 
-IMPCORE_END_NAMESPACE
-#endif  /* IMPCORE_ROTATION_3D_H */
+IMPALGEBRA_END_NAMESPACE
+#endif  /* IMPALGEBRA_ROTATION_3D_H */

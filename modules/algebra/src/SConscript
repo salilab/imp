@@ -1,0 +1,10 @@
+Import('env')
+e = env.IMPSharedLibraryEnvironment()
+
+files = [
+         'Rotation3D.cpp',
+         'Transformation3D.cpp',
+        ]
+
+# Build and install the shared library:
+e.IMPSharedLibrary(files, install=True)

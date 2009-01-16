@@ -20,3 +20,6 @@ env.IMPModule('core', author='IMP developers', version='SVN',
 
 env.IMPModule('search', author='Daniel Russel', version='SVN',
               description='Build search structures over particles.')
+
+env.IMPModule('algebra', author='IMP developers', version='SVN',
+              description='General purpose algebraic manipulation.')

@@ -1,0 +1,9 @@
+Import('env')
+
+files = [
+         'Rotation3D.h',
+         'Transformation3D.h',
+        ]
+
+# Install the include files:
+env.IMPHeaders(files)

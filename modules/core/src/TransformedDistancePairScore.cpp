@@ -16,7 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 TransformedDistancePairScore
 ::TransformedDistancePairScore(UnaryFunction *f,
-                               const Transformation3D &t): f_(f)
+                               const IMP::algebra::Transformation3D &t): f_(f)
 {
   set_transformation(t);
 }
@@ -24,10 +24,10 @@ TransformedDistancePairScore
 struct TransformParticle
 {
   Vector3D tv_;
-  const Rotation3D &ri_;
+  const IMP::algebra::Rotation3D &ri_;
   XYZDecorator d_;
-  TransformParticle(const Transformation3D &t,
-                    const Rotation3D &r,
+  TransformParticle(const IMP::algebra::Transformation3D &t,
+                    const IMP::algebra::Rotation3D &r,
                     Particle *p): ri_(r), d_(p){
     tv_= t.transform(d_.get_coordinates());
   }
@@ -60,7 +60,8 @@ Float TransformedDistancePairScore::evaluate(Particle *a, Particle *b,
 }
 
 
-void TransformedDistancePairScore::set_transformation(const Transformation3D &t)
+void TransformedDistancePairScore::set_transformation(
+                                const IMP::algebra::Transformation3D &t)
 {
   ri_= t.get_rotation().get_inverse();
   t_=t;

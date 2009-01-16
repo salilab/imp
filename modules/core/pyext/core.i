@@ -2,6 +2,7 @@
 
 %{
 #include "IMP.h"
+#include "IMP/algebra.h"
 #include "IMP/core.h"
 %}
 
@@ -208,8 +209,6 @@ namespace IMP {
 %include "IMP/core/MinimumPairScoreRestraint.h"
 %include "IMP/core/MaximumSingletonScoreRestraint.h"
 %include "IMP/core/MaximumPairScoreRestraint.h"
-%include "IMP/core/Rotation3D.h"
-%include "IMP/core/Transformation3D.h"
 %include "IMP/core/TransformationFunction.h"
 
 

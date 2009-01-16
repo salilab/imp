@@ -10,8 +10,9 @@
 
 #include "config.h"
 
+#include <IMP/algebra/Transformation3D.h>
+
 #include <IMP/core/ParticleFunction.h>
-#include "IMP/core/Transformation3D.h"
 #include "IMP/core/MolecularHierarchyDecorator.h"
 #include "IMP/core/XYZDecorator.h"
 #include <iostream>
@@ -23,7 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
 class TransformationFunction : public ParticleFunction
 {
 public:
-  TransformationFunction(Transformation3D t)
+  TransformationFunction(IMP::algebra::Transformation3D t)
   {
     t_=t;
   }
@@ -43,7 +44,7 @@ public:
     }
   }
 private:
-  Transformation3D t_;
+  IMP::algebra::Transformation3D t_;
 };
 
 IMPCORE_END_NAMESPACE

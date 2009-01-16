@@ -4,15 +4,14 @@
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
-#include "IMP/core/Transformation3D.h"
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/algebra/Transformation3D.h"
 
-IMPCORE_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_NAMESPACE
 
 Transformation3D::~Transformation3D(){}
 
 
-IMPCOREEXPORT Transformation3D
+IMPALGEBRAEXPORT Transformation3D
 transformation_from_rotation_around_vector(const Rotation3D &rot,
                                            const Vector3D &center) {
   Vector3D rc= rot.rotate(center);
@@ -20,4 +19,4 @@ transformation_from_rotation_around_vector(const Rotation3D &rot,
 }
 
 
-IMPCORE_END_NAMESPACE
+IMPALGEBRA_END_NAMESPACE
