@@ -1,0 +1,69 @@
+Index: kernel/include/utility.h
+===================================================================
+--- kernel/include/utility.h	(revision 1193)
++++ kernel/include/utility.h	(working copy)
+@@ -21,6 +21,9 @@
+ #endif // __GNUC__
+ #endif // BOOST_VERSION
+ 
++#include <string>
++#include <vector>
++
+ IMP_BEGIN_NAMESPACE
+ 
+ //! Compute the square of a number
+@@ -49,6 +52,41 @@
+ #endif // BOOST_VERSION
+ }
+ 
++//! Trims spaces at the left side of a string
++inline std::string trim_left(const std::string& str) {
++  unsigned int i=str.find_first_not_of(" \t");
++  if(str.size()==0 || i >= str.size())
++    return str;
++  return str.substr( i ) ;
++}
++ 
++//! Trims spaces at the right side of a string
++inline std::string trim_right(const std::string& str) {
++  unsigned int i=str.find_last_not_of(" \t");
++  if(str.size()==0 || i >= str.size())
++    return str;
++  return str.substr(0, i + 1);
++}
++  
++//! Trims spaces at both sides of a string
++inline std::string trim(const std::string& str) {
++  return trim_left(trim_right(str));
++}
++
++//! turns all the string to upper case
++extern IMPEXPORT std::string to_upper_case(const std::string& s);
++
++//! turns all the string to lower case
++extern IMPEXPORT std::string to_lower_case(const std::string& s);
++
++//! Splits a given line by the given delimiter
++extern IMPEXPORT void string_split(const std::string& str, std::string delim,
++                                   std::vector<std::string>& results);
++
++//! Return true if the line is empty or spaces and tabs only
++extern IMPEXPORT bool is_blank_line(const std::string& str);
++
++
+ IMP_END_NAMESPACE
+ 
+ #endif  /* IMP_UTILITY_H */
+Index: kernel/src/SConscript
+===================================================================
+--- kernel/src/SConscript	(revision 1193)
++++ kernel/src/SConscript	(working copy)
+@@ -13,7 +13,7 @@
+          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
+          'random.cpp', 'Key.cpp', 'exception.cpp', 'ParticleRefiner.cpp',
+          'UnaryFunction.cpp', 'PairScore.cpp',
+-         'SingletonScore.cpp', 'TripletScore.cpp'
++         'SingletonScore.cpp', 'TripletScore.cpp', 'utility.cpp'
+         ] + internal_files
+ 
+ # Build the shared library:
