@@ -124,7 +124,7 @@ def main():
     if module == 'kernel':
         cpp_excludes = h_excludes = []
     else:
-        h_excludes = ['%s_version_info.h' % module, '%s_exports.h' % module]
+        h_excludes = ['%s_version_info.h' % module, 'config.h']
         cpp_excludes = ['%s_version_info.cpp' % module]
 
     g = SConscriptGenerator('src', '.cpp',
