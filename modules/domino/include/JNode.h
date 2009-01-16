@@ -104,14 +104,6 @@ public:
   const DiscreteSampler* get_sampler() {
     return ds_;
   }
-  long number_of_states() const {
-    long number_of_states = 1;
-    for (Particles::const_iterator it = particles_.begin();
-         it != particles_.end(); it++) {
-      number_of_states *=  ds_->get_space_size(*it);
-    }
-    return number_of_states;
-  }
   //! Move the system to the state encoded in the class
   void move2state(CombState *cs) const;
   void clear();
