@@ -74,13 +74,6 @@ public:
       \return the value of the radius attribute of particle particles_[ind]
    */
   float get_r(unsigned int ind) const {
-    std::cout<<"size ::: " << particles_.size() << std::endl;
-    std::cout<<"ind ::: " << ind << std::endl;
-    particles_[ind]->show();
-    std::cout << radius_key_ <<std::endl;
-    std::cout<<"val ::: " << particles_[ind]->get_value(radius_key_)
-             << std::endl;
-    std::cout << "after " << std::endl;
     return particles_[ind]->get_value(radius_key_);
   }
   //! Get the value of the weight attribute of a particle
