@@ -17,7 +17,7 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-class IMPDOMINOEXPORT SimpleDiscreteSampler : public DiscreteSampler
+class SimpleDiscreteSampler : public DiscreteSampler
 {
 public:
   SimpleDiscreteSampler(){}
