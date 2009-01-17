@@ -62,6 +62,11 @@ public:
   }
   //! Return the rotation which undoes this rotation.
   Rotation3D get_inverse() const;
+
+  //! return the quaterion so that it can be stored
+  VectorD<4> get_quaternion() const {
+    return VectorD<4>(a_, b_, c_, d_);
+  }
 private:
   Float a_,b_,c_,d_;
 };
