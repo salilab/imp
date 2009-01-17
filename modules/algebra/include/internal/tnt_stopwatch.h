@@ -21,11 +21,11 @@
 #define IMPALGEBRA_TNT_STOPWATCH_H
 
 // for clock() and CLOCKS_PER_SEC
-#include "config.h"
+#include "../config.h"
 #include <time.h>
 
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -92,6 +92,6 @@ inline double Stopwatch::read()
 
 
 } /* TNT namespace */
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_STOPWATCH_H */

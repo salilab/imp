@@ -38,12 +38,12 @@
 #define IMPALGEBRA_TNT_SUBSCRIPT_TYPE int
 #endif
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
     typedef IMPALGEBRA_TNT_SUBSCRIPT_TYPE Subscript;
 } /* namespace TNT */
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 // () indexing in TNT means 1-offset, i.e. x(1) and A(1,1) are the
 // first elements.  This offset is left as a macro for future

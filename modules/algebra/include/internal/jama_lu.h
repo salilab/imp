@@ -6,7 +6,7 @@
 #ifndef IMPALGEBRA_JAMA_LU_H
 #define IMPALGEBRA_JAMA_LU_H
 
-#include "config.h"
+#include "../config.h"
 #include "../algebra.h"
 #include <algorithm>
 //for min(), max() below
@@ -14,7 +14,7 @@
 
 
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace JAMA
 {
 using namespace TNT;
@@ -324,6 +324,6 @@ class LU
 
 } /* namespace JAMA */
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_JAMA_LU_H */

@@ -22,7 +22,7 @@
 #ifndef IMPALGEBRA_TNT_ARRAY_1D_H
 #define IMPALGEBRA_TNT_ARRAY_1D_H
 
-//#include "config.h"
+//#include "../config.h"
 #include <cstdlib>
 #include <iostream>
 
@@ -33,7 +33,7 @@
 
 #include "tnt_i_refvec.h"
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -276,6 +276,6 @@ void Array1D<T>::copy_(T* p, const T* q, int len) const
 
 } /* namespace TNT */
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_ARRAY_1D_H */

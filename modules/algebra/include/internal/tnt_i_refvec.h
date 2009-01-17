@@ -22,7 +22,7 @@
 #ifndef IMPALGEBRA_TNT_I_REFVEC_H
 #define IMPALGEBRA_TNT_I_REFVEC_H
 
-#include "config.h"
+#include "../config.h"
 #include <cstdlib>
 #include <iostream>
 
@@ -34,7 +34,7 @@
 #define NULL 0
 #endif
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -239,6 +239,6 @@ i_refvec<T>::~i_refvec()
 
 
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_I_REFVEC_H */

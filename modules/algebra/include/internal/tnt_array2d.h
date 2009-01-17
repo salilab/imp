@@ -22,7 +22,7 @@
 #ifndef IMPALGEBRA_TNT_ARRAY_2D_H
 #define IMPALGEBRA_TNT_ARRAY_2D_H
 
-#include "config.h"
+#include "../config.h"
 #include <cstdlib>
 #include <iostream>
 #ifdef TNT_BOUNDS_CHECK
@@ -31,7 +31,7 @@
 
 #include "tnt_array1d.h"
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -313,6 +313,6 @@ inline int Array2D<T>::ref_count_dim1()
 
 } /* namespace TNT */
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_ARRAY_2D_H */

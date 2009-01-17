@@ -6,13 +6,13 @@
 #ifndef IMPALGEBRA_JAMA_CHOLESKY_H
 #define IMPALGEBRA_JAMA_CHOLESKY_H
 
-#include "config.h"
+#include "../config.h"
 #include <cmath>
 #include "tnt_array2d.h"
   /* needed for sqrt() below. */
 
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace JAMA
 {
 using namespace std;
@@ -266,6 +266,6 @@ Cholesky<Real>::solve(const IMP::algebra::TNT::Array2D<Real> &B)
 }
 // namespace JAMA
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_JAMA_CHOLESKY_H */
