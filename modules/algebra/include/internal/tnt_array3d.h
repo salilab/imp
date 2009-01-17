@@ -22,7 +22,7 @@
 #ifndef IMPALGEBRA_TNT_ARRAY_3D_H
 #define IMPALGEBRA_TNT_ARRAY_3D_H
 
-#include "config.h"
+#include "../config.h"
 #include <cstdlib>
 #include <iostream>
 #ifdef TNT_BOUNDS_CHECK
@@ -32,7 +32,7 @@
 #include "tnt_array1d.h"
 #include "tnt_array2d.h"
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -294,6 +294,6 @@ Array3D<T> Array3D<T>::subarray(int i0, int i1, int j0,
 
 } /* namespace TNT */
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_ARRAY_3D_H */

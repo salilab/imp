@@ -21,10 +21,10 @@
 #ifndef IMPALGEBRA_TNT_SPARSE_MATRIX_CSR_H
 #define IMPALGEBRA_TNT_SPARSE_MATRIX_CSR_H
 
-#include "config.h"
+#include "../config.h"
 #include "tnt_array1d.h"
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -103,6 +103,6 @@ Sparse_Matrix_CompRow<T>::Sparse_Matrix_CompRow(int M, int N, int nz,
 }
 // namespace TNT
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_SPARSE_MATRIX_CSR_H */

@@ -7,12 +7,12 @@
 #define IMPALGEBRA_TNT_MATH_UTILS_H
 
 /* needed for fabs, sqrt() below */
-#include "config.h"
+#include "../config.h"
 #include <cmath>
 
 
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -36,6 +36,6 @@ Real hypot(const Real &a, const Real &b)
 }
 } /* TNT namespace */
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_MATH_UTILS_H */

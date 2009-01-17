@@ -6,12 +6,12 @@
 #ifndef IMPALGEBRA_JAMA_QR_H
 #define IMPALGEBRA_JAMA_QR_H
 
-#include "config.h"
+#include "../config.h"
 #include "tnt_array1d.h"
 #include "tnt_array2d.h"
 #include "tnt_math_utils.h"
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace JAMA
 {
 using namespace TNT;
@@ -330,6 +330,6 @@ public:
 }
 // namespace JAMA
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_JAMA_QR_H */

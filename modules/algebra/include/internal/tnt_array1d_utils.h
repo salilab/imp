@@ -20,11 +20,11 @@
 #ifndef IMPALGEBRA_TNT_ARRAY_1D_UTILS_H
 #define IMPALGEBRA_TNT_ARRAY_1D_UTILS_H
 
-#include "config.h"
+#include "../config.h"
 #include <cstdlib>
 #include <cassert>
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -230,6 +230,6 @@ Array1D<T>&  operator/=(Array1D<T> &A, const Array1D<T> &B)
 
 } // namespace TNT
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_ARRAY_1D_UTILS_H */

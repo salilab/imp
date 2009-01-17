@@ -21,11 +21,11 @@
 #ifndef IMPALGEBRA_TNT_ARRAY_2D_UTILS_H
 #define IMPALGEBRA_TNT_ARRAY_2D_UTILS_H
 
-#include "config.h"
+#include "../config.h"
 #include <cstdlib>
 #include <cassert>
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
 {
 using namespace std;
@@ -315,6 +315,6 @@ T determinant(const Array2D<T> &A)
 
 } // namespace TNT
 
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_TNT_ARRAY_2D_UTILS_H */

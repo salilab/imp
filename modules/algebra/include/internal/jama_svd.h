@@ -7,7 +7,7 @@
 #define IMPALGEBRA_JAMA_SVD_H
 
 
-#include "config.h"
+#include "../config.h"
 #include "tnt_array1d.h"
 #include "tnt_array1d_utils.h"
 #include "tnt_array2d.h"
@@ -22,7 +22,7 @@
 
 
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace JAMA
 {
 using namespace TNT;
@@ -543,6 +543,6 @@ class SVD
 };
 
 }
-IMPALGEBRA_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
 #endif /* IMPALGEBRA_JAMA_SVD_H */
