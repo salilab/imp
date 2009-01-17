@@ -3,6 +3,23 @@ Import('env')
 files = [
          'Rotation3D.h',
          'Transformation3D.h',
+         'jama_cholesky.h',
+         'jama_eig.h',
+         'jama_lu.h',
+         'jama_qr.h',
+         'jama_svd.h',
+         'tnt_array1d.h',
+         'tnt_array1d_utils.h',
+         'tnt_array2d.h',
+         'tnt_array2d_utils.h',
+         'tnt_array3d.h',
+         'tnt_array3d_utils.h',
+         'tnt_i_refvec.h',
+         'tnt_math_utils.h',
+         'tnt_sparse_matrix_csr.h',
+         'tnt_stopwatch.h',
+         'tnt_subscript.h',
+         'tnt_version.h',
         ]
 
 # Install the include files:
