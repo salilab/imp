@@ -12,7 +12,7 @@
     - \ref deprecation "Deprecated Functionality"
 
     Then look through the examples which can be found at:
-    - \ref Examples "Examples"
+    - \ref examples "Examples"
 
     There are a variety of useful base classes which are used to provide
     most functionality. They are:

@@ -41,7 +41,7 @@ d.set_foo(1.0)
 d.get_foo_key()
 \endverbatim
 
-See the \ref decorator example for how to implement a simple
+See the IMP::examples::Decorator example for how to implement a simple
 decorator.
  */
 
