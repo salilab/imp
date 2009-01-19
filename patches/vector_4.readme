@@ -1,0 +1,2 @@
+support more vector functionality in higher dimensions, specifically choosing
+points on spheres and exporting a 4D vector to python.
