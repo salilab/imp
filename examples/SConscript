@@ -17,20 +17,12 @@ e = env.Clone()
 def builder_unit_test(target, source, env):
     bin = source[0].abspath
     for src in source[1:]:
-        if src.endswith(".py"):
-            (dir, script) = os.path.split(src.abspath)
-            app = "cd %s && %s %s %s > /dev/null" % (dir, bin, e['PYTHON'], script)
-            if env.Execute(app) != 0:
-                print "examples FAILED"
-                return 1
-            file(str(target[0]), 'w').write('PASSED\n')
-        elif src.endswith(".cpp"):
-            contents= open(src,'r').read()
-            print "Testing cpp file "+src
-            ret = context.TryCompile(contents, '.cpp')
-            if not ret:
-                print "examples FAILED"
-                return 1
+        (dir, script) = os.path.split(src.abspath)
+        app = "cd %s && %s %s %s > /dev/null" % (dir, bin, e['PYTHON'], script)
+        if env.Execute(app) != 0:
+            print "examples FAILED"
+            return 1
+        file(str(target[0]), 'w').write('PASSED\n')
 
 e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
                                      source_scanner=pyscanner.PythonScanner)})
