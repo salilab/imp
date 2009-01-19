@@ -7,24 +7,36 @@ Import('env', 'bin')
 example_py = [x for x in Glob("*.py") + Glob("*/*.py") \
               if 'fragments' not in x.path]
 
+example_cpp = [x for x in Glob("*.cpp") + Glob("*/*.cpp") \
+              if 'fragments' not in x.path]
+
+
 e = env.Clone()
 
 # Custom builder to run unit tests:
 def builder_unit_test(target, source, env):
     bin = source[0].abspath
     for src in source[1:]:
-        (dir, script) = os.path.split(src.abspath)
-        app = "cd %s && %s %s %s > /dev/null" % (dir, bin, e['PYTHON'], script)
-        if env.Execute(app) != 0:
-            print "examples FAILED"
-            return 1
-    file(str(target[0]), 'w').write('PASSED\n')
+        if src.endswith(".py"):
+            (dir, script) = os.path.split(src.abspath)
+            app = "cd %s && %s %s %s > /dev/null" % (dir, bin, e['PYTHON'], script)
+            if env.Execute(app) != 0:
+                print "examples FAILED"
+                return 1
+            file(str(target[0]), 'w').write('PASSED\n')
+        elif src.endswith(".cpp"):
+            contents= open(src,'r').read()
+            print "Testing cpp file "+src
+            ret = context.TryCompile(contents, '.cpp')
+            if not ret:
+                print "examples FAILED"
+                return 1
 
 e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
                                      source_scanner=pyscanner.PythonScanner)})
 
 # Test all scripts:
-test = e.Test("examples.passed", bin + example_py)
+test = e.Test("examples.passed", bin + example_py+example_cpp)
 e.Alias("test", test)
 e.AlwaysBuild("examples.passed")
 
