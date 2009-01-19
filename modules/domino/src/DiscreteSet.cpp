@@ -14,8 +14,14 @@ DiscreteSet::DiscreteSet(const std::vector<FloatKey> &atts) {
 }
 void DiscreteSet::add_state(Particle* p) {
   //check that the particle holds of the necessary attributes
+  //TODO - this loop should probably not be there all of the times.
+  std::stringstream err_msg;
   for (std::vector<FloatKey>::iterator it = atts_.begin(); it != atts_.end();
        it++) {
+    err_msg.clear();
+    err_msg <<"DiscreteSet::add_state The particle does not have the attribute";
+    it->show(err_msg);
+    IMP_assert(p->has_attribute(*it),err_msg.str());
     p->get_value(*it);
   }
   states_.push_back(p);
@@ -32,6 +38,8 @@ Float DiscreteSet::get_state_val(long state_ind, IMP::FloatKey key) const {
 
 
 void DiscreteSet::show(std::ostream& out) const {
+  out<<"DiscreteSet::show number of states : ";
+  out<<get_number_of_states()<<std::endl;
   for(Particles::const_iterator it1 = states_.begin();
       it1 != states_.end(); it1++) {
     out << "state " << it1-states_.begin() << " :: ";
