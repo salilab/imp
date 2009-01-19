@@ -24,15 +24,6 @@ public:
   /** \param[in] atts the attributes for the states held in the set
    */
   DiscreteSet(const std::vector<FloatKey> &atts);
-// int number_of_values=1) {
-//   attributes_ =  std::vector<FloatKey>();
-//   attributes_.push_back(FloatKey("x"));
-//   attributes_.push_back(FloatKey("y"));
-//   attributes_.push_back(FloatKey("z"));
-//   values_ = std::vector<std::map<FloatKey,float> * >();
-//   orig_anchor_points_ = Particles();
-//   radius_=0.;
-// }
 
   //! Get all attributes sampled in the set
   /**
