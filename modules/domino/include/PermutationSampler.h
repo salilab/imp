@@ -24,6 +24,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 class  IMPDOMINOEXPORT PermutationSampler :  public DiscreteSampler
 {
 public:
+  PermutationSampler(){}
   //! Create a permutation sampler.
   /**
     \param[in] ds           the discrete sampling space
