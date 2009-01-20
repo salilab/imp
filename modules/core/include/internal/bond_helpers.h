@@ -15,13 +15,15 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-extern IMPCOREEXPORT internal::GraphData bond_graph_data_;
-extern IMPCOREEXPORT  bool bond_keys_initialized_;
-extern IMPCOREEXPORT  IntKey bond_type_key_;
-extern IMPCOREEXPORT  IntKey bond_order_key_;
-extern IMPCOREEXPORT  FloatKey bond_length_key_;
-extern IMPCOREEXPORT  FloatKey bond_stiffness_key_;
+struct BondData {
+  IntKey type_;
+  IntKey order_;
+  FloatKey length_;
+  FloatKey stiffness_;
+  internal::GraphData graph_;
+};
 
+IMPCOREEXPORT BondData &get_bond_data();
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

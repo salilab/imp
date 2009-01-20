@@ -29,8 +29,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 {
   typedef HierarchyDecorator P;
-  static IntKey type_key_;
-  static void initialize_static_data();
 public:
 
   //! The various values for levels of the hierarchy
@@ -57,21 +55,24 @@ public:
   // swig gets unhappy if it is private
   typedef MolecularHierarchyDecorator This;
 
+
   //! Create a HiearchyDecorator on the Particle
   /** A traits class can be specified if the default one is not desired.
    */
   MolecularHierarchyDecorator(Particle *p):
-    P(p,get_traits()){}
+    P(p,get_traits()){
+    IMP_assert(is_instance_of(p), "Missing required attributes for "
+               << "MolecularHierarchyDecorator" << *p);
+  }
 
   //! null constructor
-  MolecularHierarchyDecorator(): P(get_traits()){}
+  MolecularHierarchyDecorator() {}
 
   //! cast a particle which has the needed attributes
   static MolecularHierarchyDecorator cast(Particle *p) {
-    initialize_static_data();
     HierarchyDecorator::cast(p, get_traits());
-    IMP_check(p->has_attribute(type_key_), "Particle is missing attribute "
-              << type_key_,
+    IMP_check(p->has_attribute(get_type_key()), "Particle is missing attribute "
+              << get_type_key(),
               InvalidStateException);
     return MolecularHierarchyDecorator(p);
   }
@@ -80,18 +81,16 @@ public:
       attributes. */
   static MolecularHierarchyDecorator create(Particle *p,
                                             Type t= UNKNOWN) {
-    initialize_static_data();
     HierarchyDecorator::create(p, get_traits());
-    p->add_attribute(type_key_, t);
+    p->add_attribute(get_type_key(), t);
     return MolecularHierarchyDecorator(p);
   }
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
   static bool is_instance_of(Particle *p){
-    initialize_static_data();
     return P::is_instance_of(p, get_traits())
-      && p->has_attribute(type_key_);
+      && p->has_attribute(get_type_key());
   }
 
 
@@ -104,11 +103,11 @@ public:
 
   /** */
   Type get_type() const {
-    return Type(get_particle()->get_value(type_key_));
+    return Type(get_particle()->get_value(get_type_key()));
   }
   /** */
   void set_type(Type t) {
-    get_particle()->set_value(type_key_, t);
+    get_particle()->set_value(get_type_key(), t);
   }
 
   //! Return a string representation of the current level of the hierarchy
@@ -188,7 +187,7 @@ public:
   /** Get the parent particle. */
   MolecularHierarchyDecorator get_parent() const {
     HierarchyDecorator hd= P::get_parent();
-    if (hd == HierarchyDecorator(get_traits())) {
+    if (hd == HierarchyDecorator()) {
       return MolecularHierarchyDecorator();
     } else {
       return cast(hd.get_particle());
@@ -196,11 +195,7 @@ public:
   }
 
   /** Gets the key used to store the type. */
-  static IntKey get_type_key() {
-    decorator_initialize_static_data();
-    return type_key_;
-  }
-
+  static IntKey get_type_key() ;
   //! Get the molecular hierarchy HierararchyTraits.
   static const HierarchyTraits& get_traits();
 

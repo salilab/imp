@@ -23,16 +23,24 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT NameDecorator: public DecoratorBase
 {
-  IMP_DECORATOR(NameDecorator, DecoratorBase,
-                return p->has_attribute(name_key_),
-                {p->add_attribute(name_key_, "No Name");});
-private:
-  static StringKey name_key_;
-
+  IMP_DECORATOR(NameDecorator, DecoratorBase);
 public:
 
-  IMP_DECORATOR_GET_SET(name, name_key_, String, String);
+  IMP_DECORATOR_GET_SET(name, get_name_key(), String, String);
 
+  //! Create a decorator with the name
+  static NameDecorator create(Particle *p, std::string name="new_name") {
+    p->add_attribute(get_name_key(), name);
+    return NameDecorator(p);
+  }
+
+  //! return true if it has a name
+  static bool is_instance_of(Particle *p) {
+    return p->has_attribute(get_name_key());
+  }
+
+  //! Return the key used to store the name
+  static StringKey get_name_key();
 };
 
 IMP_OUTPUT_OPERATOR(NameDecorator);

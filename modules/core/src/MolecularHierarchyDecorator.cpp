@@ -22,14 +22,10 @@ const HierarchyTraits& MolecularHierarchyDecorator::get_traits() {
   return ret;
 }
 
-IntKey MolecularHierarchyDecorator::type_key_;
-
-void MolecularHierarchyDecorator::initialize_static_data() {
-  if (type_key_== IntKey()) {
-    type_key_= IntKey("molecular_hierarchy_type");
-  }
+IntKey MolecularHierarchyDecorator::get_type_key() {
+  static IntKey k("molecular_hierarchy_type");
+  return k;
 }
-
 
 void MolecularHierarchyDecorator::show(std::ostream &out,
                                        std::string prefix) const
@@ -123,7 +119,7 @@ molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
             ValueException);
   MatchResidueIndex mi(index);
   HierarchyDecorator hd= hierarchy_find(mhd, mi);
-  if (hd== HierarchyDecorator(MolecularHierarchyDecorator::get_traits())) {
+  if (hd== HierarchyDecorator()) {
     return ResidueDecorator();
   } else {
     return ResidueDecorator(hd.get_particle());

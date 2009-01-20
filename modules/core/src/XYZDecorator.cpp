@@ -11,10 +11,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-// These aren't statically initialized, as that way they may be initialized
-// before the table that caches them
-FloatKeys XYZDecorator::key_(3);
-
 void XYZDecorator::show(std::ostream &out, std::string prefix) const
 {
   out << prefix << "(" << get_x()<< ", "
@@ -22,12 +18,11 @@ void XYZDecorator::show(std::ostream &out, std::string prefix) const
 
 }
 
-IMP_DECORATOR_INITIALIZE(XYZDecorator, DecoratorBase,
-                         {
-                         key_[0] = FloatKey("x");
-                         key_[1] = FloatKey("y");
-                         key_[2] = FloatKey("z");
-                         })
+const FloatKeys& XYZDecorator::get_xyz_keys() {
+  static FloatKey ks[3]={FloatKey("x"), FloatKey("y"), FloatKey("z")};
+  static FloatKeys fks(ks, ks+3);
+  return fks;
+}
 
 Float distance(XYZDecorator a, XYZDecorator b)
 {

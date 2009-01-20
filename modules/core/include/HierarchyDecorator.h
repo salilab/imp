@@ -87,6 +87,7 @@ class IMPCOREEXPORT HierarchyTraits
   const HierarchyDecorator wrap(Particle* p) const;
 
 public:
+  HierarchyTraits(){}
   //! Create a HierarchyTraits with the given name
   HierarchyTraits(std::string name);
   //! Get the name used to identify this traits.
@@ -126,36 +127,14 @@ public:
 class IMPCOREEXPORT HierarchyDecorator: public DecoratorBase
 {
   typedef DecoratorBase P;
-  HierarchyTraits traits_;
 
   IMP_DECORATOR_ARRAY_DECL(public, child, children, traits_,
                            HierarchyDecorator)
 public:
+  IMP_DECORATOR_TRAITS(HierarchyDecorator, DecoratorBase,
+                       HierarchyTraits, traits,
+                       HierarchyDecorator::get_default_traits());
 
-  // swig gets unhappy if it is private
-  typedef HierarchyDecorator This;
-
-  //! Create a HiearchyDecorator on the Particle
-  /** A traits class can be specified if the default one is not desired.
-   */
-  HierarchyDecorator(Particle *p,
-                     HierarchyTraits traits
-                     =HierarchyDecorator::get_default_traits());
-  //! null constructor
-  HierarchyDecorator(HierarchyTraits traits
-                     =HierarchyDecorator::get_default_traits());
-
-  //! Cast a particle which has the needed attributes
-  static HierarchyDecorator cast(Particle *p,
-                                 HierarchyTraits traits
-                                 =HierarchyDecorator::get_default_traits()) {
-    IMP_check(has_required_attributes_for_child(p, traits),
-              "Attempting to cast "
-              << " particle to HierarchyDecorator, but it is missing"
-              << " required traits.",
-              InvalidStateException);
-    return HierarchyDecorator(p, traits);
-  }
 
   //! Add the needed attributes to a particle
   static HierarchyDecorator create(Particle *p,
@@ -173,20 +152,13 @@ public:
     return has_required_attributes_for_child(p, traits);
   }
 
-
-  /** Write information about this decorator to out. Each line should
-   prefixed by prefix*/
-  void show(std::ostream &out=std::cout,
-            std::string prefix=std::string()) const;
-
-
   /** \return the parent particle, or HierarchyDecorator()
       if it has no parent.
    */
   This get_parent() const {
     IMP_DECORATOR_GET(traits_.parent_key_, Particle*,
                       return This(VALUE, traits_),
-                      return This(traits_));
+                      return This());
   }
 
   //! Get the index of this particle in the list of children
@@ -220,11 +192,6 @@ public:
   //! Return the string identifying this type of hierarchy
   std::string get_hierarchy_type() const {
     return traits_.get_name();
-  }
-
-  //! Get the hierarchy traits used in this instance
-  const HierarchyTraits& get_traits() const {
-    return traits_;
   }
 
   //! Get the default hierarchy traits
@@ -386,7 +353,7 @@ struct HierarchyPrinter
       out_ << " ";
       prefix+=" ";
     }
-    if (hd == HierarchyDecorator(traits_) || hd.get_number_of_children()==0) {
+    if (hd == HierarchyDecorator() || hd.get_number_of_children()==0) {
       out_ << "-";
     } else {
       out_ << "+";
