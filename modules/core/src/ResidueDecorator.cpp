@@ -16,7 +16,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-#define TYPE_DEF(STR) ResidueType ResidueDecorator::STR(#STR);
+#define TYPE_DEF(STR) const ResidueType STR(#STR);
 TYPE_DEF(UNK);
 TYPE_DEF(GLY);
 TYPE_DEF(ALA);
