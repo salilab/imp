@@ -16,13 +16,19 @@ e = env.Clone()
 # Custom builder to run unit tests:
 def builder_unit_test(target, source, env):
     bin = source[0].abspath
+    root= os.path.split(os.path.split(bin)[0])[0]
+    failed=False
     for src in source[1:]:
-        (dir, script) = os.path.split(src.abspath)
-        app = "cd %s && %s %s %s > /dev/null" % (dir, bin, e['PYTHON'], script)
+        #(dir, script) = os.path.split(src.abspath)
+        app = "cd %s && %s %s %s > /dev/null" % (root, bin, e['PYTHON'], src.abspath)
         if env.Execute(app) != 0:
-            print "examples FAILED"
-            return 1
-        file(str(target[0]), 'w').write('PASSED\n')
+            failed=True
+            file(str(target[0]), 'w').write('FAILED\n')
+        else:
+            file(str(target[0]), 'w').write('PASSED\n')
+    if failed:
+        print "examples FAILED"
+        return 1
 
 e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
                                      source_scanner=pyscanner.PythonScanner)})
