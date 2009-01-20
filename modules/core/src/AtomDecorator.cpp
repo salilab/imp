@@ -16,8 +16,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-#define TYPE_DEF(STR) AtomType AtomDecorator::AT_##STR(#STR);
-#define TYPE_DEF2(NAME, STR) AtomType AtomDecorator::AT_##NAME(#STR);
+#define TYPE_DEF(STR) const AtomType AT_##STR(#STR);
+#define TYPE_DEF2(NAME, STR) const AtomType AT_##NAME(#STR);
 
 TYPE_DEF(N);
 TYPE_DEF(H);

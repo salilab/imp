@@ -21,6 +21,78 @@ IMPCORE_BEGIN_NAMESPACE
 IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
 
+/* each static must be on a separate line because of MSVC bug C2487:
+   see http://support.microsoft.com/kb/127900/
+*/
+/** @name Residue Types
+
+    The standard residue types are provided. New types can be added simply by
+    creating an instance of ResidueType("my_residue_name"). Note that methods
+    such as get_is_amino_acid() will not work with user-added types.
+    \relates ResidueDecorator
+*/
+/*@{*/
+/** Unknown residue */
+IMPCOREEXPORT extern const ResidueType UNK;
+/** glycein G*/
+IMPCOREEXPORT extern const ResidueType GLY;
+/** alanine A*/
+IMPCOREEXPORT extern const ResidueType ALA;
+/** valine V*/
+IMPCOREEXPORT extern const ResidueType VAL;
+/** leucine L*/
+IMPCOREEXPORT extern const ResidueType LEU;
+/** isoleucine I*/
+IMPCOREEXPORT extern const ResidueType ILE;
+/** serine S*/
+IMPCOREEXPORT extern const ResidueType SER;
+/** threonine T*/
+IMPCOREEXPORT extern const ResidueType THR;
+/** cystein C*/
+IMPCOREEXPORT extern const ResidueType CYS;
+/** metthionine M*/
+IMPCOREEXPORT extern const ResidueType MET;
+/** proline P*/
+IMPCOREEXPORT extern const ResidueType PRO;
+/** aspartic acid D*/
+IMPCOREEXPORT extern const ResidueType ASP;
+/** asparagine N*/
+IMPCOREEXPORT extern const ResidueType ASN;
+/** glutamine Q*/
+IMPCOREEXPORT extern const ResidueType GLU;
+/** glutamic acid E*/
+IMPCOREEXPORT extern const ResidueType GLN;
+/** lysine K*/
+IMPCOREEXPORT extern const ResidueType LYS;
+/** arginine N*/
+IMPCOREEXPORT extern const ResidueType ARG;
+/** histidine H*/
+IMPCOREEXPORT extern const ResidueType HIS;
+/** phynylaline F*/
+IMPCOREEXPORT extern const ResidueType PHE;
+/** tyrosine Y */
+IMPCOREEXPORT extern const ResidueType TYR;
+/** tryptophan W */
+IMPCOREEXPORT extern const ResidueType TRP;
+/** ACE */
+IMPCOREEXPORT extern const ResidueType ACE;
+/** end group */
+IMPCOREEXPORT extern const ResidueType NH2;
+/* Code currently depends on all indices above ADE.get_index()
+   being nucleic acid */
+/** adenine */
+IMPCOREEXPORT extern const ResidueType ADE;
+/** uracil */
+IMPCOREEXPORT extern const ResidueType URA;
+/** cytosine */
+IMPCOREEXPORT extern const ResidueType CYT;
+/** guanine */
+IMPCOREEXPORT extern const ResidueType GUA;
+/** thymine */
+IMPCOREEXPORT extern const ResidueType THY;
+/*@}*/
+
+
 //! A decorator for a residue.
 /**
    As with the AtomDecorator, the types of residues may be expanded
@@ -45,78 +117,6 @@ public:
     return p->has_attribute(get_type_key())
     && p->has_attribute(get_index_key());
   }
-
-  //! The supported residue types
-  /* \note each static must be on a separate line because of MSVC bug C2487:
-            see http://support.microsoft.com/kb/127900/
-   */
-  /** @name Residue Types
-
-   The standard residue types are provided. New types can be added simply by
-   creating an instance of ResidueType("my_residue_name"). Note that methods
-   such as get_is_amino_acid() will not work with user-added types.
-   */
-  /*@{*/
-
-  /** Unknown residue */
-  static ResidueType UNK;
-  /** glycein G*/
-  static ResidueType GLY;
-  /** alanine A*/
-  static ResidueType ALA;
-  /** valine V*/
-  static ResidueType VAL;
-  /** leucine L*/
-  static ResidueType LEU;
-  /** isoleucine I*/
-  static ResidueType ILE;
-  /** serine S*/
-  static ResidueType SER;
-  /** threonine T*/
-  static ResidueType THR;
-  /** cystein C*/
-  static ResidueType CYS;
-  /** metthionine M*/
-  static ResidueType MET;
-  /** proline P*/
-  static ResidueType PRO;
-  /** aspartic acid D*/
-  static ResidueType ASP;
-  /** asparagine N*/
-  static ResidueType ASN;
-  /** glutamine Q*/
-  static ResidueType GLU;
-  /** glutamic acid E*/
-  static ResidueType GLN;
-  /** lysine K*/
-  static ResidueType LYS;
-  /** arginine N*/
-  static ResidueType ARG;
-  /** histidine H*/
-  static ResidueType HIS;
-  /** phynylaline F*/
-  static ResidueType PHE;
-  /** tyrosine Y */
-  static ResidueType TYR;
-  /** tryptophan W */
-  static ResidueType TRP;
-  /** ACE */
-  static ResidueType ACE;
-  /** end group */
-  static ResidueType NH2;
-  /* Code currently depends on all indices above ADE.get_index()
-     being nucleic acid */
-  /** adenine */
-  static ResidueType ADE;
-  /** uracil */
-  static ResidueType URA;
-  /** cytosine */
-  static ResidueType CYT;
-  /** guanine */
-  static ResidueType GUA;
-  /** thymine */
-  static ResidueType THY;
-  /*@}*/
 
   /** Return the ResidueType stored in the Particle */
   ResidueType get_type() const {
