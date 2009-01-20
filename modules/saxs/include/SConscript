@@ -1,7 +1,7 @@
 Import('env')
 
 files = [
-         'SaxsData.h',
+         'SAXSProfile.h', 'FormFactorTable.h', 'RadialDistributionFunction.h'
         ]
 
 # Install the include files:
