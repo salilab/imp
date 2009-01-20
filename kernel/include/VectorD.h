@@ -31,7 +31,18 @@ public:
   // public for swig
   typedef VectorD<D> This;
 
-  //! Initialize the 3-vector from separate x,y,z values.
+  //! Initialize the 1-vector from its value.
+  VectorD(Float x) {
+#ifdef SWIG_WRAPPER
+    IMP_check(D==1, "Need " << D << " to construct a "
+              << D << "-vector.", ValueException);
+#else
+    BOOST_STATIC_ASSERT(D==1);
+#endif
+    vec_[0] = x;
+  }
+
+  //! Initialize the 2-vector from separate x,y values.
   VectorD(Float x, Float y) {
 #ifdef SWIG_WRAPPER
     IMP_check(D==2, "Need " << D << " to construct a "
@@ -67,7 +78,7 @@ public:
     vec_[0] = w;
     vec_[1] = x;
     vec_[2] = y;
-    vec_[2] = z;
+    vec_[3] = z;
   }
 
   //! Default constructor
@@ -81,13 +92,15 @@ public:
 
   //! \return A single component of this vector (0-D).
   Float operator[](unsigned int i) const {
-    IMP_assert(i < D, "Invalid component of vector requested");
+    IMP_assert(i < D, "Invalid component of vector requested: "
+               << i << " of " << D);
     return vec_[i];
   }
 
   //! \return A single component of this vector (0-D).
   Float& operator[](unsigned int i) {
-    IMP_assert(i < D, "Invalid component of vector requested");
+    IMP_assert(i < D, "Invalid component of vector requested: "
+               << i << " of " << D);
     return vec_[i];
   }
 
@@ -134,7 +147,12 @@ public:
 
   //! \return the vector product of two vectors.
   VectorD vector_product(const VectorD &vec2) const {
+#ifdef SWIG_WRAPPER
+    IMP_check(D==3, "Need " << D << " to perform a vector product ",
+              ValueException);
+#else
     BOOST_STATIC_ASSERT(D==3);
+#endif
     return VectorD(vec_[1] * vec2.vec_[2] - vec_[2] * vec2.vec_[1],
                    vec_[2] * vec2.vec_[0] - vec_[0] * vec2.vec_[2],
                    vec_[0] * vec2.vec_[1] - vec_[1] * vec2.vec_[0]);
@@ -313,29 +331,42 @@ VectorD<D>
 random_vector_on_sphere(const VectorD<D> &center,
                         Float radius) {
   // could be made general
-  BOOST_STATIC_ASSERT(D==3);
+  BOOST_STATIC_ASSERT(D>0);
   IMP_check(radius > 0, "Radius in randomize must be postive",
             ValueException);
-  ::boost::uniform_real<> rand(-1,1);
+  Float cur_radius=radius;
   VectorD<D> up;
-  up[2]= rand(random_number_generator);
-  ::boost::uniform_real<> trand(0, 2*IMP::internal::PI);
-  Float theta= trand(random_number_generator);
-  // radius of circle
-  Float r= std::sqrt(1-square(up[2]));
-  up[0]= std::sin(theta)*r;
-  up[1]= std::cos(theta)*r;
-  IMP_assert(std::abs(up.get_magnitude() -1) < .1,
-             "Error generating unit vector on sphere");
+  for (unsigned int i=D-1; i>0; --i) {
+    ::boost::uniform_real<> rand(-cur_radius,cur_radius);
+    up[i]= rand(random_number_generator);
+    // radius of circle
+    cur_radius= std::sqrt(square(cur_radius)-square(up[i]));
+  }
+  ::boost::uniform_int<> rand(0, 1);
+  Float x= cur_radius;
+  if (rand(random_number_generator)) {
+    x=-x;
+  }
+  up[0]=x;
+
+  IMP_assert(std::abs(up.get_magnitude() -radius) < .1,
+             "Error generating vector on sphere: "
+             << up << " for " << radius);
   IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);
-  return center+ up*radius;
+
+  return center+ up;
 }
+
 
 //! Generate a random vector on a sphere with uniform density
 template <unsigned int D>
 VectorD<D>
 random_vector_on_unit_sphere() {
-  return random_vector_on_sphere(VectorD<D>(0,0,0), 1);
+  VectorD<D> v;
+  for (unsigned int i=0; i < D; ++i) {
+    v[i]=0;
+  }
+  return random_vector_on_sphere(v, 1);
 }
 
 

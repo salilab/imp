@@ -50,6 +50,7 @@ namespace IMP {
 
 namespace IMP {
    %template(Vector3D) VectorD<3>;
+   %template(Vector4D) VectorD<4>;
    %template(random_vector_on_sphere) random_vector_on_sphere<3>;
    %template(random_vector_in_sphere) random_vector_in_sphere<3>;
    %template(random_vector_in_box) random_vector_in_box<3>;
@@ -58,4 +59,5 @@ namespace IMP {
    %template(random_vector_in_unit_box) random_vector_in_unit_box<3>;
    %template(distance) distance<3>;
    %template(squared_distance) squared_distance<3>;
+   %template(Vector3Ds) ::std::vector<VectorD<3> >;
 }
