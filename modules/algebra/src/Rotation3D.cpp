@@ -5,6 +5,8 @@
  *
  */
 #include "IMP/algebra/Rotation3D.h"
+#include "IMP/VectorD.h"
+
 IMPALGEBRA_BEGIN_NAMESPACE
 
 Rotation3D::~Rotation3D() {
@@ -84,5 +86,10 @@ Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
   if (m13-m31 < 0.0) c=-c;
   if (m21-m12 < 0.0) d=-d;
   return Rotation3D(a,b,c,d);
+}
+
+Rotation3D random_rotation() {
+  VectorD<4> r= random_vector_on_unit_sphere<4>();
+  return Rotation3D(r[0], r[1], r[2], r[3]);
 }
 IMPALGEBRA_END_NAMESPACE
