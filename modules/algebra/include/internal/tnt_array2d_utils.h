@@ -291,8 +291,8 @@ template <class T>
 Array2D<T> transpose(const Array2D<T> &A)
 {
   Array2D<T> ret(A.dim2(), A.dim1());
-  for (unsigned int i=0; i < A.dim1(); ++i) {
-    for (unsigned int j=0; j < A.dim2(); ++j) {
+  for (int i=0; i < A.dim1(); ++i) {
+    for (int j=0; j < A.dim2(); ++j) {
       ret[j][i]=A[i][j];
     }
   }
