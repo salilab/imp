@@ -8,96 +8,112 @@
 #ifndef IMPSAXS_FORM_FACTOR_TABLE_H
 #define IMPSAXS_FORM_FACTOR_TABLE_H
 
+#include "config.h"
+
 #include <IMP/Particle.h>
+#include <IMP/base_types.h>
+#include <IMP/core/ResidueDecorator.h>
+#include <IMP/core/AtomDecorator.h>
 
 #include <iostream>
-#include <string>
 #include <vector>
 
-using std::istream;
-using std::ostream;
-using std::string;
-using std::vector;
-using std::endl;
-using std::cerr;
-
-
-// atom types for heavy atoms according to the number of hydrogens
-// connected to them
-enum FFHeavyAtomType
-  {C, CH, CH2, CH3, N, NH, NH2, NH3, O, OH, S, SH, P, AU, UNK};
-
-enum FFType { ALL_ATOMS, HEAVY_ATOMS, CA_ATOMS };
+IMPSAXS_BEGIN_NAMESPACE
 
 /*
    class that deals with form factor computation
 */
 class FormFactorTable {
 public:
-  FormFactorTable() {};
 
-  int readFormFactorTable(istream& s);
+  //! constructor
+  FormFactorTable(const String& table_name, Float min_s, Float max_s,
+                  Float delta_s);
 
-  // get f(0), ie s=0
-  float getFormFactor(IMP::Particle* p, FFType ff_type = HEAVY_ATOMS);
+  //! type of the form factors for profile calculations
+  enum FormFactorType { ALL_ATOMS, HEAVY_ATOMS };
 
-  //
-  const vector<float>& getFormFactors(IMP::Particle* p,
-                                      FFType ff_type = HEAVY_ATOMS) const;
+  //! get f(0), ie s=0 for real space profile calculation
+  Float get_form_factor(Particle* p, FormFactorType ff_type= HEAVY_ATOMS) const;
 
-  class AtomFactorCoefficients {
-  public:
-    // read entry
-    friend istream& operator>>(istream& s,
-                             AtomFactorCoefficients& atom_factor_coefficients);
+  //! for reciprocal space profile calculation
+  const Floats& get_form_factors(Particle* p,
+                                 FormFactorType ff_type = HEAVY_ATOMS) const;
 
-    // write entry
-    friend ostream& operator<<(ostream& s,
-                       const AtomFactorCoefficients& atom_factor_coefficients);
-
-  public:
-    string atom_type_;
-    vector<float> a_;
-    vector<float> b_;
-    float c_;
-    float excl_vol_;
-  };
+  //! print tables
+  void show(std::ostream &out, std::string prefix) const;
 
 private:
-  void computeFormFactors();
-  void computeFormFactorsAllAtoms();
-  void computeFormFactorsHeavyAtoms();
-  void computeFormFactorsCAAtoms();
+  // atom types for heavy atoms according to the number of hydrogens
+  // connected to them
+  // ALL_ATOM_SIZE is number of types needed for all atom representation
+  // this indexing is used in form_factors arrays
+  enum FormFactorAtomType
+    {H=0, C=1, N=2, O=3, S=4, P=5, AU=6, ALL_ATOM_SIZE = 7,
+     CH=7, CH2=8, CH3=9, NH=10, NH2=11, NH3=12, OH=13, SH=14,
+     HEAVY_ATOM_SIZE=15, UNK=16};
 
-  // 3 types of form factors
-  const vector<float>& getFormFactorsAllAtom(IMP::Particle* p) const;
-  const vector<float>& getFormFactorsHeavyAtom(IMP::Particle* p) const;
-  const vector<float>& getFormFactorsCAAtom(IMP::Particle* p) const;
+  // the names correspond to the first FormFactorAtomTypes
+  // (the order should be the same)
+  static String element_names[];// {"H", "C", "N", "O", "S", "P", "AU"};
 
-  // only s=0 form factor for faster computation
-  float getFormFactorAllAtom(IMP::Particle* p) const;
-  float getFormFactorHeavyAtom(IMP::Particle* p) const;
-  float getFormFactorCAAtom(IMP::Particle* p) const;
+  // a key for storing zero form factor in Particle as attribute
+  static FloatKey form_factor_key_;
 
-protected:
+  // class for storing form factors solvation table
+  class AtomFactorCoefficients {
+  public:
+    String atom_type_;
+    Float a_[5];
+    Float b_[5];
+    Float c_;
+    Float excl_vol_;
+  };
+
+  // read entry
+  friend std::istream& operator>>(std::istream& s,
+                             AtomFactorCoefficients& atom_factor_coefficients);
+
+  // write entry
+  friend std::ostream& operator<<(std::ostream& s,
+                       const AtomFactorCoefficients& atom_factor_coefficients);
+
+private:
+  int read_form_factor_table(const String& table_name);
+
+  void compute_form_factors_all_atoms();
+
+  void compute_form_factors_heavy_atoms();
+
+  FormFactorAtomType get_form_factor_atom_type(Particle* p,
+                                               FormFactorType ff_type) const;
+
+  FormFactorAtomType get_carbon_atom_type(const core::AtomType& atom_type,
+                                const core::ResidueType& residue_type) const;
+
+  FormFactorAtomType get_nitrogen_atom_type(const core::AtomType& atom_type,
+                                const core::ResidueType& residue_type) const;
+
+  FormFactorAtomType get_oxygen_atom_type(const core::AtomType& atom_type,
+                                const core::ResidueType& residue_type) const;
+
+  FormFactorAtomType get_sulfur_atom_type(const core::AtomType& atom_type,
+                                const core::ResidueType& residue_type) const;
+
+private:
   // read from lib file
-  vector<AtomFactorCoefficients> form_factors_coefficients_;
+  std::vector<AtomFactorCoefficients> form_factors_coefficients_;
 
-  // tables of form factors for 14 atom types
-  vector<vector<float> > form_factors_all_atoms_;
-  vector<vector<float> > form_factors_heavy_atoms_;
-  vector<vector<float> > form_factors_CA_atoms_;
+  // table of form factors for 14 atom types
+  std::vector<Floats> form_factors_;
 
-  // tables for s=0
-  vector<float> zero_form_factors_all_atoms_;
-  vector<float> zero_form_factors_heavy_atoms_;
-  vector<float> zero_form_factors_CA_atoms_;
+  // form factors for s=0
+  Floats zero_form_factors_;
 
-  float s_min_, s_max_; // max s for form factor computation
-  float delta_s_; // resolution
-
-  //static IntKey ff_atom_type_;
-
+  // min/max s and sampling resolution for form factor computation
+  Float min_s_, max_s_, delta_s_;
 };
+
+IMPSAXS_END_NAMESPACE
 
 #endif /* IMPSAXS_FORM_FACTOR_TABLE_H */
