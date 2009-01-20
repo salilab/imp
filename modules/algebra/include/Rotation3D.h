@@ -40,9 +40,17 @@ public:
   Rotation3D(Float a, Float b, Float c, Float d){
     IMP_check(std::abs(square(a)+square(b)+square(c)+square(d) - 1.0) < .05,
               "Attempting to construct a rotation from a non-quaternion value."
-              << " The coefficient vector must have a length of 1.",
+              << " The coefficient vector must have a length of 1. Got: "
+              << a << " " << b << " " << c << " " << d,
               ValueException);
     a_=a;b_=b;c_=c;d_=d;
+    if (a<0) {
+      // make them canonical
+      a_=-a_;
+      b_=-b_;
+      c_=-c_;
+      d_=-d_;
+    }
   }
   ~Rotation3D();
   //! Rotate a vector around the origin
@@ -71,8 +79,11 @@ private:
   Float a_,b_,c_,d_;
 };
 
+IMP_OUTPUT_OPERATOR(Rotation3D)
+
 
 //! Return a rotation that does not do anything
+/** \relates Rotation3D */
 inline Rotation3D identity_rotation() {
   return Rotation3D(1,0,0,0);
 }
@@ -112,11 +123,10 @@ IMPALGEBRAEXPORT Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
                                               Float m21,Float m22,Float m23,
                                               Float m31,Float m32,Float m33);
 
-/*
-Rotation3D rotation_from_axis_angle(Vector3D axis, Float a){}
-*/
+//! Pick a rotation at random from all possible rotations
+/** \relates Rotation3D */
+IMPALGEBRAEXPORT Rotation3D random_rotation();
 
-IMP_OUTPUT_OPERATOR(Rotation3D)
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_3D_H */
