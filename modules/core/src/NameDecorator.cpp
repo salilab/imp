@@ -11,7 +11,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-StringKey NameDecorator::name_key_;
+StringKey NameDecorator::get_name_key() {
+  static StringKey k("name");
+  return k;
+}
 
 
 
@@ -25,9 +28,6 @@ void NameDecorator::show(std::ostream &out,std::string prefix) const
 
 
 
-IMP_DECORATOR_INITIALIZE(NameDecorator, DecoratorBase,
-                         {
-                           name_key_= StringKey("name");
-                         })
+
 
 IMPCORE_END_NAMESPACE

@@ -23,7 +23,7 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
 //! A decorator for a residue.
 /**
-   As with the AtomDecorator, the types of residues may been to be expanded
+   As with the AtomDecorator, the types of residues may be expanded
    dynamically. This can be easily done in an analogous manner when we
    need it.
    \ingroup hierarchy
@@ -31,17 +31,20 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
  */
 class IMPCOREEXPORT ResidueDecorator: public DecoratorBase
 {
-  static IntKey type_key_;
-  static IntKey index_key_;
-
-  IMP_DECORATOR(ResidueDecorator, DecoratorBase,
-                return p->has_attribute(type_key_)
-                       && p->has_attribute(index_key_),
-                { p->add_attribute(type_key_, -1);
-                  p->add_attribute(index_key_, -1);
-                });
-
 public:
+  IMP_DECORATOR(ResidueDecorator, DecoratorBase)
+
+  static ResidueDecorator create(Particle *p, ResidueType t= UNK,
+                                 int index=-1) {
+    p->add_attribute(get_type_key(), t.get_index());
+    p->add_attribute(get_index_key(), index);
+    return ResidueDecorator(p);
+  }
+  //! Return true if the particle is a ResidueDecorator
+  static bool is_instance_of(Particle *p) {
+    return p->has_attribute(get_type_key())
+    && p->has_attribute(get_index_key());
+  }
 
   //! The supported residue types
   /* \note each static must be on a separate line because of MSVC bug C2487:
@@ -117,12 +120,12 @@ public:
 
   /** Return the ResidueType stored in the Particle */
   ResidueType get_type() const {
-    return ResidueType(get_particle()->get_value(type_key_));
+    return ResidueType(get_particle()->get_value(get_type_key()));
   }
 
   /** set the ResidueType stored in the Particle */
   void set_type(ResidueType t) {
-    return get_particle()->set_value(type_key_, t.get_index());
+    return get_particle()->set_value(get_type_key(), t.get_index());
   }
 
   /** Return true if the residue is an amino acid */
@@ -135,20 +138,14 @@ public:
     return get_type().get_index() >= ADE.get_index();
   }
   //! The residues index in the chain
-  IMP_DECORATOR_GET_SET(index, index_key_,
+  IMP_DECORATOR_GET_SET(index, get_index_key(),
                         Int, unsigned int);
 
   //! Get the key storing the index
-  static IntKey get_index_key() {
-    decorator_initialize_static_data();
-    return index_key_;
-  }
+  static IntKey get_index_key();
 
   //! Get the key storing the type
-  static IntKey get_type_key() {
-    decorator_initialize_static_data();
-    return type_key_;
-  }
+  static IntKey get_type_key();
 };
 
 IMP_OUTPUT_OPERATOR(ResidueDecorator);

@@ -26,25 +26,20 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT XYZDecorator: public DecoratorBase
 {
-  static FloatKeys key_;
-  IMP_DECORATOR(XYZDecorator, DecoratorBase,
-                {
-                  return p->has_attribute(key_[0])
-                    && p->has_attribute(key_[1])
-                    && p->has_attribute(key_[2]);
-                    },
-                { p->add_attribute(key_[0],
-                                   std::numeric_limits<float>::infinity());
-                  p->add_attribute(key_[1],
-                                   std::numeric_limits<float>::infinity());
-                  p->add_attribute(key_[2],
-                                   std::numeric_limits<float>::infinity());
-                });
+ public:
+  IMP_DECORATOR(XYZDecorator, DecoratorBase)
 
-public:
-  IMP_DECORATOR_GET_SET(x, key_[0], Float, Float);
-  IMP_DECORATOR_GET_SET(y, key_[1], Float, Float);
-  IMP_DECORATOR_GET_SET(z, key_[2], Float, Float);
+  /** Create a decorator with the passed coordinates. */
+  static XYZDecorator create(Particle *p, const Vector3D &v= Vector3D(0,0,0)) {
+    p->add_attribute(get_coordinate_key(0),v[0]);
+    p->add_attribute(get_coordinate_key(1),v[1]);
+    p->add_attribute(get_coordinate_key(2),v[2]);
+    return XYZDecorator(p);
+  }
+
+  IMP_DECORATOR_GET_SET(x, get_coordinate_key(0), Float, Float);
+  IMP_DECORATOR_GET_SET(y, get_coordinate_key(1), Float, Float);
+  IMP_DECORATOR_GET_SET(z, get_coordinate_key(2), Float, Float);
   //! set the ith coordinate
   void set_coordinate(unsigned int i, Float v) {
     get_particle()->set_value(get_coordinate_key(i), v);
@@ -114,16 +109,22 @@ public:
                     get_coordinate_derivative(2));
   }
 
+  //! Return true if the particle is an instance of an XYZDecorator
+  static bool is_instance_of(Particle *p) {
+    return p->has_attribute(get_coordinate_key(0))
+      && p->has_attribute(get_coordinate_key(1))
+      && p->has_attribute(get_coordinate_key(2));
+  }
+
   //! Get a vector containing the keys for x,y,z
   /** This is quite handy for initializing movers and things.
    */
-  IMP_DECORATOR_GET_KEY(FloatKeys, xyz_keys, key_)
-
+  static const FloatKeys& get_xyz_keys();
 private:
   static FloatKey get_coordinate_key(unsigned int i) {
     IMP_check(i <3, "Out of range coordinate",
               IndexException);
-    return key_[i];
+    return get_xyz_keys()[i];
   }
 };
 

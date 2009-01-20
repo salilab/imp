@@ -38,15 +38,14 @@ class BondedDecorator;
 class IMPCOREEXPORT BondDecorator: public DecoratorBase
 {
   friend class BondedDecorator;
-
-  /* Do not initialize the attributes as we don't want people
-     creating bonds directly.
-  */
-  IMP_DECORATOR(BondDecorator, DecoratorBase,
-                return internal::graph_is_edge(p, internal::bond_graph_data_),
-               );
-
 public:
+  IMP_DECORATOR(BondDecorator, DecoratorBase)
+
+  //! Return true if the particle is a bond.
+  static bool is_instance_of(Particle *p) {
+    return internal::graph_is_edge(p, internal::get_bond_data().graph_);
+  }
+
   //! The types a bond can have right now
   enum Type {UNKNOWN=-1,
              COVALENT, HYDROGEN, DISULPHIDE, SALT, PEPTIDE,
@@ -59,14 +58,20 @@ public:
   */
   BondedDecorator get_bonded(unsigned int i) const ;
 
-  IMP_DECORATOR_GET_SET_OPT(type, internal::bond_type_key_, Int, Int,
+  IMP_DECORATOR_GET_SET_OPT(type,
+                            internal::get_bond_data().type_, Int, Int,
                             UNKNOWN);
 
-  IMP_DECORATOR_GET_SET_OPT(order, internal::bond_order_key_, Int, Int, 1);
+  IMP_DECORATOR_GET_SET_OPT(order,
+                            internal::get_bond_data().order_,
+                            Int, Int, 1);
 
-  IMP_DECORATOR_GET_SET_OPT(length, internal::bond_length_key_, Float,
+  IMP_DECORATOR_GET_SET_OPT(length,
+                            internal::get_bond_data().length_, Float,
                             Float, -1);
-  IMP_DECORATOR_GET_SET_OPT(stiffness, internal::bond_stiffness_key_, Float,
+  IMP_DECORATOR_GET_SET_OPT(stiffness,
+                            internal::get_bond_data().stiffness_,
+                            Float,
                             Float, -1);
 };
 
@@ -81,17 +86,22 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
  */
 class IMPCOREEXPORT BondedDecorator: public DecoratorBase
 {
-  IMP_DECORATOR(BondedDecorator, DecoratorBase,
-                return internal::graph_is_node(p, internal::bond_graph_data_),
-                graph_initialize_node(p, internal::bond_graph_data_));
-
-
 public:
+  IMP_DECORATOR(BondedDecorator, DecoratorBase)
+  //! return true if it is a bonded particle
+  static bool is_instance_of(Particle *p) {
+  return internal::graph_is_node(p, internal::get_bond_data().graph_);
+  }
+
+  static BondedDecorator create(Particle *p) {
+  graph_initialize_node(p, internal::get_bond_data().graph_);
+  return BondedDecorator(p);
+  }
 
   /** */
   unsigned int get_number_of_bonds() const {
     return graph_get_number_of_edges(get_particle(),
-                                     internal::bond_graph_data_);
+                                     internal::get_bond_data().graph_);
   }
 
 
@@ -101,7 +111,7 @@ public:
   */
   BondDecorator get_bond(unsigned int i) const {
     Particle *p= graph_get_edge(get_particle(), i,
-                                     internal::bond_graph_data_);
+                                     internal::get_bond_data().graph_);
     return BondDecorator(p);
   }
 
@@ -116,7 +126,8 @@ public:
       desired.
   */
   BondedDecorator get_bonded(unsigned int i) const {
-    Particle *p= graph_get_edge(get_particle(), i, internal::bond_graph_data_);
+    Particle *p= graph_get_edge(get_particle(), i,
+                                internal::get_bond_data().graph_);
     BondDecorator bd(p);
     if (bd.get_bonded(0) == *this) return bd.get_bonded(1);
     else return bd.get_bonded(0);
@@ -131,7 +142,7 @@ typedef std::vector<BondDecorator> BondDecorators;
 inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
 {
   Particle *p= graph_get_node(get_particle(), i,
-                              internal::bond_graph_data_);
+                              internal::get_bond_data().graph_);
   return BondedDecorator(p);
 }
 

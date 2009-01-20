@@ -37,16 +37,6 @@ IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
  */
 class IMPCOREEXPORT AtomDecorator: public XYZDecorator
 {
-  IMP_DECORATOR(AtomDecorator, XYZDecorator,
-                return p->has_attribute(type_key_),
-                { p->add_attribute(type_key_, AT_UNKNOWN.get_index()); });
-private:
-  static IntKey element_key_;
-  static FloatKey charge_key_;
-  //static FloatKey vdw_radius_key_;
-  static FloatKey mass_key_;
-  static IntKey type_key_;
-
 public:
   //! The various elements currently supported
   /**
@@ -245,33 +235,49 @@ public:
   /** */ static AtomType AT_H72;
   /** */ static AtomType AT_H73;
 
+  IMP_DECORATOR(AtomDecorator, XYZDecorator)
+
+  /** Create a decorator with the passed type and coordinates.*/
+  static AtomDecorator create(Particle *p, AtomType t= AT_UNKNOWN,
+                              const Vector3D &v= Vector3D(0,0,0)) {
+    p->add_attribute(get_type_key(), t.get_index());
+    XYZDecorator::create(p, v);
+    return AtomDecorator(p);
+  }
+
+  //! return true if the particle has the needed attributes
+  static bool is_instance_of(Particle *p) {
+    return p->has_attribute(get_type_key())
+      && XYZDecorator::is_instance_of(p);
+  }
+
   /** get the stored type */
   AtomType get_type() const {
-    return AtomType(get_particle()->get_value(type_key_));
+    return AtomType(get_particle()->get_value(get_type_key()));
   }
 
   /** set the stored type */
   void set_type(AtomType t);
 
-  IMP_DECORATOR_GET_SET_OPT(charge, charge_key_,
+  IMP_DECORATOR_GET_SET_OPT(charge, get_charge_key(),
                             Float, Float, 0);
-  IMP_DECORATOR_GET_SET_OPT(element, element_key_,
+  IMP_DECORATOR_GET_SET_OPT(element, get_element_key(),
                             Int, Int, 0);
 
-  IMP_DECORATOR_GET_SET_OPT(mass, mass_key_,
+  IMP_DECORATOR_GET_SET_OPT(mass, get_mass_key(),
                             Float, Float, 0);
 
   /** Get the key storing the type */
-  static IntKey get_type_key() {
-    decorator_initialize_static_data();
-    return type_key_;
-  }
+  static IntKey get_type_key();
 
   /** Get the key storing the element */
-  static IntKey get_element_key() {
-    decorator_initialize_static_data();
-    return element_key_;
-  }
+  static IntKey get_element_key();
+
+  /** Get the key storing the mass */
+  static FloatKey get_mass_key();
+
+  /** Get the key storing the mass */
+  static FloatKey get_charge_key();
 };
 
 IMP_OUTPUT_OPERATOR(AtomDecorator);

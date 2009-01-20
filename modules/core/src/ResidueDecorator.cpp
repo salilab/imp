@@ -16,9 +16,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-IntKey ResidueDecorator::type_key_;
-IntKey ResidueDecorator::index_key_;
-
 #define TYPE_DEF(STR) ResidueType ResidueDecorator::STR(#STR);
 TYPE_DEF(UNK);
 TYPE_DEF(GLY);
@@ -64,11 +61,13 @@ void ResidueDecorator::show(std::ostream &out, std::string pre) const
   << get_type() << std::endl;
 }
 
+IntKey ResidueDecorator::get_index_key() {
+  IntKey k("residue_index");
+  return k;
+}
 
-
-IMP_DECORATOR_INITIALIZE(ResidueDecorator, DecoratorBase,
-                         { type_key_= IntKey("residue type");
-                           index_key_= IntKey("residue index");
-                         })
-
+IntKey ResidueDecorator::get_type_key() {
+  IntKey k("residue_type");
+  return k;
+}
 IMPCORE_END_NAMESPACE

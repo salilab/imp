@@ -22,33 +22,10 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT XYZRDecorator: public XYZDecorator
 {
-  FloatKey my_radius_;
 public:
-  XYZRDecorator(){}
-  /**
-     \param[in] p The particle to wrap.
-     \param[in] radius_key The (optional) key name to use.
-     The default is "radius".
-   */
-  XYZRDecorator(Particle *p,
-                FloatKey radius_key= FloatKey("radius")): XYZDecorator(p),
-    my_radius_(radius_key) {
-    IMP_assert(p->has_attribute(radius_key),
-               "Missing attribute " << radius_key);
-  }
-  /** Cast a particle assuming that the key is radius_key.
-     \param[in] p The particle to wrap.
-     \param[in] radius_key The (optional) key name to use.
-     The default is "radius".
-   */
-  static XYZRDecorator cast(Particle *p,
-                            FloatKey radius_key= FloatKey("radius")) {
-    XYZDecorator::cast(p);
-    IMP_check(p->has_attribute(radius_key),
-              "Missing radius attribute " << radius_key,
-              InvalidStateException);
-    return XYZRDecorator(p, radius_key);
-  }
+  IMP_DECORATOR_TRAITS(XYZRDecorator, XYZDecorator, FloatKey,
+                       radius_key, get_default_radius_key());
+
   /** Create a decorator using radius_key to store the FloatKey.
      \param[in] p The particle to wrap.
      \param[in] radius_key The (optional) key name to use.
@@ -63,24 +40,34 @@ public:
     return XYZRDecorator(p, radius_key);
   }
 
+  /** Create a decorator using radius_key to store the FloatKey.
+     \param[in] p The particle to wrap.
+     \param[in] radius_key The (optional) key name to use.
+     The default is "radius".
+   */
+  static XYZRDecorator create(Particle *p,
+                              const Vector3D &coords,
+                              Float radius,
+                              FloatKey radius_key= FloatKey("radius")) {
+    if (!XYZDecorator::is_instance_of(p)) {
+      XYZDecorator::create(p, coords);
+    }
+    p->add_attribute(radius_key, radius, false);
+    return XYZRDecorator(p, radius_key);
+  }
+
   //! Check if the particle has the required attributes
   static bool is_instance_of(Particle *p,
                              FloatKey radius_key= FloatKey("radius")) {
     return p->has_attribute(radius_key);
   }
-  IMP_DECORATOR_GET_SET(radius, my_radius_, Float, Float);
-  //! Get the radius key used in this decorator
-  FloatKey get_radius_key() const {
-    return my_radius_;
-  }
+  IMP_DECORATOR_GET_SET(radius, get_radius_key(), Float, Float);
+
   //! Get the default radius key.
   static FloatKey get_default_radius_key() {
     static FloatKey rk("radius");
     return rk;
   }
-
-  //! show the values
-  void show(std::ostream &out= std::cout, std::string prefix="") const;
 };
 
 IMP_OUTPUT_OPERATOR(XYZRDecorator);

@@ -12,12 +12,15 @@ IMPCORE_BEGIN_NAMESPACE
 namespace internal
 {
 
-GraphData bond_graph_data_;
-bool bond_keys_initialized_=false;
-FloatKey bond_length_key_;
-IntKey bond_type_key_;
-IntKey bond_order_key_;
-FloatKey bond_stiffness_key_;
+
+BondData &get_bond_data() {
+  static BondData d={IntKey("bond type"),
+      IntKey("bond order"),
+    FloatKey("bond length"),
+    FloatKey("bond stiffness"),
+        internal::GraphData("bond")};
+  return d;
+}
 
 } // namespace internal
 
@@ -35,9 +38,9 @@ void BondDecorator::show(std::ostream &out, std::string) const
     out << " of type " << get_type();
   }
   if (get_order() != 1) out << " and order " << get_order();
-  if (get_particle()->has_attribute(internal::bond_length_key_)) {
+  if (get_particle()->has_attribute(internal::get_bond_data().length_)) {
     out << " and length "
-        << get_particle()->get_value(internal::bond_length_key_);
+        << get_particle()->get_value(internal::get_bond_data().length_);
   }
   out << std::endl;
 }
@@ -61,29 +64,6 @@ void BondedDecorator::show(std::ostream &out, std::string) const
   }
 }
 
-static void bond_initialize_static_data()
-{
-  if (internal::bond_keys_initialized_) {
-  } else {
-    internal::bond_graph_data_= internal::GraphData("bond");
-    internal::bond_type_key_= IntKey("bond type");
-    internal::bond_order_key_=IntKey("bond order");
-    internal::bond_length_key_=FloatKey("bond length");
-    internal::bond_stiffness_key_=FloatKey("bond stiffness");
-    internal::bond_keys_initialized_=true;
-  }
-}
-
-IMP_DECORATOR_INITIALIZE(BondDecorator, DecoratorBase,
-                         {
-                           bond_initialize_static_data();
-                         });
-
-
-IMP_DECORATOR_INITIALIZE(BondedDecorator, DecoratorBase,
-                         BondDecorator::decorator_initialize_static_data());
-
-
 BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)
 {
   IMP_check(a.get_particle() != b.get_particle(),
@@ -91,14 +71,14 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)
             ValueException);
 
   Particle *p= internal::graph_connect(a.get_particle(), b.get_particle(),
-                                       internal::bond_graph_data_);
+                                       internal::get_bond_data().graph_);
   BondDecorator bd(p);
   bd.set_type(t);
   return bd;
 }
 
 void unbond(BondDecorator b) {
-  graph_disconnect(b.get_particle(), internal::bond_graph_data_);
+  graph_disconnect(b.get_particle(), internal::get_bond_data().graph_);
 }
 
 BondDecorator get_bond(BondedDecorator a, BondedDecorator b) {

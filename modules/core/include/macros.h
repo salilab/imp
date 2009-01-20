@@ -12,40 +12,32 @@
 #include <sstream>
 
 //! Define the basic things needed by a Decorator.
-/** The key things this defines are a default constructor, a static create
-    function, a static cast function, a method get_particle(), a method
-    get_model() and comparisons.
+/** The key things this defines are
+    - a default constructor,
+    - a static cast function,
+    - a method get_particle(),
+    - a method get_model()
+    - comparisons.
+    - a show method
 
     \param[in] Name is the name of the decorator, such as NameDecorator
     \param[in] Parent The class name for the parent of this class,
     typically DecoratorBase
-    \param[in] check_required is code which returns a bool which checks
-    if a Particle *p has the required fields
-    \param[in] add_required is code which adds the required fields
 
     It requires that the implementer of the Decorator implement the static
-    method:
+    methods:
 
-    - void initialize_static_data() which initializes static data such as
-      AttributeKey instances. Ideally, this should internally make sure it
-      is only done once.
+    - bool is_instance_of(Particle *p) which checks if a particle has
+    needed attributes.
+    - create(Particle *p, other args) which adds the needed attributes
+    to a particle
  */
-#define IMP_DECORATOR(Name, Parent, check_required, add_required)       \
-  private:                                                              \
-  static bool decorator_keys_initialized_;                              \
+#define IMP_DECORATOR(Name, Parent)                                     \
 protected:                                                              \
  /** goes away once DecoratorBase patched */                            \
  static bool has_required_attributes(::IMP::Particle *p) {              \
    return is_instance_of(p);                                            \
  }                                                                      \
- /** Initialize the data needed for these decorators */                 \
-  static void decorator_initialize_static_data();                       \
-  static void add_required_attributes(::IMP::Particle *p) {             \
-    if (!internal::parent_instance<Parent>(p)) {                        \
-      Parent::add_required_attributes(p);                               \
-    }                                                                   \
-    add_required;                                                       \
-  }                                                                     \
   friend class DecoratorBase;                                           \
 public:                                                                 \
 /** \note Should be private but SWIG accesses it through the comparison
@@ -55,17 +47,9 @@ public:                                                                 \
  Name(): Parent(){}                                                     \
  /** \short Construct from a Particle which has all needed attributes */\
  Name(::IMP::Particle *p): Parent(p) {                                  \
-   decorator_initialize_static_data();                                  \
-   IMP_assert(decorator_keys_initialized_,                              \
-              #Name "::create or ::cast must be called before the "     \
-              << "constructor is used.");                               \
    IMP_assert(is_instance_of(p),                                        \
               "Particle missing required attributes for decorator "     \
               << #Name << *p << std::endl);                             \
- }                                                                      \
- /** Add the necessary attributes to p and return a decorator. */       \
- static Name create(::IMP::Particle *p) {                               \
-   return IMP::DecoratorBase::create<Name>(p);                          \
  }                                                                      \
  /** Check that p has the necessary attributes and return a decorator.
      \throws InvalidStateException if some required attributes are
@@ -74,39 +58,77 @@ public:                                                                 \
  static Name cast(::IMP::Particle *p) {                                 \
    return IMP::DecoratorBase::cast<Name>(p);                            \
  }                                                                      \
-/** Check if the particle has the needed attributes for a
-    cast to succeed */                                                  \
- static bool is_instance_of(::IMP::Particle *p) {                       \
-   decorator_initialize_static_data();                                  \
-   if (!internal::parent_instance<Parent>(p)) return false;             \
-   check_required;                                                      \
- }                                                                      \
  /** Write information about this decorator to out. Each line should
      prefixed by prefix*/                                               \
  void show(std::ostream &out=std::cout,                                 \
            std::string prefix=std::string()) const;
 
+//! Define the basic things needed by a Decorator which has a traits object.
+/** The key things this defines are
+    - a default constructor,
+    - a static cast function,
+    - a method get_particle(),
+    - a method get_model()
+    - comparisons.
+    - a show method
+    - a get_traits_name method
 
-/**
-   Put this macro in to the .cpp with code to initialize the keys
-   used by the decorator. This will make sure that the keys are
-   initialized before use and initialized exactly once.
-   \param[in] Name the name of the decorate
-   \param[in] Parent the name of the parent decorator to make sure its keys
-   are initalized
-   \param[in] work The list of statements to initialize the keys.
-   this should probably look something like {a_key_=IntKey("Foo");...}
+    \param[in] Name is the name of the decorator, such as NameDecorator
+    \param[in] Parent The class name for the parent of this class,
+    typically DecoratorBase
+    \param[in] TraitsType the type of the traits object
+    \param[in] TraitsType the type of the traits object
+
+    It requires that the implementer of the Decorator implement the static
+    methods:
+
+    - bool is_instance_of(Particle *p) which checks if a particle has
+    needed attributes.
+    - create(Particle *p, other args) which adds the needed attributes
+    to a particle
  */
-#define IMP_DECORATOR_INITIALIZE(Name, Parent, work)\
-  bool Name::decorator_keys_initialized_=false;     \
-  void Name::decorator_initialize_static_data() {   \
-    if (decorator_keys_initialized_) return;        \
-    else {                                          \
-      Parent::decorator_initialize_static_data();   \
-      work;                                         \
-      decorator_keys_initialized_=true;             \
-    }                                               \
-  }
+#define IMP_DECORATOR_TRAITS(Name, Parent, TraitsType, traits_name,     \
+default_traits)                                                         \
+  private:                                                              \
+  TraitsType traits_name##_;                                             \
+protected:                                                              \
+ /** goes away once DecoratorBase patched */                            \
+ static bool has_required_attributes(::IMP::Particle *p) {              \
+   return is_instance_of(p);                                            \
+ }                                                                      \
+  friend class DecoratorBase;                                           \
+public:                                                                 \
+/** \note Should be private but SWIG accesses it through the comparison
+    macros*/                                                            \
+ typedef Name This;                                                     \
+ /** \short The default constructor. This is used as a null value */    \
+ Name(): Parent(){}                                                     \
+ /** \short Construct from a Particle which has all needed attributes */\
+Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
+                                                traits_name##_(tr) {     \
+  IMP_assert(is_instance_of(p, tr),                                     \
+              "Particle missing required attributes for decorator "     \
+              << #Name << *p << std::endl);                             \
+ }                                                                      \
+ /** Check that p has the necessary attributes and return a decorator.
+     \throws InvalidStateException if some required attributes are
+     missing
+ */                                                                     \
+static Name cast(::IMP::Particle *p, const TraitsType &tr=default_traits) { \
+  IMP_check(is_instance_of(p, tr), "Particle missing required attributes for "\
+  << "decorator " << #Name << " " << *p, InvalidStateException);\
+  return Name(p, tr);\
+}                                                                       \
+ /** Write information about this decorator to out. Each line should
+     prefixed by prefix*/                                               \
+ void show(std::ostream &out=std::cout,                                 \
+           std::string prefix=std::string()) const;                     \
+/** Get the traits object */                                            \
+const TraitsType &get_##traits_name() const {                            \
+  return traits_name##_;                                                 \
+}
+
+
 
 //! Perform actions dependent on whether a particle has an attribute.
 /** A common pattern is to check if a particle has a particular attribute,

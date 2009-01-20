@@ -24,13 +24,13 @@ HierarchyTraits::HierarchyTraits(std::string name): P(name),
 }
 
 
-HierarchyDecorator::HierarchyDecorator(Particle *p,
+/*HierarchyDecorator::HierarchyDecorator(Particle *p,
                                        HierarchyTraits traits): P(p),
                                                                 traits_(traits){
 }
 
 HierarchyDecorator::HierarchyDecorator(HierarchyTraits traits): traits_(traits){
-}
+}*/
 
 
 void HierarchyDecorator::validate_node() const
@@ -48,8 +48,9 @@ void HierarchyDecorator::validate_node() const
   }
 }
 
-void HierarchyDecorator::show(std::ostream &, std::string) const
+void HierarchyDecorator::show(std::ostream &out, std::string) const
 {
+  out << "HierarchyDecorator";
 }
 
 

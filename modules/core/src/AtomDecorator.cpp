@@ -18,11 +18,6 @@ IMPCORE_BEGIN_NAMESPACE
 #define TYPE_DEF(STR) AtomType AtomDecorator::AT_##STR(#STR);
 #define TYPE_DEF2(NAME, STR) AtomType AtomDecorator::AT_##NAME(#STR);
 
-
-IntKey AtomDecorator::element_key_;
-FloatKey AtomDecorator::charge_key_;
-FloatKey AtomDecorator::mass_key_;
-IntKey AtomDecorator::type_key_;
 TYPE_DEF(N);
 TYPE_DEF(H);
 TYPE_DEF(1H);
@@ -210,16 +205,27 @@ void AtomDecorator::set_type(AtomType t)
 {
   // ultimate the secondary info should be set from a
   // better source. But this is good enough for now.
-  get_particle()->set_value(type_key_, t.get_index());
+  get_particle()->set_value(get_type_key(), t.get_index());
 }
 
-IMP_DECORATOR_INITIALIZE(AtomDecorator, XYZDecorator,
-                         {
-                           element_key_= IntKey("atom element");
-                           charge_key_= FloatKey("atom charge");
-                           mass_key_= FloatKey("atom mass");
-                           //vdw_radius_key_= FloatKey("atom vdw radius");
-                           type_key_ = IntKey("atom type");
-                         })
+IntKey AtomDecorator::get_type_key() {
+  static IntKey k("atom_type");
+  return k;
+}
+
+IntKey AtomDecorator::get_element_key() {
+  static IntKey k("element");
+  return k;
+}
+
+FloatKey AtomDecorator::get_mass_key() {
+  static FloatKey k("atom_mass");
+  return k;
+}
+
+FloatKey AtomDecorator::get_charge_key() {
+  static FloatKey k("atom_charge");
+  return k;
+}
 
 IMPCORE_END_NAMESPACE
