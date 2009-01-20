@@ -24,7 +24,6 @@ for r in residues:
 mp1= IMP.modeller.read_pdb('single_protein.pdb', m)
 
 p = IMP.Particle(m)
-rmp= IMP.core.MolecularHierarchyDecorator.create(p)
-rmp.set_type(IMP.core.MolecularHierarchyDecorator.ASSEMBLY)
+rmp= IMP.core.MolecularHierarchyDecorator.create(p, IMP.core.MolecularHierarchyDecorator.ASSEMBLY)
 rmp.add_child(mp0)
 rmp.add_child(mp1)
