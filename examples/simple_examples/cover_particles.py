@@ -3,7 +3,7 @@ import IMP.core
 import IMP.modeller
 
 m= IMP.Model()
-prot= IMP.modeller.read_pdb('single_protein.pdb', m)
+prot= IMP.modeller.read_pdb('examples/simple_examples/single_protein.pdb', m)
 res= IMP.core.molecular_hierarchy_get_by_type(prot, IMP.core.MolecularHierarchyDecorator.RESIDUE)
 rc= IMP.core.ListSingletonContainer(res)
 for p in res:
