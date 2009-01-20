@@ -12,6 +12,7 @@
 #include "utility.h"
 #include "XYZDecorator.h"
 #include "macros.h"
+#include "ResidueDecorator.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
@@ -288,6 +289,42 @@ IMP_OUTPUT_OPERATOR(AtomDecorator);
     \relates AtomType
  */
 IMPCOREEXPORT AtomType atom_type_from_pdb_string(std::string nm);
+
+
+//! Return the index of the residue containing this atom
+/** The atom must be part of a molecular hierarchy.
+ */
+IMPCOREEXPORT unsigned int get_residue_index(AtomDecorator d);
+
+#ifdef SWIG
+// ResidueType is a typedef so this is invalid C++ code, but swig needs it
+class ResidueType;
+class ResidueDecorator;
+#endif
+
+//! Return the type of the residue containing this atom
+/** The atom must be part of a molecular hierarchy.
+    \relates AtomDecorator
+    \relates ResidueDecorator
+    \relates MolecularHierarchyDecorator
+ */
+IMPCOREEXPORT ResidueType get_residue_type(AtomDecorator d);
+
+//! Return the ResidueDecorator containing this atom
+/** The atom must be part of a molecular hierarchy.
+    \relates AtomDecorator
+    \relates ResidueDecorator
+    \relates MolecularHierarchyDecorator
+ */
+IMPCOREEXPORT ResidueDecorator get_residue(AtomDecorator d);
+
+//! Return a particle atom from the residue
+/** The residue must be part of a molecular hierarchy.
+    \relates AtomDecorator
+    \relates ResidueDecorator
+    \relates MolecularHierarchyDecorator
+ */
+IMPCOREEXPORT AtomDecorator get_atom(ResidueDecorator rd, AtomType at);
 
 IMPCORE_END_NAMESPACE
 

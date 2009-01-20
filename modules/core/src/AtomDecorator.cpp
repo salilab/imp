@@ -6,6 +6,7 @@
  */
 
 #include <IMP/core/AtomDecorator.h>
+#include <IMP/core/MolecularHierarchyDecorator.h>
 
 #include <IMP/log.h>
 
@@ -226,6 +227,36 @@ FloatKey AtomDecorator::get_mass_key() {
 FloatKey AtomDecorator::get_charge_key() {
   static FloatKey k("atom_charge");
   return k;
+}
+
+unsigned int get_residue_index(AtomDecorator d) {
+  return get_residue(d).get_index();
+}
+
+
+ResidueType get_residue_type(AtomDecorator d) {
+  return get_residue(d).get_type();
+}
+
+ResidueDecorator get_residue(AtomDecorator d) {
+  MolecularHierarchyDecorator mhd(d.get_particle());
+  do {
+    mhd= mhd.get_parent();
+    if (mhd== MolecularHierarchyDecorator()) {
+      throw InvalidStateException("Atom is not the child of a residue");
+    }
+  } while (!ResidueDecorator::is_instance_of(mhd.get_particle()));
+  ResidueDecorator rd(mhd.get_particle());
+  return rd;
+}
+
+AtomDecorator get_atom(ResidueDecorator rd, AtomType at) {
+  MolecularHierarchyDecorator mhd(rd.get_particle());
+  for (unsigned int i=0; i< mhd.get_number_of_children(); ++i) {
+    AtomDecorator a(mhd.get_child(i).get_particle());
+    if (a.get_type() == at) return a;
+  }
+  throw InvalidStateException("Atom not found");
 }
 
 IMPCORE_END_NAMESPACE
