@@ -71,6 +71,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(MaximumChangeScoreState)
     IMP_OWN_FIRST_CONSTRUCTOR(NonbondedRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(BondBondPairScore)
+    IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RigidBodyScoreState)
     IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(SingletonListRestraint)

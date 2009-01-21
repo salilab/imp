@@ -10,9 +10,12 @@
 
 #include "config.h"
 #include "internal/rigid_bodies.h"
+#include "internal/core_version_info.h"
 
-#include <IMP/core/XYZDecorator.h>
-
+#include "XYZDecorator.h"
+#include "SingletonContainer.h"
+#include <IMP/ParticleRefiner.h>
+#include <IMP/ScoreState.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 
@@ -27,8 +30,8 @@ class IMPCOREEXPORT RigidBodyTraits {
       masses will be considered equal and the radii 0, respectively.
   */
   RigidBodyTraits(std::string prefix="default_rigid",
-                  FloatKey mass=FloatKey(),
-                  FloatKey radius=FloatKey());
+                  FloatKey radius=FloatKey(),
+                  FloatKey mass=FloatKey());
   //! Get the keys used to store the offset coordinates
   const FloatKeys& get_local_coordinate_keys() const {
     return d_->child_keys_;
@@ -183,6 +186,23 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
 IMP_OUTPUT_OPERATOR(RigidMemberDecorator);
 
 
+
+//! Force the passed rigid bodies to stay rigid
+/** The positions of the rigid bodies are updated before
+    each evaluate call to keep the sub particles in a rigid
+    configuration.
+ */
+class IMPCOREEXPORT RigidBodyScoreState: public ScoreState {
+  Pointer<SingletonContainer> ps_;
+  Pointer<ParticleRefiner> pr_;
+  RigidBodyTraits tr_;
+ public:
+  //! pass a container of RigidBodyDecorator particles
+  RigidBodyScoreState(SingletonContainer *ps,
+                      ParticleRefiner *pr,
+                      RigidBodyTraits tr= RigidBodyTraits());
+  IMP_SCORE_STATE(internal::core_version_info);
+};
 
 IMPCORE_END_NAMESPACE
 
