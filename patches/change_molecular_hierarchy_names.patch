@@ -1,0 +1,73 @@
+Index: modules/saxs/src/SaxsData.cpp
+===================================================================
+--- modules/saxs/src/SaxsData.cpp	(revision 1246)
++++ modules/saxs/src/SaxsData.cpp	(working copy)
+@@ -21,9 +21,9 @@
+   mp_.show();
+   mp_.validate();
+ 
+-  ps_ = IMP::core::molecular_hierarchy_get_by_type(mp_,
++  ps_ = IMP::core::get_by_type(mp_,
+                         IMP::core::MolecularHierarchyDecorator::ATOM);
+-  residues_ = IMP::core::molecular_hierarchy_get_by_type(mp_,
++  residues_ = IMP::core::get_by_type(mp_,
+                         IMP::core::MolecularHierarchyDecorator::RESIDUE);
+ 
+   //! number of particles and residues in pdb files
+Index: modules/modeller/test/run-all-tests.py
+===================================================================
+--- modules/modeller/test/run-all-tests.py	(revision 1246)
++++ modules/modeller/test/run-all-tests.py	(working copy)
+@@ -1 +1,26 @@
+-link ../../../tools/run-all-tests.py
+\ No newline at end of file
++import unittest, sys, os, re
++
++def regressionTest():
++    """Run all tests in files called test_*.py in current directory and
++       subdirectories"""
++    path = os.path.dirname(sys.argv[0])
++    if path == '':
++        path = '.'
++    # Tell test cases where to find any input files needed
++    os.environ['TEST_DIRECTORY'] = path
++    modobjs = []
++    for subdir in [''] + [x for x in os.listdir(path) \
++                          if os.path.isdir(os.path.join(path, x))]:
++        files = os.listdir(os.path.join(path, subdir))
++        test = re.compile("^test_.*\.py$", re.IGNORECASE)
++        files = filter(test.search, files)
++        modnames = [os.path.splitext(f)[0] for f in files]
++        sys.path.insert(0, os.path.join(path, subdir))
++        modobjs.extend([__import__(m) for m in modnames])
++        sys.path.pop(0)
++
++    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
++    return unittest.TestSuite(tests)
++
++if __name__ == "__main__":
++    unittest.main(defaultTest="regressionTest")
+Index: modules/modeller/test/test_pdb_read.py
+===================================================================
+--- modules/modeller/test/test_pdb_read.py	(revision 1246)
++++ modules/modeller/test/test_pdb_read.py	(working copy)
+@@ -35,7 +35,9 @@
+         self.assertEqual(i_num_atom_type, f_num_atom_type, "too many atom types")
+         self.assertEqual(1377, hc.get_count(),
+                          "Wrong number of particles created")
+-        rd= IMP.core.molecular_hierarchy_get_residue(mp, 29)
++        rd= IMP.core.get_residue(mp, 29)
++        at= IMP.core.get_atom(rd, IMP.core.AtomType("C"))
++        self.assertEqual(IMP.core.get_residue_index(at), rd.get_index())
+         self.assertEqual(rd.get_index(), 29);
+ 
+     def test_bonds(self):
+@@ -44,7 +46,7 @@
+         mp= IMP.modeller.read_pdb(
+                       self.get_input_file_name('single_protein.pdb'), m)
+         #mp= IMP.core.MolecularHierarchyDecorator.cast(p)
+-        all_atoms= IMP.core.molecular_hierarchy_get_by_type(mp,
++        all_atoms= IMP.core.get_by_type(mp,
+                              IMP.core.MolecularHierarchyDecorator.ATOM);
+         self.assertEqual(1221, len(all_atoms),
+                          "Wrong number of atoms found in protein")
