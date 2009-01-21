@@ -11,7 +11,7 @@
 #include "../config.h"
 
 #include <IMP/base_types.h>
-#include <IMP/Vector3D.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <limits>
 
@@ -179,7 +179,7 @@ public:
 private:
   std::vector<VT> data_;
   int d_[3];
-  Vector3D min_;
+  algebra::Vector3D min_;
   float edge_size_[3];
 
   unsigned int index(const Index &i) const {
@@ -190,7 +190,7 @@ private:
     return ii;
   }
   template <class IndexType>
-  IndexType get_index_t(Vector3D pt) const {
+  IndexType get_index_t(algebra::Vector3D pt) const {
     int index[3];
     for (unsigned int i=0; i< 3; ++i ) {
       IMP_assert(d_[i] != 0, "Invalid grid in Index");
@@ -246,7 +246,7 @@ public:
       \param[in] def The default value for the voxels
    */
   Grid3D(int xd, int yd, int zd,
-         Vector3D minc, Vector3D max,
+         algebra::Vector3D minc, algebra::Vector3D max,
          VoxelData def): data_(xd*yd*zd, def),
                          min_(minc) {
     d_[0]=xd;
@@ -272,7 +272,7 @@ public:
       \param[in] def The default value for the voxels
    */
   Grid3D(float side,
-         Vector3D minc, Vector3D maxc,
+         algebra::Vector3D minc, algebra::Vector3D maxc,
          VoxelData def) {
     min_=minc;
     for (unsigned int i=0; i< 3; ++i ) {
@@ -294,15 +294,15 @@ public:
   }
 
   //! Get the min corner
-  const Vector3D &get_min() const {
+  const algebra::Vector3D &get_min() const {
     return min_;
   }
 
   //! Get the max corner
-  Vector3D get_max() const {
-    return Vector3D(d_[0]*edge_size_[0],
-                    d_[1]*edge_size_[1],
-                    d_[2]*edge_size_[2]);
+  algebra::Vector3D get_max() const {
+    return algebra::Vector3D(d_[0]*edge_size_[0],
+                             d_[1]*edge_size_[1],
+                             d_[2]*edge_size_[2]);
   }
 
   //! Return the number of voxels in a certain direction
@@ -312,7 +312,7 @@ public:
   }
 
   //! Return the index of the voxel containing the point.
-  Index get_index(Vector3D pt) const {
+  Index get_index(algebra::Vector3D pt) const {
     VirtualIndex v= get_virtual_index(pt);
     for (unsigned int i=0; i< 3; ++i) {
       if (v[i] < 0) return Index();
@@ -322,7 +322,7 @@ public:
   }
 
   //! Return the index that would contain the voxel if the grid extended there
-  VirtualIndex get_virtual_index(Vector3D pt) const {
+  VirtualIndex get_virtual_index(algebra::Vector3D pt) const {
     return get_index_t<VirtualIndex>(pt);
   }
 
@@ -351,10 +351,10 @@ public:
   }
 
   //! Return a point at the center of the voxel
-  Vector3D get_center(VirtualIndex gi) const {
-    return Vector3D(edge_size_[0]*(.5f+ gi[0]) + min_[0],
-                    edge_size_[1]*(.5f+ gi[1]) + min_[1],
-                    edge_size_[2]*(.5f+ gi[2]) + min_[2]);
+  algebra::Vector3D get_center(VirtualIndex gi) const {
+    return algebra::Vector3D(edge_size_[0]*(.5f+ gi[0]) + min_[0],
+                             edge_size_[1]*(.5f+ gi[1]) + min_[1],
+                             edge_size_[2]*(.5f+ gi[2]) + min_[2]);
   }
 
 

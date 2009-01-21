@@ -7,6 +7,7 @@
 
 #include <IMP/core/BrownianDynamics.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <IMP/log.h>
 #include <IMP/random.h>
@@ -119,7 +120,7 @@ void BrownianDynamics::setup_particles()
 
 bool BrownianDynamics::step()
 {
-  std::vector<Vector3D> new_pos(get_number_of_particles());
+  std::vector<algebra::Vector3D> new_pos(get_number_of_particles());
   bool noshrink=true;
   while (!propose_step(new_pos)) {
     cur_dt_= cur_dt_/2.0;
@@ -137,7 +138,8 @@ bool BrownianDynamics::step()
 
 
 //! Perform a single dynamics step.
-bool BrownianDynamics::propose_step(std::vector<Vector3D>& new_pos)
+bool BrownianDynamics::propose_step(std::vector<algebra::Vector3D>&
+                                    new_pos)
 {
   FloatKeys xyzk=XYZDecorator::get_xyz_keys();
 

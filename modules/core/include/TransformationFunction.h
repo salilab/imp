@@ -15,6 +15,7 @@
 #include <IMP/core/ParticleFunction.h>
 #include "IMP/core/MolecularHierarchyDecorator.h"
 #include "IMP/core/XYZDecorator.h"
+#include <IMP/algebra/Vector3D.h>
 #include <iostream>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -24,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 class TransformationFunction : public ParticleFunction
 {
 public:
-  TransformationFunction(IMP::algebra::Transformation3D t)
+  TransformationFunction(algebra::Transformation3D t)
   {
     t_=t;
   }
@@ -36,7 +37,7 @@ public:
   void apply(Particles ps)
   {
     IMP::core::XYZDecorator xyz;
-    Vector3D v;
+    algebra::Vector3D v;
     for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
       xyz = IMP::core::XYZDecorator::cast(*it);
       v = xyz.get_coordinates();
@@ -44,7 +45,7 @@ public:
     }
   }
 private:
-  IMP::algebra::Transformation3D t_;
+  algebra::Transformation3D t_;
 };
 
 IMPCORE_END_NAMESPACE

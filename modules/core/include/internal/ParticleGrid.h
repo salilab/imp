@@ -14,6 +14,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/Pointer.h>
+#include <IMP/algebra/Vector3D.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -42,7 +43,7 @@ public:
 
   typedef Grid::VirtualIndex VirtualIndex;
   typedef Grid::Index Index;
-  Grid::VirtualIndex get_virtual_index(Vector3D pt) const {
+  Grid::VirtualIndex get_virtual_index(algebra::Vector3D pt) const {
     return grid_.get_virtual_index(pt);
   }
 

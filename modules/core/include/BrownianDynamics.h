@@ -14,7 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
 #include <IMP/internal/units.h>
-#include <IMP/Vector3D.h>
+#include <IMP/algebra/Vector3D.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -136,7 +136,7 @@ private:
       small enough.
       \return true if it should be accepted.
    */
-  bool propose_step(std::vector<Vector3D> &proposal);
+  bool propose_step(std::vector<algebra::Vector3D> &proposal);
 
   unit::Femtojoule kt() const;
 

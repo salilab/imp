@@ -10,21 +10,21 @@
 #include "IMP/internal/constants.h"
 #include "IMP/core/internal/evaluate_distance_pair_score.h"
 #include "IMP/core/bond_decorators.h"
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/Particle.h>
 #include <boost/lambda/lambda.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
 
-Segment shortest_segment(const Segment &s,
-                         const Vector3D &p) {
-  Vector3D vs= s.second- s.first;
-  Vector3D vps= p- s.first;
+Segment shortest_segment(const Segment &s, const algebra::Vector3D &p) {
+  algebra::Vector3D vs= s.second- s.first;
+  algebra::Vector3D vps= p- s.first;
   double f= vps*vs/(vs*vs);
   if (f<= 0) return Segment(s.first, p);
   else if (f>=1) return Segment(s.second, p);
   else {
-    Vector3D ps= s.first + vs*f;
+    algebra::Vector3D ps= s.first + vs*f;
     return Segment(ps, p);
   }
 }
@@ -39,8 +39,8 @@ Segment shortest_segment(const Segment &s,
 Segment shortest_segment(const Segment &sa,
                           const Segment &sb) {
   const double eps= .0001;
-  Vector3D va= sa.second - sa.first;
-  Vector3D vb= sb.second - sb.first;
+  algebra::Vector3D va= sa.second - sa.first;
+  algebra::Vector3D vb= sb.second - sb.first;
   double ma= va*va;
   double mb= vb*vb;
   if (ma < eps) {
@@ -54,7 +54,7 @@ Segment shortest_segment(const Segment &sa,
     return shortest_segment(sa, sb.first);
   }
 
-  Vector3D vfirst = sa.first- sb.first;
+  algebra::Vector3D vfirst = sa.first- sb.first;
 
   IMP_LOG(VERBOSE, vfirst << " | " << va << " | " << vb << std::endl);
 
@@ -86,7 +86,7 @@ Segment shortest_segment(const Segment &sa,
    pb->z = p3.z + *mub * p43.z;
    */
 
-   Vector3D ra;
+   algebra::Vector3D ra;
    if (fa < 1 && fa > 0) {
      ra = sa.first + fa *va;
    } else if (fa <=0) {
@@ -94,7 +94,7 @@ Segment shortest_segment(const Segment &sa,
    } else {
      ra= sa.second;
    }
-   Vector3D rb;
+   algebra::Vector3D rb;
    if (fb < 1 && fb > 0) {
      rb = sb.first + fb *vb;
    } else if (fa <=0) {
@@ -142,8 +142,8 @@ Float BondBondPairScore::get_offset(Particle *p,
   }
 }
 
-Vector3D BondBondPairScore::get_difference(const Segment &s0,
-                                          const Segment &s1) const
+algebra::Vector3D BondBondPairScore::get_difference(const Segment &s0,
+                                                    const Segment &s1) const
 {
   Segment s= shortest_segment(s0, s1);
   return s.second-s.first;
@@ -162,9 +162,9 @@ Float BondBondPairScore::evaluate(Particle *a, Particle *b,
 
   Float o[2]= {get_offset(a, d[0]),
                get_offset(b, d[1])};
-  Vector3D diff= get_difference(ep[0], ep[1]);
+  algebra::Vector3D diff= get_difference(ep[0], ep[1]);
 
-  Vector3D deriv;
+  algebra::Vector3D deriv;
   Float score= internal::compute_distance_pair_score(diff, f_,
                                                      (da? &deriv : NULL),
                                                      boost::lambda::_1

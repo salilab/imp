@@ -3,12 +3,13 @@ import unittest
 import IMP.utils
 import IMP.test
 import IMP.core
+import IMP.algebra
 
 class DistanceTests(IMP.test.TestCase):
     """Test the BindBondPairScore"""
     def test_constructions(self):
         """Test the cylinder edge cases"""
-        V= IMP.Vector3D
+        V= IMP.algebra.Vector3D
         S= IMP.core.Segment
 
         v=V(0,0,0)
@@ -39,7 +40,7 @@ class DistanceTests(IMP.test.TestCase):
 
     def test_random(self):
         """Test random cylinder/cylinder vectors"""
-        V= IMP.Vector3D
+        V= IMP.algebra.Vector3D
         S= IMP.core.Segment
         IMP.set_log_level(IMP.VERBOSE)
         m=IMP.Model()
@@ -64,10 +65,10 @@ class DistanceTests(IMP.test.TestCase):
         l= IMP.core.Linear(0,1)
         ps= IMP.core.BondBondPairScore(l)
         for i in range(0,1):
-            s0= S(IMP.random_vector_in_box(V(0,0,0), V(100,100,100)),
-                  IMP.random_vector_in_box(V(0,0,0), V(100,100,100)))
-            s1= S(IMP.random_vector_in_box(V(0,0,0), V(100,100,100)),
-                  IMP.random_vector_in_box(V(0,0,0), V(100,100,100)))
+            s0= S(IMP.algebra.random_vector_in_box(V(0,0,0), V(100,100,100)),
+                  IMP.algebra.random_vector_in_box(V(0,0,0), V(100,100,100)))
+            s1= S(IMP.algebra.random_vector_in_box(V(0,0,0), V(100,100,100)),
+                  IMP.algebra.random_vector_in_box(V(0,0,0), V(100,100,100)))
             ss= IMP.core.shortest_segment(s0, s1)
             v0= s0.second - s0.first
             v1= s1.second - s1.first

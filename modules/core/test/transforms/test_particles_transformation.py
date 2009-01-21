@@ -28,14 +28,14 @@ class ParticleTrasnformationTests(IMP.test.TestCase):
     def test_transformation(self):
         """Test the TransformationFunction class"""
         r = IMP.algebra.rotation_from_fixed_xyz(0.2,0.8,-0.4)
-        t=IMP.algebra.Transformation3D(r,IMP.Vector3D(20.0,-12.4,18.6))
+        t=IMP.algebra.Transformation3D(r,IMP.algebra.Vector3D(20.0,-12.4,18.6))
         tf=IMP.core.TransformationFunction(t)
         r = tf.apply(self.particles)
         tp=[]
-        tp.append(IMP.Vector3D(47.948, -86.769, 118.648))
-        tp.append(IMP.Vector3D(68.987, 6.399, 110.088))
-        tp.append(IMP.Vector3D(30.447,  28.832, 134.914))
-        tp.append(IMP.Vector3D(29.265,  17.052, 136.600))
+        tp.append(IMP.algebra.Vector3D(47.948, -86.769, 118.648))
+        tp.append(IMP.algebra.Vector3D(68.987, 6.399, 110.088))
+        tp.append(IMP.algebra.Vector3D(30.447,  28.832, 134.914))
+        tp.append(IMP.algebra.Vector3D(29.265,  17.052, 136.600))
         for i in xrange(4):
             xyz = IMP.core.XYZDecorator.cast(self.particles[i]);
             v = xyz.get_coordinates();

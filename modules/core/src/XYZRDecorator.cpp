@@ -6,6 +6,7 @@
  */
 
 #include "IMP/core/XYZRDecorator.h"
+#include <IMP/algebra/Vector3D.h>
 
 #ifdef IMP_USE_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -67,7 +68,7 @@ void set_enclosing_sphere(const Particles &v,
   out.set_y(*(ms.center_cartesian_begin()+1));
   out.set_z(*(ms.center_cartesian_begin()+2));
 #else
-  Vector3D c(0,0,0);
+  algebra::Vector3D c(0,0,0);
   for (unsigned int i=0; i< v.size(); ++i) {
     XYZDecorator d(v[i]);
     c+= d.get_coordinates();
@@ -94,12 +95,9 @@ Particles create_xyzr_particles(Model *m,
     Particle *p= new Particle();
     m->add_particle(p);
     XYZRDecorator d= XYZRDecorator::create(p);
-    d.set_coordinates(random_vector_in_box(Vector3D(-box_side,
-                                                    -box_side,
-                                                    -box_side),
-                                           Vector3D(box_side,
-                                                    box_side,
-                                                    box_side)));
+    d.set_coordinates(algebra::random_vector_in_box(
+                            algebra::Vector3D(-box_side, -box_side, -box_side),
+                            algebra::Vector3D(box_side, box_side, box_side)));
     d.set_radius(radius);
     d.set_coordinates_are_optimized(true);
     ret.push_back(p);

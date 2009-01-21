@@ -8,6 +8,7 @@
 
 #include <IMP/core/VRMLLogOptimizerState.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <fstream>
 #include <sstream>
@@ -135,10 +136,8 @@ static Float snap(Float f)
   return f;
 }
 
-void VRMLLogOptimizerState::set_color(int c, Vector3D v) {
-  colors_[c]= Vector3D(snap(v[0]),
-                       snap(v[1]),
-                       snap(v[2]));
+void VRMLLogOptimizerState::set_color(int c, algebra::Vector3D v) {
+  colors_[c]= algebra::Vector3D(snap(v[0]), snap(v[1]), snap(v[2]));
 }
 
 

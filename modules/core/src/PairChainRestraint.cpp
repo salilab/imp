@@ -12,7 +12,6 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/log.h>
-#include <IMP/Vector3D.h>
 #include <IMP/PairScore.h>
 
 #include <cmath>

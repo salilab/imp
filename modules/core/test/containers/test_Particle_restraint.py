@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.utils
 import IMP.core
+import IMP.algebra
 import math
 
 
@@ -34,7 +35,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         p= IMP.Particle()
         m.add_particle(p)
         d=IMP.core.XYZDecorator.create(p)
-        d.set_coordinates(IMP.random_vector_in_unit_box())
+        d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         p.add_attribute(IMP.FloatKey("thekey"), d.get_x())
         return p
 
@@ -45,8 +46,8 @@ class ParticleContainerTest(IMP.test.TestCase):
         m.add_particle(p1)
         d0= IMP.core.XYZDecorator.create(p0)
         d1= IMP.core.XYZDecorator.create(p1)
-        d0.set_coordinates(IMP.random_vector_in_unit_box())
-        d1.set_coordinates(IMP.random_vector_in_unit_box())
+        d0.set_coordinates(IMP.algebra.random_vector_in_unit_box())
+        d1.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         return IMP.ParticlePair(p0,p1)
 
     def same_particle(self, a, b):

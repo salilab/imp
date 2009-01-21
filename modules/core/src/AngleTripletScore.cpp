@@ -7,6 +7,7 @@
 
 #include <IMP/core/AngleTripletScore.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <IMP/UnaryFunction.h>
 #include <boost/tuple/tuple.hpp>
@@ -26,8 +27,8 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
   XYZDecorator d1 = XYZDecorator::cast(b);
   XYZDecorator d2 = XYZDecorator::cast(c);
 
-  Vector3D rij = d1.get_vector_to(d0);
-  Vector3D rkj = d1.get_vector_to(d2);
+  algebra::Vector3D rij = d1.get_vector_to(d0);
+  algebra::Vector3D rkj = d1.get_vector_to(d2);
 
   Float scalar_product = rij.scalar_product(rkj);
   Float mag_rij = rij.get_magnitude();
@@ -49,8 +50,8 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
     Float deriv;
     boost::tie(score, deriv) = f_->evaluate_with_derivative(angle);
 
-    Vector3D unit_rij = rij.get_unit_vector();
-    Vector3D unit_rkj = rkj.get_unit_vector();
+    algebra::Vector3D unit_rij = rij.get_unit_vector();
+    algebra::Vector3D unit_rkj = rkj.get_unit_vector();
 
     Float sinangle = std::abs(std::sin(angle));
 

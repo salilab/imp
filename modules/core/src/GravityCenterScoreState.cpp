@@ -8,7 +8,7 @@
 #include <IMP/core/GravityCenterScoreState.h>
 #include <IMP/core/XYZDecorator.h>
 
-#include <IMP/Vector3D.h>
+#include <IMP/algebra/Vector3D.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -32,7 +32,7 @@ IMP_LIST_IMPL(GravityCenterScoreState, Particle, particle, Particle*,
 
 void GravityCenterScoreState::update_position()
 {
-  Vector3D cvect(0.0, 0.0, 0.0);
+  algebra::Vector3D cvect(0.0, 0.0, 0.0);
   bool do_weighting = (weightkey_ != FloatKey());
 
   Float total_weight = 0.;
@@ -66,7 +66,7 @@ transform_derivatives(DerivativeAccumulator *accpt)
   if (nchildren > 0) {
     // we know center is OK since update was called
     XYZDecorator d(center_);
-    Vector3D deriv;
+    algebra::Vector3D deriv;
     // divide derivatives equally between all children
     for (int i = 0; i < 3; ++i) {
       deriv[i] = d.get_coordinate_derivative(i) / nchildren;

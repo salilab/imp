@@ -1,6 +1,7 @@
 import unittest
 import IMP, IMP.test
 import IMP.core
+import IMP.algebra
 
 class OneSingle(IMP.SingletonScore):
     def __init__(self):
@@ -55,7 +56,7 @@ class TestList(IMP.test.TestCase):
         d.set_y(1)
         d.set_z(1)
         d.set_coordinates_are_optimized(True)
-        v= IMP.Vector3D(3,1,5)
+        v= IMP.algebra.Vector3D(3,1,5)
         l= IMP.core.Linear(0, 1)
         s= IMP.core.DistanceToSingletonScore(l, v)
         r= IMP.core.SingletonListRestraint(s, m.get_particles())
@@ -73,7 +74,7 @@ class TestList(IMP.test.TestCase):
         d.set_y(1)
         d.set_z(1)
         d.set_coordinates_are_optimized(True)
-        v= IMP.Vector3D(5,5,5)
+        v= IMP.algebra.Vector3D(5,5,5)
         h= IMP.core.HarmonicUpperBound(10, 10)
         s= IMP.core.DistanceToSingletonScore(h, v)
         r= IMP.core.SingletonListRestraint(s, m.get_particles())

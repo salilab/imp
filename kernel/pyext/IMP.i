@@ -121,7 +121,6 @@ namespace IMP {
 %feature("director") IMP::ParticleRefiner;
 
 %include "IMP/base_types.h"
-%include "Vector3D.i"
 %include "IMP/deprecation.h"
 %include "IMP/Object.h"
 %include "IMP/RefCountedObject.h"
@@ -162,8 +161,4 @@ namespace IMP {
   %template(Floats) ::std::vector<Float>;
   %template(Strings) ::std::vector<String>;
   %template(Ints) ::std::vector<Int>;
-  /*%template(Vector3D) VectorD<3>;
-  %template(random_vector_on_sphere) random_vector_on_sphere<3>;
-  %template(random_vector_in_sphere) random_vector_in_sphere<3>;
-  %template(random_vector_in_box) random_vector_in_box<3>;*/
 }

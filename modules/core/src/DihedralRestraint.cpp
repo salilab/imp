@@ -8,11 +8,11 @@
 
 #include <IMP/core/DihedralRestraint.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/log.h>
-#include <IMP/Vector3D.h>
 
 #include <boost/tuple/tuple.hpp>
 #include <cmath>
@@ -51,12 +51,12 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
   XYZDecorator d2 = XYZDecorator::cast(p_[2]);
   XYZDecorator d3 = XYZDecorator::cast(p_[3]);
 
-  Vector3D rij = d1.get_vector_to(d0);
-  Vector3D rkj = d1.get_vector_to(d2);
-  Vector3D rkl = d3.get_vector_to(d2);
+  algebra::Vector3D rij = d1.get_vector_to(d0);
+  algebra::Vector3D rkj = d1.get_vector_to(d2);
+  algebra::Vector3D rkl = d3.get_vector_to(d2);
 
-  Vector3D v1 = rij.vector_product(rkj);
-  Vector3D v2 = rkj.vector_product(rkl);
+  algebra::Vector3D v1 = rij.vector_product(rkj);
+  algebra::Vector3D v2 = rkj.vector_product(rkl);
   Float scalar_product = v1.scalar_product(v2);
   Float mag_product = v1.get_magnitude() * v2.get_magnitude();
 
@@ -70,7 +70,7 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 
   Float angle = std::acos(cosangle);
   // get sign
-  Vector3D v0 = v1.vector_product(v2);
+  algebra::Vector3D v0 = v1.vector_product(v2);
   Float sign = rkj.scalar_product(v0);
   if (sign < 0.0) {
     angle = -angle;
@@ -84,8 +84,8 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 
     // method for derivative calculation from van Schaik et al.
     // J. Mol. Biol. 234, 751-762 (1993)
-    Vector3D vijkj = rij.vector_product(rkj);
-    Vector3D vkjkl = rkj.vector_product(rkl);
+    algebra::Vector3D vijkj = rij.vector_product(rkj);
+    algebra::Vector3D vkjkl = rkj.vector_product(rkl);
     Float sijkj2 = vijkj.get_squared_magnitude();
     Float skjkl2 = vkjkl.get_squared_magnitude();
     Float skj = rkj.get_magnitude();

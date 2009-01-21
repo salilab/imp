@@ -8,6 +8,7 @@
 #include <IMP/core/TransformedDistancePairScore.h>
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <IMP/UnaryFunction.h>
 #include <boost/lambda/lambda.hpp>
@@ -16,18 +17,18 @@ IMPCORE_BEGIN_NAMESPACE
 
 TransformedDistancePairScore
 ::TransformedDistancePairScore(UnaryFunction *f,
-                               const IMP::algebra::Transformation3D &t): f_(f)
+                               const algebra::Transformation3D &t): f_(f)
 {
   set_transformation(t);
 }
 
 struct TransformParticle
 {
-  Vector3D tv_;
-  const IMP::algebra::Rotation3D &ri_;
+  algebra::Vector3D tv_;
+  const algebra::Rotation3D &ri_;
   XYZDecorator d_;
-  TransformParticle(const IMP::algebra::Transformation3D &t,
-                    const IMP::algebra::Rotation3D &r,
+  TransformParticle(const algebra::Transformation3D &t,
+                    const algebra::Rotation3D &r,
                     Particle *p): ri_(r), d_(p){
     tv_= t.transform(d_.get_coordinates());
   }
@@ -36,10 +37,10 @@ struct TransformParticle
     return tv_[i];
   }
 
-  void add_to_coordinates_derivative(const Vector3D& f,
+  void add_to_coordinates_derivative(const algebra::Vector3D& f,
                                      DerivativeAccumulator &da) {
     IMP_LOG(VERBOSE, "Incoming deriv is " << f << std::endl);
-    Vector3D r= ri_.rotate(f);
+    algebra::Vector3D r= ri_.rotate(f);
     IMP_LOG(VERBOSE, "Transformed deriv is " << r << std::endl);
     d_.add_to_coordinates_derivative(r, da);
   }
@@ -61,7 +62,7 @@ Float TransformedDistancePairScore::evaluate(Particle *a, Particle *b,
 
 
 void TransformedDistancePairScore::set_transformation(
-                                const IMP::algebra::Transformation3D &t)
+                                         const algebra::Transformation3D &t)
 {
   ri_= t.get_rotation().get_inverse();
   t_=t;

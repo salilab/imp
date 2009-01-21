@@ -10,7 +10,6 @@
 
 #include "../config.h"
 
-#include <IMP/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/Transformation3D.h>
 

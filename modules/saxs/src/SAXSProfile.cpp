@@ -6,7 +6,6 @@
  */
 #include <IMP/saxs/SAXSProfile.h>
 
-#include <IMP/Vector3D.h>
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/utility.h>
 

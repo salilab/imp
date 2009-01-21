@@ -1,6 +1,8 @@
 import IMP
 import IMP.core
 import IMP.misc
+import IMP.algebra
+
 m= IMP.Model()
 
 # Put the parent particles for each molecule
@@ -16,7 +18,7 @@ for i in range(0,10):
         cd= IMP.core.MolecularHierarchyDecorator.create(p,
             IMP.core.MolecularHierarchyDecorator.FRAGMENT)
         d.add_child(cd)
-        xd= IMP.core.XYZRDecorator.create(p, IMP.Vector3D(3*i,j,0), 1)
+        xd= IMP.core.XYZRDecorator.create(p, IMP.algebra.Vector3D(3*i,j,0), 1)
     hs.append(p)
 
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0,1))

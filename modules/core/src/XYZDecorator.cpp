@@ -26,7 +26,7 @@ const FloatKeys& XYZDecorator::get_xyz_keys() {
 
 Float distance(XYZDecorator a, XYZDecorator b)
 {
-  return IMP::distance(a.get_coordinates(),b.get_coordinates());
+  return algebra::distance(a.get_coordinates(),b.get_coordinates());
 }
 
 IMPCORE_END_NAMESPACE

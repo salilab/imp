@@ -11,16 +11,16 @@
 #include "../macros.h"
 
 #include <IMP/utility.h>
-#include <IMP/Vector3D.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <boost/tuple/tuple.hpp>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 template <class SD>
-Float compute_distance_pair_score(const Vector3D &delta,
+Float compute_distance_pair_score(const algebra::Vector3D &delta,
                                   const UnaryFunction *f,
-                                  Vector3D *d,
+                                  algebra::Vector3D *d,
                                   SD sd) {
   static const Float MIN_DISTANCE = .00001;
   Float distance= delta.get_magnitude();
@@ -37,7 +37,7 @@ Float compute_distance_pair_score(const Vector3D &delta,
   } else {
     // calculate the score based on the distance feature
     score = f->evaluate(shifted_distance);
-    if (d) *d= Vector3D(0,0,0);
+    if (d) *d= algebra::Vector3D(0,0,0);
   }
   return score;
 }
@@ -50,13 +50,13 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
 {
   IMP_CHECK_OBJECT(f);
 
-  Vector3D delta;
+  algebra::Vector3D delta;
 
   for (int i = 0; i < 3; ++i) {
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
   }
 
-  Vector3D d;
+  algebra::Vector3D d;
   Float score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd);
 
 

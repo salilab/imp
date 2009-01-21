@@ -11,7 +11,7 @@
 #include "config.h"
 
 #include <IMP/PairScore.h>
-#include <IMP/Vector3D.h>
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/UnaryFunction.h>
 #include <utility>
 
@@ -19,14 +19,15 @@ IMPCORE_BEGIN_NAMESPACE
 
 // exposed for testing
 struct Segment {
-  Vector3D first, second;
-  Segment(const Vector3D &f, const Vector3D &s): first(f), second(s){}
+  algebra::Vector3D first, second;
+  Segment(const algebra::Vector3D &f,
+          const algebra::Vector3D &s): first(f), second(s){}
 };
 
 // for testing
 IMPCOREEXPORT
 Segment shortest_segment(const Segment &s,
-                         const Vector3D &p);
+                         const algebra::Vector3D &p);
 
 // for testing
 IMPCOREEXPORT
@@ -48,8 +49,8 @@ class IMPCOREEXPORT BondBondPairScore : public PairScore
 
   Segment get_endpoints(Particle *p) const;
   Float get_offset(Particle *p, Float d) const;
-  Vector3D get_difference(const Segment &s0,
-                          const Segment &s1) const;
+  algebra::Vector3D get_difference(const Segment &s0,
+                                   const Segment &s1) const;
  public:
   BondBondPairScore(UnaryFunction *f,
                             FloatKey volume= FloatKey());
