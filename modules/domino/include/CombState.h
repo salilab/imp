@@ -47,11 +47,18 @@ public:
   data[p] = val;
 
   }
+  bool has_particle(Particle *p) {
+    if (data.find(p) == data.end()) {
+      return true;
+    }
+    return false;
+  }
+
   unsigned int get_state_num(Particle *p) {
-  std::stringstream error_message;
-  error_message << "CombState::get_state the particle is not "
-                << "part of the corresponding JNode : " << p;
-  IMP_assert(data.find(p) != data.end(), error_message.str());
+  std::stringstream err_msg;
+  err_msg << "CombState::get_state_num the particle " << p->get_index();
+  err_msg << " is not found in the combstate data";
+  IMP_assert(data.find(p) != data.end(), err_msg.str());
   return data[p];
 
   }
