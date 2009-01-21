@@ -2,6 +2,7 @@ files = [
          'ParticleGrid.cpp',
          'bbox_nbl_helpers.cpp',
          'graph_base.cpp',
+         'rigid_bodies.cpp',
         ]
 
 files = [File(x) for x in files]

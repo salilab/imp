@@ -85,6 +85,7 @@ files = [
          'XYZRDecorator.cpp',
          'bond_decorators.cpp',
          'model_io.cpp',
+         'rigid_bodies.cpp',
         ] \
         + SConscript('internal/SConscript')
 
