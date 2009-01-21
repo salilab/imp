@@ -21,6 +21,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! A location in 3D
 typedef VectorD<3> Vector3D;
 
+//! A collection of Vector3D
+typedef std::vector<Vector3D> Vector3Ds;
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_3D_H */
