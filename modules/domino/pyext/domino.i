@@ -27,6 +27,8 @@
 %include "IMP/domino/DominoOptimizer.h"
 %include "IMP/domino/DiscreteSet.h"
 %include "IMP/domino/PermutationSampler.h"
+%include "IMP/domino/MappedDiscreteSet.h"
+%include "IMP/domino/CartesianProductSampler.h"
 %include "IMP/domino/SimpleDiscreteSpace.h"
 %include "IMP/domino/SimpleDiscreteRestraint.h"
 %include "IMP/domino/SimpleDiscreteSampler.h"

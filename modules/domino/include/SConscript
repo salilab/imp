@@ -10,6 +10,8 @@ files = [
          'RestraintGraph.h',
          'DiscreteSet.h',
          'PermutationSampler.h',
+         'MappedDiscreteSet.h',
+         'CartesianProductSampler.h',
          'SimpleDiscreteRestraint.h',
          'SimpleDiscreteSpace.h',
          'SimpleDiscreteSampler.h',
