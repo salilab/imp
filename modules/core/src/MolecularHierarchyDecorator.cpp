@@ -76,8 +76,8 @@ struct MHDMatchingType
 
 } // namespace
 
-Particles molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd,
-                                          MolecularHierarchyDecorator::Type t)
+Particles get_by_type(MolecularHierarchyDecorator mhd,
+                      MolecularHierarchyDecorator::Type t)
 {
   Particles out;
   hierarchy_gather(mhd, MHDMatchingType(t),
@@ -109,8 +109,8 @@ struct MatchResidueIndex
 
 
 ResidueDecorator
-molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
-                                unsigned int index)
+get_residue(MolecularHierarchyDecorator mhd,
+            unsigned int index)
 {
   IMP_check(mhd.get_type() == MolecularHierarchyDecorator::PROTEIN
             || mhd.get_type() == MolecularHierarchyDecorator::CHAIN

@@ -212,7 +212,7 @@ typedef std::vector<MolecularHierarchyDecorator> MolecularHierarchyDecorators;
    \relates MolecularHierarchyDecorator
 */
 IMPCOREEXPORT Particles
-molecular_hierarchy_get_by_type(MolecularHierarchyDecorator mhd,
+get_by_type(MolecularHierarchyDecorator mhd,
                                 MolecularHierarchyDecorator::Type t);
 
 class ResidueDecorator;
@@ -228,8 +228,8 @@ class ResidueDecorator;
     \relates MolecularHierarchyDecorator
  */
 IMPCOREEXPORT ResidueDecorator
-molecular_hierarchy_get_residue(MolecularHierarchyDecorator mhd,
-                                unsigned int index);
+get_residue(MolecularHierarchyDecorator mhd,
+            unsigned int index);
 
 
 //! Create a fragment containing the specified nodes
