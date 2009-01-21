@@ -5,18 +5,18 @@ import IMP.modeller
 m = IMP.Model()
 mp0= IMP.modeller.read_pdb('examples/simple_examples/single_protein.pdb', m)
 # get the 16th residue
-r16 = IMP.core.molecular_hierarchy_get_residue(mp0, 16)
+r16 = IMP.core.get_residue(mp0, 16)
 r16.show()
 
-atoms= IMP.core.molecular_hierarchy_get_by_type(mp0, IMP.core.MolecularHierarchyDecorator.ATOM)
+atoms= IMP.core.get_by_type(mp0, IMP.core.MolecularHierarchyDecorator.ATOM)
 print len(atoms)
 
 #get the residues
-residues= IMP.core.molecular_hierarchy_get_by_type(mp0, IMP.core.MolecularHierarchyDecorator.RESIDUE)
+residues= IMP.core.get_by_type(mp0, IMP.core.MolecularHierarchyDecorator.RESIDUE)
 # set the coordinates and radius of each residue to enclose its atoms
 for r in residues:
     d= IMP.core.XYZRDecorator.create(r)
-    atoms= IMP.core.molecular_hierarchy_get_by_type(IMP.core.MolecularHierarchyDecorator(r),
+    atoms= IMP.core.get_by_type(IMP.core.MolecularHierarchyDecorator(r),
                                                     IMP.core.MolecularHierarchyDecorator.ATOM)
     IMP.core.set_enclosing_sphere(atoms, d)
 
