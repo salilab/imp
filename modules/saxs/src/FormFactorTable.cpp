@@ -233,111 +233,111 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
                        const core::AtomType& atom_type,
                        const core::ResidueType& residue_type) const {
   // CA
-  if (atom_type == core::AtomDecorator::AT_CA) {
-    if (residue_type == core::ResidueDecorator::GLY)
+  if (atom_type == core::AT_CA) {
+    if (residue_type == core::GLY)
       return CH2;                   // Glycine has 2 hydrogens
     return CH;
   }
 
   // CH3 at C-term
-  //if(atom_type == core::AtomDecorator::AT_CT) return CH3;
+  //if(atom_type == core::AT_CT) return CH3;
 
   // CH2
-  if (atom_type == core::AtomDecorator::AT_CH2) return CH2;
+  if (atom_type == core::AT_CH2) return CH2;
 
   // C
-  if (atom_type == core::AtomDecorator::AT_C) return C;
+  if (atom_type == core::AT_C) return C;
 
   // CB
-  if (atom_type == core::AtomDecorator::AT_CB) {
-    if (residue_type == core::ResidueDecorator::ILE ||
-        residue_type == core::ResidueDecorator::THR ||
-        residue_type == core::ResidueDecorator::VAL) return CH;
-    if (residue_type == core::ResidueDecorator::ALA) return CH3;
+  if (atom_type == core::AT_CB) {
+    if (residue_type == core::ILE ||
+        residue_type == core::THR ||
+        residue_type == core::VAL) return CH;
+    if (residue_type == core::ALA) return CH3;
     return CH2;
   }
 
   // CG1
-  if (atom_type == core::AtomDecorator::AT_CG) {
-    if (residue_type == core::ResidueDecorator::ASN ||
-        residue_type == core::ResidueDecorator::ASP ||
-        residue_type == core::ResidueDecorator::HIS ||
-        residue_type == core::ResidueDecorator::PHE ||
-        residue_type == core::ResidueDecorator::TRP ||
-        residue_type == core::ResidueDecorator::TYR) return C;
-    if (residue_type == core::ResidueDecorator::LEU) return CH;
+  if (atom_type == core::AT_CG) {
+    if (residue_type == core::ASN ||
+        residue_type == core::ASP ||
+        residue_type == core::HIS ||
+        residue_type == core::PHE ||
+        residue_type == core::TRP ||
+        residue_type == core::TYR) return C;
+    if (residue_type == core::LEU) return CH;
     return CH2;
   }
 
   // CG1
-  if (atom_type == core::AtomDecorator::AT_CG1) {
-    if (residue_type == core::ResidueDecorator::ILE) return CH2;
-    if (residue_type == core::ResidueDecorator::VAL) return CH3;
+  if (atom_type == core::AT_CG1) {
+    if (residue_type == core::ILE) return CH2;
+    if (residue_type == core::VAL) return CH3;
   }
 
   // CG2 - only VAL, ILE, and THR
-  if (atom_type == core::AtomDecorator::AT_CG2) return CH3;
+  if (atom_type == core::AT_CG2) return CH3;
 
   // CD
-  if (atom_type == core::AtomDecorator::AT_CD) {
-    if (residue_type == core::ResidueDecorator::GLU ||
-        residue_type == core::ResidueDecorator::GLN) return C;
+  if (atom_type == core::AT_CD) {
+    if (residue_type == core::GLU ||
+        residue_type == core::GLN) return C;
     return CH2;
   }
 
   // CD1
-  if (atom_type == core::AtomDecorator::AT_CD1) {
-    if (residue_type == core::ResidueDecorator::LEU ||
-        residue_type == core::ResidueDecorator::ILE) return CH3;
-    if (residue_type == core::ResidueDecorator::PHE ||
-        residue_type == core::ResidueDecorator::TRP ||
-        residue_type == core::ResidueDecorator::TYR) return CH;
+  if (atom_type == core::AT_CD1) {
+    if (residue_type == core::LEU ||
+        residue_type == core::ILE) return CH3;
+    if (residue_type == core::PHE ||
+        residue_type == core::TRP ||
+        residue_type == core::TYR) return CH;
     return C;
   }
 
   // CD2
-  if (atom_type == core::AtomDecorator::AT_CD2) {
-    if (residue_type == core::ResidueDecorator::LEU) return CH3;
-    if (residue_type == core::ResidueDecorator::PHE ||
-        residue_type == core::ResidueDecorator::HIS ||
-        residue_type == core::ResidueDecorator::TYR) return CH;
+  if (atom_type == core::AT_CD2) {
+    if (residue_type == core::LEU) return CH3;
+    if (residue_type == core::PHE ||
+        residue_type == core::HIS ||
+        residue_type == core::TYR) return CH;
     return C;
   }
 
   // CE
-  if (atom_type == core::AtomDecorator::AT_CE) {
-    if (residue_type == core::ResidueDecorator::LYS) return CH2;
-    if (residue_type == core::ResidueDecorator::MET) return CH3;
+  if (atom_type == core::AT_CE) {
+    if (residue_type == core::LYS) return CH2;
+    if (residue_type == core::MET) return CH3;
     return C;
   }
 
   // CE1
-  if (atom_type == core::AtomDecorator::AT_CE1) {
-    if (residue_type == core::ResidueDecorator::PHE ||
-        residue_type == core::ResidueDecorator::HIS ||
-        residue_type == core::ResidueDecorator::TYR) return CH;
+  if (atom_type == core::AT_CE1) {
+    if (residue_type == core::PHE ||
+        residue_type == core::HIS ||
+        residue_type == core::TYR) return CH;
     return C;
   }
 
   // CE2
-  if (atom_type == core::AtomDecorator::AT_CE2) {
-    if (residue_type == core::ResidueDecorator::PHE ||
-        residue_type == core::ResidueDecorator::TYR) return CH;
+  if (atom_type == core::AT_CE2) {
+    if (residue_type == core::PHE ||
+        residue_type == core::TYR) return CH;
     return C;
   }
   // CZ
-  if (atom_type == core::AtomDecorator::AT_CZ) {
-    if (residue_type == core::ResidueDecorator::PHE) return CH;
+  if (atom_type == core::AT_CZ) {
+    if (residue_type == core::PHE) return CH;
     return C;
   }
 //   // CZ1
-//   if(atom_type == core::AtomDecorator::AT_CZ1) return C;
+//   if(atom_type == core::AT_CZ1) return C;
 
   // CZ2, CZ3, CE3
-  if (atom_type == core::AtomDecorator::AT_CZ2 ||
-      atom_type == core::AtomDecorator::AT_CZ3 ||
-      atom_type == core::AtomDecorator::AT_CE3) {
-    if (residue_type == core::ResidueDecorator::TRP) return CH;
+  if (atom_type == core::AT_CZ2 ||
+      atom_type == core::AT_CZ3 ||
+      atom_type == core::AT_CE3) {
+    if (residue_type == core::TRP) return CH;
     return C;
   }
 
@@ -350,46 +350,46 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
                      const core::AtomType& atom_type,
                      const core::ResidueType& residue_type) const {
   // N
-  if (atom_type == core::AtomDecorator::AT_N) {
-    if (residue_type == core::ResidueDecorator::PRO) return N;
+  if (atom_type == core::AT_N) {
+    if (residue_type == core::PRO) return N;
     return NH;
   }
   //// ND
-  //if(atom_type == core::AtomDecorator::AT_ND) return N;
+  //if(atom_type == core::AT_ND) return N;
   // ND1
-  if (atom_type == core::AtomDecorator::AT_ND1) {
-    if (residue_type == core::ResidueDecorator::HIS) return NH;
+  if (atom_type == core::AT_ND1) {
+    if (residue_type == core::HIS) return NH;
     return N;
   }
   // ND2
-  if (atom_type == core::AtomDecorator::AT_ND2) {
-    if (residue_type == core::ResidueDecorator::ASN) return NH2;
+  if (atom_type == core::AT_ND2) {
+    if (residue_type == core::ASN) return NH2;
     return N;
   }
   // NH1, NH2
-  if (atom_type == core::AtomDecorator::AT_NH1 ||
-      atom_type == core::AtomDecorator::AT_NH2) {
-    if (residue_type == core::ResidueDecorator::ARG) return NH2;
+  if (atom_type == core::AT_NH1 ||
+      atom_type == core::AT_NH2) {
+    if (residue_type == core::ARG) return NH2;
     return N;
   }
   // NE
-  if (atom_type == core::AtomDecorator::AT_NE) {
-    if (residue_type == core::ResidueDecorator::ARG) return NH;
+  if (atom_type == core::AT_NE) {
+    if (residue_type == core::ARG) return NH;
     return N;
   }
   // NE1
-  if (atom_type == core::AtomDecorator::AT_NE1) {
-    if (residue_type == core::ResidueDecorator::TRP) return NH;
+  if (atom_type == core::AT_NE1) {
+    if (residue_type == core::TRP) return NH;
     return N;
   }
   // NE2
-  if (atom_type == core::AtomDecorator::AT_NE2) {
-    if (residue_type == core::ResidueDecorator::GLN) return NH2;
+  if (atom_type == core::AT_NE2) {
+    if (residue_type == core::GLN) return NH2;
     return N;
   }
   // NZ
-  if (atom_type == core::AtomDecorator::AT_NZ) {
-    if (residue_type == core::ResidueDecorator::LYS) return NH3;
+  if (atom_type == core::AT_NZ) {
+    if (residue_type == core::LYS) return NH3;
     return N;
   }
   std::cerr << "Error in get_nitrogen_atom_type: atom not found "
@@ -402,29 +402,29 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
                      const core::ResidueType& residue_type) const {
 
   // O OE1 OE2 OD1 OD2 O1A O2A OXT OT1 OT2
-  if (atom_type == core::AtomDecorator::AT_O ||
-      atom_type == core::AtomDecorator::AT_OE1 ||
-      atom_type == core::AtomDecorator::AT_OE2 ||
-      atom_type == core::AtomDecorator::AT_OD1 ||
-      atom_type == core::AtomDecorator::AT_OD2 ||
-      //atom_type == core::AtomDecorator::AT_O1A ||
-      //atom_type == core::AtomDecorator::AT_O2A ||
-      //atom_type == core::AtomDecorator::AT_OT1 ||
-      //atom_type == core::AtomDecorator::AT_OT2 ||
-      atom_type == core::AtomDecorator::AT_OXT) return O;
+  if (atom_type == core::AT_O ||
+      atom_type == core::AT_OE1 ||
+      atom_type == core::AT_OE2 ||
+      atom_type == core::AT_OD1 ||
+      atom_type == core::AT_OD2 ||
+      //atom_type == core::AT_O1A ||
+      //atom_type == core::AT_O2A ||
+      //atom_type == core::AT_OT1 ||
+      //atom_type == core::AT_OT2 ||
+      atom_type == core::AT_OXT) return O;
   // OG
-  if (atom_type == core::AtomDecorator::AT_OG) {
-    if (residue_type == core::ResidueDecorator::SER) return OH;
+  if (atom_type == core::AT_OG) {
+    if (residue_type == core::SER) return OH;
     return O;
   }
   // OG1
-  if (atom_type == core::AtomDecorator::AT_OG1) {
-    if (residue_type == core::ResidueDecorator::THR) return OH;
+  if (atom_type == core::AT_OG1) {
+    if (residue_type == core::THR) return OH;
     return O;
   }
   // OH
-  if (atom_type == core::AtomDecorator::AT_OH) {
-    if (residue_type == core::ResidueDecorator::TYR) return OH;
+  if (atom_type == core::AT_OH) {
+    if (residue_type == core::TYR) return OH;
     return O;
   }
   std::cerr << "Error in get_oxygen_atom_type: atom not found "
@@ -436,10 +436,10 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
                      const core::AtomType& atom_type,
                      const core::ResidueType& residue_type) const {
   // SD
-  if (atom_type == core::AtomDecorator::AT_SD) return S;
+  if (atom_type == core::AT_SD) return S;
   // SG
-  if (atom_type == core::AtomDecorator::AT_SG) {
-    if (residue_type == core::ResidueDecorator::CYS) return SH;
+  if (atom_type == core::AT_SG) {
+    if (residue_type == core::CYS) return SH;
     return S;
   }
   std::cerr << "Error in get_sulfur_atom_type: atom not found "

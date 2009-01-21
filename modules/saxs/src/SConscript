@@ -2,7 +2,10 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
-         'SAXSProfile.cpp', 'FormFactorTable.cpp', 'RadialDistributionFunction.cpp'
+         'FormFactorTable.cpp',
+         'RadialDistributionFunction.cpp',
+         'SAXSProfile.cpp',
+         'SaxsData.cpp',
         ]
 
 # Build and install the shared library:
