@@ -9,6 +9,8 @@ files = [
          'RestraintGraph.cpp',
          'DiscreteSet.cpp',
          'PermutationSampler.cpp',
+         'MappedDiscreteSet.cpp',
+         'CartesianProductSampler.cpp',
          'SimpleDiscreteRestraint.cpp',
         ]
 
