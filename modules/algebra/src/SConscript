@@ -4,6 +4,7 @@ e = env.IMPSharedLibraryEnvironment()
 files = [
          'Rotation3D.cpp',
          'Transformation3D.cpp',
+         'geometric_alignment.cpp',
         ]
 
 # Build and install the shared library:
