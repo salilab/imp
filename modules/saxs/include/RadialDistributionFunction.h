@@ -22,7 +22,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-class RadialDistributionFunction {
+class IMPSAXSEXPORT RadialDistributionFunction {
 public:
   RadialDistributionFunction(Float bin_size, FormFactorTable* ff_table);
 

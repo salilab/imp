@@ -24,7 +24,7 @@ class RadialDistributionFunction;
    (experimental or theoretical) or computed from a set of Model
    Particles (theoretical)
 */
-class SAXSProfile {
+class IMPSAXSEXPORT SAXSProfile {
 public:
   //! init from file
   SAXSProfile(const String& file_name);
