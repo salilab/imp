@@ -12,7 +12,6 @@
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/algebra/internal/jama_eig.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include <boost/foreach.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -91,7 +90,8 @@ Matrix compute_I(const std::vector<RigidMemberDecorator> &ds,
                  const algebra::Vector3D &center,
                  const IMP::algebra::Rotation3D &rot) {
   Matrix I(3,3, 0.0);
-  BOOST_FOREACH(RigidMemberDecorator cm, ds) {
+  for (unsigned int i=0; i< ds.size(); ++i) {
+    RigidMemberDecorator cm= ds[i];
     Float r= cm.get_radius();
     Float m= cm.get_mass();
     algebra::Vector3D cv=rot.rotate(cm.get_coordinates()-center);
@@ -123,7 +123,9 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   std::vector<RigidMemberDecorator> ds;
   RigidBodyDecorator d(p, tr);
 
-  BOOST_FOREACH(Particle *mp, members) {
+  for (unsigned int i=0; i< members.size(); ++i) {
+    Particle *mp= members[i];
+
     IMP_check(!tr.get_has_required_attributes_for_member(p),
               "Particle " << p->get_index() << " is already part of "
               << "a conflicting rigid body",
@@ -135,7 +137,9 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   // compute center of mass
   algebra::Vector3D v(0,0,0);
   Float mass=0;
-  BOOST_FOREACH(RigidMemberDecorator cm, ds) {
+  for (unsigned int i=0; i< ds.size(); ++i) {
+    RigidMemberDecorator cm= ds[i];
+
     v+= cm.get_coordinates()*cm.get_mass();
     mass+= cm.get_mass();
   }
@@ -165,7 +169,9 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   d.set_transformation(IMP::algebra::Transformation3D(rot, v));
   IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
 
-  BOOST_FOREACH(RigidMemberDecorator cm, ds) {
+  for (unsigned int i=0; i< ds.size(); ++i) {
+    RigidMemberDecorator cm= ds[i];
+
     algebra::Vector3D cv=cm.get_coordinates()-v;
     algebra::Vector3D lc= roti.rotate(cv);
     cm.set_internal_coordinates(lc);
@@ -173,7 +179,8 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   }
 
   IMP_IF_CHECK(EXPENSIVE) {
-    BOOST_FOREACH(RigidMemberDecorator cm, ds) {
+    for (unsigned int i=0; i< ds.size(); ++i) {
+      RigidMemberDecorator cm= ds[i];
       algebra::Vector3D v= cm.get_coordinates();
       algebra::Vector3D nv= d.get_coordinates(cm);
       IMP_assert((v-nv).get_squared_magnitude() < .1,
@@ -225,7 +232,8 @@ void RigidBodyDecorator
 
 void RigidBodyDecorator::set_transformation(const Particles &members) {
   std::vector<algebra::Vector3D> cur, local;
-  BOOST_FOREACH(Particle *p, members) {
+  for (unsigned int i=0; i< members.size(); ++i) {
+    Particle *p =members[i];
     RigidMemberDecorator d(p);
     cur.push_back(d.get_coordinates());
     local.push_back(d.get_internal_coordinates());
@@ -233,7 +241,8 @@ void RigidBodyDecorator::set_transformation(const Particles &members) {
   IMP::algebra::Transformation3D tr
     = IMP::algebra::rigid_align_first_to_second(local, cur);
   set_transformation(tr);
-  BOOST_FOREACH(Particle *p, members) {
+  for (unsigned int i=0; i< members.size(); ++i) {
+    Particle *p =members[i];
     RigidMemberDecorator d(p);
     d.set_coordinates(tr.transform(d.get_internal_coordinates()));
   }
@@ -271,7 +280,8 @@ RigidBodyScoreState::RigidBodyScoreState(SingletonContainer *ps,
        pit != ps->particles_end(); ++pit) {
     RigidBodyDecorator::cast(*pit, tr_);
     Particles rps= pr->get_refined(*pit);
-    BOOST_FOREACH(Particle *p, rps) {
+    for (unsigned int i=0; i< rps.size(); ++i) {
+      Particle *p =rps[i];
       RigidMemberDecorator::cast(p, tr_);
     }
     pr->cleanup_refined(*pit, rps);
