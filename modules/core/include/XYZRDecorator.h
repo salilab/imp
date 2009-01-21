@@ -94,7 +94,7 @@ IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
     \relates XYZRDecorator
  */
 IMPCOREEXPORT void set_enclosing_sphere(const Particles &v,
-                                       XYZRDecorator b);
+                                        XYZRDecorator b);
 
 //! Create a set of particles which random coordinates
 /** This function is mostly to be used to keep demo code brief.
