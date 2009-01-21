@@ -6,7 +6,7 @@
  */
 
 #include <IMP/saxs/SaxsData.h>
-#include <IMP/log.h>
+//#include <IMP/log.h>
 
 #include <boost/multi_array.hpp>
 
@@ -21,9 +21,9 @@ SaxsData::SaxsData(Model *model, IMP::core::MolecularHierarchyDecorator mp) {
   mp_.show();
   mp_.validate();
 
-  ps_ = IMP::core::molecular_hierarchy_get_by_type(mp_,
+  ps_ = IMP::core::get_by_type(mp_,
                         IMP::core::MolecularHierarchyDecorator::ATOM);
-  residues_ = IMP::core::molecular_hierarchy_get_by_type(mp_,
+  residues_ = IMP::core::get_by_type(mp_,
                         IMP::core::MolecularHierarchyDecorator::RESIDUE);
 
   //! number of particles and residues in pdb files
@@ -149,7 +149,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
 
   double mesh_density;    //! density of mesh in reciprocal space [1/\AA]
   std::vector<bool> picatm;  //! picatm(mdl%cd%natm)
-  int i, iform;           //! Local Scalars
+  int i;           //! Local Scalars
   std::string routine = "ini_saxs";     //! Local Arrays
 
   //! copy specified selection to saxs structure
@@ -169,7 +169,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
 
   // Select all just temporarily
   picatm.resize(num_particles_);
-  for (i=0; i<picatm.size(); i++)
+  for (i=0; i<(int)picatm.size(); i++)
     picatm[i] = 1;
 
   //! --------- sampling of reciprocal space ------------
@@ -202,7 +202,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
   printf("##################################################\n");
 
   ns_ = nmesh_;
-  mesh_density = (s_max_ - s_min_)/(nmesh_-1);
+  mesh_density = (s_max_ - s_min_) / (nmesh_ - 1);
   s_mesh_ = mesh_density;
   formfac_file_ = filename_;
 
@@ -459,10 +459,8 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
 */
 int SaxsData::saxs_formheavatm(void) {
   //! .. Local Arrays
-  int iat=0, is, isum, ncols, nh, iform;
-  int ierr=0, eof=0;
+  int iat=0, is, isum, nh, iform, ierr=0;
   double s_waasmei;
-  double dumvar;
   char temp[256];
   boost::multi_array<double,2> a(boost::extents[natomtyp_][5]);
   boost::multi_array<double,2> b(boost::extents[natomtyp_][5]);
@@ -811,8 +809,7 @@ int SaxsData::saxs_assformfac_heavat(std::string atmnam, std::string restyp) {
 ! ----------------------------------------------------------------------
 */
 int SaxsData::saxs_intensity(std::string filename, bool fitflag) {
-  int is, i_low, i_hi;
-  double weisum;
+  int is;
   std::vector<double> wei;
   std::FILE *fp;
 
@@ -820,6 +817,9 @@ int SaxsData::saxs_intensity(std::string filename, bool fitflag) {
   printf("Intensity_filename = %s : %d\n", filename.c_str(), fitflag);
 
   /*
+  int i_low, i_hi;
+  double weisum;
+
   !IF (saxsd%use_rolloff) THEN
   !  scf = -11.529+12.2126+3.13220+2.01250+1.16630-saxsd%rho_solv*2.49
   !  scf = 1/scf
@@ -910,7 +910,7 @@ int SaxsData::saxs_computepr(void) {
   std::vector<IMP::algebra::Vector3D> coordinates;
 
   // copy coordinates in advance, to avoid n^2 copy operations
-  for(i=0; i<ps_.size(); i++) {
+  for(i=0; i<(int)ps_.size(); i++) {
     IMP::core::XYZDecorator d = IMP::core::XYZDecorator::cast(ps_[i]);
     coordinates.push_back(d.get_coordinates());
   }
@@ -922,7 +922,7 @@ int SaxsData::saxs_computepr(void) {
     for (j=i+1; j<num_particles_; j++) {
       dist = distance(coordinates[i], coordinates[j]);
       ir = (unsigned int)(dist/dr_ + 0.5);
-      if (ir > nr_) {
+      if (ir > (unsigned int)nr_) {
         std::cout << "error (ir > nr_)" << std::endl;
         return -1;
       }
@@ -982,7 +982,7 @@ int SaxsData::saxs_pr2is(void) {
     }
 
     //!IF (saxsd%represtyp /='CA') THEN
-    intensity_[is] = intensity_  [is] * exp( -0.23 * s_[is] * s_[is] );
+    intensity_[is] = intensity_[is] * exp( -0.23 * s_[is] * s_[is] );
       //!ELSE
     //!  saxsd%intensity(is) = saxsd%intensity(is) *&
     //!    EXP( -4.2718 * saxsd%s(is)*saxsd%s(is) )
@@ -990,6 +990,320 @@ int SaxsData::saxs_pr2is(void) {
   }
   return 0;
 }
+
+
+
+/*
+ ! ----------------------------------------------------------------------
+ !>   Read SAXS data.
+ !!   The routine reads experimental saxsdata and errors to saxsd%int_exp.
+ !!   Furthermore, the weighting function is updated if an experimental
+ !!   error is specified
+ !!   last changes
+ !!   05/03/06 FF - log updated
+ !!   09/28/06 FF - use subroutine to get i_low and i_max, log updated
+ !!   10/10/06 FF - experimental error set to 0.3 * I(s_max) if
+ !!                 none specified
+ !!   12/08/06 FF - fixed bug in is increment - when did it get it?!
+ !!   01/26/07 FF - fixed bug for no error - now LAST I_max is taken ...
+ ! ----------------------------------------------------------------------
+*/
+int SaxsData::saxs_read(std::string filename) {
+  int ncols, is=0, i_low, i_hi;
+  std::ifstream fh;
+  std::string line;
+  double sig_exp, temp1, temp2, temp3;
+
+  std::cout << "reading a file : " << filename << std::endl;
+  fh.open(filename.c_str());
+  if(!fh.is_open()) {
+    std::cerr << "Can't open the file : " << filename << std::endl;
+    return -1;
+  }
+
+  //! ----- first check number of frequencies
+  while ( !fh.eof() ) {
+    getline(fh, line);
+    if (line[0] == '#' || line[0] == '\0')
+      continue;
+
+    ncols = sscanf(line.c_str(), "%lf %lf %lf", &temp1, &temp2, &temp3);
+    is++;
+  }
+  fh.close();
+
+  if (is != ns_) {
+    printf("saxs_read: ns other than specified in ini_saxs\n");
+    printf("           ns_old = %d changed to ns_file = %d\n", ns_, is);
+    ns_ = is;
+    if (is > maxs_) {
+      maxs_ = is;
+      printf("more frequencies than specified in ini_saxs(maxs)\n");
+      printf("exit...\n");
+      return -2;
+    }
+  }
+
+  int_exp_.resize(maxs_);
+  sigma_exp_.resize(maxs_);
+  if (ncols < 3) {
+    printf("saxs_read: No experimental error specified\n");
+    sig_exp = 0.3 * temp2;
+    printf("           error set to 0.3 I(s_max) = %g\n", sig_exp);
+  }
+
+  //! ----- Rewind file
+  fh.open(filename.c_str());
+
+  //! ----- now read in the numbers
+  is=0;
+  while ( !fh.eof() ) {
+    getline(fh, line);
+    if (line[0] == '#' || line[0] == '\0')
+      continue;
+
+    ncols = sscanf(line.c_str(), "%lf %lf %lf",
+                   &s_[is], &int_exp_[is], &sigma_exp_[is]);
+
+    if (ncols < 3)
+      sigma_exp_[is] = sig_exp;
+
+    w_s_[is] /= sigma_exp_[is];
+
+    //printf("%d (cols:%d) \t %.10lf \t %.10lf \t %.10lf \t %.10lf\n",
+    //       is, ncols, s_[is], int_exp_[is], sigma_exp_[is], w_s_[is]);
+    is++;
+  }
+  fh.close();
+
+  //! ------ set parameters for sampling in reciprocal space
+  if (s_max_ != s_[is-1]) {
+    printf("saxs_read: s_max_ in file differs from initial value\n");
+    printf("       old s_max_ = %g -> s_max_ = %g\n", s_max_, s_[is-1]);
+    s_max_ = s_[is-1];
+  }
+  if (s_min_ != s_[0]) {
+    printf("saxs_read: s_min_ in file differs from initial value\n");
+    printf("       old s_min_ = %g -> s_min_ = %g\n", s_min_, s_[0]);
+    s_min_ = s_[0];
+  }
+  s_mesh_ = (s_[is-1] - s_[0]) / (ns_ - 1);
+
+  //! ------ calculate norm of experimental profile to from hipass to lowpass
+  //!        frequency
+  saxs_bandpass2i(&i_low, &i_hi);
+  normsq_exp_ = saxs_sqnormfunc(int_exp_, w_s_, i_low, i_hi);
+  printf("saxs_read: Norm (=Integral) of SAXS data: %.5lf\n", normsq_exp_);
+  printf(" - integral ranged from s_low=%g to s_hi=%g\n", s_low_, s_hi_);
+  std::cout << "i_low = " << i_low << ", i_hi = " << i_hi << std::endl;
+
+  return 0;
+}
+
+
+/*
+! ----------------------------------------------------------------------
+!>   computes the norm^2 of a function I(s) as
+!!   sum ( (func * wei)^2 )
+!!   12/08/05 FF
+!!   08/07/06 FF - sum ranges from i_low to i_hi
+! ----------------------------------------------------------------------
+ */
+double SaxsData::saxs_sqnormfunc(std::vector<double> func,
+                                std::vector<double> wei, int i_low, int i_hi) {
+  double norm=0.0, temp;
+
+  for (int i=i_low; i<i_hi; i++) {
+    temp = func[i] * wei[i];
+    norm += temp * temp;
+  }
+  return norm;
+}
+
+
+/*
+! ----------------------------------------------------------------------
+!>   Calculate SAXS score chi from model.
+! ----------------------------------------------------------------------
+*/
+double SaxsData::saxs_chifun(bool transfer_is) {
+  int i_low, i_hi, isaxsspecs, nsaxsspecs;
+  double saxsscore=0.0;
+  //TYPE(saxslist), POINTER  :: saxspt
+  //REAL(double), POINTER    :: saxsintens(:,:)
+  //REAL(double), POINTER    :: scalefacs(:)
+  std::vector<double> saxsintens;
+  std::vector<double> scalefacs;
+
+  //std::cout << "saxs_chifun : " << transfer_is << std::endl;
+//!------ determine number of saxs spectra ---------------------------------
+  /*
+  isaxsspecs = 0
+  saxspt => enedata%saxslst
+  DO WHILE (ASSOCIATED(saxspt))
+    isaxsspecs = isaxsspecs + 1
+    saxspt => saxspt%next
+  END DO
+  nsaxsspecs = isaxsspecs
+  NULLIFY(saxsintens, scalefacs)
+  saxspt => enedata%saxslst
+  CALL alloc_array(saxsintens, 1, nsaxsspecs, 1, &
+                   saxspt%d%maxs, .TRUE., routine, 'saxsintens')
+  CALL alloc_array(scalefacs, 1, nsaxsspecs, .TRUE., routine, &
+                   'scalefacs')
+   */
+
+//!-------calculate I(s) if desired
+  if (!transfer_is) {
+    //DO isaxsspecs=1, nsaxsspecs
+    saxs_intensity("i_s.txt", false);
+    //END DO
+  } else {
+    std::cout <<"transfer_is = True - do not calculate I(s) again"<<std::endl;
+  }
+
+//!------ copy intensities for mixed conformation case
+  if (mixflag_) {
+    /*
+    DO isaxsspecs=1, nsaxsspecs
+      saxsintens(isaxsspecs,:) = saxspt%d%intensity(:)
+      saxspt => saxspt%next
+    END DO
+    saxspt => enedata%saxslst
+    */
+  }
+
+//!-------------------------------------------------------------------------
+//!-------calculate scores -------------------------------------------------
+//!-------------------------------------------------------------------------
+  if (mixflag_) {
+    /*
+    CALL saxs_bandpass2i(saxspt%d, i_low, i_hi)
+    CALL saxs_chi_mix(saxsscore, saxspt%d, i_low, i_hi, nsaxsspecs, &
+                      saxsintens, scalefacs, ierr)
+    IF (ierr /= 0) RETURN
+    //! copy scalefactors to saxsstructures
+    DO isaxsspecs=1, nsaxsspecs
+      saxspt%d%c = scalefacs(isaxsspecs)
+      saxspt => saxspt%next
+    END DO
+    saxspt => enedata%saxslst
+    saxspt%d%chi_sq = saxsscore
+    */
+  } else {
+    //DO isaxsspecs=1, nsaxsspecs
+    saxs_bandpass2i(&i_low, &i_hi);
+    //std::cout << "i_low = " << i_low << " i_hi = " << i_hi << std::endl;
+    saxs_chi(&chi_sq_, i_low, i_hi);
+    //saxspt => saxspt%next
+    //END DO
+  }
+
+  return chi_sq_;
+}
+
+
+
+/*
+! ----------------------------------------------------------------------
+!>   calculate indices corresponding to bandpass
+!!   FF 09/29/06
+! ----------------------------------------------------------------------
+*/
+int SaxsData::saxs_bandpass2i(int *i_low, int *i_hi) {
+  int is;
+
+  *i_hi = 0;
+  *i_low = 0;
+  for (is=0; is<maxs_; is++) {
+    //!-------- determine freq that corresponds to lowpass
+    if (s_[is] > s_hi_) {
+      *i_hi = is;
+      break;
+    }
+  }
+
+  if ( (*i_hi >= ns_) || (*i_hi == 0) )
+    *i_hi = ns_;
+
+  //!-------- ... and hipass
+  for (is=0; is<maxs_; is++) {
+    //!-------- determine freq that corresponds to lowpass
+    if (s_[is] >= s_low_) {
+      *i_low = is;
+      break;
+    }
+  }
+
+  return 0;
+}
+
+
+
+/*
+!------------ scoring function with weighting by error      ------------
+! ----------------------------------------------------------------------
+!>   calculate SAXS Chi square of experimental data and model
+!!   in this function the following scoring function is used:
+!!
+!!         \chi = (\sum_{is} wei(is) *( int_exp(is)-intens(is) )**2) /
+!!                    (\sum_{is} fil(is))
+!!
+!!   FF 06/08/06
+!!   last change
+!!   FF 09/28/06 - docu updated
+!!   03/15/07 FF - scale c in intensity
+! ----------------------------------------------------------------------
+*/
+int SaxsData::saxs_chi(double *saxsscore, int i_low, int i_hi) {
+  int is;
+  double weisum=0.0, filsum=0.0, fil, temp;
+  std::vector<double> wei;
+
+  wei.resize(ns_);
+  *saxsscore = 0.0;
+  std::cout << "i_low = " << i_low << " i_hi = " << i_hi << std::endl;
+
+  //! precalculate square of weight
+  for (is=i_low; is<i_hi; is++) {
+    wei[is] = w_s_[is] * w_s_[is];
+    weisum += wei[is];
+
+    //! w_s already contains sigma_exp -> multiply to get rid
+    fil = w_s_[is] * sigma_exp_[is];
+    fil *= fil;
+    filsum += fil;
+  }
+
+  //! calculate scaling and offset (passed to saxs structure as saxsd%offset)
+  //c_ = saxs_scale(wei, weisum, i_low, i_hi);
+
+  /*!IF (saxsd%use_rolloff) THEN
+  !  CALL saxs_fancyscore(saxsscore, saxsd%ns, i_low, i_hi, &
+  !      saxsd%intensity, &
+  !      saxsd%int_exp, saxsd%w_s, saxsd%sigma_exp, saxsd%s, saxsd%c, &
+  !      saxsd%bfac, saxsd%rolloff, saxsd%offset, saxsd%use_offset)
+  !ELSE
+   */
+
+  for (is=i_low; is<i_hi; is++) {
+    if ( use_offset_ ) {
+      //** Why ignoring this scaling parameter, c?
+      //!saxsscore = saxsscore + wei(is) * ( saxsd%int_exp(is) +&
+      //!   saxsd%offset - saxsd%c * saxsd%intensity(is) )**2
+      temp = int_exp_[is] + offset_ - intensity_[is];
+    } else {
+      //!  saxsd%c * saxsd%intensity(is))**2
+      temp = int_exp_[is] - intensity_[is];
+    }
+    *saxsscore += wei[is] * temp * temp;
+  }
+  // Why?
+  *saxsscore /= filsum;
+
+  return 0;
+}
+
 
 
 /*
