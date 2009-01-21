@@ -7,7 +7,6 @@
 #define IMPSAXS_SAXS_DATA_H
 
 #include "config.h"
-#include "internal/saxs_version_info.h"
 #include "boost/multi_array.hpp"
 
 #include <IMP/Model.h>
@@ -35,18 +34,39 @@ public:
                   std::string wswitch, double s_low, double s_hi,
                   double s_hybrid, std::string spaceflag, bool use_lookup);
 
-  int saxs_formheavatm(void); //! formfactor heavy atom representation
+  //! formfactor heavy atom representation
+  int saxs_formheavatm(void);
 
-  // index of formfactor for atomtyp in restyp - heavy atom mode
+  //! index of formfactor for atomtyp in restyp - heavy atom mode
   int saxs_assformfac_heavat(std::string atmnam, std::string restyp);
+
+  //! Calculate SAXS profile and write spectrum
   int saxs_intensity(std::string filename, bool fitflag);
 
-  int saxs_computepr(void);   //! Faster computation in real space, compute P(r)
-  int saxs_pr2is(void);       //! compute I(s) from P(r)
+  //! Faster computation in real space, compute P(r)
+  int saxs_computepr(void);
 
+  //! compute I(s) from P(r)
+  int saxs_pr2is(void);
   //void saxs_computeis(); // Computation in reciprocal space
-  //void saxs_chi(); // SAXS score
-  //void saxs_scale(); // Scalining parameter and offset
+
+  //! Read SAXS data
+  int saxs_read(std::string filename);
+
+  //! computes the norm^2 of a function I(s) as sum ( (func * wei)^2 )
+  double saxs_sqnormfunc(std::vector<double> func,
+                         std::vector<double> wei, int i_low, int i_hi);
+
+  //! Calculate SAXS score from model
+  double saxs_chifun(bool transfer_is);
+
+  //! calculate indices corresponding to bandpass
+  int saxs_bandpass2i(int *i_low, int *i_hi);
+
+  //! calculate SAXS Chi square of experimental data and model
+  int saxs_chi(double *saxsscore, int i_low, int i_hi);
+  //void saxs_scale(); // Scaling parameter and offset
+
   //void saxs_forces();  // Derivative of SAXS score ('forces')
   //void saxs_chi_deriv();   // Formulation in reciprocal space
   //void saxs_chi_real_deriv();  // Formulation in real space
