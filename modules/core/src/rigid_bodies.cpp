@@ -65,15 +65,21 @@ void RigidBodyTraits::add_required_attributes_for_body(Particle *p) const {
     p->add_attribute(d_->quaternion_[i], 0);
   }
   IMP_assert(get_has_required_attributes_for_body(p),
-             "Particles must already be XYZDecorator particles");
+             "Particles must already be XYZDecorator particles "
+             << *p);
 }
 
 void RigidBodyTraits::add_required_attributes_for_member(Particle *p) const {
   for (unsigned int i=0; i< 3; ++i) {
     p->add_attribute(d_->child_keys_[i], 0);
   }
-  IMP_assert(get_has_required_attributes_for_member(p),
-             "Particles must already be XYZDecorator particles");
+  IMP_check(d_->mass_ == FloatKey() || p->has_attribute(d_->mass_),
+            "Particle is missing mass attribute "
+            << *p, InvalidStateException);
+  IMP_check(d_->radius_ == FloatKey() || p->has_attribute(d_->radius_),
+            "Particle is missing radius attribute "
+            << *p, InvalidStateException);
+  XYZDecorator::cast(p);
 }
 
 
@@ -254,4 +260,38 @@ void RigidMemberDecorator::show(std::ostream &out, std::string prefix) const {
       << get_internal_coordinates() << std::endl;;
 }
 
+
+
+RigidBodyScoreState::RigidBodyScoreState(SingletonContainer *ps,
+                                         ParticleRefiner *pr,
+                                         RigidBodyTraits tr): ps_(ps),
+                                                               pr_(pr),
+                                                               tr_(tr){
+  for (SingletonContainer::ParticleIterator pit= ps->particles_begin();
+       pit != ps->particles_end(); ++pit) {
+    RigidBodyDecorator::cast(*pit, tr_);
+    Particles rps= pr->get_refined(*pit);
+    BOOST_FOREACH(Particle *p, rps) {
+      RigidMemberDecorator::cast(p, tr_);
+    }
+    pr->cleanup_refined(*pit, rps);
+  }
+}
+
+void RigidBodyScoreState::do_before_evaluate() {
+  for (SingletonContainer::ParticleIterator pit= ps_->particles_begin();
+       pit != ps_->particles_end(); ++pit) {
+    RigidBodyDecorator rb(*pit, tr_);
+    Particles rps= pr_->get_refined(*pit);
+    rb.set_transformation(rps);
+    pr_->cleanup_refined(*pit, rps);
+  }
+}
+
+
+
+void RigidBodyScoreState::show(std::ostream &out) const {
+  out << "RigidBodyScoreState " << *ps_
+      << *pr_ << std::endl;
+}
 IMPCORE_END_NAMESPACE
