@@ -181,6 +181,7 @@ namespace IMP {
 %include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/ResidueDecorator.h"
 %include "IMP/core/RestraintSet.h"
+%include "IMP/core/rigid_bodies.h"
 %include "IMP/core/SingletonListRestraint.h"
 %include "IMP/core/SphereDistancePairScore.h"
 %include "IMP/core/SteepestDescent.h"
