@@ -87,7 +87,7 @@ IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
     of decorators in C++, but you can't in python without adding
     explicit support.
 
-    \note This function produces tigher bounds if the CGAL library
+    \note This function produces tighter bounds if the CGAL library
     is linked.
 
     \relates XYZRDecorator
