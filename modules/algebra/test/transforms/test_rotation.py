@@ -9,8 +9,8 @@ class RigidTransformationTests(IMP.test.TestCase):
     """Test particles"""
 
     def test_rotation(self):
-        """Check that the rotation invese is an inverse"""
-        axis= IMP.random_vector_on_unit_sphere()
+        """Check that the rotation inverse is an inverse"""
+        axis= IMP.algebra.random_vector_on_unit_sphere()
         m= random.uniform(-1,1)
         mag= m*m+ axis*axis
         mag = mag**(.5)
@@ -18,7 +18,7 @@ class RigidTransformationTests(IMP.test.TestCase):
         m/=mag
         r= IMP.algebra.Rotation3D(m, axis[0], axis[1], axis[2])
         ri= r.get_inverse()
-        v= IMP.random_vector_in_unit_box()
+        v= IMP.algebra.random_vector_in_unit_box()
         vt= r.rotate(v)
         vti= ri.rotate(vt)
         v.show()

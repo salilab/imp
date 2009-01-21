@@ -9,7 +9,7 @@
 #define IMPALGEBRA_ROTATION_3D_H
 
 #include "config.h"
-#include "IMP/Vector3D.h"
+#include "Vector3D.h"
 #include <iostream>
 IMPALGEBRA_BEGIN_NAMESPACE
 

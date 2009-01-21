@@ -907,7 +907,7 @@ int SaxsData::saxs_computepr(void) {
   int i, j;
   unsigned int ir;
   double dist;
-  std::vector<IMP::Vector3D> coordinates;
+  std::vector<IMP::algebra::Vector3D> coordinates;
 
   // copy coordinates in advance, to avoid n^2 copy operations
   for(i=0; i<ps_.size(); i++) {

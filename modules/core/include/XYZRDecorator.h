@@ -10,6 +10,7 @@
 #define IMPCORE_XYZR_DECORATOR_H
 
 #include "XYZDecorator.h"
+#include <IMP/algebra/Vector3D.h>
 
 #include <limits>
 
@@ -46,7 +47,7 @@ public:
      The default is "radius".
    */
   static XYZRDecorator create(Particle *p,
-                              const Vector3D &coords,
+                              const algebra::Vector3D &coords,
                               Float radius,
                               FloatKey radius_key= FloatKey("radius")) {
     if (!XYZDecorator::is_instance_of(p)) {

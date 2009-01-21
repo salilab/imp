@@ -10,6 +10,7 @@
 #include <IMP/core/internal/ParticleGrid.h>
 #include <IMP/core/internal/bbox_nbl_helpers.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/deprecation.h>
 
 #include <IMP/internal/utility.h>
@@ -264,9 +265,9 @@ void AllNonbondedListScoreState
     internal::NBLAddIfNonbonded f(this, p);
     XYZDecorator d= XYZDecorator::cast(p);
     internal::ParticleGrid::VirtualIndex index
-      = grid_bin->get_virtual_index(Vector3D(d.get_x(),
-                                             d.get_y(),
-                                             d.get_z()));
+      = grid_bin->get_virtual_index(algebra::Vector3D(d.get_x(),
+                                                      d.get_y(),
+                                                      d.get_z()));
     IMP_LOG(VERBOSE, "Searching for " << p->get_index()
             << " from " << index << std::endl);
     grid_bin->apply_to_nearby(f, index,

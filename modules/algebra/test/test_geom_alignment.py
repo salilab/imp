@@ -8,17 +8,17 @@ class RigidTransformationTests(IMP.test.TestCase):
     """Test rigid transformations"""
 
     def _produce_point_sets(self, tr):
-        vs= IMP.Vector3Ds()
-        vsr= IMP.Vector3Ds()
+        vs= IMP.algebra.Vector3Ds()
+        vsr= IMP.algebra.Vector3Ds()
         for i in range(0, 20):
-            vs.append(IMP.random_vector_in_unit_box())
+            vs.append(IMP.algebra.random_vector_in_unit_box())
             vsr.append(tr.transform(vs.back()))
         return (vs, vsr)
 
     def test_align(self):
         """Testing rigid alignment of point sets, no translation"""
         r= IMP.algebra.random_rotation();
-        t= IMP.Vector3D(0,0,0) #IMP.random_vector_in_unit_box()
+        t= IMP.algebra.Vector3D(0,0,0) #IMP.random_vector_in_unit_box()
         tr= IMP.algebra.Transformation3D(r, t)
         (vs, vsr)= self._produce_point_sets(tr)
         tr= IMP.algebra.rigid_align_first_to_second(vs, vsr)
@@ -44,7 +44,7 @@ class RigidTransformationTests(IMP.test.TestCase):
     def test_full_align(self):
         """Testing rigid alignment of point sets"""
         r= IMP.algebra.random_rotation();
-        t= IMP.random_vector_in_unit_box()
+        t= IMP.algebra.random_vector_in_unit_box()
         tr= IMP.algebra.Transformation3D(r, t)
         (vs, vsr)= self._produce_point_sets(tr)
         tr= IMP.algebra.rigid_align_first_to_second(vs, vsr)

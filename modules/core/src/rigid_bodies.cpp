@@ -7,6 +7,7 @@
  */
 
 #include "IMP/core/rigid_bodies.h"
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/algebra/internal/jama_eig.h>
@@ -81,13 +82,13 @@ typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
 
 Matrix compute_I(const std::vector<RigidMemberDecorator> &ds,
                  RigidBodyTraits tr,
-                 const Vector3D &center,
+                 const algebra::Vector3D &center,
                  const IMP::algebra::Rotation3D &rot) {
   Matrix I(3,3, 0.0);
   BOOST_FOREACH(RigidMemberDecorator cm, ds) {
     Float r= cm.get_radius();
     Float m= cm.get_mass();
-    Vector3D cv=rot.rotate(cm.get_coordinates()-center);
+    algebra::Vector3D cv=rot.rotate(cm.get_coordinates()-center);
 
     Matrix Is(3,3, 0.0);
     for (unsigned int i=0; i<3; ++i) {
@@ -126,7 +127,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   }
 
   // compute center of mass
-  Vector3D v(0,0,0);
+  algebra::Vector3D v(0,0,0);
   Float mass=0;
   BOOST_FOREACH(RigidMemberDecorator cm, ds) {
     v+= cm.get_coordinates()*cm.get_mass();
@@ -159,16 +160,16 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
 
   BOOST_FOREACH(RigidMemberDecorator cm, ds) {
-    Vector3D cv=cm.get_coordinates()-v;
-    Vector3D lc= roti.rotate(cv);
+    algebra::Vector3D cv=cm.get_coordinates()-v;
+    algebra::Vector3D lc= roti.rotate(cv);
     cm.set_internal_coordinates(lc);
      IMP_LOG(VERBOSE, "Member particle is " << cm << std::endl);
   }
 
   IMP_IF_CHECK(EXPENSIVE) {
     BOOST_FOREACH(RigidMemberDecorator cm, ds) {
-      Vector3D v= cm.get_coordinates();
-      Vector3D nv= d.get_coordinates(cm);
+      algebra::Vector3D v= cm.get_coordinates();
+      algebra::Vector3D nv= d.get_coordinates(cm);
       IMP_assert((v-nv).get_squared_magnitude() < .1,
                  "Bad initial orientation "
                  << d.get_transformation() << std::endl
@@ -193,15 +194,16 @@ RigidBodyDecorator::get_transformation() const {
   return IMP::algebra::Transformation3D(rot, get_coordinates());
 }
 
-Vector3D RigidBodyDecorator::get_coordinates(RigidMemberDecorator p) const{
-  Vector3D lp= p.get_internal_coordinates();
+algebra::Vector3D RigidBodyDecorator::get_coordinates(RigidMemberDecorator p)
+                                                                      const {
+  algebra::Vector3D lp= p.get_internal_coordinates();
   IMP::algebra::Transformation3D tr= get_transformation();
   return tr.transform(lp);
 }
 
 void RigidBodyDecorator
 ::set_transformation(const IMP::algebra::Transformation3D &tr) {
-  VectorD<4> v= tr.get_rotation().get_quaternion();
+  algebra::VectorD<4> v= tr.get_rotation().get_quaternion();
   get_particle()->set_value(get_traits().get_quaternion_keys()[0], v[0]);
   get_particle()->set_value(get_traits().get_quaternion_keys()[1], v[1]);
   get_particle()->set_value(get_traits().get_quaternion_keys()[2], v[2]);
@@ -216,7 +218,7 @@ void RigidBodyDecorator
 
 
 void RigidBodyDecorator::set_transformation(const Particles &members) {
-  Vector3Ds cur, local;
+  std::vector<algebra::Vector3D> cur, local;
   BOOST_FOREACH(Particle *p, members) {
     RigidMemberDecorator d(p);
     cur.push_back(d.get_coordinates());

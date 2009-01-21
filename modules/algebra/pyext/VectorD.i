@@ -1,14 +1,15 @@
 
 /* Provide our own implementations for some operators */
-%ignore IMP::VectorD::operator[];
-%ignore IMP::VectorD::operator+=;
-%ignore IMP::VectorD::operator*=;
-%ignore IMP::VectorD::operator/=;
-%ignore IMP::VectorD::operator-=;
+%ignore IMP::algebra::VectorD::operator[];
+%ignore IMP::algebra::VectorD::operator+=;
+%ignore IMP::algebra::VectorD::operator*=;
+%ignore IMP::algebra::VectorD::operator/=;
+%ignore IMP::algebra::VectorD::operator-=;
 
 /* Make sure that we return the original Python object from C++ inplace
    operators (not a new Python proxy around the same C++ object) */
 namespace IMP {
+ namespace algebra {
   %feature("shadow") VectorD::__iadd__(const VectorD &) %{
     def __iadd__(self, *args):
         $action(self, *args)
@@ -29,9 +30,10 @@ namespace IMP {
         $action(self, *args)
         return self
   %}
+ }
 }
 
-%extend IMP::VectorD {
+%extend IMP::algebra::VectorD {
   Float __getitem__(unsigned int index) const {
     return self->operator[](index);
   }
@@ -46,9 +48,10 @@ namespace IMP {
   void __isub__(const VectorD &o) { self->operator-=(o); }
 };
 
-%include "IMP/VectorD.h"
+%include "IMP/algebra/VectorD.h"
 
 namespace IMP {
+ namespace algebra {
    %template(Vector3D) VectorD<3>;
    %template(Vector4D) VectorD<4>;
    %template(random_vector_on_sphere) random_vector_on_sphere<3>;
@@ -60,4 +63,5 @@ namespace IMP {
    %template(distance) distance<3>;
    %template(squared_distance) squared_distance<3>;
    %template(Vector3Ds) ::std::vector<VectorD<3> >;
+ }
 }

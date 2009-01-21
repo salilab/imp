@@ -15,8 +15,9 @@
 %include "std_string.i"
 %include "std_except.i"
 
-/* Get definitions of kernel base classes (but do not wrap) */
+/* Get definitions of base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
+%import "modules/algebra/pyext/algebra.i"
 
 namespace IMP {
   typedef VectorD<3> Vector3D;

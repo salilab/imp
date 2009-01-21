@@ -11,8 +11,8 @@
 
 #include "config.h"
 
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/Vector3D.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 
@@ -31,7 +31,7 @@ IMPMISC_BEGIN_NAMESPACE
 class IMPMISCEXPORT TunnelSingletonScore : public SingletonScore
 {
   int coordinate_;
-  Vector3D center_;
+  algebra::Vector3D center_;
   Float height_;
   Float radius_;
   Pointer<UnaryFunction> f_;
@@ -41,7 +41,7 @@ public:
   TunnelSingletonScore(UnaryFunction* f, FloatKey r);
 
   //! Set the center of the tunnel
-  void set_center(Vector3D c) {
+  void set_center(algebra::Vector3D c) {
     center_=c;
   }
   /** Set height of slab */

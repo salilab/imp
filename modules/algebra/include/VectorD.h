@@ -5,22 +5,23 @@
  *
  */
 
-#ifndef IMP_VECTOR_D_H
-#define IMP_VECTOR_D_H
+#ifndef IMPALGEBRA_VECTOR_D_H
+#define IMPALGEBRA_VECTOR_D_H
 
 #include "config.h"
-#include "base_types.h"
-#include "macros.h"
-#include "exception.h"
-#include "random.h"
-#include "internal/constants.h"
+#include <IMP/base_types.h>
+#include <IMP/macros.h>
+#include <IMP/exception.h>
+#include <IMP/random.h>
+#include <IMP/internal/constants.h>
 
 #include <boost/random/uniform_real.hpp>
+#include <boost/static_assert.hpp>
 
 #include <limits>
 #include <cmath>
 
-IMP_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Simple D vector class
 template <unsigned int D>
@@ -435,6 +436,6 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
   return out;
 }
 
-IMP_END_NAMESPACE
+IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMP_VECTOR_D_H */
+#endif  /* IMPALGEBRA_VECTOR_D_H */

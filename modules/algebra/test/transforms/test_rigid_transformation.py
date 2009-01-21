@@ -10,29 +10,29 @@ class RigidTransformationTests(IMP.test.TestCase):
     def setUp(self):
         """Build a set of test vectors"""
         IMP.test.TestCase.setUp(self)
-        self.v1 = IMP.Vector3D(-63.537,76.945,84.162)
-        self.v2 = IMP.Vector3D(-41.472,8.922,-63.657)
+        self.v1 = IMP.algebra.Vector3D(-63.537,76.945,84.162)
+        self.v2 = IMP.algebra.Vector3D(-41.472,8.922,-63.657)
 
 
     def test_transformation(self):
         """Check that the rotation function is ok"""
         rt = IMP.algebra.rotation_from_fixed_xyz(0.2,0.8,-0.4)
-        t=IMP.algebra.Transformation3D(rt,IMP.Vector3D(20.0,-12.4,18.6))
+        t=IMP.algebra.Transformation3D(rt,IMP.algebra.Vector3D(20.0,-12.4,18.6))
         v1_t = t.transform(self.v1)
         v2_t = t.transform(self.v2)
-        v1_t_res=IMP.Vector3D(-62.517,86.209, 41.139)
-        v2_t_res=IMP.Vector3D( 41.767, 1.621,-53.381)
+        v1_t_res=IMP.algebra.Vector3D(-62.517,86.209, 41.139)
+        v2_t_res=IMP.algebra.Vector3D( 41.767, 1.621,-53.381)
         self.assertEqual((v1_t- v1_t_res).get_magnitude() < 0.01,True)
         self.assertEqual((v2_t- v2_t_res).get_magnitude() < 0.01,True)
 
     def test_center_rotation(self):
         """Check that rotation around a center is correct"""
-        c= IMP.Vector3D(50,50,50)
+        c= IMP.algebra.Vector3D(50,50,50)
         r= IMP.algebra.rotation_from_matrix(0, -1, 0,
                                             1, 0, 0,
                                             0 ,0, 1)
         tr= IMP.algebra.transformation_from_rotation_around_vector(r, c)
-        v= IMP.Vector3D(51,50,50)
+        v= IMP.algebra.Vector3D(51,50,50)
         ct= tr.transform(c)
         self.assertInTolerance(ct[0], c[0], .01)
         self.assertInTolerance(ct[1], c[1], .01)

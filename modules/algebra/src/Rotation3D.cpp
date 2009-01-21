@@ -5,7 +5,7 @@
  *
  */
 #include "IMP/algebra/Rotation3D.h"
-#include "IMP/VectorD.h"
+#include "IMP/algebra/VectorD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

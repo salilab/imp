@@ -3,6 +3,8 @@ Import('env')
 files = [
          'Rotation3D.h',
          'Transformation3D.h',
+         'Vector3D.h',
+         'VectorD.h',
          'geometric_alignment.h',
         ] \
         + SConscript('internal/SConscript')

@@ -10,8 +10,8 @@
 
 #include "config.h"
 
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/Vector3D.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
 
@@ -29,10 +29,10 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
 {
   Pointer<UnaryFunction> f_;
-  Vector3D pt_;
+  algebra::Vector3D pt_;
 public:
   /** */
-  DistanceToSingletonScore(UnaryFunction *f, const Vector3D& pt);
+  DistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D& pt);
   virtual ~DistanceToSingletonScore(){}
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const;

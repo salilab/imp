@@ -37,9 +37,10 @@ IMP_ADD_OBJECTS(type, add_##lcname##s)
 %enddef
 
 
-/* Get definitions of kernel base classes (but do not wrap) */
+/* Get definitions of base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
 %import "kernel/pyext/IMP_keys.i"
+%import "modules/algebra/pyext/algebra.i"
 %include "singleton_containers.i"
 %include "pair_containers.i"
 

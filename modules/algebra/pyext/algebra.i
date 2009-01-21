@@ -17,10 +17,13 @@
 %import "kernel/pyext/IMP_keys.i"
 
 namespace IMP {
-  typedef VectorD<3> Vector3D;
+  namespace algebra {
+    typedef VectorD<3> Vector3D;
+  }
 }
 
 /* Wrap our own base classes */
+%include "VectorD.i"
 %include "IMP/algebra/Rotation3D.h"
 %include "IMP/algebra/Transformation3D.h"
 %include "IMP/algebra/geometric_alignment.h"

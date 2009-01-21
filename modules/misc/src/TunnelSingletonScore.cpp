@@ -18,7 +18,7 @@ TunnelSingletonScore::TunnelSingletonScore(UnaryFunction *f, FloatKey r) :
     f_(f), rk_(r)
 {
   coordinate_=0;
-  center_=Vector3D(0,0,0);
+  center_= algebra::Vector3D(0,0,0);
   height_=0;
   radius_=0;
 }
@@ -52,7 +52,7 @@ Float TunnelSingletonScore::evaluate(Particle *p,
         - d.get_coordinate(coordinate_);
       Float hdd=  d.get_coordinate(coordinate_)
         + height_- center_[coordinate_];
-      Vector3D deriv(0,0,0);
+      algebra::Vector3D deriv(0,0,0);
       Float score=0;
       Float deriv_scalar=0;
       /*! \todo Clean up these tests so I am not dependent on two expressions
@@ -67,7 +67,8 @@ Float TunnelSingletonScore::evaluate(Particle *p,
 
       // kind if evil
       if (dist== -rd -radius) {
-        Vector3D v= (d.get_coordinates() - center_).get_unit_vector();
+        algebra::Vector3D v= (d.get_coordinates() -
+                                   center_).get_unit_vector();
         for (int i=0; i< 2; ++i) {
           int oc= (i+coordinate_+1)%3;
           deriv[oc]= v[oc]*deriv_scalar;

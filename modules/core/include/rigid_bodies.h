@@ -13,7 +13,7 @@
 
 #include <IMP/core/XYZDecorator.h>
 
-#include <IMP/Vector3D.h>
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -97,7 +97,7 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
 
   // swig doesn't support using, so the method is wrapped
   //! Get the coordinates of the particle
-  Vector3D get_coordinates() const {
+  algebra::Vector3D get_coordinates() const {
     return XYZDecorator::get_coordinates();
   }
 
@@ -105,7 +105,7 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
   /** This method computes the coordinates of p given its internal coordinates
       and the current position and orientation of the rigid body.
    */
-  Vector3D get_coordinates(RigidMemberDecorator p) const;
+  algebra::Vector3D get_coordinates(RigidMemberDecorator p) const;
 
   //! Get the transformation implied by the rigid body
   IMP::algebra::Transformation3D get_transformation() const;
@@ -126,8 +126,8 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
                        internal::get_default_rigid_body_traits());
 
   //! Return the current orientation of the body
-  Vector3D get_internal_coordinates() const {
-    return Vector3D(get_particle()
+  algebra::Vector3D get_internal_coordinates() const {
+    return algebra::Vector3D(get_particle()
                     ->get_value(get_traits().get_local_coordinate_keys()[0]),
                     get_particle()
                     ->get_value(get_traits().get_local_coordinate_keys()[1]),
@@ -136,7 +136,7 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
   }
 
   //! set the internal coordinates for this member
-  void set_internal_coordinates(const Vector3D &v) const {
+  void set_internal_coordinates(const algebra::Vector3D &v) const {
     get_particle()->set_value(get_traits().get_local_coordinate_keys()[0],
                               v[0]);
     get_particle()->set_value(get_traits().get_local_coordinate_keys()[1],
@@ -147,12 +147,12 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
 
   //! set the coordinates of the body
   // this is here since swig does like using statements
-  void set_coordinates(const Vector3D &center) {
+  void set_coordinates(const algebra::Vector3D &center) {
     XYZDecorator::set_coordinates(center);
   }
 
   //! Set the coordinates from the internal coordinates
-  void set_coordinates(const Vector3D &center,
+  void set_coordinates(const algebra::Vector3D &center,
                        const IMP::algebra::Rotation3D &rot) {
     set_coordinates(center+rot.rotate(get_internal_coordinates()));
   }

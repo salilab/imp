@@ -12,7 +12,7 @@
 #include "internal/utility.h"
 
 #include <IMP/DecoratorBase.h>
-#include <IMP/Vector3D.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <vector>
 #include <limits>
@@ -30,7 +30,9 @@ class IMPCOREEXPORT XYZDecorator: public DecoratorBase
   IMP_DECORATOR(XYZDecorator, DecoratorBase)
 
   /** Create a decorator with the passed coordinates. */
-  static XYZDecorator create(Particle *p, const Vector3D &v= Vector3D(0,0,0)) {
+  static XYZDecorator create(Particle *p,
+                             const algebra::Vector3D &v=
+                                                 algebra::Vector3D(0,0,0)) {
     p->add_attribute(get_coordinate_key(0),v[0]);
     p->add_attribute(get_coordinate_key(1),v[1]);
     p->add_attribute(get_coordinate_key(2),v[2]);
@@ -45,7 +47,7 @@ class IMPCOREEXPORT XYZDecorator: public DecoratorBase
     get_particle()->set_value(get_coordinate_key(i), v);
   }
   //! set all coordinates from a vector
-  void set_coordinates(const Vector3D &v) {
+  void set_coordinates(const algebra::Vector3D &v) {
     set_x(v[0]);
     set_y(v[1]);
     set_z(v[2]);
@@ -65,7 +67,7 @@ class IMPCOREEXPORT XYZDecorator: public DecoratorBase
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
   //! Add something to the derivative of the coordinates
-  void add_to_coordinates_derivative(const Vector3D& v,
+  void add_to_coordinates_derivative(const algebra::Vector3D& v,
                                      DerivativeAccumulator &d) {
     add_to_coordinate_derivative(0, v[0], d);
     add_to_coordinate_derivative(1, v[1], d);
@@ -87,8 +89,8 @@ class IMPCOREEXPORT XYZDecorator: public DecoratorBase
   }
 
   //! Get the vector from this particle to another
-  Vector3D get_vector_to(const XYZDecorator &b) const {
-    return Vector3D(b.get_coordinate(0) - get_coordinate(0),
+  algebra::Vector3D get_vector_to(const XYZDecorator &b) const {
+    return algebra::Vector3D(b.get_coordinate(0) - get_coordinate(0),
                     b.get_coordinate(1) - get_coordinate(1),
                     b.get_coordinate(2) - get_coordinate(2));
   }
@@ -96,17 +98,17 @@ class IMPCOREEXPORT XYZDecorator: public DecoratorBase
   //! Convert it to a vector.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  Vector3D get_coordinates() const {
-    return Vector3D(get_x(), get_y(), get_z());
+  algebra::Vector3D get_coordinates() const {
+    return algebra::Vector3D(get_x(), get_y(), get_z());
   }
 
   //! Get the vector of derivatives.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  Vector3D get_derivatives() const {
-    return Vector3D(get_coordinate_derivative(0),
-                    get_coordinate_derivative(1),
-                    get_coordinate_derivative(2));
+  algebra::Vector3D get_derivatives() const {
+    return algebra::Vector3D(get_coordinate_derivative(0),
+                             get_coordinate_derivative(1),
+                             get_coordinate_derivative(2));
   }
 
   //! Return true if the particle is an instance of an XYZDecorator

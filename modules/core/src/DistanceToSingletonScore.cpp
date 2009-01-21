@@ -8,6 +8,7 @@
 #include <IMP/core/DistanceToSingletonScore.h>
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <IMP/UnaryFunction.h>
 
@@ -17,15 +18,15 @@ IMPCORE_BEGIN_NAMESPACE
 
 struct StaticD
 {
-  Vector3D v_;
-  StaticD(Vector3D v): v_(v){}
+  algebra::Vector3D v_;
+  StaticD(algebra::Vector3D v): v_(v){}
   Float get_coordinate(unsigned int i) {return v_[i];}
-  void add_to_coordinates_derivative(Vector3D, DerivativeAccumulator){}
+  void add_to_coordinates_derivative(algebra::Vector3D, DerivativeAccumulator){}
 };
 
 DistanceToSingletonScore::DistanceToSingletonScore(UnaryFunction *f,
-                                                   const Vector3D &v): f_(f),
-                                                                       pt_(v){}
+                                                   const algebra::Vector3D &v)
+    : f_(f), pt_(v){}
 
 Float DistanceToSingletonScore::evaluate(Particle *b,
                                          DerivativeAccumulator *da) const

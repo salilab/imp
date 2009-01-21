@@ -12,11 +12,11 @@
 #include "config.h"
 #include "internal/core_version_info.h"
 #include <IMP/core/SingletonContainer.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/ParticleRefiner.h>
-#include <IMP/Vector3D.h>
 
 #include <iostream>
 #include <map>
@@ -69,7 +69,7 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
       \param[in] v  Color as an RGB vector. Color values should be between 0
                     and 1. They will be snapped if needed.
    */
-  void set_color(int c, Vector3D v);
+  void set_color(int c, algebra::Vector3D v);
 
   //! Set the container containing the particles
   void set_singleton_container(SingletonContainer *pc) {
@@ -94,7 +94,7 @@ private:
   int skip_steps_;
   FloatKey radius_;
   IntKey color_;
-  std::map<int, Vector3D > colors_;
+  std::map<int, algebra::Vector3D > colors_;
   Pointer<SingletonContainer> pc_;
 };
 

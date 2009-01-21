@@ -7,7 +7,7 @@
  */
 #include <IMP/saxs/RadialDistributionFunction.h>
 
-#include <IMP/Vector3D.h>
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/core/XYZDecorator.h>
 
 IMPSAXS_BEGIN_NAMESPACE
@@ -37,7 +37,7 @@ void RadialDistributionFunction::calculate_distribution(
       << particles.size() << " particles" << std::endl;
 
   // copy coordinates in advance, to avoid n^2 copy operations
-  std::vector < Vector3D > coordinates;
+  std::vector < algebra::Vector3D > coordinates;
   for (unsigned int i = 0; i < particles.size(); i++) {
     coordinates.push_back(core::XYZDecorator::cast(particles[i]).
                           get_coordinates());
@@ -69,7 +69,7 @@ void RadialDistributionFunction::calculate_distribution(
       << " particles" << std::endl;
 
   // copy coordinates in advance, to avoid n^2 copy operations
-  std::vector < Vector3D > coordinates1, coordinates2;
+  std::vector < algebra::Vector3D > coordinates1, coordinates2;
   for (unsigned int i = 0; i < particles1.size(); i++) {
     coordinates1.push_back(core::XYZDecorator::cast(particles1[i]).
                            get_coordinates());

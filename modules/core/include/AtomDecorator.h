@@ -246,7 +246,8 @@ public:
 
   /** Create a decorator with the passed type and coordinates.*/
   static AtomDecorator create(Particle *p, AtomType t= AT_UNKNOWN,
-                              const Vector3D &v= Vector3D(0,0,0)) {
+                              const algebra::Vector3D &v=
+                                    algebra::Vector3D(0,0,0)) {
     p->add_attribute(get_type_key(), t.get_index());
     XYZDecorator::create(p, v);
     return AtomDecorator(p);

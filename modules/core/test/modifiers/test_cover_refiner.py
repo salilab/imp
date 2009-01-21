@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+import IMP.algebra
 import random
 
 class TestREFCover(IMP.test.TestCase):
@@ -23,7 +24,7 @@ class TestREFCover(IMP.test.TestCase):
             d=IMP.core.XYZRDecorator.create(p)
             ps.append(p)
             ds.append(d)
-            d.set_coordinates(IMP.random_vector_in_unit_box())
+            d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
             d.set_radius(random.uniform(0,1))
             hd.add_child(IMP.core.HierarchyDecorator.create(p))
         r= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())

@@ -8,6 +8,7 @@
 #include <IMP/core/MaxChangeScoreState.h>
 #include <IMP/core/internal/ParticleGrid.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/algebra/Vector3D.h>
 
 #include <IMP/internal/utility.h>
 
@@ -60,12 +61,12 @@ void ParticleGrid::build_grid(const Particles &ps)
     target_voxel_side_= std::max(vx, target_voxel_side_);
   }
   grid_= Grid(target_voxel_side_,
-             Vector3D(mn[0], mn[1], mn[2]),
-             Vector3D(mx[0], mx[1], mx[2]),
-             Particles());
+              algebra::Vector3D(mn[0], mn[1], mn[2]),
+              algebra::Vector3D(mx[0], mx[1], mx[2]),
+              Particles());
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZDecorator d(ps[i]);
-    Vector3D v(d.get_x(), d.get_y(), d.get_z());
+    algebra::Vector3D v(d.get_x(), d.get_y(), d.get_z());
     grid_.get_voxel(grid_.get_index(v)).push_back(ps[i]);
   }
   IMP_LOG(TERSE, "done." << std::endl);

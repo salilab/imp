@@ -131,11 +131,12 @@ class TestCase(unittest.TestCase):
                                 lb= [0,0,0],
                                 ub= [10,10,10]):
         """Create a bunch of particles in a box"""
-        lbv=IMP.Vector3D(lb[0],lb[1],lb[2])
-        ubv=IMP.Vector3D(ub[0],ub[1],ub[2])
+        import IMP.algebra
+        lbv=IMP.algebra.Vector3D(lb[0],lb[1],lb[2])
+        ubv=IMP.algebra.Vector3D(ub[0],ub[1],ub[2])
         ps= IMP.Particles()
         for i in range(0,num):
-            v = IMP.random_vector_in_box(lbv, ubv)
+            v = IMP.algebra.random_vector_in_box(lbv, ubv)
             p = self.create_point_particle(model, v[0], v[1], v[2])
             ps.append(p)
         return ps

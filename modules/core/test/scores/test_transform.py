@@ -16,11 +16,11 @@ class DistanceTests(IMP.test.TestCase):
         p1= IMP.Particle()
         m.add_particle(p1)
         d1= IMP.core.XYZDecorator.create(p1)
-        t=IMP.Vector3D(0,1,0)
+        t=IMP.algebra.Vector3D(0,1,0)
         tr= IMP.algebra.Transformation3D(IMP.algebra.identity_rotation(), t)
         tps= IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0,1), tr)
-        d0.set_coordinates(IMP.Vector3D(2,3,4))
-        d1.set_coordinates(IMP.Vector3D(2,2,4))
+        d0.set_coordinates(IMP.algebra.Vector3D(2,3,4))
+        d1.set_coordinates(IMP.algebra.Vector3D(2,2,4))
         self.assertEqual(tps.evaluate(p0, p1, None), 0)
         self.assert_(tps.evaluate(p1, p0, None) != 0)
 
@@ -30,16 +30,16 @@ class DistanceTests(IMP.test.TestCase):
                                               1, 0, 0)
         tr= IMP.algebra.Transformation3D(rot, t)
         tps.set_transformation(tr)
-        d1.set_coordinates(IMP.Vector3D(4, 2, -2))
+        d1.set_coordinates(IMP.algebra.Vector3D(4, 2, -2))
         self.assertInTolerance(tps.evaluate(p0, p1, None), 0, .01)
         self.assert_(tps.evaluate(p1, p0, None) != 0)
-        t=IMP.Vector3D(0,0,0)
+        t=IMP.algebra.Vector3D(0,0,0)
         rot= IMP.algebra.rotation_from_matrix(0,-1, 0,
                                               1, 0, 0,
                                               0, 0, 1)
         tps.set_transformation(IMP.algebra.Transformation3D(rot, t))
-        d0.set_coordinates(IMP.Vector3D(0,1,0))
-        d1.set_coordinates(IMP.Vector3D(1,1,0))
+        d0.set_coordinates(IMP.algebra.Vector3D(0,1,0))
+        d1.set_coordinates(IMP.algebra.Vector3D(1,1,0))
         # clear derivs
         print "test derivs"
         m.evaluate(True)
@@ -66,14 +66,14 @@ class DistanceTests(IMP.test.TestCase):
         p1= IMP.Particle()
         m.add_particle(p1)
         d1= IMP.core.XYZDecorator.create(p1)
-        d0.set_coordinates(IMP.Vector3D(2,3,4))
-        d1.set_coordinates(IMP.Vector3D(20,20,40))
+        d0.set_coordinates(IMP.algebra.Vector3D(2,3,4))
+        d1.set_coordinates(IMP.algebra.Vector3D(20,20,40))
         d0.set_coordinates_are_optimized(True)
         d1.set_coordinates_are_optimized(True)
         r= IMP.algebra.rotation_from_matrix(1, 0, 0,
                                             0, 0,-1,
                                             0, 1, 0)
-        t= IMP.Vector3D(0,1,0)
+        t= IMP.algebra.Vector3D(0,1,0)
         tps= IMP.core.TransformedDistancePairScore(IMP.core.Harmonic(0,1),
                                            IMP.algebra.Transformation3D(r,t))
         pr= IMP.core.PairListRestraint(tps)
@@ -84,9 +84,12 @@ class DistanceTests(IMP.test.TestCase):
         cg.optimize(100)
         d0.show()
         d1.show()
-        vt= IMP.Vector3D(d1.get_coordinates()*IMP.Vector3D(1,0,0)+0,
-                         d1.get_coordinates()*IMP.Vector3D(0,0,-1)+1,
-                         d1.get_coordinates()*IMP.Vector3D(0,1,0)+0)
+        vt= IMP.algebra.Vector3D(d1.get_coordinates()
+                                     * IMP.algebra.Vector3D(1,0,0)+0,
+                                 d1.get_coordinates()
+                                     * IMP.algebra.Vector3D(0,0,-1)+1,
+                                 d1.get_coordinates()
+                                     * IMP.algebra.Vector3D(0,1,0)+0)
         print "trans"
         print str(vt[0]) + " " + str(vt[1])+" " + str(vt[2])
         self.assertInTolerance(vt[0], d0.get_coordinate(0), .1)
