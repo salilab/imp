@@ -226,6 +226,7 @@ IMP_OUTPUT_OPERATOR(HierarchyDecorator);
 
 //! Collect the matching visiting nodes into a container.
 /** A node is collected if the function evaluates true.
+    \relates HierarchyDecorator
  */
 template <class F, class Out>
 struct Gather: public HierarchyVisitor
