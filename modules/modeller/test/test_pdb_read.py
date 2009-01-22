@@ -35,7 +35,9 @@ class PDBReadTest(IMP.test.TestCase):
         self.assertEqual(i_num_atom_type, f_num_atom_type, "too many atom types")
         self.assertEqual(1377, hc.get_count(),
                          "Wrong number of particles created")
-        rd= IMP.core.molecular_hierarchy_get_residue(mp, 29)
+        rd= IMP.core.get_residue(mp, 29)
+        at= IMP.core.get_atom(rd, IMP.core.AtomType("C"))
+        self.assertEqual(IMP.core.get_residue_index(at), rd.get_index())
         self.assertEqual(rd.get_index(), 29);
 
     def test_bonds(self):
@@ -44,7 +46,7 @@ class PDBReadTest(IMP.test.TestCase):
         mp= IMP.modeller.read_pdb(
                       self.get_input_file_name('single_protein.pdb'), m)
         #mp= IMP.core.MolecularHierarchyDecorator.cast(p)
-        all_atoms= IMP.core.molecular_hierarchy_get_by_type(mp,
+        all_atoms= IMP.core.get_by_type(mp,
                              IMP.core.MolecularHierarchyDecorator.ATOM);
         self.assertEqual(1221, len(all_atoms),
                          "Wrong number of atoms found in protein")
