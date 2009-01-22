@@ -1,5 +1,5 @@
 /**
- *  \file TransformSingletonParticle.h     \brief Transform a particle
+ *  \file TransformSingletonModifier.h     \brief Transform a particle
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
@@ -14,6 +14,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 
 //! Apply a transformation to a passed particle
+/**
+   \relates Transformation3D
+ */
 class IMPCOREEXPORT TransformSingletonModifier : public SingletonModifier
 {
 public:
