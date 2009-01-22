@@ -12,6 +12,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+
+//! Apply a transformation to a passed particle
 class IMPCOREEXPORT TransformSingletonModifier : public SingletonModifier
 {
 public:
