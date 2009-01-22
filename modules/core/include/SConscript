@@ -70,7 +70,6 @@ files = [
          'PairModifier.h',
          'PairsRestraint.h',
          'PairsScoreState.h',
-         'ParticleFunction.h',
          'QuadraticClosePairsFinder.h',
          'ResidueDecorator.h',
          'RestraintSet.h',
@@ -82,6 +81,7 @@ files = [
          'SingletonsScoreState.h',
          'SphereDistancePairScore.h',
          'SteepestDescent.h',
+         'TransformSingletonModifier.h',
          'TransformedDistancePairScore.h',
          'TripletChainRestraint.h',
          'TruncatedHarmonic.h',
@@ -95,7 +95,6 @@ files = [
          'model_io.h',
          'rigid_bodies.h',
          'utility.h',
-         'TransformSingletonModifier.h'
         ] \
         + SConscript('internal/SConscript')
 
