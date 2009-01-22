@@ -14,6 +14,7 @@
 #include "bond_decorators.h"
 #include "internal/hierarchy_helpers.h"
 #include "internal/ArrayOnAttributesHelper.h"
+#include "SingletonModifier.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
@@ -103,6 +104,7 @@ public:
 /** This works from both C++ and Python
     \ingroup hierarchy
     \ingroup decorators
+    \relates HierarchyDecorator
  */
 class IMPCOREEXPORT HierarchyVisitor
 {
@@ -114,6 +116,27 @@ public:
    */
   virtual bool visit(Particle *p) = 0;
   virtual ~HierarchyVisitor() {}
+};
+
+
+
+//! A which applies a singleton modifier to each Particle in a hierarchy
+/** This works from both C++ and Python
+    \ingroup hierarchy
+    \ingroup decorators
+    \relates SingletonModifier
+    \relates HierarchyDecorator
+ */
+class IMPCOREEXPORT ModifierVisitor: public HierarchyVisitor
+{
+  Pointer<SingletonModifier> sm_;
+public:
+  ModifierVisitor(SingletonModifier *sm): sm_(sm) {}
+  virtual bool visit(Particle *p) {
+    sm_->apply(p);
+    return true;
+  }
+  virtual ~ModifierVisitor() {}
 };
 
 
