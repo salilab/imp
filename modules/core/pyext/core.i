@@ -64,6 +64,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(CentroidOfRefinedSingletonModifier)
     IMP_OWN_FIRST_CONSTRUCTOR(DerivativesFromRefinedSingletonModifier)
     IMP_OWN_FIRST_CONSTRUCTOR(DerivativesToRefinedSingletonModifier)
+    IMP_OWN_FIRST_CONSTRUCTOR(TransformSingletonModifier)
     IMP_OWN_FIRST_CONSTRUCTOR(DihedralRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(DistancePairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(DistanceRestraint)
@@ -160,6 +161,7 @@ namespace IMP {
 %include "IMP/core/CoverRefinedSingletonModifier.h"
 %include "IMP/core/DerivativesFromRefinedSingletonModifier.h"
 %include "IMP/core/DerivativesToRefinedSingletonModifier.h"
+%include "IMP/core/TransformSingletonModifier.h"
 %include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"
@@ -212,7 +214,6 @@ namespace IMP {
 %include "IMP/core/MinimumPairScoreRestraint.h"
 %include "IMP/core/MaximumSingletonScoreRestraint.h"
 %include "IMP/core/MaximumPairScoreRestraint.h"
-%include "IMP/core/TransformationFunction.h"
 
 
 
