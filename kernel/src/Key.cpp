@@ -30,7 +30,7 @@ void KeyData::show(std::ostream &out) const
 IMPEXPORT KeyData& get_key_data(unsigned int index) {
   static std::map<unsigned int, KeyData> key_data;
   if (key_data.find(index) == key_data.end()) {
-    IMP_LOG(TERSE, "Initializing keys with index " << index << std::endl);
+    IMP_LOG(VERBOSE, "Initializing keys with index " << index << std::endl);
   }
   return key_data[index];
 }
