@@ -490,15 +490,16 @@ my @difflines;
 
 # Go through each project and see if there are any matches for this
 # project.  If so, send the log out.
+# Changed by BW: only send out if *every* file matches the filter
 foreach my $project (@project_settings_list)
   {
     my $match_re = $project->{match_re};
-    my $match    = 0;
+    my $match    = 1;
     foreach my $path (@dirschanged, @adds, @dels, @mods)
       {
-        if ($path =~ $match_re)
+        if ($path !~ $match_re)
           {
-            $match = 1;
+            $match = 0;
             last;
           }
       }
