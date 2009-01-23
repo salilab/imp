@@ -29,4 +29,7 @@ bin = env.ScriptFile("imppy.sh",
                       env.Value(env['MODELLER_MODPY']),
                       env.Value(env['PATHSEP']),
                       env.Value(env['PATHSEP'].join(env['lib']))])
+
+env.AlwaysBuild("imppy.sh")
+
 Return('bin')
