@@ -44,7 +44,9 @@ private:
 
   void add_to_distribution(Float dist, Float value);
 
-  unsigned int dist2index(Float dist) const { return roundf(dist/bin_size_); }
+  unsigned int dist2index(Float dist) const {
+    return floor(dist/bin_size_ + 0.5);
+  }
 
   Float index2dist(unsigned int index) const { return index*bin_size_; }
 
