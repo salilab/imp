@@ -5,6 +5,7 @@ files = [
          'LowestRefinedPairScore.cpp',
          'RefineOncePairScore.cpp',
          'TunnelSingletonScore.cpp',
+         'attribute_statistics.cpp',
         ]
 
 # Build and install the shared library:

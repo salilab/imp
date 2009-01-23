@@ -36,3 +36,4 @@ namespace IMP::misc {
 %include "IMP/misc/TunnelSingletonScore.h"
 %include "IMP/misc/LowestRefinedPairScore.h"
 %include "IMP/misc/RefineOncePairScore.h"
+%include "IMP/misc/attribute_statistics.h"
