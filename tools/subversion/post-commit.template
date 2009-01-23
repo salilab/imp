@@ -51,4 +51,4 @@ REV="$2"
 # (using its spam filtering methods) thus reducing the chance that the
 # list will get spammed. Replace @HOOKPATH@ and @FROM@ accordingly and rename
 # this file to post-commit.
-@HOOKPATH@/commit-email.pl --from "@FROM@@salilab.org" -m '^trunk/' "${REPOS}" "$REV" imp-commits@salilab.org
+@HOOKPATH@/commit-email.pl -m '^trunk/' --from "@FROM@@salilab.org" "${REPOS}" "$REV" imp-commits@salilab.org
