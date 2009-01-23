@@ -4,12 +4,12 @@
     <tab type="mainpage" visible="yes" title=""/>
     <tab type="pages" visible="yes" title=""/>
     <tab type="modules" visible="no" title=""/>
-    <tab type="namespaces" visible="yes" title="">
-      <tab type="namespaces" visible="yes" title=""/>
-      <tab type="namespacemembers" visible="yes" title=""/>
-    </tab>
+    <tab type="namespacemembers" visible="yes" title="Methods and Variables"/>
+    <tab type="classindex" visible="yes" title="Class Index"/>
     <tab type="hierarchy" visible="yes" title=""/>
-    <tab type="classindex" visible="yes" title=""/> 
+    <tab type="namespaces" visible="yes" title="Namespaces"/>
+    <tab type="namespaces" visible="no" title="API">
+    </tab>
     <tab type="classes" visible="no" title="">
       <tab type="classes" visible="no" title=""/>
       <tab type="classmembers" visible="no" title=""/>
