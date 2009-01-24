@@ -1,3 +1,0 @@
-The patch adds an example module for C++ code so that the code can be
-guaranteed to compile. It also points various bits of documentation at the
-module.

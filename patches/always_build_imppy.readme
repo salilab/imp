@@ -1,2 +1,0 @@
-make it so that imppy.sh is always built. Otherwise bad things happen when you
-move or copy the IMP dir.
