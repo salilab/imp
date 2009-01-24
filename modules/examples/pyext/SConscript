@@ -1,0 +1,10 @@
+Import('env')
+
+e = env.IMPPythonExtensionEnvironment()
+
+e.IMPPythonExtension('examples.i')
+
+files = (Glob('examples/*.py'))
+
+# Install the Python files:
+env.IMPPython(files)
