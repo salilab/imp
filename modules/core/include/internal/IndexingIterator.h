@@ -25,6 +25,7 @@ class IndexingIterator {
   bool is_default() const {
     return i_!= std::numeric_limits<unsigned int>::max();
   }
+  mutable typename Accessor::result_type vt_;
 public:
   typedef const typename Accessor::result_type  value_type;
   typedef unsigned int difference_type;
@@ -111,9 +112,8 @@ public:
   }
 
   pointer operator->() const {
-    static value_type vt;
-    vt= a_(i_);
-    return &vt;
+    vt_= a_(i_);
+    return &vt_;
   }
 };
 
