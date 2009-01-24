@@ -1,0 +1,11 @@
+/** \namespace IMP::examples
+\brief IMP.examples provides examples showing how to implement various types of objects and functionality. 
+
+<b>Overview:</b> IMP.examples provides examples showing how to implement things.
+
+<b>Authors:</b> Daniel Russel.
+
+<b>Publications:</b> IMP.examples is part of the main \imp distribution.
+
+<b>License:</b> IMP.examples is licensed under the BSD license.
+*/
