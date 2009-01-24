@@ -10,7 +10,7 @@
  */
 
 #include "IMP/core/PairsRestraint.h"
-#include "IMP/core/internal/container_helpers.h"
+#include <IMP/internal/container_helpers.h>
 #include "IMP/core/ListPairContainer.h"
 
 #include <IMP/PairScore.h>
@@ -50,7 +50,7 @@ Float PairsRestraint::evaluate(DerivativeAccumulator *accum)
   for (PairContainer::ParticlePairIterator
          it= pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
-    score += internal::ContainerTraits<ParticlePair>
+    score += IMP::internal::ContainerTraits<ParticlePair>
       ::evaluate(ss_, *it, accum);
   }
 
@@ -60,12 +60,13 @@ Float PairsRestraint::evaluate(DerivativeAccumulator *accum)
 
 ParticlesList PairsRestraint::get_interacting_particles() const
 {
-  if (!internal::ContainerTraits<ParticlePair>::is_singleton) {
+  if (!IMP::internal::ContainerTraits<ParticlePair>::is_singleton) {
     ParticlesList ret;
     for (PairContainer::ParticlePairIterator it
            = pc_->particle_pairs_begin();
          it != pc_->particle_pairs_end(); ++it) {
-      ret.push_back(internal::ContainerTraits<ParticlePair>::create_set(*it));
+      ret.push_back(IMP::internal
+                    ::ContainerTraits<ParticlePair>::create_set(*it));
     }
     return ret;
   } else {

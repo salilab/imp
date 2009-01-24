@@ -20,7 +20,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Restrain each pair of consecutive particles in each chain.
+//! This class is depreceated, use a ParticlePairsRestraint instead.
 /** \deprecated Use a ParticlePairsRestraint instead.
  */
 class IMPCOREEXPORT PairChainRestraint : public Restraint

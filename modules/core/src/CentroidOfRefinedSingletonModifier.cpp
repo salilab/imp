@@ -25,7 +25,7 @@ CentroidOfRefinedSingletonModifier::~CentroidOfRefinedSingletonModifier()
 {
 }
 
-void CentroidOfRefinedSingletonModifier::apply(Particle *p)
+void CentroidOfRefinedSingletonModifier::apply(Particle *p) const
 {
   Particles ps = r_->get_refined(p);
   unsigned int n= ps.size();

@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMPCORE_INDEXING_ITERATOR_H
-#define IMPCORE_INDEXING_ITERATOR_H
+#ifndef IMP_INDEXING_ITERATOR_H
+#define IMP_INDEXING_ITERATOR_H
 
 #include "../macros.h"
 
@@ -15,17 +15,17 @@
 #include <iterator>
 #include <limits>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class Accessor>
 class IndexingIterator {
   Accessor a_;
   unsigned int i_;
+  mutable typename Accessor::result_type vt_;
   typedef IndexingIterator<Accessor> This;
   bool is_default() const {
     return i_!= std::numeric_limits<unsigned int>::max();
   }
-  mutable typename Accessor::result_type vt_;
 public:
   typedef const typename Accessor::result_type  value_type;
   typedef unsigned int difference_type;
@@ -118,6 +118,6 @@ public:
 };
 
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INDEXING_ITERATOR_H */
+#endif  /* IMP_INDEXING_ITERATOR_H */

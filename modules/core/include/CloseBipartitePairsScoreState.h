@@ -13,7 +13,7 @@
 #include "ClosePairsFinder.h"
 #include "FilteredListPairContainer.h"
 #include <IMP/ScoreState.h>
-#include <IMP/core/SingletonContainer.h>
+#include <IMP/SingletonContainer.h>
 
 
 IMPCORE_BEGIN_NAMESPACE

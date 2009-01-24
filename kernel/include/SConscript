@@ -1,14 +1,39 @@
 Import('env')
 
-files = ['base_types.h', 'random.h', 'Index.h', 'Model.h',
-         'Particle.h', 'ScoreState.h', 'OptimizerState.h', 'config.h',
-         'log.h', 'DerivativeAccumulator.h',
-         'Key.h', 'utility.h', 'Restraint.h', 'Optimizer.h',
-         'DecoratorBase.h',
-         'UnaryFunction.h', 'PairScore.h', 'SingletonScore.h', 'macros.h',
-         'TripletScore.h', 'exception.h', 'VersionInfo.h',
-         'Object.h', 'Pointer.h', 'RefCountedObject.h', 'ParticleRefiner.h',
-         'container_macros.h', 'deprecation.h']
+files = [
+    'DecoratorBase.h',
+    'DerivativeAccumulator.h',
+    'Index.h',
+    'Key.h',
+    'Model.h',
+    'Object.h',
+    'Optimizer.h',
+    'OptimizerState.h',
+    'PairContainer.h',
+    'PairModifier.h',
+    'PairScore.h',
+    'Particle.h',
+    'ParticleRefiner.h',
+    'Pointer.h',
+    'RefCountedObject.h',
+    'Restraint.h',
+    'ScoreState.h',
+    'SingletonContainer.h',
+    'SingletonModifier.h',
+    'SingletonScore.h',
+    'TripletScore.h',
+    'UnaryFunction.h',
+    'VersionInfo.h',
+    'base_types.h',
+    'config.h',
+    'container_macros.h',
+    'deprecation.h',
+    'exception.h',
+    'log.h',
+    'macros.h',
+    'random.h',
+    'utility.h',
+    ]
 
 # Subdirectories
 files = [File(f) for f in files] \

@@ -24,7 +24,7 @@ DerivativesFromRefinedSingletonModifier
 {
 }
 
-void DerivativesFromRefinedSingletonModifier::apply(Particle *p)
+void DerivativesFromRefinedSingletonModifier::apply(Particle *p) const
 {
   Particles ps = r_->get_refined(p);
 

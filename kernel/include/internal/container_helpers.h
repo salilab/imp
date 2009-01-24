@@ -6,17 +6,17 @@
  *
  */
 
-#ifndef IMPCORE_INTERNAL_CONTAINER_HELPERS_H
-#define IMPCORE_INTERNAL_CONTAINER_HELPERS_H
+#ifndef IMP_INTERNAL_CONTAINER_HELPERS_H
+#define IMP_INTERNAL_CONTAINER_HELPERS_H
 
-#include "../macros.h"
-#include <IMP/Particle.h>
-#include <IMP/SingletonScore.h>
-#include <IMP/PairScore.h>
+#include "../base_types.h"
+#include "../Particle.h"
+#include "../SingletonScore.h"
+#include "../PairScore.h"
 
 #include <boost/tuple/tuple.hpp>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class P>
 struct ContainerTraits {
@@ -83,6 +83,6 @@ struct ContainerTraits<ParticleTriplet> {
 };*/
 
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif /* IMPCORE_INTERNAL_CONTAINER_HELPERS_H */
+#endif /* IMP_INTERNAL_CONTAINER_HELPERS_H */

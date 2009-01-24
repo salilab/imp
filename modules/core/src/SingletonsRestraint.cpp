@@ -10,7 +10,7 @@
  */
 
 #include "IMP/core/SingletonsRestraint.h"
-#include "IMP/core/internal/container_helpers.h"
+#include <IMP/internal/container_helpers.h>
 #include "IMP/core/ListSingletonContainer.h"
 
 #include <IMP/SingletonScore.h>
@@ -50,7 +50,7 @@ Float SingletonsRestraint::evaluate(DerivativeAccumulator *accum)
   for (SingletonContainer::ParticleIterator
          it= pc_->particles_begin();
        it != pc_->particles_end(); ++it) {
-    score += internal::ContainerTraits<Particle>
+    score += IMP::internal::ContainerTraits<Particle>
       ::evaluate(ss_, *it, accum);
   }
 
@@ -60,12 +60,13 @@ Float SingletonsRestraint::evaluate(DerivativeAccumulator *accum)
 
 ParticlesList SingletonsRestraint::get_interacting_particles() const
 {
-  if (!internal::ContainerTraits<Particle>::is_singleton) {
+  if (!IMP::internal::ContainerTraits<Particle>::is_singleton) {
     ParticlesList ret;
     for (SingletonContainer::ParticleIterator it
            = pc_->particles_begin();
          it != pc_->particles_end(); ++it) {
-      ret.push_back(internal::ContainerTraits<Particle>::create_set(*it));
+      ret.push_back(IMP::internal
+                    ::ContainerTraits<Particle>::create_set(*it));
     }
     return ret;
   } else {

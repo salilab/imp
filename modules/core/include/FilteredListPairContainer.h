@@ -13,7 +13,7 @@
 
 #include "config.h"
 #include "internal/core_version_info.h"
-#include <IMP/core/PairContainer.h>
+#include <IMP/PairContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

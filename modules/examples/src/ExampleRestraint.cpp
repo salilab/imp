@@ -11,7 +11,7 @@
 IMPEXAMPLES_BEGIN_NAMESPACE
 
 ExampleRestraint::ExampleRestraint(PairScore* score_func,
-                                   IMP::core::PairContainer *pc) : pc_(pc),
+                                   PairContainer *pc) : pc_(pc),
                                           f_(score_func) {}
 
 
@@ -19,7 +19,7 @@ ExampleRestraint::ExampleRestraint(PairScore* score_func,
 Float ExampleRestraint::evaluate(DerivativeAccumulator *accum)
 {
   Float score=0;
-  for (IMP::core::PairContainer::ParticlePairIterator
+  for (PairContainer::ParticlePairIterator
        it= pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
     score += f_->evaluate(it->first, it->second, accum);
@@ -33,7 +33,7 @@ Float ExampleRestraint::evaluate(DerivativeAccumulator *accum)
 ParticlesList ExampleRestraint::get_interacting_particles() const
 {
   ParticlesList ret;
-  for (IMP::core::PairContainer::ParticlePairIterator it
+  for (PairContainer::ParticlePairIterator it
        = pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
     Particles s;

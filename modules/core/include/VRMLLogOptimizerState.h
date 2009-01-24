@@ -11,7 +11,7 @@
 
 #include "config.h"
 #include "internal/core_version_info.h"
-#include <IMP/core/SingletonContainer.h>
+#include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
 
 #include <IMP/base_types.h>

@@ -119,6 +119,11 @@ namespace IMP {
 %feature("director") IMP::TripletScore;
 %feature("director") IMP::Optimizer;
 %feature("director") IMP::ParticleRefiner;
+%feature("director") IMP::SingletonContainer;
+%feature("director") IMP::PairContainer;
+%feature("director") IMP::SingletonModifier;
+%feature("director") IMP::PairModifier;
+    
 
 %include "IMP/base_types.h"
 %include "IMP/deprecation.h"
@@ -140,6 +145,11 @@ namespace IMP {
 %include "Particle.i"
 %include "IMP/DecoratorBase.h"
 %include "IMP/Optimizer.h"
+%include "IMP/SingletonContainer.h"
+%include "IMP/PairContainer.h"
+%include "IMP/SingletonModifier.h"
+%include "IMP/PairModifier.h"
+    
 
 namespace IMP {
   %template(ParticleIndex) Index<ParticleTag>;
@@ -161,4 +171,8 @@ namespace IMP {
   %template(Floats) ::std::vector<Float>;
   %template(Strings) ::std::vector<String>;
   %template(Ints) ::std::vector<Int>;
+  %template(SingletonContainers) ::std::vector<SingletonContainer*>;
+  %template(PairContainers) ::std::vector<PairContainer*>;
+  %template(SingletonContainerIndex) ::IMP::Index<SingletonContainer>;
+  %template(PairContainerIndex) ::IMP::Index<PairContainer>;
 }

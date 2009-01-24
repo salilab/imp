@@ -13,17 +13,17 @@
 #include "config.h"
 #include "internal/IndexingIterator.h"
 #include "internal/container_helpers.h"
-#include <IMP/Particle.h>
-#include <IMP/base_types.h>
-#include <IMP/Pointer.h>
+#include "Particle.h"
+#include "base_types.h"
+#include "Pointer.h"
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 //! A shared container for particle_pairs
 /** Stores a searchable shared collection of particle_pairs.
     \ingroup restraints
  */
-class IMPCOREEXPORT PairContainer : public RefCountedObject
+class IMPEXPORT PairContainer : public RefCountedObject
 {
   struct Accessor {
     typedef Accessor This;
@@ -89,7 +89,7 @@ typedef std::vector<PairContainer*> PairContainers;
 //! The index to use when this container is store in another object
 typedef Index<PairContainer> PairContainerIndex;
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE
 
 #define IMP_PAIR_CONTAINER(version_info)                      \
   bool get_contains_particle_pair(ParticlePair p) const;                      \

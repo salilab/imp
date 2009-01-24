@@ -607,4 +607,20 @@ protection:                                                             \
     return k;                                                  \
   }
 
+
+
+
+//! Define the functions needed for a SingletonModifier
+#define IMP_SINGLETON_MODIFIER(version) \
+VersionInfo get_version_info() const {return version;}\
+void show(std::ostream &out= std::cout) const;\
+void apply(Particle *a) const;
+
+
+
+//! Define the functions needed for a PairModifier
+#define IMP_PAIR_MODIFIER(version) \
+VersionInfo get_version_info() const {return version;}\
+void show(std::ostream &out= std::cout) const;\
+void apply(Particle *a, Particle *b) const;
 #endif  /* IMP_MACROS_H */

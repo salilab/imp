@@ -21,9 +21,9 @@ def triplet_cmp(a,b):
                     [b[1].get_index().get_index(), b[2].get_index().get_index()])
 
 
-class SingletonTestModifier(IMP.core.SingletonModifier):
+class SingletonTestModifier(IMP.SingletonModifier):
     def __init__(self, k):
-        IMP.core.SingletonModifier.__init__(self)
+        IMP.SingletonModifier.__init__(self)
         self.k=k
     def show(self, j):
         print "Test Particle"
@@ -32,9 +32,9 @@ class SingletonTestModifier(IMP.core.SingletonModifier):
         def get_version_info(self):
             return IMP.core.core_version_info
 
-class PairTestModifier(IMP.core.PairModifier):
+class PairTestModifier(IMP.PairModifier):
     def __init__(self, k):
-        IMP.core.PairModifier.__init__(self)
+        IMP.PairModifier.__init__(self)
         self.k=k
     def show(self, j):
         print "Test Particle"

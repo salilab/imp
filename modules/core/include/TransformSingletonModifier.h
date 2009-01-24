@@ -7,8 +7,9 @@
 #ifndef IMPCORE_TRANSFORM_SINGLETON_MODIFIER_H
 #define IMPCORE_TRANSFORM_SINGLETON_MODIFIER_H
 #include "config.h"
+#include "internal/core_version_info.h"
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/core/SingletonModifier.h>
+#include <IMP/SingletonModifier.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

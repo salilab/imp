@@ -12,8 +12,8 @@
 #define IMPCORE_SINGLETON_CONTAINER_SET_H
 
 #include "config.h"
-#include "SingletonContainer.h"
 #include "internal/core_version_info.h"
+#include <IMP/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

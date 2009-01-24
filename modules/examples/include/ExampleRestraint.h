@@ -13,7 +13,7 @@
 #include "internal/examples_version_info.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/Restraint.h>
-#include <IMP/core/PairContainer.h>
+#include <IMP/PairContainer.h>
 
 IMPEXAMPLES_BEGIN_NAMESPACE
 
@@ -31,7 +31,7 @@ class IMPEXAMPLESEXPORT ExampleRestraint : public Restraint
   /** IMP::Objects should be stored using Pointer objects
       to make sure that they are reference counted properly.
   */
-  Pointer<IMP::core::PairContainer> pc_;
+  Pointer<PairContainer> pc_;
   Pointer<PairScore> f_;
 public:
   //! Create the restraint.
@@ -41,7 +41,7 @@ public:
       allowing the form of the scoring function to be changed.
    */
   ExampleRestraint(PairScore* score_func,
-                   IMP::core::PairContainer *pc);
+                   PairContainer *pc);
   virtual ~ExampleRestraint() {}
 
   /** This macro declares the basic needed methods: evaluate and show

@@ -13,7 +13,7 @@
 
 #include "config.h"
 #include "internal/core_version_info.h"
-#include <IMP/core/SingletonContainer.h>
+#include <IMP/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

@@ -11,7 +11,7 @@
 
 #include "IMP/core/MaximumPairScoreRestraint.h"
 #include "IMP/core/internal/MinimalSet.h"
-#include "IMP/core/internal/container_helpers.h"
+#include <IMP/internal/container_helpers.h>
 
 
 IMPCORE_BEGIN_NAMESPACE
@@ -32,7 +32,7 @@ namespace {
     MS bestn(n);
     for (It it= b; it != e; ++it) {
       float score
-         = internal::ContainerTraits<ParticlePair>::evaluate(f, *it, NULL);
+      = IMP::internal::ContainerTraits<ParticlePair>::evaluate(f, *it, NULL);
 
       if (bestn.can_insert(score)) {
         bestn.insert(score, it);
@@ -57,7 +57,7 @@ Float MaximumPairScoreRestraint
   float score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {
     if (da) {
-      internal::ContainerTraits<ParticlePair>::evaluate(f_.get(),
+      IMP::internal::ContainerTraits<ParticlePair>::evaluate(f_.get(),
                                                      *bestn[i].second, da);
     }
     score+= bestn[i].first;
@@ -81,7 +81,7 @@ ParticlesList MaximumPairScoreRestraint::get_interacting_particles() const
                              c_->particle_pairs_end(), f_.get(), n_);
   ParticlesList ret;
   for (unsigned int i=0; i< bestn.size(); ++i) {
-    Particles c= internal::ContainerTraits<ParticlePair>
+    Particles c= IMP::internal::ContainerTraits<ParticlePair>
                          ::create_set(*bestn[i].second);
     ret.push_back(c);
   }
