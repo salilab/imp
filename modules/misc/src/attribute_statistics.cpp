@@ -61,7 +61,7 @@ BS get_bitset(It b, It e) {
 
 
 struct LexLess {
-  bool operator()(const BS &a, const BS &b) {
+  bool operator()(const BS &a, const BS &b) const {
     if (a.size() < b.size()) return true;
     else if (a.size() > b.size()) return false;
     else return a< b;
