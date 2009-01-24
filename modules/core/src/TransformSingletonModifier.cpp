@@ -19,7 +19,7 @@ TransformSingletonModifier::TransformSingletonModifier(
   ignore_non_xyz_=ignore_non_xyz_;
 }
 
-void TransformSingletonModifier::apply(Particle *p)
+void TransformSingletonModifier::apply(Particle *p) const
 {
   if (!XYZDecorator::is_instance_of(p)) {
     IMP_assert(ignore_non_xyz_,"The particle does not have XYZ attributes");

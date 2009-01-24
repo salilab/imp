@@ -14,8 +14,8 @@
 #include "bond_decorators.h"
 #include "internal/hierarchy_helpers.h"
 #include "internal/ArrayOnAttributesHelper.h"
-#include "SingletonModifier.h"
 
+#include <IMP/SingletonModifier.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/DecoratorBase.h>

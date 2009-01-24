@@ -26,7 +26,7 @@ CoverRefinedSingletonModifier::~CoverRefinedSingletonModifier()
 {
 }
 
-void CoverRefinedSingletonModifier::apply(Particle *p)
+void CoverRefinedSingletonModifier::apply(Particle *p) const
 {
   XYZRDecorator dp(p, rk_);
   IMP_check(ref_->get_can_refine(p), "Passed particles cannot be refined",

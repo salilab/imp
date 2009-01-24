@@ -13,13 +13,12 @@
 #include "FilteredListPairContainer.h"
 
 #include <IMP/RefCountedObject.h>
-#include <IMP/core/SingletonContainer.h>
+#include <IMP/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 // to make SWIG happy
 class FilteredListPairContainer;
-class SingletonContainer;
 
 //! A base class for algorithms to find spatial proximities
 /** In general, the algorithm should make sure it returns all

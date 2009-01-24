@@ -7,28 +7,25 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_PAIR_MODIFIER_H
-#define IMPCORE_PAIR_MODIFIER_H
+#ifndef IMP_PAIR_MODIFIER_H
+#define IMP_PAIR_MODIFIER_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
 #include "PairContainer.h"
 
-#include <IMP/base_types.h>
+#include "base_types.h"
 
 IMP_BEGIN_NAMESPACE
 // to keep swig happy
 class Particle;
-IMP_END_NAMESPACE
-
-IMPCORE_BEGIN_NAMESPACE
 
 //! A base class for modifiers of ParticlePairs
 /** The primary function of such a class is to change
     the passed particles.
  */
-class IMPCOREEXPORT PairModifier : public RefCountedObject
+class IMPEXPORT PairModifier : public RefCountedObject
 {
 public:
   PairModifier();
@@ -36,7 +33,7 @@ public:
   virtual ~PairModifier();
 
   /** Apply the function to a single value*/
-  virtual void apply(Particle *a, Particle *b)=0;
+  virtual void apply(Particle *a, Particle *b) const=0;
 
   /** Print out information about the function, ending in a newline.*/
   virtual void show(std::ostream &out = std::cout) const=0;
@@ -56,24 +53,18 @@ void apply(PairModifier* f, It b, It e) {
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-IMPCOREEXPORT inline void apply(PairModifier* f,
+IMPEXPORT inline void apply(PairModifier* f,
                                ParticlePairs &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-IMPCOREEXPORT inline void apply(PairModifier* f,
+IMPEXPORT inline void apply(PairModifier* f,
                                 PairContainer *ps) {
   apply(f, ps->particle_pairs_begin(), ps->particle_pairs_end());
 }
 
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE
 
-//! Define the functions needed for a PairModifier
-#define IMP_PAIR_MODIFIER(version) \
-VersionInfo get_version_info() const {return version;}\
-void show(std::ostream &out= std::cout) const;\
-void apply(Particle *a, Particle *b);
-
-#endif  /* IMPCORE_PAIR_MODIFIER_H */
+#endif  /* IMP_PAIR_MODIFIER_H */

@@ -13,7 +13,7 @@
 #include "internal/core_version_info.h"
 
 #include "XYZDecorator.h"
-#include "SingletonContainer.h"
+#include <IMP/SingletonContainer.h>
 #include <IMP/ParticleRefiner.h>
 #include <IMP/ScoreState.h>
 #include <IMP/algebra/Vector3D.h>

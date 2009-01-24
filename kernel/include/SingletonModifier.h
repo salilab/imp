@@ -7,28 +7,25 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_SINGLETON_MODIFIER_H
-#define IMPCORE_SINGLETON_MODIFIER_H
+#ifndef IMP_SINGLETON_MODIFIER_H
+#define IMP_SINGLETON_MODIFIER_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
 #include "SingletonContainer.h"
 
-#include <IMP/base_types.h>
+#include "base_types.h"
 
 IMP_BEGIN_NAMESPACE
 // to keep swig happy
 class Particle;
-IMP_END_NAMESPACE
-
-IMPCORE_BEGIN_NAMESPACE
 
 //! A base class for modifiers of Particles
 /** The primary function of such a class is to change
     the passed particles.
  */
-class IMPCOREEXPORT SingletonModifier : public RefCountedObject
+class IMPEXPORT SingletonModifier : public RefCountedObject
 {
 public:
   SingletonModifier();
@@ -36,7 +33,7 @@ public:
   virtual ~SingletonModifier();
 
   /** Apply the function to a single value*/
-  virtual void apply(Particle *a)=0;
+  virtual void apply(Particle *a) const=0;
 
   /** Print out information about the function, ending in a newline.*/
   virtual void show(std::ostream &out = std::cout) const=0;
@@ -56,24 +53,18 @@ void apply(SingletonModifier* f, It b, It e) {
 }
 
 //! Apply a SingletonModifier to each in the Particles
-IMPCOREEXPORT inline void apply(SingletonModifier* f,
+IMPEXPORT inline void apply(SingletonModifier* f,
                                Particles &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a SingletonModifier to each in the Particles
-IMPCOREEXPORT inline void apply(SingletonModifier* f,
+IMPEXPORT inline void apply(SingletonModifier* f,
                                 SingletonContainer *ps) {
   apply(f, ps->particles_begin(), ps->particles_end());
 }
 
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE
 
-//! Define the functions needed for a SingletonModifier
-#define IMP_SINGLETON_MODIFIER(version) \
-VersionInfo get_version_info() const {return version;}\
-void show(std::ostream &out= std::cout) const;\
-void apply(Particle *a);
-
-#endif  /* IMPCORE_SINGLETON_MODIFIER_H */
+#endif  /* IMP_SINGLETON_MODIFIER_H */

@@ -13,18 +13,18 @@
 #define IMPCORE_PAIRS_SCORE_STATE_H
 
 #include "config.h"
-#include "PairContainer.h"
-#include "PairModifier.h"
 #include "internal/core_version_info.h"
-
+#include <IMP/PairContainer.h>
+#include <IMP/PairModifier.h>
 #include <IMP/ScoreState.h>
 
-IMPCORE_BEGIN_NAMESPACE
-
+IMP_BEGIN_NAMESPACE
 // for swig
 class PairContainer;
 class PairModifier;
+IMP_END_NAMESPACE
 
+IMPCORE_BEGIN_NAMESPACE
 //! Apply a PairFunction to a PairContainer to maintain an invariant
 /** \ingroup restraint
     An example showing a how to use such a score state to maintain a cover
@@ -37,9 +37,11 @@ class IMPCOREEXPORT PairsScoreState : public ScoreState
   Pointer<PairModifier> af_;
   Pointer<PairContainer> c_;
 public:
-  /** \param[in] f The PairModifier to apply to all elements
+  /** \param[in] c The Container to hold the elements to process
+      \param[in] before The PairModifier to apply to all elements
        before evaluate.
-      \param[in] c The Container to hold the elements to process
+      \param[in] after The PairModifier to apply to all elements
+       after evaluate.
    */
   PairsScoreState(PairContainer *c, PairModifier *before,
                        PairModifier *after);

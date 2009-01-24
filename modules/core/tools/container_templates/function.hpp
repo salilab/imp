@@ -33,7 +33,7 @@ public:
   virtual ~GroupnameModifier();
 
   /** Apply the function to a single value*/
-  virtual void apply(ClassnameArguments)=0;
+  virtual void apply(ClassnameArguments) const=0;
 
   /** Print out information about the function, ending in a newline.*/
   virtual void show(std::ostream &out = std::cout) const=0;

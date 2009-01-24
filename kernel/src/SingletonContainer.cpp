@@ -8,10 +8,10 @@
  *
  */
 
-#include "IMP/core/SingletonContainer.h"
+#include "IMP/SingletonContainer.h"
 
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 SingletonContainer::SingletonContainer(){}
 
@@ -22,4 +22,4 @@ void SingletonContainer::show(std::ostream &out) const {
 }
 
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE

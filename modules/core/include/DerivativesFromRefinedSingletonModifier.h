@@ -14,7 +14,7 @@
 #include "XYZDecorator.h"
 #include <IMP/ParticleRefiner.h>
 #include <IMP/Pointer.h>
-#include <IMP/core/SingletonModifier.h>
+#include <IMP/SingletonModifier.h>
 
 
 IMPCORE_BEGIN_NAMESPACE

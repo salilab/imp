@@ -12,8 +12,8 @@
 #define IMPCORE_PAIR_CONTAINER_SET_H
 
 #include "config.h"
-#include "PairContainer.h"
 #include "internal/core_version_info.h"
+#include <IMP/PairContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

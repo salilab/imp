@@ -8,13 +8,13 @@
  *
  */
 
-#include "IMP/core/SingletonModifier.h"
+#include "IMP/SingletonModifier.h"
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 SingletonModifier::SingletonModifier(){
 }
 
 SingletonModifier::~SingletonModifier(){}
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE

@@ -8,10 +8,10 @@
  *
  */
 
-#include "IMP/core/PairContainer.h"
+#include "IMP/PairContainer.h"
 
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 PairContainer::PairContainer(){}
 
@@ -22,4 +22,4 @@ void PairContainer::show(std::ostream &out) const {
 }
 
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE

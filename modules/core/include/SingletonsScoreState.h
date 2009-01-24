@@ -13,18 +13,18 @@
 #define IMPCORE_SINGLETONS_SCORE_STATE_H
 
 #include "config.h"
-#include "SingletonContainer.h"
-#include "SingletonModifier.h"
 #include "internal/core_version_info.h"
-
+#include <IMP/SingletonContainer.h>
+#include <IMP/SingletonModifier.h>
 #include <IMP/ScoreState.h>
 
-IMPCORE_BEGIN_NAMESPACE
-
+IMP_BEGIN_NAMESPACE
 // for swig
 class SingletonContainer;
 class SingletonModifier;
+IMP_END_NAMESPACE
 
+IMPCORE_BEGIN_NAMESPACE
 //! Apply a SingletonFunction to a SingletonContainer to maintain an invariant
 /** \ingroup restraint
     An example showing a how to use such a score state to maintain a cover
@@ -37,9 +37,11 @@ class IMPCOREEXPORT SingletonsScoreState : public ScoreState
   Pointer<SingletonModifier> af_;
   Pointer<SingletonContainer> c_;
 public:
-  /** \param[in] f The SingletonModifier to apply to all elements
+  /** \param[in] c The Container to hold the elements to process
+      \param[in] before The SingletonModifier to apply to all elements
        before evaluate.
-      \param[in] c The Container to hold the elements to process
+      \param[in] after The SingletonModifier to apply to all elements
+       after evaluate.
    */
   SingletonsScoreState(SingletonContainer *c, SingletonModifier *before,
                        SingletonModifier *after);

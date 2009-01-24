@@ -11,7 +11,6 @@
  */
 
 #include "IMP/core/PairsScoreState.h"
-#include "IMP/core/internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
 

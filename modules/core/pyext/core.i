@@ -101,13 +101,6 @@ namespace IMP {
 }
 
 
-%feature("director") IMP::core::SingletonContainer;
-%feature("director") IMP::core::PairContainer;
-
-// for kernel
-%feature("director") IMP::core::SingletonModifier;
-%feature("director") IMP::core::PairModifier;
-
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
@@ -116,11 +109,6 @@ namespace IMP {
 %include "IMP/core/ClosePairsFinder.h"
 %include "IMP/core/Mover.h"
 %include "IMP/core/MoverBase.h"
-// should go to kernel
-%include "IMP/core/SingletonContainer.h"
-%include "IMP/core/PairContainer.h"
-%include "IMP/core/SingletonModifier.h"
-%include "IMP/core/PairModifier.h"
 
 %include "IMP/core/XYZDecorator.h"
 %include "IMP/core/BondedListScoreState.h"
@@ -226,12 +214,8 @@ namespace IMP {
     %template(BondedListIndex) ::IMP::Index<BondedListScoreState>;
     %template(BondDecorators) ::std::vector<BondDecorator>;
     %template(Movers) ::std::vector<Mover*>;
-    %template(SingletonContainers) ::std::vector<SingletonContainer*>;
     %template(XYZDecorators) ::std::vector<XYZDecorator>;
     %template(XYZRDecorators) ::std::vector<XYZRDecorator>;
-    %template(PairContainers) ::std::vector<PairContainer*>;
-    %template(SingletonContainerIndex) ::IMP::Index<SingletonContainer>;
-    %template(PairContainerIndex) ::IMP::Index<PairContainer>;
     %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
     %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;

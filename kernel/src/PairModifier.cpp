@@ -8,13 +8,13 @@
  *
  */
 
-#include "IMP/core/PairModifier.h"
+#include "IMP/PairModifier.h"
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 PairModifier::PairModifier(){
 }
 
 PairModifier::~PairModifier(){}
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE

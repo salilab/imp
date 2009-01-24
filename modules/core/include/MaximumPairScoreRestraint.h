@@ -13,9 +13,10 @@
 
 #include "config.h"
 #include "internal/core_version_info.h"
-#include "PairContainer.h"
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
+#include <IMP/PairContainer.h>
+
 
 IMPCORE_BEGIN_NAMESPACE
 
