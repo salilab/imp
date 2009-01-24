@@ -28,7 +28,7 @@ public:
      must match the number of provided value types in the template
      parameter list.
      */
-  IntAttributeMapScoreState(IMP::core::SingletonContainer* pc,
+  IntAttributeMapScoreState(IMP::SingletonContainer* pc,
                             IntKey k0);
 
   ~IntAttributeMapScoreState();

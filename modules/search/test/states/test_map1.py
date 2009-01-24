@@ -13,7 +13,7 @@ class GenericTest(IMP.test.TestCase):
         """Checking AttributeMap1ScoreState"""
         m = IMP.Model()
         d= IMP.modeller.read_pdb('modules/search/test/states/single_protein.pdb', m)
-        atoms= IMP.core.molecular_hierarchy_get_by_type(d, IMP.core.MolecularHierarchyDecorator.RESIDUE)
+        atoms= IMP.core.get_by_type(d, IMP.core.MolecularHierarchyDecorator.RESIDUE)
         pc= IMP.core.ListSingletonContainer(atoms)
         ss= IMP.search.IntAttributeMapScoreState(pc, IMP.core.ResidueDecorator.get_index_key())
         m.add_score_state(ss)

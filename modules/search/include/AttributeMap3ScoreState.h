@@ -14,7 +14,7 @@
 #include "config.h"
 #include "internal/search_version_info.h"
 #include "internal/MapHelper.h"
-#include <IMP/core/SingletonContainer.h>
+#include <IMP/SingletonContainer.h>
 #include <IMP/core/config.h>
 #include <IMP/Particle.h>
 #include <IMP/ScoreState.h>
@@ -22,11 +22,12 @@
 #include <iostream>
 #include <algorithm>
 
+// switch to using tuples rather than multiple arguments
+#include <boost/tuple/tuple.hpp>
+
 namespace IMP {
-  namespace core {
-    // for swig
-    class SingletonContainer;
-  }
+  // for swig
+  class SingletonContainer;
 }
 
 IMPSEARCH_BEGIN_NAMESPACE
@@ -76,7 +77,7 @@ class AttributeMap3ScoreState : public ScoreState
   };
   typedef std::vector<Bin> Map;
   Map map_;
-  Pointer<IMP::core::SingletonContainer> pc_;
+  Pointer<IMP::SingletonContainer> pc_;
   Keys keys_;
 
   typename Map::const_iterator get_iterator(const Values &vs) const {
@@ -124,7 +125,7 @@ public:
       must match the number of provided value types in the template
       parameter list.
   */
-  AttributeMap3ScoreState(IMP::core::SingletonContainer* pc,
+  AttributeMap3ScoreState(IMP::SingletonContainer* pc,
                           Key0 k0,
                           Key1 k1,
                           Key2 k2): pc_(pc) {
@@ -188,7 +189,7 @@ public:
   virtual void do_before_evaluate() {
     map_.clear();
     map_.reserve(pc_->get_number_of_particles());
-    for (IMP::core::SingletonContainer::ParticleIterator
+    for (IMP::SingletonContainer::ParticleIterator
            it= pc_->particles_begin();
          it != pc_->particles_end(); ++it) {
       Values vs= get_values(*it);
@@ -196,7 +197,7 @@ public:
     }
     std::sort(map_.begin(), map_.end());
     map_.erase(std::unique(map_.begin(), map_.end()), map_.end());
-    for (IMP::core::SingletonContainer::ParticleIterator
+    for (IMP::SingletonContainer::ParticleIterator
            it= pc_->particles_begin();
          it != pc_->particles_end(); ++it) {
       Values vs= get_values(*it);
