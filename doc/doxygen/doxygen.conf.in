@@ -560,6 +560,7 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = ../../build/include \
+                         ../../modules/examples/src \
                          ../../modules/@ALL_MODULES@/doc \
                          ../../kernel/doc \
                          .
@@ -630,7 +631,9 @@ EXCLUDE_SYMBOLS        =
 # directories that contain example code fragments that are included (see 
 # the \include command).
 
-EXAMPLE_PATH           = ../../examples
+EXAMPLE_PATH           = ../../examples \
+                         ../../modules/examples/include \
+                         ../../modules/examples/src
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the 
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -638,6 +641,7 @@ EXAMPLE_PATH           = ../../examples
 # blank all files are included.
 
 EXAMPLE_PATTERNS       = *.py \
+                         *.h \
                          *.cpp
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be 
@@ -698,7 +702,7 @@ INLINE_SOURCES         = NO
 # doxygen to hide any special comment blocks from generated source code 
 # fragments. Normal C and C++ comments will always remain visible.
 
-STRIP_CODE_COMMENTS    = YES
+STRIP_CODE_COMMENTS    = NO
 
 # If the REFERENCED_BY_RELATION tag is set to YES 
 # then for each documented function all documented 
