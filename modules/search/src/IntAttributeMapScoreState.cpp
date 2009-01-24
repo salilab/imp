@@ -10,7 +10,7 @@
 IMPSEARCH_BEGIN_NAMESPACE
 
 IntAttributeMapScoreState
-::IntAttributeMapScoreState(IMP::core::SingletonContainer *pc,
+::IntAttributeMapScoreState(IMP::SingletonContainer *pc,
                             IntKey k): AttributeMap1ScoreState<Int>(pc, k){}
 
 IntAttributeMapScoreState::~IntAttributeMapScoreState(){}

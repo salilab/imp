@@ -13,7 +13,7 @@
 #include "internal/search_version_info.h"
 
 #include <IMP/ScoreState.h>
-#include <IMP/core/SingletonContainer.h>
+#include <IMP/SingletonContainer.h>
 
 IMPSEARCH_BEGIN_NAMESPACE
 
@@ -29,12 +29,12 @@ IMPSEARCH_BEGIN_NAMESPACE
 class IMPSEARCHEXPORT RangeSearchScoreState:
 public ScoreState
 {
-  Pointer<IMP::core::SingletonContainer> pc_;
+  Pointer<IMP::SingletonContainer> pc_;
   FloatKeys keys_;
 public:
 
   //! Create a keys.size()-D search structure
-  RangeSearchScoreState(IMP::core::SingletonContainer* pc,
+  RangeSearchScoreState(IMP::SingletonContainer* pc,
                         const FloatKeys &keys);
 
   //! Get all particles whose attributes fall in the interval
