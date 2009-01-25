@@ -241,6 +241,11 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
                 BUILDERS = {'GenerateDoxFromIn':
                             generate_doxygen.GenerateDoxFromIn,
                             'MakeExamples': make_examples.MakeExamples})
+    if env.get('cxxflags', None) is not None:
+        env['CXXFLAGS'] = [env['cxxflags'].split(" ")]
+    if env.get('linkflags', None) is not None:
+        env['LINKFLAGS'] = [env['linkflags'].split(" ")]
+
     if env.get('include', None) is not None:
         env['include'] = [os.path.abspath(x) for x in \
                           env['include'].split(os.path.pathsep)]
@@ -458,6 +463,12 @@ def add_common_variables(vars, package):
                           None, PathVariable.PathAccept))
     vars.Add(PathVariable('lib', 'Library search path ' + \
                           '(e.g. "/usr/local/lib:/opt/local/lib")', None,
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('cxxflags', 'Extra cxx flags ' + \
+                          '(e.g. "-fno-rounding -DFOOBAR")',
+                          None, PathVariable.PathAccept))
+    vars.Add(PathVariable('linkflags', 'Extra link flags ' + \
+                          '(e.g. "-lefence")', None,
                           PathVariable.PathAccept))
     vars.Add(PathVariable('path', 'Extra executable path ' + \
                           '(e.g. "/opt/local/bin/")', None,
