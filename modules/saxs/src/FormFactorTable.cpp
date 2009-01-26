@@ -9,6 +9,7 @@
 #include <IMP/saxs/FormFactorTable.h>
 
 #include <IMP/core/AtomDecorator.h>
+#include <IMP/internal/constants.h>
 
 #include <fstream>
 #include <algorithm>
@@ -142,10 +143,10 @@ void FormFactorTable::compute_form_factors_all_atoms()
   for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
     // form factors for all the q range
     Float volr = pow(form_factors_coefficients_[i].excl_vol_, (float)2.0 / 3) /
-      4 * M_PI;    // v_i^(2/3) / 4PI
+      4 * IMP::internal::PI;    // v_i^(2/3) / 4PI
     for (unsigned int k = 0; k < number_of_entries; k++) {
       Float q = min_s_ + k * delta_s_;
-      Float s = square(q / 4 * M_PI); // (q/4PI)^2
+      Float s = square(q / 4 * IMP::internal::PI); // (q/4PI)^2
 
       // c
       form_factors_[i][k] = form_factors_coefficients_[i].c_;
