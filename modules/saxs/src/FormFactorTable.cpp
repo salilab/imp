@@ -86,7 +86,7 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
   }
   // skip the comment lines
   char c;
-  int MAX_LENGTH = 1000;
+  const int MAX_LENGTH = 1000;
   char line[MAX_LENGTH];
   while (s.get(c)) {
     if (c == '#') {         // if comment line, read the whole line and move on
