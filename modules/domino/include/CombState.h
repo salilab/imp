@@ -48,7 +48,7 @@ public:
 
   }
   bool has_particle(Particle *p) {
-    return not(data.find(p) == data.end());
+    return data.find(p) != data.end();
   }
 
   unsigned int get_state_num(Particle *p) {

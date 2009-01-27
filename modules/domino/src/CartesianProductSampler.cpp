@@ -42,7 +42,7 @@ void CartesianProductSampler::populate_states_of_particles(Particles *particles,
     if(c_int[i]!=v_int[i]) {
       c_int[i]++;
     }
-    while ((c_int[i] == v_int[i]) and(i>0)) {
+    while (c_int[i] == v_int[i] && i>0) {
       c_int[i]=0;
       c_int[i-1]++;
       i--;
