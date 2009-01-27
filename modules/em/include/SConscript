@@ -1,9 +1,10 @@
 Import('env')
 
 files = [
-         'EMFitRestraint.h',
-         'IMPParticlesAccessPoint.h',
+          'EMFitRestraint.h','em_exports.h',
+          'IMPParticlesAccessPoint.h','endian.h','ImageHeader.h','ImageEM.h',
+          'VolumeEM.h','EMproject.h','EMnoise.h'
         ]
 
 # Install the include files:
-env.IMPHeaders(files)
+    env.IMPHeaders(files)
