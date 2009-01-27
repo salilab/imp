@@ -6,6 +6,10 @@ files = [
          'Vector3D.h',
          'VectorD.h',
          'geometric_alignment.h',
+         'math_macros.h',
+         'MultiArray.h',
+         'Matrix2D.h',
+         'Matrix3D.h'
         ] \
         + SConscript('internal/SConscript')
 
