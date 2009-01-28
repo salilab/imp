@@ -1,0 +1,17 @@
+import os
+import os.path
+
+Import('env')
+penv = env.Clone()
+penv.Prepend(LIBS=["imp", "imp_core", "imp_misc", "imp_domino", "imp_algebra"])
+
+fs = Glob("*.cpp")
+
+all=[]
+for f in fs:
+    prog= penv.Program(f.rstr())
+    all.append(prog)
+    penv.Depends(prog, "#/modules")
+    penv.Depends(prog, "#/kernel")
+
+Return('all')
