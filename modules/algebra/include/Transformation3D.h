@@ -63,6 +63,9 @@ IMP_OUTPUT_OPERATOR(Transformation3D)
 IMPALGEBRAEXPORT Transformation3D
 transformation_from_rotation_around_vector(const Rotation3D &rot,
                                            const Vector3D &center);
+inline Transformation3D identity_transformation() {
+  return Transformation3D(identity_rotation(),Vector3D(0.0,0.0,0.0));
+}
 
 IMPALGEBRA_END_NAMESPACE
 
