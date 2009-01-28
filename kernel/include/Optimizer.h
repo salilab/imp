@@ -68,7 +68,7 @@ public:
     out << "Some optimizer" << std::endl;
   }
 
-  IMP_CONTAINER(OptimizerState, optimizer_state, OptimizerStateIndex);
+  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*);
 
 protected:
   //! Update optimizer state, should be called at each successful step
@@ -176,14 +176,14 @@ protected:
                "Out of range FloatIndex in Optimizer");
     IMP_assert((*fi.p_)->get_is_optimized(*fi.fk_),
                "Keep your mits off unoptimized attributes "
-               << (*fi.p_)->get_index() << " " << *fi.fk_ << std::endl);
+               << (*fi.p_)->get_name() << " " << *fi.fk_ << std::endl);
     (*fi.p_)->set_value(*fi.fk_, v);
   }
 
   //! Get the value of an optimized attribute
   Float get_value(FloatIndex fi) const {
     /* cast to const needed here to help MSVC */
-    IMP_assert(static_cast<Model::ParticleConstIterator>(fi.p_)
+    IMP_assert(static_cast<Model::ParticleIterator>(fi.p_)
                != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_value(*fi.fk_);

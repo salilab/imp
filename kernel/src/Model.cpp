@@ -19,26 +19,26 @@ IMP_BEGIN_NAMESPACE
 Model::Model()
 {
   iteration_ = 0;
+  last_particle_index_=0;
 }
 
 
 //! Destructor
 Model::~Model()
 {
+  for (ParticleIterator it= particles_begin();
+       it != particles_end(); ++it) {
+    (*it)->unref();
+  }
 }
 
-IMP_CONTAINER_IMPL(Model, Restraint, restraint, RestraintIndex,
-                   obj->set_model(this),,obj->set_model(NULL));
+IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
+              {obj->set_model(this);},,
+              {obj->set_model(NULL);});
 
-IMP_CONTAINER_IMPL(Model, Particle, particle, ParticleIndex,
-                   {obj->set_model(this, index);
-                     obj->set_is_active(true);},,
-                   {obj->set_model(NULL,
-                                   ParticleIndex());
-                     obj->set_is_active(false);});
-
-IMP_CONTAINER_IMPL(Model, ScoreState, score_state, ScoreStateIndex,
-                   {obj->set_model(this);},,obj->set_model(NULL));
+IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
+              {obj->set_model(this);},,
+              {obj->set_model(NULL);});
 
 
 Float Model::evaluate(bool calc_derivs)

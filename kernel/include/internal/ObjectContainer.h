@@ -42,7 +42,7 @@ class ObjectContainer
   };
 
   template <class II>
-  unsigned int get_index(II i) const {return i.get_index();}
+  unsigned int get_index(II i) const {return i.get_name();}
   unsigned int get_index(unsigned int i) const {return i;}
 
   void check_unique(O* o) {

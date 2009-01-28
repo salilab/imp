@@ -10,7 +10,6 @@
 #define IMP_INTERNAL_CONTAINER_MACROS_H
 
 #include "internal/Vector.h"
-#include "internal/ObjectContainer.h"
 #include "macros.h"
 
 #define IMP_CONTAINER_CORE(protection, Ucname, lcname, Data, IndexType,\
@@ -30,6 +29,9 @@ void clear_##lcname##s();                                             \
 /** \short return the number of objects*/                             \
 unsigned int get_number_of_##lcname##s() const {                          \
 return lcname##_vector_.size();}                                    \
+/** \short return if there are any objects*/                             \
+unsigned int get_has_##lcname##s() const {                          \
+return !lcname##_vector_.empty();}                                    \
 /** \short Get object refered to by the index
 \throws IndexException if the index is out of range
 */                                                                   \
@@ -105,12 +107,7 @@ protection:                                                           \
 /** @name Methods acting on a contained list*/                        \
 /*@{*/                                                                \
 /** \short Remove any occurences of d from the container */           \
-void erase_##lcname(Data d);                                          \
-/** \short Get a container of all the objects.
-This is for Python as the container can be used like a Python list*/\
-const Ucname##s &get_##lcname##s() const {                             \
-return static_cast< const Ucname##s &>(lcname##_vector_);           \
-}                                                                     \
+void remove_##lcname(Data d);                                          \
 void set_##lcname##s(const Ucname##s &ps) {                           \
 clear_##lcname##s();                                                \
 add_##lcname##s(ps);                                                \
@@ -131,73 +128,26 @@ IMP::internal::Vector<Data>)                                          \
  \param[in] Ucname The name of the type of container in uppercase.
  \param[in] lcname The name of the type of container in lower case.
  \param[in] Data The type of the data to store.
- \param[in] init Code to modify the passed in object. The object is obj
+ \param[in] OnAdd Code to modify the passed in object. The object is obj
  its index index.
  \param[in] OnChanged Code to get executed when the container changes.
+ \param[in] OnRemove Code to get executed when the an object is removed.
  */
-#define IMP_LIST_IMPL(Class, Ucname, lcname, Data, init, OnChanged)     \
-IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, unsigned int,    \
-init, OnChanged)                              \
-void Class::erase_##lcname(Data d) {                                  \
-for (Ucname##Iterator it= lcname##s_begin();                        \
-it != lcname##s_end(); ++it) {                                 \
-if (*it == d) {                                                   \
-lcname##_vector_.erase(it); break;                              \
-}                                                                 \
-}                                                                   \
-OnChanged;                                                          \
-}                                                                     \
-
-
-
-//! Use this to add a set of IMP objects owned by the containing one
-/**
- Such a container adds public methods add_foo, get_foo, get_number_of_foo
- and a private type foo_iterator, with methods foo_begin, foo_end.
- \param[in] Ucname The name of the type in uppercase
- \param[in] lcname The name of the type in lower case
- \param[in] IndexType The type to use for the index. This should be
- an instantiation of Index<T> or something similar.
-
- \note The type Ucnames must be declared and be a vector of
- Data.
- \note these containers are always public
- */
-#define IMP_CONTAINER(Ucname, lcname, IndexType)            \
-private:                                                                \
-/* This is an implementation detail.*/                                 \
-typedef IMP::internal::ObjectContainer<Ucname, IndexType>               \
-Ucname##Container;                                                      \
-public:                                                   \
-/** @name Methods acting on a contained set of Objects*/               \
-/*@{*/                                                                \
-void remove_##lcname(IndexType i) ;                       \
-IMP_CONTAINER_CORE(public, Ucname, lcname, Ucname*, IndexType,          \
-Ucname##Container)                                                      \
-/*@}*/                                                               \
-
-
-
-
-//! Use this to add a container of IMP objects
-/**
- This code should go in a .cpp file. One macro for each
- IMP_CONTAINER.
- \param[in] init Code to modify the passed in object. The object is obj
- its index index.
- \param[in] onchanged Code to execute when the container is changed.
- \param[in] onremove Code to execute when an object is removed. The object
- being removed is obj.
- */
-#define IMP_CONTAINER_IMPL(Class, Ucname, lcname, IndexType, init,      \
-onchanged, onremove)                                                    \
-void Class::remove_##lcname(IndexType i) {                            \
-Ucname* obj= lcname##_vector_[i];                                   \
-onremove;                                                           \
-lcname##_vector_.remove(i);                                         \
-if (false) std::cout << *obj;                                       \
-}                                                                     \
-IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Ucname*, IndexType,    \
-init,onchanged)
+#define IMP_LIST_IMPL(Class, Ucname, lcname, Data, OnAdd,             \
+                      OnChanged, OnRemoved)                           \
+  IMP_CONTAINER_CORE_IMPL(Class, Ucname, lcname, Data, unsigned int,  \
+                          OnAdd, OnChanged)                            \
+  void Class::remove_##lcname(Data d) {                                \
+    for (Ucname##Iterator it= lcname##s_begin();                       \
+         it != lcname##s_end(); ++it) {                                \
+      if (*it == d) {                                                  \
+        Data obj=*it;                                                  \
+        OnRemoved;                                                     \
+        if (0) std::cout << obj;                                       \
+        lcname##_vector_.erase(it); break;                             \
+      }                                                                \
+    }                                                                  \
+    OnChanged;                                                         \
+  }                                                                    \
 
 #endif  /* IMP_INTERNAL_CONTAINER_MACROS_H */

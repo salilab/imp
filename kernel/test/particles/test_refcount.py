@@ -20,10 +20,10 @@ class RefCountTests(IMP.test.TestCase):
             + " got " + str(IMP.RefCountedObject.get_number_of_live_objects()
                             - self.basenum)
         self.assertEqual(IMP.RefCountedObject.get_number_of_live_objects() - self.basenum,
-                         expected,
-                         "wrong number of particles")
+                         expected
+                         )
 
-    def __test_simple(self):
+    def ___test_simple(self):
         """Check that ref counting of particles works within python"""
         # swig is broken so this needs to be skipped
         self._check_number(0)
@@ -46,11 +46,11 @@ class RefCountTests(IMP.test.TestCase):
         """Check that ref counting works with removing particles"""
         self._check_number(0)
         m= IMP.Model()
+        print "creating particle"
         p= IMP.Particle(m)
-        pi= p.get_index()
         self._check_number(1)
-        m.remove_particle(pi)
-        self._check_number(1)
+        print "removing particle"
+        m.remove_particle(p)
         self.assert_(not p.get_is_active(), "Removed particle is still active")
         p=1
         self._check_number(0)
@@ -88,7 +88,7 @@ class RefCountTests(IMP.test.TestCase):
         p= IMP.Particle(m)
         print p
         print 8
-        pi= p.get_index()
+        pi= p.get_name()
         print 9
         p=None
         self._check_number(1)
@@ -115,9 +115,9 @@ class RefCountTests(IMP.test.TestCase):
         print "max change"
         self._check_number(0)
         m= IMP.Model()
-        p= IMP.Particle()
+        print "creating particle"
+        p= IMP.Particle(m)
         print "Add particle"
-        pi= m.add_particle(p)
         d= IMP.core.XYZDecorator.create(p)
         d=0
         mc= IMP.core.MaxChangeScoreState(IMP.core.XYZDecorator.get_xyz_keys())
@@ -126,12 +126,15 @@ class RefCountTests(IMP.test.TestCase):
         # also have the score state now
         self._check_number(2)
         print "Remove from model"
-        m.remove_particle(pi)
+        m.remove_particle(p)
+        self.assertEqual(m.get_number_of_particles(), 0)
         self._check_number(2)
+        print "setting p to 1"
         p=1
         self._check_number(2)
         print "Remove from mc"
         mc.clear_particles()
+        self.assertEqual(mc.get_number_of_particles(), 0)
         self._check_number(1)
         mc=0
         self._check_number(0)
@@ -141,10 +144,9 @@ class RefCountTests(IMP.test.TestCase):
         print "skipped"
         m= IMP.Model()
         p= IMP.Particle(m)
-        pi= p.get_index()
         ps= m.get_particles()
         self.assertEqual(len(ps), 1, "Should only be 1 particle")
-        m.remove_particle(pi)
+        m.remove_particle(p)
         ps= m.get_particles()
         self.assertEqual(len(ps), 0, "Should no particles particle")
 

@@ -11,6 +11,7 @@
 #include "Object.h"
 #include "Pointer.h"
 #include "Particle.h"
+#include "Model.h"
 
 IMP_BEGIN_NAMESPACE
 
