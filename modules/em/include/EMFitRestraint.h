@@ -52,8 +52,13 @@ public:
 
   IMP_RESTRAINT(internal::em_version_info)
 
-private:
+  ParticlesList get_interacting_particles() const
+  {
+    return ParticlesList(1, Particles(particles_begin(), particles_end()));
+  }
 
+  IMP_LIST(private, Particle, particle, Particle*)
+private:
   DensityMap *target_dens_map_;
   SampledDensityMap *model_dens_map_;
   // reference to the IMP environment
