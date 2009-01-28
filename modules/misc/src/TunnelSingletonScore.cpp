@@ -88,11 +88,11 @@ Float TunnelSingletonScore::evaluate(Particle *p,
       }
       ret+= score;
     } else {
-      IMP_LOG(VERBOSE, "Particle " << p->get_index()
+      IMP_LOG(VERBOSE, "Particle " << p->get_name()
               << " is in channel" << std::endl);
     }
   } else {
-    IMP_LOG(VERBOSE, "Particle " << p->get_index()
+    IMP_LOG(VERBOSE, "Particle " << p->get_name()
             << " is outside of slab" << std::endl);
   }
   return ret;
