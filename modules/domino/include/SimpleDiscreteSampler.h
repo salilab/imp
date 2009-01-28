@@ -23,7 +23,7 @@ public:
   SimpleDiscreteSampler(){}
   ~SimpleDiscreteSampler() {}
 
-  void move2state(const CombState *cs) const {
+  void move2state(const CombState *cs) {
     Particle *p;
     SimpleDiscreteSpace *ds;
     const std::vector<FloatKey> *atts;

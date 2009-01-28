@@ -37,7 +37,7 @@ void PermutationSampler::populate_states_of_particles(Particles *particles,
   } while (boost::next_partial_permutation(v_int.begin(),
            v_int.begin() + comb_size,v_int.end()));
 }
-void PermutationSampler::move2state(const CombState *cs) const {
+void PermutationSampler::move2state(const CombState *cs){
   Particle *p;
   const std::vector<FloatKey> *atts = ds_->get_att_keys();
   for (std::map<Particle *,unsigned int>::const_iterator

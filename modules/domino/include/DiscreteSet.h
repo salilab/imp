@@ -54,7 +54,8 @@ public:
     \param[in] state_ind the index of the state
     \exception if the state_ind is out of range
    */
-  Particle * get_state(long state_ind) const;
+  Particle  * get_state(long state_ind) const;
+  const Particles * get_states() const{return &states_;};
 
   //! Get the number of states held in the set
   inline long get_number_of_states() const { return states_.size();}

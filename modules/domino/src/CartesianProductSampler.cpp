@@ -50,7 +50,7 @@ void CartesianProductSampler::populate_states_of_particles(Particles *particles,
   }
 }
 
-void CartesianProductSampler::move2state(const CombState *cs) const {
+void CartesianProductSampler::move2state(const CombState *cs){
   Particle *p;
   const std::vector<FloatKey> *atts = ds_->get_att_keys();
   for (std::map<Particle *,unsigned int>::const_iterator

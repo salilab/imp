@@ -24,10 +24,11 @@ IMPDOMINO_BEGIN_NAMESPACE
  */
 class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
 {
+  typedef boost::tuple<Restraint *,Particles,Float> OptTuple;
 public:
   DominoOptimizer(std::string jt_filename, Model *m);
   IMP_OPTIMIZER(internal::domino_version_info)
-public:
+
   void show(std::ostream &out = std::cout) const {
     out << "DOMINO optimizer" << std::endl;
   }
@@ -42,6 +43,14 @@ public:
       return num_of_solutions_;}
   inline void set_number_of_solutions(unsigned int n){num_of_solutions_=n;}
   void move_to_opt_comb(unsigned int i) const;
+  //! Add a restraint that should be used in the optimization procedure.
+  /**
+  /param[in] r   the restraint
+  /param[in] ps  the particles participating in the restraint, at the
+                 same hierarhcy level as encoded in the Restraint Graph.
+  /param[in] w   the weight of the restraint
+   */
+  void add_restraint(Restraint *r, Particles ps, Float w);
 protected:
   void clear(); //TODO implement!
   //! Creates a new node and add it to the graphs that take part in the
@@ -58,13 +67,13 @@ protected:
    */
   void add_jt_edge(int node1_ind, int node2_ind);
 
-  void realize_rec(IMP::core::RestraintSet *rs, Float weight);
+  //  void realize_rec(IMP::core::RestraintSet *rs, Float weight);
   void initialize_jt_graph(int number_of_nodes);
   DiscreteSampler *ds_;
   RestraintGraph *g_;
   unsigned int num_of_solutions_;
+  std::vector<OptTuple> rs_;
 };
-
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_DOMINO_OPTIMIZER_H */
