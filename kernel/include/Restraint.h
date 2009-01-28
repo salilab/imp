@@ -117,11 +117,7 @@ public:
       The default implementation returns a single set containing all
       particles stored in this restraint.
    */
-  virtual ParticlesList get_interacting_particles() const;
-
-  IMP_LIST(protected, Particle, particle, Particle*)
-
-    //IMP_REF_COUNTED_DESTRUCTOR(Restraint)
+  virtual ParticlesList get_interacting_particles() const=0;
 
 private:
   /* This pointer should never be ref counted as Model has a
