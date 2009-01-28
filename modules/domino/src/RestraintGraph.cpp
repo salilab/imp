@@ -247,7 +247,7 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
     r->show(std::cerr);
     std::cerr << " between particles: ";
     for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
-      std::cerr << (*ii)->get_index().get_index()
+      std::cerr << (*ii)->get_index()
       //          << "," << (*ii)->get_value(IMP::StringKey("name"))
       << " :: ";
     }
@@ -257,7 +257,7 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
     std::cout<< "RestraintGraph::initialize_potentials restraint between : ";
     for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
       //      std::cout << (*ii)->get_value(IMP::StringKey("name")) << " :: ";
-      std::cout << (*ii)->get_index().get_index() << " :: ";
+      std::cout << (*ii)->get_index() << " :: ";
     }
     std::cout<<" is realized by node " << jn->get_node_index() << std::endl;
     jn->realize(r, ps, weight);

@@ -30,7 +30,7 @@ void CombState::show(std::ostream& out) const {
       out << " ||| " << it->second << " , ";
     }
     else {
-      out <<it->first->get_index().get_index()<< " ||| " <<it->second<< " , ";
+      out <<it->first->get_name() << " ||| " <<it->second<< " , ";
     }
   }
   out << " total_score : " << total_score << std::endl;
@@ -43,7 +43,7 @@ CombState *CombState::get_partial(const Particles &ps) const {
     Particle *p = *it;
     std::stringstream error_message;
     error_message << "CombState::get_partial particle with index ";
-    error_message << p->get_index().get_index() << " was not found ";
+    error_message << p->get_index() << " was not found ";
     IMP_assert(data.find(p) != data.end(), error_message.str());
     (part_state->data)[p] = data.find(p)->second;
   }

@@ -40,7 +40,7 @@ Float DominoOptimizer::optimize(unsigned int max_steps)
   IMP_assert(ds_ != NULL, error_message.str());
   error_message.clear();
   error_message << "DominoOptimizer::optimize the model was not set";
-  IMP_assert(opt_mdl != NULL, error_message.str());
+  IMP_assert(get_model() != NULL, error_message.str());
   //init all the potentials
   g_->clear();
   set_sampling_space(ds_);
