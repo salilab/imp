@@ -8,6 +8,7 @@ files = [
          'ImageEM.h',
          'ImageHeader.h',
          'VolumeEM.h',
+         'endian.h'
         ]
 
 # Install the include files:
