@@ -34,7 +34,7 @@ public:
   void show(std::ostream& out = std::cout) const;
   void populate_states_of_particles(Particles *particles,
                std::map<std::string, CombState *> *states) const;
-  void move2state(const CombState *cs) const;
+  void move2state(const CombState *cs);
 
 protected:
   //  void construct();

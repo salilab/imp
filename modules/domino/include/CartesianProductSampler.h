@@ -1,5 +1,5 @@
 /**
- *  \file CombinationSampler.h
+ *  \file CartesianProductSampler.h
  *  \brief The class samples all  combinations in a discrete set
  *         to particles. Each anchor point can be mapped to one
  *         particle for a specific mapping. For example, for anchor points
@@ -33,7 +33,7 @@ public:
   void show(std::ostream& out = std::cout) const;
   void populate_states_of_particles(Particles *particles,
                std::map<std::string, CombState *> *states) const;
-   void move2state(const CombState *cs) const;
+  virtual void move2state(const CombState *cs);
 
 protected:
   MappedDiscreteSet *ds_;

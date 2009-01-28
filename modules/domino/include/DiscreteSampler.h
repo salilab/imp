@@ -41,7 +41,7 @@ public:
 
   //! Set the attributes of the particles in the combination to the states
   //! indicated in the combination
-  virtual void move2state(const CombState *cs) const {}
+  virtual void move2state(const CombState *cs) {}
 };
 
 IMPDOMINO_END_NAMESPACE

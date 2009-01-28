@@ -16,6 +16,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 
   void RestraintGraph::parse_jt_file(const std::string &filename, Model *mdl)
   {
+    std::cout<<"RestraintGraph::parse_jt_file START " << std::endl;
     // for fast access to particle by its name, create a map
     std::map<std::string, Particle *> p_map;
     for (Model::ParticleIterator it = mdl->particles_begin();
@@ -88,6 +89,10 @@ IMPDOMINO_BEGIN_NAMESPACE
           Particles ps;
           for(std::vector<std::string>::iterator it =  v.begin();
               it != v.end(); it++) {
+            std::stringstream error_message;
+            error_message<<"RestraintGraph::parse_jt node with key : ";
+            error_message << *it << " was not found";
+            IMP_assert(p_map.find(*it) != p_map.end(), error_message.str());
             ps.push_back(p_map[*it]);
           }
           add_node(node_index, ps);
@@ -112,11 +117,6 @@ RestraintGraph::RestraintGraph(const std::string &filename, Model *mdl)
   min_combs_ = new std::vector<CombState *>();
 }
 
-// void RestraintGraph::set_model(IMP::Model *m_)
-// {
-//   m = m_;
-// }
-
 void RestraintGraph::initialize_graph(int number_of_nodes)
 {
   // TODO: here you need the check if the graph has already been initialize
@@ -138,7 +138,7 @@ void RestraintGraph::add_node(unsigned int node_index,
                                     node_index);
 }
 
-Pair RestraintGraph::get_edge_key(unsigned int node1_ind,
+RestraintGraph::Pair RestraintGraph::get_edge_key(unsigned int node1_ind,
                                   unsigned int node2_ind) const
 {
   std::stringstream error_message;
@@ -193,7 +193,7 @@ void RestraintGraph::show(std::ostream& out) const
   out << "==================================" << std::endl;
 }
 
-void RestraintGraph::set_sampling_space(const DiscreteSampler &ds_)
+void RestraintGraph::set_sampling_space(DiscreteSampler &ds_)
 {
   for (unsigned int vi = 0; vi < num_vertices(g_); vi++) {
     JNode *j = node_data_[vi];
@@ -221,12 +221,12 @@ void RestraintGraph::show_sampling_space(std::ostream& out) const
   }
 }
 
-JNode * RestraintGraph::get_node(const Particles &p)
+JNode * RestraintGraph::get_node(const Particles &ps)
 {
   std::vector<int> inter;
   for (unsigned int vi = 0; vi < num_vertices(g_); vi++) {
     JNode *j = node_data_[vi];
-    if (j->is_part(p)) {
+    if (j->is_part(ps)) {
       return j;
     }
   }
@@ -237,36 +237,30 @@ JNode * RestraintGraph::get_node(const Particles &p)
   return NULL;
 }
 
-void RestraintGraph::initialize_potentials(Restraint &r, Float weight)
-{
-  Particles r_particles;
-  ParticlesList pl = r.get_interacting_particles();
-  for(ParticlesList::iterator it1 = pl.begin();
-      it1 != pl.end(); it1++){
-    for(Particles::iterator it2 = it1->begin(); it2 != it1->end(); it2++) {
-      r_particles.push_back(*it2);
-     }
-  }
-  JNode *jn = get_node(r_particles);
+void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
+                                           Float weight) {
+  std::cout<< "RestraintGraph::initialize_potentials the number of particles";
+  std::cout<< " is : " << ps->size() << std::endl;
+  JNode *jn = get_node(*ps);
   if (jn == NULL) {
     std::cerr << "PROBLEM - no node - the restraint : ";
-    r.show(std::cerr);
+    r->show(std::cerr);
     std::cerr << " between particles: ";
-    for (Particles::const_iterator ii = r_particles.begin();
-         ii < r_particles.end();ii++) {
-      std::cerr << (*ii)->get_index().get_index() << ","
-                << (*ii)->get_value(IMP::StringKey("name")) << " :: ";
+    for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
+      std::cerr << (*ii)->get_index().get_index()
+      //          << "," << (*ii)->get_value(IMP::StringKey("name"))
+      << " :: ";
     }
     std::cerr << " has not been realized." << std::endl;
   }
   else {
     std::cout<< "RestraintGraph::initialize_potentials restraint between : ";
-    for (Particles::const_iterator ii = r_particles.begin();
-         ii < r_particles.end();ii++) {
-      std::cout << (*ii)->get_value(IMP::StringKey("name")) << " :: ";
+    for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
+      //      std::cout << (*ii)->get_value(IMP::StringKey("name")) << " :: ";
+      std::cout << (*ii)->get_index().get_index() << " :: ";
     }
     std::cout<<" is realized by node " << jn->get_node_index() << std::endl;
-    jn->realize(&r, weight);
+    jn->realize(r, ps, weight);
   }
 }
 

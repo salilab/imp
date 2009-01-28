@@ -48,10 +48,20 @@ public:
 
 // should think about something more general here, since each level of
 // hierarchy will have its own state.
-typedef std::pair<unsigned int, unsigned int> Pair;
+//
+
 
 class IMPDOMINOEXPORT RestraintGraph
 {
+
+
+  typedef std::pair<unsigned int, unsigned int> Pair;
+  typedef boost::adjacency_list < boost::vecS, boost::vecS,
+    boost::undirectedS, boost::no_property,
+    boost::property<boost::edge_weight_t,
+    boost::vecS> > Graph;
+
+
 public:
   //! Constructor
   /** \param[in] filename the file holds the graph structure (nodes and edges)
@@ -74,12 +84,15 @@ public:
       \param[in] node2_ind  the index of the second node
    */
   void add_edge(unsigned int node1_ind, unsigned int node2_ind);
-  void set_sampling_space(const DiscreteSampler &ds);
+  void set_sampling_space(DiscreteSampler &ds);
 
   //! Initalize potentials according to the input restraint set.
-  /** \param[in] rs  the restraint set
+  /** \param[in] r      the  restraint
+      \param[in] ps     the particles participate in the restraint at the
+                        hierarhcy level encoded in the graph
+      \param[in] weight the weight of the restraint
    */
-  void initialize_potentials(Restraint &r, Float weight);
+  void initialize_potentials(Restraint *r, Particles *ps, Float weight);
   unsigned int number_of_nodes() const {
     return  num_vertices(g_);
   }
@@ -168,11 +181,6 @@ protected:
   /** \param[in]  father_ind     the index of the node to start collecting from
    */
   void update(unsigned int w, unsigned int v);
-
-  typedef boost::adjacency_list < boost::vecS, boost::vecS,
-                                  boost::undirectedS, boost::no_property,
-                                  boost::property<boost::edge_weight_t,
-                                                  boost::vecS> > Graph;
   Pair get_edge_key(unsigned int node1_ind, unsigned int node2_ind) const;
  protected:
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;

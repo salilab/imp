@@ -18,6 +18,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <boost/foreach.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -40,7 +41,7 @@ public:
   //! Set the discrete sampling space of each of particles in the node
   /** \param [in] ds the sampler data
    */
-  void init_sampling(const DiscreteSampler &ds);
+  void init_sampling(DiscreteSampler &ds);
 
   //! Get the set of intersecting particles between two nodes
   /** \param [in] other   the second node
@@ -62,8 +63,12 @@ public:
   void populate_states_of_particles(Particles *particles,
           std::map<std::string,CombState *> *states);
   //! Adds the restraint values to all combinations
-  void realize(Restraint *r, float weight);
-
+  /**\param[in] r      the  restraint
+      \param[in] ps     the particles participate in the restraint at the
+                        hierarhcy level encoded in the graph
+      \param[in] weight the weight of the restraint
+   */
+  void realize(Restraint *r, Particles *ps, Float weight);
   //! Finds the minimum combination in the node.
   /** \param[in]   move_to_state     true if the model should move to the new
                                      state
@@ -72,7 +77,7 @@ public:
   std::vector<CombState *> * find_minimum(bool move_to_state = false,
                                           unsigned int num_of_solutions=1);
 
-  CombState* get_state(unsigned int index, bool move_to_state = false) const;
+  CombState* get_state(unsigned int index, bool move_to_state = false);
 
   void show(std::ostream& out = std::cout) const;
   void show_sampling_space(std::ostream& out = std::cout) const;
@@ -105,7 +110,7 @@ public:
     return ds_;
   }
   //! Move the system to the state encoded in the class
-  void move2state(CombState *cs) const;
+  void move2state(CombState *cs);
   void clear();
 protected:
   std::vector<Int> sorted_particle_indexes_; // needed for calculating
@@ -113,7 +118,8 @@ protected:
   Particles particles_; //the particles that are part of the node
   unsigned int node_ind_;
   std::map<std::string, CombState *> comb_states_;
-  const DiscreteSampler *ds_;
+  std::vector<std::string> comb_states_keys_;
+  DiscreteSampler *ds_;
 };
 
 IMPDOMINO_END_NAMESPACE

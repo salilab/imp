@@ -18,7 +18,7 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-class CombState
+class IMPDOMINOEXPORT CombState
 {
 public:
   //! Constructor
@@ -51,14 +51,8 @@ public:
     return data.find(p) != data.end();
   }
 
-  unsigned int get_state_num(Particle *p) {
-  std::stringstream err_msg;
-  err_msg << "CombState::get_state_num the particle " << p->get_index();
-  err_msg << " is not found in the combstate data";
-  IMP_assert(data.find(p) != data.end(), err_msg.str());
-  return data[p];
+  unsigned int get_state_num(Particle *p);
 
-  }
   const std::string key() const {
   std::stringstream s;
   // we assume that the particles in the JNode are stored by their index.
@@ -76,26 +70,12 @@ public:
 
   }
   const std::string partial_key(const Particles *ps) const {
-  CombState *cs = get_partial(*ps);
-  std::string cs_key = cs->key();
-  delete(cs);
-  return cs_key;
-
+    CombState *cs = get_partial(*ps);
+    std::string cs_key = cs->key();
+    delete(cs);
+    return cs_key;
   }
-  CombState *get_partial(const Particles &ps) const {
-  CombState *part_state = new CombState();
-  for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
-    Particle *p = *it;
-    unsigned int p_index = p->get_index().get_index();
-    std::stringstream error_message;
-    error_message << "CombState::key particle with index " << p_index
-                  << " was not found ";
-    IMP_assert(data.find(p) != data.end(), error_message.str());
-    (part_state->data)[p] = data.find(p)->second;
-  }
-  return part_state;
-
-  }
+  CombState *get_partial(const Particles &ps) const;
   //  void add_term(Restraint *r);
 
   void update_total_score(float old_val, float new_val) {
@@ -125,17 +105,7 @@ public:
   }
 
   //  CombState* find_minimum() const;
-  void show(std::ostream& out = std::cout) const {
-    out << "CombState combination: number of particles : ";
-    out << data.size() << " :: ";
-  for (std::map<Particle *, unsigned int>::const_iterator it = data.begin();
-       it != data.end(); it++) {
-    out << it->first->get_value(IMP::StringKey("name"))  << "|"
-        << it->second << " , ";
-  }
-  out << " total_score : " << total_score << std::endl;
-
-  }
+  void show(std::ostream& out = std::cout) const;
 
   //! Combine the combination encoded in other
   /** \param[in] other the other combination

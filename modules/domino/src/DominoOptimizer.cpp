@@ -15,41 +15,16 @@ DominoOptimizer::DominoOptimizer(std::string jt_filename, Model *m)
   set_model(m);
   num_of_solutions_=1;
 }
-
-void DominoOptimizer::realize_rec(core::RestraintSet *rs, Float weight)
-{
-  for (Model::RestraintIterator it = rs->restraints_begin();
-       it != rs->restraints_end(); it++) {
-    Restraint *r = *it;
-    // if it is a restraint set
-    core::RestraintSet *rs_child = dynamic_cast< core::RestraintSet*>(r);
-    if (rs_child) {
-      realize_rec(rs_child, weight*rs->get_weight());
-    } else {
-      g_->initialize_potentials(*r, weight*rs->get_weight());
-    }
-  }
-}
-
 void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
 {
   ds_ = ds;
   g_->set_sampling_space(*ds_);
-  Model *opt_mdl = get_model();
-  //go over all of the restraints and assign the values to one of the
-  //appropriate nodes
-  Restraint *r;
-  for (Model::RestraintIterator it = opt_mdl->restraints_begin();
-       it != opt_mdl->restraints_end(); it++) {
-    r = *it;
-    if (r != NULL) {
-      core::RestraintSet *rs_child = dynamic_cast< core::RestraintSet*>(r);
-      if (rs_child) {
-        realize_rec(rs_child, 1.0);
-      } else {
-        g_->initialize_potentials(*r, 1.0);
-      }
-    }
+  Restraint *r; Particles ps; Float w;
+  for(std::vector<OptTuple>::iterator it = rs_.begin(); it != rs_.end();it++) {
+    r = boost::get<0>(*it);
+    ps = boost::get<1>(*it);
+    w = boost::get<2>(*it);
+    g_->initialize_potentials(r,&ps,w);
   }
 }
 
@@ -60,7 +35,6 @@ void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
 
 Float DominoOptimizer::optimize(unsigned int max_steps)
 {
-  Model *opt_mdl = get_model();
   std::stringstream error_message;
   error_message << "DominoOptimizer::optimize the sampling space was not set";
   IMP_assert(ds_ != NULL, error_message.str());
@@ -96,5 +70,8 @@ void DominoOptimizer::add_jt_edge(int node1_ind, int node2_ind)
 void DominoOptimizer::move_to_opt_comb(unsigned int i)  const {
   const CombState *opt_s = g_->get_opt_combination(i);
   ds_->move2state(opt_s);
+}
+void DominoOptimizer::add_restraint(Restraint *r, Particles ps, Float w) {
+  rs_.push_back(OptTuple(r,ps,w));
 }
 IMPDOMINO_END_NAMESPACE
