@@ -8,7 +8,7 @@
 #ifndef IMPEM_ENDIAN_H
 #define IMPEM_ENDIAN_H
 
-#include "em_exports.h"
+#include "config.h"
 #include <iostream>
 #include <fstream>
 #include <cstring>

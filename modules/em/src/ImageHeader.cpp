@@ -5,6 +5,7 @@
 */
 
 #include <IMP/em/ImageHeader.h>
+#include <IMP/em/endian.h>
 #include <ctime>
 #include <string.h>
 
