@@ -8,12 +8,13 @@
 #ifndef IMPEM_VOLUME_EM_H
 #define IMPEM_VOLUME_EM_H
 
-#include <typeinfo>
 #include "config.h"
 #include "ImageHeader.h"
 // #include "EMresample.h"
 #include "IMP/algebra/Matrix3D.h"
 #include "IMP/algebra/Vector3D.h"
+#include <typeinfo>
+#include <complex>
 
 IMPEM_BEGIN_NAMESPACE
 

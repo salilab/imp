@@ -8,11 +8,13 @@
 #ifndef IMPEM_IMAGE_EM_H
 #define IMPEM_IMAGE_EM_H
 
-#include <limits>
-#include <typeinfo>
+
 #include "config.h"
 #include "ImageHeader.h"
 #include "IMP/algebra/Matrix2D.h"
+#include <complex>
+#include <limits>
+#include <typeinfo>
 
 IMPEM_BEGIN_NAMESPACE
 
