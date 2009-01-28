@@ -16,7 +16,6 @@
 #include "IMP/algebra/math_macros.h"
 #include "boost/array.hpp"
 #include "boost/multi_array.hpp"
-#include "boost/random.hpp"
 #include <ctime>
 
 IMPALGEBRA_BEGIN_NAMESPACE
