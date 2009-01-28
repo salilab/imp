@@ -7,7 +7,7 @@
  */
 
 #include <IMP/em/EMFitRestraint.h>
-
+#include "IMP/container_macros.h"
 #include <IMP/log.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -65,7 +65,7 @@ IMP_LIST_IMPL(EMFitRestraint, Particle, particle,Particle*,  {
                          == (*particles_begin())->get_model(),
                          "All particles in EMFitRestraint must belong to the "
                          "same Model.");
-              },);
+              },,);
 
 //! Calculate the em coarse restraint score.
 /** \param[in] calc_deriv If true, partial first derivatives should be
