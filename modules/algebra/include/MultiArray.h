@@ -17,7 +17,6 @@
 #include "boost/array.hpp"
 #include "boost/multi_array.hpp"
 #include "boost/random.hpp"
-#include "boost/math/distributions/students_t.hpp"
 #include <ctime>
 
 IMPALGEBRA_BEGIN_NAMESPACE
