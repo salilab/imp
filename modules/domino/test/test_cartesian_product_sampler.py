@@ -47,7 +47,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.imp_model = IMP.Model()
         self.__set_sampling_space__()
         #set restraints
-        rsrs = []
+        self.rsrs = []
         sf = IMP.core.Harmonic(1.0, 0.5)
         p1 = self.particles[0]
         p2 = self.particles[1]
@@ -61,11 +61,11 @@ class DOMINOTests(IMP.test.TestCase):
         r2.set_was_owned(True)
         r3.set_was_owned(True)
         r4.set_was_owned(True)
-        rsrs.append(r1)
-        rsrs.append(r2)
-        rsrs.append(r3)
-        rsrs.append(r4)
-        for r in rsrs:
+        self.rsrs.append(r1)
+        self.rsrs.append(r2)
+        self.rsrs.append(r3)
+        self.rsrs.append(r4)
+        for r in self.rsrs:
             self.imp_model.add_restraint(r)
         self.sampler = domino.CartesianProductSampler(self.m_discrete_set,self.particles)
 
@@ -75,6 +75,13 @@ class DOMINOTests(IMP.test.TestCase):
         """
         jt_filename = self.get_input_file_name("permutation_test_jt.txt")
         d_opt = IMP.domino.DominoOptimizer(jt_filename,self.imp_model)
+        for r in self.rsrs:
+            ps=[]
+            for p in r.get_interacting_particles():
+                for p1 in p:
+                    ps.append(p1)
+            d_opt.add_restraint(r,ps,1.0)
+
         d_opt.set_sampling_space(self.sampler)
         num_sol=5
         d_opt.set_number_of_solutions(num_sol);

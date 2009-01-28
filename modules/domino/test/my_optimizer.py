@@ -22,6 +22,7 @@ class my_optimizer:
         self.__jt_setup(jt_filename)
         self.init_sampling_space()
         self.init_restraints(restraints_filename)
+
     def exhaustive_search(self):
         if not annotation_enumeration:
             raise NotImplementedError("Test skipped: " + \
@@ -65,7 +66,14 @@ class my_optimizer:
             self.all_restraints[-1]
 
     def optimize(self):
+        for r in self.all_restraints:
+            ps=[]
+            for p in r.get_interacting_particles():
+                for p1 in p:
+                    ps.append(p1)
+            self.d_opt.add_restraint(r,ps,1.0)
         self.d_opt.set_sampling_space(self.discrete_sampler)
+        self.d_opt.show_restraint_graph()
         return self.d_opt.optimize(1)
 
     def init_sampling_space(self):
