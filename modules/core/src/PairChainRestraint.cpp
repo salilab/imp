@@ -44,9 +44,9 @@ Float PairChainRestraint::evaluate(DerivativeAccumulator *accum)
   float score=0;
   while (i < get_number_of_particles()) {
     /*IMP_LOG(VERBOSE, "Chain eval on "
-            << Restraint::get_particle(i-2)->get_index()
-            << Restraint::get_particle(i-1)->get_index()
-            << Restraint::get_particle(i)->get_index()
+            << Restraint::get_particle(i-2)->get_name()
+            << Restraint::get_particle(i-1)->get_name()
+            << Restraint::get_particle(i)->get_name()
             << " split is " << chain_splits_[cur_break]
             << std::endl);*/
     score += ts_->evaluate(get_particle(i-1),
@@ -69,7 +69,7 @@ void PairChainRestraint::clear_chains()
   chain_splits_.push_back(0);
 }
 
-IMP_LIST_IMPL(PairChainRestraint, Particle, particle, Particle*,,)
+IMP_LIST_IMPL(PairChainRestraint, Particle, particle, Particle*,,,)
 
 ParticlesList PairChainRestraint::get_interacting_particles() const
 {

@@ -32,8 +32,8 @@ void BondDecorator::show(std::ostream &out, std::string) const
     return;
   }
   out << "Bond between "
-      << get_bonded(0).get_particle()->get_index() << " and "
-      << get_bonded(1).get_particle()->get_index();
+      << get_bonded(0).get_particle()->get_name() << " and "
+      << get_bonded(1).get_particle()->get_name();
   if (get_type() != CUSTOM) {
     out << " of type " << get_type();
   }
@@ -51,14 +51,14 @@ void BondedDecorator::show(std::ostream &out, std::string) const
     out << "Null BondedDecorator";
     return;
   }
-  out << "Particle " << get_particle()->get_index()
+  out << "Particle " << get_particle()->get_name()
       << " is bonded to ";
   for (unsigned int i=0; i< get_number_of_bonds(); ++i){
     BondDecorator b= get_bond(i);
     if (b.get_bonded(0) == *this) {
-      out << b.get_bonded(1).get_particle()->get_index();
+      out << b.get_bonded(1).get_particle()->get_name();
     } else  {
-      out << b.get_bonded(0).get_particle()->get_index();
+      out << b.get_bonded(0).get_particle()->get_name();
     }
     out << " ";
   }

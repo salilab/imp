@@ -6,6 +6,9 @@
  */
 
 #include "IMP/core/model_io.h"
+#include <set>
+#include <map>
+#include <algorithm>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -18,9 +21,10 @@ namespace {
     }
   };
   struct ParticleWrite {
+    ParticleWrite(){}
     std::ostream & operator()(Particle *p,
                               std::ostream &out) const {
-      return out << p->get_index().get_index();
+      return out << p;
     }
   };
   struct FloatWrite {
@@ -61,13 +65,15 @@ namespace {
       return false;
     }
 
+    typedef std::pair<std::string, std::string> LinePair;
+
     LineStream(std::istream &init): in(init){}
     operator bool() const {return !line.empty() || static_cast<bool>(in);}
-    std::string get_line(unsigned int min_indent) {
+    LinePair get_line(unsigned int min_indent) {
       while (line.empty()) {
         char buf[3000];
         in.getline(buf, 3000);
-        if (!in) return std::string();
+        if (!in) return LinePair();
         if (buf[0] == '#') continue;
         if (not_white(buf)) {
           line.push_back(buf);
@@ -76,11 +82,21 @@ namespace {
       if (has_indent(line.back(), min_indent)) {
         std::string ret(line.back(), min_indent);
         line.pop_back();
-        return ret;
+        unsigned int pos= ret.find_first_of(":");
+        if (pos == std::string::npos) {
+          throw InvalidStateException("No colon in line");
+        }
+        IMP_LOG(VERBOSE, "Found colon at position " << pos
+                << " of \"" << ret << "\"" <<std::endl);
+        std::string key(ret, 0, pos), value;
+        if (ret.size() > pos+2) {
+          value= std::string(ret, pos+2);
+        }
+        return std::make_pair(key, value);
       } else {
         IMP_LOG(VERBOSE, "Line \"" << line.back() << "\" lacks "
                 << min_indent << " spaces" << std::endl);
-        return std::string();
+        return LinePair();
       }
     }
     void push_line(std::string s) {
@@ -91,6 +107,24 @@ namespace {
           return;
         }
       }
+    }
+
+    int get_next_indent() {
+      std::string buf;
+      if (line.empty()) {
+        char cbuf[1000];
+        in.getline(cbuf, 1000);
+        buf= std::string(cbuf);
+      } else {
+        buf=line.back();
+        line.pop_back();
+      }
+      if (buf.empty()) return 0;
+      unsigned int i=0;
+      for (; i < buf.size() && buf[i] == ' '; ++i) {
+      }
+      push_line(buf);
+      return i;
     }
   };
 
@@ -110,104 +144,87 @@ namespace {
   };
 
   struct ParticleRead {
-    void operator()(Particle *p, std::string key, std::string value) const {
+    std::set<Particle*> unused_;
+    std::map<std::string, Particle *> used_;
+    ParticleRead(const Particles &particles):
+    unused_(particles.begin(), particles.end()){}
+    void add_particle(std::string nm, Particle *p) {
+      if (unused_.find(p) != unused_.end()) {
+        unused_.erase(p);
+        used_[nm]= p;
+      }
+    }
+    void operator()(Particle *p, std::string key, std::string value) {
       IMP_LOG(VERBOSE,
               "Reading values from pair " << key << " "
               << value << std::endl);
       ParticleKey k(key.c_str());
-      std::istringstream iss(value.c_str());
-      int i;
-      iss >> i;
-      IMP_check(iss, "Error reading value" , ValueException);
-      Particle *op= p->get_model()->get_particle(ParticleIndex(i));
+      if (used_.find(value) != used_.end()) {
+      } else {
+        used_[value]=*unused_.begin();
+        unused_.erase(unused_.begin());
+      }
+      Particle *op= used_[value];
       p->set_value(k, op);
     }
   };
-
-  int get_next_indent(LineStream &in) {
-    std::string buf= in.get_line(0);
-    if (buf.empty()) return 0;
-    unsigned int i=0;
-    for (; i < buf.size() && buf[i] == ' '; ++i) {
-    }
-    in.push_line(buf);
-    return i;
-  }
-
 
   template <class Read>
   void read_attributes(Particle *p, LineStream &in,
                        int indent,
                        Read read) {
     IMP_LOG(VERBOSE, "Reading attributes " << indent << std::endl);
-    int nindent= get_next_indent(in);
+    int nindent= in.get_next_indent();
     if (nindent <= indent) return;
     indent=nindent;
     IMP_LOG(VERBOSE, "Required indent is " << indent<< std::endl);
     do {
-      std::string buf = in.get_line(indent);
-      if (buf.empty()) {
+      LineStream::LinePair lp = in.get_line(indent);
+      if (lp.first.empty()) {
         IMP_LOG(VERBOSE, "Done reading attributes" << std::endl);
         return;
       }
-      IMP_check(buf[0] != ' ', "Extra white space on line "
-                << buf, InvalidStateException);
-      std::istringstream iss(buf.c_str());
-      char key[2000];
-      iss.get(key, 2000, ':');
-      IMP_check(iss, "no : found in line " << buf,
-                ValueException);
-      char colon;
-      iss >> colon;
-      IMP_check(colon == ':', "No colon found" << buf,
-                ValueException);
-
-      char value[2000];
-      iss.getline(value, 2000);
-      IMP_check(iss, "Error reading line " << buf,
-                ValueException);
-      read(p, key, value);
+      read(p, lp.first, lp.second);
 
     } while (true);
   }
 
-  void read(Model *m,
-                 LineStream &in,
-                 unsigned int indent) {
-    std::string buf=in.get_line(indent);
-    if (buf.empty()) return;
+  void read(Model *m, Particle *p, ParticleRead &pr,
+            LineStream &in,
+            unsigned int indent) {
+    LineStream::LinePair lp=in.get_line(indent);
+    if (lp.first.empty()) return;
     //IMP_LOG(VERBOSE, "Got line " << buf << std::endl);
     //IMP_check(in, "Error reading particle line from yaml", ValueException);
-    int id;
-    int nread=sscanf(buf.c_str(), "particle: %d", &id);
-    IMP_check(nread==1, "Couldn't read id", InvalidStateException);
-    Particle *p= m->get_particle(id);
-    IMP_LOG(VERBOSE, "Reading particle " << id << std::endl);
-    unsigned int nindent= get_next_indent(in);
+    IMP_check(lp.first== "particle", "Error reading particle line: \""
+              << lp.first << "\" got " << lp.first, InvalidStateException);
+    IMP_check(!lp.second.empty(), "Couldn't read id", InvalidStateException);
+    IMP_LOG(VERBOSE, "Reading particle " << lp.second << std::endl);
+    pr.add_particle(lp.second, p);
+    unsigned int nindent= in.get_next_indent();
     if (nindent <= indent) return;
     indent=nindent;
     while (in) {
-      std::string buf=in.get_line(indent);
-      if (buf.empty()) break;
-      IMP_check(buf[0] != ' ', "Indent error" << buf, InvalidStateException);
+      LineStream::LinePair lp=in.get_line(indent);
+      if (lp.first.empty()) break;
 
-      IMP_LOG(VERBOSE, "Looking for attributes in line " << buf << std::endl);
-      std::istringstream iss(buf);
-      std::string type;
-      iss >> type;
-      if (type.compare("float-attributes:")==0) {
+      IMP_LOG(VERBOSE, "Looking for attributes in line " << lp.first << ": "
+              << lp.second << std::endl);
+      if (lp.first.compare("name")==0) {
+        p->set_name(lp.second);
+      } else if (lp.first.compare("float-attributes")==0) {
         read_attributes(p, in, indent, DefaultRead<FloatKey, Float>());
-      } else if (type.compare("int-attributes:")==0) {
+      } else if (lp.first.compare("int-attributes")==0) {
         read_attributes(p, in, indent, DefaultRead<IntKey, Int>());
-      } else if (type.compare("string-attributes:")==0) {
+      } else if (lp.first.compare("string-attributes")==0) {
         read_attributes(p, in, indent, DefaultRead<StringKey, String>());
-      } else if (type.compare("particle-attributes:")==0) {
-        read_attributes(p, in, indent, ParticleRead());
+      } else if (lp.first.compare("particle-attributes")==0) {
+        read_attributes(p, in, indent, pr);
       } else {
         break;
       }
     }
-    IMP_LOG(VERBOSE, "Done reading particle " << id << std::endl);
+    IMP_LOG(VERBOSE, "Done reading particle " << lp.second << std::endl);
   }
 }
 
@@ -216,7 +233,10 @@ static std::string indent_level="  ";
 void write(Particle *p,
            std::ostream &out,
            std::string indent) {
-  out << indent << "particle: " << p->get_index().get_index() << "\n";
+  std::ostringstream oss;
+  oss<< p;
+  out << indent << "particle: " << oss.str() << "\n";
+  out << indent << indent_level << "name: " << p->get_name() << "\n";
   out << indent << indent_level << "float-attributes:\n";
   write_attributes(indent+indent_level+"  ",
                    p,
@@ -269,27 +289,30 @@ std::string write(Model *m) {
 }
 
 void read(std::istream &in,
-               Model *m) {
+          Model *m) {
   LineStream r(in);
-  unsigned int nread=0;
+  Particles ps(m->particles_begin(), m->particles_end());
+  std::reverse(ps.begin(), ps.end());
+  ParticleRead pr(ps);
+  Model::ParticleIterator pit= m->particles_begin();
   do {
-    read(m, r, get_next_indent(r));
-    ++nread;
+    read(m, *pit, pr, r, r.get_next_indent());
+    ++pit;
   } while (r);
-  IMP_check(nread== m->get_number_of_particles(),
+  IMP_check(pit== m->particles_end(),
             "Read wrong number of particles. Model is corrupted. Bye.",
             ErrorException);
 }
 
 void read(std::string in,
-               Model *m) {
+          Model *m) {
   std::ifstream iss(in.c_str());
   IMP_check(iss, "Invalid file name " << in, ValueException);
   read(iss, m);
 }
 
 void read_from_string(std::string in,
-                           Model *m) {
+                      Model *m) {
   std::istringstream iss(in);
   read(iss, m);
 }

@@ -14,6 +14,8 @@
 #include "config.h"
 #include "internal/core_version_info.h"
 #include <IMP/PairContainer.h>
+#include <IMP/macros.h>
+#include <IMP/container_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -31,8 +33,8 @@ public:
 
   IMP_PAIR_CONTAINER(internal::core_version_info);
 
-  IMP_CONTAINER(PairContainer, pair_container,
-                PairContainerIndex);
+  IMP_LIST(public, PairContainer, pair_container,
+           PairContainer*);
 };
 
 

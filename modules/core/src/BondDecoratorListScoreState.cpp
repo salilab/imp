@@ -27,12 +27,11 @@ void BondDecoratorListScoreState::do_before_evaluate()
   for (unsigned int i=0; i< ps_.size(); ++i) {
     if (!ps_[i]->get_is_active()) continue;
     BondedDecorator di(ps_[i]);
-    ParticleIndex pi= ps_[i]->get_index();
     for (unsigned int j=0; j< di.get_number_of_bonds(); ++j) {
       BondedDecorator dj= di.get_bonded(j);
       if (! dj.get_particle()->get_is_active()) continue;
       if (!std::binary_search(ps_.begin(), ps_.end(), dj.get_particle())) {
-        IMP_LOG(VERBOSE, "Particle " << dj.get_particle()->get_index()
+        IMP_LOG(VERBOSE, "Particle " << dj.get_particle()->get_name()
                 << " not found in list" << std::endl);
         continue;
       }

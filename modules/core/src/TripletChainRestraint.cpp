@@ -35,7 +35,7 @@ void TripletChainRestraint::add_chain(const Particles &ps)
   }
 }
 
-IMP_LIST_IMPL(TripletChainRestraint, Particle, particle, Particle*,,)
+IMP_LIST_IMPL(TripletChainRestraint, Particle, particle, Particle*,,,)
 
 Float TripletChainRestraint::evaluate(DerivativeAccumulator *accum)
 {
@@ -43,12 +43,6 @@ Float TripletChainRestraint::evaluate(DerivativeAccumulator *accum)
   unsigned int i=2;
   float score=0;
   while (i < get_number_of_particles()) {
-    /*IMP_LOG(VERBOSE, "Chain eval on "
-            << get_particle(i-2)->get_index()
-            << get_particle(i-1)->get_index()
-            << get_particle(i)->get_index()
-            << " split is " << chain_splits_[cur_break]
-            << std::endl);*/
     score += ts_->evaluate(get_particle(i-2),
                            get_particle(i-1),
                            get_particle(i),

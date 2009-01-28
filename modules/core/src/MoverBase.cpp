@@ -9,9 +9,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-IMP_LIST_IMPL(MoverBase, Particle, particle, Particle*,,);
-IMP_LIST_IMPL(MoverBase, FloatKey, float_key, FloatKey,,);
-IMP_LIST_IMPL(MoverBase, IntKey, int_key, IntKey,,);
+IMP_LIST_IMPL(MoverBase, Particle, particle, Particle*,,,);
+IMP_LIST_IMPL(MoverBase, FloatKey, float_key, FloatKey,,,);
+IMP_LIST_IMPL(MoverBase, IntKey, int_key, IntKey,,,);
 
 void MoverBase::propose_move(float f)
 {

@@ -80,7 +80,7 @@ BrownianDynamics::~BrownianDynamics()
 {
 }
 
-IMP_LIST_IMPL(BrownianDynamics, Particle, particle, Particle*,,);
+IMP_LIST_IMPL(BrownianDynamics, Particle, particle, Particle*,,,);
 
 
 void BrownianDynamics::set_time_step(unit::Femtosecond t)
@@ -94,8 +94,9 @@ void BrownianDynamics::setup_particles()
 {
   clear_particles();
   FloatKeys xyzk=XYZDecorator::get_xyz_keys();
-  for (unsigned int i = 0; i < get_model()->get_number_of_particles(); ++i) {
-    Particle *p = get_model()->get_particle(i);
+  for (Model::ParticleIterator it = get_model()->particles_begin();
+       it != get_model()->particles_end(); ++it) {
+    Particle *p = *it;
     if (p->has_attribute(xyzk[0]) && p->get_is_optimized(xyzk[0])
         && p->has_attribute(xyzk[1]) && p->get_is_optimized(xyzk[1])
         && p->has_attribute(xyzk[2]) && p->get_is_optimized(xyzk[2])
@@ -162,7 +163,7 @@ bool BrownianDynamics::propose_step(std::vector<algebra::Vector3D>&
         bool bc= -d.get_coordinate(j) >= std::numeric_limits<Float>::max();
         if (ba || bb || bc ) {
           IMP_WARN("Bad value for coordinate in Brownian Dynamics on "
-                   << "particle " << p->get_index() << std::endl);
+                   << "particle " << p->get_name() << std::endl);
           throw ValueException("Bad coordinate value");
         }
       }
@@ -172,7 +173,7 @@ bool BrownianDynamics::propose_step(std::vector<algebra::Vector3D>&
     unit::SquareCentimeterPerSecond D(p->get_value(dkey_));
     IMP_check(D.get_value() > 0
               && D.get_value() < std::numeric_limits<Float>::max(),
-              "Bad diffusion coefficient on particle " << p->get_index(),
+              "Bad diffusion coefficient on particle " << p->get_name(),
               ValueException);
     unit::Angstrom sigma(compute_sigma_from_D(D));
     IMP_IF_CHECK(EXPENSIVE) {
@@ -184,14 +185,14 @@ bool BrownianDynamics::propose_step(std::vector<algebra::Vector3D>&
                 << sqrt(2.0*D*cur_dt_),
                 ErrorException);
     }
-    IMP_LOG(VERBOSE, p->get_index() << ": sigma is "
+    IMP_LOG(VERBOSE, p->get_name() << ": sigma is "
             << sigma << std::endl);
     boost::normal_distribution<double> mrng(0, sigma.get_value());
     boost::variate_generator<RandomNumberGenerator&,
       boost::normal_distribution<double> >
       sampler(random_number_generator, mrng);
 
-    //std::cout << p->get_index() << std::endl;
+    //std::cout << p->get_name() << std::endl;
 
     unit::Angstrom delta[3];
 
@@ -212,7 +213,7 @@ bool BrownianDynamics::propose_step(std::vector<algebra::Vector3D>&
     /*std::cout << "delta is " << delta << " mag is "
       << delta.get_magnitude() << " sigma " << sigma << std::endl;*/
 
-    IMP_LOG(VERBOSE, "For particle " << p->get_index()
+    IMP_LOG(VERBOSE, "For particle " << p->get_name()
             << " delta is " << delta[0] << " " << delta[1] << " " << delta[2]
             << " from a force of "
             << "[" << d.get_coordinate_derivative(0)
@@ -245,7 +246,7 @@ Float BrownianDynamics::optimize(unsigned int max_steps)
  IMP_check(get_model() != NULL, "Must set model before calling optimize",
            ValueException);
   setup_particles();
-  IMP_LOG(TERSE, "Running brownian dynamics on " << get_particles().size()
+  IMP_LOG(TERSE, "Running brownian dynamics on " << get_number_of_particles()
           << " particles with a step of " << cur_dt_ << std::endl);
   setup_particles();
   for (unsigned int i = 0; i < max_steps; ++i) {

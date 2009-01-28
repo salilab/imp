@@ -127,7 +127,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
     Particle *mp= members[i];
 
     IMP_check(!tr.get_has_required_attributes_for_member(p),
-              "Particle " << p->get_index() << " is already part of "
+              "Particle " << p->get_name() << " is already part of "
               << "a conflicting rigid body",
               InvalidStateException);
     tr.add_required_attributes_for_member(mp);

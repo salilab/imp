@@ -12,7 +12,6 @@
 #include "internal/core_version_info.h"
 
 #include <IMP/ScoreState.h>
-#include <IMP/Index.h>
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 
@@ -35,7 +34,7 @@ class IMPCOREEXPORT MaximumChangeScoreState: public ScoreState
   typedef IMP::internal::
     AttributeTable<IMP::internal::FloatAttributeTableTraits> AT;
   FloatKeys keys_;
-  std::map<ParticleIndex, AT> orig_values_;
+  std::map<Particle*, AT> orig_values_;
   float maximum_change_;
   Pointer<SingletonContainer> pc_;
 public:

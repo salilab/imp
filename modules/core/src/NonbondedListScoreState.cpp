@@ -139,9 +139,7 @@ void NonbondedListScoreState::set_nbl_is_valid(bool tf)
   }
 }
 
-IMP_CONTAINER_IMPL(NonbondedListScoreState, BondedListScoreState,
-                   bonded_list, BondedListIndex, {
-                     if (0) std::cout <<*obj;
-                   },,);
+IMP_LIST_IMPL(NonbondedListScoreState, BondedListScoreState,
+              bonded_list, BondedListScoreState*,,,);
 
 IMPCORE_END_NAMESPACE

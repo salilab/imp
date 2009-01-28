@@ -21,7 +21,6 @@ class BondDecorator;
 class BondedDecorator;
 
 class BondDecoratorListScoreState;
-typedef Index<BondDecoratorListScoreState> BondDecoratorListIndex;
 
 //! This class is deprecated use a BondDecoratorPairContainer instead.
 /** We also may want to add lazy rescanning of bonds rather than doing

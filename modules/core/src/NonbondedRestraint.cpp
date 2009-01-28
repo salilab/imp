@@ -40,8 +40,8 @@ Float NonbondedRestraint::evaluate(DerivativeAccumulator *accum)
        it != nbl_->nonbonded_end(); ++it) {
     float thisscore = sf_->evaluate(it->first, it->second, accum);
     if (thisscore != 0) {
-      IMP_LOG(VERBOSE, "Pair " << it->first->get_index()
-              << " and " << it->second->get_index() << " have score "
+      IMP_LOG(VERBOSE, "Pair " << it->first->get_name()
+              << " and " << it->second->get_name() << " have score "
               << thisscore << std::endl);
     }
     score+= thisscore;

@@ -42,8 +42,8 @@ class TestCPFL(IMP.test.TestCase):
                 d= self.get_distance(rk, ps[i], ps[j])
                 #d=1000
                 if d <= dist:
-                    #print "searching for "+str(ps[i].get_index().get_index()) + " "\
-                    #    + str(ps[j].get_index().get_index())
+                    #print "searching for "+str(ps[i].get_name()) + " "\
+                    #    + str(ps[j].get_name())
                     #XYZDecorator(ps[
                     self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
                                                                                  ps[j]))
@@ -61,7 +61,7 @@ class TestCPFL(IMP.test.TestCase):
         print "done bipartite " + str(out.get_number_of_particle_pairs())
         for i in range(0, len(ps)):
             for j in range(0,len(ps2)):
-                #print "testing " + str(ps[i].get_index().get_index()) + " " + str(ps2[j].get_index().get_index())
+                #print "testing " + str(ps[i].get_name()) + " " + str(ps2[j].get_name())
                 d= self.get_distance(rk, ps[i], ps2[j])
                 #print d
                 if d <= dist:

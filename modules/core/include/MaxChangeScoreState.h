@@ -12,7 +12,6 @@
 #include "internal/core_version_info.h"
 
 #include <IMP/ScoreState.h>
-#include <IMP/Index.h>
 #include <IMP/Particle.h>
 
 #include <vector>

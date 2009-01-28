@@ -95,16 +95,16 @@ protected:
                "Inactive particles should have been stripped");
 
     if (!are_bonded(a,b)) {
-      IMP_LOG(VERBOSE, "Found pair " << a->get_index()
-        << " " << b->get_index() << std::endl);
+      IMP_LOG(VERBOSE, "Found pair " << a->get_name()
+        << " " << b->get_name() << std::endl);
       if (nbl_.size() <  max_nbl_size_) {
         nbl_.push_back(ParticlePair(a, b));
       } else {
         throw NBLTooLargeException();
       }
     } else {
-      IMP_LOG(VERBOSE, "Pair " << a->get_index()
-              << " and " << b->get_index() << " rejected on bond"
+      IMP_LOG(VERBOSE, "Pair " << a->get_name()
+              << " and " << b->get_name() << " rejected on bond"
               <<std::endl);
     }
   }
@@ -128,12 +128,12 @@ protected:
   void add_if_box_overlap(Particle *a, Particle *b) {
     BoxesOverlap bo= boxes_overlap_object(slack_+ cutoff_);
     if (!bo(a, b)) {
-      IMP_LOG(VERBOSE, "Pair " << a->get_index()
-              << " and " << b->get_index() << " rejected on coordinate "
+      IMP_LOG(VERBOSE, "Pair " << a->get_name()
+              << " and " << b->get_name() << " rejected on coordinate "
               << std::endl);
     }
-    IMP_LOG(VERBOSE, "Adding pair " << a->get_index()
-            << " and " << b->get_index() << std::endl);
+    IMP_LOG(VERBOSE, "Adding pair " << a->get_name()
+            << " and " << b->get_name() << std::endl);
     add_if_nonbonded(a, b);
   }
 
@@ -215,8 +215,8 @@ public:
     slack_=slack;
   }
 
-  IMP_CONTAINER(BondedListScoreState, bonded_list,
-                BondedListIndex);
+  IMP_LIST(public, BondedListScoreState, bonded_list,
+           BondedListScoreState*);
 
   // kind of evil hack to make the names better
   // perhaps the macro should be made more flexible

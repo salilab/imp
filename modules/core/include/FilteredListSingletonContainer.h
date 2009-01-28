@@ -14,6 +14,7 @@
 #include "config.h"
 #include "internal/core_version_info.h"
 #include <IMP/SingletonContainer.h>
+#include <IMP/container_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -52,8 +53,8 @@ public:
     data_.clear();
   }
 
-  IMP_CONTAINER(SingletonContainer, singleton_container,
-                SingletonContainerIndex);
+  IMP_LIST(public, SingletonContainer, singleton_container,
+           SingletonContainer*);
 };
 
 

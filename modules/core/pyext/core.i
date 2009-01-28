@@ -210,8 +210,6 @@ namespace IMP {
   namespace core {
     %template(show_named_hierarchy) show<NameDecorator>;
     %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
-    %template(MoverIndex) ::IMP::Index<Mover>;
-    %template(BondedListIndex) ::IMP::Index<BondedListScoreState>;
     %template(BondDecorators) ::std::vector<BondDecorator>;
     %template(Movers) ::std::vector<Mover*>;
     %template(XYZDecorators) ::std::vector<XYZDecorator>;

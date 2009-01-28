@@ -121,7 +121,7 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
     XYZDecorator d(p);
     internal::ParticleGrid::VirtualIndex index
       = grid_bin->get_virtual_index(d.get_coordinates());
-    IMP_LOG(VERBOSE, "Searching for " << p->get_index()
+    IMP_LOG(VERBOSE, "Searching for " << p->get_name()
             << " from " << index << std::endl);
     grid_bin->apply_to_nearby(f, index,
                               distance,
@@ -172,7 +172,7 @@ void GridClosePairsFinder
     for (internal::ParticleGrid::ParticleVoxelIterator it
            = bins[i]->particle_voxels_begin();
          it != bins[i]->particle_voxels_end(); ++it) {
-      IMP_LOG(VERBOSE, "Searching with particle " << it->first->get_index()
+      IMP_LOG(VERBOSE, "Searching with particle " << it->first->get_name()
               << std::endl);
       AddToList f(out, it->first);
       bins[i]->apply_to_nearby(f, it->second,

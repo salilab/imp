@@ -11,14 +11,11 @@
 #include "config.h"
 
 #include <IMP/ScoreState.h>
-#include <IMP/Index.h>
 #include <IMP/Particle.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 class BondedListScoreState;
-//! Used to identify the BondedListScoreState in the NonbondedListScoreState
-typedef Index<BondedListScoreState> BondedListIndex;
 
 //! This class is deprecated, use a ParticlePairContainer of some sort instead.
 /** \deprecated Use a ParticlePairContainer of some sort instead.

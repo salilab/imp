@@ -29,8 +29,8 @@ RestraintSet::~RestraintSet()
   IMP_LOG(VERBOSE, "Delete RestraintSet");
 }
 
-IMP_CONTAINER_IMPL(RestraintSet, Restraint, restraint, RestraintIndex,
-                   obj->set_model(get_model());,,);
+IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
+              obj->set_model(get_model());,,obj->set_model(NULL););
 
 
 Float RestraintSet::evaluate(DerivativeAccumulator *accum)

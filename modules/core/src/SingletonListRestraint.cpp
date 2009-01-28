@@ -26,7 +26,7 @@ SingletonListRestraint::SingletonListRestraint(SingletonScore *s,
 }
 
 
-IMP_LIST_IMPL(SingletonListRestraint, Particle, particle, Particle*,,)
+IMP_LIST_IMPL(SingletonListRestraint, Particle, particle, Particle*,,,)
 
 Float SingletonListRestraint::evaluate(DerivativeAccumulator *accum)
 {

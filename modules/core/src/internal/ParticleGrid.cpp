@@ -80,7 +80,7 @@ void ParticleGrid::audit_particles(const Particles &ps) const
     try {
       XYZDecorator d= XYZDecorator::cast(ps[i]);
     } catch (...) {
-      IMP_WARN("Particle " << ps[i]->get_index()
+      IMP_WARN("Particle " << ps[i]->get_name()
                << " does not have x,y,z coordinates "
                << " but was passed to the NonbondedListScoreState.\n");
     }
@@ -95,7 +95,7 @@ void ParticleGrid::show(std::ostream &out) const
     out << *it << ": ";
     //Grid::Index
     for (unsigned int i=0; i< grid_.get_voxel(*it).size(); ++i) {
-      out << grid_.get_voxel(*it)[i]->get_index() << " ";
+      out << grid_.get_voxel(*it)[i]->get_name() << " ";
     }
     out << std::endl;
   }

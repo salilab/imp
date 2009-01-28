@@ -37,7 +37,7 @@ IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,  {
                           == (*particles_begin())->get_model(),
                          "All particles in Restraint must belong to the "
                          "same Model.");
-              },);
+              },,);
 
 
 Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
@@ -55,8 +55,8 @@ Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
     for (unsigned int j=0; j<i; ++j) {
       float d= ps_->evaluate(get_particle(i), get_particle(j), NULL);
       IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
-              << get_particle(i)->get_index() << " and "
-              << get_particle(j)->get_index() << " with weight "
+              << get_particle(i)->get_name() << " and "
+              << get_particle(j)->get_name() << " with weight "
               << d << std::endl);
       Edge e = boost::add_edge(i, j, g).first;
       boost::put(boost::edge_weight_t(), g, e, d);
@@ -72,8 +72,8 @@ Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
     int i= boost::target(mst[index], g);
     int j= boost::source(mst[index], g);
     IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
-            << get_particle(i)->get_index()
-            << " and " << get_particle(j)->get_index() << std::endl);
+            << get_particle(i)->get_name()
+            << " and " << get_particle(j)->get_name() << std::endl);
     sum+= ps_->evaluate(get_particle(i),
                         get_particle(j),
                         accum);

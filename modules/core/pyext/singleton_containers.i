@@ -9,6 +9,7 @@ namespace IMP {
     IMP_OWN_FIRST_SECOND_CONSTRUCTOR(MinimumSingletonScoreRestraint)
     IMP_OWN_FIRST_SECOND_CONSTRUCTOR(MaximumSingletonScoreRestraint)
     IMP_CONTAINER_SWIG(FilteredListSingletonContainer, SingletonContainer, singleton_container)
+    IMP_CONTAINER_SWIG(ListSingletonContainer, Particle, particle)
     IMP_SET_OBJECT(SingletonsRestraint, set_singleton_container)
     IMP_SET_OBJECT(SingletonsScoreState, set_before_evaluate_modifier)
     IMP_SET_OBJECT(SingletonsScoreState, set_after_evaluate_modifier)

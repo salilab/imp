@@ -21,7 +21,8 @@ class YamlTests(IMP.test.TestCase):
     def test_read(self):
         """Check reading from yaml"""
         m= self._create_model()
-        st="""particle: 0
+        st="""particle: 32941241
+  name: a particle
   float-attributes:
     x: 0
     y: 1
@@ -29,7 +30,7 @@ class YamlTests(IMP.test.TestCase):
   int-attributes:
   string-attributes:
   particle-attributes:
-particle: 1
+particle: 1324215
   float-attributes:
     x: 3
     y: 4
@@ -39,6 +40,12 @@ particle: 1
   particle-attributes:
 """
         IMP.core.read_from_string(st, m)
+        ps= m.get_particles()
+        d0= IMP.core.XYZDecorator.cast(ps[0])
+        self.assertEqual(d0.get_z(), 2)
+        d1= IMP.core.XYZDecorator.cast(ps[1])
+        self.assertEqual(d1.get_z(), 5)
+        self.assertEqual(ps[0].get_name(), "a particle")
         IMP.core.write(m)
 
 

@@ -44,7 +44,7 @@ IMP_LIST_IMPL(MolecularDynamics, Particle, particle, Particle*,
                     obj->add_attribute(vs_[i], 0.0, false);
                   }
                 }
-              },);
+              },,);
 
 
 void MolecularDynamics::setup_particles()
@@ -52,8 +52,9 @@ void MolecularDynamics::setup_particles()
   degrees_of_freedom_ = 0;
   clear_particles();
 
-  for (unsigned int i = 0; i < get_model()->get_number_of_particles(); ++i) {
-    Particle *p = get_model()->get_particle(i);
+  for (Model::ParticleIterator it= get_model()->particles_begin();
+       it != get_model()->particles_end(); ++it) {
+    Particle *p= *it;
     if (p->has_attribute(cs_[0]) && p->get_is_optimized(cs_[0])
         && p->has_attribute(cs_[1]) && p->get_is_optimized(cs_[1])
         && p->has_attribute(cs_[2]) && p->get_is_optimized(cs_[2])
