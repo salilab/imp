@@ -56,7 +56,6 @@ public:
 };
 //! a collection of ParticleRefiner objects
 typedef std::vector<ParticleRefiner*> ParticleRefiners;
-typedef Index<ParticleRefiner> ParticleRefinerIndex;
 
 IMP_OUTPUT_OPERATOR(ParticleRefiner);
 
