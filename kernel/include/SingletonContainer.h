@@ -14,6 +14,7 @@
 #include "internal/IndexingIterator.h"
 #include "internal/container_helpers.h"
 #include "Particle.h"
+#include "VersionInfo.h"
 #include "base_types.h"
 #include "Pointer.h"
 
@@ -86,16 +87,7 @@ IMP_OUTPUT_OPERATOR(SingletonContainer);
 
 //! A collection of containers
 typedef std::vector<SingletonContainer*> SingletonContainers;
-//! The index to use when this container is store in another object
-typedef Index<SingletonContainer> SingletonContainerIndex;
 
 IMP_END_NAMESPACE
-
-#define IMP_SINGLETON_CONTAINER(version_info)                      \
-  bool get_contains_particle(Particle* p) const;                      \
-  unsigned int get_number_of_particles() const;                   \
-  Particle* get_particle(unsigned int i) const;                       \
-  void show(std::ostream &out= std::cout) const;                   \
-  IMP::VersionInfo get_version_info() const { return version_info; }
 
 #endif  /* IMPCORE_SINGLETON_CONTAINER_H */
