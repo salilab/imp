@@ -35,6 +35,11 @@ public:
 
   virtual ~SimpleDiscreteRestraint() {};
   IMP_RESTRAINT(internal::domino_version_info)
+  ParticlesList get_interacting_particles() const
+  {
+    return ParticlesList(1, Particles(particles_begin(), particles_end()));
+  }
+  IMP_LIST(private, Particle, particle, Particle*)
 protected:
   void load_restraints(std::string restraint_filename);
   Model *model;
