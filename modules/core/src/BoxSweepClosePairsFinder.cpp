@@ -12,6 +12,7 @@
 /* compile the CGAL code with NDEBUG since it doesn't have the
    same level of control over errors as IMP
 */
+#ifndef NDEBUG
 #define NDEBUG
 #ifdef IMP_USE_CGAL
 #include <CGAL/box_intersection_d.h>
