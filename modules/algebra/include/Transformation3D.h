@@ -47,6 +47,7 @@ public:
     rot_.show(out);
     out<<" || "<<trans_<<"\n";
   }
+  Transformation3D get_inverse() const;
 private:
   Vector3D trans_; //tranlation
   Rotation3D rot_;  //rotation

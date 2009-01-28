@@ -9,6 +9,10 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 Transformation3D::~Transformation3D(){}
+Transformation3D Transformation3D::get_inverse() const{
+  Rotation3D inv_rot = rot_.get_inverse();
+  return Transformation3D(inv_rot,-(inv_rot.rotate(trans_)));
+}
 
 
 IMPALGEBRAEXPORT Transformation3D
