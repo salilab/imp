@@ -47,10 +47,11 @@ bool Restraint::get_is_active() const
 
 void Restraint::set_model(Model* model)
 {
-  IMP_assert(model==NULL || get_number_of_particles()==0
-             || model == get_particle(0)->get_model()
-             || (model_ && model_ == model),
-             "Model* different from Particle Model*");
+  IMP_check(model==NULL || model_==NULL
+            || (model_ && model_ == model),
+            "Model* different from already stored model "
+            << model << " " << model_,
+            ValueException);
   model_=model;
   was_owned_=true;
 }
@@ -65,18 +66,5 @@ void Restraint::show(std::ostream& out) const
 
   get_version_info().show(out);
 }
-
-ParticlesList Restraint::get_interacting_particles() const
-{
-  return ParticlesList(1, Particles(particles_begin(), particles_end()));
-}
-
-// The index line is to disable a warning
-IMP_LIST_IMPL(Restraint, Particle, particle,Particle*,  {
-    IMP_assert(get_number_of_particles()==0
-               || obj->get_model() == (*particles_begin())->get_model(),
-               "All particles in Restraint must belong to the "
-               "same Model.");
-  },);
 
 IMP_END_NAMESPACE
