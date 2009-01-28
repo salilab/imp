@@ -59,6 +59,14 @@ EMFitRestraint::~EMFitRestraint()
 {
 }
 
+IMP_LIST_IMPL(EMFitRestraint, Particle, particle,Particle*,  {
+              IMP_assert(get_number_of_particles()==0
+                         || obj->get_model()
+                         == (*particles_begin())->get_model(),
+                         "All particles in EMFitRestraint must belong to the "
+                         "same Model.");
+              },);
+
 //! Calculate the em coarse restraint score.
 /** \param[in] calc_deriv If true, partial first derivatives should be
                           calculated.
