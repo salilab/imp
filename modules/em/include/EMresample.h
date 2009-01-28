@@ -8,7 +8,7 @@
 #ifndef IMPEM_EMRESAMPLE_H
 #define IMPEM_EMRESAMPLE_H
 
-#include "em_exports.h"
+#include "config.h"
 #include "IMP/math_macros.h"
 
 IMPEM_BEGIN_NAMESPACE

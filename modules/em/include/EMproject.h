@@ -8,7 +8,7 @@
 #ifndef IMPEM_EMPROJECT_H
 #define IMPEM_EMPROJECT_H
 
-#include "em_exports.h"
+#include "config.h"
 #include "IMP/algebra/Matrix3D.h"
 
 IMPEM_BEGIN_NAMESPACE

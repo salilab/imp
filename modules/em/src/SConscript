@@ -3,7 +3,11 @@ e = env.IMPSharedLibraryEnvironment()
 
 files = [
          'EMFitRestraint.cpp',
+         'EMproject.cpp',
          'IMPParticlesAccessPoint.cpp',
+         'ImageEM.cpp',
+         'ImageHeader.cpp',
+         'VolumeEM.cpp',
         ]
 
 # Build and install the shared library:

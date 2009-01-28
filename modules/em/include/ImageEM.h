@@ -9,7 +9,7 @@
 #define IMPEM_IMAGE_EM_H
 
 #include <limits>
-#include "em_exports.h"
+#include "config.h"
 #include "ImageHeader.h"
 #include "IMP/algebra/Matrix2D.h"
 
