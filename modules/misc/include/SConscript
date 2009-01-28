@@ -6,6 +6,7 @@ files = [
          'TunnelSingletonScore.h',
          'WormLikeChain.h',
          'attribute_statistics.h',
+         'text_manipulation.h',
         ]
 
 # Install the include files:

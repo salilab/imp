@@ -6,6 +6,7 @@ files = [
          'RefineOncePairScore.cpp',
          'TunnelSingletonScore.cpp',
          'attribute_statistics.cpp',
+         'text_manipulation.cpp',
         ]
 
 # Build and install the shared library:
