@@ -8,7 +8,7 @@
 #ifndef IMPEM_EMNOISE_H
 #define IMPEM_EMNOISE_H
 
-#include "em_exports.h"
+#include "config.h"
 #include "ImageHeader.h"
 #include "IMP/algebra/MultiArray.h"
 #include "IMP/algebra/Matrix2D.h"

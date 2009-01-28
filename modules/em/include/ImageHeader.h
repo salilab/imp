@@ -8,7 +8,7 @@
 #ifndef IMPEM_IMAGE_HEADER_H
 #define IMPEM_IMAGE_HEADER_H
 
-#include "em_exports.h"
+#include "config.h"
 #include "endian.h"
 #include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/math_macros.h"

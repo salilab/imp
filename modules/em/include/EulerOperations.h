@@ -8,7 +8,7 @@
 #ifndef IMPEM_EULER_OPERATIONS_H
 #define IMPEM_EULER_OPERATIONS_H
 
-#include "em_exports.h"
+#include "config.h"
 #include "IMP/math_macros.h"
 #include "IMP/core/Rotation3D.h"
 #include "IMP/algebra/Matrix2D.h"
