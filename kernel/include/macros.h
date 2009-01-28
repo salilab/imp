@@ -623,4 +623,22 @@ void apply(Particle *a) const;
 VersionInfo get_version_info() const {return version;}\
 void show(std::ostream &out= std::cout) const;\
 void apply(Particle *a, Particle *b) const;
+
+//! Define the needed functions for a SingletonContainer
+#define IMP_SINGLETON_CONTAINER(version_info)                      \
+bool get_contains_particle(Particle* p) const;                      \
+unsigned int get_number_of_particles() const;                   \
+Particle* get_particle(unsigned int i) const;                       \
+void show(std::ostream &out= std::cout) const;                   \
+IMP::VersionInfo get_version_info() const { return version_info; }
+
+//! Define the needed functions for a PairContainer
+#define IMP_PAIR_CONTAINER(version_info)                      \
+bool get_contains_particle_pair(ParticlePair p) const;                      \
+unsigned int get_number_of_particle_pairs() const;                   \
+ParticlePair get_particle_pair(unsigned int i) const;                       \
+void show(std::ostream &out= std::cout) const;                   \
+IMP::VersionInfo get_version_info() const { return version_info; }
+
+
 #endif  /* IMP_MACROS_H */
