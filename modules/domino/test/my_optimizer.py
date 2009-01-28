@@ -73,7 +73,6 @@ class my_optimizer:
                     ps.append(p1)
             self.d_opt.add_restraint(r,ps,1.0)
         self.d_opt.set_sampling_space(self.discrete_sampler)
-        self.d_opt.show_restraint_graph()
         return self.d_opt.optimize(1)
 
     def init_sampling_space(self):
