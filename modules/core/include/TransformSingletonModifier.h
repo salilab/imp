@@ -16,7 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a transformation to a passed particle
 /**
-   \relates Transformation3D
+   \relates algebra::Transformation3D
  */
 class IMPCOREEXPORT TransformSingletonModifier : public SingletonModifier
 {

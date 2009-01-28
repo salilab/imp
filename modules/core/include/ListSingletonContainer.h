@@ -15,7 +15,6 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/container_macros.h>
 
-
 IMPCORE_BEGIN_NAMESPACE
 
 //! Store a list of Particles

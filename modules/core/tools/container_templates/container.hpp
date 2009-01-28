@@ -14,6 +14,7 @@
 #include "internal/IndexingIterator.h"
 #include "internal/container_helpers.h"
 #include "Particle.h"
+#include "VersionInfo.h"
 #include "base_types.h"
 #include "Pointer.h"
 #include "VersionInfo.h"
@@ -87,16 +88,7 @@ IMP_OUTPUT_OPERATOR(GroupnameContainer);
 
 //! A collection of containers
 typedef std::vector<GroupnameContainer*> GroupnameContainers;
-//! The index to use when this container is store in another object
-typedef Index<GroupnameContainer> GroupnameContainerIndex;
 
 IMP_END_NAMESPACE
-
-#define IMP_GROUPNAME_CONTAINER(version_info)                      \
-  bool get_contains_classname(Value p) const;                      \
-  unsigned int get_number_of_classnames() const;                   \
-  Value get_classname(unsigned int i) const;                       \
-  void show(std::ostream &out= std::cout) const;                   \
-  IMP::VersionInfo get_version_info() const { return version_info; }
 
 #endif  /* IMPCORE_GROUPNAME_CONTAINER_H */

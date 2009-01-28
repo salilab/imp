@@ -82,8 +82,8 @@ class ClassnameContainerTest(IMP.test.TestCase):
         m.add_particle(p1)
         d0= IMP.core.XYZDecorator.create(p0)
         d1= IMP.core.XYZDecorator.create(p1)
-        d0.set_coordinates(IMP.Vector3D(0,0,1))
-        d1.set_coordinates(IMP.Vector3D(0,0,0))
+        d0.set_coordinates(IMP.algebra.Vector3D(0,0,1))
+        d1.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         return IMP.ParticlePair(p0,p1)
 
     def same_particle(self, a, b):

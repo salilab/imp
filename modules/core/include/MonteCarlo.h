@@ -13,6 +13,7 @@
 #include "Mover.h"
 
 #include <IMP/Optimizer.h>
+#include <IMP/container_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

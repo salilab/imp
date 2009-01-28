@@ -23,7 +23,7 @@ ListGroupnameContainer::~ListGroupnameContainer(){}
 IMP_LIST_IMPL(ListGroupnameContainer, Classname,
               classname, Value,, {
                 std::sort(classnames_begin(), classnames_end());
-              });
+              },);
 
 
 bool

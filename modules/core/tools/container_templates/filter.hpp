@@ -53,8 +53,8 @@ public:
     data_.clear();
   }
 
-  IMP_CONTAINER(GroupnameContainer, groupname_container,
-                GroupnameContainerIndex);
+  IMP_LIST(public, GroupnameContainer, groupname_container,
+           GroupnameContainer*);
 };
 
 

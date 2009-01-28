@@ -32,8 +32,8 @@ public:
 
   IMP_GROUPNAME_CONTAINER(internal::core_version_info);
 
-  IMP_CONTAINER(GroupnameContainer, groupname_container,
-                GroupnameContainerIndex);
+  IMP_LIST(public, GroupnameContainer, groupname_container,
+           GroupnameContainer*);
 };
 
 
