@@ -15,6 +15,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/TripletScore.h>
+#include <IMP/container_macros.h>
 
 #include <vector>
 

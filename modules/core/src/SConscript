@@ -72,6 +72,7 @@ files = [
          'SingletonsScoreState.cpp',
          'SphereDistancePairScore.cpp',
          'SteepestDescent.cpp',
+         'TransformSingletonModifier.cpp',
          'TransformedDistancePairScore.cpp',
          'TripletChainRestraint.cpp',
          'TypedPairScore.cpp',
@@ -82,7 +83,6 @@ files = [
          'bond_decorators.cpp',
          'model_io.cpp',
          'rigid_bodies.cpp',
-         'TransformSingletonModifier.cpp'
         ] \
         + SConscript('internal/SConscript')
 

@@ -64,8 +64,8 @@ PairContainerSet::get_particle_pair(unsigned int i) const {
 
 
 IMP_LIST_IMPL(PairContainerSet,
-                   PairContainer,
-                   pair_container,
-                   PairContainer*,,,)
+              PairContainer,
+              pair_container,
+              PairContainer*,,,)
 
 IMPCORE_END_NAMESPACE

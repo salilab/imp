@@ -67,10 +67,4 @@ IMPEXPORT inline void apply(GroupnameModifier* f,
 
 IMP_END_NAMESPACE
 
-//! Define the functions needed for a GroupnameModifier
-#define IMP_GROUPNAME_MODIFIER(version) \
-VersionInfo get_version_info() const {return version;}\
-void show(std::ostream &out= std::cout) const;\
-void apply(ClassnameArguments);
-
 #endif  /* IMP_GROUPNAME_MODIFIER_H */

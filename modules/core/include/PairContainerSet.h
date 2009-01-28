@@ -14,7 +14,6 @@
 #include "config.h"
 #include "internal/core_version_info.h"
 #include <IMP/PairContainer.h>
-#include <IMP/macros.h>
 #include <IMP/container_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
