@@ -13,38 +13,18 @@ IMP_BEGIN_NAMESPACE
 
 Particle::Particle(Model *m)
 {
-  is_active_ = true;
-  m->add_particle(this);
+  m->add_particle_internal(this);
 }
 
 
 Particle::Particle()
 {
-  is_active_ = true;
+  model_=NULL;
 }
 
 Particle::~Particle()
 {
 }
-
-
-void Particle::set_model(Model *md, ParticleIndex pi)
-{
-  IMP_check(model_==NULL || md==NULL,
-            "Set_model called for particle already in model",
-            ValueException);
-  model_ = md;
-  pi_ = pi;
-  IMP_check(model_==NULL || model_->get_particle(pi_)== this,
-            "Set_model called with inconsistent data",
-            ValueException);
-}
-
-void Particle::set_is_active(const bool is_active)
-{
-  is_active_ = is_active;
-}
-
 
 void Particle::zero_derivatives()
 {
@@ -56,8 +36,8 @@ void Particle::show(std::ostream& out) const
 {
   const std::string inset("  ");
   out << std::endl;
-  out << "Particle: " << get_index() << std::endl;
-  if (is_active_) {
+  out << "Particle: " << get_name() << std::endl;
+  if (get_is_active()) {
     out << inset << inset << "active";
   } else {
     out << inset << inset << "dead";

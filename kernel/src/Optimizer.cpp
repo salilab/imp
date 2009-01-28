@@ -37,7 +37,8 @@ void Optimizer::update_states()
 }
 
 
-IMP_CONTAINER_IMPL(Optimizer, OptimizerState, optimizer_state,
-                   OptimizerStateIndex, obj->set_optimizer(this),,);
+IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
+              OptimizerState*, obj->set_optimizer(this),,
+              obj->set_optimizer(NULL));
 
 IMP_END_NAMESPACE

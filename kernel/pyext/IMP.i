@@ -129,7 +129,6 @@ namespace IMP {
 %include "IMP/deprecation.h"
 %include "IMP/Object.h"
 %include "IMP/RefCountedObject.h"
-%include "IMP/Index.h"
 %include "IMP/VersionInfo.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/DerivativeAccumulator.h"
@@ -152,10 +151,6 @@ namespace IMP {
     
 
 namespace IMP {
-  %template(ParticleIndex) Index<ParticleTag>;
-  %template(RestraintIndex) Index<RestraintTag>;
-  %template(ScoreStateIndex) Index<ScoreStateTag>;
-  %template(OptimizerStateIndex) Index<OptimizerStateTag>;
   %template(Particles) ::std::vector<Particle*>;
   %template(ParticlesList) ::std::vector<Particles>;
   %template(ParticlePairs) ::std::vector<ParticlePair>;
@@ -163,7 +158,6 @@ namespace IMP {
   %template(Restraints) ::std::vector<IMP::Restraint*>;
   %template(ScoreStates) ::std::vector<ScoreState*>;
   %template(OptimizerStates) ::std::vector<OptimizerState*>;
-  %template(ParticleIndexes) ::std::vector<ParticleIndex>;
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;
@@ -173,6 +167,4 @@ namespace IMP {
   %template(Ints) ::std::vector<Int>;
   %template(SingletonContainers) ::std::vector<SingletonContainer*>;
   %template(PairContainers) ::std::vector<PairContainer*>;
-  %template(SingletonContainerIndex) ::IMP::Index<SingletonContainer>;
-  %template(PairContainerIndex) ::IMP::Index<PairContainer>;
 }

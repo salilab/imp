@@ -182,34 +182,34 @@ class TestParticleRefiner(IMP.ParticleRefiner):
         return IMP.VersionInfo("Daniel Russel", "0.5")
 
     def get_can_refine(self, p):
-        print "Can refine? "+ str(p.get_index().get_index())
+        print "Can refine? "+ str(p.get_name())
         print "Return is " + str(self.pr.get_can_refine(p))
         return self.pr.get_can_refine(p)
 
     def get_refined(self, p):
-        print "Refining "+ str(p.get_index().get_index())
+        print "Refining "+ str(p.get_name())
         ps= self.pr.get_refined(p)
-        self.dict[p.get_index().get_index()] = ps
+        self.dict[p.get_name()] = ps
         print self.dict
         return ps
 
     def cleanup_refined(self, p, ps, da):
         # test breaks if refine is called 2x with the same particle
-        print "starting cleanup "+str( p.get_index().get_index() )
+        print "starting cleanup "+str( p.get_name() )
         print self.dict
         if not self.pr.get_can_refine(p):
             print "cleanup the unrefined"
             raise ValueError('Cleanup the unrefined')
-        if not self.dict.has_key(p.get_index().get_index()):
+        if not self.dict.has_key(p.get_name()):
             print "Missing particle info"
             raise ValueError("Missing particle info")
-        ops= self.dict[p.get_index().get_index()]
+        ops= self.dict[p.get_name()]
         print "fetched"
         if len(ops) != len(ps):
             raise ValueError("Cached particles and returned particles " + \
                              "don't match on size")
         for i in range(0, len(ops)):
-            if ps[i].get_index() != ops[i].get_index():
+            if ps[i].get_name() != ops[i].get_name():
                 raise ValueError("Cached particles and returned particles " + \
                                  "don't match")
         self.pr.cleanup_refined(p, ps)

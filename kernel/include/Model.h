@@ -17,6 +17,8 @@
 #include "base_types.h"
 #include "VersionInfo.h"
 
+#include <limits>
+
 IMP_BEGIN_NAMESPACE
 
 class Particle;
@@ -37,7 +39,23 @@ class IMPEXPORT Model: public Object
 {
 private:
   friend class Restraint;
+  friend class Particle;
+  typedef Particle::Storage ParticleStorage;
+
   unsigned int iteration_;
+  ParticleStorage particles_;
+  unsigned int last_particle_index_;
+
+  void add_particle_internal(Particle *p) {
+    particles_.push_back(p);
+    p->iterator_= --particles_.end();
+    p->model_= this;
+    internal::ref(p);
+    std::ostringstream oss;
+    oss << "P" << ++last_particle_index_;
+    p->set_name(oss.str());
+    p->index_= last_particle_index_;
+  }
 public:
   /** Construct an empty model */
   Model();
@@ -45,11 +63,72 @@ public:
       will be deleted if no other Pointers to them are held. */
   ~Model();
 
-  IMP_CONTAINER(Particle, particle, ParticleIndex);
-  IMP_CONTAINER(ScoreState, score_state, ScoreStateIndex);
-  IMP_CONTAINER(Restraint, restraint, RestraintIndex);
+  IMP_LIST(public, ScoreState, score_state, ScoreState*);
+  IMP_LIST(public, Restraint, restraint, Restraint*);
  public:
 
+
+  //! Methods to manipulate particles
+  //@{
+  //! Remove the particle from this model
+  /** Since particles are ref counted the object will still
+      be valid until all references are removed.*/
+  void remove_particle(Particle *p) {
+    IMP_check(p->get_model() == this,
+              "The particle does not belong to this model",
+              ValueException);
+    particles_.erase(p->iterator_);
+    internal::unref(p);
+    p->model_=NULL;
+  }
+  /** \note This really should only be used for debugging and only
+      then if you really know what you are doing as the number of
+      Particles can change unexpectedly.
+   */
+  unsigned int get_number_of_particles() const {
+    return particles_.size();
+  }
+  //! Think before using...
+  /** \note Only use this if you really know what you are doing as
+      Particles can be added to the object from many different places.
+  */
+  typedef ParticleStorage::iterator ParticleIterator;
+  //! Iterate through the particles
+  ParticleIterator particles_begin() {
+    return particles_.begin();
+  }
+  //! Iterate through the particles
+  ParticleIterator particles_end() {
+    return particles_.end();
+  }
+  typedef ParticleStorage::const_iterator ParticleConstIterator;
+  ParticleConstIterator particles_begin() const {
+    return particles_.begin();
+  }
+  ParticleConstIterator particles_end() const {
+    return particles_.end();
+  }
+  //! \deprecated Use the Particle(Model*) constructor
+  void add_particle(Particle *p) {
+    add_particle_internal(p);
+  }
+  //@}
+
+  Particle* get_particle(unsigned int i) const {
+    static bool printed=false;
+    if (!printed) {
+      IMP_WARN("DO NOT USE Model::get_particle(unsigned int)"
+               << " it is extremely slow and going away.");
+      printed=true;
+    }
+    for (ParticleConstIterator it = particles_begin();
+         it != particles_end(); ++it) {
+      if ((*it)->get_index() ==i) {
+        return *it;
+      }
+    }
+    throw IndexException("Bad particle index");
+  }
 
   //! Evaluate all of the restraints in the model and return the score.
   /** \param[in] calc_derivs If true, also evaluate the first derivatives.

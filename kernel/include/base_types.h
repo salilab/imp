@@ -9,7 +9,6 @@
 #define IMP_BASE_TYPES_H
 
 #include "config.h"
-#include "Index.h"
 #include "Key.h"
 
 #include <string>
@@ -43,16 +42,6 @@ struct ParticleTag {};
 struct RestraintTag {};
 struct ScoreStateTag {};
 struct OptimizerStateTag {};
-
-//! Index to access a Particle in a container in an object
-typedef Index<ParticleTag> ParticleIndex;
-//! Index to access a Restraint in a container in an object
-typedef Index<RestraintTag> RestraintIndex;
-typedef std::vector<ParticleIndex> ParticleIndexes;
-//! Index to access a ScoreState in a container in an object
-typedef Index<ScoreStateTag> ScoreStateIndex;
-//! Index to access a OptimizerState in a container in an object
-typedef Index<OptimizerStateTag> OptimizerStateIndex;
 
 /* This needs to be here so that both Model and Particle can use Particles */
 class Particle;

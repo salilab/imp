@@ -89,4 +89,5 @@ IMP_OUTPUT_OPERATOR(PairContainer);
 typedef std::vector<PairContainer*> PairContainers;
 
 IMP_END_NAMESPACE
+
 #endif  /* IMPCORE_PAIR_CONTAINER_H */

@@ -10,15 +10,19 @@
 
 #include "config.h"
 #include "base_types.h"
-#include "Model.h"
 #include "Object.h"
 #include "utility.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
+#include "internal/ObjectContainer.h"
 #include "DerivativeAccumulator.h"
 #include "Pointer.h"
 
+// should use this once we move to a new enough boost (1.35)
+//#include <boost/intrusive/list.hpp>
+
 #include <limits>
+#include <list>
 
 IMP_BEGIN_NAMESPACE
 
@@ -65,6 +69,9 @@ class IMPEXPORT Particle : public RefCountedObject
 private:
   friend class Model;
 
+  //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
+  typedef std::list<Particle*> Storage;
+
   /* This has to be declared here since boost 1.35 wants the full
      definition of Particle to be available when the Pointer
      is declared.
@@ -102,16 +109,11 @@ public:
   Particle();
   ~Particle();
 
-  //! The unique index of this particle in the Model containing it.
-  ParticleIndex get_index() const {
-    return pi_;
-  }
-
   /** Get pointer to Model containing this particle.
       \throw InvalidStateException if now Model contains this particle.
    */
   Model* get_model() const {
-    return model_.get();
+    return model_;
   }
 
   /** @name Float Attributes
@@ -335,13 +337,6 @@ public:
   }
   /*@}*/
 
-  //! Set whether the particle is active.
-  /** Restraints referencing the particle are only evaluated for 'active'
-      particles.
-      \param[in] is_active If true, the particle is active.
-   */
-  void set_is_active(const bool is_active);
-
   //! Get whether the particle is active.
   /** Restraints referencing the particle are only evaluated for 'active'
       particles.
@@ -351,7 +346,7 @@ public:
     IMP_IF_CHECK(EXPENSIVE) {
       assert_is_valid();
     }
-    return is_active_;
+    return model_;
   }
 
   //! Show the particle
@@ -388,16 +383,28 @@ public:
   }
   /*@}*/
 
+  //! Return the name of the particle
+  std::string get_name() const {
+    return name_;
+  }
+
+  // for backwards compatibility, do not use
+  unsigned int get_index() const {
+    return index_;
+  }
+
+  //! Set the name of the particle
+  void set_name(std::string name) {
+    name_=name;
+  }
+
 private:
   void zero_derivatives();
 
-  // Set pointer to model particle data.
-  void set_model(Model *md, ParticleIndex pi);
+  Model* model_;
 
-  Pointer<Model> model_;
-
-  // true if particle is active
-  bool is_active_;
+  std::string name_;
+  unsigned int index_;
 
   // float attributes associated with the particle
   FloatTable floats_;
@@ -413,7 +420,7 @@ private:
   // particle attributes associated with the particle
   ParticleTable particles_;
 
-  ParticleIndex pi_;
+  Storage::iterator iterator_;
 };
 
 
@@ -652,10 +659,10 @@ public:
 
   void show(std::ostream &out= std::cout) const {
     out << "(";
-    if (first) out << first->get_index();
+    if (first) out << first->get_name();
     else out << "NULL";
     out << ", ";
-    if (second) out << second->get_index();
+    if (second) out << second->get_name();
     else out << "NULL";
     out << ")";
   }
@@ -705,13 +712,13 @@ public:
 
   void show(std::ostream &out= std::cout) const {
     out << "(";
-    if (first) out << first->get_index();
+    if (first) out << first->get_name();
     else out << "NULL";
     out << ", ";
-    if (second) out << second->get_index();
+    if (second) out << second->get_name();
     else out << "NULL";
     out << ", ";
-    if (third) out << third->get_index();
+    if (third) out << third->get_name();
     else out << "NULL";
     out << ")";
   }
