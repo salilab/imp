@@ -5,6 +5,7 @@ files = [
          'RefineOncePairScore.h',
          'TunnelSingletonScore.h',
          'WormLikeChain.h',
+         'text_manipulation.h',
          'attribute_statistics.h',
          'text_manipulation.h',
         ]
