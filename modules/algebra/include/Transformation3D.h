@@ -25,6 +25,8 @@ public:
   typedef Transformation3D This;
   //! construct and invalid transformation
   Transformation3D(){
+    trans_=Vector3D(0.0,0.0,0.0);
+    rot_ = identity_rotation();
   }
   /** basic constructor*/
   Transformation3D(const Rotation3D& r, const Vector3D& t)
