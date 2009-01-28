@@ -74,9 +74,13 @@ Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
     IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
             << get_particle(i)->get_name()
             << " and " << get_particle(j)->get_name() << std::endl);
-    sum+= ps_->evaluate(get_particle(i),
-                        get_particle(j),
-                        accum);
+    if (accum) {
+      sum+= ps_->evaluate(get_particle(i),
+                          get_particle(j),
+                          accum);
+    } else {
+      sum += boost::get(boost::edge_weight_t(), g, mst[index]);
+    }
   }
   return sum;
 }
