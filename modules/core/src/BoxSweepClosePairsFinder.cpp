@@ -14,6 +14,8 @@
 */
 #ifndef NDEBUG
 #define NDEBUG
+#endif
+
 #ifdef IMP_USE_CGAL
 #include <CGAL/box_intersection_d.h>
 #include <vector>
