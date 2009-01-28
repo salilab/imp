@@ -73,7 +73,7 @@ public:
     for (std::map<const Particle *,SimpleDiscreteSpace *>::const_iterator it
          = data.begin(); it != data.end(); it++) {
       out << " space for particle with index: "
-          << it->first->get_index().get_index() << " is : ";
+          << it->first->get_index() << " is : ";
       it->second->show(out);
       out << std::endl;
     }

@@ -24,7 +24,7 @@ JNode::JNode(const Particles &ps, int node_ind): ds_(NULL)
   particles_ = Particles();
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     particles_.push_back(*it);
-    sorted_particle_indexes_.push_back((*it)->get_index().get_index());
+    sorted_particle_indexes_.push_back((*it)->get_index());
   }
   std::sort(sorted_particle_indexes_.begin(), sorted_particle_indexes_.end());
   comb_states_ = std::map<std::string, CombState *>();
@@ -63,7 +63,7 @@ void JNode::show_sampling_space(std::ostream& out) const
        pi != particles_.end(); pi++) {
     out << std::endl << " states for particle name : " <<
       //    (*pi)->get_value(IMP::StringKey("name")) << ":" << std::endl;
-      (*pi)->get_index().get_index() << ":" << std::endl;
+      (*pi)->get_index() << ":" << std::endl;
     ds_->show_space(*pi, out);
   }
 }
@@ -76,7 +76,7 @@ void JNode::show(std::ostream& out) const
   for (Particles::const_iterator it = particles_.begin(); it !=
        particles_.end(); it++) {
     //    out << (*it)->get_value(IMP::StringKey("name")) << " || " ;
-    out << (*it)->get_index().get_index() << " || " ;
+    out << (*it)->get_index() << " || " ;
   }
   out << std::endl << "==combinations ( " << comb_states_.size();
   out << " ): " << std::endl;
@@ -91,13 +91,13 @@ bool JNode::is_part(const Particles &ps) const
   std::cout<<"JNode::is_part " << std::endl;
   std::cout<<" the particles are : "<< std::endl;
   for(Particles::const_iterator it = ps.begin(); it != ps.end();it++) {
-    std::cout<<(*it)->get_index().get_index()<<std::endl;
+    std::cout<<(*it)->get_index()<<std::endl;
   }
   std::cout << " ========= and the JNOde is : " << std::endl;
   show();
   std::vector<IMP::Int> intersection, other_sorted_particle_indexes;
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
-    other_sorted_particle_indexes.push_back((*it)->get_index().get_index());
+    other_sorted_particle_indexes.push_back((*it)->get_index());
   }
   sort(other_sorted_particle_indexes.begin(),
        other_sorted_particle_indexes.end());
@@ -127,7 +127,7 @@ void JNode::get_intersection(const JNode &other, Particles &in) const
        it != inter_indexes.end(); it++) {
     for (Particles::const_iterator pi = particles_.begin();
          pi != particles_.end(); pi++) {
-      if (*it == (*pi)->get_index().get_index()) {
+      if (*it == (*pi)->get_index()) {
         in.push_back(*pi);
       }
     }
@@ -253,7 +253,7 @@ std::vector<CombState *>* JNode::find_minimum(bool move_to_state,
   err_msg<<"JNode::find_minimum the number of requested solutions (";
   err_msg<<num_of_solutions << ")is larger than the enumerated solution ";
   err_msg<<"by the node (" << all_states.size() << ")";
-  IMP_assert(all_states.size()>num_of_solutions,err_msg.c_str())
+  IMP_assert(all_states.size()>num_of_solutions,err_msg.str().c_str());
   //allocate min_combs with the top best solutions
   int min_num = all_states.size() * (all_states.size() < num_of_solutions) +
                 num_of_solutions * (all_states.size() >= num_of_solutions);

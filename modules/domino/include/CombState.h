@@ -59,7 +59,7 @@ public:
   for (std::map<Particle *, unsigned int>::const_iterator it = data.begin();
        it != data.end(); it++) {
     Particle *p = it->first;
-    unsigned int p_index = p->get_index().get_index();
+    unsigned int p_index = p->get_index();
     std::stringstream error_message;
     error_message << "CombState::key particle with index " << p_index
                   << " was not found ";

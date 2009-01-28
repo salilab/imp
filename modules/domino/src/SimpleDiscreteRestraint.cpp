@@ -6,6 +6,7 @@
  */
 
 #include <IMP/domino/SimpleDiscreteRestraint.h>
+#include <IMP/container_macros.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -42,8 +43,8 @@ SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model& model_,
     std::string restraint_filename, Particle * p1_, Particle *p2_)
 {
   load_restraints(restraint_filename);
-  Int p1_ind = p1_->get_index().get_index();
-  Int p2_ind = p2_->get_index().get_index();
+  Int p1_ind = p1_->get_index();
+  Int p2_ind = p2_->get_index();
   if (p1_ind < p2_ind) {
     p1 = p1_;
     p2 = p2_;
@@ -66,7 +67,7 @@ IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,  {
                          == (*particles_begin())->get_model(),
                          "All particles in Restraint must belong to the "
                          "same Model.");
-              },);
+  },,);
 
 
 
