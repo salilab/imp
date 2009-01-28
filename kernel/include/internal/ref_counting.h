@@ -32,7 +32,7 @@ struct Ref<true>
 {
   template <class O>
   static void eval(O* o) {
-    IMP_LOG(VERBOSE, "Refing object with count "
+    IMP_LOG(VERBOSE, "Refing object " << o << " with count "
             << o->get_ref_count() << std::endl);
     o->assert_is_valid();
     o->ref();
@@ -54,7 +54,7 @@ struct UnRef<true>
 {
   template <class O>
   static void eval(O *o) {
-    IMP_LOG(VERBOSE, "Unrefing object with count "
+    IMP_LOG(VERBOSE, "Unrefing object " << o << " with count "
             << o->get_ref_count() << std::endl);
     o->assert_is_valid();
     o->unref();
