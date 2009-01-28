@@ -9,10 +9,10 @@
 #define IMPEM_EULER_OPERATIONS_H
 
 #include "config.h"
-#include "IMP/math_macros.h"
-#include "IMP/core/Rotation3D.h"
+#include "IMP/algebra/math_macros.h"
+#include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Matrix2D.h"
-#include "IMP/algebra/ector3D.h"
+#include "IMP/algebra/Vector3D.h"
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -56,15 +56,17 @@ public:
 
   //! Rotates a vector. No check of correction of the rotation matrix is done.
   //! It must have been properly initialized or set.
-  Vector3D rotate(const Vector3D &o) const {
-  return Vector3D((*this)(0,0)*o[0]+(*this)(0,1)*o[1]+(*this)(0,2) * o[2],
+  algebra::Vector3D rotate(const algebra::Vector3D &o) const {
+  return algebra::Vector3D(
+                  (*this)(0,0)*o[0]+(*this)(0,1)*o[1]+(*this)(0,2) * o[2],
                   (*this)(1,0)*o[0]+(*this)(1,1)*o[1]+(*this)(1,2) * o[2],
                   (*this)(2,0)*o[0]+(*this)(2,1)*o[1]+(*this)(2,2) * o[2]);
   }
 
   //! Returns a Rotation3D class with the rotation stored in this matrix.
-  core::Rotation3D convert_to_rotation3D() {
-    return core::rotation_from_matrix((*this)(0,0),(*this)(0,1),(*this)(0, 2),
+  algebra::Rotation3D convert_to_rotation3D() {
+    return algebra::rotation_from_matrix(
+                                      (*this)(0,0),(*this)(0,1),(*this)(0, 2),
                                       (*this)(1,0),(*this)(1,1),(*this)(1, 2),
                                       (*this)(2,0),(*this)(2,1),(*this)(2, 2));
   }

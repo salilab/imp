@@ -8,6 +8,7 @@
 #ifndef IMPEM_VOLUME_EM_H
 #define IMPEM_VOLUME_EM_H
 
+#include <typeinfo>
 #include "config.h"
 #include "ImageHeader.h"
 // #include "EMresample.h"
