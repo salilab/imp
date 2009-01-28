@@ -136,7 +136,7 @@ class TestNBL(IMP.test.TestCase):
         score= m.evaluate(False)
         self.assertEqual(score, 2*190, "Wrong score")
 
-        m.remove_particle(ps[3].get_index())
+        m.remove_particle(ps[3])
         self.assert_(not ps[3].get_is_active(), "Particle not inactive")
         ps=None
         score= m.evaluate(False)
@@ -148,7 +148,7 @@ class TestNBL(IMP.test.TestCase):
 
         p= IMP.Particle()
         m.add_particle(p)
-        print "Index is " +str(p.get_index().get_index())
+        print "Index is " +str(p.get_name())
         d=IMP.core.XYZDecorator.create(p)
         d.set_coordinates_are_optimized(True)
         d.set_coordinates(IMP.algebra.random_vector_in_box(
@@ -234,7 +234,7 @@ class TestNBL(IMP.test.TestCase):
             dp= IMP.core.XYZDecorator.cast(p)
             for q in m.get_particles():
                 dq= IMP.core.XYZDecorator.cast(q)
-                if p.get_index() != q.get_index():
+                if p.get_name() != q.get_name():
                     d = IMP.core.distance(dp,dq)
                     rd= p.get_value(self.rk) + q.get_value(self.rk)
                     if rd > d:

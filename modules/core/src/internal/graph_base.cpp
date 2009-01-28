@@ -27,8 +27,7 @@ bool graph_is_node(Particle* a, const GraphData &d)
 Particle* graph_connect(Particle* a, Particle* b, GraphData &d)
 {
   Model *m= a->get_model();
-  Particle *p= new Particle();
-  ParticleIndex pi=m->add_particle(p);
+  Particle *p= new Particle(m);
   p->add_attribute(d.node_keys_[0], a);
   p->add_attribute(d.node_keys_[1], b);
   for (int i=0; i< 2; ++i) {
@@ -36,12 +35,11 @@ Particle* graph_connect(Particle* a, Particle* b, GraphData &d)
     d.push_back(cp, p);
   }
 
-  return a->get_model()->get_particle(pi);
+  return p;
 }
 
 void graph_disconnect(Particle* e, const GraphData &d)
 {
-  ParticleIndex pi=e->get_index();
   Particle *p[2];
   p[0]= graph_get_node(e, 0, d);
   p[1]= graph_get_node(e, 1, d);
@@ -53,8 +51,7 @@ void graph_disconnect(Particle* e, const GraphData &d)
       }
     }
   }
-  e->set_is_active(false);
-  e->get_model()->remove_particle(e->get_index());
+  e->get_model()->remove_particle(e);
 }
 
 

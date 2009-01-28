@@ -23,7 +23,7 @@ ListSingletonContainer::~ListSingletonContainer(){}
 IMP_LIST_IMPL(ListSingletonContainer, Particle,
               particle, Particle*,, {
                 std::sort(particles_begin(), particles_end());
-              });
+              },);
 
 
 bool

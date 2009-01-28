@@ -37,7 +37,7 @@ public:
 
   IMP_OPTIMIZER(internal::core_version_info)
 
-  IMP_CONTAINER(Mover, mover, MoverIndex);
+  IMP_LIST(public, Mover, mover, Mover*);
 public:
   //! Return the local optimizer used or NULL
   Optimizer *get_local_optimizer() const {

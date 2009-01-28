@@ -88,9 +88,9 @@ FilteredListPairContainer::get_particle_pair(unsigned int i) const {
 
 
 
-IMP_CONTAINER_IMPL(FilteredListPairContainer,
+IMP_LIST_IMPL(FilteredListPairContainer,
                    PairContainer,
                    pair_container,
-                   PairContainerIndex,,,)
+                   PairContainer*,,,)
 
 IMPCORE_END_NAMESPACE

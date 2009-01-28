@@ -76,7 +76,7 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
     pc_=pc;
   }
 
-  IMP_CONTAINER(ParticleRefiner, particle_refiner, ParticleRefinerIndex);
+  IMP_LIST(public, ParticleRefiner, particle_refiner, ParticleRefiner*);
 
   //! Force it to write the next file
   void write_next_file();

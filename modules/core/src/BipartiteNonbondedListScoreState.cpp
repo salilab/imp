@@ -134,7 +134,8 @@ void BipartiteNonbondedListScoreState::rebuild_nbl()
 {
   IMP_LOG(TERSE, "Rebuilding BNBL with cutoff "
           << P::get_cutoff() << " and slack " << P::get_slack() << std::endl);
-  process_sets(mc0_->get_particles(),  mc1_->get_particles());
+  process_sets(Particles(mc0_->particles_begin(), mc0_->particles_end()),
+               Particles(mc1_->particles_begin(), mc1_->particles_end()));
   P::set_nbl_is_valid(true);
   IMP_LOG(TERSE, "NBL has " << P::get_number_of_nonbonded()
           << " pairs" << std::endl);
@@ -162,7 +163,10 @@ void BipartiteNonbondedListScoreState::set_particles(const Particles &ps0,
 
 void BipartiteNonbondedListScoreState::add_particles_0(const Particles &ps)
 {
-  if (P::get_nbl_is_valid()) process_sets(ps, mc1_->get_particles());
+  if (P::get_nbl_is_valid()) {
+    process_sets(ps,
+    Particles(mc1_->particles_begin(), mc1_->particles_end()));
+  }
   mc0_->add_particles(ps);
   mcr_->add_particles(P::particles_with_radius(ps));
   P::set_nbl_is_valid(false);
@@ -170,7 +174,9 @@ void BipartiteNonbondedListScoreState::add_particles_0(const Particles &ps)
 
 void BipartiteNonbondedListScoreState::add_particles_1(const Particles &ps)
 {
-  if (P::get_nbl_is_valid()) process_sets(ps, mc0_->get_particles());
+  if (P::get_nbl_is_valid()) {
+    process_sets(ps, Particles(mc0_->particles_begin(), mc0_->particles_end()));
+  }
   mc1_->add_particles(ps);
   mcr_->add_particles(P::particles_with_radius(ps));
   P::set_nbl_is_valid(false);
@@ -193,8 +199,8 @@ void BipartiteNonbondedListScoreState::show(std::ostream &out) const
 
 void BipartiteNonbondedListScoreState::check_nbl() const
 {
-  const Particles &ps0= mc0_->get_particles();
-  const Particles &ps1= mc1_->get_particles();
+  const Particles ps0(mc0_->particles_begin(), mc0_->particles_end());
+  const Particles ps1(mc1_->particles_begin(), mc1_->particles_end());
   GetRadius gr= P::get_radius_object();
   for (unsigned int i=0; i< ps0.size(); ++i) {
     XYZDecorator di= XYZDecorator::cast(ps0[i]);
@@ -213,9 +219,9 @@ void BipartiteNonbondedListScoreState::check_nbl() const
           }
         }
         IMP_assert(found, "Nonbonded list is missing "
-                   << ps0[i]->get_index() << " " << di
+                   << ps0[i]->get_name() << " " << di
                    << " " << gr(ps0[i])
-                   << " and " << ps1[j]->get_index() << " "
+                   << " and " << ps1[j]->get_name() << " "
                    << dj << gr(ps1[j])
                    << " size is " << get_number_of_nonbonded() << std::endl);
       }

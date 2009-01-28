@@ -28,7 +28,7 @@ void GravityCenterScoreState::do_before_evaluate()
 
 // check that the particle is an xyz particle
 IMP_LIST_IMPL(GravityCenterScoreState, Particle, particle, Particle*,
-              XYZDecorator::cast(obj), update_position());
+              XYZDecorator::cast(obj), update_position(),);
 
 void GravityCenterScoreState::update_position()
 {

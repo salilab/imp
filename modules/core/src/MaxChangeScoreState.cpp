@@ -43,7 +43,7 @@ IMP_LIST_IMPL(MaxChangeScoreState, Particle, particle, Particle*,
                                        obj->get_value(keys_[i]), false);
                   }
                 }
-              }, {reset();});
+              }, {reset();},);
 
 void MaxChangeScoreState::do_before_evaluate()
 {
@@ -55,7 +55,7 @@ void MaxChangeScoreState::do_before_evaluate()
     for (unsigned int j=0; j < keys_.size(); ++j) {
       Float v= (*it)->get_value(keys_[j]);
       Float ov= (*it)->get_value(origkeys_[j]);
-      IMP_LOG(VERBOSE, "Particle " << (*it)->get_index()
+      IMP_LOG(VERBOSE, "Particle " << (*it)->get_name()
               << " and attribute " << keys_[j]
               << " moved " << std::abs(v - ov) << std::endl);
       max_change_= std::max(max_change_,

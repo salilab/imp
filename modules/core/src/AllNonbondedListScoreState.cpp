@@ -111,7 +111,7 @@ void AllNonbondedListScoreState::rebuild_nbl()
   IMP_LOG(TERSE, "Rebuilding AllNBL with cutoff "
           << P::get_cutoff() << " and slack " << P::get_slack() << std::endl);
   if (a_== QUADRATIC) {
-    const Particles &moving= mc_->get_particles();
+    const Particles moving(mc_->particles_begin(), mc_->particles_end());
     for (unsigned int j=0; j< moving.size(); ++j) {
       for (unsigned int i=0; i< j; ++i) {
         P::add_if_box_overlap(moving[i], moving[j]);
@@ -120,7 +120,8 @@ void AllNonbondedListScoreState::rebuild_nbl()
   } else if (a_ == GRID) {
     grid_rebuild_nbl();
   } else if (a_== BBOX) {
-    internal::bbox_scan(mc_->get_particles(), P::get_radius_key(),
+    internal::bbox_scan(Particles(mc_->particles_begin(), mc_->particles_end()),
+                        P::get_radius_key(),
                         P::get_slack(), P::get_cutoff(),
                         internal::NBLAddPairIfNonbonded(this));
 
@@ -146,14 +147,17 @@ void AllNonbondedListScoreState::add_particles(const Particles &ps)
 {
   if (P::get_nbl_is_valid()) {
     if (a_== QUADRATIC || a_ == GRID) {
-      const Particles &moving= mc_->get_particles();
+      const Particles moving= Particles(mc_->particles_begin(),
+                                        mc_->particles_end());
       for (unsigned int j=0; j< moving.size(); ++j) {
         for (unsigned int i=0; i< ps.size(); ++i) {
           P::add_if_box_overlap(ps[i], moving[j]);
         }
       }
     } else if (a_== BBOX) {
-      internal::bipartite_bbox_scan(mc_->get_particles(), ps,
+      internal::bipartite_bbox_scan(Particles(mc_->particles_begin(),
+                                              mc_->particles_end()),
+                                    ps,
                                     P::get_radius_key(),
                                     P::get_slack(), P::get_cutoff(),
                                     internal::NBLAddPairIfNonbonded(this));
@@ -197,11 +201,11 @@ float AllNonbondedListScoreState::grid_side_from_r(float r) const
 void AllNonbondedListScoreState
 ::grid_partition_points(IMP::internal::Vector<internal::ParticleGrid*> &bins)
 {
-  if (mc_->get_particles().empty()) return;
+  if (!mc_->get_has_particles()) return;
   GetRadius gr= P::get_radius_object();
   float minr=std::numeric_limits<float>::max(), maxr=0;
-  for (unsigned int i=0; i< mc_->get_particles().size(); ++i) {
-    float r= gr(mc_->get_particles()[i]);
+  for (unsigned int i=0; i< mc_->get_number_of_particles(); ++i) {
+    float r= gr(mc_->get_particle(i));
     if ( r > maxr) maxr=r;
     if ( r > 0 && r < minr) minr=r;
   }
@@ -216,13 +220,13 @@ void AllNonbondedListScoreState
   cuts.push_back(2*maxr);
 
   std::vector<Particles> ops(cuts.size());
-  for (unsigned int i=0; i< mc_->get_particles().size(); ++i) {
-    float r= gr(mc_->get_particles()[i]);
+  for (unsigned int i=0; i< mc_->get_number_of_particles(); ++i) {
+    float r= gr(mc_->get_particle(i));
     bool found=false;
     for (unsigned int j=0; ; ++j) {
       IMP_assert(j< cuts.size(), "Internal error in ASNBLSS");
       if (cuts[j] >= r) {
-        ops[j].push_back(mc_->get_particles()[i]);
+        ops[j].push_back(mc_->get_particle(i));
         found=true;
         break;
       }
@@ -268,7 +272,7 @@ void AllNonbondedListScoreState
       = grid_bin->get_virtual_index(algebra::Vector3D(d.get_x(),
                                                       d.get_y(),
                                                       d.get_z()));
-    IMP_LOG(VERBOSE, "Searching for " << p->get_index()
+    IMP_LOG(VERBOSE, "Searching for " << p->get_name()
             << " from " << index << std::endl);
     grid_bin->apply_to_nearby(f, index,
                                    P::get_cutoff() + 2*P::get_slack(),
@@ -293,7 +297,7 @@ void AllNonbondedListScoreState::grid_rebuild_nbl()
     for (internal::ParticleGrid::ParticleVoxelIterator it
            = bins[i]->particle_voxels_begin();
          it != bins[i]->particle_voxels_end(); ++it) {
-      IMP_LOG(VERBOSE, "Searching with particle " << it->first->get_index()
+      IMP_LOG(VERBOSE, "Searching with particle " << it->first->get_name()
               << std::endl);
       internal::NBLAddIfNonbonded f(this, it->first);
       bins[i]->apply_to_nearby(f, it->second,
@@ -316,7 +320,7 @@ void AllNonbondedListScoreState::grid_rebuild_nbl()
 void AllNonbondedListScoreState::check_nbl() const
 {
   if (!get_nbl_is_valid()) return;
-  const Particles &ps= mc_->get_particles();
+  const Particles ps(mc_->particles_begin(), mc_->particles_end());
   P::GetRadius gr= P::get_radius_object();
   for (unsigned int i=0; i< ps.size(); ++i) {
     XYZDecorator di= XYZDecorator::cast(ps[i]);
@@ -335,9 +339,9 @@ void AllNonbondedListScoreState::check_nbl() const
           }
         }
         IMP_assert(found, "Nonbonded list is missing "
-                   << ps[i]->get_index() << " " << di
+                   << ps[i]->get_name() << " " << di
                    << " " << gr(ps[i])
-                   << " and " << ps[j]->get_index() << " "
+                   << " and " << ps[j]->get_name() << " "
                    << dj << gr(ps[j])
                    << " size is " << get_number_of_nonbonded()
                    << " distance is " << distance(di, dj)

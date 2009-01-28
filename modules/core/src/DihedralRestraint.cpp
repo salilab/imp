@@ -127,10 +127,10 @@ void DihedralRestraint::show(std::ostream& out) const
   }
 
   get_version_info().show(out);
-  out << "  particles: " << p_[0]->get_index();
-  out << ", " << p_[1]->get_index();
-  out << ", " << p_[2]->get_index();
-  out << " and " << p_[3]->get_index();
+  out << "  particles: " << p_[0]->get_name();
+  out << ", " << p_[1]->get_name();
+  out << ", " << p_[2]->get_name();
+  out << " and " << p_[3]->get_name();
   out << "  ";
   score_func_->show(out);
   out << std::endl;

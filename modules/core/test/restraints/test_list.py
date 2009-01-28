@@ -33,9 +33,10 @@ class TestList(IMP.test.TestCase):
     def test_interacting_particles(self):
         """Test SingletonListRestraint::get_interacting_particles()"""
         m= IMP.Model()
+        ps= []
         for i in range(0,10):
-            p= IMP.Particle()
-            m.add_particle(p)
+            p= IMP.Particle(m)
+            ps.append(p)
         os= OneSingle()
         s= IMP.core.SingletonListRestraint(os, m.get_particles())
         m.add_restraint(s)
@@ -44,7 +45,7 @@ class TestList(IMP.test.TestCase):
         self.assertEqual(len(ipar), 10)
         for n, val in enumerate(ipar):
             self.assertEqual(len(val), 1)
-            self.assertEqual(val[0], m.get_particle(IMP.ParticleIndex(n)))
+            self.assertEqual(val[0], ps[n])
 
     def test_ss(self):
         """Test the distanceto score"""
@@ -67,8 +68,7 @@ class TestList(IMP.test.TestCase):
     def test_ss2(self):
         """Test the enclosing sphere """
         m= IMP.Model()
-        p= IMP.Particle()
-        m.add_particle(p)
+        p= IMP.Particle(m)
         d=IMP.core.XYZDecorator.create(p)
         d.set_x(100)
         d.set_y(1)
@@ -83,7 +83,7 @@ class TestList(IMP.test.TestCase):
         o= IMP.core.ConjugateGradients()
         o.set_model(m)
         o.optimize(100)
-        d= IMP.core.XYZDecorator.cast(m.get_particle(IMP.ParticleIndex(0)))
+        d= IMP.core.XYZDecorator.cast(p)
         dist2 = (d.get_x()-5)**2+(d.get_y()-5)**2+(d.get_y()-5)**2
         print "Final"
         d.show()

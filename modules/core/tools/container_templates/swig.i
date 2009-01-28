@@ -13,6 +13,6 @@ namespace IMP {
     IMP_SET_OBJECT(GroupnamesScoreState, set_before_evaluate_modifier)
     IMP_SET_OBJECT(GroupnamesScoreState, set_after_evaluate_modifier)
     IMP_CONTAINER_SWIG(GroupnameContainerSet, GroupnameContainer, groupname_container)
-
+    IMP_CONTAINER_SWIG(ListGroupnameContainer, Groupname, groupname)
     }
 }

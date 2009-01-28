@@ -42,8 +42,8 @@ Float BondDecoratorRestraint::evaluate(DerivativeAccumulator *accum)
     Particle *pa=NULL, *pb=NULL;
     try {
       /*IMP_LOG(VERBOSE, "Bonded pair "
-              << bd.get_bonded(0).get_particle()->get_index()
-              << " " << bd.get_bonded(1).get_particle()->get_index()
+              << bd.get_bonded(0).get_particle()->get_name()
+              << " " << bd.get_bonded(1).get_particle()->get_name()
               << " with length " << l << " and stiffness " << s << std::endl);*/
       pa = bd.get_bonded(0).get_particle();
       pb = bd.get_bonded(1).get_particle();

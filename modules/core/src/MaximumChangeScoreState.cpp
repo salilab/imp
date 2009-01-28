@@ -31,14 +31,13 @@ void MaximumChangeScoreState::do_before_evaluate()
   for (SingletonContainer::ParticleIterator it= pc_->particles_begin();
        it != pc_->particles_end(); ++it) {
     (*it)->assert_is_valid();
-    ParticleIndex pi=(*it)->get_index();
-    if (orig_values_.find(pi) == orig_values_.end()) {
+    if (orig_values_.find(*it) == orig_values_.end()) {
       maximum_change_= std::numeric_limits<Float>::max();
       break;
     } else {
       for (unsigned int j=0; j < keys_.size(); ++j) {
         Float v= (*it)->get_value(keys_[j]);
-        Float ov= orig_values_[pi].get_value(keys_[j]);
+        Float ov= orig_values_[*it].get_value(keys_[j]);
         maximum_change_= std::max(maximum_change_,
                                   std::abs(v-ov));
       }
@@ -55,10 +54,9 @@ void MaximumChangeScoreState::reset()
   for (SingletonContainer::ParticleIterator it= pc_->particles_begin();
        it != pc_->particles_end(); ++it) {
     (*it)->assert_is_valid();
-    ParticleIndex pi=(*it)->get_index();
-    orig_values_[pi]=AT();
+    orig_values_[*it]=AT();
     for (unsigned int i=0; i< keys_.size(); ++i) {
-      orig_values_[pi].insert(keys_[i],
+      orig_values_[*it].insert(keys_[i],
                               (*it)->get_value(keys_[i]));
     }
   }

@@ -29,7 +29,7 @@ public:
 
   IMP_RESTRAINT(internal::core_version_info)
 
-  IMP_CONTAINER(Restraint, restraint, RestraintIndex);
+  IMP_LIST(public, Restraint, restraint, Restraint*);
 
  public:
 

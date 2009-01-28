@@ -382,7 +382,7 @@ struct HierarchyPrinter
     } else {
       out_ << "+";
     }
-    out_ << "Particle " << p->get_index() << std::endl;
+    out_ << "Particle " << p->get_name() << std::endl;
     prefix += "  ";
     PD nd= PD::cast(p);
     if (nd != PD()) {

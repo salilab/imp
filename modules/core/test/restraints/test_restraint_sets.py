@@ -65,9 +65,9 @@ class RestraintSetTests(IMP.test.TestCase):
         rsrs = r.get_restraints()
         self.assertEqual(len(rsrs), len(self.distrsr))
         for n, val in enumerate(self.distrsr):
-            self.assertEqual(r.get_restraint(IMP.RestraintIndex(n)), val)
+            self.assertEqual(r.get_restraint(n), val)
             self.assertEqual(rsrs[n], val)
-        self.assertRaises(IndexError, r.get_restraint, IMP.RestraintIndex(2))
+        self.assertRaises(IndexError, r.get_restraint, 2)
 
 if __name__ == '__main__':
     unittest.main()

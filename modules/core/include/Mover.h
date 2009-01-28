@@ -21,9 +21,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 class MonteCarlo;
 class Mover;
-//! An index to get moves
-typedef Index<Mover> MoverIndex;
-
 
 //! A class to make a monte carlo move.
 /** You probably want to use MoverBase if you are implementing a Mover.
@@ -31,13 +28,11 @@ typedef Index<Mover> MoverIndex;
 class IMPCOREEXPORT Mover: public RefCountedObject
 {
   friend class MonteCarlo;
-  void set_optimizer(Optimizer *c, MoverIndex i) {
+  void set_optimizer(Optimizer *c) {
     opt_=c;
-    index_=i;
   }
 
   Pointer<Optimizer> opt_;
-  MoverIndex index_;
 public:
   Mover();
 
@@ -59,11 +54,6 @@ public:
   Optimizer *get_optimizer() const {
     IMP_CHECK_OBJECT(this);
     return opt_.get();
-  }
-  //! Return the index of this Mover
-  MoverIndex get_index() const {
-    IMP_assert(index_!= MoverIndex(), "Call set_optimizer first");
-    return index_;
   }
   virtual void show(std::ostream&out= std::cout) const {
     out << "Mover doesn't implement show " << std::endl;

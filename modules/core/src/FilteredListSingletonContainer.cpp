@@ -88,9 +88,9 @@ FilteredListSingletonContainer::get_particle(unsigned int i) const {
 
 
 
-IMP_CONTAINER_IMPL(FilteredListSingletonContainer,
+IMP_LIST_IMPL(FilteredListSingletonContainer,
                    SingletonContainer,
                    singleton_container,
-                   SingletonContainerIndex,,,)
+                   SingletonContainer*,,,)
 
 IMPCORE_END_NAMESPACE

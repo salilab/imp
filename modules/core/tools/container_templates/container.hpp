@@ -16,6 +16,7 @@
 #include "Particle.h"
 #include "base_types.h"
 #include "Pointer.h"
+#include "VersionInfo.h"
 
 IMP_BEGIN_NAMESPACE
 

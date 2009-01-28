@@ -87,7 +87,7 @@ class MCOptimizerTest(IMP.test.TestCase):
             print "Energy after step is " + str(e)
             for p in model.get_particles():
                 val = p.get_value(self.xkey)
-                #print "Particle " + str(p.get_index().get_index()) +\
+                #print "Particle " + str(p.get_name()) +\
                 #    " is at " + str(val)
 
         for p in model.get_particles():

@@ -62,6 +62,6 @@ void PairListRestraint::show(std::ostream& out) const
   out << std::endl;
 }
 
-IMP_LIST_IMPL(PairListRestraint, ParticlePair, particle_pair, ParticlePair,,)
+IMP_LIST_IMPL(PairListRestraint, ParticlePair, particle_pair, ParticlePair,,,)
 
 IMPCORE_END_NAMESPACE

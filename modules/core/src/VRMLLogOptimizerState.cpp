@@ -126,8 +126,8 @@ void VRMLLogOptimizerState::write(std::string buf) const
   }
 }
 
-IMP_CONTAINER_IMPL(VRMLLogOptimizerState, ParticleRefiner, particle_refiner,
-                   ParticleRefinerIndex ,,,);
+IMP_LIST_IMPL(VRMLLogOptimizerState, ParticleRefiner, particle_refiner,
+              ParticleRefiner*,,,);
 
 static Float snap(Float f)
 {

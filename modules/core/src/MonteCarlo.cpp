@@ -21,8 +21,8 @@ Mover::Mover() {}
 Mover::~Mover(){}
 
 
-IMP_CONTAINER_IMPL(MonteCarlo, Mover, mover, MoverIndex,
-                   obj->set_optimizer(this, index),,);
+IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*,
+              obj->set_optimizer(this),,);
 
 MonteCarlo::MonteCarlo(): temp_(1),
                           prior_energy_(std::numeric_limits<Float>::max()),

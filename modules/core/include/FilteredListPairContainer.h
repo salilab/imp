@@ -14,6 +14,7 @@
 #include "config.h"
 #include "internal/core_version_info.h"
 #include <IMP/PairContainer.h>
+#include <IMP/container_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -52,8 +53,8 @@ public:
     data_.clear();
   }
 
-  IMP_CONTAINER(PairContainer, pair_container,
-                PairContainerIndex);
+  IMP_LIST(public, PairContainer, pair_container,
+           PairContainer*);
 };
 
 
