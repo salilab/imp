@@ -76,7 +76,13 @@ def _add_build_flags(env):
     if env.get('build', 'release') == 'fast':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=['-O3', "-Wall"])
+            env.Append(CCFLAGS=[ "-Wall", "-O3"])
+    if env.get('build', 'release') == 'profile':
+        env.Append(CPPDEFINES=['NDEBUG'])
+        if env['CC'] == 'gcc':
+            env.Append(CCFLAGS=[ "-Wall", "-O3"])
+            env.Append(CCFLAGS=['-g', '-pg'])
+            env.Append(LINKFLAGS=['-pg'])
     elif env.get('build', 'release') == 'debug':
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=["-Wall","-g"])
@@ -453,7 +459,9 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('build',
                           "Set to \'release\' for a normal build,"
                           +" or debug to disable optimization,"
-                          +" or fast to disable most runtime checks",
+                          +" or fast to disable most runtime checks"
+                          +" or profile to disable most runtime checks"
+                          +"but keep debugging information",
                           "release", PathVariable.PathAccept))
     vars.Add(BoolVariable('linksysv',
                           'Link with old-style SysV, not GNU hash, for ' + \
