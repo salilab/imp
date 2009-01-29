@@ -23,7 +23,7 @@ class DOMINOTests(IMP.test.TestCase):
     def __set_representation__(self):
         #load three proteins
         self.particles = IMP.Particles() #the particles to be optimized
-        self.h_particles = []  #thier molecular hierarhcy decorator
+        self.h_particles = []  #thier molecular hierarchy decorator
 
         for s in ['1','2','3']:
             mp = IMP.modeller.read_pdb(
@@ -60,7 +60,7 @@ class DOMINOTests(IMP.test.TestCase):
 #             print 'connectivity restraint calculation took %9.6f Seconds' % (dt)
 
     def __set_optimizer__(self):
-        jt_filename = self.get_input_file_name("hierarhcy_jt.txt")
+        jt_filename = self.get_input_file_name("hierarchy_jt.txt")
         self.d_opt = IMP.domino.DominoOptimizer(jt_filename,self.imp_model)
 
 
