@@ -36,11 +36,8 @@ public:
    * \param[in] Xdim Number of columns
    */
   void resize(Int Zdim, Int Ydim, Int Xdim) {
-    std::vector<Int> shape(3);
-    shape[0] = Zdim;
-    shape[1] = Ydim;
-    shape[2] = Xdim;
-    MultiArray<T, 3>::resize(shape);
+    typename Matrix3D<T>::extent_gen extents;
+    MultiArray<T, 3>::resize(extents[Zdim][Ydim][Xdim]);
   }
 
 
