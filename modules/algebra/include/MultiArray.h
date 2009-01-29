@@ -112,7 +112,7 @@ public:
    * \param[in] shape Any class able to be accessed with []
    */
   template<typename T1>
-  void resize(T1& shape) {
+  void resize(const T1& shape) {
     boost::multi_array<T, D>::resize(shape);
   }
 

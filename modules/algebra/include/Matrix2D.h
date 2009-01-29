@@ -49,7 +49,7 @@ public:
    * \param[in] m2 Matrix2D whose size to copy
    */
   template<typename T1>
-  void resize(Matrix2D<T1>& m2) {
+  void resize(const Matrix2D<T1>& m2) {
     this->resize(m2.shape()[0], m2.shape()[1]);
   }
 
