@@ -12,6 +12,7 @@ files = [
          'PermutationSampler.h',
          'MappedDiscreteSet.h',
          'CartesianProductSampler.h',
+         'TransformationUtils.h',
          'SimpleDiscreteRestraint.h',
          'SimpleDiscreteSpace.h',
          'SimpleDiscreteSampler.h',

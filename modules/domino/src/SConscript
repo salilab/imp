@@ -11,6 +11,7 @@ files = [
          'PermutationSampler.cpp',
          'MappedDiscreteSet.cpp',
          'CartesianProductSampler.cpp',
+         'TransformationUtils.cpp',
          'SimpleDiscreteRestraint.cpp',
         ]
 
