@@ -94,8 +94,8 @@ class FittingTest(IMP.test.TestCase):
                                         self.particles[1])
         m.add_restraint(r1)
         m.add_restraint(r2)
-        r1 = m.get_restraint(IMP.RestraintIndex(0))
-        r2 = m.get_restraint(IMP.RestraintIndex(1))
+        r1 = m.get_restraint(0)
+        r2 = m.get_restraint(1)
         self.assert_(isinstance(IMP.em.EMFitRestraint.cast(r1),
                                 IMP.em.EMFitRestraint))
         self.assert_(IMP.em.EMFitRestraint.cast(r2) is None)
