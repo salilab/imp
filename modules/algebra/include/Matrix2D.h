@@ -40,10 +40,8 @@ public:
    * \param[in] Xdim Number of columns
    */
   void resize(Int Ydim, Int Xdim) {
-    std::vector<Int> shape(2);
-    shape[0] = Ydim;
-    shape[1] = Xdim;
-    MultiArray<T, 2>::resize(shape);
+    typename Matrix2D<T>::extent_gen extents;
+    MultiArray<T, 2>::resize(extents[Ydim][Xdim]);
   }
 
   //! Resizes the matrix copying the size of a given one
