@@ -13,6 +13,7 @@ files = [
          'MappedDiscreteSet.h',
          'CartesianProductSampler.h',
          'TransformationUtils.h',
+         'TransformationMappedDiscreteSet.h',
          'SimpleDiscreteRestraint.h',
          'SimpleDiscreteSpace.h',
          'SimpleDiscreteSampler.h',
