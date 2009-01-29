@@ -115,10 +115,11 @@ class DOMINOTests(IMP.test.TestCase):
         print self.d_opt.optimize(1)
         rg = self.d_opt.get_graph()
         print "OPT SCORE ::::::::::::; " + str(self.opt_score)
-        scores=[self.opt_score,33.3592,66.5539,86.989,95.7]
-        scores=[33.3545,33.3592,66.5539,86.989,95.7]
+        scores=[self.opt_score,29.0455, 77.5906, 84.0942, 91.4]
         for i in xrange(num_sol):
             score_inf = rg.get_opt_combination(i).get_total_score()
-            self.assertAlmostEqual(score_inf,scores[i],places=1)
+            self.assert_( abs(score_inf -scores[i]) < 0.2 ,
+                          "the score of the minimum configuration as calculated by the inference is wrong " + str(score_inf) + " != " + str(scores[i]))
+
 if __name__ == '__main__':
     unittest.main()
