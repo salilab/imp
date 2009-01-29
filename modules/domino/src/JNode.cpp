@@ -88,13 +88,6 @@ void JNode::show(std::ostream& out) const
 }
 bool JNode::is_part(const Particles &ps) const
 {
-  std::cout<<"JNode::is_part " << std::endl;
-  std::cout<<" the particles are : "<< std::endl;
-  for(Particles::const_iterator it = ps.begin(); it != ps.end();it++) {
-    std::cout<<(*it)->get_index()<<std::endl;
-  }
-  std::cout << " ========= and the JNOde is : " << std::endl;
-  show();
   std::vector<IMP::Int> intersection, other_sorted_particle_indexes;
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     other_sorted_particle_indexes.push_back((*it)->get_index());
@@ -165,14 +158,12 @@ void JNode::realize(Restraint *r, Particles *ps, Float weight)
     partial_key = it->second->partial_key(ps);
     if (result_cache.find(partial_key) == result_cache.end()) {
       move2state(it->second);
-      std::cout<<"The value is : " << r->evaluate(NULL) << std::endl;
       score = r->evaluate(NULL) * weight;
       result_cache[partial_key] = score;
     } else {
       score = result_cache.find(partial_key)->second;
     }
     it->second->update_total_score(0.0, score);
-    it->second->show();
   }
 }
 
@@ -255,9 +246,9 @@ std::vector<CombState *>* JNode::find_minimum(bool move_to_state,
   err_msg<<"by the node (" << all_states.size() << ")";
   IMP_assert(all_states.size()>num_of_solutions,err_msg.str().c_str());
   //allocate min_combs with the top best solutions
-  int min_num = all_states.size() * (all_states.size() < num_of_solutions) +
-                num_of_solutions * (all_states.size() >= num_of_solutions);
-  for(unsigned int i=0;i<min_num;i++) {
+  //  int min_num = all_states.size() * (all_states.size() < num_of_solutions) +
+  //              num_of_solutions * (all_states.size() >= num_of_solutions);
+  for(unsigned int i=0;i<num_of_solutions;i++) {
     std::string key = all_states[i].second;
     min_combs->push_back(comb_states_[key]);
   }
