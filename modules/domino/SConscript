@@ -4,7 +4,7 @@ Export('env')
 # No dependent libraries, so this module can always be built:
 env.validate()
 
-env.Append(LIBS=['imp_core'])
+env.Append(LIBS=['imp_core', 'imp_algebra'])
 
 # Subdirectories:
 SConscript('src/SConscript')
