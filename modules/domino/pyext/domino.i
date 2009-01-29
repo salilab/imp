@@ -3,6 +3,8 @@
 %{
 #include "IMP.h"
 #include "IMP/domino.h"
+#include "IMP/algebra.h"
+#include "IMP/core.h"
 %}
 
 %include "kernel/pyext/IMP_macros.i"
@@ -19,7 +21,7 @@
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
-
+%import "modules/algebra/pyext/algebra.i"
 /* Wrap our own classes */
 %include "IMP/domino/CombState.h"
 %include "IMP/domino/DiscreteSampler.h"
@@ -32,3 +34,5 @@
 %include "IMP/domino/SimpleDiscreteSpace.h"
 %include "IMP/domino/SimpleDiscreteRestraint.h"
 %include "IMP/domino/SimpleDiscreteSampler.h"
+%include "IMP/domino/TransformationMappedDiscreteSet.h"
+%include "IMP/domino/TransformationCartesianProductSampler.h"
