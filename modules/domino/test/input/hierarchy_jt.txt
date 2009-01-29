@@ -1,0 +1,5 @@
+nodes:
+prot1 prot2
+prot2 prot3
+edges:
+0 1
