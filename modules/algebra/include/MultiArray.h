@@ -91,29 +91,10 @@ public:
     *this = v;
   }
 
-  //! Clear the content of the array and deallocate memmory.
-  void clear() {
-    std::vector<index> shape(D);
-    for (Int i = 0;i < D;i++) {
-      shape[i] = 0;
-    }
-    boost::multi_array<T, D>::resize(shape);
-  }
-
-
   //! Another way of asking for the size of a given dimension. You can always
   //! use x.shape()[i] too.
   index get_size(index dim) const {
     return this->shape()[dim];
-  }
-
-  //! Resize specifying the dimensions for the array
-  /**
-   * \param[in] shape Any class able to be accessed with []
-   */
-  template<typename T1>
-  void resize(const T1& shape) {
-    boost::multi_array<T, D>::resize(shape);
   }
 
   //! Another way of asking for the initial value (logical)
@@ -176,47 +157,30 @@ public:
     return (*this)(idx);
   }
 
-  //! Assignment operator
-  MultiArray<T, D>& operator=(const MultiArray<T, D>& v) {
-    if (&v != this) {
-      this->copy_shape(v);
-      std::vector<int> idx(D);
-      while (roll_inds(idx, this->shape(), this->index_bases())) {
-        (*this)(idx) = v(idx);
-      }
-    }
-    return *this;
-  }
-
-
   //! Sum operator
   MultiArray<T, D> operator+(const MultiArray<T, D>& v) const {
-    MultiArray<T, D> result;
-    result.copy_shape(*this);
+    MultiArray<T, D> result(this->shape());
     operate_arrays(*this, v, result, '+');
     return result;
   }
 
   //! Minus operator
   MultiArray<T, D> operator-(const MultiArray<T, D>& v) const {
-    MultiArray<T, D> result;
-    result.copy_shape(*this);
+    MultiArray<T, D> result(this->shape());
     operate_arrays(*this, v, result, '-');
     return result;
   }
 
   //! Multiplication operator
   MultiArray<T, D> operator*(const MultiArray<T, D>& v) const {
-    MultiArray<T, D> result;
-    result.copy_shape(*this);
+    MultiArray<T, D> result(this->shape());
     operate_arrays(*this, v, result, '*');
     return result;
   }
 
   //! Division operator
   MultiArray<T, D> operator/(const MultiArray<T, D>& v) const {
-    MultiArray<T, D> result;
-    result.copy_shape(*this);
+    MultiArray<T, D> result(this->shape());
     operate_arrays(*this, v, result, '/');
     return result;
   }
@@ -243,24 +207,21 @@ public:
 
   //! Sum operator for an array and a scalar
   MultiArray<T, D> operator+(const T& v) const {
-    MultiArray<T, D> result;
-    result.copy_shape(*this);
+    MultiArray<T, D> result(this->shape());
     operate_array_and_scalar(*this, v, result, '+');
     return result;
   }
 
   //! Minus operator for an array and a scalar
   MultiArray<T, D> operator-(const T& v) const {
-    MultiArray<T, D> result;
-    result.copy_shape(*this);
+    MultiArray<T, D> result(this->shape());
     operate_array_and_scalar(*this, v, result, '-');
     return result;
   }
 
   //! Multiplication operator for an array and a scalar
   MultiArray<T, D> operator*(const T& v) const {
-    MultiArray<T, D> result;
-    result.copy_shape(*this);
+    MultiArray<T, D> result(this->shape());
     operate_array_and_scalar(*this, v, result, '*');
     return result;
   }
@@ -268,8 +229,7 @@ public:
 
   //! Division operator for an array and a scalar
   MultiArray<T, D> operator/(const T& v) const {
-    MultiArray<T, D> result;
-    result.copy_shape(*this);
+    MultiArray<T, D> result(this->shape());
     operate_array_and_scalar(*this, v, result, '/');
     return result;
   }
@@ -297,32 +257,28 @@ public:
 
   //! Sum operator for a scalar and an array
   friend MultiArray<T, D> operator+(const T& X, const MultiArray<T, D>& a1) {
-    MultiArray<T, D> result;
-    result.copy_shape(*a1);
+    MultiArray<T, D> result(a1->shape());
     operate_scalar_and_array(X, a1, result, '+');
     return result;
   }
 
   //! Minus operator for a scalar and an array
   friend MultiArray<T, D> operator-(const T& X, const MultiArray<T, D>& a1) {
-    MultiArray<T, D> result;
-    result.copy_shape(*a1);
+    MultiArray<T, D> result(a1->shape());
     operate_scalar_and_array(X, a1, result, '-');
     return result;
   }
 
   //! Multiplication operator for a scalar and an array
   friend MultiArray<T, D> operator*(const T& X, const MultiArray<T, D>& a1) {
-    MultiArray<T, D> result;
-    result.copy_shape(*a1);
+    MultiArray<T, D> result(a1->shape());
     operate_scalar_and_array(X, a1, result, '*');
     return result;
   }
 
   //! Division operator for a scalar and an array
   friend MultiArray<T, D> operator/(const T& X, const MultiArray<T, D>& a1) {
-    MultiArray<T, D> result;
-    result.copy_shape(*a1);
+    MultiArray<T, D> result(a1->shape());
     operate_scalar_and_array(X, a1, result, '/');
     return result;
   }
@@ -354,18 +310,6 @@ public:
       }
     }
     return true;
-  }
-
-  //! Sets the shape (size and origin) of this array to that of the argument
-  template <typename T1>
-  void copy_shape(const MultiArray<T1, D>& v) {
-    std::vector<index> shape(D), bases(D);
-    for (Int i = 0;i < D;i++) {
-      shape[i] = v.shape()[i];
-      bases[i] = v.index_bases()[i];
-    }
-    boost::multi_array<T, D>::resize(shape);
-    this->reindex(bases);
   }
 
   //! Maximum of the values in the array
