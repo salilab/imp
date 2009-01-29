@@ -36,3 +36,4 @@
 %include "IMP/domino/SimpleDiscreteSampler.h"
 %include "IMP/domino/TransformationMappedDiscreteSet.h"
 %include "IMP/domino/TransformationCartesianProductSampler.h"
+%include "IMP/domino/TransformationPermutationSampler.h"
