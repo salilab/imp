@@ -18,7 +18,6 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-#include <boost/foreach.hpp>
 
 IMPDOMINO_BEGIN_NAMESPACE
 

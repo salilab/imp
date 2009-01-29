@@ -36,9 +36,9 @@ void JNode::init_sampling(DiscreteSampler &ds)
   populate_states_of_particles(&particles_, &comb_states_);
   //create a vector of the keys, needed for fast
   //implementation of get_state function
-  std::pair<std::string, CombState *> it;
-  BOOST_FOREACH(it,comb_states_) {
-    comb_states_keys_.push_back(it.first);
+  std::map<std::string, CombState *>::const_iterator it;
+  for (it = comb_states_.begin(); it != comb_states_.end(); it++) {
+    comb_states_keys_.push_back(it->first);
   }
 }
 
