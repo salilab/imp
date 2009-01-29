@@ -1,4 +1,0 @@
-replace the release variable with a build variable which can be one of
-"debug", "release", or "fast". Debug disables optimization so the code can be
-used with a debugger. "fast" disables runtime checks and release is what we
-were building by default before.
