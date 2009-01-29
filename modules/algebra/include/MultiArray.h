@@ -46,7 +46,7 @@ bool roll_inds(T1& inds, T2* dims, T3* start)
     return aux;
   }
   while (i >= 0) {
-    if (inds[i] < (start[i] + dims[i] - 1)) {
+    if (inds[i] < (static_cast<int>(start[i] + dims[i]) - 1)) {
       inds[i] += 1;
       return true;
     }
