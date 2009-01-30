@@ -71,7 +71,7 @@ bool roll_inds(T1& inds, T2* dims, T3* start)
  * This class is based on boost multi_array and adds new functionality.
  */
 template<typename T, int D>
-class IMPALGEBRAEXPORT MultiArray: public boost::multi_array<T, D>
+class MultiArray: public boost::multi_array<T, D>
 {
 public:
   typedef boost::multi_array_types::index index;
