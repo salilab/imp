@@ -77,22 +77,27 @@ def _add_build_flags(env):
     env.Append(CCFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
+    if env['CC'] == 'gcc':
+        env.Append(CCFLAGS=["-Wall"])
     if env.get('build', 'release') == 'fast':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=[ "-Wall", "-O3"])
-    if env.get('build', 'release') == 'profile':
+    elif env.get('build', 'release') == 'debug':
+        if env['CC'] == 'gcc':
+            env.Append(CCFLAGS=["-Wall","-g"])
+    elif env.get('build', 'release') == 'release':
+        if env['CC'] == 'gcc':
+            env.Append(CCFLAGS=["-Wall","-O2"])
+    elif env.get('build', 'release') == 'profile':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=[ "-Wall", "-O3"])
             env.Append(CCFLAGS=['-g', '-pg'])
             env.Append(LINKFLAGS=['-pg'])
-    elif env.get('build', 'release') == 'debug':
-        if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=["-Wall","-g"])
     else:
-        if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=["-Wall"])
+        print "ERROR: Invalid build mode, should be one of debug, release, fast, profile."
+        Exit(1)
 
 def CheckGNUHash(context):
     """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
