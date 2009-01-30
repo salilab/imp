@@ -11,8 +11,6 @@
 #include <cmath>
 #include <cerrno>
 
-IMPMISC_BEGIN_NAMESPACE
-
 #define GCC_VERSION (__GNUC__ * 10000 \
                      + __GNUC_MINOR__ * 100 \
                      + __GNUC_PATCHLEVEL__)
@@ -22,6 +20,8 @@ IMPMISC_BEGIN_NAMESPACE
 #else
 #include <strstream>
 #endif
+
+IMPMISC_BEGIN_NAMESPACE
 
 Int best_precision(Float F, Int width)
 {
