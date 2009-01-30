@@ -21,11 +21,18 @@ class WLCTests(IMP.test.TestCase):
             mp= IMP.Particle(m)
             ps.append(mp)
             mxyz= IMP.core.XYZDecorator.create(mp,
-                                               IMP.algebra.Vector3D(0, 0, i))
+                                               IMP.algebra.random_vector_in_unit_box())
+            #IMP.algebra.Vector3D(i%2, (i+1)%3, i)
             xyzs.append(mxyz)
+            mxyz.show()
+            print
         rbd= IMP.core.RigidBodyDecorator.create(rbp, ps)
         rbd.show()
-        r= IMP.algebra.random_rotation()
+        #r= IMP.algebra.Rotation3D(0.437645, -0.422742, -0.778777, 0.152519)
+        r=IMP.algebra.random_rotation()
+        print "center rotated is "
+        r.rotate(rbd.get_coordinates()).show()
+        print
         print "transformed"
         tvs= IMP.algebra.Vector3Ds()
         for d in xyzs:
