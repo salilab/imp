@@ -242,7 +242,7 @@ void AllNonbondedListScoreState
   }
   for (unsigned int i=0; i< cuts.size(); ++i) {
     if (ops[i].empty()) continue;
-    float rmax=0;
+    Float rmax=0;
     for (unsigned int j=0; j< ops[i].size(); ++j) {
       rmax= std::max(rmax, gr(ops[i][j]));
     }

@@ -47,7 +47,7 @@ public:
   }
 
   virtual Float evaluate(Float feature) const {
-    return evaluate_with_derivative(feature).first;
+    return 0.5 * k_ * square(feature-mean_);
   }
 
   virtual FloatPair evaluate_with_derivative(Float feature) const {

@@ -19,7 +19,7 @@ namespace internal
 
 static const int target_cell_occupancy=10;
 
-ParticleGrid::ParticleGrid(float tvs,
+ParticleGrid::ParticleGrid(Float tvs,
                            const Particles &ps): target_voxel_side_(tvs)
 {
   IMP_assert(tvs >0, "Target voxel edge size must be positive");
@@ -34,12 +34,12 @@ void ParticleGrid::build_grid(const Particles &ps)
 {
   audit_particles(ps);
   IMP_LOG(TERSE, "Creating nonbonded grid..." << std::flush);
-  float mn[3]= {std::numeric_limits<float>::max(),
-                std::numeric_limits<float>::max(),
-                std::numeric_limits<float>::max()};
-  float mx[3]={-std::numeric_limits<float>::max(),
-               -std::numeric_limits<float>::max(),
-               -std::numeric_limits<float>::max()};
+  Float mn[3]= {std::numeric_limits<Float>::max(),
+                std::numeric_limits<Float>::max(),
+                std::numeric_limits<Float>::max()};
+  Float mx[3]={-std::numeric_limits<Float>::max(),
+               -std::numeric_limits<Float>::max(),
+               -std::numeric_limits<Float>::max()};
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZDecorator d(ps[i]);
     for (unsigned int j=0; j<3; ++j) {
@@ -49,8 +49,8 @@ void ParticleGrid::build_grid(const Particles &ps)
   }
   if (!ps.empty()) {
     // keep the grid size sane if things blow up
-    float maxdim= std::max(mx[0]-mn[0], std::max(mx[1]-mn[1], mx[2]-mn[2]));
-    float vx= std::pow(static_cast<float>(target_cell_occupancy
+    Float maxdim= std::max(mx[0]-mn[0], std::max(mx[1]-mn[1], mx[2]-mn[2]));
+    Float vx= std::pow(static_cast<Float>(target_cell_occupancy
                                           *(maxdim*maxdim*maxdim
                                             /ps.size())),
                        .3333f);

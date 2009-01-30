@@ -30,7 +30,7 @@ class IMPCOREEXPORT MaxChangeScoreState: public ScoreState
 {
   FloatKeys keys_;
   FloatKeys origkeys_;
-  float max_change_;
+  Float max_change_;
 public:
   //! Track the changes with the specified keys.
   MaxChangeScoreState(const FloatKeys &keys,
