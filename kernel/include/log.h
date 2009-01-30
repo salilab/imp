@@ -124,6 +124,16 @@ private:
 
 #ifndef IMP_DISABLE_LOGGING
 
+
+//! Execute the code block if a certain level logging is on
+/**
+   The next code block (delimited by { }) is executed if
+   get_check_level() <= level.
+ */
+#define IMP_IF_LOG(level)\
+  if (level <= ::IMP::get_log_level())
+
+
 //! Write an entry to a log.
 /** \param[in] level The IMP::Log_Level for the message
     \param[in] expr A stream expression to be sent to the output stream
@@ -139,6 +149,13 @@ private:
  */
 #define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
     {std::ostream &IMP_STREAM= IMP::get_log_stream(level); expr;}
+
+#else
+#define IMP_LOG(l,e)
+#define IMP_LOG_WRITE(l,e)
+#define IMP_IF_LOG(l) if (false)
+#endif
+
 
 
 //! Write a warning to a log.
@@ -183,13 +200,6 @@ private:
 /** \ingroup log
  */
 #define IMP_SET_LOG_LEVEL(level) IMP::Log::get()::set_level(level);
-
-
-
-#else
-#define IMP_LOG(l,e)
-#define IMP_LOG_WRITE(l,e)
-#endif
 
 IMP_END_NAMESPACE
 
