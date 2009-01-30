@@ -2,6 +2,7 @@
 
 import os.path
 import pyscanner
+
 from SCons.Script import Builder, File, Action
 
 def action_config(target, source, env):
@@ -177,6 +178,7 @@ def _add_module_default_alias(env, targets):
     if env['VALIDATED']:
         env.Default(targets)
 
+
 def IMPSharedLibrary(env, files, install=True):
     """Build, and optionally also install, an IMP module's C++
        shared library. This is only available from within an environment
@@ -184,8 +186,20 @@ def IMPSharedLibrary(env, files, install=True):
     module = env['IMP_MODULE']
     lib = env.SharedLibrary('#/build/lib/imp_%s' % module,
                             list(files) + [env['VER_CPP']])
+    if env['PLATFORM'] == 'darwin':
+        env.AddPostAction (lib, "install_name_tool -id %s %s" \
+                               % (lib[0].abspath, lib[0].path))
+        libdir= os.path.split(lib[0].abspath)[0]
     if install:
         libinst = env.Install(env['libdir'], lib)
+        if env['PLATFORM'] == 'darwin':
+            env.AddPostAction (libinst, "install_name_tool -id %s %s" \
+                                   % (libinst[0].abspath, libinst[0].path))
+            instlibdir= os.path.split(libinst[0].abspath)[0]
+            env.AddPostAction (libinst, "install_name_tool -change %s/libimp.dylib %s/libimp.dylib %s" \
+                                   % (libdir, instlibdir, libinst[0].path))
+            env.AddPostAction (libinst, "install_name_tool -change %s/libimp_core.dylib %s/libimp_core.dylib %s" \
+                                   % (libdir, instlibdir, libinst[0].path))
         for alias in _get_module_install_aliases(env):
             env.Alias(alias, [libinst])
         return lib, libinst
@@ -240,9 +254,13 @@ def IMPPythonExtension(env, swig_interface):
     gen_pymod = File('IMP.%s.py' % module)
     pymod = env.LinkInstallAs('#/build/lib/IMP/%s/__init__.py' % module,
                               gen_pymod)
-
     # Install the Python extension and module:
     libinst = env.Install(env['pyextdir'], pyext)
+    if env['PLATFORM'] == 'darwin':
+        libdir= os.path.split(pyext[0].abspath)[0]
+        env.AddPostAction (libinst, "install_name_tool -change %s/libimp_%s.dylib %s/libimp_%s.dylib %s" \
+                                   % (libdir, module,
+                                      env['libdir'], module, libinst[0].path))
     pyinst = env.Install(os.path.join(env['pythondir'], 'IMP', module), pymod)
     for alias in _get_module_install_aliases(env):
         env.Alias(alias, [libinst, pyinst])
@@ -256,8 +274,9 @@ def IMPPythonExtensionEnvironment(env):
     from tools import get_pyext_environment
     module = env['IMP_MODULE']
     env = get_pyext_environment(env, module.upper(), cplusplus=True)
+    env['LIBS']=[]
     env.Append(LIBS=['imp_%s' % module])
-    env.Prepend(SWIGPATH='#/build/include')
+    env.Prepend(SWIGPATH=['#/build/include',env['CPPPATH']])
     env.Append(SWIGFLAGS='-python -c++ -naturalvar')
     env.AddMethod(IMPPythonExtension)
     return env
