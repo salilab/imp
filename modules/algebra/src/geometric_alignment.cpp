@@ -75,7 +75,7 @@ rigid_align_first_to_second(const std::vector<Vector3D> &from,
   IMP_IF_LOG(VERBOSE) {
     internal::TNT::Array2D<double> Sigma(3,3, 0.0);
 
-    for (unsigned int i=0; i < 3; ++i) {
+    for (int i=0; i < 3; ++i) {
       Sigma[i][i]= SV[i];
     }
 
