@@ -72,7 +72,11 @@ def _get_python_include(env):
 
 def _add_build_flags(env):
     """Add compiler flags for release builds, if requested"""
-
+    #make sure they are all there
+    env.Append(CPPPATH=[])
+    env.Append(CCFLAGS=[])
+    env.Append(LINKFLAGS=[])
+    env.Append(LIBPATH=[])
     if env.get('build', 'release') == 'fast':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
