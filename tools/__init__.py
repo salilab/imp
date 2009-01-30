@@ -82,17 +82,17 @@ def _add_build_flags(env):
     if env.get('build', 'release') == 'fast':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=[ "-Wall", "-O3"])
-    elif env.get('build', 'release') == 'debug':
-        if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=["-Wall","-g"])
+            env.Append(CCFLAGS=[ "-O3"])
     elif env.get('build', 'release') == 'release':
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=["-Wall","-O2"])
+            env.Append(CCFLAGS=["-O2"])
+    elif env.get('build', 'release') == 'debug':
+        if env['CC'] == 'gcc':
+            env.Append(CCFLAGS=["-g"])
     elif env.get('build', 'release') == 'profile':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=[ "-Wall", "-O3"])
+            env.Append(CCFLAGS=[ "-O3"])
             env.Append(CCFLAGS=['-g', '-pg'])
             env.Append(LINKFLAGS=['-pg'])
     else:
@@ -422,6 +422,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # release builds)
         if '-DNDEBUG' in e['CPPFLAGS']:
             e['CPPFLAGS'].remove('-DNDEBUG')
+        if '-Wall' in e['CCFLAGS']:
+            e['CCFLAGS'].remove('-Wall')
 
         # Some gcc versions don't like the code that SWIG generates - but let
         # that go, because we have no control over it:
