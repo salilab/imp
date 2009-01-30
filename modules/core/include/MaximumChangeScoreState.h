@@ -35,7 +35,7 @@ class IMPCOREEXPORT MaximumChangeScoreState: public ScoreState
     AttributeTable<IMP::internal::FloatAttributeTableTraits> AT;
   FloatKeys keys_;
   std::map<Particle*, AT> orig_values_;
-  float maximum_change_;
+  Float maximum_change_;
   Pointer<SingletonContainer> pc_;
 public:
   //! Track the changes with the specified keys.

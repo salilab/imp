@@ -314,7 +314,7 @@ g20:
   dxsq = -dg1;
 
   /* Test if the initial point is the minimizer. */
-  if (dxsq <= eps * eps * std::max(1.0f, xsq)) {
+  if (dxsq <= eps * eps * std::max(Float(1.0), xsq)) {
     goto end;
   }
 

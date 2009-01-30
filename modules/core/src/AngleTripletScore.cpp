@@ -58,8 +58,8 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
     Float fact_ij = sinangle * mag_rij;
     Float fact_kj = sinangle * mag_rkj;
     // avoid division by zero
-    fact_ij = std::max(static_cast<float>(1e-12), fact_ij);
-    fact_kj = std::max(static_cast<float>(1e-12), fact_kj);
+    fact_ij = std::max(static_cast<Float>(1e-12), fact_ij);
+    fact_kj = std::max(static_cast<Float>(1e-12), fact_kj);
 
     for (int i = 0; i < 3; ++i) {
       Float derv0 = deriv * (rij[i] * cosangle - rkj[i]) / fact_ij;
