@@ -248,18 +248,20 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
                             generate_doxygen.GenerateDoxFromIn,
                             'MakeExamples': make_examples.MakeExamples})
     if env.get('cxxflags', None) is not None:
-        env['CXXFLAGS'] = [env['cxxflags'].split(" ")]
+        env.Append(CXXFLAGS = [env['cxxflags'].split(" ")])
     if env.get('linkflags', None) is not None:
-        env['LINKFLAGS'] = [env['linkflags'].split(" ")]
+        env.Append(LINKFLAGS=[env['linkflags'].split(" ")])
 
     if env.get('include', None) is not None:
         env['include'] = [os.path.abspath(x) for x in \
                           env['include'].split(os.path.pathsep)]
-        env.Prepend(CPPPATH=env['include'])
+        env.Append(CPPPATH=env['include'])
+    # make sure it is there
+    env.Append(LIBPATH=[])
     if env.get('lib', None) is not None:
         env['lib'] = [os.path.abspath(x) for x in \
                       env['lib'].split(os.path.pathsep)]
-        env.Prepend(LIBPATH=env['lib'])
+        env.Append(LIBPATH=env['lib'])
     else:
         env['lib'] = []
     _add_build_flags(env)
@@ -312,7 +314,11 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     e = env.Clone()
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CCFLAGS='${VIS_CCFLAGS}')
-
+    if e['PLATFORM'] is 'posix':
+        for p in e['LIBPATH']:
+            if p[0] is not '#':
+                # append/prepend must match other uses
+                e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
@@ -398,7 +404,11 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
             opt = opt.replace("-Wstrict-prototypes", "")
         e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
         e.Replace(CPPFLAGS=basecflags.split() + opt.split())
-
+        if e['PLATFORM'] is 'posix':
+            for p in e['LIBPATH']:
+                if p[0] is not '#':
+                    # append/prepend must match other uses
+                    e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
         # Remove NDEBUG preprocessor stuff if defined (we do it ourselves for
         # release builds)
         if '-DNDEBUG' in e['CPPFLAGS']:
@@ -480,4 +490,7 @@ def add_common_variables(vars, package):
                           PathVariable.PathAccept))
     vars.Add(PathVariable('path', 'Extra executable path ' + \
                           '(e.g. "/opt/local/bin/")', None,
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('pythonpath', 'Extra python path ' + \
+                          '(e.g. "/opt/local/lib/python-2.5/")', None,
                           PathVariable.PathAccept))

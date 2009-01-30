@@ -1,32 +1,15 @@
 #!/bin/sh
 
-TOPDIR=@TOPDIR@
-MODPY=@MODPY@
-PATHSEP=@PATHSEP@
-EXTRALIB=@EXTRALIB@
+@MODPY@
 
-LLP="${EXTRALIB}${TOPDIR}/build/lib"
-if test -z "${LD_LIBRARY_PATH}"; then
-  LD_LIBRARY_PATH=${LLP}
-else
-  LD_LIBRARY_PATH=${LLP}${PATHSEP}${LD_LIBRARY_PATH}
-fi
-if test -z "${DYLD_LIBRARY_PATH}"; then
-  DYLD_LIBRARY_PATH=${LLP}
-else
-  DYLD_LIBRARY_PATH=${LLP}${PATHSEP}${DYLD_LIBRARY_PATH}
-fi
-if test -z "${LIBPATH}"; then
-  LIBPATH=${LLP}
-else
-  LIBPATH=${LLP}${PATHSEP}${LIBPATH}
-fi
+@LDPATH@
 
-PP="${EXTRALIB}${TOPDIR}/build/lib"
-if test -z "${PYTHONPATH}"; then
-  PYTHONPATH=${PP}
-else
-  PYTHONPATH=${PP}${PATHSEP}${PYTHONPATH}
-fi
-export LD_LIBRARY_PATH DYLD_LIBRARY_PATH PYTHONPATH LIBPATH
-exec ${MODPY} "$@"
+@PYTHONPATH@
+
+@EXPORT@
+
+echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+echo PYTHONPATH=$PYTHONPATH
+echo MODPY=$modeller_init_script
+#LIBPATH DYLD_LIBRARY_PATH
+exec ${modeller_init_script} "$@"

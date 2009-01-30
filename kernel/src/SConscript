@@ -23,6 +23,11 @@ lib = env.SharedLibrary('#/build/lib/imp', files)
 
 # Install the library:
 libinst = env.Install(env['libdir'], lib)
+if env['PLATFORM'] == 'darwin':
+    env.AddPostAction (lib, "install_name_tool -id %s %s" \
+                           % (lib[0].abspath, lib[0].path))
+    env.AddPostAction (libinst, "install_name_tool -id %s %s" \
+                           % (libinst[0].abspath, libinst[0].path))
 env.Alias('kernel-install', [libinst])
 env.Alias('install', [libinst])
 
