@@ -531,8 +531,7 @@ protected:
 
 //! write to an output stream for 3 dimensions
 template<typename T, int D>
-IMPALGEBRAEXPORT std::ostream& operator<<(std::ostream& ostrm,
-          const MultiArray<T, D>& v)
+std::ostream& operator<<(std::ostream& ostrm, const MultiArray<T, D>& v)
 {
   typedef boost::multi_array_types::index index;
   std::vector<index> idx(D);
