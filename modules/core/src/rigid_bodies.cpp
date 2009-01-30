@@ -240,6 +240,7 @@ void RigidBodyDecorator::set_transformation(const Particles &members) {
   }
   IMP::algebra::Transformation3D tr
     = IMP::algebra::rigid_align_first_to_second(local, cur);
+  IMP_LOG(VERBOSE, "Alignment is " << tr << std::endl);
   set_transformation(tr);
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *p =members[i];
