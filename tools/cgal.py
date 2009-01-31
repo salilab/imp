@@ -9,9 +9,21 @@ def _check(context):
 
     ret = context.sconf.CheckLibWithHeader(['CGAL'], 'CGAL/basic.h', 'CXX',
                                            'CGAL_assertion(1);', autoadd=False)
+    context.Result(ret)
     if ret:
         context.env['CGAL_LIBS'] = ['CGAL']
-        context.env.Append(CPPDEFINES='IMP_USE_CGAL')
+        context.env.Append(CPPDEFINES=['IMP_USE_CGAL'])
+        if context.env['CC'] == 'gcc':
+            context.Message('Checking if CGAL needs -frounding-math ...')
+            ret34 = context.TryRun("""#include <CGAL/version.h>
+
+        int main()
+        {
+            return CGAL_VERSION_NS >= 1030400000 ? 0 : 1;
+        }
+        """, '.cpp')[0]
+            if ret34:
+                context.env.Append(CCFLAGS=['-frounding-math'])
     context.Result(ret)
     return ret
 
