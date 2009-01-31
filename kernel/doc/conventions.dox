@@ -166,5 +166,25 @@
       macros to help making the decorator.
 
     - Delay initialization of keys until they are actually needed (since all initialized
-      keys take up memory within each particle, more or less).
+      keys take up memory within each particle, more or less). The best way to do this is
+      to have them be static variables in a static function:
+      \code
+      FloatKey get_my_float_key() {
+               static FloatKey k("hello");
+               return k;
+      }
+      \endcode
+
+    - Information should be stored in exactly one place. Duplicated information easily gets
+      out of sync.
+
+    - Ideally, there should be exactly one way to represent any particular state. If there is
+      more than one way, anyone who writes library code using the state has to handle all ways.
+      For example, there is only one scheme for representing proteins, namely the
+      MolecularHierarchyDecorator.
+
+    - Each class/method should do exactly one thing. The presence of arguments which dramatically
+      change the behavior of the class/method is a sign that it should be split. Splitting it
+      can make the code simpler, expose the common code for others to use and make it harder to
+      make mistakes by getting the mode flag wrong.
 */

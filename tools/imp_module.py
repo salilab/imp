@@ -254,6 +254,7 @@ def IMPPythonExtension(env, swig_interface):
     gen_pymod = File('IMP.%s.py' % module)
     pymod = env.LinkInstallAs('#/build/lib/IMP/%s/__init__.py' % module,
                               gen_pymod)
+    env.Clean(pyext, '#/modules/%s/pyext/IMP_%s.py'%(module, module))
     # Install the Python extension and module:
     libinst = env.Install(env['pyextdir'], pyext)
     if env['PLATFORM'] == 'darwin':

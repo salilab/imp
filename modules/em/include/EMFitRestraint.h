@@ -66,7 +66,8 @@ private:
   int num_particles_; // can it be removed ?
   IMPParticlesAccessPoint access_p_;
   // derivatives
-  std::vector<Float> dx_, dy_ , dz_;
+  // This must be float rather than Float to preserve compatibility with EMBed
+  std::vector<float> dx_, dy_ , dz_;
 };
 
 IMPEM_END_NAMESPACE

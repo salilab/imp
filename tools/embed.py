@@ -19,14 +19,16 @@ def _check(context):
     context.env['EM_LIBPATH'] = srcpath
     context.env['EM_LIBS'] = ['em']
     context.env['EM_EMPY'] = os.path.join(em, 'bin', 'empy.sh')
+    context.env.Append(CPPDEFINES=['IMP_USE_EMBED'])
     context.Result(em)
     return True
 
 def configure_check(env):
     custom_tests = {'CheckEMBED':_check}
     conf = env.Configure(custom_tests=custom_tests)
+    result=conf.CheckEMBED()
     if env.GetOption('clean') or env.GetOption('help') \
-       or conf.CheckEMBED() is not True:
+       or result is not True:
         for suff in ('CPPPATH', 'LIBPATH', 'LIBS', 'EMPY'):
             env['EM_' + suff] = ""
     conf.Finish()
