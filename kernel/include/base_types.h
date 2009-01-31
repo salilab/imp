@@ -20,7 +20,7 @@ IMP_BEGIN_NAMESPACE
  */
 
 //! Basic floating-point value (could be float, double...)
-typedef float Float;
+typedef double Float;
 
 //! Basic integer value
 typedef int Int;
