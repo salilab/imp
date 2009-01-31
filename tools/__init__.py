@@ -323,11 +323,13 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     e = env.Clone()
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CCFLAGS='${VIS_CCFLAGS}')
-    if e['PLATFORM'] is 'posix':
+    if e['PLATFORM'] == 'posix' or e['PLATFORM']=='solaris':
+        dylinkflags=[]
         for p in e['LIBPATH']:
             if p[0] is not '#':
                 # append/prepend must match other uses
-                e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
+                dylinkflags.append('-Wl,-rpath,'+p)
+        e.Prepend(LINKFLAGS=dylinkflags)
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
