@@ -25,7 +25,7 @@ def _check(context):
         """, '.cpp')[0]
             if ret34:
                 context.env.Append(CCFLAGS=['-frounding-math'])
-    context.Result(ret34)
+        context.Result(ret34)
     return ret
 
 def configure_check(env):
