@@ -157,6 +157,8 @@
       IMP_OUTPUT_OPERATOR macro.
 
     - Use Int, Float, String rather than \c int, \c float, and \c std::string.
+      Intermediate results in computations may be stored using \c doubles
+      so as not to loose precision.
 
     - Avoid using nested classes in the API as SWIG can't wrap them properly.
       If you must use use nested classes, you will have to do more work to
@@ -165,9 +167,10 @@
     - All access to particles should be through decorators. Use the provided
       macros to help making the decorator.
 
-    - Delay initialization of keys until they are actually needed (since all initialized
-      keys take up memory within each particle, more or less). The best way to do this is
-      to have them be static variables in a static function:
+    - Delay initialization of keys until they are actually needed
+      (since all initialized keys take up memory within each particle,
+      more or less). The best way to do this is to have them be static
+      variables in a static function:
       \code
       FloatKey get_my_float_key() {
                static FloatKey k("hello");
@@ -175,16 +178,20 @@
       }
       \endcode
 
-    - Information should be stored in exactly one place. Duplicated information easily gets
-      out of sync.
+    - Information should be stored in exactly one place. Duplicated
+      information easily gets out of sync.
 
-    - Ideally, there should be exactly one way to represent any particular state. If there is
-      more than one way, anyone who writes library code using the state has to handle all ways.
-      For example, there is only one scheme for representing proteins, namely the
-      MolecularHierarchyDecorator.
+    - There should be exactly one way to represent any
+      particular state. If there is more than one way, anyone who
+      writes library code using the state has to handle all ways.  For
+      example, there is only one scheme for representing proteins,
+      namely the MolecularHierarchyDecorator.
 
-    - Each class/method should do exactly one thing. The presence of arguments which dramatically
-      change the behavior of the class/method is a sign that it should be split. Splitting it
-      can make the code simpler, expose the common code for others to use and make it harder to
-      make mistakes by getting the mode flag wrong.
+    - Each class/method should do exactly one thing. The presence of
+      arguments which dramatically change the behavior of the
+      class/method is a sign that it should be split. Splitting it can
+      make the code simpler, expose the common code for others to use
+      and make it harder to make mistakes by getting the mode flag
+      wrong.
+
 */
