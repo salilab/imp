@@ -16,15 +16,16 @@ def _check(context):
         if context.env['CC'] == 'gcc':
             context.Message('Checking if CGAL needs -frounding-math ...')
             ret34 = context.TryRun("""#include <CGAL/version.h>
+#include <cstdlib>
 
         int main()
         {
-            return CGAL_VERSION_NS >= 1030400000 ? 0 : 1;
+            return CGAL_VERSION_NR >= 1030400000 ? EXIT_SUCCESS : EXIT_FAILURE;
         }
         """, '.cpp')[0]
             if ret34:
                 context.env.Append(CCFLAGS=['-frounding-math'])
-    context.Result(ret)
+    context.Result(ret34)
     return ret
 
 def configure_check(env):
