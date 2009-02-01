@@ -6,9 +6,7 @@
 
 @PYTHONPATH@
 
-echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH
-echo PYTHONPATH=$PYTHONPATH
-echo MODPY=$modeller_init_script
-echo $PATH
-#LIBPATH DYLD_LIBRARY_PATH
+#echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+#echo PYTHONPATH=$PYTHONPATH
+#echo MODPY=$modeller_init_script
 exec ${modeller_init_script} "$@"
