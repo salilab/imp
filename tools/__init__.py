@@ -323,7 +323,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     e = env.Clone()
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CCFLAGS='${VIS_CCFLAGS}')
-    if e['PLATFORM'] == 'posix' or e['PLATFORM']=='solaris':
+    if e['PLATFORM'] == 'posix' or e['PLATFORM']=='sunos':
         dylinkflags=[]
         for p in e['LIBPATH']:
             if p[0] is not '#':
