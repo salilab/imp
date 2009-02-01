@@ -6,20 +6,24 @@ def builder_script_file(target, source, env):
     infile = file(source[0].abspath, 'r')
     outfile = file(target[0].abspath, 'w')
 
-    use_LD_LIBRARY_PATH= env['PLATFORM'] == 'posix'\
-        or sys.platform == 'linux'\
-        or env['PLATFORM']=='sunos'
+    sep=":"
+    varname=None
+    if env['PLATFORM'] == 'posix' or env['PLATFORM']=='sunos':
+        varname= "LD_LIBRARY_PATH"
+    elif env['PLATFORM'] == 'win32':
+        sep=";"
+
     print "Platform is "+env['PLATFORM']+ " "+ sys.platform
     for line in infile:
         line = line.rstrip('\r\n')
         if line == "@LDPATH@":
-            if use_LD_LIBRARY_PATH:
-                line= "LD_LIBRARY_PATH='"+source[1].get_contents()+"/build/lib'"
-                line=line+"\nexport LD_LIBRARY_PATH"
+            if varname is not None:
+                line= varname+"='"+source[1].get_contents()+"/build/lib'"
+                line=line+"\nexport "+varname
             else:
                 line=""
         if line == "@PYTHONPATH@":
-            line= "PYTHONPATH='"+source[1].get_contents()+"/build/lib:"+source[2].get_contents()+"'\nexport PYTHONPATH"
+            line= "PYTHONPATH='"+source[1].get_contents()+"/build/lib"+sep+source[2].get_contents().replace(":", sep)+"'\nexport PYTHONPATH"
         if line == "@MODPY@":
             if len(source[3].get_contents())!=0:
                 line = "modeller_init_script='" + source[3].get_contents()+"'"
