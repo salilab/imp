@@ -274,7 +274,6 @@ def IMPPythonExtensionEnvironment(env):
     from tools import get_pyext_environment
     module = env['IMP_MODULE']
     env = get_pyext_environment(env, module.upper(), cplusplus=True)
-    env['LIBS']=[]
     env.Append(LIBS=['imp_%s' % module])
     env.Prepend(SWIGPATH=['#/build/include',env['CPPPATH']])
     env.Append(SWIGFLAGS='-python -c++ -naturalvar')
