@@ -8,7 +8,7 @@ def builder_script_file(target, source, env):
 
     use_LD_LIBRARY_PATH= env['PLATFORM'] == 'posix'\
         or sys.platform == 'linux'\
-        or env['PLATFORM']=='solaris'
+        or env['PLATFORM']=='sunos'
     print "Platform is "+env['PLATFORM']+ " "+ sys.platform
     for line in infile:
         line = line.rstrip('\r\n')
