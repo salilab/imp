@@ -47,15 +47,16 @@ class PDBReadTest(IMP.test.TestCase):
         model_saxs_profile.calculate_profile(particles)
         model_saxs_profile.write_SAXS_file('i_single_protein_IMP.txt')
 
-        saxs_score = IMP.saxs.SAXSScore(f_table, exp_saxs_profile, particles)
+        saxs_score = IMP.saxs.SAXSScore(f_table,
+                                        exp_saxs_profile,
+                                        model_saxs_profile,
+                                        particles)
         chi_square = saxs_score.compute_chi_score(model_saxs_profile)
         print 'scaling c = ' + str(saxs_score.get_scaling())
         print 'Chi_square  = ' + str(chi_square)
 
-
-        chi_derivatives = saxs_score.calculate_chi_derivative (
-                                        model_saxs_profile,
-                                        particles)
+        chi_derivatives= saxs_score.calculate_chi_derivative(model_saxs_profile,
+                                                             particles)
         for i in range(0, chi_derivatives.__len__(), 100):
         #for i in range(0, particles.__len__()):
             temp = 'i=' + str(i) + '\t' + str(chi_derivatives[i][0])
