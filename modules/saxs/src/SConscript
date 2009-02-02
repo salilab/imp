@@ -5,6 +5,7 @@ files = [
          'FormFactorTable.cpp',
          'RadialDistributionFunction.cpp',
          'SAXSProfile.cpp',
+         'SAXSScore.cpp',
          'SaxsData.cpp',
         ]
 

@@ -20,6 +20,8 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+typedef std::vector<Float> Floats;
+
 /*
    class that deals with form factor computation
 */
@@ -34,7 +36,7 @@ public:
   enum FormFactorType { ALL_ATOMS, HEAVY_ATOMS };
 
   //! get f(0), ie s=0 for real space profile calculation
-  Float get_form_factor(Particle* p, FormFactorType ff_type= HEAVY_ATOMS) const;
+  Float get_form_factor(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
 
   //! for reciprocal space profile calculation
   const Floats& get_form_factors(Particle* p,
@@ -42,6 +44,9 @@ public:
 
   //! print tables
   void show(std::ostream &out, std::string prefix) const;
+
+  //! print tables, No prefix, for a python script (SJ Kim 01/22/09)
+  void show(std::ostream &out=std::cout) const;
 
 private:
   // atom types for heavy atoms according to the number of hydrogens

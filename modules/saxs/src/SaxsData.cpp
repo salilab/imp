@@ -6,7 +6,6 @@
  */
 
 #include <IMP/saxs/SaxsData.h>
-//#include <IMP/log.h>
 
 #include <boost/multi_array.hpp>
 
@@ -109,7 +108,7 @@ SaxsData::~SaxsData() {
  pr_smooth :  smoothing of P(r)
 
  ! ----------------------------------------------------------------------
- //! Don't know how to handle these...
+ // TODO: Don't know how to handle these...
  (inds, mdl) = atmsel.get_atom_indices()
 
  !>      selection indices of model and dimension
@@ -136,8 +135,10 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
   spaceflag_ = spaceflag;
   rho_solv_ = 0.334;
   use_lookup_ = use_lookup;
-  nr_ = 5000;
-  dr_ = 0.1;
+  nr_ = 100;
+  //nr_ = 5000;
+  dr_ = 0.5;
+  //dr_ = 0.1;
   nr_exp_ = 300;
   dr_exp_ = 1.0;
   use_offset_ = false;
@@ -160,12 +161,12 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
   isaxsatm_.resize(n_isaxsatm_);
   std::cout << "size of isaxsatm_ = " << isaxsatm_.size() << std::endl;
 
-  /*
-  //! Don't know how to handle these...
+
+  // TODO: Don't know how to handle these...
   // -> Probably ps_ ?
   //saxsd%isaxsatm(:) =  indatm(:)
   //CALL selection_set_picatm(mdl, indatm, n_indatm, picatm, ierr)
-  */
+
 
   // Select all just temporarily
   picatm.resize(num_particles_);
@@ -227,7 +228,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
     for (int is=1; is<nsinc; i++) {
       double x = (double)(is) * sinc_dens_;
 
-      //! Question : is it sin(pi*x)/(pi*x)? or just sin(x)/x?
+      //! TODO: Question) Is it sin(pi*x)/(pi*x)? or just sin(x)/x?
       sinc_lookup_[is] = sin(x) / x;
       cos_lookup_[is] = cos(x);
     }
@@ -311,6 +312,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
 
     //! Boost.MultiArray(?)
     formfactor_.resize(extents_[natomtyp_][maxs_]);
+    zero_form_factors_.resize(natomtyp_);
     //! CALL saxs_formca(saxsd)
   //! for all atoms
   } else if ( represtyp_ == "allh" ) {
@@ -319,6 +321,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
 
     //! Boost.MultiArray(?)
     formfactor_.resize(extents_[natomtyp_][maxs_]);
+    zero_form_factors_.resize(natomtyp_);
     //! CALL saxs_formallatm(saxsd)
   //! for heavy atoms
   } else if ( represtyp_ == "heav" ) {
@@ -327,6 +330,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
 
     //! Boost.MultiArray(?)
     formfactor_.resize(extents_[natomtyp_][maxs_]);
+    zero_form_factors_.resize(natomtyp_);
     saxs_formheavatm();
   //! for an error
   } else {
@@ -358,6 +362,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
   //!------------------ create array for index corresponding to atoms
   //!------------------------------------------------------------------------
   atmindx_.resize(num_particles_);
+  // TODO: natm?
 //  CALL alloc_array(saxsd%atmindx, 1, mdl%cd%natm, .TRUE., routine, &
 //                   'atmindx')
 
@@ -365,6 +370,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
     for (i=0; i<num_particles_; i++) {
       //!IF ( picatm(i) .AND. (mdl%cd%atmnam(i)=='CA') ) THEN
       if (picatm[i]) {
+        // TODO: formfactor for CA?
         //iform = saxs_assignformfactorca(&
         //                          mdl%seq%irestyp(mdl%cd%iresatm(i)))
         //saxsd%atmindx(i) = iform
@@ -373,6 +379,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
   } else if ( represtyp_ == "allh" ) {
     for (i=0; i<num_particles_; i++) {
       if (picatm[i]) {
+        // TODO: formfactor for all atom?
         //iform = saxs_assformfac_allat(mdl%cd%atmnam(i)(1:1))
         //saxsd%atmindx(i) = iform
       }
@@ -380,7 +387,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
   } else if ( represtyp_ == "heav") {
     for (i=0; i<num_particles_; i++) {
       if (picatm[i]) {
-        // TO DO:
+        // TODO: ?
         //iform = saxs_assformfac_heavat(mdl%cd%atmnam(i), &
         //                         mdl%seq%irestyp(mdl%cd%iresatm(i)) )
         IMP::core::AtomDecorator ad = IMP::core::AtomDecorator::cast(ps_[i]);
@@ -467,7 +474,7 @@ int SaxsData::saxs_formheavatm(void) {
   std::vector<double> c(natomtyp_), excl_vol(natomtyp_), volr(natomtyp_);
 
   std::ifstream fh;
-  const double PI = 4.0*atan(1.0);
+//  const double PI = 4.0*atan(1.0);
   std::string line;
 
   fh.open(formfac_file_.c_str());
@@ -492,18 +499,21 @@ int SaxsData::saxs_formheavatm(void) {
            &c[iat], &b[iat][0], &b[iat][1], &b[iat][2], &b[iat][3], &b[iat][4],
            &excl_vol[iat]);
 
-    volr[iat] = pow(excl_vol[iat], (2.0/3.0)) / (4.0*PI);
+    volr[iat] = pow(excl_vol[iat], (2.0/3.0));
+    //volr[iat] = pow(excl_vol[iat], (2.0/3.0)) / (4.0*IMP::internal::PI);
 
 // for Debugging
-printf("%d \t %g \t %g \t %g\n", iat, excl_vol[iat], PI, volr[iat]);
+printf("%d \t %g \t %g \t %g\n", iat, excl_vol[iat], IMP::internal::PI,
+       volr[iat]);
 
     iat++;
   }
   fh.close();
 
   for (is=0; is<ns_; is++) {
-    s_waasmei = s_[is] / (4.0*PI);
-    s_waasmei *= s_waasmei;
+    //s_waasmei = s_[is] / (4.0*IMP::internal::PI);
+    //s_waasmei *= s_waasmei;
+    s_waasmei = s_[is] * s_[is];
 
     for (iform=0; iform<14; iform++) {
       switch (iform) {
@@ -529,10 +539,10 @@ printf("%d \t %g \t %g \t %g\n", iat, excl_vol[iat], PI, volr[iat]);
                                   + nh * a[0][isum]*exp(-b[0][isum]*s_waasmei);
         }
         //! subtract solvation component
-        formfactor_[iform][is] -=
-            rho_solv_ * ( excl_vol[iat] * exp(-volr[iat] * s_[is] * s_[is])
-                         + nh * excl_vol[0] * exp(-volr[0] * s_[is] * s_[is]) );
-
+        formfactor_[iform][is] -= rho_solv_ *
+        (excl_vol[iat]*exp(-(4.0*IMP::internal::PI)*volr[iat]*s_waasmei)
+         + nh * excl_vol[0]*exp(-(4.0*IMP::internal::PI)*volr[0]*s_waasmei) );
+        // TODO: ?
         //! - rho_solv_ * (excl_vol(iat) + nh * excl_vol(1))
         //! use for comparison to real space results - replace
         //! preceding 3 lines
@@ -541,6 +551,38 @@ printf("%d \t %g \t %g \t %g\n", iat, excl_vol[iat], PI, volr[iat]);
       }
     }
   }
+
+  // zero form factors at q=0 for the faster calculation of using P(r)
+  for (int i=0; i<14; i++) {
+    switch (i) {
+      case 0 : iat = 2; nh = 0; break;  //! C
+      case 1 : iat = 2; nh = 1; break;  //! CH
+      case 2 : iat = 2; nh = 2; break;  //! CH_2
+      case 3 : iat = 2; nh = 3; break;  //! CH_3
+      case 4 : iat = 3; nh = 0; break;  //! N
+      case 5 : iat = 3; nh = 1; break;  //! NH
+      case 6 : iat = 3; nh = 2; break;  //! NH_2
+      case 7 : iat = 3; nh = 3; break;  //! NH_3
+      case 8 : iat = 4; nh = 0; break;  //! O
+      case 9 : iat = 4; nh = 1; break;  //! OH
+      case 10: iat = 9; nh = 0; break;  //! S
+      case 11: iat = 9; nh = 1; break;  //! SH
+      case 12: iat = 8; nh = 0; break;  //! P
+      case 13: iat = 14; nh = 0; break;  //! AU
+    }
+    if (iat <= natomtyp_) {
+      zero_form_factors_[i] = c[iat] + nh*c[0];
+      for (int j=0; j<5; j++) {
+        zero_form_factors_[i] += a[iat][j] + nh*a[0][j];
+      }
+      //! subtract solvation component
+      zero_form_factors_[i] -= rho_solv_ * (excl_vol[iat] + nh*excl_vol[0]);
+    } else {
+      zero_form_factors_[i] = 0.0;
+    }
+    printf("%d \t %.15f\n", i, zero_form_factors_[i]);
+  }
+
   return ierr;
 }
 
@@ -816,7 +858,7 @@ int SaxsData::saxs_intensity(std::string filename, bool fitflag) {
   wei.resize(ns_);
   printf("Intensity_filename = %s : %d\n", filename.c_str(), fitflag);
 
-  /*
+  /* // TODO: what is this?
   int i_low, i_hi;
   double weisum;
 
@@ -829,6 +871,7 @@ int SaxsData::saxs_intensity(std::string filename, bool fitflag) {
    */
 
   if (spaceflag_ == "reciprocal") {
+    // TODO: saxs_computeis()
   /*CALL saxs_computeis(saxsd, &
                       REAL(mdl%cd%x(1:mdl%cd%natm), double), &
                       REAL(mdl%cd%y(1:mdl%cd%natm), double), &
@@ -845,6 +888,7 @@ int SaxsData::saxs_intensity(std::string filename, bool fitflag) {
     return -1;
   }
 
+  // TODO: what is this?
   /*!IF (saxsd%use_rolloff) THEN
   !  DO is=1, saxsd%ns
   !    s2 = saxsd%s(is)**2
@@ -863,6 +907,7 @@ int SaxsData::saxs_intensity(std::string filename, bool fitflag) {
   fprintf(fp, "#  nmesh=%7d meshdens=%14.7lf\n", ns_, s_mesh_);
 
   if (fitflag) {
+    // TODO: what is this?
 /*    CALL saxs_bandpass2i(saxsd, i_low, i_hi);
     weisum = 0.0;
     for (is=i_low; is<=i_hi; is++) {
@@ -917,6 +962,8 @@ int SaxsData::saxs_computepr(void) {
   for (i=0; i<nr_; i++)
     p_r_[i] = 0.0;
 
+  std::FILE *fp;
+  fp = fopen("ir.txt", "w");
 //!------ loop
   for (i=0; i<num_particles_; i++) {
     for (j=i+1; j<num_particles_; j++) {
@@ -926,17 +973,22 @@ int SaxsData::saxs_computepr(void) {
         std::cout << "error (ir > nr_)" << std::endl;
         return -1;
       }
-      p_r_[ir] += 2.0*formfactor_[atmindx_[i]][0]*formfactor_[atmindx_[j]][0];
+      fprintf(fp, "(%d, %d) = %d\n", i, j, ir);
+      p_r_[ir] += 2.0 * zero_form_factors_[atmindx_[i]]
+                      * zero_form_factors_[atmindx_[j]];
     }
 //!--------   autocorrelation term
-    p_r_[0] += formfactor_[atmindx_[i]][0] * formfactor_[atmindx_[i]][0];
+    p_r_[0] += zero_form_factors_[atmindx_[i]]*zero_form_factors_[atmindx_[i]];
   }
+  fclose(fp);
 
   // for Debugging
-  std::FILE *fp;
+  //std::FILE *fp;
   fp = fopen("p_r.txt", "w");
-  for (i=0; i<nr_; i++)
+  for (i=0; i<nr_; i++) {
     fprintf(fp, "%d\t%20.10f\n", i, p_r_[i]);
+    //printf("%d\t%20.10f\n", i, p_r_[i]);
+  }
   fclose(fp);
 
   return 0;
@@ -980,9 +1032,11 @@ int SaxsData::saxs_pr2is(void) {
       //printf("r=%d p(r)=%g x=%g sinc=%g I=%g\n",
       //        ir, p_r_[ir], x, sincval, intensity_[is]);
     }
+    //exit(-1);
 
+    // TODO: what is this?
     //!IF (saxsd%represtyp /='CA') THEN
-    intensity_[is] = intensity_[is] * exp( -0.23 * s_[is] * s_[is] );
+    intensity_[is] *= exp( -0.23 * s_[is] * s_[is] );
       //!ELSE
     //!  saxsd%intensity(is) = saxsd%intensity(is) *&
     //!    EXP( -4.2718 * saxsd%s(is)*saxsd%s(is) )
@@ -1137,6 +1191,7 @@ double SaxsData::saxs_chifun(bool transfer_is) {
 
   //std::cout << "saxs_chifun : " << transfer_is << std::endl;
 //!------ determine number of saxs spectra ---------------------------------
+  // TODO: what is this?
   /*
   isaxsspecs = 0
   saxspt => enedata%saxslst
@@ -1164,7 +1219,7 @@ double SaxsData::saxs_chifun(bool transfer_is) {
 
 //!------ copy intensities for mixed conformation case
   if (mixflag_) {
-    /*
+    /* // TODO: what is this?
     DO isaxsspecs=1, nsaxsspecs
       saxsintens(isaxsspecs,:) = saxspt%d%intensity(:)
       saxspt => saxspt%next
@@ -1178,6 +1233,7 @@ double SaxsData::saxs_chifun(bool transfer_is) {
 //!-------------------------------------------------------------------------
   if (mixflag_) {
     /*
+    // TODO: ?
     CALL saxs_bandpass2i(saxspt%d, i_low, i_hi)
     CALL saxs_chi_mix(saxsscore, saxspt%d, i_low, i_hi, nsaxsspecs, &
                       saxsintens, scalefacs, ierr)
@@ -1191,6 +1247,7 @@ double SaxsData::saxs_chifun(bool transfer_is) {
     saxspt%d%chi_sq = saxsscore
     */
   } else {
+    // TODO: ?
     //DO isaxsspecs=1, nsaxsspecs
     saxs_bandpass2i(&i_low, &i_hi);
     //std::cout << "i_low = " << i_low << " i_hi = " << i_hi << std::endl;
@@ -1276,8 +1333,11 @@ int SaxsData::saxs_chi(double *saxsscore, int i_low, int i_hi) {
   }
 
   //! calculate scaling and offset (passed to saxs structure as saxsd%offset)
-  //c_ = saxs_scale(wei, weisum, i_low, i_hi);
+  c_ = saxs_scale(wei, weisum, i_low, i_hi);
+  std::cout << "c_ = " << c_ << std::endl;
 
+
+  // TODO: do we need this?
   /*!IF (saxsd%use_rolloff) THEN
   !  CALL saxs_fancyscore(saxsscore, saxsd%ns, i_low, i_hi, &
   !      saxsd%intensity, &
@@ -1288,7 +1348,7 @@ int SaxsData::saxs_chi(double *saxsscore, int i_low, int i_hi) {
 
   for (is=i_low; is<i_hi; is++) {
     if ( use_offset_ ) {
-      //** Why ignoring this scaling parameter, c?
+      // TODO: Why ignoring this scaling parameter, c?
       //!saxsscore = saxsscore + wei(is) * ( saxsd%int_exp(is) +&
       //!   saxsd%offset - saxsd%c * saxsd%intensity(is) )**2
       temp = int_exp_[is] + offset_ - intensity_[is];
@@ -1298,11 +1358,73 @@ int SaxsData::saxs_chi(double *saxsscore, int i_low, int i_hi) {
     }
     *saxsscore += wei[is] * temp * temp;
   }
-  // Why?
+  // TODO:  Why?
   *saxsscore /= filsum;
 
   return 0;
 }
+
+
+
+/*
+! ----------------------------------------------------------------------
+!>   calculate scaling of intensity to int_exp
+!!   saxsd%c, saxsd%offset
+!!   FF 09/28/06
+!!   FF 03/15/07 intensity multiplied by c
+! ----------------------------------------------------------------------
+*/
+double SaxsData::saxs_scale(std::vector<double> wei,
+                            double weisum, int i_low, int i_hi) {
+  int is;
+  double sumi_ei=0.0, sumi_i=0.0, sumi=0.0, sume=0.0, c;
+
+  for (is=i_low; is<i_hi; is++) {
+    sumi_ei += wei[is] * int_exp_[is] * intensity_[is];
+    sumi_i += wei[is] * intensity_[is] * intensity_[is];
+    sumi += wei[is] * intensity_[is];
+    sume += wei[is] * int_exp_[is];
+  }
+  if ( use_offset_ ) {
+    // TODO: is it true? I don't understand this.
+    offset_ = sumi_ei / sumi_i * sumi - sume;
+    // TODO: is it true? must be "weisum - sumi / sumi_i"
+    offset_ /= (weisum - sumi*sumi/sumi_i);
+    c = sumi_ei + offset_ * sumi;
+    c /= sumi_i;
+  } else {
+    c = sumi_ei / sumi_i;
+  }
+  if (use_rolloff_) {
+    // TODO: saxs_fit_test()
+    /*CALL saxs_fit_test(saxsd%intensity, saxsd%int_exp, saxsd%w_s,&
+          saxsd%sigma_exp, saxsd%s, saxsd%ns, i_low, i_hi, c, saxsd%bfac,&
+          saxsd%rolloff, saxsd%offset, saxsd%use_offset, saxsd%use_conv)
+     */
+  } else {
+    for (is=0; is<ns_; is++)
+      intensity_[is] *= c;
+  }
+  return c;
+}
+
+
+
+/*  for (i=0; i<nr*nr; i++) {
+ ir3.push_back( (unsigned int)(sqrt(i) * dr_reciprocal + 0.5) );
+ }
+
+ double dx = coordinates[iatom][0] - coordinates[i][0];
+ double dy = coordinates[iatom][1] - coordinates[i][1];
+ double dz = coordinates[iatom][2] - coordinates[i][2];
+ double dist2 = dx*dx + dy*dy + dz*dz;
+ unsigned int index = ir3[(unsigned int)(dist2 + 0.5)];
+ double temp =formfactor[iatom]*formfactor[i]*r_square_reciprocal[index];
+
+ Delta_x[index] += temp * dx;
+ Delta_y[index] += temp * dy;
+ Delta_z[index] += temp * dz;
+ */
 
 
 

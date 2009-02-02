@@ -4,6 +4,7 @@ files = [
          'FormFactorTable.h',
          'RadialDistributionFunction.h',
          'SAXSProfile.h',
+         'SAXSScore.h',
          'SaxsData.h',
         ]
 

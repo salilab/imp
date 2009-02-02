@@ -7,7 +7,6 @@
  */
 
 #include <IMP/saxs/FormFactorTable.h>
-
 #include <IMP/core/AtomDecorator.h>
 #include <IMP/internal/constants.h>
 
@@ -108,7 +107,7 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
             coeff.atom_type_ << std::endl;
       }
     }
-    //    cerr << coeff << endl;
+    //std::cerr << coeff << std::endl;
   }
   std::cerr << form_factors_coefficients_.size()
       << " form factors were read from file " << std::endl;
@@ -120,6 +119,16 @@ void FormFactorTable::show(std::ostream & out, std::string prefix) const
   for (unsigned int i = 0; i < zero_form_factors_.size(); i++) {
     out << prefix << " FFATOMTYPE " << i << " " << zero_form_factors_[i]
         << std::endl;
+  }
+}
+
+
+// No prefix, for a python script  (SJ Kim 01/22/09)
+void FormFactorTable::show(std::ostream & out) const
+{
+  for (unsigned int i = 0; i < zero_form_factors_.size(); i++) {
+    //out << " FFATOMTYPE " << i << " " << zero_form_factors_[i] << std::endl;
+    printf(" FFATOMTYPE %d %.15f\n", i, zero_form_factors_[i]);
   }
 }
 
@@ -138,15 +147,20 @@ void FormFactorTable::compute_form_factors_all_atoms()
   unsigned int number_of_entries = (max_s_ - min_s_) / delta_s_ + 1;
 
   // electron density of solvent - default=0.334 e/A^3 (H2O)
-  float rho = 0.334;
+  Float rho = 0.334;
 
   for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
     // form factors for all the q range
-    Float volr = pow(form_factors_coefficients_[i].excl_vol_, (float)2.0 / 3) /
-      4 * IMP::internal::PI;    // v_i^(2/3) / 4PI
+    // TODO: must be corrected like this. by SJ Kim (1/23/09)
+    //Float volr = pow(form_factors_coefficients_[i].excl_vol_, (Float)2.0 / 3)/
+    //  (4.0 * IMP::internal::PI);    // v_i^(2/3) / 4PI
+    Float volr = pow(form_factors_coefficients_[i].excl_vol_, (Float)2.0 / 3);
+
     for (unsigned int k = 0; k < number_of_entries; k++) {
       Float q = min_s_ + k * delta_s_;
-      Float s = square(q / 4 * IMP::internal::PI); // (q/4PI)^2
+      // TODO: must be corrected like this. by SJ Kim (1/23/09)
+      //Float s = square(q / (4.0 * IMP::internal::PI)); // (q/4PI)^2
+      Float s = square(q); // (q/4PI)^2
 
       // c
       form_factors_[i][k] = form_factors_coefficients_[i].c_;
@@ -155,12 +169,16 @@ void FormFactorTable::compute_form_factors_all_atoms()
       //  i=1,5
       for (unsigned int j = 0; j < 5; j++) {
         form_factors_[i][k] += form_factors_coefficients_[i].a_[j] *    // a_i
-            exp(-form_factors_coefficients_[i].b_[j] * s);   // EXP(-b_i*(q^2))
+          exp(-form_factors_coefficients_[i].b_[j] * s);   // EXP(-b_i*(q^2))
       }
 
       // subtract solvation: pho*v_i*EXP(-4PI * v_i^(2/3) * q^2)
+      //form_factors_[i][k] -=
+      //    rho * form_factors_coefficients_[i].excl_vol_ * exp(-volr * q * q);
+      // TODO: must be corrected like this. by SJ Kim (1/26/09)
       form_factors_[i][k] -=
-          rho * form_factors_coefficients_[i].excl_vol_ * exp(-volr * q * q);
+            rho * form_factors_coefficients_[i].excl_vol_
+            * exp( -(4.0 * IMP::internal::PI) * volr * s );
     }
 
     // zero form factors

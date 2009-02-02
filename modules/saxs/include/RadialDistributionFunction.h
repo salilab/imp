@@ -35,14 +35,28 @@ public:
   void calculate_distribution(const std::vector<Particle*>& particles1,
                               const std::vector<Particle*>& particles2);
 
-  // ! get distribution as array of floats
-  const Floats& get_distribution() const { return distribution_; }
+ /* void calculate_derivative_distribution
+                             (const std::vector<Particle*>& particles,
+                std::vector<IMP::algebra::Vector3D> &derivative_distribution );
+  */
+
+  // ! get distribution as array of Float
+  Floats get_distribution() const { return distribution_; }
 
   // ! print
   void show(std::ostream &out, std::string prefix) const;
+
+  //! print tables, No prefix, for a python script (SJ Kim 01/23/09)
+  void show(std::ostream &out=std::cout) const;
+
 private:
 
   void add_to_distribution(Float dist, Float value);
+
+/*  void add_to_derivative_distribution
+        (Float dist, const algebra::Vector3D &value,
+         std::vector<IMP::algebra::Vector3D> &derivative_distribution);
+*/
 
   unsigned int dist2index(Float dist) const {
     return floor(dist/bin_size_ + 0.5);
@@ -52,6 +66,7 @@ private:
 
 private:
   Floats distribution_;
+  //std::vector<IMP::algebra::Vector3D> derivative_distribution_;
   Float bin_size_; // resolution of discretization
   FormFactorTable* ff_table_; // pointer to form factors table
 };
