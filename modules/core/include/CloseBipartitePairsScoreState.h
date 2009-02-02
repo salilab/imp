@@ -29,7 +29,7 @@ class ClosePairsFinder;
     from each of two containers are reported here.
 
     \verbinclude bipartite_nonbonded_interactions.py
-    \ingroup restraint
+    \relates ClosePairsScoreState
  */
 class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState
 {
@@ -45,10 +45,16 @@ class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState
   void clear();
 public:
   // rk needs to be there so that we don't get an error for missing attributs
+  //! Create the score state for particles in the container in
+  /** rk can be FloatKey() in which case the radius is ignored. */
   CloseBipartitePairsScoreState(SingletonContainer *in0,
                                 SingletonContainer *in1,
                        FloatKey rk= XYZRDecorator::get_default_radius_key());
   // rk needs to be there so that we don't get an error for missing attributs
+  //! Create the score state for particles in the container in
+  /** rk can be FloatKey() in which case the radius is ignored.
+      The close pairs are placed in out.
+  */
   CloseBipartitePairsScoreState(SingletonContainer *in0,
                                 SingletonContainer *in1,
                        FilteredListPairContainer *out,
@@ -107,8 +113,6 @@ public:
 
   IMP_SCORE_STATE(internal::core_version_info)
 };
-
-IMP_OUTPUT_OPERATOR(CloseBipartitePairsScoreState);
 
 IMPCORE_END_NAMESPACE
 

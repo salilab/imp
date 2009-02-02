@@ -58,9 +58,15 @@ class IMPCOREEXPORT ClosePairsScoreState : public ScoreState
   void initialize();
 public:
   // rk needs to be there so that we don't get an error for missing attributs
+  //! Create the score state for particles in the container in
+  /** rk can be FloatKey() in which case the radius is ignored. */
   ClosePairsScoreState(SingletonContainer *in,
                        FloatKey rk= XYZRDecorator::get_default_radius_key());
   // rk needs to be there so that we don't get an error for missing attributs
+  //! Create the score state for particles in the container in
+  /** rk can be FloatKey() in which case the radius is ignored.
+      The close pairs are placed in out.
+  */
   ClosePairsScoreState(SingletonContainer *in,
                        FilteredListPairContainer *out,
                        FloatKey rk= XYZRDecorator::get_default_radius_key());
@@ -76,6 +82,7 @@ public:
    */
   void set_slack(Float s);
 
+  //! Get the container where the list of close pairs is put
   FilteredListPairContainer* get_close_pairs_container() const {
     return out_;
   }
@@ -107,8 +114,6 @@ public:
 
   IMP_SCORE_STATE(internal::core_version_info)
 };
-
-IMP_OUTPUT_OPERATOR(ClosePairsScoreState);
 
 IMPCORE_END_NAMESPACE
 
