@@ -14,13 +14,14 @@
 #include "ref_counting.h"
 
 #include <vector>
+#include <algorithm>
 
 IMP_BEGIN_NAMESPACE
 
 class Particle;
+IMP_END_NAMESPACE
 
-namespace internal
-{
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 // A vector with bounds checking
 /* This class is designed to be used from the IMP_LIST macro and
@@ -101,9 +102,20 @@ public:
 
 
 
+template <class T>
+struct ListContains{
+  const T& t_;
+  ListContains(const T &t): t_(t){}
+  bool operator()(typename T::value_type t) const {
+    return std::binary_search(t_.begin(), t_.end(), t);
+  }
+};
 
-} // namespace internal
+template <class T>
+ListContains<T> list_contains(const T&t) {
+  return ListContains<T>(t);
+}
 
-IMP_END_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_VECTOR_H */
