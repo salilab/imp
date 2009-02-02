@@ -112,7 +112,7 @@ struct ValueTuple<2, K> {
 
 template <class K>
 struct MapTraits {
-  typedef MapTraits<K> This;
+  typedef MapTraits<K> ThisTraits;
   typedef ValueTuple<boost::tuples::length<K>::value, K> VT;
   typedef typename VT::Value Value;
   static Value get_value(Particle *p, const K &k) {
@@ -129,10 +129,14 @@ struct MapTraits {
     Value v_;
     Bin(const Value &v): v_(v){}
     bool operator<(const Bin &o) const {
-      return This::compare(v_, o.v_) == -1;
+      //return ThisTraits::compare(v_, o.v_) == -1;
+      return TupleCompare<boost::tuples::length<K>::value, Value>
+      ::compare(v_,o.v_)==-1;
     }
     bool operator==(const Bin &o) const {
-      return This::compare(v_, o.v_)==0;
+      return TupleCompare<boost::tuples::length<K>::value, Value>
+      ::compare(v_,o.v_) ==0;
+      //return ThisTraits::compare(v_, o.v_)==0;
     }
   };
 };
