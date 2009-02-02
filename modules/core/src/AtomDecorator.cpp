@@ -197,7 +197,11 @@ AtomType atom_type_from_pdb_string(std::string nm) {
 void AtomDecorator::show(std::ostream &out, std::string prefix) const
 {
   //out <<prefix << "Element:"<< get_element() << std::endl;
-  out << prefix<< "Type: "<< get_type() << std::endl;
+  out << prefix<< "Type: "<< get_type();
+  if (get_input_index() != -1) {
+    out << " atom number: " << get_input_index();
+  }
+  out << std::endl;
   XYZDecorator::show(out, prefix);
 }
 
