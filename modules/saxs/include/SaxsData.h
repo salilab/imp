@@ -65,7 +65,9 @@ public:
 
   //! calculate SAXS Chi square of experimental data and model
   int saxs_chi(double *saxsscore, int i_low, int i_hi);
-  //void saxs_scale(); // Scaling parameter and offset
+
+  //! calculate scaling of intensity to int_exp
+  double saxs_scale(std::vector<double> wei,double weisum, int i_low, int i_hi);
 
   //void saxs_forces();  // Derivative of SAXS score ('forces')
   //void saxs_chi_deriv();   // Formulation in reciprocal space
@@ -186,6 +188,8 @@ private:
   //typedef array_type::index index;
   //std::vector< std::vector<double> > formfactor_;
   VECTOR2D_ formfactor_;
+
+  std::vector<double> zero_form_factors_;
 
   /** ----- intensity and radial distribution function - EXPERIMENT ---------
       FF: later: extend to multiple f's

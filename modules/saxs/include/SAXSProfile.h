@@ -24,6 +24,7 @@ class RadialDistributionFunction;
    (experimental or theoretical) or computed from a set of Model
    Particles (theoretical)
 */
+
 class IMPSAXSEXPORT SAXSProfile {
 public:
   //! init from file
@@ -35,12 +36,13 @@ public:
 private:
   class IntensityEntry {
   public:
-    IntensityEntry() : s_(0.0), intensity_(0.0), error_(1.0) {}
-    IntensityEntry(Float s) : s_(s), intensity_(0.0), error_(1.0) {}
+    IntensityEntry() : s_(0.0), intensity_(0.0), error_(1.0), weight_(1.0) {}
+    IntensityEntry(Float s) : s_(s),intensity_(0.0),error_(1.0),weight_(1.0) {}
 
     Float s_;
     Float intensity_;
     Float error_;
+    Float weight_;
   };
 
   friend std::ostream& operator<<(std::ostream& s, const IntensityEntry& e);
@@ -66,9 +68,6 @@ public:
   //! print to file
   void write_SAXS_file(const String& file_name);
 
-  //! compute chi value (assumes the same sampling range!)
-  Float compute_chi_score(const SAXSProfile& profile) const;
-
   //! return sampling resolution
   Float get_delta_s() const { return delta_s_; }
 
@@ -77,6 +76,13 @@ public:
 
   //! return maximal sampling point
   Float get_max_s() const { return max_s_; }
+
+  //! return number of entries in SAXS profile
+  unsigned int size() const { return profile_.size(); }
+  Float get_intensity(Float i) const { return profile_[i].intensity_; }
+  Float get_s(Float i) const { return profile_[i].s_; }
+  Float get_error(Float i) const { return profile_[i].error_; }
+  Float get_weight(Float i) const { return profile_[i].weight_; }
 
 private:
   void init();

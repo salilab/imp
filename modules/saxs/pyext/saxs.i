@@ -15,8 +15,9 @@
 %include "std_string.i"
 %include "std_except.i"
 
-/* Get definitions of kernel base classes (but do not wrap) */
+/* Get definitions of base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
+%import "modules/algebra/pyext/algebra.i"
 
 namespace IMP::saxs {
   IMP_OWN_FIRST_CONSTRUCTOR(SaxsData)
@@ -24,6 +25,7 @@ namespace IMP::saxs {
 
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
-%include "IMP/saxs/SAXSProfile.h"
 %include "IMP/saxs/RadialDistributionFunction.h"
+%include "IMP/saxs/SAXSProfile.h"
+%include "IMP/saxs/SAXSScore.h"
 %include "IMP/saxs/SaxsData.h"
