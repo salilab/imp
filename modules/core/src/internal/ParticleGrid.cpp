@@ -53,7 +53,7 @@ void ParticleGrid::build_grid(const Particles &ps)
     Float vx= std::pow(static_cast<Float>(target_cell_occupancy
                                           *(maxdim*maxdim*maxdim
                                             /ps.size())),
-                       .3333f);
+                       Float(.3333));
     if (vx > target_voxel_side_) {
       IMP_LOG(VERBOSE, "Overroade target side of " << target_voxel_side_
               << " with " << vx << std::endl);
