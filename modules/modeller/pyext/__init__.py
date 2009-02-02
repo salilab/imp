@@ -410,6 +410,7 @@ def copy_atom(a, model):
         ap.set_charge(a.charge)
     if (a.mass != 0):
         ap.set_mass(a.mass)
+    ap.set_input_index(a.index)
     return p
 
 
