@@ -87,7 +87,6 @@ Float SteepestDescent::optimize(unsigned int max_steps)
         set_value(float_indexes[i], temp_vals[i] - temp_derivs[i]
                                     * current_step_size);
       }
-      update_states();
 
       // check the new model
       new_score = get_model()->evaluate(false);
@@ -95,12 +94,15 @@ Float SteepestDescent::optimize(unsigned int max_steps)
               << new_score << "  step size: " << current_step_size);
 
       // if the score is less than the threshold, we're done
-      if (new_score <= threshold_)
+      if (new_score <= threshold_) {
+        update_states();
         return new_score;
+      }
 
       // if the score got better, we'll take it
       if (new_score < last_score) {
         done = true;
+        update_states();
         if (move_bigger)
           current_step_size *= 1.4;
       }
@@ -122,9 +124,12 @@ Float SteepestDescent::optimize(unsigned int max_steps)
         current_step_size *= 0.71;
       }
 
-      if (current_step_size == 0.0)
+      if (current_step_size == 0.0) {
+        update_states();
         return new_score;
+      }
     }
+    update_states();
   }
 
   return new_score;
