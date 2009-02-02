@@ -19,26 +19,23 @@
 %import "kernel/pyext/IMP.i"
 %import "kernel/pyext/IMP_keys.i"
 
+namespace IMP {
+  namespace search {
+    IMP_OWN_FIRST_CONSTRUCTOR(IntMapScoreState)
+  }
+}
+
 
 /* Wrap our own classes */
-%include "IMP/search/AttributeMap1ScoreState.h"
-%include "IMP/search/AttributeMap2ScoreState.h"
-%include "IMP/search/AttributeMap3ScoreState.h"
-%include "IMP/search/AttributeMap4ScoreState.h"
+%include "IMP/search/AttributeMapScoreState.h"
 
-IMP_OWN_FIRST_CONSTRUCTOR(IntBase)
 
 namespace IMP {
   namespace search {
-    %template(IntBase) AttributeMap1ScoreState<Int>;
+    /*%template(IntMapKey) AttributeMapScoreState<IntKey>;
+    %template(IntMapScoreState) AttributeMapScoreState<boost::tuple<IntKey> >;
+    %template(IntMapValue) IntMapScoreState::Value;*/
   }
 }
-
-namespace IMP {
-  namespace search {
-    IMP_OWN_FIRST_CONSTRUCTOR(IntAttributeMapScoreState)
-  }
-}
-%include "IMP/search/IntAttributeMapScoreState.h"
 
 

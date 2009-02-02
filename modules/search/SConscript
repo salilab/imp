@@ -1,2 +1,17 @@
 Import('env')
 Export('env')
+
+# Link against CGAL if present:
+if env['CGAL_LIBS']:
+    env.Append(LIBS=env['CGAL_LIBS'])
+
+# No dependent libraries, so this module can always be built:
+env.validate()
+
+env.Append(LIBS=['imp_algebra'])
+
+# Subdirectories:
+SConscript('src/SConscript')
+SConscript('include/SConscript')
+SConscript('pyext/SConscript')
+SConscript('test/SConscript')
