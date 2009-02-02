@@ -1,11 +1,11 @@
 /**
- *  \file AttributeMap4ScoreState.cpp \brief Map on attribute values.
+ *  \file AttributeMapNUMScoreState.cpp \brief Map on attribute values.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#include <IMP/search/AttributeMap4ScoreState.h>
+#include <IMP/search/AttributeMapScoreState.h>
 
 IMPSEARCH_BEGIN_NAMESPACE
 
