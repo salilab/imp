@@ -47,6 +47,7 @@ class TestBL(IMP.test.TestCase):
                      "test1")
     def test_skip(self):
         """Test skipping steps in the VRML log"""
+        IMP.set_log_level(IMP.TERSE)
         m= IMP.Model()
         o= IMP.core.SteepestDescent()
         o.set_model(m)
@@ -72,7 +73,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_z(1)
         pc= IMP.core.ListSingletonContainer(IMP.Particles([p0,p1]))
         a= IMP.core.VRMLLogOptimizerState(pc, nm)
-        a.set_skip_steps(20) # kind of a hack
+        a.set_skip_steps(10) # kind of a hack
         r= IMP.core.DistanceRestraint(IMP.core.Harmonic(0,10), p0, p1);
         m.add_restraint(r);
         o.add_optimizer_state(a)

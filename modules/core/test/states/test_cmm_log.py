@@ -78,7 +78,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_y(1)
         d1.set_z(1)
         a= IMP.core.CMMLogOptimizerState(nm, IMP.Particles([p0,p1]))
-        a.set_skip_steps(20)
+        a.set_skip_steps(10)
         r= IMP.core.DistanceRestraint(IMP.core.Harmonic(0,10), p0, p1);
         m.add_restraint(r);
         o.add_optimizer_state(a)
