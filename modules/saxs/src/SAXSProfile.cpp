@@ -99,7 +99,8 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
     if (line[0] == '#' || line[0] == '\0')
       continue;
 
-    ncols = sscanf(line.c_str(), "%lf %lf %lf",
+    ncols = sscanf(line.c_str(), "%f %f %f",
+    //ncols = sscanf(line.c_str(), "%lf %lf %lf",
                    &entry.s_, &entry.intensity_, &entry.error_);
     profile_.push_back(entry);
   }
