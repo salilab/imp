@@ -275,6 +275,9 @@ public:
   IMP_DECORATOR_GET_SET_OPT(mass, get_mass_key(),
                             Float, Float, 0);
 
+  IMP_DECORATOR_GET_SET_OPT(input_index, get_input_index_key(),
+                            Int, Int, -1);
+
   /** Get the key storing the type */
   static IntKey get_type_key();
 
@@ -286,6 +289,9 @@ public:
 
   /** Get the key storing the mass */
   static FloatKey get_charge_key();
+
+  /** Get the key used to store the input index */
+  static IntKey get_input_index_key();
 };
 
 IMP_OUTPUT_OPERATOR(AtomDecorator);
