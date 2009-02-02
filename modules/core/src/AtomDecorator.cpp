@@ -229,6 +229,11 @@ FloatKey AtomDecorator::get_charge_key() {
   return k;
 }
 
+IntKey AtomDecorator::get_input_index_key() {
+  static IntKey k("pdb_atom_index");
+  return k;
+}
+
 unsigned int get_residue_index(AtomDecorator d) {
   return get_residue(d).get_index();
 }
