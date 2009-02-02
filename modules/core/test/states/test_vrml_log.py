@@ -53,7 +53,7 @@ class TestBL(IMP.test.TestCase):
         nm = "skip" + "vrmltest%03d.vrml"
         # Possible clean up from any previous failed runs:
         try:
-            os.remove("skip" + "vrmltest002.cmm")
+            os.remove("skip" + "vrmltest002.vrml")
         except OSError:
             pass
         p0= IMP.Particle()
