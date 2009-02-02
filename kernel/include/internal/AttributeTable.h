@@ -242,7 +242,8 @@ inline void AttributeTable<Traits>::insert_always(Key k, Value v)
             ValueException);
   typename Map::size_type val
     =static_cast<typename Map::size_type>(k.get_index());
-  IMP_assert(val <1000, "Bad key index");
+  IMP_assert(val <100000, "Bad key index: " << k.get_index()
+             << " " << k.get_string());
   map_.resize(std::max(map_.size(),
                        val+1),
               Traits::get_invalid());
