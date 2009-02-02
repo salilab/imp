@@ -29,6 +29,7 @@ public:
   //! init for theoretical profile
   SAXSScore(FormFactorTable* ff_table,
             SAXSProfile* exp_saxs_profile,
+            const SAXSProfile& model_saxs_profile,
             const std::vector<Particle*>& particles);
 
   //! compute chi value (assumes the same sampling range!)
@@ -47,8 +48,12 @@ public:
   double get_offset(void) { return offset_; }
   double set_offset(double offset) { offset_ = offset;  return offset_; }
 
+  int get_mesh_sinc_(void) { return mesh_sinc_; }
+  int set_mesh_sinc_(int mesh_sinc) {mesh_sinc_ = mesh_sinc; return mesh_sinc_;}
+
 private:
-  int init(const std::vector<Particle*>& particles);
+  int init(const SAXSProfile& model_saxs_profile,
+           const std::vector<Particle*>& particles);
 
   //! compute  derivatives on atom iatom - iatom is NOT part of rigid body
   std::vector<IMP::algebra::Vector3D> calculate_chi_real_derivative (
@@ -68,11 +73,9 @@ protected:
 
   //! lookup table for sinc function and cos function
   std::vector<double> sinc_lookup_, cos_lookup_, zero_formfactor_;
+  std::vector<double> r_, r_square_reciprocal_;
   int mesh_sinc_;     //! how many points per 1 unit in sinc
   unsigned int nr_;
-  double dr_;
-
-  std::vector<double> r_, r_square_reciprocal_;
 };
 
 IMPSAXS_END_NAMESPACE

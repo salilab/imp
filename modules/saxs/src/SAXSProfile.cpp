@@ -27,12 +27,20 @@ SAXSProfile::SAXSProfile(Float smin, Float smax, Float delta,
                          FormFactorTable * ff_table):
   min_s_(smin), max_s_(smax), delta_s_(delta),ff_table_(ff_table)
 {
+  b_ = 0.23;
+  pr_resolution_ = 0.5;
+  max_pr_distance_ = 50.0;
+
   init();
 }
 
 
 SAXSProfile::SAXSProfile(const String & file_name)
 {
+  b_ = 0.23;
+  pr_resolution_ = 0.5;
+  max_pr_distance_ = 50.0;
+
   read_SAXS_file(file_name);
 }
 
@@ -56,6 +64,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
     std::cerr << "Can't open file " << file_name << std::endl;
     exit(1);
   }
+  init();
 /*
   // TODO: handle profiles with multiple comment lines
   // remove first comment line
@@ -92,16 +101,15 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
 */
   int ncols=0;
   std::string line;
-  IntensityEntry entry;
 
   while ( !in_file.eof() ) {
     getline(in_file, line);
     if (line[0] == '#' || line[0] == '\0')
       continue;
 
-    ncols = sscanf(line.c_str(), "%f %f %f",
-    //ncols = sscanf(line.c_str(), "%lf %lf %lf",
-                   &entry.s_, &entry.intensity_, &entry.error_);
+    double s, intensity, error;
+    ncols = sscanf(line.c_str(), "%lf %lf %lf", &s, &intensity, &error);
+    IntensityEntry entry(s, intensity, error);
     profile_.push_back(entry);
   }
   std::cerr << "Number of entries read " << profile_.size() << std::endl;
@@ -111,9 +119,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
   if (profile_.size() > 1) {
     min_s_ = profile_[0].s_;
     max_s_ = profile_[profile_.size() - 1].s_;
-    //delta_s_ = profile_[1].s_ - profile_[0].s_;
-
-    // TODO: must be corrected like this for accuracy, by SJ Kim (1/23/09)
+    // Corrected by SJ Kim (1/23/09)
     delta_s_ = (max_s_ - min_s_) / (profile_.size() - 1);
   }
 
@@ -161,7 +167,7 @@ void SAXSProfile::write_SAXS_file(const String & file_name)
 
 
 // TODO: this one was moved into the "SAXSScore" class
-void SAXSProfile::write_SAXS_fit_file(const String & file_name,
+/*void SAXSProfile::write_SAXS_fit_file(const String & file_name,
                                       const SAXSProfile & saxs_profile,
                                       const Float c) const
 {
@@ -182,6 +188,7 @@ void SAXSProfile::write_SAXS_fit_file(const String & file_name,
   }
   out_file.close();
 }
+*/
 
 
 void SAXSProfile::calculate_profile_real(
@@ -192,10 +199,11 @@ void SAXSProfile::calculate_profile_real(
   std::cerr << "start real profile calculation for "
       << particles.size() << " particles" << std::endl;
 
-  Float delta = 0.5;            // add to parameter?
-  RadialDistributionFunction r_dist(delta, ff_table_);
+  RadialDistributionFunction r_dist(pr_resolution_, ff_table_);
+  r_dist.set_max_pr_distance(max_pr_distance_);
   r_dist.calculate_distribution(particles);
   radial_distribution_2_profile(r_dist);
+  max_pr_distance_ = r_dist.get_max_pr_distance();
 }
 
 
@@ -203,14 +211,17 @@ void SAXSProfile::calculate_profile_real(
                       const std::vector<Particle *>& particles1,
                       const std::vector<Particle *>& particles2)
 {
+  init();
+
   std::cerr << "start real profile calculation for "
       << particles1.size() << " + " << particles2.size()
       << " particles" << std::endl;
 
-  Float delta = 0.5;            // TODO: add as parameter?
-  RadialDistributionFunction r_dist(delta, ff_table_);
+  RadialDistributionFunction r_dist(pr_resolution_, ff_table_);
+  r_dist.set_max_pr_distance(max_pr_distance_);
   r_dist.calculate_distribution(particles1, particles2);
   radial_distribution_2_profile(r_dist);
+  max_pr_distance_ = r_dist.get_max_pr_distance();
 }
 
 
@@ -218,7 +229,6 @@ void SAXSProfile::
 radial_distribution_2_profile(const RadialDistributionFunction & r_dist)
 {
   init();
-  Float b = 0.23;               // TODO: add as parameter
 
   // iterate over intensity profile (assumes initialized profile: s, I(s)=0)
   for (unsigned int k = 0; k < profile_.size(); k++) {
@@ -230,7 +240,7 @@ radial_distribution_2_profile(const RadialDistributionFunction & r_dist)
       x = sinc(x);
       profile_[k].intensity_ += r_dist.distribution_[r] * x;
     }
-    profile_[k].intensity_ *= exp(-b * profile_[k].s_ * profile_[k].s_);
+    profile_[k].intensity_ *= exp(-b_ * profile_[k].s_ * profile_[k].s_);
   }
 }
 

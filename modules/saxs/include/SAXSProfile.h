@@ -38,6 +38,8 @@ private:
   public:
     IntensityEntry() : s_(0.0), intensity_(0.0), error_(1.0), weight_(1.0) {}
     IntensityEntry(Float s) : s_(s),intensity_(0.0),error_(1.0),weight_(1.0) {}
+    IntensityEntry(Float s, Float intensity, Float error)
+      : s_(s), intensity_(intensity), error_(error), weight_(1.0) {}
 
     Float s_;
     Float intensity_;
@@ -79,10 +81,18 @@ public:
 
   //! return number of entries in SAXS profile
   unsigned int size() const { return profile_.size(); }
-  Float get_intensity(Float i) const { return profile_[i].intensity_; }
-  Float get_s(Float i) const { return profile_[i].s_; }
-  Float get_error(Float i) const { return profile_[i].error_; }
-  Float get_weight(Float i) const { return profile_[i].weight_; }
+  Float get_intensity(unsigned int i) const { return profile_[i].intensity_; }
+  Float get_s(unsigned int i) const { return profile_[i].s_; }
+  Float get_error(unsigned int i) const { return profile_[i].error_; }
+  Float get_weight(unsigned int i) const { return profile_[i].weight_; }
+  Float get_b_coeff() const { return b_; }
+  Float set_b_coeff(Float b) { b_ = b; return b_; }
+  Float get_pr_resolution() const { return pr_resolution_; }
+  Float set_pr_resolution(Float pr_resolution)
+    { pr_resolution_ = pr_resolution; return pr_resolution_; }
+  Float get_max_pr_distance() const { return max_pr_distance_; }
+  Float set_max_pr_distance(Float max_pr_distance)
+    { max_pr_distance_ = max_pr_distance; return max_pr_distance_; }
 
 private:
   void init();
@@ -100,19 +110,23 @@ private:
   void radial_distribution_2_profile(const RadialDistributionFunction& r_dist);
 
   Float sinc(Float value) {
-    if(fabs(value) < 0.0000000000000001) return 1.0;
+    if(fabs(value) < 1.0e-16) return 1.0;
     return sin(value)/value;
   }
 
-  void write_SAXS_fit_file(const String& file_name,
+  // TODO: this one was moved into the "SAXSScore" class
+  /*void write_SAXS_fit_file(const String& file_name,
                            const SAXSProfile& saxs_profile,
-                           const Float c) const;
+                           const Float c) const;*/
 
 protected:
   std::vector<IntensityEntry> profile_; // the profile
   Float min_s_, max_s_; // minimal and maximal s values  in the profile
   Float delta_s_; // profile sampling resolution
   FormFactorTable* ff_table_; // pointer to form factors table
+  Float b_;       // parameter for E^2(q), used in faster calculation
+  Float pr_resolution_;   // resolution of P(r) function (radial distribution)
+  Float max_pr_distance_;  // paramter for maximum r value for p(r) function
 };
 
 IMPSAXS_END_NAMESPACE

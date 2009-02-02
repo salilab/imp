@@ -37,6 +37,7 @@ std::istream & operator>>(std::istream & s,
   return s >> atom_factor_coefficients.excl_vol_;       // excluded volume
 }
 
+
 std::ostream & operator<<(std::ostream & s,
                           const FormFactorTable::AtomFactorCoefficients &
                           atom_factor_coefficients)
@@ -51,6 +52,7 @@ std::ostream & operator<<(std::ostream & s,
   }
   return s << atom_factor_coefficients.excl_vol_ << std::endl;
 }
+
 
 FormFactorTable::FormFactorTable(const String& table_name, Float min_s,
                                  Float max_s, Float delta_s):
@@ -73,6 +75,7 @@ FormFactorTable::FormFactorTable(const String& table_name, Float min_s,
   compute_form_factors_all_atoms();
   compute_form_factors_heavy_atoms();
 }
+
 
 int FormFactorTable::read_form_factor_table(const String & table_name)
 {
@@ -114,6 +117,7 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
   return form_factors_coefficients_.size();
 }
 
+
 void FormFactorTable::show(std::ostream & out, std::string prefix) const
 {
   for (unsigned int i = 0; i < zero_form_factors_.size(); i++) {
@@ -151,16 +155,16 @@ void FormFactorTable::compute_form_factors_all_atoms()
 
   for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
     // form factors for all the q range
-    // TODO: must be corrected like this. by SJ Kim (1/23/09)
-    //Float volr = pow(form_factors_coefficients_[i].excl_vol_, (Float)2.0 / 3)/
-    //  (4.0 * IMP::internal::PI);    // v_i^(2/3) / 4PI
-    Float volr = pow(form_factors_coefficients_[i].excl_vol_, (Float)2.0 / 3);
+    // corrected by SJ Kim (1/23/09)    // v_i^(2/3) / 4PI
+    Float volr = pow( form_factors_coefficients_[i].excl_vol_, (Float)2.0/3.0 )
+                / (4.0 * IMP::internal::PI);
 
     for (unsigned int k = 0; k < number_of_entries; k++) {
       Float q = min_s_ + k * delta_s_;
-      // TODO: must be corrected like this. by SJ Kim (1/23/09)
+      // TODO: Not clear why uses s, instead of q. corrected by SJ Kim (1/23/09)
+      // TODO: s and q relationship? still Not clear (Emailed to Frido)
       //Float s = square(q / (4.0 * IMP::internal::PI)); // (q/4PI)^2
-      Float s = square(q); // (q/4PI)^2
+      Float s = square(q);
 
       // c
       form_factors_[i][k] = form_factors_coefficients_[i].c_;
@@ -169,7 +173,7 @@ void FormFactorTable::compute_form_factors_all_atoms()
       //  i=1,5
       for (unsigned int j = 0; j < 5; j++) {
         form_factors_[i][k] += form_factors_coefficients_[i].a_[j] *    // a_i
-          exp(-form_factors_coefficients_[i].b_[j] * s);   // EXP(-b_i*(q^2))
+          exp( -form_factors_coefficients_[i].b_[j] * s );   // EXP(-b_i*(q^2))
       }
 
       // subtract solvation: pho*v_i*EXP(-4PI * v_i^(2/3) * q^2)
@@ -177,8 +181,7 @@ void FormFactorTable::compute_form_factors_all_atoms()
       //    rho * form_factors_coefficients_[i].excl_vol_ * exp(-volr * q * q);
       // TODO: must be corrected like this. by SJ Kim (1/26/09)
       form_factors_[i][k] -=
-            rho * form_factors_coefficients_[i].excl_vol_
-            * exp( -(4.0 * IMP::internal::PI) * volr * s );
+            rho * form_factors_coefficients_[i].excl_vol_ * exp( - volr * s );
     }
 
     // zero form factors
@@ -190,6 +193,7 @@ void FormFactorTable::compute_form_factors_all_atoms()
     zero_form_factors_[i] -= rho * form_factors_coefficients_[i].excl_vol_;
   }
 }
+
 
 void FormFactorTable::compute_form_factors_heavy_atoms()
 {
@@ -247,6 +251,7 @@ void FormFactorTable::compute_form_factors_heavy_atoms()
         zero_form_factors_[element_type] + h_num * zero_form_factors_[H];
   }
 }
+
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
                        const core::AtomType& atom_type,
@@ -416,6 +421,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
   return N;
 }
 
+
 FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
                      const core::AtomType& atom_type,
                      const core::ResidueType& residue_type) const {
@@ -450,6 +456,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
       << atom_type << " " << residue_type << std::endl;
   return O;
 }
+
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
                      const core::AtomType& atom_type,
@@ -507,6 +514,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
   return ret_type;
 }
 
+
 Float FormFactorTable::get_form_factor(Particle * p,
                                             FormFactorType ff_type) const {
   // initialization by request
@@ -519,6 +527,7 @@ Float FormFactorTable::get_form_factor(Particle * p,
   p->add_attribute(form_factor_key_, form_factor);
   return form_factor;
 }
+
 
 const Floats & FormFactorTable::get_form_factors(Particle * p,
                                             FormFactorType ff_type) const {

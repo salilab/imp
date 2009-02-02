@@ -12,10 +12,11 @@ IMPSAXS_BEGIN_NAMESPACE
 
 SAXSScore::SAXSScore(FormFactorTable* ff_table,
                      SAXSProfile* exp_saxs_profile,
+                     const SAXSProfile& model_saxs_profile,
                      const std::vector<Particle*>& particles) :
   ff_table_(ff_table), exp_saxs_profile_(exp_saxs_profile)
 {
-  init(particles);
+  init(model_saxs_profile, particles);
 }
 
 
@@ -24,20 +25,20 @@ SAXSScore::SAXSScore(FormFactorTable* ff_table,
  !------------ Precalculate common array data for faster calculation
  !----------------------------------------------------------------------
 */
-// TODO: need to get a number of distribution index (nr) and bin_size (dr)
-// from RadialDistirubionFunction class
-int SAXSScore::init(const std::vector<Particle*>& particles)
+int SAXSScore::init(const SAXSProfile& model_saxs_profile,
+                    const std::vector<Particle*>& particles)
 {
   //!------ setup lookup tables for sinc and cosine function
-  nr_ = 100;
-  dr_ = 0.5;
   mesh_sinc_ = 1000;
   offset_ = 0.0;
+  double dr = model_saxs_profile.get_pr_resolution();
+  nr_ = (unsigned int)(model_saxs_profile.get_max_pr_distance() / dr) + 1;
   int nsinc = (int)( exp_saxs_profile_->get_s( exp_saxs_profile_->size()-1 )
-                    * nr_ * dr_ * mesh_sinc_ ) + 1;
+                    * nr_ * dr * mesh_sinc_ ) + 1;
   const double sinc_dense = 1.0 / (double)mesh_sinc_;
   sinc_lookup_.clear();   sinc_lookup_.resize(nsinc, 0.0);
   cos_lookup_.clear();    cos_lookup_.resize(nsinc, 0.0);
+
   // to avoid the singularity of sinc function at zero
   sinc_lookup_.push_back(1.0);  cos_lookup_.push_back(1.0);
   for (int i=1; i<nsinc; i++) {
@@ -49,7 +50,7 @@ int SAXSScore::init(const std::vector<Particle*>& particles)
   r_.clear();   r_.resize(nr_, 0.0);
   r_square_reciprocal_.clear();     r_square_reciprocal_.resize(nr_, 0.0);
   for (unsigned int i=0; i<nr_; i++) {
-    r_[i] = dr_ * i;
+    r_[i] = dr * i;
     r_square_reciprocal_[i] = 1.0 / square(r_[i]);
   }
 
@@ -81,7 +82,6 @@ int SAXSScore::init(const std::vector<Particle*>& particles)
  ! added weight_tilda function w_tilda(q) = w(q) / sigma_exp^2
  ! ----------------------------------------------------------------------
 */
-// TODO: add some tests for the same sampling for both profiles
 // TODO: define a weight function (w(q) = 1, q^2, or hybrid)
 double SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
 {
@@ -116,13 +116,12 @@ double SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
     if (fabs(delta/exp_saxs_profile_->get_intensity(k)) >= IMP_SAXS_DELTA_LIMIT)
       chi_square += weight_tilda * square(delta);
   }
-  //chi /= model_saxs_profile.size();
+  chi_square /= model_saxs_profile.size();
 
   //! TODO: make this optional
   write_SAXS_fit_file("fitfile.dat", model_saxs_profile);
 
   return chi_square;
-  //return sqrt(chi);
 }
 
 
@@ -139,14 +138,15 @@ double SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
  !!   Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
  ! ----------------------------------------------------------------------
 */
-// TODO: Combine with "RadialDistribution Class"
-// TODO: s and q relationship? (Emailed to Frido)
+// TODO: Combine with "RadialDistribution Class"?
 std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
                                        const SAXSProfile& model_saxs_profile,
                                        const std::vector<Particle*>& particles)
 {
   std::vector<algebra::Vector3D> chi_derivatives;
   unsigned int i, is, iatom, ir;
+  const double b_coeff = exp_saxs_profile_-> get_b_coeff();
+  const double dr_reciprocal = 1.0 / exp_saxs_profile_->get_pr_resolution();
 
   if (exp_saxs_profile_->size() != model_saxs_profile.size()) {
     printf("Number of profile entries mismatch! (exp:%d, model:%d)\n",
@@ -169,7 +169,7 @@ std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
     if (fabs(delta/exp_saxs_profile_->get_intensity(is)) < IMP_SAXS_DELTA_LIMIT)
       delta = 0.0;
     delta_i[is] = weight_tilda * delta;
-    e_q[is] = exp( -0.23 * square(exp_saxs_profile_->get_s(is)) );
+    e_q[is] = exp( - b_coeff * square(exp_saxs_profile_->get_s(is)) );
     delta_i_and_e_q[is] = delta_i[is] * e_q[is];
   }
   //!------ copy coordinates in advance, to avoid n^2 copy operations
@@ -178,18 +178,14 @@ std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
   for (is=0; is<particles.size(); is++)
     coordinates[is] = core::XYZDecorator::cast(particles[is]).get_coordinates();
 
-  const double dr_reciprocal = 1.0 / dr_;
-
   std::vector<algebra::Vector3D> Delta;
   algebra::Vector3D Delta_q(0.0, 0.0, 0.0), chi_derivative(0.0, 0.0, 0.0);
-  // TODO: Very weird. Why did definition make huge differnce on Mac?
+  // TODO: Very weird. Why this definition makes huge differnce in performance?
   std::vector<double> Delta_x;//, Delta_y, Delta_z;
 
   //!------ The real loop starts from here
   chi_derivatives.resize(particles.size());
   for (iatom=0; iatom<particles.size(); iatom++) {
-    // TODO: Use Vector3D for simplicity.
-    // But accuracy & performance are still problematic at this moment.
     Delta.clear();
     Delta.resize(nr_, algebra::Vector3D(0.0, 0.0, 0.0));
 
@@ -223,7 +219,7 @@ std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
 
 
 //!----------------------------------------------------------------------
-//! TODO: This is a C-style file print, for the alignment of data like Modeller
+//! TODO: This is a C-style file print, for the same data alignment as Modeller
 //!----------------------------------------------------------------------
 void SAXSScore::write_SAXS_fit_file(const std::string& file_name,
                                     const SAXSProfile& model_saxs_profile)

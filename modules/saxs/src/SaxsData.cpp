@@ -1181,8 +1181,8 @@ double SaxsData::saxs_sqnormfunc(std::vector<double> func,
 ! ----------------------------------------------------------------------
 */
 double SaxsData::saxs_chifun(bool transfer_is) {
-  int i_low, i_hi, isaxsspecs, nsaxsspecs;
-  double saxsscore=0.0;
+  int i_low, i_hi; //, isaxsspecs, nsaxsspecs;
+  //double saxsscore=0.0;
   //TYPE(saxslist), POINTER  :: saxspt
   //REAL(double), POINTER    :: saxsintens(:,:)
   //REAL(double), POINTER    :: scalefacs(:)

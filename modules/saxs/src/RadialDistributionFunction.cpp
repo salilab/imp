@@ -16,8 +16,9 @@ RadialDistributionFunction::RadialDistributionFunction(Float bin_size,
                                               FormFactorTable * ff_table):
 bin_size_(bin_size), ff_table_(ff_table)
 {
-  distribution_.reserve(dist2index(50.0));      // start with ~50A
-  //derivative_distribution_.reserve(dist2index(50.0));      // start with ~50A
+  max_pr_distance_ = 50.0;      // start with ~50A (by default)
+  distribution_.reserve(dist2index(max_pr_distance_));
+  //derivative_distribution_.reserve(dist2index(max_pr_distance_));
 }
 
 void RadialDistributionFunction::add_to_distribution(Float dist, Float value)
@@ -25,7 +26,8 @@ void RadialDistributionFunction::add_to_distribution(Float dist, Float value)
   unsigned int index = dist2index(dist);
   if (index >= distribution_.size()) {
     distribution_.reserve(2 * index);   // to avoid many re-allocations
-    distribution_.resize(index + 1, 0);
+    distribution_.resize(index + 1, 0.0);
+    max_pr_distance_ = (index + 1) * bin_size_;
   }
   distribution_[index] += value;
 }

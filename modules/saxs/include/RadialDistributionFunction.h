@@ -49,6 +49,13 @@ public:
   //! print tables, No prefix, for a python script (SJ Kim 01/23/09)
   void show(std::ostream &out=std::cout) const;
 
+  Float get_max_pr_distance(void) { return max_pr_distance_; }
+  Float set_max_pr_distance(double max_pr_distance) {
+    max_pr_distance_ = max_pr_distance;
+    distribution_.reserve(dist2index(max_pr_distance_));
+    return max_pr_distance_;
+  }
+
 private:
 
   void add_to_distribution(Float dist, Float value);
@@ -69,6 +76,7 @@ private:
   //std::vector<IMP::algebra::Vector3D> derivative_distribution_;
   Float bin_size_; // resolution of discretization
   FormFactorTable* ff_table_; // pointer to form factors table
+  Float max_pr_distance_;  // paramter for maximum r value for p(r) function
 };
 
 IMPSAXS_END_NAMESPACE
