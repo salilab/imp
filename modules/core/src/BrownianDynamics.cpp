@@ -24,55 +24,11 @@ unit::Shift<unit::Multiply<unit::Pascal,
                            unit::Second>::type,
             -3>::type MillipascalSecond;
 
-static MillipascalSecond eta(unit::Kelvin T)
-{
-  const std::pair<unit::Kelvin, MillipascalSecond> points[]
-    ={ std::make_pair(unit::Kelvin(273+10.0),
-                      MillipascalSecond(1.308)),
-       std::make_pair(unit::Kelvin(273+20.0),
-                      MillipascalSecond(1.003)),
-       std::make_pair(unit::Kelvin(273+30.0),
-                      MillipascalSecond(0.7978)),
-       std::make_pair(unit::Kelvin(273+40.0),
-                      MillipascalSecond(0.6531)),
-       std::make_pair(unit::Kelvin(273+50.0),
-                      MillipascalSecond(0.5471)),
-       std::make_pair(unit::Kelvin(273+60.0),
-                      MillipascalSecond(0.4668)),
-       std::make_pair(unit::Kelvin(273+70.0),
-                      MillipascalSecond(0.4044)),
-       std::make_pair(unit::Kelvin(273+80.0),
-                      MillipascalSecond(0.3550)),
-       std::make_pair(unit::Kelvin(273+90.0),
-                      MillipascalSecond(0.3150)),
-       std::make_pair(unit::Kelvin(273+100.0),
-                      MillipascalSecond(0.2822))};
 
-  const unsigned int npoints= sizeof(points)/sizeof(std::pair<float,float>);
-  if (T < points[0].first) {
-    return points[0].second;
-  } else {
-    for (unsigned int i=1; i< npoints; ++i) {
-      if (points[i].first > T) {
-        float f= ((T - points[i-1].first)
-                  /(points[i].first - points[i-1].first))
-          .get_normalized_value();
-        MillipascalSecond ret=
-          (1.0-f) *points[i-1].second + f*points[i].second;
-        return ret;
-      }
-    }
-  }
-  return points[npoints-1].second;
-}
-
-BrownianDynamics::BrownianDynamics(FloatKey dkey) :
+BrownianDynamics::BrownianDynamics() :
   max_change_(10), max_dt_(1e7), cur_dt_(max_dt_), cur_time_(0),
-  T_(IMP::internal::DEFAULT_TEMPERATURE), dkey_(dkey)
+  T_(IMP::internal::DEFAULT_TEMPERATURE)
 {
-  IMP_check(dkey_ != FloatKey(), "BrownianDynamics needs a valid key for the "
-            << "diffusion coefficient",
-            ValueException);
 }
 
 
@@ -100,7 +56,8 @@ void BrownianDynamics::setup_particles()
     if (p->has_attribute(xyzk[0]) && p->get_is_optimized(xyzk[0])
         && p->has_attribute(xyzk[1]) && p->get_is_optimized(xyzk[1])
         && p->has_attribute(xyzk[2]) && p->get_is_optimized(xyzk[2])
-        && p->has_attribute(dkey_) && !p->get_is_optimized(dkey_)) {
+        && p->has_attribute(DiffusionDecorator::get_D_key())
+        && !p->get_is_optimized(DiffusionDecorator::get_D_key())) {
       add_particle(p);
     }
   }
@@ -170,7 +127,8 @@ bool BrownianDynamics::propose_step(std::vector<algebra::Vector3D>&
     }
 
     //double xi= 6*pi*eta*radius; // kg/s
-    unit::SquareCentimeterPerSecond D(p->get_value(dkey_));
+    DiffusionDecorator dd(p);
+    unit::SquareCentimeterPerSecond D= dd.get_D();
     IMP_check(D.get_value() > 0
               && D.get_value() < std::numeric_limits<Float>::max(),
               "Bad diffusion coefficient on particle " << p->get_name(),
@@ -317,21 +275,6 @@ BrownianDynamics
   CubicAngstrom v((m/p)*(4.0/(3.0*IMP::internal::PI)));
 
   return unit::Angstrom(std::pow(v.get_value(), .3333));
-}
-
-unit::SquareCentimeterPerSecond
-BrownianDynamics::estimate_D_from_radius(unit::Angstrom r) const
-{
-  MillipascalSecond e=eta(T_);
-  //unit::MKSUnit<-13, 0, 1, 0, -1> etar( e*r);
-  /*std::cout << e << " " << etar << " " << kt << std::endl;
-  std::cout << "scalar etar " << (unit::Scalar(6*unit::PI)*etar)
-            << std::endl;
-  std::cout << "ret pre conv " << (kt/(unit::Scalar(6* unit::PI)*etar))
-  << std::endl;*/
-  unit::SquareCentimeterPerSecond ret(kt()/(6.0* IMP::internal::PI*e*r));
-  //std::cout << "ret " << ret << std::endl;
-  return ret;
 }
 
 unit::Angstrom

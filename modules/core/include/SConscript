@@ -32,6 +32,7 @@ files = [
          'CoverRefinedSingletonModifier.h',
          'DerivativesFromRefinedSingletonModifier.h',
          'DerivativesToRefinedSingletonModifier.h',
+         'DiffusionDecorator.h',
          'DihedralRestraint.h',
          'DistancePairScore.h',
          'DistanceRestraint.h',

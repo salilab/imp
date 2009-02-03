@@ -149,6 +149,7 @@ namespace IMP {
 %include "IMP/core/CoverRefinedSingletonModifier.h"
 %include "IMP/core/DerivativesFromRefinedSingletonModifier.h"
 %include "IMP/core/DerivativesToRefinedSingletonModifier.h"
+%include "IMP/core/DiffusionDecorator.h"
 %include "IMP/core/TransformSingletonModifier.h"
 %include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/DistancePairScore.h"
