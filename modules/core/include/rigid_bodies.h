@@ -70,24 +70,24 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
 
   //! Create a new rigid bid
   /** \param[in] p The particle to make into a rigid body
-      \param[in] members The particles which will be members of the body.
-      They must already be XYZDecorator particles.
+      \param[in] gc The ParticleRefiner which returns the components of
+      the rigid body. They must already be XYZDecorator particles.
       \param[in] tr The traits class to use.
       The initial position and orientation of p is computed, as are the
       relative positions of the member particles. The member particles
       do not already need to RigidMemberDecorator particles.
    */
   static RigidBodyDecorator create(Particle *p,
-                            const Particles &members,
+                            ParticleRefiner *gc,
               RigidBodyTraits tr= internal::get_default_rigid_body_traits());
 
   //! Update the coordinates and orientation of the body from the members
   /** The member particles are then snapped to their rigid locations.
 
-      \param[in] members The particles making up the rigid body. All
+      \param[in] gc Returns the particles making up the rigid body. All
       the particles must be RigidMemberDecorators.
    */
-  void set_transformation(const Particles &members);
+  void set_transformation(ParticleRefiner *gc);
 
   ~RigidBodyDecorator();
 

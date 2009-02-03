@@ -15,18 +15,20 @@ class WLCTests(IMP.test.TestCase):
         m= IMP.Model()
         rbp= IMP.Particle(m)
         rbxyz= IMP.core.XYZDecorator.create(rbp)
-        ps= IMP.Particles()
+        hd= IMP.core.HierarchyDecorator.create(rbp)
         xyzs= []
         for i in range(0, 4):
             mp= IMP.Particle(m)
-            ps.append(mp)
             mxyz= IMP.core.XYZDecorator.create(mp,
                                                IMP.algebra.random_vector_in_unit_box())
+            chd= IMP.core.HierarchyDecorator.create(mp)
+            hd.add_child(chd)
             #IMP.algebra.Vector3D(i%2, (i+1)%3, i)
             xyzs.append(mxyz)
             mxyz.show()
             print
-        rbd= IMP.core.RigidBodyDecorator.create(rbp, ps)
+        pr= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())
+        rbd= IMP.core.RigidBodyDecorator.create(rbp, pr)
         rbd.show()
         #r= IMP.algebra.Rotation3D(0.437645, -0.422742, -0.778777, 0.152519)
         r=IMP.algebra.random_rotation()
@@ -40,7 +42,7 @@ class WLCTests(IMP.test.TestCase):
             d.show()
             print
             tvs.append(d.get_coordinates())
-        rbd.set_transformation(ps)
+        rbd.set_transformation(pr)
         print "final coordinates"
         rbd.show()
         print "at end"

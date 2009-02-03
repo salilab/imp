@@ -113,7 +113,7 @@ Matrix compute_I(const std::vector<RigidMemberDecorator> &ds,
 
 
 RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
-                                              const Particles &members,
+                                              ParticleRefiner *gc,
                                               RigidBodyTraits tr){
   IMP_check(!tr.get_has_required_attributes_for_body(p),
             "The RigidBody is already set up.",
@@ -123,6 +123,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   std::vector<RigidMemberDecorator> ds;
   RigidBodyDecorator d(p, tr);
 
+  Particles members= gc->get_refined(p);
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *mp= members[i];
 
@@ -133,6 +134,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
     tr.add_required_attributes_for_member(mp);
     ds.push_back(RigidMemberDecorator(mp, tr));
   }
+  gc->cleanup_refined(p, members);
 
   // compute center of mass
   algebra::Vector3D v(0,0,0);
@@ -230,8 +232,9 @@ void RigidBodyDecorator
 
 
 
-void RigidBodyDecorator::set_transformation(const Particles &members) {
+void RigidBodyDecorator::set_transformation(ParticleRefiner *gc) {
   std::vector<algebra::Vector3D> cur, local;
+  Particles members= gc->get_refined(get_particle());
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *p =members[i];
     RigidMemberDecorator d(p);
@@ -247,6 +250,7 @@ void RigidBodyDecorator::set_transformation(const Particles &members) {
     RigidMemberDecorator d(p);
     d.set_coordinates(tr.transform(d.get_internal_coordinates()));
   }
+  gc->cleanup_refined(get_particle(), members);
 }
 
 
@@ -293,9 +297,7 @@ void RigidBodyScoreState::do_before_evaluate() {
   for (SingletonContainer::ParticleIterator pit= ps_->particles_begin();
        pit != ps_->particles_end(); ++pit) {
     RigidBodyDecorator rb(*pit, tr_);
-    Particles rps= pr_->get_refined(*pit);
-    rb.set_transformation(rps);
-    pr_->cleanup_refined(*pit, rps);
+    rb.set_transformation(pr_);
   }
 }
 
