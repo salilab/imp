@@ -268,11 +268,17 @@ AtomDecorator get_atom(ResidueDecorator rd, AtomType at) {
   throw InvalidStateException("Atom not found");
 }
 
-void AtomDecorator::show_pdb(int index,std::ostream &out) {
+std::string AtomDecorator::get_pdb_string(int index) {
+  std::stringstream out;
   Particle *p = get_particle();
   out.setf(std::ios::left, std::ios::adjustfield);
   out.width(6);
-  out << "ATOM";
+  if (get_residue_type(*this) == UNK) {
+    out<<"HETATM";
+  }
+  else {
+    out << "ATOM";
+  }
   //7-11 : atom id
   out.setf(std::ios::right, std::ios::adjustfield);
   out.width(5);
@@ -338,7 +344,8 @@ void AtomDecorator::show_pdb(int index,std::ostream &out) {
   //61-66: temp. factor
   out.width(6);
   out.precision(2);
-  out << ""<<std::endl;//TODO
+  out << ""<<std::endl; //TODO
+  return out.str();
 }
 
 IMPCORE_END_NAMESPACE
