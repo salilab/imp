@@ -66,9 +66,6 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
   }
   init();
 /*
-  // TODO: handle profiles with multiple comment lines
-  // remove first comment line
-  String line;
   getline(in_file, line);
   // TODO: handle profile reading without error column
 
@@ -102,6 +99,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
   int ncols=0;
   std::string line;
 
+  // It handles profiles with multiple comment lines
   while ( !in_file.eof() ) {
     getline(in_file, line);
     if (line[0] == '#' || line[0] == '\0')
@@ -136,59 +134,39 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
 
 void SAXSProfile::write_SAXS_file(const String & file_name)
 {
-  /*std::ofstream out_file(file_name.c_str());
-
-  if (!out_file) {
-    std::cerr << "Can't open file " << file_name << std::endl;
-    exit(1);
-  }
-  // header line
-  out_file << "# SAXS profile: number of points = " << profile_.size()
-      << " s_ min = " << min_s_ << " s_ max = " << max_s_
-      << " delta = " << delta_s_ << std::endl;
-
-  for (unsigned int i = 0; i < profile_.size(); i++) {
-    out_file << profile_[i];
-  }
-  out_file.close();*/
-
-  // TODO: This is a C-style file print, for the alignment of data like Modeller
-  std::FILE *fp;
-  fp = fopen(file_name.c_str(), "w");
-  fprintf(fp, "# SAXS profile: number of points = %d", (int)profile_.size());
-  fprintf(fp, " s_min = %.15g, s_max = %.15g, delta = %.16g\n", min_s_,
-          max_s_, delta_s_);
-
-  for (unsigned int i = 0; i < profile_.size(); i++) {
-    fprintf(fp, "%22.15g  %22.16g\n", profile_[i].s_, profile_[i].intensity_);
-  }
-  fclose(fp);
-}
-
-
-// TODO: this one was moved into the "SAXSScore" class
-/*void SAXSProfile::write_SAXS_fit_file(const String & file_name,
-                                      const SAXSProfile & saxs_profile,
-                                      const Float c) const
-{
   std::ofstream out_file(file_name.c_str());
 
   if (!out_file) {
     std::cerr << "Can't open file " << file_name << std::endl;
     exit(1);
   }
-  // header line
-  out_file << "# SAXS profile: number of points = " << profile_.size()
-           << " s_ min = " << min_s_ << " s_ max = " << max_s_
-           << " delta = " << delta_s_ << std::endl;
 
+  // header line
+  out_file.precision(15);
+  out_file << "# SAXS profile: number of points = " << profile_.size()
+           << ", s_min = " << min_s_ << ", s_max = " << max_s_;
+  out_file << ", delta_s = " << delta_s_ << std::endl;
+  out_file << "#       s            intensity         error" << std::endl;
+
+  // Main data
   for (unsigned int i = 0; i < profile_.size(); i++) {
-    out_file << profile_[i].s_ << " " << c * profile_[i].intensity_ << " "
-        << saxs_profile.profile_[i].intensity_ << std::endl;
+    out_file.setf(std::ios::left);
+    out_file.width(20);
+    out_file.fill('0');
+    out_file << std::setprecision(15) << profile_[i].s_ << " ";
+
+    out_file.setf(std::ios::left);
+    out_file.width(16);
+    out_file.fill('0');
+    out_file << std::setprecision(15) << profile_[i].intensity_ << " ";
+
+    out_file.setf(std::ios::left);
+    out_file.width(16);
+    out_file.fill(' ');
+    out_file << std::setprecision(15) << profile_[i].error_ << std::endl;
   }
   out_file.close();
 }
-*/
 
 
 void SAXSProfile::calculate_profile_real(
