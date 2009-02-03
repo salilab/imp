@@ -12,6 +12,7 @@
 
 #include <fstream>
 #include <algorithm>
+#include <cmath>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -156,8 +157,9 @@ void FormFactorTable::compute_form_factors_all_atoms()
   for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
     // form factors for all the q range
     // corrected by SJ Kim (1/23/09)    // v_i^(2/3) / 4PI
-    Float volr = pow( form_factors_coefficients_[i].excl_vol_, (Float)2.0/3.0 )
-                / (4.0 * IMP::internal::PI);
+    Float volr = std::pow( form_factors_coefficients_[i].excl_vol_,
+                      static_cast<Float>(2.0/3.0) )
+      / (4.0 * IMP::internal::PI);
 
     for (unsigned int k = 0; k < number_of_entries; k++) {
       Float q = min_s_ + k * delta_s_;
