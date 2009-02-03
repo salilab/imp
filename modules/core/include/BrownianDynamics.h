@@ -10,6 +10,7 @@
 
 #include "config.h"
 #include "internal/core_version_info.h"
+#include "DiffusionDecorator.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
@@ -25,12 +26,14 @@ IMPCORE_BEGIN_NAMESPACE
     angstroms and the diffusion coefficent be in cm^2/s
 
     Particles without optimized x,y,z and nonoptimized D are skipped.
+
+    \relates DiffusionDecorator
   */
 class IMPCOREEXPORT BrownianDynamics : public Optimizer
 {
 public:
-  //! \param[in] dkey The key for the diffusion coefficient
-  BrownianDynamics(FloatKey dkey= FloatKey("D"));
+  //! Create the optimizer
+  BrownianDynamics();
   virtual ~BrownianDynamics();
 
   IMP_OPTIMIZER(internal::core_version_info);
@@ -64,9 +67,6 @@ public:
   /** In Kelvin */
   Float get_temperature() const { return get_temperature_units().get_value(); }
 
-  //! Return the key used for the diffusion coefficient
-  FloatKey get_d_key() const { return dkey_; }
-
   //! Estimate the radius of a protein from the mass
   /** Proteins are assumed to be spherical. The density is estimated
       using the formula from
@@ -86,14 +86,6 @@ public:
   Float compute_sigma_from_D(Float D) const {
     unit::SquareCentimeterPerSecond du(D);
     return compute_sigma_from_D(du).get_value();
-  }
-
-  //! Estimate the diffusion coefficient from the radius in Angstroms
-  /** This depends on the temperature.
-   */
-  Float estimate_D_from_radius(Float radius_in_angstroms) const {
-    unit::Angstrom r(radius_in_angstroms);
-    return estimate_D_from_radius(r).get_value();
   }
 
   //! Returns a force value which would move the particle by sigma
@@ -162,9 +154,6 @@ private:
   unit::Angstrom
     compute_sigma_from_D(unit::SquareCentimeterPerSecond D) const;
 
-  unit::SquareCentimeterPerSecond
-    estimate_D_from_radius(unit::Angstrom radius) const;
-
   unit::KilocaloriePerAngstromPerMol
     get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const;
 
@@ -181,8 +170,6 @@ private:
   unit::Angstrom max_change_;
   unit::Femtosecond max_dt_, cur_dt_, cur_time_;
   unit::Kelvin T_;
-
-  FloatKey dkey_;
 
   std::vector<int> time_steps_;
 };

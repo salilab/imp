@@ -32,6 +32,7 @@ files = [
          'CoverRefinedSingletonModifier.cpp',
          'DerivativesFromRefinedSingletonModifier.cpp',
          'DerivativesToRefinedSingletonModifier.cpp',
+         'DiffusionDecorator.cpp',
          'DihedralRestraint.cpp',
          'DistancePairScore.cpp',
          'DistanceRestraint.cpp',
