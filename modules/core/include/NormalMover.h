@@ -19,12 +19,13 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT NormalMover :public MoverBase
 {
 public:
-  /** \param[in] vars The variables to use (normally the keys for x,y,z)
-      \param[in] sigma The standard deviation to use.
-      \param[in] ps The particles to perturb.
+  /**  \param[in] sc The set of particles to perturb.
+       \param[in] vars The variables to use (normally the keys for x,y,z)
+       \param[in] sigma The standard deviation to use.
    */
-  NormalMover(const FloatKeys &vars,
-              Float sigma, const Particles &ps=Particles());
+  NormalMover(SingletonContainer *sc,
+              const FloatKeys &vars,
+              Float sigma);
   /** */
   void set_sigma(Float sigma) {
     IMP_check(sigma > 0, "Sigma must be positive",

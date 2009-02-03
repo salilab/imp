@@ -47,11 +47,10 @@ random_point_in_sphere(const std::vector<Float> &center,
 
 
 
-BallMover::BallMover(const FloatKeys &vars,
-                     Float max,
-                     const Particles &pis)
+BallMover::BallMover(SingletonContainer *sc,
+                     const FloatKeys &vars,
+                     Float max): MoverBase(sc)
 {
-  add_particles(pis);
   add_float_keys(vars);
   set_radius(max);
 }
@@ -59,7 +58,8 @@ BallMover::BallMover(const FloatKeys &vars,
 void BallMover::generate_move(float scale)
 {
   std::vector<Float> center(get_number_of_float_keys());
-  for (unsigned int i = 0; i < get_number_of_particles(); ++i) {
+  for (unsigned int i = 0;
+       i < get_container()->get_number_of_particles(); ++i) {
     for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
       center[j] = get_float(i, j);
     }

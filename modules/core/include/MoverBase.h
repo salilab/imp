@@ -11,7 +11,7 @@
 #include "config.h"
 #include "Mover.h"
 
-#include <IMP/Particle.h>
+#include <IMP/SingletonContainer.h>
 #include <IMP/macros.h>
 
 #include <vector>
@@ -30,6 +30,7 @@ class IMPCOREEXPORT MoverBase: public Mover
 {
   std::vector<Floats> floats_;
   std::vector<Ints> ints_;
+  Pointer<SingletonContainer> pc_;
 public:
   virtual void accept_move(){}
   virtual void reject_move();
@@ -38,9 +39,12 @@ public:
    */
   virtual void propose_move(float f);
 
-  IMP_LIST(public, Particle, particle, Particle*);
   IMP_LIST(public, FloatKey, float_key, FloatKey);
   IMP_LIST(public, IntKey, int_key, IntKey);
+
+  SingletonContainer* get_container() const {
+    return pc_;
+  }
 
 protected:
   //! implement this method to propose a move
@@ -53,9 +57,9 @@ protected:
       \param [in] j The index of the attribute.
    */
   Float get_float(unsigned int i, unsigned int j) const {
-    IMP_assert(get_number_of_particles() == floats_.size(),
+    IMP_assert(pc_->get_number_of_particles() == floats_.size(),
                "Only call get_float from within generate_proposal");
-    return get_particle(i)->get_value(get_float_key(j));
+    return pc_->get_particle(i)->get_value(get_float_key(j));
   }
 
   //! Get an int attribute value
@@ -63,9 +67,9 @@ protected:
       \param [in] j The index of the attribute.
    */
   Int get_int(unsigned int i, unsigned int j) const {
-    IMP_assert(get_number_of_particles() == ints_.size(),
+    IMP_assert(pc_->get_number_of_particles() == ints_.size(),
                "Only call get_int from within generate_proposal");
-    return get_particle(i)->get_value(get_int_key(j));
+    return pc_->get_particle(i)->get_value(get_int_key(j));
   }
 
   //! Propose a value
@@ -74,8 +78,8 @@ protected:
       \param[in] t The value to propose
    */
   void propose_value(unsigned int i, unsigned int j, Float t) {
-    if (get_particle(i)->get_is_optimized(get_float_key(j))) {
-      get_particle(i)->set_value(get_float_key(j), t);
+    if (pc_->get_particle(i)->get_is_optimized(get_float_key(j))) {
+      pc_->get_particle(i)->set_value(get_float_key(j), t);
     }
   }
   //! Propose a value
@@ -84,10 +88,10 @@ protected:
       \param[in] t The value to propose
    */
   void propose_value(unsigned int i, unsigned int j, Int t) {
-    get_particle(i)->set_value(get_int_key(j), t);
+    pc_->get_particle(i)->set_value(get_int_key(j), t);
   }
 
-  MoverBase(){}
+  MoverBase(SingletonContainer *sc): pc_(sc) {}
   ~MoverBase(){}
 };
 
