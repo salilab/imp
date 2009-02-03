@@ -11,18 +11,31 @@ class AllPairsContainerTest(IMP.test.TestCase):
     def test_allp(self):
         """Check AllPairsPairContainer"""
         m= IMP.Model()
-        for i in range(0,20):
-            p= IMP.Particle()
-            m.add_particle(p)
+        for i in range(0,50):
+            p= IMP.Particle(m)
         lp= IMP.core.ListSingletonContainer(m.get_particles())
         apc= IMP.core.AllPairsPairContainer(lp)
         self.assert_(not lp.thisown)
-        ap=[]
+        # use that names are unique
+        psl= set()
+        print apc.get_number_of_particle_pairs()
+        print lp.get_number_of_particles()
+        IMP.set_log_level(IMP.VERBOSE)
         for i in range(0, apc.get_number_of_particle_pairs()):
-            ap.append(apc.get_particle_pair(i))
-            print ap[-1][0]
-            print ap[-1][1]
-        self.assertEqual(len(ap), 20*19/2)
+            #print ap[-1][0]
+            #print ap[-1][1]
+            n0= apc.get_particle_pair(i)[0].get_name()
+            n1= apc.get_particle_pair(i)[1].get_name()
+            if n0 < n1: dp= (n0, n1)
+            else: dp= (n1, n0)
+            print dp
+            #print psl
+            self.assert_(not dp in psl, "Pair " + n0 + " and " +n1\
+                             +" is already in list "+ str(psl))
+            psl=psl.union([dp])
+        print psl
+        self.assertEqual(apc.get_number_of_particle_pairs(),
+                         lp.get_number_of_particles()*(lp.get_number_of_particles()-1)/2)
 
 if __name__ == '__main__':
     unittest.main()
