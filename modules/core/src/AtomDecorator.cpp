@@ -268,4 +268,77 @@ AtomDecorator get_atom(ResidueDecorator rd, AtomType at) {
   throw InvalidStateException("Atom not found");
 }
 
+void AtomDecorator::show_pdb(int index,std::ostream &out) {
+  Particle *p = get_particle();
+  out.setf(std::ios::left, std::ios::adjustfield);
+  out.width(6);
+  out << "ATOM";
+  //7-11 : atom id
+  out.setf(std::ios::right, std::ios::adjustfield);
+  out.width(5);
+  if (index==-1) {
+    out << get_input_index_key();
+  }
+  else {
+    out << index;
+  }
+  // 12: skip an undefined position
+  out.width(1);
+  out<< " ";
+
+  // 13-16: atom type
+  out.setf(std::ios::left, std::ios::adjustfield);
+  out.width(1);
+  std::string atom_type = get_type().get_string();
+  if (atom_type.size()<4) {
+    out << " ";
+    out.width(3);
+    out<<atom_type;
+  }
+  else {
+    out<<atom_type;
+  }
+  // 17: skip the alternate indication position
+  out.width(1);
+  out << " ";
+
+  // 18-20 : residue name
+  out.width(3);
+  out<< get_residue_type(*this).get_string();
+  //skip 21
+  out.width(1);
+  out<<" ";
+  // 22: chain identifier
+  out << " ";
+  //23-26: residue number
+  out.setf(std::ios::right, std::ios::adjustfield);
+  out.width(4);
+  out << get_residue_index(*this);
+  //27: residue insertion code
+  out.width(1);
+  out << " "; //TODO
+  out.setf(std::ios::fixed, std::ios::floatfield);
+  out << "   "; // skip 3 undefined positions (28-30)
+  XYZDecorator xyz= XYZDecorator::cast(p);
+  // coordinates (31-38,39-46,47-54)
+  out.width(8);
+  out.precision(3);
+  out << xyz.get_x();
+  out.width(8);
+  out.precision(3);
+  out << xyz.get_y();
+  out.width(8);
+  out.precision(3);
+  out << xyz.get_z();
+
+  //55:60 occupancy
+  out.width(6);
+  out.precision(2);
+  out << ""; //TODO
+  //61-66: temp. factor
+  out.width(6);
+  out.precision(2);
+  out << ""<<std::endl;//TODO
+}
+
 IMPCORE_END_NAMESPACE
