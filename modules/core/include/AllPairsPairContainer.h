@@ -19,7 +19,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Return all pairs of particles taken from the wrapped SingletonContainer
+//! Return all unordered pairs of particles taken from the SingletonContainer
 /** Here is an example using this container to restrain all particles in a set
     to be within a a certain distance of one another.
     \verbinclude restrain_diameter.py
@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT AllPairsPairContainer : public PairContainer
 {
   Pointer<SingletonContainer> c_;
-  mutable int a_, b_;
+  mutable int a_, b_, i_;
 public:
   //! Get the individual particles from the passed SingletonContainer
   AllPairsPairContainer(SingletonContainer *c);

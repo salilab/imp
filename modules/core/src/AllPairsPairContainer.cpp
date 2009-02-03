@@ -15,8 +15,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 AllPairsPairContainer::AllPairsPairContainer( SingletonContainer *c): c_(c) {
-  a_=-1;
-  b_=-1;
+  a_=1;
+  b_=0;
+  i_=0;
 }
 
 AllPairsPairContainer::~AllPairsPairContainer(){}
@@ -30,17 +31,23 @@ unsigned int AllPairsPairContainer::get_number_of_particle_pairs() const {
 //!
 ParticlePair AllPairsPairContainer::get_particle_pair(unsigned int i) const {
   IMP_assert(i <  get_number_of_particle_pairs(), "Invalid pair requested");
-  if (a_*c_->get_number_of_particles() + b_ > i) {
+  IMP_LOG(VERBOSE, "All pairs asked for pair " << i << " current state is "
+          << i_ << "= " << a_ << " " << b_ << std::endl);
+  // dumb method, just increase the current pair until we get to the desired one
+  if (static_cast<int>(i) < i_) {
     a_=1;
     b_=0;
   }
-  while (a_*c_->get_number_of_particles() + b_ < i) {
+  while (i_ < static_cast<int>(i)) {
     ++b_;
     if (b_==a_) {
       ++a_;
       b_=0;
     }
+    ++i_;
   }
+  IMP_LOG(VERBOSE, "Returned "
+          << i_ << "= " << a_ << " " << b_ << std::endl);
   return ParticlePair(c_->get_particle(a_), c_->get_particle(b_));
 }
 
