@@ -239,6 +239,8 @@ const {
            << ", s_min = " << exp_saxs_profile_->get_min_s()
            << ", s_max = " << exp_saxs_profile_->get_max_s();
   out_file << ", delta_s = " << exp_saxs_profile_->get_delta_s() << std::endl;
+
+  out_file.setf(std::ios::showpoint);
   out_file << "# offset = " << offset_ << ", scaling c = " << c_
            << ", Chi-square = " << chi_square_ << std::endl;
   out_file << "#       s             exp_intensity    model_intensity"

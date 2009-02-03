@@ -48,8 +48,8 @@ SAXSProfile::SAXSProfile(const String & file_name)
 void SAXSProfile::init()
 {
   profile_.clear();
-  int number_of_entries = (max_s_ - min_s_) / delta_s_ + 1;
-  for (int i = 0; i < number_of_entries; i++) {
+  int number_of_entries = (int)((max_s_ - min_s_) / delta_s_) + 1;
+  for (int i=0; i<number_of_entries; i++) {
     IntensityEntry entry(min_s_ + i * delta_s_);
     profile_.push_back(entry);
   }
@@ -64,11 +64,9 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
     std::cerr << "Can't open file " << file_name << std::endl;
     exit(1);
   }
-  init();
+
 /*
   getline(in_file, line);
-  // TODO: handle profile reading without error column
-
   IntensityEntry entry;
   while (!in_file.eof()) {
     //while(in_file >> entry) {
@@ -98,6 +96,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
 */
   int ncols=0;
   std::string line;
+  profile_.clear();
 
   // It handles profiles with multiple comment lines
   while ( !in_file.eof() ) {
@@ -148,6 +147,7 @@ void SAXSProfile::write_SAXS_file(const String & file_name)
   out_file << ", delta_s = " << delta_s_ << std::endl;
   out_file << "#       s            intensity         error" << std::endl;
 
+  out_file.setf(std::ios::showpoint);
   // Main data
   for (unsigned int i = 0; i < profile_.size(); i++) {
     out_file.setf(std::ios::left);
@@ -162,7 +162,7 @@ void SAXSProfile::write_SAXS_file(const String & file_name)
 
     out_file.setf(std::ios::left);
     out_file.width(16);
-    out_file.fill(' ');
+    out_file.fill('0');
     out_file << std::setprecision(15) << profile_[i].error_ << std::endl;
   }
   out_file.close();
