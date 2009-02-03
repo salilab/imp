@@ -40,7 +40,7 @@ MonteCarlo::~MonteCarlo()
 Float MonteCarlo::optimize(unsigned int max_steps)
 {
   IMP_CHECK_OBJECT(this);
-  if (cg_.get() != NULL) {
+  if (cg_) {
     IMP_CHECK_OBJECT(cg_.get());
     IMP_check(cg_->get_model() == get_model(),
                "The model used by the local optimizer does not match "\
@@ -59,7 +59,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       (*it)->propose_move(probability_);
     }
     Float next_energy;
-    if (cg_.get() != NULL && num_local_steps_!= 0) {
+    if (cg_ && num_local_steps_!= 0) {
       IMP_LOG(VERBOSE,
               "MC Performing local optimization "<< std::flush);
       IMP_CHECK_OBJECT(cg_.get());
