@@ -68,7 +68,7 @@ protected:
   SAXSProfile* exp_saxs_profile_;   // pointer to experimental saxs profile
 
   double c_;  // scale constant
-  double offset_;   // offset constant
+  double offset_, chi_square_;   // offset and Chi-square
   std::vector< std::vector<double> > sincval_array_;
 
   //! lookup table for sinc function and cos function

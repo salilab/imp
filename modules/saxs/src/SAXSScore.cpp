@@ -71,6 +71,7 @@ int SAXSScore::init(const SAXSProfile& model_saxs_profile,
   for (unsigned int iatom=0; iatom<particles.size(); iatom++)
     zero_formfactor_[iatom] = ff_table_->get_form_factor(particles[iatom]);
 
+  chi_square_ = 0.0;
   return 0;
 }
 
@@ -90,7 +91,8 @@ double SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
            exp_saxs_profile_->size(), model_saxs_profile.size());
     return -1.0;
   }
-  double sum1=0.0, sum2=0.0, chi_square=0.0;
+  double sum1=0.0, sum2=0.0;
+  chi_square_ = 0.0;
 
   //! determine the scaling parameter c_
   for (unsigned int k=0; k<model_saxs_profile.size(); k++) {
@@ -114,14 +116,14 @@ double SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
 
     // Exclude the uncertainty originated from limitation of floating number
     if (fabs(delta/exp_saxs_profile_->get_intensity(k)) >= IMP_SAXS_DELTA_LIMIT)
-      chi_square += weight_tilda * square(delta);
+      chi_square_ += weight_tilda * square(delta);
   }
-  chi_square /= model_saxs_profile.size();
+  chi_square_ /= model_saxs_profile.size();
 
   //! TODO: make this optional
   write_SAXS_fit_file("fitfile.dat", model_saxs_profile);
 
-  return chi_square;
+  return chi_square_;
 }
 
 
@@ -138,7 +140,7 @@ double SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
  !!   Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
  ! ----------------------------------------------------------------------
 */
-// TODO: Combine with "RadialDistribution Class"?
+// TODO: Combine with "RadialDistribution Class"? -> poor performance
 std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
                                        const SAXSProfile& model_saxs_profile,
                                        const std::vector<Particle*>& particles)
@@ -219,29 +221,49 @@ std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
 
 
 //!----------------------------------------------------------------------
-//! TODO: This is a C-style file print, for the same data alignment as Modeller
+//! Write SAXS Fit data file
 //!----------------------------------------------------------------------
 void SAXSScore::write_SAXS_fit_file(const std::string& file_name,
                                     const SAXSProfile& model_saxs_profile)
 const {
-  std::FILE *fp;
-  fp = fopen(file_name.c_str(), "w");
-  fprintf(fp, "# SAXS fit_file: number of points = %d",
-          exp_saxs_profile_->size());
-  fprintf(fp, " s_min = %.15g, s_max = %.15g, delta = %.16g\n",
-          exp_saxs_profile_->get_min_s(),
-          exp_saxs_profile_->get_max_s(),
-          exp_saxs_profile_->get_delta_s());
-  fprintf(fp, "# offset = %.16g, scaling c = %.16g\n", offset_, c_);
-  fprintf(fp, "#        s             exp_intensity         model_intensity\n");
+  std::ofstream out_file(file_name.c_str());
 
-  for (unsigned int i = 0; i < exp_saxs_profile_->size(); i++) {
-    fprintf(fp, "%22.15g  %22.15g  %22.16g\n",
-            exp_saxs_profile_->get_s(i),
-            exp_saxs_profile_->get_intensity(i) + offset_,
-            model_saxs_profile.get_intensity(i) * c_);
+  if (!out_file) {
+    std::cerr << "Can't open file " << file_name << std::endl;
+    exit(1);
   }
-  fclose(fp);
+
+  // header line
+  out_file.precision(15);
+  out_file << "# SAXS profile: number of points = " << exp_saxs_profile_->size()
+           << ", s_min = " << exp_saxs_profile_->get_min_s()
+           << ", s_max = " << exp_saxs_profile_->get_max_s();
+  out_file << ", delta_s = " << exp_saxs_profile_->get_delta_s() << std::endl;
+  out_file << "# offset = " << offset_ << ", scaling c = " << c_
+           << ", Chi-square = " << chi_square_ << std::endl;
+  out_file << "#       s             exp_intensity    model_intensity"
+           << std::endl;
+
+  // Main data
+  for (unsigned int i = 0; i < exp_saxs_profile_->size(); i++) {
+    out_file.setf(std::ios::left);
+    out_file.width(20);
+    out_file.fill('0');
+    out_file << std::setprecision(15) << exp_saxs_profile_->get_s(i) << " ";
+
+    out_file.setf(std::ios::left);
+    out_file.width(16);
+    out_file.fill('0');
+    out_file << std::setprecision(15)
+             << exp_saxs_profile_->get_intensity(i) + offset_ << " ";
+
+    out_file.setf(std::ios::left);
+    out_file.width(16);
+    out_file.fill('0');
+    out_file << std::setprecision(15) << model_saxs_profile.get_intensity(i)*c_
+             << std::endl;
+  }
+  out_file.close();
 }
 
 IMPSAXS_END_NAMESPACE

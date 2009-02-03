@@ -114,11 +114,6 @@ private:
     return sin(value)/value;
   }
 
-  // TODO: this one was moved into the "SAXSScore" class
-  /*void write_SAXS_fit_file(const String& file_name,
-                           const SAXSProfile& saxs_profile,
-                           const Float c) const;*/
-
 protected:
   std::vector<IntensityEntry> profile_; // the profile
   Float min_s_, max_s_; // minimal and maximal s values  in the profile

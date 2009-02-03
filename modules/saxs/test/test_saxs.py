@@ -21,6 +21,7 @@ class PDBReadTest(IMP.test.TestCase):
         #          self.get_input_file_name('i_single_protein_IMP.txt'))
         #          self.get_input_file_name('i_single_protein_IMP_old.txt'))
                   self.get_input_file_name('i_single_protein_MODELLER.txt'))
+        #exp_saxs_profile.write_SAXS_file('i_single_protein_MODELLER.txt')
 
         print 'min_s = ' + str(exp_saxs_profile.get_min_s())
         print 'max_s = ' + str(exp_saxs_profile.get_max_s())
@@ -64,6 +65,9 @@ class PDBReadTest(IMP.test.TestCase):
             temp += '\t' + str(chi_derivatives[i][2])
             print temp
 
+        # Clean up outputs
+        for f in ('i_single_protein_IMP.txt', 'fitfile.dat'):
+            os.unlink(f)
 """
         saxsdata = IMP.saxs.SaxsData(m, mp)
         saxsdata.initialize(0.009, 0.325, 100,
@@ -76,10 +80,6 @@ class PDBReadTest(IMP.test.TestCase):
         saxsdata.saxs_read('i_s_single_protein.txt')
         chi_sq = saxsdata.saxs_chifun(True)
         print 'Score native: ' + str(chi_sq)
-
-        # Clean up outputs
-        #for f in ('i_s_single_protein.txt', 'p_r.txt'):
-        #    os.unlink(f)
 """
 """
         saxsdata.ini_saxs(atmsel=atmsel, s_min= 0.009, s_max=0.325, maxs=100,
