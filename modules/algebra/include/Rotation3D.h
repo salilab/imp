@@ -114,6 +114,24 @@ inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
   return Rotation3D(a,b,c,d);
 }
 
+//! Initialize a rotation from euler angles
+/**
+   \note http://en.wikipedia.org/wiki/
+         Conversion_between_quaternions_and_Euler_angles
+    \relates Rotation3D
+*/
+inline Rotation3D rotation_from_euler(Float phi, Float theta, Float psi)
+{
+  Float a,b,c,d;
+  Float c1,c2,c3,s1,s2,s3;
+  c2=cos(theta/2);c1=cos(phi/2);c3=cos(psi/2);
+  s2=sin(theta/2);s1=sin(phi/2);s3=sin(psi/2);
+  a = c1*c2*c3+s1*s2*s3;
+  b = s1*c2*c3-c1*s2*s3;
+  c = c1*s2*c3+s1*c2*s3;
+  d = c1*c2*s3-s1*s2*c3;
+  return Rotation3D(a,b,c,d);
+}
 //! Generate a Rotation3D object from a rotation matrix
 /**
    \throw ValueException if the rotation is not a rotation matrix.
