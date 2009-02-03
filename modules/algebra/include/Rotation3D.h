@@ -116,11 +116,18 @@ inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
 
 //! Initialize a rotation from euler angles
 /**
-   \note http://en.wikipedia.org/wiki/
+    \param[in] phi   Rotation around the Z axis in radians
+    \param[in] theta Rotation around the X axis in radians
+    \param[in] psi   Rotation around the Z axis in radians
+    \note The first rotation is by an angle phi about the z-axis.
+          The second rotation is by an angle theta in [0,pi] about the
+          former x-axis , and the third rotation is by an angle psi
+          about the former z-axis.
+    \note http://en.wikipedia.org/wiki/
          Conversion_between_quaternions_and_Euler_angles
     \relates Rotation3D
 */
-inline Rotation3D rotation_from_euler(Float phi, Float theta, Float psi)
+inline Rotation3D rotation_from_fixed_zxz(Float phi, Float theta, Float psi)
 {
   Float a,b,c,d;
   Float c1,c2,c3,s1,s2,s3;
