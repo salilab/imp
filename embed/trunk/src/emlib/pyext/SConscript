@@ -18,6 +18,13 @@ e.Depends(pyem, 'em.i')
 # Install the Python extension and any .py files:
 libinst = e.Install(e['pyextdir'], pyext)
 pyinst = e.Install(e['pythondir'], pyem)
+
+if env['PLATFORM'] == 'darwin':
+    libdir= os.path.split(pyext[0].abspath)[0]
+    env.AddPostAction (libinst, "install_name_tool -change %s/libem.dylib %s/libem.dylib %s" \
+                                   % (libdir,
+                                      env['libdir'], libinst[0].path))
+
 e.Alias('install', [libinst, pyinst])
 
 Return('pyext')
