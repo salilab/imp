@@ -24,12 +24,12 @@ class IMPCOREEXPORT BallMover :public MoverBase
 public:
   /** The attributes are perturbed within a pall whose dimensionality is
       given by the number of attributes and radius by the given value.
-     \param[in] vars The variables to use (normally the keys for x,y,z)
-     \param[in] radius The radius deviation to use.
-     \param[in] ps The particles to perturb.
+      \param[in] sc The set of particles to perturb.
+      \param[in] vars The variables to use (normally the keys for x,y,z)
+      \param[in] radius The radius deviation to use.
    */
-  BallMover(const FloatKeys &vars,
-            Float radius, const Particles &ps);
+  BallMover(SingletonContainer *sc, const FloatKeys &vars,
+            Float radius);
   /** */
   void set_radius(Float radius) {
     IMP_check(radius > 0, "The radius must be positive",

@@ -14,11 +14,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-NormalMover::NormalMover(const FloatKeys &vars,
-                         Float max,
-                         const Particles &pis)
+NormalMover::NormalMover(SingletonContainer *sc,
+                         const FloatKeys &vars,
+                         Float max): MoverBase(sc)
 {
-  add_particles(pis);
   add_float_keys(vars);
   set_sigma(max);
 }
@@ -31,7 +30,8 @@ void NormalMover::generate_move(float probability)
                            boost::normal_distribution<double> >
                           sampler(random_number_generator, mrng);
 
-  for (unsigned int i = 0; i < get_number_of_particles(); ++i) {
+  for (unsigned int i = 0;
+       i < get_container()->get_number_of_particles(); ++i) {
     if (rand(random_number_generator) > probability) continue;
     for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
       float c = get_float(i, j);
