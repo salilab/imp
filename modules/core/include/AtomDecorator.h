@@ -278,6 +278,15 @@ public:
   IMP_DECORATOR_GET_SET_OPT(input_index, get_input_index_key(),
                             Int, Int, -1);
 
+  //! shows the Atom record in a PDB format
+  /** \param index the atom index. If index eq -1 than the original
+             atom index (as read from a PDB file) is used.
+      \param out the output stream
+      \note  The following fileds are currently not displayed:
+             chain, residue insertion code, occupancy,  temp. factor
+  */
+  void show_pdb(int index=-1,std::ostream &out=std::cout);
+
   /** Get the key storing the type */
   static IntKey get_type_key();
 
