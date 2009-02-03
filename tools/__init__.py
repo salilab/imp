@@ -261,18 +261,18 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     if env.get('linkflags', None) is not None:
         env.Append(LINKFLAGS=[env['linkflags'].split(" ")])
 
-    if env.get('include', None) is not None:
-        env['include'] = [os.path.abspath(x) for x in \
-                          env['include'].split(os.path.pathsep)]
-        env.Append(CPPPATH=env['include'])
+    if env.get('includepath', None) is not None:
+        env['includepath'] = [os.path.abspath(x) for x in \
+                          env['includepath'].split(os.path.pathsep)]
+        env.Append(CPPPATH=env['includepath'])
     # make sure it is there
     env.Append(LIBPATH=[])
-    if env.get('lib', None) is not None:
-        env['lib'] = [os.path.abspath(x) for x in \
-                      env['lib'].split(os.path.pathsep)]
-        env.Append(LIBPATH=env['lib'])
+    if env.get('libpath', None) is not None:
+        env['libpath'] = [os.path.abspath(x) for x in \
+                      env['libpath'].split(os.path.pathsep)]
+        env.Append(LIBPATH=env['libpath'])
     else:
-        env['lib'] = []
+        env['libpath'] = []
     _add_build_flags(env)
 
     sys = platform.system()
@@ -489,10 +489,10 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('linksysv',
                           'Link with old-style SysV, not GNU hash, for ' + \
                           'binary compatibility', False))
-    vars.Add(PathVariable('include', 'Include search path ' + \
+    vars.Add(PathVariable('includepath', 'Include search path ' + \
                           '(e.g. "/usr/local/include:/opt/local/include")',
                           None, PathVariable.PathAccept))
-    vars.Add(PathVariable('lib', 'Library search path ' + \
+    vars.Add(PathVariable('libpath', 'Library search path ' + \
                           '(e.g. "/usr/local/lib:/opt/local/lib")', None,
                           PathVariable.PathAccept))
     vars.Add(PathVariable('cxxflags', 'Extra cxx flags ' + \
