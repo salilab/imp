@@ -17,6 +17,7 @@ class WLCTests(IMP.test.TestCase):
         rbxyz= IMP.core.XYZDecorator.create(rbp)
         hd= IMP.core.HierarchyDecorator.create(rbp)
         xyzs= []
+        tr= IMP.core.RigidBodyTraits("myrb")
         for i in range(0, 4):
             mp= IMP.Particle(m)
             mxyz= IMP.core.XYZDecorator.create(mp,
@@ -28,7 +29,7 @@ class WLCTests(IMP.test.TestCase):
             mxyz.show()
             print
         pr= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())
-        rbd= IMP.core.RigidBodyDecorator.create(rbp, pr)
+        rbd= IMP.core.RigidBodyDecorator.create(rbp, pr, tr)
         rbd.show()
         #r= IMP.algebra.Rotation3D(0.437645, -0.422742, -0.778777, 0.152519)
         r=IMP.algebra.random_rotation()

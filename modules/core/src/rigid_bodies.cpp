@@ -237,7 +237,7 @@ void RigidBodyDecorator::set_transformation(ParticleRefiner *gc) {
   Particles members= gc->get_refined(get_particle());
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *p =members[i];
-    RigidMemberDecorator d(p);
+    RigidMemberDecorator d(p, get_traits());
     cur.push_back(d.get_coordinates());
     local.push_back(d.get_internal_coordinates());
   }
@@ -247,7 +247,7 @@ void RigidBodyDecorator::set_transformation(ParticleRefiner *gc) {
   set_transformation(tr);
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *p =members[i];
-    RigidMemberDecorator d(p);
+    RigidMemberDecorator d(p, get_traits());
     d.set_coordinates(tr.transform(d.get_internal_coordinates()));
   }
   gc->cleanup_refined(get_particle(), members);
