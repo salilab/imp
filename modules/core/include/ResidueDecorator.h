@@ -139,7 +139,7 @@ public:
   }
   //! The residues index in the chain
   IMP_DECORATOR_GET_SET(index, get_index_key(),
-                        Int, unsigned int);
+                        Int, Int);
 
   //! Get the key storing the index
   static IntKey get_index_key();
