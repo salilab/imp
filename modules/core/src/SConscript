@@ -73,6 +73,7 @@ files = [
          'SingletonsScoreState.cpp',
          'SphereDistancePairScore.cpp',
          'SteepestDescent.cpp',
+         'TableParticleRefiner.cpp',
          'TransformSingletonModifier.cpp',
          'TransformedDistancePairScore.cpp',
          'TripletChainRestraint.cpp',

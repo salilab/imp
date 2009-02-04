@@ -184,6 +184,7 @@ namespace IMP {
 %include "IMP/core/model_io.h"
 %include "IMP/core/PairChainRestraint.h"
 %include "IMP/core/PairListRestraint.h"
+%include "IMP/core/TableParticleRefiner.h"
 %include "IMP/core/TripletChainRestraint.h"
 %include "IMP/core/TruncatedHarmonic.h"
 
