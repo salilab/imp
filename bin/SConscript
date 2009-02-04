@@ -19,7 +19,7 @@ def builder_script_file(target, source, env):
             if varname:
                 libs = [source[1].get_contents() + '/build/lib']
                 libpath = source[4].get_contents()
-                if libpath:
+                if libpath and not env['rpath']:
                     libs.append(libpath)
                 line = varname + "='" + ':'.join(libs) + "'\nexport " + varname
             else:
