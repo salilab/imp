@@ -323,7 +323,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     e = env.Clone()
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CCFLAGS='${VIS_CCFLAGS}')
-    if e['PLATFORM'] == 'posix' or e['PLATFORM']=='sunos':
+    if e['PLATFORM'] == 'posix' and e['rpath']:
         dylinkflags=[]
         for p in e['LIBPATH']:
             if p[0] is not '#':
@@ -415,7 +415,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
             opt = opt.replace("-Wstrict-prototypes", "")
         e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
         e.Replace(CPPFLAGS=basecflags.split() + opt.split())
-        if e['PLATFORM'] is 'posix':
+        if e['PLATFORM'] is 'posix' and e['rpath']:
             for p in e['LIBPATH']:
                 if p[0] is not '#':
                     # append/prepend must match other uses
@@ -495,6 +495,9 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('libpath', 'Library search path ' + \
                           '(e.g. "/usr/local/lib:/opt/local/lib")', None,
                           PathVariable.PathAccept))
+    vars.Add(BoolVariable('rpath',
+                          'Add any entries from libpath to library search ' + \
+                          'path (rpath) on Linux systems', True))
     vars.Add(PathVariable('cxxflags', 'Extra cxx flags ' + \
                           '(e.g. "-fno-rounding -DFOOBAR")',
                           None, PathVariable.PathAccept))
