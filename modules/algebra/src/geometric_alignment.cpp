@@ -112,18 +112,6 @@ rigid_align_first_to_second(const std::vector<Vector3D> &from,
   Vector3D translation=center_to - rotation.rotate(center_from);
 
   Transformation3D ret(rotation, translation);
-  // must be removed from final code
-  IMP_IF_CHECK(EXPENSIVE) {
-    for (unsigned int i=0; i< from.size(); ++i) {
-      Vector3D ft= ret.transform(from[i]);
-      IMP_assert((ft-to[i]).get_squared_magnitude()
-                 < std::max(from[i].get_squared_magnitude(),
-                            to[i].get_squared_magnitude()) *.0001,
-                 "The transform does not align the vectors "
-                 << from[i] << ": " << to[i] << ": " << ft
-                 << std::endl);
-    }
-  }
   return ret;
 }
 
