@@ -7,6 +7,7 @@
 
 #include <IMP/core/AtomDecorator.h>
 #include <IMP/core/MolecularHierarchyDecorator.h>
+#include <IMP/core/NameDecorator.h>
 
 #include <IMP/log.h>
 
@@ -238,7 +239,7 @@ IntKey AtomDecorator::get_input_index_key() {
   return k;
 }
 
-unsigned int get_residue_index(AtomDecorator d) {
+int get_residue_index(AtomDecorator d) {
   return get_residue(d).get_index();
 }
 
@@ -268,13 +269,31 @@ AtomDecorator get_atom(ResidueDecorator rd, AtomType at) {
   throw InvalidStateException("Atom not found");
 }
 
+char get_chain(AtomDecorator d) {
+  ResidueDecorator rd = get_residue(d);
+  MolecularHierarchyDecorator mhd(rd.get_particle());
+  do {
+    mhd= mhd.get_parent();
+    if (mhd== MolecularHierarchyDecorator()) {
+      throw InvalidStateException("Residue is not the child of a chain");
+    }
+  } while (!NameDecorator::is_instance_of(mhd.get_particle()));
+  NameDecorator nd(mhd.get_particle());
+  String name = nd.get_name();
+  if(name.length() > 0)
+    return name[0];
+  throw InvalidStateException("Chain not found");
+  return ' ';
+}
+
+
 std::string AtomDecorator::get_pdb_string(int index) {
   std::stringstream out;
   Particle *p = get_particle();
   out.setf(std::ios::left, std::ios::adjustfield);
   out.width(6);
   if (get_residue_type(*this) == UNK) {
-    out<<"HETATM";
+    out << "HETATM";
   }
   else {
     out << "ATOM";
@@ -283,7 +302,7 @@ std::string AtomDecorator::get_pdb_string(int index) {
   out.setf(std::ios::right, std::ios::adjustfield);
   out.width(5);
   if (index==-1) {
-    out << get_input_index_key();
+    out << get_input_index();
   }
   else {
     out << index;
@@ -299,10 +318,10 @@ std::string AtomDecorator::get_pdb_string(int index) {
   if (atom_type.size()<4) {
     out << " ";
     out.width(3);
-    out<<atom_type;
+    out << atom_type;
   }
   else {
-    out<<atom_type;
+    out << atom_type;
   }
   // 17: skip the alternate indication position
   out.width(1);
@@ -310,12 +329,12 @@ std::string AtomDecorator::get_pdb_string(int index) {
 
   // 18-20 : residue name
   out.width(3);
-  out<< get_residue_type(*this).get_string();
+  out << get_residue_type(*this).get_string();
   //skip 21
   out.width(1);
-  out<<" ";
-  // 22: chain identifier
   out << " ";
+  // 22: chain identifier
+  out << get_chain(*this);
   //23-26: residue number
   out.setf(std::ios::right, std::ios::adjustfield);
   out.width(4);
