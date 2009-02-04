@@ -391,12 +391,6 @@ public:                                                                 \
 default_traits)                                                         \
   private:                                                              \
   TraitsType traits_name##_;                                             \
-protected:                                                              \
- /** goes away once DecoratorBase patched */                            \
- static bool has_required_attributes(::IMP::Particle *p) {              \
-   return is_instance_of(p);                                            \
- }                                                                      \
-  friend class DecoratorBase;                                           \
 public:                                                                 \
 /** \note Should be private but SWIG accesses it through the comparison
     macros*/                                                            \
