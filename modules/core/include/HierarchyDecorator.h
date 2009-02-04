@@ -80,9 +80,9 @@ class IMPCOREEXPORT HierarchyTraits
 
   template <class T>
   void audit_value(T t) const {
-    IMP_check(t.get_hierarchy_type() == get_name(),
+    IMP_check(t.get_traits().get_name() == get_name(),
               "Mixing hierarchies of type " << get_name()
-              << " and type " << t.get_hierarchy_type(),
+              << " and type " << t.get_traits().get_name(),
               ValueException);
   }
 
@@ -211,16 +211,9 @@ public:
    */
   int get_child_index(HierarchyDecorator c) const;
 
-  //! Do some simple validity checks on this node in the hierarchy
   void validate_node() const;
 
-  //! Do some validity checks on the subhierarchy
   void validate() const;
-
-  //! Return the string identifying this type of hierarchy
-  std::string get_hierarchy_type() const {
-    return traits_.get_name();
-  }
 
   //! Get the default hierarchy traits
   static const HierarchyTraits& get_default_traits();
