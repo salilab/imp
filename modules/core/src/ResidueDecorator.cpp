@@ -70,4 +70,10 @@ IntKey ResidueDecorator::get_type_key() {
   IntKey k("residue_type");
   return k;
 }
+
+IntKey ResidueDecorator::get_icode_key() {
+  IntKey k("residue_icode");
+  return k;
+}
+
 IMPCORE_END_NAMESPACE
