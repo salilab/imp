@@ -54,7 +54,8 @@ class Model;
     to make. To disable this warning for a particular restraint, call
     set_was_owned(true).
 
-    See the \ref restraint example for how to implement a simple restraint.
+    See the examples::ExampleRestraint  example for how to implement
+    a simple restraint.
  */
 class IMPEXPORT Restraint : public RefCountedObject
 {
