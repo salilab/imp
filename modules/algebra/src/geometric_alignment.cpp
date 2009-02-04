@@ -67,10 +67,20 @@ rigid_align_first_to_second(const std::vector<Vector3D> &from,
   internal::TNT::Array1D<double> SV;
   svd.getSingularValues(SV);
   double det= SV[0]*SV[1]*SV[2];
-  IMP_check(det > .00001,
-            "Degenerate point set. I can't align them. Sorry.",
-            ValueException);
-
+  IMP_IF_CHECK(CHEAP) {
+    if (det < .00001) {
+      IMP_LOG(TERSE, "FROM:\n");
+      for (unsigned int i=0; i< from.size(); ++i) {
+        IMP_LOG(TERSE, from[i] << std::endl);
+      }
+      IMP_LOG(TERSE, "TO:\n");
+      for (unsigned int i=0; i< from.size(); ++i) {
+        IMP_LOG(TERSE, to[i] << std::endl);
+      }
+      IMP_LOG(TERSE, H);
+      IMP_WARN("Degenerate point set. I may not be able to align them.");
+    }
+  }
 
   IMP_IF_LOG(VERBOSE) {
     internal::TNT::Array2D<double> Sigma(3,3, 0.0);
