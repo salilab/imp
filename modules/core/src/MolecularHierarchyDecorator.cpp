@@ -91,8 +91,8 @@ namespace
 
 struct MatchResidueIndex
 {
-  unsigned int index_;
-  MatchResidueIndex(unsigned int i): index_(i) {}
+  int index_;
+  MatchResidueIndex(int i): index_(i) {}
   bool operator()(Particle *p) const {
     MolecularHierarchyDecorator mhd(p);
     if (mhd.get_type() == MolecularHierarchyDecorator::RESIDUE
