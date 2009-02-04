@@ -1,0 +1,117 @@
+#!/usr/bin/python
+
+"""Add a class to the module passed as the first argument.
+"""
+
+import os
+import sys
+import getopt
+import shutil
+
+rawheader="""/**
+ *  \\file ClassName.h
+ *  \\brief XXXXXXXXXXXXXX
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ */
+
+#ifndef IMPMODULENAME_CLASS_NAME_H
+#define IMPMODULENAME_CLASS_NAME_H
+
+#include "config.h"
+
+#include "internal/modulename_version_info.h"
+#include <IMP/PairContainer.h>
+#include <IMP/SingletonContainer.h>
+#include <IMP/classtype.h>
+
+IMPMODULENAME_BEGIN_NAMESPACE
+
+//! XXXX
+/** XXXXXX.
+ */
+class IMPMODULENAMEEXPORT ClassName: public classtype
+{
+public:
+  //! Get the individual particles from the passed SingletonContainer
+  ClassName();
+
+  virtual ~ClassName();
+
+  CLASSTYPE
+};
+
+
+IMPMODULENAME_END_NAMESPACE
+
+#endif  /* IMPMODULENAME_CLASS_NAME_H */
+"""
+
+rawcpp="""/**
+ *  \\file ClassName.cpp
+ *  \\brief XXXX.
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *
+ */
+
+#include "IMP/modulename/ClassName.h"
+
+
+IMPMODULENAME_BEGIN_NAMESPACE
+
+ClassName::ClassName( ){
+}
+
+ClassName::~ClassName(){}
+
+void ClassName::show(std::ostream &out) const {
+  out << "ClassName" << std::endl;
+}
+
+IMPMODULENAME_END_NAMESPACE
+"""
+
+def usage():
+    print "Usage: modulename \'Class Name\' [parent_type]\n" % sys.argv[0]
+    print "Add the class ClassName to module modulename inheriting from parent_type.\n"
+
+
+
+def main():
+    if len(sys.argv) != 3 and len(sys.argv) != 4:
+        usage()
+        exit(1)
+    modulename = sys.argv[1]
+    classname =sys.argv[2]
+    if len(sys.argv) >3:
+        type= sys.argv[3]
+        typemacro= "IMP_"+type.upper()+"(internal::"+modulename+"_version_info)"
+    else:
+        type="RefCountedObject"
+        typemacro=""
+    print "Adding "+classname+" to " + modulename
+    ccclassname= classname.replace(" ", "")
+    ucclassname= classname.upper().replace(" ", "_")
+    ucmodname= modulename.upper()
+    header=rawheader.replace("ClassName", ccclassname)\
+        .replace("modulename", modulename)\
+        .replace("CLASS_NAME", ucclassname)\
+        .replace("MODULENAME", ucmodname)\
+        .replace('classtype', type).replace('CLASSTYPE', typemacro)
+
+    cpp=rawcpp.replace("ClassName", ccclassname)\
+        .replace("modulename", modulename)\
+        .replace("CLASS_NAME", ucclassname)\
+        .replace("MODULENAME", ucmodname).replace("modulename", modulename)
+   
+    open(os.path.join("modules", modulename, "include",
+                      ccclassname+".h"), 'w')\
+        .write(header);
+
+    open(os.path.join("modules", modulename, "src",
+                      ccclassname+".cpp"), 'w')\
+        .write(cpp);
+
+if __name__ == '__main__':
+    main()
