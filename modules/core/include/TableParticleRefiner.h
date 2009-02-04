@@ -24,7 +24,7 @@ class IMPCOREEXPORT TableParticleRefiner: public ParticleRefiner
 {
   std::map<Particle*, Particles> map_;
 public:
-  //! Get the individual particles from the passed SingletonContainer
+  //! Initialize it with an empty table
   TableParticleRefiner();
 
   virtual ~TableParticleRefiner();
