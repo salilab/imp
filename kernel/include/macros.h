@@ -334,12 +334,6 @@ protected:                                                      \
     to a particle
  */
 #define IMP_DECORATOR(Name, Parent)                                     \
-protected:                                                              \
- /** goes away once DecoratorBase patched */                            \
- static bool has_required_attributes(::IMP::Particle *p) {              \
-   return is_instance_of(p);                                            \
- }                                                                      \
-  friend class DecoratorBase;                                           \
 public:                                                                 \
 /** \note Should be private but SWIG accesses it through the comparison
     macros*/                                                            \
@@ -357,7 +351,12 @@ public:                                                                 \
      missing
  */                                                                     \
  static Name cast(::IMP::Particle *p) {                                 \
-   return IMP::DecoratorBase::cast<Name>(p);                            \
+   IMP_CHECK_OBJECT(p);                                                 \
+   if (!is_instance_of(p)) {                                            \
+      throw InvalidStateException("Particle missing required attributes"\
+                                  " in cast");                          \
+   }                                                                    \
+   return Name(p);                                                      \
  }                                                                      \
  /** Write information about this decorator to out. Each line should
      prefixed by prefix*/                                               \

@@ -39,11 +39,6 @@ protected:
   bool is_default() const {
     return !particle_;
   }
-  static bool has_required_attributes(Particle *) {
-    return true;
-  }
-  static void add_required_attributes(Particle *) {}
-  static void decorator_initialize_static_data() {}
 public:
   typedef DecoratorBase This;
 
@@ -58,33 +53,6 @@ public:
   Model *get_model() const {
     IMP_CHECK_OBJECT(particle_->get_model());
     return particle_->get_model();
-  }
-
-  //! create a decorator of class D from the Particle
-  /**
-     This is mostly for use through the D::cast function
-   */
-  template <class D>
-  static D cast(Particle *p) {
-    IMP_CHECK_OBJECT(p);
-    D:: decorator_initialize_static_data();
-    if (!D::has_required_attributes(p)) {
-      throw InvalidStateException("Particle missing required attributes"\
-                                  " in cast");
-    }
-    return D(p);
-  }
-
-  //! create a decorator of class D from the Particle
-  /**
-     This is mostly for use through the D::create function
-   */
-  template <class D>
-  static D create(Particle *p) {
-    IMP_CHECK_OBJECT(p);
-    D::decorator_initialize_static_data();
-    D::add_required_attributes(p);
-    return D(p);
   }
 
 };
