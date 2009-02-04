@@ -107,16 +107,18 @@ public:
   IMP_DECORATOR(ResidueDecorator, DecoratorBase)
 
   static ResidueDecorator create(Particle *p, ResidueType t= UNK,
-                                 int index=-1, int icode = 32) {
+                                 int index=-1, int insertion_code = 32) {
     p->add_attribute(get_type_key(), t.get_index());
     p->add_attribute(get_index_key(), index);
-    p->add_attribute(get_icode_key(), icode); // 32 is for space
+    p->add_attribute(get_insertion_code_key(), insertion_code);
+    // insertion code 32 is for space
     return ResidueDecorator(p);
   }
   //! Return true if the particle is a ResidueDecorator
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())
-    && p->has_attribute(get_index_key());
+    && p->has_attribute(get_index_key())
+    && p->has_attribute(get_insertion_code_key());
   }
 
   /** Return the ResidueType stored in the Particle */
@@ -143,13 +145,13 @@ public:
                         Int, Int);
 
   //! Return the insertion code of the residue
-  char get_icode() const {
-    return char(get_particle()->get_value(get_icode_key()));
+  char get_insertion_code() const {
+    return char(get_particle()->get_value(get_insertion_code_key()));
   }
 
   //! set the insertion code
-  void set_icode(char icode) {
-    return get_particle()->set_value(get_icode_key(), icode);
+  void set_insertion_code(char insertion_code) {
+    return get_particle()->set_value(get_insertion_code_key(), insertion_code);
   }
 
   //! Get the key storing the index
@@ -159,7 +161,7 @@ public:
   static IntKey get_type_key();
 
   //! Get the key storing the index
-  static IntKey get_icode_key();
+  static IntKey get_insertion_code_key();
 };
 
 IMP_OUTPUT_OPERATOR(ResidueDecorator);

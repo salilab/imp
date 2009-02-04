@@ -341,7 +341,7 @@ std::string AtomDecorator::get_pdb_string(int index) {
   out << get_residue_index(*this);
   //27: residue insertion code
   out.width(1);
-  out << get_residue(*this).get_icode();
+  out << get_residue(*this).get_insertion_code();
   out.setf(std::ios::fixed, std::ios::floatfield);
   out << "   "; // skip 3 undefined positions (28-30)
   XYZDecorator xyz= XYZDecorator::cast(p);
