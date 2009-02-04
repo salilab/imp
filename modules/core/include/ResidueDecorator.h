@@ -107,9 +107,10 @@ public:
   IMP_DECORATOR(ResidueDecorator, DecoratorBase)
 
   static ResidueDecorator create(Particle *p, ResidueType t= UNK,
-                                 int index=-1) {
+                                 int index=-1, int icode = 32) {
     p->add_attribute(get_type_key(), t.get_index());
     p->add_attribute(get_index_key(), index);
+    p->add_attribute(get_icode_key(), icode); // 32 is for space
     return ResidueDecorator(p);
   }
   //! Return true if the particle is a ResidueDecorator
@@ -141,11 +142,24 @@ public:
   IMP_DECORATOR_GET_SET(index, get_index_key(),
                         Int, Int);
 
+  //! Return the insertion code of the residue
+  char get_icode() const {
+    return char(get_particle()->get_value(get_icode_key()));
+  }
+
+  //! set the insertion code
+  void set_icode(char icode) {
+    return get_particle()->set_value(get_icode_key(), icode);
+  }
+
   //! Get the key storing the index
   static IntKey get_index_key();
 
   //! Get the key storing the type
   static IntKey get_type_key();
+
+  //! Get the key storing the index
+  static IntKey get_icode_key();
 };
 
 IMP_OUTPUT_OPERATOR(ResidueDecorator);
