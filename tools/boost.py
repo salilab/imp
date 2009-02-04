@@ -38,6 +38,6 @@ please use the 'include' option to add this location to the search path.
 For example, a Mac using Boost installed with MacPorts will have the Boost
 headers in /opt/local/include, so edit (or create) config.py and add the line
 
-include='/opt/local/include'
+includepath='/opt/local/include'
 """ % version)
     conf.Finish()
