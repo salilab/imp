@@ -1,5 +1,5 @@
+import os
 Import('env', 'get_pyext_environment')
-
 # Get a modified build environment suitable for building Python extensions:
 e = get_pyext_environment(env, 'EM', cplusplus=True)
 e.Append(CPPPATH=['..'])
