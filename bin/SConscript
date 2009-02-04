@@ -13,13 +13,15 @@ def builder_script_file(target, source, env):
     elif env['PLATFORM'] == 'win32':
         sep=";"
 
-    print "Platform is "+env['PLATFORM']+ " "+ sys.platform
     for line in infile:
         line = line.rstrip('\r\n')
         if line == "@LDPATH@":
-            if varname is not None:
-                line= varname+"='"+source[1].get_contents()+"/build/lib'"
-                line=line+"\nexport "+varname
+            if varname:
+                libs = [source[1].get_contents() + '/build/lib']
+                libpath = source[4].get_contents()
+                if libpath:
+                    libs.append(libpath)
+                line = varname + "='" + ':'.join(libs) + "'\nexport " + varname
             else:
                 line=""
         if line == "@PYTHONPATH@":
@@ -39,7 +41,8 @@ env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
 bin = env.ScriptFile("imppy.sh",
                      ["imppy.sh.in", env.Value(env.Dir('#').abspath),
                       env.Value(env.get('pythonpath', "")),
-                      env.Value(env['MODELLER_MODPY'])])
+                      env.Value(env['MODELLER_MODPY']),
+                      env.Value(':'.join(env['libpath']))])
 
 env.AlwaysBuild("imppy.sh")
 
