@@ -315,7 +315,7 @@ IMPCOREEXPORT AtomType atom_type_from_pdb_string(std::string nm);
 //! Return the index of the residue containing this atom
 /** The atom must be part of a molecular hierarchy.
  */
-IMPCOREEXPORT unsigned int get_residue_index(AtomDecorator d);
+IMPCOREEXPORT int get_residue_index(AtomDecorator d);
 
 #ifdef SWIG
 // ResidueType is a typedef so this is invalid C++ code, but swig needs it
@@ -346,6 +346,16 @@ IMPCOREEXPORT ResidueDecorator get_residue(AtomDecorator d);
     \relates MolecularHierarchyDecorator
  */
 IMPCOREEXPORT AtomDecorator get_atom(ResidueDecorator rd, AtomType at);
+
+//! Return the chain id of this atom
+/** The atom must be part of a molecular hierarchy.
+    \relates AtomDecorator
+    \relates ResidueDecorator
+    \relates MolecularHierarchyDecorator
+ */
+IMPCOREEXPORT char get_chain(AtomDecorator d);
+
+
 
 IMPCORE_END_NAMESPACE
 
