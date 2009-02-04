@@ -62,17 +62,17 @@ void ResidueDecorator::show(std::ostream &out, std::string pre) const
 }
 
 IntKey ResidueDecorator::get_index_key() {
-  IntKey k("residue_index");
+  static IntKey k("residue_index");
   return k;
 }
 
 IntKey ResidueDecorator::get_type_key() {
-  IntKey k("residue_type");
+  static IntKey k("residue_type");
   return k;
 }
 
-IntKey ResidueDecorator::get_icode_key() {
-  IntKey k("residue_icode");
+IntKey ResidueDecorator::get_insertion_code_key() {
+  static IntKey k("residue_icode");
   return k;
 }
 
