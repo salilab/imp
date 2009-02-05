@@ -10,6 +10,7 @@
 
 #include <IMP/SingletonScore.h>
 #include <IMP/log.h>
+#include <IMP/deprecation.h>
 
 #include <cmath>
 
@@ -23,6 +24,7 @@ SingletonListRestraint::SingletonListRestraint(SingletonScore *s,
   IMP_LOG(SILENT, "SingletonListRestraint is now deprecated. "
           << "You should start shifting to ParticlesRestraint"
           << std::endl);
+  IMP_DEPRECATED(SingletonListRestraint, SingletonsRestraint);
 }
 
 

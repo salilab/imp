@@ -12,6 +12,7 @@
 #include <IMP/Model.h>
 #include <IMP/log.h>
 #include <IMP/TripletScore.h>
+#include <IMP/deprecation.h>
 
 #include <cmath>
 
@@ -21,6 +22,7 @@ TripletChainRestraint::TripletChainRestraint(TripletScore* ts)
 {
   ts_ = ts;
   clear_chains();
+  IMP_DEPRECATED(TripletChainRestraint, "Not written yet, but easily done so");
 }
 
 void TripletChainRestraint::add_chain(const Particles &ps)
