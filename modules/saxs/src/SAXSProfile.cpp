@@ -104,7 +104,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
     if (line[0] == '#' || line[0] == '\0')
       continue;
 
-    Float s, intensity, error;
+    double s, intensity, error;
     ncols = sscanf(line.c_str(), "%lf %lf %lf", &s, &intensity, &error);
     IntensityEntry entry(s, intensity, error);
     profile_.push_back(entry);
@@ -206,8 +206,6 @@ void SAXSProfile::calculate_profile_real(
 void SAXSProfile::
 radial_distribution_2_profile(const RadialDistributionFunction & r_dist)
 {
-  init();
-
   // iterate over intensity profile (assumes initialized profile: s, I(s)=0)
   for (unsigned int k = 0; k < profile_.size(); k++) {
 
