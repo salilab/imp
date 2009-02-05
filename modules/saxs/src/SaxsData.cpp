@@ -499,7 +499,7 @@ int SaxsData::saxs_formheavatm(void) {
            &c[iat], &b[iat][0], &b[iat][1], &b[iat][2], &b[iat][3], &b[iat][4],
            &excl_vol[iat]);
 
-    volr[iat] = pow(excl_vol[iat], (2.0/3.0));
+    volr[iat] = std::pow(excl_vol[iat], (2.0/3.0));
     //volr[iat] = pow(excl_vol[iat], (2.0/3.0)) / (4.0*IMP::internal::PI);
 
 // for Debugging

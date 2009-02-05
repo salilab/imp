@@ -33,7 +33,7 @@ public:
             const std::vector<Particle*>& particles);
 
   //! compute chi value (assumes the same sampling range!)
-  double compute_chi_score(const SAXSProfile& model_saxs_profile);
+  Float compute_chi_score(const SAXSProfile& model_saxs_profile);
 
   //! compute  derivatives on atom iatom - iatom is NOT part of rigid body
   std::vector<IMP::algebra::Vector3D> calculate_chi_derivative(
@@ -42,11 +42,11 @@ public:
     return calculate_chi_real_derivative(model_saxs_profile, particles);
   }
 
-  double get_scaling(void) { return c_; }
-  double set_scaling(double c) { c_ = c;  return c_; }
+  Float get_scaling(void) { return c_; }
+  Float set_scaling(Float c) { c_ = c;  return c_; }
 
-  double get_offset(void) { return offset_; }
-  double set_offset(double offset) { offset_ = offset;  return offset_; }
+  Float get_offset(void) { return offset_; }
+  Float set_offset(Float offset) { offset_ = offset;  return offset_; }
 
   int get_mesh_sinc_(void) { return mesh_sinc_; }
   int set_mesh_sinc_(int mesh_sinc) {mesh_sinc_ = mesh_sinc; return mesh_sinc_;}
@@ -67,13 +67,13 @@ protected:
   FormFactorTable* ff_table_;       // pointer to form factors table
   SAXSProfile* exp_saxs_profile_;   // pointer to experimental saxs profile
 
-  double c_;  // scale constant
-  double offset_, chi_square_;   // offset and Chi-square
-  std::vector< std::vector<double> > sincval_array_;
+  Float c_;  // scale constant
+  Float offset_, chi_square_;   // offset and Chi-square
+  std::vector< std::vector<Float> > sincval_array_;
 
   //! lookup table for sinc function and cos function
-  std::vector<double> sinc_lookup_, cos_lookup_, zero_formfactor_;
-  std::vector<double> r_, r_square_reciprocal_;
+  std::vector<Float> sinc_lookup_, cos_lookup_, zero_formfactor_;
+  std::vector<Float> r_, r_square_reciprocal_;
   int mesh_sinc_;     //! how many points per 1 unit in sinc
   unsigned int nr_;
 };
