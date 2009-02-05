@@ -5,7 +5,6 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include <IMP/core/MaxChangeScoreState.h>
 #include <IMP/core/internal/ParticleGrid.h>
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/algebra/Vector3D.h>
