@@ -7,7 +7,6 @@
 
 #include "IMP/core/DerivativesFromRefinedSingletonModifier.h"
 
-#include "IMP/core/BondDecoratorListScoreState.h"
 #include "IMP/core/bond_decorators.h"
 #include "IMP/core/XYZDecorator.h"
 
