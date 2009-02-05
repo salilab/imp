@@ -65,63 +65,42 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
     exit(1);
   }
 
-/*
-  getline(in_file, line);
+  bool with_error = false;
+  std::string line;
   IntensityEntry entry;
   while (!in_file.eof()) {
-    //while(in_file >> entry) {
-
     getline(in_file, line);
     boost::trim(line); // remove all spaces
-    // skip comments or empty lines
-    if (boost::all(line, boost::is_any_of(" \n\t")))
-      continue;
-
+    // skip comments
+    if (line[0] == '#' || line[0] == '\0' || !isdigit(line[0])) continue;
     std::vector < std::string > split_results;
-    boost::split(split_results, line, boost::is_any_of(" "));
+    boost::split(split_results, line, boost::is_any_of(" "),
+                 boost::token_compress_on);
     if (split_results.size() != 2 && split_results.size() != 3)
       continue;                 // 3 values with error, 2 without
 
     entry.s_ = atof(split_results[0].c_str());
     entry.intensity_ = atof(split_results[1].c_str());
-    if (split_results.size() == 3)
+    if (split_results.size() == 3) {
       entry.error_ = atof(split_results[2].c_str());
-
-    if (entry.error_ == 0.0) {
-      std::cerr << "Zero intensity error! setting to 1" << std::endl;
-      entry.error_ = 1.0;
+      with_error = true;
     }
     profile_.push_back(entry);
   }
-*/
-  int ncols=0;
-  std::string line;
-  profile_.clear();
 
-  // It handles profiles with multiple comment lines
-  while ( !in_file.eof() ) {
-    getline(in_file, line);
-    if (line[0] == '#' || line[0] == '\0')
-      continue;
-
-    double s, intensity, error;
-    ncols = sscanf(line.c_str(), "%lf %lf %lf", &s, &intensity, &error);
-    IntensityEntry entry(s, intensity, error);
-    profile_.push_back(entry);
-  }
   std::cerr << "Number of entries read " << profile_.size() << std::endl;
   in_file.close();
 
-  //! determine smin, smax and delta
+  // determine smin, smax and delta
   if (profile_.size() > 1) {
     min_s_ = profile_[0].s_;
     max_s_ = profile_[profile_.size() - 1].s_;
-    // Corrected by SJ Kim (1/23/09)
+    // Corrected by SJ Kim (1/23/09) - TODO!
     delta_s_ = (max_s_ - min_s_) / (profile_.size() - 1);
   }
 
-  //! saxs_read: No experimental error specified (ncols < 3), error=0.3*I(s_max)
-  if (ncols < 3) {
+  // saxs_read: No experimental error specified, error=0.3*I(s_max)
+  if (!with_error) {
     Float sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
     for (unsigned int i=0; i<profile_.size(); i++)
       profile_[i].error_ = sig_exp;
