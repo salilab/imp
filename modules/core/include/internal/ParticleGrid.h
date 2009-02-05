@@ -9,7 +9,6 @@
 #define IMPCORE_PARTICLE_GRID_H
 
 #include "../config.h"
-#include "../MaxChangeScoreState.h"
 #include "Grid3D.h"
 
 #include <IMP/base_types.h>
