@@ -249,6 +249,10 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     except ValueError:
         pass
     env['PYTHONPATH'] = '#/build/lib'
+    if env['rpath']:
+        if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
+            env['rpath']=False
+            print "WARNING rpath not supported on platform "+ env['PLATFORM']
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
@@ -276,9 +280,8 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     _add_build_flags(env)
 
     sys = platform.system()
-    if sys == 'SunOS':
-        # Find locally-installed libraries in /usr/local (e.g. for SWIG)
-        env['ENV']['LD_LIBRARY_PATH'] = '/usr/local/lib'
+    if env.get('ldlibpath', None) is not None:
+        env['ENV']['LD_LIBRARY_PATH'] = env.get('ldlibpath', None)
     # Make Modeller exetype variable available:
     if os.environ.has_key('EXECUTABLE_TYPESVN'):
         env['ENV']['EXECUTABLE_TYPESVN'] = os.environ['EXECUTABLE_TYPESVN']
@@ -498,6 +501,11 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('rpath',
                           'Add any entries from libpath to library search ' + \
                           'path (rpath) on Linux systems', True))
+    vars.Add(PathVariable('ldlibpath',
+                          'Add to the runtime library search path ' +\
+                              '(LD_LIBRARY_PATH on linux-like systems) for various ' + \
+                              'build tools and the test cases' ,None,
+                          PathVariable.PathAccept))
     vars.Add(PathVariable('cxxflags', 'Extra cxx flags ' + \
                           '(e.g. "-fno-rounding -DFOOBAR")',
                           None, PathVariable.PathAccept))
@@ -505,8 +513,8 @@ def add_common_variables(vars, package):
                           '(e.g. "-lefence")', None,
                           PathVariable.PathAccept))
     vars.Add(PathVariable('path', 'Extra executable path ' + \
-                          '(e.g. "/opt/local/bin/")', None,
+                          '(e.g. "/opt/local/bin/") to search for build tools', None,
                           PathVariable.PathAccept))
     vars.Add(PathVariable('pythonpath', 'Extra python path ' + \
-                          '(e.g. "/opt/local/lib/python-2.5/")', None,
+                          '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None,
                           PathVariable.PathAccept))
