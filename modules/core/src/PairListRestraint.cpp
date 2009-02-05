@@ -10,6 +10,7 @@
 
 #include <IMP/PairScore.h>
 #include <IMP/log.h>
+#include <IMP/deprecation.h>
 
 #include <cmath>
 
@@ -22,6 +23,7 @@ PairListRestraint::PairListRestraint(PairScore *s,
   IMP_LOG(SILENT, "PairListRestraint is now deprecated. "
           << "You should start shifting to ParticlePairsRestraint"
           << std::endl);
+  IMP_DEPRECATED(PairListRestraint, PairsRestraint);
 }
 
 PairListRestraint::~PairListRestraint()

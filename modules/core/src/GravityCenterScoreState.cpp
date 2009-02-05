@@ -7,6 +7,7 @@
 
 #include <IMP/core/GravityCenterScoreState.h>
 #include <IMP/core/XYZDecorator.h>
+#include <IMP/deprecation.h>
 
 #include <IMP/algebra/Vector3D.h>
 
@@ -19,6 +20,7 @@ GravityCenterScoreState::GravityCenterScoreState(Particle *center,
 {
   XYZDecorator::cast(center);
   add_particles(ps);
+  IMP_DEPRECATED(AllNonbondeListScoreState, GravityCenterSingletonModifier)
 }
 
 void GravityCenterScoreState::do_before_evaluate()
