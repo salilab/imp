@@ -48,7 +48,7 @@ SAXSProfile::SAXSProfile(const String & file_name)
 void SAXSProfile::init()
 {
   profile_.clear();
-  int number_of_entries = (int)((max_s_ - min_s_) / delta_s_) + 1;
+  int number_of_entries = (int)((max_s_ - min_s_) / delta_s_ + 0.5) + 1;
   for (int i=0; i<number_of_entries; i++) {
     IntensityEntry entry(min_s_ + i * delta_s_);
     profile_.push_back(entry);
@@ -104,7 +104,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
     if (line[0] == '#' || line[0] == '\0')
       continue;
 
-    double s, intensity, error;
+    Float s, intensity, error;
     ncols = sscanf(line.c_str(), "%lf %lf %lf", &s, &intensity, &error);
     IntensityEntry entry(s, intensity, error);
     profile_.push_back(entry);
@@ -122,7 +122,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
 
   //! saxs_read: No experimental error specified (ncols < 3), error=0.3*I(s_max)
   if (ncols < 3) {
-    double sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
+    Float sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
     for (unsigned int i=0; i<profile_.size(); i++)
       profile_[i].error_ = sig_exp;
     std::cerr << "read_SAXS_file: No experimental error specified" << std::endl;
@@ -218,7 +218,7 @@ radial_distribution_2_profile(const RadialDistributionFunction & r_dist)
       x = sinc(x);
       profile_[k].intensity_ += r_dist.distribution_[r] * x;
     }
-    profile_[k].intensity_ *= exp(-b_ * profile_[k].s_ * profile_[k].s_);
+    profile_[k].intensity_ *= std::exp(-b_ * profile_[k].s_ * profile_[k].s_);
   }
 }
 

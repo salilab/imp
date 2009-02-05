@@ -132,8 +132,7 @@ void FormFactorTable::show(std::ostream & out, std::string prefix) const
 void FormFactorTable::show(std::ostream & out) const
 {
   for (unsigned int i = 0; i < zero_form_factors_.size(); i++) {
-    //out << " FFATOMTYPE " << i << " " << zero_form_factors_[i] << std::endl;
-    printf(" FFATOMTYPE %d %.15f\n", i, zero_form_factors_[i]);
+    out << " FFATOMTYPE " << i << " " << zero_form_factors_[i] << std::endl;
   }
 }
 
@@ -175,7 +174,7 @@ void FormFactorTable::compute_form_factors_all_atoms()
       //  i=1,5
       for (unsigned int j = 0; j < 5; j++) {
         form_factors_[i][k] += form_factors_coefficients_[i].a_[j] *    // a_i
-          exp( -form_factors_coefficients_[i].b_[j] * s );   // EXP(-b_i*(q^2))
+        std::exp( -form_factors_coefficients_[i].b_[j] * s ); // EXP(-b_i*(q^2))
       }
 
       // subtract solvation: pho*v_i*EXP(-4PI * v_i^(2/3) * q^2)

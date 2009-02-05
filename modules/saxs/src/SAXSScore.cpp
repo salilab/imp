@@ -31,18 +31,18 @@ int SAXSScore::init(const SAXSProfile& model_saxs_profile,
   //!------ setup lookup tables for sinc and cosine function
   mesh_sinc_ = 1000;
   offset_ = 0.0;
-  double dr = model_saxs_profile.get_pr_resolution();
-  nr_ = (unsigned int)(model_saxs_profile.get_max_pr_distance() / dr) + 1;
+  Float dr = model_saxs_profile.get_pr_resolution();
+  nr_ = (unsigned int)(model_saxs_profile.get_max_pr_distance() / dr + 0.5) + 1;
   int nsinc = (int)( exp_saxs_profile_->get_s( exp_saxs_profile_->size()-1 )
-                    * nr_ * dr * mesh_sinc_ ) + 1;
-  const double sinc_dense = 1.0 / (double)mesh_sinc_;
+                    * nr_ * dr * mesh_sinc_ + 0.5) + 1;
+  const Float sinc_dense = 1.0 / (Float)mesh_sinc_;
   sinc_lookup_.clear();   sinc_lookup_.resize(nsinc, 0.0);
   cos_lookup_.clear();    cos_lookup_.resize(nsinc, 0.0);
 
   // to avoid the singularity of sinc function at zero
   sinc_lookup_.push_back(1.0);  cos_lookup_.push_back(1.0);
   for (int i=1; i<nsinc; i++) {
-    double x = i * sinc_dense;
+    Float x = i * sinc_dense;
     sinc_lookup_[i] = sin(x) / x;
     cos_lookup_[i] = cos(x);
   }
@@ -55,11 +55,11 @@ int SAXSScore::init(const SAXSProfile& model_saxs_profile,
   }
 
   sincval_array_.clear(); sincval_array_.resize(exp_saxs_profile_->size());
-  std::vector<double> sincval_temp;
+  std::vector<Float> sincval_temp;
   sincval_temp.resize(nr_, 0.0);
   for (unsigned int is=0; is<exp_saxs_profile_->size(); is++) {
     for (unsigned int ir=0; ir<nr_; ir++) {
-      double qr = exp_saxs_profile_->get_s(is) * r_[ir];
+      Float qr = exp_saxs_profile_->get_s(is) * r_[ir];
       int ilookup = (int)(mesh_sinc_ * qr + 0.5);
       sincval_temp[ir] = sinc_lookup_[ilookup] - cos_lookup_[ilookup];
     }
@@ -84,21 +84,21 @@ int SAXSScore::init(const SAXSProfile& model_saxs_profile,
  ! ----------------------------------------------------------------------
 */
 // TODO: define a weight function (w(q) = 1, q^2, or hybrid)
-double SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
+Float SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
 {
   if (exp_saxs_profile_->size() != model_saxs_profile.size()) {
     printf("Number of profile entries mismatch! (exp:%d, model:%d)\n",
            exp_saxs_profile_->size(), model_saxs_profile.size());
     return -1.0;
   }
-  double sum1=0.0, sum2=0.0;
+  Float sum1=0.0, sum2=0.0;
   chi_square_ = 0.0;
 
   //! determine the scaling parameter c_
   for (unsigned int k=0; k<model_saxs_profile.size(); k++) {
     //! in the theoretical profile the error equals to 1 (?)
-    double square_error = square(exp_saxs_profile_->get_error(k));
-    double weight_tilda = model_saxs_profile.get_weight(k) / square_error;
+    Float square_error = square(exp_saxs_profile_->get_error(k));
+    Float weight_tilda = model_saxs_profile.get_weight(k) / square_error;
 
     sum1 += weight_tilda * model_saxs_profile.get_intensity(k)
                          * exp_saxs_profile_->get_intensity(k);
@@ -109,9 +109,9 @@ double SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
   //! compute Chi square
   for (unsigned int k=0; k<model_saxs_profile.size(); k++) {
     //! in the theoretical profile the error equals to 1 (?)
-    double square_error = square(exp_saxs_profile_->get_error(k));
-    double weight_tilda = model_saxs_profile.get_weight(k) / square_error;
-    double delta = exp_saxs_profile_->get_intensity(k) + offset_
+    Float square_error = square(exp_saxs_profile_->get_error(k));
+    Float weight_tilda = model_saxs_profile.get_weight(k) / square_error;
+    Float delta = exp_saxs_profile_->get_intensity(k) + offset_
                     - c_ * model_saxs_profile.get_intensity(k);
 
     // Exclude the uncertainty originated from limitation of floating number
@@ -147,8 +147,8 @@ std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
 {
   std::vector<algebra::Vector3D> chi_derivatives;
   unsigned int i, is, iatom, ir;
-  const double b_coeff = exp_saxs_profile_-> get_b_coeff();
-  const double dr_reciprocal = 1.0 / exp_saxs_profile_->get_pr_resolution();
+  const Float b_coeff = exp_saxs_profile_-> get_b_coeff();
+  const Float dr_reciprocal = 1.0 / exp_saxs_profile_->get_pr_resolution();
 
   if (exp_saxs_profile_->size() != model_saxs_profile.size()) {
     printf("Number of profile entries mismatch! (exp:%d, model:%d)\n",
@@ -157,21 +157,21 @@ std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
   }
 
   //!------ precalculate difference of intensities and squares of weight
-  std::vector<double> delta_i, e_q, delta_i_and_e_q;
+  std::vector<Float> delta_i, e_q, delta_i_and_e_q;
   delta_i.resize(model_saxs_profile.size(), 0.0);
   e_q.resize(model_saxs_profile.size(), 0.0);
   delta_i_and_e_q.resize(model_saxs_profile.size(), 0.0);
   for (is=0; is<model_saxs_profile.size(); is++) {
-    double delta = exp_saxs_profile_->get_intensity(is)
+    Float delta = exp_saxs_profile_->get_intensity(is)
                   - c_ * model_saxs_profile.get_intensity(is);
-    double square_error = square(exp_saxs_profile_->get_error(is));
-    double weight_tilda = model_saxs_profile.get_weight(is) / square_error;
+    Float square_error = square(exp_saxs_profile_->get_error(is));
+    Float weight_tilda = model_saxs_profile.get_weight(is) / square_error;
 
     // Exclude the uncertainty originated from limitation of floating number
     if (fabs(delta/exp_saxs_profile_->get_intensity(is)) < IMP_SAXS_DELTA_LIMIT)
       delta = 0.0;
     delta_i[is] = weight_tilda * delta;
-    e_q[is] = exp( - b_coeff * square(exp_saxs_profile_->get_s(is)) );
+    e_q[is] = std::exp( - b_coeff * square(exp_saxs_profile_->get_s(is)) );
     delta_i_and_e_q[is] = delta_i[is] * e_q[is];
   }
   //!------ copy coordinates in advance, to avoid n^2 copy operations
@@ -183,7 +183,7 @@ std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
   std::vector<algebra::Vector3D> Delta;
   algebra::Vector3D Delta_q(0.0, 0.0, 0.0), chi_derivative(0.0, 0.0, 0.0);
   // TODO: Very weird. Why this definition makes huge differnce in performance?
-  std::vector<double> Delta_x;//, Delta_y, Delta_z;
+  std::vector<Float> Delta_x;//, Delta_y, Delta_z;
 
   //!------ The real loop starts from here
   chi_derivatives.resize(particles.size());
@@ -194,9 +194,9 @@ std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
     //!------ precalculate difference delta
     for (i=0; i<particles.size(); i++) {
       if (i != iatom) {
-        double dist = distance(coordinates[iatom], coordinates[i]);
+        Float dist = distance(coordinates[iatom], coordinates[i]);
         unsigned int ir = (unsigned int)(dist * dr_reciprocal + 0.5);
-        double temp = zero_formfactor_[iatom] * zero_formfactor_[i]
+        Float temp = zero_formfactor_[iatom] * zero_formfactor_[i]
                       * r_square_reciprocal_[ir];
         Delta[ir] += temp * (coordinates[iatom] - coordinates[i]);
       }

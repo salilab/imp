@@ -50,7 +50,7 @@ public:
   void show(std::ostream &out=std::cout) const;
 
   Float get_max_pr_distance(void) { return max_pr_distance_; }
-  Float set_max_pr_distance(double max_pr_distance) {
+  Float set_max_pr_distance(Float max_pr_distance) {
     max_pr_distance_ = max_pr_distance;
     distribution_.reserve(dist2index(max_pr_distance_));
     return max_pr_distance_;
