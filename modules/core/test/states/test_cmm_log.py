@@ -25,9 +25,9 @@ class TestBL(IMP.test.TestCase):
         p1= IMP.Particle()
         m.add_particle(p1)
         d1= IMP.core.XYZDecorator.create(p1)
-        p1.add_attribute(r, 1.0, False)
-        p1.add_attribute(g, 0.0, False)
-        p1.add_attribute(b, 0.0, False)
+        p1.add_attribute(r, 255)
+        p1.add_attribute(g, 0)
+        p1.add_attribute(b, 0)
         d1.set_x(1)
         d1.set_y(1)
         d1.set_z(1)
@@ -42,16 +42,16 @@ class TestBL(IMP.test.TestCase):
     def test_1(self):
         """Testing the CMM log"""
         self._testit(IMP.FloatKey("radius"),
-                     IMP.FloatKey("red"),
-                     IMP.FloatKey("green"),
-                     IMP.FloatKey("blue"), "test1")
+                     IMP.IntKey("red"),
+                     IMP.IntKey("green"),
+                     IMP.IntKey("blue"), "test1")
 
     def test_2(self):
         """Testing the CMM log with new attribute names"""
         self._testit(IMP.FloatKey("another_radius"),
-                     IMP.FloatKey("red5"),
-                     IMP.FloatKey("green5"),
-                     IMP.FloatKey("blue5"),
+                     IMP.IntKey("red5"),
+                     IMP.IntKey("green5"),
+                     IMP.IntKey("blue5"),
                      "test1")
     def test_skip(self):
         """Test skipping steps in the CMM log"""
