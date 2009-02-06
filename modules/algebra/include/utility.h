@@ -1,14 +1,17 @@
 /**
- *  \file math_macros.h
- *  \brief Macros to deal with very common math operations
+ *  \file utility.h
+ *  \brief Functions to deal with very common math operations
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-8 Sali Lab. All rights reserved.
 */
 
-#ifndef IMPALGEBRA_MATH_MACROS_H
-#define IMPALGEBRA_MATH_MACROS_H
+#ifndef IMPALGEBRA_UTILITY_H
+#define IMPALGEBRA_UTILITY_H
 
-IMP_BEGIN_NAMESPACE
+#include "config.h"
+#include <IMP/exception.h>
+
+IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Simple interpolation that is only valid for values of a ranging from 0 to 1.
 /**
@@ -16,18 +19,20 @@ IMP_BEGIN_NAMESPACE
  * \return The returned value is the low (l) argument when a=0 and the high
  * (h) argument when a=1. Specifically, l+(h-l)*a
  */
-#define SIMPLE_INTERP(a, l, h) ((l) + ((h) - (l)) * (a))
-
-//! xor operation between two values (non necessarily bites)
-template<typename T1, typename T2>
-bool xorT(const T1& x, const T2& y)
+template <class T>
+T simple_iterpolate(T a, T l, T h) {
+  IMP_assert(a>=0 && a <=1, "Argument " << a << " must be between 0 and 1.");
+  return ((l) + ((h) - (l)) * (a));
+}
+//! xor operation between two values
+inline bool xorT(bool x, bool y)
 {
   return (((x) && !(y)) || (!(x) && (y)));
 }
 
 //! Sign of a number. 1 if the number is higher or equal to 0 and -1 otherwise
 template<typename T>
-int sgn(const T& x)
+int sign(const T& x)
 {
   if (x >= 0) return 1;
   return -1;
@@ -71,7 +76,7 @@ int round(const T& x)
  * \endcode
  */
 template<typename T>
-T threshold(const T x, const T x0, const T xF)
+T constrain_value(const T x, const T x0, const T xF)
 {
   if (x < x0) return x0;
   if (x > xF) return xF;
@@ -84,11 +89,11 @@ T threshold(const T x, const T x0, const T xF)
  * epsilon is the tolerance allowed to consider the values as equal
  */
 template<typename T>
-bool equal(const T a, const T b, const T epsilon)
+bool almost_equal(const T a, const T b, const T epsilon)
 {
   return (std::abs(a - b) < epsilon);
 }
 
-IMP_END_NAMESPACE
+IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_MATH_MACROS_H */
+#endif  /* IMPALGEBRA_UTILITY_H */

@@ -6,7 +6,7 @@ files = [
          'Vector3D.h',
          'VectorD.h',
          'geometric_alignment.h',
-         'math_macros.h',
+         'utility.h',
          'MultiArray.h',
          'Matrix2D.h',
          'Matrix3D.h'

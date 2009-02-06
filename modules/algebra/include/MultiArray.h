@@ -13,7 +13,7 @@
 #include "IMP/base_types.h"
 #include "IMP/random.h"
 #include "IMP/misc/text_manipulation.h"
-#include "IMP/algebra/math_macros.h"
+#include "IMP/algebra/utility.h"
 #include "boost/array.hpp"
 #include "boost/multi_array.hpp"
 #include <ctime>

@@ -9,7 +9,7 @@
 #define IMPEM_EULER_OPERATIONS_H
 
 #include "config.h"
-#include "IMP/algebra/math_macros.h"
+#include "IMP/algebra/utility.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/Vector3D.h"
