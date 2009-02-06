@@ -24,15 +24,14 @@ class ClosePairsFinder;
 
 //! Maintains a list of spatially close pairs of particles
 /** On object of this class fills a PairContainer with
-    spatially close pairs of particles. More precisely, a
-    ClosePairsFinder is used to fill an output list of type
-    FilteredListPairContainer from an input set of particles
-    store in a SingletonContainer.
+    all pairs of particles whose inter-sphere distance is
+    smaller than the distance parameter. These close pairs are
+    put in a list of type FilteredListPairContainer.
 
-    In order to do this efficiently, it increases the distance threshold
-    by some amount of slack. As long as the particles don't move more than
-    the slack amount, the list is still valid and doesn't need to be
-    recomputed.
+    In order to do this efficiently the class actually computes all
+    pairs within distance+slack of one another. As long as the particles
+    don't move more than the slack amount, the list is still valid and
+    doesn't need to be recomputed.
 
     The default distance is 0 and default slack is 1.
 
@@ -78,7 +77,7 @@ public:
 
   //! Set the amount of slack to add to the threshold
   /** Increasing this means the list is rebuilt more often but
-      also the list is larger. Unfortunately, this is hard to get right.
+      also the list is larger.
    */
   void set_slack(Float s);
 
