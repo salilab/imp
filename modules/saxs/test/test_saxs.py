@@ -21,28 +21,29 @@ class PDBReadTest(IMP.test.TestCase):
         #          self.get_input_file_name('i_single_protein_IMP.txt'))
         #          self.get_input_file_name('i_single_protein_IMP_old.txt'))
                   self.get_input_file_name('i_single_protein_MODELLER.txt'))
+        #           self.get_input_file_name('MflB_8586.dat'))
         #exp_saxs_profile.write_SAXS_file('i_single_protein_MODELLER.txt')
 
-        print 'min_s = ' + str(exp_saxs_profile.get_min_s())
-        print 'max_s = ' + str(exp_saxs_profile.get_max_s())
-        print 'delta_s = ' + str(exp_saxs_profile.get_delta_s())
+        print 'min_q = ' + str(exp_saxs_profile.get_min_q())
+        print 'max_q = ' + str(exp_saxs_profile.get_max_q())
+        print 'delta_q = ' + str(exp_saxs_profile.get_delta_q())
 
         # read form factors
         f_table = IMP.saxs.FormFactorTable(
                   self.get_input_file_name('formfactors-int_tab_solvation.lib'),
-                  exp_saxs_profile.get_min_s(),
-                  exp_saxs_profile.get_max_s(),
-                  exp_saxs_profile.get_delta_s())
-        #f_table.show()
+                  exp_saxs_profile.get_min_q(),
+                  exp_saxs_profile.get_max_q(),
+                  exp_saxs_profile.get_delta_q())
+        f_table.show()
 
         #calculate SAXS profile
         particles = IMP.core.get_by_type(mp,
                         IMP.core.MolecularHierarchyDecorator.ATOM)
 
         model_saxs_profile = IMP.saxs.SAXSProfile(
-                                    exp_saxs_profile.get_min_s(),
-                                    exp_saxs_profile.get_max_s(),
-                                    exp_saxs_profile.get_delta_s(),
+                                    exp_saxs_profile.get_min_q(),
+                                    exp_saxs_profile.get_max_q(),
+                                    exp_saxs_profile.get_delta_q(),
                                     f_table)
 
         model_saxs_profile.calculate_profile(particles)

@@ -43,11 +43,8 @@ public:
   // ! get distribution as array of Float
   Floats get_distribution() const { return distribution_; }
 
-  // ! print
-  void show(std::ostream &out, std::string prefix) const;
-
-  //! print tables, No prefix, for a python script (SJ Kim 01/23/09)
-  void show(std::ostream &out=std::cout) const;
+  // ! print tables
+  void show(std::ostream &out=std::cout, std::string prefix="") const;
 
   Float get_max_pr_distance(void) { return max_pr_distance_; }
   Float set_max_pr_distance(Float max_pr_distance) {
