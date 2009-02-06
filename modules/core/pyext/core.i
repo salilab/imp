@@ -56,6 +56,7 @@ namespace IMP {
     IMP_OWN_FIRST_CONSTRUCTOR(BallMover)
     IMP_OWN_FIRST_CONSTRUCTOR(BondDecoratorRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(BondSingletonScore)
+    IMP_OWN_FIRST_SECOND_CONSTRUCTOR(ClosePairsPairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(ConnectivityRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(CoverRefinedSingletonModifier)
     IMP_OWN_FIRST_CONSTRUCTOR(CentroidOfRefinedSingletonModifier)
@@ -73,6 +74,7 @@ namespace IMP {
     IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RigidBodyScoreState)
     IMP_OWN_FIRST_CONSTRUCTOR(PairChainRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(PairListRestraint)
+    IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RefinedPairsPairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(SingletonListRestraint)
     IMP_OWN_FIRST_CONSTRUCTOR(SphereDistancePairScore)
     IMP_OWN_FIRST_CONSTRUCTOR(TransformedDistancePairScore)
@@ -140,6 +142,7 @@ namespace IMP {
 %include "IMP/core/ClosedCubicSpline.h"
 %include "IMP/core/ClosePairsScoreState.h"
 %include "IMP/core/CloseBipartitePairsScoreState.h"
+%include "IMP/core/ClosePairsPairScore.h"
 %include "IMP/core/ConjugateGradients.h"
 %include "IMP/core/ConnectivityRestraint.h"
 %include "IMP/core/ConstantRestraint.h"
@@ -170,6 +173,7 @@ namespace IMP {
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
+%include "IMP/core/RefinedPairsPairScore.h"
 %include "IMP/core/ResidueDecorator.h"
 %include "IMP/core/RestraintSet.h"
 %include "IMP/core/rigid_bodies.h"
