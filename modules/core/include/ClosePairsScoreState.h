@@ -23,10 +23,9 @@ class MaximumChangeScoreState;
 class ClosePairsFinder;
 
 //! Maintains a list of spatially close pairs of particles
-/** An object of this class fills a PairContainer with
+/** An object of this class fills a FilteredListPairContainer with
     all pairs of particles whose inter-sphere distance is
-    smaller than the distance parameter. These close pairs are
-    put in a list of type FilteredListPairContainer.
+    smaller than the distance parameter.
 
     In order to do this efficiently the class actually computes all
     pairs within distance+slack of one another. As long as the particles
