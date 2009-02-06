@@ -76,7 +76,7 @@ int round(const T& x)
  * \endcode
  */
 template<typename T>
-T constrain_value(const T x, const T x0, const T xF)
+T constrain(const T x, const T x0, const T xF)
 {
   if (x < x0) return x0;
   if (x > xF) return xF;
