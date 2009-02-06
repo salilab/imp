@@ -45,7 +45,7 @@ class DOMINOTests(IMP.test.TestCase):
             ps = IMP.Particles()
             ps_refined=[]
             for j in xrange(2):
-                ps_refined.append(IMP.core.hierarchy_get_leaves(self.h_particles[i+j]))
+                ps_refined.append(IMP.core.get_leaves(self.h_particles[i+j]))
                 ps.append(self.particles[i+j])
             print "ps_refined lenght is : " + str(len(ps_refined))
             for e in ps_refined:
