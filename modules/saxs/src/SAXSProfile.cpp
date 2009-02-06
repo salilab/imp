@@ -48,7 +48,8 @@ SAXSProfile::SAXSProfile(const String & file_name)
 void SAXSProfile::init()
 {
   profile_.clear();
-  unsigned int number_of_q_entries = round( (max_q_ - min_q_) / delta_q_ ) + 1;
+  unsigned int number_of_q_entries = algebra::round(
+                                            (max_q_ - min_q_) / delta_q_ ) + 1;
 
   for (unsigned int i=0; i<number_of_q_entries; i++) {
     IntensityEntry entry(min_q_ + i * delta_q_);
