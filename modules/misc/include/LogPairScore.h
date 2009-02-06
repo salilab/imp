@@ -32,6 +32,7 @@ class LogPairScore : public PairScore
       map_[pp]=0;
     }
     ++map_[pp];
+    return 0.;
   }
   //! Get a list of all pairs (without multiplicity)
   ParticlePairs get_particle_pairs() const {
