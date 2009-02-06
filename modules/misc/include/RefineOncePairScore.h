@@ -20,6 +20,7 @@ IMPMISC_BEGIN_NAMESPACE
 //! Refine the input particles at most once with the ParticleRefiner.
 /** Each passed particle is refined once before the resulting pairs
     have the pair score called on them.
+    \deprecated Use core::RefinedPairsPairScore
  */
 class IMPMISCEXPORT RefineOncePairScore : public PairScore
 {

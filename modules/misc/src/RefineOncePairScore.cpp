@@ -11,13 +11,16 @@
 #include <IMP/core/bond_decorators.h>
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/internal/constants.h>
+#include <IMP/deprecation.h>
 
 #include <cmath>
 
 IMPMISC_BEGIN_NAMESPACE
 
 RefineOncePairScore::RefineOncePairScore(ParticleRefiner *r,
-                                         PairScore *f): r_(r), f_(f) {}
+                                         PairScore *f): r_(r), f_(f) {
+  IMP_DEPRECATED(RefineOncePairScore, RefinedPairsPairScore);
+}
 
 Float RefineOncePairScore::evaluate(Particle *a, Particle *b,
                                     DerivativeAccumulator *da) const
