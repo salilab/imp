@@ -153,17 +153,17 @@ struct MHDMatchingLeaves
 
 
 Particles
-hierarchy_get_leaves(HierarchyDecorator mhd)
+get_leaves(HierarchyDecorator mhd)
 {
   Particles out;
-  hierarchy_gather(mhd, MHDMatchingLeaves(mhd.get_traits()),
+  gather(mhd, MHDMatchingLeaves(mhd.get_traits()),
                    std::back_inserter(out));
   return out;
 }
 
-BondDecorators hierarchy_get_internal_bonds(HierarchyDecorator mhd)
+BondDecorators get_internal_bonds(HierarchyDecorator mhd)
 {
-  Particles ps= hierarchy_get_all_descendants(mhd);
+  Particles ps= get_all_descendants(mhd);
   std::set<Particle*> sps(ps.begin(), ps.end());
   BondDecorators ret;
   for (unsigned int i=0; i< ps.size(); ++i) {
@@ -195,11 +195,11 @@ struct MHDMatchingAll
 } // namespace
 
 Particles
-hierarchy_get_all_descendants(HierarchyDecorator mhd)
+get_all_descendants(HierarchyDecorator mhd)
 {
   Particles out;
-  hierarchy_gather(mhd, MHDMatchingAll(),
-                   std::back_inserter(out));
+  gather(mhd, MHDMatchingAll(),
+         std::back_inserter(out));
   return out;
 }
 
