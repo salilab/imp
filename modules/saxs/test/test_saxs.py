@@ -34,7 +34,7 @@ class PDBReadTest(IMP.test.TestCase):
                   exp_saxs_profile.get_min_q(),
                   exp_saxs_profile.get_max_q(),
                   exp_saxs_profile.get_delta_q())
-        f_table.show()
+        #f_table.show()
 
         #calculate SAXS profile
         particles = IMP.core.get_by_type(mp,

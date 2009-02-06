@@ -7,7 +7,7 @@
 #include <IMP/saxs/SAXSProfile.h>
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/utility.h>
-#include <IMP/algebra/math_macros.h>
+#include <IMP/algebra/utility.h>
 
 #include <boost/algorithm/string.hpp>
 

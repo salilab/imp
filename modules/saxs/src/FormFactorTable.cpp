@@ -9,7 +9,7 @@
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/core/AtomDecorator.h>
 #include <IMP/internal/constants.h>
-#include <IMP/algebra/math_macros.h>
+#include <IMP/algebra/utility.h>
 
 #include <fstream>
 #include <algorithm>
