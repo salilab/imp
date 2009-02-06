@@ -1,0 +1,238 @@
+<?xml version="1.0"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2009//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/DTD/pubmed_090101.dtd">
+<PubmedArticleSet>
+<PubmedArticle>
+    <MedlineCitation Owner="NLM" Status="MEDLINE">
+        <PMID>18046406</PMID>
+        <DateCreated>
+            <Year>2007</Year>
+            <Month>11</Month>
+            <Day>29</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2008</Year>
+            <Month>01</Month>
+            <Day>07</Day>
+        </DateCompleted>
+        <Article PubModel="Print">
+            <Journal>
+                <ISSN IssnType="Electronic">1476-4687</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>450</Volume>
+                    <Issue>7170</Issue>
+                    <PubDate>
+                        <Year>2007</Year>
+                        <Month>Nov</Month>
+                        <Day>29</Day>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Nature</Title>
+                <ISOAbbreviation>Nature</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>The molecular architecture of the nuclear pore complex.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>695-701</MedlinePgn>
+            </Pagination>
+            <Abstract>
+                <AbstractText>Nuclear pore complexes (NPCs) are proteinaceous assemblies of approximately 50 MDa that selectively transport cargoes across the nuclear envelope. To determine the molecular architecture of the yeast NPC, we collected a diverse set of biophysical and proteomic data, and developed a method for using these data to localize the NPC's 456 constituent proteins (see the accompanying paper). Our structure reveals that half of the NPC is made up of a core scaffold, which is structurally analogous to vesicle-coating complexes. This scaffold forms an interlaced network that coats the entire curved surface of the nuclear envelope membrane within which the NPC is embedded. The selective barrier for transport is formed by large numbers of proteins with disordered regions that line the inner face of the scaffold. The NPC consists of only a few structural modules that resemble each other in terms of the configuration of their homologous constituents, the most striking of these being a 16-fold repetition of 'columns'. These findings provide clues to the evolutionary origins of the NPC.</AbstractText>
+            </Abstract>
+            <Affiliation>Department of Bioengineering and Therapeutic Sciences, and California Institute for Quantitative Biosciences, Mission Bay QB3, 1700 4th Street, Suite 503B, University of California at San Francisco, San Francisco, California 94158-2330, USA.</Affiliation>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Alber</LastName>
+                    <ForeName>Frank</ForeName>
+                    <Initials>F</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Dokudovskaya</LastName>
+                    <ForeName>Svetlana</ForeName>
+                    <Initials>S</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Veenhoff</LastName>
+                    <ForeName>Liesbeth M</ForeName>
+                    <Initials>LM</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Zhang</LastName>
+                    <ForeName>Wenzhu</ForeName>
+                    <Initials>W</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Kipper</LastName>
+                    <ForeName>Julia</ForeName>
+                    <Initials>J</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Devos</LastName>
+                    <ForeName>Damien</ForeName>
+                    <Initials>D</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Suprapto</LastName>
+                    <ForeName>Adisetyantari</ForeName>
+                    <Initials>A</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Karni-Schmidt</LastName>
+                    <ForeName>Orit</ForeName>
+                    <Initials>O</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Williams</LastName>
+                    <ForeName>Rosemary</ForeName>
+                    <Initials>R</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Chait</LastName>
+                    <ForeName>Brian T</ForeName>
+                    <Initials>BT</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Sali</LastName>
+                    <ForeName>Andrej</ForeName>
+                    <Initials>A</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Rout</LastName>
+                    <ForeName>Michael P</ForeName>
+                    <Initials>MP</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType>Journal Article</PublicationType>
+                <PublicationType>Research Support, N.I.H., Extramural</PublicationType>
+                <PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+            </PublicationTypeList>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>England</Country>
+            <MedlineTA>Nature</MedlineTA>
+            <NlmUniqueID>0410462</NlmUniqueID>
+        </MedlineJournalInfo>
+        <ChemicalList>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Macromolecular Substances</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Nuclear Pore Complex Proteins</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Saccharomyces cerevisiae Proteins</NameOfSubstance>
+            </Chemical>
+        </ChemicalList>
+        <CitationSubset>IM</CitationSubset>
+        <CommentsCorrections>
+            <CommentIn>
+                <RefSource>Nature. 2007 Nov 29;450(7170):621-2</RefSource>
+                <PMID>18046388</PMID>
+            </CommentIn>
+        </CommentsCorrections>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Active Transport, Cell Nucleus</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Binding Sites</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Cell Nucleus</DescriptorName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Cytoplasm</DescriptorName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Evolution, Molecular</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Macromolecular Substances</DescriptorName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Nuclear Envelope</DescriptorName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Nuclear Pore</DescriptorName>
+                <QualifierName MajorTopicYN="Y">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+                <QualifierName MajorTopicYN="Y">ultrastructure</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Nuclear Pore Complex Proteins</DescriptorName>
+                <QualifierName MajorTopicYN="N">analysis</QualifierName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+                <QualifierName MajorTopicYN="N">ultrastructure</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Protein Conformation</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Saccharomyces cerevisiae</DescriptorName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="Y">cytology</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+                <QualifierName MajorTopicYN="Y">ultrastructure</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Saccharomyces cerevisiae Proteins</DescriptorName>
+                <QualifierName MajorTopicYN="N">analysis</QualifierName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+                <QualifierName MajorTopicYN="N">ultrastructure</QualifierName>
+            </MeshHeading>
+        </MeshHeadingList>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="received">
+                <Year>2007</Year>
+                <Month>4</Month>
+                <Day>20</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="accepted">
+                <Year>2007</Year>
+                <Month>10</Month>
+                <Day>22</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2007</Year>
+                <Month>11</Month>
+                <Day>30</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2008</Year>
+                <Month>1</Month>
+                <Day>8</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2007</Year>
+                <Month>11</Month>
+                <Day>30</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pii">nature06405</ArticleId>
+            <ArticleId IdType="doi">10.1038/nature06405</ArticleId>
+            <ArticleId IdType="pubmed">18046406</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+
+
+</PubmedArticleSet>

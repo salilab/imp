@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2009//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/DTD/pubmed_090101.dtd">
+<PubmedArticleSet>
+<PubmedArticle>
+    <MedlineCitation Owner="NLM" Status="MEDLINE">
+        <PMID>15766545</PMID>
+        <DateCreated>
+            <Year>2005</Year>
+            <Month>03</Month>
+            <Day>15</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2005</Year>
+            <Month>08</Month>
+            <Day>23</Day>
+        </DateCompleted>
+        <DateRevised>
+            <Year>2007</Year>
+            <Month>11</Month>
+            <Day>14</Day>
+        </DateRevised>
+        <Article PubModel="Print">
+            <Journal>
+                <ISSN IssnType="Print">0969-2126</ISSN>
+                <JournalIssue CitedMedium="Print">
+                    <Volume>13</Volume>
+                    <Issue>3</Issue>
+                    <PubDate>
+                        <Year>2005</Year>
+                        <Month>Mar</Month>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Structure (London, England : 1993)</Title>
+                <ISOAbbreviation>Structure</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Structural characterization of assemblies from overall shape and subcomplex compositions.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>435-45</MedlinePgn>
+            </Pagination>
+            <Abstract>
+                <AbstractText>We suggest structure characterization of macromolecular assemblies by combining assembly shape determined by electron cyromicroscopy with information about subunit proximity determined by affinity purification. To achieve this aim, structure characterization is expressed as a problem in satisfaction of spatial restraints that (1) represents subunits as spheres, (2) encodes information about the subunit excluded volume, assembly shape, and pulldowns in a scoring function, and (3) finds subunit configurations that satisfy the input restraints by an optimization of the scoring function. Testing of the approach with model systems suggests its feasibility.</AbstractText>
+            </Abstract>
+            <Affiliation>Department of Biopharmaceutical Sciences and, California Institute for Quantitative Biomedical Research, University of California, San Francisco, San Francisco, California 94143, USA.</Affiliation>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Alber</LastName>
+                    <ForeName>Frank</ForeName>
+                    <Initials>F</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Kim</LastName>
+                    <ForeName>Michael F</ForeName>
+                    <Initials>MF</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Sali</LastName>
+                    <ForeName>Andrej</ForeName>
+                    <Initials>A</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <GrantList CompleteYN="Y">
+                <Grant>
+                    <GrantID>R33 CA89810</GrantID>
+                    <Acronym>CA</Acronym>
+                    <Agency>NCI NIH HHS</Agency>
+                    <Country>United States</Country>
+                </Grant>
+            </GrantList>
+            <PublicationTypeList>
+                <PublicationType>Journal Article</PublicationType>
+                <PublicationType>Research Support, N.I.H., Extramural</PublicationType>
+                <PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+                <PublicationType>Research Support, U.S. Gov't, Non-P.H.S.</PublicationType>
+                <PublicationType>Research Support, U.S. Gov't, P.H.S.</PublicationType>
+            </PublicationTypeList>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>United States</Country>
+            <MedlineTA>Structure</MedlineTA>
+            <NlmUniqueID>101087697</NlmUniqueID>
+        </MedlineJournalInfo>
+        <ChemicalList>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Multiprotein Complexes</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Protein Subunits</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>EC 3.4.25.1</RegistryNumber>
+                <NameOfSubstance>Proteasome Endopeptidase Complex</NameOfSubstance>
+            </Chemical>
+        </ChemicalList>
+        <CitationSubset>IM</CitationSubset>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Computational Biology</DescriptorName>
+                <QualifierName MajorTopicYN="Y">methods</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Computer Simulation</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Cryoelectron Microscopy</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Models, Molecular</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Multiprotein Complexes</DescriptorName>
+                <QualifierName MajorTopicYN="Y">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Proteasome Endopeptidase Complex</DescriptorName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Protein Conformation</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Protein Subunits</DescriptorName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+        </MeshHeadingList>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="received">
+                <Year>2004</Year>
+                <Month>12</Month>
+                <Day>5</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="revised">
+                <Year>2005</Year>
+                <Month>1</Month>
+                <Day>12</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="accepted">
+                <Year>2005</Year>
+                <Month>1</Month>
+                <Day>14</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2005</Year>
+                <Month>3</Month>
+                <Day>16</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2005</Year>
+                <Month>8</Month>
+                <Day>24</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2005</Year>
+                <Month>3</Month>
+                <Day>16</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pii">S0969-2126(05)00067-5</ArticleId>
+            <ArticleId IdType="doi">10.1016/j.str.2005.01.013</ArticleId>
+            <ArticleId IdType="pubmed">15766545</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+
+
+</PubmedArticleSet>

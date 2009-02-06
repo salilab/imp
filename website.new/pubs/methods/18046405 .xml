@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2009//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/DTD/pubmed_090101.dtd">
+<PubmedArticleSet>
+<PubmedArticle>
+    <MedlineCitation Owner="NLM" Status="MEDLINE">
+        <PMID>18046405</PMID>
+        <DateCreated>
+            <Year>2007</Year>
+            <Month>11</Month>
+            <Day>29</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2008</Year>
+            <Month>01</Month>
+            <Day>07</Day>
+        </DateCompleted>
+        <Article PubModel="Print">
+            <Journal>
+                <ISSN IssnType="Electronic">1476-4687</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>450</Volume>
+                    <Issue>7170</Issue>
+                    <PubDate>
+                        <Year>2007</Year>
+                        <Month>Nov</Month>
+                        <Day>29</Day>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Nature</Title>
+                <ISOAbbreviation>Nature</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Determining the architectures of macromolecular assemblies.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>683-94</MedlinePgn>
+            </Pagination>
+            <Abstract>
+                <AbstractText>To understand the workings of a living cell, we need to know the architectures of its macromolecular assemblies. Here we show how proteomic data can be used to determine such structures. The process involves the collection of sufficient and diverse high-quality data, translation of these data into spatial restraints, and an optimization that uses the restraints to generate an ensemble of structures consistent with the data. Analysis of the ensemble produces a detailed architectural map of the assembly. We developed our approach on a challenging model system, the nuclear pore complex (NPC). The NPC acts as a dynamic barrier, controlling access to and from the nucleus, and in yeast is a 50 MDa assembly of 456 proteins. The resulting structure, presented in an accompanying paper, reveals the configuration of the proteins in the NPC, providing insights into its evolution and architectural principles. The present approach should be applicable to many other macromolecular assemblies.</AbstractText>
+            </Abstract>
+            <Affiliation>Department of Bioengineering and Therapeutic Sciences, and California Institute for Quantitative Biosciences, Byers Hall, Suite 503B, 1700 4th Street, University of California at San Francisco, San Francisco, California 94158-2330, USA.</Affiliation>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Alber</LastName>
+                    <ForeName>Frank</ForeName>
+                    <Initials>F</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Dokudovskaya</LastName>
+                    <ForeName>Svetlana</ForeName>
+                    <Initials>S</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Veenhoff</LastName>
+                    <ForeName>Liesbeth M</ForeName>
+                    <Initials>LM</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Zhang</LastName>
+                    <ForeName>Wenzhu</ForeName>
+                    <Initials>W</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Kipper</LastName>
+                    <ForeName>Julia</ForeName>
+                    <Initials>J</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Devos</LastName>
+                    <ForeName>Damien</ForeName>
+                    <Initials>D</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Suprapto</LastName>
+                    <ForeName>Adisetyantari</ForeName>
+                    <Initials>A</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Karni-Schmidt</LastName>
+                    <ForeName>Orit</ForeName>
+                    <Initials>O</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Williams</LastName>
+                    <ForeName>Rosemary</ForeName>
+                    <Initials>R</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Chait</LastName>
+                    <ForeName>Brian T</ForeName>
+                    <Initials>BT</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Rout</LastName>
+                    <ForeName>Michael P</ForeName>
+                    <Initials>MP</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Sali</LastName>
+                    <ForeName>Andrej</ForeName>
+                    <Initials>A</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType>Journal Article</PublicationType>
+                <PublicationType>Research Support, N.I.H., Extramural</PublicationType>
+                <PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+            </PublicationTypeList>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>England</Country>
+            <MedlineTA>Nature</MedlineTA>
+            <NlmUniqueID>0410462</NlmUniqueID>
+        </MedlineJournalInfo>
+        <ChemicalList>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Macromolecular Substances</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>NUP84 protein, S cerevisiae</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Nuclear Pore Complex Proteins</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Saccharomyces cerevisiae Proteins</NameOfSubstance>
+            </Chemical>
+        </ChemicalList>
+        <CitationSubset>IM</CitationSubset>
+        <CommentsCorrections>
+            <CommentIn>
+                <RefSource>Nature. 2007 Nov 29;450(7170):621-2</RefSource>
+                <PMID>18046388</PMID>
+            </CommentIn>
+        </CommentsCorrections>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Cell Survival</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Computational Biology</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Macromolecular Substances</DescriptorName>
+                <QualifierName MajorTopicYN="N">analysis</QualifierName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Microscopy, Immunoelectron</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Models, Biological</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Nuclear Pore</DescriptorName>
+                <QualifierName MajorTopicYN="Y">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+                <QualifierName MajorTopicYN="N">ultrastructure</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Nuclear Pore Complex Proteins</DescriptorName>
+                <QualifierName MajorTopicYN="N">analysis</QualifierName>
+                <QualifierName MajorTopicYN="Y">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+                <QualifierName MajorTopicYN="N">ultrastructure</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Protein Binding</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Proteomics</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Saccharomyces cerevisiae</DescriptorName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="Y">cytology</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+                <QualifierName MajorTopicYN="Y">ultrastructure</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Saccharomyces cerevisiae Proteins</DescriptorName>
+                <QualifierName MajorTopicYN="N">analysis</QualifierName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+                <QualifierName MajorTopicYN="N">ultrastructure</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Sensitivity and Specificity</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Uncertainty</DescriptorName>
+            </MeshHeading>
+        </MeshHeadingList>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="received">
+                <Year>2007</Year>
+                <Month>8</Month>
+                <Day>30</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="accepted">
+                <Year>2007</Year>
+                <Month>10</Month>
+                <Day>22</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2007</Year>
+                <Month>11</Month>
+                <Day>30</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2008</Year>
+                <Month>1</Month>
+                <Day>8</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2007</Year>
+                <Month>11</Month>
+                <Day>30</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pii">nature06404</ArticleId>
+            <ArticleId IdType="doi">10.1038/nature06404</ArticleId>
+            <ArticleId IdType="pubmed">18046405</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+
+
+</PubmedArticleSet>

@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2009//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/DTD/pubmed_090101.dtd">
+<PubmedArticleSet>
+<PubmedArticle>
+    <MedlineCitation Owner="NLM" Status="MEDLINE">
+        <PMID>18046388</PMID>
+        <DateCreated>
+            <Year>2007</Year>
+            <Month>11</Month>
+            <Day>29</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2008</Year>
+            <Month>01</Month>
+            <Day>07</Day>
+        </DateCompleted>
+        <Article PubModel="Print">
+            <Journal>
+                <ISSN IssnType="Electronic">1476-4687</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>450</Volume>
+                    <Issue>7170</Issue>
+                    <PubDate>
+                        <Year>2007</Year>
+                        <Month>Nov</Month>
+                        <Day>29</Day>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Nature</Title>
+                <ISOAbbreviation>Nature</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Cell biology: pore puzzle.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>621-2</MedlinePgn>
+            </Pagination>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Aitchison</LastName>
+                    <ForeName>John D</ForeName>
+                    <Initials>JD</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Wozniak</LastName>
+                    <ForeName>Richard W</ForeName>
+                    <Initials>RW</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType>Comment</PublicationType>
+                <PublicationType>News</PublicationType>
+            </PublicationTypeList>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>England</Country>
+            <MedlineTA>Nature</MedlineTA>
+            <NlmUniqueID>0410462</NlmUniqueID>
+        </MedlineJournalInfo>
+        <ChemicalList>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Macromolecular Substances</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Nuclear Pore Complex Proteins</NameOfSubstance>
+            </Chemical>
+        </ChemicalList>
+        <CitationSubset>IM</CitationSubset>
+        <CommentsCorrections>
+            <CommentOn>
+                <RefSource>Nature. 2007 Nov 29;450(7170):683-94</RefSource>
+                <PMID>18046405</PMID>
+            </CommentOn>
+            <CommentOn>
+                <RefSource>Nature. 2007 Nov 29;450(7170):695-701</RefSource>
+                <PMID>18046406</PMID>
+            </CommentOn>
+        </CommentsCorrections>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Computational Biology</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Macromolecular Substances</DescriptorName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Nuclear Pore</DescriptorName>
+                <QualifierName MajorTopicYN="Y">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Nuclear Pore Complex Proteins</DescriptorName>
+                <QualifierName MajorTopicYN="N">analysis</QualifierName>
+                <QualifierName MajorTopicYN="Y">chemistry</QualifierName>
+                <QualifierName MajorTopicYN="Y">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Protein Binding</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Protein Conformation</DescriptorName>
+            </MeshHeading>
+        </MeshHeadingList>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2007</Year>
+                <Month>11</Month>
+                <Day>30</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2008</Year>
+                <Month>1</Month>
+                <Day>8</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2007</Year>
+                <Month>11</Month>
+                <Day>30</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pii">450621a</ArticleId>
+            <ArticleId IdType="doi">10.1038/450621a</ArticleId>
+            <ArticleId IdType="pubmed">18046388</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+
+
+</PubmedArticleSet>
