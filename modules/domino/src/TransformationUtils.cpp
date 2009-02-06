@@ -45,7 +45,7 @@ void TransformationUtils::move2state(Particle *p_sample, Particle *p_trans) {
 void TransformationUtils::apply(Particle *p,const algebra::Transformation3D &t)
 {
   core::TransformSingletonModifier tsm(t);
-  Particles ps = core::hierarchy_get_leaves(
+  Particles ps = core::get_leaves(
                  core::MolecularHierarchyDecorator::cast(p));
 //   core::GravityCenterScoreState g(p, FloatKey(),ps);
 //   g.update_position();

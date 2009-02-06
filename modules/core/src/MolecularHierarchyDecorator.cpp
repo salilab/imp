@@ -80,8 +80,8 @@ Particles get_by_type(MolecularHierarchyDecorator mhd,
                       MolecularHierarchyDecorator::Type t)
 {
   Particles out;
-  hierarchy_gather(mhd, MHDMatchingType(t),
-                   std::back_inserter(out));
+  gather(mhd, MHDMatchingType(t),
+         std::back_inserter(out));
   return out;
 }
 
@@ -118,7 +118,7 @@ get_residue(MolecularHierarchyDecorator mhd,
             "Invalid type of MolecularHierarchyDecorator passed to get_residue",
             ValueException);
   MatchResidueIndex mi(index);
-  HierarchyDecorator hd= hierarchy_find(mhd, mi);
+  HierarchyDecorator hd= breadth_first_find(mhd, mi);
   if (hd== HierarchyDecorator()) {
     return ResidueDecorator();
   } else {

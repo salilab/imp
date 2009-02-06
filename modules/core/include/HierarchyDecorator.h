@@ -441,7 +441,7 @@ private:
     \relates HierarchyDecorator
  */
 template <class Out, class F>
-Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
+Out gather(HierarchyDecorator h, F f, Out out)
 {
   Gather<F,Out> gather(f,out);
   depth_first_traversal(h, gather);
@@ -453,7 +453,7 @@ Out hierarchy_gather(HierarchyDecorator h, F f, Out out)
     \relates HierarchyDecorator
  */
 template <class Out, class K, class V>
-Out hierarchy_gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
+Out gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
 {
   Gather<internal::MatchAttribute<K, V>,Out>
     gather(internal::MatchAttribute<K,V>(k,v),
@@ -470,7 +470,7 @@ Out hierarchy_gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
     \relates HierarchyDecorator
  */
 template <class Out, class K0, class V0, class K1, class V1>
-Out hierarchy_gather_by_attributes(HierarchyDecorator h, K0 k0,
+Out gather_by_attributes(HierarchyDecorator h, K0 k0,
                                    V0 v0, K1 k1, V1 v1, Out out)
 {
   Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
@@ -486,7 +486,7 @@ Out hierarchy_gather_by_attributes(HierarchyDecorator h, K0 k0,
     \relates HierarchyDecorator
  */
 template <class HD, class F>
-HD hierarchy_find(HD h, F f)
+HD breadth_first_find(HD h, F f)
 {
   if (f(h.get_particle())) return h;
   std::vector<HD> stack;
@@ -514,19 +514,19 @@ HD hierarchy_find(HD h, F f)
 /**     \relates HierarchyDecorator
  */
 IMPCOREEXPORT Particles
-hierarchy_get_leaves(HierarchyDecorator mhd);
+get_leaves(HierarchyDecorator mhd);
 
 //! Get the bonds internal to this tree
 /**     \relates HierarchyDecorator
  */
 IMPCOREEXPORT BondDecorators
-hierarchy_get_internal_bonds(HierarchyDecorator mhd);
+get_internal_bonds(HierarchyDecorator mhd);
 
 //! Get all the particles in the subtree
 /**     \relates HierarchyDecorator
  */
 IMPCOREEXPORT Particles
-hierarchy_get_all_descendants(HierarchyDecorator mhd);
+get_all_descendants(HierarchyDecorator mhd);
 
 IMPCORE_END_NAMESPACE
 
