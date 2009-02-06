@@ -1,0 +1,3 @@
+We have tentative scheduled the first public release in the middle of March. Until then, please <span class=\"e-mail\">imp at salilab.org | email us</span></li> if you would like access.
+<p>
+All <a href="https://salilab.org/imp/doc/doxygen/deprecated.html">currently deprecated</a> classes will be removed within the next week. Please make sure your code is up to date.

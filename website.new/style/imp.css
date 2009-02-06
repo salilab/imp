@@ -1,0 +1,232 @@
+html {
+   height: 101%;
+   text-align: center;
+}
+
+body {
+   margin: 0px auto;
+   padding: 0px;
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: 80%;
+   color: #666666;
+}
+
+h1 {
+   font-family: Times;
+   font-weight: normal;
+   font-size: 130%;
+   margin-top: 0px;
+   margin-bottom: 0px;
+   color:#FF7C02;
+}
+
+h2 { 
+   font-family: Times;
+   font-weight: normal;
+   font-size: 160%;
+   margin-top: -20px;
+   margin-bottom: 0px;
+   color:#FF7C02;
+}
+
+h3 {
+   font-family: Verdana, Arial, Helvetica, sans-serif;
+   font-family: Times;
+   font-weight: normal;
+   font-size: 120%;
+   margin-top: 0px;
+   margin-bottom: 10px;
+   color: #FF7C02;
+}
+
+h4 {
+   margin-top: 15px;
+   margin-bottom: 5px;
+}
+
+img {
+   border: 0px;
+}
+
+a {
+   color: #386B81;
+   text-decoration: underline;
+}
+
+a:hover, a:active {
+   color: #FF7C02;
+   text-decoration: underline;
+}
+
+#nav {
+   border-bottom: 1px solid #E0DFDF;
+}
+
+.tnav {
+   width: 700px;
+   height: 50px;
+}
+
+.tnav tr, td {
+   vertical-align: bottom;
+}
+
+#logo{
+}
+
+#headerline {
+   display: block;
+   height: 100px;
+   background-color: #43829C;
+   border-bottom: 1px solid #8D8D8D;
+   border-top: 1px solid #8D8D8D;
+   color: #ffffff;
+}
+
+.thead {
+   width: 700px;
+   text-align: left;
+}
+
+#container {
+   border-top: 1px solid #E0DFDF;
+   padding-top: 25px;
+}
+
+#name {
+   padding-top: 30px;
+   font-family: Verdana, Arial, Helvetica, sans-serif;
+   font-weight: normal;
+   font-size: 120%;
+   color: #ffffff;
+}
+
+#subname {
+   font-family: Verdana, Arial, Helvetica, sans-serif;
+   font-weight: normal;
+   font-size: 100%;
+   color: #B2D1DD;
+   font-style: italic;
+}
+
+#links {
+   text-align: right;
+}
+#links ul { 
+   list-style: none;
+   display: inline;
+}
+#links li { 
+   display: inline;
+   padding: 5px 5px 0px 5px;
+   border-right: 1px dotted #cccccc;
+ }
+
+#links a { 
+   text-decoration: none;
+}
+
+.tcon {
+   width: 700px;
+}
+
+.tcon td {
+   padding: 10px 0px;
+   vertical-align: top;
+}
+
+.twel {
+   font-family:  "Arial Narrow";
+   font-size: medium;
+   text-align: justify;
+}
+#goal {
+   background: #F0F0F0;
+   padding: 10px;
+   float: left;
+}
+#orgs {
+}
+.wel h2 {
+}
+
+.tnews {
+   width: 233px;
+}
+#news {
+   font-family:  "Arial";
+   font-size: small;
+}
+
+.thres {
+   width: 233px;
+}
+#high {
+   font-family:  "Arial";
+   font-size: small;
+}
+
+.thdev {
+   width: 233px;
+   height: auto;
+}
+
+#footer {
+   width: 700px;
+   margin-top: 10px;
+   padding-top: 10px;
+   border-top: 1px dotted #CCCCCC; 
+   font-family: "American Typewriter";
+   font-size: smaller;
+}
+
+.plogo {
+   vertical-align: middle;
+}
+
+.implink {
+   padding-left: 15px;
+   background-image: url("../images/imp_link.png");
+   background-repeat: no-repeat;
+   vertical-align: middle;
+}
+
+.extlink { 
+   display: inline;
+}
+
+.contactlink {
+   padding-left: 15px;
+   font-size: small;
+   color: #ccc;
+   background-image: url("../images/mail.gif");
+   background-repeat: no-repeat;
+   vertical-align: middle;
+}
+
+/* PUBLICATIONS */
+
+#pubcitations {
+   font-family: "Abadi MT Condensed Light";
+   background: #FFECEC;
+   border-bottom: 1px solid #ccc;
+   padding: 10px;
+}
+#pubmethods {
+   font-family: "Abadi MT Condensed Light";
+   background: #EDF4FF;
+   border-bottom: 1px solid #ccc;
+   padding: 10px;
+}
+#pubapplications {
+   font-family: "Abadi MT Condensed Light";
+   background: #F0FFED;
+   border-bottom: 1px solid #ccc;
+   padding: 10px;
+}
+#pubrelated {
+   font-family: "Abadi MT Condensed Light";
+   background: #FEEDFF;
+   border-bottom: 1px solid #ccc;
+   padding: 10px;
+}

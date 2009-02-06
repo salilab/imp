@@ -1,0 +1,185 @@
+<?xml version="1.0"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2009//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/DTD/pubmed_090101.dtd">
+<PubmedArticleSet>
+<PubmedArticle>
+    <MedlineCitation Owner="NLM" Status="MEDLINE">
+        <PMID>18318657</PMID>
+        <DateCreated>
+            <Year>2008</Year>
+            <Month>06</Month>
+            <Day>03</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2008</Year>
+            <Month>09</Month>
+            <Day>03</Day>
+        </DateCompleted>
+        <Article PubModel="Print">
+            <Journal>
+                <ISSN IssnType="Print">0066-4154</ISSN>
+                <JournalIssue CitedMedium="Print">
+                    <Volume>77</Volume>
+                    <PubDate>
+                        <Year>2008</Year>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Annual review of biochemistry</Title>
+                <ISOAbbreviation>Annu. Rev. Biochem.</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Integrating diverse data for structure determination of macromolecular assemblies.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>443-77</MedlinePgn>
+            </Pagination>
+            <Abstract>
+                <AbstractText>To understand the cell, we need to determine the macromolecular assembly structures, which may consist of tens to hundreds of components. First, we review the varied experimental data that characterize the assemblies at several levels of resolution. We then describe computational methods for generating the structures using these data. To maximize completeness, resolution, accuracy, precision, and efficiency of the structure determination, a computational approach is required that uses spatial information from a variety of experimental methods. We propose such an approach, defined by its three main components: a hierarchical representation of the assembly, a scoring function consisting of spatial restraints derived from experimental data, and an optimization method that generates structures consistent with the data. This approach is illustrated by determining the configuration of the 456 proteins in the nuclear pore complex (NPC) from baker's yeast. With these tools, we are poised to integrate structural information gathered at multiple levels of the biological hierarchy--from atoms to cells--into a common framework.</AbstractText>
+            </Abstract>
+            <Affiliation>Department of Biopharmaceutical Sciences, and California Institute for Quantitative Biosciences, University of California at San Francisco, CA 94158-2330, USA. alber@usc.edu</Affiliation>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Alber</LastName>
+                    <ForeName>Frank</ForeName>
+                    <Initials>F</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Forster</LastName>
+                    <ForeName>Friedrich</ForeName>
+                    <Initials>F</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Korkin</LastName>
+                    <ForeName>Dmitry</ForeName>
+                    <Initials>D</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Topf</LastName>
+                    <ForeName>Maya</ForeName>
+                    <Initials>M</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Sali</LastName>
+                    <ForeName>Andrej</ForeName>
+                    <Initials>A</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <GrantList CompleteYN="Y">
+                <Grant>
+                    <GrantID>R01 GM 54762</GrantID>
+                    <Acronym>GM</Acronym>
+                    <Agency>NIGMS NIH HHS</Agency>
+                    <Country>United States</Country>
+                </Grant>
+                <Grant>
+                    <GrantID>U54 RR 022220</GrantID>
+                    <Acronym>RR</Acronym>
+                    <Agency>NCRR NIH HHS</Agency>
+                    <Country>United States</Country>
+                </Grant>
+            </GrantList>
+            <PublicationTypeList>
+                <PublicationType>Journal Article</PublicationType>
+                <PublicationType>Research Support, N.I.H., Extramural</PublicationType>
+                <PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+                <PublicationType>Research Support, U.S. Gov't, Non-P.H.S.</PublicationType>
+                <PublicationType>Review</PublicationType>
+            </PublicationTypeList>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>United States</Country>
+            <MedlineTA>Annu Rev Biochem</MedlineTA>
+            <NlmUniqueID>2985150R</NlmUniqueID>
+        </MedlineJournalInfo>
+        <ChemicalList>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Macromolecular Substances</NameOfSubstance>
+            </Chemical>
+        </ChemicalList>
+        <CitationSubset>IM</CitationSubset>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Animals</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Biochemistry</DescriptorName>
+                <QualifierName MajorTopicYN="Y">methods</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Biophysics</DescriptorName>
+                <QualifierName MajorTopicYN="N">methods</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Humans</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Macromolecular Substances</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Magnetic Resonance Spectroscopy</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Mass Spectrometry</DescriptorName>
+                <QualifierName MajorTopicYN="N">methods</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Microscopy, Electron</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Models, Molecular</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Molecular Conformation</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Nuclear Pore</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Reproducibility of Results</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Saccharomyces cerevisiae</DescriptorName>
+                <QualifierName MajorTopicYN="N">metabolism</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Scattering, Radiation</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">X-Rays</DescriptorName>
+            </MeshHeading>
+        </MeshHeadingList>
+        <NumberOfReferences>187</NumberOfReferences>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2008</Year>
+                <Month>3</Month>
+                <Day>6</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2008</Year>
+                <Month>9</Month>
+                <Day>4</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2008</Year>
+                <Month>3</Month>
+                <Day>6</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="doi">10.1146/annurev.biochem.77.060407.135530</ArticleId>
+            <ArticleId IdType="pubmed">18318657</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
+
+
+</PubmedArticleSet>
