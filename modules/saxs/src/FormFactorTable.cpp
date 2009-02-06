@@ -9,6 +9,7 @@
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/core/AtomDecorator.h>
 #include <IMP/internal/constants.h>
+#include <IMP/algebra/math_macros.h>
 
 #include <fstream>
 #include <algorithm>
@@ -18,7 +19,10 @@ IMPSAXS_BEGIN_NAMESPACE
 
 FloatKey FormFactorTable::form_factor_key_ = FloatKey("form factor key");
 
-String FormFactorTable::element_names[] = {"H", "C", "N", "O", "S", "P", "AU"};
+String FormFactorTable::element_names_[] = {"H", "C", "N", "O", "S", "P", "AU"};
+
+// electron density of solvent - default=0.334 e/A^3 (H2O)
+Float FormFactorTable::rho_ = 0.334;
 
 std::istream & operator>>(std::istream & s,
                           FormFactorTable::AtomFactorCoefficients &
@@ -55,16 +59,15 @@ std::ostream & operator<<(std::ostream & s,
 }
 
 
-FormFactorTable::FormFactorTable(const String& table_name, Float min_s,
-                                 Float max_s, Float delta_s):
-  min_s_(min_s), max_s_(max_s), delta_s_(delta_s)
+FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
+                                 Float max_q, Float delta_q):
+  min_q_(min_q), max_q_(max_q), delta_q_(delta_q)
 {
-
   // init all the tables
   form_factors_coefficients_ =
       std::vector < AtomFactorCoefficients > (ALL_ATOM_SIZE);
-  unsigned int number_of_entries = (max_s_ - min_s_) / delta_s_ + 1;
-  Floats form_factor_template(number_of_entries, 0.0);
+  unsigned int number_of_q_entries = round( (max_q_ - min_q_) / delta_q_ ) + 1;
+  Floats form_factor_template(number_of_q_entries, 0.0);
   form_factors_ =
       std::vector < Floats > (HEAVY_ATOM_SIZE, form_factor_template);
   zero_form_factors_ = Floats(HEAVY_ATOM_SIZE, 0.0);
@@ -105,7 +108,7 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
   while (s >> coeff) {
     // find FormFactorAtomType
     for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
-      if (element_names[i] == coeff.atom_type_) {
+      if (element_names_[i] == coeff.atom_type_) {
         form_factors_coefficients_[i] = coeff;
         std::cerr << "read_form_factor_table: Atom type found: " <<
             coeff.atom_type_ << std::endl;
@@ -128,78 +131,69 @@ void FormFactorTable::show(std::ostream & out, std::string prefix) const
 }
 
 
-// No prefix, for a python script  (SJ Kim 01/22/09)
-void FormFactorTable::show(std::ostream & out) const
-{
-  for (unsigned int i = 0; i < zero_form_factors_.size(); i++) {
-    out << " FFATOMTYPE " << i << " " << zero_form_factors_[i] << std::endl;
-  }
-}
-
 /*
-  f(q) = f_atomic(q) - f_solvent(q)
-
-  f_atomic(q) = c + [SUM a_i*EXP(-b_i*(q^2))]
-                    i=1,5
-
-  f_solvent(q) = v_i * EXP(-4PI * v_i^(2/3) * q^2)
-
-  q is divided by 4PI
+ !----------------------------------------------------------------------
+ ! f(q) = f_atomic(q) - f_solvent(q)
+ !
+ ! f_atomic(q) = c + SUM [ a_i * EXP( - b_i * (q/4pi)^2 )]
+ !                   i=1,5
+ !
+ ! f_solvent(q) = v_i * EXP(- v_i^(2/3) * q^2 / (4pi))
+ !
+ !----------------------------------------------------------------------
 */
 void FormFactorTable::compute_form_factors_all_atoms()
 {
-  unsigned int number_of_entries = (max_s_ - min_s_) / delta_s_ + 1;
+  unsigned int number_of_q_entries = round( (max_q_ - min_q_) / delta_q_ ) + 1;
+  unsigned int i, iq;
+  Float four_pi = 4.0 * IMP::internal::PI;
+  Float one_over_four_pi = 1.0 / four_pi;
+  std::vector<Float> qq, ss;
 
-  // electron density of solvent - default=0.334 e/A^3 (H2O)
-  Float rho = 0.334;
+  // store qq and ss for the faster calculation
+  for (iq=0; iq<number_of_q_entries; iq++) {
+    //! the scattering vector q = (4pi) * sin(theta) / lambda
+    Float q = min_q_ + (Float)iq * delta_q_;
+    qq.push_back( square(q) );       // qq = q^2
 
-  for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
-    // form factors for all the q range
-    // corrected by SJ Kim (1/23/09)    // v_i^(2/3) / 4PI
-    Float volr = std::pow( form_factors_coefficients_[i].excl_vol_,
-                      static_cast<Float>(2.0/3.0) )
-      / (4.0 * IMP::internal::PI);
+    //! s = sin(theta) / lambda = q / (4pi), by Waasmaier and Kirfel (1995)
+    Float s = q * one_over_four_pi;
+    ss.push_back( square(s) );       // ss = s^2 = (q/4pi)^2
+  }
 
-    for (unsigned int k = 0; k < number_of_entries; k++) {
-      Float q = min_s_ + k * delta_s_;
-      // TODO: Not clear why uses s, instead of q. corrected by SJ Kim (1/23/09)
-      // TODO: s and q relationship? still Not clear (Emailed to Frido)
-      //Float s = square(q / (4.0 * IMP::internal::PI)); // (q/4PI)^2
-      Float s = square(q);
+  for (i = 0; i < ALL_ATOM_SIZE; i++) {
+    //! form factors for all the q range
+    //! volr_coeff = v_i^(2/3) / 4PI
+    Float volr_coeff = std::pow( form_factors_coefficients_[i].excl_vol_,
+                          static_cast<Float>(2.0/3.0) ) * one_over_four_pi;
 
-      // c
-      form_factors_[i][k] = form_factors_coefficients_[i].c_;
+    for (iq = 0; iq < number_of_q_entries; iq++) {
+      //! c
+      form_factors_[i][iq] = form_factors_coefficients_[i].c_;
 
-      // [SUM a_i*EXP(-b_i*(q^2))]
-      //  i=1,5
+      //! SUM [a_i * EXP( - b_i * (q/4pi)^2 )]
       for (unsigned int j = 0; j < 5; j++) {
-        form_factors_[i][k] += form_factors_coefficients_[i].a_[j] *    // a_i
-        std::exp( -form_factors_coefficients_[i].b_[j] * s ); // EXP(-b_i*(q^2))
+        form_factors_[i][iq] += form_factors_coefficients_[i].a_[j]
+                    * std::exp( -form_factors_coefficients_[i].b_[j] * ss[iq] );
       }
-
-      // subtract solvation: pho*v_i*EXP(-4PI * v_i^(2/3) * q^2)
-      //form_factors_[i][k] -=
-      //    rho * form_factors_coefficients_[i].excl_vol_ * exp(-volr * q * q);
-      // TODO: must be corrected like this. by SJ Kim (1/26/09)
-      form_factors_[i][k] -=
-            rho * form_factors_coefficients_[i].excl_vol_ * exp( - volr * s );
+      //! subtract solvation: rho * v_i * EXP( - v_i^(2/3) / (4PI) * q^2  )
+      form_factors_[i][iq] -= rho_ * form_factors_coefficients_[i].excl_vol_
+                          * std::exp( - volr_coeff * qq[iq] );
     }
-
-    // zero form factors
+    //! zero form factors
     zero_form_factors_[i] = form_factors_coefficients_[i].c_;
     for (unsigned int j = 0; j < 5; j++) {
       zero_form_factors_[i] += form_factors_coefficients_[i].a_[j];
     }
-    // subtract solvation
-    zero_form_factors_[i] -= rho * form_factors_coefficients_[i].excl_vol_;
+    //! subtract solvation
+    zero_form_factors_[i] -= rho_ * form_factors_coefficients_[i].excl_vol_;
   }
 }
 
 
 void FormFactorTable::compute_form_factors_heavy_atoms()
 {
-  unsigned int number_of_entries = (max_s_ - min_s_) / delta_s_ + 1;
-
+  unsigned int number_of_q_entries = round( (max_q_ - min_q_) / delta_q_ ) + 1;
   FormFactorAtomType element_type = UNK;
   unsigned int h_num = 0;       // bonded hydrogens number
 
@@ -241,10 +235,10 @@ void FormFactorTable::compute_form_factors_heavy_atoms()
       break;
     }
 
-    for (unsigned int k = 0; k < number_of_entries; k++) {
+    for (unsigned int iq = 0; iq < number_of_q_entries; iq++) {
       // ff(i) = ff(element) + h_num*ff(hydrogen)
-      form_factors_[i][k] =
-          form_factors_[element_type][k] + h_num * form_factors_[H][k];
+      form_factors_[i][iq] =
+          form_factors_[element_type][iq] + h_num * form_factors_[H][iq];
     }
 
     // zero form factors
@@ -371,6 +365,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
   return C;
 }
 
+
 FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
                      const core::AtomType& atom_type,
                      const core::ResidueType& residue_type) const {
@@ -488,8 +483,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
   if (isdigit(atom_name[0]))
     name_start = 1;
   for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
-    int comp_length = std::min(atom_name.length(), element_names[i].length());
-    if (atom_name.substr(name_start, comp_length) == element_names[i]) {
+    int comp_length = std::min(atom_name.length(), element_names_[i].length());
+    if (atom_name.substr(name_start, comp_length) == element_names_[i]) {
       ret_type = (FormFactorAtomType) i;
     }
   } if (ff_type == HEAVY_ATOMS) {

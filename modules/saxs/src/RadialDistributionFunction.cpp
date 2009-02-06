@@ -154,14 +154,4 @@ void RadialDistributionFunction::show(std::ostream & out, std::string prefix)
   }
 }
 
-
-void RadialDistributionFunction::show(std::ostream & out)
-const {
-  for (unsigned int i = 0; i < distribution_.size(); i++) {
-    //out << " dist " << index2dist(i) << " " << distribution_[i]
-    //<< std::endl;
-    printf("dist %g\t%.15f\n", index2dist(i), distribution_[i]);
-  }
-}
-
 IMPSAXS_END_NAMESPACE

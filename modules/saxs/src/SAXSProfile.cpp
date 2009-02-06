@@ -5,9 +5,9 @@
  *
  */
 #include <IMP/saxs/SAXSProfile.h>
-
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/utility.h>
+#include <IMP/algebra/math_macros.h>
 
 #include <boost/algorithm/string.hpp>
 
@@ -16,18 +16,19 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+Float SAXSProfile::modulation_function_parameter_ = 0.23;
+
 std::ostream & operator<<(std::ostream & s,
                           const SAXSProfile::IntensityEntry & e)
 {
-  return s << e.s_ << " " << e.intensity_ << " " << e.error_ << std::endl;
+  return s << e.q_ << " " << e.intensity_ << " " << e.error_ << std::endl;
 }
 
 
-SAXSProfile::SAXSProfile(Float smin, Float smax, Float delta,
+SAXSProfile::SAXSProfile(Float qmin, Float qmax, Float delta,
                          FormFactorTable * ff_table):
-  min_s_(smin), max_s_(smax), delta_s_(delta),ff_table_(ff_table)
+  min_q_(qmin), max_q_(qmax), delta_q_(delta),ff_table_(ff_table)
 {
-  b_ = 0.23;
   pr_resolution_ = 0.5;
   max_pr_distance_ = 50.0;
 
@@ -37,7 +38,6 @@ SAXSProfile::SAXSProfile(Float smin, Float smax, Float delta,
 
 SAXSProfile::SAXSProfile(const String & file_name)
 {
-  b_ = 0.23;
   pr_resolution_ = 0.5;
   max_pr_distance_ = 50.0;
 
@@ -48,9 +48,10 @@ SAXSProfile::SAXSProfile(const String & file_name)
 void SAXSProfile::init()
 {
   profile_.clear();
-  int number_of_entries = (int)((max_s_ - min_s_) / delta_s_ + 0.5) + 1;
-  for (int i=0; i<number_of_entries; i++) {
-    IntensityEntry entry(min_s_ + i * delta_s_);
+  unsigned int number_of_q_entries = round( (max_q_ - min_q_) / delta_q_ ) + 1;
+
+  for (unsigned int i=0; i<number_of_q_entries; i++) {
+    IntensityEntry entry(min_q_ + i * delta_q_);
     profile_.push_back(entry);
   }
 }
@@ -78,8 +79,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
                  boost::token_compress_on);
     if (split_results.size() != 2 && split_results.size() != 3)
       continue;                 // 3 values with error, 2 without
-
-    entry.s_ = atof(split_results[0].c_str());
+    entry.q_ = atof(split_results[0].c_str());
     entry.intensity_ = atof(split_results[1].c_str());
     if (split_results.size() == 3) {
       entry.error_ = atof(split_results[2].c_str());
@@ -91,21 +91,30 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
   std::cerr << "Number of entries read " << profile_.size() << std::endl;
   in_file.close();
 
-  // determine smin, smax and delta
+  // determine qmin, qmax and delta
   if (profile_.size() > 1) {
-    min_s_ = profile_[0].s_;
-    max_s_ = profile_[profile_.size() - 1].s_;
-    // Corrected by SJ Kim (1/23/09) - TODO!
-    delta_s_ = (max_s_ - min_s_) / (profile_.size() - 1);
+    min_q_ = profile_[0].q_;
+    max_q_ = profile_[profile_.size() - 1].q_;
+
+    // To minimize rounding errors, by averaging the difference of q
+    std::vector<Float> diff;
+    for (unsigned int i=1; i<profile_.size(); i++) {
+      diff.push_back( profile_[i].q_ - profile_[i-1].q_ );
+    }
+    delta_q_ = 0.0;
+    for (unsigned int i=0; i<diff.size(); i++) {
+      delta_q_ += diff[i];
+    }
+    delta_q_ /= diff.size();
   }
 
-  // saxs_read: No experimental error specified, error=0.3*I(s_max)
+  // saxs_read: No experimental error specified, error=0.3*I(q_max)
   if (!with_error) {
     Float sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
     for (unsigned int i=0; i<profile_.size(); i++)
       profile_[i].error_ = sig_exp;
-    std::cerr << "read_SAXS_file: No experimental error specified" << std::endl;
-    std::cerr << "-> error set to 0.3 I(s_max) = " << sig_exp << std::endl;
+    std::cerr << "read_SAXS_file: No experimental error specified"
+              << " -> error set to 0.3 I(q_max) = " << sig_exp << std::endl;
   }
 }
 
@@ -122,9 +131,9 @@ void SAXSProfile::write_SAXS_file(const String & file_name)
   // header line
   out_file.precision(15);
   out_file << "# SAXS profile: number of points = " << profile_.size()
-           << ", s_min = " << min_s_ << ", s_max = " << max_s_;
-  out_file << ", delta_s = " << delta_s_ << std::endl;
-  out_file << "#       s            intensity         error" << std::endl;
+           << ", q_min = " << min_q_ << ", q_max = " << max_q_;
+  out_file << ", delta_q = " << delta_q_ << std::endl;
+  out_file << "#       q            intensity         error" << std::endl;
 
   out_file.setf(std::ios::showpoint);
   // Main data
@@ -132,7 +141,7 @@ void SAXSProfile::write_SAXS_file(const String & file_name)
     out_file.setf(std::ios::left);
     out_file.width(20);
     out_file.fill('0');
-    out_file << std::setprecision(15) << profile_[i].s_ << " ";
+    out_file << std::setprecision(15) << profile_[i].q_ << " ";
 
     out_file.setf(std::ios::left);
     out_file.width(16);
@@ -185,17 +194,18 @@ void SAXSProfile::calculate_profile_real(
 void SAXSProfile::
 radial_distribution_2_profile(const RadialDistributionFunction & r_dist)
 {
-  // iterate over intensity profile (assumes initialized profile: s, I(s)=0)
+  // iterate over intensity profile (assumes initialized profile: q, I(q)=0)
   for (unsigned int k = 0; k < profile_.size(); k++) {
 
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist.distribution_.size(); r++) {
       Float dist = r_dist.index2dist(r);
-      Float x = dist * profile_[k].s_;
+      Float x = dist * profile_[k].q_;
       x = sinc(x);
       profile_[k].intensity_ += r_dist.distribution_[r] * x;
     }
-    profile_[k].intensity_ *= std::exp(-b_ * profile_[k].s_ * profile_[k].s_);
+    profile_[k].intensity_ *= std::exp(- modulation_function_parameter_
+                                       * profile_[k].q_ * profile_[k].q_);
   }
 }
 

@@ -29,13 +29,13 @@ class IMPSAXSEXPORT FormFactorTable {
 public:
 
   //! constructor
-  FormFactorTable(const String& table_name, Float min_s, Float max_s,
-                  Float delta_s);
+  FormFactorTable(const String& table_name, Float min_q, Float max_q,
+                  Float delta_q);
 
   //! type of the form factors for profile calculations
   enum FormFactorType { ALL_ATOMS, HEAVY_ATOMS };
 
-  //! get f(0), ie s=0 for real space profile calculation
+  //! get f(0), ie q=0 for real space profile calculation
   Float get_form_factor(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
 
   //! for reciprocal space profile calculation
@@ -43,10 +43,10 @@ public:
                                  FormFactorType ff_type = HEAVY_ATOMS) const;
 
   //! print tables
-  void show(std::ostream &out, std::string prefix) const;
+  void show(std::ostream &out=std::cout, std::string prefix="") const;
 
-  //! print tables, No prefix, for a python script (SJ Kim 01/22/09)
-  void show(std::ostream &out=std::cout) const;
+  // electron density of solvent - default=0.334 e/A^3 (H2O)
+  static Float rho_;
 
 private:
   // atom types for heavy atoms according to the number of hydrogens
@@ -60,7 +60,7 @@ private:
 
   // the names correspond to the first FormFactorAtomTypes
   // (the order should be the same)
-  static String element_names[];// {"H", "C", "N", "O", "S", "P", "AU"};
+  static String element_names_[];// {"H", "C", "N", "O", "S", "P", "AU"};
 
   // a key for storing zero form factor in Particle as attribute
   static FloatKey form_factor_key_;
@@ -112,11 +112,11 @@ private:
   // table of form factors for 14 atom types
   std::vector<Floats> form_factors_;
 
-  // form factors for s=0
+  // form factors for q=0
   Floats zero_form_factors_;
 
-  // min/max s and sampling resolution for form factor computation
-  Float min_s_, max_s_, delta_s_;
+  // min/max q and sampling resolution for form factor computation
+  Float min_q_, max_q_, delta_q_;
 };
 
 IMPSAXS_END_NAMESPACE
