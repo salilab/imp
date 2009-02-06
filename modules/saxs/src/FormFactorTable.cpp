@@ -66,7 +66,8 @@ FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
   // init all the tables
   form_factors_coefficients_ =
       std::vector < AtomFactorCoefficients > (ALL_ATOM_SIZE);
-  unsigned int number_of_q_entries = round( (max_q_ - min_q_) / delta_q_ ) + 1;
+  unsigned int number_of_q_entries = algebra::round(
+                                             (max_q_ - min_q_) / delta_q_ ) + 1;
   Floats form_factor_template(number_of_q_entries, 0.0);
   form_factors_ =
       std::vector < Floats > (HEAVY_ATOM_SIZE, form_factor_template);
@@ -144,7 +145,8 @@ void FormFactorTable::show(std::ostream & out, std::string prefix) const
 */
 void FormFactorTable::compute_form_factors_all_atoms()
 {
-  unsigned int number_of_q_entries = round( (max_q_ - min_q_) / delta_q_ ) + 1;
+  unsigned int number_of_q_entries = algebra::round(
+                                             (max_q_ - min_q_) / delta_q_ ) + 1;
   unsigned int i, iq;
   Float four_pi = 4.0 * IMP::internal::PI;
   Float one_over_four_pi = 1.0 / four_pi;
@@ -193,7 +195,8 @@ void FormFactorTable::compute_form_factors_all_atoms()
 
 void FormFactorTable::compute_form_factors_heavy_atoms()
 {
-  unsigned int number_of_q_entries = round( (max_q_ - min_q_) / delta_q_ ) + 1;
+  unsigned int number_of_q_entries = algebra::round(
+                                             (max_q_ - min_q_) / delta_q_ ) + 1;
   FormFactorAtomType element_type = UNK;
   unsigned int h_num = 0;       // bonded hydrogens number
 

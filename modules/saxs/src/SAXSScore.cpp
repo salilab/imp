@@ -33,9 +33,10 @@ int SAXSScore::init(const SAXSProfile& model_saxs_profile,
   mesh_sinc_ = 1000;
   offset_ = 0.0;
   Float dr = model_saxs_profile.get_pr_resolution();
-  nr_ = round( model_saxs_profile.get_max_pr_distance() / dr ) + 1;
-  int nsinc = round( exp_saxs_profile_->get_q( exp_saxs_profile_->size()-1 )
-                    * nr_ * dr * mesh_sinc_ ) + 1;
+  nr_ = algebra::round( model_saxs_profile.get_max_pr_distance() / dr ) + 1;
+  int nsinc = algebra::round(
+                         exp_saxs_profile_->get_q( exp_saxs_profile_->size()-1 )
+                         * nr_ * dr * mesh_sinc_ ) + 1;
   const Float sinc_dense = 1.0 / (Float)mesh_sinc_;
   sinc_lookup_.clear();   sinc_lookup_.resize(nsinc, 0.0);
   cos_lookup_.clear();    cos_lookup_.resize(nsinc, 0.0);
