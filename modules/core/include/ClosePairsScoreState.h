@@ -31,7 +31,8 @@ class ClosePairsFinder;
     In order to do this efficiently the class actually computes all
     pairs within distance+slack of one another. As long as the particles
     don't move more than the slack amount, the list is still valid and
-    doesn't need to be recomputed.
+    doesn't need to be recomputed. The ClosePairsScoreState keeps track
+    internally of how far the particles have moved.
 
     The default distance is 0 and default slack is 1.
 
