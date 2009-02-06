@@ -1,12 +1,13 @@
 Import('env')
 
 files = [
+         'LogPairScore.h',
          'LowestRefinedPairScore.h',
          'RefineOncePairScore.h',
          'TunnelSingletonScore.h',
          'WormLikeChain.h',
-         'text_manipulation.h',
          'attribute_statistics.h',
+         'text_manipulation.h',
         ]
 
 # Install the include files:
