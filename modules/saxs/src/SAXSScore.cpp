@@ -5,7 +5,7 @@
  *
  */
 #include <IMP/saxs/SAXSScore.h>
-#include <IMP/algebra/math_macros.h>
+#include <IMP/algebra/utility.h>
 
 #define IMP_SAXS_DELTA_LIMIT  1.0e-15
 
