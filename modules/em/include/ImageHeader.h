@@ -11,7 +11,7 @@
 #include "config.h"
 #include "endian.h"
 #include "IMP/algebra/Matrix2D.h"
-#include "IMP/algebra/math_macros.h"
+#include "IMP/algebra/utility.h"
 #include <cstdio>
 #include <iostream>
 #include <fstream>

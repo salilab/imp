@@ -6,6 +6,7 @@
 
 #include <IMP/em/ImageHeader.h>
 #include <IMP/em/endian.h>
+#include <IMP/algebra/utility.h>
 #include <ctime>
 #include <string.h>
 
@@ -278,7 +279,7 @@ void ImageHeader::write(std::ofstream& f, bool force_reversed)
   set_time();
   set_date();
   // Write header
-  if (xorT(reversed_, force_reversed)) {
+  if (algebra::xorT(reversed_, force_reversed)) {
     reversed_ = true;
     reversed_write(&header_,             sizeof(float),  36, f, true);
     reversed_write(&header_.fGeo_matrix, sizeof(double),  9, f, true);
