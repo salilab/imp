@@ -53,17 +53,17 @@ void CMMLogOptimizerState::write(std::string buf) const
   }
 }
 
-static Float snap(Float f)
+static Int snap(Int f)
 {
   if (f < 0) return 0;
-  if (f > 1) return 1;
+  if (f > 255) return 255;
   return f;
 }
 
 void CMMLogOptimizerState::write(const Particles &pis,
                                  const std::string &marker_set_name,
-                                 FloatKey radius_key, FloatKey r_key,
-                                 FloatKey g_key, FloatKey b_key,
+                                 FloatKey radius_key, IntKey r_key,
+                                 IntKey g_key, IntKey b_key,
                                  std::ostream &out)
 {
   out << "<marker_set name=\"" <<marker_set_name << "\">"<<std::endl;
@@ -75,7 +75,7 @@ void CMMLogOptimizerState::write(const Particles &pis,
       float y = xyz.get_y();
       float z = xyz.get_z();
       Float rv = 0., gv = 0., bv = 0.;
-      if (r_key != FloatKey() && b_key != FloatKey() && g_key != FloatKey()
+      if (r_key != IntKey() && b_key != IntKey() && g_key != IntKey()
           && p->has_attribute(r_key) && p->has_attribute(g_key)
           && p->has_attribute(b_key)) {
         rv = snap(p->get_value(r_key));
@@ -91,9 +91,9 @@ void CMMLogOptimizerState::write(const Particles &pis,
           << " y=\"" << y << "\""
           << " z=\"" << z << "\""
           << " radius=\"" << radius << "\""
-          << " r=\"" << rv << "\""
-          << " g=\"" << gv << "\""
-          << " b=\"" << bv <<  "\"/>" << std::endl;
+          << " r=\"" << (1.0*rv)/255 << "\""
+          << " g=\"" << (1.0*gv)/255 << "\""
+          << " b=\"" << (1.0*bv)/255 <<  "\"/>" << std::endl;
     }
 
     catch (InvalidStateException &e) {

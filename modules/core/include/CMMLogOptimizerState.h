@@ -53,9 +53,9 @@ class IMPCOREEXPORT CMMLogOptimizerState : public OptimizerState
     radius_=k;
   }
   //! The three color components
-  /** Color values should be between 0 and 1. They will be snapped if needed.
+  /** Color values should be between 0 and 255. They will be snapped if needed.
    */
-  void set_color(FloatKey r, FloatKey g, FloatKey b) {
+  void set_color(IntKey r, IntKey g, IntKey b) {
     r_=r; g_=g; b_=b;
   }
 
@@ -71,8 +71,8 @@ class IMPCOREEXPORT CMMLogOptimizerState : public OptimizerState
 
   //! A helper function to just write a list of particles to a file
   static void write(const Particles &pis, const std::string &marker_set_name,
-                    FloatKey radius_key, FloatKey r_key, FloatKey g_key,
-                    FloatKey b_key, std::ostream &out);
+                    FloatKey radius_key, IntKey r_key, IntKey g_key,
+                    IntKey b_key, std::ostream &out);
 
 protected:
   Particles pis_;
@@ -81,7 +81,7 @@ protected:
   int call_number_;
   int skip_steps_;
   FloatKey radius_;
-  FloatKey r_, g_, b_;
+  IntKey r_, g_, b_;
 };
 
 IMPCORE_END_NAMESPACE
