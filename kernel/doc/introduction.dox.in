@@ -239,7 +239,14 @@ Look through the types inherited from these methods to get an idea of the functi
 - and check out the modules page for an orthogonal view
 
 
-
+\section i125 Modules
+Functionality in \imp is grouped into modules. Each module contails classes,
+methods and data which are related and "owned" by a certain set of people. Examples
+of current modules include
+- IMP.core which includes functionality used by almost all \imp modules
+- IMP.algebra which contains math-related functionality used by other modules
+- IMP.em which contains functionality for fitting moleculars to EM maps
+- IMP.saxs which contains functionality for fitting molecules to SAXS data
 
 \section i13 C++ vs Python
 
