@@ -1,0 +1,78 @@
+/**
+\page installation Compilation from source code
+\section prereq Prerequisites
+In order to obtain and compile IMP, you will need:
+
+ - SWIG (1.3.33 or later).
+ - scons (0.98 or later).
+ - Boost (1.30 or later). At the moment IMP only needs the Boost headers (not the libraries).
+ - Python 2.3 or later.
+ - A Subversion (svn) client to access the repository.
+
+If you install headers, libraries or tools anywhere other than the standard locations (i.e. \c /usr/lib and friends) then you need to tell \c SCons to look in these directories by specifying the `includepath`, `libpath`, and `path` options when you build (paths are colon-separated). For example:
+
+\command{scons includepath=/usr/local/include:/opt/local/include libpath=/usr/local/lib}
+
+\subsection mac Mac
+Mac users should use one of the available collections of Unix tools, either \link{http://www.macports.org/, MacPorts} or \link{http://www.finkproject.org/,Fink}. These both include SWIG, scons, Subversion and Boost. For example, to install Boost with MacPorts, use the command 
+\command{sudo port install boost}
+
+\note At the moment Fink does not have a binary installer for Mac OS 10.5, so MacPorts is preferred.
+
+Do not install any C++ headers in `/usr/include` on your Mac as the compiler assumes any such headers are C headers. Since both Mac``Ports and Fink install into non-standard locations, you will need to add these to your SCons search path.
+
+\subsectiin windows Windows
+Windows users should probably install Cygwin, but we don't have any of those yet, so we don't really know.
+
+\subsection optional Optional dependencies
+If you want to use IMP with MODELLER (optional), you should use version 9v5 or later and use the following argument to scons
+\command{modeller=path/to/modeller}
+
+\section userbuild Getting and building IMP: Users
+If you are just going to be using IMP, you should use the stable version of IMP. This version is guaranteed to be working at all times
+
+\command{svn co https://svn.salilab.org/imp/branches/stable imp}
+
+You can then build and install IMP
+
+\command{scons
+scons prefix=path/to/install install}
+
+If there are build errors, read the scons help (scons -h) to figure out any more arguments you need to pass to scons in order to make sure it finds needed external libraries.
+
+\section devbuild Getting and building IMP: Developers
+If, instead, you will be developing code for IMP you should use the unstable version. This version is more up-to-date than the stable version, but occasionally does not work. To get this version do
+
+\command{svn co https://svn.salilab.org/imp/trunk imp}
+
+You can then build IMP by doing
+
+\command{scons}
+
+Since you will be recompiling IMP relatively frequently, you can use IMP without installing it by using the imppy.sh script. For example, to run Python such that it can use IMP do.
+
+\command{./bin/imppy.sh python}
+
+Since you will likely be compiled IMP repeatedly, it may be useful to make a config file for the build. To do this, create a file called `config.py` and put the command like arguments you wish to use into the file, one per line. For example one of ours looks like
+\command{
+>>> cat config.py
+import os
+
+embed=os.environ['HOME']+"/fs/EMbed"
+modeller=os.environ['MODINSTALLSVN']
+prefix=os.environ['HOME']+"/fs"
+path='/opt/local/bin'
+includepath='/opt/local/include:'+os.environ['HOME']+"/fs/include"
+libpath=os.environ['HOME']+"/fs/lib"
+build='debug'
+}
+\section other Some other useful commands
+ * If you have checked out a copy of IMP, you can update it to the current code by typing
+\command{svn update}
+
+To add a module to IMP into which you can put your own code use the `make-module` script:
+\command{./bin/make-module modulename}
+
+This will create a new module called modulename and hook it into the build system. See \salilab{imp/doc/doxygen/make_module.html,Making a module} for more information. You then can use the bin/imppy.sh script to run python so that python can find the local IMP libraries.
+
+*/
