@@ -1,5 +1,5 @@
 /**
- *  \file RefinePairsPairScore.h
+ *  \file RefinedPairsPairScore.h
  *  \brief Generate pairs by applying a ParticleRefiner to the paricles.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
