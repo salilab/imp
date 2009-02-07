@@ -10,7 +10,7 @@
  
  \section users IMP users
    Instructions on how to build and install \imp can be found in
-   the \wiki{installation, installation instructions}. Once \imp
+   the \ref installation "installation instructions". Once \imp
    is built and installed, read the \ref introduction "Introduction to IMP"
    to get an overview of how \imp works. Users should use the stable
    branch of \imp (https://svn.salilab.org/imp/branches/stable) or a
@@ -33,7 +33,7 @@
  - \wiki{FrontPage,IMP wiki}
  - \wiki{FAQ, FAQ}
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}.
- - \wiki{installation, Installation Instructions}
+ - \ref installation "Installation Instructions"
  - \ref introduction "Introduction to IMP"
  */
  
