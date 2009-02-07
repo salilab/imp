@@ -1,5 +1,5 @@
 /**
- *  \file utility.h
+ *  \file algebra/utility.h
  *  \brief Functions to deal with very common math operations
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-8 Sali Lab. All rights reserved.
