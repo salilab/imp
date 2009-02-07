@@ -1,1 +1,5 @@
-You can find the IMP documentation at https://salilab.org/imp/doc/
+To build and install IMP do:
+scons prefix=path_to_install install
+
+Further documentation and an installation guide can be found at
+https://salilab.org/imp/doc/

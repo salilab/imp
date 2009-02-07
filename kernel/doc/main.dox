@@ -1,32 +1,40 @@
 /**
   \mainpage IMP Documentation
 
- Welcome to the \imp documentation. If you are not familiar with \imp, you
- should read our \ref introduction "Introduction to IMP". For help installing
- \imp read the \wiki{installation, installation instructions}.
+ Welcome to the \imp documentation. There are two entry points
+ - one for \imp users, people who will use existing \imp
+   classes to solve biological problems by using the Python interface.
+ - and a second for \imp developers who will write
+   C++ code for \imp and, hopefully, contribute code back to \imp.
 
- The important documentation can be found in:
+ 
+ \section users IMP users
+   Instructions on how to build and install \imp can be found in
+   the \wiki{installation, installation instructions}. Once \imp
+   is built and installed, read the \ref introduction "Introduction to IMP"
+   to get an overview of how \imp works. Users should use the stable
+   branch of \imp (https://svn.salilab.org/imp/branches/stable) or a
+   pre-build binary.
+ 
+ \section developers IMP developers
+
+  In addition to the user documentation, developers should also be familiar
+  with the \ref devguide "developers guide" and read the \impdev email list.
+   
+
+ \section key_pages Key pages
  - \ref api "API Documentation"
+ - \salilab{imp/bugs,Bug Tracker}
+ - \salilab{internal/imp/tests.html,Daily build status}
+ - \salilab{imp/doc/doxygen/deprecated.html,
+   List of deprecated classes}
+ - \ref devguide "Developer guide"
  - \ref examples "Examples"
  - \wiki{FrontPage,IMP wiki}
  - \wiki{FAQ, FAQ}
-
- If you encounter a bug or would like a new feature, please report it in the
- \salilab{imp/bugs,Bug Tracker}.
-
- Information for developers and prospective contributes to \imp can be found
- on the \ref developers "Developers page".
-
- \section new What's new in IMP?
-
- - a script to \ref make_module "create a new module" to help you get started
-   quickly.
-
- - replacements for the non-bonded lists: IMP::core::ClosePairsScoreState
-   and IMP::core::CloseBipartitlePairsScoreState
-
- - \salilab{imp/doc/doxygen/deprecated.html,many existing classes} have been \ref deprecation "deprecated".
-
+ - \salilab{imp/archives/imp-dev/,imp-dev list archive}.
+ - \wiki{installation, Installation Instructions}
+ - \ref introduction "Introduction to IMP"
  */
  
 /**
