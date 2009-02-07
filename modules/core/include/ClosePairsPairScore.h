@@ -36,6 +36,9 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore
 public:
   /** \param[in] r The ParticleRefiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
+      \param[in] max_distance Only score pairs which are close than
+      the max_distance
+      \param[in] rk The key to use for the radius.
    */
   ClosePairsPairScore(ParticleRefiner *r, PairScore *f,
                       Float max_distance,
