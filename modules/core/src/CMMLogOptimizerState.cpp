@@ -48,7 +48,7 @@ void CMMLogOptimizerState::write(std::string buf) const
             << " particles to file " << buf << "..." << std::flush);
     std::stringstream filename;
     filename << "optimization_step_" << call_number_;
-    write(pis_, filename.str() ,radius_, r_, g_, b_, out);
+    write(pis_, filename.str() ,radius_, r_, g_, b_, name_, out);
     //IMP_LOG(TERSE, "done" << std::endl);
   }
 }
@@ -64,7 +64,7 @@ void CMMLogOptimizerState::write(const Particles &pis,
                                  const std::string &marker_set_name,
                                  FloatKey radius_key, IntKey r_key,
                                  IntKey g_key, IntKey b_key,
-                                 std::ostream &out)
+                                 StringKey name_key, std::ostream &out)
 {
   out << "<marker_set name=\"" <<marker_set_name << "\">"<<std::endl;
   for (unsigned int i = 0; i < pis.size(); ++i) {
@@ -74,6 +74,7 @@ void CMMLogOptimizerState::write(const Particles &pis,
       float x = xyz.get_x();
       float y = xyz.get_y();
       float z = xyz.get_z();
+      std::string name="";
       Float rv = 0., gv = 0., bv = 0.;
       if (r_key != IntKey() && b_key != IntKey() && g_key != IntKey()
           && p->has_attribute(r_key) && p->has_attribute(g_key)
@@ -81,6 +82,9 @@ void CMMLogOptimizerState::write(const Particles &pis,
         rv = snap(p->get_value(r_key));
         gv = snap(p->get_value(g_key));
         bv = snap(p->get_value(b_key));
+      }
+      if (name_key != StringKey() && p->has_attribute(name_key)) {
+        name = p->get_value(name_key);
       }
       Float radius = 5.;
       if (radius_key != FloatKey() && p->has_attribute(radius_key)) {
@@ -93,9 +97,9 @@ void CMMLogOptimizerState::write(const Particles &pis,
           << " radius=\"" << radius << "\""
           << " r=\"" << (1.0*rv)/255 << "\""
           << " g=\"" << (1.0*gv)/255 << "\""
-          << " b=\"" << (1.0*bv)/255 <<  "\"/>" << std::endl;
+          << " b=\"" << (1.0*bv)/255 <<  "\""
+          << " note=\"" << name <<  "\"/>" << std::endl;
     }
-
     catch (InvalidStateException &e) {
       IMP_WARN("Particle " << pis[i] << " does not have "
                << " cartesian coordinates");

@@ -8,7 +8,7 @@ class TestBL(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
 
-    def _testit(self, rk, r,g,b, pref):
+    def _testit(self, rk, r,g,b, name,pref):
         """Test logging to a CMM file"""
         m= IMP.Model()
         o= IMP.core.SteepestDescent()
@@ -28,12 +28,14 @@ class TestBL(IMP.test.TestCase):
         p1.add_attribute(r, 255)
         p1.add_attribute(g, 0)
         p1.add_attribute(b, 0)
+        p1.add_attribute(name, "p1")
         d1.set_x(1)
         d1.set_y(1)
         d1.set_z(1)
         a= IMP.core.CMMLogOptimizerState(nm, IMP.Particles([p0,p1]))
         a.set_radius(rk)
         a.set_color(r, g, b)
+        a.set_name(name)
         o.add_optimizer_state(a)
         a.update()
 
@@ -44,14 +46,14 @@ class TestBL(IMP.test.TestCase):
         self._testit(IMP.FloatKey("radius"),
                      IMP.IntKey("red"),
                      IMP.IntKey("green"),
-                     IMP.IntKey("blue"), "test1")
+                     IMP.IntKey("blue"), IMP.StringKey("name"),"test1")
 
     def test_2(self):
         """Testing the CMM log with new attribute names"""
         self._testit(IMP.FloatKey("another_radius"),
                      IMP.IntKey("red5"),
                      IMP.IntKey("green5"),
-                     IMP.IntKey("blue5"),
+                     IMP.IntKey("blue5"),IMP.StringKey("name5"),
                      "test1")
     def test_skip(self):
         """Test skipping steps in the CMM log"""
