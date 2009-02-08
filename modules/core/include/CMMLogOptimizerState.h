@@ -58,7 +58,9 @@ class IMPCOREEXPORT CMMLogOptimizerState : public OptimizerState
   void set_color(IntKey r, IntKey g, IntKey b) {
     r_=r; g_=g; b_=b;
   }
-
+  void set_name(StringKey name) {
+    name_=name;
+  }
   //! Set the particles to use.
   void set_particles(const Particles &pis) {
     pis_=pis;
@@ -72,7 +74,7 @@ class IMPCOREEXPORT CMMLogOptimizerState : public OptimizerState
   //! A helper function to just write a list of particles to a file
   static void write(const Particles &pis, const std::string &marker_set_name,
                     FloatKey radius_key, IntKey r_key, IntKey g_key,
-                    IntKey b_key, std::ostream &out);
+                    IntKey b_key, StringKey name_key, std::ostream &out);
 
 protected:
   Particles pis_;
@@ -82,6 +84,7 @@ protected:
   int skip_steps_;
   FloatKey radius_;
   IntKey r_, g_, b_;
+  StringKey name_;
 };
 
 IMPCORE_END_NAMESPACE
