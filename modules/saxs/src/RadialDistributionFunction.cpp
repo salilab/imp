@@ -18,7 +18,6 @@ bin_size_(bin_size), ff_table_(ff_table)
 {
   max_pr_distance_ = 50.0;      // start with ~50A (by default)
   distribution_.reserve(dist2index(max_pr_distance_));
-  //derivative_distribution_.reserve(dist2index(max_pr_distance_));
 }
 
 void RadialDistributionFunction::add_to_distribution(Float dist, Float value)
@@ -31,20 +30,6 @@ void RadialDistributionFunction::add_to_distribution(Float dist, Float value)
   }
   distribution_[index] += value;
 }
-
-/*
-void RadialDistributionFunction::add_to_derivative_distribution
-(Float dist, const algebra::Vector3D &value)
-{
-  unsigned int index = dist2index(dist);
-  if (index >= derivative_distribution_.size()) {
-    // to avoid many re-allocations
-    derivative_distribution_.reserve(2 * index);
-    derivative_distribution_.resize(index + 1, 0);
-  }
-  derivative_distribution_[index] += value;
-}
-*/
 
 
 void RadialDistributionFunction::calculate_distribution(
@@ -61,13 +46,20 @@ void RadialDistributionFunction::calculate_distribution(
                           get_coordinates());
   }
 
+  // Pre-store zero_formfactor for all particles, for the faster calculation
+  std::vector<Float> zero_formfactor(particles.size());
+  for (unsigned int iatom=0; iatom<particles.size(); iatom++)
+    zero_formfactor[iatom] = ff_table_->get_form_factor(particles[iatom]);
+
   // iterate over pairs of atoms
   // loop1
   for (unsigned int i = 0; i < coordinates.size(); i++) {
-    Float factor1 = ff_table_->get_form_factor(particles[i]);
+    //Float factor1 = ff_table_->get_form_factor(particles[i]);
+    Float factor1 = zero_formfactor[i];
     // loop2
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float factor2 = ff_table_->get_form_factor(particles[j]);
+      //Float factor2 = ff_table_->get_form_factor(particles[j]);
+      Float factor2 = zero_formfactor[j];
       Float dist = distance(coordinates[i], coordinates[j]);
       add_to_distribution(dist, 2.0 * factor1 * factor2);
     }                           // end of loop 2
@@ -76,41 +68,6 @@ void RadialDistributionFunction::calculate_distribution(
     add_to_distribution(0.0, factor1 * factor1);
   }                             // end of loop1
 }
-
-/*
-void RadialDistributionFunction::calculate_derivative_distribution(
-                                const std::vector<Particle*>& particles)
-{
-  // TODO: add imp macro instead
-  std::cerr << "start distribution calculation for "
-  << particles.size() << " particles" << std::endl;
-
-  // copy coordinates in advance, to avoid n^2 copy operations
-  std::vector < algebra::Vector3D > coordinates;
-  for (unsigned int i = 0; i < particles.size(); i++) {
-    coordinates.push_back(core::XYZDecorator::cast(particles[i]).
-                          get_coordinates());
-  }
-
-  // iterate over pairs of atoms
-  // loop1
-  for (unsigned int i = 0; i < coordinates.size(); i++) {
-    Float factor1 = ff_table_->get_form_factor(particles[i]);
-    // loop2
-    for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float factor2 = ff_table_->get_form_factor(particles[j]);
-      Float dist = distance(coordinates[i], coordinates[j]);
-      algebra::Vector3D diff_vector = coordinates[i] - coordinates[j];
-      diff_vector /= dist;
-      //diff_vector
-      add_to_derivative_distribution(dist, 2.0 * factor1 * factor2);
-    }                           // end of loop 2
-
-    // add autocorrelation part
-    add_to_derivative_distribution(0.0, factor1 * factor1);
-  }                             // end of loop1
-}
- */
 
 
 void RadialDistributionFunction::calculate_distribution(

@@ -12,69 +12,11 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 SAXSScore::SAXSScore(FormFactorTable* ff_table,
-                     SAXSProfile* exp_saxs_profile,
-                     const SAXSProfile& model_saxs_profile,
-                     const std::vector<Particle*>& particles) :
-  ff_table_(ff_table), exp_saxs_profile_(exp_saxs_profile)
+                     SAXSProfile* exp_saxs_profile) :
+ff_table_(ff_table), exp_saxs_profile_(exp_saxs_profile)
 {
-  init(model_saxs_profile, particles);
-}
-
-
-/*
- !----------------------------------------------------------------------
- !------------ Precalculate common array data for faster calculation
- !----------------------------------------------------------------------
-*/
-int SAXSScore::init(const SAXSProfile& model_saxs_profile,
-                    const std::vector<Particle*>& particles)
-{
-  //!------ setup lookup tables for sinc and cosine function
-  mesh_sinc_ = 1000;
   offset_ = 0.0;
-  Float dr = model_saxs_profile.get_pr_resolution();
-  nr_ = algebra::round( model_saxs_profile.get_max_pr_distance() / dr ) + 1;
-  int nsinc = algebra::round(
-                         exp_saxs_profile_->get_q( exp_saxs_profile_->size()-1 )
-                         * nr_ * dr * mesh_sinc_ ) + 1;
-  const Float sinc_dense = 1.0 / (Float)mesh_sinc_;
-  sinc_lookup_.clear();   sinc_lookup_.resize(nsinc, 0.0);
-  cos_lookup_.clear();    cos_lookup_.resize(nsinc, 0.0);
-
-  // to avoid the singularity of sinc function at zero
-  sinc_lookup_.push_back(1.0);  cos_lookup_.push_back(1.0);
-  for (int i=1; i<nsinc; i++) {
-    Float x = i * sinc_dense;
-    sinc_lookup_[i] = sin(x) / x;
-    cos_lookup_[i] = cos(x);
-  }
-
-  r_.clear();   r_.resize(nr_, 0.0);
-  r_square_reciprocal_.clear();     r_square_reciprocal_.resize(nr_, 0.0);
-  for (unsigned int i=0; i<nr_; i++) {
-    r_[i] = dr * i;
-    r_square_reciprocal_[i] = 1.0 / square(r_[i]);
-  }
-
-  sincval_array_.clear(); sincval_array_.resize(exp_saxs_profile_->size());
-  std::vector<Float> sincval_temp;
-  sincval_temp.resize(nr_, 0.0);
-  for (unsigned int iq=0; iq<exp_saxs_profile_->size(); iq++) {
-    for (unsigned int ir=0; ir<nr_; ir++) {
-      Float qr = exp_saxs_profile_->get_q(iq) * r_[ir];
-      int ilookup = (int)( mesh_sinc_ * qr + 0.5 );
-      sincval_temp[ir] = sinc_lookup_[ilookup] - cos_lookup_[ilookup];
-    }
-    sincval_array_[iq] = sincval_temp;
-  }
-
-  // Pre-store zero_formfactor for all particles, for the faster calculation
-  zero_formfactor_.clear();   zero_formfactor_.resize(particles.size(), 0.0);
-  for (unsigned int iatom=0; iatom<particles.size(); iatom++)
-    zero_formfactor_[iatom] = ff_table_->get_form_factor(particles[iatom]);
-
-  chi_square_ = 0.0;
-  return 0;
+  mesh_sinc_ = 1000;
 }
 
 
@@ -131,6 +73,86 @@ Float SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
 
 
 /*
+ !----------------------------------------------------------------------
+ !------------ Precalculate common array data for faster calculation
+ !----------------------------------------------------------------------
+*/
+int SAXSScore::init(const SAXSProfile& model_saxs_profile)
+{
+  Float dr = model_saxs_profile.get_pr_resolution();
+  //!----- this is the only way to get maximum p(r) distance dynamically.
+  unsigned int nr=algebra::round(model_saxs_profile.get_max_pr_distance()/dr)+1;
+  int nsinc_qr = algebra::round(
+                         exp_saxs_profile_->get_q( exp_saxs_profile_->size()-1 )
+                         * nr * dr * mesh_sinc_ ) + 1;
+  Float sinc_dense = 1.0 / (Float)mesh_sinc_;
+
+  //!----- setup lookup tables for sinc(qr) and cos(qr)
+  std::vector<Float> sinc_qr(nsinc_qr, 0.0), cos_qr(nsinc_qr, 0.0);
+  sinc_qr.push_back(1.0);   cos_qr.push_back(1.0);
+  for (int i=1; i<nsinc_qr; i++) {
+    Float qr = i * sinc_dense;
+    sinc_qr[i] = sin(qr) / qr;
+    cos_qr[i] = cos(qr);
+  }
+
+  std::vector<Float> r(nr, 0.0), one_over_rr(nr, 0.0);
+  for (unsigned int i=0; i<nr; i++) {
+    r[i] = dr * i;
+    one_over_rr[i] = 1.0 / square(r[i]);
+  }
+
+  //!----- delta_val_array_ = (sinc(qr) - cos_(qr)) / (r*r)
+  delta_val_array_.clear();  delta_val_array_.resize(exp_saxs_profile_->size());
+  for (unsigned int iq=0; iq<exp_saxs_profile_->size(); iq++) {
+    std::vector<Float> sincval_temp(nr, 0.0);
+    for (unsigned int ir=1; ir<nr; ir++) {
+      Float qr = exp_saxs_profile_->get_q(iq) * r[ir];
+      int ilookup = algebra::round( mesh_sinc_ * qr );
+      sincval_temp[ir] = (sinc_qr[ilookup] - cos_qr[ilookup]) * one_over_rr[ir];
+    }
+    delta_val_array_[iq] = sincval_temp;
+  }
+
+  //!----- precalculate difference of intensities and squares of weight
+  //!----- delta_i = weight_tilda * (I_exp - c*I_mod)
+  //!----- e_q = exp( -0.23 * q*q )
+  //!----- delta_i_and_e_q_ = delta_i * e_q
+  delta_i_and_e_q_.clear();
+  delta_i_and_e_q_.resize(model_saxs_profile.size(), 0.0);
+  for (unsigned int iq=0; iq<model_saxs_profile.size(); iq++) {
+    Float delta = exp_saxs_profile_->get_intensity(iq)
+                  - c_ * model_saxs_profile.get_intensity(iq);
+    Float square_error = square(exp_saxs_profile_->get_error(iq));
+    Float weight_tilda = model_saxs_profile.get_weight(iq) / square_error;
+
+    // Exclude the uncertainty originated from limitation of floating number
+    if (fabs(delta/exp_saxs_profile_->get_intensity(iq)) < IMP_SAXS_DELTA_LIMIT)
+      delta = 0.0;
+    Float delta_i = weight_tilda * delta;
+    Float E_q = std::exp( - exp_saxs_profile_-> modulation_function_parameter_
+                       * square( exp_saxs_profile_->get_q(iq) ) );
+    delta_i_and_e_q_[iq] = delta_i * E_q;
+  }
+  return 0;
+  /* //! TODO: general sine & cosine look-up table - should be somewhere
+  sin_.clear();   sin_.resize(mesh_sinc_);
+  cos_.clear();   cos_.resize(mesh_sinc_);
+  Float two_pi = 2.0*IMP::internal::PI;
+  Float one_over_two_pi = 1.0 / two_pi;
+  Float coeff = two_pi / mesh_sinc_;
+  for (unsigned int i=0; i<mesh_sinc_; i++) {
+    Float theta = coeff * i;
+    sin_[i] = sin(theta);
+    cos_[i] = cos(theta);
+  }
+ //int pi_lookup = algebra::round(qr * one_over_two_pi * mesh_sinc_)
+ //                % mesh_sinc_;
+*/
+}
+
+
+/*
  ! ----------------------------------------------------------------------
  !>   compute  derivatives on atom iatom - iatom is NOT part of rigid body
  !!   SCORING function : chi
@@ -143,81 +165,42 @@ Float SAXSScore::compute_chi_score(const SAXSProfile& model_saxs_profile)
  !!   Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
  ! ----------------------------------------------------------------------
 */
-// TODO: Combine with "RadialDistribution Class"? -> poor performance
+// TODO: Combine with "DeltaDistribution Class"? -> poor performance
 std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
                                        const SAXSProfile& model_saxs_profile,
                                        const std::vector<Particle*>& particles)
 {
   std::vector<algebra::Vector3D> chi_derivatives;
-  unsigned int i, iq, iatom, ir;
-  const Float dr_reciprocal = 1.0 / exp_saxs_profile_->get_pr_resolution();
+  algebra::Vector3D Delta_q, chi_derivative;
 
   if (exp_saxs_profile_->size() != model_saxs_profile.size()) {
     std::cerr << "Number of profile entries mismatch! "
               << "(exp:" << exp_saxs_profile_->size()
               << ", model:" << model_saxs_profile.size() << ")" << std::endl;
-   return chi_derivatives;
+    return chi_derivatives;
   }
+  //!----- Pre-calculate common parameters for faster calculation
+  init(model_saxs_profile);
+  DeltaDistributionFunction delta_dist(model_saxs_profile.get_pr_resolution(),
+                                       ff_table_, particles);
 
-  //!------ precalculate difference of intensities and squares of weight
-  std::vector<Float> delta_i, e_q, delta_i_and_e_q;
-  delta_i.resize(model_saxs_profile.size(), 0.0);
-  e_q.resize(model_saxs_profile.size(), 0.0);
-  delta_i_and_e_q.resize(model_saxs_profile.size(), 0.0);
-  for (iq=0; iq<model_saxs_profile.size(); iq++) {
-    Float delta = exp_saxs_profile_->get_intensity(iq)
-                  - c_ * model_saxs_profile.get_intensity(iq);
-    Float square_error = square(exp_saxs_profile_->get_error(iq));
-    Float weight_tilda = model_saxs_profile.get_weight(iq) / square_error;
-
-    // Exclude the uncertainty originated from limitation of floating number
-    if (fabs(delta/exp_saxs_profile_->get_intensity(iq)) < IMP_SAXS_DELTA_LIMIT)
-      delta = 0.0;
-    delta_i[iq] = weight_tilda * delta;
-    e_q[iq] = std::exp( - exp_saxs_profile_-> modulation_function_parameter_
-                       * square( exp_saxs_profile_->get_q(iq) ) );
-    delta_i_and_e_q[iq] = delta_i[iq] * e_q[iq];
-  }
-  //!------ copy coordinates in advance, to avoid n^2 copy operations
-  std::vector<algebra::Vector3D> coordinates;
-  coordinates.resize(particles.size());
-  for (iq=0; iq<particles.size(); iq++)
-    coordinates[iq] = core::XYZDecorator::cast(particles[iq]).get_coordinates();
-
-  std::vector<algebra::Vector3D> Delta;
-  algebra::Vector3D Delta_q(0.0, 0.0, 0.0), chi_derivative(0.0, 0.0, 0.0);
-  // TODO: Very weird. (in double precision)
-  // TODO: Why this definition makes huge difference in performance?
-  std::vector<Float> Delta_x;//, Delta_y, Delta_z;
-
-  //!------ The real loop starts from here
   chi_derivatives.resize(particles.size());
-  for (iatom=0; iatom<particles.size(); iatom++) {
-    Delta.clear();
-    Delta.resize(nr_, algebra::Vector3D(0.0, 0.0, 0.0));
+  for (unsigned int iatom=0; iatom<particles.size(); iatom++) {
+    //!----- Calculate a delta distribution per an atom
+    delta_dist.calculate_derivative_distribution(iatom);
 
-    //!------ precalculate difference delta
-    for (i=0; i<particles.size(); i++) {
-      if (i != iatom) {
-        Float dist = distance(coordinates[iatom], coordinates[i]);
-        unsigned int ir = (unsigned int)( dist * dr_reciprocal + 0.5 );
-        Float temp = zero_formfactor_[iatom] * zero_formfactor_[i]
-                      * r_square_reciprocal_[ir];
-        Delta[ir] += temp * (coordinates[iatom] - coordinates[i]);
-      }
-    }
-
-    //!------ core of chi derivatives
     chi_derivative[0] = chi_derivative[1] = chi_derivative[2] = 0.0;
-    for (iq=0; iq<model_saxs_profile.size(); iq++) {
+    for (unsigned int iq=0; iq<model_saxs_profile.size(); iq++) {
       Delta_q[0] = Delta_q[1] = Delta_q[2] = 0.0;
 
-      for (ir=0; ir<nr_; ir++) {
-        //!------ sincval_array_[][] = sinc_lookup_[] - cos_lookup_[]
-        Delta_q += Delta[ir] * sincval_array_[iq][ir];
+      for (unsigned int ir=0; ir<delta_dist.size(); ir++) {
+        //!----- delta_dist.distribution = sum_i [f_k(0) * f_i(0) * (x_k - x_i)]
+        //!----- delta_val_array_ = (sinc(qr) - cos_(qr)) / (r*r)
+        Delta_q += delta_dist.distribution_[ir] * delta_val_array_[iq][ir];
       }
-      //!----- delta_i_and_e_q[] = delta_i[] * e_q[]
-      chi_derivative += Delta_q * delta_i_and_e_q[iq];
+      //!----- delta_i = weight_tilda * (I_exp - c*I_model)
+      //!----- e_q = exp( -0.23 * q*q )
+      chi_derivative += Delta_q * delta_i_and_e_q_[iq];
     }
     chi_derivatives[iatom] = 4.0 * c_ * chi_derivative;
   }
