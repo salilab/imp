@@ -25,7 +25,6 @@ namespace IMP::saxs {
 
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
-%include "IMP/saxs/RadialDistributionFunction.h"
 %include "IMP/saxs/SAXSProfile.h"
 %include "IMP/saxs/SAXSScore.h"
 %include "IMP/saxs/SaxsData.h"

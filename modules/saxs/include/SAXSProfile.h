@@ -9,7 +9,7 @@
 
 #include "config.h"
 #include "FormFactorTable.h"
-#include "RadialDistributionFunction.h"
+#include "Distribution.h"
 
 #include <IMP/Model.h>
 

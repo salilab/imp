@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "FormFactorTable.h"
-#include "DeltaDistributionFunction.h"
+#include "Distribution.h"
 #include "SAXSProfile.h"
 
 #include <IMP/Model.h>
@@ -20,15 +20,16 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+class SAXSProfile;
+
 /*
  Basic SAXS scoring class
- */
+*/
 
 class IMPSAXSEXPORT SAXSScore {
 public:
   //! init for theoretical profile
-  SAXSScore(FormFactorTable* ff_table,
-            SAXSProfile* exp_saxs_profile);
+  SAXSScore(FormFactorTable* ff_table, SAXSProfile* exp_saxs_profile);
 
   //! compute chi value (assumes the same sampling range!)
   Float compute_chi_score(const SAXSProfile& model_saxs_profile);

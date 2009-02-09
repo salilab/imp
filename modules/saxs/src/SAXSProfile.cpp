@@ -8,7 +8,7 @@
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/utility.h>
 #include <IMP/algebra/utility.h>
-
+#include <IMP/saxs/Distribution.h>
 #include <boost/algorithm/string.hpp>
 
 #include <fstream>

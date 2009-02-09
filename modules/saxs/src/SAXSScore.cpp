@@ -165,7 +165,6 @@ int SAXSScore::init(const SAXSProfile& model_saxs_profile)
  !!   Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
  ! ----------------------------------------------------------------------
 */
-// TODO: Combine with "DeltaDistribution Class"? -> poor performance
 std::vector<IMP::algebra::Vector3D> SAXSScore::calculate_chi_real_derivative (
                                        const SAXSProfile& model_saxs_profile,
                                        const std::vector<Particle*>& particles)
