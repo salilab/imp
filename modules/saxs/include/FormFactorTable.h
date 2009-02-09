@@ -14,6 +14,7 @@
 #include <IMP/base_types.h>
 #include <IMP/core/ResidueDecorator.h>
 #include <IMP/core/AtomDecorator.h>
+#include <IMP/algebra/utility.h>
 
 #include <iostream>
 #include <vector>

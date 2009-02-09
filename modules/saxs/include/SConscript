@@ -1,8 +1,10 @@
 Import('env')
 
 files = [
+         'Distribution.h',
          'FormFactorTable.h',
          'RadialDistributionFunction.h',
+         'DeltaDistributionFunction.h',
          'SAXSProfile.h',
          'SAXSScore.h',
          'SaxsData.h',

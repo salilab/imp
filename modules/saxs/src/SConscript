@@ -4,6 +4,7 @@ e = env.IMPSharedLibraryEnvironment()
 files = [
          'FormFactorTable.cpp',
          'RadialDistributionFunction.cpp',
+         'DeltaDistributionFunction.cpp',
          'SAXSProfile.cpp',
          'SAXSScore.cpp',
          'SaxsData.cpp',

@@ -466,7 +466,7 @@ int SaxsData::initialize(double s_min, double s_max, int maxs, int nmesh,
 */
 int SaxsData::saxs_formheavatm(void) {
   //! .. Local Arrays
-  int iat=0, is, isum, nh, iform, ierr=0;
+  int iat=0, is, isum, nh=0, iform, ierr=0;
   double s_waasmei;
   char temp[256];
   boost::multi_array<double,2> a(boost::extents[natomtyp_][5]);
@@ -1063,10 +1063,10 @@ int SaxsData::saxs_pr2is(void) {
  ! ----------------------------------------------------------------------
 */
 int SaxsData::saxs_read(std::string filename) {
-  int ncols, is=0, i_low, i_hi;
+  int ncols=0, is=0, i_low, i_hi;
   std::ifstream fh;
   std::string line;
-  double sig_exp, temp1, temp2, temp3;
+  double sig_exp=0.0, temp1, temp2, temp3;
 
   std::cout << "reading a file : " << filename << std::endl;
   fh.open(filename.c_str());

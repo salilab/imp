@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "FormFactorTable.h"
-#include "RadialDistributionFunction.h"
+#include "DeltaDistributionFunction.h"
 #include "SAXSProfile.h"
 
 #include <IMP/Model.h>
@@ -28,9 +28,7 @@ class IMPSAXSEXPORT SAXSScore {
 public:
   //! init for theoretical profile
   SAXSScore(FormFactorTable* ff_table,
-            SAXSProfile* exp_saxs_profile,
-            const SAXSProfile& model_saxs_profile,
-            const std::vector<Particle*>& particles);
+            SAXSProfile* exp_saxs_profile);
 
   //! compute chi value (assumes the same sampling range!)
   Float compute_chi_score(const SAXSProfile& model_saxs_profile);
@@ -48,12 +46,13 @@ public:
   Float get_offset(void) { return offset_; }
   Float set_offset(Float offset) { offset_ = offset;  return offset_; }
 
-  int get_mesh_sinc_(void) { return mesh_sinc_; }
-  int set_mesh_sinc_(int mesh_sinc) {mesh_sinc_ = mesh_sinc; return mesh_sinc_;}
+  unsigned int get_mesh_sinc_(void) { return mesh_sinc_; }
+  unsigned int set_mesh_sinc_(unsigned int mesh_sinc) {
+    mesh_sinc_ = mesh_sinc;   return mesh_sinc_;
+  }
 
 private:
-  int init(const SAXSProfile& model_saxs_profile,
-           const std::vector<Particle*>& particles);
+  int init(const SAXSProfile& model_saxs_profile);
 
   //! compute  derivatives on atom iatom - iatom is NOT part of rigid body
   std::vector<IMP::algebra::Vector3D> calculate_chi_real_derivative (
@@ -68,14 +67,10 @@ protected:
   SAXSProfile* exp_saxs_profile_;   // pointer to experimental saxs profile
 
   Float c_;  // scale constant
-  Float offset_, chi_square_;   // offset and Chi-square
-  std::vector< std::vector<Float> > sincval_array_;
-
-  //! lookup table for sinc function and cos function
-  std::vector<Float> sinc_lookup_, cos_lookup_, zero_formfactor_;
-  std::vector<Float> r_, r_square_reciprocal_;
-  int mesh_sinc_;     //! how many points per 1 unit in sinc
-  unsigned int nr_;
+  Float offset_, chi_square_;
+  unsigned int mesh_sinc_;     //! how many points per 1 unit in sinc
+  std::vector< std::vector<Float> > delta_val_array_;
+  std::vector<Float> zero_formfactor_, delta_i_and_e_q_;
 };
 
 IMPSAXS_END_NAMESPACE

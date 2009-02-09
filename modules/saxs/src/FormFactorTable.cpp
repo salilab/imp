@@ -139,7 +139,7 @@ void FormFactorTable::show(std::ostream & out, std::string prefix) const
  ! f_atomic(q) = c + SUM [ a_i * EXP( - b_i * (q/4pi)^2 )]
  !                   i=1,5
  !
- ! f_solvent(q) = v_i * EXP(- v_i^(2/3) * q^2 / (4pi))
+ ! f_solvent(q) = rho * v_i * EXP( (- v_i^(2/3) / (4pi)) * q^2 )
  !
  !----------------------------------------------------------------------
 */
@@ -165,8 +165,8 @@ void FormFactorTable::compute_form_factors_all_atoms()
 
   for (i = 0; i < ALL_ATOM_SIZE; i++) {
     //! form factors for all the q range
-    //! volr_coeff = v_i^(2/3) / 4PI
-    Float volr_coeff = std::pow( form_factors_coefficients_[i].excl_vol_,
+    //! volr_coeff = - v_i^(2/3) / 4PI
+    Float volr_coeff = - std::pow( form_factors_coefficients_[i].excl_vol_,
                           static_cast<Float>(2.0/3.0) ) * one_over_four_pi;
 
     for (iq = 0; iq < number_of_q_entries; iq++) {
@@ -176,11 +176,11 @@ void FormFactorTable::compute_form_factors_all_atoms()
       //! SUM [a_i * EXP( - b_i * (q/4pi)^2 )]
       for (unsigned int j = 0; j < 5; j++) {
         form_factors_[i][iq] += form_factors_coefficients_[i].a_[j]
-                    * std::exp( -form_factors_coefficients_[i].b_[j] * ss[iq] );
+                   * std::exp( - form_factors_coefficients_[i].b_[j] * ss[iq] );
       }
-      //! subtract solvation: rho * v_i * EXP( - v_i^(2/3) / (4PI) * q^2  )
+      //! subtract solvation: rho * v_i * EXP( (- v_i^(2/3) / (4pi)) * q^2  )
       form_factors_[i][iq] -= rho_ * form_factors_coefficients_[i].excl_vol_
-                          * std::exp( - volr_coeff * qq[iq] );
+                          * std::exp( volr_coeff * qq[iq] );
     }
     //! zero form factors
     zero_form_factors_[i] = form_factors_coefficients_[i].c_;

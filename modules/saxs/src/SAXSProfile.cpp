@@ -30,7 +30,6 @@ SAXSProfile::SAXSProfile(Float qmin, Float qmax, Float delta,
   min_q_(qmin), max_q_(qmax), delta_q_(delta),ff_table_(ff_table)
 {
   pr_resolution_ = 0.5;
-  max_pr_distance_ = 50.0;
 
   init();
 }
@@ -39,7 +38,6 @@ SAXSProfile::SAXSProfile(Float qmin, Float qmax, Float delta,
 SAXSProfile::SAXSProfile(const String & file_name)
 {
   pr_resolution_ = 0.5;
-  max_pr_distance_ = 50.0;
 
   read_SAXS_file(file_name);
 }
@@ -97,7 +95,7 @@ void SAXSProfile::read_SAXS_file(const String & file_name)
     min_q_ = profile_[0].q_;
     max_q_ = profile_[profile_.size() - 1].q_;
 
-    // To minimize rounding errors, by averaging the difference of q
+    //! To minimize rounding errors, by averaging differences of q
     std::vector<Float> diff;
     for (unsigned int i=1; i<profile_.size(); i++) {
       diff.push_back( profile_[i].q_ - profile_[i-1].q_ );
@@ -167,7 +165,6 @@ void SAXSProfile::calculate_profile_real(
       << particles.size() << " particles" << std::endl;
 
   RadialDistributionFunction r_dist(pr_resolution_, ff_table_);
-  r_dist.set_max_pr_distance(max_pr_distance_);
   r_dist.calculate_distribution(particles);
   radial_distribution_2_profile(r_dist);
   max_pr_distance_ = r_dist.get_max_pr_distance();
@@ -185,7 +182,6 @@ void SAXSProfile::calculate_profile_real(
       << " particles" << std::endl;
 
   RadialDistributionFunction r_dist(pr_resolution_, ff_table_);
-  r_dist.set_max_pr_distance(max_pr_distance_);
   r_dist.calculate_distribution(particles1, particles2);
   radial_distribution_2_profile(r_dist);
   max_pr_distance_ = r_dist.get_max_pr_distance();
