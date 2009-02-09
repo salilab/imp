@@ -21,7 +21,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-typedef std::vector<Float> Floats;
+//typedef std::vector<Float> Floats;
 
 /*
    class that deals with form factor computation

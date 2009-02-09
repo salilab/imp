@@ -1,43 +1,30 @@
-/**
- * \file RadialDistributionFunction \brief computes radial distribution function
- * required for SAXS profile computation
+/*
+ *  Distribution.cpp
+ *  imp
  *
- * Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Created by sjkim on 2/9/09.
+ *  Copyright 2009 __MyCompanyName__. All rights reserved.
  *
  */
-#include <IMP/saxs/RadialDistributionFunction.h>
-
+#include <IMP/saxs/Distribution.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/XYZDecorator.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
-RadialDistributionFunction::RadialDistributionFunction(Float bin_size,
-                                              FormFactorTable * ff_table):
-bin_size_(bin_size), ff_table_(ff_table)
+RadialDistributionFunction::
+RadialDistributionFunction(Float bin_size, FormFactorTable * ff_table)
+: Distribution<Float>(bin_size, ff_table)
 {
-  max_pr_distance_ = 50.0;      // start with ~50A (by default)
-  distribution_.reserve(dist2index(max_pr_distance_));
-}
-
-void RadialDistributionFunction::add_to_distribution(Float dist, Float value)
-{
-  unsigned int index = dist2index(dist);
-  if (index >= distribution_.size()) {
-    distribution_.reserve(2 * index);   // to avoid many re-allocations
-    distribution_.resize(index + 1, 0.0);
-    max_pr_distance_ = (index + 1) * bin_size_;
-  }
-  distribution_[index] += value;
 }
 
 
-void RadialDistributionFunction::calculate_distribution(
-                                const std::vector<Particle*>& particles)
+void RadialDistributionFunction::
+calculate_distribution(const std::vector<Particle*>& particles)
 {
   // TODO: add imp macro instead
   std::cerr << "start distribution calculation for "
-      << particles.size() << " particles" << std::endl;
+  << particles.size() << " particles" << std::endl;
 
   // copy coordinates in advance, to avoid n^2 copy operations
   std::vector < algebra::Vector3D > coordinates;
@@ -70,14 +57,14 @@ void RadialDistributionFunction::calculate_distribution(
 }
 
 
-void RadialDistributionFunction::calculate_distribution(
-                             const std::vector<Particle*>&particles1,
-                             const std::vector<Particle*>&particles2)
+void RadialDistributionFunction::
+calculate_distribution(const std::vector<Particle*>&particles1,
+                       const std::vector<Particle*>&particles2)
 {
   // TODO: change to IMP macro
   std::cerr << "start distribution calculation for "
-      << particles1.size() << " + " << particles2.size()
-      << " particles" << std::endl;
+  << particles1.size() << " + " << particles2.size()
+  << " particles" << std::endl;
 
   // copy coordinates in advance, to avoid n^2 copy operations
   std::vector < algebra::Vector3D > coordinates1, coordinates2;
@@ -103,11 +90,62 @@ void RadialDistributionFunction::calculate_distribution(
   }                             // end of loop1
 }
 
-void RadialDistributionFunction::show(std::ostream & out, std::string prefix)
-                                                                       const {
+
+void RadialDistributionFunction::
+show(std::ostream & out, std::string prefix) const
+{
   for (unsigned int i = 0; i < distribution_.size(); i++) {
     out << prefix << " dist " << index2dist(i) << " " << distribution_[i]
-        << std::endl;
+    << std::endl;
+  }
+}
+
+
+DeltaDistributionFunction::
+DeltaDistributionFunction(Float bin_size,
+                          FormFactorTable* ff_table,
+                          const std::vector<Particle*>& particles)
+: Distribution<algebra::Vector3D>(bin_size, ff_table)
+{
+  //!----- copy coordinates in advance, to avoid n^2 copy operations
+  coordinates_.resize(particles.size());
+  for (unsigned int i=0; i<particles.size(); i++) {
+    coordinates_[i] = core::XYZDecorator::cast(particles[i]).get_coordinates();
+  }
+
+  //!----- Pre-store zero_formfactor for all particles, for faster calculation
+  zero_formfactor_.resize(particles.size());
+  for (unsigned int i=0; i<particles.size(); i++)
+    zero_formfactor_[i] = ff_table_->get_form_factor(particles[i]);
+}
+
+
+void DeltaDistributionFunction::
+calculate_derivative_distribution(unsigned int i)
+{
+  distribution_.clear();
+  distribution_.reserve(dist2index(max_pr_distance_));
+  Float zero_formfactor_i = zero_formfactor_[i];
+
+  //!----- delta_dist.distribution_ = sum_j [f_i(0) * f_j(0) * (x_i - x_j)]
+  for (unsigned int j=0; j<coordinates_.size(); j++) {
+    if (i==j) continue;
+
+    Float dist = distance(coordinates_[i], coordinates_[j]);
+    algebra::Vector3D diff_vector = coordinates_[i] - coordinates_[j];
+    diff_vector *= zero_formfactor_i * zero_formfactor_[j];
+    add_to_distribution(dist, diff_vector);
+  }
+}
+
+
+void DeltaDistributionFunction::
+show(std::ostream & out, std::string prefix) const
+{
+  for (unsigned int i = 0; i < distribution_.size(); i++) {
+    out << prefix << " dist " << index2dist(i) << " (" << distribution_[i][0]
+    << ", " << distribution_[i][1] << ", " << distribution_[i][2] << ")"
+    << std::endl;
   }
 }
 
