@@ -120,7 +120,8 @@ class RefCountTests(IMP.test.TestCase):
         print "Add particle"
         d= IMP.core.XYZDecorator.create(p)
         d=0
-        mc= IMP.core.MaxChangeScoreState(IMP.core.XYZDecorator.get_xyz_keys())
+
+        mc= IMP.core.ListSingletonContainer()
         print "Add particle to mc"
         mc.add_particle(p)
         # also have the score state now
