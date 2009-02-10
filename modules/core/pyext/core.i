@@ -111,8 +111,6 @@ namespace IMP {
 %include "IMP/core/MoverBase.h"
 
 %include "IMP/core/XYZDecorator.h"
-%include "IMP/core/BondedListScoreState.h"
-%include "IMP/core/NonbondedListScoreState.h"
 
 /* Must be included before HierarchyDecorator.h since it is not easy
    to predeclare a typedef (for BondDecorators) */ 
@@ -120,18 +118,14 @@ namespace IMP {
 
 
 /* Wrap the final classes */
-%include "IMP/core/AllNonbondedListScoreState.h"
 %include "IMP/core/AllPairsPairContainer.h"
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AtomDecorator.h"
 %include "IMP/core/AttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
-%include "IMP/core/BipartiteNonbondedListScoreState.h"
-%include "IMP/core/BondDecoratorListScoreState.h"
 %include "IMP/core/BondEndpointsParticleRefiner.h"
 %include "IMP/core/BondPairContainer.h"
-%include "IMP/core/BondDecoratorRestraint.h"
 %include "IMP/core/BondSingletonScore.h"
 %include "IMP/core/BondBondPairScore.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
@@ -156,20 +150,17 @@ namespace IMP {
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"
 %include "IMP/core/DistanceToSingletonScore.h"
-%include "IMP/core/GravityCenterScoreState.h"
 %include "IMP/core/GridClosePairsFinder.h"
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
 %include "IMP/core/HierarchyDecorator.h"
 %include "IMP/core/Linear.h"
-%include "IMP/core/MaxChangeScoreState.h"
 %include "IMP/core/MaximumChangeScoreState.h"
 %include "IMP/core/MolecularDynamics.h"
 %include "IMP/core/MolecularHierarchyDecorator.h"
 %include "IMP/core/MonteCarlo.h"
 %include "IMP/core/NameDecorator.h"
-%include "IMP/core/NonbondedRestraint.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
@@ -177,7 +168,6 @@ namespace IMP {
 %include "IMP/core/ResidueDecorator.h"
 %include "IMP/core/RestraintSet.h"
 %include "IMP/core/rigid_bodies.h"
-%include "IMP/core/SingletonListRestraint.h"
 %include "IMP/core/SphereDistancePairScore.h"
 %include "IMP/core/SteepestDescent.h"
 %include "IMP/core/TransformedDistancePairScore.h"
@@ -186,10 +176,7 @@ namespace IMP {
 %include "IMP/core/VelocityScalingOptimizerState.h"
 %include "IMP/core/XYZRDecorator.h"
 %include "IMP/core/model_io.h"
-%include "IMP/core/PairChainRestraint.h"
-%include "IMP/core/PairListRestraint.h"
 %include "IMP/core/TableParticleRefiner.h"
-%include "IMP/core/TripletChainRestraint.h"
 %include "IMP/core/TruncatedHarmonic.h"
 
 %include "IMP/core/ListPairContainer.h"
