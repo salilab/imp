@@ -9,7 +9,6 @@
 #include "IMP/core/TransformSingletonModifier.h"
 #include "IMP/core/MolecularHierarchyDecorator.h"
 #include "IMP/core/HierarchyDecorator.h"
-#include "IMP/core/GravityCenterScoreState.h"
 #include <IMP/core/XYZDecorator.h>
 IMPDOMINO_BEGIN_NAMESPACE
 TransformationUtils::TransformationUtils(Particles *ps, bool trans_from_orig)
