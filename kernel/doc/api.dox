@@ -21,21 +21,14 @@
     - IMP::Restraint
     - IMP::ScoreState
     - IMP::Optimizer
-    - IMP::core::SingletonContainer, IMP::core::PairContainer
+    - IMP::SingletonContainer, IMP::PairContainer
     - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
-    - IMP::core::SingletonModifier, IMP::core::PairModifier, IMP::core::TripletModifier
+    - IMP::SingletonModifier, IMP::PairModifier
 
     There are a few blocks of functionality that cut across modules. They are
     - \ref hierarchy "Code to create and manipulate hierarchies"
     - \ref bond "Code to create and manipulate bonds"
 
     When programming with \imp, one of the more useful pages is the
-    <a href="hierarchy.html"><b>class hierarchy</b></a> as well as the module main
-    pages:
-    - IMP
-    - IMP::core
-    - IMP::misc
-    - IMP::em
-    - IMP::domino
-    - IMP::saxs
-*/
+    <a href="hierarchy.html"><b>class hierarchy</b></a> as well as
+    the \salilab{imp/doc/doxygen/namespaces.html, module pages}.*/
