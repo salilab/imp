@@ -29,7 +29,7 @@ protected:
   ~Object();
 
 public:
-  //! Throw an assertion if the object has been freed
+  // Throw an assertion if the object has been freed
   void assert_is_valid() const;
 
   bool get_has_ref() const {return count_ != 0;}
