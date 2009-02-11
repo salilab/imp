@@ -14,12 +14,12 @@ If you install headers, libraries or tools anywhere other than the standard loca
 \command{scons includepath=/usr/local/include:/opt/local/include libpath=/usr/local/lib}
 
 \subsection mac Mac
-Mac users should use one of the available collections of Unix tools, either \link{http://www.macports.org/, MacPorts} or \link{http://www.finkproject.org/,Fink}. These both include SWIG, scons, Subversion and Boost. For example, to install Boost with MacPorts, use the command 
+Mac users should use one of the available collections of Unix tools, either \external{http://www.macports.org/, MacPorts} or \external{http://www.finkproject.org/, Fink}. These both include SWIG, scons, Subversion and Boost. For example, to install Boost with MacPorts, use the command 
 \command{sudo port install boost}
 
 \note At the moment Fink does not have a binary installer for Mac OS 10.5, so MacPorts is preferred.
 
-Do not install any C++ headers in `/usr/include` on your Mac as the compiler assumes any such headers are C headers. Since both Mac``Ports and Fink install into non-standard locations, you will need to add these to your SCons search path.
+Do not install any C++ headers in `/usr/include` on your Mac as the compiler assumes any such headers are C headers. Since both MacPorts and Fink install into non-standard locations, you will need to add these to your SCons search path.
 
 \subsectiin windows Windows
 Windows users should probably install Cygwin, but we don't have any of those yet, so we don't really know.
