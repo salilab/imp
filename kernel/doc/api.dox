@@ -9,7 +9,7 @@
     - \ref decorators "Using Decorators"
     - \ref log "Logging Support"
     - \ref assert "Error Reporting Facilities"
-    - \ref deprecation "Deprecated Functionality"
+    - \salilab{imp/doc/doxygen/deprecated.html, Deprecated Functionality}
 
     Then look through the examples which can be found at:
     - \ref examples "Examples"
