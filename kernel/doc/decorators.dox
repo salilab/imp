@@ -10,7 +10,7 @@ and "X" other places
 \note In general, you should not access particle attributes except
 through decorators
 
-To see a list of all available decorators, look at the IMP::DecoratorBase
+To see a list of all available decorators, look at the IMP::Decorator
 page.
 
 

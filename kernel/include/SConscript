@@ -1,7 +1,7 @@
 Import('env')
 
 files = [
-    'DecoratorBase.h',
+    'Decorator.h',
     'DerivativeAccumulator.h',
     'Key.h',
     'Model.h',

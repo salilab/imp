@@ -1,12 +1,12 @@
 /**
- *  \file DecoratorBase.h    \brief The base class for decorators.
+ *  \file Decorator.h    \brief The base class for decorators.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMP_DECORATOR_BASE_H
-#define IMP_DECORATOR_BASE_H
+#ifndef IMP_DECORATOR_H
+#define IMP_DECORATOR_H
 
 #include "Object.h"
 #include "Pointer.h"
@@ -31,18 +31,18 @@ IMP_BEGIN_NAMESPACE
     \note Remember that attribute keys should always be created lazily
     (at the time of the first use), and not be created as static variables.
 */
-class DecoratorBase
+class Decorator
 {
 protected:
   Pointer<Particle> particle_;
-  DecoratorBase(Particle *p): particle_(p) {}
+  Decorator(Particle *p): particle_(p) {}
   bool is_default() const {
     return !particle_;
   }
 public:
-  typedef DecoratorBase This;
+  typedef Decorator This;
 
-  DecoratorBase() {}
+  Decorator() {}
   IMP_COMPARISONS_1(particle_);
 
   /** \return the particle wrapped by this decorator*/
@@ -59,4 +59,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_DECORATOR_BASE_H */
+#endif  /* IMP_DECORATOR_H */

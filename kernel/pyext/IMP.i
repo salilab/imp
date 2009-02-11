@@ -142,7 +142,7 @@ namespace IMP {
 %include "IMP/SingletonScore.h"
 %include "IMP/TripletScore.h"
 %include "Particle.i"
-%include "IMP/DecoratorBase.h"
+%include "IMP/Decorator.h"
 %include "IMP/Optimizer.h"
 %include "IMP/SingletonContainer.h"
 %include "IMP/PairContainer.h"

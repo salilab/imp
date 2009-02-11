@@ -11,7 +11,7 @@
 #include "config.h"
 #include "internal/utility.h"
 
-#include <IMP/DecoratorBase.h>
+#include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>
 
 #include <vector>
@@ -24,10 +24,10 @@ IMPCORE_BEGIN_NAMESPACE
     \ingroup decorators
     \verbinclude xyzdecorator.py
  */
-class IMPCOREEXPORT XYZDecorator: public DecoratorBase
+class IMPCOREEXPORT XYZDecorator: public Decorator
 {
  public:
-  IMP_DECORATOR(XYZDecorator, DecoratorBase)
+  IMP_DECORATOR(XYZDecorator, Decorator)
 
   /** Create a decorator with the passed coordinates. */
   static XYZDecorator create(Particle *p,

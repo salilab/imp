@@ -18,7 +18,7 @@
 #include <IMP/SingletonModifier.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
-#include <IMP/DecoratorBase.h>
+#include <IMP/Decorator.h>
 
 #include <limits>
 #include <vector>
@@ -152,14 +152,14 @@ public:
     \ingroup hierarchy
     \relates HierarchyTraits
  */
-class IMPCOREEXPORT HierarchyDecorator: public DecoratorBase
+class IMPCOREEXPORT HierarchyDecorator: public Decorator
 {
-  typedef DecoratorBase P;
+  typedef Decorator P;
 
   IMP_DECORATOR_ARRAY_DECL(public, child, children, traits_,
                            HierarchyDecorator)
 public:
-  IMP_DECORATOR_TRAITS(HierarchyDecorator, DecoratorBase,
+  IMP_DECORATOR_TRAITS(HierarchyDecorator, Decorator,
                        HierarchyTraits, traits,
                        HierarchyDecorator::get_default_traits());
 

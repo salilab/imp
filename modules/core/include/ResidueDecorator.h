@@ -14,7 +14,7 @@
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
-#include <IMP/DecoratorBase.h>
+#include <IMP/Decorator.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -101,10 +101,10 @@ IMPCOREEXPORT extern const ResidueType THY;
    \ingroup hierarchy
    \ingroup decorators
  */
-class IMPCOREEXPORT ResidueDecorator: public DecoratorBase
+class IMPCOREEXPORT ResidueDecorator: public Decorator
 {
 public:
-  IMP_DECORATOR(ResidueDecorator, DecoratorBase)
+  IMP_DECORATOR(ResidueDecorator, Decorator)
 
   static ResidueDecorator create(Particle *p, ResidueType t= UNK,
                                  int index=-1, int insertion_code = 32) {
