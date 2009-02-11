@@ -132,7 +132,7 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
     try {
       params = kernel_params_.find_params(access_p.get_r(ii));
     }
-    catch (EMBED_LogicError){
+    catch (EMBED_LogicError &e){
       kernel_params_.set_params(access_p.get_r(ii));
       params = kernel_params_.find_params(access_p.get_r(ii));
     }
