@@ -13,7 +13,7 @@
 #include <IMP/core/macros.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
-#include <IMP/DecoratorBase.h>
+#include <IMP/Decorator.h>
 #include <IMP/exception.h>
 
 IMPEXAMPLES_BEGIN_NAMESPACE
@@ -28,7 +28,7 @@ IMPEXAMPLES_BEGIN_NAMESPACE
     \include ExampleDecorator.h
     \include ExampleDecorator.cpp
 */
-class IMPEXAMPLESEXPORT ExampleDecorator: public DecoratorBase
+class IMPEXAMPLESEXPORT ExampleDecorator: public Decorator
 {
   /* Use a static variable in a static method to create the key
      so that it is only done once and is only done when it is first
@@ -68,7 +68,7 @@ public:
     return get_particle()->get_value(get_name_key());
   }
   /* Declare the basic constructors and the cast function.*/
-  IMP_DECORATOR(ExampleDecorator, DecoratorBase)
+  IMP_DECORATOR(ExampleDecorator, Decorator)
 };
 
 // Make it so the C++ operator<< can be used.

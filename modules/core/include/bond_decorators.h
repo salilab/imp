@@ -15,7 +15,7 @@
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
-#include <IMP/DecoratorBase.h>
+#include <IMP/Decorator.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -35,11 +35,11 @@ class BondedDecorator;
    \ingroup decorators
    \relates BondedDecorator
  */
-class IMPCOREEXPORT BondDecorator: public DecoratorBase
+class IMPCOREEXPORT BondDecorator: public Decorator
 {
   friend class BondedDecorator;
 public:
-  IMP_DECORATOR(BondDecorator, DecoratorBase)
+  IMP_DECORATOR(BondDecorator, Decorator)
 
   //! Return true if the particle is a bond.
   static bool is_instance_of(Particle *p) {
@@ -84,10 +84,10 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
     \ingroup decorators
     \relates BondDecorator
  */
-class IMPCOREEXPORT BondedDecorator: public DecoratorBase
+class IMPCOREEXPORT BondedDecorator: public Decorator
 {
 public:
-  IMP_DECORATOR(BondedDecorator, DecoratorBase)
+  IMP_DECORATOR(BondedDecorator, Decorator)
   //! return true if it is a bonded particle
   static bool is_instance_of(Particle *p) {
   return internal::graph_is_node(p, internal::get_bond_data().graph_);

@@ -13,7 +13,7 @@
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
-#include <IMP/DecoratorBase.h>
+#include <IMP/Decorator.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -21,9 +21,9 @@ IMPCORE_BEGIN_NAMESPACE
 /** \ingroup helper
     \ingroup decorators
  */
-class IMPCOREEXPORT NameDecorator: public DecoratorBase
+class IMPCOREEXPORT NameDecorator: public Decorator
 {
-  IMP_DECORATOR(NameDecorator, DecoratorBase);
+  IMP_DECORATOR(NameDecorator, Decorator);
 public:
 
   IMP_DECORATOR_GET_SET(name, get_name_key(), String, String);

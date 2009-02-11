@@ -323,7 +323,7 @@ protected:                                                      \
 
     \param[in] Name is the name of the decorator, such as NameDecorator
     \param[in] Parent The class name for the parent of this class,
-    typically DecoratorBase
+    typically Decorator
 
     It requires that the implementer of the Decorator implement the static
     methods:
@@ -375,7 +375,7 @@ public:                                                                 \
 
     \param[in] Name is the name of the decorator, such as NameDecorator
     \param[in] Parent The class name for the parent of this class,
-    typically DecoratorBase
+    typically Decorator
     \param[in] TraitsType the type of the traits object
     \param[in] TraitsType the type of the traits object
 

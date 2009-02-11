@@ -14,7 +14,7 @@
 
 // All below can go away once decoratorbase is updated
 #include "../config.h"
-#include <IMP/DecoratorBase.h>
+#include <IMP/Decorator.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 /** Stupid hack since I can't change the kernel. This should go away
@@ -25,7 +25,7 @@ template <class T> inline bool parent_instance(::IMP::Particle *p) {
 /** inline is needed, much to my surprise.
  */
 template <>
-inline bool parent_instance<DecoratorBase>(::IMP::Particle *p) {
+inline bool parent_instance<Decorator>(::IMP::Particle *p) {
   return true;
 }
 
