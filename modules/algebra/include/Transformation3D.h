@@ -69,6 +69,31 @@ inline Transformation3D identity_transformation() {
   return Transformation3D(identity_rotation(),Vector3D(0.0,0.0,0.0));
 }
 
+
+//! Generate a transformation from the natural reference-frame to
+//  a different one
+/**
+  \param[in] u     vector used to define the new reference frame
+  \param[in] w     vector used to define the new reference frame
+  \param[in] base  the center of the new reference frame
+  \brief A rotation from the natural reference frame to one defined by u,w
+         and base.
+         The x-axis lies on u-base.
+         The y-axis is perpendicular to both x and z.
+         The z-axis is perpendicular to the u-base , w-base plane
+ */
+inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
+                                                const Vector3D &w,
+                                                const Vector3D &base) {
+  Vector3D x = (u-base).get_unit_vector();
+  Vector3D z = (get_vertical(x,w-base)).get_unit_vector();
+  Vector3D y = (get_vertical(z,x)).get_unit_vector();
+  Rotation3D rot = (rotation_from_matrix(x[0],x[1],x[2],
+                                         y[0],y[1],y[2],
+                                         z[0],z[1],z[2])).get_inverse();
+  return Transformation3D(rot,base);
+}
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_TRANSFORMATION_3D_H */
