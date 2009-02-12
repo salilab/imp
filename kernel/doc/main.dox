@@ -19,7 +19,7 @@
  \section developers IMP developers
 
   In addition to the user documentation, developers should also be familiar
-  with the \ref devguide "developers guide" and read the \impdev email list.
+  with the \ref devguide "developers guide" and monitor the \impdev email list.
    
 
  \section key_pages Key pages
@@ -27,7 +27,7 @@
  - \salilab{imp/bugs,Bug Tracker}
  - \salilab{internal/imp/tests.html,Daily build status}
  - \salilab{imp/doc/doxygen/deprecated.html,
-   List of deprecated classes}
+   Deprecated functionality list}
  - \ref devguide "Developer guide"
  - \ref examples "Examples"
  - \wiki{FrontPage,IMP wiki}
