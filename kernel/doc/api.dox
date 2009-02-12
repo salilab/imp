@@ -18,6 +18,7 @@
     most functionality. They are:
     - IMP::Model
     - IMP::Particle
+    - IMP::Decorator
     - IMP::Restraint
     - IMP::ScoreState
     - IMP::Optimizer
@@ -25,7 +26,8 @@
     - IMP::SingletonScore, IMP::PairScore, IMP::TripletScore
     - IMP::SingletonModifier, IMP::PairModifier
 
-    There are a few blocks of functionality that cut across modules. They are
+    There are a few blocks of functionality that cut across modules. They
+    include
     - \ref hierarchy "Code to create and manipulate hierarchies"
     - \ref bond "Code to create and manipulate bonds"
 
