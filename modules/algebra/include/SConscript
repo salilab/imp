@@ -9,7 +9,8 @@ files = [
          'utility.h',
          'MultiArray.h',
          'Matrix2D.h',
-         'Matrix3D.h'
+         'Matrix3D.h',
+         'eigen_analysis.h'
         ] \
         + SConscript('internal/SConscript')
 

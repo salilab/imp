@@ -5,6 +5,7 @@ files = [
          'Rotation3D.cpp',
          'Transformation3D.cpp',
          'geometric_alignment.cpp',
+         'eigen_analysis.cpp'
         ]
 
 # Build and install the shared library:

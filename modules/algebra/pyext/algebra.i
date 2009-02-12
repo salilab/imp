@@ -27,3 +27,4 @@ namespace IMP {
 %include "IMP/algebra/Rotation3D.h"
 %include "IMP/algebra/Transformation3D.h"
 %include "IMP/algebra/geometric_alignment.h"
+%include "IMP/algebra/eigen_analysis.h"
