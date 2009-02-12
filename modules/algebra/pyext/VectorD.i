@@ -49,6 +49,7 @@ namespace IMP {
 };
 
 %include "IMP/algebra/VectorD.h"
+%include "IMP/algebra/Vector3D.h"
 
 namespace IMP {
  namespace algebra {

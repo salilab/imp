@@ -31,12 +31,6 @@ class Vector4DTests(IMP.test.TestCase):
         self.assertInTolerance(v1.scalar_product(v2), v2 * v1, .1)
         self.assertInTolerance(v1.scalar_product(v2), 30.0, .1)
 
-    def test_vector_product(self):
-        """Vector4D vector product should not work"""
-        v1 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)
-        v2 = IMP.algebra.Vector4D(10.0, 1.0, 2.0, 3.0)
-        self.assertRaises(ValueError, v1.vector_product, v2)
-
     def test_difference(self):
         """Check Vector4D difference"""
         v1 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 4.0)

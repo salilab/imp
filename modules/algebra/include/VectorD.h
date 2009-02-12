@@ -146,19 +146,6 @@ public:
     return ret;
   }
 
-  //! \return the vector product of two vectors.
-  VectorD vector_product(const VectorD &vec2) const {
-#ifdef SWIG_WRAPPER
-    IMP_check(D==3, "Need " << D << " to perform a vector product ",
-              ValueException);
-#else
-    BOOST_STATIC_ASSERT(D==3);
-#endif
-    return VectorD(vec_[1] * vec2.vec_[2] - vec_[2] * vec2.vec_[1],
-                   vec_[2] * vec2.vec_[0] - vec_[0] * vec2.vec_[2],
-                   vec_[0] * vec2.vec_[1] - vec_[1] * vec2.vec_[0]);
-  }
-
   //! \return The square of the magnitude of this vector.
   Float get_squared_magnitude() const {
     return scalar_product(*this);
@@ -171,6 +158,8 @@ public:
 
   //! \return This vector normalized to unit length.
   VectorD get_unit_vector() const {
+    IMP_assert(get_magnitude() != 0,
+               "Cannot get a unit vector from a zero vector");
     Float mag = get_magnitude();
     // avoid division by zero
     mag = std::max(mag, static_cast<Float>(1e-12));
