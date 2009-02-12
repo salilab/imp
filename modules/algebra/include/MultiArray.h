@@ -14,56 +14,12 @@
 #include "IMP/random.h"
 #include "IMP/misc/text_manipulation.h"
 #include "IMP/algebra/utility.h"
-#include "boost/array.hpp"
-#include "boost/multi_array.hpp"
+#include "IMP/algebra/internal/multi_array_helpers.h"
 #include <ctime>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 
-//! Return the next set of indices within an array of given shape
-/**
- * The indices are increased from last to first, and the increment is always +1
- * If the last set of indices has been reached, false is returned.
- * \param[in] inds class with the list of indices to roll. It must be a class
- * admiting access via [], and the function .size()
- * \param[in] dims class with the list of sizes the array for each dimension
- * \param[in] inds class with the list of starting indices for the array
- */
-template<typename T1, typename T2, typename T3>
-bool roll_inds(T1& inds, T2* dims, T3* start)
-{
-  static bool initialized = false;
-  int i = inds.size() - 1;
-  if (initialized == false) {
-    // initialize the class and check that some dimension is not 0.
-    bool aux = false;
-    for (unsigned int j = 0;j < inds.size();j++) {
-      inds[j] = start[j];
-      if (dims[j] > 0) aux = true;
-    }
-    initialized = true;
-    return aux;
-  }
-  while (i >= 0) {
-    if (inds[i] < (static_cast<int>(start[i] + dims[i]) - 1)) {
-      inds[i] += 1;
-      return true;
-    }
-    // first index
-    else if (i == 0) {
-      initialized = false;
-      return false;
-    }
-    // decrease one index
-    else {
-      inds[i] = start[i];
-      i -= 1;
-    }
-  }
-  initialized = false;
-  return false;
-}
 
 
 //! Template class for managing multidimensional arrays
@@ -143,7 +99,8 @@ public:
   //! All the values of the array are set to zero
   void init_zeros() {
     std::vector<int> idx(D);
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       (*this)(idx) = 0;
     }
   }
@@ -160,69 +117,69 @@ public:
   //! Sum operator
   MultiArray<T, D> operator+(const MultiArray<T, D>& v) const {
     MultiArray<T, D> result(this->shape());
-    operate_arrays(*this, v, result, '+');
+    internal::operate_arrays(*this, v, result, '+');
     return result;
   }
 
   //! Minus operator
   MultiArray<T, D> operator-(const MultiArray<T, D>& v) const {
     MultiArray<T, D> result(this->shape());
-    operate_arrays(*this, v, result, '-');
+    internal::operate_arrays(*this, v, result, '-');
     return result;
   }
 
   //! Multiplication operator
   MultiArray<T, D> operator*(const MultiArray<T, D>& v) const {
     MultiArray<T, D> result(this->shape());
-    operate_arrays(*this, v, result, '*');
+    internal::operate_arrays(*this, v, result, '*');
     return result;
   }
 
   //! Division operator
   MultiArray<T, D> operator/(const MultiArray<T, D>& v) const {
     MultiArray<T, D> result(this->shape());
-    operate_arrays(*this, v, result, '/');
+    internal::operate_arrays(*this, v, result, '/');
     return result;
   }
 
   //! Addition operator
   void operator+=(const MultiArray<T, D>& v) const {
-    operate_arrays(*this, v, *this, '+');
+    internal::operate_arrays(*this, v, *this, '+');
   }
 
   //! Substraction operator
   void operator-=(const MultiArray<T, D>& v) const {
-    operate_arrays(*this, v, *this, '-');
+    internal::operate_arrays(*this, v, *this, '-');
   }
 
   //! Multiplication operator
   void operator*=(const MultiArray<T, D>& v) const {
-    operate_arrays(*this, v, *this, '*');
+    internal::operate_arrays(*this, v, *this, '*');
   }
 
   //! Division operator
   void operator/=(const MultiArray<T, D>& v) const {
-    operate_arrays(*this, v, *this, '/');
+    internal::operate_arrays(*this, v, *this, '/');
   }
 
   //! Sum operator for an array and a scalar
   MultiArray<T, D> operator+(const T& v) const {
     MultiArray<T, D> result(this->shape());
-    operate_array_and_scalar(*this, v, result, '+');
+    internal::operate_array_and_scalar(*this, v, result, '+');
     return result;
   }
 
   //! Minus operator for an array and a scalar
   MultiArray<T, D> operator-(const T& v) const {
     MultiArray<T, D> result(this->shape());
-    operate_array_and_scalar(*this, v, result, '-');
+    internal::operate_array_and_scalar(*this, v, result, '-');
     return result;
   }
 
   //! Multiplication operator for an array and a scalar
   MultiArray<T, D> operator*(const T& v) const {
     MultiArray<T, D> result(this->shape());
-    operate_array_and_scalar(*this, v, result, '*');
+    internal::operate_array_and_scalar(*this, v, result, '*');
     return result;
   }
 
@@ -230,56 +187,56 @@ public:
   //! Division operator for an array and a scalar
   MultiArray<T, D> operator/(const T& v) const {
     MultiArray<T, D> result(this->shape());
-    operate_array_and_scalar(*this, v, result, '/');
+    internal::operate_array_and_scalar(*this, v, result, '/');
     return result;
   }
 
   //! Addition operator for an array and a scalar
   void operator+=(const T& v) const {
-    operate_array_and_scalar(*this, v, *this, '+');
+    internal::operate_array_and_scalar(*this, v, *this, '+');
   }
 
   //! Substraction operator for an array and a scalar
   void operator-=(const T& v) const {
-    operate_array_and_scalar(*this, v, *this, '-');
+    internal::operate_array_and_scalar(*this, v, *this, '-');
   }
 
   //! Multiplication operator for an array and a scalar
   void operator*=(const T& v) const {
-    operate_array_and_scalar(*this, v, *this, '*');
+    internal::operate_array_and_scalar(*this, v, *this, '*');
   }
 
   //! Division operator for an array and a scalar
   void operator/=(const T& v) const {
-    operate_array_and_scalar(*this, v, *this, '/');
+    internal::operate_array_and_scalar(*this, v, *this, '/');
   }
 
 
   //! Sum operator for a scalar and an array
   friend MultiArray<T, D> operator+(const T& X, const MultiArray<T, D>& a1) {
     MultiArray<T, D> result(a1->shape());
-    operate_scalar_and_array(X, a1, result, '+');
+    internal::operate_scalar_and_array(X, a1, result, '+');
     return result;
   }
 
   //! Minus operator for a scalar and an array
   friend MultiArray<T, D> operator-(const T& X, const MultiArray<T, D>& a1) {
     MultiArray<T, D> result(a1->shape());
-    operate_scalar_and_array(X, a1, result, '-');
+    internal::operate_scalar_and_array(X, a1, result, '-');
     return result;
   }
 
   //! Multiplication operator for a scalar and an array
   friend MultiArray<T, D> operator*(const T& X, const MultiArray<T, D>& a1) {
     MultiArray<T, D> result(a1->shape());
-    operate_scalar_and_array(X, a1, result, '*');
+    internal::operate_scalar_and_array(X, a1, result, '*');
     return result;
   }
 
   //! Division operator for a scalar and an array
   friend MultiArray<T, D> operator/(const T& X, const MultiArray<T, D>& a1) {
     MultiArray<T, D> result(a1->shape());
-    operate_scalar_and_array(X, a1, result, '/');
+    internal::operate_scalar_and_array(X, a1, result, '/');
     return result;
   }
 
@@ -316,7 +273,8 @@ public:
   T compute_max() const {
     std::vector<index> idx(D);
     T maxval = first_element();
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       if ((*this)(idx) > maxval) {
         maxval = (*this)(idx);
       }
@@ -328,7 +286,8 @@ public:
   T compute_min() const {
     std::vector<index> idx(D);
     T minval = first_element();
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       if ((*this)(idx) < minval) {
         minval = (*this)(idx);
       }
@@ -348,7 +307,8 @@ public:
     }
     Float avg = 0;
     std::vector<index> idx(D);
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       avg += static_cast<Float>((*this)(idx));
     }
     return avg / (this->num_elements());
@@ -366,7 +326,8 @@ public:
     T val;
     Float avg = 0, stddev = 0;
     std::vector<index> idx(D);
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       val = (*this)(idx);
       avg += static_cast<Float>(val);
       stddev += static_cast<Float>(val) * static_cast<Float>(val);
@@ -392,7 +353,8 @@ public:
       maxval = minval = val;
 
       std::vector<index> idx(D);
-      while (roll_inds(idx, this->shape(), this->index_bases())) {
+      while (internal::roll_inds(idx, this->shape(),
+                                          this->index_bases())) {
         val = (*this)(idx);
         if (val > maxval) {
           maxval = val;
@@ -422,7 +384,8 @@ public:
   T sum_elements() const {
     T sum = 0;
     std::vector<index> idx(D);
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       sum += (*this)(idx);
     }
     return sum;
@@ -433,7 +396,8 @@ public:
   T sum_squared_elements() const {
     T sum = 0;
     std::vector<index> idx(D);
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       sum += (*this)(idx) * (*this)(idx);
     }
     return sum;
@@ -476,7 +440,8 @@ public:
    */
   void read_binary(std::ifstream& in) {
     std::vector<index> idx(D);
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       in.read(reinterpret_cast< char* >(&((*this)(idx))), sizeof(T));
     }
   }
@@ -511,7 +476,8 @@ public:
   //! Write to a output stream in binary mode.
   void write_binary(std::ofstream& out) {
     std::vector<index> idx(D);
-    while (roll_inds(idx, this->shape(), this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),
+                                        this->index_bases())) {
       out.write(reinterpret_cast< char* >(&((*this)(idx))), sizeof(T));
     }
   }
@@ -519,7 +485,7 @@ public:
 
   friend std::istream& operator>>(std::istream& in, MultiArray<T, D>& v) {
     std::vector<index> idx(D);
-    while (roll_inds(idx, v.shape(), v.index_bases())) {
+    while (internal::roll_inds(idx, v.shape(), v.index_bases())) {
       in >> v(idx);
     }
     return in;
@@ -542,7 +508,7 @@ std::ostream& operator<<(std::ostream& ostrm, const MultiArray<T, D>& v)
     ostrm << std::endl;
   }
   T absmax = v.first_element();
-  while (roll_inds(idx, v.shape(), v.index_bases())) {
+  while (internal::roll_inds(idx, v.shape(), v.index_bases())) {
     if (std::abs(v(idx)) > absmax) {
       absmax = v(idx);
     }
@@ -574,109 +540,12 @@ std::ostream& operator<<(std::ostream& ostrm, const MultiArray<T, D>& v)
       ostrm << std::endl;
     }
   } else {
-    while (roll_inds(idx, v.shape(), v.index_bases())) {
+    while (internal::roll_inds(idx, v.shape(), v.index_bases())) {
       ostrm << misc::float_to_string((Float)v(idx), 10, prec) << ' ';
     }
     ostrm << std::endl;
   }
   return ostrm;
-}
-
-
-//! This function operates with two arrays of the same shape on a element
-//! per element basis.
-/**
-  Supported operations: sum, rest, multiplication and division
- */
-template <typename T, int D>
-void operate_arrays(const MultiArray<T, D>& a1, const MultiArray<T, D>& a2,
-                    MultiArray<T, D>& result, const char operation)
-{
-  if (a1.same_shape(a2) && a1.same_shape(result)) {
-    typedef boost::multi_array_types::index index;
-    std::vector<index> idx(D);
-    while (roll_inds(idx, a1.shape(), a1.index_bases())) {
-      switch (operation) {
-      case '+':
-        result(idx) = a1(idx) + a2(idx);
-        break;
-      case '-':
-        result(idx) = a1(idx) - a2(idx);
-        break;
-      case '*':
-        result(idx) = a1(idx) * a2(idx);
-        break;
-      case '/':
-        result(idx) = a1(idx) / a2(idx);
-        break;
-      }
-    }
-  } else {
-    String op(&operation);
-    String msg = "operate_arrays:: Operator " + op +
-                 " not supported with arrays of different shape "
-                  "(size and origin).";
-    throw ErrorException(msg.c_str());
-  }
-}
-
-//! This function operates with one scalar and an array on a element
-//! per element basis.
-/**
-  Supported operations: sum, rest, multiplication and division
- // */
-template <typename T, int D>
-void operate_scalar_and_array(const T& X, const MultiArray<T, D>& a1,
-                              MultiArray<T, D>& result, const char operation)
-{
-  typedef boost::multi_array_types::index index;
-  std::vector<index> idx(D);
-  while (roll_inds(idx, a1.shape(), a1.index_bases())) {
-    switch (operation) {
-    case '+':
-      result(idx) = X + a1(idx);
-      break;
-    case '-':
-      result(idx) = X - a1(idx);
-      break;
-    case '*':
-      result(idx) = X * a1(idx);
-      break;
-    case '/':
-      result(idx) = X / a1(idx);
-      break;
-    }
-  }
-}
-
-
-//! This function operates with one array and a scalar on a element
-//! per element basis.
-/**
-  Supported operations: sum, rest, multiplication and division
- // */
-template <typename T, int D>
-void operate_array_and_scalar(const MultiArray<T, D>& a1, const T& X,
-                              MultiArray<T, D>& result, const char operation)
-{
-  typedef boost::multi_array_types::index index;
-  std::vector<index> idx(D);
-  while (roll_inds(idx, a1.shape(), a1.index_bases())) {
-    switch (operation) {
-    case '+':
-      result(idx) = a1(idx) + X;
-      break;
-    case '-':
-      result(idx) = a1(idx) - X;
-      break;
-    case '*':
-      result(idx) = a1(idx) * X;
-      break;
-    case '/':
-      result(idx) = a1(idx) / X;
-      break;
-    }
-  }
 }
 
 IMPALGEBRA_END_NAMESPACE
