@@ -26,8 +26,8 @@ class EigenAnalysisTests(IMP.test.TestCase):
         """Testing eigen analysis """
         vs = self._produce_point_set()
         ed = IMP.algebra.principle_components(vs)
-        self.assertInTolerance(ed.eigen_values_[0],1.28,.1)
-        self.assertInTolerance(ed.eigen_values_[1],0.049,.1)
+        self.assertInTolerance(ed.get_principle_value(0),1.28,.1)
+        self.assertInTolerance(ed.get_principle_value(1),0.049,.1)
         ed.show()
 if __name__ == '__main__':
     unittest.main()

@@ -6,7 +6,8 @@
  */
 #include "IMP/algebra/eigen_analysis.h"
 IMPALGEBRA_BEGIN_NAMESPACE
-EigenData principle_components(const std::vector<Vector3D> &ps){
+PrincipleComponentAnalysis principle_components(
+const std::vector<Vector3D> &ps){
   Float x_mean,y_mean,z_mean,varx,vary,varz;
   Float varxy,varxz,varyz;
   x_mean=y_mean=z_mean=0.0;
@@ -55,10 +56,10 @@ EigenData principle_components(const std::vector<Vector3D> &ps){
   svd.getSingularValues(SV);
   //the principal components are the columns of V
   //pc1(pc3) is the vector of the largest(smallest) eigenvalue
-  EigenData ed(Vector3D(V[0][0],V[1][0],V[2][0]),
-               Vector3D(V[0][1],V[1][1],V[2][1]),
-               Vector3D(V[0][2],V[1][2],V[2][2]),
-               Vector3D(SV[0],SV[1],SV[2]));
+  PrincipleComponentAnalysis ed(Vector3D(V[0][0],V[1][0],V[2][0]),
+                                Vector3D(V[0][1],V[1][1],V[2][1]),
+                                Vector3D(V[0][2],V[1][2],V[2][2]),
+                                Vector3D(SV[0],SV[1],SV[2]));
   return ed;
 }
 IMPALGEBRA_END_NAMESPACE
