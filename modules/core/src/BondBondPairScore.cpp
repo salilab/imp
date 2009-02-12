@@ -7,7 +7,7 @@
 
 #include "IMP/core/BondBondPairScore.h"
 #include "IMP/core/XYZDecorator.h"
-#include "IMP/internal/constants.h"
+#include "IMP/constants.h"
 #include "IMP/core/internal/evaluate_distance_pair_score.h"
 #include "IMP/core/bond_decorators.h"
 #include <IMP/algebra/Vector3D.h>
@@ -135,7 +135,7 @@ Float BondBondPairScore::get_offset(Particle *p,
       v= d*pi*r^2
       r= sqrt(v/ d*pi)
      */
-    Float r= std::sqrt(v/ (d * IMP::internal::PI));
+    Float r= std::sqrt(v/ (d * PI));
     return r;
   } else {
     return 0;

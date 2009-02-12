@@ -13,7 +13,7 @@
 #include <IMP/macros.h>
 #include <IMP/exception.h>
 #include <IMP/random.h>
-#include <IMP/internal/constants.h>
+#include <IMP/utility.h>
 
 #include <boost/random/uniform_real.hpp>
 #include <boost/static_assert.hpp>

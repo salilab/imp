@@ -10,7 +10,6 @@
 
 #include <IMP/core/bond_decorators.h>
 #include <IMP/core/XYZDecorator.h>
-#include <IMP/internal/constants.h>
 #include <IMP/deprecation.h>
 
 #include <cmath>

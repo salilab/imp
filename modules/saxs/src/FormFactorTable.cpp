@@ -8,7 +8,7 @@
 
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/core/AtomDecorator.h>
-#include <IMP/internal/constants.h>
+#include <IMP/constants.h>
 #include <IMP/algebra/utility.h>
 
 #include <fstream>
@@ -148,7 +148,7 @@ void FormFactorTable::compute_form_factors_all_atoms()
   unsigned int number_of_q_entries = algebra::round(
                                              (max_q_ - min_q_) / delta_q_ ) + 1;
   unsigned int i, iq;
-  Float four_pi = 4.0 * IMP::internal::PI;
+  Float four_pi = 4.0 * PI;
   Float one_over_four_pi = 1.0 / four_pi;
   std::vector<Float> qq, ss;
 
