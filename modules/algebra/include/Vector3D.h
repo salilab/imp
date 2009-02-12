@@ -24,6 +24,14 @@ typedef VectorD<3> Vector3D;
 //! A collection of Vector3D
 typedef std::vector<Vector3D> Vector3Ds;
 
+//! Returns a vector that is vertical to both vectors.
+inline Vector3D get_vertical(const Vector3D& p1, const Vector3D& p2) {
+  return Vector3D(p1[1]*p2[2]-p1[2]*p2[1],
+                  p1[2]*p2[0]-p1[0]*p2[2],
+                  p1[0]*p2[1]-p1[1]*p2[0]);
+  }
+
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_3D_H */
