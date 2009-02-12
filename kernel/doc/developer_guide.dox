@@ -83,6 +83,22 @@ they want to allow others commit to change code in their module. Email them
 and ask for commit rights (a sysadmin can add these), or send them your patch
 for integration. If in doubt, post it on the <imp-dev@salilab.org> mailing list.
 
+\section internal_ns Internal Namespaces
+Each module has an internal namespace, \c module_name::internal and an internal
+include directory \c modulename/internal. Any function which is
+ - not intended to be part of the API,
+ - not documented,
+ - liable to change without notice,
+ - or not tested
+
+should be declared in an internal header and placed in the internal namespace.
+
+The functionality in such internal headers is
+ - not exported to python
+ - and not part of of documented API
+
+As a result, such functions do not need to obey all the coding conventions
+(but we recommend that they do).
 
 \section submission Submission of changes to IMP kernel or IMP.core
 
