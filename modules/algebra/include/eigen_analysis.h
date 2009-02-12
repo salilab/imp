@@ -14,11 +14,10 @@
 #include <IMP/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
-
-class IMPALGEBRAEXPORT EigenData {
+class IMPALGEBRAEXPORT PrincipleComponentAnalysis {
 public:
-  EigenData(const Vector3D &pc1,const Vector3D &pc2,
-            const Vector3D &pc3,Vector3D values) : eigen_values_(values){
+  PrincipleComponentAnalysis(const Vector3D &pc1,const Vector3D &pc2,
+       const Vector3D &pc3,Vector3D values) : eigen_values_(values){
     eigen_vecs_.push_back(pc1);
     eigen_vecs_.push_back(pc2);
     eigen_vecs_.push_back(pc3);
@@ -33,11 +32,20 @@ public:
     out<<std::endl<<"Third eigen vector : ";
     eigen_vecs_[2].show();
   }
+  Vector3D get_principle_component(unsigned int i) const {
+    IMP_assert((i>=0) and (i<3), "index is not between 0, 1 or 2");
+    return eigen_vecs_[i];
+  }
+  Float get_principle_value(unsigned int i) const {
+    IMP_assert((i>=0) and (i<3), "index is not between 0, 1 or 2");
+    return eigen_values_[i];
+  }
+protected:
   std::vector<Vector3D> eigen_vecs_;
   Vector3D eigen_values_;
 };
 
-IMPALGEBRAEXPORT EigenData principle_components(
+IMPALGEBRAEXPORT PrincipleComponentAnalysis principle_components(
                               const std::vector<Vector3D> &ps);
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_EIGEN_ANALYSIS_H */
