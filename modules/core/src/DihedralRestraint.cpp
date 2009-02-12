@@ -55,8 +55,8 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
   algebra::Vector3D rkj = d1.get_vector_to(d2);
   algebra::Vector3D rkl = d3.get_vector_to(d2);
 
-  algebra::Vector3D v1 = rij.vector_product(rkj);
-  algebra::Vector3D v2 = rkj.vector_product(rkl);
+  algebra::Vector3D v1 = vector_product(rij, rkj);
+  algebra::Vector3D v2 = vector_product(rkj, rkl);
   Float scalar_product = v1.scalar_product(v2);
   Float mag_product = v1.get_magnitude() * v2.get_magnitude();
 
@@ -70,7 +70,7 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 
   Float angle = std::acos(cosangle);
   // get sign
-  algebra::Vector3D v0 = v1.vector_product(v2);
+  algebra::Vector3D v0 = vector_product(v1, v2);
   Float sign = rkj.scalar_product(v0);
   if (sign < 0.0) {
     angle = -angle;
@@ -84,8 +84,8 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 
     // method for derivative calculation from van Schaik et al.
     // J. Mol. Biol. 234, 751-762 (1993)
-    algebra::Vector3D vijkj = rij.vector_product(rkj);
-    algebra::Vector3D vkjkl = rkj.vector_product(rkl);
+    algebra::Vector3D vijkj = vector_product(rij, rkj);
+    algebra::Vector3D vkjkl = vector_product(rkj, rkl);
     Float sijkj2 = vijkj.get_squared_magnitude();
     Float skjkl2 = vkjkl.get_squared_magnitude();
     Float skj = rkj.get_magnitude();

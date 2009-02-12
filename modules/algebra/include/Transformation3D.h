@@ -86,11 +86,11 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
                                                 const Vector3D &w,
                                                 const Vector3D &base) {
   Vector3D x = (u-base).get_unit_vector();
-  Vector3D z = (get_vertical(x,w-base)).get_unit_vector();
-  Vector3D y = (get_vertical(z,x)).get_unit_vector();
-  Rotation3D rot = (rotation_from_matrix(x[0],x[1],x[2],
-                                         y[0],y[1],y[2],
-                                         z[0],z[1],z[2])).get_inverse();
+  Vector3D z = vector_product(x,w-base).get_unit_vector();
+  Vector3D y = vector_product(z,x).get_unit_vector();
+  Rotation3D rot = rotation_from_matrix(x[0],x[1],x[2],
+                                        y[0],y[1],y[2],
+                                        z[0],z[1],z[2]).get_inverse();
   return Transformation3D(rot,base);
 }
 

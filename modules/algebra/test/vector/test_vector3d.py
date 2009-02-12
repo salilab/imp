@@ -34,8 +34,8 @@ class Vector3DTests(IMP.test.TestCase):
         """Check Vector3D vector product"""
         v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         v2 = IMP.algebra.Vector3D(10.0, 1.0, 2.0)
-        v12 = v1.vector_product(v2)
-        v21 = v2.vector_product(v1)
+        v12 = IMP.algebra.vector_product(v1, v2)
+        v21 = IMP.algebra.vector_product(v2, v1)
         expected_v12 = (1.0, 28.0, -19.0)
         for i in range(3):
             self.assertInTolerance(v12[i], -v21[i], .1)
