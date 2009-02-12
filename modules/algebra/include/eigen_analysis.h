@@ -33,11 +33,11 @@ public:
     eigen_vecs_[2].show();
   }
   Vector3D get_principle_component(unsigned int i) const {
-    IMP_assert((i>=0) and (i<3), "index is not between 0, 1 or 2");
+    IMP_assert(i>=0 && i<3, "index is not between 0, 1 or 2");
     return eigen_vecs_[i];
   }
   Float get_principle_value(unsigned int i) const {
-    IMP_assert((i>=0) and (i<3), "index is not between 0, 1 or 2");
+    IMP_assert(i>=0 && i<3, "index is not between 0, 1 or 2");
     return eigen_values_[i];
   }
 protected:
