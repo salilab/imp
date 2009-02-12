@@ -5,7 +5,7 @@ import IMP.test
 import IMP.algebra
 
 class EigenAnalysisTests(IMP.test.TestCase):
-    """Test rigid transformations"""
+    """Test eigen analysis"""
 
     def _produce_point_set(self):
         vs= []
@@ -22,8 +22,8 @@ class EigenAnalysisTests(IMP.test.TestCase):
 
         return vs
 
-    def test_align(self):
-        """Testing rigid alignment of point sets, no translation"""
+    def test_pca(self):
+        """Testing eigen analysis """
         vs = self._produce_point_set()
         ed = IMP.algebra.principle_components(vs)
         self.assertInTolerance(ed.eigen_values_[0],1.28,.1)
