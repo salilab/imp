@@ -8,6 +8,7 @@
 #include <IMP/saxs/SaxsData.h>
 
 #include <boost/multi_array.hpp>
+#include <IMP/constants.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -503,7 +504,7 @@ int SaxsData::saxs_formheavatm(void) {
     //volr[iat] = pow(excl_vol[iat], (2.0/3.0)) / (4.0*IMP::internal::PI);
 
 // for Debugging
-printf("%d \t %g \t %g \t %g\n", iat, excl_vol[iat], IMP::internal::PI,
+printf("%d \t %g \t %g \t %g\n", iat, excl_vol[iat], PI,
        volr[iat]);
 
     iat++;
@@ -540,8 +541,8 @@ printf("%d \t %g \t %g \t %g\n", iat, excl_vol[iat], IMP::internal::PI,
         }
         //! subtract solvation component
         formfactor_[iform][is] -= rho_solv_ *
-        (excl_vol[iat]*exp(-(4.0*IMP::internal::PI)*volr[iat]*s_waasmei)
-         + nh * excl_vol[0]*exp(-(4.0*IMP::internal::PI)*volr[0]*s_waasmei) );
+        (excl_vol[iat]*exp(-(4.0*PI)*volr[iat]*s_waasmei)
+         + nh * excl_vol[0]*exp(-(4.0*PI)*volr[0]*s_waasmei) );
         // TODO: ?
         //! - rho_solv_ * (excl_vol(iat) + nh * excl_vol(1))
         //! use for comparison to real space results - replace

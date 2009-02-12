@@ -117,6 +117,9 @@ typedef Shift<KilocaloriePerMeter, -21>::type YoctoKilocaloriePerMeter;
 typedef Shift<KilocaloriePerAngstrom, -21>::type YoctoKilocaloriePerAngstrom;
 typedef Multiply<Multiply<Centimeter, Centimeter>::type,
                       Centimeter>::type CubicCentimeter;
+typedef Multiply<Multiply<Angstrom, Angstrom>::type,
+                      Angstrom>::type CubicAngstrom;
+  typedef Shift<CubicCentimeter, 3>::type Liter;
 typedef Divide<Gram, CubicCentimeter>::type GramPerCubicCentimeter;
 
 

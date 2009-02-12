@@ -13,6 +13,7 @@
 
 #include <fstream>
 #include <string>
+#include <iomanip>
 
 IMPSAXS_BEGIN_NAMESPACE
 

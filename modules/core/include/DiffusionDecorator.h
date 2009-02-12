@@ -34,10 +34,22 @@ class IMPCOREEXPORT DiffusionDecorator: public XYZDecorator
       D is assumed to be in cm2/sec.
   */
   static DiffusionDecorator create(Particle *p,
-                             const algebra::Vector3D &v=
-                                   algebra::Vector3D(0,0,0),
-                                   Float D=0) {
+                             const algebra::Vector3D &v,
+                                   Float D) {
     XYZDecorator::create(p, v);
+    p->add_attribute(get_D_key(), D);
+    return DiffusionDecorator(p);
+  }
+
+  /** Create a decorator with the a given D.
+      D is assumed to be in cm2/sec and the particle
+      is assumed to already have x,y,z attributes
+  */
+  static DiffusionDecorator create(Particle *p,
+                                   Float D=0) {
+    IMP_check(XYZDecorator::is_instance_of(p),
+              "Particle must already be an XYZDecorator particle",
+              ValueException);
     p->add_attribute(get_D_key(), D);
     return DiffusionDecorator(p);
   }

@@ -368,6 +368,13 @@ operator/(double d, Unit<Tag, EXP, Units> o) {
   return Unit<Tag, EXP, Units>(d/o.get_value());
 }
 
+
+template <class Tag, int EXP, int EXP2, class Units>
+Unit<Tag, EXP-EXP2, Units >
+operator/(Unit<Tag, EXP, Units> u, ExponentialNumber<EXP2> o) {
+  return Unit<Tag, EXP-EXP2, Units>(u.get_exponential_value()/o);
+}
+
 // Multiply and divide Unit instantiations
 
 template <class U0, class U1>

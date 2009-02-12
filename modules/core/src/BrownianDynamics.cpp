@@ -11,6 +11,7 @@
 
 #include <IMP/log.h>
 #include <IMP/random.h>
+#include <IMP/constants.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
@@ -272,7 +273,7 @@ BrownianDynamics
   typedef unit::Multiply<unit::SquareAngstrom,
     unit::Angstrom>::type CubicAngstrom;
 
-  CubicAngstrom v((m/p)*(4.0/(3.0*IMP::internal::PI)));
+  CubicAngstrom v((m/p)*(4.0/(3.0*PI)));
 
   return unit::Angstrom(std::pow(v.get_value(), .3333));
 }

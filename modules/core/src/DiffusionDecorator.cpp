@@ -7,6 +7,7 @@
 
 #include "IMP/core/DiffusionDecorator.h"
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/constants.h>
 
 #ifdef IMP_USE_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -88,7 +89,7 @@ void DiffusionDecorator::set_D_from_radius_in_angstroms(Float ir,
             << std::endl;
   std::cout << "ret pre conv " << (kt/(unit::Scalar(6* unit::PI)*etar))
   << std::endl;*/
-  unit::SquareCentimeterPerSecond ret(kt(t)/(6.0* IMP::internal::PI*e*r));
+  unit::SquareCentimeterPerSecond ret(kt(t)/(6.0* IMP::PI*e*r));
   //std::cout << "ret " << ret << std::endl;
   set_D_in_cm2_per_second(ret.get_value());
 }
