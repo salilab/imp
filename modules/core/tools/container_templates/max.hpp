@@ -12,7 +12,7 @@
 #define IMPCORE_MAXIMUM_GROUPNAME_SCORE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/Restraint.h>
 #include <IMP/GroupnameScore.h>
 #include <IMP/GroupnameContainer.h>
@@ -41,7 +41,7 @@ public:
 
   virtual ~MaximumGroupnameScoreRestraint();
 
-  IMP_RESTRAINT(internal::core_version_info);
+  IMP_RESTRAINT(internal::version_info);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

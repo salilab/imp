@@ -12,7 +12,7 @@
 #define IMPCORE_GROUPNAME_CONTAINER_SET_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
 
@@ -30,7 +30,7 @@ public:
 
   virtual ~GroupnameContainerSet();
 
-  IMP_GROUPNAME_CONTAINER(internal::core_version_info);
+  IMP_GROUPNAME_CONTAINER(internal::version_info);
 
   IMP_LIST(public, GroupnameContainer, groupname_container,
            GroupnameContainer*);
