@@ -58,7 +58,7 @@ class PDBReadTest(IMP.test.TestCase):
 
         t_start = time.clock()
         #! calculate derivatives of chi-square per particle
-        chi_derivatives = vs= IMP.algebra.Vector3Ds()
+        chi_derivatives = IMP.algebra.Vector3Ds()
         saxs_score.calculate_chi_derivative(model_saxs_profile,
                                             particles,
                                             chi_derivatives)
