@@ -9,7 +9,7 @@
 #define IMPCORE_ANGLE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include "AngleTripletScore.h"
 
 #include <IMP/Restraint.h>
@@ -32,7 +32,7 @@ public:
                  Particle* p1, Particle* p2, Particle* p3);
   virtual ~AngleRestraint(){}
 
-  IMP_RESTRAINT(internal::core_version_info)
+  IMP_RESTRAINT(internal::version_info)
 
   ParticlesList get_interacting_particles() const
   {

@@ -13,7 +13,7 @@
 
 #include "config.h"
 
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 
@@ -38,7 +38,7 @@ public:
 
   virtual ~AllPairsPairContainer();
 
-  IMP_PAIR_CONTAINER(internal::core_version_info);
+  IMP_PAIR_CONTAINER(internal::version_info);
 };
 
 

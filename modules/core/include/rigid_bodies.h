@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "internal/rigid_bodies.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include "XYZDecorator.h"
 #include <IMP/SingletonContainer.h>
@@ -201,7 +201,7 @@ class IMPCOREEXPORT RigidBodyScoreState: public ScoreState {
   RigidBodyScoreState(SingletonContainer *ps,
                       ParticleRefiner *pr,
                       RigidBodyTraits tr= RigidBodyTraits());
-  IMP_SCORE_STATE(internal::core_version_info);
+  IMP_SCORE_STATE(internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

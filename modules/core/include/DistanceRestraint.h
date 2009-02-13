@@ -9,7 +9,7 @@
 #define IMPCORE_DISTANCE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include "DistancePairScore.h"
 
 #include <IMP/Restraint.h>
@@ -40,7 +40,7 @@ public:
     return ret;
   }
 
-  IMP_RESTRAINT(internal::core_version_info)
+  IMP_RESTRAINT(internal::version_info)
 
 private:
   DistancePairScore dp_;

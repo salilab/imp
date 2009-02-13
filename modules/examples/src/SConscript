@@ -5,7 +5,7 @@ ns= Glob("*.cpp")+ Glob("*/*.cpp")
 files=[]
 for h in ns:
     s= h.rstr()
-    if not s.startswith(".") and not s.endswith("examples_version_info.cpp"):
+    if not s.startswith(".") and not s.endswith("version_info.cpp"):
         files.append(s)
 
 # Build and install the shared library:

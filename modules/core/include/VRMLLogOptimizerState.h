@@ -10,7 +10,7 @@
 #define IMPCORE_VRML_LOG_OPTIMIZER_STATE_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
 
@@ -43,7 +43,7 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
                         std::string filename);
   virtual ~VRMLLogOptimizerState(){}
 
-  IMP_OPTIMIZER_STATE(internal::core_version_info)
+  IMP_OPTIMIZER_STATE(internal::version_info)
 
   //! Set the number of update calls to skip between writing files
   /** The first update call always writes a file.

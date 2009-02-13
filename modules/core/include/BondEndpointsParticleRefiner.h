@@ -9,7 +9,7 @@
 #define IMPCORE_BOND_ENDPOINTS_PARTICLE_REFINER_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include <IMP/ParticleRefiner.h>
 
@@ -27,7 +27,7 @@ public:
 
   virtual ~BondEndpointsParticleRefiner() {}
 
-  IMP_PARTICLE_REFINER(internal::core_version_info);
+  IMP_PARTICLE_REFINER(internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

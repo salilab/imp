@@ -9,7 +9,7 @@
 #define IMPCORE_MAXIMUM_CHANGE_SCORE_STATE_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include <IMP/ScoreState.h>
 #include <IMP/Particle.h>
@@ -44,7 +44,7 @@ public:
 
   virtual ~MaximumChangeScoreState();
 
-  IMP_SCORE_STATE(internal::core_version_info);
+  IMP_SCORE_STATE(internal::version_info);
 
   //! Measure differences from the current value.
   void reset();

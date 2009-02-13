@@ -12,7 +12,7 @@
 #define IMPCORE_MINIMUM_SINGLETON_SCORE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/Restraint.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/SingletonContainer.h>
@@ -40,7 +40,7 @@ public:
 
   virtual ~MinimumSingletonScoreRestraint();
 
-  IMP_RESTRAINT(internal::core_version_info);
+  IMP_RESTRAINT(internal::version_info);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "bond_decorators.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include <IMP/PairContainer.h>
 
@@ -29,7 +29,7 @@ public:
 
   virtual ~BondPairContainer();
 
-  IMP_PAIR_CONTAINER(internal::core_version_info)
+  IMP_PAIR_CONTAINER(internal::version_info)
 };
 
 

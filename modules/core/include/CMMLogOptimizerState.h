@@ -10,7 +10,7 @@
 #define IMPCORE_CMM_LOG_OPTIMIZER_STATE_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
@@ -37,7 +37,7 @@ class IMPCOREEXPORT CMMLogOptimizerState : public OptimizerState
   CMMLogOptimizerState(std::string filename, const Particles &pis=Particles());
   virtual ~CMMLogOptimizerState() {}
 
-  IMP_OPTIMIZER_STATE(internal::core_version_info)
+  IMP_OPTIMIZER_STATE(internal::version_info)
 
   //! Set the number of update calls to skip between writing files
   /** The first update call always writes a file.

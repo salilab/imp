@@ -9,7 +9,7 @@
 #define IMPCORE_COVER_REFINED_SINGLETON_MODIFIER_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include "XYZRDecorator.h"
 #include <IMP/ParticleRefiner.h>
@@ -48,7 +48,7 @@ public:
                                 Float slack=0);
   ~CoverRefinedSingletonModifier();
 
-  IMP_SINGLETON_MODIFIER(internal::core_version_info);
+  IMP_SINGLETON_MODIFIER(internal::version_info);
 
   //! Set how nmuch extra to add to the radius.
   void set_slack(Float slack) {

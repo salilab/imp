@@ -10,7 +10,7 @@
 #define IMPCORE_VELOCITY_SCALING_OPTIMIZER_STATE_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
@@ -30,7 +30,7 @@ class IMPCOREEXPORT VelocityScalingOptimizerState : public OptimizerState
                                 unsigned skip_steps);
   virtual ~VelocityScalingOptimizerState() {}
 
-  IMP_OPTIMIZER_STATE(internal::core_version_info)
+  IMP_OPTIMIZER_STATE(internal::version_info)
 
   //! Set the number of update calls to skip between rescaling.
   void set_skip_steps(unsigned skip_steps) {

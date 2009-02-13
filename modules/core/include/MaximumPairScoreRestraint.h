@@ -12,7 +12,7 @@
 #define IMPCORE_MAXIMUM_PAIR_SCORE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairContainer.h>
@@ -41,7 +41,7 @@ public:
 
   virtual ~MaximumPairScoreRestraint();
 
-  IMP_RESTRAINT(internal::core_version_info);
+  IMP_RESTRAINT(internal::version_info);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

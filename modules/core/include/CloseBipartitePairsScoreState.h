@@ -111,7 +111,7 @@ public:
     return distance_;
   }
 
-  IMP_SCORE_STATE(internal::core_version_info)
+  IMP_SCORE_STATE(internal::version_info)
 };
 
 IMPCORE_END_NAMESPACE

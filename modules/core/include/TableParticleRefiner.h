@@ -10,7 +10,7 @@
 
 #include "config.h"
 
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/ParticleRefiner.h>
 #include <map>
 
@@ -38,7 +38,7 @@ public:
   //! Set the mapping for a particular particle
   void set_particle(Particle *p, const Particles &ps);
 
-  IMP_PARTICLE_REFINER(internal::core_version_info)
+  IMP_PARTICLE_REFINER(internal::version_info)
 };
 
 

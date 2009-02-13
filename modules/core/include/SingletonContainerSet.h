@@ -12,7 +12,7 @@
 #define IMPCORE_SINGLETON_CONTAINER_SET_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/container_macros.h>
 
@@ -30,7 +30,7 @@ public:
 
   virtual ~SingletonContainerSet();
 
-  IMP_SINGLETON_CONTAINER(internal::core_version_info);
+  IMP_SINGLETON_CONTAINER(internal::version_info);
 
   IMP_LIST(public, SingletonContainer, singleton_container,
            SingletonContainer*);

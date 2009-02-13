@@ -9,7 +9,7 @@
 #define IMPCORE_RESTRAINT_SET_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include <IMP/Restraint.h>
 
@@ -27,7 +27,7 @@ public:
   RestraintSet(const std::string& name=std::string());
   ~RestraintSet();
 
-  IMP_RESTRAINT(internal::core_version_info)
+  IMP_RESTRAINT(internal::version_info)
 
   IMP_LIST(public, Restraint, restraint, Restraint*);
 
