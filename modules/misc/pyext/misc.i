@@ -24,10 +24,10 @@ namespace IMP {
 }
 
 namespace IMP::misc {
-  IMP_OWN_FIRST_CONSTRUCTOR(BondCoverPairScore)
-  IMP_OWN_FIRST_SECOND_CONSTRUCTOR(RefineOncePairScore)
-  IMP_OWN_FIRST_SECOND_CONSTRUCTOR(LowestRefinedPairScore)
-  IMP_OWN_FIRST_CONSTRUCTOR(TunnelSingletonScore)
+  IMP_OWN_CONSTRUCTOR(BondCoverPairScore)
+  IMP_OWN_CONSTRUCTOR(RefineOncePairScore)
+  IMP_OWN_CONSTRUCTOR(LowestRefinedPairScore)
+  IMP_OWN_CONSTRUCTOR(TunnelSingletonScore)
 }
 
 
