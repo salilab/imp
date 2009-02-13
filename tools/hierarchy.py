@@ -46,6 +46,7 @@ def InstallHierarchy(env, dir, module, description, sources):
        headers are also installed in the build directory, but these targets
        are not returned."""
     targets = []
+    builddir_targets = []
     sources = _make_nodes(sources)
     prefix = len(os.path.commonprefix([f.path for f in sources]))
     if module != 'IMP':
@@ -58,11 +59,11 @@ def InstallHierarchy(env, dir, module, description, sources):
         targets.append(env.Install(dest, f))
         # Also place the header in the build directory:
         dest = os.path.join(incdir, module, os.path.dirname(src))
-        env.LinkInstall(dest, f)
+        builddir_targets.append(env.LinkInstall(dest, f))
 
     gen_heads = []
     for d in (dir, incdir):
-        t = env.Command(os.path.join(d, module + '.h'), sources,
+        t = env.Command(os.path.join(d, module + '.h'), builddir_targets,
                         Action(_build_header,
                                'Auto-generating header ${TARGET}'),
                         IMP_MODULE=module, IMP_MODULE_DESCRIPTION=description)
