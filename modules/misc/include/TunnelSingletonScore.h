@@ -10,6 +10,7 @@
 #define IMPMISC_TUNNEL_SINGLETON_SCORE_H
 
 #include "config.h"
+#include "internal/tunnel_traits.h"
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
@@ -30,10 +31,7 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT TunnelSingletonScore : public SingletonScore
 {
-  int coordinate_;
-  algebra::Vector3D center_;
-  Float height_;
-  Float radius_;
+  internal::TunnelTraits tr_;
   Pointer<UnaryFunction> f_;
   FloatKey rk_;
 public:
@@ -42,40 +40,27 @@ public:
 
   //! Set the center of the tunnel
   void set_center(algebra::Vector3D c) {
-    center_=c;
+    tr_.set_center(c);
   }
   /** Set height of slab */
   void set_height(Float h) {
-    IMP_check(h >= 0,
-              "Height can't be negative",
-              ValueException);
-    height_=h;
+    tr_.set_height(h);
   }
   /** */
   void set_radius(Float h) {
-    IMP_check(h >= 0,
-              "Radius can't be negative",
-              ValueException);
-    radius_=h;
+    tr_.set_radius(h);
   }
   //! set the index of the coordinate of the cylinder axis
   /**
       \throw ValueException if i>=3
    */
   void set_coordinate(unsigned int i) {
-    IMP_check(i < 3,
-              "Invalid coordinate value",
-              ValueException);
-    coordinate_=i;
-  }
-  //! Return the index of the coordinate of the cylinder axis
-  unsigned int get_coordinate() const {
-    return coordinate_;
+    tr_.set_coordinate(i);
   }
 
-  /** */
+
   virtual Float evaluate(Particle *a, DerivativeAccumulator *da) const;
-  /** */
+
   virtual void show(std::ostream &out=std::cout) const;
 };
 
