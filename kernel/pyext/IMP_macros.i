@@ -8,24 +8,11 @@ namespace IMP \
 #define IMP_END_NAMESPACE \
 } /* namespace IMP */
 
-%define IMP_OWN_FIRST_CONSTRUCTOR(Ucname)
+%define IMP_OWN_CONSTRUCTOR(Ucname)
 %pythonprepend Ucname::Ucname %{
-        if len(args) >= 1 and args[0] is not None: args[0].thisown=0
-%}
-%enddef
-
-%define IMP_OWN_FIRST_SECOND_CONSTRUCTOR(Ucname)
-%pythonprepend Ucname::Ucname %{
-        if len(args) >= 1 and args[0] is not None: args[0].thisown=0
-        if len(args) >= 2 and args[1] is not None: args[1].thisown=0
-%}
-%enddef
-
-%define IMP_OWN_FIRST_SECOND_THIRD_CONSTRUCTOR(Ucname)
-%pythonprepend Ucname::Ucname %{
-        if len(args) >= 1 and args[0] is not None: args[0].thisown=0
-        if len(args) >= 2 and args[1] is not None: args[1].thisown=0
-        if len(args) >= 3 and args[2] is not None: args[2].thisown=0
+        for i in range(0, len(args)):
+            if args[i] is not None and issubclass(type(args[i]), IMP.RefCountedObject):
+               args[i].thisown=0;
 %}
 %enddef
 

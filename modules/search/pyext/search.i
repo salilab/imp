@@ -21,7 +21,7 @@
 
 namespace IMP {
   namespace search {
-    IMP_OWN_FIRST_CONSTRUCTOR(IntMapScoreState)
+    IMP_OWN_CONSTRUCTOR(IntMapScoreState)
   }
 }
 

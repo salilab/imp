@@ -20,7 +20,7 @@
 %import "modules/algebra/pyext/algebra.i"
 
 namespace IMP::saxs {
-  IMP_OWN_FIRST_CONSTRUCTOR(SaxsData)
+  IMP_OWN_CONSTRUCTOR(SaxsData)
 }
 
 /* Wrap our own classes */

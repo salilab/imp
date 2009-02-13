@@ -27,7 +27,7 @@ def get_is_xyz_particle(p):
 
 namespace IMP {
 namespace examples {
-IMP_OWN_FIRST_SECOND_CONSTRUCTOR(Restraint)
+IMP_OWN_CONSTRUCTOR(Restraint)
 }
 }
 
