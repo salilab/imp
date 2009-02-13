@@ -17,7 +17,7 @@ import SCons
 _SWIGScanner = SCons.Scanner.ClassicCPP(
     "SWIGScan",
     ".i",
-    "CPPPATH",
+    "SWIGPATH",
     '^[ \t]*[%,#][ \t]*(?:include|import)[ \t]*(<|")([^>"]+)(>|")'
 )
 
