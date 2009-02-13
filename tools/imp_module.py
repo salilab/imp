@@ -122,8 +122,8 @@ def action_version_info(target, source, env):
  */
 """ % {'module':module, 'ext':ext}
 
-    print >> h, """#ifndef IMP%(MODULE)s_VERSION_INFO_H
-#define IMP%(MODULE)s_VERSION_INFO_H
+    print >> h, """#ifndef IMP%(MODULE)s_INTERNAL_VERSION_INFO_H
+#define IMP%(MODULE)s_INTERNAL_VERSION_INFO_H
 
 #include "../config.h"
 
@@ -134,8 +134,7 @@ def action_version_info(target, source, env):
                   % (module, module)
 
     for f in (h, cpp):
-        print >> f, "IMP%s_BEGIN_NAMESPACE" % module.upper()
-        print >> f, "\nnamespace internal\n{\n"
+        print >> f, "IMP%s_BEGIN_INTERNAL_NAMESPACE\n" % module.upper()
 
     print >> h, """//! Version and authorship of the %(module)s module.
 extern IMP%(MODULE)sEXPORT VersionInfo %(module)s_version_info;""" \
@@ -145,10 +144,9 @@ extern IMP%(MODULE)sEXPORT VersionInfo %(module)s_version_info;""" \
               % (module, author, version)
 
     for f in (h, cpp):
-        print >> f, "\n} // namespace internal\n"
-        print >> f, "IMP%s_END_NAMESPACE" % module.upper()
+        print >> f, "\nIMP%s_END_INTERNAL_NAMESPACE" % module.upper()
 
-    print >> h, "\n#endif  /* IMP%s_VERSION_INFO_H */" % module.upper()
+    print >> h, "\n#endif  /* IMP%s_INTERNAL_VERSION_INFO_H */" % module.upper()
 
 def _add_all_alias(aliases, env, name):
     """Add an 'all' alias `name` to the list of aliases, but only if the
