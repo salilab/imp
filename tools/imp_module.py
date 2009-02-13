@@ -115,7 +115,8 @@ def action_version_info(target, source, env):
 
     for (f, ext) in ((cpp, 'cpp'), (h, 'h')):
         print >> f, """/**
- *  \\file %(module)s_version_info.%(ext)s    \\brief %(module)s module version information.
+ *  \\file %(module)s_version_info.%(ext)s
+ *  \\brief %(module)s module version information.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
