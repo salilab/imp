@@ -32,8 +32,8 @@ namespace IMP {
     return ret;
   }
 }
-IMP_ADD_OBJECT(type, add_##lcname)
-IMP_ADD_OBJECTS(type, add_##lcname##s)
+IMP_OWN_METHOD(type, add_##lcname)
+IMP_OWN_LIST_METHOD(type, add_##lcname##s)
 %enddef
 
 
@@ -87,16 +87,16 @@ namespace IMP {
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
 
-    IMP_SET_OBJECT(MonteCarlo, set_local_optimizer)
-    IMP_SET_OBJECT(TypedPairScore, set_pair_score)
-    IMP_SET_OBJECT(ClosePairsScoreState, set_close_pairs_finder)
-    IMP_SET_OBJECT(CloseBipartitePairsScoreState, set_close_pairs_finder)
-    IMP_SET_OBJECT(VRMLLogOptimizerState, set_singleton_container)
+    IMP_OWN_METHOD(MonteCarlo, set_local_optimizer)
+    IMP_OWN_METHOD(TypedPairScore, set_pair_score)
+    IMP_OWN_METHOD(ClosePairsScoreState, set_close_pairs_finder)
+    IMP_OWN_METHOD(CloseBipartitePairsScoreState, set_close_pairs_finder)
+    IMP_OWN_METHOD(VRMLLogOptimizerState, set_singleton_container)
     //IMP_CONTAINER_SWIG(FilteredListSingletonContainer, Particle, singleton)
     //IMP_CONTAINER_SWIG(ListSingletonContainer, Particle, singleton)
     
-    IMP_ADD_OBJECT(NonbondedListScoreState, add_bonded_list)
-    IMP_ADD_OBJECTS(NonbondedListScoreState, add_bonded_lists)
+    IMP_OWN_METHOD(NonbondedListScoreState, add_bonded_list)
+    IMP_OWN_LIST_METHOD(NonbondedListScoreState, add_bonded_lists)
   }
 }
 
