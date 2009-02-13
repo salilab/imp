@@ -32,12 +32,9 @@ void SAXSScore::resample(const SAXSProfile& model_saxs_profile,
     std::map<float, unsigned int>::iterator it = q_mapping.lower_bound(q);
     if(it == q_mapping.end()) continue;
     unsigned int i = it->second;
-    //std::cerr << "k = " << k << " i = " << i << std::endl;
     if(i == 0) {
       resampled_profile.add_entry(q, model_saxs_profile.get_intensity(i));
     } else {
-      //std::cerr << "q = " << q << " q(i-1)= " << model_saxs_profile.get_q(i-1)
-      //<< " q(i) = " << model_saxs_profile.get_q(i) << std::endl;
       Float alpha = (q - model_saxs_profile.get_q(i-1)) /
             (model_saxs_profile.get_q(i) - model_saxs_profile.get_q(i-1));
       Float intensity = algebra::simple_iterpolate(alpha,
@@ -107,9 +104,9 @@ Float SAXSScore::compute_chi_square_score_internal(
   unsigned int profile_size = std::min(model_saxs_profile.size(),
                                        exp_saxs_profile_->size());
 
-  //! compute Chi square
+  // compute Chi square
   for (unsigned int k=0; k<profile_size; k++) {
-    //! in the theoretical profile the error equals to 1 (?)
+    // in the theoretical profile the error equals to 1
     Float square_error = square(exp_saxs_profile_->get_error(k));
     Float weight_tilda = model_saxs_profile.get_weight(k) / square_error;
     Float delta = exp_saxs_profile_->get_intensity(k) + offset
@@ -134,10 +131,12 @@ void SAXSScore::calculate_sinc_cos(Float pr_resolution, Float max_distance,
 {
   unsigned int nr=algebra::round(max_distance/pr_resolution) + 1; //can be input
   output_values.clear();
+  unsigned int profile_size = std::min(model_saxs_profile.size(),
+                                       exp_saxs_profile_->size());
   Floats r_size(nr, 0.0);
   output_values.insert(output_values.begin(),
-                       model_saxs_profile.size(), r_size);
-  for(unsigned int iq = 0; iq< model_saxs_profile.size(); iq++) {
+                       profile_size, r_size);
+  for(unsigned int iq = 0; iq<profile_size; iq++) {
     Float q = model_saxs_profile.get_q(iq);
     for (unsigned int ir=0; ir<nr; ir++) {
       Float r = pr_resolution * ir;
@@ -160,10 +159,12 @@ void SAXSScore::calculate_profile_difference(
   // delta_i = weight_tilda * (I_exp - c*I_mod)
   // e_q = exp( -0.23 * q*q )
   // profile_diff = delta_i * e_q
+  unsigned int profile_size = std::min(model_saxs_profile.size(),
+                                       exp_saxs_profile_->size());
   profile_diff.clear();
-  profile_diff.resize(model_saxs_profile.size(), 0.0);
+  profile_diff.resize(profile_size, 0.0);
 
-  for (unsigned int iq=0; iq<model_saxs_profile.size(); iq++) {
+  for (unsigned int iq=0; iq<profile_size; iq++) {
     Float delta = exp_saxs_profile_->get_intensity(iq)
                   - fit_coefficient * model_saxs_profile.get_intensity(iq);
     Float square_error = square(exp_saxs_profile_->get_error(iq));
@@ -212,17 +213,15 @@ void SAXSScore::calculate_chi_real_derivative(
 
   // Pre-calculate common parameters for faster calculation
   Floats profile_diff;
-  Float c = compute_fit_coefficient(model_saxs_profile);
+  Float c = compute_fit_coefficient_internal(model_saxs_profile);
   calculate_profile_difference(model_saxs_profile, c, profile_diff);
 
-  //init(model_saxs_profile);
   Float pr_resolution = 0.5;
   DeltaDistributionFunction delta_dist(pr_resolution, ff_table_, particles);
 
   std::vector<Floats> sinc_cos_values; // (sinc(qr) - cos(qr)) / (r*r)
   calculate_sinc_cos(pr_resolution, delta_dist.get_max_distance(),
                      model_saxs_profile, sinc_cos_values);
-
   unsigned int profile_size = std::min(model_saxs_profile.size(),
                                        exp_saxs_profile_->size());
   derivatives.clear();
@@ -259,9 +258,11 @@ void SAXSScore::write_SAXS_fit_file(const std::string& file_name,
     exit(1);
   }
 
+  unsigned int profile_size = std::min(model_saxs_profile.size(),
+                                       exp_saxs_profile_->size());
   // header line
   out_file.precision(15);
-  out_file << "# SAXS profile: number of points = " << exp_saxs_profile_->size()
+  out_file << "# SAXS profile: number of points = " << profile_size
            << ", q_min = " << exp_saxs_profile_->get_min_q()
            << ", q_max = " << exp_saxs_profile_->get_max_q();
   out_file << ", delta_q = " << exp_saxs_profile_->get_delta_q() << std::endl;
@@ -273,7 +274,7 @@ void SAXSScore::write_SAXS_fit_file(const std::string& file_name,
            << std::endl;
 
   // Main data
-  for (unsigned int i = 0; i < exp_saxs_profile_->size(); i++) {
+  for (unsigned int i = 0; i < profile_size; i++) {
     out_file.setf(std::ios::left);
     out_file.width(20);
     out_file.fill('0');

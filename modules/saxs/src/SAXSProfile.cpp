@@ -29,7 +29,6 @@ SAXSProfile::SAXSProfile(Float qmin, Float qmax, Float delta,
                          FormFactorTable * ff_table):
   min_q_(qmin), max_q_(qmax), delta_q_(delta), ff_table_(ff_table)
 {
-  //init();
 }
 
 SAXSProfile::SAXSProfile(const String& file_name)
@@ -104,7 +103,7 @@ void SAXSProfile::read_SAXS_file(const String& file_name)
   if (!with_error) {
     Float sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
     for (unsigned int i=0; i<profile_.size(); i++)
-      profile_[i].error_ = 1.0;//sig_exp;
+      profile_[i].error_ = sig_exp;
     std::cout << "read_SAXS_file: No experimental error specified"
               << " -> error set to 0.3 I(q_max) = " << sig_exp << std::endl;
   }
