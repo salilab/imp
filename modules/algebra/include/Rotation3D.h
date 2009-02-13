@@ -11,6 +11,7 @@
 #include "config.h"
 #include "Vector3D.h"
 #include <iostream>
+#include <algorithm>
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! 3D rotation class.
@@ -25,6 +26,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
     5. The quaternions representation does not harm the performance too much.
     http://www.euclideanspace.com/maths/algebra/matrix/orthogonal/rotation/index.htm
 
+    6. a nice comparison of different implementations of rotations:
+    http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
     Currently the rotation can be initialized from either:
     XYZ Euler angles
     Rotation Matrix
@@ -104,10 +107,11 @@ inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
   Float m00 = cz*cy;
   Float m11 = -sy*sx*sz + cx*cz;
   Float m22 = cy*cx;
-  a = sqrt(1+m00+m11+m22)/2.0;
-  b = sqrt(1+m00-m11-m22)/2.0;
-  c = sqrt(1-m00+m11-m22)/2.0;
-  d = sqrt(1-m00-m11+m22)/2.0;
+  Float zero = 0.0;
+  a = sqrt(std::max(1+m00+m11+m22,zero))/2.0;
+  b = sqrt(std::max(1+m00-m11-m22,zero))/2.0;
+  c = sqrt(std::max(1-m00+m11-m22,zero))/2.0;
+  d = sqrt(std::max(1-m00-m11+m22,zero))/2.0;
   if (cy*sx + sy*cx*sz + sx*cz < 0.0) b = -b;
   if (sz*sx - sy*cx*cz - sy < 0.0)    c = -c;
   if (sz*cy + sy*sx*cz + sz*cx < 0.0) d = -d;
@@ -139,6 +143,9 @@ inline Rotation3D rotation_from_fixed_zxz(Float phi, Float theta, Float psi)
   d = c1*c2*s3-s1*s2*c3;
   return Rotation3D(a,b,c,d);
 }
+
+
+
 //! Generate a Rotation3D object from a rotation matrix
 /**
    \throw ValueException if the rotation is not a rotation matrix.
@@ -147,6 +154,32 @@ inline Rotation3D rotation_from_fixed_zxz(Float phi, Float theta, Float psi)
 IMPALGEBRAEXPORT Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
                                               Float m21,Float m22,Float m23,
                                               Float m31,Float m32,Float m33);
+
+//! Generate a Rotation3D object from a rotation around an axis
+/**
+  \param[in] axis the rotation axis
+  \param[in] angle the rotation angle in radians
+  \note http://en.wikipedia.org/wiki/Rotation_matrix
+  \note http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/index.htm
+*/
+inline Rotation3D rotation_about_axis(Vector3D axis, Float angle)
+{
+  //normalize the vector
+  Vector3D axis_norm = axis.get_unit_vector();
+  Float s;
+  s=sin(angle/2);
+  Float x,y,z;
+  x=axis_norm[0];
+  y=axis_norm[1];
+  z=axis_norm[2];
+  Float a,b,c,d;
+  a = cos(angle/2);
+  b = x*s;
+  c = y*s;
+  d = z*s;
+  return Rotation3D(a,b,c,d);
+}
+
 
 //! Pick a rotation at random from all possible rotations
 /** \relates Rotation3D */
