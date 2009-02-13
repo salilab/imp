@@ -70,9 +70,6 @@ public:
   //! print to file
   void write_SAXS_file(const String& file_name);
 
-  //! compute chi value (assumes the same sampling range!)
-  IMP::Float compute_chi_score(const SAXSProfile& profile) const;
-
   //! return sampling resolution
   Float get_delta_q() const { return delta_q_; }
 
