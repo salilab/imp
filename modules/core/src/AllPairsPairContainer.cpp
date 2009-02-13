@@ -32,11 +32,12 @@ unsigned int AllPairsPairContainer::get_number_of_particle_pairs() const {
 ParticlePair AllPairsPairContainer::get_particle_pair(unsigned int i) const {
   IMP_assert(i <  get_number_of_particle_pairs(), "Invalid pair requested");
   IMP_LOG(VERBOSE, "All pairs asked for pair " << i << " current state is "
-          << i_ << "= " << a_ << " " << b_ << std::endl);
+    << i_ << "= " << a_ << " " << b_ << std::endl);
   // dumb method, just increase the current pair until we get to the desired one
   if (static_cast<int>(i) < i_) {
     a_=1;
     b_=0;
+    i_=0;
   }
   while (i_ < static_cast<int>(i)) {
     ++b_;
@@ -47,7 +48,7 @@ ParticlePair AllPairsPairContainer::get_particle_pair(unsigned int i) const {
     ++i_;
   }
   IMP_LOG(VERBOSE, "Returned "
-          << i_ << "= " << a_ << " " << b_ << std::endl);
+    << i_ << "= " << a_ << " " << b_ << std::endl);
   return ParticlePair(c_->get_particle(a_), c_->get_particle(b_));
 }
 
