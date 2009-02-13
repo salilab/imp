@@ -13,13 +13,13 @@ IMP_BEGIN_NAMESPACE
 
 Optimizer::Optimizer()
 {
-  IMP_LOG(VERBOSE, "MEMORY: Optimizer created " << this << std::endl);
+  IMP_LOG(MEMORY, "MEMORY: Optimizer created " << this << std::endl);
 }
 
 
 Optimizer::~Optimizer()
 {
-  IMP_LOG(VERBOSE, "MEMORY: Optimizer destroyed " << this << std::endl);
+  IMP_LOG(MEMORY, "MEMORY: Optimizer destroyed " << this << std::endl);
 }
 
 
