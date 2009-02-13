@@ -7,7 +7,7 @@ shs= Glob("*/*.h")
 for h in hs+shs:
     s= h.rstr()
     if not s.startswith(".") and not s.endswith("config.h")\
-      and not s.endswith("search.h") and not s.endswith("search_version_info.h"):
+      and not s.endswith("search.h") and not s.endswith("version_info.h"):
         files.append(s)
 
 # Install the include files:

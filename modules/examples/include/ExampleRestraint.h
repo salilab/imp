@@ -10,7 +10,7 @@
 #define IMPEXAMPLES_EXAMPLE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/examples_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/SingletonScore.h>
 #include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>
@@ -46,7 +46,7 @@ public:
 
   /** This macro declares the basic needed methods: evaluate and show
    */
-  IMP_RESTRAINT(internal::examples_version_info);
+  IMP_RESTRAINT(internal::version_info);
 
   /** Return the list of interacting sets of particles defined
       by this restraint. In this case, it is the list of

@@ -11,7 +11,7 @@
 #define IMPCORE_LIST_PAIR_CONTAINER_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/container_macros.h>
 
@@ -35,7 +35,7 @@ public:
   IMP_LIST(public, ParticlePair, particle_pair, ParticlePair);
 
   IMP::VersionInfo get_version_info() const {
-    return internal::core_version_info;
+    return internal::version_info;
   }
 
   virtual void show(std::ostream &out = std::cout) const;

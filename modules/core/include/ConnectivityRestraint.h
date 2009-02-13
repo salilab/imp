@@ -12,7 +12,7 @@
 #define IMPCORE_CONNECTIVITY_RESTRAINT_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include "DistanceRestraint.h"
 
 #include <IMP/Restraint.h>
@@ -50,7 +50,7 @@ public:
 
   virtual ~ConnectivityRestraint();
 
-  IMP_RESTRAINT(internal::core_version_info)
+  IMP_RESTRAINT(internal::version_info)
 };
 
 IMPCORE_END_NAMESPACE

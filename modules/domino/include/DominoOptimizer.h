@@ -8,7 +8,7 @@
 #define IMPDOMINO_DOMINO_OPTIMIZER_H
 
 #include "config.h"
-#include "internal/domino_version_info.h"
+#include "internal/version_info.h"
 #include "RestraintGraph.h"
 
 #include <IMP/core/RestraintSet.h>
@@ -27,7 +27,7 @@ class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
   typedef boost::tuple<Restraint *,Particles,Float> OptTuple;
 public:
   DominoOptimizer(std::string jt_filename, Model *m);
-  IMP_OPTIMIZER(internal::domino_version_info)
+  IMP_OPTIMIZER(internal::version_info)
 
   void show(std::ostream &out = std::cout) const {
     out << "DOMINO optimizer" << std::endl;

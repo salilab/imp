@@ -102,8 +102,8 @@ namespace internal \\
 def action_version_info(target, source, env):
     """The IMPModuleVersionInfo Builder generates a source file and header to
        return version information, e.g.
-       env.IMPModuleVersionInfo(('src/internal/foo_version_info.cpp',
-                                 'include/internal/foo_version_info.h'),
+       env.IMPModuleVersionInfo(('src/internal/version_info.cpp',
+                                 'include/internal/version_info.h'),
                                 (env.Value('foo'), env.Value('Me'),
                                  env.Value('1.0')))
        generates version information for the 'foo' module."""
@@ -115,7 +115,7 @@ def action_version_info(target, source, env):
 
     for (f, ext) in ((cpp, 'cpp'), (h, 'h')):
         print >> f, """/**
- *  \\file %(module)s_version_info.%(ext)s
+ *  \\file %(module)s/internal/version_info.%(ext)s
  *  \\brief %(module)s module version information.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
@@ -131,18 +131,18 @@ def action_version_info(target, source, env):
 #include <IMP/VersionInfo.h>
 """ % {'module':module, 'MODULE':module.upper()}
 
-    print >> cpp, '#include <IMP/%s/internal/%s_version_info.h>\n' \
-                  % (module, module)
+    print >> cpp, '#include <IMP/%s/internal/version_info.h>\n' \
+                  % (module)
 
     for f in (h, cpp):
         print >> f, "IMP%s_BEGIN_INTERNAL_NAMESPACE\n" % module.upper()
 
     print >> h, """//! Version and authorship of the %(module)s module.
-extern IMP%(MODULE)sEXPORT VersionInfo %(module)s_version_info;""" \
+extern IMP%(MODULE)sEXPORT VersionInfo version_info;""" \
         % {'module':module, 'MODULE':module.upper()}
 
-    print >> cpp, 'VersionInfo %s_version_info("%s", "%s");' \
-              % (module, author, version)
+    print >> cpp, 'VersionInfo version_info("%s", "%s");' \
+              % (author, version)
 
     for f in (h, cpp):
         print >> f, "\nIMP%s_END_INTERNAL_NAMESPACE" % module.upper()
@@ -362,8 +362,8 @@ def IMPModule(env, module, author, version, description, cpp=True):
         # Generate version information
         env['VER_CPP'], env['VER_H'] = \
             env.IMPModuleVersionInfo(
-                 ('%s/src/internal/%s_version_info.cpp' % (module, module),
-                  '%s/include/internal/%s_version_info.h' % (module, module)),
+                 ('%s/src/internal/version_info.cpp' % (module),
+                  '%s/include/internal/version_info.h' % (module)),
                  (env.Value(module), env.Value(author), env.Value(version)))
         # Generate config header and SWIG equivalent
         env['CONFIG_H'] = env.IMPModuleConfig(('%s/include/config.h' % module,

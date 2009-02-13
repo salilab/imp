@@ -9,7 +9,7 @@
 #define IMPDOMINO_SIMPLE_DISCRETE_RESTRAINT_H
 
 #include "config.h"
-#include "internal/domino_version_info.h"
+#include "internal/version_info.h"
 
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
@@ -34,7 +34,7 @@ public:
                           Particle *p1, Particle *p2);
 
   virtual ~SimpleDiscreteRestraint() {};
-  IMP_RESTRAINT(internal::domino_version_info)
+  IMP_RESTRAINT(internal::version_info)
   ParticlesList get_interacting_particles() const
   {
     return ParticlesList(1, Particles(particles_begin(), particles_end()));

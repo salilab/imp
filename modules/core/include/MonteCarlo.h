@@ -9,7 +9,7 @@
 #define IMPCORE_MONTE_CARLO_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include "Mover.h"
 
 #include <IMP/Optimizer.h>
@@ -36,7 +36,7 @@ public:
   MonteCarlo();
   ~MonteCarlo();
 
-  IMP_OPTIMIZER(internal::core_version_info)
+  IMP_OPTIMIZER(internal::version_info)
 
   IMP_LIST(public, Mover, mover, Mover*);
 public:

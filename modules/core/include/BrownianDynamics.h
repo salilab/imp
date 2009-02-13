@@ -9,7 +9,7 @@
 #define IMPCORE_BROWNIAN_DYNAMICS_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include "DiffusionDecorator.h"
 
 #include <IMP/Particle.h>
@@ -36,7 +36,7 @@ public:
   BrownianDynamics();
   virtual ~BrownianDynamics();
 
-  IMP_OPTIMIZER(internal::core_version_info);
+  IMP_OPTIMIZER(internal::version_info);
 
   //! Simulate until the given time in fs
   void simulate(float time_in_fs);

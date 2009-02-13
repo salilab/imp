@@ -9,7 +9,7 @@
 #define IMPCORE_DERIVATIVES_FROM_REFINED_SINGLETON_MODIFIER_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 
 #include "XYZDecorator.h"
 #include <IMP/ParticleRefiner.h>
@@ -37,7 +37,7 @@ public:
                                            = XYZDecorator::get_xyz_keys());
   ~DerivativesFromRefinedSingletonModifier();
 
-  IMP_SINGLETON_MODIFIER(internal::core_version_info);
+  IMP_SINGLETON_MODIFIER(internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE
