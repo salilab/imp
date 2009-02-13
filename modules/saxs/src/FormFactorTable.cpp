@@ -131,7 +131,6 @@ void FormFactorTable::show(std::ostream & out, std::string prefix) const
   }
 }
 
-
 /*
  !----------------------------------------------------------------------
  ! f(q) = f_atomic(q) - f_solvent(q)
@@ -145,42 +144,43 @@ void FormFactorTable::show(std::ostream & out, std::string prefix) const
 */
 void FormFactorTable::compute_form_factors_all_atoms()
 {
-  unsigned int number_of_q_entries = algebra::round(
-                                             (max_q_ - min_q_) / delta_q_ ) + 1;
-  unsigned int i, iq;
-  Float four_pi = 4.0 * PI;
-  Float one_over_four_pi = 1.0 / four_pi;
-  std::vector<Float> qq, ss;
+  unsigned int number_of_q_entries =
+    algebra::round((max_q_ - min_q_) / delta_q_ ) + 1;
+
+  static Float two_third = 2.0 / 3;
+  static Float one_over_four_pi = 1 / 4*PI;
+  Floats qq(number_of_q_entries), ss(number_of_q_entries);
 
   // store qq and ss for the faster calculation
-  for (iq=0; iq<number_of_q_entries; iq++) {
+  for (unsigned int iq=0; iq<number_of_q_entries; iq++) {
     //! the scattering vector q = (4pi) * sin(theta) / lambda
     Float q = min_q_ + (Float)iq * delta_q_;
-    qq.push_back( square(q) );       // qq = q^2
+    qq[iq] = square(q);       // qq = q^2
 
     //! s = sin(theta) / lambda = q / (4pi), by Waasmaier and Kirfel (1995)
     Float s = q * one_over_four_pi;
-    ss.push_back( square(s) );       // ss = s^2 = (q/4pi)^2
+    ss[iq] = square(s);       // ss = s^2 = (q/4pi)^2
   }
 
-  for (i = 0; i < ALL_ATOM_SIZE; i++) {
+  for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
     //! form factors for all the q range
     //! volr_coeff = - v_i^(2/3) / 4PI
-    Float volr_coeff = - std::pow( form_factors_coefficients_[i].excl_vol_,
-                          static_cast<Float>(2.0/3.0) ) * one_over_four_pi;
+    Float volr_coeff = - std::pow(form_factors_coefficients_[i].excl_vol_,
+                                  two_third)
+                           * one_over_four_pi;
 
-    for (iq = 0; iq < number_of_q_entries; iq++) {
+    for (unsigned int iq = 0; iq < number_of_q_entries; iq++) {
       //! c
       form_factors_[i][iq] = form_factors_coefficients_[i].c_;
 
       //! SUM [a_i * EXP( - b_i * (q/4pi)^2 )]
       for (unsigned int j = 0; j < 5; j++) {
         form_factors_[i][iq] += form_factors_coefficients_[i].a_[j]
-                   * std::exp( - form_factors_coefficients_[i].b_[j] * ss[iq] );
+                   * std::exp(-form_factors_coefficients_[i].b_[j] * ss[iq]);
       }
       //! subtract solvation: rho * v_i * EXP( (- v_i^(2/3) / (4pi)) * q^2  )
       form_factors_[i][iq] -= rho_ * form_factors_coefficients_[i].excl_vol_
-                          * std::exp( volr_coeff * qq[iq] );
+                          * std::exp(volr_coeff * qq[iq]);
     }
     //! zero form factors
     zero_form_factors_[i] = form_factors_coefficients_[i].c_;
@@ -479,7 +479,6 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
   core::AtomType atom_type =
       core::AtomDecorator::cast(p).get_type();
   String atom_name = atom_type.get_string();
-  //    core::AtomDecorator::cast(p).get_pdb_atom_type().get_string();
 
   FormFactorAtomType ret_type = UNK;
   int name_start = 0;
@@ -515,7 +514,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
 
 
 Float FormFactorTable::get_form_factor(Particle * p,
-                                            FormFactorType ff_type) const {
+                                       FormFactorType ff_type) const {
   // initialization by request
   if (p->has_attribute(form_factor_key_))
     return p->get_value(form_factor_key_);
@@ -528,8 +527,8 @@ Float FormFactorTable::get_form_factor(Particle * p,
 }
 
 
-const Floats & FormFactorTable::get_form_factors(Particle * p,
-                                            FormFactorType ff_type) const {
+const Floats& FormFactorTable::get_form_factors(Particle * p,
+                                                FormFactorType ff_type) const {
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
   return form_factors_[(int)ff_atom_type];
 }

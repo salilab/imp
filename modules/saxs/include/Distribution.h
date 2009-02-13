@@ -1,8 +1,9 @@
 /**
- * \file Distribution.h \brief computes
+ * \file Distribution.h \brief computes distribution functions
  *
- * base distribution class
- * required for calculation of SAXS profile and SAXS chi-square derivates
+ * Distribution - base distance distribution class
+ * RadialDistributionFunction required for calculation of SAXS profile
+ * DeltaDistributionFunction requires for chi-square derivatives
  *
  * Copyright 2007-9 Sali Lab. All rights reserved.
  *
@@ -31,30 +32,24 @@ IMPSAXS_BEGIN_NAMESPACE
 template<class ValueT>
 class Distribution {
 public:
-  Distribution(Float bin_size, FormFactorTable* ff_table) {
-    bin_size_ = bin_size;   ff_table_ = ff_table;
+  Distribution(Float bin_size) {
+    bin_size_ = bin_size;
     one_over_bin_size_ = 1.0 / bin_size_;     // for faster calculation
-    max_pr_distance_ = 50.0;      // start with ~50A (by default)
-    distribution_.reserve(dist2index(max_pr_distance_));
-  }
-
-  void add_to_distribution(Float dist, const ValueT& value) {
-    unsigned int index = dist2index(dist);
-    if (index >= distribution_.size()) {
-      distribution_.reserve(2 * index);   //!----- to avoid many re-allocations
-      //! Generalized initialization of a ValueT variable
-      ValueT valueT_zero;   valueT_zero *= 0.0;
-      distribution_.resize(index + 1, valueT_zero);
-      max_pr_distance_ = (index + 1) * bin_size_;
-    }
-    distribution_[index] += value;
+    max_distance_ = 50.0;      // start with ~50A (by default)
+    distribution_.reserve(dist2index(max_distance_) + 1);
   }
 
   //! get distribution as array of ValueT
   std::vector< ValueT > get_distribution() const { return distribution_; }
+
+  //! returns distribution vector size
   unsigned int size() const { return distribution_.size(); }
-  Float get_max_pr_distance(void) { return max_pr_distance_; }
-  Float get_bin_size_(void) { return bin_size_; }
+
+  //! returns maximal distance value of distribution
+  Float get_max_distance() { return max_distance_; }
+
+  //! returns bin size
+  Float get_bin_size_() { return bin_size_; }
 
 protected:
   unsigned int dist2index(Float dist) const {
@@ -64,11 +59,12 @@ protected:
 
 protected:
   std::vector< ValueT > distribution_;
-  FormFactorTable* ff_table_; // pointer to form factors table
   Float bin_size_, one_over_bin_size_; // resolution of discretization
-  Float max_pr_distance_;  // paramter for maximum r value for p(r) function
+  Float max_distance_;  // parameter for maximum r value for p(r) function
 };
 
+//! compute max distance
+Float compute_max_distance(const std::vector<Particle*>& particles);
 
 /*
  !----------------------------------------------------------------------
@@ -91,6 +87,21 @@ public:
 
   // ! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;
+
+ private:
+  void add_to_distribution(Float dist, Float value) {
+    unsigned int index = dist2index(dist);
+    if (index >= distribution_.size()) {
+      if(distribution_.capacity() <= index)
+        distribution_.reserve(2 * index);   // to avoid many re-allocations
+      distribution_.resize(index + 1, 0);
+      max_distance_ = index2dist(index + 1);
+    }
+    distribution_[index] += value;
+  }
+
+ protected:
+  FormFactorTable* ff_table_; // pointer to form factors table
 };
 
 
@@ -107,17 +118,34 @@ public:
 
   friend class SAXSScore;
 
-  void calculate_derivative_distribution(unsigned int iatom);
-  void calculate_derivative_distribution(
-                                      const std::vector<Particle*>& particles1,
-                                      const std::vector<Particle*>& particles2);
+  // ! calculates distribution for an atom defined by particle
+  void calculate_derivative_distribution(Particle* particle);
 
   // ! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;
 
-private:
-  std::vector< algebra::Vector3D > coordinates_;
-  std::vector<Float> zero_formfactor_;
+ private:
+  void add_to_distribution(Float dist, const algebra::Vector3D& value) {
+    unsigned int index = dist2index(dist);
+    if (index >= distribution_.size()) {
+      std::cerr << "DeltaDistributionFunction::add_to_distribution"
+                << " - distance out of range " << std::endl;
+      return;
+    }
+    distribution_[index] += value;
+  }
+
+  void init() {
+    distribution_.clear();
+    distribution_.insert(distribution_.begin(),
+                         dist2index(max_distance_) + 1,
+                         algebra::Vector3D(0.0, 0.0, 0.0));
+  }
+
+ protected:
+  FormFactorTable* ff_table_; // pointer to form factors table
+  std::vector<algebra::Vector3D> coordinates_;
+  Floats form_factors_;
 };
 
 IMPSAXS_END_NAMESPACE

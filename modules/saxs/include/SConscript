@@ -6,7 +6,7 @@ files = [
          'SAXSProfile.h',
          'SAXSScore.h',
          'SaxsData.h',
-        ]
+         'utility.h']
 
 # Install the include files:
 env.IMPHeaders(files)
