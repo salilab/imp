@@ -18,7 +18,6 @@ ScoreState::ScoreState(std::string name) : name_(name)
 {
   update_iteration_= std::numeric_limits<unsigned int>::max();
   after_iteration_= std::numeric_limits<unsigned int>::max();
-  IMP_LOG(VERBOSE, "ScoreState constructed " << name << std::endl);
 }
 
 
@@ -51,7 +50,6 @@ void ScoreState::after_evaluate(DerivativeAccumulator *da) {
 //! Destructor
 ScoreState::~ScoreState()
 {
-  IMP_LOG(VERBOSE, "ScoreState deleted " << get_name() << std::endl);
 }
 
 

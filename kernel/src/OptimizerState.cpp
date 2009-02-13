@@ -14,14 +14,12 @@ IMP_BEGIN_NAMESPACE
 //! Constructor
 OptimizerState::OptimizerState()
 {
-  IMP_LOG(VERBOSE, "OptimizerState constructed " << std::endl);
 }
 
 
 //! Destructor
 OptimizerState::~OptimizerState()
 {
-  IMP_LOG(VERBOSE, "OptimizerState deleted " << std::endl);
 }
 
 
