@@ -47,14 +47,12 @@ public:
   //! compute  derivatives on atom iatom - iatom is NOT part of rigid body
   void calculate_chi_derivative(const SAXSProfile& model_saxs_profile,
                   const std::vector<Particle*>& particles,
-                  std::vector<IMP::algebra::Vector3D>& derivatioves) const;
+                  std::vector<IMP::algebra::Vector3D>& derivatives) const;
  private:
-  //  int init(const SAXSProfile& model_saxs_profile);
-
   // compute derivatives for each particle
   void calculate_chi_real_derivative(const SAXSProfile& model_saxs_profile,
                   const std::vector<Particle*>& particles,
-                  std::vector<IMP::algebra::Vector3D>& derivatioves) const;
+                  std::vector<IMP::algebra::Vector3D>& derivatives) const;
 
   void write_SAXS_fit_file(const std::string& file_name,
                            const SAXSProfile& model_saxs_profile,
