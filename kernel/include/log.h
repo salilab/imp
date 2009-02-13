@@ -30,8 +30,10 @@ IMP_BEGIN_NAMESPACE
     TERSE prints a few lines per restraint or per state each time
     the score is evaluated.
     WARNING prints only warnings.
+    MEMORY print information about allocations and deallocations to debug
+    memory issues
  */
-enum LogLevel {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3};
+enum LogLevel {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3, MEMORY=4};
 
 //! The targets for IMP logging
 /** \ingroup log

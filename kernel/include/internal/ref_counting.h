@@ -23,7 +23,7 @@ struct Ref
   template <class O>
   static void eval(O* o) {
     BOOST_STATIC_ASSERT((!boost::is_base_of<RefCountedObject, O >::value));
-    IMP_LOG(VERBOSE, "Not refing particle " << o << std::endl);
+    IMP_LOG(MEMORY, "Not refing particle " << o << std::endl);
   }
 };
 
@@ -32,7 +32,7 @@ struct Ref<true>
 {
   template <class O>
   static void eval(O* o) {
-    IMP_LOG(VERBOSE, "Refing object " << o << " with count "
+    IMP_LOG(MEMORY, "Refing object " << o << " with count "
             << o->get_ref_count() << std::endl);
     o->assert_is_valid();
     o->ref();
@@ -45,7 +45,7 @@ struct UnRef
   template <class O>
   static void eval(O* o) {
     BOOST_STATIC_ASSERT((!boost::is_base_of<RefCountedObject, O >::value));
-    IMP_LOG(VERBOSE, "Not Unrefing object " << o << std::endl);
+    IMP_LOG(MEMORY, "Not Unrefing object " << o << std::endl);
   }
 };
 
@@ -54,7 +54,7 @@ struct UnRef<true>
 {
   template <class O>
   static void eval(O *o) {
-    IMP_LOG(VERBOSE, "Unrefing object " << o << " with count "
+    IMP_LOG(MEMORY, "Unrefing object " << o << " with count "
             << o->get_ref_count() << std::endl);
     o->assert_is_valid();
     o->unref();
@@ -100,7 +100,7 @@ void ref(O* o)
 template <class O>
 void disown(O* o)
 {
-  /*IMP_LOG(VERBOSE, "Disown called with "
+  /*IMP_LOG(MEMORY, "Disown called with "
           << (boost::is_base_of<RefCountedObject, O >::value)
           << " for " << o << " " << o->get_ref_count() << std::endl);*/
   o->unref();
@@ -114,7 +114,7 @@ void disown(O* o)
 template <class O>
 void own(O* o)
 {
-  /*IMP_LOG(VERBOSE, "Own called with "
+  /*IMP_LOG(MEMORY, "Own called with "
           << (boost::is_base_of<RefCountedObject, O >::value)
           << " for " << o
           << " " << o->get_ref_count() << std::endl);*/

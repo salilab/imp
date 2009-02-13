@@ -17,14 +17,14 @@ Object::Object()
 {
   check_value_=111111111;
   count_=0;
-  IMP_LOG(VERBOSE, "Creating object " << this << std::endl);
+  IMP_LOG(MEMORY, "Creating object " << this << std::endl);
 }
 
 Object::~Object()
 {
   assert_is_valid();
   check_value_=666666666;
-  IMP_LOG(VERBOSE, "Destroying object " << this << std::endl);
+  IMP_LOG(MEMORY, "Destroying object " << this << std::endl);
 }
 
 void Object::assert_is_valid() const
