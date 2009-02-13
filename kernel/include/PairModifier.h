@@ -66,7 +66,7 @@ IMPEXPORT inline void apply(PairModifier* f,
 
 
 //! A collection
-typedef std::vector<PairModifier> PairModifiers;
+typedef std::vector<PairModifier*> PairModifiers;
 
 IMP_END_NAMESPACE
 
