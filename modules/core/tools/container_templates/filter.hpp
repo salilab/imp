@@ -12,7 +12,7 @@
 #define IMPCORE_FILTERED_LIST_GROUPNAME_CONTAINER_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
 
@@ -43,7 +43,7 @@ public:
 
   virtual ~FilteredListGroupnameContainer();
 
-  IMP_GROUPNAME_CONTAINER(internal::core_version_info);
+  IMP_GROUPNAME_CONTAINER(internal::version_info);
 
   //! Add vt if none of the referenced containers already contains it
   void add_classname(Value vt);

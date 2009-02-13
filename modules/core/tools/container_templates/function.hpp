@@ -65,6 +65,9 @@ IMPEXPORT inline void apply(GroupnameModifier* f,
 }
 
 
+//! A collection
+typedef std::vector<GroupnameModifier> GroupnameModifiers;
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_GROUPNAME_MODIFIER_H */

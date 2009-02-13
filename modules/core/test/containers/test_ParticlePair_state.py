@@ -29,8 +29,8 @@ class SingletonTestModifier(IMP.SingletonModifier):
         print "Test Particle"
     def apply(self, p):
         p.add_attribute(self.k, 1)
-        def get_version_info(self):
-            return IMP.core.core_version_info
+    def get_version_info(self):
+        return 1
 
 class PairTestModifier(IMP.PairModifier):
     def __init__(self, k):
@@ -41,8 +41,8 @@ class PairTestModifier(IMP.PairModifier):
     def apply(self, p0, p1):
         p0.add_attribute(self.k, 1)
         p1.add_attribute(self.k, 1)
-        def get_version_info(self):
-            return IMP.core.core_version_info
+    def get_version_info(self):
+        return 1
 
 #class TripletTestModifier(IMP.core.TripletModifier):
 #    def __init__(self, k):

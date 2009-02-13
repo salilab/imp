@@ -65,6 +65,9 @@ IMPEXPORT inline void apply(SingletonModifier* f,
 }
 
 
+//! A collection
+typedef std::vector<SingletonModifier> SingletonModifiers;
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_SINGLETON_MODIFIER_H */

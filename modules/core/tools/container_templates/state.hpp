@@ -13,7 +13,7 @@
 #define IMPCORE_GROUPNAMES_SCORE_STATE_H
 
 #include "config.h"
-#include "internal/core_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/GroupnameModifier.h>
 #include <IMP/ScoreState.h>
@@ -58,7 +58,7 @@ public:
 
   virtual ~GroupnamesScoreState();
 
-  IMP_SCORE_STATE(internal::core_version_info)
+  IMP_SCORE_STATE(internal::version_info)
 
   //! Update the state by applying the modifier
   void do_after_evaluate();
