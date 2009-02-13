@@ -1,7 +1,7 @@
 Import('env')
 Export('env')
 
-env.Append(LIBS=['imp_core'])
+env.Append(LIBS=['imp_core', 'imp_algebra'])
 env.validate()
 
 # Subdirectories:
