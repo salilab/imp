@@ -9,15 +9,15 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(MinimumPairScoreRestraint)
     IMP_OWN_CONSTRUCTOR(MaximumPairScoreRestraint)
     IMP_CONTAINER_SWIG(FilteredListPairContainer, PairContainer, pair_container)
-    IMP_SET_OBJECT(PairsRestraint, set_pair_container)
-    IMP_SET_OBJECT(PairsScoreState, set_before_evaluate_modifier)
-    IMP_SET_OBJECT(PairsScoreState, set_after_evaluate_modifier)
+    IMP_OWN_METHOD(PairsRestraint, set_pair_container)
+    IMP_OWN_METHOD(PairsScoreState, set_before_evaluate_modifier)
+    IMP_OWN_METHOD(PairsScoreState, set_after_evaluate_modifier)
     /*IMP_CONTAINER_SWIG(PairContainerSet, PairContainer, pair_container)
     IMP_CONTAINER_SWIG(ListPairContainer, Pair, pair)*/
-    IMP_ADD_OBJECT(ListPairContainer, add_pair)
-    IMP_ADD_OBJECTS(ListPairContainer, add_pairs)
-    IMP_ADD_OBJECT(PairContainerSet, add_pair_container)
-    IMP_ADD_OBJECTS(PairContainerSet, add_pair_containers)
+    IMP_OWN_METHOD(ListPairContainer, add_pair)
+    IMP_OWN_LIST_METHOD(ListPairContainer, add_pairs)
+    IMP_OWN_METHOD(PairContainerSet, add_pair_container)
+    IMP_OWN_LIST_METHOD(PairContainerSet, add_pair_containers)
 
     %extend ListPairContainer {
        ParticlePairs get_particle_pairs() const {
@@ -31,8 +31,8 @@ namespace IMP {
        }
     }
 
-    IMP_ADD_OBJECT(FilteredListPairContainer, add_pair)
-    IMP_ADD_OBJECTS(FilteredListPairContainer, add_pairs)
+    IMP_OWN_METHOD(FilteredListPairContainer, add_pair)
+    IMP_OWN_LIST_METHOD(FilteredListPairContainer, add_pairs)
     %extend FilteredListPairContainer {
        ParticlePairs get_particle_pairs() const {
          return IMP::ParticlePairs(self->particle_pairs_begin(), self->particle_pairs_end());

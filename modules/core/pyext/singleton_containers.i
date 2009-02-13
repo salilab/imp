@@ -9,15 +9,15 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(MinimumSingletonScoreRestraint)
     IMP_OWN_CONSTRUCTOR(MaximumSingletonScoreRestraint)
     IMP_CONTAINER_SWIG(FilteredListSingletonContainer, SingletonContainer, singleton_container)
-    IMP_SET_OBJECT(SingletonsRestraint, set_singleton_container)
-    IMP_SET_OBJECT(SingletonsScoreState, set_before_evaluate_modifier)
-    IMP_SET_OBJECT(SingletonsScoreState, set_after_evaluate_modifier)
+    IMP_OWN_METHOD(SingletonsRestraint, set_singleton_container)
+    IMP_OWN_METHOD(SingletonsScoreState, set_before_evaluate_modifier)
+    IMP_OWN_METHOD(SingletonsScoreState, set_after_evaluate_modifier)
     /*IMP_CONTAINER_SWIG(SingletonContainerSet, SingletonContainer, singleton_container)
     IMP_CONTAINER_SWIG(ListSingletonContainer, Singleton, singleton)*/
-    IMP_ADD_OBJECT(ListSingletonContainer, add_singleton)
-    IMP_ADD_OBJECTS(ListSingletonContainer, add_singletons)
-    IMP_ADD_OBJECT(SingletonContainerSet, add_singleton_container)
-    IMP_ADD_OBJECTS(SingletonContainerSet, add_singleton_containers)
+    IMP_OWN_METHOD(ListSingletonContainer, add_singleton)
+    IMP_OWN_LIST_METHOD(ListSingletonContainer, add_singletons)
+    IMP_OWN_METHOD(SingletonContainerSet, add_singleton_container)
+    IMP_OWN_LIST_METHOD(SingletonContainerSet, add_singleton_containers)
 
     %extend ListSingletonContainer {
        Particles get_particles() const {
@@ -31,8 +31,8 @@ namespace IMP {
        }
     }
 
-    IMP_ADD_OBJECT(FilteredListSingletonContainer, add_singleton)
-    IMP_ADD_OBJECTS(FilteredListSingletonContainer, add_singletons)
+    IMP_OWN_METHOD(FilteredListSingletonContainer, add_singleton)
+    IMP_OWN_LIST_METHOD(FilteredListSingletonContainer, add_singletons)
     %extend FilteredListSingletonContainer {
        Particles get_particles() const {
          return IMP::Particles(self->particles_begin(), self->particles_end());

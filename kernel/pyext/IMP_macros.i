@@ -16,22 +16,21 @@ namespace IMP \
 %}
 %enddef
 
-%define IMP_SET_OBJECT(Ucname, methodname)
+%define IMP_OWN_METHOD(Ucname, methodname)
 %pythonprepend Ucname::methodname %{
-        args[1].thisown=0
+        import IMP
+        for i in range(1, len(args)):
+            if args[i] is not None and issubclass(type(args[i]), IMP.RefCountedObject):
+               args[i].thisown=0;
 %}
 %enddef
 
-%define IMP_ADD_OBJECT(Ucname, methodname)
+%define IMP_OWN_LIST_METHOD(Ucname, methodname)
 %pythonprepend Ucname::methodname %{
-        args[1].thisown=0
-%}
-%enddef
-
-%define IMP_ADD_OBJECTS(Ucname, methodname)
-%pythonprepend Ucname::methodname %{
+        import IMP
         for p in args[1]:
-            p.thisown=0
+            if p is not None and issubclass(type(p), IMP.RefCountedObject):
+               p.thisown=0;
 %}
 %enddef
 
@@ -43,8 +42,8 @@ namespace IMP \
     return ret;
   }
 }
-IMP_ADD_OBJECT(type, add_##lcname)
-IMP_ADD_OBJECTS(type, add_##lcname##s)
+IMP_OWN_METHOD(type, add_##lcname)
+IMP_OWN_LIST_METHOD(type, add_##lcname##s)
 %enddef
 
 %include "IMP/macros.h"
