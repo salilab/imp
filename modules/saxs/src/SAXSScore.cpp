@@ -142,8 +142,11 @@ void SAXSScore::calculate_sinc_cos(Float pr_resolution, Float max_distance,
     for (unsigned int ir=0; ir<nr; ir++) {
       Float r = pr_resolution * ir;
       Float qr = q * r;
-      Float value = (sinc(qr) - cos(qr)) / square(r);
-      output_values[iq][ir] = value;
+      if(fabs(qr) < 1.0e-16) {
+        output_values[iq][ir] = 0;
+      } else {
+        output_values[iq][ir] = (sinc(qr) - cos(qr)) / square(r);
+      }
     }
   }
 }
@@ -220,13 +223,16 @@ void SAXSScore::calculate_chi_real_derivative(
   calculate_sinc_cos(pr_resolution, delta_dist.get_max_distance(),
                      model_saxs_profile, sinc_cos_values);
 
+  unsigned int profile_size = std::min(model_saxs_profile.size(),
+                                       exp_saxs_profile_->size());
+  derivatives.clear();
   derivatives.resize(particles.size());
   for (unsigned int iatom=0; iatom<particles.size(); iatom++) {
     //!----- Calculate a delta distribution per an atom
     delta_dist.calculate_derivative_distribution(particles[iatom]);
     chi_derivative = algebra::Vector3D(0.0, 0.0, 0.0);
 
-    for (unsigned int iq=0; iq<model_saxs_profile.size(); iq++) {
+    for (unsigned int iq=0; iq<profile_size; iq++) {
       delta_q = algebra::Vector3D(0.0, 0.0, 0.0);
 
       for (unsigned int ir=0; ir<delta_dist.size(); ir++) {
