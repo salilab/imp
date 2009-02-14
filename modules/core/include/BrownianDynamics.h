@@ -41,31 +41,22 @@ public:
   //! Simulate until the given time in fs
   void simulate(float time_in_fs);
 
-  //! Set the max step that should be allowed in angstroms
-  /** The timestep is shrunk if any particles are moved more than this */
-  void set_max_step(Float a) {
-    set_max_step(unit::Angstrom(a));
-  }
-
   //! Set time step in fs
-  void set_time_step(Float t) {
+  void set_time_step_in_femtoseconds(Float t) {
     set_time_step(unit::Femtosecond(t));
   }
 
   //! Time step in fs
-  Float get_time_step() const {
+  Float get_time_step_in_femtoseconds() const {
     return get_time_step_units().get_value();
   }
 
-  //! The last time step used in fs
-  Float get_last_time_step() const {
-    return get_last_time_step_units().get_value();
-  }
-
   /** In Kelvin*/
-  void set_temperature(Float t) { set_temperature(unit::Kelvin(t)); }
+  void set_temperature_in_kelvin(Float t) { set_temperature(unit::Kelvin(t)); }
   /** In Kelvin */
-  Float get_temperature() const { return get_temperature_units().get_value(); }
+  Float get_temperature_in_kelvin() const {
+    return get_temperature_units().get_value();
+  }
 
   //! Estimate the radius of a protein from the mass
   /** Proteins are assumed to be spherical. The density is estimated
@@ -97,52 +88,28 @@ public:
   }
 
   //! Get the current time in femtoseconds
-  Float get_current_time() const {
+  Float get_current_time_in_femtoseconds() const {
     return get_current_time_units().get_value();
   }
 
   //! Set the current time in femtoseconds
-  void set_current_time(Float fs) {
+  void set_current_time_in_femptoseconds(Float fs) {
     set_current_time( unit::Femtosecond(fs));
-  }
-
-  //! Return a histogram of timesteps
-  /** The 0 value is the bin from get_time_step() to get_time_step()/2
-      and they go as factors of two from there.
-   */
-  const std::vector<int> get_time_step_histogram() const {
-    return time_steps_;
   }
 
   IMP_LIST(private, Particle, particle, Particle*);
 
 private:
 
-  //! Perform a single dynamics step.
-  //  \return true if the initial step size was OK
-  bool step();
+  unit::Femtosecond get_time_step_units() const {return dt_;}
 
   void take_step();
-
-  /** Propose a single step, this will be accepted if all moves are
-      small enough.
-      \return true if it should be accepted.
-   */
-  bool propose_step(std::vector<algebra::Vector3D> &proposal);
 
   unit::Femtojoule kt() const;
 
   void setup_particles();
 
-  void set_max_step(unit::Angstrom a) {
-    max_change_= a;
-  }
-
   void set_time_step(unit::Femtosecond t);
-
-  unit::Femtosecond get_time_step_units() const {return max_dt_;}
-
-  unit::Femtosecond get_last_time_step_units() const {return cur_dt_;}
 
   void set_temperature(unit::Kelvin t) { T_=t;}
 
@@ -166,12 +133,8 @@ private:
     cur_time_= fs;
   }
 
-  unsigned int num_const_dt_;
-  unit::Angstrom max_change_;
-  unit::Femtosecond max_dt_, cur_dt_, cur_time_;
+  unit::Femtosecond dt_, cur_time_;
   unit::Kelvin T_;
-
-  std::vector<int> time_steps_;
 };
 
 IMPCORE_END_NAMESPACE
