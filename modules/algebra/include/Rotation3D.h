@@ -163,17 +163,17 @@ rotation_from_matrix(double m11,double m12,double m13,
   \note http://en.wikipedia.org/wiki/Rotation_matrix
   \note http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/index.htm
 */
-inline Rotation3D rotation_about_axis(Vector3D axis, Float angle)
+inline Rotation3D rotation_about_axis(Vector3D axis, double angle)
 {
   //normalize the vector
   Vector3D axis_norm = axis.get_unit_vector();
-  Float s;
+  double s;
   s=sin(angle/2);
-  Float x,y,z;
+  double x,y,z;
   x=axis_norm[0];
   y=axis_norm[1];
   z=axis_norm[2];
-  Float a,b,c,d;
+  double a,b,c,d;
   a = cos(angle/2);
   b = x*s;
   c = y*s;
