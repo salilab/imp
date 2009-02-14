@@ -144,6 +144,13 @@ IMPEXPORT void set_check_level(CheckLevel tf);
 IMPEXPORT CheckLevel get_check_level();
 
 
+//! Set whether exception messages are printed or not
+/** C++ doesn't display the messages, so if you are not using
+    python, you need to turn this on to understand errors.
+*/
+IMPEXPORT void set_print_exceptions(bool tf);
+
+
 //! Execute the code block if a certain level checks are on
 /**
    The next code block (delimited by { }) is executed if

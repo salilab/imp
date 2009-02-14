@@ -60,6 +60,11 @@ bool print_exceptions=false;
 
 }
 
+void set_print_exceptions(bool ft) {
+  print_exceptions=ft;
+}
+
+
 void assert_fail(const char *msg)
 {
   if (print_exceptions) {
