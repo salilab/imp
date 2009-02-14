@@ -36,7 +36,7 @@ public:
     IMP_assert(i>=0 && i<3, "index is not between 0, 1 or 2");
     return eigen_vecs_[i];
   }
-  Float get_principle_value(unsigned int i) const {
+  double get_principle_value(unsigned int i) const {
     IMP_assert(i>=0 && i<3, "index is not between 0, 1 or 2");
     return eigen_values_[i];
   }

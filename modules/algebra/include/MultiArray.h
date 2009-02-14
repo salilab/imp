@@ -298,45 +298,45 @@ public:
 
   //! Average of the values in the array.
   /**
-   * The returned value is always Float, independently of the type of the
+   * The returned value is always double, independently of the type of the
    * array.
    //  */
-  Float compute_avg() const {
+  double compute_avg() const {
     if (this->num_elements() <= 0) {
       return 0;
     }
-    Float avg = 0;
+    double avg = 0;
     std::vector<index> idx(D);
     while (internal::roll_inds(idx, this->shape(),
                                         this->index_bases())) {
-      avg += static_cast<Float>((*this)(idx));
+      avg += static_cast<double>((*this)(idx));
     }
     return avg / (this->num_elements());
   }
 
   /** Standard deviation of the values in the array.
-   * The returned value is always Float, independently of the type of the
+   * The returned value is always double, independently of the type of the
    * array.
    // */
-  Float compute_stddev() const {
+  double compute_stddev() const {
     size_type n_elem = this->num_elements();
     if (n_elem <= 1) {
       return 0;
     }
     T val;
-    Float avg = 0, stddev = 0;
+    double avg = 0, stddev = 0;
     std::vector<index> idx(D);
     while (internal::roll_inds(idx, this->shape(),
                                         this->index_bases())) {
       val = (*this)(idx);
-      avg += static_cast<Float>(val);
-      stddev += static_cast<Float>(val) * static_cast<Float>(val);
+      avg += static_cast<double>(val);
+      stddev += static_cast<double>(val) * static_cast<double>(val);
     }
     avg /= n_elem;
     stddev = stddev / n_elem - avg * avg;
     stddev *= n_elem / (n_elem - 1);
     // Foreseeing numerical instabilities
-    stddev = sqrt(static_cast<Float>(std::abs(stddev)));
+    stddev = sqrt(static_cast<double>(std::abs(stddev)));
     return stddev;
   }
 
@@ -345,7 +345,7 @@ public:
    * The average, standard deviation, minimum and maximum value are
    * returned.
    */
-  void compute_stats(Float& avg, Float& stddev, T& minval, T& maxval) const {
+  void compute_stats(double& avg, double& stddev, T& minval, T& maxval) const {
     if (is_void()) {
       avg = stddev = minval = maxval = 0;
     } else {
@@ -362,8 +362,8 @@ public:
         if (val < minval) {
           minval = val;
         }
-        avg += static_cast<Float>(val);
-        stddev += static_cast<Float>(val) * static_cast<Float>(val);
+        avg += static_cast<double>(val);
+        stddev += static_cast<double>(val) * static_cast<double>(val);
       }
       // Average
       size_type n_elem = this->num_elements();
@@ -373,7 +373,7 @@ public:
         stddev = stddev / n_elem - avg * avg;
         stddev *= n_elem / (n_elem - 1);
         // Foreseeing numerical instabilities
-        stddev = sqrt(static_cast<Float>(std::abs(stddev)));
+        stddev = sqrt(static_cast<double>(std::abs(stddev)));
       } else {
         stddev = 0;
       }
@@ -525,7 +525,7 @@ std::ostream& operator<<(std::ostream& ostrm, const MultiArray<T, D>& v)
           idx[0] = k;
           idx[1] = j;
           idx[2] = i;
-          ostrm << misc::float_to_string((Float)v(idx), 10, prec) << ' ';
+          ostrm << misc::float_to_string((double)v(idx), 10, prec) << ' ';
         }
         ostrm << std::endl;
       }
@@ -535,13 +535,13 @@ std::ostream& operator<<(std::ostream& ostrm, const MultiArray<T, D>& v)
       for (index i = (v).get_start(1);i <= (v).get_finish(1);i++) {
         idx[0] = j;
         idx[1] = i;
-        ostrm << misc::float_to_string((Float)v(idx), 10, prec) << ' ';
+        ostrm << misc::float_to_string((double)v(idx), 10, prec) << ' ';
       }
       ostrm << std::endl;
     }
   } else {
     while (internal::roll_inds(idx, v.shape(), v.index_bases())) {
-      ostrm << misc::float_to_string((Float)v(idx), 10, prec) << ' ';
+      ostrm << misc::float_to_string((double)v(idx), 10, prec) << ' ';
     }
     ostrm << std::endl;
   }

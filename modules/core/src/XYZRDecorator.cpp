@@ -7,6 +7,7 @@
 
 #include "IMP/core/XYZRDecorator.h"
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/vector_generators.h>
 
 #ifdef IMP_USE_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>

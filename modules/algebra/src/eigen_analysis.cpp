@@ -8,8 +8,8 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 PrincipleComponentAnalysis principle_components(
 const std::vector<Vector3D> &ps){
-  Float x_mean,y_mean,z_mean,varx,vary,varz;
-  Float varxy,varxz,varyz;
+  double x_mean,y_mean,z_mean,varx,vary,varz;
+  double varxy,varxz,varyz;
   x_mean=y_mean=z_mean=0.0;
   varx=vary=varz=0.0;
   varxy=varxz=varyz=0.0;
@@ -19,9 +19,9 @@ const std::vector<Vector3D> &ps){
     y_mean+=(*it)[1];
     z_mean+=(*it)[2];
   }
-  x_mean/=((Float)ps.size());
-  y_mean/=((Float)ps.size());
-  z_mean/=((Float)ps.size());
+  x_mean/=((double)ps.size());
+  y_mean/=((double)ps.size());
+  z_mean/=((double)ps.size());
   // calculcate variance
   for (std::vector<Vector3D>::const_iterator it = ps.begin();
                                              it != ps.end(); it++) {

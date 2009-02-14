@@ -6,6 +6,7 @@
  */
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/VectorD.h"
+#include "IMP/algebra/vector_generators.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -22,9 +23,9 @@ Rotation3D Rotation3D::get_inverse() const {
 
 
 
-Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
-                                Float m21,Float m22,Float m23,
-                                Float m31,Float m32,Float m33) {
+Rotation3D rotation_from_matrix(double m11,double m12,double m13,
+                                double m21,double m22,double m23,
+                                double m31,double m32,double m33) {
   IMP_IF_CHECK(EXPENSIVE) {
     Vector3D v0(m11, m12, m13);
     Vector3D v1(m21, m22, m23);
@@ -69,14 +70,14 @@ Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
               "The passed matrix is not a rotation matrix (col 1, col 2).",
               ValueException);
   }
-  Float a,b,c,d;
+  double a,b,c,d;
   a = fabs(1+m11+m22+m33)/4;
   b = fabs(1+m11-m22-m33)/4;
   c = fabs(1-m11+m22-m33)/4;
   d = fabs(1-m11-m22+m33)/4;
 
   // make sure quat is normalized.
-  Float sum = a+b+c+d;
+  double sum = a+b+c+d;
   a = sqrt(a/sum);
   b = sqrt(b/sum);
   c = sqrt(c/sum);
