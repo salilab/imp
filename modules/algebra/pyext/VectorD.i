@@ -15,12 +15,12 @@ namespace IMP {
         $action(self, *args)
         return self
   %}
-  %feature("shadow") VectorD::__imul__(Float) %{
+  %feature("shadow") VectorD::__imul__(double) %{
     def __imul__(self, *args):
         $action(self, *args)
         return self
   %}
-  %feature("shadow") VectorD::__idiv__(Float) %{
+  %feature("shadow") VectorD::__idiv__(double) %{
     def __idiv__(self, *args):
         $action(self, *args)
         return self
@@ -34,17 +34,17 @@ namespace IMP {
 }
 
 %extend IMP::algebra::VectorD {
-  Float __getitem__(unsigned int index) const {
+  double __getitem__(unsigned int index) const {
     return self->operator[](index);
   }
-  void __setitem__(unsigned int index, Float val) {
+  void __setitem__(unsigned int index, double val) {
     self->operator[](index) = val;
   }
   /* Ignore C++ return value from inplace operators, so that SWIG does not
      generate a new SWIG wrapper for the return value (see above). */
   void __iadd__(const VectorD &o) { self->operator+=(o); }
-  void __imul__(Float f) { self->operator*=(f); }
-  void __idiv__(Float f) { self->operator/=(f); }
+  void __imul__(double f) { self->operator*=(f); }
+  void __idiv__(double f) { self->operator/=(f); }
   void __isub__(const VectorD &o) { self->operator-=(o); }
 };
 
