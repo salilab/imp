@@ -103,7 +103,7 @@ public:
 
   void show(std::ostream &out) const {
     std::ios::fmtflags of = out.flags();
-    out << setiosflags(std::ios::fixed) << v_;
+    out << std::setiosflags(std::ios::fixed) << v_;
     if (EXP != 0) out << "e" << EXP;
     out.flags(of);
     /** \todo I should restore the io flags.
