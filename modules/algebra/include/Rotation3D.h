@@ -107,7 +107,7 @@ inline Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
   double m00 = cz*cy;
   double m11 = -sy*sx*sz + cx*cz;
   double m22 = cy*cx;
-  Float zero = 0.0;
+  double zero =0.0;
   a = sqrt(std::max(1+m00+m11+m22,zero))/2.0;
   b = sqrt(std::max(1+m00-m11-m22,zero))/2.0;
   c = sqrt(std::max(1-m00+m11-m22,zero))/2.0;
