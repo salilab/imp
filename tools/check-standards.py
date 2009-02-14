@@ -50,7 +50,7 @@ def check_python_file(filename, errors):
     try:
         if r.run():
             errors.append('Python file ' + filename + ' has odd indentation; ' \
-                          + 'please run through reindent.py first.')
+                          + 'please run through tools/reindent.py first.')
     except Exception:
         print >> sys.stderr, "reindent.py FAILED on %s:" % filename
         raise
