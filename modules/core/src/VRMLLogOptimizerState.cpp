@@ -7,7 +7,7 @@
  */
 
 #include <IMP/core/VRMLLogOptimizerState.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZRDecorator.h>
 #include <IMP/algebra/Vector3D.h>
 
 #include <fstream>
@@ -18,7 +18,8 @@ IMPCORE_BEGIN_NAMESPACE
 VRMLLogOptimizerState::VRMLLogOptimizerState(SingletonContainer *pc,
                                              std::string filename) :
     filename_(filename), file_number_(0), call_number_(0),
-    skip_steps_(0), pc_(pc)
+    skip_steps_(0), radius_(XYZRDecorator::get_default_radius_key()),
+    pc_(pc)
 {
 }
 
