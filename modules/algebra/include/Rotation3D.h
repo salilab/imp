@@ -40,7 +40,7 @@ public:
   //! Create a rotation from a quaternion
   /** \throw ValueException if the rotation is not a rotation matrix.
    */
-  Rotation3D(Float a, Float b, Float c, Float d){
+  Rotation3D(double a, double b, double c, double d){
     IMP_check(std::abs(square(a)+square(b)+square(c)+square(d) - 1.0) < .05,
               "Attempting to construct a rotation from a non-quaternion value."
               << " The coefficient vector must have a length of 1. Got: "
@@ -79,7 +79,7 @@ public:
     return VectorD<4>(a_, b_, c_, d_);
   }
 private:
-  Float a_,b_,c_,d_;
+  double a_,b_,c_,d_;
 };
 
 IMP_OUTPUT_OPERATOR(Rotation3D)
@@ -99,14 +99,14 @@ inline Rotation3D identity_rotation() {
     coordinate frame. http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
     \relates Rotation3D
 */
-inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
+inline Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
 {
-  Float a,b,c,d;
-  Float cx = cos(xr);  Float cy = cos(yr);  Float cz = cos(zr);
-  Float sx = sin(xr);  Float sy = sin(yr);  Float sz = sin(zr);
-  Float m00 = cz*cy;
-  Float m11 = -sy*sx*sz + cx*cz;
-  Float m22 = cy*cx;
+  double a,b,c,d;
+  double cx = cos(xr);  double cy = cos(yr);  double cz = cos(zr);
+  double sx = sin(xr);  double sy = sin(yr);  double sz = sin(zr);
+  double m00 = cz*cy;
+  double m11 = -sy*sx*sz + cx*cz;
+  double m22 = cy*cx;
   Float zero = 0.0;
   a = sqrt(std::max(1+m00+m11+m22,zero))/2.0;
   b = sqrt(std::max(1+m00-m11-m22,zero))/2.0;
@@ -131,10 +131,10 @@ inline Rotation3D rotation_from_fixed_xyz(Float xr,Float yr, Float zr)
          Conversion_between_quaternions_and_Euler_angles
     \relates Rotation3D
 */
-inline Rotation3D rotation_from_fixed_zxz(Float phi, Float theta, Float psi)
+inline Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
 {
-  Float a,b,c,d;
-  Float c1,c2,c3,s1,s2,s3;
+  double a,b,c,d;
+  double c1,c2,c3,s1,s2,s3;
   c2=cos(theta/2);c1=cos(phi/2);c3=cos(psi/2);
   s2=sin(theta/2);s1=sin(phi/2);s3=sin(psi/2);
   a = c1*c2*c3+s1*s2*s3;
@@ -151,9 +151,10 @@ inline Rotation3D rotation_from_fixed_zxz(Float phi, Float theta, Float psi)
    \throw ValueException if the rotation is not a rotation matrix.
    \relates Rotation3D
  */
-IMPALGEBRAEXPORT Rotation3D rotation_from_matrix(Float m11,Float m12,Float m13,
-                                              Float m21,Float m22,Float m23,
-                                              Float m31,Float m32,Float m33);
+IMPALGEBRAEXPORT Rotation3D
+rotation_from_matrix(double m11,double m12,double m13,
+                     double m21,double m22,double m23,
+                     double m31,double m32,double m33);
 
 //! Generate a Rotation3D object from a rotation around an axis
 /**

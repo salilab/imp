@@ -286,8 +286,8 @@ public:
   }
 
   //! Determinant (only for 2x2)
-  Float det() {
-    return (Float)((*this)(0, 0)*(*this)(1, 1) - (*this)(1, 0)*(*this)(0, 1));
+  double det() {
+    return (double)((*this)(0, 0)*(*this)(1, 1) - (*this)(1, 0)*(*this)(0, 1));
   }
 
 protected:

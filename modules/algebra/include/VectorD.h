@@ -33,7 +33,7 @@ public:
   typedef VectorD<D> This;
 
   //! Initialize the 1-vector from its value.
-  VectorD(Float x) {
+  VectorD(double x) {
 #ifdef SWIG_WRAPPER
     IMP_check(D==1, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
@@ -44,7 +44,7 @@ public:
   }
 
   //! Initialize the 2-vector from separate x,y values.
-  VectorD(Float x, Float y) {
+  VectorD(double x, double y) {
 #ifdef SWIG_WRAPPER
     IMP_check(D==2, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
@@ -56,7 +56,7 @@ public:
   }
 
   //! Initialize the 2-vector from separate x,y values.
-  VectorD(Float x, Float y, Float z) {
+  VectorD(double x, double y, double z) {
 #ifdef SWIG_WRAPPER
     IMP_check(D==3, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
@@ -69,7 +69,7 @@ public:
   }
 
   //! Initialize the 2-vector from separate x,y values.
-  VectorD(Float w, Float x, Float y, Float z) {
+  VectorD(double w, double x, double y, double z) {
 #ifdef SWIG_WRAPPER
     IMP_check(D==4, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
@@ -86,28 +86,28 @@ public:
   VectorD() {
 #ifndef NDEBUG
     for (unsigned int i=0; i< D; ++i) {
-      vec_[i]= std::numeric_limits<Float>::quiet_NaN();
+      vec_[i]= std::numeric_limits<double>::quiet_NaN();
     }
 #endif
   }
 
   //! \return A single component of this vector (0-D).
-  Float operator[](unsigned int i) const {
+  double operator[](unsigned int i) const {
     IMP_assert(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
     return vec_[i];
   }
 
   //! \return A single component of this vector (0-D).
-  Float& operator[](unsigned int i) {
+  double& operator[](unsigned int i) {
     IMP_assert(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
     return vec_[i];
   }
 
   //! \return the scalar product of two vectors.
-  Float scalar_product(const This &o) const {
-    Float ret=0;
+  double scalar_product(const This &o) const {
+    double ret=0;
     for (unsigned int i=0; i< D; ++i) {
       ret += vec_[i]* o.vec_[i];
     }
@@ -115,12 +115,12 @@ public:
   }
 
   //! scalar product
-  Float operator*(const This &o) const {
+  double operator*(const This &o) const {
     return scalar_product(o);
   }
 
   //! product with scalar
-  VectorD operator*(Float s) const {
+  VectorD operator*(double s) const {
     This ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] * s;
@@ -129,7 +129,7 @@ public:
   }
 
   //! divide by a scalar
-  VectorD operator/(Float s) const {
+  VectorD operator/(double s) const {
     This ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] / s;
@@ -147,12 +147,12 @@ public:
   }
 
   //! \return The square of the magnitude of this vector.
-  Float get_squared_magnitude() const {
+  double get_squared_magnitude() const {
     return scalar_product(*this);
   }
 
   //! \return The magnitude of this vector.
-  Float get_magnitude() const {
+  double get_magnitude() const {
     return std::sqrt(get_squared_magnitude());
   }
 
@@ -160,9 +160,9 @@ public:
   VectorD get_unit_vector() const {
     IMP_assert(get_magnitude() != 0,
                "Cannot get a unit vector from a zero vector");
-    Float mag = get_magnitude();
+    double mag = get_magnitude();
     // avoid division by zero
-    mag = std::max(mag, static_cast<Float>(1e-12));
+    mag = std::max(mag, static_cast<double>(1e-12));
     return operator/(mag);
   }
 
@@ -201,7 +201,7 @@ public:
   }
 
   //! Rescale the vector
-  VectorD& operator/=(Float f) {
+  VectorD& operator/=(double f) {
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] /= f;
     }
@@ -209,7 +209,7 @@ public:
   }
 
   //! Rescale the vector
-  VectorD& operator*=(Float f) {
+  VectorD& operator*=(double f) {
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] *= f;
     }
@@ -236,7 +236,7 @@ private:
     return 0;
   }
 
-  Float vec_[D];
+  double vec_[D];
 };
 
 template <unsigned int D>
@@ -248,122 +248,14 @@ std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
 
 //! product with scalar
 template <unsigned int D>
-inline VectorD<D> operator*(Float s, const VectorD<D> &o) {
+inline VectorD<D> operator*(double s, const VectorD<D> &o) {
   return o*s;
 }
 
-//! create a constant vector
-/** This is not the right name.
- */
-template <unsigned int D>
-VectorD<D> constant_vector(Float s) {
-  VectorD<D> ret;
-  for (unsigned int i= 0; i < D; ++i) {
-    ret[i]=s;
-  }
-  return ret;
-}
-
-
-//! Generate a random vector in a box with uniform density
-template <unsigned int D>
-VectorD<D>
-random_vector_in_box(const VectorD<D> &lb,
-                     const VectorD<D> &ub) {
-  VectorD<D> ret;
-  for (unsigned int i=0; i< D; ++i) {
-    IMP_check(lb[i] < ub[i], "Box for randomize must be non-empty",
-              ValueException);
-    ::boost::uniform_real<> rand(lb[i], ub[i]);
-    ret[i]=rand(random_number_generator);
-  }
-  return ret;
-}
-
-//! Generate a random vector in a box with uniform density
-template <unsigned int D>
-VectorD<D>
-random_vector_in_unit_box() {
-  return random_vector_in_box(VectorD<D>(0,0,0),
-                              VectorD<D>(1,1,1));
-}
-
-//! Generate a random vector in a sphere with uniform density
-template <unsigned int D>
-VectorD<D>
-random_vector_in_sphere(const VectorD<D> &center,
-                        Float radius){
-  IMP_check(radius > 0, "Radius in randomize must be postive",
-            ValueException);
-  VectorD<D> rad= constant_vector<D>(radius);
-  VectorD<D> min= center - rad;
-  VectorD<D> max= center + rad;
-  Float norm;
-  VectorD<D> ret;
-  // \todo This algorithm could be more efficient.
-  do {
-    ret=random_vector_in_box(min, max);
-    norm= (center- ret).get_magnitude();
-  } while (norm > radius);
-  return ret;
-}
-
-//! Generate a random vector in a unit sphere with uniform density
-template <unsigned int D>
-VectorD<D>
-random_vector_in_unit_sphere(){
-  return random_vector_in_sphere(VectorD<D>(0,0,0), 1);
-}
-
-//! Generate a random vector on a sphere with uniform density
-template <unsigned int D>
-VectorD<D>
-random_vector_on_sphere(const VectorD<D> &center,
-                        Float radius) {
-  // could be made general
-  BOOST_STATIC_ASSERT(D>0);
-  IMP_check(radius > 0, "Radius in randomize must be postive",
-            ValueException);
-  Float cur_radius=radius;
-  VectorD<D> up;
-  for (unsigned int i=D-1; i>0; --i) {
-    ::boost::uniform_real<> rand(-cur_radius,cur_radius);
-    up[i]= rand(random_number_generator);
-    // radius of circle
-    cur_radius= std::sqrt(square(cur_radius)-square(up[i]));
-  }
-  ::boost::uniform_int<> rand(0, 1);
-  Float x= cur_radius;
-  if (rand(random_number_generator)) {
-    x=-x;
-  }
-  up[0]=x;
-
-  IMP_assert(std::abs(up.get_magnitude() -radius) < .1,
-             "Error generating vector on sphere: "
-             << up << " for " << radius);
-  IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);
-
-  return center+ up;
-}
-
-
-//! Generate a random vector on a sphere with uniform density
-template <unsigned int D>
-VectorD<D>
-random_vector_on_unit_sphere() {
-  VectorD<D> v;
-  for (unsigned int i=0; i < D; ++i) {
-    v[i]=0;
-  }
-  return random_vector_on_sphere(v, 1);
-}
-
-
 //! compute the squared distance between two vectors
 template <unsigned int D>
-Float squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
-  Float d, s = 0;
+double squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
+  double d, s = 0;
   for (unsigned int i=0; i< D; ++i) {
     d = v1[i] - v2[i];
     s += d*d;
@@ -373,7 +265,7 @@ Float squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 
 //! compute the distance between two vectors
 template <unsigned int D>
-Float distance(const VectorD<D> &v1, const VectorD<D> &v2) {
+double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   return std::sqrt(squared_distance(v1, v2));
 }
 
