@@ -132,7 +132,7 @@ float DensityMap::voxel2loc(const int &index, int dim)
 
 int DensityMap::loc2voxel(float x,float y,float z) const
 {
-  if (!part_of_volume(x,y,z)) {
+  if (!is_part_of_volume(x,y,z)) {
     std::ostringstream msg;
     msg << " DensityMap::loc2voxel >> The point is not part of the grid \n";
     throw EMBED_OutOfRange(msg.str().c_str());
@@ -143,7 +143,7 @@ int DensityMap::loc2voxel(float x,float y,float z) const
   return ivoxz * header_.nx * header_.ny + ivoxy * header_.nx + ivoxx;
 }
 
-bool DensityMap::part_of_volume(float x,float y,float z) const
+bool DensityMap::is_part_of_volume(float x,float y,float z) const
 {
   if( x>=header_.get_xorigin() && x<=header_.get_top(0) &&
       y>=header_.get_yorigin() && y<=header_.get_top(1) &&
@@ -252,10 +252,10 @@ emreal DensityMap::calcRMS()
 }
 
 //!  Set the density voxels to zero and reset the managment flags.
-void DensityMap::reset_data()
+void DensityMap::reset_data(float val)
 {
   for (long i = 0; i < header_.nx * header_.ny * header_.nz; i++) {
-    data_[i] = 0.0;
+    data_[i] = val;
   }
   normalized_ = false;
   rms_calculated_ = false;
@@ -368,4 +368,39 @@ void DensityMap::add(const DensityMap &other) {
   for (long i=0;i<size;i++){
     data_[i]= data_[i] + other.data_[i];
   }
+}
+
+
+void DensityMap::pad(int nx, int ny, int nz,float val) {
+
+  if ((nx<header_.nx) or (ny<header_.ny) or (nz<header_.nz)) {
+    std::ostringstream msg;
+    msg << "DensityMap::pad The requested volume is smaller";
+    msg << " than the existing one\n";
+    throw EMBED_LogicError(msg.str().c_str());
+  }
+
+
+  long new_size = nx*ny*nz;
+  long cur_size = header_.nx * header_.ny * header_.nz;
+
+  delete(x_loc_);
+  delete(y_loc_);
+  delete(z_loc_);
+  x_loc_=NULL;y_loc_=NULL;z_loc_=NULL;
+  loc_calculated_ = false;
+
+  emreal * new_data = new emreal[new_size];
+  for (long i = 0; i < new_size; i++) {
+    new_data[i] = val;
+  }
+  for (long i = 0; i <  cur_size; i++) {
+    new_data[i] = data_[i];
+  }
+  header_.nx=nx;
+  header_.ny=ny;
+  header_.nz=nz;
+
+  delete(data_);
+  data_ = new_data;
 }
