@@ -65,32 +65,35 @@ public:
    */
   void compute_xyz_top();
 
+  void show(std::ostream& out=std::cout) const {
+    out<< "nx: " << nx << " ny: " << ny << " nz: " << nz << std::endl;
+    out<<"data_type: " << data_type << std::endl;
+    out<<"nxstart: " << nxstart << " nystart: " << nystart <<" nzstart: "
+      << nzstart << std::endl;
+    out<<"mx: "<< mx <<" my:" << my << " mz: " << mz << std::endl;
+    out<< "xlen: " << xlen <<" ylen: " << ylen <<" zlen: " << zlen
+      << std::endl;
+    out<<"alpha : " << alpha << " beta: " << beta <<" gamma: "<< gamma
+      << std::endl;
+    out<< "mapc : " << mapc << " mapr: " << mapr <<" maps: " << maps
+      << std::endl;
+    out<< "dmin: " << dmin << " dmax: " << dmax << " dmean: " << dmean
+      << std::endl;
+    out<<"ispg: " << ispg << std::endl;
+    out<<"nsymbt: " << nsymbt << std::endl;
+    out<< "user: " << user << std::endl;
+    out<<"xorigin: " << xorigin << " yorigin: "<< yorigin <<" zorigin: "
+      << zorigin << std::endl;
+    out<<"map: " << map << std::endl;
+    out<< "Objectpixelsize: " << Objectpixelsize << std::endl;
+    out<< "machinestamp: " << machinestamp << std::endl;
+    out<<"rms: " << rms << std::endl;
+    out<<"nlabl: " << nlabl <<std::endl;
+    for(int i=0;i<nlabl;i++)
+      out<< "comments[" << i << "] = ->" <<  comments[i] << "<-" << std::endl;
+  }
   friend std::ostream& operator<<(std::ostream& s, const DensityHeader &v) {
-    s<< "nx: " << v.nx << " ny: " << v.ny << " nz: " << v.nz << std::endl;
-    s<<"data_type: " << v.data_type << std::endl;
-    s <<"nxstart: " << v.nxstart << " nystart: " << v.nystart <<" nzstart: "
-      << v.nzstart << std::endl;
-    s<<"mx: "<< v.mx <<" my:" << v.my << " mz: " << v.mz << std::endl;
-    s << "xlen: " << v.xlen <<" ylen: " << v.ylen <<" zlen: " << v.zlen
-      << std::endl;
-    s <<"alpha : " << v.alpha << " beta: " << v.beta <<" gamma: "<< v.gamma
-      << std::endl;
-    s << "mapc : " << v.mapc << " mapr: " << v.mapr <<" maps: " << v.maps
-      << std::endl;
-    s << "dmin: " << v.dmin << " dmax: " << v.dmax << " dmean: " << v.dmean
-      << std::endl;
-    s <<"ispg: " << v.ispg << std::endl;
-    s <<"nsymbt: " << v.nsymbt << std::endl;
-    s << "user: " << v.user << std::endl;
-    s <<"xorigin: " << v.xorigin << " yorigin: "<< v.yorigin <<" zorigin: "
-      << v.zorigin << std::endl;
-    s <<"map: " << v.map << std::endl;
-    s << "Objectpixelsize: " << v.Objectpixelsize << std::endl;
-    s<< "machinestamp: " << v.machinestamp << std::endl;
-    s <<"rms: " << v.rms << std::endl;
-    s<<"nlabl: " << v.nlabl <<std::endl;
-    for(int i=0;i<v.nlabl;i++)
-      s << "comments[" << i << "] = ->" <<  v.comments[i] << "<-" << std::endl;
+    v.show(s);
     return s;
   }
 
