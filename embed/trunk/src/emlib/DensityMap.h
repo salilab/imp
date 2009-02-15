@@ -32,8 +32,11 @@ public:
   void Write(const char *filename,MapReaderWriter &writer);
 
 
-  // data managment
-  void reset_data(); 
+  //!  Set the density voxels to some calue and reset the managment flags.
+  /**
+  \param[in] value all of the density voxels will have this value
+   */
+  void reset_data(float value=0.0); 
 
   //! Calculates RMSD and mean of a map values are stored in the header.
   /** The header stores whether map is normalized.
@@ -72,7 +75,7 @@ public:
       \param[in] z The position ( in angstroms) of the z coordinate
       \return true if the point is part of the grid, false otherwise.
    */
-  bool part_of_volume(float x,float y,float z) const;
+  bool is_part_of_volume(float x,float y,float z) const;
 
   //! Gets the value of the voxel located at (x,y,z)
   /** \param[in] x The position ( in angstroms) of the x coordinate
@@ -169,6 +172,18 @@ public:
   /** \param[in] other the other map
    */
   void add(const DensityMap &other);
+
+  //! Increase the dimension of the map
+  //! The function pads zeros to the  left-bottom section on the map.
+  /** \param[in] x_vox the number of voxels on the X axis
+      \param[in] y_vox the number of voxels on the Y axis
+      \param[in] z_vox the number of voxels on the Z axis
+      \param[in] val   all additional voxels will have this value
+      \exception if the input  x/y/z voxels is smaller than the one 
+                 currently in the map
+   */
+  void pad(int nx, int ny, int nz,float val=0.0);
+
 protected:
 
   //! Calculates the coordinates that correspond to all voxels.
