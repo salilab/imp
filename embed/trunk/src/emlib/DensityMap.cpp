@@ -373,7 +373,7 @@ void DensityMap::add(const DensityMap &other) {
 
 void DensityMap::pad(int nx, int ny, int nz,float val) {
 
-  if ((nx<header_.nx) or (ny<header_.ny) or (nz<header_.nz)) {
+  if (nx<header_.nx || ny<header_.ny || nz<header_.nz) {
     std::ostringstream msg;
     msg << "DensityMap::pad The requested volume is smaller";
     msg << " than the existing one\n";
