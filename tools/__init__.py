@@ -416,8 +416,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # Remove options that don't work with C++ code:
         if cplusplus:
             opt = opt.replace("-Wstrict-prototypes", "")
-        if e.get('build', 'release') == 'debug':
-            opt=opt.replace("-O2", "")
+        opt=opt.replace("-O2", "")
         e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
         e.Replace(CPPFLAGS=basecflags.split() + opt.split())
         if e['PLATFORM'] is 'posix' and e['rpath']:
