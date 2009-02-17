@@ -20,7 +20,7 @@ rawheader="""/**
 
 #include "config.h"
 
-#include "internal/modulename_version_info.h"
+#include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/classtype.h>
@@ -86,7 +86,7 @@ def main():
     classname =sys.argv[2]
     if len(sys.argv) >3:
         type= sys.argv[3]
-        typemacro= "IMP_"+type.upper()+"(internal::"+modulename+"_version_info)"
+        typemacro= "IMP_"+type.upper()+"(internal::version_info)"
     else:
         type="RefCountedObject"
         typemacro=""
