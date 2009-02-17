@@ -261,17 +261,25 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
                             generate_doxygen.GenerateDoxFromIn,
                             'MakeExamples': make_examples.MakeExamples})
     if env.get('cxxflags', None) is not None:
+        print "Appending "+env.get('cxxflags', None)+\
+        " to the list of compiler flags."
         env.Append(CXXFLAGS = [env['cxxflags'].split(" ")])
     if env.get('linkflags', None) is not None:
+        print "Appending "+env.get('linkflags', None)+\
+        " to the list of linker flags."
         env.Append(LINKFLAGS=[env['linkflags'].split(" ")])
 
     if env.get('includepath', None) is not None:
+        print "Appending "+env.get('includepath', None)+\
+        " to the list of header search paths."
         env['includepath'] = [os.path.abspath(x) for x in \
                           env['includepath'].split(os.path.pathsep)]
         env.Append(CPPPATH=env['includepath'])
     # make sure it is there
     env.Append(LIBPATH=[])
     if env.get('libpath', None) is not None:
+        print "Appending "+env.get('libpath', None)+\
+        " to the list of library search paths."
         env['libpath'] = [os.path.abspath(x) for x in \
                       env['libpath'].split(os.path.pathsep)]
         env.Append(LIBPATH=env['libpath'])
