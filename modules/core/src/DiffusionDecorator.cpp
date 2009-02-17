@@ -43,24 +43,23 @@ static MillipascalSecond eta(unit::Kelvin T)
        std::make_pair(unit::Kelvin(273+90.0),
                       MillipascalSecond(0.3150)),
        std::make_pair(unit::Kelvin(273+100.0),
+                      MillipascalSecond(0.2822)),
+       std::make_pair(unit::Kelvin(std::numeric_limits<Float>::max()),
                       MillipascalSecond(0.2822))};
 
   const unsigned int npoints= sizeof(points)/sizeof(std::pair<float,float>);
   if (T < points[0].first) {
     return points[0].second;
   } else {
-    for (unsigned int i=1; i< npoints; ++i) {
-      if (points[i].first > T) {
-        float f= ((T - points[i-1].first)
-                  /(points[i].first - points[i-1].first))
-          .get_normalized_value();
-        MillipascalSecond ret=
-          (1.0-f) *points[i-1].second + f*points[i].second;
-        return ret;
-      }
-    }
+    unsigned int i;
+    for (i=1; points[i].first < T; ++i);
+    float f= ((T - points[i-1].first)
+              /(points[i].first - points[i-1].first))
+      .get_normalized_value();
+    MillipascalSecond ret=
+      (1.0-f) *points[i-1].second + f*points[i].second;
+    return ret;
   }
-  return points[npoints-1].second;
 }
 
 unit::Femtojoule kt(unit::Kelvin t) {
