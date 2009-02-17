@@ -22,7 +22,7 @@ float CoarseConvolution::convolution(const DensityMap &f, DensityMap &g,
     throw EMBED_LogicError(msg.str().c_str());
   }
   if (!f.same_voxel_size(g)){
-    std::ostrinstream msg;
+    std::ostringstream msg;
     msg << "CoarseConvolution::cross_correlation_coefficient >> This function "
     << "cannot handle density maps of different pixelsize "
     << std::endl << "First map pixelsize : " << f_header->Objectpixelsize
