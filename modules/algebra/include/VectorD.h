@@ -216,15 +216,16 @@ public:
     return *this;
   }
 
-  void show(std::ostream &out=std::cout, std::string delim=", ") const {
-    out << "(";
+  void show(std::ostream &out=std::cout, std::string delim=", ",
+            bool parens=true) const {
+    if (parens) out << "(";
     for (unsigned int i=0; i< D; ++i) {
       out << vec_[i];
       if (i != D-1) {
         out << delim;
       }
     }
-    out << ")";
+    if (parens) out << ")";
   }
 
 private:
@@ -289,7 +290,7 @@ SpacesIO<D> spaces_io(const VectorD<D> &v) {
 template <unsigned int D>
 inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
 {
-  s.v_.show(out, " ");
+  s.v_.show(out, " ", false);
   return out;
 }
 
