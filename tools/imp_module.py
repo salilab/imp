@@ -235,7 +235,8 @@ def IMPPython(env, files):
     inst, lib = InstallPythonHierarchy(env, pydir, env['IMP_MODULE'], files)
     for alias in _get_module_install_aliases(env):
         env.Alias(alias, inst)
-    _add_module_default_alias(env, lib)
+    if env.get('python', True):
+        _add_module_default_alias(env, lib)
     return lib
 
 def IMPPythonExtension(env, swig_interface):
@@ -263,7 +264,8 @@ def IMPPythonExtension(env, swig_interface):
     pyinst = env.Install(os.path.join(env['pythondir'], 'IMP', module), pymod)
     for alias in _get_module_install_aliases(env):
         env.Alias(alias, [libinst, pyinst])
-    _add_module_default_alias(env, [pyext, pymod])
+    if env.get('python', True):
+        _add_module_default_alias(env, [pyext, pymod])
     return pyext, pymod
 
 def IMPPythonExtensionEnvironment(env):
