@@ -45,6 +45,7 @@ void KernelParameters::set_params(float radius) {
        std::ostringstream msg;
         msg << " KernelParameters::set_params >> "
               "The Kernel Parameters are not initialized \n";
+        std::cerr<<msg.str()<<std::endl;
         throw EMBED_LogicError(msg.str().c_str());
       }
   std::map<float ,const KernelParameters::Parameters *>::iterator iter = 
@@ -54,6 +55,7 @@ void KernelParameters::set_params(float radius) {
     msg << " KernelParameters::set_params >> "
      "The Kernel Parameters for the radius " << radius 
      << " have already been calculated \n";
+    std::cerr<<msg.str()<<std::endl;
     throw EMBED_LogicError(msg.str().c_str());
   }
   radii2params[radius]=new Parameters(radius,rsigsq,timessig,sq2pi3,
