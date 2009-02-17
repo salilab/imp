@@ -60,10 +60,17 @@ public:
 
   }
 
-  //! Computes the maximum x,y,z coordinates of the grid.
-  /**
-   */
   void compute_xyz_top();
+
+
+  //! Update the dimensions of the map to be (nnx,nny,nnz). 
+  //!The origin of the map does not change
+  /**
+     /param[in] nnx the new number of voxels on the X axis
+     /param[in] nny the new number of voxels on the Y axis
+     /param[in] nnz the new number of voxels on the Z axis
+   */
+  void update_map_dimensions(int nnx,int nny,int nnz);
 
   void show(std::ostream& out=std::cout) const {
     out<< "nx: " << nx << " ny: " << ny << " nz: " << nz << std::endl;
