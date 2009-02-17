@@ -428,12 +428,12 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
   for (long i = 0; i < new_size; i++) {
     new_data[i] = val;
   }
-  int x,y,z,new_vox_x,new_vox_y,new_vox_z;
+  int new_vox_x,new_vox_y,new_vox_z;
   long new_vox;
   for (long i = 0; i <  cur_size; i++) {
-    x = voxel2loc(i,0);
-    y = voxel2loc(i,1);
-    z = voxel2loc(i,2);
+    float x = voxel2loc(i,0);
+    float y = voxel2loc(i,1);
+    float z = voxel2loc(i,2);
     new_vox_x=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
     new_vox_y=(int)floor((y-header_.get_yorigin())/header_.Objectpixelsize);
     new_vox_z=(int)floor((z-header_.get_zorigin())/header_.Objectpixelsize);
