@@ -12,8 +12,10 @@
 #include "../MRCReaderWriter.h"
 #include "../SampledDensityMap.h"
 #include "../CoarseCC.h"
+#include "../CoarseConvolution.h"
 #include "../CoarseCCatIntervals.h"
 #include "../ParticlesAccessPoint.h"
+#include "../SurfaceShellDensityMap.h"
 %}
 
 
@@ -53,5 +55,7 @@ namespace std {
 %include "../MRCReaderWriter.h"
 %include "../SampledDensityMap.h"
 %include "../CoarseCC.h"
+%include "../CoarseConvolution.h"
 %include "../CoarseCCatIntervals.h"
 %include "../ParticlesAccessPoint.h"
+%include "../SurfaceShellDensityMap.h"
