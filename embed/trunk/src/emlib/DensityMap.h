@@ -56,6 +56,7 @@ public:
       \param[in] dim   The dimesion of intereset ( between x:=0,y:=1,z:=2)
       \return the location (x,y,z) (in angstroms) of a given voxel. If the
               index is not part of the map, the function returns -1. 
+      \todo change to const and throw exception if loc_calculated == false
    */
   float voxel2loc(const int &index,int dim);
 
@@ -165,7 +166,8 @@ public:
   */
   Vector3 get_centroid(emreal threshold=0.0);
   //! Returns the the value of the voxel with the highest density.
-  emreal get_max_value() const;  
+  emreal get_max_value() const;
+  emreal get_min_value() const;
   //! Sums two grids.
   //! The result is kept in the map.
   //! The two maps should have the same dimensions and the same voxelsize
@@ -183,6 +185,16 @@ public:
                  currently in the map
    */
   void pad(int nx, int ny, int nz,float val=0.0);
+
+  //! Multiply each voxel in the map by the input factor
+  //! The result is kept in the map.
+  /** \param[in] factor the multiplication factor
+   */
+  void multiply(float factor);
+
+  //! Prints the locations of all of the voxels with value above a given
+  //! threshold into the input stream.
+  std::string get_locations_string(float t);
 
 protected:
 

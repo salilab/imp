@@ -336,7 +336,7 @@ Vector3 DensityMap::get_centroid(emreal threshold)  {
   return Vector3(x_centroid,y_centroid,z_centroid);
 }
 emreal DensityMap::get_max_value() const{
-  float max_val = -1.0 * INT_MAX;
+  emreal max_val = -1.0 * INT_MAX;
   long nvox = header_.nx*header_.ny*header_.nz;
   for (long i=0;i<nvox;i++) {
     if (data_[i] > max_val) {
@@ -346,6 +346,40 @@ emreal DensityMap::get_max_value() const{
   return max_val;
 }
 
+emreal DensityMap::get_min_value() const{
+  emreal min_val = INT_MAX;
+  long nvox = header_.nx*header_.ny*header_.nz;
+  for (long i=0;i<nvox;i++) {
+    if (data_[i] < min_val) {
+      min_val = data_[i];
+    }
+  }
+  return min_val;
+}
+
+std::string DensityMap::get_locations_string(float t)  {
+  std::stringstream out;
+  long nvox = header_.nx*header_.ny*header_.nz;
+  float x,y,z;
+  for (long i=0;i<nvox;i++) {
+    if (data_[i] > t) {
+      x=voxel2loc(i,0);
+      y=voxel2loc(i,1);
+      z=voxel2loc(i,2);
+      std::cout<< i << " || " << x << " " << y<<"  "<< z <<
+        " || " << loc2voxel(x,y,z) << std::endl;
+      out<<x << " " << y << " " << z << std::endl;
+    }
+  }
+  return out.str();
+}
+
+void DensityMap::multiply(float factor) {
+  long size = header_.nx * header_.ny * header_.nz;
+  for (long i=0;i<size;i++){
+    data_[i]= factor*data_[i];
+  }  
+}
 void DensityMap::add(const DensityMap &other) {
   //check that the two maps have the same dimensions
   if (!same_dimensions(other)){
@@ -394,13 +428,20 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
   for (long i = 0; i < new_size; i++) {
     new_data[i] = val;
   }
+  int x,y,z,new_vox_x,new_vox_y,new_vox_z;
+  long new_vox;
   for (long i = 0; i <  cur_size; i++) {
-    new_data[i] = data_[i];
+    x = voxel2loc(i,0);
+    y = voxel2loc(i,1);
+    z = voxel2loc(i,2);
+    new_vox_x=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
+    new_vox_y=(int)floor((y-header_.get_yorigin())/header_.Objectpixelsize);
+    new_vox_z=(int)floor((z-header_.get_zorigin())/header_.Objectpixelsize);
+    new_vox =  new_vox_z * nx * ny + new_vox_y * nx + new_vox_x;
+    new_data[new_vox] = data_[i];
   }
-  header_.nx=nx;
-  header_.ny=ny;
-  header_.nz=nz;
-
+  header_.update_map_dimensions(nx,ny,nz);
   delete(data_);
   data_ = new_data;
+  calc_all_voxel2loc();
 }
