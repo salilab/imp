@@ -26,6 +26,3 @@ env.IMPModule('search', author='Daniel Russel', version='SVN',
 
 env.IMPModule('examples', author='Daniel Russel', version='SVN',
               description='C++ example code for IMP.')
-
-env.IMPModule('npc', author='Daniel Russel', version='SVN',
-              description='NPC dynamics code for IMP.')
