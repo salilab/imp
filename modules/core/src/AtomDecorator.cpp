@@ -186,6 +186,214 @@ TYPE_DEF(H73);
 
 TYPE_DEF(UNKNOWN);
 
+namespace {
+  struct ElementData {
+    AtomType at;
+    AtomDecorator::Element e;
+  };
+
+  ElementData element_data[]=
+    {{AT_N, AtomDecorator::N},
+     {AT_H, AtomDecorator::H},
+     {AT_1H, AtomDecorator::H},
+     {AT_2H, AtomDecorator::H},
+     {AT_3H, AtomDecorator::H},
+     {AT_C, AtomDecorator::C},
+     {AT_O, AtomDecorator::O},
+     {AT_OXT, AtomDecorator::O},
+     {AT_CH3, AtomDecorator::C},
+
+     {AT_CA, AtomDecorator::C},
+     {AT_HA, AtomDecorator::H},
+     {AT_1HA, AtomDecorator::H},
+     {AT_2HA, AtomDecorator::H},
+
+     {AT_CB, AtomDecorator::C},
+     {AT_HB, AtomDecorator::H},
+     {AT_1HB, AtomDecorator::H},
+     { AT_2HB, AtomDecorator::H},
+     { AT_3HB, AtomDecorator::H},
+
+     {AT_CG, AtomDecorator::C},
+     {AT_CG1, AtomDecorator::C},
+     {AT_CG2, AtomDecorator::C},
+     {AT_HG, AtomDecorator::H},
+     { AT_1HG, AtomDecorator::H},
+     { AT_2HG, AtomDecorator::H},
+     //{AT_HG1},
+     {AT_1HG1, AtomDecorator::H},
+     {AT_2HG1, AtomDecorator::H},
+     {AT_3HG1, AtomDecorator::H},
+     {AT_1HG2, AtomDecorator::H},
+     {AT_2HG2, AtomDecorator::H},
+     {AT_3HG2, AtomDecorator::H},
+     {AT_OG, AtomDecorator::O},
+     {AT_OG1, AtomDecorator::O},
+     {AT_SG, AtomDecorator::S},
+
+     {AT_CD, AtomDecorator::C},
+     {AT_CD1, AtomDecorator::C},
+     {AT_CD2, AtomDecorator::C},
+     //{AT_HD1},
+     //{AT_HD2},
+     {AT_HD, AtomDecorator::H},
+     {AT_1HD, AtomDecorator::H},
+     {AT_2HD, AtomDecorator::H},
+     {AT_3HD, AtomDecorator::H},
+     {AT_1HD1, AtomDecorator::H},
+     {AT_2HD1, AtomDecorator::H},
+     {AT_3HD1, AtomDecorator::H},
+     {AT_1HD2, AtomDecorator::H},
+     {AT_2HD2, AtomDecorator::H},
+     {AT_3HD2, AtomDecorator::H},
+     {AT_SD, AtomDecorator::S},
+     {AT_OD1, AtomDecorator::O},
+     {AT_OD2, AtomDecorator::O},
+     {AT_ND1, AtomDecorator::N},
+     {AT_ND2, AtomDecorator::N},
+
+     {AT_CE, AtomDecorator::C},
+     {AT_CE1, AtomDecorator::C},
+     {AT_CE2, AtomDecorator::C},
+     {AT_CE3, AtomDecorator::C},
+     {AT_HE, AtomDecorator::H},
+     {AT_1HE, AtomDecorator::H},{AT_1HE, AtomDecorator::H},
+     {AT_2HE, AtomDecorator::H},{AT_2HE, AtomDecorator::H},
+     {AT_3HE, AtomDecorator::H},{AT_3HE, AtomDecorator::H},
+     //{AT_HE1},
+     //{AT_HE2},
+     //{AT_HE3},
+     {AT_1HE2, AtomDecorator::H},{AT_1HE2, AtomDecorator::H},
+     {AT_2HE2, AtomDecorator::H},{AT_2HE2, AtomDecorator::H},
+     {AT_OE1, AtomDecorator::O},
+     {AT_OE2, AtomDecorator::O},
+     {AT_NE, AtomDecorator::N},
+     {AT_NE1, AtomDecorator::N},
+     {AT_NE2, AtomDecorator::N},
+
+     {AT_CZ, AtomDecorator::C},
+     {AT_CZ2, AtomDecorator::C},
+     {AT_CZ3, AtomDecorator::C},
+     {AT_NZ, AtomDecorator::N},
+     {AT_HZ, AtomDecorator::H},
+     {AT_1HZ, AtomDecorator::H},
+     {AT_2HZ, AtomDecorator::H},
+     {AT_3HZ, AtomDecorator::H},
+     //{AT_HZ2},
+     //{AT_HZ2},
+     //{AT_HZ3},
+
+     {AT_CH2, AtomDecorator::C},
+     {AT_NH1, AtomDecorator::N},
+     {AT_NH2, AtomDecorator::N},
+     {AT_OH, AtomDecorator::O},
+     {AT_HH, AtomDecorator::H},
+
+     { AT_1HH1, AtomDecorator::H},
+     { AT_2HH1, AtomDecorator::H},
+     {AT_HH2, AtomDecorator::H},
+     { AT_1HH2, AtomDecorator::H},
+     { AT_2HH2, AtomDecorator::H},
+     { AT_1HH2, AtomDecorator::H},
+
+     { AT_1HH3, AtomDecorator::H},
+     { AT_2HH3, AtomDecorator::H},
+     { AT_3HH3, AtomDecorator::H},
+
+     { AT_P, AtomDecorator::P},
+     { AT_OP1, AtomDecorator::O},
+     { AT_OP2, AtomDecorator::O},
+     { AT_O5p, AtomDecorator::O},
+     { AT_H5p, AtomDecorator::C},
+     { AT_H5pp, AtomDecorator::H},
+     { AT_C4p, AtomDecorator::C},
+     { AT_H4p, AtomDecorator::H},
+     { AT_O4p, AtomDecorator::O},
+     { AT_C1p, AtomDecorator::C},
+     { AT_H1p, AtomDecorator::H},
+     { AT_C3p, AtomDecorator::C},
+     { AT_H3p, AtomDecorator::H},
+     { AT_O3p, AtomDecorator::O},
+     { AT_C2p, AtomDecorator::C},
+     { AT_H2p, AtomDecorator::H},
+     { AT_H2pp, AtomDecorator::H},
+     { AT_O2p, AtomDecorator::O},
+     { AT_HO2p, AtomDecorator::O},
+     { AT_N9, AtomDecorator::N},
+     { AT_C8, AtomDecorator::C},
+     { AT_H8, AtomDecorator::H},
+     { AT_N7, AtomDecorator::N},
+     { AT_C5, AtomDecorator::C},
+     { AT_C4, AtomDecorator::C},
+     { AT_N3, AtomDecorator::N},
+     { AT_C2, AtomDecorator::C},
+     { AT_H2, AtomDecorator::H},
+     { AT_N1, AtomDecorator::N},
+     { AT_C6, AtomDecorator::C},
+     { AT_N6, AtomDecorator::N},
+     { AT_H61, AtomDecorator::H},
+     { AT_H62, AtomDecorator::H},
+     { AT_O6, AtomDecorator::O},
+     { AT_H1, AtomDecorator::H},
+     { AT_N2, AtomDecorator::N},
+     { AT_H21, AtomDecorator::H},
+     { AT_H22, AtomDecorator::H},
+
+     { AT_H6, AtomDecorator::H},
+     { AT_H5, AtomDecorator::H},
+     { AT_O2, AtomDecorator::O},
+     { AT_N4, AtomDecorator::N},
+     { AT_H41, AtomDecorator::H},
+     { AT_H42,AtomDecorator::H},
+     { AT_H3, AtomDecorator::H},
+     { AT_O4, AtomDecorator::O},
+     { AT_C7, AtomDecorator::C},
+     { AT_H71, AtomDecorator::H},
+     { AT_H72,AtomDecorator::H},
+     { AT_H73,AtomDecorator::H},
+     { AT_UNKNOWN, AtomDecorator::UNKNOWN_ELEMENT}};
+
+  struct ElementMap {
+    std::map<AtomType, AtomDecorator::Element> map_;
+    ElementMap() {
+      for (unsigned int i=0; element_data[i].at != AT_UNKNOWN; ++i) {
+        map_[element_data[i].at]= element_data[i].e;
+      }
+    }
+    AtomDecorator::Element get_element(AtomType at) const {
+      IMP_check(map_.find(at) != map_.end(),
+                "Unknown AtomType in get_element.",
+                ValueException);
+      return map_.find(at)->second;
+    }
+    bool get_has_element(AtomType at) const {
+      return map_.find(at) != map_.end();
+    }
+    unsigned int get_number_of_types() const {
+      return map_.size();
+    }
+  };
+
+  ElementMap &get_element_map() {
+    static ElementMap element_map;
+    IMP_assert(element_map.get_number_of_types() > 40,
+               "Map is not initialized: "
+               << element_map.get_number_of_types());
+    return element_map;
+  }
+}
+
+AtomDecorator AtomDecorator::create(Particle *p, AtomType t,
+                                    const algebra::Vector3D &v) {
+  p->add_attribute(get_type_key(), t.get_index());
+  XYZDecorator::create(p, v);
+  AtomDecorator ret(p);
+  if (get_element_map().get_has_element(t)) {
+    ret.set_element(get_element_map().get_element(t));
+  }
+  return ret;
+}
+
 AtomType atom_type_from_pdb_string(std::string nm) {
   if (!AtomType::get_key_exists(nm)) {
     std::ostringstream oss;
