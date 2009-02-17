@@ -247,11 +247,7 @@ public:
   /** Create a decorator with the passed type and coordinates.*/
   static AtomDecorator create(Particle *p, AtomType t= AT_UNKNOWN,
                               const algebra::Vector3D &v=
-                                    algebra::Vector3D(0,0,0)) {
-    p->add_attribute(get_type_key(), t.get_index());
-    XYZDecorator::create(p, v);
-    return AtomDecorator(p);
-  }
+                              algebra::Vector3D(0,0,0));
 
   //! return true if the particle has the needed attributes
   static bool is_instance_of(Particle *p) {
