@@ -416,7 +416,10 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # Remove options that don't work with C++ code:
         if cplusplus:
             opt = opt.replace("-Wstrict-prototypes", "")
+        # This is mildly unsafe if there happens to be another compiler which uses these
+        # for something different.
         opt=opt.replace("-O2", "")
+        opt=opt.replace("-g", "")
         e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
         e.Replace(CPPFLAGS=basecflags.split() + opt.split())
         if e['PLATFORM'] is 'posix' and e['rpath']:
@@ -519,3 +522,4 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('pythonpath', 'Extra python path ' + \
                           '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None,
                           PathVariable.PathAccept))
+    vars.Add(BoolVariable('python', 'Whether to build the python libraries ', True))
