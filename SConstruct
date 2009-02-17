@@ -60,7 +60,9 @@ SConscript('modules/SConscript')
 SConscript('benchmarks/SConscript')
 
 # bin script first requires kernel libraries to be built:
-env.Depends(bin, [src, pyext])
+#env.Depends(bin, [src, pyext])
 
 # Build the binaries by default:
-env.Default(bin)
+env.Default([bin, src])
+if env.get('python', True):
+    env.Default(pyext)
