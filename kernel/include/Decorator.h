@@ -28,6 +28,8 @@ IMP_BEGIN_NAMESPACE
       particle which is assumed not to have them and throws an
       InvalidStateException if there is a problem.
 
+    \note Decorator objects are ordered based on the get_particle()
+
     \note Remember that attribute keys should always be created lazily
     (at the time of the first use), and not be created as static variables.
 */

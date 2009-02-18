@@ -644,6 +644,8 @@ void inline Particle::remove_attribute(ParticleKey name)
 /** \note These do not due ref counting currently. SWIG prevents
     use of Pointer<Particle> as the storage type without some
     gynmastics.
+
+    \note ParticlePair objects are ordered.
  */
 class ParticlePair {
   bool is_default() const {return false;}
@@ -693,6 +695,9 @@ IMP_OUTPUT_OPERATOR(ParticlePair);
 
 
 //! Store three particles
+/**     \note ParticleTriplet objects are ordered.
+
+ */
 class ParticleTriplet {
   bool is_default() const {return false;}
 public:
