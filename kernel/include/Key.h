@@ -74,6 +74,8 @@ typedef std::vector<Name> Name##s
     Keys used for storing attributes in particles should never be statically
     initialized. While this is annoying, statically initializing them is bad,
     as unused attribute keys can result in wasted memory in each particle.
+
+    \note Keys objects are ordered.
  */
 template <int ID>
 class KeyBase

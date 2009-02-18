@@ -21,7 +21,7 @@ Mac users should use one of the available collections of Unix tools, either \ext
 
 Do not install any C++ headers in `/usr/include` on your Mac as the compiler assumes any such headers are C headers. Since both MacPorts and Fink install into non-standard locations, you will need to add these to your SCons search path.
 
-\subsectiin windows Windows
+\subsection windows Windows
 Windows users should probably install Cygwin, but we don't have any of those yet, so we don't really know.
 
 \subsection optional Optional dependencies

@@ -84,7 +84,6 @@
     thrown, and actually hurt compiler optimizations in many cases. Many
     libraries (such as Boost) advise against using them.)
 
-
     \section coding Good Coding Practices
 
     - Restraints and ScoreStates should generally use a
@@ -151,10 +150,12 @@
     #include <vector>
     \endcode
 
-    - All classes should have a \c show method which takes an optional 
+    - All classes must have a \c show method which takes an optional 
       \c std::ostream and prints information about the object. In addition they
-      should have \c operator<< defined. This can be easily done using the
-      IMP_OUTPUT_OPERATOR macro.
+      must have \c operator<< defined. This can be easily done using the
+      IMP_OUTPUT_OPERATOR macro once the show method is defined. Note that
+      \c operator<< writes human readable information. Add a \c write method
+      if you want to provide output that can be read back in.
 
     - Use Int, Float, String rather than \c int, \c float, and \c std::string.
       Intermediate results in computations may be stored using \c doubles

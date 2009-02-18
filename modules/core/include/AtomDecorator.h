@@ -352,6 +352,7 @@ IMPCOREEXPORT char get_chain(AtomDecorator d);
     between the AtomType and the proper element.
     \note This method has not been tested. If you use it, please
     write a test and remove this comment.
+    \relates AtomType
 */
 IMPCOREEXPORT AtomType add_atom_type(std::string name,
                                     AtomDecorator::Element element);

@@ -14,28 +14,28 @@
     appropriate.
  */
 #define IMP_COMPARISONS                                                 \
-  /** */ bool operator==(const This &o) const {                         \
+  bool operator==(const This &o) const {                                \
     return (compare(o) == 0);                                           \
   }                                                                     \
-  /** */ bool operator!=(const This &o) const {                         \
+  bool operator!=(const This &o) const {                                \
     return (compare(o) != 0);                                           \
   }                                                                     \
-  /** */ bool operator<(const This &o) const {                          \
+  bool operator<(const This &o) const {                                 \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (compare(o) <0);                                             \
   }                                                                     \
-  /** */ bool operator>(const This &o) const {                          \
+  bool operator>(const This &o) const {                                 \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (compare(o) > 0);                                            \
   }                                                                     \
-  /** */ bool operator>=(const This &o) const {                         \
+  bool operator>=(const This &o) const {                                \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return !(compare(o) < 0);                                           \
   }                                                                     \
-  /** */ bool operator<=(const This &o) const {                         \
+  bool operator<=(const This &o) const {                                \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return !(compare(o) > 0);                                           \
@@ -45,28 +45,28 @@
 /** The macro requires that This be defined as the type of the current class.
  */
 #define IMP_COMPARISONS_1(field)                                        \
-  /** */ bool operator==(const This &o) const {                         \
+   bool operator==(const This &o) const {                         \
     return (field== o.field);                                           \
   }                                                                     \
-  /** */ bool operator!=(const This &o) const {                         \
+   bool operator!=(const This &o) const {                         \
     return (field!= o.field);                                           \
   }                                                                     \
-  /** */ bool operator<(const This &o) const {                          \
+   bool operator<(const This &o) const {                          \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (field< o.field);                                            \
   }                                                                     \
-  /** */ bool operator>(const This &o) const {                          \
+   bool operator>(const This &o) const {                          \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (field> o.field);                                            \
   }                                                                     \
-  /** */ bool operator>=(const This &o) const {                         \
+   bool operator>=(const This &o) const {                         \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (field>= o.field);                                           \
   }                                                                     \
-  /** */ bool operator<=(const This &o) const {                         \
+   bool operator<=(const This &o) const {                         \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (field<= o.field);                                           \
@@ -76,32 +76,32 @@
 /** The macro requires that This be defined as the type of the current class.
  */
 #define IMP_COMPARISONS_2(f0, f1)                                       \
-  /** */ bool operator==(const This &o) const {                         \
+  bool operator==(const This &o) const {                                \
     return (f0== o.f0 && f1==o.f1);                                     \
   }                                                                     \
-  /** */ bool operator!=(const This &o) const {                         \
+  bool operator!=(const This &o) const {                                \
     return (f0!= o.f0 || f1 != o.f1);                                   \
   }                                                                     \
-  /** */ bool operator<(const This &o) const {                          \
+  bool operator<(const This &o) const {                                 \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     if (f0< o.f0) return true;                                          \
     else if (f0 > o.f0) return false;                                   \
     else return f1 < o.f1;                                              \
   }                                                                     \
-  /** */ bool operator>(const This &o) const {                          \
+  bool operator>(const This &o) const {                                 \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     if (f0 > o.f0) return true;                                         \
     else if (f0 < o.f0) return false;                                   \
     else return f1 > o.f1;                                              \
   }                                                                     \
-  /** */ bool operator>=(const This &o) const {                         \
+  bool operator>=(const This &o) const {                                \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return operator>(o) || operator==(o);                               \
   }                                                                     \
-  /** */ bool operator<=(const This &o) const {                         \
+  bool operator<=(const This &o) const {                                \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return operator<(o) || operator==(o);                               \
@@ -111,13 +111,13 @@
 /** The macro requires that This be defined as the type of the current class.
  */
 #define IMP_COMPARISONS_3(f0, f1, f2)                                   \
-  /** */ bool operator==(const This &o) const {                         \
+  bool operator==(const This &o) const {                                \
     return (f0== o.f0 && f1==o.f1 && f2 == o.f2);                       \
   }                                                                     \
-  /** */ bool operator!=(const This &o) const {                         \
+  bool operator!=(const This &o) const {                                \
     return (f0!= o.f0 || f1 != o.f1 || f2 != o.f2);                     \
   }                                                                     \
-  /** */ bool operator<(const This &o) const {                          \
+  bool operator<(const This &o) const {                                 \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     if (f0< o.f0) return true;                                          \
@@ -126,7 +126,7 @@
     else if (f1 > o.f1) return false;                                   \
     else return f2 < o.f2;                                              \
   }                                                                     \
-  /** */ bool operator>(const This &o) const {                          \
+  bool operator>(const This &o) const {                                 \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     if (f0 > o.f0) return true;                                         \
@@ -135,12 +135,12 @@
     else if (f1 < o.f1) return false;                                   \
     else return f2 > o.f2;                                              \
   }                                                                     \
-  /** */ bool operator>=(const This &o) const {                         \
+  bool operator>=(const This &o) const {                                \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return operator>(o) || operator==(o);                               \
   }                                                                     \
-  /** */ bool operator<=(const This &o) const {                         \
+  bool operator<=(const This &o) const {                                \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return operator<(o) || operator==(o);                               \
@@ -149,7 +149,7 @@
 //! Implement operator<< on class name, assuming it has one template argument
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
-#define IMP_OUTPUT_OPERATOR_1(name) /** write to a stream*/             \
+#define IMP_OUTPUT_OPERATOR_1(name)                                     \
 template <class L>                                                      \
  inline std::ostream& operator<<(std::ostream &out, const name<L> &i)   \
   {                                                                     \
@@ -160,7 +160,7 @@ template <class L>                                                      \
 //! Implement operator<< on class name, assuming it has two template arguments
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
-#define IMP_OUTPUT_OPERATOR_2(name) /** write to a stream*/             \
+#define IMP_OUTPUT_OPERATOR_2(name)                                     \
   template <class L, class M>                                           \
   inline std::ostream& operator<<(std::ostream &out, const name<L, M> &i) \
   {                                                                     \
@@ -171,7 +171,7 @@ template <class L>                                                      \
 //! Implement operator<< on class name
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
-#define IMP_OUTPUT_OPERATOR(name)   /** write to a stream*/             \
+#define IMP_OUTPUT_OPERATOR(name)                                       \
   inline std::ostream &operator<<(std::ostream &out, const name &i)     \
   {                                                                     \
     i.show(out);                                                 \
