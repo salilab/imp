@@ -372,6 +372,9 @@ namespace {
     unsigned int get_number_of_types() const {
       return map_.size();
     }
+    void add_element(AtomType at, AtomDecorator::Element e) {
+      map_[at]= e;
+    }
   };
 
   ElementMap &get_element_map() {
@@ -574,6 +577,17 @@ std::string AtomDecorator::get_pdb_string(int index) {
   out.precision(2);
   out << ""<<std::endl; //TODO
   return out.str();
+}
+
+
+AtomType add_atom_type(std::string name,
+                       AtomDecorator::Element element) {
+  IMP_check(!AtomType::get_key_exists(name),
+            "An AtomType with that name already exists: "
+            << name, ValueException);
+  AtomType ret(name.c_str());
+  get_element_map().add_element(ret, element);
+  return ret;
 }
 
 IMPCORE_END_NAMESPACE

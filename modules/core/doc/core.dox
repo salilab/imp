@@ -1,16 +1,20 @@
 /** \namespace IMP::core
+
+\author Daniel Russel and Ben Webb
+
 \brief IMP.core contains basic functionality that is
 expected to be used by a wide variety of IMP users. 
 
-<b>Overview:</b> IMP.core contains basic functionality that is
+<b>Overview:</b>
+IMP.core contains basic functionality that is
 expected to be used by a wide variety of IMP users. The classes in it
 should not directly incorporate experimental data and instead should
 provide basic building blocks for making restraints and manipulating
 IMP Particles.
 
-<b>Authors:</b> Daniel Russel and Ben Webb.
+<b>Publications:</b>
+IMP.core is covered by the main IMP publications.
 
-<b>Publications:</b> IMP.core is covered by the main IMP publications.
-
-<b>License:</b> IMP.core is licensed under the LGPL.
+<b>License:</b>
+IMP.core is licensed under the LGPL.
 */
