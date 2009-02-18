@@ -195,4 +195,8 @@
       and make it harder to make mistakes by getting the mode flag
       wrong.
 
+    - Functions which take a parameter which has units should have the
+      unit as part of the function name, for example
+      IMP::core::BrownianDynamics::set_time_step_in_femtoseconds.
+
 */
