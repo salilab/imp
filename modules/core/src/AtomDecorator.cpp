@@ -388,9 +388,7 @@ AtomDecorator AtomDecorator::create(Particle *p, AtomType t,
   p->add_attribute(get_type_key(), t.get_index());
   XYZDecorator::create(p, v);
   AtomDecorator ret(p);
-  if (get_element_map().get_has_element(t)) {
-    ret.set_element(get_element_map().get_element(t));
-  }
+  ret.set_type(t);
   return ret;
 }
 
@@ -420,6 +418,9 @@ void AtomDecorator::set_type(AtomType t)
   // ultimate the secondary info should be set from a
   // better source. But this is good enough for now.
   get_particle()->set_value(get_type_key(), t.get_index());
+  if (get_element_map().get_has_element(t)) {
+    set_element(get_element_map().get_element(t));
+  }
 }
 
 IntKey AtomDecorator::get_type_key() {
