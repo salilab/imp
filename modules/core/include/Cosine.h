@@ -12,7 +12,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Cosine function.
+//! @Cosine function.
 /** This evaluates the function
     |k| - k cos(nf + a)
     where k is a force constant, n the periodicity, a the phase, and f the

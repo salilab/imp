@@ -12,7 +12,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Linear function
+//! @Linear function
 /** \note The offset is not meaningful for optimization, but does
     make the displayed energies nicer.
  */

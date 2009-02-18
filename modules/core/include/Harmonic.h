@@ -13,7 +13,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Harmonic function (symmetric about the mean)
+//! @Harmonic function (symmetric about the mean)
 /** This is a simple score modeling an harmonic oscillator. The score is
     0.5 * k * x * x, where k is the 'force constant' and x is the distance
     from the mean.
