@@ -207,11 +207,6 @@ IMPCOREEXPORT extern const AtomType AT_CG1;
 
 //! A decorator for a particle representing an atom.
 /**
-   At some point the Types and elements need to be expanded to be more complete.
-   Elements can be done exhaustively, but we need some sort of dynamic
-   mechanism for the types. This could be done by having an
-   add_type(string) method which adds a string name and assigns it to the
-   next unused type int available.
    \ingroup hierarchy
    \ingroup decorators
  */
@@ -351,6 +346,15 @@ IMPCOREEXPORT AtomDecorator get_atom(ResidueDecorator rd, AtomType at);
  */
 IMPCOREEXPORT char get_chain(AtomDecorator d);
 
+
+//! Create a new AtomType
+/** This creates a new AtomType (returned) and sets up the mapping
+    between the AtomType and the proper element.
+    \note This method has not been tested. If you use it, please
+    write a test and remove this comment.
+*/
+IMPCOREEXPORT AtomType add_atom_type(std::string name,
+                                    AtomDecorator::Element element);
 
 
 IMPCORE_END_NAMESPACE
