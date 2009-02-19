@@ -1,5 +1,5 @@
 /**
- *  \file SimpleDiscreteSsampler.h   \brief for debugging
+ *  \file SimpleDiscreteSampler.h   \brief for debugging
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */

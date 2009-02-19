@@ -18,7 +18,7 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Reads from file in normal or reverse order
 /** \ingroup LittleBigEndian
- * \param[in] reverse If true, the data will be read in reverse order.
+ * If the reverse parameter is true, the data will be read in reverse order.
  */
 void reversed_read(void *dest, size_t size, size_t nitems, std::ifstream& f,
                 bool reverse);
@@ -30,7 +30,7 @@ void reversed_read(void *dest, size_t size, size_t nitems, std::ifstream& f,
  * This function is the same as fread from C, but at the end there is a flag
  * saying if data should be read in reverse order or not.
  *
- * \param[in] reverse If true, the data will be read in reverse order.
+ * If the reverse parameter is true, the data will be read in reverse order.
  */
 void reversed_write(const void* src,size_t size,size_t nitems,
               std::ofstream& f,bool reverse = false);
