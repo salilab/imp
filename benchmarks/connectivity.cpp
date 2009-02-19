@@ -19,9 +19,12 @@ int main() {
   ConnectivityRestraint* r= new ConnectivityRestraint(ss);
   r->set_particles(ps);
   m->add_restraint(r);
-  set_checks_level(NONE);
-  set_log_level(SILENT);
+  set_check_level(EXPENSIVE);
+  set_log_level(VERBOSE);
+  m->evaluate(NULL);
 
+  set_check_level(NONE);
+  set_log_level(SILENT);
   boost::timer t;
   for (unsigned int i=0; i< 10; ++i) {
     m->evaluate(NULL);
