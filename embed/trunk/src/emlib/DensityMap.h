@@ -14,7 +14,7 @@
 /** CONVENTIONS
     1) IT IS ASSUMED THAT THE LOCATION OF A VOXEL IS AT THE LOWER XYZ
        VALUES THAT IT DEFINES AS A BOX.
-       This is important for function calc_all_voxel2loc() 
+       This is important for function calc_all_voxel2loc()
  */
 class EMDLLEXPORT DensityMap
 {
@@ -36,7 +36,7 @@ public:
   /**
   \param[in] value all of the density voxels will have this value
    */
-  void reset_data(float value=0.0); 
+  void reset_data(float value=0.0);
 
   //! Calculates RMSD and mean of a map values are stored in the header.
   /** The header stores whether map is normalized.
@@ -55,7 +55,7 @@ public:
   /** \param[in] index The voxel index
       \param[in] dim   The dimesion of intereset ( between x:=0,y:=1,z:=2)
       \return the location (x,y,z) (in angstroms) of a given voxel. If the
-              index is not part of the map, the function returns -1. 
+              index is not part of the map, the function returns -1.
       \todo change to const and throw exception if loc_calculated == false
    */
   float voxel2loc(const int &index,int dim);
@@ -160,7 +160,7 @@ public:
       \return true if the two maps have the same voxel size
    */
   bool same_voxel_size(const DensityMap &other) const;
-  //! Calculates the centroid of all the voxels with 
+  //! Calculates the centroid of all the voxels with
   //! density above a given threshold
   /** \param[in] threshold the input threshold
   */
@@ -175,13 +175,15 @@ public:
    */
   void add(const DensityMap &other);
 
+  long get_number_of_voxels() const;
+
   //! Increase the dimension of the map
   //! The function pads zeros to the  left-bottom section on the map.
   /** \param[in] x_vox the number of voxels on the X axis
       \param[in] y_vox the number of voxels on the Y axis
       \param[in] z_vox the number of voxels on the Z axis
       \param[in] val   all additional voxels will have this value
-      \exception if the input  x/y/z voxels is smaller than the one 
+      \exception if the input  x/y/z voxels is smaller than the one
                  currently in the map
    */
   void pad(int nx, int ny, int nz,float val=0.0);
@@ -199,7 +201,7 @@ public:
 protected:
 
   //! Calculates the coordinates that correspond to all voxels.
-  /** Can be precomputed to make corr faster.  
+  /** Can be precomputed to make corr faster.
       \todo which is a better design - have it public or call it from voxel2loc?
    */
   void calc_all_voxel2loc();

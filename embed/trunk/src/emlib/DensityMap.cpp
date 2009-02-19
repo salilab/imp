@@ -90,7 +90,7 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader)
 void DensityMap::float2real(float *f_data, emreal **r_data)
 {
   long size = header_.nx * header_.ny * header_.nz;
-  (*r_data)= new emreal[size]; 
+  (*r_data)= new emreal[size];
   for (long i=0;i<size;i++){
     (*r_data)[i]=(emreal)(f_data)[i];
   }
@@ -99,7 +99,7 @@ void DensityMap::float2real(float *f_data, emreal **r_data)
 void DensityMap::real2float(emreal *r_data, float **f_data)
 {
   long size = header_.nx * header_.ny * header_.nz;
-  (*f_data)= new float[size]; 
+  (*f_data)= new float[size];
   for (long i=0;i<size;i++){
     (*f_data)[i]=(float)(r_data)[i];
   }
@@ -115,10 +115,13 @@ void DensityMap::Write(const char *filename, MapReaderWriter &writer)
   delete[] f_data;
 }
 
+long DensityMap::get_number_of_voxels() const {
+  return header_.nx * header_.ny * header_.nz;
+}
 
-float DensityMap::voxel2loc(const int &index, int dim) 
+float DensityMap::voxel2loc(const int &index, int dim)
 {
-  if (!loc_calculated_) 
+  if (!loc_calculated_)
     calc_all_voxel2loc();
   if (dim==0) {
     return x_loc_[index];
@@ -167,7 +170,7 @@ void DensityMap::calc_all_voxel2loc()
   if (loc_calculated_)
     return;
 
-  long nvox = header_.nx * header_.ny * header_.nz;
+  long nvox = get_number_of_voxels();
   x_loc_ = new float[nvox];
   y_loc_ = new float[nvox];
   z_loc_ = new float[nvox];
@@ -201,7 +204,7 @@ void DensityMap::std_normalize()
   float max_value=-1e40, min_value=1e40;
   float inv_std = 1.0/calcRMS();
   float mean = header_.dmean;
-  long nvox = header_.nx * header_.ny * header_.nz;
+  long nvox = get_number_of_voxels();
 
   for (long ii=0;ii<nvox;ii++) {
     data_[ii] = (data_[ii] - mean) * inv_std;
@@ -226,7 +229,7 @@ emreal DensityMap::calcRMS()
   }
 
   emreal max_value=-1e40, min_value=1e40;
-  long  nvox = header_.nx * header_.ny * header_.nz;
+  long  nvox = get_number_of_voxels();
   emreal meanval = .0;
   emreal stdval = .0;
 
@@ -306,11 +309,11 @@ bool DensityMap::same_voxel_size(const DensityMap &other) const
 }
 
 Vector3 DensityMap::get_centroid(emreal threshold)  {
-  emreal max_val = get_max_value(); 
+  emreal max_val = get_max_value();
   if (threshold >= max_val) {
     std::ostringstream msg;
-    msg << "DensityMap::get_centroid >> The input threshold with value " << 
-    threshold << " is higher than the maximum density in the map " <<  
+    msg << "DensityMap::get_centroid >> The input threshold with value " <<
+    threshold << " is higher than the maximum density in the map " <<
       max_val << std::endl;
     throw EMBED_WrongValue(msg.str().c_str());
   }
@@ -318,7 +321,7 @@ Vector3 DensityMap::get_centroid(emreal threshold)  {
   float y_centroid = 0.0;
   float z_centroid = 0.0;
   int counter = 0;
-  long nvox = header_.nx*header_.ny*header_.nz;
+  long nvox = get_number_of_voxels();
   for (long i=0;i<nvox;i++) {
     if (data_[i] <= threshold) {
       continue;
@@ -328,7 +331,7 @@ Vector3 DensityMap::get_centroid(emreal threshold)  {
     z_centroid += voxel2loc(i,2);
     counter += 1;
   }
-  //counter will not be 0 since we checked that threshold is within 
+  //counter will not be 0 since we checked that threshold is within
   //the map densities.
   x_centroid /= counter;
   y_centroid /= counter;
@@ -337,7 +340,7 @@ Vector3 DensityMap::get_centroid(emreal threshold)  {
 }
 emreal DensityMap::get_max_value() const{
   emreal max_val = -1.0 * INT_MAX;
-  long nvox = header_.nx*header_.ny*header_.nz;
+  long nvox = get_number_of_voxels();
   for (long i=0;i<nvox;i++) {
     if (data_[i] > max_val) {
       max_val = data_[i];
@@ -348,7 +351,7 @@ emreal DensityMap::get_max_value() const{
 
 emreal DensityMap::get_min_value() const{
   emreal min_val = INT_MAX;
-  long nvox = header_.nx*header_.ny*header_.nz;
+  long nvox = get_number_of_voxels();
   for (long i=0;i<nvox;i++) {
     if (data_[i] < min_val) {
       min_val = data_[i];
@@ -359,7 +362,7 @@ emreal DensityMap::get_min_value() const{
 
 std::string DensityMap::get_locations_string(float t)  {
   std::stringstream out;
-  long nvox = header_.nx*header_.ny*header_.nz;
+  long nvox = get_number_of_voxels();
   float x,y,z;
   for (long i=0;i<nvox;i++) {
     if (data_[i] > t) {
@@ -378,8 +381,9 @@ void DensityMap::multiply(float factor) {
   long size = header_.nx * header_.ny * header_.nz;
   for (long i=0;i<size;i++){
     data_[i]= factor*data_[i];
-  }  
+  }
 }
+
 void DensityMap::add(const DensityMap &other) {
   //check that the two maps have the same dimensions
   if (!same_dimensions(other)){
@@ -414,9 +418,8 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
     throw EMBED_LogicError(msg.str().c_str());
   }
 
-
   long new_size = nx*ny*nz;
-  long cur_size = header_.nx * header_.ny * header_.nz;
+  long cur_size = get_number_of_voxels();
 
   delete(x_loc_);
   delete(y_loc_);
