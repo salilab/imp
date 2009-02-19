@@ -29,8 +29,8 @@ class IMPDOMINOEXPORT JNode
 {
 public:
   //! Constructor
-  /** \param [in] p_    a vector of IMP particles that are part of the node
-      \param [in] node_ind_  The index of the JNode
+  /** \param [in] p    a vector of IMP particles that are part of the node
+      \param [in] node_ind  The index of the JNode
    */
   JNode(const Particles &p, int node_ind);
   ~JNode() {
@@ -56,8 +56,8 @@ public:
   bool is_part(const Particles &p) const;
 
   //! Fill states as encoded in the node for the input subset of particles
-  /** \param[in] particles_   a set of particles
-      \param[in] states_      the dataset to be filled with states.
+  /** \param[in] particles   a set of particles
+      \param[in] states      the dataset to be filled with states.
    */
   void populate_states_of_particles(Particles *particles,
           std::map<std::string,CombState *> *states);
@@ -71,6 +71,7 @@ public:
   //! Finds the minimum combination in the node.
   /** \param[in]   move_to_state     true if the model should move to the new
                                      state
+      \param[in] num_of_solutions
       \return all of the combinations that reach the global minimum
    */
   std::vector<CombState *> * find_minimum(bool move_to_state = false,

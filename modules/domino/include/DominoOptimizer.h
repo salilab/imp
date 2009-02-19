@@ -55,9 +55,9 @@ protected:
   void clear(); //TODO implement!
   //! Creates a new node and add it to the graphs that take part in the
   //! optimization
-  /**
+  /*
     \param[in] node_index the index of the node
-    \param[in] particles  the particles that are part of the node
+    \param[in] particles_ind  the particles that are part of the node
   */
   void add_jt_node(int node_index, std::vector<Int>  &particles_ind,
                    Model &m);
