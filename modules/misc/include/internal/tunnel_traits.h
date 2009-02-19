@@ -26,7 +26,7 @@ class TunnelTraits {
     radius_=0;
   }
   void set_coordinate(unsigned int i) {
-    IMP_check(coordinate_ <3, "Coordinate out of range",
+    IMP_check(i <3, "Coordinate out of range",
               ValueException);
     coordinate_=i;
   }
