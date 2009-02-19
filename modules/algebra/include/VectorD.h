@@ -240,7 +240,7 @@ std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
 }
 
 //! lexicographic comparison of two vectors
-template <int D>
+template <unsigned int D>
 int compare(const VectorD<D> &a, const VectorD<D> &b) {
   for (unsigned int i=0; i< D; ++i) {
     if (a[i] < b[i]) return -1;
