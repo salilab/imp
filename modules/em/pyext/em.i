@@ -31,6 +31,7 @@
 /* Wrap our own classes */
 %include "IMP/em/IMPParticlesAccessPoint.h"
 %include "IMP/em/EMFitRestraint.h"
+%include "IMP/em/convertors.h"
 
 /* Allow runtime casting of Restraint* objects to EMFitRestraint* */
 namespace IMP {
