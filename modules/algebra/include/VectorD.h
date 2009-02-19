@@ -229,13 +229,6 @@ public:
   }
 
 private:
-  int compare(const This &o) const {
-    for (unsigned int i=0; i< D; ++i) {
-      if (vec_[i] < o.vec_[i]) return -1;
-      else if (vec_[i] > o.vec_[i]) return 1;
-    }
-    return 0;
-  }
 
   double vec_[D];
 };
@@ -244,6 +237,16 @@ template <unsigned int D>
 std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
   v.show(out);
   return out;
+}
+
+//! lexicographic comparison of two vectors
+template <int D>
+int compare(const VectorD<D> &a, const VectorD<D> &b) {
+  for (unsigned int i=0; i< D; ++i) {
+    if (a[i] < b[i]) return -1;
+    else if (a[i] > b[i]) return 1;
+  }
+  return 0;
 }
 
 
