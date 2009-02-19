@@ -35,6 +35,7 @@ namespace IMP {
 
 %extend IMP::algebra::VectorD {
   double __getitem__(unsigned int index) const {
+    if (index >= D) throw IMP::IndexException("");
     return self->operator[](index);
   }
   void __setitem__(unsigned int index, double val) {
@@ -46,6 +47,7 @@ namespace IMP {
   void __imul__(double f) { self->operator*=(f); }
   void __idiv__(double f) { self->operator/=(f); }
   void __isub__(const VectorD &o) { self->operator-=(o); }
+  unsigned int __len__() {return D;}
 };
 
 %include "IMP/algebra/VectorD.h"
