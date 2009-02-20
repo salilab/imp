@@ -38,6 +38,12 @@ def make_one(name, value, multi, args):
                path+"/modules/core/tools/container_templates/restraint.hpp"),
               ("modules/core/src/"+multi + "sRestraint.cpp",
                path+"/modules/core/tools/container_templates/restraint.cc"),
+
+              ("modules/core/include/"+multi + "Restraint.h",
+               path+"/modules/core/tools/container_templates/srestraint.hpp"),
+              ("modules/core/src/"+multi + "Restraint.cpp",
+               path+"/modules/core/tools/container_templates/srestraint.cc"),
+
               ("modules/core/include/FilteredList"+multi + "Container.h",
                path+"/modules/core/tools/container_templates/filter.hpp"),
               ("modules/core/src/FilteredList"+multi + "Container.cpp",
@@ -50,6 +56,12 @@ def make_one(name, value, multi, args):
                path+"/modules/core/tools/container_templates/state.hpp"),
               ("modules/core/src/"+multi + "sScoreState.cpp",
                path+"/modules/core/tools/container_templates/state.cc"),
+  
+              ("modules/core/include/"+multi + "ScoreState.h",
+               path+"/modules/core/tools/container_templates/sstate.hpp"),
+              ("modules/core/src/"+multi + "ScoreState.cpp",
+               path+"/modules/core/tools/container_templates/sstate.cc"),
+  
               ("kernel/include/"+multi + "Modifier.h",
                path+"/modules/core/tools/container_templates/function.hpp"),
               ("kernel/src/"+multi + "Modifier.cpp",

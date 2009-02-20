@@ -5,7 +5,9 @@ namespace IMP {
        We need to check if the object inherits from ref counted or
        object first */
     IMP_OWN_CONSTRUCTOR(GroupnamesRestraint)
+    IMP_OWN_CONSTRUCTOR(GroupnameRestraint)
     IMP_OWN_CONSTRUCTOR(GroupnamesScoreState)
+    IMP_OWN_CONSTRUCTOR(GroupnameScoreState)
     IMP_OWN_CONSTRUCTOR(MinimumGroupnameScoreRestraint)
     IMP_OWN_CONSTRUCTOR(MaximumGroupnameScoreRestraint)
     IMP_CONTAINER_SWIG(FilteredListGroupnameContainer, GroupnameContainer, groupname_container)

@@ -35,6 +35,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT GroupnamesRestraint : public Restraint
 {
+  Pointer<GroupnameScore> ss_;
+  Pointer<GroupnameContainer> pc_;
 public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.
@@ -80,10 +82,6 @@ public:
   }
 
   virtual ParticlesList get_interacting_particles() const;
-
-private:
-  Pointer<GroupnameScore> ss_;
-  Pointer<GroupnameContainer> pc_;
 };
 
 IMPCORE_END_NAMESPACE
