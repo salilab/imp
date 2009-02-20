@@ -15,9 +15,9 @@ void DensityHeader::update_map_dimensions(int nnx,int nny,int nnz) {
   nx=nnx;
   ny=nny;
   nz=nnz;
-  mx = nxstart + nx - 1; 
-  my = nystart + ny - 1; 
-  mz = nzstart + nz - 1;
+  mx = nx;
+  my = ny;
+  mz = nz;
   top_calculated=false;
   compute_xyz_top();
   xlen=nx*Objectpixelsize;
