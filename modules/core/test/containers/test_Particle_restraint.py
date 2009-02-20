@@ -88,6 +88,18 @@ class ParticleContainerTest(IMP.test.TestCase):
         c.add_particle(p)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
+
+    def test_srestraint(self):
+        """Test the SingletonRestraint"""
+        m= IMP.Model()
+        gs=self.create_singleton_score()
+        p=self.create_particle(m)
+        f= evaluate_singleton_score(gs, p)
+        r= IMP.core.SingletonRestraint(gs, p)
+        r.set_was_owned(True)
+        m.add_restraint(r)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+
     def test_min_restraint(self):
         """Test the MinimumSingletonScoreRestraint"""
         m= IMP.Model()

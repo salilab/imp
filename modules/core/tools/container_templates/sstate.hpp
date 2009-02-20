@@ -30,7 +30,7 @@ class IMPCOREEXPORT GroupnameScoreState : public ScoreState
 {
   Pointer<GroupnameModifier> f_;
   Pointer<GroupnameModifier> af_;
-  Classname v_;
+  Value v_;
 public:
   /** \param[in] v The Classname to modify
       \param[in] before The GroupnameModifier to apply to all elements
@@ -38,8 +38,8 @@ public:
       \param[in] after The GroupnameModifier to apply to all elements
        after evaluate.
    */
-  GroupnamesScoreState(GroupnameModifier *before,
-                       GroupnameModifier *after, Classname v);
+  GroupnameScoreState(GroupnameModifier *before,
+                       GroupnameModifier *after, Value v);
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(GroupnameModifier* f) {
@@ -51,7 +51,7 @@ public:
     f_=f;
   }
 
-  virtual ~GroupnamesScoreState();
+  virtual ~GroupnameScoreState();
 
   IMP_SCORE_STATE(internal::version_info)
 
@@ -62,4 +62,4 @@ public:
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_GROUPNAMES_SCORE_STATE_H */
+#endif  /* IMPCORE_GROUPNAME_SCORE_STATE_H */

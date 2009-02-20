@@ -19,30 +19,30 @@ IMPCORE_BEGIN_NAMESPACE
 
 GroupnameRestraint
 ::GroupnameRestraint(GroupnameScore *ss,
-                     Classname v):
+                     Value v):
   ss_(ss),
   v_(v)
 {
 }
 
-GroupnamesRestraint::~GroupnamesRestraint()
+GroupnameRestraint::~GroupnameRestraint()
 {
 }
 
-Float GroupnamesRestraint::evaluate(DerivativeAccumulator *accum)
+Float GroupnameRestraint::evaluate(DerivativeAccumulator *accum)
 {
 
   IMP_CHECK_OBJECT(ss_);
 
   Float score=0;
   score += IMP::internal::ContainerTraits<Classname>
-    ::evaluate(ss_, *it, accum);
+    ::evaluate(ss_, v_, accum);
 
   return score;
 }
 
 
-ParticlesList GroupnamesRestraint::get_interacting_particles() const
+ParticlesList GroupnameRestraint::get_interacting_particles() const
 {
   if (!IMP::internal::ContainerTraits<Classname>::is_singleton) {
     ParticlesList ret;
@@ -54,12 +54,11 @@ ParticlesList GroupnamesRestraint::get_interacting_particles() const
   }
 }
 
-void GroupnamesRestraint::show(std::ostream& out) const
+void GroupnameRestraint::show(std::ostream& out) const
 {
   out << "GroupnameRestraint with score function ";
   ss_->show(out);
-  out << " and container ";
-  pc_->show(out);
+  out << " and " << v_;
   out << std::endl;
 }
 

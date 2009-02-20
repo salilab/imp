@@ -16,7 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 GroupnameScoreState::GroupnameScoreState(GroupnameModifier *before,
                                          GroupnameModifier *after,
-                                         Classname v):
+                                         Value v):
   v_(v){
     if (before) f_=before;
     if (after) af_=after;
@@ -31,22 +31,22 @@ void GroupnameScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP::internal::ContainerTraits<Classname>
-    ::apply(ss_, v_);
+    ::apply(f_.get(), v_);
   IMP_LOG(TERSE, "End GroupnamesScoreState::update" << std::endl);
 }
 
-void GroupnamScoreState::do_after_evaluate()
+void GroupnameScoreState::do_after_evaluate()
 {
   if (!af_) return;
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP::internal::ContainerTraits<Classname>
-    ::apply(ss_, v_);
+    ::apply(af_.get(), v_);
   IMP_LOG(TERSE, "End GroupnamesScoreState::after_evaluate" << std::endl);
 }
 
-void GroupnamesScoreState::show(std::ostream &out) const {
-  out << "GroupnamesScoreState base" << std::endl;
+void GroupnameScoreState::show(std::ostream &out) const {
+  out << "GroupnameScoreState" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

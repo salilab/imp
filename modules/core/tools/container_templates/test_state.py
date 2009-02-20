@@ -106,7 +106,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         return IMP.core.DistancePairScore(uf)
 
     def test_set(self):
-        """Testing GroupnameContainerScoreState"""
+        """Testing GroupnamesScoreState"""
         # write increment an int field
         # call evaluate and check that it is incremented
         IMP.set_log_level(IMP.VERBOSE)
@@ -131,6 +131,27 @@ class ClassnameContainerTest(IMP.test.TestCase):
         m.evaluate(False)
         for p in cs:
             self.assert_(classname_has_attribute(p, k))
+        print "done"
+
+    def test_sset(self):
+        """Testing GroupnameScoreState"""
+        # write increment an int field
+        # call evaluate and check that it is incremented
+        IMP.set_log_level(IMP.VERBOSE)
+        print "start"
+        m= IMP.Model()
+        print "hi"
+        t=self.create_classname(m)
+        print "dl"
+        k= IMP.IntKey("thevalue")
+        f= GroupnameTestModifier(k)
+        print "apply"
+        s= IMP.core.GroupnameScoreState(f, None, t)
+        self.assert_( not f.thisown)
+        m.add_score_state(s)
+        print "add"
+        m.evaluate(False)
+        self.assert_(classname_has_attribute(t, k))
         print "done"
 
 if __name__ == '__main__':

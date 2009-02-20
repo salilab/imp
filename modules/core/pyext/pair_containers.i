@@ -5,7 +5,9 @@ namespace IMP {
        We need to check if the object inherits from ref counted or
        object first */
     IMP_OWN_CONSTRUCTOR(PairsRestraint)
+    IMP_OWN_CONSTRUCTOR(PairRestraint)
     IMP_OWN_CONSTRUCTOR(PairsScoreState)
+    IMP_OWN_CONSTRUCTOR(PairScoreState)
     IMP_OWN_CONSTRUCTOR(MinimumPairScoreRestraint)
     IMP_OWN_CONSTRUCTOR(MaximumPairScoreRestraint)
     IMP_CONTAINER_SWIG(FilteredListPairContainer, PairContainer, pair_container)

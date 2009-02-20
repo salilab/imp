@@ -35,6 +35,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT SingletonsRestraint : public Restraint
 {
+  Pointer<SingletonScore> ss_;
+  Pointer<SingletonContainer> pc_;
 public:
   //! Create the restraint.
   /** \param[in] ss The function to apply to each particle.
@@ -80,10 +82,6 @@ public:
   }
 
   virtual ParticlesList get_interacting_particles() const;
-
-private:
-  Pointer<SingletonScore> ss_;
-  Pointer<SingletonContainer> pc_;
 };
 
 IMPCORE_END_NAMESPACE
