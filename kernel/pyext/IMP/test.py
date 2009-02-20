@@ -4,7 +4,7 @@ import os
 import random
 import IMP
 
-def _numerical_derivative(func, val, step):
+def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
        point `val`. The derivative is calculated using simple finite
        differences starting with the given `step`; Richardson extrapolation
@@ -114,7 +114,7 @@ class TestCase(unittest.TestCase):
            approximations between lb and ub"""
         for f in [lb + i * step for i in range(1, int((ub-lb)/step))]:
             (v,d)= func.evaluate_with_derivative(f)
-            da = _numerical_derivative(func.evaluate, f, step / 10.)
+            da = numerical_derivative(func.evaluate, f, step / 10.)
             self.assertInTolerance(d, da, max(abs(.1 *d), 0.01))
 
     def check_unary_function_min(self, func, lb, ub, step, expected_fmin):
