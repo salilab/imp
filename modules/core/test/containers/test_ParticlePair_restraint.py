@@ -88,6 +88,18 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         c.add_particle_pair(p)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
+
+    def test_srestraint(self):
+        """Test the PairRestraint"""
+        m= IMP.Model()
+        gs=self.create_pair_score()
+        p=self.create_particle_pair(m)
+        f= evaluate_pair_score(gs, p)
+        r= IMP.core.PairRestraint(gs, p)
+        r.set_was_owned(True)
+        m.add_restraint(r)
+        self.assertInTolerance(m.evaluate(False), f, .1*f)
+
     def test_min_restraint(self):
         """Test the MinimumPairScoreRestraint"""
         m= IMP.Model()
