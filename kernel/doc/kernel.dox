@@ -1,0 +1,15 @@
+/**
+\namespace IMP
+\brief The IMP library.
+\author Daniel Russel, Ben Webb, Keren Laskar
+
+\par Overview
+All kernel and module classes and functions should be in this namespace or
+a sub-namespace.
+
+\par Publications
+The kernel is covered by the main \imp publications.
+
+\par License
+LGPL
+ */

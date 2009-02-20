@@ -36,10 +36,3 @@
  - \ref installation "Installation Instructions"
  - \ref introduction "Introduction to IMP"
  */
- 
-/**
-  \namespace IMP \brief The IMP library.
-
-  All kernel and module classes and functions should be in this namespace or
-  a sub-namespace.
- */
