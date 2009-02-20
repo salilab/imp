@@ -34,53 +34,144 @@ IMPALGEBRA_BEGIN_NAMESPACE
     Quaternion
 */
 class IMPALGEBRAEXPORT Rotation3D {
+  VectorD<4> v_;
 public:
   //! Create an invalid rotation
-  Rotation3D():a_(0.0),b_(0.0),c_(0.0),d_(0.0) {}
+  Rotation3D():v_(0,0,0,0) {}
   //! Create a rotation from a quaternion
-  /** \throw ValueException if the rotation is not a rotation matrix.
+  /** \throw ValueException if the rotation is not a unit vector.
    */
-  Rotation3D(double a, double b, double c, double d){
-    IMP_check(std::abs(square(a)+square(b)+square(c)+square(d) - 1.0) < .05,
+  Rotation3D(double a, double b, double c, double d): v_(a,b,c,d) {
+    IMP_check(std::abs(v_.get_squared_magnitude() - 1.0) < .05,
               "Attempting to construct a rotation from a non-quaternion value."
               << " The coefficient vector must have a length of 1. Got: "
               << a << " " << b << " " << c << " " << d,
               ValueException);
-    a_=a;b_=b;c_=c;d_=d;
     if (a<0) {
       // make them canonical
-      a_=-a_;
-      b_=-b_;
-      c_=-c_;
-      d_=-d_;
+      v_=-v_;
     }
   }
   ~Rotation3D();
   //! Rotate a vector around the origin
+  /**
+     (q0*q0+q1*q1-q2*q2-q3*q3)*x
+     + 2*(q1*q2-q0*q3)*y
+     + 2*(q1*q3+q0*q2)*z,
+     2*(q1*q2+q0*q3)*x
+     + (q0*q0-q1*q1+q2*q2-q3*q3)*y
+     + 2*(q2*q3-q0*q1)*z,
+     2*(q1*q3-q0*q2)*x
+     + 2*(q2*q3+q0*q1)*y
+     + (q0*q0-q1*q1-q2*q2+q3*q3)*z
+   */
   Vector3D rotate(const Vector3D &o) const {
-    IMP_check(a_ != 0 || b_ != 0 || c_ != 0 || d_ != 0,
+    IMP_check(v_.get_squared_magnitude() >0,
               "Attempting to apply uninitialized rotation",
               InvalidStateException);
-    return Vector3D((a_*a_+b_*b_-c_*c_-d_*d_)*o[0] +
-                         2*(b_*c_-a_*d_)*o[1] + 2*(b_*d_+a_*c_)*o[2],
-                     2*(b_*c_+a_*d_)*o[0] +
-                         (a_*a_-b_*b_+c_*c_-d_*d_)*o[1] + 2*(c_*d_-a_*b_)*o[2],
-                     2*(b_*d_-a_*c_)*o[0] +
-                         2*(c_*d_+a_*b_)*o[1] + (a_*a_-b_*b_-c_*c_+d_*d_)*o[2]);
+    return Vector3D((v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3])*o[0]
+                    + 2*(v_[1]*v_[2]-v_[0]*v_[3])*o[1]
+                    + 2*(v_[1]*v_[3]+v_[0]*v_[2])*o[2],
+                    2*(v_[1]*v_[2]+v_[0]*v_[3])*o[0]
+                    + (v_[0]*v_[0]-v_[1]*v_[1]+v_[2]*v_[2]-v_[3]*v_[3])*o[1]
+                    + 2*(v_[2]*v_[3]-v_[0]*v_[1])*o[2],
+                    2*(v_[1]*v_[3]-v_[0]*v_[2])*o[0]
+                    + 2*(v_[2]*v_[3]+v_[0]*v_[1])*o[1]
+                    + (v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3])*o[2]);
   }
   void show(std::ostream& out = std::cout) const {
-    out <<a_<<"|"<<b_<<"|"<<c_<<"|"<<d_<<'\n';
+    out <<v_[0]<<"|"<<v_[1]<<"|"<<v_[2]<<"|"<<v_[3]<<'\n';
   }
   //! Return the rotation which undoes this rotation.
   Rotation3D get_inverse() const;
 
   //! return the quaterion so that it can be stored
-  VectorD<4> get_quaternion() const {
-    return VectorD<4>(a_, b_, c_, d_);
+  const VectorD<4>& get_quaternion() const {
+    return v_;
   }
-private:
-  double a_,b_,c_,d_;
+
+  /** \brief Return the derivative of the position x with respect to
+      internal variable i. */
+  const Vector3D get_derivative(const Vector3D &o, unsigned int i) const {
+    /* The computation was derived in maple. Source code is probably in
+       modules//algebra/tools
+     */
+    double t4 = v_[0]*o[0] - v_[3]*o[1] + v_[2]*o[2];
+    double t5 = square(v_[0]);
+    double t6 = square(v_[1]);
+    double t7 = square(v_[2]);
+    double t8 = square(v_[3]);
+    double t9 = t5 + t6 + t7 + t8;
+    double t10 = 1.0/t9;
+    double t11 = 2*t4*t10;
+    double t14 = v_[1]*v_[2];
+    double t15 = v_[0]*v_[3];
+
+    double t19 = v_[1]*v_[3];
+    double t20 = v_[0]*v_[2];
+    double t25 = square(t9);
+    double t26 = 1.0/t25;
+
+    double t27 = ((t5 + t6 - t7 - t8)*o[0] + 2*(t14 - t15)*o[1]
+                  + 2*(t19 + t20)*o[2])*t26;
+
+    double t34 = v_[3]*o[0] + v_[0]*o[1] - v_[1]*o[2];
+    double t35 = 2*t34*t10;
+    double t41 = v_[2]*v_[3];
+    double t42 = v_[0]*v_[1];
+
+    double t47 = (2*(t14 + t15)*o[0] + (t5 - t6 + t7 - t8)*o[1]
+                  + 2*(t41 - t42)*o[2])*t26;
+
+    double t54 = -v_[2]*o[0] + v_[1]*o[1] + v_[0]*o[2];
+    double t55 = 2*t54*t10;
+
+    double t65 = (2*(t19 - t20)*o[0] + 2*(t41 + t42)*o[1]
+                  + (t5 - t6 - t7 + t8)*o[2])*t26;
+
+    double t73 = 2*(v_[1]*o[0] + v_[2]*o[1] + v_[3]*o[2])*t10;
+
+    /*all[1, 1] = t11 - 2*t27*v_[0];
+      all[1, 2] = t35 - 2*t47*v_[0];
+      all[1, 3] = t55 - 2*t65*v_[0];
+
+      all[2, 1] = t73 - 2*t27*v_[1];
+      all[2, 2] = -2*t54 t10 - 2*t47*v_[1];
+      all[2, 3] = t35 - 2*t65*v_[1];
+
+      all[3, 1] = t55 - 2*t27*v_[2];
+      all[3, 2] = t73 - 2*t47*v_[2];
+      all[3, 3] = -2*t4 t10 - 2*t65*v_[2];
+
+      all[4, 1] = -2*t34 t10 - 2*t27*v_[3];
+      all[4, 2] = t11 - 2*t47*v_[3];
+      all[4, 3] = t73 - 2*t65*v_[3];
+    */
+
+    switch (i) {
+    case 0:
+    return Vector3D(t11 - 2*t27*v_[0],
+                    t35 - 2*t47*v_[0],
+                    t55 - 2*t65*v_[0]);
+    case 1:
+    return Vector3D(t73 - 2*t27*v_[1],
+                    -2*t54*t10 - 2*t47*v_[1],
+                    t35 - 2*t65*v_[1]);
+    case 2:
+    return Vector3D(t55 - 2*t27*v_[2],
+                    t73 - 2*t47*v_[2],
+                    -2*t4*t10 - 2*t65*v_[2]);
+    case 3:
+    return Vector3D(-2*t34*t10 - 2*t27*v_[3],
+                    t11 - 2*t47*v_[3],
+                    t73 - 2*t65*v_[3]);
+    default:
+      throw IndexException("Invalid derivative component");
+    };
+    return Vector3D(0,0,0);
+  }
 };
+
 
 IMP_OUTPUT_OPERATOR(Rotation3D)
 
