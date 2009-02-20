@@ -18,12 +18,12 @@ DensityMap::DensityMap()
 DensityMap::DensityMap(const DensityMap &other)
 {
   header_ = other.header_;
-  long size = header_.nx * header_.ny * header_.nz;
+  long size = get_number_of_voxels();
   data_ = new emreal[size];
   x_loc_ = new float[size];
   y_loc_ = new float[size];
   z_loc_ = new float[size];
-  for (long i = 0; i < header_.nx * header_.ny * header_.nz; i++) {
+  for (long i = 0; i < size; i++) {
     data_[i] = other.data_[i];
   }
   loc_calculated_ = other.loc_calculated_;
@@ -89,7 +89,7 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader)
 
 void DensityMap::float2real(float *f_data, emreal **r_data)
 {
-  long size = header_.nx * header_.ny * header_.nz;
+  long size = get_number_of_voxels();
   (*r_data)= new emreal[size];
   for (long i=0;i<size;i++){
     (*r_data)[i]=(emreal)(f_data)[i];
@@ -98,7 +98,7 @@ void DensityMap::float2real(float *f_data, emreal **r_data)
 
 void DensityMap::real2float(emreal *r_data, float **f_data)
 {
-  long size = header_.nx * header_.ny * header_.nz;
+  long size = get_number_of_voxels();
   (*f_data)= new float[size];
   for (long i=0;i<size;i++){
     (*f_data)[i]=(float)(r_data)[i];
@@ -133,7 +133,11 @@ float DensityMap::voxel2loc(const int &index, int dim)
   return z_loc_[index];
 }
 
-int DensityMap::loc2voxel(float x,float y,float z) const
+long DensityMap::xyz_ind2voxel(int voxx,int voxy,int voxz) const{
+  return voxz * header_.nx * header_.ny + voxy * header_.nx + voxx;
+}
+
+long DensityMap::loc2voxel(float x,float y,float z) const
 {
   if (!is_part_of_volume(x,y,z)) {
     std::ostringstream msg;
@@ -143,8 +147,18 @@ int DensityMap::loc2voxel(float x,float y,float z) const
   int ivoxx=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
   int ivoxy=(int)floor((y-header_.get_yorigin())/header_.Objectpixelsize);
   int ivoxz=(int)floor((z-header_.get_zorigin())/header_.Objectpixelsize);
-  return ivoxz * header_.nx * header_.ny + ivoxy * header_.nx + ivoxx;
+  return xyz_ind2voxel(ivoxx,ivoxy,ivoxz);
 }
+
+bool DensityMap::is_xyz_ind_part_of_volume(int ix,int iy,int iz) const
+{
+  if( ix>=0 && ix<header_.nx &&
+      iy>=0 && iy<header_.ny &&
+      iz>=0 && iz<header_.nz )
+    return true;
+  return false;
+}
+
 
 bool DensityMap::is_part_of_volume(float x,float y,float z) const
 {
@@ -165,6 +179,15 @@ emreal DensityMap::get_value(float x, float y, float z) const
   return data_[loc2voxel(x,y,z)];
 }
 
+emreal DensityMap::get_value(long index) const {
+  if ((index>-1) && (index < get_number_of_voxels())) {
+    std::ostringstream msg;
+    msg << " DensityMap::get_value >> The index is not part of the grid \n";
+    std::cerr<<msg.str();
+    throw EMBED_OutOfRange(msg.str().c_str());
+  }
+  return data_[index];
+}
 void DensityMap::calc_all_voxel2loc()
 {
   if (loc_calculated_)

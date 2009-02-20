@@ -60,6 +60,15 @@ public:
    */
   float voxel2loc(const int &index,int dim);
 
+
+  //! Calculate the voxel of a given xyz indexes
+  /** \param[in] x The voxel index on the x axis of the grid
+      \param[in] y The voxel index on the y axis of the grid
+      \param[in] z The voxel index on the z axis of the grid
+      \return the voxel index.
+   */
+  long xyz_ind2voxel(int voxx,int voxy,int voxz) const;
+
   //! Calculate the voxel of a given location
   /** \param[in] x The position ( in angstroms) of the x coordinate
       \param[in] y The position ( in angstroms) of the y coordinate
@@ -68,7 +77,9 @@ public:
       \return the voxel index of a given position. If the position is out of
               the boundaries of the map, the function returns -1.
    */
-  int loc2voxel(float x, float y, float z) const;
+  long loc2voxel(float x, float y, float z) const;
+
+  bool is_xyz_ind_part_of_volume(int ix,int iy,int iz) const;
 
   //! Checks whether a given point is in the grid the voxel of a given location
   /** \param[in] x The position ( in angstroms) of the x coordinate
@@ -86,6 +97,7 @@ public:
       \exception std::out_of_range The point is not covered by the grid.
    */
   emreal get_value(float x,float y,float z) const;
+  emreal get_value(long index) const;
 
   //! Sets the origin of the header
   /**
