@@ -1,6 +1,7 @@
 Import('env')
 
 import os.path
+import os
 
 dox = env.Doxygen("../html/index.html", "doxygen.conf")
 
@@ -23,6 +24,11 @@ def generate_doxygen(target, source, env):
             # Expand out ALL_MODULES to a list of all modules, one per line
             for mod in env['IMP_MODULES_ALL']:
                 outfile.write(line.replace('@ALL_MODULES@', mod))
+        elif '@IMP_HAS_DOT@' in line:
+            if os.system('dot -V > /dev/null') == 0:
+                outfile.write(line.replace('@IMP_HAS_DOT@', 'YES'))
+            else:
+                outfile.write(line.replace('@IMP_HAS_DOT@', 'NO'))
         elif not line.startswith('#'):
             outfile.write(line)
     infile.close()
