@@ -24,7 +24,8 @@
 
   <!-- Layout definition for a class page -->
   <class>
-    <briefdescription visible="yes"/>
+    <briefdescription visible="no"/>
+    <detaileddescription title=""/>
     <includes visible="$SHOW_INCLUDE_FILES"/>
     <inheritancegraph visible="$CLASS_GRAPH"/>
     <collaborationgraph visible="$COLLABORATION_GRAPH"/>
@@ -61,7 +62,6 @@
       <friends title=""/>
       <related title="" subtitle=""/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <typedefs title=""/>
       <enums title=""/>
@@ -78,7 +78,8 @@
 
   <!-- Layout definition for a namespace page -->
   <namespace>
-    <briefdescription visible="yes"/>
+    <briefdescription visible="no"/>
+    <detaileddescription title=""/>
     <memberdecl>
       <nestednamespaces visible="yes" title=""/>
       <classes visible="yes" title=""/>
@@ -88,7 +89,6 @@
       <functions title=""/>
       <variables title=""/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <typedefs title=""/>
       <enums title=""/>
@@ -127,7 +127,8 @@
 
   <!-- Layout definition for a group page -->
   <group>
-    <briefdescription visible="yes"/>
+    <briefdescription visible="no"/>
+    <detaileddescription title=""/>
     <groupgraph visible="$GROUP_GRAPHS"/>
     <memberdecl>
       <classes visible="yes" title=""/>
@@ -149,7 +150,6 @@
       <properties title=""/>
       <friends title=""/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <pagedocs/>
       <defines title=""/>
