@@ -13,15 +13,15 @@
 // an advantage of using const double over define is that it limits the use
 // of pointers to affect the data:
 //#define PI 3.141592653589793238462643383
-//define could be manipulated with a const *int ptr declaration. 
+//define could be manipulated with a const *int ptr declaration.
 
-class EMDLLEXPORT SampledDensityMap: public DensityMap 
+class EMDLLEXPORT SampledDensityMap: public DensityMap
 {
 
 public:
 
 
-  //! Creates a new density map for sampled map. 
+  //! Creates a new density map for sampled map.
   /** The header of the map is not determined and no data is being allocated
    */
   SampledDensityMap() {
@@ -48,7 +48,7 @@ public:
   /** /param[in] access_p   access point to the particles (locations,
                             radius, weight)
    */
-  void resample(const ParticlesAccessPoint &access_p);
+  virtual void resample(const ParticlesAccessPoint &access_p);
 
   void calc_sampling_bounding_box(const float &x,const float &y,const float &z,
                                   const float &kdist,
@@ -59,7 +59,7 @@ public:
 
 
 protected:
-  //! Calculate the parameters of the particles bounding box 
+  //! Calculate the parameters of the particles bounding box
   /** \param[in]  access_p     access point to the particles (locations,
                                radius, weight)
       \param[out] lower_bound  the left-bottom point of the bounding box
@@ -68,7 +68,7 @@ protected:
                                 lower_bound[2] - z coordinate)
       \param[out] upper_bound  the right-upper point of the bounding box
       \param[out] maxradius    the maximum radius of all the particles in
-                               the model. 
+                               the model.
    */
   void calculate_particles_bounding_box(const ParticlesAccessPoint &access_p,
                                         std::vector<float> &lower_bound,
@@ -86,9 +86,9 @@ protected:
     int imin;
     imin = (int)floor(((loc-kdist-orig) / header_.Objectpixelsize));
     //bookkeeping
-    if (imin < 0) 
+    if (imin < 0)
       imin = 0;
-    if (imin > ndim-1) 
+    if (imin > ndim-1)
       imin = ndim-1;
     return imin;
   }
