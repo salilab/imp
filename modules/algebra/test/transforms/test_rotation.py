@@ -52,9 +52,10 @@ class RigidTransformationTests(IMP.test.TestCase):
 
     def test_deriv(self):
         """Check the quaternion derivatives"""
-        r= IMP.algebra.Rotation3D(1,0,0,0)#IMP.algebra.random_rotation()
-        #x= IMP.algebra.random_vector_in_unit_box()
-        x=IMP.algebra.Vector3D(1,0,0)
+        #r= IMP.algebra.Rotation3D(1,0,0,0)
+        r=IMP.algebra.random_rotation()
+        x= IMP.algebra.random_vector_in_unit_box()
+        #x=IMP.algebra.Vector3D(1,0,0)
         for qi in range(0,4):
             for xi in range(0,3):
                 print "qi="+str(qi) +" and xi= " +str(xi)
