@@ -33,7 +33,7 @@ class BondedDecorator;
 
    \ingroup bond
    \ingroup decorators
-   \relates BondedDecorator
+   \see BondedDecorator
  */
 class IMPCOREEXPORT BondDecorator: public Decorator
 {
@@ -82,7 +82,7 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
 //! A decorator for a particle which has bonds.
 /** \ingroup bond
     \ingroup decorators
-    \relates BondDecorator
+    \see BondDecorator
  */
 class IMPCOREEXPORT BondedDecorator: public Decorator
 {

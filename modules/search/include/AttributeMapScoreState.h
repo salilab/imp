@@ -161,10 +161,10 @@ public:
 //! A map to store a set of particles indexed by an Int attribute
 typedef AttributeMapScoreState<boost::tuple<IntKey> > IntMapScoreState;
 //! The key to use to set up the map
-/** \relates IntMapScoreState */
+/** \see IntMapScoreState */
 typedef AttributeMapScoreState<boost::tuple<IntKey> >::Key IntMapKey;
 //! The value to use to search up the map
-/** \relates IntMapScoreState */
+/** \see IntMapScoreState */
 typedef AttributeMapScoreState<boost::tuple<IntKey> >::Value IntMapValue;
 
 

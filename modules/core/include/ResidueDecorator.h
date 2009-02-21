@@ -29,7 +29,7 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
     The standard residue types are provided. New types can be added simply by
     creating an instance of ResidueType("my_residue_name"). Note that methods
     such as get_is_amino_acid() will not work with user-added types.
-    \relates ResidueDecorator
+    \see ResidueDecorator
 */
 /*@{*/
 /** Unknown residue */

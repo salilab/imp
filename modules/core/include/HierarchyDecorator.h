@@ -40,7 +40,7 @@ class HierarchyDecorator;
 
     This example shows how to make and use a custom hierarchy:
     \verbinclude custom_hierarchy.py
-    \relates HierarchyDecorator
+    \see HierarchyDecorator
 */
 class IMPCOREEXPORT HierarchyTraits
 #ifndef SWIG

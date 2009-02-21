@@ -27,7 +27,7 @@ IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 
 
 /** @name The standard PDB atom types.
-    \relates AtomDecorator
+    \see AtomDecorator
 */
 /*@{*/
 /* each static must be on a separate line because of MSVC bug C2487:

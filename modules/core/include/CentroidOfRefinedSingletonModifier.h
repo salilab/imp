@@ -24,7 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** An exception is thrown if there are no refined particles. The weight
     FloatKey can be FloatKey and then all the weights will be equal.
 
-    \relates CoverRefinedSingletonModifier
+    \see CoverRefinedSingletonModifier
  */
 class IMPCOREEXPORT CentroidOfRefinedSingletonModifier:
 public SingletonModifier

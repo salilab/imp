@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! A a decorator for a diffusing particle.
 /** \ingroup helper
     \ingroup decorators
-    \relates BrownianDynamics
+    \see BrownianDynamics
  */
 class IMPCOREEXPORT DiffusionDecorator: public XYZDecorator
 {

@@ -19,7 +19,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Copy the derivatives from the particle to its refined particles.
-/** \relates DerivatvesFromRefinedSingletonModifier
+/** \see DerivatvesFromRefinedSingletonModifier
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
  \verbinclude simple_examples/cover_particles.py
