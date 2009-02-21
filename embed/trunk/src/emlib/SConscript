@@ -14,7 +14,8 @@ files = ('ErrorHandling.cpp','MapReaderWriter.cpp','DensityHeader.cpp','DensityM
 
 # Build the shared library:
 lib = env.SharedLibrary('em', files)
-
+if env['PLATFORM'] == 'darwin':
+    env.AddPostAction (lib, "install_name_tool -id %s %s" % (lib[0].abspath, lib[0].path))
 # Install the library:
 libinst = env.Install(env['libdir'], lib)
 env.Alias('install', [libinst])
