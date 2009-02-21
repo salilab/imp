@@ -181,7 +181,7 @@ emreal DensityMap::get_value(float x, float y, float z) const
 }
 
 emreal DensityMap::get_value(long index) const {
-  if (not((index>-1) && (index < get_number_of_voxels()))) {
+  if (!((index>-1) && (index < get_number_of_voxels()))) {
     std::ostringstream msg;
     msg << " DensityMap::get_value >> The index  " << index
         << " is not part of the grid \n";
