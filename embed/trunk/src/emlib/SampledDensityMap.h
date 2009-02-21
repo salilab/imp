@@ -44,6 +44,8 @@ public:
   SampledDensityMap(const ParticlesAccessPoint &access_p, float resolution,
                     float voxel_size, int sig_cuttoff=3);
 
+  virtual ~SampledDensityMap() {}
+
   //! Sampling beads on an EM grid
   /** /param[in] access_p   access point to the particles (locations,
                             radius, weight)
