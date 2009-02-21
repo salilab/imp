@@ -239,6 +239,14 @@ std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
   return out;
 }
 
+template <unsigned int D>
+std::istream &operator>>(std::istream &in, VectorD<D> &v) {
+  for (unsigned int i=0; i< D; ++i) {
+    in >> v[i];
+  }
+  return in;
+}
+
 //! lexicographic comparison of two vectors
 template <unsigned int D>
 int compare(const VectorD<D> &a, const VectorD<D> &b) {
@@ -248,7 +256,6 @@ int compare(const VectorD<D> &a, const VectorD<D> &b) {
   }
   return 0;
 }
-
 
 //! product with scalar
 template <unsigned int D>
