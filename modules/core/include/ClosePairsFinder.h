@@ -24,6 +24,8 @@ class FilteredListPairContainer;
 /** In general, the algorithm should make sure it returns all
     pairs of appropriate objects which are within distance
     of one another (including the radius).
+    \see ClosePairsScoreState
+    \see CloseBipartitlePairsScoreState
  */
 class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
 {

@@ -17,7 +17,8 @@ IMPCORE_BEGIN_NAMESPACE
     there are are large sets of points.
 
     \note This method requires CGAL to work.
- */
+    \see ClosePairsScoreState
+*/
 class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 {
  public:

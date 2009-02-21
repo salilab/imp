@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
     a ListSingletonContainer is used and the
     {add_, set_, clear_}particle{s} methods can be used.
 
-    \ingroup restraint
+    \see SingletonRestraint
  */
 class IMPCOREEXPORT SingletonsRestraint : public Restraint
 {

@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Applies a SingletonScore to a Particle.
 /** This restraint stores a Particle.
-    \ingroup restraint
+    \see SingletonRestraint
  */
 class IMPCOREEXPORT SingletonRestraint : public Restraint
 {

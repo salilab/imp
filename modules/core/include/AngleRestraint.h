@@ -19,6 +19,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Angle restraint between three particles
+/** \see AngleTripletScore
+ */
 class IMPCOREEXPORT AngleRestraint : public Restraint
 {
 public:

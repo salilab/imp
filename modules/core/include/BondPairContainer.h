@@ -19,6 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! A container that pretends to contain all bonds.
 /** This is to be used with a ClosePairsScoreState to exclude all bonded pairs.
     \ingroup bond
+    \see BondedDecorator
  */
 class IMPCOREEXPORT BondPairContainer :
   public PairContainer

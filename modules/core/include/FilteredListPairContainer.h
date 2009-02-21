@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
     \note The indexes can change when particles are inserted
     as the list is maintained in sorted order.
 
-    \verbinclude simple_examples/pair_filtered_container.py
+    \see ListPairContainer
  */
 class IMPCOREEXPORT FilteredListPairContainer
   : public PairContainer

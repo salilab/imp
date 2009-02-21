@@ -15,7 +15,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Modify a set of continuous variables using a normal distribution.
-/** */
+/** \see MonteCarlo
+ */
 class IMPCOREEXPORT NormalMover :public MoverBase
 {
 public:
@@ -37,7 +38,6 @@ public:
     return stddev_;
   }
 protected:
-  /** \internal */
   virtual void generate_move(float f);
 private:
   Float stddev_;

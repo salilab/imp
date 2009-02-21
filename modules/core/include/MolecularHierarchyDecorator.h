@@ -25,6 +25,8 @@ IMPCORE_BEGIN_NAMESPACE
 //! A decorator for helping deal with a hierarchy of molecules
 /** \ingroup hierarchy
     \ingroup decorators
+    \see ResidueDecorator
+    \see AtomDecorator
  */
 class IMPCOREEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 {
@@ -239,7 +241,7 @@ get_residue(MolecularHierarchyDecorator mhd,
     removed). The particles become children of the frament.
 
     \throw ValueException If all the particles do not have the same parent.
-
+    \ingroup hierarchy
     \relates MolecularHierarchyDecorator
  */
 IMPCOREEXPORT MolecularHierarchyDecorator

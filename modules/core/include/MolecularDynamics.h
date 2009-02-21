@@ -23,8 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
     the mass to be in AMU (g/mol).
 
     Particles without optimized x,y,z and nonoptimized mass are skipped.
-
-    \ingroup optimizer
+    \see VelocityScalingOptimizerState
  */
 class IMPCOREEXPORT MolecularDynamics : public Optimizer
 {

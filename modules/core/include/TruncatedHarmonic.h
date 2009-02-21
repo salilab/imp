@@ -30,6 +30,9 @@ enum BoundDirection {LOWER, BOTH, UPPER};
  both directions.  It should be one of the BoundDirection enum
  values. If it is LOWER, than the function is 0 for all values above
  the passed center.
+ \see Harmonic
+ \see HarmonicLowerBound
+ \see HarmonicUpperBound
  */
 template <int DIRECTION>
 class TruncatedHarmonic : public UnaryFunction {
@@ -77,8 +80,11 @@ private:
   internal::TruncatedHarmonicData d_;
 };
 
+//! A specialization for the upper bound
 typedef TruncatedHarmonic<UPPER> TruncatedHarmonicUpperBound;
+//! A specialization for the lower bound
 typedef TruncatedHarmonic<LOWER> TruncatedHarmonicLowerBound;
+//! A specialization
 typedef TruncatedHarmonic<BOTH> TruncatedHarmonicBound;
 
 IMPCORE_END_NAMESPACE

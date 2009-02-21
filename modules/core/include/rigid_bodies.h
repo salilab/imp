@@ -24,6 +24,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! A class to store rigid body-related data
+/** \see RigidBodyDecorator
+    \see RigidMemberDecorator
+ */
 class IMPCOREEXPORT RigidBodyTraits {
   Pointer<internal::RigidBodyData> d_;
  public:

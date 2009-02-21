@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Applies a GroupnameScore to a Classname.
 /** This restraint stores a Classname.
-    \ingroup restraint
+    \see GroupnameRestraint
  */
 class IMPCOREEXPORT GroupnameRestraint : public Restraint
 {

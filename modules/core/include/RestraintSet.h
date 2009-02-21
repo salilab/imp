@@ -18,7 +18,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Container used to hold a set of restraints
-/** \ingroup restraint
+/**
  */
 class IMPCOREEXPORT RestraintSet : public Restraint
 {

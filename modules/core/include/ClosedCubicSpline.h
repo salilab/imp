@@ -15,6 +15,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Closed cubic spline function.
 /** This function is defined by evenly-spaced spline values over a finite
     range, and is periodic.
+    \see OpenCubcSpline
  */
 class IMPCOREEXPORT ClosedCubicSpline : public UnaryFunction
 {

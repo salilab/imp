@@ -23,9 +23,12 @@ IMPCORE_BEGIN_NAMESPACE
 /** \brief This class sets the position and radius of each particle to
  enclose the refined.
 
+ \see DerivativesFromRefinedSingletonModifier
+ \see DerivativesToRefinedSingletonModifier
+ \see CentroidOfRefinedSingletonModifier
+
  Set the coordinates and radius of the passed particle to cover the particles
  listed by the particle refiner.
- \see DerivativesFromRefinedSingletonModifier
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
  \verbinclude simple_examples/cover_particles.py

@@ -20,7 +20,6 @@ IMPCORE_BEGIN_NAMESPACE
      current step size. If the score gets worse, reduce the step size.
      If the score gets better, increase the step size if we are sufficiently
      far from a score of zero. If the score reaches the threshold, quit.
-     \ingroup optimizer
  */
 class IMPCOREEXPORT SteepestDescent : public Optimizer
 {

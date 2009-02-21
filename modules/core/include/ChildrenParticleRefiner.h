@@ -23,6 +23,8 @@ class HierarchyTraits;
 /** \ingroup hierarchy
     A simple example using is
     \verbinclude simple_examples/cover_particles.py
+    \see HierarchyDecorator
+    \see MolecularHierarchyDecorator
 */
 class IMPCOREEXPORT ChildrenParticleRefiner : public ParticleRefiner
 {

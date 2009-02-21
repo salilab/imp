@@ -22,6 +22,10 @@ IMPCORE_BEGIN_NAMESPACE
 /**
    \note If the particles are closer than a certain distance, then
    the contributions to the derivatives are set to 0.
+
+   \see PairRestraint
+   \see DistancePairScore
+   \see SphereDistancePairScore
  */
 class IMPCOREEXPORT DistanceRestraint : public Restraint
 {

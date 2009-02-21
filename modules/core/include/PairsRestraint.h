@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
     a ListPairContainer is used and the
     {add_, set_, clear_}particle_pair{s} methods can be used.
 
-    \ingroup restraint
+    \see PairRestraint
  */
 class IMPCOREEXPORT PairsRestraint : public Restraint
 {

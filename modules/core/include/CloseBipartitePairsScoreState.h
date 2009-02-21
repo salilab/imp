@@ -29,7 +29,7 @@ class ClosePairsFinder;
     from each of two containers are reported here.
 
     \verbinclude bipartite_nonbonded_interactions.py
-    \relates ClosePairsScoreState
+    \see ClosePairsScoreState
  */
 class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState
 {

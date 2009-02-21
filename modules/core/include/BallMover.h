@@ -18,6 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Modify a set of continuous variables by perturbing them within a ball.
 /** The variables are perturbed within a ball of the
     given radius.
+    \see MonteCarlo
  */
 class IMPCOREEXPORT BallMover :public MoverBase
 {

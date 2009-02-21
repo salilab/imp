@@ -17,7 +17,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Return the endpoints of a bond.
 /**
- \ingroup hierarchy
+ \ingroup bond
+ \see BondDecorator
  */
 class IMPCOREEXPORT BondEndpointsParticleRefiner : public ParticleRefiner
 {
