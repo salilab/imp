@@ -319,8 +319,8 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p) const {
   algebra::Rotation3D rot= rb.get_transformation().get_rotation();
   IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
   for (unsigned int i=0; i< members.size(); ++i) {
-    Particle *p =members[i];
-    RigidMemberDecorator d(p, tr_);
+    Particle *mp =members[i];
+    RigidMemberDecorator d(mp, tr_);
     for (unsigned int i=0; i< 4; ++i) {
       algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(), i);
       algebra::Vector3D dv= d.get_derivatives();
