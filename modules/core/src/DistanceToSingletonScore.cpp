@@ -21,7 +21,7 @@ struct StaticD
   algebra::Vector3D v_;
   StaticD(algebra::Vector3D v): v_(v){}
   Float get_coordinate(unsigned int i) {return v_[i];}
-  void add_to_coordinates_derivative(algebra::Vector3D, DerivativeAccumulator){}
+  void add_to_coordinate_derivatives(algebra::Vector3D, DerivativeAccumulator){}
 };
 
 DistanceToSingletonScore::DistanceToSingletonScore(UnaryFunction *f,

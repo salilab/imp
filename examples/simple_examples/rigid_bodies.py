@@ -17,6 +17,6 @@ for r in residues:
 print "done with setup"
 
 
-ss= IMP.core.RigidBodyScoreState(rbs, cpr, rbt)
-m.add_score_state(ss)
+#ss= IMP.core.RigidBodyScoreState(rbs, cpr, rbt)
+#m.add_score_state(ss)
 print "all done"
