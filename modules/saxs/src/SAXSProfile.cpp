@@ -78,8 +78,6 @@ void SAXSProfile::read_SAXS_file(const String& file_name)
     }
     profile_.push_back(entry);
   }
-
-  std::cerr << "Number of entries read " << profile_.size() << std::endl;
   in_file.close();
 
   // determine qmin, qmax and delta
@@ -99,14 +97,22 @@ void SAXSProfile::read_SAXS_file(const String& file_name)
     }
   }
 
+  IMP_LOG(TERSE, "read_SAXS_file: " << file_name
+          << " size= " << profile_.size() << " delta= " << delta_q_
+          << " min_q= " << min_q_ << " max_q= " << max_q_ << std::endl);
+
   // saxs_read: No experimental error specified, error=0.3*I(q_max)
   if (!with_error) {
-    Float sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
-    for (unsigned int i=0; i<profile_.size(); i++)
-      profile_[i].error_ = sig_exp;
-    std::cout << "read_SAXS_file: No experimental error specified"
-              << " -> error set to 0.3 I(q_max) = " << sig_exp << std::endl;
+    add_errors();
+    IMP_LOG(TERSE, "read_SAXS_file: No experimental error specified"
+            << " -> error set to 0.3 I(q_max) = " << std::endl);
   }
+}
+
+void SAXSProfile::add_errors() {
+  Float sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
+  for (unsigned int i=0; i<profile_.size(); i++)
+    profile_[i].error_ = sig_exp;
 }
 
 bool SAXSProfile::is_uniform_sampling() const {
@@ -162,11 +168,9 @@ void SAXSProfile::write_SAXS_file(const String& file_name)
 void SAXSProfile::calculate_profile_real(
                              const std::vector<Particle*>& particles)
 {
+  IMP_LOG(TERSE, "start real profile calculation for "
+          << particles.size() << " particles" << std::endl);
   init();
-
-  std::cerr << "start real profile calculation for "
-      << particles.size() << " particles" << std::endl;
-
   Float pr_resolution = 0.5;
   RadialDistributionFunction r_dist(pr_resolution, ff_table_);
   r_dist.calculate_distribution(particles);
@@ -174,15 +178,55 @@ void SAXSProfile::calculate_profile_real(
 }
 
 void SAXSProfile::calculate_profile_real(
+                             const std::vector<Particle*>& particles,
+                             unsigned int n)
+{
+  IMP_check(n > 1, "Attempting to use symmetric computation, symmetry order"
+            << " should be > 1. Got: " << n, ValueException);
+  IMP_LOG(TERSE, "start real profile calculation for " << particles.size()
+          << " particles with symmetry = " << n << std::endl);
+  init();
+  // split units, only number_of_distances units is needed
+  unsigned int number_of_distances = n/2;
+  unsigned int unit_size = particles.size()/n;
+  std::vector<Particles> units(number_of_distances+1, Particles(unit_size));
+  for(unsigned int i=0; i<=number_of_distances; i++) {
+    for(unsigned int j=0; j<unit_size; j++) {
+      units[i][j] = particles[i*unit_size+j];
+    }
+  }
+
+  Float pr_resolution = 0.5;
+  RadialDistributionFunction r_dist(pr_resolution, ff_table_);
+  // distribution within unit
+  r_dist.calculate_distribution(units[0]);
+
+  // distributions between units separated by distance i
+  for(unsigned int i=1; i<number_of_distances; i++) {
+    r_dist.calculate_distribution(units[0], units[i]);
+  }
+  r_dist.scale(n);
+
+  // distribution between units separated by distance n/2
+  RadialDistributionFunction r_dist2(pr_resolution, ff_table_);
+  r_dist2.calculate_distribution(units[0], units[number_of_distances]);
+  // if n is even, the scale is by n/2
+  // if n is odd the scale is by n
+  if(n & 1) r_dist2.scale(n); //odd
+  else r_dist2.scale(n/2); //even
+  r_dist2.add(r_dist);
+
+  radial_distribution_2_profile(r_dist2);
+}
+
+void SAXSProfile::calculate_profile_real(
                       const std::vector<Particle *>& particles1,
                       const std::vector<Particle *>& particles2)
 {
+  IMP_LOG(TERSE, "start real profile calculation for "
+          << particles1.size() << " + " << particles2.size()
+          << " particles" << std::endl);
   init();
-
-  std::cerr << "start real profile calculation for "
-      << particles1.size() << " + " << particles2.size()
-      << " particles" << std::endl;
-
   Float pr_resolution = 0.5;
   RadialDistributionFunction r_dist(pr_resolution, ff_table_);
   r_dist.calculate_distribution(particles1, particles2);
@@ -204,6 +248,19 @@ radial_distribution_2_profile(const RadialDistributionFunction & r_dist)
     }
     profile_[k].intensity_ *= std::exp(- modulation_function_parameter_
                                        * profile_[k].q_ * profile_[k].q_);
+  }
+}
+
+void SAXSProfile::add(const SAXSProfile& other_profile) {
+  // assumes same q values!!!
+  for (unsigned int k = 0; k < profile_.size(); k++) {
+    profile_[k].intensity_ += other_profile.profile_[k].intensity_;
+  }
+}
+
+void SAXSProfile::scale(Float c) {
+  for (unsigned int k = 0; k < profile_.size(); k++) {
+    profile_[k].intensity_ *= c;
   }
 }
 

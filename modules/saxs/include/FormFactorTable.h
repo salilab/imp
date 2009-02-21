@@ -21,8 +21,8 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-/*
-   class that deals with form factor computation
+/**
+class that deals with form factor computation
 */
 class IMPSAXSEXPORT FormFactorTable {
 public:

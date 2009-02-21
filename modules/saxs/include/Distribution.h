@@ -24,14 +24,13 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-/*
-!----------------------------------------------------------------------
-! base class for distribution classes
-!----------------------------------------------------------------------
+/**
+base class for distribution classes
 */
 template<class ValueT>
 class Distribution {
 public:
+  //! Constructor
   Distribution(Float bin_size) {
     bin_size_ = bin_size;
     one_over_bin_size_ = 1.0 / bin_size_;     // for faster calculation
@@ -63,29 +62,33 @@ protected:
   Float max_distance_;  // parameter for maximum r value for p(r) function
 };
 
-//! compute max distance
-Float compute_max_distance(const std::vector<Particle*>& particles);
-
-/*
- !----------------------------------------------------------------------
- ! Radial Distribution class for calculating SAXS Profile
- !----------------------------------------------------------------------
- */
+/**
+ Radial Distribution class for calculating SAXS Profile
+ this is distance distribution multiplied by form factors of atoms
+*/
 class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<Float> {
 
 public:
+  //! Constructor
   RadialDistributionFunction(Float bin_size, FormFactorTable* ff_table);
 
   friend class SAXSProfile;
 
+  //! computes radial distribution function for a set of particles
   void calculate_distribution(const std::vector<Particle*>& particles);
 
   //! computes distribution contribution from inter-molecular
-  // interactions between the particles
+  //! interactions between the particles
   void calculate_distribution(const std::vector<Particle*>& particles1,
                               const std::vector<Particle*>& particles2);
 
-  // ! print tables
+  //! scale distribution by a constant
+  void scale(Float c);
+
+  //! add another distribution
+  void add(const RadialDistributionFunction& other_rdf);
+
+  //! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;
 
  private:
@@ -105,23 +108,26 @@ public:
 };
 
 
-/*
-!----------------------------------------------------------------------
-! Delta Distribution class for calculating the derivatives of SAXS Score
-!----------------------------------------------------------------------
+/**
+Delta Distribution class for calculating the derivatives of SAXS Score
+this distribution is:
+sum_i [f_p(0) * f_i(0) * (x_p - x_i)]
+sum_i [f_p(0) * f_i(0) * (y_p - y_i)]
+sum_i [f_p(0) * f_i(0) * (z_p - z_i)]
 */
 class IMPSAXSEXPORT
 DeltaDistributionFunction : public Distribution<algebra::Vector3D> {
 public:
+  //! Constructor
   DeltaDistributionFunction(Float bin_size, FormFactorTable* ff_table,
                             const std::vector<Particle*>& particles);
 
   friend class SAXSScore;
 
-  // ! calculates distribution for an atom defined by particle
+  //! calculates distribution for an atom defined by particle
   void calculate_derivative_distribution(Particle* particle);
 
-  // ! print tables
+  //! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;
 
  private:

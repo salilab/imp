@@ -19,12 +19,9 @@
 %import "kernel/pyext/IMP.i"
 %import "modules/algebra/pyext/algebra.i"
 
-namespace IMP::saxs {
-  IMP_OWN_CONSTRUCTOR(SaxsData)
-}
-
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
 %include "IMP/saxs/SAXSProfile.h"
 %include "IMP/saxs/SAXSScore.h"
-%include "IMP/saxs/SaxsData.h"
+%include "IMP/saxs/Distribution.h"
+%include "IMP/saxs/utility.h"
