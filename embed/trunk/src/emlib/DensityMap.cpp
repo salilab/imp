@@ -206,10 +206,6 @@ void DensityMap::calc_all_voxel2loc()
   x_loc_ = new float[nvox];
   y_loc_ = new float[nvox];
   z_loc_ = new float[nvox];
-  std::cout<<"object pixel " << header_.Objectpixelsize << std::endl;
-  std::cout<<"origin x " << header_.get_xorigin() << std::endl;
-  std::cout<<"origin y " << header_.get_yorigin() << std::endl;
-  std::cout<<"origin z " << header_.get_zorigin() << std::endl;
 
   int ix=0,iy=0,iz=0;
   for (long ii=0;ii<nvox;ii++) {
