@@ -25,7 +25,7 @@ public:
       The reason why is to use this term as part of an scoring function that
       is better the lower the term. If you want the cross correlation
       coefficient, use cross_correlation_coefficient() instead.
-      \param[in] em_map DensityMap class containing the EM map. note: 
+      \param[in] em_map DensityMap class containing the EM map. note:
              correct RMSD and mean MUST be in the header!
       \param[in] model_map SampledDensityMap class prepared to contain the
              simulated EM map for the model.
@@ -42,7 +42,8 @@ public:
   static float evaluate(DensityMap &data, SampledDensityMap &model_map,
                         const ParticlesAccessPoint &access_p,
                         std::vector<float> &dvx, std::vector<float>&dvy,
-                        std::vector<float>&dvz, float scalefac, bool lderiv);
+                        std::vector<float>&dvz, float scalefac, bool lderiv,
+                         bool divide_by_rms=true);
 
 
 /*!
@@ -50,16 +51,16 @@ public:
  voxel of the map.
  \param[in] em_map DensityMap class containing the EM map. note: correct RMS and
             mean MUST be in the header!
- \param[in] model_map SampledDensityMap class prepared to contain the simulated 
+ \param[in] model_map SampledDensityMap class prepared to contain the simulated
             EM map for the model.
- \param[in] access_p ParticlesAccessPoint class with the particles data 
+ \param[in] access_p ParticlesAccessPoint class with the particles data
             (location, radii, weight)
- \param[in] scalefactor scale factor to apply to the value of the cross 
+ \param[in] scalefactor scale factor to apply to the value of the cross
                         correlation term
  \param[out] dvx vector to contain the x partial derivatives
  \param[out] dvy vector to contain the y partial derivatives
  \param[out] dvz vector to contain the z partial derivatives
- \return the function stores the values of the partial derivatives in 
+ \return the function stores the values of the partial derivatives in
          the vectors
 */
 /* comments: Javi to Frido:
@@ -76,8 +77,8 @@ we did not do that, yet.
 
 
 
-  /** Cross correlation coefficient between the em density and the density of a 
-      model. moddens threshold can be specified that is checked in moddens to 
+  /** Cross correlation coefficient between the em density and the density of a
+      model. moddens threshold can be specified that is checked in moddens to
       reduce elements of summation
       \note This is not the local CC function
       \param[in] em_map               the target map (experimentally determined)
@@ -98,7 +99,8 @@ we did not do that, yet.
   static float cross_correlation_coefficient(const DensityMap &em_map,
                                              DensityMap &model_map,
                                              float voxel_data_threshold,
-                                             bool recalc_ccnormfac = true);
+                                             bool recalc_ccnormfac = true,
+                                             bool divide_by_rms=true);
 };
 
 

@@ -5,20 +5,24 @@ float CoarseCC::evaluate(DensityMap &em_map,
                          SampledDensityMap &model_map,
                          const ParticlesAccessPoint &access_p,
                          std::vector<float> &dvx, std::vector<float>&dvy,
-                         std::vector<float>&dvz, float scalefac, bool lderiv)
+                         std::vector<float>&dvz, float scalefac, bool lderiv,
+                         bool divide_by_rms)
 {
-  em_map.calcRMS();
   //resample the map for the particle provided
   // TODO(frido): rename: resample -> sample
   model_map.resample(access_p);
-  //determine a threshold for calculating the CC
-  model_map.calcRMS();   // This function adequately computes the dmin value,
+
+  if (divide_by_rms) {
+    em_map.calcRMS();
+    //determine a threshold for calculating the CC
+    model_map.calcRMS();   // This function adequately computes the dmin value,
                           // the safest value for the threshold
+  }
   emreal voxel_data_threshold=model_map.get_header()->dmin-EPS;
   // here we ask not to recalculate the rms ( already calculated)
   float escore = cross_correlation_coefficient(em_map, model_map,
-                                               voxel_data_threshold,false);
-  //  std::cout <<" CoarseCC::evaluate >> cross_correlation_coefficient : "<< 
+                         voxel_data_threshold,false,divide_by_rms);
+  //  std::cout <<" CoarseCC::evaluate >> cross_correlation_coefficient : "<<
   //escore << endl;
   escore = scalefac * (1. - escore);
   //compute the derivatives if required
@@ -32,8 +36,9 @@ float CoarseCC::evaluate(DensityMap &em_map,
 
 float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
                                               DensityMap &model_map,
-                                              float voxel_data_threshold, 
-                                              bool recalc_ccnormfac)
+                                              float voxel_data_threshold,
+                                              bool recalc_ccnormfac,
+                                              bool divide_by_rms)
 {
   const DensityHeader *model_header = model_map.get_header();
   const DensityHeader *em_header = em_map.get_header();
@@ -55,7 +60,7 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
        << em_header->ny << " x " << em_header->nz << std::endl <<
     "Second map dimensions: " << model_header->nx << " x "
               << model_header->ny << " x " << model_header->nz << std::endl;
-    std::cerr<<msg.str()<<std::endl; 
+    std::cerr<<msg.str()<<std::endl;
     throw EMBED_LogicError(msg.str().c_str());
   }
   bool same_voxel_size = em_map.same_voxel_size(model_map);
@@ -66,13 +71,13 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     << std::endl << "First map pixelsize : " << em_header->Objectpixelsize
     << std::endl << "Second map pixelsize: " << model_header->Objectpixelsize
     << std::endl;
-    std::cerr<<msg.str()<<std::endl; 
+    std::cerr<<msg.str()<<std::endl;
     throw EMBED_LogicError(msg.str().c_str());
   }
 
   // Take into account the possibility of a model map with zero rms
-  if(fabs(model_map.get_header()->rms-0.0)<EPS)
-    return 0.0; 
+  if ((fabs(model_map.get_header()->rms-0.0)<EPS) && divide_by_rms)
+    return 0.0;
 
   bool same_origin = em_map.same_origin(model_map);
   int  nvox = em_header->nx*em_header->ny*em_header->nz;
@@ -82,11 +87,13 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
     for (int i=0;i<nvox;i++) {
       if (model_data[i] > voxel_data_threshold) {
         ccc += em_data[i]*model_data[i];
-      } 
+      }
     }
     // This formula does not assume normalization in the maps
-    ccc = (ccc-nvox*em_header->dmean*model_header->dmean)/
-          (1.0* nvox*em_header->rms * model_header->rms);
+    if (divide_by_rms) {
+      ccc = (ccc-nvox*em_header->dmean*model_header->dmean)/
+            (1.0* nvox*em_header->rms * model_header->rms);
+    }
   }
 
   else  { // Compute the CCC taking into account the different origins
@@ -128,11 +135,12 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
         }
       }
     }
-    ccc = (ccc-nvox*em_header->dmean*model_header->dmean)
-          /(nvox*em_header->rms * model_header->rms);
-
+    if (divide_by_rms) {
+      ccc = (ccc-nvox*em_header->dmean*model_header->dmean)
+            /(nvox*em_header->rms * model_header->rms);
+    }
     //    std::cout << " ccc : " << ccc << " voxel# " << nvox
-    //          << " norm factors (map,model) " << em_header->rms 
+    //          << " norm factors (map,model) " << em_header->rms
     //          << "  " <<  model_header->rms << " means(map,model) "
     //          << em_header->dmean << " " << model_header->dmean << std::endl;
   }
@@ -170,14 +178,14 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
       std::ostringstream msg;
       msg << "CoarseCC::calcDerivatives : EM map is empty ! em_header->rms = "
           << em_header->rms <<  std::endl;
-      std::cerr<<msg.str()<<std::endl; 
+      std::cerr<<msg.str()<<std::endl;
       throw EMBED_LogicError(msg.str().c_str());
   }
   if (model_header->rms < EPS) {
   std::ostringstream msg;
   msg << "CoarseCC::calcDerivatives : Model map is empty ! "
     "model_header->rms = " << em_header->rms <<  std::endl;
-  std::cerr<<msg.str()<<std::endl; 
+  std::cerr<<msg.str()<<std::endl;
   throw EMBED_LogicError(msg.str().c_str());
   }
   // Compute the derivatives
