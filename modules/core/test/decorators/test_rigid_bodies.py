@@ -74,7 +74,7 @@ class WLCTests(IMP.test.TestCase):
             m.add_restraint(sr)
         return tr
 
-    def _check_optimization(self, m, xyzs, tr, rbd):
+    def _check_optimization(self, m, xyzs, tr, rbd, steps):
         cg= IMP.core.ConjugateGradients()
         cg.set_model(m)
         rbd.show()
@@ -84,7 +84,7 @@ class WLCTests(IMP.test.TestCase):
         cg.optimize(1)
         rbd.show()
         IMP.set_log_level(IMP.SILENT)
-        cg.optimize(100)
+        cg.optimize(steps)
         IMP.set_log_level(IMP.VERBOSE)
         print "testing"
         for p in xyzs:
@@ -112,7 +112,7 @@ class WLCTests(IMP.test.TestCase):
         rbus= IMP.core.UpdateRigidBodyOrientation(pr, rbd.get_traits())
         sss= IMP.core.SingletonScoreState(rbus, None, rbd.get_particle())
         m.add_score_state(sss)
-        self._check_optimization(m, xyzs, tr, rbd)
+        self._check_optimization(m, xyzs, tr, rbd, 1000)
 
     def test_optimized(self):
         """Test rigid body direct optimization"""
@@ -128,7 +128,7 @@ class WLCTests(IMP.test.TestCase):
         sss= IMP.core.SingletonScoreState(rm, rbus, rbd.get_particle())
         m.add_score_state(sss)
         rbd.show()
-        self._check_optimization(m, xyzs, tr, rbd)
+        self._check_optimization(m, xyzs, tr, rbd, 100)
 
 if __name__ == '__main__':
     unittest.main()
