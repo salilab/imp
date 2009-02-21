@@ -15,8 +15,8 @@ for r in residues:
     rbs.add_particle(rb.get_particle())
     print r
 print "done with setup"
-
-uro= IMP.core.UpdateRigidBodyOrientation(cpr, rbt)
-sss= IMP.core.SingletonsScoreState(rbs, uro, None)
+rbus= IMP.core.AccumulateRigidBodyDerivatives(cpr, rbt)
+rm= IMP.core.UpdateRigidBodyMembers(cpr, rbt)
+sss= IMP.core.SingletonScoreState(rm, rbus, rbd.get_particle())
 m.add_score_state(sss)
 print "all done"
