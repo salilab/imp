@@ -107,6 +107,8 @@ void ClosePairsScoreState::do_before_evaluate()
     }
   }
 }
+void ClosePairsScoreState::do_after_evaluate(DerivativeAccumulator*){
+}
 
 
 void ClosePairsScoreState::show(std::ostream &out) const

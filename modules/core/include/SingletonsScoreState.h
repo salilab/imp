@@ -59,9 +59,6 @@ public:
   virtual ~SingletonsScoreState();
 
   IMP_SCORE_STATE(internal::version_info)
-
-  //! Update the state by applying the modifier
-  void do_after_evaluate();
 };
 
 

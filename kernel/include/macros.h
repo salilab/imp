@@ -183,11 +183,8 @@ template <class L>                                                      \
     \param[in] version_info The version info object to return.
 */
 #define IMP_RESTRAINT(version_info)                       \
-  /** evaluate the restraint*/                                          \
   virtual Float evaluate(DerivativeAccumulator *accum);                 \
-  /** write information about the restraint to the stream*/             \
   virtual void show(std::ostream &out=std::cout) const;                 \
-  /** \return version and authorship information */                     \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Define the basic things you need for an optimizer.
@@ -214,11 +211,8 @@ template <class L>                                                      \
     \param[in] version_info The version info object to return.
 */
 #define IMP_OPTIMIZER_STATE(version_info)                               \
-  /** update the state*/                                                \
   virtual void update();                                                \
-  /** write information about the state to the stream*/                 \
   virtual void show(std::ostream &out=std::cout) const;                 \
-  /** \return version and authorship information */                     \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Define the basics needed for a ScoreState
@@ -232,12 +226,10 @@ template <class L>                                                      \
 */
 #define IMP_SCORE_STATE(version_info)                                   \
 protected:                                                              \
-  /** update the state*/                                                \
  virtual void do_before_evaluate();                                     \
+ virtual void do_after_evaluate(DerivativeAccumulator *da);             \
 public:                                                                 \
- /** write information about the state to the stream */                 \
  virtual void show(std::ostream &out=std::cout) const;                  \
-  /** \return version and authorship information */                     \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Define the basics needed for a particle refiner
@@ -253,14 +245,10 @@ public:                                                                 \
  */
 #define IMP_PARTICLE_REFINER(version_info)                              \
   public:                                                               \
-  /** Return if the particle can be refined*/                           \
   virtual bool get_can_refine(Particle*) const;                         \
-  /** Write information about the state to the stream */                \
   virtual void show(std::ostream &out) const;                           \
-  /** Destroy any created particles and propagate derivatives */        \
   virtual void cleanup_refined(Particle *a, Particles &b,               \
                                DerivativeAccumulator *da=0) const;      \
-  /** Return a list of particles which refines the passed particle.*/   \
   virtual Particles get_refined(Particle *) const;                      \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
