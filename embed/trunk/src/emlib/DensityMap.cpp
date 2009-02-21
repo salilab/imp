@@ -142,6 +142,7 @@ long DensityMap::loc2voxel(float x,float y,float z) const
   if (!is_part_of_volume(x,y,z)) {
     std::ostringstream msg;
     msg << " DensityMap::loc2voxel >> The point is not part of the grid \n";
+    std::cerr<<msg.str()<<std::endl;
     throw EMBED_OutOfRange(msg.str().c_str());
   }
   int ivoxx=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
@@ -180,13 +181,21 @@ emreal DensityMap::get_value(float x, float y, float z) const
 }
 
 emreal DensityMap::get_value(long index) const {
-  if ((index>-1) && (index < get_number_of_voxels())) {
+  if (not((index>-1) && (index < get_number_of_voxels()))) {
     std::ostringstream msg;
-    msg << " DensityMap::get_value >> The index is not part of the grid \n";
+    msg << " DensityMap::get_value >> The index  " << index
+        << " is not part of the grid \n";
     std::cerr<<msg.str();
     throw EMBED_OutOfRange(msg.str().c_str());
   }
   return data_[index];
+}
+void DensityMap::reset_voxel2loc() {
+  loc_calculated_=false;
+  delete x_loc_;
+  delete y_loc_;
+  delete z_loc_;
+  x_loc_=NULL;y_loc_=NULL;z_loc_=NULL;
 }
 void DensityMap::calc_all_voxel2loc()
 {
@@ -197,6 +206,10 @@ void DensityMap::calc_all_voxel2loc()
   x_loc_ = new float[nvox];
   y_loc_ = new float[nvox];
   z_loc_ = new float[nvox];
+  std::cout<<"object pixel " << header_.Objectpixelsize << std::endl;
+  std::cout<<"origin x " << header_.get_xorigin() << std::endl;
+  std::cout<<"origin y " << header_.get_yorigin() << std::endl;
+  std::cout<<"origin z " << header_.get_zorigin() << std::endl;
 
   int ix=0,iy=0,iz=0;
   for (long ii=0;ii<nvox;ii++) {
@@ -220,7 +233,6 @@ void DensityMap::calc_all_voxel2loc()
 
 void DensityMap::std_normalize()
 {
-
   if (normalized_)
     return;
 
@@ -443,13 +455,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
 
   long new_size = nx*ny*nz;
   long cur_size = get_number_of_voxels();
-
-  delete(x_loc_);
-  delete(y_loc_);
-  delete(z_loc_);
-  x_loc_=NULL;y_loc_=NULL;z_loc_=NULL;
-  loc_calculated_ = false;
-
+  reset_voxel2loc();
   emreal * new_data = new emreal[new_size];
   for (long i = 0; i < new_size; i++) {
     new_data[i] = val;
@@ -469,5 +475,13 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
   header_.update_map_dimensions(nx,ny,nz);
   delete(data_);
   data_ = new_data;
+  calc_all_voxel2loc();
+}
+
+
+void DensityMap::update_voxel_size(float new_apix) {
+  header_.Objectpixelsize = 3.0;
+  header_.compute_xyz_top(true);
+  reset_voxel2loc();
   calc_all_voxel2loc();
 }
