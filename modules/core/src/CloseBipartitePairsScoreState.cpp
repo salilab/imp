@@ -132,6 +132,10 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
   }
 }
 
+void CloseBipartitePairsScoreState
+::do_after_evaluate(DerivativeAccumulator *){
+}
+
 
 void CloseBipartitePairsScoreState::show(std::ostream &out) const
 {

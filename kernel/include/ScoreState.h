@@ -113,7 +113,7 @@ protected:
   /** \param[in] accpt The object used to scale derivatives in the score
                        calculation, or NULL if derivatives were not requested.
    */
-  virtual void do_after_evaluate(DerivativeAccumulator *accpt) {}
+  virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
 
   //! Get the current iteration count value.
   /** The value is updated before update() is called

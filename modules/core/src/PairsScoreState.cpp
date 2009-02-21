@@ -35,7 +35,7 @@ void PairsScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "End PairsScoreState::update" << std::endl);
 }
 
-void PairsScoreState::do_after_evaluate()
+void PairsScoreState::do_after_evaluate(DerivativeAccumulator *)
 {
   if (!af_) return;
   IMP_LOG(TERSE, "Begin PairsScoreState::after_evaluate" << std::endl);

@@ -46,6 +46,9 @@ void MaximumChangeScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "MaximumChange update got " << maximum_change_ << std::endl);
 }
 
+void MaximumChangeScoreState::do_after_evaluate(DerivativeAccumulator *) {
+}
+
 
 void MaximumChangeScoreState::reset()
 {
