@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     Particles without optimized x,y,z and nonoptimized D are skipped.
 
-    \relates DiffusionDecorator
+    \see DiffusionDecorator
   */
 class IMPCOREEXPORT BrownianDynamics : public Optimizer
 {
