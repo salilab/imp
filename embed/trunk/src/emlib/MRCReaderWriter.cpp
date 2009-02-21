@@ -21,15 +21,19 @@ void MRCReaderWriter::Write(const char *fn_out, const float *data,
 void MRCReaderWriter::read(float **pt)
 {
   fs.open(filename.c_str(), std::fstream::in | std::fstream::binary);
-  if (!fs.fail()) {
-    // Read header
-    read_header();
-    // Allocate memory
-    size_t n = header.nx*header.ny*header.nz;
-    (*pt)= new float[n]; 
-    read_data(*pt);
+  if (!fs.good()) {
+    std::ostringstream msg;
+    msg << " MRCReaderWriter::Read >> The file "
+    << filename << " was not found.\n";
+    std::cerr<<msg.str()<<std::endl;
+    throw EMBED_IOException(msg.str().c_str());
   }
-  // TODO - add exception
+  // Read header
+  read_header();
+  // Allocate memory
+  size_t n = header.nx*header.ny*header.nz;
+  (*pt)= new float[n];
+  read_data(*pt);
   fs.close();
 }
 
@@ -134,9 +138,9 @@ void  MRCReaderWriter::read_header(void)
   if (header.mapc != 1 || header.mapr != 2 || header.maps != 3) {
     std::ostringstream msg;
     msg << "MRCReaderWriter::read_header >> Error reading MRC header of file: "
-     << filename <<  "\nNon-standard MRC file: column, row, section indices " 
-     <<"are not (1,2,3) but (" << header.mapc << "," << header.mapr << 
-     "," << header.maps << ")." << 
+     << filename <<  "\nNon-standard MRC file: column, row, section indices "
+     <<"are not (1,2,3) but (" << header.mapc << "," << header.mapr <<
+     "," << header.maps << ")." <<
      " Resulting density data may be incorrectly oriented.\n";
     throw EMBED_IOException(msg.str().c_str());
   }
@@ -154,7 +158,7 @@ void MRCReaderWriter::write(const char *fn,const float *pt)
 
 void MRCReaderWriter::write_header(std::ofstream &s)
 {
-  int wordsize=4; 
+  int wordsize=4;
   s.write((char *) &header.nx,wordsize);
   s.write((char *) &header.ny,wordsize);
   s.write((char *) &header.nz,wordsize);
@@ -271,19 +275,19 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h)
      (1,2,3 for x,y,z) */
   mapc=h.mapc;
   mapr=h.mapr;
-  maps=h.maps; 
+  maps=h.maps;
   /* Minimum, maximum and mean density value */
   dmin=h.dmin;
   dmax=h.dmax;
-  dmean=h.dmean; 
-  ispg=h.ispg; // Sapce group number 0 or 1 (default 0) 
+  dmean=h.dmean;
+  ispg=h.ispg; // Sapce group number 0 or 1 (default 0)
   nsymbt=h.nsymbt; // Number of bytes used for symmetry data (0 or 80)
 
   // extra space used for anything - 0 by default
   for(int i=0;i<MRC_USER;i++)
     user[i]=h.user[i];
   strcpy(map,"MAP \0"); // character string 'MAP ' to identify file type
-  // Origin used for transforms 
+  // Origin used for transforms
   xorigin=h.get_xorigin() ; yorigin=h.get_yorigin() ; zorigin=h.get_zorigin();
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
   machinestamp=h.machinestamp;
@@ -319,25 +323,25 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
      (1,2,3 for x,y,z) */
   h.mapc=mapc;
   h.mapr=mapr;
-  h.maps=maps; 
+  h.maps=maps;
   /* Minimum, maximum and mean density value */
   h.dmin=dmin;
   h.dmax=dmax;
-  h.dmean=dmean; 
-  h.ispg=ispg; // Sapce group number 0 or 1 (default 0) 
+  h.dmean=dmean;
+  h.ispg=ispg; // Sapce group number 0 or 1 (default 0)
   h.nsymbt=nsymbt; // Number of bytes used for symmetry data (0 or 80)
   // extra space used for anything - 0 by default
   for(int i=0;i<MRC_USER;i++)
     h.user[i]=user[i];
   strcpy(h.map,"MAP \0"); // character string 'MAP ' to identify file type
-  // Origin used for transforms 
+  // Origin used for transforms
   h.set_xorigin(xorigin) ; h.set_yorigin(yorigin) ; h.set_zorigin(zorigin);
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
   h.machinestamp=machinestamp;
   h.rms=rms; // RMS deviation of map from mean density
   h.nlabl=nlabl; // Number of labels being used
 
-  // Copy comments  
+  // Copy comments
   for(int i=0;i<h.nlabl;i++)
     strcpy(h.comments[i],labels[i]);
 
@@ -345,6 +349,6 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
   // Fill empty coments with null character
   const char *c="\0";
   empty.resize(MRC_LABEL_SIZE,*c);
-  for(int i=h.nlabl;i<MRC_NUM_LABELS;i++) 
+  for(int i=h.nlabl;i<MRC_NUM_LABELS;i++)
     strcpy(h.comments[i],empty.c_str());
 }
