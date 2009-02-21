@@ -122,7 +122,7 @@ public:
 
 
   //! Generate a key from the given string
-  KeyBase(const char *c) {
+  explicit KeyBase(const char *c) {
     str_= find_index(c);
   }
 
