@@ -14,10 +14,12 @@
 
 #include "XYZDecorator.h"
 #include <IMP/SingletonContainer.h>
+#include <IMP/SingletonModifier.h>
 #include <IMP/ParticleRefiner.h>
 #include <IMP/ScoreState.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
+#include <IMP/algebra/Transformation3D.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -81,14 +83,6 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
                             ParticleRefiner *gc,
               RigidBodyTraits tr= internal::get_default_rigid_body_traits());
 
-  //! Update the coordinates and orientation of the body from the members
-  /** The member particles are then snapped to their rigid locations.
-
-      \param[in] gc Returns the particles making up the rigid body. All
-      the particles must be RigidMemberDecorators.
-   */
-  void set_transformation(ParticleRefiner *gc);
-
   ~RigidBodyDecorator();
 
   //!Return true of the particle is a rigid body
@@ -116,6 +110,11 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
   //! Set the current orientation and translation
   void set_transformation(const IMP::algebra::Transformation3D &tr);
 
+  //! Set whether the rigid body coordinates are optimized
+  void set_coordinates_are_optimized(bool tf);
+
+  //! Normalized the quaternion
+  void normalize_rotation();
 };
 
 IMP_OUTPUT_OPERATOR(RigidBodyDecorator);
@@ -155,9 +154,8 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
   }
 
   //! Set the coordinates from the internal coordinates
-  void set_coordinates(const algebra::Vector3D &center,
-                       const IMP::algebra::Rotation3D &rot) {
-    set_coordinates(center+rot.rotate(get_internal_coordinates()));
+  void set_coordinates(const algebra::Transformation3D &tr) {
+    set_coordinates(tr.transform(get_internal_coordinates()));
   }
   ~RigidMemberDecorator();
 
@@ -185,23 +183,48 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
 
 IMP_OUTPUT_OPERATOR(RigidMemberDecorator);
 
-
-
-//! Force the passed rigid bodies to stay rigid
-/** The positions of the rigid bodies are updated before
-    each evaluate call to keep the sub particles in a rigid
-    configuration.
- */
-class IMPCOREEXPORT RigidBodyScoreState: public ScoreState {
-  Pointer<SingletonContainer> ps_;
+//! Compute the orientation of the rigid body from the refined particles
+/** This should be applied before evaluate to keep the bodies rigid. It
+    computes the optimal orientation given the position of the members and
+    then snaps the members to their rigid locations.
+    \relates RigidBodyDecorator
+*/
+class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
   Pointer<ParticleRefiner> pr_;
   RigidBodyTraits tr_;
  public:
-  //! pass a container of RigidBodyDecorator particles
-  RigidBodyScoreState(SingletonContainer *ps,
-                      ParticleRefiner *pr,
-                      RigidBodyTraits tr= RigidBodyTraits());
-  IMP_SCORE_STATE(internal::version_info);
+  UpdateRigidBodyOrientation(ParticleRefiner *pr,
+                             RigidBodyTraits tr= RigidBodyTraits()):
+    pr_(pr), tr_(tr){}
+  IMP_SINGLETON_MODIFIER(internal::version_info);
+};
+
+//! Accumulate the derivatives from the refined particles in the rigid body
+/** \relates RigidBodyDecorator
+ */
+class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
+  public SingletonModifier {
+  Pointer<ParticleRefiner> pr_;
+  RigidBodyTraits tr_;
+ public:
+  AccumulateRigidBodyDerivatives(ParticleRefiner *pr,
+                                 RigidBodyTraits tr= RigidBodyTraits()):
+    pr_(pr), tr_(tr){}
+  IMP_SINGLETON_MODIFIER(internal::version_info);
+};
+
+
+//! Compute the coordinates of the RigidMember objects bases on the orientation
+/** This should be applied after evaluate to keep the bodies rigid.
+    \relates RigidBodyDecorator*/
+class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
+  Pointer<ParticleRefiner> pr_;
+  RigidBodyTraits tr_;
+ public:
+  UpdateRigidBodyMembers(ParticleRefiner *pr,
+                         RigidBodyTraits tr= RigidBodyTraits()):
+    pr_(pr), tr_(tr){}
+  IMP_SINGLETON_MODIFIER(internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE
