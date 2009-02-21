@@ -37,12 +37,12 @@ struct TransformParticle
     return tv_[i];
   }
 
-  void add_to_coordinates_derivative(const algebra::Vector3D& f,
+  void add_to_coordinate_derivatives(const algebra::Vector3D& f,
                                      DerivativeAccumulator &da) {
     IMP_LOG(VERBOSE, "Incoming deriv is " << f << std::endl);
     algebra::Vector3D r= ri_.rotate(f);
     IMP_LOG(VERBOSE, "Transformed deriv is " << r << std::endl);
-    d_.add_to_coordinates_derivative(r, da);
+    d_.add_to_coordinate_derivatives(r, da);
   }
 };
 

@@ -67,7 +67,7 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
   //! Add something to the derivative of the coordinates
-  void add_to_coordinates_derivative(const algebra::Vector3D& v,
+  void add_to_coordinate_derivatives(const algebra::Vector3D& v,
                                      DerivativeAccumulator &d) {
     add_to_coordinate_derivative(0, v[0], d);
     add_to_coordinate_derivative(1, v[1], d);
