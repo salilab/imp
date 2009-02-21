@@ -17,7 +17,7 @@ class WLCTests(IMP.test.TestCase):
         hd= IMP.core.HierarchyDecorator.create(rbp)
         xyzs= []
         tr= IMP.core.RigidBodyTraits("myrb")
-        for i in range(0, 4):
+        for i in range(0, 10):
             mp= IMP.Particle(m)
             mxyz= IMP.core.XYZDecorator.create(mp,
                                                IMP.algebra.random_vector_in_unit_box())
@@ -65,16 +65,21 @@ class WLCTests(IMP.test.TestCase):
         r= IMP.algebra.random_rotation()
         t= IMP.algebra.random_vector_in_unit_box()
         tr= IMP.algebra.Transformation3D(r, t)
-        for i in range(0,3):
+        for i in range(0,5):
             md= IMP.core.RigidMemberDecorator(xyzs[i].get_particle(), traits)
             iv= md.get_internal_coordinates()
             dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1),
                                                   tr.transform(iv))
             sr= IMP.core.SingletonRestraint(dt, xyzs[i].get_particle())
             m.add_restraint(sr)
-        return tr
+        targets=[]
+        for d in xyzs:
+            md= IMP.core.RigidMemberDecorator(d.get_particle(), traits)
+            iv= md.get_internal_coordinates()
+            targets.append(tr.transform(iv))
+        return (tr, targets)
 
-    def _check_optimization(self, m, xyzs, tr, rbd, steps):
+    def _check_optimization(self, m, xyzs, rbd, targets, steps):
         cg= IMP.core.ConjugateGradients()
         cg.set_model(m)
         rbd.show()
@@ -82,21 +87,25 @@ class WLCTests(IMP.test.TestCase):
         m.evaluate(True)
         rbd.show()
         cg.optimize(1)
+        m.evaluate(True)
         rbd.show()
         IMP.set_log_level(IMP.SILENT)
         cg.optimize(steps)
         IMP.set_log_level(IMP.VERBOSE)
+        m.evaluate(False)
         print "testing"
-        for p in xyzs:
-            md= IMP.core.RigidMemberDecorator(p.get_particle(), rbd.get_traits())
-            iv= md.get_internal_coordinates()
-            tv= tr.transform(iv)
-            cv= md.get_coordinates()
-            print md
-            print iv
-            print tv
-            print cv
-            self.assertInTolerance((tv-cv).get_squared_magnitude(),
+        targets[0].show()
+        targets[1].show()
+        targets[2].show()
+        targets[3].show()
+        targets[4].show()
+        for i in range(0,len(xyzs)):
+            md= xyzs[i]
+            tx= targets[i]
+            mc= md.get_coordinates()
+            mc.show(); print
+            tx.show(); print
+            self.assertInTolerance((mc-tx).get_squared_magnitude(),
                                    0, .1)
         print "done"
 
@@ -108,13 +117,13 @@ class WLCTests(IMP.test.TestCase):
         rbd.set_coordinates_are_optimized(False)
         # apply restraints to 3 particles
         # optimize then check if the remainder are in place
-        tr= self._create_restraints(m, xyzs, rbd.get_traits())
+        (tr, targets)= self._create_restraints(m, xyzs, rbd.get_traits())
         rbus= IMP.core.UpdateRigidBodyOrientation(pr, rbd.get_traits())
         sss= IMP.core.SingletonScoreState(rbus, None, rbd.get_particle())
         m.add_score_state(sss)
-        self._check_optimization(m, xyzs, tr, rbd, 10000)
+        self._check_optimization(m, xyzs, rbd, targets, 10000)
 
-    def test_optimized(self):
+    def _test_optimized(self):
         """Test rigid body direct optimization"""
         (m, rbd, pr, xyzs)= self._create_rigid_body()
         for d in xyzs:
@@ -122,13 +131,13 @@ class WLCTests(IMP.test.TestCase):
         rbd.set_coordinates_are_optimized(True)
         # apply restraints to 3 particles
         # optimize then check if the remainder are in place
-        tr= self._create_restraints(m, xyzs, rbd.get_traits())
+        (tr, targets)= self._create_restraints(m, xyzs, rbd.get_traits())
         rbus= IMP.core.AccumulateRigidBodyDerivatives(pr, rbd.get_traits())
         rm= IMP.core.UpdateRigidBodyMembers(pr, rbd.get_traits())
         sss= IMP.core.SingletonScoreState(rm, rbus, rbd.get_particle())
         m.add_score_state(sss)
         rbd.show()
-        self._check_optimization(m, xyzs, tr, rbd, 100)
+        self._check_optimization(m, xyzs, rbd, targets, 100)
 
 if __name__ == '__main__':
     unittest.main()
