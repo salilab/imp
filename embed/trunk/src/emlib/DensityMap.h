@@ -210,6 +210,9 @@ public:
   //! threshold into the input stream.
   std::string get_locations_string(float t);
 
+  //! Updated the voxel size of the map
+  void update_voxel_size(float new_apix);
+
 protected:
 
   //! Calculates the coordinates that correspond to all voxels.
@@ -217,7 +220,7 @@ protected:
       \todo which is a better design - have it public or call it from voxel2loc?
    */
   void calc_all_voxel2loc();
-
+  void reset_voxel2loc();
 
   void allocated_data();
   void float2real(float *f_data, emreal **r_data);
