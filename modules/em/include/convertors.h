@@ -15,7 +15,8 @@
 #include "internal/version_info.h"
 #include "DensityMap.h"
 #include <IMP/Particle.h>
-
+#include "IMP/core/XYZDecorator.h"
+#include "IMP/algebra/Vector3D.h"
 #define DENS_ATT_NAME "density_val"
 
 IMPEM_BEGIN_NAMESPACE
