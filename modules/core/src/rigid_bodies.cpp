@@ -195,18 +195,45 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   return d;
 }
 
+void
+RigidBodyDecorator::normalize_rotation() {
+  algebra::VectorD<4> v(get_particle()
+                        ->get_value(traits_.get_quaternion_keys()[0]),
+                        get_particle()
+                        ->get_value(traits_.get_quaternion_keys()[1]),
+                        get_particle()
+                        ->get_value(traits_.get_quaternion_keys()[2]),
+                        get_particle()
+                        ->get_value(traits_.get_quaternion_keys()[3]));
+  IMP_LOG(SILENT, "Rotation was " << v << std::endl);
+  v= v.get_unit_vector();
+  IMP_LOG(SILENT, "Rotation is " << v << std::endl);
+  get_particle()->set_value(traits_.get_quaternion_keys()[0], v[0]);
+  get_particle()->set_value(traits_.get_quaternion_keys()[1], v[1]);
+  get_particle()->set_value(traits_.get_quaternion_keys()[2], v[2]);
+  get_particle()->set_value(traits_.get_quaternion_keys()[3], v[3]);
+}
+
 
 IMP::algebra::Transformation3D
 RigidBodyDecorator::get_transformation() const {
-  IMP::algebra::Rotation3D rot(get_particle()
-                               ->get_value(traits_.get_quaternion_keys()[0]),
-                               get_particle()
-                               ->get_value(traits_.get_quaternion_keys()[1]),
-                               get_particle()
-                               ->get_value(traits_.get_quaternion_keys()[2]),
-                               get_particle()
-                               ->get_value(traits_.get_quaternion_keys()[3]));
+  algebra::VectorD<4> v(get_particle()
+                        ->get_value(traits_.get_quaternion_keys()[0]),
+                        get_particle()
+                        ->get_value(traits_.get_quaternion_keys()[1]),
+                        get_particle()
+                        ->get_value(traits_.get_quaternion_keys()[2]),
+                        get_particle()
+                        ->get_value(traits_.get_quaternion_keys()[3]));
+  IMP::algebra::Rotation3D rot(v[0], v[1], v[2], v[3]);
   return IMP::algebra::Transformation3D(rot, get_coordinates());
+}
+
+void RigidBodyDecorator::set_coordinates_are_optimized(bool tf) {
+  for (unsigned int i=0; i< 4; ++i) {
+    get_particle()->set_is_optimized(traits_.get_quaternion_keys()[i], tf);
+  }
+  XYZDecorator::set_coordinates_are_optimized(tf);
 }
 
 algebra::Vector3D RigidBodyDecorator::get_coordinates(RigidMemberDecorator p)
@@ -227,35 +254,6 @@ void RigidBodyDecorator
 }
 
 
-
-
-
-
-
-void RigidBodyDecorator::set_transformation(ParticleRefiner *gc) {
-  std::vector<algebra::Vector3D> cur, local;
-  Particles members= gc->get_refined(get_particle());
-  for (unsigned int i=0; i< members.size(); ++i) {
-    Particle *p =members[i];
-    RigidMemberDecorator d(p, get_traits());
-    cur.push_back(d.get_coordinates());
-    local.push_back(d.get_internal_coordinates());
-  }
-  IMP::algebra::Transformation3D tr
-    = IMP::algebra::rigid_align_first_to_second(local, cur);
-  IMP_LOG(VERBOSE, "Alignment is " << tr << std::endl);
-  set_transformation(tr);
-  for (unsigned int i=0; i< members.size(); ++i) {
-    Particle *p =members[i];
-    RigidMemberDecorator d(p, get_traits());
-    d.set_coordinates(tr.transform(d.get_internal_coordinates()));
-  }
-  gc->cleanup_refined(get_particle(), members);
-}
-
-
-
-
 RigidBodyDecorator::~RigidBodyDecorator(){}
 RigidMemberDecorator::~RigidMemberDecorator(){}
 
@@ -266,6 +264,15 @@ RigidMemberDecorator::~RigidMemberDecorator(){}
 
 void RigidBodyDecorator::show(std::ostream &out, std::string prefix) const {
   out << prefix << "Rigid body " << get_transformation()
+      << "("
+      << get_particle()->get_derivative(get_traits().get_quaternion_keys()[0])
+      << " "
+      << get_particle()->get_derivative(get_traits().get_quaternion_keys()[1])
+      << " "
+      << get_particle()->get_derivative(get_traits().get_quaternion_keys()[2])
+      << " "
+      << get_particle()->get_derivative(get_traits().get_quaternion_keys()[3])
+      << ")"
       << std::endl;;
 }
 
@@ -275,36 +282,96 @@ void RigidMemberDecorator::show(std::ostream &out, std::string prefix) const {
 }
 
 
+void UpdateRigidBodyOrientation::apply(Particle *p) const {
+  RigidBodyDecorator rb(p, tr_);
+  algebra::Vector3Ds cur, local;
+  Particles members= pr_->get_refined(p);
+  for (unsigned int i=0; i< members.size(); ++i) {
+    Particle *p =members[i];
+    RigidMemberDecorator d(p, tr_);
+    cur.push_back(d.get_coordinates());
+    local.push_back(d.get_internal_coordinates());
+  }
+  IMP::algebra::Transformation3D tr
+    = IMP::algebra::rigid_align_first_to_second(local, cur);
+  IMP_LOG(VERBOSE, "Alignment is " << tr << std::endl);
+  rb.set_transformation(tr);
+  for (unsigned int i=0; i< members.size(); ++i) {
+    Particle *p =members[i];
+    RigidMemberDecorator d(p, tr_);
+    d.set_coordinates(tr.transform(d.get_internal_coordinates()));
+  }
+  pr_->cleanup_refined(p, members);
+}
 
-RigidBodyScoreState::RigidBodyScoreState(SingletonContainer *ps,
-                                         ParticleRefiner *pr,
-                                         RigidBodyTraits tr): ps_(ps),
-                                                               pr_(pr),
-                                                               tr_(tr){
-  for (SingletonContainer::ParticleIterator pit= ps->particles_begin();
-       pit != ps->particles_end(); ++pit) {
-    RigidBodyDecorator::cast(*pit, tr_);
-    Particles rps= pr->get_refined(*pit);
-    for (unsigned int i=0; i< rps.size(); ++i) {
-      Particle *p =rps[i];
-      RigidMemberDecorator::cast(p, tr_);
+
+
+void UpdateRigidBodyOrientation::show(std::ostream &out) const {
+  out << "RigidBodyUpdateSingletonModifier " << *pr_ << std::endl;
+}
+
+
+
+void AccumulateRigidBodyDerivatives::apply(Particle *p) const {
+  RigidBodyDecorator rb(p, tr_);
+  DerivativeAccumulator da;
+  Particles members= pr_->get_refined(p);
+  algebra::Rotation3D rot= rb.get_transformation().get_rotation();
+  IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
+  for (unsigned int i=0; i< members.size(); ++i) {
+    Particle *p =members[i];
+    RigidMemberDecorator d(p, tr_);
+    for (unsigned int i=0; i< 4; ++i) {
+      algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(), i);
+      algebra::Vector3D dv= d.get_derivatives();
+      static_cast<XYZDecorator>(rb).add_to_coordinate_derivatives(dv, da);
+      IMP_LOG(SILENT, "Adding " << dv*v << " to quaternion deriv " << i
+              << std::endl);
+      p->add_to_derivative(tr_.get_quaternion_keys()[i],
+                           dv*v,
+                           da);
     }
-    pr->cleanup_refined(*pit, rps);
   }
+  IMP_LOG(SILENT, "Derivative is "
+          << p->get_derivative(tr_.get_quaternion_keys()[0]) << " "
+          << p->get_derivative(tr_.get_quaternion_keys()[1]) << " "
+          << p->get_derivative(tr_.get_quaternion_keys()[2]) << " "
+          << p->get_derivative(tr_.get_quaternion_keys()[3])
+          << std::endl);
+
+  pr_->cleanup_refined(p, members);
 }
 
-void RigidBodyScoreState::do_before_evaluate() {
-  for (SingletonContainer::ParticleIterator pit= ps_->particles_begin();
-       pit != ps_->particles_end(); ++pit) {
-    RigidBodyDecorator rb(*pit, tr_);
-    rb.set_transformation(pr_);
-  }
-}
 
 
-
-void RigidBodyScoreState::show(std::ostream &out) const {
-  out << "RigidBodyScoreState " << *ps_
+void AccumulateRigidBodyDerivatives
+::show(std::ostream &out) const {
+  out << "RigidBodyAccumulateDerivativesSingletonModifier "
       << *pr_ << std::endl;
 }
+
+
+void UpdateRigidBodyMembers::apply(Particle *p) const {
+  RigidBodyDecorator rb(p, tr_);
+  rb.normalize_rotation();
+  Particles members= pr_->get_refined(p);
+  algebra::Transformation3D tr= rb.get_transformation();
+  for (unsigned int i=0; i< members.size(); ++i) {
+    Particle *p =members[i];
+    RigidMemberDecorator rm(p, tr_);
+    rm.set_coordinates(tr);
+  }
+  pr_->cleanup_refined(p, members);
+
+}
+
+
+
+void UpdateRigidBodyMembers
+::show(std::ostream &out) const {
+  out << "RigidBodyUpdateMembersSingletonModifier "
+      << *pr_ << std::endl;
+}
+
+
 IMPCORE_END_NAMESPACE
