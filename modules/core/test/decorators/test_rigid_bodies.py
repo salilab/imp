@@ -32,7 +32,7 @@ class WLCTests(IMP.test.TestCase):
         return (m, rbd, pr, xyzs)
 
 
-    def _test_rigid(self):
+    def test_rigid(self):
         """Test rigid bodies"""
         (m, rbd, pr, xyzs)= self._create_rigid_body()
         rbd.show()
@@ -114,7 +114,7 @@ class WLCTests(IMP.test.TestCase):
         m.add_score_state(sss)
         self._check_optimization(m, xyzs, tr, rbd)
 
-    def _test_optimized(self):
+    def test_optimized(self):
         """Test rigid body direct optimization"""
         (m, rbd, pr, xyzs)= self._create_rigid_body()
         for d in xyzs:
