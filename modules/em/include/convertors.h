@@ -17,9 +17,12 @@
 #include <IMP/Particle.h>
 #include "IMP/core/XYZDecorator.h"
 #include "IMP/algebra/Vector3D.h"
-#define DENS_ATT_NAME "density_val"
 
 IMPEM_BEGIN_NAMESPACE
+
+//! Return the key used to store the density attribute
+IMPEMEXPORT FloatKey get_density_key();
+
 //! Converts a density grid to a set of paritlces
 /**
 Each such particle will be have xyz attributes and a density_val attribute of
@@ -29,7 +32,7 @@ type Float.
            be converted to particles
 /param[in] the new density based particles will be converted to particles.
  */
-static void density2particles(DensityMap &dmap, Float threshold,
+inline void density2particles(DensityMap &dmap, Float threshold,
                               Particles &ps, Model *m) {
   Float x,y,z;
   for (long i=0;i<dmap.get_number_of_voxels();i++) {
@@ -39,7 +42,8 @@ static void density2particles(DensityMap &dmap, Float threshold,
     if (dmap.get_value(x,y,z) > threshold) {
       Particle * p = new Particle(m);
       IMP::core::XYZDecorator::create(p,IMP::algebra::Vector3D(x,y,z));
-      p->add_attribute(DENS_ATT_NAME,dmap.get_value(x,y,z),false);
+      p->add_attribute(get_density_key(),
+                       dmap.get_value(x,y,z),false);
       ps.push_back(p);
     }
   }
