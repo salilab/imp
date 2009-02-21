@@ -18,8 +18,8 @@ public:
 
     top_calculated=false;
     // Initialize some of the parameters of the header
-    nx=0;ny=0;nz=0; 
-    data_type=5; 
+    nx=0;ny=0;nz=0;
+    data_type=5;
     nxstart=1; nystart=1; nzstart=1;
 
     mx = nxstart + nx - 1; my = nystart + ny - 1; mz = nzstart + nz - 1;
@@ -36,9 +36,9 @@ public:
   }
 
   // If a copy constructor is not defined in a class, the compiler itself
-  // defines one. This will ensure a shallow copy. 
+  // defines one. This will ensure a shallow copy.
   // If the class does not have pointer variables with dynamically allocated
-  // memory, then one need not worry about defining a 
+  // memory, then one need not worry about defining a
   // copy constructor. It can be left to the compiler's discretion.
   // But if the class has pointer variables and has some dynamic memory
   // allocations, then it is a must to have a copy constructor.
@@ -47,8 +47,8 @@ public:
   /** \param[in] ind The dimension index x:=0,y:=1,z:=2
       \return the coordinate value in angstroms
    */
-  emreal get_top(int ind) const 
-  { 
+  emreal get_top(int ind) const
+  {
     if (!top_calculated) {
       std::cerr << " DensityHeader::get_top  the top coordinates of the map "
                 << "have not been setup yet " << std::endl;
@@ -59,11 +59,15 @@ public:
     return ztop;
 
   }
+  //! Compute the farthest point of the grid.
+  /**
+    /param[in] force if true then the top point is calculated
+               even if it has already been calcualted.
+   */
+  void compute_xyz_top(bool force=false);
 
-  void compute_xyz_top();
 
-
-  //! Update the dimensions of the map to be (nnx,nny,nnz). 
+  //! Update the dimensions of the map to be (nnx,nny,nnz)
   //!The origin of the map does not change
   /**
      /param[in] nnx the new number of voxels on the X axis
@@ -114,9 +118,9 @@ public:
   //! How many bits are used to store the density of a single voxel
   //! (used in MRC format)
   int data_type;
-  int nxstart,nystart,nzstart; //number of first columns in map 
+  int nxstart,nystart,nzstart; //number of first columns in map
   int mx, my, mz; // Number of intervals along each dimension
-  float xlen,ylen,zlen; //Cell dimensions (angstroms) 
+  float xlen,ylen,zlen; //Cell dimensions (angstroms)
   float alpha, beta, gamma; //Cell angles (degrees)
   //! Axes corresponding to columns (mapc), rows (mapr) and sections (maps)
   //! (1,2,3 for x,y,z)
@@ -140,7 +144,7 @@ public:
   float Magnification;  //Magnification
   float Postmagnification; //Postmagnification (of energy filter)
   float Exposuretime; //Exposuretime
-  float Objectpixelsize; //this is the actual pixelsize 
+  float Objectpixelsize; //this is the actual pixelsize
   float Microscope;  //Microscope
   float Pixelsize; //Pixelsize - used for the microscope CCD camera
   float CCDArea;  //CCDArea
@@ -168,7 +172,7 @@ public:
   inline float get_yorigin() const {return yorigin;}
   //! Returns the origin on the map (z-coordiante)
   inline float get_zorigin() const {return zorigin;}
-  //! Returns the origin on the map 
+  //! Returns the origin on the map
   /**
   \param[in] i the relevant coordinate (0:x, 1:y, 2:z)
   \exception EMBED_WrongValue if the value of i is out of range.
@@ -201,6 +205,4 @@ protected:
   bool top_calculated;
   float resolution;
 };
-
-
-#endif 
+#endif

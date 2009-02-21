@@ -1,15 +1,15 @@
 #include "DensityHeader.h"
 
-void DensityHeader::compute_xyz_top()
+void DensityHeader::compute_xyz_top(bool force)
 {
-  if (top_calculated)
+  if ((top_calculated) && !force)
     return;
 
   xtop=xorigin+Objectpixelsize*nx;
   ytop=yorigin+Objectpixelsize*ny;
   ztop=zorigin+Objectpixelsize*nz;
   top_calculated = true;
-  }
+}
 
 void DensityHeader::update_map_dimensions(int nnx,int nny,int nnz) {
   nx=nnx;
