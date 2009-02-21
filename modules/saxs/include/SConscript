@@ -5,7 +5,6 @@ files = [
          'Distribution.h',
          'SAXSProfile.h',
          'SAXSScore.h',
-         'SaxsData.h',
          'utility.h']
 
 # Install the include files:

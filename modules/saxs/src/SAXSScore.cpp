@@ -35,12 +35,16 @@ void SAXSScore::resample(const SAXSProfile& model_saxs_profile,
     if(i == 0) {
       resampled_profile.add_entry(q, model_saxs_profile.get_intensity(i));
     } else {
-      Float alpha = (q - model_saxs_profile.get_q(i-1)) /
-            (model_saxs_profile.get_q(i) - model_saxs_profile.get_q(i-1));
-      Float intensity = algebra::simple_iterpolate(alpha,
+      Float delta_q = model_saxs_profile.get_q(i)-model_saxs_profile.get_q(i-1);
+      if(delta_q <= 1.0e-16) {
+        resampled_profile.add_entry(q, model_saxs_profile.get_intensity(i));
+      } else {
+        Float alpha = (q - model_saxs_profile.get_q(i-1)) / delta_q;
+        Float intensity = algebra::simple_iterpolate(alpha,
                                    model_saxs_profile.get_intensity(i-1),
                                    model_saxs_profile.get_intensity(i));
-      resampled_profile.add_entry(q, intensity);
+        resampled_profile.add_entry(q, intensity);
+      }
     }
   }
 }
@@ -87,11 +91,8 @@ Float SAXSScore::compute_chi_square_score(
 }
 
 /*
- ! ----------------------------------------------------------------------
- !------------ scoring function with weighting by error      ------------
- ! calculate SAXS Chi square of experimental data and model
- ! added weight_tilda function w_tilda(q) = w(q) / sigma_exp^2
- ! ----------------------------------------------------------------------
+calculate SAXS Chi square of experimental data and model
+weight_tilda function w_tilda(q) = w(q) / sigma_exp^2
 */
 // TODO: define a weight function (w(q) = 1, q^2, or hybrid)
 Float SAXSScore::compute_chi_square_score_internal(
@@ -194,15 +195,11 @@ void SAXSScore::calculate_chi_derivative(const SAXSProfile& model_saxs_profile,
 }
 
 /*
- ! ----------------------------------------------------------------------
- !>   compute  derivatives for each particle
- !!   SCORING function : chi
- !!
- !!   For calculation in real space the quantity Delta(r) is needed to get
- !!   derivatives on atom iatom
- !!
- !!   Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
- ! ----------------------------------------------------------------------
+compute derivative for each particle
+SCORING function : chi
+For calculation in real space the quantity Delta(r) is needed to get
+derivatives of an atom
+Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
 */
 void SAXSScore::calculate_chi_real_derivative(
                       const SAXSProfile& model_saxs_profile,

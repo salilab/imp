@@ -6,8 +6,8 @@ files = [
          'Distribution.cpp',
          'SAXSProfile.cpp',
          'SAXSScore.cpp',
-         'SaxsData.cpp',
         ]
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)
+#e.IMPStaticLibrary(files, install=True)

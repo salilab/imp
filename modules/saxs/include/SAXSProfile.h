@@ -20,11 +20,11 @@ IMPSAXS_BEGIN_NAMESPACE
 
 class RadialDistributionFunction;
 
-/* Basic profile class, can be initialized from the input file
+/**
+   Basic profile class, can be initialized from the input file
    (experimental or theoretical) or computed from a set of Model
    Particles (theoretical)
 */
-
 class IMPSAXSEXPORT SAXSProfile {
 public:
   //! init from file
@@ -57,12 +57,26 @@ public:
     calculate_profile_real(particles);
   }
 
+  //! computes theoretical profile faster for cyclically symmetric particles
+  //! assumes that the units particles are ordered one after another in the
+  //! input particles vector (n - symmetry order)
+  void calculate_profile(const std::vector<Particle*>& particles,
+                         unsigned int n) {
+    calculate_profile_real(particles, n);
+  }
+
   //! computes theoretical profile contribution from iter-molecular
-  // interactions between the particles
+  //! interactions between the particles
   void calculate_profile(const std::vector<Particle*>& particles1,
                          const std::vector<Particle*>& particles2) {
     calculate_profile_real(particles1, particles2);
   }
+
+  //! add another profile - useful for rigid bodies
+  void add(const SAXSProfile& other_profile);
+
+  //! scale
+  void scale(Float c);
 
   //! reads SAXS profile from file
   void read_SAXS_file(const String& file_name);
@@ -98,8 +112,10 @@ public:
   // parameter for E^2(q), used in faster calculation
   static Float modulation_function_parameter_;
 
-private:
+ private:
   void init();
+
+  void add_errors();
 
   void calculate_profile_reciprocal(const std::vector<Particle*>& particles);
 
@@ -111,11 +127,11 @@ private:
   void calculate_profile_real(const std::vector<Particle*>& particles1,
                               const std::vector<Particle*>& particles2);
 
-  void radial_distribution_2_profile(const RadialDistributionFunction& r_dist);
+  // for symmetry
+  void calculate_profile_real(const std::vector<Particle*>& particles,
+                              unsigned int n);
 
-  void write_SAXS_fit_file(const IMP::String& file_name,
-                           const SAXSProfile& saxs_profile,
-                           const IMP::Float c) const;
+  void radial_distribution_2_profile(const RadialDistributionFunction& r_dist);
 
  protected:
   std::vector<IntensityEntry> profile_; // the profile

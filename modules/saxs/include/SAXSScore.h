@@ -22,10 +22,9 @@ IMPSAXS_BEGIN_NAMESPACE
 
 class SAXSProfile;
 
-/*
+/**
  Basic SAXS scoring class
 */
-
 class IMPSAXSEXPORT SAXSScore {
 public:
   //! init for theoretical profile
@@ -49,6 +48,11 @@ public:
                   const std::vector<Particle*>& particles,
                   std::vector<IMP::algebra::Vector3D>& derivatives) const;
  private:
+
+  // required to fit the q values of computational profile to the experimental
+  void resample(const SAXSProfile& model_saxs_profile,
+                SAXSProfile& resampled_profile) const;
+
   // compute derivatives for each particle
   void calculate_chi_real_derivative(const SAXSProfile& model_saxs_profile,
                   const std::vector<Particle*>& particles,
@@ -66,10 +70,6 @@ public:
   void calculate_sinc_cos(Float pr_resolution, Float max_distance,
                           const SAXSProfile& model_saxs_profile,
                           std::vector<Floats>& output_values) const;
-
-  // required to fit the q values of computational profile to the experimental
-  void resample(const SAXSProfile& model_saxs_profile,
-                SAXSProfile& resampled_profile) const;
 
   Float compute_fit_coefficient_internal(
                                    const SAXSProfile& model_saxs_profile) const;

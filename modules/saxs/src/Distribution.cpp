@@ -7,34 +7,17 @@
  *
  */
 #include <IMP/saxs/Distribution.h>
+#include <IMP/saxs/utility.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/XYZDecorator.h>
 
 IMPSAXS_BEGIN_NAMESPACE
-
-Float compute_max_distance(const std::vector<Particle*>& particles) {
-  Float max_dist2 = 0;
-  std::vector < algebra::Vector3D > coordinates;
-  for (unsigned int i = 0; i < particles.size(); i++) {
-    coordinates.push_back(core::XYZDecorator::cast(particles[i]).
-                          get_coordinates());
-  }
-  for (unsigned int i = 0; i < coordinates.size(); i++) {
-    for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      Float dist2 = squared_distance(coordinates[i], coordinates[j]);
-      if(dist2 > max_dist2)
-        max_dist2 = dist2;
-    }
-  }
-  return sqrt(max_dist2);
-}
 
 RadialDistributionFunction::
 RadialDistributionFunction(Float bin_size, FormFactorTable * ff_table)
   : Distribution<Float>(bin_size), ff_table_(ff_table)
 {
 }
-
 
 void RadialDistributionFunction::
 calculate_distribution(const std::vector<Particle*>& particles)
@@ -59,15 +42,13 @@ calculate_distribution(const std::vector<Particle*>& particles)
   }
 }
 
-
 void RadialDistributionFunction::
-calculate_distribution(const std::vector<Particle*>&particles1,
-                       const std::vector<Particle*>&particles2)
+calculate_distribution(const std::vector<Particle*>& particles1,
+                       const std::vector<Particle*>& particles2)
 {
-  // TODO: change to IMP macro
-  std::cerr << "start distribution calculation for "
-  << particles1.size() << " + " << particles2.size()
-  << " particles" << std::endl;
+  IMP_LOG(TERSE, "start distribution calculation for "
+          << particles1.size() << " + " << particles2.size()
+          << " particles" << std::endl);
 
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
   std::vector < algebra::Vector3D > coordinates1, coordinates2;
@@ -87,11 +68,23 @@ calculate_distribution(const std::vector<Particle*>&particles1,
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = 0; j < coordinates2.size(); j++) {
       Float dist = distance(coordinates1[i], coordinates2[j]);
-      add_to_distribution(dist, form_factors1[i] * form_factors2[j]);
+      add_to_distribution(dist, 2 * form_factors1[i] * form_factors2[j]);
     }
   }
 }
 
+void RadialDistributionFunction::scale(Float c) {
+  for (unsigned int i = 0; i < distribution_.size(); i++) {
+    distribution_[i]*=c;
+  }
+}
+
+void RadialDistributionFunction::add(const RadialDistributionFunction& other_rd)
+{
+  for (unsigned int i = 0; i < other_rd.distribution_.size(); i++) {
+    add_to_distribution(other_rd.index2dist(i), other_rd.distribution_[i]);
+  }
+}
 
 void RadialDistributionFunction::
 show(std::ostream& out, std::string prefix) const
@@ -128,7 +121,6 @@ calculate_derivative_distribution(Particle* particle)
     core::XYZDecorator::cast(particle).get_coordinates();
   Float particle_form_factor = ff_table_->get_form_factor(particle);
 
-  // delta_dist.distribution_ = sum_i [f_p(0) * f_i(0) * (x_p - x_i)]
   for (unsigned int i=0; i<coordinates_.size(); i++) {
     Float dist = distance(coordinates_[i], particle_coordinate);
     algebra::Vector3D diff_vector = particle_coordinate - coordinates_[i];
@@ -143,9 +135,7 @@ show(std::ostream & out, std::string prefix) const
 {
   for (unsigned int i = 0; i < distribution_.size(); i++) {
     out << prefix << " dist " << index2dist(i) << " (" << distribution_[i]
-      //distribution_[i][0]
-      //<< ", " << distribution_[i][1] << ", " << distribution_[i][2] << ")"
-    << std::endl;
+        << std::endl;
   }
 }
 
