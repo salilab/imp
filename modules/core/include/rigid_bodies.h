@@ -63,6 +63,11 @@ class RigidMemberDecorator;
     given by the RigidBodyTraits. I, the inertial tensor, is
     computed and diagonalized, but not stored. It can be stored if
     someone wants it.
+
+    \see RigidMemberDecorator
+    \see AccumulateRigidBodyDerivatives
+    \see UpdateRigidBodyMembers
+    \see UpdateRigidBodyOrientation
  */
 class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
  public:
@@ -121,6 +126,9 @@ IMP_OUTPUT_OPERATOR(RigidBodyDecorator);
 
 
 //! A decorator for a particle that is part of a rigid body
+/**
+   \see RigidBodyDecorator
+ */
 class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
  public:
   IMP_DECORATOR_TRAITS(RigidMemberDecorator, XYZDecorator,
@@ -187,7 +195,10 @@ IMP_OUTPUT_OPERATOR(RigidMemberDecorator);
 /** This should be applied before evaluate to keep the bodies rigid. It
     computes the optimal orientation given the position of the members and
     then snaps the members to their rigid locations.
-    \relates RigidBodyDecorator
+
+    \verbinclude rigid_bodies.py
+
+    \see RigidBodyDecorator
 */
 class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
   Pointer<ParticleRefiner> pr_;
@@ -200,7 +211,10 @@ class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
 };
 
 //! Accumulate the derivatives from the refined particles in the rigid body
-/** \relates RigidBodyDecorator
+/** \see RigidBodyDecorator
+
+    \verbinclude rigid_bodies.py
+    \see UpdateRigidBodyMembers
  */
 class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
   public SingletonModifier {
@@ -216,7 +230,8 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
 
 //! Compute the coordinates of the RigidMember objects bases on the orientation
 /** This should be applied after evaluate to keep the bodies rigid.
-    \relates RigidBodyDecorator*/
+    \see RigidBodyDecorator
+    \see AccumulateRigidBodyDerivatives */
 class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
   Pointer<ParticleRefiner> pr_;
   RigidBodyTraits tr_;
