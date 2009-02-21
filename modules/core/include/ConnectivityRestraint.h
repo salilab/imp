@@ -32,8 +32,6 @@ IMPCORE_BEGIN_NAMESPACE
     More precisely, the restraint scores by computing the MST on the complete
     graph connecting all the particles. The edge weights are given by
     the value of the PairScore for the two endpoints of the edge.
-
-    \ingroup restraint
  */
 class IMPCOREEXPORT ConnectivityRestraint : public Restraint
 {

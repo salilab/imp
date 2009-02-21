@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Applies a PairScore to a ParticlePair.
 /** This restraint stores a ParticlePair.
-    \ingroup restraint
+    \see PairRestraint
  */
 class IMPCOREEXPORT PairRestraint : public Restraint
 {

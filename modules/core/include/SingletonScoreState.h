@@ -25,6 +25,7 @@ IMP_END_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a SingletonFunction to a Singleton
 /** \ingroup restraint
+    \see SingletonsScoreState
  */
 class IMPCOREEXPORT SingletonScoreState : public ScoreState
 {

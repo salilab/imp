@@ -25,6 +25,7 @@ IMP_END_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a GroupnameFunction to a Groupname
 /** \ingroup restraint
+    \see GroupnamesScoreState
  */
 class IMPCOREEXPORT GroupnameScoreState : public ScoreState
 {

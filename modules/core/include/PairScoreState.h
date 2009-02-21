@@ -25,6 +25,7 @@ IMP_END_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a PairFunction to a Pair
 /** \ingroup restraint
+    \see PairsScoreState
  */
 class IMPCOREEXPORT PairScoreState : public ScoreState
 {

@@ -25,6 +25,8 @@ IMPCORE_BEGIN_NAMESPACE
     FloatKey can be FloatKey and then all the weights will be equal.
 
     \see CoverRefinedSingletonModifier
+    \see DerivativesToRefinedSingletonModifier
+    \see DerivativesFromRefinedSingletonModifier
  */
 class IMPCOREEXPORT CentroidOfRefinedSingletonModifier:
 public SingletonModifier

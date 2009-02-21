@@ -208,7 +208,7 @@ IMPCOREEXPORT extern const AtomType AT_CG1;
 //! A decorator for a particle representing an atom.
 /**
    \ingroup hierarchy
-   \ingroup decorators
+   \see MolecularHierarchy
  */
 class IMPCOREEXPORT AtomDecorator: public XYZDecorator
 {

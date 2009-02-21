@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
     a ListGroupnameContainer is used and the
     {add_, set_, clear_}classname{s} methods can be used.
 
-    \ingroup restraint
+    \see GroupnameRestraint
  */
 class IMPCOREEXPORT GroupnamesRestraint : public Restraint
 {

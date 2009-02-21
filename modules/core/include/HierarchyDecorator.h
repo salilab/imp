@@ -41,6 +41,7 @@ class HierarchyDecorator;
     This example shows how to make and use a custom hierarchy:
     \verbinclude custom_hierarchy.py
     \see HierarchyDecorator
+    \see MolecularHierarchyDecorator
 */
 class IMPCOREEXPORT HierarchyTraits
 #ifndef SWIG
@@ -105,7 +106,7 @@ public:
 /** This works from both C++ and Python
     \ingroup hierarchy
     \ingroup decorators
-    \relates HierarchyDecorator
+    \see HierarchyDecorator
  */
 class IMPCOREEXPORT HierarchyVisitor
 {
@@ -125,8 +126,8 @@ public:
 /** This works from both C++ and Python
     \ingroup hierarchy
     \ingroup decorators
-    \relates SingletonModifier
-    \relates HierarchyDecorator
+    \see SingletonModifier
+    \see HierarchyDecorator
  */
 class IMPCOREEXPORT ModifierVisitor: public HierarchyVisitor
 {
@@ -150,7 +151,7 @@ public:
     See HierarchyTraits for an example of how to define a custom hierarchy
     and MolecularHierarchyDecorator for a hierarchy for molecules.
     \ingroup hierarchy
-    \relates HierarchyTraits
+    \see HierarchyTraits
  */
 class IMPCOREEXPORT HierarchyDecorator: public Decorator
 {
@@ -224,7 +225,7 @@ IMP_OUTPUT_OPERATOR(HierarchyDecorator);
 
 //! Collect the matching visiting nodes into a container.
 /** A node is collected if the function evaluates true.
-    \relates HierarchyDecorator
+    \see HierarchyDecorator
  */
 template <class F, class Out>
 struct Gather: public HierarchyVisitor
@@ -352,7 +353,7 @@ F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
 //! A simple visitor which pretty-prints the hierarchy
 /** The template argument NP is the decorator to use to print each node.
     \ingroup hierarchy
-    \relates HierarchyDecorator
+    \see HierarchyDecorator
  */
 template <class PD>
 struct HierarchyPrinter
@@ -416,7 +417,7 @@ std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
 //! A simple functor to count the number of particles in a hierarchy.
 /** This is a good example of a simple HierarchyVisitor.
     \ingroup hierarchy
-    \relates HierarchyDecorator
+    \see HierarchyDecorator
  */
 struct HierarchyCounter: public HierarchyVisitor
 {

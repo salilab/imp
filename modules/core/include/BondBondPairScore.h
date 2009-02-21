@@ -41,6 +41,7 @@ Segment shortest_segment(const Segment &sa,
     and the distance between the cylinders is used.
 
     \ingroup bond
+    \see BondDecorator
  */
 class IMPCOREEXPORT BondBondPairScore : public PairScore
 {
@@ -52,6 +53,7 @@ class IMPCOREEXPORT BondBondPairScore : public PairScore
   algebra::Vector3D get_difference(const Segment &s0,
                                    const Segment &s1) const;
  public:
+  //! Score based on f applied to the distance
   BondBondPairScore(UnaryFunction *f,
                             FloatKey volume= FloatKey());
   virtual ~BondBondPairScore(){}

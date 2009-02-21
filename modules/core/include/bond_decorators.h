@@ -32,7 +32,6 @@ class BondedDecorator;
    expandible.
 
    \ingroup bond
-   \ingroup decorators
    \see BondedDecorator
  */
 class IMPCOREEXPORT BondDecorator: public Decorator
@@ -81,7 +80,6 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
 
 //! A decorator for a particle which has bonds.
 /** \ingroup bond
-    \ingroup decorators
     \see BondDecorator
  */
 class IMPCOREEXPORT BondedDecorator: public Decorator

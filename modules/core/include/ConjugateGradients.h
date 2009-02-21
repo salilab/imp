@@ -18,8 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! Simple conjugate gradients optimizer.
 /** Algorithm is as per Shanno and Phua, ACM Transactions On Mathematical
     Software 6 (December 1980), 618-622
-    \ingroup optimizer
- */
+*/
 class IMPCOREEXPORT ConjugateGradients : public Optimizer
 {
 public:

@@ -26,6 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
     \note All particles in the tree must be XYZRDecorator particles for the
     passed radius. In addition, the ball defined by a particle must contain
     the balls of all its leaves.
+    \see ClosePairsScoreState
  */
 class IMPCOREEXPORT ClosePairsPairScore : public PairScore
 {

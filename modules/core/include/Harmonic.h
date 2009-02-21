@@ -17,6 +17,9 @@ IMPCORE_BEGIN_NAMESPACE
 /** This is a simple score modeling an harmonic oscillator. The score is
     0.5 * k * x * x, where k is the 'force constant' and x is the distance
     from the mean.
+    \see TruncatedHarmonic
+    \see HarmonicUpperBound
+    \see HarmonicLowerBound
  */
 class Harmonic : public UnaryFunction
 {

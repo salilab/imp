@@ -20,10 +20,10 @@
 IMPCORE_BEGIN_NAMESPACE
 
 class MonteCarlo;
-class Mover;
 
 //! A class to make a monte carlo move.
 /** You probably want to use MoverBase if you are implementing a Mover.
+    \see MonteCarlo
  */
 class IMPCOREEXPORT Mover: public RefCountedObject
 {

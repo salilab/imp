@@ -17,7 +17,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! A score on the distance between the surfaces of two spheres.
-/**
+/** \see XYZRDecorator
+    \see DistancePairScore
  */
 class IMPCOREEXPORT SphereDistancePairScore : public PairScore
 {

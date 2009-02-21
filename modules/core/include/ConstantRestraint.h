@@ -21,8 +21,6 @@ IMPCORE_BEGIN_NAMESPACE
 //! Return a constant value.
 /** This restraint is mostly for testing, but can also be used to make
     the total score look nicer.
-
-    \ingroup restraint
  */
 class IMPCOREEXPORT ConstantRestraint : public Restraint
 {

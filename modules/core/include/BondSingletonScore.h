@@ -21,6 +21,8 @@ IMPCORE_BEGIN_NAMESPACE
     and the actual length and scaled by the stiffness. That is
     stiffness * (distance-bond_length)
     \ingroup bond
+    \see BondDecorator
+    \see BondedDecorator
  */
 class IMPCOREEXPORT BondSingletonScore : public SingletonScore
 {

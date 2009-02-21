@@ -13,7 +13,10 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Lower bound harmonic function (non-zero when feature < mean)
-/** */
+/** \see Harmonic
+    \see HarmonicUpperBound
+    \see TruncatedHarmonicLowerBound
+*/
 class HarmonicLowerBound : public Harmonic
 {
 public:

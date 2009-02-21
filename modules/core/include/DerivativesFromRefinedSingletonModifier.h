@@ -21,6 +21,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Accumulate the derivatives of the refined particles.
 /** \see DerivativesToRefinedSingletonModifier
+    \see CoverRefinedSingletonModifier
+    \see CentroidOfRefinedSingletonModifer
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
  \verbinclude simple_examples/cover_particles.py

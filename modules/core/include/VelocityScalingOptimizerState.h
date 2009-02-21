@@ -21,6 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** This OptimizerState, when used with the MolecularDynamics optimizer,
     implements a simple thermostat by periodically rescaling the velocities.
     (Note that this results in discontinuous dynamics.)
+    \see MolecularDynamics
  */
 class IMPCOREEXPORT VelocityScalingOptimizerState : public OptimizerState
 {

@@ -35,6 +35,7 @@ IMPCORE_BEGIN_NAMESPACE
     http://www.cgl.ucsf.edu/chimera/docs/UsersGuide/bild.html
 
     \ingroup log
+    \see CMMLogOptimizerState
  */
 class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
 {

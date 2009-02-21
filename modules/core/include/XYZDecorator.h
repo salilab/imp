@@ -23,6 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** \ingroup helper
     \ingroup decorators
     \verbinclude xyzdecorator.py
+    \see XYZRDecorator
  */
 class IMPCOREEXPORT XYZDecorator: public Decorator
 {

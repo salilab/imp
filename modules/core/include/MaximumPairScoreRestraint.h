@@ -25,6 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
  and the value of the minumum n scores is used. That is,
  if n is 1, the value of the restraint is the value of the lowest
  score over the container.
+ \see MinimumPairScoreRestraint
  */
 class IMPCOREEXPORT MaximumPairScoreRestraint
 : public Restraint

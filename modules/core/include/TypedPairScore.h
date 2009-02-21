@@ -20,7 +20,6 @@ IMPCORE_BEGIN_NAMESPACE
     of the particles does not matter.) After creating the object, call
     set_pair_score() to tell it the PairScore objects you want to use for each
     pair of particle types.
-    \ingroup pairscore
  */
 class IMPCOREEXPORT TypedPairScore : public PairScore
 {

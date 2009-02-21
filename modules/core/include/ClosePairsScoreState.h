@@ -42,7 +42,8 @@ class ClosePairsFinder;
     It is not clear how to accomplish this. Perhaps MaximumChangeScoreState
     could keep track of newly added particles. It can do that.
 
-    \ingroup restraint
+    \see CloseBipartitePairsScoreState
+    \see ClosePairsFinder
  */
 class IMPCOREEXPORT ClosePairsScoreState : public ScoreState
 {
