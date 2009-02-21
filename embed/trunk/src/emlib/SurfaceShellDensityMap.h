@@ -11,7 +11,7 @@
 
 #define _DEFAULT_NUM_SHELLS 5
 #define _RESOLUTION 3.0
-#define _SIG_CUTOFF 3.0
+#define _SIG_CUTOFF 3
 #define _BACKGROUND_VAL 0.0
 #define _SURFACE_VAL 1.0
 //! The class repersents a molecule as shells of distance from the surface
