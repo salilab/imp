@@ -52,18 +52,16 @@ class IMPEXPORT ScoreState : public RefCountedObject
 public:
   ScoreState(std::string name=std::string());
 
-  //! Update if needed
-  /** The protected do_before_evaluate method will be called if the iteration
+  // Update if needed
+  /* The protected do_before_evaluate method will be called if the iteration
       count has not yet been seen.
    */
   void before_evaluate(unsigned int iteration);
 
-  //! Force update of the structure.
+  // Force update of the structure.
   void before_evaluate();
 
-  //! Do post evaluation work if needed
-  /** The protected do_after_evaluate method will be called if needed.
-   */
+  // Do post evaluation work if needed
   void after_evaluate(unsigned int iteration,
                       DerivativeAccumulator *accpt);
 
@@ -99,8 +97,8 @@ public:
 
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState)
 protected:
-  //! Update the state given the current state of the model.
-  /** This is also called prior to every calculation of the model score.
+  // Update the state given the current state of the model.
+  /* This is also called prior to every calculation of the model score.
       It should be implemented by ScoreStates in order to provide functionality.
 
       \note This can't have the same name as the public function due to the
@@ -109,8 +107,8 @@ protected:
    */
   virtual void do_before_evaluate() = 0;
 
-  //! Do any necessary updates after the model score is calculated.
-  /** \param[in] accpt The object used to scale derivatives in the score
+  // Do any necessary updates after the model score is calculated.
+  /* \param[in] accpt The object used to scale derivatives in the score
                        calculation, or NULL if derivatives were not requested.
    */
   virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
