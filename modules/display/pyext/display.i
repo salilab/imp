@@ -30,13 +30,16 @@ IMP_OWN_METHOD(LogOptimizerState, add_geometry)
 }
 
 /* Wrap our own classes */
+%include "IMP/display/Color.h"
 %include "IMP/display/geometry.h"
 %include "IMP/display/Writer.h"
 
 %include "IMP/display/xyzr_geometry.h"
 %include "IMP/display/bond_geometry.h"
+%include "IMP/display/derivative_geometry.h"
 %include "IMP/display/VRMLWriter.h"
 %include "IMP/display/BildWriter.h"
 %include "IMP/display/CMMWriter.h"
 %include "IMP/display/LogOptimizerState.h"
 %include "IMP/display/SphereGeometry.h"
+%include "IMP/display/CylinderGeometry.h"

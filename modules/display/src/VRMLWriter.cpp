@@ -46,8 +46,10 @@ void VRMLWriter::add_geometry(Geometry *g) {
     get_stream() << "    Shape {\n";
     get_stream() << "      appearance Appearance {\n";
     get_stream() << "        material Material {\n";
-    get_stream() << "          diffuseColor " << g->get_color()[0] << " "
-                 << g->get_color()[1] << " " << g->get_color()[2] << "\n";
+    get_stream() << "          diffuseColor "
+                 << g->get_color().get_red() << " "
+                 << g->get_color().get_green() << " "
+                 << g->get_color().get_blue() << "\n";
     get_stream() << "        }\n";
     get_stream() << "      }\n";
     get_stream() << "      geometry Sphere { radius "

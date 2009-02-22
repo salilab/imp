@@ -9,7 +9,7 @@
 #define IMPDISPLAY_GEOMETRY_H
 
 #include "config.h"
-
+#include "Color.h"
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -31,7 +31,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT Geometry: public RefCountedObject
 {
-  algebra::Vector3D default_color_;
+  Color default_color_;
 public:
   Geometry();
 
@@ -54,23 +54,15 @@ public:
   }
 
   //! Return the color of the object
-  /** The components will all be between 0 and 1.
-   */
-  virtual algebra::Vector3D get_color() const {
+  virtual Color get_color() const {
     return default_color_;
   }
 
   //! Set the default color
   /** Each of r,g,b should be between 0 and 1.
    */
-  void set_color(Float r, Float g, Float b) {
-    IMP_check(r>=0 && r <=1, "Red is out of range",
-              ValueException);
-    IMP_check(g>=0 && g <=1, "Green is out of range",
-              ValueException);
-    IMP_check(b>=0 && b <=1, "Blue is out of range",
-              ValueException);
-    default_color_= algebra::Vector3D(r,g,b);
+  void set_color(Color c) {
+    default_color_= c;
   }
 
   //! Write information about the object
