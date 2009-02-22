@@ -61,7 +61,7 @@ class TestBL(IMP.test.TestCase):
         w.set_file_name("qderiv.bild")
         oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0,4):
-            ge=display.RigidBodyDerivativeGeometryExtractor(rbd, pr)
+            ge=display.RigidBodyDerivativeGeometryExtractor(pr, rbd.get_traits())
             gs=ge.get_geometry(p)
             print gs
             for g in gs:

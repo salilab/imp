@@ -52,13 +52,13 @@ public:
 class IMPDISPLAYEXPORT RigidBodyDerivativeGeometryExtractor:
   public GeometryExtractor
 {
-  core::RigidBodyDecorator d_;
+  core::RigidBodyTraits tr_;
   Pointer<ParticleRefiner> pr_;
   Color xyzcolor_, qcolor_;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  RigidBodyDerivativeGeometryExtractor(core::RigidBodyDecorator d,
-                                       ParticleRefiner *pr);
+  RigidBodyDerivativeGeometryExtractor(ParticleRefiner *pr,
+                                       core::RigidBodyTraits tr);
 
   virtual ~RigidBodyDerivativeGeometryExtractor();
 
