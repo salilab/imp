@@ -58,8 +58,8 @@ o.set_model(m)
 
 # Write the progression of states as the system is optimized to
 # the files state.000.vrml, state.001.vrml etc.
-vrml= IMP.core.VRMLLogOptimizerState(chain, "state.%03d.vrml")
-vrml.update()
+vrml= IMP.display.LogOptimizerState(IMP.display.VRMLWriter(), "state.%03d.vrml")
+vrml.add_geometry(IMP.display.XYZRGeometryExtractor(), chain)
 vrml.set_skip_steps(100)
 o.add_optimizer_state(vrml)
 
