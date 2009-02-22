@@ -64,9 +64,9 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
     for (int i = 0; i < 3; ++i) {
       Float derv0 = deriv * (rij[i] * cosangle - rkj[i]) / fact_ij;
       Float derv2 = deriv * (rkj[i] * cosangle - rij[i]) / fact_kj;
-      d0.add_to_coordinate_derivative(i, derv0, *da);
-      d1.add_to_coordinate_derivative(i, -derv0 - derv2, *da);
-      d2.add_to_coordinate_derivative(i, derv2, *da);
+      d0.add_to_derivative(i, derv0, *da);
+      d1.add_to_derivative(i, -derv0 - derv2, *da);
+      d2.add_to_derivative(i, derv2, *da);
     }
   } else {
     score = f_->evaluate(angle);

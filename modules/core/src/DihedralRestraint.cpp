@@ -103,10 +103,10 @@ Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
       Float derv1 = (fact1 - 1.0) * derv0 - fact2 * derv3;
       Float derv2 = (fact2 - 1.0) * derv3 - fact1 * derv0;
 
-      d0.add_to_coordinate_derivative(i, derv0, *accum);
-      d1.add_to_coordinate_derivative(i, derv1, *accum);
-      d2.add_to_coordinate_derivative(i, derv2, *accum);
-      d3.add_to_coordinate_derivative(i, derv3, *accum);
+      d0.add_to_derivative(i, derv0, *accum);
+      d1.add_to_derivative(i, derv1, *accum);
+      d2.add_to_derivative(i, derv2, *accum);
+      d3.add_to_derivative(i, derv3, *accum);
     }
   } else {
     score = score_func_->evaluate(angle);

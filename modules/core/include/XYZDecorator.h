@@ -59,20 +59,20 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
     return get_particle()->get_value(get_coordinate_key(i));
   }
   //! Get the ith coordinate derivative
-  Float get_coordinate_derivative(int i) const {
+  Float get_derivative(int i) const {
     return get_particle()->get_derivative(get_coordinate_key(i));
   }
   //! Add something to the derivative of the ith coordinate
-  void add_to_coordinate_derivative(int i, Float v,
+  void add_to_derivative(int i, Float v,
                                     DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
   //! Add something to the derivative of the coordinates
-  void add_to_coordinate_derivatives(const algebra::Vector3D& v,
+  void add_to_derivatives(const algebra::Vector3D& v,
                                      DerivativeAccumulator &d) {
-    add_to_coordinate_derivative(0, v[0], d);
-    add_to_coordinate_derivative(1, v[1], d);
-    add_to_coordinate_derivative(2, v[2], d);
+    add_to_derivative(0, v[0], d);
+    add_to_derivative(1, v[1], d);
+    add_to_derivative(2, v[2], d);
   }
   //! Get whether the coordinates are optimized
   /** \return true only if all of them are optimized.
@@ -107,9 +107,9 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
   algebra::Vector3D get_derivatives() const {
-    return algebra::Vector3D(get_coordinate_derivative(0),
-                             get_coordinate_derivative(1),
-                             get_coordinate_derivative(2));
+    return algebra::Vector3D(get_derivative(0),
+                             get_derivative(1),
+                             get_derivative(2));
   }
 
   //! Return true if the particle is an instance of an XYZDecorator
