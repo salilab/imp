@@ -173,6 +173,26 @@ public:
     return HierarchyDecorator(p, traits);
   }
 
+  //! Add the needed attributes to a particle and add the particles as children
+  /** The particles can be, but don't have to be HierarchyDecorator particles
+      already.
+  */
+  static HierarchyDecorator create(Particle *p,
+                                   const Particles &children,
+                                   HierarchyTraits traits
+                                   =HierarchyDecorator::get_default_traits()) {
+    add_required_attributes_for_child(p, traits);
+    HierarchyDecorator h(p, traits);
+    for (unsigned int i=0; i< children.size(); ++i) {
+      if (!HierarchyDecorator::is_instance_of(children[i], traits)) {
+        add_required_attributes_for_child(children[i], traits);
+      }
+      HierarchyDecorator c(children[i], traits);
+      h.add_child(c);
+    }
+    return h;
+  }
+
   /** Check if the particle has the needed attributes for a
    cast to succeed */
   static bool is_instance_of(Particle *p,
