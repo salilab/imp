@@ -35,8 +35,8 @@ Float XYZDerivativeGeometry::get_size() const {
 
 
 RigidBodyDerivativeGeometryExtractor
-::RigidBodyDerivativeGeometryExtractor(core::RigidBodyDecorator d,
-                                       ParticleRefiner *pr): d_(d),
+::RigidBodyDerivativeGeometryExtractor(ParticleRefiner *pr,
+                                       core::RigidBodyTraits tr): tr_(tr),
                                                              pr_(pr){
   xyzcolor_=Color(1,0,0);
   qcolor_=Color(0,1,0);
@@ -50,11 +50,12 @@ void RigidBodyDerivativeGeometryExtractor::show(std::ostream &out) const {
 
 Geometries RigidBodyDerivativeGeometryExtractor
 ::get_geometry(Particle *p) const {
-  Particles ms= pr_->get_refined(d_.get_particle());
+  core::RigidBodyDecorator rbd(p, tr_);
+  Particles ms= pr_->get_refined(p);
   Geometries ret;
-  algebra::VectorD<4> deriv= d_.get_rotational_derivatives();
+  algebra::VectorD<4> deriv= rbd.get_rotational_derivatives();
   algebra::VectorD<4> rot
-    = d_.get_transformation().get_rotation().get_quaternion();
+    = rbd.get_transformation().get_rotation().get_quaternion();
   IMP_LOG(TERSE, "Old rotation was " << rot << std::endl);
   rot+= .1*deriv.get_unit_vector();
   rot= rot.get_unit_vector();
@@ -64,17 +65,17 @@ Geometries RigidBodyDerivativeGeometryExtractor
   for (unsigned int i=0; i< ms.size(); ++i) {
     core::RigidMemberDecorator dm(ms[i]);
     CylinderGeometry *tr= new CylinderGeometry(dm.get_coordinates(),
-                    dm.get_coordinates()+d_.get_derivatives(),
+                    dm.get_coordinates()+rbd.get_derivatives(),
                                                0, xyzcolor_);
     ret.push_back(tr);
     algebra::Vector3D ic= r.rotate(dm.get_internal_coordinates())
-      + d_.get_coordinates();
+      + rbd.get_coordinates();
     CylinderGeometry *rtr= new CylinderGeometry(dm.get_coordinates(),
                                                 ic,
                                                 0, qcolor_);
     ret.push_back(rtr);
   }
-  pr_->cleanup_refined(d_.get_particle(), ms);
+  pr_->cleanup_refined(p, ms);
   return ret;
 }
 
