@@ -21,6 +21,9 @@ env.IMPModule('modeller', author='Ben Webb', version='SVN',
 env.IMPModule('misc', author='IMP developers', version='SVN',
               description='Miscellaneous and/or experimental features.')
 
+env.IMPModule('display', author='IMP developers', version='SVN',
+                              description='Code to write to graphics formats.')
+
 env.IMPModule('search', author='Daniel Russel', version='SVN',
               description='Build search structures over particles.')
 
