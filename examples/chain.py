@@ -1,6 +1,7 @@
 import IMP
 import IMP.core
 import random
+import IMP.display
 
 # This example constructs a set of particles which are restrained
 # to form a chain via bonds between successive particles. In addition
