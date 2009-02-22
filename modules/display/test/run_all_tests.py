@@ -1,1 +1,0 @@
-../../../tools/run_all_tests.py
