@@ -22,6 +22,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Write geometry to a container periodically
 /** The State writes a series of files generated from a
     printf-style format string.
+    \verbinclude log.py
     \ingroup log
  */
 class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
