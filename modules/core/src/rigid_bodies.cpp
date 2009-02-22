@@ -205,9 +205,9 @@ RigidBodyDecorator::normalize_rotation() {
                         ->get_value(traits_.get_quaternion_keys()[2]),
                         get_particle()
                         ->get_value(traits_.get_quaternion_keys()[3]));
-  IMP_LOG(SILENT, "Rotation was " << v << std::endl);
+  IMP_LOG(TERSE, "Rotation was " << v << std::endl);
   v= v.get_unit_vector();
-  IMP_LOG(SILENT, "Rotation is " << v << std::endl);
+  IMP_LOG(TERSE, "Rotation is " << v << std::endl);
   get_particle()->set_value(traits_.get_quaternion_keys()[0], v[0]);
   get_particle()->set_value(traits_.get_quaternion_keys()[1], v[1]);
   get_particle()->set_value(traits_.get_quaternion_keys()[2], v[2]);
@@ -325,14 +325,14 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p) const {
       algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(), i);
       algebra::Vector3D dv= d.get_derivatives();
       static_cast<XYZDecorator>(rb).add_to_coordinate_derivatives(dv, da);
-      IMP_LOG(SILENT, "Adding " << dv*v << " to quaternion deriv " << i
+      IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << i
               << std::endl);
       p->add_to_derivative(tr_.get_quaternion_keys()[i],
                            dv*v,
                            da);
     }
   }
-  IMP_LOG(SILENT, "Derivative is "
+  IMP_LOG(TERSE, "Derivative is "
           << p->get_derivative(tr_.get_quaternion_keys()[0]) << " "
           << p->get_derivative(tr_.get_quaternion_keys()[1]) << " "
           << p->get_derivative(tr_.get_quaternion_keys()[2]) << " "
