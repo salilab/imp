@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
     Documentation for the CMM file format can be found at
     http://www.cgl.ucsf.edu/chimera/docs/ContributedSoftware/volumepathtracer/volumepathtracer.html#markerfiles
 
-    \ingroup log
+    \deprecated Use display::LogOptimizerState instead
  */
 class IMPCOREEXPORT CMMLogOptimizerState : public OptimizerState
 {
