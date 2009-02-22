@@ -47,7 +47,7 @@ Float TunnelSingletonScore::evaluate(Particle *p,
               << " " << v << " " << val.first << " " << val.second
               << std::endl);
       algebra::Vector3D dv= v*val.second;
-      d.add_to_coordinate_derivatives(dv, *accum);
+      d.add_to_derivatives(dv, *accum);
       return val.first;
     } else {
       Float val= f_->evaluate(-adist);
