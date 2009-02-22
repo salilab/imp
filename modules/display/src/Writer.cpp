@@ -14,7 +14,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
 Writer::Writer( ){
 }
 
-Writer::~Writer(){}
+Writer::~Writer(){
+}
 
 void Writer::show(std::ostream &out) const {
   out << "Writer" << std::endl;

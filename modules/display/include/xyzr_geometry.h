@@ -1,5 +1,5 @@
 /**
- *  \file xyzr_Geometry.h
+ *  \file xyzr_geometry.h
  *  \brief Represent an XYZRDecorator particle with a sphere
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

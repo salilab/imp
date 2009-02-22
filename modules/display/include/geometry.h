@@ -63,7 +63,7 @@ public:
   //! Set the default color
   /** Each of r,g,b should be between 0 and 1.
    */
-  void set_default_color(Float r, Float g, Float b) {
+  void set_color(Float r, Float g, Float b) {
     IMP_check(r>=0 && r <=1, "Red is out of range",
               ValueException);
     IMP_check(g>=0 && g <=1, "Green is out of range",

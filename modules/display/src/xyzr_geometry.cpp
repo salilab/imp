@@ -1,5 +1,5 @@
 /**
- *  \file XYZRGeometry.cpp
+ *  \file xyzr_geometry.cpp
  *  \brief XXXX.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

@@ -15,6 +15,9 @@ CMMWriter::CMMWriter(){
 }
 
 CMMWriter::~CMMWriter(){
+  if (get_stream_is_open()) {
+    on_close();
+  }
 }
 
 void CMMWriter::show(std::ostream &out) const {
@@ -31,6 +34,7 @@ void CMMWriter::on_close() {
 }
 
 void CMMWriter::add_geometry(Geometry *g) {
+  IMP_CHECK_OBJECT(g);
   if (g->get_dimension() != 0) return;
   algebra::Vector3D v= g->get_vertex(0);
   std::string name=g->get_name();

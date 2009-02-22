@@ -29,7 +29,11 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
  protected:
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {return out_;}
-public:
+
+  bool get_stream_is_open() const {
+    return out_.is_open();
+  }
+ public:
   //! Create a writer to a file with the given name
   Writer();
 
