@@ -9,7 +9,7 @@
 #include <IMP/core/VRMLLogOptimizerState.h>
 #include <IMP/core/XYZRDecorator.h>
 #include <IMP/algebra/Vector3D.h>
-
+#include <IMP/deprecation.h>
 #include <fstream>
 #include <sstream>
 
@@ -21,6 +21,7 @@ VRMLLogOptimizerState::VRMLLogOptimizerState(SingletonContainer *pc,
     skip_steps_(0), radius_(XYZRDecorator::get_default_radius_key()),
     pc_(pc)
 {
+  IMP_DEPRECATED(VRMLLogOptimizerState, display::LogOptimizerState);
 }
 
 template <class It>

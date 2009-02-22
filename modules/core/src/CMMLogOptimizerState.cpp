@@ -8,7 +8,7 @@
 
 #include <IMP/core/CMMLogOptimizerState.h>
 #include <IMP/core/XYZDecorator.h>
-
+#include <IMP/deprecation.h>
 #include <fstream>
 #include <sstream>
 
@@ -19,6 +19,7 @@ CMMLogOptimizerState::CMMLogOptimizerState(std::string filename,
     pis_(pis), filename_(filename), file_number_(0), call_number_(0),
     skip_steps_(0)
 {
+  IMP_DEPRECATED(CMMLogOptimizerState, display::LogOptimizerState);
 }
 
 void CMMLogOptimizerState::update()

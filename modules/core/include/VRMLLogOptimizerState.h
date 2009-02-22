@@ -34,8 +34,8 @@ IMPCORE_BEGIN_NAMESPACE
     Documentation for the VRML file format can be found at
     http://www.cgl.ucsf.edu/chimera/docs/UsersGuide/bild.html
 
-    \ingroup log
     \see CMMLogOptimizerState
+    \deprecated Use display::LogOptimizerState instead
  */
 class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
 {

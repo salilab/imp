@@ -1,0 +1,10 @@
+Import('env')
+
+e = env.IMPPythonExtensionEnvironment()
+
+e.IMPPythonExtension('display.i')
+
+files = (Glob('display/*.py'))
+
+# Install the Python files:
+env.IMPPython(files)
