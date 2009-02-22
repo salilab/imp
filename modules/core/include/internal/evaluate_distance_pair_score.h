@@ -61,8 +61,8 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
 
 
   if (da) {
-    d0.add_to_coordinate_derivatives(d, *da);
-    d1.add_to_coordinate_derivatives(-d, *da);
+    d0.add_to_derivatives(d, *da);
+    d1.add_to_derivatives(-d, *da);
   }
 
   return score;

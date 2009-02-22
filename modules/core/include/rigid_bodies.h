@@ -123,6 +123,9 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
 
   //! Normalized the quaternion
   void normalize_rotation();
+
+  //! Get the derivatives of the quaternion
+  algebra::VectorD<4> get_rotational_derivatives() const;
 };
 
 IMP_OUTPUT_OPERATOR(RigidBodyDecorator);

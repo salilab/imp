@@ -155,7 +155,7 @@ void BrownianDynamics::take_step() {
 
     for (unsigned j = 0; j < 3; ++j) {
       unit::KilocaloriePerAngstromPerMol
-        force( -d.get_coordinate_derivative(j));
+        force( -d.get_derivative(j));
       unit::Femtonewton nforce
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
@@ -173,9 +173,7 @@ void BrownianDynamics::take_step() {
     IMP_LOG(VERBOSE, "For particle " << p->get_name()
             << " delta is " << delta[0] << " " << delta[1] << " " << delta[2]
             << " from a force of "
-            << "[" << d.get_coordinate_derivative(0)
-            << ", " << d.get_coordinate_derivative(1)
-            << ", " << d.get_coordinate_derivative(2) << "]" << std::endl);
+            << "[" << d.get_derivatives() << "]" << std::endl);
 
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, d.get_coordinate(j) + delta[j].get_value());

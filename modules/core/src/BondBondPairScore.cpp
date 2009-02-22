@@ -171,8 +171,8 @@ Float BondBondPairScore::evaluate(Particle *a, Particle *b,
                                                      - o[0] - o[1]);
   if (da) {
     XYZDecorator xyzd[2]={XYZDecorator(a), XYZDecorator(b)};
-    xyzd[0].add_to_coordinate_derivatives(deriv, *da);
-    xyzd[1].add_to_coordinate_derivatives(-deriv, *da);
+    xyzd[0].add_to_derivatives(deriv, *da);
+    xyzd[1].add_to_derivatives(-deriv, *da);
   }
 
   return score;
