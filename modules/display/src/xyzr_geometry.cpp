@@ -41,7 +41,7 @@ void XYZRGeometryExtractor::show(std::ostream &out) const {
   out << "XYZRGeometryExtractor" << std::endl;
 }
 
-Geometries XYZRGeometryExtractor::get_geometries(Particle *p) const {
+Geometries XYZRGeometryExtractor::get_geometry(Particle *p) const {
   return Geometries(1, new XYZRGeometry(core::XYZRDecorator(p, rk_)));
 }
 

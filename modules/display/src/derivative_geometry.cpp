@@ -49,15 +49,18 @@ void RigidBodyDerivativeGeometryExtractor::show(std::ostream &out) const {
 }
 
 Geometries RigidBodyDerivativeGeometryExtractor
-::get_geometries(Particle *p) const {
+::get_geometry(Particle *p) const {
   Particles ms= pr_->get_refined(d_.get_particle());
   Geometries ret;
   algebra::VectorD<4> deriv= d_.get_rotational_derivatives();
   algebra::VectorD<4> rot
     = d_.get_transformation().get_rotation().get_quaternion();
-  rot+=deriv;
+  IMP_LOG(TERSE, "Old rotation was " << rot << std::endl);
+  rot+= .1*deriv.get_unit_vector();
   rot= rot.get_unit_vector();
   algebra::Rotation3D r(rot[0], rot[1], rot[2], rot[3]);
+  IMP_LOG(TERSE, "Derivative was " << deriv << std::endl);
+  IMP_LOG(TERSE, "New rotation is " << rot << std::endl);
   for (unsigned int i=0; i< ms.size(); ++i) {
     core::RigidMemberDecorator dm(ms[i]);
     CylinderGeometry *tr= new CylinderGeometry(dm.get_coordinates(),

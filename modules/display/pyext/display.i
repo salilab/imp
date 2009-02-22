@@ -28,8 +28,13 @@ IMP_OWN_CONSTRUCTOR(LogOptimizerState)
 IMP_OWN_METHOD(LogOptimizerState, add_geometry)
 }
 }
+%feature("director") IMP::display::Writer;
+%feature("director") IMP::display::Geometry;
+%feature("director") IMP::display::GeometryExtractor;
+
 
 /* Wrap our own classes */
+%include "IMP/display/macros.h"
 %include "IMP/display/Color.h"
 %include "IMP/display/geometry.h"
 %include "IMP/display/Writer.h"
@@ -43,3 +48,9 @@ IMP_OWN_METHOD(LogOptimizerState, add_geometry)
 %include "IMP/display/LogOptimizerState.h"
 %include "IMP/display/SphereGeometry.h"
 %include "IMP/display/CylinderGeometry.h"
+
+namespace IMP {
+namespace display {
+  %template(Geometries) ::std::vector<Geometry*>;
+ }
+}
