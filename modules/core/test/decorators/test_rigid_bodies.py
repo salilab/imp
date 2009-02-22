@@ -133,7 +133,7 @@ class WLCTests(IMP.test.TestCase):
                                    0, .1)
         print "done"
 
-    def _test_snapped(self):
+    def test_snapped(self):
         """Test rigid body optimization with snapping"""
         (m, rbd, pr, xyzs)= self._create_rigid_body()
         for d in xyzs:
@@ -147,7 +147,7 @@ class WLCTests(IMP.test.TestCase):
         m.add_score_state(sss)
         self._check_optimization(m, xyzs, rbd, targets, 1000)
 
-    def test_optimized(self):
+    def _test_optimized(self):
         """Test rigid body direct optimization"""
         (m, rbd, pr, xyzs)= self._create_rigid_body()
         for d in xyzs:
