@@ -9,7 +9,7 @@
 #define IMPDISPLAY_WRITER_H
 
 #include "config.h"
-#include "Geometry.h"
+#include "geometry.h"
 
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
