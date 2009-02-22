@@ -40,8 +40,6 @@ void BildWriter::add_geometry(Geometry *g) {
       get_stream() << ".dotat " << algebra::spaces_io(v)
                    << "\n";
     } else {
-      std::cout << "Vertex is " <<  algebra::spaces_io(v)
-                << std::endl;
       get_stream() << ".sphere " << algebra::spaces_io(v)
                    << " "
                    << g->get_size() << "\n";

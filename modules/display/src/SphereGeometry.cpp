@@ -17,8 +17,6 @@ SphereGeometry::SphereGeometry(algebra::Vector3D center,
                                std::string name): center_(center),
                                                   radius_(radius),
                                                   name_(name){
-  IMP_LOG(TERSE, "Created SphereGeometry with "
-          << center << " and " << radius << std::endl);
   if (color[0] >=0) set_color(color[0], color[1], color[2]);
 }
 
