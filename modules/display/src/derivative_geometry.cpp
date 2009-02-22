@@ -57,13 +57,17 @@ Geometries RigidBodyDerivativeGeometryExtractor
   algebra::VectorD<4> rot
     = rbd.get_transformation().get_rotation().get_quaternion();
   IMP_LOG(TERSE, "Old rotation was " << rot << std::endl);
-  rot+= .1*deriv.get_unit_vector();
+  algebra::VectorD<4> dv=deriv;
+  if (dv.get_squared_magnitude() != 0) {
+    dv= .1*dv.get_unit_vector();
+  }
+  rot+= dv;
   rot= rot.get_unit_vector();
   algebra::Rotation3D r(rot[0], rot[1], rot[2], rot[3]);
   IMP_LOG(TERSE, "Derivative was " << deriv << std::endl);
   IMP_LOG(TERSE, "New rotation is " << rot << std::endl);
   for (unsigned int i=0; i< ms.size(); ++i) {
-    core::RigidMemberDecorator dm(ms[i]);
+    core::RigidMemberDecorator dm(ms[i], tr_);
     CylinderGeometry *tr= new CylinderGeometry(dm.get_coordinates(),
                     dm.get_coordinates()+rbd.get_derivatives(),
                                                0, xyzcolor_);
