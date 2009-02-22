@@ -83,10 +83,10 @@ class IMPDISPLAYEXPORT GeometryExtractor: public RefCountedObject {
   GeometryExtractor();
   virtual ~GeometryExtractor();
   //! Write information about the object
-  virtual void show(std::ostream &out= std::cout) const=0;
+  virtual void show(std::ostream &out= std::cout) const{};
 
   //! get the version info
-  virtual VersionInfo get_version_info() const =0;
+  virtual VersionInfo get_version_info() const {return internal::version_info;}
 
   //! Return a list of geometry objects
   virtual Geometries get_geometry(Particle *p) const =0;

@@ -33,7 +33,7 @@
 
 //! Define information for an Geometry object
 #define IMP_GEOMETRY_EXTRACTOR(version)                                 \
-  virtual Geometries get_geometries(Particle *p) const;                 \
+  virtual Geometries get_geometry(Particle *p) const;                   \
   virtual VersionInfo get_version_info() const {return version;}        \
   virtual void show(std::ostream &out=std::cout) const;
 
