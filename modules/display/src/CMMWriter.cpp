@@ -44,9 +44,9 @@ void CMMWriter::add_geometry(Geometry *g) {
                << " y=\"" << v[1] << "\""
                << " z=\"" << v[2] << "\""
                << " radius=\"" << radius << "\""
-               << " r=\"" << g->get_color()[0] << "\""
-               << " g=\"" << g->get_color()[1] << "\""
-               << " b=\"" << g->get_color()[2] <<  "\""
+               << " r=\"" << g->get_color().get_red() << "\""
+               << " g=\"" << g->get_color().get_green() << "\""
+               << " b=\"" << g->get_color().get_blue() <<  "\""
                << " note=\"" << name <<  "\"/>" << std::endl;
 }
 

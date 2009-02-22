@@ -25,7 +25,6 @@ class IMPDISPLAYEXPORT SphereGeometry: public Geometry
 {
   algebra::Vector3D center_;
   double radius_;
-  algebra::Vector3D color_;
   std::string name_;
 public:
   //! Create a static sphere or point
@@ -34,8 +33,8 @@ public:
   */
   SphereGeometry(algebra::Vector3D center,
                  double radius=0,
-                 algebra::Vector3D color
-                 = algebra::Vector3D(-1, -1, -1),
+                 Color color
+                 = Color(),
                  std::string name= std::string());
 
   virtual ~SphereGeometry();

@@ -32,7 +32,7 @@ void BildWriter::on_close() {
 
 void BildWriter::add_geometry(Geometry *g) {
   IMP_CHECK_OBJECT(g);
-  get_stream() << ".color " << algebra::spaces_io(g->get_color())
+  get_stream() << ".color " << g->get_color()
                    << "\n";
   if (g->get_dimension() ==0) {
     algebra::Vector3D v=g->get_vertex(0);
@@ -46,7 +46,7 @@ void BildWriter::add_geometry(Geometry *g) {
     }
   } else if (g->get_dimension() ==1) {
     if (g->get_size() ==0) {
-      get_stream() << ".segment "
+      get_stream() << ".vector "
                    << algebra::spaces_io(g->get_vertex(0)) << " "
                    << algebra::spaces_io(g->get_vertex(1))
                    << "\n";
