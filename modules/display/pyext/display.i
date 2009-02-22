@@ -39,3 +39,4 @@ IMP_OWN_METHOD(LogOptimizerState, add_geometry)
 %include "IMP/display/BildWriter.h"
 %include "IMP/display/CMMWriter.h"
 %include "IMP/display/LogOptimizerState.h"
+%include "IMP/display/SphereGeometry.h"

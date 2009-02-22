@@ -15,6 +15,9 @@ VRMLWriter::VRMLWriter(){
 }
 
 VRMLWriter::~VRMLWriter(){
+  if (get_stream_is_open()) {
+    on_close();
+  }
 }
 
 void VRMLWriter::show(std::ostream &out) const {
@@ -33,6 +36,7 @@ void VRMLWriter::on_close() {
 }
 
 void VRMLWriter::add_geometry(Geometry *g) {
+  IMP_CHECK_OBJECT(g);
   if (g->get_dimension() ==0) {
     algebra::Vector3D v= g->get_vertex(0);
     get_stream() << "Transform {\n";

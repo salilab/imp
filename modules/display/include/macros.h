@@ -9,9 +9,17 @@
 #define IMPDISPLAY_MACROS_H
 
 //! Define information for an Writer object
+/** Unfortunately, you have to make sure you include the code:
+    \code
+    if (get_stream_is_open()) {
+    on_close();
+    }
+    \endcode
+    in the destructor of your class.
+ */
 #define IMP_WRITER(version)                                             \
   virtual void add_geometry(Geometry *g);                               \
-  virtual void on_open(std::string name);                               \
+  void on_open(std::string name);                               \
   virtual void on_close();                                              \
   virtual VersionInfo get_version_info() const {return version;}        \
   virtual void show(std::ostream &out=std::cout) const;

@@ -15,6 +15,9 @@ BildWriter::BildWriter(){
 }
 
 BildWriter::~BildWriter(){
+  if (get_stream_is_open()) {
+    on_close();
+  }
 }
 
 void BildWriter::show(std::ostream &out) const {
@@ -28,12 +31,18 @@ void BildWriter::on_close() {
 }
 
 void BildWriter::add_geometry(Geometry *g) {
+  IMP_CHECK_OBJECT(g);
+  get_stream() << ".color " << algebra::spaces_io(g->get_color())
+                   << "\n";
   if (g->get_dimension() ==0) {
+    algebra::Vector3D v=g->get_vertex(0);
     if (g->get_size() ==0) {
-      get_stream() << ".dotat " << algebra::spaces_io(g->get_vertex(0))
+      get_stream() << ".dotat " << algebra::spaces_io(v)
                    << "\n";
     } else {
-      get_stream() << ".sphere " << algebra::spaces_io(g->get_vertex(0))
+      std::cout << "Vertex is " <<  algebra::spaces_io(v)
+                << std::endl;
+      get_stream() << ".sphere " << algebra::spaces_io(v)
                    << " "
                    << g->get_size() << "\n";
     }
