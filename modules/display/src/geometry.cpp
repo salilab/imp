@@ -6,7 +6,7 @@
  *
  */
 
-#include "IMP/display/Geometry.h"
+#include "IMP/display/geometry.h"
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
