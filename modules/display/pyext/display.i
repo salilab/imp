@@ -26,6 +26,7 @@ namespace IMP {
 namespace display {
 IMP_OWN_CONSTRUCTOR(LogOptimizerState)
 IMP_OWN_METHOD(LogOptimizerState, add_geometry)
+IMP_OWN_METHOD(LogOptimizerState, add_geometry_extractor)
 }
 }
 %feature("director") IMP::display::Writer;
