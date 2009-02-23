@@ -10,5 +10,5 @@ fs = Glob("*.cpp")
 all=[]
 for f in fs:
     all.append(penv.Program(f.rstr()))
-
+env.Default(all)
 Return('all')

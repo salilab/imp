@@ -2,6 +2,8 @@
 
 %{
 #include "IMP.h"
+#include "IMP/core.h"
+#include "IMP/algebra.h"
 #include "IMP/modulename.h"
 %}
 
@@ -24,12 +26,13 @@ def get_is_xyz_particle(p):
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
+%import "modules/core/pyext/core.i"
+%import "modules/algebra/pyext/algebra.i"
 
 namespace IMP {
 namespace modulename {
-IMP_OWN_CONSTRUCTOR(MyRestraint)
 }
 }
 
 /* Wrap our own classes */
-%include "IMP/modulename/MyRestraint.h"
+//%include "IMP/modulename/MyRestraint.h"
