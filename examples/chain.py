@@ -62,10 +62,8 @@ o.set_model(m)
 vrml= IMP.display.LogOptimizerState(IMP.display.VRMLWriter(), "state.%03d.vrml")
 vrml.add_geometry_extractor(IMP.display.XYZRGeometryExtractor(), chain)
 vrml.set_skip_steps(100)
+IMP.set_log_level(IMP.MEMORY)
 o.add_optimizer_state(vrml)
 
 # We probably don't need this many steps
 o.optimize(1000)
-
-# Write the final state out
-vrml.write_next_file()
