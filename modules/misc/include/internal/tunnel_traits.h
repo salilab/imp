@@ -18,6 +18,14 @@ class TunnelTraits {
   IMP::algebra::Vector3D center_;
   Float height_;
   Float radius_;
+
+  /*Zone, closest point
+    SLAB perpendicular point on surface
+    RING perpendicular point on tunnel surface
+    TUNNEL same as ring
+    CHANNEL point on lip
+  */
+
  public:
   TunnelTraits(){
     coordinate_=0;
@@ -25,10 +33,40 @@ class TunnelTraits {
     height_=0;
     radius_=0;
   }
+  enum Zone {INSLAB, OUTSLAB, RING, TUNNEL, CHANNEL};
+  Zone get_location(const algebra::Vector3D &v) const {
+    double r2= get_squared_radius(v);
+    if (r2 > square(radius_)) {
+      // RING or SLAB
+      double r= std::sqrt(r2);
+      if (get_height(v) > height_) return OUTSLAB;
+      if (r - radius_ < height_-get_height(v)) {
+        return RING;
+      } else {
+        return INSLAB;
+      }
+    } else if (get_height(v) < height_) {
+      return TUNNEL;
+    } else {
+      return CHANNEL;
+    }
+  }
   void set_coordinate(unsigned int i) {
     IMP_check(i <3, "Coordinate out of range",
               ValueException);
     coordinate_=i;
+  }
+  unsigned int get_coordinate() const {
+    return coordinate_;
+  }
+  unsigned int get_height() const {
+    return height_;
+  }
+  Float get_radius() const {
+    return radius_;
+  }
+  const algebra::Vector3D& get_center() const {
+    return center_;
   }
   void set_center(const algebra::Vector3D &c){
     center_=c;
@@ -45,46 +83,23 @@ class TunnelTraits {
   }
   // signed, negative is inside
   double get_distance(const algebra::Vector3D &v) const {
-    double hd= std::abs(get_height(v))-height_;
-    double ret=0;
-    double r2=get_squared_distance_to_center(v);
-    if (hd > 0) {
-      if (r2 < square(radius_)) {
-        ret= std::sqrt(square(radius_-std::sqrt(r2))+ hd*hd);
-      } else {
-        ret= hd;
-      }
-    } else {
-      Float rd= radius_-std::sqrt(r2);
-      if (rd > 0) return rd;
-      if (rd < hd) {
-        // closer to slab
-        return hd;
-      } else {
-        return rd;
+    switch (get_location(v)) {
+    case INSLAB:
+    case OUTSLAB:
+      return get_height(v) - height_;
+    case RING:
+    case TUNNEL:
+      return radius_- std::sqrt(get_squared_radius(v));
+    case CHANNEL:
+      {
+        algebra::Vector3D rp=get_rim_point(v);
+        return (rp-v).get_magnitude();
       }
     }
-    //IMP_LOG(VERBOSE, "Distance of " << v << " is " << ret << std::endl);
-    return ret;
+    // gcc is dumb
+    return -666666;
   }
-  /*algebra::Vector3D get_closest_point(const algebra::Vector3D &v) const {
-    double h= get_height(v);
-    double r= std::sqrt(get_squared_distance_to_center(v));
-    algebra::Vector3D ret=v;
-    if (std::abs(std::abs(h)-height_) < std::abs(r - radius_)) {
-      // close to slab
-      if (h >0) {
-        ret[coordinate_]= height_;
-      } else {
-        ret[coordinate_]= -height_;
-      }
-    } else {
-      // close to cylinder
-      algebra::Vector3D diff= (v- get_pole_point(v)).get_unit_vector();
-      return get_pole_point(v)+diff*radius_;
-    }
-    }*/
-  double get_squared_distance_to_center(const algebra::Vector3D &v) const {
+  double get_squared_radius(const algebra::Vector3D &v) const {
     double sd=0;
     for (int i=1; i< 3; ++i) {
       int oc= (i+coordinate_)%3;
@@ -94,53 +109,43 @@ class TunnelTraits {
   }
   algebra::Vector3D
   get_displacement_unit_vector(const algebra::Vector3D &v) const {
-    double h= get_height(v);
-    double r2= get_squared_distance_to_center(v);
-    IMP_LOG(VERBOSE, "Distances are " << h*h
-            << " and " << r2 << std::endl);
-    if (std::abs(h)>height_) {
-      // close to slab
-      algebra::Vector3D diff(0,0,0);
-      if (h > 0) {
-        diff[coordinate_]= 1;
-      } else {
-        diff[coordinate_]=-1;
-      }
-      if (r2 < square(radius_)) {
-        algebra::Vector3D pv=(get_pole_point(v)-v).get_unit_vector();
-        pv= pv*std::abs(std::sqrt(r2)-radius_);
-        diff= diff.get_unit_vector()*(std::abs(h)-height_)+pv;
-        diff= diff.get_unit_vector();
-      } else {
-
-      }
-      IMP_LOG(VERBOSE, "Displacement in slab is " << diff << std::endl);
+    switch (get_location(v)) {
+    case INSLAB:
+    case OUTSLAB:
       {
-        algebra::Vector3D vb= v- diff*get_distance(v);
-        IMP_assert(std::abs(get_distance(vb)) < .01,
-                   "Stepping back should be close to surface: "
-                   << "stepping from " << v
-                   << " along " << diff
-                   << " of distance " << get_distance(v)
-                   << " gives distance " << get_distance(vb));
-      }
-      return diff;
-    } else {
-      // close to cylinder
-      algebra::Vector3D diff= (get_pole_point(v)-v);
-      if (diff.get_squared_magnitude() < .00001){
-        diff=algebra::Vector3D(0,0,0);
-        diff[(coordinate_+1)%3]=1;
-        IMP_LOG(TERSE, "Particle is close to center" << diff << std::endl);
+      algebra::Vector3D rv(0,0,0);
+      rv[coordinate_]=1;
+      if (v[coordinate_] > center_[coordinate_]) {
+        return rv;
       } else {
-        diff = diff.get_unit_vector();
+        return -rv;
       }
-      IMP_LOG(VERBOSE, "Displacement in cylinder is " << diff << std::endl);
-      return diff;
+      }
+    case RING:
+    case TUNNEL:
+      {
+      algebra::Vector3D diff=(get_pole_point(v)-v);
+      if (diff.get_squared_magnitude() < .001) {
+        return -(get_rim_point(v)-v).get_unit_vector();
+      } else {
+        return (get_pole_point(v)-v).get_unit_vector();
+      }
+      }
+    case CHANNEL:
+      {
+        algebra::Vector3D diff=(-get_rim_point(v)+v);
+        if (diff.get_squared_magnitude() < .001) {
+          return (get_pole_point(v)-v).get_unit_vector();
+        } else {
+          return diff.get_unit_vector();
+        }
+      }
     }
+    // gcc is dumb
+    return algebra::Vector3D(0,0,0);
   }
   double get_height(const algebra::Vector3D &v) const {
-    return v[coordinate_]- center_[coordinate_];
+    return std::abs(v[coordinate_]- center_[coordinate_]);
   }
   algebra::Vector3D get_pole_point(algebra::Vector3D v) const {
     for (unsigned int i=0; i< 3; ++i) {
@@ -148,6 +153,20 @@ class TunnelTraits {
       v[i]= center_[i];
     }
     return v;
+  }
+  algebra::Vector3D get_rim_point(algebra::Vector3D v) const {
+    algebra::Vector3D ret=v-get_pole_point(v);
+    if (ret.get_squared_magnitude() < .0001) {
+      ret=algebra::Vector3D(1,1,1);
+    }
+    ret[coordinate_]=0;
+    ret= ret.get_unit_vector()*radius_;
+    if (v[coordinate_] > center_[coordinate_]) {
+      ret[coordinate_]= center_[coordinate_]+height_;
+    } else {
+      ret[coordinate_]= center_[coordinate_]-height_;
+    }
+    return ret;
   }
   void show(std::ostream &out= std::cout) const {
     out << coordinate_ << " " << center_ << " " << height_ << " "
