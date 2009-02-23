@@ -19,4 +19,5 @@ rbus= IMP.core.AccumulateRigidBodyDerivatives(cpr, rbt)
 rm= IMP.core.UpdateRigidBodyMembers(cpr, rbt)
 sss= IMP.core.SingletonsScoreState(rbs, rm, rbus)
 m.add_score_state(sss)
+# or IMP.core.setup_rigid_bodies(m, rbs, cpr, rbt, True)
 print "all done"

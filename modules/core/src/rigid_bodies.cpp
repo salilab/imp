@@ -7,11 +7,15 @@
  */
 
 #include "IMP/core/rigid_bodies.h"
+#include "IMP/core/ListSingletonContainer.h"
+#include "IMP/core/SingletonsScoreState.h"
+#include "IMP/core/SingletonScoreState.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/algebra/internal/jama_eig.h>
 #include <IMP/algebra/geometric_alignment.h>
+#include <IMP/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -383,6 +387,45 @@ void UpdateRigidBodyMembers
 ::show(std::ostream &out) const {
   out << "RigidBodyUpdateMembersSingletonModifier "
       << *pr_ << std::endl;
+}
+
+
+namespace {
+  typedef std::pair<SingletonModifier*, SingletonModifier*> SMP;
+  SMP
+  get_modifiers(ParticleRefiner *pr, RigidBodyTraits tr, bool snap) {
+    if (snap) {
+      return SMP(new UpdateRigidBodyOrientation(pr, tr), NULL);
+    } else {
+      return SMP(new UpdateRigidBodyMembers(pr, tr),
+                 new AccumulateRigidBodyDerivatives(pr, tr));
+    }
+  }
+}
+
+void setup_rigid_bodies(Model *m, SingletonContainer *rbs,
+                        ParticleRefiner *pr, RigidBodyTraits tr,
+                        bool snap) {
+  SMP sm= get_modifiers(pr, tr, snap);
+  SingletonsScoreState *sss= new SingletonsScoreState(rbs, sm.first, sm.second);
+  m->add_score_state(sss);
+}
+
+
+void setup_rigid_bodies(Model *m, const Particles &rbs,
+                        ParticleRefiner *pr, RigidBodyTraits tr,
+                        bool snap) {
+  ListSingletonContainer *lsc= new ListSingletonContainer(rbs);
+  setup_rigid_bodies(m, lsc, pr, tr, snap);
+}
+
+
+void setup_rigid_body(Model *m, Particle* rb,
+                        ParticleRefiner *pr, RigidBodyTraits tr,
+                        bool snap) {
+  SMP sm= get_modifiers(pr, tr, snap);
+  SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, rb);
+  m->add_score_state(sss);
 }
 
 
