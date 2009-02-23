@@ -19,7 +19,8 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Write a Bild file with the geometry
-/**
+/** The bild file format is a simple format for displaying geometry in Chimera.
+    The bild writer supports points, spheres, cyliners, and segments.
  */
 class IMPDISPLAYEXPORT BildWriter: public Writer
 {
@@ -29,7 +30,7 @@ public:
 
   virtual ~BildWriter();
 
-  /* GCC was barfing on the macro, even though doing -e and putting the
+  /* GCC was barfing on the macro, even though doing -E and putting the
      contents in was fine */
   virtual void add_geometry(Geometry *g);
   virtual void on_open(std::string name);

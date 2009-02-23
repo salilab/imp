@@ -20,7 +20,8 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Write a VRML file with the geometry
-/**
+/** This writer currently only supports spheres. VRML supports other geometry
+    so someone could add it.
  */
 class IMPDISPLAYEXPORT VRMLWriter: public Writer
 {
