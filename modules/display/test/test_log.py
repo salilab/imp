@@ -14,7 +14,8 @@ class TestBL(IMP.test.TestCase):
         o= IMP.core.SteepestDescent()
         o.set_model(m)
         rk= IMP.FloatKey("my radius_key")
-        nm = pref + "test%03d."+suf
+        nm = self.get_tmp_file_name(pref + "test%03d."+suf)
+        print nm
         p0= IMP.Particle()
         m.add_particle(p0)
         d0= IMP.core.XYZRDecorator.create(p0, rk)

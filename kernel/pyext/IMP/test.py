@@ -71,6 +71,24 @@ class TestCase(unittest.TestCase):
         # If not found, default to the current working directory:
         return os.path.join('input', filename)
 
+
+    def get_tmp_file_name(self, filename):
+        """Get the full name of an output file in the build/tmp directory."""
+        # Otherwise, search up from the test's directory until we find
+        # the input directory
+        dir = os.path.abspath(sys.argv[0])
+        while len(dir) != 0:
+            input = os.path.join(dir, 'build')
+            #print input
+            if os.path.isdir(input):
+                input= os.path.join(input, 'tmp')
+                if not os.path.isdir(input):
+                    os.mkdir(input)
+                return os.path.join(input, filename)
+            dir= os.path.split(dir)[0]
+        # If not found, default to the current working directory:
+        return filename
+
     def assertInTolerance(self, num1, num2, tolerance, msg=None):
         """Assert that the difference between num1 and num2 is less than
            tolerance"""
