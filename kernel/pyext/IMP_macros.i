@@ -25,6 +25,15 @@ namespace IMP \
 %}
 %enddef
 
+%define IMP_OWN_FUNCTION(functionname)
+%pythonprepend functionname %{
+  import IMP
+  for i in range(1, len(args)):
+    if args[i] is not None and issubclass(type(args[i]), IMP.RefCountedObject):
+       args[i].thisown=0;
+%}
+%enddef
+
 %define IMP_OWN_LIST_METHOD(Ucname, methodname)
 %pythonprepend Ucname::methodname %{
         import IMP

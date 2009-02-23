@@ -99,6 +99,9 @@ namespace IMP {
     
     IMP_OWN_METHOD(NonbondedListScoreState, add_bonded_list)
     IMP_OWN_LIST_METHOD(NonbondedListScoreState, add_bonded_lists)
+
+    IMP_OWN_FUNCTION(setup_rigid_bodies)
+    IMP_OWN_FUNCTION(setup_rigid_body)
   }
 }
 

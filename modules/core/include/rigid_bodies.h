@@ -200,8 +200,11 @@ IMP_OUTPUT_OPERATOR(RigidMemberDecorator);
 //! Compute the orientation of the rigid body from the refined particles
 /** This should be applied before evaluate to keep the bodies rigid. It
     computes the optimal orientation given the position of the members and
-    then snaps the members to their rigid locations.
-
+    then snaps the members to their rigid locations. You can
+    use the setup_rigid_bodies and setup_rigid_body methods instead of
+    creating these objects yourself.
+    \see setup_rigid_bodies
+    \see setup_rigid_body
     \verbinclude rigid_bodies.py
 
     \see RigidBodyDecorator
@@ -217,8 +220,12 @@ class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
 };
 
 //! Accumulate the derivatives from the refined particles in the rigid body
-/** \see RigidBodyDecorator
-
+/** You can
+    use the setup_rigid_bodies and setup_rigid_body methods instead of
+    creating these objects yourself.
+    \see setup_rigid_bodies
+    \see setup_rigid_body
+    \see RigidBodyDecorator
     \verbinclude rigid_bodies.py
     \see UpdateRigidBodyMembers
  */
@@ -235,7 +242,11 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
 
 
 //! Compute the coordinates of the RigidMember objects bases on the orientation
-/** This should be applied after evaluate to keep the bodies rigid.
+/** This should be applied after evaluate to keep the bodies rigid. You can
+    use the setup_rigid_bodies and setup_rigid_body methods instead of
+    creating these objects yourself.
+    \see setup_rigid_bodies
+    \see setup_rigid_body
     \see RigidBodyDecorator
     \see AccumulateRigidBodyDerivatives */
 class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
@@ -247,6 +258,53 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
     pr_(pr), tr_(tr){}
   IMP_SINGLETON_MODIFIER(internal::version_info);
 };
+
+//! Sets up the ScoreState needed for a rigid body
+/**
+   \param[in] m the model
+   \param[in] rbs particles for the RigidBodyDecorator objects
+   \param[in] pr a particle refined to get the members of the rigid bodies
+   \param[in] snap whether to use snapping (as opposed to direct optimization
+   of the rotational degrees for freedom).
+   \relates RigidBodyDecorator
+ */
+IMPCOREEXPORT void setup_rigid_bodies(Model *m, const Particles &rbs,
+                                      ParticleRefiner *pr,
+                                      RigidBodyTraits tr
+                                  =internal::get_default_rigid_body_traits(),
+                                      bool snap=true);
+
+//! Sets up the ScoreState needed for a rigid body
+/**
+   \param[in] m the model
+   \param[in] rbs particles for the RigidBodyDecorator objects
+   \param[in] pr a particle refined to get the members of the rigid bodies
+   \param[in] snap whether to use snapping (as opposed to direct optimization
+   of the rotational degrees for freedom).
+   \relates RigidBodyDecorator
+ */
+IMPCOREEXPORT void setup_rigid_bodies(Model *m,
+                                      SingletonContainer* rbs,
+                                      ParticleRefiner *pr,
+                                      RigidBodyTraits tr
+                                   =internal::get_default_rigid_body_traits(),
+                                      bool snap=true);
+
+
+//! Sets up the ScoreState needed for a rigid body
+/**
+   \param[in] m the model
+   \param[in] rb particle for the RigidBodyDecorator objects
+   \param[in] pr a particle refined to get the members of the rigid bodies
+   \param[in] snap whether to use snapping (as opposed to direct optimization
+   of the rotational degrees for freedom).
+   \relates RigidBodyDecorator
+ */
+IMPCOREEXPORT void setup_rigid_body(Model *m, Particle *rb,
+                                    ParticleRefiner *pr,
+                                    RigidBodyTraits tr
+                                 =internal::get_default_rigid_body_traits(),
+                                    bool snap=true);
 
 IMPCORE_END_NAMESPACE
 

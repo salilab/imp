@@ -16,7 +16,5 @@ for r in residues:
     print r
 print "done with setup"
 
-uro= IMP.core.UpdateRigidBodyOrientation(cpr, rbt)
-sss= IMP.core.SingletonsScoreState(rbs, uro, None)
-m.add_score_state(sss)
+IMP.core.setup_rigid_bodies(m, rbs, cpr, rbt)
 print "all done"
