@@ -652,7 +652,6 @@
 		9328D78B0F51FE0300A99A43 /* Writer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Writer.cpp; sourceTree = "<group>"; };
 		9328D78C0F51FE0300A99A43 /* xyzr_geometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xyzr_geometry.cpp; sourceTree = "<group>"; };
 		9328D78F0F51FE0300A99A43 /* run-all-tests.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "run-all-tests.py"; sourceTree = "<group>"; };
-		9328D7900F51FE0300A99A43 /* run_all_tests.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = run_all_tests.py; sourceTree = "<group>"; };
 		9328D7910F51FE0300A99A43 /* SConscript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConscript; sourceTree = "<group>"; };
 		9328D7920F51FE0300A99A43 /* test_log.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = test_log.py; sourceTree = "<group>"; };
 		9328D7950F51FE0300A99A43 /* domino.dox */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = domino.dox; sourceTree = "<group>"; };
@@ -2472,7 +2471,6 @@
 			children = (
 				9328D78E0F51FE0300A99A43 /* restraints */,
 				9328D78F0F51FE0300A99A43 /* run-all-tests.py */,
-				9328D7900F51FE0300A99A43 /* run_all_tests.py */,
 				9328D7910F51FE0300A99A43 /* SConscript */,
 				9328D7920F51FE0300A99A43 /* test_log.py */,
 			);
