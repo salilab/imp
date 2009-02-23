@@ -60,6 +60,13 @@ When the tests for a module are run, the directory tree rooted at
 which inherits from \c IMP.test.TestCase is then run. We recommend you
 set up tests by copying an existing test case.
 
+Some tests will require input files or temporary files. Input files should be
+placed in a directory called \c input in the \c test directory. The test script
+should then call \command{self.get_input_file_name(file_name)} to get the true path
+to the file. Likewise, appropriate names for temporary files should be found by
+calling \command{self.get_tmp_file_name(file_name)}. Temporary files will be located in
+\c build/tmp. The test should remove temporary files after using them.
+
 \section modules Choosing a module for your code
 
 If you want to distribute your code to other, you need to choose which
