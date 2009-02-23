@@ -19,7 +19,8 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Write a CMM file with the geometry
-/**
+/** The CMM writer supports points and spheres. Cylinders can be added
+    at some point.
  */
 class IMPDISPLAYEXPORT CMMWriter: public Writer
 {
