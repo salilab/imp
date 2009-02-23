@@ -14,6 +14,8 @@
 #include <IMP/macros.h>
 #include "internal/version_info.h"
 #include "DensityMap.h"
+#include "SampledDensityMap.h"
+#include <IMP/em/IMPParticlesAccessPoint.h>
 #include <IMP/Particle.h>
 #include "IMP/core/XYZDecorator.h"
 #include "IMP/algebra/Vector3D.h"
@@ -48,5 +50,27 @@ inline void density2particles(DensityMap &dmap, Float threshold,
     }
   }
 }
+
+
+//! Resample a set of particles into a density grid
+/**
+Each such particle should be have xyz radius and weight attributes
+/param[in] ps         the particles to sample
+/param[in] rad_key    the radius attribute key of the particles
+/param[in] weight_key the weight attribute key of the particles
+/param[in] ps  the particles to sample
+/param[in] resolution the resolution of the new sampled map
+/param[in] apix the voxel size of the sampled map
+/return the sampled density grid
+ */
+SampledDensityMap * particles2density(Particles &ps,
+               const FloatKey &rad_key, const FloatKey &weight_key,
+               Float resolution, Float apix) {
+  IMPParticlesAccessPoint access_p(ps,rad_key,weight_key);
+  SampledDensityMap *dmap = new SampledDensityMap(access_p, resolution,
+                                                  apix);
+  return dmap;
+}
+
 IMPEM_END_NAMESPACE
 #endif /* IMPEM_CONVERTORS_H */
