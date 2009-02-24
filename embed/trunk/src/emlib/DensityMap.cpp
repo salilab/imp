@@ -303,10 +303,7 @@ void DensityMap::set_origin(float x, float y, float z)
   // We have to compute the xmin,xmax, ... values again after
   // changing the origin
   header_.compute_xyz_top();
-  loc_calculated_ = false;
-  delete[] x_loc_;
-  delete[] y_loc_;
-  delete[] z_loc_;
+  reset_voxel2loc();
   calc_all_voxel2loc();
 }
 
@@ -476,7 +473,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
 
 
 void DensityMap::update_voxel_size(float new_apix) {
-  header_.Objectpixelsize = 3.0;
+  header_.Objectpixelsize = new_apix;
   header_.compute_xyz_top(true);
   reset_voxel2loc();
   calc_all_voxel2loc();
