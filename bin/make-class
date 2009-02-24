@@ -33,7 +33,7 @@ IMPMODULENAME_BEGIN_NAMESPACE
 class IMPMODULENAMEEXPORT ClassName: public classtype
 {
 public:
-  //! Get the individual particles from the passed SingletonContainer
+  //! XXXX
   ClassName();
 
   virtual ~ClassName();
