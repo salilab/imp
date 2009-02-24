@@ -49,18 +49,17 @@ public:
 //! Display the derivatives of an RigidBody particle
 /** The name is the Particle::get_name() name.
  */
-class IMPDISPLAYEXPORT RigidBodyDerivativeGeometryExtractor:
-  public GeometryExtractor
-{
-  core::RigidBodyTraits tr_;
-  Pointer<ParticleRefiner> pr_;
+class IMPDISPLAYEXPORT RigidBodyDerivativeGeometry:
+  public CompoundGeometry
+{ Pointer<ParticleRefiner> pr_;
   Color xyzcolor_, qcolor_;
+  core::RigidBodyDecorator d_;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  RigidBodyDerivativeGeometryExtractor(ParticleRefiner *pr,
-                                       core::RigidBodyTraits tr);
+  RigidBodyDerivativeGeometry(core::RigidBodyDecorator d,
+                                       ParticleRefiner *pr);
 
-  virtual ~RigidBodyDerivativeGeometryExtractor();
+  virtual ~RigidBodyDerivativeGeometry();
 
   //! Set the color used to display the translational part
   void set_translational_color(Color c) {
@@ -72,7 +71,7 @@ public:
     qcolor_=c;
   }
 
-  IMP_GEOMETRY_EXTRACTOR(internal::version_info);
+  IMP_COMPOUND_GEOMETRY(internal::version_info);
 };
 
 

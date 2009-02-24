@@ -46,14 +46,6 @@ public:
   //IMP_GEOMETRY(internal::version_info)
 };
 
-class IMPDISPLAYEXPORT BondGeometryExtractor: public GeometryExtractor {
- public:
-  BondGeometryExtractor();
-  virtual ~BondGeometryExtractor();
-  IMP_GEOMETRY_EXTRACTOR(internal::version_info);
-};
-
-
 IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_BOND_GEOMETRY_H */

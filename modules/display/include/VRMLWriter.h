@@ -31,13 +31,9 @@ public:
 
   virtual ~VRMLWriter();
 
-  //IMP_WRITER(internal::version_info)
-  virtual void add_geometry(Geometry *g);
-  virtual void on_open(std::string name);
-  virtual void on_close();
-  virtual VersionInfo get_version_info() const {return internal::version_info;}
-  virtual void show(std::ostream &out=std::cout) const;
+  IMP_WRITER(internal::version_info)
 
+  IMP_WRITER_ADD_GEOMETRY
 };
 
 

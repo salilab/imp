@@ -34,28 +34,25 @@ Float XYZDerivativeGeometry::get_size() const {
 }
 
 
-RigidBodyDerivativeGeometryExtractor
-::RigidBodyDerivativeGeometryExtractor(ParticleRefiner *pr,
-                                       core::RigidBodyTraits tr): tr_(tr),
-                                                             pr_(pr){
+RigidBodyDerivativeGeometry
+::RigidBodyDerivativeGeometry(core::RigidBodyDecorator d,
+                              ParticleRefiner *pr): pr_(pr), d_(d){
   xyzcolor_=Color(1,0,0);
   qcolor_=Color(0,1,0);
 }
 
-RigidBodyDerivativeGeometryExtractor::~RigidBodyDerivativeGeometryExtractor(){}
+RigidBodyDerivativeGeometry::~RigidBodyDerivativeGeometry(){}
 
-void RigidBodyDerivativeGeometryExtractor::show(std::ostream &out) const {
+void RigidBodyDerivativeGeometry::show(std::ostream &out) const {
   out << "DerivativeGeometryExtractor" << std::endl;
 }
 
-Geometries RigidBodyDerivativeGeometryExtractor
-::get_geometry(Particle *p) const {
-  core::RigidBodyDecorator rbd(p, tr_);
-  Particles ms= pr_->get_refined(p);
+Geometries RigidBodyDerivativeGeometry::get_geometry() const {
+  Particles ms= pr_->get_refined(d_.get_particle());
   Geometries ret;
-  algebra::VectorD<4> deriv= rbd.get_rotational_derivatives();
+  algebra::VectorD<4> deriv= d_.get_rotational_derivatives();
   algebra::VectorD<4> rot
-    = rbd.get_transformation().get_rotation().get_quaternion();
+    = d_.get_transformation().get_rotation().get_quaternion();
   IMP_LOG(TERSE, "Old rotation was " << rot << std::endl);
   algebra::VectorD<4> dv=deriv;
   if (dv.get_squared_magnitude() != 0) {
@@ -67,19 +64,21 @@ Geometries RigidBodyDerivativeGeometryExtractor
   IMP_LOG(TERSE, "Derivative was " << deriv << std::endl);
   IMP_LOG(TERSE, "New rotation is " << rot << std::endl);
   for (unsigned int i=0; i< ms.size(); ++i) {
-    core::RigidMemberDecorator dm(ms[i], tr_);
+    core::RigidMemberDecorator dm(ms[i], d_.get_traits());
     CylinderGeometry *tr= new CylinderGeometry(dm.get_coordinates(),
-                    dm.get_coordinates()+rbd.get_derivatives(),
-                                               0, xyzcolor_);
+                    dm.get_coordinates()+d_.get_derivatives(),
+                                               0);
+    tr->set_color(xyzcolor_);
     ret.push_back(tr);
     algebra::Vector3D ic= r.rotate(dm.get_internal_coordinates())
-      + rbd.get_coordinates();
+      + d_.get_coordinates();
     CylinderGeometry *rtr= new CylinderGeometry(dm.get_coordinates(),
                                                 ic,
-                                                0, qcolor_);
+                                                0);
+    rtr->set_color(qcolor_);
     ret.push_back(rtr);
   }
-  pr_->cleanup_refined(p, ms);
+  pr_->cleanup_refined(d_.get_particle(), ms);
   return ret;
 }
 

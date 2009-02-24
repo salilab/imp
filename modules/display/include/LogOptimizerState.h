@@ -31,15 +31,10 @@ class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
   unsigned int step_;
   unsigned int skip_steps_;
   std::string name_template_;
-  typedef std::pair<Pointer<GeometryExtractor>,
-    Pointer<SingletonContainer> > EPair;
-  std::vector< EPair > edata_;
+
+  std::vector<Pointer<CompoundGeometry> > edata_;
   std::vector<Pointer<Geometry> > gdata_;
 
-  EPair make_pair(GeometryExtractor* g, SingletonContainer *p) const {
-    return std::make_pair(Pointer<GeometryExtractor>(g),
-                          Pointer<SingletonContainer>(p));
-  }
 public:
   //! Write files using name_template as a template (must have a %d in it)
   LogOptimizerState(Writer *writer, std::string name_template);
@@ -52,14 +47,29 @@ public:
   }
 
   //! Add to the list of what to display
-  void add_geometry_extractor(GeometryExtractor* g, SingletonContainer *p) {
-    edata_.push_back(make_pair(g, p));
+  void add_geometry(CompoundGeometry* g) {
+    edata_.push_back(Pointer<CompoundGeometry>(g));
   }
 
-  //! Add to the list of what to display
+  //! Add some more graphics
   void add_geometry(Geometry* g) {
     gdata_.push_back(Pointer<Geometry>(g));
   }
+
+  //! Add to the list of what to display
+  void add_geometry(const CompoundGeometries& g) {
+    for (unsigned int i=0; i< g.size(); ++i) {
+      add_geometry(g);
+    }
+  }
+
+  //! Add to the list of what to display
+  void add_geometry(const Geometries& g) {
+    for (unsigned int i=0; i< g.size(); ++i) {
+      add_geometry(g);
+    }
+  }
+
   IMP_OPTIMIZER_STATE(internal::version_info)
 };
 

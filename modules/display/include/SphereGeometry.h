@@ -25,17 +25,13 @@ class IMPDISPLAYEXPORT SphereGeometry: public Geometry
 {
   algebra::Vector3D center_;
   double radius_;
-  std::string name_;
 public:
   //! Create a static sphere or point
   /** If the radius is skipped, it is a point. If the color is skipped,
       the default color (gray) is used.
   */
   SphereGeometry(algebra::Vector3D center,
-                 double radius=0,
-                 Color color
-                 = Color(),
-                 std::string name= std::string());
+                 double radius=0);
 
   virtual ~SphereGeometry();
 
@@ -43,9 +39,6 @@ public:
     return radius_;
   }
 
-  std::string get_name() const {
-    return name_;
-  }
 
   virtual unsigned int get_dimension() const;
   virtual algebra::Vector3D get_vertex(unsigned int i) const;

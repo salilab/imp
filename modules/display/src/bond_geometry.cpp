@@ -34,18 +34,4 @@ Float BondGeometry::get_size() const {
   return 0;
 }
 
-
-BondGeometryExtractor::BondGeometryExtractor(){
-}
-
-BondGeometryExtractor::~BondGeometryExtractor(){}
-
-void BondGeometryExtractor::show(std::ostream &out) const {
-  out << "BondGeometryExtractor" << std::endl;
-}
-
-Geometries BondGeometryExtractor::get_geometry(Particle *p) const {
-  return Geometries(1, new BondGeometry(core::BondDecorator(p)));
-}
-
 IMPDISPLAY_END_NAMESPACE
