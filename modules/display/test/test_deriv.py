@@ -42,7 +42,7 @@ class TestBL(IMP.test.TestCase):
 
         m.evaluate(True)
         w= display.BildWriter()
-        w.set_file_name("deriv.bild")
+        w.set_file_name(self.get_tmp_file_name("deriv.bild"))
         for i in range(0,4):
             w.add_geometry(display.XYZDerivativeGeometry(core.XYZDecorator(ps[i])))
         w.set_file_name("")
@@ -58,7 +58,7 @@ class TestBL(IMP.test.TestCase):
         print "eval"
         m.evaluate(True)
         w= display.BildWriter()
-        w.set_file_name("qderiv.bild")
+        w.set_file_name(self.get_tmp_file_name("qderiv.bild"))
         #oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0,4):
             gs=display.RigidBodyDerivativeGeometry(rbd, pr)
