@@ -23,6 +23,9 @@ void XYZRGeometry::show(std::ostream &out) const {
 unsigned int XYZRGeometry::get_dimension() const{
   return 0;
 }
+unsigned int XYZRGeometry::get_number_of_vertices() const{
+  return 1;
+}
 algebra::Vector3D XYZRGeometry::get_vertex(unsigned int i) const {
   return d_.get_coordinates();
 }

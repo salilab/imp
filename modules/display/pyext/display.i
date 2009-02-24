@@ -49,6 +49,7 @@ IMP_OWN_METHOD(LogOptimizerState, add_geometry)
 %include "IMP/display/SphereGeometry.h"
 %include "IMP/display/CylinderGeometry.h"
 %include "IMP/display/BoxGeometry.h"
+%include "IMP/display/TriangleGeometry.h"
 
 namespace IMP {
 namespace display {

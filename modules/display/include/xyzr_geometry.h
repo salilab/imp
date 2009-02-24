@@ -36,13 +36,7 @@ public:
   std::string get_name() const {
     return d_.get_particle()->get_name();
   }
-  virtual unsigned int get_dimension() const;
-  virtual algebra::Vector3D get_vertex(unsigned int i) const;
-  virtual VersionInfo get_version_info() const
-  {return internal::version_info;}
-  virtual void show(std::ostream &out=std::cout) const;
-
-  //IMP_GEOMETRY(internal::version_info)
+  IMP_GEOMETRY(internal::version_info)
 };
 
 

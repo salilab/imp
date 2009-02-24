@@ -33,5 +33,7 @@ algebra::Vector3D BondGeometry::get_vertex(unsigned int i) const {
 Float BondGeometry::get_size() const {
   return 0;
 }
-
+unsigned int BondGeometry::get_number_of_vertices() const{
+  return 2;
+}
 IMPDISPLAY_END_NAMESPACE

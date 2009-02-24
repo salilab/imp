@@ -25,6 +25,9 @@ void SphereGeometry::show(std::ostream &out) const {
 unsigned int SphereGeometry::get_dimension() const{
   return 0;
 }
+unsigned int SphereGeometry::get_number_of_vertices() const{
+  return 1;
+}
 algebra::Vector3D SphereGeometry::get_vertex(unsigned int) const {
   return center_;
 }

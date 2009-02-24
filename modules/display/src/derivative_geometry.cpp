@@ -24,6 +24,9 @@ void XYZDerivativeGeometry::show(std::ostream &out) const {
 unsigned int XYZDerivativeGeometry::get_dimension() const{
   return 1;
 }
+unsigned int XYZDerivativeGeometry::get_number_of_vertices() const{
+  return 2;
+}
 algebra::Vector3D XYZDerivativeGeometry::get_vertex(unsigned int i) const {
   if (i==0) return d_.get_coordinates();
   else return d_.get_coordinates()+d_.get_derivatives();
