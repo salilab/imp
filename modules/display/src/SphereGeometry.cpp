@@ -12,12 +12,8 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 SphereGeometry::SphereGeometry(algebra::Vector3D center,
-                               double radius,
-                               Color color,
-                               std::string name): center_(center),
-                                                  radius_(radius),
-                                                  name_(name){
-  if (color != Color()) set_color(color);
+                               double radius): center_(center),
+                                                  radius_(radius){
 }
 
 SphereGeometry::~SphereGeometry(){}

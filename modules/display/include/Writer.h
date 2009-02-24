@@ -65,6 +65,26 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
   }
 
 
+  //! Add the geometry given a CompoundGeometry object
+  virtual void add_geometry(CompoundGeometry *cg) {
+    Geometries g= cg->get_geometry();
+    for (unsigned int i=0; i< g.size(); ++i) {
+      IMP_CHECK_OBJECT(g[i]);
+      add_geometry(g[i]);
+      delete g[i];
+    }
+  }
+
+
+  //! Add a set of CompoundGeometry objects
+  virtual void add_geometry(const CompoundGeometries &g) {
+    for (unsigned int i=0; i< g.size(); ++i) {
+      IMP_CHECK_OBJECT(g[i]);
+      add_geometry(g[i]);
+    }
+  }
+
+
   //! Get the version info
   virtual VersionInfo get_version_info() const=0;
 

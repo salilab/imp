@@ -26,12 +26,11 @@ namespace IMP {
 namespace display {
 IMP_OWN_CONSTRUCTOR(LogOptimizerState)
 IMP_OWN_METHOD(LogOptimizerState, add_geometry)
-IMP_OWN_METHOD(LogOptimizerState, add_geometry_extractor)
 }
 }
 %feature("director") IMP::display::Writer;
 %feature("director") IMP::display::Geometry;
-%feature("director") IMP::display::GeometryExtractor;
+%feature("director") IMP::display::CompoundGeometry;
 
 
 /* Wrap our own classes */
@@ -49,9 +48,11 @@ IMP_OWN_METHOD(LogOptimizerState, add_geometry_extractor)
 %include "IMP/display/LogOptimizerState.h"
 %include "IMP/display/SphereGeometry.h"
 %include "IMP/display/CylinderGeometry.h"
+%include "IMP/display/BoxGeometry.h"
 
 namespace IMP {
 namespace display {
   %template(Geometries) ::std::vector<Geometry*>;
+  %template(CompoundGeometries) ::std::vector<CompoundGeometry*>;
  }
 }

@@ -13,11 +13,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 CylinderGeometry::CylinderGeometry(const algebra::Vector3D& p0,
                                    const algebra::Vector3D& p1,
-                                   double radius,
-                                   Color color,
-                                   std::string name): radius_(radius),
-                                                      name_(name){
-  if (color != Color()) set_color(color);
+                                   double radius): radius_(radius){
   p_[0]= p0;
   p_[1]= p1;
 }

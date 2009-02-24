@@ -32,6 +32,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT Geometry: public RefCountedObject
 {
   Color default_color_;
+  std::string name_;
 public:
   Geometry();
 
@@ -50,7 +51,7 @@ public:
 
   //! Return a name for the object (or the empty string)
   std::string get_name() const {
-    return std::string();
+    return name_;
   }
 
   //! Return the color of the object
@@ -59,10 +60,13 @@ public:
   }
 
   //! Set the default color
-  /** Each of r,g,b should be between 0 and 1.
-   */
   void set_color(Color c) {
     default_color_= c;
+  }
+
+  //! Set the name
+  void set_name(std::string c) {
+    name_= c;
   }
 
   //! Write information about the object
@@ -78,10 +82,10 @@ IMP_OUTPUT_OPERATOR(Geometry);
 typedef std::vector<Geometry* > Geometries;
 
 //! Produce some geometry from a particle
-class IMPDISPLAYEXPORT GeometryExtractor: public RefCountedObject {
+class IMPDISPLAYEXPORT CompoundGeometry: public RefCountedObject {
  public:
-  GeometryExtractor();
-  virtual ~GeometryExtractor();
+  CompoundGeometry();
+  virtual ~CompoundGeometry();
   //! Write information about the object
   virtual void show(std::ostream &out= std::cout) const{};
 
@@ -89,9 +93,15 @@ class IMPDISPLAYEXPORT GeometryExtractor: public RefCountedObject {
   virtual VersionInfo get_version_info() const {return internal::version_info;}
 
   //! Return a list of geometry objects
-  virtual Geometries get_geometry(Particle *p) const =0;
+  virtual Geometries get_geometry() const =0;
 };
-IMP_OUTPUT_OPERATOR(GeometryExtractor);
+IMP_OUTPUT_OPERATOR(CompoundGeometry);
+
+
+//! Should be ref counted but swig objects
+typedef std::vector<CompoundGeometry* > CompoundGeometries;
+
+
 IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_GEOMETRY_H */

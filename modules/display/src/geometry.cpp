@@ -21,7 +21,7 @@ void Geometry::show(std::ostream &out) const {
 }
 
 
-GeometryExtractor::~GeometryExtractor(){}
-GeometryExtractor::GeometryExtractor(){}
+CompoundGeometry::~CompoundGeometry(){}
+CompoundGeometry::CompoundGeometry(){}
 
 IMPDISPLAY_END_NAMESPACE

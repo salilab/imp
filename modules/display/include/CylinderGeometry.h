@@ -25,7 +25,6 @@ class IMPDISPLAYEXPORT CylinderGeometry: public Geometry
 {
   algebra::Vector3D p_[2];
   double radius_;
-  std::string name_;
 public:
   //! Create a static cylinder or segment
   /** If the radius is skipped, it is a segment. If the color is skipped,
@@ -33,10 +32,7 @@ public:
   */
   CylinderGeometry(const algebra::Vector3D& p0,
                    const algebra::Vector3D& p1,
-                   double radius=0,
-                   Color color
-                   = Color(),
-                   std::string name= std::string());
+                   double radius=0);
 
   virtual ~CylinderGeometry();
 
@@ -44,9 +40,6 @@ public:
     return radius_;
   }
 
-  std::string get_name() const {
-    return name_;
-  }
 
   virtual unsigned int get_dimension() const;
   virtual algebra::Vector3D get_vertex(unsigned int i) const;

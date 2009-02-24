@@ -45,15 +45,6 @@ public:
   //IMP_GEOMETRY(internal::version_info)
 };
 
-class IMPDISPLAYEXPORT XYZRGeometryExtractor: public GeometryExtractor {
-  FloatKey rk_;
- public:
-  XYZRGeometryExtractor(
-           FloatKey rk = core::XYZRDecorator::get_default_radius_key());
-  virtual ~XYZRGeometryExtractor();
-  IMP_GEOMETRY_EXTRACTOR(internal::version_info);
-};
-
 
 IMPDISPLAY_END_NAMESPACE
 
