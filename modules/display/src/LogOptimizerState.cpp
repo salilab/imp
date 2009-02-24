@@ -37,7 +37,8 @@ void LogOptimizerState::update() {
       writer_->add_geometry(gs);
       // since swig sucks
       for (unsigned int i=0; i< gs.size(); ++i) {
-        Pointer<Geometry>(gs[i]);
+        Pointer<Geometry> pgs(gs[i]);
+        if (0) pgs->show();
       }
     }
     IMP_LOG(VERBOSE, "Writing geometries"<< std::endl);
