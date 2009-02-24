@@ -82,7 +82,7 @@ class WLCTests(IMP.test.TestCase):
 
     def _write_state(self, name, rbd, pr, xyzs, targets):
         w= IMP.display.BildWriter()
-        w.set_file_name(name)
+        w.set_file_name(self.get_tmp_file_name(name))
         r=.1
         #c= IMP.algebra.Vector3D(.8, .2, .2)
         sg=IMP.display.SphereGeometry(targets[0],r)
