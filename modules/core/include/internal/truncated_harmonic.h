@@ -63,7 +63,8 @@ struct TruncatedHarmonicData {
   Float c_, l_, k_, b_, o_, t_;
 };
 
-std::ostream &operator<<(std::ostream &out, const TruncatedHarmonicData &d) {
+inline std::ostream &operator<<(std::ostream &out,
+                                const TruncatedHarmonicData &d) {
   out << "center: " << d.c_ << " limit: " << d.l_ << " k: " << d.k_;
   return out;
 }
