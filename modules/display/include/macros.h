@@ -25,15 +25,15 @@
   virtual void show(std::ostream &out=std::cout) const;
 
 //! Since swig doesn't support using, this redefines the geometry methods
-#define IMP_WRITER_ADD_GEOMETRY                         \
-  virtual void add_geometry(const Geometries &g) {      \
-    Writer::add_geometry(g);                             \
-  }                                                     \
-  virtual void add_geometry(CompoundGeometry *cg) {     \
-    Writer::add_geometry(cg);                           \
-  }                                                     \
+#define IMP_WRITER_ADD_GEOMETRY                                 \
+  virtual void add_geometry(const Geometries &g) {              \
+    Writer::add_geometry(g);                                    \
+  }                                                             \
+  virtual void add_geometry(CompoundGeometry *cg) {             \
+    Writer::add_geometry(cg);                                   \
+  }                                                             \
   virtual void add_geometry(const CompoundGeometries &g) {      \
-    Writer::add_geometry(g);                              \
+    Writer::add_geometry(g);                                    \
   }
 
 //! Define information for an Geometry object
@@ -41,6 +41,7 @@
   virtual unsigned int get_dimension() const;                           \
   virtual algebra::Vector3D get_vertex(unsigned int i) const;           \
   virtual VersionInfo get_version_info() const {return version;}        \
+  virtual unsigned int get_number_of_vertices() const;                  \
   virtual void show(std::ostream &out=std::cout) const;
 
 //! Define information for an Geometry object

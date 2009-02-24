@@ -44,6 +44,9 @@ public:
   //! Return the ith vertex of the object
   virtual algebra::Vector3D get_vertex(unsigned int i) const=0;
 
+  //! Return the number of vertices of the object
+  virtual unsigned int get_number_of_vertices() const=0;
+
   //! Return the thickness of the object
   virtual Float get_size() const {
     return 0;

@@ -36,18 +36,21 @@ void CMMWriter::on_close() {
 void CMMWriter::add_geometry(Geometry *g) {
   IMP_CHECK_OBJECT(g);
   if (g->get_dimension() != 0) return;
-  algebra::Vector3D v= g->get_vertex(0);
   std::string name=g->get_name();
   Float radius = g->get_size();
-  get_stream() << "<marker id=\"" << ++marker_index_ << "\""
-               << " x=\"" << v[0] << "\""
-               << " y=\"" << v[1] << "\""
-               << " z=\"" << v[2] << "\""
-               << " radius=\"" << radius << "\""
-               << " r=\"" << g->get_color().get_red() << "\""
-               << " g=\"" << g->get_color().get_green() << "\""
-               << " b=\"" << g->get_color().get_blue() <<  "\""
-               << " note=\"" << name <<  "\"/>" << std::endl;
+
+  for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
+    algebra::Vector3D v= g->get_vertex(i);
+    get_stream() << "<marker id=\"" << ++marker_index_ << "\""
+                 << " x=\"" << v[0] << "\""
+                 << " y=\"" << v[1] << "\""
+                 << " z=\"" << v[2] << "\""
+                 << " radius=\"" << radius << "\""
+                 << " r=\"" << g->get_color().get_red() << "\""
+                 << " g=\"" << g->get_color().get_green() << "\""
+                 << " b=\"" << g->get_color().get_blue() <<  "\""
+                 << " note=\"" << name <<  "\"/>" << std::endl;
+  }
 }
 
 

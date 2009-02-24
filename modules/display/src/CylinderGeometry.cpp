@@ -27,6 +27,9 @@ void CylinderGeometry::show(std::ostream &out) const {
 unsigned int CylinderGeometry::get_dimension() const{
   return 1;
 }
+unsigned int CylinderGeometry::get_number_of_vertices() const{
+  return 2;
+}
 algebra::Vector3D CylinderGeometry::get_vertex(unsigned int i) const {
   IMP_assert(i < 2, "Invalid vertex of cylinder");
   return p_[i];
