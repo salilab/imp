@@ -149,6 +149,29 @@ extern IMP%(MODULE)sEXPORT VersionInfo version_info;""" \
 
     print >> h, "\n#endif  /* IMP%s_INTERNAL_VERSION_INFO_H */" % module.upper()
 
+def action_link_test(target, source, env):
+    """The IMPModuleLinkTesto Builder generates a source file. By linking in two
+    of these, any functions which are defined in headers but not declared inline are detected"""
+    module = source[0].get_contents()
+    cpp = file(target[0].abspath, 'w')
+
+    print >> cpp, """/**
+ *  \\file %s/internal/%s
+ *  \\brief Test linking for non-inlined functions.
+ *
+ *  This file is auto-generated, do not edit.
+ *
+ *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *
+ */
+""" % (module, target[0].abspath)
+
+    print >> cpp, """
+#ifndef NDEBUG
+#include "IMP/%s.h"
+#endif
+""" % (module)
+
 def _add_all_alias(aliases, env, name):
     """Add an 'all' alias `name` to the list of aliases, but only if the
        environment has been validated (i.e. this module is OK to build)."""
@@ -184,7 +207,9 @@ def IMPSharedLibrary(env, files, install=True):
        created by `IMPSharedLibraryEnvironment`."""
     module = env['IMP_MODULE']
     lib = env.SharedLibrary('#/build/lib/imp_%s' % module,
-                            list(files) + [env['VER_CPP']])
+                            list(files) + [env['VER_CPP'], \
+                                               env['LINK_0_CPP'],\
+                                               env['LINK_1_CPP']])
     if env['PLATFORM'] == 'darwin':
         env.AddPostAction (lib, "install_name_tool -id %s %s" \
                                % (lib[0].abspath, lib[0].path))
@@ -352,8 +377,10 @@ def IMPModule(env, module, author, version, description, cpp=True):
     env = env.Clone()
     config = Builder(action=action_config)
     version_info = Builder(action=action_version_info)
+    link_test = Builder(action=action_link_test)
     env.Append(BUILDERS = {'IMPModuleConfig': config,
-                           'IMPModuleVersionInfo': version_info})
+                           'IMPModuleVersionInfo': version_info,
+                           'IMPModuleLinkTest': link_test})
 
     env['IMP_MODULE'] = module
     env['IMP_MODULE_DESCRIPTION'] = description
@@ -372,6 +399,10 @@ def IMPModule(env, module, author, version, description, cpp=True):
                                                '%s/pyext/%s_config.i' \
                                                % (module, module)),
                                               env.Value(module))[0]
+        env['LINK_0_CPP']=env.IMPModuleLinkTest('%s/src/internal/link_0.cpp' % module,
+                                                env.Value(module))[0]
+        env['LINK_1_CPP']=env.IMPModuleLinkTest('%s/src/internal/link_1.cpp' % module,
+                                                env.Value(module))[0]
         env.AddMethod(IMPSharedLibraryEnvironment)
         env.AddMethod(IMPPythonExtensionEnvironment)
         env.AddMethod(IMPHeaders)
