@@ -26,7 +26,6 @@ void LogOptimizerState::update() {
   if (step_%(skip_steps_+1)==0) {
     unsigned int n= step_;
     n/= (skip_steps_+1);
-    --n;
     char buf[1000];
     sprintf(buf, name_template_.c_str(), n);
     IMP_LOG(TERSE, "Writing file " << buf << std::endl);
