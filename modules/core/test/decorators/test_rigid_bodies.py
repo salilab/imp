@@ -85,16 +85,17 @@ class WLCTests(IMP.test.TestCase):
         w.set_file_name(name)
         r=.1
         #c= IMP.algebra.Vector3D(.8, .2, .2)
-        w.add_geometry(IMP.display.SphereGeometry(targets[0],r,
-                                                  IMP.display.Color(.9, .2, .2)))
-        w.add_geometry(IMP.display.SphereGeometry(targets[1],r,
-                                                  IMP.display.Color(.7*.9, .2, .2)))
-        w.add_geometry(IMP.display.SphereGeometry(targets[2],r,
-                                                  IMP.display.Color(.4*.9, .2, .2)))
-        ge= IMP.display.RigidBodyDerivativeGeometryExtractor(pr, rbd.get_traits())
-        gs= ge.get_geometry(rbd.get_particle())
-        for g in gs:
-            w.add_geometry(g)
+        sg=IMP.display.SphereGeometry(targets[0],r)
+        sg.set_color(IMP.display.Color(.9, .2, .2))
+        w.add_geometry(sg)
+        sg=IMP.display.SphereGeometry(targets[1],r)
+        sg.set_color(IMP.display.Color(.7*.9, .2, .2))
+        w.add_geometry(sg)
+        sg=IMP.display.SphereGeometry(targets[2],r)
+        sg.set_color(IMP.display.Color(.4*.9, .2, .2))
+        w.add_geometry(sg)
+        ge= IMP.display.RigidBodyDerivativeGeometry(rbd, pr)
+        w.add_geometry(ge)
         for i in range(0,len(xyzs)):
             g=IMP.display.XYZRGeometry(xyzs[i])
             if i==0:
