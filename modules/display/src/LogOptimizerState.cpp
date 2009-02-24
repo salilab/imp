@@ -23,9 +23,9 @@ void LogOptimizerState::show(std::ostream &out) const {
 
 void LogOptimizerState::update() {
   ++step_;
-  if (skip_steps_==0 || step_%skip_steps_==0) {
+  if (step_%(skip_steps_+1)==0) {
     unsigned int n= step_;
-    if (skip_steps_ != 0) n/= skip_steps_;
+    n/= (skip_steps_+1);
     --n;
     char buf[1000];
     sprintf(buf, name_template_.c_str(), n);
