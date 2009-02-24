@@ -65,8 +65,8 @@ void MRCReaderWriter::read_8_data(float *pt)
   for(size_t i=0;i<n;i++)
     pt[i]=(float)grid_8bit[i];
   delete(grid_8bit);
-  std::cout << "MRC file read in 8-bit mode: grid "
-  << header.nx << "x" << header.ny << "x" << header.nz << "\n";
+  //  std::cout << "MRC file read in 8-bit mode: grid "
+  //<< header.nx << "x" << header.ny << "x" << header.nz << "\n";
 }
 
 
@@ -90,8 +90,8 @@ void MRCReaderWriter::read_32_data(float *pt)
     unsigned char *ch = (unsigned char *)pt;
     byte_swap(ch, n);
   }
-  std::cout << "MRC file read in 32-bit mode: grid " << header.nx << "x"
-            << header.ny << "x" << header.nz << std::endl;
+  //  std::cout << "MRC file read in 32-bit mode: grid " << header.nx << "x"
+  //          << header.ny << "x" << header.nz << std::endl;
 }
 
 void MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
