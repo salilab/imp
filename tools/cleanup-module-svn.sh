@@ -8,8 +8,8 @@ link_0.cpp
 link_1.cpp" > $tmpfile
 svn propset svn:ignore --file $tmpfile  modules/$1/src/internal
 rm -rf $tmpfile
-echo "\*.os
-\*.obj" > $tmpfile
+echo "*.os
+*.obj" > $tmpfile
 svn propset svn:ignore --file $tmpfile  modules/$1/src/
 rm -rf $tmpfile
 echo "IMP.$1.py
