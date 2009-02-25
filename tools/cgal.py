@@ -9,6 +9,7 @@ def _check(context):
 
     ret = context.sconf.CheckLibWithHeader(['CGAL'], 'CGAL/basic.h', 'CXX',
                                            'CGAL_assertion(1);', autoadd=False)
+    context.Message('Checking for CGAL ...')
     context.Result(ret)
     if ret:
         context.env['CGAL_LIBS'] = ['CGAL']
