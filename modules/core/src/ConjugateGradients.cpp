@@ -21,6 +21,8 @@
     }                                                   \
   }
 
+#define IMP_CG_SCALE
+
 IMPCORE_BEGIN_NAMESPACE
 
 //! Estimate of limit of machine precision
@@ -59,7 +61,11 @@ ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
     IMP_CHECK_VALUE(x[i]);
+#ifdef IMP_CG_SCALE
+    double v=get_scaled_value(float_indices[i]); // scaled
+#else
     double v=get_value(float_indices[i]); // scaled
+#endif
     if (std::abs(x[i] - v) > max_change_) {
       if (x[i] < v) {
         x[i] = v - max_change_;
@@ -67,7 +73,11 @@ ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
         x[i] = v + max_change_;
       }
     }
+#ifdef IMP_CG_SCALE
+    set_scaled_value(float_indices[i], x[i]);
+#else
     set_value(float_indices[i], x[i]);
+#endif
   }
 
   /* get score */
@@ -75,7 +85,11 @@ ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
 
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
+#ifdef IMP_CG_SCALE
+    dscore[i] = get_scaled_derivative(float_indices[i]); //scaled
+#else
     dscore[i] = get_derivative(float_indices[i]); //scaled
+#endif
     IMP_check(is_good_value(dscore[i]),
               "Bad input to CG", ValueException);
   }
@@ -254,6 +268,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
   IMP_check(get_model(),
             "Must set the model on the optimizer before optimizing",
             ValueException);
+  clear_range_cache();
   std::vector<NT> x, dx;
   int i;
   //ModelData* model_data = get_model()->get_model_data();
@@ -266,7 +281,11 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
   dx.resize(n);
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
+#ifdef IMP_CG_SCALE
+    x[i] = get_scaled_value(float_indices[i]); //scaled
+#else
     x[i] = get_value(float_indices[i]); //scaled
+#endif
     IMP_check(x[i] == x[i] && x[i] != std::numeric_limits<NT>::infinity()
               && x[i] != - std::numeric_limits<NT>::infinity(),
               "Bad input to CG", ValueException);
