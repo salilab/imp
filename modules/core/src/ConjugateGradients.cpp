@@ -50,30 +50,32 @@ void ConjugateGradients::failure() {
     \param[out] dscore First derivatives for current state.
     \return The model score.
  */
-Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
-                                    std::vector<Float> &x,
-                                    std::vector<Float> &dscore)
+ConjugateGradients::NT
+ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
+                              std::vector<NT> &x,
+                              std::vector<NT> &dscore)
 {
   int i, opt_var_cnt = float_indices.size();
   /* set model state */
   for (i = 0; i < opt_var_cnt; i++) {
-    IMP_CHECK_VALUE(x[i])
-    if (std::abs(x[i] - get_value(float_indices[i])) > max_change_) {
-      if (x[i] < get_value(float_indices[i])) {
-        x[i] = get_value(float_indices[i]) - max_change_;
+    IMP_CHECK_VALUE(x[i]);
+    double v=get_value(float_indices[i]); // scaled
+    if (std::abs(x[i] - v) > max_change_) {
+      if (x[i] < v) {
+        x[i] = v - max_change_;
       } else {
-        x[i] = get_value(float_indices[i]) + max_change_;
+        x[i] = v + max_change_;
       }
     }
     set_value(float_indices[i], x[i]);
   }
 
   /* get score */
-  Float score = get_model()->evaluate(true);
+  NT score = get_model()->evaluate(true);
 
   /* get derivatives */
   for (i = 0; i < opt_var_cnt; i++) {
-    dscore[i] = get_derivative(float_indices[i]);
+    dscore[i] = get_derivative(float_indices[i]); //scaled
     IMP_check(is_good_value(dscore[i]),
               "Bad input to CG", ValueException);
   }
@@ -95,16 +97,16 @@ Float ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
     \return true if the line search succeeded, false if max_steps was exceeded
             or a minimum could not be found.
  */
-bool ConjugateGradients::line_search(std::vector<Float> &x,
-                                     std::vector<Float> &dx,
+bool ConjugateGradients::line_search(std::vector<NT> &x,
+                                     std::vector<NT> &dx,
                                      NT &alpha,
                                      const std::vector<FloatIndex>
                                      &float_indices,
                                      int &ifun, NT &f,
                                      NT &dg, NT &dg1,
                                      int max_steps,
-                                     const std::vector<Float> &search,
-                                     const std::vector<Float> &estimate)
+                                     const std::vector<NT> &search,
+                                     const std::vector<NT> &estimate)
 {
   NT ap, fp, dp, step, minf, u1, u2;
   int i, n, ncalls = ifun;
@@ -252,7 +254,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
   IMP_check(get_model(),
             "Must set the model on the optimizer before optimizing",
             ValueException);
-  std::vector<Float> x, dx;
+  std::vector<NT> x, dx;
   int i;
   //ModelData* model_data = get_model()->get_model_data();
 
@@ -264,9 +266,9 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
   dx.resize(n);
   // get initial state in x(n):
   for (i = 0; i < n; i++) {
-    x[i] = get_value(float_indices[i]);
-    IMP_check(x[i] == x[i] && x[i] != std::numeric_limits<Float>::infinity()
-              && x[i] != - std::numeric_limits<Float>::infinity(),
+    x[i] = get_value(float_indices[i]); //scaled
+    IMP_check(x[i] == x[i] && x[i] != std::numeric_limits<NT>::infinity()
+              && x[i] != - std::numeric_limits<NT>::infinity(),
               "Bad input to CG", ValueException);
   }
 
@@ -283,7 +285,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
   // destimate holds the gradient at the best current estimate
   // resy holds the restart Y vector
   // ressearch holds the restart search vector
-  std::vector<Float> search, estimate, destimate, resy, ressearch;
+  std::vector<NT> search, estimate, destimate, resy, ressearch;
   search.resize(n);
   estimate.resize(n);
   destimate.resize(n);
@@ -314,7 +316,7 @@ g20:
   dxsq = -dg1;
 
   /* Test if the initial point is the minimizer. */
-  if (dxsq <= eps * eps * std::max(Float(1.0), xsq)) {
+  if (dxsq <= eps * eps * std::max(NT(1.0), xsq)) {
     goto end;
   }
 
@@ -372,10 +374,11 @@ g40:
   /* COMPUTE THE NEW SEARCH VECTOR;
      TEST IF A POWELL RESTART IS INDICATED. */
   rtst = 0.;
-  for (i = 0; i < n; i++) {
+  for (i = 0; i<n; ++i) {
     rtst += dx[i] * destimate[i];
   }
-  if (fabs(rtst / dxsq) > 0.2) {
+
+  if (std::abs(rtst/dxsq) > .2) {
     nrst = n;
   }
 
