@@ -14,8 +14,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-typedef std::pair<Float, Float> FloatPair;
-
 //! Abstract single variable functor class for score functions.
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
