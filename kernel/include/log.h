@@ -21,6 +21,14 @@ IMP_BEGIN_NAMESPACE
 
 /** \defgroup log Logging
     \defgroup assert Error checking and reporting
+
+    By default \imp performs a variety of runtime error checks. These
+    can be controlled using the IMP::set_check_level function. Call
+    IMP::set_check_level with IMP::NONE to disable all checks when you
+    are performing your optimization as opposed to testing your
+    code. Make sure you run your code with the level set to at least
+    CHEAP before running your final optimization to make sure that
+    \imp is used correctly.
  */
 
 //! The log levels supported by IMP
