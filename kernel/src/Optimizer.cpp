@@ -23,11 +23,11 @@ Optimizer::~Optimizer()
 }
 
 
-void Optimizer::update_states()
+void Optimizer::update_states() const
 {
   IMP_LOG(VERBOSE,
           "Updating OptimizerStates " << std::flush);
-  for (OptimizerStateIterator it = optimizer_states_begin();
+  for (OptimizerStateConstIterator it = optimizer_states_begin();
        it != optimizer_states_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
     (*it)->update();
