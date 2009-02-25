@@ -18,6 +18,7 @@
 #include "Pointer.h"
 
 #include <limits>
+#include <cmath>
 
 IMP_BEGIN_NAMESPACE
 
@@ -74,6 +75,8 @@ protected:
   //! Update optimizer state, should be called at each successful step
   void update_states();
 
+  //! Methods and classes to iterate through optimized attributes
+  //@{
   //! An index to an optimized particle attribute
   struct FloatIndex
   {
@@ -167,7 +170,15 @@ protected:
     return FloatIndexIterator(model_->particles_end(),
                               model_->particles_end());
   }
+  //!@}
 
+
+  //! Methods for getting and setting optimized attributes
+  /** Optimizers don't have to go through the particles themselves
+      looking for values to optimize unless they care about special
+      properties of the optimized values.
+  */
+  //!@{
   //! Set the value of an optimized attribute
   /** The attribute must be optimized or an ErrorException is thrown.
    */
@@ -195,11 +206,66 @@ protected:
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_derivative(*fi.fk_);
   }
+  //!@}
+
+
+  double width(FloatKey k) const {
+    if (!widths_.contains(k)) {
+      FloatPair w= model_->get_range(k);
+      double wid=static_cast<double>(w.second)- w.first;
+      if (wid > .0001) {
+        //double nwid= std::pow(2, std::ceil(log2(wid)));
+        widths_.insert(k, wid);
+      } else {
+        widths_.insert(k, 1);
+      }
+    }
+    return widths_.get_value(k);
+    //return 1.0;
+  }
+
+  //! Methods to get and set scaled optimizable values
+  /** Certain optimizers benefit from having all the optimized values
+      scaled to vary over a similar range. These accessors use the
+      Model::get_range ranges to scale the values before returning
+      them and unscale them before setting them.
+  */
+  //{@
+  //! Set the value of an optimized attribute
+  /** The attribute must be optimized or an ErrorException is thrown.
+   */
+  void set_scaled_value(FloatIndex fi, Float v) {
+    double wid = width(*fi.fk_);
+    set_value(fi, v*wid);
+  }
+
+  //! Get the value of an optimized attribute
+  double get_scaled_value(FloatIndex fi) const  {
+    double uv= get_value(fi);
+    double wid = width(*fi.fk_);
+    return uv/wid;
+  }
+
+  //! Get the derivative of an optimized attribute
+  double get_scaled_derivative(FloatIndex fi) const {
+    double uv=get_derivative(fi);
+    double wid= width(*fi.fk_);
+    return uv*wid;
+  }
+
+  //! Clear the cache of range information. Do this at the start of optimization
+  void clear_range_cache() {
+    widths_.clear();
+  }
+  //!@}
 
   //! A collection of indexes
   typedef std::vector<FloatIndex> FloatIndexes;
 
 private:
+  typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
+   FloatTable;
+  mutable FloatTable widths_;
   Pointer<Model> model_;
 };
 

@@ -36,7 +36,6 @@ void Optimizer::update_states()
   IMP_LOG(VERBOSE, "done." << std::endl);
 }
 
-
 IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
               OptimizerState*, obj->set_optimizer(this),,
               obj->set_optimizer(NULL));

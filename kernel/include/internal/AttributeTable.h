@@ -115,16 +115,17 @@ class AttributeTable
               IndexException);
   }
 
-  void clear() {
-    map_.clear();
-  }
-
 public:
   typedef typename Traits::Value Value;
   typedef typename Traits::Key Key;
   AttributeTable(){}
   ~AttributeTable() {
     //std::cout << "Deleting " << map_ << std::endl;
+  }
+
+
+  void clear() {
+    map_.clear();
   }
 
   const Value get_value(Key k) const {
