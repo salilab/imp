@@ -211,7 +211,6 @@ def IMPSharedLibrary(env, files, install=True):
                                                env['LINK_0_CPP'],\
                                                env['LINK_1_CPP']])
     if env['PLATFORM'] == 'darwin':
-        env.Append(SHLINKFLAGS='-headerpad_max_install_names')
         env.AddPostAction (lib, "install_name_tool -id %s %s" \
                                % (lib[0].abspath, lib[0].path))
         libdir= os.path.split(lib[0].abspath)[0]
