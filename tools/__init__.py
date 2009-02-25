@@ -245,7 +245,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         env['PYTHON'] = 'python'
         env['PATHSEP'] = os.path.pathsep
     try:
-        env['SHLINKFLAGS'] = str(env['SHLINKFLAGS']).replace('-no_archive', '')
+        env['SHLINKFLAGS'] = [ x.replace('-no_archive', '') for x in env['SHLINKFLAGS']]
     except ValueError:
         pass
     env['PYTHONPATH'] = '#/build/lib'
@@ -326,6 +326,8 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     e = env.Clone()
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CCFLAGS='${VIS_CCFLAGS}')
+    if env['PLATFORM'] == 'darwin':
+        env.Append(SHLINKFLAGS=['-headerpad_max_install_names'])
     if e['PLATFORM'] == 'posix' and e['rpath']:
         dylinkflags=[]
         for p in e['LIBPATH']:
