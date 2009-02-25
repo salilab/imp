@@ -73,7 +73,7 @@ public:
 
 protected:
   //! Update optimizer state, should be called at each successful step
-  void update_states();
+  void update_states() const ;
 
   //! Methods and classes to iterate through optimized attributes
   //@{
@@ -85,9 +85,9 @@ protected:
      */
     friend class Optimizer;
     friend class FloatIndexIterator;
-    Model::ParticleIterator p_;
+    Model::ParticleConstIterator p_;
     Particle::OptimizedKeyIterator fk_;
-    FloatIndex(Model::ParticleIterator p): p_(p){}
+    FloatIndex(Model::ParticleConstIterator p): p_(p){}
   public:
     FloatIndex() {}
   };
@@ -99,7 +99,7 @@ protected:
   class FloatIndexIterator
    {
     typedef FloatIndexIterator This;
-    Model::ParticleIterator pe_;
+    Model::ParticleConstIterator pe_;
     mutable FloatIndex i_;
 
     void search_valid() const {
@@ -125,8 +125,8 @@ protected:
       search_valid();
     }
   public:
-    FloatIndexIterator(Model::ParticleIterator pc,
-                       Model::ParticleIterator pe): pe_(pe), i_(pc) {
+    FloatIndexIterator(Model::ParticleConstIterator pc,
+                       Model::ParticleConstIterator pe): pe_(pe), i_(pc) {
       if (pc != pe) {
         i_.fk_= (*pc)->optimized_keys_begin();
         search_valid();
@@ -161,12 +161,12 @@ protected:
   };
 
   //! Iterate through the optimized attributes
-  FloatIndexIterator float_indexes_begin() {
+  FloatIndexIterator float_indexes_begin() const {
     return FloatIndexIterator(model_->particles_begin(),
                               model_->particles_end());
   }
 
-  FloatIndexIterator float_indexes_end() {
+  FloatIndexIterator float_indexes_end() const {
     return FloatIndexIterator(model_->particles_end(),
                               model_->particles_end());
   }
@@ -182,7 +182,7 @@ protected:
   //! Set the value of an optimized attribute
   /** The attribute must be optimized or an ErrorException is thrown.
    */
-  void set_value(FloatIndex fi, Float v) {
+  void set_value(FloatIndex fi, Float v) const {
     IMP_assert(fi.p_ != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     IMP_assert((*fi.p_)->get_is_optimized(*fi.fk_),
@@ -194,7 +194,7 @@ protected:
   //! Get the value of an optimized attribute
   Float get_value(FloatIndex fi) const {
     /* cast to const needed here to help MSVC */
-    IMP_assert(static_cast<Model::ParticleIterator>(fi.p_)
+    IMP_assert(static_cast<Model::ParticleConstIterator>(fi.p_)
                != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_value(*fi.fk_);
@@ -234,7 +234,7 @@ protected:
   //! Set the value of an optimized attribute
   /** The attribute must be optimized or an ErrorException is thrown.
    */
-  void set_scaled_value(FloatIndex fi, Float v) {
+  void set_scaled_value(FloatIndex fi, Float v) const {
     double wid = width(*fi.fk_);
     set_value(fi, v*wid);
   }
