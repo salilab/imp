@@ -40,7 +40,16 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
   //! Open a new file with the given name
   /** Set it to "" to close. */
   void set_file_name(std::string name) {
-    if (out_.is_open()) {
+    if (
+        // on our sun test platform the decl of is_open is non-const
+        // the sun and __sun test is copied from boost config, it would
+        // be better to test on the STL version
+#if defined(sun) || defined(__sun)
+        const_cast<std::ofstream&>(out_).is_open()
+#else
+        out_.is_open()
+#endif
+        ) {
       on_close();
       out_.close();
     }
