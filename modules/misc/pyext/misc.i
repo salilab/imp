@@ -28,6 +28,7 @@ namespace IMP::misc {
   IMP_OWN_CONSTRUCTOR(RefineOncePairScore)
   IMP_OWN_CONSTRUCTOR(LowestRefinedPairScore)
   IMP_OWN_CONSTRUCTOR(TunnelSingletonScore)
+  IMP_OWN_CONSTRUCTOR(StateAdaptor)
 }
 
 
@@ -38,3 +39,4 @@ namespace IMP::misc {
 %include "IMP/misc/RefineOncePairScore.h"
 %include "IMP/misc/attribute_statistics.h"
 %include "IMP/misc/LogPairScore.h"
+%include "IMP/misc/StateAdaptor.h"

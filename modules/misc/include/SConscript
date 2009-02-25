@@ -8,6 +8,7 @@ files = [
          'WormLikeChain.h',
          'attribute_statistics.h',
          'text_manipulation.h',
+         'StateAdaptor.h',
          'internal/tunnel_traits.h'
         ]
 
