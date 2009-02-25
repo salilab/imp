@@ -131,22 +131,27 @@ public:
 /** NONE means that minimial checks are used. CHEAP
     means that only constant time checks are performed
     and with EXPENSIVE non-linear time checks will be run.
+    \ingroup assert
  */
 enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
 
 
 //! Control runtime checks in the code
 /** The default level of checks is CHEAP.
+    \ingroup assert
  */
 IMPEXPORT void set_check_level(CheckLevel tf);
 
 //! Get the current audit mode
+/**  \ingroup assert
+ */
 IMPEXPORT CheckLevel get_check_level();
 
 
 //! Set whether exception messages are printed or not
 /** C++ doesn't display the messages, so if you are not using
     python, you need to turn this on to understand errors.
+    \ingroup assert
 */
 IMPEXPORT void set_print_exceptions(bool tf);
 
@@ -155,6 +160,7 @@ IMPEXPORT void set_print_exceptions(bool tf);
 /**
    The next code block (delimited by { }) is executed if
    get_check_level() <= level.
+   \ingroup assert
  */
 #define IMP_IF_CHECK(level)\
   if (level <= ::IMP::get_check_level())

@@ -46,7 +46,8 @@ IMP_LOG(TERSE, "Something interesting has occurred with variable "
                  << var << std::endl);
 \endcode
 
-\ref assert "Error reporting/checking" which can be controlled at runtime
+\ref assert "Error reporting/checking" which can be controlled at runtime. By default
+     some checks are performed. Make sure to turn them off if for maximum speed.
 \code
 IMP::set_check_level(IMP.EXPENSIVE);
 IMP_check(boolean_condition, "An error has occurred with value "
