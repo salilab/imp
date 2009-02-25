@@ -41,6 +41,26 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               {obj->set_model(NULL);});
 
 
+FloatPair Model::get_range(FloatKey k) const {
+  if (ranges_.find(k) != ranges_.end()) {
+    return ranges_.find(k)->second;
+  } else {
+    FloatPair r(std::numeric_limits<Float>::max(),
+                -std::numeric_limits<Float>::max());
+    for (ParticleConstIterator it= particles_begin();
+         it != particles_end(); ++it) {
+      if ((*it)->has_attribute(k)) {
+        Float v= (*it)->get_value(k);
+        r.first = std::min(r.first, v);
+        r.second= std::max(r.second, v);
+      }
+    }
+    IMP_LOG(TERSE, "Range for attribute " << k << " is " << r.first
+            << " to " << r.second << std::endl);
+    return r;
+  }
+}
+
 Float Model::evaluate(bool calc_derivs)
 {
   IMP_LOG(TERSE,

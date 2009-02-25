@@ -45,6 +45,7 @@ private:
   unsigned int iteration_;
   ParticleStorage particles_;
   unsigned int last_particle_index_;
+  std::map<FloatKey, FloatPair> ranges_;
 
   void add_particle_internal(Particle *p) {
     particles_.push_back(p);
@@ -128,6 +129,19 @@ public:
       }
     }
     throw IndexException("Bad particle index");
+  }
+
+  //! Return a range for the attribute.
+  /** This range is either the range found in the current set of particles
+      or a user-set range (using set_range). This method may be linear, the
+      first time it is called after each evaluate call.
+   */
+  FloatPair get_range(FloatKey k) const;
+
+  //! Set the expected range for an attribute
+  /** This range is not enforced, it is just to help the optimizer. */
+  void set_range(FloatKey k, FloatPair range) {
+    ranges_[k]=range;
   }
 
   //! Evaluate all of the restraints in the model and return the score.
