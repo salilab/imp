@@ -26,6 +26,9 @@ namespace IMP {
 namespace display {
 IMP_OWN_CONSTRUCTOR(LogOptimizerState)
 IMP_OWN_METHOD(LogOptimizerState, add_geometry)
+IMP_OWN_METHOD(BildWriter, add_geometry)
+IMP_OWN_METHOD(CMMWriter, add_geometry)
+IMP_OWN_METHOD(VRMLWriter, add_geometry)
 }
 }
 %feature("director") IMP::display::Writer;
