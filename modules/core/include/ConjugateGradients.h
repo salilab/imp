@@ -18,6 +18,15 @@ IMPCORE_BEGIN_NAMESPACE
 //! Simple conjugate gradients optimizer.
 /** Algorithm is as per Shanno and Phua, ACM Transactions On Mathematical
     Software 6 (December 1980), 618-622
+
+    Conjugate gradients optimization is sensitive to the scales of the
+    derivatives of the various attributes being optimized. By default,
+    the scales are estimated from the range of values found for the attribute
+    upon initialization. These estimates can be viewed either by calling
+    Model::get_range(my_float_key) or by turning on TERSE logging and looking
+    at logged messages. If this estimate does not accurately reflect the
+    scale, then you can use Model::set_range to set a more accurate range
+    for the parameters.
 */
 class IMPCOREEXPORT ConjugateGradients : public Optimizer
 {
