@@ -19,6 +19,16 @@
        radius size
        length
 this is a right cylinder
+
+todo:
+- get_point(int)
+- remove _get{high,low}*
+- doc whether area includes caps
+- remove get_bild_string
+- get_main_direction->get_direction
+- remove PI
+- document everything
+- fix overview docs
 */
 IMPALGEBRA_BEGIN_NAMESPACE
 const double PI = 4.0*std::atan(1.0);
