@@ -46,8 +46,7 @@ def main():
                os.path.join(modpath, "test", "run_all_tests.py"))
     sc= file("modules/SConscript", "a")
     sc.write(fix_string("""
-env.IMPModule('modulename', author='somebody', version='SVN',
-              description='A private module.')""", modname))
+env.IMPModule('modulename'""", modname))
 
 
 if __name__ == '__main__':
