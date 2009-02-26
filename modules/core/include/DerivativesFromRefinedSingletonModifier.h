@@ -39,7 +39,7 @@ public:
                                            = XYZDecorator::get_xyz_keys());
   ~DerivativesFromRefinedSingletonModifier();
 
-  IMP_SINGLETON_MODIFIER(internal::version_info);
+  IMP_SINGLETON_MODIFIER_DA(internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

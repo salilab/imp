@@ -35,13 +35,13 @@ void PairScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "End PairsScoreState::update" << std::endl);
 }
 
-void PairScoreState::do_after_evaluate(DerivativeAccumulator *)
+void PairScoreState::do_after_evaluate(DerivativeAccumulator *da)
 {
   if (!af_) return;
   IMP_LOG(TERSE, "Begin PairsScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP::internal::ContainerTraits<ParticlePair>
-    ::apply(af_.get(), v_);
+    ::apply(af_.get(), v_, da);
   IMP_LOG(TERSE, "End PairsScoreState::after_evaluate" << std::endl);
 }
 

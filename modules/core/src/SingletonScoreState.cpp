@@ -35,13 +35,13 @@ void SingletonScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "End SingletonsScoreState::update" << std::endl);
 }
 
-void SingletonScoreState::do_after_evaluate(DerivativeAccumulator *)
+void SingletonScoreState::do_after_evaluate(DerivativeAccumulator *da)
 {
   if (!af_) return;
   IMP_LOG(TERSE, "Begin SingletonsScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP::internal::ContainerTraits<Particle>
-    ::apply(af_.get(), v_);
+    ::apply(af_.get(), v_, da);
   IMP_LOG(TERSE, "End SingletonsScoreState::after_evaluate" << std::endl);
 }
 

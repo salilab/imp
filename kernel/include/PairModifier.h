@@ -14,7 +14,7 @@
 #include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
 #include "PairContainer.h"
-
+#include "DerivativeAccumulator.h"
 #include "base_types.h"
 
 IMP_BEGIN_NAMESPACE
@@ -31,6 +31,10 @@ public:
   PairModifier();
 
   virtual ~PairModifier();
+
+  /** Apply the function to a single value*/
+  virtual void apply(Particle *a, Particle *b,
+                     DerivativeAccumulator *da) const=0;
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b) const=0;
@@ -64,6 +68,28 @@ IMPEXPORT inline void apply(PairModifier* f,
   apply(f, ps->particle_pairs_begin(), ps->particle_pairs_end());
 }
 
+
+//! Apply the PairModifier to each element of the sequence
+template <class It>
+void apply(PairModifier* f, DerivativeAccumulator *da, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<ParticlePair>::apply(f, *c, da);
+  }
+}
+
+//! Apply a PairModifier to each in the ParticlePairs
+IMPEXPORT inline void apply(PairModifier* f,
+                            DerivativeAccumulator *da,
+                            ParticlePairs &ps) {
+  apply(f, da, ps.begin(), ps.end());
+}
+
+//! Apply a PairModifier to each in the ParticlePairs
+IMPEXPORT inline void apply(PairModifier* f,
+                            DerivativeAccumulator *da,
+                            PairContainer *ps) {
+  apply(f, da, ps->particle_pairs_begin(), ps->particle_pairs_end());
+}
 
 //! A collection
 typedef std::vector<PairModifier*> PairModifiers;

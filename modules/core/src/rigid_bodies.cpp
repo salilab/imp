@@ -37,6 +37,13 @@ RigidBodyTraits::RigidBodyTraits(std::string pre,
   d_->radius_= radius;
 }
 
+void RigidBodyTraits::set_model_ranges(Model *m) const {
+  m->set_range(d_->quaternion_[0], FloatPair(0,1));
+  m->set_range(d_->quaternion_[1], FloatPair(0,1));
+  m->set_range(d_->quaternion_[2], FloatPair(0,1));
+  m->set_range(d_->quaternion_[3], FloatPair(0,1));
+}
+
 bool RigidBodyTraits::get_has_required_attributes_for_body(Particle *p) const {
   for (unsigned int i=0; i< 4; ++i) {
     if (!p->has_attribute(d_->quaternion_[i])) return false;
@@ -311,6 +318,17 @@ void UpdateRigidBodyOrientation::apply(Particle *p) const {
   IMP::algebra::Transformation3D tr
     = IMP::algebra::rigid_align_first_to_second(local, cur);
   IMP_LOG(VERBOSE, "Alignment is " << tr << std::endl);
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE, ".color 1 0 0\n");
+    for (unsigned int i=0; i< cur.size(); ++i) {
+      IMP_LOG(VERBOSE, ".sphere " << algebra::spaces_io(cur[i]) << " .1\n");
+    }
+    IMP_LOG(VERBOSE, ".color 0 1 0\n");
+    for (unsigned int i=0; i< cur.size(); ++i) {
+      IMP_LOG(VERBOSE, ".sphere " << algebra::spaces_io(tr.transform(local[i]))
+              << " .1\n");
+    }
+  }
   rb.set_transformation(tr);
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *p =members[i];
@@ -328,24 +346,26 @@ void UpdateRigidBodyOrientation::show(std::ostream &out) const {
 
 
 
-void AccumulateRigidBodyDerivatives::apply(Particle *p) const {
+void AccumulateRigidBodyDerivatives::apply(Particle *p,
+                                           DerivativeAccumulator *da) const {
+  if (!da) return;
   RigidBodyDecorator rb(p, tr_);
-  DerivativeAccumulator da;
   Particles members= pr_->get_refined(p);
   algebra::Rotation3D rot= rb.get_transformation().get_rotation();
   IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *mp =members[i];
     RigidMemberDecorator d(mp, tr_);
+    algebra::Vector3D dv= d.get_derivatives();
+    IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
+    static_cast<XYZDecorator>(rb).add_to_derivatives(dv, *da);
     for (unsigned int i=0; i< 4; ++i) {
       algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(), i);
-      algebra::Vector3D dv= d.get_derivatives();
-      static_cast<XYZDecorator>(rb).add_to_derivatives(dv, da);
       IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << i
               << std::endl);
       p->add_to_derivative(tr_.get_quaternion_keys()[i],
                            dv*v,
-                           da);
+                           *da);
     }
   }
   IMP_LOG(TERSE, "Derivative is "
@@ -356,6 +376,10 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p) const {
           << std::endl);
 
   pr_->cleanup_refined(p, members);
+  IMP_LOG(TERSE, "Translation deriv is "
+          << static_cast<XYZDecorator>(rb).get_derivatives()
+          << "" << std::endl);
+
 }
 
 

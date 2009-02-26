@@ -33,7 +33,8 @@ public:
   virtual ~GroupnameModifier();
 
   /** Apply the function to a single value*/
-  virtual void apply(ClassnameArguments, DerivativeAccumulator *da) const=0;
+  virtual void apply(ClassnameArguments,
+                     DerivativeAccumulator *da) const=0;
 
   /** Apply the function to a single value*/
   virtual void apply(ClassnameArguments) const=0;

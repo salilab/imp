@@ -592,34 +592,70 @@ protection:                                                             \
 
 
 //! Define the functions needed for a SingletonModifier
-#define IMP_SINGLETON_MODIFIER(version) \
-VersionInfo get_version_info() const {return version;}\
-void show(std::ostream &out= std::cout) const;\
-void apply(Particle *a) const;
+/** \see IMP_SINGLETON_MODIFIER_DA
+ */
+#define IMP_SINGLETON_MODIFIER(version)                          \
+  VersionInfo get_version_info() const {return version;}         \
+  void show(std::ostream &out= std::cout) const;                 \
+  void apply(Particle *a) const;                                 \
+  void apply(Particle *a, DerivativeAccumulator*) const{         \
+    apply(a);                                                    \
+  }
 
 
 
 //! Define the functions needed for a PairModifier
-#define IMP_PAIR_MODIFIER(version) \
-VersionInfo get_version_info() const {return version;}\
-void show(std::ostream &out= std::cout) const;\
-void apply(Particle *a, Particle *b) const;
+/** \see IMP_PAIR_MODIFIER_DA
+ */
+#define IMP_PAIR_MODIFIER(version)                                      \
+  VersionInfo get_version_info() const {return version;}                \
+  void show(std::ostream &out= std::cout) const;                        \
+  void apply(Particle *a, Particle *b) const;                           \
+  void apply(Particle *a, Particle *b, DerivativeAccumulator*) const{     \
+    apply(a,b);                                                         \
+  }
 
+//! Define the functions needed for a SingletonModifier
+/** This version takes a derivative accumulator.
+   \see IMP_SINGLETON_MODIFIER
+ */
+#define IMP_SINGLETON_MODIFIER_DA(version)                            \
+  VersionInfo get_version_info() const {return version;}              \
+  void show(std::ostream &out= std::cout) const;                      \
+  void apply(Particle *a, DerivativeAccumulator *da) const;           \
+  void apply(Particle *) const{                                       \
+    IMP_failure("This modifier requires a derivative accumulator "    \
+               << *this, ErrorException);                             \
+ }
+
+
+//! Define the functions needed for a PairModifier
+/** This version takes a derivative accumulator.
+    \see IMP_PAIR_MODIFIER
+ */
+#define IMP_PAIR_MODIFIER_DA(version) \
+  VersionInfo get_version_info() const {return version;}                \
+ void show(std::ostream &out= std::cout) const;                         \
+ void apply(Particle *a, Particle *b, DerivativeAccumulator *da) const; \
+ void apply(Particle *, Particle *) const{                              \
+   IMP_failure("This modifier requires a derivative accumulator "       \
+               << *this, ErrorException);                               \
+ }
 //! Define the needed functions for a SingletonContainer
-#define IMP_SINGLETON_CONTAINER(version_info)                      \
-bool get_contains_particle(Particle* p) const;                      \
-unsigned int get_number_of_particles() const;                   \
-Particle* get_particle(unsigned int i) const;                       \
-void show(std::ostream &out= std::cout) const;                   \
-IMP::VersionInfo get_version_info() const { return version_info; }
+#define IMP_SINGLETON_CONTAINER(version_info)                       \
+  bool get_contains_particle(Particle* p) const;                    \
+  unsigned int get_number_of_particles() const;                     \
+  Particle* get_particle(unsigned int i) const;                     \
+  void show(std::ostream &out= std::cout) const;                    \
+  IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Define the needed functions for a PairContainer
-#define IMP_PAIR_CONTAINER(version_info)                      \
-bool get_contains_particle_pair(ParticlePair p) const;                      \
-unsigned int get_number_of_particle_pairs() const;                   \
-ParticlePair get_particle_pair(unsigned int i) const;                       \
-void show(std::ostream &out= std::cout) const;                   \
-IMP::VersionInfo get_version_info() const { return version_info; }
+#define IMP_PAIR_CONTAINER(version_info)                                \
+  bool get_contains_particle_pair(ParticlePair p) const;                \
+  unsigned int get_number_of_particle_pairs() const;                    \
+  ParticlePair get_particle_pair(unsigned int i) const;                 \
+  void show(std::ostream &out= std::cout) const;                        \
+  IMP::VersionInfo get_version_info() const { return version_info; }
 
 
 #endif  /* IMP_MACROS_H */

@@ -14,7 +14,7 @@
 #include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
 #include "SingletonContainer.h"
-
+#include "DerivativeAccumulator.h"
 #include "base_types.h"
 
 IMP_BEGIN_NAMESPACE
@@ -31,6 +31,10 @@ public:
   SingletonModifier();
 
   virtual ~SingletonModifier();
+
+  /** Apply the function to a single value*/
+  virtual void apply(Particle *a,
+                     DerivativeAccumulator *da) const=0;
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a) const=0;
@@ -64,6 +68,28 @@ IMPEXPORT inline void apply(SingletonModifier* f,
   apply(f, ps->particles_begin(), ps->particles_end());
 }
 
+
+//! Apply the SingletonModifier to each element of the sequence
+template <class It>
+void apply(SingletonModifier* f, DerivativeAccumulator *da, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<Particle>::apply(f, *c, da);
+  }
+}
+
+//! Apply a SingletonModifier to each in the Particles
+IMPEXPORT inline void apply(SingletonModifier* f,
+                            DerivativeAccumulator *da,
+                            Particles &ps) {
+  apply(f, da, ps.begin(), ps.end());
+}
+
+//! Apply a SingletonModifier to each in the Particles
+IMPEXPORT inline void apply(SingletonModifier* f,
+                            DerivativeAccumulator *da,
+                            SingletonContainer *ps) {
+  apply(f, da, ps->particles_begin(), ps->particles_end());
+}
 
 //! A collection
 typedef std::vector<SingletonModifier*> SingletonModifiers;
