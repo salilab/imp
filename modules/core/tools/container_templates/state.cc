@@ -35,13 +35,13 @@ void GroupnamesScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "End GroupnamesScoreState::update" << std::endl);
 }
 
-void GroupnamesScoreState::do_after_evaluate(DerivativeAccumulator *)
+void GroupnamesScoreState::do_after_evaluate(DerivativeAccumulator *da)
 {
   if (!af_) return;
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  apply(af_.get(), c_.get());
+  apply(af_.get(), da, c_.get());
   IMP_LOG(TERSE, "End GroupnamesScoreState::after_evaluate" << std::endl);
 }
 

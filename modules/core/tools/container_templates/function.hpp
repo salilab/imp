@@ -14,7 +14,7 @@
 #include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
 #include "GroupnameContainer.h"
-
+#include "DerivativeAccumulator.h"
 #include "base_types.h"
 
 IMP_BEGIN_NAMESPACE
@@ -31,6 +31,9 @@ public:
   GroupnameModifier();
 
   virtual ~GroupnameModifier();
+
+  /** Apply the function to a single value*/
+  virtual void apply(ClassnameArguments, DerivativeAccumulator *da) const=0;
 
   /** Apply the function to a single value*/
   virtual void apply(ClassnameArguments) const=0;
@@ -64,6 +67,28 @@ IMPEXPORT inline void apply(GroupnameModifier* f,
   apply(f, ps->classnames_begin(), ps->classnames_end());
 }
 
+
+//! Apply the GroupnameModifier to each element of the sequence
+template <class It>
+void apply(GroupnameModifier* f, DerivativeAccumulator *da, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<Classname>::apply(f, *c, da);
+  }
+}
+
+//! Apply a GroupnameModifier to each in the Classnames
+IMPEXPORT inline void apply(GroupnameModifier* f,
+                            DerivativeAccumulator *da,
+                            Classnames &ps) {
+  apply(f, da, ps.begin(), ps.end());
+}
+
+//! Apply a GroupnameModifier to each in the Classnames
+IMPEXPORT inline void apply(GroupnameModifier* f,
+                            DerivativeAccumulator *da,
+                            GroupnameContainer *ps) {
+  apply(f, da, ps->classnames_begin(), ps->classnames_end());
+}
 
 //! A collection
 typedef std::vector<GroupnameModifier*> GroupnameModifiers;
