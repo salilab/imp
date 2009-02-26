@@ -107,9 +107,9 @@ def action_version_info(target, source, env):
                                 (env.Value('foo'), env.Value('Me'),
                                  env.Value('1.0')))
        generates version information for the 'foo' module."""
-    module = source[0].get_contents()
-    author = source[1].get_contents()
-    version = source[2].get_contents()
+    module = env['IMP_MODULE']
+    author = env['IMP_MODULE_AUTHOR']#source[0].get_contents()
+    version = env['IMP_MODULE_VERSION']#source[1].get_contents()
     cpp = file(target[0].abspath, 'w')
     h = file(target[1].abspath, 'w')
 
@@ -362,7 +362,12 @@ def validate(env):
     module = env['IMP_MODULE']
     env['VALIDATED'] = True
 
-def IMPModule(env, module, author, version, description, cpp=True):
+def IMPModuleAbout(env, author, version, description):
+    env['IMP_MODULE_DESCRIPTION'] = description
+    env['IMP_MODULE_VERSION'] = version
+    env['IMP_MODULE_AUTHOR'] = author
+
+def IMPModule(env, module, cpp=True):
     """Set up an IMP module. The module's SConscript gets its own
        customized environment ('env') in which the following pseudo-builders
        or methods are available: IMPPython, IMPModuleTest, validate
@@ -383,7 +388,9 @@ def IMPModule(env, module, author, version, description, cpp=True):
                            'IMPModuleLinkTest': link_test})
 
     env['IMP_MODULE'] = module
-    env['IMP_MODULE_DESCRIPTION'] = description
+    env['IMP_MODULE_DESCRIPTION'] = "An IMP Module"
+    env['IMP_MODULE_VERSION'] = "SVN"
+    env['IMP_MODULE_AUTHOR'] = "A. Biologist"
     env.Prepend(CPPPATH=['#/build/include'])
     env.Prepend(LIBPATH=['#/build/lib'], LIBS=['imp'])
 
@@ -393,7 +400,7 @@ def IMPModule(env, module, author, version, description, cpp=True):
             env.IMPModuleVersionInfo(
                  ('%s/src/internal/version_info.cpp' % (module),
                   '%s/include/internal/version_info.h' % (module)),
-                 (env.Value(module), env.Value(author), env.Value(version)))
+                 ())
         # Generate config header and SWIG equivalent
         env['CONFIG_H'] = env.IMPModuleConfig(('%s/include/config.h' % module,
                                                '%s/pyext/%s_config.i' \
@@ -409,6 +416,7 @@ def IMPModule(env, module, author, version, description, cpp=True):
 
     env.AddMethod(IMPPython)
     env.AddMethod(IMPModuleTest)
+    env.AddMethod(IMPModuleAbout)
     env.AddMethod(validate)
     env.AddMethod(invalidate)
     env.Append(BUILDERS={'_IMPModuleTest': \

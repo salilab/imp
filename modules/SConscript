@@ -1,31 +1,12 @@
 Import('env')
 
-env.IMPModule('algebra', author='IMP developers', version='SVN',
-              description='General purpose algebraic manipulation.')
-
-env.IMPModule('core', author='IMP developers', version='SVN',
-              description='General purpose features of broad utility.')
-
-env.IMPModule('em', author='Keren Lasker', version='SVN',
-              description='Interface to the EMBED package.')
-
-env.IMPModule('saxs', author='Seung Joong Kim', version='SVN',
-              description='Small Angle X-ray Scattering methods.')
-
-env.IMPModule('domino', author='Keren Lasker', version='SVN',
-              description='DOMINO optimizer.')
-
-env.IMPModule('modeller', author='Ben Webb', version='SVN',
-              description='Interface to the MODELLER package.', cpp=False)
-
-env.IMPModule('misc', author='IMP developers', version='SVN',
-              description='Miscellaneous and/or experimental features.')
-
-env.IMPModule('display', author='IMP developers', version='SVN',
-                              description='Code to write to graphics formats.')
-
-env.IMPModule('search', author='Daniel Russel', version='SVN',
-              description='Build search structures over particles.')
-
-env.IMPModule('examples', author='Daniel Russel', version='SVN',
-              description='C++ example code for IMP.')
+env.IMPModule('algebra')
+env.IMPModule('core')
+env.IMPModule('display')
+env.IMPModule('domino')
+env.IMPModule('em')
+env.IMPModule('examples')
+env.IMPModule('misc')
+env.IMPModule('modeller', cpp=False)
+env.IMPModule('saxs')
+env.IMPModule('search')

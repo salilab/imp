@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='Keren Lasker', version='SVN',
+                   description='DOMINO optimizer.')
+
 # No dependent libraries, so this module can always be built:
 env.validate()
 

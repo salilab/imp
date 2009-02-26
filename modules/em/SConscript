@@ -3,6 +3,9 @@ from tools import embed
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='Keren Lasker', version='SVN',
+                   description='Interface to the EMBED package.')
+
 # Modify our environment for building against EMBED:
 embed.configure_check(env)
 

@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='Daniel Russel', version='SVN',
+                   description='Build search structures over particles.')
+
 # Link against CGAL if present:
 if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])

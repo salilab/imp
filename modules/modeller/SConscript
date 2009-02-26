@@ -1,6 +1,10 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='Ben Webb', version='SVN',
+                   description='Interface to the MODELLER package.')
+
+
 def modeller_fail(env, target, source):
     print """
   ERROR: Modeller is required to build %s.

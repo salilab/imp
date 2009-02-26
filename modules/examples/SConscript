@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='Daniel Russel', version='SVN',
+                   description='C++ example code for IMP.')
+
 env.Append(LIBS=['imp_core', 'imp_algebra'])
 env.validate()
 
