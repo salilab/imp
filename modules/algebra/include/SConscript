@@ -12,6 +12,7 @@ files = [
          'Matrix2D.h',
          'Matrix3D.h',
          'eigen_analysis.h',
+         'Cylinder3D.h',
          'vector_generators.h'
         ] \
         + SConscript('internal/SConscript')

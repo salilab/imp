@@ -9,6 +9,7 @@
 #define IMPALGEBRA_VECTOR_GENERATORS_H
 
 #include "VectorD.h"
+#include "Cylinder3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -172,6 +173,37 @@ random_vector_on_unit_sphere() {
   return random_vector_on_sphere(v, 1);
 }
 
+//! Generate a set of 3d points that uniformly cover a cylinder
+inline Vector3Ds uniform_cover(const Cylinder3D &cyl,
+                        int number_of_disks, int number_of_points_on_disk){
+  Vector3Ds points;
+  // move the cylinder to the base reference frame (center at (0,0,0)
+  // and its main direction to be on the Z axis)
+  Transformation3D cyl_rf_to_base_rf =
+          cyl.get_transformation_to_base_reference_frame();
+  Vector3D z_direction(0.0,0.0,1.0);
+  Float translation_step = cyl.get_height()/number_of_disks;
+  Float rotation_step = 2*PI/number_of_points_on_disk;
+  std::vector<Rotation3D> rotations;
+  for(int angle_ind = 0; angle_ind<number_of_points_on_disk;angle_ind++) {
+    rotations.push_back(
+         rotation_about_axis(z_direction, angle_ind*rotation_step));
+  }
+  Vector3D starting_point,rotated_point;
+  for(int disk_ind = 0; disk_ind<number_of_disks;disk_ind++) {
+    starting_point = cyl.get_low_base_point()+
+      Vector3D(cyl.get_radius(),0.0,translation_step*disk_ind);
+    starting_point = cyl_rf_to_base_rf.transform(starting_point);
+    for(std::vector<Rotation3D>::iterator i_rot = rotations.begin();
+        i_rot != rotations.end();i_rot++) {
+      rotated_point =  i_rot->rotate(starting_point);
+      //back transformation of the rotated point back to the original cylindar
+      points.push_back(
+       cyl_rf_to_base_rf.get_inverse().transform(rotated_point));
+    }
+  }
+  return points;
+}
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_GENERATORS_H */
