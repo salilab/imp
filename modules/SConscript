@@ -29,3 +29,6 @@ env.IMPModule('search', author='Daniel Russel', version='SVN',
 
 env.IMPModule('examples', author='Daniel Russel', version='SVN',
               description='C++ example code for IMP.')
+
+env.IMPModule('gsl', author='Daniel Russel', version='SVN',
+              description='Optimizers using GSL for IMP.')

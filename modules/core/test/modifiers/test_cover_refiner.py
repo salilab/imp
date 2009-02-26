@@ -28,7 +28,7 @@ class TestREFCover(IMP.test.TestCase):
             d.set_radius(random.uniform(0,1))
             hd.add_child(IMP.core.HierarchyDecorator.create(p))
         r= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())
-        c= IMP.core.CentroidOfRefinedSingletonModifier(r)
+        c= IMP.core.CentroidOfRefined(r)
         c.apply(pp)
 
 if __name__ == '__main__':

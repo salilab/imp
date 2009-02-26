@@ -1,12 +1,12 @@
 /**
- *  \file DerivativesFromRefinedSingletonModifier.h
+ *  \file DerivativesFromRefined.h
  *  \brief Accumulate the derivatives of the refined particles
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_DERIVATIVES_FROM_REFINED_SINGLETON_MODIFIER_H
-#define IMPCORE_DERIVATIVES_FROM_REFINED_SINGLETON_MODIFIER_H
+#ifndef IMPCORE_DERIVATIVES_FROM_REFINED_H
+#define IMPCORE_DERIVATIVES_FROM_REFINED_H
 
 #include "config.h"
 #include "internal/version_info.h"
@@ -20,28 +20,28 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Accumulate the derivatives of the refined particles.
-/** \see DerivativesToRefinedSingletonModifier
-    \see CoverRefinedSingletonModifier
+/** \see DerivativesToRefined
+    \see CoverRefined
     \see CentroidOfRefinedSingletonModifer
  An example showing a how to use such a score state to maintain a cover
  of the atoms of a protein by a sphere per residue.
  \verbinclude simple_examples/cover_particles.py
  */
-class IMPCOREEXPORT DerivativesFromRefinedSingletonModifier:
+class IMPCOREEXPORT DerivativesFromRefined:
 public SingletonModifier
 {
   Pointer<ParticleRefiner> r_;
   FloatKeys ks_;
 public:
   //! Copy ks from the particles returned by r.
-  DerivativesFromRefinedSingletonModifier(ParticleRefiner *r,
+  DerivativesFromRefined(ParticleRefiner *r,
                                           FloatKeys ks
                                            = XYZDecorator::get_xyz_keys());
-  ~DerivativesFromRefinedSingletonModifier();
+  ~DerivativesFromRefined();
 
   IMP_SINGLETON_MODIFIER_DA(internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_DERIVATIVES_FROM_REFINED_SINGLETON_MODIFIER_H */
+#endif  /* IMPCORE_DERIVATIVES_FROM_REFINED_H */

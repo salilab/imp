@@ -1,30 +1,30 @@
 /**
- *  \file CentroidOfRefinedSingletonModifier.cpp
+ *  \file CentroidOfRefined.cpp
  *  \brief CentroidOf a the refined particles with a sphere.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/core/CentroidOfRefinedSingletonModifier.h"
+#include "IMP/core/CentroidOfRefined.h"
 
 #include "IMP/core/bond_decorators.h"
 #include "IMP/core/XYZRDecorator.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
-CentroidOfRefinedSingletonModifier
-::CentroidOfRefinedSingletonModifier(ParticleRefiner *r,
+CentroidOfRefined
+::CentroidOfRefined(ParticleRefiner *r,
                                      FloatKey weight,
                                      FloatKeys ks): r_(r),
 ks_(ks), w_(weight)
 {
 }
 
-CentroidOfRefinedSingletonModifier::~CentroidOfRefinedSingletonModifier()
+CentroidOfRefined::~CentroidOfRefined()
 {
 }
 
-void CentroidOfRefinedSingletonModifier::apply(Particle *p) const
+void CentroidOfRefined::apply(Particle *p) const
 {
   Particles ps = r_->get_refined(p);
   unsigned int n= ps.size();
@@ -52,9 +52,9 @@ void CentroidOfRefinedSingletonModifier::apply(Particle *p) const
   r_->cleanup_refined(p, ps);
 }
 
-void CentroidOfRefinedSingletonModifier::show(std::ostream &out) const
+void CentroidOfRefined::show(std::ostream &out) const
 {
-  out << "CentroidOfRefinedSingletonModifier" << std::endl;
+  out << "CentroidOfRefined" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

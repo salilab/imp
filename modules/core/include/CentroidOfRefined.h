@@ -1,13 +1,13 @@
 /**
- *  \file CentroidOfRefinedSingletonModifier.h
+ *  \file CentroidOfRefined.h
  *  \brief Set the coordinates of the particle to be the centoid of the
  *  refined particles.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_CENTROID_OF_REFINED_SINGLETON_MODIFIER_H
-#define IMPCORE_CENTROID_OF_REFINED_SINGLETON_MODIFIER_H
+#ifndef IMPCORE_CENTROID_OF_REFINED_H
+#define IMPCORE_CENTROID_OF_REFINED_H
 
 #include "config.h"
 #include "internal/version_info.h"
@@ -24,11 +24,11 @@ IMPCORE_BEGIN_NAMESPACE
 /** An exception is thrown if there are no refined particles. The weight
     FloatKey can be FloatKey and then all the weights will be equal.
 
-    \see CoverRefinedSingletonModifier
-    \see DerivativesToRefinedSingletonModifier
-    \see DerivativesFromRefinedSingletonModifier
+    \see CoverRefined
+    \see DerivativesToRefined
+    \see DerivativesFromRefined
  */
-class IMPCOREEXPORT CentroidOfRefinedSingletonModifier:
+class IMPCOREEXPORT CentroidOfRefined:
 public SingletonModifier
 {
   Pointer<ParticleRefiner> r_;
@@ -36,15 +36,15 @@ public SingletonModifier
   FloatKey w_;
 public:
   //! Set the keys ks to be the average of the refined particles.
-  CentroidOfRefinedSingletonModifier(ParticleRefiner *r,
+  CentroidOfRefined(ParticleRefiner *r,
                                      FloatKey weight=FloatKey(),
                                      FloatKeys ks
                                       = XYZDecorator::get_xyz_keys());
-  ~CentroidOfRefinedSingletonModifier();
+  ~CentroidOfRefined();
 
   IMP_SINGLETON_MODIFIER(internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CENTROID_OF_REFINED_SINGLETON_MODIFIER_H */
+#endif  /* IMPCORE_CENTROID_OF_REFINED_H */

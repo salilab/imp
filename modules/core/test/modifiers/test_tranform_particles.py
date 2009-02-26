@@ -29,7 +29,7 @@ class ParticleTrasnformationTests(IMP.test.TestCase):
         """Test the TransformationFunction class"""
         r = IMP.algebra.rotation_from_fixed_xyz(0.2,0.8,-0.4)
         t=IMP.algebra.Transformation3D(r,IMP.algebra.Vector3D(20.0,-12.4,18.6))
-        tf=IMP.core.TransformSingletonModifier(t)
+        tf=IMP.core.Transform(t)
         for p in self.particles:
             r = tf.apply(p)
         tp=[]

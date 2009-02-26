@@ -1,29 +1,29 @@
 /**
- *  \file DerivativesToRefinedSingletonModifier.cpp
+ *  \file DerivativesFromRefined.cpp
  *  \brief Cover a bond with a sphere.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include "IMP/core/DerivativesToRefinedSingletonModifier.h"
+#include "IMP/core/DerivativesFromRefined.h"
 
 #include "IMP/core/bond_decorators.h"
 #include "IMP/core/XYZDecorator.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
-DerivativesToRefinedSingletonModifier
-::DerivativesToRefinedSingletonModifier(ParticleRefiner *r,
+DerivativesFromRefined
+::DerivativesFromRefined(ParticleRefiner *r,
                                           FloatKeys ks): r_(r), ks_(ks)
 {
 }
 
-DerivativesToRefinedSingletonModifier
-::~DerivativesToRefinedSingletonModifier()
+DerivativesFromRefined
+::~DerivativesFromRefined()
 {
 }
 
-void DerivativesToRefinedSingletonModifier
+void DerivativesFromRefined
 ::apply(Particle *p,
         DerivativeAccumulator *da) const
 {
@@ -32,16 +32,16 @@ void DerivativesToRefinedSingletonModifier
 
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< ks_.size(); ++j) {
-      Float f= p->get_derivative(ks_[j]);
-      ps[i]->add_to_derivative(ks_[j], f, *da);
+      Float f= ps[i]->get_derivative(ks_[j]);
+      p->add_to_derivative(ks_[j], f, *da);
     }
   }
   r_->cleanup_refined(p, ps);
 }
 
-void DerivativesToRefinedSingletonModifier::show(std::ostream &out) const
+void DerivativesFromRefined::show(std::ostream &out) const
 {
-  out << "DerivativesToRefinedSingletonModifier" << std::endl;
+  out << "DerivativesFromRefined" << std::endl;
 }
 
 IMPCORE_END_NAMESPACE
