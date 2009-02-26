@@ -30,7 +30,10 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {return out_;}
 
-  bool get_stream_is_open() const {
+  // Ideally this would be const, but std::ostream::is_open is unfortunately
+  // defined non-const in older versions of the C++ standard, so need to leave
+  // this as non-const until we can require g++ later than 3.5.
+  bool get_stream_is_open() {
     return out_.is_open();
   }
  public:
@@ -40,15 +43,7 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
   //! Open a new file with the given name
   /** Set it to "" to close. */
   void set_file_name(std::string name) {
-    if (
-        // versions of gcc <= ~3.5 need this work around
-        // I don't expect anything works with gcc 2 so ignore that
-#if defined(__GNUC__) && __GNUC__ <= 3 && __GNUC_MINOR__ < 5
-        const_cast<std::ofstream&>(out_).is_open()
-#else
-        out_.is_open()
-#endif
-        ) {
+    if (get_stream_is_open()) {
       on_close();
       out_.close();
     }
