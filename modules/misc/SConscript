@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='IMP developers', version='SVN',
+                   description='Miscellaneous and/or experimental features.')
+
 # No dependent libraries, so this module can always be built:
 env.validate()
 

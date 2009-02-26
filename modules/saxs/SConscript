@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='Dina Schneidman and Seung Joong Kim', version='SVN',
+                   description='Small Angle X-ray Scattering methods.')
+
 def modeller_fail(env, target, source):
     print """
   ERROR: Modeller is required to build %s.

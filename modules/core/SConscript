@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='IMP developers', version='SVN',
+                   description='General purpose features of broad utility.')
+
 # Link against CGAL if present:
 if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])

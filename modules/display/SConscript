@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='IMP developers', version='SVN',
+                   description='Code to write to graphics formats.')
+
 env.Append(LIBS=['imp_core', 'imp_algebra'])
 env.validate()
 

@@ -1,6 +1,9 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author='IMP developers', version='SVN',
+                   description='General purpose algebraic manipulation.')
+
 env.validate()
 
 # Subdirectories:
