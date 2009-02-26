@@ -1,6 +1,8 @@
 Import('env')
 Export('env')
 
+env.IMPModuleAbout(author="Someone", version="SVN", description="A private module")
+
 env.Append(LIBS=['imp_core'])
 env.validate()
 
