@@ -32,8 +32,7 @@ Float compute_distance_pair_score(const algebra::Vector3D &delta,
   Float score, deriv;
   if (d && distance >= MIN_DISTANCE) {
     boost::tie(score, deriv) = f->evaluate_with_derivative(shifted_distance);
-
-    *d= delta/distance *deriv;
+    *d= (delta/distance) *deriv;
   } else {
     // calculate the score based on the distance feature
     score = f->evaluate(shifted_distance);
@@ -56,7 +55,13 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
   }
 
+#ifndef NDEBUG
+  algebra::Vector3D d(std::numeric_limits<double>::quiet_NaN(),
+                      std::numeric_limits<double>::quiet_NaN(),
+                      std::numeric_limits<double>::quiet_NaN());
+#else
   algebra::Vector3D d;
+#endif
   Float score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd);
 
 
