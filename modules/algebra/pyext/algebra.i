@@ -28,6 +28,7 @@ namespace IMP {
 %include "IMP/algebra/Transformation3D.h"
 %include "IMP/algebra/geometric_alignment.h"
 %include "IMP/algebra/eigen_analysis.h"
+%include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/vector_generators.h"
 
 namespace IMP {
