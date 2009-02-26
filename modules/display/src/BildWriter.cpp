@@ -69,7 +69,7 @@ void BildWriter::add_geometry(Geometry *g) {
     if (g->get_number_of_vertices() >2) {
       get_stream() << ".polygon ";
       for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
-        get_stream() << " " << algebra::spaces_io(g->get_vertex(0));
+        get_stream() << " " << algebra::spaces_io(g->get_vertex(i));
       }
       get_stream() << "\n";
     }
