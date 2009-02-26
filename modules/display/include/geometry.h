@@ -10,6 +10,7 @@
 
 #include "config.h"
 #include "Color.h"
+#include "macros.h"
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
