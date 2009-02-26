@@ -22,6 +22,20 @@ namespace IMP {
   }
 }
 
+namespace boost {
+template <class T, int D> class multi_array{};
+
+namespace multi_array_types {
+  typedef size_t size_type;
+  typedef size_t difference_type;
+  struct index;
+  struct index_range{};
+  struct extent_range{};
+  struct index_gen{};
+  struct extent_gen{};
+}
+}
+
 /* Wrap our own base classes */
 %include "VectorD.i"
 %include "IMP/algebra/Rotation3D.h"
@@ -30,6 +44,7 @@ namespace IMP {
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/vector_generators.h"
+%include "IMP/algebra/MultiArray.h"
 
 namespace IMP {
  namespace algebra {
@@ -40,5 +55,7 @@ namespace IMP {
    %template(random_vector_in_unit_sphere) random_vector_in_unit_sphere<3>;
    %template(random_vector_in_unit_box) random_vector_in_unit_box<3>;
    %template(random_vector_on_box) random_vector_on_box<3>;
+   %template(bm2) ::boost::multi_array<float, 2>;
+   %template(multi2) MultiArray<float, 2>;
  }
 }
