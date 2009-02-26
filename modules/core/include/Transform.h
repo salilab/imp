@@ -1,11 +1,11 @@
 /**
- *  \file TransformSingletonModifier.h     \brief Transform a particle
+ *  \file Transform.h     \brief Transform a particle
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
-#ifndef IMPCORE_TRANSFORM_SINGLETON_MODIFIER_H
-#define IMPCORE_TRANSFORM_SINGLETON_MODIFIER_H
+#ifndef IMPCORE_TRANSFORM_H
+#define IMPCORE_TRANSFORM_H
 #include "config.h"
 #include "internal/version_info.h"
 #include <IMP/algebra/Transformation3D.h>
@@ -18,7 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 /**
    \see algebra::Transformation3D
  */
-class IMPCOREEXPORT TransformSingletonModifier : public SingletonModifier
+class IMPCOREEXPORT Transform : public SingletonModifier
 {
 public:
   //! Initialize
@@ -27,9 +27,9 @@ public:
   /param[in] ignore_non_xyz if false then appling the tranformation
                             on a non XYZ particle will result in an exception.
   */
-  TransformSingletonModifier(const algebra::Transformation3D &t,
+  Transform(const algebra::Transformation3D &t,
                     bool ignore_non_xyz=false);
-  ~TransformSingletonModifier(){}
+  ~Transform(){}
 
   IMP_SINGLETON_MODIFIER(internal::version_info);
 private:
@@ -39,4 +39,4 @@ private:
 
 
 IMPCORE_END_NAMESPACE
-#endif  /* IMPCORE_TRANSFORM_SINGLETON_MODIFIER_H */
+#endif  /* IMPCORE_TRANSFORM_H */

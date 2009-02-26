@@ -58,11 +58,11 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(BondSingletonScore)
     IMP_OWN_CONSTRUCTOR(ClosePairsPairScore)
     IMP_OWN_CONSTRUCTOR(ConnectivityRestraint)
-    IMP_OWN_CONSTRUCTOR(CoverRefinedSingletonModifier)
-    IMP_OWN_CONSTRUCTOR(CentroidOfRefinedSingletonModifier)
-    IMP_OWN_CONSTRUCTOR(DerivativesFromRefinedSingletonModifier)
-    IMP_OWN_CONSTRUCTOR(DerivativesToRefinedSingletonModifier)
-    IMP_OWN_CONSTRUCTOR(TransformSingletonModifier)
+    IMP_OWN_CONSTRUCTOR(CoverRefined)
+    IMP_OWN_CONSTRUCTOR(CentroidOfRefined)
+    IMP_OWN_CONSTRUCTOR(DerivativesFromRefined)
+    IMP_OWN_CONSTRUCTOR(DerivativesToRefined)
+    IMP_OWN_CONSTRUCTOR(Transform)
     IMP_OWN_CONSTRUCTOR(DihedralRestraint)
     IMP_OWN_CONSTRUCTOR(DistancePairScore)
     IMP_OWN_CONSTRUCTOR(DistanceRestraint)
@@ -135,7 +135,7 @@ namespace IMP {
 %include "IMP/core/BondBondPairScore.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/BrownianDynamics.h"
-%include "IMP/core/CentroidOfRefinedSingletonModifier.h"
+%include "IMP/core/CentroidOfRefined.h"
 %include "IMP/core/ChildrenParticleRefiner.h"
 %include "IMP/core/CMMLogOptimizerState.h"
 %include "IMP/core/ClosedCubicSpline.h"
@@ -146,11 +146,11 @@ namespace IMP {
 %include "IMP/core/ConnectivityRestraint.h"
 %include "IMP/core/ConstantRestraint.h"
 %include "IMP/core/Cosine.h"
-%include "IMP/core/CoverRefinedSingletonModifier.h"
-%include "IMP/core/DerivativesFromRefinedSingletonModifier.h"
-%include "IMP/core/DerivativesToRefinedSingletonModifier.h"
+%include "IMP/core/CoverRefined.h"
+%include "IMP/core/DerivativesFromRefined.h"
+%include "IMP/core/DerivativesToRefined.h"
 %include "IMP/core/DiffusionDecorator.h"
-%include "IMP/core/TransformSingletonModifier.h"
+%include "IMP/core/Transform.h"
 %include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"

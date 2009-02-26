@@ -6,7 +6,7 @@
  *
  */
 #include "IMP/domino/TransformationUtils.h"
-#include "IMP/core/TransformSingletonModifier.h"
+#include "IMP/core/Transform.h"
 #include "IMP/core/MolecularHierarchyDecorator.h"
 #include "IMP/core/HierarchyDecorator.h"
 #include <IMP/core/XYZDecorator.h>
@@ -43,7 +43,7 @@ void TransformationUtils::move2state(Particle *p_sample, Particle *p_trans) {
 
 void TransformationUtils::apply(Particle *p,const algebra::Transformation3D &t)
 {
-  core::TransformSingletonModifier tsm(t);
+  core::Transform tsm(t);
   Particles ps = core::get_leaves(
                  core::MolecularHierarchyDecorator::cast(p));
 //   core::GravityCenterScoreState g(p, FloatKey(),ps);
