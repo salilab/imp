@@ -21,7 +21,9 @@ struct StaticD
   algebra::Vector3D v_;
   StaticD(algebra::Vector3D v): v_(v){}
   Float get_coordinate(unsigned int i) {return v_[i];}
-  void add_to_derivatives(algebra::Vector3D, DerivativeAccumulator){}
+  void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator){
+    IMP_LOG(VERBOSE, "DistanceTo dropped deriv of " <<  v << std::endl);
+  }
 };
 
 DistanceToSingletonScore::DistanceToSingletonScore(UnaryFunction *f,
@@ -31,9 +33,12 @@ DistanceToSingletonScore::DistanceToSingletonScore(UnaryFunction *f,
 Float DistanceToSingletonScore::evaluate(Particle *b,
                                          DerivativeAccumulator *da) const
 {
-  return internal::evaluate_distance_pair_score(XYZDecorator(b),
-                                                StaticD(pt_), da,
-                                                f_.get(), boost::lambda::_1);
+  Float v= internal::evaluate_distance_pair_score(XYZDecorator(b),
+                                                  StaticD(pt_), da,
+                                                  f_.get(), boost::lambda::_1);
+  IMP_LOG(VERBOSE, "DistanceTo from " << XYZDecorator(b) << " to "
+          << pt_ << " scored " << v << std::endl);
+  return v;
 }
 
 void DistanceToSingletonScore::show(std::ostream &out) const

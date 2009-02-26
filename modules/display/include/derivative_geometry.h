@@ -46,7 +46,7 @@ public:
 class IMPDISPLAYEXPORT RigidBodyDerivativeGeometry:
   public CompoundGeometry
 { Pointer<ParticleRefiner> pr_;
-  Color xyzcolor_, qcolor_;
+  Color xyzcolor_, qcolor_, ccolor_;
   core::RigidBodyDecorator d_;
 public:
   //! Get the individual particles from the passed SingletonContainer

@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
+import IMP.gsl
 import IMP.display
 
 
@@ -21,7 +22,7 @@ class WLCTests(IMP.test.TestCase):
         for i in range(0, 10):
             mp= IMP.Particle(m)
             mxyz= IMP.core.XYZRDecorator.create(mp,
-                                               IMP.algebra.random_vector_in_unit_box(), 0.1)
+                                               IMP.algebra.random_vector_in_unit_box(), 0.01)
             chd= IMP.core.HierarchyDecorator.create(mp)
             hd.add_child(chd)
             #IMP.algebra.Vector3D(i%2, (i+1)%3, i)
@@ -30,6 +31,18 @@ class WLCTests(IMP.test.TestCase):
             print
         pr= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())
         rbd= IMP.core.RigidBodyDecorator.create(rbp, pr, tr)
+        w= IMP.display.BildWriter()
+        w.set_file_name(self.get_tmp_file_name('rigidbody.bild'))
+        for p in xyzs:
+            rm= IMP.core.RigidMemberDecorator(p.get_particle(), tr)
+            v= rm.get_internal_coordinates()
+            sg=IMP.display.SphereGeometry(v,.01)
+            sg.set_color(IMP.display.Color(1,0,0));
+            w.add_geometry(sg)
+        sg=IMP.display.SphereGeometry(IMP.algebra.Vector3D(0,0,0),.01)
+        sg.set_color(IMP.display.Color(1,1,0));
+        w.add_geometry(sg)
+        w.set_file_name("")
         return (m, rbd, pr, xyzs)
 
 
@@ -61,109 +74,6 @@ class WLCTests(IMP.test.TestCase):
             print
             self.assertInTolerance((d.get_coordinates()-v).get_squared_magnitude(),
                                    0, .1)
-
-    def _create_restraints(self, m, xyzs, traits):
-        r= IMP.algebra.random_rotation()
-        t= IMP.algebra.random_vector_in_unit_box()
-        tr= IMP.algebra.Transformation3D(r, t)
-        for i in range(0,3):
-            md= IMP.core.RigidMemberDecorator(xyzs[i].get_particle(), traits)
-            iv= md.get_internal_coordinates()
-            dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1),
-                                                  tr.transform(iv))
-            sr= IMP.core.SingletonRestraint(dt, xyzs[i].get_particle())
-            m.add_restraint(sr)
-        targets=[]
-        for d in xyzs:
-            md= IMP.core.RigidMemberDecorator(d.get_particle(), traits)
-            iv= md.get_internal_coordinates()
-            targets.append(tr.transform(iv))
-        return (tr, targets)
-
-    def _write_state(self, name, rbd, pr, xyzs, targets):
-        w= IMP.display.BildWriter()
-        w.set_file_name(self.get_tmp_file_name(name))
-        r=.1
-        #c= IMP.algebra.Vector3D(.8, .2, .2)
-        sg=IMP.display.SphereGeometry(targets[0],r)
-        sg.set_color(IMP.display.Color(.9, .2, .2))
-        w.add_geometry(sg)
-        sg=IMP.display.SphereGeometry(targets[1],r)
-        sg.set_color(IMP.display.Color(.7*.9, .2, .2))
-        w.add_geometry(sg)
-        sg=IMP.display.SphereGeometry(targets[2],r)
-        sg.set_color(IMP.display.Color(.4*.9, .2, .2))
-        w.add_geometry(sg)
-        ge= IMP.display.RigidBodyDerivativeGeometry(rbd, pr)
-        w.add_geometry(ge)
-        for i in range(0,len(xyzs)):
-            g=IMP.display.XYZRGeometry(xyzs[i])
-            if i==0:
-                g.set_color(IMP.display.Color(.2, .8, .2))
-            elif i==1:
-                g.set_color(IMP.display.Color(.2, .7*.8, .2))
-            elif i==2:
-                g.set_color(IMP.display.Color(.2, .4*.8, .2))
-            w.add_geometry(g)
-        w.set_file_name("")
-
-    def _check_optimization(self, m, xyzs, rbd, pr, targets, steps):
-        cg= IMP.core.SteepestDescent()
-        cg.set_model(m)
-        #rbd.show()
-        print "evaluating"
-        #m.evaluate(True)
-        #rbd.show()
-        #cg.optimize(1)
-        #m.evaluate(True)
-        #rbd.show()
-        #w= IMP.display.BildWriter()
-        #l= IMP.display.LogOptimizerState(w, "opt_state.%03d.bild")
-        IMP.set_log_level(IMP.SILENT)
-        cg.set_threshold(0)
-        cg.optimize(steps)
-        IMP.set_log_level(IMP.VERBOSE)
-        print "testing"
-        self._write_state("final_config.bild", rbd, pr, xyzs, targets)
-        #m.evaluate(False)
-        cg.optimize(1)
-        self._write_state("real_config.bild", rbd, pr, xyzs, targets)
-        for i in range(0,len(xyzs)):
-            md= xyzs[i]
-            tx= targets[i]
-            mc= md.get_coordinates()
-            mc.show(); print
-            tx.show(); print
-            self.assertInTolerance((mc-tx).get_squared_magnitude(),
-                                   0, .1)
-        print "done"
-
-    def test_snapped(self):
-        """Test rigid body optimization with snapping"""
-        (m, rbd, pr, xyzs)= self._create_rigid_body()
-        for d in xyzs:
-            d.set_coordinates_are_optimized(True)
-        rbd.set_coordinates_are_optimized(False)
-        # apply restraints to 3 particles
-        # optimize then check if the remainder are in place
-        (tr, targets)= self._create_restraints(m, xyzs, rbd.get_traits())
-        IMP.core.setup_rigid_body(m, rbd.get_particle(), pr, rbd.get_traits(),
-                         True)
-        self._check_optimization(m, xyzs, rbd, pr, targets, 100)
-
-    def _test_optimized(self):
-        """Test rigid body direct optimization"""
-        (m, rbd, pr, xyzs)= self._create_rigid_body()
-        for d in xyzs:
-            d.set_coordinates_are_optimized(False)
-        rbd.set_coordinates_are_optimized(True)
-        # apply restraints to 3 particles
-        # optimize then check if the remainder are in place
-        (tr, targets)= self._create_restraints(m, xyzs, rbd.get_traits())
-        IMP.core.setup_rigid_body(m, rbd.get_particle(), pr, rbd.get_traits(),
-                         False)
-        rbd.show()
-        self._check_optimization(m, xyzs, rbd, pr, targets, 100)
 
 if __name__ == '__main__':
     unittest.main()

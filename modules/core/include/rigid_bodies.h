@@ -53,6 +53,10 @@ class IMPCOREEXPORT RigidBodyTraits {
   FloatKey get_mass_key() const {
     return d_->mass_;
   }
+  //! Set appropriate ranges for contrainable values
+  /** Quaternion ranges are set to be from 0 to 1.
+   */
+  void set_model_ranges(Model *m) const;
   bool get_has_required_attributes_for_body(Particle *p) const;
   bool get_has_required_attributes_for_member(Particle* p) const;
   void add_required_attributes_for_body(Particle *p) const;
@@ -237,7 +241,7 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
   AccumulateRigidBodyDerivatives(ParticleRefiner *pr,
                                  RigidBodyTraits tr= RigidBodyTraits()):
     pr_(pr), tr_(tr){}
-  IMP_SINGLETON_MODIFIER(internal::version_info);
+  IMP_SINGLETON_MODIFIER_DA(internal::version_info);
 };
 
 
