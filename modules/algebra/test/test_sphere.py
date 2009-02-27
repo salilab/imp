@@ -53,10 +53,10 @@ class SphereTests(IMP.test.TestCase):
         center = IMP.algebra.Vector3D(4.0,5.0,-9.0)
         radius=5.0
         sph = IMP.algebra.Sphere3D(center,radius)
-        points=IMP.algebra.uniform_cover(sph,144)
+        points=IMP.algebra.uniform_cover(sph,400)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        self.assertEqual(len(points),144)
+        self.assertEqual(len(points),400)
         for i in xrange(len(points)):
             sampled_centroid = sampled_centroid + points[i]
         sampled_centroid = sampled_centroid * (1.0/len(points))
