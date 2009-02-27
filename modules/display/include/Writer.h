@@ -29,15 +29,17 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {return out_;}
 
-  // Ideally this would be const, but std::ostream::is_open is unfortunately
-  // defined non-const in older versions of the C++ standard, so need to leave
-  // this as non-const until we can require g++ later than 3.5.
-  bool get_stream_is_open() {
-    return out_.is_open();
-  }
  public:
   //! Create a writer to a file
   Writer();
+
+  // Ideally this would be const, but std::ostream::is_open is unfortunately
+  // defined non-const in older versions of the C++ standard, so need to leave
+  // this as non-const until we can require g++ later than 3.5.
+  //! Return whether a file is open for writing
+  bool get_stream_is_open() {
+    return out_.is_open();
+  }
 
   //! Open a new file with the given name
   /** Set it to "" to close. */
