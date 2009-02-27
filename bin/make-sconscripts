@@ -125,7 +125,7 @@ def main():
         cpp_excludes = h_excludes = []
     else:
         h_excludes = ['version_info.h', 'config.h']
-        cpp_excludes = ['version_info.cpp']
+        cpp_excludes = ['version_info.cpp', 'link_0.cpp', 'link_1.cpp']
 
     g = SConscriptGenerator('src', '.cpp',
                             "e = env.IMPSharedLibraryEnvironment()\n",
