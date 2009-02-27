@@ -17,7 +17,8 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Store a triangle
-/** Represented by three vertices
+/** Represented by three vertices. The triangles are oriented counter
+    clockwise.
  */
 class IMPDISPLAYEXPORT TriangleGeometry: public Geometry
 {
