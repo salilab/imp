@@ -89,7 +89,7 @@ public:
   const VectorD<4>& get_quaternion() const {
     return v_;
   }
-  Rotation3D multiply(const Rotation3D rot2) {
+  Rotation3D compose(const Rotation3D rot2) {
     return Rotation3D(a_*rot2.a_ - b_*rot2.b_ - c_*rot2.c_ - d_*rot2.d_,
                       a_*rot2.b_ + b_*rot2.a_ + c_*rot2.d_ - d_*rot2.c_,
                       a_*rot2.c_ - b_*rot2.d_ + c_*rot2.a_ + d_*rot2.b_,
