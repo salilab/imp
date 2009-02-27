@@ -89,7 +89,14 @@ public:
   const VectorD<4>& get_quaternion() const {
     return v_;
   }
-
+  Rotation3D multiply(const Rotation3D rot2) {
+    return Rotation3D(a_*rot2.a_ - b_*rot2.b_ - c_*rot2.c_ - d_*rot2.d_,
+                      a_*rot2.b_ + b_*rot2.a_ + c_*rot2.d_ - d_*rot2.c_,
+                      a_*rot2.c_ - b_*rot2.d_ + c_*rot2.a_ + d_*rot2.b_,
+                      a_*rot2.d_ + b_*rot2.c_ - c_*rot2.b_ + d_*rot2.a_);
+  }
+private:
+  double a_,b_,c_,d_;
   /** \brief Return the derivative of the position x with respect to
       internal variable i. */
   const Vector3D get_derivative(const Vector3D &o, unsigned int i) const {
@@ -271,6 +278,16 @@ inline Rotation3D rotation_about_axis(Vector3D axis, double angle)
   d = z*s;
   return Rotation3D(a,b,c,d);
 }
+
+// void rotation_bewteen_two_vectors(const Vector3D &v1,
+//                                   const Vector3D &v2) {
+//     Vector3D vv = cross_product(v1,v2);
+//     Float len = vv.get_magnitude();
+//     Float dotp = v1*v2;
+//     Float t = 1 - dotp;
+
+//     return rotation_about_axis(vv.get_unit_vector(),t);
+// }
 
 
 //! Pick a rotation at random from all possible rotations
