@@ -1,4 +1,14 @@
-/** \page make_module Making a module
+/** \page scripts Useful Scripts
+
+    \section make_scons Generate SConscripts
+    The \c SConscripts in a number of the modules must list all of the
+    header and \c cpp files which are part of the module (those of other
+    modules automatically build this list at compile time). These lists can
+    be generated using the \c make-sconscripts script. To run it to rebuild
+    the SConscripts for the module modulename do
+    \command{./bin/make-sconscrips modulename}
+
+    \section make_module Making a module
 
     This page describes how to create a new module in your local copy
     of \imp. Creating such a module is the easiest way to get started
@@ -10,7 +20,8 @@
 
     Then do
     \command{bin/make-module my_module}
-    to create the module.
+    to create the module. If you run \c scons with \c localmodules=True, then
+    your locally created module will be included in the build.
 
     You can use your new module in a variety of ways:
     - add C++ code to your module by putting \string{.h} files
@@ -28,9 +39,6 @@
       \string{%pythoncode} blocks to \string{modules/my_module/pyext/my_module.i}.
     - add test code to your library by putting \string{.py} files in
       \string{modules/my_module/test} or a subdirectory.
-
-    Examples of all types of usage are included in the newly created
-    module.
 
     If you feel your module is of interest to other \imp users and 
     developers, post to the \impdev list to discuss adding
