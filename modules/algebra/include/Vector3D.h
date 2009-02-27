@@ -30,7 +30,17 @@ inline Vector3D vector_product(const Vector3D& p1, const Vector3D& p2) {
                   p1[2]*p2[0]-p1[0]*p2[2],
                   p1[0]*p2[1]-p1[1]*p2[0]);
   }
-
+inline Vector3D get_vertical_vector(const Vector3D &v) {
+  if (v[0] != 0) {
+    return Vector3D((-v[1]-v[2])/v[0],1,1);
+  } else if (v[1] != 0.0) {
+    return Vector3D(1,(-v[0]-v[2])/v[1],1);
+  } else if (v[2] != 0.0) {
+    return Vector3D(1,1,(-v[0]-v[1])/v[2]);
+  } else {
+    return Vector3D(0.0,0.0,0.0);
+  }
+}
 
 IMPALGEBRA_END_NAMESPACE
 
