@@ -25,11 +25,11 @@ class IMPALGEBRAEXPORT Cylinder3D
 {
  public:
   Cylinder3D(const Vector3D &start,const Vector3D &end, double radius);
-  //! Get a transformation from the cylinder reference frame to the base one.
+  //! Get a transformation that places the cylinder direction on Z
   /**
-  The transformation places the cylinder direction on the Z-axis
+  /note the function would work if the center of the reference frame is (0,0,0)
   */
-  Transformation3D get_transformation_to_base_reference_frame() const;
+  Transformation3D get_transformation_to_place_direction_on_Z() const;
   Vector3D get_center() const {return start_+(end_-start_)*0.5;}
   Vector3D get_direction() const {return (end_-start_).get_unit_vector();}
   double get_radius() const {return radius_;}
