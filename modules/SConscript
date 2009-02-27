@@ -1,12 +1,30 @@
 Import('env')
 
-env.IMPModule('algebra')
-env.IMPModule('core')
-env.IMPModule('display')
-env.IMPModule('domino')
-env.IMPModule('em')
-env.IMPModule('examples')
-env.IMPModule('misc')
-env.IMPModule('modeller', cpp=False)
-env.IMPModule('saxs')
-env.IMPModule('search')
+cppmodules=['algebra',
+            'core',
+            'display',
+            'domino',
+            'em',
+            'examples',
+            'misc',
+            'saxs',
+            'search']
+pymodules=['modeller']
+
+for p in cppmodules:
+    print "Configuring IMP."+p
+    env.IMPModule(p)
+
+for p in pymodules:
+    print "Configuring IMP."+p
+    env.IMPModule(p, cpp=False)
+
+if env.get('localmodules', False):
+    import os.path
+
+    dirs= Glob("*/SConscript")
+
+    for m in [os.path.split(str(d))[0] for d in dirs]:
+        if m not in cppmodules and m not in pymodules:
+            print "Configuring IMP."+m
+            env.IMPModule(m)
