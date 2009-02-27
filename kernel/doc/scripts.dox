@@ -30,7 +30,7 @@
       classes in python, you must add a line 
       \string{%include "IMP/my_module/myheader.h"} near the end of the file
       \string{modules/my_module/pyext/my_module.i}.
-    - write C++ programs using IMP by creating \string{.cpp} files in
+    - write C++ programs using \imp by creating \string{.cpp} files in
       \string{modules/my_module/bin}. Each \string{.cpp} file placed there
       is built into a separate executable.
     - add python code to your library by putting a \string{.py} file in
