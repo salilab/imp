@@ -313,7 +313,7 @@ struct CommasIO
 
 //! Use this before outputing to delimited vector entries with a comma
 /** std::cout << commas_io(v);
- produces "(1.0, 2.0, 3.0)"
+ produces "1.0, 2.0, 3.0"
 
  */
 template <unsigned int D>
@@ -324,7 +324,7 @@ CommasIO<D> commas_io(const VectorD<D> &v) {
 template <unsigned int D>
 inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
 {
-  s.v_.show(out, ", ");
+  s.v_.show(out, ", ", false);
   return out;
 }
 
