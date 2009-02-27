@@ -48,6 +48,7 @@ IMP_OWN_METHOD(VRMLWriter, add_geometry)
 %include "IMP/display/VRMLWriter.h"
 %include "IMP/display/BildWriter.h"
 %include "IMP/display/CMMWriter.h"
+%include "IMP/display/CGOWriter.h"
 %include "IMP/display/LogOptimizerState.h"
 %include "IMP/display/SphereGeometry.h"
 %include "IMP/display/CylinderGeometry.h"

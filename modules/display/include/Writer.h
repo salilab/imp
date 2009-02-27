@@ -25,7 +25,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT Writer: public RefCountedObject
 {
   std::ofstream out_;
-
  protected:
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {return out_;}
@@ -37,7 +36,7 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
     return out_.is_open();
   }
  public:
-  //! Create a writer to a file with the given name
+  //! Create a writer to a file
   Writer();
 
   //! Open a new file with the given name
