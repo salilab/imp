@@ -5,7 +5,6 @@ import IMP.test
 import IMP.algebra
 import random
 import math
-
 class TransformFunct:
     def __init__(self, x_index, q_index, x_base, q_base):
         self.xi= x_index
@@ -28,9 +27,24 @@ class TransformFunct:
         return r.get_derivative(self.x, self.qi)[self.xi]
 
 class RigidTransformationTests(IMP.test.TestCase):
-    """Test particles"""
+    """Test rotations"""
 
-    def _test_rotation(self):
+    def test_axis_rotation(self):
+        """Check the centroid """
+        for ii in xrange(10):
+            axis= IMP.algebra.random_vector_on_unit_sphere()
+            angle= random.uniform(-math.pi,math.pi)
+            r= IMP.algebra.rotation_about_axis(IMP.algebra.Vector3D(axis[0], axis[1], axis[2]),angle)
+            ri= r.get_inverse()
+            v= IMP.algebra.random_vector_in_unit_box()
+            vt= r.rotate(v)
+            vti= ri.rotate(vt)
+            self.assertInTolerance(vti[0], v[0], .1)
+            self.assertInTolerance(vti[1], v[1], .1)
+            self.assertInTolerance(vti[2], v[2], .1)
+
+
+    def test_rotation(self):
         """Check that the rotation inverse is an inverse"""
         axis= IMP.algebra.random_vector_on_unit_sphere()
         m= random.uniform(-1,1)
