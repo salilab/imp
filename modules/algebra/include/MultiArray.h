@@ -12,7 +12,7 @@
 #include "IMP/exception.h"
 #include "IMP/base_types.h"
 #include "IMP/random.h"
-#include "IMP/misc/text_manipulation.h"
+#include "internal/output_helpers.h"
 #include "IMP/algebra/utility.h"
 #include "IMP/algebra/internal/multi_array_helpers.h"
 #include <ctime>
@@ -495,7 +495,7 @@ std::ostream& operator<<(std::ostream& ostrm,
       absmax = v(idx);
     }
   }
-  Int prec = misc::best_precision(absmax, 10);
+  Int prec = internal::best_precision(absmax, 10);
 
 
   // Print differently depending on dimension
@@ -507,7 +507,7 @@ std::ostream& operator<<(std::ostream& ostrm,
           idx[0] = k;
           idx[1] = j;
           idx[2] = i;
-          ostrm << misc::float_to_string((double)v(idx), 10, prec) << ' ';
+          ostrm << internal::float_to_string((double)v(idx), 10, prec) << ' ';
         }
         ostrm << std::endl;
       }
@@ -517,13 +517,13 @@ std::ostream& operator<<(std::ostream& ostrm,
       for (index i = (v).get_start(1);i <= (v).get_finish(1);i++) {
         idx[0] = j;
         idx[1] = i;
-        ostrm << misc::float_to_string((double)v(idx), 10, prec) << ' ';
+        ostrm << internal::float_to_string((double)v(idx), 10, prec) << ' ';
       }
       ostrm << std::endl;
     }
   } else {
     while (internal::roll_inds(idx, v.shape(), v.index_bases())) {
-      ostrm << misc::float_to_string((double)v(idx), 10, prec) << ' ';
+      ostrm << internal::float_to_string((double)v(idx), 10, prec) << ' ';
     }
     ostrm << std::endl;
   }

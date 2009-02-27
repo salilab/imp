@@ -90,13 +90,16 @@ public:
     return v_;
   }
   Rotation3D compose(const Rotation3D rot2) {
-    return Rotation3D(a_*rot2.a_ - b_*rot2.b_ - c_*rot2.c_ - d_*rot2.d_,
-                      a_*rot2.b_ + b_*rot2.a_ + c_*rot2.d_ - d_*rot2.c_,
-                      a_*rot2.c_ - b_*rot2.d_ + c_*rot2.a_ + d_*rot2.b_,
-                      a_*rot2.d_ + b_*rot2.c_ - c_*rot2.b_ + d_*rot2.a_);
+    return Rotation3D(v_[0]*rot2.v_[0] - v_[1]*rot2.v_[1]
+                      - v_[2]*rot2.v_[2] - v_[3]*rot2.v_[3],
+                      v_[0]*rot2.v_[1] + v_[1]*rot2.v_[0]
+                      + v_[2]*rot2.v_[3] - v_[3]*rot2.v_[2],
+                      v_[0]*rot2.v_[2] - v_[1]*rot2.v_[3]
+                      + v_[2]*rot2.v_[0] + v_[3]*rot2.v_[1],
+                      v_[0]*rot2.v_[3] + v_[1]*rot2.v_[2]
+                      - v_[2]*rot2.v_[1] + v_[3]*rot2.v_[0]);
   }
-private:
-  double a_,b_,c_,d_;
+
   /** \brief Return the derivative of the position x with respect to
       internal variable i. */
   const Vector3D get_derivative(const Vector3D &o, unsigned int i) const {

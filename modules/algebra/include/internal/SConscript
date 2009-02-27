@@ -4,6 +4,8 @@ files = [
          'jama_lu.h',
          'jama_qr.h',
          'jama_svd.h',
+         'multi_array_helpers.h',
+         'output_helpers.h',
          'tnt_array1d.h',
          'tnt_array1d_utils.h',
          'tnt_array2d.h',
@@ -16,7 +18,6 @@ files = [
          'tnt_stopwatch.h',
          'tnt_subscript.h',
          'tnt_version.h',
-         'multi_array_helpers.h'
         ]
 
 files = [File(x) for x in files]

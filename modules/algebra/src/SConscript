@@ -2,11 +2,13 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
+         'Cylinder3D.cpp',
          'Rotation3D.cpp',
          'Transformation3D.cpp',
+         'eigen_analysis.cpp',
          'geometric_alignment.cpp',
-         'eigen_analysis.cpp'
-        ]
+        ] \
+        + SConscript('internal/SConscript')
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)

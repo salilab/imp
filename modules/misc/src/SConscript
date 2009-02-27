@@ -4,11 +4,11 @@ e = env.IMPSharedLibraryEnvironment()
 files = [
          'LowestRefinedPairScore.cpp',
          'RefineOncePairScore.cpp',
+         'StateAdaptor.cpp',
          'TunnelSingletonScore.cpp',
          'attribute_statistics.cpp',
-         'StateAdaptor.cpp',
-         'text_manipulation.cpp',
-        ]
+        ] \
+        + SConscript('internal/SConscript')
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)
