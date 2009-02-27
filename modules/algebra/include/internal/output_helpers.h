@@ -1,13 +1,13 @@
 /**
- *  \file text_manipulation.h
+ *  \file output_helpers.h
  *  \brief manipulation of text, and Interconversion between text and numbers
  *  Copyright 2007-8 Sali Lab. All rights reserved.
 */
 
-#ifndef IMPMISC_TEXT_MANIPULATION_H
-#define IMPMISC_TEXT_MANIPULATION_H
+#ifndef IMPALGEBRA_INTERNAL_OUTPUT_HELPERS_H
+#define IMPALGEBRA_INTERNAL_OUTPUT_HELPERS_H
 
-#include "config.h"
+#include "../config.h"
 #include "IMP/base_types.h"
 
 #include <cstdio>
@@ -15,7 +15,7 @@
 #include <vector>
 #include <string.h>
 
-IMPMISC_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 //! Best precision for a Float number.
 /*
@@ -23,7 +23,7 @@ IMPMISC_BEGIN_NAMESPACE
  * this number is to fit in a given width. It returns -1 if the exponential
  * format is advised.
  */
-IMPMISCEXPORT Int best_precision(Float F, Int width);
+IMPALGEBRAEXPORT int best_precision(double F, Int width);
 
 
 /** Formated Float to string conversion.
@@ -32,9 +32,10 @@ IMPMISCEXPORT Int best_precision(Float F, Int width);
  * precision==-1 then the exponential format is forced. If width==0 then the
  * minimum width is used.
  */
-IMPMISCEXPORT String float_to_string(Float F, Int width = 8, Int _prec = 0);
+IMPALGEBRAEXPORT std::string float_to_string(double F, Int width = 8,
+Int prec = 0);
 
 
-IMPMISC_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPMISC_TEXT_MANIPULATION_H */
+#endif  /* IMPALGEBRA_INTERNAL_OUTPUT_HELPERS_H */

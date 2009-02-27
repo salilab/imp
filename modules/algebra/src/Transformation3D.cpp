@@ -15,8 +15,8 @@ Transformation3D Transformation3D::get_inverse() const{
 }
 
 Transformation3D Transformation3D::multiply(const Transformation3D &trans2) {
-  return Transformation3D(rot_.multiply(trans2.rot_),
-                          transform(trans2.trans_));
+  /*return Transformation3D(rot_.multiply(trans2.rot_),
+    transform(trans2.trans_));*/
 }
 
 IMPALGEBRAEXPORT Transformation3D

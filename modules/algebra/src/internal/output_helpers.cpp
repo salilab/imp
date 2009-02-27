@@ -1,29 +1,21 @@
 /**
- *  \file text_manipulation.cpp
+ *  \file output_helpers.cpp
  *  \brief manipulation of text, and Interconversion between text and numbers
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *  Adapted with permission from Xmip 2.2
 */
-
-#include "IMP/base_types.h"
-#include "IMP/misc/text_manipulation.h"
+#include "IMP/algebra/internal/output_helpers.h"
 #include <cstdio>
 #include <cmath>
 #include <cerrno>
 
-#define GCC_VERSION (__GNUC__ * 10000 \
-                     + __GNUC_MINOR__ * 100 \
-                     + __GNUC_PATCHLEVEL__)
-/* Test for GCC > 3.3.0 */
-#if GCC_VERSION >= 30300
+
 #include <sstream>
-#else
-#include <strstream>
-#endif
 
-IMPMISC_BEGIN_NAMESPACE
 
-Int best_precision(Float F, Int width)
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
+
+int best_precision(double F, Int width)
 {
   // Trivial case
   if (F == 0) {
@@ -50,37 +42,26 @@ Int best_precision(Float F, Int width)
   return advised_prec;
 }
 
-String float_to_string(Float F, Int width, Int _prec)
+std::string float_to_string(double F, Int width, Int pre)
 {
-#if GCC_VERSION < 30300
-  char aux[15];
-  std::ostrstream outs(aux, sizeof(aux));
-#else
   std::ostringstream outs;
-#endif
 
   outs.fill(' ');
   if (width != 0) {
     outs.width(width);
   }
-  if (_prec == 0) {
-    _prec = best_precision(F, width);
+  if (pre == 0) {
+    pre = best_precision(F, width);
   }
-  if (_prec == -1 && width > 7) {
+  if (pre == -1 && width > 7) {
     outs.precision(width - 7);
     outs.setf(std::ios::scientific);
   }
   else {
-    outs.precision(_prec);
+    outs.precision(pre);
   }
-#if GCC_VERSION < 30301
-  outs << F << std::ends;
-#else
   outs << F;
-#endif
-#if GCC_VERSION < 30300
-  return String(aux);
-#else
+
   String retval = outs.str();
   Int i = retval.find('\0');
 
@@ -88,7 +69,6 @@ String float_to_string(Float F, Int width, Int _prec)
     retval = retval.substr(0, i);
 
   return retval;
-#endif
 }
 
-IMPMISC_END_NAMESPACE
+IMPALGEBRA_END_INTERNAL_NAMESPACE
