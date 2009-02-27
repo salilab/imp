@@ -10,18 +10,16 @@ import getopt
 import shutil
 
 class SConscriptGenerator:
-    def __init__(self, dir, extension, prefix, suffix, excludes, force, backup):
+    def __init__(self, dir, extension, prefix, suffix, excludes):
         self.dir, self.extension = dir, extension
         self.prefix, self.suffix, self.excludes = prefix, suffix, excludes
-        self.force, self.backup = force, backup
         self.script_name = "SConscript"
 
     def make(self):
         if not os.path.exists(self.dir):
             print "There is no %s subdirectory under the current directory." \
                   % self.dir
-            print "You should run this script within an IMP module directory,"
-            print "e.g. in modules/core/ or kernel/"
+            print "You should run this script within an IMP main directory,"
             sys.exit(1)
         else:
             print "Generating SConscript files for %s directory" % self.dir
@@ -29,16 +27,6 @@ class SConscriptGenerator:
 
     def open_file(self, dir):
         fname = os.path.join(dir, self.script_name)
-        if os.path.exists(fname):
-            if self.backup:
-                bkp = fname + '.bak'
-                shutil.move(fname, bkp)
-                print "%s backed up as %s" % (fname, bkp)
-            elif not self.force:
-                print "\nFile %s already exists - will not overwrite." % fname
-                print "\nPlease rerun with the -f option to force an overwrite,"
-                print "or the -b option to backup the original file."
-                sys.exit(1)
         return file(fname, 'w')
 
     def exclude_file(self, filename):
@@ -78,65 +66,34 @@ class SConscriptGenerator:
             print >> f, "\n\nfiles = [File(x) for x in files]"
             print >> f, "Return('files')"
 
-
-def usage():
-    print "Usage: %s [-h] [-f|-b]\n" % sys.argv[0]
-    print "Generate or update SConscript files for the src and include"
-    print "directories of an IMP module.\n"
-    print """Options:
-  -h, --help
-     Print detailed help screen
-
-  -f, --force
-     If SConscript files already exist, force an overwrite with new versions
-
-  -b, --backup
-     If SConscript files already exist, back them up (with a .bak extension)
-"""
-
-
-def get_options():
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "hfb",
-                                   ["help", "force", "backup"])
-    except getopt.GetoptError, err:
-        print str(err)
-        usage()
-        sys.exit(3)
-    force = backup = False
-    for o, a in opts:
-        if o in ("-h", "--help"):
-            usage()
-            sys.exit(1)
-        elif o in ("-f", "--force"):
-            force = True
-        elif o in ("-b", "--backup"):
-            backup = True
-    if force and backup:
-        usage()
-        sys.exit(1)
-    return force, backup
-
-
 def main():
-    force, backup = get_options()
-    module = os.path.basename(os.getcwd())
+    if len(sys.argv) != 2:
+        print "usage: "+sys.argv[0] + " modulename"
+        sys.exit(1)
+    module = sys.argv[1]
     if module == 'kernel':
         cpp_excludes = h_excludes = []
     else:
         h_excludes = ['version_info.h', 'config.h']
         cpp_excludes = ['version_info.cpp', 'link_0.cpp', 'link_1.cpp']
 
-    g = SConscriptGenerator('src', '.cpp',
+    try:
+        os.listdir(os.path.join('modules', module));
+    except:
+        print "Cannot find module " + module +" in modules/"
+        sys.exit(1)
+
+    g = SConscriptGenerator(os.path.join('modules', module, 'src'), '.cpp',
                             "e = env.IMPSharedLibraryEnvironment()\n",
                             "\n# Build and install the shared library:\n" + \
                             "e.IMPSharedLibrary(files, install=True)",
-                            cpp_excludes, force, backup)
+                            cpp_excludes)
     g.make()
 
-    g = SConscriptGenerator('include', '.h', "",
+    g = SConscriptGenerator(os.path.join('modules', module, 'include'),
+                            '.h', "",
                             "\n# Install the include files:\n" + \
-                            "env.IMPHeaders(files)", h_excludes, force, backup)
+                            "env.IMPHeaders(files)", h_excludes)
     g.make()
 
 
