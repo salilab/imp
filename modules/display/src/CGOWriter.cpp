@@ -75,19 +75,19 @@ void CGOWriter::add_geometry(Geometry *g) {
     }
   } else if (g->get_dimension() ==2) {
     if (g->get_number_of_vertices() >2) {
-      get_stream() << "TRIANGLE_FAN, ";
+      get_stream() << "BEGIN, TRIANGLE_FAN, ";
       algebra::Vector3D n=
         vector_product(g->get_vertex(1)-g->get_vertex(0),
                       g->get_vertex(2)-g->get_vertex(0)).get_unit_vector();
+      get_stream() << "COLOR, " << g->get_color().get_red()
+                   << ", " << g->get_color().get_green()
+                   << ", " << g->get_color().get_blue()
+                   << ",\n";
+      get_stream() << "NORMAL, " << algebra::commas_io(n)
+                   << ",\n";
       for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
         get_stream() << "VERTEX, " << algebra::commas_io(g->get_vertex(i))
                      << ", ";
-        get_stream() << "COLOR, " << g->get_color().get_red()
-                         << ", " << g->get_color().get_green()
-                         << ", " << g->get_color().get_blue()
-                         << ",\n";
-        get_stream() << "NORMAL, " << algebra::commas_io(n)
-                         << ",\n";
       }
       get_stream() << "END,\n";
     }
