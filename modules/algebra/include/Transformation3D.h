@@ -39,7 +39,11 @@ public:
   }
   //! Get the translation part
   const Vector3D& get_translation()const{return trans_;}
-
+  //! Multiply the transformation by another one
+  /**
+     /note for any vector v (rt1*rt2)*v = rt1*(rt2*v)
+   */
+  Transformation3D multiply(const Transformation3D &trans2);
   void show(std::ostream& out = std::cout) const {
     rot_.show(out);
     out<<" || "<<trans_<<"\n";
@@ -69,7 +73,6 @@ inline Transformation3D identity_transformation() {
   return Transformation3D(identity_rotation(),Vector3D(0.0,0.0,0.0));
 }
 
-
 //! Generate a transformation from the natural reference-frame to
 //  a different one
 /**
@@ -85,12 +88,15 @@ inline Transformation3D identity_transformation() {
 inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
                                                 const Vector3D &w,
                                                 const Vector3D &base) {
-  Vector3D x = (u-base).get_unit_vector();
-  Vector3D z = vector_product(x,w-base).get_unit_vector();
-  Vector3D y = vector_product(z,x).get_unit_vector();
-  Rotation3D rot = rotation_from_matrix(x[0],x[1],x[2],
-                                        y[0],y[1],y[2],
-                                        z[0],z[1],z[2]).get_inverse();
+  Vector3D x = (u-base);
+  Vector3D z = vector_product(x,w-base);
+  Vector3D y = vector_product(z,x);
+  Vector3D xu = x.get_unit_vector();
+  Vector3D zu = z.get_unit_vector();
+  Vector3D yu = y.get_unit_vector();
+  Rotation3D rot = rotation_from_matrix(xu[0],xu[1],xu[2],
+                                        yu[0],yu[1],yu[2],
+                                        zu[0],zu[1],zu[2]).get_inverse();
   return Transformation3D(rot,base);
 }
 
