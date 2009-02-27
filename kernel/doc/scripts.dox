@@ -6,7 +6,7 @@
     modules automatically build this list at compile time). These lists can
     be generated using the \c make-sconscripts script. To run it to rebuild
     the SConscripts for the module modulename do
-    \command{./bin/make-sconscrips modulename}
+    \command{./bin/make-sconscripts modulename}
 
     \section make_module Making a module
 
