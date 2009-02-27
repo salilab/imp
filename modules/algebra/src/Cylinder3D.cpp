@@ -29,11 +29,11 @@ Transformation3D Cylinder3D::get_transformation_to_place_direction_on_Z() const{
 }
 
 double Cylinder3D::get_surface_area() const {
-  return 2.0*PI*radius_ * get_height() +
+  return 2.0*PI*radius_ * get_length() +
     2.0*PI *radius_*radius_;
 }
 double Cylinder3D::get_volume() const {
-  return PI *radius_*radius_ * get_height();
+  return PI *radius_*radius_ * get_length();
 }
 // std::string Cylinder3D::get_bild_string() const {
 //   std::ostringstream s;
@@ -43,7 +43,8 @@ double Cylinder3D::get_volume() const {
 //   return s.str();
 // }
 Vector3D Cylinder3D::get_point(int i) const {
-  IMP_assert((i == 1 || i == 0), "Invalid points index");
+  IMP_check((i == 1 || i == 0), "Invalid points index",
+            IndexException);
   if (i==0) {
     return start_;
   }

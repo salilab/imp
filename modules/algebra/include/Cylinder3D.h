@@ -12,15 +12,16 @@
 #include <iostream>
 #include <IMP/constants.h>
 
-/** The cylinder is represented by two points that define
-the cylinder direction and height. The radius of the cylinder
-is set by a third parameter.
 
-todo:
-- document everything
-- fix overview docs
-*/
 IMPALGEBRA_BEGIN_NAMESPACE
+/** The cylinder is represented by two points that define
+    the cylinder direction and height. The radius of the cylinder
+    is set by a third parameter.
+
+    todo:
+    - document everything
+    - fix overview docs
+*/
 class IMPALGEBRAEXPORT Cylinder3D
 {
  public:
@@ -30,18 +31,25 @@ class IMPALGEBRAEXPORT Cylinder3D
   /note the function would work if the center of the reference frame is (0,0,0)
   */
   Transformation3D get_transformation_to_place_direction_on_Z() const;
+  /** */
   Vector3D get_center() const {return start_+(end_-start_)*0.5;}
+  /** \brief Get a normalized direction vector pointing from
+      get_point(0) to get_point(1)*/
   Vector3D get_direction() const {return (end_-start_).get_unit_vector();}
+  /** */
   double get_radius() const {return radius_;}
-  double get_height() const {return (end_-start_).get_magnitude();}
+  /** */
+  double get_length() const {return (end_-start_).get_magnitude();}
+  /** */
   double get_surface_area() const;
+  /** */
   double get_volume() const;
   //! Return one of the two points that define the cylinder
   /**
     /param[in] the point index (0 or 1).
    */
   Vector3D get_point(int i) const;
- protected:
+ private:
   Vector3D start_;
   Vector3D end_;
   double radius_;

@@ -2,11 +2,11 @@ Import('env')
 
 files = [
          'Cylinder3D.h',
-         'Sphere3D.h',
          'Matrix2D.h',
          'Matrix3D.h',
          'MultiArray.h',
          'Rotation3D.h',
+         'Sphere3D.h',
          'Transformation3D.h',
          'Vector3D.h',
          'VectorD.h',

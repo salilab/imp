@@ -5,17 +5,18 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 #include <IMP/algebra/Sphere3D.h>
-#include <IMP/algebra/vector_generators.h>
+#include <cmath>
+
 IMPALGEBRA_BEGIN_NAMESPACE
-Sphere3D::Sphere3D(Vector3D center,Float radius):center_(center),
+Sphere3D::Sphere3D(const Vector3D& center,double radius):center_(center),
                                                  radius_(radius){
 }
 Float Sphere3D::get_volume() const {
-  return PI * (4.0f / 3.0f) * powf(radius_, 3.0f);
+  return PI * (4.0 / 3.0) * std::pow(radius_, 3.0);
 }
 
 Float Sphere3D::get_surface_area() const {
-  return PI * 4.0f * powf(radius_, 2.0f);
+  return PI * 4.0 * square(radius_);
 }
 
 IMPALGEBRA_END_NAMESPACE
