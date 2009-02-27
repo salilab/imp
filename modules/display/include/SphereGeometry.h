@@ -13,8 +13,7 @@
 
 #include "internal/version_info.h"
 #include "geometry.h"
-#include <IMP/PairContainer.h>
-#include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Sphere3D.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -23,20 +22,18 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT SphereGeometry: public Geometry
 {
-  algebra::Vector3D center_;
-  double radius_;
+  algebra::Sphere3D s_;
 public:
   //! Create a static sphere or point
   /** If the radius is skipped, it is a point. If the color is skipped,
       the default color (gray) is used.
   */
-  SphereGeometry(algebra::Vector3D center,
-                 double radius=0);
+  SphereGeometry(const algebra::Sphere3D &s);
 
   virtual ~SphereGeometry();
 
   virtual Float get_size() const {
-    return radius_;
+    return s_.get_radius();
   }
 
 

@@ -55,10 +55,10 @@ class WLCTests(IMP.test.TestCase):
             rm= IMP.core.RigidMemberDecorator(p.get_particle(), tr)
             v= rm.get_internal_coordinates()
             self.assertInTolerance((rm.get_internal_coordinates()-rm.get_coordinates()).get_magnitude(), 0, .1)
-            sg=IMP.display.SphereGeometry(v,.01)
+            sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(v,.01))
             sg.set_color(IMP.display.Color(1,0,0));
             w.add_geometry(sg)
-        sg=IMP.display.SphereGeometry(IMP.algebra.Vector3D(0,0,0),.01)
+        sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),.01))
         sg.set_color(IMP.display.Color(1,1,0));
         w.add_geometry(sg)
         w.set_file_name("")
@@ -91,7 +91,7 @@ class WLCTests(IMP.test.TestCase):
         w= IMP.display.BildWriter()
         w.set_file_name(self.get_tmp_file_name('targets.bild'))
         for t in targets:
-            sg=IMP.display.SphereGeometry(t,.01)
+            sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(t,.01))
             sg.set_color(IMP.display.Color(.5,.5,.5));
             w.add_geometry(sg)
         return (tr, targets)
@@ -101,13 +101,13 @@ class WLCTests(IMP.test.TestCase):
         w.set_file_name(self.get_tmp_file_name(name))
         r=.01
         #c= IMP.algebra.Vector3D(.8, .2, .2)
-        sg=IMP.display.SphereGeometry(targets[0],r)
+        sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(targets[0],r))
         sg.set_color(IMP.display.Color(.9, .2, .2))
         w.add_geometry(sg)
-        sg=IMP.display.SphereGeometry(targets[1],r)
+        sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(targets[1],r))
         sg.set_color(IMP.display.Color(.7*.9, .2, .2))
         w.add_geometry(sg)
-        sg=IMP.display.SphereGeometry(targets[2],r)
+        sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(targets[2],r))
         sg.set_color(IMP.display.Color(.4*.9, .2, .2))
         w.add_geometry(sg)
         ge= IMP.display.RigidBodyDerivativeGeometry(rbd, pr)

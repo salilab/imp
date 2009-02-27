@@ -49,7 +49,8 @@ Geometries BoxGeometry::get_geometry() const {
     algebra::Vector3D omax(PICK(v1, 0),
                            PICK(v1, 1),
                            PICK(v1, 2));
-    CylinderGeometry *ncg= new CylinderGeometry( omin, omax);
+    CylinderGeometry *ncg=
+      new CylinderGeometry(algebra::Cylinder3D(omin, omax, 0));
     if (color_ != Color()) {
       ncg->set_color(color_);
     }

@@ -52,8 +52,8 @@ class SphereTests(IMP.test.TestCase):
         w= IMP.display.CGOWriter("cover")
         w.set_file_name(self.get_tmp_file_name("cover.py"))
         for p in points:
-            w.add_geometry(IMP.display.SphereGeometry(p, 1))
-        w.add_geometry(IMP.display.SphereGeometry(center, 4))
+            w.add_geometry(IMP.display.SphereGeometry(IMP.algebra.Sphere3D(p, 1)))
+        w.add_geometry(IMP.display.SphereGeometry(IMP.algebra.Sphere3D(center, 4)))
         self.assertInTolerance((sampled_centroid-center).get_magnitude(),0,
                                4*radius/numpts**.5)
 
