@@ -1,6 +1,4 @@
 files = [
-         'link_0.cpp',
-         'link_1.cpp',
          'output_helpers.cpp',
         ]
 
