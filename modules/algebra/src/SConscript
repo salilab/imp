@@ -3,6 +3,7 @@ e = env.IMPSharedLibraryEnvironment()
 
 files = [
          'Cylinder3D.cpp',
+         'Sphere3D.cpp',
          'Rotation3D.cpp',
          'Transformation3D.cpp',
          'eigen_analysis.cpp',
