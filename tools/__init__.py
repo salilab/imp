@@ -525,3 +525,4 @@ def add_common_variables(vars, package):
                           '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None,
                           PathVariable.PathAccept))
     vars.Add(BoolVariable('python', 'Whether to build the python libraries ', True))
+    vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))
