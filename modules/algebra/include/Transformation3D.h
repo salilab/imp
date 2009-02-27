@@ -39,11 +39,11 @@ public:
   }
   //! Get the translation part
   const Vector3D& get_translation()const{return trans_;}
-  //! Multiply the transformation by another one
+  //! Compose two transformations
   /**
      /note for any vector v (rt1*rt2)*v = rt1*(rt2*v)
    */
-  Transformation3D multiply(const Transformation3D &trans2);
+  Transformation3D compose(const Transformation3D &trans2);
   void show(std::ostream& out = std::cout) const {
     rot_.show(out);
     out<<" || "<<trans_<<"\n";
