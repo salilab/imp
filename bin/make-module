@@ -44,9 +44,6 @@ def main():
     copy_dir("kernel/doc/module_template", modpath, modname)
     os.symlink(os.path.join("..", "..", "..", "tools", "run_all_tests.py"),
                os.path.join(modpath, "test", "run_all_tests.py"))
-    sc= file("modules/SConscript", "a")
-    sc.write(fix_string("""
-env.IMPModule('modulename'""", modname))
 
 
 if __name__ == '__main__':
