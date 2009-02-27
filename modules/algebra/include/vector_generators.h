@@ -184,7 +184,7 @@ IMPALGEBRAEXPORT Vector3Ds grid_cover(const Cylinder3D &cyl,
                                       int number_of_points_on_cycle);
 
 //! Generate a set of 3d points that uniformly cover a cylinder
-IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph
+IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph,
                                          int number_of_points) ;
 
 
