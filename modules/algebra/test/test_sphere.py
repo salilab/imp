@@ -3,6 +3,7 @@ import IMP
 import IMP.utils
 import IMP.test
 import IMP.algebra
+import IMP.display
 import math
 class SphereTests(IMP.test.TestCase):
     """Test rigid transformations"""
@@ -38,14 +39,23 @@ class SphereTests(IMP.test.TestCase):
         center = IMP.algebra.Vector3D(0.0,0.0,0.0)
         radius=20.0
         sph = IMP.algebra.Sphere3D(center,radius)
-        points=IMP.algebra.uniform_cover(sph,600)
+        numpts=600
+        points=IMP.algebra.uniform_cover(sph,numpts)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        self.assertEqual(len(points),600)
-        for i in xrange(len(points)):
-            sampled_centroid = sampled_centroid + points[i]
+        self.assertEqual(len(points),numpts)
+        for p in points:
+            sampled_centroid = sampled_centroid + p
+        sampled_centroid.show()
         sampled_centroid = sampled_centroid * (1.0/len(points))
-        self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
+        sampled_centroid.show()
+        w= IMP.display.CGOWriter("cover")
+        w.set_file_name(self.get_tmp_file_name("cover.py"))
+        for p in points:
+            w.add_geometry(IMP.display.SphereGeometry(p, 1))
+        w.add_geometry(IMP.display.SphereGeometry(center, 4))
+        self.assertInTolerance((sampled_centroid-center).get_magnitude(),0,
+                               2*radius/numpts**.5)
 
 
     def test_uniform_cover_not_on_000(self):
