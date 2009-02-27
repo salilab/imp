@@ -11,7 +11,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-Writer::Writer( ){
+Writer::Writer(){
 }
 
 Writer::~Writer(){
