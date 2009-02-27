@@ -78,7 +78,8 @@ void CGOWriter::add_geometry(Geometry *g) {
       get_stream() << "BEGIN, TRIANGLE_FAN, ";
       algebra::Vector3D n=
         vector_product(g->get_vertex(1)-g->get_vertex(0),
-                      g->get_vertex(2)-g->get_vertex(0)).get_unit_vector();
+                       g->get_vertex(2)-g->get_vertex(0)).get_unit_vector();
+      if (n[0] <0 ) n=-n;
       get_stream() << "COLOR, " << g->get_color().get_red()
                    << ", " << g->get_color().get_green()
                    << ", " << g->get_color().get_blue()
