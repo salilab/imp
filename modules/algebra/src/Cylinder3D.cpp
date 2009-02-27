@@ -14,7 +14,7 @@ Cylinder3D::Cylinder3D(const Vector3D &start,
 }
 Transformation3D Cylinder3D::get_transformation_to_base_reference_frame() const{
   Vector3D main_dir = get_direction();
-  Vector3D vertical_dir = get_vertical_vector(main_dir);
+  Vector3D vertical_dir = orthogonal_vector(main_dir);
   Transformation3D move2zero= Transformation3D(
                                 identity_rotation(),-get_center());
   //transformation_from_reference_frame(a,b,c) , sets the Z-axis to
