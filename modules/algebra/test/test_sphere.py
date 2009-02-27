@@ -32,7 +32,7 @@ class SphereTests(IMP.test.TestCase):
         cyl = sph.get_bounding_cylinder()
         #print cyl.get_bild_string()
         self.assertEqual(cyl.get_radius(),radius)
-        self.assertEqual(cyl.get_height(),2.0*radius)
+        self.assertEqual(cyl.get_length(),2.0*radius)
 
     def test_uniform_cover(self):
         """Check uniform cover on a sphere"""
@@ -55,7 +55,7 @@ class SphereTests(IMP.test.TestCase):
             w.add_geometry(IMP.display.SphereGeometry(p, 1))
         w.add_geometry(IMP.display.SphereGeometry(center, 4))
         self.assertInTolerance((sampled_centroid-center).get_magnitude(),0,
-                               2*radius/numpts**.5)
+                               4*radius/numpts**.5)
 
 
     def test_uniform_cover_not_on_000(self):

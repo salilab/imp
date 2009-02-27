@@ -11,22 +11,28 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+//! Represent a sphere
 class IMPALGEBRAEXPORT Sphere3D {
 public:
-  Sphere3D(Vector3D center,Float radius);
+  /** */
+  Sphere3D(const Vector3D& center,double radius);
+  /** */
   Float get_volume() const;
+  /** */
   Float get_surface_area() const;
+  /** */
   Float get_radius() const {return radius_;}
+  /**  */
   const Vector3D &get_center() const {return center_;}
-  //! Get a bounding sphere of a cylinder
+  /**  */
   Cylinder3D get_bounding_cylinder() const {
     return Cylinder3D(get_center()-Vector3D(0.0,0.0,get_radius()),
                       get_center()+Vector3D(0.0,0.0,get_radius()),
                       get_radius());
   }
-protected:
+private:
   Vector3D center_;
-  Float radius_;
+  double radius_;
 };
 
 IMPALGEBRA_END_NAMESPACE

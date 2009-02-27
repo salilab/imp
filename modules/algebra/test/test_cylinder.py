@@ -20,7 +20,7 @@ class CylinderTests(IMP.test.TestCase):
         self.assertEqual((cyl.get_center()-center).get_magnitude() < 0.01,True)
         self.assertEqual((cyl.get_direction()-direction).get_magnitude() < 0.01,True)
         self.assertEqual(cyl.get_radius(),5.0)
-        self.assertEqual(cyl.get_height(),8.0)
+        self.assertEqual(cyl.get_length(),8.0)
 
         self.assertAlmostEqual(cyl.get_surface_area(),2*math.pi*5.0*8.0+2*math.pi*25.0,
                                places=1)
