@@ -11,9 +11,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-SphereGeometry::SphereGeometry(algebra::Vector3D center,
-                               double radius): center_(center),
-                                                  radius_(radius){
+SphereGeometry::SphereGeometry(const algebra::Sphere3D &s): s_(s){
 }
 
 SphereGeometry::~SphereGeometry(){}
@@ -29,6 +27,6 @@ unsigned int SphereGeometry::get_number_of_vertices() const{
   return 1;
 }
 algebra::Vector3D SphereGeometry::get_vertex(unsigned int) const {
-  return center_;
+  return s_.get_center();
 }
 IMPDISPLAY_END_NAMESPACE

@@ -35,10 +35,10 @@ class WLCTests(IMP.test.TestCase):
         for p in xyzs:
             rm= IMP.core.RigidMemberDecorator(p.get_particle(), tr)
             v= rm.get_internal_coordinates()
-            sg=IMP.display.SphereGeometry(v,.01)
+            sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(v,.01))
             sg.set_color(IMP.display.Color(1,0,0));
             w.add_geometry(sg)
-        sg=IMP.display.SphereGeometry(IMP.algebra.Vector3D(0,0,0),.01)
+        sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),.01))
         sg.set_color(IMP.display.Color(1,1,0));
         w.add_geometry(sg)
         w.set_file_name("")

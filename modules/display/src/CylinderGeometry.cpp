@@ -11,11 +11,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-CylinderGeometry::CylinderGeometry(const algebra::Vector3D& p0,
-                                   const algebra::Vector3D& p1,
-                                   double radius): radius_(radius){
-  p_[0]= p0;
-  p_[1]= p1;
+CylinderGeometry::CylinderGeometry(const algebra::Cylinder3D &c): c_(c){
 }
 
 CylinderGeometry::~CylinderGeometry(){}
@@ -31,7 +27,6 @@ unsigned int CylinderGeometry::get_number_of_vertices() const{
   return 2;
 }
 algebra::Vector3D CylinderGeometry::get_vertex(unsigned int i) const {
-  IMP_assert(i < 2, "Invalid vertex of cylinder");
-  return p_[i];
+  return c_.get_point(i);
 }
 IMPDISPLAY_END_NAMESPACE

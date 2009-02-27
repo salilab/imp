@@ -10,7 +10,7 @@
 #define IMPCORE_XYZR_DECORATOR_H
 
 #include "XYZDecorator.h"
-#include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Sphere3D.h>
 
 #include <limits>
 
@@ -66,6 +66,11 @@ public:
   }
   IMP_DECORATOR_GET_SET(radius, get_radius_key(), Float, Float);
 
+
+  //! Return a sphere object
+  algebra::Sphere3D get_sphere() const {
+    return algebra::Sphere3D(get_coordinates(), get_radius());
+  }
   //! Get the default radius key.
   static FloatKey get_default_radius_key() {
     static FloatKey rk("radius");

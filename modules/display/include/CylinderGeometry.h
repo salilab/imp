@@ -13,8 +13,7 @@
 
 #include "internal/version_info.h"
 #include "geometry.h"
-#include <IMP/PairContainer.h>
-#include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Cylinder3D.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -23,21 +22,18 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT CylinderGeometry: public Geometry
 {
-  algebra::Vector3D p_[2];
-  double radius_;
+  algebra::Cylinder3D c_;
 public:
   //! Create a static cylinder or segment
-  /** If the radius is skipped, it is a segment. If the color is skipped,
+  /** If the radius is 0, it is a segment. If the color is skipped,
       the default color (gray) is used.
   */
-  CylinderGeometry(const algebra::Vector3D& p0,
-                   const algebra::Vector3D& p1,
-                   double radius=0);
+  CylinderGeometry(const algebra::Cylinder3D &c);
 
   virtual ~CylinderGeometry();
 
   virtual Float get_size() const {
-    return radius_;
+    return c_.get_radius();
   }
 
   IMP_GEOMETRY(internal::version_info)
