@@ -80,7 +80,7 @@ public:
                     + (v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3])*o[2]);
   }
   void show(std::ostream& out = std::cout) const {
-    out <<v_[0]<<"|"<<v_[1]<<"|"<<v_[2]<<"|"<<v_[3]<<'\n';
+    out <<v_[0]<<"|"<<v_[1]<<"|"<<v_[2]<<"|"<<v_[3] << " ";
   }
   //! Return the rotation which undoes this rotation.
   Rotation3D get_inverse() const;
