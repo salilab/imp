@@ -11,7 +11,7 @@
 #include "config.h"
 
 #include "Vector3D.h"
-#include "IMP/algebra/Rotation3D.h"
+#include "Rotation3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
