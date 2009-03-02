@@ -37,7 +37,7 @@ public:
       \param[in] v The classname to restrain.
    */
   GroupnameRestraint(GroupnameScore *ss,
-                      Value v);
+                      ClassnameArguments);
 
   virtual ~GroupnameRestraint();
 

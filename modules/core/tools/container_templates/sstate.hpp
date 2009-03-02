@@ -40,7 +40,7 @@ public:
        after evaluate.
    */
   GroupnameScoreState(GroupnameModifier *before,
-                       GroupnameModifier *after, Value v);
+                      GroupnameModifier *after, ClassnameArguments);
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(GroupnameModifier* f) {

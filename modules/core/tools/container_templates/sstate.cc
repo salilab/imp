@@ -16,8 +16,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 GroupnameScoreState::GroupnameScoreState(GroupnameModifier *before,
                                          GroupnameModifier *after,
-                                         Value v):
-  v_(v){
+                                         ClassnameArguments):
+  v_(FromClassnameArguments){
     if (before) f_=before;
     if (after) af_=after;
 }
