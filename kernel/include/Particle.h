@@ -678,6 +678,9 @@ public:
     }
   }
 
+  std::string get_name() const {
+    return first->get_name() + " and " +second->get_name();
+  }
   void show(std::ostream &out= std::cout) const {
     out << "(";
     if (first) out << first->get_name();
