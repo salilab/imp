@@ -16,8 +16,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 SingletonScoreState::SingletonScoreState(SingletonModifier *before,
                                          SingletonModifier *after,
-                                         Particle* v):
-  v_(v){
+                                         Particle *a):
+  v_(a){
     if (before) f_=before;
     if (after) af_=after;
 }

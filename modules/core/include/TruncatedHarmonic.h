@@ -62,14 +62,14 @@ public:
   virtual ~TruncatedHarmonic() {}
 
   virtual Float evaluate(Float feature) const {
-    if (DIRECTION == LOWER && feature > d_.c_
-        || DIRECTION == UPPER && feature < d_.c_) return 0;
+    if ((DIRECTION == LOWER && (feature > d_.c_))
+        || (DIRECTION == UPPER && (feature < d_.c_))) return 0;
     return d_.evaluate(feature);
   }
 
   virtual FloatPair evaluate_with_derivative(Float feature) const {
-    if (DIRECTION == LOWER && feature > d_.c_
-        || DIRECTION == UPPER && feature < d_.c_) return FloatPair(0,0);
+    if ((DIRECTION == LOWER && (feature > d_.c_))
+        || (DIRECTION == UPPER && (feature < d_.c_))) return FloatPair(0,0);
     return d_.evaluate_with_derivative(feature);
   }
 

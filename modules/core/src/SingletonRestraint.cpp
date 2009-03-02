@@ -19,9 +19,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 SingletonRestraint
 ::SingletonRestraint(SingletonScore *ss,
-                     Particle* v):
+                     Particle *a):
   ss_(ss),
-  v_(v)
+  v_(a)
 {
 }
 

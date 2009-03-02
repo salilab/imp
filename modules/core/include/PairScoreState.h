@@ -40,7 +40,7 @@ public:
        after evaluate.
    */
   PairScoreState(PairModifier *before,
-                       PairModifier *after, ParticlePair v);
+                      PairModifier *after, Particle *a, Particle *b);
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(PairModifier* f) {

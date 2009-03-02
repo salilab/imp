@@ -16,8 +16,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 PairScoreState::PairScoreState(PairModifier *before,
                                          PairModifier *after,
-                                         ParticlePair v):
-  v_(v){
+                                         Particle *a, Particle *b):
+  v_(ParticlePair(a,b)){
     if (before) f_=before;
     if (after) af_=after;
 }

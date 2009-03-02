@@ -37,7 +37,7 @@ public:
       \param[in] v The particle to restrain.
    */
   SingletonRestraint(SingletonScore *ss,
-                      Particle* v);
+                      Particle *a);
 
   virtual ~SingletonRestraint();
 
