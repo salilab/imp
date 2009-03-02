@@ -95,6 +95,14 @@ struct ContainerTraits<ParticleTriplet> {
 };*/
 
 
+inline const Particle& streamable(Particle *p) {
+  return *p;
+}
+
+inline const ParticlePair& streamable(const ParticlePair &p) {
+  return p;
+}
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif /* IMP_INTERNAL_CONTAINER_HELPERS_H */
