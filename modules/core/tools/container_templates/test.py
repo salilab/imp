@@ -68,6 +68,12 @@ class ClassnameContainerTest(IMP.test.TestCase):
         uf= IMP.core.Linear(0,1)
         return IMP.core.DistancePairScore(uf)
 
+    def create_singleton_restraint(self, ps,p):
+        return IMP.core.SingletonRestraint(ps, p)
+
+    def create_pair_restraint(self, ps, p):
+        return IMP.core.PairRestraint(ps, p.first, p.second)
+
 
     def test_restraint(self):
         """Test the GroupnamesRestraint"""
@@ -95,7 +101,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         gs=self.create_groupname_score()
         p=self.create_classname(m)
         f= evaluate_groupname_score(gs, p)
-        r= IMP.core.GroupnameRestraint(gs, p)
+        r= self.create_groupname_restraint(gs, p)
         r.set_was_owned(True)
         m.add_restraint(r)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
