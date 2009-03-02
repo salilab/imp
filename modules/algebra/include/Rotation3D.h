@@ -79,9 +79,16 @@ public:
                     + 2*(v_[2]*v_[3]+v_[0]*v_[1])*o[1]
                     + (v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3])*o[2]);
   }
-  void show(std::ostream& out = std::cout) const {
-    out <<v_[0]<<"|"<<v_[1]<<"|"<<v_[2]<<"|"<<v_[3] << " ";
+
+  //! Rotate a vector around the origin
+  Vector3D operator*(const Vector3D &v) {
+    return rotate(v);
   }
+
+  void show(std::ostream& out = std::cout, std::string delim=" ") const {
+    out << v_[0] << delim << v_[1]<< delim <<v_[2]<< delim <<v_[3];
+  }
+
   //! Return the rotation which undoes this rotation.
   Rotation3D get_inverse() const;
 
@@ -89,6 +96,8 @@ public:
   const VectorD<4>& get_quaternion() const {
     return v_;
   }
+
+  //!  multiply two rotations
   Rotation3D compose(const Rotation3D rot2) {
     return Rotation3D(v_[0]*rot2.v_[0] - v_[1]*rot2.v_[1]
                       - v_[2]*rot2.v_[2] - v_[3]*rot2.v_[3],
@@ -98,6 +107,11 @@ public:
                       + v_[2]*rot2.v_[0] + v_[3]*rot2.v_[1],
                       v_[0]*rot2.v_[3] + v_[1]*rot2.v_[2]
                       - v_[2]*rot2.v_[1] + v_[3]*rot2.v_[0]);
+  }
+
+  //! multiply two rotations
+  Rotation3D operator*(const Rotation3D& q) {
+    return compose(q);
   }
 
   /** \brief Return the derivative of the position x with respect to
