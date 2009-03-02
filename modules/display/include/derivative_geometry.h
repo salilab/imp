@@ -25,9 +25,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT XYZDerivativeGeometry: public Geometry
 {
   core::XYZDecorator d_;
+  Float radius_;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  XYZDerivativeGeometry(core::XYZDecorator d);
+  XYZDerivativeGeometry(core::XYZDecorator d, Float radius=0);
 
   virtual ~XYZDerivativeGeometry();
 
