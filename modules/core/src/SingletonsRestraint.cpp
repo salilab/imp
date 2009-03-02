@@ -52,7 +52,7 @@ Float SingletonsRestraint::evaluate(DerivativeAccumulator *accum)
        it != pc_->particles_end(); ++it) {
     double lscore= IMP::internal::ContainerTraits<Particle>
       ::evaluate(ss_, *it, accum);
-    IMP_LOG(VERBOSE, IMP::internal::streamable(*it)
+    IMP_LOG(VERBOSE, IMP::internal::streamable(*it).get_name()
             << " has score " << lscore << std::endl);
     score+=lscore;
   }
