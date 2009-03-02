@@ -2,11 +2,12 @@
 import sys
 import os
 
-def filter(name, value, scorename, args, infile):
+def filter(name, value, scorename, args, fromargs, infile):
     cname= name.title().replace(' ', '')
     ucname= name.upper().replace(' ', '_') 
     lcname= name.lower().replace(' ', '_')
     return infile.replace("CLASSNAME", ucname)\
+        .replace("FromClassnameArguments", fromargs)\
         .replace("ClassnameArguments", args)\
         .replace("Classname", cname) \
         .replace("classname", lcname) \
@@ -16,7 +17,7 @@ def filter(name, value, scorename, args, infile):
         .replace("groupname", scorename.lower())
 
 
-def make_one(name, value, multi, args):
+def make_one(name, value, multi, args, fromargs):
     path= os.getcwd()+"/"
     cname= name.title().replace(' ', '')
     lcvalue= value.lower().replace(' ', '_').replace('*','')
@@ -85,11 +86,12 @@ def make_one(name, value, multi, args):
         ifile= open(p[1], 'r')
         contents= ifile.read()
         print "writing " + p[0]
-        ofile.write(filter(name, value, multi, args, contents))
+        ofile.write(filter(name, value, multi, args, fromargs, contents))
 
 def main():
-    make_one("particle", "Particle*", "Singleton", "Particle *a")
-    make_one("particle pair", "ParticlePair", "Pair", "Particle *a, Particle *b")
+    make_one("particle", "Particle*", "Singleton", "Particle *a", "a")
+    make_one("particle pair", "ParticlePair", "Pair", "Particle *a, Particle *b",
+             "ParticlePair(a,b)")
     #make_one("particle triplet", "ParticleTriplet", "Triplet", "Particle *a, Particle *b, Particle *c")
 
   

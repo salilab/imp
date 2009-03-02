@@ -19,9 +19,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 GroupnameRestraint
 ::GroupnameRestraint(GroupnameScore *ss,
-                     Value v):
+                     ClassnameArguments):
   ss_(ss),
-  v_(v)
+  v_(FromClassnameArguments)
 {
 }
 
