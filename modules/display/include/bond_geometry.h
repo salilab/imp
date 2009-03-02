@@ -24,9 +24,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT BondGeometry: public Geometry
 {
   core::BondDecorator d_;
+  Float radius_;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  BondGeometry(core::BondDecorator d);
+  BondGeometry(core::BondDecorator d, Float radius=0);
 
   virtual ~BondGeometry();
 

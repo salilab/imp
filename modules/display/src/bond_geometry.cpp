@@ -12,7 +12,9 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-BondGeometry::BondGeometry(core::BondDecorator p): d_(p){
+BondGeometry::BondGeometry(core::BondDecorator p,
+                           Float radius): d_(p),
+                                          radius_(radius){
 }
 
 BondGeometry::~BondGeometry(){}
@@ -31,7 +33,7 @@ algebra::Vector3D BondGeometry::get_vertex(unsigned int i) const {
 }
 
 Float BondGeometry::get_size() const {
-  return 0;
+  return radius_;
 }
 unsigned int BondGeometry::get_number_of_vertices() const{
   return 2;
