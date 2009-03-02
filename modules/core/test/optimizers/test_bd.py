@@ -22,6 +22,7 @@ class MCOptimizerTest(IMP.test.TestCase):
             s[i]= s[i]**.5
         return (m[0], m[1], m[2], s[0], s[1], s[2])
     def test_step_size(self):
+        """Testing the step size invariance of free diffusion"""
         m= IMP.Model()
         bd= IMP.core.BrownianDynamics()
         bd.set_model(m)
@@ -46,7 +47,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         print big_moments
         for i in range(0, len(moments)):
             self.assertInTolerance(big_moments[i], moments[i],
-                                   .1*(big_moments[i]+ moments[i])+20)
+                                   .1*(big_moments[i]+ moments[i])+30)
 
 if __name__ == '__main__':
     unittest.main()
