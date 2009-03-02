@@ -22,10 +22,10 @@ Float AttributeSingletonScore::evaluate(Particle *b,
                                         DerivativeAccumulator *da) const
 {
   if (da) {
-    Float d, r;
-    boost::tie(d,r) = f_->evaluate_with_derivative(b->get_value(k_));
+    Float v, d;
+    boost::tie(v,d) = f_->evaluate_with_derivative(b->get_value(k_));
     b->add_to_derivative(k_, d, *da);
-    return r;
+    return v;
   } else {
     return f_->evaluate(b->get_value(k_));
   }
