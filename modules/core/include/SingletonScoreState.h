@@ -40,7 +40,7 @@ public:
        after evaluate.
    */
   SingletonScoreState(SingletonModifier *before,
-                       SingletonModifier *after, Particle* v);
+                      SingletonModifier *after, Particle *a);
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(SingletonModifier* f) {

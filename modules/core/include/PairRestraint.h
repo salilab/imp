@@ -37,7 +37,7 @@ public:
       \param[in] v The particle_pair to restrain.
    */
   PairRestraint(PairScore *ss,
-                      ParticlePair v);
+                      Particle *a, Particle *b);
 
   virtual ~PairRestraint();
 

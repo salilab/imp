@@ -19,9 +19,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 PairRestraint
 ::PairRestraint(PairScore *ss,
-                     ParticlePair v):
+                     Particle *a, Particle *b):
   ss_(ss),
-  v_(v)
+  v_(ParticlePair(a,b))
 {
 }
 
