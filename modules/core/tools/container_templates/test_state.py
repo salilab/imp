@@ -97,6 +97,12 @@ class ClassnameContainerTest(IMP.test.TestCase):
             + str(b[1].get_name())
         return self.same_particle(a[0], b[0]) and self.same_particle(a[1], b[1])
 
+    def create_singleton_score_state(self, f, a, t):
+        return IMP.core.SingletonScoreState(f, a, t)
+
+    def create_pair_score_state(self, f, a, t):
+        return IMP.core.PairScoreState(f, a, t.first, t.second)
+
     def create_particle_score(self):
         uf= IMP.core.Linear(0,1)
         return IMP.core.AttributeSingletonScore(uf,IMP.FloatKey("thekey"))
@@ -146,7 +152,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         k= IMP.IntKey("thevalue")
         f= GroupnameTestModifier(k)
         print "apply"
-        s= IMP.core.GroupnameScoreState(f, None, t)
+        s= self.create_groupname_score_state(f, None, t)
         self.assert_( not f.thisown)
         m.add_score_state(s)
         print "add"
