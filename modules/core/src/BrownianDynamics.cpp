@@ -160,12 +160,17 @@ void BrownianDynamics::take_step() {
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
       unit::Angstrom force_term(nforce*dt_*D/kt());
+      if (force_term > 5*sigma) {
+        IMP_failure("Forces are too high to stably integrate: "
+                    << *p, InvalidStateException);
+      }
       //std::cout << "Force term is " << force_term << " and R is "
       //<< R << std::endl;
       unit::Angstrom dr= force_term +  R; //std::sqrt(2*kb*T_*ldt/xi) *
       // get back from meters
       delta[j]=dr;
     }
+
     //unit::Angstrom max_motion= unit::Scalar(4)*sigma;
     /*std::cout << "delta is " << delta << " mag is "
       << delta.get_magnitude() << " sigma " << sigma << std::endl;*/
