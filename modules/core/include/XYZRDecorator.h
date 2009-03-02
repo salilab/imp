@@ -41,6 +41,21 @@ public:
     return XYZRDecorator(p, radius_key);
   }
 
+
+ /** Create a decorator using radius_key to store the FloatKey.
+     The particle should already be an XYZDecorator particle.
+     \param[in] p The particle to wrap.
+     \param[in] radius The radius to set initially
+     \param[in] radius_key The (optional) key name to use.
+     The default is "radius".
+   */
+  static XYZRDecorator create(Particle *p,
+                              Float radius,
+                              FloatKey radius_key= FloatKey("radius")) {
+    p->add_attribute(radius_key, radius, false);
+    return XYZRDecorator(p, radius_key);
+  }
+
   /** Create a decorator using radius_key to store the FloatKey.
      \param[in] p The particle to wrap.
      \param[in] coords Initial value for the coordinates
@@ -52,9 +67,7 @@ public:
                               const algebra::Vector3D &coords,
                               Float radius,
                               FloatKey radius_key= FloatKey("radius")) {
-    if (!XYZDecorator::is_instance_of(p)) {
-      XYZDecorator::create(p, coords);
-    }
+    XYZDecorator::create(p, coords);
     p->add_attribute(radius_key, radius, false);
     return XYZRDecorator(p, radius_key);
   }
