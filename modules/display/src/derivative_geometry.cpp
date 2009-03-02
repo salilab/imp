@@ -12,7 +12,9 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-XYZDerivativeGeometry::XYZDerivativeGeometry(core::XYZDecorator d): d_(d){
+XYZDerivativeGeometry::XYZDerivativeGeometry(core::XYZDecorator d,
+                                             Float radius): d_(d),
+                                                            radius_(radius){
 }
 
 XYZDerivativeGeometry::~XYZDerivativeGeometry(){}
@@ -33,7 +35,7 @@ algebra::Vector3D XYZDerivativeGeometry::get_vertex(unsigned int i) const {
 }
 
 Float XYZDerivativeGeometry::get_size() const {
-  return 0;
+  return radius_;
 }
 
 
