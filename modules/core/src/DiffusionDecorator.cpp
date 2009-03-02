@@ -47,7 +47,7 @@ static MillipascalSecond eta(unit::Kelvin T)
        std::make_pair(unit::Kelvin(std::numeric_limits<Float>::max()),
                       MillipascalSecond(0.2822))};
 
-  const unsigned int npoints= sizeof(points)/sizeof(std::pair<float,float>);
+  //const unsigned int npoints= sizeof(points)/sizeof(std::pair<float,float>);
   if (T < points[0].first) {
     return points[0].second;
   } else {
