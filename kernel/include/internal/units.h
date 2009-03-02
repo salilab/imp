@@ -87,7 +87,7 @@ typedef boost::mpl::vector_c<int, 0,-1,0,0,1> HeatEnergyDerivative;
 
 
 typedef Unit<internal::MKSTag, 0, Length> Meter;
-typedef Unit<internal::MKSTag, 2, Length> Centimeter;
+typedef Unit<internal::MKSTag, -2, Length> Centimeter;
 typedef Unit<internal::MKSTag, 0, Mass> Kilogram;
 typedef Unit<internal::MKSTag, -3, Mass> Gram;
 typedef Unit<internal::MKSTag, 0, Time> Second;
@@ -119,7 +119,7 @@ typedef Multiply<Multiply<Centimeter, Centimeter>::type,
                       Centimeter>::type CubicCentimeter;
 typedef Multiply<Multiply<Angstrom, Angstrom>::type,
                       Angstrom>::type CubicAngstrom;
-  typedef Shift<CubicCentimeter, 3>::type Liter;
+typedef Shift<CubicCentimeter, 3>::type Liter;
 typedef Divide<Gram, CubicCentimeter>::type GramPerCubicCentimeter;
 
 
