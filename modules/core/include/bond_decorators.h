@@ -175,6 +175,9 @@ inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
   IMP_assert(length>=0, "Length must be positive");
   BondDecorator bd=bond(a,b, BondDecorator::CUSTOM);
   bd.set_length(length);
+  bd.get_particle()->set_name(std::string("bond ")+
+                              a.get_particle()->get_name()
+                              + " and " + b.get_particle()->get_name());
   if (stiffness >=0) bd.set_stiffness(stiffness);
   return bd;
 }
