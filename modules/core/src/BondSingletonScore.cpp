@@ -13,11 +13,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-BondSingletonScore::BondSingletonScore(UnaryFunction *f):
-                                                              f_(f){}
+BondSingletonScore::BondSingletonScore(UnaryFunction *f): f_(f){}
 
 Float BondSingletonScore::evaluate(Particle *b,
-                                            DerivativeAccumulator *da) const
+                                   DerivativeAccumulator *da) const
 {
   IMP_IF_CHECK(EXPENSIVE) {
     BondDecorator::cast(b);
