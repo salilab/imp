@@ -60,9 +60,9 @@ void CGOWriter::add_geometry(Geometry *g) {
       } else {
         r= .01*(g->get_vertex(i-1)- g->get_vertex(i)).get_magnitude();
       }
-      get_stream() << "CYLINDER, "
-                   << algebra::commas_io(g->get_vertex(i-1)) << ", "
-                   << algebra::commas_io(g->get_vertex(i)) << ", "
+      get_stream() << "CYLINDER,\n"
+                   << algebra::commas_io(g->get_vertex(i-1)) << ",\n"
+                   << algebra::commas_io(g->get_vertex(i)) << ",\n"
                    << r << ",\n";
       get_stream() << g->get_color().get_red()
                    << ", " << g->get_color().get_green()
