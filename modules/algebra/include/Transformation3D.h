@@ -33,6 +33,15 @@ public:
   Vector3D transform(const Vector3D &o) const {
     return rot_.rotate(o) + trans_;
   }
+  //! apply transformation
+  Vector3D operator*(const Vector3D &v) {
+    return transform(v);
+  }
+  /** multiply two rigid transformation such that for any vector v
+      (rt1*rt2)*v = rt1*(rt2*v) */
+  Transformation3D operator*(const Transformation3D &tr) {
+    return Transformation3D(rot_ * tr.rot_, transform(tr.trans_));
+  }
   //! get the rotation part
   const Rotation3D& get_rotation() const {
     return rot_;
@@ -46,7 +55,7 @@ public:
   Transformation3D compose(const Transformation3D &trans2);
   void show(std::ostream& out = std::cout) const {
     rot_.show(out);
-    out<<" || "<<trans_<<"\n";
+    out<<" || "<<trans_;
   }
   Transformation3D get_inverse() const;
 private:
