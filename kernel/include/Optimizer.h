@@ -266,7 +266,7 @@ private:
   typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
    FloatTable;
   mutable FloatTable widths_;
-  Pointer<Model> model_;
+  WeakPointer<Model> model_;
 };
 
 IMP_OUTPUT_OPERATOR(Optimizer);

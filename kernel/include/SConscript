@@ -24,6 +24,7 @@ files = [
     'TripletScore.h',
     'UnaryFunction.h',
     'VersionInfo.h',
+    'WeakPointer.h',
     'base_types.h',
     'config.h',
     'container_macros.h',

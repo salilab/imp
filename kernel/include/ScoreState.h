@@ -132,7 +132,7 @@ protected:
   unsigned int update_iteration_;
   unsigned int after_iteration_;
   // all of the particle data
-  Pointer<Model> model_;
+  WeakPointer<Model> model_;
   std::string name_;
 };
 

@@ -26,6 +26,10 @@ typedef std::vector<Mover*> Movers;
     accepted or rejected based on the Metropolis criteria. Optionally, a
     number of local optimization steps are taken before the step is
     accepted or rejected.
+
+    \note The local optimizer object will never be freed due to lack
+    of reference counting with SWIG.
+
     \see Mover
  */
 class IMPCOREEXPORT MonteCarlo: public Optimizer
@@ -99,7 +103,7 @@ private:
   Float prior_energy_;
   Float stop_energy_;
   Float probability_;
-  Pointer<Optimizer> cg_;
+  WeakPointer<Optimizer> cg_;
   unsigned int num_local_steps_;
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_upward_steps_taken_;

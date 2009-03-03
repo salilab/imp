@@ -16,7 +16,6 @@ IMP_BEGIN_NAMESPACE
 
 Restraint::Restraint()
 {
-  model_=NULL;
   is_active_ = true; // active by default
 }
 

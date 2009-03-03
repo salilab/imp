@@ -68,9 +68,10 @@ class IMPEXPORT Particle : public RefCountedObject
 {
 private:
   friend class Model;
-
   //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
   typedef std::list<Particle*> Storage;
+
+  void zero_derivatives();
 
   /* This has to be declared here since boost 1.35 wants the full
      definition of Particle to be available when the Pointer
@@ -100,6 +101,27 @@ private:
     StringTable;
   typedef internal::AttributeTable<ParticleAttributeTableTraits>
     ParticleTable;
+
+  WeakPointer<Model> model_;
+
+  std::string name_;
+  unsigned int index_;
+
+  // float attributes associated with the particle
+  FloatTable floats_;
+  // float attributes associated with the particle
+  FloatTable derivatives_;
+  // Whether a given float is optimized or not
+  OptimizedTable optimizeds_;
+
+  // int attributes associated with the particle
+  IntTable ints_;
+  // string attributes associated with the particle
+  StringTable  strings_;
+  // particle attributes associated with the particle
+  ParticleTable particles_;
+
+  Storage::iterator iterator_;
 
 public:
 
@@ -397,30 +419,6 @@ public:
   void set_name(std::string name) {
     name_=name;
   }
-
-private:
-  void zero_derivatives();
-
-  Model* model_;
-
-  std::string name_;
-  unsigned int index_;
-
-  // float attributes associated with the particle
-  FloatTable floats_;
-  // float attributes associated with the particle
-  FloatTable derivatives_;
-  // Whether a given float is optimized or not
-  OptimizedTable optimizeds_;
-
-  // int attributes associated with the particle
-  IntTable ints_;
-  // string attributes associated with the particle
-  StringTable  strings_;
-  // particle attributes associated with the particle
-  ParticleTable particles_;
-
-  Storage::iterator iterator_;
 };
 
 
