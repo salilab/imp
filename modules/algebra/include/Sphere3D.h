@@ -14,6 +14,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Represent a sphere
 class IMPALGEBRAEXPORT Sphere3D {
 public:
+  Sphere3D(){}
   /** */
   Sphere3D(const Vector3D& center,double radius);
   /** */
@@ -35,10 +36,19 @@ public:
     double d= (get_center()-o.get_center()).get_magnitude();
     return (d+ o.get_radius() < get_radius());
   }
+
+  void show(std::ostream &out=std::cout) const {
+    out << "(" << spaces_io(center_) << ": " << get_radius()
+        << ")";
+  }
 private:
   Vector3D center_;
   double radius_;
 };
+
+IMP_OUTPUT_OPERATOR(Sphere3D);
+
+typedef std::vector<Sphere3D> Sphere3Ds;
 
 //! Return the distance between the two spheres if they are disjoint
 /** If they intersect, the distances are not meaningful. */
@@ -46,6 +56,10 @@ inline double distance(const Sphere3D& a, const Sphere3D &b) {
   double d= (a.get_center()-b.get_center()).get_magnitude();
   return d - a.get_radius() - b.get_radius();
 }
+
+
+//! Return a sphere containing the listed spheres
+IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Sphere3Ds &ss);
 
 IMPALGEBRA_END_NAMESPACE
 

@@ -20,8 +20,8 @@ class WLCTests(IMP.test.TestCase):
         tr= IMP.core.RigidBodyTraits("myrb")
         for i in range(0, 10):
             mp= IMP.Particle(m)
-            mxyz= IMP.core.XYZRDecorator.create(mp,
-                                               IMP.algebra.random_vector_in_unit_box(), 0.01)
+            mxyz= IMP.core.XYZRDecorator.create(mp, IMP.algebra.Sphere3D(
+                                               IMP.algebra.random_vector_in_unit_box(), 0.01))
             chd= IMP.core.HierarchyDecorator.create(mp)
             hd.add_child(chd)
             #IMP.algebra.Vector3D(i%2, (i+1)%3, i)

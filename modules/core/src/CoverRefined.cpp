@@ -53,8 +53,9 @@ void setup_covers(Model *m, SingletonContainer *sc,
   for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
        pit != sc->particles_end(); ++pit) {
     if (!XYZRDecorator::is_instance_of(*pit)) {
-      XYZRDecorator::create(*pit, algebra::Vector3D(0,0,0),
-                            0, radius_key).set_coordinates_are_optimized(false);
+      XYZRDecorator::create(*pit,
+                            algebra::Sphere3D(algebra::Vector3D(0,0,0),0),
+                            radius_key).set_coordinates_are_optimized(false);
     }
   }
 
@@ -78,8 +79,11 @@ Particle* create_cover(Model *m, const Particles &ps,
     }
   }
   Particle *p= new Particle(m);
-  XYZRDecorator d= XYZRDecorator::create(p, algebra::Vector3D(0,0,0),
-                                         0, radius_key);
+  XYZRDecorator d
+    = XYZRDecorator::create(p,
+                            algebra::Sphere3D(algebra::Vector3D(0,0,0),
+                                              0),
+                            radius_key);
   d.set_coordinates_are_optimized(false);
   FixedParticleRefiner *fpr= new FixedParticleRefiner(ps);
 
