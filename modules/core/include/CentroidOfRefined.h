@@ -45,6 +45,18 @@ public:
   IMP_SINGLETON_MODIFIER(internal::version_info);
 };
 
+
+//! Create a particle which which is kept to be the centroid of the passed ones
+/** This method adds score states as needed to make things work and to propagate
+    derivatives from the centroid particle to the constituent particles.
+    \relates CentroidOfRefined
+ */
+IMPCOREEXPORT Particle* create_centroid_particle(Model *m, const Particles &p,
+                                                 FloatKey weight=FloatKey(),
+                                                 FloatKeys ks
+                                      = XYZDecorator::get_xyz_keys());
+
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_CENTROID_OF_REFINED_H */
