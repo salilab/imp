@@ -9,6 +9,9 @@
 
 #include "IMP/core/bond_decorators.h"
 #include "IMP/core/XYZRDecorator.h"
+#include "IMP/core/FixedParticleRefiner.h"
+#include "IMP/core/SingletonScoreState.h"
+#include "IMP/core/DerivativesToRefined.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -56,5 +59,28 @@ void CentroidOfRefined::show(std::ostream &out) const
 {
   out << "CentroidOfRefined" << std::endl;
 }
+
+Particle* create_centroid_particle(Model *m, const Particles &ps,
+                                   FloatKey weight,
+                                   FloatKeys ks) {
+  IMP_check(!ps.empty(), "Need at least one particle to cover",
+            ValueException);
+
+  Particle *p= new Particle(m);
+  for (unsigned int i=0; i< ks.size(); ++i) {
+    p->add_attribute(ks[i], 0, false);
+  }
+  FixedParticleRefiner *fpr= new FixedParticleRefiner(ps);
+
+  CentroidOfRefined *cr= new CentroidOfRefined(fpr, weight, ks);
+  DerivativesToRefined *dtr= new DerivativesToRefined(fpr,
+                                    XYZDecorator::get_xyz_keys());
+  SingletonScoreState *sss= new SingletonScoreState(cr, dtr, p);
+  m->add_score_state(sss);
+  IMP_assert(fpr->get_refined(p).size() == ps.size(),
+             "FixedPR is broken");
+  return p;
+}
+
 
 IMPCORE_END_NAMESPACE
