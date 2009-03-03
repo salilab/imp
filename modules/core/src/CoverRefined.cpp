@@ -11,6 +11,7 @@
 #include "IMP/core/XYZRDecorator.h"
 #include "IMP/core/FixedParticleRefiner.h"
 #include "IMP/core/SingletonScoreState.h"
+#include "IMP/core/SingletonsScoreState.h"
 #include "IMP/core/DerivativesToRefined.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -46,9 +47,27 @@ void CoverRefined::show(std::ostream &out) const
       << *ref_ << " and " << rk_ << std::endl;
 }
 
+void setup_covers(Model *m, SingletonContainer *sc,
+                  ParticleRefiner *pr,
+                  FloatKey radius_key, Float slack) {
+  for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
+       pit != sc->particles_end(); ++pit) {
+    if (!XYZRDecorator::is_instance_of(*pit)) {
+      XYZRDecorator::create(*pit, algebra::Vector3D(0,0,0),
+                            0, radius_key).set_coordinates_are_optimized(false);
+    }
+  }
 
-Particle* create_cover_particle(Model *m, const Particles &ps,
-                                FloatKey radius_key, Float slack) {
+  CoverRefined *cr= new CoverRefined(pr, radius_key, slack);
+  DerivativesToRefined *dtr= new DerivativesToRefined(pr,
+                                    XYZDecorator::get_xyz_keys());
+  SingletonsScoreState *sss= new SingletonsScoreState(sc, cr, dtr);
+  m->add_score_state(sss);
+}
+
+
+Particle* create_cover(Model *m, const Particles &ps,
+                       FloatKey radius_key, Float slack) {
   IMP_check(!ps.empty(), "Need at least one particle to cover",
             ValueException);
   IMP_IF_CHECK(EXPENSIVE) {

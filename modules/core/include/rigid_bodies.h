@@ -272,21 +272,6 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
    of the rotational degrees for freedom).
    \relates RigidBodyDecorator
  */
-IMPCOREEXPORT void setup_rigid_bodies(Model *m, const Particles &rbs,
-                                      ParticleRefiner *pr,
-                                      RigidBodyTraits tr
-                                  =internal::get_default_rigid_body_traits(),
-                                      bool snap=true);
-
-//! Sets up the ScoreState needed for a rigid body
-/**
-   \param[in] m the model
-   \param[in] rbs particles for the RigidBodyDecorator objects
-   \param[in] pr a particle refined to get the members of the rigid bodies
-   \param[in] snap whether to use snapping (as opposed to direct optimization
-   of the rotational degrees for freedom).
-   \relates RigidBodyDecorator
- */
 IMPCOREEXPORT void setup_rigid_bodies(Model *m,
                                       SingletonContainer* rbs,
                                       ParticleRefiner *pr,
@@ -294,21 +279,20 @@ IMPCOREEXPORT void setup_rigid_bodies(Model *m,
                                    =internal::get_default_rigid_body_traits(),
                                       bool snap=true);
 
-
-//! Sets up the ScoreState needed for a rigid body
+//! Creates a rigid body and sets up the needed score states
 /**
    \param[in] m the model
-   \param[in] rb particle for the RigidBodyDecorator objects
-   \param[in] pr a particle refined to get the members of the rigid bodies
+   \param[in] ps the particles making up the rigid body
    \param[in] snap whether to use snapping (as opposed to direct optimization
    of the rotational degrees for freedom).
    \relates RigidBodyDecorator
  */
-IMPCOREEXPORT void setup_rigid_body(Model *m, Particle *rb,
-                                    ParticleRefiner *pr,
-                                    RigidBodyTraits tr
-                                 =internal::get_default_rigid_body_traits(),
-                                    bool snap=true);
+IMPCOREEXPORT Particle * create_rigid_body(Model *m,
+                                           const Particles &ps,
+                                           RigidBodyTraits tr
+                          =internal::get_default_rigid_body_traits(),
+                                           bool snap=true);
+
 
 IMPCORE_END_NAMESPACE
 

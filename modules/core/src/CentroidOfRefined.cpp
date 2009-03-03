@@ -11,6 +11,7 @@
 #include "IMP/core/XYZRDecorator.h"
 #include "IMP/core/FixedParticleRefiner.h"
 #include "IMP/core/SingletonScoreState.h"
+#include "IMP/core/SingletonsScoreState.h"
 #include "IMP/core/DerivativesToRefined.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -60,9 +61,31 @@ void CentroidOfRefined::show(std::ostream &out) const
   out << "CentroidOfRefined" << std::endl;
 }
 
-Particle* create_centroid_particle(Model *m, const Particles &ps,
-                                   FloatKey weight,
-                                   FloatKeys ks) {
+void setup_centroids(Model *m, SingletonContainer *sc,
+                  ParticleRefiner *pr,
+                  FloatKey weight,
+                  FloatKeys ks) {
+  for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
+       pit != sc->particles_end(); ++pit) {
+    for (unsigned int i=0; i< ks.size(); ++i) {
+      if (!(*pit)->has_attribute(ks[0])) {
+        (*pit)->add_attribute(ks[i], 0, false);
+      }
+    }
+  }
+
+  CentroidOfRefined *cr= new CentroidOfRefined(pr, weight, ks);
+  DerivativesToRefined *dtr= new DerivativesToRefined(pr,
+                                                      ks);
+  SingletonsScoreState *sss= new SingletonsScoreState(sc, cr, dtr);
+  m->add_score_state(sss);
+}
+
+
+
+Particle* create_centroid(Model *m, const Particles &ps,
+                          FloatKey weight,
+                          FloatKeys ks) {
   IMP_check(!ps.empty(), "Need at least one particle to cover",
             ValueException);
 
@@ -73,8 +96,7 @@ Particle* create_centroid_particle(Model *m, const Particles &ps,
   FixedParticleRefiner *fpr= new FixedParticleRefiner(ps);
 
   CentroidOfRefined *cr= new CentroidOfRefined(fpr, weight, ks);
-  DerivativesToRefined *dtr= new DerivativesToRefined(fpr,
-                                    XYZDecorator::get_xyz_keys());
+  DerivativesToRefined *dtr= new DerivativesToRefined(fpr,ks);
   SingletonScoreState *sss= new SingletonScoreState(cr, dtr, p);
   m->add_score_state(sss);
   IMP_assert(fpr->get_refined(p).size() == ps.size(),

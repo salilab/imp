@@ -101,7 +101,11 @@ namespace IMP {
     IMP_OWN_LIST_METHOD(NonbondedListScoreState, add_bonded_lists)
 
     IMP_OWN_FUNCTION(setup_rigid_bodies)
-    IMP_OWN_FUNCTION(setup_rigid_body)
+    IMP_OWN_FUNCTION(create_rigid_body)
+    IMP_OWN_FUNCTION(setup_covers)
+    IMP_OWN_FUNCTION(create_cover)
+    IMP_OWN_FUNCTION(setup_centroids)
+    IMP_OWN_FUNCTION(create_centroid)
   }
 }
 
