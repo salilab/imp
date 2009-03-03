@@ -1,9 +1,10 @@
 import unittest, sys, os, re
+#global path
 
 def regressionTest():
     """Run all tests in files called test_*.py in current directory and
        subdirectories"""
-    path = os.path.dirname(sys.argv[0])
+    path ="."
     if path == '':
         path = '.'
     # Tell test cases where to find any input files needed
@@ -23,4 +24,7 @@ def regressionTest():
     return unittest.TestSuite(tests)
 
 if __name__ == "__main__":
+    #global path
+    #path = os.path.dirname(sys.argv[1])
+    #sys.argv=[sys.argv[0]]+sys.argv[2:]
     unittest.main(defaultTest="regressionTest")
