@@ -2,13 +2,19 @@ Import('env', 'bin')
 
 from tools import pyscanner
 import os
+import os.path
 
 e = env.Clone()
 
 # Custom builder to run unit tests:
 def builder_unit_test(target, source, env):
-    app = "%s %s %s -v > /dev/null" % (source[1].path, e['PYTHON'],
-                                       source[0].path)
+    print source[0].path
+    print source[1].path
+    print target[0].path
+    app = "cd %s; %s %s %s -v > /dev/null" % (os.path.split(target[0].path)[0],
+                                              source[1].abspath, e['PYTHON'],
+                                              source[0].abspath,
+                                              )
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
     else:
@@ -18,7 +24,7 @@ def builder_unit_test(target, source, env):
 e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
                                      source_scanner=pyscanner.PythonScanner)})
 
-test = e.Test("test.passed", ["run-all-tests.py", bin,
+test = e.Test("test.passed", ["#/tools/run-all-tests.py",  bin,
                               # Make sure we depend on IMP.core being built:
                               "particles/test_refcount.py"])
 e.Alias("test", test)
