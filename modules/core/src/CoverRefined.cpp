@@ -61,6 +61,7 @@ Particle* create_cover_particle(Model *m, const Particles &ps,
   Particle *p= new Particle(m);
   XYZRDecorator d= XYZRDecorator::create(p, algebra::Vector3D(0,0,0),
                                          0, radius_key);
+  d.set_coordinates_are_optimized(false);
   FixedParticleRefiner *fpr= new FixedParticleRefiner(ps);
 
   CoverRefined *cr= new CoverRefined(fpr, radius_key, slack);
