@@ -11,6 +11,7 @@
  */
 
 #include "IMP/core/SingletonScoreState.h"
+#include "IMP/internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -46,7 +47,14 @@ void SingletonScoreState::do_after_evaluate(DerivativeAccumulator *da)
 }
 
 void SingletonScoreState::show(std::ostream &out) const {
-  out << "SingletonScoreState" << std::endl;
+  out << "SingletonScoreState with ";
+  if (f_) out << *f_;
+  else out << "NULL";
+  out << " and ";
+  if (af_) out << *af_;
+  else out << "NULL";
+  out << " on ";
+  out << IMP::internal::streamable(v_).get_name() << std::endl;
 }
 
 IMPCORE_END_NAMESPACE
