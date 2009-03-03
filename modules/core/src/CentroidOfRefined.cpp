@@ -28,7 +28,7 @@ void CentroidOfRefined::apply(Particle *p) const
 {
   Particles ps = r_->get_refined(p);
   unsigned int n= ps.size();
-  Float tw=0;
+  double tw=0;
   if (w_ != FloatKey()) {
     for (unsigned int i=0; i< n; ++i) {
       tw+= ps[i]->get_value(w_);
@@ -37,9 +37,9 @@ void CentroidOfRefined::apply(Particle *p) const
     tw=1;
   }
   for (unsigned int j=0; j< ks_.size(); ++j) {
-    Float v=0;
+    double v=0;
     for (unsigned int i=0; i< n; ++i) {
-      Float w;
+      double w;
       if (w_ != FloatKey()) {
         w= ps[i]->get_value(w_)/tw;
       } else {
