@@ -16,7 +16,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Mover::Mover() {}
+Mover::Mover(): opt_(NULL) {}
 
 Mover::~Mover(){}
 
