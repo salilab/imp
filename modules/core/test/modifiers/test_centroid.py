@@ -29,10 +29,22 @@ class TestREFCover(IMP.test.TestCase):
             d.set_radius(random.uniform(0,1))
             hd.add_child(IMP.core.HierarchyDecorator.create(p))
         r= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())
-        c= IMP.core.CoverRefined(r)
+        c= IMP.core.CentroidOfRefined(r)
         c.set_slack(.1)
         c.apply(pp)
         for d in ds:
             self.assert_(IMP.core.distance(d, dd) <= 0)
+    def test_it(self):
+        """Test centroid of refined helper"""
+        m= IMP.Model()
+        IMP.set_log_level(IMP.MEMORY)
+        n= random.randrange(1,10)
+        ps=IMP.core.create_xyzr_particles(m, 10, 1)
+        p= IMP.core.create_centroid_particle(m, ps);
+        ss= m.get_score_states()
+        for s in ss:
+            s.show()
+        print "eval"
+        m.evaluate(True)
 if __name__ == '__main__':
     unittest.main()
