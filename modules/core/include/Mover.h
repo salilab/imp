@@ -12,7 +12,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/RefCountedObject.h>
-#include <IMP/Pointer.h>
+#include <IMP/WeakPointer.h>
 #include <IMP/Optimizer.h>
 
 #include <vector>
@@ -32,7 +32,7 @@ class IMPCOREEXPORT Mover: public RefCountedObject
     opt_=c;
   }
 
-  Optimizer* opt_;
+  WeakPointer<Optimizer> opt_;
 public:
   Mover();
 

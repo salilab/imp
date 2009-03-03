@@ -124,7 +124,7 @@ private:
   /* This pointer should never be ref counted as Model has a
      pointer to this object. Not that Model is refcounted yet.
    */
-  Model *model_;
+  WeakPointer<Model> model_;
 
   /* True if restraint has not been deactivated.
      If it is not active, evaluate should not be called

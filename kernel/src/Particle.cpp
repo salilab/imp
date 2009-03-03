@@ -19,7 +19,6 @@ Particle::Particle(Model *m)
 
 Particle::Particle()
 {
-  model_=NULL;
 }
 
 Particle::~Particle()
@@ -44,7 +43,7 @@ void Particle::show(std::ostream& out) const
   }
   out << std::endl;
 
-  if (get_model() != NULL) {
+  if (model_) {
     out << inset << "float attributes:" << std::endl;
     floats_.show(out, inset+inset);
 

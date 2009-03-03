@@ -62,8 +62,7 @@ public:
   }
   IMP_REF_COUNTED_DESTRUCTOR(OptimizerState)
 protected:
-  //! Stored optimizer
-  Pointer<Optimizer> optimizer_;
+  WeakPointer<Optimizer> optimizer_;
 };
 
 IMP_OUTPUT_OPERATOR(OptimizerState);
