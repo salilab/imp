@@ -59,6 +59,16 @@ public:
   }
 };
 
+
+//! Create a particle which describes a sphere containing the listed particles
+/** This method adds score states as needed to make things work and to propagate
+    derivatives from the cover particle to the constituent particles.
+    \relates CoverRefined
+ */
+IMPCOREEXPORT Particle* create_cover_particle(Model *m, const Particles &p,
+               FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
+                                             Float slack=0);
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_COVER_REFINED_H */
