@@ -13,8 +13,8 @@ class Test(IMP.test.TestCase):
         p= IMP.Particle(m)
         h = IMP.core.HierarchyDecorator.create(p)
         if depth== 0:
-            d = IMP.core.XYZRDecorator.create(p, IMP.algebra.random_vector_in_unit_box(),
-                                              .1)
+            d = IMP.core.XYZRDecorator.create(p, IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(),
+                                              .1))
         else:
             children= [self._random_hierarchy(m, depth-1) for x in range(0,width)]
             cps= [x.get_particle() for x in children]

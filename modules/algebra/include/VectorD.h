@@ -289,7 +289,7 @@ struct SpacesIO
 
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
-    produces "(1.0 2.0 3.0)"
+    produces "1.0 2.0 3.0"
 
  */
 template <unsigned int D>

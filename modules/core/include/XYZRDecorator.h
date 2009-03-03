@@ -64,11 +64,10 @@ public:
      The default is "radius".
    */
   static XYZRDecorator create(Particle *p,
-                              const algebra::Vector3D &coords,
-                              Float radius,
+                              const algebra::Sphere3D &s,
                               FloatKey radius_key= FloatKey("radius")) {
-    XYZDecorator::create(p, coords);
-    p->add_attribute(radius_key, radius, false);
+    XYZDecorator::create(p, s.get_center());
+    p->add_attribute(radius_key, s.get_radius(), false);
     return XYZRDecorator(p, radius_key);
   }
 
@@ -83,6 +82,12 @@ public:
   //! Return a sphere object
   algebra::Sphere3D get_sphere() const {
     return algebra::Sphere3D(get_coordinates(), get_radius());
+  }
+
+  //! Set the attributes from a sphere
+  void set_sphere(const algebra::Sphere3D &s) {
+    set_coordinates(s.get_center());
+    set_radius(s.get_radius());
   }
   //! Get the default radius key.
   static FloatKey get_default_radius_key() {
