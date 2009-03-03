@@ -1,7 +1,7 @@
 Import('env')
 import os
 
-test = env.IMPModuleTest("test.passed", "run-all-tests.py",
+test = env.IMPModuleTest("test.passed", "#/tools/run-all-tests.py",
                          TEST_ENVSCRIPT=env['EM_EMPY'])
 if env['wine']:
     # On Win32 systems, link the EM DLL into the lib directory, so that loading
