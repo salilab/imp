@@ -35,6 +35,7 @@ files = [
          'DistanceToSingletonScore.h',
          'FilteredListPairContainer.h',
          'FilteredListSingletonContainer.h',
+         'FixedParticleRefiner.h',
          'GridClosePairsFinder.h',
          'Harmonic.h',
          'HarmonicLowerBound.h',
