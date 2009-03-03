@@ -48,6 +48,13 @@ private:
   std::map<FloatKey, FloatPair> ranges_;
 
   void add_particle_internal(Particle *p) {
+    IMP_IF_CHECK(EXPENSIVE) {
+      for (ParticleStorage::const_iterator it= particles_.begin();
+           it != particles_.end(); ++it) {
+        IMP_check(*it != p, "Particle already in Model",
+                  ValueException);
+      }
+    }
     particles_.push_back(p);
     p->iterator_= --particles_.end();
     p->model_= this;
@@ -80,6 +87,8 @@ public:
               ValueException);
     particles_.erase(p->iterator_);
     internal::unref(p);
+    IMP_LOG(VERBOSE, "Removing particle " << p->get_name()
+            << std::endl);
     p->model_=NULL;
   }
   /** \note This really should only be used for debugging and only
