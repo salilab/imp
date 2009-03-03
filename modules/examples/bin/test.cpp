@@ -10,7 +10,7 @@
 using namespace IMP;
 int main(){
   set_log_level(VERBOSE);
-  Pointer<Model> m(new Model());
+  WeakPointer<Model> m(new Model());
   Particle* p0= new Particle(m);
   core::XYZDecorator d0= core::XYZDecorator::create(p0);
   Particle* p1= new Particle(m);
