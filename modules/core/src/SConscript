@@ -36,6 +36,7 @@ files = [
          'DistanceToSingletonScore.cpp',
          'FilteredListPairContainer.cpp',
          'FilteredListSingletonContainer.cpp',
+         'FixedParticleRefiner.cpp',
          'GridClosePairsFinder.cpp',
          'HierarchyDecorator.cpp',
          'ListPairContainer.cpp',
