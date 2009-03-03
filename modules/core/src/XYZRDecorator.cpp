@@ -26,9 +26,7 @@ void XYZRDecorator::show(std::ostream &out, std::string prefix) const
 
 Float distance(XYZRDecorator a, XYZRDecorator b)
 {
-  float d= distance(static_cast<XYZDecorator>(a),
-                    static_cast<XYZDecorator>(b));
-  return d - a.get_radius() - b.get_radius();
+  return distance(a.get_sphere(), b.get_sphere());
 }
 
 

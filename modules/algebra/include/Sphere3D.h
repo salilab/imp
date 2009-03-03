@@ -30,10 +30,22 @@ public:
                       get_center()+Vector3D(0.0,0.0,get_radius()),
                       get_radius());
   }
+  //! Return true if this sphere contains the other one
+  bool get_contains(const Sphere3D &o) const {
+    double d= (get_center()-o.get_center()).get_magnitude();
+    return (d+ o.get_radius() < get_radius());
+  }
 private:
   Vector3D center_;
   double radius_;
 };
+
+//! Return the distance between the two spheres if they are disjoint
+/** If they intersect, the distances are not meaningful. */
+inline double distance(const Sphere3D& a, const Sphere3D &b) {
+  double d= (a.get_center()-b.get_center()).get_magnitude();
+  return d - a.get_radius() - b.get_radius();
+}
 
 IMPALGEBRA_END_NAMESPACE
 
