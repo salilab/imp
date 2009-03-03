@@ -32,7 +32,7 @@ class IMPCOREEXPORT Mover: public RefCountedObject
     opt_=c;
   }
 
-  Pointer<Optimizer> opt_;
+  Optimizer* opt_;
 public:
   Mover();
 
@@ -53,7 +53,7 @@ public:
   //! Get a pointer to the optimizer which has this mover.
   Optimizer *get_optimizer() const {
     IMP_CHECK_OBJECT(this);
-    return opt_.get();
+    return opt_;
   }
   virtual void show(std::ostream&out= std::cout) const {
     out << "Mover doesn't implement show " << std::endl;
