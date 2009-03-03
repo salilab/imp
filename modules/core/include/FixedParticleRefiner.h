@@ -14,6 +14,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/ParticleRefiner.h>
+#include <IMP/container_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -22,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT FixedParticleRefiner: public ParticleRefiner
 {
-  const Particles &ps_;
+  IMP_LIST(private, Particle, particle, Particle*);
 public:
   //! Store the set of particles
   FixedParticleRefiner(const Particles &ps);
