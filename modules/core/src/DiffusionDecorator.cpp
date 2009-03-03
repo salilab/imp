@@ -9,11 +9,6 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/constants.h>
 
-#ifdef IMP_USE_CGAL
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-#include <CGAL/Min_sphere_of_spheres_d.h>
-#endif
-
 IMPCORE_BEGIN_NAMESPACE
 
 typedef
