@@ -59,15 +59,25 @@ public:
   }
 };
 
+//! Set up a set of particles as covers of their refined constituents
+/** This method adds score states as needed to make things work and to propagate
+    derivatives from the cover particle to the constituent particles.
+    \relates CoverRefined
+ */
+IMPCOREEXPORT void setup_covers(Model *m, SingletonContainer *sc,
+                                     ParticleRefiner *pr,
+               FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
+                                     Float slack=0);
+
 
 //! Create a particle which describes a sphere containing the listed particles
 /** This method adds score states as needed to make things work and to propagate
     derivatives from the cover particle to the constituent particles.
     \relates CoverRefined
  */
-IMPCOREEXPORT Particle* create_cover_particle(Model *m, const Particles &p,
+IMPCOREEXPORT Particle* create_cover(Model *m, const Particles &p,
                FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
-                                             Float slack=0);
+                                     Float slack=0);
 
 IMPCORE_END_NAMESPACE
 

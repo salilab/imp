@@ -16,6 +16,7 @@
 #include <IMP/algebra/internal/jama_eig.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/core/FixedParticleRefiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -437,21 +438,16 @@ void setup_rigid_bodies(Model *m, SingletonContainer *rbs,
   m->add_score_state(sss);
 }
 
-
-void setup_rigid_bodies(Model *m, const Particles &rbs,
-                        ParticleRefiner *pr, RigidBodyTraits tr,
-                        bool snap) {
-  ListSingletonContainer *lsc= new ListSingletonContainer(rbs);
-  setup_rigid_bodies(m, lsc, pr, tr, snap);
-}
-
-
-void setup_rigid_body(Model *m, Particle* rb,
-                        ParticleRefiner *pr, RigidBodyTraits tr,
-                        bool snap) {
-  SMP sm= get_modifiers(pr, tr, snap);
-  SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, rb);
+Particle* create_rigid_body(Model *m, const Particles &ps,
+                            RigidBodyTraits tr,
+                            bool snap) {
+  Particle *p= new Particle(m);
+  FixedParticleRefiner *fpr= new FixedParticleRefiner(ps);
+  RigidBodyDecorator rbd= RigidBodyDecorator::create(p, fpr, tr);
+  SMP sm= get_modifiers(fpr, tr, snap);
+  SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, p);
   m->add_score_state(sss);
+  return p;
 }
 
 

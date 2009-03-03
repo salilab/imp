@@ -187,7 +187,9 @@ class WLCTests(IMP.test.TestCase):
         # apply restraints to 3 particles
         # optimize then check if the remainder are in place
         (tr, targets)= self._create_restraints(m, xyzs, rbd.get_traits())
-        IMP.core.setup_rigid_body(m, rbd.get_particle(), pr, rbd.get_traits(),
+        l= IMP.core.ListSingletonContainer()
+        l.add_particle(rbd.get_particle())
+        IMP.core.setup_rigid_bodies(m, l, pr, rbd.get_traits(),
                          True)
         self._check_optimization(m, xyzs, rbd, pr, tr, targets, 100)
 
@@ -200,7 +202,9 @@ class WLCTests(IMP.test.TestCase):
         # apply restraints to 3 particles
         # optimize then check if the remainder are in place
         (tr, targets)= self._create_restraints(m, xyzs, rbd.get_traits())
-        IMP.core.setup_rigid_body(m, rbd.get_particle(), pr, rbd.get_traits(),
+        l= IMP.core.ListSingletonContainer()
+        l.add_particle(rbd.get_particle())
+        IMP.core.setup_rigid_bodies(m, l, pr, rbd.get_traits(),
                          False)
         rbd.show()
         self._check_optimization(m, xyzs, rbd, pr, tr, targets, 100)
