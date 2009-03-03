@@ -164,7 +164,7 @@ def action_link_test(target, source, env):
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
-""" % (module, target[0].abspath)
+""" % (module, os.path.split(target[0].abspath)[1])
 
     print >> cpp, """
 #ifndef NDEBUG
