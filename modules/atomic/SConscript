@@ -1,0 +1,14 @@
+Import('env')
+Export('env')
+
+env.IMPModuleAbout(author="Ben Webb, Daniel Russel and Dina Schneidman", version="SVN", description="Code for dealing with protein and atomic structures.")
+
+env.Append(LIBS=['imp_core', 'imp_algebra'])
+env.validate()
+
+# Subdirectories:
+SConscript('src/SConscript')
+SConscript('include/SConscript')
+SConscript('pyext/SConscript')
+SConscript('test/SConscript')
+SConscript('bin/SConscript')
