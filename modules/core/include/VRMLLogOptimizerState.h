@@ -24,6 +24,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! A state that writes a series of VRML files.
 /** The State writes a series of files generated from a
     printf-style format string. These files contain spheres
@@ -98,6 +100,8 @@ private:
   std::map<int, algebra::Vector3D > colors_;
   Pointer<SingletonContainer> pc_;
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

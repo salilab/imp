@@ -15,6 +15,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 VRMLLogOptimizerState::VRMLLogOptimizerState(SingletonContainer *pc,
                                              std::string filename) :
     filename_(filename), file_number_(0), call_number_(0),
@@ -147,5 +149,7 @@ void VRMLLogOptimizerState::show(std::ostream &out) const
 {
   out << "Writing VRML files " << filename_ << std::endl;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

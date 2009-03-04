@@ -19,6 +19,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! A state that writes a series of CMM files.
 /** The State writes a series of files generated from a
     printf-style format string. These files contain spheres
@@ -86,6 +88,8 @@ protected:
   IntKey r_, g_, b_;
   StringKey name_;
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 
