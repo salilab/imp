@@ -36,6 +36,7 @@ def generate_doxygen(target, source, env):
 
 env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
 dox=env.GenerateDoxygen("doxygen.conf", "doxygen.conf.in")
+env.AlwaysBuild("doxygen.conf")
 Clean(dox, Glob("../html/*"))
 examples = env.MakeExamples(".examples/examples.dox", None)
 Return('dox', 'examples')
