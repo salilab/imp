@@ -118,12 +118,16 @@ public:
   ParticleConstIterator particles_end() const {
     return particles_.end();
   }
+#ifndef IMP_NO_DEPRECATED
   //! \deprecated Use the Particle(Model*) constructor
   void add_particle(Particle *p) {
     add_particle_internal(p);
   }
+#endif
   //@}
 
+#ifndef IMP_NO_DEPRECATED
+  //! \deprecated Do not use
   Particle* get_particle(unsigned int i) const {
     static bool printed=false;
     if (!printed) {
@@ -139,6 +143,7 @@ public:
     }
     throw IndexException("Bad particle index");
   }
+#endif
 
   //! Return a range for the attribute.
   /** This range is either the range found in the current set of particles

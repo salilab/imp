@@ -41,6 +41,9 @@ IMP_END_NAMESPACE
   IMP::core::set_print_deprecation_messages function.
   \param[in] old_classname The class which is deprecated.
   \param[in] replacement_classname The class which replaces is.
+
+  Further, \imp can be built without deprecated code by defining
+  \c IMP_NO_DEPRECATED or the \c deprecated=False \c scons argument.
  */
 #define IMP_DEPRECATED(old_classname, replacement_classname)           \
   if (::IMP::internal::get_print_deprecation_message(#old_classname)) { \
