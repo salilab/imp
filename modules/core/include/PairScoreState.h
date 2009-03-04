@@ -33,11 +33,8 @@ class IMPCOREEXPORT PairScoreState : public ScoreState
   Pointer<PairModifier> af_;
   ParticlePair v_;
 public:
-  /** \param[in] v The ParticlePair to modify
-      \param[in] before The PairModifier to apply to all elements
-       before evaluate.
-      \param[in] after The PairModifier to apply to all elements
-       after evaluate.
+  /** before and after are the modifiers to apply before and after
+      evaluate.
    */
   PairScoreState(PairModifier *before,
                       PairModifier *after, Particle *a, Particle *b);

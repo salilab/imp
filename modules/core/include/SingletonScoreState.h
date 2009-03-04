@@ -33,11 +33,8 @@ class IMPCOREEXPORT SingletonScoreState : public ScoreState
   Pointer<SingletonModifier> af_;
   Particle* v_;
 public:
-  /** \param[in] v The Particle to modify
-      \param[in] before The SingletonModifier to apply to all elements
-       before evaluate.
-      \param[in] after The SingletonModifier to apply to all elements
-       after evaluate.
+  /** before and after are the modifiers to apply before and after
+      evaluate.
    */
   SingletonScoreState(SingletonModifier *before,
                       SingletonModifier *after, Particle *a);

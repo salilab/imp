@@ -33,8 +33,8 @@ class IMPCOREEXPORT PairRestraint : public Restraint
   ParticlePair v_;
 public:
   //! Create the restraint.
-  /** \param[in] ss The function to apply to each particle.
-      \param[in] v The particle_pair to restrain.
+  /** This function takes the function to apply to the
+      stored Pair and the Pair.
    */
   PairRestraint(PairScore *ss,
                       Particle *a, Particle *b);

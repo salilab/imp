@@ -33,11 +33,8 @@ class IMPCOREEXPORT GroupnameScoreState : public ScoreState
   Pointer<GroupnameModifier> af_;
   Value v_;
 public:
-  /** \param[in] v The Classname to modify
-      \param[in] before The GroupnameModifier to apply to all elements
-       before evaluate.
-      \param[in] after The GroupnameModifier to apply to all elements
-       after evaluate.
+  /** before and after are the modifiers to apply before and after
+      evaluate.
    */
   GroupnameScoreState(GroupnameModifier *before,
                       GroupnameModifier *after, ClassnameArguments);

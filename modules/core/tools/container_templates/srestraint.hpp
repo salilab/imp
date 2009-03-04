@@ -33,8 +33,8 @@ class IMPCOREEXPORT GroupnameRestraint : public Restraint
   Value v_;
 public:
   //! Create the restraint.
-  /** \param[in] ss The function to apply to each particle.
-      \param[in] v The classname to restrain.
+  /** This function takes the function to apply to the
+      stored Groupname and the Groupname.
    */
   GroupnameRestraint(GroupnameScore *ss,
                       ClassnameArguments);

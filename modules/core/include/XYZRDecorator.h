@@ -58,8 +58,7 @@ public:
 
   /** Create a decorator using radius_key to store the FloatKey.
      \param[in] p The particle to wrap.
-     \param[in] coords Initial value for the coordinates
-     \param[in] radius Initial value for the radius
+     \param[in] s The sphere to use to set the position and radius
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
