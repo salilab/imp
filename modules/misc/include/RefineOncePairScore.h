@@ -17,6 +17,8 @@
 
 IMPMISC_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! Refine the input particles at most once with the ParticleRefiner.
 /** Each passed particle is refined once before the resulting pairs
     have the pair score called on them.
@@ -40,6 +42,8 @@ public:
   /** */
   virtual void show(std::ostream &out=std::cout) const;
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPMISC_END_NAMESPACE
 
