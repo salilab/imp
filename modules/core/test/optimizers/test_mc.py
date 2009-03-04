@@ -61,8 +61,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         opt = IMP.core.MonteCarlo()
         opt.set_model(model)
         for value in (-3.0, -1.0, -3.0, -1.0):
-            p = IMP.Particle()
-            model.add_particle(p)
+            p = IMP.Particle(model)
             p.add_attribute(self.xkey, value, True)
         fk=IMP.FloatKeys([self.xkey])
         ls= IMP.core.ListSingletonContainer(model.get_particles())

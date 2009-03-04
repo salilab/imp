@@ -7,14 +7,10 @@ class TestBL(IMP.test.TestCase):
     def test_it(self):
         """Test bond decorator pair container"""
         m= IMP.Model()
-        p0=IMP.Particle()
-        p1= IMP.Particle()
-        p2= IMP.Particle()
-        p3= IMP.Particle()
-        m.add_particle(p0)
-        m.add_particle(p1)
-        m.add_particle(p2)
-        m.add_particle(p3)
+        p0=IMP.Particle(m)
+        p1= IMP.Particle(m)
+        p2= IMP.Particle(m)
+        p3= IMP.Particle(m)
         b0= IMP.core.BondedDecorator.create(p0)
         b1= IMP.core.BondedDecorator.create(p1)
         b3= IMP.core.BondedDecorator.create(p3)

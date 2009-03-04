@@ -16,16 +16,14 @@ class TestBL(IMP.test.TestCase):
         rk= IMP.FloatKey("my radius_key")
         nm = self.get_tmp_file_name(pref + "test%03d."+suf)
         print nm
-        p0= IMP.Particle()
-        m.add_particle(p0)
+        p0= IMP.Particle(m)
         d0= IMP.core.XYZRDecorator.create(p0, rk)
         d0.set_radius(1.5)
         d0.set_x(0)
         d0.set_y(0)
         d0.set_z(0)
 
-        p1= IMP.Particle()
-        m.add_particle(p1)
+        p1= IMP.Particle(m)
         d1= IMP.core.XYZRDecorator.create(p1)
         d1.set_x(1)
         d1.set_y(1)

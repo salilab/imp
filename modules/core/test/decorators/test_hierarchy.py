@@ -7,14 +7,12 @@ class DecoratorTests(IMP.test.TestCase):
     def test_hierarchy(self):
         """Check that the hierarchy works fine"""
         m = IMP.Model()
-        pp=IMP.Particle()
-        m.add_particle(pp)
+        pp=IMP.Particle(m)
         ppd= IMP.core.HierarchyDecorator.create(pp)
         ppnd= IMP.core.NameDecorator.create(pp)
         ppnd.set_name("root");
         for i in range(0,10):
-            pc=IMP.Particle()
-            m.add_particle(pc)
+            pc=IMP.Particle(m)
             pcd= IMP.core.HierarchyDecorator.create(pc)
             ppd.add_child(pcd)
             pcnd= IMP.core.NameDecorator.create(pc)
@@ -27,14 +25,12 @@ class DecoratorTests(IMP.test.TestCase):
         """Check that an alternate hierarchy works fine"""
         t= IMP.core.HierarchyTraits("my_hierarchy")
         m = IMP.Model()
-        pp=IMP.Particle()
-        m.add_particle(pp)
+        pp=IMP.Particle(m)
         ppd= IMP.core.HierarchyDecorator.create(pp, t)
         ppnd= IMP.core.NameDecorator.create(pp)
         ppnd.set_name("root");
         for i in range(0,10):
-            pc=IMP.Particle()
-            m.add_particle(pc)
+            pc=IMP.Particle(m)
             pcd= IMP.core.HierarchyDecorator.create(pc, t)
             ppd.add_child(pcd)
             pcnd= IMP.core.NameDecorator.create(pc)

@@ -14,13 +14,11 @@ class Test(IMP.test.TestCase):
         """Checking refine once pair score"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
-        pp= IMP.Particle()
-        m.add_particle(pp)
+        pp= IMP.Particle(m)
         hpp= IMP.core.HierarchyDecorator.create(pp)
         c=[]
         for i in range(0,10):
-            p= IMP.Particle()
-            m.add_particle(p)
+            p= IMP.Particle(m)
             hp= IMP.core.HierarchyDecorator.create(p)
             hpp.add_child(hp)
             c.append(p)

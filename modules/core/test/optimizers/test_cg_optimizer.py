@@ -44,8 +44,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         particles = []
 
         for value in starting_values:
-            p = IMP.Particle()
-            model.add_particle(p)
+            p = IMP.Particle(model)
             particles.append(p)
             p.add_attribute(IMP.FloatKey("x"), value, True)
         rsr = WoodsFunc(model, particles)

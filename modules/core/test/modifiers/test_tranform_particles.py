@@ -15,8 +15,7 @@ class ParticleTrasnformationTests(IMP.test.TestCase):
         self.particles = IMP.Particles()
         self.rsrs = []
 
-        pp=IMP.Particle()
-        self.imp_model.add_particle(pp)
+        pp=IMP.Particle(self.imp_model)
         self.particles.append(self.create_point_particle(self.imp_model,
                                                          109.882,-50.414,41.302))
         self.particles.append(self.create_point_particle(self.imp_model,

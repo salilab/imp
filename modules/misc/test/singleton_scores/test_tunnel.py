@@ -70,8 +70,7 @@ class TunnelTest(IMP.test.TestCase):
         """Test optimize tunnel score"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
-        p= IMP.Particle()
-        m.add_particle(p)
+        p= IMP.Particle(m)
         rk= IMP.FloatKey("radiusk")
         d= IMP.core.XYZRDecorator.create(p, rk)
         d.set_radius(1)

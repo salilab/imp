@@ -7,11 +7,9 @@ class YamlTests(IMP.test.TestCase):
     def _create_model(self):
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        p= IMP.Particle()
-        m.add_particle(p)
+        p= IMP.Particle(m)
         IMP.core.XYZDecorator.create(p)
-        p= IMP.Particle()
-        m.add_particle(p)
+        p= IMP.Particle(m)
         IMP.core.XYZDecorator.create(p)
         return m
     def test_yaml(self):

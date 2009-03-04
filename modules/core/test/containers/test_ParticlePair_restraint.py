@@ -31,18 +31,15 @@ class ParticlePairContainerTest(IMP.test.TestCase):
     """Tests for PairContainer related objects"""
 
     def create_particle(self,m):
-        p= IMP.Particle()
-        m.add_particle(p)
+        p= IMP.Particle(m)
         d=IMP.core.XYZDecorator.create(p)
         d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         p.add_attribute(IMP.FloatKey("thekey"), d.get_x())
         return p
 
     def create_particle_pair(self,m):
-        p0= IMP.Particle()
-        m.add_particle(p0)
-        p1= IMP.Particle()
-        m.add_particle(p1)
+        p0= IMP.Particle(m)
+        p1= IMP.Particle(m)
         d0= IMP.core.XYZDecorator.create(p0)
         d1= IMP.core.XYZDecorator.create(p1)
         d0.set_coordinates(IMP.algebra.random_vector_in_unit_box())
