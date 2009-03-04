@@ -143,8 +143,7 @@ create_fragment(const MolecularHierarchyDecorators &ps)
     }
   }
 
-  Particle *fp= new Particle();
-  parent.get_particle()->get_model()->add_particle(fp);
+  Particle *fp= new Particle(parent.get_particle()->get_model());
   MolecularHierarchyDecorator fd= MolecularHierarchyDecorator::create(fp,
                                        MolecularHierarchyDecorator::FRAGMENT);
 
