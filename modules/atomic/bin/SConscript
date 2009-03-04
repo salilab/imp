@@ -1,0 +1,14 @@
+import os
+import os.path
+
+Import('env')
+penv = env.Clone()
+penv.Prepend(LIBS=["imp_atomic"])
+
+fs = Glob("*.cpp")
+
+all=[]
+for f in fs:
+    all.append(penv.Program(f.rstr()))
+env.Default(all)
+Return('all')

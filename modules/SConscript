@@ -1,6 +1,7 @@
 Import('env')
 
 cppmodules=['algebra',
+            'atomic',
             'core',
             'display',
             'domino',
