@@ -48,8 +48,7 @@ Particles create_xyzr_particles(Model *m,
                                 Float box_side) {
   Particles ret;
   for (unsigned int i=0; i< num; ++i) {
-    Particle *p= new Particle();
-    m->add_particle(p);
+    Particle *p= new Particle(m);
     XYZRDecorator d= XYZRDecorator::create(p);
     d.set_coordinates(algebra::random_vector_in_box(
                             algebra::Vector3D(-box_side, -box_side, -box_side),
