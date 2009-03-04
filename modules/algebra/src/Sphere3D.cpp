@@ -53,7 +53,7 @@ Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
   for (unsigned int i=0; i< ss.size(); ++i) {
     c+= ss[i].get_center();
   }
-  c/=v.size();
+  c/=ss.size();
   double r=0;
   for (unsigned int i=0; i< ss.size(); ++i) {
     double d= (c- ss[i].get_center()).get_magnitude();
