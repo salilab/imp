@@ -42,8 +42,6 @@ def main():
     print "Creating a new module " + modname
     os.mkdir(modpath)
     copy_dir("kernel/doc/module_template", modpath, modname)
-    os.symlink(os.path.join("..", "..", "..", "tools", "run_all_tests.py"),
-               os.path.join(modpath, "test", "run_all_tests.py"))
 
 
 if __name__ == '__main__':
