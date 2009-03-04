@@ -77,6 +77,8 @@ def _add_build_flags(env):
     env.Append(CCFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
+    if not env.get('deprecated', "True"):
+        env.Append(CPPDEFINES=['IMP_NO_DEPRECATED'])
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS=["-Wall"])
     if env.get('build', 'release') == 'fast':
@@ -386,8 +388,10 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # See _swig_postprocess class comments:
         repl = '$SWIG -DPySwigIterator=IMP%s_PySwigIterator ' % mod_prefix
         e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
+        if not env.get('deprecated', "True"):
+            repl = '$SWIG -DIMP_NO_DEPRECATED '
+            e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
         e['SWIGCOM'] = [e['SWIGCOM'], _swig_postprocess(mod_prefix).builder]
-
     e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
     # import library (.lib file):
@@ -433,6 +437,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # release builds)
         if '-DNDEBUG' in e['CPPFLAGS']:
             e['CPPFLAGS'].remove('-DNDEBUG')
+        if not env.get('deprecated', "True"):
+            e.Append(CPPFLAGS=['-DIMP_NO_DEPRECATED'])
         if '-Wall' in e['CCFLAGS']:
             e['CCFLAGS'].remove('-Wall')
 
@@ -524,5 +530,7 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('pythonpath', 'Extra python path ' + \
                           '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None,
                           PathVariable.PathAccept))
+    vars.Add(BoolVariable('deprecated',
+                          'Build deprecated classes and functions', True))
     vars.Add(BoolVariable('python', 'Whether to build the python libraries ', True))
     vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))

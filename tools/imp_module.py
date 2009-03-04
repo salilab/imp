@@ -310,9 +310,11 @@ def _action_unit_test(target, source, env):
     scripts = [File('#/bin/imppy.sh')]
     if env['TEST_ENVSCRIPT']:
         scripts.append(File(env['TEST_ENVSCRIPT']))
-    app = "cd %s; %s %s %s -v > /dev/null" \
-          % (os.path.split(target[0].path)[0],
-             " ".join([x.abspath for x in scripts]), env['PYTHON'], source[0].abspath)
+    #app = "cd %s; %s %s %s -v > /dev/null" \
+    app = "%s %s %s %s -v > /dev/null" \
+          % (#os.path.split(target[0].path)[0],
+             " ".join([x.abspath for x in scripts]), env['PYTHON'], source[0].abspath,
+             os.path.split(target[0].path)[0])
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
     else:
