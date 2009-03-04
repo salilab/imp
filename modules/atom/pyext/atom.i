@@ -1,17 +1,17 @@
-%module(directors="1") "IMP.atomic"
+%module(directors="1") "IMP.atom"
 
 %{
 #include "IMP.h"
 #include "IMP/core.h"
 #include "IMP/algebra.h"
-#include "IMP/atomic.h"
+#include "IMP/atom.h"
 %}
 
 
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 
-%include "atomic_config.i"
+%include "atom_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"
@@ -23,9 +23,9 @@
 %import "modules/algebra/pyext/algebra.i"
 
 namespace IMP {
-namespace atomic {
+namespace atom {
 }
 }
 
 /* Wrap our own classes */
-%include "IMP/atomic/estimates.h"
+%include "IMP/atom/estimates.h"

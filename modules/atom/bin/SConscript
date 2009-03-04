@@ -3,7 +3,7 @@ import os.path
 
 Import('env')
 penv = env.Clone()
-penv.Prepend(LIBS=["imp_atomic"])
+penv.Prepend(LIBS=["imp_atom"])
 
 fs = Glob("*.cpp")
 
