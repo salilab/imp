@@ -1,0 +1,146 @@
+/**
+ * \file selectors
+ * \brief Selectors to extract predefined subsets of ATOM records from PDB files
+ *
+ * Copyright 2007-8 Sali Lab. All rights reserved.
+ *
+ */
+#ifndef IMPATOM_SELECTORS_H
+#define IMPATOM_SELECTORS_H
+
+#include "config.h"
+#include "PDBParser.h"
+
+#include <IMP/base_types.h>
+
+IMPATOM_BEGIN_NAMESPACE
+
+/** Selector is a general purpose class used to select records from a PDB
+    file. Using descendants of this class one may implement arbitrary
+    selection functions with operator() and pass them to PDB reading functions
+    for object selection. Simple selectors can be used to build more compilated
+    ones.
+*/
+class IMPATOMEXPORT Selector {
+ public:
+  virtual bool operator()(const String& pdb_line) const { return true; }
+  virtual ~Selector() {}
+};
+
+//! Defines a selector that will pick only C-alpha atoms.
+class IMPATOMEXPORT CAlphaSelector : public Selector {
+ public:
+  bool operator() (const String& pdb_line) const {
+    const String type = PDBParser::atom_type(pdb_line);
+    return (type[1] == 'C' && type[2] == 'A' && type[3] == ' ');
+  }
+};
+
+//! Defines a selector that will pick only C-beta atoms.
+class IMPATOMEXPORT CBetaSelector: public Selector {
+ public:
+  bool operator() (const String& pdb_line) const {
+    const String type = PDBParser::atom_type(pdb_line);
+    return (type[1] == 'C' && type[2] == 'B' && type[3] == ' ');
+  }
+};
+
+//! Defines a selector that will pick only C atoms. (not Ca or Cb)
+class IMPATOMEXPORT CSelector: public Selector {
+ public:
+  bool operator()(const String& pdb_line) const {
+    const String type = PDBParser::atom_type(pdb_line);
+    return (type[1] == 'C' && type[2] == ' ' && type[3] == ' ');
+  }
+};
+
+//! Defines a selector that will pick only N atoms.
+class IMPATOMEXPORT NSelector: public Selector {
+ public:
+  bool operator()(const String& pdb_line) const {
+    const String type = PDBParser::atom_type(pdb_line);
+    return (type[1] == 'N' && type[2] == ' ' && type[3] == ' ');
+  }
+};
+
+//! Defines a selector that will pick every atom.
+class IMPATOMEXPORT AllSelector : public Selector {
+ public:
+  bool operator()(const String& pdb_line) const { return true; }
+};
+
+//! Selector that picks atoms of given chains.
+class IMPATOMEXPORT ChainSelector : public Selector {
+ public:
+  ChainSelector(const String &chains): chains_(chains) {}
+  virtual ~ChainSelector() {}
+  bool operator()(const String& pdb_line) const {
+    for(int i=0; i < (int)chains_.length(); i++) {
+      if(PDBParser::atom_chain_id(pdb_line) == chains_[i])
+        return true;
+    }
+    return false;
+  }
+ private:
+  String chains_;
+};
+
+//! Selector that check if the line is water record
+class IMPATOMEXPORT WaterSelector : public Selector {
+ public:
+  bool operator()(const String& pdb_line) const {
+    const String res_name = PDBParser::atom_residue_name(pdb_line);
+    return ((res_name[0]=='H' && res_name[1] =='O' && res_name[2]=='H') ||
+            (res_name[0]=='D' && res_name[1] =='O' && res_name[2]=='D'));
+  }
+};
+
+//! Selector that check if the line is hydrogen record
+class IMPATOMEXPORT HydrogenSelector : public Selector {
+ public:
+  bool operator()(const String& pdb_line) const {
+    return (pdb_line[PDBParser::atom_type_field_+1] == 'H' ||
+            pdb_line[PDBParser::atom_type_field_+1] == 'D');
+  }
+};
+
+//! Selector that picks non water and non hydrogen atoms
+class IMPATOMEXPORT NonWaterNonHydrogenSelector : public Selector {
+ public:
+  bool operator()(const String& pdb_line) const {
+    WaterSelector w;
+    HydrogenSelector h;
+    return (! w(pdb_line) && ! h(pdb_line));
+  }
+};
+
+//! Selector that picks non water atoms
+class IMPATOMEXPORT NonWaterSelector : public Selector {
+ public:
+  bool operator()(const String& pdb_line) const {
+    WaterSelector w;
+    return( ! w(pdb_line));
+  }
+};
+
+//! A PDB Selector that picks only Phosphate atoms.
+class IMPATOMEXPORT PSelector : public Selector {
+ public:
+  bool operator()(const String& pdb_line) const {
+    const String type = PDBParser::atom_type(pdb_line);
+    return (type[1] == 'P' && type[2] == ' ');
+  }
+};
+
+//! A PDB Selector that ignores all alternative location atoms.
+class IMPATOMEXPORT IgnoreAlternativesSelector : public Selector {
+ public:
+  bool operator()(const String& pdb_line) const {
+    return ((PDBParser::atom_alt_loc_indicator(pdb_line) == ' ') ||
+            (PDBParser::atom_alt_loc_indicator(pdb_line) == 'A'));
+  }
+};
+
+IMPATOM_END_NAMESPACE
+
+#endif /* IMPATOM_SELECTORS_H */

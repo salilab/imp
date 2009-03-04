@@ -29,3 +29,6 @@ namespace atom {
 
 /* Wrap our own classes */
 %include "IMP/atom/estimates.h"
+%include "IMP/atom/selectors.h"
+%include "IMP/atom/PDBReader.h"
+%include "IMP/atom/PDBParser.h"
