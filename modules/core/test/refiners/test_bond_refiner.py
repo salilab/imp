@@ -11,11 +11,9 @@ class AllPairsContainerTest(IMP.test.TestCase):
     def test_allp(self):
         """Check that BondRefiner works"""
         m=IMP.Model()
-        p0= IMP.Particle()
-        m.add_particle(p0)
+        p0= IMP.Particle(m)
         b0= IMP.core.BondedDecorator.create(p0)
-        p1= IMP.Particle()
-        m.add_particle(p1)
+        p1= IMP.Particle(m)
         b1= IMP.core.BondedDecorator.create(p1)
         b= IMP.core.custom_bond(b0, b1, 1)
         r= IMP.core.BondEndpointsParticleRefiner()

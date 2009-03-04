@@ -8,10 +8,8 @@ class DecoratorTests(IMP.test.TestCase):
     def test_xyzr(self):
         """ Testing XYZR decorators"""
         m = IMP.Model()
-        pa=IMP.Particle()
-        m.add_particle(pa)
-        pb=IMP.Particle()
-        m.add_particle(pb)
+        pa=IMP.Particle(m)
+        pb=IMP.Particle(m)
         da= IMP.core.XYZRDecorator.create(pa, IMP.FloatKey("rk_1"))
         db= IMP.core.XYZRDecorator.create(pb, IMP.FloatKey("rk_0"))
         da.set_radius(1.0)

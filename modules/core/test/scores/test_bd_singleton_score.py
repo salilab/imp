@@ -9,10 +9,8 @@ class DistanceTests(IMP.test.TestCase):
     def test_bd_ss(self):
         """Test the bond decorator score"""
         m= IMP.Model()
-        p0= IMP.Particle()
-        m.add_particle(p0)
-        p1= IMP.Particle()
-        m.add_particle(p1)
+        p0= IMP.Particle(m)
+        p1= IMP.Particle(m)
         d0= IMP.core.XYZDecorator.create(p0)
         d1= IMP.core.XYZDecorator.create(p1)
         b0= IMP.core.BondedDecorator.create(p0)

@@ -7,10 +7,8 @@ class DecoratorTests(IMP.test.TestCase):
     def test_bonded(self):
         """Check bonds """
         m = IMP.Model()
-        pa=IMP.Particle()
-        m.add_particle(pa)
-        pb=IMP.Particle()
-        m.add_particle(pb)
+        pa=IMP.Particle(m)
+        pb=IMP.Particle(m)
         da= IMP.core.BondedDecorator.create(pa)
         db= IMP.core.BondedDecorator.create(pb)
         self.assertEqual(da.get_number_of_bonds(), 0,

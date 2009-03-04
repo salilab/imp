@@ -190,8 +190,7 @@ def init_imp_from_modeller(model, particles, atoms):
     yk= IMP.FloatKey("y")
     zk= IMP.FloatKey("z")
     for (num, at) in enumerate(atoms):
-        p = IMP.Particle()
-        model.add_particle(p)
+        p = IMP.Particle(model)
         p.add_attribute(xk, at.x, True)
         p.add_attribute(yk, at.y, True)
         p.add_attribute(zk, at.z, True)
@@ -377,8 +376,7 @@ def load_restraints_file(filename, protein):
 def copy_residue(r, model):
     """Copy residue information from modeller to imp"""
     #print "residue "+str(r)
-    p=IMP.Particle()
-    model.add_particle(p)
+    p=IMP.Particle(model)
     hp= IMP.core.MolecularHierarchyDecorator.create(p,
                                   IMP.core.MolecularHierarchyDecorator.RESIDUE )
     rp= IMP.core.ResidueDecorator.create(p)
@@ -397,8 +395,7 @@ def copy_residue(r, model):
 def copy_atom(a, model):
     """Copy atom information from modeller"""
     #print "atom "+str(a)
-    p=IMP.Particle()
-    model.add_particle(p)
+    p=IMP.Particle(model)
     ap= IMP.core.AtomDecorator.create(p)
     ap.set_x(a.x)
     ap.set_y(a.y)
@@ -441,15 +438,13 @@ def read_pdb(name, model, special_patches=None):
     e.io.hetatm=True
     pdb = modeller.scripts.complete_pdb(e, name,
                                         special_patches=special_patches)
-    pp= IMP.Particle()
-    model.add_particle(pp)
+    pp= IMP.Particle(model)
     hpp= IMP.core.MolecularHierarchyDecorator.create(pp,
                     IMP.core.MolecularHierarchyDecorator.PROTEIN)
     IMP.core.NameDecorator.create(pp).set_name(name)
     atoms={}
     for chain in pdb.chains:
-        cp=IMP.Particle()
-        model.add_particle(cp)
+        cp=IMP.Particle(model)
         hcp= IMP.core.MolecularHierarchyDecorator.create(cp,
                                    IMP.core.MolecularHierarchyDecorator.FRAGMENT)
         # We don't really know the type yet

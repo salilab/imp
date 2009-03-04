@@ -10,9 +10,8 @@ class TypedPairScoreTests(IMP.test.TestCase):
 
     def _make_particles(self, m, types):
         """Make particles with the given types"""
-        ps = [IMP.Particle() for i in types]
+        ps = [IMP.Particle(m) for i in types]
         for p, typ in zip(ps, types):
-            m.add_particle(p)
             p.add_attribute(typekey, typ)
         return ps
 

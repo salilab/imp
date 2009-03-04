@@ -25,8 +25,7 @@ public:
   atts_.push_back(FloatKey(KEY_OPT));
   Particle * p;
   for (int j = 0;j < number_of_states;j++) {
-    p = new Particle();
-    m_.add_particle(p);
+    p = new Particle(&m_);
     p->add_attribute(KEY_OPT,j,true);
     states_.push_back(p);
   }
