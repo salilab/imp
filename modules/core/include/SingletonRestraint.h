@@ -33,8 +33,8 @@ class IMPCOREEXPORT SingletonRestraint : public Restraint
   Particle* v_;
 public:
   //! Create the restraint.
-  /** \param[in] ss The function to apply to each particle.
-      \param[in] v The particle to restrain.
+  /** This function takes the function to apply to the
+      stored Singleton and the Singleton.
    */
   SingletonRestraint(SingletonScore *ss,
                       Particle *a);

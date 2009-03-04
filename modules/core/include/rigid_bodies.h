@@ -268,6 +268,7 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
    \param[in] m the model
    \param[in] rbs particles for the RigidBodyDecorator objects
    \param[in] pr a particle refined to get the members of the rigid bodies
+   \param[in] tr the rigid body traits to use
    \param[in] snap whether to use snapping (as opposed to direct optimization
    of the rotational degrees for freedom).
    \relates RigidBodyDecorator
@@ -283,6 +284,7 @@ IMPCOREEXPORT void setup_rigid_bodies(Model *m,
 /**
    \param[in] m the model
    \param[in] ps the particles making up the rigid body
+   \param[in] tr the rigid body traits to use
    \param[in] snap whether to use snapping (as opposed to direct optimization
    of the rotational degrees for freedom).
    \relates RigidBodyDecorator
