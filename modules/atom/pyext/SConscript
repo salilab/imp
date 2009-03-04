@@ -2,9 +2,9 @@ Import('env')
 
 e = env.IMPPythonExtensionEnvironment()
 
-e.IMPPythonExtension('atomic.i')
+e.IMPPythonExtension('atom.i')
 
-files = (Glob('atomic/*.py'))
+files = (Glob('atom/*.py'))
 
 # Install the Python files:
 env.IMPPython(files)

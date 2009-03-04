@@ -5,13 +5,13 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPATOMIC_ESTIMATES_H
-#define IMPATOMIC_ESTIMATES_H
+#ifndef IMPATOM_ESTIMATES_H
+#define IMPATOM_ESTIMATES_H
 
 #include "config.h"
 #include <IMP/base_types.h>
 
-IMPATOMIC_BEGIN_NAMESPACE
+IMPATOM_BEGIN_NAMESPACE
 
 //! Estimate the volume of a protein from its mass
 /** The estimate uses a formula published in
@@ -37,11 +37,11 @@ IMPATOMIC_BEGIN_NAMESPACE
     \note I don't like the abbreviations in the name, but it is too
     long without them.
 
-    \note It is not clear that this belongs in IMP.atomic, but it doesn't
+    \note It is not clear that this belongs in IMP.atom, but it doesn't
     fit at all anywhere else.
 */
-IMPATOMICEXPORT double volume_in_A3_from_mass_in_kDa(double v);
+IMPATOMEXPORT double volume_in_A3_from_mass_in_kDa(double v);
 
-IMPATOMIC_END_NAMESPACE
+IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOMIC_ESTIMATES_H */
+#endif  /* IMPATOM_ESTIMATES_H */
