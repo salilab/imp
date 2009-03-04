@@ -14,6 +14,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 CMMLogOptimizerState::CMMLogOptimizerState(std::string filename,
                                              const Particles &pis) :
     pis_(pis), filename_(filename), file_number_(0), call_number_(0),
@@ -114,5 +116,7 @@ void CMMLogOptimizerState::show(std::ostream &out) const
 {
   out << "Writing CMM files " << filename_ << std::endl;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
