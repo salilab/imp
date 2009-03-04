@@ -16,6 +16,8 @@
 
 IMPMISC_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 RefineOncePairScore::RefineOncePairScore(ParticleRefiner *r,
                                          PairScore *f): r_(r), f_(f) {
   IMP_DEPRECATED(RefineOncePairScore, RefinedPairsPairScore);
@@ -61,5 +63,7 @@ void RefineOncePairScore::show(std::ostream &out) const
   f_->show(out);
   r_->show(out);
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPMISC_END_NAMESPACE
