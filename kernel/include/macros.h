@@ -287,7 +287,7 @@ public:                                                         \
  virtual ~Classname(){}
 #else
 
-#ifdef SWIG || IMP_SWIG_WRAPPER
+#if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
 // SWIG doesn't do friends right either, but we don't care as much
 #define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
 public:                                                      \
