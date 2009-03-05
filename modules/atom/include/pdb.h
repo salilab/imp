@@ -38,6 +38,13 @@ read_pdb(std::string pdb_file_name,
 IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
                              std::string file_name);
 
+/** \note This function is not yet implemented.
+    \see read_pdb
+    \relates MolecularHierarchyDecorator
+*/
+IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
+                             std::string file_name);
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_PDB_H */
