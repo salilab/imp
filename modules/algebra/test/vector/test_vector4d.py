@@ -97,6 +97,12 @@ class Vector4DTests(IMP.test.TestCase):
         v2 = IMP.algebra.Vector4D(1.0, 2.0, 3.0, 10.0)
         self.assertRaises(TypeError, IMP.algebra.squared_distance, v1, v2)
 
+    def test_passing(self):
+        r= IMP.algebra.Rotation3D(1,0,0,0)
+        v1= r.get_quaternion()
+        v2= IMP.algebra.Vector4D(1.0, 2.0, 3.0, 10.0)
+        print v1*v2
+        r2= IMP.algebra.rotation_from_vector4d(v2)
 
 if __name__ == '__main__':
     unittest.main()
