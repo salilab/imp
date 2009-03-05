@@ -21,7 +21,7 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT DomainDecorator: public Decorator
 {
-  class Data {
+  struct Data {
     Data(): begin("domain_begin"),
             end("domain_end"){}
     IntKey begin, end;
@@ -30,9 +30,9 @@ class IMPATOMEXPORT DomainDecorator: public Decorator
 public:
   //! Create a domain covering the range [b, e)
   static DomainDecorator create(Particle *p, Int b, Int e) {
-    p->add_attribute(get_data().begin(), b);
-    p->add_attribute(get_data().end(), e);
-    return DomianDecorator(p);
+    p->add_attribute(get_data().begin, b);
+    p->add_attribute(get_data().end, e);
+    return DomainDecorator(p);
   }
 
   virtual ~DomainDecorator();
@@ -44,15 +44,15 @@ public:
 
   //! Get the index of the first residue in the domain
   Int get_begin_index() const {
-    return get_particle()->get_attribute(get_data().begin);
+    return get_particle()->get_value(get_data().begin);
   }
 
   //! Get the index of the first residue not in the domain
   Int get_end_index() const {
-    return get_particle()->get_attribute(get_data().end);
+    return get_particle()->get_value(get_data().end);
   }
 
-  IMP_DECORATOR(internal::version_info)
+  IMP_DECORATOR(DomainDecorator, Decorator)
 };
 
 

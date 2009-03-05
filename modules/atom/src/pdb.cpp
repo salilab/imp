@@ -219,8 +219,8 @@ void write_pdb(MolecularHierarchyDecorator mhd,
   }
 }
 
-void write_pdb(const MolecularHierarchyDecorator& mhd,
-                    std::string file_name) {
+void write_pdb(const MolecularHierarchyDecorators& mhd,
+               std::string file_name) {
 
   IMP_failure("Not implemented", ErrorException);
 }
