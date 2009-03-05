@@ -112,7 +112,6 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
                              get_derivative(2));
   }
 
-  //! Return true if the particle is an instance of an XYZDecorator
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_coordinate_key(0))
       && p->has_attribute(get_coordinate_key(1))
