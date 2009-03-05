@@ -50,6 +50,7 @@ void set_x(Float f);
 %include "IMP/atom/BondSingletonScore.h"
 %include "IMP/atom/BrownianDynamics.h"
 %include "IMP/atom/DiffusionDecorator.h"
+%include "IMP/atom/DomainDecorator.h"
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/MolecularHierarchyDecorator.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
