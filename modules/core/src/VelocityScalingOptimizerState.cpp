@@ -11,6 +11,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 VelocityScalingOptimizerState::VelocityScalingOptimizerState(
     const Particles &pis, Float temperature, unsigned skip_steps) :
     pis_(pis), temperature_(temperature), skip_steps_(skip_steps),
@@ -53,5 +55,7 @@ void VelocityScalingOptimizerState::show(std::ostream &out) const
   out << "Rescaling velocities to " << temperature_ << " every "
       << skip_steps_ << " steps" << std::endl;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

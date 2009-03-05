@@ -161,26 +161,6 @@ get_leaves(HierarchyDecorator mhd)
   return out;
 }
 
-BondDecorators get_internal_bonds(HierarchyDecorator mhd)
-{
-  Particles ps= get_all_descendants(mhd);
-  std::set<Particle*> sps(ps.begin(), ps.end());
-  BondDecorators ret;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    if (BondedDecorator::is_instance_of(ps[i])){
-      BondedDecorator b(ps[i]);
-      for (unsigned int i=0; i< b.get_number_of_bonds(); ++i) {
-        Particle *op= b.get_bonded(i).get_particle();
-        if (op < ps[i]
-            && sps.find(op) != sps.end()) {
-          ret.push_back(b.get_bond(i));
-        }
-      }
-    }
-  }
-  return ret;
-}
-
 
 namespace
 {

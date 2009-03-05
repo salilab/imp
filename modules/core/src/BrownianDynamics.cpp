@@ -20,6 +20,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 typedef
 unit::Shift<unit::Multiply<unit::Pascal,
                            unit::Second>::type,
@@ -244,5 +246,7 @@ unit::KilocaloriePerAngstromPerMol BrownianDynamics
   unit::YoctoKilocaloriePerAngstrom yc=unit::convert_J_to_Cal(pn);
   return unit::operator*(unit::ATOMS_PER_MOL,yc);
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

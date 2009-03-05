@@ -16,6 +16,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! Simple molecular dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
     and a non-optimizable mass attribute; this optimizer assumes the score
@@ -23,6 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
     the mass to be in AMU (g/mol).
 
     Particles without optimized x,y,z and nonoptimized mass are skipped.
+    \deprecated use atom::MolecularDynamics instead
     \see VelocityScalingOptimizerState
  */
 class IMPCOREEXPORT MolecularDynamics : public Optimizer
@@ -96,6 +99,8 @@ private:
   //! Maximum absolute value of a single velocity component
   Float velocity_cap_;
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

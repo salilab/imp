@@ -11,7 +11,6 @@
 
 #include "config.h"
 #include "utility.h"
-#include "bond_decorators.h"
 #include "internal/hierarchy_helpers.h"
 #include "internal/ArrayOnAttributesHelper.h"
 
@@ -536,12 +535,6 @@ HD breadth_first_find(HD h, F f)
  */
 IMPCOREEXPORT Particles
 get_leaves(HierarchyDecorator mhd);
-
-//! Get the bonds internal to this tree
-/**     \relates HierarchyDecorator
- */
-IMPCOREEXPORT BondDecorators
-get_internal_bonds(HierarchyDecorator mhd);
 
 //! Get all the particles in the subtree
 /**     \relates HierarchyDecorator

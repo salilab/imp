@@ -19,6 +19,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! Simple Brownian dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
     and a non-optimizable "Stokes radius"; this optimizer assumes
@@ -26,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
     angstroms and the diffusion coefficent be in cm^2/s
 
     Particles without optimized x,y,z and nonoptimized D are skipped.
-
+    \deprecated Use atom::BrownianDynamics instead
     \see DiffusionDecorator
   */
 class IMPCOREEXPORT BrownianDynamics : public Optimizer
@@ -136,6 +138,8 @@ private:
   unit::Femtosecond dt_, cur_time_;
   unit::Kelvin T_;
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

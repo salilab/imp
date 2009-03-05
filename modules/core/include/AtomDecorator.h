@@ -23,6 +23,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 
 
@@ -207,6 +209,7 @@ IMPCOREEXPORT extern const AtomType AT_CG1;
 
 //! A decorator for a particle representing an atom.
 /**
+   \deprectated use atom::AtomDecorator instead
    \ingroup hierarchy
    \see MolecularHierarchy
  */
@@ -357,6 +360,7 @@ IMPCOREEXPORT char get_chain(AtomDecorator d);
 IMPCOREEXPORT AtomType add_atom_type(std::string name,
                                     AtomDecorator::Element element);
 
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

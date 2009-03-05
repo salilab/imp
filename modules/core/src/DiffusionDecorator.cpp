@@ -11,6 +11,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 typedef
 unit::Shift<unit::Multiply<unit::Pascal,
                            unit::Second>::type,
@@ -94,5 +96,7 @@ void DiffusionDecorator::show(std::ostream &out, std::string prefix) const
   out << "D= " << get_D_in_cm2_per_second() << "cm^2/sec";
 
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

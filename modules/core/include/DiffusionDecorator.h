@@ -20,10 +20,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! A a decorator for a diffusing particle.
 /** \ingroup helper
     \ingroup decorators
     \see BrownianDynamics
+    \deprecated Use atom::DiffusionDecorator instead
  */
 class IMPCOREEXPORT DiffusionDecorator: public XYZDecorator
 {
@@ -84,6 +87,8 @@ class IMPCOREEXPORT DiffusionDecorator: public XYZDecorator
 };
 
 IMP_OUTPUT_OPERATOR(DiffusionDecorator);
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

@@ -16,6 +16,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! Constructor
 MolecularDynamics::MolecularDynamics() :
     time_step_(4.0), degrees_of_freedom_(0),
@@ -174,5 +176,7 @@ void MolecularDynamics::assign_velocities(Float temperature)
     }
   }
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

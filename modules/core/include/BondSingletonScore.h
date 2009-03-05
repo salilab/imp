@@ -16,11 +16,14 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! Score the bond based on a UnaryFunction,
 /** The score is based on the difference between the stored length
     and the actual length and scaled by the stiffness. That is
     stiffness * (distance-bond_length)
     \ingroup bond
+    \deprecated use atom::BondSingletonScore instead
     \see BondDecorator
     \see BondedDecorator
  */
@@ -35,6 +38,8 @@ public:
                          DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

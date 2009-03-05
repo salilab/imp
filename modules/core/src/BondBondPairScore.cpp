@@ -9,13 +9,14 @@
 #include "IMP/core/XYZDecorator.h"
 #include "IMP/constants.h"
 #include "IMP/core/internal/evaluate_distance_pair_score.h"
-#include "IMP/core/bond_decorators.h"
+#include "IMP/atom/bond_decorators.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/Particle.h>
 #include <boost/lambda/lambda.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
 
 Segment shortest_segment(const Segment &s, const algebra::Vector3D &p) {
   algebra::Vector3D vs= s.second- s.first;
@@ -118,7 +119,7 @@ BondBondPairScore
 
 Segment BondBondPairScore::get_endpoints(Particle *p) const
 {
-  BondDecorator b(p);
+  atom::BondDecorator b(p);
   Particle* p0= b.get_bonded(0).get_particle();
   Particle* p1= b.get_bonded(1).get_particle();
   XYZDecorator d0(p0);
@@ -183,5 +184,7 @@ void BondBondPairScore::show(std::ostream &out) const
   out << "BondBondPairScore using ";
   f_->show(out);
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

@@ -16,9 +16,12 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! A container that pretends to contain all bonds.
 /** This is to be used with a ClosePairsScoreState to exclude all bonded pairs.
     \ingroup bond
+    \deprecated use atom::BondPairContainer instead
     \see BondedDecorator
  */
 class IMPCOREEXPORT BondPairContainer :
@@ -33,6 +36,7 @@ public:
   IMP_PAIR_CONTAINER(internal::version_info)
 };
 
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 
