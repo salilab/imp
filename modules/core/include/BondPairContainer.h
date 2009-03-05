@@ -31,9 +31,7 @@ public:
   //! no arguments
   BondPairContainer();
 
-  virtual ~BondPairContainer();
-
-  IMP_PAIR_CONTAINER(internal::version_info)
+  IMP_PAIR_CONTAINER(BondPairContainer, internal::version_info)
 };
 
 #endif // IMP_NO_DEPRECATED

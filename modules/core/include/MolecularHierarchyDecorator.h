@@ -220,22 +220,6 @@ IMPCOREEXPORT Particles
 get_by_type(MolecularHierarchyDecorator mhd,
                                 MolecularHierarchyDecorator::Type t);
 
-class ResidueDecorator;
-
-//! Get the residue with the specified index
-/** Find the residue with the appropriate index. This is the PDB index,
-    not the offset in the chain (if they are different).
-
-    \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
-    \return MolecularHierarchyDecorator() if that residue is not found.
-
-    \ingroup hierarchy
-    \relates MolecularHierarchyDecorator
- */
-IMPCOREEXPORT ResidueDecorator
-get_residue(MolecularHierarchyDecorator mhd,
-            unsigned int index);
-
 
 //! Create a fragment containing the specified nodes
 /** A particle representing the frament is created and initialized.
