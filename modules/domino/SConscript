@@ -7,7 +7,7 @@ env.IMPModuleAbout(author='Keren Lasker', version='SVN',
 # No dependent libraries, so this module can always be built:
 env.validate()
 
-env.Append(LIBS=['imp_core', 'imp_algebra'])
+env.Append(LIBS=['imp_core', 'imp_algebra', 'imp_atom'])
 
 # Subdirectories:
 SConscript('src/SConscript')
