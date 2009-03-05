@@ -210,19 +210,31 @@ void write_pdb(MolecularHierarchyDecorator mhd,
                 << " for writing",
                 ValueException);
   }
+  write_pdb(mhd, out_file);
+}
+void write_pdb(MolecularHierarchyDecorator mhd,
+               std::ostream &out) {
   Particles ps= get_leaves(mhd);
   for (unsigned int i=0; i< ps.size(); ++i) {
     if (AtomDecorator::is_instance_of(ps[i])) {
       AtomDecorator ad(ps[i]);
-      out_file << ad.get_pdb_string();
+      out << ad.get_pdb_string();
     }
   }
 }
 
+
 void write_pdb(const MolecularHierarchyDecorators& mhd,
                std::string file_name) {
-
-  IMP_failure("Not implemented", ErrorException);
+  std::ofstream out_file(file_name.c_str());
+  if (!out_file) {
+    IMP_failure("Can't open file " << file_name
+                << " for writing",
+                ValueException);
+  }
+  for (unsigned int i=0; i< mhd.size(); ++i) {
+    write_pdb(mhd[i], out_file);
+  }
 }
 
 
