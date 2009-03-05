@@ -10,6 +10,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 BondPairContainer
 ::BondPairContainer(){
 }
@@ -45,5 +47,7 @@ ParticlePair BondPairContainer
 void BondPairContainer::show(std::ostream &out) const {
   out << "BondPairContainer" << std::endl;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

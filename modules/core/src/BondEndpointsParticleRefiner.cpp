@@ -10,6 +10,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 BondEndpointsParticleRefiner::BondEndpointsParticleRefiner()
 {
 }
@@ -43,5 +45,7 @@ void BondEndpointsParticleRefiner::show(std::ostream &out) const
 {
   out << "BondEndpointsParticleRefiner" << std::endl;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

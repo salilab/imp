@@ -17,6 +17,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 // exposed for testing
 struct Segment {
   algebra::Vector3D first, second;
@@ -39,7 +41,7 @@ Segment shortest_segment(const Segment &sa,
     defined by two bonds. If the volume_key is non-default, then
     the bond is given a width to define a cylinder of that volume
     and the distance between the cylinders is used.
-
+    \deprecated Use atom::BondBondPairScore instead
     \ingroup bond
     \see BondDecorator
  */
@@ -61,6 +63,8 @@ class IMPCOREEXPORT BondBondPairScore : public PairScore
                          DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

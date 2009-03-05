@@ -46,16 +46,15 @@ IMP_OWN_LIST_METHOD(type, add_##lcname##s)
 
 namespace IMP {
   namespace core {
-    %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
-    %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
-
     IMP_OWN_CONSTRUCTOR(AllPairsPairContainer)
     IMP_OWN_CONSTRUCTOR(AngleRestraint)
     IMP_OWN_CONSTRUCTOR(AngleTripletScore)
     IMP_OWN_CONSTRUCTOR(AttributeSingletonScore)
     IMP_OWN_CONSTRUCTOR(BallMover)
-    IMP_OWN_CONSTRUCTOR(BondDecoratorRestraint)
+#ifndef IMP_NO_DEPRECATED
     IMP_OWN_CONSTRUCTOR(BondSingletonScore)
+    IMP_OWN_CONSTRUCTOR(BondBondPairScore)
+#endif
     IMP_OWN_CONSTRUCTOR(ClosePairsPairScore)
     IMP_OWN_CONSTRUCTOR(ConnectivityRestraint)
     IMP_OWN_CONSTRUCTOR(CoverRefined)
@@ -70,7 +69,6 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(MaximumChangeScoreState)
     IMP_OWN_CONSTRUCTOR(NonbondedRestraint)
     IMP_OWN_CONSTRUCTOR(NormalMover)
-    IMP_OWN_CONSTRUCTOR(BondBondPairScore)
     IMP_OWN_CONSTRUCTOR(UpdateRigidBodyOrientation)
     IMP_OWN_CONSTRUCTOR(AccumulateRigidBodyDerivatives)
     IMP_OWN_CONSTRUCTOR(UpdateRigidBodyMembers)
@@ -81,9 +79,12 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(SphereDistancePairScore)
     IMP_OWN_CONSTRUCTOR(TransformedDistancePairScore)
     IMP_OWN_CONSTRUCTOR(TripletChainRestraint)
+#ifndef IMP_NO_DEPRECATED
     IMP_OWN_CONSTRUCTOR(VRMLLogOptimizerState)
     IMP_CONTAINER_SWIG(VRMLLogOptimizerState,
     ParticleRefiner, particle_refiner)
+    IMP_OWN_METHOD(VRMLLogOptimizerState, set_singleton_container)
+#endif
     IMP_OWN_CONSTRUCTOR(ClosePairsScoreState)
     IMP_OWN_CONSTRUCTOR(CloseBipartitePairsScoreState)
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
@@ -93,12 +94,8 @@ namespace IMP {
     IMP_OWN_METHOD(TypedPairScore, set_pair_score)
     IMP_OWN_METHOD(ClosePairsScoreState, set_close_pairs_finder)
     IMP_OWN_METHOD(CloseBipartitePairsScoreState, set_close_pairs_finder)
-    IMP_OWN_METHOD(VRMLLogOptimizerState, set_singleton_container)
     //IMP_CONTAINER_SWIG(FilteredListSingletonContainer, Particle, singleton)
     //IMP_CONTAINER_SWIG(ListSingletonContainer, Particle, singleton)
-    
-    IMP_OWN_METHOD(NonbondedListScoreState, add_bonded_list)
-    IMP_OWN_LIST_METHOD(NonbondedListScoreState, add_bonded_lists)
 
     IMP_OWN_FUNCTION(setup_rigid_bodies)
     IMP_OWN_FUNCTION(create_rigid_body)
@@ -213,14 +210,17 @@ namespace IMP {
 
 namespace IMP {
   namespace core {
-    %template(show_named_hierarchy) show<NameDecorator>;
-    %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
-    %template(BondDecorators) ::std::vector<BondDecorator>;
     %template(Movers) ::std::vector<Mover*>;
     %template(XYZDecorators) ::std::vector<XYZDecorator>;
     %template(XYZRDecorators) ::std::vector<XYZRDecorator>;
     %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
     %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
+    // swig up on scopes, I can't be bothered to fix it
+    //%template(show_named_hierarchy) show<::IMP::core::NameDecorator>;
+#ifndef IMP_NO_DEPRECATED
+    %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
+    %template(BondDecorators) ::std::vector<BondDecorator>;
+#endif
   }
 }

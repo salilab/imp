@@ -18,6 +18,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 
 
@@ -100,6 +102,7 @@ IMPCOREEXPORT extern const ResidueType THY;
    need it.
    \ingroup hierarchy
    \ingroup decorators
+   \deprecated Use atom::ResidueDecorator instead
  */
 class IMPCOREEXPORT ResidueDecorator: public Decorator
 {
@@ -173,6 +176,8 @@ IMP_OUTPUT_OPERATOR(ResidueDecorator);
     \relates ResidueType
  */
 IMPCOREEXPORT ResidueType residue_type_from_pdb_string(std::string nm);
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

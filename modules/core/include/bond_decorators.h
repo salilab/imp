@@ -19,6 +19,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 class BondDecorator;
 class BondedDecorator;
 
@@ -31,6 +33,7 @@ class BondedDecorator;
    As with AtomDecorator, the types of bonds will eventually be run-time
    expandible.
 
+   \deprecated Use atom::BondDecorator instead
    \ingroup bond
    \see BondedDecorator
  */
@@ -200,6 +203,9 @@ void unbond(BondDecorator b);
  */
 IMPCOREEXPORT
 BondDecorator get_bond(BondedDecorator a, BondedDecorator b);
+
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

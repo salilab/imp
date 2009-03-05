@@ -17,6 +17,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 const HierarchyTraits& MolecularHierarchyDecorator::get_traits() {
   static HierarchyTraits ret("molecular_hierarchy");
   return ret;
@@ -155,5 +157,7 @@ create_fragment(const MolecularHierarchyDecorators &ps)
   parent.add_child_at(fd, index);
   return fd;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

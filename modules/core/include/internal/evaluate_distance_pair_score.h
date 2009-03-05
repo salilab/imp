@@ -8,8 +8,9 @@
 #ifndef IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 #define IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H
 
-#include "../macros.h"
-
+#include "../config.h"
+#include <IMP/base_types.h>
+#include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
 #include <IMP/algebra/Vector3D.h>
 

@@ -22,11 +22,14 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! A decorator for helping deal with a hierarchy of molecules
 /** \ingroup hierarchy
     \ingroup decorators
     \see ResidueDecorator
     \see AtomDecorator
+    \deprecated use atom::MolecularHierarchyDecorator instead
  */
 class IMPCOREEXPORT MolecularHierarchyDecorator: public HierarchyDecorator
 {
@@ -246,6 +249,8 @@ get_residue(MolecularHierarchyDecorator mhd,
  */
 IMPCOREEXPORT MolecularHierarchyDecorator
 create_fragment(const MolecularHierarchyDecorators &ps);
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

@@ -13,6 +13,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 BondSingletonScore::BondSingletonScore(UnaryFunction *f): f_(f){}
 
 Float BondSingletonScore::evaluate(Particle *b,
@@ -52,5 +54,7 @@ void BondSingletonScore::show(std::ostream &out) const
   f_->show(out);
   out << std::endl;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

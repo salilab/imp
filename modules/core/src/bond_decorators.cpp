@@ -9,6 +9,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 namespace internal
 {
 
@@ -91,5 +93,7 @@ BondDecorator get_bond(BondedDecorator a, BondedDecorator b) {
   }
   return BondDecorator();
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

@@ -16,6 +16,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 #define TYPE_DEF(STR) const ResidueType STR(#STR);
 TYPE_DEF(UNK);
 TYPE_DEF(GLY);
@@ -75,5 +77,7 @@ IntKey ResidueDecorator::get_insertion_code_key() {
   static IntKey k("residue_icode");
   return k;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE

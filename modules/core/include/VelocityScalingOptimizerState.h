@@ -17,11 +17,14 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! Maintains temperature during molecular dynamics by velocity scaling.
 /** This OptimizerState, when used with the MolecularDynamics optimizer,
     implements a simple thermostat by periodically rescaling the velocities.
     (Note that this results in discontinuous dynamics.)
     \see MolecularDynamics
+    \deprecated Use atom::VelocityScalingOptimizerState instead
  */
 class IMPCOREEXPORT VelocityScalingOptimizerState : public OptimizerState
 {
@@ -60,6 +63,8 @@ private:
   //! Keys of the xyz velocities
   FloatKey vs_[3];
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

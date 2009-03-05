@@ -15,8 +15,10 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 //! Return the endpoints of a bond.
-/**
+/** \deprecated Use atom::BondEndpointsParticleRefiner
  \ingroup bond
  \see BondDecorator
  */
@@ -30,6 +32,8 @@ public:
 
   IMP_PARTICLE_REFINER(internal::version_info);
 };
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
 

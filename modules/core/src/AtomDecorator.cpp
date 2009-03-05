@@ -17,6 +17,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+#ifndef IMP_NO_DEPRECATED
+
 #define TYPE_DEF(STR) const AtomType AT_##STR(#STR);
 #define TYPE_DEF2(NAME, STR) const AtomType AT_##NAME(#STR);
 
@@ -589,5 +591,7 @@ AtomType add_atom_type(std::string name,
   get_element_map().add_element(ret, element);
   return ret;
 }
+
+#endif // IMP_NO_DEPRECATED
 
 IMPCORE_END_NAMESPACE
