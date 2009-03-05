@@ -8,6 +8,8 @@
 #define IMPALGEBRA_SPHERE_3D_H
 
 #include <IMP/algebra/Cylinder3D.h>
+#include <cmath>
+#include <IMP/constants.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -60,6 +62,11 @@ inline double distance(const Sphere3D& a, const Sphere3D &b) {
 
 //! Return a sphere containing the listed spheres
 IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Sphere3Ds &ss);
+
+//! Return the radius of a sphere with a given volume
+inline double sphere_radius_from_volume(double volume) {
+  return std::pow((.75/PI)*volume, .3333);
+}
 
 IMPALGEBRA_END_NAMESPACE
 

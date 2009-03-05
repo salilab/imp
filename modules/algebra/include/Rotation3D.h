@@ -312,5 +312,11 @@ inline Rotation3D rotation_about_axis(Vector3D axis, double angle)
 IMPALGEBRAEXPORT Rotation3D random_rotation();
 
 
+//! Compute a rotatation from an unnormalized quaternion
+inline Rotation3D rotation_from_vector4d(const VectorD<4> &v) {
+  VectorD<4> uv= v.get_unit_vector();
+  return Rotation3D(uv[0], uv[1], uv[2], uv[3]);
+}
+
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_3D_H */
