@@ -35,7 +35,7 @@ public:
 
   //! Initialize the 1-vector from its value.
   VectorD(double x) {
-#ifdef SWIG_WRAPPER
+#ifdef IMP_SWIG_WRAPPER
     IMP_check(D==1, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
@@ -46,7 +46,7 @@ public:
 
   //! Initialize the 2-vector from separate x,y values.
   VectorD(double x, double y) {
-#ifdef SWIG_WRAPPER
+#ifdef IMP_SWIG_WRAPPER
     IMP_check(D==2, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
@@ -58,7 +58,7 @@ public:
 
   //! Initialize the 2-vector from separate x,y values.
   VectorD(double x, double y, double z) {
-#ifdef SWIG_WRAPPER
+#ifdef IMP_SWIG_WRAPPER
     IMP_check(D==3, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
@@ -71,7 +71,7 @@ public:
 
   //! Initialize the 2-vector from separate x,y values.
   VectorD(double w, double x, double y, double z) {
-#ifdef SWIG_WRAPPER
+#ifdef IMP_SWIG_WRAPPER
     IMP_check(D==4, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
