@@ -13,13 +13,13 @@ class PDBReadTest(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m, IMP.atom.NonWaterSelector())
+        mp= IMP.atom.PDBReader.read_PDB_file(self.get_input_file_name("input.pdb"), m, IMP.atom.NonWaterSelector())
         print "number of particles"
         print m.get_number_of_particles()
         #IMP.core.show_molecular_hierarchy(mp)
 
         m2 = IMP.Model()
-        mp= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m2, IMP.atom.CAlphaSelector())
+        mp= IMP.atom.PDBReader.read_PDB_file(self.get_input_file_name("input.pdb"), m2, IMP.atom.CAlphaSelector())
         print "number of particles"
         print m2.get_number_of_particles()
 

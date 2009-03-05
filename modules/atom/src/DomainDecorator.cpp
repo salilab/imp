@@ -11,9 +11,6 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-DomainDecorator::DomainDecorator(){
-}
-
 DomainDecorator::~DomainDecorator(){}
 
 const DomainDecorator::Data& DomainDecorator::get_data() {
@@ -21,8 +18,8 @@ const DomainDecorator::Data& DomainDecorator::get_data() {
   return data;
 }
 
-void DomainDecorator::show(std::ostream &out) const {
-  out << "DomainDecorator: " << get_begin_index()
+void DomainDecorator::show(std::ostream &out, std::string prefix) const {
+  out << prefix << "DomainDecorator: " << get_begin_index()
       << " to " << get_end_index() << std::endl;
 }
 

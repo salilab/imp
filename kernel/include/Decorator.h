@@ -41,10 +41,12 @@ protected:
   bool is_default() const {
     return !particle_;
   }
+
+protected:
+  Decorator() {}
 public:
   typedef Decorator This;
 
-  Decorator() {}
   IMP_COMPARISONS_1(particle_);
 
   /** \return the particle wrapped by this decorator*/
