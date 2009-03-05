@@ -388,16 +388,16 @@ namespace {
 
 AtomDecorator AtomDecorator::create(Particle *p, AtomType t,
                                     const algebra::Vector3D &v) {
+  p->add_attribute(get_type_key(), t.get_index());
   XYZDecorator::create(p, v);
   AtomDecorator ret(p);
-  ret.set_type(t);
   return ret;
 }
 
 AtomDecorator AtomDecorator::create(Particle *p, AtomDecorator o) {
   XYZDecorator::create(p, o.get_coordinates());
+  p->add_attribute(get_type_key(), o.get_type().get_index());
   AtomDecorator ret(p);
-  ret.set_type(o.get_type());
   if (o.get_element() != UNKNOWN_ELEMENT) {
     ret.set_element(o.get_element());
   }
