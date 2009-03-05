@@ -245,6 +245,9 @@ public:
                               const algebra::Vector3D &v=
                               algebra::Vector3D(0,0,0));
 
+  /** Create a decorator by copying from o.*/
+  static AtomDecorator create(Particle *p, AtomDecorator o);
+
   //! return true if the particle has the needed attributes
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())

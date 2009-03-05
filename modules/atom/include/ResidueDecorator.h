@@ -106,7 +106,7 @@ class IMPATOMEXPORT ResidueDecorator: public Decorator
 {
 public:
   IMP_DECORATOR(ResidueDecorator, Decorator)
-
+  //! create a decorator from the provided information
   static ResidueDecorator create(Particle *p, ResidueType t= UNK,
                                  int index=-1, int insertion_code = 32) {
     p->add_attribute(get_type_key(), t.get_index());
@@ -115,7 +115,15 @@ public:
     // insertion code 32 is for space
     return ResidueDecorator(p);
   }
-  //! Return true if the particle is a ResidueDecorator
+
+  //! Copy data from the o
+  static ResidueDecorator create(Particle *p, ResidueDecorator o) {
+    p->add_attribute(get_type_key(), o.get_type().get_index());
+    p->add_attribute(get_index_key(), o.get_index());
+    p->add_attribute(get_insertion_code_key(), o.get_insertion_code());
+    return ResidueDecorator(p);
+  }
+
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())
     && p->has_attribute(get_index_key())
