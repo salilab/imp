@@ -1,5 +1,5 @@
 /**
- *  \file BondEndpointsParticleRefiner.h
+ *  \file core/BondEndpointsParticleRefiner.h
  *  \brief Return the endpoints of a bond.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file MolecularHierarchyDecorator.h   \brief Decorator for helping deal with
+ *  \file core/MolecularHierarchyDecorator.h   \brief MHD
  *                                               a hierarchy of molecules.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
