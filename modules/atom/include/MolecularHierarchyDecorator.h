@@ -259,10 +259,10 @@ get_internal_bonds(MolecularHierarchyDecorator mhd);
 
 //! Clone the MolecularHiearchy
 /** This method copies the bonds, AtomDecorator data, ResidueDecorator
-    data and NameDecorator data to the new copies in addition to the
-    MolecularHierarchyDecorator relationships.
+    data, DomainDecorator data and NameDecorator data to the new copies
+    in addition to the MolecularHierarchyDecorator relationships.
 
-    \note It is not implemented :-)
+    \note This method has not been tested at all
     \relates MolecularHierarchyDecorator
 */
 IMPATOMEXPORT

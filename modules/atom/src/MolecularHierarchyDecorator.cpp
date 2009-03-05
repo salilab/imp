@@ -10,6 +10,7 @@
 #include <IMP/core/NameDecorator.h>
 #include <IMP/atom/AtomDecorator.h>
 #include <IMP/atom/ResidueDecorator.h>
+#include <IMP/atom/DomainDecorator.h>
 
 #include <sstream>
 #include <set>
@@ -177,11 +178,59 @@ BondDecorators get_internal_bonds(MolecularHierarchyDecorator mhd)
   return ret;
 }
 
-
+namespace {
+IMPATOMEXPORT
+MolecularHierarchyDecorator clone_internal(MolecularHierarchyDecorator d,
+                                           std::map<Particle*,
+                                           Particle*> &map) {
+  Particle *p= new Particle(d.get_model());
+  map[d.get_particle()]=p;
+  MolecularHierarchyDecorator nd
+    =MolecularHierarchyDecorator::create(p, d.get_type());
+  for (unsigned int i=0 ;i< d.get_number_of_children(); ++i) {
+    MolecularHierarchyDecorator nc= clone_internal(d.get_child(i), map);
+    nd.add_child(nc);
+  }
+  if (AtomDecorator::is_instance_of(d.get_particle())) {
+    AtomDecorator::create(p, AtomDecorator(d.get_particle()));
+  }
+  if (ResidueDecorator::is_instance_of(d.get_particle())) {
+    ResidueDecorator::create(p, ResidueDecorator(d.get_particle()));
+  }
+  if (DomainDecorator::is_instance_of(d.get_particle())) {
+    DomainDecorator::create(p, DomainDecorator(d.get_particle()));
+  }
+  if (core::NameDecorator::is_instance_of(d.get_particle())) {
+    core::NameDecorator::create(p,
+                    core::NameDecorator(d.get_particle()).get_name());
+  }
+  return nd;
+}
+}
 
 IMPATOMEXPORT
 MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d) {
-  IMP_failure("Not implemented", ErrorException);
+  std::map<Particle*,Particle*> map;
+  MolecularHierarchyDecorator nh= clone_internal(d, map);
+  BondDecorators bds= get_internal_bonds(d);
+  for (unsigned int i=0; i< bds.size(); ++i) {
+    BondedDecorator e0= bds[i].get_bonded(0);
+    BondedDecorator e1= bds[i].get_bonded(1);
+    Particle *np0= map[e0.get_particle()];
+    Particle *np1= map[e1.get_particle()];
+    BondedDecorator ne0, ne1;
+    if (BondedDecorator::is_instance_of(np0)) {
+      ne0=BondedDecorator(np0);
+    } else {
+      ne0=BondedDecorator::create(np0);
+    }
+    if (BondedDecorator::is_instance_of(np1)) {
+      ne1=BondedDecorator(np1);
+    } else {
+      ne1=BondedDecorator::create(np1);
+    }
+    copy_bond(ne0, ne1, bds[i]);
+  }
 }
 
 
