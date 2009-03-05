@@ -46,9 +46,9 @@ class DecoratorTests(IMP.test.TestCase):
         self.assertRaises(ValueError, IMP.core.residue_type_from_pdb_string, "blah")
 
     def test_types(self):
-        at= IMP.core.atom_type_from_pdb_string("CA")
-        self.assertRaises(ValueError, IMP.core.atom_type_from_pdb_string, "blah")
-        lt= IMP.core.residue_type_from_pdb_string("LYS")
-        self.assertRaises(ValueError, IMP.core.residue_type_from_pdb_string, "blah")
+        at= IMP.atom.atom_type_from_pdb_string("CA")
+        self.assertRaises(ValueError, IMP.atom.atom_type_from_pdb_string, "blah")
+        lt= IMP.atom.residue_type_from_pdb_string("LYS")
+        self.assertRaises(ValueError, IMP.atom.residue_type_from_pdb_string, "blah")
 if __name__ == '__main__':
     unittest.main()
