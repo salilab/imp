@@ -6,109 +6,109 @@
  *
  */
 
-#include <IMP/atom/PDBParser.h>
+#include <IMP/atom/internal/pdb.h>
 
-IMPATOM_BEGIN_NAMESPACE
+IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
-bool PDBParser::is_ATOM_rec(const String& pdb_line)
+bool is_ATOM_rec(const String& pdb_line)
 {
   return (pdb_line[0] == 'A' && pdb_line[1] == 'T' &&
           pdb_line[2] == 'O' && pdb_line[3] == 'M');
 }
 
-bool PDBParser::is_HETATM_rec(const String& pdb_line)
+bool is_HETATM_rec(const String& pdb_line)
 {
   return (pdb_line[0] == 'H' && pdb_line[1] == 'E' && pdb_line[2] == 'T' &&
           pdb_line[3] == 'A' && pdb_line[4] == 'T' && pdb_line[5] == 'M');
 }
 
-bool PDBParser::is_MODEL_rec(const String& pdb_line)
+bool is_MODEL_rec(const String& pdb_line)
 {
   return (pdb_line[0] == 'M' && pdb_line[1] == 'O' && pdb_line[2] == 'D' &&
           pdb_line[3] == 'E' && pdb_line[4] == 'L');
 }
 
-bool PDBParser::is_ENDMDL_rec(const String& pdb_line)
+bool is_ENDMDL_rec(const String& pdb_line)
 {
   return (pdb_line[0] == 'E' && pdb_line[1] == 'N' && pdb_line[2] == 'D' &&
           pdb_line[3] == 'M' && pdb_line[4] == 'D' && pdb_line[5] == 'L');
 }
 
-bool PDBParser::is_CONECT_rec(const String& pdb_line)
+bool is_CONECT_rec(const String& pdb_line)
 {
   return (pdb_line[0] == 'C' && pdb_line[1] == 'O' && pdb_line[2] == 'N' &&
           pdb_line[3] == 'E' && pdb_line[4] == 'C' && pdb_line[5] == 'T');
 }
 
-int PDBParser::atom_number(const String& pdb_line)
+int atom_number(const String& pdb_line)
 {
   return atoi(pdb_line.substr(atom_number_field_).c_str());
 }
 
-String PDBParser::atom_type(const String& pdb_line)
+String atom_type(const String& pdb_line)
 {
   String atom_type_string = pdb_line.substr(atom_type_field_, 4);
   return atom_type_string;
 }
 
-char PDBParser::atom_alt_loc_indicator(const String& pdb_line)
+char atom_alt_loc_indicator(const String& pdb_line)
 {
   return pdb_line[atom_alt_loc_field_];
 }
 
-String PDBParser::atom_residue_name(const String& pdb_line)
+String atom_residue_name(const String& pdb_line)
 {
   String res_name = pdb_line.substr(atom_res_name_field_, 3);
   return res_name;
 }
 
-char PDBParser::atom_chain_id(const String& pdb_line)
+char atom_chain_id(const String& pdb_line)
 {
   return pdb_line[atom_chain_id_field_];
 }
 
-short PDBParser::atom_residue_number(const String& pdb_line)
+short atom_residue_number(const String& pdb_line)
 {
   return atoi(pdb_line.substr(atom_res_number_field_).c_str());
 }
 
-char PDBParser::atom_residue_icode(const String& pdb_line)
+char atom_residue_icode(const String& pdb_line)
 {
   return pdb_line[atom_res_insertion_field_];
 }
 
-float PDBParser::atom_xcoord(const String& pdb_line)
+float atom_xcoord(const String& pdb_line)
 {
   return atof(pdb_line.substr(atom_xcoord_field_).c_str());
 }
 
-float PDBParser::atom_ycoord(const String& pdb_line)
+float atom_ycoord(const String& pdb_line)
 {
   return atof(pdb_line.substr(atom_ycoord_field_).c_str());
 }
 
-float PDBParser::atom_zcoord(const String& pdb_line)
+float atom_zcoord(const String& pdb_line)
 {
   return atof(pdb_line.substr(atom_zcoord_field_).c_str());
 }
 
-float PDBParser::atom_occupancy(const String& pdb_line)
+float atom_occupancy(const String& pdb_line)
 {
   return atof(pdb_line.substr(atom_occupancy_field_).c_str());
 }
 
-float PDBParser::atom_temp_factor(const String& pdb_line)
+float atom_temp_factor(const String& pdb_line)
 {
   return atof(pdb_line.substr(atom_temp_factor_field_).c_str());
 }
 
-String PDBParser::atom_element(const String& pdb_line)
+String atom_element(const String& pdb_line)
 {
   String element_name = pdb_line.substr(atom_element_field_, 2);
   return element_name;
 }
 
-std::vector<unsigned short> PDBParser::connected_atoms(const String& pdb_line)
+std::vector<unsigned short> connected_atoms(const String& pdb_line)
 {
   std::vector <unsigned short> conn_atoms;
   if (is_CONECT_rec(pdb_line)) {
@@ -132,4 +132,4 @@ std::vector<unsigned short> PDBParser::connected_atoms(const String& pdb_line)
   return conn_atoms;
 }
 
-IMPATOM_END_NAMESPACE
+IMPATOM_END_INTERNAL_NAMESPACE

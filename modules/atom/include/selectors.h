@@ -9,7 +9,7 @@
 #define IMPATOM_SELECTORS_H
 
 #include "config.h"
-#include "PDBParser.h"
+#include "internal/pdb.h"
 
 #include <IMP/base_types.h>
 
@@ -24,59 +24,59 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT Selector {
  public:
   virtual bool operator()(const String& pdb_line) const { return true; }
-  virtual ~Selector() {}
+  virtual ~Selector();
 };
 
 //! Defines a selector that will pick only C-alpha atoms.
-class IMPATOMEXPORT CAlphaSelector : public Selector {
+class CAlphaSelector : public Selector {
  public:
   bool operator() (const String& pdb_line) const {
-    const String type = PDBParser::atom_type(pdb_line);
+    const String type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == 'A' && type[3] == ' ');
   }
 };
 
 //! Defines a selector that will pick only C-beta atoms.
-class IMPATOMEXPORT CBetaSelector: public Selector {
+class CBetaSelector: public Selector {
  public:
   bool operator() (const String& pdb_line) const {
-    const String type = PDBParser::atom_type(pdb_line);
+    const String type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == 'B' && type[3] == ' ');
   }
 };
 
 //! Defines a selector that will pick only C atoms. (not Ca or Cb)
-class IMPATOMEXPORT CSelector: public Selector {
+class CSelector: public Selector {
  public:
   bool operator()(const String& pdb_line) const {
-    const String type = PDBParser::atom_type(pdb_line);
+    const String type = internal::atom_type(pdb_line);
     return (type[1] == 'C' && type[2] == ' ' && type[3] == ' ');
   }
 };
 
 //! Defines a selector that will pick only N atoms.
-class IMPATOMEXPORT NSelector: public Selector {
+class NSelector: public Selector {
  public:
   bool operator()(const String& pdb_line) const {
-    const String type = PDBParser::atom_type(pdb_line);
+    const String type = internal::atom_type(pdb_line);
     return (type[1] == 'N' && type[2] == ' ' && type[3] == ' ');
   }
 };
 
 //! Defines a selector that will pick every atom.
-class IMPATOMEXPORT AllSelector : public Selector {
+class AllSelector : public Selector {
  public:
   bool operator()(const String& pdb_line) const { return true; }
 };
 
 //! Selector that picks atoms of given chains.
-class IMPATOMEXPORT ChainSelector : public Selector {
+class ChainSelector : public Selector {
  public:
   ChainSelector(const String &chains): chains_(chains) {}
   virtual ~ChainSelector() {}
   bool operator()(const String& pdb_line) const {
     for(int i=0; i < (int)chains_.length(); i++) {
-      if(PDBParser::atom_chain_id(pdb_line) == chains_[i])
+      if(internal::atom_chain_id(pdb_line) == chains_[i])
         return true;
     }
     return false;
@@ -86,26 +86,26 @@ class IMPATOMEXPORT ChainSelector : public Selector {
 };
 
 //! Selector that check if the line is water record
-class IMPATOMEXPORT WaterSelector : public Selector {
+class WaterSelector : public Selector {
  public:
   bool operator()(const String& pdb_line) const {
-    const String res_name = PDBParser::atom_residue_name(pdb_line);
+    const String res_name = internal::atom_residue_name(pdb_line);
     return ((res_name[0]=='H' && res_name[1] =='O' && res_name[2]=='H') ||
             (res_name[0]=='D' && res_name[1] =='O' && res_name[2]=='D'));
   }
 };
 
 //! Selector that check if the line is hydrogen record
-class IMPATOMEXPORT HydrogenSelector : public Selector {
+class HydrogenSelector : public Selector {
  public:
   bool operator()(const String& pdb_line) const {
-    return (pdb_line[PDBParser::atom_type_field_+1] == 'H' ||
-            pdb_line[PDBParser::atom_type_field_+1] == 'D');
+    return (pdb_line[internal::atom_type_field_+1] == 'H' ||
+            pdb_line[internal::atom_type_field_+1] == 'D');
   }
 };
 
 //! Selector that picks non water and non hydrogen atoms
-class IMPATOMEXPORT NonWaterNonHydrogenSelector : public Selector {
+class NonWaterNonHydrogenSelector : public Selector {
  public:
   bool operator()(const String& pdb_line) const {
     WaterSelector w;
@@ -115,7 +115,7 @@ class IMPATOMEXPORT NonWaterNonHydrogenSelector : public Selector {
 };
 
 //! Selector that picks non water atoms
-class IMPATOMEXPORT NonWaterSelector : public Selector {
+class NonWaterSelector : public Selector {
  public:
   bool operator()(const String& pdb_line) const {
     WaterSelector w;
@@ -124,20 +124,20 @@ class IMPATOMEXPORT NonWaterSelector : public Selector {
 };
 
 //! A PDB Selector that picks only Phosphate atoms.
-class IMPATOMEXPORT PSelector : public Selector {
+class PSelector : public Selector {
  public:
   bool operator()(const String& pdb_line) const {
-    const String type = PDBParser::atom_type(pdb_line);
+    const String type = internal::atom_type(pdb_line);
     return (type[1] == 'P' && type[2] == ' ');
   }
 };
 
 //! A PDB Selector that ignores all alternative location atoms.
-class IMPATOMEXPORT IgnoreAlternativesSelector : public Selector {
+class IgnoreAlternativesSelector : public Selector {
  public:
   bool operator()(const String& pdb_line) const {
-    return ((PDBParser::atom_alt_loc_indicator(pdb_line) == ' ') ||
-            (PDBParser::atom_alt_loc_indicator(pdb_line) == 'A'));
+    return ((internal::atom_alt_loc_indicator(pdb_line) == ' ') ||
+            (internal::atom_alt_loc_indicator(pdb_line) == 'A'));
   }
 };
 
