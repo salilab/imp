@@ -57,6 +57,10 @@ public:
     return particle_->get_model();
   }
 
+#ifdef IMP_DOXYGEN
+  /** Return true if the particle can be cast to the decorator. */
+  static bool is_instance_of(Particle *p);
+#endif
 };
 
 IMP_END_NAMESPACE
