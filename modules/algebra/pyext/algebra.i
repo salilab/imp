@@ -1,3 +1,4 @@
+// Algebra
 %module(directors="1") "IMP.algebra"
 
 %{
@@ -45,7 +46,8 @@ namespace multi_array_types {
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Sphere3D.h"
 %include "IMP/algebra/vector_generators.h"
-%include "IMP/algebra/MultiArray.h"
+%include "Matrix2D.i"
+%include "Matrix3D.i"
 
 namespace IMP {
  namespace algebra {
@@ -56,7 +58,5 @@ namespace IMP {
    %template(random_vector_in_unit_sphere) random_vector_in_unit_sphere<3>;
    %template(random_vector_in_unit_box) random_vector_in_unit_box<3>;
    %template(random_vector_on_box) random_vector_on_box<3>;
-   %template(bm2) ::boost::multi_array<float, 2>;
-   %template(multi2) MultiArray<float, 2>;
  }
 }

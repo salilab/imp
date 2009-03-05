@@ -9,8 +9,8 @@
 #define IMPALGEBRA_MULTI_ARRAY_H
 
 #include "config.h"
-#include "IMP/exception.h"
 #include "IMP/base_types.h"
+#include "IMP/exception.h"
 #include "IMP/random.h"
 #include "internal/output_helpers.h"
 #include "IMP/algebra/utility.h"
@@ -36,15 +36,32 @@ public:
   typedef boost::multi_array_types::index index;
   typedef boost::multi_array_types::size_type size_type;
   typedef boost::multi_array<T, D> BMA;
-
+  typedef IMP::algebra::MultiArray<T, D> This;
 public:
   //! Empty constructor
   MultiArray() : BMA() {
   }
 
   //! Copy constructor
-  MultiArray(const IMP::algebra::MultiArray<T, D>& v) {
-    *this = v;
+  MultiArray(const This& v) {
+    boost::array<index, D> shape;
+    // Resize the MultiArray
+    int dims=v.num_dimensions();
+    for(int i=0;i<dims;i++) {shape[i]=v.shape()[i]; }
+    this->resize(shape);
+    // Assign
+    std::vector<index> idx(D);
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
+      (*this)(idx) = v(idx);
+    }
+  }
+
+  //! Constructor with given dimensions
+  /**
+   * \param[in] dims a boost::array of index indicating the sizes for each dim.
+   */
+  MultiArray(const boost::array<index, D>& dims) {
+    this->resize(dims);
   }
 
   //! Another way of asking for the size of a given dimension. You can always
@@ -117,84 +134,82 @@ public:
     }
     return (*this)(idx);
   }
+
 #ifndef SWIG
+
   //! Sum operator
-  IMP::algebra::MultiArray<T, D>
-  operator+(const IMP::algebra::MultiArray<T, D>& v) const {
-    IMP::algebra::MultiArray<T, D> result(this->shape());
+  This operator+(const This& v) const {
+    This result(v);
     internal::operate_arrays(*this, v, result, '+');
     return result;
   }
 
   //! Minus operator
-  IMP::algebra::MultiArray<T, D>
-  operator-(const IMP::algebra::MultiArray<T, D>& v) const {
-    IMP::algebra::MultiArray<T, D> result(this->shape());
+  This operator-(const This& v) const {
+    This result(v);
     internal::operate_arrays(*this, v, result, '-');
     return result;
   }
 
   //! Multiplication operator
-  IMP::algebra::MultiArray<T, D>
-  operator*(const IMP::algebra::MultiArray<T, D>& v) const {
-    IMP::algebra::MultiArray<T, D> result(this->shape());
+  This operator*(const This& v) const {
+    This result(v);
     internal::operate_arrays(*this, v, result, '*');
     return result;
   }
 
   //! Division operator
-  IMP::algebra::MultiArray<T, D>
-  operator/(const IMP::algebra::MultiArray<T, D>& v) const {
-    IMP::algebra::MultiArray<T, D> result(this->shape());
+  This operator/(const This& v) const {
+    This result(v);
     internal::operate_arrays(*this, v, result, '/');
     return result;
   }
 
   //! Addition operator
-  void operator+=(const IMP::algebra::MultiArray<T, D>& v) const {
+  void operator+=(const This& v) const {
     internal::operate_arrays(*this, v, *this, '+');
   }
 
   //! Substraction operator
-  void operator-=(const IMP::algebra::MultiArray<T, D>& v) const {
+  void operator-=(const This& v) const {
     internal::operate_arrays(*this, v, *this, '-');
   }
 
   //! Multiplication operator
-  void operator*=(const IMP::algebra::MultiArray<T, D>& v) const {
+  void operator*=(const This& v) const {
     internal::operate_arrays(*this, v, *this, '*');
   }
 
   //! Division operator
-  void operator/=(const IMP::algebra::MultiArray<T, D>& v) const {
+  void operator/=(const This& v) const {
     internal::operate_arrays(*this, v, *this, '/');
   }
 
   //! Sum operator for an array and a scalar
-  IMP::algebra::MultiArray<T, D> operator+(const T& v) const {
-    IMP::algebra::MultiArray<T, D> result(this->shape());
+  This operator+(const T& v) const {
+    This result(v);
     internal::operate_array_and_scalar(*this, v, result, '+');
     return result;
   }
 
   //! Minus operator for an array and a scalar
-  IMP::algebra::MultiArray<T, D> operator-(const T& v) const {
-    IMP::algebra::MultiArray<T, D> result(this->shape());
+  This operator-(const T& v) const {
+    This result(v);
     internal::operate_array_and_scalar(*this, v, result, '-');
     return result;
   }
 
   //! Multiplication operator for an array and a scalar
-  IMP::algebra::MultiArray<T, D> operator*(const T& v) const {
-    IMP::algebra::MultiArray<T, D> result(this->shape());
+  This operator*(const T& v) const {
+    This result(v);
     internal::operate_array_and_scalar(*this, v, result, '*');
     return result;
   }
 
 
   //! Division operator for an array and a scalar
-  IMP::algebra::MultiArray<T, D> operator/(const T& v) const {
-    IMP::algebra::MultiArray<T, D> result(this->shape());
+  This operator/(const T& v) const {
+    This result(v);
     internal::operate_array_and_scalar(*this, v, result, '/');
     return result;
   }
@@ -463,8 +478,7 @@ void write_binary(const std::string& filename) {
   }
 
 
-  friend std::istream& operator>>(std::istream& in,
-                                  IMP::algebra::MultiArray<T, D>& v) {
+  friend std::istream& operator>>(std::istream& in,This& v) {
     std::vector<index> idx(D);
     while (internal::roll_inds(idx, v.shape(), v.index_bases())) {
       in >> v(idx);
@@ -495,7 +509,7 @@ std::ostream& operator<<(std::ostream& ostrm,
       absmax = v(idx);
     }
   }
-  Int prec = internal::best_precision(absmax, 10);
+  int prec = internal::best_precision(absmax, 10);
 
 
   // Print differently depending on dimension
