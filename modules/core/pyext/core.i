@@ -54,6 +54,9 @@ namespace IMP {
 #ifndef IMP_NO_DEPRECATED
     IMP_OWN_CONSTRUCTOR(BondSingletonScore)
     IMP_OWN_CONSTRUCTOR(BondBondPairScore)
+    %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
+    %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
+
 #endif
     IMP_OWN_CONSTRUCTOR(ClosePairsPairScore)
     IMP_OWN_CONSTRUCTOR(ConnectivityRestraint)
