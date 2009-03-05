@@ -35,6 +35,13 @@ public:
     return DomainDecorator(p);
   }
 
+  //! Create a domain by copying from o
+  static DomainDecorator create(Particle *p, DomainDecorator o) {
+    p->add_attribute(get_data().begin, o.get_begin_index());
+    p->add_attribute(get_data().end, o.get_end_index());
+    return DomainDecorator(p);
+  }
+
   virtual ~DomainDecorator();
 
   static bool is_instance_of(Particle *p) {

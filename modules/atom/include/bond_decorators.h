@@ -185,6 +185,25 @@ inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
 }
 
 
+//! Connect the two wrapped particles by a custom bond.
+/** Create a bond by copying the information from the othr bond
+
+    \ingroup bond
+    \relates BondDecorator
+    \relates BondedDecorator
+ */
+IMPATOMEXPORT
+inline BondDecorator copy_bond(BondedDecorator a, BondedDecorator b,
+                                 BondDecorator o) {
+  BondDecorator bd=bond(a,b, o.get_type());
+  if (o.get_length() > 0) bd.set_length(o.get_length());
+  bd.get_particle()->set_name(std::string("bond ")+
+                              a.get_particle()->get_name()
+                              + " and " + b.get_particle()->get_name());
+  if (o.get_stiffness() >=0) bd.set_stiffness(o.get_stiffness());
+  return bd;
+}
+
 //! Destroy the bond connecting to particles.
 /** \param[in] b The bond.
     \ingroup bond
