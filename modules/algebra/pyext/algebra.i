@@ -46,6 +46,7 @@ namespace multi_array_types {
 %include "IMP/algebra/Plane3D.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Sphere3D.h"
+%include "IMP/algebra/Sphere3DPatch.h"
 %include "IMP/algebra/vector_generators.h"
 %include "Matrix2D.i"
 %include "Matrix3D.i"
