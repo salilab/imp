@@ -7,7 +7,7 @@
  */
 
 #include <IMP/saxs/FormFactorTable.h>
-#include <IMP/core/AtomDecorator.h>
+#include <IMP/atom/AtomDecorator.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/utility.h>
 
