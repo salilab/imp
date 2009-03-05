@@ -39,9 +39,7 @@ public:
                                  GroupnameContainer *c,
                                  unsigned int n=1);
 
-  virtual ~MinimumGroupnameScoreRestraint();
-
-  IMP_RESTRAINT(internal::version_info);
+  IMP_RESTRAINT(MinimumGroupnameScoreRestraint, internal::version_info);
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}

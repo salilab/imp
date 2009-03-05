@@ -29,14 +29,13 @@ public:
    */
   DihedralRestraint(UnaryFunction* score_func,
                     Particle* p1, Particle* p2, Particle* p3, Particle *p4);
-  virtual ~DihedralRestraint();
 
   ParticlesList get_interacting_particles() const {
     ParticlesList ret(1,Particles(p_, p_+4));
     return ret;
   }
 
-  IMP_RESTRAINT(internal::version_info)
+  IMP_RESTRAINT(DihedralRestraint, internal::version_info)
 
 private:
   Pointer<UnaryFunction> score_func_;

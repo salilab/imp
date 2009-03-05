@@ -57,9 +57,7 @@ public:
     f_=f;
   }
 
-  virtual ~PairsScoreState();
-
-  IMP_SCORE_STATE(internal::version_info)
+  IMP_SCORE_STATE(PairsScoreState, internal::version_info)
 };
 
 

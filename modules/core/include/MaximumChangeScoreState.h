@@ -40,9 +40,7 @@ public:
   MaximumChangeScoreState(SingletonContainer *pc,
                           const FloatKeys &keys);
 
-  virtual ~MaximumChangeScoreState();
-
-  IMP_SCORE_STATE(internal::version_info);
+  IMP_SCORE_STATE(MaximumChangeScoreState, internal::version_info);
 
   //! Measure differences from the current value.
   void reset();

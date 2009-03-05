@@ -15,8 +15,6 @@ IMP_BEGIN_NAMESPACE
 
 GroupnameContainer::GroupnameContainer(){}
 
-GroupnameContainer::~GroupnameContainer(){}
-
 void GroupnameContainer::show(std::ostream &out) const {
   out << "GroupnameContainer" << std::endl;
 }

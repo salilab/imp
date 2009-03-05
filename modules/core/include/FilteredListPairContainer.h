@@ -41,9 +41,8 @@ public:
   //! cannot pass a Pairs on construction
   FilteredListPairContainer();
 
-  virtual ~FilteredListPairContainer();
-
-  IMP_PAIR_CONTAINER(internal::version_info);
+  IMP_PAIR_CONTAINER(FilteredListPairContainer,
+                          internal::version_info);
 
   //! Add vt if none of the referenced containers already contains it
   void add_particle_pair(ParticlePair vt);

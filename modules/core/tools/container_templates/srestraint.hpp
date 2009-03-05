@@ -39,9 +39,7 @@ public:
   GroupnameRestraint(GroupnameScore *ss,
                       ClassnameArguments);
 
-  virtual ~GroupnameRestraint();
-
-  IMP_RESTRAINT(internal::version_info);
+  IMP_RESTRAINT(GroupnameRestraint, internal::version_info);
 
   virtual ParticlesList get_interacting_particles() const;
 };

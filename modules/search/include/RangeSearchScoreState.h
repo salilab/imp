@@ -52,7 +52,7 @@ public:
     return keys_;
   }
 
-  IMP_SCORE_STATE(internal::version_info);
+  IMP_SCORE_STATE(RangeSearchScoreState, internal::version_info);
 };
 
 IMPSEARCH_END_NAMESPACE

@@ -39,8 +39,6 @@ FilteredListSingletonContainer
 ::FilteredListSingletonContainer(){
 }
 
-FilteredListSingletonContainer::~FilteredListSingletonContainer(){}
-
 void FilteredListSingletonContainer::add_particle(Particle* vt) {
   IMP_CHECK_OBJECT(this);
   // For VC which can't convert the iterators

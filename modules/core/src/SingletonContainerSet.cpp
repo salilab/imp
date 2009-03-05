@@ -19,8 +19,6 @@ SingletonContainerSet
 ::SingletonContainerSet(){
 }
 
-SingletonContainerSet::~SingletonContainerSet(){}
-
 bool
 SingletonContainerSet
 ::get_contains_particle(Particle* vt) const {

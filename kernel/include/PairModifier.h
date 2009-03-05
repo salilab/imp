@@ -30,8 +30,6 @@ class IMPEXPORT PairModifier : public RefCountedObject
 public:
   PairModifier();
 
-  virtual ~PairModifier();
-
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b,
                      DerivativeAccumulator *da) const=0;
@@ -44,6 +42,8 @@ public:
 
   /** return information about the authors */
   virtual VersionInfo get_version_info() const = 0;
+
+  IMP_REF_COUNTED_DESTRUCTOR(PairModifier)
 };
 
 IMP_OUTPUT_OPERATOR(PairModifier)

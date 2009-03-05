@@ -57,9 +57,7 @@ public:
     f_=f;
   }
 
-  virtual ~GroupnamesScoreState();
-
-  IMP_SCORE_STATE(internal::version_info)
+  IMP_SCORE_STATE(GroupnamesScoreState, internal::version_info)
 };
 
 

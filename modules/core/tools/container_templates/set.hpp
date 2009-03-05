@@ -28,9 +28,7 @@ public:
   //! Construct and empty set
   GroupnameContainerSet();
 
-  virtual ~GroupnameContainerSet();
-
-  IMP_GROUPNAME_CONTAINER(internal::version_info);
+  IMP_GROUPNAME_CONTAINER(GroupnameContainerSet, internal::version_info);
 
   IMP_LIST(public, GroupnameContainer, groupname_container,
            GroupnameContainer*);

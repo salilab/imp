@@ -28,9 +28,7 @@ public:
   //! Construct and empty set
   SingletonContainerSet();
 
-  virtual ~SingletonContainerSet();
-
-  IMP_SINGLETON_CONTAINER(internal::version_info);
+  IMP_SINGLETON_CONTAINER(SingletonContainerSet, internal::version_info);
 
   IMP_LIST(public, SingletonContainer, singleton_container,
            SingletonContainer*);

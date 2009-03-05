@@ -22,8 +22,6 @@ SingletonsScoreState::SingletonsScoreState(SingletonContainer *c,
     if (after) af_=after;
 }
 
-SingletonsScoreState::~SingletonsScoreState(){}
-
 
 void SingletonsScoreState::do_before_evaluate()
 {

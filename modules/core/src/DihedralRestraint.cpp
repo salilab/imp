@@ -31,13 +31,6 @@ DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
   score_func_ = score_func;
 }
 
-
-//! Destructor
-DihedralRestraint::~DihedralRestraint()
-{
-}
-
-
 //! Calculate the score for this dihedral restraint.
 /** \param[in] accum If not NULL, use this object to accumulate partial first
                      derivatives.

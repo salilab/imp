@@ -27,18 +27,20 @@ public:
   //! construct and pass an initial set of particles
   ListSingletonContainer(const Particles &ps= Particles());
 
-  virtual ~ListSingletonContainer();
+  IMP_LIST(public, Particle, particle, Particle*);
 
   //! log n time
   virtual bool get_contains_particle(Particle* vt) const;
-
-  IMP_LIST(public, Particle, particle, Particle*);
 
   IMP::VersionInfo get_version_info() const {
     return internal::version_info;
   }
 
   virtual void show(std::ostream &out = std::cout) const;
+
+  // for some reason swig gets this wrong
+  //IMP_REF_COUNTED_DESTRUCTOR(ListSingletonContainer)
+  ~ListSingletonContainer(){}
 };
 
 

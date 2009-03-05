@@ -39,9 +39,7 @@ public:
   PairRestraint(PairScore *ss,
                       Particle *a, Particle *b);
 
-  virtual ~PairRestraint();
-
-  IMP_RESTRAINT(internal::version_info);
+  IMP_RESTRAINT(PairRestraint, internal::version_info);
 
   virtual ParticlesList get_interacting_particles() const;
 };

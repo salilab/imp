@@ -15,8 +15,6 @@ IMP_BEGIN_NAMESPACE
 
 PairContainer::PairContainer(){}
 
-PairContainer::~PairContainer(){}
-
 void PairContainer::show(std::ostream &out) const {
   out << "PairContainer" << std::endl;
 }

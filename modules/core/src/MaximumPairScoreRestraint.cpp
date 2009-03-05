@@ -46,9 +46,6 @@ namespace {
   }
 }
 
-
-MaximumPairScoreRestraint::~MaximumPairScoreRestraint(){}
-
 Float MaximumPairScoreRestraint
 ::evaluate(DerivativeAccumulator *da) {
   MS bestn= find_minimal_set(c_->particle_pairs_begin(),

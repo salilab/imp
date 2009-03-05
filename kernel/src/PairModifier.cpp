@@ -15,6 +15,4 @@ IMP_BEGIN_NAMESPACE
 PairModifier::PairModifier(){
 }
 
-PairModifier::~PairModifier(){}
-
 IMP_END_NAMESPACE

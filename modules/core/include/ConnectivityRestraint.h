@@ -46,9 +46,7 @@ public:
     return ParticlesList(1, Particles(particles_begin(), particles_end()));
   }
 
-  virtual ~ConnectivityRestraint();
-
-  IMP_RESTRAINT(internal::version_info)
+  IMP_RESTRAINT(ConnectivityRestraint, internal::version_info)
 };
 
 IMPCORE_END_NAMESPACE

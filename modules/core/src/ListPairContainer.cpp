@@ -18,8 +18,6 @@ ListPairContainer::ListPairContainer(const ParticlePairs &ps){
   set_particle_pairs(ps);
 }
 
-ListPairContainer::~ListPairContainer(){}
-
 IMP_LIST_IMPL(ListPairContainer, ParticlePair,
               particle_pair, ParticlePair,, {
                 std::sort(particle_pairs_begin(), particle_pairs_end());

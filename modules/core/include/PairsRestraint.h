@@ -53,9 +53,7 @@ public:
   PairsRestraint(PairScore *ss,
                       PairContainer *pc);
 
-  virtual ~PairsRestraint();
-
-  IMP_RESTRAINT(internal::version_info);
+  IMP_RESTRAINT(PairsRestraint, internal::version_info);
 
   /** \note This can only be used if the container is a ListPairContainer
   */

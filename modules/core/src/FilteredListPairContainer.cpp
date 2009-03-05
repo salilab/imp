@@ -39,8 +39,6 @@ FilteredListPairContainer
 ::FilteredListPairContainer(){
 }
 
-FilteredListPairContainer::~FilteredListPairContainer(){}
-
 void FilteredListPairContainer::add_particle_pair(ParticlePair vt) {
   IMP_CHECK_OBJECT(this);
   // For VC which can't convert the iterators

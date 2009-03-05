@@ -23,8 +23,6 @@ GroupnameScoreState::GroupnameScoreState(GroupnameModifier *before,
     if (after) af_=after;
 }
 
-GroupnameScoreState::~GroupnameScoreState(){}
-
 
 void GroupnameScoreState::do_before_evaluate()
 {

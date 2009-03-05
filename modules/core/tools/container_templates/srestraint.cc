@@ -25,10 +25,6 @@ GroupnameRestraint
 {
 }
 
-GroupnameRestraint::~GroupnameRestraint()
-{
-}
-
 Float GroupnameRestraint::evaluate(DerivativeAccumulator *accum)
 {
 

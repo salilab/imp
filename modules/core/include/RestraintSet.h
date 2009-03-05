@@ -25,9 +25,8 @@ class IMPCOREEXPORT RestraintSet : public Restraint
 public:
   //! Create an empty set
   RestraintSet(const std::string& name=std::string());
-  ~RestraintSet();
 
-  IMP_RESTRAINT(internal::version_info)
+  IMP_RESTRAINT(RestraintSet, internal::version_info)
 
   IMP_LIST(public, Restraint, restraint, Restraint*);
 

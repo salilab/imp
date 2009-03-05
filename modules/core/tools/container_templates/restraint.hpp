@@ -53,9 +53,7 @@ public:
   GroupnamesRestraint(GroupnameScore *ss,
                       GroupnameContainer *pc);
 
-  virtual ~GroupnamesRestraint();
-
-  IMP_RESTRAINT(internal::version_info);
+  IMP_RESTRAINT(GroupnamesRestraint, internal::version_info);
 
   /** \note This can only be used if the container is a ListGroupnameContainer
   */

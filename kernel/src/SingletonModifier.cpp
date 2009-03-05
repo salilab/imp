@@ -15,6 +15,4 @@ IMP_BEGIN_NAMESPACE
 SingletonModifier::SingletonModifier(){
 }
 
-SingletonModifier::~SingletonModifier(){}
-
 IMP_END_NAMESPACE

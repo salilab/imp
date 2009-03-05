@@ -32,9 +32,8 @@ public:
    */
   AngleRestraint(UnaryFunction* score_func,
                  Particle* p1, Particle* p2, Particle* p3);
-  virtual ~AngleRestraint(){}
 
-  IMP_RESTRAINT(internal::version_info)
+  IMP_RESTRAINT(AngleRestraint, internal::version_info)
 
   ParticlesList get_interacting_particles() const
   {

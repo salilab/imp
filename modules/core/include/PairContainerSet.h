@@ -28,9 +28,7 @@ public:
   //! Construct and empty set
   PairContainerSet();
 
-  virtual ~PairContainerSet();
-
-  IMP_PAIR_CONTAINER(internal::version_info);
+  IMP_PAIR_CONTAINER(PairContainerSet, internal::version_info);
 
   IMP_LIST(public, PairContainer, pair_container,
            PairContainer*);

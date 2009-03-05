@@ -24,7 +24,7 @@ class Particle;
 class IMPEXPORT SingletonScore : public RefCountedObject
 {
 public:
-  SingletonScore() {}
+  SingletonScore();
   //! Compute the score for the particle and the derivative if needed.
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const = 0;

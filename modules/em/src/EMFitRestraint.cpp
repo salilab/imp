@@ -53,12 +53,6 @@ EMFitRestraint::EMFitRestraint(const Particles &ps,
   // IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << endl);
 }
 
-
-//! Destructor
-EMFitRestraint::~EMFitRestraint()
-{
-}
-
 IMP_LIST_IMPL(EMFitRestraint, Particle, particle,Particle*,  {
               IMP_assert(get_number_of_particles()==0
                          || obj->get_model()

@@ -43,14 +43,12 @@ public:
                  FloatKey weight_key,
                  float scale);
 
-  virtual ~EMFitRestraint();
-
   //! \return the predicted density map of the model
   SampledDensityMap *get_model_dens_map() {
     return model_dens_map_;
   }
 
-  IMP_RESTRAINT(internal::version_info)
+  IMP_RESTRAINT(EMFitRestraint, internal::version_info)
 
   ParticlesList get_interacting_particles() const
   {

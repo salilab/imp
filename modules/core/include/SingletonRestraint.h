@@ -39,9 +39,7 @@ public:
   SingletonRestraint(SingletonScore *ss,
                       Particle *a);
 
-  virtual ~SingletonRestraint();
-
-  IMP_RESTRAINT(internal::version_info);
+  IMP_RESTRAINT(SingletonRestraint, internal::version_info);
 
   virtual ParticlesList get_interacting_particles() const;
 };

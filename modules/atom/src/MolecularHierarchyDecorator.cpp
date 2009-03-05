@@ -178,4 +178,11 @@ BondDecorators get_internal_bonds(MolecularHierarchyDecorator mhd)
 }
 
 
+
+IMPATOMEXPORT
+MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d) {
+  IMP_failure("Not implemented", ErrorException);
+}
+
+
 IMPATOM_END_NAMESPACE

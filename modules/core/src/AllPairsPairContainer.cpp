@@ -20,9 +20,6 @@ AllPairsPairContainer::AllPairsPairContainer( SingletonContainer *c): c_(c) {
   i_=0;
 }
 
-AllPairsPairContainer::~AllPairsPairContainer(){}
-
-
 unsigned int AllPairsPairContainer::get_number_of_particle_pairs() const {
   unsigned int n= c_->get_number_of_particles();
   return n*(n-1)/2;

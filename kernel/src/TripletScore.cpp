@@ -8,7 +8,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-TripletScore::~TripletScore()
+TripletScore::TripletScore()
 {
   /* Implemented here rather than in the header so that TripletScore
      symbols are present in the kernel DSO */

@@ -22,8 +22,6 @@ MaximumChangeScoreState::MaximumChangeScoreState(SingletonContainer *pc,
   reset();
 }
 
-MaximumChangeScoreState::~MaximumChangeScoreState() {}
-
 void MaximumChangeScoreState::do_before_evaluate()
 {
   IMP_CHECK_OBJECT(pc_);

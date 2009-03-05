@@ -19,8 +19,6 @@ PairContainerSet
 ::PairContainerSet(){
 }
 
-PairContainerSet::~PairContainerSet(){}
-
 bool
 PairContainerSet
 ::get_contains_particle_pair(ParticlePair vt) const {

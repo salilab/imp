@@ -29,7 +29,7 @@ public:
   //! Add v to the total score.
   ConstantRestraint(Float v);
 
-  IMP_RESTRAINT(internal::version_info)
+  IMP_RESTRAINT(ConstantRestraint, internal::version_info)
 
   ParticlesList get_interacting_particles() const
   {

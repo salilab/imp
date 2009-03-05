@@ -25,10 +25,6 @@ SingletonRestraint
 {
 }
 
-SingletonRestraint::~SingletonRestraint()
-{
-}
-
 Float SingletonRestraint::evaluate(DerivativeAccumulator *accum)
 {
 

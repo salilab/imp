@@ -27,18 +27,20 @@ public:
   //! construct and pass an initial set of classnames
   ListGroupnameContainer(const Classnames &ps= Classnames());
 
-  virtual ~ListGroupnameContainer();
+  IMP_LIST(public, Classname, classname, Value);
 
   //! log n time
   virtual bool get_contains_classname(Value vt) const;
-
-  IMP_LIST(public, Classname, classname, Value);
 
   IMP::VersionInfo get_version_info() const {
     return internal::version_info;
   }
 
   virtual void show(std::ostream &out = std::cout) const;
+
+  // for some reason swig gets this wrong
+  //IMP_REF_COUNTED_DESTRUCTOR(ListGroupnameContainer)
+  ~ListGroupnameContainer(){}
 };
 
 

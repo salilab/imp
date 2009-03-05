@@ -70,8 +70,6 @@ void ClosePairsScoreState::set_radius_key(FloatKey k) {
   xyzc_=NULL;
 }
 
-ClosePairsScoreState::~ClosePairsScoreState() {}
-
 void ClosePairsScoreState::do_before_evaluate()
 {
   IMP_CHECK_OBJECT(in_);

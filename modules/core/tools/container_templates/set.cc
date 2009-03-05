@@ -19,8 +19,6 @@ GroupnameContainerSet
 ::GroupnameContainerSet(){
 }
 
-GroupnameContainerSet::~GroupnameContainerSet(){}
-
 bool
 GroupnameContainerSet
 ::get_contains_classname(Value vt) const {

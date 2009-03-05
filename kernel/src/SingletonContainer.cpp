@@ -15,8 +15,6 @@ IMP_BEGIN_NAMESPACE
 
 SingletonContainer::SingletonContainer(){}
 
-SingletonContainer::~SingletonContainer(){}
-
 void SingletonContainer::show(std::ostream &out) const {
   out << "SingletonContainer" << std::endl;
 }

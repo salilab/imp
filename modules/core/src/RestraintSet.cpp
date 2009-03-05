@@ -18,16 +18,10 @@ IMPCORE_BEGIN_NAMESPACE
 RestraintSet::RestraintSet(const std::string& name)
     : weight_(1.0)
 {
-  IMP_LOG(VERBOSE, "Restraint set constructed");
   name_=name;
 }
 
 
-
-RestraintSet::~RestraintSet()
-{
-  IMP_LOG(VERBOSE, "Delete RestraintSet");
-}
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               obj->set_model(get_model());,,obj->set_model(NULL););

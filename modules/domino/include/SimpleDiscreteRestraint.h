@@ -32,9 +32,7 @@ public:
    */
   SimpleDiscreteRestraint(Model& model_, std::string restraint_filename,
                           Particle *p1, Particle *p2);
-
-  virtual ~SimpleDiscreteRestraint() {};
-  IMP_RESTRAINT(internal::version_info)
+  IMP_RESTRAINT(SimpleDiscreteRestraint, internal::version_info)
   ParticlesList get_interacting_particles() const
   {
     return ParticlesList(1, Particles(particles_begin(), particles_end()));

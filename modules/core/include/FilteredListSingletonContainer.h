@@ -41,9 +41,8 @@ public:
   //! cannot pass a Singletons on construction
   FilteredListSingletonContainer();
 
-  virtual ~FilteredListSingletonContainer();
-
-  IMP_SINGLETON_CONTAINER(internal::version_info);
+  IMP_SINGLETON_CONTAINER(FilteredListSingletonContainer,
+                          internal::version_info);
 
   //! Add vt if none of the referenced containers already contains it
   void add_particle(Particle* vt);

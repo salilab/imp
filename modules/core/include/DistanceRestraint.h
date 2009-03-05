@@ -37,14 +37,13 @@ public:
    */
   DistanceRestraint(UnaryFunction* score_func,
                     Particle* p1, Particle* p2);
-  virtual ~DistanceRestraint() {}
 
   ParticlesList get_interacting_particles() const {
     ParticlesList ret(1,Particles(p_, p_+2));
     return ret;
   }
 
-  IMP_RESTRAINT(internal::version_info)
+  IMP_RESTRAINT(DistanceRestraint, internal::version_info)
 
 private:
   DistancePairScore dp_;
