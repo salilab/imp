@@ -46,9 +46,6 @@ namespace {
   }
 }
 
-
-MaximumSingletonScoreRestraint::~MaximumSingletonScoreRestraint(){}
-
 Float MaximumSingletonScoreRestraint
 ::evaluate(DerivativeAccumulator *da) {
   MS bestn= find_minimal_set(c_->particles_begin(),

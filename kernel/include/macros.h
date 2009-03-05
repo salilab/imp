@@ -179,13 +179,18 @@ template <class L>                                                      \
   }
 
 //! Define the basic things you need for a Restraint.
-/** These are: show, evaluate, get_version_info
+/** These are: show, evaluate, get_version_info and a empty destructor
+    \param[in] The class name
     \param[in] version_info The version info object to return.
+    \relates Restraint
 */
-#define IMP_RESTRAINT(version_info)                       \
+#define IMP_RESTRAINT(Name, version_info)                                \
   virtual Float evaluate(DerivativeAccumulator *accum);                 \
   virtual void show(std::ostream &out=std::cout) const;                 \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }\
+  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
+  public:
+
 
 //! Define the basic things you need for an optimizer.
 /** These are: optimize, get_version_info
@@ -221,13 +226,18 @@ template <class L>                                                      \
     - void show(std::ostream &out) const
     and defines the function
     - get_version_info
+    - an empty destructor
 
+    \relates ScoreState
+
+    \param[in] Name the class name
     \param[in] version_info The version info object to return.
 */
-#define IMP_SCORE_STATE(version_info)                                   \
+#define IMP_SCORE_STATE(Name, version_info)                              \
 protected:                                                              \
  virtual void do_before_evaluate();                                     \
  virtual void do_after_evaluate(DerivativeAccumulator *da);             \
+ IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
 public:                                                                 \
  virtual void show(std::ostream &out=std::cout) const;                  \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
@@ -274,14 +284,14 @@ public:                                                                 \
 // VC doesn't understand friends properly
 #define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
 public:                                                         \
-virtual ~Classname();
+ virtual ~Classname(){}
 #else
 
-#ifdef SWIG
+#ifdef SWIG || IMP_SWIG_WRAPPER
 // SWIG doesn't do friends right either, but we don't care as much
 #define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
-protected:                                                      \
-    virtual ~Classname();
+public:                                                      \
+ virtual ~Classname(){}
 #else
 //! Declare a protected destructor and get the friends right
 /** The destructor is unprotected for SWIG since if it is protected
@@ -293,11 +303,9 @@ protected:                                                      \
   protected:                                                    \
   template <class T> friend void IMP::internal::disown(T*);     \
   friend class IMP::internal::UnRef<true>;                      \
-  virtual ~Classname();
+  virtual ~Classname(){}
 #endif // SWIG
 #endif // _MSC_VER
-
-
 
 
 //! Define the basic things needed by a Decorator.
@@ -329,7 +337,7 @@ public:                                                                 \
  /** \short The default constructor. This is used as a null value */    \
  Name(): Parent(){}                                                     \
  /** \short Construct from a Particle which has all needed attributes */\
- Name(::IMP::Particle *p): Parent(p) {                                  \
+explicit Name(::IMP::Particle *p): Parent(p) {                          \
    IMP_assert(is_instance_of(p),                                        \
               "Particle missing required attributes for decorator "     \
               << #Name << *p << std::endl);                             \
@@ -642,20 +650,34 @@ protection:                                                             \
                << *this, ErrorException);                               \
  }
 //! Define the needed functions for a SingletonContainer
-#define IMP_SINGLETON_CONTAINER(version_info)                       \
+/** You need to implement
+    - get_contains_particle
+    - get_number_of_particles
+    - get_particle
+    - show
+    A private, empty destructor is provided.
+    \relates SingletonContainer
+*/
+#define IMP_SINGLETON_CONTAINER(Name, version_info)                  \
   bool get_contains_particle(Particle* p) const;                    \
   unsigned int get_number_of_particles() const;                     \
   Particle* get_particle(unsigned int i) const;                     \
   void show(std::ostream &out= std::cout) const;                    \
-  IMP::VersionInfo get_version_info() const { return version_info; }
+  IMP::VersionInfo get_version_info() const { return version_info; }\
+  IMP_REF_COUNTED_DESTRUCTOR(Name)                                  \
+  public:
 
 //! Define the needed functions for a PairContainer
-#define IMP_PAIR_CONTAINER(version_info)                                \
+/** \relates PairContainer
+ */
+#define IMP_PAIR_CONTAINER(Name, version_info)                           \
   bool get_contains_particle_pair(ParticlePair p) const;                \
   unsigned int get_number_of_particle_pairs() const;                    \
   ParticlePair get_particle_pair(unsigned int i) const;                 \
   void show(std::ostream &out= std::cout) const;                        \
-  IMP::VersionInfo get_version_info() const { return version_info; }
+  IMP::VersionInfo get_version_info() const { return version_info; }    \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
+  public:
 
 
 #endif  /* IMP_MACROS_H */

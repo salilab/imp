@@ -8,7 +8,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-SingletonScore::~SingletonScore()
+SingletonScore::SingletonScore()
 {
   /* Implemented here rather than in the header so that SingletonScore
      symbols are present in the kernel DSO */

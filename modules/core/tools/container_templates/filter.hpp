@@ -41,9 +41,8 @@ public:
   //! cannot pass a Groupnames on construction
   FilteredListGroupnameContainer();
 
-  virtual ~FilteredListGroupnameContainer();
-
-  IMP_GROUPNAME_CONTAINER(internal::version_info);
+  IMP_GROUPNAME_CONTAINER(FilteredListGroupnameContainer,
+                          internal::version_info);
 
   //! Add vt if none of the referenced containers already contains it
   void add_classname(Value vt);

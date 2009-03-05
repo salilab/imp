@@ -60,8 +60,6 @@ public:
                        FilteredListPairContainer *out,
                        FloatKey rk= XYZRDecorator::get_default_radius_key());
 
-  virtual ~CloseBipartitePairsScoreState();
-
   //! Set the distance threshold
   void set_distance(Float d);
 
@@ -111,7 +109,7 @@ public:
     return distance_;
   }
 
-  IMP_SCORE_STATE(internal::version_info)
+  IMP_SCORE_STATE(CloseBipartitePairsScoreState, internal::version_info)
 };
 
 IMPCORE_END_NAMESPACE

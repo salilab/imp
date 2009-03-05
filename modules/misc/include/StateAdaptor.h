@@ -26,9 +26,7 @@ public:
   //! set the before and after states
   StateAdaptor(OptimizerState *before, OptimizerState *after);
 
-  virtual ~StateAdaptor();
-
-  IMP_SCORE_STATE(internal::version_info)
+  IMP_SCORE_STATE(StateAdaptor, internal::version_info)
 };
 
 

@@ -84,8 +84,6 @@ void CloseBipartitePairsScoreState::set_radius_key(FloatKey k) {
   clear();
 }
 
-CloseBipartitePairsScoreState::~CloseBipartitePairsScoreState() {}
-
 void CloseBipartitePairsScoreState::do_before_evaluate()
 {
   IMP_CHECK_OBJECT(in_[0]);

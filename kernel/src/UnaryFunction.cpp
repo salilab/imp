@@ -8,7 +8,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-UnaryFunction::~UnaryFunction()
+UnaryFunction::UnaryFunction()
 {
   /* Implemented here rather than in the header so that UnaryFunction
      symbols are present in the kernel DSO */

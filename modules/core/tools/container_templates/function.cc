@@ -15,6 +15,4 @@ IMP_BEGIN_NAMESPACE
 GroupnameModifier::GroupnameModifier(){
 }
 
-GroupnameModifier::~GroupnameModifier(){}
-
 IMP_END_NAMESPACE

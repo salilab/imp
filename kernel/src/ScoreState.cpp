@@ -47,12 +47,6 @@ void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   do_after_evaluate(da);
 }
 
-//! Destructor
-ScoreState::~ScoreState()
-{
-}
-
-
 //! Give accesss to model particle data.
 /** \param[in] model_data All particle data in the model.
  */

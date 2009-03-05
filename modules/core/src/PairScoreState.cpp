@@ -23,8 +23,6 @@ PairScoreState::PairScoreState(PairModifier *before,
     if (after) af_=after;
 }
 
-PairScoreState::~PairScoreState(){}
-
 
 void PairScoreState::do_before_evaluate()
 {

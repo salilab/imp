@@ -23,8 +23,6 @@ SingletonScoreState::SingletonScoreState(SingletonModifier *before,
     if (after) af_=after;
 }
 
-SingletonScoreState::~SingletonScoreState(){}
-
 
 void SingletonScoreState::do_before_evaluate()
 {

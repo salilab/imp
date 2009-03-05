@@ -39,8 +39,6 @@ FilteredListGroupnameContainer
 ::FilteredListGroupnameContainer(){
 }
 
-FilteredListGroupnameContainer::~FilteredListGroupnameContainer(){}
-
 void FilteredListGroupnameContainer::add_classname(Value vt) {
   IMP_CHECK_OBJECT(this);
   // For VC which can't convert the iterators

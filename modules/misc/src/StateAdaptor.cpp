@@ -16,8 +16,6 @@ StateAdaptor::StateAdaptor(OptimizerState *before,
                                                    after_(after){
 }
 
-StateAdaptor::~StateAdaptor(){}
-
 void StateAdaptor::show(std::ostream &out) const {
   out << "StateAdaptor" << std::endl;
 }

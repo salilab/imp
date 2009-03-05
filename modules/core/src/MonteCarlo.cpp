@@ -18,9 +18,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 Mover::Mover() {}
 
-Mover::~Mover(){}
-
-
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*,
               obj->set_optimizer(this),,);
 

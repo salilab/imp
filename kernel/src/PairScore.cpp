@@ -8,7 +8,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-PairScore::~PairScore()
+PairScore::PairScore()
 {
   /* Implemented here rather than in the header so that PairScore
      symbols are present in the kernel DSO */

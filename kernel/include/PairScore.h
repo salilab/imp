@@ -22,7 +22,7 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT PairScore : public RefCountedObject
 {
 public:
-  PairScore() {}
+  PairScore();
   //! Compute the score for the pair and the derivative if needed.
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const = 0;

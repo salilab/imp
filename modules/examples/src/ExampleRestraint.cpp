@@ -14,8 +14,6 @@ ExampleRestraint::ExampleRestraint(PairScore* score_func,
                                    PairContainer *pc) : pc_(pc),
                                           f_(score_func) {}
 
-
-
 Float ExampleRestraint::evaluate(DerivativeAccumulator *accum)
 {
   Float score=0;

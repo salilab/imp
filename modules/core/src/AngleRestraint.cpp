@@ -20,11 +20,6 @@ AngleRestraint::AngleRestraint(UnaryFunction* score_func,
   sf_= new AngleTripletScore(score_func);
 }
 
-//! Calculate the score for this angle restraint.
-/** \param[in] accum If not NULL, use this object to accumulate partial first
-                     derivatives.
-    \return Current score.
- */
 Float AngleRestraint::evaluate(DerivativeAccumulator *accum)
 {
   return sf_->evaluate(p_[0], p_[1], p_[2],
@@ -32,9 +27,6 @@ Float AngleRestraint::evaluate(DerivativeAccumulator *accum)
 }
 
 
-//! Show the current restraint.
-/** \param[in] out Stream to send restraint description to.
- */
 void AngleRestraint::show(std::ostream& out) const
 {
   if (get_is_active()) {

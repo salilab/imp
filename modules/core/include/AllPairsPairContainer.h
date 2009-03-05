@@ -36,9 +36,7 @@ public:
   //! Get the individual particles from the passed SingletonContainer
   AllPairsPairContainer(SingletonContainer *c);
 
-  virtual ~AllPairsPairContainer();
-
-  IMP_PAIR_CONTAINER(internal::version_info);
+  IMP_PAIR_CONTAINER(AllPairsPairContainer, internal::version_info);
 };
 
 

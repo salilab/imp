@@ -22,8 +22,6 @@ PairsScoreState::PairsScoreState(PairContainer *c,
     if (after) af_=after;
 }
 
-PairsScoreState::~PairsScoreState(){}
-
 
 void PairsScoreState::do_before_evaluate()
 {

@@ -57,9 +57,7 @@ public:
     f_=f;
   }
 
-  virtual ~SingletonsScoreState();
-
-  IMP_SCORE_STATE(internal::version_info)
+  IMP_SCORE_STATE(SingletonsScoreState, internal::version_info)
 };
 
 

@@ -46,9 +46,6 @@ namespace {
   }
 }
 
-
-MaximumGroupnameScoreRestraint::~MaximumGroupnameScoreRestraint(){}
-
 Float MaximumGroupnameScoreRestraint
 ::evaluate(DerivativeAccumulator *da) {
   MS bestn= find_minimal_set(c_->classnames_begin(),

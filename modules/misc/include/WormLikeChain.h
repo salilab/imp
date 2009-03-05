@@ -37,8 +37,6 @@ public:
               ValueException);
   }
 
-  virtual ~WormLikeChain() {}
-
   //! Calculate the WormLikeChain energy given the length
   /** \param[in] lf Current length in Angstroms
       \return Energy in kcal/mol
@@ -87,6 +85,7 @@ public:
   void show(std::ostream &out=std::cout) const {
     out << "WormLikeChain " << lmax_ << " " << lp_ << std::endl;
   }
+  IMP_REF_COUNTED_DESTRUCTOR(WormLikeChain);
 
 private:
   unit::Piconewton cderiv(unit::Angstrom l) const {

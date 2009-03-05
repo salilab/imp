@@ -17,12 +17,6 @@ OptimizerState::OptimizerState()
 }
 
 
-//! Destructor
-OptimizerState::~OptimizerState()
-{
-}
-
-
 //! Give accesss to optimizer.
 /** \param[in] optimizer The optimizer this state will act on.
  */

@@ -22,7 +22,7 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT TripletScore : public RefCountedObject
 {
 public:
-  TripletScore() {}
+  TripletScore();
   //! Compute the score for the triplet and the derivative if needed.
   virtual Float evaluate(Particle *a, Particle *b, Particle *c,
                          DerivativeAccumulator *da) const = 0;

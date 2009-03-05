@@ -22,8 +22,6 @@ GroupnamesScoreState::GroupnamesScoreState(GroupnameContainer *c,
     if (after) af_=after;
 }
 
-GroupnamesScoreState::~GroupnamesScoreState(){}
-
 
 void GroupnamesScoreState::do_before_evaluate()
 {

@@ -25,10 +25,6 @@ PairRestraint
 {
 }
 
-PairRestraint::~PairRestraint()
-{
-}
-
 Float PairRestraint::evaluate(DerivativeAccumulator *accum)
 {
 

@@ -21,7 +21,7 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT UnaryFunction : public RefCountedObject
 {
 public:
-  UnaryFunction() {}
+  UnaryFunction();
 
   //! Calculate score with respect to the given feature.
   /** \param[in] feature Value of feature being tested.

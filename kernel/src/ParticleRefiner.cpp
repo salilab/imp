@@ -9,8 +9,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-ParticleRefiner::~ParticleRefiner(){}
-
 Particles ParticleRefiner::get_refined(Particle *p) const {
   throw ErrorException("Can't refine");
   return Particles();
