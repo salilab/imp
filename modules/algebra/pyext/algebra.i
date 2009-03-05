@@ -43,6 +43,7 @@ namespace multi_array_types {
 %include "IMP/algebra/Transformation3D.h"
 %include "IMP/algebra/geometric_alignment.h"
 %include "IMP/algebra/eigen_analysis.h"
+%include "IMP/algebra/Plane3D.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Sphere3D.h"
 %include "IMP/algebra/vector_generators.h"
