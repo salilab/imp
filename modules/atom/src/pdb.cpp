@@ -9,6 +9,7 @@
 #include <IMP/atom/AtomDecorator.h>
 #include <IMP/atom/ResidueDecorator.h>
 #include <IMP/core/NameDecorator.h>
+#include <IMP/core/HierarchyDecorator.h>
 
 #include <boost/algorithm/string.hpp>
 
@@ -201,16 +202,21 @@ MolecularHierarchyDecorator read_pdb(
   return root_d;
 }
 
-void write_PDB_file(String pdb_file_name, Model *model) {
-  std::ofstream out_file(pdb_file_name.c_str());
-  for (Model::ParticleIterator it= model->particles_begin();
-       it != model->particles_end(); ++it) {
-    if (AtomDecorator::is_instance_of(*it)) {
-      AtomDecorator ad = AtomDecorator::cast(*it);
+void write_pdb(MolecularHierarchyDecorator mhd,
+                    std::string file_name) {
+  std::ofstream out_file(file_name.c_str());
+  if (!out_file) {
+    IMP_failure("Can't open file " << file_name
+                << " for writing",
+                ValueException);
+  }
+  Particles ps= get_leaves(mhd);
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (AtomDecorator::is_instance_of(ps[i])) {
+      AtomDecorator ad(ps[i]);
       out_file << ad.get_pdb_string();
     }
   }
-  out_file.close();
 }
 
 IMPATOM_END_NAMESPACE
