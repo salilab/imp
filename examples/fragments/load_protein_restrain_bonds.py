@@ -1,4 +1,4 @@
-prot= IMP.modeller.read_pdb("some.pdb")
+prot= IMP.atom.read_pdb("some.pdb")
 bds= IMP.core.get_internal_bonds(prot)
 ps= IMP.Particles()
 for b in bds:

@@ -1,9 +1,9 @@
 import IMP
 import IMP.core
-import IMP.modeller
+import IMP.atom
 
 m = IMP.Model()
-mp0= IMP.modeller.read_pdb('examples/simple_examples/single_protein.pdb', m)
+mp0= IMP.atom.read_pdb('examples/simple_examples/single_protein.pdb', m)
 # get the 16th residue
 r16 = IMP.atom.get_residue(mp0, 16)
 r16.show()
@@ -21,7 +21,7 @@ for r in residues:
     IMP.core.set_enclosing_sphere(atoms, d)
 
 # load another copy
-mp1= IMP.modeller.read_pdb('examples/simple_examples/single_protein.pdb', m)
+mp1= IMP.atom.read_pdb('examples/simple_examples/single_protein.pdb', m)
 
 p = IMP.Particle(m)
 rmp= IMP.atom.MolecularHierarchyDecorator.create(p, IMP.atom.MolecularHierarchyDecorator.ASSEMBLY)
