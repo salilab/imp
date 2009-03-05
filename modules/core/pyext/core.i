@@ -54,9 +54,6 @@ namespace IMP {
 #ifndef IMP_NO_DEPRECATED
     IMP_OWN_CONSTRUCTOR(BondSingletonScore)
     IMP_OWN_CONSTRUCTOR(BondBondPairScore)
-    %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
-    %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
-
 #endif
     IMP_OWN_CONSTRUCTOR(ClosePairsPairScore)
     IMP_OWN_CONSTRUCTOR(ConnectivityRestraint)
@@ -130,13 +127,11 @@ namespace IMP {
 %include "IMP/core/AllPairsPairContainer.h"
 %include "IMP/core/AngleRestraint.h"
 %include "IMP/core/AngleTripletScore.h"
-%include "IMP/core/AtomDecorator.h"
 %include "IMP/core/AttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
 %include "IMP/core/BondEndpointsParticleRefiner.h"
 %include "IMP/core/BondPairContainer.h"
 %include "IMP/core/BondSingletonScore.h"
-%include "IMP/core/BondBondPairScore.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/BrownianDynamics.h"
 %include "IMP/core/CentroidOfRefined.h"
@@ -175,7 +170,6 @@ namespace IMP {
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/RefinedPairsPairScore.h"
-%include "IMP/core/ResidueDecorator.h"
 %include "IMP/core/RestraintSet.h"
 %include "IMP/core/rigid_bodies.h"
 %include "IMP/core/SphereDistancePairScore.h"
@@ -221,9 +215,5 @@ namespace IMP {
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
     // swig up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::NameDecorator>;
-#ifndef IMP_NO_DEPRECATED
-    %template(show_molecular_hierarchy) show<MolecularHierarchyDecorator>;
-    %template(BondDecorators) ::std::vector<BondDecorator>;
-#endif
   }
 }

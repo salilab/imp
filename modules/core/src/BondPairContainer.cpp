@@ -16,8 +16,6 @@ BondPairContainer
 ::BondPairContainer(){
 }
 
-BondPairContainer::~BondPairContainer(){}
-
 bool BondPairContainer
 ::get_contains_particle_pair(ParticlePair pp) const {
   if (!BondedDecorator::is_instance_of(pp.first)

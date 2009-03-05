@@ -8,8 +8,6 @@
 
 #include <IMP/core/MolecularHierarchyDecorator.h>
 #include <IMP/core/NameDecorator.h>
-#include <IMP/core/AtomDecorator.h>
-#include <IMP/core/ResidueDecorator.h>
 
 #include <sstream>
 #include <set>
@@ -35,17 +33,6 @@ void MolecularHierarchyDecorator::show(std::ostream &out,
   if (is_default()) {
     out << "NULL Molecular Hierarchy node";
     return;
-  }
-  if (get_type() == ATOM) {
-    AtomDecorator ad= AtomDecorator::cast(get_particle());
-    if (ad != AtomDecorator()) {
-      ad.show(out, prefix);
-    }
-  } else if (get_type() == RESIDUE) {
-    ResidueDecorator ad= ResidueDecorator::cast(get_particle());
-    if (ad != ResidueDecorator()) {
-      ad.show(out, prefix);
-    }
   } else {
     out << prefix << get_type_string() <<std::endl;
     NameDecorator nd= NameDecorator::cast(get_particle());
@@ -86,48 +73,6 @@ Particles get_by_type(MolecularHierarchyDecorator mhd,
          std::back_inserter(out));
   return out;
 }
-
-
-namespace
-{
-
-struct MatchResidueIndex
-{
-  int index_;
-  MatchResidueIndex(int i): index_(i) {}
-  bool operator()(Particle *p) const {
-    MolecularHierarchyDecorator mhd(p);
-    if (mhd.get_type() == MolecularHierarchyDecorator::RESIDUE
-        || mhd.get_type() == MolecularHierarchyDecorator::NUCLEICACID) {
-      ResidueDecorator rd(p);
-      return (rd.get_index() == index_);
-    } else {
-      return false;
-    }
-  }
-};
-
-} // namespace
-
-
-ResidueDecorator
-get_residue(MolecularHierarchyDecorator mhd,
-            unsigned int index)
-{
-  IMP_check(mhd.get_type() == MolecularHierarchyDecorator::PROTEIN
-            || mhd.get_type() == MolecularHierarchyDecorator::CHAIN
-            || mhd.get_type() == MolecularHierarchyDecorator::NUCLEOTIDE,
-            "Invalid type of MolecularHierarchyDecorator passed to get_residue",
-            ValueException);
-  MatchResidueIndex mi(index);
-  HierarchyDecorator hd= breadth_first_find(mhd, mi);
-  if (hd== HierarchyDecorator()) {
-    return ResidueDecorator();
-  } else {
-    return ResidueDecorator(hd.get_particle());
-  }
-}
-
 
 
 MolecularHierarchyDecorator

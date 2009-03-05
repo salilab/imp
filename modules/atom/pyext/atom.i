@@ -67,7 +67,7 @@ namespace IMP {
 
 namespace IMP {
 namespace atom {
-   // swig has random, perplexing issues if these are higher
+   // swig has random, perplexing issues if these are higher in the file
    %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
    %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
 }
