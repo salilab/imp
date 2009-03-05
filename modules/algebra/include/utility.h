@@ -8,6 +8,7 @@
 #ifndef IMPALGEBRA_UTILITY_H
 #define IMPALGEBRA_UTILITY_H
 
+#include <cmath> // abs
 #include "config.h"
 #include <IMP/exception.h>
 
@@ -61,18 +62,18 @@ int round(const T& x)
 }
 
 
-//! Thresholds a value between two given limits
+//! Constrains a value between two given limits
 /*
- * The limits act as the thresholds to saturate the value. Examples:
- * with x and threshold(x,-2,2):
+ * The limits act as the constrain to saturate the value. Examples:
+ * with x and constrain(x,-2,2):
  *
  * \code
- * x = threshold(-8,-2,2); // x=-2;
- * x = threshold(-2,-2,2); // x=-2;
- * x = threshold(-1,-2,2); // x=-1;
- * x = threshold(0,-2,2); // x=0;
- * x = threshold(2,-2,2); // x=2;
- * x = threshold(4,-2,2); // x=2;
+ * x = constrain(-8,-2,2); // x=-2;
+ * x = constrain(-2,-2,2); // x=-2;
+ * x = constrain(-1,-2,2); // x=-1;
+ * x = constrain(0,-2,2); // x=0;
+ * x = constrain(2,-2,2); // x=2;
+ * x = constrain(4,-2,2); // x=2;
  * \endcode
  */
 template<typename T>
@@ -84,14 +85,22 @@ T constrain(const T x, const T x0, const T xF)
 }
 
 
-//! Compares two values (intended for float or doubles)
+//! Compares two values (intended for doubles)
 /**
  * epsilon is the tolerance allowed to consider the values as equal
  */
-template<typename T>
-bool almost_equal(const T a, const T b, const T epsilon)
+inline bool almost_equal(const double a, const double b, const double epsilon)
 {
-  return (std::abs(a - b) < epsilon);
+  return (std::abs(a-b) < epsilon);
+}
+
+//! Compares two values (intended for floats)
+/**
+ * epsilon is the tolerance allowed to consider the values as equal
+ */
+inline bool almost_equal(const float a, const float b, const float epsilon)
+{
+  return (std::abs(a-b) < epsilon);
 }
 
 IMPALGEBRA_END_NAMESPACE

@@ -9,6 +9,7 @@
 #define IMPALGEBRA_VECTOR_D_H
 
 #include "config.h"
+#include "utility.h"
 #include <IMP/base_types.h>
 #include <IMP/macros.h>
 #include <IMP/exception.h>
@@ -164,6 +165,18 @@ public:
     // avoid division by zero
     mag = std::max(mag, static_cast<double>(1e-12));
     return operator/(mag);
+  }
+
+
+  //! \return true if all the values in the vector are zero (an epsilon value
+  //! to determine the tolerance can be specified (default is 0).
+  bool is_zero(double epsilon=0.0) const {
+    for (unsigned int i=0; i< D; ++i) {
+      if(!algebra::almost_equal(vec_[i],0.0,epsilon)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   //! \return Difference between two vectors.
