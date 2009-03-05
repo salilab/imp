@@ -1,5 +1,5 @@
 /**
- *  \file DiffusionDecorator.h     \brief A decorator for a diffusing particle.
+ *  \file core/DiffusionDecorator.h     \brief A
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *

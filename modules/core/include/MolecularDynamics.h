@@ -1,5 +1,5 @@
 /**
- *  \file MolecularDynamics.h    \brief Simple molecular dynamics optimizer.
+ *  \file core/MolecularDynamics.h    \brief MD
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
