@@ -180,9 +180,9 @@ template <class L>                                                      \
 
 //! Define the basic things you need for a Restraint.
 /** These are: show, evaluate, get_version_info and a empty destructor
-    \param[in] The class name
+    \param[in] Name The class name
     \param[in] version_info The version info object to return.
-    \relates Restraint
+    \relates IMP::Restraint
 */
 #define IMP_RESTRAINT(Name, version_info)                                \
   virtual Float evaluate(DerivativeAccumulator *accum);                 \
@@ -212,7 +212,6 @@ template <class L>                                                      \
     - void show(std::ostream &out) const
     and defines the function
     - get_version_info
-
     \param[in] version_info The version info object to return.
 */
 #define IMP_OPTIMIZER_STATE(version_info)                               \
@@ -228,7 +227,7 @@ template <class L>                                                      \
     - get_version_info
     - an empty destructor
 
-    \relates ScoreState
+    \relates IMP::ScoreState
 
     \param[in] Name the class name
     \param[in] version_info The version info object to return.
@@ -373,7 +372,8 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
     \param[in] Parent The class name for the parent of this class,
     typically Decorator
     \param[in] TraitsType the type of the traits object
-    \param[in] TraitsType the type of the traits object
+    \param[in] traits_name what to name the traits object.
+    \param[in] default_traits How to get the default traits value
 
     It requires that the implementer of the Decorator implement the static
     methods:
@@ -656,7 +656,7 @@ protection:                                                             \
     - get_particle
     - show
     A private, empty destructor is provided.
-    \relates SingletonContainer
+    \relates IMP::SingletonContainer
 */
 #define IMP_SINGLETON_CONTAINER(Name, version_info)                  \
   bool get_contains_particle(Particle* p) const;                    \
@@ -668,7 +668,7 @@ protection:                                                             \
   public:
 
 //! Define the needed functions for a PairContainer
-/** \relates PairContainer
+/** \relates IMP::PairContainer
  */
 #define IMP_PAIR_CONTAINER(Name, version_info)                           \
   bool get_contains_particle_pair(ParticlePair p) const;                \
