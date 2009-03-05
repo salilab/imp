@@ -39,6 +39,9 @@ public:
     return (d+ o.get_radius() < get_radius());
   }
 
+  //! Return true if the point is in or on the surface of the sphere
+  bool is_inside(const Vector3D &p) const;
+
   void show(std::ostream &out=std::cout) const {
     out << "(" << spaces_io(center_) << ": " << get_radius()
         << ")";
