@@ -425,6 +425,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # This is mildly unsafe if there happens to be another compiler which uses these
         # for something different.
         opt=opt.replace("-O2", "")
+        opt=opt.replace("-O3", "")
         opt=opt.replace("-g", "")
         e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
         e.Replace(CPPFLAGS=basecflags.split() + opt.split())
