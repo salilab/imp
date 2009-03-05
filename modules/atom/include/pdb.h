@@ -18,8 +18,11 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-/** Selectors can be used to define which atoms to read.
-    Several basic selectors are implemented in PDBParser */
+/** Selector objects can be used to define which atoms to read.
+    \see write_pdb
+    \relates MolecularHierarchyDecorator
+    \relates Selector
+ */
 IMPATOMEXPORT MolecularHierarchyDecorator
 read_pdb(std::string pdb_file_name,
          Model* model,
@@ -29,6 +32,8 @@ read_pdb(std::string pdb_file_name,
 
 /** \note This function produces files that are not valid PDB files. Complain
     if your favorite program can't read them and we might fix it.
+    \see read_pdb
+    \relates MolecularHierarchyDecorator
 */
 IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
                              std::string file_name);
