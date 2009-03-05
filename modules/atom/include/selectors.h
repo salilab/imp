@@ -1,5 +1,5 @@
 /**
- * \file selectors
+ * \file selectors.h
  * \brief Selectors to extract predefined subsets of ATOM records from PDB files
  *
  * Copyright 2007-8 Sali Lab. All rights reserved.

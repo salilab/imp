@@ -1,5 +1,5 @@
 /**
- *  \file VelocityScalingOptimizerState.h
+ *  \file atom/VelocityScalingOptimizerState.h
  *  \brief Maintains temperature during molecular dynamics by velocity scaling.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
