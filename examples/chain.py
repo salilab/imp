@@ -14,12 +14,12 @@ m= IMP.Model()
 chain= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 1.0))
 
 # create a bond between successive particles
-IMP.core.BondedDecorator.create(chain.get_particle(0))
+IMP.atom.BondedDecorator.create(chain.get_particle(0))
 bonds= IMP.core.ListSingletonContainer()
 for i in range(1, chain.get_number_of_particles()):
-    bp= IMP.core.BondedDecorator.cast(chain.get_particle(i-1))
-    bpr= IMP.core.BondedDecorator.create(chain.get_particle(i))
-    b= IMP.core.custom_bond(bp, bpr, 1.5, 10)
+    bp= IMP.atom.BondedDecorator.cast(chain.get_particle(i-1))
+    bpr= IMP.atom.BondedDecorator.create(chain.get_particle(i))
+    b= IMP.atom.custom_bond(bp, bpr, 1.5, 10)
     bonds.add_particle(b.get_particle())
 
 # If you want to inspect the particles
@@ -32,7 +32,7 @@ nbl= IMP.core.ClosePairsScoreState(chain)
 nbli= m.add_score_state(nbl)
 # Exclude bonds from closest pairs
 fl= nbl.get_close_pairs_container()
-fl.add_pair_container(IMP.core.BondPairContainer())
+fl.add_pair_container(IMP.atom.BondPairContainer())
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
@@ -40,7 +40,7 @@ evr= IMP.core.PairsRestraint(ps, fl)
 evri= m.add_restraint(evr)
 
 # Restraint for bonds
-bss= IMP.core.BondSingletonScore(IMP.core.Harmonic(0,1))
+bss= IMP.atom.BondSingletonScore(IMP.core.Harmonic(0,1))
 br= IMP.core.SingletonsRestraint(bss, bonds)
 bri= m.add_restraint(br)
 

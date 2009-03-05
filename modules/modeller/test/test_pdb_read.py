@@ -11,8 +11,8 @@ class PDBReadTest(IMP.test.TestCase):
     #    self.assertRaises(IMP.IOError,  read_pdb, 'fake_file.pdb', m)
     def test_hierarchy(self):
         """Check reading a pdb with one protein"""
-        i_num_res_type= IMP.core.ResidueType.get_number_unique()
-        i_num_atom_type= IMP.core.AtomType.get_number_unique()
+        i_num_res_type= IMP.atom.ResidueType.get_number_unique()
+        i_num_atom_type= IMP.atom.AtomType.get_number_unique()
         m = IMP.Model()
         mp= IMP.modeller.read_pdb(
                        self.get_input_file_name('single_protein.pdb'), m)
@@ -22,10 +22,10 @@ class PDBReadTest(IMP.test.TestCase):
         mp.validate()
         hc= IMP.core.HierarchyCounter()
         IMP.core.depth_first_traversal(mp, hc)
-        f_num_res_type= IMP.core.ResidueType.get_number_unique()
-        f_num_atom_type= IMP.core.AtomType.get_number_unique()
+        f_num_res_type= IMP.atom.ResidueType.get_number_unique()
+        f_num_atom_type= IMP.atom.AtomType.get_number_unique()
         mpp= mp.get_parent()
-        self.assertEqual(mpp, IMP.core.MolecularHierarchyDecorator(),
+        self.assertEqual(mpp, IMP.atom.MolecularHierarchyDecorator(),
                          "Should not have a parent")
         mpc= mp.get_child(0)
         self.assertEqual(mpc.get_parent(), mp,
@@ -35,9 +35,9 @@ class PDBReadTest(IMP.test.TestCase):
         self.assertEqual(i_num_atom_type, f_num_atom_type, "too many atom types")
         self.assertEqual(1377, hc.get_count(),
                          "Wrong number of particles created")
-        rd= IMP.core.get_residue(mp, 29)
-        at= IMP.core.get_atom(rd, IMP.core.AtomType("C"))
-        self.assertEqual(IMP.core.get_residue_index(at), rd.get_index())
+        rd= IMP.atom.get_residue(mp, 29)
+        at= IMP.atom.get_atom(rd, IMP.atom.AtomType("C"))
+        self.assertEqual(IMP.atom.get_residue_index(at), rd.get_index())
         self.assertEqual(rd.get_index(), 29);
 
     def test_bonds(self):
@@ -46,8 +46,8 @@ class PDBReadTest(IMP.test.TestCase):
         mp= IMP.modeller.read_pdb(
                       self.get_input_file_name('single_protein.pdb'), m)
         #mp= IMP.core.MolecularHierarchyDecorator.cast(p)
-        all_atoms= IMP.core.get_by_type(mp,
-                             IMP.core.MolecularHierarchyDecorator.ATOM);
+        all_atoms= IMP.atom.get_by_type(mp,
+                             IMP.atom.MolecularHierarchyDecorator.ATOM);
         self.assertEqual(1221, len(all_atoms),
                          "Wrong number of atoms found in protein")
 
@@ -69,7 +69,7 @@ class PDBReadTest(IMP.test.TestCase):
         hc= IMP.core.HierarchyCounter()
         IMP.core.depth_first_traversal(mp, hc)
         mpp= mp.get_parent()
-        self.assertEqual(mpp, IMP.core.MolecularHierarchyDecorator(),
+        self.assertEqual(mpp, IMP.atom.MolecularHierarchyDecorator(),
                          "Should not have a parent")
         mpc= mp.get_child(0)
         self.assertEqual(mpc.get_parent(), mp,

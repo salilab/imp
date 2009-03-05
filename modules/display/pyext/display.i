@@ -5,6 +5,7 @@
 #include "IMP/display.h"
 #include "IMP/algebra.h"
 #include "IMP/core.h"
+#include "IMP/atom.h"
 %}
 
 
@@ -20,6 +21,7 @@
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
 %import "modules/core/pyext/core.i"
+%import "modules/atom/pyext/atom.i"
 %import "modules/algebra/pyext/algebra.i"
 
 namespace IMP {

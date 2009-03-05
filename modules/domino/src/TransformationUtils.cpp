@@ -7,7 +7,7 @@
  */
 #include "IMP/domino/TransformationUtils.h"
 #include "IMP/core/Transform.h"
-#include "IMP/core/MolecularHierarchyDecorator.h"
+#include "IMP/atom/MolecularHierarchyDecorator.h"
 #include "IMP/core/HierarchyDecorator.h"
 #include <IMP/core/XYZDecorator.h>
 IMPDOMINO_BEGIN_NAMESPACE
@@ -45,7 +45,7 @@ void TransformationUtils::apply(Particle *p,const algebra::Transformation3D &t)
 {
   core::Transform tsm(t);
   Particles ps = core::get_leaves(
-                 core::MolecularHierarchyDecorator::cast(p));
+                 atom::MolecularHierarchyDecorator::cast(p));
 //   core::GravityCenterScoreState g(p, FloatKey(),ps);
 //   g.update_position();
   for (Particles::iterator it = ps.begin(); it != ps.end(); it++) {

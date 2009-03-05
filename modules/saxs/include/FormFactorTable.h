@@ -12,8 +12,8 @@
 
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
-#include <IMP/core/ResidueDecorator.h>
-#include <IMP/core/AtomDecorator.h>
+#include <IMP/atom/ResidueDecorator.h>
+#include <IMP/atom/AtomDecorator.h>
 #include <IMP/algebra/utility.h>
 
 #include <iostream>
@@ -92,17 +92,17 @@ private:
   FormFactorAtomType get_form_factor_atom_type(Particle* p,
                                                FormFactorType ff_type) const;
 
-  FormFactorAtomType get_carbon_atom_type(const core::AtomType& atom_type,
-                                const core::ResidueType& residue_type) const;
+  FormFactorAtomType get_carbon_atom_type(const atom::AtomType& atom_type,
+                                const atom::ResidueType& residue_type) const;
 
-  FormFactorAtomType get_nitrogen_atom_type(const core::AtomType& atom_type,
-                                const core::ResidueType& residue_type) const;
+  FormFactorAtomType get_nitrogen_atom_type(const atom::AtomType& atom_type,
+                                const atom::ResidueType& residue_type) const;
 
-  FormFactorAtomType get_oxygen_atom_type(const core::AtomType& atom_type,
-                                const core::ResidueType& residue_type) const;
+  FormFactorAtomType get_oxygen_atom_type(const atom::AtomType& atom_type,
+                                const atom::ResidueType& residue_type) const;
 
-  FormFactorAtomType get_sulfur_atom_type(const core::AtomType& atom_type,
-                                const core::ResidueType& residue_type) const;
+  FormFactorAtomType get_sulfur_atom_type(const atom::AtomType& atom_type,
+                                const atom::ResidueType& residue_type) const;
 
 private:
   // read from lib file
