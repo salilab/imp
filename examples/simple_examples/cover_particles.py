@@ -1,10 +1,9 @@
 import IMP
 import IMP.core
-import IMP.modeller
 import IMP.atom
 
 m= IMP.Model()
-prot= IMP.modeller.read_pdb('examples/simple_examples/single_protein.pdb', m)
+prot= IMP.atom.read_pdb('examples/simple_examples/single_protein.pdb', m)
 res= IMP.atom.get_by_type(prot, IMP.atom.MolecularHierarchyDecorator.RESIDUE)
 rc= IMP.core.ListSingletonContainer(res)
 for p in res:
