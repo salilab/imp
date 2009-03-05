@@ -1,6 +1,6 @@
 /**
- *  \file MolecularHierarchyDecorator.h   \brief Decorator for helping deal with
- *                                               a hierarchy of molecules.
+ *  \file atom/MolecularHierarchyDecorator.h
+ *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
@@ -27,6 +27,8 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup decorators
     \see ResidueDecorator
     \see AtomDecorator
+    \see write_pdb
+    \see read_pdb
  */
 class IMPATOMEXPORT MolecularHierarchyDecorator:
   public IMP::core::HierarchyDecorator
@@ -261,6 +263,7 @@ get_internal_bonds(MolecularHierarchyDecorator mhd);
     MolecularHierarchyDecorator relationships.
 
     \note It is not implemented :-)
+    \relates MolecularHierarchyDecorator
 */
 IMPATOMEXPORT
 MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d);
