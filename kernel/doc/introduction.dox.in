@@ -146,8 +146,7 @@ IMP_PYTHON(fragments/load_protein_restrain_bonds)
 \endhtmlonly
 
 \code
-// Currently you can't read a pdb from C++
-IMP::core::MolecularHierarchyDecorator prot=???;
+IMP::core::MolecularHierarchyDecorator prot=IMP::atom::read_pdb("my.pdb", m);
 IMP::core::BondDecorators bds= IMP::core::get_internal_bonds(prot);
 IMP::Particles ps(bds.size());
 for (unsigned int i=0; i< bds.size(); ++i) ps[i]= bds[i].get_particle();
