@@ -130,8 +130,8 @@ MolecularHierarchyDecorator read_pdb(
 {
   std::ifstream pdb_file(pdb_file_name.c_str());
   if (!pdb_file) {
-    std::cerr << "no such PDB file " << pdb_file_name << std::endl;
-    return MolecularHierarchyDecorator();
+    IMP_failure("No such PDB file " << pdb_file_name,
+                ValueException);
   }
 
   // create root particle
