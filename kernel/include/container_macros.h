@@ -59,7 +59,7 @@ void clear_##lcname##s();                                             \
 unsigned int get_number_of_##lcname##s() const {                        \
   return lcname##_vector_.size();}                                      \
 /** \short return if there are any objects*/                            \
-unsigned int get_has_##lcname##s() const {                              \
+bool get_has_##lcname##s() const {                              \
   return !lcname##_vector_.empty();}                                    \
 /** \short Get object refered to by the index
     \throws IndexException if the index is out of range
