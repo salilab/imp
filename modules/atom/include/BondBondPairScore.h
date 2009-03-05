@@ -1,5 +1,5 @@
 /**
- *  \file BondBondPairScore.h
+ *  \file atom/BondBondPairScore.h
  *  \brief Score on the distance between a pair of bonds.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.

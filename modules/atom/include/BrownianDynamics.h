@@ -1,5 +1,6 @@
 /**
- *  \file BrownianDynamics.h    \brief Simple molecular dynamics optimizer.
+ *  \file atom/BrownianDynamics.h
+ *  \brief Simple molecular dynamics optimizer.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *

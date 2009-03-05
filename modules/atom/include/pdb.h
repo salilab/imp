@@ -1,5 +1,6 @@
 /**
- *  \file pdb.h   \brief A class for reading PDB files
+ *  \file atom/pdb.h
+ *  \brief Functions to read pdbs
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
@@ -10,18 +11,15 @@
 #include "config.h"
 #include "internal/pdb.h"
 #include "selectors.h"
+#include "MolecularHierarchyDecorator.h"
 
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
-
-#include "MolecularHierarchyDecorator.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
 /** Selector objects can be used to define which atoms to read.
     \see write_pdb
-    \relates MolecularHierarchyDecorator
-    \relates Selector
  */
 IMPATOMEXPORT MolecularHierarchyDecorator
 read_pdb(std::string pdb_file_name,
@@ -30,17 +28,24 @@ read_pdb(std::string pdb_file_name,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
-/** \note This function produces files that are not valid PDB files. Complain
-    if your favorite program can't read them and we might fix it.
-    \see read_pdb
-    \relates MolecularHierarchyDecorator
+/** Helper function for python to call write_pdb(MolecularHierarchyDecorator,
+    std::ostream&)
+    \see write_pdb
 */
 IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
                              std::string file_name);
 
+/** \note This function produces files that are not valid PDB files. Complain
+    if your favorite program can't read them and we might fix it.
+    \see read_pdb
+    \see write_pdb
+*/
+IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
+                             std::ostream &out);
+
 /** \note This function is not yet implemented.
     \see read_pdb
-    \relates MolecularHierarchyDecorator
+    \see write_pdb
 */
 IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
                              std::string file_name);

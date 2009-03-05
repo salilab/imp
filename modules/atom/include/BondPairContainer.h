@@ -1,5 +1,5 @@
 /**
- *  \file BondPairContainer.h
+ *  \file atom/BondPairContainer.h
  *  \brief A fake container for bonds
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
