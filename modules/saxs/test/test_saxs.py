@@ -39,8 +39,8 @@ class PDBReadTest(IMP.test.TestCase):
         #f_table.show()
 
         #! select particles from the model
-        particles = IMP.core.get_by_type(mp,
-                        IMP.core.MolecularHierarchyDecorator.ATOM)
+        particles = IMP.atom.get_by_type(mp,
+                        IMP.atom.MolecularHierarchyDecorator.ATOM)
 
         #! calculate SAXS profile
         model_saxs_profile = IMP.saxs.SAXSProfile(

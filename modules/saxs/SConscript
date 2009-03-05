@@ -19,7 +19,7 @@ if env['MODELLER_EXETYPE'] == '':
 else:
     env.validate()
 
-env.Append(LIBS=['imp_core', 'imp_algebra'])
+env.Append(LIBS=['imp_core', 'imp_algebra', 'imp_atom'])
 
 # Subdirectories:
 SConscript('src/SConscript')

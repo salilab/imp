@@ -1,5 +1,6 @@
 import IMP
 import IMP.core
+import IMP.atom
 
 # This example addes a restraint on nonbonded interactions
 # after excluding a set of bonded interactions.
@@ -10,16 +11,16 @@ ps = IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 1.0))
 
 # create a bond between two particles
 bonds= IMP.core.ListSingletonContainer()
-bd0= IMP.core.BondedDecorator.create(ps.get_particle(0))
-bd1= IMP.core.BondedDecorator.create(ps.get_particle(1))
-bonds.add_particle(IMP.core.custom_bond(bd0, bd1, 2.0).get_particle())
+bd0= IMP.atom.BondedDecorator.create(ps.get_particle(0))
+bd1= IMP.atom.BondedDecorator.create(ps.get_particle(1))
+bonds.add_particle(IMP.atom.custom_bond(bd0, bd1, 2.0).get_particle())
 
 # Set up the nonbonded list
 nbl= IMP.core.ClosePairsScoreState(ps)
 m.add_score_state(nbl)
 # Exclude bonds from closest pairs
 fl= nbl.get_close_pairs_container()
-fl.add_pair_container(IMP.core.BondPairContainer())
+fl.add_pair_container(IMP.atom.BondPairContainer())
 # Set the amount particles need to move before the list is updated
 nbl.set_slack(2.0)
 

@@ -12,7 +12,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-BondGeometry::BondGeometry(core::BondDecorator p,
+BondGeometry::BondGeometry(atom::BondDecorator p,
                            Float radius): d_(p),
                                           radius_(radius){
 }
@@ -27,7 +27,7 @@ unsigned int BondGeometry::get_dimension() const{
   return 1;
 }
 algebra::Vector3D BondGeometry::get_vertex(unsigned int i) const {
-  core::BondedDecorator ep=  d_.get_bonded(i);
+  atom::BondedDecorator ep=  d_.get_bonded(i);
   core::XYZDecorator epi(ep.get_particle());
   return epi.get_coordinates();
 }

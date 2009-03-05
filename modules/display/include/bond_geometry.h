@@ -13,7 +13,7 @@
 
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
-#include <IMP/core/bond_decorators.h>
+#include <IMP/atom/bond_decorators.h>
 #include <IMP/display/geometry.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -23,11 +23,11 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT BondGeometry: public Geometry
 {
-  core::BondDecorator d_;
+  atom::BondDecorator d_;
   Float radius_;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  BondGeometry(core::BondDecorator d, Float radius=0);
+  BondGeometry(atom::BondDecorator d, Float radius=0);
 
   virtual ~BondGeometry();
 
