@@ -231,6 +231,7 @@ MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d) {
     }
     copy_bond(ne0, ne1, bds[i]);
   }
+  return nh;
 }
 
 
