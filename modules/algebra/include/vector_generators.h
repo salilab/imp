@@ -191,7 +191,7 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph,
 /note the implementation can be improved
  */
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3DPatch &sph,
-                                         int number_of_points);
+                                         unsigned int number_of_points);
 
 
 IMPALGEBRA_END_NAMESPACE

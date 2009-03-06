@@ -94,7 +94,7 @@ Vector3Ds uniform_cover(const Sphere3D &sph,int number_of_points) {
 }
 
 Vector3Ds uniform_cover(const Sphere3DPatch &sph,
-                        int number_of_points) {
+                        unsigned int number_of_points) {
  Vector3Ds points;
  Vector3Ds sph_points;
  while (points.size() < number_of_points) {
