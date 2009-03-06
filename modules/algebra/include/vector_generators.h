@@ -11,7 +11,7 @@
 #include "VectorD.h"
 #include "Cylinder3D.h"
 #include "Sphere3D.h"
-
+#include "Sphere3DPatch.h"
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! create a constant vector
@@ -186,6 +186,12 @@ IMPALGEBRAEXPORT Vector3Ds grid_cover(const Cylinder3D &cyl,
 //! Generate a set of 3d points that uniformly cover a cylinder
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph,
                                          int number_of_points) ;
+//! Generate a set of 3d points that uniformly cover a patch of a sphere
+/**
+/note the implementation can be improved
+ */
+IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3DPatch &sph,
+                                         int number_of_points);
 
 
 IMPALGEBRA_END_NAMESPACE
