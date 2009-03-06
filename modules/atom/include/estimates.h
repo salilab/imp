@@ -12,6 +12,12 @@
 #include <IMP/base_types.h>
 
 IMPATOM_BEGIN_NAMESPACE
+/** @name Estimator Functions
+
+    These functions allow you to estimate physical quantities
+    relating to biomolecules.
+*/
+//!@{
 
 //! Estimate the volume of a protein from its mass
 /** The estimate uses a formula published in
@@ -41,10 +47,14 @@ IMPATOMEXPORT double volume_in_A3_from_mass_in_kDa(double v);
 
 
 //! Estimate the mass of a protein from the numnber of amino acids
-/** This function currently uses the numbers from wikipedia that yeast
+/** This function currently uses the numbers from
+    \external{http://en.wikipedia.org/wiki/Protein,wikipedia} that yeast
     proteins average 53kDa in mass and 466 residues in length.
  */
 IMPATOMEXPORT double mass_in_kDa_from_number_of_residues(unsigned int num_aa);
+
+
+//!@}
 
 IMPATOM_END_NAMESPACE
 
