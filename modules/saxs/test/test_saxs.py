@@ -1,7 +1,7 @@
 import unittest
 import IMP
 import IMP.test
-import IMP.modeller
+import IMP.atom
 import IMP.core
 import IMP.saxs
 import os
@@ -14,7 +14,7 @@ class PDBReadTest(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp= IMP.modeller.read_pdb(
+        mp= IMP.atom.read_pdb(
                       self.get_input_file_name('single_protein.pdb'), m)
         #IMP.core.show_molecular_hierarchy(mp)
 
