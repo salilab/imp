@@ -50,7 +50,9 @@ public:
   const Vector3D& get_translation()const{return trans_;}
   //! Compose two transformations
   /**
-     /note for any vector v (rt1*rt2)*v = rt1*(rt2*v)
+     /param[in] trans2 The other transformation
+     /note for any vector v (trans1*trans2)*v = trans1*(trans2*v).
+           Here trans1 is the transformation stored in this.
    */
   Transformation3D compose(const Transformation3D &trans2);
   void show(std::ostream& out = std::cout) const {
