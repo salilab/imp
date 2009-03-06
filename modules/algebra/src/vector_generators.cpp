@@ -93,4 +93,22 @@ Vector3Ds uniform_cover(const Sphere3D &sph,int number_of_points) {
   return points;
 }
 
+Vector3Ds uniform_cover(const Sphere3DPatch &sph,
+                        int number_of_points) {
+ Vector3Ds points;
+ Vector3Ds sph_points;
+ while (points.size() < number_of_points) {
+   sph_points = uniform_cover(sph.get_sphere(),number_of_points-points.size());
+   for(Vector3Ds::iterator it = sph_points.begin(); it != sph_points.end();it++)
+   {
+     if (sph.get_contains(*it)) {
+       points.push_back(*it);
+     }
+   }
+ }
+ return points ;
+}
+
+
+
 IMPALGEBRA_END_NAMESPACE
