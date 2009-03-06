@@ -1,3 +1,0 @@
-This example shows how to set up rigid bodies, one per residue in a protein. A score state
-is then used to update the rigid body derivatives from those on the member particles
-and to set the positions of the member particles from the optimized orientation.
