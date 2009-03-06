@@ -82,7 +82,7 @@ namespace {
       if (has_indent(line.back(), min_indent)) {
         std::string ret(line.back(), min_indent);
         line.pop_back();
-        int pos= ret.find_first_of(":");
+        std::size_t pos= ret.find_first_of(":");
         if (pos == std::string::npos) {
           throw InvalidStateException("No colon in line");
         }
