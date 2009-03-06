@@ -45,13 +45,17 @@ IMP_BEGIN_NAMESPACE
 typedef std::vector<Name> Name##s
 #else
 #define IMP_DECLARE_KEY_TYPE(Name, Tag)                                 \
+  /** A string based identifier.*/                                      \
   struct Name: public ::IMP::KeyBase<ID> {                              \
   typedef ::IMP::KeyBase<ID> P;                                         \
   typedef Name This;                                                    \
+  /** */                                                                \
   Name(){};                                                             \
   Name(unsigned int i): P(i){}                                          \
+  /** */                                                                \
   Name(const char *nm): P(nm){}                                         \
 };                                                                      \
+  /** */                                                                \
 typedef std::vector<Name> Name##s
 #endif
 

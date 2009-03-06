@@ -18,6 +18,10 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+/** @name PDB IO
+*/
+//!@{
+
 /** Selector objects can be used to define which atoms to read.
     \see write_pdb
  */
@@ -49,6 +53,7 @@ IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
 */
 IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
                              std::string file_name);
+//!@}
 
 IMPATOM_END_NAMESPACE
 

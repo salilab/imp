@@ -27,7 +27,13 @@ IMPATOM_BEGIN_NAMESPACE
 IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 
 
-/** @name The standard PDB atom types.
+/** @name PDB Atom Types
+
+    We provide an AtomType instance for each of the standard PDB %atom types.
+    These have names such as IMP::atom::AT_N. The full list is elided for
+    readability. New types can be added using the
+    add_atom_type() function.
+
     \see AtomDecorator
 */
 /*@{*/
@@ -36,6 +42,7 @@ IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 */
 /** */
 IMPATOMEXPORT extern const AtomType AT_UNKNOWN;
+#ifndef IMP_DOXYGEN
 /** */
 IMPATOMEXPORT extern const AtomType AT_N;
 /** */
@@ -203,6 +210,7 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 /** */ IMPATOMEXPORT extern const AtomType AT_H71;
 /** */ IMPATOMEXPORT extern const AtomType AT_H72;
 /** */ IMPATOMEXPORT extern const AtomType AT_H73;
+#endif
 /*@}*/
 
 
@@ -309,6 +317,7 @@ IMPATOMEXPORT AtomType atom_type_from_pdb_string(std::string nm);
 
 //! Return the index of the residue containing this atom
 /** The atom must be part of a molecular hierarchy.
+    \relates AtomDecorator
  */
 IMPATOMEXPORT int get_residue_index(AtomDecorator d);
 

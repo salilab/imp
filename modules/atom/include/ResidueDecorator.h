@@ -27,14 +27,18 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 */
 /** @name Residue Types
 
-    The standard residue types are provided. New types can be added simply by
-    creating an instance of ResidueType("my_residue_name"). Note that methods
-    such as get_is_amino_acid() will not work with user-added types.
+    The standard residue types are provided with names like
+    IMP::atom::GLY.  New types can be added simply by creating an
+    instance of ResidueType("my_residue_name"). Note that methods such
+    as ResidueDecorator::get_is_amino_acid() will not work with
+    user-added types.
+
     \see ResidueDecorator
 */
 /*@{*/
 /** Unknown residue */
 IMPATOMEXPORT extern const ResidueType UNK;
+#ifndef IMP_DOXYGEN
 /** glycein G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 /** alanine A*/
@@ -91,6 +95,7 @@ IMPATOMEXPORT extern const ResidueType CYT;
 IMPATOMEXPORT extern const ResidueType GUA;
 /** thymine */
 IMPATOMEXPORT extern const ResidueType THY;
+#endif
 /*@}*/
 
 
