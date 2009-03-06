@@ -53,7 +53,7 @@ public:
 
   //! Resizes the matrix copying the size of a given one
   /**
-   * \param[in] m2 Matrix3D whose size to copy
+   * \param[in] v Matrix3D whose size to copy
    */
   template<typename T1>
   void resize(const IMP::algebra::Matrix3D<T1>& v) {
@@ -63,7 +63,7 @@ public:
 
   //! Reshapes the matrix copying the size and range of a given one
   /**
-   * \param[in] m2 Matrix3D whose shape to copy
+   * \param[in] v Matrix3D whose shape to copy
    */
   template<typename T1>
   void reshape(const IMP::algebra::Matrix3D<T1>& v) {
@@ -80,7 +80,7 @@ public:
   //! Copies the contents of a matrix to this one (does not resize this one).
   //! For guarantee a copy with resizing use operator=
   /**
-   * \param[in] m2 Matrix3D whose contents to copy
+   * \param[in] v Matrix3D whose contents to copy
    */
   void copy(const This& v) {
     std::vector<index> idx(3);
