@@ -71,6 +71,32 @@ inline double sphere_radius_from_volume(double volume) {
   return std::pow((.75/PI)*volume, .3333);
 }
 
+#ifndef SWIG
+
+namespace internal {
+  struct SphereSpacesIO
+  {
+    const Sphere3D &v_;
+    SphereSpacesIO(const Sphere3D &v): v_(v){}
+  };
+  inline std::ostream &operator<<(std::ostream &out, const Sphere3D &s)
+  {
+    out << spaces_io(s.get_center()) << " " << s.get_radius();
+    return out;
+  }
+}
+
+//! Use this before outputing to a stream with spaces delimiting
+/** std::cout << spaces_io(s);
+    produces "1.0 2.0 3.0 4.0" where the radius is 4.0
+    \relates Sphere3D
+ */
+inline internal::SphereSpacesIO spaces_io(const Sphere3D &v) {
+  return internal::SphereSpacesIO(v);
+}
+#endif
+
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_SPHERE_3D_H */

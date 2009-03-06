@@ -293,53 +293,59 @@ double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   return std::sqrt(squared_distance(v1, v2));
 }
 
-template <unsigned int D>
-struct SpacesIO
-{
-  const VectorD<D> &v_;
-  SpacesIO(const VectorD<D> &v): v_(v){}
-};
+#ifndef SWIG
+
+namespace internal {
+  template <unsigned int D>
+  struct SpacesIO
+  {
+    const VectorD<D> &v_;
+    SpacesIO(const VectorD<D> &v): v_(v){}
+  };
+
+  template <unsigned int D>
+  struct CommasIO
+  {
+    const VectorD<D> &v_;
+    CommasIO(const VectorD<D> &v): v_(v){}
+  };
+  template <unsigned int D>
+  inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
+  {
+    s.v_.show(out, " ", false);
+    return out;
+  }
+  template <unsigned int D>
+  inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
+  {
+    s.v_.show(out, ", ", false);
+    return out;
+  }
+}
 
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
-
+    \relates VectorD
  */
 template <unsigned int D>
-SpacesIO<D> spaces_io(const VectorD<D> &v) {
-  return SpacesIO<D>(v);
+internal::SpacesIO<D> spaces_io(const VectorD<D> &v) {
+  return internal::SpacesIO<D>(v);
 }
 
-template <unsigned int D>
-inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
-{
-  s.v_.show(out, " ", false);
-  return out;
-}
 
-template <unsigned int D>
-struct CommasIO
-{
-  const VectorD<D> &v_;
-  CommasIO(const VectorD<D> &v): v_(v){}
-};
+
 
 //! Use this before outputing to delimited vector entries with a comma
 /** std::cout << commas_io(v);
- produces "1.0, 2.0, 3.0"
-
+    produces "1.0, 2.0, 3.0"
+    \relates VectorD
  */
 template <unsigned int D>
-CommasIO<D> commas_io(const VectorD<D> &v) {
-  return CommasIO<D>(v);
+internal::CommasIO<D> commas_io(const VectorD<D> &v) {
+  return internal::CommasIO<D>(v);
 }
-
-template <unsigned int D>
-inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
-{
-  s.v_.show(out, ", ", false);
-  return out;
-}
+#endif
 
 IMPALGEBRA_END_NAMESPACE
 
