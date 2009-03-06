@@ -36,11 +36,15 @@ IMPATOM_BEGIN_NAMESPACE
 
     \note I don't like the abbreviations in the name, but it is too
     long without them.
-
-    \note It is not clear that this belongs in IMP.atom, but it doesn't
-    fit at all anywhere else.
 */
 IMPATOMEXPORT double volume_in_A3_from_mass_in_kDa(double v);
+
+
+//! Estimate the mass of a protein from the numnber of amino acids
+/** This function currently uses the numbers from wikipedia that yeast
+    proteins average 53kDa in mass and 466 residues in length.
+ */
+IMPATOMEXPORT double mass_in_kDa_from_number_of_residues(unsigned int num_aa);
 
 IMPATOM_END_NAMESPACE
 

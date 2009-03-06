@@ -18,4 +18,9 @@ double volume_in_A3_from_mass_in_kDa(double m) {
   return ca.get_value();
 }
 
+double mass_in_kDa_from_number_of_residues(unsigned int num_aa) {
+  static const double factor= 53.0/466.0;
+  return factor*num_aa;
+}
+
 IMPATOM_END_NAMESPACE
