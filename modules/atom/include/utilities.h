@@ -19,7 +19,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! Get the centroid of a molecule
 IMPATOMEXPORT algebra::Vector3D
-get_centroid(const MolecularHierarchyDecorator &m);
+centroid(const MolecularHierarchyDecorator &m);
 
 //! Transform a molecule
 IMPATOMEXPORT
