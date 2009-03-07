@@ -18,28 +18,28 @@ IMPALGEBRA_BEGIN_NAMESPACE
     lines with # are a comment.
     \see read_pts
 */
-void write_pts(const Vector3Ds &vs, std::ostream &out);
+IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs, std::ostream &out);
 
 //! Read a set of vector3Ds from a file
 /** The file format is one vector per line, spaces between coordinates
     lines with # are a comment.
     \see write_pts
 */
-Vector3Ds read_pts(std::istream &in);
+IMPALGEBRAEXPORT Vector3Ds read_pts(std::istream &in);
 
 //! Write a set of Sphere3Ds to a file
 /** The file format is one vector per line, spaces between coordinates
     lines with # are a comment.
     \see read_pts
 */
-void write_spheres(const Vector3Ds &vs, std::ostream &out);
+IMPALGEBRAEXPORT void write_spheres(const Vector3Ds &vs, std::ostream &out);
 
 //! Read a set of Sphere3Ds from a file
 /** The file format is one vector per line, spaces between coordinates
     lines with # are a comment.
     \see write_pts
 */
-Sphere3Ds read_spheres(std::istream &in);
+IMPALGEBRAEXPORT Sphere3Ds read_spheres(std::istream &in);
 
 IMPALGEBRA_END_NAMESPACE
 
