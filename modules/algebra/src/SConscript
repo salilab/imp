@@ -3,13 +3,14 @@ e = env.IMPSharedLibraryEnvironment()
 
 files = [
          'Cylinder3D.cpp',
-         'Rotation3D.cpp',
          'Plane3D.cpp',
+         'Rotation3D.cpp',
          'Sphere3D.cpp',
          'Sphere3DPatch.cpp',
          'Transformation3D.cpp',
          'eigen_analysis.cpp',
          'geometric_alignment.cpp',
+         'io.cpp',
          'vector_generators.cpp',
         ] \
         + SConscript('internal/SConscript')

@@ -5,8 +5,8 @@ files = [
          'Matrix2D.h',
          'Matrix3D.h',
          'MultiArray.h',
-         'Rotation3D.h',
          'Plane3D.h',
+         'Rotation3D.h',
          'Sphere3D.h',
          'Sphere3DPatch.h',
          'Transformation3D.h',
@@ -15,6 +15,7 @@ files = [
          'eigen_analysis.h',
          'geometric_alignment.h',
          'grid_range_D.h',
+         'io.h',
          'utility.h',
          'vector_generators.h',
         ] \
