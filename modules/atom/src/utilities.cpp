@@ -11,7 +11,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 IMPATOMEXPORT algebra::Vector3D
-get_centroid(const MolecularHierarchyDecorator &m) {
+centroid(const MolecularHierarchyDecorator &m) {
  algebra::Vector3D centroid(0.0,0.0,0.0);
  Particles ps =
    get_by_type(m, MolecularHierarchyDecorator::ATOM);
