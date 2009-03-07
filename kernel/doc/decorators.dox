@@ -1,45 +1,50 @@
 /** \page decorators Decorators
-Decorators wrap particles in order to provide a higher level interface to
-manipulate the attributes of the particle. They can be used to
-- maintain invariants: e.g. each of the particles have all of x,y,z coordinates
+Decorators wrap particles in order to provide a nicer interface to
+manipulate the attributes of the particle. For example, a decorator
+can be used to manipulate an appropriate particle as a sphere, allowing
+the user to get the radius or compute the distance between two such
+wrapped particles.
+
+When talking about a decorator, for example, an XYZDecorator, we say
+- a particle is an XYZ particle if it can be used with an XYZ decorator
+- we create an XYZ particle when we have the decorator add the needed
+  attributes (data) to the particle
+- we can wrap a particle in an XYZDecorator if the particle is already
+  an XYZ particle
+
+The general usage of the decorators is quite simple
+- Create an XYZ particle:
+\verbatim
+d= IMP.core.XYZDecorator.create(p, Vector3D(0,2,3))
+\endverbatim
+- Check whether a particle is an XYZ particle
+\verbatim
+d= IMP.core.XYZDecorator.is_instance_of(p)
+\endverbatim
+- Wrap a particle which is known to be an XYZ particle
+\verbatim
+d= IMP.core.XYZDecorator(p)
+\endverbatim
+- Access and manipulate the particle through an XYZDecorator
+\verbatim
+coords=d.get_coordinates()
+d.set_coordinates(IMP.algebra.Vector3D(0,4,5))
+\endverbatim
+- When needed, access the keys used by the decorator through methods like
+\verbatim
+d.get_coordinate_keys()
+\endverbatim
+
+More abstractly, decorators can be used to
+- maintain invariants: e.g. each of the XYZ particles have all of x,y,z coordinates
 - add functionality: e.g. you can get the coordinates as an IMP::Vector3D
 - provide uniform names for attributes: so you don't use "x" some places
 and "X" other places
 - cache keys since those can be expensive to create
 
-\note In general, you should not access particle attributes except
-through decorators
 
 To see a list of all available decorators, look at the IMP::Decorator
 page.
-
-
-The general usage of the decorators is quite simple
-- Create a decorator around a particle which does not have the needed
-attributes. This adds the attributes.
-\verbatim
-d= IMP.core.MyDecorator.create(p)
-\endverbatim
-- Cast a particle which has the required attributes to a decorator,
-checking that it has the attributes
-\verbatim
-d= IMP.core.MyDecorator.cast(p)
-\endverbatim
-- Wrap a particle which is known to have the required attributes in a
-decorator. No checks are necessarily made
-\verbatim
-d= IMP.core.MyDecorator(p)
-\endverbatim
-- Access and manipulate attributes or groups of attributes through
-methods like
-\verbatim
-x=d.get_foo()
-d.set_foo(1.0)
-\endverbatim
-- When needed, access the keys used by the decorator through methods like
-\verbatim
-d.get_foo_key()
-\endverbatim
 
 See the IMP::examples::Decorator example for how to implement a simple
 decorator.
