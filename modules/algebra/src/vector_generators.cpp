@@ -109,6 +109,22 @@ Vector3Ds uniform_cover(const Sphere3DPatch &sph,
  return points ;
 }
 
+IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
+                                         unsigned int number_of_points) {
+ Vector3Ds points;
+ Vector3Ds sph_points;
+ Sphere3D sph = cone.bounding_sphere();
+ while (points.size() < number_of_points) {
+   sph_points = uniform_cover(sph,number_of_points-points.size());
+   for(Vector3Ds::iterator it = sph_points.begin(); it != sph_points.end();it++)
+   {
+     if (cone.get_contains(*it)) {
+       points.push_back(*it);
+     }
+   }
+ }
+ return points;
+}
 
 
 IMPALGEBRA_END_NAMESPACE

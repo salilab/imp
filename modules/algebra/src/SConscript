@@ -7,6 +7,7 @@ files = [
          'Rotation3D.cpp',
          'Sphere3D.cpp',
          'Sphere3DPatch.cpp',
+         'Cone3D.cpp',
          'Transformation3D.cpp',
          'eigen_analysis.cpp',
          'geometric_alignment.cpp',
