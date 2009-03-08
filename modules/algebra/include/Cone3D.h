@@ -14,14 +14,7 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-/** The cylinder is represented by two points that define
-    the cylinder direction and height. The radius of the cylinder
-    is set by a third parameter.
-
-    todo:
-    - document everything
-    - fix overview docs
-*/
+//! Cone3D
 class IMPALGEBRAEXPORT Cone3D
 {
  public:
