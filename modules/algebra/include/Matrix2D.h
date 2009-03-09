@@ -74,7 +74,7 @@ public:
       shape[i]=v.shape()[i];
       start[i]=v.index_bases()[i];
     }
-    MA2::resize(shape);
+    resize(shape[0], shape[1]);
     MA2::reindex(start);
  }
 
