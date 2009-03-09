@@ -18,7 +18,7 @@ class ConeTests(IMP.test.TestCase):
         tip = IMP.algebra.Vector3D(0.0,0.0,0.0)
         direction = IMP.algebra.Vector3D(1.0,0.0,0.0)
         h=5.0;angle=math.pi/3;
-        cone = IMP.algebra.Cone3D(tip,direction,angle,h)
+        cone = IMP.algebra.SphericalCone3D(tip,direction,angle,h)
         self.assertEqual((cone.get_tip()-tip).get_magnitude() < 0.01,True)
         self.assertEqual(cone.is_bound(),True)
         self.assertEqual(cone.get_contains(IMP.algebra.Vector3D(0.5,0.5,0.5)),True)
@@ -29,7 +29,7 @@ class ConeTests(IMP.test.TestCase):
         tip = IMP.algebra.Vector3D(0.0,0.0,0.0)
         direction = IMP.algebra.Vector3D(1.0,0.0,0.0)
         angle=math.pi/3;
-        cone = IMP.algebra.Cone3D(tip,direction,angle)
+        cone = IMP.algebra.SphericalCone3D(tip,direction,angle)
         self.assertEqual((cone.get_tip()-tip).get_magnitude() < 0.01,True)
         self.assertEqual(cone.is_bound(),False)
         self.assertEqual(cone.get_contains(IMP.algebra.Vector3D(0.5,0.5,0.5)),True)
