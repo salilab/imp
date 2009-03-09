@@ -5,7 +5,7 @@ In order to obtain and compile IMP, you will need:
 
  - SWIG (1.3.33 or later).
  - scons (0.98 or later).
- - Boost (1.30 or later). At the moment IMP only needs the Boost headers (not the libraries).
+ - Boost (1.33 or later). At the moment IMP only needs the Boost headers (not the libraries).
  - Python 2.3 or later.
  - A Subversion (svn) client to access the repository.
 
