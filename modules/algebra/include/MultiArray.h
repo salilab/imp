@@ -66,22 +66,19 @@ public:
 
   //! Another way of asking for the size of a given dimension. You can always
   //! use x.shape()[i] too.
-  typename boost::multi_array_types::index
-  get_size(typename boost::multi_array_types::index dim) const {
+  int get_size(const int dim) const {
     return this->shape()[dim];
   }
 
   //! Another way of asking for the initial value (logical)
   //! for the index of the dimension. You can always use index_bases()[dim]
-  typename boost::multi_array_types::index
-  get_start(const typename boost::multi_array_types::index dim) const {
+  int get_start(const int dim) const {
     return this->index_bases()[dim];
   }
 
   //! Another way setting the initial value (logical)
   //! for the index of the dimension. You can always use reindex()
-  void set_start(const typename boost::multi_array_types::index dim,
-                 const int value) {
+  void set_start(const int dim,const int value) {
     std::vector<typename boost::multi_array_types::index> idx(D);
     for (unsigned int i = 0;i < D;i++) {
       idx[i] = this->index_bases()[i];
@@ -102,8 +99,7 @@ public:
 
   //! Another way of asking for the final value (logical) for the index of the
   //! dimension
-  typename boost::multi_array_types::index
-  get_finish(const typename boost::multi_array_types::index dim) const {
+  int get_finish(const int dim) const {
     return this->index_bases()[dim] + this->shape()[dim] - 1;
   }
 

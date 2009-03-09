@@ -89,31 +89,6 @@ public:
     }
   }
 
-  //! Get the origin of a given dimension
-  int get_start(const int dim) const {
-    return MA3::get_start(dim);
-  }
-
-  //! Set the origin of a given dimension
-  void set_start(const int dim, const int value) {
-    MA3::set_start(dim, value);
-  }
-
-  //! Set the origin of all the dimensions
-  /**
-   * \param[in] v Any class able to be accessed with []
-   */
-  template<typename T1>
-  void set_start(const T1& v) {
-    MA3::reindex(v);
-  }
-
-  //! Get the final index value for a given dimension
-  int get_finish(const int dim) const {
-    return MA3::get_finish(dim);
-  }
-
-
   //! Access operator. The returned element is the LOGICAL element of the
   //! matrix, NOT the direct one
   /**
@@ -122,9 +97,9 @@ public:
    * \param[in] i third index
    */
   T& operator()(int k,int j, int i) const {
-    if (get_start(0) <= k && k <= get_finish(0) &&
-        get_start(1) <= j && j <= get_finish(1) &&
-        get_start(2) <= i && i <= get_finish(2)) {
+    if (this->get_start(0) <= k && k <= this->get_finish(0) &&
+        this->get_start(1) <= j && j <= this->get_finish(1) &&
+        this->get_start(2) <= i && i <= this->get_finish(2)) {
       return (T&)(*this)[k][j][i];
     } else {
       String msg = "Matri3D::(): Index out of range." ;
@@ -171,7 +146,6 @@ public:
   This test_sub_f(const T& v) const {return (*this) - v;}
   This test_mul_f(const T& v) const {return (*this) * v;}
   This test_div_f(const T& v) const {return (*this) / v;}
-
 
 #ifndef SWIG
   //! Sum operator

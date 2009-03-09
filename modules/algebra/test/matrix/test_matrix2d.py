@@ -28,6 +28,10 @@ class Matrix2DTests(IMP.test.TestCase):
         m = alg.matrix2D(3,2)
         m[2,1]=34.5
         self.assertEqual(m[2,1],34.5)
+        m.set_start(0,-2)
+        m.set_start(1,-5)
+        m[-1,-4]=34.5
+        self.assertEqual(m[-1,-4],34.5)
 
     def test_matrices_operations(self):
         """Check matrix3D operations"""

@@ -90,30 +90,6 @@ public:
     }
   }
 
-  //! Get the origin of a given dimension
-  int get_start(const int dim) const {
-    return MA2::get_start(dim);
-  }
-
-  //! Set the origin of a given dimension
-  void set_start(const int dim, const int value) {
-    MA2::set_start(dim, value);
-  }
-
-  //! Set the origin of all the dimensions
-  /**
-   * \param[in] v Any class able to be accessed with []
-   */
-  template<typename T1>
-  void set_start(const T1& v) {
-    MA2::reindex(v);
-  }
-
-  //! Get the final index value for a given dimension
-  int get_finish(const int dim) const {
-    return MA2::get_finish(dim);
-  }
-
   //! Returns the number of rows in the matrix
   int get_rows() const {
     return (int)this->get_size(0);
@@ -136,6 +112,34 @@ public:
     return aux;
   }
 
+  //! Physicial access to the elements of the matrix
+  /**
+   * \param[in] j physical row to access
+   * \param[in] i physical Column to access
+   */
+  T& physical_get(const int j,const int i) const {
+    if (0<=j && j<get_rows() && 0<=i && i<get_columns()) {
+      return (*this)(j+this->get_start(0),i+this->get_start(1));
+    } else {
+      String msg = "Matri2D::physical_get: index out of range." ;
+      throw ValueException(msg.c_str());
+    }
+  }
+
+  //! Physicial set of the elements of the matrix
+  /**
+   * \param[in] j physical row to access
+   * \param[in] i physical Column to access
+   */
+  void physical_set(const int j,const int i,const T& val) {
+    if (0<=j && j<get_rows() && 0<=i && i < get_columns()) {
+      (*this)(j+this->get_start(0),i+this->get_start(1))=val;
+    } else {
+      String msg = "Matri2D::physical_set: index out of range." ;
+      throw ValueException(msg.c_str());
+    }
+  }
+
   //! Access operator. The returned element is the LOGICAL element of the
   //! matrix, NOT the direct one
   /**
@@ -143,8 +147,8 @@ public:
    * \param[in] i Column to access
    */
   T& operator()(int j, int i) const {
-    if (get_start(0) <= j && j <= get_finish(0) &&
-        get_start(1) <= i && i <= get_finish(1)) {
+    if (this->get_start(0) <= j && j <= this->get_finish(0) &&
+        this->get_start(1) <= i && i <= this->get_finish(1)) {
       return (T&)((*this)[j][i]);
     } else {
       String msg = "Matri2D::(): Index out of range." ;
@@ -335,7 +339,8 @@ public:
 #endif
   //! Determinant (only for 2x2)
   double det() {
-    return (double)((*this)(0, 0)*(*this)(1, 1) - (*this)(1, 0)*(*this)(0, 1));
+    return (double)(physical_get(0,0)*physical_get(1,1) -
+                    physical_get(1,0)*physical_get(0,1));
   }
 
 protected:
