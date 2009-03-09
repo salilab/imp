@@ -21,6 +21,9 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
+//! Permutation sampler
+/**
+ */
 class  IMPDOMINOEXPORT PermutationSampler :  public DiscreteSampler
 {
 public:
