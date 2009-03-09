@@ -42,28 +42,6 @@ public:
   MultiArray() : BMA() {
   }
 
-  //! Copy constructor
-  MultiArray(const This& v) {
-    boost::array<index, D> shape;
-    // Resize the MultiArray
-    int dims=v.num_dimensions();
-    for(int i=0;i<dims;i++) {shape[i]=v.shape()[i]; }
-    this->resize(shape);
-    // Assign
-    std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-      (*this)(idx) = v(idx);
-    }
-  }
-
-  //! Constructor with given dimensions
-  /**
-   * \param[in] dims a boost::array of index indicating the sizes for each dim.
-   */
-  MultiArray(const boost::array<index, D>& dims) {
-    this->resize(dims);
-  }
-
   //! Another way of asking for the size of a given dimension. You can always
   //! use x.shape()[i] too.
   int get_size(const int dim) const {
