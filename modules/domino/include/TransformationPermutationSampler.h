@@ -17,6 +17,9 @@
 #include "IMP/domino/TransformationUtils.h"
 IMPDOMINO_BEGIN_NAMESPACE
 
+//! Sample all permutations of transformations on particles
+/**
+ */
 class IMPDOMINOEXPORT TransformationPermutationSampler:public PermutationSampler
 {
 public:
