@@ -33,4 +33,30 @@ void transform(const MolecularHierarchyDecorator &m,
     xyz_d.set_coordinates(xyz_new);
   }
 }
+IMPATOMEXPORT
+algebra::Line3D maximum_diameter(const MolecularHierarchyDecorator &m) {
+  algebra::Vector3D lower_bound,upper_bound;
+   //read the points and determine the dimentions of the map
+  for (int i=0;i<3;i++) {
+    lower_bound[i]=INT_MAX;
+    upper_bound[i]=INT_MIN;
+  }
+  IMP::Float dist=INT_MIN;
+ Particles ps =
+   get_by_type(m, MolecularHierarchyDecorator::ATOM);
+  for (IMP::Particles::const_iterator it = ps.begin();it != ps.end();it++){
+    IMP::algebra::Vector3D xyz1 =
+         IMP::core::XYZDecorator::cast(*it).get_coordinates();
+    for (IMP::Particles::const_iterator it1 = it+1;it1 != ps.end();it1++){
+      IMP::algebra::Vector3D xyz2 =
+           IMP::core::XYZDecorator::cast(*it1).get_coordinates();
+      if (IMP::algebra::distance(xyz1,xyz2) >dist) {
+        lower_bound = xyz1;
+        upper_bound = xyz2;
+        dist = IMP::algebra::distance(xyz1,xyz2);
+      }
+    }
+  }
+  return algebra::Line3D(lower_bound,upper_bound);
+}
 IMPATOM_END_NAMESPACE
