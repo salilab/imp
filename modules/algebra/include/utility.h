@@ -31,6 +31,8 @@ inline bool xorT(bool x, bool y)
   return (((x) && !(y)) || (!(x) && (y)));
 }
 
+
+
 //! Sign of a number. 1 if the number is higher or equal to 0 and -1 otherwise
 template<typename T>
 int sign(const T& x)

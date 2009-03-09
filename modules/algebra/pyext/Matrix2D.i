@@ -4,11 +4,11 @@
 
 // Extend Matrix2D with _internal_get and _internal_set
 %extend IMP::algebra::Matrix2D<float> {
-  float _internal_get(int i, int j) const {
-    return self->operator()(i, j);
+  float _internal_get(int j, int i) const {
+    return self->operator()(j,i);
   }
-  void _internal_set(int i, int j, float val) {
-    self->operator()(i, j) = val;
+  void _internal_set(int j, int i, float val) {
+    self->operator()(j,i) = val;
   }
   IMP::algebra::Matrix2D<float> _internal_add(
                               const IMP::algebra::Matrix2D<float>& m) {
@@ -42,7 +42,7 @@
   // Compose the python calls to _internal_get and _internal_set
   %pythoncode {
     def __setitem__(self, indx, val):
-      return self._internal_set(indx[0], indx[1], val)
+      self._internal_set(indx[0], indx[1], val)
     def __getitem__(self, indx):
       return self._internal_get(indx[0], indx[1])
     def __div__(self, m):
