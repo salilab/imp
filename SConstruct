@@ -19,7 +19,7 @@ if unknown:
     print "Unknown variables: ", unknown.keys()
     print "Use 'scons -h' to get a list of the accepted variables."
     Exit(1)
-boost.configure_check(env, '1.30')
+boost.configure_check(env, '1.33')
 cgal.configure_check(env)
 Help("""
 Available command-line options:
