@@ -18,7 +18,10 @@
 #include "IMP/domino/MappedDiscreteSet.h"
 
 IMPDOMINO_BEGIN_NAMESPACE
-
+//! TransformationMappedDiscreteSet
+/**
+Holds a discrete sampling space of rigid transformations.
+ */
 class IMPDOMINOEXPORT TransformationMappedDiscreteSet : public MappedDiscreteSet
 {
 public:
