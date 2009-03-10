@@ -296,15 +296,14 @@ inline Rotation3D rotation_about_axis(Vector3D axis, double angle)
   return Rotation3D(a,b,c,d);
 }
 
-// void rotation_bewteen_two_vectors(const Vector3D &v1,
-//                                   const Vector3D &v2) {
-//     Vector3D vv = cross_product(v1,v2);
-//     Float len = vv.get_magnitude();
-//     Float dotp = v1*v2;
-//     Float t = 1 - dotp;
 
-//     return rotation_about_axis(vv.get_unit_vector(),t);
-// }
+inline Rotation3D rotation_between_two_vectors(const Vector3D &v1,
+                                        const Vector3D &v2) {
+    Vector3D vv = vector_product(v1,v2);
+    Float dotp = v1*v2;
+    Float t = 1 - dotp;
+    return rotation_about_axis(vv.get_unit_vector(),t);
+}
 
 
 //! Pick a rotation at random from all possible rotations
