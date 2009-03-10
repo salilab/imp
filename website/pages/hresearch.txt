@@ -1,3 +1,3 @@
 <a href="http://salilab.org/npc.html"><img src="images/npc.png"></a><br />
-Researchers from the UCSF and the Rockefeller University have used IMP for modeling the Nuclear Pore Complex.<br />
+Researchers from UCSF and the Rockefeller University have used IMP for modeling the Nuclear Pore Complex.<br />
 <a href="http://salilab.org/npc.html">more...</a>

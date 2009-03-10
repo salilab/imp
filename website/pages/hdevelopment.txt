@@ -1,2 +1,2 @@
-New optimizer DOMINO in r1000.
+New optimizer DOMINO in r605.
 <a href="https://salilab.org/imp/doc/doxygen/namespaceIMP_1_1domino.html">more...</a>
