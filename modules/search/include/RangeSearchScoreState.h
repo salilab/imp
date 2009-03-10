@@ -26,7 +26,7 @@ IMPSEARCH_BEGIN_NAMESPACE
     since otherwise telling the lower bound and the upper bound appart is
     annoying (is it lb0, ub0, lb1, ub1 or lb0, lb1, ub0, ub1?).
  */
-class IMPSEARCHEXPORT RangeSearchScoreState:
+class RangeSearchScoreState:
 public ScoreState
 {
   Pointer<IMP::SingletonContainer> pc_;
