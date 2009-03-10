@@ -1,16 +1,16 @@
 <table>
    <tr>
-      <td width=150><img src="images/groups.png"></td>
+      <td width=150><img src="images/groups.png" alt="World map"></td>
       <td>
          
          <h4><a href="http://www.salilab.org" target="_blank">The Sali Lab</a></h4>
-         Departments of Biopharmaceutical Sciences and Pharmaceutical Chemistry,<br /> 
-         and California Institute for Quantitative Biosciences. UCSF.<br />
-         San Francisco, CA. US.<br />
+         Departments of Biopharmaceutical Sciences and Pharmaceutical Chemistry,<br> 
+         and California Institute for Quantitative Biosciences. UCSF.<br>
+         San Francisco, CA. US.<br>
          
          <h4><a href="http://sgu.bioinfo.cipf.es" target="_blank">Structural Genomics Unit</a></h4>
-         Bioinformatics and Genomics Department.<br />
-         Centro de Investigaci&oacute;n Pr&iacute;ncipe Felipe.<br />
+         Bioinformatics and Genomics Department.<br>
+         Centro de Investigaci&oacute;n Pr&iacute;ncipe Felipe.<br>
          Valencia. Spain. 
       
        </td>

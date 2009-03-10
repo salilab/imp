@@ -2,5 +2,5 @@
 Until then, access to other parts of this site and the IMP source code
 is only for Sali lab members and collaborators.</p>
 
-<p>Please <span class=\"e-mail\">imp at salilab.org | email us</span></li>
+<p>Please <span class="e-mail">imp at salilab.org | email us</span>
 if you have questions about IMP.</p>

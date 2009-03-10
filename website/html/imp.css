@@ -161,7 +161,8 @@ a:hover, a:active {
 .thres {
    width: 233px;
 }
-#high {
+
+.high {
    font-family:  "Arial";
    font-size: small;
 }
@@ -206,25 +207,26 @@ a:hover, a:active {
 
 /* PUBLICATIONS */
 
-#pubcitations {
+.pubcitations {
    font-family: "Abadi MT Condensed Light";
    background: #FFECEC;
    border-bottom: 1px solid #ccc;
    padding: 10px;
 }
-#pubmethods {
+
+.pubmethods {
    font-family: "Abadi MT Condensed Light";
    background: #EDF4FF;
    border-bottom: 1px solid #ccc;
    padding: 10px;
 }
-#pubapplications {
+.pubapplications {
    font-family: "Abadi MT Condensed Light";
    background: #F0FFED;
    border-bottom: 1px solid #ccc;
    padding: 10px;
 }
-#pubrelated {
+.pubrelated {
    font-family: "Abadi MT Condensed Light";
    background: #FEEDFF;
    border-bottom: 1px solid #ccc;

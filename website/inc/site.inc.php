@@ -39,7 +39,7 @@
             #echo "begin parsed";
 	    #echo $parsed;
 	    #echo "end parsed";
-            echo "<div id=\"pub$at\">".$parsed."</div>";
+            echo "<div class=\"pub$at\">".$parsed."</div>";
          }
       }
    }
