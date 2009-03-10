@@ -15,8 +15,12 @@
 
    # GET PUBLICATIONS FOR IMP
    function GetPublications () {
-      dl("dom.so");
-      dl("xmlreader.so");
+      if (!extension_loaded('dom')) {
+        dl("dom.so");
+      }
+      if (!extension_loaded('xmlreader')) {
+        dl("xmlreader.so");
+      }
       $artypes = array ('citations','methods','applications','related');
       foreach ($artypes as $at_num => $at) {
         echo "<a href=\"#$at\">$at</a>&nbsp;&nbsp;";
