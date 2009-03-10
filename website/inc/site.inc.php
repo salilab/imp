@@ -1,5 +1,5 @@
 <?PHP
-   include("inc/conf.inc.php");
+   include("conf.inc.php");
    # Navigator on top of page
    function GetLinks () {
       echo "<ul>
