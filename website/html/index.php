@@ -1,7 +1,7 @@
 <?PHP
-   include("inc/conf.inc.php");
-   include("inc/site.inc.php");
-   include("inc/misc.inc.php");
+   include("../inc/conf.inc.php");
+   include("../inc/site.inc.php");
+   include("../inc/misc.inc.php");
    $page = $_GET['page'];
    if (!$page) { $page = "home"; }
 ?>
@@ -36,7 +36,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="description" content="IMP Community site for the development of an Integrative Modeling Platform" />
 <meta name="keywords" content="IMP, Integrative, Modeling, Platform" />
-<link href="style/imp.css" rel="stylesheet" type="text/css" />
+<link href="imp.css" rel="stylesheet" type="text/css" />
 <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
 </head>
 
