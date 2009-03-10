@@ -4,6 +4,7 @@ tmpfile="/tmp/props"
 svn propset svn:ignore config.h modules/$1/include
 svn propset svn:ignore version_info.h modules/$1/include/internal
 echo "*.os
+*.obj
 version_info.cpp
 link_0.cpp
 link_1.cpp" > $tmpfile
