@@ -32,15 +32,18 @@
    }
 ?>
 
-<title>IMP Community</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="description" content="IMP Community site for the development of an Integrative Modeling Platform" />
-<meta name="keywords" content="IMP, Integrative, Modeling, Platform" />
-<link href="imp.css" rel="stylesheet" type="text/css" />
-<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
 
-<script><!--
+<head>
+<title>IMP Community</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="IMP Community site for the development of an Integrative Modeling Platform">
+<meta name="keywords" content="IMP, Integrative, Modeling, Platform">
+<link href="imp.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+
+<script type="text/javascript"><!--
 /* e-mail obfuscation adapted from code by Jason Johnston:
    http://lojjic.net/blog/20030828-142754.rdf.html
 */
@@ -69,6 +72,7 @@ function linkEmail() {
 window.onload = linkEmail;
 -->
 </script>
+</head>
 
 <body>
 
@@ -78,7 +82,8 @@ window.onload = linkEmail;
 <div id="nav">
    <table class="tnav">
       <tr>
-         <td><a href="<? echo $GLOBALS["home"]; ?>"><img src="images/imp_logo.png"></a></td>
+         <td><a href="<? echo $GLOBALS["home"]; ?>">
+             <img src="images/imp_logo.png" alt="IMP logo"></a></td>
          <td>
             <div id="links">
                <?PHP GetLinks(); ?>
@@ -128,19 +133,19 @@ window.onload = linkEmail;
       echo "<tr>
                <td class=\"tnews\">
                   <h3>News</h3>
-                  <div id=\"high\">";
+                  <div class=\"high\">";
                      PrintFile("pages/news.txt");
       echo "      </div>
                </td>
                <td class=\"thres\">
                   <h3>Highlighted research</h3>
-                  <div id=\"high\">";
+                  <div class=\"high\">";
                      PrintFile("pages/hresearch.txt");
       echo "      </div>
                </td>
                <td class=\"thdev\">
                   <h3>Highlighted development</h3>
-                  <div id=\"high\">";
+                  <div class=\"high\">";
                      PrintFile("pages/hdevelopment.txt");
       echo "      </div>
                </td>
