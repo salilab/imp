@@ -91,7 +91,8 @@
             if($lastname != '' && $forename != '') {
                $nauthors++;
                if ($nauthors == 1) { $first_author = $lastname.', '.substr($forename,0,1); }
-               $author_list .= $lastname.', '.substr($forename,0,1).'; ';
+               else { $author_list .= '; '; }
+               $author_list .= $lastname.', '.substr($forename,0,1);
                $lastname = '';
                $forename = '';
                $initials = '';
