@@ -17,7 +17,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Template class for managing 2D matrices. This class is based on
 //! boost multi_array
 template<typename T>
-class IMPALGEBRAEXPORT Matrix2D: public IMP::algebra::MultiArray<T,2>
+class Matrix2D: public IMP::algebra::MultiArray<T,2>
 {
 public:
     typedef boost::multi_array_types::index index;
