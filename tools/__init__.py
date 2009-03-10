@@ -427,7 +427,6 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         opt=opt.replace("-O2", "")
         opt=opt.replace("-O3", "")
         opt=opt.replace("-g", "")
-        opt=opt+(" -DIMP_SWIG_WRAPPER")
         e.Replace(CC=cc, CXX=cxx, LDMODULESUFFIX=so)
         e.Replace(CPPFLAGS=basecflags.split() + opt.split())
         if e['PLATFORM'] is 'posix' and e['rpath']:
@@ -439,8 +438,6 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # release builds)
         if '-DNDEBUG' in e['CPPFLAGS']:
             e['CPPFLAGS'].remove('-DNDEBUG')
-        if not env.get('deprecated', "True"):
-            e.Append(CPPFLAGS=['-DIMP_NO_DEPRECATED'])
         if '-Wall' in e['CCFLAGS']:
             e['CCFLAGS'].remove('-Wall')
 
@@ -463,6 +460,9 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         elif system() != "Linux":
             e['LDMODULEFLAGS'] = []
             e['SHLINK'] = e['LDMODULE'] = ldshared
+    e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
+    if not env.get('deprecated', "True"):
+        e.Append(CPPDEFINES=['IMP_NO_DEPRECATED'])
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
