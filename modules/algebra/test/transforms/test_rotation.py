@@ -80,5 +80,20 @@ class RigidTransformationTests(IMP.test.TestCase):
                 print ad
                 self.assertInTolerance(d, ad, .05)
 
+    def test_rotation_between_vectors(self):
+        """Check that the rotation between two vecteors is correct"""
+        axis=[]
+        axis.append(IMP.algebra.Vector3D(1.0,0.0,0.0))
+        axis.append(IMP.algebra.Vector3D(0.0,1.0,0.0))
+        axis.append(IMP.algebra.Vector3D(0.0,1.0,0.0)) #to check the parallel case
+        axis.append(IMP.algebra.Vector3D(0.0,0.0,1.0))
+        axis.append(IMP.algebra.Vector3D(0.0,0.0,-1.0))#to check the antiparallel case
+        axis.append(IMP.algebra.random_vector_on_unit_sphere())
+        axis.append(IMP.algebra.random_vector_on_unit_sphere())
+        for i in xrange(len(axis)-1):
+            rot = IMP.algebra.rotation_between_two_vectors(axis[i],axis[i+1])
+            self.assertAlmostEqual(IMP.algebra.distance(rot*axis[i],axis[i+1]),0.0)
+
+
 if __name__ == '__main__':
     unittest.main()
