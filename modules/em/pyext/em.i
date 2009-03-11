@@ -22,6 +22,9 @@
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
 
+/* Get definitions of algebra base classes (but do not wrap) */
+%import "modules/algebra/pyext/algebra.i"
+
 /* Get definitions of EMBED base classes (but do not wrap) */
 %import "ParticlesAccessPoint.h"
 
@@ -32,6 +35,9 @@
 %include "IMP/em/IMPParticlesAccessPoint.h"
 %include "IMP/em/EMFitRestraint.h"
 %include "IMP/em/convertors.h"
+%include "IMP/em/EMproject.h"
+
+
 
 /* Allow runtime casting of Restraint* objects to EMFitRestraint* */
 namespace IMP {
@@ -41,5 +47,7 @@ namespace IMP {
         return dynamic_cast<IMP::em::EMFitRestraint *>(r);
       }
     }
+
+    %template(project) ::IMP::em::project<float>;
   }
 }

@@ -16,11 +16,11 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-//! Rotation matrix associated with Euler Angles,according to the convention ZYZ
+//! Rotation matrix associated with given Euler angles (ZYZ convention)
 /**
-  If your work is oriented towards performance, a rotation matrix is the most
-  efficient way of performing rotations. Otherwise, it is advised to use the
-  class Rotation3D.
+  Note: If your work is oriented towards performance, a rotation matrix is
+  the most efficient way of performing rotations. Otherwise, it is advised
+  to use the class Rotation3D.
 
   This class requires the angles to be given in radians, and the convention
   used is that the rotations are performed rotating counterclockwise (right
@@ -36,12 +36,23 @@ public:
 
   //! Constructor given the angles (in Radians)
   EulerMatrixZYZ(Float z1,Float y,Float z2) : algebra::Matrix2D<Float>(3,3) {
-    Float c1 = cos(z1);
-    Float c2 = cos(y);
-    Float c3 = cos(z2);
-    Float s1 = sin(z1);
-    Float s2 = sin(y);
-    Float s3 = sin(z2);
+    set_angles(z1,y,z2);
+  }
+
+  //! Provide the angles to form the Euler rotation matrix
+  //! This function actually builds the matrix.
+  /**
+  * \param[in] Rot First Euler angle (radians) defining the rotation (Z axis)
+  * \param[in] Tilt Second Euler angle (radians) defining the rotation (Y axis)
+  * \param[in] Psi Third Euler angle (radians) defining the rotation (Z axis)
+  */
+  void set_angles(Float Rot,Float Tilt,Float Psi) {
+    Float c1 = cos(Rot);
+    Float c2 = cos(Tilt);
+    Float c3 = cos(Psi);
+    Float s1 = sin(Rot);
+    Float s2 = sin(Tilt);
+    Float s3 = sin(Psi);
 
     (*this)(0, 0) = c1 * c2 * c3 - s1 * s3;
     (*this)(0, 1) = (-1.0) * c2 * c3 * s1 - c1 * s3;
