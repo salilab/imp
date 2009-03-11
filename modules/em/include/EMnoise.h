@@ -42,8 +42,8 @@ IMPEM_BEGIN_NAMESPACE
   * \note Tested with MuiltiArray, Matrix2D and Matrix3D
   */
 template<typename T>
-void add_noise(T& data, Float op1, Float op2,
-               const String& mode = "uniform", Float df = 3)
+void add_noise(T& data, double op1, double op2,
+               const String& mode = "uniform", double df = 3)
 {
   if (mode == "uniform") {
     // Distribution
@@ -56,7 +56,9 @@ void add_noise(T& data, Float op1, Float op2,
     Int D = data.dimensionality;
     // add noise
     std::vector<Int> idx(D); // access index
-    while (roll_inds(idx, data.shape(), data.index_bases())) {
+    while (IMP::algebra::internal::roll_inds(idx,
+                                             data.shape(),
+                                             data.index_bases())) {
       data(idx) += rnd_unif();
     }
   } else if (mode == "gaussian") {
@@ -70,7 +72,9 @@ void add_noise(T& data, Float op1, Float op2,
     Int D = data.dimensionality;
     // add noise
     std::vector<Int> idx(D); // access index
-    while (roll_inds(idx, data.shape(), data.index_bases())) {
+    while (IMP::algebra::internal::roll_inds(idx,
+                                             data.shape(),
+                                             data.index_bases())) {
       data(idx) += rnd_gauss();
     }
   } else if (mode == "student") {
