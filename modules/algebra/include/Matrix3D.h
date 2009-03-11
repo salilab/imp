@@ -132,10 +132,6 @@ public:
     return (int)this->get_size(2);
   }
 
-  void operator=(const This& v) {
-    this->reshape(v);
-    this->copy(v);
-  }
 
   // Functions to help wrapping operators
   This test_add(const This& v) const {return (*this) + v;}
@@ -148,6 +144,11 @@ public:
   This test_div_f(const T& v) const {return (*this) / v;}
 
 #ifndef SWIG
+  void operator=(const This& v) {
+    this->reshape(v);
+    this->copy(v);
+  }
+
   //! Sum operator
   This operator+(const This& v) const {
     This result;

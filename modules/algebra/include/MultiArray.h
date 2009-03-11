@@ -75,10 +75,28 @@ public:
     this->reindex(v);
   }
 
+  //! Sets the zero (0,0,0,...) of the logical coordinates at the center of
+  //! the center of the matrix.
+  /**
+   * Some examples:
+   *
+   * \code
+   * m.centered_start(); // if m is a 5x4 matrix, the origin will be (-2,-2)
+   * m.centered_start(); // if m is a 16x3 matrix, the origin will be (-8,-1)
+   * \endcode
+   */
+  void centered_start() {
+    std::vector<int> idx(D);
+    for (unsigned int i = 0;i < D;i++) {
+      idx[i] =(-1) * (int)this->shape()[i]/2;
+    }
+    this->reindex(idx);
+  }
+
   //! Another way of asking for the final value (logical) for the index of the
   //! dimension
   int get_finish(const int dim) const {
-    return this->index_bases()[dim] + this->shape()[dim] - 1;
+    return (this->index_bases()[dim] + this->shape()[dim] - 1);
   }
 
   //! Check if the array has some dimensionality or is just empty

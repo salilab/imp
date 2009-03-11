@@ -47,10 +47,10 @@ int sign(const T& x)
  * examples:
  *
  * \code
- * a = round(-0.8); // a = -1
+ * a = round(-0.7); // a = -1
  * a = round(-0.2); // a = 0
  * a = round(0.2); // a = 0
- * a = round(0.8); // a = 1
+ * a = round(0.7); // a = 1
  * \endcode
  */
 template<typename T>
