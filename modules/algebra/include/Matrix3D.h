@@ -133,17 +133,6 @@ public:
   }
 
 
-  // Functions to help wrapping operators
-  This test_add(const This& v) const {return (*this) + v;}
-  This test_sub(const This& v) const {return (*this) - v;}
-  This test_mul(const This& v) const {return (*this) * v;}
-  This test_div(const This& v) const {return (*this) / v;}
-  This test_add_f(const T& v) const {return (*this) + v;}
-  This test_sub_f(const T& v) const {return (*this) - v;}
-  This test_mul_f(const T& v) const {return (*this) * v;}
-  This test_div_f(const T& v) const {return (*this) / v;}
-
-#ifndef SWIG
   void operator=(const This& v) {
     this->reshape(v);
     this->copy(v);
@@ -253,6 +242,7 @@ public:
     internal::operate_array_and_scalar(*((MA3*)this), v, *((MA3*)this), '/');
   }
 
+#ifndef SWIG
   //! Sum operator for a scalar and an array
   friend This operator+(const T& X, const This& a1) {
     This result;
