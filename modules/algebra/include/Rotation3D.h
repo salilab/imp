@@ -296,13 +296,23 @@ inline Rotation3D rotation_about_axis(Vector3D axis, double angle)
   return Rotation3D(a,b,c,d);
 }
 
-
+//! Create a rotation from the first vector to the second one.
 inline Rotation3D rotation_between_two_vectors(const Vector3D &v1,
-                                        const Vector3D &v2) {
-    Vector3D vv = vector_product(v1,v2);
-    Float dotp = v1*v2;
-    Float t = 1 - dotp;
-    return rotation_about_axis(vv.get_unit_vector(),t);
+                                               const Vector3D &v2) {
+    Vector3D v1_norm = v1.get_unit_vector();
+    Vector3D v2_norm = v2.get_unit_vector();
+    //get a vector that is perpendicular to the plane containing v1 and v2
+    Vector3D vv = vector_product(v1_norm,v2_norm);
+    //get the angle between v1 and v2
+    double dot = v1_norm*v2_norm;
+    dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
+    double angle = acos(dot);
+    //check a special case: the input vectors are parallel / antiparallel
+    if (abs(dot) == 1.0) {
+      IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
+      return rotation_about_axis(IMP::algebra::orthogonal_vector(v1),angle);
+    }
+    return rotation_about_axis(vv,angle);
 }
 
 
