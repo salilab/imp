@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.search
 import IMP.core
-import IMP.modeller
+import IMP.atom
 
 
 class GenericTest(IMP.test.TestCase):
@@ -12,7 +12,7 @@ class GenericTest(IMP.test.TestCase):
     def _test_myrestraint(self):
         """Checking AttributeMap1ScoreState"""
         m = IMP.Model()
-        d= IMP.modeller.read_pdb('modules/search/test/states/single_protein.pdb', m)
+        d= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb', m))
         atoms= IMP.core.get_by_type(d, IMP.core.MolecularHierarchyDecorator.RESIDUE)
         pc= IMP.core.ListSingletonContainer(atoms)
         ss= IMP.search.IntMapScoreState(pc, IMP.search.IntMapKey(IMP.core.ResidueDecorator.get_index_key()))
