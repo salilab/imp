@@ -9,6 +9,8 @@
 #include "IMP/core/BoxSweepClosePairsFinder.h"
 #include "IMP/core/XYZDecorator.h"
 
+#ifdef IMP_USE_CGAL
+
 /* compile the CGAL code with NDEBUG since it doesn't have the
    same level of control over errors as IMP
 */
@@ -16,16 +18,12 @@
 #define NDEBUG
 #endif
 
-#ifdef IMP_USE_CGAL
 #include <CGAL/box_intersection_d.h>
 #include <vector>
-#endif
 
 
 IMPCORE_BEGIN_NAMESPACE
 
-
-#ifdef IMP_USE_CGAL
 
 namespace {
 struct NBLBbox
@@ -75,7 +73,6 @@ struct AddToList {
 };
 
 }
-#endif
 
 
 BoxSweepClosePairsFinder::BoxSweepClosePairsFinder(){}
@@ -88,16 +85,12 @@ void BoxSweepClosePairsFinder
                   Float distance,
                   FloatKey radius_key,
                   FilteredListPairContainer *out) const {
-#ifdef IMP_USE_CGAL
   std::vector<NBLBbox> boxes0, boxes1;
   copy_particles_to_boxes(ca, radius_key, distance, boxes0);
   copy_particles_to_boxes(cb, radius_key, distance, boxes1);
 
   CGAL::box_intersection_d( boxes0.begin(), boxes0.end(),
                             boxes1.begin(), boxes1.end(), AddToList(out));
-#else
-  IMP_failure( "IMP built without CGAL support.", ErrorException);
-#endif
 }
 
 void BoxSweepClosePairsFinder
@@ -105,25 +98,13 @@ void BoxSweepClosePairsFinder
                   Float distance,
                   FloatKey radius_key,
                   FilteredListPairContainer *out) const {
-#ifdef IMP_USE_CGAL
   std::vector<NBLBbox> boxes;
   copy_particles_to_boxes(c, radius_key, distance, boxes);
 
 
   CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), AddToList(out));
-#else
-  IMP_failure("IMP built without CGAL support.", ErrorException);
-#endif
 }
 
-
-bool BoxSweepClosePairsFinder
-::get_is_implemented() {
-#ifdef IMP_USE_CGAL
-  return true;
-#else
-  return false;
-#endif
-}
 
 IMPCORE_END_NAMESPACE
+#endif /* IMP_USE_CGAL */

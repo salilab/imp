@@ -74,9 +74,8 @@ class TestCPFL(IMP.test.TestCase):
         self.do_test_one(IMP.core.QuadraticClosePairsFinder())
     def test_sweep(self):
         """Testing BoxSweepClosePairsFinder"""
-        if IMP.core.BoxSweepClosePairsFinder.get_is_implemented():
-            print "have cgal"
-            self.do_test_one(IMP.core.BoxSweepClosePairsFinder())
+        print "have cgal"
+        self.do_test_one(IMP.core.BoxSweepClosePairsFinder())
     def test_grid(self):
         """Testing GridClosePairsFinder"""
         print "grid"
