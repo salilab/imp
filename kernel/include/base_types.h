@@ -9,6 +9,7 @@
 #define IMP_BASE_TYPES_H
 
 #include "config.h"
+#include "internal/config.h"
 #include "Key.h"
 
 #include <string>
