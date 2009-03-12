@@ -62,7 +62,7 @@ namespace IMP {
   namespace atom {
     %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::MolecularHierarchyDecorator>;
     // swig gets scope wrong, I can't fix it
-    //%template(BondDecorators) ::std::vector<IMP::atom::BondDecorator>;
+    %template(BondDecorators) ::std::vector<IMP::atom::BondDecorator>;
   }
 }
 
