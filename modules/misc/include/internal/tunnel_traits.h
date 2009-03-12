@@ -59,7 +59,7 @@ class TunnelTraits {
   unsigned int get_coordinate() const {
     return coordinate_;
   }
-  unsigned int get_height() const {
+  Float get_height() const {
     return height_;
   }
   Float get_radius() const {
