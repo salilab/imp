@@ -29,8 +29,7 @@ void transform(const MolecularHierarchyDecorator &m,
   core::XYZDecorator xyz_d;
   for (Particles::iterator it = ps.begin(); it != ps.end(); it++) {
     xyz_d = core::XYZDecorator::cast(*it);
-    algebra::Vector3D copy_xyz = xyz_d.get_coordinates();
-    algebra::Vector3D xyz_new = t.transform(copy_xyz); //need to copy vector
+    xyz_new = t.transform(xyz_d.get_coordinates());
     xyz_d.set_coordinates(xyz_new);
   }
 }
