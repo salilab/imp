@@ -39,6 +39,8 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
 /** Unknown residue */
 IMPATOMEXPORT extern const ResidueType UNK;
 #ifndef IMP_DOXYGEN
+/* Code currently assumes that all indices between GLY.get_index()
+   and TRP.get_index() being amino acids */
 /** glycein G*/
 IMPATOMEXPORT extern const ResidueType GLY;
 /** alanine A*/
@@ -83,8 +85,8 @@ IMPATOMEXPORT extern const ResidueType TRP;
 IMPATOMEXPORT extern const ResidueType ACE;
 /** end group */
 IMPATOMEXPORT extern const ResidueType NH2;
-/* Code currently depends on all indices above ADE.get_index()
-   being nucleic acid */
+/* Code currently assumes that all indices between ADE.get_index()
+   and THY.get_index() being nucleic acid */
 /** adenine */
 IMPATOMEXPORT extern const ResidueType ADE;
 /** uracil */
@@ -147,12 +149,14 @@ public:
 
   /** Return true if the residue is an amino acid */
   bool get_is_amino_acid() const {
-    return !get_is_nucleic_acid();
+    return (get_type().get_index() >= GLY.get_index() &&
+            get_type().get_index() <= TRP.get_index());
   }
 
   /** Return true if the residue is a nucleic acid */
   bool get_is_nucleic_acid() const {
-    return get_type().get_index() >= ADE.get_index();
+    return (get_type().get_index() >= ADE.get_index() &&
+            get_type().get_index() <= THY.get_index());
   }
   //! The residues index in the chain
   IMP_DECORATOR_GET_SET(index, get_index_key(),
