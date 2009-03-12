@@ -179,7 +179,7 @@ public:
   const {
     This result;
     result.resize(*this);
-    internal::operate_arrays(*((MA2*)this),(MA2&)v,(MA2&)result, '+');
+    internal::operate_arrays(*this, v, result, '+');
     return result;
   }
 
@@ -187,7 +187,7 @@ public:
   This operator-(const This& v) const {
     This result;
     result.resize(*this);
-    internal::operate_arrays(*((MA2*)this),(MA2&)v,(MA2&)result, '-');
+    internal::operate_arrays(*this, v, result, '-');
     return result;
   }
 
@@ -195,7 +195,7 @@ public:
   This operator*(const This& v) const {
     This result;
     result.resize(*this);
-    internal::operate_arrays(*((MA2*)this),(MA2&)v,(MA2&)result, '*');
+    internal::operate_arrays(*this, v, result, '*');
     return result;
   }
 
@@ -204,7 +204,7 @@ public:
   const {
     This result;
     result.resize(*this);
-    internal::operate_arrays(*((MA2*)this),(MA2&)v,(MA2&)result, '/');
+    internal::operate_arrays(*this, v, result, '/');
     return result;
   }
 
@@ -212,7 +212,7 @@ public:
   This operator+(const T& v) const {
     This result;
     result.resize(*this);
-    internal::operate_array_and_scalar(*((MA2*)this),v,(MA2&)result, '+');
+    internal::operate_array_and_scalar(*this, v, result, '+');
     return result;
   }
 
@@ -220,7 +220,7 @@ public:
   This operator-(const T& v) const {
     This result;
     result.resize(*this);
-    internal::operate_array_and_scalar(*((MA2*)this),v,(MA2&)result, '-');
+    internal::operate_array_and_scalar(*this, v, result, '-');
     return result;
   }
 
@@ -228,7 +228,7 @@ public:
   This operator*(const T& v) const {
     This result;
     result.resize(*this);
-    internal::operate_array_and_scalar(*((MA2*)this),v,(MA2&)result, '*');
+    internal::operate_array_and_scalar(*this, v, result, '*');
     return result;
   }
 
@@ -236,57 +236,57 @@ public:
   This operator/(const T& v) const {
     This result;
     result.resize(*this);
-    internal::operate_array_and_scalar(*((MA2*)this),v,(MA2&)result, '/');
+    internal::operate_array_and_scalar(*this, v, result, '/');
     return result;
   }
 
 
   //! Addition operator
-  void operator+=(const This& v) const {
-    internal::operate_arrays((MA2&)(*this),(MA2)v,(MA2&)(*this), '+');
+  This& operator+=(const This& v) {
+    internal::operate_arrays(*this, v, *this, '+');
+    return *this;
   }
 
-  //! Substraction operator
-  void operator-=(const This& v) const {
-    internal::operate_arrays(*((MA2*)this),(MA2)v,*((MA2*)this), '-');
+  //! Subtraction operator
+  This& operator-=(const This& v) {
+    internal::operate_arrays(*this, v, *this, '-');
+    return *this;
   }
 
   //! Multiplication operator
-  void operator*=(const This& v) const {
-    internal::operate_arrays(*((MA2*)this),(MA2)v,*((MA2*)this), '*');
+  This& operator*=(const This& v) {
+    internal::operate_arrays(*this, v, *this, '*');
+    return *this;
   }
 
   //! Division operator
-  void operator/=(const This& v) const {
-    internal::operate_arrays(*((MA2*)this),(MA2)v,*((MA2*)this), '/');
+  This& operator/=(const This& v) {
+    internal::operate_arrays(*this, v, *this, '/');
+    return *this;
   }
 
   //! Addition operator for an array and a scalar
-  void operator+=(const T& v) const {
-    internal::operate_array_and_scalar(*((MA2*)this),
-                                       v,
-                                       *((MA2*)this), '+');
+  This& operator+=(const T& v) {
+    internal::operate_array_and_scalar(*this, v, *this, '+');
+    return *this;
   }
 
   //! Substraction operator for an array and a scalar
-  void operator-=(const T& v) const {
-    internal::operate_array_and_scalar(*((MA2*)this),
-                                       v,
-                                       *((MA2*)this), '-');
+  This& operator-=(const T& v) {
+    internal::operate_array_and_scalar(*this, v, *this, '-');
+    return *this;
   }
 
   //! Multiplication operator for an array and a scalar
-  void operator*=(const T& v) const {
-    internal::operate_array_and_scalar(*((MA2*)this),
-                                       v,
-                                       *((MA2*)this), '*');
+  This& operator*=(const T& v) {
+    internal::operate_array_and_scalar(*this, v, *this, '*');
+    return *this;
   }
 
   //! Division operator for an array and a scalar
-  void operator/=(const T& v) const {
-    internal::operate_array_and_scalar(*((MA2*)this),
-                                       v,
-                                       *((MA2*)this), '/');
+  This& operator/=(const T& v) {
+    internal::operate_array_and_scalar(*this, v, *this, '/');
+    return *this;
   }
 
 #ifndef SWIG
@@ -295,7 +295,7 @@ public:
                          const This& a1) {
     This result;
     result.resize(*a1);
-    internal::operate_scalar_and_array(X, (MA2&)a1, (MA2&)result, '+');
+    internal::operate_scalar_and_array(X, a1, result, '+');
     return result;
   }
 
@@ -304,7 +304,7 @@ public:
                          const This& a1) {
     This result;
     result.resize(*a1);
-    internal::operate_scalar_and_array(X, (MA2&)a1, (MA2&)result, '-');
+    internal::operate_scalar_and_array(X, a1, result, '-');
     return result;
   }
 
@@ -312,7 +312,7 @@ public:
   friend This operator*(const T& X,const This& a1) {
     This result;
     result.resize(*a1);
-    internal::operate_scalar_and_array(X, (MA2&)a1, (MA2&)result, '*');
+    internal::operate_scalar_and_array(X, a1, result, '*');
     return result;
   }
 
@@ -322,7 +322,7 @@ public:
         const This& a1) {
     This result;
     result.resize(*a1);
-    internal::operate_scalar_and_array(X, (MA2&)a1, (MA2&)result, '/');
+    internal::operate_scalar_and_array(X, a1, result, '/');
     return result;
   }
 
