@@ -10,6 +10,7 @@
 
 #include "ClosePairsFinder.h"
 
+#ifdef IMP_USE_CGAL
 IMPCORE_BEGIN_NAMESPACE
 
 //! Find all nearby pairs by sweeping the bounding boxes
@@ -36,11 +37,10 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
                        Float distance,
                        FloatKey radius_key,
                        FilteredListPairContainer *out) const;
-
-  //! Return true if the needed libraries have been found.
-  static bool get_is_implemented();
 };
 
 IMPCORE_END_NAMESPACE
+
+#endif /* IMP_USE_CGAL */
 
 #endif  /* IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H */

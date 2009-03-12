@@ -38,11 +38,11 @@ ClosePairsScoreState::ClosePairsScoreState(SingletonContainer *pc,
 void ClosePairsScoreState::initialize() {
   distance_=0;
   slack_=1;
-  if (BoxSweepClosePairsFinder::get_is_implemented()) {
-    set_close_pairs_finder(new BoxSweepClosePairsFinder());
-  } else {
-    set_close_pairs_finder(new GridClosePairsFinder());
-  }
+#ifdef IMP_USE_CGAL
+  set_close_pairs_finder(new BoxSweepClosePairsFinder());
+#else
+  set_close_pairs_finder(new GridClosePairsFinder());
+#endif
 }
 
 void ClosePairsScoreState::set_distance(Float d) {
