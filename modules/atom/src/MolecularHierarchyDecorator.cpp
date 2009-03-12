@@ -41,7 +41,7 @@ void MolecularHierarchyDecorator::show(std::ostream &out,
     if (ad != AtomDecorator()) {
       ad.show(out, prefix);
     }
-  } else if (get_type() == RESIDUE) {
+  } else if (get_type() == RESIDUE || get_type() == NUCLEICACID) {
     ResidueDecorator ad= ResidueDecorator::cast(get_particle());
     if (ad != ResidueDecorator()) {
       ad.show(out, prefix);

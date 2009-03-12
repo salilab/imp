@@ -53,13 +53,13 @@ Particle* residue_particle(Model *m, const String& pdb_line)
 
   int residue_index = internal::atom_residue_number(pdb_line);
   char residue_icode = internal::atom_residue_icode(pdb_line);
-  ResidueType residue_type =
-    ResidueType(internal::atom_residue_name(pdb_line).c_str());
+  String residue_name = internal::atom_residue_name(pdb_line);
+  ResidueType residue_type = ResidueType(residue_name.c_str());
 
   // residue decorator
   ResidueDecorator rd =
     ResidueDecorator::create(p, residue_type,
-                                   residue_index, (int)residue_icode);
+                             residue_index, (int)residue_icode);
 
   // hierarchy decorator
   MolecularHierarchyDecorator hd =
@@ -75,7 +75,7 @@ Particle* residue_particle(Model *m, const String& pdb_line)
     hd.set_type(MolecularHierarchyDecorator::FRAGMENT);
 
   // name decorator
-  core::NameDecorator::create(p, String("residue " + residue_index));
+  core::NameDecorator::create(p, residue_name);
 
   return p;
 }
