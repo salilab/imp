@@ -4,6 +4,7 @@
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
+#include <IMP/base_types.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <cmath>
 

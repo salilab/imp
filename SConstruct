@@ -23,7 +23,7 @@ boost.configure_check(env, '1.33')
 cgal.configure_check(env)
 
 conf=env.Configure(config_h="kernel/include/internal/config.h")
-if env['CGAL_LIBS'] != '':
+if env['CGAL_LIBS'] != ['']:
     conf.Define("IMP_USE_CGAL")
 
 if not env.get('deprecated', "True"):

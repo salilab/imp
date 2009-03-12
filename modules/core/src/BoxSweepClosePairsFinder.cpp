@@ -6,6 +6,7 @@
  *
  */
 
+#include <IMP/base_types.h>
 #include "IMP/core/BoxSweepClosePairsFinder.h"
 #include "IMP/core/XYZDecorator.h"
 
