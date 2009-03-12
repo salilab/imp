@@ -2,6 +2,7 @@ import unittest
 import IMP, IMP.test
 import IMP.core
 import os.path
+import sys
 import random
 
 class TestCPFL(IMP.test.TestCase):
@@ -74,8 +75,10 @@ class TestCPFL(IMP.test.TestCase):
         self.do_test_one(IMP.core.QuadraticClosePairsFinder())
     def test_sweep(self):
         """Testing BoxSweepClosePairsFinder"""
-        print "have cgal"
-        self.do_test_one(IMP.core.BoxSweepClosePairsFinder())
+        if hasattr(IMP.core, 'BoxSweepClosePairsFinder'):
+            self.do_test_one(IMP.core.BoxSweepClosePairsFinder())
+        else:
+            sys.stderr.write("Test skipped: no CGAL support: ")
     def test_grid(self):
         """Testing GridClosePairsFinder"""
         print "grid"
