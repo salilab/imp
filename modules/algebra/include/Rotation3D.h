@@ -223,10 +223,10 @@ inline Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
   double m11 = -sy*sx*sz + cx*cz;
   double m22 = cy*cx;
   double zero =0.0;
-  a = sqrt(std::max(1+m00+m11+m22,zero))/2.0;
-  b = sqrt(std::max(1+m00-m11-m22,zero))/2.0;
-  c = sqrt(std::max(1-m00+m11-m22,zero))/2.0;
-  d = sqrt(std::max(1-m00-m11+m22,zero))/2.0;
+  a = std::sqrt(std::max(1+m00+m11+m22,zero))/2.0;
+  b = std::sqrt(std::max(1+m00-m11-m22,zero))/2.0;
+  c = std::sqrt(std::max(1-m00+m11-m22,zero))/2.0;
+  d = std::sqrt(std::max(1-m00-m11+m22,zero))/2.0;
   if (cy*sx + sy*cx*sz + sx*cz < 0.0) b = -b;
   if (sz*sx - sy*cx*cz - sy < 0.0)    c = -c;
   if (sz*cy + sy*sx*cz + sz*cx < 0.0) d = -d;
@@ -250,8 +250,8 @@ inline Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
 {
   double a,b,c,d;
   double c1,c2,c3,s1,s2,s3;
-  c2=cos(theta/2);c1=cos(phi/2);c3=cos(psi/2);
-  s2=sin(theta/2);s1=sin(phi/2);s3=sin(psi/2);
+  c2=std::cos(theta/2);c1=cos(phi/2);c3=cos(psi/2);
+  s2=std::sin(theta/2);s1=sin(phi/2);s3=sin(psi/2);
   a = c1*c2*c3+s1*s2*s3;
   b = s1*c2*c3-c1*s2*s3;
   c = c1*s2*c3+s1*c2*s3;
@@ -289,7 +289,7 @@ inline Rotation3D rotation_about_axis(Vector3D axis, double angle)
   y=axis_norm[1];
   z=axis_norm[2];
   double a,b,c,d;
-  a = cos(angle/2);
+  a = std::cos(angle/2);
   b = x*s;
   c = y*s;
   d = z*s;
@@ -306,9 +306,9 @@ inline Rotation3D rotation_between_two_vectors(const Vector3D &v1,
     //get the angle between v1 and v2
     double dot = v1_norm*v2_norm;
     dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
-    double angle = acos(dot);
+    double angle = std::acos(dot);
     //check a special case: the input vectors are parallel / antiparallel
-    if (abs(dot) == 1.0) {
+    if (std::abs(dot) == 1.0) {
       IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
       return rotation_about_axis(IMP::algebra::orthogonal_vector(v1),angle);
     }
