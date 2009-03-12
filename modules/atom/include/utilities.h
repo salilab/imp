@@ -27,7 +27,7 @@ IMPATOMEXPORT
 void transform(const MolecularHierarchyDecorator &m,
                const algebra::Transformation3D &t);
 IMPATOMEXPORT
-algebra::Line3D maximum_diameter(const MolecularHierarchyDecorator &m);
+algebra::Line3D diameter(const MolecularHierarchyDecorator &m);
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_UTILITIES_H */
