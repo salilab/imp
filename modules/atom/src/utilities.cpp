@@ -27,13 +27,10 @@ void transform(const MolecularHierarchyDecorator &m,
     get_by_type(m, MolecularHierarchyDecorator::ATOM);
   algebra::Vector3D xyz_new;
   core::XYZDecorator xyz_d;
-  FloatKey x_key("x");
-  FloatKey y_key("y");
-  FloatKey z_key("z");
   for (Particles::iterator it = ps.begin(); it != ps.end(); it++) {
     xyz_d = core::XYZDecorator::cast(*it);
     xyz_new = t.transform(xyz_d.get_coordinates());
-    //xyz_d.set_coordinates(xyz_new);
+    xyz_d.set_coordinates(xyz_new);
   }
 }
 IMPATOMEXPORT
