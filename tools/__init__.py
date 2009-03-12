@@ -77,8 +77,6 @@ def _add_build_flags(env):
     env.Append(CCFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
-    if not env.get('deprecated', "True"):
-        env.Append(CPPDEFINES=['IMP_NO_DEPRECATED'])
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS=["-Wall"])
     if env.get('build', 'release') == 'fast':
@@ -389,7 +387,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         repl = '$SWIG -DPySwigIterator=IMP%s_PySwigIterator ' % mod_prefix
         e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
         if not env.get('deprecated', "True"):
-            repl = '$SWIG -DIMP_NO_DEPRECATED '
+            repl = '$SWIG '
             e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
         e['SWIGCOM'] = [e['SWIGCOM'], _swig_postprocess(mod_prefix).builder]
     e['LDMODULEPREFIX'] = ''
@@ -461,8 +459,6 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
             e['LDMODULEFLAGS'] = []
             e['SHLINK'] = e['LDMODULE'] = ldshared
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
-    if not env.get('deprecated', "True"):
-        e.Append(CPPDEFINES=['IMP_NO_DEPRECATED'])
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e

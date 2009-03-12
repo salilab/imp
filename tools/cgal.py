@@ -13,7 +13,7 @@ def _check(context):
     context.Result(ret)
     if ret:
         context.env['CGAL_LIBS'] = ['CGAL']
-        context.env.Append(CPPDEFINES=['IMP_USE_CGAL'])
+        #context.env.Append(CPPDEFINES=['IMP_USE_CGAL'])
         if context.env['CC'] == 'gcc':
             context.Message('Checking if CGAL needs -frounding-math ...')
             ret34 = context.TryRun("""#include <CGAL/version.h>

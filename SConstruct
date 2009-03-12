@@ -21,6 +21,16 @@ if unknown:
     Exit(1)
 boost.configure_check(env, '1.33')
 cgal.configure_check(env)
+
+conf=env.Configure(config_h="kernel/include/internal/config.h")
+if env['CGAL_LIBS'] != '':
+    conf.Define("IMP_USE_CGAL")
+
+if not env.get('deprecated', "True"):
+    conf.Define('IMP_NO_DEPRECATED')
+conf.Finish()
+env.AlwaysBuild("kernel/include/internal/config.h")
+
 Help("""
 Available command-line options:
 (These can also be specified in regular Python syntax by creating a file
