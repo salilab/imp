@@ -8,7 +8,7 @@ import time
 
 class PDBReadTest(IMP.test.TestCase):
 
-    def test_saxs(self):
+    def test_read(self):
         """Check reading a pdb with one protein"""
         m = IMP.Model()
 
@@ -17,7 +17,7 @@ class PDBReadTest(IMP.test.TestCase):
                                         m, IMP.atom.NonWaterSelector())
         print "number of particles"
         print m.get_number_of_particles()
-        #IMP.core.show_molecular_hierarchy(mp)
+        IMP.atom.show_molecular_hierarchy(mp)
 
         m2 = IMP.Model()
         mp= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
