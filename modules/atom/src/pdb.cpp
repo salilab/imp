@@ -72,7 +72,7 @@ Particle* residue_particle(Model *m, const String& pdb_line)
   else if (rd.get_is_nucleic_acid())
     hd.set_type(MolecularHierarchyDecorator::NUCLEICACID);
   else
-    hd.set_type(MolecularHierarchyDecorator::MOLECULE);
+    hd.set_type(MolecularHierarchyDecorator::FRAGMENT);
 
   // name decorator
   core::NameDecorator::create(p, String("residue " + residue_index));
@@ -106,7 +106,7 @@ Particle* chain_particle(Model *m, char chain_id)
   // hierarchy decorator
   MolecularHierarchyDecorator hd =
     MolecularHierarchyDecorator::create(p,
-               MolecularHierarchyDecorator::FRAGMENT);
+               MolecularHierarchyDecorator::CHAIN);
   return p;
 }
 
