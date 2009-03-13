@@ -10,7 +10,7 @@
 
 #include "VectorD.h"
 #include "Cylinder3D.h"
-#include "SphericalCone3D.h"
+#include "Cone3D.h"
 #include "Sphere3D.h"
 #include "Sphere3DPatch.h"
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -184,7 +184,7 @@ IMPALGEBRAEXPORT Vector3Ds grid_cover(const Cylinder3D &cyl,
                                       int number_of_cycles,
                                       int number_of_points_on_cycle);
 
-//! Generate a set of 3d points that uniformly cover a cylinder
+//! Generate a set of 3d points that uniformly cover a sphere
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph,
                                          int number_of_points) ;
 //! Generate a set of 3d points that uniformly cover a patch of a sphere
@@ -194,7 +194,7 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph,
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3DPatch &sph,
                                          unsigned int number_of_points);
 
-IMPALGEBRAEXPORT Vector3Ds uniform_cover(const SphericalCone3D &cone,
+IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
                                          unsigned int number_of_points);
 
 IMPALGEBRA_END_NAMESPACE
