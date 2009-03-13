@@ -95,32 +95,32 @@ Vector3Ds uniform_cover(const Sphere3D &sph,int number_of_points) {
 
 Vector3Ds uniform_cover(const Sphere3DPatch &sph,
                         unsigned int number_of_points) {
- Vector3Ds points;
- Vector3Ds sph_points;
- while (points.size() < number_of_points) {
-   sph_points = uniform_cover(sph.get_sphere(),number_of_points-points.size());
-   for(Vector3Ds::iterator it = sph_points.begin(); it != sph_points.end();it++)
-   {
-     if (sph.get_contains(*it)) {
-       points.push_back(*it);
-     }
-   }
- }
- return points ;
+  //find a sphere to sample in
+  Vector3D center = sph.get_sphere().get_center()+
+  sph.get_sphere().get_radius()*sph.get_plane().get_normal().get_unit_vector();
+  double radius = distance(sph.point_on_sphere(),center);
+  IMP_check(
+   radius > 0.,"The radius should be positive " << radius,ErrorException);
+  Vector3Ds points;
+  while (points.size() < number_of_points) {
+    Vector3D rp = random_vector_in_sphere(center,radius);
+    if (sph.get_contains(rp)) {
+      points.push_back(rp);
+    }
+  }
+  return points ;
 }
 
-IMPALGEBRAEXPORT Vector3Ds uniform_cover(const SphericalCone3D &cone,
+
+IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
                                          unsigned int number_of_points) {
  Vector3Ds points;
- Vector3Ds sph_points;
+ Vector3D sph_p;
  Sphere3D sph = cone.get_bounding_sphere();
  while (points.size() < number_of_points) {
-   sph_points = uniform_cover(sph,number_of_points-points.size());
-   for(Vector3Ds::iterator it = sph_points.begin(); it != sph_points.end();it++)
-   {
-     if (cone.get_contains(*it)) {
-       points.push_back(*it);
-     }
+   sph_p=random_vector_in_sphere(sph.get_center(),sph.get_radius());
+   if (cone.get_contains(sph_p)) {
+     points.push_back(sph_p);
    }
  }
  return points;
