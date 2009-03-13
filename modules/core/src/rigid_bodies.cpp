@@ -75,9 +75,9 @@ void RigidBodyTraits::add_required_attributes_for_body(Particle *p) const {
   for (unsigned int i=0; i< 4; ++i) {
     p->add_attribute(d_->quaternion_[i], 0);
   }
-  IMP_assert(get_has_required_attributes_for_body(p),
-             "Particles must already be XYZDecorator particles "
-             << *p);
+  if (!XYZDecorator::is_instance_of(p)) {
+    XYZDecorator::create(p);
+  }
 }
 
 void RigidBodyTraits::add_required_attributes_for_member(Particle *p) const {
@@ -136,6 +136,8 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   RigidBodyDecorator d(p, tr);
 
   Particles members= gc->get_refined(p);
+  IMP_check(!members.empty(), "There must be particles to make a rigid body",
+            InvalidStateException);
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *mp= members[i];
 
@@ -433,6 +435,10 @@ namespace {
 void setup_rigid_bodies(Model *m, SingletonContainer *rbs,
                         ParticleRefiner *pr, RigidBodyTraits tr,
                         bool snap) {
+  for (SingletonContainer::ParticleIterator pit= rbs->particles_begin();
+       pit != rbs->particles_end();++pit) {
+    RigidBodyDecorator::create(*pit, pr, tr);
+  }
   SMP sm= get_modifiers(pr, tr, snap);
   SingletonsScoreState *sss= new SingletonsScoreState(rbs, sm.first, sm.second);
   m->add_score_state(sss);

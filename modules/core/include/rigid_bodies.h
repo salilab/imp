@@ -266,7 +266,7 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
 //! Sets up the ScoreState needed for a rigid body
 /**
    \param[in] m the model
-   \param[in] rbs particles for the RigidBodyDecorator objects
+   \param[in] rbs particles to make into rigid bodies
    \param[in] pr a particle refined to get the members of the rigid bodies
    \param[in] tr the rigid body traits to use
    \param[in] snap whether to use snapping (as opposed to direct optimization
