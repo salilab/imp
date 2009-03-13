@@ -17,6 +17,7 @@ A patch of a sphere is defined as all points above the plane and in the sphere
  */
 class IMPALGEBRAEXPORT Sphere3DPatch {
 public:
+  Sphere3DPatch(){}
   //! Constructor
   /**
   /param[in] sph            the sphere to cut a patch from
@@ -25,8 +26,14 @@ public:
   Sphere3DPatch(const Sphere3D &sph, const Plane3D& crossing_plane);
   //! Return true if the point is inside the patch
   bool get_contains(const Vector3D &p) const;
-  const Plane3D &get_plane() const {return crossing_plane_;}
-  const Sphere3D &get_sphere() const {return sph_;}
+  Plane3D  get_plane() const {return crossing_plane_;}
+  Sphere3D get_sphere() const {return Sphere3D(sph_);}
+  void show(std::ostream &out=std::cout) const {
+    sph_.show();
+    crossing_plane_.show();
+  }
+  //! Get a point which is on the sphere and on the patch
+  Vector3D point_on_sphere() const;
 protected:
   Sphere3D sph_;
   Plane3D crossing_plane_;
