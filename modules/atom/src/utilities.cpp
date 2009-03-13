@@ -34,7 +34,7 @@ void transform(const MolecularHierarchyDecorator &m,
   }
 }
 IMPATOMEXPORT
-algebra::Line3D diameter(const MolecularHierarchyDecorator &m) {
+algebra::Segment3D diameter(const MolecularHierarchyDecorator &m) {
   algebra::Vector3D lower_bound,upper_bound;
    //read the points and determine the dimentions of the map
   for (int i=0;i<3;i++) {
@@ -57,6 +57,6 @@ algebra::Line3D diameter(const MolecularHierarchyDecorator &m) {
       }
     }
   }
-  return algebra::Line3D(lower_bound,upper_bound);
+  return algebra::Segment3D(lower_bound,upper_bound);
 }
 IMPATOM_END_NAMESPACE
