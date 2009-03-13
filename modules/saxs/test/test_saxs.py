@@ -15,7 +15,7 @@ class PDBReadTest(IMP.test.TestCase):
 
         #! read PDB
         mp= IMP.atom.read_pdb(
-                      self.get_input_file_name('single_protein.pdb'), m)
+                      self.get_input_file_name('single_protein.pdb'), m, IMP.atom.NonWaterNonHydrogenSelector())
         #IMP.core.show_molecular_hierarchy(mp)
 
         #! read experimental profile
@@ -59,7 +59,7 @@ class PDBReadTest(IMP.test.TestCase):
         t_start = time.clock()
         #! calculate derivatives of chi-square per particle
         chi_derivatives = IMP.algebra.Vector3Ds()
-        saxs_score.calculate_chi_derivative(model_saxs_profile,
+        saxs_score.compute_chi_derivative(model_saxs_profile,
                                             particles,
                                             chi_derivatives)
         for i in range(0, chi_derivatives.__len__(), 100):

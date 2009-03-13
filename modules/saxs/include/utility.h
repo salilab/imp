@@ -13,8 +13,8 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 inline Float sinc(Float value) {
-  if(fabs(value) < 1.0e-16) return 1.0;
-  return sin(value)/value;
+  if(std::abs(value) < 1.0e-16) return 1.0;
+  return std::sin(value)/value;
 }
 
 //! compute max distance
