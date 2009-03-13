@@ -12,7 +12,7 @@
 #include "internal/pdb.h"
 #include "MolecularHierarchyDecorator.h"
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/algebra/Line3D.h>
+#include <IMP/algebra/Segment3D.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 
@@ -27,7 +27,7 @@ IMPATOMEXPORT
 void transform(const MolecularHierarchyDecorator &m,
                const algebra::Transformation3D &t);
 IMPATOMEXPORT
-algebra::Line3D diameter(const MolecularHierarchyDecorator &m);
+algebra::Segment3D diameter(const MolecularHierarchyDecorator &m);
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_UTILITIES_H */
