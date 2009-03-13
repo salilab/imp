@@ -20,6 +20,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 /** \note Since this class is header-only, we must not mark it for
           export with IMPDOMINOEXPORT.
  */
+
 class  DiscreteSampler
 {
 public:
@@ -37,7 +38,7 @@ public:
       \param[in] states      the dataset to be filled with states.
    */
   virtual void populate_states_of_particles(Particles *particles,
-              std::map<std::string, CombState *> *states) const{}
+              Combinations *states) const{}
 
   //! Set the attributes of the particles in the combination to the states
   //! indicated in the combination
