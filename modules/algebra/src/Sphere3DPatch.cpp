@@ -4,7 +4,10 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
+
+#include <IMP/utility.h>
 #include "IMP/algebra/Sphere3DPatch.h"
+
 IMPALGEBRA_BEGIN_NAMESPACE
 Sphere3DPatch::Sphere3DPatch(const Sphere3D &sph,
   const Plane3D& crossing_plane) {
@@ -29,7 +32,7 @@ Vector3D Sphere3DPatch::point_on_sphere() const {
   double b = 2.*(p*v+cen*v);
   double a = v*v;
   double f = (-b+std::sqrt(b*b-4*a*c))/(2*a);
-  IMP_check(!std::isnan(f), "problem calculating a point on a sphere a : "
+  IMP_check(!is_nan(f), "problem calculating a point on a sphere a : "
         << a << " b : "<< b << " c : " << c << " f : " << f,ErrorException);
   return p+f*v;
 }
