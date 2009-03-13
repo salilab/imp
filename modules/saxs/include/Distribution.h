@@ -55,12 +55,15 @@ protected:
     return algebra::round( dist * one_over_bin_size_ );
   }
   Float index2dist(unsigned int index) const { return index * bin_size_; }
-  static const Float pr_resolution_ = 0.5;
+  static const Float pr_resolution_;
 protected:
   std::vector< ValueT > distribution_;
   Float bin_size_, one_over_bin_size_; // resolution of discretization
   Float max_distance_;  // parameter for maximum r value for p(r) function
 };
+
+template<class ValueT>
+const Float Distribution<ValueT>::pr_resolution_ = 0.5;
 
 /**
  Radial Distribution class for calculating SAXS Profile

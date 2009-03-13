@@ -114,7 +114,7 @@ public:
   bool is_uniform_sampling() const;
 
   // parameter for E^2(q), used in faster calculation
-  static const Float modulation_function_parameter_ = 0.23;
+  static const Float modulation_function_parameter_;
 
  private:
   void init();
