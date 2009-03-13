@@ -16,7 +16,8 @@ else:
     env.validate()
 
 env.Append(CPPPATH=env['EM_CPPPATH'], SWIGPATH=env['EM_CPPPATH'])
-env.Append(LIBPATH=env['EM_LIBPATH'], LIBS=[env['EM_LIBS'], 'imp_core'])
+env.Append(LIBPATH=env['EM_LIBPATH'], LIBS=[env['EM_LIBS'], 'imp_core',
+                                            'imp_algebra'])
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
 env.Append(CPPDEFINES='_USE_MATH_DEFINES')
