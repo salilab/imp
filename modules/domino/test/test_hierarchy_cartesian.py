@@ -52,7 +52,7 @@ class DOMINOTests(IMP.test.TestCase):
                 r.add_particles(e)
             self.imp_model.add_restraint(r)
             r.set_was_owned(True)
-            self.d_opt.add_restraint(r,ps,1.0)
+            self.d_opt.add_restraint(r,ps)
 #             beg  = time.time()
             self.opt_score = self.opt_score + r.evaluate(None)
 #             end = time.time()

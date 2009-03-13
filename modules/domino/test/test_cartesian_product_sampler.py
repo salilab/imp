@@ -76,11 +76,7 @@ class DOMINOTests(IMP.test.TestCase):
         jt_filename = self.get_input_file_name("permutation_test_jt.txt")
         d_opt = IMP.domino.DominoOptimizer(jt_filename,self.imp_model)
         for r in self.rsrs:
-            ps=[]
-            for p in r.get_interacting_particles():
-                for p1 in p:
-                    ps.append(p1)
-            d_opt.add_restraint(r,ps,1.0)
+            d_opt.add_restraint(r)
 
         d_opt.set_sampling_space(self.sampler)
         num_sol=5

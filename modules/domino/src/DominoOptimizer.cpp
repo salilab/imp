@@ -18,14 +18,14 @@ DominoOptimizer::DominoOptimizer(std::string jt_filename, Model *m)
 void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
 {
   ds_ = ds;
-  g_->set_sampling_space(*ds_);
-  Restraint *r; Particles ps; Float w;
-  for(std::vector<OptTuple>::iterator it = rs_.begin(); it != rs_.end();it++) {
-    r = boost::get<0>(*it);
-    ps = boost::get<1>(*it);
-    w = boost::get<2>(*it);
-    g_->initialize_potentials(r,&ps,w);
-  }
+ g_->set_sampling_space(*ds_);
+ Restraint *r; Particles ps; Float w;
+ for(std::vector<OptTuple>::iterator it = rs_.begin(); it != rs_.end();it++) {
+   r = boost::get<0>(*it);
+   ps = boost::get<1>(*it);
+   w = boost::get<2>(*it);
+   g_->initialize_potentials(r,&ps,w);
+ }
 }
 
 void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
@@ -36,11 +36,8 @@ void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
 Float DominoOptimizer::optimize(unsigned int max_steps)
 {
   std::stringstream error_message;
-  error_message << "DominoOptimizer::optimize the sampling space was not set";
-  IMP_assert(ds_ != NULL, error_message.str());
-  error_message.clear();
-  //  error_message << "DominoOptimizer::optimize the model was not set";
-  //IMP_assert(opt_mdl != NULL, error_message.str());
+  IMP_assert(ds_ != NULL,
+             "DominoOptimizer::optimize the sampling space was not set");
   //init all the potentials
   g_->clear();
   set_sampling_space(ds_);
@@ -71,7 +68,30 @@ void DominoOptimizer::move_to_opt_comb(unsigned int i)  const {
   const CombState *opt_s = g_->get_opt_combination(i);
   ds_->move2state(opt_s);
 }
-void DominoOptimizer::add_restraint(Restraint *r, Particles ps, Float w) {
-  rs_.push_back(OptTuple(r,ps,w));
+
+void DominoOptimizer::add_restraint_recursive(Restraint *rs, Float weight)
+{
+  core::RestraintSet *rs_set = dynamic_cast<core::RestraintSet*>(rs);
+   if (rs_set) {
+     for (Model::RestraintIterator it = rs_set->restraints_begin();
+          it != rs_set->restraints_end(); it++) {
+       add_restraint_recursive(*it, weight*rs_set->get_weight());
+     }
+   }
+   else {
+     IMP_check(rs->get_interacting_particles().size()==1,
+               "DominoOptimizer::add_restraint_recursive dose not support"
+               <<" lists with more than one set of particles for a single "
+               <<"restraint: "
+               << rs->get_interacting_particles().size(),ErrorException);
+     rs_.push_back(OptTuple(rs,rs->get_interacting_particles()[0],weight));
+   }
+}
+
+void DominoOptimizer::add_restraint(Restraint *r) {
+  add_restraint_recursive(r,1.0);
+}
+void DominoOptimizer::add_restraint(Restraint *r,Particles ps) {
+  rs_.push_back(OptTuple(r,ps,1.0));
 }
 IMPDOMINO_END_NAMESPACE
