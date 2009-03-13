@@ -20,6 +20,7 @@
 namespace IMP {
   namespace algebra {
     typedef VectorD<3> Vector3D;
+    typedef VectorD<4> Vector4D;
   }
 }
 
@@ -43,12 +44,12 @@ namespace multi_array_types {
 %include "IMP/algebra/Transformation3D.h"
 %include "IMP/algebra/geometric_alignment.h"
 %include "IMP/algebra/eigen_analysis.h"
-%include "IMP/algebra/Line3D.h"
+%include "IMP/algebra/Segment3D.h"
 %include "IMP/algebra/Plane3D.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Sphere3D.h"
 %include "IMP/algebra/Sphere3DPatch.h"
-%include "IMP/algebra/SphericalCone3D.h"
+%include "IMP/algebra/Cone3D.h"
 %include "IMP/algebra/vector_generators.h"
 %include "IMP/algebra/io.h"
 %include "Matrix2D.i"
