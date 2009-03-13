@@ -1,0 +1,217 @@
+<PubmedArticle>
+    <MedlineCitation Owner="NLM" Status="MEDLINE">
+        <PMID>18694757</PMID>
+        <DateCreated>
+            <Year>2008</Year>
+            <Month>09</Month>
+            <Day>15</Day>
+        </DateCreated>
+        <DateCompleted>
+            <Year>2008</Year>
+            <Month>10</Month>
+            <Day>01</Day>
+        </DateCompleted>
+        <Article PubModel="Print-Electronic">
+            <Journal>
+                <ISSN IssnType="Electronic">1089-8638</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>382</Volume>
+                    <Issue>4</Issue>
+                    <PubDate>
+                        <Year>2008</Year>
+                        <Month>Oct</Month>
+                        <Day>17</Day>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Journal of molecular biology</Title>
+                <ISOAbbreviation>J. Mol. Biol.</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Integration of small-angle X-ray scattering data into structural modeling of proteins and their assemblies.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>1089-106</MedlinePgn>
+            </Pagination>
+            <Abstract>
+                <AbstractText>A major challenge in structural biology is to determine the configuration of domains and proteins in multidomain proteins and assemblies, respectively. All available data should be considered to maximize the accuracy and precision of these models. Small-angle X-ray scattering (SAXS) efficiently provides low-resolution experimental data about the shapes of proteins and their assemblies. Thus, we integrated SAXS profiles into our software for modeling proteins and their assemblies by satisfaction of spatial restraints. Specifically, we modeled the quaternary structures of multidomain proteins with structurally defined rigid domains as well as quaternary structures of binary complexes of structurally defined rigid proteins. In addition to SAXS profiles and the component structures, we used stereochemical restraints and an atomic distance-dependent statistical potential. The scoring function is optimized by a biased Monte Carlo protocol, including quasi-Newton and simulated annealing schemes. The final prediction corresponds to the best scoring solution in the largest cluster of many independently calculated solutions. To quantify how well the quaternary structures are determined based on their SAXS profiles, we used a benchmark of 12 simulated examples as well as an experimental SAXS profile of the homotetramer D-xylose isomerase. Optimization of the SAXS-dependent scoring function generally results in accurate models if sufficiently precise approximations for the constituent rigid bodies are available; otherwise, the best scoring models can have significant errors. Thus, SAXS profiles can play a useful role in the structural characterization of proteins and assemblies if they are combined with additional data and used judiciously. Our integration of a SAXS profile into modeling by satisfaction of spatial restraints will facilitate further integration of different kinds of data for structure determination of proteins and their assemblies.</AbstractText>
+            </Abstract>
+            <Affiliation>Department of Bioengineering and Therapeutic Sciences, University of California at San Francisco, San Francisco, CA 94158, USA. frido@salilab.org</Affiliation>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Förster</LastName>
+                    <ForeName>Friedrich</ForeName>
+                    <Initials>F</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Webb</LastName>
+                    <ForeName>Benjamin</ForeName>
+                    <Initials>B</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Krukenberg</LastName>
+                    <ForeName>Kristin A</ForeName>
+                    <Initials>KA</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Tsuruta</LastName>
+                    <ForeName>Hiro</ForeName>
+                    <Initials>H</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Agard</LastName>
+                    <ForeName>David A</ForeName>
+                    <Initials>DA</Initials>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Sali</LastName>
+                    <ForeName>Andrej</ForeName>
+                    <Initials>A</Initials>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <GrantList CompleteYN="Y">
+                <Grant>
+                    <GrantID>P41 RR001209</GrantID>
+                    <Acronym>RR</Acronym>
+                    <Agency>NCRR NIH HHS</Agency>
+                    <Country>United States</Country>
+                </Grant>
+                <Grant>
+                    <GrantID>PN2 EY016525</GrantID>
+                    <Acronym>EY</Acronym>
+                    <Agency>NEI NIH HHS</Agency>
+                    <Country>United States</Country>
+                </Grant>
+                <Grant>
+                    <GrantID>R01 GM083960</GrantID>
+                    <Acronym>GM</Acronym>
+                    <Agency>NIGMS NIH HHS</Agency>
+                    <Country>United States</Country>
+                </Grant>
+                <Grant>
+                    <GrantID>R01 GM54762</GrantID>
+                    <Acronym>GM</Acronym>
+                    <Agency>NIGMS NIH HHS</Agency>
+                    <Country>United States</Country>
+                </Grant>
+                <Grant>
+                    <GrantID>U54 RR022220</GrantID>
+                    <Acronym>RR</Acronym>
+                    <Agency>NCRR NIH HHS</Agency>
+                    <Country>United States</Country>
+                </Grant>
+                <Grant>
+                    <Agency>Howard Hughes Medical Institute</Agency>
+                    <Country>United States</Country>
+                </Grant>
+            </GrantList>
+            <PublicationTypeList>
+                <PublicationType>Journal Article</PublicationType>
+                <PublicationType>Research Support, N.I.H., Extramural</PublicationType>
+                <PublicationType>Research Support, Non-U.S. Gov't</PublicationType>
+                <PublicationType>Research Support, U.S. Gov't, Non-P.H.S.</PublicationType>
+            </PublicationTypeList>
+            <ArticleDate DateType="Electronic">
+                <Year>2008</Year>
+                <Month>07</Month>
+                <Day>31</Day>
+            </ArticleDate>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>England</Country>
+            <MedlineTA>J Mol Biol</MedlineTA>
+            <NlmUniqueID>2985088R</NlmUniqueID>
+        </MedlineJournalInfo>
+        <ChemicalList>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Diphtheria Toxin</NameOfSubstance>
+            </Chemical>
+            <Chemical>
+                <RegistryNumber>0</RegistryNumber>
+                <NameOfSubstance>Proteins</NameOfSubstance>
+            </Chemical>
+        </ChemicalList>
+        <CitationSubset>IM</CitationSubset>
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Computational Biology</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Computer Simulation</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Diphtheria Toxin</DescriptorName>
+                <QualifierName MajorTopicYN="N">chemistry</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Models, Molecular</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Protein Conformation</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Proteins</DescriptorName>
+                <QualifierName MajorTopicYN="Y">chemistry</QualifierName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">Scattering, Small Angle</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Software</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="Y">X-Ray Diffraction</DescriptorName>
+            </MeshHeading>
+        </MeshHeadingList>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="received">
+                <Year>2008</Year>
+                <Month>4</Month>
+                <Day>19</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="revised">
+                <Year>2008</Year>
+                <Month>7</Month>
+                <Day>20</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="accepted">
+                <Year>2008</Year>
+                <Month>7</Month>
+                <Day>25</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="aheadofprint">
+                <Year>2008</Year>
+                <Month>7</Month>
+                <Day>31</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2008</Year>
+                <Month>8</Month>
+                <Day>13</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2008</Year>
+                <Month>10</Month>
+                <Day>2</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2008</Year>
+                <Month>8</Month>
+                <Day>13</Day>
+                <Hour>9</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pii">S0022-2836(08)00943-1</ArticleId>
+            <ArticleId IdType="doi">10.1016/j.jmb.2008.07.074</ArticleId>
+            <ArticleId IdType="pubmed">18694757</ArticleId>
+        </ArticleIdList>
+    </PubmedData>
+</PubmedArticle>
