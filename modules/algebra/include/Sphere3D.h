@@ -20,11 +20,11 @@ public:
   /** */
   Sphere3D(const Vector3D& center,double radius);
   /** */
-  Float get_volume() const;
+  double get_volume() const;
   /** */
-  Float get_surface_area() const;
+  double get_surface_area() const;
   /** */
-  Float get_radius() const {return radius_;}
+  double get_radius() const {return radius_;}
   /**  */
   const Vector3D &get_center() const {return center_;}
   /**  */
