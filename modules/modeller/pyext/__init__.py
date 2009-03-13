@@ -388,7 +388,7 @@ def copy_residue(r, model):
     elif rp.get_is_nucleic_acid():
         hp.set_type(IMP.atom.MolecularHierarchyDecorator.NUCLEICACID)
     else:
-        hp.set_type(IMP.atom.MolecularHierrchyDecorator.MOLECULE)
+        hp.set_type(IMP.atom.MolecularHierarchyDecorator.MOLECULE)
     IMP.core.NameDecorator.create(p).set_name(str("residue "+r.num));
     return p
 
