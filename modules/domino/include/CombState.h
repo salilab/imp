@@ -18,37 +18,37 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
+typedef std::map<Particle *, unsigned int> CombData;
 class IMPDOMINOEXPORT CombState
 {
 public:
   //! Constructor
   CombState() {
-  total_score = 0.0;
-  data = std::map<Particle *, unsigned int>();
+  total_score_ = 0.0;
+  data_ = CombData();
 
   }
   //! Copy constructor
   CombState(const CombState &other){
-  total_score = 0.0;
-  data = std::map<Particle *, unsigned int>();
+  total_score_ = 0.0;
+  data_ = CombData();
 
-  for(std::map<Particle*,unsigned int>::const_iterator it = other.data.begin();
-      it != other.data.end(); it++) {
-    data[it->first]=it->second;
+  for(CombData::const_iterator it = other.data_.begin();
+      it != other.data_.end(); it++) {
+    data_[it->first]=it->second;
   }
-  total_score = other.total_score;
-
+  total_score_ = other.total_score_;
   }
   void add_data_item(Particle *p, unsigned int val) {
   std::stringstream error_message;
   error_message << "CombState::add_data_item the particle is already part"
                 << "CombState : " << p;
-  IMP_assert(data.find(p) == data.end(), error_message.str());
-  data[p] = val;
+  IMP_assert(data_.find(p) == data_.end(), error_message.str());
+  data_[p] = val;
 
   }
   bool has_particle(Particle *p) {
-    return data.find(p) != data.end();
+    return data_.find(p) != data_.end();
   }
 
   unsigned int get_state_num(Particle *p);
@@ -56,14 +56,13 @@ public:
   const std::string key() const {
   std::stringstream s;
   // we assume that the particles in the JNode are stored by their index.
-  for (std::map<Particle *, unsigned int>::const_iterator it = data.begin();
-       it != data.end(); it++) {
+  for (CombData::const_iterator it = data_.begin();
+       it != data_.end(); it++) {
     Particle *p = it->first;
     unsigned int p_index = p->get_index();
-    std::stringstream error_message;
-    error_message << "CombState::key particle with index " << p_index
-                  << " was not found ";
-    IMP_assert(data.find(p) != data.end(), error_message.str());
+    IMP_assert(data_.find(p) != data_.end(),
+          "CombState::key particle with index " << p_index
+           << " was not found ");
     s << p_index << ":" << it->second << "_";
   }
   return s.str();
@@ -79,24 +78,23 @@ public:
   //  void add_term(Restraint *r);
 
   void update_total_score(float old_val, float new_val) {
-    total_score += new_val - old_val;
+    total_score_ += new_val - old_val;
   }
 
-  float get_total_score() const {
-    return total_score;
+  Float get_total_score() const {
+    return total_score_;
   }
 
   //! Checks if the other state is part of this state
   /** \param[in] other the other state
    */
   bool is_part(const CombState &other) const {
-  for (std::map<Particle *,
-                unsigned int>::const_iterator it = other.data.begin();
-       it != other.data.end(); it++) {
-    if (data.find(it->first) == data.end()) {
+  for (CombData::const_iterator it = other.data_.begin();
+       it != other.data_.end(); it++) {
+    if (data_.find(it->first) == data_.end()) {
       return false;
     }
-    if ((data.find(it->first))->second != it->second) {
+    if ((data_.find(it->first))->second != it->second) {
       return false;
     }
   }
@@ -111,48 +109,34 @@ public:
   /** \param[in] other the other combination
    */
   void combine(CombState *other) {
-  for (std::map<Particle *,
-                unsigned int>::const_iterator it = other->data.begin();
-       it != other->data.end(); it++) {
+  for (CombData::const_iterator it = other->data_.begin();
+       it != other->data_.end(); it++) {
     Particle *p = it->first;
-    if (data.find(p) == data.end()) {
+    if (data_.find(p) == data_.end()) {
       //add particle
-      data[p] = it->second;
+      data_[p] = it->second;
     } else {
       std::stringstream error_message;
       error_message << " CombState::combine the state of particle with name :"
                     << p->get_value(IMP::StringKey("name")) << " is wrong"
                     << " - expect ( " << it->second << " instead of "
-                    << data[p] << " )";
-      IMP_assert(data[p] == it->second, error_message.str());
+                    << data_[p] << " )";
+      IMP_assert(data_[p] == it->second, error_message.str());
     }
   }
 
   }
-  const std::map<Particle *, unsigned int> * get_data() const {
-    return &data;
+  const CombData * get_data() const {
+    return &data_;
   }
-  /*
-  void move2state(DiscreteSampler *ds) const {
-    Particle *p;
-    FloatKey att;
-    Float val;
-    for (std::map<Particle *, unsigned int>::const_iterator it =  data.begin();
-      it != data.end();it++){
-      p = it->first;
-      for (unsigned int i = 0; i < ds->get_number_of_attributes(*p); i++) {
-        att = ds->get_attribute(*p, i);
-        val = ds->get_state_val(*p,it->second,att );
-        p->set_value(att,val);
-      }
-    }
-  }
-  */
 protected:
-  std::map<Particle *, unsigned int> data; //data[p] = for particle p
+  CombData data_; //data[p] = for particle p
   // the state is state number  data[p] from the assigned states.
-  float total_score;
+  Float total_score_;
 };
+
+
+typedef std::map<std::string, CombState *> Combinations;
 
 IMPDOMINO_END_NAMESPACE
 
