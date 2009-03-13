@@ -5,19 +5,18 @@
  *
  */
 #include <IMP/saxs/SAXSProfile.h>
-#include <IMP/core/XYZDecorator.h>
-#include <IMP/algebra/utility.h>
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
+#include <IMP/core/XYZDecorator.h>
+#include <IMP/algebra/utility.h>
+#include <IMP/constants.h>
+
 #include <boost/algorithm/string.hpp>
 
 #include <fstream>
 #include <string>
-#include <iomanip>
 
 IMPSAXS_BEGIN_NAMESPACE
-
-Float SAXSProfile::modulation_function_parameter_ = 0.23;
 
 std::ostream & operator<<(std::ostream & s,
                           const SAXSProfile::IntensityEntry & e)
@@ -66,7 +65,7 @@ void SAXSProfile::read_SAXS_file(const String& file_name)
     // skip comments
     if (line[0] == '#' || line[0] == '\0' || !isdigit(line[0])) continue;
     std::vector < std::string > split_results;
-    boost::split(split_results, line, boost::is_any_of(" "),
+    boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
     if (split_results.size() != 2 && split_results.size() != 3)
       continue;                 // 3 values with error, 2 without
@@ -171,8 +170,7 @@ void SAXSProfile::calculate_profile_real(
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
   init();
-  Float pr_resolution = 0.5;
-  RadialDistributionFunction r_dist(pr_resolution, ff_table_);
+  RadialDistributionFunction r_dist(ff_table_);
   r_dist.calculate_distribution(particles);
   radial_distribution_2_profile(r_dist);
 }
@@ -196,8 +194,7 @@ void SAXSProfile::calculate_profile_real(
     }
   }
 
-  Float pr_resolution = 0.5;
-  RadialDistributionFunction r_dist(pr_resolution, ff_table_);
+  RadialDistributionFunction r_dist(ff_table_);
   // distribution within unit
   r_dist.calculate_distribution(units[0]);
 
@@ -208,7 +205,7 @@ void SAXSProfile::calculate_profile_real(
   r_dist.scale(n);
 
   // distribution between units separated by distance n/2
-  RadialDistributionFunction r_dist2(pr_resolution, ff_table_);
+  RadialDistributionFunction r_dist2(ff_table_);
   r_dist2.calculate_distribution(units[0], units[number_of_distances]);
   // if n is even, the scale is by n/2
   // if n is odd the scale is by n
@@ -227,14 +224,13 @@ void SAXSProfile::calculate_profile_real(
           << particles1.size() << " + " << particles2.size()
           << " particles" << std::endl);
   init();
-  Float pr_resolution = 0.5;
-  RadialDistributionFunction r_dist(pr_resolution, ff_table_);
+  RadialDistributionFunction r_dist(ff_table_);
   r_dist.calculate_distribution(particles1, particles2);
   radial_distribution_2_profile(r_dist);
 }
 
 void SAXSProfile::
-radial_distribution_2_profile(const RadialDistributionFunction & r_dist)
+radial_distribution_2_profile(const RadialDistributionFunction& r_dist)
 {
   // iterate over intensity profile (assumes initialized profile: q, I(q)=0)
   for (unsigned int k = 0; k < profile_.size(); k++) {
@@ -247,7 +243,7 @@ radial_distribution_2_profile(const RadialDistributionFunction & r_dist)
       profile_[k].intensity_ += r_dist.distribution_[r] * x;
     }
     profile_[k].intensity_ *= std::exp(- modulation_function_parameter_
-                                       * profile_[k].q_ * profile_[k].q_);
+                                       * square(profile_[k].q_));
   }
 }
 
@@ -261,6 +257,22 @@ void SAXSProfile::add(const SAXSProfile& other_profile) {
 void SAXSProfile::scale(Float c) {
   for (unsigned int k = 0; k < profile_.size(); k++) {
     profile_[k].intensity_ *= c;
+  }
+}
+
+void SAXSProfile::profile_2_distribution(RadialDistributionFunction& rd,
+                                         Float max_distance) const {
+  float scale = 1 / (2*PI*PI);
+  unsigned int distribution_size = rd.dist2index(max_distance) + 1;
+  // iterate over r
+  for (unsigned int i = 0; i < distribution_size; i++) {
+    Float r = rd.index2dist(i);
+    Float sum = 0.0;
+    // sum over q: SUM (I(q)*q*sin(qr))
+    for (unsigned int k = 0; k < profile_.size(); k++) {
+      sum += profile_[i].intensity_ * profile_[i].q_ * sin(profile_[i].q_ * r);
+    }
+    rd.add_to_distribution(r, r*scale*sum);
   }
 }
 

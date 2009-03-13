@@ -14,7 +14,7 @@
 IMPSAXS_BEGIN_NAMESPACE
 
 RadialDistributionFunction::
-RadialDistributionFunction(Float bin_size, FormFactorTable * ff_table)
+RadialDistributionFunction(FormFactorTable * ff_table, Float bin_size)
   : Distribution<Float>(bin_size), ff_table_(ff_table)
 {
 }
@@ -97,9 +97,9 @@ show(std::ostream& out, std::string prefix) const
 
 
 DeltaDistributionFunction::
-DeltaDistributionFunction(Float bin_size,
-                          FormFactorTable* ff_table,
-                          const std::vector<Particle*>& particles)
+DeltaDistributionFunction(FormFactorTable* ff_table,
+                          const std::vector<Particle*>& particles,
+                          Float bin_size)
   : Distribution<algebra::Vector3D>(bin_size), ff_table_(ff_table)
 {
   // copy coordinates and form factors in advance, to avoid n^2 copy operations

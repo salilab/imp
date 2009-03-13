@@ -31,7 +31,7 @@ template<class ValueT>
 class Distribution {
 public:
   //! Constructor
-  Distribution(Float bin_size) {
+  Distribution(Float bin_size = pr_resolution_) {
     bin_size_ = bin_size;
     one_over_bin_size_ = 1.0 / bin_size_;     // for faster calculation
     max_distance_ = 50.0;      // start with ~50A (by default)
@@ -48,14 +48,14 @@ public:
   Float get_max_distance() { return max_distance_; }
 
   //! returns bin size
-  Float get_bin_size_() { return bin_size_; }
+  Float get_bin_size() { return bin_size_; }
 
 protected:
   unsigned int dist2index(Float dist) const {
     return algebra::round( dist * one_over_bin_size_ );
   }
   Float index2dist(unsigned int index) const { return index * bin_size_; }
-
+  static const Float pr_resolution_ = 0.5;
 protected:
   std::vector< ValueT > distribution_;
   Float bin_size_, one_over_bin_size_; // resolution of discretization
@@ -70,7 +70,8 @@ class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<Float> {
 
 public:
   //! Constructor
-  RadialDistributionFunction(Float bin_size, FormFactorTable* ff_table);
+  RadialDistributionFunction(FormFactorTable* ff_table,
+                             Float bin_size = pr_resolution_);
 
   friend class SAXSProfile;
 
@@ -119,8 +120,9 @@ class IMPSAXSEXPORT
 DeltaDistributionFunction : public Distribution<algebra::Vector3D> {
 public:
   //! Constructor
-  DeltaDistributionFunction(Float bin_size, FormFactorTable* ff_table,
-                            const std::vector<Particle*>& particles);
+  DeltaDistributionFunction(FormFactorTable* ff_table,
+                            const std::vector<Particle*>& particles,
+                            Float bin_size = pr_resolution_);
 
   friend class SAXSScore;
 

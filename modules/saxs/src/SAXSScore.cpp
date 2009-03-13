@@ -30,7 +30,7 @@ void SAXSScore::resample(const SAXSProfile& model_saxs_profile,
   for (unsigned int k=0; k<exp_saxs_profile_->size(); k++) {
     Float q = exp_saxs_profile_->get_q(k);
     std::map<float, unsigned int>::iterator it = q_mapping.lower_bound(q);
-    if(it == q_mapping.end()) continue;
+    if(it == q_mapping.end()) break;
     unsigned int i = it->second;
     if(i == 0) {
       resampled_profile.add_entry(q, model_saxs_profile.get_intensity(i));
@@ -49,63 +49,91 @@ void SAXSScore::resample(const SAXSProfile& model_saxs_profile,
   }
 }
 
-Float SAXSScore::compute_fit_coefficient(
-                             const SAXSProfile& model_saxs_profile) const
-{
-  SAXSProfile resampled_profile(exp_saxs_profile_->get_min_q(),
-                                exp_saxs_profile_->get_max_q(),
-                                exp_saxs_profile_->get_delta_q(),
-                                ff_table_);
-  resample(model_saxs_profile, resampled_profile);
-  return compute_fit_coefficient_internal(resampled_profile);
-}
-
-Float SAXSScore::compute_fit_coefficient_internal(
-                             const SAXSProfile& model_saxs_profile) const
+Float SAXSScore::compute_scale_factor(const SAXSProfile& model_saxs_profile,
+                                      const Float offset) const
 {
   Float sum1=0.0, sum2=0.0;
   unsigned int profile_size = std::min(model_saxs_profile.size(),
                                        exp_saxs_profile_->size());
   for (unsigned int k=0; k<profile_size; k++) {
-    //! in the theoretical profile the error equals to 1 (?)
     Float square_error = square(exp_saxs_profile_->get_error(k));
     Float weight_tilda = model_saxs_profile.get_weight(k) / square_error;
 
     sum1 += weight_tilda * model_saxs_profile.get_intensity(k)
-                         * exp_saxs_profile_->get_intensity(k);
+                         * (exp_saxs_profile_->get_intensity(k) + offset);
     sum2 += weight_tilda * square(model_saxs_profile.get_intensity(k));
   }
+  // std::cerr << "c = " << sum1 / sum2 << std::endl;
   return sum1 / sum2;
+}
+
+Float SAXSScore::compute_offset(const SAXSProfile& model_saxs_profile) const {
+  Float sum_iexp_imod=0.0, sum_imod=0.0, sum_iexp=0.0, sum_imod2=0.0;
+  Float sum_weight=0.0;
+  unsigned int profile_size = std::min(model_saxs_profile.size(),
+                                       exp_saxs_profile_->size());
+  for (unsigned int k=0; k<profile_size; k++) {
+    Float square_error = square(exp_saxs_profile_->get_error(k));
+    Float weight_tilda = model_saxs_profile.get_weight(k) / square_error;
+
+    sum_iexp_imod += weight_tilda * model_saxs_profile.get_intensity(k)
+                                  * exp_saxs_profile_->get_intensity(k);
+    sum_imod += weight_tilda * model_saxs_profile.get_intensity(k);
+    sum_iexp += weight_tilda * exp_saxs_profile_->get_intensity(k);
+    sum_imod2 += weight_tilda * square(model_saxs_profile.get_intensity(k));
+    sum_weight += weight_tilda;
+  }
+  Float offset = sum_iexp_imod / sum_imod2 * sum_imod - sum_iexp;
+  offset /= (sum_weight - sum_imod*sum_imod/sum_imod2);
+  return offset;
 }
 
 Float SAXSScore::compute_chi_square_score(
                              const SAXSProfile& model_saxs_profile,
-                             const std::string fit_file_name) const
+                             const std::string fit_file_name,
+                             bool use_offset) const
 {
   SAXSProfile resampled_profile(exp_saxs_profile_->get_min_q(),
                                 exp_saxs_profile_->get_max_q(),
                                 exp_saxs_profile_->get_delta_q(),
                                 ff_table_);
   resample(model_saxs_profile, resampled_profile);
-  return compute_chi_square_score_internal(resampled_profile, fit_file_name);
+  return compute_chi_square_score_internal(
+                            resampled_profile, fit_file_name, use_offset);
+}
+
+Float SAXSScore::compute_chi_square_score_internal(
+                             const SAXSProfile& model_saxs_profile,
+                             const std::string& fit_file_name,
+                             bool use_offset) const
+{
+  Float offset = 0.0;
+  if(use_offset) offset = compute_offset(model_saxs_profile);
+  std::cerr << "offset = " << offset << std::endl;
+  Float c = compute_scale_factor(model_saxs_profile, offset);
+  Float chi_square = compute_chi_square_score_internal(
+                                          model_saxs_profile, c, offset);
+
+  if(fit_file_name.length() > 0) {
+    write_SAXS_fit_file(fit_file_name, model_saxs_profile,
+                        chi_square, c, offset);
+  }
+  return chi_square;
 }
 
 /*
-calculate SAXS Chi square of experimental data and model
+compute SAXS Chi square of experimental data and model
 weight_tilda function w_tilda(q) = w(q) / sigma_exp^2
 */
 // TODO: define a weight function (w(q) = 1, q^2, or hybrid)
 Float SAXSScore::compute_chi_square_score_internal(
                              const SAXSProfile& model_saxs_profile,
-                             const std::string& fit_file_name) const
+                             const Float c, const Float offset) const
 {
-  Float chi_square = 0.0, offset = 0;
-
-  Float c = compute_fit_coefficient_internal(model_saxs_profile);
+  Float chi_square = 0.0;
   unsigned int profile_size = std::min(model_saxs_profile.size(),
                                        exp_saxs_profile_->size());
-
-  // compute Chi square
+  // compute chi square
   for (unsigned int k=0; k<profile_size; k++) {
     // in the theoretical profile the error equals to 1
     Float square_error = square(exp_saxs_profile_->get_error(k));
@@ -118,17 +146,12 @@ Float SAXSScore::compute_chi_square_score_internal(
       chi_square += weight_tilda * square(delta);
   }
   chi_square /= profile_size;
-
-  if(fit_file_name.length() > 0) {
-    write_SAXS_fit_file(fit_file_name, model_saxs_profile,
-                        chi_square, c, offset);
-  }
   return chi_square;
 }
 
-void SAXSScore::calculate_sinc_cos(Float pr_resolution, Float max_distance,
-                                   const SAXSProfile& model_saxs_profile,
-                                   std::vector<Floats>& output_values) const
+void SAXSScore::compute_sinc_cos(Float pr_resolution, Float max_distance,
+                                 const SAXSProfile& model_saxs_profile,
+                                 std::vector<Floats>& output_values) const
 {
   unsigned int nr=algebra::round(max_distance/pr_resolution) + 1; //can be input
   output_values.clear();
@@ -151,15 +174,14 @@ void SAXSScore::calculate_sinc_cos(Float pr_resolution, Float max_distance,
   }
 }
 
-void SAXSScore::calculate_profile_difference(
+void SAXSScore::compute_profile_difference(
                        const SAXSProfile& model_saxs_profile,
-                       const Float fit_coefficient,
+                       const Float c, const Float offset,
                        Floats& profile_diff) const
 {
-  // calculate difference of intensities and squares of weight
-  // delta_i = weight_tilda * (I_exp - c*I_mod)
+  // compute difference of intensities and squares of weight
+  // profile_diff[q] = e_q * weight_tilda * (I_exp[q] - c*I_mod[q] + offset)
   // e_q = exp( -0.23 * q*q )
-  // profile_diff = delta_i * e_q
   unsigned int profile_size = std::min(model_saxs_profile.size(),
                                        exp_saxs_profile_->size());
   profile_diff.clear();
@@ -167,31 +189,31 @@ void SAXSScore::calculate_profile_difference(
 
   for (unsigned int iq=0; iq<profile_size; iq++) {
     Float delta = exp_saxs_profile_->get_intensity(iq)
-                  - fit_coefficient * model_saxs_profile.get_intensity(iq);
+                  - c * model_saxs_profile.get_intensity(iq) + offset;
     Float square_error = square(exp_saxs_profile_->get_error(iq));
     Float weight_tilda = model_saxs_profile.get_weight(iq) / square_error;
 
     // Exclude the uncertainty originated from limitation of floating number
     if (fabs(delta/exp_saxs_profile_->get_intensity(iq)) < IMP_SAXS_DELTA_LIMIT)
       delta = 0.0;
-    Float delta_i = weight_tilda * delta;
     Float E_q = std::exp( - exp_saxs_profile_-> modulation_function_parameter_
                        * square( exp_saxs_profile_->get_q(iq) ) );
-    profile_diff[iq] = delta_i * E_q;
+    profile_diff[iq] = E_q * weight_tilda * delta;
   }
 }
 
-void SAXSScore::calculate_chi_derivative(const SAXSProfile& model_saxs_profile,
-                      const std::vector<Particle*>& particles,
-                      std::vector<IMP::algebra::Vector3D>& derivatives) const {
+Float SAXSScore::compute_chi_derivative(const SAXSProfile& model_saxs_profile,
+                                  const std::vector<Particle*>& particles,
+                                  std::vector<algebra::Vector3D>& derivatives,
+                                  bool use_offset) const {
 
   SAXSProfile resampled_profile(exp_saxs_profile_->get_min_q(),
                                 exp_saxs_profile_->get_max_q(),
                                 exp_saxs_profile_->get_delta_q(),
                                 ff_table_);
   resample(model_saxs_profile, resampled_profile);
-  return calculate_chi_real_derivative(resampled_profile, particles,
-                                       derivatives);
+  return compute_chi_real_derivative(resampled_profile, particles,
+                                     derivatives, use_offset);
 }
 
 /*
@@ -201,30 +223,34 @@ For calculation in real space the quantity Delta(r) is needed to get
 derivatives of an atom
 Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
 */
-void SAXSScore::calculate_chi_real_derivative(
-                      const SAXSProfile& model_saxs_profile,
-                      const std::vector<Particle*>& particles,
-                      std::vector<IMP::algebra::Vector3D>& derivatives) const
+Float SAXSScore::compute_chi_real_derivative(
+                           const SAXSProfile& model_saxs_profile,
+                           const std::vector<Particle*>& particles,
+                           std::vector<algebra::Vector3D>& derivatives,
+                           bool use_offset) const
 {
   algebra::Vector3D delta_q, chi_derivative;
 
-  // Pre-calculate common parameters for faster calculation
+  // Pre-compute common parameters for faster calculation
   Floats profile_diff;
-  Float c = compute_fit_coefficient_internal(model_saxs_profile);
-  calculate_profile_difference(model_saxs_profile, c, profile_diff);
+  Float offset = 0.0;
+  if(use_offset) offset = compute_offset(model_saxs_profile);
+  Float c = compute_scale_factor(model_saxs_profile);
+  Float chi_square =
+    compute_chi_square_score_internal(model_saxs_profile, c, offset);
+  compute_profile_difference(model_saxs_profile, c, offset, profile_diff);
 
-  Float pr_resolution = 0.5;
-  DeltaDistributionFunction delta_dist(pr_resolution, ff_table_, particles);
+  DeltaDistributionFunction delta_dist(ff_table_, particles);
 
   std::vector<Floats> sinc_cos_values; // (sinc(qr) - cos(qr)) / (r*r)
-  calculate_sinc_cos(pr_resolution, delta_dist.get_max_distance(),
-                     model_saxs_profile, sinc_cos_values);
+  compute_sinc_cos(delta_dist.get_bin_size(), delta_dist.get_max_distance(),
+                   model_saxs_profile, sinc_cos_values);
   unsigned int profile_size = std::min(model_saxs_profile.size(),
                                        exp_saxs_profile_->size());
   derivatives.clear();
   derivatives.resize(particles.size());
   for (unsigned int iatom=0; iatom<particles.size(); iatom++) {
-    //!----- Calculate a delta distribution per an atom
+    // Compute a delta distribution per an atom
     delta_dist.calculate_derivative_distribution(particles[iatom]);
     chi_derivative = algebra::Vector3D(0.0, 0.0, 0.0);
 
@@ -232,16 +258,17 @@ void SAXSScore::calculate_chi_real_derivative(
       delta_q = algebra::Vector3D(0.0, 0.0, 0.0);
 
       for (unsigned int ir=0; ir<delta_dist.size(); ir++) {
-        //!----- delta_dist.distribution = sum_i [f_k(0) * f_i(0) * (x_k - x_i)]
-        //!----- delta_val_array_ = (sinc(qr) - cos_(qr)) / (r*r)
+        // delta_dist.distribution = sum_i [f_k(0) * f_i(0) * (x_k - x_i)]
+        // sinc_cos_values = (sinc(qr) - cos_(qr)) / (r*r)
         delta_q += delta_dist.distribution_[ir] * sinc_cos_values[iq][ir];
       }
-      //!----- delta_i = weight_tilda * (I_exp - c*I_model)
-      //!----- e_q = exp( -0.23 * q*q )
+      // profile_diff = weight_tilda * (I_exp - c*I_model)
+      // e_q = exp( -0.23 * q*q )
       chi_derivative += delta_q * profile_diff[iq];
     }
     derivatives[iatom] = 4 * c * chi_derivative;
   }
+  return chi_square;
 }
 
 void SAXSScore::write_SAXS_fit_file(const std::string& file_name,
@@ -280,12 +307,12 @@ void SAXSScore::write_SAXS_fit_file(const std::string& file_name,
     out_file.setf(std::ios::left);
     out_file.width(16);
     out_file.fill('0');
-    out_file << exp_saxs_profile_->get_intensity(i) + offset << " ";
+    out_file << exp_saxs_profile_->get_intensity(i)  << " ";
 
     out_file.setf(std::ios::left);
     out_file.width(16);
     out_file.fill('0');
-    out_file << model_saxs_profile.get_intensity(i)*c << std::endl;
+    out_file << model_saxs_profile.get_intensity(i)*c - offset << std::endl;
   }
   out_file.close();
 }

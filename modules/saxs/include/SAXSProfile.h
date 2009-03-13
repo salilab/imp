@@ -72,6 +72,10 @@ public:
     calculate_profile_real(particles1, particles2);
   }
 
+  //! convert to real space distribution
+  void profile_2_distribution(RadialDistributionFunction& rd,
+                              Float max_distance) const;
+
   //! add another profile - useful for rigid bodies
   void add(const SAXSProfile& other_profile);
 
@@ -110,7 +114,7 @@ public:
   bool is_uniform_sampling() const;
 
   // parameter for E^2(q), used in faster calculation
-  static Float modulation_function_parameter_;
+  static const Float modulation_function_parameter_ = 0.23;
 
  private:
   void init();
