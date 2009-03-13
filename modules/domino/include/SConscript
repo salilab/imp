@@ -9,6 +9,7 @@ files = [
          'JNode.h',
          'RestraintGraph.h',
          'DiscreteSet.h',
+         'TransformationDiscreteSet.h',
          'PermutationSampler.h',
          'MappedDiscreteSet.h',
          'CartesianProductSampler.h',
@@ -19,6 +20,7 @@ files = [
          'SimpleDiscreteRestraint.h',
          'SimpleDiscreteSpace.h',
          'SimpleDiscreteSampler.h',
+         'SymmetrySampler.h'
         ]
 
 # Install the include files:

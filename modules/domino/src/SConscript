@@ -16,6 +16,8 @@ files = [
          'TransformationCartesianProductSampler.cpp',
          'TransformationPermutationSampler.cpp',
          'SimpleDiscreteRestraint.cpp',
+         'TransformationDiscreteSet.cpp',
+         'SymmetrySampler.cpp'
         ]
 
 # Build and install the shared library:
