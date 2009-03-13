@@ -86,17 +86,27 @@ IMPATOMEXPORT extern const ResidueType ACE;
 /** end group */
 IMPATOMEXPORT extern const ResidueType NH2;
 /* Code currently assumes that all indices between ADE.get_index()
-   and THY.get_index() being nucleic acid */
-/** adenine */
+   and DTHY.get_index() being nucleic acid */
+/** adenine (RNA) */
 IMPATOMEXPORT extern const ResidueType ADE;
-/** uracil */
+/** uracil (RNA) */
 IMPATOMEXPORT extern const ResidueType URA;
-/** cytosine */
+/** cytosine (RNA) */
 IMPATOMEXPORT extern const ResidueType CYT;
-/** guanine */
+/** guanine (RNA) */
 IMPATOMEXPORT extern const ResidueType GUA;
-/** thymine */
+/** thymine (RNA) */
 IMPATOMEXPORT extern const ResidueType THY;
+/** adenine (DNA) */
+IMPATOMEXPORT extern const ResidueType DADE;
+/** uracil (DNA) */
+IMPATOMEXPORT extern const ResidueType DURA;
+/** cytosine (DNA) */
+IMPATOMEXPORT extern const ResidueType DCYT;
+/** guanine (DNA) */
+IMPATOMEXPORT extern const ResidueType DGUA;
+/** thymine (DNA) */
+IMPATOMEXPORT extern const ResidueType DTHY;
 #endif
 /*@}*/
 
@@ -153,10 +163,10 @@ public:
             get_type().get_index() <= TRP.get_index());
   }
 
-  /** Return true if the residue is a nucleic acid */
+  /** Return true if the residue is a nucleic acid (RNA or DNA) */
   bool get_is_nucleic_acid() const {
     return (get_type().get_index() >= ADE.get_index() &&
-            get_type().get_index() <= THY.get_index());
+            get_type().get_index() <= DTHY.get_index());
   }
   //! The residues index in the chain
   IMP_DECORATOR_GET_SET(index, get_index_key(),

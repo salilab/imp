@@ -45,6 +45,11 @@ TYPE_DEF(URA);
 TYPE_DEF(CYT);
 TYPE_DEF(GUA);
 TYPE_DEF(THY);
+TYPE_DEF(DADE);
+TYPE_DEF(DURA);
+TYPE_DEF(DCYT);
+TYPE_DEF(DGUA);
+TYPE_DEF(DTHY);
 
 ResidueType residue_type_from_pdb_string(std::string nm) {
   if (!ResidueType::get_key_exists(nm)) {
