@@ -33,6 +33,8 @@ public:
     out << "DOMINO optimizer" << std::endl;
   }
   void set_sampling_space(DiscreteSampler *ds);
+  //TODO : set a discrete sampling space for one node
+  //void set_sampling_space(int node_ind, DiscreteSampler *ds);
 
   void show_restraint_graph(std::ostream& out = std::cout) const {
     g_->show(out);
@@ -46,12 +48,28 @@ public:
   //! Add a restraint that should be used in the optimization procedure.
   /**
   /param[in] r   the restraint
-  /param[in] ps  the particles participating in the restraint, at the
-                 same hierarhcy level as encoded in the Restraint Graph.
-  /param[in] w   the weight of the restraint
+  /note The input restraint can also be a RestraintSet, a recursive addition
+        of restraints is performed in these cases.
    */
-  void add_restraint(Restraint *r, Particles ps, Float w);
+  void add_restraint(Restraint *r);
+  //! Add a restraint that should be used in the optimization procedure.
+  /**
+  To support hierarchy, some time the particles of the restraint are a
+  refined set of the particles represented in the restraint graph.
+  In this function the user set the particles of the restraint (as interpert
+  by the restraint graph). It is up to the use to make sure that pl represent a
+  coarser set of particles than the ones actually used in the restraint.
+   */
+  void add_restraint(Restraint *r,Particles ps);
 protected:
+  //! Recursivly add restraints
+  /*
+    \param[in] rs a restraint which can also be a restraint set
+    \param[in] weight is a recursive multiplication of all weights
+               from parent RestraintSet
+  */
+  void add_restraint_recursive(Restraint *rs, Float weight);
+
   void clear(); //TODO implement!
   //! Creates a new node and add it to the graphs that take part in the
   //! optimization

@@ -67,11 +67,7 @@ class my_optimizer:
 
     def optimize(self):
         for r in self.all_restraints:
-            ps=[]
-            for p in r.get_interacting_particles():
-                for p1 in p:
-                    ps.append(p1)
-            self.d_opt.add_restraint(r,ps,1.0)
+            self.d_opt.add_restraint(r)
         self.d_opt.set_sampling_space(self.discrete_sampler)
         return self.d_opt.optimize(1)
 
