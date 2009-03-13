@@ -57,3 +57,4 @@ IMP_OWN_LIST_METHOD(type, add_##lcname##s)
 
 %include "IMP/macros.h"
 %include "IMP/container_macros.h"
+%include "IMP/internal/config.h"
