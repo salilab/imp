@@ -58,7 +58,7 @@ IMPEM_BEGIN_NAMESPACE
  *   vector3D using the (x,y,z) convention.
  */
 template<typename T>
-IMPEMEXPORT void project(IMP::algebra::Matrix3D<T>& m3,
+void project(IMP::algebra::Matrix3D<T>& m3,
              IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
              IMP::algebra::Vector3D& direction,
