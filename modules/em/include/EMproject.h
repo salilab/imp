@@ -205,7 +205,13 @@ void project(IMP::algebra::Matrix3D<T>& m3,
 #endif
         // Index of the first voxel
         for (int ii=0;ii < 3;ii++) {
-          idx[ii] = IMP::algebra::constrain(round(v[ii]), init0[ii], end0[ii]);
+          if (v[ii] >= 0.) {
+            idx[ii] = IMP::algebra::constrain((double)((int)(v[ii] + 0.5)),
+                                              init0[ii], end0[ii]);
+          } else {
+            idx[ii] = IMP::algebra::constrain((double)((int)(v[ii] - 0.5)),
+                                              init0[ii], end0[ii]);
+          }
 #ifdef DEBUG
           std::cout << " idx[" << ii << "]= " << idx[ii];
 #endif
