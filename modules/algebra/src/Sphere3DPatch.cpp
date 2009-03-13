@@ -23,9 +23,10 @@ Vector3D Sphere3DPatch::point_on_sphere() const {
   Vector3D
     v = orthogonal_vector(crossing_plane_.get_normal()).get_unit_vector();
   Vector3D p = crossing_plane_.get_point_on_plane(); // a point on the plane
-  //a point q is both on the plane and on the sphere if q*q=R
-  double c = p*p-sph_.get_radius()*sph_.get_radius();
-  double b = 2.*p*v;
+  Vector3D cen = sph_.get_center();
+  //a point q is both on the plane and on the sphere if (q-center)*(q-center)=R
+  double c = -2.*cen*p+cen*cen+p*p-sph_.get_radius()*sph_.get_radius();
+  double b = 2.*(p*v+cen*v);
   double a = v*v;
   double f = (-b+std::sqrt(b*b-4*a*c))/(2*a);
   IMP_check(!std::isnan(f), "problem calculating a point on a sphere a : "
