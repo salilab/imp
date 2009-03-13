@@ -18,6 +18,8 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
+const Float SAXSProfile::modulation_function_parameter_ = 0.23;
+
 std::ostream & operator<<(std::ostream & s,
                           const SAXSProfile::IntensityEntry & e)
 {
