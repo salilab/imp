@@ -23,9 +23,6 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
     symm_deg_[(*ps_)[i]]=i;
   }
 }
-void SymmetrySampler::set_symmetry(const algebra::Cylinder3D &c) {
-  cyl_=c;
-}
 
 void SymmetrySampler::populate_states_of_particles(Particles *particles,
                                                    Combinations *states) const {
@@ -59,28 +56,19 @@ void SymmetrySampler::move2state(const CombState *cs) {
 
   //first move the atoms to their initial location
   reset_placement(cs);
-  std::cout<<"in SymmetrySampler::move2state " << std::endl;
   Particle *p;
   algebra::Transformation3D t;
   for (std::map<Particle *,unsigned int>::const_iterator
          it = cs->get_data()->begin();it != cs->get_data()->end(); it++) {
     p = it->first;
     t = ts_->get_transformation(it->second);
-    t.show();
     double angle = 2.*PI/ps_->size()*symm_deg_[p];
-    std::cout<<"angle : " << angle <<std::endl;
-    std::cout<<"going to transform " << std::endl;
-    std::cout<<"going to transform : " << cyl_.get_length() << std::endl;
-    algebra::rotate(cyl_,it->second).show();
-    std::cout<<"going to transform " << std::endl;
     atom::transform(atom::MolecularHierarchyDecorator::cast(p),
                     algebra::rotate(cyl_,angle).compose(t));
                     //t.compose(algebra::rotate(cyl_,angle)));
-    std::stringstream name;
-    name<<p->get_value(StringKey("name"))<<"__"<<cs->key()<<".pdb";
-    atom::write_pdb(atom::MolecularHierarchyDecorator::cast(p),name.str());
+ //    std::stringstream name;
+//     name<<p->get_value(StringKey("name"))<<"__"<<cs->key()<<".pdb";
+//     atom::write_pdb(atom::MolecularHierarchyDecorator::cast(p),name.str());
   }
-  std::cout<<"in SymmetrySampler::move2state END" << std::endl;
 }
-
 IMPDOMINO_END_NAMESPACE
