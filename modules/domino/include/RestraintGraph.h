@@ -50,7 +50,7 @@ public:
 // hierarchy will have its own state.
 //
 
-
+//! RestraintGraph
 class IMPDOMINOEXPORT RestraintGraph
 {
 
@@ -135,6 +135,15 @@ public:
   \return the i'th best combination
    */
   const CombState *get_opt_combination(unsigned int i) const;
+  //! \return a node that contains the input set of particles.
+  /** It might be that there is more than one such one. The function returns
+      the first it finds.
+     \param[in] p the set of particles
+     \return a node that contains the input set of particles
+     \exception IMP exception if none of the graph nodes contain the given
+                set of particles.
+   */
+  JNode * get_node(const Particles &p);
 protected:
   //! Determine a DFS
   /** \param[in]  root_ind the index of the node from which the DFS starts
@@ -145,15 +154,7 @@ protected:
   void dfs_order(unsigned int root_ind);
   void move_model2state_rec(unsigned int father_ind,
                             CombState &best_state) const;
-  //! \return a node that contains the input set of particles.
-  /** It might be that there is more than one such one. The function returns
-      the first it finds.
-     \param[in] p the set of particles
-     \return a node that contains the input set of particles
-     \exception IMP exception if none of the graph nodes contain the given
-                set of particles.
-   */
-  JNode * get_node(const Particles &p);
+
   JEdge* get_edge(unsigned int n1, unsigned int n2) const {
     return edge_data_.find(get_edge_key(n1, n2))->second;
   }
