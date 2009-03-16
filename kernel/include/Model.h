@@ -62,7 +62,9 @@ private:
     std::ostringstream oss;
     oss << "P" << ++last_particle_index_;
     p->set_name(oss.str());
+#ifndef IMP_NO_DEPRECATED
     p->index_= last_particle_index_;
+#endif
   }
 public:
   /** Construct an empty model */

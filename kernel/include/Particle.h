@@ -105,7 +105,9 @@ private:
   WeakPointer<Model> model_;
 
   std::string name_;
+#ifndef IMP_NO_DEPRECATED
   unsigned int index_;
+#endif
 
   // float attributes associated with the particle
   FloatTable floats_;
@@ -409,11 +411,12 @@ public:
   std::string get_name() const {
     return name_;
   }
-
+#ifndef IMP_NO_DEPRECATED
   // for backwards compatibility, do not use
   unsigned int get_index() const {
     return index_;
   }
+#endif
 
   //! Set the name of the particle
   void set_name(std::string name) {
