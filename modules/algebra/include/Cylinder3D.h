@@ -8,6 +8,7 @@
 #define IMPALGEBRA_CYLINDER_3D_H
 
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <iostream>
 #include <IMP/constants.h>
@@ -54,7 +55,11 @@ class IMPALGEBRAEXPORT Cylinder3D
   Vector3D end_;
   double radius_;
 };
-
+//! Return a transformation around the main axis of the cylinder
+inline Transformation3D rotate(const Cylinder3D &cyl, double angle) {
+  return Transformation3D(rotation_about_axis(cyl.get_direction(),angle),
+                          Vector3D(0.0,0.0,0.0));
+}
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_CYLINDER_3D_H */
