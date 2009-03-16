@@ -6,12 +6,11 @@
                <li><a href=\"".$GLOBALS["home"]."\">imp</a></li>
                <li><a href=\"https://salilab.org/imp/doc/doxygen/\" class=\"link\">doc</a></li>
                <li><a href=\"https://salilab.org/imp/wiki/\" class=\"link\">wiki</a></li>
-               <li><a href=\"?page=pubs\">publications</a></li>
-               <li><a href=\"?page=groups\">groups</a></li>
+               <li><a href=\"pubs.html\">publications</a></li>
+               <li><a href=\"groups.html\">groups</a></li>
                <li><span class=\"e-mail\">imp at salilab.org | contact</span></li>
             </ul>";   
    }
-   # <li><a href=\"?page=imp\" class=\"implink\">IMP</a></li>
 
    # GET PUBLICATIONS FOR IMP
    function GetPublications () {
@@ -26,7 +25,7 @@
         echo "<a href=\"#$at\">$at</a>&nbsp;&nbsp;";
       }
       foreach ($artypes as $at_num => $at) {
-         $dir = $GLOBALS['home_dir']."/pubs/".$at; 
+         $dir = "../pubs/".$at; 
          if ($at == "citations")    { echo "<a name=\"$at\"></a><h4>To cite IMP use these articles:</h4>"; }
          if ($at == "methods")      { echo "<a name=\"$at\"></a><h4>IMP methods:</h4>"; }
          if ($at == "applications") { echo "<a name=\"$at\"></a><h4>IMP applications:</h4>"; }
