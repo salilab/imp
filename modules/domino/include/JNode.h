@@ -11,10 +11,7 @@
 #include "config.h"
 #include "DiscreteSampler.h"
 #include "CombState.h"
-
-#include <IMP/Particle.h>
-#include <IMP/Restraint.h>
-
+#include <IMP/base_types.h>
 #include <vector>
 #include <sstream>
 #include <algorithm>
@@ -113,9 +110,7 @@ public:
   void move2state(CombState *cs);
   void clear();
 protected:
-  std::vector<Int> sorted_particle_indexes_; // needed for calculating
-                                            // intersections with other nodes.
-  Particles particles_; //the particles that are part of the node
+  Particles particles_; //a sorted list of particles that are part of the node
   unsigned int node_ind_;
   std::map<std::string, CombState *> comb_states_;
   std::vector<std::string> comb_states_keys_;

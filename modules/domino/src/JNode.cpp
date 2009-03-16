@@ -7,6 +7,7 @@
 
 #include <IMP/domino/JNode.h>
 
+
 #include <numeric>
 #include <climits>
 #include <algorithm>
@@ -18,28 +19,32 @@ IMPDOMINO_BEGIN_NAMESPACE
 //nodes come sorted.
 JNode::JNode(const Particles &ps, int node_ind): ds_(NULL)
 {
+  IMP_LOG(VERBOSE,"Constructing a JNode with "<<
+                   ps.size() << " particles "<<std::endl);
   node_ind_ = node_ind;
-  //enter the particles by the order of their indexes.
-  sorted_particle_indexes_ = std::vector<Int>();
   particles_ = Particles();
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     particles_.push_back(*it);
-    sorted_particle_indexes_.push_back((*it)->get_index());
   }
-  std::sort(sorted_particle_indexes_.begin(), sorted_particle_indexes_.end());
+  std::sort(particles_.begin(), particles_.end());
   comb_states_ = std::map<std::string, CombState *>();
 }
 
 void JNode::init_sampling(DiscreteSampler &ds)
 {
+  IMP_LOG(VERBOSE,"Start sampling initialization for node number: "
+                  << node_ind_ <<std::endl);
   ds_ = &ds;
   populate_states_of_particles(&particles_, &comb_states_);
+
   //create a vector of the keys, needed for fast
   //implementation of get_state function
   std::map<std::string, CombState *>::const_iterator it;
   for (it = comb_states_.begin(); it != comb_states_.end(); it++) {
     comb_states_keys_.push_back(it->first);
   }
+  IMP_LOG(VERBOSE,"End sampling initialization for node number: "
+                   << node_ind_ <<std::endl);
 }
 
 CombState* JNode::get_state(unsigned int index, bool move2state_){
@@ -55,6 +60,8 @@ void JNode::populate_states_of_particles(Particles *particles,
                                          CombState *> *states)
 {
   ds_->populate_states_of_particles(particles, states);
+  IMP_check(comb_states_.size()>0,"no state added to node: "
+            << node_ind_ << std::endl,ValueException);
 }
 void JNode::show_sampling_space(std::ostream& out) const
 {
@@ -88,14 +95,14 @@ void JNode::show(std::ostream& out) const
 }
 bool JNode::is_part(const Particles &ps) const
 {
-  std::vector<IMP::Int> intersection, other_sorted_particle_indexes;
+  Particles intersection, other_sorted_particle_indexes;
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
-    other_sorted_particle_indexes.push_back((*it)->get_index());
+    other_sorted_particle_indexes.push_back(*it);
   }
   sort(other_sorted_particle_indexes.begin(),
        other_sorted_particle_indexes.end());
-  set_intersection(sorted_particle_indexes_.begin(),
-                   sorted_particle_indexes_.end(),
+  set_intersection(particles_.begin(),
+                   particles_.end(),
                    other_sorted_particle_indexes.begin(),
                    other_sorted_particle_indexes.end(),
                    std::inserter(intersection, intersection.begin()));
@@ -109,18 +116,18 @@ void JNode::get_intersection(const JNode &other, Particles &in) const
 {
   // since the list should be sorted we use the indexes and not the pointers,
   // as we can not predict the order of the pointers.
-  std::vector<unsigned int> inter_indexes;
-  set_intersection(sorted_particle_indexes_.begin(),
-                   sorted_particle_indexes_.end(),
-                   other.sorted_particle_indexes_.begin(),
-                   other.sorted_particle_indexes_.end(),
+  Particles inter_indexes;
+  set_intersection(particles_.begin(),
+                   particles_.end(),
+                   other.particles_.begin(),
+                   other.particles_.end(),
                    std::inserter(inter_indexes, inter_indexes.begin()));
   //TODO - do this more efficient
-  for (std::vector<unsigned int>::const_iterator it = inter_indexes.begin();
+  for (Particles::const_iterator it = inter_indexes.begin();
        it != inter_indexes.end(); it++) {
     for (Particles::const_iterator pi = particles_.begin();
          pi != particles_.end(); pi++) {
-      if (*it == (*pi)->get_index()) {
+      if (*it == *pi) {
         in.push_back(*pi);
       }
     }
@@ -135,8 +142,6 @@ void JNode::move2state(CombState *cs)
 
 void JNode::realize(Restraint *r, Particles *ps, Float weight)
 {
-  std::cout <<" JNode::realize restraint start in node with index ";
-  std::cout << node_ind_ << std::endl;
   std::map<std::string, float> temp_calculations;
   // stores calculated discrete values. It might be that each appears more
   // than once, since the node may contain more particles than the ones
