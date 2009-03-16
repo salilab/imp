@@ -25,6 +25,7 @@
 /* Wrap our own classes */
 %include "IMP/domino/CombState.h"
 %include "IMP/domino/DiscreteSampler.h"
+%include "IMP/domino/JNode.h"
 %include "IMP/domino/RestraintGraph.h"
 %include "IMP/domino/DominoOptimizer.h"
 %include "IMP/domino/DiscreteSet.h"
@@ -37,3 +38,6 @@
 %include "IMP/domino/TransformationMappedDiscreteSet.h"
 %include "IMP/domino/TransformationCartesianProductSampler.h"
 %include "IMP/domino/TransformationPermutationSampler.h"
+%include "IMP/domino/TransformationDiscreteSet.h"
+%include "IMP/domino/SymmetrySampler.h"
+
