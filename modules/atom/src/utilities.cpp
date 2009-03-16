@@ -59,4 +59,22 @@ algebra::Segment3D diameter(const MolecularHierarchyDecorator &m) {
   }
   return algebra::Segment3D(lower_bound,upper_bound);
 }
+IMPATOMEXPORT
+void copy_atom_positions(const MolecularHierarchyDecorator &m1,
+                         const MolecularHierarchyDecorator &m2) {
+Particles ps1 =
+   get_by_type(m1, MolecularHierarchyDecorator::ATOM);
+Particles ps2 =
+   get_by_type(m2, MolecularHierarchyDecorator::ATOM);
+ IMP_check(ps1.size() == ps2.size(),
+            "The molecules do not have the same number of atoms",
+            ErrorException);
+ for(int i=0;i<ps1.size();i++) {
+    IMP::algebra::Vector3D xyz1 =
+      IMP::core::XYZDecorator::cast(ps1[i]).get_coordinates();
+    IMP::core::XYZDecorator xyz2_d =
+      IMP::core::XYZDecorator::cast(ps2[i]);
+    xyz2_d.set_coordinates(xyz1);
+ }
+}
 IMPATOM_END_NAMESPACE
