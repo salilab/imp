@@ -104,7 +104,7 @@
          }
       }
       $title = "<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/".$key."\">$title</a>";
-      $reference = "$author_list. ($year) &#8220;$title&#8221; <i>$journal</i> <b>$volume</b>:$pages";
+      $reference = "$author_list. ($year) &#8220;$title&#8221; <i>" . htmlspecialchars($journal) . "</i> <b>$volume</b>:$pages";
       #$reference = $file;
       return($reference);
    }    
