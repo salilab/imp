@@ -1,10 +1,10 @@
 /** \namespace IMP::display
-\brief IMP.display provides support for display IMP data in various ways. 
+\brief This module provides support for displaying \imp data in various ways. 
 
 \author Daniel Russel
 
 \par Overview
-IMP.display provides code to write various file formats for display data
+IMP.display provides code to write various file formats for displaying data
 from \imp optimizations. The display::Writer classes provides the base
 class for objects which write to specific file formats and the
 display::Geometry and display::GeometryExtractor provide means of describing
