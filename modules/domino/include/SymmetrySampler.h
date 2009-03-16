@@ -43,11 +43,6 @@ public:
    */
   SymmetrySampler(Particles *ps, TransformationDiscreteSet *ts,
                   const algebra::Cylinder3D &c);
-  //! define the symmetry
-  /**
-  /param[in] cyl the cylinder direction defined the symmetry axis.
-   */
-  void set_symmetry(const algebra::Cylinder3D &c);
   void set_ref(Particle *p){ref_=p;}
   void move2state(const CombState *cs);
   void populate_states_of_particles(Particles *particles,
