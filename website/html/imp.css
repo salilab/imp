@@ -140,6 +140,11 @@ a:hover, a:active {
    font-size: medium;
    text-align: justify;
 }
+
+#groups {
+   text-align: left;
+}
+
 #goal {
    background: #F0F0F0;
    padding: 10px;
