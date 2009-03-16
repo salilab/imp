@@ -28,6 +28,10 @@ void transform(const MolecularHierarchyDecorator &m,
                const algebra::Transformation3D &t);
 IMPATOMEXPORT
 algebra::Segment3D diameter(const MolecularHierarchyDecorator &m);
+//! Copy atoms positions from the first molecule to the second
+IMPATOMEXPORT
+void copy_atom_positions(const MolecularHierarchyDecorator &m1,
+                         const MolecularHierarchyDecorator &m2);
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_UTILITIES_H */
