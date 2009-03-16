@@ -26,8 +26,12 @@ public:
   //! construct and invalid transformation
   Transformation3D(){}
   /** basic constructor*/
-  Transformation3D(const Rotation3D& r, const Vector3D& t)
-    : trans_(t), rot_(r){}
+  Transformation3D(const Rotation3D& r,
+                   const Vector3D& t=Vector3D(0,0,0)):
+    trans_(t), rot_(r){}
+  /** Construct a transformation with an identity rotation.*/
+  Transformation3D(const Vector3D& t):
+    trans_(t), rot_(identity_rotation()){}
   ~Transformation3D();
   //! transform
   Vector3D transform(const Vector3D &o) const {
