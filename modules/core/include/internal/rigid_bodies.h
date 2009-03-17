@@ -12,7 +12,8 @@
 
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/Transformation3D.h>
-
+#include <IMP/Pointer.h>
+#include <IMP/ParticleRefiner.h>
 #include <IMP/RefCountedObject.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -23,10 +24,12 @@ IMPCORE_END_NAMESPACE
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 struct RigidBodyData: public RefCountedObject {
+  Pointer<ParticleRefiner> pr_;
   FloatKeys child_keys_;
   FloatKeys quaternion_;
   FloatKey mass_;
   FloatKey radius_;
+  bool snap_;
   void show(std::ostream &out) const {
     out << child_keys_[0] << " " << quaternion_[0];
   }
