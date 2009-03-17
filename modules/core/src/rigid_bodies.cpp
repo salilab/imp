@@ -482,6 +482,7 @@ RigidBodyDecorator create_rigid_body(Particle *p,
   Model *m= p->get_model();
   RigidBodyDecorator rbd= RigidBodyDecorator::create(p, tr);
   SMP sm= get_modifiers(tr);
+  rbd.set_coordinates_are_optimized(true);
   SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, p);
   m->add_score_state(sss);
   return rbd;
