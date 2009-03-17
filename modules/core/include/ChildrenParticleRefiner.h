@@ -32,8 +32,6 @@ class IMPCOREEXPORT ChildrenParticleRefiner : public ParticleRefiner
   HierarchyTraits traits_;
 public:
   //! Create a refiner for a particular type of hierarchy
-  /** In order to preserve backward compatiblity, the default traits is the
-      molecular hierarchy traits. */
   ChildrenParticleRefiner(HierarchyTraits tr);
 
   virtual ~ChildrenParticleRefiner() {}
