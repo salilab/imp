@@ -4,6 +4,7 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 import IMP.display
+import IMP.atom
 
 
 
@@ -79,6 +80,9 @@ class RBDTests(IMP.test.TestCase):
                                      IMP.FloatKey(),
                                      IMP.FloatKey(),
                                      True)
+        self._test_create_one(tr, htr)
+        htr= IMP.atom.MolecularHierarchyDecorator.get_traits()
+        tr= IMP.atom.get_molecular_rigid_body_traits()
         self._test_create_one(tr, htr)
     def _test_create_many(self):
         """Testing create_rigid_bodies"""

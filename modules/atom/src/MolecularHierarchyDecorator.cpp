@@ -11,6 +11,7 @@
 #include <IMP/atom/AtomDecorator.h>
 #include <IMP/atom/ResidueDecorator.h>
 #include <IMP/atom/DomainDecorator.h>
+#include <IMP/core/LeavesParticleRefiner.h>
 
 #include <sstream>
 #include <set>
@@ -232,6 +233,14 @@ MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d) {
     copy_bond(ne0, ne1, bds[i]);
   }
   return nh;
+}
+
+
+core::RigidBodyTraits get_molecular_rigid_body_traits() {
+  static core::RigidBodyTraits tr(
+    new core::LeavesParticleRefiner(MolecularHierarchyDecorator::get_traits()),
+                                  "rigid_molecule");
+  return tr;
 }
 
 

@@ -24,8 +24,13 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! A class to store rigid body-related data
-/** \see RigidBodyDecorator
+/** The data includes a prefix to make the keys unique (so that a particle can
+    be part of more than one rigid body) as well the the particle refiner to use
+    to map between the rigid body and its members.
+
+    \see RigidBodyDecorator
     \see RigidMemberDecorator
+    \see RigidBodyDecorator::get_default_traits()
  */
 class IMPCOREEXPORT RigidBodyTraits {
   Pointer<internal::RigidBodyData> d_;
@@ -34,6 +39,8 @@ class IMPCOREEXPORT RigidBodyTraits {
   //! Create as set of rigid body data using the prefix as an identifier
   /** The radius and mass keys can be default keys, in which case the
       masses will be considered equal and the radii 0, respectively.
+
+     \note  Having non-default values is not well tested at this point.
   */
   RigidBodyTraits(ParticleRefiner *pr,
                   std::string prefix,
@@ -164,6 +171,9 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
   RigidMemberDecorators get_members() const;
 
   //! Return the default traits
+  /** These use a ChildrenHierarchyDecorator with a
+      HierarchyDecorator::get_default_traits() traits.
+   */
   static RigidBodyTraits get_default_traits() {
     return internal::get_default_rigid_body_traits();
   }
