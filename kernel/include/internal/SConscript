@@ -1,5 +1,4 @@
 files = [
-    'config.h',
     'AttributeTable.h',
     'ExponentialNumber.h',
     'IndexingIterator.h',
