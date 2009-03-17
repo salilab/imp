@@ -25,8 +25,8 @@ Float distance(XYZRDecorator a, XYZRDecorator b)
 }
 
 
-void set_enclosing_sphere(const Particles &v,
-                          XYZRDecorator out)
+void set_enclosing_sphere(XYZRDecorator out,
+                          const Particles &v)
 {
   algebra::Sphere3Ds ss(v.size());
   for (unsigned int i=0; i< v.size(); ++i) {
