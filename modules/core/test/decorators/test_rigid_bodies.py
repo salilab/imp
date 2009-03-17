@@ -84,7 +84,7 @@ class RBDTests(IMP.test.TestCase):
         htr= IMP.atom.MolecularHierarchyDecorator.get_traits()
         tr= IMP.atom.get_molecular_rigid_body_traits()
         self._test_create_one(tr, htr)
-    def _test_create_many(self):
+    def test_create_many(self):
         """Testing create_rigid_bodies"""
         tr= IMP.core.RigidBodyDecorator.get_default_traits()
         htr= IMP.core.HierarchyDecorator.get_default_traits()
