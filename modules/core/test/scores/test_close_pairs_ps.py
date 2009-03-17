@@ -19,7 +19,7 @@ class Test(IMP.test.TestCase):
             children= [self._random_hierarchy(m, depth-1) for x in range(0,width)]
             cps= [x.get_particle() for x in children]
             d= IMP.core.XYZRDecorator.create(p)
-            IMP.core.set_enclosing_sphere(cps, d)
+            IMP.core.set_enclosing_sphere(d, cps)
             for c in children:
                 h.add_child(c)
         return h

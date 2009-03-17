@@ -18,7 +18,7 @@ for r in residues:
     d= IMP.core.XYZRDecorator.create(r)
     atoms= IMP.atom.get_by_type(IMP.atom.MolecularHierarchyDecorator(r),
                                 IMP.atom.MolecularHierarchyDecorator.ATOM)
-    IMP.core.set_enclosing_sphere(atoms, d)
+    IMP.core.set_enclosing_sphere(d, atoms)
 
 # load another copy
 mp1= IMP.atom.read_pdb('examples/simple_examples/single_protein.pdb', m)
