@@ -39,6 +39,7 @@ files = [
          'HarmonicLowerBound.h',
          'HarmonicUpperBound.h',
          'HierarchyDecorator.h',
+         'LeavesParticleRefiner.h',
          'Linear.h',
          'ListPairContainer.h',
          'ListSingletonContainer.h',

@@ -37,6 +37,7 @@ files = [
          'FixedParticleRefiner.cpp',
          'GridClosePairsFinder.cpp',
          'HierarchyDecorator.cpp',
+         'LeavesParticleRefiner.cpp',
          'ListPairContainer.cpp',
          'ListSingletonContainer.cpp',
          'MaximumChangeScoreState.cpp',
