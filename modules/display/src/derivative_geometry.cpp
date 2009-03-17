@@ -40,8 +40,7 @@ Float XYZDerivativeGeometry::get_size() const {
 
 
 RigidBodyDerivativeGeometry
-::RigidBodyDerivativeGeometry(core::RigidBodyDecorator d,
-                              ParticleRefiner *pr): pr_(pr), d_(d){
+::RigidBodyDerivativeGeometry(core::RigidBodyDecorator d): d_(d){
   xyzcolor_=Color(1,0,0);
   qcolor_=Color(0,1,0);
   ccolor_=Color(0,0,1);
@@ -54,7 +53,8 @@ void RigidBodyDerivativeGeometry::show(std::ostream &out) const {
 }
 
 Geometries RigidBodyDerivativeGeometry::get_geometry() const {
-  Particles ms= pr_->get_refined(d_.get_particle());
+  Particles ms=
+    d_.get_traits().get_particle_refiner()->get_refined(d_.get_particle());
   Geometries ret;
   algebra::Transformation3D otr= d_.get_transformation();
   algebra::VectorD<4> rderiv= d_.get_rotational_derivatives();
@@ -103,7 +103,8 @@ Geometries RigidBodyDerivativeGeometry::get_geometry() const {
     nrtr->set_color(ccolor_);
     ret.push_back(nrtr);
   }
-  pr_->cleanup_refined(d_.get_particle(), ms);
+  d_.get_traits().get_particle_refiner()
+    ->cleanup_refined(d_.get_particle(), ms);
   return ret;
 }
 
