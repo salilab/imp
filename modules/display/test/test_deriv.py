@@ -50,14 +50,13 @@ class TestBL(IMP.test.TestCase):
         rbd= core.create_rigid_body(p)
 
         set_log_level(TERSE)
-        m.add_score_state(ss)
         print "eval"
         m.evaluate(True)
         w= display.BildWriter()
         w.set_file_name(self.get_tmp_file_name("qderiv.bild"))
         #oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0,4):
-            gs=display.RigidBodyDerivativeGeometry(rbd, pr)
+            gs=display.RigidBodyDerivativeGeometry(rbd)
             w.add_geometry(gs)
             print gs
         w.set_file_name("")
