@@ -103,22 +103,22 @@ IMP_OUTPUT_OPERATOR(XYZRDecorator);
 IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
 
 //! Set the coordinates and radius of the last to enclose the list
-/** \param[in] v The vector of XYZR objects to enclose
+/** \param[in] v The vector of XYZ or XYZR particles to enclose
     \param[out] b The one whose values should be set
+    Any particle which does not have the attribute b.get_radius()
+    is assumed to have a radius of 0.
 
     \note This takes a Particles object rather than a vector of
     something else since you can't easily cast vectors of
-    different things to one another. Well, you can cast vectors
-    of decorators in C++, but you can't in python without adding
-    explicit support.
+    different things to one another.
 
     \note This function produces tighter bounds if the CGAL library
     is linked.
 
     \relates XYZRDecorator
  */
-IMPCOREEXPORT void set_enclosing_sphere(const Particles &v,
-                                        XYZRDecorator b);
+IMPCOREEXPORT void set_enclosing_sphere(XYZRDecorator b,
+                                        const Particles &v);
 
 //! Create a set of particles which random coordinates
 /** This function is mostly to be used to keep demo code brief.
