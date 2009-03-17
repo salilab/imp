@@ -13,6 +13,7 @@ files = [
     'log_internal.h',
     'ref_counting.h',
     'units.h',
+    'config.h',
     'utility.h',
 ]
 
