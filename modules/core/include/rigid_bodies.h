@@ -116,7 +116,7 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
  public:
   IMP_DECORATOR_TRAITS(RigidBodyDecorator, XYZDecorator,
                        RigidBodyTraits, traits,
-                       internal::get_default_rigid_body_traits());
+                       RigidBodyDecorator::get_default_traits());
 
   //! Create a new rigid body, but do not add score states
   /** \param[in] p The particle to make into a rigid body
@@ -129,14 +129,14 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
       score states to the model.
    */
   static RigidBodyDecorator create(Particle *p,
-              RigidBodyTraits tr= internal::get_default_rigid_body_traits());
+              RigidBodyTraits tr= RigidBodyDecorator::get_default_traits());
 
   ~RigidBodyDecorator();
 
   //!Return true of the particle is a rigid body
   static bool is_instance_of(Particle *p,
                              RigidBodyTraits traits
-                             =internal::get_default_rigid_body_traits()) {
+                             =RigidBodyDecorator::get_default_traits()) {
     return traits.get_has_required_attributes_for_body(p);
   }
 
@@ -190,7 +190,7 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
  public:
   IMP_DECORATOR_TRAITS(RigidMemberDecorator, XYZDecorator,
                        RigidBodyTraits, traits,
-                       internal::get_default_rigid_body_traits());
+                       RigidBodyDecorator::get_default_traits());
 
   //! Return the current orientation of the body
   algebra::Vector3D get_internal_coordinates() const {
@@ -241,7 +241,7 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
   //! return true if it is a rigid member
   static bool is_instance_of(Particle *p,
                              RigidBodyTraits traits
-                             =internal::get_default_rigid_body_traits()) {
+                             =RigidBodyDecorator::get_default_traits()) {
     return traits.get_has_required_attributes_for_member(p);
   }
 };
@@ -264,7 +264,7 @@ class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
   RigidBodyTraits tr_;
  public:
   UpdateRigidBodyOrientation(RigidBodyTraits tr
-                             = internal::get_default_rigid_body_traits()):
+                             = RigidBodyDecorator::get_default_traits()):
     tr_(tr){}
   IMP_SINGLETON_MODIFIER(internal::version_info);
 };
@@ -284,7 +284,7 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
   RigidBodyTraits tr_;
  public:
   AccumulateRigidBodyDerivatives(RigidBodyTraits tr
-                                 =internal::get_default_rigid_body_traits()):
+                                 =RigidBodyDecorator::get_default_traits()):
     tr_(tr){}
   IMP_SINGLETON_MODIFIER_DA(internal::version_info);
 };
@@ -302,7 +302,7 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
   RigidBodyTraits tr_;
  public:
   UpdateRigidBodyMembers(RigidBodyTraits tr
-                         =internal::get_default_rigid_body_traits()):
+                         =RigidBodyDecorator::get_default_traits()):
     tr_(tr){}
   IMP_SINGLETON_MODIFIER(internal::version_info);
 };
@@ -319,7 +319,7 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
  */
 IMPCOREEXPORT void create_rigid_bodies(SingletonContainer* rbs,
                                        RigidBodyTraits tr
-                                   =internal::get_default_rigid_body_traits());
+                                   =RigidBodyDecorator::get_default_traits());
 
 //! Creates a rigid body and sets up the needed score states
 /**
@@ -333,7 +333,7 @@ IMPCOREEXPORT void create_rigid_bodies(SingletonContainer* rbs,
  */
 IMPCOREEXPORT RigidBodyDecorator create_rigid_body(Particle *p,
                                                    RigidBodyTraits tr
-                               =internal::get_default_rigid_body_traits());
+                               =RigidBodyDecorator::get_default_traits());
 
 
 IMPCORE_END_NAMESPACE
