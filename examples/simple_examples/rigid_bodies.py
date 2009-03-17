@@ -13,5 +13,4 @@ IMP.core.create_rigid_bodies(rbs, rbt)
 mp1= IMP.atom.read_pdb('examples/simple_examples/single_protein.pdb', m)
 residues= IMP.atom.get_by_type(mp1, IMP.atom.MolecularHierarchyDecorator.CHAIN)
 rbd=IMP.core.create_rigid_body(residues[0], rbt)
-rbd.set_coordinates_are_optimized(True)
 print "all done"
