@@ -61,14 +61,18 @@ void CentroidOfRefined::show(std::ostream &out) const
   out << "CentroidOfRefined" << std::endl;
 }
 
-void setup_centroids(Model *m, SingletonContainer *sc,
-                  ParticleRefiner *pr,
-                  FloatKey weight,
-                  FloatKeys ks) {
+void create_centroids(SingletonContainer *sc,
+                      ParticleRefiner *pr,
+                      FloatKey weight,
+                      FloatKeys ks) {
+  IMP_check(sc->get_number_of_particles() >0,
+            "Need some particles to set up as centroid",
+            ValueException);
+  Model *m= sc->get_particle(0)->get_model();
   for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
        pit != sc->particles_end(); ++pit) {
     for (unsigned int i=0; i< ks.size(); ++i) {
-      if (!(*pit)->has_attribute(ks[0])) {
+      if (!(*pit)->has_attribute(ks[i])) {
         (*pit)->add_attribute(ks[i], 0, false);
       }
     }
@@ -83,25 +87,22 @@ void setup_centroids(Model *m, SingletonContainer *sc,
 
 
 
-Particle* create_centroid(Model *m, const Particles &ps,
-                          FloatKey weight,
-                          FloatKeys ks) {
-  IMP_check(!ps.empty(), "Need at least one particle to cover",
-            ValueException);
-
-  Particle *p= new Particle(m);
+void create_centroid(Particle *p, ParticleRefiner *pr,
+                     FloatKey weight,
+                     FloatKeys ks) {
   for (unsigned int i=0; i< ks.size(); ++i) {
-    p->add_attribute(ks[i], 0, false);
+    if (!p->has_attribute(ks[i])) {
+      p->add_attribute(ks[i], 0, false);
+    }
   }
-  FixedParticleRefiner *fpr= new FixedParticleRefiner(ps);
 
-  CentroidOfRefined *cr= new CentroidOfRefined(fpr, weight, ks);
-  DerivativesToRefined *dtr= new DerivativesToRefined(fpr,ks);
+  CentroidOfRefined *cr= new CentroidOfRefined(pr, weight, ks);
+  DerivativesToRefined *dtr= new DerivativesToRefined(pr,ks);
   SingletonScoreState *sss= new SingletonScoreState(cr, dtr, p);
-  m->add_score_state(sss);
-  IMP_assert(fpr->get_refined(p).size() == ps.size(),
-             "FixedPR is broken");
-  return p;
+  p->get_model()->add_score_state(sss);
+  IMP_check(pr->get_refined(p).size()>0,
+             "Need particles to compute the centroid of",
+             ValueException);
 }
 
 

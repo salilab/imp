@@ -20,6 +20,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+// for swig
+class XYZRDecorator;
+
 /** \brief This class sets the position and radius of each particle to
  enclose the refined.
 
@@ -59,25 +62,28 @@ public:
   }
 };
 
-//! Set up a set of particles as covers of their refined constituents
+//! Set up a set of particles as covers of their refined particles
 /** This method adds score states as needed to make things work and to propagate
-    derivatives from the cover particle to the constituent particles.
+    derivatives from the cover particle to the constituent particles. The
+    resulting XYZR particles' location is not optimized.
     \relates CoverRefined
  */
-IMPCOREEXPORT void setup_covers(Model *m, SingletonContainer *sc,
-                                     ParticleRefiner *pr,
+IMPCOREEXPORT void create_covers(SingletonContainer *sc,
+                                ParticleRefiner *pr,
                FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
-                                     Float slack=0);
+                                Float slack=0);
 
 
-//! Create a particle which describes a sphere containing the listed particles
+//! Setup a particle to be the cetroid of a set of aprticles
 /** This method adds score states as needed to make things work and to propagate
-    derivatives from the cover particle to the constituent particles.
+    derivatives from the cover particle to the constituent particles. The
+    resulting XYZR particle's location is not optimized.
     \relates CoverRefined
  */
-IMPCOREEXPORT Particle* create_cover(Model *m, const Particles &p,
-               FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
-                                     Float slack=0);
+IMPCOREEXPORT XYZRDecorator create_cover(Particle *p,
+                                         ParticleRefiner *pr,
+              FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
+                                         Float slack=0);
 
 IMPCORE_END_NAMESPACE
 
