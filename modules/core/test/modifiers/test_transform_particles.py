@@ -1,11 +1,11 @@
 import unittest
-import IMP.utils
+import IMP
 import IMP.core
 import IMP.algebra
-import IMP.test, IMP
+import IMP.test
 
-class ParticleTrasnformationTests(IMP.test.TestCase):
-    """Test distance restraint and three harmonic score functions"""
+class ParticleTransformationTests(IMP.test.TestCase):
+    """Test particle transformations"""
 
     def setUp(self):
         """Set up model and particles"""
