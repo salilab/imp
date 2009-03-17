@@ -10,5 +10,5 @@ for p in res:
     IMP.core.XYZRDecorator.create(p)
 mtr=IMP.atom.MolecularHierarchyDecorator.get_traits()
 pr= IMP.core.ChildrenParticleRefiner(mtr)
-IMP.core.setup_covers(m, rc, pr)
+IMP.core.create_covers(rc, pr)
 m.evaluate(False)
