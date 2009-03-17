@@ -13,6 +13,7 @@
 #include <IMP/core/utility.h>
 #include <IMP/core/HierarchyDecorator.h>
 #include "bond_decorators.h"
+#include <IMP/core/rigid_bodies.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
@@ -29,6 +30,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see AtomDecorator
     \see write_pdb
     \see read_pdb
+    \see get_molecular_rigid_body_traits
  */
 class IMPATOMEXPORT MolecularHierarchyDecorator:
   public IMP::core::HierarchyDecorator
@@ -267,6 +269,16 @@ get_internal_bonds(MolecularHierarchyDecorator mhd);
 */
 IMPATOMEXPORT
 MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d);
+
+
+//! Get a set of rigid body traits customized for use with a molecular hierarchy
+/** The members of the rigid body are the leaves of the hierarchy under the
+    body.
+    \see MolecularHiearchyDecorator
+    \relates RigidBodyDecorator
+ */
+
+IMPATOMEXPORT core::RigidBodyTraits get_molecular_rigid_body_traits();
 
 IMPATOM_END_NAMESPACE
 

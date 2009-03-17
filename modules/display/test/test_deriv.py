@@ -47,11 +47,7 @@ class TestBL(IMP.test.TestCase):
             w.add_geometry(display.XYZDerivativeGeometry(core.XYZDecorator(ps[i])))
         w.set_file_name("")
 
-        pr=core.ChildrenParticleRefiner(hd.get_traits())
-        rbd= core.RigidBodyDecorator.create(p, pr)
-        s= core.AccumulateRigidBodyDerivatives(pr, rbd.get_traits())
-        um= core.UpdateRigidBodyMembers(pr, rbd.get_traits())
-        ss= core.SingletonScoreState(um, s, p)
+        rbd= core.create_rigid_body(p)
 
         set_log_level(TERSE)
         m.add_score_state(ss)
