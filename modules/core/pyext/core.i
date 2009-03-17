@@ -70,6 +70,7 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(NonbondedRestraint)
     IMP_OWN_CONSTRUCTOR(NormalMover)
     IMP_OWN_CONSTRUCTOR(UpdateRigidBodyOrientation)
+    IMP_OWN_CONSTRUCTOR(RigidBodyTraits)
     IMP_OWN_CONSTRUCTOR(AccumulateRigidBodyDerivatives)
     IMP_OWN_CONSTRUCTOR(UpdateRigidBodyMembers)
     IMP_OWN_CONSTRUCTOR(PairChainRestraint)
@@ -97,11 +98,11 @@ namespace IMP {
     //IMP_CONTAINER_SWIG(FilteredListSingletonContainer, Particle, singleton)
     //IMP_CONTAINER_SWIG(ListSingletonContainer, Particle, singleton)
 
-    IMP_OWN_FUNCTION(setup_rigid_bodies)
+    IMP_OWN_FUNCTION(create_rigid_bodies)
     IMP_OWN_FUNCTION(create_rigid_body)
-    IMP_OWN_FUNCTION(setup_covers)
+    IMP_OWN_FUNCTION(create_covers)
     IMP_OWN_FUNCTION(create_cover)
-    IMP_OWN_FUNCTION(setup_centroids)
+    IMP_OWN_FUNCTION(create_centroids)
     IMP_OWN_FUNCTION(create_centroid)
   }
 }
@@ -210,6 +211,7 @@ namespace IMP {
     %template(Movers) ::std::vector<Mover*>;
     %template(XYZDecorators) ::std::vector<XYZDecorator>;
     %template(XYZRDecorators) ::std::vector<XYZRDecorator>;
+    %template(RigidMemberDecorators) ::std::vector<RigidMemberDecorator>;
     %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
     %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
