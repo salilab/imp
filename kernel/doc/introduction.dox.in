@@ -97,7 +97,7 @@ for (int i=0; i< 100; ++i) {
 
 
 
-\section i7 Restraint some distances
+\section i7 Restrain some distances
 
 Restrain the distance between the first two particles.
 
@@ -108,8 +108,8 @@ IMP_PYTHON(fragments/pair_restraint)
 
 \code
 IMP::core::Harmonic *uf= new IMP::core::Harmonic(0,1);
-IMP::core::SphereDistancePairScore *df= new IMP::core::SphereDistancePairScore(uf);
-IMP::core::PairRestraint* r= new IMP::core::PairRestraint(df, ps->get_particle(0), ps->get_particle(1));
+IMP::core::SphereDistancePairScore *ps= new IMP::core::SphereDistancePairScore(uf);
+IMP::core::PairRestraint* r= new IMP::core::PairRestraint(ps, ps->get_particle(0), ps->get_particle(1));
 m->add_restraint(r);
 \endcode
 
