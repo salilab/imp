@@ -36,7 +36,7 @@ void CoverRefined::apply(Particle *p) const
   IMP_check(ref_->get_can_refine(p), "Passed particles cannot be refined",
             ValueException);
   Particles ps= ref_->get_refined(p);
-  set_enclosing_sphere(ps, dp);
+  set_enclosing_sphere(dp, ps);
   dp.set_radius(dp.get_radius()+slack_);
   ref_->cleanup_refined(p, ps);
 }
@@ -77,22 +77,13 @@ void create_covers(SingletonContainer *sc,
 
 XYZRDecorator create_cover(Particle *p, ParticleRefiner *pr,
                        FloatKey radius_key, Float slack) {
-  IMP_IF_CHECK(EXPENSIVE) {
-    Particles ps=pr->get_refined(p);
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_check(XYZRDecorator::is_instance_of(ps[i], radius_key),
-                "Particles must have radius attribute " << radius_key,
-                ValueException);
-    }
-    pr->cleanup_refined(p, ps, NULL);
-  }
   if (!XYZDecorator::is_instance_of(p)) {
     XYZDecorator::create(p, algebra::Vector3D(0,0,0));
   }
   if (!p->has_attribute(radius_key)) {
     p->add_attribute(radius_key, 0);
   }
-  XYZRDecorator d(p);
+  XYZRDecorator d(p, radius_key);
   d.set_coordinates_are_optimized(false);
 
   CoverRefined *cr= new CoverRefined(pr, radius_key, slack);
