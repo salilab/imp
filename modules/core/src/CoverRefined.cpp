@@ -47,16 +47,24 @@ void CoverRefined::show(std::ostream &out) const
       << *ref_ << " and " << rk_ << std::endl;
 }
 
-void setup_covers(Model *m, SingletonContainer *sc,
+void create_covers(SingletonContainer *sc,
                   ParticleRefiner *pr,
                   FloatKey radius_key, Float slack) {
+  IMP_check(sc->get_number_of_particles() >0,
+            "Need some particles to set up as centroid",
+            ValueException);
+  Model *m= sc->get_particle(0)->get_model();
   for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
        pit != sc->particles_end(); ++pit) {
+    XYZRDecorator d;
     if (!XYZRDecorator::is_instance_of(*pit)) {
-      XYZRDecorator::create(*pit,
+      d= XYZRDecorator::create(*pit,
                             algebra::Sphere3D(algebra::Vector3D(0,0,0),0),
-                            radius_key).set_coordinates_are_optimized(false);
+                            radius_key);
+    } else {
+      d= XYZRDecorator(*pit, radius_key);
     }
+    d.set_coordinates_are_optimized(false);
   }
 
   CoverRefined *cr= new CoverRefined(pr, radius_key, slack);
@@ -67,34 +75,32 @@ void setup_covers(Model *m, SingletonContainer *sc,
 }
 
 
-Particle* create_cover(Model *m, const Particles &ps,
+XYZRDecorator create_cover(Particle *p, ParticleRefiner *pr,
                        FloatKey radius_key, Float slack) {
-  IMP_check(!ps.empty(), "Need at least one particle to cover",
-            ValueException);
   IMP_IF_CHECK(EXPENSIVE) {
+    Particles ps=pr->get_refined(p);
     for (unsigned int i=0; i< ps.size(); ++i) {
       IMP_check(XYZRDecorator::is_instance_of(ps[i], radius_key),
                 "Particles must have radius attribute " << radius_key,
                 ValueException);
     }
+    pr->cleanup_refined(p, ps, NULL);
   }
-  Particle *p= new Particle(m);
-  XYZRDecorator d
-    = XYZRDecorator::create(p,
-                            algebra::Sphere3D(algebra::Vector3D(0,0,0),
-                                              0),
-                            radius_key);
+  if (!XYZDecorator::is_instance_of(p)) {
+    XYZDecorator::create(p, algebra::Vector3D(0,0,0));
+  }
+  if (!p->has_attribute(radius_key)) {
+    p->add_attribute(radius_key, 0);
+  }
+  XYZRDecorator d(p);
   d.set_coordinates_are_optimized(false);
-  FixedParticleRefiner *fpr= new FixedParticleRefiner(ps);
 
-  CoverRefined *cr= new CoverRefined(fpr, radius_key, slack);
-  DerivativesToRefined *dtr= new DerivativesToRefined(fpr,
+  CoverRefined *cr= new CoverRefined(pr, radius_key, slack);
+  DerivativesToRefined *dtr= new DerivativesToRefined(pr,
                                     XYZDecorator::get_xyz_keys());
   SingletonScoreState *sss= new SingletonScoreState(cr, dtr, p);
-  m->add_score_state(sss);
-  IMP_assert(fpr->get_refined(p).size() == ps.size(),
-             "FixedPR is broken");
-  return p;
+  p->get_model()->add_score_state(sss);
+  return d;
 }
 
 
