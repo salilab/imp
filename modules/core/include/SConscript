@@ -81,6 +81,7 @@ files = [
          'XYZDecorator.h',
          'XYZRDecorator.h',
          'bond_decorators.h',
+         'helpers.h',
          'macros.h',
          'model_io.h',
          'rigid_bodies.h',

@@ -76,6 +76,7 @@ files = [
          'XYZDecorator.cpp',
          'XYZRDecorator.cpp',
          'bond_decorators.cpp',
+         'helpers.cpp',
          'model_io.cpp',
          'rigid_bodies.cpp',
         ] \

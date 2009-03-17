@@ -157,6 +157,7 @@ namespace IMP {
 %include "IMP/core/DistanceToSingletonScore.h"
 %include "IMP/core/FixedParticleRefiner.h"
 %include "IMP/core/GridClosePairsFinder.h"
+%include "IMP/core/helpers.h"
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
