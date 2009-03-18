@@ -26,7 +26,7 @@ class TransformFunct:
         r= IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
         return r.get_derivative(self.x, self.qi)[self.xi]
 
-class RigidTransformationTests(IMP.test.TestCase):
+class RotationTests(IMP.test.TestCase):
     """Test rotations"""
 
     def test_axis_rotation(self):
@@ -81,7 +81,7 @@ class RigidTransformationTests(IMP.test.TestCase):
                 self.assertInTolerance(d, ad, .05)
 
     def test_rotation_between_vectors(self):
-        """Check that the rotation between two vecteors is correct"""
+        """Check that the rotation between two vectors is correct"""
         axis=[]
         axis.append(IMP.algebra.Vector3D(1.0,0.0,0.0))
         axis.append(IMP.algebra.Vector3D(0.0,1.0,0.0))
