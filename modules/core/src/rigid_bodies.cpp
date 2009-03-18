@@ -151,7 +151,6 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
     tr.add_required_attributes_for_member(mp);
     ds.push_back(RigidMemberDecorator(mp, tr));
   }
-  tr.get_particle_refiner()->cleanup_refined(p, members);
 
   // compute center of mass
   algebra::Vector3D v(0,0,0);
@@ -367,7 +366,6 @@ void UpdateRigidBodyOrientation::apply(Particle *p) const {
     RigidMemberDecorator d(p, tr_);
     d.set_coordinates(tr.transform(d.get_internal_coordinates()));
   }
-  tr_.get_particle_refiner()->cleanup_refined(p, members);
 }
 
 
@@ -409,7 +407,6 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
           << p->get_derivative(tr_.get_quaternion_keys()[3])
           << std::endl);
 
-  tr_.get_particle_refiner()->cleanup_refined(p, members);
   IMP_LOG(TERSE, "Translation deriv is "
           << static_cast<XYZDecorator>(rb).get_derivatives()
           << "" << std::endl);
@@ -435,8 +432,6 @@ void UpdateRigidBodyMembers::apply(Particle *p) const {
     RigidMemberDecorator rm(p, tr_);
     rm.set_coordinates(tr);
   }
-  tr_.get_particle_refiner()->cleanup_refined(p, members);
-
 }
 
 

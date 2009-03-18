@@ -53,7 +53,6 @@ void CentroidOfRefined::apply(Particle *p) const
     }
     p->set_value(ks_[j], v);
   }
-  r_->cleanup_refined(p, ps);
 }
 
 void CentroidOfRefined::show(std::ostream &out) const

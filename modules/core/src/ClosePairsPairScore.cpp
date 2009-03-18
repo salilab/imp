@@ -32,8 +32,6 @@ Float ClosePairsPairScore::evaluate(Particle *a, Particle *b,
 {
   std::vector<ParticlePair> queue;
   queue.push_back(ParticlePair(a,b));
-  // ick, and it isn't really even used
-  std::vector<std::pair<Particle*, Particles> > refined;
   double ret=0;
   do {
     ParticlePair pp= queue.back();
@@ -54,13 +52,11 @@ Float ClosePairsPairScore::evaluate(Particle *a, Particle *b,
     } else {
       if (r_->get_can_refine(pp[0])) {
         ps0= r_->get_refined(pp[0]);
-        refined.push_back(std::make_pair(pp[0], ps0));
       } else {
         ps0.push_back(pp[0]);
       }
       if (r_->get_can_refine(pp[1])) {
         ps1= r_->get_refined(pp[1]);
-        refined.push_back(std::make_pair(pp[1], ps1));
       } else {
         ps1.push_back(pp[1]);
       }
@@ -72,9 +68,6 @@ Float ClosePairsPairScore::evaluate(Particle *a, Particle *b,
     }
   } while (!queue.empty());
 
-  for (unsigned int i=0; i< refined.size(); ++i) {
-    r_->cleanup_refined(refined[i].first, refined[i].second);
-  }
   return ret;
 }
 
