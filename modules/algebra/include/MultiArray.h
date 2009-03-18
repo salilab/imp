@@ -36,7 +36,7 @@ public:
   typedef boost::multi_array_types::index index;
   typedef boost::multi_array_types::size_type size_type;
   typedef boost::multi_array<T, D> BMA;
-  typedef IMP::algebra::MultiArray<T, D> This;
+  typedef MultiArray<T, D> This;
 public:
   //! Empty constructor
   MultiArray() : BMA() {
@@ -247,7 +247,7 @@ public:
    * \return true if both arrays have the same size and index bases
    */
   template <typename T1>
-  bool same_shape(const IMP::algebra::MultiArray<T1, D>& b) const {
+  bool same_shape(const MultiArray<T1, D>& b) const {
     for (index i = 0;i < D;i++) {
       if (get_size(i) != b.get_size(i) || get_start(i) != b.get_start(i)) {
         return false; // different shape
@@ -485,7 +485,7 @@ protected:
 //! write to an output stream for 3 dimensions
 template<typename T, int D>
 std::ostream& operator<<(std::ostream& ostrm,
-                         const IMP::algebra::MultiArray<T, D>& v)
+                         const MultiArray<T, D>& v)
 {
   typedef boost::multi_array_types::index index;
   std::vector<index> idx(D);
@@ -539,36 +539,36 @@ std::ostream& operator<<(std::ostream& ostrm,
 #ifndef SWIG
   //! Sum operator for a scalar and an array
 template <class T, int D>
-  IMP::algebra::MultiArray<T, D> operator+(const T& X,
-                            const IMP::algebra::MultiArray<T, D>& a1) {
-    IMP::algebra::MultiArray<T, D> result(a1->shape());
+  MultiArray<T, D> operator+(const T& X,
+                             const MultiArray<T, D>& a1) {
+    MultiArray<T, D> result(a1->shape());
     internal::operate_scalar_and_array(X, a1, result, '+');
     return result;
   }
 
   //! Minus operator for a scalar and an array
 template <class T, int D>
-  IMP::algebra::MultiArray<T, D> operator-(const T& X,
-                          const IMP::algebra::MultiArray<T, D>& a1) {
-    IMP::algebra::MultiArray<T, D> result(a1->shape());
+  MultiArray<T, D> operator-(const T& X,
+                             const MultiArray<T, D>& a1) {
+    MultiArray<T, D> result(a1->shape());
     internal::operate_scalar_and_array(X, a1, result, '-');
     return result;
   }
 
   //! Multiplication operator for a scalar and an array
 template <class T, int D>
-  IMP::algebra::MultiArray<T, D> operator*(const T& X,
-                          const IMP::algebra::MultiArray<T, D>& a1) {
-    IMP::algebra::MultiArray<T, D> result(a1->shape());
+  MultiArray<T, D> operator*(const T& X,
+                             const MultiArray<T, D>& a1) {
+    MultiArray<T, D> result(a1->shape());
     internal::operate_scalar_and_array(X, a1, result, '*');
     return result;
   }
 
   //! Division operator for a scalar and an array
 template <class T, int D>
-  IMP::algebra::MultiArray<T, D> operator/(const T& X,
-                          const IMP::algebra::MultiArray<T, D>& a1) {
-    IMP::algebra::MultiArray<T, D> result(a1->shape());
+  MultiArray<T, D> operator/(const T& X,
+                             const MultiArray<T, D>& a1) {
+    MultiArray<T, D> result(a1->shape());
     internal::operate_scalar_and_array(X, a1, result, '/');
     return result;
   }
