@@ -7,10 +7,10 @@ import random
 
 
 def print_matrix3D(m):
-    for i in xrange(m.get_start(0),m.get_finish(0)+1):
+    for i in range(m.get_start(0),m.get_finish(0)+1):
         print "Layer :",i
-        for j in xrange(m.get_start(1),m.get_finish(1)+1):
-            for k in xrange(m.get_start(2),m.get_finish(2)+1):
+        for j in range(m.get_start(1),m.get_finish(1)+1):
+            for k in range(m.get_start(2),m.get_finish(2)+1):
                 print m[i,j,k],
             print "\n"
 
@@ -25,9 +25,9 @@ def print_matrix2D(m):
 
 def create_matrix(z,y,x):
     m1 = alg.matrix3D(z,y,x)
-    for i in xrange(m1.get_start(0),m1.get_finish(0)+1):
-        for j in xrange(m1.get_start(1),m1.get_finish(1)+1):
-            for k in xrange(m1.get_start(2),m1.get_finish(2)+1):
+    for i in range(m1.get_start(0),m1.get_finish(0)+1):
+        for j in range(m1.get_start(1),m1.get_finish(1)+1):
+            for k in range(m1.get_start(2),m1.get_finish(2)+1):
                 m1[i,j,k]=i+j+k
 #    print_matrix3D(m1)
 #    print "==============================================="
@@ -36,9 +36,9 @@ def create_matrix(z,y,x):
 def create_cube(z,y,x):
     m1 = alg.matrix3D(z,y,x)
     m1.centered_start()
-    for i in xrange(-2,2+1):
-        for j in xrange(-2,2+1):
-            for k in xrange(-2,2+1):
+    for i in range(-2,2+1):
+        for j in range(-2,2+1):
+            for k in range(-2,2+1):
                 m1[i,j,k]=random.random()
     m1.set_start(0,0)
     m1.set_start(1,0)
@@ -61,8 +61,8 @@ class EMprojectTests(IMP.test.TestCase):
         direction = alg.Vector3D(0,0,1)
         em.project(m1,result,dy,dx,direction,shift ,tolerance)
         print_matrix2D(result)
-        for i in xrange(0,dy):
-            for j in xrange(0,dx):
+        for i in range(0,dy):
+            for j in range(0,dx):
                 self.assertEqual(result[i,j],3*(i+j+1))
 
     def test_project_Z_opposite(self):
@@ -75,8 +75,8 @@ class EMprojectTests(IMP.test.TestCase):
         direction = alg.Vector3D(0,0,-1)
         em.project(m1,result,dy,dx,direction,shift ,tolerance)
         print_matrix2D(result)
-        for i in xrange(0,dy):
-            for j in xrange(0,dx):
+        for i in range(0,dy):
+            for j in range(0,dx):
                 self.assertEqual(result[(dy-1)-i,(dx-1)-j],3*(i+j+1))
 
 
@@ -90,8 +90,8 @@ class EMprojectTests(IMP.test.TestCase):
         direction = alg.Vector3D(1,0,0)
         em.project(m1,result,dy,dz,direction,shift ,tolerance)
 #        print_matrix2D(result)
-        for i in xrange(0,dy):
-            for j in xrange(0,dz):
+        for i in range(0,dy):
+            for j in range(0,dz):
                 self.assertEqual(result[i,j],9*(i+j+4))
 
 
@@ -105,8 +105,8 @@ class EMprojectTests(IMP.test.TestCase):
         direction = alg.Vector3D(-1,0,0)
         em.project(m1,result,dy,dz,direction,shift ,tolerance)
 #        print_matrix2D(result)
-        for i in xrange(0,dy):
-            for j in xrange(0,dz):
+        for i in range(0,dy):
+            for j in range(0,dz):
                 self.assertEqual(result[i,(dz-1)-j],9*(i+j+4))
 
 
@@ -120,8 +120,8 @@ class EMprojectTests(IMP.test.TestCase):
         direction = alg.Vector3D(0,1,0)
         em.project(m1,result,dz,dx,direction,shift ,tolerance)
 #        print_matrix2D(result)
-        for i in xrange(0,dz):
-            for j in xrange(0,dx):
+        for i in range(0,dz):
+            for j in range(0,dx):
                 self.assertEqual(result[i,j],5*(i+j+2))
 
 
@@ -135,8 +135,8 @@ class EMprojectTests(IMP.test.TestCase):
         direction = alg.Vector3D(0,-1,0)
         em.project(m1,result,dz,dx,direction,shift ,tolerance)
 #        print_matrix2D(result)
-        for i in xrange(0,dz):
-            for j in xrange(0,dx):
+        for i in range(0,dz):
+            for j in range(0,dx):
                 self.assertEqual(result[(dz-1)-i,j],5*(i+j+2))
 
     def test_project(self):
@@ -155,8 +155,8 @@ class EMprojectTests(IMP.test.TestCase):
 #        print_matrix2D(opp_result)
         # Check that the two projections mirror each other
         # (Double mirror in both directions of the projection)
-        for i in xrange(0,ydim):
-            for j in xrange(0,xdim):
+        for i in range(0,ydim):
+            for j in range(0,xdim):
                 self.assertEqual(result[i,j],opp_result[(xdim-1)-j,(ydim-1)-i])
 
 

@@ -38,13 +38,13 @@ class DOMINOTests(IMP.test.TestCase):
     def __set_restraints__(self):
         rsrs=[]
         self.opt_score = 0.0
-        for i in xrange(2):
+        for i in range(2):
             ub = IMP.core.HarmonicUpperBound(1.0, 0.1)
             ss= IMP.core.DistancePairScore(ub)
             r= IMP.core.ConnectivityRestraint(ss)
             ps = IMP.Particles()
             ps_refined=[]
-            for j in xrange(2):
+            for j in range(2):
                 ps_refined.append(IMP.core.get_leaves(self.h_particles[i+j]))
                 ps.append(self.particles[i+j])
             print "ps_refined lenght is : " + str(len(ps_refined))
@@ -68,7 +68,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.m_discrete_set = domino.TransformationMappedDiscreteSet(self.particles)
         #set 4 optinal centroids for each of the particles
         for j,p in enumerate(self.particles):
-            for i in xrange(3):
+            for i in range(3):
                 new_p=IMP.Particle()
                 self.imp_model.add_particle(new_p)
                 if (i==j):
@@ -116,7 +116,7 @@ class DOMINOTests(IMP.test.TestCase):
         rg = self.d_opt.get_graph()
         print "OPT SCORE ::::::::::::; " + str(self.opt_score)
         scores=[self.opt_score,39.3363,65.1026,71.9682, 85.5188]
-        for i in xrange(num_sol):
+        for i in range(num_sol):
             score_inf = rg.get_opt_combination(i).get_total_score()
             self.assert_( abs(score_inf -scores[i]) < 0.2 ,
                           "the score of the minimum configuration as calculated by the inference is wrong " + str(score_inf) + " != " + str(scores[i]))

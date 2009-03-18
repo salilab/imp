@@ -29,7 +29,7 @@ class SampleTests(IMP.test.TestCase):
             self.particles.append(p)
         self.particle_indexes = IMP.Ints()
         self.particle_indexes.clear()
-        for i in xrange(npart):
+        for i in range(npart):
             self.particle_indexes.push_back(i)
         print "initialization done ..."
 

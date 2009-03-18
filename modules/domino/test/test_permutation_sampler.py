@@ -13,7 +13,7 @@ class DOMINOTests(IMP.test.TestCase):
         name_key = IMP.StringKey("name")
         atts.append(x_key);atts.append(y_key);atts.append(z_key)
         self.discrete_set = domino.DiscreteSet(atts)
-        for i in xrange(4):
+        for i in range(4):
             new_p=IMP.Particle()
             self.imp_model.add_particle(new_p)
             new_p.add_attribute(x_key,3*i,True)
@@ -76,7 +76,7 @@ class DOMINOTests(IMP.test.TestCase):
         print d_opt.optimize(1)
         rg = d_opt = d_opt.get_graph()
         scores=[6.7889,6.7889,6.7889,6.7889,22.6833]
-        for i in xrange(num_sol):
+        for i in range(num_sol):
             score_inf = rg.get_opt_combination(i).get_total_score()
             self.assertAlmostEqual(score_inf,scores[i],places=1)
 if __name__ == '__main__':
