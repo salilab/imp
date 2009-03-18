@@ -2,7 +2,7 @@
  *  \file VolumeEM.h
  *  \brief Management of IMP volumes for Electron Microscopy
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPEM_VOLUME_EM_H

@@ -2,7 +2,7 @@
  *  \file CloseBipartitePairsScoreState.h
  *  \brief Maintain a list of close pairs.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_CLOSE_BIPARTITE_PAIRS_SCORE_STATE_H

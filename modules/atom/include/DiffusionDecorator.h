@@ -2,7 +2,7 @@
  *  \file atom/DiffusionDecorator.h
  *  \brief A decorator for a diffusing particle.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file EulerOperations.h
  *  \brief Euler operations for EM
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPEM_EULER_OPERATIONS_H

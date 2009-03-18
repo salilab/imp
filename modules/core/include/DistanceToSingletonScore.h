@@ -2,7 +2,7 @@
  *  \file DistanceToSingletonScore.h
  *  \brief A Score on the distance to a fixed point.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H

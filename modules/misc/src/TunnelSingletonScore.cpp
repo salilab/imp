@@ -2,7 +2,7 @@
  *  \file TunnelSingletonScore.cpp
  *  \brief Score particles with respect to a tunnel.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

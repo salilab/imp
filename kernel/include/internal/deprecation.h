@@ -2,7 +2,7 @@
  *  \file internal/deprecation.h
  *  \brief Macros to mark a class as deprecated.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

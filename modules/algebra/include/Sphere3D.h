@@ -1,7 +1,7 @@
 /**
  *  \file Sphere3D.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 #ifndef IMPALGEBRA_SPHERE_3D_H

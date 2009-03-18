@@ -1,7 +1,7 @@
 /**
  *  \file PairScore.h    \brief A Score on a pair of particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMP_PAIR_SCORE_H

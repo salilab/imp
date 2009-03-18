@@ -1,7 +1,7 @@
 /**
  *  \file output_helpers.cpp
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *  Adapted with permission from Xmip 2.2
 */
 #include "IMP/algebra/internal/output_helpers.h"

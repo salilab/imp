@@ -1,7 +1,7 @@
 /**
  *  \file SAXSScore.h   \brief A class for SAXS scoring and its derivatives
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

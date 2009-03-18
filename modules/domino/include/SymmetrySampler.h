@@ -2,7 +2,7 @@
  * \file  SymmetrySampler.h
  * \brief Sample transformations of particles while preseving N-symmetry.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDOMINO_SYMMETRY_SAMPLER_H

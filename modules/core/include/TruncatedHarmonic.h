@@ -1,7 +1,7 @@
 /**
  *  \file TruncatedHarmonic.h    \brief Truncated harmonic.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_TRUNCATED_HARMONIC_H

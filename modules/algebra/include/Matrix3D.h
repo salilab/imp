@@ -2,7 +2,7 @@
  *  \file Matrix3D.h
  *  \brief Management of 3D matrices (volumes) of data
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_MATRIX_3D_H

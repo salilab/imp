@@ -2,7 +2,7 @@
  *  \file hierarchy_helpers.h
  *  \brief Helpers for the HierarchyDecorator.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

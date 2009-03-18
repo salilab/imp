@@ -2,7 +2,7 @@
  *  \file DomainDecorator.h
  *  \brief A decorator for associating a MolecularHiearchy piece with a domain
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPATOM_DOMAIN_DECORATOR_H

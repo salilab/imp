@@ -1,7 +1,7 @@
 /**
  *  \file ParticleRefiner.cpp \brief Refine a particle into a list of particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

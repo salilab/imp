@@ -2,7 +2,7 @@
  *  \file DiameterRestraint.h
  *  \brief A restraint to maintain the diameter of a set of points
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_DIAMETER_RESTRAINT_H

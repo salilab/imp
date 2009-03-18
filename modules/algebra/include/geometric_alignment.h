@@ -2,7 +2,7 @@
  *  \file geometric_alignment.h
  *  \brief align sets of points.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_GEOMETRIC_ALIGNMENT_H

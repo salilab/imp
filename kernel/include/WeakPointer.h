@@ -2,7 +2,7 @@
  *  \file WeakPointer.h
  *  \brief A NULL-initialized pointer to an IMP Object.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

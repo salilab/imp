@@ -1,7 +1,7 @@
 /**
  *  \file Restraint.cpp   \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

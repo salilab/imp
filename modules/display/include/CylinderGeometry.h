@@ -2,7 +2,7 @@
  *  \file CylinderGeometry.h
  *  \brief Represent an CylinderDecorator particle with a sphere
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_CYLINDER_GEOMETRY_H

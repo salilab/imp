@@ -2,7 +2,7 @@
  *  \file BondBondPairScore.cpp
  *  \brief Score on the cylinerCyliner between a pair of particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include "IMP/atom/BondBondPairScore.h"

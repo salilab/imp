@@ -1,7 +1,7 @@
 /**
  *  \file SimpleDiscreteSampler.h   \brief for debugging
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDOMINO_SIMPLE_DISCRETE_SAMPLER_H

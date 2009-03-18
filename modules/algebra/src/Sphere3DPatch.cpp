@@ -1,7 +1,7 @@
 /**
  *  \file Sphere3DPatch.cpp   \brief Simple 3D sphere patch class.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

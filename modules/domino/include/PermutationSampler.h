@@ -5,7 +5,7 @@
  *         particle for a specific mapping. For example, for anchor points
  *         [1,2,3,4,5,6] to particles [a,b,c,d] the sampling space would be:
  *         [1,2,3,4],[1,2,3,5],[1,2,3,6],[1,2,4,3],......,[6,5,4,2],[6,5,4,3]
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #ifndef IMPDOMINO_PERMUTATION_SAMPLER_H
 #define IMPDOMINO_PERMUTATION_SAMPLER_H

@@ -1,7 +1,7 @@
 /**
  *  \file Optimizer.cpp   \brief Base class for all optimizers.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

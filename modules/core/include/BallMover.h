@@ -2,7 +2,7 @@
  *  \file BallMover.h
  *  \brief A modifier which variables within a ball.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

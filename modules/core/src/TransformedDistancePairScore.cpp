@@ -2,7 +2,7 @@
  *  \file TransformedDistancePairScore.cpp
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/core/TransformedDistancePairScore.h>

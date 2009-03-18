@@ -2,7 +2,7 @@
  * \file  TransformationDiscreteSet.cpp
  * \brief Holds a discrete sampling space of transformations.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/domino/TransformationDiscreteSet.h>

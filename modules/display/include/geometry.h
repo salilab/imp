@@ -2,7 +2,7 @@
  *  \file geometry.h
  *  \brief XXXXXXXXXXXXXX
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_GEOMETRY_H

@@ -2,7 +2,7 @@
  *  \file container_macros.h
  *  \brief Macros to define containers of objects
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

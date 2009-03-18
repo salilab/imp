@@ -2,7 +2,7 @@
  *  \file ImageHeader.h
  *  \brief Header for EM images
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPEM_IMAGE_HEADER_H

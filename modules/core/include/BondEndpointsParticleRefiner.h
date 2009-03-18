@@ -2,7 +2,7 @@
  *  \file core/BondEndpointsParticleRefiner.h
  *  \brief Return the endpoints of a bond.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_BOND_ENDPOINTS_PARTICLE_REFINER_H

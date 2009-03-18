@@ -2,7 +2,7 @@
  *  \file container_helpers.h
  *  \brief Internal helpers for container classes.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

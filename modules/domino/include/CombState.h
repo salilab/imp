@@ -1,7 +1,7 @@
 /**
  *  \file CombState.h   \brief Handles all functionalities of a single state
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDOMINO_COMB_STATE_H

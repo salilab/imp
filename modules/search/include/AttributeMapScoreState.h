@@ -2,7 +2,7 @@
  * \file AttributeMapScoreState.h
  * \brief Maintain a map between attribute values and particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

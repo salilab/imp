@@ -2,7 +2,7 @@
  *  \file ParticleGrid.h
  *  \brief A grid for keeping track of particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_PARTICLE_GRID_H

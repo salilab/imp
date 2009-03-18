@@ -1,7 +1,7 @@
 /**
  *  \file Vector3D.h   \brief Simple 3D vector class.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

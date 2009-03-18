@@ -16,7 +16,7 @@ def _build_header(target, source, env):
     fh = file(fname, 'w')
     print >> fh, "/**\n *  \\file %s   \\brief %s\n *" \
              % (os.path.basename(fname), description)
-    print >> fh, " *  Copyright 2007-8 Sali Lab. All rights reserved."
+    print >> fh, " *  Copyright 2007-9 Sali Lab. All rights reserved."
     print >> fh, " *\n */\n"
     print >> fh, "#ifndef %s\n#define %s\n" % (guard, guard)
     prefix = len(os.path.commonprefix([f.path for f in source]))

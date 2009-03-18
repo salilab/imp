@@ -1,7 +1,7 @@
 /**
  *  \file WormLikeChain.h    \brief Worm-like-chain score for polymer chains.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPMISC_WORM_LIKE_CHAIN_H

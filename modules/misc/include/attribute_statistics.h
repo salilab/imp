@@ -2,7 +2,7 @@
  *  \file attribute_statistics.h
  *  \brief Functions to get report statistics about the used attributes.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPMISC_ATTRIBUTE_STATISTICS_H

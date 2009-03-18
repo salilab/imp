@@ -2,7 +2,7 @@
  *  \file LeavesParticleRefiner.h
  *  \brief Return the hierarchy children of a particle.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_LEAVES_PARTICLE_REFINER_H

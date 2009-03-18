@@ -2,7 +2,7 @@
  *  \file RefineOncePairScore.h
  *  \brief Refine particles at most once with a ParticleRefiner.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPMISC_REFINE_ONCE_PAIR_SCORE_H

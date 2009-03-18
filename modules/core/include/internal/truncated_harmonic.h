@@ -2,7 +2,7 @@
  *  \file truncated_harmonic.h
  *  \brief Helpers for the truncated harmonics.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

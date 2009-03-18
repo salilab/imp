@@ -9,7 +9,7 @@
  *    the sampling space would be:
  *    [p1^t11,p2^t21,p3^t31],[p1^t11,p2^t21,p3^t32], ... ,[p1^t12,p2^t23,p3^t31]
  *     p^t indicates the p is transforms by t
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #ifndef IMPDOMINO_TRANSFORMATION_CARTESIAN_PRODUCT_SAMPLER_H
 #define IMPDOMINO_TRANSFORMATION_CARTESIAN_PRODUCT_SAMPLER_H

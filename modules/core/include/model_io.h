@@ -1,7 +1,7 @@
 /**
  *  \file model_io.h     \brief Support for io of the model.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

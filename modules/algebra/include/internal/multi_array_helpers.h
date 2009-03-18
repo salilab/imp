@@ -1,7 +1,7 @@
 /**
  *  \file multi_array_helpers.h    \brief helpers for multi_array.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

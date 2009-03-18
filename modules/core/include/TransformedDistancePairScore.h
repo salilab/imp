@@ -3,7 +3,7 @@
  *  \brief A score on the distance between a pair of particles
  *  after transforming one.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H

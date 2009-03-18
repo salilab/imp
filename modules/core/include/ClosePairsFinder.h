@@ -2,7 +2,7 @@
  *  \file ClosePairsFinder.h
  *  \brief A base class for algorithms to detect proximities.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_CLOSE_PAIRS_FINDER_H

@@ -2,7 +2,7 @@
  *  \file ChildrenParticleRefiner.cpp
  *  \brief Return the hierarchy children of a particle.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/core/ChildrenParticleRefiner.h>

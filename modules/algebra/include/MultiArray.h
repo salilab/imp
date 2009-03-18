@@ -2,7 +2,7 @@
  *  \file MultiArray.h
  *  \brief Management of arrays of multiple dimensions
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_MULTI_ARRAY_H

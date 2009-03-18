@@ -1,7 +1,7 @@
 /**
  *  \file TransformationCartesianProductSampler.h
  *  \brief Samples all combinations of a transformations on particles.
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #include "IMP/domino/TransformationCartesianProductSampler.h"
 IMPDOMINO_BEGIN_NAMESPACE

@@ -1,7 +1,7 @@
 /**
  *  \file PermutationSampler.h
  *  \brief The class samples all  permutations of transformations to particles
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #ifndef IMPDOMINO_TRANSFORMATION_PERMUTATION_SAMPLER_H
 #define IMPDOMINO_TRANSFORMATION_PERMUTATION_SAMPLER_H

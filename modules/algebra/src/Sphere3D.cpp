@@ -2,7 +2,7 @@
  *  \file  Sphere3D.cpp
  *  \brief simple implementation of spheres in 3D
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #include <IMP/base_types.h>
 #include <IMP/algebra/Sphere3D.h>

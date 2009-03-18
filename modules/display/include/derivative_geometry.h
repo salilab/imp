@@ -2,7 +2,7 @@
  *  \file derivative_geometry.h
  *  \brief Display the derivatives of various things
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_DERIVATIVE_GEOMETRY_H

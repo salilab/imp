@@ -1,7 +1,7 @@
 /**
  *  \file Grid3D.h   \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

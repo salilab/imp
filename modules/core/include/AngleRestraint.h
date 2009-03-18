@@ -1,7 +1,7 @@
 /**
  *  \file AngleRestraint.h   \brief Angle restraint between three particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

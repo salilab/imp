@@ -1,7 +1,7 @@
 /**
  *  \file UnaryFunction.cpp  \brief Single variable function.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/UnaryFunction.h>

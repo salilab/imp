@@ -2,7 +2,7 @@
  *  \file NormalMover.cpp
  *  \brief A modifier which perturbs a point with a gaussian.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

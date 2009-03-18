@@ -2,7 +2,7 @@
  *  \file AttributeSingletonScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H

@@ -1,7 +1,7 @@
 /**
  *  \file Rotation3D.cpp   \brief Simple 3D rotation class.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 #include "IMP/algebra/Rotation3D.h"

@@ -2,7 +2,7 @@
  *  \file FixedParticleRefiner.h
  *  \brief A particle refiner which returns a fixed set of particles
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_FIXED_PARTICLE_REFINER_H

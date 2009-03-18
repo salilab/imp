@@ -2,7 +2,7 @@
  *  \file DerivativesToRefined.h
  *  \brief Accumulate the derivatives of the refined particles
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_DERIVATIVES_TO_REFINED_H

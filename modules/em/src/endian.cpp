@@ -1,7 +1,7 @@
 /**
  *  \file endian.cpp
  *  \brief Calculate score based on fit to EM map.
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #include <IMP/em/endian.h>

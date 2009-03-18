@@ -2,7 +2,7 @@
  *  \file core/MolecularHierarchyDecorator.h   \brief MHD
  *                                               a hierarchy of molecules.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

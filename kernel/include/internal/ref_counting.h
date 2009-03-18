@@ -2,7 +2,7 @@
  *  \file ref_counting.h
  *  \brief Helpers to handle reference counting.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

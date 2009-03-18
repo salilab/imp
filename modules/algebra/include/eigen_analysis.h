@@ -2,7 +2,7 @@
  *  \file eigen_analysis.h
  *  \brief Principal component analysis of a set of points
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 
