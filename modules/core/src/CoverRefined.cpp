@@ -38,7 +38,6 @@ void CoverRefined::apply(Particle *p) const
   Particles ps= ref_->get_refined(p);
   set_enclosing_sphere(dp, ps);
   dp.set_radius(dp.get_radius()+slack_);
-  ref_->cleanup_refined(p, ps);
 }
 
 void CoverRefined::show(std::ostream &out) const

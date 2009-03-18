@@ -103,8 +103,6 @@ Geometries RigidBodyDerivativeGeometry::get_geometry() const {
     nrtr->set_color(ccolor_);
     ret.push_back(nrtr);
   }
-  d_.get_traits().get_particle_refiner()
-    ->cleanup_refined(d_.get_particle(), ms);
   return ret;
 }
 

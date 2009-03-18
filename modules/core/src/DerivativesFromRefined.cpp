@@ -36,7 +36,6 @@ void DerivativesFromRefined
       p->add_to_derivative(ks_[j], f, *da);
     }
   }
-  r_->cleanup_refined(p, ps);
 }
 
 void DerivativesFromRefined::show(std::ostream &out) const

@@ -41,7 +41,6 @@ void VRMLLogOptimizerState::write(std::ostream &out, It b, It e) const
       if ((*prit)->get_can_refine(p)) {
         Particles refined= (*prit)->get_refined(p);
         write(out, refined.begin(), refined.end());
-        (*prit)->cleanup_refined(p, refined, NULL);
         wasrefined=true;
         break;
       }

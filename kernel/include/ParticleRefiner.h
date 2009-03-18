@@ -35,14 +35,6 @@ public:
    */
   virtual Particles get_refined(Particle *a) const;
 
-  //! Cleanup after refining
-  /** If da is non-NULL then the derivatives should be propagated
-      to the appropriate particles. This method is only called when
-      the caller is done with the particles, so the particles
-      can be destroyed if they are temporary.
-   */
-  virtual void cleanup_refined(Particle *a, Particles &b,
-                               DerivativeAccumulator *da=0) const {}
   //! Print information about the refiner
   /** It should end in a new line. */
   virtual void show(std::ostream &out=std::cout) const {
