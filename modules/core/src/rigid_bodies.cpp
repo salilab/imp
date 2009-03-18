@@ -479,10 +479,14 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
 }
 
 ScoreState* create_rigid_body(Particle *p,
-                                     RigidBodyTraits tr) {
+                              RigidBodyTraits tr) {
   Model *m= p->get_model();
   RigidBodyDecorator rbd= RigidBodyDecorator::create(p, tr);
-  SMP sm= get_modifiers(tr);
+  RigidBodyTraits ftr= tr;
+  Particles ps= rbd.get_traits().get_particle_refiner()
+    ->get_refined(rbd.get_particle());
+  ftr.set_particle_refiner(new FixedParticleRefiner(ps));
+  SMP sm= get_modifiers(ftr);
   rbd.set_coordinates_are_optimized(true);
   SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, p);
   m->add_score_state(sss);
