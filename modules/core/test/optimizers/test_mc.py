@@ -23,7 +23,7 @@ class WoodsFunc(IMP.Restraint):
                    -2.0 * (180.0 * x3 * b + 1.0 - x3),
                    2.0 * (90.0 * b + 10.1 * (x4 - 1.0) + 9.9 * (x2 - 1.0))]
             for (p,d) in zip(self.get_model().get_particles(), dx):
-                p.add_to_derivative(self.index, d, accum);
+                p.add_to_derivative(self.index, d, accum)
         return e
     def get_version_info(self):
         return IMP.VersionInfo("Daniel Russel", "0.5")

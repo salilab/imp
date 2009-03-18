@@ -7,7 +7,7 @@ import math
 
 def _testfunc(val):
     """Simple function and its first derivative"""
-    return val * val + 3.0 * val + 1.0, 2.0 * val + 3.0;
+    return val * val + 3.0 * val + 1.0, 2.0 * val + 3.0
 
 def _periodic_testfunc(val):
     """Simple periodic function and its first derivative"""

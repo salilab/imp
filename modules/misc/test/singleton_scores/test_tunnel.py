@@ -92,7 +92,7 @@ class TunnelTest(IMP.test.TestCase):
         d.show()
         m.evaluate(True)
         IMP.set_log_level(IMP.SILENT)
-        cg.optimize(1000);
+        cg.optimize(1000)
         d.show()
         self.assert_(m.evaluate(False) < .001)
 

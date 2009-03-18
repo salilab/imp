@@ -72,7 +72,7 @@ class DOMINOTests(IMP.test.TestCase):
             d_opt.add_restraint(r)
         d_opt.set_sampling_space(self.sampler)
         num_sol=5
-        d_opt.set_number_of_solutions(num_sol);
+        d_opt.set_number_of_solutions(num_sol)
         print d_opt.optimize(1)
         rg = d_opt = d_opt.get_graph()
         scores=[6.7889,6.7889,6.7889,6.7889,22.6833]
