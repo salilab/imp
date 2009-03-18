@@ -3,7 +3,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
-import IMP.display
 import IMP.atom
 
 
