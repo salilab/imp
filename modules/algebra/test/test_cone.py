@@ -3,8 +3,8 @@ import IMP
 import IMP.utils
 import IMP.test
 import IMP.algebra
-import IMP.display
 import math
+
 class ConeTests(IMP.test.TestCase):
     """Test rigid transformations"""
 
