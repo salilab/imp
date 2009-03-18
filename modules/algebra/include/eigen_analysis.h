@@ -1,6 +1,6 @@
 /**
  *  \file eigen_analysis.h
- *  \brief principal component analysis of a set of points
+ *  \brief Principal component analysis of a set of points
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
@@ -14,9 +14,9 @@
 #include <IMP/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
-class IMPALGEBRAEXPORT PrincipleComponentAnalysis {
+class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
 public:
-  PrincipleComponentAnalysis(const Vector3D &pc1,const Vector3D &pc2,
+  PrincipalComponentAnalysis(const Vector3D &pc1,const Vector3D &pc2,
        const Vector3D &pc3,Vector3D values) : eigen_values_(values){
     eigen_vecs_.push_back(pc1);
     eigen_vecs_.push_back(pc2);
@@ -32,11 +32,11 @@ public:
     out<<std::endl<<"Third eigen vector : ";
     eigen_vecs_[2].show();
   }
-  Vector3D get_principle_component(unsigned int i) const {
+  Vector3D get_principal_component(unsigned int i) const {
     IMP_assert(i>=0 && i<3, "index is not between 0, 1 or 2");
     return eigen_vecs_[i];
   }
-  double get_principle_value(unsigned int i) const {
+  double get_principal_value(unsigned int i) const {
     IMP_assert(i>=0 && i<3, "index is not between 0, 1 or 2");
     return eigen_values_[i];
   }
@@ -45,7 +45,7 @@ protected:
   Vector3D eigen_values_;
 };
 
-IMPALGEBRAEXPORT PrincipleComponentAnalysis principle_components(
+IMPALGEBRAEXPORT PrincipalComponentAnalysis principal_components(
                               const std::vector<Vector3D> &ps);
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_EIGEN_ANALYSIS_H */
