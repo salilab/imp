@@ -33,6 +33,16 @@ struct RigidBodyData: public RefCountedObject {
   void show(std::ostream &out) const {
     out << child_keys_[0] << " " << quaternion_[0];
   }
+  RigidBodyData* clone() const {
+    RigidBodyData *rb= new RigidBodyData();
+    rb->pr_=pr_;
+    rb->child_keys_= child_keys_;
+    rb->quaternion_= quaternion_;
+    rb->mass_= mass_;
+    rb->radius_= radius_;
+    rb->snap_= snap_;
+    return rb;
+  }
 };
 
 IMP_OUTPUT_OPERATOR(RigidBodyData);

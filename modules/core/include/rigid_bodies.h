@@ -73,12 +73,14 @@ class IMPCOREEXPORT RigidBodyTraits {
   }
   //! For testing only currently
   /** This method changes whether the current traits uses snapping or not.
-      Changing this setting will not effect existing rigid bodies and passing
-      traits whose contents don't match the value when the rigid body was
-      created can mess things up.
    */
   void set_snapping(bool tf) {
-    d_->snap_=tf;
+    d_= d_->clone();
+    d_->snap_= tf;
+  }
+  void set_particle_refiner(ParticleRefiner *pr) {
+    d_= d_->clone();
+    d_->pr_=pr;
   }
   //! Set appropriate ranges for contrainable values
   /** Quaternion ranges are set to be from 0 to 1.
@@ -309,13 +311,13 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
 
 //! Sets up the ScoreState needed for a rigid body
 /**
-   \param[in] m the model
    \param[in] rbs particles to make into rigid bodies
    \param[in] tr the rigid body traits to use
-   \param[in] snap whether to use snapping (as opposed to direct optimization
-   of the rotational degrees for freedom).
    \relates RigidBodyDecorator
    \note The rigid bodies are set to be optimized.
+   \note The composition of the rigid bodies may be cached and changes after
+   setup may not be detected.
+
    To stop keeping the body rigid, remove the returned score state from the
    model.
  */
@@ -327,11 +329,12 @@ IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
 /**
    \param[in] m the model
    \param[in] tr the rigid body traits to use
-   \param[in] snap whether to use snapping (as opposed to direct optimization
-   of the rotational degrees for freedom).
    \relates RigidBodyDecorator
 
    \note The rigid body is set to be optimized.
+   \note The composition of the rigid bodies may be cached and changes after
+   setup may not be detected.
+
    To stop keeping the body rigid, remove the returned score state from the
    model.
  */
