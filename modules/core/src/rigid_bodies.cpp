@@ -16,12 +16,12 @@
 #include <IMP/algebra/internal/jama_eig.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/core/FixedParticleRefiner.h>
+#include <IMP/core/FixedRefiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 
-RigidBodyTraits::RigidBodyTraits(ParticleRefiner *pr,
+RigidBodyTraits::RigidBodyTraits(Refiner *pr,
                                  std::string pre,
                                  FloatKey mass,
                                  FloatKey radius,
@@ -480,7 +480,7 @@ ScoreState* create_rigid_body(Particle *p,
   RigidBodyTraits ftr= tr;
   Particles ps= rbd.get_traits().get_particle_refiner()
     ->get_refined(rbd.get_particle());
-  ftr.set_particle_refiner(new FixedParticleRefiner(ps));
+  ftr.set_particle_refiner(new FixedRefiner(ps));
   SMP sm= get_modifiers(ftr);
   rbd.set_coordinates_are_optimized(true);
   SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, p);

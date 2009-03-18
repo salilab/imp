@@ -1,6 +1,6 @@
 /**
  *  \file RefineOncePairScore.h
- *  \brief Refine particles at most once with a ParticleRefiner.
+ *  \brief Refine particles at most once with a Refiner.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
@@ -13,27 +13,27 @@
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
 #ifndef IMP_NO_DEPRECATED
 
-//! Refine the input particles at most once with the ParticleRefiner.
+//! Refine the input particles at most once with the Refiner.
 /** Each passed particle is refined once before the resulting pairs
     have the pair score called on them.
     \deprecated Use core::RefinedPairsPairScore
  */
 class IMPMISCEXPORT RefineOncePairScore : public PairScore
 {
-  Pointer<ParticleRefiner> r_;
+  Pointer<Refiner> r_;
   Pointer<PairScore> f_;
 
 public:
-  /** \param[in] r The ParticleRefiner to call on each particle
+  /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
    */
-  RefineOncePairScore(ParticleRefiner *r, PairScore *f);
+  RefineOncePairScore(Refiner *r, PairScore *f);
   /** */
   virtual ~RefineOncePairScore(){}
   /** */

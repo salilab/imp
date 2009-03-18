@@ -1,19 +1,19 @@
 /**
- *  \file ChildrenParticleRefiner.h
+ *  \file ChildrenRefiner.h
  *  \brief Return the hierarchy children of a particle.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_CHILDREN_PARTICLE_REFINER_H
-#define IMPCORE_CHILDREN_PARTICLE_REFINER_H
+#ifndef IMPCORE_CHILDREN_REFINER_H
+#define IMPCORE_CHILDREN_REFINER_H
 
 #include "config.h"
 #include "internal/version_info.h"
 #include "HierarchyDecorator.h"
 #include <IMP/atom/MolecularHierarchyDecorator.h>
 
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -26,19 +26,19 @@ class HierarchyTraits;
     \see HierarchyDecorator
     \see MolecularHierarchyDecorator
 */
-class IMPCOREEXPORT ChildrenParticleRefiner : public ParticleRefiner
+class IMPCOREEXPORT ChildrenRefiner : public Refiner
 {
 
   HierarchyTraits traits_;
 public:
   //! Create a refiner for a particular type of hierarchy
-  ChildrenParticleRefiner(HierarchyTraits tr);
+  ChildrenRefiner(HierarchyTraits tr);
 
-  virtual ~ChildrenParticleRefiner() {}
+  virtual ~ChildrenRefiner() {}
 
-  IMP_PARTICLE_REFINER(internal::version_info);
+  IMP_REFINER(internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_CHILDREN_PARTICLE_REFINER_H */
+#endif  /* IMPCORE_CHILDREN_REFINER_H */

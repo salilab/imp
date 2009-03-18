@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ClosePairsPairScore::ClosePairsPairScore(ParticleRefiner *r,
+ClosePairsPairScore::ClosePairsPairScore(Refiner *r,
                                          PairScore *f,
                                          Float thre,
                                          FloatKey rk): r_(r), f_(f),

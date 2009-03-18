@@ -36,7 +36,7 @@ void VRMLLogOptimizerState::write(std::ostream &out, It b, It e) const
   for (It c=b; c != e; ++c) {
     Particle *p = *c;
     bool wasrefined=false;
-    for (ParticleRefinerConstIterator prit= particle_refiners_begin();
+    for (RefinerConstIterator prit= particle_refiners_begin();
          prit != particle_refiners_end(); ++prit) {
       if ((*prit)->get_can_refine(p)) {
         Particles refined= (*prit)->get_refined(p);
@@ -129,8 +129,8 @@ void VRMLLogOptimizerState::write(std::string buf) const
   }
 }
 
-IMP_LIST_IMPL(VRMLLogOptimizerState, ParticleRefiner, particle_refiner,
-              ParticleRefiner*,,,);
+IMP_LIST_IMPL(VRMLLogOptimizerState, Refiner, particle_refiner,
+              Refiner*,,,);
 
 static Float snap(Float f)
 {

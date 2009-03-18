@@ -1,11 +1,11 @@
 /**
- *  \file ParticleRefiner.h   \brief Refine a particle into a list of particles.
+ *  \file Refiner.h   \brief Refine a particle into a list of particles.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMP_PARTICLE_REFINER_H
-#define IMP_PARTICLE_REFINER_H
+#ifndef IMP_REFINER_H
+#define IMP_REFINER_H
 
 #include "config.h"
 #include "base_types.h"
@@ -22,10 +22,10 @@ class DerivativeAccumulator;
 /** The job of this class is to take a single particle and, if
     appropriate, return a list of particles.
 */
-class IMPEXPORT ParticleRefiner : public RefCountedObject
+class IMPEXPORT Refiner : public RefCountedObject
 {
 public:
-  ParticleRefiner() {}
+  Refiner() {}
   //! Return true if this refiner can refine that particle
   /** This should not throw, so be careful what fields are touched.
    */
@@ -38,19 +38,19 @@ public:
   //! Print information about the refiner
   /** It should end in a new line. */
   virtual void show(std::ostream &out=std::cout) const {
-    out << "ParticleRefiner base" << std::endl;
+    out << "Refiner base" << std::endl;
   };
 
   //! Get information about the author and version
   virtual IMP::VersionInfo get_version_info() const =0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(ParticleRefiner)
+  IMP_REF_COUNTED_DESTRUCTOR(Refiner)
 };
-//! a collection of ParticleRefiner objects
-typedef std::vector<ParticleRefiner*> ParticleRefiners;
+//! a collection of Refiner objects
+typedef std::vector<Refiner*> Refiners;
 
-IMP_OUTPUT_OPERATOR(ParticleRefiner);
+IMP_OUTPUT_OPERATOR(Refiner);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_PARTICLE_REFINER_H */
+#endif  /* IMP_REFINER_H */

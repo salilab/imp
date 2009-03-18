@@ -9,7 +9,7 @@
 #include "IMP/core/DiameterRestraint.h"
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZRDecorator.h>
-#include <IMP/core/FixedParticleRefiner.h>
+#include <IMP/core/FixedRefiner.h>
 #include <IMP/core/PairsRestraint.h>
 #include <IMP/core/CoverRefined.h>
 #include <IMP/core/DistancePairScore.h>
@@ -72,7 +72,7 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f,
   Model *m= sc->get_particle(0)->get_model();
   Particle *p= new Particle(m);
   ss_.set(create_cover(p,
-                       new FixedParticleRefiner(Particles(sc->particles_begin(),
+                       new FixedRefiner(Particles(sc->particles_begin(),
                                                           sc->particles_end())),
                        FloatKey("diameter_radius"),
                        0), NULL);

@@ -33,7 +33,7 @@ class Test(IMP.test.TestCase):
         r1= self._random_hierarchy(m)
         ls0= IMP.core.get_leaves(r0)
         ls1= IMP.core.get_leaves(r1)
-        cpr= IMP.core.ChildrenParticleRefiner(r0.get_traits())
+        cpr= IMP.core.ChildrenRefiner(r0.get_traits())
         lps= IMP.misc.LogPairScore()
         cpps= IMP.core.ClosePairsPairScore(cpr, lps, threshold)
         cpps.evaluate(r0.get_particle(), r1.get_particle(), None)

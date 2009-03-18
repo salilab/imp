@@ -13,7 +13,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
@@ -22,14 +22,14 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT LowestRefinedPairScore : public PairScore
 {
-  Pointer<ParticleRefiner> r_;
+  Pointer<Refiner> r_;
   Pointer<PairScore> f_;
 
 public:
-  /** \param[in] r The ParticleRefiner to call on each particle
+  /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
    */
-  LowestRefinedPairScore(ParticleRefiner *r, PairScore *f);
+  LowestRefinedPairScore(Refiner *r, PairScore *f);
   /** */
   virtual ~LowestRefinedPairScore(){}
   /** */

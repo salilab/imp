@@ -33,7 +33,7 @@ class Test(IMP.test.TestCase):
             for p1 in ds[1]:
                 d= IMP.core.distance(p0, p1)
                 if d < md: md=d
-        pr= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())
+        pr= IMP.core.ChildrenRefiner(IMP.core.HierarchyDecorator.get_default_traits())
         cps= IMP.core.Linear(0,1)
         dps= IMP.core.DistancePairScore(cps)
         rps= IMP.misc.LowestRefinedPairScore(pr, dps)

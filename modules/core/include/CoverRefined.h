@@ -12,7 +12,7 @@
 #include "internal/version_info.h"
 
 #include "XYZRDecorator.h"
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonContainer.h>
@@ -42,13 +42,13 @@ class XYZRDecorator;
  */
 class IMPCOREEXPORT CoverRefined: public SingletonModifier
 {
-  Pointer<ParticleRefiner> ref_;
+  Pointer<Refiner> ref_;
   FloatKey rk_;
   Float slack_;
 public:
   //! Create with the given refiner and radius key
   /** Slack is the amount added to the radius.*/
-  CoverRefined(ParticleRefiner *ref,
+  CoverRefined(Refiner *ref,
                                 FloatKey rk
                                 =XYZRDecorator::get_default_radius_key(),
                                 Float slack=0);
@@ -69,7 +69,7 @@ public:
     \relates CoverRefined
  */
 IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
-                                ParticleRefiner *pr,
+                                Refiner *pr,
                FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
                                 Float slack=0);
 
@@ -81,7 +81,7 @@ IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
     \relates CoverRefined
  */
 IMPCOREEXPORT ScoreState* create_cover(Particle *p,
-                                       ParticleRefiner *pr,
+                                       Refiner *pr,
                   FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
                                        Float slack=0);
 

@@ -24,7 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** The restraint takes several particles and ensures that they remain
     connected. If you wish to restraint the connectivity of sets of
     particles (i.e. each protein is represented using a set of balls)
-    use an appropriate PairScore which calls a ParticleRefiner (such
+    use an appropriate PairScore which calls a Refiner (such
     as LowestRefinedPairScore).
 
     \verbinclude connectivity_restraint.py

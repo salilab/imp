@@ -1,6 +1,6 @@
 /**
  *  \file RefinedPairsPairScore.cpp
- *  \brief Refine particles at most once with a ParticleRefiner.
+ *  \brief Refine particles at most once with a Refiner.
  *
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-RefinedPairsPairScore::RefinedPairsPairScore(ParticleRefiner *r,
+RefinedPairsPairScore::RefinedPairsPairScore(Refiner *r,
                                          PairScore *f): r_(r), f_(f) {}
 
 Float RefinedPairsPairScore::evaluate(Particle *a, Particle *b,

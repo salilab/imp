@@ -12,7 +12,7 @@
 #include "internal/version_info.h"
 
 #include "XYZDecorator.h"
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonModifier.h>
 
@@ -29,11 +29,11 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT DerivativesToRefined:
 public SingletonModifier
 {
-  Pointer<ParticleRefiner> r_;
+  Pointer<Refiner> r_;
   FloatKeys ks_;
 public:
   //! Copy ks to the particles returned by r.
-  DerivativesToRefined(ParticleRefiner *r,
+  DerivativesToRefined(Refiner *r,
                                         FloatKeys ks
                                         = XYZDecorator::get_xyz_keys());
   ~DerivativesToRefined();

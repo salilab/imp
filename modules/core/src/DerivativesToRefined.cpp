@@ -13,7 +13,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 DerivativesToRefined
-::DerivativesToRefined(ParticleRefiner *r,
+::DerivativesToRefined(Refiner *r,
                                           FloatKeys ks): r_(r), ks_(ks)
 {
 }

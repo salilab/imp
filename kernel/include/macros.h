@@ -252,7 +252,7 @@ public:                                                                 \
     \param[in] version_info The version info object to return
 
  */
-#define IMP_PARTICLE_REFINER(version_info)                              \
+#define IMP_REFINER(version_info)                              \
   public:                                                               \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual void show(std::ostream &out) const;                           \

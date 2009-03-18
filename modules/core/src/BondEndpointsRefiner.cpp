@@ -1,28 +1,28 @@
 /**
- *  \file BondEndpointsParticleRefiner.cpp
+ *  \file BondEndpointsRefiner.cpp
  *  \brief Return the hierarchy children of a particle.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#include <IMP/core/BondEndpointsParticleRefiner.h>
+#include <IMP/core/BondEndpointsRefiner.h>
 #include <IMP/core/bond_decorators.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
 #ifndef IMP_NO_DEPRECATED
 
-BondEndpointsParticleRefiner::BondEndpointsParticleRefiner()
+BondEndpointsRefiner::BondEndpointsRefiner()
 {
 }
 
 
-bool BondEndpointsParticleRefiner::get_can_refine(Particle *p) const
+bool BondEndpointsRefiner::get_can_refine(Particle *p) const
 {
   return core::BondDecorator::is_instance_of(p);
 }
 
-Particles BondEndpointsParticleRefiner::get_refined(Particle *p) const
+Particles BondEndpointsRefiner::get_refined(Particle *p) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
   BondDecorator d(p);
@@ -34,16 +34,16 @@ Particles BondEndpointsParticleRefiner::get_refined(Particle *p) const
 
 
 
-void BondEndpointsParticleRefiner::cleanup_refined(Particle *,
+void BondEndpointsRefiner::cleanup_refined(Particle *,
                                               Particles &,
                                               DerivativeAccumulator *) const
 {
   // This space left intentionally blank
 }
 
-void BondEndpointsParticleRefiner::show(std::ostream &out) const
+void BondEndpointsRefiner::show(std::ostream &out) const
 {
-  out << "BondEndpointsParticleRefiner" << std::endl;
+  out << "BondEndpointsRefiner" << std::endl;
 }
 
 #endif // IMP_NO_DEPRECATED

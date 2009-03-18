@@ -22,7 +22,7 @@ class Test(IMP.test.TestCase):
             hp= IMP.core.HierarchyDecorator.create(p)
             hpp.add_child(hp)
             c.append(p)
-        pr= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())
+        pr= IMP.core.ChildrenRefiner(IMP.core.HierarchyDecorator.get_default_traits())
         cps= IMP.test.ConstPairScore(1)
         rps= IMP.core.RefinedPairsPairScore(pr, cps)
         self.assertEqual(rps.evaluate(pp, pp, None), 100)

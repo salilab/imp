@@ -184,11 +184,11 @@ class ConstUnaryFunction(IMP.UnaryFunction):
         print "ConstUF with value "+str(self.v)
 
 
-class TestParticleRefiner(IMP.ParticleRefiner):
+class TestRefiner(IMP.Refiner):
     """A class which makes sure that the right particles are passed back"""
 
     def __init__(self, pr):
-        IMP.ParticleRefiner.__init__(self)
+        IMP.Refiner.__init__(self)
         self.pr= pr
         self.dict={}
 
