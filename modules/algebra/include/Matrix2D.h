@@ -17,12 +17,12 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Template class for managing 2D matrices. This class is based on
 //! boost multi_array
 template<typename T>
-class Matrix2D: public IMP::algebra::MultiArray<T,2>
+class Matrix2D: public MultiArray<T,2>
 {
 public:
     typedef boost::multi_array_types::index index;
-    typedef IMP::algebra::MultiArray<T,2> MA2;
-    typedef IMP::algebra::Matrix2D<T> This;
+    typedef MultiArray<T,2> MA2;
+    typedef Matrix2D<T> This;
 
   //! Empty constructor
   Matrix2D() : MA2() {
@@ -58,7 +58,7 @@ public:
    * \param[in] m2 Matrix2D whose size to copy
    */
   template<typename T1>
-  void resize(const IMP::algebra::Matrix2D<T1>& m2) {
+  void resize(const Matrix2D<T1>& m2) {
     this->resize(m2.shape()[0], m2.shape()[1]);
   }
 
@@ -67,7 +67,7 @@ public:
    * \param[in] v Matrix2D whose shape to copy
    */
   template<typename T1>
-  void reshape(const IMP::algebra::Matrix2D<T1>& v) {
+  void reshape(const Matrix2D<T1>& v) {
     boost::array<index,2> shape,start;
     int dims=v.num_dimensions();
     for(int i=0;i<dims;i++) {
