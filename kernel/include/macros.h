@@ -669,6 +669,7 @@ protection:                                                             \
 
 //! Define the needed functions for a PairContainer
 /** \relates IMP::PairContainer
+    See IMP_SINGLETON_CONTAINER() for full documentation.
  */
 #define IMP_PAIR_CONTAINER(Name, version_info)                           \
   bool get_contains_particle_pair(ParticlePair p) const;                \
