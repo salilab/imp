@@ -2,7 +2,7 @@
  *  \file BondSingletonScore.h
  *  \brief A Score on the distance between a the two particles in a bond.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_BOND_SINGLETON_SCORE_H

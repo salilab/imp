@@ -2,7 +2,7 @@
  *  \file internal/utility.h
  *  \brief Various useful utilities
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMP_INTERNAL_UTILITY_H

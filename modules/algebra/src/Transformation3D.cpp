@@ -2,7 +2,7 @@
  *  \file Transformation3D.cpp
  *  \brief Simple 3D transformation class.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #include "IMP/algebra/Transformation3D.h"
 

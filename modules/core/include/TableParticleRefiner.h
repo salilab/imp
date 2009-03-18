@@ -2,7 +2,7 @@
  *  \file TableParticleRefiner.h
  *  \brief A lookup based particle refiner
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_TABLE_PARTICLE_REFINER_H

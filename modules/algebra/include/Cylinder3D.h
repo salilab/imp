@@ -2,7 +2,7 @@
  *  \file  Cylinder3D.h
  *  \brief stores a cylinder
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #ifndef IMPALGEBRA_CYLINDER_3D_H
 #define IMPALGEBRA_CYLINDER_3D_H

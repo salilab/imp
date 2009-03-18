@@ -1,7 +1,7 @@
 /**
  *  \file Transformation3D.h   \brief Simple 3D transformation class.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

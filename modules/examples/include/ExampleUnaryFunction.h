@@ -2,7 +2,7 @@
  *  \file ExampleUnaryFunction.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

@@ -1,7 +1,7 @@
 /**
  *  \file output_helpers.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_INTERNAL_OUTPUT_HELPERS_H

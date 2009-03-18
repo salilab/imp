@@ -2,7 +2,7 @@
  *  \file SimpleDiscreteRestraint.h
  *  \brief Simple restraint for testing
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDOMINO_SIMPLE_DISCRETE_RESTRAINT_H

@@ -1,7 +1,7 @@
 /**
  *  \file DiscreteSampler.h   \brief Storage of a discrete sampling space
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDOMINO_DISCRETE_SAMPLER_H

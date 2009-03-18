@@ -1,7 +1,7 @@
 /**
  *  \file ConstantRestraint.cpp \brief Don't restrain anything.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

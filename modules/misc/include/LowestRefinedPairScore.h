@@ -2,7 +2,7 @@
  *  \file LowestRefinedPairScore.h
  *  \brief Score on the lowest scoring pair of the refined pairs.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPMISC_LOWEST_REFINED_PAIR_SCORE_H

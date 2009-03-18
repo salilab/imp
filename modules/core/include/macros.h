@@ -2,7 +2,7 @@
  *  \file core/macros.h    \brief Various important macros
  *                           for implementing decorators.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

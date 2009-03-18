@@ -2,7 +2,7 @@
  *  \file ClosePairsPairScore.h
  *  \brief Apply a PairScore to close pairs.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_CLOSE_PAIRS_PAIR_SCORE_H

@@ -1,7 +1,7 @@
 /**
  *  \file Plane3D.cpp   \brief Simple 3D plane class.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #include <IMP/algebra/Plane3D.h>
 IMPALGEBRA_BEGIN_NAMESPACE

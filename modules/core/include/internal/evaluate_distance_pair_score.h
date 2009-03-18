@@ -2,7 +2,7 @@
  *  \file evaluate_distance_pair_score.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_EVALUATE_DISTANCE_PAIR_SCORE_H

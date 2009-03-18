@@ -2,7 +2,7 @@
  * \file RangeSearchScoreState.h
  * \brief Search over ranges of values.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

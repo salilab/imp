@@ -1,7 +1,7 @@
 /**
  *  \file bond_decorators.cpp     \brief Decorators for a bond
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

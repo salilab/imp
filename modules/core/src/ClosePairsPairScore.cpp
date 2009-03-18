@@ -3,7 +3,7 @@
  *  \brief Iteratively refine to find all close pairs in a tree.
  *
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/core/ClosePairsPairScore.h>

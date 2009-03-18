@@ -1,7 +1,7 @@
 /**
  *  \file Transform.h     \brief Transform a particle
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 #ifndef IMPCORE_TRANSFORM_H

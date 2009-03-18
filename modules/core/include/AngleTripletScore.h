@@ -2,7 +2,7 @@
  *  \file AngleTripletScore.h
  *  \brief A Score on the angle between three of particles.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_ANGLE_TRIPLET_SCORE_H

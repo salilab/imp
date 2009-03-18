@@ -2,7 +2,7 @@
  *  \file LogPairScore.h
  *  \brief Track the particles pairs passed to the pair score.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPMISC_LOG_PAIR_SCORE_H

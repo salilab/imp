@@ -1,7 +1,7 @@
 /**
  *  \file TransformationUtils.h
  *  \brief Handeling tranformation of hierarchical particles
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDOMINO_TRANSFORMATION_UTILS_H

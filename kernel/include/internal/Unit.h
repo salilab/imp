@@ -1,7 +1,7 @@
 /**
  *  \file Unit.h     \brief Classes to help with converting between units.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

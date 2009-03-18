@@ -2,7 +2,7 @@
  *  \file AttributeSingletonScore.cpp
  *  \brief A score based on an unmodified attribute value.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/core/AttributeSingletonScore.h>

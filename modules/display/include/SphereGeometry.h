@@ -2,7 +2,7 @@
  *  \file SphereGeometry.h
  *  \brief Represent an SphereDecorator particle with a sphere
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_SPHERE_GEOMETRY_H

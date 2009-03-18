@@ -2,7 +2,7 @@
  *  \file XYZRDecorator.h
  *  \brief Decorator for a sphere-like particle.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file SaxsData.cpp
  *  \brief saxs data initilize cpp file.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/saxs/SaxsData.h>

@@ -2,7 +2,7 @@
  *  \file atom/BondBondPairScore.h
  *  \brief Score on the distance between a pair of bonds.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPATOM_BOND_BOND_PAIR_SCORE_H

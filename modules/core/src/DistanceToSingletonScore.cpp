@@ -2,7 +2,7 @@
  *  \file DistanceToSingletonScore.cpp
  *  \brief A Score on the distance to a fixed point.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/core/DistanceToSingletonScore.h>

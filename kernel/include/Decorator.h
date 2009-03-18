@@ -1,7 +1,7 @@
 /**
  *  \file Decorator.h    \brief The base class for decorators.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

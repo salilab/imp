@@ -1,7 +1,7 @@
 /**
  *  \file HarmonicUpperBound.h    \brief Harmonic upper bound function.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPCORE_HARMONIC_UPPER_BOUND_H

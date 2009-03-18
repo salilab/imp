@@ -2,7 +2,7 @@
  *  \file Matrix2D.h
  *  \brief Management of 2D matrices.
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_MATRIX_2D_H

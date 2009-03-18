@@ -2,7 +2,7 @@
  *  \file CGOWriter.h
  *  \brief XXXXXXXXXXXXXX
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_CGO_WRITER_H

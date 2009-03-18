@@ -2,7 +2,7 @@
  * \file  TransformationDiscreteSet.h
  * \brief Holds a discrete sampling space of transformations.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #ifndef IMPDOMINO_TRANSFORMATION_DISCRETE_SET_H
 #define IMPDOMINO_TRANSFORMATION_DISCRETE_SET_H

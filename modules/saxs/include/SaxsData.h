@@ -1,6 +1,6 @@
 /** \file SaxsData.h
     \brief saxs data initilize header file.
-    Copyright 2007-8 Sali Lab. All rights reserved.
+    Copyright 2007-9 Sali Lab. All rights reserved.
   */
 
 #ifndef IMPSAXS_SAXS_DATA_H

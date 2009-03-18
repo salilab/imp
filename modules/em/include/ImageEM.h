@@ -2,7 +2,7 @@
  *  \file ImageEM.h
  *  \brief Management of IMP images for Electron Microscopy
  *  \author Javier Velazquez-Muriel
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPEM_IMAGE_EM_H

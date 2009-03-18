@@ -1,7 +1,7 @@
 /**
  *  \file tunnel_traits.h    \brief traits for tunnels
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

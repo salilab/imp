@@ -2,7 +2,7 @@
  *  \file RefCountedObject.h
  *  \brief A common base class for ref counted objects.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

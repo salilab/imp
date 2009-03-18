@@ -2,7 +2,7 @@
  *  \file SphereDistancePairScore.cpp
  *  \brief A score on the distance between the surfaces of two spheres.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #include <IMP/core/SphereDistancePairScore.h>

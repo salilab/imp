@@ -2,7 +2,7 @@
  *  \file  Cone3D.cpp
  *  \brief simple implementation of cones in 3D
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #include <IMP/algebra/Cone3D.h>
 IMPALGEBRA_BEGIN_NAMESPACE

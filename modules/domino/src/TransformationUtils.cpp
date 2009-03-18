@@ -2,7 +2,7 @@
  *  \file TransformationUtils.cpp
  *  \brief Handeling tranformation of hierarchical particles
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 #include "IMP/domino/TransformationUtils.h"

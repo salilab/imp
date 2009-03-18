@@ -1,7 +1,7 @@
 /**
  *  \file SingletonScore.h    \brief A Score on a single particle.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMP_SINGLETON_SCORE_H

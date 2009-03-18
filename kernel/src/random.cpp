@@ -1,7 +1,7 @@
 /**
  *  \file random.cpp  \brief Random number generators used by IMP.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

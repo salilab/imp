@@ -2,7 +2,7 @@
  *  \file display/macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_MACROS_H

@@ -2,7 +2,7 @@
  *  \file EMproject.h
  *  \brief Project operation for EM volumes
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
 #ifndef IMPEM_EMPROJECT_H

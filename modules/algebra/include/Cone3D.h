@@ -2,7 +2,7 @@
  *  \file  Cone3D.h
  *  \brief stores a cone
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_CONE_3D_H

@@ -2,7 +2,7 @@
  *  \file MaximumChangeScoreState.cpp
  *  \brief Keep track of the maximumimum change of a set of attributes.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
 

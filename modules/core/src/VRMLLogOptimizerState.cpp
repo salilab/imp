@@ -2,7 +2,7 @@
  *  \file VRMLLogOptimizerState.cpp
  *  \brief A state which writes a series of VRML files.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 

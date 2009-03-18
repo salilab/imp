@@ -5,7 +5,7 @@
  *         particle for a specific mapping. For example, for anchor points
  *         [1,2,3,4,5] to particles [a,b,c,d] the sampling space would be:
  *         [1,1,1,1],[1,1,1,2],[1,1,1,3],[1,1,1,4],......,[5,5,5,4],[5,5,5,5]
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #ifndef IMPDOMINO_CARTESIAN_PRODUCT_SAMPLER_H
 #define IMPDOMINO_CARTESIAN_PRODUCT_SAMPLER_H
