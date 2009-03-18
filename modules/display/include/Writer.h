@@ -20,14 +20,20 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Base class for writing geometry to a file.
 /** A writer object accumulates geometry and then
-    writes a file when the object is destroyed.
+    writes a file when the object is destroyed. You must set the name
+    of the file being written to before writing using the
+    IMP::display::Writer::set_file_name() method.
  */
 class IMPDISPLAYEXPORT Writer: public RefCountedObject
 {
   std::ofstream out_;
  protected:
   //! Get the stream for inhereting classes to write to
-  std::ostream &get_stream() {return out_;}
+  std::ostream &get_stream() {
+    IMP_check(out_.is_open(), "You must set the file name before writing",
+               InvalidStateException);
+    return out_;
+  }
 
  public:
   //! Create a writer to a file
@@ -52,6 +58,11 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
       out_.open(name.c_str());
       on_open(name);
     }
+  }
+
+  //! Close the stream. You shouldn't need this, but it doesn't hurt
+  void close() {
+    set_file_name("");
   }
 
   //! Write the data and close the file
