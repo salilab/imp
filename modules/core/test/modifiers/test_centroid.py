@@ -28,7 +28,7 @@ class TestREFCover(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
             d.set_radius(random.uniform(0,1))
             hd.add_child(IMP.core.HierarchyDecorator.create(p))
-        r= IMP.core.ChildrenParticleRefiner(IMP.core.HierarchyDecorator.get_default_traits())
+        r= IMP.core.ChildrenRefiner(IMP.core.HierarchyDecorator.get_default_traits())
         c= IMP.core.CentroidOfRefined(r)
         c.set_slack(.1)
         c.apply(pp)
@@ -40,7 +40,7 @@ class TestREFCover(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         n= random.randrange(1,10)
         ps=IMP.core.create_xyzr_particles(m, 10, 1)
-        fpr= IMP.core.FixedParticleRefiner(ps)
+        fpr= IMP.core.FixedRefiner(ps)
         p= IMP.core.create_centroid(IMP.Particle(m), fpr)
         ss= m.get_score_states()
         for s in ss:

@@ -15,12 +15,12 @@
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Traverse the ParticleRefiner hierarchy to find all pairs which are close
-/** The ParticleRefiner implicitly defines a tree rooted at each particle.
+//! Traverse the Refiner hierarchy to find all pairs which are close
+/** The Refiner implicitly defines a tree rooted at each particle.
     This PairScore applies another PairScore to all pairs of leaves, one
     taken from each tree such that the leaves are closer than the threshold.
     \note All particles in the tree must be XYZRDecorator particles for the
@@ -30,18 +30,18 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ClosePairsPairScore : public PairScore
 {
-  Pointer<ParticleRefiner> r_;
+  Pointer<Refiner> r_;
   Pointer<PairScore> f_;
   Float th_;
   FloatKey rk_;
 public:
-  /** \param[in] r The ParticleRefiner to call on each particle
+  /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
       \param[in] max_distance Only score pairs which are close than
       the max_distance
       \param[in] rk The key to use for the radius.
    */
-  ClosePairsPairScore(ParticleRefiner *r, PairScore *f,
+  ClosePairsPairScore(Refiner *r, PairScore *f,
                       Float max_distance,
                       FloatKey rk= XYZRDecorator::get_default_radius_key());
   virtual ~ClosePairsPairScore(){}

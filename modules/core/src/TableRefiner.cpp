@@ -1,26 +1,26 @@
 /**
- *  \file TableParticleRefiner.cpp
+ *  \file TableRefiner.cpp
  *  \brief A particle refiner that uses a table.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/core/TableParticleRefiner.h"
+#include "IMP/core/TableRefiner.h"
 
 
 IMPCORE_BEGIN_NAMESPACE
 
-TableParticleRefiner::TableParticleRefiner( ){
+TableRefiner::TableRefiner( ){
 }
 
-TableParticleRefiner::~TableParticleRefiner(){}
+TableRefiner::~TableRefiner(){}
 
-void TableParticleRefiner::show(std::ostream &out) const {
-  out << "TableParticleRefiner" << std::endl;
+void TableRefiner::show(std::ostream &out) const {
+  out << "TableRefiner" << std::endl;
 }
 
-void TableParticleRefiner::add_particle(Particle *p,
+void TableRefiner::add_particle(Particle *p,
                                         const Particles &ps) {
   IMP_check(map_.find(p) == map_.end(),
             "Particle " << p->get_name() << " already in map.",
@@ -28,31 +28,31 @@ void TableParticleRefiner::add_particle(Particle *p,
   map_[p]=ps;
 }
 
-void TableParticleRefiner::remove_particle(Particle *p) {
+void TableRefiner::remove_particle(Particle *p) {
   IMP_check(map_.find(p) != map_.end(),
             "Particle " << p->get_name() << " not found in map.",
             ValueException);
   map_.erase(p);
 }
 
-void TableParticleRefiner::set_particle(Particle *p, const Particles &ps) {
+void TableRefiner::set_particle(Particle *p, const Particles &ps) {
   IMP_check(map_.find(p) != map_.end(),
             "Particle " << p->get_name() << " not found in map.",
             ValueException);
   map_[p]=ps;
 }
 
-bool TableParticleRefiner::get_can_refine(Particle *p) const {
+bool TableRefiner::get_can_refine(Particle *p) const {
   return map_.find(p) != map_.end();
 }
 
-Particles TableParticleRefiner::get_refined(Particle *p) const {
+Particles TableRefiner::get_refined(Particle *p) const {
   IMP_assert(map_.find(p) != map_.end(),
              "Particle " << p->get_name() << " not found in map.");
   return map_.find(p)->second;
 }
 
-void TableParticleRefiner::cleanup_refined(Particle *p,
+void TableRefiner::cleanup_refined(Particle *p,
                                            Particles &,
                                            DerivativeAccumulator*) const {
 }

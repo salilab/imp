@@ -1,6 +1,6 @@
 /**
  *  \file RefineOncePairScore.cpp
- *  \brief Refine particles at most once with a ParticleRefiner.
+ *  \brief Refine particles at most once with a Refiner.
  *
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
@@ -18,7 +18,7 @@ IMPMISC_BEGIN_NAMESPACE
 
 #ifndef IMP_NO_DEPRECATED
 
-RefineOncePairScore::RefineOncePairScore(ParticleRefiner *r,
+RefineOncePairScore::RefineOncePairScore(Refiner *r,
                                          PairScore *f): r_(r), f_(f) {
   IMP_DEPRECATED(RefineOncePairScore, RefinedPairsPairScore);
 }

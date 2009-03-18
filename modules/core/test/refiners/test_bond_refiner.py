@@ -16,7 +16,7 @@ class AllPairsContainerTest(IMP.test.TestCase):
         p1= IMP.Particle(m)
         b1= IMP.atom.BondedDecorator.create(p1)
         b= IMP.atom.custom_bond(b0, b1, 1)
-        r= IMP.atom.BondEndpointsParticleRefiner()
+        r= IMP.atom.BondEndpointsRefiner()
         self.assert_(not r.get_can_refine(p0))
         self.assert_(not r.get_can_refine(p1))
         self.assert_(r.get_can_refine(b.get_particle()))

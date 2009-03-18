@@ -13,7 +13,7 @@
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/Pointer.h>
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 #include <IMP/RefCountedObject.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -24,7 +24,7 @@ IMPCORE_END_NAMESPACE
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 struct RigidBodyData: public RefCountedObject {
-  Pointer<ParticleRefiner> pr_;
+  Pointer<Refiner> pr_;
   FloatKeys child_keys_;
   FloatKeys quaternion_;
   FloatKey mass_;

@@ -15,7 +15,7 @@
 #include "XYZDecorator.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 #include <IMP/ScoreState.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
@@ -42,7 +42,7 @@ class IMPCOREEXPORT RigidBodyTraits {
 
      \note  Having non-default values is not well tested at this point.
   */
-  RigidBodyTraits(ParticleRefiner *pr,
+  RigidBodyTraits(Refiner *pr,
                   std::string prefix,
                   FloatKey radius=FloatKey(),
                   FloatKey mass=FloatKey(),
@@ -64,7 +64,7 @@ class IMPCOREEXPORT RigidBodyTraits {
     return d_->mass_;
   }
   //! Return the particle refiner used to get the constituent particles
-  ParticleRefiner *get_particle_refiner() const {
+  Refiner *get_particle_refiner() const {
     return d_->pr_;
   }
   //! Get whether to use snapping or direct optimization of the rigid body
@@ -78,7 +78,7 @@ class IMPCOREEXPORT RigidBodyTraits {
     d_= d_->clone();
     d_->snap_= tf;
   }
-  void set_particle_refiner(ParticleRefiner *pr) {
+  void set_particle_refiner(Refiner *pr) {
     d_= d_->clone();
     d_->pr_=pr;
   }

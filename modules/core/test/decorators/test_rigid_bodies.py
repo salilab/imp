@@ -71,11 +71,11 @@ class RBDTests(IMP.test.TestCase):
         htr= IMP.core.HierarchyDecorator.get_default_traits()
         #self._test_create_one(tr, htr)
         htr= IMP.atom.MolecularHierarchyDecorator.get_traits()
-        tr= IMP.core.RigidBodyTraits(IMP.core.ChildrenParticleRefiner(htr),
+        tr= IMP.core.RigidBodyTraits(IMP.core.ChildrenRefiner(htr),
                                         "new_string")
         #self._test_create_one(tr, htr)
         htr= IMP.atom.MolecularHierarchyDecorator.get_traits()
-        tr= IMP.core.RigidBodyTraits(IMP.core.ChildrenParticleRefiner(htr),
+        tr= IMP.core.RigidBodyTraits(IMP.core.ChildrenRefiner(htr),
                                         "new_string",
                                      IMP.FloatKey(),
                                      IMP.FloatKey(),

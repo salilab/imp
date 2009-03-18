@@ -16,7 +16,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 
 #include <iostream>
 #include <map>
@@ -79,7 +79,7 @@ class IMPCOREEXPORT VRMLLogOptimizerState : public OptimizerState
     pc_=pc;
   }
 
-  IMP_LIST(public, ParticleRefiner, particle_refiner, ParticleRefiner*);
+  IMP_LIST(public, Refiner, particle_refiner, Refiner*);
 
   //! Force it to write the next file
   void write_next_file();

@@ -118,7 +118,7 @@ namespace IMP {
 %feature("director") IMP::PairScore;
 %feature("director") IMP::TripletScore;
 %feature("director") IMP::Optimizer;
-%feature("director") IMP::ParticleRefiner;
+%feature("director") IMP::Refiner;
 %feature("director") IMP::SingletonContainer;
 %feature("director") IMP::PairContainer;
 %feature("director") IMP::SingletonModifier;
@@ -138,7 +138,7 @@ namespace IMP {
 %include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/PairScore.h"
-%include "IMP/ParticleRefiner.h"
+%include "IMP/Refiner.h"
 %include "IMP/SingletonScore.h"
 %include "IMP/TripletScore.h"
 %include "Particle.i"

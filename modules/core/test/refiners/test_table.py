@@ -13,7 +13,7 @@ class Test(IMP.test.TestCase):
         print "hello"
         m= IMP.Model()
         p= IMP.Particle(m)
-        tpr= IMP.core.TableParticleRefiner()
+        tpr= IMP.core.TableRefiner()
         ps= IMP.Particles()
         ps.append(p)
         tpr.add_particle(p, ps)

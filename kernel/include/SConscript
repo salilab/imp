@@ -13,7 +13,7 @@ files = [
     'PairModifier.h',
     'PairScore.h',
     'Particle.h',
-    'ParticleRefiner.h',
+    'Refiner.h',
     'Pointer.h',
     'RefCountedObject.h',
     'Restraint.h',

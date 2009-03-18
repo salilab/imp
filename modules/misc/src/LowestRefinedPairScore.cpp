@@ -15,7 +15,7 @@
 
 IMPMISC_BEGIN_NAMESPACE
 
-LowestRefinedPairScore::LowestRefinedPairScore(ParticleRefiner *r,
+LowestRefinedPairScore::LowestRefinedPairScore(Refiner *r,
                                                PairScore *f): r_(r), f_(f) {}
 
 Float LowestRefinedPairScore::evaluate(Particle *a, Particle *b,

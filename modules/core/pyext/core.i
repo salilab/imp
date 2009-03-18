@@ -84,7 +84,7 @@ namespace IMP {
 #ifndef IMP_NO_DEPRECATED
     IMP_OWN_CONSTRUCTOR(VRMLLogOptimizerState)
     IMP_CONTAINER_SWIG(VRMLLogOptimizerState,
-    ParticleRefiner, particle_refiner)
+    Refiner, particle_refiner)
     IMP_OWN_METHOD(VRMLLogOptimizerState, set_singleton_container)
 #endif
     IMP_OWN_CONSTRUCTOR(ClosePairsScoreState)
@@ -131,13 +131,13 @@ namespace IMP {
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
-%include "IMP/core/BondEndpointsParticleRefiner.h"
+%include "IMP/core/BondEndpointsRefiner.h"
 %include "IMP/core/BondPairContainer.h"
 %include "IMP/core/BondSingletonScore.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/BrownianDynamics.h"
 %include "IMP/core/CentroidOfRefined.h"
-%include "IMP/core/ChildrenParticleRefiner.h"
+%include "IMP/core/ChildrenRefiner.h"
 %include "IMP/core/CMMLogOptimizerState.h"
 %include "IMP/core/ClosedCubicSpline.h"
 %include "IMP/core/ClosePairsScoreState.h"
@@ -157,13 +157,13 @@ namespace IMP {
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"
 %include "IMP/core/DistanceToSingletonScore.h"
-%include "IMP/core/FixedParticleRefiner.h"
+%include "IMP/core/FixedRefiner.h"
 %include "IMP/core/GridClosePairsFinder.h"
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
 %include "IMP/core/HierarchyDecorator.h"
-%include "IMP/core/LeavesParticleRefiner.h"
+%include "IMP/core/LeavesRefiner.h"
 %include "IMP/core/Linear.h"
 %include "IMP/core/MaximumChangeScoreState.h"
 %include "IMP/core/MolecularDynamics.h"
@@ -184,7 +184,7 @@ namespace IMP {
 %include "IMP/core/VelocityScalingOptimizerState.h"
 %include "IMP/core/XYZRDecorator.h"
 %include "IMP/core/model_io.h"
-%include "IMP/core/TableParticleRefiner.h"
+%include "IMP/core/TableRefiner.h"
 %include "IMP/core/TruncatedHarmonic.h"
 
 %include "IMP/core/ListPairContainer.h"

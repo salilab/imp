@@ -9,7 +9,7 @@
 
 #include "IMP/core/bond_decorators.h"
 #include "IMP/core/XYZRDecorator.h"
-#include "IMP/core/FixedParticleRefiner.h"
+#include "IMP/core/FixedRefiner.h"
 #include "IMP/core/SingletonScoreState.h"
 #include "IMP/core/SingletonsScoreState.h"
 #include "IMP/core/DerivativesToRefined.h"
@@ -17,7 +17,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 CentroidOfRefined
-::CentroidOfRefined(ParticleRefiner *r,
+::CentroidOfRefined(Refiner *r,
                                      FloatKey weight,
                                      FloatKeys ks): r_(r),
 ks_(ks), w_(weight)
@@ -61,7 +61,7 @@ void CentroidOfRefined::show(std::ostream &out) const
 }
 
 ScoreState* create_centroids(SingletonContainer *sc,
-                      ParticleRefiner *pr,
+                      Refiner *pr,
                       FloatKey weight,
                       FloatKeys ks) {
   IMP_check(sc->get_number_of_particles() >0,
@@ -87,7 +87,7 @@ ScoreState* create_centroids(SingletonContainer *sc,
 
 
 
-ScoreState* create_centroid(Particle *p, ParticleRefiner *pr,
+ScoreState* create_centroid(Particle *p, Refiner *pr,
                      FloatKey weight,
                      FloatKeys ks) {
   for (unsigned int i=0; i< ks.size(); ++i) {

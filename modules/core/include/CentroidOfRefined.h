@@ -13,7 +13,7 @@
 #include "internal/version_info.h"
 
 #include "XYZDecorator.h"
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonModifier.h>
 
@@ -31,12 +31,12 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT CentroidOfRefined:
 public SingletonModifier
 {
-  Pointer<ParticleRefiner> r_;
+  Pointer<Refiner> r_;
   FloatKeys ks_;
   FloatKey w_;
 public:
   //! Set the keys ks to be the average of the refined particles.
-  CentroidOfRefined(ParticleRefiner *r,
+  CentroidOfRefined(Refiner *r,
                                      FloatKey weight=FloatKey(),
                                      FloatKeys ks
                                       = XYZDecorator::get_xyz_keys());
@@ -52,7 +52,7 @@ public:
     \relates CentroidOfRefined
  */
 IMPCOREEXPORT ScoreState* create_centroids(SingletonContainer *sc,
-                                    ParticleRefiner *pr,
+                                    Refiner *pr,
                                     FloatKey weight=FloatKey(),
                                     FloatKeys ks
                                     = XYZDecorator::get_xyz_keys());
@@ -65,7 +65,7 @@ IMPCOREEXPORT ScoreState* create_centroids(SingletonContainer *sc,
     \relates CentroidOfRefined
  */
 IMPCOREEXPORT ScoreState* create_centroid(Particle *p,
-                                   ParticleRefiner *pr,
+                                   Refiner *pr,
                                    FloatKey weight=FloatKey(),
                                    FloatKeys ks
                                    = XYZDecorator::get_xyz_keys());

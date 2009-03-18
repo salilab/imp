@@ -44,7 +44,7 @@ void set_x(Float f);
 /* Wrap our own classes */
 %include "IMP/atom/estimates.h"
 %include "IMP/atom/bond_decorators.h"
-%include "IMP/atom/BondEndpointsParticleRefiner.h"
+%include "IMP/atom/BondEndpointsRefiner.h"
 %include "IMP/atom/BondBondPairScore.h"
 %include "IMP/atom/BondPairContainer.h"
 %include "IMP/atom/BondSingletonScore.h"

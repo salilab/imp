@@ -9,6 +9,6 @@ rc= IMP.core.ListSingletonContainer(res)
 for p in res:
     IMP.core.XYZRDecorator.create(p)
 mtr=IMP.atom.MolecularHierarchyDecorator.get_traits()
-pr= IMP.core.ChildrenParticleRefiner(mtr)
+pr= IMP.core.ChildrenRefiner(mtr)
 IMP.core.create_covers(rc, pr)
 m.evaluate(False)

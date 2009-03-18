@@ -1,17 +1,17 @@
 /**
- *  \file TableParticleRefiner.h
+ *  \file TableRefiner.h
  *  \brief A lookup based particle refiner
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_TABLE_PARTICLE_REFINER_H
-#define IMPCORE_TABLE_PARTICLE_REFINER_H
+#ifndef IMPCORE_TABLE_REFINER_H
+#define IMPCORE_TABLE_REFINER_H
 
 #include "config.h"
 
 #include "internal/version_info.h"
-#include <IMP/ParticleRefiner.h>
+#include <IMP/Refiner.h>
 #include <map>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -20,14 +20,14 @@ IMPCORE_BEGIN_NAMESPACE
 /** Each particle is refined by returning the list
     of particles stored for it in a table.
  */
-class IMPCOREEXPORT TableParticleRefiner: public ParticleRefiner
+class IMPCOREEXPORT TableRefiner: public Refiner
 {
   std::map<Particle*, Particles> map_;
 public:
   //! Initialize it with an empty table
-  TableParticleRefiner();
+  TableRefiner();
 
-  virtual ~TableParticleRefiner();
+  virtual ~TableRefiner();
 
   //! Add a mapping to the table
   void add_particle(Particle *p, const Particles &ps);
@@ -38,10 +38,10 @@ public:
   //! Set the mapping for a particular particle
   void set_particle(Particle *p, const Particles &ps);
 
-  IMP_PARTICLE_REFINER(internal::version_info)
+  IMP_REFINER(internal::version_info)
 };
 
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_TABLE_PARTICLE_REFINER_H */
+#endif  /* IMPCORE_TABLE_REFINER_H */
