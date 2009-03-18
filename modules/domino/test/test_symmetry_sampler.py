@@ -84,14 +84,14 @@ class DOMINOTests(IMP.test.TestCase):
         cendtroids=[IMP.algebra.Vector3D(0.0,0.0,0.0),
                     IMP.algebra.Vector3D(0.0,0.0,0.0),
                     IMP.algebra.Vector3D(0.0,0.0,0.0),]
-        for i in xrange(5):
+        for i in range(5):
             state = n.get_state(i)
             self.sampler.move2state(state)
             for j,p in enumerate(self.ps):
                 cendtroids[j] = cendtroids[j]+IMP.atom.centroid(self.prots[j])
             state.show()
         rot120 = IMP.algebra.rotate(self.cyl,2.*math.pi/3)
-        for j in xrange(2):
+        for j in range(2):
             cendtroids[j].show()
             cendtroids[j+1].show()
             rot120.transform(cendtroids[j]).show()

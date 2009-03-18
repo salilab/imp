@@ -13,7 +13,7 @@ class my_optimizer:
         self.particles = IMP.Particles()
         self.sampling_spaces=[]
         self.all_restraints=[]
-        for i in xrange(num_of_particles):
+        for i in range(num_of_particles):
             new_p = IMP.Particle()
             self.mdl.add_particle(new_p)
             self.particles.append(new_p)
@@ -73,7 +73,7 @@ class my_optimizer:
 
     def init_sampling_space(self):
         self.discrete_sampler = IMP.domino.SimpleDiscreteSampler()
-        for i in xrange(len(self.particles)):
+        for i in range(len(self.particles)):
             number_of_states=3
             if i==1 or i==3:
                 number_of_states=2

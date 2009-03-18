@@ -36,7 +36,7 @@ class CylinderTests(IMP.test.TestCase):
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),8*8)
-        for i in xrange(len(points)):
+        for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]
         sampled_centroid = sampled_centroid * (1.0/len(points))
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
@@ -53,7 +53,7 @@ class CylinderTests(IMP.test.TestCase):
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),8*8)
-        for i in xrange(len(points)):
+        for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]
         sampled_centroid = sampled_centroid * (1.0/len(points))
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
@@ -71,7 +71,7 @@ class CylinderTests(IMP.test.TestCase):
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),12*12)
-        for i in xrange(len(points)):
+        for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]
         sampled_centroid = sampled_centroid * (1.0/len(points))
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
@@ -89,7 +89,7 @@ class CylinderTests(IMP.test.TestCase):
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),1000)
-        for i in xrange(len(points)):
+        for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]
         sampled_centroid = sampled_centroid * (1.0/len(points))
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)

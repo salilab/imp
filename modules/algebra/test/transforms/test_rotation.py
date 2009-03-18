@@ -31,7 +31,7 @@ class RotationTests(IMP.test.TestCase):
 
     def test_axis_rotation(self):
         """Check the centroid """
-        for ii in xrange(10):
+        for ii in range(10):
             axis= IMP.algebra.random_vector_on_unit_sphere()
             angle= random.uniform(-math.pi,math.pi)
             r= IMP.algebra.rotation_about_axis(IMP.algebra.Vector3D(axis[0], axis[1], axis[2]),angle)
@@ -90,7 +90,7 @@ class RotationTests(IMP.test.TestCase):
         axis.append(IMP.algebra.Vector3D(0.0,0.0,-1.0))#to check the antiparallel case
         axis.append(IMP.algebra.random_vector_on_unit_sphere())
         axis.append(IMP.algebra.random_vector_on_unit_sphere())
-        for i in xrange(len(axis)-1):
+        for i in range(len(axis)-1):
             rot = IMP.algebra.rotation_between_two_vectors(axis[i],axis[i+1])
             self.assertAlmostEqual(IMP.algebra.distance(rot*axis[i],axis[i+1]),0.0)
 

@@ -36,7 +36,7 @@ class ParticleTransformationTests(IMP.test.TestCase):
         tp.append(IMP.algebra.Vector3D(68.987, 6.399, 110.088))
         tp.append(IMP.algebra.Vector3D(30.447,  28.832, 134.914))
         tp.append(IMP.algebra.Vector3D(29.265,  17.052, 136.600))
-        for i in xrange(4):
+        for i in range(4):
             xyz = IMP.core.XYZDecorator.cast(self.particles[i])
             v = xyz.get_coordinates()
             self.assertEqual((v-tp[i]).get_magnitude()<0.01,True)
