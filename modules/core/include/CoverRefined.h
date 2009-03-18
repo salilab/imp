@@ -68,7 +68,7 @@ public:
     resulting XYZR particles' location is not optimized.
     \relates CoverRefined
  */
-IMPCOREEXPORT void create_covers(SingletonContainer *sc,
+IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
                                 ParticleRefiner *pr,
                FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
                                 Float slack=0);
@@ -80,10 +80,10 @@ IMPCOREEXPORT void create_covers(SingletonContainer *sc,
     resulting XYZR particle's location is not optimized.
     \relates CoverRefined
  */
-IMPCOREEXPORT XYZRDecorator create_cover(Particle *p,
-                                         ParticleRefiner *pr,
-              FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
-                                         Float slack=0);
+IMPCOREEXPORT ScoreState* create_cover(Particle *p,
+                                       ParticleRefiner *pr,
+                  FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
+                                       Float slack=0);
 
 IMPCORE_END_NAMESPACE
 

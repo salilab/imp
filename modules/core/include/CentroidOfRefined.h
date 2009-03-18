@@ -51,7 +51,7 @@ public:
     derivatives from the cover particle to the constituent particles.
     \relates CentroidOfRefined
  */
-IMPCOREEXPORT void create_centroids(SingletonContainer *sc,
+IMPCOREEXPORT ScoreState* create_centroids(SingletonContainer *sc,
                                     ParticleRefiner *pr,
                                     FloatKey weight=FloatKey(),
                                     FloatKeys ks
@@ -64,7 +64,7 @@ IMPCOREEXPORT void create_centroids(SingletonContainer *sc,
     derivatives from the centroid particle to the constituent particles.
     \relates CentroidOfRefined
  */
-IMPCOREEXPORT void create_centroid(Particle *p,
+IMPCOREEXPORT ScoreState* create_centroid(Particle *p,
                                    ParticleRefiner *pr,
                                    FloatKey weight=FloatKey(),
                                    FloatKeys ks
