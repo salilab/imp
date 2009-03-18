@@ -18,12 +18,12 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Template class for managing 3D matrices. This class is based on
 //! boost multi_array
 template<typename T>
-class Matrix3D: public IMP::algebra::MultiArray<T,3>
+class Matrix3D: public MultiArray<T,3>
 {
 public:
     typedef boost::multi_array_types::index index;
-    typedef IMP::algebra::MultiArray<T,3> MA3;
-    typedef IMP::algebra::Matrix3D<T> This;
+    typedef MultiArray<T,3> MA3;
+    typedef Matrix3D<T> This;
 
   //! Empty constructor
   Matrix3D() : MA3() {
@@ -56,7 +56,7 @@ public:
    * \param[in] v Matrix3D whose size to copy
    */
   template<typename T1>
-  void resize(const IMP::algebra::Matrix3D<T1>& v) {
+  void resize(const Matrix3D<T1>& v) {
     this->resize(v.shape()[0], v.shape()[1], v.shape()[2]);
   }
 
@@ -66,7 +66,7 @@ public:
    * \param[in] v Matrix3D whose shape to copy
    */
   template<typename T1>
-  void reshape(const IMP::algebra::Matrix3D<T1>& v) {
+  void reshape(const Matrix3D<T1>& v) {
     boost::array<index,3> shape,start;
     int dims=v.num_dimensions();
     for(int i=0;i<dims;i++) {
