@@ -17,10 +17,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 DistancePairScore::DistancePairScore(UnaryFunction *f): f_(f){}
 
-struct Identity
-{
-  Float operator()(Float t) const {return t;}
-};
 
 Float DistancePairScore::evaluate(Particle *a, Particle *b,
                                   DerivativeAccumulator *da) const
