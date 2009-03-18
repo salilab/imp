@@ -507,7 +507,10 @@ char get_chain(AtomDecorator d) {
     if (mhd== MolecularHierarchyDecorator()) {
       throw InvalidStateException("Residue is not the child of a chain");
     }
-  } while (!IMP::core::NameDecorator::is_instance_of(mhd.get_particle()));
+  } while (!mhd.get_type() != MolecularHierarchyDecorator::CHAIN);
+  IMP_check(IMP::core::NameDecorator::is_instance_of(mhd.get_particle()),
+             "The chain has no name",
+             InvalidStateException);
   IMP::core::NameDecorator nd(mhd.get_particle());
   String name = nd.get_name();
   if(name.length() > 0)
