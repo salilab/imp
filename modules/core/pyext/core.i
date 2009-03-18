@@ -66,6 +66,7 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(DistancePairScore)
     IMP_OWN_CONSTRUCTOR(DistanceRestraint)
     IMP_OWN_CONSTRUCTOR(DistanceToSingletonScore)
+    IMP_OWN_CONSTRUCTOR(DiameterRestraint)
     IMP_OWN_CONSTRUCTOR(MaximumChangeScoreState)
     IMP_OWN_CONSTRUCTOR(NonbondedRestraint)
     IMP_OWN_CONSTRUCTOR(NormalMover)
@@ -150,6 +151,7 @@ namespace IMP {
 %include "IMP/core/DerivativesFromRefined.h"
 %include "IMP/core/DerivativesToRefined.h"
 %include "IMP/core/DiffusionDecorator.h"
+%include "IMP/core/DiameterRestraint.h"
 %include "IMP/core/Transform.h"
 %include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/DistancePairScore.h"
@@ -157,7 +159,6 @@ namespace IMP {
 %include "IMP/core/DistanceToSingletonScore.h"
 %include "IMP/core/FixedParticleRefiner.h"
 %include "IMP/core/GridClosePairsFinder.h"
-%include "IMP/core/helpers.h"
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
