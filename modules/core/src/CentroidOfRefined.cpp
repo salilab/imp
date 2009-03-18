@@ -61,7 +61,7 @@ void CentroidOfRefined::show(std::ostream &out) const
   out << "CentroidOfRefined" << std::endl;
 }
 
-void create_centroids(SingletonContainer *sc,
+ScoreState* create_centroids(SingletonContainer *sc,
                       ParticleRefiner *pr,
                       FloatKey weight,
                       FloatKeys ks) {
@@ -83,11 +83,12 @@ void create_centroids(SingletonContainer *sc,
                                                       ks);
   SingletonsScoreState *sss= new SingletonsScoreState(sc, cr, dtr);
   m->add_score_state(sss);
+  return sss;
 }
 
 
 
-void create_centroid(Particle *p, ParticleRefiner *pr,
+ScoreState* create_centroid(Particle *p, ParticleRefiner *pr,
                      FloatKey weight,
                      FloatKeys ks) {
   for (unsigned int i=0; i< ks.size(); ++i) {
@@ -103,6 +104,7 @@ void create_centroid(Particle *p, ParticleRefiner *pr,
   IMP_check(pr->get_refined(p).size()>0,
              "Need particles to compute the centroid of",
              ValueException);
+  return sss;
 }
 
 

@@ -47,7 +47,7 @@ void CoverRefined::show(std::ostream &out) const
       << *ref_ << " and " << rk_ << std::endl;
 }
 
-void create_covers(SingletonContainer *sc,
+ScoreState* create_covers(SingletonContainer *sc,
                   ParticleRefiner *pr,
                   FloatKey radius_key, Float slack) {
   IMP_check(sc->get_number_of_particles() >0,
@@ -72,11 +72,12 @@ void create_covers(SingletonContainer *sc,
                                     XYZDecorator::get_xyz_keys());
   SingletonsScoreState *sss= new SingletonsScoreState(sc, cr, dtr);
   m->add_score_state(sss);
+  return sss;
 }
 
 
-XYZRDecorator create_cover(Particle *p, ParticleRefiner *pr,
-                       FloatKey radius_key, Float slack) {
+ScoreState *create_cover(Particle *p, ParticleRefiner *pr,
+                         FloatKey radius_key, Float slack) {
   if (!XYZDecorator::is_instance_of(p)) {
     XYZDecorator::create(p, algebra::Vector3D(0,0,0));
   }
@@ -91,7 +92,7 @@ XYZRDecorator create_cover(Particle *p, ParticleRefiner *pr,
                                     XYZDecorator::get_xyz_keys());
   SingletonScoreState *sss= new SingletonScoreState(cr, dtr, p);
   p->get_model()->add_score_state(sss);
-  return d;
+  return sss;
 }
 
 
