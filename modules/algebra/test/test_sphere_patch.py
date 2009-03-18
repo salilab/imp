@@ -6,11 +6,6 @@ import IMP.algebra
 import math
 
 class Sphere3DPatchTests(IMP.test.TestCase):
-    """Test rigid transformations"""
-
-    def setUp(self):
-        """Build a set of test vectors"""
-        IMP.test.TestCase.setUp(self)
 
     def test_sphere_patch_construction(self):
         """Check that a patch of a sphere is constructed correctly"""
@@ -35,13 +30,13 @@ class Sphere3DPatchTests(IMP.test.TestCase):
         points=IMP.algebra.uniform_cover(patch,numpts)
         #check that the centroid of the sampled points make sense
         sampled_centroid = IMP.algebra.Vector3D(0.0,radius/2,0.0)
-        excpeted_sampled_centroid = IMP.algebra.Vector3D(0.0,radius/2,0.0)
+        expected_sampled_centroid = IMP.algebra.Vector3D(0.0,radius/2,0.0)
         self.assertEqual(len(points),numpts)
         for p in points:
             sampled_centroid = sampled_centroid + p
         sampled_centroid = sampled_centroid * (1.0/len(points))
         sampled_centroid.show()
-        self.assertInTolerance((sampled_centroid-excpeted_sampled_centroid).get_magnitude(),0,
+        self.assertInTolerance((sampled_centroid-expected_sampled_centroid).get_magnitude(),0,
                                4*radius/numpts**.5)
 
 

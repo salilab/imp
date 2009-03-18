@@ -6,12 +6,6 @@ import IMP.algebra
 import math
 
 class SphereTests(IMP.test.TestCase):
-    """Test rigid transformations"""
-
-    def setUp(self):
-        """Build a set of test vectors"""
-        IMP.test.TestCase.setUp(self)
-
 
     def test_sphere_construction(self):
         """Check that sphere are constructed correctly"""
@@ -24,6 +18,7 @@ class SphereTests(IMP.test.TestCase):
                                places=1)
         self.assertAlmostEqual(sph.get_volume(),math.pi*125.0*(4.0/3),
                                places=1)
+
     def test_bounding_sphere(self):
         center = IMP.algebra.Vector3D(0.0,0.0,0.0)
         radius=5.0
