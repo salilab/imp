@@ -49,14 +49,15 @@ class TestREFCover(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         n= random.randrange(1,10)
         ps=IMP.core.create_xyzr_particles(m, 10, 1)
-        p= IMP.core.create_cover(IMP.Particle(m),
+        p=IMP.Particle(m)
+        ss= IMP.core.create_cover(p,
                                  IMP.core.FixedParticleRefiner(ps),
                                  IMP.core.XYZRDecorator.get_default_radius_key(), 1)
-        ss= m.get_score_states()
-        for s in ss:
+        sss= m.get_score_states()
+        for s in sss:
             s.show()
         print "eval"
         m.evaluate(True)
-        self.check_cover(p.get_particle(), ps)
+        self.check_cover(p, ps)
 if __name__ == '__main__':
     unittest.main()
