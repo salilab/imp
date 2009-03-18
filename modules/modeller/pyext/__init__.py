@@ -411,6 +411,15 @@ def copy_atom(a, model):
     ap.set_input_index(a.index)
     return p
 
+def copy_chain(c, model):
+    """Copy chain information from modeller"""
+    #print "atom "+str(a)
+    p=IMP.Particle(model)
+    #set the chain name
+    cn = IMP.core.NameDecorator.create(p,c.name)
+    hp= IMP.atom.MolecularHierarchyDecorator.create(p, IMP.atom.MolecularHierarchyDecorator.CHAIN)
+    return p
+
 
 def copy_bonds(pdb, atoms, model):
     for b in pdb.bonds:
