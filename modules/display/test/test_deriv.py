@@ -47,8 +47,8 @@ class TestBL(IMP.test.TestCase):
             w.add_geometry(display.XYZDerivativeGeometry(core.XYZDecorator(ps[i])))
         w.set_file_name("")
 
-        rbd= core.create_rigid_body(p)
-
+        ss= core.create_rigid_body(p)
+        rbd= IMP.core.RigidBodyDecorator(p)
         set_log_level(TERSE)
         print "eval"
         m.evaluate(True)
