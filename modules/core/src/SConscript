@@ -27,6 +27,7 @@ files = [
          'CoverRefined.cpp',
          'DerivativesFromRefined.cpp',
          'DerivativesToRefined.cpp',
+         'DiameterRestraint.cpp',
          'DiffusionDecorator.cpp',
          'DihedralRestraint.cpp',
          'DistancePairScore.cpp',
@@ -76,7 +77,6 @@ files = [
          'XYZDecorator.cpp',
          'XYZRDecorator.cpp',
          'bond_decorators.cpp',
-         'helpers.cpp',
          'model_io.cpp',
          'rigid_bodies.cpp',
         ] \

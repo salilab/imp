@@ -12,8 +12,8 @@ class TestBL(IMP.test.TestCase):
         ps= IMP.core.create_xyzr_particles(m, 20, 1.0)
         for p in ps:
             IMP.core.XYZDecorator(p).set_coordinates_are_optimized(True)
-        IMP.core.create_diameter_restraint(ps, diameter, 1)
-
+        r=IMP.core.DiameterRestraint(IMP.core.Harmonic(0,1), IMP.core.ListSingletonContainer(ps), diameter)
+        m.add_restraint(r)
         # Set up optimizer
         o= IMP.core.ConjugateGradients()
         o.set_model(m)
