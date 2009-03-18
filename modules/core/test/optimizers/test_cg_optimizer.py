@@ -27,7 +27,7 @@ class WoodsFunc(IMP.Restraint):
                   -2.0 * (180.0 * x3 * b + 1.0 - x3),
                    2.0 * (90.0 * b + 10.1 * (x4 - 1.0) + 9.9 * (x2 - 1.0))]
             for (p,d) in zip(self.particles, dx):
-                p.add_to_derivative(self.index, d, accum);
+                p.add_to_derivative(self.index, d, accum)
             #for (i, d) in zip(self.indices, dx):
             #    accum.add_to_deriv(i, d)
         return e

@@ -17,7 +17,7 @@ class RigidTransformationTests(IMP.test.TestCase):
 
     def test_align(self):
         """Testing rigid alignment of point sets, no translation"""
-        r= IMP.algebra.random_rotation();
+        r= IMP.algebra.random_rotation()
         t= IMP.algebra.Vector3D(0,0,0) #IMP.random_vector_in_unit_box()
         tr= IMP.algebra.Transformation3D(r, t)
         (vs, vsr)= self._produce_point_sets(tr)
@@ -43,7 +43,7 @@ class RigidTransformationTests(IMP.test.TestCase):
 
     def test_full_align(self):
         """Testing rigid alignment of point sets"""
-        r= IMP.algebra.random_rotation();
+        r= IMP.algebra.random_rotation()
         t= IMP.algebra.random_vector_in_unit_box()
         tr= IMP.algebra.Transformation3D(r, t)
         (vs, vsr)= self._produce_point_sets(tr)

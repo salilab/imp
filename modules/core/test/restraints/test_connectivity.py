@@ -69,7 +69,7 @@ class ConnectivityTests(IMP.test.TestCase):
                      "Point 2 is not connected")
         self.assert_(ok03 or ok13 or ok23,
                      "Point 3 is not connected")
-        self.assert_(score < 10, "Score too high");
+        self.assert_(score < 10, "Score too high")
 
 
 if __name__ == '__main__':

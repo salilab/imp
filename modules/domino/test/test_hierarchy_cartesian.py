@@ -111,7 +111,7 @@ class DOMINOTests(IMP.test.TestCase):
         """
         self.d_opt.set_sampling_space(self.sampler)
         num_sol=5
-        self.d_opt.set_number_of_solutions(num_sol);
+        self.d_opt.set_number_of_solutions(num_sol)
         print self.d_opt.optimize(1)
         rg = self.d_opt.get_graph()
         print "OPT SCORE ::::::::::::; " + str(self.opt_score)

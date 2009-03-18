@@ -38,7 +38,7 @@ class PDBReadTest(IMP.test.TestCase):
         rd= IMP.atom.get_residue(mp, 29)
         at= IMP.atom.get_atom(rd, IMP.atom.AtomType("C"))
         self.assertEqual(IMP.atom.get_residue_index(at), rd.get_index())
-        self.assertEqual(rd.get_index(), 29);
+        self.assertEqual(rd.get_index(), 29)
 
     def test_bonds(self):
         """Check that the file loader produces bonds"""
@@ -47,7 +47,7 @@ class PDBReadTest(IMP.test.TestCase):
                       self.get_input_file_name('single_protein.pdb'), m)
         #mp= IMP.core.MolecularHierarchyDecorator.cast(p)
         all_atoms= IMP.atom.get_by_type(mp,
-                             IMP.atom.MolecularHierarchyDecorator.ATOM);
+                             IMP.atom.MolecularHierarchyDecorator.ATOM)
         self.assertEqual(1221, len(all_atoms),
                          "Wrong number of atoms found in protein")
 
@@ -78,7 +78,7 @@ class PDBReadTest(IMP.test.TestCase):
         self.assertEqual(3160, hc.get_count(),
                          "Wrong number of particles created")
         #rd= IMP.get_residue(mp, 29)
-        #self.assertEqual(rd.get_index(), 29);
+        #self.assertEqual(rd.get_index(), 29)
 
 if __name__ == '__main__':
     unittest.main()

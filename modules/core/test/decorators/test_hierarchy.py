@@ -10,13 +10,13 @@ class DecoratorTests(IMP.test.TestCase):
         pp=IMP.Particle(m)
         ppd= IMP.core.HierarchyDecorator.create(pp)
         ppnd= IMP.core.NameDecorator.create(pp)
-        ppnd.set_name("root");
+        ppnd.set_name("root")
         for i in range(0,10):
             pc=IMP.Particle(m)
             pcd= IMP.core.HierarchyDecorator.create(pc)
             ppd.add_child(pcd)
             pcnd= IMP.core.NameDecorator.create(pc)
-            pcnd.set_name(str("child "+str(i)));
+            pcnd.set_name(str("child "+str(i)))
 
         self.assertEqual(ppd.get_number_of_children(), 10,
                          "Number of children is not as expected")
@@ -28,13 +28,13 @@ class DecoratorTests(IMP.test.TestCase):
         pp=IMP.Particle(m)
         ppd= IMP.core.HierarchyDecorator.create(pp, t)
         ppnd= IMP.core.NameDecorator.create(pp)
-        ppnd.set_name("root");
+        ppnd.set_name("root")
         for i in range(0,10):
             pc=IMP.Particle(m)
             pcd= IMP.core.HierarchyDecorator.create(pc, t)
             ppd.add_child(pcd)
             pcnd= IMP.core.NameDecorator.create(pc)
-            pcnd.set_name(str("child "+str(i)));
+            pcnd.set_name(str("child "+str(i)))
 
         self.assertEqual(ppd.get_number_of_children(), 10,
                          "Number of children is not as expected")

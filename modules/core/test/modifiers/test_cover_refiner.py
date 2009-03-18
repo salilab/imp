@@ -51,7 +51,7 @@ class TestREFCover(IMP.test.TestCase):
         ps=IMP.core.create_xyzr_particles(m, 10, 1)
         p= IMP.core.create_cover(IMP.Particle(m),
                                  IMP.core.FixedParticleRefiner(ps),
-                                 IMP.core.XYZRDecorator.get_default_radius_key(), 1);
+                                 IMP.core.XYZRDecorator.get_default_radius_key(), 1)
         ss= m.get_score_states()
         for s in ss:
             s.show()

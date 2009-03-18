@@ -118,7 +118,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         m.add_restraint(r)
         f= m.evaluate(False)
         print f
-        ms= [];
+        ms= []
         print c.get_number_of_classnames()
         for i in range(0,10):
             ps= c.get_classname(i)
@@ -126,7 +126,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
             ms.append(cm)
         print ms
         ms.sort()
-        mt=0;
+        mt=0
         for i in range(0, 4):
             mt = mt+ ms[i]
         print mt
@@ -147,7 +147,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         m.add_restraint(r)
         f= m.evaluate(False)
         print f
-        ms= [];
+        ms= []
         print c.get_number_of_classnames()
         for i in range(0,10):
             ps= c.get_classname(i)
@@ -155,7 +155,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
             ms.append(cm)
         ms.sort()
         print ms
-        mt=0;
+        mt=0
         for i in range(0, 4):
             mt = mt+ ms[-i-1]
         print mt
