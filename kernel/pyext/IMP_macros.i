@@ -32,6 +32,10 @@ namespace IMP \
     if args[i] is not None and issubclass(type(args[i]), IMP.RefCountedObject):
        args[i].thisown=0;
 %}
+%pythonappend functionname %{
+  if val is not None and issubclass(type(val), IMP.RefCountedObject):
+     val.thisown=0;
+%}
 %enddef
 
 %define IMP_OWN_LIST_METHOD(Ucname, methodname)
