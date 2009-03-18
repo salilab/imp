@@ -461,8 +461,8 @@ namespace {
   }
 }
 
-void create_rigid_bodies(SingletonContainer *rbs,
-                         RigidBodyTraits tr) {
+ScoreState* create_rigid_bodies(SingletonContainer *rbs,
+                                RigidBodyTraits tr) {
   IMP_check(rbs->get_number_of_particles() >0,
             "Need some particles to make rigid bodies",
             ValueException);
@@ -475,9 +475,10 @@ void create_rigid_bodies(SingletonContainer *rbs,
   SMP sm= get_modifiers(tr);
   SingletonsScoreState *sss= new SingletonsScoreState(rbs, sm.first, sm.second);
   m->add_score_state(sss);
+  return sss;
 }
 
-RigidBodyDecorator create_rigid_body(Particle *p,
+ScoreState* create_rigid_body(Particle *p,
                                      RigidBodyTraits tr) {
   Model *m= p->get_model();
   RigidBodyDecorator rbd= RigidBodyDecorator::create(p, tr);
@@ -485,7 +486,7 @@ RigidBodyDecorator create_rigid_body(Particle *p,
   rbd.set_coordinates_are_optimized(true);
   SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, p);
   m->add_score_state(sss);
-  return rbd;
+  return sss;
 }
 
 

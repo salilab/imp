@@ -316,9 +316,11 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
    of the rotational degrees for freedom).
    \relates RigidBodyDecorator
    \note The rigid bodies are set to be optimized.
+   To stop keeping the body rigid, remove the returned score state from the
+   model.
  */
-IMPCOREEXPORT void create_rigid_bodies(SingletonContainer* rbs,
-                                       RigidBodyTraits tr
+IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
+                                              RigidBodyTraits tr
                                    =RigidBodyDecorator::get_default_traits());
 
 //! Creates a rigid body and sets up the needed score states
@@ -330,9 +332,11 @@ IMPCOREEXPORT void create_rigid_bodies(SingletonContainer* rbs,
    \relates RigidBodyDecorator
 
    \note The rigid body is set to be optimized.
+   To stop keeping the body rigid, remove the returned score state from the
+   model.
  */
-IMPCOREEXPORT RigidBodyDecorator create_rigid_body(Particle *p,
-                                                   RigidBodyTraits tr
+IMPCOREEXPORT ScoreState* create_rigid_body(Particle *p,
+                                            RigidBodyTraits tr
                                =RigidBodyDecorator::get_default_traits());
 
 
