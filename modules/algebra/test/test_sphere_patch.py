@@ -3,8 +3,8 @@ import IMP
 import IMP.utils
 import IMP.test
 import IMP.algebra
-import IMP.display
 import math
+
 class Sphere3DPatchTests(IMP.test.TestCase):
     """Test rigid transformations"""
 
@@ -41,11 +41,6 @@ class Sphere3DPatchTests(IMP.test.TestCase):
             sampled_centroid = sampled_centroid + p
         sampled_centroid = sampled_centroid * (1.0/len(points))
         sampled_centroid.show()
-        w= IMP.display.CGOWriter("cover")
-        w.set_file_name(self.get_tmp_file_name("cover.py"))
-        for p in points:
-            w.add_geometry(IMP.display.SphereGeometry(IMP.algebra.Sphere3D(p, 1)))
-        w.add_geometry(IMP.display.SphereGeometry(IMP.algebra.Sphere3D(center, 4)))
         self.assertInTolerance((sampled_centroid-excpeted_sampled_centroid).get_magnitude(),0,
                                4*radius/numpts**.5)
 
