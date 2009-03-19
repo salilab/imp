@@ -95,15 +95,14 @@ Vector3Ds uniform_cover(const Sphere3D &sph,int number_of_points) {
 
 Vector3Ds uniform_cover(const Sphere3DPatch &sph,
                         unsigned int number_of_points) {
-  //find a sphere to sample in
-  Vector3D center = sph.get_sphere().get_center()+
-  sph.get_sphere().get_radius()*sph.get_plane().get_normal().get_unit_vector();
-  double radius = distance(sph.point_on_sphere(),center);
-  IMP_check(
-   radius > 0.,"The radius should be positive " << radius,ErrorException);
   Vector3Ds points;
   while (points.size() < number_of_points) {
-    Vector3D rp = random_vector_in_sphere(center,radius);
+    Vector3D rp = random_vector_on_sphere(sph.get_sphere().get_center(),
+                                          sph.get_sphere().get_radius());
+    double r2= (rp-sph.get_sphere().get_center()).get_squared_magnitude();
+    IMP_assert(std::abs(r2- square(sph.get_sphere().get_radius())) < .05 *r2,
+               "Bad point on sphere " << r2
+               << " " << square(sph.get_sphere().get_radius()) << std::endl);
     if (sph.get_contains(rp)) {
       points.push_back(rp);
     }
