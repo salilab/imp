@@ -81,6 +81,7 @@ def get_all_files():
     modfiles = []
     excludes = ['\.\/kernel\/pyext\/IMP_wrap\.[h|cc]',
                 '\.\/kernel\/pyext\/IMP\.py',
+                '\.\/kernel\/include\/internal\/config\.h',
                 '\.\/modules\/\w+\/pyext\/\w+_wrap\.[h|cc]',
                 '\.\/modules\/\w+\/pyext\/IMP\.\w+\.py']
     excludes = [re.compile(x) for x in excludes]
