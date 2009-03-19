@@ -7,10 +7,9 @@
 #include <IMP/algebra/Cylinder3D.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
-Cylinder3D::Cylinder3D(const Vector3D &start,
-                       const Vector3D &end,
+Cylinder3D::Cylinder3D(const Segment3D &s,
                        double radius)
-           :start_(start),end_(end),radius_(radius){
+  :start_(s.get_point(0)),end_(s.get_point(1)),radius_(radius){
 }
 
 Transformation3D Cylinder3D::get_transformation_to_place_direction_on_Z() const{

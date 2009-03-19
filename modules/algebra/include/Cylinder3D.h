@@ -10,6 +10,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/Transformation3D.h>
+#include <IMP/algebra/Segment3D.h>
 #include <iostream>
 #include <IMP/constants.h>
 
@@ -26,7 +27,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT Cylinder3D
 {
  public:
-  Cylinder3D(const Vector3D &start,const Vector3D &end, double radius);
+  Cylinder3D(const Segment3D &s, double radius);
   //! Get a transformation that places the cylinder direction on Z
   /**
   /note the function would work if the center of the reference frame is (0,0,0)
@@ -35,7 +36,8 @@ class IMPALGEBRAEXPORT Cylinder3D
   /** */
   Vector3D get_center() const {return start_+(end_-start_)*0.5;}
   /** \brief Get a normalized direction vector pointing from
-      get_point(0) to get_point(1)*/
+      get_point(0) to get_point(1).
+  */
   Vector3D get_direction() const {return (end_-start_).get_unit_vector();}
   /** */
   double get_radius() const {return radius_;}
@@ -55,11 +57,7 @@ class IMPALGEBRAEXPORT Cylinder3D
   Vector3D end_;
   double radius_;
 };
-//! Return a transformation around the main axis of the cylinder
-inline Transformation3D rotate(const Cylinder3D &cyl, double angle) {
-  return Transformation3D(rotation_about_axis(cyl.get_direction(),angle),
-                          Vector3D(0.0,0.0,0.0));
-}
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_CYLINDER_3D_H */
