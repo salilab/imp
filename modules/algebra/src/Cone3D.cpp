@@ -19,16 +19,13 @@ bool Cone3D::get_contains(const Vector3D &v) const {
 }
 Sphere3D Cone3D::get_bounding_sphere() const {
   return Sphere3D(get_tip(),
-                  std::sqrt(radius_*radius_+get_height()*get_height()));
+                  std::sqrt(square(radius_)+square(get_height())));
 }
 
 
-Plane3D Cone3D::get_intersecting_plane() const {
-  Sphere3D sph = get_bounding_sphere();
-  Vector3D d = get_direction().get_unit_vector();
-  Vector3D intersecting_point
-       = seg_.get_point(1)+radius_*(orthogonal_vector(d).get_unit_vector());
-  return Plane3D(intersecting_point,d);
+Plane3D Cone3D::get_base_plane() const {
+    return Plane3D(seg_.get_point(1),
+                   seg_.get_point(0)-seg_.get_point(1));
 }
 
 

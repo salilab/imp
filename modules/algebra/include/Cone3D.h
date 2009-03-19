@@ -28,12 +28,13 @@ However, when used without qualification, the term "cone" often means
 class IMPALGEBRAEXPORT Cone3D
 {
  public:
+  // A cone with a top at s.get_point(0) and the given base radius
   Cone3D(const Segment3D &s,double radius);
   //!Get the vertex of the cone
   Vector3D get_tip() const {return seg_.get_point(0);}
   //!Get the direction of the cone
   Vector3D get_direction() const {return seg_.get_direction();}
-  double get_height() const {return seg_.lenght();}
+  double get_height() const {return seg_.get_length();}
   /** The opening angle of a cone is the vertex angle made by a cross section
       through the apex and center of the base.*/
   double get_angle() const {
@@ -41,8 +42,10 @@ class IMPALGEBRAEXPORT Cone3D
   }
   bool get_contains(const Vector3D &v) const;
   Sphere3D get_bounding_sphere() const;
-  //! Get the intersecting plane between a cone and its bounding sphere
-  Plane3D get_intersecting_plane() const;
+  //! Get the plane supporting the base of the cone
+  /** The cone is on the positive side of the plane.
+   */
+  Plane3D get_base_plane() const;
  private:
   Segment3D seg_;
   double radius_;
