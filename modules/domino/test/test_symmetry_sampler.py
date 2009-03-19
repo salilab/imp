@@ -39,10 +39,10 @@ class DOMINOTests(IMP.test.TestCase):
         max_d=IMP.algebra.Segment3D(max_d1.get_point(1),max_d1.get_point(0))
         #print ".dot " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2])
         #print ".dot " +str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2])
-        cone = IMP.algebra.Cone3D(max_d,max_d.lenght())
-        print ".cone " + str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2]) +" " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2]) + " " + str(max_d.lenght())
-        pln = cone.get_intersecting_plane()
-        patch = IMP.algebra.Sphere3DPatch(cone.get_bounding_sphere(),pln)
+        cone = IMP.algebra.Cone3D(max_d,max_d.get_length())
+        print ".cone " + str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2]) +" " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2]) + " " + str(max_d.get_length())
+        pln = cone.get_base_plane()
+        patch = IMP.algebra.Sphere3DPatch(cone.get_bounding_sphere(),pln.get_opposite())
         print ".dot " +str(pln.get_point_on_plane()[0]) + " " + str(pln.get_point_on_plane()[1]) + " " + str(pln.get_point_on_plane()[2])
         sss = cone.get_bounding_sphere()
         print ".sphere " + str(sss.get_center()[0]) + " " + str(sss.get_center()[1]) + " "+ str(sss.get_center()[2]) + " " + str(sss.get_radius())
@@ -57,8 +57,8 @@ class DOMINOTests(IMP.test.TestCase):
         #write a function to find a bounding cylinder
 #         self.cyl = IMP.algebra.Cylinder3D(IMP.algebra.Vector3D(0.0,0.0,-50.0),
 #                                           IMP.algebra.Vector3D(0.0,0.0,-90.0),5.0)
-        self.cyl = IMP.algebra.Cylinder3D(IMP.algebra.Vector3D(0.0,0.0,0.0),
-                                          IMP.algebra.Vector3D(0.0,0.0,1.0),5.0)
+        self.cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,0.0),
+                                          IMP.algebra.Vector3D(0.0,0.0,1.0)),5.0)
 
         self.sampler = IMP.domino.SymmetrySampler(self.ps,self.rt,self.cyl)
         self.sampler.set_ref(self.ref.get_particle())
@@ -90,7 +90,8 @@ class DOMINOTests(IMP.test.TestCase):
             for j,p in enumerate(self.ps):
                 cendtroids[j] = cendtroids[j]+IMP.atom.centroid(self.prots[j])
             state.show()
-        rot120 = IMP.algebra.rotate(self.cyl,2.*math.pi/3)
+        rot120 = IMP.algebra.Transformation3D(IMP.algebra.rotation_about_axis(self.cyl.get_direction(),
+                                                 2.*math.pi/3))
         for j in range(2):
             cendtroids[j].show()
             cendtroids[j+1].show()
