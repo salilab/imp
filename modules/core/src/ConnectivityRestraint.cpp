@@ -35,32 +35,42 @@ IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,  {
               },,);
 
 
+namespace {
+  typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                        boost::undirectedS, boost::no_property,
+            boost::property<boost::edge_weight_t, float> > Graph;
+  typedef boost::graph_traits<Graph>::edge_descriptor Edge;
+  typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
+
+  void compute_mst(const ConnectivityRestraint *a,
+                   PairScore *ps,
+                   Graph &g,
+                   std::vector<Edge> &mst) {
+    for (unsigned int i=0; i< a->get_number_of_particles(); ++i) {
+      for (unsigned int j=0; j<i; ++j) {
+        float d= ps->evaluate(a->get_particle(i), a->get_particle(j), NULL);
+        IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
+                << a->get_particle(i)->get_name() << " and "
+                << a->get_particle(j)->get_name() << " with weight "
+                << d << std::endl);
+        Edge e = boost::add_edge(i, j, g).first;
+        boost::put(boost::edge_weight_t(), g, e, d);
+      }
+    }
+
+    boost::kruskal_minimum_spanning_tree(g, std::back_inserter(mst));
+  }
+
+}
+
+
 Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
 {
   IMP_CHECK_OBJECT(ps_.get());
-
-  typedef boost::adjacency_list<boost::vecS, boost::vecS,
-    boost::undirectedS, boost::no_property,
-    boost::property<boost::edge_weight_t, float> > Graph;
-  typedef boost::graph_traits<Graph>::edge_descriptor Edge;
-  typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
-  Graph g(get_number_of_particles());
-
-  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
-    for (unsigned int j=0; j<i; ++j) {
-      float d= ps_->evaluate(get_particle(i), get_particle(j), NULL);
-      IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
-              << get_particle(i)->get_name() << " and "
-              << get_particle(j)->get_name() << " with weight "
-              << d << std::endl);
-      Edge e = boost::add_edge(i, j, g).first;
-      boost::put(boost::edge_weight_t(), g, e, d);
-    }
-  }
-
   std::vector<Edge> mst;
-  boost::kruskal_minimum_spanning_tree(g, std::back_inserter(mst));
 
+  Graph g(get_number_of_particles());
+  compute_mst(this, ps_, g, mst);
   float sum=0;
   // could be more clever if accum is NULL
   for (unsigned int index=0; index< mst.size(); ++index) {
@@ -80,6 +90,21 @@ Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
   return sum;
 }
 
+
+ParticlePairs ConnectivityRestraint::get_connected_pairs() const {
+  IMP_CHECK_OBJECT(ps_.get());
+  std::vector<Edge> mst;
+  Graph g(get_number_of_particles());
+  compute_mst(this, ps_, g, mst);
+  ParticlePairs ret(mst.size());
+  for (unsigned int index=0; index< mst.size(); ++index) {
+    int i= boost::target(mst[index], g);
+    int j= boost::source(mst[index], g);
+    ret[index]= ParticlePair(get_particle(i),
+                             get_particle(j));
+  }
+  return ret;
+}
 
 void ConnectivityRestraint::show(std::ostream& out) const
 {

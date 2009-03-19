@@ -70,7 +70,11 @@ class ConnectivityTests(IMP.test.TestCase):
         self.assert_(ok03 or ok13 or ok23,
                      "Point 3 is not connected")
         self.assert_(score < 10, "Score too high")
-
+        pps= r.get_connected_pairs()
+        lscore=0
+        for p in pps:
+            lscore= lscore+ss.evaluate(p[0], p[1], None)
+        self.assertInTolerance(score, lscore, .1)
 
 if __name__ == '__main__':
     unittest.main()

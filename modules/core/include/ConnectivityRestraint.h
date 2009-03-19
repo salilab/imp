@@ -46,7 +46,19 @@ public:
     return ParticlesList(1, Particles(particles_begin(), particles_end()));
   }
 
+  //! Return the set of pairs which are connected by the restraint
+  /** This set of pairs reflects the current configuration at the time of
+      the get_connected_pairs() call, not the set at the time of the last
+      evaluate() call.
+  */
+  ParticlePairs get_connected_pairs() const;
+
   IMP_RESTRAINT(ConnectivityRestraint, internal::version_info)
+
+  //! Return the pair score used for scoring
+  PairScore *get_pair_score() const {
+    return ps_;
+  }
 };
 
 IMPCORE_END_NAMESPACE
