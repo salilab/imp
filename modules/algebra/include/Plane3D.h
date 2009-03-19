@@ -16,28 +16,36 @@ public:
   Plane3D(){}
   /** */
   Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane);
+  /** */
+  Plane3D(double distance_to_plane ,const Vector3D &normal_to_plane);
   /**  */
-  const Vector3D &get_point_on_plane() const {return point_;}
+  Vector3D get_point_on_plane() const {return normal_*distance_;}
   const Vector3D &get_normal() const {return normal_;}
-  double projection(const Vector3D &p) const;
+  //! Project the point onto the plane
+  Vector3D get_projection(const Vector3D &p) const;
   /**
   /note the directionality of the plane is determined by the normal
    */
-  bool is_above(const Vector3D &p) const;
+  bool get_is_above(const Vector3D &p) const;
   /**
   /note the directionality of the plane is determined by the normal
    */
-  bool is_below(const Vector3D &p) const;
+  bool get_is_below(const Vector3D &p) const;
   void show(std::ostream &out=std::cout) const;
+
+  //! Return the plane facing the other way
+  Plane3D get_opposite() const {
+    return Plane3D(-distance_, -normal_);
+  }
 private:
-  Vector3D point_; //point on plane
+  double distance_;
   Vector3D normal_; //normal to plane
 };
 
 
 //! Return the distance between a plane and a point in 3D
 inline double distance(const Plane3D& pln, const Vector3D &p) {
-  return std::abs(pln.projection(p));
+  return (pln.get_projection(p)-p).get_magnitude();
 }
 
 

@@ -7,21 +7,30 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 Plane3D::Plane3D(const Vector3D& point_on_plane,
                  const Vector3D &normal_to_plane) {
-  point_ = point_on_plane;
   normal_ = normal_to_plane.get_unit_vector();
+  distance_= normal_*point_on_plane;
 }
-double Plane3D::projection(const Vector3D &p) const {
-  return normal_*(p-point_);
+Plane3D::Plane3D(double distance,
+                 const Vector3D &normal):
+  normal_(normal),
+  distance_(distance) {
+  IMP_check(std::abs(normal.get_squared_magnitude()-1) < .05,
+            "The normal vector must be normalized",
+            ValueException);
+  }
+
+Vector3D Plane3D::get_projection(const Vector3D &p) const {
+  return p-normal_*(normal_*p-distance_);
 }
-bool Plane3D::is_above(const Vector3D &p) const {
-  return projection(p)>0;
+bool Plane3D::get_is_above(const Vector3D &p) const {
+  return normal_*p > distance_;
 }
-bool Plane3D::is_below(const Vector3D &p) const {
-  return projection(p)>0;
+bool Plane3D::get_is_below(const Vector3D &p) const {
+  return normal_*p < distance_;
 }
 
 void Plane3D::show(std::ostream &out) const {
-    out << "(" << spaces_io(point_) << ": " << spaces_io(normal_)
+    out << "(" << distance_ << ": " << spaces_io(normal_)
         << ")";
 }
 
