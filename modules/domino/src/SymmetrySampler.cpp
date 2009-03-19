@@ -63,9 +63,11 @@ void SymmetrySampler::move2state(const CombState *cs) {
     p = it->first;
     t = ts_->get_transformation(it->second);
     double angle = 2.*PI/ps_->size()*symm_deg_[p];
+    // was algebra::rotate(cyl_,angle).compose(t)
     atom::transform(atom::MolecularHierarchyDecorator::cast(p),
-                    algebra::rotate(cyl_,angle).compose(t));
-                    //t.compose(algebra::rotate(cyl_,angle)));
+                    compose(algebra::rotation_about_axis(cyl_.get_direction(),
+                                                         angle),
+                            t));
  //    std::stringstream name;
 //     name<<p->get_value(StringKey("name"))<<"__"<<cs->key()<<".pdb";
 //     atom::write_pdb(atom::MolecularHierarchyDecorator::cast(p),name.str());
