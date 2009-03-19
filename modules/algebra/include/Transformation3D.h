@@ -15,6 +15,10 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+class Transformation3D;
+Transformation3D compose(const Transformation3D &a,
+                         const Transformation3D &b);
+
 //! Simple 3D transformation class
 /**
 */
@@ -44,7 +48,7 @@ public:
   /** multiply two rigid transformation such that for any vector v
       (rt1*rt2)*v = rt1*(rt2*v) */
   Transformation3D operator*(const Transformation3D &tr) {
-    return Transformation3D(rot_ * tr.rot_, transform(tr.trans_));
+    return compose(*this, tr);
   }
   //! get the rotation part
   const Rotation3D& get_rotation() const {
@@ -52,13 +56,7 @@ public:
   }
   //! Get the translation part
   const Vector3D& get_translation()const{return trans_;}
-  //! Compose two transformations
-  /**
-     /param[in] trans2 The other transformation
-     /note for any vector v (trans1*trans2)*v = trans1*(trans2*v).
-           Here trans1 is the transformation stored in this.
-   */
-  Transformation3D compose(const Transformation3D &trans2);
+
   void show(std::ostream& out = std::cout) const {
     rot_.show(out);
     out<<" || "<<trans_;
@@ -113,6 +111,16 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
                                         yu[0],yu[1],yu[2],
                                         zu[0],zu[1],zu[2]).get_inverse();
   return Transformation3D(rot,base);
+}
+
+
+//! compose two transformations
+  /** For any vector v (a*a)*v = a*(b*v).
+   */
+inline Transformation3D compose(const Transformation3D &a,
+                         const Transformation3D &b){
+  return Transformation3D(compose(a.get_rotation(), b.get_rotation()),
+                          a.transform(b.get_translation()));
 }
 
 IMPALGEBRA_END_NAMESPACE

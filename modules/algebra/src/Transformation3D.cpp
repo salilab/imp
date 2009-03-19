@@ -14,11 +14,6 @@ Transformation3D Transformation3D::get_inverse() const{
   return Transformation3D(inv_rot,-(inv_rot.rotate(trans_)));
 }
 
-Transformation3D Transformation3D::compose(const Transformation3D &trans2) {
-  return Transformation3D(rot_.compose(trans2.rot_),
-                          transform(trans2.trans_));
-}
-
 IMPALGEBRAEXPORT Transformation3D
 transformation_from_rotation_around_vector(const Rotation3D &rot,
                                            const Vector3D &center) {
