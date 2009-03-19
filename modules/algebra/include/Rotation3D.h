@@ -14,6 +14,9 @@
 #include <algorithm>
 IMPALGEBRA_BEGIN_NAMESPACE
 
+class Rotation3D;
+Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
+
 //! 3D rotation class.
 /** Holds a three dimensional rotation compactly using a quaternion (4 numbers).
     Advantages using quaternion:
@@ -35,6 +38,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 class IMPALGEBRAEXPORT Rotation3D {
   VectorD<4> v_;
+#ifndef SWIG
+  friend Rotation3D compose(const Rotation3D &a, const Rotation3D &b);
+#endif
 public:
   //! Create an invalid rotation
   Rotation3D():v_(0,0,0,0) {}
@@ -97,21 +103,9 @@ public:
     return v_;
   }
 
-  //!  multiply two rotations
-  Rotation3D compose(const Rotation3D rot2) {
-    return Rotation3D(v_[0]*rot2.v_[0] - v_[1]*rot2.v_[1]
-                      - v_[2]*rot2.v_[2] - v_[3]*rot2.v_[3],
-                      v_[0]*rot2.v_[1] + v_[1]*rot2.v_[0]
-                      + v_[2]*rot2.v_[3] - v_[3]*rot2.v_[2],
-                      v_[0]*rot2.v_[2] - v_[1]*rot2.v_[3]
-                      + v_[2]*rot2.v_[0] + v_[3]*rot2.v_[1],
-                      v_[0]*rot2.v_[3] + v_[1]*rot2.v_[2]
-                      - v_[2]*rot2.v_[1] + v_[3]*rot2.v_[0]);
-  }
-
   //! multiply two rotations
-  Rotation3D operator*(const Rotation3D& q) {
-    return compose(q);
+  Rotation3D operator*(const Rotation3D& q) const {
+    return compose(*this, q);
   }
 
   /** \brief Return the derivative of the position x with respect to
@@ -326,6 +320,19 @@ inline Rotation3D rotation_from_vector4d(const VectorD<4> &v) {
   VectorD<4> uv= v.get_unit_vector();
   return Rotation3D(uv[0], uv[1], uv[2], uv[3]);
 }
+
+
+//! Compose two translations
+inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
+    return Rotation3D(a.v_[0]*b.v_[0] - a.v_[1]*b.v_[1]
+                      - a.v_[2]*b.v_[2] - a.v_[3]*b.v_[3],
+                      a.v_[0]*b.v_[1] + a.v_[1]*b.v_[0]
+                      + a.v_[2]*b.v_[3] - a.v_[3]*b.v_[2],
+                      a.v_[0]*b.v_[2] - a.v_[1]*b.v_[3]
+                      + a.v_[2]*b.v_[0] + a.v_[3]*b.v_[1],
+                      a.v_[0]*b.v_[3] + a.v_[1]*b.v_[2]
+                      - a.v_[2]*b.v_[1] + a.v_[3]*b.v_[0]);
+  }
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_3D_H */
