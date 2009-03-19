@@ -289,7 +289,6 @@ public:
     return *this;
   }
 
-#ifndef SWIG
   //! Sum operator for a scalar and an array
   friend This operator+(const T& X,
                          const This& a1) {
@@ -326,7 +325,6 @@ public:
     return result;
   }
 
-#endif
   //! Determinant (only for 2x2)
   double det() {
     return (double)(physical_get(0,0)*physical_get(1,1) -

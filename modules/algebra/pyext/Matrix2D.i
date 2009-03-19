@@ -6,6 +6,12 @@
 %ignore IMP::algebra::Matrix2D::operator*=;
 %ignore IMP::algebra::Matrix2D::operator/=;
 
+/* Ignore friend operators */
+%ignore operator+(const T& X, const This& a1);
+%ignore operator-(const T& X, const This& a1);
+%ignore operator*(const T& X, const This& a1);
+%ignore operator/(const T& X, const This& a1);
+
 // Matrix2D
 %include "IMP/algebra/MultiArray.h"
 %include "IMP/algebra/Matrix2D.h"

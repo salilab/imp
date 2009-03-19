@@ -250,7 +250,6 @@ public:
     return *this;
   }
 
-#ifndef SWIG
   //! Sum operator for a scalar and an array
   friend This operator+(const T& X, const This& a1) {
     This result;
@@ -282,7 +281,6 @@ public:
     internal::operate_scalar_and_array(X, a1, result, '/');
     return result;
   }
-#endif
 
 protected:
 };
