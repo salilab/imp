@@ -22,21 +22,25 @@ class ConeTests(IMP.test.TestCase):
         s = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,0.0),
                                   IMP.algebra.Vector3D(0.0,0.0,5.0))
         cone = IMP.algebra.Cone3D(s,4.0)
-        cone_pln = cone.get_intersecting_plane()
+        cone_pln = cone.get_base_plane()
         cone_sphere = cone.get_bounding_sphere()
-        sp = IMP.algebra.Sphere3DPatch(cone_sphere,cone_pln)
+        sp = IMP.algebra.Sphere3DPatch(cone_sphere,cone_pln.get_opposite())
         for v in IMP.algebra.uniform_cover(sp,3):
             self.assertEqual(cone.get_bounding_sphere().get_contains(v),True)
 
     def test_sphere_patch2(self):
-        s = IMP.algebra.Segment3D(IMP.algebra.random_vector_in_sphere(IMP.algebra.Vector3D(0.0,5.0,8.0),4.0),
-                                  IMP.algebra.random_vector_in_sphere(IMP.algebra.Vector3D(7.0,1.0,3.0),5.0))
-        cone = IMP.algebra.Cone3D(s,4.0)
-        cone_pln = cone.get_intersecting_plane()
-        cone_sphere = cone.get_bounding_sphere()
-        sp = IMP.algebra.Sphere3DPatch(cone_sphere,cone_pln)
+        """Testing sampling a patch"""
+        sphere= IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(), 10)
+        n= IMP.algebra.random_vector_on_unit_sphere()
+        p= IMP.algebra.random_vector_in_sphere(sphere.get_center(), sphere.get_radius())
+        plane= IMP.algebra.Plane3D(p, n)
+        sp = IMP.algebra.Sphere3DPatch(sphere,plane)
+        bs=IMP.algebra.Sphere3D(sphere.get_center(),
+                                sphere.get_radius()*1.1)
+        bs.show(); print
         for v in IMP.algebra.uniform_cover(sp,3):
-            self.assertEqual(cone.get_bounding_sphere().get_contains(v),True)
+            v.show(); print
+            self.assertEqual(bs.get_contains(v),True)
 
 if __name__ == '__main__':
     unittest.main()
