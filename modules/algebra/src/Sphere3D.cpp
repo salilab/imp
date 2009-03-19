@@ -24,9 +24,7 @@ double Sphere3D::get_volume() const {
 double Sphere3D::get_surface_area() const {
   return PI * 4.0 * square(radius_);
 }
-bool Sphere3D::get_contains(const Vector3D &p) const {
-  return ((p-center_).get_squared_magnitude() <= radius_*radius_);
-}
+
 Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
   IMP_check(!ss.empty(), "Must pass some spheres to have a bounding sphere",
             ValueException);
