@@ -116,11 +116,12 @@ random_vector_in_sphere(const VectorD<D> &center,
   VectorD<D> max= center + rad;
   double norm;
   VectorD<D> ret;
+  double r2= square(radius);
   // \todo This algorithm could be more efficient.
   do {
     ret=random_vector_in_box(min, max);
-    norm= (center- ret).get_magnitude();
-  } while (norm > radius);
+    norm= (center- ret).get_squared_magnitude();
+  } while (norm > r2);
   return ret;
 }
 
@@ -140,16 +141,17 @@ random_vector_on_sphere(const VectorD<D> &center,
   BOOST_STATIC_ASSERT(D>0);
   IMP_check(radius > 0, "Radius in randomize must be postive",
             ValueException);
-  double cur_radius=radius;
+  double cur_radius2=square(radius);
   VectorD<D> up;
   for (unsigned int i=D-1; i>0; --i) {
-    ::boost::uniform_real<> rand(-cur_radius,cur_radius);
+    double r= std::sqrt(cur_radius2);
+    ::boost::uniform_real<> rand(-r, r);
     up[i]= rand(random_number_generator);
     // radius of circle
-    cur_radius= std::sqrt(square(cur_radius)-square(up[i]));
+    cur_radius2= cur_radius2-square(up[i]);
   }
   ::boost::uniform_int<> rand(0, 1);
-  double x= cur_radius;
+  double x= std::sqrt(cur_radius2);
   if (rand(random_number_generator)) {
     x=-x;
   }
