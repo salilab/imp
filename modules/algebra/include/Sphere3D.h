@@ -29,8 +29,8 @@ public:
   const Vector3D &get_center() const {return center_;}
   /**  */
   Cylinder3D get_bounding_cylinder() const {
-    return Cylinder3D(get_center()-Vector3D(0.0,0.0,get_radius()),
-                      get_center()+Vector3D(0.0,0.0,get_radius()),
+    return Cylinder3D(Segment3D(get_center()-Vector3D(0.0,0.0,get_radius()),
+                                get_center()+Vector3D(0.0,0.0,get_radius())),
                       get_radius());
   }
   //! Return true if this sphere contains the other one
@@ -40,7 +40,9 @@ public:
   }
 
   //! Return true if the point is in or on the surface of the sphere
-  bool get_contains(const Vector3D &p) const;
+  bool get_contains(const Vector3D &p) const {
+    return ((p-center_).get_squared_magnitude() <= square(radius_));
+  }
 
   void show(std::ostream &out=std::cout) const {
     out << "(" << spaces_io(center_) << ": " << get_radius()
