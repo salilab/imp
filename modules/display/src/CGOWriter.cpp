@@ -11,14 +11,10 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-CGOWriter::CGOWriter(std::string name): name_(name){
+CGOWriter::CGOWriter(std::string file_name,
+                     std::string name): Writer(file_name),
+                                        name_(name){
   count_=0;
-}
-
-CGOWriter::~CGOWriter(){
-  if (get_stream_is_open()) {
-    on_close();
-  }
 }
 
 void CGOWriter::show(std::ostream &out) const {

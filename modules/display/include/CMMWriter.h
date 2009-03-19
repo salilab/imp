@@ -27,11 +27,9 @@ class IMPDISPLAYEXPORT CMMWriter: public Writer
   unsigned int marker_index_;
 public:
   //! write to a file
-  CMMWriter();
+  CMMWriter(std::string name=std::string());
 
-  virtual ~CMMWriter();
-
-  IMP_WRITER(internal::version_info)
+  IMP_WRITER(CMMWriter, internal::version_info)
 
   IMP_WRITER_ADD_GEOMETRY
 };

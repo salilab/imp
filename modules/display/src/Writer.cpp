@@ -11,7 +11,8 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-Writer::Writer(){
+Writer::Writer(std::string name){
+  set_file_name(name);
 }
 
 Writer::~Writer(){

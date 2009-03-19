@@ -27,11 +27,9 @@ class IMPDISPLAYEXPORT VRMLWriter: public Writer
 {
 public:
   //! write to a file with the given name
-  VRMLWriter();
+  VRMLWriter(std::string name=std::string());
 
-  virtual ~VRMLWriter();
-
-  IMP_WRITER(internal::version_info)
+  IMP_WRITER(VRMLWriter, internal::version_info)
 
   IMP_WRITER_ADD_GEOMETRY
 };

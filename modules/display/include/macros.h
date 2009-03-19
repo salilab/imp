@@ -9,20 +9,21 @@
 #define IMPDISPLAY_MACROS_H
 
 //! Define information for an Writer object
-/** Unfortunately, you have to make sure you include the code:
-    \code
-    if (get_stream_is_open()) {
-    on_close();
-    }
-    \endcode
-    in the destructor of your class.
+/** This macro declares the methods on_open, on_close, add_geometry
+    and show, and defines the destructor and get_version_info.
  */
-#define IMP_WRITER(version)                                             \
+#define IMP_WRITER(Name, version)                                       \
   virtual void add_geometry(IMP::display::Geometry *g);                 \
   void on_open(std::string name);                                       \
   virtual void on_close();                                              \
   virtual IMP::VersionInfo get_version_info() const {return version;}   \
-  virtual void show(std::ostream &out=std::cout) const;
+  virtual void show(std::ostream &out=std::cout) const;                 \
+  ~Name(){                                                              \
+  if (get_stream_is_open()) {                                           \
+    on_close();                                                         \
+  }                                                                     \
+  }
+
 
 //! Since swig doesn't support using, this redefines the geometry methods
 #define IMP_WRITER_ADD_GEOMETRY                                         \

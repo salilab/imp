@@ -37,7 +37,7 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
 
  public:
   //! Create a writer to a file
-  Writer();
+  Writer(std::string name);
 
   // Ideally this would be const, but std::ostream::is_open is unfortunately
   // defined non-const in older versions of the C++ standard, so need to leave
