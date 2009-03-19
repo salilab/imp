@@ -169,8 +169,7 @@ def action_link_test(target, source, env):
     print >> cpp, """
 #ifndef NDEBUG
 #include "IMP/%s.h"
-#endif
-""" % (module)
+#endif""" % (module)
 
 def _add_all_alias(aliases, env, name):
     """Add an 'all' alias `name` to the list of aliases, but only if the
