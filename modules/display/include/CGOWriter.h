@@ -21,6 +21,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Write a CGO file with the geometry
 /** The cgo file format is a simple format for displaying geometry in Pymol.
     The cgo writer supports points, spheres, cyliners, and segments.
+    The file name should end in ".py".
  */
 class IMPDISPLAYEXPORT CGOWriter: public Writer
 {
@@ -28,11 +29,10 @@ class IMPDISPLAYEXPORT CGOWriter: public Writer
   unsigned int count_;
 public:
   //! write to a file using the name to  name the files
-  CGOWriter(std::string name);
+  CGOWriter(std::string file_name=std::string(),
+            std::string pymol_name="geometry");
 
-  virtual ~CGOWriter();
-
-  IMP_WRITER(internal::version_info)
+  IMP_WRITER(CGOWriter, internal::version_info)
 
   IMP_WRITER_ADD_GEOMETRY
 };

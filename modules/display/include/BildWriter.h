@@ -26,11 +26,9 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
 {
 public:
   //! write to a file with the given name
-  BildWriter();
+  BildWriter(std::string file_name=std::string());
 
-  virtual ~BildWriter();
-
-  IMP_WRITER(internal::version_info)
+  IMP_WRITER(BildWriter, internal::version_info)
 
   IMP_WRITER_ADD_GEOMETRY
 };

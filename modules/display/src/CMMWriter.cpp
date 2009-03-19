@@ -11,13 +11,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-CMMWriter::CMMWriter(){
-}
-
-CMMWriter::~CMMWriter(){
-  if (get_stream_is_open()) {
-    on_close();
-  }
+CMMWriter::CMMWriter(std::string name): Writer(name){
 }
 
 void CMMWriter::show(std::ostream &out) const {

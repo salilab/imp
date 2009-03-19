@@ -11,13 +11,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-VRMLWriter::VRMLWriter(){
-}
-
-VRMLWriter::~VRMLWriter(){
-  if (get_stream_is_open()) {
-    on_close();
-  }
+VRMLWriter::VRMLWriter(std::string file_name): Writer(file_name){
 }
 
 void VRMLWriter::show(std::ostream &out) const {
