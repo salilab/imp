@@ -83,22 +83,25 @@ Geometries RigidBodyDerivativeGeometry::get_geometry() const {
   for (unsigned int i=0; i< ms.size(); ++i) {
     core::RigidMemberDecorator dm(ms[i], d_.get_traits());
     CylinderGeometry *tr
-      = new CylinderGeometry(algebra::Cylinder3D(dm.get_coordinates(),
-                                                 dm.get_coordinates()+tderiv,
+      = new CylinderGeometry(algebra::Cylinder3D(
+                         algebra::Segment3D(dm.get_coordinates(),
+                                            dm.get_coordinates()+tderiv),
                                                  0));
     tr->set_color(xyzcolor_);
     ret.push_back(tr);
     algebra::Vector3D ic= r.rotate(dm.get_internal_coordinates())
       + d_.get_coordinates();
     CylinderGeometry *rtr
-      = new CylinderGeometry(algebra::Cylinder3D(dm.get_coordinates(),
-                                                 ic,
+      = new CylinderGeometry(algebra::Cylinder3D(
+                            algebra::Segment3D(dm.get_coordinates(),
+                                               ic),
                                                  0));
     rtr->set_color(qcolor_);
     ret.push_back(rtr);
     CylinderGeometry *nrtr
-      = new CylinderGeometry(algebra::Cylinder3D(dm.get_coordinates(),
-                             ntr.transform(dm.get_internal_coordinates()),
+      = new CylinderGeometry(algebra::Cylinder3D(
+                             algebra::Segment3D(dm.get_coordinates(),
+                            ntr.transform(dm.get_internal_coordinates())),
                                                  0));
     nrtr->set_color(ccolor_);
     ret.push_back(nrtr);
