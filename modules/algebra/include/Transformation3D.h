@@ -116,6 +116,7 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
 
 //! compose two transformations
   /** For any vector v (a*a)*v = a*(b*v).
+      \relates Transformation3D
    */
 inline Transformation3D compose(const Transformation3D &a,
                          const Transformation3D &b){
