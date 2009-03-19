@@ -323,6 +323,8 @@ inline Rotation3D rotation_from_vector4d(const VectorD<4> &v) {
 
 
 //! Compose two translations
+/** \relates Rotation3D
+ */
 inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
     return Rotation3D(a.v_[0]*b.v_[0] - a.v_[1]*b.v_[1]
                       - a.v_[2]*b.v_[2] - a.v_[3]*b.v_[3],
