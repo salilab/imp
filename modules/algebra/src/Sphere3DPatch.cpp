@@ -15,13 +15,10 @@ Sphere3DPatch::Sphere3DPatch(const Sphere3D &sph,
   sph_=sph;
 }
 bool Sphere3DPatch::get_contains(const Vector3D &p) const {
-  if (!sph_.get_contains(p)) {
-    return false;
-  }
   //check that the point is above the plane (the direction on the normal)
-  return (crossing_plane_.is_above(p));
+  return (crossing_plane_.get_is_above(p));
 }
-Vector3D Sphere3DPatch::point_on_sphere() const {
+Vector3D Sphere3DPatch::get_boundary_point() const {
   //v - a vector on the plane
   Vector3D
     v = orthogonal_vector(crossing_plane_.get_normal()).get_unit_vector();
