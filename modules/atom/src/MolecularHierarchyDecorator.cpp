@@ -49,10 +49,7 @@ void MolecularHierarchyDecorator::show(std::ostream &out,
     }
   } else {
     out << prefix << get_type_string() <<std::endl;
-    IMP::core::NameDecorator nd= IMP::core::NameDecorator::cast(get_particle());
-    if (nd != IMP::core::NameDecorator()) {
-      out << prefix << "\"" <<  nd.get_name() << "\"" << std::endl;
-    }
+    out << prefix << "\"" <<  get_particle()->get_name() << "\"" << std::endl;
   }
 }
 
@@ -201,10 +198,7 @@ MolecularHierarchyDecorator clone_internal(MolecularHierarchyDecorator d,
   if (DomainDecorator::is_instance_of(d.get_particle())) {
     DomainDecorator::create(p, DomainDecorator(d.get_particle()));
   }
-  if (core::NameDecorator::is_instance_of(d.get_particle())) {
-    core::NameDecorator::create(p,
-                    core::NameDecorator(d.get_particle()).get_name());
-  }
+  p->set_name(d.get_particle()->get_name());
   return nd;
 }
 }

@@ -9,25 +9,16 @@
 
 #include <sstream>
 
+#ifndef IMP_NO_DEPRECATED
+
 IMPCORE_BEGIN_NAMESPACE
-
-StringKey NameDecorator::get_name_key() {
-  static StringKey k("name");
-  return k;
-}
-
-
-
 
 void NameDecorator::show(std::ostream &out,std::string prefix) const
 {
   out << prefix << get_name();
 
 }
-
-
-
-
-
-
 IMPCORE_END_NAMESPACE
+
+
+#endif /* IMP_NO_DEPRECATED*/

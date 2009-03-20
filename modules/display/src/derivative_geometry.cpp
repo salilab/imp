@@ -15,6 +15,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 XYZDerivativeGeometry::XYZDerivativeGeometry(core::XYZDecorator d,
                                              Float radius): d_(d),
                                                             radius_(radius){
+  set_name(d.get_particle()->get_name()+" derivative");
 }
 
 XYZDerivativeGeometry::~XYZDerivativeGeometry(){}
@@ -44,6 +45,7 @@ RigidBodyDerivativeGeometry
   xyzcolor_=Color(1,0,0);
   qcolor_=Color(0,1,0);
   ccolor_=Color(0,0,1);
+  set_name(d.get_particle()->get_name()+" derivative");
 }
 
 RigidBodyDerivativeGeometry::~RigidBodyDerivativeGeometry(){}
