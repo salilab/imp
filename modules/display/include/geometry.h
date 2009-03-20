@@ -87,6 +87,7 @@ typedef std::vector<Geometry* > Geometries;
 
 //! Produce some geometry from a particle
 class IMPDISPLAYEXPORT CompoundGeometry: public RefCountedObject {
+  std::string name_;
  public:
   CompoundGeometry();
   virtual ~CompoundGeometry();
@@ -98,6 +99,16 @@ class IMPDISPLAYEXPORT CompoundGeometry: public RefCountedObject {
 
   //! Return a list of geometry objects
   virtual Geometries get_geometry() const =0;
+
+  //! Get the name of the geometry object
+  const std::string &get_name() const {
+    return name_;
+  }
+
+  //! set the name of the geometry
+  void set_name(std::string name) const {
+    name=name_;
+  }
 };
 IMP_OUTPUT_OPERATOR(CompoundGeometry);
 
