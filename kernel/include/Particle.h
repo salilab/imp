@@ -408,7 +408,7 @@ public:
   /*@}*/
 
   //! Return the name of the particle
-  std::string get_name() const {
+  const std::string& get_name() const {
     return name_;
   }
 #ifndef IMP_NO_DEPRECATED
