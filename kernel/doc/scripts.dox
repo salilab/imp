@@ -47,4 +47,16 @@
     If you document your code, running \command{scons doc} will build
     documentation of all of the modules including yours. To access the
     documentation, open \string{doc/html/index.html}.
+
+    \section make_class Making a class
+    The \c ./bin/make-class script aids adding a new class to an existing
+    module. To use this script do
+    \command{./bin/make-class modulename "Class Name With Spaces" "BaseClassName"}
+    For example
+    \command{./bin/make-class mymodule "My Restraint" Restraint}
+    adds a new restraint to \c mymodule. The resulting files have a dummy
+    class declaration and definition and appropriate comment fields and header
+    guards. However, they do not necessarily declare all the needed methods
+    for your type of class. You also need to make sure the class is properly
+    exported to \c python and listed in \c SConscript files.
 */
