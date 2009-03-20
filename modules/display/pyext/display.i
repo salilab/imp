@@ -31,6 +31,7 @@ IMP_OWN_METHOD(LogOptimizerState, add_geometry)
 IMP_OWN_METHOD(BildWriter, add_geometry)
 IMP_OWN_METHOD(CMMWriter, add_geometry)
 IMP_OWN_METHOD(VRMLWriter, add_geometry)
+IMP_OWN_METHOD(ChimeraWriter, add_geometry)
 }
 }
 %feature("director") IMP::display::Writer;
@@ -51,6 +52,7 @@ IMP_OWN_METHOD(VRMLWriter, add_geometry)
 %include "IMP/display/BildWriter.h"
 %include "IMP/display/CMMWriter.h"
 %include "IMP/display/CGOWriter.h"
+%include "IMP/display/ChimeraWriter.h"
 %include "IMP/display/LogOptimizerState.h"
 %include "IMP/display/SphereGeometry.h"
 %include "IMP/display/CylinderGeometry.h"
