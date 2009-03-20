@@ -17,6 +17,9 @@
 %import "kernel/pyext/IMP.i"
 %import "kernel/pyext/IMP_keys.i"
 
+/* Ignore friends */
+%ignore compose(const Rotation3D &a, const Rotation3D &b);
+
 namespace IMP {
   namespace algebra {
     typedef VectorD<3> Vector3D;

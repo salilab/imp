@@ -38,9 +38,9 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 */
 class IMPALGEBRAEXPORT Rotation3D {
   VectorD<4> v_;
-#ifndef SWIG
+
   friend Rotation3D compose(const Rotation3D &a, const Rotation3D &b);
-#endif
+
 public:
   //! Create an invalid rotation
   Rotation3D():v_(0,0,0,0) {}
