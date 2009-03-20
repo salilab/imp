@@ -31,6 +31,7 @@ namespace atom {
 }
 }
 
+
 /*namespace IMP {
 namespace core {
 // stupid hack for swig
@@ -72,6 +73,8 @@ namespace atom {
    // swig has random, perplexing issues if these are higher in the file
    %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
    %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
+   %template(MolecularHierarhcyDecorators) ::std::vector<MolecularHierarchyDecorator>;	
+
 }
 }
 %include "IMP/atom/AtomDecorator.h"
