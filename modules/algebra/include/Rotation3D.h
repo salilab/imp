@@ -317,6 +317,7 @@ IMPALGEBRAEXPORT Rotation3D random_rotation();
 
 
 //! Compute a rotatation from an unnormalized quaternion
+/** \relates Rotation3D */
 inline Rotation3D rotation_from_vector4d(const VectorD<4> &v) {
   VectorD<4> uv= v.get_unit_vector();
   return Rotation3D(uv[0], uv[1], uv[2], uv[3]);
