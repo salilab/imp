@@ -52,14 +52,64 @@ public:
     return c_[2];
   }
 
-  void show(std::ostream &out=std::cout) const {
-    out << get_red() << " " << get_green() << " " << get_blue();
+  void show(std::ostream &out=std::cout, std::string delim=" ") const {
+    out << get_red() << delim << get_green() << delim << get_blue();
   }
 
   IMP_COMPARISONS_3(c_[0],c_[1], c_[2]);
 };
 
 IMP_OUTPUT_OPERATOR(Color)
+
+
+#ifndef SWIG
+
+namespace internal {
+  struct SpacesIO
+  {
+    const Color &v_;
+    SpacesIO(const Color &v): v_(v){}
+  };
+
+  struct CommasIO
+  {
+    const Color &v_;
+    CommasIO(const Color &v): v_(v){}
+  };
+  inline std::ostream &operator<<(std::ostream &out, const SpacesIO &s)
+  {
+    s.v_.show(out, " ");
+    return out;
+  }
+  inline std::ostream &operator<<(std::ostream &out, const CommasIO &s)
+  {
+    s.v_.show(out, ", ");
+    return out;
+  }
+}
+
+//! Use this before outputing to delimited vector entries with a space
+/** std::cout << spaces_io(v);
+    produces "1.0 2.0 3.0"
+    \relates Color
+ */
+inline internal::SpacesIO spaces_io(const Color &v) {
+  return internal::SpacesIO(v);
+}
+
+
+
+
+//! Use this before outputing to delimited vector entries with a comma
+/** std::cout << commas_io(v);
+    produces "1.0, 2.0, 3.0"
+    \relates Color
+ */
+inline internal::CommasIO commas_io(const Color &v) {
+  return internal::CommasIO(v);
+}
+
+#endif // SWIG
 
 IMPDISPLAY_END_NAMESPACE
 
