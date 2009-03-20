@@ -75,7 +75,7 @@ Particle* residue_particle(Model *m, const String& pdb_line)
     hd.set_type(MolecularHierarchyDecorator::FRAGMENT);
 
   // name decorator
-  core::NameDecorator::create(p, residue_name);
+  p->set_name(residue_name);
 
   return p;
 }
@@ -85,7 +85,7 @@ Particle* root_particle(Model *m, const String& pdb_file_name)
   Particle* p = new Particle(m);
 
   // name decorator
-  core::NameDecorator::create(p, pdb_file_name);
+  p->set_name(pdb_file_name);
 
   // hierarchy decorator
   MolecularHierarchyDecorator hd =
@@ -97,11 +97,8 @@ Particle* root_particle(Model *m, const String& pdb_file_name)
 Particle* chain_particle(Model *m, char chain_id)
 {
   Particle* p = new Particle(m);
-
-  // name decorator
-  String chain;
-  chain += chain_id;
-  core::NameDecorator::create(p, chain);
+  char chain_name[]={chain_id, '\0'};
+  p->set_name(chain_name);
 
   // hierarchy decorator
   MolecularHierarchyDecorator hd =

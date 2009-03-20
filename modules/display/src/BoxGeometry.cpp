@@ -16,6 +16,7 @@ BoxGeometry::BoxGeometry(const algebra::Vector3D &min,
                          const algebra::Vector3D &max,
                          const Color &color): min_(min), max_(max),
                                               color_(color){
+  CompoundGeometry::set_name("Bounding Box");
 }
 
 BoxGeometry::~BoxGeometry(){}
