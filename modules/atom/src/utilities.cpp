@@ -11,6 +11,16 @@
 IMPATOM_BEGIN_NAMESPACE
 
 IMPATOMEXPORT algebra::Vector3D
+centroid(const MolecularHierarchyDecorators &ms) {
+ algebra::Vector3D cen(0.0,0.0,0.0);
+ for (MolecularHierarchyDecorators::const_iterator it = ms.begin();
+      it != ms.end(); it++) {
+   cen = cen + centroid(*it);
+  }
+ return cen*(1.0/ms.size());
+
+}
+IMPATOMEXPORT algebra::Vector3D
 centroid(const MolecularHierarchyDecorator &m) {
  algebra::Vector3D centroid(0.0,0.0,0.0);
  Particles ps =
