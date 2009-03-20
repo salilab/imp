@@ -21,6 +21,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Write a CMM file with the geometry
 /** The CMM writer supports points and spheres. Cylinders can be added
     at some point.
+
+    You are probably better off using the IMP::display::ChimeraWriter
+    which writes a python file, readable by Chimera as it supports
+    more types of geometry.
  */
 class IMPDISPLAYEXPORT CMMWriter: public Writer
 {
