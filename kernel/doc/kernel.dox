@@ -1,7 +1,7 @@
 /**
 \namespace IMP
 \brief The IMP library.
-\author Daniel Russel, Ben Webb, Keren Laskar
+\author Daniel Russel, Ben Webb, Keren Lasker
 
 \par Overview
 All kernel and module classes and functions should be in this namespace or
