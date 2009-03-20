@@ -160,7 +160,7 @@ random_vector_on_sphere(const VectorD<D> &center,
   IMP_assert(std::abs(up.get_magnitude() -radius) < .1,
              "Error generating vector on sphere: "
              << up << " for " << radius);
-  IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);
+  //IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);
 
   return center+ up;
 }
