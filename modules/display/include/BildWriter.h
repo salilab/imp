@@ -22,8 +22,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** The bild file format is a simple format for displaying geometry in Chimera.
     The bild writer supports points, spheres, cyliners, and segments.
 
-    You are probably better off using the IMP::display::ChimeraWriter
-    which writes a python file, readable by Chimera, as it support better
+    You are probably better off using the IMP::display::ChimeraWriter unless
+    you want a human-readable file. ChimeraWriter supports better
     interactivity and more types of geometry.
  */
 class IMPDISPLAYEXPORT BildWriter: public Writer
