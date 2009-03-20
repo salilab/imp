@@ -271,23 +271,19 @@ rotation_from_matrix(double m11,double m12,double m13,
   \param[in] axis the rotation axis passes through (0,0,0)
   \param[in] angle the rotation angle in radians
   \note http://en.wikipedia.org/wiki/Rotation_matrix
-  \note http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/index.htm
+  \note www.euclideanspace.com/maths/geometry/rotations/conversions/
+  angleToQuaternion/index.htm
 */
-inline Rotation3D rotation_about_axis(Vector3D axis, double angle)
+inline Rotation3D rotation_about_axis(const Vector3D& axis, double angle)
 {
   //normalize the vector
   Vector3D axis_norm = axis.get_unit_vector();
-  double s;
-  s=sin(angle/2);
-  double x,y,z;
-  x=axis_norm[0];
-  y=axis_norm[1];
-  z=axis_norm[2];
+  double s = sin(angle/2);
   double a,b,c,d;
   a = std::cos(angle/2);
-  b = x*s;
-  c = y*s;
-  d = z*s;
+  b = axis_norm[0]*s;
+  c = axis_norm[1]*s;
+  d = axis_norm[2]*s;
   return Rotation3D(a,b,c,d);
 }
 
