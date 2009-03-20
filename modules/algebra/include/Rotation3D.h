@@ -265,9 +265,10 @@ rotation_from_matrix(double m11,double m12,double m13,
                      double m21,double m22,double m23,
                      double m31,double m32,double m33);
 
+
 //! Generate a Rotation3D object from a rotation around an axis
 /**
-  \param[in] axis the rotation axis
+  \param[in] axis the rotation axis passes through (0,0,0)
   \param[in] angle the rotation angle in radians
   \note http://en.wikipedia.org/wiki/Rotation_matrix
   \note http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/index.htm

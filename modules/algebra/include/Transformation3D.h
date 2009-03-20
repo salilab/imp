@@ -113,13 +113,25 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   return Transformation3D(rot,base);
 }
 
+//! Generate a Transformation3D object from a rotation around an axis
+/**
+  \param[in] point the rotation axis passes through the point
+  \param[in] dorectopn the direction of the rotation axis
+  \param[in] angle the rotation angle in radians
+*/
+inline Transformation3D rotation_around_axis(const Vector3D &point,
+                                             const Vector3D &direction,
+                                             double angle) {
+  Rotation3D r = rotation_about_axis(direction,angle);
+  return Transformation3D(r, (r*(-point)+point));
+}
 
 //! compose two transformations
   /** For any vector v (a*a)*v = a*(b*v).
       \relates Transformation3D
    */
 inline Transformation3D compose(const Transformation3D &a,
-                         const Transformation3D &b){
+                                const Transformation3D &b){
   return Transformation3D(compose(a.get_rotation(), b.get_rotation()),
                           a.transform(b.get_translation()));
 }

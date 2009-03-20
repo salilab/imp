@@ -29,19 +29,48 @@ class TransformFunct:
 class RotationTests(IMP.test.TestCase):
     """Test rotations"""
 
+
     def test_axis_rotation(self):
-        """Check the centroid """
-        for ii in range(10):
-            axis= IMP.algebra.random_vector_on_unit_sphere()
-            angle= random.uniform(-math.pi,math.pi)
-            r= IMP.algebra.rotation_about_axis(IMP.algebra.Vector3D(axis[0], axis[1], axis[2]),angle)
+        """Check rotation around axis that does not pass through (0,0,0)"""
+        for ii in xrange(1,10):
+            direction= IMP.algebra.random_vector_on_unit_sphere()
+            point = IMP.algebra.random_vector_in_unit_box()*10
+            angle= math.pi/ii#random.uniform(-math.pi,math.pi)
+
+            r= IMP.algebra.rotation_around_axis(point,direction,angle)
             ri= r.get_inverse()
-            v= IMP.algebra.random_vector_in_unit_box()
-            vt= r.rotate(v)
-            vti= ri.rotate(vt)
-            self.assertInTolerance(vti[0], v[0], .1)
-            self.assertInTolerance(vti[1], v[1], .1)
-            self.assertInTolerance(vti[2], v[2], .1)
+            v_start = IMP.algebra.random_vector_in_unit_box()
+            vt = v_start
+            for i in xrange(2*ii):
+                vt= r.transform(vt)
+                if i==0:
+                    vti= ri.transform(vt)
+            self.assertInTolerance(IMP.algebra.distance(v_start,vt),0., .1)
+            self.assertInTolerance(vti[0], v_start[0], .1)
+            self.assertInTolerance(vti[1], v_start[1], .1)
+            self.assertInTolerance(vti[2], v_start[2], .1)
+
+
+    def test_axis_rotation(self):
+        """Check rotation about axis """
+        for ii in xrange(1,10):
+            axis= IMP.algebra.random_vector_on_unit_sphere()
+            angle= math.pi/ii#random.uniform(-math.pi,math.pi)
+
+            r= IMP.algebra.rotation_about_axis(axis,angle)
+            ri= r.get_inverse()
+            v_start = IMP.algebra.random_vector_in_unit_box()
+            vt = v_start
+            for i in xrange(2*ii):
+                vt= r.rotate(vt)
+                if i==0:
+                    vti= ri.rotate(vt)
+            self.assertInTolerance(IMP.algebra.distance(v_start,vt),0., .1)
+            self.assertInTolerance(vti[0], v_start[0], .1)
+            self.assertInTolerance(vti[1], v_start[1], .1)
+            self.assertInTolerance(vti[2], v_start[2], .1)
+
+
 
 
     def test_rotation(self):
