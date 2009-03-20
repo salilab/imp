@@ -13,6 +13,7 @@ for more information about Modeller.
 IMP.modeller is part of the main IMP package.
 
 \par License
-IMP.modeller is LGPL. Modeller itself is commercial, but free for academic users. See \external{http://salilab.org/modeller/, the Modeller page} for
-more information about licensing Modeller.
+Modeller itself is commercial, but free for academic users. See \external{http://salilab.org/modeller/, the Modeller page} for
+more information about licensing Modeller. The IMP.modeller module's library
+is to be determined.
 */
