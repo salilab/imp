@@ -25,7 +25,7 @@ class IMPDISPLAYEXPORT ChimeraWriter: public Writer
   bool has_ms_;
   bool has_surf_;
 
-  void add_geometry_internal(IMP::display::Geometry *g);
+  void add_geometry_internal(IMP::display::Geometry *g, std::string name);
 public:
   //! Create a writer with the given file name (or no open file)
   ChimeraWriter(std::string name=std::string());
