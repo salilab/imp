@@ -20,15 +20,6 @@ void ChimeraWriter::show(std::ostream &out) const {
   out << "ChimeraWriter" << std::endl;
 }
 
-void ChimeraWriter::add_geometry(IMP::display::Geometry *g) {
-  if (has_surf_) {
-    get_stream() << "chimera.openModels.add([m])\n";
-  }
-  has_ms_=false;
-  has_surf_=false;
-  add_geometry_internal(g);
-}
-
 namespace {
   void write_marker(std::ostream &out, Geometry *g,
                     const algebra::Vector3D &p) {
@@ -42,12 +33,13 @@ namespace {
   }
 }
 
-void ChimeraWriter::add_geometry_internal(IMP::display::Geometry *g) {
+void ChimeraWriter::add_geometry_internal(IMP::display::Geometry *g,
+                                          std::string name) {
   IMP_CHECK_OBJECT(g);
   if (g->get_dimension() ==0) {
     if (!has_ms_) {
       has_ms_=true;
-      get_stream() << "s= d.new_marker_set('" << g->get_name()
+      get_stream() << "s= d.new_marker_set('" << name
                    << "')\n";
     }
     for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
@@ -57,7 +49,7 @@ void ChimeraWriter::add_geometry_internal(IMP::display::Geometry *g) {
   } else if (g->get_dimension() ==1) {
     if (!has_ms_) {
       has_ms_=true;
-      get_stream() << "s= d.new_marker_set('" << g->get_name()
+      get_stream() << "s= d.new_marker_set('" << name
                    << "')\n";
     }
     write_marker(get_stream(), g, g->get_vertex(0));
@@ -76,6 +68,7 @@ void ChimeraWriter::add_geometry_internal(IMP::display::Geometry *g) {
       if (!has_surf_) {
         has_surf_=true;
         get_stream() << "m=_surface.SurfaceModel()\n";
+        get_stream() <<"m.name= \"" << name << "\"\n";
       }
       get_stream() << "v=[";
       for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
@@ -119,9 +112,20 @@ void ChimeraWriter::add_geometry(IMP::display::CompoundGeometry *cg) {
   for (unsigned int i=0; i< g.size(); ++i) {
     IMP_CHECK_OBJECT(g[i]);
     Pointer<Geometry> gi(g[i]);
-    add_geometry_internal(gi);
+    add_geometry_internal(gi, cg->get_name());
   }
 }
+
+
+void ChimeraWriter::add_geometry(IMP::display::Geometry *g) {
+  if (has_surf_) {
+    get_stream() << "chimera.openModels.add([m])\n";
+  }
+  has_ms_=false;
+  has_surf_=false;
+  add_geometry_internal(g, g->get_name());
+}
+
 
 
 IMPDISPLAY_END_NAMESPACE
