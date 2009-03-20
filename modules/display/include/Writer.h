@@ -85,8 +85,9 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
     Geometries g= cg->get_geometry();
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
+      Pointer<Geometry> gi(g[i]);
+
       add_geometry(g[i]);
-      delete g[i];
     }
   }
 
