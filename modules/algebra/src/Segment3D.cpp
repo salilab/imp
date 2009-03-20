@@ -14,12 +14,12 @@ Segment3D::Segment3D(const Vector3D &start,const Vector3D &end) {
 double Segment3D::get_length() const {
   return (p_[0]-p_[1]).get_magnitude();
 }
+
 Vector3D projection(const Segment3D &s, const Vector3D &p) {
   Vector3D d = s.get_direction().get_unit_vector();
   double t = d*(s.get_point(0)-p);
-  return Vector3D(s.get_point(0)+t * d);
+  return Vector3D(p +t * d);
 }
-
 
 namespace {
   Segment3D shortest_segment(const Segment3D &s, const algebra::Vector3D &p) {
@@ -112,7 +112,6 @@ namespace {
 
     return Segment3D(ra, rb);
   }
-
 }
 
 
