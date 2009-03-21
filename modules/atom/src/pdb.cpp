@@ -10,6 +10,7 @@
 #include <IMP/atom/ResidueDecorator.h>
 #include <IMP/core/NameDecorator.h>
 #include <IMP/core/HierarchyDecorator.h>
+#include <IMP/atom/ChainDecorator.h>
 
 #include <boost/algorithm/string.hpp>
 
@@ -97,8 +98,7 @@ Particle* root_particle(Model *m, const String& pdb_file_name)
 Particle* chain_particle(Model *m, char chain_id)
 {
   Particle* p = new Particle(m);
-  char chain_name[]={chain_id, '\0'};
-  p->set_name(chain_name);
+  ChainDecorator::create(p, chain_id);
 
   // hierarchy decorator
   MolecularHierarchyDecorator hd =

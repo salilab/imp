@@ -7,6 +7,7 @@
 
 #include <IMP/atom/AtomDecorator.h>
 #include <IMP/atom/MolecularHierarchyDecorator.h>
+#include <IMP/atom/ChainDecorator.h>
 
 #include <IMP/log.h>
 
@@ -507,12 +508,8 @@ char get_chain(AtomDecorator d) {
       throw InvalidStateException("Residue is not the child of a chain");
     }
   } while (mhd.get_type() != MolecularHierarchyDecorator::CHAIN);
-
-  String name = mhd.get_particle()->get_name();
-  if(name.length() > 0)
-    return name[0];
-  throw InvalidStateException("Chain not found");
-  return ' ';
+  ChainDecorator cd(mhd.get_particle());
+  return cd.get_chain();
 }
 
 

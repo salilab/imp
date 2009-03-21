@@ -1,12 +1,26 @@
 Import('env')
 e = env.IMPSharedLibraryEnvironment()
-ns= Glob("*.cpp")+ Glob("*/*.cpp")
 
-files=[]
-for h in ns:
-    s= h.rstr()
-    if not s.startswith(".") and not s.endswith("version_info.cpp"):
-        files.append(s)
+files = [
+         'AtomDecorator.cpp',
+         'BondBondPairScore.cpp',
+         'BondEndpointsRefiner.cpp',
+         'BondPairContainer.cpp',
+         'BondSingletonScore.cpp',
+         'BrownianDynamics.cpp',
+         'ChainDecorator.cpp',
+         'DiffusionDecorator.cpp',
+         'DomainDecorator.cpp',
+         'MolecularDynamics.cpp',
+         'MolecularHierarchyDecorator.cpp',
+         'ResidueDecorator.cpp',
+         'VelocityScalingOptimizerState.cpp',
+         'bond_decorators.cpp',
+         'estimates.cpp',
+         'pdb.cpp',
+         'utilities.cpp',
+        ] \
+        + SConscript('internal/SConscript')
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)
