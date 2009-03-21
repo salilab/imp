@@ -1,27 +1,14 @@
 Import('env')
 
-files = [
-         'AtomDecorator.h',
-         'BondBondPairScore.h',
-         'BondEndpointsRefiner.h',
-         'BondPairContainer.h',
-         'BondSingletonScore.h',
-         'BrownianDynamics.h',
-         'ChainDecorator.h',
-         'DiffusionDecorator.h',
-         'DomainDecorator.h',
-         'MolecularDynamics.h',
-         'MolecularHierarchyDecorator.h',
-         'ResidueDecorator.h',
-         'VelocityScalingOptimizerState.h',
-         'bond_decorators.h',
-         'estimates.h',
-         'macros.h',
-         'pdb.h',
-         'selectors.h',
-         'utilities.h',
-        ] \
-        + SConscript('internal/SConscript')
+files= []
+
+hs= Glob("*.h")
+shs= Glob("*/*.h")
+for h in hs+shs:
+    s= h.rstr()
+    if not s.startswith(".") and not s.endswith("config.h")\
+      and not s.endswith("examples.h") and not s.endswith("version_info.h"):
+        files.append(s)
 
 # Install the include files:
 env.IMPHeaders(files)
