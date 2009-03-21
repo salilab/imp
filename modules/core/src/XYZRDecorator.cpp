@@ -60,4 +60,22 @@ Particles create_xyzr_particles(Model *m,
   return ret;
 }
 
+
+
+HierarchyDecorator
+create_sphere_hierarchy(const Particles &ps,
+                        HierarchyTraits traits) {
+  IMP_failure("Not Implemented", InvalidStateException);
+  /* - if ps is empty, return
+     - create a new XYZR and Hierarchy particle
+     - set its enclosing sphere to the enclosing sphere of ps
+     - find the largest extent of x,y,z
+     - divide the points at the midpoint
+     - recurse and add the two return values as children to the new particle
+   */
+}
+
+
+
+
 IMPCORE_END_NAMESPACE
