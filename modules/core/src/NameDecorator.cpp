@@ -18,6 +18,12 @@ void NameDecorator::show(std::ostream &out,std::string prefix) const
   out << prefix << get_name();
 
 }
+
+StringKey NameDecorator::get_default_name_key() {
+  static StringKey k("name");
+  return k;
+}
+
 IMPCORE_END_NAMESPACE
 
 

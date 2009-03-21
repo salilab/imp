@@ -29,16 +29,16 @@ class IMPCOREEXPORT NameDecorator: public Decorator
 public:
 
   void set_name(std::string name) {
-    get_particle()->set_name(name);
+    get_particle()->set_value(get_default_name_key(), name);
   }
 
-  const std::string &get_name() const {
-    return get_particle()->get_name();
+  std::string get_name() const {
+    return get_particle()->get_value(get_default_name_key());
   }
 
   //! Create a decorator with the name
-  static NameDecorator create(Particle *p, std::string name="") {
-    if (!name.empty()) p->set_name(name);
+  static NameDecorator create(Particle *p, std::string name) {
+    p->add_attribute(get_default_name_key(), name);
     return NameDecorator(p);
   }
 
@@ -46,6 +46,8 @@ public:
   static bool is_instance_of(Particle *p) {
     return true;
   }
+
+  static StringKey get_default_name_key();
 };
 
 IMP_OUTPUT_OPERATOR(NameDecorator);
