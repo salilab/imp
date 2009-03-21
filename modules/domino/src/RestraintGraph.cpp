@@ -37,14 +37,6 @@ StringKey node_name_key() {
                 << (*it)->get_value(node_name_key())<< std::endl);
         p_map[(*it)->get_value(node_name_key())] = *it;
       }
-    /*
-       {
-       IMP_LOG(VERBOSE,"adding index for particle named: "
-       << (*it)->get_name() << std::endl);
-       (*it)->add_attribute(node_name_key(), (*it)->get_name());
-       p_map[(*it)->get_value(node_name_key())] = *it;
-       } else {
-    */
     }
     IMP_LOG(VERBOSE,"end checking particles"<< std::endl);
     // load the nodes and edges
