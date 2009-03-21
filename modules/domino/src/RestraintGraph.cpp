@@ -11,22 +11,40 @@
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
+#include <IMP/core/NameDecorator.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
+StringKey node_name_key() {
+#ifndef IMP_NO_DEPRECATED
+  return core::NameDecorator::get_default_name_key();
+#else
+  static StringKey k("name");
+  return k;
+#endif
+}
+
   void RestraintGraph::parse_jt_file(const std::string &filename, Model *mdl)
   {
-    StringKey name_key("name");
     // for fast access to particle by its name, create a map
     std::map<std::string, Particle *> p_map;
     IMP_LOG(VERBOSE,"start checking particles"<< std::endl);
     for (Model::ParticleIterator it = mdl->particles_begin();
          it != mdl->particles_end(); it++ ) {
-       if ((*it)->has_attribute(name_key)) {
-         IMP_LOG(VERBOSE,"adding index for particle named: "
-                 << (*it)->get_value(name_key)<< std::endl);
-         p_map[(*it)->get_value(name_key)] = *it;
-       }
+      if ((*it)->has_attribute(node_name_key())) {
+        IMP_LOG(VERBOSE,"particle: " << (*it)->get_name()
+                << " has node name "
+                << (*it)->get_value(node_name_key())<< std::endl);
+        p_map[(*it)->get_value(node_name_key())] = *it;
+      }
+    /*
+       {
+       IMP_LOG(VERBOSE,"adding index for particle named: "
+       << (*it)->get_name() << std::endl);
+       (*it)->add_attribute(node_name_key(), (*it)->get_name());
+       p_map[(*it)->get_value(node_name_key())] = *it;
+       } else {
+    */
     }
     IMP_LOG(VERBOSE,"end checking particles"<< std::endl);
     // load the nodes and edges
@@ -254,7 +272,7 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
     std::cerr << " between particles: ";
     for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
       std::cerr << (*ii)->get_index() << " ("
-      <<(*ii)->get_value(StringKey("name"))<<"):: ";
+                <<(*ii)->get_value(node_name_key())<<"):: ";
     }
     std::cerr << " has not been realized." << std::endl;
   }

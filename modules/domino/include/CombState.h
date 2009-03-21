@@ -17,6 +17,8 @@
 #include <algorithm>
 
 IMPDOMINO_BEGIN_NAMESPACE
+// defined in RestraintGraph
+IMPDOMINOEXPORT StringKey node_name_key();
 
 typedef std::map<Particle *, unsigned int> CombData;
 class IMPDOMINOEXPORT CombState
@@ -118,7 +120,7 @@ public:
     } else {
       std::stringstream error_message;
       error_message << " CombState::combine the state of particle with name :"
-                    << p->get_value(IMP::StringKey("name")) << " is wrong"
+                    << p->get_value(node_name_key()) << " is wrong"
                     << " - expect ( " << it->second << " instead of "
                     << data_[p] << " )";
       IMP_assert(data_[p] == it->second, error_message.str());

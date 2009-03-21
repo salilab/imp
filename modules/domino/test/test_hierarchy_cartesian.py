@@ -30,7 +30,7 @@ class DOMINOTests(IMP.test.TestCase):
                 self.get_input_file_name('prot'+s+'.pdb'), self.imp_model)
             self.h_particles.append(mp)
             p = mp.get_particle()
-            p.set_value(IMP.StringKey("name"),"prot"+s)
+            p.add_attribute(IMP.domino.node_name_key(),"prot"+s)
             self.particles.append(p)
             for att in self.atts[0:3]:
                 p.add_attribute(att,0.0)

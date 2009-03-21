@@ -25,6 +25,10 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
+//! The key for the string Domino uses as a unique index
+IMPDOMINOEXPORT StringKey node_name_key();
+
+
 template < typename TimeMap > class dfs_time_visitor :
       public boost::default_dfs_visitor
 {
