@@ -20,13 +20,12 @@ unsigned int CombState::get_state_num(Particle *p) {
 }
 
 void CombState::show(std::ostream& out) const {
-  StringKey name("name");
   out << "CombState combination: number of particles : ";
   out << data_.size() << " :: ";
   for (CombData::const_iterator it = data_.begin();
        it != data_.end(); it++) {
-    if (it->first->has_attribute(name)){
-      out << it->first->get_value(IMP::StringKey("name"));
+    if (it->first->has_attribute(node_name_key())){
+      out << it->first->get_value(node_name_key());
       out << " ||| " << it->second << " , ";
     }
     else {

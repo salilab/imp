@@ -16,18 +16,18 @@ class DOMINOTests(IMP.test.TestCase):
         #create three MolecularHierarchy particels:
         self.prots.append(IMP.atom.read_pdb(self.get_input_file_name("symm1.pdb"),
                                     self.m))
-        self.prots[0].get_particle().set_value(IMP.StringKey("name"),str(0))
+        self.prots[0].get_particle().add_attribute(IMP.domino.node_name_key(),str(0))
         self.ps.append(self.prots[0].get_particle())
         self.ref = IMP.atom.read_pdb(self.get_input_file_name("symm1.pdb"),
                                      self.m)
 
         self.prots.append(IMP.atom.read_pdb(self.get_input_file_name("symm2.pdb"),
                                          self.m))
-        self.prots[1].get_particle().set_value(IMP.StringKey("name"),str(1))
+        self.prots[1].get_particle().add_attribute(IMP.domino.node_name_key(),str(1))
         self.ps.append(self.prots[1].get_particle())
         self.prots.append(IMP.atom.read_pdb(self.get_input_file_name("symm3.pdb"),
                                     self.m))
-        self.prots[2].get_particle().set_value(IMP.StringKey("name"),str(2))
+        self.prots[2].get_particle().add_attribute(IMP.domino.node_name_key(),str(2))
         self.ps.append(self.prots[2].get_particle())
 
     def __set_sampling_space__(self):
@@ -70,6 +70,7 @@ class DOMINOTests(IMP.test.TestCase):
 
     def setUp(self):
         """Set up model and particles"""
+        IMP.set_log_level(IMP.VERBOSE)
         IMP.test.TestCase.setUp(self)
         self.__set_particles()
         self.__set_sampling_space__()

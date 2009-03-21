@@ -17,7 +17,7 @@ class my_optimizer:
             new_p = IMP.Particle()
             self.mdl.add_particle(new_p)
             self.particles.append(new_p)
-            new_p.add_attribute(IMP.StringKey("name"),str(i))
+            new_p.add_attribute(IMP.domino.node_name_key(),str(i))
             new_p.add_attribute(IMP.FloatKey("OPT"),0)
         self.__jt_setup(jt_filename)
         self.init_sampling_space()
