@@ -7,7 +7,6 @@
 
 #include <IMP/atom/AtomDecorator.h>
 #include <IMP/atom/MolecularHierarchyDecorator.h>
-#include <IMP/core/NameDecorator.h>
 
 #include <IMP/log.h>
 
