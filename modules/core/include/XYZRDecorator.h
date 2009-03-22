@@ -134,13 +134,15 @@ IMPCOREEXPORT Particles create_xyzr_particles(Model *m,
                                               Float radius,
                                               Float box_side=10);
 
+class HierarchyTraits;
+class HierarchyDecorator;
 
 //! Create a hierarchical cover of a set of XYZR particles
 /** \note Not implemented yet.
 */
 IMPCOREEXPORT HierarchyDecorator
 create_sphere_hierarchy(const Particles &ps,
-                        HierarchyTraits traits);
+                        const HierarchyTraits &traits);
 
 IMPCORE_END_NAMESPACE
 

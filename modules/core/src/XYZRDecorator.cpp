@@ -8,6 +8,7 @@
 #include "IMP/core/XYZRDecorator.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/vector_generators.h>
+#include "IMP/core/HierarchyDecorator.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -64,15 +65,16 @@ Particles create_xyzr_particles(Model *m,
 
 HierarchyDecorator
 create_sphere_hierarchy(const Particles &ps,
-                        HierarchyTraits traits) {
+                        const HierarchyTraits& traits) {
   IMP_failure("Not Implemented", InvalidStateException);
   /* - if ps is empty, return
      - create a new XYZR and Hierarchy particle
      - set its enclosing sphere to the enclosing sphere of ps
      - find the largest extent of x,y,z
-     - divide the points at the midpoint
+     - divide the points at the midpoint (of one or more directions)
      - recurse and add the two return values as children to the new particle
    */
+  return HierarchyDecorator();
 }
 
 
