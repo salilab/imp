@@ -91,13 +91,21 @@ public:
 
   //! The model the restraint is part of.
   /** \param[in] model The model.
+      Restraints that want to take action when they are added to the model
+      can override this method (but be sure to call Restraint::set_model()
+      to set the actual model pointer).
    */
-  void set_model(Model* model);
+  virtual void set_model(Model* model);
 
   //! Return the model containing this restraint
   Model *get_model() const {
     IMP_assert(model_,
                "get_model() called before set_model()");
+    return model_;
+  }
+
+  //! Return true if this particle is part of a model
+  bool get_is_part_of_model() const {
     return model_;
   }
 
