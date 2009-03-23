@@ -13,6 +13,12 @@
 #include "macros.h"
 #include <algorithm>
 
+// Swig doesn't do protection right with protected members
+#ifdef IMP_SWIG_WRAPPER
+#define IMP_PROTECTION(protection) public:
+#else
+#define IMP_PROTECTION(protection) protection:
+#endif
 
 //! Use this to add a list of objects to a class.
 /** The difference between a IMP_LIST and IMP_CONTAINER is that an
@@ -31,7 +37,7 @@
  Data.
  */
 #define IMP_LIST(protection, Ucname, lcname, Data)                      \
-  protection:                                                           \
+  IMP_PROTECTION(protection)                                            \
   /** @name Methods acting on a contained list*/                        \
   /*@{*/                                                                \
   /** \brief Remove any occurences of d from the container */           \
@@ -43,7 +49,7 @@
     clear_##lcname##s();                                                \
     add_##lcname##s(ps);                                                \
   }                                                                     \
-protection:                                                             \
+  IMP_PROTECTION(protection)                                            \
 /** \short Add an object.
     \param[in] obj Pointer to the object
     \return index of object within the object
@@ -85,7 +91,7 @@ Ucname##ConstIterator lcname##s_end() const {                          \
   return lcname##_vector_.end();}                                       \
 private:                                                                \
 IMP::internal::Vector<Data> lcname##_vector_;                           \
-protection:                                                             \
+IMP_PROTECTION(protection)                                              \
 /*@}*/                                                                  \
 
 
