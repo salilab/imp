@@ -37,6 +37,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
       }                                         \
     }                                           \
   }                                             \
+  operator UCName*() const {return r_;}         \
   };
 
 IMP_MANAGER(Restraint, restraint)
