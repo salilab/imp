@@ -24,7 +24,9 @@ RestraintSet::RestraintSet(const std::string& name)
 
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
-              obj->set_model(get_model());,,obj->set_model(NULL););
+              if (get_is_part_of_model()) {
+                obj->set_model(get_model());
+              },,obj->set_model(NULL););
 
 
 Float RestraintSet::evaluate(DerivativeAccumulator *accum)
@@ -46,6 +48,13 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
   }
 
   return score * weight_;
+}
+
+void RestraintSet::set_model(Model *m) {
+   for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+     (*it)->set_model(m);
+   }
 }
 
 ParticlesList RestraintSet::get_interacting_particles() const
