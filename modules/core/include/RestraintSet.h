@@ -44,6 +44,8 @@ public:
 
   virtual ParticlesList get_interacting_particles() const;
 
+
+  void set_model(Model *m);
 private:
 
   //! Weight for all restraints.
