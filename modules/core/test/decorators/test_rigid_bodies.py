@@ -34,35 +34,45 @@ class RBDTests(IMP.test.TestCase):
         return rd.get_particle()
 
     def _test_create_one(self, tr, htr):
-        m= IMP.Model()
-        IMP.set_log_level(IMP.VERBOSE)
-        p= self._create_hierarchy(m, tr, htr)
-        ss=IMP.core.create_rigid_body(p, tr)
-        rbd= IMP.core.RigidBodyDecorator(p, tr)
-        rbd.set_coordinates_are_optimized(True)
-        self. _add_rb_restraints(rbd)
-        cg= IMP.core.ConjugateGradients()
-        cg.set_model(m)
-        print "Initial score is " + str(m.evaluate(False))
-        cg.optimize(1000)
-        self.assert_(m.evaluate(False) < .1)
+        count=10
+        success=0
+        for i in range(0, count):
+            m= IMP.Model()
+            IMP.set_log_level(IMP.SILENT)
+            p= self._create_hierarchy(m, tr, htr)
+            ss=IMP.core.create_rigid_body(p, tr)
+            rbd= IMP.core.RigidBodyDecorator(p, tr)
+            rbd.set_coordinates_are_optimized(True)
+            self. _add_rb_restraints(rbd)
+            cg= IMP.core.ConjugateGradients()
+            cg.set_model(m)
+            print "Initial score is " + str(m.evaluate(False))
+            cg.optimize(1000)
+            if m.evaluate(False) < .1:
+                success=success+1
+        self.assert_(success > count/2)
 
     def _test_create_many(self, tr, htr):
-        m= IMP.Model()
-        IMP.set_log_level(IMP.VERBOSE)
-        l= IMP.core.ListSingletonContainer()
-        for i in range(0,2):
-            p= self._create_hierarchy(m, tr, htr)
-            l.add_particle(p)
-        IMP.core.create_rigid_bodies(l, tr)
-        for p in l.get_particles():
-            rbd= IMP.core.RigidBodyDecorator(p, tr)
-            self. _add_rb_restraints(rbd)
-        cg= IMP.core.ConjugateGradients()
-        cg.set_model(m)
-        print "Initial score is " + str(m.evaluate(False))
-        cg.optimize(1000)
-        self.assert_(m.evaluate(False) < .1)
+        count=10
+        success=0
+        for i in range(0, count):
+            m= IMP.Model()
+            IMP.set_log_level(IMP.SILENT)
+            l= IMP.core.ListSingletonContainer()
+            for i in range(0,2):
+                p= self._create_hierarchy(m, tr, htr)
+                l.add_particle(p)
+            IMP.core.create_rigid_bodies(l, tr)
+            for p in l.get_particles():
+                rbd= IMP.core.RigidBodyDecorator(p, tr)
+                self. _add_rb_restraints(rbd)
+            cg= IMP.core.ConjugateGradients()
+            cg.set_model(m)
+            print "Initial score is " + str(m.evaluate(False))
+            cg.optimize(1000)
+            if m.evaluate(False) < .1:
+                success=success+1
+        self.assert_(success > count/2)
 
 
     def test_create_one(self):
