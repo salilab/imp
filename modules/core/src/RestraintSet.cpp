@@ -51,10 +51,11 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
 }
 
 void RestraintSet::set_model(Model *m) {
-   for (RestraintConstIterator it= restraints_begin();
+  Restraint::set_model(m);
+  for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-     (*it)->set_model(m);
-   }
+    (*it)->set_model(m);
+  }
 }
 
 ParticlesList RestraintSet::get_interacting_particles() const
