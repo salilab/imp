@@ -416,7 +416,7 @@ def copy_chain(c, model):
     #print "atom "+str(a)
     p=IMP.Particle(model)
     #set the chain name
-    p.set_name(c.name)
+    cp = IMP.atom.ChainDecorator.create(p,c.name)
     hp= IMP.atom.MolecularHierarchyDecorator.create(p, IMP.atom.MolecularHierarchyDecorator.CHAIN)
     return p
 
