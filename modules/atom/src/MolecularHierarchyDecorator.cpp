@@ -230,12 +230,4 @@ MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d) {
 }
 
 
-core::RigidBodyTraits get_molecular_rigid_body_traits() {
-  static core::RigidBodyTraits tr(
-    new core::LeavesRefiner(MolecularHierarchyDecorator::get_traits()),
-                                  "rigid_molecule");
-  return tr;
-}
-
-
 IMPATOM_END_NAMESPACE

@@ -9,8 +9,8 @@
 #define IMPCORE_RIGID_BODIES_H
 
 #include "config.h"
-#include "internal/rigid_bodies.h"
 #include "internal/version_info.h"
+#include "internal/rigid_bodies.h"
 
 #include "XYZDecorator.h"
 #include <IMP/SingletonContainer.h>
@@ -23,83 +23,11 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! A class to store rigid body-related data
-/** The data includes a prefix to make the keys unique (so that a particle can
-    be part of more than one rigid body) as well the the particle refiner to use
-    to map between the rigid body and its members.
-
-    \see RigidBodyDecorator
-    \see RigidMemberDecorator
-    \see RigidBodyDecorator::get_default_traits()
- */
-class IMPCOREEXPORT RigidBodyTraits {
-  Pointer<internal::RigidBodyData> d_;
- public:
-  RigidBodyTraits(){}
-  //! Create as set of rigid body data using the prefix as an identifier
-  /** The radius and mass keys can be default keys, in which case the
-      masses will be considered equal and the radii 0, respectively.
-
-     \note  Having non-default values is not well tested at this point.
-  */
-  RigidBodyTraits(Refiner *pr,
-                  std::string prefix,
-                  FloatKey radius=FloatKey(),
-                  FloatKey mass=FloatKey(),
-                  bool snap=false);
-  //! Get the keys used to store the offset coordinates
-  const FloatKeys& get_local_coordinate_keys() const {
-    return d_->child_keys_;
-  }
-  //! Get the keys used to store the offset quaternion
-  const FloatKeys& get_quaternion_keys() const {
-    return d_->quaternion_;
-  }
-  //! Get the key used to store the radius
-  FloatKey get_radius_key() const {
-    return d_->radius_;
-  }
-  //! Get the key used to store the radius
-  FloatKey get_mass_key() const {
-    return d_->mass_;
-  }
-  //! Return the particle refiner used to get the constituent particles
-  Refiner *get_particle_refiner() const {
-    return d_->pr_;
-  }
-  //! Get whether to use snapping or direct optimization of the rigid body
-  bool get_snapping() const {
-    return d_->snap_;
-  }
-  //! For testing only currently
-  /** This method changes whether the current traits uses snapping or not.
-   */
-  void set_snapping(bool tf) {
-    d_= d_->clone();
-    d_->snap_= tf;
-  }
-  void set_particle_refiner(Refiner *pr) {
-    d_= d_->clone();
-    d_->pr_=pr;
-  }
-  //! Set appropriate ranges for contrainable values
-  /** Quaternion ranges are set to be from 0 to 1.
-   */
-  void set_model_ranges(Model *m) const;
-  bool get_has_required_attributes_for_body(Particle *p) const;
-  bool get_has_required_attributes_for_member(Particle* p) const;
-  void add_required_attributes_for_body(Particle *p) const;
-  void add_required_attributes_for_member(Particle *p) const;
-
-  //! print stuff
-  void show(std::ostream &out) const {
-    out << "rigid body traits: " << get_quaternion_keys()[0];
-  }
-};
-
-IMP_OUTPUT_OPERATOR(RigidBodyTraits);
 
 class RigidMemberDecorator;
+class UpdateRigidBodyOrientation;
+class AccumulateRigidBodyDerivatives;
+class UpdateRigidBodyMembers;
 
 typedef std::vector<RigidMemberDecorator> RigidMemberDecorators;
 
@@ -115,10 +43,14 @@ typedef std::vector<RigidMemberDecorator> RigidMemberDecorators;
     \see UpdateRigidBodyOrientation
  */
 class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
- public:
-  IMP_DECORATOR_TRAITS(RigidBodyDecorator, XYZDecorator,
-                       RigidBodyTraits, traits,
-                       RigidBodyDecorator::get_default_traits());
+#ifndef SWIG
+  friend class AccumulateRigidBodyDerivatives;
+  friend class UpdateRigidBodyOrientation;
+  friend class UpdateRigidBodyMembers;
+#endif
+  RigidMemberDecorators get_members() const;
+public:
+  IMP_DECORATOR(RigidBodyDecorator, XYZDecorator)
 
   //! Create a new rigid body, but do not add score states
   /** \param[in] p The particle to make into a rigid body
@@ -131,15 +63,13 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
       score states to the model.
    */
   static RigidBodyDecorator create(Particle *p,
-              RigidBodyTraits tr= RigidBodyDecorator::get_default_traits());
+                                   const Particles &members);
 
   ~RigidBodyDecorator();
 
   //!Return true of the particle is a rigid body
-  static bool is_instance_of(Particle *p,
-                             RigidBodyTraits traits
-                             =RigidBodyDecorator::get_default_traits()) {
-    return traits.get_has_required_attributes_for_body(p);
+  static bool is_instance_of(Particle *p) {
+    return internal::get_has_required_attributes_for_body(p);
   }
 
   // swig doesn't support using, so the method is wrapped
@@ -161,7 +91,8 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
   void set_transformation(const IMP::algebra::Transformation3D &tr);
 
   //! Set whether the rigid body coordinates are optimized
-  void set_coordinates_are_optimized(bool tf);
+  void set_coordinates_are_optimized(bool tf,
+                                     bool snapping=false);
 
   //! Normalized the quaternion
   void normalize_rotation();
@@ -170,15 +101,7 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
   algebra::VectorD<4> get_rotational_derivatives() const;
 
   //! Get the member particles of the rigid body
-  RigidMemberDecorators get_members() const;
-
-  //! Return the default traits
-  /** These use a ChildrenHierarchyDecorator with a
-      HierarchyDecorator::get_default_traits() traits.
-   */
-  static RigidBodyTraits get_default_traits() {
-    return internal::get_default_rigid_body_traits();
-  }
+  Particles get_member_particles() const;
 };
 
 IMP_OUTPUT_OPERATOR(RigidBodyDecorator);
@@ -190,27 +113,25 @@ IMP_OUTPUT_OPERATOR(RigidBodyDecorator);
  */
 class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
  public:
-  IMP_DECORATOR_TRAITS(RigidMemberDecorator, XYZDecorator,
-                       RigidBodyTraits, traits,
-                       RigidBodyDecorator::get_default_traits());
+  IMP_DECORATOR(RigidMemberDecorator, XYZDecorator);
 
   //! Return the current orientation of the body
   algebra::Vector3D get_internal_coordinates() const {
     return algebra::Vector3D(get_particle()
-                    ->get_value(get_traits().get_local_coordinate_keys()[0]),
+                    ->get_value(internal::rigid_body_data().child_keys_[0]),
                     get_particle()
-                    ->get_value(get_traits().get_local_coordinate_keys()[1]),
+                    ->get_value(internal::rigid_body_data().child_keys_[1]),
                     get_particle()
-                    ->get_value(get_traits().get_local_coordinate_keys()[2]));
+                    ->get_value(internal::rigid_body_data().child_keys_[2]));
   }
 
   //! set the internal coordinates for this member
   void set_internal_coordinates(const algebra::Vector3D &v) const {
-    get_particle()->set_value(get_traits().get_local_coordinate_keys()[0],
+    get_particle()->set_value(internal::rigid_body_data().child_keys_[0],
                               v[0]);
-    get_particle()->set_value(get_traits().get_local_coordinate_keys()[1],
+    get_particle()->set_value(internal::rigid_body_data().child_keys_[1],
                               v[1]);
-    get_particle()->set_value(get_traits().get_local_coordinate_keys()[2],
+    get_particle()->set_value(internal::rigid_body_data().child_keys_[2],
                               v[2]);
   }
 
@@ -226,25 +147,9 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
   }
   ~RigidMemberDecorator();
 
-  //! return the mass or 1 if there is no mass key defined
-  Float get_mass() const {
-    if (get_traits().get_mass_key() != FloatKey()) {
-      return get_particle()->get_value(get_traits().get_mass_key());
-    } else return 1;
-  }
-
-  //! return the radius or 0 if there is no radius key defined
-  Float get_radius() const {
-    if (get_traits().get_radius_key() != FloatKey()) {
-      return get_particle()->get_value(get_traits().get_radius_key());
-    } else return 0;
-  }
-
   //! return true if it is a rigid member
-  static bool is_instance_of(Particle *p,
-                             RigidBodyTraits traits
-                             =RigidBodyDecorator::get_default_traits()) {
-    return traits.get_has_required_attributes_for_member(p);
+  static bool is_instance_of(Particle *p) {
+    return internal::get_has_required_attributes_for_member(p);
   }
 };
 
@@ -263,11 +168,8 @@ IMP_OUTPUT_OPERATOR(RigidMemberDecorator);
     \see RigidBodyDecorator
 */
 class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
-  RigidBodyTraits tr_;
  public:
-  UpdateRigidBodyOrientation(RigidBodyTraits tr
-                             = RigidBodyDecorator::get_default_traits()):
-    tr_(tr){}
+  UpdateRigidBodyOrientation(){}
   IMP_SINGLETON_MODIFIER(internal::version_info);
 };
 
@@ -283,11 +185,8 @@ class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
  */
 class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
   public SingletonModifier {
-  RigidBodyTraits tr_;
  public:
-  AccumulateRigidBodyDerivatives(RigidBodyTraits tr
-                                 =RigidBodyDecorator::get_default_traits()):
-    tr_(tr){}
+  AccumulateRigidBodyDerivatives(){}
   IMP_SINGLETON_MODIFIER_DA(internal::version_info);
 };
 
@@ -301,18 +200,17 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
     \see RigidBodyDecorator
     \see AccumulateRigidBodyDerivatives */
 class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
-  RigidBodyTraits tr_;
  public:
-  UpdateRigidBodyMembers(RigidBodyTraits tr
-                         =RigidBodyDecorator::get_default_traits()):
-    tr_(tr){}
+  UpdateRigidBodyMembers(){}
   IMP_SINGLETON_MODIFIER(internal::version_info);
 };
 
 //! Sets up the ScoreState needed for a rigid body
 /**
    \param[in] rbs particles to make into rigid bodies
-   \param[in] tr the rigid body traits to use
+   \param[in] pr The refiner to get the constituent particles
+   \param[in] snapping Whether to use snapping or to optimize the coordinates
+   directly
    \relates RigidBodyDecorator
    \note The rigid bodies are set to be optimized.
    \note The composition of the rigid bodies may be cached and changes after
@@ -322,13 +220,15 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
    model.
  */
 IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
-                                              RigidBodyTraits tr
-                                   =RigidBodyDecorator::get_default_traits());
+                                              Refiner *pr,
+                                              bool snapping=false);
 
 //! Creates a rigid body and sets up the needed score states
 /**
    \param[in] m the model
-   \param[in] tr the rigid body traits to use
+   \param[in] members The XYZ particles comprising the rigid body
+   \param[in] snapping Whether to use snapping or to optimize the coordinates
+   directly
    \relates RigidBodyDecorator
 
    \note The rigid body is set to be optimized.
@@ -339,8 +239,8 @@ IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
    model.
  */
 IMPCOREEXPORT ScoreState* create_rigid_body(Particle *p,
-                                            RigidBodyTraits tr
-                               =RigidBodyDecorator::get_default_traits());
+                                            const Particles &members,
+                                            bool snapping=false);
 
 
 IMPCORE_END_NAMESPACE
