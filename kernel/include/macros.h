@@ -546,6 +546,14 @@ protection:                                                             \
  ExternalType get_##name(unsigned int i) const {                        \
    return traits.wrap(traits.get_value(get_particle(), i));             \
  }                                                                      \
+ /** \brief Get the all the members*/                                   \
+ Particles get_##name##_particles() const {                             \
+   Particles ret(get_number_of_##plural());                             \
+   for (unsigned int i=0; i< ret.size(); ++i) {                         \
+     ret[i]= get_##name(i).get_particle();                              \
+   }                                                                    \
+   return ret;                                                          \
+ }                                                                      \
  /** \brief Get the total number of them*/                              \
  unsigned int get_number_of_##plural() const {                          \
    return traits.get_size(get_particle());                              \
