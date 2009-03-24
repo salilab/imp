@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT BallMover :public MoverBase
 {
 public:
-  /** The attributes are perturbed within a pall whose dimensionality is
+  /** The attributes are perturbed within a ball whose dimensionality is
       given by the number of attributes and radius by the given value.
       \param[in] sc The set of particles to perturb.
       \param[in] vars The variables to use (normally the keys for x,y,z)
