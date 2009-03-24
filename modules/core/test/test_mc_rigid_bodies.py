@@ -2,7 +2,6 @@ import unittest
 import IMP, IMP.test
 import IMP.core
 import IMP.atom
-import IMP.em
 
 class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):
