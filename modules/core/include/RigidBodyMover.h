@@ -33,8 +33,8 @@ public:
       \param[in] max_translation maximum translation sampling step
       \param[in] max_rotation maximum rotation sampling step
    */
-  RigidBodyMover(Particle *p, RigidBodyTraits *rbt, Float max_translation,
-                           Float max_rotation);
+  RigidBodyMover(Particle *p,Float max_translation,
+                 Float max_rotation);
   void reject_move();
   void accept_move();
   void propose_move(float f);
@@ -54,7 +54,6 @@ protected:
   Float max_translation_;
   Float max_angle_;
   Particle *p_;
-  RigidBodyTraits * rbt_;
 };
 
 IMPCORE_END_NAMESPACE
