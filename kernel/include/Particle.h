@@ -442,6 +442,8 @@ inline Float Particle::get_value(FloatKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
+  IMP_assert(has_attribute(name), "Particle " << get_name()
+             << " does not have attribute " << name);
   return floats_.get_value(name);
 }
 
@@ -449,6 +451,8 @@ inline Float Particle::get_derivative(FloatKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
+  IMP_assert(has_attribute(name), "Particle " << get_name()
+             << " does not have attribute " << name);
   return derivatives_.get_value(name);
 }
 
@@ -456,6 +460,8 @@ inline void Particle::set_value(FloatKey name, Float value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
+  IMP_assert(has_attribute(name), "Particle " << get_name()
+             << " does not have attribute " << name);
   floats_.set_value(name, value);
 }
 
@@ -490,6 +496,8 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
             InactiveParticleException);
   IMP_assert(!is_nan(value), "Can't add NaN to derivative in particle "
              << *this);
+  IMP_assert(has_attribute(name), "Particle " << get_name()
+             << " does not have attribute " << name);
   derivatives_.set_value(name, derivatives_.get_value(name)+ da(value));
 }
 
@@ -506,6 +514,8 @@ inline Int Particle::get_value(IntKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
+  IMP_assert(has_attribute(name), "Particle " << get_name()
+             << " does not have attribute " << name);
   return ints_.get_value(name);
 }
 
