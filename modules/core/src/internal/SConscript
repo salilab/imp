@@ -1,7 +1,6 @@
 files = [
          'ParticleGrid.cpp',
          'graph_base.cpp',
-         'rigid_bodies.cpp',
         ]
 
 files = [File(x) for x in files]

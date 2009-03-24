@@ -270,16 +270,6 @@ get_internal_bonds(MolecularHierarchyDecorator mhd);
 IMPATOMEXPORT
 MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d);
 
-
-//! Get a set of rigid body traits customized for use with a molecular hierarchy
-/** The members of the rigid body are the leaves of the hierarchy under the
-    body.
-    \see MolecularHiearchyDecorator
-    \relates RigidBodyDecorator
- */
-
-IMPATOMEXPORT core::RigidBodyTraits get_molecular_rigid_body_traits();
-
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_MOLECULAR_HIERARCHY_DECORATOR_H */

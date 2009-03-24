@@ -55,8 +55,7 @@ void RigidBodyDerivativeGeometry::show(std::ostream &out) const {
 }
 
 Geometries RigidBodyDerivativeGeometry::get_geometry() const {
-  Particles ms=
-    d_.get_traits().get_particle_refiner()->get_refined(d_.get_particle());
+  Particles ms=d_.get_member_particles();
   Geometries ret;
   algebra::Transformation3D otr= d_.get_transformation();
   algebra::VectorD<4> rderiv= d_.get_rotational_derivatives();
@@ -83,7 +82,7 @@ Geometries RigidBodyDerivativeGeometry::get_geometry() const {
                                                     rot[2], rot[3]),
                                 stderiv+otr.get_translation());
   for (unsigned int i=0; i< ms.size(); ++i) {
-    core::RigidMemberDecorator dm(ms[i], d_.get_traits());
+    core::RigidMemberDecorator dm(ms[i]);
     CylinderGeometry *tr
       = new CylinderGeometry(algebra::Cylinder3D(
                          algebra::Segment3D(dm.get_coordinates(),
