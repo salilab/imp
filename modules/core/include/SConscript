@@ -6,6 +6,7 @@ files = [
          'AngleTripletScore.h',
          'AttributeSingletonScore.h',
          'BallMover.h',
+         'RigidBodyMover.h',
          'BondEndpointsRefiner.h',
          'BondPairContainer.h',
          'BondSingletonScore.h',
