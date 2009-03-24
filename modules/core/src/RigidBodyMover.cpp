@@ -10,7 +10,7 @@
 #include <IMP/algebra/vector_generators.h>
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(Particle *p, RigidBodyTraits *rbt,
+RigidBodyMover::RigidBodyMover(Particle *p,
                                Float max_translation, Float max_angle) {
   IMP_LOG(VERBOSE,"start RigidBodyMover constructor");
   max_translation_=max_translation;
@@ -18,14 +18,13 @@ RigidBodyMover::RigidBodyMover(Particle *p, RigidBodyTraits *rbt,
   last_accepted_transformation_ = algebra::identity_transformation();
   last_transformation_ = algebra::identity_transformation();
   p_=p;
-  rbt_=rbt;
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
 algebra::Transformation3D RigidBodyMover::get_random_rigid_transformation() {
   algebra::Vector3D direction =
       algebra::random_vector_on_sphere(algebra::Vector3D(0.0,0.0,0.0),1.);
-  algebra::Vector3D curr_centroid = core::XYZDecorator(p_).get_coordinates();
+  algebra::Vector3D curr_centroid(0,0,0);
   ::boost::uniform_real<> rand(-max_angle_,max_angle_);
   Float angle =rand(random_number_generator);
   algebra::Vector3D trans = algebra::random_vector_in_sphere(
@@ -38,8 +37,9 @@ algebra::Transformation3D RigidBodyMover::get_random_rigid_transformation() {
 }
 
 void RigidBodyMover::transform(const algebra::Transformation3D &t) {
-  IMP::core::RigidBodyDecorator::cast(p_,*rbt_).set_transformation(
-        last_transformation_);
+  IMP::core::RigidBodyDecorator d = IMP::core::RigidBodyDecorator(p_);
+  d.set_transformation(d.get_transformation()*
+        last_transformation_*d.get_transformation().get_inverse());
 }
 void RigidBodyMover::propose_move(float f) {
   IMP_LOG(VERBOSE,"propose move start");
