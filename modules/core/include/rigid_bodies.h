@@ -32,7 +32,11 @@ class UpdateRigidBodyMembers;
 typedef std::vector<RigidMemberDecorator> RigidMemberDecorators;
 
 //! A decorator for a rigid body
-/** The body is modeled as a collection of balls of radius and mass
+/** A rigid body's orientation is stored using a transformation that
+    takes a set of internal coordinates for the member particles
+    to the current location of the member particles.
+
+    The body is modeled as a collection of balls of radius and mass
     given by the RigidBodyTraits. I, the inertial tensor, is
     computed and diagonalized, but not stored. It can be stored if
     someone wants it.
