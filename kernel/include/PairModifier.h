@@ -48,6 +48,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(PairModifier)
 
+// skip declarations that look the same to swig
+#ifndef SWIG
 //! Apply the PairModifier to each element of the sequence
 /** \relates PairModifier */
 template <class It>
@@ -96,7 +98,7 @@ IMPEXPORT inline void apply(const PairModifier& f,
                             PairContainer *ps) {
   apply(f, da, ps->particle_pairs_begin(), ps->particle_pairs_end());
 }
-
+#endif // SWIG
 
 //! Apply the PairModifier to each element of the sequence
 /** \relates PairModifier */

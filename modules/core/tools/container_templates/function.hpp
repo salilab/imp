@@ -48,6 +48,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(GroupnameModifier)
 
+// skip declarations that look the same to swig
+#ifndef SWIG
 //! Apply the GroupnameModifier to each element of the sequence
 /** \relates GroupnameModifier */
 template <class It>
@@ -96,7 +98,7 @@ IMPEXPORT inline void apply(const GroupnameModifier& f,
                             GroupnameContainer *ps) {
   apply(f, da, ps->classnames_begin(), ps->classnames_end());
 }
-
+#endif // SWIG
 
 //! Apply the GroupnameModifier to each element of the sequence
 /** \relates GroupnameModifier */
