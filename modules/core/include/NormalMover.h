@@ -38,7 +38,7 @@ public:
     return stddev_;
   }
 protected:
-  virtual void generate_move(float f);
+  virtual void generate_move(Float f);
 private:
   Float stddev_;
 };
