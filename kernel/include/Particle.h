@@ -54,9 +54,10 @@ class Model;
 
 
     This class contains particle methods and indexes to particle attributes.
-    To merely prevent a particle from moving during
+    To prevent a particle from being moved by the optimizer during
     optimization, mark all of its attributes as being non-optimizable
-    (set_is_optimized method).
+    (set_is_optimized method). Note that this only affects the optimizer,
+    ScoreStates may still change the particle attributes.
 
     A particle may only belong to one model.
 
@@ -189,7 +190,9 @@ public:
   void add_to_derivative(FloatKey name, Float value,
                          const DerivativeAccumulator &da);
 
-  /** Set whether this float attribute is optimized.*/
+  /** Set whether this float attribute will be changed by
+      the optimizer. The attribute value is still allowed
+      to change.*/
   void set_is_optimized(FloatKey k, bool tf);
 
   /** Return whether this float attribute is optimized.*/
