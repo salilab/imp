@@ -175,7 +175,7 @@ void JNode::realize(Restraint *r, Particles *ps, Float weight)
 std::vector<CombState *> JNode::min_marginalize(const CombState &s,
                                                 bool move_to_state)
 {
-  float min_score = INT_MAX;
+  Float min_score = std::numeric_limits<Float>::max();
   std::vector<CombState *> min_comb;
   min_comb = std::vector<CombState *>();
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
