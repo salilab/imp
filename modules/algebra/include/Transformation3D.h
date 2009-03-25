@@ -116,7 +116,7 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
 //! Generate a Transformation3D object from a rotation around an axis
 /**
   \param[in] point the rotation axis passes through the point
-  \param[in] dorectopn the direction of the rotation axis
+  \param[in] direction the direction of the rotation axis
   \param[in] angle the rotation angle in radians
 */
 inline Transformation3D rotation_around_axis(const Vector3D &point,
