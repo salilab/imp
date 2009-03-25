@@ -24,8 +24,8 @@ typedef std::vector<Mover*> Movers;
     each Mover is called at each Monte Carlo iteration. This may change in
     the future. The movers propose some modification, which is then
     accepted or rejected based on the Metropolis criteria. Optionally, a
-    number of local optimization steps are taken before the step is
-    accepted or rejected.
+    number of local optimization steps are taken before the MonteCarlo step
+    is accepted or rejected.
 
     \note The local optimizer object will never be freed due to lack
     of reference counting with SWIG.
@@ -49,7 +49,9 @@ public:
   }
   //! Set the local optimizer
   /** The number of local steps must be nonzero for the
-      local optimizer to be used.
+      local optimizer to be used. Steps taken by the local optimizer
+      do not count towards the total number of steps passed to the
+      Optimizer::optimize() call.
    */
   void set_local_optimizer(Optimizer* cg);
 
@@ -69,6 +71,10 @@ public:
     return stop_energy_;
   }
   //! Take this many steps of the local optimizer for each MC step
+  /** Steps taken by the local optimizer
+      do not count towards the total number of steps passed to the
+      Optimizer::optimize() call.
+   */
   int get_local_steps() const {
     return num_local_steps_;
   }
