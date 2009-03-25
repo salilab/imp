@@ -2,10 +2,14 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 ns= Glob("*.cpp")+ Glob("*/*.cpp")
 
+skip=["internal/version_info.cpp",
+      "internal/link_0.cpp",
+          "internal/link_1.cpp"]
+
 files=[]
 for h in ns:
     s= h.rstr()
-    if not s.startswith(".") and not s.endswith("version_info.cpp"):
+    if not s.startswith(".") and not s in skip:
         files.append(s)
 
 # Build and install the shared library:
