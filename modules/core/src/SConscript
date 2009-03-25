@@ -8,6 +8,7 @@ files = [
          'AttributeSingletonScore.cpp',
          'BallMover.cpp',
          'RigidBodyMover.cpp',
+         'ConeMover.cpp',
          'BondEndpointsRefiner.cpp',
          'BondPairContainer.cpp',
          'BondSingletonScore.cpp',
@@ -80,6 +81,7 @@ files = [
          'bond_decorators.cpp',
          'model_io.cpp',
          'rigid_bodies.cpp',
+         'utilities.cpp',
         ] \
         + SConscript('internal/SConscript')
 
