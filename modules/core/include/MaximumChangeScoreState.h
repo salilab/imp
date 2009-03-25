@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! Keeps track of the maximum change of a set of attributes.
 /** The score state maintains a list of particle and a list of
-    float attribute keys and keeps track of the Maximumimum amount
+    Float attribute keys and keeps track of the Maximumimum amount
     any of these have changed since the last time reset was called.
 
     Adding a new particle to the container without calling reset()
@@ -46,7 +46,7 @@ public:
   void reset();
 
   //! Return the maximum amount any attribute has changed.
-  float get_maximum_change() const {
+  Float get_maximum_change() const {
     return maximum_change_;
   }
   //! Change the container to get the particles from
