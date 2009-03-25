@@ -37,7 +37,7 @@ public:
                  Float max_rotation);
   void reject_move();
   void accept_move();
-  void propose_move(float f);
+  void propose_move(Float f);
   void show(std::ostream&out= std::cout) const {
     out << "RigidTransformationMover " << std::endl;
   }
