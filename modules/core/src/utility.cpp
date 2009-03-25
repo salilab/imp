@@ -1,11 +1,11 @@
 /**
- *  \file core/utilities.cpp
+ *  \file core/utility.cpp
  *  \brief Functions to perform simple functions on a set of particles
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#include "IMP/core/utilities.h"
+#include "IMP/core/utility.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/XYZDecorator.h>
 IMPCORE_BEGIN_NAMESPACE
