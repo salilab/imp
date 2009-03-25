@@ -22,7 +22,7 @@ NormalMover::NormalMover(SingletonContainer *sc,
   set_sigma(max);
 }
 
-void NormalMover::generate_move(float probability)
+void NormalMover::generate_move(Float probability)
 {
   boost::uniform_real<> rand(0,1);
   boost::normal_distribution<double> mrng(0, stddev_);
