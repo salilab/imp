@@ -19,9 +19,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-// for swig
-class Transformation3D;
-
 /** \brief  Apply a function to the distance between two particles
     after transforming the first
 
