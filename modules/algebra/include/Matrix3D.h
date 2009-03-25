@@ -31,7 +31,7 @@ public:
 
   //! Constructor
   Matrix3D(int Zdim, int Ydim, int Xdim) : MA3() {
-    resize(Zdim, Ydim, Xdim);
+    this->resize(Zdim, Ydim, Xdim);
   }
 
   // Copy constructor
@@ -74,7 +74,7 @@ public:
       start[i]=v.index_bases()[i];
     }
     resize(shape[0], shape[1], shape[2]);
-    MA3::reindex(start);
+    this->reindex(start);
  }
 
   //! Copies the contents of a matrix to this one (does not resize this one).
@@ -118,7 +118,7 @@ public:
   }
 
   //! Returns the number of slices in the matrix
-  int get_slices() {
+  int get_slices() const {
     return (int)this->get_size(0);
   }
 

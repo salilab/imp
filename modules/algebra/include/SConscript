@@ -20,6 +20,7 @@ files = [
          'io.h',
          'utility.h',
          'vector_generators.h',
+         'endian.h',
         ] \
         + SConscript('internal/SConscript')
 
