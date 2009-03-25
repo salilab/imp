@@ -48,60 +48,10 @@ public:
 
 IMP_OUTPUT_OPERATOR(PairModifier)
 
-// skip declarations that look the same to swig
-#ifndef SWIG
 //! Apply the PairModifier to each element of the sequence
-/** \relates PairModifier */
-template <class It>
-void apply(const PairModifier& f, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<ParticlePair>::apply(&f, *c);
-  }
-}
-
-//! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier */
-IMPEXPORT inline void apply(const PairModifier& f,
-                               ParticlePairs &ps) {
-  apply(f, ps.begin(), ps.end());
-}
-
-//! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier */
-IMPEXPORT inline void apply(const PairModifier& f,
-                                PairContainer *ps) {
-  apply(f, ps->particle_pairs_begin(), ps->particle_pairs_end());
-}
-
-
-//! Apply the PairModifier to each element of the sequence
-/** \relates PairModifier */
-template <class It>
-void apply(const PairModifier& f, DerivativeAccumulator *da, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<ParticlePair>::apply(&f, *c, da);
-  }
-}
-
-//! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier */
-IMPEXPORT inline void apply(const PairModifier& f,
-                            DerivativeAccumulator *da,
-                            ParticlePairs &ps) {
-  apply(f, da, ps.begin(), ps.end());
-}
-
-//! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier */
-IMPEXPORT inline void apply(const PairModifier& f,
-                            DerivativeAccumulator *da,
-                            PairContainer *ps) {
-  apply(f, da, ps->particle_pairs_begin(), ps->particle_pairs_end());
-}
-#endif // SWIG
-
-//! Apply the PairModifier to each element of the sequence
-/** \relates PairModifier */
+/** \relates PairModifier
+    Use IMP::make_pointer to properly clean up the pointer.
+ */
 template <class It>
 void apply(const PairModifier* f, It b, It e) {
   for (It c=b; c != e; ++c) {
@@ -110,14 +60,20 @@ void apply(const PairModifier* f, It b, It e) {
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier */
+/** \relates PairModifier
+    \code
+    apply(make_pointer(new core::Transform(tr)), my_particles);
+    \endcode
+ */
 IMPEXPORT inline void apply(const PairModifier* f,
                             ParticlePairs &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier */
+/** \relates PairModifier
+    \copydoc apply(const PairModifier*,ParticlePairs&)
+  */
 IMPEXPORT inline void apply(const PairModifier* f,
                             PairContainer *ps) {
   apply(f, ps->particle_pairs_begin(), ps->particle_pairs_end());
