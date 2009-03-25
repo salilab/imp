@@ -48,6 +48,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonModifier)
 
+// skip declarations that look the same to swig
+#ifndef SWIG
 //! Apply the SingletonModifier to each element of the sequence
 /** \relates SingletonModifier */
 template <class It>
@@ -96,7 +98,7 @@ IMPEXPORT inline void apply(const SingletonModifier& f,
                             SingletonContainer *ps) {
   apply(f, da, ps->particles_begin(), ps->particles_end());
 }
-
+#endif // SWIG
 
 //! Apply the SingletonModifier to each element of the sequence
 /** \relates SingletonModifier */
