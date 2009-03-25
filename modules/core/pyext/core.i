@@ -52,6 +52,7 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(AttributeSingletonScore)
     IMP_OWN_CONSTRUCTOR(BallMover)
     IMP_OWN_CONSTRUCTOR(RigidBodyMover)
+    IMP_OWN_CONSTRUCTOR(ConeMover)
 #ifndef IMP_NO_DEPRECATED
     IMP_OWN_CONSTRUCTOR(BondSingletonScore)
     IMP_OWN_CONSTRUCTOR(BondBondPairScore)
@@ -207,6 +208,8 @@ namespace IMP {
 %include "IMP/core/MaximumSingletonScoreRestraint.h"
 %include "IMP/core/MaximumPairScoreRestraint.h"
 %include "IMP/core/RigidBodyMover.h"
+%include "IMP/core/ConeMover.h"
+%include "IMP/core/utilities.h"
 
 
 

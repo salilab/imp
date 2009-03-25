@@ -7,6 +7,7 @@ files = [
          'AttributeSingletonScore.h',
          'BallMover.h',
          'RigidBodyMover.h',
+         'ConeMover.h',
          'BondEndpointsRefiner.h',
          'BondPairContainer.h',
          'BondSingletonScore.h',
@@ -87,6 +88,7 @@ files = [
          'model_io.h',
          'rigid_bodies.h',
          'utility.h',
+         'utilities.h',
         ] \
         + SConscript('internal/SConscript')
 
