@@ -20,7 +20,7 @@ Transformation3D compose(const Transformation3D &a,
                          const Transformation3D &b);
 
 //! Simple 3D transformation class
-/**
+/** \see IMP::core::Transform
 */
 class IMPALGEBRAEXPORT Transformation3D
 {
