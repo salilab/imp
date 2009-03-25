@@ -7,8 +7,7 @@ files = [
          'StateAdaptor.cpp',
          'TunnelSingletonScore.cpp',
          'attribute_statistics.cpp',
-        ] \
-        + SConscript('internal/SConscript')
+        ]
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)
