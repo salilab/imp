@@ -43,49 +43,105 @@ public:
   /** return information about the authors */
   virtual VersionInfo get_version_info() const = 0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(GroupnameModifier)
+  ~GroupnameModifier(){}
 };
 
 IMP_OUTPUT_OPERATOR(GroupnameModifier)
 
 //! Apply the GroupnameModifier to each element of the sequence
+/** \relates GroupnameModifier */
 template <class It>
-void apply(GroupnameModifier* f, It b, It e) {
+void apply(const GroupnameModifier& f, It b, It e) {
   for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Classname>::apply(f, *c);
+    internal::ContainerTraits<Classname>::apply(&f, *c);
   }
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-IMPEXPORT inline void apply(GroupnameModifier* f,
+/** \relates GroupnameModifier */
+IMPEXPORT inline void apply(const GroupnameModifier& f,
                                Classnames &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-IMPEXPORT inline void apply(GroupnameModifier* f,
+/** \relates GroupnameModifier */
+IMPEXPORT inline void apply(const GroupnameModifier& f,
                                 GroupnameContainer *ps) {
   apply(f, ps->classnames_begin(), ps->classnames_end());
 }
 
 
 //! Apply the GroupnameModifier to each element of the sequence
+/** \relates GroupnameModifier */
 template <class It>
-void apply(GroupnameModifier* f, DerivativeAccumulator *da, It b, It e) {
+void apply(const GroupnameModifier& f, DerivativeAccumulator *da, It b, It e) {
   for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Classname>::apply(f, *c, da);
+    internal::ContainerTraits<Classname>::apply(&f, *c, da);
   }
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-IMPEXPORT inline void apply(GroupnameModifier* f,
+/** \relates GroupnameModifier */
+IMPEXPORT inline void apply(const GroupnameModifier& f,
                             DerivativeAccumulator *da,
                             Classnames &ps) {
   apply(f, da, ps.begin(), ps.end());
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-IMPEXPORT inline void apply(GroupnameModifier* f,
+/** \relates GroupnameModifier */
+IMPEXPORT inline void apply(const GroupnameModifier& f,
+                            DerivativeAccumulator *da,
+                            GroupnameContainer *ps) {
+  apply(f, da, ps->classnames_begin(), ps->classnames_end());
+}
+
+
+//! Apply the GroupnameModifier to each element of the sequence
+/** \relates GroupnameModifier */
+template <class It>
+void apply(const GroupnameModifier* f, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<Classname>::apply(f, *c);
+  }
+}
+
+//! Apply a GroupnameModifier to each in the Classnames
+/** \relates GroupnameModifier */
+IMPEXPORT inline void apply(const GroupnameModifier* f,
+                            Classnames &ps) {
+  apply(f, ps.begin(), ps.end());
+}
+
+//! Apply a GroupnameModifier to each in the Classnames
+/** \relates GroupnameModifier */
+IMPEXPORT inline void apply(const GroupnameModifier* f,
+                            GroupnameContainer *ps) {
+  apply(f, ps->classnames_begin(), ps->classnames_end());
+}
+
+
+//! Apply the GroupnameModifier to each element of the sequence
+/** \relates GroupnameModifier */
+template <class It>
+void apply(const GroupnameModifier* f, DerivativeAccumulator *da, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<Classname>::apply(f, *c, da);
+  }
+}
+
+//! Apply a GroupnameModifier to each in the Classnames
+/** \relates GroupnameModifier */
+IMPEXPORT inline void apply(const GroupnameModifier* f,
+                            DerivativeAccumulator *da,
+                            Classnames &ps) {
+  apply(f, da, ps.begin(), ps.end());
+}
+
+//! Apply a GroupnameModifier to each in the Classnames
+/** \relates GroupnameModifier */
+IMPEXPORT inline void apply(const GroupnameModifier* f,
                             DerivativeAccumulator *da,
                             GroupnameContainer *ps) {
   apply(f, da, ps->classnames_begin(), ps->classnames_end());
