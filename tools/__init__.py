@@ -79,25 +79,22 @@ def _add_build_flags(env):
     env.Append(LIBPATH=[])
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS=["-Wall"])
-    if env.get('build', 'release') == 'fast':
+    if env['build'] == 'fast':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=[ "-O3"])
-    elif env.get('build', 'release') == 'release':
+    elif env['build'] == 'release':
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=["-O2"])
-    elif env.get('build', 'release') == 'debug':
+    elif env['build'] == 'debug':
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=["-g"])
-    elif env.get('build', 'release') == 'profile':
+    elif env['build'] == 'profile':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=[ "-O3"])
             env.Append(CCFLAGS=['-g', '-pg'])
             env.Append(LINKFLAGS=['-pg'])
-    else:
-        print "ERROR: Invalid build mode, should be one of debug, release, fast, profile."
-        Exit(1)
 
 def CheckGNUHash(context):
     """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
@@ -492,13 +489,13 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('wine',
                           'Build using MS Windows tools via Wine emulation',
                           False))
-    vars.Add(PathVariable('build',
-                          "Set to \'release\' for a normal build,"
-                          +" or debug to disable optimization,"
-                          +" or fast to disable most runtime checks"
-                          +" or profile to disable most runtime checks"
-                          +"but keep debugging information",
-                          "release", PathVariable.PathAccept))
+    vars.Add(EnumVariable('build',
+                          "Set to 'release' for a normal build," \
+                          +" 'debug' to disable optimization," \
+                          +" 'fast' to disable most runtime checks," \
+                          +" or 'profile' to disable most runtime checks" \
+                          +" but keep debugging information",
+                          "release", ['release', 'debug', 'fast', 'profile']))
     vars.Add(BoolVariable('linksysv',
                           'Link with old-style SysV, not GNU hash, for ' + \
                           'binary compatibility', False))
