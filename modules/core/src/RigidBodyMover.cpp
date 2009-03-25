@@ -51,7 +51,7 @@ void RigidBodyMover::propose_move(float f) {
   of the particles. The final transformation is a composition of all
   the transformations.
  */
-void RigidBodyMover::generate_move(float size) {
+void RigidBodyMover::generate_move(Float size) {
   last_transformation_ = get_random_rigid_transformation();
   IMP_LOG(VERBOSE,"generate move : random transformation:");
   IMP_LOG_WRITE(VERBOSE,last_transformation_.show());
