@@ -33,12 +33,12 @@ struct ContainerTraits<Particle> {
     return ss->evaluate(p, ac);
   }
   template <class SM>
-  static void apply(SM *ss,
+  static void apply(const SM *ss,
                     Particle *p) {
     ss->apply(p);
   }
   template <class SM>
-  static void apply(SM *ss,
+  static void apply(const SM *ss,
                     Particle *p,
                     DerivativeAccumulator *da) {
     ss->apply(p, da);
@@ -60,12 +60,12 @@ struct ContainerTraits<ParticlePair> {
     return ss->evaluate(p.first, p.second, ac);
   }
   template <class PM>
-  static void apply(PM *ss,
+  static void apply(const PM *ss,
                     const ParticlePair &p) {
     ss->apply(p.first, p.second);
   }
   template <class PM>
-  static void apply(PM *ss,
+  static void apply(const PM *ss,
                     const ParticlePair &p,
                     DerivativeAccumulator *da) {
     ss->apply(p.first, p.second, da);

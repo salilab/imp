@@ -43,49 +43,105 @@ public:
   /** return information about the authors */
   virtual VersionInfo get_version_info() const = 0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(SingletonModifier)
+  ~SingletonModifier(){}
 };
 
 IMP_OUTPUT_OPERATOR(SingletonModifier)
 
 //! Apply the SingletonModifier to each element of the sequence
+/** \relates SingletonModifier */
 template <class It>
-void apply(SingletonModifier* f, It b, It e) {
+void apply(const SingletonModifier& f, It b, It e) {
   for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Particle>::apply(f, *c);
+    internal::ContainerTraits<Particle>::apply(&f, *c);
   }
 }
 
 //! Apply a SingletonModifier to each in the Particles
-IMPEXPORT inline void apply(SingletonModifier* f,
+/** \relates SingletonModifier */
+IMPEXPORT inline void apply(const SingletonModifier& f,
                                Particles &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a SingletonModifier to each in the Particles
-IMPEXPORT inline void apply(SingletonModifier* f,
+/** \relates SingletonModifier */
+IMPEXPORT inline void apply(const SingletonModifier& f,
                                 SingletonContainer *ps) {
   apply(f, ps->particles_begin(), ps->particles_end());
 }
 
 
 //! Apply the SingletonModifier to each element of the sequence
+/** \relates SingletonModifier */
 template <class It>
-void apply(SingletonModifier* f, DerivativeAccumulator *da, It b, It e) {
+void apply(const SingletonModifier& f, DerivativeAccumulator *da, It b, It e) {
   for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Particle>::apply(f, *c, da);
+    internal::ContainerTraits<Particle>::apply(&f, *c, da);
   }
 }
 
 //! Apply a SingletonModifier to each in the Particles
-IMPEXPORT inline void apply(SingletonModifier* f,
+/** \relates SingletonModifier */
+IMPEXPORT inline void apply(const SingletonModifier& f,
                             DerivativeAccumulator *da,
                             Particles &ps) {
   apply(f, da, ps.begin(), ps.end());
 }
 
 //! Apply a SingletonModifier to each in the Particles
-IMPEXPORT inline void apply(SingletonModifier* f,
+/** \relates SingletonModifier */
+IMPEXPORT inline void apply(const SingletonModifier& f,
+                            DerivativeAccumulator *da,
+                            SingletonContainer *ps) {
+  apply(f, da, ps->particles_begin(), ps->particles_end());
+}
+
+
+//! Apply the SingletonModifier to each element of the sequence
+/** \relates SingletonModifier */
+template <class It>
+void apply(const SingletonModifier* f, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<Particle>::apply(f, *c);
+  }
+}
+
+//! Apply a SingletonModifier to each in the Particles
+/** \relates SingletonModifier */
+IMPEXPORT inline void apply(const SingletonModifier* f,
+                            Particles &ps) {
+  apply(f, ps.begin(), ps.end());
+}
+
+//! Apply a SingletonModifier to each in the Particles
+/** \relates SingletonModifier */
+IMPEXPORT inline void apply(const SingletonModifier* f,
+                            SingletonContainer *ps) {
+  apply(f, ps->particles_begin(), ps->particles_end());
+}
+
+
+//! Apply the SingletonModifier to each element of the sequence
+/** \relates SingletonModifier */
+template <class It>
+void apply(const SingletonModifier* f, DerivativeAccumulator *da, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<Particle>::apply(f, *c, da);
+  }
+}
+
+//! Apply a SingletonModifier to each in the Particles
+/** \relates SingletonModifier */
+IMPEXPORT inline void apply(const SingletonModifier* f,
+                            DerivativeAccumulator *da,
+                            Particles &ps) {
+  apply(f, da, ps.begin(), ps.end());
+}
+
+//! Apply a SingletonModifier to each in the Particles
+/** \relates SingletonModifier */
+IMPEXPORT inline void apply(const SingletonModifier* f,
                             DerivativeAccumulator *da,
                             SingletonContainer *ps) {
   apply(f, da, ps->particles_begin(), ps->particles_end());
