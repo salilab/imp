@@ -60,7 +60,7 @@ bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b,
   Float rb= get_radius(b, rk);
   Float sr= ra+rb;
   for (unsigned int i=0; i< 3; ++i) {
-    float delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
+    double delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
     if (delta - sr >= distance) {
       return false;
     }

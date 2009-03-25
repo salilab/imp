@@ -32,19 +32,40 @@ struct DefaultTraits
   typedef K Key;
 };
 
-struct FloatAttributeTableTraits: public DefaultTraits<Float, FloatKey>
+struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
 {
-  static Float get_invalid() {
-    if (std::numeric_limits<Float>::has_quiet_NaN) {
-      return std::numeric_limits<Float>::quiet_NaN();
-    } else if (std::numeric_limits<Float>::has_infinity) {
-      return std::numeric_limits<Float>::infinity();
+  static float get_invalid() {
+    if (std::numeric_limits<float>::has_quiet_NaN) {
+      return std::numeric_limits<float>::quiet_NaN();
+    } else if (std::numeric_limits<float>::has_infinity) {
+      return std::numeric_limits<float>::infinity();
     } else {
-      return std::numeric_limits<Float>::max();
+      return std::numeric_limits<float>::max();
     }
   }
-  static bool get_is_valid(Float f) {
-    if (std::numeric_limits<Float>::has_quiet_NaN) {
+  static bool get_is_valid(float f) {
+    if (std::numeric_limits<float>::has_quiet_NaN) {
+      return f==f;
+    } else {
+      return f != get_invalid();
+    }
+  }
+};
+
+
+struct DoubleAttributeTableTraits: public DefaultTraits<double, FloatKey>
+{
+  static double get_invalid() {
+    if (std::numeric_limits<double>::has_quiet_NaN) {
+      return std::numeric_limits<double>::quiet_NaN();
+    } else if (std::numeric_limits<double>::has_infinity) {
+      return std::numeric_limits<double>::infinity();
+    } else {
+      return std::numeric_limits<double>::max();
+    }
+  }
+  static bool get_is_valid(double f) {
+    if (std::numeric_limits<double>::has_quiet_NaN) {
       return f==f;
     } else {
       return f != get_invalid();

@@ -92,7 +92,7 @@ private:
 
  typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
    FloatTable;
- typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
+ typedef internal::AttributeTable<internal::DoubleAttributeTableTraits>
    DerivativeTable;
  typedef internal::AttributeTable<internal::BoolAttributeTableTraits>
    OptimizedTable;

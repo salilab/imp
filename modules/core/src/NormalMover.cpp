@@ -34,8 +34,8 @@ void NormalMover::generate_move(float probability)
        i < get_container()->get_number_of_particles(); ++i) {
     if (rand(random_number_generator) > probability) continue;
     for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
-      float c = get_float(i, j);
-      float r = sampler();
+      Float c = get_float(i, j);
+      Float r = sampler();
       // Check for NaN (x!=x when x==NaN) (can only use std::isnan with C99)
       IMP_assert(r == r, "Bad random");
       IMP_assert(c == c, "Bad stored");

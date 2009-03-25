@@ -23,7 +23,7 @@ MinimumPairScoreRestraint
 }
 
 namespace {
-  typedef internal::MinimalSet<float,
+  typedef internal::MinimalSet<double,
     PairContainer::ParticlePairIterator> MS;
   template <class It, class F>
   MS find_minimal_set(It b, It e, F *f, unsigned int n) {
@@ -31,7 +31,7 @@ namespace {
             << std::distance(b,e) << std::endl);
     MS bestn(n);
     for (It it= b; it != e; ++it) {
-      float score= IMP::internal::ContainerTraits<ParticlePair>
+      double score= IMP::internal::ContainerTraits<ParticlePair>
                            ::evaluate(f, *it, NULL);
 
       if (bestn.can_insert(score)) {
@@ -47,7 +47,7 @@ Float MinimumPairScoreRestraint
   MS bestn= find_minimal_set(c_->particle_pairs_begin(),
                              c_->particle_pairs_end(), f_.get(), n_);
 
-  float score=0;
+  double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {
     if (da) {
       IMP::internal::ContainerTraits<ParticlePair>::evaluate(f_.get(),

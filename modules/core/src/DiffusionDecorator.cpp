@@ -50,7 +50,7 @@ static MillipascalSecond eta(unit::Kelvin T)
   } else {
     unsigned int i;
     for (i=1; points[i].first < T; ++i);
-    float f= ((T - points[i-1].first)
+    double f= ((T - points[i-1].first)
               /(points[i].first - points[i-1].first))
       .get_normalized_value();
     MillipascalSecond ret=

@@ -75,7 +75,7 @@ FloatPair OpenCubicSpline::evaluate_with_derivative(Float feature) const
 
   Float b = (feature - lowfeature) / spacing_;
   Float a = 1. - b;
-  float sixthspacing = spacing_ / 6.;
+  Float sixthspacing = spacing_ / 6.;
 
   Float deriv = (values_[highbin] - values_[lowbin]) / spacing_
     - (3. * a * a - 1.) * sixthspacing * second_derivs_[lowbin]
