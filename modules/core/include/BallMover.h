@@ -42,7 +42,7 @@ public:
     return radius_;
   }
 protected:
-  void generate_move(float a);
+  void generate_move(Float a);
 
 private:
   Float radius_;

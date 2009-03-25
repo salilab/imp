@@ -41,7 +41,7 @@ public:
       moves. This number can be either used to scale a continuous move
       or affect the probability of a discrete move.
    */
-  virtual void propose_move(float size)=0;
+  virtual void propose_move(Float size)=0;
   //! set whether the proposed modification is accepted
   /** \note Accepting should not change the Particles at all.
    */
