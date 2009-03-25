@@ -40,7 +40,7 @@ namespace {
 
 
 
-  float grid_side_from_r(float r)
+  double grid_side_from_r(double r)
   {
     if (r==0) return 1;
     else return r*1.6;
@@ -52,14 +52,14 @@ namespace {
   {
     if (c->get_number_of_particles() ==0) return;
 
-    float minr=std::numeric_limits<float>::max(), maxr=0;
+    double minr=std::numeric_limits<double>::max(), maxr=0;
     for (unsigned int i=0; i< c->get_number_of_particles(); ++i) {
-      float r= c->get_particle(i)->get_value(rk);
+      double r= c->get_particle(i)->get_value(rk);
       if ( r > maxr) maxr=r;
       if ( r > 0 && r < minr) minr=r;
     }
     minr= std::min(maxr, minr);
-    float curr=minr*2;
+    double curr=minr*2;
     Floats cuts;
     cuts.push_back(0);
     do {
@@ -70,7 +70,7 @@ namespace {
 
     std::vector<Particles> ops(cuts.size());
     for (unsigned int i=0; i< c->get_number_of_particles(); ++i) {
-      float r= c->get_particle(i)->get_value(rk);
+      double r= c->get_particle(i)->get_value(rk);
       bool found=false;
       for (unsigned int j=0; ; ++j) {
       IMP_assert(j< cuts.size(), "Internal error in ASNBLSS");

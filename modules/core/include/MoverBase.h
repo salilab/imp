@@ -37,7 +37,7 @@ public:
 
   /** This sets everything up and then calls the generate_move method.
    */
-  virtual void propose_move(float f);
+  virtual void propose_move(Float f);
 
   IMP_LIST(public, FloatKey, float_key, FloatKey);
   IMP_LIST(public, IntKey, int_key, IntKey);
@@ -50,7 +50,7 @@ protected:
   //! implement this method to propose a move
   /** See NormalMover for a simple example.
    */
-  virtual void generate_move(float f)=0;
+  virtual void generate_move(Float f)=0;
 
   //! Get the value of a controlled attribute
   /** \param [in] i The index of the particle.

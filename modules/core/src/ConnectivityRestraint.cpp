@@ -38,7 +38,7 @@ IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,  {
 namespace {
   typedef boost::adjacency_list<boost::vecS, boost::vecS,
                         boost::undirectedS, boost::no_property,
-            boost::property<boost::edge_weight_t, float> > Graph;
+            boost::property<boost::edge_weight_t, double> > Graph;
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
@@ -48,7 +48,7 @@ namespace {
                    std::vector<Edge> &mst) {
     for (unsigned int i=0; i< a->get_number_of_particles(); ++i) {
       for (unsigned int j=0; j<i; ++j) {
-        float d= ps->evaluate(a->get_particle(i), a->get_particle(j), NULL);
+        double d= ps->evaluate(a->get_particle(i), a->get_particle(j), NULL);
         IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
                 << a->get_particle(i)->get_name() << " and "
                 << a->get_particle(j)->get_name() << " with weight "
@@ -71,7 +71,7 @@ Float ConnectivityRestraint::evaluate(DerivativeAccumulator *accum)
 
   Graph g(get_number_of_particles());
   compute_mst(this, ps_, g, mst);
-  float sum=0;
+  double sum=0;
   // could be more clever if accum is NULL
   for (unsigned int index=0; index< mst.size(); ++index) {
     int i= boost::target(mst[index], g);

@@ -21,7 +21,7 @@ IMP_BEGIN_NAMESPACE
  */
 
 //! Basic floating-point value (could be float, double...)
-typedef float Float;
+typedef double Float;
 
 //! A pair of floats
 typedef std::pair<Float, Float> FloatPair;

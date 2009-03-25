@@ -12,7 +12,7 @@ IMPCORE_BEGIN_NAMESPACE
 IMP_LIST_IMPL(MoverBase, FloatKey, float_key, FloatKey,,,);
 IMP_LIST_IMPL(MoverBase, IntKey, int_key, IntKey,,,);
 
-void MoverBase::propose_move(float f)
+void MoverBase::propose_move(Float f)
 {
   if (get_number_of_float_keys() != 0) {
     floats_.resize(pc_->get_number_of_particles(),
