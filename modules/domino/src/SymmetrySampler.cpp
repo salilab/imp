@@ -5,9 +5,9 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #include <IMP/domino/SymmetrySampler.h>
-#include <IMP/atom/utilities.h>
 #include <IMP/atom/pdb.h>
-
+#include <IMP/algebra/geometric_alignment.h>
+#include <IMP/core/XYZDecorator.h>
 IMPDOMINO_BEGIN_NAMESPACE
 //  virtual void show(std::ostream& out = std::cout) const {}
 
@@ -22,10 +22,34 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
   for(unsigned int i=0;i<ps_->size();i++){
     symm_deg_[(*ps_)[i]]=i;
   }
+  //superpose the particles on the first one and use that as reference
+  ref_[(*ps_)[0]]=algebra::identity_transformation();
+  algebra::Vector3Ds ref_positions;
+  Particles ps1 =
+    atom::get_by_type((*ps_)[0], atom::MolecularHierarchyDecorator::ATOM);
+
+  for(Particles::iterator it=ps1.begin();it!=ps1.end();it++) {
+    ref_positions.push_back(core::XYZDecorator::cast(*it).get_coordinates());
+  }
+
+  for(unsigned int i=1;i<ps_->size();i++) {
+    algebra::Vector3Ds other_positions;
+    Particles ps2 =
+      atom::get_by_type((*ps_)[i], atom::MolecularHierarchyDecorator::ATOM);
+    for(Particles::iterator it=ps2.begin();it!=ps2.end();it++) {
+      other_positions.push_back(
+         core::XYZDecorator::cast(*it).get_coordinates());
+    }
+    ref_[(*ps_)[i]]=
+      algebra::rigid_align_first_to_second(other_positions,ref_positions);
+  }
 }
 
 void SymmetrySampler::populate_states_of_particles(Particles *particles,
                                                    Combinations *states) const {
+  IMP_assert(states != NULL,"the states should be initialized");
+  IMP_LOG(VERBOSE,"SymmetrySampler:: start populaing states of particles");
+  std::cout<<"SymmetrySampler:: start populaing states of particles"<<std::endl;
   CombState *calc_state;
   int comb_size = particles->size();
   std::vector<int> v_int(ts_->get_number_of_states());
@@ -38,22 +62,28 @@ void SymmetrySampler::populate_states_of_particles(Particles *particles,
     }
     (*states)[calc_state->partial_key(particles)]=calc_state;
   }
+  IMP_LOG(VERBOSE,
+          "SymmetrySampler:: end populaing states of particles"<<std::endl);
 }
-
+//TODO - consider keeping particles and not using get_leaves
 void SymmetrySampler::reset_placement(const CombState *cs) {
+  IMP_LOG(VERBOSE,"SymmetrySampler:: start reset placement"<<std::endl);
   Particle *p;
   for (CombData::const_iterator it = cs->get_data()->begin();
         it != cs->get_data()->end(); it++) {
     p = it->first;
-  atom::copy_atom_positions(atom::MolecularHierarchyDecorator::cast(ref_),
-                            atom::MolecularHierarchyDecorator::cast(p));
+    IMP_LOG_WRITE(VERBOSE,p->show());
+    core::transform(
+        core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)),ref_[p]);
+    IMP_LOG(VERBOSE,"end loop iteration"<<std::endl);
   }
+  IMP_LOG(VERBOSE,"SymmetrySampler:: end reset placement"<<std::endl);
 }
 
 //! Set the attributes of the particles in the combination to the states
 //! indicated in the combination
 void SymmetrySampler::move2state(const CombState *cs) {
-
+  IMP_LOG(VERBOSE,"SymmetrySampler:: start moving to state"<<std::endl);
   //first move the atoms to their initial location
   reset_placement(cs);
   Particle *p;
@@ -64,13 +94,14 @@ void SymmetrySampler::move2state(const CombState *cs) {
     t = ts_->get_transformation(it->second);
     double angle = 2.*PI/ps_->size()*symm_deg_[p];
     // was algebra::rotate(cyl_,angle).compose(t)
-    atom::transform(atom::MolecularHierarchyDecorator::cast(p),
-                    compose(algebra::rotation_about_axis(cyl_.get_direction(),
-                                                         angle),
-                            t));
+    core::transform(
+      core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)),
+      compose(algebra::rotation_about_axis(cyl_.get_direction(),
+      angle),t));
  //    std::stringstream name;
 //     name<<p->get_value(StringKey("name"))<<"__"<<cs->key()<<".pdb";
 //     atom::write_pdb(atom::MolecularHierarchyDecorator::cast(p),name.str());
   }
+  IMP_LOG(VERBOSE,"SymmetrySampler:: end moving to state"<<std::endl);
 }
 IMPDOMINO_END_NAMESPACE

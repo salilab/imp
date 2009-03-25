@@ -20,9 +20,10 @@ IMPDOMINO_BEGIN_NAMESPACE
 class IMPDOMINOEXPORT TransformationDiscreteSet : public DiscreteSet
 {
 public:
-  TransformationDiscreteSet();//Model *m);
+  TransformationDiscreteSet();
   void add_transformation(const algebra::Transformation3D &t);
   algebra::Transformation3D get_transformation(long state_ind) const;
+  long get_number_of_transformations() const{return trans_.size();};
 
   void show(std::ostream& out=std::cout) const;
   void set_model(Model *m) {m_=m;}

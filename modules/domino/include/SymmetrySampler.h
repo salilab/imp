@@ -43,10 +43,10 @@ public:
    */
   SymmetrySampler(Particles *ps, TransformationDiscreteSet *ts,
                   const algebra::Cylinder3D &c);
-  void set_ref(Particle *p){ref_=p;}
   void move2state(const CombState *cs);
   void populate_states_of_particles(Particles *particles,
                std::map<std::string, CombState *> *states) const;
+  void show(std::ostream& out = std::cout) const {out<<"SymmetrySampler";}
  protected:
 
   void reset_placement(const CombState *cs);
@@ -55,7 +55,7 @@ public:
   std::map<Particle*,int> symm_deg_;
   Particles *ps_;
   TransformationDiscreteSet *ts_;
-  Particle *ref_;
+  std::map<Particle*,algebra::Transformation3D> ref_;
 };
 
 IMPDOMINO_END_NAMESPACE

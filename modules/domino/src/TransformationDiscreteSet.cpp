@@ -28,6 +28,7 @@ algebra::Transformation3D
 }
 void TransformationDiscreteSet::add_transformation(
          const algebra::Transformation3D &t) {
+  IMP_assert(m_!=NULL,"need to set the model first");
   trans_.push_back(t);
   Particle *p = new Particle(m_);
   for(int i=0;i<3;i++){
