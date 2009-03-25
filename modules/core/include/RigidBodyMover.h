@@ -48,7 +48,7 @@ public:
 protected:
   void transform(const algebra::Transformation3D &t);
   virtual algebra::Transformation3D get_random_rigid_transformation();
-  void generate_move(float a);
+  void generate_move(Float a);
   algebra::Transformation3D last_transformation_;
   algebra::Transformation3D last_accepted_transformation_;
   Float max_translation_;

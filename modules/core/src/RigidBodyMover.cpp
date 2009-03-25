@@ -41,7 +41,7 @@ void RigidBodyMover::transform(const algebra::Transformation3D &t) {
   d.set_transformation(d.get_transformation()*
         last_transformation_*d.get_transformation().get_inverse());
 }
-void RigidBodyMover::propose_move(float f) {
+void RigidBodyMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"propose move start");
   generate_move(f);
   IMP_LOG(VERBOSE,"propose move end");
