@@ -72,6 +72,12 @@ public:
   }
 };
 
+//! Make a ref counted pointer to an object. Useful for temporaries.
+template <class T>
+Pointer<T> make_pointer(T*t) {
+  return Pointer<T>(t);
+}
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_POINTER_H */
