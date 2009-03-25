@@ -9,11 +9,13 @@
 #define IMPALGEBRA_MULTI_ARRAY_H
 
 #include "config.h"
+#include "endian.h"
 #include "IMP/base_types.h"
 #include "IMP/exception.h"
 #include "IMP/random.h"
 #include "internal/output_helpers.h"
 #include "IMP/algebra/utility.h"
+#include "IMP/algebra/endian.h"
 #include "IMP/algebra/internal/multi_array_helpers.h"
 #include <ctime>
 
@@ -118,14 +120,40 @@ public:
     }
   }
 
+  //! Returns true if the LOGICAL index belongs to those of the matrix
+  /**
+   * \param[in] v Any class able to be accessed with []
+   */
+  template<typename T1>
+  bool is_logical_element(T1 &v) const {
+    for (unsigned int i = 0;i < D;i++) {
+      if(v[i]<this->get_start(i) || this->get_finish(i)<v[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  //! Returns true if the PHYSICAL index belongs to those of the matrix
+  template<typename T1>
+  bool is_physical_element(T1 &v) const {
+    for (unsigned int i = 0;i < D;i++) {
+      if(v[i]<0 || (this->get_size(i)-1)<v[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   //! Returns the first element
-  const T& first_element() const {
+  bool first_element() const {
     std::vector<index> idx(D);
     for (unsigned int i = 0;i < D;i++) {
       idx[i] = this->index_bases()[i];
     }
     return (*this)(idx);
   }
+
 
 #ifndef SWIG
 
@@ -409,30 +437,33 @@ void read(const std::string& filename) {
   /**
    * The array must be previously resized to the correct size.
    */
-void read_binary(const std::string& filename) {
+void read_binary(const std::string& filename,bool reversed=false) {
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
     if (!in) {
       String msg = "MultiArray::read_binary: File " + filename + " not found" ;
       throw ErrorException(msg.c_str());
     }
-    read_binary(in);
+    read_binary(in,reversed);
     in.close();
   }
-
 
   //! Read from a input stream in binary mode
   /**
    * The array must be previously resized to the correct size.
    */
-  void read_binary(std::ifstream& in) {
+  void read_binary(std::ifstream& in,bool reversed=false) {
     std::vector<index> idx(D);
     while (internal::roll_inds(idx, this->shape(),
                                         this->index_bases())) {
-      in.read(reinterpret_cast< char* >(&((*this)(idx))), sizeof(T));
+      if(!reversed) {
+        in.read(reinterpret_cast< char* >(&((*this)(idx))), sizeof(T));
+      } else {
+        reversed_read(reinterpret_cast< char* >(&((*this)(idx))),
+                       sizeof(T),1,in,true);
+      }
     }
   }
-
 
   //! Write to an ASCII file.
 void write(const std::string& filename) const {
@@ -448,7 +479,7 @@ void write(const std::string& filename) const {
   }
 
   //! Write to a binary file.
-void write_binary(const std::string& filename) {
+void write_binary(const std::string& filename,bool reversed=false) {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     if (!out) {
@@ -456,18 +487,24 @@ void write_binary(const std::string& filename) {
                    " cannot be opened for output" ;
       throw ErrorException(msg.c_str());
     }
-    write_binary(out);
+    write_binary(out,reversed);
     out.close();
   }
 
   //! Write to a output stream in binary mode.
-  void write_binary(std::ofstream& out) {
+  void write_binary(std::ofstream& out,bool reversed=false) {
     std::vector<index> idx(D);
     while (internal::roll_inds(idx, this->shape(),
                                         this->index_bases())) {
-      out.write(reinterpret_cast< char* >(&((*this)(idx))), sizeof(T));
+      if(!reversed) {
+        out.write(reinterpret_cast< char* >(&((*this)(idx))), sizeof(T));
+      } else {
+        reversed_write(reinterpret_cast< char* >(&((*this)(idx))),
+                     sizeof(T),1,out,true);
+      }
     }
   }
+
 
 
   friend std::istream& operator>>(std::istream& in,This& v) {
