@@ -48,60 +48,10 @@ public:
 
 IMP_OUTPUT_OPERATOR(GroupnameModifier)
 
-// skip declarations that look the same to swig
-#ifndef SWIG
 //! Apply the GroupnameModifier to each element of the sequence
-/** \relates GroupnameModifier */
-template <class It>
-void apply(const GroupnameModifier& f, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Classname>::apply(&f, *c);
-  }
-}
-
-//! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier */
-IMPEXPORT inline void apply(const GroupnameModifier& f,
-                               Classnames &ps) {
-  apply(f, ps.begin(), ps.end());
-}
-
-//! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier */
-IMPEXPORT inline void apply(const GroupnameModifier& f,
-                                GroupnameContainer *ps) {
-  apply(f, ps->classnames_begin(), ps->classnames_end());
-}
-
-
-//! Apply the GroupnameModifier to each element of the sequence
-/** \relates GroupnameModifier */
-template <class It>
-void apply(const GroupnameModifier& f, DerivativeAccumulator *da, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Classname>::apply(&f, *c, da);
-  }
-}
-
-//! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier */
-IMPEXPORT inline void apply(const GroupnameModifier& f,
-                            DerivativeAccumulator *da,
-                            Classnames &ps) {
-  apply(f, da, ps.begin(), ps.end());
-}
-
-//! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier */
-IMPEXPORT inline void apply(const GroupnameModifier& f,
-                            DerivativeAccumulator *da,
-                            GroupnameContainer *ps) {
-  apply(f, da, ps->classnames_begin(), ps->classnames_end());
-}
-#endif // SWIG
-
-//! Apply the GroupnameModifier to each element of the sequence
-/** \relates GroupnameModifier */
+/** \relates GroupnameModifier
+    Use IMP::make_pointer to properly clean up the pointer.
+ */
 template <class It>
 void apply(const GroupnameModifier* f, It b, It e) {
   for (It c=b; c != e; ++c) {
@@ -110,14 +60,20 @@ void apply(const GroupnameModifier* f, It b, It e) {
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier */
+/** \relates GroupnameModifier
+    \code
+    apply(make_pointer(new core::Transform(tr)), my_particles);
+    \endcode
+ */
 IMPEXPORT inline void apply(const GroupnameModifier* f,
                             Classnames &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier */
+/** \relates GroupnameModifier
+    \copydoc apply(const GroupnameModifier*,Classnames&)
+  */
 IMPEXPORT inline void apply(const GroupnameModifier* f,
                             GroupnameContainer *ps) {
   apply(f, ps->classnames_begin(), ps->classnames_end());

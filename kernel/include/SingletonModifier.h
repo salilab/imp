@@ -48,60 +48,10 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonModifier)
 
-// skip declarations that look the same to swig
-#ifndef SWIG
 //! Apply the SingletonModifier to each element of the sequence
-/** \relates SingletonModifier */
-template <class It>
-void apply(const SingletonModifier& f, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Particle>::apply(&f, *c);
-  }
-}
-
-//! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier */
-IMPEXPORT inline void apply(const SingletonModifier& f,
-                               Particles &ps) {
-  apply(f, ps.begin(), ps.end());
-}
-
-//! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier */
-IMPEXPORT inline void apply(const SingletonModifier& f,
-                                SingletonContainer *ps) {
-  apply(f, ps->particles_begin(), ps->particles_end());
-}
-
-
-//! Apply the SingletonModifier to each element of the sequence
-/** \relates SingletonModifier */
-template <class It>
-void apply(const SingletonModifier& f, DerivativeAccumulator *da, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Particle>::apply(&f, *c, da);
-  }
-}
-
-//! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier */
-IMPEXPORT inline void apply(const SingletonModifier& f,
-                            DerivativeAccumulator *da,
-                            Particles &ps) {
-  apply(f, da, ps.begin(), ps.end());
-}
-
-//! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier */
-IMPEXPORT inline void apply(const SingletonModifier& f,
-                            DerivativeAccumulator *da,
-                            SingletonContainer *ps) {
-  apply(f, da, ps->particles_begin(), ps->particles_end());
-}
-#endif // SWIG
-
-//! Apply the SingletonModifier to each element of the sequence
-/** \relates SingletonModifier */
+/** \relates SingletonModifier
+    Use IMP::make_pointer to properly clean up the pointer.
+ */
 template <class It>
 void apply(const SingletonModifier* f, It b, It e) {
   for (It c=b; c != e; ++c) {
@@ -110,14 +60,20 @@ void apply(const SingletonModifier* f, It b, It e) {
 }
 
 //! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier */
+/** \relates SingletonModifier
+    \code
+    apply(make_pointer(new core::Transform(tr)), my_particles);
+    \endcode
+ */
 IMPEXPORT inline void apply(const SingletonModifier* f,
                             Particles &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier */
+/** \relates SingletonModifier
+    \copydoc apply(const SingletonModifier*,Particles&)
+  */
 IMPEXPORT inline void apply(const SingletonModifier* f,
                             SingletonContainer *ps) {
   apply(f, ps->particles_begin(), ps->particles_end());
