@@ -43,49 +43,105 @@ public:
   /** return information about the authors */
   virtual VersionInfo get_version_info() const = 0;
 
-  IMP_REF_COUNTED_DESTRUCTOR(PairModifier)
+  ~PairModifier(){}
 };
 
 IMP_OUTPUT_OPERATOR(PairModifier)
 
 //! Apply the PairModifier to each element of the sequence
+/** \relates PairModifier */
 template <class It>
-void apply(PairModifier* f, It b, It e) {
+void apply(const PairModifier& f, It b, It e) {
   for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<ParticlePair>::apply(f, *c);
+    internal::ContainerTraits<ParticlePair>::apply(&f, *c);
   }
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-IMPEXPORT inline void apply(PairModifier* f,
+/** \relates PairModifier */
+IMPEXPORT inline void apply(const PairModifier& f,
                                ParticlePairs &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-IMPEXPORT inline void apply(PairModifier* f,
+/** \relates PairModifier */
+IMPEXPORT inline void apply(const PairModifier& f,
                                 PairContainer *ps) {
   apply(f, ps->particle_pairs_begin(), ps->particle_pairs_end());
 }
 
 
 //! Apply the PairModifier to each element of the sequence
+/** \relates PairModifier */
 template <class It>
-void apply(PairModifier* f, DerivativeAccumulator *da, It b, It e) {
+void apply(const PairModifier& f, DerivativeAccumulator *da, It b, It e) {
   for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<ParticlePair>::apply(f, *c, da);
+    internal::ContainerTraits<ParticlePair>::apply(&f, *c, da);
   }
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-IMPEXPORT inline void apply(PairModifier* f,
+/** \relates PairModifier */
+IMPEXPORT inline void apply(const PairModifier& f,
                             DerivativeAccumulator *da,
                             ParticlePairs &ps) {
   apply(f, da, ps.begin(), ps.end());
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-IMPEXPORT inline void apply(PairModifier* f,
+/** \relates PairModifier */
+IMPEXPORT inline void apply(const PairModifier& f,
+                            DerivativeAccumulator *da,
+                            PairContainer *ps) {
+  apply(f, da, ps->particle_pairs_begin(), ps->particle_pairs_end());
+}
+
+
+//! Apply the PairModifier to each element of the sequence
+/** \relates PairModifier */
+template <class It>
+void apply(const PairModifier* f, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<ParticlePair>::apply(f, *c);
+  }
+}
+
+//! Apply a PairModifier to each in the ParticlePairs
+/** \relates PairModifier */
+IMPEXPORT inline void apply(const PairModifier* f,
+                            ParticlePairs &ps) {
+  apply(f, ps.begin(), ps.end());
+}
+
+//! Apply a PairModifier to each in the ParticlePairs
+/** \relates PairModifier */
+IMPEXPORT inline void apply(const PairModifier* f,
+                            PairContainer *ps) {
+  apply(f, ps->particle_pairs_begin(), ps->particle_pairs_end());
+}
+
+
+//! Apply the PairModifier to each element of the sequence
+/** \relates PairModifier */
+template <class It>
+void apply(const PairModifier* f, DerivativeAccumulator *da, It b, It e) {
+  for (It c=b; c != e; ++c) {
+    internal::ContainerTraits<ParticlePair>::apply(f, *c, da);
+  }
+}
+
+//! Apply a PairModifier to each in the ParticlePairs
+/** \relates PairModifier */
+IMPEXPORT inline void apply(const PairModifier* f,
+                            DerivativeAccumulator *da,
+                            ParticlePairs &ps) {
+  apply(f, da, ps.begin(), ps.end());
+}
+
+//! Apply a PairModifier to each in the ParticlePairs
+/** \relates PairModifier */
+IMPEXPORT inline void apply(const PairModifier* f,
                             DerivativeAccumulator *da,
                             PairContainer *ps) {
   apply(f, da, ps->particle_pairs_begin(), ps->particle_pairs_end());
