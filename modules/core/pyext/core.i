@@ -208,8 +208,7 @@ namespace IMP {
 %include "IMP/core/MaximumSingletonScoreRestraint.h"
 %include "IMP/core/MaximumPairScoreRestraint.h"
 %include "IMP/core/RigidBodyMover.h"
-%include "IMP/core/ConeMover.h"
-%include "IMP/core/utilities.h"
+%include "IMP/core/utility.h"
 
 
 
