@@ -315,6 +315,7 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
   algebra::Rotation3D rot= rb.get_transformation().get_rotation();
   IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
   algebra::Vector3D v(0,0,0);
+  algebra::VectorD<4> q(0,0,0,0);
   for (unsigned int i=0; i< members.size(); ++i) {
     RigidMemberDecorator d= members[i];
     algebra::Vector3D dv= d.get_derivatives();
@@ -326,15 +327,17 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
                                                 j);
         IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
                 << std::endl);
-        rb.get_particle()->add_to_derivative(internal::rigid_body_data()
-                                             .quaternion_[j],
-                                            dv*v,
-                                            *da);
+        q[j]+= dv*v;
       }
     }
   }
   if (da) {
     static_cast<XYZDecorator>(rb).add_to_derivatives(v, *da);
+    for (unsigned int j=0; j< 4; ++j) {
+      rb.get_particle()->add_to_derivative(internal::rigid_body_data()
+                                           .quaternion_[j], q[j],*da);
+    }
+
     IMP_LOG(TERSE, "Derivative is "
           << p->get_derivative(internal::rigid_body_data().quaternion_[0])
           << " "
