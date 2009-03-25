@@ -58,7 +58,6 @@ void set_x(Float f);
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/selectors.h"
 %include "IMP/atom/pdb.h"
-%include "IMP/atom/utilities.h"
 
 namespace IMP {
   namespace atom {
