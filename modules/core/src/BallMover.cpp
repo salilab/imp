@@ -55,7 +55,7 @@ BallMover::BallMover(SingletonContainer *sc,
   set_radius(max);
 }
 
-void BallMover::generate_move(float scale)
+void BallMover::generate_move(Float scale)
 {
   std::vector<Float> center(get_number_of_float_keys());
   for (unsigned int i = 0;
