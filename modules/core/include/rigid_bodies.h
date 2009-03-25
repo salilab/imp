@@ -53,6 +53,11 @@ class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
   friend class UpdateRigidBodyMembers;
 #endif
   RigidMemberDecorators get_members() const;
+  //! Return the location of a member particle given the current position
+  /** This method computes the coordinates of p given its internal coordinates
+      and the current position and orientation of the rigid body.
+   */
+  algebra::Vector3D get_coordinates(RigidMemberDecorator p) const;
 public:
   IMP_DECORATOR(RigidBodyDecorator, XYZDecorator)
 
@@ -81,12 +86,6 @@ public:
   algebra::Vector3D get_coordinates() const {
     return XYZDecorator::get_coordinates();
   }
-
-  //! Return the location of a member particle given the current position
-  /** This method computes the coordinates of p given its internal coordinates
-      and the current position and orientation of the rigid body.
-   */
-  algebra::Vector3D get_coordinates(RigidMemberDecorator p) const;
 
   //! Get the transformation implied by the rigid body
   IMP::algebra::Transformation3D get_transformation() const;
