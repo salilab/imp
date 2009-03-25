@@ -27,38 +27,81 @@
 
 
 
-/** MRC header */
+//! Class to deal with the header of MRC files
 class EMDLLEXPORT MRCHeader
 {
 public:
-  int nx,ny,nz; // map size
-  int mode; /* 0 image : signed 8-bit bytes range -128 to 127.
-               1 image : 16-bit halfwords. 
-               2 image : 32-bit reals.
-               3 transform : complex 16-bit integers
-               4 transform : complex 32-bit reals */
-  int nxstart,nystart,nzstart; // number of first columns in map (default = 0)
-  int mx, my, mz;  /* Number of intervals along each dimension */
-  float xlen,ylen,zlen; // Cell dimensions (angstroms)
-  float alpha, beta, gamma; // Cell angles (degrees)
-  /** Axes corresponding to columns (mapc), rows (mapr) and sections (maps)
-      (1,2,3 for x,y,z) */
+  //! map size (x dimension)
+  int nx;
+  //! map size (y dimension)
+  int ny;
+  //! map size (z dimension)
+  int nz;
+  //! Image mode
+  /**
+   * 0 image : signed 8-bit bytes range -128 to 127.
+   * 1 image : 16-bit halfwords.
+   * 2 image : 32-bit reals.
+   * 3 transform : complex 16-bit integers
+   * 4 transform : complex 32-bit reals
+  **/
+  int mode;
+  //! number of first columns in map (default = 0)
+  int nxstart,nystart,nzstart;
+  //! Intervals along dimension x
+  int mx;
+  //! Intervals along dimension y
+  int my;
+  //! Intervals along dimension z
+  int mz;
+  //! Cell dimension (angstroms) for x
+  float xlen;
+  //! Cell dimension (angstroms) for y
+  float ylen;
+  //! Cell dimension (angstroms) for z
+  float zlen;
+  //! Cell angle (degrees) for x
+  float alpha;
+  //! Cell angle (degrees) for y
+  float beta;
+  //! Cell angle (degrees) for z
+  float gamma;
+  //! Axes corresponding to columns (mapc), rows (mapr) and sections (maps)
+  //!    (1,2,3 for x,y,z)
   int mapc, mapr, maps;
-  /** Minimum, maximum and mean density value */
-  float dmin,dmax,dmean;
-  int ispg; // Sapce group number 0 or 1 (default 0) 
-  int nsymbt; // Number of bytes used for symmetry data (0 or 80)
-  int user[MRC_USER]; // extra space used for anything - 0 by default
-  float xorigin, yorigin, zorigin; // Origin used for transforms 
-  char map[4]; // character string 'MAP ' to identify file type
-  int machinestamp; // machine stamp (0x11110000 bigendian, 0x44440000 little)
-  float rms; // RMS deviation of map from mean density
-  int nlabl; // Number of labels being used
-  char labels[MRC_NUM_LABELS][MRC_LABEL_SIZE]; // text labels
+  //! Minimum density value
+  float dmin;
+  //! Maximum density value
+  float dmax;
+  //! Mean density value
+  float dmean;
+  //! Sapce group number 0 or 1 (default 0)
+  int ispg;
+  int nsymbt;
+  //! Number of bytes used for symmetry data (0 or 80)
+  int user[MRC_USER];
+  //! extra space used for anything - 0 by default
+  //! Map origin used for transforms (x dimension)
+  float xorigin;
+  //! Map origin used for transforms (y dimension)
+  float yorigin;
+  //! Map origin used for transforms (z dimension)
+  float zorigin;
+  //! character string 'MAP ' to identify file type
+  char map[4];
+  //! machine stamp (0x11110000 bigendian, 0x44440000 little)
+  int machinestamp;
+  //! Standard deviation of map from mean density
+  float rms;
+  //! Number of labels being used
+  int nlabl;
+  //! text labels
+  char labels[MRC_NUM_LABELS][MRC_LABEL_SIZE];
 public:
+  //! Converter from MRCHeader to DensityHeader
   void FromDensityHeader(const DensityHeader &h);
+  //! Converter from DensityHeader to MRCHeader
   void ToDensityHeader(DensityHeader &h);
-
   //! Outputs coordinates delimited by single space.
   friend std::ostream& operator<<(std::ostream& s, const MRCHeader &v) {
     s<< "nx: " << v.nx << " ny: " << v.ny << " nz: " << v.nz << std::endl;
@@ -88,21 +131,22 @@ public:
       s <<"labels[" << i << "] = ->" <<  v.labels[i] << "<-" << std::endl;
     return s;
   }
-
-
-
 };
 
 
 class EMDLLEXPORT MRCReaderWriter : public MapReaderWriter
 {
 public:
-
+  //! Empty constructor
   MRCReaderWriter(void){}
+  //! Constructor
+  /**
+   * param[in] fn name of the file to open or write
+   */
   MRCReaderWriter(char *fn) {
     filename=fn;
   }
-  //! Reads an MRC file and translates the header to the general DensityHeader 
+  //! Reads an MRC file and translates the header to the general DensityHeader
   void Read(const char *fn_in, float **data, DensityHeader &head);
   //! Writes an MRC file from the data and the general DensityHeader
   void Write(const char *fn_out, const float *data, const DensityHeader &head);
@@ -111,36 +155,57 @@ public:
 private:
 
 
-  // By default the data are read into the grid of the class, but an external
-  // pointer to another grid can be specified
+  //! By default the data are read into the grid of the class, but an external
+  //! pointer to another grid can be specified
   void read(void) {
     read(&grid);
   }
-  void read(float **pt);
 
-  //! read the header
+  void read(float **pt);
+  //! reads the header
   void read_header(void);
-  //! read different modes
+  //! reads the data
   void read_data(float *pt);
+  //! reads data of size 8-bit
   void read_8_data(float *pt);
+  //! reads data of size 32-bit
   void read_32_data(float *pt);
   void read_grid(void *pt,size_t size,size_t n);
   void seek_to_data(void);
-  // Write functions
+  //! Write function
+  /**
+   * param[in] fn name of the file to write
+   */
   void write(const char *fn) {
     return write(fn,grid);
   }
 
+  //! Write function
+  /**
+   * param[in] fn name of the file to write
+   * param[in] pt pointer to the data to write
+   */
   void write(const char *fn,const float *pt);
+  //! Writes the header
+  /**
+   * param[in] s stream to write the header
+   */
   void write_header(std::ofstream &s);
+  //! Writes data
+  /**
+   * param[in] s stream to write the data
+   * param[in] pt pointer to the data
+   */
   void write_data(std::ofstream &s, const float *pt);
 
-
-  std::string filename; // Name of the file
-  std::fstream fs;  // file stream for the file read
-  MRCHeader header; // The header of the file
-  // The grid of data. The data is stored in the grid with the convention
-  // that the order of indexes is z,y,x
+  //! Name of the file
+  std::string filename;
+  //! file stream for the file read
+  std::fstream fs;
+  //! The header of the file
+  MRCHeader header;
+  //! The grid of data. The data is stored in the grid with the convention
+  //! that the order of indexes is z,y,x
   float *grid;
 
 };
@@ -148,8 +213,8 @@ private:
 
 
 EMDLLEXPORT
-//!Returns a CCP4 convention machine stamp: 0x11110000 for big endian, 
-//!or 0x44440000 for little endian 
+//!Returns a CCP4 convention machine stamp: 0x11110000 for big endian,
+//!or 0x44440000 for little endian
 int get_machine_stamp(void);
 
 EMDLLEXPORT
