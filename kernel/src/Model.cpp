@@ -86,7 +86,7 @@ Float Model::evaluate(bool calc_derivs)
 
   // evaluate all of the active restraints to get score (and derivatives)
   // for current state of the model
-  Float score = 0.0;
+  double score = 0.0;
   DerivativeAccumulator accum;
   DerivativeAccumulator *accpt = (calc_derivs ? &accum : NULL);
 
