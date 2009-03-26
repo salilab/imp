@@ -48,11 +48,9 @@ class MCOptimizerTest(IMP.test.TestCase):
         trans2 = IMP.algebra.Transformation3D(
           IMP.algebra.Rotation3D(rot2[0],rot2[1],rot2[2],0.),
           point2)
-        IMP.atom.write_pdb(mhs,"orig.pdb")
         IMP.core.RigidBodyDecorator.cast(self.m1.get_particle()).set_transformation(trans1)
         IMP.core.RigidBodyDecorator.cast(self.m2.get_particle()).set_transformation(trans2)
         self.m.evaluate(False) #to transform the children
-        IMP.atom.write_pdb(mhs,"before.pdb")
         #optimize
         opt = IMP.core.MonteCarlo()
         opt.set_model(self.m)
@@ -66,7 +64,6 @@ class MCOptimizerTest(IMP.test.TestCase):
         for i in range(0,5):
             opt.optimize(20)
             e = self.m.evaluate(False)
-        IMP.atom.write_pdb(mhs,"after.pdb")
         self.assertAlmostEqual(e, 0.0, places=2)
 
 if __name__ == '__main__':
