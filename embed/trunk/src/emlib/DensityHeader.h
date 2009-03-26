@@ -113,12 +113,22 @@ public:
   static const unsigned short USER_FIELD_SIZE     =  25;
   static const unsigned short COMMENT_FIELD_NUM_OF     =  10;
   static const unsigned short COMMENT_FIELD_SINGLE_SIZE    =  80;
-
-  int nx,ny,nz; // map size
+  //! map size (voxels) x-dimension
+  int nx;
+  //! map size (voxels) y-dimension
+  int ny;
+  //! map size (voxels) z-dimension
+  int nz;
   //! How many bits are used to store the density of a single voxel
   //! (used in MRC format)
   int data_type;
-  int nxstart,nystart,nzstart; //number of first columns in map
+  //! number of first columns in map (x-dimension)
+  int nxstart;
+  //! number of first columns in map (y-dimension)
+  int nystart;
+  //! number of first columns in map (z-dimension)
+  int nzstart;
+
   int mx, my, mz; // Number of intervals along each dimension
   float xlen,ylen,zlen; //Cell dimensions (angstroms)
   float alpha, beta, gamma; //Cell angles (degrees)
