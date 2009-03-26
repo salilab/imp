@@ -31,11 +31,10 @@ class DOMINOTests(IMP.test.TestCase):
         self.ps.append(self.prots[2].get_particle())
 
     def __set_sampling_space__(self):
-        print "================"
         #set 10 transformations on a patch of a sphere
         self.rt = IMP.domino.TransformationDiscreteSet()
         self.rt.set_model(self.m)
-        max_d1 = IMP.atom.diameter(self.ref)
+        max_d1 = IMP.core.diameter(IMP.core.get_leaves(self.ref))
         max_d=IMP.algebra.Segment3D(max_d1.get_point(1),max_d1.get_point(0))
         #print ".dot " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2])
         #print ".dot " +str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2])
@@ -61,8 +60,6 @@ class DOMINOTests(IMP.test.TestCase):
                                           IMP.algebra.Vector3D(0.0,0.0,1.0)),5.0)
 
         self.sampler = IMP.domino.SymmetrySampler(self.ps,self.rt,self.cyl)
-        self.sampler.set_ref(self.ref.get_particle())
-        print "11"
     def set_restraint_graph(self):
         jt_filename = self.get_input_file_name("simple_jt3.txt")
         self.d_opt = IMP.domino.DominoOptimizer(jt_filename,self.m)
@@ -89,14 +86,12 @@ class DOMINOTests(IMP.test.TestCase):
             state = n.get_state(i)
             self.sampler.move2state(state)
             for j,p in enumerate(self.ps):
-                cendtroids[j] = cendtroids[j]+IMP.atom.centroid(self.prots[j])
-            state.show()
-        rot120 = IMP.algebra.Transformation3D(IMP.algebra.rotation_about_axis(self.cyl.get_direction(),
-                                                 2.*math.pi/3))
+                cendtroids[j] = cendtroids[j]+IMP.core.centroid(IMP.core.get_leaves(self.prots[j]))
+
+        rot120 = IMP.algebra.Transformation3D(
+            IMP.algebra.rotation_about_axis(self.cyl.get_direction(),
+                                            2.*math.pi/3))
         for j in range(2):
-            cendtroids[j].show()
-            cendtroids[j+1].show()
-            rot120.transform(cendtroids[j]).show()
             self.assertAlmostEqual(IMP.algebra.distance(rot120.transform(cendtroids[j]),cendtroids[j+1]),0.0,2)
 if __name__ == '__main__':
     unittest.main()
