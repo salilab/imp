@@ -47,7 +47,7 @@ Float MappedDiscreteSet::get_mapped_state_val(Particle* p_target,
                            long state_ind, IMP::FloatKey key) const {
   std::stringstream err_msg;
   err_msg <<"MappedDiscreteSet::get_mapped_state_val the input state index: ";
-  err_msg <<state_ind <<" for particle : "<<p_target->get_index();
+  err_msg <<state_ind <<" for particle : "<<p_target->get_name();
   err_msg <<" is out of range ( " << get_number_of_mapped_states(p_target);
   err_msg << " ) " <<std::endl;
   IMP_assert(state_ind<get_number_of_mapped_states(p_target),err_msg.str());
