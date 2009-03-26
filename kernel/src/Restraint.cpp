@@ -17,6 +17,7 @@ IMP_BEGIN_NAMESPACE
 Restraint::Restraint()
 {
   is_active_ = true; // active by default
+  was_owned_=false;
 }
 
 
@@ -25,9 +26,9 @@ Restraint::~Restraint()
 {
   if (!was_owned_) {
     // can't use virtual functions in the destructor
-    std::cerr << "Restraint " << this << " is being destroyed "
-              << "without ever having been added to a model."
-              << std::endl;
+    IMP_WARN("Restraint " << this << " is being destroyed "
+             << "without ever having been added to a model."
+             << std::endl);
   }
 }
 

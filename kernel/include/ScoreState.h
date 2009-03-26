@@ -95,7 +95,15 @@ public:
     return model_.get();
   }
 
-  IMP_REF_COUNTED_DESTRUCTOR(ScoreState)
+
+  /** A warning is printed if a restraint is destroyed
+      without ever having belonged to a restraint set or a model.
+   */
+  void set_was_owned(bool tf) {
+    was_owned_=tf;
+  }
+
+  ~ScoreState();
 protected:
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.
@@ -134,6 +142,10 @@ protected:
   // all of the particle data
   WeakPointer<Model> model_;
   std::string name_;
+  /* keep track of whether the restraint ever was in a model.
+     Give warnings on destruction if it was not.
+   */
+  bool was_owned_;
 };
 
 IMP_OUTPUT_OPERATOR(ScoreState);
