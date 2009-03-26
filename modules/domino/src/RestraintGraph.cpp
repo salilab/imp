@@ -263,7 +263,7 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
     r->show(std::cerr);
     std::cerr << " between particles: ";
     for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
-      std::cerr << (*ii)->get_index() << " ("
+      std::cerr << (*ii)->get_name() << " ("
                 <<(*ii)->get_value(node_name_key())<<"):: ";
     }
     std::cerr << " has not been realized." << std::endl;
