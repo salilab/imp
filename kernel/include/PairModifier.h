@@ -66,7 +66,7 @@ void apply(const PairModifier* f, It b, It e) {
     \endcode
  */
 IMPEXPORT inline void apply(const PairModifier* f,
-                            ParticlePairs &ps) {
+                            const ParticlePairs &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
@@ -93,7 +93,7 @@ void apply(const PairModifier* f, DerivativeAccumulator *da, It b, It e) {
 /** \relates PairModifier */
 IMPEXPORT inline void apply(const PairModifier* f,
                             DerivativeAccumulator *da,
-                            ParticlePairs &ps) {
+                            const ParticlePairs &ps) {
   apply(f, da, ps.begin(), ps.end());
 }
 

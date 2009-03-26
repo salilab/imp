@@ -66,7 +66,7 @@ void apply(const SingletonModifier* f, It b, It e) {
     \endcode
  */
 IMPEXPORT inline void apply(const SingletonModifier* f,
-                            Particles &ps) {
+                            const Particles &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
@@ -93,7 +93,7 @@ void apply(const SingletonModifier* f, DerivativeAccumulator *da, It b, It e) {
 /** \relates SingletonModifier */
 IMPEXPORT inline void apply(const SingletonModifier* f,
                             DerivativeAccumulator *da,
-                            Particles &ps) {
+                            const Particles &ps) {
   apply(f, da, ps.begin(), ps.end());
 }
 

@@ -66,7 +66,7 @@ void apply(const GroupnameModifier* f, It b, It e) {
     \endcode
  */
 IMPEXPORT inline void apply(const GroupnameModifier* f,
-                            Classnames &ps) {
+                            const Classnames &ps) {
   apply(f, ps.begin(), ps.end());
 }
 
@@ -93,7 +93,7 @@ void apply(const GroupnameModifier* f, DerivativeAccumulator *da, It b, It e) {
 /** \relates GroupnameModifier */
 IMPEXPORT inline void apply(const GroupnameModifier* f,
                             DerivativeAccumulator *da,
-                            Classnames &ps) {
+                            const Classnames &ps) {
   apply(f, da, ps.begin(), ps.end());
 }
 
