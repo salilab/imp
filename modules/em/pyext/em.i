@@ -50,8 +50,6 @@
 %include "IMP/em/VolumeEM.h"
 %include "IMP/em/ImageEM.h"
 
-%include "IMP/em/prueba.h"
-
 /* Allow runtime casting of Restraint* objects to EMFitRestraint* */
 namespace IMP {
   namespace em {
