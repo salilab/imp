@@ -57,7 +57,7 @@ class RotationTests(IMP.test.TestCase):
             axis= IMP.algebra.random_vector_on_unit_sphere()
             angle= math.pi/ii#random.uniform(-math.pi,math.pi)
 
-            r= IMP.algebra.rotation_about_axis(axis,angle)
+            r= IMP.algebra.rotation_in_radians_about_axis(axis,angle)
             ri= r.get_inverse()
             v_start = IMP.algebra.random_vector_in_unit_box()
             vt = v_start

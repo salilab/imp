@@ -274,7 +274,8 @@ rotation_from_matrix(double m11,double m12,double m13,
   \note www.euclideanspace.com/maths/geometry/rotations/conversions/
   angleToQuaternion/index.htm
 */
-inline Rotation3D rotation_about_axis(const Vector3D& axis, double angle)
+inline Rotation3D rotation_in_radians_about_axis(const Vector3D& axis,
+                                                 double angle)
 {
   //normalize the vector
   Vector3D axis_norm = axis.get_unit_vector();
@@ -301,9 +302,9 @@ inline Rotation3D rotation_between_two_vectors(const Vector3D &v1,
     //check a special case: the input vectors are parallel / antiparallel
     if (std::abs(dot) == 1.0) {
       IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
-      return rotation_about_axis(IMP::algebra::orthogonal_vector(v1),angle);
+      return rotation_in_radians_about_axis(orthogonal_vector(v1),angle);
     }
-    return rotation_about_axis(vv,angle);
+    return rotation_in_radians_about_axis(vv,angle);
 }
 
 
@@ -324,15 +325,15 @@ inline Rotation3D rotation_from_vector4d(const VectorD<4> &v) {
 /** \relates Rotation3D
  */
 inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
-    return Rotation3D(a.v_[0]*b.v_[0] - a.v_[1]*b.v_[1]
-                      - a.v_[2]*b.v_[2] - a.v_[3]*b.v_[3],
-                      a.v_[0]*b.v_[1] + a.v_[1]*b.v_[0]
-                      + a.v_[2]*b.v_[3] - a.v_[3]*b.v_[2],
+  return Rotation3D(a.v_[0]*b.v_[0] - a.v_[1]*b.v_[1]
+                    - a.v_[2]*b.v_[2] - a.v_[3]*b.v_[3],
+                    a.v_[0]*b.v_[1] + a.v_[1]*b.v_[0]
+                    + a.v_[2]*b.v_[3] - a.v_[3]*b.v_[2],
                       a.v_[0]*b.v_[2] - a.v_[1]*b.v_[3]
-                      + a.v_[2]*b.v_[0] + a.v_[3]*b.v_[1],
-                      a.v_[0]*b.v_[3] + a.v_[1]*b.v_[2]
-                      - a.v_[2]*b.v_[1] + a.v_[3]*b.v_[0]);
-  }
+                    + a.v_[2]*b.v_[0] + a.v_[3]*b.v_[1],
+                    a.v_[0]*b.v_[3] + a.v_[1]*b.v_[2]
+                    - a.v_[2]*b.v_[1] + a.v_[3]*b.v_[0]);
+}
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_3D_H */

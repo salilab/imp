@@ -14,12 +14,5 @@ Transformation3D Transformation3D::get_inverse() const{
   return Transformation3D(inv_rot,-(inv_rot.rotate(trans_)));
 }
 
-IMPALGEBRAEXPORT Transformation3D
-transformation_from_rotation_around_vector(const Rotation3D &rot,
-                                           const Vector3D &center) {
-  Vector3D rc= rot.rotate(center);
-  return Transformation3D(rot, -rc + center);
-}
-
 
 IMPALGEBRA_END_NAMESPACE

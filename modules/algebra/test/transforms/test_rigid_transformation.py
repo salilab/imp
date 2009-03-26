@@ -25,22 +25,6 @@ class RigidTransformationTests(IMP.test.TestCase):
         self.assertEqual((v1_t- v1_t_res).get_magnitude() < 0.01,True)
         self.assertEqual((v2_t- v2_t_res).get_magnitude() < 0.01,True)
 
-    def test_center_rotation(self):
-        """Check that rotation around a center is correct"""
-        c= IMP.algebra.Vector3D(50,50,50)
-        r= IMP.algebra.rotation_from_matrix(0, -1, 0,
-                                            1, 0, 0,
-                                            0 ,0, 1)
-        tr= IMP.algebra.transformation_from_rotation_around_vector(r, c)
-        v= IMP.algebra.Vector3D(51,50,50)
-        ct= tr.transform(c)
-        self.assertInTolerance(ct[0], c[0], .01)
-        self.assertInTolerance(ct[1], c[1], .01)
-        self.assertInTolerance(ct[2], c[2], .01)
-        vt= tr.transform(v)
-        self.assertInTolerance(vt[0], 50, .01)
-        self.assertInTolerance(vt[1], 51, .01)
-        self.assertInTolerance(vt[2], 50, .01)
 
 if __name__ == '__main__':
     unittest.main()
