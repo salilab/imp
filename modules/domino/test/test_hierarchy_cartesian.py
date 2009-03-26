@@ -69,8 +69,7 @@ class DOMINOTests(IMP.test.TestCase):
         #set 4 optinal centroids for each of the particles
         for j,p in enumerate(self.particles):
             for i in range(3):
-                new_p=IMP.Particle()
-                self.imp_model.add_particle(new_p)
+                new_p=IMP.Particle(self.imp_model)
                 if (i==j):
                     new_p.add_attribute(self.atts[0],0.0,True)
                     new_p.add_attribute(self.atts[1],0.0,True)
