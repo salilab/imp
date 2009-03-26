@@ -61,10 +61,9 @@ public:
   for (CombData::const_iterator it = data_.begin();
        it != data_.end(); it++) {
     Particle *p = it->first;
-    unsigned int p_index = p->get_index();
     IMP_assert(data_.find(p) != data_.end(),
-          "CombState::key particle with index " << p_index
-           << " was not found ");
+               "CombState::key particle with index " << p->get_name()
+               << " was not found ");
     s << p_index << ":" << it->second << "_";
   }
   return s.str();
