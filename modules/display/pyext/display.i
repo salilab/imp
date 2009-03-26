@@ -58,6 +58,7 @@ IMP_OWN_METHOD(ChimeraWriter, add_geometry)
 %include "IMP/display/CylinderGeometry.h"
 %include "IMP/display/BoxGeometry.h"
 %include "IMP/display/TriangleGeometry.h"
+%include "IMP/display/PDBOptimizerState.h"
 
 namespace IMP {
 namespace display {
