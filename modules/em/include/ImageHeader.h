@@ -1,6 +1,6 @@
 /**
  *  \file ImageHeader.h
- *  \brief Header for EM images
+ *  \brief Header for EM images. Compatible with Spider and Xmipp formats
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
@@ -9,9 +9,10 @@
 #define IMPEM_IMAGE_HEADER_H
 
 #include "config.h"
-#include "endian.h"
-#include "IMP/algebra/Matrix2D.h"
-#include "IMP/algebra/utility.h"
+#include "SpiderHeader.h"
+#include <IMP/algebra/Matrix2D.h>
+#include <IMP/algebra/utility.h>
+#include <IMP/algebra/endian.h>
 #include <cstdio>
 #include <iostream>
 #include <fstream>
@@ -34,28 +35,50 @@ public:
                  IMG_FOURIER = -1, VOL_FOURIER = -3
                } img_type;
 
-  //! Constructor. The type of image can be specified
-  ImageHeader(img_type im = IMG_IMPEM) {
+  //! Constructor.
+  ImageHeader() {
     clear();
-    im_ = im;
+    header_.fIform=(float)IMG_IMPEM;
+  }
+
+  //! Constructor. The type of image can be specified
+  ImageHeader(img_type im) {
+    clear();
+    header_.fIform=(float)im;
+  }
+
+  //! Constructor. The type of image can be specified
+  ImageHeader(float im) {
+    clear();
+    header_.fIform=im;
   }
 
   //! Get the type of image
-  img_type get_image_type() {
-    return im_;
+  float get_image_type() const {
+    return header_.fIform;
   }
 
   //! Set the type of image
   /**
-   * Available values:
+   * param[in] im type of image. Available values:
    * IMG_BYTE = 0, IMG_IMPEM  = 1,IMG_INT  = 9, VOL_BYTE = 2,  VOL_IMPEM  = 3,
    * VOL_INT  = 10 , IMG_FOURIER = -1, VOL_FOURIER = -3
    * \note No check is done for correctness of the value
    */
+  //! Set the type of image
   void set_image_type(img_type im) {
-    im_ = im;
+    this->set_image_type((float)im);
   }
 
+  //! Set the type of image
+  /**
+   * param[in] im type of image. Available values:
+   */
+  void set_image_type(float im) {
+    header_.fIform=im;
+  }
+
+#ifndef SWIG
   //! Output operator
   friend std::ostream& operator<<(std::ostream& out, const ImageHeader& I) {
     out << "Image type   : ";
@@ -125,7 +148,7 @@ public:
     out << "Weight  : " << I.get_Weight() << std::endl;
     return out;
   }
-
+#endif
 
   //! Prints a reduced set of information (debugging purposes)
   void print_hard(std::ostream& out) const;
@@ -153,13 +176,13 @@ public:
   void set_header();
 
   //! Interaction with data
-  bool reversed() const {
+  bool get_reversed() const {
     return reversed_;
   }
 
   //! Interaction with data
-  bool& reversed() {
-    return reversed_;
+  void set_reversed(bool value) {
+    reversed_=value;
   }
 
   //! get header size
@@ -197,126 +220,143 @@ public:
     header_.fNcol = n;
   }
 
-  //! Rotation Angle
+  //! get rotation angle. (Xmipp compatibility)
   float get_old_rot() const {
     return header_.fAngle1;
   }
 
-  float& get_old_rot() {
+  //! set rotation angle. (Xmipp compatibility)
+  void set_old_rot(float value) {
+    header_.fAngle1= value;
+  }
+
+  //! get rotation angle. (Xmipp compatibility)
+  float get_fAngle1() const {
     return header_.fAngle1;
+  }
+
+  //! set rotation angle. (Xmipp compatibility)
+  void set_fAngle1(float value) {
+    header_.fAngle1= value;
   }
 
   float  get_Scale() const {
     return header_.fScale;
   }
 
-  float& get_Scale() {
-    return header_.fScale;
+  void set_Scale(float value) {
+    header_.fScale=value;
   }
 
-  //! For Maximum-Likelihood refinement (for compatibility: not currently used)
+  /* For Maximum-Likelihood refinement (Xmipp compatibility:
+  not currently used)
+  */
+
   float get_Flip() const {
     return header_.Flip;
   }
 
-  float& get_Flip() {
-    return header_.Flip;
+  /* For Maximum-Likelihood refinement (Xmipp compatibility:
+  not currently used)
+  */
+  void set_Flip(float value) {
+    header_.Flip=value;
   }
 
   float get_Weight() const {
     return header_.Weight;
   }
 
-  float& get_Weight() {
-    return header_.Weight;
+  void set_Weight(float value) {
+    header_.Weight=value;
   }
 
   float get_fNrec() const {
     return header_.fNrec;
   }
 
-  float& get_fNrec() {
-    return header_.fNrec;
+  void set_fNrec(float value) {
+    header_.fNrec = value;
   }
 
   float get_fNlabel() const {
     return header_.fNlabel;
   }
 
-  float& get_fNlabel() {
-    return header_.fNlabel;
+  void set_fNlabel(float value) {
+    header_.fNlabel=value;
   }
 
   float get_fIform() const {
     return header_.fIform;
   }
 
-  float& get_fIform() {
-    return header_.fIform;
+  void set_fIform(float value) {
+    header_.fIform = value;
   }
 
   float get_fImami() const {
     return header_.fImami;
   }
 
-  float& get_fImami() {
-    return header_.fImami;
+  void set_fImami(float value) {
+    header_.fImami=value;
   }
 
   float get_fFmax() const {
     return header_.fFmax;
   }
 
-  float& get_fFmax() {
-    return header_.fFmax;
+  void set_fFmax(float value) {
+    header_.fFmax=value;
   }
 
   float get_fFmin() const {
     return header_.fFmin;
   }
 
-  float& get_fFmin() {
-    return header_.fFmin;
+  void set_fFmin(float value) {
+    header_.fFmin=value;
   }
 
   float get_fAv() const {
     return header_.fAv;
   }
 
-  float& get_fAv() {
-    return header_.fAv;
+  void set_fAv(float value) {
+    header_.fAv=value;
   }
 
   float get_fSig() const {
     return header_.fSig;
   }
 
-  float& get_fSig() {
-    return header_.fSig;
+  void set_fSig(float value) {
+    header_.fSig=value;
   }
 
   float get_fIhist()  const {
     return header_.fIhist;
   }
 
-  float& get_fIhist() {
-    return header_.fIhist;
+  void set_fIhist(float value) {
+    header_.fIhist=value;
   }
 
   float get_fLabrec() const {
     return header_.fLabrec;
   }
 
-  float& get_fLabrec() {
-    return header_.fLabrec;
+  void set_fLabrec(float value) {
+    header_.fLabrec=value;
   }
 
   float get_fIangle() const {
     return header_.fIangle;
   }
 
-  float& get_fIangle() {
-    return header_.fIangle;
+  void set_fIangle(float value) {
+    header_.fIangle=value;
   }
 
   float get_xorigin() const {
@@ -355,23 +395,25 @@ public:
     return header_.fLabbyt;
   }
 
-  float& get_fLabbyt() {
-    return header_.fLabbyt;
+  void set_fLabbyt(float value) {
+    header_.fLabbyt=value;
   }
 
   float get_fLenbyt() const {
     return header_.fLenbyt;
   }
 
-  float& get_fLenbyt() {
-    return header_.fLenbyt;
+  void set_fLenbyt(float value) {
+    header_.fLenbyt=value;
   }
 
-  algebra::Matrix2D< double > get_fGeo_matrix();
+  IMP::algebra::Matrix2D< double > get_fGeo_matrix();
 
   // Origin offsets
-  void set_origin_offsets(float Xoff, float Yoff);
-  void get_origin_offsets(float& Xoff, float& Yoff) const;
+  void set_origin_offsets(float Yoff, float Xoff);
+  void get_origin_offsets(float& Yoff, float& Xoff) const;
+  void set_origin_offsets(float Zoff, float Yoff, float Xoff);
+  void get_origin_offsets(float& Zoff, float& Yoff, float& Xoff) const;
 
   // Euler angles
   void set_euler_angles(float Phi, float Theta, float Psi);
@@ -379,17 +421,26 @@ public:
   void set_euler_angles2(float Phi2, float Theta2, float Psi2);
 
 
-
-
-  //! Clears fFlag flag.
-  /** The number of triads of Euler angles stored in the header (up to three)
-    is stored here. set_euler_angles2 makes fFlag=2, set_euler_angles1 makes
-    fFlag=max(fFlag, 1), set_euler_angles does not change fFlag
+  //! Gets the fFlag.
+  /** fFlag contains the number of triads of Euler angles stored
+      in the header (up to three).
+      set_euler_angles2 makes fFlag=2, set_euler_angles1 makes
+      fFlag=max(fFlag, 1), set_euler_angles does not change fFlag
   */
-  void clear_fFlag_flag() {
-    header_.fFlag = 0.f;
+  float get_fFlag() const {
+    return header_.fFlag;
   }
 
+
+  //! Sets the fFlag.
+  /** fFlag contains the number of triads of Euler angles stored
+      in the header (up to three).
+      set_euler_angles2 makes fFlag=2, set_euler_angles1 makes
+      fFlag=max(fFlag, 1), set_euler_angles does not change fFlag
+  */
+  void set_fFlag(float value) {
+    header_.fFlag = value;
+  }
 
   template<typename T>
   void get_euler_angles(T& Phi, T& Theta, T& Psi) const {
@@ -412,92 +463,86 @@ public:
     Psi2 = (T) header_.fPsi2;
   }
 
-  float& get_Phi() {
+  void set_Phi(float value) {
     header_.fIangle = 1;
-    return header_.fPhi;
+    header_.fPhi=value;
   }
 
   float get_Phi() const {
     return header_.fPhi;
   }
 
-  float& get_Theta() {
+  void set_Theta(float value) {
     header_.fIangle = 1;
-    return header_.fTheta;
+    header_.fTheta=value;
   }
 
   float get_Theta() const {
     return header_.fTheta;
   }
 
-  float& get_Psi() {
+  void set_Psi(float value) {
     header_.fIangle = 1;
-    return header_.fPsi;
+    header_.fPsi=value;
   }
 
   float get_Psi() const {
     return header_.fPsi;
   }
 
-  float& get_Phi1() {
+  void set_Phi1(float value) {
     header_.fFlag = 1.f;
-    return header_.fPhi1;
+    header_.fPhi1=value;
   }
 
   float get_Phi1() const {
     return header_.fPhi1;
   }
 
-  float& get_Theta1() {
+  void set_Theta1(float value) {
     header_.fFlag = 1.f;
-    return header_.fTheta1;
+    header_.fTheta1=value;
   }
 
   float get_Theta1() const {
     return header_.fTheta1;
   }
 
-  float& get_Psi1() {
+  void set_Psi1(float value) {
     header_.fFlag = 1.f;
-    return header_.fPsi1;
+    header_.fPsi1=value;
   }
 
   float get_Psi1() const {
     return header_.fPsi1;
   }
 
-  float& get_Phi2() {
+  void set_Phi2(float value) {
     header_.fFlag = 2.f;
-    return header_.fPhi2;
+    header_.fPhi2=value;
   }
 
   float get_Phi2() const {
     return header_.fPhi2;
   }
 
-  float& get_Theta2() {
+  void set_Theta2(float value) {
     header_.fFlag = 2.f;
-    return header_.fTheta2;
+    header_.fTheta2=value;
   }
 
   float get_Theta2() const {
     return header_.fTheta2;
   }
 
-  float& get_Psi2() {
+  void set_Psi2(float value) {
     header_.fFlag = 2.f;
-    return header_.fPsi2;
+    header_.fPsi2=value;
   }
 
   float get_Psi2() const {
     return header_.fPsi2;
   }
-
-  float is_flag_set(void) {
-    return(header_.fFlag);
-  }
-
-
 
   // Date and Time
   char* get_date() const;
@@ -508,8 +553,11 @@ public:
   //! Set info about the image dimension in the header
   void set_dimensions(float Ydim, float Xdim);
   //! Get info about the image dimension from the header
-  void get_dimensions(float &Ydim, float &Xdim) const;
-
+  void get_dimensions(float& Ydim, float& Xdim) const;
+  //! Set info about volume dimension in the header
+  void set_dimensions(float Zdim,float Ydim, float Xdim);
+  //! Get info about volume dimension from the header
+  void get_dimensions(float& Zdim,float& Ydim, float& Xdim) const;
 
   // Title
   char* get_title() const;
@@ -519,91 +567,8 @@ public:
 
 private:
 
-//! Header for Spider images. IMP-EM is designed to be compatible with it
-  /**
-    * Set as protected in order to avoid direct manipulation
-    */
-  typedef struct {
-    float fNslice; // Number of slices (=1 for images)
-    float fNrow;   // Number of rows
-    float fNrec; // Total number of records
-    float fNlabel; // Auxiliary number used to compute the number of records
-    float fIform; // FILE TYPE SPECIFIER.
-    // +3 FOR A 3-D FILE  (FLOAT)
-    // +1 FOR A 2-D IMAGE (FLOAT)
-    // -1 FOR A 2-D FOURIER TRANSFORM
-    // -3 FOR A 3-D FOURIER TRANSFORM
-    // -5 FOR A NEW 2-D FOURIER TRANSFORM
-    // -7 FOR A NEW 3-D FOURIER TRANSFORM
-    // +8 FOR A 2-D EIGHT BIT IMAGE FILE
-    // +9 FOR A 2-D INT IMAGE FILE
-    // 10 FOR A 3-D INT IMAGE FILE
-    // 11 FOR A 2-D EIGHT BIT COLOR IMAGE FILE
-    float fImami; // MAXIMUM/MINIMUM FLAG. IS SET AT 0 WHEN THE
-    // FILE IS CREATED, AND AT 1 WHEN THE MAXIMUM AND
-    // MINIMUM HAVE BEEN COMPUTED, AND HAVE BEEN STORED
-    // INTO THIS LABEL RECORD (SEE FOLLOWING WORDS)
-    float fFmax; // maximum value in the image
-    float fFmin; // minimum value in the image
-    float fAv; // average value
-    float fSig; // Standard deviation. If -1 it means that it has no been
-                // computed.
-    float fIhist; // FLAG INDICATING IF THE HISTOGRAM HAS BE
-    // COMPUTED. NOT USED IN 3D FILES!
-    float fNcol; // Number of columns
-    float fLabrec; // NUMBER OF LABEL RECORDS IN FILE HEADER
-    float fIangle; // FLAG THAT TILT ANGLES HAVE BEEN FILLED
-    float fPhi;   // 1st Euler rotation angle (Rot) (ZYZ convention)
-    float fTheta; // 2nd Euler rotation angle (Tilt) (ZYZ convention)
-    float fPsi;   // 3rd Euler rotation angle (Psi) (ZYZ convention)
-    float fXoff; // X TRANSLATION
-    float fYoff; // Y TRANSLATION
-    float fZoff; // Z TRANSLATION
-    float fScale; // SCALE
-    float fLabbyt; // Total number of bytes in the header
-    float fLenbyt; // RECORD LENGTH IN BYTES
-    char  fNada[24]; // this is a spider incongruence
-    float fFlag; // THAT ANGLES ARE SET. 1 = ONE ADDITIONAL
-    // ROTATION IS PRESENT, 2 = ADDITIONAL ROTATION
-    // THAT PRECEEDS THE ROTATION THAT WAS STORED IN
-    // 15 FOR DETAILS SEE MANUAL CHAPTER VOCEUL.MAN
-    float fPhi1;
-    float fTheta1;
-    float fPsi1;
-    float fPhi2;
-    float fTheta2;
-    float fPsi2;
-    double fGeo_matrix[3][3]; // x9 = 72 bytes: Geometric info
-    float fAngle1; // angle info
-    float fr1;
-    float fr2; // lift up cosine mask parameters
-    /** Fraga 23/05/97  For Radon transforms **/
-    float RTflag; // 1=RT, 2=FFT(RT)
-    float Astart;
-    float Aend;
-    float Ainc;
-    float Rsigma; // 4*7 = 28 bytes
-    float Tstart;
-    float Tend;
-    float Tinc; // 4*3 = 12, 12+28 = 40B
-    float Weight; // For Maximum-Likelihood refinement ( not used)
-    float Flip; // 0=no flipping operation (false), 1=flipping (true) (not used)
-    /****** beginning of IMP additions *******/
-    float object_pixel_size;
-
-    // Size of IMP additions in bytes = 4
-    /****** end of IMP additions *******/
-    // Empty field in the SPIDER header format
-    // Originally is 700 bytes long, but additional information has been added:
-    // empty 700-76-40=624-40-8-4(= IMP additions)= 572 bytes
-    char empty[572];
-    char szIDat[12]; // date
-    char szITim[8]; // time of creation
-    char szITit[160]; // Title
-  } SpiderHeader;
-
+  // ! The header is directly in format Spider with a couple of additions
   SpiderHeader header_;
-  img_type im_;
   bool reversed_;
 
 }; // ImageHeader

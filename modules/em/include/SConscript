@@ -5,12 +5,16 @@ files = [
          'EMnoise.h',
          'EulerOperations.h',
          'IMPParticlesAccessPoint.h',
-         'ImageEM.h',
+         'SpiderHeader.h',
          'ImageHeader.h',
+         'HeaderConverters.h',
+         'ImageEM.h',
+         'ImageReaderWriter.h',
+         'SpiderReaderWriter.h',
          'VolumeEM.h',
          'EMproject.h',
-         'endian.h',
          'convertors.h',
+         'prueba.h',
         ]
 
 # Install the include files:

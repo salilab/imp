@@ -1,6 +1,7 @@
 /**
  *  \file VolumeEM.h
- *  \brief Management of IMP volumes for Electron Microscopy
+ *  \brief Management of IMP volumes for Electron Microscopy. Compatible with
+ *  Spider and Xmipp formats
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
@@ -19,12 +20,13 @@
 IMPEM_BEGIN_NAMESPACE
 
 //! Template class for managing 3D Electron Microscopy volumes in IMP
-template<typename T>
+template <typename T>
 class IMPEMEXPORT VolumeEM
 {
 public:
   //! Empty constructor
   VolumeEM() {
+    data_.set_start(0,0);data_.set_start(1,0);data_.set_start(2,0);
     name_ = "";
     locations_calculated_ = false;
     normalized_ = false;
@@ -32,8 +34,9 @@ public:
   }
 
   //! Constructor with size
-  VolumeEM(Int Zdim, Int Ydim, Int Xdim) {
+  VolumeEM(int Zdim, int Ydim, int Xdim) {
     data_.resize(Zdim, Ydim, Xdim);
+    data_.set_start(0,0);data_.set_start(1,0);data_.set_start(2,0);
     header_.set_header();
     locations_calculated_ = false;
     normalized_ = false;
@@ -41,7 +44,7 @@ public:
   }
 
   //! Return the matrix of data of the volume
-  algebra::Matrix3D<T>& get_data() {
+  IMP::algebra::Matrix3D<T>& get_data() {
     return data_;
   }
 
@@ -56,7 +59,7 @@ public:
     if (typeid(T) == typeid(std::complex< double >)) {
       header_.set_image_type(ImageHeader::VOL_FOURIER);
     } else if (typeid(T) == typeid(double) ||
-               typeid(T) == typeid(Float)) {
+               typeid(T) == typeid(float)) {
       header_.set_image_type(ImageHeader::VOL_IMPEM);
     }
     header_.set_slices(data_.get_slices());
@@ -69,16 +72,26 @@ public:
     header_.set_header();
   }
 
-  //! Reads the image from the file
-  void read(String filename) {
+  //! Reads the volume from the file
+  /**
+   * \param[in] filename name of the file
+   * \param[in] skip_type_check true if the check for type of image is skipped
+   * \param[in] force_reversed true to force reverse reading
+   * \param[in] skip_extra_checkings true to skip the extra stringent tests
+   */
+  void read(String filename,bool skip_type_check,
+        bool force_reversed,bool skip_extra_checkings) {
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
-    header_.read(in);
+    header_.read(in,skip_type_check,force_reversed,skip_extra_checkings);
+    data_.resize(header_.get_slices(),
+                 header_.get_rows(),
+                 header_.get_columns());
     data_.read_binary(in);
     in.close();
   }
 
-  //! Writes the image to a file
+  //! Writes the volume to a file
   void write(String filename, bool force_reversed = false) {
     adjust_header(); // First adjust the header to guarantee consistence
     std::ofstream out;
@@ -88,9 +101,18 @@ public:
     out.close();
   }
 
-  //! Clears all the data in the volume and sets it to zeros
-  void reset_data() {
-    data_.init_zeros();
+  //! Clears all the data in the volume and sets it to the given value
+  /**
+   * \param[in] val value to set
+   */
+  void reset_data(float const val) {
+    for(int i=data_.get_start(0);i<= data_.get_finish(0);i++) {
+      for(int j=data_.get_start(1);j<= data_.get_finish(1);j++) {
+        for(int k=data_.get_start(2);k<= data_.get_finish(2);k++) {
+          data_(i,j,k)=val;
+        }
+      }
+    }
   }
 
   //! Computes the x,y,z coordinates (location) associated with each voxel of
@@ -99,17 +121,17 @@ public:
     if (locations_calculated_)
       return;
 
-    Int nz = (Int)data_.get_slices();
-    Int ny = (Int)data_.get_rows();
-    Int nx = (Int)data_.get_columns();
-    Float pixel_size = header_.get_object_pixel_size();
+    int nz = (int)data_.get_slices();
+    int ny = (int)data_.get_rows();
+    int nx = (int)data_.get_columns();
+    float pixel_size = header_.get_object_pixel_size();
 
     locations_.resize(nz, ny, nx);
 
-    for (Int k = 0;k <= nz;k++) {
-      for (Int j = 0;j <= ny;j++) {
-        for (Int i = 0;i <= nx;i++) {
-          algebra::Vector3D p;
+    for (int k = 0;k <= nz;k++) {
+      for (int j = 0;j <= ny;j++) {
+        for (int i = 0;i <= nx;i++) {
+          IMP::algebra::Vector3D p;
           p[2] = i * pixel_size + header_.get_xorigin();
           p[1] = j * pixel_size + header_.get_yorigin();
           p[0] = k * pixel_size + header_.get_zorigin();
@@ -120,19 +142,59 @@ public:
     locations_calculated_ = true;
   }
 
+  //! Returns the number of voxels of the map
+  long get_number_of_voxels() const {
+    return data_.get_slices() * data_.get_rows() * data_.get_columns();
+  }
+
+  //! Returns true if the physical index for the element of the matrix
+  //! that contains the data in the map is within the range.
+  /**
+   * \param[in] i index for dimension 0 (z)
+   * \param[in] j index for dimension 1 (y)
+   * \param[in] k index for dimension 2 (x)
+   */
+  bool is_xyz_ind_part_of_volume(int i,int j,int k) const {
+    std::vector<int> v(3);
+    v[0]=i;v[1]=j;v[2]=k;
+    return data_.is_physical_element(v);
+  }
+
+  //! Returns true if coordinates of a given point belong to those covered
+  //! by the volume
+  /**
+   * \param[in] x coordinate for x
+   * \param[in] y coordinate for y
+   * \param[in] z coordinate for z
+   */
+  bool is_part_of_volume(T x,T y,T z) const {
+    float pixel_size = header_.get_object_pixel_size();
+    IMP::algebra::Vector3D origin(header_.get_xorigin(),
+                                  header_.get_yorigin(),
+                                  header_.get_zorigin());
+    IMP::algebra::Vector3D v((T)data_.get_columns(),
+                             (T)data_.get_rows(),
+                             (T)data_.get_slices());
+    IMP::algebra::Vector3D end= origin + pixel_size * v;
+    for (int i = 0;i<3;i++) {
+      if(v[i]<origin[i] || end[i]<v[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 //  friend void resample(VolumeEM volume, const ParticlesAccessPoint& access_p);
-
 
 protected:
   //! Name of the volume. Frequently it will be the name of the file
   String name_;
   //! Matrix3D with the data for each voxel of the volume
-  algebra::Matrix3D<T> data_;
+  IMP::algebra::Matrix3D<T> data_;
   //! Header for the volume with all the pertinent information
   ImageHeader header_;
   //! Matrix with the locations (z,y,x) of the volume voxels
-  algebra::Matrix3D<algebra::Vector3D> locations_;
+  IMP::algebra::Matrix3D<IMP::algebra::Vector3D> locations_;
   //! True if the locations have being calculated
   bool locations_calculated_;
   //! True if the volume values have been normalized
