@@ -14,7 +14,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 PDBOptimizerState::PDBOptimizerState(
   const atom::MolecularHierarchyDecorators &mh, std::string name ):
-  mh_(mh), step_(0), skip_steps_(0), name_template_(name){
+  step_(0), skip_steps_(0), name_template_(name),  mh_(mh){
 }
 
 PDBOptimizerState::~PDBOptimizerState(){}
