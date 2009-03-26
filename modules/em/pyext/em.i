@@ -3,6 +3,9 @@
 %{
 #include "IMP.h"
 #include "IMP/em.h"
+#include "IMP/algebra.h"
+#include "IMP/core.h"
+#include "IMP/atom.h"
 %}
 
 %include "kernel/pyext/IMP_macros.i"
@@ -24,9 +27,13 @@
 
 /* Get definitions of algebra base classes (but do not wrap) */
 %import "modules/algebra/pyext/algebra.i"
+%import "modules/core/pyext/core.i"
+%import "modules/atom/pyext/atom.i"
 
 /* Get definitions of EMBED base classes (but do not wrap) */
 %import "ParticlesAccessPoint.h"
+%import "MapReaderWriter.h"
+%import "DensityMap.h"
 
 /* Don't use the exception handlers defined in the kernel */
 %exception;
@@ -36,8 +43,14 @@
 %include "IMP/em/EMFitRestraint.h"
 %include "IMP/em/convertors.h"
 %include "IMP/em/EMproject.h"
+%include "IMP/em/SpiderHeader.h"
+%include "IMP/em/ImageHeader.h"
+%include "IMP/em/ImageReaderWriter.h"
+%include "IMP/em/SpiderReaderWriter.h"
+%include "IMP/em/VolumeEM.h"
+%include "IMP/em/ImageEM.h"
 
-
+%include "IMP/em/prueba.h"
 
 /* Allow runtime casting of Restraint* objects to EMFitRestraint* */
 namespace IMP {
@@ -49,5 +62,11 @@ namespace IMP {
     }
 
     %template(project) ::IMP::em::project<float>;
+    %template(imageReaderWriter) ::IMP::em::ImageReaderWriter<float>;
+    %template(spiderImageReaderWriter)
+                          ::IMP::em::SpiderImageReaderWriter<float>;
+    %template(imageEM) ::IMP::em::ImageEM<float>;
+    %template(volumeEM) ::IMP::em::VolumeEM<float>;
+
   }
 }

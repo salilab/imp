@@ -11,6 +11,7 @@
 
 #include "config.h"
 #include "ImageHeader.h"
+#include "ImageReaderWriter.h"
 #include "IMP/algebra/Matrix2D.h"
 #include <complex>
 #include <limits>
@@ -70,24 +71,14 @@ public:
   }
 
   //! Reads the image from the file
-  void read(String filename) {
-    std::ifstream in;
-    in.open(filename.c_str(), std::ios::in | std::ios::binary);
-    header_.read(in);
-    // Adjust size of the matrix according to the header
-    data_.resize(header_.get_rows(), header_.get_columns());
-    data_.read_binary(in);
-    in.close();
+  void read(String filename,ImageReaderWriter<T>& reader) {
+    reader.read(filename,header_,data_);
   }
 
   //! Writes the image to a file
-  void write(String filename, bool force_reversed = false) {
+  void write(String filename, ImageReaderWriter<T>& writer) {
     adjust_header(); // First adjust the header to guarantee consistence
-    std::ofstream out;
-    out.open(filename.c_str(), std::ios::out | std::ios::binary);
-    header_.write(out, force_reversed);
-    data_.write_binary(out);
-    out.close();
+    writer.write(filename,header_,data_);
   }
 
 protected:
@@ -99,6 +90,10 @@ protected:
   ImageHeader header_;
 
 }; // ImageEM
+
+
+
+
 
 IMPEM_END_NAMESPACE
 #endif  /* IMPEM_IMAGE_EM_H */

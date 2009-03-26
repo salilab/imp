@@ -4,11 +4,13 @@ e = env.IMPSharedLibraryEnvironment()
 files = ['convertors.cpp',
          'EMFitRestraint.cpp',
          'IMPParticlesAccessPoint.cpp',
+         'ImageReaderWriter.cpp',
+         'SpiderReaderWriter.cpp',
          'ImageEM.cpp',
          'ImageHeader.cpp',
+         'HeaderConverters.cpp',
          'VolumeEM.cpp',
          'EMproject.cpp',
-         'endian.cpp',
         ]
 
 # Build and install the shared library:

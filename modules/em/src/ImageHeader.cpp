@@ -5,15 +5,13 @@
 */
 
 #include <IMP/em/ImageHeader.h>
-#include <IMP/em/endian.h>
-#include <IMP/algebra/utility.h>
 #include <ctime>
 #include <string.h>
 
 IMPEM_BEGIN_NAMESPACE
 
 
-void ImageHeader::print_hard(std::ostream &out) const
+     void ImageHeader::print_hard(std::ostream &out) const
 {
   out << "fNslice=" << header_.fNslice << std::endl;
   out << "fNrow=" <<   header_.fNrow << std::endl;
@@ -39,7 +37,6 @@ void ImageHeader::print_hard(std::ostream &out) const
   out << "fLabbyt=" << header_.fLabbyt << std::endl;
   out << "fLenbyt=" << header_.fLenbyt << std::endl;
 }
-
 
 
 //#define DEBUG
@@ -122,11 +119,12 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
   }
   // Read numerical fields reversed
   else {
-    reversed_read(&header_,             sizeof(float),  36, f, true);
-    reversed_read(&header_.fGeo_matrix, sizeof(double),  9, f, true);
+    IMP::algebra::reversed_read(&header_,sizeof(float),  36, f, true);
+    IMP::algebra::reversed_read(&header_.fGeo_matrix,
+                                 sizeof(double),  9, f, true);
     // 14 is the number of fields in the SpiderHeader struct after fGeo_matrix
-    reversed_read(&header_.fAngle1,     sizeof(float),  14, f, true);
-    reversed_read(&header_.empty,      sizeof(char),  752, f, true);
+    IMP::algebra::reversed_read(&header_.fAngle1,sizeof(float),  14, f, true);
+    IMP::algebra::reversed_read(&header_.empty,  sizeof(char),  752, f, true);
   }
 
   unsigned long usfNcol = (unsigned long) header_.fNcol;
@@ -145,15 +143,16 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
   f.seekg(current_position, std::ios::beg);
 
   // Check if it is an "aberrant" image
-  if (im_ == IMG_IMPEM || header_.fIform == 1) {
+  if (header_.fIform == IMG_IMPEM) {
     if ((usfNcol*usfNrow*sizeof(float)) == file_size) {
       usfNrow = (unsigned long)(--header_.fNrow);
       --header_.fNrec;
     }
   }
+
   // Extra checkings
   if (!skip_extra_checkings) {
-    switch (im_) {
+    switch ((int)header_.fIform) {
     case IMG_BYTE:
       size = usfNcol * usfNrow * sizeof(float);
       if ((size != file_size)) {
@@ -161,16 +160,13 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
       }
       break;
     case IMG_IMPEM:
-
       size = usfHeader + usfNcol * usfNrow * sizeof(float);
-
       if ((size != file_size) || (header_.fIform != 1)) {
         return false;
       } else if (skip_type_check) {
         header_.fIform = 1;
-        // This is done to recover files which are not
-        // properly converted from other packages
       }
+
       break;
     case IMG_INT:
       size = usfHeader + usfNcol * usfNrow * sizeof(float);
@@ -215,7 +211,7 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
       }
       break;
     case VOL_FOURIER:
-      size = usfHeader + 2 * usfNslice * usfNcol * usfNrow * sizeof(float);
+      size = usfHeader + 2 * usfNcol * usfNrow * sizeof(float);
       // The term 2 is to take into account that VOL_FOURIER
       // stores complex numbers with 2 floats for each one.
       if ((size != file_size) ||
@@ -228,20 +224,17 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
     }
   }
 
-  /* This is Spider stuff, it's an acient trick.
-    Spider images contain:
+  /* Spider images contain:
     - a header with the size of the struct SpiderHeader,
     - a "filling" empty space
     - the data of size cols*rows*sizeof(float).
   */
-
   header_.fLabrec = (float) ceil((float) 256 / header_.fNcol);
   tmpSize = (int)(header_.fNcol * header_.fLabrec * 4); //Size of whole header
   tmpSize -= sizeof(SpiderHeader);         //Decrease the real header
-
   // read empty filling space
   for (unsigned i = 0; i < tmpSize / 4; i++) {
-    reversed_read(&tmp, sizeof(float), 1, f, reversed_);
+    IMP::algebra::reversed_read(&tmp, sizeof(float), 1, f, reversed_);
   }
   return true;
 }
@@ -270,7 +263,6 @@ void ImageHeader::write(std::ofstream& f, bool force_reversed)
 {
   float tmp;
   unsigned tmpSize;
-
   if (get_rows() == 0 || get_columns() == 0 || get_slices() == 0) {
     return;
   }
@@ -281,17 +273,19 @@ void ImageHeader::write(std::ofstream& f, bool force_reversed)
   // Write header
   if (algebra::xorT(reversed_, force_reversed)) {
     reversed_ = true;
-    reversed_write(&header_,             sizeof(float),  36, f, true);
-    reversed_write(&header_.fGeo_matrix, sizeof(double),  9, f, true);
+    IMP::algebra::reversed_write(&header_,sizeof(float),  36, f, true);
+    IMP::algebra::reversed_write(&header_.fGeo_matrix,
+                                  sizeof(double),  9, f, true);
     // 14 is the number of float fields after fGeo_matrix in the eader_ struct
-    reversed_write(&header_.fAngle1,     sizeof(float),  14, f, true);
+    IMP::algebra::reversed_write(&header_.fAngle1,sizeof(float),14, f, true);
     // 752 is the number of chars to the end of the file
     f.write(header_.empty, sizeof(char)*752);
   } else {
     reversed_ = false;
     f.write(reinterpret_cast< char* >(&header_),
-            sizeof(ImageHeader::SpiderHeader));
+            sizeof(SpiderHeader));
   }
+
   // Write empty filling space (filled with zeros)
   tmpSize = get_header_size(); //Size of whole header
   tmpSize -= sizeof(SpiderHeader);             //Decrease the real header
@@ -339,7 +333,7 @@ void ImageHeader::set_header()
   }
 
   // file type
-  switch (im_) {
+  switch ((int)header_.fIform) {
   case IMG_BYTE:
     header_.fIform = 0;    // for a 2D image.
     break;
@@ -397,6 +391,22 @@ void ImageHeader::get_dimensions(float &Ydim, float &Xdim) const
   Xdim = header_.fNcol;
 }
 
+
+void ImageHeader::set_dimensions(float Zdim, float Ydim, float Xdim)
+{
+  header_.fNslice = Zdim;
+  header_.fNrow = Ydim;
+  header_.fNcol = Xdim;
+}
+
+void ImageHeader::get_dimensions(float& Zdim,float& Ydim, float& Xdim) const
+{
+  Zdim = header_.fNslice;
+  Ydim = header_.fNrow;
+  Xdim = header_.fNcol;
+}
+
+
 char* ImageHeader::get_date() const
 {
   return (char*) header_.szIDat;
@@ -438,10 +448,30 @@ void ImageHeader::set_title(String newName)
   strcpy(header_.szITit, newName.c_str());
 }
 
-void ImageHeader::set_origin_offsets(float Xoff, float Yoff)
+void ImageHeader::set_origin_offsets(float Yoff, float Xoff)
 {
   header_.fXoff = Xoff;
   header_.fYoff = Yoff;
+}
+
+void ImageHeader::set_origin_offsets(float Zoff, float Yoff, float Xoff)
+{
+  header_.fXoff = Xoff;
+  header_.fYoff = Yoff;
+  header_.fZoff = Zoff;
+}
+
+void ImageHeader::get_origin_offsets(float &Yoff, float &Xoff) const
+{
+  Xoff =  header_.fXoff;
+  Yoff =  header_.fYoff;
+}
+
+void ImageHeader::get_origin_offsets(float& Zoff,float& Yoff,float& Xoff) const
+{
+  Xoff =  header_.fXoff;
+  Yoff =  header_.fYoff;
+  Zoff =  header_.fZoff;
 }
 
 void ImageHeader::set_euler_angles(float Phi, float Theta, float Psi)
@@ -473,11 +503,6 @@ void ImageHeader::set_euler_angles2(float Phi2, float Theta2, float Psi2)
   header_.fPsi2 = Psi2;
 }
 
-void ImageHeader::get_origin_offsets(float &Xoff, float &Yoff) const
-{
-  Xoff =  header_.fXoff;
-  Yoff =  header_.fYoff;
-}
 
 algebra::Matrix2D<double> ImageHeader::get_fGeo_matrix()
 {
