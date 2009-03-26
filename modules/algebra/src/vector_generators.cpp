@@ -34,8 +34,8 @@ Vector3Ds uniform_cover(const Cylinder3D &cyl,
   for(int i=0;i<number_of_points;i++) {
     ::boost::uniform_real<> rand(0,2*PI);
     //generate a random rotation around the cycle
-    Rotation3D rot = rotation_about_axis(z_direction,
-                                     rand(random_number_generator));
+    Rotation3D rot = rotation_in_radians_about_axis(z_direction,
+                                rand(random_number_generator));
     rotated_point =  rot.rotate(points[i]);
     //back transformation of the rotated point back to the original cylinder
     rotated_point =  cyl_rf_to_base_rf.get_inverse().transform(rotated_point);
@@ -58,7 +58,7 @@ Vector3Ds grid_cover(const Cylinder3D &cyl,
   std::vector<Rotation3D> rotations;
   for(int angle_ind = 0; angle_ind<number_of_points_on_cycle;angle_ind++) {
     rotations.push_back(
-         rotation_about_axis(z_direction, angle_ind*rotation_step));
+         rotation_in_radians_about_axis(z_direction, angle_ind*rotation_step));
   }
   Vector3D starting_point,rotated_point;
   Transformation3D move2zero =

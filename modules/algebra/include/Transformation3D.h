@@ -69,17 +69,7 @@ private:
 
 IMP_OUTPUT_OPERATOR(Transformation3D)
 
-//! Compute the transformation resulting from rotating around some point
-/** This computes the Transformation3D that results when you rotate space
-    around the specified point.
 
-    The transformation is rot(x-center)+center
-    \relates Transformation3D
- */
-
-IMPALGEBRAEXPORT Transformation3D
-transformation_from_rotation_around_vector(const Rotation3D &rot,
-                                           const Vector3D &center);
 //! Return a transformation that does not do anything
 /** \relates Transformation3D */
 inline Transformation3D identity_transformation() {
@@ -119,10 +109,11 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   \param[in] direction the direction of the rotation axis
   \param[in] angle the rotation angle in radians
 */
-inline Transformation3D rotation_around_axis(const Vector3D &point,
-                                             const Vector3D &direction,
-                                             double angle) {
-  Rotation3D r = rotation_about_axis(direction,angle);
+inline Transformation3D
+rotation_in_radians_about_axis(const Vector3D &point,
+                               const Vector3D &direction,
+                               double angle) {
+  Rotation3D r = rotation_in_radians_about_axis(direction,angle);
   return Transformation3D(r, (r*(-point)+point));
 }
 
