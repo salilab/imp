@@ -73,9 +73,10 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f,
   Particle *p= new Particle(m);
   ss_.set(create_cover(p,
                        new FixedRefiner(Particles(sc->particles_begin(),
-                                                          sc->particles_end())),
+                                                  sc->particles_end())),
                        FloatKey("diameter_radius"),
                        0), NULL);
+  m->add_score_state(ss_);
   // make pairs from special generator
   Float radius= diameter/2.0;
   SPairContainer *sp= new SPairContainer(sc, p);
