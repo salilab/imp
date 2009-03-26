@@ -56,11 +56,11 @@ public:
 
   //! Full constructor.
   /**
-   *  param[in] filename file to read
-   *  param[in] skip_type_check if true, the check for type of image is skipped
-   *  param[in] force_reversed if true, the reverse mode is enforced for reading
-   * and writting
-   *  param[in] skip_extra_checkings if true, the most stringent
+   *  \param[in] filename file to read
+   *  \param[in] skip_type_check if true, the check for type of image is skipped
+   *  \param[in] force_reversed if true, the reverse mode is enforced
+   * for reading and writting
+   *  \param[in] skip_extra_checkings if true, the most stringent
    * tests for consistency of images are skipped when reading
    */
   SpiderImageReaderWriter(String filename,bool skip_type_check,
@@ -74,9 +74,9 @@ public:
   //! Reads a image file in Spider format and stores the content
   //! the header and data parameters
   /**
-   *  param[in] filename file to read
-   *  param[in] header header to store the info
-   *  param[in] data a matrix to store the grid of data of the image
+   *  \param[in] filename file to read
+   *  \param[in] header header to store the info
+   *  \param[in] data a matrix to store the grid of data of the image
    */
   void read(String filename, ImageHeader& header,
             algebra::Matrix2D<T>& data) {
@@ -93,9 +93,9 @@ public:
 
   //! Writes an EM image in Spider format
   /**
-   *  param[in] filename file to write
-   *  param[in] header header with the image info
-   *  param[in] data a matrix with the grid of data of the image
+   *  \param[in] filename file to write
+   *  \param[in] header header with the image info
+   *  \param[in] data a matrix with the grid of data of the image
    */
   void write(String filename, ImageHeader& header,
             algebra::Matrix2D<T>& data) {
@@ -131,11 +131,11 @@ public:
 
   //! Full constructor.
   /**
-   *  param[in] filename file to read
-   *  param[in] skip_type_check if true, the check for type of image is skipped
-   *  param[in] force_reversed if true, the reverse mode is enforced for reading
-   * and writting
-   *  param[in] skip_extra_checkings if true, the most stringent
+   *  \param[in] filename file to read
+   *  \param[in] skip_type_check if true, the check for type of image is skipped
+   *  \param[in] force_reversed if true, the reverse mode is enforced
+   * for reading and writting
+   *  \param[in] skip_extra_checkings if true, the most stringent
    * tests for consistency of images are skipped when reading
    */
   SpiderMapReaderWriter(String filename,bool skip_type_check,
@@ -148,18 +148,18 @@ public:
 
   //! Reads a map in Spider format and transfers the data and header.
   /**
-   *  param[in] filename file to read
-   *  param[in] data pointer to the structure where to store the data
-   *  param[in] header DensityHeader class where to store the info
+   *  \param[in] filename file to read
+   *  \param[in] data pointer to the structure where to store the data
+   *  \param[in] header DensityHeader class where to store the info
    *  from the header.
    */
   void Read(const char *filename, float **data, DensityHeader &header);
 
   //! Writes a map in Spider format from data and header.
   /**
-   *  param[in] filename file to write
-   *  param[in] data pointer to the structure where data are stored
-   *  param[in] header DensityHeader class where the header info is stored
+   *  \param[in] filename file to write
+   *  \param[in] data pointer to the structure where data are stored
+   *  \param[in] header DensityHeader class where the header info is stored
    *  data from the header.
    */
   void Write(const char *filename,

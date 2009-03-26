@@ -11,8 +11,9 @@ class VolumeTest(IMP.test.TestCase):
     def test_image(self):
         """Check image reading and writing"""
         img=em.imageEM()
-        rw=em.spiderImageReaderWriter("flipY-nup84-0.spi",False,False,True)
-        img.read("flipY-nup84-0.spi",rw)
+        rw=em.spiderImageReaderWriter("input/flipY-nup84-0.spi",
+                                                  False,False,True)
+        img.read("input/flipY-nup84-0.spi",rw)
         img.write("test_image.spi",rw)
         img2=em.imageEM()
         img2.read("test_image.spi",rw)
@@ -23,10 +24,11 @@ class VolumeTest(IMP.test.TestCase):
     def test_em_maps(self):
         """Check volume reading and writing"""
         # Read in Xmipp format
-        rw1=em.SpiderMapReaderWriter("media_mon_iter3.xmp",False,False,True)
+        rw1=em.SpiderMapReaderWriter("input/media_mon_iter3.xmp",
+                                                    False,False,True)
         rw2=EM.MRCReaderWriter()
         m=EM.DensityMap()
-        m.Read("media_mon_iter3.xmp",rw1)
+        m.Read("input/media_mon_iter3.xmp",rw1)
         m.Write("test.mrc",rw2)
         m.Write("test.xmp",rw1)
         m2=EM.DensityMap()
