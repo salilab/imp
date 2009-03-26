@@ -41,19 +41,12 @@ public:
   void show(std::ostream&out= std::cout) const {
     out << "RigidTransformationMover " << std::endl;
   }
-  algebra::Transformation3D get_last_accepted_transformation() const {
-    return last_accepted_transformation_;
-  }
 
-protected:
-  void transform(const algebra::Transformation3D &t);
-  virtual algebra::Transformation3D get_random_rigid_transformation();
-  void generate_move(Float a);
+private:
   algebra::Transformation3D last_transformation_;
-  algebra::Transformation3D last_accepted_transformation_;
   Float max_translation_;
   Float max_angle_;
-  Particle *p_;
+  RigidBodyDecorator d_;
 };
 
 IMPCORE_END_NAMESPACE
