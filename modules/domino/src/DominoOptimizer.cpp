@@ -8,6 +8,18 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
+namespace {
+  Particle* get_particle(Model *m, unsigned int i) {
+    Model::ParticleIterator pit= m->particles_begin();
+    while (i != 0) {
+      ++pit;
+      --i;
+    }
+    return *pit;
+  }
+}
+
+
 DominoOptimizer::DominoOptimizer(std::string jt_filename, Model *m)
 {
   ds_ = NULL;
@@ -54,7 +66,7 @@ void DominoOptimizer::add_jt_node(int node_index,
   Particles particles = Particles();
   for  (std::vector<Int>::const_iterator it =particles_ind.begin();
    it != particles_ind.end(); it++) {
-    particles.push_back(m.get_particle(*it));
+    particles.push_back(get_particle(&m, *it));
   }
   g_->add_node(node_index,particles);
 }
