@@ -23,6 +23,17 @@ IMPDOMINOEXPORT StringKey node_name_key();
 typedef std::map<Particle *, unsigned int> CombData;
 class IMPDOMINOEXPORT CombState
 {
+  // backwards compatibility functions
+  static unsigned int particle_index(Particle *p) {
+    Model::ParticleIterator pit= p->get_model()->particles_begin();
+    unsigned int ret=0;
+    while (*pit != p) {
+      ++pit;
+      ++ret;
+    }
+    return ret;
+  }
+
 public:
   //! Constructor
   CombState() {
@@ -61,8 +72,9 @@ public:
   for (CombData::const_iterator it = data_.begin();
        it != data_.end(); it++) {
     Particle *p = it->first;
+    unsigned int p_index= particle_index(p);
     IMP_assert(data_.find(p) != data_.end(),
-               "CombState::key particle with index " << p->get_name()
+               "CombState::key particle with index " << p_index
                << " was not found ");
     s << p_index << ":" << it->second << "_";
   }
