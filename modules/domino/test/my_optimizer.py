@@ -14,8 +14,7 @@ class my_optimizer:
         self.sampling_spaces=[]
         self.all_restraints=[]
         for i in range(num_of_particles):
-            new_p = IMP.Particle()
-            self.mdl.add_particle(new_p)
+            new_p = IMP.Particle(self.mdl)
             self.particles.append(new_p)
             new_p.add_attribute(IMP.domino.node_name_key(),str(i))
             new_p.add_attribute(IMP.FloatKey("OPT"),0)

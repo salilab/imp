@@ -11,10 +11,8 @@ class RestraintTests(IMP.test.TestCase):
         """Loading an invalid restraints file should give an error"""
         fname = "invalid"
         m = IMP.Model()
-        p1 = IMP.Particle()
-        p2 = IMP.Particle()
-        m.add_particle(p1)
-        m.add_particle(p2)
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
 
         print >> file(fname, "w"), "garbage"
         self.assertRaises(RuntimeError, IMP.domino.SimpleDiscreteRestraint,

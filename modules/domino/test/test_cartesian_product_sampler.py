@@ -33,8 +33,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.m_discrete_set = domino.MappedDiscreteSet(self.particles,atts)
         for j in range(4):
             for i in range(4):
-                new_p=IMP.Particle()
-                self.imp_model.add_particle(new_p)
+                new_p=IMP.Particle(self.imp_model)
                 new_p.add_attribute(x_key,0.3*i+0.5*j,True)
                 new_p.add_attribute(y_key,0.2*i*i+1.2*j,True)
                 new_p.add_attribute(z_key,1.2*i+j*j,True)
