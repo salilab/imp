@@ -400,7 +400,6 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
   IMP_check(rbs->get_number_of_particles() >0,
             "Need some particles to make rigid bodies",
             ValueException);
-  Model *m= rbs->get_particle(0)->get_model();
   for (SingletonContainer::ParticleIterator pit= rbs->particles_begin();
        pit != rbs->particles_end();++pit) {
     RigidBodyDecorator rbd= RigidBodyDecorator::create(*pit,
@@ -409,19 +408,16 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
   }
   SMP sm= get_modifiers(snapping);
   SingletonsScoreState *sss= new SingletonsScoreState(rbs, sm.first, sm.second);
-  m->add_score_state(sss);
   return sss;
 }
 
 ScoreState* create_rigid_body(Particle *p,
                               const Particles &ps,
                               bool snapping) {
-  Model *m= p->get_model();
   RigidBodyDecorator rbd= RigidBodyDecorator::create(p, ps);
   SMP sm= get_modifiers(snapping);
   rbd.set_coordinates_are_optimized(true, snapping);
   SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, p);
-  m->add_score_state(sss);
   return sss;
 }
 

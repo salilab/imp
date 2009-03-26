@@ -67,7 +67,6 @@ ScoreState* create_centroids(SingletonContainer *sc,
   IMP_check(sc->get_number_of_particles() >0,
             "Need some particles to set up as centroid",
             ValueException);
-  Model *m= sc->get_particle(0)->get_model();
   for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
        pit != sc->particles_end(); ++pit) {
     for (unsigned int i=0; i< ks.size(); ++i) {
@@ -81,7 +80,6 @@ ScoreState* create_centroids(SingletonContainer *sc,
   DerivativesToRefined *dtr= new DerivativesToRefined(pr,
                                                       ks);
   SingletonsScoreState *sss= new SingletonsScoreState(sc, cr, dtr);
-  m->add_score_state(sss);
   return sss;
 }
 
@@ -99,7 +97,6 @@ ScoreState* create_centroid(Particle *p, Refiner *pr,
   CentroidOfRefined *cr= new CentroidOfRefined(pr, weight, ks);
   DerivativesToRefined *dtr= new DerivativesToRefined(pr,ks);
   SingletonScoreState *sss= new SingletonScoreState(cr, dtr, p);
-  p->get_model()->add_score_state(sss);
   IMP_check(pr->get_refined(p).size()>0,
              "Need particles to compute the centroid of",
              ValueException);

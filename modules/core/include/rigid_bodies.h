@@ -219,6 +219,8 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
    \note The composition of the rigid bodies may be cached and changes after
    setup may not be detected.
 
+
+   To make ths body rigid, add the score state to the model.
    To stop keeping the body rigid, remove the returned score state from the
    model.
  */
@@ -238,6 +240,7 @@ IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
    \note The composition of the rigid bodies may be cached and changes after
    setup may not be detected.
 
+   To make ths body rigid, add the score state to the model.
    To stop keeping the body rigid, remove the returned score state from the
    model.
  */

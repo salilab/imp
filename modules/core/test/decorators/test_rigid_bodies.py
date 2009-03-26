@@ -42,6 +42,7 @@ class RBDTests(IMP.test.TestCase):
             IMP.set_log_level(IMP.SILENT)
             p= self._create_hierarchy(m,  htr)
             ss=IMP.core.create_rigid_body(p, IMP.core.HierarchyDecorator(p, htr).get_child_particles(), snap)
+            m.add_score_state(ss)
             rbd= IMP.core.RigidBodyDecorator(p)
             p.show()
             rbd.set_coordinates_are_optimized(True, snap)
@@ -64,7 +65,8 @@ class RBDTests(IMP.test.TestCase):
             for i in range(0,2):
                 p= self._create_hierarchy(m, htr)
                 l.add_particle(p)
-            IMP.core.create_rigid_bodies(l, IMP.core.ChildrenRefiner(htr), snap)
+            ss=IMP.core.create_rigid_bodies(l, IMP.core.ChildrenRefiner(htr), snap)
+            m.add_score_state(ss)
             for p in l.get_particles():
                 rbd= IMP.core.RigidBodyDecorator(p)
                 self._add_rb_restraints(rbd)

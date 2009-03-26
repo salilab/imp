@@ -53,6 +53,7 @@ class TestREFCover(IMP.test.TestCase):
         ss= IMP.core.create_cover(p,
                                  IMP.core.FixedRefiner(ps),
                                  IMP.core.XYZRDecorator.get_default_radius_key(), 1)
+        m.add_score_state(ss)
         sss= m.get_score_states()
         for s in sss:
             s.show()

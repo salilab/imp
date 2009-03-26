@@ -63,9 +63,12 @@ public:
 };
 
 //! Set up a set of particles as covers of their refined particles
-/** This method adds score states as needed to make things work and to propagate
-    derivatives from the cover particle to the constituent particles. The
-    resulting XYZR particles' location is not optimized.
+/** This method creates the score stated needed to maintain the cover
+    and to propagate derivatives from the cover particle to the
+    constituent particles. The resulting XYZR particles' location is
+    not optimized. Add the score state to the model to enforce
+    maintain the cover.
+
     \relates CoverRefined
  */
 IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
@@ -75,9 +78,12 @@ IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
 
 
 //! Setup a particle to be the cetroid of a set of aprticles
-/** This method adds score states as needed to make things work and to propagate
-    derivatives from the cover particle to the constituent particles. The
-    resulting XYZR particle's location is not optimized.
+/** This method creates the score state need to maintain the cover and
+    to propagate derivatives from the cover particle to the
+    constituent particles. The resulting XYZR particle's location is
+    not optimized. Add the score state to the model to enforce
+    maintain the cover.
+
     \relates CoverRefined
  */
 IMPCOREEXPORT ScoreState* create_cover(Particle *p,

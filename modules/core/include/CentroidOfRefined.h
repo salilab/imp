@@ -47,8 +47,10 @@ public:
 
 
 //! Set up a set of particles as centroids of their refined constituents
-/** This method adds score states as needed to make things work and to propagate
-    derivatives from the cover particle to the constituent particles.
+/** This method creates the score stated needed to make things work
+    and to propagate derivatives from the cover particle to the
+    constituent particles. Add the ScoreState to the model to maintain
+    the centroid.
     \relates CentroidOfRefined
  */
 IMPCOREEXPORT ScoreState* create_centroids(SingletonContainer *sc,
@@ -60,8 +62,11 @@ IMPCOREEXPORT ScoreState* create_centroids(SingletonContainer *sc,
 
 
 //! Initialize the particle to be the cetroid of a set of particles
-/** This method adds score states as needed to make things work and to propagate
-    derivatives from the centroid particle to the constituent particles.
+/** This method creates the score state need to make things work and
+    to propagate derivatives from the centroid particle to the
+    constituent particles. Add the ScoreState to the model to maintain
+    the centroid.
+
     \relates CentroidOfRefined
  */
 IMPCOREEXPORT ScoreState* create_centroid(Particle *p,

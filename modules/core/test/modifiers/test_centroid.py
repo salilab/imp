@@ -42,6 +42,7 @@ class TestREFCover(IMP.test.TestCase):
         ps=IMP.core.create_xyzr_particles(m, 10, 1)
         fpr= IMP.core.FixedRefiner(ps)
         p= IMP.core.create_centroid(IMP.Particle(m), fpr)
+        m.add_score_state(p)
         ss= m.get_score_states()
         for s in ss:
             s.show()
