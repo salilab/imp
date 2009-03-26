@@ -24,7 +24,11 @@ public:
   DensityMap&  operator=(const DensityMap &other );
   ~DensityMap();
 
+  //! Creates a new map with the given dimension
   /**
+    param[in] nx x-dimension (voxels)
+    param[in] ny y-dimension (voxels)
+    param[in] nz z-dimension (voxels)
    */
   void CreateVoidMap(const int &nx,const int &ny,const int &nz);
 
@@ -97,13 +101,19 @@ public:
       \exception std::out_of_range The point is not covered by the grid.
    */
   emreal get_value(float x,float y,float z) const;
+
+
+  //! Gets the value of the voxel at a given index
+  /**
+    \param[in] index voxel number in physical sense, NOT logical
+  */
   emreal get_value(long index) const;
 
   //! Sets the origin of the header
   /**
-    \param x the new x
-    \param y the new y
-    \param z the new z
+    \param x the new x (Angstroms)
+    \param y the new y (Angstroms)
+    \param z the new z (Angstroms)
   */
   void set_origin(float x,float y,float z);
 
