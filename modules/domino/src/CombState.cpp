@@ -12,7 +12,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 unsigned int CombState::get_state_num(Particle *p) {
   std::stringstream err_msg;
-  err_msg << "CombState::get_state_num the particle " << p->get_index();
+  err_msg << "CombState::get_state_num the particle " << p->get_name();
   //  p->show(err_msg);
   err_msg << " is not found in the combstate data : ";
   IMP_assert(data_.find(p) != data_.end(), err_msg.str());
@@ -42,7 +42,7 @@ CombState *CombState::get_partial(const Particles &ps) const {
     Particle *p = *it;
     IMP_assert(data_.find(p) != data_.end(),
     "CombState::get_partial particle with index "
-    << p->get_index() << " was not found ");
+    << p->get_name() << " was not found ");
     (part_state->data_)[p] = data_.find(p)->second;
   }
   return part_state;
