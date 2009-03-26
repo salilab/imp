@@ -4,7 +4,7 @@ import IMP.utils
 import IMP.test, IMP
 import IMP.domino as domino
 import IMP.core
-import IMP.modeller
+import IMP.atom
 import time
 class DOMINOTests(IMP.test.TestCase):
 
@@ -26,7 +26,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.h_particles = []  #thier molecular hierarchy decorator
 
         for s in ['1','2','3']:
-            mp = IMP.modeller.read_pdb(
+            mp = IMP.atom.read_pdb(
                 self.get_input_file_name('prot'+s+'.pdb'), self.imp_model)
             self.h_particles.append(mp)
             p = mp.get_particle()
@@ -115,7 +115,7 @@ class DOMINOTests(IMP.test.TestCase):
         print self.d_opt.optimize(1)
         rg = self.d_opt.get_graph()
         print "OPT SCORE ::::::::::::; " + str(self.opt_score)
-        scores=[self.opt_score,39.3363,65.1026,71.9682, 85.5188]
+        scores=[self.opt_score,39.3363,65.1026,75.7, 91.8]
         for i in range(num_sol):
             score_inf = rg.get_opt_combination(i).get_total_score()
             self.assert_( abs(score_inf -scores[i]) < 0.2 ,
