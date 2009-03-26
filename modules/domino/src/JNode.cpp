@@ -70,7 +70,7 @@ void JNode::show_sampling_space(std::ostream& out) const
        pi != particles_.end(); pi++) {
     out << std::endl << " states for particle name : " <<
       //    (*pi)->get_value(IMP::StringKey("name")) << ":" << std::endl;
-      (*pi)->get_index() << ":" << std::endl;
+      (*pi)->get_name() << ":" << std::endl;
     ds_->show_space(*pi, out);
   }
 }
@@ -83,7 +83,7 @@ void JNode::show(std::ostream& out) const
   for (Particles::const_iterator it = particles_.begin(); it !=
        particles_.end(); it++) {
     //    out << (*it)->get_value(IMP::StringKey("name")) << " || " ;
-    out << (*it)->get_index() << " || " ;
+    out << (*it)->get_name() << " || " ;
   }
   out << std::endl << "==combinations ( " << comb_states_.size();
   out << " ): " << std::endl;
