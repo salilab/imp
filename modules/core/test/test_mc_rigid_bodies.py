@@ -16,6 +16,8 @@ class MCOptimizerTest(IMP.test.TestCase):
         #create rigid bodies
         self.rb1 = IMP.core.create_rigid_body(self.m1.get_particle(),IMP.core.get_leaves(self.m1))
         self.rb2 = IMP.core.create_rigid_body(self.m2.get_particle(),IMP.core.get_leaves(self.m2))
+        self.m.add_score_state(self.rb1)
+        self.m.add_score_state(self.rb2)
         #add restraints
         self.rsrs=IMP.core.RestraintSet()
         self.rsrs.set_model(self.m)
