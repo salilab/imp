@@ -20,10 +20,16 @@
 IMPCORE_BEGIN_NAMESPACE
 //! Get the centroid
 IMPCOREEXPORT algebra::Vector3D centroid(const Particles &ps);
+
+#ifndef IMP_NO_DEPRECATED
 //! Transform a molecule
+/**
+   \deprecated use apply(make_pointer(core::Transform(t)), ps) instead
+ */
 IMPCOREEXPORT
 void transform(const Particles &ps,
                const algebra::Transformation3D &t);
+#endif // IMP_NO_DEPRECATED
 IMPCOREEXPORT
 algebra::Segment3D diameter(const Particles &ps);
 
