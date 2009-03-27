@@ -43,6 +43,7 @@ namespace std {
 %ignore operator<<(std::ostream&, const DensityHeader &);
 %ignore operator<<(std::ostream&, const EMHeader &);
 %ignore operator<<(std::ostream&, const MRCHeader &);
+%ignore operator*(const real& m, const Vector3& p);
 
 %include "Vector3.i"
 %include "../def.h"
