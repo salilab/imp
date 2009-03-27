@@ -19,7 +19,7 @@ IMP_BEGIN_NAMESPACE
 Model::Model()
 {
   iteration_ = 0;
-  last_particle_index_=0;
+  next_particle_index_=0;
 }
 
 
