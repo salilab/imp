@@ -22,7 +22,7 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Template class for managing 2D Electron Microscopy images in IMP
 template<typename T>
-class IMPEMEXPORT ImageEM
+class ImageEM
 {
 public:
   //! Empty constructor

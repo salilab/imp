@@ -35,7 +35,7 @@ IMPEM_BEGIN_NAMESPACE
  * \note An ImageHeader class is expected.
  */
 template <typename T>
-class IMPEMEXPORT SpiderImageReaderWriter: public ImageReaderWriter<T>
+class SpiderImageReaderWriter: public ImageReaderWriter<T>
 {
 public:
   String filename_;
