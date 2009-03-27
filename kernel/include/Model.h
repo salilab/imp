@@ -44,7 +44,7 @@ private:
 
   unsigned int iteration_;
   ParticleStorage particles_;
-  unsigned int last_particle_index_;
+  unsigned int next_particle_index_;
   std::map<FloatKey, FloatPair> ranges_;
 
   void add_particle_internal(Particle *p) {
@@ -60,11 +60,12 @@ private:
     p->model_= this;
     internal::ref(p);
     std::ostringstream oss;
-    oss << "P" << ++last_particle_index_;
+    oss << "P" << next_particle_index_;
     p->set_name(oss.str());
 #ifndef IMP_NO_DEPRECATED
-    p->index_= last_particle_index_;
+    p->index_= next_particle_index_;
 #endif
+    ++next_particle_index_;
   }
 public:
   /** Construct an empty model */
