@@ -29,7 +29,7 @@ if env['CGAL_LIBS'] != ['']:
 if not env.get('deprecated', "True"):
     conf.Define('IMP_NO_DEPRECATED')
 conf.Finish()
-env.AlwaysBuild("kernel/include/internal/config.h")
+env.AlwaysBuild("build/include/IMP/internal/config.h")
 
 Help("""
 Available command-line options:
