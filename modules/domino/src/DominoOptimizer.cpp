@@ -10,6 +10,8 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 namespace {
   Particle* get_particle(Model *m, unsigned int i) {
+    IMP_assert(i>=1, "Out of range index in hacked function");
+    --i;
     Model::ParticleIterator pit= m->particles_begin();
     while (i != 0) {
       ++pit;
