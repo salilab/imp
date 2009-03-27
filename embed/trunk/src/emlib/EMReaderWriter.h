@@ -23,6 +23,7 @@
 class EMDLLEXPORT EMHeader
 {
 public:
+#ifndef SWIG
   class EMHeaderParse
   {
   public:
@@ -136,6 +137,7 @@ public:
     char dummy_long[256];
 
   };
+#endif // SWIG
 
 
 
