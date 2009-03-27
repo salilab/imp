@@ -54,7 +54,7 @@ class TestBL(IMP.test.TestCase):
     def test_4(self):
         """Testing the chimera writer"""
         nm=self.get_tmp_file_name("test.chimera.py")
-        w=IMP.display.ChimeraWriter()
+        w=IMP.display.ChimeraWriter("hi.py")
         w.set_file_name(nm)
         self._testit(w)
     def test_5(self):

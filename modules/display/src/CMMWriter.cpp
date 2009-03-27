@@ -18,8 +18,8 @@ void CMMWriter::show(std::ostream &out) const {
   out << "CMMWriter" << std::endl;
 }
 
-void CMMWriter::on_open(std::string name) {
-  get_stream() << "<marker_set name=\"" <<name << "\">"<<std::endl;
+void CMMWriter::on_open() {
+  get_stream() << "<marker_set name=\"" <<get_file_name() << "\">"<<std::endl;
   marker_index_=0;
 }
 

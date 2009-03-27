@@ -27,12 +27,22 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT Writer: public RefCountedObject
 {
   std::ofstream out_;
+  std::string file_name_;
  protected:
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {
-    IMP_check(out_.is_open(), "You must set the file name before writing",
+    if (!out_.is_open() && !file_name_.empty()) {
+      out_.open(file_name_.c_str());
+      on_open();
+    }
+    IMP_check(out_.is_open(), "Error opening file '" << file_name_ << "'",
                InvalidStateException);
     return out_;
+  }
+
+  //! Get the name of the file
+  std::string get_file_name() const {
+    return file_name_;
   }
 
  public:
@@ -54,10 +64,7 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
       on_close();
       out_.close();
     }
-    if (!name.empty()) {
-      out_.open(name.c_str());
-      on_open(name);
-    }
+    file_name_=name;
   }
 
   //! Close the stream. You shouldn't need this, but it doesn't hurt
@@ -110,7 +117,7 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
   //! Take actions before a file closes
   virtual void on_close()=0;
   //! Take actions after a file opens
-  virtual void on_open(std::string name)=0;
+  virtual void on_open()=0;
 };
 
 IMP_OUTPUT_OPERATOR(Writer)
