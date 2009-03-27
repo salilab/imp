@@ -24,7 +24,9 @@ to install the needed libraries and tools.
 Windows users should probably install Cygwin, but we don't have any of those yet, so we don't really know.
 
 \subsection optional Optional dependencies
-If you want to use \imp with MODELLER (optional), you should use version 9v5 or later and use the following argument to scons
+The documentation will look prettier if you have \external{http://www.graphviz.org/,graphviz} installed. It is available as part of most unix tool sets (MacPorts, all linux distributions etc.).
+
+If you want to use \imp with MODELLER, you should use version 9v5 or later and use the following argument to scons
 \command{modeller=path/to/modeller}
 
 \section userbuild Getting and building IMP: Users
