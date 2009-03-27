@@ -188,7 +188,7 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         f= IMP.core.ListPairContainer()
         print "add"
         f.show()
-        c.add_pair_container(f)
+        c.add_pair_filter(f)
         print "assert"
         f.show()
         self.assert_(not f.thisown)

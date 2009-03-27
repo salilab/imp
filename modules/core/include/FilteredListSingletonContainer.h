@@ -16,6 +16,12 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/container_macros.h>
 
+IMP_BEGIN_NAMESPACE
+
+typedef SingletonContainers SingletonFilters;
+
+IMP_END_NAMESPACE
+
 IMPCORE_BEGIN_NAMESPACE
 
 //! Store a list of Particles filtered by other lists
@@ -52,7 +58,7 @@ public:
     data_.clear();
   }
 
-  IMP_LIST(public, SingletonContainer, singleton_container,
+  IMP_LIST(public, SingletonFilter, singleton_filter,
            SingletonContainer*);
 };
 

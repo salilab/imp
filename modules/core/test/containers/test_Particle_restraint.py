@@ -188,7 +188,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         f= IMP.core.ListSingletonContainer()
         print "add"
         f.show()
-        c.add_singleton_container(f)
+        c.add_singleton_filter(f)
         print "assert"
         f.show()
         self.assert_(not f.thisown)

@@ -20,7 +20,7 @@ nbl= IMP.core.ClosePairsScoreState(ps)
 m.add_score_state(nbl)
 # Exclude bonds from closest pairs
 fl= nbl.get_close_pairs_container()
-fl.add_pair_container(IMP.atom.BondPairContainer())
+fl.add_pair_filter(IMP.atom.BondPairContainer())
 # Set the amount particles need to move before the list is updated
 nbl.set_slack(2.0)
 

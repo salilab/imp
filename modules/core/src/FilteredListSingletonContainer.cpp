@@ -19,7 +19,7 @@ namespace {
 
   class Found {
     typedef FilteredListSingletonContainer
-    ::SingletonContainerConstIterator It;
+    ::SingletonFilterConstIterator It;
     It b_,e_;
   public:
     Found(It b,
@@ -44,8 +44,8 @@ void FilteredListSingletonContainer::add_particle(Particle* vt) {
   // For VC which can't convert the iterators
   const FilteredListSingletonContainer *cthis=
     const_cast<const FilteredListSingletonContainer*>(this);
-  if (!Found(cthis->singleton_containers_begin(),
-             cthis->singleton_containers_end())(vt)) {
+  if (!Found(cthis->singleton_filters_begin(),
+             cthis->singleton_filters_end())(vt)) {
     data_.insert(std::upper_bound(data_.begin(),
                                   data_.end(), vt), vt);
   }
@@ -87,8 +87,8 @@ FilteredListSingletonContainer::get_particle(unsigned int i) const {
 
 
 IMP_LIST_IMPL(FilteredListSingletonContainer,
-              SingletonContainer,
-              singleton_container,
+              SingletonFilter,
+              singleton_filter,
               SingletonContainer*,,,)
 
 IMPCORE_END_NAMESPACE

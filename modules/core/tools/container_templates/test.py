@@ -188,7 +188,7 @@ class ClassnameContainerTest(IMP.test.TestCase):
         f= IMP.core.ListGroupnameContainer()
         print "add"
         f.show()
-        c.add_groupname_container(f)
+        c.add_groupname_filter(f)
         print "assert"
         f.show()
         self.assert_(not f.thisown)
