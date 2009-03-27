@@ -32,14 +32,14 @@ public:
                     const std::vector<FloatKey> &atts);
 
   //! Add a new state to the set.
-  /** \param[in] p the new state
-      \exception if the new state does not have values for all of the
+  /** \exception if the new state does not have values for all of the
                  attributes of the set.
    */
   void add_mapped_state(Particle* p_taret,Particle *p_src);
   //! Get a state
   /**
     \param[in] state_ind the index of the state
+    \param[in] p_target
     \exception if the state_ind is out of range
    */
   Particle * get_mapped_state(Particle *p_target,long state_ind) const;
@@ -47,7 +47,7 @@ public:
 
   //! Get a value of an attribute of a state
   /**
-    \param[in] the target particle
+    \param[in] p_target the target particle
     \param[in] state_ind the index of the state
     \param[in] key       the key of the attribute
     \exception if the state_ind is out of range or if the attribute

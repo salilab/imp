@@ -16,7 +16,7 @@
 #include <utility>
 
 IMPATOM_BEGIN_NAMESPACE
-
+#ifndef IMP_DOXYGEN
 // exposed for testing
 struct Segment {
   algebra::Vector3D first, second;
@@ -33,6 +33,7 @@ Segment shortest_segment(const Segment &s,
 IMPATOMEXPORT
 Segment shortest_segment(const Segment &sa,
                         const Segment &sb);
+#endif
 
 //! Apply a function to the distance between two bonds.
 /** A UnaryFunction is applied to the distance between the edges

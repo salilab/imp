@@ -69,6 +69,7 @@ class IMPDOMINOEXPORT RestraintGraph
 public:
   //! Constructor
   /** \param[in] filename the file holds the graph structure (nodes and edges)
+      \param[in] mdl
    */
   RestraintGraph(const std::string & filename, Model *mdl);
   //    void clear_states();
@@ -117,8 +118,7 @@ public:
   //! Sets the optimizable attributes of the optimizable components to the
   //! values that build the minimum of the scoring function when the state
   //! of the root of the junction tree is of a spcific index.
-  /** \param[in] state_index the index of the state of the root node of
-                 the junction tree.
+  /**
    */
   void show_sampling_space(std::ostream& out = std::cout) const;
 
@@ -134,7 +134,7 @@ public:
   void clear();
   //! Get an optimal combination of states
   /**
-  \param[in] comb_num the number of best combinations.
+  \param[in] i the number of best combinations.
   \exception if no combinations have been infered or if i is out of range.
   \return the i'th best combination
    */
@@ -151,7 +151,7 @@ public:
 protected:
   //! Determine a DFS
   /** \param[in]  root_ind the index of the node from which the DFS starts
-      \param[out] discover_time stores the discover order of the nodes.
+      Stores the discover order of the nodes.
                   discover_time[i] is the discover time in the DFS of node
                   with index i.
    */
@@ -183,7 +183,7 @@ protected:
   void distribute_minimum(unsigned int father_ind, CombState *min_comb);
 
   //! Updates node with index w based on the evidence in the node with index v
-  /** \param[in]  father_ind     the index of the node to start collecting from
+  /**
    */
   void update(unsigned int w, unsigned int v);
   Pair get_edge_key(unsigned int node1_ind, unsigned int node2_ind) const;

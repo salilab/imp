@@ -45,6 +45,7 @@ protected:
   Vector3D eigen_values_;
 };
 
+//! Perform principle components analysis on a set of vectors
 IMPALGEBRAEXPORT PrincipalComponentAnalysis principal_components(
                               const std::vector<Vector3D> &ps);
 IMPALGEBRA_END_NAMESPACE

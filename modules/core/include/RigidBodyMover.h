@@ -29,7 +29,6 @@ public:
   /** The attributes are perturbed within a pall whose dimensionality is
       given by the number of attributes and radius by the given value.
       \param[in] p   the rigid body particle
-      \param[in] rbt the traits of the rigid body
       \param[in] max_translation maximum translation sampling step
       \param[in] max_rotation maximum rotation sampling step
    */

@@ -295,33 +295,33 @@ double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 
 #ifndef SWIG
 
-namespace internal {
-  template <unsigned int D>
-  struct SpacesIO
-  {
-    const VectorD<D> &v_;
-    SpacesIO(const VectorD<D> &v): v_(v){}
-  };
+#ifndef IMP_DOXYGEN
+template <unsigned int D>
+struct SpacesIO
+{
+  const VectorD<D> &v_;
+  SpacesIO(const VectorD<D> &v): v_(v){}
+};
 
-  template <unsigned int D>
-  struct CommasIO
-  {
-    const VectorD<D> &v_;
-    CommasIO(const VectorD<D> &v): v_(v){}
-  };
-  template <unsigned int D>
-  inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
-  {
-    s.v_.show(out, " ", false);
-    return out;
-  }
-  template <unsigned int D>
-  inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
-  {
-    s.v_.show(out, ", ", false);
-    return out;
-  }
+template <unsigned int D>
+struct CommasIO
+{
+  const VectorD<D> &v_;
+  CommasIO(const VectorD<D> &v): v_(v){}
+};
+template <unsigned int D>
+inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
+{
+  s.v_.show(out, " ", false);
+  return out;
 }
+template <unsigned int D>
+inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
+{
+  s.v_.show(out, ", ", false);
+  return out;
+}
+#endif
 
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
@@ -329,7 +329,7 @@ namespace internal {
     \relates VectorD
  */
 template <unsigned int D>
-internal::SpacesIO<D> spaces_io(const VectorD<D> &v) {
+SpacesIO<D> spaces_io(const VectorD<D> &v) {
   return internal::SpacesIO<D>(v);
 }
 
@@ -342,8 +342,8 @@ internal::SpacesIO<D> spaces_io(const VectorD<D> &v) {
     \relates VectorD
  */
 template <unsigned int D>
-internal::CommasIO<D> commas_io(const VectorD<D> &v) {
-  return internal::CommasIO<D>(v);
+CommasIO<D> commas_io(const VectorD<D> &v) {
+  return CommasIO<D>(v);
 }
 #endif
 

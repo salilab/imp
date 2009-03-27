@@ -28,6 +28,7 @@ public:
   /**
     \param[in] ds           the discrete sampling space
     \param[in] ps           the sampled particles
+    \param[in] trans_from_orig
   */
   TransformationPermutationSampler(DiscreteSet *ds,
                                    Particles *ps,bool trans_from_orig);

@@ -130,6 +130,7 @@ public:
   /**
    * \param[in] j physical row to access
    * \param[in] i physical Column to access
+   * \param[in] val the value to set
    */
   void physical_set(const int j,const int i,const T& val) {
     if (0<=j && j<get_rows() && 0<=i && i < get_columns()) {
