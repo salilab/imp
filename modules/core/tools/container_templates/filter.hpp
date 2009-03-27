@@ -16,6 +16,12 @@
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
 
+IMP_BEGIN_NAMESPACE
+
+typedef GroupnameContainers GroupnameFilters;
+
+IMP_END_NAMESPACE
+
 IMPCORE_BEGIN_NAMESPACE
 
 //! Store a list of Classnames filtered by other lists
@@ -52,7 +58,7 @@ public:
     data_.clear();
   }
 
-  IMP_LIST(public, GroupnameContainer, groupname_container,
+  IMP_LIST(public, GroupnameFilter, groupname_filter,
            GroupnameContainer*);
 };
 

@@ -19,7 +19,7 @@ namespace {
 
   class Found {
     typedef FilteredListGroupnameContainer
-    ::GroupnameContainerConstIterator It;
+    ::GroupnameFilterConstIterator It;
     It b_,e_;
   public:
     Found(It b,
@@ -44,8 +44,8 @@ void FilteredListGroupnameContainer::add_classname(Value vt) {
   // For VC which can't convert the iterators
   const FilteredListGroupnameContainer *cthis=
     const_cast<const FilteredListGroupnameContainer*>(this);
-  if (!Found(cthis->groupname_containers_begin(),
-             cthis->groupname_containers_end())(vt)) {
+  if (!Found(cthis->groupname_filters_begin(),
+             cthis->groupname_filters_end())(vt)) {
     data_.insert(std::upper_bound(data_.begin(),
                                   data_.end(), vt), vt);
   }
@@ -87,8 +87,8 @@ FilteredListGroupnameContainer::get_classname(unsigned int i) const {
 
 
 IMP_LIST_IMPL(FilteredListGroupnameContainer,
-              GroupnameContainer,
-              groupname_container,
+              GroupnameFilter,
+              groupname_filter,
               GroupnameContainer*,,,)
 
 IMPCORE_END_NAMESPACE
