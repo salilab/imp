@@ -8,7 +8,6 @@
 
 #include <IMP/core/RefinedPairsPairScore.h>
 
-#include <IMP/core/bond_decorators.h>
 #include <IMP/core/XYZDecorator.h>
 
 #include <cmath>
