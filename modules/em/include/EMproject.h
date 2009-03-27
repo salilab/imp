@@ -92,11 +92,11 @@ void project(IMP::algebra::Matrix3D<T>& m3,
     double product = univ_coord.scalar_product(direction);
     if(product < 0.0 ) {
       // The requested direction is -z
-      Rot = IMP::algebra::rotation_about_axis(direction,PI);
+      Rot = IMP::algebra::rotation_in_radians_about_axis(direction,PI);
     }
     else {
       // The requested direction is z
-      Rot = IMP::algebra::rotation_about_axis(direction,0.0);
+      Rot = IMP::algebra::rotation_in_radians_about_axis(direction,0.0);
     }
   }
   else {
