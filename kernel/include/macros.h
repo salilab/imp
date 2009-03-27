@@ -8,6 +8,17 @@
 #ifndef IMP_MACROS_H
 #define IMP_MACROS_H
 
+#ifdef IMP_DOXYGEN
+//! Hide something from doxygen
+#define IMP_NO_DOXYGEN(x)
+//! Only show something to doxygen
+#define IMP_ONLY_DOXYGEN(x) x
+#else
+#define IMP_NO_DOXYGEN(x) x
+#define IMP_ONLY_DOXYGEN(x)
+#endif
+
+
 //! Implement comparison in a class using a compare function
 /** The macro requires that This be defined as the type of the current class.
     The compare function should take a const This & and return -1, 0, 1 as
@@ -526,7 +537,6 @@ const TraitsType &get_##traits_name() const {                            \
    \param[in] traits the traits object to use to manipulate things. This should
    inherit from or implement the interface of internal::ArrayOnAttributesHelper
    \param[in] ExternalType The name of the type to wrap the return type with.
-   \param[in] helper The internal::ArrayOnAttributesHelper instance to use.
  */
 #define IMP_DECORATOR_ARRAY_DECL(protection, name, plural,              \
                                  traits, ExternalType)                  \
