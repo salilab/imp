@@ -96,9 +96,9 @@ void SymmetrySampler::move2state(const CombState *cs) {
     // was algebra::rotate(cyl_,angle).compose(t)
     core::transform(
       core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)),
-      compose(algebra::rotation_about_axis(cyl_.get_direction(),
+      compose(algebra::rotation_in_radians_about_axis(cyl_.get_direction(),
       angle),t));
-    ref_[p]= compose(algebra::rotation_about_axis(
+    ref_[p]= compose(algebra::rotation_in_radians_about_axis(
                      cyl_.get_direction(),angle),t).get_inverse();
  //    std::stringstream name;
 //     name<<p->get_value(StringKey("name"))<<"__"<<cs->key()<<".pdb";
