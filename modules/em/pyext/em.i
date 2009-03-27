@@ -13,6 +13,10 @@
 /* Ignore shared object import/export stuff */
 #define EMDLLEXPORT
 #define EMDLLLOCAL
+
+/* Ignore things to prevent SWIG warning about them */
+%ignore DensityMap::operator =;
+
 %include "em_config.i"
 
 %include "std_vector.i"
