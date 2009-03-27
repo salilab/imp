@@ -31,7 +31,13 @@ class IMPDOMINOEXPORT CombState
       ++pit;
       ++ret;
     }
-    return ret;
+    /****************************************************************
+
+     EVIL HACK. The +1 is needed to be consistent with
+     SimpleDiscreteRestraint.
+
+     ****************************************************************/
+    return ret+1;
   }
 
 public:
