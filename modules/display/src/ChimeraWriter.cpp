@@ -87,7 +87,7 @@ void ChimeraWriter::add_geometry_internal(IMP::display::Geometry *g,
     }
   }
 }
-void ChimeraWriter::on_open(std::string name) {
+void ChimeraWriter::on_open() {
   get_stream() << "import _surface\n";
   get_stream() << "import chimera\n";
   get_stream() << "from VolumePath import markerset as ms\n";

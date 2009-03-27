@@ -18,7 +18,7 @@ void BildWriter::show(std::ostream &out) const {
   out << "BildWriter" << std::endl;
 }
 
-void BildWriter::on_open(std::string) {
+void BildWriter::on_open() {
 }
 
 void BildWriter::on_close() {

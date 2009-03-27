@@ -14,7 +14,7 @@
  */
 #define IMP_WRITER(Name, version)                                       \
   virtual void add_geometry(IMP::display::Geometry *g);                 \
-  void on_open(std::string name);                                       \
+  void on_open();                                                       \
   virtual void on_close();                                              \
   virtual IMP::VersionInfo get_version_info() const {return version;}   \
   virtual void show(std::ostream &out=std::cout) const;                 \

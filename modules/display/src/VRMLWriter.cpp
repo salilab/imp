@@ -18,7 +18,7 @@ void VRMLWriter::show(std::ostream &out) const {
   out << "VRMLWriter" << std::endl;
 }
 
-void VRMLWriter::on_open(std::string) {
+void VRMLWriter::on_open() {
   get_stream() << "#VRML V2.0 utf8\n";
   get_stream() << "Group {\n";
   get_stream() << "children [\n";\

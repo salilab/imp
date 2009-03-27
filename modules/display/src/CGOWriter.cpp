@@ -21,7 +21,7 @@ void CGOWriter::show(std::ostream &out) const {
   out << "CGOWriter" << std::endl;
 }
 
-void CGOWriter::on_open(std::string) {
+void CGOWriter::on_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "model= [\n";
 }
