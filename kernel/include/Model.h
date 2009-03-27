@@ -62,9 +62,6 @@ private:
     std::ostringstream oss;
     oss << "P" << next_particle_index_;
     p->set_name(oss.str());
-#ifndef IMP_NO_DEPRECATED
-    p->index_= next_particle_index_;
-#endif
     ++next_particle_index_;
   }
 public:
@@ -122,25 +119,6 @@ public:
     return particles_.end();
   }
   //@}
-
-#ifndef IMP_NO_DEPRECATED
-  //! \deprecated Do not use
-  Particle* get_particle(unsigned int i) const {
-    static bool printed=false;
-    if (!printed) {
-      IMP_WARN("DO NOT USE Model::get_particle(unsigned int)"
-               << " it is extremely slow and going away.");
-      printed=true;
-    }
-    for (ParticleConstIterator it = particles_begin();
-         it != particles_end(); ++it) {
-      if ((*it)->get_index() ==i) {
-        return *it;
-      }
-    }
-    throw IndexException("Bad particle index");
-  }
-#endif
 
   //! Return a range for the attribute.
   /** This range is either the range found in the current set of particles
