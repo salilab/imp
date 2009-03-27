@@ -121,12 +121,6 @@ public:
   ParticleConstIterator particles_end() const {
     return particles_.end();
   }
-#ifndef IMP_NO_DEPRECATED
-  //! \deprecated Use the Particle(Model*) constructor
-  void add_particle(Particle *p) {
-    add_particle_internal(p);
-  }
-#endif
   //@}
 
 #ifndef IMP_NO_DEPRECATED
