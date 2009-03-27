@@ -26,6 +26,9 @@ class ConeTests(IMP.test.TestCase):
         cone_sphere = cone.get_bounding_sphere()
         sp = IMP.algebra.Sphere3DPatch(cone_sphere,cone_pln.get_opposite())
         for v in IMP.algebra.uniform_cover(sp,3):
+            # Move each vector very slightly towards the origin, to allow for
+            # a small amount of floating point error
+            v *= 0.99999
             self.assertEqual(cone.get_bounding_sphere().get_contains(v),True)
 
     def test_sphere_patch2(self):
