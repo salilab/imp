@@ -10,19 +10,6 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-namespace {
-  // backwards compatibility functions
-  unsigned int particle_index(Particle *p) {
-    Model::ParticleIterator pit= p->get_model()->particles_begin();
-    unsigned int ret=0;
-    while (*pit != p) {
-      ++pit;
-      ++ret;
-    }
-    return ret;
-  }
-}
-
 void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
 {
   std::ifstream myfile(restraint_filename.c_str());
@@ -56,8 +43,8 @@ SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model& model_,
     std::string restraint_filename, Particle * p1_, Particle *p2_)
 {
   load_restraints(restraint_filename);
-  Int p1_ind = particle_index(p1_);
-  Int p2_ind = particle_index(p2_);
+  Int p1_ind = p1_->get_index();
+  Int p2_ind = p2_->get_index();
   if (p1_ind < p2_ind) {
     p1 = p1_;
     p2 = p2_;
@@ -102,8 +89,8 @@ void SimpleDiscreteRestraint::show(std::ostream& out) const
     out << "simple discrete restraint (inactive):" << std::endl;
   }
   get_version_info().show(out);
-  out << "  particles: " << get_particle(0)->get_name();
-  out << " and " << get_particle(1)->get_name();
+  out << "  particles: " << get_particle(0)->get_index();
+  out << " and " << get_particle(1)->get_index();
   out << std::endl;
 }
 
