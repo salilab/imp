@@ -33,6 +33,12 @@ typedef std::vector<OptimizerState*> OptimizerStates;
     The optimizers have one key method Optimizer::optimize which takes
     the number of steps to perform. The optimizers can have other
     stopping conditions as appropriate.
+
+    The interaaction between the Model, Optimizer, Particles, Restraints
+    and ScoreStates  in a typical optimization loop is shown in the following
+    UML diagram:
+     <img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=cGFydGljaXBhbnQgT3B0aW1pemVyCgAKDE1vZGVsAAUNU2NvcmVTdGF0ZQAcDVJlc3RyYWludAAyDVAAXAVsZQpsb29wIG8AXQZhdGlvbiBzdGVwcwoAbQktPgBmBTogZXZhbHVhdGUKYWN0aXZhdGUAfQcAPQVhbGwAdgtzCgCBGgUtPgCBCgo6IGJlZm9yZV8ANRIAgS4LAIEPCAAsDmF0dHJpYnV0ZSB2YWx1ZXMKbm90ZSByaWdodCBvZgCBbQxjb21wdXRlIGludmFyaWFudHMKYW5kIHVwZGEAEQV0ZXJuYWwKcwCCIQVlbmQgbm90ZQoAgjAKLT4AghEIOiBtb2RpZmllZAB1CnMKZGUAgSIUZW5kAIF8CgCCZwkAgXwJAIJ5CQCCMBQAgxUKAIFyCgAmCwCBXBUAg0kKICAAgWoIc2NvcmUKICBhbmQgZGVyaXZhdGl2ZXMAgVsKAIN_CQCBWAwAHgwAFgsAg2sHcgCEMwgAVwcAgXMLAIRMCgCBcA0Ag2QfYWZ0ZXIAg040AIFHCwCBXQUAhAEHAIMjFgCBcwwAgxcaAIUbBwCGVQk6IHRvdGFsAIFZEgCGZAYAhRAKACcLAIJdDACFBg4AhysKAIUMBwoAhlMRAIR2CgCGYQsAhHUKAIVkB2VuZA&s=modern-blue"></img>
+
  */
 class IMPEXPORT Optimizer: public Object
 {
@@ -82,10 +88,7 @@ protected:
   //! Update optimizer state, should be called at each successful step
   void update_states() const ;
 
-  //! Methods and classes to iterate through optimized attributes
-  //@{
-  //! An index to an optimized particle attribute
-  struct FloatIndex
+ struct FloatIndex
   {
     /**
        \todo mac gcc breaks on the protection and friends here
@@ -100,9 +103,6 @@ protected:
   };
 
 
-  //! An interator through the optimized attributes
-  /** The value type is an FloatIndex
-   */
   class FloatIndexIterator
    {
     typedef FloatIndexIterator This;
@@ -167,7 +167,17 @@ protected:
     }
   };
 
-  //! Iterate through the optimized attributes
+
+/** @name Methods for getting and setting optimized attributes
+      Optimizers don't have to go through the particles themselves
+      looking for values to optimize unless they care about special
+      properties of the optimized values. Instead they can iterate
+      through the list of optimized attributes, each of which is
+      identified by a FloatIndex. With they FloatIndex objects
+      they can get and set the values and derivatives as needed.
+  */
+  //!@{
+
   FloatIndexIterator float_indexes_begin() const {
     return FloatIndexIterator(model_->particles_begin(),
                               model_->particles_end());
@@ -177,18 +187,7 @@ protected:
     return FloatIndexIterator(model_->particles_end(),
                               model_->particles_end());
   }
-  //!@}
 
-
-  //! Methods for getting and setting optimized attributes
-  /** Optimizers don't have to go through the particles themselves
-      looking for values to optimize unless they care about special
-      properties of the optimized values.
-  */
-  //!@{
-  //! Set the value of an optimized attribute
-  /** The attribute must be optimized or an ErrorException is thrown.
-   */
   void set_value(FloatIndex fi, Float v) const {
     IMP_assert(fi.p_ != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
@@ -198,7 +197,6 @@ protected:
     (*fi.p_)->set_value(*fi.fk_, v);
   }
 
-  //! Get the value of an optimized attribute
   Float get_value(FloatIndex fi) const {
     /* cast to const needed here to help MSVC */
     IMP_assert(static_cast<Model::ParticleConstIterator>(fi.p_)
@@ -207,14 +205,15 @@ protected:
     return (*fi.p_)->get_value(*fi.fk_);
   }
 
-  //! Get the derivative of an optimized attribute
   Float get_derivative(FloatIndex fi) const {
     IMP_assert(fi.p_ != model_->particles_end(),
                "Out of range FloatIndex in Optimizer");
     return (*fi.p_)->get_derivative(*fi.fk_);
   }
+
   //!@}
 
+  typedef std::vector<FloatIndex> FloatIndexes;
 
   double width(FloatKey k) const {
     if (!widths_.contains(k)) {
@@ -231,29 +230,24 @@ protected:
     //return 1.0;
   }
 
-  //! Methods to get and set scaled optimizable values
-  /** Certain optimizers benefit from having all the optimized values
+  /** @name Methods to get and set scaled optimizable values
+      Certain optimizers benefit from having all the optimized values
       scaled to vary over a similar range. These accessors use the
       Model::get_range ranges to scale the values before returning
       them and unscale them before setting them.
   */
   //{@
-  //! Set the value of an optimized attribute
-  /** The attribute must be optimized or an ErrorException is thrown.
-   */
   void set_scaled_value(FloatIndex fi, Float v) const {
     double wid = width(*fi.fk_);
     set_value(fi, v*wid);
   }
 
-  //! Get the value of an optimized attribute
   double get_scaled_value(FloatIndex fi) const  {
     double uv= get_value(fi);
     double wid = width(*fi.fk_);
     return uv/wid;
   }
 
-  //! Get the derivative of an optimized attribute
   double get_scaled_derivative(FloatIndex fi) const {
     double uv=get_derivative(fi);
     double wid= width(*fi.fk_);
@@ -265,9 +259,6 @@ protected:
     widths_.clear();
   }
   //!@}
-
-  //! A collection of indexes
-  typedef std::vector<FloatIndex> FloatIndexes;
 
 private:
   typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
