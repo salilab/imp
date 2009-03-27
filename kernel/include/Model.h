@@ -70,6 +70,7 @@ public:
   /** Particles, ScoreStates and Restraints are ref-counted so they
       will be deleted if no other Pointers to them are held. */
   ~Model();
+
   /** @name States
 
       The Model stores a list of ScoreStates which are given an
@@ -114,7 +115,7 @@ public:
       As a result, the list of Particles should only be used for
       debugging.
    */
-  //@{
+  /**@{*/
   unsigned int get_number_of_particles() const {
     return particles_.size();
   }
@@ -137,7 +138,7 @@ public:
   ParticleConstIterator particles_end() const {
     return particles_.end();
   }
-  // @}
+  /** @} */
 
   //! Return a range for the attribute.
   /** This range is either the range found in the current set of particles
