@@ -63,7 +63,7 @@ public:
 
   //! Create a new rigid body, but do not add score states
   /** \param[in] p The particle to make into a rigid body
-      \param[in] tr The traits class to use.
+      \param[in] members The particles to use as members of the rigid body
       The initial position and orientation of p is computed, as are the
       relative positions of the member particles. The member particles
       do not already need to RigidMemberDecorator particles.
@@ -230,7 +230,7 @@ IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
 
 //! Creates a rigid body and sets up the needed score states
 /**
-   \param[in] m the model
+   \param[in] p the particle to create the rigid body using
    \param[in] members The XYZ particles comprising the rigid body
    \param[in] snapping Whether to use snapping or to optimize the coordinates
    directly

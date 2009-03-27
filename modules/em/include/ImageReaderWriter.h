@@ -1,5 +1,5 @@
 /**
- *  \file ImageReaderWriter.cpp
+ *  \file ImageReaderWriter.h
  *  \brief Virtual class for reader/writers of images
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */

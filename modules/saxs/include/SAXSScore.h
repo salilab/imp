@@ -52,7 +52,8 @@ public:
      \param[in] model_saxs_profile The current profile of particles
      \param[in] particles Derivative will be computed for each particle
      \param[in] derivatives Output vector
-     \param[out] chi square score for current particle setup
+     \param[in] use_offset
+     It returns the chi square score for current particle setup
   */
   Float compute_chi_derivative(const SAXSProfile& model_saxs_profile,
                                const std::vector<Particle*>& particles,
