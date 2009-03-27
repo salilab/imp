@@ -23,20 +23,33 @@ IMP_BEGIN_NAMESPACE
 class Model;
 
 //! Shared score state.
-/** ScoreStates should be used to generate state that needs to be
-    updated every time Particle attributes change.
+/** ScoreStates should be used to maintain invariants of the Model.
+    Examples include
+    - ensuring that a particular PairContainer contains all pairs
+    of particles within a certain distance of one another.
+    - ensuring that a particular set of particles moves as a rigid
+    body
+    - ensuring that the forces which act on a centroid are propagated
+    to the constituent particles.
+
+    Do do this, ScoreStates have two methods which are called during
+    the Model::evaluate() function
+    - before_evaluate()
+    - after_evaluate()
 
     ScoreStates can change the state of particles and restraints.
     However, optimizers may not pick up new particles or changes
     to whether particular attributes are optimized or not.
 
-    The ScoreState base class has an iteration counter built in
-    so that a given score state will only be updated once per
-    Model::evaluate call, even if many other ScoreStates ask that
-    it be updated. To use this projection mechanism, inherit from
-    ScoreState and provide implementations of do_before_evaluate()
-    and do_after_evaluate(). Or, better yet, use the IMP_SCORESTATE
-    macro.
+    The result of a ScoreState computation may be needed by several
+    other ScoreStates or restraints. To ensure that a given ScoreState
+    is updated when needed and only updated once per Model::evaluate()
+    call, each call to Model::evaluate() is assigned a unique ID which
+    is passed to the ScoreState. The ScoreState base uses this ID to
+    make sure that state is only updated once. To use this projection
+    mechanism, inherit from ScoreState and provide implementations of
+    do_before_evaluate() and do_after_evaluate(). Or, better yet, use
+    the IMP_SCORESTATE macro.
 
     \note When logging is VERBOSE, state should print enough information
     in evaluate to reproduce the the entire flow of data in update. When
