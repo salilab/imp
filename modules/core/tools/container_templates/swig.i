@@ -10,7 +10,7 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(GroupnameScoreState)
     IMP_OWN_CONSTRUCTOR(MinimumGroupnameScoreRestraint)
     IMP_OWN_CONSTRUCTOR(MaximumGroupnameScoreRestraint)
-    IMP_CONTAINER_SWIG(FilteredListGroupnameContainer, GroupnameContainer, groupname_container)
+    IMP_CONTAINER_SWIG(FilteredListGroupnameContainer, GroupnameFilter, groupname_filter)
     IMP_OWN_METHOD(GroupnamesRestraint, set_groupname_container)
     IMP_OWN_METHOD(GroupnamesScoreState, set_before_evaluate_modifier)
     IMP_OWN_METHOD(GroupnamesScoreState, set_after_evaluate_modifier)
