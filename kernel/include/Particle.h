@@ -61,6 +61,10 @@ class Model;
 
     A particle may only belong to one model.
 
+    Any attempt to access or change an attribute which the particle does not
+    have results in an IndexException. An attempt to touch a particle which
+    is not part of a model results in an InactiveParticleException.
+
     \note In general, Particles should only be used through
     \ref decorators "Decorators" as these provide a nice and more reliable
     interface.
@@ -142,68 +146,42 @@ public:
       allowed to change their value in order to improve the score.
    */
   /*@{*/
-  //! Add a Float attribute to this particle.
-  /** \param[in] name Name of the attribute being added.
+  /** \param[in] key The key identifying the float attribute.
       \param[in] value Initial value of the attribute.
       \param[in] is_optimized Whether the attribute's value should be
                               optimizable.
    */
-  void add_attribute(FloatKey name, const Float value,
+  void add_attribute(FloatKey key, const Float value,
                      const bool is_optimized = false);
 
-  /** Remove a Float attribute from this particle.
-      \param[in] name Name of the attribute being added.
-   */
   void remove_attribute(FloatKey name);
 
 
-  /** Does particle have a Float attribute with the given name.
-      \param[in] name Name of the attribute being checked.
-      \return true if Float attribute exists in this particle.
-   */
   bool has_attribute(FloatKey name) const;
 
-  /** Get the specified Float for this particle.
-      \param[in] name Name of the attribute being retrieved.
-      \exception std::out_of_range attribute does not exist.
-      \return the value of this attribute.
-   */
   Float get_value(FloatKey name) const;
 
-  /** Set the specified Float for this particle.
-      \param[in] name Name of the attribute being set.
-      \param[in] value Value of the attribute being set.
-      \exception std::out_of_range attribute does not exist.
-   */
   void set_value(FloatKey name, Float value);
 
   //! Add to the derivative of a specified float.
-  /** \param[in] name Name of the attribute being modified.
-      \param[in] value Value being added.
+  /** \param[in] key Key identifying the attribute.
+      \param[in] value Amount to add to the derivative.
       \param[in] da The DerivativeAccumulator to scale the value.
-      \exception std::out_of_range attribute does not exist.
    */
   void add_to_derivative(FloatKey name, Float value,
                          const DerivativeAccumulator &da);
 
   /** Set whether this float attribute will be changed by
       the optimizer. The attribute value is still allowed
-      to change.*/
+      to change (for example in initialization or by ScoreStates.*/
   void set_is_optimized(FloatKey k, bool tf);
 
-  /** Return whether this float attribute is optimized.*/
   bool get_is_optimized(FloatKey k) const;
 
-  /** Get the derivative of a specified Float.
-      \param[in] name Name of the attribute being modified.
-      \exception std::out_of_range attribute does not exist.
-   */
   Float get_derivative(FloatKey name) const;
 
-  //! An iterator through the keys of the float attributes of this particle
-  typedef FloatTable::AttributeKeyIterator
-    FloatKeyIterator;
-  //! Iterate through the keys of float attributes of the particle
+  IMP_NO_DOXYGEN(typedef FloatTable::AttributeKeyIterator
+                 FloatKeyIterator;)
   FloatKeyIterator float_keys_begin() const {
     return floats_.attribute_keys_begin();
   }
@@ -211,10 +189,8 @@ public:
     return floats_.attribute_keys_end();
   }
 
-  //! An iterator through the keys of the derivative attributes of this particle
-  typedef OptimizedTable::AttributeKeyIterator
-    OptimizedKeyIterator;
-  //! Iterate through the keys of float attributes of the particle
+  IMP_NO_DOXYGEN(typedef OptimizedTable::AttributeKeyIterator
+                OptimizedKeyIterator;)
   OptimizedKeyIterator optimized_keys_begin() const {
     return optimizeds_.attribute_keys_begin();
   }
@@ -226,40 +202,25 @@ public:
 
   /** @name Int Attributes*/
   /*@{*/
-  //! Add an Int attribute to this particle.
-  /** \param[in] name Name of the attribute being added.
+  /** \param[in] key The key identifying the attribute being added.
       \param[in] value Initial value of the attribute.
    */
-  void add_attribute(IntKey name, const Int value);
+  void add_attribute(IntKey key, const Int value);
 
-  /** Remove a Int attribute from this particle.
-      \param[in] name Name of the attribute being added.
-   */
   void remove_attribute(IntKey name);
 
-  /** Does particle have an Int attribute with the given name.
-      \param[in] name Name of the attribute being checked.
-      \return true if Int attribute exists in this particle.
-   */
   bool has_attribute(IntKey name) const;
 
-  /** Get the specified Int for this particle.
-      \param[in] name Name of the attribute being retrieved.
-      \exception std::out_of_range attribute does not exist.
-      \return value of the attribute.
-   */
   Int get_value(IntKey name) const;
 
-  /**  Set the specified Int for this particle.
-       \param[in] name Name of the attribute being set.
-      \param[in] value Value of the attribute being set.
-      \exception std::out_of_range attribute does not exist.
-   */
   void set_value(IntKey name, Int value);
 
-  //! An iterator through the keys of the int attributes of this particle
+#ifdef IMP_DOXYGEN
+  class IntKeyIterator;
+#else
   typedef IntTable::AttributeKeyIterator IntKeyIterator;
-  //! Iterate through the keys of int attributes of the particle
+#endif
+
   IntKeyIterator int_keys_begin() const {
     return ints_.attribute_keys_begin();
   }
@@ -278,35 +239,19 @@ public:
    */
   void add_attribute(StringKey name, const String value);
 
-  /**  Remove a String attribute from this particle.
-       \param[in] name Name of the attribute being added.
-   */
   void remove_attribute(StringKey name);
 
-
-  /** Does particle have a String attribute with the given name.
-      \param[in] name Name of the attribute being checked.
-      \return true if Int attribute exists in this particle.
-   */
   bool has_attribute(StringKey name) const;
 
-  /** Get the specified String for this particle.
-      \param[in] name Name of the attribute being retrieved.
-      \exception std::out_of_range attribute does not exist.
-      \return value of the attribute.
-   */
   String get_value(StringKey name) const;
 
-  /** Set the specified String for this particle.
-      \param[in] name Name of the attribute being set.
-      \param[in] value Value of the attribute being set.
-      \exception std::out_of_range attribute does not exist.
-   */
   void set_value(StringKey name, String value);
 
-  //! An iterator through the keys of the string attributes of this particle
+#ifdef IMP_DOXYGEN
+  class StringKeyIterator;
+#else
   typedef StringTable::AttributeKeyIterator StringKeyIterator;
-  //! Iterate through the keys of string attributes of the particle
+#endif
   StringKeyIterator string_keys_begin() const {
     return strings_.attribute_keys_begin();
   }
@@ -316,42 +261,30 @@ public:
   /*@}*/
 
 
-  /** @name Particle Attributes*/
+  /** @name Particle Attributes
+      Particle attributes store a pointer to another particle. They are
+      useful for setting up graphs and hierarchies.
+   */
   /*@{*/
   /** Add a Particle attribute to this particle.
-      \param[in] name Name of the attribute being added.
+      \param[in] key Name of the attribute being added.
       \param[in] value Initial value of the attribute.
    */
-  void add_attribute(ParticleKey name, Particle* value);
+  void add_attribute(ParticleKey key, Particle* value);
 
-  /** Remove a Particle attribute from this particle.
-      \param[in] name Name of the attribute being added.
-   */
   void remove_attribute(ParticleKey name);
 
-  /** Does particle have a Particle attribute with the given name.
-      \param[in] name Name of the attribute being checked.
-      \return true if Particle attribute exists in this particle.
-   */
   bool has_attribute(ParticleKey name) const;
 
-  /** Get the specified Particle for this particle.
-      \param[in] name Name of the attribute being retrieved.
-      \exception std::out_of_range attribute does not exist.
-      \return value of the attribute.
-   */
   Particle* get_value(ParticleKey name) const;
 
-  /** Set the specified Particle for this particle.
-      \param[in] name Name of the attribute being set.
-      \param[in] value Value of the attribute being set.
-      \exception std::out_of_range attribute does not exist.
-   */
   void set_value(ParticleKey name, Particle* value);
 
-  //! An iterator through the keys of the Particle attributes of this particle
+#ifdef IMP_DOXYGEN
+  class ParticleKeyIterator;
+#else
   typedef ParticleTable::AttributeKeyIterator ParticleKeyIterator;
-  //! Iterate through the keys of Particle attributes of the particle
+#endif
   ParticleKeyIterator particle_keys_begin() const {
     return particles_.attribute_keys_begin();
   }
@@ -385,36 +318,34 @@ public:
    \todo These should be move to the swig file and made %extends.
   */
   /*@{*/
-  //! Return a vector containing all the FloatKeys for the Particle
-  std::vector<FloatKey> get_float_attributes() const {
+  FloatKeys get_float_attributes() const {
     return floats_.get_keys();
   }
-
-  //! See get_float_attributes
-  std::vector<IntKey> get_int_attributes() const {
+  IntKeys get_int_attributes() const {
     return ints_.get_keys();
   }
-
-  //! See get_float_attributes
-  std::vector<StringKey> get_string_attributes() const {
+  StringKeys get_string_attributes() const {
     return strings_.get_keys();
   }
-
-  //! See get_particle_attributes
-  std::vector<ParticleKey> get_particle_attributes() const {
+  ParticleKeys get_particle_attributes() const {
     return particles_.get_keys();
   }
   /*@}*/
 
-  //! Return the name of the particle
+  /** @name Names
+      All particles have names to aid in debugging and inspection
+      of the state of the system. These names are not necessarily unique
+      and should not be used to store data or as keys into a table. If
+      you need a unique key identifying a particle, add a new attribuite.
+      @{
+  */
   const std::string& get_name() const {
     return name_;
   }
-
-  //! Set the name of the particle
   void set_name(std::string name) {
     name_=name;
   }
+  /* @} */
 };
 
 
