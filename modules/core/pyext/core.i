@@ -82,10 +82,6 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(ClosePairsScoreState)
     IMP_OWN_CONSTRUCTOR(CloseBipartitePairsScoreState)
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
-    IMP_CONTAINER_SWIG(CompoundRestraint, Restraint, restraint)
-    IMP_CONTAINER_SWIG(CompoundRestraint, ScoreState, score_state)
-    IMP_CONTAINER_SWIG(CompoundRestraint, SingletonContainer, singleton_container)
-    IMP_CONTAINER_SWIG(CompoundRestraint, PairContainer, pair_container)
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
 
     IMP_OWN_METHOD(MonteCarlo, set_local_optimizer)
@@ -128,7 +124,6 @@ namespace IMP {
 %include "IMP/core/BallMover.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/CentroidOfRefined.h"
-//%include "IMP/core/CompoundRestraint.h"
 %include "IMP/core/ChildrenRefiner.h"
 %include "IMP/core/ClosedCubicSpline.h"
 %include "IMP/core/ClosePairsScoreState.h"
