@@ -16,6 +16,28 @@
 #include <sstream>
 #include <algorithm>
 
+IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
+// backwards compatibility functions
+inline  unsigned int particle_index(Particle *p) {
+  Model::ParticleIterator pit= p->get_model()->particles_begin();
+  unsigned int ret=0;
+  while (*pit != p) {
+    ++pit;
+    ++ret;
+    IMP_assert(pit != p->get_model()->particles_end(),
+               "Particle not found");
+    }
+
+  /****************************************************************
+
+     EVIL HACK. +1 is needed to get the tests to pass, but I suspect
+     the tests are broken. It is awaiting discussion with Keren.
+
+  ****************************************************************/
+  return ret+1;
+}
+IMPDOMINO_END_INTERNAL_NAMESPACE
+
 IMPDOMINO_BEGIN_NAMESPACE
 // defined in RestraintGraph
 IMPDOMINOEXPORT StringKey node_name_key();
@@ -23,23 +45,6 @@ IMPDOMINOEXPORT StringKey node_name_key();
 typedef std::map<Particle *, unsigned int> CombData;
 class IMPDOMINOEXPORT CombState
 {
-  // backwards compatibility functions
-  static unsigned int particle_index(Particle *p) {
-    Model::ParticleIterator pit= p->get_model()->particles_begin();
-    unsigned int ret=0;
-    while (*pit != p) {
-      ++pit;
-      ++ret;
-    }
-    /****************************************************************
-
-     EVIL HACK. The +1 is needed to be consistent with
-     SimpleDiscreteRestraint.
-
-     ****************************************************************/
-    return ret+1;
-  }
-
 public:
   //! Constructor
   CombState() {
@@ -78,7 +83,7 @@ public:
   for (CombData::const_iterator it = data_.begin();
        it != data_.end(); it++) {
     Particle *p = it->first;
-    unsigned int p_index= particle_index(p);
+    unsigned int p_index= internal::particle_index(p);
     IMP_assert(data_.find(p) != data_.end(),
                "CombState::key particle with index " << p_index
                << " was not found ");
