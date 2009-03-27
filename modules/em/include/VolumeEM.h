@@ -21,7 +21,7 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Template class for managing 3D Electron Microscopy volumes in IMP
 template <typename T>
-class IMPEMEXPORT VolumeEM
+class VolumeEM
 {
 public:
   //! Empty constructor

@@ -14,7 +14,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 template<typename T>
-class IMPEMEXPORT ImageReaderWriter
+class ImageReaderWriter
 {
 public:
   virtual ~ImageReaderWriter() {}
