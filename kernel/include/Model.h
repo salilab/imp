@@ -140,25 +140,34 @@ public:
   }
   /** @} */
 
-  //! Return a range for the attribute.
-  /** This range is either the range found in the current set of particles
-      or a user-set range (using set_range). This method may be linear, the
-      first time it is called after each evaluate call.
-   */
+  /** @name Float Attribute Ranges
+      Each Float attribute has an associated range which reflect the
+      range of values that it is expected to take on during optimization.
+      The optimizer can use these ranges to make the optimization process
+      more efficient. By default, the range estimates are simply the
+      range of values for that attribute in the various particles, but
+      it can be set to another value. For example, an attribute storing
+      an angle should have the range set to eg (0,PI).
+
+      The ranges are not enforced, they are just guidelines.
+      @{
+  */
   FloatPair get_range(FloatKey k) const;
 
-  //! Set the expected range for an attribute
-  /** This range is not enforced, it is just to help the optimizer. */
   void set_range(FloatKey k, FloatPair range) {
     ranges_[k]=range;
   }
+  /** @} */
 
   //! Evaluate all of the restraints in the model and return the score.
   /** \param[in] calc_derivs If true, also evaluate the first derivatives.
       \return The score.
 
-      All of the stored ScoreState objects are updated before the
-      restraints are evaluated.
+      Evaluation proceeds as follows:
+      - ScoreState::before_evaluate() is called on all ScoreStates
+      - Restraint::evaluate() is called on all Restraints
+      - ScoreState::after_evaluate() is called on all ScoreStates
+      The sum of the Restraint::evaluate() return values is returned.
    */
   Float evaluate(bool calc_derivs);
 
