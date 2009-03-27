@@ -26,8 +26,14 @@ class IMPCOREEXPORT ListSingletonContainer : public SingletonContainer
 public:
   //! construct and pass an initial set of particles
   ListSingletonContainer(const Particles &ps= Particles());
+ /** @name Methods to control the contained objects
 
+     This container stores a list of Particle objects. To manipulate
+     the list use these methods.
+  */
+  /**@{*/
   IMP_LIST(public, Particle, particle, Particle*);
+  /**@}*/
 
   //! log n time
   virtual bool get_contains_particle(Particle* vt) const;

@@ -39,9 +39,17 @@ public:
    */
   virtual void propose_move(Float f);
 
-  IMP_LIST(public, FloatKey, float_key, FloatKey);
-  IMP_LIST(public, IntKey, int_key, IntKey);
 
+  /** @name Methods to manipulate the set of controlled attributes
+
+       Each of the attributes whose FloatKey or IntKey is added to
+       the list below is controlled by the MoverBase in each particle in
+       the container.
+  */
+  /**@{*/
+  IMP_LIST(protected, FloatKey, float_key, FloatKey);
+  IMP_LIST(public, IntKey, int_key, IntKey);
+  /**@}*/
   SingletonContainer* get_container() const {
     return pc_;
   }

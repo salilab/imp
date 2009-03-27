@@ -57,9 +57,20 @@ public:
   void clear_particles() {
     data_.clear();
   }
+ /** @name Methods to control the set of filters
 
+     SingletonContainer objects can be used as filters to prevent
+     the addition of Particle objects to the container. Every
+     time someone requests to add a Particle object, the container
+     checks each SingletonContainer in the SingletonFilter list to
+     see of any of the filters contain an identical object using the
+     SingletonContainer::get_contains_particle() call. If true is
+     returned, the object is not added to this container.
+  */
+  /**@{*/
   IMP_LIST(public, SingletonFilter, singleton_filter,
            SingletonContainer*);
+   /**@}*/
 };
 
 

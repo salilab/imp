@@ -57,9 +57,20 @@ public:
   void clear_classnames() {
     data_.clear();
   }
+ /** @name Methods to control the set of filters
 
+     GroupnameContainer objects can be used as filters to prevent
+     the addition of Classname objects to the container. Every
+     time someone requests to add a Classname object, the container
+     checks each GroupnameContainer in the GroupnameFilter list to
+     see of any of the filters contain an identical object using the
+     GroupnameContainer::get_contains_classname() call. If true is
+     returned, the object is not added to this container.
+  */
+  /**@{*/
   IMP_LIST(public, GroupnameFilter, groupname_filter,
            GroupnameContainer*);
+   /**@}*/
 };
 
 

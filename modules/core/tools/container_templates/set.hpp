@@ -29,9 +29,15 @@ public:
   GroupnameContainerSet();
 
   IMP_GROUPNAME_CONTAINER(GroupnameContainerSet, internal::version_info);
+ /** @name Methods to control the nested container
 
+     This container merges a set of nested containers. To add
+     or remove nested containers, use the methods below.
+  */
+  /**@{*/
   IMP_LIST(public, GroupnameContainer, groupname_container,
            GroupnameContainer*);
+  /**@}*/
 };
 
 

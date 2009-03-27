@@ -29,9 +29,15 @@ public:
   SingletonContainerSet();
 
   IMP_SINGLETON_CONTAINER(SingletonContainerSet, internal::version_info);
+ /** @name Methods to control the nested container
 
+     This container merges a set of nested containers. To add
+     or remove nested containers, use the methods below.
+  */
+  /**@{*/
   IMP_LIST(public, SingletonContainer, singleton_container,
            SingletonContainer*);
+  /**@}*/
 };
 
 

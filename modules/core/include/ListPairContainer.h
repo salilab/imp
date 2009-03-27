@@ -26,8 +26,14 @@ class IMPCOREEXPORT ListPairContainer : public PairContainer
 public:
   //! construct and pass an initial set of particle_pairs
   ListPairContainer(const ParticlePairs &ps= ParticlePairs());
+ /** @name Methods to control the contained objects
 
+     This container stores a list of ParticlePair objects. To manipulate
+     the list use these methods.
+  */
+  /**@{*/
   IMP_LIST(public, ParticlePair, particle_pair, ParticlePair);
+  /**@}*/
 
   //! log n time
   virtual bool get_contains_particle_pair(ParticlePair vt) const;

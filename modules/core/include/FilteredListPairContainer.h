@@ -57,9 +57,20 @@ public:
   void clear_particle_pairs() {
     data_.clear();
   }
+ /** @name Methods to control the set of filters
 
+     PairContainer objects can be used as filters to prevent
+     the addition of ParticlePair objects to the container. Every
+     time someone requests to add a ParticlePair object, the container
+     checks each PairContainer in the PairFilter list to
+     see of any of the filters contain an identical object using the
+     PairContainer::get_contains_particle_pair() call. If true is
+     returned, the object is not added to this container.
+  */
+  /**@{*/
   IMP_LIST(public, PairFilter, pair_filter,
            PairContainer*);
+   /**@}*/
 };
 
 
