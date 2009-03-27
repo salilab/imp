@@ -63,38 +63,37 @@ IMP_OUTPUT_OPERATOR(Color)
 
 
 #ifndef SWIG
+#ifndef IMP_DOXYGEN
+struct SpacesIO
+{
+  const Color &v_;
+  SpacesIO(const Color &v): v_(v){}
+};
 
-namespace internal {
-  struct SpacesIO
-  {
-    const Color &v_;
-    SpacesIO(const Color &v): v_(v){}
-  };
-
-  struct CommasIO
-  {
-    const Color &v_;
-    CommasIO(const Color &v): v_(v){}
-  };
-  inline std::ostream &operator<<(std::ostream &out, const SpacesIO &s)
-  {
-    s.v_.show(out, " ");
-    return out;
-  }
-  inline std::ostream &operator<<(std::ostream &out, const CommasIO &s)
-  {
-    s.v_.show(out, ", ");
-    return out;
-  }
+struct CommasIO
+{
+  const Color &v_;
+  CommasIO(const Color &v): v_(v){}
+};
+inline std::ostream &operator<<(std::ostream &out, const SpacesIO &s)
+{
+  s.v_.show(out, " ");
+  return out;
 }
+inline std::ostream &operator<<(std::ostream &out, const CommasIO &s)
+{
+  s.v_.show(out, ", ");
+  return out;
+}
+#endif
 
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
     \relates Color
  */
-inline internal::SpacesIO spaces_io(const Color &v) {
-  return internal::SpacesIO(v);
+inline SpacesIO spaces_io(const Color &v) {
+  return SpacesIO(v);
 }
 
 
@@ -105,8 +104,8 @@ inline internal::SpacesIO spaces_io(const Color &v) {
     produces "1.0, 2.0, 3.0"
     \relates Color
  */
-inline internal::CommasIO commas_io(const Color &v) {
-  return internal::CommasIO(v);
+inline CommasIO commas_io(const Color &v) {
+  return CommasIO(v);
 }
 
 #endif // SWIG
