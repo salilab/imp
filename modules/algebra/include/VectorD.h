@@ -330,7 +330,7 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
  */
 template <unsigned int D>
 SpacesIO<D> spaces_io(const VectorD<D> &v) {
-  return internal::SpacesIO<D>(v);
+  return SpacesIO<D>(v);
 }
 
 
