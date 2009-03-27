@@ -23,7 +23,8 @@ TransformationDiscreteSet::TransformationDiscreteSet(){
 
 algebra::Transformation3D
   TransformationDiscreteSet::get_transformation(long state_ind) const {
-  IMP_assert(state_ind<trans_.size(),"the input index is out of range");
+  IMP_assert(static_cast<unsigned int>(state_ind)<trans_.size(),
+             "the input index is out of range");
   return trans_[state_ind];
 }
 void TransformationDiscreteSet::add_transformation(
