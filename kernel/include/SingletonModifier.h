@@ -51,6 +51,7 @@ IMP_OUTPUT_OPERATOR(SingletonModifier)
 //! Apply the SingletonModifier to each element of the sequence
 /** \relates SingletonModifier
     Use IMP::make_pointer to properly clean up the pointer.
+    \copydoc apply(const SingletonModifier*,const Particles&)
  */
 template <class It>
 void apply(const SingletonModifier* f, It b, It e) {
@@ -72,7 +73,7 @@ IMPEXPORT inline void apply(const SingletonModifier* f,
 
 //! Apply a SingletonModifier to each in the Particles
 /** \relates SingletonModifier
-    \copydoc apply(const SingletonModifier*,Particles&)
+    \copydoc apply(const SingletonModifier*,const Particles&)
   */
 IMPEXPORT inline void apply(const SingletonModifier* f,
                             SingletonContainer *ps) {
@@ -81,7 +82,9 @@ IMPEXPORT inline void apply(const SingletonModifier* f,
 
 
 //! Apply the SingletonModifier to each element of the sequence
-/** \relates SingletonModifier */
+/** \relates SingletonModifier
+    \copydoc apply(const SingletonModifier*,const Particles&)
+*/
 template <class It>
 void apply(const SingletonModifier* f, DerivativeAccumulator *da, It b, It e) {
   for (It c=b; c != e; ++c) {
@@ -90,7 +93,9 @@ void apply(const SingletonModifier* f, DerivativeAccumulator *da, It b, It e) {
 }
 
 //! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier */
+/** \relates SingletonModifier
+    \copydoc apply(const SingletonModifier*,const Particles&)
+*/
 IMPEXPORT inline void apply(const SingletonModifier* f,
                             DerivativeAccumulator *da,
                             const Particles &ps) {
@@ -98,7 +103,9 @@ IMPEXPORT inline void apply(const SingletonModifier* f,
 }
 
 //! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier */
+/** \relates SingletonModifier
+    \copydoc apply(const SingletonModifier*,const Particles&)
+*/
 IMPEXPORT inline void apply(const SingletonModifier* f,
                             DerivativeAccumulator *da,
                             SingletonContainer *ps) {

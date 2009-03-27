@@ -66,7 +66,11 @@ public:
   virtual VersionInfo get_version_info() const=0;
 
   //! An iterator through the contents of the container
+#ifdef IMP_DOXYGEN
+  class ParticlePairIterator;
+#else
   typedef internal::IndexingIterator<Accessor> ParticlePairIterator;
+#endif
   //! begin iterating through the particle_pairs
   ParticlePairIterator particle_pairs_begin() const {
     // Since I can't make the count mutable in Object

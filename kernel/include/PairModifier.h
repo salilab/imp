@@ -51,6 +51,7 @@ IMP_OUTPUT_OPERATOR(PairModifier)
 //! Apply the PairModifier to each element of the sequence
 /** \relates PairModifier
     Use IMP::make_pointer to properly clean up the pointer.
+    \copydoc apply(const PairModifier*,const ParticlePairs&)
  */
 template <class It>
 void apply(const PairModifier* f, It b, It e) {
@@ -72,7 +73,7 @@ IMPEXPORT inline void apply(const PairModifier* f,
 
 //! Apply a PairModifier to each in the ParticlePairs
 /** \relates PairModifier
-    \copydoc apply(const PairModifier*,ParticlePairs&)
+    \copydoc apply(const PairModifier*,const ParticlePairs&)
   */
 IMPEXPORT inline void apply(const PairModifier* f,
                             PairContainer *ps) {
@@ -81,7 +82,9 @@ IMPEXPORT inline void apply(const PairModifier* f,
 
 
 //! Apply the PairModifier to each element of the sequence
-/** \relates PairModifier */
+/** \relates PairModifier
+    \copydoc apply(const PairModifier*,const ParticlePairs&)
+*/
 template <class It>
 void apply(const PairModifier* f, DerivativeAccumulator *da, It b, It e) {
   for (It c=b; c != e; ++c) {
@@ -90,7 +93,9 @@ void apply(const PairModifier* f, DerivativeAccumulator *da, It b, It e) {
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier */
+/** \relates PairModifier
+    \copydoc apply(const PairModifier*,const ParticlePairs&)
+*/
 IMPEXPORT inline void apply(const PairModifier* f,
                             DerivativeAccumulator *da,
                             const ParticlePairs &ps) {
@@ -98,7 +103,9 @@ IMPEXPORT inline void apply(const PairModifier* f,
 }
 
 //! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier */
+/** \relates PairModifier
+    \copydoc apply(const PairModifier*,const ParticlePairs&)
+*/
 IMPEXPORT inline void apply(const PairModifier* f,
                             DerivativeAccumulator *da,
                             PairContainer *ps) {
