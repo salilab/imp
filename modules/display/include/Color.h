@@ -30,27 +30,25 @@ public:
 
   Color();
 
-  //! set the color from r,g,b components
   /** Components must be between 0 and 1
    */
   Color(float r, float g, float b);
 
   ~Color();
-
-  //! Red rgb component, from 0 to 1
+  /** @name Component access
+   @{
+   */
   float get_red() const {
     return c_[0];
   }
 
-  //! Green rgb component, from 0 to 1
   float get_green() const {
     return c_[1];
   }
-
-  //! Blye rgb component, from 0 to 1
   float get_blue() const {
     return c_[2];
   }
+  //@}
 
   void show(std::ostream &out=std::cout, std::string delim=" ") const {
     out << get_red() << delim << get_green() << delim << get_blue();
