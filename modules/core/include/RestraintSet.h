@@ -27,9 +27,14 @@ public:
   RestraintSet(const std::string& name=std::string());
 
   IMP_RESTRAINT(RestraintSet, internal::version_info)
+ /** @name Methods to control the nested Restraint objects
 
+     This container manages a set of Restraint objects. To
+     manipulate the stored set use the methods below.
+  */
+  /**@{*/
   IMP_LIST(public, Restraint, restraint, Restraint*);
-
+  /**@}*/
  public:
 
   //! Set weight for all restraints contained by this set.

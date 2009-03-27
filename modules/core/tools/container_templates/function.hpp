@@ -51,6 +51,7 @@ IMP_OUTPUT_OPERATOR(GroupnameModifier)
 //! Apply the GroupnameModifier to each element of the sequence
 /** \relates GroupnameModifier
     Use IMP::make_pointer to properly clean up the pointer.
+    \copydoc apply(const GroupnameModifier*,const Classnames&)
  */
 template <class It>
 void apply(const GroupnameModifier* f, It b, It e) {
@@ -72,7 +73,7 @@ IMPEXPORT inline void apply(const GroupnameModifier* f,
 
 //! Apply a GroupnameModifier to each in the Classnames
 /** \relates GroupnameModifier
-    \copydoc apply(const GroupnameModifier*,Classnames&)
+    \copydoc apply(const GroupnameModifier*,const Classnames&)
   */
 IMPEXPORT inline void apply(const GroupnameModifier* f,
                             GroupnameContainer *ps) {
@@ -81,7 +82,9 @@ IMPEXPORT inline void apply(const GroupnameModifier* f,
 
 
 //! Apply the GroupnameModifier to each element of the sequence
-/** \relates GroupnameModifier */
+/** \relates GroupnameModifier
+    \copydoc apply(const GroupnameModifier*,const Classnames&)
+*/
 template <class It>
 void apply(const GroupnameModifier* f, DerivativeAccumulator *da, It b, It e) {
   for (It c=b; c != e; ++c) {
@@ -90,7 +93,9 @@ void apply(const GroupnameModifier* f, DerivativeAccumulator *da, It b, It e) {
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier */
+/** \relates GroupnameModifier
+    \copydoc apply(const GroupnameModifier*,const Classnames&)
+*/
 IMPEXPORT inline void apply(const GroupnameModifier* f,
                             DerivativeAccumulator *da,
                             const Classnames &ps) {
@@ -98,7 +103,9 @@ IMPEXPORT inline void apply(const GroupnameModifier* f,
 }
 
 //! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier */
+/** \relates GroupnameModifier
+    \copydoc apply(const GroupnameModifier*,const Classnames&)
+*/
 IMPEXPORT inline void apply(const GroupnameModifier* f,
                             DerivativeAccumulator *da,
                             GroupnameContainer *ps) {

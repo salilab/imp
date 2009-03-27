@@ -26,8 +26,14 @@ class IMPCOREEXPORT ListGroupnameContainer : public GroupnameContainer
 public:
   //! construct and pass an initial set of classnames
   ListGroupnameContainer(const Classnames &ps= Classnames());
+ /** @name Methods to control the contained objects
 
+     This container stores a list of Classname objects. To manipulate
+     the list use these methods.
+  */
+  /**@{*/
   IMP_LIST(public, Classname, classname, Value);
+  /**@}*/
 
   //! log n time
   virtual bool get_contains_classname(Value vt) const;

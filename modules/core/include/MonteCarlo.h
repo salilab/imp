@@ -40,8 +40,6 @@ public:
   ~MonteCarlo();
 
   IMP_OPTIMIZER(internal::version_info)
-
-  IMP_LIST(public, Mover, mover, Mover*);
 public:
   //! Return the local optimizer used or NULL
   Optimizer *get_local_optimizer() const {
@@ -104,6 +102,16 @@ public:
   }
 
   void show(std::ostream &out= std::cout) const;
+
+  /** @name Movers
+
+       The following methods are used to manipulate the list of Movers.
+       Each mover is called at each optimization step, giving it a chance
+       to change the current configuration.
+  */
+  /**@{*/
+  IMP_LIST(public, Mover, mover, Mover*);
+  /**@}*/
 private:
   Float temp_;
   Float prior_energy_;

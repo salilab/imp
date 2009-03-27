@@ -39,8 +39,16 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint
 public:
   //! Use the given PairScore
   ConnectivityRestraint(PairScore* ps);
+  /** @name Particles to be connected
 
+       The following methods are used to manipulate the list of particles
+       that are to be connected. Each particle should have all the
+       attributes expected by the PairScore used.
+  */
+  /*@{*/
   IMP_LIST(public, Particle, particle, Particle*)
+  /*@}*/
+
   ParticlesList get_interacting_particles() const
   {
     return ParticlesList(1, Particles(particles_begin(), particles_end()));
