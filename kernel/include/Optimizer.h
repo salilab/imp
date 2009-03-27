@@ -69,8 +69,15 @@ public:
     out << "Some optimizer" << std::endl;
   }
 
-  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*);
+  /** @name States
 
+       The stored OptimizerState objects are updated each time the
+       Optimizer decides to accept a new configuration of the Model.
+       To manipulate the list of optimizer states use the methods below.
+  */
+  /**@{*/
+  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*);
+  /**@}*/
 protected:
   //! Update optimizer state, should be called at each successful step
   void update_states() const ;

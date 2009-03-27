@@ -70,17 +70,31 @@ public:
   /** Particles, ScoreStates and Restraints are ref-counted so they
       will be deleted if no other Pointers to them are held. */
   ~Model();
+  /** @name States
 
+      The Model stores a list of ScoreStates which are given an
+      opportunity to update the stored Particles and their internal
+      state before and after the restraints are evaluated. Use the
+      methods below to manipulate the list of ScoreState objects.
+  */
+  /**@{*/
   IMP_LIST(public, ScoreState, score_state, ScoreState*);
+  /**@}*/
+
+  /** @name Restraints
+
+      The Model scores the current configuration use the stored Restraint
+      objects. Use the methods below to manipulate the list.
+   */
+  /**@{*/
   IMP_LIST(public, Restraint, restraint, Restraint*);
+  /**@}*/
  public:
 
-
-  //! Methods to manipulate particles
-  //@{
   //! Remove the particle from this model
-  /** Since particles are ref counted the object will still
-      be valid until all references are removed.*/
+  /** Since particles are ref counted the object will still be valid
+      objects until all references are removed, however attributes of
+      removed particles cannot be changed or inspected.*/
   void remove_particle(Particle *p) {
     IMP_check(p->get_model() == this,
               "The particle does not belong to this model",
@@ -91,34 +105,39 @@ public:
             << std::endl);
     p->model_=NULL;
   }
-  /** \note This really should only be used for debugging and only
-      then if you really know what you are doing as the number of
-      Particles can change unexpectedly.
+
+  /** @name Methods to debug particles
+      It is sometimes useful to inspect the list of all particles when
+      debugging. These methods allow you to do that.
+      \note Only use this if you really know what you are doing as
+      Particles can be added to the object from many different places.
+      As a result, the list of Particles should only be used for
+      debugging.
    */
+  //@{
   unsigned int get_number_of_particles() const {
     return particles_.size();
   }
-  //! Think before using...
-  /** \note Only use this if you really know what you are doing as
-      Particles can be added to the object from many different places.
-  */
-  typedef ParticleStorage::iterator ParticleIterator;
-  //! Iterate through the particles
+#ifdef IMP_DOXYGEN
+  class ParticleInterator; class ParticleConstIterator;
+#else
+ typedef ParticleStorage::const_iterator ParticleConstIterator;
+ typedef ParticleStorage::iterator ParticleIterator;
+#endif
   ParticleIterator particles_begin() {
     return particles_.begin();
   }
-  //! Iterate through the particles
   ParticleIterator particles_end() {
     return particles_.end();
   }
-  typedef ParticleStorage::const_iterator ParticleConstIterator;
+
   ParticleConstIterator particles_begin() const {
     return particles_.begin();
   }
   ParticleConstIterator particles_end() const {
     return particles_.end();
   }
-  //@}
+  // @}
 
   //! Return a range for the attribute.
   /** This range is either the range found in the current set of particles

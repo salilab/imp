@@ -1,17 +1,19 @@
-/*
+/**
  *  \file container_macros.h
  *  \brief Macros to define containers of objects
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-
-#ifndef IMP_INTERNAL_CONTAINER_MACROS_H
-#define IMP_INTERNAL_CONTAINER_MACROS_H
+#ifndef IMP_CONTAINER_MACROS_H
+#define IMP_CONTAINER_MACROS_H
 
 #include "internal/Vector.h"
 #include "macros.h"
 #include <algorithm>
+
+
+
 
 // Swig doesn't do protection right with protected members
 #ifdef IMP_SWIG_WRAPPER
@@ -20,79 +22,93 @@
 #define IMP_PROTECTION(protection) protection:
 #endif
 
-//! Use this to add a list of objects to a class.
-/** The difference between a IMP_LIST and IMP_CONTAINER is that an
- IMP_CONTAINER uses Index objects to return access to the objects and this
- container just uses ints.
 
- Such a container adds public methods add_foo, get_foo, get_number_of_foo
- and a private type foo_iterator, with methods foo_begin, foo_end.
- \param[in] protection The level of protection for the container
- (public, private).
- \param[in] Ucname The name of the type of container in uppercase.
- \param[in] lcname The name of the type of container in lower case.
- \param[in] Data The type of the data to store.
 
- \note the type Ucnames must be declared and be a vector of
- Data.
+
+
+/**  \brief  A macro to provide a uniform interface for storing lists of
+     objects.
+
+     This macro is designed to be used in the body of an object to add
+     a set of methods for manipulating a list of contained objects. It adds
+     methods
+     - get_foo
+     - set_foo
+     - set_foos
+     - foos_begin, foos_end
+     - remove_foo
+     - remove_foos
+     etc. where foo is the lcname provided.
+
+     \param[in] protection The level of protection for the container
+     (public, private).
+     \param[in] Ucname The name of the type of container in uppercase.
+     \param[in] lcname The name of the type of container in lower case.
+     \param[in] Data The type of the data to store.
+
+     An accompanying IMP_LIST_IMPL must go in a \c .cpp file.
+
+     \note the type Ucnames must be declared and be a vector of
+     Data.
+
+     \note This macro should be given an appropriate name and wrapped in a
+     doxygen comment block such as by starting with a C++ comment like
+     \verbatim
+     @name short description
+     longer description
+     @{
+     \endverbatim
+     and ending with one like
+     \verbatim
+     @}
+     \endverbatim
  */
 #define IMP_LIST(protection, Ucname, lcname, Data)                      \
   IMP_PROTECTION(protection)                                            \
-  /** @name Methods acting on a contained list*/                        \
-  /*@{*/                                                                \
-  /** \brief Remove any occurences of d from the container */           \
+  /** \brief Remove any occurences of d from the container. */          \
   void remove_##lcname(Data d);                                         \
-  /** \brief Remove any occurences of each item in pc */                \
+  /** \brief Remove any occurences of each item in d. */                \
   void remove_##lcname##s(Ucname##s d);                                 \
-  /** \brief Set the contents of the container to ps. */                \
+  /** Set the contents of the container to ps removing all its current
+      contents. */                                                      \
   void set_##lcname##s(const Ucname##s &ps) {                           \
     clear_##lcname##s();                                                \
     add_##lcname##s(ps);                                                \
   }                                                                     \
   IMP_PROTECTION(protection)                                            \
-/** \short Add an object.
-    \param[in] obj Pointer to the object
-    \return index of object within the object
-*/                                                                    \
-unsigned int add_##lcname(Data obj);                                     \
-/** \short Add several objects.
-    \param[in] obj a vector of pointers
-*/                                                                    \
-void add_##lcname##s(const std::vector<Data>& obj);                   \
-/** \short Clear the contents of the container */                     \
-void clear_##lcname##s();                                             \
-/** \short return the number of objects*/                               \
+/** \return index of object within the object
+*/                                                                      \
+unsigned int add_##lcname(Data obj);                                    \
+/** Add several objects to the container. They are not necessarily
+    added at the end.
+*/                                                                      \
+void add_##lcname##s(const std::vector<Data>& obj);                     \
+void clear_##lcname##s();                                               \
 unsigned int get_number_of_##lcname##s() const {                        \
   return lcname##_vector_.size();}                                      \
-/** \short return if there are any objects*/                            \
-bool get_has_##lcname##s() const {                              \
+/** \brief return true if there are any objects in the container*/      \
+bool get_has_##lcname##s() const {                                      \
   return !lcname##_vector_.empty();}                                    \
-/** \short Get object refered to by the index
+/** Get the object refered to by the index
     \throws IndexException if the index is out of range
-*/                                                                    \
-Data get_##lcname(unsigned int i) const {                             \
-  return lcname##_vector_[i];                                         \
-}                                                                     \
-/** \short An iterator through the objects.
-    The value type is a pointer.*/                                     \
-typedef IMP::internal::Vector<Data>::iterator Ucname##Iterator;        \
-/** \short A const iterator through the objects.
-    The value type is a pointer.*/                                     \
-typedef IMP::internal::Vector<Data>::const_iterator Ucname##ConstIterator; \
-/** Begin iterating through container */                               \
-Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}  \
-/** End iterating through container */                                 \
-Ucname##Iterator lcname##s_end() {return lcname##_vector_.end();}      \
-/** Begin iterating through container */                               \
-Ucname##ConstIterator lcname##s_begin() const {                        \
-  return lcname##_vector_.begin();}                                    \
-/** End iterating through container */                                 \
-Ucname##ConstIterator lcname##s_end() const {                          \
+*/                                                                     \
+Data get_##lcname(unsigned int i) const {                              \
+  return lcname##_vector_[i];                                          \
+}                                                                      \
+IMP_NO_DOXYGEN(typedef IMP::internal::Vector<Data>                      \
+               ::iterator Ucname##Iterator;)                            \
+IMP_NO_DOXYGEN(typedef IMP::internal::Vector<Data>::const_iterator      \
+               Ucname##ConstIterator;)                                  \
+IMP_ONLY_DOXYGEN(class Ucname##Iterator; class Ucname##ConstIterator;)  \
+Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}   \
+Ucname##Iterator lcname##s_end() {return lcname##_vector_.end();}       \
+Ucname##ConstIterator lcname##s_begin() const {                         \
+  return lcname##_vector_.begin();}                                     \
+Ucname##ConstIterator lcname##s_end() const {                           \
   return lcname##_vector_.end();}                                       \
 private:                                                                \
 IMP::internal::Vector<Data> lcname##_vector_;                           \
 IMP_PROTECTION(protection)                                              \
-/*@}*/                                                                  \
 
 
 
@@ -100,16 +116,14 @@ IMP_PROTECTION(protection)                                              \
 //! This should go in a .cpp file for the respective class.
 /**
  This code should go in a .cpp file. One macro for each IMP_CONTAINER.
- \param[in] The name of the class containing this container.
- \param[in] protection The level of protection for the container
- (public, private).
+ \param[in] Class The name of the class containing this container.
  \param[in] Ucname The name of the type of container in uppercase.
  \param[in] lcname The name of the type of container in lower case.
  \param[in] Data The type of the data to store.
  \param[in] OnAdd Code to modify the passed in object. The object is obj
  its index index.
  \param[in] OnChanged Code to get executed when the container changes.
- \param[in] OnRemove Code to get executed when the an object is removed.
+ \param[in] OnRemoved Code to get executed when the an object is removed.
 
  For all of these the current object is called obj.
 */
@@ -165,4 +179,4 @@ IMP_PROTECTION(protection)                                              \
     OnChanged;                                                          \
   }                                                                     \
 
-#endif  /* IMP_INTERNAL_CONTAINER_MACROS_H */
+#endif  /* IMP_CONTAINER_MACROS_H */
