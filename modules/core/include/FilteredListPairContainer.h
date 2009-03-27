@@ -16,6 +16,12 @@
 #include <IMP/PairContainer.h>
 #include <IMP/container_macros.h>
 
+IMP_BEGIN_NAMESPACE
+
+typedef PairContainers PairFilters;
+
+IMP_END_NAMESPACE
+
 IMPCORE_BEGIN_NAMESPACE
 
 //! Store a list of ParticlePairs filtered by other lists
@@ -52,7 +58,7 @@ public:
     data_.clear();
   }
 
-  IMP_LIST(public, PairContainer, pair_container,
+  IMP_LIST(public, PairFilter, pair_filter,
            PairContainer*);
 };
 

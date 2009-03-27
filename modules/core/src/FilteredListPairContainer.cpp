@@ -19,7 +19,7 @@ namespace {
 
   class Found {
     typedef FilteredListPairContainer
-    ::PairContainerConstIterator It;
+    ::PairFilterConstIterator It;
     It b_,e_;
   public:
     Found(It b,
@@ -44,8 +44,8 @@ void FilteredListPairContainer::add_particle_pair(ParticlePair vt) {
   // For VC which can't convert the iterators
   const FilteredListPairContainer *cthis=
     const_cast<const FilteredListPairContainer*>(this);
-  if (!Found(cthis->pair_containers_begin(),
-             cthis->pair_containers_end())(vt)) {
+  if (!Found(cthis->pair_filters_begin(),
+             cthis->pair_filters_end())(vt)) {
     data_.insert(std::upper_bound(data_.begin(),
                                   data_.end(), vt), vt);
   }
@@ -87,8 +87,8 @@ FilteredListPairContainer::get_particle_pair(unsigned int i) const {
 
 
 IMP_LIST_IMPL(FilteredListPairContainer,
-              PairContainer,
-              pair_container,
+              PairFilter,
+              pair_filter,
               PairContainer*,,,)
 
 IMPCORE_END_NAMESPACE

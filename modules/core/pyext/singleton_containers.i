@@ -10,7 +10,7 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(SingletonScoreState)
     IMP_OWN_CONSTRUCTOR(MinimumSingletonScoreRestraint)
     IMP_OWN_CONSTRUCTOR(MaximumSingletonScoreRestraint)
-    IMP_CONTAINER_SWIG(FilteredListSingletonContainer, SingletonContainer, singleton_container)
+    IMP_CONTAINER_SWIG(FilteredListSingletonContainer, SingletonFilter, singleton_filter)
     IMP_OWN_METHOD(SingletonsRestraint, set_singleton_container)
     IMP_OWN_METHOD(SingletonsScoreState, set_before_evaluate_modifier)
     IMP_OWN_METHOD(SingletonsScoreState, set_after_evaluate_modifier)

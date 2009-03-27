@@ -14,17 +14,37 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  class DegeneratePairContainer: public PairContainer {
+  public:
+    DegeneratePairContainer(){}
+    unsigned int get_number_of_particle_pairs() const {return 0;}
+    ParticlePair get_particle_pair(unsigned int) const {
+      IMP_failure("The container contains no pairs", ErrorException);
+    }
+    bool get_contains_particle_pair(ParticlePair pp) const {
+      return pp.first==pp.second;
+    }
+    void show(std::ostream &out) const {
+    }
+    VersionInfo get_version_info() const {
+      return internal::version_info;
+    }
+  };
+}
+
 CloseBipartitePairsScoreState
 ::CloseBipartitePairsScoreState(SingletonContainer *pc0,
                                 SingletonContainer *pc1,
                                 FilteredListPairContainer* out,
-                                           FloatKey rk)
+                                FloatKey rk)
 {
   in_[0]=pc0;
   in_[1]=pc1;
   out_=out;
   rk_=rk;
   initialize();
+  out_->add_pair_filter(new DegeneratePairContainer());
 }
 
 CloseBipartitePairsScoreState
@@ -35,6 +55,7 @@ CloseBipartitePairsScoreState
   in_[0]=pc0;
   in_[1]=pc1;
   out_=new FilteredListPairContainer();
+  out_->add_pair_filter(new DegeneratePairContainer());
   rk_=rk;
   initialize();
 }

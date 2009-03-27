@@ -10,7 +10,7 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(PairScoreState)
     IMP_OWN_CONSTRUCTOR(MinimumPairScoreRestraint)
     IMP_OWN_CONSTRUCTOR(MaximumPairScoreRestraint)
-    IMP_CONTAINER_SWIG(FilteredListPairContainer, PairContainer, pair_container)
+    IMP_CONTAINER_SWIG(FilteredListPairContainer, PairFilter, pair_filter)
     IMP_OWN_METHOD(PairsRestraint, set_pair_container)
     IMP_OWN_METHOD(PairsScoreState, set_before_evaluate_modifier)
     IMP_OWN_METHOD(PairsScoreState, set_after_evaluate_modifier)
