@@ -132,7 +132,7 @@ public:
     unsigned char type;
     int nx,ny,nz;
     char comment[80];
-    int emdata[40];  
+    int emdata[40];
     char dummy_long[256];
 
   };
@@ -147,10 +147,10 @@ public:
   //// Outputs coordinates delimited by single space.
   friend std::ostream& operator<<(std::ostream& s, const EMHeader &h) {
     return s <<"size : " << h.nx << "  " << h.ny << "  " << h.nz
-      << std::endl << "magic: " << h.magic << std::endl << 
-      "type:  " << h.type <<  std::endl << 
-      " comment : " << h.comment <<  std::endl << 
-      " voltage : " << h.voltage <<  std::endl << 
+      << std::endl << "magic: " << h.magic << std::endl <<
+      "type:  " << h.type <<  std::endl <<
+      " comment : " << h.comment <<  std::endl <<
+      " voltage : " << h.voltage <<  std::endl <<
       "cs: " << h.Cs << std::endl <<
       "aperture: " << h.Aperture<< std::endl <<
       "Magnification " << h.Magnification<< std::endl <<
