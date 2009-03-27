@@ -148,8 +148,8 @@ public:
   /*@{*/
   /** \param[in] key The key identifying the float attribute.
       \param[in] value Initial value of the attribute.
-      \param[in] is_optimized Whether the attribute's value should be
-                              optimizable.
+      \param[in] is_optimized Whether the attribute's value can be
+      changed by the optimizer.
    */
   void add_attribute(FloatKey key, const Float value,
                      const bool is_optimized = false);
