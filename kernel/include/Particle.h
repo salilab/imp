@@ -131,7 +131,6 @@ public:
   //! Construct a particle and add it to the Model
   Particle(Model *m);
 
-  Particle();
   ~Particle();
 
   /** Get pointer to Model containing this particle.

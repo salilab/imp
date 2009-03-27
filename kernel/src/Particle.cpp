@@ -16,11 +16,6 @@ Particle::Particle(Model *m)
   m->add_particle_internal(this);
 }
 
-
-Particle::Particle()
-{
-}
-
 Particle::~Particle()
 {
 }
