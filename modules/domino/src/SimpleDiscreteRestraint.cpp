@@ -6,31 +6,11 @@
  */
 
 #include <IMP/domino/SimpleDiscreteRestraint.h>
+#include <IMP/domino/CombState.h>
 #include <IMP/container_macros.h>
 
+
 IMPDOMINO_BEGIN_NAMESPACE
-
-namespace {
-  // backwards compatibility functions
-  unsigned int particle_index(Particle *p) {
-    Model::ParticleIterator pit= p->get_model()->particles_begin();
-    unsigned int ret=0;
-    while (*pit != p) {
-      ++pit;
-      ++ret;
-      IMP_assert(pit != p->get_model()->particles_end(),
-                 "Particle not found");
-    }
-
-    /****************************************************************
-
-     EVIL HACK. +1 is needed to get the tests to pass, but I suspect
-     the tests are broken. It is awaiting discussion with Keren.
-
-     ****************************************************************/
-    return ret+1;
-  }
-}
 
 void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
 {
@@ -65,8 +45,8 @@ SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model& model_,
     std::string restraint_filename, Particle * p1_, Particle *p2_)
 {
   load_restraints(restraint_filename);
-  Int p1_ind = particle_index(p1_);
-  Int p2_ind = particle_index(p2_);
+  Int p1_ind = internal::particle_index(p1_);
+  Int p2_ind = internal::particle_index(p2_);
   if (p1_ind < p2_ind) {
     p1 = p1_;
     p2 = p2_;
