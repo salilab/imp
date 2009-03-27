@@ -7,7 +7,6 @@
 
 #include "IMP/core/CoverRefined.h"
 
-#include "IMP/core/bond_decorators.h"
 #include "IMP/core/XYZRDecorator.h"
 #include "IMP/core/FixedRefiner.h"
 #include "IMP/core/SingletonScoreState.h"

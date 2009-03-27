@@ -53,10 +53,6 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(BallMover)
     IMP_OWN_CONSTRUCTOR(RigidBodyMover)
     IMP_OWN_CONSTRUCTOR(ConeMover)
-#ifndef IMP_NO_DEPRECATED
-    IMP_OWN_CONSTRUCTOR(BondSingletonScore)
-    IMP_OWN_CONSTRUCTOR(BondBondPairScore)
-#endif
     IMP_OWN_CONSTRUCTOR(ClosePairsPairScore)
     IMP_OWN_CONSTRUCTOR(ConnectivityRestraint)
     IMP_OWN_CONSTRUCTOR(CoverRefined)
@@ -83,15 +79,13 @@ namespace IMP {
     IMP_OWN_CONSTRUCTOR(SphereDistancePairScore)
     IMP_OWN_CONSTRUCTOR(TransformedDistancePairScore)
     IMP_OWN_CONSTRUCTOR(TripletChainRestraint)
-#ifndef IMP_NO_DEPRECATED
-    IMP_OWN_CONSTRUCTOR(VRMLLogOptimizerState)
-    IMP_CONTAINER_SWIG(VRMLLogOptimizerState,
-    Refiner, particle_refiner)
-    IMP_OWN_METHOD(VRMLLogOptimizerState, set_singleton_container)
-#endif
     IMP_OWN_CONSTRUCTOR(ClosePairsScoreState)
     IMP_OWN_CONSTRUCTOR(CloseBipartitePairsScoreState)
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
+    IMP_CONTAINER_SWIG(CompoundRestraint, Restraint, restraint)
+    IMP_CONTAINER_SWIG(CompoundRestraint, ScoreState, score_state)
+    IMP_CONTAINER_SWIG(CompoundRestraint, SingletonContainer, singleton_container)
+    IMP_CONTAINER_SWIG(CompoundRestraint, PairContainer, pair_container)
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
 
     IMP_OWN_METHOD(MonteCarlo, set_local_optimizer)
@@ -124,8 +118,7 @@ namespace IMP {
 
 /* Must be included before HierarchyDecorator.h since it is not easy
    to predeclare a typedef (for BondDecorators) */ 
-%include "IMP/core/bond_decorators.h"
-
+%include "IMP/core/RestraintSet.h"
 
 /* Wrap the final classes */
 %include "IMP/core/AllPairsPairContainer.h"
@@ -133,14 +126,10 @@ namespace IMP {
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
-%include "IMP/core/BondEndpointsRefiner.h"
-%include "IMP/core/BondPairContainer.h"
-%include "IMP/core/BondSingletonScore.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
-%include "IMP/core/BrownianDynamics.h"
 %include "IMP/core/CentroidOfRefined.h"
+//%include "IMP/core/CompoundRestraint.h"
 %include "IMP/core/ChildrenRefiner.h"
-%include "IMP/core/CMMLogOptimizerState.h"
 %include "IMP/core/ClosedCubicSpline.h"
 %include "IMP/core/ClosePairsScoreState.h"
 %include "IMP/core/CloseBipartitePairsScoreState.h"
@@ -152,7 +141,6 @@ namespace IMP {
 %include "IMP/core/CoverRefined.h"
 %include "IMP/core/DerivativesFromRefined.h"
 %include "IMP/core/DerivativesToRefined.h"
-%include "IMP/core/DiffusionDecorator.h"
 %include "IMP/core/DiameterRestraint.h"
 %include "IMP/core/Transform.h"
 %include "IMP/core/DihedralRestraint.h"
@@ -168,22 +156,17 @@ namespace IMP {
 %include "IMP/core/LeavesRefiner.h"
 %include "IMP/core/Linear.h"
 %include "IMP/core/MaximumChangeScoreState.h"
-%include "IMP/core/MolecularDynamics.h"
-%include "IMP/core/MolecularHierarchyDecorator.h"
 %include "IMP/core/MonteCarlo.h"
 %include "IMP/core/NameDecorator.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/RefinedPairsPairScore.h"
-%include "IMP/core/RestraintSet.h"
 %include "IMP/core/rigid_bodies.h"
 %include "IMP/core/SphereDistancePairScore.h"
 %include "IMP/core/SteepestDescent.h"
 %include "IMP/core/TransformedDistancePairScore.h"
 %include "IMP/core/TypedPairScore.h"
-%include "IMP/core/VRMLLogOptimizerState.h"
-%include "IMP/core/VelocityScalingOptimizerState.h"
 %include "IMP/core/XYZRDecorator.h"
 %include "IMP/core/model_io.h"
 %include "IMP/core/TableRefiner.h"
