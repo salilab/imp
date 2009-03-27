@@ -65,7 +65,7 @@ struct UnRef<true>
   };
 
 
-//! Can be called on any object and will only unref it if appropriate
+// Can be called on any object and will only unref it if appropriate
 template <class O>
 void unref(O o)
 {
@@ -73,14 +73,14 @@ void unref(O o)
 }
 
 
-//! Can be called on any object and will only ref it if appropriate
+// Can be called on any object and will only ref it if appropriate
 template <class O>
 void ref(O o)
 {
   BOOST_STATIC_ASSERT(!boost::is_pointer<O>::value);
 }
 
-//! Can be called on any object and will only unref it if appropriate
+// Can be called on any object and will only unref it if appropriate
 template <class O>
 void unref(O* o)
 {
@@ -88,7 +88,7 @@ void unref(O* o)
 }
 
 
-//! Can be called on any object and will only ref it if appropriate
+// Can be called on any object and will only ref it if appropriate
 template <class O>
 void ref(O* o)
 {
@@ -96,7 +96,7 @@ void ref(O* o)
 }
 
 
-//! Can be called on any object and will only unref it if appropriate
+// Can be called on any object and will only unref it if appropriate
 template <class O>
 void disown(O* o)
 {
@@ -110,7 +110,7 @@ void disown(O* o)
 }
 
 
-//! Can be called on any object and will only ref it if appropriate
+// Can be called on any object and will only ref it if appropriate
 template <class O>
 void own(O* o)
 {
