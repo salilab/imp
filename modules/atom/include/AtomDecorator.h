@@ -277,9 +277,15 @@ public:
 
   IMP_DECORATOR_GET_SET_OPT(mass, get_mass_key(),
                             Float, Float, 0);
-
+  /** @name The atom index in the input file
+      This index is not necessarily unique over any particular
+      set of atoms and so should never be used as an atom identifier
+      except during I/O.
+      @{
+  */
   IMP_DECORATOR_GET_SET_OPT(input_index, get_input_index_key(),
                             Int, Int, -1);
+  /* @}*/
 
   //! shows the Atom record in a PDB format
   /** \param index the atom index. If index eq -1 than the original
