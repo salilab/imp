@@ -128,6 +128,8 @@ IMPCOREEXPORT void set_enclosing_sphere(XYZRDecorator b,
     \param[in] box_side The particles have coordinates from -box_side
     to box_side.
     \relates XYZRDecorator
+
+    The particles coordinates are optimized.
  */
 IMPCOREEXPORT Particles create_xyzr_particles(Model *m,
                                               unsigned int num,
