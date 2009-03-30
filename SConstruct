@@ -69,7 +69,9 @@ SConscript('build/SConscript')
 SConscript('modules/SConscript')
 SConscript('benchmarks/SConscript')
 
-Clean('build', Glob('build/tmp/*'))
+Clean('build', ['build/tmp/',
+                'build/include',
+                'build/lib'])
 
 # bin script first requires kernel libraries to be built:
 #env.Depends(bin, [src, pyext])
