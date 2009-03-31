@@ -16,6 +16,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
 public:
+  PrincipalComponentAnalysis(){}
   PrincipalComponentAnalysis(const Vector3D &pc1,const Vector3D &pc2,
        const Vector3D &pc3,Vector3D values) : eigen_values_(values){
     eigen_vecs_.push_back(pc1);
