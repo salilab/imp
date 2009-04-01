@@ -21,6 +21,42 @@ _SWIGScanner = SCons.Scanner.ClassicCPP(
     '^[ \t]*[%,#][ \t]*(?:include|import)[ \t]*(<|")([^>"]+)(>|")'
 )
 
+def get_swig_version(env):
+    version = env.get('SWIGVERSION', None)
+    if version:
+        match = re.match('(\d+)\.(\d+)\.(\d+)', version)
+        if match:
+            try:
+                return [int(x) for x in match.groups()]
+            except ValueError:
+                pass
+
+def EnsureSWIGVersion(env, major, minor, revision):
+    installed = get_swig_version(env)
+    desired = [major, minor, revision]
+    if not installed:
+        msg = "but the SWIG version could not be determined " + \
+              "in the form xx.yy.zz."
+    elif installed >= desired:
+        return
+    else:
+        msg = "but version %d.%d.%d was found." % tuple(installed)
+
+    print """
+SWIG version %d.%d.%d or later is required to build IMP,
+%s
+
+Please install a sufficiently recent version of SWIG (http://www.swig.org/).
+Note that if you install SWIG in a non-standard location, please use the
+'path' option to add this location to the search path.
+For example, a Mac using SWIG installed with MacPorts will have the 'swig'
+program in /opt/local/bin, so edit (or create) config.py and add the line
+
+path='/opt/local/bin'
+""" % (desired[0], desired[1], desired[2], msg)
+    Exit(1)
+
+
 # Provide a portable way to use the popen2.Popen3 class (we need this rather
 # than the popen3() factory function so we can call wait() to get exit status,
 # and can't use subprocess just yet since that requires a newer Python).
@@ -253,6 +289,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
+    env.AddMethod(EnsureSWIGVersion)
     env.Prepend(SCANNERS = [_SWIGScanner],
                 BUILDERS = {'GenerateDoxFromIn':
                             generate_doxygen.GenerateDoxFromIn,
