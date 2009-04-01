@@ -288,7 +288,7 @@ emreal DensityMap::calcRMS()
 //!  Set the density voxels to zero and reset the managment flags.
 void DensityMap::reset_data(float val)
 {
-  for (long i = 0; i < header_.nx * header_.ny * header_.nz; i++) {
+  for (long i = 0; i < get_number_of_voxels(); i++) {
     data_[i] = val;
   }
   normalized_ = false;
