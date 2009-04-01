@@ -19,6 +19,11 @@ if unknown:
     print "Unknown variables: ", unknown.keys()
     print "Use 'scons -h' to get a list of the accepted variables."
     Exit(1)
+
+# We need SWIG 1.3.31 or later
+if not env.GetOption('clean') and not env.GetOption('help'):
+    env.EnsureSWIGVersion(1, 3, 31)
+
 boost.configure_check(env, '1.33')
 cgal.configure_check(env)
 
