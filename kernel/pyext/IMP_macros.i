@@ -10,6 +10,7 @@ namespace IMP \
 
 %define IMP_OWN_CONSTRUCTOR(Ucname)
 %pythonprepend Ucname::Ucname %{
+        import IMP
         for i in range(0, len(args)):
             if args[i] is not None and issubclass(type(args[i]), IMP.RefCountedObject):
                args[i].thisown=0;
