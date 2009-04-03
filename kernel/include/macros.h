@@ -624,7 +624,7 @@ protection:                                                             \
   VersionInfo get_version_info() const {return version;}         \
   void show(std::ostream &out= std::cout) const;                 \
   void apply(Particle *a) const;                                 \
-  void apply(Particle *a, DerivativeAccumulator*) const{         \
+  void apply(Particle *a, DerivativeAccumulator&) const{         \
     apply(a);                                                    \
   }
 
@@ -637,7 +637,7 @@ protection:                                                             \
   VersionInfo get_version_info() const {return version;}                \
   void show(std::ostream &out= std::cout) const;                        \
   void apply(Particle *a, Particle *b) const;                           \
-  void apply(Particle *a, Particle *b, DerivativeAccumulator*) const{     \
+  void apply(Particle *a, Particle *b, DerivativeAccumulator&) const{     \
     apply(a,b);                                                         \
   }
 
@@ -645,13 +645,13 @@ protection:                                                             \
 /** This version takes a derivative accumulator.
    \see IMP_SINGLETON_MODIFIER
  */
-#define IMP_SINGLETON_MODIFIER_DA(version)                            \
-  VersionInfo get_version_info() const {return version;}              \
-  void show(std::ostream &out= std::cout) const;                      \
-  void apply(Particle *a, DerivativeAccumulator *da) const;           \
-  void apply(Particle *) const{                                       \
-    IMP_failure("This modifier requires a derivative accumulator "    \
-               << *this, ErrorException);                             \
+#define IMP_SINGLETON_MODIFIER_DA(version)                              \
+  VersionInfo get_version_info() const {return version;}                \
+  void show(std::ostream &out= std::cout) const;                        \
+  void apply(Particle *a, DerivativeAccumulator &da) const;             \
+  void apply(Particle *) const{                                         \
+    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
+            << *this << std::endl);                                     \
  }
 
 
@@ -664,8 +664,8 @@ protection:                                                             \
  void show(std::ostream &out= std::cout) const;                         \
  void apply(Particle *a, Particle *b, DerivativeAccumulator *da) const; \
  void apply(Particle *, Particle *) const{                              \
-   IMP_failure("This modifier requires a derivative accumulator "       \
-               << *this, ErrorException);                               \
+   IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator "  \
+         << *this << std::endl);                                        \
  }
 //! Define the needed functions for a SingletonContainer
 /** You need to implement

@@ -65,8 +65,8 @@ public:
   //! provide information about who implemeneted the container
   virtual VersionInfo get_version_info() const=0;
 
-  //! An iterator through the contents of the container
 #ifdef IMP_DOXYGEN
+  //! An iterator through the contents of the container
   class ParticleIterator;
 #else
   typedef internal::IndexingIterator<Accessor> ParticleIterator;

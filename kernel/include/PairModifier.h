@@ -23,7 +23,11 @@ class Particle;
 
 //! A base class for modifiers of ParticlePairs
 /** The primary function of such a class is to change
-    the passed particles.
+    the passed particles. You can use the associated PairFunction
+    along with \c map or \c std::for_each to easily apply a
+    PairModifier to a set of ParticlePairs.
+
+    \see IMP::PairFunctor
  */
 class IMPEXPORT PairModifier : public RefCountedObject
 {
@@ -32,7 +36,7 @@ public:
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b,
-                     DerivativeAccumulator *da) const=0;
+                     DerivativeAccumulator &da) const=0;
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b) const=0;
@@ -48,72 +52,44 @@ public:
 
 IMP_OUTPUT_OPERATOR(PairModifier)
 
-//! Apply the PairModifier to each element of the sequence
-/** \relates PairModifier
-    Use IMP::make_pointer to properly clean up the pointer.
-    \copydoc apply(const PairModifier*,const ParticlePairs&)
- */
-template <class It>
-void apply(const PairModifier* f, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<ParticlePair>::apply(f, *c);
-  }
-}
-
-//! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier
-    \code
-    apply(make_pointer(new core::Transform(tr)), my_particles);
-    \endcode
- */
-IMPEXPORT inline void apply(const PairModifier* f,
-                            const ParticlePairs &ps) {
-  apply(f, ps.begin(), ps.end());
-}
-
-//! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier
-    \copydoc apply(const PairModifier*,const ParticlePairs&)
-  */
-IMPEXPORT inline void apply(const PairModifier* f,
-                            PairContainer *ps) {
-  apply(f, ps->particle_pairs_begin(), ps->particle_pairs_end());
-}
-
-
-//! Apply the PairModifier to each element of the sequence
-/** \relates PairModifier
-    \copydoc apply(const PairModifier*,const ParticlePairs&)
-*/
-template <class It>
-void apply(const PairModifier* f, DerivativeAccumulator *da, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<ParticlePair>::apply(f, *c, da);
-  }
-}
-
-//! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier
-    \copydoc apply(const PairModifier*,const ParticlePairs&)
-*/
-IMPEXPORT inline void apply(const PairModifier* f,
-                            DerivativeAccumulator *da,
-                            const ParticlePairs &ps) {
-  apply(f, da, ps.begin(), ps.end());
-}
-
-//! Apply a PairModifier to each in the ParticlePairs
-/** \relates PairModifier
-    \copydoc apply(const PairModifier*,const ParticlePairs&)
-*/
-IMPEXPORT inline void apply(const PairModifier* f,
-                            DerivativeAccumulator *da,
-                            PairContainer *ps) {
-  apply(f, da, ps->particle_pairs_begin(), ps->particle_pairs_end());
-}
 
 //! A collection
 typedef std::vector<PairModifier*> PairModifiers;
+
+//! Create a functor which can be used with build in C++ and python commands
+/** For example, you can do
+    \code
+    std::for_each(particles.begin(), particles.end(),
+                  SingletonFunctor(new Transform(tr)));
+    \endcode
+    in C++ or
+    \verbatim
+    map(particles, SingletonFunctor(Transform(tr)))
+    \endverbatim
+    in python.
+
+    \see IMP::PairModifier
+ */
+class PairFunctor {
+  Pointer<PairModifier> f_;
+  DerivativeAccumulator *da_;
+public:
+  //! Store the PairModifier and the optional DerivativeAccumulator
+  PairFunctor(PairModifier *f,
+                   DerivativeAccumulator *da=NULL): f_(f), da_(da){}
+
+  void operator()( ParticlePair p) const {
+    if (da_) {
+      IMP::internal::ContainerTraits<ParticlePair>::apply(f_.get(), p, da_);
+    } else {
+      IMP::internal::ContainerTraits<ParticlePair>::apply(f_.get(), p);
+    }
+  }
+};
+
+
+//! Return a functor which can be used to call the apply method
+
 
 IMP_END_NAMESPACE
 

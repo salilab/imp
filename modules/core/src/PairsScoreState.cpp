@@ -11,6 +11,7 @@
  */
 
 #include "IMP/core/PairsScoreState.h"
+#include <utility>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,7 +30,8 @@ void PairsScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "Begin PairsScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  apply(f_.get(), c_.get());
+  std::for_each(c_->particle_pairs_begin(), c_->particle_pairs_end(),
+                PairFunctor(f_));
   IMP_LOG(TERSE, "End PairsScoreState::update" << std::endl);
 }
 
@@ -39,7 +41,8 @@ void PairsScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "Begin PairsScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  apply(af_.get(), da, c_.get());
+  std::for_each(c_->particle_pairs_begin(), c_->particle_pairs_end(),
+                PairFunctor(af_, da));
   IMP_LOG(TERSE, "End PairsScoreState::after_evaluate" << std::endl);
 }
 

@@ -308,8 +308,7 @@ void UpdateRigidBodyOrientation::show(std::ostream &out) const {
 
 
 void AccumulateRigidBodyDerivatives::apply(Particle *p,
-                                           DerivativeAccumulator *da) const {
-  if (!da) return;
+                                           DerivativeAccumulator &da) const {
   RigidBodyDecorator rb(p);
   RigidMemberDecorators members= rb.get_members();
   algebra::Rotation3D rot= rb.get_transformation().get_rotation();
@@ -321,24 +320,21 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
     algebra::Vector3D dv= d.get_derivatives();
     v+=dv;
     IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
-    if (da) {
-      for (unsigned int j=0; j< 4; ++j) {
-        algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(),
-                                                j);
-        IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
-                << std::endl);
-        q[j]+= dv*v;
-      }
+    for (unsigned int j=0; j< 4; ++j) {
+      algebra::Vector3D v= rot.get_derivative(d.get_internal_coordinates(),
+                                              j);
+      IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
+              << std::endl);
+      q[j]+= dv*v;
     }
   }
-  if (da) {
-    static_cast<XYZDecorator>(rb).add_to_derivatives(v, *da);
-    for (unsigned int j=0; j< 4; ++j) {
-      rb.get_particle()->add_to_derivative(internal::rigid_body_data()
-                                           .quaternion_[j], q[j],*da);
-    }
+  static_cast<XYZDecorator>(rb).add_to_derivatives(v, da);
+  for (unsigned int j=0; j< 4; ++j) {
+    rb.get_particle()->add_to_derivative(internal::rigid_body_data()
+                                         .quaternion_[j], q[j],da);
+  }
 
-    IMP_LOG(TERSE, "Derivative is "
+  IMP_LOG(TERSE, "Derivative is "
           << p->get_derivative(internal::rigid_body_data().quaternion_[0])
           << " "
           << p->get_derivative(internal::rigid_body_data().quaternion_[1])
@@ -348,10 +344,9 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
           << p->get_derivative(internal::rigid_body_data().quaternion_[3])
           << std::endl);
 
-    IMP_LOG(TERSE, "Translation deriv is "
-            << static_cast<XYZDecorator>(rb).get_derivatives()
-            << "" << std::endl);
-  }
+  IMP_LOG(TERSE, "Translation deriv is "
+          << static_cast<XYZDecorator>(rb).get_derivatives()
+          << "" << std::endl);
 }
 
 

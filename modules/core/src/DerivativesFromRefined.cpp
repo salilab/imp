@@ -24,15 +24,14 @@ DerivativesFromRefined
 
 void DerivativesFromRefined
 ::apply(Particle *p,
-        DerivativeAccumulator *da) const
+        DerivativeAccumulator &da) const
 {
-  if (!da) return;
   Particles ps = r_->get_refined(p);
 
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< ks_.size(); ++j) {
       Float f= ps[i]->get_derivative(ks_[j]);
-      p->add_to_derivative(ks_[j], f, *da);
+      p->add_to_derivative(ks_[j], f, da);
     }
   }
 }

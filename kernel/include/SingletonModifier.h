@@ -23,7 +23,11 @@ class Particle;
 
 //! A base class for modifiers of Particles
 /** The primary function of such a class is to change
-    the passed particles.
+    the passed particles. You can use the associated SingletonFunction
+    along with \c map or \c std::for_each to easily apply a
+    SingletonModifier to a set of Particles.
+
+    \see IMP::SingletonFunctor
  */
 class IMPEXPORT SingletonModifier : public RefCountedObject
 {
@@ -32,7 +36,7 @@ public:
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a,
-                     DerivativeAccumulator *da) const=0;
+                     DerivativeAccumulator &da) const=0;
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a) const=0;
@@ -48,72 +52,44 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonModifier)
 
-//! Apply the SingletonModifier to each element of the sequence
-/** \relates SingletonModifier
-    Use IMP::make_pointer to properly clean up the pointer.
-    \copydoc apply(const SingletonModifier*,const Particles&)
- */
-template <class It>
-void apply(const SingletonModifier* f, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Particle>::apply(f, *c);
-  }
-}
-
-//! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier
-    \code
-    apply(make_pointer(new core::Transform(tr)), my_particles);
-    \endcode
- */
-IMPEXPORT inline void apply(const SingletonModifier* f,
-                            const Particles &ps) {
-  apply(f, ps.begin(), ps.end());
-}
-
-//! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier
-    \copydoc apply(const SingletonModifier*,const Particles&)
-  */
-IMPEXPORT inline void apply(const SingletonModifier* f,
-                            SingletonContainer *ps) {
-  apply(f, ps->particles_begin(), ps->particles_end());
-}
-
-
-//! Apply the SingletonModifier to each element of the sequence
-/** \relates SingletonModifier
-    \copydoc apply(const SingletonModifier*,const Particles&)
-*/
-template <class It>
-void apply(const SingletonModifier* f, DerivativeAccumulator *da, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Particle>::apply(f, *c, da);
-  }
-}
-
-//! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier
-    \copydoc apply(const SingletonModifier*,const Particles&)
-*/
-IMPEXPORT inline void apply(const SingletonModifier* f,
-                            DerivativeAccumulator *da,
-                            const Particles &ps) {
-  apply(f, da, ps.begin(), ps.end());
-}
-
-//! Apply a SingletonModifier to each in the Particles
-/** \relates SingletonModifier
-    \copydoc apply(const SingletonModifier*,const Particles&)
-*/
-IMPEXPORT inline void apply(const SingletonModifier* f,
-                            DerivativeAccumulator *da,
-                            SingletonContainer *ps) {
-  apply(f, da, ps->particles_begin(), ps->particles_end());
-}
 
 //! A collection
 typedef std::vector<SingletonModifier*> SingletonModifiers;
+
+//! Create a functor which can be used with build in C++ and python commands
+/** For example, you can do
+    \code
+    std::for_each(particles.begin(), particles.end(),
+                  SingletonFunctor(new Transform(tr)));
+    \endcode
+    in C++ or
+    \verbatim
+    map(particles, SingletonFunctor(Transform(tr)))
+    \endverbatim
+    in python.
+
+    \see IMP::SingletonModifier
+ */
+class SingletonFunctor {
+  Pointer<SingletonModifier> f_;
+  DerivativeAccumulator *da_;
+public:
+  //! Store the SingletonModifier and the optional DerivativeAccumulator
+  SingletonFunctor(SingletonModifier *f,
+                   DerivativeAccumulator *da=NULL): f_(f), da_(da){}
+
+  void operator()( Particle* p) const {
+    if (da_) {
+      IMP::internal::ContainerTraits<Particle>::apply(f_.get(), p, da_);
+    } else {
+      IMP::internal::ContainerTraits<Particle>::apply(f_.get(), p);
+    }
+  }
+};
+
+
+//! Return a functor which can be used to call the apply method
+
 
 IMP_END_NAMESPACE
 
