@@ -23,7 +23,11 @@ class Particle;
 
 //! A base class for modifiers of Classnames
 /** The primary function of such a class is to change
-    the passed particles.
+    the passed particles. You can use the associated GroupnameFunction
+    along with \c map or \c std::for_each to easily apply a
+    GroupnameModifier to a set of Classnames.
+
+    \see IMP::GroupnameFunctor
  */
 class IMPEXPORT GroupnameModifier : public RefCountedObject
 {
@@ -32,7 +36,7 @@ public:
 
   /** Apply the function to a single value*/
   virtual void apply(ClassnameArguments,
-                     DerivativeAccumulator *da) const=0;
+                     DerivativeAccumulator &da) const=0;
 
   /** Apply the function to a single value*/
   virtual void apply(ClassnameArguments) const=0;
@@ -48,72 +52,44 @@ public:
 
 IMP_OUTPUT_OPERATOR(GroupnameModifier)
 
-//! Apply the GroupnameModifier to each element of the sequence
-/** \relates GroupnameModifier
-    Use IMP::make_pointer to properly clean up the pointer.
-    \copydoc apply(const GroupnameModifier*,const Classnames&)
- */
-template <class It>
-void apply(const GroupnameModifier* f, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Classname>::apply(f, *c);
-  }
-}
-
-//! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier
-    \code
-    apply(make_pointer(new core::Transform(tr)), my_particles);
-    \endcode
- */
-IMPEXPORT inline void apply(const GroupnameModifier* f,
-                            const Classnames &ps) {
-  apply(f, ps.begin(), ps.end());
-}
-
-//! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier
-    \copydoc apply(const GroupnameModifier*,const Classnames&)
-  */
-IMPEXPORT inline void apply(const GroupnameModifier* f,
-                            GroupnameContainer *ps) {
-  apply(f, ps->classnames_begin(), ps->classnames_end());
-}
-
-
-//! Apply the GroupnameModifier to each element of the sequence
-/** \relates GroupnameModifier
-    \copydoc apply(const GroupnameModifier*,const Classnames&)
-*/
-template <class It>
-void apply(const GroupnameModifier* f, DerivativeAccumulator *da, It b, It e) {
-  for (It c=b; c != e; ++c) {
-    internal::ContainerTraits<Classname>::apply(f, *c, da);
-  }
-}
-
-//! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier
-    \copydoc apply(const GroupnameModifier*,const Classnames&)
-*/
-IMPEXPORT inline void apply(const GroupnameModifier* f,
-                            DerivativeAccumulator *da,
-                            const Classnames &ps) {
-  apply(f, da, ps.begin(), ps.end());
-}
-
-//! Apply a GroupnameModifier to each in the Classnames
-/** \relates GroupnameModifier
-    \copydoc apply(const GroupnameModifier*,const Classnames&)
-*/
-IMPEXPORT inline void apply(const GroupnameModifier* f,
-                            DerivativeAccumulator *da,
-                            GroupnameContainer *ps) {
-  apply(f, da, ps->classnames_begin(), ps->classnames_end());
-}
 
 //! A collection
 typedef std::vector<GroupnameModifier*> GroupnameModifiers;
+
+//! Create a functor which can be used with build in C++ and python commands
+/** For example, you can do
+    \code
+    std::for_each(particles.begin(), particles.end(),
+                  SingletonFunctor(new Transform(tr)));
+    \endcode
+    in C++ or
+    \verbatim
+    map(particles, SingletonFunctor(Transform(tr)))
+    \endverbatim
+    in python.
+   
+    \see IMP::GroupnameModifier
+ */
+class GroupnameFunctor {
+  Pointer<GroupnameModifier> f_;
+  DerivativeAccumulator *da_;
+public:
+  //! Store the GroupnameModifier and the optional DerivativeAccumulator
+  GroupnameFunctor(GroupnameModifier *f,
+                   DerivativeAccumulator *da=NULL): f_(f), da_(da){}
+
+  void operator()( Value p) const {
+    if (da_) {
+      IMP::internal::ContainerTraits<Classname>::apply(f_.get(), p, da_);
+    } else {
+      IMP::internal::ContainerTraits<Classname>::apply(f_.get(), p);
+    }
+  }
+};
+
+
+//! Return a functor which can be used to call the apply method
+
 
 IMP_END_NAMESPACE
 

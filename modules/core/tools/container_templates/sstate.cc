@@ -39,8 +39,13 @@ void GroupnameScoreState::do_after_evaluate(DerivativeAccumulator *da)
   if (!af_) return;
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
-  IMP::internal::ContainerTraits<Classname>
-    ::apply(af_.get(), v_, da);
+  if (da) {
+    IMP::internal::ContainerTraits<Classname>
+      ::apply(af_.get(), v_, da);
+  } else {
+    IMP::internal::ContainerTraits<Classname>
+      ::apply(af_.get(), v_);
+  }
   IMP_LOG(TERSE, "End GroupnamesScoreState::after_evaluate" << std::endl);
 }
 
