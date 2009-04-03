@@ -58,7 +58,7 @@ inline bool is_nan(const T& a) {
  */
 template <class Range, class Functor>
 void for_each(const Range &r, const Functor &f) {
-  return std::for_each(r.begin(), r.end(), f);
+  std::for_each(r.begin(), r.end(), f);
 }
 IMP_END_NAMESPACE
 
