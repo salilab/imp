@@ -12,6 +12,7 @@
 #include "config.h"
 
 #include <boost/version.hpp>
+#include <algorithm>
 
 #if BOOST_VERSION >= 103500
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -49,6 +50,16 @@ inline bool is_nan(const T& a) {
 #endif // BOOST_VERSION
 }
 
+
+
+//! A version of std::for_each which works with ranges
+/** This is needed to apply the functor to a range which is a temporary
+    object, since you can't call both begin and end on it.
+ */
+template <class Range, class Functor>
+void for_each(const Range &r, Functor &f) {
+  return std::for_each(r.begin(), r.end(), f);
+}
 IMP_END_NAMESPACE
 
 #endif  /* IMP_UTILITY_H */
