@@ -44,7 +44,7 @@ public:
     vec_[0] = x;
   }
 
-  //! Initialize the 2-vector from separate x,y values.
+  //! Initialize a 2-vector from separate x,y values.
   VectorD(double x, double y) {
 #ifdef IMP_SWIG_WRAPPER
     IMP_check(D==2, "Need " << D << " to construct a "
@@ -56,7 +56,7 @@ public:
     vec_[1] = y;
   }
 
-  //! Initialize the 2-vector from separate x,y values.
+  //! Initialize a 3-vector from separate x,y,z values.
   VectorD(double x, double y, double z) {
 #ifdef IMP_SWIG_WRAPPER
     IMP_check(D==3, "Need " << D << " to construct a "
@@ -69,7 +69,7 @@ public:
     vec_[2] = z;
   }
 
-  //! Initialize the 2-vector from separate x,y values.
+  //! Initialize a 4-vector from separate w,x,y,z values.
   VectorD(double w, double x, double y, double z) {
 #ifdef IMP_SWIG_WRAPPER
     IMP_check(D==4, "Need " << D << " to construct a "
