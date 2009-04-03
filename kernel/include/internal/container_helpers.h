@@ -41,7 +41,7 @@ struct ContainerTraits<Particle> {
   static void apply(const SM *ss,
                     Particle *p,
                     DerivativeAccumulator *da) {
-    ss->apply(p, da);
+    ss->apply(p, *da);
   }
 };
 
@@ -68,7 +68,7 @@ struct ContainerTraits<ParticlePair> {
   static void apply(const PM *ss,
                     const ParticlePair &p,
                     DerivativeAccumulator *da) {
-    ss->apply(p.first, p.second, da);
+    ss->apply(p.first, p.second, *da);
   }
 };
 

@@ -101,6 +101,9 @@ namespace IMP {
   IMP_CONTAINER_SWIG(Model, ScoreState, score_state)
   IMP_CONTAINER_SWIG(Model, Restraint, restraint)
   IMP_CONTAINER_SWIG(Optimizer, OptimizerState, optimizer_state)
+
+  IMP_OWN_CONSTRUCTOR(SingletonFunctor)
+  IMP_OWN_CONSTRUCTOR(PairFunctor)
 }
 
 %feature("ref")   Particle "IMP::internal::own($this);"

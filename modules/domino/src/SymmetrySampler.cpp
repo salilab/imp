@@ -9,6 +9,7 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/core/Transform.h>
+#include <IMP/utility.h>
 IMPDOMINO_BEGIN_NAMESPACE
 //  virtual void show(std::ostream& out = std::cout) const {}
 
@@ -73,9 +74,9 @@ void SymmetrySampler::reset_placement(const CombState *cs) {
   for (CombData::const_iterator it = cs->get_data()->begin();
         it != cs->get_data()->end(); it++) {
     p = it->first;
-    IMP_LOG_WRITE(VERBOSE,p->show());
-    apply(make_pointer(new core::Transform(ref_[p])),
-          core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)));
+    IMP_LOG_WRITE(VERBOSE,p->show(IMP_STREAM));
+    for_each(core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)),
+             SingletonFunctor(new core::Transform(ref_[p])));
     IMP_LOG(VERBOSE,"end loop iteration"<<std::endl);
   }
   IMP_LOG(VERBOSE,"SymmetrySampler:: end reset placement"<<std::endl);
@@ -98,8 +99,8 @@ void SymmetrySampler::move2state(const CombState *cs) {
     algebra::Transformation3D tr
       =compose(algebra::rotation_in_radians_about_axis(cyl_.get_direction(),
                                                        angle),t);
-    apply(make_pointer(new core::Transform(tr)),
-          core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)));
+    for_each(core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)),
+             SingletonFunctor(new core::Transform(tr)));
     ref_[p]= compose(algebra::rotation_in_radians_about_axis(
                      cyl_.get_direction(),angle),t).get_inverse();
  //    std::stringstream name;

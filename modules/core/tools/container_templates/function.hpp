@@ -67,7 +67,7 @@ typedef std::vector<GroupnameModifier*> GroupnameModifiers;
     map(particles, SingletonFunctor(Transform(tr)))
     \endverbatim
     in python.
-   
+
     \see IMP::GroupnameModifier
  */
 class GroupnameFunctor {
