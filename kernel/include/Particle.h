@@ -168,7 +168,7 @@ public:
       \param[in] value Amount to add to the derivative.
       \param[in] da The DerivativeAccumulator to scale the value.
    */
-  void add_to_derivative(FloatKey name, Float value,
+  void add_to_derivative(FloatKey key, Float value,
                          const DerivativeAccumulator &da);
 
   /** Set whether this float attribute will be changed by
