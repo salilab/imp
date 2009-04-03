@@ -93,6 +93,9 @@ public:
   //! Set the current orientation and translation
   void set_transformation(const IMP::algebra::Transformation3D &tr);
 
+  //! Get whether the rigid body coordinates are optimized
+  bool get_coordinates_are_optimized() const;
+
   //! Set whether the rigid body coordinates are optimized
   void set_coordinates_are_optimized(bool tf,
                                      bool snapping=false);
