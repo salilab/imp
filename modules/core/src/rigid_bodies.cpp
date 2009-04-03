@@ -200,6 +200,15 @@ algebra::VectorD<4> RigidBodyDecorator::get_rotational_derivatives() const {
   return v;
 }
 
+bool RigidBodyDecorator::get_coordinates_are_optimized() const {
+  for (unsigned int i=0; i< 4; ++i) {
+    if(!get_particle()
+       ->get_is_optimized(internal::rigid_body_data().quaternion_[i]))
+      return false;
+  }
+  return XYZDecorator::get_coordinates_are_optimized();
+}
+
 void RigidBodyDecorator::set_coordinates_are_optimized(bool tf, bool snapping) {
   bool body, member;
   if (snapping) {
