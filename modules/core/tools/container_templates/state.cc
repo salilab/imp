@@ -11,6 +11,7 @@
  */
 
 #include "IMP/core/GroupnamesScoreState.h"
+#include <utility>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,7 +30,8 @@ void GroupnamesScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  apply(f_.get(), c_.get());
+  std::for_each(c_->classnames_begin(), c_->classnames_end(),
+                GroupnameFunctor(f_));
   IMP_LOG(TERSE, "End GroupnamesScoreState::update" << std::endl);
 }
 
@@ -39,7 +41,8 @@ void GroupnamesScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  apply(af_.get(), da, c_.get());
+  std::for_each(c_->classnames_begin(), c_->classnames_end(),
+                GroupnameFunctor(af_, da));
   IMP_LOG(TERSE, "End GroupnamesScoreState::after_evaluate" << std::endl);
 }
 
