@@ -24,7 +24,7 @@ IMPCOREEXPORT algebra::Vector3D centroid(const Particles &ps);
 #ifndef IMP_NO_DEPRECATED
 //! Transform a molecule
 /**
-   \deprecated use apply(make_pointer(core::Transform(t)), ps) instead
+   \deprecated see SingletonFunctor for a replacement
  */
 IMPCOREEXPORT
 void transform(const Particles &ps,
