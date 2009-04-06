@@ -7,14 +7,19 @@
  There are several key concepts in \imp:
   - Representation: all data is stored as attributes of an IMP::Particle
     - \ref decorators "Decorators" ease use of the particles and help
-    maintain invariants
+    maintain invariants, such as ensuring that a bond is internally consistent
+    - IMP::ScoreState objects can be used to maintain representational invariants such
+    as a particle being the centroid of other particles or a set of particles moving as
+    a rigid body.
   - Scoring:
-    - a IMP::Restraint is used to compute the score of some subset of the particles
+    - a IMP::Restraint is used to compute the score of the current configuration of some subset of the Particles. The total score is the sum of the various restraint scores.
     - IMP::ScoreState objects compute maintain high level information about the particles (such as which particles are close to one another)
-  - an IMP::Optimizer optimizes the Particles with respect to the Restraints
+  - an IMP::Optimizer optimizes the Particles with respect to the Restraints by changing the Particle attribute values.
 
 
   - The IMP::Model holds the particles, restraints, and score states.
+    - It also ensures that the IMP::ScoreState objects are properly called when computing
+    the score of the current configuration.
 
 
 \section i05 Restraints
