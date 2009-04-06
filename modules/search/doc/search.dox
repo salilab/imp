@@ -1,14 +1,14 @@
 /** \namespace IMP::search
-\brief IMP.search provides structures to %search lists of particles. 
+\brief This module provides structures to %search lists of particles. 
 
 \author Daniel Russel
 
 \par Overview
-IMP.search provides structures to perform efficient searches
+%IMP.%search provides structures to perform efficient searches
 over lists of particles.
 
 \par Publications
-IMP.search is part of the main IMP package.
+%IMP.%search is part of the main IMP package.
 
 \par License
 To be determined.

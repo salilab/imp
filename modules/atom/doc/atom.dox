@@ -1,13 +1,13 @@
 /** \namespace IMP::atom
-\brief IMP.atom contains functionality for dealing with atoms and proteins. 
+\brief %IMP.%atom contains functionality for dealing with atoms and proteins. 
 
 \author Ben Webb, Daniel Russel, Dina Schneidman
 
 \par Overview
-IMP.atom provides a variety of functionality for loading, creating, manipulating and scoring atomic structures.
+%IMP.%atom provides a variety of functionality for loading, creating, manipulating and scoring atomic structures.
 
 \par Publications
-IMP.atom part of the \imp distribution.
+%IMP.%atom part of the \imp distribution.
 
 \par License
 To be determined.

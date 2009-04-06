@@ -1,17 +1,17 @@
 /** \namespace IMP::display
-\brief This module provides support for displaying \imp data in various ways. 
+\brief This module provides support for displaying and exporting \imp data in various ways. 
 
 \author Daniel Russel
 
 \par Overview
-IMP.display provides code to write various file formats for displaying data
+%IMP.%display provides code to write various file formats for displaying data
 from \imp optimizations. The display::Writer classes provides the base
 class for objects which write to specific file formats and the
 display::Geometry and display::GeometryExtractor provide means of describing
 geometry.
 
 \par Publications
-IMP.display is covered by the main \imp publications.
+%IMP.%display is covered by the main \imp publications.
 
 \par License
 To be determined.
