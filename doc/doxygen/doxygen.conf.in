@@ -181,7 +181,7 @@ TAB_SIZE               = 2
 
 ALIASES                = "command{1}=\code \1 \endcode" \
                          "salilab{2}=<a href=\"https://salilab.org/\1\"><b>\2</b></a>" \
-                         "external{2}=<a href=\"https://\1\"><b>\2</b></a>" \
+                         "external{2}=<a href=\"http://\1\"><b>\2</b></a>" \
                          "imp=\p %IMP" \
                          "wiki{2}=<a href=\"https://salilab.org/imp/wiki/\1/\"><b>\2</b></a>" \
                          "string{1}=<tt>\1</tt>" \
@@ -800,7 +800,7 @@ HTML_FOOTER            = footer.html
 # the style sheet file to the HTML output directory, so don't put your own 
 # stylesheet in the HTML output directory as well, or it will be erased!
 
-HTML_STYLESHEET        = 
+HTML_STYLESHEET        = ../../website/html/imp.css
 
 # If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, 
 # files or namespaces will be aligned in HTML using tables. If set to 
