@@ -94,7 +94,7 @@ window.onload = linkEmail;
 </div>
 
 
-<div id="headerline">
+<div id="impheaderline">
 </div>
 
 <div id="container">
