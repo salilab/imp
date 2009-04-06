@@ -6,7 +6,7 @@ body {
    margin-right: 20px;
    margin-left: 20px;
    font-family: Arial, Helvetica, sans-serif;
-   font-size: 80%;
+   font-size: 100%;
    color: #666666;
 }
 
@@ -32,14 +32,15 @@ h3 {
 
 h4 {
    font-weight: bold;
-   font-size: 110%;
+   font-size: 105%;
+   color: #FF7C02;
 }
 
 img {
    border: 0px;
 }
 
-a {
+/*a {
    color: #386B81;
    text-decoration: underline;
 }
@@ -47,6 +48,43 @@ a {
 a:hover, a:active {
    color: #FF7C02;
    text-decoration: underline;
+}*/
+
+a {
+	color: #153788;
+        text-decoration: none;
+}
+
+.contents a:visited {
+	color: #1b77c5;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a.qindex {
+/*	font-weight: bold;*/
+}
+
+a.qindexHL {
+/*	font-weight: bold;*/
+	background-color: #6666cc;
+	color: #ffffff;
+	border: 1px double #9295C2;
+}
+
+a.el {
+/*	font-weight: bold;*/
+}
+
+a.elRef {
+}
+
+a.code {
+}
+
+a.codeRef {
 }
 
 #impnav {
