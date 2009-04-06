@@ -79,13 +79,13 @@ window.onload = linkEmail;
 
 <center>
 
-<div id="nav">
-   <table class="tnav">
+<div id="impnav">
+   <table class="imptnav">
       <tr>
          <td><a href="<? echo $GLOBALS["home"]; ?>">
              <img src="images/imp_logo.png" alt="IMP logo"></a></td>
          <td>
-            <div id="links">
+            <div id="implinks">
                <?PHP GetLinks(); ?>
             </div>
          </td>
