@@ -1,13 +1,13 @@
 /** \namespace IMP::domino
-\brief IMP.domino provides a cool optimizer. 
+\brief %IMP.%domino provides a cool optimizer. 
 
 \author Keren Lasker
 
 \par Overview
-IMP.domino provides a cool optimizer.
+%IMP.%domino provides a cool optimizer.
 
 \par Publications
-IMP.domino is covered by the main \imp publications.
+%IMP.%domino is covered by the main \imp publications.
 
 \par License
 To be determined.

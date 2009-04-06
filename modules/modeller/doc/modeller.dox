@@ -1,19 +1,19 @@
 /** \namespace IMP::modeller
-\brief IMP.modeller contains functionality for integrating Modeller with IMP. 
+\brief %IMP.%modeller contains functionality for integrating Modeller with IMP. 
 
 \author Daniel Russel and Ben Webb
 
 \par Overview
-IMP.modeller supports integration of modeller with IMP. It
+%IMP.modeller supports integration of modeller with IMP. It
 also provides PDB reading support. See
 \external{http://salilab.org/modeller/, the Modeller page}
 for more information about Modeller.
 
 \par Publications
-IMP.modeller is part of the main IMP package.
+%IMP.%modeller is part of the main IMP package.
 
 \par License
 Modeller itself is commercial, but free for academic users. See \external{http://salilab.org/modeller/, the Modeller page} for
-more information about licensing Modeller. The IMP.modeller module's library
+more information about licensing Modeller. The %IMP.%modeller module's library
 is to be determined.
 */

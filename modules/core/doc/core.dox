@@ -1,19 +1,19 @@
 /** \namespace IMP::core
 
-\brief IMP.core contains basic functionality that is
+\brief %IMP.%core contains basic functionality that is
 expected to be used by a wide variety of \imp users. 
 
 \author Daniel Russel and Ben Webb
 
 \par Overview
-IMP.core contains basic functionality that is
+%IMP.%core contains basic functionality that is
 expected to be used by a wide variety of \imp users. The classes in it
 should not directly incorporate experimental data and instead should
 provide basic building blocks for making restraints and manipulating
-Particles.
+Particle objects.
 
 \par Publications
-IMP.core is covered by the main \imp publications.
+%IMP.%core is covered by the main \imp publications.
 
 \par License
 To be determined.

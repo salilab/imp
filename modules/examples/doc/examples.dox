@@ -2,13 +2,13 @@
 
  \author Daniel Russel
 
-\brief IMP.examples provides %examples showing how to implement various types of objects and functionality. 
+\brief %IMP.%examples provides %examples showing how to implement various types of objects and functionality. 
 
 \par Overview
-IMP.examples provides %examples showing how to implement things.
+%IMP.%examples provides %examples showing how to implement things.
 
 \par Publications
-IMP.examples is part of the main \imp distribution.
+%IMP.%examples is part of the main \imp distribution.
 
 \par License
 To be determined.

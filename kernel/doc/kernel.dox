@@ -1,6 +1,6 @@
 /**
 \namespace IMP
-\brief The IMP library.
+\brief The \imp kernel provides base classes and key shared functionality.
 \author Daniel Russel, Ben Webb, Keren Lasker
 
 \par Overview
