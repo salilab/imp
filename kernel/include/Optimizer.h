@@ -35,9 +35,9 @@ typedef std::vector<OptimizerState*> OptimizerStates;
     stopping conditions as appropriate.
 
     \htmlonly
-    The interaction between the Model, Optimizer, Particles, Restraints
-    and ScoreStates  in a typical optimization loop is shown in the following
-    UML diagram:
+    The interaction between the Model, Optimizer, Particle, Restraint
+    and ScoreState objects  in a typical optimization loop is shown in the
+    following UML diagram:
      <img src="http://www.websequencediagrams.com/cgi-bin/cdraw?lz=cGFydGljaXBhbnQgT3B0aW1pemVyCgAKDE1vZGVsAAUNU2NvcmVTdGF0ZQAcDVJlc3RyYWludAAyDVAAXAVsZQpsb29wIG8AXQZhdGlvbiBzdGVwcwoAbQktPgBmBTogZXZhbHVhdGUKYWN0aXZhdGUAfQcAPQVhbGwAdgtzCgCBGgUtPgCBCgo6IGJlZm9yZV8ANRIAgS4LAIEPCAAsDmF0dHJpYnV0ZSB2YWx1ZXMKbm90ZSByaWdodCBvZgCBbQxjb21wdXRlIGludmFyaWFudHMKYW5kIHVwZGEAEQV0ZXJuYWwKcwCCIQVlbmQgbm90ZQoAgjAKLT4AghEIOiBtb2RpZmllZAB1CnMKZGUAgSIUZW5kAIF8CgCCZwkAgXwJAIJ5CQCCMBQAgxUKAIFyCgAmCwCBXBUAg0kKICAAgWoIc2NvcmUKICBhbmQgZGVyaXZhdGl2ZXMAgVsKAIN_CQCBWAwAHgwAFgsAg2sHcgCEMwgAVwcAgXMLAIRMCgCBcA0Ag2QfYWZ0ZXIAg040AIFHCwCBXQUAhAEHAIMjFgCBcwwAgxcaAIUbBwCGVQk6IHRvdGFsAIFZEgCGZAYAhRAKACcLAIJdDACFBg4AhysKAIUMBwoAhlMRAIR2CgCGYQsAhHUKAIVkB2VuZA&s=modern-blue"></img>
      \endhtmlonly
  */
