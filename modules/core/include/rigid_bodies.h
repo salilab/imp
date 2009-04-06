@@ -64,12 +64,14 @@ public:
   //! Create a new rigid body, but do not add score states
   /** \param[in] p The particle to make into a rigid body
       \param[in] members The particles to use as members of the rigid body
+
       The initial position and orientation of p is computed, as are the
       relative positions of the member particles. The member particles
-      do not already need to RigidMemberDecorator particles.
+      do not already need to be RigidMember particles, only
+      XYZ particles.
 
-      Use the function IMP::core::create_rigid_body() to add the needed
-      score states to the model.
+      Use the function IMP::core::create_rigid_body() to create the needed
+      score states in order to keep the rigid body rigid.
    */
   static RigidBodyDecorator create(Particle *p,
                                    const Particles &members);
