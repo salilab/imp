@@ -17,13 +17,13 @@
    pre-build binary.
 
    Non-programmers might want to read 
-   \external{http://docs.python.org/tutorial/introduction.html, the official introduction to Python}
+   \external{docs.python.org/tutorial/introduction.html, the official introduction to Python}
    and
-   \external{http://www.rexx.com/~dkuhlman/python_101/python_101.html, Python 101}
+   \external{www.rexx.com/~dkuhlman/python_101/python_101.html, Python 101}
    to acquaint themselves with the basics of python.
 
    Users who have programmed but are not familiar with Python should take a look
-   at \external{http://diveintopython.org/toc/index.html, Dive into Python}, especially
+   at \external{diveintopython.org/toc/index.html, Dive into Python}, especially
    chapters 1-6, and 15-18.
  
  \section developers IMP developers
