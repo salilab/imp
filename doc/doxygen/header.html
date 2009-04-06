@@ -1,6 +1,62 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <title>$title</title>
-<link href="doxygen.css" rel="stylesheet" type="text/css">
+<link href="imp.css" rel="stylesheet" type="text/css">
 <link href="tabs.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript"><!--
+/* e-mail obfuscation adapted from code by Jason Johnston:
+   http://lojjic.net/blog/20030828-142754.rdf.html
+*/
+function linkEmail() {
+  if(!document.getElementsByTagName) return;
+  var allElts = document.getElementsByTagName("*");
+  if(allElts.length == 0 && document.all) 
+    allElts = document.all; //hack for IE5
+  for(var i=0; i<allElts.length; i++) {
+    var elt = allElts[i];
+    var className = elt.className || elt.getAttribute("class") 
+      || elt.getAttribute("className");
+    if(className && className.match(/\be-mail\b/)
+        && elt.firstChild.nodeType == 3) {
+      var alls = elt.firstChild.nodeValue;
+      fs= alls.split("|")
+      addr = fs[0].replace(/\ at\ /i, "@")
+        .replace(/\ (dot|period)\ /gi, ".");
+      var lnk = document.createElement("a");
+      lnk.setAttribute("href","mailto:"+addr);
+      lnk.appendChild(document.createTextNode(fs[1]));
+      elt.replaceChild(lnk, elt.firstChild);
+    }
+  }
+}
+window.onload = linkEmail;
+-->
+</script>
 </head><body>
+<center>
+<div id="impnav">
+   <table class="imptnav">
+      <tr>
+         <td><a href="http://www.integrativemodeling.org/">
+             <img src="http://www.integrativemodeling.org/images/imp_logo.png" alt="IMP logo" border=0></a></td>
+         <td>
+            <div id="implinks">
+             <ul>
+               <li><a href="http://www.integrativemodeling.org/">imp</a></li>
+               <li><a href="https://salilab.org/imp/doc/doxygen/">doc</a></li>
+               <li><a href="https://salilab.org/imp/wiki/">wiki</a></li>
+               <li><a href="http://www.integrativemodeling.org/pubs.html">publications</a></li>
+               <li><a href="http://www.integrativemodeling.org/groups.html">groups</a></li>
+            </ul>
+            </div>
+         </td>
+      </tr>
+   </table>
+</div>
+
+
+<div id="impheaderline">
+</div>
+
+</center>
