@@ -1,4 +1,4 @@
-WEB=~www/html/imp/
+WEB=~/public_html/unstructured/imp/
 
 .PHONY: all
 
