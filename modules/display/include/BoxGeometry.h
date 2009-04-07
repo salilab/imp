@@ -16,15 +16,14 @@
 #include <IMP/SingletonContainer.h>
 IMPDISPLAY_BEGIN_NAMESPACE
 
-//! Display a bounding box
-/** Defined by the min and max corners.
+//! Display an axis aligned wire frame box
+/** The box is axis aligned and defined by the min and max corners.
  */
 class IMPDISPLAYEXPORT BoxGeometry: public CompoundGeometry
 {
   algebra::Vector3D min_, max_;
   Color color_;
 public:
-  //! XXXX
   BoxGeometry(const algebra::Vector3D &min,
               const algebra::Vector3D &max,
               const Color &color=Color());

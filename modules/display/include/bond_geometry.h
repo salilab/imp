@@ -19,14 +19,14 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Represent a bond with segment
-/**
+/** A bond is represented by a segment with a given, constant
+    radius. The name is taken from the name of the bond particle.
  */
 class IMPDISPLAYEXPORT BondGeometry: public Geometry
 {
   atom::BondDecorator d_;
   Float radius_;
 public:
-  //! Get the individual particles from the passed SingletonContainer
   BondGeometry(atom::BondDecorator d, Float radius=0);
 
   virtual ~BondGeometry();

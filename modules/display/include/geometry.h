@@ -39,50 +39,39 @@ public:
 
   virtual ~Geometry();
 
-  //! Return the dimension of the object
   virtual unsigned int get_dimension() const=0;
 
-  //! Return the ith vertex of the object
   virtual algebra::Vector3D get_vertex(unsigned int i) const=0;
 
-  //! Return the number of vertices of the object
   virtual unsigned int get_number_of_vertices() const=0;
 
-  //! Return the thickness of the object
   virtual Float get_size() const {
     return 0;
   }
 
-  //! Return a name for the object (or the empty string)
   std::string get_name() const {
     return name_;
   }
 
-  //! Return the color of the object
   virtual Color get_color() const {
     return default_color_;
   }
 
-  //! Set the default color
   void set_color(Color c) {
     default_color_= c;
   }
 
-  //! Set the name
   void set_name(std::string c) {
     name_= c;
   }
 
-  //! Write information about the object
   virtual void show(std::ostream &out= std::cout) const=0;
 
-  //! get the version info
   virtual VersionInfo get_version_info() const =0;
 };
 
 IMP_OUTPUT_OPERATOR(Geometry);
 
-//! Should be ref counted but swig objects
 typedef std::vector<Geometry* > Geometries;
 
 //! Produce some geometry from a particle
@@ -91,29 +80,23 @@ class IMPDISPLAYEXPORT CompoundGeometry: public RefCountedObject {
  public:
   CompoundGeometry();
   virtual ~CompoundGeometry();
-  //! Write information about the object
+
   virtual void show(std::ostream &out= std::cout) const{};
 
-  //! get the version info
   virtual VersionInfo get_version_info() const {return internal::version_info;}
 
-  //! Return a list of geometry objects
   virtual Geometries get_geometry() const =0;
 
-  //! Get the name of the geometry object
   const std::string &get_name() const {
     return name_;
   }
 
-  //! set the name of the geometry
   void set_name(std::string name) const {
     name=name_;
   }
 };
 IMP_OUTPUT_OPERATOR(CompoundGeometry);
 
-
-//! Should be ref counted but swig objects
 typedef std::vector<CompoundGeometry* > CompoundGeometries;
 
 
