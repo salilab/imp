@@ -3,13 +3,13 @@
 
 \author Daniel Russel
 
-\par Overview
+\overview
 %IMP.%search provides structures to perform efficient searches
 over lists of particles.
 
-\par Publications
-%IMP.%search is part of the main IMP package.
+\publications
+\standard_imp_publications
 
-\par License
-To be determined.
+\license
+\standard_imp_license
 */

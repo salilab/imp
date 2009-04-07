@@ -4,12 +4,12 @@
 
 \brief %IMP.%examples provides %examples showing how to implement various types of objects and functionality. 
 
-\par Overview
+\overview
 %IMP.%examples provides %examples showing how to implement things.
 
-\par Publications
-%IMP.%examples is part of the main \imp distribution.
+\publications
+\standard_imp_publications
 
-\par License
-To be determined.
+\license
+\standard_imp_license
 */

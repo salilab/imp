@@ -3,13 +3,13 @@
 \brief The \imp kernel provides base classes and key shared functionality.
 \author Daniel Russel, Ben Webb, Keren Lasker
 
-\par Overview
+\overview
 All kernel and module classes and functions should be in this namespace or
 a sub-namespace.
 
-\par Publications
-The kernel is covered by the main \imp publications.
+\publications
+\standard_imp_publications
 
-\par License
-To be determined.
+\license
+\standard_imp_license
  */

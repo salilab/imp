@@ -5,16 +5,16 @@ expected to be used by a wide variety of \imp users.
 
 \author Daniel Russel and Ben Webb
 
-\par Overview
+\overview
 %IMP.%core contains basic functionality that is
 expected to be used by a wide variety of \imp users. The classes in it
 should not directly incorporate experimental data and instead should
 provide basic building blocks for making restraints and manipulating
 Particle objects.
 
-\par Publications
-%IMP.%core is covered by the main \imp publications.
+\publications
+\standard_imp_publications
 
-\par License
-To be determined.
+\license
+\standard_imp_license
 */

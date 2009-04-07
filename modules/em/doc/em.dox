@@ -3,13 +3,13 @@
 
 \author Keren Lasker and Friedrich Foerster.
 
-\par Overview
+\overview
 %IMP.%em allows density maps to be used as restraints using
 the EMBED package (an external dependency).
 
-\par Publications
-%IMP.%em is covered by the main \imp publications.
+\publications
+\standard_imp_publications
 
-\par License
-To be determined.
+\license
+\standard_imp_license
 */
