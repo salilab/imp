@@ -24,7 +24,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-//! Simple D vector class
+/** */
 template <unsigned int D>
 class VectorD
 {
@@ -92,21 +92,18 @@ public:
 #endif
   }
 
-  //! \return A single component of this vector (0-D).
   double operator[](unsigned int i) const {
     IMP_assert(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
     return vec_[i];
   }
 
-  //! \return A single component of this vector (0-D).
   double& operator[](unsigned int i) {
     IMP_assert(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
     return vec_[i];
   }
 
-  //! \return the scalar product of two vectors.
   double scalar_product(const This &o) const {
     double ret=0;
     for (unsigned int i=0; i< D; ++i) {
@@ -115,49 +112,14 @@ public:
     return ret;
   }
 
-  //! scalar product
-  double operator*(const This &o) const {
-    return scalar_product(o);
-  }
-
-  //! product with scalar
-  VectorD operator*(double s) const {
-    This ret;
-    for (unsigned int i=0; i< D; ++i) {
-      ret.vec_[i] = vec_[i] * s;
-    }
-    return ret;
-  }
-
-  //! divide by a scalar
-  VectorD operator/(double s) const {
-    This ret;
-    for (unsigned int i=0; i< D; ++i) {
-      ret.vec_[i] = vec_[i] / s;
-    }
-    return ret;
-  }
-
-  //! negation
-  VectorD operator-() const {
-    This ret;
-    for (unsigned int i=0; i< D; ++i) {
-      ret.vec_[i] = -vec_[i];
-    }
-    return ret;
-  }
-
-  //! \return The square of the magnitude of this vector.
   double get_squared_magnitude() const {
     return scalar_product(*this);
   }
 
-  //! \return The magnitude of this vector.
   double get_magnitude() const {
     return std::sqrt(get_squared_magnitude());
   }
 
-  //! \return This vector normalized to unit length.
   VectorD get_unit_vector() const {
     IMP_assert(get_magnitude() != 0,
                "Cannot get a unit vector from a zero vector");
@@ -179,7 +141,34 @@ public:
     return true;
   }
 
-  //! \return Difference between two vectors.
+  double operator*(const This &o) const {
+    return scalar_product(o);
+  }
+
+  VectorD operator*(double s) const {
+    This ret;
+    for (unsigned int i=0; i< D; ++i) {
+      ret.vec_[i] = vec_[i] * s;
+    }
+    return ret;
+  }
+
+  VectorD operator/(double s) const {
+    This ret;
+    for (unsigned int i=0; i< D; ++i) {
+      ret.vec_[i] = vec_[i] / s;
+    }
+    return ret;
+  }
+
+  VectorD operator-() const {
+    This ret;
+    for (unsigned int i=0; i< D; ++i) {
+      ret.vec_[i] = -vec_[i];
+    }
+    return ret;
+  }
+
   VectorD operator-(const VectorD &o) const {
     This ret;
     for (unsigned int i=0; i< D; ++i) {
@@ -188,7 +177,6 @@ public:
     return ret;
   }
 
-  //! \return Sum of two vectors.
   VectorD operator+(const VectorD &o) const {
     This ret;
     for (unsigned int i=0; i< D; ++i) {
@@ -197,7 +185,6 @@ public:
     return ret;
   }
 
-  //! Accumulate the vector
   VectorD& operator+=(const VectorD &o) {
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] += o[i];
@@ -205,7 +192,6 @@ public:
     return *this;
   }
 
-  //! Subtract in place
   VectorD& operator-=(const VectorD &o) {
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] -= o[i];
@@ -213,7 +199,6 @@ public:
     return *this;
   }
 
-  //! Rescale the vector
   VectorD& operator/=(double f) {
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] /= f;
@@ -221,7 +206,6 @@ public:
     return *this;
   }
 
-  //! Rescale the vector
   VectorD& operator*=(double f) {
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] *= f;
@@ -246,6 +230,8 @@ private:
   double vec_[D];
 };
 
+#ifndef IMP_DOXYGEN
+
 template <unsigned int D>
 std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
   v.show(out);
@@ -260,7 +246,11 @@ std::istream &operator>>(std::istream &in, VectorD<D> &v) {
   return in;
 }
 
+#endif
+
 //! lexicographic comparison of two vectors
+/** \relates VectorD
+ */
 template <unsigned int D>
 int compare(const VectorD<D> &a, const VectorD<D> &b) {
   for (unsigned int i=0; i< D; ++i) {
@@ -270,13 +260,15 @@ int compare(const VectorD<D> &a, const VectorD<D> &b) {
   return 0;
 }
 
-//! product with scalar
+/** \relates VectorD */
 template <unsigned int D>
 inline VectorD<D> operator*(double s, const VectorD<D> &o) {
   return o*s;
 }
 
 //! compute the squared distance between two vectors
+/** \relates VectorD
+ */
 template <unsigned int D>
 double squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   double d, s = 0;
@@ -288,6 +280,8 @@ double squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 }
 
 //! compute the distance between two vectors
+/** \relates VectorD
+ */
 template <unsigned int D>
 double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   return std::sqrt(squared_distance(v1, v2));

@@ -13,7 +13,7 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-//! Segment3D
+/** */
 class IMPALGEBRAEXPORT Segment3D
 {
  public:
@@ -44,15 +44,18 @@ IMP_OUTPUT_OPERATOR(Segment3D)
 
 
 //! Get the distance between a segment and a point
+/** \relates Segment3D */
 IMPALGEBRAEXPORT double distance(const Segment3D &s, const Vector3D &p);
 
 //! Get the distance between two segments
+/** \relates Segment3D */
 IMPALGEBRAEXPORT double distance(const Segment3D &a, const Segment3D &b);
 
 //! Get the projected point on a segment
 /** It doesn't really make sense for a segment. I vote it goes away.
     This produces the wrong answer for points that don't project between
     the endpoints.
+    \relates Segment3D
  */
 IMPALGEBRAEXPORT Vector3D projection(const Segment3D &s, const Vector3D &p);
 

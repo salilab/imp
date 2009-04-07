@@ -15,9 +15,11 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
 class Transformation3D;
 Transformation3D compose(const Transformation3D &a,
                          const Transformation3D &b);
+#endif
 
 //! Simple 3D transformation class
 /** \see IMP::core::Transform
@@ -87,6 +89,8 @@ inline Transformation3D identity_transformation() {
          The x-axis lies on u-base.
          The y-axis is perpendicular to both x and z.
          The z-axis is perpendicular to the u-base , w-base plane
+
+   \relates Transformation3D
  */
 inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
                                                 const Vector3D &w,
@@ -108,6 +112,7 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   \param[in] point the rotation axis passes through the point
   \param[in] direction the direction of the rotation axis
   \param[in] angle the rotation angle in radians
+  \relates Transformation3D
 */
 inline Transformation3D
 rotation_in_radians_about_axis(const Vector3D &point,

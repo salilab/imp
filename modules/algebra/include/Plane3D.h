@@ -11,14 +11,12 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+/** */
 class IMPALGEBRAEXPORT Plane3D {
 public:
   Plane3D(){}
-  /** */
   Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane);
-  /** */
   Plane3D(double distance_to_plane ,const Vector3D &normal_to_plane);
-  /**  */
   Vector3D get_point_on_plane() const {return normal_*distance_;}
   const Vector3D &get_normal() const {return normal_;}
   //! Project the point onto the plane
@@ -44,6 +42,7 @@ private:
 
 
 //! Return the distance between a plane and a point in 3D
+/** \relates Plane3D */
 inline double distance(const Plane3D& pln, const Vector3D &p) {
   return (pln.get_projection(p)-p).get_magnitude();
 }

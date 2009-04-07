@@ -87,11 +87,13 @@ public:
   }
 };
 
+#ifndef IMP_DOXYGEN
 template <unsigned int D>
 std::ostream &operator<<(std::ostream &out, const GridIteratorD<D> &v) {
   v.show(out);
   return out;
 }
+#endif
 
 //! A Boost.Range over the vertices of a grid
 /** This range range the VectorD objects whose coordinates

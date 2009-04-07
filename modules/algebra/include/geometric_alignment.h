@@ -30,6 +30,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
     case.
 
     \throw ValueException if from.size() != to.size().
+    \relates Transformation3D
+    \see Vector3D
  */
 IMPALGEBRAEXPORT Transformation3D
 rigid_align_first_to_second(const std::vector<Vector3D> &from,
