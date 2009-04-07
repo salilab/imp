@@ -29,6 +29,7 @@
 
 //! Since swig doesn't support using, this redefines the geometry methods
 #define IMP_WRITER_ADD_GEOMETRY                                         \
+  public:                                                               \
   virtual void add_geometry(const IMP::display::Geometries &g) {        \
     Writer::add_geometry(g);                                            \
   }                                                                     \

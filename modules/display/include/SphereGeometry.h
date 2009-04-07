@@ -18,16 +18,12 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Represent a static sphere (or point)
-/**
+/** If the radius of the Sphere3D is 0, then point geometry is used instead.
  */
 class IMPDISPLAYEXPORT SphereGeometry: public Geometry
 {
   algebra::Sphere3D s_;
 public:
-  //! Create a static sphere or point
-  /** If the radius is skipped, it is a point. If the color is skipped,
-      the default color (gray) is used.
-  */
   SphereGeometry(const algebra::Sphere3D &s);
 
   virtual ~SphereGeometry();
