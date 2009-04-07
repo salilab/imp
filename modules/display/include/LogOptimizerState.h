@@ -21,7 +21,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Write geometry to a container periodically
 /** The State writes a series of files generated from a
-    printf-style format string.
+    printf-style format string. The added geometry objects
+    are stored by reference internally.
     \verbinclude log.py
     \ingroup log
  */
