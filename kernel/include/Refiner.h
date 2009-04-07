@@ -36,7 +36,7 @@ public:
   //! Refine the passed particle into a set of particles.
   /** As a precondition can_refine_particle(a) should be true.
    */
-  virtual const Particles get_refined(Particle *a) const;
+  virtual const Particles get_refined(Particle *a) const=0;
 
   //! Get the ith refined particle.
   /** As a precondition can_refine_particle(a) should be true.

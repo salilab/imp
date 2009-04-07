@@ -39,6 +39,15 @@ unsigned int ChildrenRefiner::get_number_of_refined(Particle *p) const
   return d.get_number_of_children();
 }
 
+const Particles ChildrenRefiner::get_refined(Particle *p) const {
+    HierarchyDecorator hd(p, traits_);
+    Particles ret(hd.get_number_of_children());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= hd.get_child(i).get_particle();
+    }
+    return ret;
+  }
+
 
 void ChildrenRefiner::show(std::ostream &out) const
 {
