@@ -262,12 +262,10 @@ public:
       && XYZDecorator::is_instance_of(p);
   }
 
-  /** get the stored type */
   AtomType get_type() const {
     return AtomType(get_particle()->get_value(get_type_key()));
   }
 
-  /** set the stored type */
   void set_type(AtomType t);
 
   IMP_DECORATOR_GET_SET_OPT(charge, get_charge_key(),
