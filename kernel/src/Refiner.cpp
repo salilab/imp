@@ -9,8 +9,5 @@
 
 IMP_BEGIN_NAMESPACE
 
-const Particles Refiner::get_refined(Particle *p) const {
-  return Particles(refined_begin(p), refined_end(p));
-}
 
 IMP_END_NAMESPACE

@@ -14,8 +14,6 @@ IMPCORE_BEGIN_NAMESPACE
 TableRefiner::TableRefiner( ){
 }
 
-TableRefiner::~TableRefiner(){}
-
 void TableRefiner::show(std::ostream &out) const {
   out << "TableRefiner" << std::endl;
 }
@@ -57,6 +55,12 @@ unsigned int TableRefiner::get_number_of_refined(Particle *p) const {
   IMP_assert(map_.find(p) != map_.end(),
              "Particle " << p->get_name() << " not found in map.");
   return map_.find(p)->second.size();
+}
+
+const Particles TableRefiner::get_refined(Particle *p) const {
+  IMP_assert(map_.find(p) != map_.end(),
+             "Particle is not found in table to refine");
+  return map_.find(p)->second;
 }
 
 IMPCORE_END_NAMESPACE

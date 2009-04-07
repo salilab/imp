@@ -20,8 +20,6 @@ FixedRefiner::FixedRefiner(const Particles &ps){
   set_particles(ps);
 }
 
-FixedRefiner::~FixedRefiner(){}
-
 void FixedRefiner::show(std::ostream &out) const {
   out << "FixedRefiner on " << get_number_of_particles() << " particles"
       << std::endl;
@@ -39,6 +37,10 @@ Particle* FixedRefiner::get_refined(Particle *, unsigned int i) const {
 unsigned int FixedRefiner::get_number_of_refined(Particle *) const {
   IMP_CHECK_OBJECT(this);
   return get_number_of_particles();
+}
+
+const Particles FixedRefiner::get_refined(Particle *p) const {
+  return Particles(particles_begin(), particles_end());
 }
 
 IMPCORE_END_NAMESPACE

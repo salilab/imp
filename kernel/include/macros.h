@@ -257,6 +257,7 @@ public:                                                                 \
     - bool get_can_refine(Particle*) const;
     - unsigned int get_number_of_refined(Particle *) const;
     - Particle* get_refined(Particle *, unsigned int) const;
+    - const Particles get_refined(Particle *) const;
     - void show(std::ostream &out) const;
 
     \param[in] version_info The version info object to return
@@ -267,7 +268,7 @@ public:                                                                 \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual void show(std::ostream &out) const;                           \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
-  using Refiner::get_refined;                                           \
+  virtual const Particles get_refined(Particle *) const;                 \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
@@ -340,9 +341,9 @@ public:                                                      \
  */
 #define IMP_DECORATOR(Name, Parent)                                     \
 public:                                                                 \
-/** \note Should be private but SWIG accesses it through the comparison
+/* Should be private but SWIG accesses it through the comparison
     macros*/                                                            \
- typedef Name This;                                                     \
+IMP_NO_DOXYGEN(typedef Name This);                                      \
  /** \short The default constructor. This is used as a null value */    \
  Name(): Parent(){}                                                     \
  /** \short Construct from a Particle which has all needed attributes */\
@@ -475,11 +476,9 @@ const TraitsType &get_##traits_name() const {                            \
    \param[in] ReturnType The type to return from the get.
 */
 #define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)     \
-  /** \return the attribute value  */                                   \
   ReturnType get_##name() const {                                       \
     return static_cast<ReturnType>(get_particle()->get_value(AttributeKey)); \
   }                                                                     \
-  /** Set the attribute \param[in] t the value    */                    \
   void set_##name(ReturnType t) {                                             \
     get_particle()->set_value(AttributeKey, t);                         \
   }
@@ -497,13 +496,11 @@ const TraitsType &get_##traits_name() const {                            \
  */
 #define IMP_DECORATOR_GET_SET_OPT(name, AttributeKey, Type,             \
                                   ReturnType, default_value)            \
-  /** \return the attribute value*/                                     \
   ReturnType get_##name() const {                                       \
     IMP_DECORATOR_GET(AttributeKey, Type,                               \
                       return static_cast<ReturnType>(VALUE),            \
                       return default_value);                            \
   }                                                                     \
-  /** \param[in] t the value to set the attribute to*/                  \
   void set_##name(ReturnType t) {                                       \
     IMP_DECORATOR_SET(AttributeKey, t);                                 \
   }
@@ -551,11 +548,9 @@ private:                                                                \
    return traits.add_required_attributes(p);                            \
  }                                                                      \
 protection:                                                             \
- /** \brief Get the ith member*/                                        \
  ExternalType get_##name(unsigned int i) const {                        \
    return traits.wrap(traits.get_value(get_particle(), i));             \
  }                                                                      \
- /** \brief Get the all the members*/                                   \
  Particles get_##name##_particles() const {                             \
    Particles ret(get_number_of_##plural());                             \
    for (unsigned int i=0; i< ret.size(); ++i) {                         \
@@ -563,11 +558,9 @@ protection:                                                             \
    }                                                                    \
    return ret;                                                          \
  }                                                                      \
- /** \brief Get the total number of them*/                              \
  unsigned int get_number_of_##plural() const {                          \
    return traits.get_size(get_particle());                              \
  }                                                                      \
- /** \brief Add t at the end */                                         \
  unsigned int add_##name(ExternalType t) {                              \
    traits.audit_value(t);                                               \
    unsigned int i= traits.push_back(get_particle(),                     \
@@ -575,7 +568,6 @@ protection:                                                             \
    traits.on_add(get_particle(), t, i);                                 \
    return i;                                                            \
  }                                                                      \
- /** Add t at a certain position */                                     \
  void add_##name##_at(ExternalType t, unsigned int idx) {               \
    traits.audit_value(t);                                               \
    traits.insert(get_particle(),                                        \
@@ -588,7 +580,6 @@ protection:                                                             \
                       i-1, i);                                          \
    }                                                                    \
  }                                                                      \
- /** Remove t from the array */                                         \
  void remove_##name(ExternalType t) {                                   \
    traits.audit_value(t);                                               \
    unsigned int idx= traits.get_index(get_particle(), t);               \
