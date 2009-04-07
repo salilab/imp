@@ -47,7 +47,7 @@ inline bool get_has_required_attributes_for_body(Particle *p) {
       if (!p->has_attribute(rigid_body_data().quaternion_[i])) return false;
   }
   for (unsigned int i=0; i< 3; ++i) {
-    if (!p->has_attribute(XYZDecorator::get_xyz_keys()[i]))
+    if (!p->has_attribute(XYZDecorator::get_coordinate_key(i)))
       return false;
   }
   return true;
@@ -61,7 +61,7 @@ get_has_required_attributes_for_member(Particle *p) {
     if (!p->has_attribute(rigid_body_data().child_keys_[i])) return false;
   }
   for (unsigned int i=0; i< 3; ++i) {
-    if (!p->has_attribute(XYZDecorator::get_xyz_keys()[i]))
+    if (!p->has_attribute(XYZDecorator::get_coordinate_key(i)))
       return false;
   }
   return true;

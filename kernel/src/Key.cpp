@@ -7,6 +7,8 @@
 
 #include "IMP/Key.h"
 #include "IMP/exception.h"
+#include "IMP/base_types.h"
+#include "IMP/internal/AttributeTable.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -27,10 +29,21 @@ void KeyData::show(std::ostream &out) const
   }
 }
 
+namespace {
+  struct KeyTable: public std::map<unsigned int, KeyData> {
+    KeyTable() {
+      unsigned int fk= FloatKey::get_ID();
+      operator[](fk).add_key("x");
+      operator[](fk).add_key("y");
+      operator[](fk).add_key("z");
+    }
+  };
+};
+
 IMPEXPORT KeyData& get_key_data(unsigned int index) {
-  static std::map<unsigned int, KeyData> key_data;
+  static KeyTable key_data;
   if (key_data.find(index) == key_data.end()) {
-    IMP_LOG(VERBOSE, "Initializing keys with index " << index << std::endl);
+    IMP_LOG(TERSE, "Initializing key table with index " << index << std::endl);
   }
   return key_data[index];
 }

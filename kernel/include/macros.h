@@ -18,12 +18,14 @@
 #define IMP_ONLY_DOXYGEN(x)
 #endif
 
-
+#ifdef IMP_DOXYGEN
 //! Implement comparison in a class using a compare function
 /** The macro requires that This be defined as the type of the current class.
     The compare function should take a const This & and return -1, 0, 1 as
     appropriate.
  */
+#define IMP_COMPARISONS
+#else
 #define IMP_COMPARISONS                                                 \
   bool operator==(const This &o) const {                                \
     return (compare(o) == 0);                                           \
@@ -51,41 +53,49 @@
                "Ordering with uninitialized index is undefined");       \
     return !(compare(o) > 0);                                           \
   }
+#endif
 
+#ifdef IMP_DOXYGEN                                                         \
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
  */
+#define IMP_COMPARISONS_1(field)
+#else
 #define IMP_COMPARISONS_1(field)                                        \
-   bool operator==(const This &o) const {                         \
+  bool operator==(const This &o) const {                                \
     return (field== o.field);                                           \
   }                                                                     \
-   bool operator!=(const This &o) const {                         \
+  bool operator!=(const This &o) const {                                \
     return (field!= o.field);                                           \
   }                                                                     \
-   bool operator<(const This &o) const {                          \
+  bool operator<(const This &o) const {                                 \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (field< o.field);                                            \
   }                                                                     \
-   bool operator>(const This &o) const {                          \
+  bool operator>(const This &o) const {                                 \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (field> o.field);                                            \
   }                                                                     \
-   bool operator>=(const This &o) const {                         \
+  bool operator>=(const This &o) const {                                \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (field>= o.field);                                           \
   }                                                                     \
-   bool operator<=(const This &o) const {                         \
+  bool operator<=(const This &o) const {                                \
     IMP_assert(!is_default() && !o.is_default(),                        \
                "Ordering with uninitialized index is undefined");       \
     return (field<= o.field);                                           \
   }
+#endif
 
+#ifdef IMP_DOXYGEN
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
  */
+#define IMP_COMPARISONS_2(f0, f1)
+#else
 #define IMP_COMPARISONS_2(f0, f1)                                       \
   bool operator==(const This &o) const {                                \
     return (f0== o.f0 && f1==o.f1);                                     \
@@ -117,10 +127,15 @@
                "Ordering with uninitialized index is undefined");       \
     return operator<(o) || operator==(o);                               \
   }
+#endif
 
+
+#ifdef IMP_DOXYGEN
 //! Implement comparison in a class using field as the variable to compare
 /** The macro requires that This be defined as the type of the current class.
  */
+#define IMP_COMPARISONS_3(f0, f1, f2)
+#else
 #define IMP_COMPARISONS_3(f0, f1, f2)                                   \
   bool operator==(const This &o) const {                                \
     return (f0== o.f0 && f1==o.f1 && f2 == o.f2);                       \
@@ -156,21 +171,29 @@
                "Ordering with uninitialized index is undefined");       \
     return operator<(o) || operator==(o);                               \
   }
+#endif
 
+#ifdef IMP_DOXYGEN                                                         \
 //! Implement operator<< on class name, assuming it has one template argument
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
+#define IMP_OUTPUT_OPERATOR_1(name)
+#else
 #define IMP_OUTPUT_OPERATOR_1(name)                                     \
-template <class L>                                                      \
- inline std::ostream& operator<<(std::ostream &out, const name<L> &i)   \
+  template <class L>                                                    \
+  inline std::ostream& operator<<(std::ostream &out, const name<L> &i)  \
   {                                                                     \
     i.show(out);                                                        \
     return out;                                                         \
   }
+#endif
 
+#ifdef IMP_DOXYGEN
 //! Implement operator<< on class name, assuming it has two template arguments
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
+#define IMP_OUTPUT_OPERATOR_2(name)
+#else
 #define IMP_OUTPUT_OPERATOR_2(name)                                     \
   template <class L, class M>                                           \
   inline std::ostream& operator<<(std::ostream &out, const name<L, M> &i) \
@@ -178,16 +201,21 @@ template <class L>                                                      \
     i.show(out);                                                        \
     return out;                                                         \
   }
+#endif
 
+#ifdef IMP_DOXYGEN
 //! Implement operator<< on class name
 /** class name should also define the method std::ostream &show(std::ostream&)
  */
+#define IMP_OUTPUT_OPERATOR(name)
+#else
 #define IMP_OUTPUT_OPERATOR(name)                                       \
   inline std::ostream &operator<<(std::ostream &out, const name &i)     \
   {                                                                     \
     i.show(out);                                                 \
     return out;                                                  \
   }
+#endif
 
 //! Define the basic things you need for a Restraint.
 /** These are: show, evaluate, get_version_info and a empty destructor
@@ -259,7 +287,9 @@ public:                                                                 \
     - Particle* get_refined(Particle *, unsigned int) const;
     - const Particles get_refined(Particle *) const;
     - void show(std::ostream &out) const;
+    - an empty, private destructor
 
+    \param[in] Name The name of the class which this is adding methods to.
     \param[in] version_info The version info object to return
 
  */

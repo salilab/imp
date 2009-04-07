@@ -14,8 +14,10 @@
 #include <algorithm>
 IMPALGEBRA_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
 class Rotation3D;
 Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
+#endif
 
 //! 3D rotation class.
 /** Holds a three dimensional rotation compactly using a quaternion (4 numbers).
@@ -324,7 +326,6 @@ inline Rotation3D rotation_from_vector4d(const VectorD<4> &v) {
 }
 
 
-//! Compose two translations
 /** \relates Rotation3D
  */
 inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {

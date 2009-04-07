@@ -18,7 +18,6 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-//! Cone3D
 /**
 In general, a cone is a pyramid with a circular cross section.
 A right cone is a cone with its vertex above the center of its base.

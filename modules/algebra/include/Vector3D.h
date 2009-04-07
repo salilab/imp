@@ -25,13 +25,17 @@ typedef VectorD<3> Vector3D;
 typedef std::vector<Vector3D> Vector3Ds;
 
 //! Returns the vector product (cross product) of two vectors.
+/** \relates Vector3D
+ */
 inline Vector3D vector_product(const Vector3D& p1, const Vector3D& p2) {
   return Vector3D(p1[1]*p2[2]-p1[2]*p2[1],
                   p1[2]*p2[0]-p1[0]*p2[2],
                   p1[0]*p2[1]-p1[1]*p2[0]);
 }
 //! Return a vector that is perpendicular to the given vector
-/** Or, if you are Israeli, it is a vertical vector. */
+/** Or, if you are Israeli, it is a vertical vector.
+    \relates Vector3D
+*/
 inline Vector3D orthogonal_vector(const Vector3D &v) {
   if (v[0] != 0) {
     return Vector3D((-v[1]-v[2])/v[0],1,1);

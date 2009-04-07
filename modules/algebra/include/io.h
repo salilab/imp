@@ -13,33 +13,35 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+
+/** @name Simple geometric IO
+    These functions write geometry to text files as one line per
+    object where the line is "x y z [r]" (r is there for spheres).
+    Lines beginning with "#" are comments.
+
+    @{
+ */
 //! Write a set of vector3Ds to a file
-/** The file format is one vector per line, spaces between coordinates
-    lines with # are a comment.
-    \see read_pts
+/** \see read_pts
 */
 IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs, std::ostream &out);
 
 //! Read a set of vector3Ds from a file
-/** The file format is one vector per line, spaces between coordinates
-    lines with # are a comment.
-    \see write_pts
+/** \see write_pts
 */
 IMPALGEBRAEXPORT Vector3Ds read_pts(std::istream &in);
 
 //! Write a set of Sphere3Ds to a file
-/** The file format is one vector per line, spaces between coordinates
-    lines with # are a comment.
-    \see read_pts
+/** \see read_pts
 */
 IMPALGEBRAEXPORT void write_spheres(const Vector3Ds &vs, std::ostream &out);
 
 //! Read a set of Sphere3Ds from a file
-/** The file format is one vector per line, spaces between coordinates
-    lines with # are a comment.
-    \see write_pts
+/** \see write_pts
 */
 IMPALGEBRAEXPORT Sphere3Ds read_spheres(std::istream &in);
+
+/** @} */
 
 IMPALGEBRA_END_NAMESPACE
 

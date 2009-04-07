@@ -15,6 +15,13 @@
 #include "Sphere3DPatch.h"
 IMPALGEBRA_BEGIN_NAMESPACE
 
+/** @name Vector Generators
+
+    These functions generate VectorD or Vector3D objects using
+    a variety of distributions.
+    @{
+ */
+
 //! create a constant vector
 /** This is not the right name.
  */
@@ -198,6 +205,9 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3DPatch &sph,
 
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
                                          unsigned int number_of_points);
+
+
+/** @} */
 
 IMPALGEBRA_END_NAMESPACE
 
