@@ -26,7 +26,6 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT DiameterRestraint: public Restraint
 {
-  Pointer<Restraint> r_;
   Pointer<ScoreState> ss_;
   Pointer<Particle> p_;
   Float diameter_;
