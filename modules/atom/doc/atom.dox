@@ -3,12 +3,12 @@
 
 \author Ben Webb, Daniel Russel, Dina Schneidman
 
-\par Overview
+\overview
 %IMP.%atom provides a variety of functionality for loading, creating, manipulating and scoring atomic structures.
 
-\par Publications
-%IMP.%atom part of the \imp distribution.
+\publications
+\standard_imp_publications
 
-\par License
-To be determined.
+\license
+\standard_imp_license
 */

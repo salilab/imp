@@ -3,12 +3,12 @@
 
 \author Someone
 
-\par Overview
+\overview
 IMP.modulename provides a cool optimizer.
 
-\par Publications
-IMP.modulename is an internal module.
+\publications
+\publication{author, title, journal, year}
 
-\par License
+\license
 not licensed for distribution.
 */

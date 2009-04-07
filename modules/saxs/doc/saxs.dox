@@ -3,12 +3,12 @@
 
 \author Dina Schneidman and Seung Joong Kim
 
-\par Overview
+\overview
 %IMP.%saxs adds small angle x-ray scattering support to IMP.
 
-\par Publications
-%IMP.%saxs is covered by the main IMP publications.
+\publications
+\standard_imp_publications
 
-\par License
-To be determined.
+\license
+\standard_imp_license
 */

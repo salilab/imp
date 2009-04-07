@@ -3,13 +3,13 @@
 
 \author Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velazquez-Muriel
 
-\par Overview
+\overview
 %IMP.%algebra contains general purpose algebraic methods
 that are expected to be used by a wide variety of \imp users.
 
-\par Publications
-%IMP.%algebra is covered by the main \imp publications.
+\publications
+\standard_imp_publications
 
-\par License
-To be determined.
+\license
+\standard_imp_license
 */
