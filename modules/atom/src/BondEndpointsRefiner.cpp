@@ -31,6 +31,16 @@ unsigned int BondEndpointsRefiner::get_number_of_refined(Particle *p) const {
   return 2;
 }
 
+const Particles BondEndpointsRefiner::get_refined(Particle *p) const
+{
+  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  BondDecorator d(p);
+  Particles ps(2);
+  ps[0]= d.get_bonded(0).get_particle();
+  ps[1]= d.get_bonded(1).get_particle();
+  return ps;
+}
+
 void BondEndpointsRefiner::show(std::ostream &out) const
 {
   out << "BondEndpointsRefiner" << std::endl;

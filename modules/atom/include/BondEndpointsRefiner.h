@@ -26,8 +26,6 @@ public:
   //! no arguments
   BondEndpointsRefiner();
 
-  virtual ~BondEndpointsRefiner() {}
-
   IMP_REFINER(internal::version_info);
 };
 
