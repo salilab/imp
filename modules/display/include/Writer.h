@@ -46,7 +46,7 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
   }
 
  public:
-  //! Create a writer to a file
+  //! Create a writer opening the file with the passed name
   Writer(std::string name);
 
   // Ideally this would be const, but std::ostream::is_open is unfortunately
@@ -75,10 +75,8 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
   //! Write the data and close the file
   virtual ~Writer();
 
-  //! Add the geometry given a Geometry objec with the particle set
   virtual void add_geometry(Geometry *g)=0;
 
-  //! Add the geometry given a Geometry object with the particle set
   virtual void add_geometry(const Geometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
@@ -86,8 +84,6 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
     }
   }
 
-
-  //! Add the geometry given a CompoundGeometry object
   virtual void add_geometry(CompoundGeometry *cg) {
     Geometries g= cg->get_geometry();
     for (unsigned int i=0; i< g.size(); ++i) {
@@ -98,8 +94,6 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
     }
   }
 
-
-  //! Add a set of CompoundGeometry objects
   virtual void add_geometry(const CompoundGeometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
@@ -107,16 +101,14 @@ class IMPDISPLAYEXPORT Writer: public RefCountedObject
     }
   }
 
-
-  //! Get the version info
   virtual VersionInfo get_version_info() const=0;
 
-  //! Write info about the object
   virtual void show(std::ostream &out=std::cout) const=0;
 
-  //! Take actions before a file closes
+  IMP_NO_SWIG(protected:)
+  //! A hook for implementation classes to use to take actions on file close
   virtual void on_close()=0;
-  //! Take actions after a file opens
+  //! A hook for implementation classes to use to take actions on file open
   virtual void on_open()=0;
 };
 
