@@ -263,14 +263,17 @@ public:                                                                 \
     \param[in] version_info The version info object to return
 
  */
-#define IMP_REFINER(version_info)                                       \
+#define IMP_REFINER(Name, version_info)                                 \
   public:                                                               \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual void show(std::ostream &out) const;                           \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
-  virtual const Particles get_refined(Particle *) const;                 \
+  virtual const Particles get_refined(Particle *) const;                \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+  virtual IMP::VersionInfo get_version_info() const {                   \
+    return version_info;                                                \
+  }                                                                     \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 //! Use the swap_with member function to swap two objects
 #define IMP_SWAP(name) \

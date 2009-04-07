@@ -26,7 +26,7 @@ public:
   //! no arguments
   BondEndpointsRefiner();
 
-  IMP_REFINER(internal::version_info);
+  IMP_REFINER(BondEndpointsRefiner, internal::version_info);
 };
 
 IMPATOM_END_NAMESPACE

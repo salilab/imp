@@ -28,7 +28,7 @@ public:
   //! Store the set of particles
   FixedRefiner(const Particles &ps);
 
-  IMP_REFINER(internal::version_info)
+  IMP_REFINER(FixedRefiner, internal::version_info)
 };
 
 
