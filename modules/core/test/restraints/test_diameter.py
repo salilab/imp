@@ -20,7 +20,7 @@ class DistanceTests(IMP.test.TestCase):
         o= IMP.core.ConjugateGradients()
         o.set_model(m)
 
-        o.optimize(100)
+        o.optimize(1000)
 
         max=0
         for p0 in lc.get_particles():
