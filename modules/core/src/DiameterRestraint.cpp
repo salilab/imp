@@ -93,6 +93,9 @@ void DiameterRestraint::set_model(Model *m) {
     r_->set_was_owned(true);
   } else {
     IMP_LOG(TERSE, "Removing components of DiameterRestraint" << std::endl);
+    IMP_CHECK_OBJECT(r_.get());
+    IMP_CHECK_OBJECT(ss_.get());
+    IMP_CHECK_OBJECT(p_.get());
     m->remove_score_state(ss_);
     m->remove_particle(p_);
     ss_=NULL;
@@ -103,6 +106,7 @@ void DiameterRestraint::set_model(Model *m) {
 }
 
 Float DiameterRestraint::evaluate(DerivativeAccumulator *da) {
+  IMP_CHECK_OBJECT(r_.get());
   return r_->evaluate(da);
 }
 
