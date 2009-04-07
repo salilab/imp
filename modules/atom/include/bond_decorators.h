@@ -33,6 +33,7 @@ class BondedDecorator;
 
    \ingroup bond
    \see BondedDecorator
+   \see IMP::atom::get_internal_bonds()
  */
 class IMPATOMEXPORT BondDecorator: public Decorator
 {
