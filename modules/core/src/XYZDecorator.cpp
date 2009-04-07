@@ -17,12 +17,14 @@ void XYZDecorator::show(std::ostream &out, std::string prefix) const
   << get_y() << ", " << get_z() <<")";
 
 }
-
-const FloatKeys& XYZDecorator::get_xyz_keys() {
-  static FloatKey ks[3]={FloatKey("x"), FloatKey("y"), FloatKey("z")};
-  static FloatKeys fks(ks, ks+3);
+const FloatKeys&  XYZDecorator::get_xyz_keys() {
+  static FloatKey fka[]={IMP::internal::get_xyz_key(0),
+                         IMP::internal::get_xyz_key(1),
+                         IMP::internal::get_xyz_key(2)};
+  static FloatKeys fks(fka, fka+3);
   return fks;
 }
+
 
 Float distance(XYZDecorator a, XYZDecorator b)
 {

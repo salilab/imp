@@ -298,6 +298,14 @@ inline std::vector<typename Traits::Key>
 }
 
 
+
+inline FloatKey get_xyz_key(unsigned int i) {
+  // the table adds them straight away as "x", "y", "z"
+  // this way the compiler can inline them
+  return FloatKey(i);
+}
+
+
 } // namespace internal
 
 IMP_END_NAMESPACE

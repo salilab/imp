@@ -122,12 +122,13 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
   /** This is quite handy for initializing movers and things.
    */
   static const FloatKeys& get_xyz_keys();
-private:
+
   static FloatKey get_coordinate_key(unsigned int i) {
     IMP_check(i <3, "Out of range coordinate",
               IndexException);
-    return get_xyz_keys()[i];
+    return IMP::internal::get_xyz_key(i);
   }
+private:
 };
 
 IMP_OUTPUT_OPERATOR(XYZDecorator);

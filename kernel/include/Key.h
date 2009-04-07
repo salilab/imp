@@ -49,13 +49,10 @@ typedef std::vector<Name> Name##s
   struct Name: public ::IMP::KeyBase<ID> {                              \
   typedef ::IMP::KeyBase<ID> P;                                         \
   typedef Name This;                                                    \
-  /** */                                                                \
   Name(){};                                                             \
-  Name(unsigned int i): P(i){}                                          \
-  /** */                                                                \
+  IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                          \
   Name(const char *nm): P(nm){}                                         \
 };                                                                      \
-  /** */                                                                \
 typedef std::vector<Name> Name##s
 #endif
 
@@ -81,7 +78,7 @@ typedef std::vector<Name> Name##s
 
     \note Keys objects are ordered.
  */
-template <int ID>
+template <unsigned int ID>
 class KeyBase
 {
   int str_;
@@ -105,6 +102,11 @@ class KeyBase
 private:
  bool is_default() const;
 public:
+#ifndef DOXYGEN
+  static unsigned int get_ID() {
+    return ID;
+  }
+
   static const std::string get_string(int i)
   {
     if (static_cast<unsigned int>(i)
@@ -120,20 +122,24 @@ public:
   }
 
   typedef KeyBase<ID> This;
+#endif
 
-  //! make a default (uninitalized) key
+  //! make a default key in a well-defined null state
   KeyBase(): str_(-1) {}
 
 
   //! Generate a key from the given string
+  /** This operation can be expensive, so please cache the result.*/
   explicit KeyBase(const char *c) {
     str_= find_index(c);
   }
 
+#ifndef DOXYGEN
   explicit KeyBase(unsigned int i): str_(i) {
     IMP_assert(str_ >= 0, "Invalid initializer " << i);
     // cannot check here as we need a past end iterator
   }
+#endif
 
   //! Return true if there already is a key with that string
   static bool get_key_exists(std::string sc) {
@@ -153,12 +159,13 @@ public:
     out << "\"" << get_string() << "\"";
   }
 
-  //! Get a unique (with that type of key) int for the key
+#ifndef DOXYGEN
   unsigned int get_index() const {
     IMP_assert(!is_default(),
                "Cannot get index on defaultly constructed Key");
     return str_;
   }
+#endif
 
   //! Show all the keys of this type
   static void show_all(std::ostream &out);
@@ -198,26 +205,26 @@ public:
 };
 
 
-template <int ID>
+template <unsigned int ID>
 std::ostream &operator<<(std::ostream &out, KeyBase<ID> k) {
   k.show(out);
   return out;
 }
 
-template <int ID>
+template <unsigned int ID>
 inline bool KeyBase<ID>::is_default() const
 {
   return str_==-1;
 }
 
 
-template <int ID>
+template <unsigned int ID>
 inline void KeyBase<ID>::show_all(std::ostream &out)
 {
   internal::get_key_data(ID).show(out);
 }
 
-template <int ID>
+template <unsigned int ID>
 std::vector<std::string> KeyBase<ID>::get_all_strings()
 {
   std::vector<std::string> str;
