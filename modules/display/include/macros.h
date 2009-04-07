@@ -14,15 +14,17 @@
  */
 #define IMP_WRITER(Name, version)                                       \
   virtual void add_geometry(IMP::display::Geometry *g);                 \
-  void on_open();                                                       \
-  virtual void on_close();                                              \
   virtual IMP::VersionInfo get_version_info() const {return version;}   \
   virtual void show(std::ostream &out=std::cout) const;                 \
   ~Name(){                                                              \
-  if (get_stream_is_open()) {                                           \
+    if (get_stream_is_open()) {                                         \
     on_close();                                                         \
   }                                                                     \
-  }
+  }                                                                     \
+  IMP_NO_SWIG(protected:)                                               \
+ virtual void on_open();                                                \
+  virtual void on_close();                                              \
+
 
 
 //! Since swig doesn't support using, this redefines the geometry methods
