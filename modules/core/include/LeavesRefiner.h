@@ -26,13 +26,15 @@ class HierarchyTraits;
 */
 class IMPCOREEXPORT LeavesRefiner : public Refiner
 {
-
+  mutable std::map<Particle*, Particles> cache_;
   HierarchyTraits traits_;
 public:
   //! Create a refiner for a particular type of hierarchy
   LeavesRefiner(HierarchyTraits tr);
 
   virtual ~LeavesRefiner() {}
+
+  virtual const Particles get_refined(Particle *p) const;
 
   IMP_REFINER(internal::version_info);
 };

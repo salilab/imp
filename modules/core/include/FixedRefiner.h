@@ -30,6 +30,10 @@ public:
 
   virtual ~FixedRefiner();
 
+  virtual const Particles get_refined(Particle *p) const {
+    return Particles(particles_begin(), particles_end());
+  }
+
   IMP_REFINER(internal::version_info)
 };
 

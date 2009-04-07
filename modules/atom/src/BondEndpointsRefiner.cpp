@@ -20,23 +20,15 @@ bool BondEndpointsRefiner::get_can_refine(Particle *p) const
   return atom::BondDecorator::is_instance_of(p);
 }
 
-Particles BondEndpointsRefiner::get_refined(Particle *p) const
+Particle* BondEndpointsRefiner::get_refined(Particle *p, unsigned int i) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
   BondDecorator d(p);
-  Particles ps(2);
-  ps[0]= d.get_bonded(0).get_particle();
-  ps[1]= d.get_bonded(1).get_particle();
-  return ps;
+  return d.get_bonded(i).get_particle();
 }
 
-
-
-void BondEndpointsRefiner::cleanup_refined(Particle *,
-                                              Particles &,
-                                              DerivativeAccumulator *) const
-{
-  // This space left intentionally blank
+unsigned int BondEndpointsRefiner::get_number_of_refined(Particle *p) const {
+  return 2;
 }
 
 void BondEndpointsRefiner::show(std::ostream &out) const

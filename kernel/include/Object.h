@@ -34,12 +34,12 @@ public:
 
   bool get_has_ref() const {return count_ != 0;}
 
-  void ref() {
+  void ref() const {
     assert_is_valid();
     ++count_;
   }
 
-  void unref() {
+  void unref() const {
     assert_is_valid();
     IMP_assert(count_ !=0, "Too many unrefs on object");
     --count_;
@@ -53,7 +53,7 @@ private:
   Object(const Object &o){}
   const Object& operator=(const Object &o) {return *this;}
 
-  int count_;
+  mutable int count_;
   /* Do not use NDEBUG to remove check_value_ as that changes the memory
    layout and causes bad things to happen. It should get wrapped in some
    sort of macro later. */
