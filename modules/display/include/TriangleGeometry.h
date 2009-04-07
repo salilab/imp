@@ -24,7 +24,6 @@ class IMPDISPLAYEXPORT TriangleGeometry: public Geometry
 {
   algebra::Vector3D v_[3];
 public:
-  //! Initialize is
   TriangleGeometry(const algebra::Vector3D &a,
                    const algebra::Vector3D &b,
                    const algebra::Vector3D &c);

@@ -19,14 +19,14 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Represent an XYZRDecorator particle with a sphere
-/** The name is the Particle::get_name() name.
+/** The current coordinates and radius of the particle are used.
+    The name is the Particle::get_name() name.
  */
 class IMPDISPLAYEXPORT XYZRGeometry: public Geometry
 {
   core::XYZRDecorator d_;
   FloatKey rk_;
 public:
-  //! Get the individual particles from the passed SingletonContainer
   XYZRGeometry(core::XYZRDecorator d);
 
   virtual ~XYZRGeometry();

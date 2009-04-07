@@ -20,14 +20,16 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Display the derivatives of an XYZ particle
-/** The name is the Particle::get_name() name.
+/** This class draws the derivative of an XYZ particle
+    as cylinders starting at the particle center. The radius
+    of the cylinder can be specified. The name is the
+    Particle::get_name() name.
  */
 class IMPDISPLAYEXPORT XYZDerivativeGeometry: public Geometry
 {
   core::XYZDecorator d_;
   Float radius_;
 public:
-  //! Get the individual particles from the passed SingletonContainer
   XYZDerivativeGeometry(core::XYZDecorator d, Float radius=0);
 
   virtual ~XYZDerivativeGeometry();
@@ -42,7 +44,10 @@ public:
 
 
 //! Display the derivatives of an RigidBody particle
-/** The name is the Particle::get_name() name.
+/** This class displays the derivatives of a rigid body. Currently,
+    it draws a cylinder like the XYZDerivativeGeometry for each of
+    the members, splitting the motion into rotational and translational
+    parts. The name is the Particle::get_name() name.
  */
 class IMPDISPLAYEXPORT RigidBodyDerivativeGeometry:
   public CompoundGeometry
@@ -50,7 +55,6 @@ class IMPDISPLAYEXPORT RigidBodyDerivativeGeometry:
   Color xyzcolor_, qcolor_, ccolor_;
   core::RigidBodyDecorator d_;
 public:
-  //! Get the individual particles from the passed SingletonContainer
   RigidBodyDerivativeGeometry(core::RigidBodyDecorator d);
 
   virtual ~RigidBodyDerivativeGeometry();
