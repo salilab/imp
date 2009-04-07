@@ -46,24 +46,20 @@ public:
     skip_steps_=i;
   }
 
-  //! Add to the list of what to display
   void add_geometry(CompoundGeometry* g) {
     edata_.push_back(Pointer<CompoundGeometry>(g));
   }
 
-  //! Add some more graphics
   void add_geometry(Geometry* g) {
     gdata_.push_back(Pointer<Geometry>(g));
   }
 
-  //! Add to the list of what to display
   void add_geometry(const CompoundGeometries& g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       add_geometry(g);
     }
   }
 
-  //! Add to the list of what to display
   void add_geometry(const Geometries& g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       add_geometry(g);
