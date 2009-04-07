@@ -30,7 +30,7 @@ struct TruncatedHarmonicData {
         -12*k_*square(t_*l_)+8*l_*l_*l_)/square(k_*t_);
     o_= 2*(k_*square(t_) -l_)/(k_*t_);
     IMP_assert(std::abs(evaluate(center+t_+.001)- evaluate(center+t_-.001))
-               < .1*evaluate(center+t_), "Values do not match at threshold "
+               < .1*evaluate(center+t_)+.01, "Values do not match at threshold "
                << evaluate(center+t_+.001) << " and "
                << evaluate(center+t_-.001));
     IMP_assert(o_ <t_, "Something wrong with computed values for intermediates "
