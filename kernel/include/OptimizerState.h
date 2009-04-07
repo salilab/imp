@@ -40,21 +40,15 @@ class IMPEXPORT OptimizerState : public RefCountedObject
 public:
   OptimizerState();
 
-  // Update the state given the current state of the optimizer
+  //! Called when the Optimizer accepts a new conformation
   virtual void update() = 0;
 
-  //! Show the OptimizerState
-  /** Show can print out multiple lines and should end
-      in a newline.
-  */
   virtual void show(std::ostream& out = std::cout) const;
 
-  //! \return version and authorship information.
   virtual VersionInfo get_version_info() const {
     return VersionInfo("unknown", "unknown");
   }
 
-  //! return the stored optimizer
   Optimizer *get_optimizer() const {
     IMP_assert(optimizer_,
                "Must call set_optimizer before get_optimizer on state");
