@@ -273,6 +273,7 @@ rotation_from_matrix(double m11,double m12,double m13,
   \note http://en.wikipedia.org/wiki/Rotation_matrix
   \note www.euclideanspace.com/maths/geometry/rotations/conversions/
   angleToQuaternion/index.htm
+  \relates Rotation3D
 */
 inline Rotation3D rotation_in_radians_about_axis(const Vector3D& axis,
                                                  double angle)
@@ -289,6 +290,8 @@ inline Rotation3D rotation_in_radians_about_axis(const Vector3D& axis,
 }
 
 //! Create a rotation from the first vector to the second one.
+/** \relates Rotation3D
+ */
 inline Rotation3D rotation_between_two_vectors(const Vector3D &v1,
                                                const Vector3D &v2) {
     Vector3D v1_norm = v1.get_unit_vector();
