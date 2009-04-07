@@ -32,9 +32,7 @@ public:
   //! Create a refiner for a particular type of hierarchy
   LeavesRefiner(HierarchyTraits tr);
 
-  virtual ~LeavesRefiner() {}
-
-  IMP_REFINER(internal::version_info);
+  IMP_REFINER(LeavesRefiner, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE

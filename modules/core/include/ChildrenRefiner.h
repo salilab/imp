@@ -34,9 +34,7 @@ public:
   //! Create a refiner for a particular type of hierarchy
   ChildrenRefiner(HierarchyTraits tr);
 
-  virtual ~ChildrenRefiner() {}
-
-  IMP_REFINER(internal::version_info);
+  IMP_REFINER(ChildrenRefiner, internal::version_info);
 };
 
 IMPCORE_END_NAMESPACE
