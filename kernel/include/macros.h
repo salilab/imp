@@ -18,6 +18,13 @@
 #define IMP_ONLY_DOXYGEN(x)
 #endif
 
+#if defined(IMP_SWIG_WRAPPER) || defined(SWIG)
+#define IMP_NO_SWIG(x)
+#else
+//! Hide the line when SWIG is compiled or parses it
+#define IMP_NO_SWIG(x) x
+#endif
+
 #ifdef IMP_DOXYGEN
 //! Implement comparison in a class using a compare function
 /** The macro requires that This be defined as the type of the current class.
