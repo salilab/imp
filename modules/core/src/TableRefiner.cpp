@@ -46,15 +46,17 @@ bool TableRefiner::get_can_refine(Particle *p) const {
   return map_.find(p) != map_.end();
 }
 
-Particles TableRefiner::get_refined(Particle *p) const {
+Particle* TableRefiner::get_refined(Particle *p, unsigned int i) const {
   IMP_assert(map_.find(p) != map_.end(),
              "Particle " << p->get_name() << " not found in map.");
-  return map_.find(p)->second;
+  return map_.find(p)->second[i];
 }
 
-void TableRefiner::cleanup_refined(Particle *p,
-                                           Particles &,
-                                           DerivativeAccumulator*) const {
+
+unsigned int TableRefiner::get_number_of_refined(Particle *p) const {
+  IMP_assert(map_.find(p) != map_.end(),
+             "Particle " << p->get_name() << " not found in map.");
+  return map_.find(p)->second.size();
 }
 
 IMPCORE_END_NAMESPACE

@@ -31,14 +31,14 @@ bool FixedRefiner::get_can_refine(Particle *) const {
   return true;
 }
 
-Particles FixedRefiner::get_refined(Particle *) const {
+Particle* FixedRefiner::get_refined(Particle *, unsigned int i) const {
   IMP_CHECK_OBJECT(this);
-  return Particles(particles_begin(), particles_end());
+  return get_particle(i);
 }
 
-void FixedRefiner::cleanup_refined(Particle *,
-                                           Particles &,
-                                   DerivativeAccumulator *) const {
+unsigned int FixedRefiner::get_number_of_refined(Particle *) const {
+  IMP_CHECK_OBJECT(this);
+  return get_number_of_particles();
 }
 
 IMPCORE_END_NAMESPACE

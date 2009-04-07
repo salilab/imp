@@ -254,22 +254,21 @@ public:                                                                 \
 
 //! Define the basics needed for a particle refiner
 /** This macro declares the following functions
-    - bool can_refine(Particle*) const;
-    - void cleanup(Particle *a, Particles &b,
-                   DerivativeAccumulator *da);
+    - bool get_can_refine(Particle*) const;
+    - unsigned int get_number_of_refined(Particle *) const;
+    - Particle* get_refined(Particle *, unsigned int) const;
     - void show(std::ostream &out) const;
-    - Particles refine(Particle *) const;
 
     \param[in] version_info The version info object to return
 
  */
-#define IMP_REFINER(version_info)                              \
+#define IMP_REFINER(version_info)                                       \
   public:                                                               \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual void show(std::ostream &out) const;                           \
-  virtual void cleanup_refined(Particle *a, Particles &b,               \
-                               DerivativeAccumulator *da=0) const;      \
-  virtual Particles get_refined(Particle *) const;                      \
+  virtual Particle* get_refined(Particle *, unsigned int) const;        \
+  using Refiner::get_refined;                                           \
+  virtual unsigned int get_number_of_refined(Particle *) const;         \
   virtual IMP::VersionInfo get_version_info() const { return version_info; }
 
 //! Use the swap_with member function to swap two objects
@@ -699,4 +698,18 @@ protection:                                                             \
   public:
 
 
+//! Use this to label a function with no side effects
+#ifdef __GNU__
+#define IMP_NO_SIDEEFFECTS __attribute__ ((pure))
+#else
+#define IMP_NO_SIDEEFFECTS
+#endif
+
+
+//! Use this to make the compiler (possibly) warn if the result is not used
+#ifdef __GNU__
+#define IMP_WARN_UNUSED_RESULT __attribute__ ((warn_unused_result))
+#else
+#define IMP_WARN_UNUSED_RESULT
+#endif
 #endif  /* IMP_MACROS_H */

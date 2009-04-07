@@ -24,25 +24,21 @@ bool ChildrenRefiner::get_can_refine(Particle *p) const
 
 }
 
-Particles ChildrenRefiner::get_refined(Particle *p) const
+Particle* ChildrenRefiner::get_refined(Particle *p, unsigned int i) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
   core::HierarchyDecorator d(p, traits_);
-  Particles ps(d.get_number_of_children());
-  for (unsigned int i=0; i< d.get_number_of_children(); ++i){
-    ps[i]= d.get_child(i).get_particle();
-  }
-  return ps;
+  return d.get_child(i).get_particle();
 }
 
 
-
-void ChildrenRefiner::cleanup_refined(Particle *,
-                                              Particles &,
-                                              DerivativeAccumulator *) const
+unsigned int ChildrenRefiner::get_number_of_refined(Particle *p) const
 {
-  // This space left intentionally blank
+  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  core::HierarchyDecorator d(p, traits_);
+  return d.get_number_of_children();
 }
+
 
 void ChildrenRefiner::show(std::ostream &out) const
 {

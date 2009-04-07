@@ -9,9 +9,8 @@
 
 IMP_BEGIN_NAMESPACE
 
-Particles Refiner::get_refined(Particle *p) const {
-  throw ErrorException("Can't refine");
-  return Particles();
+const Particles Refiner::get_refined(Particle *p) const {
+  return Particles(refined_begin(p), refined_end(p));
 }
 
 IMP_END_NAMESPACE

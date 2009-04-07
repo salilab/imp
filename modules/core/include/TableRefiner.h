@@ -38,6 +38,12 @@ public:
   //! Set the mapping for a particular particle
   void set_particle(Particle *p, const Particles &ps);
 
+  virtual const Particles get_refined(Particle *p) const {
+    IMP_assert(map_.find(p) != map_.end(),
+               "Particle is not found in table to refine");
+    return map_.find(p)->second;
+  }
+
   IMP_REFINER(internal::version_info)
 };
 

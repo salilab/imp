@@ -20,25 +20,40 @@ LeavesRefiner
 bool LeavesRefiner::get_can_refine(Particle *p) const
 {
   if (!core::HierarchyDecorator::is_instance_of(p, traits_)) return false;
-  return core::HierarchyDecorator(p, traits_).get_number_of_children() != 0;
+  if (core::HierarchyDecorator(p, traits_).get_number_of_children() != 0) {
+    cache_[p]=get_leaves(core::HierarchyDecorator(p, traits_));
+    return true;
+  } else {
+    return false;
+  }
 
 }
 
-Particles LeavesRefiner::get_refined(Particle *p) const
+Particle* LeavesRefiner::get_refined(Particle *p, unsigned int i) const
 {
+  // force filling of the cache, yeah, its not good organization
+  get_can_refine(p);
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
-  core::HierarchyDecorator d(p, traits_);
-  return get_leaves(d);
+  return cache_[p][i];
 }
 
-
-
-void LeavesRefiner::cleanup_refined(Particle *,
-                                              Particles &,
-                                              DerivativeAccumulator *) const
+unsigned int LeavesRefiner::get_number_of_refined(Particle *p) const
 {
-  // This space left intentionally blank
+  // force filling of the cache, yeah, its not good organization
+  get_can_refine(p);
+  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  return cache_[p].size();
 }
+
+
+
+const Particles LeavesRefiner::get_refined(Particle *p) const{
+  // force filling of the cache, yeah, its not good organization
+  get_can_refine(p);
+  IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
+  return cache_[p];
+}
+
 
 void LeavesRefiner::show(std::ostream &out) const
 {

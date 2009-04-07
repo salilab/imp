@@ -36,6 +36,15 @@ public:
 
   virtual ~ChildrenRefiner() {}
 
+  virtual const Particles get_refined(Particle *p) const {
+    HierarchyDecorator hd(p, traits_);
+    Particles ret(hd.get_number_of_children());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= hd.get_child(i).get_particle();
+    }
+    return ret;
+  }
+
   IMP_REFINER(internal::version_info);
 };
 
