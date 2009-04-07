@@ -254,6 +254,7 @@ create_fragment(const MolecularHierarchyDecorators &ps);
 
 //! Get the bonds internal to this tree
 /**     \relates MolecularHierarchyDecorator
+        \see BondDecorator
  */
 IMPATOMEXPORT atom::BondDecorators
 get_internal_bonds(MolecularHierarchyDecorator mhd);
