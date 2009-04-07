@@ -34,8 +34,6 @@ public:
 
   virtual ~LeavesRefiner() {}
 
-  virtual const Particles get_refined(Particle *p) const;
-
   IMP_REFINER(internal::version_info);
 };
 
