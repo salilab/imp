@@ -187,9 +187,10 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "string{1}=<tt>\1</tt>" \
                          "impdev=<a href=\"https://salilab.org/mailman/listinfo/imp-dev\">imp-dev</a>" \
                          "impcommits=<a href=\"https://salilab.org/mailman/listinfo/imp-commits\">imp-commits</a>" \
-                         "advanced=\par Advanced:" \
-                         "overview=\par Overview:" \
-                         "license=\par License:" \
+                         "advanced=\par Advanced:\n" \
+                         "cpp=\par For C++ users:\n" \
+                         "overview=\par Overview:\n" \
+                         "license=\par License:\n" \
                          "standard_imp_license=To be determined" \
                          "publications=\par Publications:" \
                          "standard_imp_publications=This module will be covered in the upcoming \imp publication" \
