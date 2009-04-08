@@ -34,15 +34,19 @@ class IMPEXPORT RefCounted
   typedef RefCounted This;
   static unsigned int live_objects_;
   mutable int count_;
+  RefCounted(const RefCounted &){}
+  RefCounted& operator=(const RefCounted &){}
+
+#ifndef IMP_DOXYGEN
 protected:
   RefCounted() {
      ++live_objects_;
      count_=0;
   }
+  virtual ~RefCounted();
 
 public:
 
-#ifndef IMP_DOXYGEN
   bool get_has_ref() const {return count_ != 0;}
 
   void ref() const {
@@ -63,9 +67,6 @@ public:
     return live_objects_;
   }
 
-protected:
-  // never hold pointers to it directly
-  virtual ~RefCounted();
 #endif
 
 };
