@@ -24,7 +24,7 @@ IMP_BEGIN_NAMESPACE
     Use an IMP::WeakPointer to break cycles or to point to
     non-ref-counted objects.
 
-    \param[in] O The type of IMP::Object-derived object to point to
+    \param[in] O The type of IMP::RefCounted-derived object to point to
  */
 template <class O>
 class Pointer: public WeakPointer<O>
