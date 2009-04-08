@@ -21,18 +21,18 @@ IMPDOMINO_BEGIN_NAMESPACE
 class SimpleDiscreteSpace : public DiscreteSet
 {
 public:
-  SimpleDiscreteSpace(int number_of_states):m_(){
-  atts_.push_back(FloatKey(KEY_OPT));
-  Particle * p;
-  for (int j = 0;j < number_of_states;j++) {
-    p = new Particle(&m_);
-    p->add_attribute(KEY_OPT,j,true);
-    states_.push_back(p);
+  SimpleDiscreteSpace(int number_of_states): m_(new Model()){
+    atts_.push_back(FloatKey(KEY_OPT));
+    Particle * p;
+    for (int j = 0;j < number_of_states;j++) {
+      p = new Particle(m_);
+      p->add_attribute(KEY_OPT,j,true);
+      states_.push_back(p);
+    }
   }
-}
 
 protected:
-  Model m_;
+  Pointer<Model> m_;
 };
 
 IMPDOMINO_END_NAMESPACE
