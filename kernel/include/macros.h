@@ -349,10 +349,10 @@ public:                                                      \
     dereference the ref counted pointer. Swig also gets confused
     on template friends.
  */
-#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
-  protected:                                                    \
-  template <class T> friend void IMP::internal::unref(T*);     \
-  friend class IMP::internal::UnRef<true>;                      \
+#define IMP_REF_COUNTED_DESTRUCTOR(Classname)                           \
+  protected:                                                            \
+  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);) \
+  IMP_NO_DOXYGEN(friend class IMP::internal::UnRef<true>;)              \
   virtual ~Classname(){}
 #endif // SWIG
 #endif // _MSC_VER
