@@ -63,8 +63,5 @@ void ClosePairsFinder
 }
 */
 
-void ClosePairsFinder::show(std::ostream &out) const {
-  out << "ClosePairsFinder" << std::endl;
-}
 
 IMPCORE_END_NAMESPACE

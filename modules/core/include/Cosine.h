@@ -8,6 +8,7 @@
 #define IMPCORE_COSINE_H
 
 #include "config.h"
+#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -42,7 +43,9 @@ public:
         << ", periodicity " << periodicity_ << ", and phase "
         << phase_ << std::endl;
   }
-
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 private:
   Float force_constant_;
   int periodicity_;

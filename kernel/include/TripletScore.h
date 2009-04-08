@@ -9,7 +9,7 @@
 
 #include "config.h"
 #include "base_types.h"
-#include "RefCountedObject.h"
+#include "RefCounted.h"
 #include "Particle.h"
 #include "DerivativeAccumulator.h"
 
@@ -19,7 +19,7 @@ IMP_BEGIN_NAMESPACE
 /** TripletScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPEXPORT TripletScore : public RefCountedObject
+class IMPEXPORT TripletScore : public RefCounted, public Object
 {
 public:
   TripletScore();

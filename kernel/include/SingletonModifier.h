@@ -29,7 +29,7 @@ class Particle;
 
     \see IMP::SingletonFunctor
  */
-class IMPEXPORT SingletonModifier : public RefCountedObject
+class IMPEXPORT SingletonModifier : public RefCounted, public Object
 {
 public:
   SingletonModifier();
@@ -47,7 +47,7 @@ public:
   /** return information about the authors */
   virtual VersionInfo get_version_info() const = 0;
 
-  ~SingletonModifier(){}
+  IMP_REF_COUNTED_DESTRUCTOR(SingletonModifier);
 };
 
 IMP_OUTPUT_OPERATOR(SingletonModifier)
@@ -60,9 +60,12 @@ typedef std::vector<SingletonModifier*> SingletonModifiers;
 /** For example, you can do
     \code
     std::for_each(particles.begin(), particles.end(),
-                  SingletonFunctor(new Transform(tr)));
+                  IMP::SingletonFunctor(new IMP::core::Transform(tr)));
+    IMP::for_each(particles,
+                  IMP::SingletonFunctor(new IMP::core::Transform(tr)));
     \endcode
-    in C++ or
+    in C++ (the second can be used with when \c particles is a temporary
+    value) or
     \verbatim
     map(particles, SingletonFunctor(Transform(tr)))
     \endverbatim

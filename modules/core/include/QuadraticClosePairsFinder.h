@@ -18,7 +18,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
 {
  public:
-  /** */
   QuadraticClosePairsFinder();
   ~QuadraticClosePairsFinder();
 
@@ -36,6 +35,13 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
   bool get_are_close(Particle *a, Particle *b,
                      Float distance,
                      FloatKey radius_key) const;
+
+  void show(std::ostream &out= std::cout) const {
+    out << "QuadraticClosePairsFinder" << std::endl;
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 };
 
 IMPCORE_END_NAMESPACE

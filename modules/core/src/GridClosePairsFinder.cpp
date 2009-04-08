@@ -110,8 +110,6 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
                        FloatKey rk,
                        FilteredListPairContainer *out)
 {
-  IMP_CHECK_OBJECT(particle_bin);
-  IMP_CHECK_OBJECT(grid_bin);
   IMP_LOG(VERBOSE, "Generate nbl for pair " << std::endl);
   for (internal::ParticleGrid::ParticleVoxelIterator
          it= particle_bin->particle_voxels_begin();

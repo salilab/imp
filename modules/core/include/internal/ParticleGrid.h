@@ -21,7 +21,7 @@ namespace internal
 {
 
 /** \internal */
-class ParticleGrid: public Object
+class ParticleGrid
 {
   // don't need ref counting since mc_ has the same set of points
   typedef internal::Grid3D<Particles> Grid;

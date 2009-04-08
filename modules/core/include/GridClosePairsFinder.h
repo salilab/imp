@@ -33,6 +33,14 @@ class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
                        Float distance,
                        FloatKey radius_key,
                        FilteredListPairContainer *out) const;
+
+
+  void show(std::ostream &out= std::cout) const {
+    out << "GridClosePairsFinder" << std::endl;
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 };
 
 IMPCORE_END_NAMESPACE

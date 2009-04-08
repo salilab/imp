@@ -8,6 +8,7 @@
 #define IMPCORE_LINEAR_H
 
 #include "config.h"
+#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -32,12 +33,10 @@ public:
     return std::make_pair(evaluate(feature), slope_);
   }
 
-  /** */
   void set_slope(Float f) {
     slope_=f;
   }
 
-  /** */
   void set_offset(Float f) {
     offset_=f;
   }
@@ -46,6 +45,9 @@ public:
     out << "Linear: " << slope_ << ", " << offset_ << std::endl;
   }
 
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 private:
   Float slope_, offset_;
 };

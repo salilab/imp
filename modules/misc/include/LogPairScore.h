@@ -9,7 +9,7 @@
 #define IMPMISC_LOG_PAIR_SCORE_H
 
 #include "config.h"
-
+#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 #include <map>
 
@@ -53,6 +53,9 @@ class LogPairScore : public PairScore
   //! Return true if the pair is in the list
   bool get_contains(const ParticlePair &pp) const {
     return map_.find(pp) != map_.end();
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
   }
 };
 

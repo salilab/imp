@@ -29,7 +29,7 @@ class Particle;
 
     \see IMP::GroupnameFunctor
  */
-class IMPEXPORT GroupnameModifier : public RefCountedObject
+class IMPEXPORT GroupnameModifier : public RefCounted, public Object
 {
 public:
   GroupnameModifier();
@@ -47,7 +47,7 @@ public:
   /** return information about the authors */
   virtual VersionInfo get_version_info() const = 0;
 
-  ~GroupnameModifier(){}
+  IMP_REF_COUNTED_DESTRUCTOR(GroupnameModifier);
 };
 
 IMP_OUTPUT_OPERATOR(GroupnameModifier)

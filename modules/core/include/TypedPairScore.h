@@ -9,7 +9,7 @@
 #define IMPCORE_TYPED_PAIR_SCORE_H
 
 #include "config.h"
-
+#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -59,6 +59,9 @@ public:
     score_map_[std::pair<Int,Int>(std::min(atype, btype),
                                   std::max(atype, btype))]
         = Pointer<PairScore>(ps);
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
   }
 
 protected:

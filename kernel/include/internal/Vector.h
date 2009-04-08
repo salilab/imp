@@ -10,7 +10,7 @@
 
 #include "../exception.h"
 #include "../Object.h"
-#include "../RefCountedObject.h"
+#include "../RefCounted.h"
 #include "ref_counting.h"
 
 #include <vector>

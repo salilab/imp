@@ -9,7 +9,7 @@
 
 #include "config.h"
 #include "base_types.h"
-#include "RefCountedObject.h"
+#include "RefCounted.h"
 #include "Pointer.h"
 #include "DerivativeAccumulator.h"
 
@@ -21,21 +21,17 @@ class Particle;
 /** SingletonScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPEXPORT SingletonScore : public RefCountedObject
+class IMPEXPORT SingletonScore : public RefCounted, public Object
 {
 public:
   SingletonScore();
   //! Compute the score for the particle and the derivative if needed.
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const = 0;
-  //! Print information about the SingletonScore to a stream.
-  /** Should end in a newline.
-   */
-  virtual void show(std::ostream &out=std::cout) const = 0;
+
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore)
 };
 
-IMP_OUTPUT_OPERATOR(SingletonScore);
 
 IMP_END_NAMESPACE
 

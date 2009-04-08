@@ -11,7 +11,7 @@
 #include "base_types.h"
 #include "Particle.h"
 #include "VersionInfo.h"
-#include "RefCountedObject.h"
+#include "RefCounted.h"
 #include "internal/IndexingIterator.h"
 
 IMP_BEGIN_NAMESPACE
@@ -23,7 +23,7 @@ class DerivativeAccumulator;
 /** The job of this class is to take a single particle and, if
     appropriate, return a list of particles.
 */
-class IMPEXPORT Refiner : public RefCountedObject
+class IMPEXPORT Refiner : public RefCounted, public Object
 {
   struct Accessor;
 public:

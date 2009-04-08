@@ -10,55 +10,49 @@
 #define IMP_OBJECT_H
 
 #include "exception.h"
+#include "VersionInfo.h"
+#include "macros.h"
 
 IMP_BEGIN_NAMESPACE
 
-//! Common base class for IMP objects.
-/** Currently this just makes the object noncopyable and adds heuristic checks
-    to make sure the memory has not been freed.
-
-    \note This has ref and unref methods to simplifity ObjectContainer.
-    For Object, the reference count can be at most 1.
+//! Common base class for heap-allocated IMP objects.
+/** This class makes the object non-copyable a declares pure virtual
+    methods Object::show() and Object::get_version_info(). In addition
+    Objects can be written to a stream, producing the same output
+    as show.
 
     \internal
  */
 class IMPEXPORT Object
 {
 protected:
-  Object();
-  ~Object();
+  IMP_NO_DOXYGEN(Object());
+  IMP_NO_DOXYGEN(~Object());
 
 public:
+#ifndef IMP_DOXYGEN
   // Throw an assertion if the object has been freed
   void assert_is_valid() const;
+#endif
 
-  bool get_has_ref() const {return count_ != 0;}
+  //! Print out one or more lines of text describing the object
+  virtual void show(std::ostream &out=std::cout) const=0;
 
-  void ref() const {
-    assert_is_valid();
-    ++count_;
-  }
-
-  void unref() const {
-    assert_is_valid();
-    IMP_assert(count_ !=0, "Too many unrefs on object");
-    --count_;
-  }
-
-  unsigned int get_ref_count() const {
-    return count_;
-  }
+  //! Get information about the author and version of the object
+  virtual VersionInfo get_version_info() const=0;
 
 private:
   Object(const Object &o){}
   const Object& operator=(const Object &o) {return *this;}
 
-  mutable int count_;
   /* Do not use NDEBUG to remove check_value_ as that changes the memory
    layout and causes bad things to happen. It should get wrapped in some
    sort of macro later. */
   double check_value_;
 };
+
+
+IMP_OUTPUT_OPERATOR(Object);
 
 IMP_END_NAMESPACE
 
@@ -67,6 +61,5 @@ IMP_END_NAMESPACE
 IMP_assert(obj != NULL, "NULL object");     \
 (obj)->assert_is_valid();                   \
 } while (false)
-
 
 #endif  /* IMP_OBJECT_H */

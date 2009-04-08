@@ -11,7 +11,7 @@
 
 
 #include "WeakPointer.h"
-#include "RefCountedObject.h"
+#include "RefCounted.h"
 #include "internal/ref_counting.h"
 
 #include <boost/static_assert.hpp>
@@ -34,15 +34,15 @@ class Pointer: public WeakPointer<O>
 
   void set_pointer(O* p) {
     if (p == P::o_) return;
-    if (P::o_) internal::disown(P::o_);
-    if (p) internal::own(p);
+    if (P::o_) internal::unref(P::o_);
+    if (p) internal::ref(p);
     P::o_=p;
   }
   // issue with commas
   /*struct RefCheck {
     typedef typename boost::is_base_of<RefCountedObject, O>::value value;
     };*/
-  BOOST_STATIC_ASSERT((boost::is_base_of<RefCountedObject, O>::value));
+  BOOST_STATIC_ASSERT((boost::is_base_of<RefCounted, O>::value));
 
 public:
   /** copy constructor */

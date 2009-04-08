@@ -14,6 +14,7 @@
 #include "utility.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
+#include "internal/kernel_version_info.h"
 #include "internal/ObjectContainer.h"
 #include "DerivativeAccumulator.h"
 #include "Pointer.h"
@@ -69,7 +70,7 @@ class Model;
     \ref decorators "Decorators" as these provide a nice and more reliable
     interface.
  */
-class IMPEXPORT Particle : public RefCountedObject
+class IMPEXPORT Particle : public RefCounted, public Object
 {
 private:
   friend class Model;
@@ -303,6 +304,10 @@ public:
       assert_is_valid();
     }
     return model_;
+  }
+
+  VersionInfo get_version_info() const {
+    return internal::kernel_version_info;
   }
 
   //! Show the particle

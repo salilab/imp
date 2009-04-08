@@ -15,7 +15,7 @@ files = [
     'Particle.h',
     'Refiner.h',
     'Pointer.h',
-    'RefCountedObject.h',
+    'RefCounted.h',
     'Restraint.h',
     'ScoreState.h',
     'SingletonContainer.h',

@@ -9,7 +9,7 @@
 #define IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
 
 #include "config.h"
-
+#include "internal/version_info.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/Pointer.h>
@@ -37,6 +37,9 @@ public:
   virtual Float evaluate(Particle *a,
                          DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 };
 
 IMPCORE_END_NAMESPACE

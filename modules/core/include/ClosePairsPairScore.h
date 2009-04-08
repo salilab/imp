@@ -9,7 +9,7 @@
 #define IMPCORE_CLOSE_PAIRS_PAIR_SCORE_H
 
 #include "config.h"
-
+#include "internal/version_info.h"
 #include "XYZRDecorator.h"
 
 #include <IMP/PairScore.h>
@@ -48,6 +48,9 @@ public:
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 };
 
 IMPCORE_END_NAMESPACE

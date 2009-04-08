@@ -351,7 +351,7 @@ public:                                                      \
  */
 #define IMP_REF_COUNTED_DESTRUCTOR(Classname)                   \
   protected:                                                    \
-  template <class T> friend void IMP::internal::disown(T*);     \
+  template <class T> friend void IMP::internal::unref(T*);     \
   friend class IMP::internal::UnRef<true>;                      \
   virtual ~Classname(){}
 #endif // SWIG

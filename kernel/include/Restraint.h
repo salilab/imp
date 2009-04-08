@@ -57,7 +57,7 @@ class Model;
     See the examples::ExampleRestraint  example for how to implement
     a simple restraint.
  */
-class IMPEXPORT Restraint : public RefCountedObject
+class IMPEXPORT Restraint : public RefCounted, public Object
 {
 public:
   Restraint();
@@ -79,15 +79,6 @@ public:
   /** \return true if the restraint is active.
    */
   bool get_is_active() const;
-
-  //! Show the current restraint.
-  /** \param[in] out Stream to send restraint description to.
-      The output of show may take several lines and should end in a newline.
-   */
-  virtual void show(std::ostream& out=std::cout) const;
-
-  //! \return version and authorship information.
-  virtual VersionInfo get_version_info() const = 0;
 
   //! The model the restraint is part of.
   /** \param[in] model The model.

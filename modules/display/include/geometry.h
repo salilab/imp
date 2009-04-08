@@ -14,7 +14,7 @@
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/RefCountedObject.h>
+#include <IMP/RefCounted.h>
 #include <IMP/algebra/Vector3D.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -30,7 +30,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     is a polygon (and must have thickness 0). A dimension of -1
     means do nothing.
  */
-class IMPDISPLAYEXPORT Geometry: public RefCountedObject
+class IMPDISPLAYEXPORT Geometry: public RefCounted, public Object
 {
   Color default_color_;
   std::string name_;
@@ -75,7 +75,7 @@ IMP_OUTPUT_OPERATOR(Geometry);
 typedef std::vector<Geometry* > Geometries;
 
 //! Produce some geometry from a particle
-class IMPDISPLAYEXPORT CompoundGeometry: public RefCountedObject {
+class IMPDISPLAYEXPORT CompoundGeometry: public RefCounted, public Object {
   std::string name_;
  public:
   CompoundGeometry();

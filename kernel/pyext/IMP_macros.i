@@ -12,7 +12,7 @@ namespace IMP \
 %pythonprepend Ucname::Ucname %{
         import IMP
         for i in range(0, len(args)):
-            if args[i] is not None and issubclass(type(args[i]), IMP.RefCountedObject):
+            if args[i] is not None and issubclass(type(args[i]), IMP.RefCounted):
                args[i].thisown=0;
 %}
 %enddef
@@ -21,7 +21,7 @@ namespace IMP \
 %pythonprepend Ucname::methodname %{
         import IMP
         for i in range(1, len(args)):
-            if args[i] is not None and issubclass(type(args[i]), IMP.RefCountedObject):
+            if args[i] is not None and issubclass(type(args[i]), IMP.RefCounted):
                args[i].thisown=0;
 %}
 %enddef
@@ -30,11 +30,11 @@ namespace IMP \
 %pythonprepend functionname %{
   import IMP
   for i in range(0, len(args)):
-    if args[i] is not None and issubclass(type(args[i]), IMP.RefCountedObject):
+    if args[i] is not None and issubclass(type(args[i]), IMP.RefCounted):
        args[i].thisown=0;
 %}
 %pythonappend functionname %{
-  if val is not None and issubclass(type(val), IMP.RefCountedObject):
+  if val is not None and issubclass(type(val), IMP.RefCounted):
      val.thisown=0;
 %}
 %enddef
@@ -43,7 +43,7 @@ namespace IMP \
 %pythonprepend Ucname::methodname %{
         import IMP
         for p in args[1]:
-            if p is not None and issubclass(type(p), IMP.RefCountedObject):
+            if p is not None and issubclass(type(p), IMP.RefCounted):
                p.thisown=0;
 %}
 %enddef

@@ -11,6 +11,7 @@
 
 #include "config.h"
 #include "internal/tunnel_traits.h"
+#include "internal/version_info.h"
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
@@ -57,7 +58,9 @@ public:
   void set_coordinate(unsigned int i) {
     tr_.set_coordinate(i);
   }
-
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 
   virtual Float evaluate(Particle *a, DerivativeAccumulator *da) const;
 

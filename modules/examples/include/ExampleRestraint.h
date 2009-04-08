@@ -22,10 +22,13 @@ IMPEXAMPLES_BEGIN_NAMESPACE
     ClosePairsScoreState and a SphereDistancePairScore,
     to prevent particles from interpenetrating.
 
+    \note Be sure to check out the swig wrapper file and how it
+    wraps this class.
+
     The source code is as follows:
     \include ExampleRestraint.h
     \include ExampleRestraint.cpp
- */
+*/
 class IMPEXAMPLESEXPORT ExampleRestraint : public Restraint
 {
   /** IMP::Objects should be stored using Pointer objects

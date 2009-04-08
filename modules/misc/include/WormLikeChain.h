@@ -8,7 +8,7 @@
 #define IMPMISC_WORM_LIKE_CHAIN_H
 
 #include "config.h"
-
+#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
@@ -104,6 +104,10 @@ private:
                                        +.5*square(m)
                                        /lmax_);
     return J;
+  }
+
+  VersionInfo get_version_info() const {
+    return internal::version_info;
   }
 
   unit::Angstrom cutoff() const {

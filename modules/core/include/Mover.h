@@ -11,7 +11,7 @@
 #include "config.h"
 
 #include <IMP/base_types.h>
-#include <IMP/RefCountedObject.h>
+#include <IMP/RefCounted.h>
 #include <IMP/WeakPointer.h>
 #include <IMP/Optimizer.h>
 
@@ -25,7 +25,7 @@ class MonteCarlo;
 /** You probably want to use MoverBase if you are implementing a Mover.
     \see MonteCarlo
  */
-class IMPCOREEXPORT Mover: public RefCountedObject
+class IMPCOREEXPORT Mover: public RefCounted, public Object
 {
   friend class MonteCarlo;
   void set_optimizer(Optimizer *c) {

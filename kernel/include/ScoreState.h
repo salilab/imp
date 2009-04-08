@@ -9,7 +9,7 @@
 #define IMP_SCORE_STATE_H
 
 #include "config.h"
-#include "RefCountedObject.h"
+#include "RefCounted.h"
 #include "Pointer.h"
 #include "Model.h"
 #include "DerivativeAccumulator.h"
@@ -57,7 +57,7 @@ class Model;
     of lines per update call.
 
  */
-class IMPEXPORT ScoreState : public RefCountedObject
+class IMPEXPORT ScoreState : public RefCounted, public Object
 {
   friend class Model;
   void set_model(Model* model);
@@ -80,17 +80,6 @@ public:
 
   //! Force update of the structure
   void after_evaluate(DerivativeAccumulator *accpt);
-
-
-  //! Show the ScoreState
-  /** The output of show may take several lines and should end in a newline.
-   */
-  virtual void show(std::ostream& out = std::cout) const;
-
-  //! \return version and authorship information.
-  virtual VersionInfo get_version_info() const {
-    return VersionInfo("unknown", "unknown");
-  }
 
   //! Get the name of the state
   const std::string& get_name() const {

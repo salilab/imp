@@ -8,6 +8,7 @@
 #define IMPCORE_TRUNCATED_HARMONIC_H
 
 #include "config.h"
+#include "internal/version_info.h"
 #include "internal/truncated_harmonic.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
@@ -75,6 +76,9 @@ public:
 
   void show(std::ostream &out=std::cout) const {
     out << "TruncatedHarmonic: " << d_ << std::endl;
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
   }
 private:
   internal::TruncatedHarmonicData d_;

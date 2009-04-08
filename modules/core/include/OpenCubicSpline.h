@@ -8,6 +8,7 @@
 #define IMPCORE_OPEN_CUBIC_SPLINE_H
 
 #include "config.h"
+#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -37,6 +38,9 @@ public:
   void show(std::ostream &out=std::cout) const {
     out << "Open cubic spline of " << values_.size() << " values from "
         << minrange_ << " to " << maxrange_ << std::endl;
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
   }
 
 private:

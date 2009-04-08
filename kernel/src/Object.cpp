@@ -7,16 +7,21 @@
  */
 
 #include "IMP/Object.h"
-#include "IMP/RefCountedObject.h"
+#include "IMP/RefCounted.h"
 
 IMP_BEGIN_NAMESPACE
 
-unsigned int RefCountedObject::live_objects_=0;
+unsigned int RefCounted::live_objects_=0;
+
+RefCounted::~ RefCounted() {
+    IMP_assert(!get_has_ref(), "Deleting object which still has references");
+    IMP_LOG(MEMORY, "Deleting ref counted object " << this << std::endl);
+    --live_objects_;
+  }
 
 Object::Object()
 {
   check_value_=111111111;
-  count_=0;
   IMP_LOG(MEMORY, "Creating object " << this << std::endl);
 }
 

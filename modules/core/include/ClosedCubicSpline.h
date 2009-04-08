@@ -8,6 +8,7 @@
 #define IMPCORE_CLOSED_CUBIC_SPLINE_H
 
 #include "config.h"
+#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -40,7 +41,9 @@ public:
     out << "Closed cubic spline of " << values_.size() << " values from "
         << minrange_ << " to " << maxrange_ << std::endl;
   }
-
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 private:
   std::vector<Float> values_;
   std::vector<Float> second_derivs_;

@@ -9,7 +9,7 @@
 
 #include "config.h"
 #include "base_types.h"
-#include "RefCountedObject.h"
+#include "RefCounted.h"
 #include "Pointer.h"
 
 IMP_BEGIN_NAMESPACE
@@ -18,7 +18,7 @@ IMP_BEGIN_NAMESPACE
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
  */
-class IMPEXPORT UnaryFunction : public RefCountedObject
+class IMPEXPORT UnaryFunction : public RefCounted, public Object
 {
 public:
   UnaryFunction();
@@ -36,15 +36,8 @@ public:
    */
   virtual FloatPair evaluate_with_derivative(Float feature) const = 0;
 
-  //! Print information about the UnaryFunction to a stream.
-  /** Should end in a newline.
-    */
-  virtual void show(std::ostream &out=std::cout) const = 0;
-
   IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction)
 };
-
-IMP_OUTPUT_OPERATOR(UnaryFunction);
 
 IMP_END_NAMESPACE
 

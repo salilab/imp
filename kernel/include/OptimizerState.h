@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "VersionInfo.h"
-#include "RefCountedObject.h"
+#include "RefCounted.h"
 #include "Pointer.h"
 #include "Optimizer.h"
 
@@ -32,7 +32,7 @@ class Optimizer;
     logging is TERSE the restraint should print out only a constant number
     of lines per update call.
  */
-class IMPEXPORT OptimizerState : public RefCountedObject
+class IMPEXPORT OptimizerState : public RefCounted, public Object
 {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
@@ -43,12 +43,6 @@ public:
   //! Called when the Optimizer accepts a new conformation
   virtual void update() = 0;
 
-  virtual void show(std::ostream& out = std::cout) const;
-
-  virtual VersionInfo get_version_info() const {
-    return VersionInfo("unknown", "unknown");
-  }
-
   Optimizer *get_optimizer() const {
     IMP_assert(optimizer_,
                "Must call set_optimizer before get_optimizer on state");
@@ -58,8 +52,6 @@ public:
 protected:
   WeakPointer<Optimizer> optimizer_;
 };
-
-IMP_OUTPUT_OPERATOR(OptimizerState);
 
 IMP_END_NAMESPACE
 

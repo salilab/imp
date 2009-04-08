@@ -36,14 +36,14 @@ class WeakPointer
   void set_pointer(O* p) {
     if (p == o_) return;
     if (p) {
-      IMP_CHECK_OBJECT(p);
+      //IMP_CHECK_OBJECT(p);
     }
     o_=p;
   }
 
   void audit() const {
     IMP_assert(o_ != NULL, "Pointer is NULL");
-    IMP_CHECK_OBJECT(o_);
+    //IMP_CHECK_OBJECT(o_);
   }
 
   bool is_default() const {

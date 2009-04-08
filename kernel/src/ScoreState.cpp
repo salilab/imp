@@ -75,15 +75,4 @@ void ScoreState::set_model(Model* model)
   was_owned_=true;
 }
 
-
-//! Show the state.
-/** \param[in] out Stream to send state description to.
- */
-void ScoreState::show(std::ostream& out) const
-{
-  out << "unknown state:" << std::endl;
-
-  get_version_info().show(out);
-}
-
 IMP_END_NAMESPACE

@@ -14,7 +14,7 @@
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/RefCountedObject.h>
+#include <IMP/RefCounted.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     of the file being written to before writing using the
     IMP::display::Writer::set_file_name() method.
  */
-class IMPDISPLAYEXPORT Writer: public RefCountedObject
+class IMPDISPLAYEXPORT Writer: public RefCounted, public Object
 {
   std::ofstream out_;
   std::string file_name_;

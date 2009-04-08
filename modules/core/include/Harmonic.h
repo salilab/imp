@@ -8,6 +8,7 @@
 #define IMPCORE_HARMONIC_H
 
 #include "config.h"
+#include "internal/version_info.h"
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
 
@@ -77,6 +78,10 @@ public:
     // Gas constant in kcal/mol K
     const static Float R = 8.31441 / 4186.8;
     return R * t / square(sd);
+  }
+
+  VersionInfo get_version_info() const {
+    return internal::version_info;
   }
 
 private:
