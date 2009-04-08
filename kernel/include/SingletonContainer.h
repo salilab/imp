@@ -25,7 +25,8 @@ IMP_BEGIN_NAMESPACE
 /** Stores a searchable shared collection of particles.
     \ingroup restraints
  */
-class IMPEXPORT SingletonContainer : public RefCountedObject
+class IMPEXPORT SingletonContainer : public RefCounted,
+                                     public Object
 {
   struct Accessor {
     typedef Accessor This;
@@ -58,12 +59,6 @@ public:
 
   //! get one particle
   virtual Particle* get_particle(unsigned int i) const=0;
-
-  //! print information about the container
-  virtual void show(std::ostream &out = std::cout) const;
-
-  //! provide information about who implemeneted the container
-  virtual VersionInfo get_version_info() const=0;
 
 #ifdef IMP_DOXYGEN
   //! An iterator through the contents of the container

@@ -10,13 +10,13 @@
 #include <IMP/algebra/vector_generators.h>
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(Particle *p,
+RigidBodyMover::RigidBodyMover(RigidBodyDecorator d,
                                Float max_translation, Float max_angle) {
   IMP_LOG(VERBOSE,"start RigidBodyMover constructor");
   max_translation_=max_translation;
   max_angle_ =max_angle*PI/180.;
   last_transformation_ = algebra::identity_transformation();
-  d_= RigidBodyDecorator::cast(p);
+  d_= d;
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 

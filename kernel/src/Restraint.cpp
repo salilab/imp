@@ -56,15 +56,4 @@ void Restraint::set_model(Model* model)
   was_owned_=true;
 }
 
-void Restraint::show(std::ostream& out) const
-{
-  if (get_is_active()) {
-    out << "unknown restraint (active):" << std::endl;
-  } else {
-    out << "unknown restraint (inactive):" << std::endl;
-  }
-
-  get_version_info().show(out);
-}
-
 IMP_END_NAMESPACE

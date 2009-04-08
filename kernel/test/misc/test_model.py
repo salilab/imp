@@ -8,6 +8,9 @@ class DummyRestraint(IMP.Restraint):
         return 0.
     def show(self, something):
         print "I can't really show from python"
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
+
 
 
 class DummyScoreState(IMP.ScoreState):
@@ -16,6 +19,8 @@ class DummyScoreState(IMP.ScoreState):
         pass
     def show(self, something):
         print "I can't really show from python"
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
 
 class ModelTests(IMP.test.TestCase):
     def test_score_state(self):

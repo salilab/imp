@@ -106,8 +106,8 @@ namespace IMP {
   IMP_OWN_CONSTRUCTOR(PairFunctor)
 }
 
-%feature("ref")   Particle "IMP::internal::own($this);"
-%feature("unref") Particle "IMP::internal::disown($this);"
+%feature("ref")   Particle "IMP::internal::ref($this);"
+%feature("unref") Particle "IMP::internal::unref($this);"
 
 /* Don't wrap internal functions */
 %ignore IMP::internal::check_particles_active;
@@ -130,9 +130,9 @@ namespace IMP {
 
 %include "IMP/base_types.h"
 %include "IMP/deprecation.h"
-%include "IMP/Object.h"
-%include "IMP/RefCountedObject.h"
 %include "IMP/VersionInfo.h"
+%include "IMP/Object.h"
+%include "IMP/RefCounted.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "Restraint.i"

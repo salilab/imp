@@ -9,7 +9,7 @@
 #define IMPALGEBRA_GRID_RANGE_D_H
 
 #include "VectorD.h"
-#include <IMP/RefCountedObject.h>
+#include <IMP/RefCounted.h>
 #include <IMP/Pointer.h>
 #include <boost/range.hpp>
 
@@ -17,7 +17,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 namespace {
   template <unsigned int D>
-  struct GridRangeData: public RefCountedObject {
+  struct GridRangeData: public RefCounted {
     VectorD<D> min,max;
     double step;
     GridRangeData(const VectorD<D> &mn,

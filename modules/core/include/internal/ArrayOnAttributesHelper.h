@@ -21,7 +21,7 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 template <class Key, class Value>
-struct ArrayData: public RefCountedObject {
+struct ArrayData: public RefCounted {
   ArrayData(std::string p):
     num_key((p+"_number").c_str()),
     prefix(p) {

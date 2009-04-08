@@ -182,6 +182,8 @@ class ConstUnaryFunction(IMP.UnaryFunction):
         return self.v, 0.0
     def show(self, *args):
         print "ConstUF with value "+str(self.v)
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
 
 
 class TestRefiner(IMP.Refiner):
@@ -210,24 +212,3 @@ class TestRefiner(IMP.Refiner):
         self.dict[p.get_name()] = ps
         print self.dict
         return ps
-
-    def cleanup_refined(self, p, ps, da):
-        # test breaks if refine is called 2x with the same particle
-        print "starting cleanup "+str( p.get_name() )
-        print self.dict
-        if not self.pr.get_can_refine(p):
-            print "cleanup the unrefined"
-            raise ValueError('Cleanup the unrefined')
-        if not self.dict.has_key(p.get_name()):
-            print "Missing particle info"
-            raise ValueError("Missing particle info")
-        ops= self.dict[p.get_name()]
-        print "fetched"
-        if len(ops) != len(ps):
-            raise ValueError("Cached particles and returned particles " + \
-                             "don't match on size")
-        for i in range(0, len(ops)):
-            if ps[i].get_name() != ops[i].get_name():
-                raise ValueError("Cached particles and returned particles " + \
-                                 "don't match")
-        self.pr.cleanup_refined(p, ps)

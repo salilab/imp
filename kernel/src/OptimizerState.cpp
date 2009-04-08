@@ -26,14 +26,4 @@ void OptimizerState::set_optimizer(Optimizer* optimizer)
 }
 
 
-//! Show the state.
-/** \param[in] out Stream to send state description to.
- */
-void OptimizerState::show(std::ostream& out) const
-{
-  out << "unknown state:" << std::endl;
-
-  get_version_info().show(out);
-}
-
 IMP_END_NAMESPACE

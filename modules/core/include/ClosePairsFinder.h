@@ -12,7 +12,7 @@
 #include "XYZRDecorator.h"
 #include "FilteredListPairContainer.h"
 
-#include <IMP/RefCountedObject.h>
+#include <IMP/RefCounted.h>
 #include <IMP/SingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -27,7 +27,7 @@ class FilteredListPairContainer;
     \see ClosePairsScoreState
     \see CloseBipartitlePairsScoreState
  */
-class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
+class IMPCOREEXPORT ClosePairsFinder : public RefCounted, public Object
 {
  protected:
   Float get_radius(Particle *p, FloatKey rk) const {
@@ -48,9 +48,9 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
       is less than distance. If radius_key is FloatKey() all radii
       are assumed to be 0. Other pairs can be added too. */
   virtual void add_close_pairs(SingletonContainer *pc,
-                       Float distance,
-                       FloatKey radius_key,
-                       FilteredListPairContainer *out) const =0;
+                               Float distance,
+                               FloatKey radius_key,
+                               FilteredListPairContainer *out) const =0;
 
   /** \brief Compute all nearby pairs of particles with the first taken from
       pca and the second from pcb.
@@ -63,8 +63,6 @@ class IMPCOREEXPORT ClosePairsFinder : public RefCountedObject
                        Float distance,
                        FloatKey radius_key,
                        FilteredListPairContainer *out) const =0;
-
-  void show(std::ostream &out=std::cout) const;
 };
 
 IMP_OUTPUT_OPERATOR(ClosePairsFinder);

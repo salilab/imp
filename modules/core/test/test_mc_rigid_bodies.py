@@ -54,9 +54,9 @@ class MCOptimizerTest(IMP.test.TestCase):
         #optimize
         opt = IMP.core.MonteCarlo()
         opt.set_model(self.m)
-        mover1 = IMP.core.RigidBodyMover(self.m1.get_particle(),5.,15.)
+        mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBodyDecorator(self.m1.get_particle()),5.,15.)
         opt.add_mover(mover1)
-        mover2 = IMP.core.RigidBodyMover(self.m2.get_particle(),5.,15.)
+        mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBodyDecorator(self.m2.get_particle()),5.,15.)
         opt.add_mover(mover2)
         lopt= IMP.core.ConjugateGradients()
         lopt.set_model(self.m)

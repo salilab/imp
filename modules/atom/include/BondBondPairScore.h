@@ -9,7 +9,7 @@
 #define IMPATOM_BOND_BOND_PAIR_SCORE_H
 
 #include "config.h"
-
+#include "internal/version_info.h"
 #include <IMP/PairScore.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/UnaryFunction.h>
@@ -61,6 +61,10 @@ class IMPATOMEXPORT BondBondPairScore : public PairScore
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const;
   virtual void show(std::ostream &out=std::cout) const;
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
+
 };
 
 IMPATOM_END_NAMESPACE

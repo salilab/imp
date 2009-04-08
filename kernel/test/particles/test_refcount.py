@@ -12,14 +12,14 @@ class RefCountTests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.VERBOSE)
-        self.basenum= IMP.RefCountedObject.get_number_of_live_objects()
+        self.basenum= IMP.RefCounted.get_number_of_live_objects()
         print "The base number of objects is " + str(self.basenum)
 
     def _check_number(self, expected):
         print "Expected "+str(expected)\
-            + " got " + str(IMP.RefCountedObject.get_number_of_live_objects()
+            + " got " + str(IMP.RefCounted.get_number_of_live_objects()
                             - self.basenum)
-        self.assertEqual(IMP.RefCountedObject.get_number_of_live_objects() - self.basenum,
+        self.assertEqual(IMP.RefCounted.get_number_of_live_objects() - self.basenum,
                          expected
                          )
 

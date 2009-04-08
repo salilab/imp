@@ -23,7 +23,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 {
  public:
-  //! no arguments
   BoxSweepClosePairsFinder();
   ~BoxSweepClosePairsFinder();
 
@@ -37,6 +36,14 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
                        Float distance,
                        FloatKey radius_key,
                        FilteredListPairContainer *out) const;
+
+
+  void show(std::ostream &out= std::cout) const {
+    out << "BoxSweepClosePairsFinder" << std::endl;
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
 };
 
 IMPCORE_END_NAMESPACE

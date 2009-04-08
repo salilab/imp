@@ -26,19 +26,22 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT RigidBodyMover : public Mover
 {
 public:
-  /** The attributes are perturbed within a pall whose dimensionality is
-      given by the number of attributes and radius by the given value.
-      \param[in] p   the rigid body particle
+  /** The rigid body is rotated and translated to move
+      \param[in] d   the rigid body decorator
       \param[in] max_translation maximum translation sampling step
       \param[in] max_rotation maximum rotation sampling step
    */
-  RigidBodyMover(Particle *p,Float max_translation,
+  RigidBodyMover(RigidBodyDecorator d,Float max_translation,
                  Float max_rotation);
   void reject_move();
   void accept_move();
   void propose_move(Float f);
   void show(std::ostream&out= std::cout) const {
     out << "RigidTransformationMover " << std::endl;
+  }
+
+  VersionInfo get_version_info() const {
+    return internal::version_info;
   }
 
 private:

@@ -10,7 +10,7 @@
 #define IMP_REF_COUNTING_H
 
 #include "../Object.h"
-#include "../RefCountedObject.h"
+#include "../RefCounted.h"
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
@@ -22,7 +22,7 @@ struct Ref
 {
   template <class O>
   static void eval(O* o) {
-    BOOST_STATIC_ASSERT((!boost::is_base_of<RefCountedObject, O >::value));
+    BOOST_STATIC_ASSERT((!boost::is_base_of<RefCounted, O >::value));
     IMP_LOG(MEMORY, "Not refing particle " << o << std::endl);
   }
 };
@@ -34,7 +34,7 @@ struct Ref<true>
   static void eval(O* o) {
     IMP_LOG(MEMORY, "Refing object " << o << " with count "
             << o->get_ref_count() << std::endl);
-    o->assert_is_valid();
+    //o->assert_is_valid();
     o->ref();
   }
 };
@@ -44,7 +44,7 @@ struct UnRef
 {
   template <class O>
   static void eval(O* o) {
-    BOOST_STATIC_ASSERT((!boost::is_base_of<RefCountedObject, O >::value));
+    BOOST_STATIC_ASSERT((!boost::is_base_of<RefCounted, O >::value));
     IMP_LOG(MEMORY, "Not Unrefing object " << o << std::endl);
   }
 };
@@ -56,7 +56,7 @@ struct UnRef<true>
   static void eval(O *o) {
     IMP_LOG(MEMORY, "Unrefing object " << o << " with count "
             << o->get_ref_count() << std::endl);
-    o->assert_is_valid();
+    //o->assert_is_valid();
     o->unref();
     if (!o->get_has_ref()) {
       delete o;
@@ -84,7 +84,7 @@ void ref(O o)
 template <class O>
 void unref(O* o)
 {
-  UnRef<(boost::is_base_of<RefCountedObject, O >::value)>::eval(o);
+  UnRef<(boost::is_base_of<RefCounted, O >::value)>::eval(o);
 }
 
 
@@ -92,42 +92,8 @@ void unref(O* o)
 template <class O>
 void ref(O* o)
 {
-  Ref<(boost::is_base_of<RefCountedObject, O >::value)>::eval(o);
+  Ref<(boost::is_base_of<RefCounted, O >::value)>::eval(o);
 }
-
-
-// Can be called on any object and will only unref it if appropriate
-template <class O>
-void disown(O* o)
-{
-  /*IMP_LOG(MEMORY, "Disown called with "
-          << (boost::is_base_of<RefCountedObject, O >::value)
-          << " for " << o << " " << o->get_ref_count() << std::endl);*/
-  o->unref();
-  if (!o->get_has_ref()) {
-    delete o;
-  }
-}
-
-
-// Can be called on any object and will only ref it if appropriate
-template <class O>
-void own(O* o)
-{
-  /*IMP_LOG(MEMORY, "Own called with "
-          << (boost::is_base_of<RefCountedObject, O >::value)
-          << " for " << o
-          << " " << o->get_ref_count() << std::endl);*/
-  if (boost::is_base_of<RefCountedObject, O >::value) {
-    // no checks
-  } else {
-    IMP_check(!o->get_has_ref(), "Trying to own already owned but "
-              << "non-reference-counted object: " << *o,
-              ValueException);
-  }
-  o->ref();
-}
-
 
 IMP_END_INTERNAL_NAMESPACE
 

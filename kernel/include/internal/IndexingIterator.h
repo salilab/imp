@@ -10,7 +10,7 @@
 
 #include "../macros.h"
 
-#include <IMP/RefCountedObject.h>
+#include <IMP/RefCounted.h>
 
 #include <iterator>
 #include <limits>

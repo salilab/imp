@@ -25,10 +25,8 @@ public:
 
   VersionInfo() : author_("unknown"), version_("unknown") {}
 
-  //! \return author of this object.
   std::string get_author() const { return author_; }
 
-  //! \return version string of this object.
   std::string get_version() const { return version_; }
 
   //! Print version information to a stream.

@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+import IMP.atom
 
 class DecoratorTests(IMP.test.TestCase):
     def test_hierarchy(self):
