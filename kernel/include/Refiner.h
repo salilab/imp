@@ -23,7 +23,7 @@ class DerivativeAccumulator;
 /** The job of this class is to take a single particle and, if
     appropriate, return a list of particles.
 */
-class IMPEXPORT Refiner : public RefCounted, public Object
+class IMPEXPORT Refiner : public Object
 {
   struct Accessor;
 public:

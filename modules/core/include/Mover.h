@@ -25,7 +25,7 @@ class MonteCarlo;
 /** You probably want to use MoverBase if you are implementing a Mover.
     \see MonteCarlo
  */
-class IMPCOREEXPORT Mover: public RefCounted, public Object
+class IMPCOREEXPORT Mover: public Object
 {
   friend class MonteCarlo;
   void set_optimizer(Optimizer *c) {

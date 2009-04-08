@@ -29,7 +29,7 @@ class Particle;
 
     \see IMP::SingletonFunctor
  */
-class IMPEXPORT SingletonModifier : public RefCounted, public Object
+class IMPEXPORT SingletonModifier : public Object
 {
 public:
   SingletonModifier();

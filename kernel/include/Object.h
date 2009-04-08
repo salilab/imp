@@ -9,24 +9,35 @@
 #ifndef IMP_OBJECT_H
 #define IMP_OBJECT_H
 
+#include "RefCounted.h"
 #include "exception.h"
 #include "VersionInfo.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
 
-//! Common base class for heap-allocated IMP objects.
-/** This class makes the object non-copyable a declares pure virtual
-    methods Object::show() and Object::get_version_info(). In addition
-    Objects can be written to a stream, producing the same output
+//! Common base class for heavy weight IMP objects.
+/** All the heavy-weight IMP objects have IMP::Object as a base class.
+    Such objects shave methods Object::show() and Object::get_version_info().
+    In addition Objects can be written to a stream, producing the same output
     as show.
 
-    \note Types inheriting from Object should always be created using
+    \cpp Types inheriting from Object should always be created using
     \c new in C++ and passed, passed using pointers and stored using
-    IMP::Pointer or IMP::WeakPointer objects.
+    IMP::Pointer objects. Note that you have to be careful of cycles
+    and so must use IMP::WeakPointer objects to break cycles. See
+    IMP::RefCounted for more information on reference counting.
+
+    \cpp Special care must taken when using the SWIG python interface
+    to make sure that Python reference counting is turned off for all
+    objects which are being reference counted in C++. The
+    IMP_OWN_CONSTRUCTOR(), IMP_OWN_METHOD(), IMP_OWN_FUNCTION() macros
+    aid this process.
+
  */
-class IMPEXPORT Object
+class IMPEXPORT Object: public RefCounted
 {
+  // hide the inheritance from RefCounted as it is a detail
 protected:
   IMP_NO_DOXYGEN(Object());
   IMP_NO_DOXYGEN(virtual ~Object());

@@ -48,6 +48,7 @@ private:
   std::map<FloatKey, FloatPair> ranges_;
 
   void add_particle_internal(Particle *p) {
+    IMP_CHECK_OBJECT(this);
     IMP_IF_CHECK(EXPENSIVE) {
       for (ParticleStorage::const_iterator it= particles_.begin();
            it != particles_.end(); ++it) {
@@ -64,12 +65,21 @@ private:
     p->set_name(oss.str());
     ++next_particle_index_;
   }
+
+
+#if defined(SWIG)
+ public:
+#else
+ private:
+  template <class T> friend void IMP::internal::unref(T*);
+  friend class IMP::internal::UnRef<true>;
+#endif
+
+  virtual ~Model();
 public:
   /** Construct an empty model */
   Model();
-  /** Particles, ScoreStates and Restraints are ref-counted so they
-      will be deleted if no other Pointers to them are held. */
-  virtual ~Model();
+
 
   /** @name States
 
@@ -97,6 +107,7 @@ public:
       objects until all references are removed, however attributes of
       removed particles cannot be changed or inspected.*/
   void remove_particle(Particle *p) {
+    IMP_CHECK_OBJECT(this);
     IMP_check(p->get_model() == this,
               "The particle does not belong to this model",
               ValueException);
@@ -178,6 +189,7 @@ public:
 
   //! \return version and authorship information.
   VersionInfo get_version_info() const {
+    IMP_CHECK_OBJECT(this);
     return internal::kernel_version_info;
   }
 };

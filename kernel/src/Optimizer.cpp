@@ -13,15 +13,7 @@ IMP_BEGIN_NAMESPACE
 
 Optimizer::Optimizer()
 {
-  IMP_LOG(MEMORY, "MEMORY: Optimizer created " << this << std::endl);
 }
-
-
-Optimizer::~Optimizer()
-{
-  IMP_LOG(MEMORY, "MEMORY: Optimizer destroyed " << this << std::endl);
-}
-
 
 void Optimizer::update_states() const
 {

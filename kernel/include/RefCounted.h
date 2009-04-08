@@ -9,8 +9,8 @@
 #ifndef IMP_REF_COUNTED_H
 #define IMP_REF_COUNTED_H
 
-#include "Object.h"
-
+#include "exception.h"
+#include "log.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
@@ -18,19 +18,34 @@ IMP_BEGIN_NAMESPACE
 
 //! Common base class for ref counted objects.
 /** This base class implements reference counting when used in
-    conjunction with IMP::Pointer objects. Special care must be
-    taken when using the SWIG python interface to make sure that
-    Python reference counting is turned off for all objects which
-    are being reference counted in C++. The IMP_OWN_CONSTRUCTOR(),
-    IMP_OWN_METHOD(), IMP_OWN_FUNCTION() macros aid this process.
+    conjunction with IMP::Pointer or IMP::WeakPointer objects.
+    Objects which inherit from IMP::RefCounted should be passed
+    using pointers and stored using IMP::Pointer and
+    IMP::WeakPointer objects. Users must be careful to avoid
+    cycles of reference counted pointers, otherwise memory will
+    never be reclaimed.
 
-    This class makes objects that inherit from it non-copyable.
+    \par Introduction to reference counting:
+    Reference counting is a technique for managing memory and
+    automatically freeing memory (destroying objects) when it
+    is no longer needed. It is used by Python to do its memory
+    management. In reference counting, each object has a reference
+    count, which tracks how many different places are using the
+    object. When this count goes to 0, the object is freed. The
+    IMP::Pointer class adds one to the reference count of the
+    IMP::RefCounted object it points to (and subtracts one when
+    it no longer points to the object.\n\nBe aware of cycles,
+    since if, for example, object A contains an IMP::Pointer to
+    object B and object B contains an IMP::Pointer to object A,
+    their reference counts will never go to 0 even if both A
+    and B are no longer used. To avoid this, use an
+    IMP::WeakPointer in one of A or B.
 
-   \internal
+    IMP::RefCounted provides no public methods or constructors.
+    It makes objects that inherit from it non-copyable.
  */
 class IMPEXPORT RefCounted
 {
-  typedef Object P;
   typedef RefCounted This;
   static unsigned int live_objects_;
   mutable int count_;

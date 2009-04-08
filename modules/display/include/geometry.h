@@ -30,7 +30,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     is a polygon (and must have thickness 0). A dimension of -1
     means do nothing.
  */
-class IMPDISPLAYEXPORT Geometry: public RefCounted, public Object
+class IMPDISPLAYEXPORT Geometry: public Object
 {
   Color default_color_;
   std::string name_;
@@ -75,7 +75,7 @@ IMP_OUTPUT_OPERATOR(Geometry);
 typedef std::vector<Geometry* > Geometries;
 
 //! Produce some geometry from a particle
-class IMPDISPLAYEXPORT CompoundGeometry: public RefCounted, public Object {
+class IMPDISPLAYEXPORT CompoundGeometry: public Object {
   std::string name_;
  public:
   CompoundGeometry();

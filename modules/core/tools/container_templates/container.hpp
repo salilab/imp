@@ -25,8 +25,7 @@ IMP_BEGIN_NAMESPACE
 /** Stores a searchable shared collection of classnames.
     \ingroup restraints
  */
-class IMPEXPORT GroupnameContainer : public RefCounted,
-                                     public Object
+class IMPEXPORT GroupnameContainer : public Object
 {
   struct Accessor {
     typedef Accessor This;

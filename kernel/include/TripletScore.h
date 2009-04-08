@@ -19,7 +19,7 @@ IMP_BEGIN_NAMESPACE
 /** TripletScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPEXPORT TripletScore : public RefCounted, public Object
+class IMPEXPORT TripletScore : public Object
 {
 public:
   TripletScore();

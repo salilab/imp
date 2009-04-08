@@ -19,7 +19,7 @@ IMP_BEGIN_NAMESPACE
 /** PairScores should take a UnaryFunction as their first
     argument if such is needed.
 */
-class IMPEXPORT PairScore : public RefCounted, public Object
+class IMPEXPORT PairScore : public Object
 {
 public:
   PairScore();

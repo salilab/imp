@@ -44,15 +44,18 @@ class RefCountTests(IMP.test.TestCase):
 
     def test_removal(self):
         """Check that ref counting works with removing particles"""
+        IMP.set_log_level(IMP.MEMORY)
         self._check_number(0)
         m= IMP.Model()
         print "creating particle"
         p= IMP.Particle(m)
-        self._check_number(1)
+        self._check_number(2)
         print "removing particle"
         m.remove_particle(p)
         self.assert_(not p.get_is_active(), "Removed particle is still active")
         p=1
+        self._check_number(1)
+        m=1
         self._check_number(0)
 
     # This test does not work since swig refcounting is broken
@@ -69,15 +72,15 @@ class RefCountTests(IMP.test.TestCase):
         pi= m.add_particle(p)
         print 2.5
         p=1
-        self._check_number(1)
+        self._check_number(2)
         print "got particle back"
         print 3
         p= m.get_particle(pi)
         print str(p)
-        self._check_number(1)
+        self._check_number(2)
         print 4
         p=None
-        self._check_number(1)
+        self._check_number(2)
         m=1
         print 6
 
@@ -91,12 +94,12 @@ class RefCountTests(IMP.test.TestCase):
         pi= p.get_name()
         print 9
         p=None
-        self._check_number(1)
+        self._check_number(2)
         print "got particle back"
         print 10
         p= m.get_particle(pi)
         print p
-        self._check_number(1)
+        self._check_number(2)
         print "removing particle"
         print 11
         p=None
@@ -104,9 +107,11 @@ class RefCountTests(IMP.test.TestCase):
         p= m.get_particle(pi)
         print 11.5
         m.remove_particle(pi)
-        self._check_number(1)
+        self._check_number(2)
         print 12
         p=None
+        self._check_number(1)
+        m=None
         self._check_number(0)
 
 
@@ -125,20 +130,20 @@ class RefCountTests(IMP.test.TestCase):
         print "Add particle to mc"
         mc.add_particle(p)
         # also have the score state now
-        self._check_number(2)
+        self._check_number(3)
         print "Remove from model"
         m.remove_particle(p)
         self.assertEqual(m.get_number_of_particles(), 0)
-        self._check_number(2)
+        self._check_number(3)
         print "setting p to 1"
         p=1
-        self._check_number(2)
+        self._check_number(3)
         print "Remove from mc"
         mc.clear_particles()
         self.assertEqual(mc.get_number_of_particles(), 0)
-        self._check_number(1)
+        self._check_number(2)
         mc=0
-        self._check_number(0)
+        self._check_number(1)
 
     def test_skip(self):
         """Check that removed particles are skipped"""

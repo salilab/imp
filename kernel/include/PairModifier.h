@@ -29,7 +29,7 @@ class Particle;
 
     \see IMP::PairFunctor
  */
-class IMPEXPORT PairModifier : public RefCounted, public Object
+class IMPEXPORT PairModifier : public Object
 {
 public:
   PairModifier();
