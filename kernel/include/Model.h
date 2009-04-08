@@ -69,7 +69,7 @@ public:
   Model();
   /** Particles, ScoreStates and Restraints are ref-counted so they
       will be deleted if no other Pointers to them are held. */
-  ~Model();
+  virtual ~Model();
 
   /** @name States
 

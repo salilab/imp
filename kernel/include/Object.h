@@ -41,6 +41,8 @@ public:
   //! Get information about the author and version of the object
   virtual VersionInfo get_version_info() const=0;
 
+  virtual ~Object(){}
+
 private:
   Object(const Object &o){}
   const Object& operator=(const Object &o) {return *this;}
