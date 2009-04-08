@@ -21,7 +21,9 @@ IMP_BEGIN_NAMESPACE
     Objects can be written to a stream, producing the same output
     as show.
 
-    \internal
+    \note Types inheriting from Object should always be created using
+    \c new in C++ and passed, passed using pointers and stored using
+    IMP::Pointer or IMP::WeakPointer objects.
  */
 class IMPEXPORT Object
 {
