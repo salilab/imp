@@ -3,8 +3,7 @@
 
 \author Daniel Russel and Ben Webb
 
-\overview
-%IMP.modeller supports integration of modeller with IMP. It
+\overview %IMP.modeller supports integration of modeller with IMP. It
 also provides PDB reading support. See
 \external{http://salilab.org/modeller/, the Modeller page}
 for more information about Modeller.
@@ -13,8 +12,7 @@ for more information about Modeller.
 \standard_imp_publications
 \publication{A. Sali and T.L. Blundell, Comparative protein modelling by satisfaction of spatial restraints, J. Mol. Biol., 1993}
 
-\license
-Modeller itself is commercial, but free for academic users. See \external{http://salilab.org/modeller/, the Modeller page} for
+\license Modeller itself is commercial, but free for academic users. See \external{http://salilab.org/modeller/, the Modeller page} for
 more information about licensing Modeller. The %IMP.%modeller module's library
 is to be determined.
 */
