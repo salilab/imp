@@ -57,7 +57,7 @@ class Model;
     of lines per update call.
 
  */
-class IMPEXPORT ScoreState : public RefCounted, public Object
+class IMPEXPORT ScoreState : public Object
 {
   friend class Model;
   void set_model(Model* model);

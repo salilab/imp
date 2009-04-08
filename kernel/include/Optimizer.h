@@ -45,7 +45,6 @@ class IMPEXPORT Optimizer: public Object
 {
 public:
   Optimizer();
-  virtual ~Optimizer();
 
   /** Optimize the model
       \param[in] max_steps The maximum number of steps to take.
@@ -85,6 +84,17 @@ public:
   /**@{*/
   IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*);
   /**@}*/
+
+
+#if defined(SWIG)
+ public:
+#else
+ protected:
+  template <class T> friend void IMP::internal::unref(T*);
+  friend class IMP::internal::UnRef<true>;
+#endif
+  virtual ~Optimizer(){}
+
 protected:
   //! Update optimizer state, should be called at each successful step
   void update_states() const ;

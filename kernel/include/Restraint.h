@@ -57,7 +57,7 @@ class Model;
     See the examples::ExampleRestraint  example for how to implement
     a simple restraint.
  */
-class IMPEXPORT Restraint : public RefCounted, public Object
+class IMPEXPORT Restraint : public Object
 {
 public:
   Restraint();

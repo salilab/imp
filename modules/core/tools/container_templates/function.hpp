@@ -29,7 +29,7 @@ class Particle;
 
     \see IMP::GroupnameFunctor
  */
-class IMPEXPORT GroupnameModifier : public RefCounted, public Object
+class IMPEXPORT GroupnameModifier : public Object
 {
 public:
   GroupnameModifier();

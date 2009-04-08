@@ -70,7 +70,7 @@ class Model;
     \ref decorators "Decorators" as these provide a nice and more reliable
     interface.
  */
-class IMPEXPORT Particle : public RefCounted, public Object
+class IMPEXPORT Particle : public Object
 {
 private:
   friend class Model;
@@ -128,12 +128,20 @@ private:
 
   Storage::iterator iterator_;
 
+
+#if defined(SWIG)
+ public:
+#else
+ private:
+  template <class T> friend void IMP::internal::unref(T*);
+  friend class IMP::internal::UnRef<true>;
+#endif
+  virtual ~Particle();
+
 public:
 
   //! Construct a particle and add it to the Model
   Particle(Model *m);
-
-  ~Particle();
 
   /** Get pointer to Model containing this particle.
       \throw InvalidStateException if now Model contains this particle.

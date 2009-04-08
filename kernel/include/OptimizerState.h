@@ -32,7 +32,7 @@ class Optimizer;
     logging is TERSE the restraint should print out only a constant number
     of lines per update call.
  */
-class IMPEXPORT OptimizerState : public RefCounted, public Object
+class IMPEXPORT OptimizerState : public Object
 {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);

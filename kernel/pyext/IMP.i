@@ -109,6 +109,14 @@ namespace IMP {
 %feature("ref")   Particle "IMP::internal::ref($this);"
 %feature("unref") Particle "IMP::internal::unref($this);"
 
+%feature("ref")   Model "IMP::internal::ref($this);"
+%feature("unref") Model "IMP::internal::unref($this);"
+
+%feature("ref")   Optimizer "IMP::internal::ref($this);"
+%feature("unref") Optimizer "IMP::internal::unref($this);"
+
+
+
 /* Don't wrap internal functions */
 %ignore IMP::internal::check_particles_active;
 
@@ -131,8 +139,8 @@ namespace IMP {
 %include "IMP/base_types.h"
 %include "IMP/deprecation.h"
 %include "IMP/VersionInfo.h"
-%include "IMP/Object.h"
 %include "IMP/RefCounted.h"
+%include "IMP/Object.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "Restraint.i"

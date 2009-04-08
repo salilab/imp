@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     of the file being written to before writing using the
     IMP::display::Writer::set_file_name() method.
  */
-class IMPDISPLAYEXPORT Writer: public RefCounted, public Object
+class IMPDISPLAYEXPORT Writer: public Object
 {
   std::ofstream out_;
   std::string file_name_;

@@ -27,7 +27,7 @@ class FilteredListPairContainer;
     \see ClosePairsScoreState
     \see CloseBipartitlePairsScoreState
  */
-class IMPCOREEXPORT ClosePairsFinder : public RefCounted, public Object
+class IMPCOREEXPORT ClosePairsFinder : public Object
 {
  protected:
   Float get_radius(Particle *p, FloatKey rk) const {

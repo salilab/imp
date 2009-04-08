@@ -18,7 +18,7 @@ IMP_BEGIN_NAMESPACE
 /** These functors take a single feature value, and return a corresponding
     score (and optionally also the first derivative).
  */
-class IMPEXPORT UnaryFunction : public RefCounted, public Object
+class IMPEXPORT UnaryFunction : public Object
 {
 public:
   UnaryFunction();

@@ -26,6 +26,7 @@ Model::Model()
 //! Destructor
 Model::~Model()
 {
+  IMP_CHECK_OBJECT(this);
   for (ParticleIterator it= particles_begin();
        it != particles_end(); ++it) {
     (*it)->unref();
@@ -42,6 +43,7 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
 
 
 FloatPair Model::get_range(FloatKey k) const {
+  IMP_CHECK_OBJECT(this);
   if (ranges_.find(k) != ranges_.end()) {
     return ranges_.find(k)->second;
   } else {
@@ -63,6 +65,7 @@ FloatPair Model::get_range(FloatKey k) const {
 
 Float Model::evaluate(bool calc_derivs)
 {
+  IMP_CHECK_OBJECT(this);
   IMP_LOG(TERSE,
           "Begin Model::evaluate" << std::endl);
   // If calcualting derivatives, first set all derivatives to zero
@@ -140,6 +143,7 @@ void Model::show(std::ostream& out) const
   out << get_number_of_score_states() << " score states" << std::endl;
 
   out << std::endl;
+  IMP_CHECK_OBJECT(this);
 }
 
 IMP_END_NAMESPACE
