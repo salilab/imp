@@ -105,7 +105,7 @@ class IMPDISPLAYEXPORT Writer: public RefCounted, public Object
 
   virtual void show(std::ostream &out=std::cout) const=0;
 
-  IMP_NO_SWIG(protected:)
+ protected:
   //! A hook for implementation classes to use to take actions on file close
   virtual void on_close()=0;
   //! A hook for implementation classes to use to take actions on file open
