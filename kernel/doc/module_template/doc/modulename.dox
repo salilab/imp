@@ -1,14 +1,12 @@
 /** \namespace IMP::modulename
-\brief IMP.modulename does something. 
+\brief %IMP.%modulename does something. 
 
 \author Someone
 
-\overview
-IMP.modulename provides a cool optimizer.
+\overview %IMP.%modulename provides a cool optimizer.
 
 \publications
 \publication{author, title, journal, year}
 
-\license
-not licensed for distribution.
+\license not licensed for distribution.
 */

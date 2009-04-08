@@ -3,8 +3,7 @@
 
 \author Daniel Russel
 
-\overview
-%IMP.%display provides code to write various file formats for displaying data
+\overview %IMP.%display provides code to write various file formats for displaying data
 from \imp optimizations. The display::Writer classes provides the base
 class for objects which write to specific file formats and the
 display::Geometry and display::GeometryExtractor provide means of describing
@@ -13,6 +12,5 @@ geometry.
 \publications
 \standard_imp_publications
 
-\license
-\standard_imp_license
+\license \standard_imp_license
 */
