@@ -35,7 +35,7 @@ class IMPEXPORT RefCounted
   static unsigned int live_objects_;
   mutable int count_;
   RefCounted(const RefCounted &){}
-  RefCounted& operator=(const RefCounted &){}
+  RefCounted& operator=(const RefCounted &){return *this;}
 
 #ifndef IMP_DOXYGEN
 protected:
