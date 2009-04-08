@@ -21,9 +21,9 @@
     on_close();                                                         \
   }                                                                     \
   }                                                                     \
-  IMP_NO_SWIG(protected:)                                               \
+protected:                                                              \
  virtual void on_open();                                                \
-  virtual void on_close();                                              \
+ virtual void on_close();                                               \
 
 
 
