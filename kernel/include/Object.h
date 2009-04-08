@@ -27,7 +27,7 @@ class IMPEXPORT Object
 {
 protected:
   IMP_NO_DOXYGEN(Object());
-  IMP_NO_DOXYGEN(~Object());
+  IMP_NO_DOXYGEN(virtual ~Object());
 
 public:
 #ifndef IMP_DOXYGEN
@@ -40,8 +40,6 @@ public:
 
   //! Get information about the author and version of the object
   virtual VersionInfo get_version_info() const=0;
-
-  virtual ~Object(){}
 
 private:
   Object(const Object &o){}
