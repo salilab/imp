@@ -224,111 +224,52 @@
   }
 #endif
 
-//! Define the basic things you need for a Restraint.
-/** These are: show, evaluate, get_version_info and a empty destructor
-    \param[in] Name The class name
-    \param[in] version_info The version info object to return.
-    \relates IMP::Restraint
-*/
-#define IMP_RESTRAINT(Name, version_info)                                \
-  virtual Float evaluate(DerivativeAccumulator *accum);                 \
-  virtual void show(std::ostream &out=std::cout) const;                 \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }\
-  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
-  public:
 
-
-//! Define the basic things you need for an optimizer.
-/** These are: optimize, get_version_info
-    \param[in] version_info The version info object to return.
-*/
-#define IMP_OPTIMIZER(version_info)                                     \
-  /** \short Optimize the model.
-      \param[in] max_steps The maximum number of steps to take.
-      \return The final score.
-   */                                                                   \
-  virtual Float optimize(unsigned int max_steps);                       \
-  /** \return version and authorship information */                     \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }
-
-
-//! Define the basics needed for an OptimizerState
-/** This macro declares the required functions
-    - void update()
-    - void show(std::ostream &out) const
-    and defines the function
-    - get_version_info
-    \param[in] version_info The version info object to return.
-*/
-#define IMP_OPTIMIZER_STATE(version_info)                               \
-  virtual void update();                                                \
-  virtual void show(std::ostream &out=std::cout) const;                 \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }
-
-//! Define the basics needed for a ScoreState
-/** This macro declares the required functions
-    - void do_before_evaluate()
-    - void show(std::ostream &out) const
-    and defines the function
-    - get_version_info
-    - an empty destructor
-
-    \relates IMP::ScoreState
-
-    \param[in] Name the class name
-    \param[in] version_info The version info object to return.
-*/
-#define IMP_SCORE_STATE(Name, version_info)                              \
-protected:                                                              \
- virtual void do_before_evaluate();                                     \
- virtual void do_after_evaluate(DerivativeAccumulator *da);             \
- IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
-public:                                                                 \
- virtual void show(std::ostream &out=std::cout) const;                  \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }
-
-//! Define the basics needed for a particle refiner
-/** This macro declares the following functions
-    - bool get_can_refine(Particle*) const;
-    - unsigned int get_number_of_refined(Particle *) const;
-    - Particle* get_refined(Particle *, unsigned int) const;
-    - const Particles get_refined(Particle *) const;
-    - void show(std::ostream &out) const;
-    - an empty, private destructor
-
-    \param[in] Name The name of the class which this is adding methods to.
-    \param[in] version_info The version info object to return
-
- */
-#define IMP_REFINER(Name, version_info)                                 \
-  public:                                                               \
-  virtual bool get_can_refine(Particle*) const;                         \
-  virtual void show(std::ostream &out) const;                           \
-  virtual Particle* get_refined(Particle *, unsigned int) const;        \
-  virtual const Particles get_refined(Particle *) const;                \
-  virtual unsigned int get_number_of_refined(Particle *) const;         \
-  virtual IMP::VersionInfo get_version_info() const {                   \
-    return version_info;                                                \
-  }                                                                     \
-  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 //! Use the swap_with member function to swap two objects
-#define IMP_SWAP(name) \
-  inline void swap(name &a, name &b) {          \
+/** The two objects mustbe of the same type (Name) and define
+    the method \c swap_with().
+*/
+#define IMP_SWAP(Name) \
+  inline void swap(Name &a, Name &b) {          \
     a.swap_with(b);                             \
   }
 
 //! swap two member variables assuming the other object is called o
+/** Swap the member \c var_name of the two objects (this and o).
+ */
 #define IMP_SWAP_MEMBER(var_name) \
   std::swap(var_name, o.var_name);
 
 
 
 //! use a copy_from method to create a copy constructor and operator=
+/** This macro is there to aid with classes which require a custom
+    copy constructor. It simply forwards \c operator= and the copy
+    constructor to a method \c copy_from() which should do the copying.
+
+    You should think very hard before implementing a class which
+    requires a custom copy custructor as it is easy to get wrong
+    and you can easily wrap most resources with RIIA objects
+    (\external{en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
+    wikipedia entry}).
+
+ */
 #define IMP_COPY_CONSTRUCTOR(TC) TC(const TC &o){copy_from(o);}  \
   TC& operator=(const TC &o) {copy_from(o); return *this;}
 
 
+
+#ifdef IMP_DOXYGEN
+//! Ref counted objects should have private destructors
+/** This macro defines a private destructor and adds the appropriate
+    friend methods so that the class can be used with ref counting.
+    By defining a private destructor, you make it so that the object
+    cannot be declared on the stack and so must be ref counted.
+    \see IMP::RefCounted
+ */
+#define IMP_REF_COUNTED_DESTRUCTOR
+#else
 
 #ifdef _MSC_VER
 // VC doesn't understand friends properly
@@ -343,8 +284,7 @@ public:                                                         \
 public:                                                      \
  virtual ~Classname(){}
 #else
-//! Declare a protected destructor and get the friends right
-/** The destructor is unprotected for SWIG since if it is protected
+/* The destructor is unprotected for SWIG since if it is protected
     SWIG does not wrap the python proxy distruction and so does not
     dereference the ref counted pointer. Swig also gets confused
     on template friends.
@@ -356,7 +296,17 @@ public:                                                      \
   virtual ~Classname(){}
 #endif // SWIG
 #endif // _MSC_VER
+#endif // doxygen
 
+
+/** \name Macros to aid with implementing decorators
+
+    These macros are here to aid in implementation of decorators. The first
+    two declare/define the expected methods. The remainder help implement
+    basic functions.
+
+    @{
+ */
 
 //! Define the basic things needed by a Decorator.
 /** The key things this defines are
@@ -509,6 +459,9 @@ const TraitsType &get_##traits_name() const {                            \
                          The attribute value is stored in the variable VALUE.
    \param[in] not_has_action The action to take if the Particle does not have
                              the attribute.
+   \see IMP_DECORATOR_GET()
+   \see IMP_DECORATOR_GET_SET()
+
  */
 #define IMP_DECORATOR_GET(AttributeKey, Type, has_action, not_has_action) \
   if (get_particle()->has_attribute(AttributeKey)) {                    \
@@ -520,9 +473,11 @@ const TraitsType &get_##traits_name() const {                            \
 
 
 //! Set an attribute, creating it if it does not already exist.
-/** Another commont pattern is to have an assumed value if the attribute
+/** Another common pattern is to have an assumed value if the attribute
     is not there. Then, you sometimes need to set the value whether it
     is there or not.
+   \see IMP_DECORATOR_GET()
+   \see IMP_DECORATOR_GET_SET()
  */
 #define IMP_DECORATOR_SET(AttributeKey, value)          \
   if (get_particle()->has_attribute(AttributeKey)) {    \
@@ -540,6 +495,8 @@ const TraitsType &get_##traits_name() const {                            \
                            the attribute.
    \param[in] Type The type of the attribute (upper case).
    \param[in] ReturnType The type to return from the get.
+   \see IMP_DECORATOR_GET()
+   \see IMP_DECORATOR_SET()
 */
 #define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)     \
   ReturnType get_##name() const {                                       \
@@ -551,11 +508,11 @@ const TraitsType &get_##traits_name() const {                            \
 
 //! Define methods for getting and setting an optional simple field.
 /**
-   See IMP_DECORATOR_GET_SET.
+   See IMP_DECORATOR_GET_SET(). The difference is that here you can provide
+   a default value to use if the decorator does not have the attribute.
 
    \param[in] name The lower case name of the attribute
-   \param[in] AttributeKey The AttributeKey object controlling
-                           the attribute.
+   \param[in] AttributeKey The expression to get the required attribute key.
    \param[in] Type The type of the attribute (upper case).
    \param[in] ReturnType The type to return from the get.
    \param[in] default_value The value returned if the attribute is missing.
@@ -571,8 +528,6 @@ const TraitsType &get_##traits_name() const {                            \
     IMP_DECORATOR_SET(AttributeKey, t);                                 \
   }
 
-              /* static internal::ArrayOnAttributesHelper<Traits::Key,  \
-                 Traits::Value> name##_data_;  */
 
 //! Define a set of attributes which form an array
 /**
@@ -659,18 +614,116 @@ protection:                                                             \
    }                                                                    \
  }
 
+//! @}
 
-//! add a method to get a key
-/** One has to make sure to call the
-    decorator_initialize_static_data method first
+
+
+
+
+
+
+
+/** \name Macros to aid with implementation classes
+
+    These macros are here to aid with implementing classes that inherit
+    from the various abstract base classes in the kernel. Each macro,
+    which should be used in the body of the class,
+    declares the set of needed functions. The functions should be defined
+    in the associated \c .cpp file. By using the macros, you ensure
+    that your class gets the names of the functions correct and it
+    makes it easier to update your class if the functions should change.
+
+    @{
  */
-#define IMP_DECORATOR_GET_KEY(KeyType, key_name, key_string)   \
-  static KeyType get_##key_name() {                            \
-    static KeyType k(#key_string);                             \
-    return k;                                                  \
-  }
 
 
+//! Define the basic things you need for a Restraint.
+/** These are: show, evaluate, get_version_info and a empty destructor
+    \param[in] Name The class name
+    \param[in] version_info The version info object to return.
+    \relates IMP::Restraint
+*/
+#define IMP_RESTRAINT(Name, version_info)                                \
+  virtual Float evaluate(DerivativeAccumulator *accum);                 \
+  virtual void show(std::ostream &out=std::cout) const;                 \
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }\
+  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
+  public:
+
+
+//! Define the basic things you need for an optimizer.
+/** These are: optimize, get_version_info
+    \param[in] version_info The version info object to return.
+*/
+#define IMP_OPTIMIZER(version_info)                                     \
+  /** \short Optimize the model.
+      \param[in] max_steps The maximum number of steps to take.
+      \return The final score.
+   */                                                                   \
+  virtual Float optimize(unsigned int max_steps);                       \
+  /** \return version and authorship information */                     \
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+
+
+//! Define the basics needed for an OptimizerState
+/** This macro declares the required functions
+    - void update()
+    - void show(std::ostream &out) const
+    and defines the function
+    - get_version_info
+    \param[in] version_info The version info object to return.
+*/
+#define IMP_OPTIMIZER_STATE(version_info)                               \
+  virtual void update();                                                \
+  virtual void show(std::ostream &out=std::cout) const;                 \
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+
+//! Define the basics needed for a ScoreState
+/** This macro declares the required functions
+    - void do_before_evaluate()
+    - void show(std::ostream &out) const
+    and defines the function
+    - get_version_info
+    - an empty destructor
+
+    \relates IMP::ScoreState
+
+    \param[in] Name the class name
+    \param[in] version_info The version info object to return.
+*/
+#define IMP_SCORE_STATE(Name, version_info)                              \
+protected:                                                              \
+ virtual void do_before_evaluate();                                     \
+ virtual void do_after_evaluate(DerivativeAccumulator *da);             \
+ IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
+public:                                                                 \
+ virtual void show(std::ostream &out=std::cout) const;                  \
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+
+//! Define the basics needed for a particle refiner
+/** This macro declares the following functions
+    - bool get_can_refine(Particle*) const;
+    - unsigned int get_number_of_refined(Particle *) const;
+    - Particle* get_refined(Particle *, unsigned int) const;
+    - const Particles get_refined(Particle *) const;
+    - void show(std::ostream &out) const;
+    - an empty, private destructor
+
+    \param[in] Name The name of the class which this is adding methods to.
+    \param[in] version_info The version info object to return
+
+ */
+#define IMP_REFINER(Name, version_info)                                 \
+  public:                                                               \
+  virtual bool get_can_refine(Particle*) const;                         \
+  virtual void show(std::ostream &out) const;                           \
+  virtual Particle* get_refined(Particle *, unsigned int) const;        \
+  virtual const Particles get_refined(Particle *) const;                \
+  virtual unsigned int get_number_of_refined(Particle *) const;         \
+  virtual IMP::VersionInfo get_version_info() const {                   \
+    return version_info;                                                \
+  }                                                                     \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 
 //! Define the functions needed for a SingletonModifier
@@ -754,6 +807,8 @@ protection:                                                             \
   IMP::VersionInfo get_version_info() const { return version_info; }    \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
   public:
+
+//! @}
 
 
 //! Use this to label a function with no side effects
