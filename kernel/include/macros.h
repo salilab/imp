@@ -380,6 +380,16 @@ public:                                                      \
 
     In addition, the macro declares a show(std::ostream &out,
     std::string prefix) method which should be implemented elsewhere.
+
+    You also implement static methods \c get_x_key() to return each of the
+    keys used. These static methods, which must be defined in the \c .cpp
+    file should declare the key itself as a \c static member variable to
+    avoid initializing the key if the decorator is not used.
+
+    See \ref decorators "the decorators page" for a more detailed description
+    of decorators.
+
+    \see IMP_DECORATOR_TRAITS()
  */
 #define IMP_DECORATOR(Name, Parent)                                     \
 public:                                                                 \
@@ -436,9 +446,19 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
     - create(Particle *p, other args) which adds the needed attributes
     to a particle
 
-
     In addition, the macro declares a show(std::ostream &out,
-    std::string prefix) method which should be implemented elsewhere.
+    std::string prefix) method which should be implemented elsewhere (eg
+    the .cpp file).
+
+    You also implement static methods \c get_x_key() to return each of the
+    keys used. These static methods, which must be defined in the \c .cpp
+    file should declare the key itself as a \c static member variable to
+    avoid initializing the key if the decorator is not used.
+
+    See \ref decorators "the decorators page" for a more detailed description
+    of decorators.
+
+    \see IMP_DECORATOR()
  */
 #define IMP_DECORATOR_TRAITS(Name, Parent, TraitsType, traits_name,     \
 default_traits)                                                         \
