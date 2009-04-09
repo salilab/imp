@@ -18,9 +18,9 @@ IMP_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight IMP objects.
 /** All the heavy-weight IMP objects have IMP::Object as a base class.
-    Such objects share methods Object::show() and Object::get_version_info().
-    In addition Objects can be written to a stream, producing the same output
-    as show.
+    Such all such object support the methods Object::show() and
+    Object::get_version_info().  In addition Objects can be written to
+    a stream, producing the same output as show.
 
     \cpp Types inheriting from Object should always be created using
     \c new in C++ and passed, passed using pointers and stored using
