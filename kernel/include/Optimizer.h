@@ -16,13 +16,11 @@
 #include "Model.h"
 #include "Particle.h"
 #include "Pointer.h"
-
+#include "OptimizerState.h"
 #include <limits>
 #include <cmath>
 
 IMP_BEGIN_NAMESPACE
-
-class OptimizerState;
 
 typedef std::vector<OptimizerState*> OptimizerStates;
 

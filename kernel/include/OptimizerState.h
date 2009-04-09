@@ -12,7 +12,6 @@
 #include "VersionInfo.h"
 #include "RefCounted.h"
 #include "Pointer.h"
-#include "Optimizer.h"
 
 #include <iostream>
 
