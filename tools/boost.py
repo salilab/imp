@@ -34,7 +34,7 @@ Boost version >= %s is required to build IMP, but it could not be found
 on your system. Please see config.log for more details.
 
 In particular, if you have Boost installed in a non-standard location,
-please use the 'include' option to add this location to the search path.
+please use the 'includepath' option to add this location to the search path.
 For example, a Mac using Boost installed with MacPorts will have the Boost
 headers in /opt/local/include, so edit (or create) config.py and add the line
 
