@@ -43,6 +43,8 @@ IMP_BEGIN_NAMESPACE
 
     IMP::RefCounted provides no public methods or constructors.
     It makes objects that inherit from it non-copyable.
+
+    \see IMP_REF_COUNTED_DESTRUCTOR()
  */
 class IMPEXPORT RefCounted
 {
