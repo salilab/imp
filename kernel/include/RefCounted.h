@@ -34,7 +34,7 @@ IMP_BEGIN_NAMESPACE
     object. When this count goes to 0, the object is freed. The
     IMP::Pointer class adds one to the reference count of the
     IMP::RefCounted object it points to (and subtracts one when
-    it no longer points to the object.\n\nBe aware of cycles,
+    it no longer points to the object.\n\n Be aware of cycles,
     since if, for example, object A contains an IMP::Pointer to
     object B and object B contains an IMP::Pointer to object A,
     their reference counts will never go to 0 even if both A
