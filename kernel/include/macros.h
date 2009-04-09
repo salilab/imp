@@ -671,6 +671,7 @@ protection:                                                             \
     apply(a,b);                                                         \
   }
 
+
 //! Define the functions needed for a SingletonModifier
 /** This version takes a derivative accumulator.
    \see IMP_SINGLETON_MODIFIER
