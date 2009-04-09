@@ -301,9 +301,9 @@ public:                                                      \
 
 /** \name Macros to aid with implementing decorators
 
-    These macros are here to aid in implementation of decorators. The first
-    two declare/define the expected methods. The remainder help implement
-    basic functions.
+    These macros are here to aid in implementation of IMP::Decorator
+    objects.  The first two declare/define the expected methods. The
+    remainder help implement basic functions.
 
     @{
  */
