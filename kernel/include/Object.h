@@ -18,7 +18,7 @@ IMP_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight IMP objects.
 /** All the heavy-weight IMP objects have IMP::Object as a base class.
-    Such objects shave methods Object::show() and Object::get_version_info().
+    Such objects share methods Object::show() and Object::get_version_info().
     In addition Objects can be written to a stream, producing the same output
     as show.
 
