@@ -346,6 +346,7 @@ public:                                                                 \
 /* Should be private but SWIG accesses it through the comparison
     macros*/                                                            \
 IMP_NO_DOXYGEN(typedef Name This);                                      \
+ /** \brief Create null decorator */                                    \
  Name(): Parent(){}                                                     \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
    IMP_assert(is_instance_of(p),                                        \
@@ -375,28 +376,27 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
 #define IMP_DECORATOR_TRAITS(Name, Parent, TraitsType, traits_name,     \
 default_traits)                                                         \
   private:                                                              \
-  TraitsType traits_name##_;                                             \
+  TraitsType traits_name##_;                                            \
 public:                                                                 \
-/* Should be private but SWIG accesses it through the comparison
-    macros*/                                                            \
 IMP_NO_DOXYGEN(typedef Name This;)                                      \
- Name(): Parent(){}                                                     \
+ /** \brief Create null decorator */                                    \
+Name(): Parent(){}                                                      \
 Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
-                                                traits_name##_(tr) {     \
+                                                   traits_name##_(tr) { \
   IMP_assert(is_instance_of(p, tr),                                     \
-              "Particle missing required attributes for decorator "     \
-              << #Name << *p << std::endl);                             \
- }                                                                      \
-static Name cast(::IMP::Particle *p, const TraitsType &tr=default_traits) { \
-  IMP_check(is_instance_of(p, tr), "Particle missing required attributes for "\
-  << "decorator " << #Name << " " << *p, InvalidStateException);\
-  return Name(p, tr);\
+             "Particle missing required attributes for decorator "      \
+             << #Name << *p << std::endl);                              \
 }                                                                       \
- void show(std::ostream &out=std::cout,                                 \
-           std::string prefix=std::string()) const;                     \
+static Name cast(::IMP::Particle *p, const TraitsType &tr=default_traits) { \
+  IMP_check(is_instance_of(p, tr), "Particle missing required attributes for " \
+            << "decorator " << #Name << " " << *p, InvalidStateException); \
+  return Name(p, tr);                                                   \
+}                                                                       \
+void show(std::ostream &out=std::cout,                                  \
+          std::string prefix=std::string()) const;                      \
 /** Get the traits object */                                            \
-const TraitsType &get_##traits_name() const {                            \
-  return traits_name##_;                                                 \
+const TraitsType &get_##traits_name() const {                           \
+  return traits_name##_;                                                \
 }
 
 
