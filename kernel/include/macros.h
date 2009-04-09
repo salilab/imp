@@ -346,18 +346,12 @@ public:                                                                 \
 /* Should be private but SWIG accesses it through the comparison
     macros*/                                                            \
 IMP_NO_DOXYGEN(typedef Name This);                                      \
- /** \short The default constructor. This is used as a null value */    \
  Name(): Parent(){}                                                     \
- /** \short Construct from a Particle which has all needed attributes */\
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
    IMP_assert(is_instance_of(p),                                        \
               "Particle missing required attributes for decorator "     \
               << #Name << *p << std::endl);                             \
  }                                                                      \
- /** Check that p has the necessary attributes and return a decorator.
-     \throws InvalidStateException if some required attributes are
-     missing
- */                                                                     \
  static Name cast(::IMP::Particle *p) {                                 \
    IMP_CHECK_OBJECT(p);                                                 \
    if (!is_instance_of(p)) {                                            \
@@ -366,78 +360,38 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
    }                                                                    \
    return Name(p);                                                      \
  }                                                                      \
- /** Write information about this decorator to out. Each line should
-     prefixed by prefix*/                                               \
  void show(std::ostream &out=std::cout,                                 \
            std::string prefix=std::string()) const;
 
 //! Define the basic things needed by a Decorator which has a traits object.
-/** The key things this defines are
-    - a default constructor,
-    - a static cast function,
-    - a method get_particle(),
-    - a method get_model()
-    - comparisons.
-    - a show method
-    - a get_traits_name method
-
-    \param[in] Name is the name of the decorator, such as NameDecorator
-    \param[in] Parent The class name for the parent of this class,
-    typically Decorator
-    \param[in] TraitsType the type of the traits object
-    \param[in] traits_name what to name the traits object.
-    \param[in] default_traits How to get the default traits value
-
-    It requires that the implementer of the Decorator implement the static
-    methods:
-
-    - bool is_instance_of(Particle *p) which checks if a particle has
-    needed attributes.
-    - create(Particle *p, other args) which adds the needed attributes
-    to a particle
-
-    In addition, the macro declares a show(std::ostream &out,
-    std::string prefix) method which should be implemented elsewhere (eg
-    the .cpp file).
-
-    You also implement static methods \c get_x_key() to return each of the
-    keys used. These static methods, which must be defined in the \c .cpp
-    file should declare the key itself as a \c static member variable to
-    avoid initializing the key if the decorator is not used.
-
-    See \ref decorators "the decorators page" for a more detailed description
-    of decorators.
-
-    \see IMP_DECORATOR()
+/** This macro is the same as IMP_DECORATOR() except that an extra object
+    of type TraitsType is passed after the particle to
+    Decorator::is_instance_of(), Decorator::create() and Decorator::cast().
+    As in the IMP::core::XYZRDecorator or IMP::core::HierarchyDecorator,
+    this object can be used to parameterize the Decorator. The traits
+    object is stored in the decorator and made accessible through
+    the get_traits() method.
  */
 #define IMP_DECORATOR_TRAITS(Name, Parent, TraitsType, traits_name,     \
 default_traits)                                                         \
   private:                                                              \
   TraitsType traits_name##_;                                             \
 public:                                                                 \
-/** \note Should be private but SWIG accesses it through the comparison
+/* Should be private but SWIG accesses it through the comparison
     macros*/                                                            \
- typedef Name This;                                                     \
- /** \short The default constructor. This is used as a null value */    \
+IMP_NO_DOXYGEN(typedef Name This;)                                      \
  Name(): Parent(){}                                                     \
- /** \short Construct from a Particle which has all needed attributes */\
 Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
                                                 traits_name##_(tr) {     \
   IMP_assert(is_instance_of(p, tr),                                     \
               "Particle missing required attributes for decorator "     \
               << #Name << *p << std::endl);                             \
  }                                                                      \
- /** Check that p has the necessary attributes and return a decorator.
-     \throws InvalidStateException if some required attributes are
-     missing
- */                                                                     \
 static Name cast(::IMP::Particle *p, const TraitsType &tr=default_traits) { \
   IMP_check(is_instance_of(p, tr), "Particle missing required attributes for "\
   << "decorator " << #Name << " " << *p, InvalidStateException);\
   return Name(p, tr);\
 }                                                                       \
- /** Write information about this decorator to out. Each line should
-     prefixed by prefix*/                                               \
  void show(std::ostream &out=std::cout,                                 \
            std::string prefix=std::string()) const;                     \
 /** Get the traits object */                                            \
