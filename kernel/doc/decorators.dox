@@ -43,8 +43,8 @@ and "X" other places
 - cache keys since those can be expensive to create
 
 
-To see a list of all available decorators, look at the IMP::Decorator
-page.
+To see a list of all available decorators and to see what functions all decorators
+have, look at the IMP::Decorator page.
 
 See the IMP::examples::Decorator example for how to implement a simple
 decorator.
