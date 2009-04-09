@@ -75,7 +75,6 @@
     clear_##lcname##s();                                                \
     add_##lcname##s(ps);                                                \
   }                                                                     \
-  IMP_PROTECTION(protection)                                            \
 /** \return index of object within the object
 */                                                                      \
 unsigned int add_##lcname(Data obj);                                    \
@@ -106,8 +105,8 @@ Ucname##ConstIterator lcname##s_begin() const {                         \
   return lcname##_vector_.begin();}                                     \
 Ucname##ConstIterator lcname##s_end() const {                           \
   return lcname##_vector_.end();}                                       \
-private:                                                                \
-IMP::internal::Vector<Data> lcname##_vector_;                           \
+IMP_NO_DOXYGEN(private:)                                                \
+IMP_NO_DOXYGEN(IMP::internal::Vector<Data> lcname##_vector_;)           \
 IMP_PROTECTION(protection)                                              \
 
 
