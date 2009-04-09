@@ -365,7 +365,6 @@ public:                                                      \
     - a method get_particle(),
     - a method get_model()
     - comparisons.
-    - a show method
 
     \param[in] Name is the name of the decorator, such as NameDecorator
     \param[in] Parent The class name for the parent of this class,
@@ -378,6 +377,9 @@ public:                                                      \
     needed attributes.
     - create(Particle *p, other args) which adds the needed attributes
     to a particle
+
+    In addition, the macro declares a show(std::ostream &out,
+    std::string prefix) method which should be implemented elsewhere.
  */
 #define IMP_DECORATOR(Name, Parent)                                     \
 public:                                                                 \
@@ -433,6 +435,10 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
     needed attributes.
     - create(Particle *p, other args) which adds the needed attributes
     to a particle
+
+
+    In addition, the macro declares a show(std::ostream &out,
+    std::string prefix) method which should be implemented elsewhere.
  */
 #define IMP_DECORATOR_TRAITS(Name, Parent, TraitsType, traits_name,     \
 default_traits)                                                         \
