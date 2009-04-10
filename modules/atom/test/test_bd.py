@@ -28,7 +28,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         bd= IMP.atom.BrownianDynamics()
         bd.set_model(m)
         radius=2
-        ps= IMP.core.create_xyzr_particles(m, 400, radius)
+        ps= IMP.core.create_xyzr_particles(m, 1000, radius)
         for p in ps:
             d= IMP.atom.DiffusionDecorator.create(p)
             d.set_D_from_radius_in_angstroms(radius)
