@@ -73,6 +73,8 @@ class Model;
 class IMPEXPORT Particle : public Object
 {
 private:
+  // doxygen produces funny docs for these things
+#ifndef IMP_DOXYGEN
   friend class Model;
   //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
   typedef std::list<Particle*> Storage;
@@ -127,7 +129,7 @@ private:
   ParticleTable particles_;
 
   Storage::iterator iterator_;
-
+#endif
 
 #if defined(SWIG)
  public:
