@@ -30,9 +30,6 @@
 #include <assert.h>
 #endif
 
-#ifndef NULL
-#define NULL 0
-#endif
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace TNT
