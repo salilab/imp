@@ -31,6 +31,9 @@ def check_c_file(filename, errors):
         if srch.search(line):
             errors.append('%s:%d: Line has trailing whitespace' \
                           % (filename, num+1))
+        if not filename.endswith(".cpp") and line.startswith("#define ") and not line.startswith("#define IMP"):
+            errors.append('%s:%d: Preprocess symbols must start with IMP' \
+                          % (filename, num+1))
         blank = (len(line) == 0)
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
