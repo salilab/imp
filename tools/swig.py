@@ -137,7 +137,7 @@ def generate(env):
     java_file.add_action('.i', SwigAction)
     java_file.add_emitter('.i', _swigEmitter)
 
-    env['SWIG']              = 'swig'
+    env['SWIG']              = env.WhereIs('swig')
     env['SWIGVERSION']       = _get_swig_version(env)
     env['SWIGFLAGS']         = SCons.Util.CLVar('')
     env['SWIGDIRECTORSUFFIX'] = '_wrap.h'
