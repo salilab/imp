@@ -3,7 +3,7 @@
 \section prereq Prerequisites
 In order to obtain and compile \imp, you will need:
 
- - SWIG (1.3.31 or later).
+ - SWIG (1.3.34 or later).
  - scons (0.98 or later).
  - Boost (1.33 or later). At the moment \imp only needs the Boost headers (not the libraries).
  - Python 2.3 or later.
@@ -16,12 +16,22 @@ If you install headers, libraries or tools anywhere other than the standard loca
 \subsection mac Mac
 Mac users should use one of the available collections of Unix tools, either \external{http://www.macports.org/, MacPorts} or \external{http://www.finkproject.org/, Fink}. If you use MacPorts, you must add \c /opt/local/bin to your path (either by modifying your shell's config file or by making an \c environment.plist file-see the \salilab{imp/wiki/FAQ, FAQ}) and then do
 \command{sudo port install boost subversion scons swig}
-to install the needed libraries and tools.
+to install the needed libraries and tools. Alternatively, you can build the
+packages yourself from source code.
+
+Note that Mac OS X 10.5 includes a 'swig' binary, but it is too old to use with
+IMP. If you install SWIG with MacPorts above, you will need to make sure SCons
+picks up your SWIG rather than Apple's, with the `path=/opt/local/bin` command
+line option.
 
 \note Do not install any C++ headers in `/usr/include` on your Mac as the compiler assumes any such headers are C headers. Since both MacPorts and Fink install into non-standard locations, you will need to add these to your SCons search path.
 
 \subsection windows Windows
-Windows users should probably install Cygwin, but we don't have any of those yet, so we don't really know.
+The SCons build system should work on Windows with the command line Microsoft
+Visual Studio compiler (`cl`) but it has not yet been tested; some of the
+subsidiary scripts may assume a Unix environment. (In the Sali lab, you can
+build a Windows version on `synth` by running `scons` in the usual way, giving
+the `wine=true` command line option.)
 
 \subsection optional Optional dependencies
 The documentation will look prettier if you have \external{http://www.graphviz.org/,graphviz} installed. It is available as part of most unix tool sets (MacPorts, all linux distributions etc.).
