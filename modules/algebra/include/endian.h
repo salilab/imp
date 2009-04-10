@@ -9,6 +9,7 @@
 #define IMPALGEBRA_ENDIAN_H
 
 #include "config.h"
+#include <IMP/macros.h>
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -36,12 +37,17 @@ void IMPALGEBRAEXPORT reversed_write(const void* src,size_t size,size_t nitems,
               std::ofstream& f,bool reverse = false);
 
 
+
+IMP_NO_DOXYGEN(void IMPALGEBRAEXPORT byte_swap(unsigned char* b, int n);)
+
 //! Conversion between little and big endian. Goes both ways
 /**
  * \ingroup LittleBigEndian
  */
-#define little22bigendian(x) byte_swap((unsigned char*)& x,sizeof(x))
-void IMPALGEBRAEXPORT byte_swap(unsigned char* b, int n);
+template <class T>
+inline  void little_to_big_endian(T &x) {
+  byte_swap((unsigned char*)& x,sizeof(T));
+}
 
 //! Returns 1 if machine is big endian else 0
 /**
