@@ -45,7 +45,7 @@ IMP_NO_DOXYGEN(void IMPALGEBRAEXPORT byte_swap(unsigned char* b, int n);)
  * \ingroup LittleBigEndian
  */
 template <class T>
-inline  void little_to_big_endian(T &x) {
+inline  void convert_between_little_and_big_endian(T &x) {
   byte_swap((unsigned char*)& x,sizeof(T));
 }
 
