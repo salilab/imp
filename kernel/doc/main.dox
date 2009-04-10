@@ -35,6 +35,7 @@
  \section key_pages Key pages
  - \ref api "API Documentation"
  - \salilab{imp/bugs,Bug Tracker}
+ - \ref recent "Change history"
  - \salilab{internal/imp/tests.html,Daily build status}
  - \salilab{imp/doc/doxygen/deprecated.html,
    Deprecated functionality list}
