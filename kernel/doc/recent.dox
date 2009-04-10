@@ -1,0 +1,41 @@
+/** \page recent Change History
+
+\par Week of April 6
+
+- IMP::Object now defines pure virtual methods IMP::Object::get_version_info() and IMP::Object::show(). All non-abstract classes which inherit from IMP::Object must implement them. Doing this means they are more uniformly implemented and are documented in one place.
+
+- IMP::Object is now reference counted (the only objects this changes are IMP::Model and IMP::Optimizer). As a result optimizers and IMP::Model objects must be created on the heap.
+
+- IMP::RefCounted has had its name changed and no longer inherits from IMP::Object. This makes it easier to use independently.
+
+- the docs for reference counting (IMP::RefCounted) and \ref decorators decorators (and IMP::Decorator) have been improved
+
+- running doxygen produces no warnings. Let's try to keep it that way. Run \command{scons doc > /dev/null} before you check in large blocks of new code to make sure that you didn't introduce warnings.
+
+- Helper classes have been added to make SingletonModiefier and PairModifier objects look like functors for C++ and python. This makes it so you can use \c map in Python and \c for_each in C++. See IMP::SingletonFunctor and IMP::PairFunctor for more information.
+
+- The recent changes page has moved to a doxygen page to make it easier to link changes back to the relevant source code.
+
+\par Week of March 20:
+
+- create_rigid_body(), create_rigid_bodies(), create_centroid() etc. now require you to add the score state to the model yourself. Whether the rigid body is enforced or not can be controlled by adding or removing the returned IMP::ScoreState.
+
+- All previously deprecated code has been removed. This includes indexes in particles, the no-argument constructor for particles and the functionality that was moved from core to atom.
+
+- The IMP::core::RigidBodyDecorator and IMP::core::RigidMemberDecorator have been simplified by removing the traits classes. There is now only one type of rigid body and it stores the list of member particles internally.
+
+- IMP::core::NameDecorator has been deprecated as IMP::Particles have built in names (use IMP::Particle::get_name(), IMP::Particle::set_name()).
+
+- IMP::atom::ChainDecorator has been added
+
+\par Week of March 13:
+
+- A new IMP::display::Writer, IMP::display::ChimeraWriter has been added which exports geometry to native Chimera constructs. It probably should be used instead of bild and cmm for most purposes as it combines the best of both types.
+
+- compose() for transformation is now a free function so compose(rotation, vector) will work via promotions.
+
+ - the geometry classes have been cleaned up and are now more consistent with IMP standards (and more likely to do what their names/comments suggest). See IMP::algebra::Sphere3D, IMP::algebra::Cylinder3D, IMP::algebra::Segment3D, IMP::algebra::Plane3D etc.
+
+- ParticleRefiner has been renamed to IMP::Refiner since the Particle was long and unnecessary. 
+
+*/
