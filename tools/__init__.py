@@ -268,7 +268,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     env = Environment(tools=[], variables=variables)
     newpath = env['ENV']['PATH']
     if env.get('path', None) is not None:
-        newpath += os.path.pathsep + env['path']
+        newpath = env['path'] + os.path.pathsep + newpath
     if env['wine']:
         env = WineEnvironment(variables=variables, ENV = {'PATH': newpath},
                               *args, **kw)
@@ -302,13 +302,13 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     if env.get('includepath', None) is not None:
         env['includepath'] = [os.path.abspath(x) for x in \
                           env['includepath'].split(os.path.pathsep)]
-        env.Append(CPPPATH=env['includepath'])
+        env.Prepend(CPPPATH=env['includepath'])
     # make sure it is there
     env.Append(LIBPATH=[])
     if env.get('libpath', None) is not None:
         env['libpath'] = [os.path.abspath(x) for x in \
                       env['libpath'].split(os.path.pathsep)]
-        env.Append(LIBPATH=env['libpath'])
+        env.Prepend(LIBPATH=env['libpath'])
     else:
         env['libpath'] = []
     _add_build_flags(env)
