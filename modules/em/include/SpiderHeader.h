@@ -8,10 +8,12 @@
 #ifndef IMPEM_SPIDER_HEADER_H
 #define IMPEM_SPIDER_HEADER_H
 
+#include "config.h"
+
 IMPEM_BEGIN_NAMESPACE
 
 //! Header for Spider images. IMP-EM is designed to be compatible with it
-typedef struct {
+struct SpiderHeader {
 //! Number of slices (=1 for images)
   float fNslice;
   //! Number of rows
@@ -125,7 +127,7 @@ typedef struct {
   char szITim[8];
   //! Title
   char szITit[160];
-} SpiderHeader;
+};
 
 
 IMPEM_END_NAMESPACE
