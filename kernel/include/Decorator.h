@@ -33,10 +33,10 @@ class Decorator
 {
 private:
   Pointer<Particle> particle_;
-protected:
   bool is_default() const {
     return !particle_;
   }
+protected:
   Decorator(Particle *p): particle_(p) {}
   Decorator() {}
 public:

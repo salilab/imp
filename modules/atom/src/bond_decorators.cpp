@@ -27,7 +27,7 @@ BondData &get_bond_data() {
 
 void BondDecorator::show(std::ostream &out, std::string) const
 {
-  if (is_default()) {
+  if (*this == BondDecorator()) {
     out << "Null BondDecorator";
     return;
   }
@@ -47,7 +47,7 @@ void BondDecorator::show(std::ostream &out, std::string) const
 
 void BondedDecorator::show(std::ostream &out, std::string) const
 {
-  if (!is_default()) {
+  if (*this == BondedDecorator()) {
     out << "Null BondedDecorator";
     return;
   }

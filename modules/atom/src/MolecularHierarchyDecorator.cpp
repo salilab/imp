@@ -33,7 +33,7 @@ IntKey MolecularHierarchyDecorator::get_type_key() {
 void MolecularHierarchyDecorator::show(std::ostream &out,
                                        std::string prefix) const
 {
-  if (is_default()) {
+  if (*this == MolecularHierarchyDecorator()) {
     out << "NULL Molecular Hierarchy node";
     return;
   }
