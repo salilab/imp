@@ -106,7 +106,8 @@ class CrossCorrelationTests(unittest.TestCase):
         interval=5;         times=10;       scores_interval=[]
         dvx = EM.vectorf();         dvy= EM.vectorf();              dvz= EM.vectorf()
         for d in [dvx,dvy,dvz]:
-            d.insert(d.begin(),self.atoms.get_size(),0.0)
+            for i in range(self.atoms.get_size()):
+                d.push_back(0.0)
             for i in xrange(0,times):
                 score=self.ccc_intervals.evaluate(self.EM_map,self.model_map,self.atoms,dvx,dvy,dvz,1.0,False,interval)
                 scores_interval.append(score)
