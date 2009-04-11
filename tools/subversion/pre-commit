@@ -28,13 +28,17 @@ def check_c_file(filename, txn, repos, errors):
         line = line.rstrip('\r\n')
         # No way to split URLs, so let them exceed 80 characters:
         if len(line) > 80 and not url.search(line):
-            errors.append('Line %d in %s is longer than 80 characters.' \
-                          % (num+1, filename))
+            errors.append('%s:%d: Line is longer than 80 characters.' \
+                          % (filename, num+1))
         if line.find('\t') >= 0:
-            errors.append('Line %d in %s contains tabs.' % (num+1, filename))
+            errors.append('%s:%d: Line contains tabs.' % (filename, num+1))
         if srch.search(line):
-            errors.append('Line %d in %s has trailing whitespace' \
-                          % (num+1, filename))
+            errors.append('%s:%d: Line has trailing whitespace' \
+                          % (filename, num+1))
+        if not filename.endswith(".cpp") and line.startswith("#define ") \
+           and not line.startswith("#define IMP"):
+            errors.append('%s:%d: Preprocessor symbols must start with IMP' \
+                          % (filename, num+1))
         blank = (len(line) == 0)
         if blank and num == 0:
             errors.append('File %s has leading blank line(s)' % filename)
