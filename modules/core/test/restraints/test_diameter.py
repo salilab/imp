@@ -6,9 +6,7 @@ import IMP.test, IMP
 class DistanceTests(IMP.test.TestCase):
     """Test distance restraint and three harmonic score functions"""
 
-    def test_diagmeter(self):
-        """Test that diameter restraints are reasonable"""
-
+    def _test_diameter(self):
         diameter=10
         m= IMP.Model()
         lc= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 50, 1.0))
@@ -29,6 +27,9 @@ class DistanceTests(IMP.test.TestCase):
                                     IMP.core.XYZDecorator(p1))
                 self.assert_(d < 1.1*diameter)
 
+    def test_diameter(self):
+        """Test that diameter restraints are reasonable"""
+        self.probabilistic_test("self._test_diameter()", .002)
 
 if __name__ == '__main__':
     unittest.main()
