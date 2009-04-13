@@ -106,6 +106,37 @@ class TestCase(unittest.TestCase):
         p.add_attribute(IMP.FloatKey("z"), z, True)
         return p
 
+    def probabilistic_test(self, testcall, chance_of_failure):
+        """Help handle a test which is expected to fail some fraction of
+        the time. The test is run multiple times and an exception
+        is thrown only if it fails too many times."""
+        prob=chance_of_failure
+        tries=1
+        while prob > .001:
+            tries=tries+1
+            prob= prob*chance_of_failure
+        for i in range(0, tries):
+            try:
+                eval(testcall)
+            except:
+                pass
+            else:
+                return
+        raise AssertError("Too many failures")
+
+    def failure_probability(self, testcall):
+        """Estimate how like a given block of code is to raise an
+        AssertionError."""
+        failures=0
+        tries=0.0
+        while failures < 10 and tries <1000:
+            try:
+                eval(testcall)
+            except:
+                failures=failures+1
+            tries=tries+1
+        return failures/tries
+
     def randomize_particles(self, particles, deviation):
         """Randomize the xyz coordinates of a list of particles"""
         # Note: cannot use XYZDecorator here since that pulls in IMP.core
