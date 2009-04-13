@@ -167,7 +167,7 @@
 
 #ifdef IMP_DOXYGEN                                                         \
 //! Implement operator<< on class name, assuming it has one template argument
-/** class name should also define the method std::ostream &show(std::ostream&)
+/** \copydetails IMP_OUTPUT_OPERATOR
  */
 #define IMP_OUTPUT_OPERATOR_1(name)
 #else
@@ -182,7 +182,7 @@
 
 #ifdef IMP_DOXYGEN
 //! Implement operator<< on class name, assuming it has two template arguments
-/** class name should also define the method std::ostream &show(std::ostream&)
+/** \copydetails IMP_OUTPUT_OPERATOR
  */
 #define IMP_OUTPUT_OPERATOR_2(name)
 #else
@@ -197,7 +197,8 @@
 
 #ifdef IMP_DOXYGEN
 //! Implement operator<< on class name
-/** class name should also define the method std::ostream &show(std::ostream&)
+/** The class named should define the method
+    \c void \c show(std::ostream&).
  */
 #define IMP_OUTPUT_OPERATOR(name)
 #else
