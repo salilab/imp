@@ -5,18 +5,14 @@
 \author Daniel Russel and Ben Webb
 
 \overview %IMP.%misc contains miscellaneous functionality that is
-<b>not</b> expected to be used by many \imp users. It is a general purpose
-module to be used for code that is testing or experimental in nature
-(as opposed to encoding for restraints that use experimental data). Typically,
-functionality should be placed in a module that groups similar classes
-(e.g. restraints and optimizers used with NMR data might go in an 'nmr' module).
-%IMP.%misc should only be used for small miscellaneous functions that don't
-warrant creating an entire new module.
+<b>not</b> expected to be used by many \imp users. As a result, the code
+contained in it may be poorly tested, liable to change or experimental 
+in nature.
 <br><br>
 In particular, other modules should <b>not</b> depend on %IMP.%misc (e.g. don't
 create a class in another module that derives from one in %IMP.%misc). If you
-find yourself relying on such functionality, move it to a specialized module,
-or something like IMP.core.
+find yourself relying on such functionality, discuss moving it to a
+specialized module or something like IMP.core or IMP.atom.
 
 
 \publications
