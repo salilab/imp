@@ -44,22 +44,22 @@
 
 /* Wrap our own classes */
 %include "IMP/em/IMPParticlesAccessPoint.h"
-%include "IMP/em/EMFitRestraint.h"
+%include "IMP/em/FitRestraint.h"
 %include "IMP/em/convertors.h"
 %include "IMP/em/EMproject.h"
 %include "IMP/em/SpiderHeader.h"
 %include "IMP/em/ImageHeader.h"
 %include "IMP/em/ImageReaderWriter.h"
 %include "IMP/em/SpiderReaderWriter.h"
-%include "IMP/em/VolumeEM.h"
-%include "IMP/em/ImageEM.h"
+%include "IMP/em/Volume.h"
+%include "IMP/em/Image.h"
 
-/* Allow runtime casting of Restraint* objects to EMFitRestraint* */
+/* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
   namespace em {
-    %extend EMFitRestraint {
-      static EMFitRestraint* cast(Restraint *r) {
-        return dynamic_cast<IMP::em::EMFitRestraint *>(r);
+    %extend FitRestraint {
+      static FitRestraint* cast(Restraint *r) {
+        return dynamic_cast<IMP::em::FitRestraint *>(r);
       }
     }
 
@@ -67,8 +67,8 @@ namespace IMP {
     %template(imageReaderWriter) ::IMP::em::ImageReaderWriter<float>;
     %template(spiderImageReaderWriter)
                           ::IMP::em::SpiderImageReaderWriter<float>;
-    %template(imageEM) ::IMP::em::ImageEM<float>;
-    %template(volumeEM) ::IMP::em::VolumeEM<float>;
+    %template(image) ::IMP::em::Image<float>;
+    %template(volume) ::IMP::em::Volume<float>;
 
   }
 }

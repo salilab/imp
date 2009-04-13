@@ -1,12 +1,12 @@
 /**
- *  \file ImageEM.h
+ *  \file Image.h
  *  \brief Management of IMP images for Electron Microscopy
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#ifndef IMPEM_IMAGE_EM_H
-#define IMPEM_IMAGE_EM_H
+#ifndef IMPEM_IMAGE_H
+#define IMPEM_IMAGE_H
 
 
 #include "config.h"
@@ -22,11 +22,11 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Template class for managing 2D Electron Microscopy images in IMP
 template<typename T>
-class ImageEM
+class Image
 {
 public:
   //! Empty constructor
-  ImageEM() {
+  Image() {
     name_ = "";
     if (typeid(T) == typeid(Float)) {
       header_.set_image_type(ImageHeader::IMG_IMPEM);
@@ -34,7 +34,7 @@ public:
   }
 
   //! Constructor with size
-  ImageEM(Int Ydim, Int Xdim) {
+  Image(Int Ydim, Int Xdim) {
     data_.resize(Ydim, Xdim);
     header_.set_header();
     if (typeid(T) == typeid(Float)) {
@@ -89,11 +89,11 @@ protected:
   //! Header for the image with all the pertinent information
   ImageHeader header_;
 
-}; // ImageEM
+}; // Image
 
 
 
 
 
 IMPEM_END_NAMESPACE
-#endif  /* IMPEM_IMAGE_EM_H */
+#endif  /* IMPEM_IMAGE_H */

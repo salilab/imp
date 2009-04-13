@@ -1,17 +1,17 @@
 Import('env')
 
 files = [
-         'EMFitRestraint.h',
+         'FitRestraint.h',
          'EMnoise.h',
          'EulerOperations.h',
          'IMPParticlesAccessPoint.h',
          'SpiderHeader.h',
          'ImageHeader.h',
          'HeaderConverters.h',
-         'ImageEM.h',
+         'Image.h',
          'ImageReaderWriter.h',
          'SpiderReaderWriter.h',
-         'VolumeEM.h',
+         'Volume.h',
          'EMproject.h',
          'convertors.h',
         ]

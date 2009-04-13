@@ -1,22 +1,22 @@
 /**
- *  \file EMFitRestraint.cpp
+ *  \file FitRestraint.cpp
  *  \brief Calculate score based on fit to EM map.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include <IMP/em/EMFitRestraint.h>
+#include <IMP/em/FitRestraint.h>
 #include "IMP/container_macros.h"
 #include <IMP/log.h>
 
 IMPEM_BEGIN_NAMESPACE
 
-EMFitRestraint::EMFitRestraint(const Particles &ps,
-                               DensityMap &em_map,
-                               FloatKey radius_key,
-                               FloatKey weight_key,
-                               float scale)
+FitRestraint::FitRestraint(const Particles &ps,
+                           DensityMap &em_map,
+                           FloatKey radius_key,
+                           FloatKey weight_key,
+                           float scale)
 {
   target_dens_map_ = &em_map;
   scalefac_ = scale;
@@ -53,11 +53,11 @@ EMFitRestraint::EMFitRestraint(const Particles &ps,
   // IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << endl);
 }
 
-IMP_LIST_IMPL(EMFitRestraint, Particle, particle,Particle*,  {
+IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*,  {
               IMP_assert(get_number_of_particles()==0
                          || obj->get_model()
                          == (*particles_begin())->get_model(),
-                         "All particles in EMFitRestraint must belong to the "
+                         "All particles in FitRestraint must belong to the "
                          "same Model.");
               },,);
 
@@ -67,7 +67,7 @@ IMP_LIST_IMPL(EMFitRestraint, Particle, particle,Particle*,  {
     \return score associated with this restraint for the given state of
             the model.
  */
-Float EMFitRestraint::evaluate(DerivativeAccumulator *accum)
+Float FitRestraint::evaluate(DerivativeAccumulator *accum)
 {
   //  IMP_LOG(VERBOSE, "in RSR_EM_Fit::evaluate calc_deriv: " << calc_deriv
   //                   << endl);
@@ -93,7 +93,7 @@ Float EMFitRestraint::evaluate(DerivativeAccumulator *accum)
   return score;
 }
 
-void EMFitRestraint::show(std::ostream& out) const
+void FitRestraint::show(std::ostream& out) const
 {
   // TODO - add implementation
 }

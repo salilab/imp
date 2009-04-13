@@ -86,11 +86,11 @@ class DerivativesTest(IMP.test.TestCase):
         em_map.get_header_writable().set_zorigin(zorigin)
         em_map.get_header_writable().set_resolution(resolution)
         ind_emrsr = []
-        ind_emrsr.append(IMP.em.EMFitRestraint(self.particles,
-                                               em_map,
-                                               IMP.FloatKey("radius"),
-                                               IMP.FloatKey("weight"),
-                                               1.0))
+        ind_emrsr.append(IMP.em.FitRestraint(self.particles,
+                                             em_map,
+                                             IMP.FloatKey("radius"),
+                                             IMP.FloatKey("weight"),
+                                             1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
         print("EM-score score: "+str(self.atmsel.energy()) )
         self.atmsel.randomize_xyz(1.0)

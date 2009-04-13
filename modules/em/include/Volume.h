@@ -1,13 +1,13 @@
 /**
- *  \file VolumeEM.h
+ *  \file Volume.h
  *  \brief Management of IMP volumes for Electron Microscopy. Compatible with
  *  Spider and Xmipp formats
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#ifndef IMPEM_VOLUME_EM_H
-#define IMPEM_VOLUME_EM_H
+#ifndef IMPEM_VOLUME_H
+#define IMPEM_VOLUME_H
 
 #include "config.h"
 #include "ImageHeader.h"
@@ -21,11 +21,11 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Template class for managing 3D Electron Microscopy volumes in IMP
 template <typename T>
-class VolumeEM
+class Volume
 {
 public:
   //! Empty constructor
-  VolumeEM() {
+  Volume() {
     data_.set_start(0,0);data_.set_start(1,0);data_.set_start(2,0);
     name_ = "";
     locations_calculated_ = false;
@@ -34,7 +34,7 @@ public:
   }
 
   //! Constructor with size
-  VolumeEM(int Zdim, int Ydim, int Xdim) {
+  Volume(int Zdim, int Ydim, int Xdim) {
     data_.resize(Zdim, Ydim, Xdim);
     data_.set_start(0,0);data_.set_start(1,0);data_.set_start(2,0);
     header_.set_header();
@@ -184,7 +184,7 @@ public:
     return true;
   }
 
-//  friend void resample(VolumeEM volume, const ParticlesAccessPoint& access_p);
+//  friend void resample(Volume volume, const ParticlesAccessPoint& access_p);
 
 protected:
   //! Name of the volume. Frequently it will be the name of the file
@@ -202,7 +202,7 @@ protected:
   //! True if the rms of the values in the volume have been computed
   bool rms_calculated_;
 
-}; // VolumeEM
+}; // Volume
 
 IMPEM_END_NAMESPACE
-#endif  /* IMPEM_VOLUME_EM_H */
+#endif  /* IMPEM_VOLUME_H */
