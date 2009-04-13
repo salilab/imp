@@ -146,7 +146,7 @@
     - All classes must have a \c show method which takes an optional 
       \c std::ostream and prints information about the object. In addition they
       must have \c operator<< defined. This can be easily done using the
-      IMP_OUTPUT_OPERATOR macro once the show method is defined. Note that
+      IMP_OUTPUT_OPERATOR() macro once the show method is defined. Note that
       \c operator<< writes human readable information. Add a \c write method
       if you want to provide output that can be read back in.
 
