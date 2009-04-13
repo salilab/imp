@@ -46,7 +46,7 @@
 %include "IMP/em/IMPParticlesAccessPoint.h"
 %include "IMP/em/FitRestraint.h"
 %include "IMP/em/converters.h"
-%include "IMP/em/EMproject.h"
+%include "IMP/em/project.h"
 %include "IMP/em/SpiderHeader.h"
 %include "IMP/em/ImageHeader.h"
 %include "IMP/em/ImageReaderWriter.h"

@@ -1,12 +1,12 @@
 /**
- *  \file EMnoise.h
+ *  \file noise.h
  *  \brief Management of IMP images for Electron Microscopy
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#ifndef IMPEM_EMNOISE_H
-#define IMPEM_EMNOISE_H
+#ifndef IMPEM_NOISE_H
+#define IMPEM_NOISE_H
 
 #include "config.h"
 #include "ImageHeader.h"
@@ -86,4 +86,4 @@ void add_noise(T& data, double op1, double op2,
 
 
 IMPEM_END_NAMESPACE
-#endif  /* IMPEM_EMNOISE_H */
+#endif  /* IMPEM_NOISE_H */

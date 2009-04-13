@@ -1,5 +1,5 @@
 /**
- *  \file HeaderConverters.h
+ *  \file header_converters.h
  *  \brief Functions to convert between ImageHeader and DensityHeader
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.

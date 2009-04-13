@@ -6,8 +6,7 @@ files = ['converters.cpp',
          'IMPParticlesAccessPoint.cpp',
          'SpiderReaderWriter.cpp',
          'ImageHeader.cpp',
-         'HeaderConverters.cpp',
-         'EMproject.cpp',
+         'header_converters.cpp',
         ]
 
 # Build and install the shared library:
