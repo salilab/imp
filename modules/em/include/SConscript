@@ -13,7 +13,7 @@ files = [
          'SpiderReaderWriter.h',
          'Volume.h',
          'EMproject.h',
-         'convertors.h',
+         'converters.h',
         ]
 
 # Install the include files:

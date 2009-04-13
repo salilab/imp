@@ -1,10 +1,10 @@
 /**
- *  \file convertors.cpp
+ *  \file converters.cpp
  *  \brief impl
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#include <IMP/em/convertors.h>
+#include <IMP/em/converters.h>
 
 IMPEM_BEGIN_NAMESPACE
 

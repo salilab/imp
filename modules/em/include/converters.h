@@ -1,13 +1,13 @@
 /**
- *  \file convertors.h
- *  \brief Convertors of density values
+ *  \file converters.h
+ *  \brief Converters of density values
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPEM_CONVERTORS_H
-#define IMPEM_CONVERTORS_H
+#ifndef IMPEM_CONVERTERS_H
+#define IMPEM_CONVERTERS_H
 
 #include "config.h"
 #include <IMP/base_types.h>
@@ -73,4 +73,4 @@ inline SampledDensityMap * particles2density(Particles &ps,
 }
 
 IMPEM_END_NAMESPACE
-#endif /* IMPEM_CONVERTORS_H */
+#endif /* IMPEM_CONVERTERS_H */
