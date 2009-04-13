@@ -91,9 +91,9 @@
 
     \section coding Good Coding Practices
 
-    - Restraints and ScoreStates should generally use a
-      SingletonContainer (or other type of Container) to store the set of
-      Particles that they act on.
+    - IMP::Restraint and IMP::ScoreState classes should generally use a
+      IMP::SingletonContainer (or other type of Container) to store the set of
+      IMP::Particle objects that they act on.
 
     - Never use '\c using \c namespace' outside of a function; instead 
       explicitly provide the namespace. (This avoids namespace pollution, and
@@ -117,18 +117,6 @@
       large) and store copies of them.
 
     - Never expose member variables in an object which has methods.
-
-    - Try to limit methods to having at most one argument of a given
-      type.  Otherwise it is easy to mix up the order of arguments and
-      the compiler will not catch it for you. Int and Float count as
-      equivalent types for this rule since the compiler will invisibly
-      convert an Int into a Float.
-
-    - Do not copy and paste large blocks of code to create new
-      functionality.  Figure out a way to reuse the existing code by
-      pulling it into a function and adding extra parameters. When you
-      find bugs, you won't remember to fix them in all the copies of
-      the code.
 
     - Don't derive a class from another class simply to reuse some code that
       the base class provides - only do so if your derived class could make
@@ -162,16 +150,15 @@
       \c operator<< writes human readable information. Add a \c write method
       if you want to provide output that can be read back in.
 
-    - Use Int, Float, String rather than \c int, \c float, and \c std::string.
-      Intermediate results in computations may be stored using \c doubles
-      so as not to loose precision.
+    - Use \c double variables for all computational intermediates.
 
     - Avoid using nested classes in the API as SWIG can't wrap them properly.
       If you must use use nested classes, you will have to do more work to
       provide a Python interface to your code.
 
     - All access to particles should be through decorators. Use the provided
-      macros to help making the decorator.
+      base class (IMP::Decorator) and associated macros to write the decorator.
+      See IMP::examples::ExampleDecorator.
 
     - Delay initialization of keys until they are actually needed
       (since all initialized keys take up memory within each particle,
@@ -184,24 +171,39 @@
       }
       \endcode
 
-    - Information should be stored in exactly one place. Duplicated
-      information easily gets out of sync.
+    - One is the almost always the right number:
+        - Information should be stored in exactly one
+          place. Duplicated information easily gets out of sync.
+        - A given piece of code should only appear once. Do not copy,
+          paste and modify to create new functionality.  Instead,
+          figure out a way to reuse the existing code by pulling it
+          into an internal function and adding extra parameters. If
+          you don't, when you find bugs, you won't remember to fix
+          them in all the copies of the code.
+        - There should be exactly one way to represent any particular
+          state. If there is more than one way, anyone who writes
+          library code which uses that type of state has to handle all
+          ways.  For example, there is only one scheme for
+          representing proteins, namely the
+          IMP::atom::MolecularHierarchyDecorator.       
+        - Each class/method should do exactly one thing. The presence
+          of arguments which dramatically change the behavior of the
+          class/method is a sign that it should be split. Splitting
+          it can make the code simpler, expose the common code for
+          others to use and make it harder to make mistakes by
+          getting the mode flag wrong.
+        - Methods should take at most one agument of each type (and
+          ideally only one argument). If there are several arguments
+          of the same types (eg two different \c double parameters) it is
+          easy for a user to mix up the order of arguments and the compiler will
+          not complain. \c int and \c double count as
+          equivalent types for this rule since the compiler will
+          transparent convert an \c int into a \c double.
 
-    - There should be exactly one way to represent any
-      particular state. If there is more than one way, anyone who
-      writes library code using the state has to handle all ways.  For
-      example, there is only one scheme for representing proteins,
-      namely the MolecularHierarchyDecorator.
-
-    - Each class/method should do exactly one thing. The presence of
-      arguments which dramatically change the behavior of the
-      class/method is a sign that it should be split. Splitting it can
-      make the code simpler, expose the common code for others to use
-      and make it harder to make mistakes by getting the mode flag
-      wrong.
 
     - Functions which take a parameter which has units should have the
       unit as part of the function name, for example
-      IMP::core::BrownianDynamics::set_time_step_in_femtoseconds.
+      IMP::atom::BrownianDynamics::set_time_step_in_femtoseconds().
+      Remember the Mars orbiter.
 
 */
