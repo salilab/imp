@@ -18,22 +18,26 @@ IMP_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight IMP objects.
 /** All the heavy-weight IMP objects have IMP::Object as a base class.
-    Such all such object support the methods Object::show() and
-    Object::get_version_info().  In addition Objects can be written to
-    a stream, producing the same output as show.
+    Anything inheriting from IMP::Object should have the following
+    properties:
+    - have a method Object::show() which writes one or more lines of text
+    to a stream
+    - have embedded information about the author and version which can be
+    accessed using Object::get_version_info()
+    - support output to a stream using \c operator<<. This produces the same
+    output as Object::show()
+    - be initialized to a known good state with the default constructor
 
     \cpp Types inheriting from Object should always be created using
     \c new in C++ and passed, passed using pointers and stored using
     IMP::Pointer objects. Note that you have to be careful of cycles
     and so must use IMP::WeakPointer objects to break cycles. See
-    IMP::RefCounted for more information on reference counting.
-
-    \cpp Special care must taken when using the SWIG python interface
+    IMP::RefCounted for more information on reference counting.\n\n
+    Special care must taken when using the SWIG python interface
     to make sure that Python reference counting is turned off for all
     objects which are being reference counted in C++. The
     IMP_OWN_CONSTRUCTOR(), IMP_OWN_METHOD(), IMP_OWN_FUNCTION() macros
     aid this process.
-
  */
 class IMPEXPORT Object: public RefCounted
 {
