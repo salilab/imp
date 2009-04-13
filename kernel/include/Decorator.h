@@ -10,6 +10,7 @@
 
 #include "Object.h"
 #include "Pointer.h"
+#include "utility.h"
 #include "Particle.h"
 #include "Model.h"
 
@@ -21,15 +22,16 @@ IMP_BEGIN_NAMESPACE
     \note Decorator objects are ordered based on the address of the wrapped
     particle.
 
-    \cpp Implementers of decorators should
-    just inherit from this and then use the IMP_DECORATOR macro to
-    provide the key implementation pieces.\n\n
-    Remember that attribute keys should always be created lazily
-    (at the time of the first use), and not be created as static variables.\n\n
-    Implementors should consult IMP::examples::ExampleDecorator, IMP_DECORATOR()
-    IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(), IMP_DECORATOR_ARRAY_DECL()
+    \cpp Implementers of decorators should just inherit from this and
+    then use the IMP_DECORATOR macro to provide the key implementation
+    pieces.\n\n Remember that attribute keys should always be created
+    lazily (at the time of the first use), and not be created as
+    static variables.\n\n Implementors should consult
+    IMP::examples::ExampleDecorator, IMP_DECORATOR(),
+    IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
+    IMP_DECORATOR_ARRAY_DECL()
 */
-class Decorator
+class Decorator: public NullDefault
 {
 private:
   Pointer<Particle> particle_;

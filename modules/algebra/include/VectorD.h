@@ -26,7 +26,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 /** */
 template <unsigned int D>
-class VectorD
+class VectorD: public UninitializedDefault
 {
   bool is_default() const {return false;}
 public:

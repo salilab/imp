@@ -7,15 +7,15 @@
 #ifndef IMPALGEBRA_SPHERE_3DPATCH_H
 #define IMPALGEBRA_SPHERE_3DPATCH_H
 
-#include <IMP/algebra/Sphere3D.h>
-#include <IMP/algebra/Plane3D.h>
+#include "Sphere3D.h"
+#include "Plane3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /**
 A patch of a sphere is defined as all points above the plane and in the sphere
  */
-class IMPALGEBRAEXPORT Sphere3DPatch {
+class IMPALGEBRAEXPORT Sphere3DPatch: public UninitializedDefault {
 public:
   Sphere3DPatch(){}
   //! Constructor

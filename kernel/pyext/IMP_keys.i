@@ -1,3 +1,4 @@
+%include "IMP/utility.h"
 %include "IMP/Key.h"
 
 namespace IMP

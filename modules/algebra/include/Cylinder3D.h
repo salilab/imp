@@ -7,10 +7,10 @@
 #ifndef IMPALGEBRA_CYLINDER_3D_H
 #define IMPALGEBRA_CYLINDER_3D_H
 
-#include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/Rotation3D.h>
-#include <IMP/algebra/Transformation3D.h>
-#include <IMP/algebra/Segment3D.h>
+#include "Vector3D.h"
+#include "Rotation3D.h"
+#include "Transformation3D.h"
+#include "Segment3D.h"
 #include <iostream>
 #include <IMP/constants.h>
 
@@ -24,7 +24,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     - document everything
     - fix overview docs
 */
-class IMPALGEBRAEXPORT Cylinder3D
+class IMPALGEBRAEXPORT Cylinder3D: public UninitializedDefault
 {
  public:
   Cylinder3D(const Segment3D &s, double radius);

@@ -31,7 +31,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template<typename T, int D>
 class MultiArray
 #ifndef SWIG
-: public boost::multi_array<T, D>
+  : public boost::multi_array<T, D>
 #endif
 {
 public:

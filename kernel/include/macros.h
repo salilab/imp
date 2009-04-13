@@ -41,23 +41,15 @@
     return (compare(o) != 0);                                           \
   }                                                                     \
   bool operator<(const This &o) const {                                 \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return (compare(o) <0);                                             \
   }                                                                     \
   bool operator>(const This &o) const {                                 \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return (compare(o) > 0);                                            \
   }                                                                     \
   bool operator>=(const This &o) const {                                \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return !(compare(o) < 0);                                           \
   }                                                                     \
   bool operator<=(const This &o) const {                                \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return !(compare(o) > 0);                                           \
   }
 #endif
@@ -76,23 +68,15 @@
     return (field!= o.field);                                           \
   }                                                                     \
   bool operator<(const This &o) const {                                 \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return (field< o.field);                                            \
   }                                                                     \
   bool operator>(const This &o) const {                                 \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return (field> o.field);                                            \
   }                                                                     \
   bool operator>=(const This &o) const {                                \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return (field>= o.field);                                           \
   }                                                                     \
   bool operator<=(const This &o) const {                                \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return (field<= o.field);                                           \
   }
 #endif
@@ -111,27 +95,19 @@
     return (f0!= o.f0 || f1 != o.f1);                                   \
   }                                                                     \
   bool operator<(const This &o) const {                                 \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     if (f0< o.f0) return true;                                          \
     else if (f0 > o.f0) return false;                                   \
     else return f1 < o.f1;                                              \
   }                                                                     \
   bool operator>(const This &o) const {                                 \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     if (f0 > o.f0) return true;                                         \
     else if (f0 < o.f0) return false;                                   \
     else return f1 > o.f1;                                              \
   }                                                                     \
   bool operator>=(const This &o) const {                                \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return operator>(o) || operator==(o);                               \
   }                                                                     \
   bool operator<=(const This &o) const {                                \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return operator<(o) || operator==(o);                               \
   }
 #endif
@@ -151,8 +127,6 @@
     return (f0!= o.f0 || f1 != o.f1 || f2 != o.f2);                     \
   }                                                                     \
   bool operator<(const This &o) const {                                 \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     if (f0< o.f0) return true;                                          \
     else if (f0 > o.f0) return false;                                   \
     if (f1< o.f1) return true;                                          \
@@ -160,8 +134,6 @@
     else return f2 < o.f2;                                              \
   }                                                                     \
   bool operator>(const This &o) const {                                 \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     if (f0 > o.f0) return true;                                         \
     else if (f0 < o.f0) return false;                                   \
     if (f1 > o.f1) return true;                                         \
@@ -169,13 +141,9 @@
     else return f2 > o.f2;                                              \
   }                                                                     \
   bool operator>=(const This &o) const {                                \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return operator>(o) || operator==(o);                               \
   }                                                                     \
   bool operator<=(const This &o) const {                                \
-    IMP_assert(!is_default() && !o.is_default(),                        \
-               "Ordering with uninitialized index is undefined");       \
     return operator<(o) || operator==(o);                               \
   }
 #endif
