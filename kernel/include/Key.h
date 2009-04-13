@@ -10,6 +10,7 @@
 
 #include "macros.h"
 #include "exception.h"
+#include "utility.h"
 #include "internal/key_helpers.h"
 
 #include <map>
@@ -79,7 +80,7 @@ typedef std::vector<Name> Name##s
     \note Keys objects are ordered.
  */
 template <unsigned int ID>
-class KeyBase
+class KeyBase: public NullDefault
 {
   int str_;
 

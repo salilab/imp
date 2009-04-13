@@ -14,6 +14,7 @@
 #include "internal/IndexingIterator.h"
 #include "internal/container_helpers.h"
 #include "Particle.h"
+#include "utility.h"
 #include "VersionInfo.h"
 #include "base_types.h"
 #include "Pointer.h"
@@ -27,7 +28,7 @@ IMP_BEGIN_NAMESPACE
  */
 class IMPEXPORT GroupnameContainer : public Object
 {
-  struct Accessor {
+  struct Accessor: public NullDefault {
     typedef Accessor This;
     typedef Value result_type;
     typedef unsigned int argument_type;
@@ -35,10 +36,9 @@ class IMPEXPORT GroupnameContainer : public Object
       return o_->get_classname(i);
     }
     Accessor(GroupnameContainer *pc): o_(pc){}
-    Accessor(){}
+    Accessor(): o_(NULL){}
     IMP_COMPARISONS_1(o_);
   private:
-    bool is_default() const { return false;}
     // This should be ref counted, but swig memory management is broken
     GroupnameContainer* o_;
   };

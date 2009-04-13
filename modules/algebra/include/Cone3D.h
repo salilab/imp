@@ -8,11 +8,11 @@
 #ifndef IMPALGEBRA_CONE_3D_H
 #define IMPALGEBRA_CONE_3D_H
 
-#include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/Sphere3D.h>
-#include <IMP/algebra/Sphere3DPatch.h>
-#include <IMP/algebra/Plane3D.h>
-#include <IMP/algebra/Segment3D.h>
+#include "Vector3D.h"
+#include "Sphere3D.h"
+#include "Sphere3DPatch.h"
+#include "Plane3D.h"
+#include "Segment3D.h"
 #include <iostream>
 #include <IMP/constants.h>
 
@@ -24,7 +24,7 @@ A right cone is a cone with its vertex above the center of its base.
 However, when used without qualification, the term "cone" often means
 "right cone." We have implemented a "right cone"
  */
-class IMPALGEBRAEXPORT Cone3D
+class IMPALGEBRAEXPORT Cone3D: public UninitializedDefault
 {
  public:
   // A cone with a top at s.get_point(0) and the given base radius

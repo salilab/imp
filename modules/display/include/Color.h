@@ -19,12 +19,9 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Represent a color
 /**
  */
-class IMPDISPLAYEXPORT Color
+class IMPDISPLAYEXPORT Color: public NullDefault
 {
   float c_[3];
-  bool is_default() const {
-    return c_[0] < 0;
-  }
 public:
   typedef Color This;
 

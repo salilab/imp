@@ -46,9 +46,12 @@ class MCOptimizerTest(IMP.test.TestCase):
         bd.optimize(1)
         big_moments= self._compute_moments(ps)
         print big_moments
-        for i in range(0, len(moments)):
+        for i in range(0,3):
             self.assertInTolerance(big_moments[i], moments[i],
-                                   .1*(big_moments[i]+ moments[i])+30)
+                                   len(ps)**.5)
+        for i in range(3,6):
+            self.assertInTolerance(big_moments[i], moments[i],
+                                   .1*(big_moments[i]+ moments[i]))
 
 if __name__ == '__main__':
     unittest.main()

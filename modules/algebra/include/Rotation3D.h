@@ -38,7 +38,7 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
     Rotation Matrix
     Quaternion
 */
-class IMPALGEBRAEXPORT Rotation3D {
+class IMPALGEBRAEXPORT Rotation3D: public UninitializedDefault {
   VectorD<4> v_;
 
   friend Rotation3D compose(const Rotation3D &a, const Rotation3D &b);

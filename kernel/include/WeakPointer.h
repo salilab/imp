@@ -12,6 +12,7 @@
 #include "log.h"
 #include "Object.h"
 #include "macros.h"
+#include "utility.h"
 #include "exception.h"
 
 #include <boost/static_assert.hpp>
@@ -29,7 +30,7 @@ IMP_BEGIN_NAMESPACE
     \param[in] O The type of IMP::Object-derived object to point to
  */
 template <class O>
-class WeakPointer
+class WeakPointer: public NullDefault
 {
   typedef WeakPointer<O> This;
 

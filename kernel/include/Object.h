@@ -35,7 +35,7 @@ IMP_BEGIN_NAMESPACE
     aid this process.
 
  */
-class IMPEXPORT Object: public RefCounted
+class IMPEXPORT Object: public RefCounted, public ValidDefault
 {
   // hide the inheritance from RefCounted as it is a detail
 protected:

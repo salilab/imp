@@ -7,14 +7,14 @@
 #ifndef IMPALGEBRA_SEGMENT_3D_H
 #define IMPALGEBRA_SEGMENT_3D_H
 
-#include <IMP/algebra/Vector3D.h>
+#include "Vector3D.h"
 #include <iostream>
 #include <IMP/constants.h>
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
 /** */
-class IMPALGEBRAEXPORT Segment3D
+class IMPALGEBRAEXPORT Segment3D: public UninitializedDefault
 {
  public:
   Segment3D(){}

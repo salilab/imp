@@ -7,12 +7,12 @@
 #ifndef IMPALGEBRA_PLANE_3D_H
 #define IMPALGEBRA_PLANE_3D_H
 
-#include <IMP/algebra/Vector3D.h>
+#include "Vector3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** */
-class IMPALGEBRAEXPORT Plane3D {
+class IMPALGEBRAEXPORT Plane3D: public UninitializedDefault {
 public:
   Plane3D(){}
   Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane);

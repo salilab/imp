@@ -7,14 +7,14 @@
 #ifndef IMPALGEBRA_SPHERE_3D_H
 #define IMPALGEBRA_SPHERE_3D_H
 
-#include <IMP/algebra/Cylinder3D.h>
+#include "Cylinder3D.h"
 #include <cmath>
 #include <IMP/constants.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** */
-class IMPALGEBRAEXPORT Sphere3D {
+class IMPALGEBRAEXPORT Sphere3D: public UninitializedDefault {
 public:
   Sphere3D(){}
   Sphere3D(const Vector3D& center,double radius);

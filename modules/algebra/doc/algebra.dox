@@ -4,7 +4,10 @@
 \author Daniel Russel, Keren Lasker, Ben Webb, Javier Angel Velazquez-Muriel
 
 \overview %IMP.%algebra contains general purpose algebraic methods
-that are expected to be used by a wide variety of \imp users.
+that are expected to be used by a wide variety of \imp users. Since the classes
+defined here are generally meant to be used as low-level primitives, the default
+constructors do not initialize them to a know configuration, instead leaving them
+uninitialized.
 
 \publications
 \standard_imp_publications

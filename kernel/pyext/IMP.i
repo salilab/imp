@@ -137,6 +137,7 @@ namespace IMP {
     
 
 %include "IMP/base_types.h"
+%include "IMP/utility.h"
 %include "IMP/deprecation.h"
 %include "IMP/VersionInfo.h"
 %include "IMP/RefCounted.h"

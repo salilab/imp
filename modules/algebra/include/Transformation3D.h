@@ -24,7 +24,7 @@ Transformation3D compose(const Transformation3D &a,
 //! Simple 3D transformation class
 /** \see IMP::core::Transform
 */
-class IMPALGEBRAEXPORT Transformation3D
+class IMPALGEBRAEXPORT Transformation3D: public UninitializedDefault
 {
 public:
   // public for swig

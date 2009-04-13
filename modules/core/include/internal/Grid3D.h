@@ -31,13 +31,10 @@ class GridIndexIterator;
    directly to cells in the grid. They get mapped on to actual grid cells
    by various functions.
  */
-class VirtualGridIndex
+  class VirtualGridIndex: public NullDefault
 {
   typedef VirtualGridIndex This;
   int d_[3];
-  bool is_default() const {
-    return d_[0]==std::numeric_limits<int>::max();
-  }
 public:
   //! Create a grid cell from three arbitrary indexes
   VirtualGridIndex(int x, int y, int z) {
@@ -68,7 +65,7 @@ IMP_OUTPUT_OPERATOR(VirtualGridIndex);
 /* The order of iteration is unspecified.
  */
 template <class GI>
-class GridIndexIterator
+class GridIndexIterator: public NullDefault
 {
   template <class V>
   friend class Grid3D;
@@ -76,9 +73,6 @@ class GridIndexIterator
   VirtualGridIndex ub_;
   GI cur_;
   typedef GridIndexIterator This;
-  bool is_default() const {
-    return false;
-  }
   GridIndexIterator(VirtualGridIndex lb,
                     VirtualGridIndex ub): lb_(lb),
                                           ub_(ub), cur_(lb[0], lb[1], lb[2]) {
