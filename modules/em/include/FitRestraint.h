@@ -1,13 +1,13 @@
 /**
- *  \file EMFitRestraint.h
+ *  \file FitRestraint.h
  *  \brief Calculate score based on fit to EM map.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPEM_EM_FIT_RESTRAINT_H
-#define IMPEM_EM_FIT_RESTRAINT_H
+#ifndef IMPEM_FIT_RESTRAINT_H
+#define IMPEM_FIT_RESTRAINT_H
 
 #include "config.h"
 #include "internal/version_info.h"
@@ -26,7 +26,7 @@ IMPEM_BEGIN_NAMESPACE
 /** \ingroup exp_restraint
 
  */
-class IMPEMEXPORT EMFitRestraint : public Restraint
+class IMPEMEXPORT FitRestraint : public Restraint
 {
 public:
   //! Constructor
@@ -37,7 +37,7 @@ public:
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] scale
    */
-  EMFitRestraint(const Particles &ps,
+  FitRestraint(const Particles &ps,
                  DensityMap &em_map,
                  FloatKey radius_key,
                  FloatKey weight_key,
@@ -48,7 +48,7 @@ public:
     return model_dens_map_;
   }
 
-  IMP_RESTRAINT(EMFitRestraint, internal::version_info)
+  IMP_RESTRAINT(FitRestraint, internal::version_info)
 
   ParticlesList get_interacting_particles() const
   {
@@ -70,4 +70,4 @@ private:
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_EM_FIT_RESTRAINT_H */
+#endif  /* IMPEM_FIT_RESTRAINT_H */

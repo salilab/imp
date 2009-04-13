@@ -11,12 +11,12 @@ class VolumeTest(IMP.test.TestCase):
 
     def test_image(self):
         """Check image reading and writing"""
-        img=em.imageEM()
+        img=em.image()
         rw=em.spiderImageReaderWriter("input/flipY-nup84-0.spi",
                                                   False,False,True)
         img.read("input/flipY-nup84-0.spi",rw)
         img.write("test_image.spi",rw)
-        img2=em.imageEM()
+        img2=em.image()
         img2.read("test_image.spi",rw)
         for j in xrange(0,img.get_data().get_rows()):
             for i in xrange(0,img.get_data().get_columns()):
