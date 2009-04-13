@@ -15,6 +15,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
 namespace {
   template <unsigned int D>
   struct GridRangeData: public RefCounted {
@@ -31,6 +32,7 @@ namespace {
     return out;
   }
 }
+#endif
 
 template <unsigned int D>
 class GridIteratorD
