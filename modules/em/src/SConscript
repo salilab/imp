@@ -1,7 +1,7 @@
 Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
-files = ['convertors.cpp',
+files = ['converters.cpp',
          'FitRestraint.cpp',
          'IMPParticlesAccessPoint.cpp',
          'SpiderReaderWriter.cpp',
