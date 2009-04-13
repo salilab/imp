@@ -598,7 +598,8 @@ void inline Particle::remove_attribute(ParticleKey name)
 
     \note ParticlePair objects are ordered.
  */
-class ParticlePair: public NullDefault {
+class ParticlePair: public NullDefault,
+                    public Comparable {
 public:
   typedef ParticlePair This;
   Particle *first, *second;
@@ -651,7 +652,8 @@ IMP_OUTPUT_OPERATOR(ParticlePair);
 /**     \note ParticleTriplet objects are ordered.
 
  */
-class ParticleTriplet: public NullDefault {
+class ParticleTriplet: public NullDefault,
+                       public Comparable {
   bool is_default() const {return false;}
 public:
   typedef ParticleTriplet This;
