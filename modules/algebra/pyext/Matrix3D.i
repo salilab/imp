@@ -76,7 +76,7 @@ namespace IMP {
 // Instantiating the templates for Python
 namespace IMP {
  namespace algebra {
-   %template(boostmultiarray3D) ::boost::multi_array<float,3>;
+   %template() ::boost::multi_array<float,3>;
    %template(multiarray3D) ::IMP::algebra::MultiArray<float,3>;
    %template(matrix3D) ::IMP::algebra::Matrix3D<float>;
  }
