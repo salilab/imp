@@ -27,14 +27,14 @@ public:
   /** \param[in] feature Value of feature being tested.
       \return Score
    */
-  virtual Float evaluate(Float feature) const = 0;
+  virtual double evaluate(double feature) const=0;
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
       \return a FloatPair containing the score and its partial derivative
               with respect to the given feaure.
    */
-  virtual FloatPair evaluate_with_derivative(Float feature) const = 0;
+  virtual DerivativePair evaluate_with_derivative(double feature) const = 0;
 
   IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction)
 };

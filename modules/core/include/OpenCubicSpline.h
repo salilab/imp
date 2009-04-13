@@ -29,20 +29,7 @@ public:
   OpenCubicSpline(const Floats &values, Float minrange,
                   Float spacing);
 
-  virtual ~OpenCubicSpline() {}
-
-  virtual Float evaluate(Float feature) const;
-
-  virtual FloatPair evaluate_with_derivative(Float feature) const;
-
-  void show(std::ostream &out=std::cout) const {
-    out << "Open cubic spline of " << values_.size() << " values from "
-        << minrange_ << " to " << maxrange_ << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
-
+  IMP_UNARY_FUNCTION(OpenCubicSpline, internal::version_info);
 private:
   std::vector<Float> values_;
   std::vector<Float> second_derivs_;

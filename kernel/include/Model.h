@@ -45,7 +45,7 @@ private:
   unsigned int iteration_;
   ParticleStorage particles_;
   unsigned int next_particle_index_;
-  std::map<FloatKey, FloatPair> ranges_;
+  std::map<FloatKey, FloatRange> ranges_;
 
   void add_particle_internal(Particle *p) {
     IMP_CHECK_OBJECT(this);
@@ -163,9 +163,9 @@ public:
       The ranges are not enforced, they are just guidelines.
       @{
   */
-  FloatPair get_range(FloatKey k) const;
+  FloatRange get_range(FloatKey k) const;
 
-  void set_range(FloatKey k, FloatPair range) {
+  void set_range(FloatKey k, FloatRange range) {
     ranges_[k]=range;
   }
   /** @} */

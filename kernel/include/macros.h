@@ -747,6 +747,57 @@ public:                                                                 \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
   public:
 
+
+
+//! Define the needed functions for a UnaryFunction
+/** \relates IMP::UnaryFunction
+    This macro declares the methods:
+    - Object::show()
+    - UnaryFunction::evaluate_with_derivative()
+    - UnaryFunction::evaluate()
+
+    It also defines the methods
+    - Object::get_version_info()
+
+    \see IMP_UNARY_FUNCTION_INLINE
+*/
+#define IMP_UNARY_FUNCTION(Name, version_info)                          \
+  virtual DerivativePair evaluate_with_derivative(double feature) const; \
+  virtual double evaluate(double feature) const;                        \
+  virtual void show(std::ostream &out=std::cout) const;                 \
+  IMP::VersionInfo get_version_info() const { return version_info; }    \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
+  public:
+
+//! Define the needed functions for a UnaryFunction which evaluates inline
+/** \relates IMP::UnaryFunction
+
+    This macro defines all the functions needed for an IMP::UnaryFunction
+    inline in the class. There is no need for an associated \c .cpp file.
+
+    The last three arguments are expressions that evaluate to the
+    unary function value and derivative and are sent to the stream in the
+    show function, respectively. The input to the function is called
+    \c feature.
+
+    \see IMP_UNARY_FUNCTION
+*/
+#define IMP_UNARY_FUNCTION_INLINE(Name, version_info, value_expression, \
+                           derivative_expression, show_expression)      \
+  virtual DerivativePair evaluate_with_derivative(double feature) const { \
+    return DerivativePair((value_expression), (derivative_expression)); \
+  }                                                                     \
+  virtual double evaluate(double feature) const {                       \
+    return (value_expression);                                          \
+  }                                                                     \
+  virtual void show(std::ostream &out=std::cout) const {                \
+    out << show_expression;                                             \
+  }                                                                     \
+  IMP::VersionInfo get_version_info() const { return version_info; }    \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
+  public:
+
+
 //! @}
 
 

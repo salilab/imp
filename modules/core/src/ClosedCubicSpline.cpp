@@ -9,8 +9,8 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ClosedCubicSpline::ClosedCubicSpline(const std::vector<Float> &values,
-                                     Float minrange, Float spacing) :
+ClosedCubicSpline::ClosedCubicSpline(const std::vector<double> &values,
+                                     double minrange, double spacing) :
     values_(values), minrange_(minrange), spacing_(spacing)
 {
   int npoints = values_.size();
@@ -21,17 +21,17 @@ ClosedCubicSpline::ClosedCubicSpline(const std::vector<Float> &values,
   // substitution.
   // Adapted from Spath "Spline Algorithms for Curves and Surfaces" pp 19--21.
   second_derivs_.resize(npoints);
-  Float z;
-  std::vector<Float> w(npoints), v(npoints), t(npoints);
+  double z;
+  std::vector<double> w(npoints), v(npoints), t(npoints);
 
   v[1] = w[1] = z = 0.25;
   t[0] = z * 6.0 * ((values[1] - values[0]) / spacing
                     - (values[0] - values[npoints - 1]) / spacing) / spacing;
-  Float m = 4.0;
-  Float f = 6.0 * ((values[0] - values[npoints - 1]) / spacing
+  double m = 4.0;
+  double f = 6.0 * ((values[0] - values[npoints - 1]) / spacing
                    - (values[npoints - 1]
                       - values[npoints - 2]) / spacing) / spacing;
-  Float g = 1.0;
+  double g = 1.0;
   for (int k = 1; k < npoints - 1; ++k) {
     z = 1.0 / (4.0 - v[k]);
     v[k + 1] = z;
@@ -54,7 +54,7 @@ ClosedCubicSpline::ClosedCubicSpline(const std::vector<Float> &values,
 }
 
 
-Float ClosedCubicSpline::evaluate(Float feature) const
+double ClosedCubicSpline::evaluate(double feature) const
 {
   // check for feature in range
   if (feature < minrange_ || feature > maxrange_) {
@@ -70,10 +70,10 @@ Float ClosedCubicSpline::evaluate(Float feature) const
     lowbin = npoints - 1;
     highbin = 0;
   }
-  Float lowfeature = minrange_ + lowbin * spacing_;
+  double lowfeature = minrange_ + lowbin * spacing_;
 
-  Float b = (feature - lowfeature) / spacing_;
-  Float a = 1. - b;
+  double b = (feature - lowfeature) / spacing_;
+  double a = 1. - b;
 
   return a * values_[lowbin] + b * values_[highbin]
          + ((a * (a * a - 1.)) * second_derivs_[lowbin]
@@ -81,8 +81,8 @@ Float ClosedCubicSpline::evaluate(Float feature) const
            * (spacing_ * spacing_) / 6.;
 }
 
-FloatPair
-ClosedCubicSpline::evaluate_with_derivative(Float feature) const
+DerivativePair
+ClosedCubicSpline::evaluate_with_derivative(double feature) const
 {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   size_t highbin = lowbin + 1;
@@ -92,17 +92,23 @@ ClosedCubicSpline::evaluate_with_derivative(Float feature) const
     lowbin = npoints - 1;
     highbin = 0;
   }
-  Float lowfeature = minrange_ + lowbin * spacing_;
+  double lowfeature = minrange_ + lowbin * spacing_;
 
-  Float b = (feature - lowfeature) / spacing_;
-  Float a = 1. - b;
-  Float sixthspacing = spacing_ / 6.;
+  double b = (feature - lowfeature) / spacing_;
+  double a = 1. - b;
+  double sixthspacing = spacing_ / 6.;
 
-  Float deriv = (values_[highbin] - values_[lowbin]) / spacing_
+  double deriv = (values_[highbin] - values_[lowbin]) / spacing_
           - (3. * a * a - 1.) * sixthspacing * second_derivs_[lowbin]
           + (3. * b * b - 1.) * sixthspacing * second_derivs_[highbin];
 
   return std::make_pair(evaluate(feature), deriv);
 }
+
+void ClosedCubicSpline::show(std::ostream &out) const {
+  out << "Closed cubic spline of " << values_.size() << " values from "
+      << minrange_ << " to " << maxrange_ << std::endl;
+}
+
 
 IMPCORE_END_NAMESPACE

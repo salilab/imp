@@ -28,7 +28,11 @@ public:
   /** Create with the given mean and the spring constant k */
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
 
-  virtual ~Harmonic() {}
+  IMP_UNARY_FUNCTION_INLINE(Harmonic, internal::version_info,
+                            0.5 * k_ * square(feature-mean_),
+                            k_*(feature - mean_),
+                            "Harmonic: " << mean_ << " and " << k_
+                            << std::endl);
 
   //! \return the mean of this function
   Float get_mean() const {
@@ -50,19 +54,6 @@ public:
     k_ = k;
   }
 
-  virtual Float evaluate(Float feature) const {
-    return 0.5 * k_ * square(feature-mean_);
-  }
-
-  virtual FloatPair evaluate_with_derivative(Float feature) const {
-    Float e = (feature - mean_);
-    Float deriv = k_ * e;
-    return std::make_pair(0.5 * k_ * e * e, deriv);
-  }
-
-  void show(std::ostream &out=std::cout) const {
-    out << "Harmonic: " << mean_ << " and " << k_ << std::endl;
-  }
 
   //! Return the k to use for a given Gaussian standard deviation.
   /** Given the standard deviation of a Gaussian distribution, get
@@ -78,10 +69,6 @@ public:
     // Gas constant in kcal/mol K
     const static Float R = 8.31441 / 4186.8;
     return R * t / square(sd);
-  }
-
-  VersionInfo get_version_info() const {
-    return internal::version_info;
   }
 
 private:

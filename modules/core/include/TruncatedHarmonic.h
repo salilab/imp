@@ -59,27 +59,16 @@ public:
   d_(center, k, threshold, k*square(threshold-center)){
   }
 
+  IMP_UNARY_FUNCTION_INLINE(TruncatedHarmonic,
+                            internal::version_info,
+                            ((DIRECTION == LOWER && (feature > d_.c_))
+                             || (DIRECTION == UPPER && (feature < d_.c_)))?
+                            0: d_.evaluate(feature),
+                            ((DIRECTION == LOWER && (feature > d_.c_))
+                             || (DIRECTION == UPPER && (feature < d_.c_)))?
+                            0: d_.evaluate_with_derivative(feature).second,
+                            "TruncatedHarmonic: " << d_ << std::endl);
 
-  virtual ~TruncatedHarmonic() {}
-
-  virtual Float evaluate(Float feature) const {
-    if ((DIRECTION == LOWER && (feature > d_.c_))
-        || (DIRECTION == UPPER && (feature < d_.c_))) return 0;
-    return d_.evaluate(feature);
-  }
-
-  virtual FloatPair evaluate_with_derivative(Float feature) const {
-    if ((DIRECTION == LOWER && (feature > d_.c_))
-        || (DIRECTION == UPPER && (feature < d_.c_))) return FloatPair(0,0);
-    return d_.evaluate_with_derivative(feature);
-  }
-
-  void show(std::ostream &out=std::cout) const {
-    out << "TruncatedHarmonic: " << d_ << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
 private:
   internal::TruncatedHarmonicData d_;
 };

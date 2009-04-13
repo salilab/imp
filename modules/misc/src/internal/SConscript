@@ -1,7 +1,0 @@
-files = [
-         'link_0.cpp',
-         'link_1.cpp',
-        ]
-
-files = [File(x) for x in files]
-Return('files')

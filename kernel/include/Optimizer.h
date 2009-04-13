@@ -226,7 +226,7 @@ protected:
 
   double width(FloatKey k) const {
     if (!widths_.contains(k)) {
-      FloatPair w= model_->get_range(k);
+      FloatRange w= model_->get_range(k);
       double wid=static_cast<double>(w.second)- w.first;
       if (wid > .0001) {
         //double nwid= std::pow(2, std::ceil(log2(wid)));

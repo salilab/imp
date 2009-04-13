@@ -37,21 +37,12 @@ public:
               ValueException);
   }
 
-  virtual ~ExampleUnaryFunction() {}
-
-  virtual Float evaluate(Float feature) const {
-    return .5*k_*square(feature-center_);
-  }
-
-  virtual FloatPair evaluate_with_derivative(Float feature) const {
-    Float e = (feature - center_);
-    Float deriv = k_ * e;
-    return FloatPair(evaluate(feature), deriv);
-  }
-
-  void show(std::ostream &out=std::cout) const {
-    out << "Harmonic: " << center_ << " and " << k_ << std::endl;
-  }
+  IMP_UNARY_FUNCTION_INLINE(ExampleUnaryFunction,
+                            internal::version_info,
+                            .5*k_*square(feature-center_),
+                            k_*(feature - center_),
+                            "Harmonic: " << center_ << " and " << k_
+                            << std::endl);
 };
 
 IMPEXAMPLES_END_NAMESPACE

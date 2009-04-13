@@ -23,8 +23,11 @@ IMP_BEGIN_NAMESPACE
 //! Basic floating-point value (could be float, double...)
 typedef double Float;
 
-//! A pair of floats
-typedef std::pair<Float, Float> FloatPair;
+//! A pair representing a function value with its first derivative
+typedef std::pair<double, double> DerivativePair;
+
+//! A pair representing the allowed range for a Float attribute
+typedef std::pair<Float, Float> FloatRange;
 
 //! Basic integer value
 typedef int Int;

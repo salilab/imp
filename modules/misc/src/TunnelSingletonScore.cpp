@@ -41,7 +41,7 @@ Float TunnelSingletonScore::evaluate(Particle *p,
       algebra::Vector3D v
         = tr_.get_displacement_unit_vector(d.get_coordinates());
 
-      FloatPair val= f_->evaluate_with_derivative(-adist);
+      DerivativePair val= f_->evaluate_with_derivative(-adist);
       IMP_LOG(VERBOSE, "Result of eval on " << adist << " "
               << radius << " " << dist
               << " " << v << " " << val.first << " " << val.second

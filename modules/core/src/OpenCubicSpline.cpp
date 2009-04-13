@@ -42,7 +42,7 @@ OpenCubicSpline::OpenCubicSpline(const std::vector<Float> &values,
 }
 
 
-Float OpenCubicSpline::evaluate(Float feature) const
+double OpenCubicSpline::evaluate(double feature) const
 {
   // check for feature in range
   if (feature < minrange_ || feature > maxrange_) {
@@ -54,10 +54,10 @@ Float OpenCubicSpline::evaluate(Float feature) const
   // handle the case where feature ~= maxrange
   lowbin = std::min(lowbin, values_.size() - 2);
   size_t highbin = lowbin + 1;
-  Float lowfeature = minrange_ + lowbin * spacing_;
+  double lowfeature = minrange_ + lowbin * spacing_;
 
-  Float b = (feature - lowfeature) / spacing_;
-  Float a = 1. - b;
+  double b = (feature - lowfeature) / spacing_;
+  double a = 1. - b;
 
   return a * values_[lowbin] + b * values_[highbin]
          + ((a * (a * a - 1.)) * second_derivs_[lowbin]
@@ -65,23 +65,28 @@ Float OpenCubicSpline::evaluate(Float feature) const
            * (spacing_ * spacing_) / 6.;
 }
 
-FloatPair OpenCubicSpline::evaluate_with_derivative(Float feature) const
+DerivativePair OpenCubicSpline::evaluate_with_derivative(double feature) const
 {
   size_t lowbin = static_cast<size_t>((feature - minrange_) / spacing_);
   // handle the case where feature ~= maxrange
   lowbin = std::min(lowbin, values_.size() - 2);
   size_t highbin = lowbin + 1;
-  Float lowfeature = minrange_ + lowbin * spacing_;
+  double lowfeature = minrange_ + lowbin * spacing_;
 
-  Float b = (feature - lowfeature) / spacing_;
-  Float a = 1. - b;
-  Float sixthspacing = spacing_ / 6.;
+  double b = (feature - lowfeature) / spacing_;
+  double a = 1. - b;
+  double sixthspacing = spacing_ / 6.;
 
-  Float deriv = (values_[highbin] - values_[lowbin]) / spacing_
+  double deriv = (values_[highbin] - values_[lowbin]) / spacing_
     - (3. * a * a - 1.) * sixthspacing * second_derivs_[lowbin]
     + (3. * b * b - 1.) * sixthspacing * second_derivs_[highbin];
 
   return std::make_pair(evaluate(feature), deriv);
+}
+
+void OpenCubicSpline::show(std::ostream &out) const {
+    out << "Open cubic spline of " << values_.size() << " values from "
+        << minrange_ << " to " << maxrange_ << std::endl;
 }
 
 IMPCORE_END_NAMESPACE
