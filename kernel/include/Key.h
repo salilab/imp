@@ -80,7 +80,7 @@ typedef std::vector<Name> Name##s
     \note Keys objects are ordered.
  */
 template <unsigned int ID>
-class KeyBase: public NullDefault
+class KeyBase: public NullDefault, public Comparable
 {
   int str_;
 

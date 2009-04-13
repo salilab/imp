@@ -19,7 +19,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Represent a color
 /**
  */
-class IMPDISPLAYEXPORT Color: public NullDefault
+class IMPDISPLAYEXPORT Color: public NullDefault,
+                              public Comparable
 {
   float c_[3];
 public:

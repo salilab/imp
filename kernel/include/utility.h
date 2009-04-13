@@ -108,6 +108,23 @@ struct NullDefault{};
 */
 struct UninitializedDefault{
 };
+
+
+/** \brief A base class to declare that the object can be compared against
+    other objects of the same type.
+
+    Objects inheriting from IMP::Comparable should support the operators
+    \c <, \c >, \c ==, \c !=, \c >=, \c <= against other objects of the same
+    type. In addition they support a namespace function \c compare(a,b) which
+    return -1,0,1 if \c a \c < \c b, \c a\c == \c b or \c a \c > \c b.
+*/
+struct Comparable {};
+
+
+template <class T>
+int compare(const T &a, const T &b) {
+  return a.compare(b);
+}
 IMP_END_NAMESPACE
 
 #endif  /* IMP_UTILITY_H */

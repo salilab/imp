@@ -51,7 +51,8 @@
   }                                                                     \
   bool operator<=(const This &o) const {                                \
     return !(compare(o) > 0);                                           \
-  }
+  }                                                                     \
+  IMP_NO_SWIG(template <class T> friend int compare(const T&a, const T&b);
 #endif
 
 #ifdef IMP_DOXYGEN                                                         \
@@ -78,7 +79,13 @@
   }                                                                     \
   bool operator<=(const This &o) const {                                \
     return (field<= o.field);                                           \
+  }                                                                     \
+  int compare(const This &o) const {                                    \
+    if (operator<(o)) return -1;                                        \
+    else if (operator>(o)) return 1;                                    \
+    else return 0;                                                      \
   }
+
 #endif
 
 #ifdef IMP_DOXYGEN
@@ -109,6 +116,11 @@
   }                                                                     \
   bool operator<=(const This &o) const {                                \
     return operator<(o) || operator==(o);                               \
+  }                                                                     \
+  int compare(const This &o) const {                                    \
+    if (operator<(o)) return -1;                                        \
+    else if (operator>(o)) return 1;                                    \
+    else return 0;                                                      \
   }
 #endif
 
@@ -145,6 +157,11 @@
   }                                                                     \
   bool operator<=(const This &o) const {                                \
     return operator<(o) || operator==(o);                               \
+  }                                                                     \
+  int compare(const This &o) const {                                    \
+    if (operator<(o)) return -1;                                        \
+    else if (operator>(o)) return 1;                                    \
+    else return 0;                                                      \
   }
 #endif
 

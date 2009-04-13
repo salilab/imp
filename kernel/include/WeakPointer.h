@@ -30,7 +30,7 @@ IMP_BEGIN_NAMESPACE
     \param[in] O The type of IMP::Object-derived object to point to
  */
 template <class O>
-class WeakPointer: public NullDefault
+class WeakPointer: public NullDefault, public Comparable
 {
   typedef WeakPointer<O> This;
 

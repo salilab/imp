@@ -31,7 +31,7 @@ IMP_BEGIN_NAMESPACE
     IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
     IMP_DECORATOR_ARRAY_DECL()
 */
-class Decorator: public NullDefault
+class Decorator: public NullDefault, public Comparable
 {
 private:
   Pointer<Particle> particle_;
@@ -43,11 +43,13 @@ protected:
   Decorator() {}
 public:
   IMP_NO_DOXYGEN(typedef Decorator This;)
+
+  IMP_COMPARISONS_1(particle_);
+
  /** \name Methods provided by the Decorator class
       The following methods are provided by the Decorator class.
       @{
   */
-  IMP_COMPARISONS_1(particle_);
 
   /** \return the particle wrapped by this decorator*/
   Particle *get_particle() const {
