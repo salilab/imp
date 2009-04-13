@@ -1,12 +1,12 @@
 /**
- *  \file EMproject.h
+ *  \file project.h
  *  \brief Project operation for EM volumes
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#ifndef IMPEM_EMPROJECT_H
-#define IMPEM_EMPROJECT_H
+#ifndef IMPEM_PROJECT_H
+#define IMPEM_PROJECT_H
 
 #include "config.h"
 #include <IMP/algebra/utility.h>
@@ -281,4 +281,4 @@ void project(IMP::algebra::Matrix3D<T>& m3,
 
 IMPEM_END_NAMESPACE
 
-#endif  /* IMPEM_EMPROJECT_H */
+#endif  /* IMPEM_PROJECT_H */

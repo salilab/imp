@@ -63,6 +63,11 @@
     - member methods that set a value should begin with \c set_
     - member methods which return a value should begin with \c get_
     - all preprocessor symbols (things created by \#define) must begin with \c IMP
+    - names of files that implement a single class should be named for that
+      class; for example the SpecialVector class could be implemented in
+      \c SpecialVector.h and \c SpecialVector.cpp
+    - files that provide free functions or macros should be given names
+      \c separated_by_underscores, for example \c container_macros.h
 
     Do not use abbreviations in names.
 

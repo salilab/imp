@@ -12,7 +12,7 @@
 #include "config.h"
 #include "ImageHeader.h"
 #include "ImageReaderWriter.h"
-#include "HeaderConverters.h"
+#include "header_converters.h"
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
 #include <IMP/algebra/Matrix2D.h>
