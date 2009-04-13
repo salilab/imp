@@ -28,22 +28,9 @@ public:
       \param[in] minrange Feature value at first spline point.
       \param[in] spacing  Distance (in feature space) between points
    */
-  ClosedCubicSpline(const std::vector<Float> &values, Float minrange,
-                    Float spacing);
-
-  virtual ~ClosedCubicSpline() {}
-
-  virtual Float evaluate(Float feature) const;
-
-  virtual FloatPair evaluate_with_derivative(Float feature) const;
-
-  void show(std::ostream &out=std::cout) const {
-    out << "Closed cubic spline of " << values_.size() << " values from "
-        << minrange_ << " to " << maxrange_ << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  ClosedCubicSpline(const Floats &values, double minrange,
+                    double spacing);
+  IMP_UNARY_FUNCTION(ClosedCubicSpline, internal::version_info);
 private:
   std::vector<Float> values_;
   std::vector<Float> second_derivs_;

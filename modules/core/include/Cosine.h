@@ -32,20 +32,7 @@ public:
       force_constant_(force_constant), periodicity_(periodicity),
       phase_(phase) {}
 
-  virtual ~Cosine() {}
-
-  virtual Float evaluate(Float feature) const;
-
-  virtual FloatPair evaluate_with_derivative(Float feature) const;
-
-  void show(std::ostream &out=std::cout) const {
-    out << "Cosine function with force " << force_constant_
-        << ", periodicity " << periodicity_ << ", and phase "
-        << phase_ << std::endl;
-  }
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
+  IMP_UNARY_FUNCTION(Cosine, internal::version_info);
 private:
   Float force_constant_;
   int periodicity_;

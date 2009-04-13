@@ -22,28 +22,15 @@ class HarmonicLowerBound : public Harmonic
 public:
   /** Create with the given mean and the spring constant k */
   HarmonicLowerBound(Float mean, Float k) : Harmonic(mean, k) {}
-  virtual ~HarmonicLowerBound() {}
-
-  virtual Float evaluate(Float feature) const {
-    if (feature >= Harmonic::get_mean()) {
-      return 0.0;
-    } else {
-      return Harmonic::evaluate(feature);
-    }
-  }
-
-  virtual FloatPair evaluate_with_derivative(Float feature) const {
-    if (feature >= Harmonic::get_mean()) {
-      return std::make_pair(0.0f, 0.0f);
-    } else {
-      return Harmonic::evaluate_with_derivative(feature);
-    }
-  }
-
-  void show(std::ostream &out=std::cout) const {
-    out << "HarmonicLB: " << Harmonic::get_mean()
-        << " and " << Harmonic::get_k() << std::endl;
-  }
+  IMP_UNARY_FUNCTION_INLINE(HarmonicLowerBound,
+                            internal::version_info,
+                            feature >= Harmonic::get_mean() ?
+                            0.0: Harmonic::evaluate(feature),
+                            feature >= Harmonic::get_mean() ?
+                            0.0:
+                            Harmonic::evaluate_with_derivative(feature).second,
+                            "HarmonicLB: " << Harmonic::get_mean()
+                            << " and " << Harmonic::get_k() << std::endl);
 };
 
 IMPCORE_END_NAMESPACE

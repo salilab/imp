@@ -11,17 +11,23 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Float Cosine::evaluate(Float feature) const
+double Cosine::evaluate(double feature) const
 {
   return std::abs(force_constant_)
          - force_constant_ * std::cos(periodicity_ * feature + phase_);
 }
 
-FloatPair Cosine::evaluate_with_derivative(Float feature) const
+DerivativePair Cosine::evaluate_with_derivative(double feature) const
 {
   Float deriv = force_constant_ * periodicity_
     * std::sin(periodicity_ * feature + phase_);
   return std::make_pair(evaluate(feature), deriv);
 }
+
+ void Cosine::show(std::ostream &out) const {
+    out << "Cosine function with force " << force_constant_
+        << ", periodicity " << periodicity_ << ", and phase "
+        << phase_ << std::endl;
+  }
 
 IMPCORE_END_NAMESPACE

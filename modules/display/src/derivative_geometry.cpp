@@ -74,7 +74,7 @@ Geometries RigidBodyDerivativeGeometry::get_geometry() const {
   IMP_LOG(TERSE, "Derivative was " << tderiv << std::endl);
   IMP_LOG(TERSE, "New rotation is " << rot << std::endl);
 
-  FloatPair xr= d_.get_particle()->get_model()
+  FloatRange xr= d_.get_particle()->get_model()
     ->get_range(core::XYZDecorator::get_xyz_keys()[0]);
   Float wid= xr.second-xr.first;
   algebra::Vector3D stderiv= scale*tderiv*wid;

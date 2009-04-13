@@ -16,8 +16,8 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 struct TruncatedHarmonicData {
-  TruncatedHarmonicData(Float center, Float k,
-                        Float threshold, Float limit): c_(center),
+  TruncatedHarmonicData(double center, double k,
+                        double threshold, double limit): c_(center),
   l_(limit), k_(k), t_(threshold) {
     IMP_check(.5*k*square(threshold) < limit,
               "The limit must be larger than the harmonic at the threshold",
@@ -38,8 +38,8 @@ struct TruncatedHarmonicData {
     std::cout << o_ << " " << b_ << std::endl;
   }
 
-  inline Float evaluate(Float feature) const {
-    Float x= std::abs(feature-c_);
+  inline double evaluate(double feature) const {
+    double x= std::abs(feature-c_);
     if (x > t_) {
       return l_ - b_/square(x-o_);
     } else {
@@ -47,20 +47,20 @@ struct TruncatedHarmonicData {
     }
   }
 
-  inline FloatPair evaluate_with_derivative(Float feature) const {
-    Float x= (feature-c_);
-    Float deriv;
+  inline DerivativePair evaluate_with_derivative(double feature) const {
+    double x= (feature-c_);
+    double deriv;
     if (std::abs(x) > t_) {
       deriv= 2*b_/(square(std::abs(x)-o_)*(std::abs(x)-o_));
       if (feature < c_) deriv=-deriv;
     } else {
       deriv= k_*x;
     }
-    return FloatPair(evaluate(feature), deriv);
+    return DerivativePair(evaluate(feature), deriv);
   }
 
 
-  Float c_, l_, k_, b_, o_, t_;
+  double c_, l_, k_, b_, o_, t_;
 };
 
 inline std::ostream &operator<<(std::ostream &out,

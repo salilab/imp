@@ -21,35 +21,23 @@ class Linear : public UnaryFunction
 {
 public:
   //! Create with the given offset and slope.
-  Linear(Float offset, Float slope) : slope_(slope), offset_(offset) {}
+  Linear(double offset, double slope) : slope_(slope), offset_(offset) {}
 
-  virtual ~Linear() {}
-
-  virtual Float evaluate(Float feature) const {
-    return (feature-offset_)*slope_;
-  }
-
-  virtual FloatPair evaluate_with_derivative(Float feature) const {
-    return std::make_pair(evaluate(feature), slope_);
-  }
-
-  void set_slope(Float f) {
+  IMP_UNARY_FUNCTION_INLINE(Linear, internal::version_info,
+                            (feature-offset_)*slope_,
+                            slope_,
+                            "Linear: " << slope_ << ", " << offset_
+                            << std::endl);
+  void set_slope(double f) {
     slope_=f;
   }
 
-  void set_offset(Float f) {
+  void set_offset(double f) {
     offset_=f;
   }
 
-  void show(std::ostream &out=std::cout) const {
-    out << "Linear: " << slope_ << ", " << offset_ << std::endl;
-  }
-
-  VersionInfo get_version_info() const {
-    return internal::version_info;
-  }
 private:
-  Float slope_, offset_;
+  double slope_, offset_;
 };
 
 IMPCORE_END_NAMESPACE

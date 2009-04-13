@@ -42,12 +42,12 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               {obj->set_model(NULL);});
 
 
-FloatPair Model::get_range(FloatKey k) const {
+FloatRange Model::get_range(FloatKey k) const {
   IMP_CHECK_OBJECT(this);
   if (ranges_.find(k) != ranges_.end()) {
     return ranges_.find(k)->second;
   } else {
-    FloatPair r(std::numeric_limits<Float>::max(),
+    FloatRange r(std::numeric_limits<Float>::max(),
                 -std::numeric_limits<Float>::max());
     for (ParticleConstIterator it= particles_begin();
          it != particles_end(); ++it) {

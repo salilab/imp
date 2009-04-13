@@ -179,5 +179,6 @@ namespace IMP {
   %template(Ints) ::std::vector<Int>;
   %template(SingletonContainers) ::std::vector<SingletonContainer*>;
   %template(PairContainers) ::std::vector<PairContainer*>;
-  %template(FloatPair) ::std::pair<Float, Float>;
+  %template(float_pair) ::std::pair<float,float>;
+  %template(double_pair) ::std::pair<double, double>;
 }

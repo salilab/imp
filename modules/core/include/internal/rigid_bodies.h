@@ -36,10 +36,10 @@ IMPCOREEXPORT const RigidBodyData &rigid_body_data();
 
 
 inline void set_model_ranges(Model *m) {
-  m->set_range(rigid_body_data().quaternion_[0], FloatPair(0,1));
-  m->set_range(rigid_body_data().quaternion_[1], FloatPair(0,1));
-  m->set_range(rigid_body_data().quaternion_[2], FloatPair(0,1));
-  m->set_range(rigid_body_data().quaternion_[3], FloatPair(0,1));
+  m->set_range(rigid_body_data().quaternion_[0], FloatRange(0,1));
+  m->set_range(rigid_body_data().quaternion_[1], FloatRange(0,1));
+  m->set_range(rigid_body_data().quaternion_[2], FloatRange(0,1));
+  m->set_range(rigid_body_data().quaternion_[3], FloatRange(0,1));
 }
 
 inline bool get_has_required_attributes_for_body(Particle *p) {
