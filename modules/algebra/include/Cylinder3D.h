@@ -51,7 +51,7 @@ class IMPALGEBRAEXPORT Cylinder3D: public UninitializedDefault
   /**
     /param[in] the point index (0 or 1).
    */
-  Vector3D get_point(int i) const;
+  Vector3D get_point(unsigned int i) const;
  private:
   Vector3D start_;
   Vector3D end_;

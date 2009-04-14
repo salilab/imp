@@ -41,7 +41,7 @@ double Cylinder3D::get_volume() const {
 //    << " open "<<std::endl;
 //   return s.str();
 // }
-Vector3D Cylinder3D::get_point(int i) const {
+Vector3D Cylinder3D::get_point(unsigned int i) const {
   IMP_check((i == 1 || i == 0), "Invalid points index",
             IndexException);
   if (i==0) {
