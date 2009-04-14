@@ -39,13 +39,9 @@ class IMPALGEBRAEXPORT Cylinder3D: public UninitializedDefault
       get_point(0) to get_point(1).
   */
   Vector3D get_direction() const {return (end_-start_).get_unit_vector();}
-  /** */
   double get_radius() const {return radius_;}
-  /** */
   double get_length() const {return (end_-start_).get_magnitude();}
-  /** */
   double get_surface_area() const;
-  /** */
   double get_volume() const;
   //! Return one of the two points that define the cylinder
   /**
