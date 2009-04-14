@@ -97,12 +97,14 @@ void SymmetrySampler::move2state(const CombState *cs) {
     double angle = 2.*PI/ps_->size()*symm_deg_[p];
     // was algebra::rotate(cyl_,angle).compose(t)
     algebra::Transformation3D tr
-      =compose(algebra::rotation_in_radians_about_axis(cyl_.get_direction(),
+      =compose(algebra::rotation_in_radians_about_axis(
+                                     cyl_.get_segment().get_direction(),
                                                        angle),t);
     for_each(core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)),
              SingletonFunctor(new core::Transform(tr)));
     ref_[p]= compose(algebra::rotation_in_radians_about_axis(
-                     cyl_.get_direction(),angle),t).get_inverse();
+                      cyl_.get_segment().get_direction(),
+                      angle),t).get_inverse();
  //    std::stringstream name;
 //     name<<p->get_value(StringKey("name"))<<"__"<<cs->key()<<".pdb";
 //     atom::write_pdb(atom::MolecularHierarchyDecorator::cast(p),name.str());

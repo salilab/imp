@@ -14,10 +14,10 @@ class CylinderTests(IMP.test.TestCase):
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,-4.0),
                                                            IMP.algebra.Vector3D(0.0,0.0,4.0)),
                                    5.0);
-        self.assertEqual((cyl.get_center()-center).get_magnitude() < 0.01,True)
-        self.assertEqual((cyl.get_direction()-direction).get_magnitude() < 0.01,True)
+        self.assertEqual((cyl.get_segment().get_middle_point()-center).get_magnitude() < 0.01,True)
+        self.assertEqual((cyl.get_segment().get_direction()-direction).get_magnitude() < 0.01,True)
         self.assertEqual(cyl.get_radius(),5.0)
-        self.assertEqual(cyl.get_length(),8.0)
+        self.assertEqual(cyl.get_segment().get_length(),8.0)
 
         self.assertAlmostEqual(cyl.get_surface_area(),2*math.pi*5.0*8.0+2*math.pi*25.0,
                                places=1)

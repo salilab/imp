@@ -33,24 +33,15 @@ class IMPALGEBRAEXPORT Cylinder3D: public UninitializedDefault
   /note the function would work if the center of the reference frame is (0,0,0)
   */
   Transformation3D get_transformation_to_place_direction_on_Z() const;
-  /** */
-  Vector3D get_center() const {return start_+(end_-start_)*0.5;}
-  /** \brief Get a normalized direction vector pointing from
-      get_point(0) to get_point(1).
-  */
-  Vector3D get_direction() const {return (end_-start_).get_unit_vector();}
   double get_radius() const {return radius_;}
-  double get_length() const {return (end_-start_).get_magnitude();}
+  //! Get surface area, including the caps
   double get_surface_area() const;
   double get_volume() const;
-  //! Return one of the two points that define the cylinder
-  /**
-    /param[in] the point index (0 or 1).
-   */
-  Vector3D get_point(unsigned int i) const;
+  const Segment3D& get_segment() const {
+    return s_;
+  }
  private:
-  Vector3D start_;
-  Vector3D end_;
+  Segment3D s_;
   double radius_;
 };
 

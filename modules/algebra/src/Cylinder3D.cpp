@@ -9,14 +9,14 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 Cylinder3D::Cylinder3D(const Segment3D &s,
                        double radius)
-  :start_(s.get_point(0)),end_(s.get_point(1)),radius_(radius){
+  :s_(s),radius_(radius){
 }
 
 Transformation3D Cylinder3D::get_transformation_to_place_direction_on_Z() const{
-  Vector3D main_dir = get_direction();
+  Vector3D main_dir = get_segment().get_direction();
   Vector3D vertical_dir = orthogonal_vector(main_dir);
   Transformation3D move2zero= Transformation3D(
-                                identity_rotation(),-get_center());
+                   identity_rotation(),-get_segment().get_middle_point());
   //transformation_from_reference_frame(a,b,c) , sets the Z-axis to
   //be prependicular to a and b. We want Z to be the main direction of
   //the cylinder
@@ -28,26 +28,11 @@ Transformation3D Cylinder3D::get_transformation_to_place_direction_on_Z() const{
 }
 
 double Cylinder3D::get_surface_area() const {
-  return 2.0*PI*radius_ * get_length() +
+  return 2.0*PI*radius_ * get_segment().get_length() +
     2.0*PI *radius_*radius_;
 }
 double Cylinder3D::get_volume() const {
-  return PI *radius_*radius_ * get_length();
-}
-// std::string Cylinder3D::get_bild_string() const {
-//   std::ostringstream s;
-//   s<<".cylinder " << start_[0] << " " << start_[1] << " " << start_[2]
-//    << " " << end_[0] << " "<< end_[1]<<" " <<end_[2]<< " " << radius_
-//    << " open "<<std::endl;
-//   return s.str();
-// }
-Vector3D Cylinder3D::get_point(unsigned int i) const {
-  IMP_check((i == 1 || i == 0), "Invalid points index",
-            IndexException);
-  if (i==0) {
-    return start_;
-  }
-  return end_;
+  return PI *radius_*radius_ * get_segment().get_length();
 }
 
 IMPALGEBRA_END_NAMESPACE

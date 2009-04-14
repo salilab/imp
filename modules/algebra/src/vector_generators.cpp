@@ -21,10 +21,10 @@ Vector3Ds uniform_cover(const Cylinder3D &cyl,
   Transformation3D cyl_rf_to_base_rf =
     cyl.get_transformation_to_place_direction_on_Z();
   Transformation3D move2zero =
-              Transformation3D(identity_rotation(),-cyl.get_center());
+    Transformation3D(identity_rotation(),-cyl.get_segment().get_middle_point());
   for(int i=0;i<number_of_points;i++) {
-    ::boost::uniform_real<> rand(0,cyl.get_length());
-    starting_point = cyl.get_point(0);
+    ::boost::uniform_real<> rand(0,cyl.get_segment().get_length());
+    starting_point = cyl.get_segment().get_point(0);
     starting_point = move2zero.transform(starting_point);
     starting_point = cyl_rf_to_base_rf.transform(starting_point);
     starting_point = starting_point +
@@ -53,7 +53,7 @@ Vector3Ds grid_cover(const Cylinder3D &cyl,
   Transformation3D cyl_rf_to_base_rf =
     cyl.get_transformation_to_place_direction_on_Z();
   Vector3D z_direction(0.0,0.0,1.0);
-  Float translation_step = cyl.get_length()/number_of_cycles;
+  Float translation_step = cyl.get_segment().get_length()/number_of_cycles;
   Float rotation_step = 2*PI/number_of_points_on_cycle;
   std::vector<Rotation3D> rotations;
   for(int angle_ind = 0; angle_ind<number_of_points_on_cycle;angle_ind++) {
@@ -62,9 +62,9 @@ Vector3Ds grid_cover(const Cylinder3D &cyl,
   }
   Vector3D starting_point,rotated_point;
   Transformation3D move2zero =
-               Transformation3D(identity_rotation(),-cyl.get_center());
+    Transformation3D(identity_rotation(),-cyl.get_segment().get_middle_point());
   for(int cycle_ind = 0; cycle_ind<number_of_cycles;cycle_ind++) {
-    starting_point = cyl.get_point(0);
+    starting_point = cyl.get_segment().get_point(0);
     starting_point = move2zero.transform(starting_point);
     starting_point = cyl_rf_to_base_rf.transform(starting_point);
     starting_point = starting_point +

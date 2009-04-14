@@ -20,7 +20,7 @@ class IMPALGEBRAEXPORT Segment3D: public UninitializedDefault
   Segment3D(){}
   Segment3D(const Vector3D &start,const Vector3D &end);
   //! Get the start=0/end=1 point of the segment
-  Vector3D get_point(unsigned int i) const {
+  const Vector3D& get_point(unsigned int i) const {
 #if IMP_SWIG_WRAPPER
     IMP_check(i<2,"invalid point index",ValueException);
 #else
@@ -28,10 +28,11 @@ class IMPALGEBRAEXPORT Segment3D: public UninitializedDefault
 #endif
     return p_[i];
   }
-  Vector3D get_middle_point() const {return (p_[0]+get_direction()/2);}
-  //! Get the unnormalized direction of the segment
-  Vector3D get_direction() const {return p_[1]-p_[0];}
-  //! Get the lenght of the line
+  Vector3D get_middle_point() const {return (p_[0]+p_[1])/2.0;}
+  /** \brief Get a normalized direction vector pointing from
+      get_point(0) to get_point(1).
+  */
+  Vector3D get_direction() const {return (p_[1]-p_[0]).get_unit_vector();}
   double get_length() const;
   void show(std::ostream &out=std::cout) const {
     out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]);

@@ -19,6 +19,7 @@ def check_c_file(filename, errors):
     fh = file(filename, "r")
     srch = re.compile('\s+$')
     url = re.compile('https?://')
+    configh=False
     blank = False
     for (num, line) in enumerate(fh):
         line = line.rstrip('\r\n')
@@ -36,10 +37,16 @@ def check_c_file(filename, errors):
             errors.append('%s:%d: Preprocessor symbols must start with IMP' \
                           % (filename, num+1))
         blank = (len(line) == 0)
+        if line.startswith('#include "'):
+            configh=True;
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
     if blank:
         errors.append('%s:1000: File has trailing blank line(s)' % filename)
+    if not configh and filename.endswith(".h") and not filename.endswith("config.h")\
+            and not filename.endswith("macros.h") and filename.find("internal") == -1:
+        errors.append('%s: Non-internal header files must include config.h at least indirectly, use #include "config.h"' \
+                          % (filename))
 
 def check_python_file(filename, errors):
     """Check each modified Python file to make sure it adheres to the
