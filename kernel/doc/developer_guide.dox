@@ -54,9 +54,9 @@ When designing the interface for your new code, you should
   IMP::atom::read_pdb() and IMP::atom::write_pdb() functions provide
   templates that should be used for the design of any functions that
   create particles from a file or write particles to a file. Since
-  IMP::core::BondDecorator, IMP::algebra::Cylinder3D and
+  IMP::atom::BondDecorator, IMP::algebra::Segment3D and
   IMP::display::Geometry all use methods like
-  IMP::algebra::Cylinder3D::get_point(unsigned int i) to accesss the
+  IMP::algebra::Segment3D::get_point() to accesss the
   endpoints of a segment, any new object which defines similar
   point-based geometry should do likewise.
 

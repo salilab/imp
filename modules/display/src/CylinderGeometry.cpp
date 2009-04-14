@@ -27,6 +27,6 @@ unsigned int CylinderGeometry::get_number_of_vertices() const{
   return 2;
 }
 algebra::Vector3D CylinderGeometry::get_vertex(unsigned int i) const {
-  return c_.get_point(i);
+  return c_.get_segment().get_point(i);
 }
 IMPDISPLAY_END_NAMESPACE

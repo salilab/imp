@@ -27,7 +27,7 @@ class SphereTests(IMP.test.TestCase):
         cyl = sph.get_bounding_cylinder()
         #print cyl.get_bild_string()
         self.assertEqual(cyl.get_radius(),radius)
-        self.assertEqual(cyl.get_length(),2.0*radius)
+        self.assertEqual(cyl.get_segment().get_length(),2.0*radius)
 
     def test_uniform_cover(self):
         """Check uniform cover on a sphere"""
