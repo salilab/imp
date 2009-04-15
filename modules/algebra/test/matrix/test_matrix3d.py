@@ -6,7 +6,7 @@ import math
 
 class Matrix3DTests(IMP.test.TestCase):
     def make_matrix(self, v):
-        m = alg.matrix3D(len(v), len(v[0]), len(v[0][0]))
+        m = alg.Matrix3D(len(v), len(v[0]), len(v[0][0]))
         for z in range(len(v)):
             for y in range(len(v[0])):
                 for x in range(len(v[0][0])):
@@ -27,7 +27,7 @@ class Matrix3DTests(IMP.test.TestCase):
 
     def test_sizes(self):
         """Check proper creation an resizing"""
-        m = alg.matrix3D(3,2,3)
+        m = alg.Matrix3D(3,2,3)
         self.assertEqual(m.get_slices(), 3)
         m.resize(5,7,6)
         self.assertEqual(m.get_slices(), 5)
@@ -35,8 +35,8 @@ class Matrix3DTests(IMP.test.TestCase):
         self.assertEqual(m.get_columns(), 6)
 
     def test_access(self):
-        """Check matrix3D access"""
-        m = alg.matrix3D(3,2,7)
+        """Check Matrix3D access"""
+        m = alg.Matrix3D(3,2,7)
         m[2,1,6]=34.5
         self.assertEqual(m[2,1,6],34.5)
 
