@@ -13,8 +13,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 void XYZDecorator::show(std::ostream &out, std::string prefix) const
 {
-  out << prefix << "(" << get_x()<< ", "
-  << get_y() << ", " << get_z() <<")";
+  out << prefix << "(" <<algebra::commas_io(get_coordinates())<<")";
 
 }
 const FloatKeys&  XYZDecorator::get_xyz_keys() {
