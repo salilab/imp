@@ -235,4 +235,11 @@ void write_pdb(const MolecularHierarchyDecorators& mhd,
 }
 
 
+void write_pdb(const MolecularHierarchyDecorators& mhd,
+               std::ostream &out) {
+  for (unsigned int i=0; i< mhd.size(); ++i) {
+    write_pdb(mhd[i], out);
+  }
+}
+
 IMPATOM_END_NAMESPACE
