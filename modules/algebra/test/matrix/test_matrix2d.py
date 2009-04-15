@@ -1,10 +1,10 @@
 import unittest
 import IMP.test
-import IMP.algebra as alg
+import IMP.algebra
 
 class Matrix2DTests(IMP.test.TestCase):
     def make_matrix(self, v):
-        m = alg.Matrix2D(len(v), len(v[0]))
+        m = IMP.algebra.Matrix2D(len(v), len(v[0]))
         for row in range(len(v)):
             for col in range(len(v[0])):
                 m[row,col] = v[row][col]
@@ -22,7 +22,7 @@ class Matrix2DTests(IMP.test.TestCase):
 
     def test_sizes(self):
         """Check proper creation and resizing"""
-        m = alg.Matrix2D(3,2)
+        m = IMP.algebra.Matrix2D(3,2)
         self.assertEqual(m.get_columns(), 2)
         m.resize(5,7)
         self.assertEqual(m.get_rows(), 5)
@@ -30,7 +30,7 @@ class Matrix2DTests(IMP.test.TestCase):
 
     def test_access(self):
         """Check Matrix2D access"""
-        m = alg.Matrix2D(3,2)
+        m = IMP.algebra.Matrix2D(3,2)
         m[2,1]=34.5
         self.assertEqual(m[2,1],34.5)
         m.set_start(0,-2)

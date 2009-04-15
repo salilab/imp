@@ -19,7 +19,8 @@ class SphereTests(IMP.test.TestCase):
         self.assertAlmostEqual(sph.get_volume(),math.pi*125.0*(4.0/3),
                                places=1)
 
-    def test_bounding_sphere(self):
+    def test_bounding_cylinder(self):
+        """Check correct behavior of Sphere3D.get_bounding_cylinder"""
         center = IMP.algebra.Vector3D(0.0,0.0,0.0)
         radius=5.0
         sph = IMP.algebra.Sphere3D(center,radius)

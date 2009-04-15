@@ -19,6 +19,7 @@ class ConeTests(IMP.test.TestCase):
         self.assertEqual(cone.get_contains(IMP.algebra.Vector3D(1.0,1.0,-3.0)),False)
 
     def test_sphere_patch(self):
+        """Check correct behavior of Cone3D bounding sphere and patches"""
         s = IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,0.0),
                                   IMP.algebra.Vector3D(0.0,0.0,5.0))
         cone = IMP.algebra.Cone3D(s,4.0)
