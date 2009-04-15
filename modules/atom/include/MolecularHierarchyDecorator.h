@@ -44,15 +44,18 @@ public:
       - RESIDUE (1) a residue
       - NUCLEICACID (2) a nucleic acid
       - FRAGMENT (3) an arbitrary fragment
-      - CHAIN (4) a chain of a protein
-      - PROTEIN (5) a protein
-      - NUCLEOTIDE (6) a nucleotide
-      - MOLECULE (7) an arbitrary molecule
-      - ASSEMBLY (8) an assembly
-      - COLLECTION (9) a group of assemblies
+      - DOMAIN (4) a chain of a protein
+      - CHAIN (5) a chain of a protein
+      - PROTEIN (6) a protein
+      - NUCLEOTIDE (7) a nucleotide
+      - MOLECULE (8) an arbitrary molecule
+      - ASSEMBLY (9) an assembly
+      - COLLECTION (10) a group of assemblies
       - UNIVERSE is all the molecules in existance at once.
       - UNIVERSES is a set of universes
       - TRAJECTORY is an ordered set of UNIVERSES
+
+      \note These values may change.
    */
   enum Type {UNKNOWN=-1, ATOM, RESIDUE, NUCLEICACID, FRAGMENT,
              CHAIN, PROTEIN, NUCLEOTIDE, MOLECULE, ASSEMBLY,
@@ -60,7 +63,7 @@ public:
             };
 
   // swig gets unhappy if it is private
-  typedef MolecularHierarchyDecorator This;
+  IMP_NO_DOXYGEN(typedef MolecularHierarchyDecorator This;)
 
 
   //! Create a HiearchyDecorator on the Particle
@@ -108,11 +111,9 @@ public:
 
 
 
-  /** */
   Type get_type() const {
     return Type(get_particle()->get_value(get_type_key()));
   }
-  /** */
   void set_type(Type t) {
     get_particle()->set_value(get_type_key(), t);
   }
@@ -158,7 +159,7 @@ public:
   /** A child must have a type that is listed before the parent in the
       Type enum list.
    */
-  unsigned int add_child(This o) {
+  unsigned int add_child(MolecularHierarchyDecorator o) {
     IMP_check(get_type() > o.get_type(),
               "Parent type must subsume child type",
               InvalidStateException);
@@ -173,7 +174,7 @@ public:
   /** A child must have a type that is listed before the parent in the
       Type enum list.
    */
-  void add_child_at(This o, unsigned int i) {
+  void add_child_at(MolecularHierarchyDecorator o, unsigned int i) {
     IMP_check(get_type() > o.get_type(),
               "Parent type must subsume child type",
               InvalidStateException);
