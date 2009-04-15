@@ -1,22 +1,19 @@
 import unittest
 import IMP.test
-import IMP.algebra as alg
+import IMP.em
 import EM
-import IMP.em as em
-import math
-import random
 import os
 
 class VolumeTest(IMP.test.TestCase):
 
     def test_image(self):
         """Check image reading and writing"""
-        img=em.Image()
-        rw=em.SpiderImageReaderWriter("input/flipY-nup84-0.spi",
-                                                  False,False,True)
+        img = IMP.em.Image()
+        rw = IMP.em.SpiderImageReaderWriter("input/flipY-nup84-0.spi",
+                                            False,False,True)
         img.read("input/flipY-nup84-0.spi",rw)
         img.write("test_image.spi",rw)
-        img2=em.Image()
+        img2 = IMP.em.Image()
         img2.read("test_image.spi",rw)
         for j in xrange(0,img.get_data().get_rows()):
             for i in xrange(0,img.get_data().get_columns()):
@@ -27,8 +24,8 @@ class VolumeTest(IMP.test.TestCase):
     def test_em_maps(self):
         """Check volume reading and writing"""
         # Read in Xmipp format
-        rw1=em.SpiderMapReaderWriter("input/media_mon_iter3.xmp",
-                                                    False,False,True)
+        rw1 = IMP.em.SpiderMapReaderWriter("input/media_mon_iter3.xmp",
+                                           False,False,True)
         rw2=EM.MRCReaderWriter()
         m=EM.DensityMap()
         m.Read("input/media_mon_iter3.xmp",rw1)

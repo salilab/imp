@@ -62,11 +62,7 @@ class DerivativesTest(IMP.test.TestCase):
         print "initialization done ..."
 
     def test_deriv(self):
-        """1. create a map
-           2. read it back in
-           3. calculate score
-           4. distort model
-           5. calculate derivatives """
+        """Test calculated derivatives for a distorted model's map"""
         resolution=3.
         voxel_size=1.
         access_p = IMP.em.IMPParticlesAccessPoint(self.particles,

@@ -33,8 +33,8 @@ class ToParticlesTest(IMP.test.TestCase):
         self.assert_(ps.size() > 0)
 
     def test_density2particles_map1(self):
-        """Test conversion of a density map into a set of particles after
-           updateing the voxel size of the map"""
+        """Test conversion of a density map into a set of particles
+           This is done after updating the voxel size of the map"""
         m = IMP.Model()
         ps = IMP.Particles()
         IMP.em.density2particles(self.scene2,9.0,ps,m)
