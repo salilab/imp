@@ -76,7 +76,13 @@ namespace IMP {
 namespace IMP {
  namespace algebra {
    %template() ::boost::multi_array<float,2>;
-   %template(multiarray2D) ::IMP::algebra::MultiArray<float,2>;
-   %template(matrix2D) ::IMP::algebra::Matrix2D<float>;
+   %template(MultiArray2D) ::IMP::algebra::MultiArray<float,2>;
+   %template(_Matrix2D) ::IMP::algebra::Matrix2D<float>;
  }
+}
+
+// Cannot instantiate Matrix2D directly, since SWIG complains about an
+// attempt to redefine the template class; so rename it in the Python layer
+%pythoncode {
+  Matrix2D = _Matrix2D
 }
