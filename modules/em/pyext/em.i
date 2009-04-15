@@ -64,11 +64,20 @@ namespace IMP {
     }
 
     %template(project) ::IMP::em::project<float>;
-    %template(imageReaderWriter) ::IMP::em::ImageReaderWriter<float>;
-    %template(spiderImageReaderWriter)
+    %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<float>;
+    %template(_SpiderImageReaderWriter)
                           ::IMP::em::SpiderImageReaderWriter<float>;
-    %template(image) ::IMP::em::Image<float>;
-    %template(volume) ::IMP::em::Volume<float>;
+    %template(_Image) ::IMP::em::Image<float>;
+    %template(_Volume) ::IMP::em::Volume<float>;
 
   }
+}
+
+// Cannot instantiate template classes directly, since SWIG complains about
+// attempts to redefine the template classes; so rename them in the Python layer
+%pythoncode {
+  ImageReaderWriter = _ImageReaderWriter
+  SpiderImageReaderWriter = _SpiderImageReaderWriter
+  Image = _Image
+  Volume = _Volume
 }
