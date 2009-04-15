@@ -128,7 +128,6 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
               IndexException);
     return IMP::internal::get_xyz_key(i);
   }
-private:
 };
 
 IMP_OUTPUT_OPERATOR(XYZDecorator);
