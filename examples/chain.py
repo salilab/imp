@@ -29,7 +29,7 @@ for p in m.get_particles():
 
 # Set up the nonbonded list
 nbl= IMP.core.ClosePairsScoreState(chain)
-nbli= m.add_score_state(nbl)
+m.add_score_state(nbl)
 # Exclude bonds from closest pairs
 fl= nbl.get_close_pairs_container()
 bpc=IMP.atom.BondPairContainer()
@@ -38,12 +38,12 @@ fl.add_pair_filter(bpc)
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
 evr= IMP.core.PairsRestraint(ps, fl)
-evri= m.add_restraint(evr)
+m.add_restraint(evr)
 
 # Restraint for bonds
 bss= IMP.atom.BondSingletonScore(IMP.core.Harmonic(0,1))
 br= IMP.core.SingletonsRestraint(bss, bonds)
-bri= m.add_restraint(br)
+m.add_restraint(br)
 
 # Tie the ends of the chain
 # We cound have used a bond instead
@@ -52,7 +52,7 @@ pps= IMP.core.ListPairContainer()
 pps.add_particle_pair(p)
 cr= IMP.core.PairsRestraint(
            IMP.core.SphereDistancePairScore(IMP.core.Harmonic(3,1)), pps)
-cri=m.add_restraint(cr)
+m.add_restraint(cr)
 
 # Set up optimizer
 o= IMP.core.ConjugateGradients()
