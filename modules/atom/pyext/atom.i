@@ -42,6 +42,10 @@ void set_x(Float f);
 }
 }*/
 
+// it is used as a base class
+%include "IMP/atom/MolecularHierarchyDecorator.h"
+
+
 /* Wrap our own classes */
 %include "IMP/atom/estimates.h"
 %include "IMP/atom/bond_decorators.h"
@@ -54,7 +58,6 @@ void set_x(Float f);
 %include "IMP/atom/ChainDecorator.h"
 %include "IMP/atom/DomainDecorator.h"
 %include "IMP/atom/MolecularDynamics.h"
-%include "IMP/atom/MolecularHierarchyDecorator.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/selectors.h"
 %include "IMP/atom/pdb.h"
