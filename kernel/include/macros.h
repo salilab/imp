@@ -353,6 +353,34 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
  void show(std::ostream &out=std::cout,                                 \
            std::string prefix=std::string()) const;
 
+
+#define IMP_DECORATOR_2(Name, Parent0, Parent1)                         \
+public:                                                                 \
+/* Should be private but SWIG accesses it through the comparison
+    macros*/                                                            \
+IMP_NO_DOXYGEN(typedef Name This);                                      \
+/** \brief Create null decorator. Such a decorator is like a NULL
+    pointer in C++. */                                                  \
+Name(): Parent0(), Parent1(){}                                          \
+/** \brief Create a decorator wrapping a particle which already has
+    had create() called on it. */                                       \
+explicit Name(::IMP::Particle *p): Parent0(p), Parent1(p) {             \
+   IMP_assert(is_instance_of(p),                                        \
+              "Particle missing required attributes for decorator "     \
+              << #Name << *p << std::endl);                             \
+ }                                                                      \
+ static Name cast(::IMP::Particle *p) {                                 \
+   IMP_CHECK_OBJECT(p);                                                 \
+   if (!is_instance_of(p)) {                                            \
+      throw InvalidStateException("Particle missing required attributes"\
+                                  " in cast");                          \
+   }                                                                    \
+   return Name(p);                                                      \
+ }                                                                      \
+ void show(std::ostream &out=std::cout,                                 \
+           std::string prefix=std::string()) const;
+
+
 //! Define the basic things needed by a Decorator which has a traits object.
 /** This macro is the same as IMP_DECORATOR() except that an extra object
     of type TraitsType is passed after the particle to
