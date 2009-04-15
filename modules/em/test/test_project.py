@@ -1,9 +1,8 @@
 import unittest
-import IMP.test
-import IMP.algebra as alg
-import IMP.em as em
-import math
 import random
+import IMP.test
+import IMP.algebra
+import IMP.em
 
 
 def print_matrix3D(m):
@@ -24,7 +23,7 @@ def print_matrix2D(m):
 
 
 def create_matrix(z,y,x):
-    m1 = alg.Matrix3D(z,y,x)
+    m1 = IMP.algebra.Matrix3D(z,y,x)
     for i in range(m1.get_start(0),m1.get_finish(0)+1):
         for j in range(m1.get_start(1),m1.get_finish(1)+1):
             for k in range(m1.get_start(2),m1.get_finish(2)+1):
@@ -34,7 +33,7 @@ def create_matrix(z,y,x):
     return m1
 
 def create_cube(z,y,x):
-    m1 = alg.Matrix3D(z,y,x)
+    m1 = IMP.algebra.Matrix3D(z,y,x)
     m1.centered_start()
     for i in range(-2,2+1):
         for j in range(-2,2+1):
@@ -55,11 +54,11 @@ class EMprojectTests(IMP.test.TestCase):
         """Check projection of a matrix3D for axis Z"""
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
-        shift = alg.Vector3D(0,0,0)
+        shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.Matrix2D()
-        direction = alg.Vector3D(0,0,1)
-        em.project(m1,result,dy,dx,direction,shift ,tolerance)
+        result = IMP.algebra.Matrix2D()
+        direction = IMP.algebra.Vector3D(0,0,1)
+        IMP.em.project(m1,result,dy,dx,direction,shift ,tolerance)
         print_matrix2D(result)
         for i in range(0,dy):
             for j in range(0,dx):
@@ -69,11 +68,11 @@ class EMprojectTests(IMP.test.TestCase):
         """Check projection of a matrix3D for axis -Z"""
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
-        shift = alg.Vector3D(0,0,0)
+        shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.Matrix2D()
-        direction = alg.Vector3D(0,0,-1)
-        em.project(m1,result,dy,dx,direction,shift ,tolerance)
+        result = IMP.algebra.Matrix2D()
+        direction = IMP.algebra.Vector3D(0,0,-1)
+        IMP.em.project(m1,result,dy,dx,direction,shift ,tolerance)
         print_matrix2D(result)
         for i in range(0,dy):
             for j in range(0,dx):
@@ -84,11 +83,11 @@ class EMprojectTests(IMP.test.TestCase):
         """Check projection of a matrix3D for axis X"""
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
-        shift = alg.Vector3D(0,0,0)
+        shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.Matrix2D()
-        direction = alg.Vector3D(1,0,0)
-        em.project(m1,result,dy,dz,direction,shift ,tolerance)
+        result = IMP.algebra.Matrix2D()
+        direction = IMP.algebra.Vector3D(1,0,0)
+        IMP.em.project(m1,result,dy,dz,direction,shift ,tolerance)
 #        print_matrix2D(result)
         for i in range(0,dy):
             for j in range(0,dz):
@@ -99,11 +98,11 @@ class EMprojectTests(IMP.test.TestCase):
         """Check projection of a matrix3D for axis -X"""
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
-        shift = alg.Vector3D(0,0,0)
+        shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.Matrix2D()
-        direction = alg.Vector3D(-1,0,0)
-        em.project(m1,result,dy,dz,direction,shift ,tolerance)
+        result = IMP.algebra.Matrix2D()
+        direction = IMP.algebra.Vector3D(-1,0,0)
+        IMP.em.project(m1,result,dy,dz,direction,shift ,tolerance)
 #        print_matrix2D(result)
         for i in range(0,dy):
             for j in range(0,dz):
@@ -114,11 +113,11 @@ class EMprojectTests(IMP.test.TestCase):
         """Check projection of a matrix3D for axis Y"""
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
-        shift = alg.Vector3D(0,0,0)
+        shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.Matrix2D()
-        direction = alg.Vector3D(0,1,0)
-        em.project(m1,result,dz,dx,direction,shift ,tolerance)
+        result = IMP.algebra.Matrix2D()
+        direction = IMP.algebra.Vector3D(0,1,0)
+        IMP.em.project(m1,result,dz,dx,direction,shift ,tolerance)
 #        print_matrix2D(result)
         for i in range(0,dz):
             for j in range(0,dx):
@@ -129,11 +128,11 @@ class EMprojectTests(IMP.test.TestCase):
         """Check projection of a matrix3D for axis -Y"""
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
-        shift = alg.Vector3D(0,0,0)
+        shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.Matrix2D()
-        direction = alg.Vector3D(0,-1,0)
-        em.project(m1,result,dz,dx,direction,shift ,tolerance)
+        result = IMP.algebra.Matrix2D()
+        direction = IMP.algebra.Vector3D(0,-1,0)
+        IMP.em.project(m1,result,dz,dx,direction,shift ,tolerance)
 #        print_matrix2D(result)
         for i in range(0,dz):
             for j in range(0,dx):
@@ -142,16 +141,16 @@ class EMprojectTests(IMP.test.TestCase):
     def test_project(self):
         """Check projection of a matrix3D for a vector"""
         m1 = create_cube(7,7,9)
-        shift = alg.Vector3D(0,0,0)
+        shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.Matrix2D()
-        direction = alg.Vector3D(1,1,1)
+        result = IMP.algebra.Matrix2D()
+        direction = IMP.algebra.Vector3D(1,1,1)
         ydim=11; xdim=11
-        em.project(m1,result,ydim,xdim,direction,shift ,tolerance)
+        IMP.em.project(m1,result,ydim,xdim,direction,shift ,tolerance)
 #        print_matrix2D(result)
-        opp_result = alg.Matrix2D()
-        direction = alg.Vector3D(-1,-1,-1)
-        em.project(m1,opp_result,ydim,xdim,direction,shift ,tolerance)
+        opp_result = IMP.algebra.Matrix2D()
+        direction = IMP.algebra.Vector3D(-1,-1,-1)
+        IMP.em.project(m1,opp_result,ydim,xdim,direction,shift ,tolerance)
 #        print_matrix2D(opp_result)
         # Check that the two projections mirror each other
         # (Double mirror in both directions of the projection)
