@@ -13,13 +13,14 @@ When talking about a decorator, for example, an XYZDecorator, we say
   an XYZ particle
 
 The general usage of the decorators is quite simple
-- Create an XYZ particle:
+- Create an XYZ particle from a particle which does \e not have the needed attributes to be an XYZ particle:
 \verbatim
 d= IMP.core.XYZDecorator.create(p, Vector3D(0,2,3))
 \endverbatim
 - Check whether a particle is an XYZ particle
 \verbatim
-d= IMP.core.XYZDecorator.is_instance_of(p)
+if IMP.core.XYZDecorator.is_instance_of(p):
+   blah
 \endverbatim
 - Wrap a particle which is known to be an XYZ particle
 \verbatim
