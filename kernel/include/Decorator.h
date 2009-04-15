@@ -53,6 +53,8 @@ public:
 
   /** \return the particle wrapped by this decorator*/
   Particle *get_particle() const {
+    IMP_check(particle_, "You must give the decorator a particle to decorate.",
+              InvalidStateException);
     return particle_.get();
   }
   /** \return the Model containing the particle */

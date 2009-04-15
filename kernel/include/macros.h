@@ -332,8 +332,11 @@ public:                                                                 \
 /* Should be private but SWIG accesses it through the comparison
     macros*/                                                            \
 IMP_NO_DOXYGEN(typedef Name This);                                      \
- /** \brief Create null decorator */                                    \
+/** \brief Create null decorator. Such a decorator is like a NULL
+    pointer in C++. */                                                  \
  Name(): Parent(){}                                                     \
+/** \brief Create a decorator wrapping a particle which already has
+    had create() called on it. */                                       \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
    IMP_assert(is_instance_of(p),                                        \
               "Particle missing required attributes for decorator "     \
@@ -365,8 +368,11 @@ default_traits)                                                         \
   TraitsType traits_name##_;                                            \
 public:                                                                 \
 IMP_NO_DOXYGEN(typedef Name This;)                                      \
- /** \brief Create null decorator */                                    \
+ /** \brief Create null decorator. Such a decorator is like a NULL
+     pointer in C++. */                                                 \
 Name(): Parent(){}                                                      \
+/** \brief Create a decorator wrapping a particle which already has
+    had create() called on it with the passed traits. */                \
 Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
                                                    traits_name##_(tr) { \
   IMP_assert(is_instance_of(p, tr),                                     \
