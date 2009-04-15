@@ -24,7 +24,7 @@ def print_matrix2D(m):
 
 
 def create_matrix(z,y,x):
-    m1 = alg.matrix3D(z,y,x)
+    m1 = alg.Matrix3D(z,y,x)
     for i in range(m1.get_start(0),m1.get_finish(0)+1):
         for j in range(m1.get_start(1),m1.get_finish(1)+1):
             for k in range(m1.get_start(2),m1.get_finish(2)+1):
@@ -34,7 +34,7 @@ def create_matrix(z,y,x):
     return m1
 
 def create_cube(z,y,x):
-    m1 = alg.matrix3D(z,y,x)
+    m1 = alg.Matrix3D(z,y,x)
     m1.centered_start()
     for i in range(-2,2+1):
         for j in range(-2,2+1):
@@ -57,7 +57,7 @@ class EMprojectTests(IMP.test.TestCase):
         m1 = create_matrix(dz,dy,dx)
         shift = alg.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.matrix2D()
+        result = alg.Matrix2D()
         direction = alg.Vector3D(0,0,1)
         em.project(m1,result,dy,dx,direction,shift ,tolerance)
         print_matrix2D(result)
@@ -71,7 +71,7 @@ class EMprojectTests(IMP.test.TestCase):
         m1 = create_matrix(dz,dy,dx)
         shift = alg.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.matrix2D()
+        result = alg.Matrix2D()
         direction = alg.Vector3D(0,0,-1)
         em.project(m1,result,dy,dx,direction,shift ,tolerance)
         print_matrix2D(result)
@@ -86,7 +86,7 @@ class EMprojectTests(IMP.test.TestCase):
         m1 = create_matrix(dz,dy,dx)
         shift = alg.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.matrix2D()
+        result = alg.Matrix2D()
         direction = alg.Vector3D(1,0,0)
         em.project(m1,result,dy,dz,direction,shift ,tolerance)
 #        print_matrix2D(result)
@@ -101,7 +101,7 @@ class EMprojectTests(IMP.test.TestCase):
         m1 = create_matrix(dz,dy,dx)
         shift = alg.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.matrix2D()
+        result = alg.Matrix2D()
         direction = alg.Vector3D(-1,0,0)
         em.project(m1,result,dy,dz,direction,shift ,tolerance)
 #        print_matrix2D(result)
@@ -116,7 +116,7 @@ class EMprojectTests(IMP.test.TestCase):
         m1 = create_matrix(dz,dy,dx)
         shift = alg.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.matrix2D()
+        result = alg.Matrix2D()
         direction = alg.Vector3D(0,1,0)
         em.project(m1,result,dz,dx,direction,shift ,tolerance)
 #        print_matrix2D(result)
@@ -131,7 +131,7 @@ class EMprojectTests(IMP.test.TestCase):
         m1 = create_matrix(dz,dy,dx)
         shift = alg.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.matrix2D()
+        result = alg.Matrix2D()
         direction = alg.Vector3D(0,-1,0)
         em.project(m1,result,dz,dx,direction,shift ,tolerance)
 #        print_matrix2D(result)
@@ -144,12 +144,12 @@ class EMprojectTests(IMP.test.TestCase):
         m1 = create_cube(7,7,9)
         shift = alg.Vector3D(0,0,0)
         tolerance = 1e-6
-        result = alg.matrix2D()
+        result = alg.Matrix2D()
         direction = alg.Vector3D(1,1,1)
         ydim=11; xdim=11
         em.project(m1,result,ydim,xdim,direction,shift ,tolerance)
 #        print_matrix2D(result)
-        opp_result = alg.matrix2D()
+        opp_result = alg.Matrix2D()
         direction = alg.Vector3D(-1,-1,-1)
         em.project(m1,opp_result,ydim,xdim,direction,shift ,tolerance)
 #        print_matrix2D(opp_result)
