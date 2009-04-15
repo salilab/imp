@@ -32,7 +32,8 @@ nbl= IMP.core.ClosePairsScoreState(chain)
 nbli= m.add_score_state(nbl)
 # Exclude bonds from closest pairs
 fl= nbl.get_close_pairs_container()
-fl.add_pair_filter(IMP.atom.BondPairContainer())
+bpc=IMP.atom.BondPairContainer()
+fl.add_pair_filter(bpc)
 
 # Set up excluded volume
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
@@ -63,7 +64,6 @@ vrml= IMP.display.LogOptimizerState(IMP.display.VRMLWriter(), "state.%03d.vrml")
 for p in chain.get_particles():
     vrml.add_geometry(IMP.display.XYZRGeometry(IMP.core.XYZRDecorator(p)))
 vrml.set_skip_steps(100)
-IMP.set_log_level(IMP.MEMORY)
 o.add_optimizer_state(vrml)
 
 # We probably don't need this many steps
