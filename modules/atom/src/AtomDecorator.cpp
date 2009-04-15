@@ -390,6 +390,7 @@ AtomDecorator AtomDecorator::create(Particle *p, AtomType t,
                                     const algebra::Vector3D &v) {
   p->add_attribute(get_type_key(), t.get_index());
   XYZDecorator::create(p, v);
+  MolecularHierarchyDecorator::create(p, MolecularHierarchyDecorator::ATOM);
   AtomDecorator ret(p);
   return ret;
 }
@@ -397,6 +398,7 @@ AtomDecorator AtomDecorator::create(Particle *p, AtomType t,
 AtomDecorator AtomDecorator::create(Particle *p, AtomDecorator o) {
   XYZDecorator::create(p, o.get_coordinates());
   p->add_attribute(get_type_key(), o.get_type().get_index());
+  MolecularHierarchyDecorator::create(p, MolecularHierarchyDecorator::ATOM);
   AtomDecorator ret(p);
   if (o.get_element() != UNKNOWN_ELEMENT) {
     ret.set_element(o.get_element());
@@ -509,7 +511,7 @@ char get_chain(AtomDecorator d) {
     }
   } while (mhd.get_type() != MolecularHierarchyDecorator::CHAIN);
   ChainDecorator cd(mhd.get_particle());
-  return cd.get_chain();
+  return cd.get_id();
 }
 
 

@@ -378,17 +378,8 @@ def copy_residue(r, model):
     """Copy residue information from modeller to imp"""
     #print "residue "+str(r)
     p=IMP.Particle(model)
-    hp= IMP.atom.MolecularHierarchyDecorator.create(p,
-                                  IMP.atom.MolecularHierarchyDecorator.RESIDUE )
-    rp= IMP.atom.ResidueDecorator.create(p)
-    rp.set_type(IMP.atom.ResidueType(r.name))
-    rp.set_index(r.index)
-    if rp.get_is_amino_acid():
-        hp.set_type(IMP.atom.MolecularHierarchyDecorator.RESIDUE)
-    elif rp.get_is_nucleic_acid():
-        hp.set_type(IMP.atom.MolecularHierarchyDecorator.NUCLEICACID)
-    else:
-        hp.set_type(IMP.atom.MolecularHierarchyDecorator.MOLECULE)
+    rp= IMP.atom.ResidueDecorator.create(p, IMP.atom.ResidueType(r.name),
+                                         r.index)
     p.set_name(str("residue "+r.num));
     return p
 
@@ -401,7 +392,6 @@ def copy_atom(a, model):
     ap.set_x(a.x)
     ap.set_y(a.y)
     ap.set_z(a.z)
-    hp= IMP.atom.MolecularHierarchyDecorator.create(p, IMP.atom.MolecularHierarchyDecorator.ATOM)
     ap.set_type(IMP.atom.AtomType(a.name))
     #IMP.core.NameDecorator.create(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
@@ -417,7 +407,6 @@ def copy_chain(c, model):
     p=IMP.Particle(model)
     #set the chain name
     cp = IMP.atom.ChainDecorator.create(p,c.name)
-    hp= IMP.atom.MolecularHierarchyDecorator.create(p, IMP.atom.MolecularHierarchyDecorator.CHAIN)
     return p
 
 

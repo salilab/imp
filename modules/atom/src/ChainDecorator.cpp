@@ -18,7 +18,7 @@ IntKey ChainDecorator::get_id_key() {
 }
 
 void ChainDecorator::show(std::ostream &out, std::string prefix) const {
-  out << prefix << "ChainDecorator: " << get_chain() << std::endl;
+  out << prefix << "ChainDecorator: " << get_id() << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

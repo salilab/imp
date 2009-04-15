@@ -9,7 +9,7 @@
 #define IMPATOM_DOMAIN_DECORATOR_H
 
 #include "config.h"
-
+#include "MolecularHierarchyDecorator.h"
 #include "internal/version_info.h"
 #include <IMP/Decorator.h>
 
@@ -19,7 +19,7 @@ IMPATOM_BEGIN_NAMESPACE
 /** The decorator stores the indexes of the first and last residues
     in this domain.
  */
-class IMPATOMEXPORT DomainDecorator: public Decorator
+class IMPATOMEXPORT DomainDecorator: public MolecularHierarchyDecorator
 {
   struct Data {
     Data(): begin("domain_begin"),
@@ -32,6 +32,10 @@ public:
   static DomainDecorator create(Particle *p, Int b, Int e) {
     p->add_attribute(get_data().begin, b);
     p->add_attribute(get_data().end, e);
+    if (!MolecularHierarchyDecorator::is_instance_of(p)) {
+      MolecularHierarchyDecorator::create(p,
+                     MolecularHierarchyDecorator::FRAGMENT);
+    }
     return DomainDecorator(p);
   }
 
@@ -39,6 +43,10 @@ public:
   static DomainDecorator create(Particle *p, DomainDecorator o) {
     p->add_attribute(get_data().begin, o.get_begin_index());
     p->add_attribute(get_data().end, o.get_end_index());
+    if (!MolecularHierarchyDecorator::is_instance_of(p)) {
+      MolecularHierarchyDecorator::create(p,
+               MolecularHierarchyDecorator::FRAGMENT);
+    }
     return DomainDecorator(p);
   }
 
@@ -46,7 +54,8 @@ public:
 
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_data().begin)
-      && p->has_attribute(get_data().end);
+      && p->has_attribute(get_data().end)
+      && MolecularHierarchyDecorator::is_instance_of(p);
   }
 
   //! Get the index of the first residue in the domain
@@ -59,7 +68,7 @@ public:
     return get_particle()->get_value(get_data().end);
   }
 
-  IMP_DECORATOR(DomainDecorator, Decorator)
+  IMP_DECORATOR(DomainDecorator, MolecularHierarchyDecorator)
 };
 
 

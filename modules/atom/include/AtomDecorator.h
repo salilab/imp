@@ -10,10 +10,11 @@
 
 #include "config.h"
 #include "macros.h"
+#include "ResidueDecorator.h"
+#include "MolecularHierarchyDecorator.h"
 #include <IMP/core/utility.h>
 #include <IMP/core/XYZDecorator.h>
 #include <IMP/core/macros.h>
-#include "ResidueDecorator.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
@@ -219,7 +220,8 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
    \ingroup hierarchy
    \see MolecularHierarchy
  */
-class IMPATOMEXPORT AtomDecorator: public core::XYZDecorator
+class IMPATOMEXPORT AtomDecorator: public core::XYZDecorator,
+  public MolecularHierarchyDecorator
 {
 public:
   //! The various elements currently supported
@@ -246,7 +248,12 @@ public:
   };
 
 
-  IMP_DECORATOR(AtomDecorator, IMP::core::XYZDecorator)
+  IMP_DECORATOR_2(AtomDecorator, IMP::core::XYZDecorator,
+                  MolecularHierarchyDecorator)
+
+  Particle* get_particle() const {
+    return MolecularHierarchyDecorator::get_particle();
+  }
 
   /** Create a decorator with the passed type and coordinates.*/
   static AtomDecorator create(Particle *p, AtomType t= AT_UNKNOWN,
@@ -259,7 +266,8 @@ public:
   //! return true if the particle has the needed attributes
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())
-      && XYZDecorator::is_instance_of(p);
+      && XYZDecorator::is_instance_of(p)
+      && MolecularHierarchyDecorator::is_instance_of(p);
   }
 
   AtomType get_type() const {
@@ -293,20 +301,22 @@ public:
   */
   std::string get_pdb_string(int index=-1);
 
-  /** Get the key storing the type */
+  /** @name Keys
+      These methods provide access to the various keys used to store
+      things in the AtomDecorator. These can be used if you want to
+      use an attribute to search a set of particles.
+      @{
+   */
   static IntKey get_type_key();
 
-  /** Get the key storing the element */
   static IntKey get_element_key();
 
-  /** Get the key storing the mass */
   static FloatKey get_mass_key();
 
-  /** Get the key storing the mass */
   static FloatKey get_charge_key();
 
-  /** Get the key used to store the input index */
   static IntKey get_input_index_key();
+  //! @}
 };
 
 IMP_OUTPUT_OPERATOR(AtomDecorator);

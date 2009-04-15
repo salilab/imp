@@ -10,6 +10,7 @@
 #include <IMP/core/NameDecorator.h>
 #include <IMP/atom/AtomDecorator.h>
 #include <IMP/atom/ResidueDecorator.h>
+#include <IMP/atom/ChainDecorator.h>
 #include <IMP/atom/DomainDecorator.h>
 #include <IMP/core/LeavesRefiner.h>
 
@@ -37,16 +38,20 @@ void MolecularHierarchyDecorator::show(std::ostream &out,
     out << "NULL Molecular Hierarchy node";
     return;
   }
-  if (get_type() == ATOM) {
-    AtomDecorator ad= AtomDecorator::cast(get_particle());
-    if (ad != AtomDecorator()) {
-      ad.show(out, prefix);
-    }
-  } else if (get_type() == RESIDUE || get_type() == NUCLEICACID) {
-    ResidueDecorator ad= ResidueDecorator::cast(get_particle());
-    if (ad != ResidueDecorator()) {
-      ad.show(out, prefix);
-    }
+  if (get_type() == ATOM && AtomDecorator::is_instance_of(get_particle())) {
+    AtomDecorator ad(get_particle());
+    ad.show(out, prefix);
+  } else if ((get_type() == RESIDUE || get_type() == NUCLEICACID)
+             && ResidueDecorator::is_instance_of(get_particle())){
+      ResidueDecorator adt(get_particle());
+      adt.show(out, prefix);
+  } else if (get_type() == CHAIN
+             && ChainDecorator::is_instance_of(get_particle())){
+      ChainDecorator adt(get_particle());
+      adt.show(out, prefix);
+  } else if (DomainDecorator::is_instance_of(get_particle())) {
+    DomainDecorator dd(get_particle());
+    dd.show(out, prefix);
   } else {
     out << prefix << get_type_string() <<std::endl;
     out << prefix << "\"" <<  get_particle()->get_name() << "\"" << std::endl;
@@ -183,22 +188,23 @@ MolecularHierarchyDecorator clone_internal(MolecularHierarchyDecorator d,
                                            Particle*> &map) {
   Particle *p= new Particle(d.get_model());
   map[d.get_particle()]=p;
-  MolecularHierarchyDecorator nd
-    =MolecularHierarchyDecorator::create(p, d.get_type());
+  MolecularHierarchyDecorator nd;
+  if (AtomDecorator::is_instance_of(d.get_particle())) {
+    nd= AtomDecorator::create(p, AtomDecorator(d.get_particle()));
+  } else if (ResidueDecorator::is_instance_of(d.get_particle())) {
+    nd= ResidueDecorator::create(p, ResidueDecorator(d.get_particle()));
+  } else if (DomainDecorator::is_instance_of(d.get_particle())) {
+    nd= DomainDecorator::create(p, DomainDecorator(d.get_particle()));
+  } else if (ChainDecorator::is_instance_of(d.get_particle())) {
+    nd= ChainDecorator::create(p, ChainDecorator(d.get_particle()));
+  } else {
+    nd=MolecularHierarchyDecorator::create(p, d.get_type());
+  }
+  p->set_name(d.get_particle()->get_name());
   for (unsigned int i=0 ;i< d.get_number_of_children(); ++i) {
     MolecularHierarchyDecorator nc= clone_internal(d.get_child(i), map);
     nd.add_child(nc);
   }
-  if (AtomDecorator::is_instance_of(d.get_particle())) {
-    AtomDecorator::create(p, AtomDecorator(d.get_particle()));
-  }
-  if (ResidueDecorator::is_instance_of(d.get_particle())) {
-    ResidueDecorator::create(p, ResidueDecorator(d.get_particle()));
-  }
-  if (DomainDecorator::is_instance_of(d.get_particle())) {
-    DomainDecorator::create(p, DomainDecorator(d.get_particle()));
-  }
-  p->set_name(d.get_particle()->get_name());
   return nd;
 }
 }
