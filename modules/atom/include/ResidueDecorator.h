@@ -10,6 +10,7 @@
 
 #include "config.h"
 #include "macros.h"
+#include "MolecularHierarchyDecorator.h"
 #include <IMP/core/internal/utility.h>
 
 #include <IMP/base_types.h>
@@ -119,76 +120,78 @@ IMPATOMEXPORT extern const ResidueType DTHY;
    \ingroup hierarchy
    \ingroup decorators
  */
-class IMPATOMEXPORT ResidueDecorator: public Decorator
+class IMPATOMEXPORT ResidueDecorator: public MolecularHierarchyDecorator
 {
 public:
-  IMP_DECORATOR(ResidueDecorator, Decorator)
-  //! create a decorator from the provided information
+  IMP_DECORATOR(ResidueDecorator, MolecularHierarchyDecorator)
+  //! Add the required attributes to the particle and create a ResidueDecorator
   static ResidueDecorator create(Particle *p, ResidueType t= UNK,
                                  int index=-1, int insertion_code = 32) {
     p->add_attribute(get_type_key(), t.get_index());
     p->add_attribute(get_index_key(), index);
     p->add_attribute(get_insertion_code_key(), insertion_code);
     // insertion code 32 is for space
-    return ResidueDecorator(p);
+    MolecularHierarchyDecorator::create(p,
+                     MolecularHierarchyDecorator::UNKNOWN);
+    ResidueDecorator ret(p);
+    ret.set_type(t);
+    return ret;
   }
 
-  //! Copy data from the o
+  //! Copy data from the other ResidueDecorator to the particle p
   static ResidueDecorator create(Particle *p, ResidueDecorator o) {
     p->add_attribute(get_type_key(), o.get_type().get_index());
     p->add_attribute(get_index_key(), o.get_index());
     p->add_attribute(get_insertion_code_key(), o.get_insertion_code());
+    MolecularHierarchyDecorator::create(p,
+              static_cast<MolecularHierarchyDecorator>(o).get_type());
     return ResidueDecorator(p);
   }
 
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())
-    && p->has_attribute(get_index_key())
-    && p->has_attribute(get_insertion_code_key());
+      && p->has_attribute(get_index_key())
+      && p->has_attribute(get_insertion_code_key())
+      && MolecularHierarchyDecorator::is_instance_of(p);
   }
 
-  /** Return the ResidueType stored in the Particle */
   ResidueType get_type() const {
     return ResidueType(get_particle()->get_value(get_type_key()));
   }
 
-  /** set the ResidueType stored in the Particle */
+  //! Update the stored ResidueType and the MolecularHiearchyDecorator::Type.
   void set_type(ResidueType t) {
-    return get_particle()->set_value(get_type_key(), t.get_index());
+    get_particle()->set_value(get_type_key(), t.get_index());
+    if (get_type().get_index() >= GLY.get_index() &&
+        get_type().get_index() <= TRP.get_index()) {
+      MolecularHierarchyDecorator
+        ::set_type(MolecularHierarchyDecorator::RESIDUE);
+    } else if (get_type().get_index() >= ADE.get_index() &&
+               get_type().get_index() <= DTHY.get_index()) {
+      MolecularHierarchyDecorator
+        ::set_type(MolecularHierarchyDecorator::NUCLEICACID);
+    } else {
+      MolecularHierarchyDecorator
+        ::set_type(MolecularHierarchyDecorator::FRAGMENT);
+    }
   }
 
-  /** Return true if the residue is an amino acid */
-  bool get_is_amino_acid() const {
-    return (get_type().get_index() >= GLY.get_index() &&
-            get_type().get_index() <= TRP.get_index());
-  }
-
-  /** Return true if the residue is a nucleic acid (RNA or DNA) */
-  bool get_is_nucleic_acid() const {
-    return (get_type().get_index() >= ADE.get_index() &&
-            get_type().get_index() <= DTHY.get_index());
-  }
   //! The residues index in the chain
   IMP_DECORATOR_GET_SET(index, get_index_key(),
                         Int, Int);
 
-  //! Return the insertion code of the residue
   char get_insertion_code() const {
     return char(get_particle()->get_value(get_insertion_code_key()));
   }
 
-  //! set the insertion code
   void set_insertion_code(char insertion_code) {
     return get_particle()->set_value(get_insertion_code_key(), insertion_code);
   }
 
-  //! Get the key storing the index
   static IntKey get_index_key();
 
-  //! Get the key storing the type
   static IntKey get_type_key();
 
-  //! Get the key storing the index
   static IntKey get_insertion_code_key();
 };
 

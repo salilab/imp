@@ -41,10 +41,6 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   d.set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
 
-  // hierarchy decorator
-  MolecularHierarchyDecorator hd =
-    MolecularHierarchyDecorator::create(p,
-               MolecularHierarchyDecorator::ATOM);
   return p;
 }
 
@@ -62,20 +58,6 @@ Particle* residue_particle(Model *m, const String& pdb_line)
     ResidueDecorator::create(p, residue_type,
                              residue_index, (int)residue_icode);
 
-  // hierarchy decorator
-  MolecularHierarchyDecorator hd =
-    MolecularHierarchyDecorator::create(p,
-              MolecularHierarchyDecorator::RESIDUE);
-
-  // check if amino acid or nucleic acid or something else
-  if (rd.get_is_amino_acid())
-    hd.set_type(MolecularHierarchyDecorator::RESIDUE);
-  else if (rd.get_is_nucleic_acid())
-    hd.set_type(MolecularHierarchyDecorator::NUCLEICACID);
-  else
-    hd.set_type(MolecularHierarchyDecorator::FRAGMENT);
-
-  // name decorator
   p->set_name(residue_name);
 
   return p;
@@ -100,10 +82,6 @@ Particle* chain_particle(Model *m, char chain_id)
   Particle* p = new Particle(m);
   ChainDecorator::create(p, chain_id);
 
-  // hierarchy decorator
-  MolecularHierarchyDecorator hd =
-    MolecularHierarchyDecorator::create(p,
-               MolecularHierarchyDecorator::CHAIN);
   return p;
 }
 
@@ -234,12 +212,10 @@ void write_pdb(const MolecularHierarchyDecorators& mhd,
   }
 }
 
-
 void write_pdb(const MolecularHierarchyDecorators& mhd,
                std::ostream &out) {
   for (unsigned int i=0; i< mhd.size(); ++i) {
     write_pdb(mhd[i], out);
   }
 }
-
 IMPATOM_END_NAMESPACE
