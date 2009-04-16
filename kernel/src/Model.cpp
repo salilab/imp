@@ -29,7 +29,8 @@ Model::~Model()
   IMP_CHECK_OBJECT(this);
   for (ParticleIterator it= particles_begin();
        it != particles_end(); ++it) {
-    (*it)->unref();
+    (*it)->model_ = NULL;
+    internal::unref(*it);
   }
 }
 
