@@ -78,8 +78,7 @@ class CylinderTests(IMP.test.TestCase):
 
 
     def test_uniform_cover_with_direction_not_on_Z(self):
-        """Check uniform cover when the direction of the
-           cylinde is not the Z axis"""
+        """Check uniform cover with cylinder not on the Z axis"""
         center = IMP.algebra.Vector3D(9.0,5.5,3.5)
         direction = IMP.algebra.Vector3D(12.0,3.0,13.0).get_unit_vector()
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(3.0,4.0,-3.0),
