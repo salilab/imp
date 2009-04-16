@@ -96,6 +96,19 @@ void set_chain_type(const MolecularHierarchyDecorator& hrd,
     hcd.set_type(MolecularHierarchyDecorator::MOLECULE);
 }
 
+
+
+void write_pdb(MolecularHierarchyDecorator mhd,
+               std::ostream &out) {
+  Particles ps= get_leaves(mhd);
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (AtomDecorator::is_instance_of(ps[i])) {
+      AtomDecorator ad(ps[i]);
+      out << ad.get_pdb_string();
+    }
+  }
+}
+
 }
 
 MolecularHierarchyDecorator read_pdb(
@@ -187,16 +200,6 @@ void write_pdb(MolecularHierarchyDecorator mhd,
   }
   write_pdb(mhd, out_file);
 }
-void write_pdb(MolecularHierarchyDecorator mhd,
-               std::ostream &out) {
-  Particles ps= get_leaves(mhd);
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    if (AtomDecorator::is_instance_of(ps[i])) {
-      AtomDecorator ad(ps[i]);
-      out << ad.get_pdb_string();
-    }
-  }
-}
 
 
 void write_pdb(const MolecularHierarchyDecorators& mhd,
@@ -212,10 +215,4 @@ void write_pdb(const MolecularHierarchyDecorators& mhd,
   }
 }
 
-void write_pdb(const MolecularHierarchyDecorators& mhd,
-               std::ostream &out) {
-  for (unsigned int i=0; i< mhd.size(); ++i) {
-    write_pdb(mhd[i], out);
-  }
-}
 IMPATOM_END_NAMESPACE
