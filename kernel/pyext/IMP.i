@@ -101,21 +101,10 @@ namespace IMP {
   IMP_CONTAINER_SWIG(Model, ScoreState, score_state)
   IMP_CONTAINER_SWIG(Model, Restraint, restraint)
   IMP_CONTAINER_SWIG(Optimizer, OptimizerState, optimizer_state)
-
-  IMP_OWN_CONSTRUCTOR(SingletonFunctor)
-  IMP_OWN_CONSTRUCTOR(PairFunctor)
 }
 
-%feature("ref")   Particle "IMP::internal::ref($this);"
-%feature("unref") Particle "IMP::internal::unref($this);"
-
-%feature("ref")   Model "IMP::internal::ref($this);"
-%feature("unref") Model "IMP::internal::unref($this);"
-
-%feature("ref")   Optimizer "IMP::internal::ref($this);"
-%feature("unref") Optimizer "IMP::internal::unref($this);"
-
-
+%feature("ref")   IMP::RefCounted "IMP::internal::ref($this);"
+%feature("unref") IMP::RefCounted "IMP::internal::unref($this);"
 
 /* Don't wrap internal functions */
 %ignore IMP::internal::check_particles_active;

@@ -19,13 +19,6 @@
 %import "kernel/pyext/IMP.i"
 %import "kernel/pyext/IMP_keys.i"
 
-namespace IMP {
-  namespace search {
-    IMP_OWN_CONSTRUCTOR(IntMapScoreState)
-  }
-}
-
-
 /* Wrap our own classes */
 %include "IMP/search/AttributeMapScoreState.h"
 

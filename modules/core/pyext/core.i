@@ -32,8 +32,6 @@ namespace IMP {
     return ret;
   }
 }
-IMP_OWN_METHOD(type, add_##lcname)
-IMP_OWN_LIST_METHOD(type, add_##lcname##s)
 %enddef
 
 
@@ -46,57 +44,11 @@ IMP_OWN_LIST_METHOD(type, add_##lcname##s)
 
 namespace IMP {
   namespace core {
-    IMP_OWN_CONSTRUCTOR(AllPairsPairContainer)
-    IMP_OWN_CONSTRUCTOR(AngleRestraint)
-    IMP_OWN_CONSTRUCTOR(AngleTripletScore)
-    IMP_OWN_CONSTRUCTOR(AttributeSingletonScore)
-    IMP_OWN_CONSTRUCTOR(BallMover)
-    IMP_OWN_CONSTRUCTOR(RigidBodyMover)
-    IMP_OWN_CONSTRUCTOR(ConeMover)
-    IMP_OWN_CONSTRUCTOR(ClosePairsPairScore)
-    IMP_OWN_CONSTRUCTOR(ConnectivityRestraint)
-    IMP_OWN_CONSTRUCTOR(CoverRefined)
-    IMP_OWN_CONSTRUCTOR(CentroidOfRefined)
-    IMP_OWN_CONSTRUCTOR(DerivativesFromRefined)
-    IMP_OWN_CONSTRUCTOR(DerivativesToRefined)
-    IMP_OWN_CONSTRUCTOR(Transform)
-    IMP_OWN_CONSTRUCTOR(DihedralRestraint)
-    IMP_OWN_CONSTRUCTOR(DistancePairScore)
-    IMP_OWN_CONSTRUCTOR(DistanceRestraint)
-    IMP_OWN_CONSTRUCTOR(DistanceToSingletonScore)
-    IMP_OWN_CONSTRUCTOR(DiameterRestraint)
-    IMP_OWN_CONSTRUCTOR(MaximumChangeScoreState)
-    IMP_OWN_CONSTRUCTOR(NonbondedRestraint)
-    IMP_OWN_CONSTRUCTOR(NormalMover)
-    IMP_OWN_CONSTRUCTOR(UpdateRigidBodyOrientation)
-    IMP_OWN_CONSTRUCTOR(RigidBodyTraits)
-    IMP_OWN_CONSTRUCTOR(AccumulateRigidBodyDerivatives)
-    IMP_OWN_CONSTRUCTOR(UpdateRigidBodyMembers)
-    IMP_OWN_CONSTRUCTOR(PairChainRestraint)
-    IMP_OWN_CONSTRUCTOR(PairListRestraint)
-    IMP_OWN_CONSTRUCTOR(RefinedPairsPairScore)
-    IMP_OWN_CONSTRUCTOR(SingletonListRestraint)
-    IMP_OWN_CONSTRUCTOR(SphereDistancePairScore)
-    IMP_OWN_CONSTRUCTOR(TransformedDistancePairScore)
-    IMP_OWN_CONSTRUCTOR(TripletChainRestraint)
-    IMP_OWN_CONSTRUCTOR(ClosePairsScoreState)
-    IMP_OWN_CONSTRUCTOR(CloseBipartitePairsScoreState)
     IMP_CONTAINER_SWIG(RestraintSet, Restraint, restraint)
     IMPCORE_CONTAINER_SWIG(MonteCarlo, Mover, mover)
 
-    IMP_OWN_METHOD(MonteCarlo, set_local_optimizer)
-    IMP_OWN_METHOD(TypedPairScore, set_pair_score)
-    IMP_OWN_METHOD(ClosePairsScoreState, set_close_pairs_finder)
-    IMP_OWN_METHOD(CloseBipartitePairsScoreState, set_close_pairs_finder)
     //IMP_CONTAINER_SWIG(FilteredListSingletonContainer, Particle, singleton)
     //IMP_CONTAINER_SWIG(ListSingletonContainer, Particle, singleton)
-
-    IMP_OWN_FUNCTION(create_rigid_bodies)
-    IMP_OWN_FUNCTION(create_rigid_body)
-    IMP_OWN_FUNCTION(create_covers)
-    IMP_OWN_FUNCTION(create_cover)
-    IMP_OWN_FUNCTION(create_centroids)
-    IMP_OWN_FUNCTION(create_centroid)
   }
 }
 
