@@ -21,6 +21,7 @@ files = [
     'SingletonContainer.h',
     'SingletonModifier.h',
     'SingletonScore.h',
+    'stream.h',
     'TripletScore.h',
     'UnaryFunction.h',
     'VersionInfo.h',
