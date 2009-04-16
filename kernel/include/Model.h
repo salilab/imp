@@ -111,11 +111,11 @@ public:
     IMP_check(p->get_model() == this,
               "The particle does not belong to this model",
               ValueException);
-    particles_.erase(p->iterator_);
-    internal::unref(p);
     IMP_LOG(VERBOSE, "Removing particle " << p->get_name()
             << std::endl);
+    particles_.erase(p->iterator_);
     p->model_=NULL;
+    internal::unref(p);
   }
 
   /** @name Methods to debug particles
