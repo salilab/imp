@@ -23,12 +23,6 @@
 %import "modules/core/pyext/core.i"
 %import "modules/algebra/pyext/algebra.i"
 
-namespace IMP {
-namespace examples {
-IMP_OWN_CONSTRUCTOR(Restraint)
-}
-}
-
 /* Wrap our own classes */
 %include "IMP/examples/ExampleRestraint.h"
 %include "IMP/examples/ExampleDecorator.h"

@@ -117,6 +117,7 @@ class ParticleContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         print "hi"
         c= IMP.core.ListSingletonContainer()
+        self.assertEqual(c.get_ref_count(), 1)
         cs=[]
         for i in range(0,30):
             t=self.create_particle(m)
@@ -125,10 +126,11 @@ class ParticleContainerTest(IMP.test.TestCase):
         print "dl"
         k= IMP.IntKey("thevalue")
         f= SingletonTestModifier(k)
+        self.assertEqual(f.get_ref_count(), 1)
         print "apply"
         s= IMP.core.SingletonsScoreState(c, f, None)
-        self.assert_( not f.thisown)
-        self.assert_( not c.thisown)
+        self.assertEqual(c.get_ref_count(), 2)
+        self.assertEqual(f.get_ref_count(), 2)
         m.add_score_state(s)
         print "add"
         m.evaluate(False)
@@ -148,9 +150,10 @@ class ParticleContainerTest(IMP.test.TestCase):
         print "dl"
         k= IMP.IntKey("thevalue")
         f= SingletonTestModifier(k)
+        self.assertEqual(f.get_ref_count(), 1)
         print "apply"
         s= self.create_singleton_score_state(f, None, t)
-        self.assert_( not f.thisown)
+        self.assertEqual(f.get_ref_count(), 2)
         m.add_score_state(s)
         print "add"
         m.evaluate(False)

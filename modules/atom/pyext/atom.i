@@ -24,14 +24,6 @@
 %import "modules/algebra/pyext/algebra.i"
 %import "modules/core/pyext/core.i"
 
-namespace IMP {
-namespace atom {
-    IMP_OWN_CONSTRUCTOR(BondSingletonScore)
-    IMP_OWN_CONSTRUCTOR(BondBondPairScore)
-}
-}
-
-
 /*namespace IMP {
 namespace core {
 // stupid hack for swig

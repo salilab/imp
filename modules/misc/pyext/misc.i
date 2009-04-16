@@ -23,15 +23,6 @@ namespace IMP {
   typedef VectorD<3> Vector3D;
 }
 
-namespace IMP::misc {
-  IMP_OWN_CONSTRUCTOR(BondCoverPairScore)
-  IMP_OWN_CONSTRUCTOR(RefineOncePairScore)
-  IMP_OWN_CONSTRUCTOR(LowestRefinedPairScore)
-  IMP_OWN_CONSTRUCTOR(TunnelSingletonScore)
-  IMP_OWN_CONSTRUCTOR(StateAdaptor)
-}
-
-
 /* Wrap our own classes */
 %include "IMP/misc/WormLikeChain.h"
 %include "IMP/misc/TunnelSingletonScore.h"

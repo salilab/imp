@@ -107,13 +107,15 @@ class ParticleContainerTest(IMP.test.TestCase):
         """Test the MinimumSingletonScoreRestraint"""
         m= IMP.Model()
         c= IMP.core.ListSingletonContainer()
+        self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_particle(self.create_particle(m))
         print c.get_number_of_particles()
         d= self.create_singleton_score()
+        self.assertEqual(d.get_ref_count(), 1)
         r= IMP.core.MinimumSingletonScoreRestraint(d, c)
-        self.assert_(not d.thisown)
-        self.assert_(not c.thisown)
+        self.assertEqual(d.get_ref_count(), 2)
+        self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -136,13 +138,15 @@ class ParticleContainerTest(IMP.test.TestCase):
         """Test the MaximumSingletonScoreRestraint"""
         m= IMP.Model()
         c= IMP.core.ListSingletonContainer()
+        self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_particle(self.create_particle(m))
         print c.get_number_of_particles()
         d= self.create_singleton_score()
+        self.assertEqual(d.get_ref_count(), 1)
         r= IMP.core.MaximumSingletonScoreRestraint(d, c)
-        self.assert_(not d.thisown)
-        self.assert_(not c.thisown)
+        self.assertEqual(c.get_ref_count(), 2)
+        self.assertEqual(d.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -186,12 +190,13 @@ class ParticleContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         c= IMP.core.FilteredListSingletonContainer()
         f= IMP.core.ListSingletonContainer()
+        self.assertEqual(f.get_ref_count(), 1)
         print "add"
         f.show()
         c.add_singleton_filter(f)
+        self.assertEqual(f.get_ref_count(), 2)
         print "assert"
         f.show()
-        self.assert_(not f.thisown)
         print "range"
         for i in range(0,10):
             print "filter add"
