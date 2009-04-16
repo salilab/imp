@@ -146,6 +146,7 @@ namespace IMP {
 %include "IMP/DerivativeAccumulator.h"
 %include "Restraint.i"
 %include "IMP/ScoreState.h"
+%include "IMP/stream.h"
 %include "IMP/OptimizerState.h"
 %include "IMP/log.h"
 %include "IMP/Model.h"
