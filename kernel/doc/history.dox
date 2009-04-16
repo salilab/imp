@@ -2,6 +2,8 @@
 
 \par Week of April 13
 
+- The decorators IMP::atom::AtomDecorator, IMP::atom::ChainDecorator, IMP::atom::ResidueDecorator etc. now inhertic from IMP::atom::MolecularHierarchyDecorator. This means they can set their IMP::atom::MolecularHierarchyDecorator::Type properly and saves a lot of typing in the common case. We can always make hierarchy decorators zero memory overhead if we find that the cost matters.
+
 - The base classes IMP::Comparable, IMP::NullDefault, IMP::ValidDefault and IMP::UninitializedDefault were added to document what the default constructors do for various objects in \imp.
 
 \par Week of April 6
