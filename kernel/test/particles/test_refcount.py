@@ -44,17 +44,36 @@ class RefCountTests(IMP.test.TestCase):
         del m
         self._check_number(0)
 
-    def test_round_trip(self):
-        """Test that particle survives the round trip"""
+    def test_delete_model_constructor(self):
+        """Constructed Python Particles should survive model deletion"""
         m= IMP.Model()
         p= IMP.Particle(m)
-        del p
+        self.assertEqual(p.get_ref_count(), 2)
         self._check_number(2)
-        (p,)= m.get_particles()
-        self._check_number(2)
-        del p
-        self._check_number(2)
+        # New particle p should not go away until we free the Python reference
         del m
+        self._check_number(1)
+        self.assertEqual(p.get_ref_count(), 1)
+        del p
+        self._check_number(0)
+
+    def test_delete_model_accessor(self):
+        "Python Particles from vector accessors should survive model deletion"
+        m= IMP.Model()
+        IMP.Particle(m)
+        # Now create new Python particle p from a C++ vector accessor
+        # (front(), back(), [], etc.)
+        # (not the Python IMP.Particle() constructor)
+        # These accessors call specific methods in the SWIG wrapper which
+        # are modified by typemaps in our interface.
+        p = m.get_particles()[0]
+        # Python reference p plus C++ reference from m
+        self.assertEqual(p.get_ref_count(), 2)
+        del m
+        # Now only the Python reference p should survive
+        self.assertEqual(p.get_ref_count(), 1)
+        self._check_number(1)
+        del p
         self._check_number(0)
 
     def test_shared(self):

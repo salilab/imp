@@ -12,8 +12,11 @@
 %include "IMP_macros.i"
 %include "IMP_exceptions.i"
 %include "IMP_keys.i"
+%include "IMP_refcount.i"
 
 %include "typemaps.i"
+
+IMP_REFCOUNT_RETURN(IMP::Particle)
 
 %ignore IMP::ParticlePair::operator[];
 %ignore IMP::ParticleTriplet::operator[];
