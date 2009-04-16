@@ -31,17 +31,19 @@ IMPCORE_BEGIN_NAMESPACE
 
     \note At this point we do not guarantee that the file format will
     not change and loose backward compatibility.
- */
+*/
 
-//! Write as the model to a stream
-/** The third, optional parameter allows the base indent to be specified.
+//! Write as Model to a file
+/** \note This method is here for python users since we don't have stream
+    support in python.
     \ingroup helpers
     \ingroup yaml
- */
+*/
 IMPCOREEXPORT void write(Model *m,
-                         std::ostream& out,
-                         std::string indent="");
-
+                         std::string file_name);
+IMP_NO_DOXYGEN(IMP_NO_SWIG(IMPCOREEXPORT void write(Model *m,
+                                                    std::ostream &out,
+                                      std::string indent=std::string());))
 
 //! Read the Model from a stream
 /** The model must already have particles matching all read particles.
@@ -60,7 +62,10 @@ IMPCOREEXPORT void write(Model *m,
     \ingroup helpers
     \ingroup yaml
 */
-IMPCOREEXPORT void read(std::istream &in, Model *m);
+IMPCOREEXPORT void read(std::string file_name, Model *m);
+
+IMP_NO_DOXYGEN(IMP_NO_SWIG(IMPCOREEXPORT
+                           void read(std::istream &in, Model *m);))
 
 IMPCORE_END_NAMESPACE
 

@@ -32,22 +32,16 @@ read_pdb(std::string pdb_file_name,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
-/** Helper function for python to call write_pdb(MolecularHierarchyDecorator,
-    std::ostream&)
-    \copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
-*/
 IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
                              std::string file_name);
 
 /** \note This function produces files that are not valid PDB files. Complain
     if your favorite program can't read them and we might fix it.
     \see read_pdb
-    \see write_pdb(MolecularHierarchyDecorator mhd,std::string file_name)
     \see write_pdb(const MolecularHierarchyDecorators& mhd,std::ostream &out)
-    \see write_pdb(MolecularHierarchyDecorator& mhd,std::ostream &out)
 */
 IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
-                             std::ostream &out);
+                             std::string file_name);
 
 /**
     \copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
@@ -55,11 +49,6 @@ IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
 IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
                              std::string file_name);
 
-/**
-    \copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
-*/
-IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
-                             std::ostream &out);
 //!@}
 
 IMPATOM_END_NAMESPACE

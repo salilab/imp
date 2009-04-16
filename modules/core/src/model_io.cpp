@@ -276,6 +276,12 @@ void write(Model *m,
   }
 }
 
+void write(Model *m, std::string out) {
+  std::ofstream outf(out.c_str());
+  IMP_check(outf, "Invalid file name " << out, ValueException);
+  write(m, outf, "");
+}
+
 void read(std::istream &in,
           Model *m) {
   LineStream r(in);
@@ -283,13 +289,24 @@ void read(std::istream &in,
   std::reverse(ps.begin(), ps.end());
   ParticleRead pr(ps);
   Model::ParticleIterator pit= m->particles_begin();
+  int nump=0;
   do {
     read(m, *pit, pr, r, r.get_next_indent());
     ++pit;
+    ++nump;
   } while (r);
   IMP_check(pit== m->particles_end(),
-            "Read wrong number of particles. Model is corrupted. Bye.",
+            "Read wrong number of particles. Got " << nump
+            << " but expected " << m->get_number_of_particles()
+            << " Model is probably corrupt.",
             ErrorException);
+}
+
+void read(std::string in,
+          Model *m) {
+  std::ifstream iss(in.c_str());
+  IMP_check(iss, "Invalid file name " << in, ValueException);
+  read(iss, m);
 }
 
 IMPCORE_END_NAMESPACE
