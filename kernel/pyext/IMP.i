@@ -115,6 +115,13 @@ namespace IMP {
 /* Don't wrap internal functions */
 %ignore IMP::internal::check_particles_active;
 
+/* Don't wrap classes that provide no methods usable in Python */
+%ignore IMP::ValidDefault;
+%ignore IMP::NullDefault;
+%ignore IMP::UninitializedDefault;
+%ignore IMP::Comparable;
+%ignore IMP::SetLogState;
+
 /* Make selected classes extensible in Python */
 IMP_DIRECTOR_KERNEL_CLASS(UnaryFunction);
 IMP_DIRECTOR_KERNEL_CLASS(Restraint);
