@@ -37,6 +37,24 @@ class ModelTests(IMP.test.TestCase):
         for s in m.get_score_states():
             s.show()
 
+    def test_refcount_director_score_state(self):
+        """Refcounting should prevent director ScoreStates from being deleted"""
+        m = IMP.Model()
+        s = DummyScoreState()
+        s.python_member = 'test string'
+        m.add_score_state(s)
+        # Since C++ now holds a reference to s, it should be safe to delete the
+        # Python object (director objects should not be freed while C++ holds
+        # a reference)
+        del s
+        news = m.get_score_state(0)
+        self.assertEqual(news.python_member, 'test string')
+        # Make sure that all director objects are cleaned up
+        self.assertEqual(IMP._director_objects.get_object_count(), 1)
+        del news, m
+        IMP._director_objects.cleanup()
+        self.assertEqual(IMP._director_objects.get_object_count(), 0)
+
     def test_restraints(self):
         """Check restraint methods"""
         m = IMP.Model()
