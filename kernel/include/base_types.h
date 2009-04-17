@@ -43,13 +43,6 @@ typedef std::vector<Int> Ints;
 //! Standard way to pass a bunch of String values
 typedef std::vector<String> Strings;
 
-
-
-struct ParticleTag {};
-struct RestraintTag {};
-struct ScoreStateTag {};
-struct OptimizerStateTag {};
-
 /* This needs to be here so that both Model and Particle can use Particles */
 class Particle;
 
