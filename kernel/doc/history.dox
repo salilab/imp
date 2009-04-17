@@ -6,6 +6,15 @@
 
 - The base classes IMP::Comparable, IMP::NullDefault, IMP::ValidDefault and IMP::UninitializedDefault were added to document what the default constructors do for various objects in \imp.
 
+- The SWIG interface now ties in to the reference counting mechanism used in
+  the C++ code, for all classes derived from IMP::RefCounted. So, for example,
+  deleting a Python object should not free the underlying C++ object if another
+  C++ object holds a reference to it, and unrefing a C++ object should not
+  delete it if a Python object still holds a reference to it. There should be no
+  further need to manually keep references to Python objects to prevent things
+  from being prematurely cleaned up. This should be transparent to the user;
+  please report any problems.
+
 \par Week of April 6
 
 - IMP::Object now defines pure virtual methods IMP::Object::get_version_info() and IMP::Object::show(). All non-abstract classes which inherit from IMP::Object must implement them. Doing this means they are more uniformly implemented and are documented in one place.

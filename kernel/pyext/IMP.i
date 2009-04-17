@@ -13,6 +13,7 @@
 %include "IMP_exceptions.i"
 %include "IMP_keys.i"
 %include "IMP_refcount.i"
+%include "IMP_directors.i"
 
 %include "typemaps.i"
 
@@ -115,20 +116,20 @@ namespace IMP {
 %ignore IMP::internal::check_particles_active;
 
 /* Make selected classes extensible in Python */
-%feature("director") IMP::UnaryFunction;
-%feature("director") IMP::Restraint;
-%feature("director") IMP::ScoreState;
-%feature("director") IMP::OptimizerState;
-%feature("director") IMP::SingletonScore;
-%feature("director") IMP::PairScore;
-%feature("director") IMP::TripletScore;
-%feature("director") IMP::Optimizer;
-%feature("director") IMP::Refiner;
-%feature("director") IMP::SingletonContainer;
-%feature("director") IMP::PairContainer;
-%feature("director") IMP::SingletonModifier;
-%feature("director") IMP::PairModifier;
-    
+IMP_DIRECTOR_KERNEL_CLASS(UnaryFunction);
+IMP_DIRECTOR_KERNEL_CLASS(Restraint);
+IMP_DIRECTOR_KERNEL_CLASS(ScoreState);
+IMP_DIRECTOR_KERNEL_CLASS(ScoreState);
+IMP_DIRECTOR_KERNEL_CLASS(OptimizerState);
+IMP_DIRECTOR_KERNEL_CLASS(SingletonScore);
+IMP_DIRECTOR_KERNEL_CLASS(PairScore);
+IMP_DIRECTOR_KERNEL_CLASS(TripletScore);
+IMP_DIRECTOR_KERNEL_CLASS(Optimizer);
+IMP_DIRECTOR_KERNEL_CLASS(Refiner);
+IMP_DIRECTOR_KERNEL_CLASS(SingletonContainer);
+IMP_DIRECTOR_KERNEL_CLASS(PairContainer);
+IMP_DIRECTOR_KERNEL_CLASS(SingletonModifier);
+IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 
 %include "IMP/base_types.h"
 %include "IMP/utility.h"

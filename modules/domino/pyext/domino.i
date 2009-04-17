@@ -15,9 +15,10 @@
 %include "std_string.i"
 %include "std_except.i"
 
-// generate directors for all classes that have virtual methods
-%feature("director") IMP::domino::DiscreteSampler;
-%feature("director") IMP::domino::DiscreteSet;
+/* Make selected classes extensible in Python */
+%import "kernel/pyext/IMP_directors.i"
+IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSampler);
+IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 
 /* Get definitions of kernel base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"

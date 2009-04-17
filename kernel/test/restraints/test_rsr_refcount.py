@@ -12,6 +12,8 @@ class RefCountTests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.VERBOSE)
+        # Make sure no director objects are hanging around
+        IMP._director_objects.cleanup()
         self.basenum= IMP.RefCounted.get_number_of_live_objects()
 
     def _check_number(self, expected):

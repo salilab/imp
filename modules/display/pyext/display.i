@@ -24,10 +24,11 @@
 %import "modules/atom/pyext/atom.i"
 %import "modules/algebra/pyext/algebra.i"
 
-%feature("director") IMP::display::Writer;
-%feature("director") IMP::display::Geometry;
-%feature("director") IMP::display::CompoundGeometry;
-
+/* Make selected classes extensible in Python */
+%import "kernel/pyext/IMP_directors.i"
+IMP_DIRECTOR_MODULE_CLASS(display, Writer);
+IMP_DIRECTOR_MODULE_CLASS(display, Geometry);
+IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
 
 /* Wrap our own classes */
 %include "IMP/display/macros.h"
