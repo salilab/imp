@@ -35,7 +35,6 @@ class MCOptimizerTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
         self.xkey= IMP.FloatKey("x")
-        self.rsrs=[]
 
     def test_c1(self):
         """test montecarlo 1"""
@@ -69,7 +68,6 @@ class MCOptimizerTest(IMP.test.TestCase):
         opt.add_mover(mod)
 
         rsr = WoodsFunc()
-        self.rsrs.append(rsr)
         model.add_restraint(rsr)
         #print rsr.evaluate(None)
         #print model.evaluate(False)
