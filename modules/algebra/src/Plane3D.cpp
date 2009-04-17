@@ -4,6 +4,8 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 #include <IMP/algebra/Plane3D.h>
+#include <IMP/algebra/internal/cgal_predicates.h>
+
 IMPALGEBRA_BEGIN_NAMESPACE
 Plane3D::Plane3D(const Vector3D& point_on_plane,
                  const Vector3D &normal_to_plane) {
@@ -23,10 +25,18 @@ Vector3D Plane3D::get_projection(const Vector3D &p) const {
   return p-normal_*(normal_*p-distance_);
 }
 bool Plane3D::get_is_above(const Vector3D &p) const {
+#ifdef IMP_USE_CGAL
+  return internal::cgal_plane_compare_above(*this, p) > 0;
+#else
   return normal_*p > distance_;
+#endif
 }
 bool Plane3D::get_is_below(const Vector3D &p) const {
+#ifdef IMP_USE_CGAL
+  return internal::cgal_plane_compare_above(*this, p) < 0;
+#else
   return normal_*p < distance_;
+#endif
 }
 
 void Plane3D::show(std::ostream &out) const {

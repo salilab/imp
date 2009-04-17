@@ -1,26 +1,26 @@
 Import('env')
 
 files = [
+         'Cone3D.h',
          'Cylinder3D.h',
          'Matrix2D.h',
          'Matrix3D.h',
          'MultiArray.h',
-         'Segment3D.h',
          'Plane3D.h',
          'Rotation3D.h',
+         'Segment3D.h',
          'Sphere3D.h',
          'Sphere3DPatch.h',
-         'Cone3D.h',
          'Transformation3D.h',
          'Vector3D.h',
          'VectorD.h',
          'eigen_analysis.h',
+         'endian.h',
          'geometric_alignment.h',
          'grid_range_D.h',
          'io.h',
          'utility.h',
          'vector_generators.h',
-         'endian.h',
         ] \
         + SConscript('internal/SConscript')
 

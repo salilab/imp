@@ -10,6 +10,7 @@
 #include "Cylinder3D.h"
 #include <cmath>
 #include <IMP/constants.h>
+#include "internal/cgal_predicates.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -35,7 +36,11 @@ public:
 
   //! Return true if the point is in or on the surface of the sphere
   bool get_contains(const Vector3D &p) const {
+#ifdef IMP_CGAL
+    return internal::cgal_sphere_compare_inside(*this, p);
+#else
     return ((p-center_).get_squared_magnitude() <= square(radius_));
+#endif
   }
 
   void show(std::ostream &out=std::cout) const {
