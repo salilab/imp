@@ -57,6 +57,24 @@ class RefCountTests(IMP.test.TestCase):
         del p
         self._check_number(0)
 
+    def test_delete_model_iterator(self):
+        """Python Particles from iterators should survive model deletion"""
+        m= IMP.Model()
+        IMP.Particle(m)
+        # Now create new Python particle p from C++ iterator
+        # (not the Python IMP.Particle() constructor)
+        # This calls swig::from() internally, which is modified by template
+        # specialization in our SWIG interface.
+        p = m.get_particles().__iter__().value()
+        # Python reference p plus C++ reference from m
+        self.assertEqual(p.get_ref_count(), 2)
+        del m
+        # Now only the Python reference p should survive
+        self.assertEqual(p.get_ref_count(), 1)
+        self._check_number(1)
+        del p
+        self._check_number(0)
+
     def test_delete_model_accessor(self):
         "Python Particles from vector accessors should survive model deletion"
         m= IMP.Model()
