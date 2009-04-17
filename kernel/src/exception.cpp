@@ -55,7 +55,7 @@ namespace
 {
 
 // The error message is already in the exception
-bool print_exceptions=false;
+bool print_exceptions=true;
 
 
 }

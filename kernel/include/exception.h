@@ -149,8 +149,9 @@ IMPEXPORT CheckLevel get_check_level();
 
 
 //! Set whether exception messages are printed or not
-/** C++ doesn't display the messages, so if you are not using
-    python, you need to turn this on to understand errors.
+/** By default the error message associated with thrown exceptions are printed
+    when using IMP from C++, but not from Python (since the error messages of
+    unhandled exception are printed by the python runtime).
     \ingroup assert
 */
 IMPEXPORT void set_print_exceptions(bool tf);

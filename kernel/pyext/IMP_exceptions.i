@@ -6,7 +6,13 @@ namespace IMP
 enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
 void set_check_level(CheckLevel tf);
 CheckLevel get_check_level();
+void set_print_exceptions(bool tf);
 }
+
+/* Python prints exception messages */                        
+%pythoncode %{                                                
+set_print_exceptions(False)
+%}
 
 %{
   /* Code to convert C++ exceptions into scripting language errors. Saves
