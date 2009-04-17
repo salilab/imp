@@ -37,6 +37,18 @@ class ParticleTests(IMP.test.TestCase):
         for i in range(0,6):
             p1.add_attribute(IMP.FloatKey("attr_" + str(i)), 3.5 * i, False)
 
+    def test_no_model(self):
+        """Check that operations fail on particles once the model is gone"""
+        p1 = self.particles[0]
+        self.assertEqual(p1.get_is_active(), True)
+        del self.model
+        # Particles left over after a model is deleted should act as if
+        # they are inactive
+        self.assertEqual(p1.get_is_active(), False)
+        self.assertRaises(ValueError, p1.add_attribute, IMP.IntKey("Test"), 0)
+        self.assertRaises(ValueError, p1.get_value, xkey)
+        self.assertRaises(ValueError, p1.set_value, xkey, 0.0)
+
     def test_inactive(self):
         """Check that operations fail on inactivated particles"""
         print("Testing inactive")
