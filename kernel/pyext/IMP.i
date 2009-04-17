@@ -149,6 +149,7 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 %include "IMP/SingletonScore.h"
 %include "IMP/TripletScore.h"
 %include "Particle.i"
+%include "random.i"
 %include "IMP/Decorator.h"
 %include "IMP/Optimizer.h"
 %include "IMP/SingletonContainer.h"
