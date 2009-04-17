@@ -39,6 +39,7 @@ class ModelTests(IMP.test.TestCase):
 
     def test_refcount_director_score_state(self):
         """Refcounting should prevent director ScoreStates from being deleted"""
+        IMP._director_objects.cleanup()
         m = IMP.Model()
         s = DummyScoreState()
         s.python_member = 'test string'
@@ -49,9 +50,17 @@ class ModelTests(IMP.test.TestCase):
         del s
         news = m.get_score_state(0)
         self.assertEqual(news.python_member, 'test string')
-        # Make sure that all director objects are cleaned up
+        # Make sure we kept a reference somewhere to this director object
         self.assertEqual(IMP._director_objects.get_object_count(), 1)
-        del news, m
+        # Cleanup should touch nothing as long as we have Python reference news
+        IMP._director_objects.cleanup()
+        self.assertEqual(IMP._director_objects.get_object_count(), 1)
+        del news
+        # Should also touch nothing as long as we have C++ references (from m)
+        IMP._director_objects.cleanup()
+        self.assertEqual(IMP._director_objects.get_object_count(), 1)
+        del m
+        # No refs remain, so make sure all director objects are cleaned up
         IMP._director_objects.cleanup()
         self.assertEqual(IMP._director_objects.get_object_count(), 0)
 
@@ -69,6 +78,24 @@ class ModelTests(IMP.test.TestCase):
         for s in m.get_restraints():
             s.show()
 
+    def test_refcount_director_restraints(self):
+        """Refcounting should prevent director Restraints from being deleted"""
+        IMP._director_objects.cleanup()
+        m = IMP.Model()
+        r = DummyRestraint()
+        r.python_member = 'test string'
+        m.add_restraint(r)
+        # Since C++ now holds a reference to r, it should be safe to delete the
+        # Python object (director objects should not be freed while C++ holds
+        # a reference)
+        del r
+        newr = m.get_restraint(0)
+        self.assertEqual(newr.python_member, 'test string')
+        # Make sure that all director objects are cleaned up
+        self.assertEqual(IMP._director_objects.get_object_count(), 1)
+        del newr, m
+        IMP._director_objects.cleanup()
+        self.assertEqual(IMP._director_objects.get_object_count(), 0)
 
     def test_particles(self):
         """Check particle methods"""
