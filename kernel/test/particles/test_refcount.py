@@ -126,25 +126,6 @@ class RefCountTests(IMP.test.TestCase):
         ps= m.get_particles()
         self.assertEqual(len(ps), 0, "Should be no particles")
 
-    def test_restraints(self):
-        """Check reference counting of restraints"""
-        m= IMP.Model()
-        r= IMP.core.ConstantRestraint(1)
-        s= IMP.core.RestraintSet()
-        m.add_restraint(s)
-        m.add_restraint(r)
-        s.add_restraint(r)
-        m.evaluate(False)
-        self._check_number(3)
-        # Model should hold a ref to restraints, so nothing should be freed
-        # until it is
-        del r
-        self._check_number(3)
-        del s
-        self._check_number(3)
-        del m
-        self._check_number(0)
-
 
 if __name__ == '__main__':
     unittest.main()

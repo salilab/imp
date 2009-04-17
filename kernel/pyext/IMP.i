@@ -16,7 +16,9 @@
 
 %include "typemaps.i"
 
+// Make sure that Python refcounts any returned pointers to IMP types
 IMP_REFCOUNT_RETURN(IMP::Particle)
+IMP_REFCOUNT_RETURN(IMP::Restraint)
 
 %ignore IMP::ParticlePair::operator[];
 %ignore IMP::ParticleTriplet::operator[];
