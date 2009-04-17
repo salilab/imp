@@ -520,8 +520,6 @@ void inline Particle::add_attribute(FloatKey name, const Float value,
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
-  IMP_assert(model_ ,
-             "Particle must be added to Model before attributes are added");
   floats_.insert(name, value);
   derivatives_.insert(name, 0);
   if (is_optimized) {
@@ -543,8 +541,6 @@ void inline Particle::add_attribute(IntKey name, const Int value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
-  IMP_assert(model_,
-             "Particle must be added to Model before attributes are added");
   ints_.insert(name, value);
 }
 
@@ -560,8 +556,6 @@ void inline Particle::add_attribute(StringKey name, const String value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
-  IMP_assert(model_,
-             "Particle must be added to Model before attributes are added");
   strings_.insert(name, value);
 }
 
@@ -576,8 +570,6 @@ void inline Particle::add_attribute(ParticleKey name, Particle* value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
-  IMP_assert(model_,
-             "Particle must be added to Model before attributes are added");
   particles_.insert(name,
                            Pointer<Particle>(value));
 }
