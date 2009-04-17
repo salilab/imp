@@ -60,9 +60,8 @@ class ParticleTests(IMP.test.TestCase):
         self.assert_(p0 == p0)
         # Different SWIG proxies for the same underlying Particle should
         # report equality:
-        # m_p0 = self.model.get_particle(IMP.ParticleIndex(0))
-        # self.assert_(m_p0 == p0)
-        # figure out an easy way to test this
+        [m_p0, m_p1] = self.model.get_particles()
+        self.assert_(m_p0 == p0)
         # Even particles with equal attributes should not count as equal:
         p0 = self.create_point_particle(self.model, 0, 0, 0)
         p1 = self.create_point_particle(self.model, 0, 0, 0)
