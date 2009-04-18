@@ -69,30 +69,72 @@ def check_particle(p, a):
 namespace IMP {
   // need to special case particle so can't add this to macro
   %pythonprepend Particle::get_value %{
-        check_particle(args[0], args[1])
+        try:
+          parg=self
+          karg=args[0]
+        except NameError:
+          parg=args[0]
+          karg=args[1]
+        check_particle(parg, karg)
   %}
   %pythonprepend Particle::get_is_optimized %{
-        check_particle(args[0], args[1])
+        try:
+          parg=self
+          karg=args[0]
+        except NameError:
+          parg=args[0]
+          karg=args[1]
+        check_particle(parg, karg)
   %}
   %pythonprepend Particle::set_is_optimized %{
-        check_particle(args[0], args[1])
+        try:
+          parg=self
+          karg=args[0]
+        except NameError:
+          parg=args[0]
+          karg=args[1]
+        check_particle(parg, karg)
   %}
   %pythonprepend Particle::set_value %{
-        check_particle(args[0], args[1])
+        try:
+          parg=self
+          karg=args[0]
+        except NameError:
+          parg=args[0]
+          karg=args[1]
+        check_particle(parg, karg)
   %}
   %pythonprepend Particle::add_to_derivative %{
-        check_particle(args[0], args[1])
+        try:
+          parg=self
+          karg=args[0]
+        except NameError:
+          parg=args[0]
+          karg=args[1]
+        check_particle(parg, karg)
   %}
   %pythonprepend Particle::get_derivative %{
-        check_particle(args[0], args[1])
+        try:
+          parg=self
+          karg=args[0]
+        except NameError:
+          parg=args[0]
+          karg=args[1]
+        check_particle(parg, karg)
   %}
   %pythonprepend Particle::add_attribute %{
         # special case since we don't want to check that the attribute is there
-        if (not args[0].get_is_active()):
+        try:
+          parg=self
+          karg=args[0]
+        except NameError:
+          parg=args[0]
+          karg=args[1]
+        if (not parg.get_is_active()):
            raise ValueError("Inactive Particle")
-        elif (type(args[1])() == args[1]):
+        elif (type(karg)() == karg):
            raise IndexError("Cannot use default Index")
-        elif (args[0].has_attribute(args[1])):
+        elif (parg.has_attribute(karg)):
            raise IndexError("Particle already has attribute")
 
   %}
