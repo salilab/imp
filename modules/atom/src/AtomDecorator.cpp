@@ -8,6 +8,7 @@
 #include <IMP/atom/AtomDecorator.h>
 #include <IMP/atom/MolecularHierarchyDecorator.h>
 #include <IMP/atom/ChainDecorator.h>
+#include <IMP/core/XYZDecorator.h>
 
 #include <IMP/log.h>
 
@@ -386,17 +387,14 @@ namespace {
   }
 }
 
-AtomDecorator AtomDecorator::create(Particle *p, AtomType t,
-                                    const algebra::Vector3D &v) {
+AtomDecorator AtomDecorator::create(Particle *p, AtomType t) {
   p->add_attribute(get_type_key(), t.get_index());
-  XYZDecorator::create(p, v);
   MolecularHierarchyDecorator::create(p, MolecularHierarchyDecorator::ATOM);
   AtomDecorator ret(p);
   return ret;
 }
 
 AtomDecorator AtomDecorator::create(Particle *p, AtomDecorator o) {
-  XYZDecorator::create(p, o.get_coordinates());
   p->add_attribute(get_type_key(), o.get_type().get_index());
   MolecularHierarchyDecorator::create(p, MolecularHierarchyDecorator::ATOM);
   AtomDecorator ret(p);
@@ -432,7 +430,6 @@ void AtomDecorator::show(std::ostream &out, std::string prefix) const
     out << " atom number: " << get_input_index();
   }
   out << std::endl;
-  XYZDecorator::show(out, prefix);
 }
 
 
@@ -572,7 +569,7 @@ std::string AtomDecorator::get_pdb_string(int index) {
   out << get_residue(*this).get_insertion_code();
   out.setf(std::ios::fixed, std::ios::floatfield);
   out << "   "; // skip 3 undefined positions (28-30)
-  XYZDecorator xyz= XYZDecorator::cast(p);
+  core::XYZDecorator xyz= core::XYZDecorator::cast(p);
   // coordinates (31-38,39-46,47-54)
   out.width(8);
   out.precision(3);

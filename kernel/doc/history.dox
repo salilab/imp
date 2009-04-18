@@ -1,10 +1,6 @@
 /** \page recent Change History
 
-\par Week of April 13
-
-- The decorators IMP::atom::AtomDecorator, IMP::atom::ChainDecorator, IMP::atom::ResidueDecorator etc. now inhertic from IMP::atom::MolecularHierarchyDecorator. This means they can set their IMP::atom::MolecularHierarchyDecorator::Type properly and saves a lot of typing in the common case. We can always make hierarchy decorators zero memory overhead if we find that the cost matters.
-
-- The base classes IMP::Comparable, IMP::NullDefault, IMP::ValidDefault and IMP::UninitializedDefault were added to document what the default constructors do for various objects in \imp.
+\par Week of April 20
 
 - The SWIG interface now ties in to the reference counting mechanism used in
   the C++ code, for all classes derived from IMP::RefCounted. So, for example,
@@ -14,6 +10,14 @@
   further need to manually keep references to Python objects to prevent things
   from being prematurely cleaned up. This should be transparent to the user;
   please report any problems.
+
+- IMP::atom::AtomDecorator no longer inherits from IMP::core::XYZDecorator.
+
+\par Week of April 13
+
+- The decorators IMP::atom::AtomDecorator, IMP::atom::ChainDecorator, IMP::atom::ResidueDecorator etc. now inhertic from IMP::atom::MolecularHierarchyDecorator. This means they can set their IMP::atom::MolecularHierarchyDecorator::Type properly and saves a lot of typing in the common case. We can always make hierarchy decorators zero memory overhead if we find that the cost matters.
+
+- The base classes IMP::Comparable, IMP::NullDefault, IMP::ValidDefault and IMP::UninitializedDefault were added to document what the default constructors do for various objects in \imp.
 
 \par Week of April 6
 

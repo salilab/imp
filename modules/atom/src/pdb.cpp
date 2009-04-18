@@ -36,9 +36,8 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   AtomType atom_type = AtomType(atom_name.c_str());
 
   // atom decorator
-  AtomDecorator d = AtomDecorator::create(p, atom_type, v);
-
-  d.set_coordinates_are_optimized(true);
+  AtomDecorator d = AtomDecorator::create(p, atom_type);
+  core::XYZDecorator::create(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
 
   return p;
