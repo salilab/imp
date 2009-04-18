@@ -13,6 +13,7 @@
 #include <IMP/atom/ChainDecorator.h>
 #include <IMP/atom/DomainDecorator.h>
 #include <IMP/core/LeavesRefiner.h>
+#include <IMP/core/XYZRDecorator.h>
 
 #include <sstream>
 #include <set>
@@ -199,6 +200,16 @@ MolecularHierarchyDecorator clone_internal(MolecularHierarchyDecorator d,
     nd= ChainDecorator::create(p, ChainDecorator(d.get_particle()));
   } else {
     nd=MolecularHierarchyDecorator::create(p, d.get_type());
+  }
+  using core::XYZDecorator;
+  using core::XYZRDecorator;
+  if (XYZRDecorator::is_instance_of(d.get_particle())){
+    XYZRDecorator::create(p,
+        algebra::Sphere3D(XYZDecorator(d.get_particle()).get_coordinates(),
+                          XYZRDecorator(d.get_particle()).get_radius()));
+  } else if (XYZDecorator::is_instance_of(d.get_particle())) {
+    XYZDecorator::create(p,
+                         XYZDecorator(d.get_particle()).get_coordinates());
   }
   p->set_name(d.get_particle()->get_name());
   for (unsigned int i=0 ;i< d.get_number_of_children(); ++i) {

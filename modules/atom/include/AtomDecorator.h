@@ -220,7 +220,7 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
    \ingroup hierarchy
    \see MolecularHierarchy
  */
-class IMPATOMEXPORT AtomDecorator: public core::XYZDecorator,
+class IMPATOMEXPORT AtomDecorator:
   public MolecularHierarchyDecorator
 {
 public:
@@ -248,17 +248,14 @@ public:
   };
 
 
-  IMP_DECORATOR_2(AtomDecorator, IMP::core::XYZDecorator,
-                  MolecularHierarchyDecorator)
+  IMP_DECORATOR(AtomDecorator, MolecularHierarchyDecorator)
 
   Particle* get_particle() const {
     return MolecularHierarchyDecorator::get_particle();
   }
 
   /** Create a decorator with the passed type and coordinates.*/
-  static AtomDecorator create(Particle *p, AtomType t= AT_UNKNOWN,
-                              const algebra::Vector3D &v=
-                              algebra::Vector3D(0,0,0));
+  static AtomDecorator create(Particle *p, AtomType t= AT_UNKNOWN);
 
   /** Create a decorator by copying from o.*/
   static AtomDecorator create(Particle *p, AtomDecorator o);
@@ -266,7 +263,6 @@ public:
   //! return true if the particle has the needed attributes
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())
-      && XYZDecorator::is_instance_of(p)
       && MolecularHierarchyDecorator::is_instance_of(p);
   }
 
