@@ -11,7 +11,17 @@ class DummyRestraint(IMP.Restraint):
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
 
+class CustomError(Exception):
+    pass
 
+class FailingRestraint(IMP.Restraint):
+    """Restraint that fails in evaluate"""
+    def evaluate(self, accum):
+        raise CustomError("Custom error message")
+    def show(self, something):
+        print "I can't really show from python"
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
 
 class DummyScoreState(IMP.ScoreState):
     """Dummy do-nothing score state"""
@@ -60,6 +70,13 @@ class ModelTests(IMP.test.TestCase):
         del m
         # No refs remain, so make sure all director objects are cleaned up
         dirchk.assert_number(0)
+
+    def test_director_python_exceptions(self):
+        """Check that exceptions raised in directors are handled"""
+        m = IMP.Model()
+        r = FailingRestraint()
+        m.add_restraint(r)
+        self.assertRaises(CustomError, m.evaluate, False)
 
     def test_restraints(self):
         """Check restraint methods"""
