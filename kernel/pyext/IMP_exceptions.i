@@ -46,10 +46,20 @@ set_print_exceptions(False)
   try {
     $action
   } catch (...) {
-    handle_imp_exception();
-    /* This should be unnecessary, since handle_imp_exception cannot return;
-       here just to quell lots of warnings about the 'result' variable not
-       being initialized. */
+    // If Python error indicator is set (e.g. from a failed director method),
+    // it will be reraised at the end of the method
+    if (!PyErr_Occurred()) {
+      handle_imp_exception();
+    }
     SWIG_fail;
+  }
+}
+
+// If Python exceptions are raised in a director method, temporarily reraise
+// them as C++ exceptions (will be finally handled as Python exceptions
+// again by %exception)
+%feature("director:except") {
+  if ($error != NULL) {
+    throw Swig::DirectorMethodException();
   }
 }
