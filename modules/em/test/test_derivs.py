@@ -5,7 +5,6 @@ import IMP.test
 import sys
 import IMP.modeller
 import IMP.em
-import EM
 import unittest
 from os import unlink
 
@@ -67,15 +66,15 @@ class DerivativesTest(IMP.test.TestCase):
         voxel_size=1.
         access_p = IMP.em.IMPParticlesAccessPoint(self.particles,
                            IMP.FloatKey("radius"), IMP.FloatKey("weight"))
-        model_map = EM.SampledDensityMap(access_p, resolution, voxel_size)
-        erw = EM.EMReaderWriter()
+        model_map = IMP.em.SampledDensityMap(access_p, resolution, voxel_size)
+        erw = IMP.em.EMReaderWriter()
         xorigin = model_map.get_header().get_xorigin()
         yorigin = model_map.get_header().get_yorigin()
         zorigin = model_map.get_header().get_zorigin()
         print("x= " + str(xorigin) + " y=" + str(yorigin) + " z=" + str(zorigin) )
         model_map.Write("xxx.em",erw)
         # EM restraint
-        em_map = EM.DensityMap()
+        em_map = IMP.em.DensityMap()
         em_map.Read("xxx.em",erw)
         em_map.get_header_writable().set_xorigin(xorigin)
         em_map.get_header_writable().set_yorigin(yorigin)

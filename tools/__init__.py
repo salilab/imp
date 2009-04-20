@@ -169,6 +169,41 @@ int main(void)
         context.Result("yes")
     return res
 
+def CheckEndian(context):
+    context.Message("Checking endianess... ")
+    text = """
+#include <stdio.h>
+int main(int argc, char ** argv) {
+  union {
+    char array[4];
+    int integer;
+  } TestUnion;
+  TestUnion.array[0] = 'a';
+  TestUnion.array[1] = 'b';
+  TestUnion.array[2] = 'c';
+  TestUnion.array[3] = 'd';
+  if (TestUnion.integer == 0x64636261) {
+    printf("little");
+  } else if (TestUnion.integer == 0x61626364) {
+    printf("big");
+  } else {
+    printf("unknown");
+  }
+  return 0;
+}
+"""
+    ret = context.TryRun(text, ".c")
+    if ret[0] == 0:
+        context.env.Exit("Could not run endian check program")
+    # Workaround for dumb systems (e.g. wine) which insert stuff into stdout:
+    result = ret[1].split()[-1]
+    # Make sure we got a sensible result:
+    if result == 'little' or result == 'big' or result == 'unknown':
+        context.Result(result)
+        return result
+    else:
+        context.env.Exit("Got nonsensical endian: %s" % result)
+
 def CheckModeller(context):
     """Find Modeller include and library directories"""
     context.Message('Checking for MODELLER...')
@@ -327,12 +362,15 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     if not env.GetOption('clean') and not env.GetOption('help'):
         custom_tests = {'CheckGNUHash': CheckGNUHash,
                         'CheckGCCVisibility': CheckGCCVisibility,
+                        'CheckEndian': CheckEndian,
                         'CheckModeller': CheckModeller}
         conf = env.Configure(custom_tests = custom_tests)
         if sys == 'Linux' and env['linksysv']:
             conf.CheckGNUHash()
         if sys != 'win32' and not env['wine']:
             conf.CheckGCCVisibility()
+        if conf.CheckEndian() == "little":
+            env.Append(CPPDEFINES=["IMP_LITTLE_ENDIAN"])
         # Check explicitly for False, since all checks will return Null if
         # configure has been disabled
         if conf.CheckModeller() is False:

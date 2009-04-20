@@ -12,12 +12,14 @@
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
 
-/* Ignore shared object import/export stuff */
-#define EMDLLEXPORT
-#define EMDLLLOCAL
-
 /* Ignore things to prevent SWIG warning about them */
-%ignore DensityMap::operator =;
+namespace IMP::em {
+  %ignore DensityMap::operator =;
+}
+%ignore operator<<(std::ostream&, const DensityHeader &);
+%ignore operator<<(std::ostream&, const EMHeader &);
+%ignore operator<<(std::ostream&, const MRCHeader &);
+%ignore operator*(const real& m, const Vector3& p);
 
 %include "em_config.i"
 
@@ -27,25 +29,32 @@
 
 /* Make selected classes extensible in Python */
 %import "kernel/pyext/IMP_directors.i"
+IMP_DIRECTOR_MODULE_CLASS(em, ParticlesAccessPoint);
 IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 
-/* Get definitions of kernel base classes (but do not wrap) */
+/* Get definitions of kernel and module base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
-
-/* Get definitions of algebra base classes (but do not wrap) */
 %import "modules/algebra/pyext/algebra.i"
 %import "modules/core/pyext/core.i"
 %import "modules/atom/pyext/atom.i"
 
-/* Get definitions of EMBED base classes (but do not wrap) */
-%import "ParticlesAccessPoint.h"
-%import "MapReaderWriter.h"
-%import "DensityMap.h"
-
-/* Don't use the exception handlers defined in the kernel */
-%exception;
-
 /* Wrap our own classes */
+%include "Vector3.i"
+%include "IMP/em/def.h"
+%include "IMP/em/Vector3.h"
+%include "IMP/em/DensityHeader.h"
+%include "IMP/em/MapReaderWriter.h"
+%include "IMP/em/DensityMap.h"
+%include "IMP/em/EMReaderWriter.h"
+%include "IMP/em/XplorReaderWriter.h"
+%include "IMP/em/MRCReaderWriter.h"
+%include "IMP/em/KernelParameters.h"
+%include "IMP/em/ParticlesAccessPoint.h"
+%include "IMP/em/SampledDensityMap.h"
+%include "IMP/em/CoarseCC.h"
+%include "IMP/em/CoarseConvolution.h"
+%include "IMP/em/CoarseCCatIntervals.h"
+%include "IMP/em/SurfaceShellDensityMap.h"
 %include "IMP/em/IMPParticlesAccessPoint.h"
 %include "IMP/em/FitRestraint.h"
 %include "IMP/em/converters.h"
@@ -72,7 +81,7 @@ namespace IMP {
                           ::IMP::em::SpiderImageReaderWriter<float>;
     %template(_Image) ::IMP::em::Image<float>;
     %template(_Volume) ::IMP::em::Volume<float>;
-
+    %template(floats) ::std::vector<float>;
   }
 }
 

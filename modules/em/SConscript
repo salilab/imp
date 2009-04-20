@@ -1,23 +1,25 @@
-from tools import embed
-
 Import('env')
 Export('env')
 
-env.IMPModuleAbout(author='Keren Lasker', version='SVN',
-                   description='Interface to the EMBED package.')
+env.IMPModuleAbout(author='Keren Lasker, Friedrich Foerster', version='SVN',
+                   description='Handling of EM density maps.')
 
-# Modify our environment for building against EMBED:
-embed.configure_check(env)
+def modeller_fail(env, target, source):
+    print """
+  ERROR: Modeller is required to build %s.
 
-# Make sure that all builds with this environment fail if EMBED was not found:
-if env['EM_LIBS'] == '' or env['MODELLER_LIBS'] == '':
-    env.invalidate(embed.fail)
+  Use the modeller command line option (or options file) to set the
+  directory where Modeller is installed (run 'scons -h' for help.)
+""" % target[0]
+    return 1
+
+# Make sure that builds with this environment fail if MODELLER was not found:
+if env['MODELLER_LIBS'] == '':
+    env.invalidate(modeller_fail)
 else:
     env.validate()
 
-env.Append(CPPPATH=env['EM_CPPPATH'], SWIGPATH=env['EM_CPPPATH'])
-env.Append(LIBPATH=env['EM_LIBPATH'], LIBS=[env['EM_LIBS'], 'imp_core',
-                                      'imp_atom','imp_algebra'])
+env.Append(LIBS=['imp_core', 'imp_atom','imp_algebra'])
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
 env.Append(CPPDEFINES='_USE_MATH_DEFINES')

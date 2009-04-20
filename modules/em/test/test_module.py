@@ -1,6 +1,5 @@
 import unittest
 import IMP
-import EM
 import IMP.test
 
 

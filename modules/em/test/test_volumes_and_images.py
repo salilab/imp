@@ -1,7 +1,6 @@
 import unittest
 import IMP.test
 import IMP.em
-import EM
 import os
 
 class VolumeTest(IMP.test.TestCase):
@@ -9,9 +8,10 @@ class VolumeTest(IMP.test.TestCase):
     def test_image(self):
         """Check image reading and writing"""
         img = IMP.em.Image()
-        rw = IMP.em.SpiderImageReaderWriter("input/flipY-nup84-0.spi",
-                                            False,False,True)
-        img.read("input/flipY-nup84-0.spi",rw)
+        rw = IMP.em.SpiderImageReaderWriter(
+                       self.get_input_file_name("flipY-nup84-0.spi"),
+                       False,False,True)
+        img.read(self.get_input_file_name("flipY-nup84-0.spi"), rw)
         img.write("test_image.spi",rw)
         img2 = IMP.em.Image()
         img2.read("test_image.spi",rw)
@@ -24,14 +24,15 @@ class VolumeTest(IMP.test.TestCase):
     def test_em_maps(self):
         """Check volume reading and writing"""
         # Read in Xmipp format
-        rw1 = IMP.em.SpiderMapReaderWriter("input/media_mon_iter3.xmp",
-                                           False,False,True)
-        rw2=EM.MRCReaderWriter()
-        m=EM.DensityMap()
-        m.Read("input/media_mon_iter3.xmp",rw1)
+        rw1 = IMP.em.SpiderMapReaderWriter(
+                        self.get_input_file_name("media_mon_iter3.xmp"),
+                        False,False,True)
+        rw2 = IMP.em.MRCReaderWriter()
+        m = IMP.em.DensityMap()
+        m.Read(self.get_input_file_name("media_mon_iter3.xmp"), rw1)
         m.Write("test.mrc",rw2)
         m.Write("test.xmp",rw1)
-        m2=EM.DensityMap()
+        m2 = IMP.em.DensityMap()
         m2.Read("test.xmp",rw1)
         # Check that the two maps have the same values
         for k in xrange(0,m.get_header().nz):
