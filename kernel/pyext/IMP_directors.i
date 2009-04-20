@@ -66,8 +66,10 @@ class _DirectorObjects(object):
     def __init__(self):
         self._objects = []
     def register(self, obj):
-        """Take a reference to a director object"""
-        self._objects.append(obj)
+        """Take a reference to a director object; will only work for
+           refcounted C++ classes"""
+        if hasattr(obj, 'get_ref_count'):
+            self._objects.append(obj)
     def cleanup(self):
         """Only drop our reference and allow cleanup by Python if no other
            Python references exist (we hold 3 references: one in self._objects,
