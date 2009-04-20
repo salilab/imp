@@ -10,6 +10,7 @@
 
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
+%include "kernel/pyext/IMP_streams.i"
 
 %include "examples_config.i"
 
