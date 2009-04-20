@@ -9,6 +9,8 @@
 %typemap(in) std::ostream& (PyFileAdapter *tmp=NULL) {
   tmp = new PyFileAdapter($input);
   $1 = new std::ostream(tmp);
+  $1->exceptions(std::ostream::eofbit | std::ostream::failbit
+                 | std::ostream::badbit);
 }
 %typemap(freearg) std::ostream& {
   if ($1) delete $1;
@@ -46,7 +48,7 @@ protected:
     PyObject *result = PyObject_CallMethod(p_, method, fmt, s, num);
     if (!result) {
       // Python exception will be reraised when SWIG method finishes
-      throw Swig::DirectorMethodException();
+      throw std::ostream::failure("Python error on write");
     } else {
       Py_DECREF(result);
     }
