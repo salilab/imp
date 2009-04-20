@@ -14,6 +14,7 @@
 %include "IMP_keys.i"
 %include "IMP_refcount.i"
 %include "IMP_directors.i"
+%include "IMP_streams.i"
 
 %include "typemaps.i"
 

@@ -2,6 +2,7 @@ import unittest
 import IMP.utils
 import IMP.core
 import IMP.test, IMP
+import StringIO
 
 class DistanceTests(IMP.test.TestCase):
     """Test distance restraint and three harmonic score functions"""
@@ -86,7 +87,9 @@ class DistanceTests(IMP.test.TestCase):
                                        self.particles[1],
                                        self.particles[0])
         r.set_was_owned(True)
-        r.show()
+        s = StringIO.StringIO()
+        r.show(s)
+        self.assertEqual(s.getvalue()[:28], "distance restraint (active):")
 
     def test_distance(self):
         """Test that distance restraints are reasonable"""

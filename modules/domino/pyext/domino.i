@@ -9,6 +9,7 @@
 
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
+%include "kernel/pyext/IMP_streams.i"
 
 %include "domino_config.i"
 %include "std_vector.i"

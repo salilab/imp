@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 import math
+import StringIO
 
 def _cosfunc(val, force_constant, periodicity, phase):
     """Python implementation of cosine function and first derivative"""
@@ -33,7 +34,9 @@ class CosineTests(IMP.test.TestCase):
     def test_show(self):
         """Check Cosine::show() method"""
         func = IMP.core.Cosine(10.0, 1, 0.0)
-        func.show()
+        s = StringIO.StringIO()
+        func.show(s)
+        self.assertEqual(s.getvalue()[:26], 'Cosine function with force')
 
 if __name__ == '__main__':
     unittest.main()
