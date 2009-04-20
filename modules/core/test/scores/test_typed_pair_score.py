@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+import StringIO
 
 typekey = IMP.IntKey('mytype')
 
@@ -42,7 +43,9 @@ class TypedPairScoreTests(IMP.test.TestCase):
     def test_show(self):
         """Check TypedPairScore::show() method"""
         ps = IMP.core.TypedPairScore(typekey)
-        ps.show()
+        s = StringIO.StringIO()
+        ps.show(s)
+        self.assertEqual(s.getvalue(), 'TypedPairScore with type key "mytype"')
 
 if __name__ == '__main__':
     unittest.main()

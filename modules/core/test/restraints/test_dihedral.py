@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.utils
 import IMP.core
+import StringIO
 import math
 
 class DihedralRestraintTests(IMP.test.TestCase):
@@ -58,7 +59,9 @@ class DihedralRestraintTests(IMP.test.TestCase):
     def test_show(self):
         """Check DihedralRestraint::show() method"""
         model, rsr = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
-        rsr.show()
+        s = StringIO.StringIO()
+        rsr.show(s)
+        self.assertEqual(s.getvalue()[:28], "dihedral restraint (active):")
 
 if __name__ == '__main__':
     unittest.main()

@@ -9,6 +9,8 @@
 %}
 
 %include "kernel/pyext/IMP_macros.i"
+%include "kernel/pyext/IMP_exceptions.i"
+%include "kernel/pyext/IMP_streams.i"
 
 /* Ignore shared object import/export stuff */
 #define EMDLLEXPORT

@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.utils
 import IMP.core
+import StringIO
 import math
 
 class AngleRestraintTests(IMP.test.TestCase):
@@ -52,7 +53,9 @@ class AngleRestraintTests(IMP.test.TestCase):
     def test_show(self):
         """Check AngleRestraint::show() method"""
         model, rsr = self._setup_particles(math.pi / 2.0, math.pi / 2.0)
-        rsr.show()
+        s = StringIO.StringIO()
+        rsr.show(s)
+        self.assertEqual(s.getvalue()[:25], "angle restraint (active):")
 
     def test_interacting_particles(self):
         """Check Restraint::get_interacting_particles() method"""

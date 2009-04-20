@@ -1,6 +1,7 @@
 import unittest
 import IMP
 import IMP.test
+import StringIO
 
 class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
@@ -46,6 +47,18 @@ class ModelTests(IMP.test.TestCase):
                           1);
         for s in m.get_score_states():
             s.show()
+
+    def test_show(self):
+        """Check Model.show() method"""
+        class BrokenFile(object):
+            def write(self, str):
+                raise NotImplementedError()
+        m = IMP.Model()
+        self.assertRaises(NotImplementedError, m.show, BrokenFile())
+        self.assertRaises(AttributeError, m.show, None)
+        s = StringIO.StringIO()
+        m.show(s)
+        self.assertEqual(s.getvalue()[:17], "\n\nModel:\nversion:")
 
     def test_refcount_director_score_state(self):
         """Refcounting should prevent director ScoreStates from being deleted"""

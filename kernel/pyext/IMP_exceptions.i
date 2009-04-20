@@ -55,6 +55,25 @@ set_print_exceptions(False)
   }
 }
 
+// show methods, when passed Python file-like objects, can raise Python
+// exceptions, but std::ostream swallows these; so, add an extra check to
+// these methods for Python exceptions (we don't want to do this for all
+// methods, since it adds one extra function call, to PyErr_Occurred,
+// regardless of whether the method failed)
+%exception *::show {
+  try {
+    $action
+    if (PyErr_Occurred()) {
+      SWIG_fail;
+    }
+  } catch (...) {
+    if (!PyErr_Occurred()) {
+      handle_imp_exception();
+    }
+    SWIG_fail;
+  }
+}
+
 // If Python exceptions are raised in a director method, temporarily reraise
 // them as C++ exceptions (will be finally handled as Python exceptions
 // again by %exception)
