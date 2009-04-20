@@ -8,8 +8,8 @@ class WoodsFunc(IMP.Restraint):
         IMP.Restraint.__init__(self)
         self.particles= particles
         self.index= IMP.FloatKey("x")
-    def show(self, junk):
-        print "Woods function"
+    def show(self, fh):
+        fh.write("Woods function")
     def get_version_info(self):
         return IMP.VersionInfo("Daniel Russel", "0.5")
 

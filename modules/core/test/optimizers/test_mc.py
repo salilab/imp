@@ -27,8 +27,8 @@ class WoodsFunc(IMP.Restraint):
         return e
     def get_version_info(self):
         return IMP.VersionInfo("Daniel Russel", "0.5")
-    def show(self, fakestream):
-        print "WoodsFunc"
+    def show(self, fh):
+        fh.write("WoodsFunc")
 
 class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):

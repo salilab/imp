@@ -33,8 +33,8 @@ class XTransRestraint(IMP.Restraint):
         return e
     def get_version_info(self):
         return IMP.VersionInfo("Daniel Russel", "0.5")
-    def show(self, junk=1):
-        print "Test restraint"
+    def show(self, fh):
+        fh.write("Test restraint")
 
 
 class WriteTrajState(IMP.OptimizerState):
