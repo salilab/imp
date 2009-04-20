@@ -4,20 +4,7 @@ Export('env')
 env.IMPModuleAbout(author='Keren Lasker, Friedrich Foerster', version='SVN',
                    description='Handling of EM density maps.')
 
-def modeller_fail(env, target, source):
-    print """
-  ERROR: Modeller is required to build %s.
-
-  Use the modeller command line option (or options file) to set the
-  directory where Modeller is installed (run 'scons -h' for help.)
-""" % target[0]
-    return 1
-
-# Make sure that builds with this environment fail if MODELLER was not found:
-if env['MODELLER_LIBS'] == '':
-    env.invalidate(modeller_fail)
-else:
-    env.validate()
+env.validate()
 
 env.Append(LIBS=['imp_core', 'imp_atom','imp_algebra'])
 
