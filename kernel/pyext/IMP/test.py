@@ -63,7 +63,8 @@ class TestCase(unittest.TestCase):
         else:
             # Otherwise, search up from the test's directory until we find
             # the input directory
-            dirs = os.path.dirname(sys.argv[0]).split(os.path.sep)
+            testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+            dirs = testdir.split(os.path.sep)
             for i in range(len(dirs), 0, -1):
                 input = os.path.sep.join(dirs[:i] + ['input'])
                 if os.path.isdir(input):
