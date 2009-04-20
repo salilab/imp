@@ -1,9 +1,12 @@
 # test that derivatives agree with numerical ones
-import modeller
+try:
+    import modeller
+    import IMP.modeller
+except ImportError:
+    modeller = None
 import IMP
 import IMP.test
 import sys
-import IMP.modeller
 import IMP.em
 import unittest
 from os import unlink
@@ -30,10 +33,11 @@ def init_particle(particles,p_ind_,x_,y_,z_,r_=0.0,w_=1.0,protein_=1):
 class DerivativesTest(IMP.test.TestCase):
     """check the agreement of numerical and analytical
        derivatives"""
-    def setUp(self):
-        """initialize IMP and modeller environment
-           create particles"""
-        IMP.test.TestCase.setUp(self)
+    def test_deriv(self):
+        """Test calculated derivatives for a distorted model's map"""
+        if modeller is None:
+            sys.stderr.write("test skipped: modeller module unavailable: ")
+            return
         modeller.log.level= (0,0,0,0,1)
         self.env = modeller.environ()
         self.env.edat.dynamic_sphere = False
@@ -60,8 +64,6 @@ class DerivativesTest(IMP.test.TestCase):
         self.atmsel = modeller.selection(self.modeller_model)
         print "initialization done ..."
 
-    def test_deriv(self):
-        """Test calculated derivatives for a distorted model's map"""
         resolution=3.
         voxel_size=1.
         access_p = IMP.em.IMPParticlesAccessPoint(self.particles,
