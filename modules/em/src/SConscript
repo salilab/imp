@@ -1,11 +1,23 @@
 Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
-files = ['converters.cpp',
+files = [
+         'CoarseCC.cpp',
+         'CoarseCCatIntervals.cpp',
+         'CoarseConvolution.cpp',
+         'DensityHeader.cpp',
+         'DensityMap.cpp',
+         'EMReaderWriter.cpp',
          'FitRestraint.cpp',
          'IMPParticlesAccessPoint.cpp',
-         'SpiderReaderWriter.cpp',
          'ImageHeader.cpp',
+         'KernelParameters.cpp',
+         'MRCReaderWriter.cpp',
+         'SampledDensityMap.cpp',
+         'SpiderReaderWriter.cpp',
+         'SurfaceShellDensityMap.cpp',
+         'XplorReaderWriter.cpp',
+         'converters.cpp',
          'header_converters.cpp',
         ]
 

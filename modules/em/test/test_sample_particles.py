@@ -3,7 +3,6 @@ import IMP.test
 import sys
 import IMP.utils
 import IMP.em
-import EM
 import unittest
 import os
 
@@ -40,11 +39,11 @@ class SampleTests(IMP.test.TestCase):
         access_p = IMP.em.IMPParticlesAccessPoint(self.particles,
                               IMP.FloatKey("radius"), IMP.FloatKey("weight"))
 
-        model_map = EM.SampledDensityMap(access_p, resolution, voxel_size)
+        model_map = IMP.em.SampledDensityMap(access_p, resolution, voxel_size)
         model_map.calcRMS()
-        erw = EM.EMReaderWriter()
+        erw = IMP.em.EMReaderWriter()
         model_map.Write("xxx.em",erw)
-        em_map = EM.DensityMap()
+        em_map = IMP.em.DensityMap()
         em_map.Read("xxx.em",erw)
         em_map.calcRMS()
         self.assert_(abs(em_map.get_header().rms - \

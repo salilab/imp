@@ -1,7 +1,6 @@
 import unittest
 import os
 import IMP
-import EM
 import IMP.em
 import IMP.test
 import IMP.utils
@@ -11,8 +10,8 @@ class FittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_map(self):
-        self.scene = EM.DensityMap()
-        erw = EM.EMReaderWriter()
+        self.scene = IMP.em.DensityMap()
+        erw = IMP.em.EMReaderWriter()
         self.scene.Read(self.get_input_file_name("in.em"), erw)
         self.scene.get_header_writable().set_resolution(3.)
         header = self.scene.get_header()
@@ -105,7 +104,8 @@ class FittingTest(IMP.test.TestCase):
                                  self.radius_key,
                                  self.weight_key, 1.0)
         r1.set_was_owned(True)
-        self.assert_(isinstance(r1.get_model_dens_map(), EM.SampledDensityMap))
+        self.assert_(isinstance(r1.get_model_dens_map(),
+                                IMP.em.SampledDensityMap))
 
 
 if __name__ == '__main__':

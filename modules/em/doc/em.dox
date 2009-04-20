@@ -3,8 +3,8 @@
 
 \author Keren Lasker and Friedrich Foerster.
 
-\overview %IMP.%em allows density maps to be used as restraints using
-the EMBED package (an external dependency).
+\overview %IMP.%em provides methods to manipulate EM density maps, and allows
+these maps to be used as restraints.
 
 \publications
 \standard_imp_publications
