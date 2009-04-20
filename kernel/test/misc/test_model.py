@@ -28,12 +28,37 @@ class DummyScoreState(IMP.ScoreState):
     """Dummy do-nothing score state"""
     def update(self):
         pass
-    def show(self, something):
-        print "I can't really show from python"
+    def show(self, fh):
+        fh.write("DummyScoreState")
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
+
+class ClassScoreState(IMP.ScoreState):
+    """Score state that shows the filehandle class"""
+    def update(self):
+        pass
+    def show(self, fh):
+        fh.write(str(fh.__class__))
+        fh.write("; ")
     def get_version_info(self):
         return IMP.VersionInfo("Me", "0.5")
 
 class ModelTests(IMP.test.TestCase):
+    def test_state_show(self):
+        """Test score state show method"""
+        m = IMP.Model()
+        s = ClassScoreState()
+        sio = StringIO.StringIO()
+        s.show(sio)
+        m.add_score_state(s)
+        for s in m.get_score_states():
+            s.show(sio)
+        # Output should work for a direct call (in which the filehandle is
+        # just the Python file-like object) or via a C++ proxy (in which case
+        # the filehandle is a std::ostream adapter)
+        self.assertEqual(sio.getvalue(),
+                         "StringIO.StringIO; <class 'IMP._ostream'>; ")
+
     def test_score_state(self):
         """Check score state methods"""
         m = IMP.Model()
