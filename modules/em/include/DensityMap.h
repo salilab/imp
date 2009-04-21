@@ -11,9 +11,9 @@
 
 #include "config.h"
 #include "DensityHeader.h"
-#include "Vector3.h"
 #include "ErrorHandling.h"
 #include "MapReaderWriter.h"
+#include <IMP/algebra/Vector3D.h>
 #include <iostream>
 #include <iomanip>
 
@@ -195,7 +195,7 @@ public:
   //! density above a given threshold
   /** \param[in] threshold the input threshold
   */
-  Vector3 get_centroid(emreal threshold=0.0);
+  algebra::Vector3D get_centroid(emreal threshold=0.0);
   //! Returns the the value of the voxel with the highest density.
   emreal get_max_value() const;
   emreal get_min_value() const;

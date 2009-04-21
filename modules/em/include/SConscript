@@ -22,7 +22,6 @@ files = [
          'SpiderHeader.h',
          'SpiderReaderWriter.h',
          'SurfaceShellDensityMap.h',
-         'Vector3.h',
          'Volume.h',
          'XplorReaderWriter.h',
          'converters.h',
