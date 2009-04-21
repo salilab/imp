@@ -19,7 +19,6 @@ namespace IMP::em {
 %ignore operator<<(std::ostream&, const DensityHeader &);
 %ignore operator<<(std::ostream&, const EMHeader &);
 %ignore operator<<(std::ostream&, const MRCHeader &);
-%ignore operator*(const real& m, const Vector3& p);
 
 %include "em_config.i"
 
@@ -39,9 +38,7 @@ IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 %import "modules/atom/pyext/atom.i"
 
 /* Wrap our own classes */
-%include "Vector3.i"
 %include "IMP/em/def.h"
-%include "IMP/em/Vector3.h"
 %include "IMP/em/DensityHeader.h"
 %include "IMP/em/MapReaderWriter.h"
 %include "IMP/em/DensityMap.h"

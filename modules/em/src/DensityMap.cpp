@@ -346,7 +346,7 @@ bool DensityMap::same_voxel_size(const DensityMap &other) const
   return false;
 }
 
-Vector3 DensityMap::get_centroid(emreal threshold)  {
+algebra::Vector3D DensityMap::get_centroid(emreal threshold)  {
   emreal max_val = get_max_value();
   if (threshold >= max_val) {
     std::ostringstream msg;
@@ -374,7 +374,7 @@ Vector3 DensityMap::get_centroid(emreal threshold)  {
   x_centroid /= counter;
   y_centroid /= counter;
   z_centroid /= counter;
-  return Vector3(x_centroid,y_centroid,z_centroid);
+  return algebra::Vector3D(x_centroid,y_centroid,z_centroid);
 }
 emreal DensityMap::get_max_value() const{
   emreal max_val = -1.0 * INT_MAX;
