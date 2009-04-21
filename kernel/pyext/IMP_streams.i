@@ -59,19 +59,21 @@ protected:
 
 // Typemaps to allow Python file objects to be used for C++ code that
 // expects a std::istream
-// Note: only 'real' file objects can be used (not file-like objects), i.e.
-// the objects must contain a FILE pointer, not simply a 'read' method. This
-// is because file-like objects do not support operations such as
-// ungetc, and the overhead of a Python method call for every getc is
-// probably too great.
+// It is rather expensive to call the Python 'read' method for every character
+// (and we cannot read multiple bytes from the Python file, since there is no
+// way to put them back if we read too many; even if the stream is seekable
+// there is no guarantee we can restore the file position unless it is opened
+// in binary mode). Thus, we try to use the underlying FILE pointer (only
+// available for real files, not for-like objects) if possible. This may fail
+// on Windows where different C runtimes can make FILE pointers unusable:
+// http://www.python.org/doc/faq/windows/#pyrun-simplefile-crashes-on-windows-but-not-on-unix-why
 
-%typemap(in) std::istream& (PyInFileAdapter *tmp=NULL) {
-  if (!PyFile_Check($input)) {
-    SWIG_exception(SWIG_TypeError,
-               "Can only use Python file objects here (not file-like objects), "
-               "in method $symname, argument number $argnum");
+%typemap(in) std::istream& (std::streambuf *tmp=NULL) {
+  if (PyFile_Check($input) && ftell(PyFile_AsFile($input)) != -1) {
+    tmp = new PyInFileAdapter(PyFile_AsFile($input));
+  } else {
+    tmp = new PyInFilelikeAdapter($input);
   }
-  tmp = new PyInFileAdapter(PyFile_AsFile($input));
   $1 = new std::istream(tmp);
   $1->exceptions(std::istream::badbit);
 }
@@ -113,6 +115,61 @@ protected:
 
   virtual int_type sync() {
     return fflush(fh_);
+  }
+};
+%}
+
+// Adapter class that acts like a std::streambuf but delegates to a Python
+// file-like object
+%{
+class PyInFilelikeAdapter : public std::streambuf
+{
+  PyObject *p_;
+  // Last character peeked from the stream by underflow(), or -1
+  int peeked_;
+public:
+  PyInFilelikeAdapter(PyObject *p) : p_(p), peeked_(-1) {}
+
+  virtual ~PyInFilelikeAdapter() {
+    if (peeked_ != -1) {
+      IMP_WARN("One excess character read from Python stream - "
+               "cannot be put back.")
+    }
+  }
+
+protected:
+  virtual int_type uflow() {
+    int c;
+    c = (peeked_ == -1 ? underflow() : peeked_);
+    peeked_ = -1;
+    return c;
+  }
+
+  virtual int_type underflow() {
+    static char method[] = "read";
+    static char fmt[] = "(i)";
+    peeked_ = -1;
+    PyObject *result = PyObject_CallMethod(p_, method, fmt, 1);
+    if (!result) {
+      // Python exception will be reraised when SWIG method finishes
+      throw std::ostream::failure("Python error on read");
+    } else {
+      if (PyString_Check(result)) {
+        if (PyString_Size(result) == 1) {
+          int c = peeked_ = PyString_AsString(result)[0];
+          Py_DECREF(result);
+          return c;
+        } else {
+          Py_DECREF(result);
+          return EOF;
+        }
+      } else {
+        Py_DECREF(result);
+        PyErr_SetString(PyExc_TypeError, "Python file-like object read method "
+                        "should return a string");
+        throw std::ostream::failure("Python error on read");
+      }
+    }
   }
 };
 %}
