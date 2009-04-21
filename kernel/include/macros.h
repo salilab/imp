@@ -854,6 +854,19 @@ public:                                                                 \
 //! @}
 
 
+//! Declare a ref counted pointer to a new object
+/** \param[in] varname The name for the ref counted pointer
+    \param[in] Typename The namespace qualified type being declared
+    \param[in] args The paretesized arguments to the constructor, or ()
+    if there are none.
+    \see IMP::Pointer
+    \code
+    IMP_NEW(m, IMP::Model, ());
+    \endcode
+ */
+#define IMP_NEW(varname, Typename, args)        \
+  Pointer<Typename> varname(new Typename args)
+
 //! Use this to label a function with no side effects
 #ifdef __GNU__
 #define IMP_NO_SIDEEFFECTS __attribute__ ((pure))
