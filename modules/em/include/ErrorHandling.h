@@ -81,13 +81,6 @@ class IMPEMEXPORT EMBED_LogicError: public EMBED_Exception {
 public:
   EMBED_LogicError(const char *msg): EMBED_Exception(msg){}
 };
-//! Exception to throw when there are values out of range
-class IMPEMEXPORT EMBED_OutOfRange: public EMBED_Exception {
-// Using IMPEMEXPORT is necessary to make the object public when compiled in a
-// dynamic share object in SWIG
-public:
-  EMBED_OutOfRange(const char *msg): EMBED_Exception(msg){}
-};
 
 IMPEM_END_NAMESPACE
 

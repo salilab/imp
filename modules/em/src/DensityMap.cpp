@@ -149,12 +149,8 @@ long DensityMap::xyz_ind2voxel(int voxx,int voxy,int voxz) const{
 
 long DensityMap::loc2voxel(float x,float y,float z) const
 {
-  if (!is_part_of_volume(x,y,z)) {
-    std::ostringstream msg;
-    msg << " DensityMap::loc2voxel >> The point is not part of the grid \n";
-    std::cerr<<msg.str()<<std::endl;
-    throw EMBED_OutOfRange(msg.str().c_str());
-  }
+  IMP_check(is_part_of_volume(x,y,z),
+            "The point is not part of the grid", IndexException);
   int ivoxx=(int)floor((x-header_.get_xorigin())/header_.Objectpixelsize);
   int ivoxy=(int)floor((y-header_.get_yorigin())/header_.Objectpixelsize);
   int ivoxz=(int)floor((z-header_.get_zorigin())/header_.Objectpixelsize);
@@ -191,13 +187,9 @@ emreal DensityMap::get_value(float x, float y, float z) const
 }
 
 emreal DensityMap::get_value(long index) const {
-  if (!((index>-1) && (index < get_number_of_voxels()))) {
-    std::ostringstream msg;
-    msg << " DensityMap::get_value >> The index  " << index
-        << " is not part of the grid \n";
-    std::cerr<<msg.str();
-    throw EMBED_OutOfRange(msg.str().c_str());
-  }
+  IMP_check(index >= 0 && index < get_number_of_voxels(),
+            "The index " << index << " is not part of the grid",
+            IndexException);
   return data_[index];
 }
 void DensityMap::reset_voxel2loc() {

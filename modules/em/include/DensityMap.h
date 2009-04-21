@@ -86,7 +86,7 @@ public:
   /** \param[in] x The position ( in angstroms) of the x coordinate
       \param[in] y The position ( in angstroms) of the y coordinate
       \param[in] z The position ( in angstroms) of the z coordinate
-      \exception  EMBED_OutOfRange  The point is not covered by the grid.
+      \exception  IndexException  The point is not covered by the grid.
       \return the voxel index of a given position. If the position is out of
               the boundaries of the map, the function returns -1.
    */
@@ -107,7 +107,7 @@ public:
       \param[in] y The position ( in angstroms) of the y coordinate
       \param[in] z The position ( in angstroms) of the z coordinate
       \return the value of the voxel located at (x,y,z)
-      \exception std::out_of_range The point is not covered by the grid.
+      \exception IndexException The point is not covered by the grid.
    */
   emreal get_value(float x,float y,float z) const;
 
@@ -134,7 +134,7 @@ public:
 
   //! Returns the x-location of the map
   /**
-  \exception EMBED_OutOfRange The locations have not been calculated.
+  \exception EMBED_LogicError The locations have not been calculated.
   */
   float* get_x_loc() const {
     if (!loc_calculated_) {
@@ -147,7 +147,7 @@ public:
   }
   //! Returns the y-location of the map
   /**
-  \exception EMBED_OutOfRange The locations have not been calculated.
+  \exception EMBED_LogicError The locations have not been calculated.
   */
   float* get_y_loc() const {
     if (!loc_calculated_) {
@@ -160,7 +160,7 @@ public:
   }
   //! Returns the z-location of the map
   /**
-  \exception EMBED_OutOfRange The locations have not been calculated.
+  \exception IndexException The locations have not been calculated.
   */
   float* get_z_loc() const {
     if (!loc_calculated_) {
