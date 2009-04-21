@@ -11,7 +11,5 @@ all=[]
 for f in fs:
     prog= penv.Program(f.rstr())
     all.append(prog)
-    penv.Depends(prog, "#/modules")
-    penv.Depends(prog, "#/kernel")
 
 Return('all')
