@@ -66,7 +66,7 @@ void SurfaceShellDensityMap::binaries(const ParticlesAccessPoint &access_p,
     try {
       params = kernel_params_.find_params(access_p.get_r(ii));
     }
-    catch (EMBED_LogicError &e){
+    catch (InvalidStateException &e){
       kernel_params_.set_params(access_p.get_r(ii));
       params = kernel_params_.find_params(access_p.get_r(ii));
     }

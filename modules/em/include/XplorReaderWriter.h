@@ -12,7 +12,6 @@
 #include "config.h"
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
-#include "ErrorHandling.h"
 #include <math.h>
 #include <iostream>
 #include <iomanip>

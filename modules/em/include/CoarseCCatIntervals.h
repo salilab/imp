@@ -11,7 +11,6 @@
 
 #include "config.h"
 #include "CoarseCC.h"
-#include "ErrorHandling.h"
 #include <vector>
 
 IMPEM_BEGIN_NAMESPACE

@@ -15,7 +15,6 @@
 #include "SampledDensityMap.h"
 #include "ParticlesAccessPoint.h"
 #include "def.h"
-#include "ErrorHandling.h"
 #include <vector>
 
 IMPEM_BEGIN_NAMESPACE

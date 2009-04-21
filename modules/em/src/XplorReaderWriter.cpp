@@ -23,12 +23,10 @@ void XplorReaderWriter::Read(const char *filename, float **data,
   //data
   int size = xheader.extent[0]*xheader.extent[1]*xheader.extent[2];
   *data =  new float[size];
-  if (*data == NULL) {
-    std::ostringstream msg;
-    msg << "XplorReader::Read can not allocated space for data - the "
-     << "requested size: " << size * sizeof(float) << std::endl;
-    throw EMBED_IOException(msg.str().c_str());
-  }
+  IMP_check(*data,
+            "XplorReader::Read can not allocated space for data - the "
+            << "requested size: " << size * sizeof(float),
+            IOException);
   ReadMap(XPLORstream, *data, xheader);
   XPLORstream.close();
 }
