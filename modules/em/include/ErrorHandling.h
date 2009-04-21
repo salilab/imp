@@ -66,14 +66,6 @@ public:
   refstring *str_;
 };
 
-//! Exception to throw when a variable has a wrong value
-class IMPEMEXPORT EMBED_WrongValue: public EMBED_Exception {
-// Using IMPEMEXPORT is necessary to make the object public when compiled in a
-// dynamic share object in SWIG
-public:
-  EMBED_WrongValue(const char *msg): EMBED_Exception(msg){}
-};
-
  //! Exception to throw when there are I/O problems
 class IMPEMEXPORT EMBED_IOException: public EMBED_Exception {
 // Using IMPEMEXPORT is necessary to make the object public when compiled in a
