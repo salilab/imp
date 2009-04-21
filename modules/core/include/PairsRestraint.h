@@ -80,6 +80,16 @@ public:
   }
 
   virtual ParticlesList get_interacting_particles() const;
+
+  PairScore* get_pair_score() const {
+    return ss_;
+  }
+
+  void set_pair_score(PairScore* ss) {
+    IMP_check(ss, "The PairScore must be non-null",
+              IndexException);
+    ss_= ss;
+  }
 };
 
 IMPCORE_END_NAMESPACE

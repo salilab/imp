@@ -80,6 +80,16 @@ public:
   }
 
   virtual ParticlesList get_interacting_particles() const;
+
+  GroupnameScore* get_groupname_score() const {
+    return ss_;
+  }
+
+  void set_groupname_score(GroupnameScore* ss) {
+    IMP_check(ss, "The GroupnameScore must be non-null",
+              IndexException);
+    ss_= ss;
+  }
 };
 
 IMPCORE_END_NAMESPACE
