@@ -80,6 +80,16 @@ public:
   }
 
   virtual ParticlesList get_interacting_particles() const;
+
+  SingletonScore* get_singleton_score() const {
+    return ss_;
+  }
+
+  void set_singleton_score(SingletonScore* ss) {
+    IMP_check(ss, "The SingletonScore must be non-null",
+              IndexException);
+    ss_= ss;
+  }
 };
 
 IMPCORE_END_NAMESPACE
