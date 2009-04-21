@@ -8,6 +8,7 @@
 
 #include "IMP/core/QuadraticClosePairsFinder.h"
 #include "IMP/core/XYZDecorator.h"
+#include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
 

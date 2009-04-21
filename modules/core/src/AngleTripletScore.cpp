@@ -11,6 +11,7 @@
 
 #include <IMP/UnaryFunction.h>
 #include <boost/tuple/tuple.hpp>
+#include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
 
