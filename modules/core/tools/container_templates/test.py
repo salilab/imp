@@ -110,11 +110,15 @@ class ClassnameContainerTest(IMP.test.TestCase):
         """Test the MinimumGroupnameScoreRestraint"""
         m= IMP.Model()
         c= IMP.core.ListGroupnameContainer()
+        self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_classname(self.create_classname(m))
         print c.get_number_of_classnames()
         d= self.create_groupname_score()
+        self.assertEqual(d.get_ref_count(), 1)
         r= IMP.core.MinimumGroupnameScoreRestraint(d, c)
+        self.assertEqual(d.get_ref_count(), 2)
+        self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -137,11 +141,15 @@ class ClassnameContainerTest(IMP.test.TestCase):
         """Test the MaximumGroupnameScoreRestraint"""
         m= IMP.Model()
         c= IMP.core.ListGroupnameContainer()
+        self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_classname(self.create_classname(m))
         print c.get_number_of_classnames()
         d= self.create_groupname_score()
+        self.assertEqual(d.get_ref_count(), 1)
         r= IMP.core.MaximumGroupnameScoreRestraint(d, c)
+        self.assertEqual(c.get_ref_count(), 2)
+        self.assertEqual(d.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -185,9 +193,11 @@ class ClassnameContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         c= IMP.core.FilteredListGroupnameContainer()
         f= IMP.core.ListGroupnameContainer()
+        self.assertEqual(f.get_ref_count(), 1)
         print "add"
         f.show()
         c.add_groupname_filter(f)
+        self.assertEqual(f.get_ref_count(), 2)
         print "assert"
         f.show()
         print "range"

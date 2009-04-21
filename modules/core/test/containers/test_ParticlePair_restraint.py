@@ -110,11 +110,15 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         """Test the MinimumPairScoreRestraint"""
         m= IMP.Model()
         c= IMP.core.ListPairContainer()
+        self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_particle_pair(self.create_particle_pair(m))
         print c.get_number_of_particle_pairs()
         d= self.create_pair_score()
+        self.assertEqual(d.get_ref_count(), 1)
         r= IMP.core.MinimumPairScoreRestraint(d, c)
+        self.assertEqual(d.get_ref_count(), 2)
+        self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -137,11 +141,15 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         """Test the MaximumPairScoreRestraint"""
         m= IMP.Model()
         c= IMP.core.ListPairContainer()
+        self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_particle_pair(self.create_particle_pair(m))
         print c.get_number_of_particle_pairs()
         d= self.create_pair_score()
+        self.assertEqual(d.get_ref_count(), 1)
         r= IMP.core.MaximumPairScoreRestraint(d, c)
+        self.assertEqual(c.get_ref_count(), 2)
+        self.assertEqual(d.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -185,9 +193,11 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         c= IMP.core.FilteredListPairContainer()
         f= IMP.core.ListPairContainer()
+        self.assertEqual(f.get_ref_count(), 1)
         print "add"
         f.show()
         c.add_pair_filter(f)
+        self.assertEqual(f.get_ref_count(), 2)
         print "assert"
         f.show()
         print "range"
