@@ -25,6 +25,8 @@ set_print_exceptions(False)
       SWIG_exception(SWIG_IndexError, e.what());
     } catch (std::domain_error &e) {
       SWIG_exception(SWIG_ValueError, e.what());
+    } catch (std::ios::failure &e) {
+      SWIG_exception(SWIG_IOError, e.what());
     } catch (IMP::IndexException &e) {
       SWIG_exception(SWIG_IndexError, e.what());
     } catch (IMP::InvalidStateException &e) {
