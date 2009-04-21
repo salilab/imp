@@ -90,6 +90,10 @@ inline Transformation3D identity_transformation() {
          The y-axis is perpendicular to both x and z.
          The z-axis is perpendicular to the u-base , w-base plane
 
+   \note This function is poorly designed and liable the change. The
+   main problem comes from having the three arguments of the same type
+   with no natural order amongst them.
+
    \relates Transformation3D
  */
 inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
