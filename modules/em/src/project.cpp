@@ -1,64 +1,19 @@
 /**
- *  \file project.h
- *  \brief Project operation for EM volumes
- *
+ *  \file project.cpp
+ *  \brief Projection operation for 3D volumes
+ *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#ifndef IMPEM_PROJECT_H
-#define IMPEM_PROJECT_H
+#include <IMP/em/project.h>
+#include <fstream>
 
-#include "config.h"
-#include <IMP/algebra/utility.h>
-#include <IMP/algebra/Matrix3D.h>
-#include <IMP/algebra/Matrix2D.h>
-#include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/Rotation3D.h>
-#include <IMP/constants.h>
-#include <algorithm> // max,min
-#include "DensityMap.h"
+
 
 IMPEM_BEGIN_NAMESPACE
 
 
-//! Projects a given 3D matrix into a 2D matrix given a direction shift
-//! vector.
-/**
- * The direction is used to build a rotation that ultimately describes the
- * projection plane. This rotation builds the coordinate system for the
- * projection.
- * The projection plane is the XY plane (Z=0) of this new coordinate system.
- * The additional shift vector is applied in the coordinate system for the
- * projection.
- * The projection model is:
- *               p = Rot * r + v
- * where:
- *   p - coordinates of a point in the projection coordinate system
- *   Rot - Rotation3D applied to a point r of the universal coordinate system
- *         employed for the Matrix3D
- *   r - coordinates of a point r in the of the universal coordinate system of
- *        Matrix3D
- *   v - shift vector applied to p in the coordinate system of the projection.
- *
- * \param[in] m3 A matrix3D of values to project.
- * \param[out] m2  A Matrix2D of floats to store the projection.
- * \param[in] Ydim size in rows for the Matrix2D
- *            that is to contain the projection
- * \param[in] Xdim size in columns for the Matrix2D
- *            that is to contain the projection
- * \param[in] direction vector containing the direction of projection desired
- * \param[in] shift Shift vector applied to p in the coordinate
- *            system of the projection.
- * \param[in] equality_tolerance tolerance allowed to consider a value in the
- *            direction as zero.
-
- * \note The function assumes that the matrices are given and stored
- *   with the (z,y,x)
- *   convention for 3D and (y,x) for 2D. But it expects and operates all the
- *   vector3D using the (x,y,z) convention.
- */
-template<typename T>
-void project(IMP::algebra::Matrix3D<T>& m3,
+void project(DensityMap& map,
              IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
              IMP::algebra::Vector3D& direction,
@@ -69,11 +24,20 @@ void project(IMP::algebra::Matrix3D<T>& m3,
   m2.resize(Ydim, Xdim);
   // Save the origin of the matrices
   std::vector<int> orig2D(2), orig3D(3);
-  orig2D[0]=m2.get_start(0);orig2D[1]=m2.get_start(1);
-  orig3D[0]=m3.get_start(0);orig3D[1]=m3.get_start(1);orig3D[2]=m3.get_start(2);
-  // Center the matrices (necessary for the projection algorithm)
+  orig2D[0]=m2.get_start(0); // X
+  orig2D[1]=m2.get_start(1); // Y
+  orig3D[0]=map.get_header()->get_xorigin();
+  orig3D[1]=map.get_header()->get_yorigin();
+  orig3D[2]=map.get_header()->get_zorigin();
+  float voxelsize=map.get_header()->Objectpixelsize;
+  // Center the 2D matrix (necessary for the projection algorithm)
   m2.centered_start();
-  m3.centered_start();
+  // Set the pixel size of the map to 1 (necessary for the projection algorithm)
+  map.get_header_writable()->Objectpixelsize=1.0;
+  // Center the map (necessary for the projection algorithm)
+  map.set_origin((-1)*(int)(map.get_header()->nx/2.),
+                 (-1)*(int)(map.get_header()->ny/2.),
+                 (-1)*(int)(map.get_header()->nz/2.));
   // For each pixel, 4 rays of projection are computed on each direction. The
   // step is going to be 1/3 from the center of the pixel in 4 directions
   double step = 1.0 / 3.0;
@@ -106,32 +70,47 @@ void project(IMP::algebra::Matrix3D<T>& m3,
     Rot = IMP::algebra::rotation_between_two_vectors(univ_coord,direction);
   }
 
-  // We are interested in the inverse rotation (that one that allows to pass
-  // form the projection coordinate system to the universal coordinate system)
-  //  IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
+//   We are interested in the inverse rotation (that one that allows to pass
+//   form the projection coordinate system to the universal coordinate system)
+//   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
+
 #ifdef DEBUG
   std::cout << " direction " << direction << std::endl;
   std::cout << "Rotation: " << Rot << std::endl;
   std::cout << "vector_product " << vv << std::endl;
 //  std::cout << "Inverse rotation: " << InvRot << std::endl;
 #endif
-  // Precalculated variables
+
+  // Logical ints for the beginning of the map
   IMP::algebra::Vector3D init0, end0, signs, half_signs;
+  init0[0] = map.get_header()->get_xorigin();
+  init0[1] = map.get_header()->get_yorigin();
+  init0[2] = map.get_header()->get_zorigin();
+  // Logical ints for the end of the map. The next 3 lines make sense
+  // because the voxel size is set to 1.0
+  end0[0] = init0[0]-1+map.get_header()->nx;
+  end0[1] = init0[1]-1+map.get_header()->ny;
+  end0[2] = init0[2]-1+map.get_header()->nz;
   for (int i = 0;i < 3;i++) {
-    init0[i] = m3.get_start(2-i); // (2-i) because we are going to work
-                        // with x,y,z convention for vectors and calculations,
-                        // but matrices are stored as (z,y,x)
-    end0[i] = m3.get_finish(2-i); // Same convention
     signs[i] = IMP::algebra::sign(direction[i]);
     half_signs[i] = 0.5 * signs[i];
   }
 
-  IMP::algebra::Vector3D r; // A point in the coordinate system for Matrix3D m3
+  IMP::algebra::Vector3D r; // A point in the coordinate system for the map
   IMP::algebra::Vector3D p; // A point in the coord. system of the projection
+
+#ifdef DEBUG
+  std::string fn_p = "plane_p.txt";
+  std::string fn_r = "plane_r.txt";
+  std::ofstream f_p,f_r;
+  f_p.open(fn_p.c_str(), std::ios::out);
+  f_r.open(fn_r.c_str(), std::ios::out);
+#endif
+
   // build projection
-  for (int j = m2.get_start(1);j <= m2.get_finish(1);j++) {
-    for (int i = m2.get_start(0);i <= m2.get_finish(0);i++) {
-      // 4 different rays per pixel.
+  for (int j = m2.get_start(1);j <= m2.get_finish(1);j++) { // X
+    for (int i = m2.get_start(0);i <= m2.get_finish(0);i++) { // Y
+
       double ray_sum = 0.0;  // Line integral value
       for (int rays_per_pixel = 0; rays_per_pixel < 4; rays_per_pixel++) {
 #ifdef DEBUG
@@ -154,19 +133,22 @@ void project(IMP::algebra::Matrix3D<T>& m3,
           break;
         }
 
-        // Express p in the universal coordinate system
+        // Get the coordinates r in the universal system corresponding to
+        // the point p
         if (!shift.is_zero(equality_tolerance)) {
           p -= shift;
         }
-        // Get the coordinates r in the universal system corresponding to
-        // the point p
+
+//        r = InvRot.rotate(p);
+        r = Rot.rotate(p); // This is the RIGHT rotation to apply
+
 #ifdef DEBUG
         std::cout << "p: " << p << std::endl;
-#endif
-//        r = InvRot.rotate(p);
-        r = Rot.rotate(p);
-#ifdef DEBUG
         std::cout << "r: " << r << std::endl;
+        if(rays_per_pixel==0) {
+          f_p << p << std::endl;
+          f_r << r << std::endl;
+        }
 #endif
         // Compute the minimum and maximum alpha for the line of the ray
         // intersecting the given volume. line = r + alpha * direction
@@ -185,6 +167,7 @@ void project(IMP::algebra::Matrix3D<T>& m3,
                       std::max(v_alpha_min[ii],v_alpha_max[ii]));
           }
         }
+
 #ifdef DEBUG
         std::cout << "v_alpha_min " << v_alpha_min;
         std::cout << " v_alpha_max " << v_alpha_max << std::endl;
@@ -199,10 +182,28 @@ void project(IMP::algebra::Matrix3D<T>& m3,
         }
         // v is going to be the first voxel in the volume intersecting the ray
         IMP::algebra::Vector3D v;
+        // idx is a vector of logical ints indicating a voxel of the map
         std::vector<int> idx(3);
         v = r + alpha_min * direction; // vector operation
+
 #ifdef DEBUG
         std::cout << " v " << v << std::endl;
+
+        std::ofstream f_txt;
+        if(rays_per_pixel==0) {
+          std::cout << "(" << j << "," << i << ") init ray " <<
+                        rays_per_pixel << std::endl;
+          std::string fn_txt = "m2_";
+          fn_txt+=IMP::algebra::internal::float_to_string(i,0,0);
+          fn_txt+="_";
+          fn_txt+=IMP::algebra::internal::float_to_string(j,0,0);
+          fn_txt+="_ray_";
+          fn_txt+=IMP::algebra::internal::float_to_string(rays_per_pixel,0,0);
+          fn_txt+=".txt";
+
+          f_txt.open(fn_txt.c_str(), std::ios::out);
+          f_txt << v << std::endl;
+        }
 #endif
         // Index of the first voxel
         for (int ii=0;ii < 3;ii++) {
@@ -240,16 +241,15 @@ void project(IMP::algebra::Matrix3D<T>& m3,
 #endif
           double diff_alpha=std::min(std::min(v_diff[0],v_diff[1]),v_diff[2]);
 
-//          std::cout << " diff_alpha " << diff_alpha << std::endl;
-          // It is supposed that the first index of the Matrix3D is for Z,
-          // that's why the indices are inverted
 #ifdef DEBUG
-          std::cout << "inverted idx " <<
-              idx[2] << " " << idx[1] << " " << idx[0] << " | ";
-          std::cout << "m3(inverted idx) = " <<
-              m3(idx[2], idx[1], idx[0]) << std::endl;
+          std::cout << " diff_alpha " << diff_alpha << std::endl;
+          std::cout << "voxel indexes " <<
+              idx[0] << " " << idx[1] << " " << idx[2] << " | ";
+          std::cout << "map(idx) = "
+          << map.get_value(map.loc2voxel(idx[0],idx[1],idx[2]));
 #endif
-          ray_sum += diff_alpha * m3(idx[2], idx[1], idx[0]);
+          ray_sum += diff_alpha *
+                     map.get_value(map.loc2voxel(idx[0],idx[1],idx[2]));
           // update the indexes in the required dimensions
           for (int ii=0;ii < 3;ii++) {
             if (IMP::algebra::almost_equal(diff_alpha, v_diff[ii],
@@ -260,11 +260,20 @@ void project(IMP::algebra::Matrix3D<T>& m3,
           }
 #ifdef DEBUG
           std::cout << " alpha =" << alpha << std::endl;
+          if(rays_per_pixel==0) {
+            v = r + alpha * direction; // vector operation
+            f_txt << v << std::endl;
+          }
 #endif
         } while ((alpha_max - alpha) > equality_tolerance); // end of the ray
+
+
 #ifdef DEBUG
         std::cout << " final alpha =" << alpha << std::endl;
         std::cout << " ray_sum =" << ray_sum << std::endl;
+        if(rays_per_pixel==0) {
+         f_txt.close();
+        }
 #endif
       } // for involving the 4 rays
       // Average the value of the 4 rays
@@ -275,55 +284,17 @@ void project(IMP::algebra::Matrix3D<T>& m3,
     } // i for
   } // j for
 
-  // Reindex the matrices again
+#ifdef DEBUG
+  f_p.close();
+  f_r.close();
+#endif
+
+
+  // Reindex the matrix again
   m2.reindex(orig2D);
-  m3.reindex(orig3D);
-}
-
-
-//! Projects a given 3D matrix into a 2D matrix given a direction shift
-//! vector.
-/**
- * The direction is used to build a rotation that ultimately describes the
- * projection plane. This rotation builds the coordinate system for the
- * projection.
- * The projection plane is the XY plane (Z=0) of this new coordinate system.
- * The additional shift vector is applied in the coordinate system for the
- * projection.
- * The projection model is:
- *               p = Rot * r + v
- * where:
- *   p - coordinates of a point in the projection coordinate system
- *   Rot - Rotation3D applied to a point r of the universal coordinate system
- *         employed for the Matrix3D
- *   r - coordinates of a point r in the of the universal coordinate system of
- *        Matrix3D
- *   v - shift vector applied to p in the coordinate system of the projection.
- *
- * \param[in] m3 A DensityMap of values to project.
- * \param[out] m2  A Matrix2D of floats to store the projection.
- * \param[in] Ydim size in rows for the Matrix2D
- *            that is to contain the projection
- * \param[in] Xdim size in columns for the Matrix2D
- *            that is to contain the projection
- * \param[in] direction vector containing the direction of projection desired
- * \param[in] shift Shift vector applied to p in the coordinate
- *            system of the projection.
- * \param[in] equality_tolerance tolerance allowed to consider a value in the
- *            direction as zero.
-
- * \note The function assumes that the matrices are given and stored
- *   with the (z,y,x)
- *   convention for 3D and (y,x) for 2D. But it expects and operates all the
- *   vector3D using the (x,y,z) convention.
- */
-void IMPEMEXPORT project(DensityMap& map,
-             IMP::algebra::Matrix2D<float>& m2,
-             const int Ydim,const int Xdim,
-             IMP::algebra::Vector3D& direction,
-             const IMP::algebra::Vector3D& shift,
-             const double equality_tolerance);
+  // Restore the map parameters
+  map.get_header_writable()->Objectpixelsize=voxelsize;
+  map.set_origin(orig3D[0],orig3D[1],orig3D[2]);
+};
 
 IMPEM_END_NAMESPACE
-
-#endif  /* IMPEM_PROJECT_H */
