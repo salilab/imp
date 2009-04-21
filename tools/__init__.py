@@ -11,7 +11,7 @@ import make_examples
 import symlinks
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
-           "get_sharedlib_environment", "embed"]
+           "get_sharedlib_environment"]
 
 import SCons
 _SWIGScanner = SCons.Scanner.ClassicCPP(
