@@ -7,6 +7,7 @@
  */
 
 #include <IMP/em/KernelParameters.h>
+#include <IMP/constants.h>
 
 IMPEM_BEGIN_NAMESPACE
 
