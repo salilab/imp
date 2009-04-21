@@ -1,3 +1,7 @@
+# NOTE: This file is generated from modules/core/tools/container_tempates/test.py
+# do not edit.
+
+
 import unittest
 import IMP
 import IMP.test
@@ -25,8 +29,8 @@ class SingletonTestModifier(IMP.SingletonModifier):
     def __init__(self, k):
         IMP.SingletonModifier.__init__(self)
         self.k=k
-    def show(self, j):
-        print "Test Particle"
+    def show(self, fh):
+        fh.write("Test Particle")
     def apply(self, p):
         p.add_attribute(self.k, 1)
     def get_version_info(self):
@@ -36,8 +40,8 @@ class PairTestModifier(IMP.PairModifier):
     def __init__(self, k):
         IMP.PairModifier.__init__(self)
         self.k=k
-    def show(self, j):
-        print "Test Particle"
+    def show(self, fh):
+        fh.write("Test Particle")
     def apply(self, p0, p1):
         p0.add_attribute(self.k, 1)
         p1.add_attribute(self.k, 1)
@@ -127,10 +131,8 @@ class ClassnameContainerTest(IMP.test.TestCase):
         f= GroupnameTestModifier(k)
         print "apply"
         s= IMP.core.GroupnamesScoreState(c, f, None)
-        self.assert_( not f.thisown)
-        self.assert_( not c.thisown)
-        m.add_score_state(s)
         print "add"
+        m.add_score_state(s)
         m.evaluate(False)
         for p in cs:
             self.assert_(classname_has_attribute(p, k))
@@ -150,7 +152,6 @@ class ClassnameContainerTest(IMP.test.TestCase):
         f= GroupnameTestModifier(k)
         print "apply"
         s= self.create_groupname_score_state(f, None, t)
-        self.assert_( not f.thisown)
         m.add_score_state(s)
         print "add"
         m.evaluate(False)
