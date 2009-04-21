@@ -20,7 +20,7 @@ int main() {
   r->set_particles(ps);
   m->add_restraint(r);
   set_check_level(EXPENSIVE);
-  set_log_level(VERBOSE);
+  //set_log_level(VERBOSE);
   m->evaluate(NULL);
 
   set_check_level(NONE);
