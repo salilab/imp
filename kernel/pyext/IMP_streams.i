@@ -6,11 +6,10 @@
 // Typemaps to allow Python file-like objects to be used for C++ code that
 // expects a std::ostream
 
-%typemap(in) std::ostream& (PyFileAdapter *tmp=NULL) {
-  tmp = new PyFileAdapter($input);
+%typemap(in) std::ostream& (PyOutFileAdapter *tmp=NULL) {
+  tmp = new PyOutFileAdapter($input);
   $1 = new std::ostream(tmp);
-  $1->exceptions(std::ostream::eofbit | std::ostream::failbit
-                 | std::ostream::badbit);
+  $1->exceptions(std::ostream::badbit);
 }
 %typemap(freearg) std::ostream& {
   if ($1) delete $1;
@@ -22,13 +21,13 @@
 %{
 // Adapter class that acts like a std::streambuf but delegates to a Python
 // file-like object, p
-class PyFileAdapter : public std::streambuf
+class PyOutFileAdapter : public std::streambuf
 {
   PyObject *p_;
 public:
-  PyFileAdapter(PyObject *p) : p_(p) { Py_XINCREF(p_); }
+  PyOutFileAdapter(PyObject *p) : p_(p) { Py_XINCREF(p_); }
 
-  virtual ~PyFileAdapter() { Py_XDECREF(p_); }
+  virtual ~PyOutFileAdapter() { Py_XDECREF(p_); }
 
 protected:
   virtual int_type overflow(int_type c) {
@@ -53,6 +52,67 @@ protected:
       Py_DECREF(result);
     }
     return num;
+  }
+};
+%}
+
+
+// Typemaps to allow Python file objects to be used for C++ code that
+// expects a std::istream
+// Note: only 'real' file objects can be used (not file-like objects), i.e.
+// the objects must contain a FILE pointer, not simply a 'read' method. This
+// is because file-like objects do not support operations such as
+// ungetc, and the overhead of a Python method call for every getc is
+// probably too great.
+
+%typemap(in) std::istream& (PyInFileAdapter *tmp=NULL) {
+  if (!PyFile_Check($input)) {
+    SWIG_exception(SWIG_TypeError,
+               "Can only use Python file objects here (not file-like objects), "
+               "in method $symname, argument number $argnum");
+  }
+  tmp = new PyInFileAdapter(PyFile_AsFile($input));
+  $1 = new std::istream(tmp);
+  $1->exceptions(std::istream::badbit);
+}
+
+%typemap(freearg) std::istream& {
+  if ($1) delete $1;
+  if (tmp$argnum) delete tmp$argnum;
+}
+
+%typemap(typecheck) std::istream& = PyObject *;
+
+// Adapter class that acts like a std::streambuf but delegates to C-style
+// stdio via a FILE pointer
+%{
+class PyInFileAdapter : public std::streambuf
+{
+  FILE *fh_;
+public:
+  PyInFileAdapter(FILE *fh) : fh_(fh) {}
+
+  virtual ~PyInFileAdapter() {}
+
+protected:
+  virtual int_type uflow() {
+    return getc(fh_);
+  }
+
+  virtual int_type underflow() {
+    int c = getc(fh_);
+    if (c != EOF) {
+      ungetc(c, fh_);
+    }
+    return c;
+  }
+
+  virtual int_type pbackfail(int c) {
+    return c == EOF ? EOF : ungetc(c, fh_);
+  }
+
+  virtual int_type sync() {
+    return fflush(fh_);
   }
 };
 %}
