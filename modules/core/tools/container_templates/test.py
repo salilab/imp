@@ -1,3 +1,6 @@
+# NOTE: This file is generated from modules/core/tools/container_tempates/test.py
+# do not edit.
+
 import unittest
 import IMP
 import IMP.test
@@ -112,8 +115,6 @@ class ClassnameContainerTest(IMP.test.TestCase):
         print c.get_number_of_classnames()
         d= self.create_groupname_score()
         r= IMP.core.MinimumGroupnameScoreRestraint(d, c)
-        self.assert_(not d.thisown)
-        self.assert_(not c.thisown)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -141,8 +142,6 @@ class ClassnameContainerTest(IMP.test.TestCase):
         print c.get_number_of_classnames()
         d= self.create_groupname_score()
         r= IMP.core.MaximumGroupnameScoreRestraint(d, c)
-        self.assert_(not d.thisown)
-        self.assert_(not c.thisown)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -191,7 +190,6 @@ class ClassnameContainerTest(IMP.test.TestCase):
         c.add_groupname_filter(f)
         print "assert"
         f.show()
-        self.assert_(not f.thisown)
         print "range"
         for i in range(0,10):
             print "filter add"

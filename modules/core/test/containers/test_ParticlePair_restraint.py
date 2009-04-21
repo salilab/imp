@@ -1,3 +1,6 @@
+# NOTE: This file is generated from modules/core/tools/container_tempates/test.py
+# do not edit.
+
 import unittest
 import IMP
 import IMP.test
@@ -112,8 +115,6 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         print c.get_number_of_particle_pairs()
         d= self.create_pair_score()
         r= IMP.core.MinimumPairScoreRestraint(d, c)
-        self.assertEqual(d.get_ref_count(), 2)
-        self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -141,8 +142,6 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         print c.get_number_of_particle_pairs()
         d= self.create_pair_score()
         r= IMP.core.MaximumPairScoreRestraint(d, c)
-        self.assertEqual(d.get_ref_count(), 2)
-        self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
@@ -186,11 +185,9 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         c= IMP.core.FilteredListPairContainer()
         f= IMP.core.ListPairContainer()
-        self.assertEqual(f.get_ref_count(), 1)
         print "add"
         f.show()
         c.add_pair_filter(f)
-        self.assertEqual(f.get_ref_count(), 2)
         print "assert"
         f.show()
         print "range"

@@ -1,3 +1,7 @@
+# NOTE: This file is generated from modules/core/tools/container_tempates/test.py
+# do not edit.
+
+
 import unittest
 import IMP
 import IMP.test
@@ -117,7 +121,6 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         m= IMP.Model()
         print "hi"
         c= IMP.core.ListPairContainer()
-        self.assertEqual(c.get_ref_count(), 1)
         cs=[]
         for i in range(0,30):
             t=self.create_particle_pair(m)
@@ -126,13 +129,10 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         print "dl"
         k= IMP.IntKey("thevalue")
         f= PairTestModifier(k)
-        self.assertEqual(f.get_ref_count(), 1)
         print "apply"
         s= IMP.core.PairsScoreState(c, f, None)
-        self.assertEqual(f.get_ref_count(), 2)
-        self.assertEqual(c.get_ref_count(), 2)
-        m.add_score_state(s)
         print "add"
+        m.add_score_state(s)
         m.evaluate(False)
         for p in cs:
             self.assert_(particle_pair_has_attribute(p, k))
@@ -150,10 +150,8 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         print "dl"
         k= IMP.IntKey("thevalue")
         f= PairTestModifier(k)
-        self.assertEqual(f.get_ref_count(), 1)
         print "apply"
         s= self.create_pair_score_state(f, None, t)
-        self.assertEqual(f.get_ref_count(), 2)
         m.add_score_state(s)
         print "add"
         m.evaluate(False)
