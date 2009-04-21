@@ -1,6 +1,7 @@
 import unittest
 import IMP.test
 import IMP.algebra
+import os
 import math
 
 class Vector3DTests(IMP.test.TestCase):
@@ -9,6 +10,21 @@ class Vector3DTests(IMP.test.TestCase):
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         self.assertEqual(v.get_squared_magnitude(), 14.0)
         self.assertAlmostEqual(v.get_magnitude(), math.sqrt(14.0), places=1)
+
+    def test_io(self):
+        """Check I/O of Vector3Ds"""
+        vs1 = IMP.algebra.Vector3Ds()
+        vs1.push_back(IMP.algebra.Vector3D(1.0, 2.0, 3.0))
+        vs1.push_back(IMP.algebra.Vector3D(4.0, 5.0, 6.0))
+        self.assertRaises(AttributeError, IMP.algebra.write_pts, vs1, None)
+        IMP.algebra.write_pts(vs1, file('vectors', 'w'))
+        self.assertRaises(TypeError, IMP.algebra.read_pts, None)
+        vs2 = IMP.algebra.read_pts(file('vectors'))
+        for v1, v2 in ((vs1[0], vs2[0]), (vs1[1], vs2[1])):
+            self.assertEqual(v1[0], v2[0])
+            self.assertEqual(v1[1], v2[1])
+            self.assertEqual(v1[2], v2[2])
+        os.unlink('vectors')
 
     def test_component(self):
         """Check Vector3D components"""
