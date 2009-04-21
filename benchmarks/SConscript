@@ -3,7 +3,8 @@ import os.path
 
 Import('env')
 penv = env.Clone()
-penv.Prepend(LIBS=["imp", "imp_core", "imp_misc", "imp_domino", "imp_algebra"])
+penv.Prepend(LIBS=["imp", "imp_misc", "imp_domino", "imp_core", "imp_atom",
+                   "imp_algebra"])
 
 fs = Glob("*.cpp")
 
