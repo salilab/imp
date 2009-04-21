@@ -203,6 +203,22 @@ class ConstPairScore(IMP.PairScore):
     def show(self, t):
         print "ConstPairScore "+ str(self.v)
 
+class LogPairScore(IMP.PairScore):
+    def __init__(self, v):
+        IMP.PairScore.__init__(self)
+        self.log=[]
+    def evaluate(self, pa, pb, da):
+        self.log.append((pa,pb))
+        return 1
+    def get_log(self):
+        return self.log
+    def clear_log(self):
+        self.log=[]
+    def get_version_info(self):
+        return IMP.VersionInfo("Me", "0.5")
+    def show(self, t):
+        print "LogPairScore "
+
 
 class ConstUnaryFunction(IMP.UnaryFunction):
     def __init__(self, v):
