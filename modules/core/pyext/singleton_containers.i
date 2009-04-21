@@ -1,6 +1,7 @@
+/* DO NOT EDIT. Edit modules/core/tools/container-templates/swig.i instead */
+
 namespace IMP {
   namespace core {
-
     IMP_CONTAINER_SWIG(FilteredListSingletonContainer, SingletonFilter, singleton_filter)
     /*IMP_CONTAINER_SWIG(SingletonContainerSet, SingletonContainer, singleton_container)
     IMP_CONTAINER_SWIG(ListSingletonContainer, Singleton, singleton)*/
