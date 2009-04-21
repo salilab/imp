@@ -11,7 +11,7 @@
 
 #include "config.h"
 #include "def.h"
-#include "ErrorHandling.h"
+#include <IMP/exception.h>
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -195,15 +195,12 @@ public:
   //! Returns the origin on the map
   /**
   \param[in] i the relevant coordinate (0:x, 1:y, 2:z)
-  \exception EMBED_WrongValue if the value of i is out of range.
+  \exception ValueException if the value of i is out of range.
   */
   inline float get_origin(int i) const {
-    if (! (i>=0 && i<3)) {
-      std::ostringstream msg;
-      msg << "DensityHeader::get_origin >> the input parameter i is out of"
-      <<" range , should be between 0-2 and the value is " << i << "\n";
-      throw EMBED_WrongValue(msg.str().c_str());
-    }
+    IMP_check(i >= 0 && i <= 2,
+              "The origin coordinate should be between 0 and 2",
+              ValueException);
     switch (i) {
       case 0: return get_xorigin();
       case 1: return get_yorigin();

@@ -348,13 +348,10 @@ bool DensityMap::same_voxel_size(const DensityMap &other) const
 
 algebra::Vector3D DensityMap::get_centroid(emreal threshold)  {
   emreal max_val = get_max_value();
-  if (threshold >= max_val) {
-    std::ostringstream msg;
-    msg << "DensityMap::get_centroid >> The input threshold with value " <<
-    threshold << " is higher than the maximum density in the map " <<
-      max_val << std::endl;
-    throw EMBED_WrongValue(msg.str().c_str());
-  }
+  IMP_check(threshold < max_val,
+            "The input threshold with value " << threshold
+            << " is higher than the maximum density in the map " << max_val,
+            ValueException);
   float x_centroid = 0.0;
   float y_centroid = 0.0;
   float z_centroid = 0.0;
@@ -424,22 +421,16 @@ void DensityMap::multiply(float factor) {
 
 void DensityMap::add(const DensityMap &other) {
   //check that the two maps have the same dimensions
-  if (!same_dimensions(other)){
-    std::ostringstream msg;
-    msg << " DensityMap::add >> The dimensions of the two maps differ ( ";
-    msg << header_.nx <<"," << header_.ny << "," << header_.nz << ") != (";
-    msg << other.header_.nx <<"," << other.header_.ny << ",";
-    msg << other.header_.nz << " ) "<< std::endl;
-    throw EMBED_WrongValue(msg.str().c_str());
-  }
-  // check that the two maps have the same dimensions
-  if (!same_voxel_size(other)){
-    std::ostringstream msg;
-    msg << " DensityMap::add >> The voxel sizes of the two maps differ ( ";
-    msg << header_.Objectpixelsize << " != " << other.header_.Objectpixelsize;
-    msg << std::endl;
-    throw EMBED_WrongValue(msg.str().c_str());
-  }
+  IMP_check(same_dimensions(other),
+            "The dimensions of the two maps differ ( " << header_.nx
+            << "," << header_.ny << "," << header_.nz << ") != ("
+            << other.header_.nx << "," << other.header_.ny << ","
+            << other.header_.nz << " ) ", ValueException);
+  // check that the two maps have the same voxel size
+  IMP_check(same_voxel_size(other),
+            "The voxel sizes of the two maps differ ( "
+            << header_.Objectpixelsize << " != "
+            << other.header_.Objectpixelsize, ValueException);
   long size = header_.nx * header_.ny * header_.nz;
   for (long i=0;i<size;i++){
     data_[i]= data_[i] + other.data_[i];

@@ -7,6 +7,7 @@
  */
 
 #include <IMP/em/MRCReaderWriter.h>
+#include <IMP/em/ErrorHandling.h>
 
 IMPEM_BEGIN_NAMESPACE
 
