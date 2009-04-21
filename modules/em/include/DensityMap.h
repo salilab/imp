@@ -11,7 +11,6 @@
 
 #include "config.h"
 #include "DensityHeader.h"
-#include "ErrorHandling.h"
 #include "MapReaderWriter.h"
 #include <IMP/algebra/Vector3D.h>
 #include <iostream>
@@ -134,41 +133,32 @@ public:
 
   //! Returns the x-location of the map
   /**
-  \exception EMBED_LogicError The locations have not been calculated.
+  \exception InvalidStateException The locations have not been calculated.
   */
   float* get_x_loc() const {
-    if (!loc_calculated_) {
-      std::ostringstream msg;
-      msg << " DensityMap::get_x_loc >> "
-      "x location requested before being calculated \n";
-      throw EMBED_LogicError(msg.str().c_str());
-    }
+    IMP_check(loc_calculated_,
+              "x location requested before being calculated",
+              InvalidStateException);
     return x_loc_;
   }
   //! Returns the y-location of the map
   /**
-  \exception EMBED_LogicError The locations have not been calculated.
+  \exception InvalidStateException The locations have not been calculated.
   */
   float* get_y_loc() const {
-    if (!loc_calculated_) {
-      std::ostringstream msg;
-      msg << " DensityMap::get_y_loc >> "
-      "y location requested before being calculated \n";
-      throw EMBED_LogicError(msg.str().c_str());
-    }
+    IMP_check(loc_calculated_,
+              "y location requested before being calculated",
+              InvalidStateException);
     return y_loc_;
   }
   //! Returns the z-location of the map
   /**
-  \exception IndexException The locations have not been calculated.
+  \exception InvalidStateException The locations have not been calculated.
   */
   float* get_z_loc() const {
-    if (!loc_calculated_) {
-      std::ostringstream msg;
-      msg << " DensityMap::get_z_loc >> "
-      "z location requested before being calculated \n";
-      throw EMBED_LogicError(msg.str().c_str());
-    }
+    IMP_check(loc_calculated_,
+              "z location requested before being calculated",
+              InvalidStateException);
     return z_loc_;
   }
 

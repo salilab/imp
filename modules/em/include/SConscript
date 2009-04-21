@@ -7,7 +7,6 @@ files = [
          'DensityHeader.h',
          'DensityMap.h',
          'EMReaderWriter.h',
-         'ErrorHandling.h',
          'EulerOperations.h',
          'FitRestraint.h',
          'IMPParticlesAccessPoint.h',

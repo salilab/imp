@@ -10,7 +10,7 @@
 #define IMPEM_KERNEL_PARAMETERS_H
 
 #include "def.h"
-#include "ErrorHandling.h"
+#include <IMP/exception.h>
 #include <map>
 #include <cmath>
 #include <iostream>
@@ -85,22 +85,13 @@ public:
     \exception if the parameters of the radius have not been set
   */
   const KernelParameters::Parameters* find_params(float radius) {
-    if (!initialized) {
-      std::ostringstream msg;
-      msg << " KernelParameters::find_params >> "
-      "The Kernel Parameters are not initialized\n";
-      std::cout<<msg.str().c_str()<<std::endl;
-      throw EMBED_LogicError(msg.str().c_str());
-    }
+    IMP_check(initialized, "The Kernel Parameters are not initialized",
+              InvalidStateException);
     std::map<float, const KernelParameters::Parameters *>::iterator iter
         = radii2params.find(radius);
-    if (iter == radii2params.end()) {
-      std::ostringstream msg;
-      msg << " KernelParameters::find_params >> "
-      "The parameters for the radius " << radius << " have not been set\n";
-      std::cout<<msg.str().c_str()<<std::endl;
-      throw EMBED_LogicError(msg.str().c_str());
-    }
+    IMP_check(iter != radii2params.end(),
+              "The parameters for the radius " << radius
+              << " have not been set", InvalidStateException);
     return radii2params[radius];
   }
 

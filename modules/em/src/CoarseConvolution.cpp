@@ -21,27 +21,18 @@ float CoarseConvolution::convolution(const DensityMap &f, DensityMap &g,
   const emreal *g_data = g.get_data();
 
   //validity checks
-  if (!f.same_dimensions(g)){
-    std::ostringstream msg;
-    msg << "CoarseCC::cross_correlation_coefficient >> This function "
-       << "cannot handle density maps of different size\n"<<
-    "First map dimensions : " << f_header->nx << " x "
-       << f_header->ny << " x " << f_header->nz << std::endl <<
-    "Second map dimensions: " << g_header->nx << " x "
-              << g_header->ny << " x " << g_header->nz << std::endl;
-    std::cerr<<msg.str()<<std::endl;
-    throw EMBED_LogicError(msg.str().c_str());
-  }
-  if (!f.same_voxel_size(g)){
-    std::ostringstream msg;
-    msg << "CoarseConvolution::cross_correlation_coefficient >> This function "
-    << "cannot handle density maps of different pixelsize "
-    << std::endl << "First map pixelsize : " << f_header->Objectpixelsize
-    << std::endl << "Second map pixelsize: " << g_header->Objectpixelsize
-    << std::endl;
-    std::cerr<<msg.str()<<std::endl;
-    throw EMBED_LogicError(msg.str().c_str());
-  }
+  IMP_check(f.same_dimensions(g),
+            "This function cannot handle density maps of different size. "
+            << "First map dimensions : " << f_header->nx << " x "
+            << f_header->ny << " x " << f_header->nz
+            << "; Second map dimensions: " << g_header->nx << " x "
+            << g_header->ny << " x " << g_header->nz,
+            InvalidStateException);
+  IMP_check(f.same_voxel_size(g),
+            "This function cannot handle density maps of different pixelsize. "
+            << "First map pixelsize : " << f_header->Objectpixelsize
+            << "; Second map pixelsize: " << g_header->Objectpixelsize,
+            InvalidStateException);
   bool same_origin = f.same_origin(g);
   int  nvox = f_header->nx*f_header->ny*f_header->nz;
   emreal conv = 0.0;

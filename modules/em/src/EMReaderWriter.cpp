@@ -86,12 +86,9 @@ void EMReaderWriter::Read(const char *filename, float **data,
 {
   std::ifstream file;
   file.open(filename, std::ifstream::in | std::ifstream::binary);
-  if (!file.good()) {
-    std::ostringstream msg;
-    msg << " EMReaderWriter::Read >> The file "
-    << filename << " was not found.\n";
-    throw EMBED_IOException(msg.str().c_str());
-  }
+  IMP_check(file.good(),
+            "EMReaderWriter::Read >> The file " << filename
+            << " was not found.", IOException);
   file.exceptions(std::ifstream::eofbit | std::ifstream::failbit
                   | std::ifstream::badbit);
   EMHeader eheader;
@@ -178,12 +175,9 @@ void EMReaderWriter::WriteHeader(std::ostream& s, const EMHeader &header)
 #endif
 
   s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
-  if(s.bad())
-    {
-      std::ostringstream msg;
-      msg << " EMReaderWriter::WriteHeader >> Error writing header to file.\n";
-      throw EMBED_IOException(msg.str().c_str());
-    }
+  IMP_check(!s.bad(),
+            "EMReaderWriter::WriteHeader >> Error writing header to file.",
+            IOException);
 }
 
 
@@ -218,12 +212,9 @@ void EMReaderWriter::ReadData(std::ifstream &file, float **data,
 
     // allocate data
     *data = new float[nvox];
-    if (*data == NULL) {
-      std::ostringstream msg;
-      msg << " EMReaderWriter::ReadData >> can not allocated space for data. "
-          "Requested size: " << nvox*sizeof(float) <<  "\n";
-     throw EMBED_IOException(msg.str().c_str());
-    }
+    IMP_check(*data,
+              "EMReaderWriter::ReadData >> can not allocated space for data. "
+              "Requested size: " << nvox*sizeof(float), IOException);
 
     // a density of a single voxel can be reprented in 1 to 4 bytes.
     // header.type provides this information.
@@ -240,10 +231,9 @@ void EMReaderWriter::ReadData(std::ifstream &file, float **data,
         voxel_data_size =sizeof(float);
       break;
     default:
-      std::ostringstream msg;
-      msg << "EMReaderWriter::ReadData the requested data type "
-         << header.type << " is not implemented.\n";
-     throw EMBED_IOException(msg.str().c_str());
+      IMP_failure("EMReaderWriter::ReadData the requested data type "
+                  << header.type << " is not implemented.",
+                  IOException);
     }
 
     char *voxeldata = new char[nvox * voxel_data_size];

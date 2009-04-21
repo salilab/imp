@@ -127,6 +127,17 @@ public:
   ~ValueException() throw();
 };
 
+//! An input/output exception
+/** \ingroup assert
+ */
+class IMPEXPORT IOException: public Exception
+{
+public:
+  //! Create exception with an error message
+  IOException(const char *t): Exception(t){}
+  ~IOException() throw();
+};
+
 //! Determine the level of runtime checks performed
 /** NONE means that minimial checks are used. CHEAP
     means that only constant time checks are performed

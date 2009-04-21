@@ -432,12 +432,9 @@ void DensityMap::add(const DensityMap &other) {
 
 void DensityMap::pad(int nx, int ny, int nz,float val) {
 
-  if (nx<header_.nx || ny<header_.ny || nz<header_.nz) {
-    std::ostringstream msg;
-    msg << "DensityMap::pad The requested volume is smaller";
-    msg << " than the existing one\n";
-    throw EMBED_LogicError(msg.str().c_str());
-  }
+  IMP_check(nx >= header_.nx && ny >= header_.ny && nz >= header_.nz,
+            "The requested volume is smaller than the existing one",
+            InvalidStateException);
 
   long new_size = nx*ny*nz;
   long cur_size = get_number_of_voxels();

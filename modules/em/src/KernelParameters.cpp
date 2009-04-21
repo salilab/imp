@@ -52,23 +52,15 @@ void KernelParameters::init(float resolution_)
 
 
 void KernelParameters::set_params(float radius) {
-  if (!initialized) {
-       std::ostringstream msg;
-        msg << " KernelParameters::set_params >> "
-              "The Kernel Parameters are not initialized \n";
-        std::cerr<<msg.str()<<std::endl;
-        throw EMBED_LogicError(msg.str().c_str());
-      }
+  IMP_check(initialized,
+            "The Kernel Parameters are not initialized",
+            InvalidStateException);
   std::map<float ,const KernelParameters::Parameters *>::iterator iter =
                    radii2params.find(radius);
-  if (iter !=  radii2params.end()) {
-    std::ostringstream msg;
-    msg << " KernelParameters::set_params >> "
-     "The Kernel Parameters for the radius " << radius
-     << " have already been calculated \n";
-    std::cerr<<msg.str()<<std::endl;
-    throw EMBED_LogicError(msg.str().c_str());
-  }
+  IMP_check(iter == radii2params.end(),
+            "The Kernel Parameters for the radius " << radius
+            << " have already been calculated",
+            InvalidStateException);
   radii2params[radius]=new Parameters(radius,rsigsq,timessig,sq2pi3,
                                           inv_rsigsq,rnormfac,rkdist);
 }

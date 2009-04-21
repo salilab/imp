@@ -51,6 +51,10 @@ ValueException::~ValueException() throw()
 {
 }
 
+IOException::~IOException() throw()
+{
+}
+
 namespace
 {
 

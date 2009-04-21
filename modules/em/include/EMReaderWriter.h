@@ -13,7 +13,6 @@
 #include "MapReaderWriter.h"
 #include "DensityHeader.h"
 #include "def.h"
-#include "ErrorHandling.h"
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -200,7 +199,7 @@ public:
   \param[in] filename name of the file to read
   \param[in] data pointer to the data
   \param[in] header DensityHeader() to store the header information
-  \exception EMBED_IOException in case that the filename was not found
+  \exception IOException in case that the filename was not found
   */
   void Read(const char *filename, float **data, DensityHeader &header);
   //! Writes a density file in EM format with the header information
@@ -224,15 +223,15 @@ protected:
   \param file ifstream of the file to read
   \param data pointer to store the data
   \param header EMHeader() to store the header information
-  \exception EMBED_IOException if the data allocation had failed
-  \exception  EMBED_IOException is the requested data type is not implemented
+  \exception IOException if the data allocation had failed
+  \exception  IOException is the requested data type is not implemented
   */
   void ReadData(std::ifstream &file, float **data, const EMHeader &header);
   //! Writes the header
   /**
   \param[in] file ofstream of the file to write
   \param[in] header EMHeader() with the header information
-  \exception EMBED_IOException if the writing operation had failed.
+  \exception IOException if the writing operation had failed.
   */
   void WriteHeader(std::ostream& s, const EMHeader &header);
 };
