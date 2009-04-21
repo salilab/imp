@@ -674,8 +674,46 @@ public:                                                                 \
   IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 
-//! Define the functions needed for a SingletonModifier
-/** \see IMP_SINGLETON_MODIFIER_DA
+//! Declare the functions needed for a SingletonScore
+/** The declared functions are:
+    - void show(std::ostream &) const
+    - double evaluate(Particle *a, DerivativeAccumulator *da) const
+    The defined function is
+    - VersionInfo get_version_info() const
+    - The destructor
+ */
+#define IMP_SINGLETON_SCORE(ClassName, version)  \
+  VersionInfo get_version_info() const {return version;}         \
+  void show(std::ostream &out= std::cout) const;                 \
+  double evaluate(Particle *a, DerivativeAccumulator *da) const; \
+  IMP_REF_COUNTED_DESTRUCTOR(ClassName)
+
+
+//! Declare the functions needed for a PairScore
+/** The declared functions are:
+    - void show(std::ostream &) const
+    - double evaluate(Particle *a, Particle *b, DerivativeAccumulator *da) const
+    The defined function is
+    - VersionInfo get_version_info() const
+    - The destructor
+ */
+#define IMP_PAIR_SCORE(ClassName, version)  \
+  VersionInfo get_version_info() const {return version;}         \
+  void show(std::ostream &out= std::cout) const;                 \
+  double evaluate(Particle *a, Particle *b,                      \
+                  DerivativeAccumulator *da) const;              \
+  IMP_REF_COUNTED_DESTRUCTOR(ClassName)
+
+
+//! Declare the functions needed for a SingletonModifier
+/** The declared functins are:
+    - void show(std::ostream &) const
+    - void apply(Particle *) const
+    The defined functions are:
+    - get_version_info() const
+    - void apply(Particle *a, DerivativeAccumulator&) const
+
+    \see IMP_SINGLETON_MODIFIER_DA
  */
 #define IMP_SINGLETON_MODIFIER(version)                          \
   VersionInfo get_version_info() const {return version;}         \
@@ -687,8 +725,14 @@ public:                                                                 \
 
 
 
-//! Define the functions needed for a PairModifier
-/** \see IMP_PAIR_MODIFIER_DA
+//! Declare the functions needed for a PairModifier
+/** The declared functins are:
+    - void show(std::ostream &) const
+    - void apply(Particle *, Particle *b) const
+    The defined functions are:
+    - get_version_info() const
+    - void apply(Particle *, Particle *, DerivativeAccumulator&) const
+    \see IMP_PAIR_MODIFIER_DA
  */
 #define IMP_PAIR_MODIFIER(version)                                      \
   VersionInfo get_version_info() const {return version;}                \
@@ -699,7 +743,7 @@ public:                                                                 \
   }
 
 
-//! Define the functions needed for a SingletonModifier
+//! Declare the functions needed for a SingletonModifier
 /** This version takes a derivative accumulator.
    \see IMP_SINGLETON_MODIFIER
  */
@@ -713,7 +757,7 @@ public:                                                                 \
  }
 
 
-//! Define the functions needed for a PairModifier
+//! Declare the functions needed for a PairModifier
 /** This version takes a derivative accumulator.
     \see IMP_PAIR_MODIFIER
  */
@@ -725,7 +769,7 @@ public:                                                                 \
    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator "  \
          << *this << std::endl);                                        \
  }
-//! Define the needed functions for a SingletonContainer
+//! Declare the needed functions for a SingletonContainer
 /** You need to implement
     - get_contains_particle
     - get_number_of_particles
@@ -743,7 +787,7 @@ public:                                                                 \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                  \
   public:
 
-//! Define the needed functions for a PairContainer
+//! Declare the needed functions for a PairContainer
 /** \relates IMP::PairContainer
     See IMP_SINGLETON_CONTAINER() for full documentation.
  */
@@ -758,7 +802,7 @@ public:                                                                 \
 
 
 
-//! Define the needed functions for a UnaryFunction
+//! Declare the needed functions for a UnaryFunction
 /** \relates IMP::UnaryFunction
     This macro declares the methods:
     - Object::show()
@@ -778,10 +822,10 @@ public:                                                                 \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
   public:
 
-//! Define the needed functions for a UnaryFunction which evaluates inline
+//! Declare the needed functions for a UnaryFunction which evaluates inline
 /** \relates IMP::UnaryFunction
 
-    This macro defines all the functions needed for an IMP::UnaryFunction
+    This macro declares all the functions needed for an IMP::UnaryFunction
     inline in the class. There is no need for an associated \c .cpp file.
 
     The last three arguments are expressions that evaluate to the
