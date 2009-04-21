@@ -1,6 +1,7 @@
+/* DO NOT EDIT. Edit modules/core/tools/container-templates/swig.i instead */
+
 namespace IMP {
   namespace core {
-
     IMP_CONTAINER_SWIG(FilteredListPairContainer, PairFilter, pair_filter)
     /*IMP_CONTAINER_SWIG(PairContainerSet, PairContainer, pair_container)
     IMP_CONTAINER_SWIG(ListPairContainer, Pair, pair)*/
