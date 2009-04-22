@@ -122,7 +122,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
     algebra::Vector3D cv=cm.get_coordinates()-v;
     algebra::Vector3D lc= roti.rotate(cv);
     cm.set_internal_coordinates(lc);
-     IMP_LOG(VERBOSE, "Member particle is " << cm << std::endl);
+    IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
 
   IMP_IF_CHECK(EXPENSIVE) {
@@ -286,13 +286,11 @@ void RigidBodyDecorator::show(std::ostream &out, std::string prefix) const {
       << " "
       << get_particle()->get_derivative(internal::rigid_body_data()
                                         .quaternion_[3])
-      << ")"
-      << std::endl;;
+      << ")";
 }
 
 void RigidMemberDecorator::show(std::ostream &out, std::string prefix) const {
-  out << prefix << "RigidMember " << get_coordinates() << " "
-      << get_internal_coordinates() << std::endl;;
+  out << prefix << "Member at " << get_internal_coordinates();
 }
 
 
@@ -437,6 +435,20 @@ ScoreState* create_rigid_body(Particle *p,
   rbd.set_coordinates_are_optimized(true, snapping);
   SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, p);
   return sss;
+}
+
+
+
+void cover_members(RigidBodyDecorator d, FloatKey rk) {
+  double md=0;
+  for (unsigned int i=0; i< d.get_number_of_members(); ++i) {
+    double cd= d.get_member(i).get_internal_coordinates().get_magnitude();
+    if (d.get_member(i).get_particle()->has_attribute(rk)) {
+      cd+= d.get_member(i).get_particle()->get_value(rk);
+    }
+    md=std::max(cd, md);
+  }
+  d.get_particle()->add_attribute(rk, md);
 }
 
 IMPCORE_END_NAMESPACE
