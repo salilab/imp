@@ -69,7 +69,13 @@ protected:
 // http://www.python.org/doc/faq/windows/#pyrun-simplefile-crashes-on-windows-but-not-on-unix-why
 
 %typemap(in) std::istream& (std::streambuf *tmp=NULL) {
-  if (PyFile_Check($input) && ftell(PyFile_AsFile($input)) != -1) {
+  bool real_file;
+  try {
+    real_file = (PyFile_Check($input) && ftell(PyFile_AsFile($input)) != -1);
+  } catch(...) {
+    real_file = false;
+  }
+  if (real_file) {
     tmp = new PyInFileAdapter(PyFile_AsFile($input));
   } else {
     tmp = new PyInFilelikeAdapter($input);
