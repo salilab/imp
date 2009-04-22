@@ -19,12 +19,17 @@ m.add_score_state(rbss0)
 rbss1 = IMP.core.create_rigid_body(rbp1, rbps1)
 m.add_score_state(rbss1)
 
+# make sure the rigid bodies have a large enough radius to include their members
+IMP.core.cover_members(IMP.core.RigidBodyDecorator(rbp0))
+IMP.core.cover_members(IMP.core.RigidBodyDecorator(rbp1))
+
 lsc= IMP.core.ListSingletonContainer()
 lsc.add_particle(rbp0)
 lsc.add_particle(rbp1)
 
 # Set up the nonbonded list
-nbl= IMP.core.ClosePairsScoreState(lsc, IMP.core.RigidClosePairsFinder())
+nbl= IMP.core.ClosePairsScoreState(lsc)
+nbl.set_close_pairs_finder(IMP.core.RigidClosePairsFinder())
 m.add_score_state(nbl)
 # Set the amount particles need to move before the list is updated
 nbl.set_slack(2.0)
