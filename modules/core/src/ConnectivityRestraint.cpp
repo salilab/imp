@@ -15,8 +15,9 @@
 #include <IMP/log.h>
 #include <IMP/PairScore.h>
 
+#include <climits>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
-
+#include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 
@@ -44,6 +45,7 @@ namespace {
   typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
                         boost::property<boost::edge_weight_t, double> > Graph;
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
+  typedef Graph::edge_property_type Weight;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
   void compute_mst(const ConnectivityRestraint *a,
@@ -57,12 +59,23 @@ namespace {
                 << a->get_particle(i)->get_name() << " and "
                 << a->get_particle(j)->get_name() << " with weight "
                 << d << std::endl);
-        Edge e = boost::add_edge(i, j, g).first;
-        boost::put(boost::edge_weight_t(), g, e, d);
+        /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
+        //boost::put(boost::edge_weight_t(), g, e, d);
       }
     }
+    mst.resize(a->get_number_of_particles()-1);
+    boost::kruskal_minimum_spanning_tree(g, mst.begin());
 
-    boost::kruskal_minimum_spanning_tree(g, std::back_inserter(mst));
+    /*
+    boost::property_map<Graph, boost::vertex_index_t>::type indexmap
+      = get(boost::vertex_index, g);
+    boost::prim_minimum_spanning_tree(g, indexmap);
+    for (unsigned int i=0; i< a->get_number_of_particles(); ++i) {
+      Vertex cv= boost::vertex(i,g);
+      if (boost::get(indexmap, cv) !=  cv) {
+        mst.push_back(boost::edge(cv, boost::get(indexmap, cv), g).first);
+      }
+      }*/
   }
 
 }
