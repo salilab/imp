@@ -47,6 +47,8 @@ IMPCORE_BEGIN_NAMESPACE
     grid cells to use should be explored. In addition, with highly
     excentric sets of points, there will be too many cells.
 
+    \verbinclude simple_examples/rigid_collisions.py
+
     \see ClosePairsScoreState
     \see RigidBodyDecorator
     \see cover_members()
