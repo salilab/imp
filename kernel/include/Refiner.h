@@ -49,8 +49,8 @@ public:
 
   /** @name Iterating through the set of refined particles
 
-      Using iterators can be more efficient, however it is not
-      necessarily so.
+      Using iterators can be more efficient than using the bulk
+      get_refined(), however it is not necessarily so.
       @{
   */
   typedef internal::IndexingIterator<Accessor> RefinedIterator;
