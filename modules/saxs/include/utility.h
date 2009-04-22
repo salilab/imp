@@ -34,6 +34,29 @@ inline Float compute_max_distance(const std::vector<Particle*>& particles) {
   return sqrt(max_dist2);
 }
 
+//! compute max distance between pairs of particles one from particles1
+//! and the other from particles2
+inline Float compute_max_distance(const std::vector<Particle*>& particles1,
+                                  const std::vector<Particle*>& particles2) {
+  Float max_dist2 = 0;
+  std::vector<algebra::Vector3D> coordinates1(particles1.size());
+  std::vector<algebra::Vector3D> coordinates2(particles2.size());
+  for (unsigned int i = 0; i < particles1.size(); i++) {
+    coordinates1[i] = core::XYZDecorator::cast(particles1[i]).get_coordinates();
+  }
+  for (unsigned int i = 0; i < particles2.size(); i++) {
+    coordinates2[i] = core::XYZDecorator::cast(particles2[i]).get_coordinates();
+  }
+  for (unsigned int i = 0; i < coordinates1.size(); i++) {
+    for (unsigned int j = i + 1; j < coordinates2.size(); j++) {
+      Float dist2 = squared_distance(coordinates1[i], coordinates2[j]);
+      if(dist2 > max_dist2)
+        max_dist2 = dist2;
+    }
+  }
+  return sqrt(max_dist2);
+}
+
 //! compute radius_of_gyration
 inline Float radius_of_gyration(const std::vector<Particle*>& particles) {
   algebra::Vector3D centroid(0.0, 0.0, 0.0);

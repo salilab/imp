@@ -3,8 +3,9 @@ Import('env')
 files = [
          'FormFactorTable.h',
          'Distribution.h',
-         'SAXSProfile.h',
-         'SAXSScore.h',
+         'Profile.h',
+         'Score.h',
+         'Restraint.h',
          'utility.h']
 
 # Install the include files:

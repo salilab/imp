@@ -14,8 +14,8 @@
 
 #include "config.h"
 #include "FormFactorTable.h"
-#include "SAXSProfile.h"
-#include "SAXSScore.h"
+#include "Profile.h"
+#include "Score.h"
 #include <IMP/algebra/utility.h>
 #include <IMP/Particle.h>
 
@@ -76,7 +76,7 @@ public:
   RadialDistributionFunction(FormFactorTable* ff_table,
                              Float bin_size = pr_resolution);
 
-  friend class SAXSProfile;
+  friend class Profile;
 
   //! computes radial distribution function for a set of particles
   void calculate_distribution(const std::vector<Particle*>& particles);
@@ -125,9 +125,10 @@ public:
   //! Constructor
   DeltaDistributionFunction(FormFactorTable* ff_table,
                             const std::vector<Particle*>& particles,
+                            Float max_distance = 0.0,
                             Float bin_size = pr_resolution);
 
-  friend class SAXSScore;
+  friend class Score;
 
   //! calculates distribution for an atom defined by particle
   void calculate_derivative_distribution(Particle* particle);
@@ -139,9 +140,10 @@ public:
   void add_to_distribution(Float dist, const algebra::Vector3D& value) {
     unsigned int index = dist2index(dist);
     if (index >= distribution_.size()) {
-      std::cerr << "DeltaDistributionFunction::add_to_distribution"
-                << " - distance out of range " << std::endl;
-      return;
+      if(distribution_.capacity() <= index)
+        distribution_.reserve(2 * index);   // to avoid many re-allocations
+      distribution_.resize(index + 1, algebra::Vector3D(0.0, 0.0, 0.0));
+      max_distance_ = index2dist(index + 1);
     }
     distribution_[index] += value;
   }

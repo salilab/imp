@@ -4,10 +4,10 @@ e = env.IMPSharedLibraryEnvironment()
 files = [
          'FormFactorTable.cpp',
          'Distribution.cpp',
-         'SAXSProfile.cpp',
-         'SAXSScore.cpp',
+         'Profile.cpp',
+         'Score.cpp',
+         'Restraint.cpp'
         ]
 
 # Build and install the shared library:
 e.IMPSharedLibrary(files, install=True)
-#e.IMPStaticLibrary(files, install=True)
