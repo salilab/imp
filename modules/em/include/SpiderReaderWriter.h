@@ -87,7 +87,7 @@ public:
     header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
     // Adjust size of the matrix according to the header
     data.resize(header.get_rows(),header.get_columns());
-    data.read_binary(in,force_reversed_);
+    data.read_binary(in,force_reversed_ ^ algebra::is_big_endian());
     in.close();
   }
 
@@ -103,8 +103,8 @@ public:
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     //! Take advantage that the image header is already in Spider format and
     //! just write it
-    header.write(out, force_reversed_);
-    data.write_binary(out,force_reversed_);
+    header.write(out, force_reversed_ ^ algebra::is_big_endian());
+    data.write_binary(out,force_reversed_ ^ algebra::is_big_endian());
     out.close();
   }
 };
