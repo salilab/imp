@@ -113,9 +113,15 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
   }
 
   static bool is_instance_of(Particle *p) {
-    return p->has_attribute(get_coordinate_key(0))
-      && p->has_attribute(get_coordinate_key(1))
-      && p->has_attribute(get_coordinate_key(2));
+    IMP_check((p->has_attribute(get_coordinate_key(2))
+               && p->has_attribute(get_coordinate_key(0))
+               && p->has_attribute(get_coordinate_key(1)))
+              || (!p->has_attribute(get_coordinate_key(2))
+                  && !p->has_attribute(get_coordinate_key(0))
+                  && !p->has_attribute(get_coordinate_key(1))),
+              "Particle expected to either have all of x,y,z or none.",
+              InvalidStateException);
+    return p->has_attribute(get_coordinate_key(2));
   }
 
   //! Get a vector containing the keys for x,y,z
