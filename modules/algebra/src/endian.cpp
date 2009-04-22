@@ -18,7 +18,7 @@ void reversed_read(void *dest, size_t size, size_t nitems, std::ifstream& f,
     bool end = false;
     for (size_t n = 0; n < nitems; n++) {
       for (int i = size - 1; i >= 0; i--) {
-        f.get(ptr + i,1);
+        f.get(ptr[i]);
         if (f.eof() || f.bad()) {
           end = true;
           break;
