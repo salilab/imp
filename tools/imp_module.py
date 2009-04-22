@@ -332,7 +332,7 @@ def _action_unit_test(target, source, env):
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
     else:
-        print "unit tests FAILED"
+        print "IMP.%s unit tests FAILED" % env['IMP_MODULE']
         return 1
 
 def _print_unit_test(target, source, env):
