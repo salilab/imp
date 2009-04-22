@@ -14,22 +14,25 @@
 #include <map>
 #include <sstream>
 
-#define KEY_OPT "OPT"
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-class SimpleDiscreteSpace : public DiscreteSet
+class IMPDOMINOEXPORT SimpleDiscreteSpace : public DiscreteSet
 {
 public:
+  static FloatKey get_optimization_key();
+
   SimpleDiscreteSpace(int number_of_states): m_(new Model()){
-    atts_.push_back(FloatKey(KEY_OPT));
+    atts_.push_back(get_optimization_key());
     Particle * p;
     for (int j = 0;j < number_of_states;j++) {
       p = new Particle(m_);
-      p->add_attribute(KEY_OPT,j,true);
+      p->add_attribute(get_optimization_key(),j,true);
       states_.push_back(p);
     }
   }
+
+  ~SimpleDiscreteSpace();
 
 protected:
   Pointer<Model> m_;

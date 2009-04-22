@@ -17,8 +17,6 @@
 #include <string>
 #include <climits>
 
-#define KEY_OPT "OPT"
-
 IMPDOMINO_BEGIN_NAMESPACE
 
 /**
