@@ -18,8 +18,12 @@
   virtual void show(std::ostream &out=std::cout) const;                 \
   ~Name(){                                                              \
     if (get_stream_is_open()) {                                         \
-    on_close();                                                         \
-  }                                                                     \
+      on_close();                                                       \
+    } else if (!get_file_name().empty()) {                              \
+      /* make sure a file is writen even if there is no geometry */     \
+      get_stream();                                                     \
+      on_close();                                                       \
+    }                                                                   \
   }                                                                     \
 protected:                                                              \
  virtual void on_open();                                                \
