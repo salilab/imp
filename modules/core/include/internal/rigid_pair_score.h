@@ -33,7 +33,7 @@ public:
   Particle* get_particle(unsigned int ni, unsigned int i,
                             Particle *p) const;
   const algebra::Sphere3D &get_sphere(unsigned int ni) const;
-  void show_tree(std::ostream &out) const;
+  void show_tree(std::ostream &out, Particle *p) const;
   std::vector<algebra::Sphere3D> get_spheres() const;
 };
 
