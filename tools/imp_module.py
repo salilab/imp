@@ -209,12 +209,20 @@ def IMPSharedLibrary(env, files, install=True):
                             list(files) + [env['VER_CPP'], \
                                                env['LINK_0_CPP'],\
                                                env['LINK_1_CPP']])
+
+    if env['build']=='profile' and env['CC'] == 'gcc':
+        staticlib = env.StaticLibrary('#/build/lib/imp_%s' % module,
+                                      list(files) + [env['VER_CPP'], \
+                                                     env['LINK_0_CPP'],\
+                                                     env['LINK_1_CPP']])
     if env['PLATFORM'] == 'darwin':
         env.AddPostAction (lib, "install_name_tool -id %s %s" \
                                % (lib[0].abspath, lib[0].path))
         libdir= os.path.split(lib[0].abspath)[0]
     if install:
         libinst = env.Install(env['libdir'], lib)
+        if env['build']=='profile' and env['CC'] == 'gcc':
+            staticlibinst = env.Install(env['libdir'], staticlib)
         if env['PLATFORM'] == 'darwin':
             env.AddPostAction (libinst, "install_name_tool -id %s %s" \
                                    % (libinst[0].abspath, libinst[0].path))
@@ -225,9 +233,16 @@ def IMPSharedLibrary(env, files, install=True):
                                    % (libdir, instlibdir, libinst[0].path))
         for alias in _get_module_install_aliases(env):
             env.Alias(alias, [libinst])
-        return lib, libinst
+
+        if env['build']=='profile' and env['CC'] == 'gcc':
+            return lib, staticlib, libinst, staticlibinst
+        else:
+            return lib, libinst
     else:
-        return lib
+        if env['build']=='profile' and env['CC'] == 'gcc':
+            return lib, staticlib
+        else:
+            return lib
 
 def IMPSharedLibraryEnvironment(env):
     """Create a customized environment suitable for building IMP module C++
