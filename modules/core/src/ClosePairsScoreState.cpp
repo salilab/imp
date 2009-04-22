@@ -47,10 +47,12 @@ void ClosePairsScoreState::initialize() {
 
 void ClosePairsScoreState::set_distance(Float d) {
   distance_=d;
+  f_->set_distance(distance_+slack_);
 }
 
 void ClosePairsScoreState::set_slack(Float d) {
   slack_=d;
+  f_->set_distance(distance_+slack_);
 }
 
 void ClosePairsScoreState::set_singleton_container(SingletonContainer *pc) {
@@ -62,12 +64,15 @@ void ClosePairsScoreState::set_singleton_container(SingletonContainer *pc) {
 
 void ClosePairsScoreState::set_close_pairs_finder(ClosePairsFinder *f) {
   f_=f;
+  f_->set_distance(distance_+slack_);
+  f_->set_radius_key(rk_);
 }
 
 void ClosePairsScoreState::set_radius_key(FloatKey k) {
   rk_=k;
   rc_=NULL;
   xyzc_=NULL;
+  f_->set_radius_key(rk_);
 }
 
 void ClosePairsScoreState::do_before_evaluate()
@@ -85,8 +90,7 @@ void ClosePairsScoreState::do_before_evaluate()
     unsigned int sz= out_->get_number_of_particle_pairs();
     out_->clear_particle_pairs();
     out_->reserve_particle_pairs(sz);
-    f_->add_close_pairs(in_, distance_+slack_,
-                        rk_, out_);
+    f_->add_close_pairs(in_,out_);
     //std::cout << "done"<< std::endl;
     return;
   } else {
@@ -100,8 +104,7 @@ void ClosePairsScoreState::do_before_evaluate()
       unsigned int sz= out_->get_number_of_particle_pairs();
       out_->clear_particle_pairs();
       out_->reserve_particle_pairs(sz);
-      f_->add_close_pairs(in_, distance_+slack_,
-                          rk_, out_);
+      f_->add_close_pairs(in_, out_);
       xyzc_->reset();
       if (rc_) {
         rc_->reset();

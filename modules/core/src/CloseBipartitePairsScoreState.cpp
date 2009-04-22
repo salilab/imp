@@ -69,10 +69,12 @@ void CloseBipartitePairsScoreState::initialize() {
 
 void CloseBipartitePairsScoreState::set_distance(Float d) {
   distance_=d;
+  f_->set_distance(slack_+distance_);
 }
 
 void CloseBipartitePairsScoreState::set_slack(Float d) {
   slack_=d;
+  f_->set_distance(distance_+slack_);
 }
 
 void CloseBipartitePairsScoreState::clear() {
@@ -98,10 +100,13 @@ void CloseBipartitePairsScoreState
 void CloseBipartitePairsScoreState
 ::set_close_pairs_finder(ClosePairsFinder *f) {
   f_=f;
+  f_->set_radius_key(rk_);
+  f_->set_distance(distance_+slack_);
 }
 
 void CloseBipartitePairsScoreState::set_radius_key(FloatKey k) {
   rk_=k;
+  f_->set_radius_key(rk_);
   clear();
 }
 
@@ -121,8 +126,7 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
     }
     IMP_LOG(TERSE, "adding pairs" << std::endl);
     out_->clear_particle_pairs();
-    f_->add_close_pairs(in_[0], in_[1], distance_+slack_,
-                        rk_, out_);
+    f_->add_close_pairs(in_[0], in_[1],out_);
     IMP_LOG(TERSE, "done"<< std::endl);
     return;
   } else {
@@ -139,8 +143,7 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
 
     if (delta > slack_) {
       out_->clear_particle_pairs();
-      f_->add_close_pairs(in_[0], in_[1], distance_+slack_,
-                          rk_, out_);
+      f_->add_close_pairs(in_[0], in_[1],out_);
       xyzc_[0]->reset();
       xyzc_[1]->reset();
       if (rk_ != FloatKey()) {

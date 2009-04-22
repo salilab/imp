@@ -24,14 +24,10 @@ class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
   ~GridClosePairsFinder();
 
   void add_close_pairs(SingletonContainer *pc,
-                       Float distance,
-                       FloatKey radius_key,
                        FilteredListPairContainer *out) const;
 
   void add_close_pairs(SingletonContainer *pca,
                        SingletonContainer *pcb,
-                       Float distance,
-                       FloatKey radius_key,
                        FilteredListPairContainer *out) const;
 
 

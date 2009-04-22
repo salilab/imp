@@ -91,8 +91,8 @@ int main() {
       rbsp[i]= rbs[i].get_particle();
     }
     lsc->set_particles(rbsp);
-    IMP_NEW(rcps, RigidClosePairScore, (pr->get_pair_score(), 0));
-    pr->set_pair_score(rcps);
+    IMP_NEW(rcps, RigidClosePairsFinder, ());
+    cpss->set_close_pairs_finder(rcps);
     std::cout << "Hierarchy:" << std::endl;
     test_one(m, rbs, 10);
 
