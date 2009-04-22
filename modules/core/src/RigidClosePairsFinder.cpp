@@ -1,21 +1,38 @@
 /**
- *  \file RigidClosePairScore.cpp
- *  \brief XXXX.
+ *  \file RigidClosePairsFinder.cpp
+ *  \brief Test all pairs.
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/core/RigidClosePairScore.h"
-#include "IMP/core/ListSingletonContainer.h"
-#include "IMP/core/SingletonsScoreState.h"
-#include "IMP/core/SingletonScoreState.h"
+#include "IMP/core/RigidClosePairsFinder.h"
+#include "IMP/core/BoxSweepClosePairsFinder.h"
+#include "IMP/core/GridClosePairsFinder.h"
+#include "IMP/core/rigid_bodies.h"
+#include "IMP/core/XYZDecorator.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/core/internal/Grid3D.h>
+#include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
+
+RigidClosePairsFinder::RigidClosePairsFinder():
+  cpfout_(new FilteredListPairContainer()){
+  #ifdef IMP_USE_CGAL
+  cpf_=Pointer<ClosePairsFinder>(new BoxSweepClosePairsFinder());
+#else
+  cpf_=Pointer<ClosePairsFinder>(new GridClosePairsFinder());
+#endif
+}
+RigidClosePairsFinder
+::RigidClosePairsFinder(ClosePairsFinder *cpf): cpf_(cpf),
+                        cpfout_(new FilteredListPairContainer()){}
+
+RigidClosePairsFinder::~RigidClosePairsFinder(){}
+
 
 
 namespace {
@@ -135,14 +152,17 @@ namespace internal {
       return ni;
     }
   }
-  unsigned int RigidBodyParticleData::get_particle(unsigned int ni,
-                                                   unsigned int i) const  {
+  Particle* RigidBodyParticleData::get_particle(unsigned int ni,
+                                                   unsigned int i,
+                                                   Particle *p) const  {
     IMP_assert(ni < data_.size(), "Out of range");
     IMP_assert(data_[ni].storage_.size() > i,
                "Out of range in particle");
     IMP_assert(data_[ni].storage_[i] < 0,
                "Not a leaf node");
-    return std::abs(data_[ni].storage_[i])-1;
+    if (!RigidBodyDecorator::is_instance_of(p)) return p;
+    int index= std::abs(data_[ni].storage_[i])-1;
+    return RigidBodyDecorator(p).get_member(index).get_particle();
   }
   const algebra::Sphere3D &
   RigidBodyParticleData::get_sphere(unsigned int ni) const  {
@@ -199,19 +219,19 @@ namespace internal {
 }
 
 const algebra::Sphere3D
-RigidClosePairScore::get_transformed(Particle *a,
+RigidClosePairsFinder::get_transformed(Particle *a,
                                      const algebra::Sphere3D &s) const {
   if (RigidBodyDecorator::is_instance_of(a)) {
     RigidBodyDecorator d(a);
     return algebra::Sphere3D(d.get_transformation().transform(s.get_center()),
                              s.get_radius());
   } else {
-    XYZRDecorator d(a, rk_);
+    XYZRDecorator d(a, get_radius_key());
     return d.get_sphere();
   }
 }
 
-Particle *RigidClosePairScore::get_member(Particle *a,
+Particle *RigidClosePairsFinder::get_member(Particle *a,
                                           unsigned int i) const {
    if (RigidBodyDecorator::is_instance_of(a)) {
      RigidBodyDecorator d(a);
@@ -221,56 +241,8 @@ Particle *RigidClosePairScore::get_member(Particle *a,
    }
 }
 
-double RigidClosePairScore::process(Particle *a, Particle *b,
-                                  DerivativeAccumulator *dacc) const {
-  last_pairs_.clear();
-  lp0_= Pointer<Particle>(a);
-  lp1_= Pointer<Particle>(b);
-  const internal::RigidBodyParticleData &da= data_.get_data(a);
-  const internal::RigidBodyParticleData &db= data_.get_data(b);
-  std::vector<std::pair<int, int> > stack;
-  stack.push_back(std::make_pair(0,0));
-  double ret=0;
-  do {
-    std::pair<int, int> cur= stack.back();
-    stack.pop_back();
-    IMP_LOG(VERBOSE, "Trying pair " << cur.first << " "
-            << cur.second << std::endl);
-    for (unsigned int i=0; i< da.get_number_of_children(cur.first);
-         ++i) {
-      int ci=da.get_child(cur.first, i);
-      algebra::Sphere3D si
-        = get_transformed(a, da.get_sphere(ci));
-      for (unsigned int j=0;
-           j< db.get_number_of_children(cur.second); ++j) {
-        int cj=db.get_child(cur.second, j);
-        algebra::Sphere3D sj = get_transformed(b, db.get_sphere(cj));
-        if (balls_intersect(si, sj)) {
-          if (da.get_is_leaf(ci) && db.get_is_leaf(cj)) {
-            for (unsigned int k=0; k< da.get_number_of_particles(ci); ++k) {
-              for (unsigned int l=0; l< db.get_number_of_particles(cj); ++l) {
-                ret+= ps_->evaluate(get_member(a, da.get_particle(ci, k)),
-                                    get_member(b, db.get_particle(cj, l)),
-                                    dacc);
-
-              }
-            }
-          } else {
-            IMP_IF_LOG(VERBOSE) {
-              last_pairs_.push_back(std::make_pair(da.get_sphere(ci),
-                                                   db.get_sphere(cj)));
-            }
-            stack.push_back(std::make_pair(ci, cj));
-          }
-        }
-      }
-    }
-  } while (!stack.empty());
-  return ret;
-}
-
 void
-RigidClosePairScore::setup(const algebra::Sphere3Ds &spheres,
+RigidClosePairsFinder::setup(const algebra::Sphere3Ds &spheres,
                            unsigned int node_index,
                            const internal::SphereIndexes &leaves,
                            internal::RigidBodyParticleData &data) const {
@@ -283,7 +255,7 @@ RigidClosePairScore::setup(const algebra::Sphere3Ds &spheres,
   }
   algebra::Sphere3D ec= algebra::enclosing_sphere(ss);
   data.set_sphere(node_index, algebra::Sphere3D(ec.get_center(),
-                                      ec.get_radius()+threshold_/2.0));
+                                   ec.get_radius()+get_distance()/2.0));
   if (leaves.size() <10) {
     data.set_leaf(node_index, leaves);
   } else {
@@ -303,15 +275,17 @@ RigidClosePairScore::setup(const algebra::Sphere3Ds &spheres,
    is itself). Encode being a leaf by having a negative last index, that being
    the index into the array of particles.
  */
-void RigidClosePairScore::setup(Particle *p) const {
+void RigidClosePairsFinder::setup(Particle *p) const {
   if (RigidBodyDecorator::is_instance_of(p)) {
     // build spheres on internal coordinates
     RigidBodyDecorator d(p);
     algebra::Sphere3Ds spheres(d.get_number_of_members());
     for (unsigned int i=0; i< d.get_number_of_members(); ++i) {
       double r;
-      if (XYZRDecorator::is_instance_of(d.get_member(i).get_particle(), rk_)) {
-        r= XYZRDecorator(d.get_member(i).get_particle(), rk_).get_radius();
+      if (XYZRDecorator::is_instance_of(d.get_member(i).get_particle(),
+                                        get_radius_key())) {
+        r= XYZRDecorator(d.get_member(i).get_particle(),
+                         get_radius_key()).get_radius();
       } else {
         r=0;
       }
@@ -326,70 +300,16 @@ void RigidClosePairScore::setup(Particle *p) const {
     }
     setup(spheres, 0, leaves, data_.get_data(p));
   } else {
-    XYZRDecorator d(p, rk_);
+    XYZRDecorator d(p, get_radius_key());
     data_.add_data(p, algebra::Sphere3D(d.get_sphere().get_center(),
-                               d.get_sphere().get_radius()+threshold_/2.0));
+                           d.get_sphere().get_radius()+get_distance()/2.0));
   }
   IMP_LOG_WRITE(VERBOSE, data_.get_data(p).show_tree(IMP_STREAM));
 }
 
 
-RigidClosePairScore::RigidClosePairScore(PairScore *app, double threshold,
-                                         FloatKey r): ps_(app),
-                                                      rk_(r),
-                                                      threshold_(threshold)
-{}
-
-double RigidClosePairScore::evaluate(Particle *a, Particle *b,
-                                     DerivativeAccumulator *da) const {
-#if 1
-  if (!data_.has_data(a)) {
-    setup(a);
-  }
-  if (!data_.has_data(b)) {
-    setup(b);
-  }
-  double sum= process(a,b, da);
-#else
-  Particles psa;
-  if (RigidBodyDecorator::is_instance_of(a)) {
-    psa= RigidBodyDecorator(a).get_member_particles();
-  } else {
-    psa.push_back(a);
-  }
-  Particles psb;
-  if (RigidBodyDecorator::is_instance_of(b)) {
-    psb= RigidBodyDecorator(b).get_member_particles();
-  } else {
-    psb.push_back(b);
-  }
-  double sum=0;
-  for (unsigned int i=0; i< psa.size(); ++i) {
-    for (unsigned int j=0; j< psb.size(); ++j) {
-      sum+=ps_->evaluate(psa[i], psb[j], da);
-    }
-  }
-#endif
-  return sum;
-}
-
-
-void RigidClosePairScore::show(std::ostream &out) const {
-  out << "RigidClosePairScore:\n";
-}
-
-std::vector<std::pair<algebra::Sphere3D, algebra::Sphere3D> >
-RigidClosePairScore::get_last_sphere_pairs() const {
-  std::vector<std::pair<algebra::Sphere3D, algebra::Sphere3D> >
-    ret(last_pairs_.size());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= std::make_pair(get_transformed(lp0_,last_pairs_[i].first),
-                           get_transformed(lp1_,last_pairs_[i].second));
-  }
-  return ret;
-}
 std::vector<algebra::Sphere3D>
-RigidClosePairScore::get_tree(Particle *p) const {
+RigidClosePairsFinder::get_tree(Particle *p) const {
   std::vector<algebra::Sphere3D> ret= data_.get_data(p).get_spheres();
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= get_transformed(p, ret[i]);
@@ -397,9 +317,81 @@ RigidClosePairScore::get_tree(Particle *p) const {
   return ret;
 }
 
-void RigidClosePairScore::show_tree(Particle *p, std::ostream &out) const {
+void RigidClosePairsFinder::show_tree(Particle *p, std::ostream &out) const {
 
   return data_.get_data(p).show_tree(out);
+}
+
+void RigidClosePairsFinder
+::add_close_pairs(SingletonContainer *ca,
+                  SingletonContainer *cb,
+                  FilteredListPairContainer *out) const {
+  IMP_LOG(TERSE, "Rigid add_close_pairs called with "
+          << ca->get_number_of_particles() << " and "
+          << cb->get_number_of_particles() << std::endl);
+  cpf_->add_close_pairs(ca,cb, cpfout_);
+  for (PairContainer::ParticlePairIterator it= cpfout_->particle_pairs_begin();
+       it != cpfout_->particle_pairs_end(); ++it) {
+    add_close_pairs(it->first, it->second, out);
+  }
+}
+
+void RigidClosePairsFinder
+::add_close_pairs(SingletonContainer *c,
+                  FilteredListPairContainer *out) const {
+  IMP_LOG(TERSE, "Adding close pairs from "
+          << c->get_number_of_particles() << " particles." << std::endl);
+  cpf_->add_close_pairs(c, cpfout_);
+  for (PairContainer::ParticlePairIterator it= cpfout_->particle_pairs_begin();
+       it != cpfout_->particle_pairs_end(); ++it) {
+     add_close_pairs(it->first, it->second, out);
+  }
+}
+
+
+
+void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
+                                   FilteredListPairContainer *out) const {
+  if (!data_.has_data(a)) {
+    setup(a);
+  }
+  if (!data_.has_data(b)) {
+    setup(b);
+  }
+  const internal::RigidBodyParticleData &da= data_.get_data(a);
+  const internal::RigidBodyParticleData &db= data_.get_data(b);
+  std::vector<std::pair<int, int> > stack;
+  stack.push_back(std::make_pair(0,0));
+  do {
+    std::pair<int, int> cur= stack.back();
+    stack.pop_back();
+    IMP_LOG(VERBOSE, "Trying pair " << cur.first << " "
+            << cur.second << std::endl);
+    for (unsigned int i=0; i< da.get_number_of_children(cur.first);
+         ++i) {
+      int ci=da.get_child(cur.first, i);
+      algebra::Sphere3D si
+        = get_transformed(a, da.get_sphere(ci));
+      for (unsigned int j=0;
+           j< db.get_number_of_children(cur.second); ++j) {
+        int cj=db.get_child(cur.second, j);
+        algebra::Sphere3D sj = get_transformed(b, db.get_sphere(cj));
+        if (balls_intersect(si, sj)) {
+          if (da.get_is_leaf(ci) && db.get_is_leaf(cj)) {
+            for (unsigned int k=0; k< da.get_number_of_particles(ci); ++k) {
+              for (unsigned int l=0; l< db.get_number_of_particles(cj); ++l) {
+                out->add_particle_pair(ParticlePair(da.get_particle(ci, k, a),
+                                                    db.get_particle(cj, l, b)));
+
+              }
+            }
+          } else {
+            stack.push_back(std::make_pair(ci, cj));
+          }
+        }
+      }
+    }
+  } while (!stack.empty());
 }
 
 IMPCORE_END_NAMESPACE

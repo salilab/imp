@@ -29,10 +29,12 @@ class FilteredListPairContainer;
  */
 class IMPCOREEXPORT ClosePairsFinder : public Object
 {
+  FloatKey rk_;
+  double distance_;
  protected:
-  Float get_radius(Particle *p, FloatKey rk) const {
-    if (rk != FloatKey()) {
-      return p->get_value(rk);
+  Float get_radius(Particle *p) const {
+    if (rk_ != FloatKey()) {
+      return p->get_value(rk_);
     } else {
       return 0;
     }
@@ -48,8 +50,6 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       is less than distance. If radius_key is FloatKey() all radii
       are assumed to be 0. Other pairs can be added too. */
   virtual void add_close_pairs(SingletonContainer *pc,
-                               Float distance,
-                               FloatKey radius_key,
                                FilteredListPairContainer *out) const =0;
 
   /** \brief Compute all nearby pairs of particles with the first taken from
@@ -60,9 +60,22 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   */
   virtual void add_close_pairs(SingletonContainer *pca,
                        SingletonContainer *pcb,
-                       Float distance,
-                       FloatKey radius_key,
                        FilteredListPairContainer *out) const =0;
+
+  virtual void set_radius_key(FloatKey rk) {
+    rk_=rk;
+  }
+  virtual void set_distance(double d) {
+    IMP_check(d>=0, "Distance cannot be negative " << d,
+              ValueException);
+    distance_=d;
+  }
+  FloatKey get_radius_key() const {
+    return rk_;
+  }
+  double get_distance() const {
+    return distance_;
+  }
 };
 
 IMP_OUTPUT_OPERATOR(ClosePairsFinder);

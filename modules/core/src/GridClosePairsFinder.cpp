@@ -152,34 +152,31 @@ GridClosePairsFinder::~GridClosePairsFinder(){}
 void GridClosePairsFinder
 ::add_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb,
-                  Float distance,
-                  FloatKey radius_key,
                   FilteredListPairContainer *out) const {
   QuadraticClosePairsFinder qp;
-  qp.add_close_pairs(ca, cb, distance, radius_key, out);
+  qp.add_close_pairs(ca, cb, out);
 }
 
 void GridClosePairsFinder
 ::add_close_pairs(SingletonContainer *c,
-                  Float distance,
-                  FloatKey radius_key,
                   FilteredListPairContainer *out) const {
   IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
-          << distance << std::endl );
+          << get_distance() << std::endl );
   IMP::internal::Vector<internal::ParticleGrid*> bins;
 
-  if (radius_key== FloatKey()) {
+  if (get_radius_key()== FloatKey()) {
     Particles ps(c->particles_begin(), c->particles_end());
     /** \todo need to pick better value here.
      */
     bins.push_back(new internal::ParticleGrid(1.0, ps));
 
   } else {
-    grid_partition_points(c, distance, radius_key, bins);
+    grid_partition_points(c, get_distance(), get_radius_key(), bins);
   }
   for (unsigned int i=0; i< bins.size(); ++i) {
     for (unsigned int j=i+1; j< bins.size(); ++j) {
-      grid_generate_nbl(bins[i], bins[j], distance, radius_key, out);
+      grid_generate_nbl(bins[i], bins[j], get_distance(),
+                        get_radius_key(), out);
     }
 
     internal::ParticleGrid::Index last_index;
@@ -188,13 +185,13 @@ void GridClosePairsFinder
          it != bins[i]->particle_voxels_end(); ++it) {
       IMP_LOG(VERBOSE, "Searching with particle " << it->first->get_name()
               << std::endl);
-      AddToList f(out, it->first, radius_key, distance);
+      AddToList f(out, it->first, get_radius_key(), get_distance());
       bins[i]->apply_to_nearby(f, it->second,
-                               distance,
+                               get_distance(),
                                true);
 
       if (it->second != last_index) {
-        AddToList2 fp(out, radius_key, distance);
+        AddToList2 fp(out, get_radius_key(), get_distance());
         IMP_LOG(VERBOSE, "Searching in " << it->second
                 << std::endl);
         bins[i]->apply_to_cell_pairs(fp, it->second);

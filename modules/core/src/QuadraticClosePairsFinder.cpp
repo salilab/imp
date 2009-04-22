@@ -8,6 +8,7 @@
 
 #include "IMP/core/QuadraticClosePairsFinder.h"
 #include "IMP/core/XYZDecorator.h"
+#include <IMP/algebra/Sphere3D.h>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -19,8 +20,6 @@ QuadraticClosePairsFinder::~QuadraticClosePairsFinder(){}
 void QuadraticClosePairsFinder
 ::add_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb,
-                  Float distance,
-                  FloatKey radius_key,
                   FilteredListPairContainer *out) const {
   IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
           << ca->get_number_of_particles() << " and "
@@ -29,7 +28,7 @@ void QuadraticClosePairsFinder
        it != ca->particles_end(); ++it) {
     for (SingletonContainer::ParticleIterator it2 = cb->particles_begin();
          it2 != cb->particles_end(); ++it2) {
-      if (get_are_close(*it, *it2, distance, radius_key)) {
+      if (get_are_close(*it, *it2)) {
         out->add_particle_pair(ParticlePair(*it, *it2));
       }
     }
@@ -38,8 +37,6 @@ void QuadraticClosePairsFinder
 
 void QuadraticClosePairsFinder
 ::add_close_pairs(SingletonContainer *c,
-                  Float distance,
-                  FloatKey radius_key,
                   FilteredListPairContainer *out) const {
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles." << std::endl);
@@ -47,7 +44,7 @@ void QuadraticClosePairsFinder
        it != c->particles_end(); ++it) {
     for (SingletonContainer::ParticleIterator it2 = c->particles_begin();
        it2 != it; ++it2) {
-      if (get_are_close(*it, *it2, distance, radius_key)) {
+      if (get_are_close(*it, *it2)) {
         out->add_particle_pair(ParticlePair(*it, *it2));
       }
     }
@@ -55,21 +52,21 @@ void QuadraticClosePairsFinder
 }
 
 
-bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b,
-                                              Float distance,
-                                              FloatKey rk) const {
+bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
   XYZDecorator da(a);
   XYZDecorator db(b);
-  Float ra= get_radius(a, rk);
-  Float rb= get_radius(b, rk);
-  Float sr= ra+rb;
+  Float ra= get_radius(a);
+  Float rb= get_radius(b);
+  Float sr= ra+rb+get_distance();
   for (unsigned int i=0; i< 3; ++i) {
     double delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
-    if (delta - sr >= distance) {
+    if (delta >= sr) {
       return false;
     }
   }
-  return true;
+  return balls_intersect(algebra::Sphere3D(da.get_coordinates(),
+                                           ra+get_distance()),
+                         algebra::Sphere3D(db.get_coordinates(), rb));
 }
 
 IMPCORE_END_NAMESPACE

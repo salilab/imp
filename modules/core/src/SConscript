@@ -54,7 +54,7 @@ files = [
          'RefinedPairsPairScore.cpp',
          'RestraintSet.cpp',
          'RigidBodyMover.cpp',
-         'RigidClosePairScore.cpp',
+         'RigidClosePairsFinder.cpp',
          'SingletonContainerSet.cpp',
          'SingletonRestraint.cpp',
          'SingletonScoreState.cpp',

@@ -27,14 +27,10 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
   ~BoxSweepClosePairsFinder();
 
   void add_close_pairs(SingletonContainer *pc,
-                       Float distance,
-                       FloatKey radius_key,
                        FilteredListPairContainer *out) const;
 
   void add_close_pairs(SingletonContainer *pca,
                        SingletonContainer *pcb,
-                       Float distance,
-                       FloatKey radius_key,
                        FilteredListPairContainer *out) const;
 
 

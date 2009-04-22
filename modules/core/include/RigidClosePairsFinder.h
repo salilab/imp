@@ -1,26 +1,24 @@
 /**
- *  \file RigidClosePairScore.h
- *  \brief A pair score to efficient find close pairs between two
- *  rigid bodies.
+ *  \file RigidClosePairsFinder.h
+ *  \brief Handle rigid bodies by looking at their members
  *
- *  Copyright 2007-8 Sali Lab. All rights reserved.
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
 
-#ifndef IMPCORE_RIGID_CLOSE_PAIR_SCORE_H
-#define IMPCORE_RIGID_CLOSE_PAIR_SCORE_H
+#ifndef IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H
+#define IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H
 
-#include "config.h"
-
-#include "internal/version_info.h"
-#include "rigid_bodies.h"
+#include "ClosePairsFinder.h"
 #include "internal/rigid_pair_score.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Compute collisions between the members of two rigid bodies
-/** This pair score calls a passed PairScore on each RigidMember particle
-    pair (p,q), one taken from the first pass RigidBody particle and the
-    second from the second RigidBody particle such that
+//! Return close pairs between members of rigid bodies.
+/** It needs to be passed another ClosePairsFinder to help
+    determine which rigid bodies are close to which others.
+
+    For each pair of RigidBody particles, it returns all pairs
+    (p,q), where p and q are taken from different rigid bodies and
     \code
     distance(XYZRDecorator(p, radius_key), XYZRDecorator(p, radius_key)) < 0
     \endcode
@@ -48,40 +46,62 @@ IMPCORE_BEGIN_NAMESPACE
     \note The particles are divided up using a grid. The number of
     grid cells to use should be explored. In addition, with highly
     excentric sets of points, there will be too many cells.
+
+    \see ClosePairsScoreState
+    \see RigidBodyDecorator
  */
-class IMPCOREEXPORT RigidClosePairScore: public PairScore {
+class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
+{
   mutable internal::RigidBodyCollisionData data_;
-  Pointer<PairScore> ps_;
-  FloatKey rk_;
-  double threshold_;
-  mutable std::vector<std::pair<algebra::Sphere3D, algebra::Sphere3D> >
-    last_pairs_;
-  mutable Pointer<Particle> lp0_, lp1_;
+  Pointer<ClosePairsFinder> cpf_;
+  Pointer<FilteredListPairContainer> cpfout_;
 
   void setup(Particle *) const;
   void setup(const algebra::Sphere3Ds &spheres,
              unsigned int node_index,
              const internal::SphereIndexes &leaves,
              internal::RigidBodyParticleData &data) const;
-  double process(Particle *a, Particle *b,
-                 DerivativeAccumulator *da) const;
   Particle *get_member(Particle *a, unsigned int i) const;
   const algebra::Sphere3D get_transformed(Particle *a,
                                           const algebra::Sphere3D &s) const;
-public:
-  RigidClosePairScore(PairScore *applied,
-                      double threshold,
-                      FloatKey radius_key
-                      = XYZRDecorator::get_default_radius_key());
+ public:
+  //! Use the default choice for the ClosePairsFinder
+  RigidClosePairsFinder();
+  RigidClosePairsFinder(ClosePairsFinder *cpf);
+  ~RigidClosePairsFinder();
+
+  void add_close_pairs(SingletonContainer *pc,
+                       FilteredListPairContainer *out) const;
+
+  void add_close_pairs(SingletonContainer *pca,
+                       SingletonContainer *pcb,
+                       FilteredListPairContainer *out) const;
+  void add_close_pairs(Particle *a, Particle *b,
+                       FilteredListPairContainer *out) const;
+
+  void show(std::ostream &out= std::cout) const {
+    out << "RigidClosePairsFinder" << std::endl;
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
+
+  void set_distance(double d) {
+    data_.clear();
+    cpf_->set_distance(d);
+    ClosePairsFinder::set_distance(d);
+  }
+  void set_radius_key(FloatKey d) {
+    data_.clear();
+    cpf_->set_radius_key(d);
+    ClosePairsFinder::set_radius_key(d);
+  }
 #ifndef IMP_DOXYGEN
-  std::vector<std::pair<algebra::Sphere3D, algebra::Sphere3D> >
-                 get_last_sphere_pairs() const;
   std::vector<algebra::Sphere3D> get_tree(Particle *p) const;
   void show_tree(Particle *p, std::ostream &out=std::cout) const;
 #endif
-  IMP_PAIR_SCORE(RigidClosePairScore, internal::version_info)
 };
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_RIGID_CLOSE_PAIR_SCORE_H */
+#endif  /* IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H */

@@ -30,7 +30,8 @@ public:
   unsigned int get_number_of_particles(unsigned int ni) const;
   unsigned int get_number_of_children(unsigned int ni) const;
   unsigned int get_child(unsigned int ni, unsigned int i) const;
-  unsigned int get_particle(unsigned int ni, unsigned int i) const;
+  Particle* get_particle(unsigned int ni, unsigned int i,
+                            Particle *p) const;
   const algebra::Sphere3D &get_sphere(unsigned int ni) const;
   void show_tree(std::ostream &out) const;
   std::vector<algebra::Sphere3D> get_spheres() const;
@@ -51,6 +52,7 @@ public:
   const RigidBodyParticleData &get_data(Particle *p) const;
   bool has_data(Particle *p) const;
   void show(std::ostream &out) const;
+  void clear() {data_.clear();}
 };
 
 
