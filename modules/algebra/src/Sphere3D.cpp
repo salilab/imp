@@ -41,13 +41,21 @@ Sphere3D enclosing_sphere(const Sphere3Ds &ss) {
     spheres.push_back(Sphere(Point(ss[i].get_center()[0],
                                    ss[i].get_center()[1],
                                    ss[i].get_center()[2]),
-                             square(ss[i].get_radius())));
+                             ss[i].get_radius()));
   }
   Min_sphere ms(spheres.begin(), spheres.end());
-  return Sphere3D(Vector3D(*ms.center_cartesian_begin(),
-                           *(ms.center_cartesian_begin()+1),
-                           *(ms.center_cartesian_begin()+2)),
-                  ms.radius());
+   Sphere3D s(Vector3D(*ms.center_cartesian_begin(),
+                       *(ms.center_cartesian_begin()+1),
+                       *(ms.center_cartesian_begin()+2)),
+              ms.radius());
+   IMP_IF_LOG(VERBOSE) {
+     IMP_LOG(VERBOSE, "Enclosing sphere is " << s << " for ");
+     for (unsigned int i=0; i< ss.size(); ++i) {
+       IMP_LOG(VERBOSE, ss[i] << "| ");
+     }
+     IMP_LOG(VERBOSE, std::endl);
+   }
+   return s;
 #else
   Vector3D c(0,0,0);
   for (unsigned int i=0; i< ss.size(); ++i) {
