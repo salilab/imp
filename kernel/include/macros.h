@@ -853,6 +853,7 @@ public:                                                                 \
 
 //! @}
 
+#ifndef IMP_DOXYGEN
 
 //! Declare a ref counted pointer to a new object
 /** \param[in] varname The name for the ref counted pointer
@@ -866,6 +867,8 @@ public:                                                                 \
  */
 #define IMP_NEW(varname, Typename, args)        \
   Pointer<Typename> varname(new Typename args)
+
+
 
 //! Use this to label a function with no side effects
 #ifdef __GNU__
@@ -881,4 +884,20 @@ public:                                                                 \
 #else
 #define IMP_WARN_UNUSED_RESULT
 #endif
+
+//! Time the given command and assign the time of one iteration to the variable
+/** The units for the time are in seconds. */
+#define IMP_TIME(block, timev)                  \
+  {                                             \
+    boost::timer imp_timer;                     \
+    unsigned int imp_reps=0;                    \
+    do {                                        \
+      block;                                    \
+      ++imp_reps;                               \
+    } while (imp_timer.elapsed() < 5);          \
+    timev= imp_timer.elapsed()/imp_reps;        \
+  }
+
+#endif
+
 #endif  /* IMP_MACROS_H */
