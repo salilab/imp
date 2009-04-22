@@ -69,5 +69,9 @@ namespace IMP {
    %template(random_vector_in_unit_sphere) random_vector_in_unit_sphere<3>;
    %template(random_vector_in_unit_box) random_vector_in_unit_box<3>;
    %template(random_vector_on_box) random_vector_on_box<3>;
+   // for debugging
+   %template(Sphere3Ds) ::std::vector<IMP::algebra::Sphere3D>;
+   %template(SpherePair) ::std::pair<IMP::algebra::Sphere3D,IMP::algebra::Sphere3D>;
+   %template(Sphere3DPairs) ::std::vector< SpherePair >;
  }
 }
