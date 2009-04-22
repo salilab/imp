@@ -82,7 +82,9 @@ void ClosePairsScoreState::do_before_evaluate()
       rc_= new MaximumChangeScoreState(in_, FloatKeys(1, rk_));
     }
     //std::cout << "adding pairs" << std::endl;
+    unsigned int sz= out_->get_number_of_particle_pairs();
     out_->clear_particle_pairs();
+    out_->reserve_particle_pairs(sz);
     f_->add_close_pairs(in_, distance_+slack_,
                         rk_, out_);
     //std::cout << "done"<< std::endl;
@@ -95,7 +97,9 @@ void ClosePairsScoreState::do_before_evaluate()
     Float delta= xyzc_->get_maximum_change()
       + (rc_ ? rc_->get_maximum_change(): 0);
     if (delta*2 > slack_) {
+      unsigned int sz= out_->get_number_of_particle_pairs();
       out_->clear_particle_pairs();
+      out_->reserve_particle_pairs(sz);
       f_->add_close_pairs(in_, distance_+slack_,
                           rk_, out_);
       xyzc_->reset();

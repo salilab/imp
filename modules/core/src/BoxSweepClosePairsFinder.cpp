@@ -46,7 +46,7 @@ struct NBLBbox
     return d_.get_coordinate(i)+r_;
   }
   // make it so I can reused the callback provide by NBLSS
-  operator Particle*() {return d_.get_particle();}
+  operator Particle*() const {return d_.get_particle();}
 };
 
 static void copy_particles_to_boxes(const SingletonContainer *ps,
@@ -68,8 +68,12 @@ static void copy_particles_to_boxes(const SingletonContainer *ps,
 struct AddToList {
   FilteredListPairContainer *out_;
   AddToList(FilteredListPairContainer *out): out_(out){}
-  void operator()(Particle *a, Particle *b) {
-    out_->add_particle_pair(ParticlePair(a,b));
+  void operator()(const NBLBbox &a, const NBLBbox &b) {
+    if (squared_distance(XYZDecorator(a).get_coordinates(),
+                         XYZDecorator(b).get_coordinates())
+        < square(a.r_ + b.r_)) {
+      out_->add_particle_pair(ParticlePair(a,b));
+    }
   }
 };
 

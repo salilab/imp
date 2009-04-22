@@ -8,7 +8,7 @@
 
 #include "IMP/core/GridClosePairsFinder.h"
 #include "IMP/core/QuadraticClosePairsFinder.h"
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZRDecorator.h"
 
 #include "IMP/core/internal/ParticleGrid.h"
 #include <IMP/internal/Vector.h>
@@ -23,18 +23,31 @@ namespace {
   struct AddToList {
     FilteredListPairContainer *out_;
     Particle *p_;
+    FloatKey rk_;
+    double d_;
     AddToList(FilteredListPairContainer *o,
-              Particle *p): out_(o), p_(p){}
+              Particle *p, FloatKey rk, double d): out_(o), p_(p),
+                                                   rk_(rk), d_(d){}
     void operator()(Particle *p) {
-      out_->add_particle_pair(ParticlePair(p_, p));
+      if (distance(XYZRDecorator(p_, rk_),
+                   XYZRDecorator(p, rk_)) < d_) {
+        out_->add_particle_pair(ParticlePair(p_, p));
+      }
     }
   };
 
   struct AddToList2 {
     FilteredListPairContainer *out_;
-    AddToList2(FilteredListPairContainer *o): out_(o){}
+    FloatKey rk_;
+    double d_;
+    AddToList2(FilteredListPairContainer *o,
+               FloatKey rk, double d): out_(o),
+                                       rk_(rk), d_(d){}
     void operator()(Particle *a, Particle *b) {
-      out_->add_particle_pair(ParticlePair(a, b));
+      if (distance(XYZRDecorator(a, rk_),
+                   XYZRDecorator(b, rk_)) < d_) {
+        out_->add_particle_pair(ParticlePair(a, b));
+      }
     }
   };
 
@@ -47,6 +60,7 @@ namespace {
   }
 
   void grid_partition_points(SingletonContainer *c,
+                             double distance,
                              FloatKey rk,
                              GVector &bins)
   {
@@ -95,7 +109,9 @@ namespace {
     for (unsigned int j=0; j< ops[i].size(); ++j) {
       rmax= std::max(rmax, ops[i][j]->get_value(rk));
     }
-    bins.push_back(new internal::ParticleGrid(grid_side_from_r(rmax), ops[i]));
+    bins.push_back(new internal::ParticleGrid(grid_side_from_r(rmax
+                                                               +distance),
+                                              ops[i]));
   }
   IMP_LOG(VERBOSE, "Created " << bins.size() << " grids" << std::endl);
   for (unsigned int i=0; i< bins.size(); ++i) {
@@ -115,7 +131,7 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
          it= particle_bin->particle_voxels_begin();
        it != particle_bin->particle_voxels_end(); ++it) {
     Particle *p= it->first;
-    AddToList f(out, p);
+    AddToList f(out, p, rk, distance);
     XYZDecorator d(p);
     internal::ParticleGrid::VirtualIndex index
       = grid_bin->get_virtual_index(d.get_coordinates());
@@ -159,7 +175,7 @@ void GridClosePairsFinder
     bins.push_back(new internal::ParticleGrid(1.0, ps));
 
   } else {
-    grid_partition_points(c, radius_key, bins);
+    grid_partition_points(c, distance, radius_key, bins);
   }
   for (unsigned int i=0; i< bins.size(); ++i) {
     for (unsigned int j=i+1; j< bins.size(); ++j) {
@@ -172,13 +188,13 @@ void GridClosePairsFinder
          it != bins[i]->particle_voxels_end(); ++it) {
       IMP_LOG(VERBOSE, "Searching with particle " << it->first->get_name()
               << std::endl);
-      AddToList f(out, it->first);
+      AddToList f(out, it->first, radius_key, distance);
       bins[i]->apply_to_nearby(f, it->second,
                                distance,
                                true);
 
       if (it->second != last_index) {
-        AddToList2 fp(out);
+        AddToList2 fp(out, radius_key, distance);
         IMP_LOG(VERBOSE, "Searching in " << it->second
                 << std::endl);
         bins[i]->apply_to_cell_pairs(fp, it->second);
