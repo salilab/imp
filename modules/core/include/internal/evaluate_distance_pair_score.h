@@ -30,16 +30,16 @@ Float compute_distance_pair_score(const algebra::Vector3D &delta,
   // if needed, calculate the partial derivatives of the scores with respect
   // to the particle attributes
   // avoid division by zero if the distance is too small
-  Float score, deriv;
+  DerivativePair dp;
   if (d && distance >= MIN_DISTANCE) {
-    boost::tie(score, deriv) = f->evaluate_with_derivative(shifted_distance);
-    *d= (delta/distance) *deriv;
+    dp = f->evaluate_with_derivative(shifted_distance);
+    *d= (delta/distance) *dp.second;
   } else {
     // calculate the score based on the distance feature
-    score = f->evaluate(shifted_distance);
+    dp.first = f->evaluate(shifted_distance);
     if (d) *d= algebra::Vector3D(0,0,0);
   }
-  return score;
+  return dp.first;
 }
 
 
