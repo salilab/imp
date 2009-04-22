@@ -16,7 +16,9 @@
 #include <IMP/PairScore.h>
 
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
+
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adjacency_matrix.hpp>
 
 #include <limits>
 
@@ -36,9 +38,11 @@ IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,  {
 
 
 namespace {
-  typedef boost::adjacency_list<boost::vecS, boost::vecS,
+  /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
                         boost::undirectedS, boost::no_property,
-            boost::property<boost::edge_weight_t, double> > Graph;
+                        boost::property<boost::edge_weight_t, double> > Graph;*/
+  typedef boost::adjacency_matrix<boost::undirectedS, boost::no_property,
+                        boost::property<boost::edge_weight_t, double> > Graph;
   typedef boost::graph_traits<Graph>::edge_descriptor Edge;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
