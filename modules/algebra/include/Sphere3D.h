@@ -91,8 +91,13 @@ inline double ball_radius_from_volume(double volume) {
 /** \relates Sphere3D
  */
 inline bool balls_intersect(const Sphere3D &a, const Sphere3D &b) {
+  double sr= a.get_radius() + b.get_radius();
+  for (unsigned int i=0; i< 3; ++i) {
+    double delta=std::abs(a.get_center()[i]- b.get_center()[i]);
+    if (delta >= sr) return false;
+  }
   return squared_distance(a.get_center(), b.get_center())
-    < square(a.get_radius() + b.get_radius());
+    < square(sr);
 }
 
 #ifndef SWIG
