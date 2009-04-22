@@ -17,11 +17,20 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** */
 class IMPALGEBRAEXPORT Sphere3D: public UninitializedDefault {
 public:
-  Sphere3D(){}
+  Sphere3D(){
+#ifndef NDEBUG
+    radius_= std::numeric_limits<double>::quiet_NaN();
+#endif
+  }
   Sphere3D(const Vector3D& center,double radius);
   double get_volume() const;
   double get_surface_area() const;
-  double get_radius() const {return radius_;}
+  double get_radius() const {
+    IMP_check(!is_nan(radius_),
+              "Attempt to use uninitialized sphere.",
+              InvalidStateException);
+    return radius_;
+  }
   const Vector3D &get_center() const {return center_;}
   Cylinder3D get_bounding_cylinder() const {
     return Cylinder3D(Segment3D(get_center()-Vector3D(0.0,0.0,get_radius()),
@@ -103,7 +112,9 @@ inline internal::SphereSpacesIO spaces_io(const Sphere3D &v) {
 }
 #endif
 
-
+#ifndef IMP_DOXYGEN
+typedef std::pair<Sphere3D, Sphere3D> SpherePair;
+#endif
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_SPHERE_3D_H */

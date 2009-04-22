@@ -28,10 +28,16 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template <unsigned int D>
 class VectorD: public UninitializedDefault
 {
-  bool is_default() const {return false;}
+  void check_vector() const {
+    for (unsigned int i=0; i< D; ++i) {
+      IMP_check(!is_nan(vec_[i]),
+                "Attempt to use uninitialized vector.",
+                InvalidStateException);
+    }
+  }
 public:
   // public for swig
-  typedef VectorD<D> This;
+  IMP_NO_DOXYGEN(typedef VectorD<D> This;)
 
   //! Initialize the 1-vector from its value.
   VectorD(double x) {
@@ -95,6 +101,7 @@ public:
   double operator[](unsigned int i) const {
     IMP_assert(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
+    check_vector();
     return vec_[i];
   }
 
@@ -104,7 +111,8 @@ public:
     return vec_[i];
   }
 
-  double scalar_product(const This &o) const {
+  double scalar_product(const VectorD<D> &o) const {
+    check_vector();
     double ret=0;
     for (unsigned int i=0; i< D; ++i) {
       ret += vec_[i]* o.vec_[i];
@@ -121,8 +129,6 @@ public:
   }
 
   VectorD get_unit_vector() const {
-    IMP_assert(get_magnitude() != 0,
-               "Cannot get a unit vector from a zero vector");
     double mag = get_magnitude();
     // avoid division by zero
     mag = std::max(mag, static_cast<double>(1e-12));
@@ -133,6 +139,7 @@ public:
   //! \return true if all the values in the vector are zero (an epsilon value
   //! to determine the tolerance can be specified (default is 0).
   bool is_zero(double epsilon=0.0) const {
+    check_vector();
     for (unsigned int i=0; i< D; ++i) {
       if(!algebra::almost_equal(vec_[i],0.0,epsilon)) {
         return false;
@@ -141,11 +148,12 @@ public:
     return true;
   }
 
-  double operator*(const This &o) const {
+  double operator*(const VectorD<D> &o) const {
     return scalar_product(o);
   }
 
   VectorD operator*(double s) const {
+    check_vector();
     This ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] * s;
@@ -154,6 +162,7 @@ public:
   }
 
   VectorD operator/(double s) const {
+    check_vector();
     This ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] / s;
@@ -162,6 +171,7 @@ public:
   }
 
   VectorD operator-() const {
+    check_vector();
     This ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = -vec_[i];
@@ -170,6 +180,7 @@ public:
   }
 
   VectorD operator-(const VectorD &o) const {
+    check_vector(); o.check_vector();
     This ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] - o.vec_[i];
@@ -178,6 +189,7 @@ public:
   }
 
   VectorD operator+(const VectorD &o) const {
+    check_vector(); o.check_vector();
     This ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] + o.vec_[i];
@@ -186,6 +198,7 @@ public:
   }
 
   VectorD& operator+=(const VectorD &o) {
+    check_vector(); o.check_vector();
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] += o[i];
     }
@@ -193,6 +206,7 @@ public:
   }
 
   VectorD& operator-=(const VectorD &o) {
+    check_vector(); o.check_vector();
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] -= o[i];
     }
@@ -200,6 +214,7 @@ public:
   }
 
   VectorD& operator/=(double f) {
+    check_vector();
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] /= f;
     }
@@ -207,6 +222,7 @@ public:
   }
 
   VectorD& operator*=(double f) {
+    check_vector();
     for (unsigned int i=0; i< D; ++i) {
       vec_[i] *= f;
     }
@@ -215,6 +231,7 @@ public:
 
   void show(std::ostream &out=std::cout, std::string delim=", ",
             bool parens=true) const {
+    check_vector();
     if (parens) out << "(";
     for (unsigned int i=0; i< D; ++i) {
       out << vec_[i];
