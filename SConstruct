@@ -82,5 +82,6 @@ Clean('build', ['build/tmp/',
 
 # Build the binaries by default:
 env.Default([bin, src])
+env.Default('benchmarks')
 if env.get('python', True):
     env.Default(pyext)
