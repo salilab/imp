@@ -46,7 +46,6 @@ class IMPEXPORT PairContainer : public Object
 public:
   PairContainer();
 
-  //!
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -56,7 +55,6 @@ public:
    */
   virtual unsigned int get_number_of_particle_pairs() const =0;
 
-  //! get one particle_pair
   virtual ParticlePair get_particle_pair(unsigned int i) const=0;
 
 #ifdef IMP_DOXYGEN

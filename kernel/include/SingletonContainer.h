@@ -46,7 +46,6 @@ class IMPEXPORT SingletonContainer : public Object
 public:
   SingletonContainer();
 
-  //!
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -56,7 +55,6 @@ public:
    */
   virtual unsigned int get_number_of_particles() const =0;
 
-  //! get one particle
   virtual Particle* get_particle(unsigned int i) const=0;
 
 #ifdef IMP_DOXYGEN
