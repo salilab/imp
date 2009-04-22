@@ -50,7 +50,7 @@ int main() {
   Pointer<Model> m(new Model());
   Particles atoms;
   std::vector<RigidBodyDecorator> rbs;
-  for (int i=0; i< 10; ++i) {
+  for (int i=0; i< 5; ++i) {
     MolecularHierarchyDecorator mhd
       = read_pdb("benchmarks/input/single_protein.pdb", m);
     Particles catoms= get_by_type(mhd, MolecularHierarchyDecorator::ATOM);

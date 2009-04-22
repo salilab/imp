@@ -21,6 +21,7 @@ void test_one(ClosePairsFinder *cpf, unsigned int n, float rmin, float rmax) {
   }
   ListSingletonContainer *lsc= new ListSingletonContainer(ps);
   ClosePairsScoreState *cpss= new ClosePairsScoreState(lsc);
+  cpss->set_slack(0);
   cpss->set_close_pairs_finder(cpf);
 
   set_check_level(NONE);
@@ -38,9 +39,12 @@ void test_one(ClosePairsFinder *cpf, unsigned int n, float rmin, float rmax) {
       }
       cpss->before_evaluate();
     }, runtime);
-  std::cout << "Collision detection on " << n << " particles with radii from "
+  IMP_NEW(pr, PairsRestraint, (new DistancePairScore(new Linear(1,0)),
+                               cpss->get_close_pairs_container()));
+  std::cout << n << " particles with radii from "
             << rmin << " to " << rmax
             << " took " << runtime-setuptime
+            << " with value " << pr->evaluate(NULL)
             << std::endl;
 }
 
@@ -51,8 +55,8 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
-    test_one(cpf, 10000, 0, .5);
     test_one(cpf, 10000, 0, .1);
+    test_one(cpf, 10000, 0, .5);
   }
   {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
@@ -60,8 +64,8 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
-    test_one(cpf, 10000, 0, .5);
     test_one(cpf, 10000, 0, .1);
+    test_one(cpf, 10000, 0, .5);
   }
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
@@ -69,8 +73,8 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
-    test_one(cpf, 10000, 0, .5);
     test_one(cpf, 10000, 0, .1);
+    test_one(cpf, 10000, 0, .5);
   }
   return 0;
 }
