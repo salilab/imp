@@ -94,7 +94,12 @@ public:
   IMP::algebra::Transformation3D get_transformation() const;
 
   //! Set the current orientation and translation
-  void set_transformation(const IMP::algebra::Transformation3D &tr);
+  /** If the second argument is true, all the member particles are
+      immediately transformed. Otherwise they will be transformed later
+      by a score state as appropriate.
+   */
+  void set_transformation(const IMP::algebra::Transformation3D &tr,
+                          bool transform_members=false);
 
   bool get_coordinates_are_optimized() const;
 

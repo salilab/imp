@@ -18,20 +18,30 @@ void test_one(Model *m,
               ListSingletonContainer *lsc,
               float side) {
   Vector3D minc(0,0,0), maxc(side, side, side);
-  unsigned int reps=10;
-  boost::timer t;
-  for (unsigned int k=0; k< reps; ++k) {
-    for (unsigned int i=0; i< rbs.size(); ++i) {
-      Vector3D t= random_vector_in_box(minc, maxc);
-      Rotation3D r= random_rotation();
-      Transformation3D tr(r, t);
-      rbs[i].set_transformation(tr);
-    }
+  set_log_level(SILENT);
+  m->evaluate(false);
+  double runtime, inittime;
+  IMP_TIME(
+           {
+             for (unsigned int i=0; i< rbs.size(); ++i) {
+               Vector3D t= random_vector_in_box(minc, maxc);
+               Rotation3D r= random_rotation();
+               Transformation3D tr(r, t);
+               rbs[i].set_transformation(tr, true);
+             }
+           }, inittime);
+  IMP_TIME(
+           {
+             for (unsigned int i=0; i< rbs.size(); ++i) {
+               Vector3D t= random_vector_in_box(minc, maxc);
+               Rotation3D r= random_rotation();
+               Transformation3D tr(r, t);
+               rbs[i].set_transformation(tr, true);
+             }
+             m->evaluate(false);
+           }, runtime);
 
-    m->evaluate(false);
-  }
-
-  std::cout << " took " << t.elapsed()/reps
+  std::cout << " took " << runtime-inittime << " with side " << side
             << std::endl;
 }
 
@@ -52,17 +62,28 @@ int main() {
                          catoms);
   }
   IMP_NEW(lsc, ListSingletonContainer, ());
-  IMP_NEW(qcpf, BoxSweepClosePairsFinder, ());
-  ClosePairsScoreState *cpss= new ClosePairsScoreState(lsc);
-  cpss->set_close_pairs_finder(qcpf);
+  IMP_NEW(cpss, ClosePairsScoreState, (lsc));
   m->add_score_state(cpss);
   IMP_NEW(pr, PairsRestraint,
           (new DistancePairScore(new Harmonic(0,1)),
            cpss->get_close_pairs_container()));
   m->add_restraint(pr);
+
   {
+    IMP_NEW(qcpf, BoxSweepClosePairsFinder, ());
+    cpss->set_close_pairs_finder(qcpf);
     lsc->set_particles(atoms);
     std::cout << "Box:" << std::endl;
+    test_one(m, rbs, lsc, 10);
+    test_one(m, rbs, lsc, 100);
+    test_one(m, rbs, lsc, 1000);
+  }
+  {
+    IMP_NEW(qcpf, QuadraticClosePairsFinder, ());
+    lsc->set_particles(atoms);
+    cpss->set_close_pairs_finder(qcpf);
+    std::cout << "Quadratic:" << std::endl;
+    test_one(m, rbs, lsc, 10);
     test_one(m, rbs, lsc, 100);
     test_one(m, rbs, lsc, 1000);
   }
@@ -72,9 +93,10 @@ int main() {
       rbsp[i]= rbs[i].get_particle();
     }
     lsc->set_particles(rbsp);
-    RigidClosePairScore *rcps= new RigidClosePairScore(pr->get_pair_score());
+    IMP_NEW(rcps, RigidClosePairScore, (pr->get_pair_score(), 0));
     pr->set_pair_score(rcps);
     std::cout << "Hierarchy:" << std::endl;
+    test_one(m, rbs, lsc, 10);
     test_one(m, rbs, lsc, 100);
     test_one(m, rbs, lsc, 1000);
   }

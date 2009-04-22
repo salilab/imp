@@ -234,9 +234,8 @@ void RigidBodyDecorator::set_coordinates_are_optimized(bool tf, bool snapping) {
                                      body);
   }
   XYZDecorator::set_coordinates_are_optimized(body);
-  RigidMemberDecorators rmds=get_members();
-  for (unsigned int i=0; i< rmds.size(); ++i) {
-    rmds[i].set_coordinates_are_optimized(member);
+  for (unsigned int i=0; i< get_number_of_members(); ++i) {
+    get_member(i).set_coordinates_are_optimized(member);
   }
 }
 
@@ -248,13 +247,20 @@ algebra::Vector3D RigidBodyDecorator::get_coordinates(RigidMemberDecorator p)
 }
 
 void RigidBodyDecorator
-::set_transformation(const IMP::algebra::Transformation3D &tr) {
+::set_transformation(const IMP::algebra::Transformation3D &tr,
+                     bool transform_now) {
   algebra::VectorD<4> v= tr.get_rotation().get_quaternion();
   get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[1], v[1]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[2], v[2]);
   get_particle()->set_value(internal::rigid_body_data().quaternion_[3], v[3]);
   set_coordinates(tr.get_translation());
+  if (transform_now) {
+    for (unsigned int i=0; i< get_number_of_members(); ++i) {
+      get_member(i)
+    .set_coordinates(tr.transform(get_member(i).get_internal_coordinates()));
+    }
+  }
 }
 
 
@@ -293,10 +299,9 @@ void RigidMemberDecorator::show(std::ostream &out, std::string prefix) const {
 void UpdateRigidBodyOrientation::apply(Particle *p) const {
   RigidBodyDecorator rb(p);
   algebra::Vector3Ds cur, local;
-  RigidMemberDecorators members=rb.get_members();
-  for (unsigned int i=0; i< members.size(); ++i) {
-    cur.push_back(members[i].get_coordinates());
-    local.push_back(members[i].get_internal_coordinates());
+  for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
+    cur.push_back(rb.get_member(i).get_coordinates());
+    local.push_back(rb.get_member(i).get_internal_coordinates());
   }
   IMP::algebra::Transformation3D tr
     = IMP::algebra::rigid_align_first_to_second(local, cur);
@@ -313,8 +318,8 @@ void UpdateRigidBodyOrientation::apply(Particle *p) const {
     }
   }
   rb.set_transformation(tr);
-  for (unsigned int i=0; i< members.size(); ++i) {
-    members[i].set_coordinates(tr.transform(members[i]
+  for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
+    rb.get_member(i).set_coordinates(tr.transform(rb.get_member(i)
                                             .get_internal_coordinates()));
   }
 }
@@ -330,13 +335,12 @@ void UpdateRigidBodyOrientation::show(std::ostream &out) const {
 void AccumulateRigidBodyDerivatives::apply(Particle *p,
                                            DerivativeAccumulator &da) const {
   RigidBodyDecorator rb(p);
-  RigidMemberDecorators members= rb.get_members();
   algebra::Rotation3D rot= rb.get_transformation().get_rotation();
   IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
   algebra::Vector3D v(0,0,0);
   algebra::VectorD<4> q(0,0,0,0);
-  for (unsigned int i=0; i< members.size(); ++i) {
-    RigidMemberDecorator d= members[i];
+  for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
+    RigidMemberDecorator d= rb.get_member(i);
     algebra::Vector3D dv= d.get_derivatives();
     v+=dv;
     IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
@@ -380,10 +384,9 @@ void AccumulateRigidBodyDerivatives
 void UpdateRigidBodyMembers::apply(Particle *p) const {
   RigidBodyDecorator rb(p);
   rb.normalize_rotation();
-  RigidMemberDecorators members= rb.get_members();
   algebra::Transformation3D tr= rb.get_transformation();
-  for (unsigned int i=0; i< members.size(); ++i) {
-    members[i].set_coordinates(tr);
+  for (unsigned int i=0; i<rb.get_number_of_members(); ++i) {
+    rb.get_member(i).set_coordinates(tr);
   }
 }
 
