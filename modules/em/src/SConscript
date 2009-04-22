@@ -19,6 +19,7 @@ files = [
          'XplorReaderWriter.cpp',
          'converters.cpp',
          'header_converters.cpp',
+         'project.cpp',
         ]
 
 # Build and install the shared library:
