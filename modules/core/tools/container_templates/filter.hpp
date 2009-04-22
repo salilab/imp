@@ -53,9 +53,11 @@ public:
   //! Add vt if none of the referenced containers already contains it
   void add_classname(Value vt);
 
-  //! remove all objects from the container
   void clear_classnames() {
     data_.clear();
+  }
+  void reserve_classnames(unsigned int sz) {
+    data_.reserve(sz);
   }
  /** @name Methods to control the set of filters
 

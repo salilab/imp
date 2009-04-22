@@ -94,6 +94,9 @@ bool get_has_##lcname##s() const {                                      \
 Data get_##lcname(unsigned int i) const {                              \
   return lcname##_vector_[i];                                          \
 }                                                                      \
+void reserve_##lcname##s(unsigned int sz) {                             \
+  lcname##_vector_.reserve(sz);                                         \
+}                                                                       \
 IMP_NO_DOXYGEN(typedef IMP::internal::Vector<Data>                      \
                ::iterator Ucname##Iterator;)                            \
 IMP_NO_DOXYGEN(typedef IMP::internal::Vector<Data>::const_iterator      \
