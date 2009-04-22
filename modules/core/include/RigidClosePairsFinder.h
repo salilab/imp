@@ -49,6 +49,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     \see ClosePairsScoreState
     \see RigidBodyDecorator
+    \see cover_members()
  */
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 {
@@ -64,6 +65,13 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   Particle *get_member(Particle *a, unsigned int i) const;
   const algebra::Sphere3D get_transformed(Particle *a,
                                           const algebra::Sphere3D &s) const;
+  void process_one(Particle *a, Particle *b,
+                   FilteredListPairContainer *out,
+                   const internal::RigidBodyParticleData &da,
+                   const internal::RigidBodyParticleData &db,
+                   unsigned int ci,
+                   unsigned int cj,
+                   std::vector<std::pair<int, int> > &stack) const;
  public:
   //! Use the default choice for the ClosePairsFinder
   RigidClosePairsFinder();
