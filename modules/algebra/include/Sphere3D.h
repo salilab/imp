@@ -83,8 +83,16 @@ IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Sphere3Ds &ss);
 //! Return the radius of a sphere with a given volume
 /** \relates Sphere3D
  */
-inline double sphere_radius_from_volume(double volume) {
+inline double ball_radius_from_volume(double volume) {
   return std::pow((.75/PI)*volume, .3333);
+}
+
+//! Return true if the two balls bounded by the two spheres interesect
+/** \relates Sphere3D
+ */
+inline bool balls_intersect(const Sphere3D &a, const Sphere3D &b) {
+  return squared_distance(a.get_center(), b.get_center())
+    < square(a.get_radius() + b.get_radius());
 }
 
 #ifndef SWIG
