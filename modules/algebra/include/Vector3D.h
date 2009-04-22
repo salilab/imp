@@ -48,6 +48,28 @@ inline Vector3D orthogonal_vector(const Vector3D &v) {
   }
 }
 
+//! Converts cartesian coordinates to spherical ones
+/**
+  The order returned is radial distance, zenith, and azimuth (r, tetha, psi)
+*/
+inline Vector3D cartesian_to_spherical(const Vector3D &v) {
+  double r =   v.get_magnitude();
+  return Vector3D(r, atan2(v[1],v[0]),
+                  atan2(std::sqrt(v[0]*v[0]+v[1]*v[1]),v[2]));
+}
+
+//! Converts spherical coordinates to cartesian ones
+/**
+  The order assumed for the vector of spherical coordinates  is radial
+distance, zenith, and azimuth (r, tetha, psi)
+*/
+inline Vector3D spherical_to_cartesian(const Vector3D &v) {
+  return Vector3D(v[0]*cos(v[2])*sin(v[1]),
+                  v[0]*sin(v[2])*sin(v[1]),
+                  v[0]*cos(v[1]));
+}
+
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_3D_H */
