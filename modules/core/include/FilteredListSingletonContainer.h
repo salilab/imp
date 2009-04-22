@@ -42,7 +42,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT FilteredListSingletonContainer
   : public SingletonContainer
 {
-  std::vector<Particle*> data_;
+  bool sorted_;
+  mutable std::vector<Particle*> data_;
 public:
   //! cannot pass a Singletons on construction
   FilteredListSingletonContainer();
@@ -55,10 +56,34 @@ public:
 
   void clear_particles() {
     data_.clear();
+    sorted_=true;
   }
   void reserve_particles(unsigned int sz) {
     data_.reserve(sz);
   }
+
+  /** @name Faster editing
+
+      The container keeps it list of elements in a sorted order.
+      As this can make for slow insertions, the user has the option
+      of disabling the sorting while inserting many objects. To do this,
+      call
+      \code
+      set_is_editing(true);
+      // do stuff
+      set_is_editing(false);
+      \endcode
+      \see FilteredListSingletonContainerEditor
+
+      @{
+   */
+  void set_is_editing( bool tf);
+
+  bool get_is_editing() const {
+    return !sorted_;
+  }
+  /** @}*/
+
  /** @name Methods to control the set of filters
 
      SingletonContainer objects can be used as filters to prevent
@@ -75,6 +100,28 @@ public:
    /**@}*/
 };
 
+
+/** \brief A RIIA-style object to control the editing modes on a
+    FilteredListSingletonContainer
+
+    This object sets the editing mode to true if the object is not
+    being edited when it is created. If it changed the editing mode
+    on creation, the mode is set to false when the object is
+    destroyed.
+*/
+class FilteredListSingletonContainerEditor {
+  Pointer<FilteredListSingletonContainer> o_;
+public:
+  FilteredListSingletonContainerEditor(FilteredListSingletonContainer *o) {
+    if (!o->get_is_editing()) {
+      o_= Pointer<FilteredListSingletonContainer>(o);
+      o_->set_is_editing(true);
+    }
+  }
+  ~FilteredListSingletonContainerEditor() {
+    if (o_) o_->set_is_editing(false);
+  }
+};
 
 IMPCORE_END_NAMESPACE
 

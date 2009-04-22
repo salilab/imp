@@ -24,6 +24,8 @@ void QuadraticClosePairsFinder
   IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
           << ca->get_number_of_particles() << " and "
           << cb->get_number_of_particles() << std::endl);
+
+  FilteredListPairContainerEditor e(out);
   for (SingletonContainer::ParticleIterator it = ca->particles_begin();
        it != ca->particles_end(); ++it) {
     for (SingletonContainer::ParticleIterator it2 = cb->particles_begin();
@@ -40,6 +42,7 @@ void QuadraticClosePairsFinder
                   FilteredListPairContainer *out) const {
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles." << std::endl);
+  FilteredListPairContainerEditor e(out);
   for (SingletonContainer::ParticleIterator it = c->particles_begin();
        it != c->particles_end(); ++it) {
     for (SingletonContainer::ParticleIterator it2 = c->particles_begin();

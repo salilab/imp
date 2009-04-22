@@ -15,13 +15,26 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ListSingletonContainer::ListSingletonContainer(const Particles &ps){
+  sorted_=false;
   set_particles(ps);
+  set_is_editing(false);
 }
 
 IMP_LIST_IMPL(ListSingletonContainer, Particle,
               particle, Particle*,, {
-                std::sort(particles_begin(), particles_end());
+                if (sorted_) std::sort(particles_begin(), particles_end());
               },);
+
+
+void ListSingletonContainer::set_is_editing(bool tf) {
+  if (tf== !sorted_) return;
+  else {
+    sorted_=!tf;
+    if (sorted_) {
+      std::sort(particles_begin(), particles_end());
+    }
+  }
+}
 
 
 bool

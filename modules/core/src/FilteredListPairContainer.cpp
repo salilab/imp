@@ -36,7 +36,7 @@ namespace {
 }
 
 FilteredListPairContainer
-::FilteredListPairContainer(){
+::FilteredListPairContainer(): sorted_(true){
 }
 
 void FilteredListPairContainer::add_particle_pair(ParticlePair vt) {
@@ -46,13 +46,9 @@ void FilteredListPairContainer::add_particle_pair(ParticlePair vt) {
     const_cast<const FilteredListPairContainer*>(this);
   if (!Found(cthis->pair_filters_begin(),
              cthis->pair_filters_end())(vt)) {
-    data_.insert(std::upper_bound(data_.begin(),
-                                  data_.end(), vt), vt);
-  }
-  IMP_IF_CHECK(EXPENSIVE) {
-    for (unsigned int i=1; i< data_.size(); ++i) {
-      IMP_assert(data_[i-1] < data_[i], "Poorly sorted list at position "
-                 << i);
+    data_.push_back(vt);
+    if (sorted_) {
+      std::sort(data_.begin(), data_.end());
     }
   }
 }
@@ -60,6 +56,8 @@ void FilteredListPairContainer::add_particle_pair(ParticlePair vt) {
 bool
 FilteredListPairContainer
 ::get_contains_particle_pair(ParticlePair vt) const {
+  IMP_check(sorted_, "Cannot check if the container contains an object "
+            << "while you are editing it.", InvalidStateException);
   return std::binary_search(particle_pairs_begin(),
                             particle_pairs_end(), vt);
 }
@@ -69,6 +67,17 @@ void FilteredListPairContainer::show(std::ostream &out) const {
   out << "FilteredListPairContainer with "
       << get_number_of_particle_pairs()
       << " particle_pairs." << std::endl;
+}
+
+
+void FilteredListPairContainer::set_is_editing(bool tf) {
+  if (tf== !sorted_) return;
+  else {
+    sorted_=!tf;
+    if (sorted_) {
+      std::sort(data_.begin(), data_.end());
+    }
+  }
 }
 
 unsigned int

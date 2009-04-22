@@ -42,7 +42,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT FilteredListPairContainer
   : public PairContainer
 {
-  std::vector<ParticlePair> data_;
+  bool sorted_;
+  mutable std::vector<ParticlePair> data_;
 public:
   //! cannot pass a Pairs on construction
   FilteredListPairContainer();
@@ -55,10 +56,34 @@ public:
 
   void clear_particle_pairs() {
     data_.clear();
+    sorted_=true;
   }
   void reserve_particle_pairs(unsigned int sz) {
     data_.reserve(sz);
   }
+
+  /** @name Faster editing
+
+      The container keeps it list of elements in a sorted order.
+      As this can make for slow insertions, the user has the option
+      of disabling the sorting while inserting many objects. To do this,
+      call
+      \code
+      set_is_editing(true);
+      // do stuff
+      set_is_editing(false);
+      \endcode
+      \see FilteredListPairContainerEditor
+
+      @{
+   */
+  void set_is_editing( bool tf);
+
+  bool get_is_editing() const {
+    return !sorted_;
+  }
+  /** @}*/
+
  /** @name Methods to control the set of filters
 
      PairContainer objects can be used as filters to prevent
@@ -75,6 +100,28 @@ public:
    /**@}*/
 };
 
+
+/** \brief A RIIA-style object to control the editing modes on a
+    FilteredListPairContainer
+
+    This object sets the editing mode to true if the object is not
+    being edited when it is created. If it changed the editing mode
+    on creation, the mode is set to false when the object is
+    destroyed.
+*/
+class FilteredListPairContainerEditor {
+  Pointer<FilteredListPairContainer> o_;
+public:
+  FilteredListPairContainerEditor(FilteredListPairContainer *o) {
+    if (!o->get_is_editing()) {
+      o_= Pointer<FilteredListPairContainer>(o);
+      o_->set_is_editing(true);
+    }
+  }
+  ~FilteredListPairContainerEditor() {
+    if (o_) o_->set_is_editing(false);
+  }
+};
 
 IMPCORE_END_NAMESPACE
 
