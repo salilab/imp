@@ -53,9 +53,11 @@ public:
   //! Add vt if none of the referenced containers already contains it
   void add_particle(Particle* vt);
 
-  //! remove all objects from the container
   void clear_particles() {
     data_.clear();
+  }
+  void reserve_particles(unsigned int sz) {
+    data_.reserve(sz);
   }
  /** @name Methods to control the set of filters
 
