@@ -60,8 +60,7 @@ int main() {
                                        catoms);
     m->add_score_state(ss);
     rbs.push_back(RigidBodyDecorator(mhd.get_particle()));
-    set_enclosing_sphere(XYZRDecorator::create(mhd.get_particle()),
-                         catoms);
+    cover_members(rbs.back());
   }
   for (unsigned int i=0; i< atoms.size(); ++i) {
     XYZRDecorator::create(atoms[i], 1);
