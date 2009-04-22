@@ -22,6 +22,9 @@ RadialDistributionFunction(FormFactorTable * ff_table, Float bin_size)
 void RadialDistributionFunction::
 calculate_distribution(const std::vector<Particle*>& particles)
 {
+  IMP_LOG(VERBOSE, "start distribution calculation for "
+          << particles.size() << " particles" << std::endl);
+
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
   std::vector < algebra::Vector3D > coordinates;
   Floats form_factors;
@@ -46,7 +49,7 @@ void RadialDistributionFunction::
 calculate_distribution(const std::vector<Particle*>& particles1,
                        const std::vector<Particle*>& particles2)
 {
-  IMP_LOG(TERSE, "start distribution calculation for "
+  IMP_LOG(VERBOSE, "start distribution calculation for "
           << particles1.size() << " + " << particles2.size()
           << " particles" << std::endl);
 
@@ -99,7 +102,7 @@ show(std::ostream& out, std::string prefix) const
 DeltaDistributionFunction::
 DeltaDistributionFunction(FormFactorTable* ff_table,
                           const std::vector<Particle*>& particles,
-                          Float bin_size)
+                          Float max_distance, Float bin_size)
   : Distribution<algebra::Vector3D>(bin_size), ff_table_(ff_table)
 {
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
@@ -109,7 +112,9 @@ DeltaDistributionFunction(FormFactorTable* ff_table,
     coordinates_[i] = core::XYZDecorator::cast(particles[i]).get_coordinates();
     form_factors_[i] = ff_table_->get_form_factor(particles[i]);
   }
-  max_distance_ = compute_max_distance(particles);
+  // compute max distance if not given
+  max_distance_ = max_distance;
+  if (max_distance_ <= 0.0) max_distance_ = compute_max_distance(particles);
 }
 
 void DeltaDistributionFunction::
@@ -133,8 +138,9 @@ calculate_derivative_distribution(Particle* particle)
 void DeltaDistributionFunction::
 show(std::ostream & out, std::string prefix) const
 {
+  out << "DeltaDistributionFunction::show" << std::endl;
   for (unsigned int i = 0; i < distribution_.size(); i++) {
-    out << prefix << " dist " << index2dist(i) << " (" << distribution_[i]
+    out << prefix << " dist " << index2dist(i) << " value " << distribution_[i]
         << std::endl;
   }
 }

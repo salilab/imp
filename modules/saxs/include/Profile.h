@@ -1,11 +1,11 @@
 /**
- *  \file SAXSProfile.h   \brief A class for profile storing and computation
+ *  \file Profile.h   \brief A class for profile storing and computation
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#ifndef IMPSAXS_SAXS_PROFILE_H
-#define IMPSAXS_SAXS_PROFILE_H
+#ifndef IMPSAXS_PROFILE_H
+#define IMPSAXS_PROFILE_H
 
 #include "config.h"
 #include "FormFactorTable.h"
@@ -25,13 +25,14 @@ class RadialDistributionFunction;
    (experimental or theoretical) or computed from a set of Model
    Particles (theoretical)
 */
-class IMPSAXSEXPORT SAXSProfile {
+class IMPSAXSEXPORT Profile {
 public:
   //! init from file
-  SAXSProfile(const String& file_name);
+  Profile(const String& file_name);
 
   //! init for theoretical profile
-  SAXSProfile(Float qmin, Float qmax, Float delta, FormFactorTable* ff_table);
+  Profile(FormFactorTable* ff_table,
+          Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
 
 private:
   class IntensityEntry {
@@ -77,7 +78,7 @@ public:
                               Float max_distance) const;
 
   //! add another profile - useful for rigid bodies
-  void add(const SAXSProfile& other_profile);
+  void add(const Profile& other_profile);
 
   //! scale
   void scale(Float c);
@@ -113,13 +114,14 @@ public:
   //! checks the sampling of experimental profile
   bool is_uniform_sampling() const;
 
+  //! add simulated error
+  void add_errors();
+
   // parameter for E^2(q), used in faster calculation
   static const Float modulation_function_parameter_;
 
  private:
   void init();
-
-  void add_errors();
 
   void calculate_profile_reciprocal(const std::vector<Particle*>& particles);
 
@@ -146,4 +148,4 @@ public:
 
 IMPSAXS_END_NAMESPACE
 
-#endif /* IMPSAXS_SAXS_PROFILE_H */
+#endif /* IMPSAXS_PROFILE_H */

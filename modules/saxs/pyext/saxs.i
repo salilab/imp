@@ -30,7 +30,8 @@
 
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
-%include "IMP/saxs/SAXSProfile.h"
-%include "IMP/saxs/SAXSScore.h"
+%include "IMP/saxs/Profile.h"
+%include "IMP/saxs/Score.h"
+%include "IMP/saxs/Restraint.h"
 %include "IMP/saxs/Distribution.h"
 %include "IMP/saxs/utility.h"

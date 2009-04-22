@@ -1,10 +1,10 @@
 /**
- *  \file SAXSProfile.h   \brief A class for profile storing and computation
+ *  \file Profile.h   \brief A class for profile storing and computation
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#include <IMP/saxs/SAXSProfile.h>
+#include <IMP/saxs/Profile.h>
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
 #include <IMP/core/XYZDecorator.h>
@@ -18,30 +18,28 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-const Float SAXSProfile::modulation_function_parameter_ = 0.23;
+const Float Profile::modulation_function_parameter_ = 0.23;
 
-std::ostream & operator<<(std::ostream & s,
-                          const SAXSProfile::IntensityEntry & e)
+std::ostream & operator<<(std::ostream & s, const Profile::IntensityEntry & e)
 {
   return s << e.q_ << " " << e.intensity_ << " " << e.error_ << std::endl;
 }
 
-SAXSProfile::SAXSProfile(Float qmin, Float qmax, Float delta,
-                         FormFactorTable * ff_table):
+Profile::Profile(FormFactorTable *ff_table,
+                 Float qmin, Float qmax, Float delta):
   min_q_(qmin), max_q_(qmax), delta_q_(delta), ff_table_(ff_table)
 {
 }
 
-SAXSProfile::SAXSProfile(const String& file_name)
+Profile::Profile(const String& file_name)
 {
   read_SAXS_file(file_name);
 }
 
-void SAXSProfile::init()
+void Profile::init()
 {
   profile_.clear();
-  unsigned int number_of_q_entries =
-    algebra::round((max_q_ - min_q_) / delta_q_ ) + 1;
+  unsigned int number_of_q_entries = std::ceil((max_q_ - min_q_) / delta_q_ );
 
   for (unsigned int i=0; i<number_of_q_entries; i++) {
     IntensityEntry entry(min_q_ + i * delta_q_);
@@ -49,7 +47,7 @@ void SAXSProfile::init()
   }
 }
 
-void SAXSProfile::read_SAXS_file(const String& file_name)
+void Profile::read_SAXS_file(const String& file_name)
 {
   std::ifstream in_file(file_name.c_str());
 
@@ -110,13 +108,13 @@ void SAXSProfile::read_SAXS_file(const String& file_name)
   }
 }
 
-void SAXSProfile::add_errors() {
+void Profile::add_errors() {
   Float sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
   for (unsigned int i=0; i<profile_.size(); i++)
     profile_[i].error_ = sig_exp;
 }
 
-bool SAXSProfile::is_uniform_sampling() const {
+bool Profile::is_uniform_sampling() const {
   if (profile_.size() <= 1) return false;
 
   Float curr_diff = profile_[1].q_ - profile_[0].q_;
@@ -128,7 +126,7 @@ bool SAXSProfile::is_uniform_sampling() const {
   return true;
 }
 
-void SAXSProfile::write_SAXS_file(const String& file_name)
+void Profile::write_SAXS_file(const String& file_name)
 {
   std::ofstream out_file(file_name.c_str());
 
@@ -166,8 +164,7 @@ void SAXSProfile::write_SAXS_file(const String& file_name)
   out_file.close();
 }
 
-void SAXSProfile::calculate_profile_real(
-                             const std::vector<Particle*>& particles)
+void Profile::calculate_profile_real(const std::vector<Particle*>& particles)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
@@ -177,9 +174,8 @@ void SAXSProfile::calculate_profile_real(
   radial_distribution_2_profile(r_dist);
 }
 
-void SAXSProfile::calculate_profile_real(
-                             const std::vector<Particle*>& particles,
-                             unsigned int n)
+void Profile::calculate_profile_real(const std::vector<Particle*>& particles,
+                                     unsigned int n)
 {
   IMP_check(n > 1, "Attempting to use symmetric computation, symmetry order"
             << " should be > 1. Got: " << n, ValueException);
@@ -218,9 +214,8 @@ void SAXSProfile::calculate_profile_real(
   radial_distribution_2_profile(r_dist2);
 }
 
-void SAXSProfile::calculate_profile_real(
-                      const std::vector<Particle *>& particles1,
-                      const std::vector<Particle *>& particles2)
+void Profile::calculate_profile_real(const std::vector<Particle *>& particles1,
+                                     const std::vector<Particle *>& particles2)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles1.size() << " + " << particles2.size()
@@ -231,7 +226,7 @@ void SAXSProfile::calculate_profile_real(
   radial_distribution_2_profile(r_dist);
 }
 
-void SAXSProfile::
+void Profile::
 radial_distribution_2_profile(const RadialDistributionFunction& r_dist)
 {
   // iterate over intensity profile (assumes initialized profile: q, I(q)=0)
@@ -249,21 +244,27 @@ radial_distribution_2_profile(const RadialDistributionFunction& r_dist)
   }
 }
 
-void SAXSProfile::add(const SAXSProfile& other_profile) {
+void Profile::add(const Profile& other_profile) {
+  if(profile_.size() == 0 && other_profile.size() != 0) {
+    min_q_ = other_profile.get_min_q();
+    max_q_ = other_profile.get_max_q();
+    delta_q_ = other_profile.get_delta_q();
+    init();
+  }
   // assumes same q values!!!
   for (unsigned int k = 0; k < profile_.size(); k++) {
     profile_[k].intensity_ += other_profile.profile_[k].intensity_;
   }
 }
 
-void SAXSProfile::scale(Float c) {
+void Profile::scale(Float c) {
   for (unsigned int k = 0; k < profile_.size(); k++) {
     profile_[k].intensity_ *= c;
   }
 }
 
-void SAXSProfile::profile_2_distribution(RadialDistributionFunction& rd,
-                                         Float max_distance) const {
+void Profile::profile_2_distribution(RadialDistributionFunction& rd,
+                                     Float max_distance) const {
   float scale = 1 / (2*PI*PI);
   unsigned int distribution_size = rd.dist2index(max_distance) + 1;
   // iterate over r
