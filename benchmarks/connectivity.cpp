@@ -11,7 +11,6 @@ using namespace IMP::core;
 
 int main() {
   unsigned int npart=1000;
-  unsigned int reps=10;
   Model *m= new Model();
   UnaryFunction *ub = new HarmonicUpperBound(1.0, 0.1);
   PairScore *ss= new DistancePairScore(ub);
@@ -25,12 +24,11 @@ int main() {
 
   set_check_level(NONE);
   set_log_level(SILENT);
-  boost::timer t;
-  for (unsigned int i=0; i< 10; ++i) {
-    m->evaluate(NULL);
-  }
+  double runtime;
+  IMP_TIME(m->evaluate(NULL), runtime);
+
   std::cout << "Connectivity restraint on " << npart
-            << " took " << t.elapsed()/reps
+            << " took " << runtime
             << std::endl;
   return 0;
 }

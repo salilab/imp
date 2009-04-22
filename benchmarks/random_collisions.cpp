@@ -13,7 +13,6 @@ using namespace IMP::algebra;
 
 void test_one(ClosePairsFinder *cpf, unsigned int n, float rmin, float rmax) {
   Vector3D minc(0,0,0), maxc(10,10,10);
-  unsigned int reps=10;
   Model *m= new Model();
   Particles ps = create_xyzr_particles(m, n, rmin);
   ::boost::uniform_real<> rand(rmin, rmax);
@@ -26,16 +25,22 @@ void test_one(ClosePairsFinder *cpf, unsigned int n, float rmin, float rmax) {
 
   set_check_level(NONE);
   set_log_level(SILENT);
-  boost::timer t;
-  for (unsigned int i=0; i< 10; ++i) {
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      XYZDecorator(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
-    }
-    cpss->before_evaluate();
-  }
-  std::cout << "Connectivity restraint on " << n << " with radii from "
+  double setuptime;
+  IMP_TIME({
+      for (unsigned int i=0; i< ps.size(); ++i) {
+        XYZDecorator(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
+      }
+    }, setuptime);
+  double runtime;
+  IMP_TIME({
+      for (unsigned int i=0; i< ps.size(); ++i) {
+        XYZDecorator(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
+      }
+      cpss->before_evaluate();
+    }, runtime);
+  std::cout << "Collision detection on " << n << " particles with radii from "
             << rmin << " to " << rmax
-            << " took " << t.elapsed()/reps
+            << " took " << runtime-setuptime
             << std::endl;
 }
 
@@ -46,6 +51,8 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
+    test_one(cpf, 10000, 0, 1);
+    test_one(cpf, 10000, 0, .1);
   }
   {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
@@ -53,6 +60,8 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
+    test_one(cpf, 10000, 0, 1);
+    test_one(cpf, 1000, 0, .1);
   }
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
@@ -60,6 +69,7 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
+    test_one(cpf, 10000, 0, 1);
   }
   return 0;
 }

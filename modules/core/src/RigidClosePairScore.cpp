@@ -245,7 +245,7 @@ double RigidClosePairScore::process(Particle *a, Particle *b,
            j< db.get_number_of_children(cur.second); ++j) {
         int cj=db.get_child(cur.second, j);
         algebra::Sphere3D sj = get_transformed(b, db.get_sphere(cj));
-        if (distance(si, sj) < threshold_) {
+        if (balls_intersect(si, sj)) {
           if (da.get_is_leaf(ci) && db.get_is_leaf(cj)) {
             for (unsigned int k=0; k< da.get_number_of_particles(ci); ++k) {
               for (unsigned int l=0; l< db.get_number_of_particles(cj); ++l) {
@@ -280,7 +280,8 @@ RigidClosePairScore::setup(const algebra::Sphere3Ds &spheres,
     ss[i]= spheres[leaves[i]];
   }
   algebra::Sphere3D ec= algebra::enclosing_sphere(ss);
-  data.set_sphere(node_index, ec);
+  data.set_sphere(node_index, algebra::Sphere3D(ec.get_center(),
+                                      ec.get_radius()+threshold_/2.0));
   if (leaves.size() <10) {
     data.set_leaf(node_index, leaves);
   } else {
@@ -324,7 +325,8 @@ void RigidClosePairScore::setup(Particle *p) const {
     setup(spheres, 0, leaves, data_.get_data(p));
   } else {
     XYZRDecorator d(p, rk_);
-    data_.add_data(p, d.get_sphere());
+    data_.add_data(p, algebra::Sphere3D(d.get_sphere().get_center(),
+                               d.get_sphere().get_radius()+threshold_/2.0));
   }
   IMP_LOG_WRITE(VERBOSE, data_.get_data(p).show_tree(IMP_STREAM));
 }

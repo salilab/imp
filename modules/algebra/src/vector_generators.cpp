@@ -103,6 +103,8 @@ Vector3Ds uniform_cover(const Sphere3DPatch &sph,
     IMP_assert(std::abs(r2- square(sph.get_sphere().get_radius())) < .05 *r2,
                "Bad point on sphere " << r2
                << " " << square(sph.get_sphere().get_radius()) << std::endl);
+    // suppress warning
+    if (0) {r2=r2+2;}
     if (sph.get_contains(rp)) {
       points.push_back(rp);
     }
