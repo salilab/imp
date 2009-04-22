@@ -44,14 +44,18 @@ inline void set_model_ranges(Model *m) {
 }
 
 inline bool get_has_required_attributes_for_body(Particle *p) {
-  for (unsigned int i=0; i< 4; ++i) {
-      if (!p->has_attribute(rigid_body_data().quaternion_[i])) return false;
-  }
-  for (unsigned int i=0; i< 3; ++i) {
-    if (!p->has_attribute(XYZDecorator::get_coordinate_key(i)))
-      return false;
-  }
-  return true;
+  IMP_check((p->has_attribute(rigid_body_data().quaternion_[0])
+            && p->has_attribute(rigid_body_data().quaternion_[1])
+            && p->has_attribute(rigid_body_data().quaternion_[2])
+            && p->has_attribute(rigid_body_data().quaternion_[3])
+             && XYZDecorator::is_instance_of(p))
+            || (!p->has_attribute(rigid_body_data().quaternion_[0])
+                && !p->has_attribute(rigid_body_data().quaternion_[1])
+                && !p->has_attribute(rigid_body_data().quaternion_[2])
+                && !p->has_attribute(rigid_body_data().quaternion_[3])),
+            "Particle should have all of quaterion attributes or none",
+            InvalidStateException);
+  return p->has_attribute(rigid_body_data().quaternion_[0]);
 }
 
 
@@ -86,43 +90,6 @@ inline void add_required_attributes_for_member(Particle *p) {
   XYZDecorator::cast(p);
 }
 
-
-class IMPCOREEXPORT RigidBodyParticleData {
-  struct Data {
-    std::vector<int> storage_;
-    algebra::Sphere3D s_;
-  };
-  std::vector<Data> data_;
-public:
-  RigidBodyParticleData();
-  void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
-  void set_leaf(unsigned int ni, const std::vector<unsigned int> &ids);
-  unsigned int add_children(unsigned int ni, unsigned int num_children);
-  bool get_is_leaf(unsigned int ni) const;
-  unsigned int get_number_of_particles(unsigned int ni) const;
-  unsigned int get_number_of_children(unsigned int ni) const;
-  unsigned int get_child(unsigned int ni, unsigned int i) const;
-  unsigned int get_particle(unsigned int ni, unsigned int i) const;
-  const algebra::Sphere3D &get_sphere(unsigned int ni) const;
-  void show_tree(std::ostream &out) const;
-};
-
-
-typedef std::vector<unsigned int> SphereIndexes;
-typedef std::vector<SphereIndexes> SpheresSplit;
-
-
-class IMPCOREEXPORT RigidBodyCollisionData {
-  std::map<Particle*, RigidBodyParticleData> data_;
-public:
-  // for a non rigid body
-  void add_data(Particle *p, const algebra::Sphere3D &s);
-  void add_data(Particle *p);
-  RigidBodyParticleData &get_data(Particle *p);
-  const RigidBodyParticleData &get_data(Particle *p) const;
-  bool has_data(Particle *p) const;
-  void show(std::ostream &out) const;
-};
 
 
 IMPCORE_END_INTERNAL_NAMESPACE
