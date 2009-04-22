@@ -28,6 +28,8 @@ namespace {
                  << commas_io(g->get_color()) << ")";
     if (g->get_size() != 0) {
       out << ", " << g->get_size();
+    } else {
+      out << ", " << .1;
     }
     out << ")\n";
   }
