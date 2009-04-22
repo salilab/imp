@@ -167,7 +167,7 @@ IMPEXPORT CheckLevel get_check_level();
 */
 IMPEXPORT void set_print_exceptions(bool tf);
 
-
+#ifndef NDEBUG
 //! Execute the code block if a certain level checks are on
 /**
    The next code block (delimited by { }) is executed if
@@ -176,6 +176,9 @@ IMPEXPORT void set_print_exceptions(bool tf);
  */
 #define IMP_IF_CHECK(level)\
   if (level <= ::IMP::get_check_level())
+#else
+#define IMP_IF_CHECK(level) if (0)
+#endif
 
 //! This is just here so you can catch errors more easily in the debugger
 /** Break on exception.cpp:31 to catch assertion failures.
@@ -214,6 +217,7 @@ IMPEXPORT void check_fail(const char *msg);
 #define IMP_assert(expr, message)
 #endif
 
+#ifndef NDEBUG
 //! A runtime check for IMP.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
@@ -230,6 +234,9 @@ IMPEXPORT void check_fail(const char *msg);
       throw ExceptionType(oss.str().c_str());                           \
     }                                                                   \
   } while (false)
+#else
+#define IMP_check(e,m,E)
+#endif
 
 //! A runtime failure for IMP.
 /** \param[in] message Failure message to write.
