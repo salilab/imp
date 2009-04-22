@@ -262,6 +262,14 @@ IMPCOREEXPORT ScoreState* create_rigid_body(Particle *p,
                                             bool snapping=false);
 
 
+//! Give the rigid body a radius to include its members
+/** Make sure that the RigidBody particle has a radius large enough to include
+    its members. One cannot use the cover_particles() method as that will
+    change the location of the center.
+    \relates RigidBodyDecorator
+ */
+IMPCOREEXPORT void cover_members(RigidBodyDecorator d,
+                   FloatKey rk= XYZRDecorator::get_default_radius_key());
 
 IMPCORE_END_NAMESPACE
 
