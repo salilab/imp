@@ -22,55 +22,55 @@ namespace {
   internal::SpheresSplit divide_spheres(const algebra::Sphere3Ds &ss,
                                         const internal::SphereIndexes &s) {
     algebra::Vector3D centroid(0,0,0);
-  for (unsigned int i=0; i< s.size(); ++i) {
-    centroid += ss[s[i]].get_center();
-  }
-  centroid/= s.size();
-  algebra::Vector3Ds pts(s.size());
-  for (unsigned int i=0; i< s.size(); ++i) {
-    pts[i]= ss[s[i]].get_center()-centroid;
-  }
-  algebra::PrincipalComponentAnalysis pca= algebra::principal_components(pts);
-  const algebra::Vector3D &v0=pca.get_principal_component(0),
-    &v1= pca.get_principal_component(1),
-    &v2= pca.get_principal_component(2);
-  algebra::Rotation3D r= algebra::rotation_from_matrix(v0[0], v0[1], v0[2],
-                                                       v1[0], v1[1], v1[2],
-                                                       v2[0], v2[1], v2[2])
-    .get_inverse();
-  algebra::Vector3D minc(std::numeric_limits<double>::max(),
-                         std::numeric_limits<double>::max(),
-                         std::numeric_limits<double>::max()),
-    maxc(-std::numeric_limits<double>::max(),
-         -std::numeric_limits<double>::max(),
-         -std::numeric_limits<double>::max());
-  for (unsigned int i=0; i< s.size(); ++i) {
-    pts[i]= r.rotate(pts[i]);
+    for (unsigned int i=0; i< s.size(); ++i) {
+      centroid += ss[s[i]].get_center();
+    }
+    centroid/= s.size();
+    algebra::Vector3Ds pts(s.size());
+    for (unsigned int i=0; i< s.size(); ++i) {
+      pts[i]= ss[s[i]].get_center()-centroid;
+    }
+    algebra::PrincipalComponentAnalysis pca= algebra::principal_components(pts);
+    const algebra::Vector3D &v0=pca.get_principal_component(0),
+      &v1= pca.get_principal_component(1),
+      &v2= pca.get_principal_component(2);
+    algebra::Rotation3D r= algebra::rotation_from_matrix(v0[0], v0[1], v0[2],
+                                                         v1[0], v1[1], v1[2],
+                                                         v2[0], v2[1], v2[2])
+      .get_inverse();
+    algebra::Vector3D minc(std::numeric_limits<double>::max(),
+                           std::numeric_limits<double>::max(),
+                           std::numeric_limits<double>::max()),
+      maxc(-std::numeric_limits<double>::max(),
+           -std::numeric_limits<double>::max(),
+           -std::numeric_limits<double>::max());
+    for (unsigned int i=0; i< s.size(); ++i) {
+      pts[i]= r.rotate(pts[i]);
+      for (unsigned int j=0; j< 3; ++j) {
+        minc[j]= std::min(minc[j], pts[i][j]);
+        maxc[j]= std::max(maxc[j], pts[i][j]);
+      }
+    }
+    double side=0;
     for (unsigned int j=0; j< 3; ++j) {
-      minc[j]= std::min(minc[j], pts[i][j]);
-      maxc[j]= std::max(maxc[j], pts[i][j]);
+      side= std::max(side, (maxc[j]-minc[j])/2.0);
     }
-  }
-  double side=0;
-  for (unsigned int j=0; j< 3; ++j) {
-    side= std::max(side, (maxc[j]-minc[j])/2.0);
-  }
-  typedef internal::Grid3D<internal::SphereIndexes > Grid;
-  Grid grid(side, minc, maxc, internal::SphereIndexes());
-  for (unsigned int i=0; i< s.size(); ++i) {
-    Grid::Index ix= grid.get_index(pts[i]);
-    grid.get_voxel(ix).push_back(s[i]);
-  }
+    typedef internal::Grid3D<internal::SphereIndexes > Grid;
+    Grid grid(side, minc, maxc, internal::SphereIndexes());
+    for (unsigned int i=0; i< s.size(); ++i) {
+      Grid::Index ix= grid.get_index(pts[i]);
+      grid.get_voxel(ix).push_back(s[i]);
+    }
 
-  internal::SpheresSplit ret;
-  for (Grid::IndexIterator it= grid.all_indexes_begin();
-       it != grid.all_indexes_end(); ++it) {
-    if (!grid.get_voxel(*it).empty()) {
-      ret.push_back(grid.get_voxel(*it));
+    internal::SpheresSplit ret;
+    for (Grid::IndexIterator it= grid.all_indexes_begin();
+         it != grid.all_indexes_end(); ++it) {
+      if (!grid.get_voxel(*it).empty()) {
+        ret.push_back(grid.get_voxel(*it));
+      }
     }
+    return ret;
   }
-  return ret;
-}
 }
 
 
@@ -256,8 +256,10 @@ double RigidClosePairScore::process(Particle *a, Particle *b,
               }
             }
           } else {
-            last_pairs_.push_back(std::make_pair(da.get_sphere(ci),
-                                                 db.get_sphere(cj)));
+            IMP_IF_LOG(VERBOSE) {
+              last_pairs_.push_back(std::make_pair(da.get_sphere(ci),
+                                                   db.get_sphere(cj)));
+            }
             stack.push_back(std::make_pair(ci, cj));
           }
         }
