@@ -11,7 +11,7 @@ class Test(IMP.test.TestCase):
     """Tests for bond refiner"""
 
 
-    def _test_rops(self):
+    def test_rops(self):
         """Checking rigid body pair score"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
