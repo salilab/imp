@@ -64,9 +64,9 @@ bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
       return false;
     }
   }
-  return balls_intersect(algebra::Sphere3D(da.get_coordinates(),
-                                           ra+get_distance()),
-                         algebra::Sphere3D(db.get_coordinates(), rb));
+  return interiors_intersect(algebra::Sphere3D(da.get_coordinates(),
+                                               ra+get_distance()),
+                             algebra::Sphere3D(db.get_coordinates(), rb));
 }
 
 IMPCORE_END_NAMESPACE
