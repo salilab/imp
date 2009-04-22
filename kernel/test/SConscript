@@ -18,7 +18,7 @@ def builder_unit_test(target, source, env):
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
     else:
-        print "unit tests FAILED"
+        print "IMP kernel unit tests FAILED"
         return 1
 
 e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
