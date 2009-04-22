@@ -51,7 +51,7 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
-    test_one(cpf, 10000, 0, 1);
+    test_one(cpf, 10000, 0, .5);
     test_one(cpf, 10000, 0, .1);
   }
   {
@@ -60,8 +60,8 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
-    test_one(cpf, 10000, 0, 1);
-    test_one(cpf, 1000, 0, .1);
+    test_one(cpf, 10000, 0, .5);
+    test_one(cpf, 10000, 0, .1);
   }
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
@@ -69,7 +69,8 @@ int main() {
     test_one(cpf, 10, 0, 1);
     test_one(cpf, 100, 0, 1);
     test_one(cpf, 1000, 0, 1);
-    test_one(cpf, 10000, 0, 1);
+    test_one(cpf, 10000, 0, .5);
+    test_one(cpf, 10000, 0, .1);
   }
   return 0;
 }
