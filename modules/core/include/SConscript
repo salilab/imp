@@ -58,6 +58,7 @@ files = [
          'RefinedPairsPairScore.h',
          'RestraintSet.h',
          'RigidBodyMover.h',
+         'RigidClosePairScore.h',
          'SingletonContainerSet.h',
          'SingletonRestraint.h',
          'SingletonScoreState.h',

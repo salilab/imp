@@ -111,6 +111,7 @@ namespace IMP {
 %include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/RefinedPairsPairScore.h"
 %include "IMP/core/rigid_bodies.h"
+%include "IMP/core/RigidClosePairScore.h"
 %include "IMP/core/SphereDistancePairScore.h"
 %include "IMP/core/SteepestDescent.h"
 %include "IMP/core/TransformedDistancePairScore.h"
