@@ -22,6 +22,9 @@ void QuadraticClosePairsFinder
                   Float distance,
                   FloatKey radius_key,
                   FilteredListPairContainer *out) const {
+  IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
+          << ca->get_number_of_particles() << " and "
+          << cb->get_number_of_particles() << std::endl);
   for (SingletonContainer::ParticleIterator it = ca->particles_begin();
        it != ca->particles_end(); ++it) {
     for (SingletonContainer::ParticleIterator it2 = cb->particles_begin();
