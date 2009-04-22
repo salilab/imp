@@ -30,7 +30,7 @@ void test_one(Model *m,
                rbs[i].set_transformation(tr, true);
              }
            }, inittime);
-  double value;
+  double value=0;
   IMP_TIME(
            {
              for (unsigned int i=0; i< rbs.size(); ++i) {
@@ -39,7 +39,7 @@ void test_one(Model *m,
                Transformation3D tr(r, t);
                rbs[i].set_transformation(tr, true);
              }
-             value=m->evaluate(false);
+             value+=m->evaluate(false);
            }, runtime);
 
   std::cout << " took " << runtime-inittime << " with side " << side
