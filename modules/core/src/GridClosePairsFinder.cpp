@@ -154,6 +154,8 @@ void GridClosePairsFinder
                   SingletonContainer *cb,
                   FilteredListPairContainer *out) const {
   QuadraticClosePairsFinder qp;
+  qp.set_radius_key(get_radius_key());
+  qp.set_distance(get_distance());
   qp.add_close_pairs(ca, cb, out);
 }
 
