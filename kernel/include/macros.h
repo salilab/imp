@@ -894,7 +894,7 @@ public:                                                                 \
     do {                                        \
       block;                                    \
       ++imp_reps;                               \
-    } while (imp_timer.elapsed() < 5);          \
+    } while (imp_timer.elapsed() < 2.5);          \
     timev= imp_timer.elapsed()/imp_reps;        \
   }
 
