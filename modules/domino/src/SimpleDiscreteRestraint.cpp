@@ -6,11 +6,13 @@
  */
 
 #include <IMP/domino/SimpleDiscreteRestraint.h>
+#include <IMP/domino/SimpleDiscreteSpace.h>
 #include <IMP/domino/CombState.h>
 #include <IMP/container_macros.h>
 
 
 IMPDOMINO_BEGIN_NAMESPACE
+
 
 void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
 {
@@ -77,8 +79,8 @@ IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,  {
 Float SimpleDiscreteRestraint::evaluate(DerivativeAccumulator *accum)
 {
   //build state key
-  int a1 = int(p1->get_value(IMP::FloatKey(KEY_OPT)));
-  int a2 = int(p2->get_value(IMP::FloatKey(KEY_OPT)));
+  int a1 = int(p1->get_value(SimpleDiscreteSpace::get_optimization_key()));
+  int a2 = int(p2->get_value(SimpleDiscreteSpace::get_optimization_key()));
   return states2values[key][std::pair<int,int>(a1,a2)];
 }
 

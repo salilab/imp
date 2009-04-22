@@ -16,6 +16,7 @@ files = [
          'TransformationCartesianProductSampler.cpp',
          'TransformationPermutationSampler.cpp',
          'SimpleDiscreteRestraint.cpp',
+         'SimpleDiscreteSpace.cpp',
          'TransformationDiscreteSet.cpp',
          'SymmetrySampler.cpp'
         ]
