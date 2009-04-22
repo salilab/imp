@@ -32,7 +32,9 @@ void transform(const Particles &ps,
 }
 
 algebra::Segment3D diameter(const Particles &ps) {
-  Particle *p1,*p2;
+  IMP_check(!ps.empty(), "Can't compute the diameter if you don't give "
+            "me any particles.", ValueException);
+  Particle *p1=NULL,*p2=NULL;
   double max_squared_dist=0.0;
 
   for (Particles::const_iterator it = ps.begin();it != ps.end();it++){
