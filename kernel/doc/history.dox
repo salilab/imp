@@ -2,6 +2,12 @@
 
 \par Week of April 20
 
+- Support for taking advantage of rigid bodies in collision detection has been
+  added via the IMP::core::RigidClosePairsFinder.
+
+- All IMP::core::ClosePairsScoreState-related functinality has been optimized and
+  should be noticeably faster.
+
 - The SWIG interface now ties in to the reference counting mechanism used in
   the C++ code, for all classes derived from IMP::RefCounted. So, for example,
   deleting a Python object should not free the underlying C++ object if another
