@@ -164,6 +164,9 @@ void GridClosePairsFinder
                   FilteredListPairContainer *out) const {
   IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
+
+  FilteredListPairContainerEditor e(out);
+
   IMP::internal::Vector<internal::ParticleGrid*> bins;
 
   if (get_radius_key()== FloatKey()) {
@@ -201,6 +204,7 @@ void GridClosePairsFinder
       last_index=it->second;
     }
   }
+
 }
 
 

@@ -36,7 +36,7 @@ namespace {
 }
 
 FilteredListGroupnameContainer
-::FilteredListGroupnameContainer(){
+::FilteredListGroupnameContainer(): sorted_(true){
 }
 
 void FilteredListGroupnameContainer::add_classname(Value vt) {
@@ -46,20 +46,19 @@ void FilteredListGroupnameContainer::add_classname(Value vt) {
     const_cast<const FilteredListGroupnameContainer*>(this);
   if (!Found(cthis->groupname_filters_begin(),
              cthis->groupname_filters_end())(vt)) {
-    data_.insert(std::upper_bound(data_.begin(),
-                                  data_.end(), vt), vt);
-  }
-  IMP_IF_CHECK(EXPENSIVE) {
-    for (unsigned int i=1; i< data_.size(); ++i) {
-      IMP_assert(data_[i-1] < data_[i], "Poorly sorted list at position "
-                 << i);
+    data_.push_back(vt);
+    if (sorted_) {
+      std::sort(data_.begin(), data_.end());
     }
   }
+  
 }
 
 bool
 FilteredListGroupnameContainer
 ::get_contains_classname(Value vt) const {
+  IMP_check(sorted_, "Cannot check if the container contains an object "
+            << "while you are editing it.", InvalidStateException);
   return std::binary_search(classnames_begin(),
                             classnames_end(), vt);
 }
@@ -69,6 +68,17 @@ void FilteredListGroupnameContainer::show(std::ostream &out) const {
   out << "FilteredListGroupnameContainer with "
       << get_number_of_classnames()
       << " classnames." << std::endl;
+}
+
+
+void FilteredListGroupnameContainer::set_is_editing(bool tf) {
+  if (tf== !sorted_) return;
+  else {
+    sorted_=!tf;
+    if (sorted_) {
+      std::sort(data_.begin(), data_.end());
+    }
+  }
 }
 
 unsigned int

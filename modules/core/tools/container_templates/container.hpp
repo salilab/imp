@@ -46,7 +46,6 @@ class IMPEXPORT GroupnameContainer : public Object
 public:
   GroupnameContainer();
 
-  //!
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -56,7 +55,6 @@ public:
    */
   virtual unsigned int get_number_of_classnames() const =0;
 
-  //! get one classname
   virtual Value get_classname(unsigned int i) const=0;
 
 #ifdef IMP_DOXYGEN

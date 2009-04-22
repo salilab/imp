@@ -36,7 +36,7 @@ namespace {
 }
 
 FilteredListSingletonContainer
-::FilteredListSingletonContainer(){
+::FilteredListSingletonContainer(): sorted_(true){
 }
 
 void FilteredListSingletonContainer::add_particle(Particle* vt) {
@@ -46,13 +46,9 @@ void FilteredListSingletonContainer::add_particle(Particle* vt) {
     const_cast<const FilteredListSingletonContainer*>(this);
   if (!Found(cthis->singleton_filters_begin(),
              cthis->singleton_filters_end())(vt)) {
-    data_.insert(std::upper_bound(data_.begin(),
-                                  data_.end(), vt), vt);
-  }
-  IMP_IF_CHECK(EXPENSIVE) {
-    for (unsigned int i=1; i< data_.size(); ++i) {
-      IMP_assert(data_[i-1] < data_[i], "Poorly sorted list at position "
-                 << i);
+    data_.push_back(vt);
+    if (sorted_) {
+      std::sort(data_.begin(), data_.end());
     }
   }
 }
@@ -60,6 +56,8 @@ void FilteredListSingletonContainer::add_particle(Particle* vt) {
 bool
 FilteredListSingletonContainer
 ::get_contains_particle(Particle* vt) const {
+  IMP_check(sorted_, "Cannot check if the container contains an object "
+            << "while you are editing it.", InvalidStateException);
   return std::binary_search(particles_begin(),
                             particles_end(), vt);
 }
@@ -69,6 +67,17 @@ void FilteredListSingletonContainer::show(std::ostream &out) const {
   out << "FilteredListSingletonContainer with "
       << get_number_of_particles()
       << " particles." << std::endl;
+}
+
+
+void FilteredListSingletonContainer::set_is_editing(bool tf) {
+  if (tf== !sorted_) return;
+  else {
+    sorted_=!tf;
+    if (sorted_) {
+      std::sort(data_.begin(), data_.end());
+    }
+  }
 }
 
 unsigned int

@@ -15,13 +15,26 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ListGroupnameContainer::ListGroupnameContainer(const Classnames &ps){
+  sorted_=false;
   set_classnames(ps);
+  set_is_editing(false);
 }
 
 IMP_LIST_IMPL(ListGroupnameContainer, Classname,
               classname, Value,, {
-                std::sort(classnames_begin(), classnames_end());
+                if (sorted_) std::sort(classnames_begin(), classnames_end());
               },);
+
+
+void ListGroupnameContainer::set_is_editing(bool tf) {
+  if (tf== !sorted_) return;
+  else {
+    sorted_=!tf;
+    if (sorted_) {
+      std::sort(classnames_begin(), classnames_end());
+    }
+  }
+}
 
 
 bool

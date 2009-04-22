@@ -42,7 +42,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT FilteredListGroupnameContainer
   : public GroupnameContainer
 {
-  std::vector<Value> data_;
+  bool sorted_;
+  mutable std::vector<Value> data_;
 public:
   //! cannot pass a Groupnames on construction
   FilteredListGroupnameContainer();
@@ -55,10 +56,34 @@ public:
 
   void clear_classnames() {
     data_.clear();
+    sorted_=true;
   }
   void reserve_classnames(unsigned int sz) {
     data_.reserve(sz);
   }
+
+  /** @name Faster editing
+
+      The container keeps it list of elements in a sorted order.
+      As this can make for slow insertions, the user has the option
+      of disabling the sorting while inserting many objects. To do this,
+      call
+      \code
+      set_is_editing(true);
+      // do stuff
+      set_is_editing(false);
+      \endcode
+      \see FilteredListGroupnameContainerEditor
+
+      @{
+   */
+  void set_is_editing( bool tf);
+
+  bool get_is_editing() const {
+    return !sorted_;
+  }
+  /** @}*/
+
  /** @name Methods to control the set of filters
 
      GroupnameContainer objects can be used as filters to prevent
@@ -75,6 +100,28 @@ public:
    /**@}*/
 };
 
+
+/** \brief A RIIA-style object to control the editing modes on a
+    FilteredListGroupnameContainer
+
+    This object sets the editing mode to true if the object is not
+    being edited when it is created. If it changed the editing mode
+    on creation, the mode is set to false when the object is
+    destroyed.
+*/
+class FilteredListGroupnameContainerEditor {
+  Pointer<FilteredListGroupnameContainer> o_;
+public:
+  FilteredListGroupnameContainerEditor(FilteredListGroupnameContainer *o) {
+    if (!o->get_is_editing()) {
+      o_= Pointer<FilteredListGroupnameContainer>(o);
+      o_->set_is_editing(true);
+    }
+  }
+  ~FilteredListGroupnameContainerEditor() {
+    if (o_) o_->set_is_editing(false);
+  }
+};
 
 IMPCORE_END_NAMESPACE
 
