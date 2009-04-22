@@ -19,6 +19,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+static const double EXPANSION=1.0;
+static const unsigned int MAX_LEAF_SIZE=10;
+
 RigidClosePairsFinder::RigidClosePairsFinder():
   cpfout_(new FilteredListPairContainer()){
   #ifdef IMP_USE_CGAL
@@ -170,11 +173,17 @@ namespace internal {
     return data_[ni].s_;
   }
 
-  void RigidBodyParticleData::show_tree(std::ostream &out) const {
+  void RigidBodyParticleData::show_tree(std::ostream &out, Particle *p) const {
     for (unsigned int i=0; i< data_.size(); ++i) {
       out << "Node " << i << ": ";
-      for (unsigned int j=0; j< data_[i].storage_.size(); ++j) {
-        out << data_[i].storage_[j] << " ";
+      if (get_is_leaf(i)) {
+        for (unsigned int j=0; j< data_[i].storage_.size(); ++j) {
+          out << get_particle(i, j, p)->get_name() << " ";
+        }
+      } else {
+        for (unsigned int j=0; j< data_[i].storage_.size(); ++j) {
+          out << data_[i].storage_[j] << " ";
+        }
       }
       out << ": " << data_[i].s_ << std::endl;
     }
@@ -226,8 +235,9 @@ RigidClosePairsFinder::get_transformed(Particle *a,
     return algebra::Sphere3D(d.get_transformation().transform(s.get_center()),
                              s.get_radius());
   } else {
-    XYZRDecorator d(a, get_radius_key());
-    return d.get_sphere();
+    XYZDecorator d(a);
+    return algebra::Sphere3D(d.get_coordinates(),
+                             get_radius(a)+get_distance()*.5);
   }
 }
 
@@ -255,8 +265,8 @@ RigidClosePairsFinder::setup(const algebra::Sphere3Ds &spheres,
   }
   algebra::Sphere3D ec= algebra::enclosing_sphere(ss);
   data.set_sphere(node_index, algebra::Sphere3D(ec.get_center(),
-                                   ec.get_radius()+get_distance()/2.0));
-  if (leaves.size() <10) {
+                        (ec.get_radius()+get_distance()/2.0)*EXPANSION));
+  if (leaves.size() <MAX_LEAF_SIZE) {
     data.set_leaf(node_index, leaves);
   } else {
     internal::SpheresSplit ss= divide_spheres(spheres, leaves);
@@ -281,14 +291,7 @@ void RigidClosePairsFinder::setup(Particle *p) const {
     RigidBodyDecorator d(p);
     algebra::Sphere3Ds spheres(d.get_number_of_members());
     for (unsigned int i=0; i< d.get_number_of_members(); ++i) {
-      double r;
-      if (XYZRDecorator::is_instance_of(d.get_member(i).get_particle(),
-                                        get_radius_key())) {
-        r= XYZRDecorator(d.get_member(i).get_particle(),
-                         get_radius_key()).get_radius();
-      } else {
-        r=0;
-      }
+      double r =get_radius(d.get_member(i).get_particle());
       algebra::Vector3D v= d.get_member(i).get_internal_coordinates();
       spheres[i]= algebra::Sphere3D(v, r);
     }
@@ -300,11 +303,12 @@ void RigidClosePairsFinder::setup(Particle *p) const {
     }
     setup(spheres, 0, leaves, data_.get_data(p));
   } else {
-    XYZRDecorator d(p, get_radius_key());
-    data_.add_data(p, algebra::Sphere3D(d.get_sphere().get_center(),
-                           d.get_sphere().get_radius()+get_distance()/2.0));
+    double r=get_radius(p);
+    XYZDecorator d(p);
+    data_.add_data(p, algebra::Sphere3D(d.get_coordinates(),
+                            (r+get_distance()/2.0)*EXPANSION));
   }
-  IMP_LOG_WRITE(VERBOSE, data_.get_data(p).show_tree(IMP_STREAM));
+  IMP_LOG_WRITE(VERBOSE, data_.get_data(p).show_tree(IMP_STREAM, p));
 }
 
 
@@ -319,8 +323,25 @@ RigidClosePairsFinder::get_tree(Particle *p) const {
 
 void RigidClosePairsFinder::show_tree(Particle *p, std::ostream &out) const {
 
-  return data_.get_data(p).show_tree(out);
+  return data_.get_data(p).show_tree(out, p);
 }
+
+namespace {
+  void check_particles(SingletonContainer *sc, FloatKey rk) {
+    IMP_IF_CHECK(CHEAP) {
+      for (SingletonContainer::ParticleIterator it= sc->particles_begin();
+         it != sc->particles_end(); ++it) {
+        if (RigidBodyDecorator::is_instance_of(*it)
+            && !(*it)->has_attribute(rk)) {
+          IMP_WARN("Particle " << (*it)->get_name() << " is a rigid body "
+                   << "but does not have a radius. "
+                   << "Collision detection is unlikely to work.");
+        }
+      }
+    }
+  }
+}
+
 
 void RigidClosePairsFinder
 ::add_close_pairs(SingletonContainer *ca,
@@ -329,6 +350,8 @@ void RigidClosePairsFinder
   IMP_LOG(TERSE, "Rigid add_close_pairs called with "
           << ca->get_number_of_particles() << " and "
           << cb->get_number_of_particles() << std::endl);
+  check_particles(ca, get_radius_key());
+  check_particles(cb, get_radius_key());
   cpf_->add_close_pairs(ca,cb, cpfout_);
   for (PairContainer::ParticlePairIterator it= cpfout_->particle_pairs_begin();
        it != cpfout_->particle_pairs_end(); ++it) {
@@ -341,6 +364,7 @@ void RigidClosePairsFinder
                   FilteredListPairContainer *out) const {
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles." << std::endl);
+  check_particles(c, get_radius_key());
   cpf_->add_close_pairs(c, cpfout_);
   for (PairContainer::ParticlePairIterator it= cpfout_->particle_pairs_begin();
        it != cpfout_->particle_pairs_end(); ++it) {
@@ -348,6 +372,37 @@ void RigidClosePairsFinder
   }
 }
 
+inline void
+RigidClosePairsFinder::process_one(Particle *a, Particle *b,
+                                   FilteredListPairContainer *out,
+                                   const internal::RigidBodyParticleData &da,
+                                   const internal::RigidBodyParticleData &db,
+                                   unsigned int ci,
+                                   unsigned int cj,
+                        std::vector<std::pair<int, int> > &stack) const {
+  if (da.get_is_leaf(ci) && db.get_is_leaf(cj)) {
+    for (unsigned int k=0; k< da.get_number_of_particles(ci); ++k) {
+      Particle *pk=da.get_particle(ci, k, a);
+      algebra::Sphere3D sk(XYZDecorator(pk).get_coordinates(),
+                             get_radius(pk)+get_distance()*.5);
+      for (unsigned int l=0; l< db.get_number_of_particles(cj); ++l) {
+        Particle *pl=db.get_particle(cj, l, b);
+        algebra::Sphere3D sl(XYZDecorator(pl).get_coordinates(),
+                             get_radius(pl)+get_distance()*.5);
+        IMP_LOG(VERBOSE, "Trying member particles " << pk->get_name()
+                << " and " << pl->get_name() << std::endl);
+        if (interiors_intersect(sk, sl)) {
+          out->add_particle_pair(ParticlePair(pk, pl));
+        } else {
+          IMP_LOG(VERBOSE, "Spheres do not interesct " << sk << " | " << sl
+                  << std::endl);
+        }
+      }
+    }
+  } else {
+    stack.push_back(std::make_pair(ci, cj));
+  }
+}
 
 
 void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
@@ -358,40 +413,34 @@ void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
   if (!data_.has_data(b)) {
     setup(b);
   }
+  IMP_LOG(VERBOSE, "Testing " << a->get_name() << " and " << b->get_name()
+          << " for addition to list" << std::endl);
   const internal::RigidBodyParticleData &da= data_.get_data(a);
   const internal::RigidBodyParticleData &db= data_.get_data(b);
   std::vector<std::pair<int, int> > stack;
-  stack.push_back(std::make_pair(0,0));
-  do {
+  process_one(a,b,out, da, db, 0,0,stack);
+  while (!stack.empty()) {
     std::pair<int, int> cur= stack.back();
     stack.pop_back();
-    IMP_LOG(VERBOSE, "Trying pair " << cur.first << " "
+    IMP_LOG(VERBOSE, "Processing pair " << cur.first << " "
             << cur.second << std::endl);
     for (unsigned int i=0; i< da.get_number_of_children(cur.first);
          ++i) {
       int ci=da.get_child(cur.first, i);
-      algebra::Sphere3D si
-        = get_transformed(a, da.get_sphere(ci));
+      algebra::Sphere3D si = get_transformed(a, da.get_sphere(ci));
       for (unsigned int j=0;
            j< db.get_number_of_children(cur.second); ++j) {
         int cj=db.get_child(cur.second, j);
         algebra::Sphere3D sj = get_transformed(b, db.get_sphere(cj));
-        if (balls_intersect(si, sj)) {
-          if (da.get_is_leaf(ci) && db.get_is_leaf(cj)) {
-            for (unsigned int k=0; k< da.get_number_of_particles(ci); ++k) {
-              for (unsigned int l=0; l< db.get_number_of_particles(cj); ++l) {
-                out->add_particle_pair(ParticlePair(da.get_particle(ci, k, a),
-                                                    db.get_particle(cj, l, b)));
-
-              }
-            }
-          } else {
-            stack.push_back(std::make_pair(ci, cj));
-          }
+        if (interiors_intersect(si, sj)) {
+          process_one(a,b,out, da, db, ci, cj, stack);
+        } else {
+          IMP_LOG(VERBOSE, "Rejected " << ci << " " << cj << ": "
+                  << si << " | " << sj << std::endl);
         }
       }
     }
-  } while (!stack.empty());
+  };
 }
 
 IMPCORE_END_NAMESPACE
