@@ -13,35 +13,33 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//! Return close pairs between members of rigid bodies.
-/** It needs to be passed another ClosePairsFinder to help
-    determine which rigid bodies are close to which others.
+//! Peform more efficient close pair finding when rigid bodies are involved.
+/** The class finds all close pairs consisting of particles taken from the
+    passed list(s) (if they are not rigid bodies) or members of rigid
+    bodies passed as input. That is, given an input list \c l, for each
+    pair of particles \c p, \c q taken from the list, that are closer than
+    the distance threshold, it returns
+    - if neither \c p or \c q are RigidBody particles it returns
+    (\c p,\c q)
+    - if bother \c p and \c q are RigidBody particles, it returns
+    all \c (\c r,\c s) where \c r is a member of \c p and \c s is member of
+    \c q and \c r and \c s are closer than the distance threshold
+    - pairs \c (\c p,\c s) or \c (\c r,\c q) as appropriate if only one of
+    \c p or \c q is a rigid body.
 
-    For each pair of RigidBody particles, it returns all pairs
-    (p,q), where p and q are taken from different rigid bodies and
-    \code
-    distance(XYZRDecorator(p, radius_key), XYZRDecorator(p, radius_key)) < 0
-    \endcode
-    A called particle that is not an RigidBody particle is assumed to
-    be a RigidBody consisting of a single sphere.
+    Consequently, the user must ensure that the RigidBodyDecorator are
+    assigned a radius that encloses all of their RigidMember
+    particles.
 
-    The user must ensure that the RigidBody particle is assigned a radius
-    that encloses all of its RigidMember particles.
+    It uses another ClosePairsFinder to find which pairs of particles in
+    the input list or lists are close. Your choice of this can be passed
+    to the constructor.
 
-    \par Algorithmic details:
-    For each rigid body seen, a sphere hierarchy is built enclosing the
-    spheres for each RigidMember particle. When it is called with two
-    particles it walks down the hierarchy and applies the passed
-    PairScore to each intersecting pair of RigidMember particles. Having
-    CGAL makes the computations more efficient.
+    \note Having CGAL makes the computations more efficient.
 
     \note The bounding spheres are kept in internal coordinates for
     the rigid body and transformed on the fly. It would probably be
-    faster to cache the tranformed results. Unfortunately, this is
-    hard to do as the PairScore can't tall when you move on to a new
-    round. One solution would be to make the iteration count in model
-    public. Then one could store the iteration cound with the cached
-    results and invalidate the cache if needed.
+    faster to cache the tranformed results.
 
     \note The particles are divided up using a grid. The number of
     grid cells to use should be explored. In addition, with highly

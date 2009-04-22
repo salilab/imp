@@ -22,8 +22,10 @@ class FilteredListPairContainer;
 
 //! A base class for algorithms to find spatial proximities
 /** In general, the algorithm should make sure it returns all
-    pairs of appropriate objects which are within distance
-    of one another (including the radius).
+    pairs of appropriate objects which are within the distance
+    of one another (including their radius). They are free to
+    return more if it is conventient, but this is not
+    recommended as the list can easily become very large.
     \see ClosePairsScoreState
     \see CloseBipartitlePairsScoreState
  */
@@ -32,6 +34,7 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   FloatKey rk_;
   double distance_;
  protected:
+  //! Get the radius if get_radius_key() is non-default, otherwise 0.
   Float get_radius(Particle *p) const {
     if (rk_ != FloatKey()) {
       return p->get_value(rk_);
@@ -44,38 +47,49 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   ClosePairsFinder();
   ~ClosePairsFinder();
 
-  //! Compute all nearby pairs of particles in pc
-  /** All pairs of distinct particles, p0, p1, taken from pc such that
-      distance(XYZRDecorator(p0, radius_key), XYZRDecorator(p1, radius_key))
-      is less than distance. If radius_key is FloatKey() all radii
-      are assumed to be 0. Other pairs can be added too. */
+  /** \name Methods to find close pairs
+      The methods add apprioriately close pairs of particles from the
+      input list (or lists, for the bipartite version) to the out
+      list. You can add filters to the out list to prevent centerain
+      pairs or types of pairs from being added to the list of close
+      pairs. For example, see IMP::atom::BondPairContainer.
+      @{
+   */
   virtual void add_close_pairs(SingletonContainer *pc,
                                FilteredListPairContainer *out) const =0;
 
-  /** \brief Compute all nearby pairs of particles with the first taken from
-      pca and the second from pcb.
-
-      See evaluate(SingletonContainer* for more
-      details.
-  */
   virtual void add_close_pairs(SingletonContainer *pca,
                        SingletonContainer *pcb,
                        FilteredListPairContainer *out) const =0;
-
+  /** @} */
+  /** \name The radius key
+      If the radius key is non-default, then all particles must have
+      that attribute and the particles are assumed to be bounded by
+      a sphere with the given radius. If it is default, the particles
+      are all treated as points.
+      @{
+   */
   virtual void set_radius_key(FloatKey rk) {
     rk_=rk;
   }
+  FloatKey get_radius_key() const {
+    return rk_;
+  }
+  /** @} */
+  /** \name The distance threshold
+      All pairs within this distance threshold are added to the output
+      list.
+      @{
+  */
   virtual void set_distance(double d) {
     IMP_check(d>=0, "Distance cannot be negative " << d,
               ValueException);
     distance_=d;
   }
-  FloatKey get_radius_key() const {
-    return rk_;
-  }
   double get_distance() const {
     return distance_;
   }
+  /** @} */
 };
 
 IMP_OUTPUT_OPERATOR(ClosePairsFinder);
