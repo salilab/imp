@@ -12,6 +12,7 @@
 
 #include "IMP/core/internal/ParticleGrid.h"
 #include <IMP/internal/Vector.h>
+#include <IMP/core/utility.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -165,7 +166,7 @@ void GridClosePairsFinder
   IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
 
-  FilteredListPairContainerEditor e(out);
+  EditGuard<FilteredListPairContainer> guard(out);
 
   IMP::internal::Vector<internal::ParticleGrid*> bins;
 

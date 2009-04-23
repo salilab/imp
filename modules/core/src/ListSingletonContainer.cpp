@@ -22,7 +22,8 @@ ListSingletonContainer::ListSingletonContainer(const Particles &ps){
 
 IMP_LIST_IMPL(ListSingletonContainer, Particle,
               particle, Particle*,, {
-                if (sorted_) std::sort(particles_begin(), particles_end());
+                if (sorted_) std::sort(particles_begin(),
+                                       particles_end());
               },);
 
 

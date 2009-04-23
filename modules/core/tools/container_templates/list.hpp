@@ -72,28 +72,6 @@ public:
 };
 
 
-/** \brief A RIIA-style object to control the editing modes on a
-    FilteredListGroupnameContainer
-
-    This object sets the editing mode to true if the object is not
-    being edited when it is created. If it changed the editing mode
-    on creation, the mode is set to false when the object is
-    destroyed.
-*/
-class ListGroupnameContainerEditor {
-  Pointer<ListGroupnameContainer> o_;
-public:
-  ListGroupnameContainerEditor(ListGroupnameContainer *o) {
-    if (!o->get_is_editing()) {
-      o_= Pointer<ListGroupnameContainer>(o);
-      o_->set_is_editing(true);
-    }
-  }
-  ~ListGroupnameContainerEditor() {
-    if (o_) o_->set_is_editing(false);
-  }
-};
-
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_LIST_GROUPNAME_CONTAINER_H */
