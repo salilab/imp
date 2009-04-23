@@ -11,6 +11,7 @@ files = [
          'Sphere3DPatch.cpp',
          'Transformation3D.cpp',
          'eigen_analysis.cpp',
+         'SphericalCoords.cpp',
          'endian.cpp',
          'geometric_alignment.cpp',
          'io.cpp',

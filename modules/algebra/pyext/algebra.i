@@ -59,6 +59,7 @@ namespace multi_array_types {
 %include "IMP/algebra/endian.h"
 %include "Matrix2D.i"
 %include "Matrix3D.i"
+%include "SphericalCoords.i"
 
 namespace IMP {
  namespace algebra {
