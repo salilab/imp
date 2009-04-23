@@ -17,7 +17,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 //! Stores the 3 Euler angles of a rotation in ZYZ convention
-class IMPEMEXPORT EulerAnglesZYZ
+class EulerAnglesZYZ
 {
 public:
   EulerAnglesZYZ() {};
@@ -60,7 +60,7 @@ private:
   hand side convention).
 
 */
-class IMPEMEXPORT EulerMatrixZYZ: public algebra::Matrix2D<double>
+class EulerMatrixZYZ: public algebra::Matrix2D<double>
 {
 public:
   //! Empty constructor
