@@ -25,8 +25,8 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
  */
 IMPALGEBRAEXPORT int best_precision(double F, Int width);
 
-
-/** Formated Float to string conversion.
+//!  Formated Float to string conversion.
+/**
  * If precision==0 the precision is automatically computed in such a way that
  * the number fits the width (exponential format might be chosen). If
  * precision==-1 then the exponential format is forced. If width==0 then the
