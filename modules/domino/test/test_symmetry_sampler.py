@@ -1,12 +1,12 @@
 import sys
 import unittest
-import IMP.utils
 import IMP.test, IMP
 import IMP.domino as domino
 import IMP.core
 import IMP.atom
 import IMP.algebra
 import math
+
 class DOMINOTests(IMP.test.TestCase):
     def __set_particles(self):
         #after the sampler you need to check that the centroids are rotated the same

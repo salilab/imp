@@ -2,7 +2,6 @@ import unittest
 import IMP
 import IMP.test
 import IMP.misc
-import IMP.utils
 import IMP.core
 import IMP.algebra
 import math

@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import sys
-import IMP.utils
 import IMP.em
 import unittest
 import os

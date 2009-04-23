@@ -1,10 +1,10 @@
 import unittest
 import IMP
-import IMP.utils
 import IMP.test
 import IMP.algebra
 import random
 import math
+
 class TransformFunct:
     def __init__(self, x_index, q_index, x_base, q_base):
         self.xi= x_index

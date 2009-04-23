@@ -1,5 +1,4 @@
 import unittest
-import IMP.utils
 import IMP.test, IMP
 import IMP.core
 import IMP.atom

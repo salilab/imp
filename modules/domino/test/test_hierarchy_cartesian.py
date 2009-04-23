@@ -1,11 +1,11 @@
 import sys
 import unittest
-import IMP.utils
 import IMP.test, IMP
 import IMP.domino as domino
 import IMP.core
 import IMP.atom
 import time
+
 class DOMINOTests(IMP.test.TestCase):
 
     def __set_attributes__(self):

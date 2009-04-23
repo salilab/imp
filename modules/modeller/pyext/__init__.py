@@ -4,7 +4,6 @@ import math
 import imp
 import os
 import IMP
-import IMP.utils
 import IMP.core
 import IMP.atom
 
