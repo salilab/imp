@@ -193,42 +193,42 @@ public:
   }
 
   //! Addition operator
-  void operator+=(const This& v) const {
+  void operator+=(const This& v) {
     internal::operate_arrays(*this, v, *this, '+');
   }
 
   //! Substraction operator
-  void operator-=(const This& v) const {
+  void operator-=(const This& v) {
     internal::operate_arrays(*this, v, *this, '-');
   }
 
   //! Multiplication operator
-  void operator*=(const This& v) const {
+  void operator*=(const This& v) {
     internal::operate_arrays(*this, v, *this, '*');
   }
 
   //! Division operator
-  void operator/=(const This& v) const {
+  void operator/=(const This& v) {
     internal::operate_arrays(*this, v, *this, '/');
   }
 
   //! Sum operator for an array and a scalar
   This operator+(const T& v) const {
-    This result(v);
+    This result(*this);
     internal::operate_array_and_scalar(*this, v, result, '+');
     return result;
   }
 
   //! Minus operator for an array and a scalar
   This operator-(const T& v) const {
-    This result(v);
+    This result(*this);
     internal::operate_array_and_scalar(*this, v, result, '-');
     return result;
   }
 
   //! Multiplication operator for an array and a scalar
   This operator*(const T& v) const {
-    This result(v);
+    This result(*this);
     internal::operate_array_and_scalar(*this, v, result, '*');
     return result;
   }
@@ -236,28 +236,28 @@ public:
 
   //! Division operator for an array and a scalar
   This operator/(const T& v) const {
-    This result(v);
+    This result(*this);
     internal::operate_array_and_scalar(*this, v, result, '/');
     return result;
   }
 
   //! Addition operator for an array and a scalar
-  void operator+=(const T& v) const {
+  void operator+=(const T& v) {
     internal::operate_array_and_scalar(*this, v, *this, '+');
   }
 
   //! Substraction operator for an array and a scalar
-  void operator-=(const T& v) const {
+  void operator-=(const T& v) {
     internal::operate_array_and_scalar(*this, v, *this, '-');
   }
 
   //! Multiplication operator for an array and a scalar
-  void operator*=(const T& v) const {
+  void operator*=(const T& v) {
     internal::operate_array_and_scalar(*this, v, *this, '*');
   }
 
   //! Division operator for an array and a scalar
-  void operator/=(const T& v) const {
+  void operator/=(const T& v) {
     internal::operate_array_and_scalar(*this, v, *this, '/');
   }
 #endif
