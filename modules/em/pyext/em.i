@@ -63,7 +63,6 @@ IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 %include "IMP/em/Volume.h"
 %include "IMP/em/Image.h"
 %include "EulerOperations.i"
-%include "prueba.i"
 
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
