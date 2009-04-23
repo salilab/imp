@@ -13,8 +13,8 @@
    the \ref installation "installation instructions". Once \imp
    is built and installed, read the \ref introduction "Introduction to IMP"
    to get an overview of how \imp works. Users should use the stable
-   branch of \imp (https://svn.salilab.org/imp/branches/stable) or a
-   pre-build binary.
+   branch of \imp (https://svn.salilab.org/imp/branches/stable/) or a
+   pre-built binary.
 
    Non-programmers might want to read 
    \external{docs.python.org/tutorial/introduction.html, the official introduction to Python}

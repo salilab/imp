@@ -14,7 +14,7 @@ If you install headers, libraries or tools anywhere other than the standard loca
 \command{scons includepath=/usr/local/include:/opt/local/include libpath=/usr/local/lib}
 
 \subsection mac Mac
-Mac users should use one of the available collections of Unix tools, either \external{http://www.macports.org/, MacPorts} or \external{http://www.finkproject.org/, Fink}. If you use MacPorts, you must add \c /opt/local/bin to your path (either by modifying your shell's config file or by making an \c environment.plist file-see the \salilab{imp/wiki/FAQ, FAQ}) and then do
+Mac users should use one of the available collections of Unix tools, either \external{www.macports.org/, MacPorts} or \external{www.finkproject.org/, Fink}. If you use MacPorts, you must add \c /opt/local/bin to your path (either by modifying your shell's config file or by making an \c environment.plist file-see the \salilab{imp/wiki/FAQ, FAQ}) and then do
 \command{sudo port install boost subversion scons swig}
 to install the needed libraries and tools. Alternatively, you can build the
 packages yourself from source code.
@@ -34,7 +34,7 @@ build a Windows version on `synth` by running `scons` in the usual way, giving
 the `wine=true` command line option.)
 
 \subsection optional Optional dependencies
-The documentation will look prettier if you have \external{http://www.graphviz.org/,graphviz} installed. It is available as part of most unix tool sets (MacPorts, all linux distributions etc.).
+The documentation will look prettier if you have \external{www.graphviz.org/,graphviz} installed. It is available as part of most unix tool sets (MacPorts, all linux distributions etc.).
 
 If you want to use \imp with MODELLER, you should use version 9v5 or later and use the following argument to scons
 \command{modeller=path/to/modeller}
