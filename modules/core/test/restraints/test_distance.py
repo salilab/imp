@@ -1,6 +1,7 @@
 import unittest
+import IMP
 import IMP.core
-import IMP.test, IMP
+import IMP.test
 import StringIO
 
 class DistanceTests(IMP.test.TestCase):

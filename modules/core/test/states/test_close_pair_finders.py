@@ -1,7 +1,7 @@
 import unittest
-import IMP, IMP.test
+import IMP
+import IMP.test
 import IMP.core
-import os.path
 import sys
 import random
 

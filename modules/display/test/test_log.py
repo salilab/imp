@@ -1,8 +1,9 @@
 import unittest
-import IMP, IMP.test
+import IMP
+import IMP.test
 import IMP.core
 import IMP.display
-import os.path
+import os
 
 class TestBL(IMP.test.TestCase):
     def setUp(self):

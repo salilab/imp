@@ -1,7 +1,8 @@
 import sys
 import unittest
-import IMP.test, IMP
-import IMP.domino as domino
+import IMP
+import IMP.test
+import IMP.domino
 import IMP.core
 import IMP.atom
 import time
@@ -65,7 +66,7 @@ class DOMINOTests(IMP.test.TestCase):
 
 
     def __set_discrete_sampling_space__(self):
-        self.m_discrete_set = domino.TransformationMappedDiscreteSet(self.particles)
+        self.m_discrete_set = IMP.domino.TransformationMappedDiscreteSet(self.particles)
         #set 4 optinal centroids for each of the particles
         for j,p in enumerate(self.particles):
             for i in range(3):
@@ -88,7 +89,7 @@ class DOMINOTests(IMP.test.TestCase):
 
                 self.m_discrete_set.add_state(new_p)
                 self.m_discrete_set.add_mapped_state(p,new_p)
-        self.sampler = domino.TransformationCartesianProductSampler(self.m_discrete_set,self.particles,True)
+        self.sampler = IMP.domino.TransformationCartesianProductSampler(self.m_discrete_set,self.particles,True)
 
 
     def setUp(self):

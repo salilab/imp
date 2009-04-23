@@ -1,8 +1,8 @@
 import unittest
-import IMP, IMP.test
+import IMP
+import IMP.test
 import IMP.core
 import IMP.algebra
-import os.path
 import random
 
 class TestBL(IMP.test.TestCase):
