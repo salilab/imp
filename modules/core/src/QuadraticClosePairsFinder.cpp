@@ -9,6 +9,7 @@
 #include "IMP/core/QuadraticClosePairsFinder.h"
 #include "IMP/core/XYZDecorator.h"
 #include <IMP/algebra/Sphere3D.h>
+#include <IMP/core/utility.h>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -25,7 +26,7 @@ void QuadraticClosePairsFinder
           << ca->get_number_of_particles() << " and "
           << cb->get_number_of_particles() << std::endl);
 
-  FilteredListPairContainerEditor e(out);
+  EditGuard<FilteredListPairContainer> guard(out);
   for (SingletonContainer::ParticleIterator it = ca->particles_begin();
        it != ca->particles_end(); ++it) {
     for (SingletonContainer::ParticleIterator it2 = cb->particles_begin();
@@ -42,7 +43,7 @@ void QuadraticClosePairsFinder
                   FilteredListPairContainer *out) const {
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles." << std::endl);
-  FilteredListPairContainerEditor e(out);
+  EditGuard<FilteredListPairContainer> guard(out);
   for (SingletonContainer::ParticleIterator it = c->particles_begin();
        it != c->particles_end(); ++it) {
     for (SingletonContainer::ParticleIterator it2 = c->particles_begin();

@@ -9,6 +9,7 @@
 #include <IMP/base_types.h>
 #include "IMP/core/BoxSweepClosePairsFinder.h"
 #include "IMP/core/XYZDecorator.h"
+#include "IMP/core/utility.h"
 
 #ifdef IMP_USE_CGAL
 
@@ -92,7 +93,7 @@ void BoxSweepClosePairsFinder
   copy_particles_to_boxes(ca, get_radius_key(), get_distance(), boxes0);
   copy_particles_to_boxes(cb, get_radius_key(), get_distance(), boxes1);
 
-  FilteredListPairContainerEditor e(out);
+  EditGuard<FilteredListPairContainer> guard(out);
 
   CGAL::box_intersection_d( boxes0.begin(), boxes0.end(),
                             boxes1.begin(), boxes1.end(), AddToList(out));
@@ -104,7 +105,7 @@ void BoxSweepClosePairsFinder
   std::vector<NBLBbox> boxes;
   copy_particles_to_boxes(c, get_radius_key(), get_distance(), boxes);
 
-  FilteredListPairContainerEditor e(out);
+  EditGuard<FilteredListPairContainer> guard(out);
 
   CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), AddToList(out));
 

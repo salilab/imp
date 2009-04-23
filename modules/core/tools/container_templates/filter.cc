@@ -51,7 +51,6 @@ void FilteredListGroupnameContainer::add_classname(Value vt) {
       std::sort(data_.begin(), data_.end());
     }
   }
-  
 }
 
 bool
