@@ -1,9 +1,9 @@
 import unittest
 import random
+import math
 import IMP.test
 import IMP.algebra
 import IMP.em
-from math import *
 
 def print_matrix3D(m):
     for i in range(m.get_start(0),m.get_finish(0)+1):
@@ -75,7 +75,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.em.EulerAnglesZYZ(0,pi,0) # -z
+        angles = IMP.em.EulerAnglesZYZ(0,math.pi,0) # -z
         IMP.em.project_given_euler_angles1(m1,
                           result,dy,dx,angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-Z")
@@ -91,7 +91,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.em.EulerAnglesZYZ(0,-pi/2,0) # x
+        angles = IMP.em.EulerAnglesZYZ(0,-math.pi/2,0) # x
         IMP.em.project_given_euler_angles1(m1,result,dy,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_X")
@@ -107,7 +107,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.em.EulerAnglesZYZ(0,pi/2,0) # -x
+        angles = IMP.em.EulerAnglesZYZ(0,math.pi/2,0) # -x
         IMP.em.project_given_euler_angles1(m1,result,dy,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-X")
@@ -123,7 +123,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.em.EulerAnglesZYZ(pi/2,pi/2,0) # y
+        angles = IMP.em.EulerAnglesZYZ(math.pi/2,math.pi/2,0) # y
         IMP.em.project_given_euler_angles1(m1,result,dx,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_Y")
@@ -139,7 +139,7 @@ class EMprojectTests(IMP.test.TestCase):
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.em.EulerAnglesZYZ(pi/2,-pi/2,0) # -y
+        angles = IMP.em.EulerAnglesZYZ(math.pi/2,-math.pi/2,0) # -y
         IMP.em.project_given_euler_angles1(m1,result,dx,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-Y")
