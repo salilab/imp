@@ -44,24 +44,24 @@ namespace IMP {
 }
 
 // Extend Matrix3D with _internal_get and _internal_set
-%extend IMP::algebra::Matrix3D<float> {
-  float _internal_get(int i, int j, int k) const {
+%extend IMP::algebra::Matrix3D<double> {
+  double _internal_get(int i, int j, int k) const {
     return self->operator()(i, j, k);
   }
-  void _internal_set(int i, int j, int k, float val) {
+  void _internal_set(int i, int j, int k, double val) {
     self->operator()(i, j, k) = val;
   }
 
   /* Ignore any C++ return value from inplace operators, so that SWIG does not
      generate a new SWIG wrapper for the return value (see above). */
-  void __iadd__(const Matrix3D<float> &x) { self->operator+=(x); }
-  void __iadd__(float x) { self->operator+=(x); }
-  void __imul__(const Matrix3D<float> &x) { self->operator*=(x); }
-  void __imul__(float x) { self->operator*=(x); }
-  void __idiv__(const Matrix3D<float> &x) { self->operator/=(x); }
-  void __idiv__(float x) { self->operator/=(x); }
-  void __isub__(const Matrix3D<float> &x) { self->operator-=(x); }
-  void __isub__(float x) { self->operator-=(x); }
+  void __iadd__(const Matrix3D<double> &x) { self->operator+=(x); }
+  void __iadd__(double x) { self->operator+=(x); }
+  void __imul__(const Matrix3D<double> &x) { self->operator*=(x); }
+  void __imul__(double x) { self->operator*=(x); }
+  void __idiv__(const Matrix3D<double> &x) { self->operator/=(x); }
+  void __idiv__(double x) { self->operator/=(x); }
+  void __isub__(const Matrix3D<double> &x) { self->operator-=(x); }
+  void __isub__(double x) { self->operator-=(x); }
 
   // Compose the python calls to _internal_get and _internal_set
   %pythoncode {
@@ -76,9 +76,9 @@ namespace IMP {
 // Instantiating the templates for Python
 namespace IMP {
  namespace algebra {
-   %template() ::boost::multi_array<float,3>;
-   %template(MultiArray3D) ::IMP::algebra::MultiArray<float,3>;
-   %template(_Matrix3D) ::IMP::algebra::Matrix3D<float>;
+   %template() ::boost::multi_array<double,3>;
+   %template(MultiArray3D) ::IMP::algebra::MultiArray<double,3>;
+   %template(_Matrix3D) ::IMP::algebra::Matrix3D<double>;
  }
 }
 
