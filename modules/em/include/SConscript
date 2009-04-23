@@ -29,6 +29,7 @@ files = [
          'header_converters.h',
          'noise.h',
          'project.h',
+         'prueba.h',
         ]
 
 # Install the include files:

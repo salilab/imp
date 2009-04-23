@@ -54,9 +54,9 @@ struct SpiderHeader {
   float fIhist;
   //! Number of columns
   float fNcol;
-  //! NUMBER OF LABEL RECORDS IN FILE HEADER
+  //! number of records in file header (label)
   float fLabrec;
-  //! FLAG THAT TILT ANGLES HAVE BEEN FILLED
+  //! flag that tilt angles are present.
   float fIangle;
   //! 1st Euler rotation angle (Rot) (ZYZ convention)
   float fPhi;
@@ -109,18 +109,12 @@ struct SpiderHeader {
   float Weight;
   //! 0= no flipping , 1= flipping  (Xmipp compatibility)
   float Flip;
-  /****** beginning of IMP additions *******/
-  //! Size in Angstroms of a pixel in the image
-  float object_pixel_size;
-
-  //! Size of IMP additions in bytes = 4
-  /****** end of IMP additions *******/
   //! Empty field in the SPIDER header format.
   /**
    * Originally is 700 bytes long, but additional information has been added:
-   * empty 700-76-40=624-40-8-4(= IMP additions)= 572 bytes
+   * empty 700-76-40=624-40-8= 576 bytes
    */
-  char empty[572];
+  char empty[576];
   //! date
   char szIDat[12];
   //! time of creation

@@ -6,17 +6,26 @@
 */
 
 #include <IMP/em/project.h>
-#include <fstream>
-
-
 
 IMPEM_BEGIN_NAMESPACE
 
-
-void project(DensityMap& map,
-             IMP::algebra::Matrix2D<float>& m2,
+void project_given_direction(DensityMap& map,
+             IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              IMP::algebra::Vector3D& direction,
+             const IMP::algebra::Vector3D& shift,
+             const double equality_tolerance) {
+
+  IMP::algebra::SphericalCoords sph(direction);
+  EulerAnglesZYZ angles(sph[1],sph[2],0.0);
+  project_given_euler_angles(map,m2,Ydim,Xdim,angles,shift,equality_tolerance);
+};
+
+
+void project_given_euler_angles(DensityMap& map,
+             IMP::algebra::Matrix2D<double>& m2,
+             const int Ydim,const int Xdim,
+             const EulerAnglesZYZ& angles,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance) {
 
@@ -38,48 +47,29 @@ void project(DensityMap& map,
   map.set_origin((-1)*(int)(map.get_header()->nx/2.),
                  (-1)*(int)(map.get_header()->ny/2.),
                  (-1)*(int)(map.get_header()->nz/2.));
+
+
+  // Get the rotation and the direction from the Euler angles
+  EulerMatrixZYZ RotMat(angles);
+  IMP::algebra::Vector3D direction = RotMat.direction();
+  IMP::algebra::Rotation3D Rot = RotMat.convert_to_rotation3D();
+  IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
+
   // For each pixel, 4 rays of projection are computed on each direction. The
   // step is going to be 1/3 from the center of the pixel in 4 directions
   double step = 1.0 / 3.0;
   // Avoids divisions by zero and allows orthogonal rays computation
   // (If any of the direction of projection's component is zero)
   for (int ii = 0;ii < 3;ii++) {
-    if (direction[ii] == 0) {
+    if (std::abs(direction[ii]) < equality_tolerance) {
       direction[ii] = equality_tolerance;
     }
   }
-  IMP::algebra::Vector3D univ_coord(0,0,1);
-  IMP::algebra::Vector3D vv=IMP::algebra::vector_product(univ_coord,direction);
-  IMP::algebra::Rotation3D Rot;
-  // If the norm of vv is near 0, the direction requested is z or -z
-  if(IMP::algebra::almost_equal(vv.get_magnitude(),0.0,2*equality_tolerance)) {
-    double product = univ_coord.scalar_product(direction);
-    if(product < 0.0 ) {
-      // The requested direction is -z
-      Rot = IMP::algebra::rotation_in_radians_about_axis(direction,PI);
-    }
-    else {
-      // The requested direction is z
-      Rot = IMP::algebra::rotation_in_radians_about_axis(direction,0.0);
-    }
-  }
-  else {
-    // Obtain the rotation around the direction of projection
-    // This quaternion allows to pass from the universal coordinate system to
-    // the coordinate system of the projection
-    Rot = IMP::algebra::rotation_between_two_vectors(univ_coord,direction);
-  }
-
-//   We are interested in the inverse rotation (that one that allows to pass
-//   form the projection coordinate system to the universal coordinate system)
-//   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
 
 #ifdef DEBUG
   std::cout << " direction " << direction << std::endl;
   std::cout << "Rotation: " << Rot << std::endl;
-  std::cout << "vector_product " << vv << std::endl;
-//  std::cout << "Inverse rotation: " << InvRot << std::endl;
-#endif
+ #endif
 
   // Logical ints for the beginning of the map
   IMP::algebra::Vector3D init0, end0, signs, half_signs;
@@ -139,12 +129,11 @@ void project(DensityMap& map,
           p -= shift;
         }
 
-//        r = InvRot.rotate(p);
-        r = Rot.rotate(p); // This is the RIGHT rotation to apply
+        r = InvRot.rotate(p);
 
 #ifdef DEBUG
-        std::cout << "p: " << p << std::endl;
-        std::cout << "r: " << r << std::endl;
+       std::cout << "p: " << p << std::endl;
+       std::cout << "r: " << r << std::endl;
         if(rays_per_pixel==0) {
           f_p << p << std::endl;
           f_r << r << std::endl;
@@ -296,5 +285,6 @@ void project(DensityMap& map,
   map.get_header_writable()->Objectpixelsize=voxelsize;
   map.set_origin(orig3D[0],orig3D[1],orig3D[2]);
 };
+
 
 IMPEM_END_NAMESPACE

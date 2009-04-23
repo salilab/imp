@@ -384,11 +384,11 @@ public:
   }
 
   float get_object_pixel_size() const {
-    return header_.object_pixel_size;
+    return header_.fScale;
   }
 
   void set_object_pixel_size(float value) {
-    header_.object_pixel_size = value;
+    header_.fScale = value;
   }
 
   float get_fLabbyt() const {

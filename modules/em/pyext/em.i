@@ -62,6 +62,8 @@ IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 %include "IMP/em/SpiderReaderWriter.h"
 %include "IMP/em/Volume.h"
 %include "IMP/em/Image.h"
+%include "EulerOperations.i"
+%include "prueba.i"
 
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
@@ -72,12 +74,15 @@ namespace IMP {
       }
     }
 
-    %template(project) ::IMP::em::project<float>;
-    %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<float>;
+    %template(project_given_euler_angles1) 
+                  ::IMP::em::project_given_euler_angles1<double>;
+    %template(project_given_direction1) 
+                  ::IMP::em::project_given_direction1<double>;
+    %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<double>;
     %template(_SpiderImageReaderWriter)
-                          ::IMP::em::SpiderImageReaderWriter<float>;
-    %template(_Image) ::IMP::em::Image<float>;
-    %template(_Volume) ::IMP::em::Volume<float>;
+                          ::IMP::em::SpiderImageReaderWriter<double>;
+    %template(_Image) ::IMP::em::Image<double>;
+    %template(_Volume) ::IMP::em::Volume<double>;
     %template(floats) ::std::vector<float>;
   }
 }

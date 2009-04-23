@@ -1,7 +1,9 @@
 Import('env')
 Export('env')
 
-env.IMPModuleAbout(author='Keren Lasker, Friedrich Foerster', version='SVN',
+
+env.IMPModuleAbout(author='Keren Lasker, Javier Velazquez-Muriel,'
+                    'Friedrich Foerster', version='SVN',
                    description='Handling of EM density maps.')
 
 env.validate()
