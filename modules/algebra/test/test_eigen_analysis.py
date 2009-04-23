@@ -1,6 +1,5 @@
 import unittest
 import IMP
-import IMP.utils
 import IMP.test
 import IMP.algebra
 

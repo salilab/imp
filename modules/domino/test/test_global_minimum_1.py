@@ -1,6 +1,5 @@
 import sys
 import unittest
-import IMP.utils
 import IMP.test, IMP
 import my_optimizer
 

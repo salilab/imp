@@ -3,7 +3,6 @@ import os
 import IMP
 import IMP.test
 import IMP.core
-import IMP.utils
 
 class ConnectivityTests(IMP.test.TestCase):
     """Class to test connectivity restraints"""

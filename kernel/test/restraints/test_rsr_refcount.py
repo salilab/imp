@@ -1,6 +1,5 @@
 import unittest
 import IMP
-import IMP.utils
 import IMP.test
 
 # We probably shouldn't require IMP.core to test the kernel; temporary hack

@@ -1,9 +1,9 @@
 import sys
 import unittest
-import IMP.utils
 import IMP.test, IMP
 import IMP.domino as domino
 import IMP.core
+
 class DOMINOTests(IMP.test.TestCase):
     def __set_sampling_space__(self):
         atts=IMP.FloatKeys()

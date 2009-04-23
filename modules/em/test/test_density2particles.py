@@ -3,7 +3,6 @@ import os
 import IMP
 import IMP.em
 import IMP.test
-import IMP.utils
 import IMP.core
 
 class ToParticlesTest(IMP.test.TestCase):

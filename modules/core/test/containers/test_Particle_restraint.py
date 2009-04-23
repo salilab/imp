@@ -4,7 +4,6 @@
 import unittest
 import IMP
 import IMP.test
-import IMP.utils
 import IMP.core
 import math
 
