@@ -8,6 +8,12 @@
 - All IMP::core::ClosePairsScoreState-related functinality has been optimized and
   should be noticeably faster.
 
+- The EMBED project has been merged into the IMP::em module. Thus, it is no
+  longer necessary to obtain EMBED separately to build IMP::em.
+
+- All C++ methods which work with std::istream or std::ostream arguments should
+  now be usable from Python: any Python file-like object can be used.
+
 - The SWIG interface now ties in to the reference counting mechanism used in
   the C++ code, for all classes derived from IMP::RefCounted. So, for example,
   deleting a Python object should not free the underlying C++ object if another
