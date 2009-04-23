@@ -1,7 +1,8 @@
 import sys
 import unittest
-import IMP.test, IMP
-import IMP.domino as domino
+import IMP
+import IMP.test
+import IMP.domino
 import IMP.core
 
 class DOMINOTests(IMP.test.TestCase):
@@ -12,7 +13,7 @@ class DOMINOTests(IMP.test.TestCase):
         z_key = IMP.FloatKey("z")
         #name_key = IMP.StringKey("name")
         atts.append(x_key);atts.append(y_key);atts.append(z_key)
-        self.discrete_set = domino.DiscreteSet(atts)
+        self.discrete_set = IMP.domino.DiscreteSet(atts)
         for i in range(4):
             new_p=IMP.Particle(self.imp_model)
             new_p.add_attribute(x_key,3*i,True)
@@ -58,7 +59,8 @@ class DOMINOTests(IMP.test.TestCase):
         self.rsrs.append(r4)
         for r in self.rsrs:
             self.imp_model.add_restraint(r)
-        self.sampler = domino.PermutationSampler(self.discrete_set,self.particles)
+        self.sampler = IMP.domino.PermutationSampler(self.discrete_set,
+                                                     self.particles)
 
     def test_global_min(self):
         """

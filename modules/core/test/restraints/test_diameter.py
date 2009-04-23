@@ -1,6 +1,7 @@
 import unittest
+import IMP
 import IMP.core
-import IMP.test, IMP
+import IMP.test
 
 class DistanceTests(IMP.test.TestCase):
     """Test distance restraint and three harmonic score functions"""

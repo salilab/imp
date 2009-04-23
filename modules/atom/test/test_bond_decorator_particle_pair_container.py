@@ -1,8 +1,8 @@
 import unittest
-import IMP, IMP.test
+import IMP
+import IMP.test
 import IMP.core
 import IMP.atom
-import os.path
 
 class TestBL(IMP.test.TestCase):
     def test_it(self):

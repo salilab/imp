@@ -1,6 +1,7 @@
 import sys
 import unittest
-import IMP.test, IMP
+import IMP
+import IMP.test
 import my_optimizer
 
 class DOMINOTests(IMP.test.TestCase):

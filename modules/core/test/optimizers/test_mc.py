@@ -1,5 +1,6 @@
 import unittest
-import IMP, IMP.test
+import IMP
+import IMP.test
 import IMP.core
 
 class WoodsFunc(IMP.Restraint):

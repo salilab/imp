@@ -1,7 +1,8 @@
 import sys
 import unittest
-import IMP.test, IMP
-import IMP.domino as domino
+import IMP
+import IMP.test
+import IMP.domino
 import IMP.core
 
 class DOMINOTests(IMP.test.TestCase):
@@ -30,7 +31,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.particles.append(p3)
         self.particles.append(p4)
 
-        self.m_discrete_set = domino.MappedDiscreteSet(self.particles,atts)
+        self.m_discrete_set = IMP.domino.MappedDiscreteSet(self.particles,atts)
         for j in range(4):
             for i in range(4):
                 new_p=IMP.Particle(self.imp_model)
@@ -66,7 +67,8 @@ class DOMINOTests(IMP.test.TestCase):
         self.rsrs.append(r4)
         for r in self.rsrs:
             self.imp_model.add_restraint(r)
-        self.sampler = domino.CartesianProductSampler(self.m_discrete_set,self.particles)
+        self.sampler = IMP.domino.CartesianProductSampler(self.m_discrete_set,
+                                                          self.particles)
 
     def test_global_min(self):
         """

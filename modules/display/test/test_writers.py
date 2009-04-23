@@ -1,9 +1,8 @@
 import unittest
-import IMP, IMP.test
+import IMP
+import IMP.test
 import IMP.core
 import IMP.display
-import os.path
-from IMP.algebra import *
 
 class TestBL(IMP.test.TestCase):
     def setUp(self):
@@ -12,13 +11,13 @@ class TestBL(IMP.test.TestCase):
 
     def _testit(self, w):
         print "create sg"
-        sg=IMP.display.SphereGeometry(Sphere3D(Vector3D(1,2,3), 4))
+        sg=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1,2,3), 4))
         sg.set_name("sphere")
         print "setting color"
         sg.set_color(IMP.display.Color(1,0,0))
         print "add 0"
         w.add_geometry(sg)
-        sg=IMP.display.CylinderGeometry(Cylinder3D(Segment3D(IMP.algebra.Vector3D(1,2,3),
+        sg=IMP.display.CylinderGeometry(IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(1,2,3),
                                                              IMP.algebra.Vector3D(4,5,6)), 1))
         sg.set_name("cylinder")
         sg.set_color(IMP.display.Color(0,1,0))
