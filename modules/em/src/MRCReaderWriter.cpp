@@ -107,7 +107,7 @@ void MRCReaderWriter::read_grid(void *pt,size_t size,size_t n)
             "are not the amount requested", IOException);
 }
 
-void MRCReaderWriter::seek_to_data(void)
+void MRCReaderWriter::seek_to_data()
 {
   fs.seekg(sizeof(MRCHeader)+header.nsymbt, std::ios::beg);
   IMP_check(!fs.fail(),
@@ -115,7 +115,7 @@ void MRCReaderWriter::seek_to_data(void)
             << filename, IOException);
 }
 
-void  MRCReaderWriter::read_header(void)
+void  MRCReaderWriter::read_header()
 {
   // Read header
   fs.read((char *) &header,sizeof(MRCHeader));
@@ -206,7 +206,7 @@ void MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
 
 /** Returns a CCP4 convention machine stamp: 0x11110000 for big endian, or
     0x44440000 for little endian */
-int get_machine_stamp(void)
+int get_machine_stamp()
 {
   int retval;
   unsigned char *ch;
@@ -216,7 +216,7 @@ int get_machine_stamp(void)
   return retval;
 }
 
-int is_bigendian(void)
+int is_bigendian()
 {
   static const int ival = 50;
   char *ch = (char *)&ival;

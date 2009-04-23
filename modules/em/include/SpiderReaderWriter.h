@@ -48,7 +48,7 @@ public:
   /**
    *  \note reversed is only used in case that the type_check is skipped
    */
-  SpiderImageReaderWriter(void){
+  SpiderImageReaderWriter() {
     skip_type_check_=false;
     force_reversed_=false;
     skip_extra_checkings_=false;

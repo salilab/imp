@@ -53,13 +53,13 @@ inline  void convert_between_little_and_big_endian(T &x) {
 /**
  * \ingroup LittleBigEndian
  */
-bool IMPALGEBRAEXPORT is_big_endian(void);
+bool IMPALGEBRAEXPORT is_big_endian();
 
 //! Returns 1 if machine is little endian else 0
 /**
  * \ingroup LittleBigEndian
  */
-bool IMPALGEBRAEXPORT is_little_endian(void);
+bool IMPALGEBRAEXPORT is_little_endian();
 
 
 IMPALGEBRA_END_NAMESPACE
