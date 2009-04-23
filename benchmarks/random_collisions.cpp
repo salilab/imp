@@ -58,6 +58,7 @@ int main() {
     test_one(cpf, 10000, 0, .1);
     test_one(cpf, 10000, 0, .5);
   }
+#ifdef IMP_USE_CGAL
   {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
     std::cout << "Box:" << std::endl;
@@ -67,6 +68,7 @@ int main() {
     test_one(cpf, 10000, 0, .1);
     test_one(cpf, 10000, 0, .5);
   }
+#endif
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
     std::cout << "Grid:" << std::endl;
