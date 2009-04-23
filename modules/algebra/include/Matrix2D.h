@@ -294,19 +294,17 @@ public:
   }
 
   //! Sum operator for a scalar and an array
-  friend This operator+(const T& X,
-                         const This& a1) {
+  friend This operator+(const T& X, const This& a1) {
     This result;
-    result.resize(*a1);
+    result.resize(a1);
     internal::operate_scalar_and_array(X, a1, result, '+');
     return result;
   }
 
   //! Minus operator for a scalar and an array
-  friend This operator-(const T& X,
-                         const This& a1) {
+  friend This operator-(const T& X, const This& a1) {
     This result;
-    result.resize(*a1);
+    result.resize(a1);
     internal::operate_scalar_and_array(X, a1, result, '-');
     return result;
   }
@@ -314,17 +312,16 @@ public:
   //! Multiplication operator for a scalar and an array
   friend This operator*(const T& X,const This& a1) {
     This result;
-    result.resize(*a1);
+    result.resize(a1);
     internal::operate_scalar_and_array(X, a1, result, '*');
     return result;
   }
 
 
   //! Division operator for a scalar and an array
-  friend This operator/(const T& X,
-        const This& a1) {
+  friend This operator/(const T& X, const This& a1) {
     This result;
-    result.resize(*a1);
+    result.resize(a1);
     internal::operate_scalar_and_array(X, a1, result, '/');
     return result;
   }
