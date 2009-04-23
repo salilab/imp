@@ -24,10 +24,17 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 
 
-//! Template class for managing multidimensional arrays
+//! Template class for managing multidimensional arrays. This class is based on
+//! boost multi_array.
 /**
- * This class is based on boost multi_array and adds new functionality.
- */
+  The class adds new functionality to the boost class:
+    1) Operators + - * and / to deal with other multiarrays and scalars
+    2) Computation of maximum, minimum, and statistical properties of the
+       array.
+    3) Read/Write both in text and binary modes (taking into account the
+       endianess).
+**/
+
 template<typename T, int D>
 class MultiArray
 #ifndef SWIG

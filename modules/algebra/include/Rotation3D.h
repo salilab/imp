@@ -282,7 +282,7 @@ inline Rotation3D rotation_in_radians_about_axis(const Vector3D& axis,
 {
   //normalize the vector
   Vector3D axis_norm = axis.get_unit_vector();
-  double s = sin(angle/2);
+  double s = std::sin(angle/2);
   double a,b,c,d;
   a = std::cos(angle/2);
   b = axis_norm[0]*s;

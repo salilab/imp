@@ -16,6 +16,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Template class for managing 2D matrices. This class is based on
 //! boost multi_array
+/**
+  Check MultiArray class for a list of added functionality
+**/
 template<typename T>
 class Matrix2D: public MultiArray<T,2>
 {
