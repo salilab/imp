@@ -132,7 +132,7 @@ class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter
 {
 public:
   //! Empty constructor
-  MRCReaderWriter(void){}
+  MRCReaderWriter() {}
   //! Constructor
   /**
    * param[in] fn name of the file to open or write
@@ -151,13 +151,13 @@ private:
 
   //! By default the data are read into the grid of the class, but an external
   //! pointer to another grid can be specified
-  void read(void) {
+  void read() {
     read(&grid);
   }
 
   void read(float **pt);
   //! reads the header
-  void read_header(void);
+  void read_header();
   //! reads the data
   void read_data(float *pt);
   //! reads data of size 8-bit
@@ -165,7 +165,7 @@ private:
   //! reads data of size 32-bit
   void read_32_data(float *pt);
   void read_grid(void *pt,size_t size,size_t n);
-  void seek_to_data(void);
+  void seek_to_data();
   //! Write function
   /**
    * param[in] fn name of the file to write
@@ -209,11 +209,11 @@ private:
 IMPEMEXPORT
 //!Returns a CCP4 convention machine stamp: 0x11110000 for big endian,
 //!or 0x44440000 for little endian
-int get_machine_stamp(void);
+int get_machine_stamp();
 
 IMPEMEXPORT
 //! Returns true if this machine is big endian
-int is_bigendian(void);
+int is_bigendian();
 
 IMPEMEXPORT
 //! Swaps the byte order in an array of 32-bit ints

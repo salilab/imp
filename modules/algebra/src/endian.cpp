@@ -66,13 +66,13 @@ void byte_swap(unsigned char * b, int n) {
   }
 }
 
-bool is_little_endian(void) {
+bool is_little_endian() {
   const unsigned long ul = 0x00000001;
   return ((int)(*((unsigned char *) &ul))) != 0;
 }
 
 
-bool is_big_endian(void) {
+bool is_big_endian() {
   static const unsigned long ul = 0x01000000;
   return ((int)(*((unsigned char *) &ul))) != 0;
 }

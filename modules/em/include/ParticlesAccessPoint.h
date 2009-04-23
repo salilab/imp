@@ -40,7 +40,7 @@ class IMPEMEXPORT ParticlesProvider : public ParticlesAccessPoint
 {
 public:
   ~ParticlesProvider(){}
-  ParticlesProvider(void){}
+  ParticlesProvider() {}
   // The constructor reads the file
   ParticlesProvider(const char *filename) {
     read(filename);
