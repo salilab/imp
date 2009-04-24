@@ -16,6 +16,25 @@
   if (tmp$argnum) delete tmp$argnum;
 }
 
+// Something of an abuse of argout: force anything in our streambuf adapter to
+// be flushed out to the file, and catch any exceptions raised. (Ideally the
+// call to pubsync would come immediately after the method call, but the only
+// way to handle that would be to use %exception or %feature("action") for
+// each method using ostreams.)
+// Potential memory leak here if there are other argout arguments that come
+// after the ostream.
+%typemap(argout) std::ostream& {
+  try {
+    tmp$argnum->pubsync();
+  } catch (...) {
+    Py_DECREF($result);
+    if (!PyErr_Occurred()) {
+      handle_imp_exception();
+    }
+    SWIG_fail;
+  }
+}
+
 %typemap(typecheck) std::ostream& = PyObject *;
 
 %{
@@ -23,35 +42,44 @@
 // file-like object, p
 class PyOutFileAdapter : public std::streambuf
 {
+  char buffer_[512];
   PyObject *p_;
 public:
-  PyOutFileAdapter(PyObject *p) : p_(p) { Py_XINCREF(p_); }
+  PyOutFileAdapter(PyObject *p) : p_(p) {
+    setp(buffer_, buffer_ + sizeof(buffer_));
+    Py_XINCREF(p_);
+  }
 
   virtual ~PyOutFileAdapter() { Py_XDECREF(p_); }
 
 protected:
   virtual int_type overflow(int_type c) {
     if (c != EOF) {
-      char buf[2];
-      buf[0] = static_cast<char>(c); buf[1] = '\0';
-      xsputn(buf, 1);
+      sync();
+      *pptr() = c;
+      pbump(1);
     }
     return c;
   }
 
-  virtual std::streamsize xsputn(const char *s, std::streamsize num) {
+  virtual int_type sync() {
     // Python API uses char* arguments rather than const char*, so create
     // here to quell the compiler warning
     static char method[] = "write";
     static char fmt[] = "(s#)";
-    PyObject *result = PyObject_CallMethod(p_, method, fmt, s, num);
+    int num = pptr() - pbase();
+    if (num <= 0) {
+      return 0;
+    }
+    PyObject *result = PyObject_CallMethod(p_, method, fmt, pbase(), num);
     if (!result) {
       // Python exception will be reraised when SWIG method finishes
       throw std::ostream::failure("Python error on write");
     } else {
+      pbump(-num);
       Py_DECREF(result);
+      return 0;
     }
-    return num;
   }
 };
 %}
