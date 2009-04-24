@@ -47,6 +47,10 @@ IMPCORE_BEGIN_NAMESPACE
 
     \verbinclude simple_examples/rigid_collisions.py
 
+    \note This class uses the IMP::core::BoxSweepClosePairsFinder by
+    default if \ref CGAL "CGAL" is available.
+
+    \ingroup CGAL
     \see ClosePairsScoreState
     \see RigidBodyDecorator
     \see cover_members()

@@ -29,6 +29,11 @@ class ClosePairsFinder;
     from each of two containers are reported here.
 
     \verbinclude bipartite_nonbonded_interactions.py
+
+    \note This class uses the IMP::core::BoxSweepClosePairsFinder by
+    default if \ref CGAL "CGAL" is available.
+
+    \ingroup CGAL
     \see ClosePairsScoreState
  */
 class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState

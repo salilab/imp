@@ -32,9 +32,6 @@ read_pdb(std::string pdb_file_name,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
-IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
-                             std::string file_name);
-
 /** \note This function produces files that are not valid PDB files. Complain
     if your favorite program can't read them and we might fix it.
     \see read_pdb
@@ -44,7 +41,7 @@ IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
                              std::string file_name);
 
 /**
-    \copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::string file_name)
 */
 IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
                              std::string file_name);
