@@ -46,7 +46,7 @@ private:
 
 
 //! Return the distance between a plane and a point in 3D
-/** \relates Plane3D */
+/** \relatesalso Plane3D */
 inline double distance(const Plane3D& pln, const Vector3D &p) {
   return (pln.get_projection(p)-p).get_magnitude();
 }

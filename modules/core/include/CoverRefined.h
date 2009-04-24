@@ -69,7 +69,7 @@ public:
     not optimized. Add the score state to the model to enforce
     maintain the cover.
 
-    \relates CoverRefined
+    \relatesalso CoverRefined
  */
 IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
                                 Refiner *pr,
@@ -84,7 +84,7 @@ IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
     not optimized. Add the score state to the model to enforce
     maintain the cover.
 
-    \relates CoverRefined
+    \relatesalso CoverRefined
  */
 IMPCOREEXPORT ScoreState* create_cover(Particle *p,
                                        Refiner *pr,

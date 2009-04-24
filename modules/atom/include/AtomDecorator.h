@@ -319,15 +319,15 @@ IMP_OUTPUT_OPERATOR(AtomDecorator);
 
 //! Return the AtomType from the four letter code in the PDB
 /** \throw ValueException if nm is invalid.
-    \relates AtomDecorator
-    \relates AtomType
+    \relatesalso AtomDecorator
+    \relatesalso AtomType
  */
 IMPATOMEXPORT AtomType atom_type_from_pdb_string(std::string nm);
 
 
 //! Return the index of the residue containing this atom
 /** The atom must be part of a molecular hierarchy.
-    \relates AtomDecorator
+    \relatesalso AtomDecorator
  */
 IMPATOMEXPORT int get_residue_index(AtomDecorator d);
 
@@ -339,33 +339,33 @@ class ResidueDecorator;
 
 //! Return the type of the residue containing this atom
 /** The atom must be part of a molecular hierarchy.
-    \relates AtomDecorator
-    \relates ResidueDecorator
-    \relates MolecularHierarchyDecorator
+    \relatesalso AtomDecorator
+    \relatesalso ResidueDecorator
+    \relatesalso MolecularHierarchyDecorator
  */
 IMPATOMEXPORT ResidueType get_residue_type(AtomDecorator d);
 
 //! Return the ResidueDecorator containing this atom
 /** The atom must be part of a molecular hierarchy.
-    \relates AtomDecorator
-    \relates ResidueDecorator
-    \relates MolecularHierarchyDecorator
+    \relatesalso AtomDecorator
+    \relatesalso ResidueDecorator
+    \relatesalso MolecularHierarchyDecorator
  */
 IMPATOMEXPORT ResidueDecorator get_residue(AtomDecorator d);
 
 //! Return a particle atom from the residue
 /** The residue must be part of a molecular hierarchy.
-    \relates AtomDecorator
-    \relates ResidueDecorator
-    \relates MolecularHierarchyDecorator
+    \relatesalso AtomDecorator
+    \relatesalso ResidueDecorator
+    \relatesalso MolecularHierarchyDecorator
  */
 IMPATOMEXPORT AtomDecorator get_atom(ResidueDecorator rd, AtomType at);
 
 //! Return the chain id of this atom
 /** The atom must be part of a molecular hierarchy.
-    \relates AtomDecorator
-    \relates ResidueDecorator
-    \relates MolecularHierarchyDecorator
+    \relatesalso AtomDecorator
+    \relatesalso ResidueDecorator
+    \relatesalso MolecularHierarchyDecorator
  */
 IMPATOMEXPORT char get_chain(AtomDecorator d);
 
@@ -375,7 +375,7 @@ IMPATOMEXPORT char get_chain(AtomDecorator d);
     between the AtomType and the proper element.
     \note This method has not been tested. If you use it, please
     write a test and remove this comment.
-    \relates AtomType
+    \relatesalso AtomType
 */
 IMPATOMEXPORT AtomType add_atom_type(std::string name,
                                     AtomDecorator::Element element);

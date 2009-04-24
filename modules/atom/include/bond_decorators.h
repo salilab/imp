@@ -154,8 +154,8 @@ inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
     \return BondDecorator of the bond Particle.
 
     \ingroup bond
-    \relates BondDecorator
-    \relates BondedDecorator
+    \relatesalso BondDecorator
+    \relatesalso BondedDecorator
  */
 IMPATOMEXPORT
 BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
@@ -169,8 +169,8 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
     \return BondDecorator of the bond Particle.
 
     \ingroup bond
-    \relates BondDecorator
-    \relates BondedDecorator
+    \relatesalso BondDecorator
+    \relatesalso BondedDecorator
  */
 IMPATOMEXPORT
 inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
@@ -190,8 +190,8 @@ inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
 /** Create a bond by copying the information from the othr bond
 
     \ingroup bond
-    \relates BondDecorator
-    \relates BondedDecorator
+    \relatesalso BondDecorator
+    \relatesalso BondedDecorator
  */
 IMPATOMEXPORT
 inline BondDecorator copy_bond(BondedDecorator a, BondedDecorator b,
@@ -208,8 +208,8 @@ inline BondDecorator copy_bond(BondedDecorator a, BondedDecorator b,
 //! Destroy the bond connecting to particles.
 /** \param[in] b The bond.
     \ingroup bond
-    \relates BondDecorator
-    \relates BondedDecorator
+    \relatesalso BondDecorator
+    \relatesalso BondedDecorator
  */
 IMPATOMEXPORT
 void unbond(BondDecorator b);
@@ -217,8 +217,8 @@ void unbond(BondDecorator b);
 //! Get the bond between two particles.
 /** BondDecorator() is returned if the particles are not bonded.
     \ingroup bond
-    \relates BondDecorator
-    \relates BondedDecorator
+    \relatesalso BondDecorator
+    \relatesalso BondedDecorator
  */
 IMPATOMEXPORT
 BondDecorator get_bond(BondedDecorator a, BondedDecorator b);

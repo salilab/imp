@@ -227,7 +227,7 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
    \param[in] pr The refiner to get the constituent particles
    \param[in] snapping Whether to use snapping or to optimize the coordinates
    directly
-   \relates RigidBodyDecorator
+   \relatesalso RigidBodyDecorator
    \note The rigid bodies are set to be optimized.
    \note The composition of the rigid bodies may be cached and changes after
    setup may not be detected.
@@ -247,7 +247,7 @@ IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
    \param[in] members The XYZ particles comprising the rigid body
    \param[in] snapping Whether to use snapping or to optimize the coordinates
    directly
-   \relates RigidBodyDecorator
+   \relatesalso RigidBodyDecorator
 
    \note The rigid body is set to be optimized.
    \note The composition of the rigid bodies may be cached and changes after
@@ -266,7 +266,7 @@ IMPCOREEXPORT ScoreState* create_rigid_body(Particle *p,
 /** Make sure that the RigidBody particle has a radius large enough to include
     its members. One cannot use the cover_particles() method as that will
     change the location of the center.
-    \relates RigidBodyDecorator
+    \relatesalso RigidBodyDecorator
  */
 IMPCOREEXPORT void cover_members(RigidBodyDecorator d,
                    FloatKey rk= XYZRDecorator::get_default_radius_key());

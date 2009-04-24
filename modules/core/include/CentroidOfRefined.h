@@ -51,7 +51,7 @@ public:
     and to propagate derivatives from the cover particle to the
     constituent particles. Add the ScoreState to the model to maintain
     the centroid.
-    \relates CentroidOfRefined
+    \relatesalso CentroidOfRefined
  */
 IMPCOREEXPORT ScoreState* create_centroids(SingletonContainer *sc,
                                     Refiner *pr,
@@ -67,7 +67,7 @@ IMPCOREEXPORT ScoreState* create_centroids(SingletonContainer *sc,
     constituent particles. Add the ScoreState to the model to maintain
     the centroid.
 
-    \relates CentroidOfRefined
+    \relatesalso CentroidOfRefined
  */
 IMPCOREEXPORT ScoreState* create_centroid(Particle *p,
                                    Refiner *pr,

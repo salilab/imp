@@ -86,7 +86,7 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO &s)
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
-    \relates Color
+    \relatesalso Color
  */
 inline SpacesIO spaces_io(const Color &v) {
   return SpacesIO(v);
@@ -98,7 +98,7 @@ inline SpacesIO spaces_io(const Color &v) {
 //! Use this before outputing to delimited vector entries with a comma
 /** std::cout << commas_io(v);
     produces "1.0, 2.0, 3.0"
-    \relates Color
+    \relatesalso Color
  */
 inline CommasIO commas_io(const Color &v) {
   return CommasIO(v);

@@ -140,7 +140,7 @@ IMP_OUTPUT_OPERATOR(XYZDecorator);
 
 //! Compute the distance between a pair of particles
 /** \ingroup helper
-    \relates XYZDecorator
+    \relatesalso XYZDecorator
  */
 IMPCOREEXPORT Float distance(XYZDecorator a, XYZDecorator b);
 

@@ -73,7 +73,7 @@ IMP_OUTPUT_OPERATOR(Transformation3D)
 
 
 //! Return a transformation that does not do anything
-/** \relates Transformation3D */
+/** \relatesalso Transformation3D */
 inline Transformation3D identity_transformation() {
   return Transformation3D(identity_rotation(),Vector3D(0.0,0.0,0.0));
 }
@@ -94,7 +94,7 @@ inline Transformation3D identity_transformation() {
    main problem comes from having the three arguments of the same type
    with no natural order amongst them.
 
-   \relates Transformation3D
+   \relatesalso Transformation3D
  */
 inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
                                                 const Vector3D &w,
@@ -116,7 +116,7 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   \param[in] point the rotation axis passes through the point
   \param[in] direction the direction of the rotation axis
   \param[in] angle the rotation angle in radians
-  \relates Transformation3D
+  \relatesalso Transformation3D
 */
 inline Transformation3D
 rotation_in_radians_about_axis(const Vector3D &point,
@@ -128,7 +128,7 @@ rotation_in_radians_about_axis(const Vector3D &point,
 
 //! compose two transformations
   /** For any vector v (a*a)*v = a*(b*v).
-      \relates Transformation3D
+      \relatesalso Transformation3D
    */
 inline Transformation3D compose(const Transformation3D &a,
                                 const Transformation3D &b){

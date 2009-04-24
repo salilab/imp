@@ -200,8 +200,8 @@ IMP_OUTPUT_OPERATOR(ResidueDecorator);
 //! Return the residue type from the three letter code in the PDB
 /** The string should be capitalized, as in the PDB.
     \throw ValueException if nm is invalid.
-    \relates ResidueDecorator
-    \relates ResidueType
+    \relatesalso ResidueDecorator
+    \relatesalso ResidueType
  */
 IMPATOMEXPORT ResidueType residue_type_from_pdb_string(std::string nm);
 
