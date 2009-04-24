@@ -35,6 +35,25 @@ IMPALGEBRAEXPORT int best_precision(double F, Int width);
 IMPALGEBRAEXPORT std::string float_to_string(double F, Int width = 8,
 Int prec = 0);
 
+template <class T>
+struct IMPALGEBRAEXPORT stdVectorIO
+{
+  const std::vector<T> &v_;
+  stdVectorIO(const std::vector<T>& v): v_(v) {}
+};
+
+//! output for a std::vector
+template <class T>
+std::ostream& operator<<(std::ostream& ostrm,
+                         const stdVectorIO<T>& v)
+{
+  unsigned long s = v.v_.size();
+  for(unsigned long i = 0; i<s; i++) {
+    ostrm << v.v_[i] << " ";
+  }
+  return ostrm;
+}
+
 
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 
