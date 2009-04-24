@@ -21,9 +21,6 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-
-
-
 //! Template class for managing multidimensional arrays. This class is based on
 //! boost multi_array.
 /**
@@ -34,7 +31,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
     3) Read/Write both in text and binary modes (taking into account the
        endianess).
 **/
-
 template<typename T, int D>
 class MultiArray
 #ifndef SWIG
@@ -48,8 +44,7 @@ public:
   typedef MultiArray<T, D> This;
 public:
   //! Empty constructor
-  MultiArray() : BMA() {
-  }
+  MultiArray() : BMA() {}
 
   //! Another way of asking for the size of a given dimension. You can always
   //! use x.shape()[i] too.
@@ -121,8 +116,7 @@ public:
   //! All the values of the array are set to zero
   void init_zeros() {
     std::vector<int> idx(D);
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       (*this)(idx) = 0;
     }
   }
@@ -193,42 +187,42 @@ public:
   }
 
   //! Addition operator
-  void operator+=(const This& v) {
+  void operator+=(const This& v) const {
     internal::operate_arrays(*this, v, *this, '+');
   }
 
   //! Substraction operator
-  void operator-=(const This& v) {
+  void operator-=(const This& v) const {
     internal::operate_arrays(*this, v, *this, '-');
   }
 
   //! Multiplication operator
-  void operator*=(const This& v) {
+  void operator*=(const This& v) const {
     internal::operate_arrays(*this, v, *this, '*');
   }
 
   //! Division operator
-  void operator/=(const This& v) {
+  void operator/=(const This& v) const {
     internal::operate_arrays(*this, v, *this, '/');
   }
 
   //! Sum operator for an array and a scalar
   This operator+(const T& v) const {
-    This result(*this);
+    This result(v);
     internal::operate_array_and_scalar(*this, v, result, '+');
     return result;
   }
 
   //! Minus operator for an array and a scalar
   This operator-(const T& v) const {
-    This result(*this);
+    This result(v);
     internal::operate_array_and_scalar(*this, v, result, '-');
     return result;
   }
 
   //! Multiplication operator for an array and a scalar
   This operator*(const T& v) const {
-    This result(*this);
+    This result(v);
     internal::operate_array_and_scalar(*this, v, result, '*');
     return result;
   }
@@ -236,28 +230,28 @@ public:
 
   //! Division operator for an array and a scalar
   This operator/(const T& v) const {
-    This result(*this);
+    This result(v);
     internal::operate_array_and_scalar(*this, v, result, '/');
     return result;
   }
 
   //! Addition operator for an array and a scalar
-  void operator+=(const T& v) {
+  void operator+=(const T& v) const {
     internal::operate_array_and_scalar(*this, v, *this, '+');
   }
 
   //! Substraction operator for an array and a scalar
-  void operator-=(const T& v) {
+  void operator-=(const T& v) const {
     internal::operate_array_and_scalar(*this, v, *this, '-');
   }
 
   //! Multiplication operator for an array and a scalar
-  void operator*=(const T& v) {
+  void operator*=(const T& v) const {
     internal::operate_array_and_scalar(*this, v, *this, '*');
   }
 
   //! Division operator for an array and a scalar
-  void operator/=(const T& v) {
+  void operator/=(const T& v) const {
     internal::operate_array_and_scalar(*this, v, *this, '/');
   }
 #endif
@@ -291,12 +285,36 @@ public:
     return true;
   }
 
+
+  //! Compares the size of two multidimensional arrays
+  /**
+   * \return true if both arrays have the same size
+   */
+  template <typename T1>
+  bool same_size(const MultiArray<T1, D>& b) const {
+    for (index i = 0;i < D;i++) {
+      if (get_size(i) != b.get_size(i)) { return false; }
+    }
+    return true;
+  }
+
+  //! Compares the origin of two multidimensional arrays
+  /**
+   * \return true if both arrays have the same size
+   */
+  template <typename T1>
+  bool same_start(const MultiArray<T1, D>& b) const {
+    for (index i = 0;i < D;i++) {
+      if (get_start(i) != b.get_start(i)) {return false;}
+    }
+    return true;
+  }
+
   //! Maximum of the values in the array
   T compute_max() const {
     std::vector<index> idx(D);
     T maxval = first_element();
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       if ((*this)(idx) > maxval) {
         maxval = (*this)(idx);
       }
@@ -308,8 +326,7 @@ public:
   T compute_min() const {
     std::vector<index> idx(D);
     T minval = first_element();
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       if ((*this)(idx) < minval) {
         minval = (*this)(idx);
       }
@@ -324,13 +341,10 @@ public:
    * array.
    //  */
   double compute_avg() const {
-    if (this->num_elements() <= 0) {
-      return 0;
-    }
+    if (this->num_elements() <= 0) { return 0; }
     double avg = 0;
     std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(), this->index_bases())) {
       avg += static_cast<double>((*this)(idx));
     }
     return avg / (this->num_elements());
@@ -370,20 +384,15 @@ public:
   void compute_stats(double& avg, double& stddev, T& minval, T& maxval) const {
     if (is_void()) {
       avg = stddev = minval = maxval = 0;
-    } else {
+    }
+    else {
       T val = first_element();
       maxval = minval = val;
-
       std::vector<index> idx(D);
-      while (internal::roll_inds(idx, this->shape(),
-                                          this->index_bases())) {
+      while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
         val = (*this)(idx);
-        if (val > maxval) {
-          maxval = val;
-        }
-        if (val < minval) {
-          minval = val;
-        }
+        if (val > maxval) { maxval = val; }
+        if (val < minval) { minval = val; }
         avg += static_cast<double>(val);
         stddev += static_cast<double>(val) * static_cast<double>(val);
       }
@@ -406,8 +415,7 @@ public:
   T sum_elements() const {
     T sum = 0;
     std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       sum += (*this)(idx);
     }
     return sum;
@@ -418,18 +426,133 @@ public:
   T sum_squared_elements() const {
     T sum = 0;
     std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       sum += (*this)(idx) * (*this)(idx);
     }
     return sum;
   }
 
+
+  //! Computes the sum of the squared elements of the difference MultiArray
+  //! obtained from substracting v.
+  /**
+    \note Both MultiArrays are required to have the same shape (size and origin)
+  */
+  T squared_difference(const This& v) const {
+    if (this->same_shape(v)) {
+      T sum = 0;
+      T aux;
+      typedef boost::multi_array_types::index index;
+      std::vector<index> idx(D);
+      while (internal::roll_inds(idx, this->shape(), this->index_bases())) {
+        aux = ((*this)(idx)-v(idx));
+        sum += aux*aux;
+      }
+    } else {
+      String msg = "squared_difference:: operation "
+                   "not supported with arrays of different shape "
+                   "(size and origin).";
+      throw ErrorException(msg.c_str());
+    }
+  }
+
+
+  //! Computes the cross correlation coeffcient between two MultiArrays
+  /**
+    \note Both MultiArrays are required to have the same size, but not the
+    same origin
+    \param[in] v array to compute the cross_correlation with.
+    \param[in] true if a threshold is applied to the elements of v .
+    \param[in] threshold minimum value for an element v to consider it in the
+               computation .
+    \param[in] divide_by_stddev true if the cross correlation term is divided
+               by the standard deviation to get the cross correlation
+               coefficient that always is between 0 and 1
+    \param[in] force_recalc_stats true if the statistics (mean, stddev) for the
+               Multiarrays must be recalculated (default).
+               If the statistics are known from previous computations,
+               you can speed up the next computations setting this variable
+               to false and directly providing the parameters.
+    \param[in] avg average of this Multiarray
+    \param[in] stddev standard deviation of this Multiarray
+    \param[in] avg_v average of Multiarray v
+    \param[in] stddev_v standard deviation of Multiarray v
+
+  */
+  double cross_correlation_coefficient(const This& v,
+                                      bool apply_threshold=false,
+                                      double threshold=0.0,
+                                      bool divide_by_stddev=true,
+                                      bool force_recalc_stats=true,
+                                      double avg=0.0,
+                                      double stddev=0.0,
+                                      double avg_v=0.0,
+                                      double stddev_v=0.0) {
+    if(this->same_size(v)==false) {
+      String msg = "cross_correlation_coefficient:: operation "
+                   "not supported with arrays of different size. ";
+      throw ErrorException(msg.c_str());
+    }
+
+    double t_avg,t_stddev,v_avg,v_stddev;
+    T t_max,t_min,v_max,v_min;
+
+    if(force_recalc_stats) {
+      this->compute_stats(t_avg,t_stddev,t_min,t_max);
+      v.compute_stats(v_avg,v_stddev,v_min,v_max);
+    } else {
+      t_avg=avg;
+      t_stddev=stddev;
+      v_avg=avg_v;
+      v_stddev=stddev_v;
+    }
+
+    // Get number of elements
+    double n_elems = 1.0;
+    for (unsigned int i = 0;i < D;i++) {
+      n_elems *= static_cast<double>(this->get_size(i));
+    }
+
+    double epsilon = 1e-6;
+    // Check for stddevs near zero using the default tolerance
+    if (divide_by_stddev && ( almost_equal(t_stddev,0.0,epsilon) ||
+                              almost_equal(v_stddev,0.0,epsilon))) {
+      return 0.0;
+    }
+
+    double ccc = 0.0;
+    std::vector<index> idx(D);
+
+    // Fast version
+    if(this->same_start(v)) {
+      while (internal::roll_inds(idx, this->shape(), this->index_bases())) {
+        if(!apply_threshold || (apply_threshold && v(idx) > threshold)) {
+          ccc += (*this)(idx)*v(idx);
+        }
+      }
+    } else { // Different origins
+      while (internal::roll_inds(idx, this->shape(), this->index_bases())) {
+        // Check if the index belongs to v
+        if(v.is_logical_element(idx)) {
+          // Check for threshold
+          if(!apply_threshold || (apply_threshold && v(idx) > threshold)) {
+            ccc += (*this)(idx)*v(idx);
+          }
+        }
+      }
+    }
+    if (divide_by_stddev) {
+      ccc = (ccc-n_elems*t_avg*v_avg)/(n_elems*t_stddev*v_stddev);
+    }
+    return ccc;
+  }
+
+
   //! Read from an ASCII file.
   /**
    * The array must be previously resized to the correct size.
    */
-void read(const std::string& filename) {
+  void read(const std::string& filename) {
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in);
     if (!in) {
@@ -444,7 +567,7 @@ void read(const std::string& filename) {
   /**
    * The array must be previously resized to the correct size.
    */
-void read_binary(const std::string& filename,bool reversed=false) {
+  void read_binary(const std::string& filename,bool reversed=false) {
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
     if (!in) {
@@ -473,7 +596,7 @@ void read_binary(const std::string& filename,bool reversed=false) {
   }
 
   //! Write to an ASCII file.
-void write(const std::string& filename) const {
+  void write(const std::string& filename) const {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out);
     if (!out) {
@@ -486,7 +609,7 @@ void write(const std::string& filename) const {
   }
 
   //! Write to a binary file.
-void write_binary(const std::string& filename,bool reversed=false) {
+  void write_binary(const std::string& filename,bool reversed=false) {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     if (!out) {
@@ -523,7 +646,6 @@ void write_binary(const std::string& filename,bool reversed=false) {
   }
 
 protected:
-
 }; // MultiArray
 
 //! write to an output stream for 3 dimensions

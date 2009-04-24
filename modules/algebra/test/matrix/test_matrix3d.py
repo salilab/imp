@@ -147,5 +147,25 @@ class Matrix3DTests(IMP.test.TestCase):
                                               [0.666,1.000,1.333,1.666]]],
                                             0.001)
 
+    def test_autocorrelation(self):
+        """Check cross_correlation of Matrix3D with itself"""
+        m1 = self.make_matrix([[[1,2,3], [3,4,8]],[[7,9,3], [9,1,2]]])
+        m2 = self.make_matrix([[[1,2,3], [3,4,8]],[[7,9,3], [9,1,2]]])
+        ccc = m1.cross_correlation_coefficient(m2)
+        self.assertInTolerance(1.0,ccc, 0.001)
+        m3 = IMP.algebra.Matrix2D(2,3)
+
+    def test_correlation_different_origins(self):
+        """Check cross_correlation of 3D matrices with different origins"""
+        m1 = self.make_matrix([[[0,0,0,0],[0,1,2,3], [0,3,4,8]],
+                               [[0,0,0,0],[0,7,9,3], [0,9,1,2]]])
+        m2 = self.make_matrix([[[1,2,3,0],[3,4,8,0], [0,0,0,0]],
+                               [[7,9,3,0],[9,1,2,0], [0,0,0,0]]])
+        m1.set_start(1,-1)
+        m1.set_start(2,-1)
+        ccc = m1.cross_correlation_coefficient(m2)
+        self.assertInTolerance(1.0,ccc, 0.001)
+
+
 if __name__ == '__main__':
     unittest.main()

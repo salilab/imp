@@ -124,5 +124,21 @@ class Matrix2DTests(IMP.test.TestCase):
             self.assert_matrix_in_tolerance(r, [[0.333,0.666], [1.0,1.333]],
                                             0.001)
 
+    def test_autocorrelation(self):
+        """Check cross_correlation of Matrix2D with itself"""
+        m1 = self.make_matrix([[1,2,3], [3,4,8]])
+        m2 = self.make_matrix([[1,2,3], [3,4,8]])
+        ccc = m1.cross_correlation_coefficient(m2)
+        self.assertInTolerance(1.0,ccc, 0.001)
+
+    def test_correlation_different_origins(self):
+        """Check cross_correlation matrices with different origins"""
+        m1 = self.make_matrix([[0,0,0,0],[0,1,2,3], [0,3,4,8]])
+        m2 = self.make_matrix([[1,2,3,0], [3,4,8,0],[0,0,0,0]])
+        m1.set_start(0,-1)
+        m1.set_start(1,-1)
+        ccc = m1.cross_correlation_coefficient(m2)
+        self.assertInTolerance(1.0,ccc, 0.001)
+
 if __name__ == '__main__':
     unittest.main()
