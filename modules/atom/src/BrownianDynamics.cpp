@@ -52,11 +52,8 @@ void BrownianDynamics::setup_particles()
   for (Model::ParticleIterator it = get_model()->particles_begin();
        it != get_model()->particles_end(); ++it) {
     Particle *p = *it;
-    if (p->has_attribute(xyzk[0]) && p->get_is_optimized(xyzk[0])
-        && p->has_attribute(xyzk[1]) && p->get_is_optimized(xyzk[1])
-        && p->has_attribute(xyzk[2]) && p->get_is_optimized(xyzk[2])
-        && p->has_attribute(DiffusionDecorator::get_D_key())
-        && !p->get_is_optimized(DiffusionDecorator::get_D_key())) {
+    DiffusionDecorator d= DiffusionDecorator::cast(p);
+    if (d && d.get_coordinates_are_optimized()) {
       add_particle(p);
     }
   }

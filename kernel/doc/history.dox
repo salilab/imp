@@ -1,5 +1,11 @@
 /** \page recent Change History
 
+\par Week of April 27
+
+- IMP::Decorator derived objects are now convertible to bool (so code like \if (d) { \c blah works)
+
+- IMP::Decorator::cast now returns a null decorator (\c DecoratorName()) rather than throwing an exception. This might make it actually useful.
+
 \par Week of April 20
 
 - Support for taking advantage of rigid bodies in collision detection has been

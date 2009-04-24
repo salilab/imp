@@ -345,13 +345,15 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
  static Name cast(::IMP::Particle *p) {                                 \
    IMP_CHECK_OBJECT(p);                                                 \
    if (!is_instance_of(p)) {                                            \
-      throw InvalidStateException("Particle missing required attributes"\
-                                  " in cast");                          \
+     return Name();                                                     \
    }                                                                    \
    return Name(p);                                                      \
  }                                                                      \
  void show(std::ostream &out=std::cout,                                 \
-           std::string prefix=std::string()) const;
+           std::string prefix=std::string()) const;                     \
+IMP_NO_SWIG(IMP_NO_DOXYGEN(operator bool_type() const {                 \
+    return is_null()? 0: &Decorator::safe_bool_function;                \
+    }))
 
 
 
@@ -382,16 +384,19 @@ Name(::IMP::Particle *p, const TraitsType &tr=default_traits): Parent(p), \
              << #Name << *p << std::endl);                              \
 }                                                                       \
 static Name cast(::IMP::Particle *p, const TraitsType &tr=default_traits) { \
-  IMP_check(is_instance_of(p, tr), "Particle missing required attributes for " \
-            << "decorator " << #Name << " " << *p, InvalidStateException); \
-  return Name(p, tr);                                                   \
+  if (!is_instance_of(p, tr)) return Name();                            \
+  else return Name(p, tr);                                              \
 }                                                                       \
 void show(std::ostream &out=std::cout,                                  \
           std::string prefix=std::string()) const;                      \
 /** Get the traits object */                                            \
 const TraitsType &get_##traits_name() const {                           \
   return traits_name##_;                                                \
-}
+}                                                                       \
+IMP_NO_SWIG(IMP_NO_DOXYGEN(operator bool_type() const {                 \
+    return is_null()? 0: &Decorator::safe_bool_function;                \
+    }))
+
 
 
 
