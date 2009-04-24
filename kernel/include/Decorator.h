@@ -20,7 +20,8 @@ IMP_BEGIN_NAMESPACE
     \ref decorators "Decorator introduction".
 
     \note Decorator objects are ordered based on the address of the wrapped
-    particle.
+    particle. Like pointers, they are logical values so can be in \c if
+    statements.
 
     \cpp Implementers of decorators should just inherit from this and
     then use the IMP_DECORATOR macro to provide the key implementation
@@ -35,9 +36,6 @@ class Decorator: public NullDefault, public Comparable
 {
 private:
   Pointer<Particle> particle_;
-  bool is_default() const {
-    return !particle_;
-  }
 protected:
   Decorator(Particle *p): particle_(p) {}
   Decorator() {}
@@ -88,7 +86,7 @@ public:
   /** Create a decorator from a particle which has already been set up.
       That is, the Decorator::create() function was previously called with
       the Particle and so it has all the needed attributes.
-      \throw InvalidStateException if p cannot be cast successfully.
+      \return The Decorator(p) if p has been set up or Decorator() if not.
   */
   static Decorator cast(Particle *p);
 
@@ -112,6 +110,10 @@ public:
   Decorator();
   //! @}
 #endif
+  IMP_NO_DOXYGEN(bool is_null() const {return !particle_;});
+  IMP_NO_DOXYGEN(typedef void (Decorator::*bool_type)() const;)
+  IMP_NO_DOXYGEN(void safe_bool_function() const {})
+
 };
 
 IMP_END_NAMESPACE
