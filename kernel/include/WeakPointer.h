@@ -46,13 +46,8 @@ class WeakPointer: public NullDefault, public Comparable
     IMP_assert(o_ != NULL, "Pointer is NULL");
     //IMP_CHECK_OBJECT(o_);
   }
-
-  bool is_default() const {
-    return o_==NULL;
-  }
-  typedef bool (This::*unspecified_bool)() const;
 protected:
-  O* o_;
+  IMP_NO_DOXYGEN(O* o_;)
 public:
   //! initialize to NULL
   WeakPointer(): o_(NULL) {}
