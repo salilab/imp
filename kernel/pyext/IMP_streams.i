@@ -115,6 +115,10 @@ protected:
     return c;
   }
 
+  virtual std::streamsize xsgetn(char *s, std::streamsize n) {
+    return fread(s, 1, n, fh_);
+  }
+
   virtual int_type pbackfail(int c) {
     return c == EOF ? EOF : ungetc(c, fh_);
   }
@@ -168,6 +172,35 @@ protected:
         } else {
           Py_DECREF(result);
           return EOF;
+        }
+      } else {
+        Py_DECREF(result);
+        PyErr_SetString(PyExc_TypeError, "Python file-like object read method "
+                        "should return a string");
+        throw std::ostream::failure("Python error on read");
+      }
+    }
+  }
+
+  virtual std::streamsize xsgetn(char *s, std::streamsize n) {
+    static char method[] = "read";
+    static char fmt[] = "(i)";
+    PyObject *result = PyObject_CallMethod(p_, method, fmt, n);
+    if (!result) {
+      throw std::ostream::failure("Python error on read");
+    } else {
+      if (PyString_Check(result)) {
+        int len = PyString_Size(result);
+        char *str = PyString_AsString(result);
+        if (len > n) {
+          Py_DECREF(result);
+          PyErr_SetString(PyExc_IOError, "Python file-like object read method "
+                          "returned data longer than the input buffer");
+          throw std::ostream::failure("Python error on read");
+        } else {
+          memcpy(s, str, len);
+          Py_DECREF(result);
+          return len;
         }
       } else {
         Py_DECREF(result);
