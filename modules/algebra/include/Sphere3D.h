@@ -70,7 +70,7 @@ typedef std::vector<Sphere3D> Sphere3Ds;
 
 //! Return the distance between the two spheres if they are disjoint
 /** If they intersect, the distances are not meaningful.
-    \relates Sphere3D
+    \relatesalso Sphere3D
 */
 inline double distance(const Sphere3D& a, const Sphere3D &b) {
   double d= (a.get_center()-b.get_center()).get_magnitude();
@@ -79,7 +79,7 @@ inline double distance(const Sphere3D& a, const Sphere3D &b) {
 
 
 //! Return a sphere containing the listed spheres
-/** \relates Sphere3D
+/** \relatesalso Sphere3D
     \note This method produces tighter bounding spheres if CGAL
     is used.
     \ingroup CGAL
@@ -87,14 +87,14 @@ inline double distance(const Sphere3D& a, const Sphere3D &b) {
 IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Sphere3Ds &ss);
 
 //! Return the radius of a sphere with a given volume
-/** \relates Sphere3D
+/** \relatesalso Sphere3D
  */
 inline double ball_radius_from_volume(double volume) {
   return std::pow((.75/PI)*volume, .3333);
 }
 
 //! Return true if the two balls bounded by the two spheres interesect
-/** \relates Sphere3D
+/** \relatesalso Sphere3D
  */
 inline bool interiors_intersect(const Sphere3D &a, const Sphere3D &b) {
   double sr= a.get_radius() + b.get_radius();
@@ -124,7 +124,7 @@ namespace internal {
 //! Use this before outputing to a stream with spaces delimiting
 /** std::cout << spaces_io(s);
     produces "1.0 2.0 3.0 4.0" where the radius is 4.0
-    \relates Sphere3D
+    \relatesalso Sphere3D
  */
 inline internal::SphereSpacesIO spaces_io(const Sphere3D &v) {
   return internal::SphereSpacesIO(v);

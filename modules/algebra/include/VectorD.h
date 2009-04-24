@@ -266,7 +266,7 @@ std::istream &operator>>(std::istream &in, VectorD<D> &v) {
 #endif
 
 //! lexicographic comparison of two vectors
-/** \relates VectorD
+/** \relatesalso VectorD
  */
 template <unsigned int D>
 int compare(const VectorD<D> &a, const VectorD<D> &b) {
@@ -277,14 +277,14 @@ int compare(const VectorD<D> &a, const VectorD<D> &b) {
   return 0;
 }
 
-/** \relates VectorD */
+/** \relatesalso VectorD */
 template <unsigned int D>
 inline VectorD<D> operator*(double s, const VectorD<D> &o) {
   return o*s;
 }
 
 //! compute the squared distance between two vectors
-/** \relates VectorD
+/** \relatesalso VectorD
  */
 template <unsigned int D>
 double squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
@@ -297,7 +297,7 @@ double squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 }
 
 //! compute the distance between two vectors
-/** \relates VectorD
+/** \relatesalso VectorD
  */
 template <unsigned int D>
 double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
@@ -337,7 +337,7 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
 //! Use this before outputing to delimited vector entries with a space
 /** std::cout << spaces_io(v);
     produces "1.0 2.0 3.0"
-    \relates VectorD
+    \relatesalso VectorD
  */
 template <unsigned int D>
 SpacesIO<D> spaces_io(const VectorD<D> &v) {
@@ -350,7 +350,7 @@ SpacesIO<D> spaces_io(const VectorD<D> &v) {
 //! Use this before outputing to delimited vector entries with a comma
 /** std::cout << commas_io(v);
     produces "1.0, 2.0, 3.0"
-    \relates VectorD
+    \relatesalso VectorD
  */
 template <unsigned int D>
 CommasIO<D> commas_io(const VectorD<D> &v) {

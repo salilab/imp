@@ -197,7 +197,7 @@ IMP_OUTPUT_OPERATOR(Rotation3D)
 
 
 //! Return a rotation that does not do anything
-/** \relates Rotation3D */
+/** \relatesalso Rotation3D */
 inline Rotation3D identity_rotation() {
   return Rotation3D(1,0,0,0);
 }
@@ -208,7 +208,7 @@ inline Rotation3D identity_rotation() {
     \param[in] zr Rotation around the Z axis in radians
     \note The three rotations are represented in the original (fixed)
     coordinate frame. http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-    \relates Rotation3D
+    \relatesalso Rotation3D
 */
 inline Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
 {
@@ -240,7 +240,7 @@ inline Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
           about the former z-axis.
     \note http://en.wikipedia.org/wiki/
          Conversion_between_quaternions_and_Euler_angles
-    \relates Rotation3D
+    \relatesalso Rotation3D
 */
 inline Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
 {
@@ -260,7 +260,7 @@ inline Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
 //! Generate a Rotation3D object from a rotation matrix
 /**
    \throw ValueException if the rotation is not a rotation matrix.
-   \relates Rotation3D
+   \relatesalso Rotation3D
  */
 IMPALGEBRAEXPORT Rotation3D
 rotation_from_matrix(double m11,double m12,double m13,
@@ -275,7 +275,7 @@ rotation_from_matrix(double m11,double m12,double m13,
   \note http://en.wikipedia.org/wiki/Rotation_matrix
   \note www.euclideanspace.com/maths/geometry/rotations/conversions/
   angleToQuaternion/index.htm
-  \relates Rotation3D
+  \relatesalso Rotation3D
 */
 inline Rotation3D rotation_in_radians_about_axis(const Vector3D& axis,
                                                  double angle)
@@ -292,7 +292,7 @@ inline Rotation3D rotation_in_radians_about_axis(const Vector3D& axis,
 }
 
 //! Create a rotation from the first vector to the second one.
-/** \relates Rotation3D
+/** \relatesalso Rotation3D
  */
 inline Rotation3D rotation_between_two_vectors(const Vector3D &v1,
                                                const Vector3D &v2) {
@@ -314,19 +314,19 @@ inline Rotation3D rotation_between_two_vectors(const Vector3D &v1,
 
 
 //! Pick a rotation at random from all possible rotations
-/** \relates Rotation3D */
+/** \relatesalso Rotation3D */
 IMPALGEBRAEXPORT Rotation3D random_rotation();
 
 
 //! Compute a rotatation from an unnormalized quaternion
-/** \relates Rotation3D */
+/** \relatesalso Rotation3D */
 inline Rotation3D rotation_from_vector4d(const VectorD<4> &v) {
   VectorD<4> uv= v.get_unit_vector();
   return Rotation3D(uv[0], uv[1], uv[2], uv[3]);
 }
 
 
-/** \relates Rotation3D
+/** \relatesalso Rotation3D
  */
 inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
   return Rotation3D(a.v_[0]*b.v_[0] - a.v_[1]*b.v_[1]

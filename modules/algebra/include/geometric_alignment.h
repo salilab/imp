@@ -30,7 +30,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     case.
 
     \throw ValueException if from.size() != to.size().
-    \relates Transformation3D
+    \relatesalso Transformation3D
     \see Vector3D
  */
 IMPALGEBRAEXPORT Transformation3D

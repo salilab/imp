@@ -283,7 +283,7 @@ inline const HierarchyDecorator HierarchyTraits::wrap(Particle* p) const {
 /** \param[in] d The HierarchyDecorator for the tree in question
     \param[in] v The visitor to be applied. This is passed by reference.
     \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 IMPCOREEXPORT
 void breadth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
@@ -291,7 +291,7 @@ void breadth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
 //! Depth first traversal of the hierarchy
 /** See breadth_first_traversal and HierarchyVisitor for more information
     \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 IMPCOREEXPORT
 void depth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
@@ -320,7 +320,7 @@ void depth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
            the functor state.
 
     \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 template <class HD, class F>
 F breadth_first_traversal_with_data(HD d, F f, typename F::result_type i)
@@ -345,7 +345,7 @@ F breadth_first_traversal_with_data(HD d, F f, typename F::result_type i)
 //! Apply functor F to each particle, traversing the hierarchy depth first.
 /** See breadth_first_traversal for documentation.
     \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 template <class HD, class F>
 F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
@@ -420,7 +420,7 @@ struct HierarchyPrinter
 //! Print the hierarchy using a given decorator as to display each node
 /** The last argument limits how deep will be printed out.
     \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 template <class ND>
 std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
@@ -458,7 +458,7 @@ private:
 
 //! Gather all the Particle* in the hierarchy which meet some criteria
 /** \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 template <class Out, class F>
 Out gather(HierarchyDecorator h, F f, Out out)
@@ -470,7 +470,7 @@ Out gather(HierarchyDecorator h, F f, Out out)
 
 //! Gather all the Particle* in the hierarchy which match on an attribute
 /** \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 template <class Out, class K, class V>
 Out gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
@@ -487,7 +487,7 @@ Out gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
 
 //! Gather all the Particle* in the hierarchy which match on two attributes
 /** \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 template <class Out, class K0, class V0, class K1, class V1>
 Out gather_by_attributes(HierarchyDecorator h, K0 k0,
@@ -503,7 +503,7 @@ Out gather_by_attributes(HierarchyDecorator h, K0 k0,
 
 //! Find the first node which matches some criteria
 /** \ingroup hierarchy
-    \relates HierarchyDecorator
+    \relatesalso HierarchyDecorator
  */
 template <class HD, class F>
 HD breadth_first_find(HD h, F f)
@@ -531,13 +531,13 @@ HD breadth_first_find(HD h, F f)
 
 
 //! Get all the leaves of the bit of hierarchy
-/**     \relates HierarchyDecorator
+/**     \relatesalso HierarchyDecorator
  */
 IMPCOREEXPORT Particles
 get_leaves(HierarchyDecorator mhd);
 
 //! Get all the particles in the subtree
-/**     \relates HierarchyDecorator
+/**     \relatesalso HierarchyDecorator
  */
 IMPCOREEXPORT Particles
 get_all_descendants(HierarchyDecorator mhd);

@@ -48,7 +48,7 @@ protected:
 };
 
 //! Perform principle components analysis on a set of vectors
-/** \relates PrincipalComponentAnalysis
+/** \relatesalso PrincipalComponentAnalysis
  */
 IMPALGEBRAEXPORT PrincipalComponentAnalysis principal_components(
                               const std::vector<Vector3D> &ps);

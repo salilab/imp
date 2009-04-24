@@ -589,7 +589,7 @@ protection:                                                             \
 /** These are: show, evaluate, get_version_info and a empty destructor
     \param[in] Name The class name
     \param[in] version_info The version info object to return.
-    \relates IMP::Restraint
+    \relatesalso IMP::Restraint
 */
 #define IMP_RESTRAINT(Name, version_info)                                \
   virtual Float evaluate(DerivativeAccumulator *accum);                 \
@@ -634,7 +634,7 @@ protection:                                                             \
     - get_version_info
     - an empty destructor
 
-    \relates IMP::ScoreState
+    \relatesalso IMP::ScoreState
 
     \param[in] Name the class name
     \param[in] version_info The version info object to return.
@@ -776,7 +776,7 @@ public:                                                                 \
     - get_particle
     - show
     A private, empty destructor is provided.
-    \relates IMP::SingletonContainer
+    \relatesalso IMP::SingletonContainer
 */
 #define IMP_SINGLETON_CONTAINER(Name, version_info)                  \
   bool get_contains_particle(Particle* p) const;                    \
@@ -788,7 +788,7 @@ public:                                                                 \
   public:
 
 //! Declare the needed functions for a PairContainer
-/** \relates IMP::PairContainer
+/** \relatesalso IMP::PairContainer
     See IMP_SINGLETON_CONTAINER() for full documentation.
  */
 #define IMP_PAIR_CONTAINER(Name, version_info)                           \
@@ -803,7 +803,7 @@ public:                                                                 \
 
 
 //! Declare the needed functions for a UnaryFunction
-/** \relates IMP::UnaryFunction
+/** \relatesalso IMP::UnaryFunction
     This macro declares the methods:
     - Object::show()
     - UnaryFunction::evaluate_with_derivative()
@@ -823,7 +823,7 @@ public:                                                                 \
   public:
 
 //! Declare the needed functions for a UnaryFunction which evaluates inline
-/** \relates IMP::UnaryFunction
+/** \relatesalso IMP::UnaryFunction
 
     This macro declares all the functions needed for an IMP::UnaryFunction
     inline in the class. There is no need for an associated \c .cpp file.

@@ -217,7 +217,7 @@ typedef std::vector<MolecularHierarchyDecorator> MolecularHierarchyDecorators;
    Gather all the molecular particles of a certain level
    in the molecular hierarchy
    \ingroup hierarchy
-   \relates MolecularHierarchyDecorator
+   \relatesalso MolecularHierarchyDecorator
 */
 IMPATOMEXPORT Particles
 get_by_type(MolecularHierarchyDecorator mhd,
@@ -233,7 +233,7 @@ class ResidueDecorator;
     \return MolecularHierarchyDecorator() if that residue is not found.
 
     \ingroup hierarchy
-    \relates MolecularHierarchyDecorator
+    \relatesalso MolecularHierarchyDecorator
  */
 IMPATOMEXPORT ResidueDecorator
 get_residue(MolecularHierarchyDecorator mhd,
@@ -248,13 +248,13 @@ get_residue(MolecularHierarchyDecorator mhd,
 
     \throw ValueException If all the particles do not have the same parent.
     \ingroup hierarchy
-    \relates MolecularHierarchyDecorator
+    \relatesalso MolecularHierarchyDecorator
  */
 IMPATOMEXPORT MolecularHierarchyDecorator
 create_fragment(const MolecularHierarchyDecorators &ps);
 
 //! Get the bonds internal to this tree
-/**     \relates MolecularHierarchyDecorator
+/**     \relatesalso MolecularHierarchyDecorator
         \see BondDecorator
  */
 IMPATOMEXPORT atom::BondDecorators
@@ -267,7 +267,7 @@ get_internal_bonds(MolecularHierarchyDecorator mhd);
     in addition to the MolecularHierarchyDecorator relationships.
 
     \note This method has not been tested at all
-    \relates MolecularHierarchyDecorator
+    \relatesalso MolecularHierarchyDecorator
 */
 IMPATOMEXPORT
 MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d);

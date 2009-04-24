@@ -98,7 +98,7 @@ public:
 IMP_OUTPUT_OPERATOR(XYZRDecorator);
 
 //! Compute the distance between a pair of particles
-/** \relates XYZRDecorator
+/** \relatesalso XYZRDecorator
  */
 IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
 
@@ -115,7 +115,7 @@ IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
     \note This function produces tighter bounds if the \ref CGAL "CGAL"
     library is available.
     \ingroup CGAL
-    \relates XYZRDecorator
+    \relatesalso XYZRDecorator
  */
 IMPCOREEXPORT void set_enclosing_sphere(XYZRDecorator b,
                                         const Particles &v);
@@ -127,7 +127,7 @@ IMPCOREEXPORT void set_enclosing_sphere(XYZRDecorator b,
     \param[in] radius The radius to give them.
     \param[in] box_side The particles have coordinates from -box_side
     to box_side.
-    \relates XYZRDecorator
+    \relatesalso XYZRDecorator
 
     The particles coordinates are optimized.
  */
