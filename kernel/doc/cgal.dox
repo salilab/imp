@@ -1,0 +1,11 @@
+/** \defgroup CGAL CGAL
+
+\external{www.cgal.org,CGAL} is a library of geometry-related
+algorithms and data structures written in C++. The relevant parts of
+CGAL are licensed under LGPL and QPL and commercial licenses are
+available if needed. More information can be found on the
+\external{www.cgal.org/license.html, CGAL license page}.
+
+Certain functionality provided in \imp requires or benifits from using CGAL.
+
+*/

@@ -112,9 +112,9 @@ IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
     something else since you can't easily cast vectors of
     different things to one another.
 
-    \note This function produces tighter bounds if the CGAL library
-    is linked.
-
+    \note This function produces tighter bounds if the \ref CGAL "CGAL"
+    library is available.
+    \ingroup CGAL
     \relates XYZRDecorator
  */
 IMPCOREEXPORT void set_enclosing_sphere(XYZRDecorator b,

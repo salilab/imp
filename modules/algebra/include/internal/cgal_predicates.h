@@ -11,10 +11,14 @@
 #include <IMP/base_types.h>
 #ifdef IMP_USE_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/intersection_3.h>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 typedef CGAL::Exact_predicates_inexact_constructions_kernel CGALKernel;
+
+/* actually, the sphere ones aren't exact due to the squaring. They should be
+   reasonably consistent, but... */
 
 template <class Plane, class Vector>
 inline int cgal_plane_compare_above(const Plane &p, const Vector&v) {

@@ -42,6 +42,10 @@ class ClosePairsFinder;
     It is not clear how to accomplish this. Perhaps MaximumChangeScoreState
     could keep track of newly added particles. It can do that.
 
+    \note This class uses the IMP::core::BoxSweepClosePairsFinder by
+    default if \ref CGAL "CGAL" is available.
+
+    \ingroup CGAL
     \see CloseBipartitePairsScoreState
     \see ClosePairsFinder
  */

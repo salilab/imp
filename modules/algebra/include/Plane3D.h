@@ -11,7 +11,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** */
+/** Represent a plane using the distance and a normal.
+*/
 class IMPALGEBRAEXPORT Plane3D: public UninitializedDefault {
 public:
   Plane3D(){}
@@ -21,17 +22,20 @@ public:
   const Vector3D &get_normal() const {return normal_;}
   //! Project the point onto the plane
   Vector3D get_projection(const Vector3D &p) const;
-  /**
-  /note the directionality of the plane is determined by the normal
+  /** @name Orientation
+       Up is the direction of the normal.
+       @{
+  */
+  /** \cgalpredicate
    */
   bool get_is_above(const Vector3D &p) const;
-  /**
-  /note the directionality of the plane is determined by the normal
+  /** \cgalpredicate
    */
   bool get_is_below(const Vector3D &p) const;
+  /** @} */
   void show(std::ostream &out=std::cout) const;
 
-  //! Return the plane facing the other way
+  //! Return the plane with the opposite normal
   Plane3D get_opposite() const {
     return Plane3D(-distance_, -normal_);
   }

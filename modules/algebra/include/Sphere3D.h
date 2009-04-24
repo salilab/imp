@@ -14,7 +14,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** */
+/** Represent a sphere using a point and a radius.
+  */
 class IMPALGEBRAEXPORT Sphere3D: public UninitializedDefault {
 public:
   Sphere3D(){
@@ -44,6 +45,8 @@ public:
   }
 
   //! Return true if the point is in or on the surface of the sphere
+  /** \cgalpredicate
+   */
   bool get_contains(const Vector3D &p) const {
 #ifdef IMP_CGAL
     return internal::cgal_sphere_compare_inside(*this, p);
@@ -77,6 +80,9 @@ inline double distance(const Sphere3D& a, const Sphere3D &b) {
 
 //! Return a sphere containing the listed spheres
 /** \relates Sphere3D
+    \note This method produces tighter bounding spheres if CGAL
+    is used.
+    \ingroup CGAL
  */
 IMPALGEBRAEXPORT Sphere3D enclosing_sphere(const Sphere3Ds &ss);
 

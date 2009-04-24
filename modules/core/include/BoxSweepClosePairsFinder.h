@@ -17,8 +17,9 @@ IMPCORE_BEGIN_NAMESPACE
 /** This method is much faster than the quadratic one when
     there are are large sets of points.
 
-    \note This method requires CGAL to work.
+    \note This method requires \ref CGAL "CGAL" to work.
     \see ClosePairsScoreState
+    \ingroup CGAL
 */
 class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 {
