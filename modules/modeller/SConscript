@@ -1,5 +1,4 @@
 Import('env')
-Export('env')
 
 env.IMPModuleAbout(author='Ben Webb', version='SVN',
                    description='Interface to the MODELLER package.')
@@ -21,5 +20,5 @@ else:
     env.validate()
 
 # Subdirectories:
-SConscript('pyext/SConscript')
-SConscript('test/SConscript')
+SConscript('pyext/SConscript', exports='env')
+SConscript('test/SConscript', exports='env')

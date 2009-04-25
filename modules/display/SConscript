@@ -1,5 +1,4 @@
 Import('env')
-Export('env')
 
 env.IMPModuleAbout(author='IMP developers', version='SVN',
                    description='Code to write to graphics formats.')
@@ -8,8 +7,8 @@ env.Append(LIBS=['imp_core', 'imp_algebra', 'imp_atom'])
 env.validate()
 
 # Subdirectories:
-SConscript('src/SConscript')
-SConscript('include/SConscript')
-SConscript('pyext/SConscript')
-SConscript('test/SConscript')
-SConscript('bin/SConscript')
+SConscript('src/SConscript', exports='env')
+SConscript('include/SConscript', exports='env')
+SConscript('pyext/SConscript', exports='env')
+SConscript('test/SConscript', exports='env')
+SConscript('bin/SConscript', exports='env')
