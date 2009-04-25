@@ -188,7 +188,7 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 %include "IMP/deprecation.h"
 %include "IMP/VersionInfo.h"
 %include "IMP/RefCounted.h"
-%include "IMP/Object.h"
+%include "Object.i"
 %include "IMP/UnaryFunction.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "Restraint.i"
