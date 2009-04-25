@@ -1,5 +1,4 @@
 Import('env')
-Export('env')
 
 env.IMPModuleAbout(author='Dina Schneidman and Seung Joong Kim', version='SVN',
                    description='Small Angle X-ray Scattering methods.')
@@ -8,7 +7,7 @@ env.Append(LIBS=['imp_core', 'imp_algebra', 'imp_atom'])
 env.validate()
 
 # Subdirectories:
-SConscript('src/SConscript')
-SConscript('include/SConscript')
-SConscript('pyext/SConscript')
-SConscript('test/SConscript')
+SConscript('src/SConscript', exports='env')
+SConscript('include/SConscript', exports='env')
+SConscript('pyext/SConscript', exports='env')
+SConscript('test/SConscript', exports='env')

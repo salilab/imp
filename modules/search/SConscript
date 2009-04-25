@@ -1,5 +1,4 @@
 Import('env')
-Export('env')
 
 env.IMPModuleAbout(author='Daniel Russel', version='SVN',
                    description='Build search structures over particles.')
@@ -14,7 +13,7 @@ env.validate()
 env.Append(LIBS=['imp_algebra'])
 
 # Subdirectories:
-SConscript('src/SConscript')
-SConscript('include/SConscript')
-SConscript('pyext/SConscript')
-SConscript('test/SConscript')
+SConscript('src/SConscript', exports='env')
+SConscript('include/SConscript', exports='env')
+SConscript('pyext/SConscript', exports='env')
+SConscript('test/SConscript', exports='env')

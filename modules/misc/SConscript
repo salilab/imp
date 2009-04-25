@@ -1,5 +1,4 @@
 Import('env')
-Export('env')
 
 env.IMPModuleAbout(author='IMP developers', version='SVN',
                    description='Miscellaneous and/or experimental features.')
@@ -10,7 +9,7 @@ env.validate()
 env.Append(LIBS=['imp_core'])
 
 # Subdirectories:
-SConscript('src/SConscript')
-SConscript('include/SConscript')
-SConscript('pyext/SConscript')
-SConscript('test/SConscript')
+SConscript('src/SConscript', exports='env')
+SConscript('include/SConscript', exports='env')
+SConscript('pyext/SConscript', exports='env')
+SConscript('test/SConscript', exports='env')
