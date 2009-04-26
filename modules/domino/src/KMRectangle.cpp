@@ -25,7 +25,7 @@ bool km_is_equal(const KMPoint &p,const KMPoint &q) {
 bool KMRectangle::is_inside(const KMPoint &p)
 {
   for (unsigned int i = 0; i < p.size(); i++) {
-    if ((p[i] < lo_[i] )or (p[i] > hi_[i])) return false;
+    if ((p[i] < lo_[i] ) || (p[i] > hi_[i])) return false;
   }
   return true;
 }
