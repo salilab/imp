@@ -1,6 +1,19 @@
 Import('env')
 
 files = [
+         'KMData.h',
+         'KMCenters.h',
+         'KMFilterCenters.h',
+         'random_generator.h',
+         'KMCentersTree.h',
+         'KMCentersNode.h',
+         'KMCentersNodeSplit.h',
+         'KMCentersNodeLeaf.h',
+         'KMRectangle.h',
+         'KMLocalSearch.h',
+         'KMLocalSearchLloyd.h',
+         'KMTerminationCondition.h',
+         'KMLProxy.h',
          'DiscreteSampler.h',
          'CombState.h',
          'combination.hpp',
@@ -20,7 +33,6 @@ files = [
          'SimpleDiscreteRestraint.h',
          'SimpleDiscreteSpace.h',
          'SimpleDiscreteSampler.h',
-         'SymmetrySampler.h'
         ]
 
 # Install the include files:
