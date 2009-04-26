@@ -29,7 +29,7 @@ void KMLocalSearchLloyd::end_stage() {
 }
 bool KMLocalSearchLloyd::is_run_done() {
   // check if we already preformed too many stages
-  if (KMLocalSearch::is_run_done() or
+  if (KMLocalSearch::is_run_done() ||
   (stage_num_ - run_init_stage_ >= term_->get_max_num_of_stages_for_run())) {
       return true;
   }
