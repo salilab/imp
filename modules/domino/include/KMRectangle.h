@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 #include "config.h"
-#include <IMP/domino/KMData.h>
+#include "KMData.h"
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -38,7 +38,7 @@ public:
     lo_.insert(lo_.end(),dim,0);
     hi_.insert(hi_.end(),dim,0);
   }
-  KMRectangle( const KMPoint &l,const KMPoint &h):lo_(l),hi_(h){}
+  KMRectangle(const KMPoint &l,const KMPoint &h):lo_(l),hi_(h){}
   //! Checks if the point is inside the rectangle
   /** Returns true if a point lies inside the (closed) rectangle and false
       otherwise.
@@ -48,12 +48,12 @@ public:
   KMRectangle expand(double x);
   int get_dim(){return lo_.size();}
   KMPoint *get_point(int i) {
-    IMP_assert(i==0 or i==1,"wrong index");
+    IMP_assert(i==0 || i==1,"wrong index");
     if (i==0) return &lo_;
     return &hi_;
   }
   const KMPoint *get_point(int i) const {
-    IMP_assert(i==0 or i==1,"wrong index");
+    IMP_assert(i==0 || i==1,"wrong index");
     if (i==0) return &lo_;
     return &hi_;
   }
