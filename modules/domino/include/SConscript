@@ -26,6 +26,7 @@ files = [
          'PermutationSampler.h',
          'MappedDiscreteSet.h',
          'CartesianProductSampler.h',
+         'SymmetrySampler.h',
          'TransformationUtils.h',
          'TransformationMappedDiscreteSet.h',
          'TransformationCartesianProductSampler.h',

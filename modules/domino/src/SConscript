@@ -22,6 +22,7 @@ files = [
          'PermutationSampler.cpp',
          'MappedDiscreteSet.cpp',
          'CartesianProductSampler.cpp',
+         'SymmetrySampler.cpp',
          'TransformationUtils.cpp',
          'TransformationMappedDiscreteSet.cpp',
          'TransformationCartesianProductSampler.cpp',
