@@ -2,6 +2,17 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
+         'KMData.cpp',
+         'KMCenters.cpp',
+         'KMFilterCenters.cpp',
+         'KMCentersTree.cpp',
+         'KMCentersNode.cpp',
+         'KMCentersNodeSplit.cpp',
+         'KMCentersNodeLeaf.cpp',
+         'KMRectangle.cpp',
+         'KMLocalSearch.cpp',
+         'KMLocalSearchLloyd.cpp',
+         'KMLProxy.cpp',
          'CombState.cpp',
          'DominoOptimizer.cpp',
          'JEdge.cpp',
@@ -18,7 +29,6 @@ files = [
          'SimpleDiscreteRestraint.cpp',
          'SimpleDiscreteSpace.cpp',
          'TransformationDiscreteSet.cpp',
-         'SymmetrySampler.cpp'
         ]
 
 # Build and install the shared library:
