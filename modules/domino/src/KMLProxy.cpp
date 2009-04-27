@@ -147,6 +147,7 @@ std::string KMLProxy::get_cmm_string() const {
 //   CMMLogOptimizerState cmm_log;
 //   cmm_log.set_radius(IMP.StringKey("get_cmm_string(centroids_);
   //TODO - add the edges
+  return std::string();
 }
 unsigned int KMLProxy::get_particle_assignment(Particle *p) const {
   return assignment_.find(p)->second;
