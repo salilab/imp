@@ -266,11 +266,11 @@ public:
       && MolecularHierarchyDecorator::is_instance_of(p);
   }
 
-  AtomType get_type() const {
+  AtomType get_atom_type() const {
     return AtomType(get_particle()->get_value(get_type_key()));
   }
 
-  void set_type(AtomType t);
+  void set_atom_type(AtomType t);
 
   IMP_DECORATOR_GET_SET_OPT(charge, get_charge_key(),
                             Float, Float, 0);

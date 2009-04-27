@@ -468,11 +468,10 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
 }
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
-                                   Particle * p, FormFactorType ff_type) const {
-  atom::ResidueType residue_type =
-    atom::get_residue_type(atom::AtomDecorator::cast(p));
-  atom::AtomType atom_type =
-      atom::AtomDecorator::cast(p).get_type();
+                                   Particle *p, FormFactorType ff_type) const {
+  atom::AtomDecorator ad = atom::AtomDecorator::cast(p);
+  atom::ResidueType residue_type = atom::get_residue_type(ad);
+  atom::AtomType atom_type = ad.get_atom_type();
   String atom_name = atom_type.get_string();
 
   FormFactorAtomType ret_type = UNK;
@@ -508,7 +507,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
 }
 
 
-Float FormFactorTable::get_form_factor(Particle * p,
+Float FormFactorTable::get_form_factor(Particle *p,
                                        FormFactorType ff_type) const {
   // initialization by request
   if (p->has_attribute(form_factor_key_))
