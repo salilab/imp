@@ -63,7 +63,7 @@ ResidueType residue_type_from_pdb_string(std::string nm) {
 void ResidueDecorator::show(std::ostream &out, std::string pre) const
 {
   out << pre << "residue #" << get_index() << " of type "
-  << get_type() << std::endl;
+      << get_residue_type() << std::endl;
 }
 
 IntKey ResidueDecorator::get_index_key() {

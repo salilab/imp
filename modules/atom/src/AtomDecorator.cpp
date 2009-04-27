@@ -395,7 +395,7 @@ AtomDecorator AtomDecorator::create(Particle *p, AtomType t) {
 }
 
 AtomDecorator AtomDecorator::create(Particle *p, AtomDecorator o) {
-  p->add_attribute(get_type_key(), o.get_type().get_index());
+  p->add_attribute(get_type_key(), o.get_atom_type().get_index());
   MolecularHierarchyDecorator::create(p, MolecularHierarchyDecorator::ATOM);
   AtomDecorator ret(p);
   if (o.get_element() != UNKNOWN_ELEMENT) {
@@ -425,7 +425,7 @@ AtomType atom_type_from_pdb_string(std::string nm) {
 void AtomDecorator::show(std::ostream &out, std::string prefix) const
 {
   //out <<prefix << "Element:"<< get_element() << std::endl;
-  out << prefix<< "Type: "<< get_type();
+  out << prefix<< "Type: "<< get_atom_type();
   if (get_input_index() != -1) {
     out << " atom number: " << get_input_index();
   }
@@ -433,7 +433,7 @@ void AtomDecorator::show(std::ostream &out, std::string prefix) const
 }
 
 
-void AtomDecorator::set_type(AtomType t)
+void AtomDecorator::set_atom_type(AtomType t)
 {
   // ultimate the secondary info should be set from a
   // better source. But this is good enough for now.
@@ -474,7 +474,7 @@ int get_residue_index(AtomDecorator d) {
 
 
 ResidueType get_residue_type(AtomDecorator d) {
-  return get_residue(d).get_type();
+  return get_residue(d).get_residue_type();
 }
 
 ResidueDecorator get_residue(AtomDecorator d) {
@@ -493,9 +493,10 @@ AtomDecorator get_atom(ResidueDecorator rd, AtomType at) {
   MolecularHierarchyDecorator mhd(rd.get_particle());
   for (unsigned int i=0; i< mhd.get_number_of_children(); ++i) {
     AtomDecorator a(mhd.get_child(i).get_particle());
-    if (a.get_type() == at) return a;
+    if (a.get_atom_type() == at) return a;
   }
-  throw InvalidStateException("Atom not found");
+  IMP_LOG(VERBOSE, "Atom not found " << at << std::endl);
+  return AtomDecorator();
 }
 
 char get_chain(AtomDecorator d) {
@@ -539,7 +540,7 @@ std::string AtomDecorator::get_pdb_string(int index) {
   // 13-16: atom type
   out.setf(std::ios::left, std::ios::adjustfield);
   out.width(1);
-  std::string atom_type = get_type().get_string();
+  std::string atom_type = get_atom_type().get_string();
   if (atom_type.size()<4) {
     out << " ";
     out.width(3);

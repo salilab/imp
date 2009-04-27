@@ -134,13 +134,13 @@ public:
     MolecularHierarchyDecorator::create(p,
                      MolecularHierarchyDecorator::UNKNOWN);
     ResidueDecorator ret(p);
-    ret.set_type(t);
+    ret.set_residue_type(t);
     return ret;
   }
 
   //! Copy data from the other ResidueDecorator to the particle p
   static ResidueDecorator create(Particle *p, ResidueDecorator o) {
-    p->add_attribute(get_type_key(), o.get_type().get_index());
+    p->add_attribute(get_type_key(), o.get_residue_type().get_index());
     p->add_attribute(get_index_key(), o.get_index());
     p->add_attribute(get_insertion_code_key(), o.get_insertion_code());
     MolecularHierarchyDecorator::create(p,
@@ -155,19 +155,19 @@ public:
       && MolecularHierarchyDecorator::is_instance_of(p);
   }
 
-  ResidueType get_type() const {
+  ResidueType get_residue_type() const {
     return ResidueType(get_particle()->get_value(get_type_key()));
   }
 
   //! Update the stored ResidueType and the MolecularHiearchyDecorator::Type.
-  void set_type(ResidueType t) {
+  void set_residue_type(ResidueType t) {
     get_particle()->set_value(get_type_key(), t.get_index());
-    if (get_type().get_index() >= GLY.get_index() &&
-        get_type().get_index() <= TRP.get_index()) {
+    if (get_residue_type().get_index() >= GLY.get_index() &&
+        get_residue_type().get_index() <= TRP.get_index()) {
       MolecularHierarchyDecorator
         ::set_type(MolecularHierarchyDecorator::RESIDUE);
-    } else if (get_type().get_index() >= ADE.get_index() &&
-               get_type().get_index() <= DTHY.get_index()) {
+    } else if (get_residue_type().get_index() >= ADE.get_index() &&
+               get_residue_type().get_index() <= DTHY.get_index()) {
       MolecularHierarchyDecorator
         ::set_type(MolecularHierarchyDecorator::NUCLEICACID);
     } else {
