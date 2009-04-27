@@ -387,6 +387,7 @@ public:
     }
     else {
       T val = first_element();
+      avg = stddev = 0;
       maxval = minval = val;
       std::vector<index> idx(D);
       while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
