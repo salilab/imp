@@ -25,13 +25,7 @@ public:
     /**
 /param[in] the bounding box of the points
      */
-  KMCentersNode(const KMRectangle &bb, KMCenters *centers,int level)
-    : bnd_box_(bb),centers_(centers),level_(level){
-   int dim = bnd_box_.get_dim();
-   sum_.insert(sum_.end(),dim,0);
-   sum_sq_ = 0;
-   n_data_=0;
- }
+  KMCentersNode(const KMRectangle &bb, KMCenters *centers,int level);
  virtual ~KMCentersNode();
   //! Get the number of nodes in this subtree
   /**

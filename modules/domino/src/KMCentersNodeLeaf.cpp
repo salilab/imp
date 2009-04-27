@@ -44,6 +44,8 @@ void KMCentersNodeLeaf::get_neighbors(const std::vector<int> &cands,
 {
   //if only one candidate left, post points as neighbors
   if (cands.size() == 1) {
+    IMP_LOG(VERBOSE,
+            "KMCentersNodeLeaf::get_neighbors post neighbor\n");
     post_neighbor(sums, sum_sqs, weights, cands[0]);
     return;
   }

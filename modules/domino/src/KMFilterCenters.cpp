@@ -15,37 +15,44 @@ KMFilterCenters::KMFilterCenters(int k, KMData* data,
   damp_factor_ = df;
   ini_cen_arr_ = ini_cen_arr;
   sums_ = allocate_points(k,data_points_->get_dim());
-  sum_sqs_.insert(sum_sqs_.end(),0.0,k);
-  weights_.insert(weights_.end(),0,k);
-  dists_.insert(dists_.end(),0,k);
+  sum_sqs_.insert(sum_sqs_.end(),k,0.);
+  weights_.insert(weights_.end(),k,0);
+  dists_.insert(dists_.end(),k,0);
   curr_dist_ = INT_MAX;
   tree_ = new KMCentersTree(data_points_,this);
   invalidate();// distortions are initially invalid
 }
 // assignment operator
 KMFilterCenters& KMFilterCenters::operator=(const KMFilterCenters &other) {
-  KMCenters::operator=(other);
-  //copy sums
-  sums_ = new KMPointArray();
-  copy_points(other.sums_,sums_);
-  //copy sum_sqs
-  copy_point(&other.sum_sqs_,&sum_sqs_);
-  //copy weights
-  for(unsigned int i=0;i<other.weights_.size();i++) {
-    weights_.push_back(other.weights_[i]);
+  if (this != &other) {
+    KMCenters::operator=(other);
+    //copy sums
+    sums_ = new KMPointArray();
+    copy_points(other.sums_,sums_);
+    //copy sum_sqs
+    copy_point(&other.sum_sqs_,&sum_sqs_);
+    //copy weights
+    for(unsigned int i=0;i<other.weights_.size();i++) {
+      weights_.push_back(other.weights_[i]);
+    }
+    //copy ini_cen_arr
+    if (other.ini_cen_arr_ == NULL) {
+      ini_cen_arr_ = NULL;
+    }
+    else{
+      ini_cen_arr_ = new KMPointArray();
+      copy_points(other.ini_cen_arr_,ini_cen_arr_);
+    }
+    //copy distortions
+    copy_point(&other.dists_,&dists_);
+    //copy current total distortion
+    curr_dist_ = other.curr_dist_;
+    //copy valid flag
+    valid_ = other.valid_;
+    //copy dampening factor
+    damp_factor_ = other.damp_factor_;
+    tree_ = other.tree_;
   }
-  //copy ini_cen_arr
-  ini_cen_arr_ = new KMPointArray();
-  copy_points(other.ini_cen_arr_,ini_cen_arr_);
-  //copy distortions
-  copy_point(&other.dists_,&dists_);
-  //copy current total distortion
-  curr_dist_ = other.curr_dist_;
-  //copy valid flag
-  valid_ = other.valid_;
-  //copy dampening factor
-  damp_factor_ = other.damp_factor_;
-  tree_ = other.tree_;
   return *this;
 }
 // copy constructor
@@ -82,7 +89,8 @@ KMFilterCenters::~KMFilterCenters() {
 
 void KMFilterCenters::compute_distortion()
 {
-  assert(tree_ != NULL);
+  IMP_assert(tree_ != NULL,"The tree should be initialized");
+  IMP_assert(sums_!=NULL,"sums_ were not allocated\n");
   tree_->get_neighbors(sums_,&sum_sqs_,&weights_);
   curr_dist_=0.;
   for (int j = 0; j < get_number_of_centers(); j++) {

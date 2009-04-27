@@ -56,14 +56,24 @@ void KMCentersNodeSplit::get_neighbors(const std::vector<int> &cands,
      KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights)
 {
   if (cands.size() == 1) {
+    IMP_LOG(VERBOSE,"KMCentersNodeSplit::get_neighbors there is one candidate"
+            <<" going to post\n");
     // post points as neighbors
     post_neighbor(sums, sum_sqs, weights,cands[0]);
   }
   //get cloest candidate to the box represented by the node
   else {
     std::vector<int> new_cands;
+    IMP_LOG(VERBOSE,
+            "KMCentersNodeSplit::get_neighbors compute close centers\n");
     compute_close_centers(cands,&new_cands);
+    IMP_LOG(VERBOSE,
+            "KMCentersNodeSplit::get_neighbors call left child with "
+            << new_cands.size() << " candidates\n");
     children_[0]->get_neighbors(new_cands,sums,sum_sqs,weights);
+    IMP_LOG(VERBOSE,
+            "KMCentersNodeSplit::get_neighbors call right child with "
+            << new_cands.size() << " candidates\n");
     children_[1]->get_neighbors(new_cands,sums,sum_sqs,weights);
   }
 }

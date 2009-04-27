@@ -34,10 +34,14 @@ void KMLProxy::initialize(Model *m,const Particles &ps,
 
 void KMLProxy::run(Particles *initial_centers) {
   IMP_assert(is_init_,"The proxy was not initialized");
-
+  IMP_LOG(VERBOSE,"KMLProxy::run start \n");
   //use the initial centers if provided
   KMPointArray *kmc=NULL;
   if (initial_centers != NULL)  {
+    IMP_assert(kcenters_ == initial_centers->size(),
+    "the number of initial points differs from the number of required"
+    <<" centers\n");
+    IMP_LOG(VERBOSE,"KMLProxy::run initial centers provided : \n");
     kmc = allocate_points(kcenters_,atts_.size());
     for (unsigned int i=0;i<kcenters_;i++){
       Particle *cen=(*initial_centers)[i];
@@ -46,15 +50,18 @@ void KMLProxy::run(Particles *initial_centers) {
        }
     }
   }
-
+  IMP_LOG(VERBOSE,"KMLProxy::run load initial guess \n");
   //load the initail guess
   KMFilterCenters ctrs(kcenters_, data_, kmc,damp_factor_);
 
   //apply lloyd search
+  IMP_LOG(VERBOSE,"KMLProxy::run load lloyd \n");
   lloyd_alg_ = new KMLocalSearchLloyd(&ctrs,&term_);
   log_header();
   clock_t start = clock();
+  IMP_LOG(VERBOSE,"KMLProxy::run excute lloyd \n");
   lloyd_alg_->execute();
+  IMP_LOG(VERBOSE,"KMLProxy::run analyse \n");
   KMFilterCenters best_clusters = lloyd_alg_->get_best();
   Float exec_time = elapsed_time(start);
   // print summary
@@ -66,6 +73,7 @@ void KMLProxy::run(Particles *initial_centers) {
   //TODO clear the centroids list
   //set the centroids:
   Particle *p;
+  IMP_LOG(VERBOSE,"KMLProxy::run load best results \n");
   for (unsigned int ctr_ind = 0; ctr_ind < kcenters_; ctr_ind++) {
     KMPoint *kmp = best_clusters[ctr_ind];
     //create a new particle

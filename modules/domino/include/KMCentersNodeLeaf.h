@@ -33,7 +33,9 @@ public:
    */
   KMCentersNodeLeaf(int level,const KMRectangle &bb, KMCenters *centers,
      const std::vector<int> &data_inds) :  KMCentersNode(bb,centers,level) {
-   IMP_assert(data_inds.size()<=1,
+    IMP_LOG(VERBOSE, "add a new center node leaf with " <<
+            data_inds.size() << " points" <<std::endl);
+   IMP_assert(data_inds.size()>=1,
               "a leaf node should contain at least one point");
    for (unsigned int i=0;i<data_inds.size();i++) {
      data_ps_.push_back(data_inds[i]);}
