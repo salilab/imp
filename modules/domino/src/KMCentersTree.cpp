@@ -71,7 +71,7 @@ void KMCentersTree::skeleton_tree(const std::vector<int> &p_id,
     for (int i = 0; i < data_points_->get_number_of_points(); i++)
       p_id_.push_back(p_id[i]);
   }
-  if (bb_lo == NULL or bb_hi == NULL) {
+  if (bb_lo == NULL || bb_hi == NULL) {
     bnd_box_ = bounding_rectangle(0,data_points_->get_number_of_points()-1);;
   }
   // if points are provided, use it
