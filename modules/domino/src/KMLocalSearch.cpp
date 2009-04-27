@@ -9,8 +9,9 @@
 #include <IMP/domino/KMLocalSearch.h>
 IMPDOMINO_BEGIN_NAMESPACE
 KMLocalSearch::KMLocalSearch(KMFilterCenters *sol,
-  KMTerminationCondition *term) : best_(*sol) {
+  KMTerminationCondition *term) {
   curr_ = sol;
+  best_ = *sol;
   term_ = term;
   num_of_data_points_ = curr_->get_number_of_points();
   num_of_centers_ = curr_->get_number_of_centers();
@@ -21,15 +22,19 @@ KMLocalSearch::KMLocalSearch(KMFilterCenters *sol,
 }
 void KMLocalSearch::execute()
 {
+  int i,j; i=0;j=0;
   reset();
   while (!is_done()) {
+    IMP_LOG(VERBOSE,"KMLocalSearch::execute run: " <<i <<"\n");
     begin_run();
     do {
+      IMP_LOG(VERBOSE,"KMLocalSearch::execute stage: " <<j <<"\n");
       begin_stage();
       preform_stage();
       end_stage();
     } while (!is_run_done());
     end_run();
+    IMP_LOG(VERBOSE,"KMLocalSearch::execute end run: " <<i <<"\n");
     try_acceptance();
   }
 }

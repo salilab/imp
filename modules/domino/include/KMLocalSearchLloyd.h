@@ -30,8 +30,7 @@ ends in failure.
 class IMPDOMINOEXPORT KMLocalSearchLloyd : public KMLocalSearch {
 public:
   KMLocalSearchLloyd(KMFilterCenters *sol, KMTerminationCondition *term)
-    : KMLocalSearch(sol,term) {
-  }
+    : KMLocalSearch(sol,term) {}
 protected:
   //!Get the relative distortion loss for a trail
   double get_accumulated_rdl() {

@@ -52,11 +52,11 @@ public:
   void run(Particles *ps=NULL);
   std::string get_cmm_string() const;
   void log_header() const;
-  void log_summary(KMFilterCenters *ctrs,Float run_time) const;
   //  Particles get_particles_for_center(unsigned int k) const;
   unsigned int get_particle_assignment(Particle *p) const;
   Particles get_centers() const {return centroids_;}
 protected:
+  void log_summary(KMFilterCenters *ctrs,Float run_time) const;
   void reset();
   bool is_init_;
   bool is_calculated;

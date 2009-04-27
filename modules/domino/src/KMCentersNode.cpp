@@ -7,6 +7,16 @@
  */
 #include <IMP/domino/KMCentersNode.h>
 IMPDOMINO_BEGIN_NAMESPACE
+
+KMCentersNode::KMCentersNode(const KMRectangle &bb,
+                             KMCenters *centers,int level)
+  : bnd_box_(bb),centers_(centers),level_(level){
+  int dim = bnd_box_.get_dim();
+  sum_.insert(sum_.end(),dim,0);
+  sum_sq_ = 0;
+  n_data_=0;
+}
+
 KMPoint KMCentersNode::get_mid_point() const {
   KMPoint p;
   const KMPoint *l,*h;
@@ -62,13 +72,19 @@ void KMCentersNode::compute_close_centers(
 void KMCentersNode::post_neighbor(
    KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights,
    int center_ind) {
+  IMP_assert((unsigned int)center_ind<sums->size(),
+             "the center index is out of range\n");
   // increment sum
   for (int d = 0; d < centers_->get_dim(); d++) {
     (*((*sums)[center_ind]))[d] += sum_[d];
   }
   //incremet weight
+  IMP_assert((unsigned int)center_ind<weights->size(),
+              "the center index is out of range\n");
   (*weights)[center_ind] += n_data_;
   //increment sum of squares
+  IMP_assert((unsigned int)center_ind<sum_sqs->size(),
+             "the center index is out of range\n");
   (*sum_sqs)[center_ind] += sum_sq_;
 }
 
