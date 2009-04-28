@@ -42,6 +42,11 @@ IMP_BEGIN_NAMESPACE
   Name(){};                                                             \
   Name(unsigned int i): P(i){}                                          \
   Name(const char *nm): P(nm){}                                         \
+  static Name add_alias(Name nm, const char *new_name) {                \
+    ::IMP::KeyBase<Tag>:: add_alias(nm, new_name);                      \
+    IMP_assert(Name(new_name) == nm, "Keys don't match after alias.");   \
+    return Name(new_name);                                              \
+  }                                                                     \
 };                                                                      \
 typedef std::vector<Name> Name##s
 #else
@@ -53,6 +58,8 @@ typedef std::vector<Name> Name##s
   Name(){};                                                             \
   IMP_NO_DOXYGEN(Name(unsigned int i): P(i){})                          \
   Name(const char *nm): P(nm){}                                         \
+  /** Define the string new_name to refer to the same key as nm. */     \
+  static Name add_alias(Name nm, const char *new_name);                 \
 };                                                                      \
 typedef std::vector<Name> Name##s
 #endif
@@ -158,6 +165,19 @@ public:
 
   void show(std::ostream &out = std::cout) const {
     out << "\"" << get_string() << "\"";
+  }
+
+  //! Make new_name an alias for old_key
+  /** Afterwards
+      \code
+      KeyBase<ID>(old_key.get_string()) == KeyBase<ID>(new_name)
+      \endcode
+   */
+  static KeyBase<ID> add_alias(KeyBase<ID> old_key, std::string new_name) {
+    IMP_assert(get_map().find(new_name) == get_map().end(),
+               "You the name is already taken with an existing key or alias");
+    IMP::internal::get_key_data(ID).add_alias(new_name, old_key.get_index());
+    return KeyBase<ID>(new_name.c_str());
   }
 
 #ifndef DOXYGEN

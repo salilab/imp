@@ -29,7 +29,11 @@ struct IMPEXPORT KeyData
     rmap_.push_back(str);
     return i;
   }
-
+  unsigned int add_alias(std::string str, unsigned int i) {
+    IMP_assert(rmap_.size() > i, "The aliased key doesn't exist");
+    map_[str]=i;
+    return i;
+  }
   const Map &get_map() const {return map_;}
   const RMap &get_rmap() const {return rmap_;}
 
