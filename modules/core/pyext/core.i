@@ -16,6 +16,12 @@
 %include "std_string.i"
 %include "std_except.i"
 
+%{
+#ifdef NDEBUG
+#error "The python wrappers must not be built with NDEBUG"
+#endif
+%}
+
 
 namespace IMP {
   namespace core {
