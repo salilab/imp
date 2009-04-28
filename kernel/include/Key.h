@@ -175,7 +175,7 @@ public:
    */
   static KeyBase<ID> add_alias(KeyBase<ID> old_key, std::string new_name) {
     IMP_assert(get_map().find(new_name) == get_map().end(),
-               "You the name is already taken with an existing key or alias");
+               "The name is already taken with an existing key or alias");
     IMP::internal::get_key_data(ID).add_alias(new_name, old_key.get_index());
     return KeyBase<ID>(new_name.c_str());
   }
