@@ -89,10 +89,8 @@ public:
               InvalidStateException);
     std::map<float, const KernelParameters::Parameters *>::iterator iter
         = radii2params.find(radius);
-    IMP_check(iter != radii2params.end(),
-              "The parameters for the radius " << radius
-              << " have not been set", InvalidStateException);
-    return radii2params[radius];
+    if (iter == radii2params.end()) return NULL;
+    else return iter->second;
   }
 
   //! Gets the value of rsig parameter
