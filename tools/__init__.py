@@ -508,6 +508,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
         # release builds)
         if 'NDEBUG' in e['CPPDEFINES']:
             e['CPPDEFINES'].remove('NDEBUG')
+        if '-DNDEBUG' in e['CPPFLAGS']:
+            e['CPPFLAGS'].remove('-DNDEBUG')
         if '-Wall' in e['CCFLAGS']:
             e['CCFLAGS'].remove('-Wall')
 
