@@ -136,13 +136,15 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
   for (int ii=0; ii<access_p.get_size(); ii++) {
     // If the kernel parameters for the particles have not been
     // precomputed, do it
-    try {
-      params = kernel_params_.find_params(access_p.get_r(ii));
-    }
-    catch (InvalidStateException &e){
+
+    params = kernel_params_.find_params(access_p.get_r(ii));
+    if (!params) {
+      IMP_LOG(SILENT, "Using default params" << std::endl);
       kernel_params_.set_params(access_p.get_r(ii));
       params = kernel_params_.find_params(access_p.get_r(ii));
     }
+    IMP_check(params, "Parameters shouldn't be NULL",
+              InvalidStateException);
       // compute the box affected by each particle
     calc_sampling_bounding_box(access_p.get_x(ii), access_p.get_y(ii),
                                access_p.get_z(ii), params->get_kdist(),
