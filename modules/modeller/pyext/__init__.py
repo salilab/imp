@@ -389,7 +389,7 @@ def copy_atom(a, model):
     p=IMP.Particle(model)
     ap= IMP.atom.AtomDecorator.create(p)
     xyzd= IMP.core.XYZDecorator.create(p, IMP.algebra.Vector3D(a.x, a.y, a.z))
-    ap.set_type(IMP.atom.AtomType(a.name))
+    ap.set_atom_type(IMP.atom.AtomType(a.name))
     #IMP.core.NameDecorator.create(p).set_name(str("atom "+a._atom__get_num()));
     if (a.charge != 0):
         ap.set_charge(a.charge)
