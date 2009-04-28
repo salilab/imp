@@ -11,7 +11,7 @@ IMP_BEGIN_NAMESPACE
 
 static CheckLevel check_mode =
 #ifdef NDEBUG
-  CHEAP;
+  NONE;
 #else
   EXPENSIVE;
 #endif
