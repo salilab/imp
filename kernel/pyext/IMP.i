@@ -25,6 +25,12 @@ IMP_REFCOUNT_RETURN(IMP::Restraint)
 IMP_REFCOUNT_RETURN(IMP::ScoreState)
 IMP_REFCOUNT_RETURN(IMP::OptimizerState)
 
+%{
+#ifdef NDEBUG
+#error "The python wrappers must not be built with NDEBUG"
+#endif
+%}
+
 %ignore IMP::ParticlePair::operator[];
 %ignore IMP::ParticleTriplet::operator[];
 %extend IMP::ParticlePair {
