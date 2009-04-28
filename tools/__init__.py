@@ -118,7 +118,7 @@ def _add_build_flags(env):
     if env['build'] == 'fast':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=[ "-O3"])
+            env.Append(CCFLAGS=["-O3"])
     elif env['build'] == 'release':
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=["-O2"])
@@ -506,8 +506,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
                     e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
         # Remove NDEBUG preprocessor stuff if defined (we do it ourselves for
         # release builds)
-        if '-DNDEBUG' in e['CPPFLAGS']:
-            e['CPPFLAGS'].remove('-DNDEBUG')
+        if 'NDEBUG' in e['CPPDEFINES']:
+            e['CPPDEFINES'].remove('NDEBUG')
         if '-Wall' in e['CCFLAGS']:
             e['CCFLAGS'].remove('-Wall')
 
