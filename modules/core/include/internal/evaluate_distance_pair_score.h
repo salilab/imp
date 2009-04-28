@@ -56,13 +56,7 @@ Float evaluate_distance_pair_score(W0 d0, W1 d1,
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
   }
 
-#ifndef NDEBUG
-  algebra::Vector3D d(std::numeric_limits<double>::quiet_NaN(),
-                      std::numeric_limits<double>::quiet_NaN(),
-                      std::numeric_limits<double>::quiet_NaN());
-#else
   algebra::Vector3D d;
-#endif
   Float score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd);
 
 
