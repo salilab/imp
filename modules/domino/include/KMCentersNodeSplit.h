@@ -44,13 +44,13 @@ public:
   children_[0]= lc;  // left child
   children_[1] = hc; // right child
  }
-
- virtual ~KMCentersNodeSplit() {
-   for(int i=0;i<2;i++) {
-     if (children_[i] != NULL) delete children_[i];
-  }
- }
- void compute_sums();
+  virtual ~KMCentersNodeSplit();
+  //! Compute the sums of a split node.
+  /** The sums of such a node derive from the children.
+      The sum on a specific dimension is the sum of the sums of the children
+      on that dimension.
+   */
+  void compute_sums();
  //! Compute neighbors for centers
  void get_neighbors(const std::vector<int> &cands,
      KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights);

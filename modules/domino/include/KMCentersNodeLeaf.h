@@ -32,7 +32,7 @@ public:
 /param[in]
    */
   KMCentersNodeLeaf(int level,const KMRectangle &bb, KMCenters *centers,
-     const std::vector<int> &data_inds) :  KMCentersNode(bb,centers,level) {
+    const std::vector<int> &data_inds) :  KMCentersNode(bb,centers,level) {
     IMP_LOG(VERBOSE, "add a new center node leaf with " <<
             data_inds.size() << " points" <<std::endl);
    IMP_assert(data_inds.size()>=1,
@@ -41,7 +41,6 @@ public:
      data_ps_.push_back(data_inds[i]);}
    n_data_ = data_ps_.size();
  }
- ~KMCentersNodeLeaf() {}
 
   //!Compute sums
   /**  Computes the sums and the sum of squares of points associated with

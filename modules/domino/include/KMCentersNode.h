@@ -32,6 +32,7 @@ public:
   /note we assume that the number of data points in the leafs is 1
    */
  int get_subtree_size() { return 2*n_data_ - 1; }
+ int get_number_of_data_points() { return n_data_; }
 
  KMPoint get_mid_point() const;
  KMRectangle &get_bounding_box() //TODO - should be const ?
@@ -72,8 +73,10 @@ protected:
    std::vector<int> *close_centers_inds);
 
   void post_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
-         std::vector<int> *weights,int center_ind);
+    std::vector<int> *weights,int center_ind);
 
+  void post_one_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
+        std::vector<int> *weights,int center_ind, const KMPoint &p);
   int n_data_; // number of data points associated with the node
   KMPoint sum_; //sum of points for each dimension
   double  sum_sq_; // sum of squares

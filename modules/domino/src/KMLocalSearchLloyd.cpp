@@ -11,21 +11,24 @@ void KMLocalSearchLloyd::reset() {
   KMLocalSearch::reset();
   is_new_trail_ = false;
   init_trail_dist_ = curr_->get_distortion();
-  log_stage();
+  IMP_LOG_WRITE(VERBOSE,log_stage());
 }
-void KMLocalSearchLloyd::log_stage() {
-  IMP_LOG(VERBOSE,"\t<stage: "<< stage_num_
-          << " curr: "<< curr_->get_average_distortion()
-          <<" best: " << best_.get_average_distortion()
-          <<" accum_rdl: " << get_accumulated_rdl()*100 << "% >" << std::endl);
+void KMLocalSearchLloyd::log_stage(std::ostream &out) {
+  out<<"\t<stage: "<< stage_num_
+     << " curr: "<< curr_->get_average_distortion()
+     <<" best: " << best_.get_average_distortion()
+     <<" accum_rdl: " << get_accumulated_rdl()*100 << "% >" << std::endl;
+  best_.show();
 }
 void KMLocalSearchLloyd::end_stage() {
+  IMP_LOG(VERBOSE,"end Lloyd stage\n");
   KMLocalSearch::end_stage();
   // get distortions
   if (curr_->get_average_distortion() < best_.get_average_distortion()) {
-    best_ = *curr_;
+    best_ = KMFilterCentersResults(*curr_);
   }
-  log_stage();
+  IMP_LOG_WRITE(VERBOSE,log_stage());
+  IMP_LOG(VERBOSE,"end Lloyd stage==\n");
 }
 bool KMLocalSearchLloyd::is_run_done() {
   // check if we already preformed too many stages
@@ -55,9 +58,13 @@ void KMLocalSearchLloyd::end_run() {
 void KMLocalSearchLloyd::preform_stage() {
   // if this is the first stage of the run, randomly select centers
   if ( run_init_stage_ == stage_num_) {
+    IMP_LOG(VERBOSE,
+    "KMLocalSearchLloyd::preform_stage generate random centers \n");
     curr_->generate_random_centers(num_of_centers_);
   }
   else {
+    IMP_LOG(VERBOSE,
+    "KMLocalSearchLloyd::preform_stage move to centroids \n");
     curr_->move_to_centroid();
   }
 }

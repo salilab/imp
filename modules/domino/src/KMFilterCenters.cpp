@@ -9,6 +9,7 @@
 #include <IMP/domino/KMFilterCenters.h>
 #include <IMP/domino/random_generator.h>
 IMPDOMINO_BEGIN_NAMESPACE
+KMFilterCenters::KMFilterCenters(){}
 KMFilterCenters::KMFilterCenters(int k, KMData* data,
                                  KMPointArray *ini_cen_arr,double df)
   : KMCenters(k,data) {
@@ -22,75 +23,62 @@ KMFilterCenters::KMFilterCenters(int k, KMData* data,
   tree_ = new KMCentersTree(data_points_,this);
   invalidate();// distortions are initially invalid
 }
-// assignment operator
-KMFilterCenters& KMFilterCenters::operator=(const KMFilterCenters &other) {
-  if (this != &other) {
-    KMCenters::operator=(other);
-    //copy sums
-    sums_ = new KMPointArray();
-    copy_points(other.sums_,sums_);
-    //copy sum_sqs
-    copy_point(&other.sum_sqs_,&sum_sqs_);
-    //copy weights
-    for(unsigned int i=0;i<other.weights_.size();i++) {
-      weights_.push_back(other.weights_[i]);
-    }
-    //copy ini_cen_arr
-    if (other.ini_cen_arr_ == NULL) {
-      ini_cen_arr_ = NULL;
-    }
-    else{
-      ini_cen_arr_ = new KMPointArray();
-      copy_points(other.ini_cen_arr_,ini_cen_arr_);
-    }
-    //copy distortions
-    copy_point(&other.dists_,&dists_);
-    //copy current total distortion
-    curr_dist_ = other.curr_dist_;
-    //copy valid flag
-    valid_ = other.valid_;
-    //copy dampening factor
-    damp_factor_ = other.damp_factor_;
-    tree_ = other.tree_;
-  }
-  return *this;
-}
-// copy constructor
-KMFilterCenters::KMFilterCenters(const KMFilterCenters &other)
-  : KMCenters(other){
-  //copy sums
-  sums_ = new KMPointArray();
-  copy_points(other.sums_,sums_);
-  //copy sum_sqs
-  copy_point(&other.sum_sqs_,&sum_sqs_);
-  //copy weights
-  for(unsigned int i=0;i<other.weights_.size();i++) {
-    weights_.push_back(other.weights_[i]);
-  }
-  //copy ini_cen_arr
-  ini_cen_arr_ = new KMPointArray();
-  copy_points(other.ini_cen_arr_,ini_cen_arr_);
-  //copy distortions
-  copy_point(&other.dists_,&dists_);
-  //copy current total distortion
-  curr_dist_ = other.curr_dist_;
-  //copy valid flag
-  valid_ = other.valid_;
-  //copy dampening factor
-  damp_factor_ = other.damp_factor_;
-  tree_ = other.tree_;
-}
-
 KMFilterCenters::~KMFilterCenters() {
   deallocate_points(sums_);
   deallocate_points(ini_cen_arr_);
-  delete tree_;
+  if (tree_ != NULL)
+    delete tree_;
 }
 
+void KMFilterCenters::invalidate() {
+  IMP_LOG_WRITE(VERBOSE,show());
+  clear_data();
+  valid_ = false;
+}
+
+void KMFilterCenters::generate_random_centers(int k) {
+  if (ini_cen_arr_ != NULL) {
+    IMP_LOG(VERBOSE,"KMFilterCenters::generate_random_centers"
+    <<" with initial points"<<std::endl);
+    for (int i=0;i<k;i++) {
+      for(int j=0;j<data_points_->get_dim();j++) {
+        KMPoint *p= (*ini_cen_arr_)[i];
+        (*(*centers_)[i])[j]=
+        random_uniform((*(p))[j]-20.,(*(p))[j]+20.);
+        //kmCopyPt(pts->getDim(),(*ini_cen_arr_)[i],ctrs[i]);
+      }//for j
+    }//for i
+  }
+  else {
+    IMP_LOG(VERBOSE,"KMFilterCenters::generate_random_centers"
+    <<" without initial points"<<std::endl);
+    data_points_->sample_centers(centers_,k,false);
+  }
+  invalidate();
+}
+void KMFilterCenters::clear_data() {
+  if (sums_ != NULL) {
+    for(unsigned int i=0;i<sums_->size();i++) {
+      KMPoint *p = (*sums_)[i];
+      if (p != NULL) {
+        for(unsigned int j=0;j<p->size();j++) {
+          (*p)[j]=0.;
+        }
+      }
+    }
+  }
+  for(unsigned int i=0;i<sum_sqs_.size();i++) {
+    sum_sqs_[i]=0.;
+  }
+  for(unsigned int i=0;i<weights_.size();i++) {
+    weights_[i]=0;
+  }
+}
 void KMFilterCenters::compute_distortion()
 {
   IMP_assert(tree_ != NULL,"The tree should be initialized");
   IMP_assert(sums_!=NULL,"sums_ were not allocated\n");
+  clear_data();
   tree_->get_neighbors(sums_,&sum_sqs_,&weights_);
   curr_dist_=0.;
   for (int j = 0; j < get_number_of_centers(); j++) {
@@ -130,11 +118,15 @@ void KMFilterCenters::move_to_centroid()
     }
     invalidate();
 }
-void KMFilterCenters::show(std::ostream& out) const{
+void KMFilterCenters::show(std::ostream& out) {
+  if (!valid_) compute_distortion();
   for (int j = 0; j < get_number_of_centers(); j++) {
     out << "    " << std::setw(4) << j << "\t";
     print_point(*((*centers_)[j]), out);
-    out << " dist = " << std::setw(8) << dists_[j] << std::endl;
+    out << " dist = " << std::setw(8) << dists_[j] <<
+           " weight = " << std::setw(8) << weights_[j] <<
+           std::endl;
   }
+  tree_->show(out);
 }
 IMPDOMINO_END_NAMESPACE

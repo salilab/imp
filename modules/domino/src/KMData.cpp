@@ -21,18 +21,13 @@ KMPoint KMData::sample_center(){
 
 void KMData::sample_centers( KMPointArray *sample,int k,
       bool allow_duplicate) {
-  //delete the old sample
-  for(unsigned int i=0;i<sample->size();i++){
-    delete (*sample)[i];
-  }
-
-  IMP_LOG(VERBOSE,"KMData::sample_centers"<<std::endl);
+  clear_points(sample);
+  IMP_LOG(VERBOSE,"KMData::sample_centers size: "<<sample->size()<<std::endl);
    if (!allow_duplicate)
      IMP_assert(((unsigned int)k)<= points_->size(),
                 "not enough points to sample from");
    std::vector<int> sampled_ind;
    for (int i = 0; i < k; i++) {
-     IMP_LOG(VERBOSE,"KMData::sample_centers i: "<< i << std::endl);
      int ri = random_int(points_->size());
      if (!allow_duplicate) {
        bool dup_found;
@@ -53,10 +48,18 @@ void KMData::sample_centers( KMPointArray *sample,int k,
      copy_point((*points_)[ri],p);
      sample->push_back(p);
    }
-   IMP_LOG(VERBOSE,"KMData::sample_centers end" << std::endl);
+   IMP_LOG(VERBOSE,"KMData::sampled centers  : " <<std::endl);
+   for (int i = 0; i < k; i++) {
+     IMP_LOG_WRITE(VERBOSE,print_point(*((*sample)[i])));
+   }
+   IMP_LOG(VERBOSE,"\nKMData::sample_centers end size : "
+           << sample->size()<<std::endl);
 }
 
 void copy_points(KMPointArray *from, KMPointArray *to) {
+  if (from == NULL) {
+    return;
+  }
   for (unsigned int i=0;i<from->size();i++) {
     KMPoint *p = new KMPoint();
     copy_point((*from)[i],p);
@@ -65,11 +68,11 @@ void copy_points(KMPointArray *from, KMPointArray *to) {
 }
 void print_point(const KMPoint &p,std::ostream &out)
 {
-    out << "[ ";
-    for (unsigned int i = 0; i < p.size(); i++) {
-      out << std::setw(8) << p[i] <<" ";
-    }
-    out << " ]";
+  out << "[ ";
+  for (unsigned int i = 0; i < p.size(); i++) {
+    out << std::setw(8) << p[i] <<" ";
+  }
+  out << " ]";
 }
 
 void print_points(const std::string &title,const KMPointArray &ps,

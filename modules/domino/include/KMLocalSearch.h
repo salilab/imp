@@ -60,7 +60,7 @@ public:
   int get_total_number_of_stages() const {
     return stage_num_;
   }
-  const KMFilterCenters &get_best() const {return best_;}
+  const KMFilterCentersResults &get_best() const {return best_;}
 protected:
   virtual void reset();
   virtual bool is_done() const;
@@ -76,7 +76,7 @@ protected:
   virtual void end_run() {}
   //! Test acceptance
   virtual void try_acceptance();
-  virtual void log_stage();
+  virtual void log_stage(std::ostream &out=std::cout);
 
   Int num_of_data_points_;
   Int num_of_centers_;
@@ -84,7 +84,7 @@ protected:
   Int stage_num_;
   Int run_init_stage_; // the stage at which a new run started
   KMFilterCenters *curr_; //current solution
-  KMFilterCenters best_; //best solution so far
+  KMFilterCentersResults best_; //best solution so far
   KMTerminationCondition *term_;
 };
 

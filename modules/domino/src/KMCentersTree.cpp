@@ -7,6 +7,8 @@
 #include <IMP/domino/KMCentersTree.h>
 #include <IMP/algebra/utility.h>
 IMPDOMINO_BEGIN_NAMESPACE
+
+
 KMCentersTree::KMCentersTree( KMData *data_points,KMCenters *centers,
   KMPoint *bb_lo, KMPoint *bb_hi) : centers_(centers){
   data_points_ = data_points;
@@ -41,8 +43,9 @@ KMPoint KMCentersTree::sample_center()
 }
 
 void KMCentersTree::show(std::ostream &out) {
-  out << "    Points:\n";
-  print_points("Points:\n",*(data_points_->get_points()),out);
+  //TODO - consider uncommenting
+  //out << "    Points:\n";
+  //print_points("Points:\n",*(data_points_->get_points()),out);
   if (root_ == NULL)
   out << "    Null tree.\n";
  else {
@@ -51,10 +54,16 @@ void KMCentersTree::show(std::ostream &out) {
 }
 void KMCentersTree::get_assignments(std::vector<int> &close_center)
 {
+  IMP_LOG(VERBOSE,"KMCentersTree::get_assignments for "
+  << centers_->get_number_of_centers() << " centers "<<std::endl);
   close_center.clear();
   std::vector<int> candidate_centers;
   for (int j = 0; j < centers_->get_number_of_centers(); j++) {
-    candidate_centers[j] = j;
+    candidate_centers.push_back(j);
+  }
+  close_center.clear();
+  for(int i=0;i<data_points_->get_number_of_points();i++) {
+    close_center.push_back(0);
   }
   root_->get_assignments(candidate_centers,close_center);
 }

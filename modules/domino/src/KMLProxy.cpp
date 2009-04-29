@@ -62,10 +62,11 @@ void KMLProxy::run(Particles *initial_centers) {
   IMP_LOG(VERBOSE,"KMLProxy::run excute lloyd \n");
   lloyd_alg_->execute();
   IMP_LOG(VERBOSE,"KMLProxy::run analyse \n");
-  KMFilterCenters best_clusters = lloyd_alg_->get_best();
+  KMFilterCentersResults best_clusters = lloyd_alg_->get_best();
   Float exec_time = elapsed_time(start);
   // print summary
-  log_summary(&best_clusters,exec_time);
+  IMP_LOG_WRITE(TERSE,log_summary(&best_clusters,exec_time));
+  IMP_LOG_WRITE(TERSE,best_clusters.show());
   IMP_assert(kcenters_ == (unsigned int) best_clusters.get_number_of_centers(),
              "The final number of centers does not match the requested one");
   IMP_assert (dim_ == (unsigned int) best_clusters.get_dim(),
@@ -85,12 +86,14 @@ void KMLProxy::run(Particles *initial_centers) {
   }
   //set the assignment of particles to centers
   //array of number of all points
-  std::vector<int> close_center;
-//   double* sq_dist = new double[data_->getNPts()];
-
-  best_clusters.get_assignments(close_center);
+  //TODO - return this
+  IMP_LOG(VERBOSE,"KMLProxy::run get assignments \n");
+  const std::vector<int> *close_center = best_clusters.get_assignments();
+  IMP_LOG(VERBOSE,"KMLProxy::run get assignments 2\n");
   for (int i=0;i<data_->get_number_of_points();i++) {
-    assignment_[ps_[i]]=close_center[i];
+    //std::cout<<"ps number i: " << i << " close center : "
+    //<< (*close_center)[i] << std::endl;
+    assignment_[ps_[i]]=(*close_center)[i];
   }
 }
 
@@ -113,7 +116,7 @@ void KMLProxy::set_default_values() {
   print_points_   = false;
   show_assign_    = false;
   validate_       = false;
-  term_ = KMTerminationCondition(200,30,0.1,0.1);
+  term_ = KMTerminationCondition(300,30,0.1,0.1);
 }
 
 void KMLProxy::log_header()  const{
@@ -128,10 +131,11 @@ void KMLProxy::log_header()  const{
       << "  min_accum_rdl   = " << term_.get_min_accumulated_rdl() << "\n");
 }
 
-void KMLProxy::log_summary(KMFilterCenters *ctrs,Float run_time) const {
+void KMLProxy::log_summary(KMFilterCentersResults *ctrs,Float run_time,
+                          std::ostream &out) const {
   int n_stages = lloyd_alg_->get_total_number_of_stages();
   Float total_time = run_time + kc_build_time_;
-    IMP_LOG(TERSE,"\n[k-means completed:\n"
+  out<<"\n[k-means completed:\n"
       << "  n_stages      = "  << n_stages << "\n"
       << "  total_time    = "  << total_time << " sec\n"
       << "  init_time     = "  << kc_build_time_ << " sec\n"
@@ -139,8 +143,8 @@ void KMLProxy::log_summary(KMFilterCenters *ctrs,Float run_time) const {
       << " sec/stage_(excl_init) " << Float(total_time)/Float(n_stages)
       << " sec/stage_(incl_init)\n"
       << "  average_distort = "
-      << ctrs->get_distortion(false)/Float(ctrs->get_number_of_centers())
-      << "\n");
+      << ctrs->get_distortion()/Float(ctrs->get_number_of_centers())
+      << "\n";
 }
 
 std::string KMLProxy::get_cmm_string() const {

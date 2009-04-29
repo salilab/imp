@@ -10,8 +10,15 @@
 #include <IMP/domino/random_generator.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
+KMCentersNodeSplit::~KMCentersNodeSplit() {
+  for(int i=0;i<2;i++) {
+    if (children_[i] != NULL) delete children_[i];
+  }
+}
+
+
 void KMCentersNodeSplit::compute_sums() {
-  n_data_=1;
+  n_data_=0;
   for(int i=0;i<2;i++) {
     children_[i]->compute_sums();
     const KMPoint *s_child = children_[i]->get_sums();
@@ -19,7 +26,7 @@ void KMCentersNodeSplit::compute_sums() {
       sum_[d] += (*s_child)[d];
     }
     sum_sq_ += children_[i]->get_sum_sq();
-    n_data_ += children_[i]->get_subtree_size();
+    n_data_ += children_[i]->get_number_of_data_points();
   }
 }
 
@@ -45,7 +52,8 @@ void KMCentersNodeSplit::show(std::ostream &out) const {
     out << ".";
   }
   out.precision(4);
-  out << "Split" << " cd=" << cut_dim_ << " cv=" << std::setw(6) << cut_val_
+  out << "Split cd=" << cut_dim_ << " cv="
+      << std::setw(6) << cut_val_
       << " nd=" << n_data_ << " sm=";
   print_point(sum_, out);
   out << " ss=" << sum_sq_ << "\n";
@@ -56,8 +64,8 @@ void KMCentersNodeSplit::get_neighbors(const std::vector<int> &cands,
      KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights)
 {
   if (cands.size() == 1) {
-    IMP_LOG(VERBOSE,"KMCentersNodeSplit::get_neighbors there is one candidate"
-            <<" going to post\n");
+    IMP_LOG(VERBOSE,"KMCentersNodeSplit::get_neighbors the data points are"
+    <<" associated to center : " << cands[0] <<std::endl);
     // post points as neighbors
     post_neighbor(sums, sum_sqs, weights,cands[0]);
   }
@@ -65,10 +73,14 @@ void KMCentersNodeSplit::get_neighbors(const std::vector<int> &cands,
   else {
     std::vector<int> new_cands;
     IMP_LOG(VERBOSE,
-            "KMCentersNodeSplit::get_neighbors compute close centers\n");
+    "KMCentersNodeSplit::get_neighbors compute close centers for node:\n");
+    IMP_LOG_WRITE(VERBOSE,show());
     compute_close_centers(cands,&new_cands);
+    for(unsigned int i=0;i<new_cands.size();i++) {
+      IMP_LOG(VERBOSE,new_cands[i]<<"  | ");
+    }
     IMP_LOG(VERBOSE,
-            "KMCentersNodeSplit::get_neighbors call left child with "
+            "\nKMCentersNodeSplit::get_neighbors call left child with "
             << new_cands.size() << " candidates\n");
     children_[0]->get_neighbors(new_cands,sums,sum_sqs,weights);
     IMP_LOG(VERBOSE,
