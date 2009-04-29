@@ -25,10 +25,14 @@ Float TypedPairScore::evaluate(Particle *a, Particle *b,
       score_map_.find(std::pair<Int,Int>(std::min(atype, btype),
                                          std::max(atype, btype)));
   if (psit == score_map_.end()) {
-    IMP_check(allow_invalid_types_, "Attempt to evaluate TypedPairScore on "
-              "particles with invalid types (" << atype << ", " << btype << ")",
-               ValueException);
-    return 0.;
+    if (!allow_invalid_types_) {
+      std::ostringstream oss;
+      oss << "Attempt to evaluate TypedPairScore on "
+          "particles with invalid types (" << atype << ", " << btype << ")";
+      throw ValueException(oss.str().c_str());
+    } else {
+      return 0.;
+    }
   } else {
     PairScore *ps = psit->second.get();
     return ps->evaluate(a, b, da);
