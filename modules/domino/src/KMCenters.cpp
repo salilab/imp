@@ -12,10 +12,7 @@ KMCenters::KMCenters(int k, KMData *p)
   centers_ = allocate_points(k,data_points_->get_dim());
 }
 KMCenters::~KMCenters() {
-  for (unsigned int i=0;i<centers_->size();i++) {
-    delete (*centers_)[i];
-  }
-  delete centers_;
+  deallocate_points(centers_);
 }
 void KMCenters::show(std::ostream& out) const{
   print_points("Center_Points", *centers_,out);

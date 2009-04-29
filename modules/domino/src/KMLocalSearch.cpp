@@ -11,7 +11,8 @@ IMPDOMINO_BEGIN_NAMESPACE
 KMLocalSearch::KMLocalSearch(KMFilterCenters *sol,
   KMTerminationCondition *term) {
   curr_ = sol;
-  best_ = *sol;
+  curr_->get_distortion(); // so that best_ will have a valid distortion value
+  best_ = KMFilterCentersResults(*sol);
   term_ = term;
   num_of_data_points_ = curr_->get_number_of_points();
   num_of_centers_ = curr_->get_number_of_centers();
@@ -25,15 +26,18 @@ void KMLocalSearch::execute()
   int i,j; i=0;j=0;
   reset();
   while (!is_done()) {
-    IMP_LOG(VERBOSE,"KMLocalSearch::execute run: " <<i <<"\n");
+    IMP_LOG(VERBOSE,"KMLocalSearch::execute run: " << i <<"\n");
     begin_run();
+    j=0;
     do {
       IMP_LOG(VERBOSE,"KMLocalSearch::execute stage: " <<j <<"\n");
       begin_stage();
       preform_stage();
       end_stage();
+      j++;
     } while (!is_run_done());
     end_run();
+    i++;
     IMP_LOG(VERBOSE,"KMLocalSearch::execute end run: " <<i <<"\n");
     try_acceptance();
   }
@@ -43,7 +47,7 @@ void KMLocalSearch::reset() {
   run_init_stage_ = 0;
   curr_->generate_random_centers(num_of_centers_);
   curr_->get_distortion();
-  best_ = *curr_;
+  best_ = KMFilterCentersResults(*curr_);
 }
 bool KMLocalSearch::is_done() const {
   return stage_num_ >= term_->get_abs_max_num_of_stages();
@@ -56,14 +60,21 @@ void KMLocalSearch::end_stage() {
 }
 void KMLocalSearch::try_acceptance() {
   // is current distortion lower?
-  if (curr_->get_distortion() < best_.get_distortion()) {
-    best_ = *curr_;
+  IMP_LOG(VERBOSE,"KMLocalSearch::try_acceptance for"
+    << " old distortions=" << best_.get_distortion()
+    << " new distortions=" << curr_->get_distortion() <<"\n");
+  IMP_LOG(VERBOSE,"The current filtered centers are :\n");
+  IMP_LOG_WRITE(VERBOSE,curr_->show());
+  if (curr_->get_distortion() <= best_.get_distortion()) {
+    IMP_LOG(VERBOSE,"KMLocalSearch::try_acceptance new centers accepted.\n");
+    best_ = KMFilterCentersResults(*curr_);
   }
 }
-void KMLocalSearch::log_stage() {
-  IMP_LOG(VERBOSE,"\t<stage: " << stage_num_
-          << " curr: " << curr_->get_average_distortion()
-          <<" best: " <<  best_.get_average_distortion()
-          << " > " << std::endl);
+void KMLocalSearch::log_stage(std::ostream &out) {
+  out<<"\t<stage: " << stage_num_
+     << " curr: " << curr_->get_average_distortion()
+     <<" best: " <<  best_.get_average_distortion()
+     << " > " << std::endl;
+  best_.show(out);
 }
 IMPDOMINO_END_NAMESPACE

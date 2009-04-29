@@ -70,6 +70,10 @@ public:
     return max_length;
   }
   KMPoint find_closest_vertex(const KMPoint &p){
+    IMP_assert(p.size() == (unsigned int)get_dim(),
+    "KMRectangle::find_closest_vertex the"
+    <<" input point is of the wrong dimension" << p.size() << " != "
+     << get_dim()<<std::endl);
     KMPoint closest_vertex;
     for(int d=0;d<get_dim();d++) {
       if (p[d]>hi_[d]) {

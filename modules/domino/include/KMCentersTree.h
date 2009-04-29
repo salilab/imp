@@ -19,7 +19,7 @@ class KMCentersTree {
 public:
   //!  Constructor
   /**
-   /param[in] ps all data points
+   /param[in] data_points all data points
    /param[in] centers the centers
    /parm[in]  bb_lo Bounding box left-bottom coordinates (default: compute
    bounding box from points).
@@ -32,28 +32,23 @@ public:
   KMCentersTree( KMData *data_points, KMCenters *centers,
      KMPoint *bb_lo = NULL, KMPoint *bb_hi = NULL);
 
+
   //! Compute the neighboring data points of each center
-  /** This is the heart of the filter-based k-means algorithm.  It is
-  given an array of centers (ctrs) and an array of center sums (sums),
-  and an array of sums of squares (sumSqs).  All three arrays consist of
-  k points.  It computes the sum, sum of squares, and weights of all the
-  neighbors of each center, and stores the results in these arrays. From these
-  quantities, the final centroid and distortion (mean squared error) can be
-  computed.
-  This is done by determining the set of candidates for each node in the tree.
-  When the number of candidates for a node is equal to 1 (it cannot be 0) then
-  all of the points in the subtree rooted at this node are assigned as
+  /** This is the heart of the filter-based k-means algorithm.
+  /param[in] sums     an array of center sums to update
+  /param[in] sums_sqs an array of center sums of squares to update
+  /param[in] weights  the number of points associated with each center
+  /note From these parameters the final centroid and distortion
+  (mean squared error) can be computed. This is done by determining the set of
+  candidates for each node in the tree.
+  When the number of center candidates for a node is equal to 1 (it cannot be 0)
+  then all of the points in the subtree rooted at this node are assigned as
   neighbors to this center.  This means that the centroid and weight for this
   cell is added into the neighborhood centroid sum for this center.  If this
   node is a leaf, then we compute (by brute-force) the distance from each
   candidate to each data point, and assign the data point to the closest
   center.
-  The key to pruning the set of candidates for each node is handled by two
-  functions.  The function nearCand() finds the candidate that is nearest to
-  the midpoint of the cell.  The function pruneTest() determines whether
-  another candidate is close enough to the cell to be closer to some part of
-  the cell than the nearest candidate.
-*/
+  */
   void get_neighbors(
   KMPointArray *sums, std::vector<double> *sum_sqs,std::vector<int> *weights);
 

@@ -36,7 +36,7 @@ protected:
   double get_accumulated_rdl() {
     return (init_trail_dist_ - curr_->get_distortion()) / init_trail_dist_;
   }
-  void log_stage();
+  void log_stage(std::ostream &out=std::cout);
   void log_run() {
     IMP_LOG(VERBOSE,"<Generating new random centers>" << std::endl);
   }

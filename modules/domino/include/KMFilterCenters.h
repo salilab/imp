@@ -17,11 +17,12 @@
 #include <limits.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
+
 //! Provides efficient algorithm for computing distortions, by a
 //! filtering algorithm.
 class IMPDOMINOEXPORT KMFilterCenters : public KMCenters{
 public:
-  KMFilterCenters(){}
+  KMFilterCenters();
   //! Constructor
   /**
   /param[in] k     number of centers
@@ -31,12 +32,6 @@ public:
    */
   KMFilterCenters(int k, KMData* data,KMPointArray *ini_cen_arr=NULL,
                   double df = 1);
-  //! Copy constructor
-  /**
-  /note the tree data is not deep copied, we just copy the pointer
-   */
-  KMFilterCenters(const KMFilterCenters &other);
-  KMFilterCenters& operator=(const KMFilterCenters &other);
   virtual ~KMFilterCenters();
 public:
   //! Returns sums
@@ -79,26 +74,8 @@ public:
   void get_assignments(std::vector<int> &close_center);
 
 //! Generate random centers
-virtual void generate_random_centers(int k) {
-  std::cout<<"in generate_random"<<std::endl;
-  if (ini_cen_arr_ != NULL) {
-    std::cout<<"with initial points"<<std::endl;
-    for (int i=0;i<k;i++) {
-      for(int j=0;j<data_points_->get_dim();j++) {
-        KMPoint *p= (*ini_cen_arr_)[i];
-        (*(*centers_)[i])[j]=
-        random_uniform((*(p))[j]-20.,(*(p))[j]+20.);
-        //kmCopyPt(pts->getDim(),(*ini_cen_arr_)[i],ctrs[i]);
-      }//for j
-    }//for i
-  }
-  else {
-    std::cout<<"without initial points"<<std::endl;
-    data_points_->sample_centers(centers_,k,false);
-  }
-  invalidate();
-}
-void show(std::ostream& out=std::cout) const;
+  virtual void generate_random_centers(int k);
+void show(std::ostream& out=std::cout);
   //!  move centers to cluster centroids
   /** Moves each center point to the centroid of its associated cluster.
       We call compute_distortion() if necessary to compute the weights
@@ -111,27 +88,26 @@ void show(std::ostream& out=std::cout) const;
   */
   void move_to_centroid();
 protected:
-//!  Compute distortions
-/**  A distortion of a set of points from a set of centers is defined as the
-the sum of squared distances from each point to its closest center.
-To accelerate this calculation we make use of intermediate terms, such that
-the distortion for center cj is:
-dists[j] = SUM_i{ (pi - cj)^2}
+  void clear_data();
+  //!  Compute distortions
+  /**  A distortion of a set of points from a set of centers is defined as the
+  the sum of squared distances from each point to its closest center.
+  To accelerate this calculation we make use of intermediate terms, such that
+  the distortion for center cj to its closest points {pi} is:
+  dists[j] = SUM_i{ (pi - cj)^2}
          = SUM_i{ (pi^2 - 2*cj*pi + cj^2)}
          = SUM_i{ pi^2} - 2*cj*SUM_i{pi} + weights_[j]*cj^2
          = sum_sqs[j] - 2*(c[j].sums_[j]) + weights[j]*(cj^2)
-Thus the individual distortion can be computed from these quantities.
-The total distortion is the sum of the individual distortions.
-*/
+  Thus the individual distortion can be computed from these quantities.
+  The total distortion is the sum of the individual distortions.
+  */
   void compute_distortion();
   void validate(){ valid_ = true; }
   //! Make invalid
   /** The function should be called after center update
    */
-  void invalidate() {
-    show();
-    valid_ = false;
-  }
+  void invalidate();
+
 protected:
   KMPointArray *sums_;// vector sum of points
   KMPoint sum_sqs_;// sum of squares
@@ -144,5 +120,116 @@ protected:
                        //consider old centers in move_to_centroid function
   KMCentersTree* tree_; //the centers tree of the data points
 };
+
+class IMPDOMINOEXPORT KMFilterCentersResults : public KMCenters {
+public:
+  KMFilterCentersResults(){};
+  //! Constructor
+  /**
+  /param[in] k     number of centers
+  /param[in] data  the data points
+  /param[in] ini_cen_arr initial centers
+  /param[in] df    damp factor
+   */
+  KMFilterCentersResults(KMFilterCenters &full)
+    : KMCenters(full) {
+    close_center_.clear();
+    full.get_assignments(close_center_);
+    sums_ = new KMPointArray();
+    copy_points(full.get_sums(),sums_);
+    copy_point(full.get_sum_sqs(),&sum_sqs_);
+    std::vector<int> *w = full.get_weights();
+    weights_.clear();
+    for(unsigned int i=0;i<w->size();i++) {
+      weights_.push_back((*w)[i]);
+    }
+    copy_point(full.get_distortions(),&dists_);
+    curr_dist_ = full.get_distortion();
+  }
+  KMFilterCentersResults & operator=(const KMFilterCentersResults &other) {
+    if (this != &other) {// avoid self assignment (x=x)
+      KMCenters::operator=(other);
+      close_center_.clear();
+      for(unsigned int i=0;i<other.close_center_.size();i++) {
+        close_center_.push_back(other.close_center_[i]);
+      }
+      sums_ = new KMPointArray();
+      copy_points(other.sums_,sums_);
+      copy_point(&other.sum_sqs_,&sum_sqs_);
+      weights_.clear();
+      for(unsigned int i=0;i<other.weights_.size();i++) {
+        weights_.push_back(other.weights_[i]);
+      }
+      copy_point(&other.dists_,&dists_);
+      curr_dist_ = other.curr_dist_;
+    }
+    return *this;
+  }
+  KMFilterCentersResults(const KMFilterCentersResults &other):KMCenters(other) {
+    close_center_.clear();
+    for(unsigned int i=0;i<other.close_center_.size();i++) {
+      close_center_.push_back(other.close_center_[i]);
+    }
+    sums_ = new KMPointArray();
+    copy_points(other.sums_,sums_);
+    copy_point(&other.sum_sqs_,&sum_sqs_);
+    weights_.clear();
+    for(unsigned int i=0;i<other.weights_.size();i++) {
+      weights_.push_back(other.weights_[i]);
+    }
+    copy_point(&other.dists_,&dists_);
+    curr_dist_ = other.curr_dist_;
+  }
+  ~KMFilterCentersResults() {
+    deallocate_points(sums_);
+  }
+public:
+  //! Returns sums
+  KMPointArray *get_sums() const {
+    return sums_;
+  }
+  // Returns sums of squares
+  const std::vector<double>* get_sum_sqs() const {
+    return &sum_sqs_;
+  }
+  //! Return weights
+  const std::vector<int>* get_weights() const {
+    return &weights_;
+  }
+  //! Returns total distortion
+  double get_distortion() const {
+    return curr_dist_;
+  }
+  //! Returns average distortion
+  double get_average_distortion() const {
+    return curr_dist_/double(get_number_of_points());
+  }
+  //! Returns individual distortions
+  const std::vector<double>* get_distortions() const {
+    return &dists_;
+  }
+  //! Get the assignment of points to centers
+  const std::vector<int> * get_assignments() const {
+    return &close_center_;
+  }
+
+  void show(std::ostream& out=std::cout) const{
+    for (int j = 0; j < get_number_of_centers(); j++) {
+      out << "    " << std::setw(4) << j << "\t";
+      print_point(*((*centers_)[j]), out);
+      out << " dist = " << std::setw(8) << dists_[j] <<
+             " weight = " << std::setw(8) << weights_[j] <<
+             std::endl;
+    }
+  }
+protected:
+  KMPointArray *sums_;// vector sum of points
+  KMPoint sum_sqs_;// sum of squares
+  std::vector<int> weights_; //number of data points assigned to each point
+  KMPoint dists_;// individual distortions
+  double curr_dist_;// current total distortion
+  std::vector<int> close_center_;
+};
+
 IMPDOMINO_END_NAMESPACE
 #endif /* IMPDOMINO_KM_FILTER_CENTERS_H */

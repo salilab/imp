@@ -9,7 +9,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 KMCentersNode::KMCentersNode(const KMRectangle &bb,
-                             KMCenters *centers,int level)
+  KMCenters *centers,int level)
   : bnd_box_(bb),centers_(centers),level_(level){
   int dim = bnd_box_.get_dim();
   sum_.insert(sum_.end(),dim,0);
@@ -34,6 +34,9 @@ KMCentersNode::~KMCentersNode()
 void KMCentersNode::compute_close_centers(
    const std::vector<int> &candidate_centers_inds,
    std::vector<int> *close_centers_inds) {
+  const KMPoint *l,*h;
+  l = bnd_box_.get_point(0);
+  h = bnd_box_.get_point(1);
   //first we calculate the center that is closest to the middle of the
   //bounding box
   int mid_center_ind = mid_center(candidate_centers_inds);
@@ -53,7 +56,12 @@ void KMCentersNode::compute_close_centers(
       for (int d = 0; d < bnd_box_.get_dim(); d++) {
         double cc_comp = (*cand_cen)[d] - (*mid_cen)[d];
         cc_dot += cc_comp * cc_comp; // increment dot product
-        box_dot=cc_comp*(closest_vertex[d]-(*mid_cen)[d]);
+        if (cc_comp > 0) {
+          box_dot+=cc_comp*((*h)[d]-(*mid_cen)[d]);
+        }
+        else {
+          box_dot+=cc_comp*((*l)[d]-(*mid_cen)[d]);
+        }
       }
       if (cc_dot<2*box_dot) {
         close_centers_inds->push_back(*it);
@@ -86,6 +94,21 @@ void KMCentersNode::post_neighbor(
   IMP_assert((unsigned int)center_ind<sum_sqs->size(),
              "the center index is out of range\n");
   (*sum_sqs)[center_ind] += sum_sq_;
+}
+
+void KMCentersNode::post_one_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
+     std::vector<int> *weights,int center_ind, const KMPoint &p) {
+ IMP_assert((unsigned int)center_ind<sums->size(),
+             "the center index is out of range\n");
+  // increment sums and sums sq
+ for (int d = 0; d < centers_->get_dim(); d++) {
+   (*((*sums)[center_ind]))[d] += p[d];
+   (*sum_sqs)[center_ind] += p[d]*p[d];
+ }
+ //incremet weight
+ IMP_assert((unsigned int)center_ind<weights->size(),
+              "the center index is out of range\n");
+ (*weights)[center_ind] += 1;
 }
 
 int KMCentersNode::mid_center(const std::vector<int> &cands) {
