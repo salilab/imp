@@ -506,7 +506,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
                     e.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
         # Remove NDEBUG preprocessor stuff if defined (we do it ourselves for
         # release builds)
-        if 'NDEBUG' in e['CPPDEFINES']:
+        if e.has_key('CPPDEFINES') and 'NDEBUG' in e['CPPDEFINES']:
             e['CPPDEFINES'].remove('NDEBUG')
         if '-DNDEBUG' in e['CPPFLAGS']:
             e['CPPFLAGS'].remove('-DNDEBUG')
