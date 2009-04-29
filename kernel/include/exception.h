@@ -197,7 +197,10 @@ IMPEXPORT void check_fail(const char *msg);
 //! An assertion for IMP. An IMP::ErrorException will be thrown.
 /** Since it is a debug-only check and no attempt should be made to
     recover from it, the exception type cannot be specified.
-    \note if the code is compiled with NDEBUG, this is a noop.
+    \note if the code is compiled with NDEBUG, or the check level is less than
+    EXPENSIVE, the check is not performed. Do not use asserts as a shorthand
+    to throw exceptions (throw the exception yourself); use them only to
+    check for logic errors.
 
     \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
@@ -223,6 +226,10 @@ IMPEXPORT void check_fail(const char *msg);
     \param[in] message Write this message if the assertion fails.
     \param[in] ExceptionType Throw an exception of this type. The exception
     must be constructable from a char *.
+    \note if the code is compiled with NDEBUG, or the check level is less than
+    CHEAP, the check is not performed. Do not use these checks as a shorthand
+    to throw necessary exceptions (throw the exception yourself); use them
+    only to check for errors, such as inappropriate input.
     \ingroup assert
  */
 #define IMP_check(expr, message, ExceptionType)                         \
