@@ -1,15 +1,12 @@
-import sys
 import unittest
-import IMP.utils
-import IMP.test, IMP
+import IMP.test
+import IMP
 import IMP.domino
 import IMP.core
 import IMP.algebra
-import IMP.atom
-'''
-Test kmeans on a set of particles randomly distributed around three centers
-'''
+
 class KMeansTests(IMP.test.TestCase):
+    "Test kmeans on set of particles randomly distributed around three centers"
     def load_particles(self):
         self.centers=[]
         self.ps=[]
