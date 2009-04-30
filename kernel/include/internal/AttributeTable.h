@@ -135,15 +135,10 @@ class AttributeTable
               << "\" not found in table.",
               IndexException);
   }
-
 public:
   typedef typename Traits::Value Value;
   typedef typename Traits::Key Key;
   AttributeTable(){}
-  ~AttributeTable() {
-    //std::cout << "Deleting " << map_ << std::endl;
-  }
-
 
   void clear() {
     map_.clear();
@@ -298,13 +293,9 @@ inline std::vector<typename Traits::Key>
 }
 
 
-
-inline FloatKey get_xyz_key(unsigned int i) {
-  // the table adds them straight away as "x", "y", "z"
-  // this way the compiler can inline them
-  return FloatKey(i);
-}
-
+static const FloatKey x_key(0U);
+static const FloatKey y_key(1U);
+static const FloatKey z_key(2U);
 
 } // namespace internal
 
