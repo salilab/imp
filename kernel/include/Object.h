@@ -77,8 +77,8 @@ IMP_END_NAMESPACE
 
 //! Perform some basic validity checks on the object for memory debugging
 #define IMP_CHECK_OBJECT(obj) do {                                      \
-    IMP_assert(obj != NULL, "NULL object");                             \
-    IMP_assert(obj->get_is_valid(), "Object was previously freed");     \
+    IMP_assert((obj) != NULL, "NULL object");                             \
+    IMP_assert((obj)->get_is_valid(), "Object was previously freed");     \
 } while (false)
 
 #endif  /* IMP_OBJECT_H */
