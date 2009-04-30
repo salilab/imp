@@ -292,10 +292,12 @@ inline std::vector<typename Traits::Key>
   return ret;
 }
 
-
-static const FloatKey x_key(0U);
-static const FloatKey y_key(1U);
-static const FloatKey z_key(2U);
+inline FloatKey get_coordinate_key(unsigned int i) {
+  static const FloatKey key[]= {FloatKey(0U),
+                                FloatKey(1U),
+                                FloatKey(2U)};
+  return key[i];
+}
 
 } // namespace internal
 
