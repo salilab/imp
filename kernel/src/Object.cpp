@@ -27,15 +27,9 @@ Object::Object()
 
 Object::~Object()
 {
-  assert_is_valid();
+  IMP_assert(get_is_valid(), "Object " << this << " previously freed.");
   check_value_=666666666;
   IMP_LOG(MEMORY, "Destroying object " << this << std::endl);
-}
-
-void Object::assert_is_valid() const
-{
-  IMP_assert(check_value_==111111111,
-             "Previously freed object is not valid: " << this);
 }
 
 IMP_END_NAMESPACE

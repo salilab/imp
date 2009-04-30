@@ -49,7 +49,9 @@ protected:
 public:
 #ifndef IMP_DOXYGEN
   // Throw an assertion if the object has been freed
-  void assert_is_valid() const;
+  bool get_is_valid() const {
+    return check_value_==111111111;
+  }
 #endif
 
   //! Print out one or more lines of text describing the object
@@ -73,10 +75,10 @@ IMP_OUTPUT_OPERATOR(Object);
 
 IMP_END_NAMESPACE
 
-//! Call the assert_is_valid method in the object base
-#define IMP_CHECK_OBJECT(obj) do {              \
-IMP_assert(obj != NULL, "NULL object");     \
-(obj)->assert_is_valid();                   \
+//! Perform some basic validity checks on the object for memory debugging
+#define IMP_CHECK_OBJECT(obj) do {                                      \
+    IMP_assert(obj != NULL, "NULL object");                             \
+    IMP_assert(obj->get_is_valid(), "Object was previously freed");     \
 } while (false)
 
 #endif  /* IMP_OBJECT_H */
