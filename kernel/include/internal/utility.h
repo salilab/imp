@@ -31,7 +31,7 @@ inline void remove_inactive_particles(Particles &ps)
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           internal::IsInactiveParticle()), ps.end());
   for (Particles::iterator c = ps.begin(); c != ps.end(); ++c) {
-    (*c)->assert_is_valid();
+    IMP_assert((*c)->get_is_valid(), "Particle previously freed");
     IMP_assert((*c)->get_is_active(), "Did not remove inactive particle");
   }
 }
