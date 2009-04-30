@@ -28,7 +28,7 @@ void MaximumChangeScoreState::do_before_evaluate()
   maximum_change_=0;
   for (SingletonContainer::ParticleIterator it= pc_->particles_begin();
        it != pc_->particles_end(); ++it) {
-    (*it)->assert_is_valid();
+    IMP_CHECK_OBJECT((*it));
     if (orig_values_.find(*it) == orig_values_.end()) {
       maximum_change_= std::numeric_limits<Float>::max();
       break;
@@ -54,7 +54,7 @@ void MaximumChangeScoreState::reset()
   orig_values_.clear();
   for (SingletonContainer::ParticleIterator it= pc_->particles_begin();
        it != pc_->particles_end(); ++it) {
-    (*it)->assert_is_valid();
+    IMP_CHECK_OBJECT(*it);
     orig_values_[*it]=AT();
     for (unsigned int i=0; i< keys_.size(); ++i) {
       orig_values_[*it].insert(keys_[i],
