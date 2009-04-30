@@ -35,9 +35,6 @@ void ExampleComplexRestraint::set_model(Model *m) {
             << std::endl);
     Model *m= sc_->get_particle(0)->get_model();
 
-    // make pairs from special generator
-    Float radius= diameter_/2.0;
-
     p_= new Particle(m);
     ss_=core::create_cover(p_,
                new core::FixedRefiner(Particles(sc_->particles_begin(),
