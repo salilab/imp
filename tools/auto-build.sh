@@ -15,7 +15,7 @@ VER=SVN
 IMPSVNDIR=file:///cowbell1/svn/imp/trunk/
 
 TMPDIR=/var/tmp/modeller-build-$$
-MODINSTALL=/diva1/home/modeller/.${VER}-new
+MODINSTALL=/salilab/diva1/home/modeller/.${VER}-new
 IMPSRCTGZ=${MODINSTALL}/build/sources/imp.tar.gz
 
 rm -rf ${TMPDIR}
