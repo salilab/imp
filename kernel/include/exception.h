@@ -194,8 +194,10 @@ IMPEXPORT void check_fail(const char *msg);
 
 #ifndef NDEBUG
 
-//! An assertion for IMP. An IMP::ErrorException will be thrown.
-/** Since it is a debug-only check and no attempt should be made to
+/** \brief An assertion to check for internal errors in \imp. An
+    IMP::ErrorException will be thrown.
+
+    Since it is a debug-only check and no attempt should be made to
     recover from it, the exception type cannot be specified.
     \note if the code is compiled with NDEBUG, or the check level is less than
     EXPENSIVE, the check is not performed. Do not use asserts as a shorthand
@@ -221,7 +223,7 @@ IMPEXPORT void check_fail(const char *msg);
 #endif
 
 #ifndef NDEBUG
-//! A runtime check for IMP.
+//! A runtime test for incorrect usage of a class or method.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
     \param[in] ExceptionType Throw an exception of this type. The exception
