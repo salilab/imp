@@ -48,7 +48,7 @@ protected:
 
 public:
 #ifndef IMP_DOXYGEN
-  // Throw an assertion if the object has been freed
+  // Return whether the object already been freed
   bool get_is_valid() const {
     return check_value_==111111111;
   }
