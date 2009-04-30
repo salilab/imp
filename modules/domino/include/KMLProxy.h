@@ -56,7 +56,8 @@ public:
   unsigned int get_particle_assignment(Particle *p) const;
   Particles get_centers() const {return centroids_;}
 protected:
-  void log_summary(KMFilterCenters *ctrs,Float run_time) const;
+  void log_summary(KMFilterCentersResults *ctrs, Float run_time,
+                   std::ostream &out=std::cout) const;
   void reset();
   bool is_init_;
   bool is_calculated;
