@@ -28,6 +28,20 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT XYZDecorator: public Decorator
 {
  public:
+
+  static FloatKey get_coordinate_key(unsigned int i) {
+    IMP_check(i <3, "Out of range coordinate",
+              IndexException);
+    switch (i) {
+      case 0:
+        return IMP::internal::x_key;
+      case 1:
+        return IMP::internal::y_key;
+    }
+    // gcc can be dumb
+    return IMP::internal::z_key;
+  }
+
   IMP_DECORATOR(XYZDecorator, Decorator)
 
   /** Create a decorator with the passed coordinates. */
@@ -100,7 +114,10 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
   algebra::Vector3D get_coordinates() const {
-    return algebra::Vector3D(get_x(), get_y(), get_z());
+    return algebra::Vector3D(
+            get_particle()->get_value(IMP::internal::x_key),
+            get_particle()->get_value(IMP::internal::y_key),
+            get_particle()->get_value(IMP::internal::z_key));
   }
 
   //! Get the vector of derivatives.
@@ -128,12 +145,6 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
   /** This is quite handy for initializing movers and things.
    */
   static const FloatKeys& get_xyz_keys();
-
-  static FloatKey get_coordinate_key(unsigned int i) {
-    IMP_check(i <3, "Out of range coordinate",
-              IndexException);
-    return IMP::internal::get_xyz_key(i);
-  }
 };
 
 IMP_OUTPUT_OPERATOR(XYZDecorator);
