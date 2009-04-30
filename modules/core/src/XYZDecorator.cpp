@@ -17,9 +17,9 @@ void XYZDecorator::show(std::ostream &out, std::string prefix) const
 
 }
 const FloatKeys&  XYZDecorator::get_xyz_keys() {
-  static FloatKey fka[]={get_coordinate_key(0),
-                         get_coordinate_key(1),
-                         get_coordinate_key(2)};
+  static FloatKey fka[]={IMP::internal::x_key,
+                         IMP::internal::y_key,
+                         IMP::internal::z_key};
   static FloatKeys fks(fka, fka+3);
   return fks;
 }

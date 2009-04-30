@@ -36,8 +36,6 @@ namespace {
       operator[](fk).add_key("x");
       operator[](fk).add_key("y");
       operator[](fk).add_key("z");
-      IMP_assert(FloatKey("z").get_index() ==2,
-                 "Somehow the index is wrong on the z attribute");
     }
   };
 };
