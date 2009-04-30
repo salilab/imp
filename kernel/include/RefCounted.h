@@ -9,10 +9,25 @@
 #ifndef IMP_REF_COUNTED_H
 #define IMP_REF_COUNTED_H
 
+#include "config.h"
 #include "exception.h"
 #include "log.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
+
+#ifndef IMP_DOXYGEN
+#ifndef SWIG
+
+namespace IMP {
+  class RefCounted;
+  namespace internal {
+    void do_unref(IMP::RefCounted*);
+    void do_ref(IMP::RefCounted*);
+  }
+}
+//IMP_END_INTERNAL_NAMESPACE
+#endif
+#endif
 
 IMP_BEGIN_NAMESPACE
 
@@ -55,6 +70,8 @@ class IMPEXPORT RefCounted
   RefCounted& operator=(const RefCounted &){return *this;}
 
 #ifndef IMP_DOXYGEN
+  friend void internal::do_unref(RefCounted*);
+  friend void internal::do_ref(RefCounted*);
 protected:
   RefCounted() {
      ++live_objects_;
@@ -62,19 +79,7 @@ protected:
   }
   virtual ~RefCounted();
 
-public:
-
-  bool get_has_ref() const {return count_ != 0;}
-
-  void ref() const {
-    ++count_;
-  }
-
-  void unref() const {
-    IMP_assert(count_ !=0, "Too many unrefs on object");
-    --count_;
-  }
-
+ public:
   unsigned int get_ref_count() const {
     return count_;
   }
@@ -83,7 +88,6 @@ public:
     // for debugging purposes only
     return live_objects_;
   }
-
 #endif
 
 };

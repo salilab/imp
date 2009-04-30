@@ -17,6 +17,18 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
+inline void do_ref(RefCounted* r) {
+  ++r->count_;
+}
+
+inline void do_unref(RefCounted *r) {
+  IMP_assert(r->count_ !=0, "Too many unrefs on object");
+  --r->count_;
+  if (r->count_==0) {
+    delete r;
+  }
+}
+
 template <bool REF>
 struct Ref
 {
@@ -35,7 +47,7 @@ struct Ref<true>
     IMP_LOG(MEMORY, "Refing object " << o << " with count "
             << o->get_ref_count() << std::endl);
     //o->assert_is_valid();
-    o->ref();
+    do_ref(o);
   }
 };
 
@@ -57,10 +69,7 @@ struct UnRef<true>
     IMP_LOG(MEMORY, "Unrefing object " << o << " with count "
             << o->get_ref_count() << std::endl);
     //o->assert_is_valid();
-    o->unref();
-    if (!o->get_has_ref()) {
-      delete o;
-    }
+    do_unref(o);
   }
   };
 
