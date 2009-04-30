@@ -311,7 +311,7 @@ public:
    */
   bool get_is_active() const {
     IMP_IF_CHECK(EXPENSIVE) {
-      assert_is_valid();
+      IMP_assert(get_is_valid(), "Particle has been previously freed.");
     }
     return model_;
   }
