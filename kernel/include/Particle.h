@@ -134,7 +134,7 @@ private:
 #if defined(SWIG)
  public:
 #else
- private:
+ protected:
   IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);)
   IMP_NO_DOXYGEN(friend class IMP::internal::UnRef<true>;)
 #endif
