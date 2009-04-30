@@ -34,8 +34,8 @@ class Pointer: public WeakPointer<O>
 
   void set_pointer(O* p) {
     if (p == P::o_) return;
-    if (P::o_) P::o_->unref();
-    if (p) p->ref();
+    if (P::o_) internal::unref(P::o_);
+    if (p) internal::ref(p);
     P::o_=p;
   }
   // issue with commas

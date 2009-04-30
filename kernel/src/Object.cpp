@@ -14,7 +14,7 @@ IMP_BEGIN_NAMESPACE
 unsigned int RefCounted::live_objects_=0;
 
 RefCounted::~ RefCounted() {
-    IMP_assert(!get_has_ref(), "Deleting object which still has references");
+  IMP_assert(get_ref_count()!= 0, "Deleting object which still has references");
     IMP_LOG(MEMORY, "Deleting ref counted object " << this << std::endl);
     --live_objects_;
   }
