@@ -35,10 +35,11 @@ IMP_BEGIN_NAMESPACE
 class Decorator: public NullDefault, public Comparable
 {
 private:
-  Pointer<Particle> particle_;
+  Particle *particle_;
 protected:
   Decorator(Particle *p): particle_(p) {}
-  Decorator() {}
+  Decorator() :particle_(NULL)
+ {}
 public:
   IMP_NO_DOXYGEN(typedef Decorator This;)
 
@@ -53,7 +54,8 @@ public:
   Particle *get_particle() const {
     IMP_check(particle_, "You must give the decorator a particle to decorate.",
               InvalidStateException);
-    return particle_.get();
+    IMP_CHECK_OBJECT(particle_);
+    return particle_;
   }
   /** \return the Model containing the particle */
   Model *get_model() const {
