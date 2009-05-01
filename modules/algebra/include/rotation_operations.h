@@ -19,7 +19,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Stores the 3 Euler angles of a 3D rotation in ZYZ convention
-class IMPALGEBRAEXPORT EulerAnglesZYZ: public UninitializedDefault
+class EulerAnglesZYZ: public UninitializedDefault
 {
 public:
   EulerAnglesZYZ() {
@@ -63,7 +63,7 @@ private:
   hand side convention).
 
 */
-class IMPALGEBRAEXPORT EulerMatrixZYZ: public Matrix2D<double>
+class EulerMatrixZYZ: public Matrix2D<double>
 {
 public:
   //! Empty constructor
@@ -139,7 +139,7 @@ public:
   onvention used is that the rotations are performed rotating counterclockwise
   (right hand side convention).
 **/
-class IMPALGEBRAEXPORT RotationMatrix2D
+class RotationMatrix2D
 {
 public:
   RotationMatrix2D() {
