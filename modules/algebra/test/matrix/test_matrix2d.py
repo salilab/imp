@@ -1,6 +1,7 @@
 import unittest
 import IMP.test
 import IMP.algebra
+import os.path
 
 class Matrix2DTests(IMP.test.TestCase):
     def make_matrix(self, v):
@@ -139,6 +140,13 @@ class Matrix2DTests(IMP.test.TestCase):
         m1.set_start(1,-1)
         ccc = m1.cross_correlation_coefficient(m2)
         self.assertInTolerance(1.0,ccc, 0.001)
+
+    def test_write(self):
+        """Check writing an empty matrix"""
+        m = IMP.algebra.Matrix2D(0,0)
+        name = 'nothing.txt'
+        m.write(name)
+        os.remove(name)
 
 if __name__ == '__main__':
     unittest.main()

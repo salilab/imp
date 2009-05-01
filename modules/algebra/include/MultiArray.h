@@ -106,7 +106,7 @@ public:
   //! Check if the array has some dimensionality or is just empty
   bool is_void() const {
     for (index i = 0;i < D;i++) {
-      if (get_size(i) != 0) {
+      if ((index)get_size(i) != 0) {
         return false;
       }
     }
@@ -136,6 +136,9 @@ public:
   }
 
   //! Returns true if the PHYSICAL index belongs to those of the matrix
+  /**
+   * \param[in] v Any class able to be accessed with []
+   */
   template<typename T1>
   bool is_physical_element(T1 &v) const {
     for (unsigned int i = 0;i < D;i++) {
@@ -273,7 +276,7 @@ public:
 
   //! Compares the shape of two multidimensional arrays
   /**
-   * \return true if both arrays have the same size and index bases
+   * \return true if both arrays have the same size and origin
    */
   template <typename T1>
   bool same_shape(const MultiArray<T1, D>& b) const {
@@ -300,7 +303,7 @@ public:
 
   //! Compares the origin of two multidimensional arrays
   /**
-   * \return true if both arrays have the same size
+   * \return true if both arrays have the same origin
    */
   template <typename T1>
   bool same_start(const MultiArray<T1, D>& b) const {
@@ -463,21 +466,22 @@ public:
     \note Both MultiArrays are required to have the same size, but not the
     same origin
     \param[in] v array to compute the cross_correlation with.
-    \param[in] true if a threshold is applied to the elements of v .
+    \param[in] apply_threshold true if a threshold is applied to the elements
+               of v .
     \param[in] threshold minimum value for an element v to consider it in the
                computation .
     \param[in] divide_by_stddev true if the cross correlation term is divided
                by the standard deviation to get the cross correlation
-               coefficient that always is between 0 and 1
+               coefficient (0 <= ccc <= 1).
     \param[in] force_recalc_stats true if the statistics (mean, stddev) for the
                Multiarrays must be recalculated (default).
                If the statistics are known from previous computations,
                you can speed up the next computations setting this variable
                to false and directly providing the parameters.
-    \param[in] avg average of this Multiarray
-    \param[in] stddev standard deviation of this Multiarray
-    \param[in] avg_v average of Multiarray v
-    \param[in] stddev_v standard deviation of Multiarray v
+    \param[in] avg average of this Multiarray.
+    \param[in] stddev standard deviation of this Multiarray.
+    \param[in] avg_v average of Multiarray v.
+    \param[in] stddev_v standard deviation of Multiarray v.
 
   */
   double cross_correlation_coefficient(const This& v,
@@ -658,7 +662,8 @@ std::ostream& operator<<(std::ostream& ostrm,
   std::vector<index> idx(D);
 
   if (v.is_void()) {
-    ostrm << "NULL Array\n";
+    ostrm << "NULL Array" << std::endl;
+    return ostrm;
   } else {
     ostrm << std::endl;
   }
