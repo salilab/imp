@@ -6,9 +6,9 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_TERMINATION_CONDITION_H
-#define IMPDOMINO_KM_TERMINATION_CONDITION_H
-IMPDOMINO_BEGIN_NAMESPACE
+#ifndef IMPSTATISTICS_KM_TERMINATION_CONDITION_H
+#define IMPSTATISTICS_KM_TERMINATION_CONDITION_H
+IMPSTATISTICS_BEGIN_NAMESPACE
 //! Stores data controlling the termination and phase changes of
 //! the kmean clustering
 class KMTerminationCondition {
@@ -46,5 +46,5 @@ protected:
   //min value for accumulated  relative distortion loss within a single run
   double min_accumulated_rdl_;
 };
-IMPDOMINO_END_NAMESPACE
-#endif  /* IMPDOMINO_KM_TERMINATION_CONDITION_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_KM_TERMINATION_CONDITION_H */

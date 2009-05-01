@@ -5,8 +5,8 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#include <IMP/domino/KMCentersNode.h>
-IMPDOMINO_BEGIN_NAMESPACE
+#include <IMP/statistics/KMCentersNode.h>
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 KMCentersNode::KMCentersNode(const KMRectangle &bb,
   KMCenters *centers,int level)
@@ -130,4 +130,4 @@ int KMCentersNode::mid_center(const std::vector<int> &cands) {
   }
   return cands[min_ind];
 }
-IMPDOMINO_END_NAMESPACE
+IMPSTATISTICS_END_NAMESPACE

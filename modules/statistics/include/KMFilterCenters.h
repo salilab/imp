@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_FILTER_CENTERS_H
-#define IMPDOMINO_KM_FILTER_CENTERS_H
+#ifndef IMPSTATISTICS_KM_FILTER_CENTERS_H
+#define IMPSTATISTICS_KM_FILTER_CENTERS_H
 
 #include "KMCenters.h"
 #include <iostream>
@@ -15,12 +15,12 @@
 #include "KMData.h"
 #include "KMCentersTree.h"
 #include <limits.h>
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 
 //! Provides efficient algorithm for computing distortions, by a
 //! filtering algorithm.
-class IMPDOMINOEXPORT KMFilterCenters : public KMCenters{
+class IMPSTATISTICSEXPORT KMFilterCenters : public KMCenters{
 public:
   KMFilterCenters();
   //! Constructor
@@ -121,7 +121,7 @@ protected:
   KMCentersTree* tree_; //the centers tree of the data points
 };
 
-class IMPDOMINOEXPORT KMFilterCentersResults : public KMCenters {
+class IMPSTATISTICSEXPORT KMFilterCentersResults : public KMCenters {
 public:
   KMFilterCentersResults(){};
   //! Constructor
@@ -231,5 +231,5 @@ protected:
   std::vector<int> close_center_;
 };
 
-IMPDOMINO_END_NAMESPACE
-#endif /* IMPDOMINO_KM_FILTER_CENTERS_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif /* IMPSTATISTICS_KM_FILTER_CENTERS_H */

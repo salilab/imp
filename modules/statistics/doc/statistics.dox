@@ -1,0 +1,12 @@
+/** \namespace IMP::statistics
+\brief %IMP.%statistics provides various statistics and clustering methods.
+
+\author Someone
+
+\overview %IMP.%statistics provides various statistics and clustering methods.
+
+\publications
+\standard_imp_publications
+
+\license \standard_imp_license
+*/

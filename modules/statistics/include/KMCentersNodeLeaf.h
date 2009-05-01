@@ -5,19 +5,19 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_CENTERS_NODE_LEAF_H
-#define IMPDOMINO_KM_CENTERS_NODE_LEAF_H
+#ifndef IMPSTATISTICS_KM_CENTERS_NODE_LEAF_H
+#define IMPSTATISTICS_KM_CENTERS_NODE_LEAF_H
 
 #include "KMCentersNode.h"
 #include "KMData.h"
 #include "KMRectangle.h"
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 /** Leaf nodes of the kc-tree store the set of points associated with this
     bucket, stored as an array of point indices.  These are indices in the
     array points, which resides with the root of the kc-tree.
    We also store the number of points that reside in this bucket.
 */
-class IMPDOMINOEXPORT KMCentersNodeLeaf: public KMCentersNode
+class IMPSTATISTICSEXPORT KMCentersNodeLeaf: public KMCentersNode
 {
 
 public:
@@ -62,5 +62,5 @@ protected:
   std::vector<int> data_ps_; //the indexes of data points
                              //which are part of the leaf
 };
-IMPDOMINO_END_NAMESPACE
-#endif  /* IMPDOMINO_KM_CENTERS_NODE_LEAF_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_KM_CENTERS_NODE_LEAF_H */

@@ -5,13 +5,13 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_CENTERS_H
-#define IMPDOMINO_KM_CENTERS_H
+#ifndef IMPSTATISTICS_KM_CENTERS_H
+#define IMPSTATISTICS_KM_CENTERS_H
 
 #include "KMData.h"
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 //! Manages the centers of the data points
-class IMPDOMINOEXPORT KMCenters {
+class IMPSTATISTICSEXPORT KMCenters {
  public:
   KMCenters(){}
   KMCenters(int k, KMData* p);
@@ -57,5 +57,5 @@ class IMPDOMINOEXPORT KMCenters {
   KMData* data_points_;
   KMPointArray* centers_;
 };
-IMPDOMINO_END_NAMESPACE
-#endif  /* IMPDOMINO_KM_CENTERS_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_KM_CENTERS_H */

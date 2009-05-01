@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMPDOMINO_KML_PROXY_H
-#define IMPDOMINO_KML_PROXY_H
+#ifndef IMPSTATISTICS_KML_PROXY_H
+#define IMPSTATISTICS_KML_PROXY_H
 
 #include "config.h"
 #include <IMP/Particle.h>
@@ -23,14 +23,14 @@
 #include "random_generator.h"
 #include "KMLocalSearchLloyd.h"
 
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 inline double elapsed_time(clock_t start) {
   return double(clock() - start)/double(CLOCKS_PER_SEC);
 }
 
 //! Proxy to apply k-means clustering on a set of Particles
-class IMPDOMINOEXPORT KMLProxy
+class IMPSTATISTICSEXPORT KMLProxy
 {
 public:
   KMLProxy();
@@ -96,5 +96,5 @@ protected:
   std::map<Particle *,unsigned int> assignment_;
   // the assignment of input data to centers
 };
-IMPDOMINO_END_NAMESPACE
-#endif /* IMPDOMINO_KML_PROXY_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif /* IMPSTATISTICS_KML_PROXY_H */

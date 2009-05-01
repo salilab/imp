@@ -1,0 +1,20 @@
+Import('env')
+
+files = [
+         'KMCenters.h',
+         'KMCentersNode.h',
+         'KMCentersNodeLeaf.h',
+         'KMCentersNodeSplit.h',
+         'KMCentersTree.h',
+         'KMData.h',
+         'KMFilterCenters.h',
+         'KMLProxy.h',
+         'KMLocalSearch.h',
+         'KMLocalSearchLloyd.h',
+         'KMRectangle.h',
+         'KMTerminationCondition.h',
+         'random_generator.h',
+        ]
+
+# Install the include files:
+env.IMPHeaders(files)

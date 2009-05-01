@@ -4,8 +4,8 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#ifndef IMPDOMINO_KM_DATA_H
-#define IMPDOMINO_KM_DATA_H
+#ifndef IMPSTATISTICS_KM_DATA_H
+#define IMPSTATISTICS_KM_DATA_H
 
 #include <vector>
 #include <iomanip>
@@ -13,7 +13,7 @@
 #include <string>
 #include "config.h"
 
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 
 typedef enum { // distributions
@@ -129,5 +129,5 @@ void print_point(const KMPoint &p,std::ostream& out = std::cout);
 void print_points(const std::string &title,const KMPointArray &pa,
 std::ostream& out = std::cout);
 
-IMPDOMINO_END_NAMESPACE
-#endif /* IMPDOMINO_KM_DATA_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif /* IMPSTATISTICS_KM_DATA_H */

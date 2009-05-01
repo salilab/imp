@@ -4,9 +4,9 @@
  *  Copyright 2007-8 Sali Lab. All rights reserved.
  */
 
-#include <IMP/domino/KMLProxy.h>
-#include <IMP/domino/KMRectangle.h>
-IMPDOMINO_BEGIN_NAMESPACE
+#include <IMP/statistics/KMLProxy.h>
+#include <IMP/statistics/KMRectangle.h>
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 KMLProxy::KMLProxy() {
   set_default_values();
@@ -157,4 +157,4 @@ unsigned int KMLProxy::get_particle_assignment(Particle *p) const {
   return assignment_.find(p)->second;
 }
 
-IMPDOMINO_END_NAMESPACE
+IMPSTATISTICS_END_NAMESPACE

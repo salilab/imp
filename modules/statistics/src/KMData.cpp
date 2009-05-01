@@ -4,10 +4,10 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#include <IMP/domino/KMData.h>
-#include <IMP/domino/random_generator.h>
+#include <IMP/statistics/KMData.h>
+#include <IMP/statistics/random_generator.h>
 #include <iostream>
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 KMData::KMData(int d, int n) : dim_(d) {
   points_ = allocate_points(n,dim_);
 }
@@ -86,4 +86,4 @@ void print_points(const std::string &title,const KMPointArray &ps,
     }
     out << "  )" << std::endl;
 }
-IMPDOMINO_END_NAMESPACE
+IMPSTATISTICS_END_NAMESPACE

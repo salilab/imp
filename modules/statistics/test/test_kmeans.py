@@ -1,7 +1,7 @@
 import unittest
 import IMP.test
 import IMP
-import IMP.domino
+import IMP.statistics
 import IMP.core
 import IMP.algebra
 
@@ -37,7 +37,7 @@ class KMeansTests(IMP.test.TestCase):
         self.atts.append(IMP.FloatKey("z"))
 
     def test_kmeans(self):
-        km = IMP.domino.KMLProxy()
+        km = IMP.statistics.KMLProxy()
         km.initialize(self.m,self.ps,self.atts,len(self.centers))
         km.run()
         #check that points that should be in the same cluster are in the same cluster

@@ -1,0 +1,19 @@
+Import('env')
+e = env.IMPSharedLibraryEnvironment()
+
+files = [
+         'KMCenters.cpp',
+         'KMCentersNode.cpp',
+         'KMCentersNodeLeaf.cpp',
+         'KMCentersNodeSplit.cpp',
+         'KMCentersTree.cpp',
+         'KMData.cpp',
+         'KMFilterCenters.cpp',
+         'KMLProxy.cpp',
+         'KMLocalSearch.cpp',
+         'KMLocalSearchLloyd.cpp',
+         'KMRectangle.cpp',
+        ]
+
+# Build and install the shared library:
+e.IMPSharedLibrary(files, install=True)

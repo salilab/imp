@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_RECTANGLE_H
-#define IMPDOMINO_KM_RECTANGLE_H
+#ifndef IMPSTATISTICS_KM_RECTANGLE_H
+#define IMPSTATISTICS_KM_RECTANGLE_H
 
 #include <cstdlib>
 #include <fstream>
@@ -18,7 +18,7 @@
 #include "config.h"
 #include "KMData.h"
 #include <IMP/base_types.h>
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! Returns the squared distances betweentwo points
 double km_distance2(const KMPoint &p,const KMPoint &q);
@@ -98,5 +98,5 @@ protected:
   KMPoint hi_;
 };
 
-IMPDOMINO_END_NAMESPACE
-#endif /* IMPDOMINO_KM_RECTANGLE_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif /* IMPSTATISTICS_KM_RECTANGLE_H */

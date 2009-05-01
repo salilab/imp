@@ -5,20 +5,20 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_CENTERS_NODE_H
-#define IMPDOMINO_KM_CENTERS_NODE_H
+#ifndef IMPSTATISTICS_KM_CENTERS_NODE_H
+#define IMPSTATISTICS_KM_CENTERS_NODE_H
 
 #include "KMData.h"
 #include "KMRectangle.h"
 #include "KMCenters.h"
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 //! Generic KMCentersTree node
 /** Nodes in kc-trees are of two types, splitting nodes which contain
 splitting information (a splitting hyperplane orthogonal to one of the
 coordinate axes) and leaf nodes which contain point information (an array of
 points stored in a bucket).
 */
-class IMPDOMINOEXPORT KMCentersNode {
+class IMPSTATISTICSEXPORT KMCentersNode {
 public:
   KMCentersNode(){}
     //!Constructor
@@ -85,5 +85,5 @@ protected:
   int level_;
 };
 
-IMPDOMINO_END_NAMESPACE
-#endif  /* IMPDOMINO_KM_CENTERS_NODE_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_KM_CENTERS_NODE_H */

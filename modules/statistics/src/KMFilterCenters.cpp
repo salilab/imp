@@ -6,9 +6,9 @@
  *
  */
 
-#include <IMP/domino/KMFilterCenters.h>
-#include <IMP/domino/random_generator.h>
-IMPDOMINO_BEGIN_NAMESPACE
+#include <IMP/statistics/KMFilterCenters.h>
+#include <IMP/statistics/random_generator.h>
+IMPSTATISTICS_BEGIN_NAMESPACE
 KMFilterCenters::KMFilterCenters(){}
 KMFilterCenters::KMFilterCenters(int k, KMData* data,
                                  KMPointArray *ini_cen_arr,double df)
@@ -129,4 +129,4 @@ void KMFilterCenters::show(std::ostream& out) {
   }
   tree_->show(out);
 }
-IMPDOMINO_END_NAMESPACE
+IMPSTATISTICS_END_NAMESPACE

@@ -6,13 +6,13 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_CENTERS_NODE_SPLIT_H
-#define IMPDOMINO_KM_CENTERS_NODE_SPLIT_H
+#ifndef IMPSTATISTICS_KM_CENTERS_NODE_SPLIT_H
+#define IMPSTATISTICS_KM_CENTERS_NODE_SPLIT_H
 
 #include "KMCentersNode.h"
 #include "KMData.h"
 #include "KMRectangle.h"
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 //!  kc-tree splitting node.
 /** Splitting nodes contain a cutting dimension and a cutting value. These
@@ -22,7 +22,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     store the entire bounding box since this may be wasteful of space in
     high dimensions]. We also store pointers to the 2 children.
 */
-class IMPDOMINOEXPORT KMCentersNodeSplit : public KMCentersNode
+class IMPSTATISTICSEXPORT KMCentersNodeSplit : public KMCentersNode
 {
 public:
   KMCentersNodeSplit(){}
@@ -81,5 +81,5 @@ protected:
                         // rectangle along cut_dim
     KMCentersNode *children_[2];  // left and right children
 };
-IMPDOMINO_END_NAMESPACE
-#endif  /* IMPDOMINO_KM_CENTERS_NODE_SPLIT_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_KM_CENTERS_NODE_SPLIT_H */
