@@ -13,20 +13,5 @@
   }
 };
 
-
-%import "IMP/algebra/rotation_operations.h"
-
-// Instantiating the templates for Python
-namespace IMP {
- namespace algebra {
-   %template(rotate_matrix_2D) ::IMP::algebra::rotate_matrix_2D<float>;
-   %template(rotate_matrix_2Dd) ::IMP::algebra::rotate_matrix_2D<double>;
-   %template(auto_rotate_matrix_2D)
-      ::IMP::algebra::auto_rotate_matrix_2D<float>;
-   %template(auto_rotate_matrix_2Dd)
-      ::IMP::algebra::auto_rotate_matrix_2D<double>;
- }
-}
-
 %include "IMP/algebra/rotation_operations.h"
 

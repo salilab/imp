@@ -75,5 +75,12 @@ namespace IMP {
    %template(Sphere3Ds) ::std::vector<IMP::algebra::Sphere3D>;
    %template(SpherePair) ::std::pair<IMP::algebra::Sphere3D,IMP::algebra::Sphere3D>;
    %template(Sphere3DPairs) ::std::vector< SpherePair >;
+   // rotation operations
+   %template(rotate_matrix_2D) ::IMP::algebra::rotate_matrix_2D<float>;
+   %template(rotate_matrix_2Dd) ::IMP::algebra::rotate_matrix_2D<double>;
+   %template(auto_rotate_matrix_2D) 
+      ::IMP::algebra::auto_rotate_matrix_2D<float>;
+   %template(auto_rotate_matrix_2Dd)
+      ::IMP::algebra::auto_rotate_matrix_2D<double>;
  }
 }
