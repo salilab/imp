@@ -8,11 +8,13 @@
 #ifndef IMPEM_IMAGE_H
 #define IMPEM_IMAGE_H
 
+// #define DEBUG
 
 #include "config.h"
 #include "ImageHeader.h"
 #include "ImageReaderWriter.h"
 #include "IMP/algebra/Matrix2D.h"
+#include "IMP/algebra/rotation_operations.h"
 #include <complex>
 #include <limits>
 #include <typeinfo>
@@ -25,6 +27,9 @@ template<typename T>
 class Image
 {
 public:
+
+typedef Image<T> This;
+
   //! Empty constructor
   Image() {
     name_ = "";
@@ -72,6 +77,9 @@ public:
 
   //! Reads the image from the file
   void read(String filename,ImageReaderWriter<T>& reader) {
+#ifdef DEBUG
+    std::cout << "reading EM image " << std::endl;
+#endif
     reader.read(filename,header_,data_);
   }
 
@@ -79,6 +87,47 @@ public:
   void write(String filename, ImageReaderWriter<T>& writer) {
     adjust_header(); // First adjust the header to guarantee consistence
     writer.write(filename,header_,data_);
+  }
+
+
+  //! Rotates the image a given angle in radians. The center is the center of
+  //! rotation.
+  /**
+    \param[in] ang angle
+    \param[in] wrap if true, the Matrix2D is wrapped.
+  **/
+  void rotate(double ang,bool wrap=false) {
+    IMP::algebra::auto_rotate_matrix_2D(this->get_data(),ang,wrap);
+  }
+
+  //! The image is used as reference to translationally align the
+  //! parameter image with it.
+  /**
+    \param[in] img Image to align with the reference
+    \todo Under implementation
+  **/
+  void align2d_trans(This& img) {
+    int a = 1;
+  }
+
+  //! The image is used as reference to rotationally align the
+  //! parameter image with it.
+  /**
+    \param[in] img Image to align with the reference
+    \todo Under implementation
+  **/
+  void align2d_rot(This& img) {
+    int a = 1;
+  }
+
+  //! The image is used as reference to rotationally and translationally align
+  //! the parameter image with it.
+  /**
+    \param[in] img Image to align with the reference
+    \todo Under implementation
+  **/
+  void align2d_complete(This& img) {
+    int a = 1;
   }
 
 protected:
@@ -91,9 +140,7 @@ protected:
 
 }; // Image
 
-
-
-
+// #undef DEBUG
 
 IMPEM_END_NAMESPACE
 #endif  /* IMPEM_IMAGE_H */

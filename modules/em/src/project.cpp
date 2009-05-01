@@ -10,22 +10,22 @@
 IMPEM_BEGIN_NAMESPACE
 
 void project_given_direction(DensityMap& map,
-             IMP::algebra::Matrix2D<double>& m2,
+             IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
              IMP::algebra::Vector3D& direction,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance) {
 
   IMP::algebra::SphericalCoords sph(direction);
-  EulerAnglesZYZ angles(sph[1],sph[2],0.0);
+  IMP::algebra::EulerAnglesZYZ angles(sph[1],sph[2],0.0);
   project_given_euler_angles(map,m2,Ydim,Xdim,angles,shift,equality_tolerance);
 };
 
 
 void project_given_euler_angles(DensityMap& map,
-             IMP::algebra::Matrix2D<double>& m2,
+             IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
-             const EulerAnglesZYZ& angles,
+             const IMP::algebra::EulerAnglesZYZ& angles,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance) {
 
@@ -50,7 +50,7 @@ void project_given_euler_angles(DensityMap& map,
 
 
   // Get the rotation and the direction from the Euler angles
-  EulerMatrixZYZ RotMat(angles);
+  IMP::algebra::EulerMatrixZYZ RotMat(angles);
   IMP::algebra::Vector3D direction = RotMat.direction();
   IMP::algebra::Rotation3D Rot = RotMat.convert_to_rotation3D();
   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
