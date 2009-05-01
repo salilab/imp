@@ -6,6 +6,8 @@
 
 - IMP::Decorator::cast now returns a null decorator (\c DecoratorName()) rather than throwing an exception. This might make it actually useful.
 
+- New IMP::statistics module for statistical methods (e.g. clustering).
+
 \par Week of April 20
 
 - Support for taking advantage of rigid bodies in collision detection has been

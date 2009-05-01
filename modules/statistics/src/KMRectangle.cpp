@@ -4,10 +4,10 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#include <IMP/domino/KMRectangle.h>
-#include <IMP/domino/random_generator.h>
+#include <IMP/statistics/KMRectangle.h>
+#include <IMP/statistics/random_generator.h>
 #include <iostream>
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 double km_distance2(const KMPoint &p,const KMPoint &q){
   double dist = 0;
   //IMP_assert(); - TODO L add check for high checks level
@@ -47,4 +47,4 @@ KMPoint KMRectangle::sample(){
   return p;
 }
 
-IMPDOMINO_END_NAMESPACE
+IMPSTATISTICS_END_NAMESPACE

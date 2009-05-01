@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_LOCAL_SEARCH_H
-#define IMPDOMINO_KM_LOCAL_SEARCH_H
+#ifndef IMPSTATISTICS_KM_LOCAL_SEARCH_H
+#define IMPSTATISTICS_KM_LOCAL_SEARCH_H
 
 #include "config.h"
 #include "KMFilterCenters.h"
@@ -16,7 +16,7 @@
 #include <IMP/base_types.h>
 #include <vector>
 
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! KMLocalSearch
 /** A generic algorithm for k-means clustering by local search.
@@ -49,7 +49,7 @@ The generic algorithm:
    }
    return best                                  // return best solution
 */
-class IMPDOMINOEXPORT KMLocalSearch {
+class IMPSTATISTICSEXPORT KMLocalSearch {
 public:
   KMLocalSearch(KMFilterCenters *sol, KMTerminationCondition *term);
 
@@ -88,5 +88,5 @@ protected:
   KMTerminationCondition *term_;
 };
 
-IMPDOMINO_END_NAMESPACE
-#endif  /* IMPDOMINO_KM_LOCAL_SEARCH_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_KM_LOCAL_SEARCH_H */

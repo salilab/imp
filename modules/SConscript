@@ -9,6 +9,7 @@ cppmodules=['algebra',
             'examples',
             'misc',
             'saxs',
+            'statistics',
             'search']
 pymodules=['modeller']
 

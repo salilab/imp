@@ -5,8 +5,8 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#include <IMP/domino/KMLocalSearchLloyd.h>
-IMPDOMINO_BEGIN_NAMESPACE
+#include <IMP/statistics/KMLocalSearchLloyd.h>
+IMPSTATISTICS_BEGIN_NAMESPACE
 void KMLocalSearchLloyd::reset() {
   KMLocalSearch::reset();
   is_new_trail_ = false;
@@ -68,4 +68,4 @@ void KMLocalSearchLloyd::preform_stage() {
     curr_->move_to_centroid();
   }
 }
-IMPDOMINO_END_NAMESPACE
+IMPSTATISTICS_END_NAMESPACE

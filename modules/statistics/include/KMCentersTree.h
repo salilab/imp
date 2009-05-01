@@ -5,15 +5,16 @@
  *
  */
 
-#ifndef IMPDOMINO_KM_CENTERS_TREE_H
-#define IMPDOMINO_KM_CENTERS_TREE_H
+#ifndef IMPSTATISTICS_KM_CENTERS_TREE_H
+#define IMPSTATISTICS_KM_CENTERS_TREE_H
 
-#include <IMP/domino/KMData.h>
-#include <IMP/domino/KMCenters.h>
-#include <IMP/domino/KMCentersNode.h>
-#include <IMP/domino/KMCentersNodeLeaf.h>
-#include <IMP/domino/KMCentersNodeSplit.h>
-IMPDOMINO_BEGIN_NAMESPACE
+#include "KMData.h"
+#include "KMCenters.h"
+#include "KMCentersNode.h"
+#include "KMCentersNodeLeaf.h"
+#include "KMCentersNodeSplit.h"
+
+IMPSTATISTICS_BEGIN_NAMESPACE
 //! A data structure for efficeint assignment of points to clusters
 class KMCentersTree {
 public:
@@ -172,5 +173,5 @@ number of nodes.
   KMCentersNode *root_;
   KMRectangle *bnd_box_;
 };
-IMPDOMINO_END_NAMESPACE
-#endif  /* IMPDOMINO_KM_CENTERS_TREE_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_KM_CENTERS_TREE_H */

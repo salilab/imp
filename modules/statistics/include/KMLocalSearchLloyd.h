@@ -5,14 +5,14 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#ifndef IMPDOMINO_KM_LOCAL_SEARCH_LLOYD_H
-#define IMPDOMINO_KM_LOCAL_SEARCH_LLOYD_H
+#ifndef IMPSTATISTICS_KM_LOCAL_SEARCH_LLOYD_H
+#define IMPSTATISTICS_KM_LOCAL_SEARCH_LLOYD_H
 
 #include "KMLocalSearch.h"
 #include "config.h"
 #include "IMP/base_types.h"
 
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 //! KMLocalSearchLloyd
 /** Lloyd's algorithm with random restarts.
 Each run is broken into trails, we keep to prefrom trails as long as we improve
@@ -27,7 +27,7 @@ for the run exceeds this value, then the run ends in success.
 If the number of stages is exceeded before this happens, the run
 ends in failure.
 */
-class IMPDOMINOEXPORT KMLocalSearchLloyd : public KMLocalSearch {
+class IMPSTATISTICSEXPORT KMLocalSearchLloyd : public KMLocalSearch {
 public:
   KMLocalSearchLloyd(KMFilterCenters *sol, KMTerminationCondition *term)
     : KMLocalSearch(sol,term) {}
@@ -64,5 +64,5 @@ protected:
   double init_trail_dist_; // initial distortion for a trail
   bool is_new_trail_;
 };
-IMPDOMINO_END_NAMESPACE
-#endif /* IMPDOMINO_KM_LOCAL_SEARCH_LLOYD_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif /* IMPSTATISTICS_KM_LOCAL_SEARCH_LLOYD_H */

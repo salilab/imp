@@ -6,9 +6,9 @@
  *
  */
 
-#include <IMP/domino/KMCentersNodeSplit.h>
-#include <IMP/domino/random_generator.h>
-IMPDOMINO_BEGIN_NAMESPACE
+#include <IMP/statistics/KMCentersNodeSplit.h>
+#include <IMP/statistics/random_generator.h>
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 KMCentersNodeSplit::~KMCentersNodeSplit() {
   for(int i=0;i<2;i++) {
@@ -103,4 +103,4 @@ void KMCentersNodeSplit::get_assignments(const std::vector<int> &cands,
     children_[1]->get_assignments(new_cands,close_center);
   }
 }
-IMPDOMINO_END_NAMESPACE
+IMPSTATISTICS_END_NAMESPACE

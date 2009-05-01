@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMPDOMINO_RANDOM_GENERATOR_H
-#define IMPDOMINO_RANDOM_GENERATOR_H
+#ifndef IMPSTATISTICS_RANDOM_GENERATOR_H
+#define IMPSTATISTICS_RANDOM_GENERATOR_H
 
 #include <cstdlib>
 #include <math.h>
@@ -14,7 +14,7 @@
 #include "config.h"
 #include "IMP/macros.h"
 #include  <boost/random/normal_distribution.hpp>
-IMPDOMINO_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! Generate a random integer number
 /**
@@ -37,5 +37,5 @@ inline double random_gauss(double mean=0.0,double sigma=1.0) {
   return norm_dist(random_number_generator);
 }
 
-IMPDOMINO_END_NAMESPACE
-#endif  /* IMPDOMINO_RANDOM_GENERATOR_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif  /* IMPSTATISTICS_RANDOM_GENERATOR_H */
