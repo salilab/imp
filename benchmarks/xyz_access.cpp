@@ -22,7 +22,7 @@ double compute_distances_decorator_access(
     for (unsigned int j = i + 1; j < particles.size(); j++) {
       IMP::algebra::Vector3D v2 =
         IMP::core::XYZDecorator(particles[j]).get_coordinates();
-      tdist+= distance(v1, v2);
+      tdist+= IMP::algebra::distance(v1, v2);
     }
   }
   return tdist;
@@ -41,7 +41,7 @@ double compute_distances_class_access(
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     for (unsigned int j = i + 1; j < particles.size(); j++) {
-      tdist += distance(particles[i]->v_, particles[j]->v_);
+      tdist += IMP::algebra::distance(particles[i]->v_, particles[j]->v_);
     }
   }
   return tdist;
@@ -62,7 +62,7 @@ double compute_distances_class_access(
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     for (unsigned int j = i + 1; j < particles.size(); j++) {
-      tdist+= distance(*particles[i]->v_, *particles[j]->v_);
+      tdist+= IMP::algebra::distance(*particles[i]->v_, *particles[j]->v_);
     }
   }
   return tdist;
@@ -74,7 +74,7 @@ double compute_distances_direct_access(
   double tdist=0;
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
-      tdist+= distance(coordinates[i], coordinates[j]);
+      tdist+= IMP::algebra::distance(coordinates[i], coordinates[j]);
     }
   }
   return tdist;
