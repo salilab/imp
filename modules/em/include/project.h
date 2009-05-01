@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "DensityMap.h"
-#include "EulerOperations.h"
+#include <IMP/algebra/rotation_operations.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Matrix3D.h>
 #include <IMP/algebra/Matrix2D.h>
@@ -61,9 +61,9 @@ IMPEM_BEGIN_NAMESPACE
  */
 template<typename T>
 void project_given_euler_angles1(IMP::algebra::Matrix3D<T>& m3,
-             IMP::algebra::Matrix2D<double>& m2,
+             IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
-             const IMP::em::EulerAnglesZYZ& angles,
+             const IMP::algebra::EulerAnglesZYZ& angles,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance) {
 
@@ -77,7 +77,7 @@ void project_given_euler_angles1(IMP::algebra::Matrix3D<T>& m3,
   m2.centered_start();
   m3.centered_start();
   // Get the rotation and the direction from the Euler angles
-  EulerMatrixZYZ RotMat(angles);
+  IMP::algebra::EulerMatrixZYZ RotMat(angles);
   IMP::algebra::Vector3D direction = RotMat.direction();
   IMP::algebra::Rotation3D Rot = RotMat.convert_to_rotation3D();
   // We are interested in the inverse rotation (that one that allows to pass
@@ -87,7 +87,6 @@ void project_given_euler_angles1(IMP::algebra::Matrix3D<T>& m3,
 #ifdef DEBUG
   std::cout << " direction " << direction << std::endl;
   std::cout << "Rotation: " << Rot << std::endl;
-  std::cout << "vector_product " << vv << std::endl;
   std::cout << "Inverse rotation: " << InvRot << std::endl;
 #endif
 
@@ -193,7 +192,6 @@ void project_given_euler_angles1(IMP::algebra::Matrix3D<T>& m3,
         }
 #ifdef DEBUG
         std::cout << " v " << v << std::endl;
-          std::cout << " idx[" << ii << "]= " << idx[ii];
         std::cout << std::endl;
 #endif
         // Follow the ray
@@ -266,7 +264,7 @@ void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
              const double equality_tolerance) {
 
   IMP::algebra::SphericalCoords sph(direction);
-  EulerAnglesZYZ angles(sph[1],sph[2],0.0);
+  IMP::algebra::EulerAnglesZYZ angles(sph[2],sph[1],0.0);
   project_given_euler_angles1(m3,m2,Ydim,Xdim,angles,shift,equality_tolerance);
 };
 
@@ -310,7 +308,7 @@ void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
  *   vector3D using the (x,y,z) convention.
  */
 void IMPEMEXPORT project_given_direction(DensityMap& map,
-             IMP::algebra::Matrix2D<double>& m2,
+             IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
              IMP::algebra::Vector3D& direction,
              const IMP::algebra::Vector3D& shift,
@@ -355,9 +353,9 @@ void IMPEMEXPORT project_given_direction(DensityMap& map,
  *   vector3D using the (x,y,z) convention.
  */
 void IMPEMEXPORT project_given_euler_angles(DensityMap& map,
-             IMP::algebra::Matrix2D<double>& m2,
+             IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
-             const IMP::em::EulerAnglesZYZ& angles,
+             const IMP::algebra::EulerAnglesZYZ& angles,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance);
 

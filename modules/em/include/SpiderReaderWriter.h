@@ -9,6 +9,8 @@
 #ifndef IMPEM_SPIDER_READER_WRITER_H
 #define IMPEM_SPIDER_READER_WRITER_H
 
+// #define DEBUG
+
 #include "config.h"
 #include "ImageHeader.h"
 #include "ImageReaderWriter.h"
@@ -80,11 +82,17 @@ public:
    */
   void read(String filename, ImageHeader& header,
             algebra::Matrix2D<T>& data) {
+#ifdef DEBUG
+    std::cout << "reading with SpiderImageReaderWriter" << std::endl;
+#endif
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
     //! Take advantage that the header format is already in Spider format and
     //! just read it
     header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
+#ifdef DEBUG
+    std::cout << header << std::endl;
+#endif
     // Adjust size of the matrix according to the header
     data.resize(header.get_rows(),header.get_columns());
     data.read_binary(in,force_reversed_ ^ algebra::is_big_endian());
@@ -167,5 +175,7 @@ public:
 };
 
 IMPEM_END_NAMESPACE
+
+// #undef DEBUG
 
 #endif /* IMPEM_SPIDER_READER_WRITER_H */
