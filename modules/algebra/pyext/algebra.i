@@ -60,6 +60,7 @@ namespace multi_array_types {
 %include "Matrix2D.i"
 %include "Matrix3D.i"
 %include "SphericalCoords.i"
+%include "rotation_operations.i"
 
 namespace IMP {
  namespace algebra {

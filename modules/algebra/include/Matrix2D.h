@@ -11,6 +11,7 @@
 #include "IMP/base_types.h"
 #include "IMP/exception.h"
 #include "MultiArray.h"
+#include "VectorD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -195,7 +196,7 @@ public:
     return result;
   }
 
-  //! Multiplication operator
+  //! Multiplication operator (element by element)
   This operator*(const This& v) const {
     This result;
     result.resize(*this);
@@ -203,7 +204,7 @@ public:
     return result;
   }
 
-  //! Division operator
+  //! Division operator (element by element)
   This operator/(const This& v)
   const {
     This result;
@@ -330,6 +331,64 @@ public:
   double det() {
     return (double)(physical_get(0,0)*physical_get(1,1) -
                     physical_get(1,0)*physical_get(0,1));
+  }
+
+
+
+  //! Performs bilinear interpolation for a point using the
+  //! 4 closest values in the matrix
+  /**
+    \param[in] idx must be a class supporting access via []. It must have 2
+               elements.
+    \param[in] wrap if true, the image is wrapped and values from the right are
+               used when the left limit is excedeed, and viceversa. Same thing
+               is done between top and bottom.
+  **/
+  template<typename T1>
+  T bilinear_interp(T1 idx,bool wrap = false) const {
+    // lower limits (xlow,ylow) are stored in v1, upper limits (xup,yup) in v2
+    int v1[2], v2[2];
+    double diff[2], result;
+
+    if(!wrap) {
+      // No interpolation can be done, the value is not in the image
+      if(!this->is_logical_element(idx)) {
+        return (T)0.0;
+      }
+      else {
+        // Set the coordinates for the 4 points used in the interpolation
+        for(int i=0;i<2;i++) {
+          v1[i] = (int)floor(idx[i]);
+          // no interpolation can be done, v1[i] is in the border of the image
+          if(v1[i]==this->get_finish(i)) {
+            return (T)0.0;
+          } else {
+            v2[i] = v1[i]+1;
+          }
+          diff[i] = (double)idx[i] - v1[i];
+        }
+      }
+    // Wrap is required
+    } else {
+      for(int i=0;i<2;i++) {
+        v1[i] = (int)floor(idx[i]);
+        v2[i] = v1[i]+1;
+        int size = this->get_size(i);
+        // wrap
+        if(v1[i]<this->get_start(i) ) { v1[i]+=size; }
+        if(v2[i]<this->get_start(i) ) { v2[i]+=size; }
+        if(v1[i]>this->get_finish(i)) { v1[i]-=size; }
+        if(v2[i]>this->get_finish(i)) { v2[i]-=size; }
+        diff[i] = (double)idx[i] - v1[i];
+      }
+    }
+
+    // Interpolate
+    result= (*this)(v1[0],v1[1])*(1-diff[0])*(1-diff[1]) +
+            (*this)(v2[0],v1[1])*(  diff[0])*(1-diff[1]) +
+            (*this)(v1[0],v2[1])*(1-diff[0])*(diff[1])   +
+            (*this)(v2[0],v2[1])*(  diff[0])*(diff[1]);
+    return (T)result;
   }
 
 protected:

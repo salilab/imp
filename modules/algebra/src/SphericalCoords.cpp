@@ -14,10 +14,16 @@ Vector3D SphericalCoords::to_cartesian() {
 };
 
 void SphericalCoords::from_cartesian(Vector3D& v) {
-  double r =   v.get_magnitude();
-  _v[0] = r;
-  _v[1] = atan2(v[1],v[0]);
-  _v[2] = atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+  _v[0] = v.get_magnitude();
+  _v[1] = atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+  _v[2] = atan2(v[1],v[0]);
+};
+
+bool SphericalCoords::check(double r, double tetha, double psi) {
+  if(r<0) {return false;}
+  if(tetha< -PI || tetha>PI) {return false;}
+  if(psi< -2*PI || psi>2*PI) {return false;}
+  return true;
 };
 
 IMPALGEBRA_END_NAMESPACE
