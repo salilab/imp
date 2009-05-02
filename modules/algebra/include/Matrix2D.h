@@ -8,6 +8,8 @@
 #ifndef IMPALGEBRA_MATRIX_2D_H
 #define IMPALGEBRA_MATRIX_2D_H
 
+// #define DEBUG
+
 #include "IMP/base_types.h"
 #include "IMP/exception.h"
 #include "MultiArray.h"
@@ -343,9 +345,11 @@ public:
     \param[in] wrap if true, the image is wrapped and values from the right are
                used when the left limit is excedeed, and viceversa. Same thing
                is done between top and bottom.
+    \param[in] outside Value to apply if the requested idx falls outside the
+               limits of the matrix. (It is never used if wrap is requested)
   **/
   template<typename T1>
-  T bilinear_interp(T1 idx,bool wrap = false) const {
+  T bilinear_interp(T1 idx,bool wrap = false,T outside = 0.0) const {
     // lower limits (xlow,ylow) are stored in v1, upper limits (xup,yup) in v2
     int v1[2], v2[2];
     double diff[2], result;
@@ -353,7 +357,7 @@ public:
     if(!wrap) {
       // No interpolation can be done, the value is not in the image
       if(!this->is_logical_element(idx)) {
-        return (T)0.0;
+        return (T)outside;
       }
       else {
         // Set the coordinates for the 4 points used in the interpolation
@@ -361,11 +365,11 @@ public:
           v1[i] = (int)floor(idx[i]);
           // no interpolation can be done, v1[i] is in the border of the image
           if(v1[i]==this->get_finish(i)) {
-            return (T)0.0;
+            return (T)outside;
           } else {
             v2[i] = v1[i]+1;
           }
-          diff[i] = (double)idx[i] - v1[i];
+          diff[i] = (double)idx[i] - (double)v1[i];
         }
       }
     // Wrap is required
@@ -374,12 +378,13 @@ public:
         v1[i] = (int)floor(idx[i]);
         v2[i] = v1[i]+1;
         int size = this->get_size(i);
+        // this line must be before the wrapping ones
+        diff[i] = (double)idx[i] - (double)v1[i];
         // wrap
         if(v1[i]<this->get_start(i) ) { v1[i]+=size; }
         if(v2[i]<this->get_start(i) ) { v2[i]+=size; }
         if(v1[i]>this->get_finish(i)) { v1[i]-=size; }
         if(v2[i]>this->get_finish(i)) { v2[i]-=size; }
-        diff[i] = (double)idx[i] - v1[i];
       }
     }
 
@@ -388,6 +393,15 @@ public:
             (*this)(v2[0],v1[1])*(  diff[0])*(1-diff[1]) +
             (*this)(v1[0],v2[1])*(1-diff[0])*(diff[1])   +
             (*this)(v2[0],v2[1])*(  diff[0])*(diff[1]);
+
+#ifdef DEBUG
+    if(result>3) {
+      std::cout << " v1 " << v1[0] << " " << v1[1]
+                << " v2 " << v2[0] << " " << v2[1]
+                << " diff " << diff[0] << " " << diff[1]
+                << " dix " << idx[0] << " " << idx[1] << std::endl;
+    }
+#endif
     return (T)result;
   }
 
@@ -395,5 +409,7 @@ protected:
 };
 
 IMPALGEBRA_END_NAMESPACE
+
+// #undef DEBUG
 
 #endif  /* IMPALGEBRA_MATRIX_2D_H */
