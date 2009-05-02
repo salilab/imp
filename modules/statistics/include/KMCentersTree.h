@@ -20,8 +20,8 @@ class KMCentersTree {
 public:
   //!  Constructor
   /**
-   /param[in] data_points all data points
-   /param[in] centers the centers
+   \param[in] data_points all data points
+   \param[in] centers the centers
    /parm[in]  bb_lo Bounding box left-bottom coordinates (default: compute
    bounding box from points).
    /parm[in]  bb_hi Bounding box right_upper coordiantes (default: compute
@@ -36,9 +36,9 @@ public:
 
   //! Compute the neighboring data points of each center
   /** This is the heart of the filter-based k-means algorithm.
-  /param[in] sums     an array of center sums to update
-  /param[in] sums_sqs an array of center sums of squares to update
-  /param[in] weights  the number of points associated with each center
+  \param[in] sums     an array of center sums to update
+  \param[in] sums_sqs an array of center sums of squares to update
+  \param[in] weights  the number of points associated with each center
   /note From these parameters the final centroid and distortion
   (mean squared error) can be computed. This is done by determining the set of
   candidates for each node in the tree.
@@ -60,7 +60,7 @@ public:
   filtering search, when only one candidate remains, it does not stop the
   search, but continues to traverse all the leaves descended from this node in
   order to perform the assignments.
-  /param[out] close_center  will contain the closest center index for
+  \param[out] close_center  will contain the closest center index for
               each of the data points
   */
   void get_assignments(std::vector<int> &close_center);
@@ -87,9 +87,9 @@ associated bucket.
 protected:
   //! Initializes the basic tree elements (without building the tree)
   /**
-  /param[in] bb_lo bounding box low point (optional)
-  /param[in] bb_hi bounding box high point (optional)
-  /param[in] p_id point indices (optional)
+  \param[in] bb_lo bounding box low point (optional)
+  \param[in] bb_hi bounding box high point (optional)
+  \param[in] p_id point indices (optional)
   /note If p_id is NULL then the constructor should initialize the array of
         indices
   */
@@ -97,11 +97,11 @@ protected:
    KMPoint *bb_lo=NULL, KMPoint *bb_hi=NULL);
    //!Recursive construction of the tree from a set of points.
    /**
-   /param[in] pa the points
-   /param[in] pidx point indices to store in subtree
-   /param[in] n number of points
-   /param[in] dim the dimension of space
-   /param[in] bnd_box bounding box for current node
+   \param[in] pa the points
+   \param[in] pidx point indices to store in subtree
+   \param[in] n number of points
+   \param[in] dim the dimension of space
+   \param[in] bnd_box bounding box for current node
    /note The construction is based on a standard algorithm for constructing
    the kc-tree (see Friedman, Bentley, and Finkel, ``An algorithm for finding
    best matches in logarithmic expected time,'' ACM Transactions on Mathematical
@@ -119,12 +119,12 @@ protected:
 //! split a set of points about a cutting plane along a given cutting dimension.
 /**
 /note split the points whose indexes are stored in p_id [start_ind,end_ind]
-/param[in] start_ind the start index
-/param[in] end_ind the last index
-/param[in] p_id point indexes
-/param[in] dim the dimension to split upon
-/param[in] cv cutting value
-/param[out] a pair (a,b) of breaks such that ps[start_ind,...,a-1] < cv,
+\param[in] start_ind the start index
+\param[in] end_ind the last index
+\param[in] p_id point indexes
+\param[in] dim the dimension to split upon
+\param[in] cv cutting value
+\param[out] a pair (a,b) of breaks such that ps[start_ind,...,a-1] < cv,
             ps[a,b-1]=cv and ps[b,end_ind] > cv
 /note the partition is stored in p_id
  */
@@ -144,11 +144,11 @@ less than the x-bisector, then the split is taken along the maximum x-coordinate
 of the data points. Intuitively, this rule cannot generate trivial splits,
 and hence avoids midpt_split's tendency to produce trees with a very large
 number of nodes.
-/param[in] start_ind the index of the first point in p_id_
-/param[in] end_ind the index of the last point in p_id_
-/param[out] cut_dim the index of cutting dimension
-/param[out] cut_val the cutting value
-/param[out] n_lo the number of points in the low side
+\param[in] start_ind the index of the first point in p_id_
+\param[in] end_ind the index of the last point in p_id_
+\param[out] cut_dim the index of cutting dimension
+\param[out] cut_val the cutting value
+\param[out] n_lo the number of points in the low side
 */
   void split_by_mid_point(int start_ind, int end_ind,
    int &cut_dim, double &cut_val, int &n_lo);

@@ -31,7 +31,7 @@ public:
   KMRectangle(){}
 //! Constructor
 /**
-/param[in] dim dimension
+\param[in] dim dimension
  */
   KMRectangle(int dim) {
     lo_.clear();hi_.clear();

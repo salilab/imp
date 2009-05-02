@@ -23,7 +23,7 @@ public:
   KMCentersNode(){}
     //!Constructor
     /**
-/param[in] the bounding box of the points
+\param[in] the bounding box of the points
      */
   KMCentersNode(const KMRectangle &bb, KMCenters *centers,int level);
  virtual ~KMCentersNode();
@@ -54,12 +54,12 @@ public:
 protected:
   //! Find the center closest to the middle of the bounding box of the node
   /**
-   /param[in] cands a set of center indexes, one of which should be the closest
+   \param[in] cands a set of center indexes, one of which should be the closest
   */
   int mid_center(const std::vector<int> &cands);
   //! Determine if a candidate center is close enough
-  /** /param[in] candidate_centers_inds the indexes of the candidate centers
-    /param[in] close_centers_inds returned subset of candidate_centers_inds
+  /** \param[in] candidate_centers_inds the indexes of the candidate centers
+    \param[in] close_centers_inds returned subset of candidate_centers_inds
                that are close enough to the bounding box of the node according
                to the following cretiria.
   A candidate center is close enough to the bounding box if b is closer to the
