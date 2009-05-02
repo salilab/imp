@@ -193,11 +193,15 @@ private:
   \param[in] ang angle
   \param[in] wrap if true, the Matrix2D is wrapped.
                       See help for bilinear_interp()
+  \param[in] wrap if true, the Matrix2D is wrapped.
+                      See help for bilinear_interp()
+  \param[in] outside Value to apply if a rotated point falls outside the
+               limits of the matrix. (default = 0.0)
 **/
 template<typename T>
 void rotate_matrix_2D(Matrix2D<T>& m,double ang,
               Matrix2D<T>& result,
-              bool wrap=false) {
+              bool wrap=false,T outside=0.0) {
   result.resize(m);
   // Save the origin and center
   std::vector<int> orig(2);
@@ -213,7 +217,7 @@ void rotate_matrix_2D(Matrix2D<T>& m,double ang,
       // Compute the equivalent point in the original matrix
       VectorD<2> v = inv_rot.rotate((double)i,(double)j);
       // Interpolate the value from the original matrix
-      result(i,j) = m.bilinear_interp(v,wrap);
+      result(i,j) = m.bilinear_interp(v,wrap,outside);
     }
   }
   // Restore the origins
@@ -229,13 +233,16 @@ void rotate_matrix_2D(Matrix2D<T>& m,double ang,
   \param[in] ang angle
   \param[in] wrap if true, the Matrix2D is wrapped.
                       See help for bilinear_interp()
+  \param[in] outside Value to apply if a rotated point falls outside the
+               limits of the matrix. (default = 0.0)
 **/
 template<typename T>
-void auto_rotate_matrix_2D(Matrix2D<T>& m,double ang,bool wrap=false) {
+void auto_rotate_matrix_2D(Matrix2D<T>& m,double ang,
+                           bool wrap=false,T outside=0.0) {
   Matrix2D<T> result;
-  rotate_matrix_2D(m,ang,result,wrap);
+  rotate_matrix_2D(m,ang,result,wrap,outside);
+  m.copy(result);
 }
-
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_OPERATIONS_H */
