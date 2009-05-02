@@ -17,7 +17,7 @@
 #include "IMP/base_types.h"
 #include "DiscreteSet.h"
 #include <algorithm>
-#include  "combination.hpp"
+#include  "boost/combination.hpp"
 
 IMPDOMINO_BEGIN_NAMESPACE
 

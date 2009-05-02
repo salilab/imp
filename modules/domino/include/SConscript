@@ -20,7 +20,8 @@ files = [
          'TransformationMappedDiscreteSet.h',
          'TransformationPermutationSampler.h',
          'TransformationUtils.h',
-        ]
+        ] \
+        + SConscript('boost/SConscript')
 
 # Install the include files:
 env.IMPHeaders(files)
