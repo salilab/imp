@@ -3,7 +3,8 @@
 
 \author Someone
 
-\overview %IMP.%statistics provides various statistics and clustering methods.
+\overview %IMP.%statistics provides various statistics and clustering methods,
+such as k-means.
 
 \publications
 \standard_imp_publications
