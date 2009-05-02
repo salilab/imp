@@ -32,12 +32,19 @@ class SConscriptGenerator:
     def exclude_file(self, filename):
         return filename in self.excludes or filename.startswith('.')
 
+    def file_has_extension(self, filename, dir):
+        # Special case embedded Boost headers
+        if dir.endswith('boost') and self.extension == '.h':
+            return filename.endswith('.hpp')
+        else:
+            return filename.endswith(self.extension)
+
     def scandir(self, dir, top=True):
         files = os.listdir(dir)
         subdirs = [x for x in files if os.path.isdir(os.path.join(dir, x)) \
                                        and x != '.svn']
         subdirs.sort()
-        srcs = [x for x in files if x.endswith(self.extension) \
+        srcs = [x for x in files if self.file_has_extension(x, dir) \
                                     and not self.exclude_file(x)]
         srcs.sort()
     
