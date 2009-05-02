@@ -1,9 +1,9 @@
 /** \namespace IMP::statistics
-\brief %IMP.%statistics provides various statistics and clustering methods.
+\brief %IMP.%statistics provides various %statistics and clustering methods.
 
-\author Someone
+\author Keren Lasker
 
-\overview %IMP.%statistics provides various statistics and clustering methods,
+\overview %IMP.%statistics provides various %statistics and clustering methods,
 such as k-means.
 
 \publications
