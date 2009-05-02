@@ -28,10 +28,10 @@ public:
   KMCentersNodeSplit(){}
   //!Constractor
     /**
-/param[in] dim the dimension of the points
-/param[in] bb the bounding box
-/param[in] cd the cutting dimension
-/param[in] cv the cutting value
+\param[in] dim the dimension of the points
+\param[in] bb the bounding box
+\param[in] cd the cutting dimension
+\param[in] cv the cutting value
      */
   KMCentersNodeSplit(
    int level,KMRectangle &bb,KMCenters *centers,int cd,double cv, double lv,

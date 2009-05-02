@@ -18,7 +18,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! Generate a random integer number
 /**
-/param[in] n , the range is [0,n-1]
+\param[in] n , the range is [0,n-1]
  */
 inline int random_int(int n) {
   ::boost::uniform_int<> rand(0,n-1);

@@ -24,12 +24,12 @@ public:
   KMCentersNodeLeaf(){}
   //! Constractor
   /**
-/param[in] bb the bounding rectangle of the points that are associated
+\param[in] bb the bounding rectangle of the points that are associated
               with the node
-/param[in] centers a pointer to all of the centers
-/param[in] data_inds indexes of data points that are associated with the node
-/param[in]
-/param[in]
+\param[in] centers a pointer to all of the centers
+\param[in] data_inds indexes of data points that are associated with the node
+\param[in]
+\param[in]
    */
   KMCentersNodeLeaf(int level,const KMRectangle &bb, KMCenters *centers,
     const std::vector<int> &data_inds) :  KMCentersNode(bb,centers,level) {

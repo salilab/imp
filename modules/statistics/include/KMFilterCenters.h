@@ -25,10 +25,10 @@ public:
   KMFilterCenters();
   //! Constructor
   /**
-  /param[in] k     number of centers
-  /param[in] data  the data points
-  /param[in] ini_cen_arr initial centers
-  /param[in] df    damp factor
+  \param[in] k     number of centers
+  \param[in] data  the data points
+  \param[in] ini_cen_arr initial centers
+  \param[in] df    damp factor
    */
   KMFilterCenters(int k, KMData* data,KMPointArray *ini_cen_arr=NULL,
                   double df = 1);
@@ -69,7 +69,7 @@ public:
   Even though this makes a full traversal of the kc-tree, it does not update
   the sum or sum of squares, etc., but it does not modify them either.
   Thus, we do not change the validation status.
-  /param[in] close_center will contain the closest center to each data point
+  \param[in] close_center will contain the closest center to each data point
   */
   void get_assignments(std::vector<int> &close_center);
 
@@ -126,10 +126,10 @@ public:
   KMFilterCentersResults(){};
   //! Constructor
   /**
-  /param[in] k     number of centers
-  /param[in] data  the data points
-  /param[in] ini_cen_arr initial centers
-  /param[in] df    damp factor
+  \param[in] k     number of centers
+  \param[in] data  the data points
+  \param[in] ini_cen_arr initial centers
+  \param[in] df    damp factor
    */
   KMFilterCentersResults(KMFilterCenters &full)
     : KMCenters(full) {

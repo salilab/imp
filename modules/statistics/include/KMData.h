@@ -36,8 +36,8 @@ class KMData {
 public:
   //! Constructor
   /**
-/param[in] d the dimension of the points
-/param[in] n the number of points
+\param[in] d the dimension of the points
+\param[in] n the number of points
    */
   KMData(int d, int n);
   //! Get the dimension of the points
@@ -70,7 +70,7 @@ public:
   //! set of data points
   KMPoint sample_center();
   //! Sample few centers
-  //! /param[in] sample where the samples will be stored
+  //! \param[in] sample where the samples will be stored
   //! param[in] k the number of centers to sample
   //! param[in] allow_duplicate can the centers be the same
   virtual void sample_centers( KMPointArray *sample,int k,
@@ -85,8 +85,8 @@ protected:
 };
 //! Allocate a point array of n points
 /**
-/param[in] n the number of points
-/param[in] dim the dimension of each point
+\param[in] n the number of points
+\param[in] dim the dimension of each point
  */
 inline KMPointArray* allocate_points(int n,int dim) {
   KMPointArray *points = new KMPointArray();

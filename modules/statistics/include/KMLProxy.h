@@ -36,17 +36,17 @@ public:
   KMLProxy();
   //! Initialize the proxy
   /**
-  /param[in] m IMP model
-  /param[in] ps   The set of particles to apply the k-means on
-  /param[in] atts The set of attributes of the particles
+  \param[in] m IMP model
+  \param[in] ps   The set of particles to apply the k-means on
+  \param[in] atts The set of attributes of the particles
                   participating in the clustering
-  /param[in] num_centers  The number of clusters
+  \param[in] num_centers  The number of clusters
    */
   void initialize(Model *m,const Particles &ps,
        const std::vector<FloatKey> &atts,unsigned int num_centers);
   //! Run the k-means algorithm
   /**
-  /param[in] ps a set of particles which are the initial k-means.
+  \param[in] ps a set of particles which are the initial k-means.
                 If non are provided, the initial ones are set randomly.
    */
   void run(Particles *ps=NULL);
