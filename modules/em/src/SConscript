@@ -19,6 +19,7 @@ files = [
          'XplorReaderWriter.cpp',
          'converters.cpp',
          'header_converters.cpp',
+         'filters.cpp',
          'project.cpp',
         ]
 

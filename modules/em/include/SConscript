@@ -27,6 +27,7 @@ files = [
          'exp.h',
          'header_converters.h',
          'noise.h',
+         'filters.h',
          'project.h',
         ]
 
