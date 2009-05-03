@@ -89,8 +89,8 @@ namespace IMP {
     %template(add_noise_d) 
               ::IMP::em::add_noise<::IMP::algebra::Matrix2D<double> >;
 
-    %template(_FilterByThreshold2D) ::IMP::em::FilterByThreshold<float,2>;
-    %template(_FilterByThreshold3D) ::IMP::em::FilterByThreshold<float,3>;
+    %template(FilterByThreshold2D) ::IMP::em::FilterByThreshold<float,2>;
+    %template(FilterByThreshold3D) ::IMP::em::FilterByThreshold<float,3>;
   }
 }
 
@@ -101,6 +101,4 @@ namespace IMP {
   SpiderImageReaderWriter = _SpiderImageReaderWriter
   Image = _Image
   Volume = _Volume
-  FilterByThreshold2D = _FilterByThreshold2D
-  FilterByThreshold3D = _FilterByThreshold3D
 }
