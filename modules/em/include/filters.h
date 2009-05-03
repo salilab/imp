@@ -38,35 +38,35 @@ public:
      the given value is the threshold
   **/
   void set_parameters(T threshold,int mode,T value) {
-    _threshold = threshold;
-    _mode = mode;
-    _value = value;
+    threshold_ = threshold;
+    mode_ = mode;
+    value_ = value;
   }
 
   void set_parameters(T threshold,int mode) {
-    _threshold = threshold;
-    _mode = mode;
-    _value = threshold;
+    threshold_ = threshold;
+    mode_ = mode;
+    value_ = threshold;
   }
 
   //! Function to apply the filter
   void apply(algebra::MultiArray<T,D>& m) {
     std::vector<int> idx(D);
     while (algebra::internal::roll_inds(idx, m.shape(),m.index_bases())) {
-      switch (_mode) {
+      switch (mode_) {
       case 0: // Filter all the values BELOW the threshold
-        if(m(idx)<_threshold) {m(idx) = _value;}
+        if(m(idx)<threshold_) {m(idx) = value_;}
         break;
       case 1: // Filter all the values ABOVE the threshold
-        if(m(idx)>_threshold) {m(idx) = _value;}
+        if(m(idx)>threshold_) {m(idx) = value_;}
         break;
       }
     }
   }
 protected:
-  T _threshold;
-  int _mode;
-  T _value;
+  T threshold_;
+  int mode_;
+  T value_;
 };
 
 
@@ -96,9 +96,9 @@ public:
   void apply(DensityMap& m);
 
 protected:
-  float _threshold;
-  int _mode;
-  float _value;
+  float threshold_;
+  int mode_;
+  float value_;
 };
 
 IMPEM_END_NAMESPACE

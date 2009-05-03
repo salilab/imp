@@ -19,29 +19,29 @@ IMPEM_BEGIN_NAMESPACE
 **/
 void MapFilterByThreshold::set_parameters(float threshold,
                                               int mode,float value) {
-  _threshold = threshold;
-  _mode = mode;
-  _value = value;
+  threshold_ = threshold;
+  mode_ = mode;
+  value_ = value;
 }
 
 void MapFilterByThreshold::set_parameters(float threshold,int mode) {
-  _threshold = threshold;
-  _mode = mode;
-  _value = threshold;
+  threshold_ = threshold;
+  mode_ = mode;
+  value_ = threshold;
 }
 
 void MapFilterByThreshold::apply(DensityMap& m) {
   long  nvox = m.get_number_of_voxels();
   for (long ii=0;ii<nvox;ii++) {
-    switch (_mode) {
+    switch (mode_) {
     case 0: // Filter all the values BELOW the threshold
-      if(m.get_value(ii)<_threshold) {
-        m.set_value(ii,_value);
+      if(m.get_value(ii)<threshold_) {
+        m.set_value(ii,value_);
       }
       break;
     case 1: // Filter all the values ABOVE the threshold
-      if(m.get_value(ii)>_threshold) {
-        m.set_value(ii,_value);
+      if(m.get_value(ii)>threshold_) {
+        m.set_value(ii,value_);
       }
       break;
     }
