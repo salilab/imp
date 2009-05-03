@@ -62,6 +62,8 @@ IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 %include "IMP/em/SpiderReaderWriter.h"
 %include "IMP/em/Volume.h"
 %include "IMP/em/Image.h"
+%include "IMP/em/noise.h"
+%include "IMP/em/filters.h"
 
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
@@ -82,6 +84,13 @@ namespace IMP {
     %template(_Image) ::IMP::em::Image<float>;
     %template(_Volume) ::IMP::em::Volume<float>;
     %template(floats) ::std::vector<float>;
+
+    %template(add_noise) ::IMP::em::add_noise<::IMP::algebra::Matrix2D<float> >;
+    %template(add_noise_d) 
+              ::IMP::em::add_noise<::IMP::algebra::Matrix2D<double> >;
+
+    %template(_FilterByThreshold2D) ::IMP::em::FilterByThreshold<float,2>;
+    %template(_FilterByThreshold3D) ::IMP::em::FilterByThreshold<float,3>;
   }
 }
 
@@ -92,4 +101,6 @@ namespace IMP {
   SpiderImageReaderWriter = _SpiderImageReaderWriter
   Image = _Image
   Volume = _Volume
+  FilterByThreshold2D = _FilterByThreshold2D
+  FilterByThreshold3D = _FilterByThreshold3D
 }

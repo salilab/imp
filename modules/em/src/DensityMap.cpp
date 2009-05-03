@@ -181,8 +181,7 @@ bool DensityMap::is_part_of_volume(float x,float y,float z) const
   }
 }
 
-emreal DensityMap::get_value(float x, float y, float z) const
-{
+emreal DensityMap::get_value(float x, float y, float z) const {
   return data_[loc2voxel(x,y,z)];
 }
 
@@ -192,6 +191,23 @@ emreal DensityMap::get_value(long index) const {
             IndexException);
   return data_[index];
 }
+
+void DensityMap::set_value(long index,emreal value) {
+  IMP_check(index >= 0 && index < get_number_of_voxels(),
+            "The index " << index << " is not part of the grid",
+            IndexException);
+  data_[index]=value;
+  normalized_ = false;
+  rms_calculated_ = false;
+}
+
+void DensityMap::set_value(float x, float y, float z,emreal value) {
+  data_[loc2voxel(x,y,z)]=value;
+  normalized_ = false;
+  rms_calculated_ = false;
+}
+
+
 void DensityMap::reset_voxel2loc() {
   loc_calculated_=false;
   delete x_loc_;

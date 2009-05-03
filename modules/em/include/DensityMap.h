@@ -117,6 +117,22 @@ public:
   */
   emreal get_value(long index) const;
 
+
+  //! Set the value of the voxel at a given index
+  /**
+    \param[in] index voxel number in physical sense, NOT logical
+    \param[in] val value
+  */
+  void set_value(long index,emreal value);
+
+
+  //! Set the value of the voxel at a given index
+  /**
+    \param[in] index voxel number in physical sense, NOT logical
+    \param[in] val value
+  */
+  void set_value(float x, float y, float z,emreal value);
+
   //! Sets the origin of the header
   /**
     \param x the new x (Angstroms)
