@@ -6,6 +6,8 @@
 
 @PYTHONPATH@
 
+@DATAPATH@
+
 #echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 #echo PYTHONPATH=$PYTHONPATH
 #echo MODPY=$modeller_init_script

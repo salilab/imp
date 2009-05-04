@@ -2,6 +2,7 @@ Import('env')
 
 files = [
     'constants.h',
+    'directories.h',
     'Decorator.h',
     'DerivativeAccumulator.h',
     'Key.h',

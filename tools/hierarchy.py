@@ -37,6 +37,24 @@ def _make_nodes(files):
             nodes.append(f)
     return nodes
 
+def _install_hierarchy_internal(env, buildtop, dir, module, sources):
+    insttargets = []
+    builddir_targets = []
+    sources = _make_nodes(sources)
+    prefix = len(os.path.commonprefix([f.path for f in sources]))
+    if module != 'IMP':
+        builddir = os.path.join(buildtop, 'IMP')
+    else:
+        builddir = buildtop
+    for f in sources:
+        src = f.path[prefix:]
+        dest = os.path.join(dir, module, os.path.dirname(src))
+        insttargets.append(env.Install(dest, f))
+        # Also place the file in the build directory:
+        dest = os.path.join(builddir, module, os.path.dirname(src))
+        builddir_targets.append(env.LinkInstall(dest, f))
+    return insttargets, builddir_targets
+
 def InstallHierarchy(env, dir, module, description, sources):
     """Given a set of header files, install them all under `dir`. They are
        placed in the `module` subdirectory (common prefix is stripped from the
@@ -45,24 +63,16 @@ def InstallHierarchy(env, dir, module, description, sources):
        installed headers is returned, suitable for an 'install' alias. The
        headers are also installed in the build directory, but these targets
        are not returned."""
-    targets = []
-    builddir_targets = []
-    sources = _make_nodes(sources)
-    prefix = len(os.path.commonprefix([f.path for f in sources]))
+    buildtop = '#/build/include'
+    targets, builddir_targets = \
+       _install_hierarchy_internal(env, buildtop, dir, module, sources)
     if module != 'IMP':
-        incdir = os.path.join('#/build/include', 'IMP')
+        builddir = os.path.join(buildtop, 'IMP')
     else:
-        incdir = '#/build/include'
-    for f in sources:
-        src = f.path[prefix:]
-        dest = os.path.join(dir, module, os.path.dirname(src))
-        targets.append(env.Install(dest, f))
-        # Also place the header in the build directory:
-        dest = os.path.join(incdir, module, os.path.dirname(src))
-        builddir_targets.append(env.LinkInstall(dest, f))
+        builddir = buildtop
 
     gen_heads = []
-    for d in (dir, incdir):
+    for d in (dir, builddir):
         t = env.Command(os.path.join(d, module + '.h'), builddir_targets,
                         Action(_build_header,
                                'Auto-generating header ${TARGET}'),
@@ -71,26 +81,19 @@ def InstallHierarchy(env, dir, module, description, sources):
     targets.append(gen_heads[0])
     return targets
 
-
 def InstallPythonHierarchy(env, dir, module, sources):
     """Given a set of Python files, install them all under `dir`. They are
        placed in the `module` subdirectory (common prefix is stripped from the
        filenames). A list of all installed files is returned, suitable for an
        'install' alias, plus another list of the files in the build
        directory."""
-    insttargets = []
-    libtargets = []
-    sources = _make_nodes(sources)
-    prefix = len(os.path.commonprefix([f.path for f in sources]))
-    if module != 'IMP':
-        libdir = os.path.join('#/build/lib', 'IMP')
-    else:
-        libdir = '#/build/lib'
-    for f in sources:
-        src = f.path[prefix:]
-        dest = os.path.join(dir, module, os.path.dirname(src))
-        insttargets.append(env.Install(dest, f))
-        # Also place the file in the build directory:
-        dest = os.path.join(libdir, module, os.path.dirname(src))
-        libtargets.append(env.LinkInstall(dest, f))
-    return insttargets, libtargets
+    return _install_hierarchy_internal(env, '#/build/lib', dir, module, sources)
+
+def InstallDataHierarchy(env, dir, module, sources):
+    """Given a set of data files, install them all under `dir`. They are
+       placed in the `module` subdirectory (common prefix is stripped from the
+       filenames). A list of all installed files is returned, suitable for an
+       'install' alias, plus another list of the files in the build
+       directory."""
+    return _install_hierarchy_internal(env, '#/build/data', dir, module,
+                                       sources)

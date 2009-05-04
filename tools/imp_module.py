@@ -209,6 +209,9 @@ def IMPSharedLibrary(env, files, install=True):
                             list(files) + [env['VER_CPP'], \
                                                env['LINK_0_CPP'],\
                                                env['LINK_1_CPP']])
+    # Make sure that any necessary data files are installed in the build
+    # directory prior to making the shared libraries available
+    env.Requires(lib, '#/build/data')
 
     if env['build']=='profile' and env['CC'] == 'gcc':
         staticlib = env.StaticLibrary('#/build/lib/imp_%s' % module,
@@ -276,6 +279,15 @@ def IMPPython(env, files):
         env.Alias(alias, inst)
     if env.get('python', True):
         _add_module_default_alias(env, lib)
+    return lib
+
+def IMPData(env, files):
+    """Install the given data files for this IMP module."""
+    from tools.hierarchy import InstallDataHierarchy
+    datadir = os.path.join(env['datadir'], 'IMP')
+    inst, lib = InstallDataHierarchy(env, datadir, env['IMP_MODULE'], files)
+    for alias in _get_module_install_aliases(env):
+        env.Alias(alias, inst)
     return lib
 
 def IMPPythonExtension(env, swig_interface):
@@ -390,7 +402,8 @@ def IMPModule(env, module, cpp=True):
        or methods are available: IMPPython, IMPModuleTest, validate
        and invalidate. If `cpp` is True, necessary C++ headers are also
        automatically generated, and these additional methods are available:
-       IMPSharedLibraryEnvironment, IMPPythonExtensionEnvironment, IMPHeaders.
+       IMPSharedLibraryEnvironment, IMPPythonExtensionEnvironment, IMPHeaders,
+       IMPData.
        Either validate or invalidate must be called in the module's top-level
        SConscript before setting up any builders, to indicate whether the
        module's necessary dependencies have been met.
@@ -430,6 +443,7 @@ def IMPModule(env, module, cpp=True):
         env.AddMethod(IMPSharedLibraryEnvironment)
         env.AddMethod(IMPPythonExtensionEnvironment)
         env.AddMethod(IMPHeaders)
+        env.AddMethod(IMPData)
 
     env.AddMethod(IMPPython)
     env.AddMethod(IMPModuleTest)
