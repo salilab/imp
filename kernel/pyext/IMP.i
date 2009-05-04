@@ -108,6 +108,7 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 
 %include "IMP/base_types.h"
 %include "IMP/utility.h"
+%include "IMP/directories.h"
 %include "IMP/deprecation.h"
 %include "IMP/VersionInfo.h"
 %include "IMP/RefCounted.h"

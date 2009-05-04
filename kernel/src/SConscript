@@ -8,7 +8,7 @@ env.Prepend(CPPPATH=["#/build/include"])
 internal_files = SConscript('internal/SConscript')
 
 # Source files
-files = ['base_types.cpp', 'Model.cpp',
+files = ['base_types.cpp', 'directories.cpp', 'Model.cpp',
          'Particle.cpp', 'ScoreState.cpp', 'Object.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
          'random.cpp', 'Key.cpp', 'exception.cpp', 'Refiner.cpp',
@@ -20,6 +20,10 @@ files = ['base_types.cpp', 'Model.cpp',
 
 # Build the shared library:
 lib = env.SharedLibrary('#/build/lib/imp', files)
+
+# Make sure that any necessary data files are installed in the build
+# directory prior to making the shared libraries available
+env.Requires(lib, '#/build/data')
 
 # Install the library:
 libinst = env.Install(env['libdir'], lib)
