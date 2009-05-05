@@ -39,6 +39,15 @@ public:
   // public for swig
   IMP_NO_DOXYGEN(typedef VectorD<D> This;)
 
+  /** The distance between b and e must be equal to D.
+   */
+  template <class It>
+  VectorD(It b, It e) {
+    IMP_assert(std::distance(b,e) == D,
+               "The size of the range must match the dimension");
+    std::copy(b,e, vec_);
+  }
+
   //! Initialize the 1-vector from its value.
   VectorD(double x) {
 #ifdef IMP_SWIG_WRAPPER
