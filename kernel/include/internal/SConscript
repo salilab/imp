@@ -1,22 +1,3 @@
-Import('env')
-import os
-
-def gen_file(target, source, env):
-    infile = open(source[0].abspath, 'r')
-    outfile = open(target[0].abspath, 'w')
-    for line in infile:
-        line = line.replace('@AUTOGEN@',
-                            'Auto-generated from %s; do not edit.' \
-                            % os.path.basename(source[0].path))
-        line = line.replace('@IMP_DATA_DIRECTORY@', source[1].get_contents())
-        outfile.write(line)
-
-e = env.Clone()
-e.Append(BUILDERS={'GenFile': Builder(action=gen_file)})
-directories = e.GenFile("directories.h",
-                        ["directories.h.in",
-                         e.Value('"%s/IMP"' % e.subst(e['datadir']))])
-
 files = [
     'AttributeTable.h',
     'ExponentialNumber.h',
@@ -36,5 +17,5 @@ files = [
     'utility.h',
 ]
 
-files = [File(f) for f in files] + directories
+files = [File(f) for f in files]
 Return('files')

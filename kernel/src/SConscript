@@ -1,14 +1,30 @@
 Import('env', 'get_sharedlib_environment')
+import os.path
 
 # Get an environment suitable for building a shared library:
 env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
 env.Prepend(CPPPATH=["#/build/include"])
 
+# Auto-generated files:
+def gen_file(target, source, env):
+    infile = open(source[0].abspath, 'r')
+    outfile = open(target[0].abspath, 'w')
+    for line in infile:
+        line = line.replace('@AUTOGEN@',
+                            'Auto-generated from %s; do not edit.' \
+                            % os.path.basename(source[0].path))
+        line = line.replace('@IMP_DATA_DIRECTORY@', source[1].get_contents())
+        outfile.write(line)
+env.Append(BUILDERS={'GenFile': Builder(action=gen_file)})
+directories = env.GenFile("directories.cpp",
+                          ["directories.cpp.in",
+                           env.Value('"%s/IMP"' % env.subst(env['datadir']))])
+
 # Subdirectories:
 internal_files = SConscript('internal/SConscript')
 
 # Source files
-files = ['base_types.cpp', 'directories.cpp', 'Model.cpp',
+files = ['base_types.cpp', 'Model.cpp',
          'Particle.cpp', 'ScoreState.cpp', 'Object.cpp',
          'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
          'random.cpp', 'Key.cpp', 'exception.cpp', 'Refiner.cpp',
@@ -16,7 +32,7 @@ files = ['base_types.cpp', 'directories.cpp', 'Model.cpp',
          'SingletonScore.cpp', 'TripletScore.cpp',
          'SingletonModifier.cpp', 'PairModifier.cpp',
          'SingletonContainer.cpp', 'PairContainer.cpp'
-        ] + internal_files
+        ] + internal_files + [directories]
 
 # Build the shared library:
 lib = env.SharedLibrary('#/build/lib/imp', files)
