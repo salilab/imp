@@ -42,6 +42,10 @@ typedef std::vector<RigidMemberDecorator> RigidMemberDecorators;
     computed and diagonalized, but not stored. It can be stored if
     someone wants it.
 
+    It is often desirable to randomize the orientation of a rigid
+    body:
+    \verbinclude randomize_rigid_body.py
+
     \see RigidMemberDecorator
     \see AccumulateRigidBodyDerivatives
     \see UpdateRigidBodyMembers
