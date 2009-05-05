@@ -81,6 +81,32 @@ protected:
       return 0;
     }
   }
+
+  virtual std::streamsize xsputn(const char *s, std::streamsize n) {
+    if (n > buffer_.size() * 2) {
+      // Only take this route for large buffers, since two Python calls will
+      // result per call (one here, potentially one in sync) rather than one per
+      // buffer_.size() characters via the regular buffering
+      sync();
+      static char method[] = "write";
+      static char fmt[] = "(s#)";
+      PyObject *result = PyObject_CallMethod(p_, method, fmt, s, n);
+      if (!result) {
+        throw std::ostream::failure("Python error on write");
+      } else {
+        Py_DECREF(result);
+      }
+      return n;
+    } else {
+      // Use the regular buffering mechanism
+      for (std::streamsize i = 0; i < n; ++i) {
+        if (sputc(s[i]) == EOF) {
+          return i;
+        }
+      }
+      return n;
+    }
+  }
 };
 %}
 
