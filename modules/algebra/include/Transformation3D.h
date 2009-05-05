@@ -111,8 +111,8 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   return Transformation3D(rot,base);
 }
 
-//! Generate a Transformation3D object from a rotation around an axis
-/**
+//! Generate a Transformation3D object from a rotation around a point
+/** Rotate about a point rather than the origin.
   \param[in] point Center to rotate about
   \param[in] rotation The rotation to perform
 
