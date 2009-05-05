@@ -116,6 +116,7 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   \param[in] point Center to rotate about
   \param[in] rotation The rotation to perform
 
+  \relatesalso Rotation3D
   \relatesalso Transformation3D
 */
 inline Transformation3D
