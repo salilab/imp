@@ -209,11 +209,11 @@ public:
 #ifndef SWIG
   /** \todo These should be protected, I'll try to work how
    */
-  This operator++() {
+  This& operator++() {
     ++str_;
     return *this;
   }
-  This operator--() {
+  This& operator--() {
     --str_;
     return *this;
   }

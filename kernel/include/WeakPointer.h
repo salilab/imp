@@ -82,8 +82,9 @@ public:
     return o_;
   }
   //! Set it from a possibly NULL pointer.
-  void operator=(O* o) {
+  WeakPointer<O>& operator=(O* o) {
     set_pointer(o);
+    return *this;
   }
 
   IMP_COMPARISONS_1(o_);
