@@ -67,8 +67,9 @@ public:
   }
 
   //! Set it from a possibly NULL pointer.
-  void operator=(O* o) {
+  Pointer<O>& operator=(O* o) {
     set_pointer(o);
+    return *this;
   }
 };
 
