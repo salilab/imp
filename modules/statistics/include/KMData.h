@@ -32,7 +32,7 @@ typedef enum { // distributions
 typedef std::vector<double> KMPoint;
 typedef std::vector<KMPoint *> KMPointArray;
 //! Holds the data points to cluster
-class KMData {
+class IMPSTATISTICSEXPORT KMData {
 public:
   //! Constructor
   /**
@@ -68,13 +68,19 @@ public:
   //void buildKcTree();
   //! Sample a center point. The center is selected randomly from the
   //! set of data points
-  KMPoint sample_center();
+  /**
+   \param[in] offset after selecting a point randomly shift it
+                     within offset radius
+   */
+  KMPoint sample_center(double offset=0.);
   //! Sample few centers
   //! \param[in] sample where the samples will be stored
   //! param[in] k the number of centers to sample
+  //! param[in] offset after selecting a point randomly shift it
+  //!                  within offset radius
   //! param[in] allow_duplicate can the centers be the same
   virtual void sample_centers( KMPointArray *sample,int k,
-      bool allow_duplicate);
+  double offset=0.,bool allow_duplicate=false);
   //! Show the data points - TODO - add
   void show(){}
   virtual ~KMData();
