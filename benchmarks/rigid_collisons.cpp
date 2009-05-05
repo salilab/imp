@@ -65,15 +65,15 @@ int main() {
   for (unsigned int i=0; i< atoms.size(); ++i) {
     XYZRDecorator::create(atoms[i], 1);
   }
-  IMP_NEW(lsc, ListSingletonContainer, (atoms));
-  IMP_NEW(cpss, ClosePairsScoreState, (lsc));
+  IMP_NEW(ListSingletonContainer, lsc, (atoms));
+  IMP_NEW(ClosePairsScoreState, cpss, (lsc));
   m->add_score_state(cpss);
-  IMP_NEW(pr, PairsRestraint,
+  IMP_NEW(PairsRestraint, pr,
           (new DistancePairScore(new Linear(1,0)),
            cpss->get_close_pairs_container()));
   m->add_restraint(pr);
   {
-    IMP_NEW(qcpf, QuadraticClosePairsFinder, ());
+    IMP_NEW(QuadraticClosePairsFinder,qcpf, ());
     //lsc->set_particles(atoms);
     cpss->set_close_pairs_finder(qcpf);
     std::cout << "Quadratic:" << std::endl;
@@ -90,7 +90,7 @@ int main() {
       rbsp[i]= rbs[i].get_particle();
     }
     lsc->set_particles(rbsp);
-    IMP_NEW(rcps, RigidClosePairsFinder, ());
+    IMP_NEW(RigidClosePairsFinder, rcps, ());
     cpss->set_close_pairs_finder(rcps);
     std::cout << "Hierarchy:" << std::endl;
     test_one(m, rbs, 10);

@@ -39,7 +39,7 @@ void test_one(ClosePairsFinder *cpf, unsigned int n, float rmin, float rmax) {
       }
       cpss->before_evaluate();
     }, runtime);
-  IMP_NEW(pr, PairsRestraint, (new DistancePairScore(new Linear(1,0)),
+  IMP_NEW(PairsRestraint, pr, (new DistancePairScore(new Linear(1,0)),
                                cpss->get_close_pairs_container()));
   std::cout << n << " particles with radii from "
             << rmin << " to " << rmax
