@@ -129,23 +129,44 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
 
 
 
-IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r) {
+IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r,
+                                        const Vector3D &start,
+                                        const Sphere3Ds &obstacles) {
+  IMP_check(r>.00001,
+            "If r is too small, it won't succeed in placing the spheres",
+            ValueException);
   unsigned int max_failures=30;
   Vector3Ds ret;
   std::vector<unsigned int> failures;
-  ret.push_back(Vector3D(0,0,0));
+  ret.push_back(start);
   failures.push_back(0);
   while (ret.size() != n) {
+    if (ret.empty()) {
+      IMP_failure("Cannot place first random point",
+                  ValueException);
+    }
     if (failures.back() > max_failures) {
+      IMP_LOG(VERBOSE, "Popping " << ret.back() << std::endl);
       ret.pop_back();
       failures.pop_back();
     }
     Vector3D v= random_vector_on_sphere(ret.back(), 2*r);
+    IMP_LOG(VERBOSE, "Trying " << v << " (" << ret.size() << ")"
+            << std::endl);
+    Sphere3D cb(v, r); // some slack
     bool bad=false;
     for (unsigned int i=0; i< ret.size()-1; ++i) {
-      if (distance(v, ret[i]) < 2*r) {
+      if (interiors_intersect(cb, Sphere3D(ret[i], r))) {
         bad=true;
         break;
+      }
+    }
+    if (!bad) {
+      for (unsigned int i=0; i< obstacles.size(); ++i) {
+        if (interiors_intersect(obstacles[i], cb)) {
+          bad=true;
+          break;
+        }
       }
     }
     if (bad) {
