@@ -122,6 +122,30 @@ protected:
 // on Windows where different C runtimes can make FILE pointers unusable:
 // http://www.python.org/doc/faq/windows/#pyrun-simplefile-crashes-on-windows-but-not-on-unix-why
 
+// Note that this is still not optimal, since the streambuf is not buffered;
+// uflow() or underflow() virtual methods will be called for each character
+// (unless xsgetn can be used). This could be alleviated (at the expense of
+// making the classes rather more complex) by buffering if the underlying file
+// is seekable:
+//   populate_buffer() {
+//     pos_ = (fgetpos() or Python tell());
+//     fill buffer with fread(buffer_size) or Python read(buffer_size);
+//   }
+//   sync() {
+//     fsetpos(pos_) or Python seek(pos_);
+//     chars_consumed = gptr() - eback();
+//     read and discard char array with
+//                      fread(chars_consumed) or Python read(chars_consumed);
+//     empty buffer;
+//   }
+//   uflow() and underflow() call populate_buffer(); sync ensures that future
+//   reads from the underlying file will reread characters currently between
+//   gptr() and egptr(). Note that we cannot simply do
+//   fseek(fh, gptr() - egptr(), SEEK_CUR) in sync since this doesn't work with
+//   text files on Windows, or with Python file-like objects, where the only
+//   inputs to seek() that have defined behavior are offsets previously
+//   returned by tell().
+
 %typemap(in) std::istream& (std::streambuf *tmp=NULL) {
   bool real_file;
   try {
