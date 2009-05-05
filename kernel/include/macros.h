@@ -861,8 +861,8 @@ public:                                                                 \
 #ifndef IMP_DOXYGEN
 
 //! Declare a ref counted pointer to a new object
-/** \param[in] varname The name for the ref counted pointer
-    \param[in] Typename The namespace qualified type being declared
+/** \param[in] Typename The namespace qualified type being declared
+    \param[in] varname The name for the ref counted pointer
     \param[in] args The paretesized arguments to the constructor, or ()
     if there are none.
     \see IMP::Pointer
@@ -870,7 +870,7 @@ public:                                                                 \
     IMP_NEW(m, IMP::Model, ());
     \endcode
  */
-#define IMP_NEW(varname, Typename, args)        \
+#define IMP_NEW(Typename, varname, args)        \
   Pointer<Typename> varname(new Typename args)
 
 
