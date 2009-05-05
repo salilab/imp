@@ -119,9 +119,9 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   \relatesalso Transformation3D
 */
 inline Transformation3D
-rotation_in_radians_about_axis(const Vector3D &point,
-                               const Rotation3D &rotation) {
-   return Transformation3D(rotation, (rotation*(-point)+point));
+rotation_about_point(const Vector3D &point,
+                     const Rotation3D &rotation) {
+  return Transformation3D(rotation, (rotation*(-point)+point));
 }
 
 //! compose two transformations
