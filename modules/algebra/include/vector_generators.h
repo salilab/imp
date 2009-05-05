@@ -212,10 +212,18 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
     with n particles each with radius r. Consecutive particles are
     approximately distance 2r apart and no pair of particles is closer
     than 2r.
+
+    If an obstacles parameter is provided then chain spheres also don't
+    intersect the obstacle spheres.
+
     \note The current implementation is not very clever and can be made
     more clever if needed.
  */
-IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r);
+IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r,
+                                        const Vector3D &start
+                                        = Vector3D(0,0,0),
+                                        const Sphere3Ds &obstacles
+                                        =Sphere3Ds());
 
 /** @} */
 
