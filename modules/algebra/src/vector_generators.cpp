@@ -128,4 +128,35 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
 }
 
 
+
+IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r) {
+  unsigned int max_failures=30;
+  Vector3Ds ret;
+  std::vector<unsigned int> failures;
+  ret.push_back(Vector3D(0,0,0));
+  failures.push_back(0);
+  while (ret.size() != n) {
+    if (failures.back() > max_failures) {
+      ret.pop_back();
+      failures.pop_back();
+    }
+    Vector3D v= random_vector_on_sphere(ret.back(), 2*r);
+    bool bad=false;
+    for (unsigned int i=0; i< ret.size()-1; ++i) {
+      if (distance(v, ret[i]) < 2*r) {
+        bad=true;
+        break;
+      }
+    }
+    if (bad) {
+      ++failures.back();
+    } else {
+      ret.push_back(v);
+      failures.push_back(0);
+    }
+  }
+  return ret;
+}
+
+
 IMPALGEBRA_END_NAMESPACE
