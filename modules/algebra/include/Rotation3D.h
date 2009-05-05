@@ -89,7 +89,7 @@ public:
   }
 
   //! Rotate a vector around the origin
-  Vector3D operator*(const Vector3D &v) {
+  Vector3D operator*(const Vector3D &v) const {
     return rotate(v);
   }
 
