@@ -42,11 +42,11 @@
 // file-like object, p
 class PyOutFileAdapter : public std::streambuf
 {
-  char buffer_[512];
+  std::vector<char> buffer_;
   PyObject *p_;
 public:
-  PyOutFileAdapter(PyObject *p) : p_(p) {
-    setp(buffer_, buffer_ + sizeof(buffer_));
+  PyOutFileAdapter(PyObject *p) : buffer_(1024), p_(p) {
+    setp(&buffer_.front(), &buffer_.front() + buffer_.size());
     Py_XINCREF(p_);
   }
 
