@@ -34,9 +34,10 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
     6. a nice comparison of different implementations of rotations:
     http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
     Currently the rotation can be initialized from either:
-    XYZ Euler angles
-    Rotation Matrix
-    Quaternion
+    - XYZ Euler angles
+    - Rotation Matrix
+    - Quaternion
+    - angle/axis representation
 */
 class IMPALGEBRAEXPORT Rotation3D: public UninitializedDefault {
   VectorD<4> v_;

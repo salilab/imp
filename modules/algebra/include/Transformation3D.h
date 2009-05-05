@@ -28,8 +28,8 @@ class IMPALGEBRAEXPORT Transformation3D: public UninitializedDefault
 {
 public:
   // public for swig
-  typedef Transformation3D This;
-  //! construct and invalid transformation
+  IMP_NO_DOXYGEN(typedef Transformation3D This;)
+  //! construct an invalid transformation
   Transformation3D(){}
   /** basic constructor*/
   Transformation3D(const Rotation3D& r,
@@ -52,11 +52,9 @@ public:
   Transformation3D operator*(const Transformation3D &tr) {
     return compose(*this, tr);
   }
-  //! get the rotation part
   const Rotation3D& get_rotation() const {
     return rot_;
   }
-  //! Get the translation part
   const Vector3D& get_translation()const{return trans_;}
 
   void show(std::ostream& out = std::cout) const {
@@ -116,7 +114,6 @@ inline Transformation3D transformation_from_reference_frame(const Vector3D &u,
   \param[in] point Center to rotate about
   \param[in] rotation The rotation to perform
 
-  \relatesalso Rotation3D
   \relatesalso Transformation3D
 */
 inline Transformation3D
