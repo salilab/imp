@@ -70,7 +70,8 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
             InvalidStateException);
   for (unsigned int i=0; i< members.size(); ++i) {
     Particle *mp= members[i];
-
+    IMP_check(mp != p, "A rigid body cannot have itself as a member "
+              << p->get_name(), ValueException);
     IMP_check(!internal::get_has_required_attributes_for_member(p),
               "Particle " << p->get_name() << " is already part of "
               << "a conflicting rigid body",
