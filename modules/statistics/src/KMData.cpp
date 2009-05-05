@@ -15,13 +15,21 @@ KMData::KMData(int d, int n) : dim_(d) {
 KMData::~KMData() {
   deallocate_points(points_);
 }
-KMPoint KMData::sample_center(){
-  return *((*points_)[random_int(points_->size())]);
+KMPoint KMData::sample_center(double offset){
+  KMPoint *sampled_p = (*points_)[random_int(points_->size())];
+  if (offset == 0.) {
+    return *sampled_p;
+  }
+  KMPoint p;
+  for(int i=0;i<dim_;i++) {
+    p.push_back((*sampled_p)[i]+random_uniform(-1.,1)*offset);
+  }
+  return p;
 }
 
 void KMData::sample_centers( KMPointArray *sample,int k,
-      bool allow_duplicate) {
-  clear_points(sample);
+  double offset, bool allow_duplicate) {
+    clear_points(sample);
   IMP_LOG(VERBOSE,"KMData::sample_centers size: "<<sample->size()<<std::endl);
    if (!allow_duplicate)
      IMP_assert(((unsigned int)k)<= points_->size(),
@@ -45,7 +53,10 @@ void KMData::sample_centers( KMPointArray *sample,int k,
      }
      sampled_ind.push_back(ri);
      KMPoint *p = new KMPoint();
-     copy_point((*points_)[ri],p);
+     KMPoint *copied_p = (*points_)[ri];
+     for(int j=0;j<dim_;j++) {
+       p->push_back((*copied_p)[j]+random_uniform(-1.,1)*offset);
+     }
      sample->push_back(p);
    }
    IMP_LOG(VERBOSE,"KMData::sampled centers  : " <<std::endl);

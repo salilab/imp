@@ -21,7 +21,7 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! Returns the squared distances betweentwo points
-double km_distance2(const KMPoint &p,const KMPoint &q);
+IMPSTATISTICSEXPORT double km_distance2(const KMPoint &p,const KMPoint &q);
 //! Returns true if p and q are the same points.
 bool km_is_equal(const KMPoint &p,const KMPoint &q);
 
