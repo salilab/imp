@@ -207,6 +207,16 @@ IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cone3D &cone,
                                          unsigned int number_of_points);
 
 
+//! Generate a random chain with no collisions
+/** This function generates a random chain, starting at (0,0,0)
+    with n particles each with radius r. Consecutive particles are
+    approximately distance 2r apart and no pair of particles is closer
+    than 2r.
+    \note The current implementation is not very clever and can be made
+    more clever if needed.
+ */
+IMPALGEBRAEXPORT Vector3Ds random_chain(unsigned int n, double r);
+
 /** @} */
 
 IMPALGEBRA_END_NAMESPACE
