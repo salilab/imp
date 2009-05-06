@@ -26,6 +26,16 @@ IMPATOM_BEGIN_NAMESPACE
     \see write_pdb
  */
 IMPATOMEXPORT MolecularHierarchyDecorator
+read_pdb(std::istream &in,
+         Model* model,
+         const Selector& selector = Selector(),
+         bool select_first_model = true,
+         bool ignore_alternatives = true);
+
+/** Selector objects can be used to define which atoms to read.
+    \see write_pdb
+ */
+IMPATOMEXPORT MolecularHierarchyDecorator
 read_pdb(std::string pdb_file_name,
          Model* model,
          const Selector& selector = Selector(),
@@ -38,10 +48,22 @@ read_pdb(std::string pdb_file_name,
     \see write_pdb(const MolecularHierarchyDecorators& mhd,std::ostream &out)
 */
 IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
+                             std::ostream &out);
+
+/**
+\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+*/
+IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
                              std::string file_name);
 
 /**
-\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::string file_name)
+\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+*/
+IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
+                             std::ostream &out);
+
+/**
+\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
 */
 IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
                              std::string file_name);
