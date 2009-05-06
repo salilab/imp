@@ -62,12 +62,9 @@ Particle* residue_particle(Model *m, const String& pdb_line)
   return p;
 }
 
-Particle* root_particle(Model *m, const String& pdb_file_name)
+Particle* root_particle(Model *m)
 {
   Particle* p = new Particle(m);
-
-  // name decorator
-  p->set_name(pdb_file_name);
 
   // hierarchy decorator
   MolecularHierarchyDecorator hd =
@@ -96,34 +93,15 @@ void set_chain_type(const MolecularHierarchyDecorator& hrd,
 }
 
 
-
-void write_pdb(MolecularHierarchyDecorator mhd,
-               std::ostream &out) {
-  Particles ps= get_leaves(mhd);
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    if (AtomDecorator::is_instance_of(ps[i])) {
-      AtomDecorator ad(ps[i]);
-      out << ad.get_pdb_string();
-    }
-  }
 }
 
-}
-
-MolecularHierarchyDecorator read_pdb(
-                             String pdb_file_name, Model *model,
-                             const Selector& selector,
-                             bool select_first_model,
-                             bool ignore_alternatives)
+MolecularHierarchyDecorator read_pdb(std::istream &in, Model *model,
+                                     const Selector& selector,
+                                     bool select_first_model,
+                                     bool ignore_alternatives)
 {
-  std::ifstream pdb_file(pdb_file_name.c_str());
-  if (!pdb_file) {
-    IMP_failure("No such PDB file " << pdb_file_name,
-                ValueException);
-  }
-
   // create root particle
-  Particle* root_p = root_particle(model, pdb_file_name);
+  Particle* root_p = root_particle(model);
   MolecularHierarchyDecorator root_d =
     MolecularHierarchyDecorator::cast(root_p);
 
@@ -136,8 +114,8 @@ MolecularHierarchyDecorator read_pdb(
   bool chain_type_set = false;
 
   String line;
-  while (!pdb_file.eof()) {
-    getline(pdb_file, line);
+  while (!in.eof()) {
+    getline(in, line);
     // check that line is an HETATM or ATOM rec and that selector accepts line.
     // if this is the case construct a new Particle using line and add the
     // Particle to the Model
@@ -189,6 +167,35 @@ MolecularHierarchyDecorator read_pdb(
   return root_d;
 }
 
+MolecularHierarchyDecorator read_pdb(
+                             String pdb_file_name, Model *model,
+                             const Selector& selector,
+                             bool select_first_model,
+                             bool ignore_alternatives)
+{
+  std::ifstream pdb_file(pdb_file_name.c_str());
+  if (!pdb_file) {
+    IMP_failure("No such PDB file " << pdb_file_name,
+                ValueException);
+  }
+  MolecularHierarchyDecorator root_d
+      = read_pdb(pdb_file, model, selector, select_first_model,
+                 ignore_alternatives);
+  root_d.get_particle()->set_name(pdb_file_name);
+  return root_d;
+}
+
+void write_pdb(MolecularHierarchyDecorator mhd,
+               std::ostream &out) {
+  Particles ps= get_leaves(mhd);
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (AtomDecorator::is_instance_of(ps[i])) {
+      AtomDecorator ad(ps[i]);
+      out << ad.get_pdb_string();
+    }
+  }
+}
+
 void write_pdb(MolecularHierarchyDecorator mhd,
                     std::string file_name) {
   std::ofstream out_file(file_name.c_str());
@@ -200,6 +207,13 @@ void write_pdb(MolecularHierarchyDecorator mhd,
   write_pdb(mhd, out_file);
 }
 
+void write_pdb(const MolecularHierarchyDecorators& mhd,
+               std::ostream &out)
+{
+  for (unsigned int i=0; i< mhd.size(); ++i) {
+    write_pdb(mhd[i], out);
+  }
+}
 
 void write_pdb(const MolecularHierarchyDecorators& mhd,
                std::string file_name) {
@@ -209,9 +223,7 @@ void write_pdb(const MolecularHierarchyDecorators& mhd,
                 << " for writing",
                 ValueException);
   }
-  for (unsigned int i=0; i< mhd.size(); ++i) {
-    write_pdb(mhd[i], out_file);
-  }
+  write_pdb(mhd, out_file);
 }
 
 IMPATOM_END_NAMESPACE
