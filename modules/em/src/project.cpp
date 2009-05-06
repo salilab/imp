@@ -17,15 +17,16 @@ void project_given_direction(DensityMap& map,
              const double equality_tolerance) {
 
   IMP::algebra::SphericalCoords sph(direction);
-  IMP::algebra::EulerAnglesZYZ angles(sph[1],sph[2],0.0);
-  project_given_euler_angles(map,m2,Ydim,Xdim,angles,shift,equality_tolerance);
+  algebra::Rotation3D angles
+    = algebra::rotation_from_fixed_zyz(sph[2],sph[1],0.0);
+  project_given_rotation(map,m2,Ydim,Xdim,angles,shift,equality_tolerance);
 };
 
 
-void project_given_euler_angles(DensityMap& map,
+void project_given_rotation(DensityMap& map,
              IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
-             const IMP::algebra::EulerAnglesZYZ& angles,
+             const IMP::algebra::Rotation3D& Rot,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance) {
 
@@ -50,10 +51,14 @@ void project_given_euler_angles(DensityMap& map,
 
 
   // Get the rotation and the direction from the Euler angles
-  IMP::algebra::EulerMatrixZYZ RotMat(angles);
-  IMP::algebra::Vector3D direction = RotMat.direction();
-  IMP::algebra::Rotation3D Rot = RotMat.convert_to_rotation3D();
   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
+  IMP::algebra::Vector3D direction;// = RotMat.direction();
+  for (unsigned int i=0; i< 3; ++i) {
+    IMP::algebra::Vector3D v(0,0,0);
+    v[i]=1;
+    algebra::Vector3D r= Rot.rotate(v);
+    direction[i]=r[2];
+  }
 
   // For each pixel, 4 rays of projection are computed on each direction. The
   // step is going to be 1/3 from the center of the pixel in 4 directions
