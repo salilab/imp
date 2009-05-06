@@ -120,7 +120,7 @@ class RotationTests(IMP.test.TestCase):
         axis.append(IMP.algebra.random_vector_on_unit_sphere())
         axis.append(IMP.algebra.random_vector_on_unit_sphere())
         for i in range(len(axis)-1):
-            rot = IMP.algebra.rotation_between_two_vectors(axis[i],axis[i+1])
+            rot = IMP.algebra.rotation_taking_first_to_second(axis[i],axis[i+1])
             self.assertAlmostEqual(IMP.algebra.distance(rot*axis[i],axis[i+1]),0.0)
 
 
