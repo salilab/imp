@@ -51,7 +51,7 @@ class DOMINOTests(IMP.test.TestCase):
         rots = IMP.algebra.uniform_cover(patch,10)
         for rot in rots:
             print ".dot " + str(rot[0]) + " " + str(rot[1]) + " " + str(rot[2])
-            r = IMP.algebra.rotation_between_two_vectors(max_d.get_point(1),rot)
+            r = IMP.algebra.rotation_taking_first_to_second(max_d.get_point(1),rot)
             t = IMP.algebra.Transformation3D(r,zero_vec)
             self.rt.add_transformation(t)
         #write a function to find a bounding cylinder

@@ -355,8 +355,8 @@ inline Rotation3D rotation_in_radians_about_axis(const Vector3D& axis,
 //! Create a rotation from the first vector to the second one.
 /** \relatesalso Rotation3D
  */
-inline Rotation3D rotation_between_two_vectors(const Vector3D &v1,
-                                               const Vector3D &v2) {
+inline Rotation3D rotation_taking_first_to_second(const Vector3D &v1,
+                                                  const Vector3D &v2) {
     Vector3D v1_norm = v1.get_unit_vector();
     Vector3D v2_norm = v2.get_unit_vector();
     //get a vector that is perpendicular to the plane containing v1 and v2
