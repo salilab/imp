@@ -1,11 +1,10 @@
 Import('env')
 
-import os.path
 import os
 
 dox = env.Doxygen("../html/index.html", "doxygen.conf")
 
-docdir = os.path.join(env['docdir'], 'doxygen')
+docdir = env.GetInstallDirectory('docdir', 'doxygen')
 
 # Install all files from 'dox' directory into the 'docdir' directory (cannot
 # use env.InstallAs() right now, due to scons bug #1751)

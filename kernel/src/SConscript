@@ -42,11 +42,12 @@ lib = env.SharedLibrary('#/build/lib/imp', files)
 env.Requires(lib, '#/build/data')
 
 # Install the library:
-libinst = env.Install(env['libdir'], lib)
+libdir = env.GetInstallDirectory('libdir')
+libinst = env.Install(libdir, lib)
 
 if env['build']=='profile' and env['CC'] == 'gcc':
     staticlib = env.StaticLibrary('#/build/lib/imp', files)
-    staticlibinst = env.Install(env['libdir'], staticlib)
+    staticlibinst = env.Install(libdir, staticlib)
 if env['PLATFORM'] == 'darwin':
     env.AddPostAction (lib, "install_name_tool -id %s %s" \
                            % (lib[0].abspath, lib[0].path))

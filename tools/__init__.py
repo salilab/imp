@@ -56,6 +56,21 @@ path='/opt/local/bin'
 """ % (desired[0], desired[1], desired[2], msg)
     Exit(1)
 
+def GetInstallDirectory(env, varname, *subdirs):
+    """Get a directory to install files in. The top directory is env[varname],
+       prefixed with env['destdir']. The full directory is constructed by
+       adding any other function arguments as subdirectories."""
+    destdir = env.subst(env['destdir'])
+    installdir = env.subst(env[varname])
+    if destdir != '' and not os.path.isabs(installdir):
+        print "Install directory %s (%s) must be an absolute path,\n" \
+              "since you have set destdir." % (varname, installdir)
+        env.Exit(1)
+    installdir = destdir + installdir
+    # Use SCons, not os.path.abspath, since we may not be in the top directory
+    if not os.path.isabs(installdir):
+        installdir = env.Dir('#/' + installdir).abspath
+    return os.path.join(installdir, *subdirs)
 
 # Provide a portable way to use the popen2.Popen3 class (we need this rather
 # than the popen3() factory function so we can call wait() to get exit status,
@@ -327,6 +342,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(EnsureSWIGVersion)
+    env.AddMethod(GetInstallDirectory)
     env.Prepend(SCANNERS = [_SWIGScanner],
                 BUILDERS = {'GenerateDoxFromIn':
                             generate_doxygen.GenerateDoxFromIn,
@@ -558,6 +574,11 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('docdir', 'Documentation installation directory',
                           '${prefix}/share/doc/%s' % package,
                           PathVariable.PathAccept))
+    # Note that destdir should not affect any compiled-in paths; see
+    # http://www.gnu.org/prep/standards/html_node/DESTDIR.html
+    vars.Add(PathVariable('destdir',
+                          'String to prepend to every installed filename',
+                          '', PathVariable.PathAccept))
     vars.Add(PackageVariable('python_include',
                              'Directory holding Python include files ' + \
                              '(if unspecified, distutils location is used)',

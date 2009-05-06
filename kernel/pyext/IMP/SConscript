@@ -1,5 +1,3 @@
-import os.path
-
 Import('env')
 
 # Python files
@@ -8,7 +6,7 @@ files = ['test.py']
 # Install in lib directory:
 pymod = env.LinkInstall('#/build/lib/IMP/', files)
 
-pydir = os.path.join(env['pythondir'], 'IMP')
+pydir = env.GetInstallDirectory('pythondir', 'IMP')
 pyinst = env.Install(pydir, files)
 env.Alias('install', pyinst)
 env.Alias('kernel-install', pyinst)
