@@ -43,7 +43,6 @@ void set_x(Float f);
 %include "IMP/atom/estimates.h"
 %include "IMP/atom/bond_decorators.h"
 %include "IMP/atom/BondEndpointsRefiner.h"
-%include "IMP/atom/BondBondPairScore.h"
 %include "IMP/atom/BondPairContainer.h"
 %include "IMP/atom/BondSingletonScore.h"
 %include "IMP/atom/BrownianDynamics.h"
