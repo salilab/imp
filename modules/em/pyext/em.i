@@ -74,8 +74,8 @@ namespace IMP {
       }
     }
 
-    %template(project_given_euler_angles1) 
-                  ::IMP::em::project_given_euler_angles1<float>;
+    %template(project_given_rotation1) 
+                  ::IMP::em::project_given_rotation1<float>;
     %template(project_given_direction1) 
                   ::IMP::em::project_given_direction1<float>;
     %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<float>;
