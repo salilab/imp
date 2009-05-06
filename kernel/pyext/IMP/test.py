@@ -72,6 +72,9 @@ class TestCase(unittest.TestCase):
         # If not found, default to the current working directory:
         return os.path.join('input', filename)
 
+    def open_input_file(self, filename, mode='rb'):
+        """Open and return an input file in the top-level test directory."""
+        return open(self.get_input_file_name(filename), mode)
 
     def get_tmp_file_name(self, filename):
         """Get the full name of an output file in the build/tmp directory."""
