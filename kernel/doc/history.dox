@@ -1,8 +1,18 @@
 /** \page recent Change History
 
+\par Week of MayApril 28
+
+- IMP::algebra::rotation_between_two_vectors() changed to IMP::algebra::rotation_taking_first_to_second() to make it clear which direction the rotation goes.
+
 \par Week of April 27
 
-- IMP::Decorator derived objects are now convertible to bool (so code like \if (d) { \c blah works)
+- IMP::Decorator derived objects are now convertible to bool. So code like
+\code
+ if (d) {
+    blah
+}
+\endcode
+works.
 
 - IMP::Decorator::cast now returns a null decorator (\c DecoratorName()) rather than throwing an exception. This might make it actually useful.
 
