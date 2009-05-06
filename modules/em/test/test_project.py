@@ -61,13 +61,14 @@ class EMprojectTests(IMP.test.TestCase):
 
     def test_project_Z(self):
         """Check projection of a matrix3D for axis Z"""
+        IMP.set_log_level(IMP.VERBOSE)
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.EulerAnglesZYZ(0,0,0) # Z
-        IMP.em.project_given_euler_angles1(m1,result,dy,dx,
+        angles = IMP.algebra.rotation_from_fixed_zyz(0,0,0) # Z
+        IMP.em.project_given_rotation1(m1,result,dy,dx,
                                           angles,shift,tolerance)
 #        print_matrix2D(result,"test_project_Z")
         for i in range(0,dy):
@@ -76,13 +77,14 @@ class EMprojectTests(IMP.test.TestCase):
 
     def test_project_Z_opposite(self):
         """Check projection of a matrix3D for axis -Z"""
+        IMP.set_log_level(IMP.VERBOSE)
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.EulerAnglesZYZ(0,math.pi,0) # -z
-        IMP.em.project_given_euler_angles1(m1,
+        angles = IMP.algebra.rotation_from_fixed_zyz(0,math.pi,0) # -z
+        IMP.em.project_given_rotation1(m1,
                           result,dy,dx,angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-Z")
         for i in range(0,dy):
@@ -92,13 +94,14 @@ class EMprojectTests(IMP.test.TestCase):
 
     def test_project_X(self):
         """Check projection of a matrix3D for axis X"""
+        IMP.set_log_level(IMP.VERBOSE)
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.EulerAnglesZYZ(0,-math.pi/2,0) # x
-        IMP.em.project_given_euler_angles1(m1,result,dy,dz,
+        angles = IMP.algebra.rotation_from_fixed_zyz(0,-math.pi/2,0) # x
+        IMP.em.project_given_rotation1(m1,result,dy,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_X")
         for i in range(0,dy):
@@ -108,13 +111,14 @@ class EMprojectTests(IMP.test.TestCase):
 
     def test_project_X_opposite(self):
         """Check projection of a matrix3D for axis -X"""
+        IMP.set_log_level(IMP.VERBOSE)
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.EulerAnglesZYZ(0,math.pi/2,0) # -x
-        IMP.em.project_given_euler_angles1(m1,result,dy,dz,
+        angles = IMP.algebra.rotation_from_fixed_zyz(0,math.pi/2,0) # -x
+        IMP.em.project_given_rotation1(m1,result,dy,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-X")
         for i in range(0,dy):
@@ -124,13 +128,14 @@ class EMprojectTests(IMP.test.TestCase):
 
     def test_project_Y(self):
         """Check projection of a matrix3D for axis Y"""
+        IMP.set_log_level(IMP.VERBOSE)
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.EulerAnglesZYZ(math.pi/2,math.pi/2,0) # y
-        IMP.em.project_given_euler_angles1(m1,result,dx,dz,
+        angles = IMP.algebra.rotation_from_fixed_zyz(math.pi/2,math.pi/2,0) # y
+        IMP.em.project_given_rotation1(m1,result,dx,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_Y")
         for i in range(0,dx):
@@ -140,13 +145,14 @@ class EMprojectTests(IMP.test.TestCase):
 
     def test_project_Y_opposite(self):
         """Check projection of a matrix3D for axis -Y"""
+        IMP.set_log_level(IMP.VERBOSE)
         dz=3; dy=5; dx=9
         m1 = create_matrix(dz,dy,dx)
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6
         result = IMP.algebra.Matrix2D()
-        angles = IMP.algebra.EulerAnglesZYZ(math.pi/2,-math.pi/2,0) # -y
-        IMP.em.project_given_euler_angles1(m1,result,dx,dz,
+        angles = IMP.algebra.rotation_from_fixed_zyz(math.pi/2,-math.pi/2,0) # -y
+        IMP.em.project_given_rotation1(m1,result,dx,dz,
                                           angles,shift ,tolerance)
 #        print_matrix2D(result,"test_project_-Y")
         for i in range(0,dx):
@@ -155,6 +161,7 @@ class EMprojectTests(IMP.test.TestCase):
 
     def test_project(self):
         """Check projection of a matrix3D for a vector"""
+        IMP.set_log_level(IMP.VERBOSE)
         m1 = create_cube(7,7,9)
         shift = IMP.algebra.Vector3D(0,0,0)
         tolerance = 1e-6

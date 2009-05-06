@@ -48,7 +48,7 @@ IMPEM_BEGIN_NAMESPACE
  *            that is to contain the projection
  * \param[in] Xdim size in columns for the Matrix2D
  *            that is to contain the projection
- * \param[in] angles class containing the euler angles of the projection
+ * \param[in] Rot the rotation to apply before projection along z
  * \param[in] shift Shift vector applied to p in the coordinate
  *            system of the projection.
  * \param[in] equality_tolerance tolerance allowed to consider a value in the
@@ -60,10 +60,10 @@ IMPEM_BEGIN_NAMESPACE
  *   vector3D using the (x,y,z) convention.
  */
 template<typename T>
-void project_given_euler_angles1(IMP::algebra::Matrix3D<T>& m3,
+void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
              IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
-             const IMP::algebra::EulerAnglesZYZ& angles,
+             const IMP::algebra::Rotation3D& Rot,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance) {
 
@@ -76,13 +76,17 @@ void project_given_euler_angles1(IMP::algebra::Matrix3D<T>& m3,
   // Center the matrices (necessary for the projection algorithm)
   m2.centered_start();
   m3.centered_start();
-  // Get the rotation and the direction from the Euler angles
-  IMP::algebra::EulerMatrixZYZ RotMat(angles);
-  IMP::algebra::Vector3D direction = RotMat.direction();
-  IMP::algebra::Rotation3D Rot = RotMat.convert_to_rotation3D();
+
   // We are interested in the inverse rotation (that one that allows to pass
   // form the projection coordinate system to the universal coordinate system)
   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
+  IMP::algebra::Vector3D direction;// = RotMat.direction();
+  for (unsigned int i=0; i< 3; ++i) {
+    IMP::algebra::Vector3D v(0,0,0);
+    v[i]=1;
+    algebra::Vector3D r= Rot.rotate(v);
+    direction[i]=r[2];
+  }
 
 #ifdef DEBUG
   std::cout << " direction " << direction << std::endl;
@@ -262,10 +266,10 @@ void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
              IMP::algebra::Vector3D& direction,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance) {
-
   IMP::algebra::SphericalCoords sph(direction);
-  IMP::algebra::EulerAnglesZYZ angles(sph[2],sph[1],0.0);
-  project_given_euler_angles1(m3,m2,Ydim,Xdim,angles,shift,equality_tolerance);
+  algebra::Rotation3D angles
+    = algebra::rotation_from_fixed_zyz(sph[2],sph[1],0.0);
+  project_given_rotation1(m3,m2,Ydim,Xdim,angles,shift,equality_tolerance);
 };
 
 
@@ -341,7 +345,7 @@ void IMPEMEXPORT project_given_direction(DensityMap& map,
  *            that is to contain the projection
  * \param[in] Xdim size in columns for the Matrix2D
  *            that is to contain the projection
- * \param[in] angles Vector3D containing the Euler angles (Z,Y,Z)
+ * \param[in] Rot The rotation that is applied before projection along z
  * \param[in] shift Shift vector applied to p in the coordinate
  *            system of the projection.
  * \param[in] equality_tolerance tolerance allowed to consider a value in the
@@ -352,10 +356,10 @@ void IMPEMEXPORT project_given_direction(DensityMap& map,
  *   convention for 3D and (y,x) for 2D. But it expects and operates all the
  *   vector3D using the (x,y,z) convention.
  */
-void IMPEMEXPORT project_given_euler_angles(DensityMap& map,
+void IMPEMEXPORT project_given_rotation(DensityMap& map,
              IMP::algebra::Matrix2D<float>& m2,
              const int Ydim,const int Xdim,
-             const IMP::algebra::EulerAnglesZYZ& angles,
+             const IMP::algebra::Rotation3D& Rot,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance);
 
