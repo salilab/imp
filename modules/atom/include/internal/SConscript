@@ -1,0 +1,7 @@
+files = [
+         'bond_helpers.h',
+         'pdb.h',
+        ]
+
+files = [File(x) for x in files]
+Return('files')
