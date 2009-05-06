@@ -158,8 +158,8 @@ void BrownianDynamics::take_step() {
       unit::Angstrom R(sampler());
       unit::Angstrom force_term(nforce*dt_*D/kt());
       if (force_term > 5*sigma) {
-        IMP_failure("Forces are too high to stably integrate: "
-                    << *p, InvalidStateException);
+        IMP_WARN("Forces are too high to stably integrate: "
+                 << p->get_name());
       }
       //std::cout << "Force term is " << force_term << " and R is "
       //<< R << std::endl;
