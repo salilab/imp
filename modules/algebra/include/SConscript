@@ -1,7 +1,6 @@
 Import('env')
 
 files = [
-         'rotation_operations.h',
          'Cone3D.h',
          'Cylinder3D.h',
          'Matrix2D.h',
@@ -12,15 +11,16 @@ files = [
          'Segment3D.h',
          'Sphere3D.h',
          'Sphere3DPatch.h',
+         'SphericalCoords.h',
          'Transformation3D.h',
          'Vector3D.h',
          'VectorD.h',
-         'SphericalCoords.h',
          'eigen_analysis.h',
          'endian.h',
          'geometric_alignment.h',
          'grid_range_D.h',
          'io.h',
+         'rotation_operations.h',
          'utility.h',
          'vector_generators.h',
         ] \
