@@ -19,6 +19,11 @@ class Rotation3D;
 Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 #endif
 
+
+#ifndef IMP_DOXYGEN
+#define IMP_ROTATION_CACHE
+#endif
+
 //! 3D rotation class.
 /** Holds a three dimensional rotation compactly using a quaternion (4 numbers).
     Advantages using quaternion:
@@ -41,7 +46,9 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 */
 class IMPALGEBRAEXPORT Rotation3D: public UninitializedDefault {
   VectorD<4> v_;
-
+#ifdef IMP_ROTATION_CACHE
+  Vector3D matrix_[3];
+#endif
   friend Rotation3D compose(const Rotation3D &a, const Rotation3D &b);
 
 public:
@@ -60,6 +67,17 @@ public:
       // make them canonical
       v_=-v_;
     }
+#ifdef IMP_ROTATION_CACHE
+    matrix_[0][0]= v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3];
+    matrix_[0][1]= 2*(v_[1]*v_[2]-v_[0]*v_[3]);
+    matrix_[0][2]= 2*(v_[1]*v_[3]+v_[0]*v_[2]);
+    matrix_[1][0]= 2*(v_[1]*v_[2]+v_[0]*v_[3]);
+    matrix_[1][1]= v_[0]*v_[0]-v_[1]*v_[1]+v_[2]*v_[2]-v_[3]*v_[3];
+    matrix_[1][2]= 2*(v_[2]*v_[3]-v_[0]*v_[1]);
+    matrix_[2][0]= 2*(v_[1]*v_[3]-v_[0]*v_[2]);
+    matrix_[2][1]= 2*(v_[2]*v_[3]+v_[0]*v_[1]);
+    matrix_[2][2]= v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3];
+#endif
   }
   ~Rotation3D();
   //! Rotate a vector around the origin
@@ -78,6 +96,16 @@ public:
     IMP_check(v_.get_squared_magnitude() >0,
               "Attempting to apply uninitialized rotation",
               InvalidStateException);
+#ifdef IMP_ROTATION_CACHE
+    Vector3D ret;
+    for (unsigned int i=0; i< 3; ++i) {
+      ret[i]=0;
+      for (unsigned int j=0; j< 3; ++j) {
+        ret[i]+= o[j]*matrix_[i][j];
+      }
+    }
+    return ret;
+#else
     return Vector3D((v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3])*o[0]
                     + 2*(v_[1]*v_[2]-v_[0]*v_[3])*o[1]
                     + 2*(v_[1]*v_[3]+v_[0]*v_[2])*o[2],
@@ -87,6 +115,7 @@ public:
                     2*(v_[1]*v_[3]-v_[0]*v_[2])*o[0]
                     + 2*(v_[2]*v_[3]+v_[0]*v_[1])*o[1]
                     + (v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3])*o[2]);
+#endif
   }
 
   //! Rotate a vector around the origin
@@ -256,8 +285,6 @@ inline Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
   return Rotation3D(a,b,c,d);
 }
 
-
-
 //! Generate a Rotation3D object from a rotation matrix
 /**
    \throw ValueException if the rotation is not a rotation matrix.
@@ -267,6 +294,39 @@ IMPALGEBRAEXPORT Rotation3D
 rotation_from_matrix(double m11,double m12,double m13,
                      double m21,double m22,double m23,
                      double m31,double m32,double m33);
+
+
+//! Generate a rotation object from Euler Angles
+/** \note Javi needs to fill in whether these are fixed and all the details to
+    make it as clear as the other ones.
+    \note This could be made more efficient by generating the quaternion
+    terms directly.
+    \param[in] Rot First Euler angle (radians) defining the rotation (Z axis)
+    \param[in] Tilt Second Euler angle (radians) defining the rotation (Y axis)
+    \param[in] Psi Third Euler angle (radians) defining the rotation (Z axis)
+    \relatesalso Rotation3D
+*/
+inline Rotation3D rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
+  double c1 = std::cos(Rot);
+  double c2 = std::cos(Tilt);
+  double c3 = std::cos(Psi);
+  double s1 = std::sin(Rot);
+  double s2 = std::sin(Tilt);
+  double s3 = std::sin(Psi);
+
+  double d00 = c1 * c2 * c3 - s1 * s3;
+  double d01 = (-1.0) * c2 * c3 * s1 - c1 * s3;
+  double d02 = c3 * s2;
+  double d10 = c3 * s1 + c1 * c2 * s3;
+  double d11 = c1 * c3 - c2 * s1 * s3;
+  double d12 = s2 * s3;
+  double d20 = (-1.0) * c1 * s2;
+  double d21 = s1 * s2;
+  double d22 = c2;
+  return rotation_from_matrix(d00, d01, d02,
+                              d10, d11, d12,
+                              d20, d21, d22);
+}
 
 
 //! Generate a Rotation3D object from a rotation around an axis
