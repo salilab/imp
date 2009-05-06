@@ -2,6 +2,8 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
+         'BondBondPairScore.cpp',
+         'CommonEndpointPairContainer.cpp',
          'LowestRefinedPairScore.cpp',
          'RefineOncePairScore.cpp',
          'StateAdaptor.cpp',
