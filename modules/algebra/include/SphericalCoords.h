@@ -24,6 +24,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 class IMPALGEBRAEXPORT SphericalCoords: public UninitializedDefault
 {
+  bool check(double r, double tetha, double psi);
  public:
   //! Empty constructor
   SphericalCoords() {};
@@ -31,7 +32,7 @@ class IMPALGEBRAEXPORT SphericalCoords: public UninitializedDefault
   //! Constructor that directly converts to spherical coordinates from a vector
   //! v in cartesian coordinates
   SphericalCoords(Vector3D &v) {
-    from_cartesian(v);
+    set_cartesian_coordinates(v);
   }
 
   //! Direct Constructor. A check a check for the validity of the coords is done
@@ -53,25 +54,22 @@ class IMPALGEBRAEXPORT SphericalCoords: public UninitializedDefault
   }
 
   double operator[](unsigned int i) const {
-    IMP_assert(i < 3, "Invalid component of SphericalCoords requested: "
-               << i << " of " << 3);
+    IMP_check(i < 3, "Invalid component of SphericalCoords requested: "
+              << i << " of " << 3, IndexException);
     return _v[i];
   }
 
   double& operator[](unsigned int i) {
-    IMP_assert(i < 3, "Invalid component of SphericalCoords requested: "
-               << i << " of " << 3);
+    IMP_check(i < 3, "Invalid component of SphericalCoords requested: "
+              << i << " of " << 3, IndexException);
     return _v[i];
   }
 
-  //! Checks the validity of the coordinates (true if they are correct)
-  bool check(double r, double tetha, double psi);
-
   //! Retunrs a vector with the cartesian coordinates
-  Vector3D to_cartesian();
+  Vector3D get_cartesian_coordinates();
 
   //! converts a vector in cartesian coordinates to spherical coordinates
-  void from_cartesian(Vector3D& v);
+  void set_cartesian_coordinates(Vector3D& v);
 
  private:
   double _v[3];
