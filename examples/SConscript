@@ -39,7 +39,7 @@ e.Alias("test", test)
 e.AlwaysBuild("examples.passed")
 
 # Install all scripts:
-docdir = os.path.join(env['docdir'], 'examples')
+docdir = e.GetInstallDirectory('docdir', 'examples')
 e.Install(docdir, example_py)
 e.Alias('docinstall', docdir)
 

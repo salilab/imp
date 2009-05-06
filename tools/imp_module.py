@@ -223,9 +223,10 @@ def IMPSharedLibrary(env, files, install=True):
                                % (lib[0].abspath, lib[0].path))
         libdir= os.path.split(lib[0].abspath)[0]
     if install:
-        libinst = env.Install(env['libdir'], lib)
+        libinst = env.Install(env.GetInstallDirectory('libdir'), lib)
         if env['build']=='profile' and env['CC'] == 'gcc':
-            staticlibinst = env.Install(env['libdir'], staticlib)
+            staticlibinst = env.Install(env.GetInstallDirectory('libdir'),
+                                        staticlib)
         if env['PLATFORM'] == 'darwin':
             env.AddPostAction (libinst, "install_name_tool -id %s %s" \
                                    % (libinst[0].abspath, libinst[0].path))
@@ -262,7 +263,7 @@ def IMPHeaders(env, files):
     """Install the given header files, plus any auto-generated files for this
        IMP module."""
     from tools.hierarchy import InstallHierarchy
-    includedir = os.path.join(env['includedir'], 'IMP')
+    includedir = env.GetInstallDirectory('includedir', 'IMP')
     inst = InstallHierarchy(env, includedir, env['IMP_MODULE'],
                             env['IMP_MODULE_DESCRIPTION'],
                             list(files) + [env['CONFIG_H'], env['VER_H']])
@@ -273,7 +274,7 @@ def IMPHeaders(env, files):
 def IMPPython(env, files):
     """Install the given Python files for this IMP module."""
     from tools.hierarchy import InstallPythonHierarchy
-    pydir = os.path.join(env['pythondir'], 'IMP')
+    pydir = env.GetInstallDirectory('pythondir', 'IMP')
     inst, lib = InstallPythonHierarchy(env, pydir, env['IMP_MODULE'], files)
     for alias in _get_module_install_aliases(env):
         env.Alias(alias, inst)
@@ -284,7 +285,7 @@ def IMPPython(env, files):
 def IMPData(env, files):
     """Install the given data files for this IMP module."""
     from tools.hierarchy import InstallDataHierarchy
-    datadir = os.path.join(env['datadir'], 'IMP')
+    datadir = env.GetInstallDirectory('datadir', 'IMP')
     inst, lib = InstallDataHierarchy(env, datadir, env['IMP_MODULE'], files)
     for alias in _get_module_install_aliases(env):
         env.Alias(alias, inst)
@@ -306,13 +307,14 @@ def IMPPythonExtension(env, swig_interface):
     pymod = env.LinkInstallAs('#/build/lib/IMP/%s/__init__.py' % module,
                               gen_pymod)
     # Install the Python extension and module:
-    libinst = env.Install(env['pyextdir'], pyext)
+    libinst = env.Install(env.GetInstallDirectory('pyextdir'), pyext)
     if env['PLATFORM'] == 'darwin':
         libdir= os.path.split(pyext[0].abspath)[0]
         env.AddPostAction (libinst, "install_name_tool -change %s/libimp_%s.dylib %s/libimp_%s.dylib %s" \
                                    % (libdir, module,
                                       env['libdir'], module, libinst[0].path))
-    pyinst = env.Install(os.path.join(env['pythondir'], 'IMP', module), pymod)
+    pyinst = env.Install(env.GetInstallDirectory('pythondir', 'IMP', module),
+                         pymod)
     for alias in _get_module_install_aliases(env):
         env.Alias(alias, [libinst, pyinst])
     if env.get('python', True):
