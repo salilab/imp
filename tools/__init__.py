@@ -129,9 +129,9 @@ def _add_build_flags(env):
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
     if env['CC'] == 'gcc':
-        env.Append(CCFLAGS=["-Wall",
-                            "-Woverloaded-virtual",
-                            "-Wstrict-null-sentinel"])
+        env.Append(CCFLAGS=["-Wall"])
+    if env['CXX'] == 'g++':
+        env.Append(CXXFLAGS=["-Woverloaded-virtual"])
     if env['build'] == 'fast':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
