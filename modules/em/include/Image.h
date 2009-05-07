@@ -14,7 +14,7 @@
 #include "ImageHeader.h"
 #include "ImageReaderWriter.h"
 #include "IMP/algebra/Matrix2D.h"
-#include "IMP/algebra/rotation_operations.h"
+#include "IMP/algebra/Rotation2D.h"
 #include <complex>
 #include <limits>
 #include <typeinfo>

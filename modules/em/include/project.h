@@ -10,7 +10,6 @@
 
 #include "config.h"
 #include "DensityMap.h"
-#include <IMP/algebra/rotation_operations.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/Matrix3D.h>
 #include <IMP/algebra/Matrix2D.h>
