@@ -42,10 +42,18 @@ read_pdb(std::string pdb_file_name,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
-/** \note This function produces files that are not valid PDB files. Complain
-    if your favorite program can't read them and we might fix it.
-    \see read_pdb
-    \see write_pdb(const MolecularHierarchyDecorators& mhd,std::ostream &out)
+/** Add bonds using definitions from topology file
+    if topology file is not given, default file is used
+*/
+IMPATOMEXPORT void add_bonds(MolecularHierarchyDecorator d,
+                             std::string topology_file_name = "");
+
+/** \note This function produces files that are not valid PDB files,
+    i.e. only ATOM/HETATM lines are printed for all AtomDecorator particles
+    in the hierarchy. Complain if your favorite program can't read them and
+    we might fix it.
+   \see read_pdb
+   \see write_pdb(const MolecularHierarchyDecorators& mhd,std::string file_name)
 */
 IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
                              std::ostream &out);
@@ -67,6 +75,17 @@ IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
 */
 IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
                              std::string file_name);
+
+/**
+\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+*/
+IMPATOMEXPORT void write_pdb(const Particles& ps, std::ostream &out);
+
+/**
+\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+*/
+IMPATOMEXPORT void write_pdb(const Particles& ps, std::string file_name);
+
 
 //!@}
 

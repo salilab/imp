@@ -13,6 +13,7 @@ files = [
          'MolecularDynamics.cpp',
          'MolecularHierarchyDecorator.cpp',
          'ResidueDecorator.cpp',
+         'Topology.cpp',
          'VelocityScalingOptimizerState.cpp',
          'bond_decorators.cpp',
          'estimates.cpp',
