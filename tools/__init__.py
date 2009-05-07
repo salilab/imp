@@ -557,16 +557,21 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
 
 def add_common_variables(vars, package):
     """Add common variables to an SCons Variables object."""
+    libdir = '${prefix}/lib'
+    if hasattr(os, 'uname') and sys.platform == 'linux2' \
+       and os.uname()[-1] == 'x86_64':
+        # Install in /usr/lib64 rather than /usr/lib on x86_64 Linux boxes
+        libdir += '64'
     vars.Add(PathVariable('prefix', 'Top-level installation directory', '/usr',
                           PathVariable.PathAccept))
     vars.Add(PathVariable('datadir', 'Data file installation directory',
                           '${prefix}/share', PathVariable.PathAccept))
     vars.Add(PathVariable('libdir', 'Shared library installation directory',
-                          '${prefix}/lib', PathVariable.PathAccept))
+                          libdir, PathVariable.PathAccept))
     vars.Add(PathVariable('includedir', 'Include file installation directory',
                           '${prefix}/include', PathVariable.PathAccept))
     vars.Add(PathVariable('pythondir', 'Python module installation directory',
-                          '${prefix}/lib/python%d.%d/site-packages' \
+                          libdir + '/python%d.%d/site-packages' \
                           % sys.version_info[0:2], PathVariable.PathAccept))
     vars.Add(PathVariable('pyextdir',
                           'Python extension module installation directory',
