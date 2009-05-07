@@ -21,6 +21,8 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 
 
 #ifndef IMP_DOXYGEN
+/* According to benchmarks/rotate having the cache is 20% faster. Since space
+   is unlikely to be an issue for rotations, we can keep the cache. */
 #define IMP_ROTATION_CACHE
 #endif
 
