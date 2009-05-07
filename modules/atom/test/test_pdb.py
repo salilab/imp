@@ -15,11 +15,17 @@ class PDBReadWriteTest(IMP.test.TestCase):
                               m, IMP.atom.NonWaterSelector())
         self.assertEqual(m.get_number_of_particles(), 1132)
         IMP.atom.show_molecular_hierarchy(mp)
+        IMP.atom.add_bonds(mp)
+        bds = IMP.atom.get_internal_bonds(mp)
+        self.assertEqual(bds.size(), 1020)
 
         m2 = IMP.Model()
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                               m2, IMP.atom.CAlphaSelector())
         self.assertEqual(m2.get_number_of_particles(), 260)
+        IMP.atom.add_bonds(mp)
+        bds = IMP.atom.get_internal_bonds(mp)
+        self.assertEqual(bds.size(), 0)
 
     def test_write(self):
         """Simple test of writing a PDB"""

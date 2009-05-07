@@ -205,6 +205,8 @@ IMP_OUTPUT_OPERATOR(ResidueDecorator);
  */
 IMPATOMEXPORT ResidueType residue_type_from_pdb_string(std::string nm);
 
+IMPATOMEXPORT char get_chain(ResidueDecorator rd);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_RESIDUE_DECORATOR_H */

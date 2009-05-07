@@ -11,6 +11,8 @@
 #include <IMP/core/NameDecorator.h>
 #include <IMP/core/HierarchyDecorator.h>
 #include <IMP/atom/ChainDecorator.h>
+#include <IMP/atom/Topology.h>
+#include <IMP/directories.h>
 
 #include <boost/algorithm/string.hpp>
 
@@ -92,7 +94,25 @@ void set_chain_type(const MolecularHierarchyDecorator& hrd,
     hcd.set_type(MolecularHierarchyDecorator::MOLECULE);
 }
 
+}
 
+MolecularHierarchyDecorator read_pdb(
+                             String pdb_file_name, Model *model,
+                             const Selector& selector,
+                             bool select_first_model,
+                             bool ignore_alternatives)
+{
+  std::ifstream pdb_file(pdb_file_name.c_str());
+  if (!pdb_file) {
+    IMP_failure("No such PDB file " << pdb_file_name,
+                ValueException);
+  }
+  MolecularHierarchyDecorator root_d
+      = read_pdb(pdb_file, model, selector, select_first_model,
+                 ignore_alternatives);
+  root_d.get_particle()->set_name(pdb_file_name);
+  pdb_file.close();
+  return root_d;
 }
 
 MolecularHierarchyDecorator read_pdb(std::istream &in, Model *model,
@@ -112,6 +132,7 @@ MolecularHierarchyDecorator read_pdb(std::istream &in, Model *model,
   char curr_residue_icode = '-';
   char curr_chain = '-';
   bool chain_type_set = false;
+  bool first_model_read = false;
 
   String line;
   while (!in.eof()) {
@@ -119,6 +140,13 @@ MolecularHierarchyDecorator read_pdb(std::istream &in, Model *model,
     // check that line is an HETATM or ATOM rec and that selector accepts line.
     // if this is the case construct a new Particle using line and add the
     // Particle to the Model
+
+    // handle MODEL reading
+    if (internal::is_MODEL_rec(line)) {
+      if(first_model_read && select_first_model) break;
+      first_model_read = true; continue;
+    }
+
     if ((internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line))
         && selector(line)) {
 
@@ -167,27 +195,22 @@ MolecularHierarchyDecorator read_pdb(std::istream &in, Model *model,
   return root_d;
 }
 
-MolecularHierarchyDecorator read_pdb(
-                             String pdb_file_name, Model *model,
-                             const Selector& selector,
-                             bool select_first_model,
-                             bool ignore_alternatives)
+void add_bonds(MolecularHierarchyDecorator d, std::string topology_file_name)
 {
-  std::ifstream pdb_file(pdb_file_name.c_str());
-  if (!pdb_file) {
-    IMP_failure("No such PDB file " << pdb_file_name,
-                ValueException);
+  // we want the file to be read only once
+  std::string file_name = IMP::get_data_directory() +"/atom/top.lib";
+  static Topology topology(file_name);
+
+  if(topology_file_name.length() > 0) {
+    Topology user_topology(topology_file_name);
+    user_topology.add_bonds(d);
+  } else {
+    topology.add_bonds(d);
   }
-  MolecularHierarchyDecorator root_d
-      = read_pdb(pdb_file, model, selector, select_first_model,
-                 ignore_alternatives);
-  root_d.get_particle()->set_name(pdb_file_name);
-  return root_d;
 }
 
-void write_pdb(MolecularHierarchyDecorator mhd,
-               std::ostream &out) {
-  Particles ps= get_leaves(mhd);
+void write_pdb(const Particles& ps, std::ostream &out)
+{
   for (unsigned int i=0; i< ps.size(); ++i) {
     if (AtomDecorator::is_instance_of(ps[i])) {
       AtomDecorator ad(ps[i]);
@@ -196,34 +219,50 @@ void write_pdb(MolecularHierarchyDecorator mhd,
   }
 }
 
-void write_pdb(MolecularHierarchyDecorator mhd,
-                    std::string file_name) {
+void write_pdb(const Particles& ps, std::string file_name)
+{
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    IMP_failure("Can't open file " << file_name
-                << " for writing",
+    IMP_failure("Can't open file " << file_name << " for writing",
+                ValueException);
+  }
+  write_pdb(ps, out_file);
+  out_file.close();
+}
+
+void write_pdb(MolecularHierarchyDecorator mhd, std::string file_name)
+{
+  std::ofstream out_file(file_name.c_str());
+  if (!out_file) {
+    IMP_failure("Can't open file " << file_name << " for writing",
                 ValueException);
   }
   write_pdb(mhd, out_file);
+  out_file.close();
 }
 
-void write_pdb(const MolecularHierarchyDecorators& mhd,
-               std::ostream &out)
+void write_pdb(MolecularHierarchyDecorator mhd, std::ostream &out)
+{
+  Particles ps= get_leaves(mhd);
+  write_pdb(ps, out);
+}
+
+void write_pdb(const MolecularHierarchyDecorators& mhd, std::ostream &out)
 {
   for (unsigned int i=0; i< mhd.size(); ++i) {
     write_pdb(mhd[i], out);
   }
 }
 
-void write_pdb(const MolecularHierarchyDecorators& mhd,
-               std::string file_name) {
+void write_pdb(const MolecularHierarchyDecorators& mhd, std::string file_name)
+{
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
-    IMP_failure("Can't open file " << file_name
-                << " for writing",
+    IMP_failure("Can't open file " << file_name << " for writing",
                 ValueException);
   }
   write_pdb(mhd, out_file);
+  out_file.close();
 }
 
 IMPATOM_END_NAMESPACE

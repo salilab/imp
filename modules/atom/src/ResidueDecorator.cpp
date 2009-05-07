@@ -7,6 +7,7 @@
 
 #include <IMP/atom/ResidueDecorator.h>
 #include <IMP/atom/AtomDecorator.h>
+#include <IMP/atom/ChainDecorator.h>
 
 #include <IMP/base_types.h>
 #include <IMP/log.h>
@@ -79,6 +80,18 @@ IntKey ResidueDecorator::get_type_key() {
 IntKey ResidueDecorator::get_insertion_code_key() {
   static IntKey k("residue_icode");
   return k;
+}
+
+char get_chain(ResidueDecorator rd) {
+  MolecularHierarchyDecorator mhd(rd.get_particle());
+  do {
+    mhd= mhd.get_parent();
+    if (mhd == MolecularHierarchyDecorator()) {
+      throw InvalidStateException("Residue is not the child of a chain");
+    }
+  } while (mhd.get_type() != MolecularHierarchyDecorator::CHAIN);
+  ChainDecorator cd(mhd.get_particle());
+  return cd.get_id();
 }
 
 IMPATOM_END_NAMESPACE
