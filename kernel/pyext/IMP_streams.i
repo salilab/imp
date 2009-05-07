@@ -83,7 +83,7 @@ protected:
   }
 
   virtual std::streamsize xsputn(const char *s, std::streamsize n) {
-    if (n > buffer_.size() * 2) {
+    if (static_cast<std::size_t>(n) > buffer_.size() * 2) {
       // Only take this route for large buffers, since two Python calls will
       // result per call (one here, potentially one in sync) rather than one per
       // buffer_.size() characters via the regular buffering
