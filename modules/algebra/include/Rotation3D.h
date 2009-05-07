@@ -307,10 +307,9 @@ rotation_from_matrix(double m11,double m12,double m13,
 
 
 //! Generate a rotation object from Euler Angles
-/** \note Javi needs to fill in whether these are fixed and all the details to
-    make it as clear as the other ones.
-    \note This could be made more efficient by generating the quaternion
-    terms directly.
+/**    \note The first rotation is by an angle about the z-axis.
+          The second rotation is by an angle about the new y-axis.
+          The third rotation is by an angle about the new z-axis.
     \param[in] Rot First Euler angle (radians) defining the rotation (Z axis)
     \param[in] Tilt Second Euler angle (radians) defining the rotation (Y axis)
     \param[in] Psi Third Euler angle (radians) defining the rotation (Z axis)
