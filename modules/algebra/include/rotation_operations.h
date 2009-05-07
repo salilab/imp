@@ -44,9 +44,9 @@ public:
   * \param[in] psi the angle
   */
   void set_angle(double psi) {
-    _psi = psi;
-    _c = cos(psi);
-    _s = sin(psi);
+    psi_ = psi;
+    c_ = cos(psi);
+    s_ = sin(psi);
   }
 
   //! rotates a 2D point
@@ -59,17 +59,17 @@ public:
 
   //! rotates a 2D point
   VectorD<2> rotate(const double x,const double y) const {
-    return VectorD<2>(_c*x-_s*y , _s*x+_c*y);
+    return VectorD<2>(c_*x-s_*y , s_*x+c_*y);
   }
 
   //! Returns the matrix for the inverse rotation
   Rotation2D get_inverse() {
-    return Rotation2D(-_psi);
+    return Rotation2D(-psi_);
   }
 private:
-  double _psi; // angle
-  double _c; // cosine of the angle
-  double _s; // sine of the angle
+  double psi_; // angle
+  double c_; // cosine of the angle
+  double s_; // sine of the angle
 };
 
 

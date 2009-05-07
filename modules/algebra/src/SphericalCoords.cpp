@@ -8,15 +8,15 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 Vector3D SphericalCoords::get_cartesian_coordinates() {
-  return Vector3D(_v[0]*cos(_v[2])*sin(_v[1]),
-                  _v[0]*sin(_v[2])*sin(_v[1]),
-                  _v[0]*cos(_v[1]));
+  return Vector3D(v_[0]*cos(v_[2])*sin(v_[1]),
+                  v_[0]*sin(v_[2])*sin(v_[1]),
+                  v_[0]*cos(v_[1]));
 };
 
 void SphericalCoords::set_cartesian_coordinates(Vector3D& v) {
-  _v[0] = v.get_magnitude();
-  _v[1] = atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
-  _v[2] = atan2(v[1],v[0]);
+  v_[0] = v.get_magnitude();
+  v_[1] = atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
+  v_[2] = atan2(v[1],v[0]);
 };
 
 bool SphericalCoords::check(double r, double tetha, double psi) {
