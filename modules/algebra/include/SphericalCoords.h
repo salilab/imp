@@ -48,21 +48,21 @@ class IMPALGEBRAEXPORT SphericalCoords: public UninitializedDefault
         throw ValueException(msg.c_str());
       }
     }
-    _v[0] = r;
-    _v[1] = tetha;
-    _v[2] = psi;
+    v_[0] = r;
+    v_[1] = tetha;
+    v_[2] = psi;
   }
 
   double operator[](unsigned int i) const {
     IMP_check(i < 3, "Invalid component of SphericalCoords requested: "
               << i << " of " << 3, IndexException);
-    return _v[i];
+    return v_[i];
   }
 
   double& operator[](unsigned int i) {
     IMP_check(i < 3, "Invalid component of SphericalCoords requested: "
               << i << " of " << 3, IndexException);
-    return _v[i];
+    return v_[i];
   }
 
   //! Retunrs a vector with the cartesian coordinates
@@ -72,7 +72,7 @@ class IMPALGEBRAEXPORT SphericalCoords: public UninitializedDefault
   void set_cartesian_coordinates(Vector3D& v);
 
  private:
-  double _v[3];
+  double v_[3];
 };
 
 IMPALGEBRA_END_NAMESPACE
