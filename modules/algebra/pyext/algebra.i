@@ -44,6 +44,7 @@ namespace multi_array_types {
 
 /* Wrap our own base classes */
 %include "VectorD.i"
+%include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/Rotation3D.h"
 %include "IMP/algebra/Transformation3D.h"
 %include "IMP/algebra/geometric_alignment.h"
@@ -60,7 +61,6 @@ namespace multi_array_types {
 %include "Matrix2D.i"
 %include "Matrix3D.i"
 %include "SphericalCoords.i"
-%include "rotation_operations.i"
 
 namespace IMP {
  namespace algebra {

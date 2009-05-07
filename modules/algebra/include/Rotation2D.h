@@ -6,8 +6,8 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#ifndef IMPALGEBRA_ROTATION_OPERATIONS_H
-#define IMPALGEBRA_ROTATION_OPERATIONS_H
+#ifndef IMPALGEBRA_ROTATION_2D_H
+#define IMPALGEBRA_ROTATION_2D_H
 
 #include "config.h"
 #include "utility.h"
@@ -133,4 +133,4 @@ void auto_rotate_matrix_2D(Matrix2D<T>& m,double ang,
 }
 
 IMPALGEBRA_END_NAMESPACE
-#endif  /* IMPALGEBRA_ROTATION_OPERATIONS_H */
+#endif  /* IMPALGEBRA_ROTATION_2D_H */
