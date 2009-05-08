@@ -1,0 +1,61 @@
+/**
+ *  \file pair_geometry.h
+ *  \brief Represent an XYZRDecorator particle with a sphere
+ *
+ *  Copyright 2007-9 Sali Lab. All rights reserved.
+ */
+
+#ifndef IMPDISPLAY_PAIR_GEOMETRY_H
+#define IMPDISPLAY_PAIR_GEOMETRY_H
+
+#include "config.h"
+#include "macros.h"
+
+#include "internal/version_info.h"
+#include <IMP/PairContainer.h>
+#include <IMP/core/XYZDecorator.h>
+#include <IMP/display/geometry.h>
+
+IMPDISPLAY_BEGIN_NAMESPACE
+
+//! Represent a pair of particles with segment
+/** A pair is represented by a segment with a given, constant
+    radius. The name is taken from the name of the pair particle.
+    \untested{PairGeometry}
+ */
+class IMPDISPLAYEXPORT PairGeometry: public Geometry
+{
+  core::XYZDecorator d0_, d1_;
+  Float radius_;
+public:
+  PairGeometry(core::XYZDecorator d0, core::XYZDecorator d1,
+               Float radius=0);
+
+  std::string get_name() const {
+    return d0_.get_particle()->get_name();
+  }
+
+  IMP_GEOMETRY(PairGeometry, internal::version_info);
+
+};
+
+
+//! Represent repesent a set of pairs of particles with segments
+/** \see PairGeometry
+    \untested{PairsGeometries}
+ */
+class IMPDISPLAYEXPORT PairsGeometry: public Geometry
+{
+  Pointer<PairContainer> pc_;;
+  Float radius_;
+public:
+  PairsGeometry(PairContainer *pc,
+               Float radius=0);
+
+  IMP_COMPOUND_GEOMETRY(PairsGeometry, internal::version_info)
+};
+
+
+IMPDISPLAY_END_NAMESPACE
+
+#endif  /* IMPDISPLAY_PAIR_GEOMETRY_H */
