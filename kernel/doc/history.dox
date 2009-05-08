@@ -2,6 +2,10 @@
 
 \par Week of MayApril 28
 
+- There is a IMP::Rotation2D
+
+- You can now extract fixed Euler ZYZ angles from a IMP::Rotation3D. This code can serve as a template for extracting other Euler angle conventions if they are needed.
+
 - IMP::algebra::rotation_between_two_vectors() changed to IMP::algebra::rotation_taking_first_to_second() to make it clear which direction the rotation goes.
 
 \par Week of April 27
