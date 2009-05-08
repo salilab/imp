@@ -387,11 +387,11 @@ IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_zyz(double Rot,
    \see rotation_from_fixed_zyz()
    \see fixed_zyz_from_rotation()
  */
-class EulerZYZ: public UninitializedDefault {
+class FixedZYZ: public UninitializedDefault {
   double v_[3];
 public:
-  EulerZYZ(){}
-  EulerZYZ(double rot, double tilt, double psi)
+  FixedZYZ(){}
+  FixedZYZ(double rot, double tilt, double psi)
   {v_[0]=rot; v_[1]= tilt; v_[2]=psi;}
   double get_rot() const {
     return v_[0];
@@ -407,14 +407,14 @@ public:
   }
 };
 
-IMP_OUTPUT_OPERATOR(EulerZYZ);
+IMP_OUTPUT_OPERATOR(FixedZYZ);
 
 //! The inverse of rotation_from_fixed_zyz()
 /**
    \see rotation_from_fixed_zyz()
    \relatesalso Rotation3D
  */
-IMPALGEBRAEXPORT EulerZYZ fixed_zyz_from_rotation(const Rotation3D &r);
+IMPALGEBRAEXPORT FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r);
 
 
 /** @}*/
