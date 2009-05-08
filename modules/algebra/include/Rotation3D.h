@@ -51,15 +51,15 @@ class IMPALGEBRAEXPORT Rotation3D: public UninitializedDefault {
 #ifdef IMP_ROTATION_CACHE
     if (has_cache_) return;
     has_cache_=true;
-    matrix_[0][0]= v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3];
-    matrix_[0][1]= 2*(v_[1]*v_[2]-v_[0]*v_[3]);
-    matrix_[0][2]= 2*(v_[1]*v_[3]+v_[0]*v_[2]);
-    matrix_[1][0]= 2*(v_[1]*v_[2]+v_[0]*v_[3]);
-    matrix_[1][1]= v_[0]*v_[0]-v_[1]*v_[1]+v_[2]*v_[2]-v_[3]*v_[3];
-    matrix_[1][2]= 2*(v_[2]*v_[3]-v_[0]*v_[1]);
-    matrix_[2][0]= 2*(v_[1]*v_[3]-v_[0]*v_[2]);
-    matrix_[2][1]= 2*(v_[2]*v_[3]+v_[0]*v_[1]);
-    matrix_[2][2]= v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3];
+    matrix_[0]= Vector3D(v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3],
+                         2*(v_[1]*v_[2]-v_[0]*v_[3]),
+                         2*(v_[1]*v_[3]+v_[0]*v_[2]));
+    matrix_[1]= Vector3D(2*(v_[1]*v_[2]+v_[0]*v_[3]),
+                         v_[0]*v_[0]-v_[1]*v_[1]+v_[2]*v_[2]-v_[3]*v_[3],
+                         2*(v_[2]*v_[3]-v_[0]*v_[1]));
+    matrix_[2]= Vector3D(2*(v_[1]*v_[3]-v_[0]*v_[2]),
+                         2*(v_[2]*v_[3]+v_[0]*v_[1]),
+                         v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3]);
 #endif
   }
 public:
@@ -104,15 +104,10 @@ public:
               "Attempting to apply uninitialized rotation",
               InvalidStateException);
 #ifdef IMP_ROTATION_CACHE
-    Vector3D ret;
     fill_cache();
-    for (unsigned int i=0; i< 3; ++i) {
-      ret[i]=0;
-      for (unsigned int j=0; j< 3; ++j) {
-        ret[i]+= o[j]*matrix_[i][j];
-      }
-    }
-    return ret;
+    return Vector3D(o*matrix_[0],
+                    o*matrix_[1],
+                    o*matrix_[2]);
 #else
     return rotate_no_cache(o);
 #endif
