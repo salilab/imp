@@ -54,8 +54,7 @@ void project_given_rotation(DensityMap& map,
   IMP::algebra::Rotation3D InvRot = Rot.get_inverse();
   IMP::algebra::Vector3D direction;// = RotMat.direction();
   for (unsigned int i=0; i< 3; ++i) {
-    IMP::algebra::Vector3D v(0,0,0);
-    v[i]=1;
+    IMP::algebra::Vector3D v=algebra::basis_vector<3>(i);
     algebra::Vector3D r= Rot.rotate(v);
     direction[i]=r[2];
   }
