@@ -313,6 +313,29 @@ double distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   return std::sqrt(squared_distance(v1, v2));
 }
 
+//! Return the a basis vector
+/** Return the unit vector pointing in the direction of the requested
+    coordinate. That is
+    \code
+    basis_vector<3>(2)== VectorD<3>(0,0,1);
+    \endcode
+    \relatesalso VectorD
+ */
+template <unsigned int D>
+VectorD<D> basis_vector(unsigned int coordinate) {
+  IMP_check(coordinate<D, "There are only " << D << " basis vectors",
+            IndexException);
+  double vs[D];
+  for (unsigned int i=0; i< D; ++i) {
+    if (i==coordinate) {
+      vs[i]=1;
+    } else {
+      vs[i]=0;
+    }
+  }
+  return VectorD<D>(vs, vs+D);
+}
+
 #ifndef SWIG
 
 #ifndef IMP_DOXYGEN
