@@ -95,6 +95,23 @@ Rotation3D random_rotation() {
 }
 
 
+
+Rotation3D random_rotation(const Rotation3D &center,
+                           double distance) {
+  unsigned int count=0;
+  double d2= square(distance);
+  while (count < 10000) {
+    Rotation3D rr= random_rotation();
+    if ((rr.get_quaternion()
+         - center.get_quaternion()).get_squared_magnitude() < d2) {
+      return rr;
+    }
+    ++count;
+  }
+  IMP_failure("Unable to find a suitably close rotation",
+              ValueException);
+}
+
 Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
 {
   double a,b,c,d;
