@@ -4,11 +4,11 @@
  * Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#include <IMP/atom/Topology.h>
+#include <IMP/atom/internal/Topology.h>
 
 #include <boost/algorithm/string.hpp>
 
-IMPATOM_BEGIN_NAMESPACE
+IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
 Topology::Topology(const String& top_file_name) {
   std::ifstream top_file(top_file_name.c_str());
@@ -193,4 +193,4 @@ void Topology::parse_bond_line(const String& line,
 }
 
 
-IMPATOM_END_NAMESPACE
+IMPATOM_END_INTERNAL_NAMESPACE

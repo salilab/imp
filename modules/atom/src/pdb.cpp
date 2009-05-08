@@ -11,7 +11,7 @@
 #include <IMP/core/NameDecorator.h>
 #include <IMP/core/HierarchyDecorator.h>
 #include <IMP/atom/ChainDecorator.h>
-#include <IMP/atom/Topology.h>
+#include <IMP/atom/internal/Topology.h>
 #include <IMP/directories.h>
 
 #include <boost/algorithm/string.hpp>
@@ -199,10 +199,10 @@ void add_bonds(MolecularHierarchyDecorator d, std::string topology_file_name)
 {
   // we want the file to be read only once
   std::string file_name = IMP::get_data_directory() +"/atom/top.lib";
-  static Topology topology(file_name);
+  static internal::Topology topology(file_name);
 
   if(topology_file_name.length() > 0) {
-    Topology user_topology(topology_file_name);
+    internal::Topology user_topology(topology_file_name);
     user_topology.add_bonds(d);
   } else {
     topology.add_bonds(d);

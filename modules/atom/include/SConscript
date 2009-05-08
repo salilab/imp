@@ -12,7 +12,6 @@ files = [
          'MolecularDynamics.h',
          'MolecularHierarchyDecorator.h',
          'ResidueDecorator.h',
-         'Topology.h',
          'VelocityScalingOptimizerState.h',
          'bond_decorators.h',
          'estimates.h',

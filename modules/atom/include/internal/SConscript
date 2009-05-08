@@ -1,4 +1,5 @@
 files = [
+         'Topology.h',
          'bond_helpers.h',
          'pdb.h',
         ]

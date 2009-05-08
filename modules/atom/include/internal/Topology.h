@@ -1,23 +1,23 @@
 /**
- * \file Topology \brief topology definitions
+ * \file Topology.h \brief topology definitions
  *
  * Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
-#ifndef IMPATOM_TOPOLOGY_H
-#define IMPATOM_TOPOLOGY_H
+#ifndef IMPATOM_INTERNAL_TOPOLOGY_H
+#define IMPATOM_INTERNAL_TOPOLOGY_H
 
 #include <IMP/base_types.h>
-#include "ResidueDecorator.h"
-#include "AtomDecorator.h"
-#include "MolecularHierarchyDecorator.h"
-#include "bond_decorators.h"
+#include "../ResidueDecorator.h"
+#include "../AtomDecorator.h"
+#include "../MolecularHierarchyDecorator.h"
+#include "../bond_decorators.h"
 
 #include <fstream>
 #include <map>
 #include <vector>
 
-IMPATOM_BEGIN_NAMESPACE
+IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
 class IMPATOMEXPORT Topology {
 public:
@@ -60,6 +60,6 @@ public:
   std::map<ResidueType, std::vector<Bond> > residue_bonds_;
 };
 
-IMPATOM_END_NAMESPACE
+IMPATOM_END_INTERNAL_NAMESPACE
 
-#endif /* IMPATOM_TOPOLOGY_H */
+#endif /* IMPATOM_INTERNAL_TOPOLOGY_H */
