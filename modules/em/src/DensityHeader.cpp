@@ -12,13 +12,13 @@ IMPEM_BEGIN_NAMESPACE
 
 void DensityHeader::compute_xyz_top(bool force)
 {
-  if ((top_calculated) && !force)
+  if (top_calculated_ && !force)
     return;
 
-  xtop=xorigin+Objectpixelsize*nx;
-  ytop=yorigin+Objectpixelsize*ny;
-  ztop=zorigin+Objectpixelsize*nz;
-  top_calculated = true;
+  xtop_ = xorigin_ + Objectpixelsize*nx;
+  ytop_ = yorigin_ + Objectpixelsize*ny;
+  ztop_ = zorigin_ + Objectpixelsize*nz;
+  top_calculated_ = true;
 }
 
 void DensityHeader::update_map_dimensions(int nnx,int nny,int nnz) {
@@ -28,7 +28,7 @@ void DensityHeader::update_map_dimensions(int nnx,int nny,int nnz) {
   mx = nx;
   my = ny;
   mz = nz;
-  top_calculated=false;
+  top_calculated_ = false;
   compute_xyz_top();
   xlen=nx*Objectpixelsize;
   ylen=ny*Objectpixelsize;

@@ -26,14 +26,14 @@ class IMPEMEXPORT DensityHeader
 public:
   DensityHeader() {
 
-    top_calculated=false;
+    top_calculated_ = false;
     // Initialize some of the parameters of the header
     nx=0;ny=0;nz=0;
     data_type=5;
     nxstart=1; nystart=1; nzstart=1;
 
     mx = nxstart + nx - 1; my = nystart + ny - 1; mz = nzstart + nz - 1;
-    xorigin=0.0; yorigin=0.0; zorigin =0.0;
+    xorigin_ = yorigin_ = zorigin_ = 0.0;
     alpha=90. ; beta=90. ; gamma=90.;
     mapc =1; mapr=2; maps=3;
     ispg=0;
@@ -59,14 +59,14 @@ public:
    */
   emreal get_top(int ind) const
   {
-    if (!top_calculated) {
+    if (!top_calculated_) {
       std::cerr << " DensityHeader::get_top  the top coordinates of the map "
                 << "have not been setup yet " << std::endl;
       throw 1;
     }
-    if (ind==0) return xtop;
-    if (ind==1) return ytop;
-    return ztop;
+    if (ind==0) return xtop_;
+    if (ind==1) return ytop_;
+    return ztop_;
 
   }
   //! Compute the farthest point of the grid.
@@ -103,8 +103,8 @@ public:
     out<<"ispg: " << ispg << std::endl;
     out<<"nsymbt: " << nsymbt << std::endl;
     out<< "user: " << user << std::endl;
-    out<<"xorigin: " << xorigin << " yorigin: "<< yorigin <<" zorigin: "
-      << zorigin << std::endl;
+    out<<"xorigin: " << xorigin_ << " yorigin: "<< yorigin_ <<" zorigin: "
+       << zorigin_ << std::endl;
     out<<"map: " << map << std::endl;
     out<< "Objectpixelsize: " << Objectpixelsize << std::endl;
     out<< "machinestamp: " << machinestamp << std::endl;
@@ -183,15 +183,15 @@ public:
   int lswap;
 
   //! Returns the resolution of the map
-  inline float get_resolution() { return resolution;}
+  inline float get_resolution() { return resolution_;}
   //! Sets the resolution of the map
-  void set_resolution(float resolution_) { resolution=resolution_;}
-  //! Returns the origin on the map (x-coordiante)
-  inline float get_xorigin() const {return xorigin;}
-  //! Returns the origin on the map (y-coordiante)
-  inline float get_yorigin() const {return yorigin;}
-  //! Returns the origin on the map (z-coordiante)
-  inline float get_zorigin() const {return zorigin;}
+  void set_resolution(float resolution) { resolution_=resolution;}
+  //! Returns the origin on the map (x-coordinate)
+  inline float get_xorigin() const {return xorigin_;}
+  //! Returns the origin on the map (y-coordinate)
+  inline float get_yorigin() const {return yorigin_;}
+  //! Returns the origin on the map (z-coordinate)
+  inline float get_zorigin() const {return zorigin_;}
   //! Returns the origin on the map
   /**
   \param[in] i the relevant coordinate (0:x, 1:y, 2:z)
@@ -207,20 +207,20 @@ public:
       default: return get_zorigin();
     }
   }
-  //! Sets the origin on the map (x-coordiante)
-  inline void set_xorigin(float x)  {xorigin=x; top_calculated=false;}
-  //! Sets the origin on the map (y-coordiante)
-  inline void set_yorigin(float y)  {yorigin=y; top_calculated=false;}
-  //! Sets the origin on the map (z-coordiante)
-  inline void set_zorigin(float z)  {zorigin=z; top_calculated=false;}
+  //! Sets the origin on the map (x-coordinate)
+  inline void set_xorigin(float x)  {xorigin_=x; top_calculated_=false;}
+  //! Sets the origin on the map (y-coordinate)
+  inline void set_yorigin(float y)  {yorigin_=y; top_calculated_=false;}
+  //! Sets the origin on the map (z-coordinate)
+  inline void set_zorigin(float z)  {zorigin_=z; top_calculated_=false;}
   //! True if the top coodinates (bounding-box) are calculated
-  inline bool is_top_calculated() const { return top_calculated;}
+  inline bool is_top_calculated() const { return top_calculated_;}
 
 protected:
-  float xtop, ytop,ztop; // The upper bound for the x,y and z grid.
-  float xorigin, yorigin, zorigin; //Origin used for transforms
-  bool top_calculated;
-  float resolution;
+  float xtop_, ytop_, ztop_; // The upper bound for the x,y and z grid.
+  float xorigin_, yorigin_, zorigin_; //Origin used for transforms
+  bool top_calculated_;
+  float resolution_;
 };
 
 IMPEM_END_NAMESPACE
