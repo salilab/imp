@@ -14,8 +14,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
 CylinderGeometry::CylinderGeometry(const algebra::Cylinder3D &c): c_(c){
 }
 
-CylinderGeometry::~CylinderGeometry(){}
-
 void CylinderGeometry::show(std::ostream &out) const {
   out << "CylinderGeometry" << std::endl;
 }
@@ -28,5 +26,10 @@ unsigned int CylinderGeometry::get_number_of_vertices() const{
 }
 algebra::Vector3D CylinderGeometry::get_vertex(unsigned int i) const {
   return c_.get_segment().get_point(i);
+}
+
+
+Float CylinderGeometry::get_size() const {
+  return c_.get_radius();
 }
 IMPDISPLAY_END_NAMESPACE

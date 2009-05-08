@@ -28,9 +28,7 @@ public:
                    const algebra::Vector3D &b,
                    const algebra::Vector3D &c);
 
-  virtual ~TriangleGeometry();
-
-  IMP_GEOMETRY(internal::version_info)
+  IMP_GEOMETRY(TriangleGeometry, internal::version_info)
 };
 
 

@@ -75,31 +75,43 @@ class IMPDISPLAYEXPORT Writer: public Object
   //! Write the data and close the file
   virtual ~Writer();
 
-  virtual void add_geometry(Geometry *g)=0;
+  /** @name Geometry Addition methods
+      These methods can be used to add geometry to the model.
+      If you do not want the geometry objects to be destroyed
+      upon addition, make sure you store an IMP::Pointer
+      to them externally.
+      @{
+  */
+  virtual void add_geometry(Geometry* g)=0;
 
   virtual void add_geometry(const Geometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
-      add_geometry(g[i]);
+      Pointer<Geometry> gp(g[i]);
+      add_geometry(gp);
     }
   }
 
-  virtual void add_geometry(CompoundGeometry *cg) {
-    Geometries g= cg->get_geometry();
+  virtual void add_geometry(CompoundGeometry* cg) {
+    Pointer<CompoundGeometry> cgp(cg);
+    Geometries g= cgp->get_geometry();
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
       Pointer<Geometry> gi(g[i]);
 
-      add_geometry(g[i]);
+      add_geometry(gi);
     }
   }
 
   virtual void add_geometry(const CompoundGeometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
-      add_geometry(g[i]);
+      Pointer<CompoundGeometry> gi(g[i]);
+      add_geometry(gi);
     }
   }
+
+  /** @} */
 
   virtual VersionInfo get_version_info() const=0;
 

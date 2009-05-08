@@ -29,14 +29,10 @@ class IMPDISPLAYEXPORT XYZRGeometry: public Geometry
 public:
   XYZRGeometry(core::XYZRDecorator d);
 
-  virtual ~XYZRGeometry();
-
-  virtual Float get_size() const;
-
   std::string get_name() const {
     return d_.get_particle()->get_name();
   }
-  IMP_GEOMETRY(internal::version_info)
+  IMP_GEOMETRY(XYZRGeometry, internal::version_info)
 };
 
 

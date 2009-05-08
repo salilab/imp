@@ -26,14 +26,7 @@ class IMPDISPLAYEXPORT SphereGeometry: public Geometry
 public:
   SphereGeometry(const algebra::Sphere3D &s);
 
-  virtual ~SphereGeometry();
-
-  virtual Float get_size() const {
-    return s_.get_radius();
-  }
-
-
-  IMP_GEOMETRY(internal::version_info)
+  IMP_GEOMETRY(SphereGeometry, internal::version_info)
 };
 
 IMPDISPLAY_END_NAMESPACE

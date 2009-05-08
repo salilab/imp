@@ -32,14 +32,10 @@ class IMPDISPLAYEXPORT XYZDerivativeGeometry: public Geometry
 public:
   XYZDerivativeGeometry(core::XYZDecorator d, Float radius=0);
 
-  virtual ~XYZDerivativeGeometry();
-
-  virtual Float get_size() const;
-
   std::string get_name() const {
     return d_.get_particle()->get_name();
   }
-  IMP_GEOMETRY(internal::version_info)
+  IMP_GEOMETRY(XYZDerivativeGeometry, internal::version_info)
 };
 
 
@@ -57,8 +53,6 @@ class IMPDISPLAYEXPORT RigidBodyDerivativeGeometry:
 public:
   RigidBodyDerivativeGeometry(core::RigidBodyDecorator d);
 
-  virtual ~RigidBodyDerivativeGeometry();
-
   //! Set the color used to display the translational part
   void set_translational_color(Color c) {
     xyzcolor_=c;
@@ -69,7 +63,7 @@ public:
     qcolor_=c;
   }
 
-  IMP_COMPOUND_GEOMETRY(internal::version_info);
+  IMP_COMPOUND_GEOMETRY(RigidBodyDerivativeGeometry, internal::version_info);
 };
 
 

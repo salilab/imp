@@ -38,7 +38,8 @@ namespace {
 void ChimeraWriter::add_geometry_internal(IMP::display::Geometry *g,
                                           std::string name) {
   IMP_CHECK_OBJECT(g);
-  if (g->get_dimension() ==0) {
+  Pointer<Geometry> gp(g);
+  if (gp->get_dimension() ==0) {
     if (!has_ms_) {
       has_ms_=true;
       get_stream() << "s= d.new_marker_set('" << name
@@ -105,12 +106,13 @@ void ChimeraWriter::on_close() {
 
 void ChimeraWriter::add_geometry(IMP::display::CompoundGeometry *cg) {
   // later, unify surfaces
+  Pointer<CompoundGeometry> cgp(cg);
   if (has_surf_) {
     get_stream() << "chimera.openModels.add([m])\n";
   }
   has_ms_=false;
   has_surf_=false;
-  Geometries g= cg->get_geometry();
+  Geometries g= cgp->get_geometry();
   for (unsigned int i=0; i< g.size(); ++i) {
     IMP_CHECK_OBJECT(g[i]);
     Pointer<Geometry> gi(g[i]);

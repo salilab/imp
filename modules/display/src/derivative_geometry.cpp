@@ -18,8 +18,6 @@ XYZDerivativeGeometry::XYZDerivativeGeometry(core::XYZDecorator d,
   set_name(d.get_particle()->get_name()+" derivative");
 }
 
-XYZDerivativeGeometry::~XYZDerivativeGeometry(){}
-
 void XYZDerivativeGeometry::show(std::ostream &out) const {
   out << "XYZDerivativeGeometry" << std::endl;
 }
@@ -47,8 +45,6 @@ RigidBodyDerivativeGeometry
   ccolor_=Color(0,0,1);
   set_name(d.get_particle()->get_name()+" derivative");
 }
-
-RigidBodyDerivativeGeometry::~RigidBodyDerivativeGeometry(){}
 
 void RigidBodyDerivativeGeometry::show(std::ostream &out) const {
   out << "DerivativeGeometryExtractor" << std::endl;

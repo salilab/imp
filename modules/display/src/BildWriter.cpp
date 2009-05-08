@@ -26,9 +26,10 @@ void BildWriter::on_close() {
 
 void BildWriter::add_geometry(Geometry *g) {
   IMP_CHECK_OBJECT(g);
+  Pointer<Geometry> gp(g);
   get_stream() << ".color " << g->get_color()
                    << "\n";
-  if (g->get_dimension() ==0) {
+  if (gp->get_dimension() ==0) {
     for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
       algebra::Vector3D v=g->get_vertex(i);
       if (g->get_size() ==0) {

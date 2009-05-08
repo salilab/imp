@@ -45,18 +45,21 @@ protected:                                                              \
   }
 
 //! Define information for an Geometry object
-#define IMP_GEOMETRY(version)                                           \
+#define IMP_GEOMETRY(Name, version)                                     \
   virtual unsigned int get_dimension() const;                           \
   virtual IMP::algebra::Vector3D get_vertex(unsigned int i) const;      \
   virtual IMP::VersionInfo get_version_info() const {return version;}   \
   virtual unsigned int get_number_of_vertices() const;                  \
-  virtual void show(std::ostream &out=std::cout) const;
+  virtual Float get_size() const;                                       \
+  virtual void show(std::ostream &out=std::cout) const;                 \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 //! Define information for an Geometry object
-#define IMP_COMPOUND_GEOMETRY(version)                                  \
+#define IMP_COMPOUND_GEOMETRY(Name, version)                            \
   virtual IMP::display::Geometries get_geometry() const;                \
   virtual IMP::VersionInfo get_version_info() const {return version;}   \
-  virtual void show(std::ostream &out=std::cout) const;
+  virtual void show(std::ostream &out=std::cout) const;                 \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 
 #endif /* IMPDISPLAY_MACROS_H */

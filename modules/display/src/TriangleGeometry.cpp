@@ -19,7 +19,9 @@ TriangleGeometry::TriangleGeometry(const algebra::Vector3D &a,
   v_[2]=c;
 }
 
-TriangleGeometry::~TriangleGeometry(){}
+Float TriangleGeometry::get_size() const {
+  return 0;
+}
 
 algebra::Vector3D TriangleGeometry::get_vertex(unsigned int i) const {
   IMP_check(i < 3, "Out of range vertex in triangle " << i,

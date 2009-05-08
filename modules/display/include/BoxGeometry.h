@@ -28,9 +28,7 @@ public:
               const algebra::Vector3D &max,
               const Color &color=Color());
 
-  virtual ~BoxGeometry();
-
-  IMP_COMPOUND_GEOMETRY(internal::version_info)
+  IMP_COMPOUND_GEOMETRY(BoxGeometry, internal::version_info)
 };
 
 

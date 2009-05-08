@@ -14,8 +14,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
 SphereGeometry::SphereGeometry(const algebra::Sphere3D &s): s_(s){
 }
 
-SphereGeometry::~SphereGeometry(){}
-
 void SphereGeometry::show(std::ostream &out) const {
   out << "SphereGeometry" << std::endl;
 }
@@ -29,4 +27,10 @@ unsigned int SphereGeometry::get_number_of_vertices() const{
 algebra::Vector3D SphereGeometry::get_vertex(unsigned int) const {
   return s_.get_center();
 }
+
+
+Float SphereGeometry::get_size() const {
+  return s_.get_radius();
+}
+
 IMPDISPLAY_END_NAMESPACE
