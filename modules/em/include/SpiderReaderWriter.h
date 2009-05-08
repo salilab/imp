@@ -94,7 +94,7 @@ public:
     std::cout << header << std::endl;
 #endif
     // Adjust size of the matrix according to the header
-    data.resize(header.get_rows(),header.get_columns());
+    data.resize(header.get_number_of_rows(),header.get_number_of_columns());
     data.read_binary(in,force_reversed_ ^ algebra::is_big_endian());
     in.close();
   }

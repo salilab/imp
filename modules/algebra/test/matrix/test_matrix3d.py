@@ -26,11 +26,11 @@ class Matrix3DTests(IMP.test.TestCase):
     def test_sizes(self):
         """Check proper creation and resizing"""
         m = IMP.algebra.Matrix3D(3,2,3)
-        self.assertEqual(m.get_slices(), 3)
+        self.assertEqual(m.get_number_of_slices(), 3)
         m.resize(5,7,6)
-        self.assertEqual(m.get_slices(), 5)
-        self.assertEqual(m.get_rows(), 7)
-        self.assertEqual(m.get_columns(), 6)
+        self.assertEqual(m.get_number_of_slices(), 5)
+        self.assertEqual(m.get_number_of_rows(), 7)
+        self.assertEqual(m.get_number_of_columns(), 6)
 
     def test_access(self):
         """Check Matrix3D access"""

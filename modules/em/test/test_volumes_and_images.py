@@ -15,8 +15,8 @@ class VolumeTest(IMP.test.TestCase):
         img.write("test_image.spi",rw)
         img2 = IMP.em.Image()
         img2.read("test_image.spi",rw)
-        for j in xrange(0,img.get_data().get_rows()):
-            for i in xrange(0,img.get_data().get_columns()):
+        for j in xrange(0,img.get_data().get_number_of_rows()):
+            for i in xrange(0,img.get_data().get_number_of_columns()):
                 self.assertEqual(img.get_data()[i,j],img2.get_data()[i,j])
         # Cleanup
         os.unlink('test_image.spi')

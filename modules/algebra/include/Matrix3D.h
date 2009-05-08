@@ -121,17 +121,17 @@ public:
   }
 
   //! Returns the number of slices in the matrix
-  int get_slices() const {
+  int get_number_of_slices() const {
     return (int)this->get_size(0);
   }
 
   //! Returns the number of rows in the matrix
-  int get_rows() const {
+  int get_number_of_rows() const {
     return (int)this->get_size(1);
   }
 
   //! Returns the number of columns in the matrix
-  int get_columns() const {
+  int get_number_of_columns() const {
     return (int)this->get_size(2);
   }
 

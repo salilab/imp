@@ -62,9 +62,9 @@ public:
                typeid(T) == typeid(float)) {
       header_.set_image_type(ImageHeader::VOL_IMPEM);
     }
-    header_.set_slices(data_.get_slices());
-    header_.set_rows(data_.get_rows());
-    header_.set_columns(data_.get_columns());
+    header_.set_number_of_slices(data_.get_number_of_slices());
+    header_.set_number_of_rows(data_.get_number_of_rows());
+    header_.set_number_of_columns(data_.get_number_of_columns());
     header_.set_time();
     header_.set_date();
     header_.set_title(name_);
@@ -84,9 +84,9 @@ public:
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
     header_.read(in,skip_type_check,force_reversed,skip_extra_checkings);
-    data_.resize(header_.get_slices(),
-                 header_.get_rows(),
-                 header_.get_columns());
+    data_.resize(header_.get_number_of_slices(),
+                 header_.get_number_of_rows(),
+                 header_.get_number_of_columns());
     data_.read_binary(in);
     in.close();
   }
@@ -121,9 +121,9 @@ public:
     if (locations_calculated_)
       return;
 
-    int nz = (int)data_.get_slices();
-    int ny = (int)data_.get_rows();
-    int nx = (int)data_.get_columns();
+    int nz = (int)data_.get_number_of_slices();
+    int ny = (int)data_.get_number_of_rows();
+    int nx = (int)data_.get_number_of_columns();
     float pixel_size = header_.get_object_pixel_size();
 
     locations_.resize(nz, ny, nx);
@@ -144,7 +144,8 @@ public:
 
   //! Returns the number of voxels of the map
   long get_number_of_voxels() const {
-    return data_.get_slices() * data_.get_rows() * data_.get_columns();
+    return data_.get_number_of_slices() *
+           data_.get_number_of_rows() * data_.get_number_of_columns();
   }
 
   //! Returns true if the physical index for the element of the matrix
@@ -172,9 +173,9 @@ public:
     IMP::algebra::Vector3D origin(header_.get_xorigin(),
                                   header_.get_yorigin(),
                                   header_.get_zorigin());
-    IMP::algebra::Vector3D v((T)data_.get_columns(),
-                             (T)data_.get_rows(),
-                             (T)data_.get_slices());
+    IMP::algebra::Vector3D v((T)data_.get_number_of_columns(),
+                             (T)data_.get_number_of_rows(),
+                             (T)data_.get_number_of_slices());
     IMP::algebra::Vector3D end= origin + pixel_size * v;
     for (int i = 0;i<3;i++) {
       if(v[i]<origin[i] || end[i]<v[i]) {
