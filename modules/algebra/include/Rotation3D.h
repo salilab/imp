@@ -293,6 +293,23 @@ rotation_from_matrix(double m00,double m01,double m02,
 IMPALGEBRAEXPORT Rotation3D random_rotation();
 
 
+//! Pick a rotation at random near the provided one
+/** This method generates a rotation that is within the provided
+    distance of center.
+    \param[in] center The center of the rotational volume
+    \param[in] distance A distance of 0 means only center can be
+    returned, and a distance of 1 means all rotations can be returned.
+    The exact metric used is the distance between the
+    quaternions divided by two.
+
+    \note The cost of this operation increases as distance goes to 0.
+
+    \untested{random_rotation}
+    \relatesalso Rotation3D
+*/
+IMPALGEBRAEXPORT Rotation3D random_rotation(const Rotation3D &center,
+                                            double distance);
+
 //! Compute a rotatation from an unnormalized quaternion
 /** \relatesalso Rotation3D */
 inline Rotation3D rotation_from_vector4d(const VectorD<4> &v) {
