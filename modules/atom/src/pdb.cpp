@@ -201,7 +201,7 @@ void add_bonds(MolecularHierarchyDecorator d, std::string topology_file_name)
   std::string file_name = IMP::get_data_directory() +"/atom/top.lib";
   static internal::Topology topology(file_name);
 
-  if(topology_file_name.length() > 0) {
+  if(!topology_file_name.empty()) {
     internal::Topology user_topology(topology_file_name);
     user_topology.add_bonds(d);
   } else {
