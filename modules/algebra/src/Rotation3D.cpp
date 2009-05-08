@@ -173,7 +173,7 @@ Rotation3D rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
 
 
 
-EulerZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
+FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
   // double d22 = c2
   double cos_tilt= r.rotate(Vector3D(0,0,1))[2];
   // double d12 = s2 * s3;
@@ -206,7 +206,7 @@ EulerZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
   }
   //if (rot > PI/2) rot=rot-PI;
   //if (psi > PI/2) psi= psi-PI;
-  return EulerZYZ(rot, tilt, psi);
+  return FixedZYZ(rot, tilt, psi);
 }
 
 
