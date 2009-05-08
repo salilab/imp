@@ -19,8 +19,6 @@ BoxGeometry::BoxGeometry(const algebra::Vector3D &min,
   CompoundGeometry::set_name("Bounding Box");
 }
 
-BoxGeometry::~BoxGeometry(){}
-
 #define PICK(v, i) (vertices[v][i]?min_[i]: max_[i])
 
 Geometries BoxGeometry::get_geometry() const {

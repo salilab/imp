@@ -17,7 +17,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-//! Represent a static sphere (or point)
+//! Represent a static cylinder (or segment)
 /**
  */
 class IMPDISPLAYEXPORT CylinderGeometry: public Geometry
@@ -30,13 +30,7 @@ public:
   */
   CylinderGeometry(const algebra::Cylinder3D &c);
 
-  virtual ~CylinderGeometry();
-
-  virtual Float get_size() const {
-    return c_.get_radius();
-  }
-
-  IMP_GEOMETRY(internal::version_info)
+  IMP_GEOMETRY(CylinderGeometry, internal::version_info)
 };
 
 IMPDISPLAY_END_NAMESPACE

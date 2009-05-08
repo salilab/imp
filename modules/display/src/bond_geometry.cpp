@@ -17,8 +17,6 @@ BondGeometry::BondGeometry(atom::BondDecorator p,
                                           radius_(radius){
 }
 
-BondGeometry::~BondGeometry(){}
-
 void BondGeometry::show(std::ostream &out) const {
   out << "BondGeometry" << std::endl;
 }

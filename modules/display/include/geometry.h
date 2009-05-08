@@ -37,8 +37,6 @@ class IMPDISPLAYEXPORT Geometry: public Object
 public:
   Geometry();
 
-  virtual ~Geometry();
-
   virtual unsigned int get_dimension() const=0;
 
   virtual algebra::Vector3D get_vertex(unsigned int i) const=0;
@@ -68,6 +66,8 @@ public:
   virtual void show(std::ostream &out= std::cout) const=0;
 
   virtual VersionInfo get_version_info() const =0;
+
+  IMP_REF_COUNTED_DESTRUCTOR(Geometry);
 };
 
 IMP_OUTPUT_OPERATOR(Geometry);
@@ -79,7 +79,6 @@ class IMPDISPLAYEXPORT CompoundGeometry: public Object {
   std::string name_;
  public:
   CompoundGeometry();
-  virtual ~CompoundGeometry();
 
   virtual void show(std::ostream &out= std::cout) const{};
 
@@ -94,6 +93,8 @@ class IMPDISPLAYEXPORT CompoundGeometry: public Object {
   void set_name(std::string name) const {
     name=name_;
   }
+
+  IMP_REF_COUNTED_DESTRUCTOR(CompoundGeometry);
 };
 IMP_OUTPUT_OPERATOR(CompoundGeometry);
 
