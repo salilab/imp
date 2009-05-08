@@ -361,6 +361,8 @@ public:
 
   //! Determinant (only for 2x2)
   double det() const {
+    IMP_assert(get_number_of_rows() == 2,"works only for 2x2 matrices");
+    IMP_assert(get_number_of_columns() == 2,"works only for 2x2 matrices");
     return (double)(physical_get(0,0)*physical_get(1,1) -
                     physical_get(1,0)*physical_get(0,1));
   }
