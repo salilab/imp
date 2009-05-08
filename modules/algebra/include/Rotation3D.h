@@ -276,6 +276,17 @@ inline Rotation3D rotation_taking_first_to_second(const Vector3D &v1,
     return rotation_in_radians_about_axis(vv,angle);
 }
 
+//! Generate a Rotation3D object from a rotation matrix
+/**
+   \relatesalso Rotation3D
+ */
+IMPALGEBRAEXPORT Rotation3D
+rotation_from_matrix(double m00,double m01,double m02,
+                     double m10,double m11,double m12,
+                     double m20,double m21,double m22);
+
+
+
 
 //! Pick a rotation at random from all possible rotations
 /** \relatesalso Rotation3D */
@@ -343,16 +354,6 @@ IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_xyz(double xr,
 IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_zxz(double phi,
                                                     double theta,
                                                     double psi);
-
-//! Generate a Rotation3D object from a rotation matrix
-/**
-   \relatesalso Rotation3D
- */
-IMPALGEBRAEXPORT Rotation3D
-rotation_from_matrix(double m00,double m01,double m02,
-                     double m10,double m11,double m12,
-                     double m20,double m21,double m22);
-
 
 //! Generate a rotation object from Euler Angles
 /**    \note The first rotation is by an angle about the z-axis.
