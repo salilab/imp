@@ -14,9 +14,9 @@ IMPEM_BEGIN_NAMESPACE
 void  ImageHeader_to_DensityHeader(const ImageHeader& h,DensityHeader& dh) {
   std::string empty;
   // map size
-  dh.nz=h.get_slices();
-  dh.ny=h.get_rows();
-  dh.nx=h.get_columns();
+  dh.nz=h.get_number_of_slices();
+  dh.ny=h.get_number_of_rows();
+  dh.nx=h.get_number_of_columns();
   // mode
   switch ((int) h.get_fIform()) {
   case ImageHeader::IMG_BYTE:
@@ -45,9 +45,9 @@ void  ImageHeader_to_DensityHeader(const ImageHeader& h,DensityHeader& dh) {
   // to be equal to the size of the map
   dh.mx=dh.nx;  dh.my=dh.ny;  dh.mz=dh.nz;
   // Cell dimensions (angstroms)
-  dh.xlen=h.get_xorigin()+h.get_object_pixel_size()*h.get_columns();
-  dh.zlen=h.get_yorigin()+h.get_object_pixel_size()*h.get_rows();
-  dh.ylen=h.get_zorigin()+h.get_object_pixel_size()*h.get_slices();
+  dh.xlen=h.get_xorigin()+h.get_object_pixel_size()*h.get_number_of_columns();
+  dh.zlen=h.get_yorigin()+h.get_object_pixel_size()*h.get_number_of_rows();
+  dh.ylen=h.get_zorigin()+h.get_object_pixel_size()*h.get_number_of_slices();
   // Cell angles (degrees)
   // Spider format does not have these fields. Filed with default (90 deg)
   dh.alpha=90. ; dh.beta=90. ; dh.gamma=90.;

@@ -66,9 +66,9 @@ typedef Image<T> This;
                typeid(T) == typeid(Float)) {
       header_.set_image_type(ImageHeader::IMG_IMPEM);
     }
-    header_.set_slices(1.0);
-    header_.set_rows(data_.get_rows());
-    header_.set_columns(data_.get_columns());
+    header_.set_number_of_slices(1.0);
+    header_.set_number_of_rows(data_.get_number_of_rows());
+    header_.set_number_of_columns(data_.get_number_of_columns());
     header_.set_time();
     header_.set_date();
     header_.set_title(name_);

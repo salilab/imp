@@ -14,6 +14,9 @@
 #include "IMP/exception.h"
 #include "MultiArray.h"
 #include "VectorD.h"
+#include <IMP/algebra/internal/tnt_array2d.h>
+#include <IMP/algebra/internal/jama_svd.h>
+#include <IMP/algebra/internal/jama_lu.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -97,34 +100,61 @@ public:
   }
 
   //! Returns the number of rows in the matrix
-  int get_rows() const {
+  int get_number_of_rows() const {
     return (int)this->get_size(0);
   }
 
   //! Returns the number of columns in the matrix
-  int get_columns() const {
+  int get_number_of_columns() const {
     return (int)this->get_size(1);
   }
 
   //! Returns a matrix with this matrix transposed. The original one is not
   //! modified
   This transpose() {
-    This aux(get_columns(), get_rows());
-    for (int j = 0;j < get_rows();j++) {
-      for (int i = 0;i < get_columns();i++) {
+    This aux(get_number_of_columns(), get_number_of_rows());
+    for (int j = 0;j < get_number_of_rows();j++) {
+      for (int i = 0;i < get_number_of_columns();i++) {
         aux(i, j) = (*this)(j, i);
       }
     }
     return aux;
   }
+  //! Set the matrix to be a zero matrix
+  void set_zero() {
+    unsigned int nr,nc;
+    nr = get_number_of_rows();
+    nc = get_number_of_columns();
+    for(int i=0;i<nr;i++) {
+      for(int j=0;j<nc;j++) {
+        (*this)(i,j)=0.;
+      }
+    }
+  }
+  //! Set the matrix to be an indentity matrix.
+  void set_identity() {
+    IMP_assert(is_square(), "the matrix must be square");
+    set_zero();
+    for (unsigned int i = 0; i < get_number_of_rows(); i++) {
+      (*this)(i,i)=1.;
+    }
+  }
 
+  void show(std::ostream &o=std::cout) const {
+    for(int i=0;i<get_number_of_rows();i++) {
+      for(int j=0;j<get_number_of_columns();j++) {
+        o<<(*this)(i,j)<<" ";
+      }
+      o<<std::endl;
+    }
+  }
   //! Physicial access to the elements of the matrix
   /**
    * \param[in] j physical row to access
    * \param[in] i physical Column to access
    */
   T& physical_get(const int j,const int i) const {
-    if (0<=j && j<get_rows() && 0<=i && i<get_columns()) {
+    if (0<=j && j<get_number_of_rows() && 0<=i && i<get_number_of_columns()) {
       return (*this)(j+this->get_start(0),i+this->get_start(1));
     } else {
       String msg = "Matri2D::physical_get: index out of range." ;
@@ -139,7 +169,7 @@ public:
    * \param[in] val the value to set
    */
   void physical_set(const int j,const int i,const T& val) {
-    if (0<=j && j<get_rows() && 0<=i && i < get_columns()) {
+    if (0<=j && j<get_number_of_rows() && 0<=i && i < get_number_of_columns()) {
       (*this)(j+this->get_start(0),i+this->get_start(1))=val;
     } else {
       String msg = "Matri2D::physical_set: index out of range." ;
@@ -330,12 +360,14 @@ public:
   }
 
   //! Determinant (only for 2x2)
-  double det() {
+  double det() const {
     return (double)(physical_get(0,0)*physical_get(1,1) -
                     physical_get(1,0)*physical_get(0,1));
   }
 
-
+  bool is_square() const {
+    return (get_number_of_rows() == get_number_of_columns());
+  }
 
   //! Performs bilinear interpolation for a point using the
   //! 4 closest values in the matrix
@@ -407,6 +439,7 @@ public:
 
 protected:
 };
+
 
 IMPALGEBRA_END_NAMESPACE
 

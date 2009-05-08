@@ -191,32 +191,32 @@ public:
   }
 
   //! Get number of slices
-  float get_slices()  const {
+  float get_number_of_slices()  const {
     return header_.fNslice;
   }
 
   //! Set number of slices
-  void set_slices(float n) {
+  void set_number_of_slices(float n) {
     header_.fNslice = n;
   }
 
   //! Get number of rows
-  float get_rows() const {
+  float get_number_of_rows() const {
     return header_.fNrow;
   }
 
-  //! Get number of rows
-  void set_rows(float n) {
+  //! Set number of rows
+  void set_number_of_rows(float n) {
     header_.fNrow = n;
   }
 
   //! Get number columns
-  float get_columns() const {
+  float get_number_of_columns() const {
     return header_.fNcol;
   }
 
   //! Get number columns
-  void set_columns(float n) {
+  void set_number_of_columns(float n) {
     header_.fNcol = n;
   }
 

@@ -263,7 +263,8 @@ void ImageHeader::write(std::ofstream& f, bool force_reversed)
 {
   float tmp;
   unsigned tmpSize;
-  if (get_rows() == 0 || get_columns() == 0 || get_slices() == 0) {
+  if (get_number_of_rows() == 0 ||
+      get_number_of_columns() == 0 || get_number_of_slices() == 0) {
     return;
   }
   // Set consistent header before saving
