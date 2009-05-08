@@ -46,7 +46,7 @@ read_pdb(std::string pdb_file_name,
     if topology file is not given, default file is used
 */
 IMPATOMEXPORT void add_bonds(MolecularHierarchyDecorator d,
-                             std::string topology_file_name = "");
+                             std::string topology_file_name = std::string());
 
 /** \note This function produces files that are not valid PDB files,
     i.e. only ATOM/HETATM lines are printed for all AtomDecorator particles
