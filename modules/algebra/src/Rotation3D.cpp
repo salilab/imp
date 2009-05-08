@@ -93,4 +93,104 @@ Rotation3D random_rotation() {
   VectorD<4> r= random_vector_on_unit_sphere<4>();
   return Rotation3D(r[0], r[1], r[2], r[3]);
 }
+
+
+Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
+{
+  double a,b,c,d;
+  double cx = cos(xr);  double cy = cos(yr);  double cz = cos(zr);
+  double sx = sin(xr);  double sy = sin(yr);  double sz = sin(zr);
+  double m00 = cz*cy;
+  double m11 = -sy*sx*sz + cx*cz;
+  double m22 = cy*cx;
+  double zero =0.0;
+  a = std::sqrt(std::max(1+m00+m11+m22,zero))/2.0;
+  b = std::sqrt(std::max(1+m00-m11-m22,zero))/2.0;
+  c = std::sqrt(std::max(1-m00+m11-m22,zero))/2.0;
+  d = std::sqrt(std::max(1-m00-m11+m22,zero))/2.0;
+  if (cy*sx + sy*cx*sz + sx*cz < 0.0) b = -b;
+  if (sz*sx - sy*cx*cz - sy < 0.0)    c = -c;
+  if (sz*cy + sy*sx*cz + sz*cx < 0.0) d = -d;
+  return Rotation3D(a,b,c,d);
+}
+
+Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
+{
+  double a,b,c,d;
+  double c1,c2,c3,s1,s2,s3;
+  c2=std::cos(theta/2);c1=cos(phi/2);c3=cos(psi/2);
+  s2=std::sin(theta/2);s1=sin(phi/2);s3=sin(psi/2);
+  a = c1*c2*c3+s1*s2*s3;
+  b = s1*c2*c3-c1*s2*s3;
+  c = c1*s2*c3+s1*c2*s3;
+  d = c1*c2*s3-s1*s2*c3;
+  return Rotation3D(a,b,c,d);
+}
+
+
+Rotation3D rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
+  double c1 = std::cos(Rot);
+  double c2 = std::cos(Tilt);
+  double c3 = std::cos(Psi);
+  double s1 = std::sin(Rot);
+  double s2 = std::sin(Tilt);
+  double s3 = std::sin(Psi);
+
+  /*IMP_LOG(VERBOSE, "Intermedites front: "
+          << c1 << " " << c2 << " " << c3 << "\n"
+          << s1 << " " << s2 << " " << s3 << std::endl);*/
+  double d00 = c1 * c2 * c3 - s1 * s3;
+  double d01 = (-1.0) * c2 * c3 * s1 - c1 * s3;
+  double d02 = c3 * s2;
+  double d10 = c3 * s1 + c1 * c2 * s3;
+  double d11 = c1 * c3 - c2 * s1 * s3;
+  double d12 = s2 * s3;
+  double d20 = (-1.0) * c1 * s2;
+  double d21 = s1 * s2;
+  double d22 = c2;
+  Rotation3D rot= rotation_from_matrix(d00, d01, d02,
+                                       d10, d11, d12,
+                                       d20, d21, d22);
+  return rot;
+}
+
+
+
+EulerZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
+  // double d22 = c2
+  double cos_tilt= r.rotate(Vector3D(0,0,1))[2];
+  // double d12 = s2 * s3;
+  double sin_tilt_sin_psi= r.rotate(Vector3D(0,0,1))[1];
+  // double d21 = s1 * s2;
+  double sin_rot_sin_tilt= r.rotate(Vector3D(0,1,0))[2];
+  // double d02 = c3 * s2;
+  double cos_psi_sin_tilt = r.rotate(Vector3D(0,0,1))[0];
+  //double d20 = (-1.0) * c1 * s2;
+  double cos_rot_sin_tilt = -r.rotate(Vector3D(1,0,0))[2];
+  double psi= std::atan2(sin_tilt_sin_psi, cos_psi_sin_tilt);
+  double sin_tilt= sin_tilt_sin_psi/std::sin(psi);
+  double tilt= std::atan2(sin_tilt, cos_tilt);
+  double cos_rot= cos_rot_sin_tilt/sin_tilt;
+  double sin_rot= sin_rot_sin_tilt/sin_tilt;
+  double rot= std::atan2(sin_rot, cos_rot);
+  /*IMP_LOG(VERBOSE, "Intermedites back: "
+          << cos_rot << " " << cos_tilt << " "
+          << cos_psi_sin_tilt/sin_tilt << "\n"
+          << sin_rot << " " << sin_tilt << " "
+          << sin_tilt_sin_psi/sin_tilt << std::endl);*/
+  IMP_IF_CHECK(CHEAP) {
+    Rotation3D rrot= rotation_from_fixed_zyz(rot, tilt, psi);
+    IMP_LOG(VERBOSE,
+            "Input is " << r << " output results in " << rrot << std::endl);
+    IMP_assert((rrot.get_quaternion()
+                -r.get_quaternion()).get_squared_magnitude() < .1,
+               "The input and output rotations are far apart " << r
+               << " and " << rrot << std::endl);
+  }
+  //if (rot > PI/2) rot=rot-PI;
+  //if (psi > PI/2) psi= psi-PI;
+  return EulerZYZ(rot, tilt, psi);
+}
+
+
 IMPALGEBRA_END_NAMESPACE
