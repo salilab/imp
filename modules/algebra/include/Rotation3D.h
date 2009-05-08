@@ -27,19 +27,13 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 #endif
 
 //! 3D rotation class.
-/** Holds a three dimensional rotation compactly using a quaternion (4 numbers).
-    Advantages using quaternion:
-    1. Easy convertion between axis/angle to quaternion reprsentation
-    2. Robustness to rounding errors.
-    3. Is not subject to "Gimbal lock" (i.e. attempts to rotate an
-       object fail to appear as expected, due to the order in which the
-       rotations are performed) like Euler angles.
-    4. Can be interpolated
-    5. The quaternions representation does not harm the performance too much.
-    http://www.euclideanspace.com/maths/algebra/matrix/orthogonal/rotation/index.htm
+/** Rotations are currently represented using quaternions and a cached
+    copy of the rotation matrix. The quaternion allows for fast and
+    stable composition and the cached rotation matrix means that
+    rotations are performed quickly. See
+    http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation for
+    a comparison of different implementations of rotations.
 
-    6. a nice comparison of different implementations of rotations:
-    http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
     Currently the rotation can be initialized from either:
     - XYZ Euler angles
     - Rotation Matrix
@@ -49,27 +43,14 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 class IMPALGEBRAEXPORT Rotation3D: public UninitializedDefault {
   VectorD<4> v_;
 #ifdef IMP_ROTATION_CACHE
-  Vector3D matrix_[3];
+  mutable bool has_cache_;
+  mutable Vector3D matrix_[3];
 #endif
   friend Rotation3D compose(const Rotation3D &a, const Rotation3D &b);
-
-public:
-  //! Create an invalid rotation
-  Rotation3D():v_(0,0,0,0) {}
-  //! Create a rotation from a quaternion
-  /** \throw ValueException if the rotation is not a unit vector.
-   */
-  Rotation3D(double a, double b, double c, double d): v_(a,b,c,d) {
-    IMP_check(std::abs(v_.get_squared_magnitude() - 1.0) < .05,
-              "Attempting to construct a rotation from a non-quaternion value."
-              << " The coefficient vector must have a length of 1. Got: "
-              << a << " " << b << " " << c << " " << d,
-              ValueException);
-    if (a<0) {
-      // make them canonical
-      v_=-v_;
-    }
+  void fill_cache() const {
 #ifdef IMP_ROTATION_CACHE
+    if (has_cache_) return;
+    has_cache_=true;
     matrix_[0][0]= v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3];
     matrix_[0][1]= 2*(v_[1]*v_[2]-v_[0]*v_[3]);
     matrix_[0][2]= 2*(v_[1]*v_[3]+v_[0]*v_[2]);
@@ -80,6 +61,25 @@ public:
     matrix_[2][1]= 2*(v_[2]*v_[3]+v_[0]*v_[1]);
     matrix_[2][2]= v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3];
 #endif
+  }
+public:
+  //! Create an invalid rotation
+  Rotation3D():v_(0,0,0,0) {}
+  //! Create a rotation from a quaternion
+  /** \throw ValueException if the rotation is not a unit vector.
+   */
+  Rotation3D(double a, double b, double c, double d): v_(a,b,c,d),
+    has_cache_(false) {
+    IMP_check(std::abs(v_.get_squared_magnitude() - 1.0) < .05,
+              "Attempting to construct a rotation from a non-quaternion value."
+              << " The coefficient vector must have a length of 1. Got: "
+              << a << " " << b << " " << c << " " << d,
+              ValueException);
+    if (a<0) {
+      // make them canonical
+      v_=-v_;
+    }
+
   }
   ~Rotation3D();
 
@@ -99,23 +99,13 @@ public:
 #endif
 
   //! Rotate a vector around the origin
-  /**
-     (q0*q0+q1*q1-q2*q2-q3*q3)*x
-     + 2*(q1*q2-q0*q3)*y
-     + 2*(q1*q3+q0*q2)*z,
-     2*(q1*q2+q0*q3)*x
-     + (q0*q0-q1*q1+q2*q2-q3*q3)*y
-     + 2*(q2*q3-q0*q1)*z,
-     2*(q1*q3-q0*q2)*x
-     + 2*(q2*q3+q0*q1)*y
-     + (q0*q0-q1*q1-q2*q2+q3*q3)*z
-   */
   Vector3D rotate(const Vector3D &o) const {
     IMP_check(v_.get_squared_magnitude() >0,
               "Attempting to apply uninitialized rotation",
               InvalidStateException);
 #ifdef IMP_ROTATION_CACHE
     Vector3D ret;
+    fill_cache();
     for (unsigned int i=0; i< 3; ++i) {
       ret[i]=0;
       for (unsigned int j=0; j< 3; ++j) {
@@ -154,7 +144,7 @@ public:
       internal variable i. */
   const Vector3D get_derivative(const Vector3D &o, unsigned int i) const {
     /* The computation was derived in maple. Source code is probably in
-       modules//algebra/tools
+       modules/algebra/tools
      */
     double t4 = v_[0]*o[0] - v_[3]*o[1] + v_[2]*o[2];
     double t5 = square(v_[0]);
@@ -242,102 +232,6 @@ inline Rotation3D identity_rotation() {
   return Rotation3D(1,0,0,0);
 }
 
-//! Initialize a rotation in x-y-z order from three angles
-/** \param[in] xr Rotation around the X axis in radians
-    \param[in] yr Rotation around the Y axis in radians
-    \param[in] zr Rotation around the Z axis in radians
-    \note The three rotations are represented in the original (fixed)
-    coordinate frame. http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-    \relatesalso Rotation3D
-*/
-inline Rotation3D rotation_from_fixed_xyz(double xr,double yr, double zr)
-{
-  double a,b,c,d;
-  double cx = cos(xr);  double cy = cos(yr);  double cz = cos(zr);
-  double sx = sin(xr);  double sy = sin(yr);  double sz = sin(zr);
-  double m00 = cz*cy;
-  double m11 = -sy*sx*sz + cx*cz;
-  double m22 = cy*cx;
-  double zero =0.0;
-  a = std::sqrt(std::max(1+m00+m11+m22,zero))/2.0;
-  b = std::sqrt(std::max(1+m00-m11-m22,zero))/2.0;
-  c = std::sqrt(std::max(1-m00+m11-m22,zero))/2.0;
-  d = std::sqrt(std::max(1-m00-m11+m22,zero))/2.0;
-  if (cy*sx + sy*cx*sz + sx*cz < 0.0) b = -b;
-  if (sz*sx - sy*cx*cz - sy < 0.0)    c = -c;
-  if (sz*cy + sy*sx*cz + sz*cx < 0.0) d = -d;
-  return Rotation3D(a,b,c,d);
-}
-
-//! Initialize a rotation from euler angles
-/**
-    \param[in] phi   Rotation around the Z axis in radians
-    \param[in] theta Rotation around the X axis in radians
-    \param[in] psi   Rotation around the Z axis in radians
-    \note The first rotation is by an angle phi about the z-axis.
-          The second rotation is by an angle theta in [0,pi] about the
-          former x-axis , and the third rotation is by an angle psi
-          about the former z-axis.
-    \note http://en.wikipedia.org/wiki/
-         Conversion_between_quaternions_and_Euler_angles
-    \relatesalso Rotation3D
-*/
-inline Rotation3D rotation_from_fixed_zxz(double phi, double theta, double psi)
-{
-  double a,b,c,d;
-  double c1,c2,c3,s1,s2,s3;
-  c2=std::cos(theta/2);c1=cos(phi/2);c3=cos(psi/2);
-  s2=std::sin(theta/2);s1=sin(phi/2);s3=sin(psi/2);
-  a = c1*c2*c3+s1*s2*s3;
-  b = s1*c2*c3-c1*s2*s3;
-  c = c1*s2*c3+s1*c2*s3;
-  d = c1*c2*s3-s1*s2*c3;
-  return Rotation3D(a,b,c,d);
-}
-
-//! Generate a Rotation3D object from a rotation matrix
-/**
-   \throw ValueException if the rotation is not a rotation matrix.
-   \relatesalso Rotation3D
- */
-IMPALGEBRAEXPORT Rotation3D
-rotation_from_matrix(double m11,double m12,double m13,
-                     double m21,double m22,double m23,
-                     double m31,double m32,double m33);
-
-
-//! Generate a rotation object from Euler Angles
-/**    \note The first rotation is by an angle about the z-axis.
-          The second rotation is by an angle about the new y-axis.
-          The third rotation is by an angle about the new z-axis.
-    \param[in] Rot First Euler angle (radians) defining the rotation (Z axis)
-    \param[in] Tilt Second Euler angle (radians) defining the rotation (Y axis)
-    \param[in] Psi Third Euler angle (radians) defining the rotation (Z axis)
-    \relatesalso Rotation3D
-*/
-inline Rotation3D rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
-  double c1 = std::cos(Rot);
-  double c2 = std::cos(Tilt);
-  double c3 = std::cos(Psi);
-  double s1 = std::sin(Rot);
-  double s2 = std::sin(Tilt);
-  double s3 = std::sin(Psi);
-
-  double d00 = c1 * c2 * c3 - s1 * s3;
-  double d01 = (-1.0) * c2 * c3 * s1 - c1 * s3;
-  double d02 = c3 * s2;
-  double d10 = c3 * s1 + c1 * c2 * s3;
-  double d11 = c1 * c3 - c2 * s1 * s3;
-  double d12 = s2 * s3;
-  double d20 = (-1.0) * c1 * s2;
-  double d21 = s1 * s2;
-  double d22 = c2;
-  return rotation_from_matrix(d00, d01, d02,
-                              d10, d11, d12,
-                              d20, d21, d22);
-}
-
-
 //! Generate a Rotation3D object from a rotation around an axis
 /**
   \param[in] axis the rotation axis passes through (0,0,0)
@@ -408,6 +302,110 @@ inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
                     a.v_[0]*b.v_[3] + a.v_[1]*b.v_[2]
                     - a.v_[2]*b.v_[1] + a.v_[3]*b.v_[0]);
 }
+
+/** \name Euler Angles
+    There are many conventions for how to define Euler angles, based on choices
+    of which of the x,y,z axis to use in what order and whether the rotation
+    axis is in the body frame (and hence affected by previous rotations) or in
+    in a fixed frame. See
+    http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+    for a general description.
+
+    - All Euler angles are specified in radians.
+    - The names are all \c rotation_from_{fixed/body}_abc() where abc is the
+    ordering of x,y,z.
+    @{
+ */
+
+//! Initialize a rotation in x-y-z order from three angles
+/** \param[in] xr Rotation around the X axis in radians
+    \param[in] yr Rotation around the Y axis in radians
+    \param[in] zr Rotation around the Z axis in radians
+    \note The three rotations are represented in the original (fixed)
+    coordinate frame.
+    \relatesalso Rotation3D
+*/
+IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_xyz(double xr,
+                                                    double yr,
+                                                    double zr);
+
+//! Initialize a rotation from euler angles
+/**
+    \param[in] phi   Rotation around the Z axis in radians
+    \param[in] theta Rotation around the X axis in radians
+    \param[in] psi   Rotation around the Z axis in radians
+    \note The first rotation is by an angle phi about the z-axis.
+          The second rotation is by an angle theta in [0,pi] about the
+          former x-axis , and the third rotation is by an angle psi
+          about the former z-axis.
+    \relatesalso Rotation3D
+*/
+IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_zxz(double phi,
+                                                    double theta,
+                                                    double psi);
+
+//! Generate a Rotation3D object from a rotation matrix
+/**
+   \throw ValueException if the rotation is not a rotation matrix.
+   \relatesalso Rotation3D
+ */
+IMPALGEBRAEXPORT Rotation3D
+rotation_from_matrix(double m11,double m12,double m13,
+                     double m21,double m22,double m23,
+                     double m31,double m32,double m33);
+
+
+//! Generate a rotation object from Euler Angles
+/**    \note The first rotation is by an angle about the z-axis.
+          The second rotation is by an angle about the new y-axis.
+          The third rotation is by an angle about the new z-axis.
+    \param[in] Rot First Euler angle (radians) defining the rotation (Z axis)
+    \param[in] Tilt Second Euler angle (radians) defining the rotation (Y axis)
+    \param[in] Psi Third Euler angle (radians) defining the rotation (Z axis)
+    \relatesalso Rotation3D
+*/
+IMPALGEBRAEXPORT Rotation3D rotation_from_fixed_zyz(double Rot,
+                                                    double Tilt,
+                                                    double Psi);
+
+
+
+//! A simple class for returning ZYZ Euler angles
+/**
+   \see rotation_from_fixed_zyz()
+   \see fixed_zyz_from_rotation()
+ */
+class EulerZYZ: public UninitializedDefault {
+  double v_[3];
+public:
+  EulerZYZ(){}
+  EulerZYZ(double rot, double tilt, double psi)
+  {v_[0]=rot; v_[1]= tilt; v_[2]=psi;}
+  double get_rot() const {
+    return v_[0];
+  }
+  double get_tilt() const {
+    return v_[1];
+  }
+  double get_psi() const {
+    return v_[2];
+  }
+  void show(std::ostream &out=std::cout) const {
+    out << v_[0] << " " << v_[1] << " " << v_[2];
+  }
+};
+
+IMP_OUTPUT_OPERATOR(EulerZYZ);
+
+//! The inverse of rotation_from_fixed_zyz()
+/**
+   \see rotation_from_fixed_zyz()
+   \relatesalso Rotation3D
+ */
+IMPALGEBRAEXPORT EulerZYZ fixed_zyz_from_rotation(const Rotation3D &r);
+
+
+/** @}*/
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_3D_H */
