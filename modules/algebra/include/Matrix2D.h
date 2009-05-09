@@ -14,9 +14,7 @@
 #include "IMP/exception.h"
 #include "MultiArray.h"
 #include "VectorD.h"
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/jama_svd.h>
-#include <IMP/algebra/internal/jama_lu.h>
+
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
