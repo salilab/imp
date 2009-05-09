@@ -7,7 +7,6 @@
 #define IMPALGEBRA_JAMA_LU_H
 
 #include "../config.h"
-#include "../algebra.h"
 #include <algorithm>
 //for min(), max() below
 
