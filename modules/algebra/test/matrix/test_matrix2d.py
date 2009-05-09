@@ -24,10 +24,10 @@ class Matrix2DTests(IMP.test.TestCase):
     def test_sizes(self):
         """Check proper creation and resizing"""
         m = IMP.algebra.Matrix2D(3,2)
-        self.assertEqual(m.get_columns(), 2)
+        self.assertEqual(m.get_number_of_columns(), 2)
         m.resize(5,7)
-        self.assertEqual(m.get_rows(), 5)
-        self.assertEqual(m.get_columns(), 7)
+        self.assertEqual(m.get_number_of_rows(), 5)
+        self.assertEqual(m.get_number_of_columns(), 7)
 
     def test_access(self):
         """Check Matrix2D access"""
