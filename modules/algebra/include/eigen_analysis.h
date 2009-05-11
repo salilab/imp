@@ -52,5 +52,13 @@ protected:
  */
 IMPALGEBRAEXPORT PrincipalComponentAnalysis principal_components(
                               const std::vector<Vector3D> &ps);
+
+IMP_NO_SWIG
+  (IMPALGEBRAEXPORT Vector3D compute_mean(const std::vector<Vector3D> &vs));
+IMP_NO_SWIG
+  (IMPALGEBRAEXPORT internal::TNT::Array2D<double> compute_covariance_matrix(
+   const std::vector<Vector3D> &vs,Vector3D mean));
+
+
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_EIGEN_ANALYSIS_H */
