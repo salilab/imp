@@ -14,6 +14,7 @@
 #include "config.h"
 #include "IMP/macros.h"
 #include  <boost/random/normal_distribution.hpp>
+#include  <boost/random.hpp>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! Generate a random integer number
@@ -33,8 +34,17 @@ inline double random_uniform(double lo=0.0, double hi=1.0) {
 /** Returns a normally distributed with zero mean and unit variance
  */
 inline double random_gauss(double mean=0.0,double sigma=1.0) {
-  boost::normal_distribution<double> norm_dist(mean, sigma);
-  return norm_dist(random_number_generator);
+  typedef boost::normal_distribution<double> NormalDistribution;
+  typedef boost::mt19937 RandomGenerator;
+
+  NormalDistribution norm_dist(mean, sigma);
+  norm_dist.reset();
+  // Initiate Random Number generator with current time
+  RandomGenerator rng(static_cast<unsigned> (time(0)));
+
+  boost::variate_generator<RandomGenerator, NormalDistribution>
+    generator(rng,norm_dist);
+  return generator();
 }
 
 IMPSTATISTICS_END_NAMESPACE
