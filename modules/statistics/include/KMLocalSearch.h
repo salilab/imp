@@ -35,7 +35,7 @@ annealing approach). Accepting a solution means copying the current solution to
 the saved solution. In some cases, the acceptance may involve reseting the
 current solution to a random solution.
 The generic algorithm:
-
+\verbatim
    reset()                 // resets curr and best
    while ( !is_done() ) {  // while not done
      begin_run()                                // begin a new run
@@ -48,6 +48,8 @@ The generic algorithm:
      endRun()                                   // end of run processing
    }
    return best                                  // return best solution
+\endverbatim
+\unstable{KMLocalSearch}
 */
 class IMPSTATISTICSEXPORT KMLocalSearch {
 public:

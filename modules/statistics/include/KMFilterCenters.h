@@ -20,6 +20,9 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! Provides efficient algorithm for computing distortions, by a
 //! filtering algorithm.
+/**
+   \unstable{KMFilterCenters}
+*/
 class IMPSTATISTICSEXPORT KMFilterCenters : public KMCenters{
 public:
   KMFilterCenters();

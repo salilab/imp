@@ -32,6 +32,9 @@ typedef enum { // distributions
 typedef std::vector<double> KMPoint;
 typedef std::vector<KMPoint *> KMPointArray;
 //! Holds the data points to cluster
+/**
+   \unstable{KMData}
+ */
 class IMPSTATISTICSEXPORT KMData {
 public:
   //! Constructor

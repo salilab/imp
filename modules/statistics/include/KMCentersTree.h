@@ -16,6 +16,9 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 //! A data structure for efficeint assignment of points to clusters
+/**
+   \unstable{KMCentersTree}
+ */
 class KMCentersTree {
 public:
   //!  Constructor

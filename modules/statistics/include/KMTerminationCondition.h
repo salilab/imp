@@ -11,6 +11,9 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 //! Stores data controlling the termination and phase changes of
 //! the kmean clustering
+/**
+   \unstable{KMTerminationCondition}
+ */
 class KMTerminationCondition {
 public:
   KMTerminationCondition() {

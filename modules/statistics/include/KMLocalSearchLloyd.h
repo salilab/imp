@@ -26,6 +26,7 @@ relative distortion loss (minAccumRDL).  If the accumulated RDL
 for the run exceeds this value, then the run ends in success.
 If the number of stages is exceeded before this happens, the run
 ends in failure.
+\unstable{KMLocalSearchLlouyd}
 */
 class IMPSTATISTICSEXPORT KMLocalSearchLloyd : public KMLocalSearch {
 public:
