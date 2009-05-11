@@ -11,6 +11,9 @@
 #include "KMData.h"
 IMPSTATISTICS_BEGIN_NAMESPACE
 //! Manages the centers of the data points
+/**
+   \unstable{KMCenters}
+ */
 class IMPSTATISTICSEXPORT KMCenters {
  public:
   KMCenters(){}

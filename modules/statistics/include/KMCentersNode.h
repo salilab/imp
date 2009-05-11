@@ -17,6 +17,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 splitting information (a splitting hyperplane orthogonal to one of the
 coordinate axes) and leaf nodes which contain point information (an array of
 points stored in a bucket).
+\unstable{KMCentersNode}
 */
 class IMPSTATISTICSEXPORT KMCentersNode {
 public:

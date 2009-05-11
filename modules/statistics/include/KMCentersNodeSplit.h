@@ -21,6 +21,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     (this is used to speed up point to box distance calculations) [we do not
     store the entire bounding box since this may be wasteful of space in
     high dimensions]. We also store pointers to the 2 children.
+    \unstable{KMCentersNodeSplit}
 */
 class IMPSTATISTICSEXPORT KMCentersNodeSplit : public KMCentersNode
 {

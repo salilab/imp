@@ -25,11 +25,17 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+/**
+   \unstable{KMTerminationCondition}
+ */
 inline double elapsed_time(clock_t start) {
   return double(clock() - start)/double(CLOCKS_PER_SEC);
 }
 
 //! Proxy to apply k-means clustering on a set of Particles
+/**
+   \unstable{KMTerminationCondition}
+ */
 class IMPSTATISTICSEXPORT KMLProxy
 {
 public:

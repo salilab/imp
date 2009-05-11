@@ -21,11 +21,20 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! Returns the squared distances betweentwo points
+/**
+   \unstable{KMTerminationCondition}
+ */
 IMPSTATISTICSEXPORT double km_distance2(const KMPoint &p,const KMPoint &q);
 //! Returns true if p and q are the same points.
+/**
+   \unstable{KMTerminationCondition}
+ */
 bool km_is_equal(const KMPoint &p,const KMPoint &q);
 
 //!  Orthogonal (axis aligned) rectangle
+/**
+   \unstable{KMTerminationCondition}
+ */
 class KMRectangle {
 public:
   KMRectangle(){}

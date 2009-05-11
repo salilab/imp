@@ -16,6 +16,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     bucket, stored as an array of point indices.  These are indices in the
     array points, which resides with the root of the kc-tree.
    We also store the number of points that reside in this bucket.
+   \unstable {KMCentersNodeLeaf}
 */
 class IMPSTATISTICSEXPORT KMCentersNodeLeaf: public KMCentersNode
 {
