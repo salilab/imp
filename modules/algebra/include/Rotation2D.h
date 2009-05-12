@@ -1,5 +1,5 @@
 /**
- *  \file rotation_operations.h
+ *  \file Rotation2D.h
  *  \brief Classes and operations related with rotations
  *  \author Javier Velazquez-Muriel
  *
@@ -15,7 +15,6 @@
 #include "Vector3D.h"
 #include "Matrix2D.h"
 #include "Rotation3D.h"
-#include <IMP/deprecation.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -24,8 +23,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
   \note This class requires the angles to be given in radians, and the
   onvention used is that the rotations are performed rotating counterclockwise
   (right hand side convention).
-
-  \note The name of this class is liable to change to Rotation2D at any time.
 **/
 class Rotation2D
 {
