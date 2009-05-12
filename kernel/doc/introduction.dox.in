@@ -236,12 +236,12 @@ MyRestraint::get_interacting_particles() const
 
 Look through the types inherited from these methods to get an idea of the functionality available.
 
-- IMP::DecoratorBase
+- IMP::Decorator
 - IMP::Restraint
 - IMP::SingletonScore
 - IMP::PairScore
 - IMP::TripletScore
-- and check out the modules page for an orthogonal view
+- and check out the namespace list above for an orthogonal view
 
 
 \section i125 Modules
@@ -255,23 +255,18 @@ of current modules include
 
 \section i13 C++ vs Python
 
-Most code maps trivially from one to the other as you can see in the example.
-- have to declare variables in C++
-- need to know about smart pointers (use IMP::Pointer to store pointers)
-- memory management is a bit of a mess in Python
-- a few things can only be done in one language or the other (pdb files in python)
+Most code maps trivially from one to the other as you can see in the examples.
+<table>
+<tr><td></td><td>C++</td><td>Python</td></tr>
+<tr><td>memory management</td><td>using IMP::Pointer</td><td>automatic</td></tr>
+<tr><td>debugging</td><td>use gdb</td><td>hard to inspect IMP objects from Python</td></tr>
+</table>
 
-Debugging is much easier in C++.
-- hard to inspect objects in python
-
-Easier to experiment in Python.
-- we don't have good doc strings though and no str(foo)
+Normal python usage expects a few things that we do not currently offer from out objects such as doc strings and support for the \c str method.
 
 Recommendations:
 - write restraints and decorators in C++
-- never inherit from a C++ object in Python: the python wrapper we use does not manage memory properly.
-
-
+- use python to set up and construct your optimization protocol
 
 \section i15 Getting started
 
