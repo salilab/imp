@@ -2,6 +2,8 @@
 
 \par Week of May 8
 
+- the \imp-specific doxygen commands have been documented.
+
 - the doxygen commands  unstable{name} and untested{name} have been added to doxygen to be used for marking methods and functions as likely to change or not well tested. Pass the name of the class or method as name.
 
 - bonds can now be added to molecular hierarchies automatically see IMP::atom::add_bonds()

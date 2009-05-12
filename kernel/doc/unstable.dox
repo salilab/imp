@@ -1,0 +1,11 @@
+/**
+    \defgroup unstable "Unstable API"
+    The interface of classes and functions in this group are liable to
+    change.
+*/
+/**
+    \defgroup untested "Lightly Tested Functionality"
+    The classes and functions in this group have not yet been thoroughly
+    tested and so may contain bugs (unlike the rest of \imp :-). Use with
+    caution and please contribute any test code that you write.
+ */
