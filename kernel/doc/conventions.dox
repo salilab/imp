@@ -54,6 +54,8 @@
 
     Python code should provide Python doc strings.
 
+    We provide a number of \ref doxygen_commands "additional commands to help with documentation".
+
 
     \section names Names
     - Class names should be in \c CamelCase, for example 'class SpecialVector'
