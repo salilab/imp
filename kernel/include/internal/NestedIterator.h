@@ -13,7 +13,6 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-//! An iterator through the atoms of a CGAL::PDB::Chain.
 template <class T>
 class NestedIterator {
   typedef NestedIterator<T> This;
@@ -38,7 +37,7 @@ public:
     return &ret_;
   }
   const This& operator++() {
-    CGAL_assertion(ait_ != aend_);
+    IMP_assert(ait_ != aend_, "Empty range");
     ++ait_;
     while (ait_== aend_) {
       ++rit_;
