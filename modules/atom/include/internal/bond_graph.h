@@ -16,33 +16,37 @@
 IMPATOM_BEGIN_NAMESPACE
 
 
-inline BondedDecorator source(BondDecorator bd,
-                                  const BondGraph &){
-  return bd.get_bonded(0);
+inline BondedDecorator source(BondGraph::edge_descriptor bd,
+                              const BondGraph &){
+  return bd.first;
 }
 
 
-inline BondedDecorator target(BondDecorator bd,
+inline BondedDecorator target(const BondGraph::edge_descriptor &bd,
                                   const BondGraph &){
-  return bd.get_bonded(1);
+  return bd.second;
 }
 
 inline
-std::pair<BondedDecorator::BondIterator,
-          BondedDecorator::BondIterator>
+std::pair<BondGraph::out_edge_iterator,
+          BondGraph::out_edge_iterator>
 out_edges(BondedDecorator bd,
           const BondGraph &) {
-  return std::make_pair(bd.bonds_begin(),
-                        bd.bonds_end());
+  return std::make_pair(BondGraph::out_edge_iterator(bd.bonds_begin(),
+                         BondGraph::MakeOutEdgeDescriptor(bd)),
+                        BondGraph::out_edge_iterator(bd.bonds_end(),
+                         BondGraph::MakeOutEdgeDescriptor(bd)));
 }
 
 inline
-std::pair<BondedDecorator::BondIterator,
-          BondedDecorator::BondIterator>
+std::pair<BondGraph::in_edge_iterator,
+          BondGraph::in_edge_iterator>
 in_edges(BondedDecorator bd,
           const BondGraph &) {
-  return std::make_pair(bd.bonds_begin(),
-                        bd.bonds_end());
+  return std::make_pair(BondGraph::in_edge_iterator(bd.bonds_begin(),
+                         BondGraph::MakeInEdgeDescriptor(bd)),
+                        BondGraph::in_edge_iterator(bd.bonds_end(),
+                         BondGraph::MakeInEdgeDescriptor(bd)));
 }
 
 
@@ -59,8 +63,8 @@ inline
 std::pair<BondGraph::vertex_iterator,
           BondGraph::vertex_iterator>
 vertices(const BondGraph &g) {
-  core::ListSingletonContainer *ls
-    c= const_cast<core::ListSingletonContainer*>(g.sc_.get());
+  core::ListSingletonContainer *lsc
+    = const_cast<core::ListSingletonContainer*>(g.sc_.get());
   return
     std::make_pair(BondGraph::vertex_iterator(lsc->particles_begin(),
                                               BondGraph::MakeBonded()),

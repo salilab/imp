@@ -32,10 +32,13 @@ IMPATOM_BEGIN_NAMESPACE
 \external{www.boost.org/doc/libs/1_39_0/libs/graph/doc/table_of_contents.html,
     Boost.Graph manual} for more details and a list of algorithms.
 
-    The vertices are BondedDecorators and the edges are BondDecorators.
+    The vertices are BondedDecorators and the edge descriptors are
+    \code
+    std::pair<BondedDecorator, BondededDecorator>
+    \endcode.
    \untested{BondGraph}
  */
-class IMPATOMEXPORT BondGraph{
+class IMPATOMEXPORT BondGraph: public NullDefault{
 
 
 public:
@@ -55,8 +58,9 @@ public:
    */
   BondGraph(MolecularHierarchyDecorator bd);
 
-#ifndef IMP_DOXYGEN
+  BondGraph(){}
 
+#ifndef IMP_DOXYGEN
   struct traversal_category: public virtual boost::adjacency_graph_tag,
                              public virtual boost::vertex_list_graph_tag,
                              public virtual boost::edge_list_graph_tag,
@@ -64,13 +68,38 @@ public:
                              public virtual boost::bidirectional_graph_tag
   {};
   typedef BondedDecorator vertex_descriptor;
-  typedef BondDecorator edge_descriptor;
+  typedef
+    std::pair<BondedDecorator, BondedDecorator> edge_descriptor;
   //typedef undirected_tag directed_category;
   typedef int vertices_size_type;
   typedef int edges_size_type;
   typedef int degree_size_type;
 
-  typedef vertex_descriptor::BondIterator out_edge_iterator;
+  struct MakeOutEdgeDescriptor {
+    BondedDecorator v_;
+    MakeOutEdgeDescriptor(BondedDecorator v):v_(v){}
+    typedef edge_descriptor result_type;
+    edge_descriptor operator()(BondDecorator d) const {
+      return std::make_pair(v_,
+                            d.get_bonded(0) == v_
+                            ? d.get_bonded(1): d.get_bonded(0));
+    }
+  };
+  struct MakeInEdgeDescriptor {
+    BondedDecorator v_;
+    MakeInEdgeDescriptor(BondedDecorator v):v_(v){}
+    typedef edge_descriptor result_type;
+    edge_descriptor operator()(BondDecorator d) const {
+      return std::make_pair(
+                            d.get_bonded(0) == v_
+                            ? d.get_bonded(1): d.get_bonded(0),
+                            v_);
+    }
+  };
+
+
+  typedef boost::transform_iterator<MakeOutEdgeDescriptor,
+    vertex_descriptor::BondIterator> out_edge_iterator;
   typedef vertex_descriptor::BondedIterator adjacency_iterator;
   typedef boost::transform_iterator<MakeBonded,
                    IMP::core::ListSingletonContainer::ParticleIterator>
@@ -78,24 +107,28 @@ public:
   typedef boost::disallow_parallel_edge_tag edge_parallel_category;
   typedef boost::undirected_tag directed_category;
 
-  typedef out_edge_iterator in_edge_iterator;
+  typedef boost::transform_iterator<MakeInEdgeDescriptor,
+    vertex_descriptor::BondIterator> in_edge_iterator;
+
+
 
   struct NestedTraits {
     typedef BondedDecorator::BondIterator Inner;
     typedef vertex_iterator Outer;
     struct Get_inner {
-      std::pair<Inner, Inner> operator()(Outer out) {
+      std::pair<Inner, Inner> operator()(Outer out) const {
         return std::make_pair(out->bonds_begin(),
                               out->bonds_end());
       }
     };
     struct Make_value {
-      typedef BondDecorator result_type;
-      BondDecorator operator()(Outer out, Inner in) {
-        return *in;
+      typedef edge_descriptor result_type;
+      edge_descriptor operator()(Outer out, Inner in) const {
+        return std::make_pair(in->get_bonded(0),
+                              in->get_bonded(1));
       }
     };
-    typedef BondDecorator value_type;
+    typedef edge_descriptor value_type;
   };
 
   typedef IMP::internal::NestedIterator<NestedTraits> edge_iterator;
