@@ -64,6 +64,38 @@ IMP_DECLARE_KEY_TYPE(StringKey, 2);
 //! The type used to identify a particle attribute in the Particles
 IMP_DECLARE_KEY_TYPE(ParticleKey, 3);
 
+#ifndef IMP_DOXYGEN
+
+
+template <class K>
+struct KeyAttributeType {
+  typedef void Type;
+};
+
+template <>
+struct KeyAttributeType<FloatKey> {
+  typedef Float Type;
+};
+
+template <>
+struct KeyAttributeType<IntKey> {
+  typedef Int Type;
+};
+
+
+template <>
+struct KeyAttributeType<StringKey> {
+  typedef String Type;
+};
+
+template <>
+struct KeyAttributeType<ParticleKey> {
+  typedef Particle* Type;
+};
+
+
+#endif
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_BASE_TYPES_H */
