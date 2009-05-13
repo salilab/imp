@@ -32,5 +32,5 @@
     - \ref bond "Code to create and manipulate bonds"
 
     When programming with \imp, one of the more useful pages is the
-    <a href="hierarchy.html"><b>class hierarchy</b></a> as well as
+    <a href="hierarchy.html">class hierarchy</a> as well as
     the \salilab{imp/doc/doxygen/namespaces.html, module pages}.*/
