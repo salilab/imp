@@ -37,6 +37,8 @@ IMPSEARCH_BEGIN_NAMESPACE
 
     The template arguments are a boost::tuple containing the
     key types.
+    \unstable{AttributeMapScoreState}
+    \untested{AttribiteMapScoreState}
 */
 template <class KeysT>
 class AttributeMapScoreState : public ScoreState
