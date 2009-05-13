@@ -2,6 +2,7 @@ files = [
     'AttributeTable.h',
     'ExponentialNumber.h',
     'IndexingIterator.h',
+    'NestedIterator.h',
     'ObjectContainer.h',
     'Unit.h',
     'Vector.h',
