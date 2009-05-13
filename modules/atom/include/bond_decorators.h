@@ -17,6 +17,7 @@
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
 
+#include <IMP/internal/IndexingIterator.h>
 IMPATOM_BEGIN_NAMESPACE
 
 class BondDecorator;
@@ -74,6 +75,7 @@ public:
                             internal::get_bond_data().stiffness_,
                             Float,
                             Float, -1);
+
 };
 
 IMP_OUTPUT_OPERATOR(BondDecorator);
@@ -86,6 +88,26 @@ IMP_OUTPUT_OPERATOR(BondDecorator);
  */
 class IMPATOMEXPORT BondedDecorator: public Decorator
 {
+  struct GetBond {
+    typedef BondDecorator result_type;
+    Particle* d_;
+    GetBond():d_(NULL){}
+    GetBond(Particle* d): d_(d){}
+    BondDecorator operator()(unsigned int i) const;
+    bool operator==(const GetBond &o) const {
+      return d_== o.d_;
+    }
+  };
+  struct GetBonded {
+    typedef BondedDecorator result_type;
+    Particle* d_;
+    GetBonded():d_(NULL){}
+    GetBonded(Particle* d): d_(d){}
+    BondedDecorator operator()(unsigned int i) const;
+    bool operator==(const GetBonded &o) const {
+      return d_== o.d_;
+    }
+  };
 public:
   IMP_DECORATOR(BondedDecorator, Decorator)
   //! return true if it is a bonded particle
@@ -133,6 +155,37 @@ public:
     if (bd.get_bonded(0) == *this) return bd.get_bonded(1);
     else return bd.get_bonded(0);
   }
+
+  /** @name Iterate through the bonds
+      @{
+  */
+#ifdef IMP_DOXYGEN
+  class BondIterator;
+#else
+  typedef IMP::internal::IndexingIterator<GetBond> BondIterator;
+#endif
+  BondIterator bonds_begin() const {
+    return BondIterator(GetBond(get_particle()), 0);
+  }
+  BondIterator bonds_end() const {
+    return BondIterator(GetBond(get_particle()), get_number_of_bonds());
+  }
+  /** @} */
+  /** @name Iterate through the bondeds
+      @{
+  */
+#ifdef IMP_DOXYGEN
+  class BondedIterator;
+#else
+  typedef IMP::internal::IndexingIterator<GetBonded> BondedIterator;
+#endif
+  BondedIterator bondeds_begin() const {
+    return BondedIterator(GetBonded(get_particle()), 0);
+  }
+  BondedIterator bondeds_end() const {
+    return BondedIterator(GetBonded(get_particle()), get_number_of_bonds());
+  }
+  /** @} */
 };
 
 IMP_OUTPUT_OPERATOR(BondedDecorator);
@@ -146,6 +199,18 @@ inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
                               internal::get_bond_data().graph_);
   return BondedDecorator(p);
 }
+
+#ifndef IMP_DOXYGEN
+inline BondDecorator BondedDecorator::GetBond::operator()(unsigned int i)
+  const {
+  return BondedDecorator(d_).get_bond(i);
+}
+inline BondedDecorator BondedDecorator::GetBonded::operator()(unsigned int i)
+  const {
+  return BondedDecorator(d_).get_bonded(i);
+}
+#endif
+
 
 //! Connect the two wrapped particles by a bond.
 /** \param[in] a The first Particle as a BondedDecorator

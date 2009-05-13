@@ -14,6 +14,7 @@ files = [
          'ResidueDecorator.h',
          'VelocityScalingOptimizerState.h',
          'bond_decorators.h',
+         'bond_graph.h',
          'estimates.h',
          'macros.h',
          'pdb.h',

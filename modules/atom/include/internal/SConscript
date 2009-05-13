@@ -1,5 +1,6 @@
 files = [
          'Topology.h',
+         'bond_graph.h',
          'bond_helpers.h',
          'pdb.h',
         ]
