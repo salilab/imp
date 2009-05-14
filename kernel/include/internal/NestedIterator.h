@@ -23,7 +23,7 @@ class NestedIterator {
 public:
   typedef typename T::value_type value_type;
   typedef std::forward_iterator_tag iterator_category;
-  typedef std::size_t difference_type;
+  typedef int difference_type;
   typedef value_type reference;
   typedef value_type* pointer;
 

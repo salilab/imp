@@ -28,7 +28,7 @@ class IndexingIterator {
   }
 public:
   typedef const typename Accessor::result_type  value_type;
-  typedef unsigned int difference_type;
+  typedef int difference_type;
   typedef const typename Accessor::result_type reference;
   typedef const typename Accessor::result_type* pointer;
   typedef std::random_access_iterator_tag iterator_category;
