@@ -15,7 +15,7 @@ files = [
          'ResidueDecorator.cpp',
          'VelocityScalingOptimizerState.cpp',
          'bond_decorators.cpp',
-         #'bond_graph.cpp',
+         'bond_graph.cpp',
          'estimates.cpp',
          'pdb.cpp',
         ] \

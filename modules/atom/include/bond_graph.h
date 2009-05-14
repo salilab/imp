@@ -10,6 +10,7 @@
 
 #include "bond_decorators.h"
 #include "MolecularHierarchyDecorator.h"
+#include "internal/bond_graph_functors.h"
 #include <IMP/core/ListSingletonContainer.h>
 #include <IMP/internal/NestedIterator.h>
 #include <boost/graph/graph_traits.hpp>
@@ -19,6 +20,41 @@
 #ifndef IMP_SWIG
 
 IMPATOM_BEGIN_NAMESPACE
+
+
+#ifndef IMP_DOXYGEN
+
+typedef internal::AttributeVertexPropertyMap<FloatKey, Float>
+VertexFloatPropertyMap;
+typedef internal::AttributeVertexPropertyMap<IntKey, Int>
+VertexIntPropertyMap;
+typedef internal::AttributeVertexPropertyMap<ParticleKey, BondedDecorator>
+VertexVertexPropertyMap;
+
+
+
+typedef internal::AttributeEdgePropertyMap<FloatKey, Float>
+EdgeFloatPropertyMap;
+typedef internal::AttributeEdgePropertyMap<IntKey, Int> EdgeIntPropertyMap;
+
+#else
+
+/** @name Property maps
+    Boost.Graph makes extensive use of property maps. We define a few maps
+    which use the particle attributes to store their data. Each map is
+    constructed by passing an appropriate attribute key, to specify the
+    attribute used to store the data. Attempt to store to an attribute
+    which the particle does not already have adds the attribute to the
+    particle.
+   @{
+ */
+class VertexFloatPropertyMap;
+class VertexIntPropertyMap;
+class VertexVertexPropertyMap
+class EdgeFloatPropertyMap;
+class EdgeIntPropertyMap;
+/** @} */
+#endif
 
 
 //! Represent a bond graph as a boost graph
@@ -36,21 +72,28 @@ IMPATOM_BEGIN_NAMESPACE
     \code
     std::pair<BondedDecorator, BondededDecorator>
     \endcode.
+
+    And all vertices can be assumed to have boost vertex indices.
+
+    Some usage examples
+    \code
+    boost::isomorphism(a,b,
+                     boost::isomorphism_map(VertexVertexPropertyMap(pk))
+                     .vertex_index1_map(a.get_vertex_index_map())
+                     .vertex_index2_map(b.get_vertex_index_map()));
+    boost::dijkstra_shortest_paths(a, BondedDecorator(),
+        boost::predecessor_map(VertexVertexPropertyMap(pk))
+           .weight_map(EdgeFloatPropertyMap(FloatKey("bond length")))
+           .distance_map(VertexFloatPropertyMap(FloatKey("hi")))
+           .vertex_index_map(VertexIntPropertyMap(index)));
+    \endcode
    \untested{BondGraph}
  */
 class IMPATOMEXPORT BondGraph: public NullDefault{
 
+  mutable IntKey index_key_;
 
 public:
-#ifndef IMP_DOXYGEN
-  struct MakeBonded {
-    typedef Particle *argument_type;
-    typedef BondedDecorator result_type;
-    result_type operator()(argument_type p) const {
-      return result_type(p);
-    }
-  };
-#endif
   IMP_NO_DOXYGEN(Pointer<core::ListSingletonContainer> sc_;)
 
   //! The graph is on the leaves of the MolecularHierachyDecorator
@@ -59,6 +102,11 @@ public:
   BondGraph(MolecularHierarchyDecorator bd);
 
   BondGraph(){}
+
+  ~BondGraph();
+
+  VertexIntPropertyMap get_vertex_index_map() const;
+
 
 #ifndef IMP_DOXYGEN
   struct traversal_category: public virtual boost::adjacency_graph_tag,
@@ -75,74 +123,35 @@ public:
   typedef int edges_size_type;
   typedef int degree_size_type;
 
-  struct MakeOutEdgeDescriptor {
-    BondedDecorator v_;
-    MakeOutEdgeDescriptor(){}
-    MakeOutEdgeDescriptor(BondedDecorator v):v_(v){}
-    typedef edge_descriptor result_type;
-    edge_descriptor operator()(BondDecorator d) const {
-      return std::make_pair(v_,
-                            d.get_bonded(0) == v_
-                            ? d.get_bonded(1): d.get_bonded(0));
-    }
-  };
-  struct MakeInEdgeDescriptor {
-    BondedDecorator v_;
-    MakeInEdgeDescriptor(){}
-    MakeInEdgeDescriptor(BondedDecorator v):v_(v){}
-    typedef edge_descriptor result_type;
-    edge_descriptor operator()(BondDecorator d) const {
-      return std::make_pair(
-                            d.get_bonded(0) == v_
-                            ? d.get_bonded(1): d.get_bonded(0),
-                            v_);
-    }
-  };
-
-
-  typedef boost::transform_iterator<MakeOutEdgeDescriptor,
+  typedef boost::transform_iterator<internal::MakeOutEdgeDescriptor,
     vertex_descriptor::BondIterator> out_edge_iterator;
   typedef vertex_descriptor::BondedIterator adjacency_iterator;
-  typedef boost::transform_iterator<MakeBonded,
+  typedef boost::transform_iterator<internal::MakeBonded,
                    IMP::core::ListSingletonContainer::ParticleIterator>
   vertex_iterator;
   typedef boost::disallow_parallel_edge_tag edge_parallel_category;
   typedef boost::undirected_tag directed_category;
 
-  typedef boost::transform_iterator<MakeInEdgeDescriptor,
+  typedef boost::transform_iterator<internal::MakeInEdgeDescriptor,
     vertex_descriptor::BondIterator> in_edge_iterator;
 
 
 
-  struct NestedTraits {
-    typedef BondedDecorator::BondIterator Inner;
-    typedef vertex_iterator Outer;
-    struct Get_inner {
-      std::pair<Inner, Inner> operator()(Outer out) const {
-        return std::make_pair(out->bonds_begin(),
-                              out->bonds_end());
-      }
-    };
-    struct Make_value {
-      typedef edge_descriptor result_type;
-      edge_descriptor operator()(Outer out, Inner in) const {
-        return std::make_pair(in->get_bonded(0),
-                              in->get_bonded(1));
-      }
-    };
-    typedef edge_descriptor value_type;
-  };
 
-  typedef IMP::internal::NestedIterator<NestedTraits> edge_iterator;
+
+  typedef IMP::internal::NestedIterator<internal::NestedTraits> edge_iterator;
 
   struct graph_tag{};
   typedef Int vertex_property_type;
 #endif
 };
 
+
+
+
 IMPATOM_END_NAMESPACE
 
-#include "internal/bond_graph.h"
+#include "internal/bond_graph_boost_functions.h"
 
 #endif // IMP_SWIG
 
