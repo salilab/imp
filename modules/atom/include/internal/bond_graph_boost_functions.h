@@ -1,12 +1,13 @@
 /**
- *  \file atom/internal/bond_graph.h     \brief Contains decorators for a bond
+ *  \file atom/internal/bond_graph_boost_functions.h
+ *  \brief Contains decorators for a bond
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPATOM_INTERNAL_BOND_GRAPH_H
-#define IMPATOM_INTERNAL_BOND_GRAPH_H
+#ifndef IMPATOM_INTERNAL_BOND_GRAPH_BOOST_FUNCTIONS_H
+#define IMPATOM_INTERNAL_BOND_GRAPH_BOOST_FUNCTIONS_H
 
 
 #include <boost/graph/graph_traits.hpp>
@@ -33,9 +34,9 @@ std::pair<BondGraph::out_edge_iterator,
 out_edges(BondedDecorator bd,
           const BondGraph &) {
   return std::make_pair(BondGraph::out_edge_iterator(bd.bonds_begin(),
-                         BondGraph::MakeOutEdgeDescriptor(bd)),
+                             internal::MakeOutEdgeDescriptor(bd)),
                         BondGraph::out_edge_iterator(bd.bonds_end(),
-                         BondGraph::MakeOutEdgeDescriptor(bd)));
+                             internal::MakeOutEdgeDescriptor(bd)));
 }
 
 inline
@@ -44,9 +45,9 @@ std::pair<BondGraph::in_edge_iterator,
 in_edges(BondedDecorator bd,
           const BondGraph &) {
   return std::make_pair(BondGraph::in_edge_iterator(bd.bonds_begin(),
-                         BondGraph::MakeInEdgeDescriptor(bd)),
+                           internal::MakeInEdgeDescriptor(bd)),
                         BondGraph::in_edge_iterator(bd.bonds_end(),
-                         BondGraph::MakeInEdgeDescriptor(bd)));
+                           internal::MakeInEdgeDescriptor(bd)));
 }
 
 
@@ -67,9 +68,9 @@ vertices(const BondGraph &g) {
     = const_cast<core::ListSingletonContainer*>(g.sc_.get());
   return
     std::make_pair(BondGraph::vertex_iterator(lsc->particles_begin(),
-                                              BondGraph::MakeBonded()),
+                                              internal::MakeBonded()),
                    BondGraph::vertex_iterator(lsc->particles_end(),
-                                              BondGraph::MakeBonded()));
+                                              internal::MakeBonded()));
 }
 
 inline unsigned int num_vertices(const BondGraph &g) {
@@ -79,11 +80,13 @@ inline unsigned int num_vertices(const BondGraph &g) {
 inline std::pair<BondGraph::edge_iterator,
           BondGraph::edge_iterator>
 edges(const BondGraph &g) {
+  core::ListSingletonContainer *sc
+    = const_cast<core::ListSingletonContainer*>(g.sc_.get());
   return
-    std::make_pair(BondGraph::edge_iterator(vertices(g).first,
-                                            vertices(g).second),
-                   BondGraph::edge_iterator(vertices(g).second,
-                                            vertices(g).second));
+    std::make_pair(BondGraph::edge_iterator(sc->particles_begin(),
+                                            sc->particles_end()),
+                   BondGraph::edge_iterator(sc->particles_end(),
+                                            sc->particles_end()));
 }
 
 inline unsigned int
@@ -115,4 +118,4 @@ inline unsigned int in_degree(BondedDecorator bd,
 IMPATOM_END_NAMESPACE
 
 
-#endif  /* IMPATOM_INTERNAL_BOND_GRAPH_H */
+#endif  /* IMPATOM_INTERNAL_BOND_GRAPH_BOOST_FUNCTIONS_H */
