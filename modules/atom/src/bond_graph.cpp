@@ -25,7 +25,7 @@ BondGraph::BondGraph(MolecularHierarchyDecorator bd):
   }
 }
 
-VertexIntPropertyMap BondGraph::get_vertex_index_map() const {
+BondGraph::VertexIntPropertyMap BondGraph::get_vertex_index_map() const {
   if (index_key_== IntKey()) {
     std::ostringstream oss;
     oss << this << " bond graph index";
@@ -56,6 +56,7 @@ BondGraph::~BondGraph() {
 
 
 void bgl_concept_checks() {
+
   boost::function_requires<boost::VertexListGraphConcept<BondGraph> >();
   boost::function_requires<boost::AdjacencyGraphConcept<BondGraph> >();
   boost::function_requires<boost::EdgeListGraphConcept<BondGraph> >();
@@ -66,15 +67,15 @@ void bgl_concept_checks() {
   IntKey index("crazy temp index");
   ParticleKey pk("isomaping");
   boost::isomorphism(a,b,
-                     boost::isomorphism_map(VertexVertexPropertyMap(pk))
+         boost::isomorphism_map(BondGraph::VertexVertexPropertyMap(pk))
                      .vertex_index1_map(a.get_vertex_index_map())
                      .vertex_index2_map(b.get_vertex_index_map()));
 
   boost::dijkstra_shortest_paths(a, BondedDecorator(),
-        boost::predecessor_map(VertexVertexPropertyMap(pk))
-           .weight_map(EdgeFloatPropertyMap(FloatKey("bond length")))
-           .distance_map(VertexFloatPropertyMap(FloatKey("hi")))
-           .vertex_index_map(VertexIntPropertyMap(index)));
+        boost::predecessor_map(BondGraph::VertexVertexPropertyMap(pk))
+     .weight_map(BondGraph::EdgeFloatPropertyMap(FloatKey("bond length")))
+     .distance_map(BondGraph::VertexFloatPropertyMap(FloatKey("hi")))
+     .vertex_index_map(a.get_vertex_index_map()));
 }
 
 IMPATOM_END_NAMESPACE
