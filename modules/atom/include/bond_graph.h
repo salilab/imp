@@ -77,6 +77,7 @@ public:
 
   struct MakeOutEdgeDescriptor {
     BondedDecorator v_;
+    MakeOutEdgeDescriptor(){}
     MakeOutEdgeDescriptor(BondedDecorator v):v_(v){}
     typedef edge_descriptor result_type;
     edge_descriptor operator()(BondDecorator d) const {
@@ -87,6 +88,7 @@ public:
   };
   struct MakeInEdgeDescriptor {
     BondedDecorator v_;
+    MakeInEdgeDescriptor(){}
     MakeInEdgeDescriptor(BondedDecorator v):v_(v){}
     typedef edge_descriptor result_type;
     edge_descriptor operator()(BondDecorator d) const {
@@ -132,6 +134,9 @@ public:
   };
 
   typedef IMP::internal::NestedIterator<NestedTraits> edge_iterator;
+
+  struct graph_tag{};
+  typedef Int vertex_property_type;
 #endif
 };
 

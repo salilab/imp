@@ -9,6 +9,7 @@
 #include <boost/graph/graph_concepts.hpp>
 #include <IMP/SingletonContainer.h>
 #include <boost/graph/isomorphism.hpp>
+#include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_utility.hpp>
 #include <boost/property_map.hpp>
 
@@ -25,10 +26,10 @@ BondGraph::BondGraph(MolecularHierarchyDecorator bd):
 }
 
 template <class Key>
-struct AttributePropertyMap {
+struct AttributeVertexPropertyMap {
   Key k_;
-  AttributePropertyMap(Key k): k_(k){}
-  typedef Particle* key_type;
+  AttributeVertexPropertyMap(Key k): k_(k){}
+  typedef BondedDecorator key_type;
   typedef typename KeyAttributeType<Key>::Type value_type;
   struct category: public virtual boost::readable_property_map_tag,
                    public virtual boost::writable_property_map_tag,
@@ -36,23 +37,85 @@ struct AttributePropertyMap {
   typedef value_type reference;
 };
 
-template <class Key, class Decorator>
-typename KeyAttributeType<Key>::Type get(const AttributePropertyMap<Key> &m,
-                                       Decorator d) {
+template <class Key>
+typename KeyAttributeType<Key>::Type
+get(const AttributeVertexPropertyMap<Key> &m,
+    BondedDecorator d) {
   return d.get_particle()->get_value(m.k_);
 }
 
-template <class Key, class Decorator>
-void put(const AttributePropertyMap<Key> &m,
-         Decorator d,
+template <class Key>
+typename KeyAttributeType<Key>::Type
+get(const AttributeVertexPropertyMap<Key> &m,
+    Particle* d) {
+  return d->get_value(m.k_);
+}
+
+BondedDecorator get(const AttributeVertexPropertyMap<ParticleKey> &m,
+                    BondedDecorator d) {
+  return  BondedDecorator(d.get_particle()->get_value(m.k_));
+}
+
+template <class Key>
+void put(const AttributeVertexPropertyMap<Key> &m,
+         BondedDecorator d,
          typename KeyAttributeType<Key>::Type    v) {
   return d.get_particle()->set_value(m.k_, v);
 }
 
 template <class Key>
-AttributePropertyMap<Key> make_attribute_property_map(Key k) {
-  return AttributePropertyMap<Key>(k);
+void put(const AttributeVertexPropertyMap<Key> &m,
+         BondedDecorator d,
+         BondedDecorator    v) {
+  return d.get_particle()->set_value(m.k_, v.get_particle());
 }
+
+template <class Key>
+void put(const AttributeVertexPropertyMap<Key> &m,
+         Particle* d,
+         typename KeyAttributeType<Key>::Type    v) {
+  return d->set_value(m.k_, v);
+}
+
+
+template <class Key>
+AttributeVertexPropertyMap<Key> make_attribute_property_map(Key k) {
+  return AttributeVertexPropertyMap<Key>(k);
+}
+
+
+AttributeVertexPropertyMap<IntKey> get(BondGraph::vertex_property_type,
+                                 const BondGraph &) {
+  return AttributeVertexPropertyMap<IntKey>(IntKey("dummy"));
+}
+
+struct Degree {
+  typedef unsigned int result_type;
+  typedef BondedDecorator argument_type;
+  result_type operator()(argument_type t) {
+    return t.get_number_of_bonds();
+  }
+};
+
+struct BondLengthMap{
+  typedef BondGraph::edge_descriptor argument_type;
+  typedef double result_type;
+  double operator()(argument_type e) const {
+    return get_bond(BondedDecorator(e.first),
+                    BondedDecorator(e.second)).get_length();
+  }
+  typedef argument_type key_type;
+  typedef double value_type;
+  struct category: public virtual boost::readable_property_map_tag{};
+  typedef value_type reference;
+};
+
+double get(const BondLengthMap &m,
+            BondGraph::edge_descriptor d) {
+  return m(d);
+}
+
+
 
 void bgl_concept_checks() {
   boost::function_requires<boost::VertexListGraphConcept<BondGraph> >();
@@ -64,10 +127,20 @@ void bgl_concept_checks() {
   BondGraph a,b;
   IntKey index("crazy temp index");
   ParticleKey pk("isomaping");
-  /*bool isthere=boost::isomorphism(a,b,
-    boost::isomorphism_map(make_attribute_property_map(pk)),
-    boost::vertex_index1_map(make_attribute_property_map(index)),
-    boost::vertex_index2_map(make_attribute_property_map(index)));*/
+  /*  bool isthere=boost::isomorphism(a,b,
+                                  AttributeVertexPropertyMap<IntKey>(index),
+                                  Degree(), Degree(),
+                                  1000000,
+                                  make_attribute_property_map(index),
+                                  make_attribute_property_map(index));*/
+  boost::dijkstra_shortest_paths(a, BondedDecorator(),
+        boost::predecessor_map(AttributeVertexPropertyMap<ParticleKey>(pk))
+           .weight_map(BondLengthMap())
+           .distance_map(AttributeVertexPropertyMap<FloatKey>(FloatKey("hi")))
+           .vertex_index_map(AttributeVertexPropertyMap<IntKey>(index)));
 }
 
 IMPATOM_END_NAMESPACE
+/*,
+    boost::vertex_index1_map=make_attribute_property_map(index)),
+    boost::vertex_index2_map=make_attribute_property_map(index))*/
