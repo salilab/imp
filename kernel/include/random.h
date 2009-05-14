@@ -18,6 +18,10 @@ typedef ::boost::rand48 RandomNumberGenerator;
 /** The random number generator is seeded based of of the current time. To
     provide a better seed or use a constant seed call
     random_number_generator.seed(x) with a 32 bit int or a 64 bit unsigned int.
+
+    This generator can be used by the
+\external{www.boost.org/doc/libs/1_39_0/libs/random/index.html, Boost.Random}
+    distributions.
  */
 extern IMPEXPORT RandomNumberGenerator random_number_generator;
 
