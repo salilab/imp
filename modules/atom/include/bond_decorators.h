@@ -76,6 +76,9 @@ public:
                             Float,
                             Float, -1);
 
+  static FloatKey get_length_key() {
+    return internal::get_bond_data().length_;
+  }
 };
 
 IMP_OUTPUT_OPERATOR(BondDecorator);
