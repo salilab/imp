@@ -63,8 +63,10 @@ class Model;
     A particle may only belong to one model.
 
     Any attempt to access or change an attribute which the particle does not
-    have results in an IndexException. An attempt to touch a particle which
-    is not part of a model results in an InactiveParticleException.
+    have results is undefined. It will throw an exception if checks are
+    or possibly just crash if they are not. Likewise an attempt to touch
+    an inactive particle is also undefined (and will throw an exception if
+    checks are enabled).
 
     \note In general, Particles should only be used through
     \ref decorators "Decorators" as these provide a nice and more reliable
@@ -155,6 +157,9 @@ public:
   /** @name Float Attributes
       Float attributes can be optimized, meaning the optimizer is
       allowed to change their value in order to improve the score.
+
+      All distances are assumed to be in Angstroms
+      and derivatives in kCal/MolAngstrom. This is not enforced.
    */
   /*@{*/
   /** \param[in] key The key identifying the float attribute.
