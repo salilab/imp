@@ -34,7 +34,7 @@ class MCOptimizerTest(IMP.test.TestCase):
     def test_c1(self):
         """test monte carlo with rigid bodies"""
         #rigid transformation of the two molecules
-        mhs = IMP.atom.MolecularHierarchys()
+        mhs = IMP.atom.Hierarchys()
         mhs.append(self.m1)
         mhs.append(self.m2)
         rot1 = IMP.algebra.random_vector_on_sphere(IMP.algebra.Vector3D(0.,0.,0.),1.)

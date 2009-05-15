@@ -14,7 +14,7 @@
 #include <boost/property_map.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
-BondGraph::BondGraph(MolecularHierarchy bd):
+BondGraph::BondGraph(Hierarchy bd):
   sc_(new core::ListSingletonContainer(get_leaves(bd))) {
    for (core::ListSingletonContainer::ParticleIterator
          it= sc_->particles_begin();

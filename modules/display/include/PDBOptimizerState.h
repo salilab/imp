@@ -16,7 +16,7 @@
 #include <IMP/display/geometry.h>
 #include <IMP/Pointer.h>
 #include <vector>
-#include <IMP/atom/MolecularHierarchy.h>
+#include <IMP/atom/Hierarchy.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -32,10 +32,10 @@ class IMPDISPLAYEXPORT PDBOptimizerState: public OptimizerState
   unsigned int skip_steps_;
   std::string name_template_;
 
-  atom::MolecularHierarchys mh_;
+  atom::Hierarchys mh_;
 public:
   //! Write files using name_template as a template (must have a %d in it)
-  PDBOptimizerState(const atom::MolecularHierarchys &mh,
+  PDBOptimizerState(const atom::Hierarchys &mh,
                     std::string name_template);
 
   virtual ~PDBOptimizerState();

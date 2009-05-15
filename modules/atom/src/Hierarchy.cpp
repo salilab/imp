@@ -1,12 +1,12 @@
 /**
- *  \file MolecularHierarchy.cpp   \brief Decorator for helping deal
+ *  \file Hierarchy.cpp   \brief Decorator for helping deal
  *                                                 with a hierarchy.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include <IMP/atom/MolecularHierarchy.h>
+#include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Chain.h>
@@ -25,20 +25,20 @@
 IMPATOM_BEGIN_NAMESPACE
 
 const IMP::core::HierarchyTraits&
-MolecularHierarchy::get_traits() {
+Hierarchy::get_traits() {
   static IMP::core::HierarchyTraits ret("molecular_hierarchy");
   return ret;
 }
 
-IntKey MolecularHierarchy::get_type_key() {
+IntKey Hierarchy::get_type_key() {
   static IntKey k("molecular_hierarchy_type");
   return k;
 }
 
-void MolecularHierarchy::show(std::ostream &out,
+void Hierarchy::show(std::ostream &out,
                                        std::string prefix) const
 {
-  if (*this == MolecularHierarchy()) {
+  if (*this == Hierarchy()) {
     out << "NULL Molecular Hierarchy node";
     return;
   }
@@ -69,24 +69,24 @@ namespace
 
 struct MHDMatchingType
 {
-  MHDMatchingType(MolecularHierarchy::Type t): t_(t){}
+  MHDMatchingType(Hierarchy::Type t): t_(t){}
 
   bool operator()(Particle *p) const {
-    MolecularHierarchy mhd= MolecularHierarchy::cast(p);
-    if (mhd== MolecularHierarchy()) {
+    Hierarchy mhd= Hierarchy::cast(p);
+    if (mhd== Hierarchy()) {
       return false;
     } else {
       return mhd.get_type()==t_;
     }
   }
 
-  MolecularHierarchy::Type t_;
+  Hierarchy::Type t_;
 };
 
 } // namespace
 
-Particles get_by_type(MolecularHierarchy mhd,
-                      MolecularHierarchy::Type t)
+Particles get_by_type(Hierarchy mhd,
+                      Hierarchy::Type t)
 {
   Particles out;
   gather(mhd, MHDMatchingType(t),
@@ -103,9 +103,9 @@ struct MatchResidueIndex
   int index_;
   MatchResidueIndex(int i): index_(i) {}
   bool operator()(Particle *p) const {
-    MolecularHierarchy mhd(p);
-    if (mhd.get_type() == MolecularHierarchy::RESIDUE
-        || mhd.get_type() == MolecularHierarchy::NUCLEICACID) {
+    Hierarchy mhd(p);
+    if (mhd.get_type() == Hierarchy::RESIDUE
+        || mhd.get_type() == Hierarchy::NUCLEICACID) {
       Residue rd(p);
       return (rd.get_index() == index_);
     } else {
@@ -123,32 +123,32 @@ struct MatchResidueIndex
 } // namespace
 
 
-MolecularHierarchy
-get_residue(MolecularHierarchy mhd,
+Hierarchy
+get_residue(Hierarchy mhd,
             unsigned int index)
 {
-  IMP_check(mhd.get_type() == MolecularHierarchy::PROTEIN
-            || mhd.get_type() == MolecularHierarchy::CHAIN
-            || mhd.get_type() == MolecularHierarchy::NUCLEOTIDE,
-            "Invalid type of MolecularHierarchy passed to get_residue",
+  IMP_check(mhd.get_type() == Hierarchy::PROTEIN
+            || mhd.get_type() == Hierarchy::CHAIN
+            || mhd.get_type() == Hierarchy::NUCLEOTIDE,
+            "Invalid type of Hierarchy passed to get_residue",
             ValueException);
   MatchResidueIndex mi(index);
   IMP::core::Hierarchy hd= breadth_first_find(mhd, mi);
   if (hd== IMP::core::Hierarchy()) {
-    return MolecularHierarchy();
+    return Hierarchy();
   } else {
-    return MolecularHierarchy(hd.get_particle());
+    return Hierarchy(hd.get_particle());
   }
 }
 
 
 
-MolecularHierarchy
-create_fragment(const MolecularHierarchys &ps)
+Hierarchy
+create_fragment(const Hierarchys &ps)
 {
   IMP_check(!ps.empty(), "Need some particles",
             ValueException);
-  MolecularHierarchy parent= ps[0].get_parent();
+  Hierarchy parent= ps[0].get_parent();
   unsigned int index= ps[0].get_parent_index();
   IMP_IF_CHECK(CHEAP) {
     for (unsigned int i=0; i< ps.size(); ++i) {
@@ -159,8 +159,8 @@ create_fragment(const MolecularHierarchys &ps)
   }
 
   Particle *fp= new Particle(parent.get_particle()->get_model());
-  MolecularHierarchy fd= MolecularHierarchy::create(fp,
-                                       MolecularHierarchy::FRAGMENT);
+  Hierarchy fd= Hierarchy::create(fp,
+                                       Hierarchy::FRAGMENT);
 
   for (unsigned int i=0; i< ps.size(); ++i) {
     parent.remove_child(ps[i]);
@@ -171,7 +171,7 @@ create_fragment(const MolecularHierarchys &ps)
   return fd;
 }
 
-Bonds get_internal_bonds(MolecularHierarchy mhd)
+Bonds get_internal_bonds(Hierarchy mhd)
 {
   Particles ps= get_all_descendants(mhd);
   std::set<Particle*> sps(ps.begin(), ps.end());
@@ -193,12 +193,12 @@ Bonds get_internal_bonds(MolecularHierarchy mhd)
 
 namespace {
 IMPATOMEXPORT
-MolecularHierarchy clone_internal(MolecularHierarchy d,
+Hierarchy clone_internal(Hierarchy d,
                                            std::map<Particle*,
                                            Particle*> &map) {
   Particle *p= new Particle(d.get_model());
   map[d.get_particle()]=p;
-  MolecularHierarchy nd;
+  Hierarchy nd;
   if (Atom::is_instance_of(d.get_particle())) {
     nd= Atom::create(p, Atom(d.get_particle()));
   } else if (Residue::is_instance_of(d.get_particle())) {
@@ -208,7 +208,7 @@ MolecularHierarchy clone_internal(MolecularHierarchy d,
   } else if (Chain::is_instance_of(d.get_particle())) {
     nd= Chain::create(p, Chain(d.get_particle()));
   } else {
-    nd=MolecularHierarchy::create(p, d.get_type());
+    nd=Hierarchy::create(p, d.get_type());
   }
   using core::XYZ;
   using core::XYZR;
@@ -222,7 +222,7 @@ MolecularHierarchy clone_internal(MolecularHierarchy d,
   }
   p->set_name(d.get_particle()->get_name());
   for (unsigned int i=0 ;i< d.get_number_of_children(); ++i) {
-    MolecularHierarchy nc= clone_internal(d.get_child(i), map);
+    Hierarchy nc= clone_internal(d.get_child(i), map);
     nd.add_child(nc);
   }
   return nd;
@@ -230,9 +230,9 @@ MolecularHierarchy clone_internal(MolecularHierarchy d,
 }
 
 
-MolecularHierarchy clone(MolecularHierarchy d) {
+Hierarchy clone(Hierarchy d) {
   std::map<Particle*,Particle*> map;
-  MolecularHierarchy nh= clone_internal(d, map);
+  Hierarchy nh= clone_internal(d, map);
   Bonds bds= get_internal_bonds(d);
   for (unsigned int i=0; i< bds.size(); ++i) {
     Bonded e0= bds[i].get_bonded(0);
@@ -291,15 +291,15 @@ IMPATOMEXPORT Restraint* create_protein(Particle *p,
   // assume a 20% overlap in the beads to make the protein not too bumpy
   double overlap_frac=.2;
   std::pair<int, double> nr= compute_n(volume, resolution, overlap_frac);
-  MolecularHierarchy pd
-    =MolecularHierarchy::create(p,
-                              MolecularHierarchy::PROTEIN);
+  Hierarchy pd
+    =Hierarchy::create(p,
+                              Hierarchy::PROTEIN);
   Particles ps;
   for (int i=0; i< nr.first; ++i) {
     Particle *pc= new Particle(p->get_model());
-    MolecularHierarchy pcd
-      =MolecularHierarchy::create(pc,
-                              MolecularHierarchy::FRAGMENT);
+    Hierarchy pcd
+      =Hierarchy::create(pc,
+                              Hierarchy::FRAGMENT);
     pd.add_child(pcd);
     core::XYZR xyzd=core::XYZR::create(pc);
     xyzd.set_radius(nr.second);

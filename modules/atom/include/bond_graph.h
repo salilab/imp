@@ -9,7 +9,7 @@
 #define IMPATOM_BOND_GRAPH_H
 
 #include "bond_decorators.h"
-#include "MolecularHierarchy.h"
+#include "Hierarchy.h"
 #include "internal/bond_graph_functors.h"
 #include <IMP/core/ListSingletonContainer.h>
 #include <IMP/internal/NestedIterator.h>
@@ -67,7 +67,7 @@ public:
       \note The hierarchy must not have any bonds to particles not in the
       hierarchy.
    */
-  BondGraph(MolecularHierarchy bd);
+  BondGraph(Hierarchy bd);
 
   BondGraph(){}
 

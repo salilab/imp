@@ -9,33 +9,33 @@
 #define IMPATOM_CHAIN_H
 
 #include "config.h"
-#include "MolecularHierarchy.h"
+#include "Hierarchy.h"
 #include <IMP/macros.h>
 #include <IMP/Decorator.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
 //! Store info for a chain of a protein
-/** \see MolecularHierarchy
+/** \see Hierarchy
  */
-class IMPATOMEXPORT Chain: public MolecularHierarchy
+class IMPATOMEXPORT Chain: public Hierarchy
 {
-  IMP_DECORATOR(Chain, MolecularHierarchy);
+  IMP_DECORATOR(Chain, Hierarchy);
 public:
   static Chain create(Particle *p, char id) {
     p->add_attribute(get_id_key(), id);
-    if (!MolecularHierarchy::is_instance_of(p)) {
-      MolecularHierarchy::create(p,
-                     MolecularHierarchy::CHAIN);
+    if (!Hierarchy::is_instance_of(p)) {
+      Hierarchy::create(p,
+                     Hierarchy::CHAIN);
     }
     return Chain(p);
   }
 
   static Chain create(Particle *p, Chain o) {
     p->add_attribute(get_id_key(), o.get_id());
-    if (!MolecularHierarchy::is_instance_of(p)) {
-      MolecularHierarchy::create(p,
-                     MolecularHierarchy::CHAIN);
+    if (!Hierarchy::is_instance_of(p)) {
+      Hierarchy::create(p,
+                     Hierarchy::CHAIN);
     }
     return Chain(p);
   }
@@ -43,7 +43,7 @@ public:
 
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_id_key())
-      &&  MolecularHierarchy::is_instance_of(p);
+      &&  Hierarchy::is_instance_of(p);
   }
 
   //! Return the chain id

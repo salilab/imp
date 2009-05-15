@@ -14,7 +14,7 @@ class DOMINOTests(IMP.test.TestCase):
         self.m = IMP.Model()
         self.ps = IMP.Particles()
         self.prots=[]
-        #create three MolecularHierarchy particels:
+        #create three Hierarchy particels:
         self.prots.append(IMP.atom.read_pdb(self.get_input_file_name("symm1.pdb"),
                                     self.m))
         self.prots[0].get_particle().add_attribute(IMP.domino.node_name_key(),str(0))

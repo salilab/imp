@@ -1,5 +1,5 @@
 /**
- *  \file Hierarchy.h     \brief Decorator for helping deal with
+ *  \file core/Hierarchy.h     \brief Decorator for helping deal with
  *                                        a hierarchy.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
@@ -40,7 +40,7 @@ class Hierarchy;
     This example shows how to make and use a custom hierarchy:
     \verbinclude custom_hierarchy.py
     \see Hierarchy
-    \see MolecularHierarchy
+    \see Hierarchy
 */
 class IMPCOREEXPORT HierarchyTraits
 #ifndef SWIG
@@ -148,7 +148,7 @@ public:
 //! A decorator for helping deal with a hierarchy.
 /**
     See HierarchyTraits for an example of how to define a custom hierarchy
-    and MolecularHierarchy for a hierarchy for molecules.
+    and Hierarchy for a hierarchy for molecules.
     \ingroup hierarchy
     \see HierarchyTraits
  */

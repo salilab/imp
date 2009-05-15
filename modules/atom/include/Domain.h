@@ -9,7 +9,7 @@
 #define IMPATOM_DOMAIN_H
 
 #include "config.h"
-#include "MolecularHierarchy.h"
+#include "Hierarchy.h"
 #include "internal/version_info.h"
 #include <IMP/Decorator.h>
 
@@ -19,7 +19,7 @@ IMPATOM_BEGIN_NAMESPACE
 /** The decorator stores the indexes of the first and last residues
     in this domain.
  */
-class IMPATOMEXPORT Domain: public MolecularHierarchy
+class IMPATOMEXPORT Domain: public Hierarchy
 {
   struct Data {
     Data(): begin("domain_begin"),
@@ -32,9 +32,9 @@ public:
   static Domain create(Particle *p, Int b, Int e) {
     p->add_attribute(get_data().begin, b);
     p->add_attribute(get_data().end, e);
-    if (!MolecularHierarchy::is_instance_of(p)) {
-      MolecularHierarchy::create(p,
-                     MolecularHierarchy::FRAGMENT);
+    if (!Hierarchy::is_instance_of(p)) {
+      Hierarchy::create(p,
+                     Hierarchy::FRAGMENT);
     }
     return Domain(p);
   }
@@ -43,9 +43,9 @@ public:
   static Domain create(Particle *p, Domain o) {
     p->add_attribute(get_data().begin, o.get_begin_index());
     p->add_attribute(get_data().end, o.get_end_index());
-    if (!MolecularHierarchy::is_instance_of(p)) {
-      MolecularHierarchy::create(p,
-               MolecularHierarchy::FRAGMENT);
+    if (!Hierarchy::is_instance_of(p)) {
+      Hierarchy::create(p,
+               Hierarchy::FRAGMENT);
     }
     return Domain(p);
   }
@@ -55,7 +55,7 @@ public:
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_data().begin)
       && p->has_attribute(get_data().end)
-      && MolecularHierarchy::is_instance_of(p);
+      && Hierarchy::is_instance_of(p);
   }
 
   //! Get the index of the first residue in the domain
@@ -68,7 +68,7 @@ public:
     return get_particle()->get_value(get_data().end);
   }
 
-  IMP_DECORATOR(Domain, MolecularHierarchy)
+  IMP_DECORATOR(Domain, Hierarchy)
 };
 
 

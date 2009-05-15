@@ -311,7 +311,7 @@ def _DihedralRestraintGenerator(form, modalities, atoms, parameters):
 def _get_protein_atom_particles(protein):
     """Given a protein particle, get the flattened list of all child atoms"""
     atom_particles = []
-    #protein = IMP.core.MolecularHierarchy.cast(protein)
+    #protein = IMP.core.Hierarchy.cast(protein)
     for ichain in range(protein.get_number_of_children()):
         chain = protein.get_child(ichain)
         for ires in range(chain.get_number_of_children()):
@@ -424,7 +424,7 @@ def copy_bonds(pdb, atoms, model):
         bp= IMP.atom.bond(ba, bb, IMP.atom.Bond.COVALENT)
 
 def read_pdb(name, model, special_patches=None):
-    """Construct a MolecularHierarchy from a pdb file.
+    """Construct a Hierarchy from a pdb file.
        The highest level hierarchy node is a PROTEIN. `special_patches`
        can be a function that applies patches (e.g. nucleic acid termini)
        to the Modeller model."""
@@ -435,34 +435,34 @@ def read_pdb(name, model, special_patches=None):
     pdb = modeller.scripts.complete_pdb(e, name,
                                         special_patches=special_patches)
     pp= IMP.Particle(model)
-    hpp= IMP.atom.MolecularHierarchy.create(pp,
-                    IMP.atom.MolecularHierarchy.PROTEIN)
+    hpp= IMP.atom.Hierarchy.create(pp,
+                    IMP.atom.Hierarchy.PROTEIN)
     pp.set_name(name)
     atoms={}
     for chain in pdb.chains:
         cp=IMP.Particle(model)
-        hcp= IMP.atom.MolecularHierarchy.create(cp,
-                                   IMP.atom.MolecularHierarchy.FRAGMENT)
+        hcp= IMP.atom.Hierarchy.create(cp,
+                                   IMP.atom.Hierarchy.FRAGMENT)
         # We don't really know the type yet
         hpp.add_child(hcp)
         cp.set_name(chain.name)
         for residue in chain.residues:
             rp= copy_residue(residue, model)
-            hrp= IMP.atom.MolecularHierarchy.cast(rp)
+            hrp= IMP.atom.Hierarchy.cast(rp)
             hcp.add_child(hrp)
             for atom in residue.atoms:
                 ap= copy_atom(atom, model)
-                hap= IMP.atom.MolecularHierarchy.cast(ap)
+                hap= IMP.atom.Hierarchy.cast(ap)
                 hrp.add_child(hap)
                 atoms[atom.index]=ap
             lastres=hrp
         # set the type for real
-        if lastres.get_type() == IMP.atom.MolecularHierarchy.RESIDUE:
-            hcp.set_type(IMP.atom.MolecularHierarchy.CHAIN)
+        if lastres.get_type() == IMP.atom.Hierarchy.RESIDUE:
+            hcp.set_type(IMP.atom.Hierarchy.CHAIN)
         elif lastres.get_type() ==\
-                IMP.atom.MolecularHierarchy.NUCLEICACID:
-            hcp.set_type(IMP.atom.MolecularHierarchy.NUCLEOTIDE)
+                IMP.atom.Hierarchy.NUCLEICACID:
+            hcp.set_type(IMP.atom.Hierarchy.NUCLEOTIDE)
         else:
-            hcp.set_type(IMP.atom.MolecularHierarchy.MOLECULE)
+            hcp.set_type(IMP.atom.Hierarchy.MOLECULE)
     copy_bonds(pdb,atoms, model)
     return hpp

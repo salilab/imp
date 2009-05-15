@@ -3,15 +3,15 @@ import IMP
 import IMP.test
 import IMP.atom
 
-ATOM = IMP.atom.MolecularHierarchy.ATOM
-RESIDUE = IMP.atom.MolecularHierarchy.RESIDUE
-UNKNOWN = IMP.atom.MolecularHierarchy.UNKNOWN
+ATOM = IMP.atom.Hierarchy.ATOM
+RESIDUE = IMP.atom.Hierarchy.RESIDUE
+UNKNOWN = IMP.atom.Hierarchy.UNKNOWN
 
 def _make_hierarchy_decorators(m, *types):
     decorators = []
     for t in types:
         p = IMP.Particle(m)
-        d = IMP.atom.MolecularHierarchy.create(p, t)
+        d = IMP.atom.Hierarchy.create(p, t)
         decorators.append(d)
     return decorators
 

@@ -11,7 +11,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "Hierarchy.h"
-#include <IMP/atom/MolecularHierarchy.h>
+#include <IMP/atom/Hierarchy.h>
 
 #include <IMP/Refiner.h>
 
@@ -22,7 +22,7 @@ class HierarchyTraits;
 //! Return the hierarchy leaves under a particle.
 /** \ingroup hierarchy
     \see Hierarchy
-    \see MolecularHierarchy
+    \see Hierarchy
 */
 class IMPCOREEXPORT LeavesRefiner : public Refiner
 {

@@ -23,7 +23,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 //! SymmetrySampler
 /**
 The class symmetrically sample particles.
-/note We currently assume that the particles are MolecularHierarchys,
+/note We currently assume that the particles are Hierarchys,
       it should be changes to general Hierarchy.
  */
 class IMPDOMINOEXPORT SymmetrySampler : public DiscreteSampler
