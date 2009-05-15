@@ -10,7 +10,7 @@
 #include <IMP/base_types.h>
 #include "../Residue.h"
 #include "../Atom.h"
-#include "../MolecularHierarchy.h"
+#include "../Hierarchy.h"
 #include "../bond_decorators.h"
 
 #include <fstream>
@@ -25,7 +25,7 @@ public:
   Topology(const String& top_file_name);
 
   //! add bonds to the structure defined in the hierarchy
-  void add_bonds(MolecularHierarchy mhd);
+  void add_bonds(Hierarchy mhd);
 
  private:
   class Bond {
@@ -44,8 +44,8 @@ public:
   void parse_bond_line(const String& line, const ResidueType& curr_res_type);
 
   void add_bonds(Residue rd);
-  void add_bonds(MolecularHierarchy mhd,
-                 MolecularHierarchy::Type type);
+  void add_bonds(Hierarchy mhd,
+                 Hierarchy::Type type);
   void add_bonds(Residue rd1, Residue rd2);
 
  private:

@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "macros.h"
-#include "MolecularHierarchy.h"
+#include "Hierarchy.h"
 #include <IMP/core/internal/utility.h>
 
 #include <IMP/base_types.h>
@@ -120,10 +120,10 @@ IMPATOMEXPORT extern const ResidueType DTHY;
    \ingroup hierarchy
    \ingroup decorators
  */
-class IMPATOMEXPORT Residue: public MolecularHierarchy
+class IMPATOMEXPORT Residue: public Hierarchy
 {
 public:
-  IMP_DECORATOR(Residue, MolecularHierarchy)
+  IMP_DECORATOR(Residue, Hierarchy)
   //! Add the required attributes to the particle and create a Residue
   static Residue create(Particle *p, ResidueType t= UNK,
                                  int index=-1, int insertion_code = 32) {
@@ -131,8 +131,8 @@ public:
     p->add_attribute(get_index_key(), index);
     p->add_attribute(get_insertion_code_key(), insertion_code);
     // insertion code 32 is for space
-    MolecularHierarchy::create(p,
-                     MolecularHierarchy::UNKNOWN);
+    Hierarchy::create(p,
+                     Hierarchy::UNKNOWN);
     Residue ret(p);
     ret.set_residue_type(t);
     return ret;
@@ -143,8 +143,8 @@ public:
     p->add_attribute(get_type_key(), o.get_residue_type().get_index());
     p->add_attribute(get_index_key(), o.get_index());
     p->add_attribute(get_insertion_code_key(), o.get_insertion_code());
-    MolecularHierarchy::create(p,
-              static_cast<MolecularHierarchy>(o).get_type());
+    Hierarchy::create(p,
+              static_cast<Hierarchy>(o).get_type());
     return Residue(p);
   }
 
@@ -152,7 +152,7 @@ public:
     return p->has_attribute(get_type_key())
       && p->has_attribute(get_index_key())
       && p->has_attribute(get_insertion_code_key())
-      && MolecularHierarchy::is_instance_of(p);
+      && Hierarchy::is_instance_of(p);
   }
 
   ResidueType get_residue_type() const {
@@ -164,15 +164,15 @@ public:
     get_particle()->set_value(get_type_key(), t.get_index());
     if (get_residue_type().get_index() >= GLY.get_index() &&
         get_residue_type().get_index() <= TRP.get_index()) {
-      MolecularHierarchy
-        ::set_type(MolecularHierarchy::RESIDUE);
+      Hierarchy
+        ::set_type(Hierarchy::RESIDUE);
     } else if (get_residue_type().get_index() >= ADE.get_index() &&
                get_residue_type().get_index() <= DTHY.get_index()) {
-      MolecularHierarchy
-        ::set_type(MolecularHierarchy::NUCLEICACID);
+      Hierarchy
+        ::set_type(Hierarchy::NUCLEICACID);
     } else {
-      MolecularHierarchy
-        ::set_type(MolecularHierarchy::FRAGMENT);
+      Hierarchy
+        ::set_type(Hierarchy::FRAGMENT);
     }
   }
 

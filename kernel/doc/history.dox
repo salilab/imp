@@ -1,9 +1,12 @@
 /** \page recent Change History
 
 \par Week of May 8
+
+- IMP::atom::MolecularHierarchy has been renamed to IMP::atom::Hierarchy. Use \command{sed -i.old "s#MolecularHierarchy#Hierarchy#g" my_files}
+
 - the long-deprecated Name(Decorator) was removed
 
-- The decorator suffix has been removed from decorator names. To update your code do \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" **/*.h **/*.cpp **/*.py **/*.i} or \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" `find * -name \*.h`} (and the various variants.
+- The decorator suffix has been removed from decorator names. To update your code do \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" **/*.h **/*.cpp **/*.py **/*.i} or \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" `find * -name \*.h -or -name \*.cpp`} (and the various suffixes).
 
 - Unit conventions have been established and documented for distance, energy, force and angle.
 

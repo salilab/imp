@@ -68,9 +68,9 @@ Particle* root_particle(Model *m)
   Particle* p = new Particle(m);
 
   // hierarchy decorator
-  MolecularHierarchy hd =
-    MolecularHierarchy::create(p,
-               MolecularHierarchy::PROTEIN);
+  Hierarchy hd =
+    Hierarchy::create(p,
+               Hierarchy::PROTEIN);
   return p;
 }
 
@@ -82,20 +82,20 @@ Particle* chain_particle(Model *m, char chain_id)
   return p;
 }
 
-void set_chain_type(const MolecularHierarchy& hrd,
-                               MolecularHierarchy& hcd) {
+void set_chain_type(const Hierarchy& hrd,
+                               Hierarchy& hcd) {
 
-  if (hrd.get_type() == MolecularHierarchy::RESIDUE)
-    hcd.set_type(MolecularHierarchy::CHAIN);
-  else if (hrd.get_type() == MolecularHierarchy::NUCLEICACID)
-    hcd.set_type(MolecularHierarchy::NUCLEOTIDE);
+  if (hrd.get_type() == Hierarchy::RESIDUE)
+    hcd.set_type(Hierarchy::CHAIN);
+  else if (hrd.get_type() == Hierarchy::NUCLEICACID)
+    hcd.set_type(Hierarchy::NUCLEOTIDE);
   else
-    hcd.set_type(MolecularHierarchy::MOLECULE);
+    hcd.set_type(Hierarchy::MOLECULE);
 }
 
 }
 
-MolecularHierarchy read_pdb(
+Hierarchy read_pdb(
                              String pdb_file_name, Model *model,
                              const Selector& selector,
                              bool select_first_model,
@@ -106,7 +106,7 @@ MolecularHierarchy read_pdb(
     IMP_failure("No such PDB file " << pdb_file_name,
                 ValueException);
   }
-  MolecularHierarchy root_d
+  Hierarchy root_d
       = read_pdb(pdb_file, model, selector, select_first_model,
                  ignore_alternatives);
   root_d.get_particle()->set_name(pdb_file_name);
@@ -114,19 +114,19 @@ MolecularHierarchy read_pdb(
   return root_d;
 }
 
-MolecularHierarchy read_pdb(std::istream &in, Model *model,
+Hierarchy read_pdb(std::istream &in, Model *model,
                                      const Selector& selector,
                                      bool select_first_model,
                                      bool ignore_alternatives)
 {
   // create root particle
   Particle* root_p = root_particle(model);
-  MolecularHierarchy root_d =
-    MolecularHierarchy::cast(root_p);
+  Hierarchy root_d =
+    Hierarchy::cast(root_p);
 
   Particle* cp = NULL;
   Particle* rp = NULL;
-  MolecularHierarchy hcd, hrd;
+  Hierarchy hcd, hrd;
 
   char curr_residue_icode = '-';
   char curr_chain = '-';
@@ -159,7 +159,7 @@ MolecularHierarchy read_pdb(std::istream &in, Model *model,
         // create new chain particle
         cp = chain_particle(model, chain);
         chain_type_set = false;
-        hcd = MolecularHierarchy::cast(cp);
+        hcd = Hierarchy::cast(cp);
         root_d.add_child(hcd);
       }
 
@@ -170,7 +170,7 @@ MolecularHierarchy read_pdb(std::istream &in, Model *model,
         curr_residue_icode = residue_icode;
         // create new residue particle
         rp = residue_particle(model, line);
-        hrd = MolecularHierarchy::cast(rp);
+        hrd = Hierarchy::cast(rp);
         hcd.add_child(hrd);
       }
 
@@ -186,15 +186,15 @@ MolecularHierarchy read_pdb(std::istream &in, Model *model,
 
       // create atom particle
       Particle* ap = atom_particle(model, line);
-      MolecularHierarchy had =
-        MolecularHierarchy::cast(ap);
+      Hierarchy had =
+        Hierarchy::cast(ap);
         hrd.add_child(had);
     }
   }
   return root_d;
 }
 
-void add_bonds(MolecularHierarchy d, std::string topology_file_name)
+void add_bonds(Hierarchy d, std::string topology_file_name)
 {
   // we want the file to be read only once
   std::string file_name = IMP::get_data_directory() +"/atom/top.lib";
@@ -229,7 +229,7 @@ void write_pdb(const Particles& ps, std::string file_name)
   out_file.close();
 }
 
-void write_pdb(MolecularHierarchy mhd, std::string file_name)
+void write_pdb(Hierarchy mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
@@ -240,20 +240,20 @@ void write_pdb(MolecularHierarchy mhd, std::string file_name)
   out_file.close();
 }
 
-void write_pdb(MolecularHierarchy mhd, std::ostream &out)
+void write_pdb(Hierarchy mhd, std::ostream &out)
 {
   Particles ps= get_leaves(mhd);
   write_pdb(ps, out);
 }
 
-void write_pdb(const MolecularHierarchys& mhd, std::ostream &out)
+void write_pdb(const Hierarchys& mhd, std::ostream &out)
 {
   for (unsigned int i=0; i< mhd.size(); ++i) {
     write_pdb(mhd[i], out);
   }
 }
 
-void write_pdb(const MolecularHierarchys& mhd, std::string file_name)
+void write_pdb(const Hierarchys& mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {

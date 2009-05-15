@@ -1,13 +1,13 @@
 /**
- *  \file atom/MolecularHierarchy.h
+ *  \file atom/Hierarchy.h
  *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPATOM_MOLECULAR_HIERARCHY_H
-#define IMPATOM_MOLECULAR_HIERARCHY_H
+#ifndef IMPATOM_HIERARCHY_H
+#define IMPATOM_HIERARCHY_H
 
 #include "config.h"
 #include <IMP/core/utility.h>
@@ -32,7 +32,7 @@ IMPATOM_BEGIN_NAMESPACE
     \see read_pdb
     \see get_molecular_rigid_body_traits
  */
-class IMPATOMEXPORT MolecularHierarchy:
+class IMPATOMEXPORT Hierarchy:
   public IMP::core::Hierarchy
 {
   typedef IMP::core::Hierarchy P;
@@ -63,37 +63,37 @@ public:
             };
 
   // swig gets unhappy if it is private
-  IMP_NO_DOXYGEN(typedef MolecularHierarchy This;)
+  IMP_NO_DOXYGEN(typedef Hierarchy This;)
 
 
   //! Create a Hiearchy on the Particle
   /** A traits class can be specified if the default one is not desired.
    */
-  MolecularHierarchy(Particle *p):
+  Hierarchy(Particle *p):
     P(p,get_traits()){
     IMP_assert(is_instance_of(p), "Missing required attributes for "
-               << "MolecularHierarchy" << *p);
+               << "Hierarchy" << *p);
   }
 
   //! null constructor
-  MolecularHierarchy() {}
+  Hierarchy() {}
 
   //! cast a particle which has the needed attributes
-  static MolecularHierarchy cast(Particle *p) {
+  static Hierarchy cast(Particle *p) {
     IMP::core::Hierarchy::cast(p, get_traits());
     IMP_check(p->has_attribute(get_type_key()), "Particle is missing attribute "
               << get_type_key(),
               InvalidStateException);
-    return MolecularHierarchy(p);
+    return Hierarchy(p);
   }
 
-  /** Create a MolecularHierarchy of level t by adding the needed
+  /** Create a Hierarchy of level t by adding the needed
       attributes. */
-  static MolecularHierarchy create(Particle *p,
+  static Hierarchy create(Particle *p,
                                             Type t= UNKNOWN) {
-    Hierarchy::create(p, get_traits());
+    IMP::core::Hierarchy::create(p, get_traits());
     p->add_attribute(get_type_key(), t);
-    return MolecularHierarchy(p);
+    return Hierarchy(p);
   }
 
   /** Check if the particle has the needed attributes for a
@@ -150,7 +150,7 @@ public:
     case TRAJECTORY:
       return "trajectory";
     default:
-      IMP_assert(0, "Invalid MolecularHierarchy type");
+      IMP_assert(0, "Invalid Hierarchy type");
       return std::string();
     }
   }
@@ -159,7 +159,7 @@ public:
   /** A child must have a type that is listed before the parent in the
       Type enum list.
    */
-  unsigned int add_child(MolecularHierarchy o) {
+  unsigned int add_child(Hierarchy o) {
     IMP_check(get_type() > o.get_type(),
               "Parent type must subsume child type",
               InvalidStateException);
@@ -174,7 +174,7 @@ public:
   /** A child must have a type that is listed before the parent in the
       Type enum list.
    */
-  void add_child_at(MolecularHierarchy o, unsigned int i) {
+  void add_child_at(Hierarchy o, unsigned int i) {
     IMP_check(get_type() > o.get_type(),
               "Parent type must subsume child type",
               InvalidStateException);
@@ -186,16 +186,16 @@ public:
   }
 
   /** Get the ith child */
-  MolecularHierarchy get_child(unsigned int i) const {
-    Hierarchy hd= P::get_child(i);
+  Hierarchy get_child(unsigned int i) const {
+    IMP::core::Hierarchy hd= P::get_child(i);
     return cast(hd.get_particle());
   }
 
   /** Get the parent particle. */
-  MolecularHierarchy get_parent() const {
-    Hierarchy hd= P::get_parent();
+  Hierarchy get_parent() const {
+    IMP::core::Hierarchy hd= P::get_parent();
     if (hd == Hierarchy()) {
-      return MolecularHierarchy();
+      return Hierarchy();
     } else {
       return cast(hd.get_particle());
     }
@@ -208,19 +208,19 @@ public:
 
 };
 
-/** A colleciton of MolecularHierarchys. */
-typedef std::vector<MolecularHierarchy> MolecularHierarchys;
+/** A colleciton of Hierarchys. */
+typedef std::vector<Hierarchy> Hierarchys;
 
 
 /**
    Gather all the molecular particles of a certain level
    in the molecular hierarchy
    \ingroup hierarchy
-   \relatesalso MolecularHierarchy
+   \relatesalso Hierarchy
 */
 IMPATOMEXPORT Particles
-get_by_type(MolecularHierarchy mhd,
-                                MolecularHierarchy::Type t);
+get_by_type(Hierarchy mhd,
+                                Hierarchy::Type t);
 
 class Residue;
 
@@ -229,13 +229,13 @@ class Residue;
     This is the PDB index, not the offset in the chain (if they are different).
 
     \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
-    \return MolecularHierarchy() if that residue is not found.
+    \return Hierarchy() if that residue is not found.
 
     \ingroup hierarchy
-    \relatesalso MolecularHierarchy
+    \relatesalso Hierarchy
  */
-IMPATOMEXPORT MolecularHierarchy
-get_residue(MolecularHierarchy mhd,
+IMPATOMEXPORT Hierarchy
+get_residue(Hierarchy mhd,
             unsigned int index);
 
 
@@ -247,29 +247,29 @@ get_residue(MolecularHierarchy mhd,
 
     \throw ValueException If all the particles do not have the same parent.
     \ingroup hierarchy
-    \relatesalso MolecularHierarchy
+    \relatesalso Hierarchy
  */
-IMPATOMEXPORT MolecularHierarchy
-create_fragment(const MolecularHierarchys &ps);
+IMPATOMEXPORT Hierarchy
+create_fragment(const Hierarchys &ps);
 
 //! Get the bonds internal to this tree
-/**     \relatesalso MolecularHierarchy
+/**     \relatesalso Hierarchy
         \see Bond
  */
 IMPATOMEXPORT atom::Bonds
-get_internal_bonds(MolecularHierarchy mhd);
+get_internal_bonds(Hierarchy mhd);
 
 
 //! Clone the MolecularHiearchy
 /** This method copies the bonds, Atom data, Residue
     data, Domain data and Name data to the new copies
-    in addition to the MolecularHierarchy relationships.
+    in addition to the Hierarchy relationships.
 
     \note This method has not been tested at all
-    \relatesalso MolecularHierarchy
+    \relatesalso Hierarchy
 */
 IMPATOMEXPORT
-MolecularHierarchy clone(MolecularHierarchy d);
+Hierarchy clone(Hierarchy d);
 
 
 //! Create a coarse grained molecule
@@ -303,4 +303,4 @@ IMPATOMEXPORT Restraint* create_protein(Particle *p,
                                         double spring_strength=1);
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_MOLECULAR_HIERARCHY_H */
+#endif  /* IMPATOM_HIERARCHY_H */

@@ -11,7 +11,7 @@
 #include "config.h"
 #include "macros.h"
 #include "Residue.h"
-#include "MolecularHierarchy.h"
+#include "Hierarchy.h"
 #include <IMP/core/utility.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/macros.h>
@@ -218,10 +218,10 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
 //! A decorator for a particle representing an atom.
 /**
    \ingroup hierarchy
-   \see MolecularHierarchy
+   \see Hierarchy
  */
 class IMPATOMEXPORT Atom:
-  public MolecularHierarchy
+  public Hierarchy
 {
 public:
   //! The various elements currently supported
@@ -248,10 +248,10 @@ public:
   };
 
 
-  IMP_DECORATOR(Atom, MolecularHierarchy)
+  IMP_DECORATOR(Atom, Hierarchy)
 
   Particle* get_particle() const {
-    return MolecularHierarchy::get_particle();
+    return Hierarchy::get_particle();
   }
 
   /** Create a decorator with the passed type and coordinates.*/
@@ -263,7 +263,7 @@ public:
   //! return true if the particle has the needed attributes
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())
-      && MolecularHierarchy::is_instance_of(p);
+      && Hierarchy::is_instance_of(p);
   }
 
   AtomType get_atom_type() const {
@@ -341,7 +341,7 @@ class Residue;
 /** The atom must be part of a molecular hierarchy.
     \relatesalso Atom
     \relatesalso Residue
-    \relatesalso MolecularHierarchy
+    \relatesalso Hierarchy
  */
 IMPATOMEXPORT ResidueType get_residue_type(Atom d);
 
@@ -349,7 +349,7 @@ IMPATOMEXPORT ResidueType get_residue_type(Atom d);
 /** The atom must be part of a molecular hierarchy.
     \relatesalso Atom
     \relatesalso Residue
-    \relatesalso MolecularHierarchy
+    \relatesalso Hierarchy
  */
 IMPATOMEXPORT Residue get_residue(Atom d);
 
@@ -357,7 +357,7 @@ IMPATOMEXPORT Residue get_residue(Atom d);
 /** The residue must be part of a molecular hierarchy.
     \relatesalso Atom
     \relatesalso Residue
-    \relatesalso MolecularHierarchy
+    \relatesalso Hierarchy
  */
 IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
 
@@ -365,7 +365,7 @@ IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
 /** The atom must be part of a molecular hierarchy.
     \relatesalso Atom
     \relatesalso Residue
-    \relatesalso MolecularHierarchy
+    \relatesalso Hierarchy
  */
 IMPATOMEXPORT char get_chain(Atom d);
 

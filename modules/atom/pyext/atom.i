@@ -36,7 +36,7 @@ void set_x(Float f);
 }*/
 
 // it is used as a base class
-%include "IMP/atom/MolecularHierarchy.h"
+%include "IMP/atom/Hierarchy.h"
 
 
 /* Wrap our own classes */
@@ -56,7 +56,7 @@ void set_x(Float f);
 
 namespace IMP {
   namespace atom {
-    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::MolecularHierarchy>;
+    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
     // swig gets scope wrong, I can't fix it
     %template(Bonds) ::std::vector<IMP::atom::Bond>;
   }
@@ -68,7 +68,7 @@ namespace atom {
    // swig has random, perplexing issues if these are higher in the file
    %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
    %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
-   %template(MolecularHierarchys) ::std::vector<MolecularHierarchy>;	
+   %template(Hierarchys) ::std::vector<Hierarchy>;	
 
 }
 }

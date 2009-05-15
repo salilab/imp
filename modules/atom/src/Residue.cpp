@@ -83,13 +83,13 @@ IntKey Residue::get_insertion_code_key() {
 }
 
 char get_chain(Residue rd) {
-  MolecularHierarchy mhd(rd.get_particle());
+  Hierarchy mhd(rd.get_particle());
   do {
     mhd= mhd.get_parent();
-    if (mhd == MolecularHierarchy()) {
+    if (mhd == Hierarchy()) {
       throw InvalidStateException("Residue is not the child of a chain");
     }
-  } while (mhd.get_type() != MolecularHierarchy::CHAIN);
+  } while (mhd.get_type() != Hierarchy::CHAIN);
   Chain cd(mhd.get_particle());
   return cd.get_id();
 }

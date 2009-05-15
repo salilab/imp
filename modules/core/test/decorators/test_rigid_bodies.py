@@ -83,9 +83,9 @@ class RBDTests(IMP.test.TestCase):
         """Testing create_rigid_body"""
         htr= IMP.core.Hierarchy.get_default_traits()
         self._test_create_one(htr, False)
-        htr= IMP.atom.MolecularHierarchy.get_traits()
+        htr= IMP.atom.Hierarchy.get_traits()
         self._test_create_one(htr, False)
-        htr= IMP.atom.MolecularHierarchy.get_traits()
+        htr= IMP.atom.Hierarchy.get_traits()
         self._test_create_one(htr, True)
     def test_create_many(self):
         """Testing create_rigid_bodies"""

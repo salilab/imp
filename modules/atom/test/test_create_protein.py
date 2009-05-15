@@ -16,7 +16,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         print "back"
         r.show()
         m.add_restraint(r)
-        p= IMP.atom.MolecularHierarchy(rp)
+        p= IMP.atom.Hierarchy(rp)
         print p.get_number_of_children()
         for c in p.get_child_particles():
             d= IMP.core.XYZ(c)

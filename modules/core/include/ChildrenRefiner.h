@@ -11,7 +11,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "Hierarchy.h"
-#include <IMP/atom/MolecularHierarchy.h>
+#include <IMP/atom/Hierarchy.h>
 
 #include <IMP/Refiner.h>
 
@@ -24,7 +24,7 @@ class HierarchyTraits;
     A simple example using is
     \verbinclude simple_examples/cover_particles.py
     \see Hierarchy
-    \see MolecularHierarchy
+    \see Hierarchy
 */
 class IMPCOREEXPORT ChildrenRefiner : public Refiner
 {

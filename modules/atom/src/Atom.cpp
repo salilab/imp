@@ -6,7 +6,7 @@
  */
 
 #include <IMP/atom/Atom.h>
-#include <IMP/atom/MolecularHierarchy.h>
+#include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Chain.h>
 #include <IMP/core/XYZ.h>
 
@@ -392,14 +392,14 @@ namespace {
 
 Atom Atom::create(Particle *p, AtomType t) {
   p->add_attribute(get_type_key(), t.get_index());
-  MolecularHierarchy::create(p, MolecularHierarchy::ATOM);
+  Hierarchy::create(p, Hierarchy::ATOM);
   Atom ret(p);
   return ret;
 }
 
 Atom Atom::create(Particle *p, Atom o) {
   p->add_attribute(get_type_key(), o.get_atom_type().get_index());
-  MolecularHierarchy::create(p, MolecularHierarchy::ATOM);
+  Hierarchy::create(p, Hierarchy::ATOM);
   Atom ret(p);
   if (o.get_element() != UNKNOWN_ELEMENT) {
     ret.set_element(o.get_element());
@@ -481,10 +481,10 @@ ResidueType get_residue_type(Atom d) {
 }
 
 Residue get_residue(Atom d) {
-  MolecularHierarchy mhd(d.get_particle());
+  Hierarchy mhd(d.get_particle());
   do {
     mhd= mhd.get_parent();
-    if (mhd== MolecularHierarchy()) {
+    if (mhd== Hierarchy()) {
       throw InvalidStateException("Atom is not the child of a residue");
     }
   } while (!Residue::is_instance_of(mhd.get_particle()));
@@ -493,7 +493,7 @@ Residue get_residue(Atom d) {
 }
 
 Atom get_atom(Residue rd, AtomType at) {
-  MolecularHierarchy mhd(rd.get_particle());
+  Hierarchy mhd(rd.get_particle());
   for (unsigned int i=0; i< mhd.get_number_of_children(); ++i) {
     Atom a(mhd.get_child(i).get_particle());
     if (a.get_atom_type() == at) return a;
@@ -504,13 +504,13 @@ Atom get_atom(Residue rd, AtomType at) {
 
 char get_chain(Atom d) {
   Residue rd = get_residue(d);
-  MolecularHierarchy mhd(rd.get_particle());
+  Hierarchy mhd(rd.get_particle());
   do {
     mhd= mhd.get_parent();
-    if (mhd == MolecularHierarchy()) {
+    if (mhd == Hierarchy()) {
       throw InvalidStateException("Residue is not the child of a chain");
     }
-  } while (mhd.get_type() != MolecularHierarchy::CHAIN);
+  } while (mhd.get_type() != Hierarchy::CHAIN);
   Chain cd(mhd.get_particle());
   return cd.get_id();
 }

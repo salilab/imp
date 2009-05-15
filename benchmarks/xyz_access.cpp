@@ -88,10 +88,10 @@ int main(int argc, char **argv) {
   }
   // read pdb, prepare particles
   IMP::Model *model = new IMP::Model();
-  MolecularHierarchy mhd
+  Hierarchy mhd
     = read_pdb(argv[1], model, NonWaterNonHydrogenSelector());
   std::vector < IMP::Particle * > particles =
-      get_by_type(mhd, MolecularHierarchy::ATOM); ;
+      get_by_type(mhd, Hierarchy::ATOM); ;
   std::cout << "Number of particles " << particles.size() << std::endl;
   set_check_level(IMP::NONE);
   set_log_level(SILENT);

@@ -16,7 +16,7 @@ class PDBReadTest(IMP.test.TestCase):
         m = IMP.Model()
         mp= IMP.modeller.read_pdb(
                        self.get_input_file_name('single_protein.pdb'), m)
-        #mp= IMP.core.MolecularHierarchy.cast(p)
+        #mp= IMP.core.Hierarchy.cast(p)
         #mp.show()
         #IMP.core.show_molecular_hierarchy(mp)
         mp.validate()
@@ -25,7 +25,7 @@ class PDBReadTest(IMP.test.TestCase):
         f_num_res_type= IMP.atom.ResidueType.get_number_unique()
         f_num_atom_type= IMP.atom.AtomType.get_number_unique()
         mpp= mp.get_parent()
-        self.assertEqual(mpp, IMP.atom.MolecularHierarchy(),
+        self.assertEqual(mpp, IMP.atom.Hierarchy(),
                          "Should not have a parent")
         mpc= mp.get_child(0)
         self.assertEqual(mpc.get_parent(), mp,
@@ -45,9 +45,9 @@ class PDBReadTest(IMP.test.TestCase):
         m = IMP.Model()
         mp= IMP.modeller.read_pdb(
                       self.get_input_file_name('single_protein.pdb'), m)
-        #mp= IMP.core.MolecularHierarchy.cast(p)
+        #mp= IMP.core.Hierarchy.cast(p)
         all_atoms= IMP.atom.get_by_type(mp,
-                             IMP.atom.MolecularHierarchy.ATOM)
+                             IMP.atom.Hierarchy.ATOM)
         self.assertEqual(1221, len(all_atoms),
                          "Wrong number of atoms found in protein")
 
@@ -62,14 +62,14 @@ class PDBReadTest(IMP.test.TestCase):
                                   m, na_patches)
         print "done reading"
         #IMP.core.show_molecular_hierarchy(mp)
-        #mp= IMP.core.MolecularHierarchy.cast(p)
+        #mp= IMP.core.Hierarchy.cast(p)
         #mp.show()
         #IMP.core.show_molecular_hierarchy(mp)
         mp.validate()
         hc= IMP.core.HierarchyCounter()
         IMP.core.depth_first_traversal(mp, hc)
         mpp= mp.get_parent()
-        self.assertEqual(mpp, IMP.atom.MolecularHierarchy(),
+        self.assertEqual(mpp, IMP.atom.Hierarchy(),
                          "Should not have a parent")
         mpc= mp.get_child(0)
         self.assertEqual(mpc.get_parent(), mp,

@@ -20,14 +20,14 @@ Topology::Topology(const String& top_file_name) {
   top_file.close();
 }
 
-void Topology::add_bonds(MolecularHierarchy mhd) {
-  add_bonds(mhd, MolecularHierarchy::RESIDUE);
-  add_bonds(mhd, MolecularHierarchy::NUCLEICACID);
-  add_bonds(mhd, MolecularHierarchy::FRAGMENT);
+void Topology::add_bonds(Hierarchy mhd) {
+  add_bonds(mhd, Hierarchy::RESIDUE);
+  add_bonds(mhd, Hierarchy::NUCLEICACID);
+  add_bonds(mhd, Hierarchy::FRAGMENT);
 }
 
-void Topology::add_bonds(MolecularHierarchy mhd,
-                         MolecularHierarchy::Type type) {
+void Topology::add_bonds(Hierarchy mhd,
+                         Hierarchy::Type type) {
   // get all residues
   Particles ps = get_by_type(mhd, type);
   Residue prev_rd;
@@ -46,14 +46,14 @@ void Topology::add_bonds(MolecularHierarchy mhd,
 void Topology::add_bonds(Residue rd1, Residue rd2) {
   Atom ad1, ad2;
   // connect two residues by C-N bond
-  if(rd1.get_type() == MolecularHierarchy::RESIDUE &&
-     rd2.get_type() == MolecularHierarchy::RESIDUE) {
+  if(rd1.get_type() == Hierarchy::RESIDUE &&
+     rd2.get_type() == Hierarchy::RESIDUE) {
     ad1 = get_atom(rd1, atom::AT_C);
     ad2 = get_atom(rd2, atom::AT_N);
    }
   // connect two nucleic acids by O3'-P bond
-  if(rd1.get_type() == MolecularHierarchy::NUCLEICACID &&
-     rd2.get_type() == MolecularHierarchy::NUCLEICACID) {
+  if(rd1.get_type() == Hierarchy::NUCLEICACID &&
+     rd2.get_type() == Hierarchy::NUCLEICACID) {
     ad1 = get_atom(rd1, atom::AT_O3p);
     ad2 = get_atom(rd2, atom::AT_P);
   }
