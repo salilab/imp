@@ -12,7 +12,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         """Testing create_protein"""
         m= IMP.Model()
         rp= IMP.Particle(m)
-        r= IMP.atom.create_protein(rp, 2.0, 150)
+        r= IMP.atom.create_protein(rp, 10.0, 150)
         print "back"
         r.show()
         m.add_restraint(r)
@@ -22,7 +22,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
             d= IMP.core.XYZDecorator(c)
             d.set_coordinates(random_vector_in_box(Vector3D(0,0,0),
                                                    Vector3D(300, 300, 300)))
-        o= IMP.core.ConjugateGradients()
+        o= IMP.core.SteepestDescent()
         o.set_model(m)
         score=o.optimize(1000)
         print score
