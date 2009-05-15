@@ -31,9 +31,9 @@
 
     \section physical Physical Units
     Unless these is a good reason, the following units should be used
-    - Angstrom for all distances
-    - kCal/Mol Angstrom for forces/derivatives
-    - kCal/Mol for energies
+    - angstrom for all distances
+    - kcal/mol angstrom for forces/derivatives
+    - kcal/mol for energies
     - radians for angles
 
     \section docs Documentation
@@ -213,7 +213,7 @@
       unit as part of the function name, for example
       IMP::atom::BrownianDynamics::set_time_step_in_femtoseconds().
       Remember the Mars orbiter. The exception to this is distance
-      and force numbers which should always be in Angstroms and
-      kCal/Mol Angstrom respectively unless otherwise stated.
+      and force numbers which should always be in angstroms and
+      kcal/mol angstrom respectively unless otherwise stated.
 
 */

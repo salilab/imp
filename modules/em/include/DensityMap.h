@@ -135,9 +135,9 @@ public:
 
   //! Sets the origin of the header
   /**
-    \param x the new x (Angstroms)
-    \param y the new y (Angstroms)
-    \param z the new z (Angstroms)
+    \param x the new x (angstroms)
+    \param y the new y (angstroms)
+    \param z the new z (angstroms)
   */
   void set_origin(float x,float y,float z);
 

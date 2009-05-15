@@ -17,7 +17,7 @@ IMPMISC_BEGIN_NAMESPACE
 
 //! Worm-like-chain energy for polymer chains
 /** This function implements one polymer force/extension curve. It
-    is a physical energy and all the inputs are in Angstroms
+    is a physical energy and all the inputs are in angstroms
     and the outputs in kcal/mol (/angstrom).
 
     \note The actual worm like chain force blows up as the extension approaches

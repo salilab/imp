@@ -158,8 +158,8 @@ public:
       Float attributes can be optimized, meaning the optimizer is
       allowed to change their value in order to improve the score.
 
-      All distances are assumed to be in Angstroms
-      and derivatives in kCal/MolAngstrom. This is not enforced.
+      All distances are assumed to be in angstroms
+      and derivatives in kcal/mol angstrom. This is not enforced.
    */
   /*@{*/
   /** \param[in] key The key identifying the float attribute.
