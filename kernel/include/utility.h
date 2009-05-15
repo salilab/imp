@@ -33,6 +33,13 @@ T square(T t)
   return t*t;
 }
 
+//! Compute the cube of a number
+template <class T>
+T cube(T t)
+{
+  return t*t*t;
+}
+
 
 //! Return true if a number is NaN
 /** With certain compiler settings the compiler can optimize
