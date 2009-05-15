@@ -29,6 +29,12 @@
     \command{tools/reindent.py} script, available as part of the \imp
     distribution.
 
+    \section physical Physical Units
+    Unless these is a good reason, the following units should be used
+    - Angstrom for all distances
+    - kCal/Mol Angstrom for forces/derivatives
+    - kCal/Mol for energies
+    - radians for angles
 
     \section docs Documentation
 
@@ -206,6 +212,8 @@
     - Functions which take a parameter which has units should have the
       unit as part of the function name, for example
       IMP::atom::BrownianDynamics::set_time_step_in_femtoseconds().
-      Remember the Mars orbiter.
+      Remember the Mars orbiter. The exception to this is distance
+      and force numbers which should always be in Angstroms and
+      kCal/Mol Angstrom respectively unless otherwise stated.
 
 */
