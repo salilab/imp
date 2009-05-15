@@ -17,21 +17,7 @@ IMP_BEGIN_NAMESPACE
 Restraint::Restraint()
 {
   is_active_ = true; // active by default
-  was_owned_=false;
 }
-
-
-//! Destructor
-Restraint::~Restraint()
-{
-  if (!was_owned_) {
-    // can't use virtual functions in the destructor
-    IMP_WARN("Restraint " << this << " is being destroyed "
-             << "without ever having been added to a model."
-             << std::endl);
-  }
-}
-
 
 void Restraint::set_is_active(const bool is_active)
 {
@@ -53,7 +39,7 @@ void Restraint::set_model(Model* model)
             << model << " " << model_,
             ValueException);
   model_=model;
-  was_owned_=true;
+  set_was_owned(true);
 }
 
 IMP_END_NAMESPACE

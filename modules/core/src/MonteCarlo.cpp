@@ -51,7 +51,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   for (unsigned int i=0; i< max_steps; ++i) {
     //make it a parameter
     for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
-      IMP_LOG(VERBOSE, "MC Trying move " << **it << std::endl);
+      IMP_LOG(TERSE, "MC Trying move " << **it << std::endl);
       IMP_CHECK_OBJECT(*it);
       (*it)->propose_move(probability_);
     }

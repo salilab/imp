@@ -57,11 +57,10 @@ class Model;
     See the examples::ExampleRestraint  example for how to implement
     a simple restraint.
  */
-class IMPEXPORT Restraint : public Object
+class IMPEXPORT Restraint : public Object, public Ownable
 {
 public:
   Restraint();
-  ~Restraint();
 
   //! Return the score for this restraint for the current state of the model.
   /** \param[in] accum If not NULL, use this object to accumulate partial first
@@ -100,13 +99,6 @@ public:
     return model_;
   }
 
-  /** A warning is printed if a restraint is destroyed
-      without ever having belonged to a restraint set or a model.
-   */
-  void set_was_owned(bool tf) {
-    was_owned_=tf;
-  }
-
   //! Return a list of sets of particles that are restrained by this restraint
   /** This function returns a list of sets of particles that are
       interacting within this restraint. Particles can appear in more
@@ -119,6 +111,7 @@ public:
    */
   virtual ParticlesList get_interacting_particles() const=0;
 
+  IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:
   /* This pointer should never be ref counted as Model has a
      pointer to this object. Not that Model is refcounted yet.
@@ -129,11 +122,6 @@ private:
      If it is not active, evaluate should not be called
    */
   bool is_active_;
-
-  /* keep track of whether the restraint ever was in a model.
-     Give warnings on destruction if it was not.
-   */
-  bool was_owned_;
 };
 
 IMP_OUTPUT_OPERATOR(Restraint);
