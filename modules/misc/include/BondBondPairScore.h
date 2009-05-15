@@ -24,7 +24,7 @@ IMPMISC_BEGIN_NAMESPACE
     and the distance between the cylinders is used.
 
     \ingroup bond
-    \see BondDecorator
+    \see Bond
  */
 class IMPMISCEXPORT BondBondPairScore : public PairScore
 {

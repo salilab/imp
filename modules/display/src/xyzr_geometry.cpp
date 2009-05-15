@@ -11,7 +11,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-XYZRGeometry::XYZRGeometry(core::XYZRDecorator d): d_(d){
+XYZRGeometry::XYZRGeometry(core::XYZR d): d_(d){
 }
 
 void XYZRGeometry::show(std::ostream &out) const {

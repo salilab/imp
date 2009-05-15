@@ -7,7 +7,7 @@
 
 #include "IMP/core/CoverRefined.h"
 
-#include "IMP/core/XYZRDecorator.h"
+#include "IMP/core/XYZR.h"
 #include "IMP/core/FixedRefiner.h"
 #include "IMP/core/SingletonScoreState.h"
 #include "IMP/core/SingletonsScoreState.h"
@@ -30,7 +30,7 @@ CoverRefined::~CoverRefined()
 
 void CoverRefined::apply(Particle *p) const
 {
-  XYZRDecorator dp(p, rk_);
+  XYZR dp(p, rk_);
   IMP_CHECK_OBJECT(ref_.get());
   IMP_check(ref_->get_can_refine(p), "Passed particles cannot be refined",
             ValueException);
@@ -54,20 +54,20 @@ ScoreState* create_covers(SingletonContainer *sc,
   Model *m= sc->get_particle(0)->get_model();
   for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
        pit != sc->particles_end(); ++pit) {
-    XYZRDecorator d;
-    if (!XYZRDecorator::is_instance_of(*pit)) {
-      d= XYZRDecorator::create(*pit,
+    XYZR d;
+    if (!XYZR::is_instance_of(*pit)) {
+      d= XYZR::create(*pit,
                             algebra::Sphere3D(algebra::Vector3D(0,0,0),0),
                             radius_key);
     } else {
-      d= XYZRDecorator(*pit, radius_key);
+      d= XYZR(*pit, radius_key);
     }
     d.set_coordinates_are_optimized(false);
   }
 
   CoverRefined *cr= new CoverRefined(pr, radius_key, slack);
   DerivativesToRefined *dtr= new DerivativesToRefined(pr,
-                                    XYZDecorator::get_xyz_keys());
+                                    XYZ::get_xyz_keys());
   SingletonsScoreState *sss= new SingletonsScoreState(sc, cr, dtr);
   m->add_score_state(sss);
   return sss;
@@ -76,18 +76,18 @@ ScoreState* create_covers(SingletonContainer *sc,
 
 ScoreState *create_cover(Particle *p, Refiner *pr,
                          FloatKey radius_key, Float slack) {
-  if (!XYZDecorator::is_instance_of(p)) {
-    XYZDecorator::create(p, algebra::Vector3D(0,0,0));
+  if (!XYZ::is_instance_of(p)) {
+    XYZ::create(p, algebra::Vector3D(0,0,0));
   }
   if (!p->has_attribute(radius_key)) {
     p->add_attribute(radius_key, 0);
   }
-  XYZRDecorator d(p, radius_key);
+  XYZR d(p, radius_key);
   d.set_coordinates_are_optimized(false);
 
   CoverRefined *cr= new CoverRefined(pr, radius_key, slack);
   DerivativesToRefined *dtr= new DerivativesToRefined(pr,
-                                    XYZDecorator::get_xyz_keys());
+                                    XYZ::get_xyz_keys());
   SingletonScoreState *sss= new SingletonScoreState(cr, dtr, p);
   p->get_model()->add_score_state(sss);
   return sss;

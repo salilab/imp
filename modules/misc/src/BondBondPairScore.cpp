@@ -6,7 +6,7 @@
  */
 
 #include "IMP/misc/BondBondPairScore.h"
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZ.h"
 #include "IMP/constants.h"
 #include "IMP/core/internal/evaluate_distance_pair_score.h"
 #include "IMP/atom/bond_decorators.h"
@@ -29,11 +29,11 @@ namespace {
 
   algebra::Segment3D get_endpoints(Particle *p)
   {
-    atom::BondDecorator b(p);
+    atom::Bond b(p);
     Particle* p0= b.get_bonded(0).get_particle();
     Particle* p1= b.get_bonded(1).get_particle();
-    IMP::core::XYZDecorator d0(p0);
-    IMP::core::XYZDecorator d1(p1);
+    IMP::core::XYZ d0(p0);
+    IMP::core::XYZ d1(p1);
     return algebra::Segment3D(d0.get_coordinates(), d1.get_coordinates());
 }
 
@@ -85,8 +85,8 @@ Float BondBondPairScore::evaluate(Particle *a, Particle *b,
                                                      boost::lambda::_1
                                                      - o[0] - o[1]);
   if (da) {
-    IMP::core::XYZDecorator xyzd[2]={IMP::core::XYZDecorator(a),
-                                     IMP::core::XYZDecorator(b)};
+    IMP::core::XYZ xyzd[2]={IMP::core::XYZ(a),
+                                     IMP::core::XYZ(b)};
     xyzd[0].add_to_derivatives(deriv, *da);
     xyzd[1].add_to_derivatives(-deriv, *da);
   }

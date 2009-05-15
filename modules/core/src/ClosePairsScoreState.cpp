@@ -82,7 +82,7 @@ void ClosePairsScoreState::do_before_evaluate()
   IMP_CHECK_OBJECT(f_);
   if (!xyzc_) {
     //std::cout << "Virgin ss" << std::endl;
-    xyzc_ =new MaximumChangeScoreState(in_, XYZDecorator::get_xyz_keys());
+    xyzc_ =new MaximumChangeScoreState(in_, XYZ::get_xyz_keys());
     if (rk_ != FloatKey()) {
       rc_= new MaximumChangeScoreState(in_, FloatKeys(1, rk_));
     }

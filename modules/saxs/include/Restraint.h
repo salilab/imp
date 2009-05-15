@@ -59,7 +59,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
  private:
   FormFactorTable* ff_table_; // pointer to form factors table
   Particles particles_; // non-rigid bodies particles
-  std::vector<core::RigidBodyDecorator> rigid_bodies_decorators_; //rigid bodies
+  std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
   std::vector<Particles> rigid_bodies_; // rigid bodies particles
   Profile rigid_bodies_profile_; // non-changing part of the profile
   Score *saxs_score_; // computes profiles and derivatives

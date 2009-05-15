@@ -23,8 +23,8 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.rsrs=IMP.core.RestraintSet()
         self.rsrs.set_model(self.m)
         self.h = IMP.core.HarmonicUpperBound(IMP.algebra.distance(
-            IMP.core.XYZDecorator.cast(self.m1.get_particle()).get_coordinates(),
-            IMP.core.XYZDecorator.cast(self.m2.get_particle()).get_coordinates()),
+            IMP.core.XYZ.cast(self.m1.get_particle()).get_coordinates(),
+            IMP.core.XYZ.cast(self.m2.get_particle()).get_coordinates()),
             3.)
 
         self.dr = IMP.core.DistanceRestraint(self.h,self.m1.get_particle(),
@@ -34,7 +34,7 @@ class MCOptimizerTest(IMP.test.TestCase):
     def test_c1(self):
         """test monte carlo with rigid bodies"""
         #rigid transformation of the two molecules
-        mhs = IMP.atom.MolecularHierarchyDecorators()
+        mhs = IMP.atom.MolecularHierarchys()
         mhs.append(self.m1)
         mhs.append(self.m2)
         rot1 = IMP.algebra.random_vector_on_sphere(IMP.algebra.Vector3D(0.,0.,0.),1.)
@@ -49,15 +49,15 @@ class MCOptimizerTest(IMP.test.TestCase):
         trans2 = IMP.algebra.Transformation3D(
           IMP.algebra.Rotation3D(rot2[0],rot2[1],rot2[2],0.),
           point2)
-        IMP.core.RigidBodyDecorator.cast(self.m1.get_particle()).set_transformation(trans1)
-        IMP.core.RigidBodyDecorator.cast(self.m2.get_particle()).set_transformation(trans2)
+        IMP.core.RigidBody.cast(self.m1.get_particle()).set_transformation(trans1)
+        IMP.core.RigidBody.cast(self.m2.get_particle()).set_transformation(trans2)
         self.m.evaluate(False) #to transform the children
         #optimize
         opt = IMP.core.MonteCarlo()
         opt.set_model(self.m)
-        mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBodyDecorator(self.m1.get_particle()),5.,15.)
+        mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m1.get_particle()),5.,15.)
         opt.add_mover(mover1)
-        mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBodyDecorator(self.m2.get_particle()),5.,15.)
+        mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m2.get_particle()),5.,15.)
         opt.add_mover(mover2)
         lopt= IMP.core.ConjugateGradients()
         lopt.set_model(self.m)

@@ -7,7 +7,7 @@
  */
 
 #include <IMP/core/DihedralRestraint.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
 
 #include <IMP/Particle.h>
@@ -39,10 +39,10 @@ DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
 Float DihedralRestraint::evaluate(DerivativeAccumulator *accum)
 {
   IMP_CHECK_OBJECT(score_func_);
-  XYZDecorator d0 = XYZDecorator::cast(p_[0]);
-  XYZDecorator d1 = XYZDecorator::cast(p_[1]);
-  XYZDecorator d2 = XYZDecorator::cast(p_[2]);
-  XYZDecorator d3 = XYZDecorator::cast(p_[3]);
+  XYZ d0 = XYZ::cast(p_[0]);
+  XYZ d1 = XYZ::cast(p_[1]);
+  XYZ d2 = XYZ::cast(p_[2]);
+  XYZ d3 = XYZ::cast(p_[3]);
 
   algebra::Vector3D rij = d1.get_vector_to(d0);
   algebra::Vector3D rkj = d1.get_vector_to(d2);

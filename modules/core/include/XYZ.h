@@ -1,12 +1,12 @@
 /**
- *  \file XYZDecorator.h     \brief Simple xyz decorator.
+ *  \file XYZ.h     \brief Simple xyz decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPCORE_XYZ_DECORATOR_H
-#define IMPCORE_XYZ_DECORATOR_H
+#ifndef IMPCORE_XY_Z_H
+#define IMPCORE_XY_Z_H
 
 #include "config.h"
 #include "internal/utility.h"
@@ -23,9 +23,9 @@ IMPCORE_BEGIN_NAMESPACE
 /** \ingroup helper
     \ingroup decorators
     \verbinclude xyzdecorator.py
-    \see XYZRDecorator
+    \see XYZR
  */
-class IMPCOREEXPORT XYZDecorator: public Decorator
+class IMPCOREEXPORT XYZ: public Decorator
 {
  public:
 
@@ -42,16 +42,16 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
     return IMP::internal::z_key;
   }
 
-  IMP_DECORATOR(XYZDecorator, Decorator)
+  IMP_DECORATOR(XYZ, Decorator)
 
   /** Create a decorator with the passed coordinates. */
-  static XYZDecorator create(Particle *p,
+  static XYZ create(Particle *p,
                              const algebra::Vector3D &v=
                                                  algebra::Vector3D(0,0,0)) {
     p->add_attribute(get_coordinate_key(0),v[0]);
     p->add_attribute(get_coordinate_key(1),v[1]);
     p->add_attribute(get_coordinate_key(2),v[2]);
-    return XYZDecorator(p);
+    return XYZ(p);
   }
 
   IMP_DECORATOR_GET_SET(x, get_coordinate_key(0), Float, Float);
@@ -104,7 +104,7 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
   }
 
   //! Get the vector from this particle to another
-  algebra::Vector3D get_vector_to(const XYZDecorator &b) const {
+  algebra::Vector3D get_vector_to(const XYZ &b) const {
     return algebra::Vector3D(b.get_coordinate(0) - get_coordinate(0),
                     b.get_coordinate(1) - get_coordinate(1),
                     b.get_coordinate(2) - get_coordinate(2));
@@ -147,14 +147,14 @@ class IMPCOREEXPORT XYZDecorator: public Decorator
   static const FloatKeys& get_xyz_keys();
 };
 
-IMP_OUTPUT_OPERATOR(XYZDecorator);
+IMP_OUTPUT_OPERATOR(XYZ);
 
 //! Compute the distance between a pair of particles
 /** \ingroup helper
-    \relatesalso XYZDecorator
+    \relatesalso XYZ
  */
-IMPCOREEXPORT Float distance(XYZDecorator a, XYZDecorator b);
+IMPCOREEXPORT Float distance(XYZ a, XYZ b);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_XYZ_DECORATOR_H */
+#endif  /* IMPCORE_XY_Z_H */

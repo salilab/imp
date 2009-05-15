@@ -8,7 +8,7 @@ import IMP.atom
 
 
 class RBDTests(IMP.test.TestCase):
-    """Tests for RigidBodyDecorator function"""
+    """Tests for RigidBody function"""
     def _add_rb_restraints(self, rbd):
         #intentionally kept trivial to ensure convergence
         r= IMP.algebra.identity_rotation()
@@ -17,20 +17,20 @@ class RBDTests(IMP.test.TestCase):
         mbs= rbd.get_member_particles()
         m= rbd.get_particle().get_model()
         for b in mbs:
-            mb= IMP.core.RigidMemberDecorator(b)
+            mb= IMP.core.RigidMember(b)
             lc= mb.get_internal_coordinates()
             lct= tr.transform(lc)
             dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1), lct)
             r= IMP.core.SingletonRestraint(dt, mb.get_particle())
             m.add_restraint(r)
     def _create_hierarchy(self, m, htr, n=10):
-        rd= IMP.core.XYZDecorator.create(IMP.Particle(m),
+        rd= IMP.core.XYZ.create(IMP.Particle(m),
                                          IMP.algebra.random_vector_in_unit_box())
-        hd= IMP.core.HierarchyDecorator.create(rd.get_particle(), htr)
+        hd= IMP.core.Hierarchy.create(rd.get_particle(), htr)
         for i in range(0,n):
-            crd= IMP.core.XYZDecorator.create(IMP.Particle(m),
+            crd= IMP.core.XYZ.create(IMP.Particle(m),
                                               IMP.algebra.random_vector_in_unit_box())
-            chd= IMP.core.HierarchyDecorator.create(crd.get_particle(), htr)
+            chd= IMP.core.Hierarchy.create(crd.get_particle(), htr)
             hd.add_child(chd)
         return rd.get_particle()
 
@@ -41,9 +41,9 @@ class RBDTests(IMP.test.TestCase):
             m= IMP.Model()
             IMP.set_log_level(IMP.SILENT)
             p= self._create_hierarchy(m,  htr)
-            ss=IMP.core.create_rigid_body(p, IMP.core.HierarchyDecorator(p, htr).get_child_particles(), snap)
+            ss=IMP.core.create_rigid_body(p, IMP.core.Hierarchy(p, htr).get_child_particles(), snap)
             m.add_score_state(ss)
-            rbd= IMP.core.RigidBodyDecorator(p)
+            rbd= IMP.core.RigidBody(p)
             p.show()
             rbd.set_coordinates_are_optimized(True, snap)
             self. _add_rb_restraints(rbd)
@@ -68,7 +68,7 @@ class RBDTests(IMP.test.TestCase):
             ss=IMP.core.create_rigid_bodies(l, IMP.core.ChildrenRefiner(htr), snap)
             m.add_score_state(ss)
             for p in l.get_particles():
-                rbd= IMP.core.RigidBodyDecorator(p)
+                rbd= IMP.core.RigidBody(p)
                 self._add_rb_restraints(rbd)
             cg= IMP.core.ConjugateGradients()
             cg.set_model(m)
@@ -81,17 +81,17 @@ class RBDTests(IMP.test.TestCase):
 
     def test_create_one(self):
         """Testing create_rigid_body"""
-        htr= IMP.core.HierarchyDecorator.get_default_traits()
+        htr= IMP.core.Hierarchy.get_default_traits()
         self._test_create_one(htr, False)
-        htr= IMP.atom.MolecularHierarchyDecorator.get_traits()
+        htr= IMP.atom.MolecularHierarchy.get_traits()
         self._test_create_one(htr, False)
-        htr= IMP.atom.MolecularHierarchyDecorator.get_traits()
+        htr= IMP.atom.MolecularHierarchy.get_traits()
         self._test_create_one(htr, True)
     def test_create_many(self):
         """Testing create_rigid_bodies"""
-        htr= IMP.core.HierarchyDecorator.get_default_traits()
+        htr= IMP.core.Hierarchy.get_default_traits()
         self._test_create_many(htr, False)
-        htr= IMP.core.HierarchyDecorator.get_default_traits()
+        htr= IMP.core.Hierarchy.get_default_traits()
         self._test_create_many(htr, True)
 
 

@@ -1,6 +1,6 @@
 /**
  *  \file xyzr_geometry.h
- *  \brief Represent an XYZRDecorator particle with a sphere
+ *  \brief Represent an XYZR particle with a sphere
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
@@ -13,21 +13,21 @@
 
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
-#include <IMP/core/XYZRDecorator.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/display/geometry.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-//! Represent an XYZRDecorator particle with a sphere
+//! Represent an XYZR particle with a sphere
 /** The current coordinates and radius of the particle are used.
     The name is the Particle::get_name() name.
  */
 class IMPDISPLAYEXPORT XYZRGeometry: public Geometry
 {
-  core::XYZRDecorator d_;
+  core::XYZR d_;
   FloatKey rk_;
 public:
-  XYZRGeometry(core::XYZRDecorator d);
+  XYZRGeometry(core::XYZR d);
 
   std::string get_name() const {
     return d_.get_particle()->get_name();

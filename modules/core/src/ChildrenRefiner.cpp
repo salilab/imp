@@ -7,7 +7,7 @@
 
 #include <IMP/core/ChildrenRefiner.h>
 
-#include <IMP/core/HierarchyDecorator.h>
+#include <IMP/core/Hierarchy.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -19,15 +19,15 @@ ChildrenRefiner
 
 bool ChildrenRefiner::get_can_refine(Particle *p) const
 {
-  if (!core::HierarchyDecorator::is_instance_of(p, traits_)) return false;
-  return core::HierarchyDecorator(p, traits_).get_number_of_children() != 0;
+  if (!core::Hierarchy::is_instance_of(p, traits_)) return false;
+  return core::Hierarchy(p, traits_).get_number_of_children() != 0;
 
 }
 
 Particle* ChildrenRefiner::get_refined(Particle *p, unsigned int i) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
-  core::HierarchyDecorator d(p, traits_);
+  core::Hierarchy d(p, traits_);
   return d.get_child(i).get_particle();
 }
 
@@ -35,12 +35,12 @@ Particle* ChildrenRefiner::get_refined(Particle *p, unsigned int i) const
 unsigned int ChildrenRefiner::get_number_of_refined(Particle *p) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
-  core::HierarchyDecorator d(p, traits_);
+  core::Hierarchy d(p, traits_);
   return d.get_number_of_children();
 }
 
 const Particles ChildrenRefiner::get_refined(Particle *p) const {
-    HierarchyDecorator hd(p, traits_);
+    Hierarchy hd(p, traits_);
     Particles ret(hd.get_number_of_children());
     for (unsigned int i=0; i< ret.size(); ++i) {
       ret[i]= hd.get_child(i).get_particle();

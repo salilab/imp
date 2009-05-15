@@ -18,10 +18,10 @@ double compute_distances_decorator_access(
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::algebra::Vector3D v1 =
-      IMP::core::XYZDecorator(particles[i]).get_coordinates();
+      IMP::core::XYZ(particles[i]).get_coordinates();
     for (unsigned int j = i + 1; j < particles.size(); j++) {
       IMP::algebra::Vector3D v2 =
-        IMP::core::XYZDecorator(particles[j]).get_coordinates();
+        IMP::core::XYZ(particles[j]).get_coordinates();
       tdist+= IMP::algebra::distance(v1, v2);
     }
   }
@@ -88,10 +88,10 @@ int main(int argc, char **argv) {
   }
   // read pdb, prepare particles
   IMP::Model *model = new IMP::Model();
-  MolecularHierarchyDecorator mhd
+  MolecularHierarchy mhd
     = read_pdb(argv[1], model, NonWaterNonHydrogenSelector());
   std::vector < IMP::Particle * > particles =
-      get_by_type(mhd, MolecularHierarchyDecorator::ATOM); ;
+      get_by_type(mhd, MolecularHierarchy::ATOM); ;
   std::cout << "Number of particles " << particles.size() << std::endl;
   set_check_level(IMP::NONE);
   set_log_level(SILENT);
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
     std::vector < MyParticle * > my_particles;
     for (unsigned int i = 0; i < particles.size(); i++) {
       MyParticle *p = new MyParticle(model);
-      p->v_ = IMP::core::XYZDecorator::cast(particles[i]).get_coordinates();
+      p->v_ = IMP::core::XYZ::cast(particles[i]).get_coordinates();
       my_particles.push_back(p);
     }
     double runtime, dist;
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
     std::vector < MyParticle2 * > my_particles;
     for (unsigned int i = 0; i < particles.size(); i++) {
       MyParticle2 *p = new MyParticle2(model);
-      *p->v_ = IMP::core::XYZDecorator::cast(particles[i]).get_coordinates();
+      *p->v_ = IMP::core::XYZ::cast(particles[i]).get_coordinates();
       my_particles.push_back(p);
     }
     double runtime, dist;
@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
   {
     std::vector<IMP::algebra::Vector3D> coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
-      coordinates.push_back(IMP::core::XYZDecorator::cast(particles[i]).
+      coordinates.push_back(IMP::core::XYZ::cast(particles[i]).
                             get_coordinates());
     }
     double runtime, dist;

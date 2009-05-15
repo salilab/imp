@@ -54,7 +54,7 @@ public:
   /** rk can be FloatKey() in which case the radius is ignored. */
   CloseBipartitePairsScoreState(SingletonContainer *in0,
                                 SingletonContainer *in1,
-                       FloatKey rk= XYZRDecorator::get_default_radius_key());
+                       FloatKey rk= XYZR::get_default_radius_key());
   // rk needs to be there so that we don't get an error for missing attributs
   //! Create the score state for particles in the container in
   /** rk can be FloatKey() in which case the radius is ignored.
@@ -63,7 +63,7 @@ public:
   CloseBipartitePairsScoreState(SingletonContainer *in0,
                                 SingletonContainer *in1,
                        FilteredListPairContainer *out,
-                       FloatKey rk= XYZRDecorator::get_default_radius_key());
+                       FloatKey rk= XYZR::get_default_radius_key());
 
   //! Set the distance threshold
   void set_distance(Float d);

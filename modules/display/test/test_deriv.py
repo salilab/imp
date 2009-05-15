@@ -20,11 +20,11 @@ class TestBL(IMP.test.TestCase):
         ps= IMP.Particles()
         for i in range(0,4):
             p= IMP.Particle(m)
-            d= IMP.core.XYZDecorator.create(p, pts[i])
+            d= IMP.core.XYZ.create(p, pts[i])
             ps.append(p)
         p= IMP.Particle(m)
-        d= IMP.core.XYZDecorator.create(p)
-        hd= IMP.core.HierarchyDecorator.create(p, ps)
+        d= IMP.core.XYZ.create(p)
+        hd= IMP.core.Hierarchy.create(p, ps)
 
         for i in range(0,4):
             u= IMP.core.Harmonic(0,1)
@@ -36,11 +36,11 @@ class TestBL(IMP.test.TestCase):
         w= IMP.display.BildWriter()
         w.set_file_name(self.get_tmp_file_name("deriv.bild"))
         for i in range(0,4):
-            w.add_geometry(IMP.display.XYZDerivativeGeometry(IMP.core.XYZDecorator(ps[i])))
+            w.add_geometry(IMP.display.XYZDerivativeGeometry(IMP.core.XYZ(ps[i])))
         w.set_file_name("")
 
         ss= IMP.core.create_rigid_body(p, ps)
-        rbd= IMP.core.RigidBodyDecorator(p)
+        rbd= IMP.core.RigidBody(p)
         IMP.set_log_level(IMP.TERSE)
         print "eval"
         m.evaluate(True)

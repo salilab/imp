@@ -28,12 +28,12 @@ IMPCORE_BEGIN_NAMESPACE
 
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
 
-Matrix compute_I(const std::vector<RigidMemberDecorator> &ds,
+Matrix compute_I(const std::vector<RigidMember> &ds,
                  const algebra::Vector3D &center,
                  const IMP::algebra::Rotation3D &rot) {
   Matrix I(3,3, 0.0);
   for (unsigned int i=0; i< ds.size(); ++i) {
-    RigidMemberDecorator cm= ds[i];
+    RigidMember cm= ds[i];
     double m=1;
     double r=0;
     algebra::Vector3D cv=rot.rotate(cm.get_coordinates()-center);
@@ -54,17 +54,17 @@ Matrix compute_I(const std::vector<RigidMemberDecorator> &ds,
 
 
 
-RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
+RigidBody RigidBody::create(Particle *p,
                                               const Particles &members){
   IMP_check(!internal::get_has_required_attributes_for_body(p),
             "The RigidBody is already set up.",
             InvalidStateException);
   internal::add_required_attributes_for_body(p);
 
-  std::vector<RigidMemberDecorator> ds;
-  RigidBodyDecorator d(p);
+  std::vector<RigidMember> ds;
+  RigidBody d(p);
 
-  HierarchyDecorator hd(p, internal::rigid_body_data().htraits_);
+  Hierarchy hd(p, internal::rigid_body_data().htraits_);
 
   IMP_check(!members.empty(), "There must be particles to make a rigid body",
             InvalidStateException);
@@ -77,8 +77,8 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
               << "a conflicting rigid body",
               InvalidStateException);
     internal::add_required_attributes_for_member(mp);
-    ds.push_back(RigidMemberDecorator(mp));
-    HierarchyDecorator hc(mp, internal::rigid_body_data().htraits_);
+    ds.push_back(RigidMember(mp));
+    Hierarchy hc(mp, internal::rigid_body_data().htraits_);
     hd.add_child(hc);
   }
 
@@ -86,7 +86,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   algebra::Vector3D v(0,0,0);
   Float mass=0;
   for (unsigned int i=0; i< ds.size(); ++i) {
-    RigidMemberDecorator cm= ds[i];
+    RigidMember cm= ds[i];
 
     v+= cm.get_coordinates()*1.0 /*cm.get_mass()*/;
     mass+= 1.0 /*cm.get_mass()*/;
@@ -118,7 +118,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
   IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
 
   for (unsigned int i=0; i< ds.size(); ++i) {
-    RigidMemberDecorator cm= ds[i];
+    RigidMember cm= ds[i];
 
     algebra::Vector3D cv=cm.get_coordinates()-v;
     algebra::Vector3D lc= roti.rotate(cv);
@@ -128,7 +128,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
 
   IMP_IF_CHECK(EXPENSIVE) {
     for (unsigned int i=0; i< ds.size(); ++i) {
-      RigidMemberDecorator cm= ds[i];
+      RigidMember cm= ds[i];
       algebra::Vector3D v= cm.get_coordinates();
       algebra::Vector3D nv= d.get_coordinates(cm);
       IMP_assert((v-nv).get_squared_magnitude() < .1,
@@ -142,7 +142,7 @@ RigidBodyDecorator RigidBodyDecorator::create(Particle *p,
 }
 
 void
-RigidBodyDecorator::normalize_rotation() {
+RigidBody::normalize_rotation() {
   algebra::VectorD<4>
     v(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
       get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
@@ -163,7 +163,7 @@ RigidBodyDecorator::normalize_rotation() {
 
 
 IMP::algebra::Transformation3D
-RigidBodyDecorator::get_transformation() const {
+RigidBody::get_transformation() const {
   algebra::VectorD<4>
     v(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
       get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
@@ -173,33 +173,33 @@ RigidBodyDecorator::get_transformation() const {
   return IMP::algebra::Transformation3D(rot, get_coordinates());
 }
 
-RigidMemberDecorators
-RigidBodyDecorator::get_members() const {
-  HierarchyDecorator hd(get_particle(), internal::rigid_body_data().htraits_);
-  RigidMemberDecorators rbms(hd.get_number_of_children());
+RigidMembers
+RigidBody::get_members() const {
+  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
+  RigidMembers rbms(hd.get_number_of_children());
   for (unsigned int i=0; i< rbms.size(); ++i) {
-    rbms[i]= RigidMemberDecorator(hd.get_child(i).get_particle());
+    rbms[i]= RigidMember(hd.get_child(i).get_particle());
   }
   return rbms;
 }
 
-unsigned int RigidBodyDecorator::get_number_of_members() const {
-  HierarchyDecorator hd(get_particle(), internal::rigid_body_data().htraits_);
+unsigned int RigidBody::get_number_of_members() const {
+  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
   return hd.get_number_of_children();
 }
 
-RigidMemberDecorator RigidBodyDecorator::get_member(unsigned int i) const {
-  HierarchyDecorator hd(get_particle(), internal::rigid_body_data().htraits_);
-  return RigidMemberDecorator(hd.get_child(i).get_particle());
+RigidMember RigidBody::get_member(unsigned int i) const {
+  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
+  return RigidMember(hd.get_child(i).get_particle());
 }
 
 Particles
-RigidBodyDecorator::get_member_particles() const {
-  HierarchyDecorator hd(get_particle(), internal::rigid_body_data().htraits_);
+RigidBody::get_member_particles() const {
+  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
   return hd.get_child_particles();
 }
 
-algebra::VectorD<4> RigidBodyDecorator::get_rotational_derivatives() const {
+algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
   algebra::VectorD<4>
     v(get_particle()
       ->get_derivative(internal::rigid_body_data().quaternion_[0]),
@@ -212,16 +212,16 @@ algebra::VectorD<4> RigidBodyDecorator::get_rotational_derivatives() const {
   return v;
 }
 
-bool RigidBodyDecorator::get_coordinates_are_optimized() const {
+bool RigidBody::get_coordinates_are_optimized() const {
   for (unsigned int i=0; i< 4; ++i) {
     if(!get_particle()
        ->get_is_optimized(internal::rigid_body_data().quaternion_[i]))
       return false;
   }
-  return XYZDecorator::get_coordinates_are_optimized();
+  return XYZ::get_coordinates_are_optimized();
 }
 
-void RigidBodyDecorator::set_coordinates_are_optimized(bool tf, bool snapping) {
+void RigidBody::set_coordinates_are_optimized(bool tf, bool snapping) {
   bool body, member;
   if (snapping) {
     body=false;
@@ -234,20 +234,20 @@ void RigidBodyDecorator::set_coordinates_are_optimized(bool tf, bool snapping) {
     get_particle()->set_is_optimized(internal::rigid_body_data().quaternion_[i],
                                      body);
   }
-  XYZDecorator::set_coordinates_are_optimized(body);
+  XYZ::set_coordinates_are_optimized(body);
   for (unsigned int i=0; i< get_number_of_members(); ++i) {
     get_member(i).set_coordinates_are_optimized(member);
   }
 }
 
-algebra::Vector3D RigidBodyDecorator::get_coordinates(RigidMemberDecorator p)
+algebra::Vector3D RigidBody::get_coordinates(RigidMember p)
                                                                       const {
   algebra::Vector3D lp= p.get_internal_coordinates();
   IMP::algebra::Transformation3D tr= get_transformation();
   return tr.transform(lp);
 }
 
-void RigidBodyDecorator
+void RigidBody
 ::set_transformation(const IMP::algebra::Transformation3D &tr,
                      bool transform_now) {
   algebra::VectorD<4> v= tr.get_rotation().get_quaternion();
@@ -265,15 +265,15 @@ void RigidBodyDecorator
 }
 
 
-RigidBodyDecorator::~RigidBodyDecorator(){}
-RigidMemberDecorator::~RigidMemberDecorator(){}
+RigidBody::~RigidBody(){}
+RigidMember::~RigidMember(){}
 
 
 
 
 
 
-void RigidBodyDecorator::show(std::ostream &out, std::string prefix) const {
+void RigidBody::show(std::ostream &out, std::string prefix) const {
   out << prefix << "Rigid body " << get_transformation()
       << "("
       << get_particle()->get_derivative(internal::rigid_body_data()
@@ -290,13 +290,13 @@ void RigidBodyDecorator::show(std::ostream &out, std::string prefix) const {
       << ")";
 }
 
-void RigidMemberDecorator::show(std::ostream &out, std::string prefix) const {
+void RigidMember::show(std::ostream &out, std::string prefix) const {
   out << prefix << "Member at " << get_internal_coordinates();
 }
 
 
 void UpdateRigidBodyOrientation::apply(Particle *p) const {
-  RigidBodyDecorator rb(p);
+  RigidBody rb(p);
   algebra::Vector3Ds cur, local;
   for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
     cur.push_back(rb.get_member(i).get_coordinates());
@@ -333,13 +333,13 @@ void UpdateRigidBodyOrientation::show(std::ostream &out) const {
 
 void AccumulateRigidBodyDerivatives::apply(Particle *p,
                                            DerivativeAccumulator &da) const {
-  RigidBodyDecorator rb(p);
+  RigidBody rb(p);
   algebra::Rotation3D rot= rb.get_transformation().get_rotation();
   IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
   algebra::Vector3D v(0,0,0);
   algebra::VectorD<4> q(0,0,0,0);
   for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
-    RigidMemberDecorator d= rb.get_member(i);
+    RigidMember d= rb.get_member(i);
     algebra::Vector3D dv= d.get_derivatives();
     v+=dv;
     IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
@@ -351,7 +351,7 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
       q[j]+= dv*v;
     }
   }
-  static_cast<XYZDecorator>(rb).add_to_derivatives(v, da);
+  static_cast<XYZ>(rb).add_to_derivatives(v, da);
   for (unsigned int j=0; j< 4; ++j) {
     rb.get_particle()->add_to_derivative(internal::rigid_body_data()
                                          .quaternion_[j], q[j],da);
@@ -368,7 +368,7 @@ void AccumulateRigidBodyDerivatives::apply(Particle *p,
           << std::endl);
 
   IMP_LOG(TERSE, "Translation deriv is "
-          << static_cast<XYZDecorator>(rb).get_derivatives()
+          << static_cast<XYZ>(rb).get_derivatives()
           << "" << std::endl);
 }
 
@@ -381,7 +381,7 @@ void AccumulateRigidBodyDerivatives
 
 
 void UpdateRigidBodyMembers::apply(Particle *p) const {
-  RigidBodyDecorator rb(p);
+  RigidBody rb(p);
   rb.normalize_rotation();
   algebra::Transformation3D tr= rb.get_transformation();
   for (unsigned int i=0; i<rb.get_number_of_members(); ++i) {
@@ -419,7 +419,7 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
             ValueException);
   for (SingletonContainer::ParticleIterator pit= rbs->particles_begin();
        pit != rbs->particles_end();++pit) {
-    RigidBodyDecorator rbd= RigidBodyDecorator::create(*pit,
+    RigidBody rbd= RigidBody::create(*pit,
                                                        pr->get_refined(*pit));
     rbd.set_coordinates_are_optimized(true, snapping);
   }
@@ -431,7 +431,7 @@ ScoreState* create_rigid_bodies(SingletonContainer *rbs,
 ScoreState* create_rigid_body(Particle *p,
                               const Particles &ps,
                               bool snapping) {
-  RigidBodyDecorator rbd= RigidBodyDecorator::create(p, ps);
+  RigidBody rbd= RigidBody::create(p, ps);
   SMP sm= get_modifiers(snapping);
   rbd.set_coordinates_are_optimized(true, snapping);
   SingletonScoreState *sss= new SingletonScoreState(sm.first, sm.second, p);
@@ -440,7 +440,7 @@ ScoreState* create_rigid_body(Particle *p,
 
 
 
-void cover_members(RigidBodyDecorator d, FloatKey rk) {
+void cover_members(RigidBody d, FloatKey rk) {
   double md=0;
   for (unsigned int i=0; i< d.get_number_of_members(); ++i) {
     double cd= d.get_member(i).get_internal_coordinates().get_magnitude();

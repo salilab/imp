@@ -143,7 +143,7 @@ class TestCase(unittest.TestCase):
 
     def randomize_particles(self, particles, deviation):
         """Randomize the xyz coordinates of a list of particles"""
-        # Note: cannot use XYZDecorator here since that pulls in IMP.core
+        # Note: cannot use XYZ here since that pulls in IMP.core
         xkey = IMP.FloatKey("x")
         ykey = IMP.FloatKey("y")
         zkey = IMP.FloatKey("z")

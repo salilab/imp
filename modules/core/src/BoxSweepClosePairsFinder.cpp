@@ -8,7 +8,7 @@
 
 #include <IMP/base_types.h>
 #include "IMP/core/BoxSweepClosePairsFinder.h"
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZ.h"
 #include "IMP/core/utility.h"
 
 #ifdef IMP_USE_CGAL
@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
 namespace {
 struct NBLBbox
 {
-  XYZDecorator d_;
+  XYZ d_;
   typedef Float NT;
   typedef void * ID;
   Float r_;
@@ -70,8 +70,8 @@ struct AddToList {
   FilteredListPairContainer *out_;
   AddToList(FilteredListPairContainer *out): out_(out){}
   void operator()(const NBLBbox &a, const NBLBbox &b) {
-    if (squared_distance(XYZDecorator(a).get_coordinates(),
-                         XYZDecorator(b).get_coordinates())
+    if (squared_distance(XYZ(a).get_coordinates(),
+                         XYZ(b).get_coordinates())
         < square(a.r_ + b.r_)) {
       out_->add_particle_pair(ParticlePair(a,b));
     }

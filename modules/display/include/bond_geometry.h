@@ -1,6 +1,6 @@
 /**
  *  \file bond_geometry.h
- *  \brief Represent an XYZRDecorator particle with a sphere
+ *  \brief Represent an XYZR particle with a sphere
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
@@ -24,10 +24,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT BondGeometry: public Geometry
 {
-  atom::BondDecorator d_;
+  atom::Bond d_;
   Float radius_;
 public:
-  BondGeometry(atom::BondDecorator d, Float radius=0);
+  BondGeometry(atom::Bond d, Float radius=0);
 
   std::string get_name() const {
     return d_.get_particle()->get_name();

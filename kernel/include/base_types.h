@@ -55,6 +55,13 @@ class Particle;
  */
 typedef std::vector<Particle*> Particles;
 
+/** @name Attribute Keys
+    Each type of attribute has an associated type of key. The keys can
+    be constructed from a string. Such construction can be expensive
+    and so the resulting keys should be cached.
+    @{
+ */
+
 //! The type used to identify float attributes in the Particles
 IMP_DECLARE_KEY_TYPE(FloatKey, 0);
 //! The type used to identify int attributes in the Particles
@@ -63,6 +70,7 @@ IMP_DECLARE_KEY_TYPE(IntKey, 1);
 IMP_DECLARE_KEY_TYPE(StringKey, 2);
 //! The type used to identify a particle attribute in the Particles
 IMP_DECLARE_KEY_TYPE(ParticleKey, 3);
+/** @} */
 
 #ifndef IMP_DOXYGEN
 

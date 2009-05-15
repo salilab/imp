@@ -8,6 +8,8 @@
 
 #ifndef IMPSTATISTICS_KM_TERMINATION_CONDITION_H
 #define IMPSTATISTICS_KM_TERMINATION_CONDITION_H
+#include "config.h"
+
 IMPSTATISTICS_BEGIN_NAMESPACE
 //! Stores data controlling the termination and phase changes of
 //! the kmean clustering

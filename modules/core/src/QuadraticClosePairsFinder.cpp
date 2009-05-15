@@ -7,7 +7,7 @@
  */
 
 #include "IMP/core/QuadraticClosePairsFinder.h"
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZ.h"
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/core/utility.h>
 #include <cmath>
@@ -57,8 +57,8 @@ void QuadraticClosePairsFinder
 
 
 bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
-  XYZDecorator da(a);
-  XYZDecorator db(b);
+  XYZ da(a);
+  XYZ db(b);
   Float ra= get_radius(a);
   Float rb= get_radius(b);
   Float sr= ra+rb+get_distance();

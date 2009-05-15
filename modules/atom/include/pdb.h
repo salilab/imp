@@ -11,7 +11,7 @@
 #include "config.h"
 #include "internal/pdb.h"
 #include "selectors.h"
-#include "MolecularHierarchyDecorator.h"
+#include "MolecularHierarchy.h"
 
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
@@ -25,7 +25,7 @@ IMPATOM_BEGIN_NAMESPACE
 /** Selector objects can be used to define which atoms to read.
     \see write_pdb
  */
-IMPATOMEXPORT MolecularHierarchyDecorator
+IMPATOMEXPORT MolecularHierarchy
 read_pdb(std::istream &in,
          Model* model,
          const Selector& selector = Selector(),
@@ -35,7 +35,7 @@ read_pdb(std::istream &in,
 /** Selector objects can be used to define which atoms to read.
     \see write_pdb
  */
-IMPATOMEXPORT MolecularHierarchyDecorator
+IMPATOMEXPORT MolecularHierarchy
 read_pdb(std::string pdb_file_name,
          Model* model,
          const Selector& selector = Selector(),
@@ -45,44 +45,44 @@ read_pdb(std::string pdb_file_name,
 /** Add bonds using definitions from topology file
     if topology file is not given, default file is used
 */
-IMPATOMEXPORT void add_bonds(MolecularHierarchyDecorator d,
+IMPATOMEXPORT void add_bonds(MolecularHierarchy d,
                              std::string topology_file_name = std::string());
 
 /** \note This function produces files that are not valid PDB files,
-    i.e. only ATOM/HETATM lines are printed for all AtomDecorator particles
+    i.e. only ATOM/HETATM lines are printed for all Atom particles
     in the hierarchy. Complain if your favorite program can't read them and
     we might fix it.
    \see read_pdb
-   \see write_pdb(const MolecularHierarchyDecorators& mhd,std::string file_name)
+   \see write_pdb(const MolecularHierarchys& mhd,std::string file_name)
 */
-IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
+IMPATOMEXPORT void write_pdb(MolecularHierarchy mhd,
                              std::ostream &out);
 
 /**
-\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+\copydetails write_pdb(MolecularHierarchy mhd,std::ostream &out)
 */
-IMPATOMEXPORT void write_pdb(MolecularHierarchyDecorator mhd,
+IMPATOMEXPORT void write_pdb(MolecularHierarchy mhd,
                              std::string file_name);
 
 /**
-\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+\copydetails write_pdb(MolecularHierarchy mhd,std::ostream &out)
 */
-IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
+IMPATOMEXPORT void write_pdb(const MolecularHierarchys &mhd,
                              std::ostream &out);
 
 /**
-\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+\copydetails write_pdb(MolecularHierarchy mhd,std::ostream &out)
 */
-IMPATOMEXPORT void write_pdb(const MolecularHierarchyDecorators &mhd,
+IMPATOMEXPORT void write_pdb(const MolecularHierarchys &mhd,
                              std::string file_name);
 
 /**
-\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+\copydetails write_pdb(MolecularHierarchy mhd,std::ostream &out)
 */
 IMPATOMEXPORT void write_pdb(const Particles& ps, std::ostream &out);
 
 /**
-\copydetails write_pdb(MolecularHierarchyDecorator mhd,std::ostream &out)
+\copydetails write_pdb(MolecularHierarchy mhd,std::ostream &out)
 */
 IMPATOMEXPORT void write_pdb(const Particles& ps, std::string file_name);
 

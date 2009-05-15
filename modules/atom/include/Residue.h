@@ -1,16 +1,16 @@
 /**
- *  \file ResidueDecorator.h     \brief A decorator for Residues.
+ *  \file Residue.h     \brief A decorator for Residues.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPATOM_RESIDUE_DECORATOR_H
-#define IMPATOM_RESIDUE_DECORATOR_H
+#ifndef IMPATOM_RESIDUE_H
+#define IMPATOM_RESIDUE_H
 
 #include "config.h"
 #include "macros.h"
-#include "MolecularHierarchyDecorator.h"
+#include "MolecularHierarchy.h"
 #include <IMP/core/internal/utility.h>
 
 #include <IMP/base_types.h>
@@ -31,10 +31,10 @@ IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
     The standard residue types are provided with names like
     IMP::atom::GLY.  New types can be added simply by creating an
     instance of ResidueType("my_residue_name"). Note that methods such
-    as ResidueDecorator::get_is_amino_acid() will not work with
+    as Residue::get_is_amino_acid() will not work with
     user-added types.
 
-    \see ResidueDecorator
+    \see Residue
 */
 /*@{*/
 /** Unknown residue */
@@ -114,65 +114,65 @@ IMPATOMEXPORT extern const ResidueType DTHY;
 
 //! A decorator for a residue.
 /**
-   As with the AtomDecorator, the types of residues may be expanded
+   As with the Atom, the types of residues may be expanded
    dynamically. This can be easily done in an analogous manner when we
    need it.
    \ingroup hierarchy
    \ingroup decorators
  */
-class IMPATOMEXPORT ResidueDecorator: public MolecularHierarchyDecorator
+class IMPATOMEXPORT Residue: public MolecularHierarchy
 {
 public:
-  IMP_DECORATOR(ResidueDecorator, MolecularHierarchyDecorator)
-  //! Add the required attributes to the particle and create a ResidueDecorator
-  static ResidueDecorator create(Particle *p, ResidueType t= UNK,
+  IMP_DECORATOR(Residue, MolecularHierarchy)
+  //! Add the required attributes to the particle and create a Residue
+  static Residue create(Particle *p, ResidueType t= UNK,
                                  int index=-1, int insertion_code = 32) {
     p->add_attribute(get_type_key(), t.get_index());
     p->add_attribute(get_index_key(), index);
     p->add_attribute(get_insertion_code_key(), insertion_code);
     // insertion code 32 is for space
-    MolecularHierarchyDecorator::create(p,
-                     MolecularHierarchyDecorator::UNKNOWN);
-    ResidueDecorator ret(p);
+    MolecularHierarchy::create(p,
+                     MolecularHierarchy::UNKNOWN);
+    Residue ret(p);
     ret.set_residue_type(t);
     return ret;
   }
 
-  //! Copy data from the other ResidueDecorator to the particle p
-  static ResidueDecorator create(Particle *p, ResidueDecorator o) {
+  //! Copy data from the other Residue to the particle p
+  static Residue create(Particle *p, Residue o) {
     p->add_attribute(get_type_key(), o.get_residue_type().get_index());
     p->add_attribute(get_index_key(), o.get_index());
     p->add_attribute(get_insertion_code_key(), o.get_insertion_code());
-    MolecularHierarchyDecorator::create(p,
-              static_cast<MolecularHierarchyDecorator>(o).get_type());
-    return ResidueDecorator(p);
+    MolecularHierarchy::create(p,
+              static_cast<MolecularHierarchy>(o).get_type());
+    return Residue(p);
   }
 
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())
       && p->has_attribute(get_index_key())
       && p->has_attribute(get_insertion_code_key())
-      && MolecularHierarchyDecorator::is_instance_of(p);
+      && MolecularHierarchy::is_instance_of(p);
   }
 
   ResidueType get_residue_type() const {
     return ResidueType(get_particle()->get_value(get_type_key()));
   }
 
-  //! Update the stored ResidueType and the MolecularHiearchyDecorator::Type.
+  //! Update the stored ResidueType and the MolecularHiearchy::Type.
   void set_residue_type(ResidueType t) {
     get_particle()->set_value(get_type_key(), t.get_index());
     if (get_residue_type().get_index() >= GLY.get_index() &&
         get_residue_type().get_index() <= TRP.get_index()) {
-      MolecularHierarchyDecorator
-        ::set_type(MolecularHierarchyDecorator::RESIDUE);
+      MolecularHierarchy
+        ::set_type(MolecularHierarchy::RESIDUE);
     } else if (get_residue_type().get_index() >= ADE.get_index() &&
                get_residue_type().get_index() <= DTHY.get_index()) {
-      MolecularHierarchyDecorator
-        ::set_type(MolecularHierarchyDecorator::NUCLEICACID);
+      MolecularHierarchy
+        ::set_type(MolecularHierarchy::NUCLEICACID);
     } else {
-      MolecularHierarchyDecorator
-        ::set_type(MolecularHierarchyDecorator::FRAGMENT);
+      MolecularHierarchy
+        ::set_type(MolecularHierarchy::FRAGMENT);
     }
   }
 
@@ -195,18 +195,18 @@ public:
   static IntKey get_insertion_code_key();
 };
 
-IMP_OUTPUT_OPERATOR(ResidueDecorator);
+IMP_OUTPUT_OPERATOR(Residue);
 
 //! Return the residue type from the three letter code in the PDB
 /** The string should be capitalized, as in the PDB.
     \throw ValueException if nm is invalid.
-    \relatesalso ResidueDecorator
+    \relatesalso Residue
     \relatesalso ResidueType
  */
 IMPATOMEXPORT ResidueType residue_type_from_pdb_string(std::string nm);
 
-IMPATOMEXPORT char get_chain(ResidueDecorator rd);
+IMPATOMEXPORT char get_chain(Residue rd);
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_RESIDUE_DECORATOR_H */
+#endif  /* IMPATOM_RESIDUE_H */

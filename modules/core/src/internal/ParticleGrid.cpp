@@ -6,7 +6,7 @@
  */
 
 #include <IMP/core/internal/ParticleGrid.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
 
 #include <IMP/internal/utility.h>
@@ -40,7 +40,7 @@ void ParticleGrid::build_grid(const Particles &ps)
                -std::numeric_limits<Float>::max(),
                -std::numeric_limits<Float>::max()};
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    XYZDecorator d(ps[i]);
+    XYZ d(ps[i]);
     for (unsigned int j=0; j<3; ++j) {
       if (d.get_coordinate(j)< mn[j]) mn[j]= d.get_coordinate(j);
       if (d.get_coordinate(j)> mx[j]) mx[j]= d.get_coordinate(j);
@@ -64,7 +64,7 @@ void ParticleGrid::build_grid(const Particles &ps)
               algebra::Vector3D(mx[0], mx[1], mx[2]),
               Particles());
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    XYZDecorator d(ps[i]);
+    XYZ d(ps[i]);
     algebra::Vector3D v(d.get_x(), d.get_y(), d.get_z());
     grid_.get_voxel(grid_.get_index(v)).push_back(ps[i]);
   }
@@ -77,7 +77,7 @@ void ParticleGrid::audit_particles(const Particles &ps) const
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
     try {
-      XYZDecorator d= XYZDecorator::cast(ps[i]);
+      XYZ d= XYZ::cast(ps[i]);
     } catch (...) {
       IMP_WARN("Particle " << ps[i]->get_name()
                << " does not have x,y,z coordinates "

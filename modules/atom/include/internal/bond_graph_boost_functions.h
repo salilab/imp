@@ -17,13 +17,13 @@
 IMPATOM_BEGIN_NAMESPACE
 
 
-inline BondedDecorator source(BondGraph::edge_descriptor bd,
+inline Bonded source(BondGraph::edge_descriptor bd,
                               const BondGraph &){
   return bd.first;
 }
 
 
-inline BondedDecorator target(const BondGraph::edge_descriptor &bd,
+inline Bonded target(const BondGraph::edge_descriptor &bd,
                                   const BondGraph &){
   return bd.second;
 }
@@ -31,7 +31,7 @@ inline BondedDecorator target(const BondGraph::edge_descriptor &bd,
 inline
 std::pair<BondGraph::out_edge_iterator,
           BondGraph::out_edge_iterator>
-out_edges(BondedDecorator bd,
+out_edges(Bonded bd,
           const BondGraph &) {
   return std::make_pair(BondGraph::out_edge_iterator(bd.bonds_begin(),
                              internal::MakeOutEdgeDescriptor(bd)),
@@ -42,7 +42,7 @@ out_edges(BondedDecorator bd,
 inline
 std::pair<BondGraph::in_edge_iterator,
           BondGraph::in_edge_iterator>
-in_edges(BondedDecorator bd,
+in_edges(Bonded bd,
           const BondGraph &) {
   return std::make_pair(BondGraph::in_edge_iterator(bd.bonds_begin(),
                            internal::MakeInEdgeDescriptor(bd)),
@@ -52,9 +52,9 @@ in_edges(BondedDecorator bd,
 
 
 inline
-std::pair<BondedDecorator::BondedIterator,
-          BondedDecorator::BondedIterator>
-adjacent_vertices(BondedDecorator bd,
+std::pair<Bonded::BondedIterator,
+          Bonded::BondedIterator>
+adjacent_vertices(Bonded bd,
                   const BondGraph &) {
   return std::make_pair(bd.bondeds_begin(),
                         bd.bondeds_end());
@@ -100,17 +100,17 @@ num_edges(const BondGraph &g) {
   return tot;
 }
 
-inline unsigned int degree(BondedDecorator bd,
+inline unsigned int degree(Bonded bd,
                     const BondGraph&) {
   return bd.get_number_of_bonds();
 }
 
-inline unsigned int out_degree(BondedDecorator bd,
+inline unsigned int out_degree(Bonded bd,
                     const BondGraph&) {
   return bd.get_number_of_bonds();
 }
 
-inline unsigned int in_degree(BondedDecorator bd,
+inline unsigned int in_degree(Bonded bd,
                     const BondGraph&) {
   return bd.get_number_of_bonds();
 }

@@ -7,7 +7,7 @@
 
 
 #include <IMP/core/Transform.h>
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZ.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -21,11 +21,11 @@ Transform::Transform(
 
 void Transform::apply(Particle *p) const
 {
-  if (!XYZDecorator::is_instance_of(p)) {
+  if (!XYZ::is_instance_of(p)) {
     IMP_assert(ignore_non_xyz_,"The particle does not have XYZ attributes");
     return;
   }
-  XYZDecorator xyz = XYZDecorator(p);
+  XYZ xyz = XYZ(p);
   xyz.set_coordinates(t_.transform(xyz.get_coordinates()));
 }
 void Transform::show(std::ostream &out) const

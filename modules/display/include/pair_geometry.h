@@ -1,6 +1,6 @@
 /**
  *  \file pair_geometry.h
- *  \brief Represent an XYZRDecorator particle with a sphere
+ *  \brief Represent an XYZR particle with a sphere
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */
@@ -13,7 +13,7 @@
 
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/display/geometry.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -25,10 +25,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT PairGeometry: public Geometry
 {
-  core::XYZDecorator d0_, d1_;
+  core::XYZ d0_, d1_;
   Float radius_;
 public:
-  PairGeometry(core::XYZDecorator d0, core::XYZDecorator d1,
+  PairGeometry(core::XYZ d0, core::XYZ d1,
                Float radius=0);
 
   std::string get_name() const {

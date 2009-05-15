@@ -11,7 +11,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 
-#include "XYZRDecorator.h"
+#include "XYZR.h"
 #include <IMP/Refiner.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonModifier.h>
@@ -21,7 +21,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 // for swig
-class XYZRDecorator;
+class XYZR;
 
 /** \brief This class sets the position and radius of each particle to
  enclose the refined.
@@ -36,7 +36,7 @@ class XYZRDecorator;
  of the atoms of a protein by a sphere per residue.
  \verbinclude simple_examples/cover_particles.py
 
- \note The particle passed must be an XYZRDecorator with the given radius key.
+ \note The particle passed must be an XYZR with the given radius key.
  \note This used the set_enclosing_sphere function and so produces
   better results if the CGAL library is found.
  */
@@ -50,7 +50,7 @@ public:
   /** Slack is the amount added to the radius.*/
   CoverRefined(Refiner *ref,
                                 FloatKey rk
-                                =XYZRDecorator::get_default_radius_key(),
+                                =XYZR::get_default_radius_key(),
                                 Float slack=0);
   ~CoverRefined();
 
@@ -73,7 +73,7 @@ public:
  */
 IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
                                 Refiner *pr,
-               FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
+               FloatKey radius_key= XYZR::get_default_radius_key(),
                                 Float slack=0);
 
 
@@ -88,7 +88,7 @@ IMPCOREEXPORT ScoreState* create_covers(SingletonContainer *sc,
  */
 IMPCOREEXPORT ScoreState* create_cover(Particle *p,
                                        Refiner *pr,
-                  FloatKey radius_key= XYZRDecorator::get_default_radius_key(),
+                  FloatKey radius_key= XYZR::get_default_radius_key(),
                                        Float slack=0);
 
 IMPCORE_END_NAMESPACE

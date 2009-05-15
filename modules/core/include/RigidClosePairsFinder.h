@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
     - pairs \c (\c p,\c s) or \c (\c r,\c q) as appropriate if only one of
     \c p or \c q is a rigid body.
 
-    Consequently, the user must ensure that the RigidBodyDecorator are
+    Consequently, the user must ensure that the RigidBody are
     assigned a radius that encloses all of their RigidMember
     particles.
 
@@ -52,7 +52,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     \ingroup CGAL
     \see ClosePairsScoreState
-    \see RigidBodyDecorator
+    \see RigidBody
     \see cover_members()
  */
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder

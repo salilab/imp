@@ -1,6 +1,6 @@
 tr= IMP.core.HierarchyTraits("my hierarchy")
-pd= IMP.core.HierarchyDecorator.create(parent_particle, tr)
+pd= IMP.core.Hierarchy.create(parent_particle, tr)
 for p in children_particles:
-    cd= IMP.core.HierarchyDecorator.create(p, tr)
+    cd= IMP.core.Hierarchy.create(p, tr)
     pd.add_child(cd)
 pd.show()

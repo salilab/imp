@@ -1,15 +1,15 @@
 /**
- *  \file XYZRDecorator.h
+ *  \file XYZR.h
  *  \brief Decorator for a sphere-like particle.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPCORE_XYZR_DECORATOR_H
-#define IMPCORE_XYZR_DECORATOR_H
+#ifndef IMPCORE_XYZ_R_H
+#define IMPCORE_XYZ_R_H
 
-#include "XYZDecorator.h"
+#include "XYZ.h"
 #include <IMP/algebra/Sphere3D.h>
 
 #include <limits>
@@ -21,10 +21,10 @@ IMPCORE_BEGIN_NAMESPACE
     A simple example illustrating some of the functionality.
     \verbinclude xyzrdecorator.py
  */
-class IMPCOREEXPORT XYZRDecorator: public XYZDecorator
+class IMPCOREEXPORT XYZR: public XYZ
 {
 public:
-  IMP_DECORATOR_TRAITS(XYZRDecorator, XYZDecorator, FloatKey,
+  IMP_DECORATOR_TRAITS(XYZR, XYZ, FloatKey,
                        radius_key, get_default_radius_key());
 
   /** Create a decorator using radius_key to store the FloatKey.
@@ -32,28 +32,28 @@ public:
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
-  static XYZRDecorator create(Particle *p,
+  static XYZR create(Particle *p,
                               FloatKey radius_key= FloatKey("radius")) {
-    if (!XYZDecorator::is_instance_of(p)) {
-      XYZDecorator::create(p);
+    if (!XYZ::is_instance_of(p)) {
+      XYZ::create(p);
     }
     p->add_attribute(radius_key, 0, false);
-    return XYZRDecorator(p, radius_key);
+    return XYZR(p, radius_key);
   }
 
 
  /** Create a decorator using radius_key to store the FloatKey.
-     The particle should already be an XYZDecorator particle.
+     The particle should already be an XYZ particle.
      \param[in] p The particle to wrap.
      \param[in] radius The radius to set initially
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
-  static XYZRDecorator create(Particle *p,
+  static XYZR create(Particle *p,
                               Float radius,
                               FloatKey radius_key= FloatKey("radius")) {
     p->add_attribute(radius_key, radius, false);
-    return XYZRDecorator(p, radius_key);
+    return XYZR(p, radius_key);
   }
 
   /** Create a decorator using radius_key to store the FloatKey.
@@ -62,12 +62,12 @@ public:
      \param[in] radius_key The (optional) key name to use.
      The default is "radius".
    */
-  static XYZRDecorator create(Particle *p,
+  static XYZR create(Particle *p,
                               const algebra::Sphere3D &s,
                               FloatKey radius_key= FloatKey("radius")) {
-    XYZDecorator::create(p, s.get_center());
+    XYZ::create(p, s.get_center());
     p->add_attribute(radius_key, s.get_radius(), false);
-    return XYZRDecorator(p, radius_key);
+    return XYZR(p, radius_key);
   }
 
   //! Check if the particle has the required attributes
@@ -95,12 +95,12 @@ public:
   }
 };
 
-IMP_OUTPUT_OPERATOR(XYZRDecorator);
+IMP_OUTPUT_OPERATOR(XYZR);
 
 //! Compute the distance between a pair of particles
-/** \relatesalso XYZRDecorator
+/** \relatesalso XYZR
  */
-IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
+IMPCOREEXPORT Float distance(XYZR a, XYZR b);
 
 //! Set the coordinates and radius of the last to enclose the list
 /** \param[in] v The vector of XYZ or XYZR particles to enclose
@@ -115,9 +115,9 @@ IMPCOREEXPORT Float distance(XYZRDecorator a, XYZRDecorator b);
     \note This function produces tighter bounds if the \ref CGAL "CGAL"
     library is available.
     \ingroup CGAL
-    \relatesalso XYZRDecorator
+    \relatesalso XYZR
  */
-IMPCOREEXPORT void set_enclosing_sphere(XYZRDecorator b,
+IMPCOREEXPORT void set_enclosing_sphere(XYZR b,
                                         const Particles &v);
 
 //! Create a set of particles which random coordinates
@@ -127,7 +127,7 @@ IMPCOREEXPORT void set_enclosing_sphere(XYZRDecorator b,
     \param[in] radius The radius to give them.
     \param[in] box_side The particles have coordinates from -box_side
     to box_side.
-    \relatesalso XYZRDecorator
+    \relatesalso XYZR
 
     The particles coordinates are optimized.
  */
@@ -137,15 +137,15 @@ IMPCOREEXPORT Particles create_xyzr_particles(Model *m,
                                               Float box_side=10);
 
 class HierarchyTraits;
-class HierarchyDecorator;
+class Hierarchy;
 
 //! Create a hierarchical cover of a set of XYZR particles
 /** \note Not implemented yet.
 */
-IMPCOREEXPORT HierarchyDecorator
+IMPCOREEXPORT Hierarchy
 create_sphere_hierarchy(const Particles &ps,
                         const HierarchyTraits &traits);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_XYZR_DECORATOR_H */
+#endif  /* IMPCORE_XYZ_R_H */

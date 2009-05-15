@@ -10,7 +10,7 @@
 #include "IMP/core/BoxSweepClosePairsFinder.h"
 #include "IMP/core/GridClosePairsFinder.h"
 #include "IMP/core/rigid_bodies.h"
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZ.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/eigen_analysis.h>
@@ -163,9 +163,9 @@ namespace internal {
                "Out of range in particle");
     IMP_assert(data_[ni].storage_[i] < 0,
                "Not a leaf node");
-    if (!RigidBodyDecorator::is_instance_of(p)) return p;
+    if (!RigidBody::is_instance_of(p)) return p;
     int index= std::abs(data_[ni].storage_[i])-1;
-    return RigidBodyDecorator(p).get_member(index).get_particle();
+    return RigidBody(p).get_member(index).get_particle();
   }
   const algebra::Sphere3D &
   RigidBodyParticleData::get_sphere(unsigned int ni) const  {
@@ -230,12 +230,12 @@ namespace internal {
 const algebra::Sphere3D
 RigidClosePairsFinder::get_transformed(Particle *a,
                                      const algebra::Sphere3D &s) const {
-  if (RigidBodyDecorator::is_instance_of(a)) {
-    RigidBodyDecorator d(a);
+  if (RigidBody::is_instance_of(a)) {
+    RigidBody d(a);
     return algebra::Sphere3D(d.get_transformation().transform(s.get_center()),
                              s.get_radius());
   } else {
-    XYZDecorator d(a);
+    XYZ d(a);
     return algebra::Sphere3D(d.get_coordinates(),
                              get_radius(a)+get_distance()*.5);
   }
@@ -243,8 +243,8 @@ RigidClosePairsFinder::get_transformed(Particle *a,
 
 Particle *RigidClosePairsFinder::get_member(Particle *a,
                                           unsigned int i) const {
-   if (RigidBodyDecorator::is_instance_of(a)) {
-     RigidBodyDecorator d(a);
+   if (RigidBody::is_instance_of(a)) {
+     RigidBody d(a);
      return d.get_member(i).get_particle();
    } else {
      return a;
@@ -286,9 +286,9 @@ RigidClosePairsFinder::setup(const algebra::Sphere3Ds &spheres,
    the index into the array of particles.
  */
 void RigidClosePairsFinder::setup(Particle *p) const {
-  if (RigidBodyDecorator::is_instance_of(p)) {
+  if (RigidBody::is_instance_of(p)) {
     // build spheres on internal coordinates
-    RigidBodyDecorator d(p);
+    RigidBody d(p);
     algebra::Sphere3Ds spheres(d.get_number_of_members());
     for (unsigned int i=0; i< d.get_number_of_members(); ++i) {
       double r =get_radius(d.get_member(i).get_particle());
@@ -304,7 +304,7 @@ void RigidClosePairsFinder::setup(Particle *p) const {
     setup(spheres, 0, leaves, data_.get_data(p));
   } else {
     double r=get_radius(p);
-    XYZDecorator d(p);
+    XYZ d(p);
     data_.add_data(p, algebra::Sphere3D(d.get_coordinates(),
                             (r+get_distance()/2.0)*EXPANSION));
   }
@@ -331,7 +331,7 @@ namespace {
     IMP_IF_CHECK(CHEAP) {
       for (SingletonContainer::ParticleIterator it= sc->particles_begin();
          it != sc->particles_end(); ++it) {
-        if (RigidBodyDecorator::is_instance_of(*it)
+        if (RigidBody::is_instance_of(*it)
             && !(*it)->has_attribute(rk)) {
           IMP_WARN("Particle " << (*it)->get_name() << " is a rigid body "
                    << "but does not have a radius. "
@@ -385,11 +385,11 @@ RigidClosePairsFinder::process_one(Particle *a, Particle *b,
   if (da.get_is_leaf(ci) && db.get_is_leaf(cj)) {
     for (unsigned int k=0; k< da.get_number_of_particles(ci); ++k) {
       Particle *pk=da.get_particle(ci, k, a);
-      algebra::Sphere3D sk(XYZDecorator(pk).get_coordinates(),
+      algebra::Sphere3D sk(XYZ(pk).get_coordinates(),
                              get_radius(pk)+get_distance()*.5);
       for (unsigned int l=0; l< db.get_number_of_particles(cj); ++l) {
         Particle *pl=db.get_particle(cj, l, b);
-        algebra::Sphere3D sl(XYZDecorator(pl).get_coordinates(),
+        algebra::Sphere3D sl(XYZ(pl).get_coordinates(),
                              get_radius(pl)+get_distance()*.5);
         IMP_LOG(VERBOSE, "Trying member particles " << pk->get_name()
                 << " and " << pl->get_name() << std::endl);

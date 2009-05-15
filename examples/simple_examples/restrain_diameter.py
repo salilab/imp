@@ -17,8 +17,8 @@ o.set_model(m)
 max=0
 for p0 in lc.get_particles():
     for p1 in lc.get_particles():
-        d=IMP.core.distance(IMP.core.XYZDecorator(p0),
-                            IMP.core.XYZDecorator(p1))
+        d=IMP.core.distance(IMP.core.XYZ(p0),
+                            IMP.core.XYZ(p1))
         if d > max: max=d
 print "The maximim distance is "+str(max)
 
@@ -28,7 +28,7 @@ o.optimize(100)
 max=0
 for p0 in lc.get_particles():
     for p1 in lc.get_particles():
-        d=IMP.core.distance(IMP.core.XYZDecorator(p0),
-                            IMP.core.XYZDecorator(p1))
+        d=IMP.core.distance(IMP.core.XYZ(p0),
+                            IMP.core.XYZ(p1))
         if d > max: max=d
 print "Afterwards, the maximim distance is "+str(max)

@@ -25,10 +25,10 @@ BondData &get_bond_data() {
 } // namespace internal
 
 
-void BondDecorator::show(std::ostream &out, std::string) const
+void Bond::show(std::ostream &out, std::string) const
 {
-  if (*this == BondDecorator()) {
-    out << "Null BondDecorator";
+  if (*this == Bond()) {
+    out << "Null Bond";
     return;
   }
   out << "Bond between "
@@ -45,16 +45,16 @@ void BondDecorator::show(std::ostream &out, std::string) const
   out << std::endl;
 }
 
-void BondedDecorator::show(std::ostream &out, std::string) const
+void Bonded::show(std::ostream &out, std::string) const
 {
-  if (*this == BondedDecorator()) {
-    out << "Null BondedDecorator";
+  if (*this == Bonded()) {
+    out << "Null Bonded";
     return;
   }
   out << "Particle " << get_particle()->get_name()
       << " is bonded to ";
   for (unsigned int i=0; i< get_number_of_bonds(); ++i){
-    BondDecorator b= get_bond(i);
+    Bond b= get_bond(i);
     if (b.get_bonded(0) == *this) {
       out << b.get_bonded(1).get_particle()->get_name();
     } else  {
@@ -64,7 +64,7 @@ void BondedDecorator::show(std::ostream &out, std::string) const
   }
 }
 
-BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)
+Bond bond(Bonded a, Bonded b, Int t)
 {
   IMP_check(a.get_particle() != b.get_particle(),
             "The endpoints of a bond must be disjoint",
@@ -73,24 +73,24 @@ BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t)
   Particle *p= IMP::core::internal::graph_connect(a.get_particle(),
                                                   b.get_particle(),
                                        internal::get_bond_data().graph_);
-  BondDecorator bd(p);
+  Bond bd(p);
   bd.set_type(t);
   return bd;
 }
 
-void unbond(BondDecorator b) {
+void unbond(Bond b) {
   graph_disconnect(b.get_particle(), internal::get_bond_data().graph_);
 }
 
-BondDecorator get_bond(BondedDecorator a, BondedDecorator b) {
-  if (a==b) return BondDecorator();
+Bond get_bond(Bonded a, Bonded b) {
+  if (a==b) return Bond();
   for (unsigned int i=0; i < a.get_number_of_bonds(); ++i) {
-    BondDecorator bd= a.get_bond(i);
+    Bond bd= a.get_bond(i);
     if (bd.get_bonded(0) == b || bd.get_bonded(1) == b) {
       return bd;
     }
   }
-  return BondDecorator();
+  return Bond();
 }
 
 IMPATOM_END_NAMESPACE

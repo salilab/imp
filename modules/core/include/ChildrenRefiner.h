@@ -10,8 +10,8 @@
 
 #include "config.h"
 #include "internal/version_info.h"
-#include "HierarchyDecorator.h"
-#include <IMP/atom/MolecularHierarchyDecorator.h>
+#include "Hierarchy.h"
+#include <IMP/atom/MolecularHierarchy.h>
 
 #include <IMP/Refiner.h>
 
@@ -23,8 +23,8 @@ class HierarchyTraits;
 /** \ingroup hierarchy
     A simple example using is
     \verbinclude simple_examples/cover_particles.py
-    \see HierarchyDecorator
-    \see MolecularHierarchyDecorator
+    \see Hierarchy
+    \see MolecularHierarchy
 */
 class IMPCOREEXPORT ChildrenRefiner : public Refiner
 {

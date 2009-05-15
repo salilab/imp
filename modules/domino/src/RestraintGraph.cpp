@@ -11,17 +11,12 @@
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
-#include <IMP/core/NameDecorator.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
 StringKey node_name_key() {
-#ifndef IMP_NO_DEPRECATED
-  return core::NameDecorator::get_default_name_key();
-#else
   static StringKey k("name");
   return k;
-#endif
 }
 
   void RestraintGraph::parse_jt_file(const std::string &filename, Model *mdl)

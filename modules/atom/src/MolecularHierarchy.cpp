@@ -1,19 +1,18 @@
 /**
- *  \file MolecularHierarchyDecorator.cpp   \brief Decorator for helping deal
+ *  \file MolecularHierarchy.cpp   \brief Decorator for helping deal
  *                                                 with a hierarchy.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include <IMP/atom/MolecularHierarchyDecorator.h>
-#include <IMP/core/NameDecorator.h>
-#include <IMP/atom/AtomDecorator.h>
-#include <IMP/atom/ResidueDecorator.h>
-#include <IMP/atom/ChainDecorator.h>
-#include <IMP/atom/DomainDecorator.h>
+#include <IMP/atom/MolecularHierarchy.h>
+#include <IMP/atom/Atom.h>
+#include <IMP/atom/Residue.h>
+#include <IMP/atom/Chain.h>
+#include <IMP/atom/Domain.h>
 #include <IMP/core/LeavesRefiner.h>
-#include <IMP/core/XYZRDecorator.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/atom/estimates.h>
 #include <IMP/core/Harmonic.h>
 #include <IMP/core/ConnectivityRestraint.h>
@@ -26,36 +25,36 @@
 IMPATOM_BEGIN_NAMESPACE
 
 const IMP::core::HierarchyTraits&
-MolecularHierarchyDecorator::get_traits() {
+MolecularHierarchy::get_traits() {
   static IMP::core::HierarchyTraits ret("molecular_hierarchy");
   return ret;
 }
 
-IntKey MolecularHierarchyDecorator::get_type_key() {
+IntKey MolecularHierarchy::get_type_key() {
   static IntKey k("molecular_hierarchy_type");
   return k;
 }
 
-void MolecularHierarchyDecorator::show(std::ostream &out,
+void MolecularHierarchy::show(std::ostream &out,
                                        std::string prefix) const
 {
-  if (*this == MolecularHierarchyDecorator()) {
+  if (*this == MolecularHierarchy()) {
     out << "NULL Molecular Hierarchy node";
     return;
   }
-  if (get_type() == ATOM && AtomDecorator::is_instance_of(get_particle())) {
-    AtomDecorator ad(get_particle());
+  if (get_type() == ATOM && Atom::is_instance_of(get_particle())) {
+    Atom ad(get_particle());
     ad.show(out, prefix);
   } else if ((get_type() == RESIDUE || get_type() == NUCLEICACID)
-             && ResidueDecorator::is_instance_of(get_particle())){
-      ResidueDecorator adt(get_particle());
+             && Residue::is_instance_of(get_particle())){
+      Residue adt(get_particle());
       adt.show(out, prefix);
   } else if (get_type() == CHAIN
-             && ChainDecorator::is_instance_of(get_particle())){
-      ChainDecorator adt(get_particle());
+             && Chain::is_instance_of(get_particle())){
+      Chain adt(get_particle());
       adt.show(out, prefix);
-  } else if (DomainDecorator::is_instance_of(get_particle())) {
-    DomainDecorator dd(get_particle());
+  } else if (Domain::is_instance_of(get_particle())) {
+    Domain dd(get_particle());
     dd.show(out, prefix);
   } else {
     out << prefix << get_type_string() <<std::endl;
@@ -70,24 +69,24 @@ namespace
 
 struct MHDMatchingType
 {
-  MHDMatchingType(MolecularHierarchyDecorator::Type t): t_(t){}
+  MHDMatchingType(MolecularHierarchy::Type t): t_(t){}
 
   bool operator()(Particle *p) const {
-    MolecularHierarchyDecorator mhd= MolecularHierarchyDecorator::cast(p);
-    if (mhd== MolecularHierarchyDecorator()) {
+    MolecularHierarchy mhd= MolecularHierarchy::cast(p);
+    if (mhd== MolecularHierarchy()) {
       return false;
     } else {
       return mhd.get_type()==t_;
     }
   }
 
-  MolecularHierarchyDecorator::Type t_;
+  MolecularHierarchy::Type t_;
 };
 
 } // namespace
 
-Particles get_by_type(MolecularHierarchyDecorator mhd,
-                      MolecularHierarchyDecorator::Type t)
+Particles get_by_type(MolecularHierarchy mhd,
+                      MolecularHierarchy::Type t)
 {
   Particles out;
   gather(mhd, MHDMatchingType(t),
@@ -104,14 +103,14 @@ struct MatchResidueIndex
   int index_;
   MatchResidueIndex(int i): index_(i) {}
   bool operator()(Particle *p) const {
-    MolecularHierarchyDecorator mhd(p);
-    if (mhd.get_type() == MolecularHierarchyDecorator::RESIDUE
-        || mhd.get_type() == MolecularHierarchyDecorator::NUCLEICACID) {
-      ResidueDecorator rd(p);
+    MolecularHierarchy mhd(p);
+    if (mhd.get_type() == MolecularHierarchy::RESIDUE
+        || mhd.get_type() == MolecularHierarchy::NUCLEICACID) {
+      Residue rd(p);
       return (rd.get_index() == index_);
     } else {
       if (mhd.get_number_of_children()==0) {
-        DomainDecorator dd= DomainDecorator::cast(p);
+        Domain dd= Domain::cast(p);
         return dd && dd.get_begin_index() <= index_
           && dd.get_end_index()> index_;
       } else {
@@ -124,32 +123,32 @@ struct MatchResidueIndex
 } // namespace
 
 
-MolecularHierarchyDecorator
-get_residue(MolecularHierarchyDecorator mhd,
+MolecularHierarchy
+get_residue(MolecularHierarchy mhd,
             unsigned int index)
 {
-  IMP_check(mhd.get_type() == MolecularHierarchyDecorator::PROTEIN
-            || mhd.get_type() == MolecularHierarchyDecorator::CHAIN
-            || mhd.get_type() == MolecularHierarchyDecorator::NUCLEOTIDE,
-            "Invalid type of MolecularHierarchyDecorator passed to get_residue",
+  IMP_check(mhd.get_type() == MolecularHierarchy::PROTEIN
+            || mhd.get_type() == MolecularHierarchy::CHAIN
+            || mhd.get_type() == MolecularHierarchy::NUCLEOTIDE,
+            "Invalid type of MolecularHierarchy passed to get_residue",
             ValueException);
   MatchResidueIndex mi(index);
-  IMP::core::HierarchyDecorator hd= breadth_first_find(mhd, mi);
-  if (hd== IMP::core::HierarchyDecorator()) {
-    return MolecularHierarchyDecorator();
+  IMP::core::Hierarchy hd= breadth_first_find(mhd, mi);
+  if (hd== IMP::core::Hierarchy()) {
+    return MolecularHierarchy();
   } else {
-    return MolecularHierarchyDecorator(hd.get_particle());
+    return MolecularHierarchy(hd.get_particle());
   }
 }
 
 
 
-MolecularHierarchyDecorator
-create_fragment(const MolecularHierarchyDecorators &ps)
+MolecularHierarchy
+create_fragment(const MolecularHierarchys &ps)
 {
   IMP_check(!ps.empty(), "Need some particles",
             ValueException);
-  MolecularHierarchyDecorator parent= ps[0].get_parent();
+  MolecularHierarchy parent= ps[0].get_parent();
   unsigned int index= ps[0].get_parent_index();
   IMP_IF_CHECK(CHEAP) {
     for (unsigned int i=0; i< ps.size(); ++i) {
@@ -160,8 +159,8 @@ create_fragment(const MolecularHierarchyDecorators &ps)
   }
 
   Particle *fp= new Particle(parent.get_particle()->get_model());
-  MolecularHierarchyDecorator fd= MolecularHierarchyDecorator::create(fp,
-                                       MolecularHierarchyDecorator::FRAGMENT);
+  MolecularHierarchy fd= MolecularHierarchy::create(fp,
+                                       MolecularHierarchy::FRAGMENT);
 
   for (unsigned int i=0; i< ps.size(); ++i) {
     parent.remove_child(ps[i]);
@@ -172,15 +171,15 @@ create_fragment(const MolecularHierarchyDecorators &ps)
   return fd;
 }
 
-BondDecorators get_internal_bonds(MolecularHierarchyDecorator mhd)
+Bonds get_internal_bonds(MolecularHierarchy mhd)
 {
   Particles ps= get_all_descendants(mhd);
   std::set<Particle*> sps(ps.begin(), ps.end());
-  BondDecorators ret;
+  Bonds ret;
   for (Particles::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
     Particle *p = *pit;
-    if (BondedDecorator::is_instance_of(p)) {
-      BondedDecorator b(p);
+    if (Bonded::is_instance_of(p)) {
+      Bonded b(p);
       for (unsigned int i=0; i< b.get_number_of_bonds(); ++i) {
         Particle *op = b.get_bonded(i).get_particle();
         if (op < p && sps.find(op) != sps.end()) {
@@ -194,36 +193,36 @@ BondDecorators get_internal_bonds(MolecularHierarchyDecorator mhd)
 
 namespace {
 IMPATOMEXPORT
-MolecularHierarchyDecorator clone_internal(MolecularHierarchyDecorator d,
+MolecularHierarchy clone_internal(MolecularHierarchy d,
                                            std::map<Particle*,
                                            Particle*> &map) {
   Particle *p= new Particle(d.get_model());
   map[d.get_particle()]=p;
-  MolecularHierarchyDecorator nd;
-  if (AtomDecorator::is_instance_of(d.get_particle())) {
-    nd= AtomDecorator::create(p, AtomDecorator(d.get_particle()));
-  } else if (ResidueDecorator::is_instance_of(d.get_particle())) {
-    nd= ResidueDecorator::create(p, ResidueDecorator(d.get_particle()));
-  } else if (DomainDecorator::is_instance_of(d.get_particle())) {
-    nd= DomainDecorator::create(p, DomainDecorator(d.get_particle()));
-  } else if (ChainDecorator::is_instance_of(d.get_particle())) {
-    nd= ChainDecorator::create(p, ChainDecorator(d.get_particle()));
+  MolecularHierarchy nd;
+  if (Atom::is_instance_of(d.get_particle())) {
+    nd= Atom::create(p, Atom(d.get_particle()));
+  } else if (Residue::is_instance_of(d.get_particle())) {
+    nd= Residue::create(p, Residue(d.get_particle()));
+  } else if (Domain::is_instance_of(d.get_particle())) {
+    nd= Domain::create(p, Domain(d.get_particle()));
+  } else if (Chain::is_instance_of(d.get_particle())) {
+    nd= Chain::create(p, Chain(d.get_particle()));
   } else {
-    nd=MolecularHierarchyDecorator::create(p, d.get_type());
+    nd=MolecularHierarchy::create(p, d.get_type());
   }
-  using core::XYZDecorator;
-  using core::XYZRDecorator;
-  if (XYZRDecorator::is_instance_of(d.get_particle())){
-    XYZRDecorator::create(p,
-        algebra::Sphere3D(XYZDecorator(d.get_particle()).get_coordinates(),
-                          XYZRDecorator(d.get_particle()).get_radius()));
-  } else if (XYZDecorator::is_instance_of(d.get_particle())) {
-    XYZDecorator::create(p,
-                         XYZDecorator(d.get_particle()).get_coordinates());
+  using core::XYZ;
+  using core::XYZR;
+  if (XYZR::is_instance_of(d.get_particle())){
+    XYZR::create(p,
+        algebra::Sphere3D(XYZ(d.get_particle()).get_coordinates(),
+                          XYZR(d.get_particle()).get_radius()));
+  } else if (XYZ::is_instance_of(d.get_particle())) {
+    XYZ::create(p,
+                         XYZ(d.get_particle()).get_coordinates());
   }
   p->set_name(d.get_particle()->get_name());
   for (unsigned int i=0 ;i< d.get_number_of_children(); ++i) {
-    MolecularHierarchyDecorator nc= clone_internal(d.get_child(i), map);
+    MolecularHierarchy nc= clone_internal(d.get_child(i), map);
     nd.add_child(nc);
   }
   return nd;
@@ -231,25 +230,25 @@ MolecularHierarchyDecorator clone_internal(MolecularHierarchyDecorator d,
 }
 
 
-MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d) {
+MolecularHierarchy clone(MolecularHierarchy d) {
   std::map<Particle*,Particle*> map;
-  MolecularHierarchyDecorator nh= clone_internal(d, map);
-  BondDecorators bds= get_internal_bonds(d);
+  MolecularHierarchy nh= clone_internal(d, map);
+  Bonds bds= get_internal_bonds(d);
   for (unsigned int i=0; i< bds.size(); ++i) {
-    BondedDecorator e0= bds[i].get_bonded(0);
-    BondedDecorator e1= bds[i].get_bonded(1);
+    Bonded e0= bds[i].get_bonded(0);
+    Bonded e1= bds[i].get_bonded(1);
     Particle *np0= map[e0.get_particle()];
     Particle *np1= map[e1.get_particle()];
-    BondedDecorator ne0, ne1;
-    if (BondedDecorator::is_instance_of(np0)) {
-      ne0=BondedDecorator(np0);
+    Bonded ne0, ne1;
+    if (Bonded::is_instance_of(np0)) {
+      ne0=Bonded(np0);
     } else {
-      ne0=BondedDecorator::create(np0);
+      ne0=Bonded::create(np0);
     }
-    if (BondedDecorator::is_instance_of(np1)) {
-      ne1=BondedDecorator(np1);
+    if (Bonded::is_instance_of(np1)) {
+      ne1=Bonded(np1);
     } else {
-      ne1=BondedDecorator::create(np1);
+      ne1=Bonded::create(np1);
     }
     copy_bond(ne0, ne1, bds[i]);
   }
@@ -292,17 +291,17 @@ IMPATOMEXPORT Restraint* create_protein(Particle *p,
   // assume a 20% overlap in the beads to make the protein not too bumpy
   double overlap_frac=.2;
   std::pair<int, double> nr= compute_n(volume, resolution, overlap_frac);
-  MolecularHierarchyDecorator pd
-    =MolecularHierarchyDecorator::create(p,
-                              MolecularHierarchyDecorator::PROTEIN);
+  MolecularHierarchy pd
+    =MolecularHierarchy::create(p,
+                              MolecularHierarchy::PROTEIN);
   Particles ps;
   for (int i=0; i< nr.first; ++i) {
     Particle *pc= new Particle(p->get_model());
-    MolecularHierarchyDecorator pcd
-      =MolecularHierarchyDecorator::create(pc,
-                              MolecularHierarchyDecorator::FRAGMENT);
+    MolecularHierarchy pcd
+      =MolecularHierarchy::create(pc,
+                              MolecularHierarchy::FRAGMENT);
     pd.add_child(pcd);
-    core::XYZRDecorator xyzd=core::XYZRDecorator::create(pc);
+    core::XYZR xyzd=core::XYZR::create(pc);
     xyzd.set_radius(nr.second);
     xyzd.set_coordinates_are_optimized(true);
     ps.push_back(pc);

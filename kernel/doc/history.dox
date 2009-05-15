@@ -1,6 +1,16 @@
 /** \page recent Change History
 
 \par Week of May 8
+- the long-deprecated Name(Decorator) was removed
+
+- The decorator suffix has been removed from decorator names. To update your code do \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" **/*.h **/*.cpp **/*.py **/*.i} or \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" `find * -name \*.h`} (and the various variants.
+
+- Unit conventions have been established and documented for distance, energy, force and angle.
+
+- there is a function IMP::atom::create_protein() to create a coarse grained
+  protein. The function is crude so far, but the idea is that we should have
+  standard ways of generating such things so that everyone can benifit from
+  best practices.
 
 - a class IMP::atom::BondGraph has been added so Boost.Graph algorithms can be used with bond graphs
 

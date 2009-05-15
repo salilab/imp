@@ -7,7 +7,7 @@
 
 #include "IMP/core/CentroidOfRefined.h"
 
-#include "IMP/core/XYZRDecorator.h"
+#include "IMP/core/XYZR.h"
 #include "IMP/core/FixedRefiner.h"
 #include "IMP/core/SingletonScoreState.h"
 #include "IMP/core/SingletonsScoreState.h"

@@ -6,7 +6,7 @@
  */
 
 #include <IMP/core/AngleTripletScore.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
 
 #include <IMP/UnaryFunction.h>
@@ -24,9 +24,9 @@ Float AngleTripletScore::evaluate(Particle *a, Particle *b, Particle *c,
   IMP_CHECK_OBJECT(a);
   IMP_CHECK_OBJECT(b);
   IMP_CHECK_OBJECT(c);
-  XYZDecorator d0 = XYZDecorator::cast(a);
-  XYZDecorator d1 = XYZDecorator::cast(b);
-  XYZDecorator d2 = XYZDecorator::cast(c);
+  XYZ d0 = XYZ::cast(a);
+  XYZ d1 = XYZ::cast(b);
+  XYZ d2 = XYZ::cast(c);
 
   algebra::Vector3D rij = d1.get_vector_to(d0);
   algebra::Vector3D rkj = d1.get_vector_to(d2);

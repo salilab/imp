@@ -9,7 +9,7 @@
 #define IMPCORE_CLOSE_PAIRS_FINDER_H
 
 #include "config.h"
-#include "XYZRDecorator.h"
+#include "XYZR.h"
 #include "FilteredListPairContainer.h"
 
 #include <IMP/RefCounted.h>

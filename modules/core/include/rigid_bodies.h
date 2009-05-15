@@ -12,8 +12,8 @@
 #include "internal/version_info.h"
 #include "internal/rigid_bodies.h"
 
-#include "XYZDecorator.h"
-#include "XYZRDecorator.h"
+#include "XYZ.h"
+#include "XYZR.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/Refiner.h>
@@ -25,12 +25,12 @@
 IMPCORE_BEGIN_NAMESPACE
 
 
-class RigidMemberDecorator;
+class RigidMember;
 class UpdateRigidBodyOrientation;
 class AccumulateRigidBodyDerivatives;
 class UpdateRigidBodyMembers;
 
-typedef std::vector<RigidMemberDecorator> RigidMemberDecorators;
+typedef std::vector<RigidMember> RigidMembers;
 
 //! A decorator for a rigid body
 /** A rigid body's orientation is stored using a transformation that
@@ -46,25 +46,25 @@ typedef std::vector<RigidMemberDecorator> RigidMemberDecorators;
     body:
     \verbinclude randomize_rigid_body.py
 
-    \see RigidMemberDecorator
+    \see RigidMember
     \see AccumulateRigidBodyDerivatives
     \see UpdateRigidBodyMembers
     \see UpdateRigidBodyOrientation
  */
-class IMPCOREEXPORT RigidBodyDecorator: public XYZDecorator {
+class IMPCOREEXPORT RigidBody: public XYZ {
 #ifndef SWIG
   friend class AccumulateRigidBodyDerivatives;
   friend class UpdateRigidBodyOrientation;
   friend class UpdateRigidBodyMembers;
 #endif
-  RigidMemberDecorators get_members() const;
+  RigidMembers get_members() const;
   //! Return the location of a member particle given the current position
   /** This method computes the coordinates of p given its internal coordinates
       and the current position and orientation of the rigid body.
    */
-  algebra::Vector3D get_coordinates(RigidMemberDecorator p) const;
+  algebra::Vector3D get_coordinates(RigidMember p) const;
 public:
-  IMP_DECORATOR(RigidBodyDecorator, XYZDecorator)
+  IMP_DECORATOR(RigidBody, XYZ)
 
   //! Create a new rigid body, but do not add score states
   /** \param[in] p The particle to make into a rigid body
@@ -78,10 +78,10 @@ public:
       Use the function IMP::core::create_rigid_body() to create the needed
       score states in order to keep the rigid body rigid.
    */
-  static RigidBodyDecorator create(Particle *p,
+  static RigidBody create(Particle *p,
                                    const Particles &members);
 
-  ~RigidBodyDecorator();
+  ~RigidBody();
 
   //!Return true of the particle is a rigid body
   static bool is_instance_of(Particle *p) {
@@ -91,7 +91,7 @@ public:
   // swig doesn't support using, so the method is wrapped
   //! Get the coordinates of the particle
   algebra::Vector3D get_coordinates() const {
-    return XYZDecorator::get_coordinates();
+    return XYZ::get_coordinates();
   }
 
   //! Get the transformation implied by the rigid body
@@ -121,19 +121,19 @@ public:
 
   unsigned int get_number_of_members() const;
 
-  RigidMemberDecorator get_member(unsigned int i) const;
+  RigidMember get_member(unsigned int i) const;
 };
 
-IMP_OUTPUT_OPERATOR(RigidBodyDecorator);
+IMP_OUTPUT_OPERATOR(RigidBody);
 
 
 //! A decorator for a particle that is part of a rigid body
 /**
-   \see RigidBodyDecorator
+   \see RigidBody
  */
-class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
+class IMPCOREEXPORT RigidMember: public XYZ {
  public:
-  IMP_DECORATOR(RigidMemberDecorator, XYZDecorator);
+  IMP_DECORATOR(RigidMember, XYZ);
 
   //! Return the current orientation of the body
   algebra::Vector3D get_internal_coordinates() const {
@@ -158,14 +158,14 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
   //! set the coordinates of the body
   // this is here since swig does like using statements
   void set_coordinates(const algebra::Vector3D &center) {
-    XYZDecorator::set_coordinates(center);
+    XYZ::set_coordinates(center);
   }
 
   //! Set the coordinates from the internal coordinates
   void set_coordinates(const algebra::Transformation3D &tr) {
     set_coordinates(tr.transform(get_internal_coordinates()));
   }
-  ~RigidMemberDecorator();
+  ~RigidMember();
 
   //! return true if it is a rigid member
   static bool is_instance_of(Particle *p) {
@@ -173,7 +173,7 @@ class IMPCOREEXPORT RigidMemberDecorator: public XYZDecorator {
   }
 };
 
-IMP_OUTPUT_OPERATOR(RigidMemberDecorator);
+IMP_OUTPUT_OPERATOR(RigidMember);
 
 //! Compute the orientation of the rigid body from the refined particles
 /** This should be applied before evaluate to keep the bodies rigid. It
@@ -185,7 +185,7 @@ IMP_OUTPUT_OPERATOR(RigidMemberDecorator);
     \see setup_rigid_body
     \verbinclude rigid_bodies.py
 
-    \see RigidBodyDecorator
+    \see RigidBody
 */
 class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
  public:
@@ -199,7 +199,7 @@ class IMPCOREEXPORT UpdateRigidBodyOrientation: public SingletonModifier {
     creating these objects yourself.
     \see setup_rigid_bodies
     \see setup_rigid_body
-    \see RigidBodyDecorator
+    \see RigidBody
     \verbinclude rigid_bodies.py
     \see UpdateRigidBodyMembers
  */
@@ -217,7 +217,7 @@ class IMPCOREEXPORT AccumulateRigidBodyDerivatives:
     creating these objects yourself.
     \see setup_rigid_bodies
     \see setup_rigid_body
-    \see RigidBodyDecorator
+    \see RigidBody
     \see AccumulateRigidBodyDerivatives */
 class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
  public:
@@ -231,7 +231,7 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
    \param[in] pr The refiner to get the constituent particles
    \param[in] snapping Whether to use snapping or to optimize the coordinates
    directly
-   \relatesalso RigidBodyDecorator
+   \relatesalso RigidBody
    \note The rigid bodies are set to be optimized.
    \note The composition of the rigid bodies may be cached and changes after
    setup may not be detected.
@@ -251,7 +251,7 @@ IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
    \param[in] members The XYZ particles comprising the rigid body
    \param[in] snapping Whether to use snapping or to optimize the coordinates
    directly
-   \relatesalso RigidBodyDecorator
+   \relatesalso RigidBody
 
    \note The rigid body is set to be optimized.
    \note The composition of the rigid bodies may be cached and changes after
@@ -270,10 +270,10 @@ IMPCOREEXPORT ScoreState* create_rigid_body(Particle *p,
 /** Make sure that the RigidBody particle has a radius large enough to include
     its members. One cannot use the cover_particles() method as that will
     change the location of the center.
-    \relatesalso RigidBodyDecorator
+    \relatesalso RigidBody
  */
-IMPCOREEXPORT void cover_members(RigidBodyDecorator d,
-                   FloatKey rk= XYZRDecorator::get_default_radius_key());
+IMPCOREEXPORT void cover_members(RigidBody d,
+                   FloatKey rk= XYZR::get_default_radius_key());
 
 IMPCORE_END_NAMESPACE
 

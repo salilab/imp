@@ -8,7 +8,7 @@
 
 #include "IMP/core/DiameterRestraint.h"
 #include <IMP/PairContainer.h>
-#include <IMP/core/XYZRDecorator.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/PairsRestraint.h>
 #include <IMP/core/CoverRefined.h>
@@ -57,12 +57,12 @@ void DiameterRestraint::set_model(Model *m) {
 Float DiameterRestraint::evaluate(DerivativeAccumulator *da) {
   IMP_CHECK_OBJECT(sc_.get());
   double v=0;
-  XYZDecorator dp(p_);
+  XYZ dp(p_);
   double radius= diameter_/2.0;
   for (SingletonContainer::ParticleIterator pit= sc_->particles_begin();
        pit != sc_->particles_end(); ++pit) {
     v+= internal::evaluate_distance_pair_score(dp,
-                                               XYZDecorator(*pit),
+                                               XYZ(*pit),
                                                da, f_.get(),
                                                boost::lambda::_1-radius);
   }

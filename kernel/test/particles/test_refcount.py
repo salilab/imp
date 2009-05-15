@@ -94,7 +94,7 @@ class RefCountTests(IMP.test.TestCase):
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()
         p= IMP.Particle(m)
-        d= IMP.core.XYZDecorator.create(p)
+        d= IMP.core.XYZ.create(p)
         del d
 
         mc= IMP.core.ListSingletonContainer()

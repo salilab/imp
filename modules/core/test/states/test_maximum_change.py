@@ -12,12 +12,12 @@ class TestBL(IMP.test.TestCase):
         vs=[]
         print "setting up"
         for p in ps:
-            d= IMP.core.XYZDecorator(p)
+            d= IMP.core.XYZ(p)
             vs.append(d.get_coordinates())
         pc= IMP.core.ListSingletonContainer(ps)
         print "initing"
         mc= IMP.core.MaximumChangeScoreState(pc,
-                                             IMP.core.XYZDecorator.get_xyz_keys())
+                                             IMP.core.XYZ.get_xyz_keys())
         m.add_score_state(mc)
         print "evaluating"
         m.evaluate(False)
@@ -25,7 +25,7 @@ class TestBL(IMP.test.TestCase):
         mmax=0
         print "perturbing"
         for i in range(0,len(ps)):
-            d= IMP.core.XYZDecorator(ps[i])
+            d= IMP.core.XYZ(ps[i])
             v= IMP.algebra.random_vector_in_unit_sphere()
             print v[0]
             mmax=max(mmax, float(v[0]), float(v[1]), float(v[2]))

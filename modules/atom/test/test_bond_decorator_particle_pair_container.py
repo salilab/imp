@@ -12,9 +12,9 @@ class TestBL(IMP.test.TestCase):
         p1= IMP.Particle(m)
         p2= IMP.Particle(m)
         p3= IMP.Particle(m)
-        b0= IMP.atom.BondedDecorator.create(p0)
-        b1= IMP.atom.BondedDecorator.create(p1)
-        b3= IMP.atom.BondedDecorator.create(p3)
+        b0= IMP.atom.Bonded.create(p0)
+        b1= IMP.atom.Bonded.create(p1)
+        b3= IMP.atom.Bonded.create(p3)
         b= IMP.atom.custom_bond(b0, b1, 1,1)
 
         pc= IMP.atom.BondPairContainer()

@@ -14,7 +14,7 @@ using namespace IMP::algebra;
 using namespace IMP::atom;
 
 void test_one(Model *m,
-              std::vector<RigidBodyDecorator> rbs,
+              std::vector<RigidBody> rbs,
               float side) {
   Vector3D minc(0,0,0), maxc(side, side, side);
   set_log_level(SILENT);
@@ -49,21 +49,21 @@ void test_one(Model *m,
 int main() {
   Pointer<Model> m(new Model());
   Particles atoms;
-  std::vector<RigidBodyDecorator> rbs;
+  std::vector<RigidBody> rbs;
   for (int i=0; i< 5; ++i) {
-    MolecularHierarchyDecorator mhd
+    MolecularHierarchy mhd
       = read_pdb("benchmarks/input/single_protein.pdb", m);
-    Particles catoms= get_by_type(mhd, MolecularHierarchyDecorator::ATOM);
+    Particles catoms= get_by_type(mhd, MolecularHierarchy::ATOM);
     IMP_assert(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
     ScoreState *ss= create_rigid_body(mhd.get_particle(),
                                        catoms);
     m->add_score_state(ss);
-    rbs.push_back(RigidBodyDecorator(mhd.get_particle()));
+    rbs.push_back(RigidBody(mhd.get_particle()));
     cover_members(rbs.back());
   }
   for (unsigned int i=0; i< atoms.size(); ++i) {
-    XYZRDecorator::create(atoms[i], 1);
+    XYZR::create(atoms[i], 1);
   }
   IMP_NEW(ListSingletonContainer, lsc, (atoms));
   IMP_NEW(ClosePairsScoreState, cpss, (lsc));

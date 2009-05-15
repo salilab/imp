@@ -22,7 +22,7 @@ inline Float compute_max_distance(const std::vector<Particle*>& particles) {
   Float max_dist2 = 0;
   std::vector<algebra::Vector3D> coordinates(particles.size());
   for (unsigned int i = 0; i < particles.size(); i++) {
-    coordinates[i] = core::XYZDecorator::cast(particles[i]).get_coordinates();
+    coordinates[i] = core::XYZ::cast(particles[i]).get_coordinates();
   }
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
@@ -42,10 +42,10 @@ inline Float compute_max_distance(const std::vector<Particle*>& particles1,
   std::vector<algebra::Vector3D> coordinates1(particles1.size());
   std::vector<algebra::Vector3D> coordinates2(particles2.size());
   for (unsigned int i = 0; i < particles1.size(); i++) {
-    coordinates1[i] = core::XYZDecorator::cast(particles1[i]).get_coordinates();
+    coordinates1[i] = core::XYZ::cast(particles1[i]).get_coordinates();
   }
   for (unsigned int i = 0; i < particles2.size(); i++) {
-    coordinates2[i] = core::XYZDecorator::cast(particles2[i]).get_coordinates();
+    coordinates2[i] = core::XYZ::cast(particles2[i]).get_coordinates();
   }
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates2.size(); j++) {
@@ -62,7 +62,7 @@ inline Float radius_of_gyration(const std::vector<Particle*>& particles) {
   algebra::Vector3D centroid(0.0, 0.0, 0.0);
   std::vector<algebra::Vector3D> coordinates(particles.size());
   for (unsigned int i = 0; i < particles.size(); i++) {
-    coordinates[i] = core::XYZDecorator::cast(particles[i]).get_coordinates();
+    coordinates[i] = core::XYZ::cast(particles[i]).get_coordinates();
     centroid += coordinates[i];
   }
   centroid /= particles.size();

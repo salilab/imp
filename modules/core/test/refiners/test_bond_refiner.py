@@ -13,9 +13,9 @@ class AllPairsContainerTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         m=IMP.Model()
         p0= IMP.Particle(m)
-        b0= IMP.atom.BondedDecorator.create(p0)
+        b0= IMP.atom.Bonded.create(p0)
         p1= IMP.Particle(m)
-        b1= IMP.atom.BondedDecorator.create(p1)
+        b1= IMP.atom.Bonded.create(p1)
         b= IMP.atom.custom_bond(b0, b1, 1)
         print "creating r"
         r= IMP.atom.BondEndpointsRefiner()

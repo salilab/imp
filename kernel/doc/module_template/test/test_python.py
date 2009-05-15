@@ -13,7 +13,7 @@ class GenericTest(IMP.test.TestCase):
         """Checking module python code"""
         m = IMP.Model()
         p= IMP.Particle(m)
-        d= IMP.core.XYZDecorator.create(p)
+        d= IMP.core.XYZ.create(p)
         IMP.modulename.randomize.randomize_particle(p)
         self.assert_(IMP.modulename.get_is_xyz_particle(p))
 

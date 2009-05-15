@@ -6,7 +6,7 @@
  */
 
 #include <IMP/core/DistancePairScore.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 
 #include <IMP/UnaryFunction.h>
@@ -21,8 +21,8 @@ DistancePairScore::DistancePairScore(UnaryFunction *f): f_(f){}
 Float DistancePairScore::evaluate(Particle *a, Particle *b,
                                   DerivativeAccumulator *da) const
 {
-  return internal::evaluate_distance_pair_score(XYZDecorator(a),
-                                                XYZDecorator(b),
+  return internal::evaluate_distance_pair_score(XYZ(a),
+                                                XYZ(b),
                                                 da, f_.get(),
                                                 boost::lambda::_1);
 }

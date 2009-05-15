@@ -8,7 +8,7 @@
 
 #include "IMP/core/GridClosePairsFinder.h"
 #include "IMP/core/QuadraticClosePairsFinder.h"
-#include "IMP/core/XYZRDecorator.h"
+#include "IMP/core/XYZR.h"
 
 #include "IMP/core/internal/ParticleGrid.h"
 #include <IMP/internal/Vector.h>
@@ -30,8 +30,8 @@ namespace {
               Particle *p, FloatKey rk, double d): out_(o), p_(p),
                                                    rk_(rk), d_(d){}
     void operator()(Particle *p) {
-      if (distance(XYZRDecorator(p_, rk_),
-                   XYZRDecorator(p, rk_)) < d_) {
+      if (distance(XYZR(p_, rk_),
+                   XYZR(p, rk_)) < d_) {
         out_->add_particle_pair(ParticlePair(p_, p));
       }
     }
@@ -45,8 +45,8 @@ namespace {
                FloatKey rk, double d): out_(o),
                                        rk_(rk), d_(d){}
     void operator()(Particle *a, Particle *b) {
-      if (distance(XYZRDecorator(a, rk_),
-                   XYZRDecorator(b, rk_)) < d_) {
+      if (distance(XYZR(a, rk_),
+                   XYZR(b, rk_)) < d_) {
         out_->add_particle_pair(ParticlePair(a, b));
       }
     }
@@ -133,7 +133,7 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
        it != particle_bin->particle_voxels_end(); ++it) {
     Particle *p= it->first;
     AddToList f(out, p, rk, distance);
-    XYZDecorator d(p);
+    XYZ d(p);
     internal::ParticleGrid::VirtualIndex index
       = grid_bin->get_virtual_index(d.get_coordinates());
     IMP_LOG(VERBOSE, "Searching for " << p->get_name()

@@ -7,9 +7,9 @@
  */
 #include "IMP/domino/TransformationUtils.h"
 #include "IMP/core/Transform.h"
-#include "IMP/atom/MolecularHierarchyDecorator.h"
-#include "IMP/core/HierarchyDecorator.h"
-#include <IMP/core/XYZDecorator.h>
+#include "IMP/atom/MolecularHierarchy.h"
+#include "IMP/core/Hierarchy.h"
+#include <IMP/core/XYZ.h>
 IMPDOMINO_BEGIN_NAMESPACE
 TransformationUtils::TransformationUtils(Particles *ps, bool trans_from_orig)
 {
@@ -45,7 +45,7 @@ void TransformationUtils::apply(Particle *p,const algebra::Transformation3D &t)
 {
   core::Transform tsm(t);
   Particles ps = core::get_leaves(
-                 atom::MolecularHierarchyDecorator::cast(p));
+                 atom::MolecularHierarchy::cast(p));
 //   core::GravityCenterScoreState g(p, FloatKey(),ps);
 //   g.update_position();
   for (Particles::iterator it = ps.begin(); it != ps.end(); it++) {
@@ -58,7 +58,7 @@ algebra::Transformation3D TransformationUtils::get_trans(Particle *p) const {
       "TransformationUtils::get_trans the attribute list is not initialized");
   algebra::Rotation3D rot(p->get_value(atts_[3]),p->get_value(atts_[4]),
                           p->get_value(atts_[5]),p->get_value(atts_[6]));
-  algebra::Vector3D vec = core::XYZDecorator::cast(p).get_coordinates();
+  algebra::Vector3D vec = core::XYZ::cast(p).get_coordinates();
   algebra::Transformation3D t3d(rot,vec);
   return t3d;
 }

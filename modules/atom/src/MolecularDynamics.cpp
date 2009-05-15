@@ -6,7 +6,7 @@
  */
 
 #include <IMP/atom/MolecularDynamics.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 
 #include <IMP/log.h>
 #include <IMP/random.h>

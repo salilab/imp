@@ -8,9 +8,9 @@
 #define IMPATOM_INTERNAL_TOPOLOGY_H
 
 #include <IMP/base_types.h>
-#include "../ResidueDecorator.h"
-#include "../AtomDecorator.h"
-#include "../MolecularHierarchyDecorator.h"
+#include "../Residue.h"
+#include "../Atom.h"
+#include "../MolecularHierarchy.h"
 #include "../bond_decorators.h"
 
 #include <fstream>
@@ -25,16 +25,16 @@ public:
   Topology(const String& top_file_name);
 
   //! add bonds to the structure defined in the hierarchy
-  void add_bonds(MolecularHierarchyDecorator mhd);
+  void add_bonds(MolecularHierarchy mhd);
 
  private:
   class Bond {
   public:
     Bond(AtomType type1, AtomType type2,
-         BondDecorator::Type bond_type = BondDecorator::COVALENT) :
+         IMP::atom::Bond::Type bond_type = IMP::atom::Bond::COVALENT) :
       type1_(type1), type2_(type2), bond_type_(bond_type) {}
     AtomType type1_,type2_;
-    BondDecorator::Type bond_type_;
+    IMP::atom::Bond::Type bond_type_;
   };
 
   void read_topology_file(std::ifstream& input_file);
@@ -43,10 +43,10 @@ public:
   void parse_atom_line(const String& line, const ResidueType& curr_res_type);
   void parse_bond_line(const String& line, const ResidueType& curr_res_type);
 
-  void add_bonds(ResidueDecorator rd);
-  void add_bonds(MolecularHierarchyDecorator mhd,
-                 MolecularHierarchyDecorator::Type type);
-  void add_bonds(ResidueDecorator rd1, ResidueDecorator rd2);
+  void add_bonds(Residue rd);
+  void add_bonds(MolecularHierarchy mhd,
+                 MolecularHierarchy::Type type);
+  void add_bonds(Residue rd1, Residue rd2);
 
  private:
   // map between imp_atom_type and charmm parameters (atom_type, charge)

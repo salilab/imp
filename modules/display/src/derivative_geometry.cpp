@@ -12,7 +12,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-XYZDerivativeGeometry::XYZDerivativeGeometry(core::XYZDecorator d,
+XYZDerivativeGeometry::XYZDerivativeGeometry(core::XYZ d,
                                              Float radius): d_(d),
                                                             radius_(radius){
   set_name(d.get_particle()->get_name()+" derivative");
@@ -39,7 +39,7 @@ Float XYZDerivativeGeometry::get_size() const {
 
 
 RigidBodyDerivativeGeometry
-::RigidBodyDerivativeGeometry(core::RigidBodyDecorator d): d_(d){
+::RigidBodyDerivativeGeometry(core::RigidBody d): d_(d){
   xyzcolor_=Color(1,0,0);
   qcolor_=Color(0,1,0);
   ccolor_=Color(0,0,1);
@@ -71,14 +71,14 @@ Geometries RigidBodyDerivativeGeometry::get_geometry() const {
   IMP_LOG(TERSE, "New rotation is " << rot << std::endl);
 
   FloatRange xr= d_.get_particle()->get_model()
-    ->get_range(core::XYZDecorator::get_xyz_keys()[0]);
+    ->get_range(core::XYZ::get_xyz_keys()[0]);
   Float wid= xr.second-xr.first;
   algebra::Vector3D stderiv= scale*tderiv*wid;
   algebra::Transformation3D ntr(algebra::Rotation3D(rot[0], rot[1],
                                                     rot[2], rot[3]),
                                 stderiv+otr.get_translation());
   for (unsigned int i=0; i< ms.size(); ++i) {
-    core::RigidMemberDecorator dm(ms[i]);
+    core::RigidMember dm(ms[i]);
     CylinderGeometry *tr
       = new CylinderGeometry(algebra::Cylinder3D(
                          algebra::Segment3D(dm.get_coordinates(),

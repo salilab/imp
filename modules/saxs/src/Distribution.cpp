@@ -9,7 +9,7 @@
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -29,7 +29,7 @@ calculate_distribution(const std::vector<Particle*>& particles)
   std::vector < algebra::Vector3D > coordinates;
   Floats form_factors;
   for (unsigned int i = 0; i < particles.size(); i++) {
-    coordinates.push_back(core::XYZDecorator::cast(particles[i]).
+    coordinates.push_back(core::XYZ::cast(particles[i]).
                           get_coordinates());
     form_factors.push_back(ff_table_->get_form_factor(particles[i]));
   }
@@ -57,12 +57,12 @@ calculate_distribution(const std::vector<Particle*>& particles1,
   std::vector < algebra::Vector3D > coordinates1, coordinates2;
   Floats form_factors1, form_factors2;
   for (unsigned int i = 0; i < particles1.size(); i++) {
-    coordinates1.push_back(core::XYZDecorator::cast(particles1[i]).
+    coordinates1.push_back(core::XYZ::cast(particles1[i]).
                            get_coordinates());
     form_factors1.push_back(ff_table_->get_form_factor(particles1[i]));
   }
   for (unsigned int i = 0; i < particles2.size(); i++) {
-    coordinates2.push_back(core::XYZDecorator::cast(particles2[i]).
+    coordinates2.push_back(core::XYZ::cast(particles2[i]).
                            get_coordinates());
     form_factors2.push_back(ff_table_->get_form_factor(particles2[i]));
   }
@@ -109,7 +109,7 @@ DeltaDistributionFunction(FormFactorTable* ff_table,
   coordinates_.resize(particles.size());
   form_factors_.resize(particles.size());
   for (unsigned int i=0; i<particles.size(); i++) {
-    coordinates_[i] = core::XYZDecorator::cast(particles[i]).get_coordinates();
+    coordinates_[i] = core::XYZ::cast(particles[i]).get_coordinates();
     form_factors_[i] = ff_table_->get_form_factor(particles[i]);
   }
   // compute max distance if not given
@@ -123,7 +123,7 @@ calculate_derivative_distribution(Particle* particle)
   init();
 
   algebra::Vector3D particle_coordinate =
-    core::XYZDecorator::cast(particle).get_coordinates();
+    core::XYZ::cast(particle).get_coordinates();
   Float particle_form_factor = ff_table_->get_form_factor(particle);
 
   for (unsigned int i=0; i<coordinates_.size(); i++) {

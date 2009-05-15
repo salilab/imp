@@ -6,11 +6,11 @@
  *
  */
 #include <IMP/core/RigidBodyMover.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/algebra/vector_generators.h>
 IMPCORE_BEGIN_NAMESPACE
 
-RigidBodyMover::RigidBodyMover(RigidBodyDecorator d,
+RigidBodyMover::RigidBodyMover(RigidBody d,
                                Float max_translation, Float max_angle) {
   IMP_LOG(VERBOSE,"start RigidBodyMover constructor");
   max_translation_=max_translation;

@@ -7,12 +7,12 @@
  */
 
 #include "IMP/display/bond_geometry.h"
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-BondGeometry::BondGeometry(atom::BondDecorator p,
+BondGeometry::BondGeometry(atom::Bond p,
                            Float radius): d_(p),
                                           radius_(radius){
 }
@@ -25,8 +25,8 @@ unsigned int BondGeometry::get_dimension() const{
   return 1;
 }
 algebra::Vector3D BondGeometry::get_vertex(unsigned int i) const {
-  atom::BondedDecorator ep=  d_.get_bonded(i);
-  core::XYZDecorator epi(ep.get_particle());
+  atom::Bonded ep=  d_.get_bonded(i);
+  core::XYZ epi(ep.get_particle());
   return epi.get_coordinates();
 }
 

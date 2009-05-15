@@ -36,7 +36,7 @@ Float ClosePairsPairScore::evaluate(Particle *a, Particle *b,
   do {
     ParticlePair pp= queue.back();
     queue.pop_back();
-    XYZRDecorator d0(pp[0]), d1(pp[1]);
+    XYZR d0(pp[0]), d1(pp[1]);
     if (distance(d0, d1) > th_) {
       IMP_LOG(VERBOSE, "Particles "
               << d0 << " and " << d1

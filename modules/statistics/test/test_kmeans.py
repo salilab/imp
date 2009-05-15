@@ -14,7 +14,7 @@ class KMeansTests(IMP.test.TestCase):
         for i in xrange(5):
             p = IMP.Particle(self.m)
             v = IMP.algebra.Vector3D(10.*i,10.*i,10.*i)
-            d= IMP.core.XYZDecorator.create(p, v)
+            d= IMP.core.XYZ.create(p, v)
             self.centers.append(p)
             self.ps.append(p)
             self.cluster_points.append([])
@@ -23,7 +23,7 @@ class KMeansTests(IMP.test.TestCase):
             for j in xrange(50):
                 p1 = IMP.Particle(self.m)
                 self.cluster_points[-1].append(p1)
-                d2= IMP.core.XYZDecorator.create(p1,IMP.algebra.random_vector_in_sphere(v,3.))
+                d2= IMP.core.XYZ.create(p1,IMP.algebra.random_vector_in_sphere(v,3.))
                 self.ps.append(p1)
 
     def setUp(self):

@@ -1,6 +1,6 @@
 /**
  *  \file hierarchy_helpers.h
- *  \brief Helpers for the HierarchyDecorator.
+ *  \brief Helpers for the Hierarchy.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *

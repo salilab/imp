@@ -1,5 +1,5 @@
 /**
- *  \file BondDecoratorPairContainer.cpp
+ *  \file BondPairContainer.cpp
  *  \brief A fake container that returns true if a pair of particles are bonded
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
@@ -16,15 +16,15 @@ BondPairContainer
 
 bool BondPairContainer
 ::get_contains_particle_pair(ParticlePair pp) const {
-  if (!BondedDecorator::is_instance_of(pp.first)
-      || ! BondedDecorator::is_instance_of(pp.second)) {
+  if (!Bonded::is_instance_of(pp.first)
+      || ! Bonded::is_instance_of(pp.second)) {
     return false;
   }
 
-  BondedDecorator ba(pp.first);
-  BondedDecorator bb(pp.second);
-  BondDecorator bd=get_bond(ba, bb);
-  return bd != BondDecorator();
+  Bonded ba(pp.first);
+  Bonded bb(pp.second);
+  Bond bd=get_bond(ba, bb);
+  return bd != Bond();
 }
 
 unsigned int BondPairContainer

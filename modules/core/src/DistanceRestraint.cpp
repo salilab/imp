@@ -7,7 +7,7 @@
 
 #include <IMP/core/DistanceRestraint.h>
 #include <IMP/core/DistancePairScore.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>

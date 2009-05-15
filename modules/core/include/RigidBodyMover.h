@@ -31,7 +31,7 @@ public:
       \param[in] max_translation maximum translation sampling step
       \param[in] max_rotation maximum rotation sampling step
    */
-  RigidBodyMover(RigidBodyDecorator d,Float max_translation,
+  RigidBodyMover(RigidBody d,Float max_translation,
                  Float max_rotation);
   void reject_move();
   void accept_move();
@@ -48,7 +48,7 @@ private:
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
   Float max_angle_;
-  RigidBodyDecorator d_;
+  RigidBody d_;
 };
 
 IMPCORE_END_NAMESPACE

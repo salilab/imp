@@ -17,7 +17,7 @@
 #include "SampledDensityMap.h"
 #include <IMP/em/IMPParticlesAccessPoint.h>
 #include <IMP/Particle.h>
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZ.h"
 #include "IMP/algebra/Vector3D.h"
 
 IMPEM_BEGIN_NAMESPACE
@@ -43,7 +43,7 @@ inline void density2particles(DensityMap &dmap, Float threshold,
     z = dmap.voxel2loc(i,2);
     if (dmap.get_value(x,y,z) > threshold) {
       Particle * p = new Particle(m);
-      IMP::core::XYZDecorator::create(p,IMP::algebra::Vector3D(x,y,z));
+      IMP::core::XYZ::create(p,IMP::algebra::Vector3D(x,y,z));
       p->add_attribute(get_density_key(),
                        dmap.get_value(x,y,z),false);
       ps.push_back(p);

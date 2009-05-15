@@ -20,19 +20,19 @@ Topology::Topology(const String& top_file_name) {
   top_file.close();
 }
 
-void Topology::add_bonds(MolecularHierarchyDecorator mhd) {
-  add_bonds(mhd, MolecularHierarchyDecorator::RESIDUE);
-  add_bonds(mhd, MolecularHierarchyDecorator::NUCLEICACID);
-  add_bonds(mhd, MolecularHierarchyDecorator::FRAGMENT);
+void Topology::add_bonds(MolecularHierarchy mhd) {
+  add_bonds(mhd, MolecularHierarchy::RESIDUE);
+  add_bonds(mhd, MolecularHierarchy::NUCLEICACID);
+  add_bonds(mhd, MolecularHierarchy::FRAGMENT);
 }
 
-void Topology::add_bonds(MolecularHierarchyDecorator mhd,
-                         MolecularHierarchyDecorator::Type type) {
+void Topology::add_bonds(MolecularHierarchy mhd,
+                         MolecularHierarchy::Type type) {
   // get all residues
   Particles ps = get_by_type(mhd, type);
-  ResidueDecorator prev_rd;
+  Residue prev_rd;
   for(unsigned int i=0; i<ps.size(); i++) {
-    ResidueDecorator rd = ResidueDecorator::cast(ps[i]);
+    Residue rd = Residue::cast(ps[i]);
     // add bonds to the current residue
     add_bonds(rd);
     // add bond between the residues (if same chain)
@@ -43,17 +43,17 @@ void Topology::add_bonds(MolecularHierarchyDecorator mhd,
   }
 }
 
-void Topology::add_bonds(ResidueDecorator rd1, ResidueDecorator rd2) {
-  AtomDecorator ad1, ad2;
+void Topology::add_bonds(Residue rd1, Residue rd2) {
+  Atom ad1, ad2;
   // connect two residues by C-N bond
-  if(rd1.get_type() == MolecularHierarchyDecorator::RESIDUE &&
-     rd2.get_type() == MolecularHierarchyDecorator::RESIDUE) {
+  if(rd1.get_type() == MolecularHierarchy::RESIDUE &&
+     rd2.get_type() == MolecularHierarchy::RESIDUE) {
     ad1 = get_atom(rd1, atom::AT_C);
     ad2 = get_atom(rd2, atom::AT_N);
    }
   // connect two nucleic acids by O3'-P bond
-  if(rd1.get_type() == MolecularHierarchyDecorator::NUCLEICACID &&
-     rd2.get_type() == MolecularHierarchyDecorator::NUCLEICACID) {
+  if(rd1.get_type() == MolecularHierarchy::NUCLEICACID &&
+     rd2.get_type() == MolecularHierarchy::NUCLEICACID) {
     ad1 = get_atom(rd1, atom::AT_O3p);
     ad2 = get_atom(rd2, atom::AT_P);
   }
@@ -61,37 +61,37 @@ void Topology::add_bonds(ResidueDecorator rd1, ResidueDecorator rd2) {
   Particle* p1 = ad1.get_particle();
   Particle* p2 = ad2.get_particle();
 
-  BondedDecorator b1,b2;
-  if(BondedDecorator::is_instance_of(p1)) b1 = BondedDecorator::cast(p1);
-  else b1 = BondedDecorator::create(p1);
+  Bonded b1,b2;
+  if(Bonded::is_instance_of(p1)) b1 = Bonded::cast(p1);
+  else b1 = Bonded::create(p1);
 
-  if(BondedDecorator::is_instance_of(p2)) b2 = BondedDecorator::cast(p2);
-  else b2 = BondedDecorator::create(p2);
+  if(Bonded::is_instance_of(p2)) b2 = Bonded::cast(p2);
+  else b2 = Bonded::create(p2);
 
-  BondDecorator bd = bond(b1, b2, BondDecorator::COVALENT);
+  IMP::atom::Bond bd = bond(b1, b2, IMP::atom::Bond::COVALENT);
 }
 
-void Topology::add_bonds(ResidueDecorator rd) {
+void Topology::add_bonds(Residue rd) {
   ResidueType type = rd.get_residue_type();
   if(residue_bonds_.find(type) == residue_bonds_.end()) return;
 
   std::vector<Bond>& bonds = residue_bonds_[type];
   for(unsigned int i=0; i<bonds.size(); i++) {
-    AtomDecorator ad1 = get_atom(rd, bonds[i].type1_);
-    AtomDecorator ad2 = get_atom(rd, bonds[i].type2_);
+    Atom ad1 = get_atom(rd, bonds[i].type1_);
+    Atom ad2 = get_atom(rd, bonds[i].type2_);
     if(!ad1 || !ad2) continue;
 
     Particle* p1 = ad1.get_particle();
     Particle* p2 = ad2.get_particle();
 
-    BondedDecorator b1,b2;
-    if(BondedDecorator::is_instance_of(p1)) b1 = BondedDecorator::cast(p1);
-    else b1 = BondedDecorator::create(p1);
+    Bonded b1,b2;
+    if(Bonded::is_instance_of(p1)) b1 = Bonded::cast(p1);
+    else b1 = Bonded::create(p1);
 
-    if(BondedDecorator::is_instance_of(p2)) b2 = BondedDecorator::cast(p2);
-    else b2 = BondedDecorator::create(p2);
+    if(Bonded::is_instance_of(p2)) b2 = Bonded::cast(p2);
+    else b2 = Bonded::create(p2);
 
-    BondDecorator bd = bond(b1, b2, bonds[i].bond_type_);
+    IMP::atom::Bond bd = bond(b1, b2, bonds[i].bond_type_);
   }
 }
 

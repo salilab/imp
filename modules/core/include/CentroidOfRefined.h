@@ -12,7 +12,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 
-#include "XYZDecorator.h"
+#include "XYZ.h"
 #include <IMP/Refiner.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonModifier.h>
@@ -39,7 +39,7 @@ public:
   CentroidOfRefined(Refiner *r,
                                      FloatKey weight=FloatKey(),
                                      FloatKeys ks
-                                      = XYZDecorator::get_xyz_keys());
+                                      = XYZ::get_xyz_keys());
   ~CentroidOfRefined();
 
   IMP_SINGLETON_MODIFIER(internal::version_info);
@@ -57,7 +57,7 @@ IMPCOREEXPORT ScoreState* create_centroids(SingletonContainer *sc,
                                     Refiner *pr,
                                     FloatKey weight=FloatKey(),
                                     FloatKeys ks
-                                    = XYZDecorator::get_xyz_keys());
+                                    = XYZ::get_xyz_keys());
 
 
 
@@ -73,7 +73,7 @@ IMPCOREEXPORT ScoreState* create_centroid(Particle *p,
                                    Refiner *pr,
                                    FloatKey weight=FloatKey(),
                                    FloatKeys ks
-                                   = XYZDecorator::get_xyz_keys());
+                                   = XYZ::get_xyz_keys());
 
 
 IMPCORE_END_NAMESPACE

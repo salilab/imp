@@ -8,7 +8,7 @@
 
 #include <IMP/misc/RefineOncePairScore.h>
 
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/deprecation.h>
 
 #include <cmath>
