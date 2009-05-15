@@ -40,10 +40,13 @@ IMPATOM_BEGIN_NAMESPACE
     proposed that provides a more accurate estimate of the average
     protein density.
 
+    The volume in is cubic anstroms, as all distances are assumed to
+    be in angstroms.
+
     \note I don't like the abbreviations in the name, but it is too
     long without them.
 */
-IMPATOMEXPORT double volume_in_A3_from_mass_in_kDa(double v);
+IMPATOMEXPORT double volume_from_mass_in_kDa(double v);
 
 
 //! Estimate the mass of a protein from the numnber of amino acids
