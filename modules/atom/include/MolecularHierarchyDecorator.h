@@ -185,8 +185,7 @@ public:
     P::add_child_at(o, i);
   }
 
-  /** Get the ith child
-      \throw IndexException if there is no such child. */
+  /** Get the ith child */
   MolecularHierarchyDecorator get_child(unsigned int i) const {
     HierarchyDecorator hd= P::get_child(i);
     return cast(hd.get_particle());
@@ -226,8 +225,8 @@ get_by_type(MolecularHierarchyDecorator mhd,
 class ResidueDecorator;
 
 //! Get the residue with the specified index
-/** Find the residue with the appropriate index. This is the PDB index,
-    not the offset in the chain (if they are different).
+/** Find the leaf containing the residue with the appropriate index.
+    This is the PDB index, not the offset in the chain (if they are different).
 
     \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
     \return MolecularHierarchyDecorator() if that residue is not found.
@@ -235,7 +234,7 @@ class ResidueDecorator;
     \ingroup hierarchy
     \relatesalso MolecularHierarchyDecorator
  */
-IMPATOMEXPORT ResidueDecorator
+IMPATOMEXPORT MolecularHierarchyDecorator
 get_residue(MolecularHierarchyDecorator mhd,
             unsigned int index);
 
@@ -272,6 +271,36 @@ get_internal_bonds(MolecularHierarchyDecorator mhd);
 IMPATOMEXPORT
 MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d);
 
+
+//! Create a coarse grained molecule
+/** The coarse grained model is created with a number of spheres
+    based on the resolution and the volume. If the volume is not provided
+    it is estimated based on the number of residues. The protein is
+    created as a molecular hierarchy rooted at p. The leaves are Domain
+    particles wtih appropriate residue indexes stored and are XYZR
+    particles.
+
+    Volume is, as usual, in cubic anstroms.
+
+    Currently the function creates a set of balls with radii no greater
+    than resolution which overlap by 20% and have a volume of their
+    union equal to the passed volume. The balls are held together by
+    a ConnectivityRestraint with the given spring constant.
+
+    The coordinates of the balls defining the protein are optimized
+    by default, and have garbage values.
+
+    \return A restraint which will enforce appropriate connectivity
+    of the protein.
+    \untested{create_protein}
+    \unstable{create_protein}
+ */
+IMPATOMEXPORT Restraint* create_protein(Particle *p,
+                                        double resolution,
+                                        int number_of_residues,
+                                        int first_residue_index=0,
+                                        double volume=-1,
+                                        double spring_strength=1);
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_MOLECULAR_HIERARCHY_DECORATOR_H */

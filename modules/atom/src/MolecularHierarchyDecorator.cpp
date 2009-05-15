@@ -14,6 +14,10 @@
 #include <IMP/atom/DomainDecorator.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/core/XYZRDecorator.h>
+#include <IMP/atom/estimates.h>
+#include <IMP/core/Harmonic.h>
+#include <IMP/core/ConnectivityRestraint.h>
+#include <IMP/core/DistancePairScore.h>
 
 #include <sstream>
 #include <set>
@@ -106,7 +110,13 @@ struct MatchResidueIndex
       ResidueDecorator rd(p);
       return (rd.get_index() == index_);
     } else {
-      return false;
+      if (mhd.get_number_of_children()==0) {
+        DomainDecorator dd= DomainDecorator::cast(p);
+        return dd && dd.get_begin_index() <= index_
+          && dd.get_end_index()> index_;
+      } else {
+        return false;
+      }
     }
   }
 };
@@ -114,7 +124,7 @@ struct MatchResidueIndex
 } // namespace
 
 
-ResidueDecorator
+MolecularHierarchyDecorator
 get_residue(MolecularHierarchyDecorator mhd,
             unsigned int index)
 {
@@ -126,9 +136,9 @@ get_residue(MolecularHierarchyDecorator mhd,
   MatchResidueIndex mi(index);
   IMP::core::HierarchyDecorator hd= breadth_first_find(mhd, mi);
   if (hd== IMP::core::HierarchyDecorator()) {
-    return ResidueDecorator();
+    return MolecularHierarchyDecorator();
   } else {
-    return ResidueDecorator(hd.get_particle());
+    return MolecularHierarchyDecorator(hd.get_particle());
   }
 }
 
@@ -220,7 +230,7 @@ MolecularHierarchyDecorator clone_internal(MolecularHierarchyDecorator d,
 }
 }
 
-IMPATOMEXPORT
+
 MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d) {
   std::map<Particle*,Particle*> map;
   MolecularHierarchyDecorator nh= clone_internal(d, map);
@@ -244,6 +254,64 @@ MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d) {
     copy_bond(ne0, ne1, bds[i]);
   }
   return nh;
+}
+
+/*
+  Volume of two spheres overlap is
+  Vi= pi*(r0+r1-d)^2*(d^2+2*d*r1-3*r1^2+2*d*r0+6*r0*r1-3*r0^2)/(12*d)
+
+  r1=r0=r
+  d=(1-f)*2*r
+  v=4/3pir^3*n-(n-1)Vi
+
+  n=.5*(3*V+2*PI*r^3*f^3-6*PI*r^3*f^2)/((-3*f^2+f^3+2)*r^3*PI)
+ */
+
+
+namespace {
+  std::pair<int, double> compute_n(double V, double r, double f) {
+    double n=.5*(3*V+2*PI*cube(r*f)-6*PI*cube(r)*square(f))
+      /((-3*square(f)+cube(f)+2)*cube(r)*PI);
+    int in= static_cast<int>(std::ceil(n));
+    double rr= std::pow(V/(.666*(2*in-3*square(f)*n+cube(f)*n
+                                +3*square(f)-cube(f))*PI), .333333);
+    return std::make_pair(in, rr);
+  }
+}
+
+IMPATOMEXPORT Restraint* create_protein(Particle *p,
+                                        double resolution,
+                                        int number_of_residues,
+                                        int first_residue_index,
+                                        double volume,
+                                        double spring_strength) {
+  if (volume < 0) {
+    double mass= mass_in_kDa_from_number_of_residues(number_of_residues);
+    volume= volume_from_mass_in_kDa(mass);
+  }
+  // assume a 20% overlap in the beads to make the protein not too bumpy
+  double overlap_frac=.2;
+  std::pair<int, double> nr= compute_n(volume, resolution, overlap_frac);
+  MolecularHierarchyDecorator pd
+    =MolecularHierarchyDecorator::create(p,
+                              MolecularHierarchyDecorator::PROTEIN);
+  Particles ps;
+  for (int i=0; i< nr.first; ++i) {
+    Particle *pc= new Particle(p->get_model());
+    MolecularHierarchyDecorator pcd
+      =MolecularHierarchyDecorator::create(pc,
+                              MolecularHierarchyDecorator::FRAGMENT);
+    pd.add_child(pcd);
+    core::XYZRDecorator xyzd=core::XYZRDecorator::create(pc);
+    xyzd.set_radius(nr.second);
+    xyzd.set_coordinates_are_optimized(true);
+    ps.push_back(pc);
+  }
+  IMP_NEW(core::Harmonic, h, ((1-overlap_frac)*2*nr.second, spring_strength));
+  IMP_NEW(core::DistancePairScore, dps, (h));
+  core::ConnectivityRestraint* cr= new core::ConnectivityRestraint(dps);
+  cr->set_particles(ps);
+  return cr;
 }
 
 
