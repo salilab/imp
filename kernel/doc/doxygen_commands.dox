@@ -48,6 +48,8 @@
 
     - To mark a method as not having been well tested yet, use \c \\untested{Classname}.
 
+    - To mark a method as not having been implemented, use \c \\untested{Classname}.
+
     There are several commands which have been adding for producing module (namespace)
     overview pages. Copy the text of an existing page.
  */

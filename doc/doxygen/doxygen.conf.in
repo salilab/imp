@@ -198,7 +198,8 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "publication{4}=\1. \2. <em>\3</em>. \4"\
                          "cgalpredicate=\note This predicates will produce guaranteed correct results if the \ref CGAL \"CGAL\" library is available (the results will be unreliable if it is not). \ingroup CGAL"\
                          "unstable{1}=\warning \1 has not been stabilized and is likely to change without notice. \ingroup unstable"\
-                         "untested{1}=\warning \1 has not be well tested yet. Use with caution and please report any bugs found. \ingroup untested"
+                         "untested{1}=\warning \1 has not be well tested yet. Use with caution and please report any bugs found. \ingroup untested"\
+                         "unimplemented{1}=\warning \1 has not be implemented. If you want to use it, ask someone to implement it or do it yourself.. \ingroup unimplemented"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C 
 # sources only. Doxygen will then generate output that is more tailored for C. 
