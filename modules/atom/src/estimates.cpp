@@ -10,7 +10,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-double volume_in_A3_from_mass_in_kDa(double m) {
+double volume_from_mass_in_kDa(double m) {
   using namespace IMP::unit;
   GramPerCubicCentimeter density(1.410+.145 *std::exp(-m/13.0));
   Kilodalton mkd(m);
