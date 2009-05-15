@@ -97,9 +97,9 @@ connected_atoms(const String& pdb_line);
     22             Character       Chain identifier.
     23 - 26        Integer         Residue sequence number.
     27             AChar           Code for insertion of residues.
-    31 - 38        Real(8.3)       Orthogonal coordinates for X in Angstroms.
-    39 - 46        Real(8.3)       Orthogonal coordinates for Y in Angstroms.
-    47 - 54        Real(8.3)       Orthogonal coordinates for Z in Angstroms.
+    31 - 38        Real(8.3)       Orthogonal coordinates for X in angstroms.
+    39 - 46        Real(8.3)       Orthogonal coordinates for Y in angstroms.
+    47 - 54        Real(8.3)       Orthogonal coordinates for Z in angstroms.
     55 - 60        Real(6.2)       Occupancy.
     61 - 66        Real(6.2)       Temperature factor (Default = 0.0).
     73 - 76        LString(4)      Segment identifier, left-justified.

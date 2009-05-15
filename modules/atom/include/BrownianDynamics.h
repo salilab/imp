@@ -73,7 +73,7 @@ public:
   }
 
   //! Return the expected distance moved for a particle with a given D
-  /** The units on D are cm^2/sec and the return has units of Angstroms.
+  /** The units on D are cm^2/sec and the return has units of angstroms.
    */
   Float compute_sigma_from_D(Float D) const {
     unit::SquareCentimeterPerSecond du(D);
