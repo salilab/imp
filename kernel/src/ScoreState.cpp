@@ -18,20 +18,6 @@ ScoreState::ScoreState(std::string name) : name_(name)
 {
   update_iteration_= std::numeric_limits<unsigned int>::max();
   after_iteration_= std::numeric_limits<unsigned int>::max();
-  was_owned_=false;
-}
-
-
-
-//! Destructor
-ScoreState::~ScoreState()
-{
-  if (!was_owned_) {
-    // can't use virtual functions in the destructor
-    IMP_WARN("ScoreState " << this << " is being destroyed "
-                << "without ever having been added to a model."
-                << std::endl);
-  }
 }
 
 
@@ -72,7 +58,7 @@ void ScoreState::set_model(Model* model)
             << model << " " << model_,
             ValueException);
   model_ = model;
-  was_owned_=true;
+  set_was_owned(true);
 }
 
 IMP_END_NAMESPACE

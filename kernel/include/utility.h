@@ -10,7 +10,7 @@
 
 #include "macros.h"
 #include "config.h"
-
+#include "log.h"
 #include <boost/version.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
@@ -127,6 +127,29 @@ struct UninitializedDefault{
 */
 struct Comparable {};
 
+
+
+/** \brief A base class which provides a warning if the object is never passed
+    to another before being destroyed.
+
+    This base class provides an automatic check to make sure that Restraint
+    or similar objects actually get added to the model. It will print a warning
+    if they are not. To turn off this warning for a particular object, call
+    the set_was_owned() method with true.
+*/
+class Ownable {
+  bool was_owned_;
+public:
+  Ownable(): was_owned_(true){}
+  void set_was_owned(bool tf) {
+    was_owned_=tf;
+  }
+  ~Ownable() {
+    if (!was_owned_) {
+      IMP_WARN("Object " << this << " destroyed without being owned");
+    }
+  }
+};
 
 template <class T>
 int compare(const T &a, const T &b) {

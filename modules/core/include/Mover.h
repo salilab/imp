@@ -25,10 +25,11 @@ class MonteCarlo;
 /** You probably want to use MoverBase if you are implementing a Mover.
     \see MonteCarlo
  */
-class IMPCOREEXPORT Mover: public Object
+class IMPCOREEXPORT Mover: public Object, public Ownable
 {
   friend class MonteCarlo;
   void set_optimizer(Optimizer *c) {
+    if (c) set_was_owned(true);
     opt_=c;
   }
 
