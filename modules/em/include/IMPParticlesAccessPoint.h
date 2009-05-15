@@ -11,7 +11,7 @@
 
 #include "config.h"
 #include "ParticlesAccessPoint.h"
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 
@@ -19,10 +19,6 @@
 #include <map>
 
 IMPEM_BEGIN_NAMESPACE
-
-#define X_ATT_NAME "x"
-#define Y_ATT_NAME "y"
-#define Z_ATT_NAME "z"
 
 //!
 class IMPEMEXPORT IMPParticlesAccessPoint : public ParticlesAccessPoint
@@ -110,13 +106,13 @@ public:
   }
 
   FloatKey get_x_key() const {
-    return IMP::core::XYZDecorator::get_xyz_keys()[0];
+    return IMP::core::XYZ::get_xyz_keys()[0];
   }
   FloatKey get_y_key() const {
-    return IMP::core::XYZDecorator::get_xyz_keys()[1];
+    return IMP::core::XYZ::get_xyz_keys()[1];
   }
   FloatKey get_z_key() const {
-    return IMP::core::XYZDecorator::get_xyz_keys()[2];
+    return IMP::core::XYZ::get_xyz_keys()[2];
   }
 
 private:
