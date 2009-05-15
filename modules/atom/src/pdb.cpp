@@ -6,11 +6,10 @@
  */
 #include <IMP/atom/pdb.h>
 
-#include <IMP/atom/AtomDecorator.h>
-#include <IMP/atom/ResidueDecorator.h>
-#include <IMP/core/NameDecorator.h>
-#include <IMP/core/HierarchyDecorator.h>
-#include <IMP/atom/ChainDecorator.h>
+#include <IMP/atom/Atom.h>
+#include <IMP/atom/Residue.h>
+#include <IMP/core/Hierarchy.h>
+#include <IMP/atom/Chain.h>
 #include <IMP/atom/internal/Topology.h>
 #include <IMP/directories.h>
 
@@ -38,8 +37,8 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   AtomType atom_type = AtomType(atom_name.c_str());
 
   // atom decorator
-  AtomDecorator d = AtomDecorator::create(p, atom_type);
-  core::XYZDecorator::create(p, v).set_coordinates_are_optimized(true);
+  Atom d = Atom::create(p, atom_type);
+  core::XYZ::create(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
 
   return p;
@@ -55,8 +54,8 @@ Particle* residue_particle(Model *m, const String& pdb_line)
   ResidueType residue_type = ResidueType(residue_name.c_str());
 
   // residue decorator
-  ResidueDecorator rd =
-    ResidueDecorator::create(p, residue_type,
+  Residue rd =
+    Residue::create(p, residue_type,
                              residue_index, (int)residue_icode);
 
   p->set_name(residue_name);
@@ -69,34 +68,34 @@ Particle* root_particle(Model *m)
   Particle* p = new Particle(m);
 
   // hierarchy decorator
-  MolecularHierarchyDecorator hd =
-    MolecularHierarchyDecorator::create(p,
-               MolecularHierarchyDecorator::PROTEIN);
+  MolecularHierarchy hd =
+    MolecularHierarchy::create(p,
+               MolecularHierarchy::PROTEIN);
   return p;
 }
 
 Particle* chain_particle(Model *m, char chain_id)
 {
   Particle* p = new Particle(m);
-  ChainDecorator::create(p, chain_id);
+  Chain::create(p, chain_id);
 
   return p;
 }
 
-void set_chain_type(const MolecularHierarchyDecorator& hrd,
-                               MolecularHierarchyDecorator& hcd) {
+void set_chain_type(const MolecularHierarchy& hrd,
+                               MolecularHierarchy& hcd) {
 
-  if (hrd.get_type() == MolecularHierarchyDecorator::RESIDUE)
-    hcd.set_type(MolecularHierarchyDecorator::CHAIN);
-  else if (hrd.get_type() == MolecularHierarchyDecorator::NUCLEICACID)
-    hcd.set_type(MolecularHierarchyDecorator::NUCLEOTIDE);
+  if (hrd.get_type() == MolecularHierarchy::RESIDUE)
+    hcd.set_type(MolecularHierarchy::CHAIN);
+  else if (hrd.get_type() == MolecularHierarchy::NUCLEICACID)
+    hcd.set_type(MolecularHierarchy::NUCLEOTIDE);
   else
-    hcd.set_type(MolecularHierarchyDecorator::MOLECULE);
+    hcd.set_type(MolecularHierarchy::MOLECULE);
 }
 
 }
 
-MolecularHierarchyDecorator read_pdb(
+MolecularHierarchy read_pdb(
                              String pdb_file_name, Model *model,
                              const Selector& selector,
                              bool select_first_model,
@@ -107,7 +106,7 @@ MolecularHierarchyDecorator read_pdb(
     IMP_failure("No such PDB file " << pdb_file_name,
                 ValueException);
   }
-  MolecularHierarchyDecorator root_d
+  MolecularHierarchy root_d
       = read_pdb(pdb_file, model, selector, select_first_model,
                  ignore_alternatives);
   root_d.get_particle()->set_name(pdb_file_name);
@@ -115,19 +114,19 @@ MolecularHierarchyDecorator read_pdb(
   return root_d;
 }
 
-MolecularHierarchyDecorator read_pdb(std::istream &in, Model *model,
+MolecularHierarchy read_pdb(std::istream &in, Model *model,
                                      const Selector& selector,
                                      bool select_first_model,
                                      bool ignore_alternatives)
 {
   // create root particle
   Particle* root_p = root_particle(model);
-  MolecularHierarchyDecorator root_d =
-    MolecularHierarchyDecorator::cast(root_p);
+  MolecularHierarchy root_d =
+    MolecularHierarchy::cast(root_p);
 
   Particle* cp = NULL;
   Particle* rp = NULL;
-  MolecularHierarchyDecorator hcd, hrd;
+  MolecularHierarchy hcd, hrd;
 
   char curr_residue_icode = '-';
   char curr_chain = '-';
@@ -160,18 +159,18 @@ MolecularHierarchyDecorator read_pdb(std::istream &in, Model *model,
         // create new chain particle
         cp = chain_particle(model, chain);
         chain_type_set = false;
-        hcd = MolecularHierarchyDecorator::cast(cp);
+        hcd = MolecularHierarchy::cast(cp);
         root_d.add_child(hcd);
       }
 
       // check if new residue
       if (rp == NULL ||
-          residue_index != ResidueDecorator::cast(rp).get_index() ||
+          residue_index != Residue::cast(rp).get_index() ||
           residue_icode != curr_residue_icode) {
         curr_residue_icode = residue_icode;
         // create new residue particle
         rp = residue_particle(model, line);
-        hrd = MolecularHierarchyDecorator::cast(rp);
+        hrd = MolecularHierarchy::cast(rp);
         hcd.add_child(hrd);
       }
 
@@ -187,15 +186,15 @@ MolecularHierarchyDecorator read_pdb(std::istream &in, Model *model,
 
       // create atom particle
       Particle* ap = atom_particle(model, line);
-      MolecularHierarchyDecorator had =
-        MolecularHierarchyDecorator::cast(ap);
+      MolecularHierarchy had =
+        MolecularHierarchy::cast(ap);
         hrd.add_child(had);
     }
   }
   return root_d;
 }
 
-void add_bonds(MolecularHierarchyDecorator d, std::string topology_file_name)
+void add_bonds(MolecularHierarchy d, std::string topology_file_name)
 {
   // we want the file to be read only once
   std::string file_name = IMP::get_data_directory() +"/atom/top.lib";
@@ -212,8 +211,8 @@ void add_bonds(MolecularHierarchyDecorator d, std::string topology_file_name)
 void write_pdb(const Particles& ps, std::ostream &out)
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
-    if (AtomDecorator::is_instance_of(ps[i])) {
-      AtomDecorator ad(ps[i]);
+    if (Atom::is_instance_of(ps[i])) {
+      Atom ad(ps[i]);
       out << ad.get_pdb_string();
     }
   }
@@ -230,7 +229,7 @@ void write_pdb(const Particles& ps, std::string file_name)
   out_file.close();
 }
 
-void write_pdb(MolecularHierarchyDecorator mhd, std::string file_name)
+void write_pdb(MolecularHierarchy mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {
@@ -241,20 +240,20 @@ void write_pdb(MolecularHierarchyDecorator mhd, std::string file_name)
   out_file.close();
 }
 
-void write_pdb(MolecularHierarchyDecorator mhd, std::ostream &out)
+void write_pdb(MolecularHierarchy mhd, std::ostream &out)
 {
   Particles ps= get_leaves(mhd);
   write_pdb(ps, out);
 }
 
-void write_pdb(const MolecularHierarchyDecorators& mhd, std::ostream &out)
+void write_pdb(const MolecularHierarchys& mhd, std::ostream &out)
 {
   for (unsigned int i=0; i< mhd.size(); ++i) {
     write_pdb(mhd[i], out);
   }
 }
 
-void write_pdb(const MolecularHierarchyDecorators& mhd, std::string file_name)
+void write_pdb(const MolecularHierarchys& mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {

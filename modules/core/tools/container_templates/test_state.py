@@ -80,8 +80,8 @@ class ClassnameContainerTest(IMP.test.TestCase):
     def create_particle_pair(self,m):
         p0= IMP.Particle(m)
         p1= IMP.Particle(m)
-        d0= IMP.core.XYZDecorator.create(p0)
-        d1= IMP.core.XYZDecorator.create(p1)
+        d0= IMP.core.XYZ.create(p0)
+        d1= IMP.core.XYZ.create(p1)
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,1))
         d1.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         return IMP.ParticlePair(p0,p1)

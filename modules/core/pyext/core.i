@@ -69,10 +69,10 @@ namespace IMP {
 %include "IMP/core/Mover.h"
 %include "IMP/core/MoverBase.h"
 
-%include "IMP/core/XYZDecorator.h"
+%include "IMP/core/XYZ.h"
 
-/* Must be included before HierarchyDecorator.h since it is not easy
-   to predeclare a typedef (for BondDecorators) */ 
+/* Must be included before Hierarchy.h since it is not easy
+   to predeclare a typedef (for Bonds) */ 
 %include "IMP/core/RestraintSet.h"
 
 /* Wrap the final classes */
@@ -106,12 +106,11 @@ namespace IMP {
 %include "IMP/core/Harmonic.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
-%include "IMP/core/HierarchyDecorator.h"
+%include "IMP/core/Hierarchy.h"
 %include "IMP/core/LeavesRefiner.h"
 %include "IMP/core/Linear.h"
 %include "IMP/core/MaximumChangeScoreState.h"
 %include "IMP/core/MonteCarlo.h"
-%include "IMP/core/NameDecorator.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
@@ -122,7 +121,7 @@ namespace IMP {
 %include "IMP/core/SteepestDescent.h"
 %include "IMP/core/TransformedDistancePairScore.h"
 %include "IMP/core/TypedPairScore.h"
-%include "IMP/core/XYZRDecorator.h"
+%include "IMP/core/XYZR.h"
 %include "IMP/core/model_io.h"
 %include "IMP/core/TableRefiner.h"
 %include "IMP/core/TruncatedHarmonic.h"
@@ -153,13 +152,13 @@ namespace IMP {
 namespace IMP {
   namespace core {
     %template(Movers) ::std::vector<Mover*>;
-    %template(XYZDecorators) ::std::vector<XYZDecorator>;
-    %template(XYZRDecorators) ::std::vector<XYZRDecorator>;
-    %template(RigidMemberDecorators) ::std::vector<RigidMemberDecorator>;
+    %template(XYZs) ::std::vector<XYZ>;
+    %template(XYZRs) ::std::vector<XYZR>;
+    %template(RigidMembers) ::std::vector<RigidMember>;
     %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
     %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
     // swig screws up on scopes, I can't be bothered to fix it
-    //%template(show_named_hierarchy) show<::IMP::core::NameDecorator>;
+    //%template(show_named_hierarchy) show<::IMP::core::Name>;
   }
 }

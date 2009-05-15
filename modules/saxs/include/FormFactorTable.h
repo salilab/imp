@@ -12,8 +12,8 @@
 
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
-#include <IMP/atom/ResidueDecorator.h>
-#include <IMP/atom/AtomDecorator.h>
+#include <IMP/atom/Residue.h>
+#include <IMP/atom/Atom.h>
 #include <IMP/algebra/utility.h>
 
 #include <iostream>

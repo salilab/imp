@@ -16,7 +16,7 @@ class TunnelTest(IMP.test.TestCase):
         ps=[]
         for i in range(0,4):
             p= IMP.Particle(m)
-            bp= IMP.atom.BondedDecorator.create(p)
+            bp= IMP.atom.Bonded.create(p)
             if lbp is not None:
                 bonds.append(IMP.atom.custom_bond(lbp, bp, 1,1))
             lbp= bp

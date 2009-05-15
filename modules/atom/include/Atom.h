@@ -1,19 +1,19 @@
 /**
- *  \file AtomDecorator.h     \brief Simple atom decorator.
+ *  \file Atom.h     \brief Simple atom decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPATOM_ATOM_DECORATOR_H
-#define IMPATOM_ATOM_DECORATOR_H
+#ifndef IMPATOM_ATOM_H
+#define IMPATOM_ATOM_H
 
 #include "config.h"
 #include "macros.h"
-#include "ResidueDecorator.h"
-#include "MolecularHierarchyDecorator.h"
+#include "Residue.h"
+#include "MolecularHierarchy.h"
 #include <IMP/core/utility.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/core/macros.h>
 
 #include <IMP/base_types.h>
@@ -35,7 +35,7 @@ IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
     readability. New types can be added using the
     add_atom_type() function.
 
-    \see AtomDecorator
+    \see Atom
 */
 /*@{*/
 /* each static must be on a separate line because of MSVC bug C2487:
@@ -220,8 +220,8 @@ IMPATOMEXPORT extern const AtomType AT_CG1;
    \ingroup hierarchy
    \see MolecularHierarchy
  */
-class IMPATOMEXPORT AtomDecorator:
-  public MolecularHierarchyDecorator
+class IMPATOMEXPORT Atom:
+  public MolecularHierarchy
 {
 public:
   //! The various elements currently supported
@@ -248,22 +248,22 @@ public:
   };
 
 
-  IMP_DECORATOR(AtomDecorator, MolecularHierarchyDecorator)
+  IMP_DECORATOR(Atom, MolecularHierarchy)
 
   Particle* get_particle() const {
-    return MolecularHierarchyDecorator::get_particle();
+    return MolecularHierarchy::get_particle();
   }
 
   /** Create a decorator with the passed type and coordinates.*/
-  static AtomDecorator create(Particle *p, AtomType t= AT_UNKNOWN);
+  static Atom create(Particle *p, AtomType t= AT_UNKNOWN);
 
   /** Create a decorator by copying from o.*/
-  static AtomDecorator create(Particle *p, AtomDecorator o);
+  static Atom create(Particle *p, Atom o);
 
   //! return true if the particle has the needed attributes
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_type_key())
-      && MolecularHierarchyDecorator::is_instance_of(p);
+      && MolecularHierarchy::is_instance_of(p);
   }
 
   AtomType get_atom_type() const {
@@ -299,7 +299,7 @@ public:
 
   /** @name Keys
       These methods provide access to the various keys used to store
-      things in the AtomDecorator. These can be used if you want to
+      things in the Atom. These can be used if you want to
       use an attribute to search a set of particles.
       @{
    */
@@ -315,11 +315,11 @@ public:
   //! @}
 };
 
-IMP_OUTPUT_OPERATOR(AtomDecorator);
+IMP_OUTPUT_OPERATOR(Atom);
 
 //! Return the AtomType from the four letter code in the PDB
 /** \throw ValueException if nm is invalid.
-    \relatesalso AtomDecorator
+    \relatesalso Atom
     \relatesalso AtomType
  */
 IMPATOMEXPORT AtomType atom_type_from_pdb_string(std::string nm);
@@ -327,47 +327,47 @@ IMPATOMEXPORT AtomType atom_type_from_pdb_string(std::string nm);
 
 //! Return the index of the residue containing this atom
 /** The atom must be part of a molecular hierarchy.
-    \relatesalso AtomDecorator
+    \relatesalso Atom
  */
-IMPATOMEXPORT int get_residue_index(AtomDecorator d);
+IMPATOMEXPORT int get_residue_index(Atom d);
 
 #ifdef SWIG
 // ResidueType is a typedef so this is invalid C++ code, but swig needs it
 class ResidueType;
-class ResidueDecorator;
+class Residue;
 #endif
 
 //! Return the type of the residue containing this atom
 /** The atom must be part of a molecular hierarchy.
-    \relatesalso AtomDecorator
-    \relatesalso ResidueDecorator
-    \relatesalso MolecularHierarchyDecorator
+    \relatesalso Atom
+    \relatesalso Residue
+    \relatesalso MolecularHierarchy
  */
-IMPATOMEXPORT ResidueType get_residue_type(AtomDecorator d);
+IMPATOMEXPORT ResidueType get_residue_type(Atom d);
 
-//! Return the ResidueDecorator containing this atom
+//! Return the Residue containing this atom
 /** The atom must be part of a molecular hierarchy.
-    \relatesalso AtomDecorator
-    \relatesalso ResidueDecorator
-    \relatesalso MolecularHierarchyDecorator
+    \relatesalso Atom
+    \relatesalso Residue
+    \relatesalso MolecularHierarchy
  */
-IMPATOMEXPORT ResidueDecorator get_residue(AtomDecorator d);
+IMPATOMEXPORT Residue get_residue(Atom d);
 
 //! Return a particle atom from the residue
 /** The residue must be part of a molecular hierarchy.
-    \relatesalso AtomDecorator
-    \relatesalso ResidueDecorator
-    \relatesalso MolecularHierarchyDecorator
+    \relatesalso Atom
+    \relatesalso Residue
+    \relatesalso MolecularHierarchy
  */
-IMPATOMEXPORT AtomDecorator get_atom(ResidueDecorator rd, AtomType at);
+IMPATOMEXPORT Atom get_atom(Residue rd, AtomType at);
 
 //! Return the chain id of this atom
 /** The atom must be part of a molecular hierarchy.
-    \relatesalso AtomDecorator
-    \relatesalso ResidueDecorator
-    \relatesalso MolecularHierarchyDecorator
+    \relatesalso Atom
+    \relatesalso Residue
+    \relatesalso MolecularHierarchy
  */
-IMPATOMEXPORT char get_chain(AtomDecorator d);
+IMPATOMEXPORT char get_chain(Atom d);
 
 
 //! Create a new AtomType
@@ -378,9 +378,9 @@ IMPATOMEXPORT char get_chain(AtomDecorator d);
     \relatesalso AtomType
 */
 IMPATOMEXPORT AtomType add_atom_type(std::string name,
-                                    AtomDecorator::Element element);
+                                    Atom::Element element);
 
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_ATOM_DECORATOR_H */
+#endif  /* IMPATOM_ATOM_H */

@@ -14,11 +14,11 @@ m= IMP.Model()
 chain= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 1.0))
 
 # create a bond between successive particles
-IMP.atom.BondedDecorator.create(chain.get_particle(0))
+IMP.atom.Bonded.create(chain.get_particle(0))
 bonds= IMP.core.ListSingletonContainer()
 for i in range(1, chain.get_number_of_particles()):
-    bp= IMP.atom.BondedDecorator.cast(chain.get_particle(i-1))
-    bpr= IMP.atom.BondedDecorator.create(chain.get_particle(i))
+    bp= IMP.atom.Bonded.cast(chain.get_particle(i-1))
+    bpr= IMP.atom.Bonded.create(chain.get_particle(i))
     b= IMP.atom.custom_bond(bp, bpr, 1.5, 10)
     bonds.add_particle(b.get_particle())
 
@@ -62,7 +62,7 @@ o.set_model(m)
 # the files state.000.vrml, state.001.vrml etc.
 vrml= IMP.display.LogOptimizerState(IMP.display.VRMLWriter(), "state.%03d.vrml")
 for p in chain.get_particles():
-    vrml.add_geometry(IMP.display.XYZRGeometry(IMP.core.XYZRDecorator(p)))
+    vrml.add_geometry(IMP.display.XYZRGeometry(IMP.core.XYZR(p)))
 vrml.set_skip_steps(100)
 o.add_optimizer_state(vrml)
 

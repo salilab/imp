@@ -9,8 +9,8 @@
 #define IMPCORE_INTERNAL_RIGID_PAIR_SCORE_H
 
 #include "../config.h"
-#include "../XYZDecorator.h"
-#include "../HierarchyDecorator.h"
+#include "../XYZ.h"
+#include "../Hierarchy.h"
 #include <IMP/algebra/Sphere3D.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE

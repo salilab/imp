@@ -7,7 +7,7 @@
 #include <IMP/domino/SymmetrySampler.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/core/Transform.h>
 #include <IMP/utility.h>
 IMPDOMINO_BEGIN_NAMESPACE
@@ -28,19 +28,19 @@ SymmetrySampler::SymmetrySampler(Particles *ps,
   ref_[(*ps_)[0]]=algebra::identity_transformation();
   algebra::Vector3Ds ref_positions;
   Particles ps1 =
-    atom::get_by_type((*ps_)[0], atom::MolecularHierarchyDecorator::ATOM);
+    atom::get_by_type((*ps_)[0], atom::MolecularHierarchy::ATOM);
 
   for(Particles::iterator it=ps1.begin();it!=ps1.end();it++) {
-    ref_positions.push_back(core::XYZDecorator::cast(*it).get_coordinates());
+    ref_positions.push_back(core::XYZ::cast(*it).get_coordinates());
   }
 
   for(unsigned int i=1;i<ps_->size();i++) {
     algebra::Vector3Ds other_positions;
     Particles ps2 =
-      atom::get_by_type((*ps_)[i], atom::MolecularHierarchyDecorator::ATOM);
+      atom::get_by_type((*ps_)[i], atom::MolecularHierarchy::ATOM);
     for(Particles::iterator it=ps2.begin();it!=ps2.end();it++) {
       other_positions.push_back(
-         core::XYZDecorator::cast(*it).get_coordinates());
+         core::XYZ::cast(*it).get_coordinates());
     }
     ref_[(*ps_)[i]]=
       algebra::rigid_align_first_to_second(other_positions,ref_positions);
@@ -75,7 +75,7 @@ void SymmetrySampler::reset_placement(const CombState *cs) {
         it != cs->get_data()->end(); it++) {
     p = it->first;
     IMP_LOG_WRITE(VERBOSE,p->show(IMP_STREAM));
-    for_each(core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)),
+    for_each(core::get_leaves(atom::MolecularHierarchy::cast(p)),
              SingletonFunctor(new core::Transform(ref_[p])));
     IMP_LOG(VERBOSE,"end loop iteration"<<std::endl);
   }
@@ -100,14 +100,14 @@ void SymmetrySampler::move2state(const CombState *cs) {
       =compose(algebra::rotation_in_radians_about_axis(
                                      cyl_.get_segment().get_direction(),
                                                        angle),t);
-    for_each(core::get_leaves(atom::MolecularHierarchyDecorator::cast(p)),
+    for_each(core::get_leaves(atom::MolecularHierarchy::cast(p)),
              SingletonFunctor(new core::Transform(tr)));
     ref_[p]= compose(algebra::rotation_in_radians_about_axis(
                       cyl_.get_segment().get_direction(),
                       angle),t).get_inverse();
  //    std::stringstream name;
 //     name<<p->get_value(StringKey("name"))<<"__"<<cs->key()<<".pdb";
-//     atom::write_pdb(atom::MolecularHierarchyDecorator::cast(p),name.str());
+//     atom::write_pdb(atom::MolecularHierarchy::cast(p),name.str());
   }
   IMP_LOG(VERBOSE,"SymmetrySampler:: end moving to state"<<std::endl);
 }

@@ -14,13 +14,13 @@
 #include <boost/property_map.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
-BondGraph::BondGraph(MolecularHierarchyDecorator bd):
+BondGraph::BondGraph(MolecularHierarchy bd):
   sc_(new core::ListSingletonContainer(get_leaves(bd))) {
    for (core::ListSingletonContainer::ParticleIterator
          it= sc_->particles_begin();
        it != sc_->particles_end(); ++it) {
-    if (!BondedDecorator::is_instance_of(*it)) {
-      BondedDecorator::create(*it);
+    if (!Bonded::is_instance_of(*it)) {
+      Bonded::create(*it);
     }
   }
 }
@@ -71,7 +71,7 @@ void bgl_concept_checks() {
                      .vertex_index1_map(a.get_vertex_index_map())
                      .vertex_index2_map(b.get_vertex_index_map()));
 
-  boost::dijkstra_shortest_paths(a, BondedDecorator(),
+  boost::dijkstra_shortest_paths(a, Bonded(),
         boost::predecessor_map(BondGraph::VertexVertexPropertyMap(pk))
      .weight_map(BondGraph::EdgeFloatPropertyMap(FloatKey("bond length")))
      .distance_map(BondGraph::VertexFloatPropertyMap(FloatKey("hi")))

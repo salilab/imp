@@ -7,7 +7,7 @@
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/constants.h>
 

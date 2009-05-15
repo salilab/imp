@@ -7,7 +7,7 @@
  */
 
 #include <IMP/saxs/FormFactorTable.h>
-#include <IMP/atom/AtomDecorator.h>
+#include <IMP/atom/Atom.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/utility.h>
 
@@ -469,7 +469,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
 
 FormFactorTable::FormFactorAtomType FormFactorTable::get_form_factor_atom_type(
                                    Particle *p, FormFactorType ff_type) const {
-  atom::AtomDecorator ad = atom::AtomDecorator::cast(p);
+  atom::Atom ad = atom::Atom::cast(p);
   atom::ResidueType residue_type = atom::get_residue_type(ad);
   atom::AtomType atom_type = ad.get_atom_type();
   String atom_name = atom_type.get_string();

@@ -13,7 +13,7 @@
 
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
-#include <IMP/core/XYZRDecorator.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/display/geometry.h>
 
@@ -27,10 +27,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT XYZDerivativeGeometry: public Geometry
 {
-  core::XYZDecorator d_;
+  core::XYZ d_;
   Float radius_;
 public:
-  XYZDerivativeGeometry(core::XYZDecorator d, Float radius=0);
+  XYZDerivativeGeometry(core::XYZ d, Float radius=0);
 
   std::string get_name() const {
     return d_.get_particle()->get_name();
@@ -49,9 +49,9 @@ class IMPDISPLAYEXPORT RigidBodyDerivativeGeometry:
   public CompoundGeometry
 {
   Color xyzcolor_, qcolor_, ccolor_;
-  core::RigidBodyDecorator d_;
+  core::RigidBody d_;
 public:
-  RigidBodyDerivativeGeometry(core::RigidBodyDecorator d);
+  RigidBodyDerivativeGeometry(core::RigidBody d);
 
   //! Set the color used to display the translational part
   void set_translational_color(Color c) {

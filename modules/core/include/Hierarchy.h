@@ -1,13 +1,13 @@
 /**
- *  \file HierarchyDecorator.h     \brief Decorator for helping deal with
+ *  \file Hierarchy.h     \brief Decorator for helping deal with
  *                                        a hierarchy.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPCORE_HIERARCHY_DECORATOR_H
-#define IMPCORE_HIERARCHY_DECORATOR_H
+#ifndef IMPCORE_HIERARCHY_H
+#define IMPCORE_HIERARCHY_H
 
 #include "config.h"
 #include "utility.h"
@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     molecules at multiple levels.
  */
 
-class HierarchyDecorator;
+class Hierarchy;
 
 //! Define the type for a type of hierarchy
 /** The hierarchy class is identified by the passed string so two
@@ -39,15 +39,15 @@ class HierarchyDecorator;
 
     This example shows how to make and use a custom hierarchy:
     \verbinclude custom_hierarchy.py
-    \see HierarchyDecorator
-    \see MolecularHierarchyDecorator
+    \see Hierarchy
+    \see MolecularHierarchy
 */
 class IMPCOREEXPORT HierarchyTraits
 #ifndef SWIG
 : public internal::ArrayOnAttributesHelper<ParticleKey, Particle*>
 #endif
 {
-  friend class HierarchyDecorator;
+  friend class Hierarchy;
   typedef internal::ArrayOnAttributesHelper<ParticleKey, Particle*> P;
 
   ParticleKey parent_key_;
@@ -86,7 +86,7 @@ class IMPCOREEXPORT HierarchyTraits
               ValueException);
   }
 
-  const HierarchyDecorator wrap(Particle* p) const;
+  const Hierarchy wrap(Particle* p) const;
 
 public:
   HierarchyTraits(){}
@@ -105,7 +105,7 @@ public:
 /** This works from both C++ and Python
     \ingroup hierarchy
     \ingroup decorators
-    \see HierarchyDecorator
+    \see Hierarchy
  */
 class IMPCOREEXPORT HierarchyVisitor
 {
@@ -126,7 +126,7 @@ public:
     \ingroup hierarchy
     \ingroup decorators
     \see SingletonModifier
-    \see HierarchyDecorator
+    \see Hierarchy
  */
 class IMPCOREEXPORT ModifierVisitor: public HierarchyVisitor
 {
@@ -148,45 +148,45 @@ public:
 //! A decorator for helping deal with a hierarchy.
 /**
     See HierarchyTraits for an example of how to define a custom hierarchy
-    and MolecularHierarchyDecorator for a hierarchy for molecules.
+    and MolecularHierarchy for a hierarchy for molecules.
     \ingroup hierarchy
     \see HierarchyTraits
  */
-class IMPCOREEXPORT HierarchyDecorator: public Decorator
+class IMPCOREEXPORT Hierarchy: public Decorator
 {
   typedef Decorator P;
 
   IMP_DECORATOR_ARRAY_DECL(public, child, children, traits_,
-                           HierarchyDecorator)
+                           Hierarchy)
 public:
-  IMP_DECORATOR_TRAITS(HierarchyDecorator, Decorator,
+  IMP_DECORATOR_TRAITS(Hierarchy, Decorator,
                        HierarchyTraits, traits,
-                       HierarchyDecorator::get_default_traits());
+                       Hierarchy::get_default_traits());
 
 
   //! Add the needed attributes to a particle
-  static HierarchyDecorator create(Particle *p,
+  static Hierarchy create(Particle *p,
                                    HierarchyTraits traits
-                                   =HierarchyDecorator::get_default_traits()) {
+                                   =Hierarchy::get_default_traits()) {
     add_required_attributes_for_child(p, traits);
-    return HierarchyDecorator(p, traits);
+    return Hierarchy(p, traits);
   }
 
   //! Add the needed attributes to a particle and add the particles as children
-  /** The particles can be, but don't have to be HierarchyDecorator particles
+  /** The particles can be, but don't have to be Hierarchy particles
       already.
   */
-  static HierarchyDecorator create(Particle *p,
+  static Hierarchy create(Particle *p,
                                    const Particles &children,
                                    HierarchyTraits traits
-                                   =HierarchyDecorator::get_default_traits()) {
+                                   =Hierarchy::get_default_traits()) {
     add_required_attributes_for_child(p, traits);
-    HierarchyDecorator h(p, traits);
+    Hierarchy h(p, traits);
     for (unsigned int i=0; i< children.size(); ++i) {
-      if (!HierarchyDecorator::is_instance_of(children[i], traits)) {
+      if (!Hierarchy::is_instance_of(children[i], traits)) {
         add_required_attributes_for_child(children[i], traits);
       }
-      HierarchyDecorator c(children[i], traits);
+      Hierarchy c(children[i], traits);
       h.add_child(c);
     }
     return h;
@@ -196,11 +196,11 @@ public:
    cast to succeed */
   static bool is_instance_of(Particle *p,
                              HierarchyTraits traits
-                             =HierarchyDecorator::get_default_traits()){
+                             =Hierarchy::get_default_traits()){
     return has_required_attributes_for_child(p, traits);
   }
 
-  /** \return the parent particle, or HierarchyDecorator()
+  /** \return the parent particle, or Hierarchy()
       if it has no parent.
    */
   This get_parent() const {
@@ -229,7 +229,7 @@ public:
       get_parent_index() on the child.
       \return the index, or -1 if there is no such child.
    */
-  int get_child_index(HierarchyDecorator c) const;
+  int get_child_index(Hierarchy c) const;
 
   IMP_NO_DOXYGEN(void validate_node() const;)
 
@@ -240,11 +240,11 @@ public:
   };
 
 
-IMP_OUTPUT_OPERATOR(HierarchyDecorator);
+IMP_OUTPUT_OPERATOR(Hierarchy);
 
 //! Collect the matching visiting nodes into a container.
 /** A node is collected if the function evaluates true.
-    \see HierarchyDecorator
+    \see Hierarchy
  */
 template <class F, class Out>
 struct Gather: public HierarchyVisitor
@@ -268,8 +268,8 @@ private:
 };
 
 
-inline const HierarchyDecorator HierarchyTraits::wrap(Particle* p) const {
-  return HierarchyDecorator(p, *this);
+inline const Hierarchy HierarchyTraits::wrap(Particle* p) const {
+  return Hierarchy(p, *this);
 }
 
 
@@ -280,28 +280,28 @@ inline const HierarchyDecorator HierarchyTraits::wrap(Particle* p) const {
 
 
 //! Apply the visitor to each particle,  breadth first.
-/** \param[in] d The HierarchyDecorator for the tree in question
+/** \param[in] d The Hierarchy for the tree in question
     \param[in] v The visitor to be applied. This is passed by reference.
     \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 IMPCOREEXPORT
-void breadth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
+void breadth_first_traversal(Hierarchy d,  HierarchyVisitor &v);
 
 //! Depth first traversal of the hierarchy
 /** See breadth_first_traversal and HierarchyVisitor for more information
     \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 IMPCOREEXPORT
-void depth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
+void depth_first_traversal(Hierarchy d,  HierarchyVisitor &v);
 
 
 //! Apply functor F to each particle, traversing the hierarchy breadth first.
 /** This method allows data to be associated with each visited node.
     The data of the parent is passed to each invocation of the child.
 
-    \param[in] d The HierarchyDecorator for the tree in question
+    \param[in] d The Hierarchy for the tree in question
     \param[in] f The functor to be applied
     F must define a type Data which is returned by each call.
     The result of the parent call is passed as the second argument
@@ -320,7 +320,7 @@ void depth_first_traversal(HierarchyDecorator d,  HierarchyVisitor &v);
            the functor state.
 
     \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 template <class HD, class F>
 F breadth_first_traversal_with_data(HD d, F f, typename F::result_type i)
@@ -345,7 +345,7 @@ F breadth_first_traversal_with_data(HD d, F f, typename F::result_type i)
 //! Apply functor F to each particle, traversing the hierarchy depth first.
 /** See breadth_first_traversal for documentation.
     \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 template <class HD, class F>
 F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
@@ -372,7 +372,7 @@ F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
 //! A simple visitor which pretty-prints the hierarchy
 /** The template argument NP is the decorator to use to print each node.
     \ingroup hierarchy
-    \see HierarchyDecorator
+    \see Hierarchy
  */
 template <class PD>
 struct HierarchyPrinter
@@ -380,7 +380,7 @@ struct HierarchyPrinter
   HierarchyPrinter(std::ostream &out,
                    unsigned int max_depth,
                    HierarchyTraits traits
-                   = HierarchyDecorator::get_default_traits()): traits_(traits),
+                   = Hierarchy::get_default_traits()): traits_(traits),
                                                                 out_(out),
                                                                 md_(max_depth)
   {}
@@ -389,13 +389,13 @@ struct HierarchyPrinter
   int operator()(Particle *p, unsigned int depth) const {
     if (depth > md_) return depth+1;
 
-    HierarchyDecorator hd= HierarchyDecorator::cast(p, traits_);
+    Hierarchy hd= Hierarchy::cast(p, traits_);
     std::string prefix;
     for (unsigned int i=0; i< depth; ++i) {
       out_ << " ";
       prefix+=" ";
     }
-    if (hd == HierarchyDecorator() || hd.get_number_of_children()==0) {
+    if (hd == Hierarchy() || hd.get_number_of_children()==0) {
       out_ << "-";
     } else {
       out_ << "+";
@@ -420,10 +420,10 @@ struct HierarchyPrinter
 //! Print the hierarchy using a given decorator as to display each node
 /** The last argument limits how deep will be printed out.
     \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 template <class ND>
-std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
+std::ostream &show(Hierarchy h, std::ostream &out=std::cout,
                    unsigned int max_depth
                    = std::numeric_limits<unsigned int>::max())
 {
@@ -436,7 +436,7 @@ std::ostream &show(HierarchyDecorator h, std::ostream &out=std::cout,
 //! A simple functor to count the number of particles in a hierarchy.
 /** This is a good example of a simple HierarchyVisitor.
     \ingroup hierarchy
-    \see HierarchyDecorator
+    \see Hierarchy
  */
 struct HierarchyCounter: public HierarchyVisitor
 {
@@ -458,10 +458,10 @@ private:
 
 //! Gather all the Particle* in the hierarchy which meet some criteria
 /** \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 template <class Out, class F>
-Out gather(HierarchyDecorator h, F f, Out out)
+Out gather(Hierarchy h, F f, Out out)
 {
   Gather<F,Out> gather(f,out);
   depth_first_traversal(h, gather);
@@ -470,10 +470,10 @@ Out gather(HierarchyDecorator h, F f, Out out)
 
 //! Gather all the Particle* in the hierarchy which match on an attribute
 /** \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 template <class Out, class K, class V>
-Out gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
+Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
 {
   Gather<internal::MatchAttribute<K, V>,Out>
     gather(internal::MatchAttribute<K,V>(k,v),
@@ -487,10 +487,10 @@ Out gather_by_attribute(HierarchyDecorator h, K k, V v, Out out)
 
 //! Gather all the Particle* in the hierarchy which match on two attributes
 /** \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 template <class Out, class K0, class V0, class K1, class V1>
-Out gather_by_attributes(HierarchyDecorator h, K0 k0,
+Out gather_by_attributes(Hierarchy h, K0 k0,
                                    V0 v0, K1 k1, V1 v1, Out out)
 {
   Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
@@ -503,7 +503,7 @@ Out gather_by_attributes(HierarchyDecorator h, K0 k0,
 
 //! Find the first node which matches some criteria
 /** \ingroup hierarchy
-    \relatesalso HierarchyDecorator
+    \relatesalso Hierarchy
  */
 template <class HD, class F>
 HD breadth_first_find(HD h, F f)
@@ -531,17 +531,17 @@ HD breadth_first_find(HD h, F f)
 
 
 //! Get all the leaves of the bit of hierarchy
-/**     \relatesalso HierarchyDecorator
+/**     \relatesalso Hierarchy
  */
 IMPCOREEXPORT Particles
-get_leaves(HierarchyDecorator mhd);
+get_leaves(Hierarchy mhd);
 
 //! Get all the particles in the subtree
-/**     \relatesalso HierarchyDecorator
+/**     \relatesalso Hierarchy
  */
 IMPCOREEXPORT Particles
-get_all_descendants(HierarchyDecorator mhd);
+get_all_descendants(Hierarchy mhd);
 
 IMPCORE_END_NAMESPACE
 
-#endif  /* IMPCORE_HIERARCHY_DECORATOR_H */
+#endif  /* IMPCORE_HIERARCHY_H */

@@ -1,6 +1,6 @@
 /**
  *  \file CylinderGeometry.h
- *  \brief Represent an CylinderDecorator particle with a sphere
+ *  \brief Represent an Cylinder particle with a sphere
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */

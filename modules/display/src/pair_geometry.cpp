@@ -7,13 +7,13 @@
  */
 
 #include "IMP/display/pair_geometry.h"
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-PairGeometry::PairGeometry(core::XYZDecorator p0,
-                           core::XYZDecorator p1,
+PairGeometry::PairGeometry(core::XYZ p0,
+                           core::XYZ p1,
                            Float radius): d0_(p0), d1_(p1),
                                           radius_(radius){
 }
@@ -50,8 +50,8 @@ Geometries PairsGeometry::get_geometry() const {
   Geometries ret;
   for (PairContainer::ParticlePairIterator it= pc_->particle_pairs_begin();
        it != pc_->particle_pairs_end(); ++it) {
-    ret.push_back(new PairGeometry(core::XYZDecorator(it->first),
-                                   core::XYZDecorator(it->second), radius_));
+    ret.push_back(new PairGeometry(core::XYZ(it->first),
+                                   core::XYZ(it->second), radius_));
   }
   return ret;
 }

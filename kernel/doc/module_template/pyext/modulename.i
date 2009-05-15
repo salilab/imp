@@ -20,8 +20,8 @@
 %pythoncode %{
 import IMP.core
 def get_is_xyz_particle(p):
-    """Return True if the particle is an IMP.core.XYZDecorator particle"""
-    return IMP.core.XYZDecorator.is_instance_of(p)
+    """Return True if the particle is an IMP.core.XYZ particle"""
+    return IMP.core.XYZ.is_instance_of(p)
 %}
 
 /* Get definitions of kernel base classes (but do not wrap) */

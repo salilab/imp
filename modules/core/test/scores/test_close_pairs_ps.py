@@ -11,14 +11,14 @@ class Test(IMP.test.TestCase):
 
     def _random_hierarchy(self, m, depth=2, width=4):
         p= IMP.Particle(m)
-        h = IMP.core.HierarchyDecorator.create(p)
+        h = IMP.core.Hierarchy.create(p)
         if depth== 0:
-            d = IMP.core.XYZRDecorator.create(p, IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(),
+            d = IMP.core.XYZR.create(p, IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(),
                                               .1))
         else:
             children= [self._random_hierarchy(m, depth-1) for x in range(0,width)]
             cps= [x.get_particle() for x in children]
-            d= IMP.core.XYZRDecorator.create(p)
+            d= IMP.core.XYZR.create(p)
             IMP.core.set_enclosing_sphere(d, cps)
             for c in children:
                 h.add_child(c)
@@ -43,8 +43,8 @@ class Test(IMP.test.TestCase):
             print
         for l0 in ls0:
             for l1 in ls1:
-                d0= IMP.core.XYZRDecorator.cast(l0)
-                d1= IMP.core.XYZRDecorator.cast(l1)
+                d0= IMP.core.XYZR.cast(l0)
+                d1= IMP.core.XYZR.cast(l1)
                 if (IMP.core.distance(d0, d1) < threshold):
                     print l0.get_name() + " " + l1.get_name()
                     self.assert_(lps.get_contains(IMP.ParticlePair(l0, l1)))

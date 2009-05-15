@@ -7,7 +7,7 @@
 
 #include "IMP/core/DerivativesToRefined.h"
 
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZ.h"
 
 IMPCORE_BEGIN_NAMESPACE
 

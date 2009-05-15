@@ -6,7 +6,7 @@
  */
 
 #include <IMP/core/TransformedDistancePairScore.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/algebra/Vector3D.h>
 
@@ -26,7 +26,7 @@ struct TransformParticle
 {
   algebra::Vector3D tv_;
   const algebra::Rotation3D &ri_;
-  XYZDecorator d_;
+  XYZ d_;
   TransformParticle(const algebra::Transformation3D &t,
                     const algebra::Rotation3D &r,
                     Particle *p): ri_(r), d_(p){
@@ -53,7 +53,7 @@ Float TransformedDistancePairScore::evaluate(Particle *a, Particle *b,
   IMP_LOG(VERBOSE, "Transformed particle is "
           << tb.get_coordinate(0) << " " << tb.get_coordinate(1)
           << " " << tb.get_coordinate(2) << std::endl);
-  Float ret= internal::evaluate_distance_pair_score(XYZDecorator(a),
+  Float ret= internal::evaluate_distance_pair_score(XYZ(a),
                                                     tb,
                                                     da, f_.get(),
                                                     boost::lambda::_1);

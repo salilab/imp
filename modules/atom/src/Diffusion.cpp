@@ -1,11 +1,11 @@
 /**
- *  \file DiffusionDecorator.cpp   \brief Simple xyzr decorator.
+ *  \file Diffusion.cpp   \brief Simple xyzr decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/atom/DiffusionDecorator.h"
+#include "IMP/atom/Diffusion.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/constants.h>
 
@@ -63,16 +63,16 @@ unit::Femtojoule kt(unit::Kelvin t) {
 
 
 
-FloatKey DiffusionDecorator::get_D_key() {
+FloatKey Diffusion::get_D_key() {
   static FloatKey k("D");
   return k;
 }
-void DiffusionDecorator::set_D_from_radius_in_angstroms(Float ir) {
+void Diffusion::set_D_from_radius_in_angstroms(Float ir) {
   return set_D_from_radius_in_angstroms(ir,
                             IMP::internal::DEFAULT_TEMPERATURE.get_value());
 }
 
-void DiffusionDecorator::set_D_from_radius_in_angstroms(Float ir,
+void Diffusion::set_D_from_radius_in_angstroms(Float ir,
                                                         Float it) {
   unit::Kelvin t(it);
   unit::Angstrom r(ir);
@@ -88,9 +88,9 @@ void DiffusionDecorator::set_D_from_radius_in_angstroms(Float ir,
   set_D_in_cm2_per_second(ret.get_value());
 }
 
-void DiffusionDecorator::show(std::ostream &out, std::string prefix) const
+void Diffusion::show(std::ostream &out, std::string prefix) const
 {
-  XYZDecorator::show(out, prefix);
+  XYZ::show(out, prefix);
   out << "D= " << get_D_in_cm2_per_second() << "cm^2/sec";
 
 }

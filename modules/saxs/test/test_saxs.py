@@ -35,7 +35,7 @@ class SAXSProfileTest(IMP.test.TestCase):
         #f_table.show()
 
         #! select particles from the model
-        particles = IMP.atom.get_by_type(mp, IMP.atom.MolecularHierarchyDecorator.ATOM)
+        particles = IMP.atom.get_by_type(mp, IMP.atom.MolecularHierarchy.ATOM)
 
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile(f_table,
@@ -86,7 +86,7 @@ class SAXSProfileTest(IMP.test.TestCase):
                   exp_profile.get_delta_q())
 
         #! select particles from the model
-        particles = IMP.atom.get_by_type(mp, IMP.atom.MolecularHierarchyDecorator.ATOM)
+        particles = IMP.atom.get_by_type(mp, IMP.atom.MolecularHierarchy.ATOM)
 
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile(f_table, exp_profile.get_min_q(),

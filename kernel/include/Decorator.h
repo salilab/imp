@@ -28,7 +28,7 @@ IMP_BEGIN_NAMESPACE
     pieces.\n\n Remember that attribute keys should always be created
     lazily (at the time of the first use), and not be created as
     static variables.\n\n Implementors should consult
-    IMP::examples::ExampleDecorator, IMP_DECORATOR(),
+    IMP::examples::Example, IMP_DECORATOR(),
     IMP_DECORATOR_TRAITS(), IMP_DECORATOR_GET(),
     IMP_DECORATOR_ARRAY_DECL()
 */
@@ -71,7 +71,7 @@ public:
 
   /** \name Methods that all decorators must have
       All decorators must have the following methods. Decorators
-      which are parameterized (for example IMP::core::XYZRDecorator)
+      which are parameterized (for example IMP::core::XYZR)
       take an (optional) extra parameter after the Particle in
       create(), cast() and is_instance_of().
       Note that these are

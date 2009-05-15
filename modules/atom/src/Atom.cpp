@@ -1,14 +1,14 @@
 /**
- *  \file AtomDecorator.cpp   \brief Simple atoms decorator.
+ *  \file Atom.cpp   \brief Simple atoms decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include <IMP/atom/AtomDecorator.h>
-#include <IMP/atom/MolecularHierarchyDecorator.h>
-#include <IMP/atom/ChainDecorator.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/atom/Atom.h>
+#include <IMP/atom/MolecularHierarchy.h>
+#include <IMP/atom/Chain.h>
+#include <IMP/core/XYZ.h>
 
 #include <IMP/log.h>
 
@@ -53,7 +53,7 @@ TYPE_DEF(CG2);
 TYPE_DEF(HG);
 TYPE_DEF(1HG);
 TYPE_DEF(2HG);
-//TYPE(HG1",AtomDecorator::AT_HG1},
+//TYPE(HG1",Atom::AT_HG1},
 TYPE_DEF(1HG1);
 TYPE_DEF(2HG1);
 TYPE_DEF(3HG1);
@@ -67,8 +67,8 @@ TYPE_DEF(SG);
 TYPE_DEF(CD);
 TYPE_DEF(CD1);
 TYPE_DEF(CD2);
-//TYPE(HD1",AtomDecorator::AT_HD1},
-//TYPE(HD2",AtomDecorator::AT_HD2},
+//TYPE(HD1",Atom::AT_HD1},
+//TYPE(HD2",Atom::AT_HD2},
 TYPE_DEF(HD);
 TYPE_DEF(1HD);
 TYPE_DEF(2HD);
@@ -93,9 +93,9 @@ TYPE_DEF(HE);
 TYPE_DEF(1HE);
 TYPE_DEF(2HE);
 TYPE_DEF(3HE);
-//TYPE(HE1",AtomDecorator::AT_HE1},
-//TYPE(HE2",AtomDecorator::AT_HE2},
-//TYPE(HE3",AtomDecorator::AT_HE3},
+//TYPE(HE1",Atom::AT_HE1},
+//TYPE(HE2",Atom::AT_HE2},
+//TYPE(HE3",Atom::AT_HE3},
 TYPE_DEF(1HE2);
 TYPE_DEF(2HE2);
 TYPE_DEF(OE1);
@@ -112,9 +112,9 @@ TYPE_DEF(HZ);
 TYPE_DEF(1HZ);
 TYPE_DEF(2HZ);
 TYPE_DEF(3HZ);
-//TYPE(HZ1",AtomDecorator::AT_HZ2},
-//TYPE(HZ2",AtomDecorator::AT_HZ2},
-//TYPE(HZ3",AtomDecorator::AT_HZ3},
+//TYPE(HZ1",Atom::AT_HZ2},
+//TYPE(HZ2",Atom::AT_HZ2},
+//TYPE(HZ3",Atom::AT_HZ3},
 
 TYPE_DEF(CH2);
 TYPE_DEF(NH1);
@@ -193,178 +193,178 @@ TYPE_DEF(UNKNOWN);
 namespace {
   struct ElementData {
     AtomType at;
-    AtomDecorator::Element e;
+    Atom::Element e;
   };
 
   ElementData element_data[]=
-    {{AT_N, AtomDecorator::N},
-     {AT_H, AtomDecorator::H},
-     {AT_1H, AtomDecorator::H},
-     {AT_2H, AtomDecorator::H},
-     {AT_3H, AtomDecorator::H},
-     {AT_C, AtomDecorator::C},
-     {AT_O, AtomDecorator::O},
-     {AT_OXT, AtomDecorator::O},
-     {AT_CH3, AtomDecorator::C},
+    {{AT_N, Atom::N},
+     {AT_H, Atom::H},
+     {AT_1H, Atom::H},
+     {AT_2H, Atom::H},
+     {AT_3H, Atom::H},
+     {AT_C, Atom::C},
+     {AT_O, Atom::O},
+     {AT_OXT, Atom::O},
+     {AT_CH3, Atom::C},
 
-     {AT_CA, AtomDecorator::C},
-     {AT_HA, AtomDecorator::H},
-     {AT_1HA, AtomDecorator::H},
-     {AT_2HA, AtomDecorator::H},
+     {AT_CA, Atom::C},
+     {AT_HA, Atom::H},
+     {AT_1HA, Atom::H},
+     {AT_2HA, Atom::H},
 
-     {AT_CB, AtomDecorator::C},
-     {AT_HB, AtomDecorator::H},
-     {AT_1HB, AtomDecorator::H},
-     { AT_2HB, AtomDecorator::H},
-     { AT_3HB, AtomDecorator::H},
+     {AT_CB, Atom::C},
+     {AT_HB, Atom::H},
+     {AT_1HB, Atom::H},
+     { AT_2HB, Atom::H},
+     { AT_3HB, Atom::H},
 
-     {AT_CG, AtomDecorator::C},
-     {AT_CG1, AtomDecorator::C},
-     {AT_CG2, AtomDecorator::C},
-     {AT_HG, AtomDecorator::H},
-     { AT_1HG, AtomDecorator::H},
-     { AT_2HG, AtomDecorator::H},
+     {AT_CG, Atom::C},
+     {AT_CG1, Atom::C},
+     {AT_CG2, Atom::C},
+     {AT_HG, Atom::H},
+     { AT_1HG, Atom::H},
+     { AT_2HG, Atom::H},
      //{AT_HG1},
-     {AT_1HG1, AtomDecorator::H},
-     {AT_2HG1, AtomDecorator::H},
-     {AT_3HG1, AtomDecorator::H},
-     {AT_1HG2, AtomDecorator::H},
-     {AT_2HG2, AtomDecorator::H},
-     {AT_3HG2, AtomDecorator::H},
-     {AT_OG, AtomDecorator::O},
-     {AT_OG1, AtomDecorator::O},
-     {AT_SG, AtomDecorator::S},
+     {AT_1HG1, Atom::H},
+     {AT_2HG1, Atom::H},
+     {AT_3HG1, Atom::H},
+     {AT_1HG2, Atom::H},
+     {AT_2HG2, Atom::H},
+     {AT_3HG2, Atom::H},
+     {AT_OG, Atom::O},
+     {AT_OG1, Atom::O},
+     {AT_SG, Atom::S},
 
-     {AT_CD, AtomDecorator::C},
-     {AT_CD1, AtomDecorator::C},
-     {AT_CD2, AtomDecorator::C},
+     {AT_CD, Atom::C},
+     {AT_CD1, Atom::C},
+     {AT_CD2, Atom::C},
      //{AT_HD1},
      //{AT_HD2},
-     {AT_HD, AtomDecorator::H},
-     {AT_1HD, AtomDecorator::H},
-     {AT_2HD, AtomDecorator::H},
-     {AT_3HD, AtomDecorator::H},
-     {AT_1HD1, AtomDecorator::H},
-     {AT_2HD1, AtomDecorator::H},
-     {AT_3HD1, AtomDecorator::H},
-     {AT_1HD2, AtomDecorator::H},
-     {AT_2HD2, AtomDecorator::H},
-     {AT_3HD2, AtomDecorator::H},
-     {AT_SD, AtomDecorator::S},
-     {AT_OD1, AtomDecorator::O},
-     {AT_OD2, AtomDecorator::O},
-     {AT_ND1, AtomDecorator::N},
-     {AT_ND2, AtomDecorator::N},
+     {AT_HD, Atom::H},
+     {AT_1HD, Atom::H},
+     {AT_2HD, Atom::H},
+     {AT_3HD, Atom::H},
+     {AT_1HD1, Atom::H},
+     {AT_2HD1, Atom::H},
+     {AT_3HD1, Atom::H},
+     {AT_1HD2, Atom::H},
+     {AT_2HD2, Atom::H},
+     {AT_3HD2, Atom::H},
+     {AT_SD, Atom::S},
+     {AT_OD1, Atom::O},
+     {AT_OD2, Atom::O},
+     {AT_ND1, Atom::N},
+     {AT_ND2, Atom::N},
 
-     {AT_CE, AtomDecorator::C},
-     {AT_CE1, AtomDecorator::C},
-     {AT_CE2, AtomDecorator::C},
-     {AT_CE3, AtomDecorator::C},
-     {AT_HE, AtomDecorator::H},
-     {AT_1HE, AtomDecorator::H},{AT_1HE, AtomDecorator::H},
-     {AT_2HE, AtomDecorator::H},{AT_2HE, AtomDecorator::H},
-     {AT_3HE, AtomDecorator::H},{AT_3HE, AtomDecorator::H},
+     {AT_CE, Atom::C},
+     {AT_CE1, Atom::C},
+     {AT_CE2, Atom::C},
+     {AT_CE3, Atom::C},
+     {AT_HE, Atom::H},
+     {AT_1HE, Atom::H},{AT_1HE, Atom::H},
+     {AT_2HE, Atom::H},{AT_2HE, Atom::H},
+     {AT_3HE, Atom::H},{AT_3HE, Atom::H},
      //{AT_HE1},
      //{AT_HE2},
      //{AT_HE3},
-     {AT_1HE2, AtomDecorator::H},{AT_1HE2, AtomDecorator::H},
-     {AT_2HE2, AtomDecorator::H},{AT_2HE2, AtomDecorator::H},
-     {AT_OE1, AtomDecorator::O},
-     {AT_OE2, AtomDecorator::O},
-     {AT_NE, AtomDecorator::N},
-     {AT_NE1, AtomDecorator::N},
-     {AT_NE2, AtomDecorator::N},
+     {AT_1HE2, Atom::H},{AT_1HE2, Atom::H},
+     {AT_2HE2, Atom::H},{AT_2HE2, Atom::H},
+     {AT_OE1, Atom::O},
+     {AT_OE2, Atom::O},
+     {AT_NE, Atom::N},
+     {AT_NE1, Atom::N},
+     {AT_NE2, Atom::N},
 
-     {AT_CZ, AtomDecorator::C},
-     {AT_CZ2, AtomDecorator::C},
-     {AT_CZ3, AtomDecorator::C},
-     {AT_NZ, AtomDecorator::N},
-     {AT_HZ, AtomDecorator::H},
-     {AT_1HZ, AtomDecorator::H},
-     {AT_2HZ, AtomDecorator::H},
-     {AT_3HZ, AtomDecorator::H},
+     {AT_CZ, Atom::C},
+     {AT_CZ2, Atom::C},
+     {AT_CZ3, Atom::C},
+     {AT_NZ, Atom::N},
+     {AT_HZ, Atom::H},
+     {AT_1HZ, Atom::H},
+     {AT_2HZ, Atom::H},
+     {AT_3HZ, Atom::H},
      //{AT_HZ2},
      //{AT_HZ2},
      //{AT_HZ3},
 
-     {AT_CH2, AtomDecorator::C},
-     {AT_NH1, AtomDecorator::N},
-     {AT_NH2, AtomDecorator::N},
-     {AT_OH, AtomDecorator::O},
-     {AT_HH, AtomDecorator::H},
+     {AT_CH2, Atom::C},
+     {AT_NH1, Atom::N},
+     {AT_NH2, Atom::N},
+     {AT_OH, Atom::O},
+     {AT_HH, Atom::H},
 
-     { AT_1HH1, AtomDecorator::H},
-     { AT_2HH1, AtomDecorator::H},
-     {AT_HH2, AtomDecorator::H},
-     { AT_1HH2, AtomDecorator::H},
-     { AT_2HH2, AtomDecorator::H},
-     { AT_1HH2, AtomDecorator::H},
+     { AT_1HH1, Atom::H},
+     { AT_2HH1, Atom::H},
+     {AT_HH2, Atom::H},
+     { AT_1HH2, Atom::H},
+     { AT_2HH2, Atom::H},
+     { AT_1HH2, Atom::H},
 
-     { AT_1HH3, AtomDecorator::H},
-     { AT_2HH3, AtomDecorator::H},
-     { AT_3HH3, AtomDecorator::H},
+     { AT_1HH3, Atom::H},
+     { AT_2HH3, Atom::H},
+     { AT_3HH3, Atom::H},
 
-     { AT_P, AtomDecorator::P},
-     { AT_OP1, AtomDecorator::O},
-     { AT_OP2, AtomDecorator::O},
-     { AT_O5p, AtomDecorator::O},
-     { AT_H5p, AtomDecorator::C},
-     { AT_H5pp, AtomDecorator::H},
-     { AT_C4p, AtomDecorator::C},
-     { AT_H4p, AtomDecorator::H},
-     { AT_O4p, AtomDecorator::O},
-     { AT_C1p, AtomDecorator::C},
-     { AT_H1p, AtomDecorator::H},
-     { AT_C3p, AtomDecorator::C},
-     { AT_H3p, AtomDecorator::H},
-     { AT_O3p, AtomDecorator::O},
-     { AT_C2p, AtomDecorator::C},
-     { AT_H2p, AtomDecorator::H},
-     { AT_H2pp, AtomDecorator::H},
-     { AT_O2p, AtomDecorator::O},
-     { AT_HO2p, AtomDecorator::O},
-     { AT_N9, AtomDecorator::N},
-     { AT_C8, AtomDecorator::C},
-     { AT_H8, AtomDecorator::H},
-     { AT_N7, AtomDecorator::N},
-     { AT_C5, AtomDecorator::C},
-     { AT_C4, AtomDecorator::C},
-     { AT_N3, AtomDecorator::N},
-     { AT_C2, AtomDecorator::C},
-     { AT_H2, AtomDecorator::H},
-     { AT_N1, AtomDecorator::N},
-     { AT_C6, AtomDecorator::C},
-     { AT_N6, AtomDecorator::N},
-     { AT_H61, AtomDecorator::H},
-     { AT_H62, AtomDecorator::H},
-     { AT_O6, AtomDecorator::O},
-     { AT_H1, AtomDecorator::H},
-     { AT_N2, AtomDecorator::N},
-     { AT_H21, AtomDecorator::H},
-     { AT_H22, AtomDecorator::H},
+     { AT_P, Atom::P},
+     { AT_OP1, Atom::O},
+     { AT_OP2, Atom::O},
+     { AT_O5p, Atom::O},
+     { AT_H5p, Atom::C},
+     { AT_H5pp, Atom::H},
+     { AT_C4p, Atom::C},
+     { AT_H4p, Atom::H},
+     { AT_O4p, Atom::O},
+     { AT_C1p, Atom::C},
+     { AT_H1p, Atom::H},
+     { AT_C3p, Atom::C},
+     { AT_H3p, Atom::H},
+     { AT_O3p, Atom::O},
+     { AT_C2p, Atom::C},
+     { AT_H2p, Atom::H},
+     { AT_H2pp, Atom::H},
+     { AT_O2p, Atom::O},
+     { AT_HO2p, Atom::O},
+     { AT_N9, Atom::N},
+     { AT_C8, Atom::C},
+     { AT_H8, Atom::H},
+     { AT_N7, Atom::N},
+     { AT_C5, Atom::C},
+     { AT_C4, Atom::C},
+     { AT_N3, Atom::N},
+     { AT_C2, Atom::C},
+     { AT_H2, Atom::H},
+     { AT_N1, Atom::N},
+     { AT_C6, Atom::C},
+     { AT_N6, Atom::N},
+     { AT_H61, Atom::H},
+     { AT_H62, Atom::H},
+     { AT_O6, Atom::O},
+     { AT_H1, Atom::H},
+     { AT_N2, Atom::N},
+     { AT_H21, Atom::H},
+     { AT_H22, Atom::H},
 
-     { AT_H6, AtomDecorator::H},
-     { AT_H5, AtomDecorator::H},
-     { AT_O2, AtomDecorator::O},
-     { AT_N4, AtomDecorator::N},
-     { AT_H41, AtomDecorator::H},
-     { AT_H42,AtomDecorator::H},
-     { AT_H3, AtomDecorator::H},
-     { AT_O4, AtomDecorator::O},
-     { AT_C7, AtomDecorator::C},
-     { AT_H71, AtomDecorator::H},
-     { AT_H72,AtomDecorator::H},
-     { AT_H73,AtomDecorator::H},
-     { AT_UNKNOWN, AtomDecorator::UNKNOWN_ELEMENT}};
+     { AT_H6, Atom::H},
+     { AT_H5, Atom::H},
+     { AT_O2, Atom::O},
+     { AT_N4, Atom::N},
+     { AT_H41, Atom::H},
+     { AT_H42,Atom::H},
+     { AT_H3, Atom::H},
+     { AT_O4, Atom::O},
+     { AT_C7, Atom::C},
+     { AT_H71, Atom::H},
+     { AT_H72,Atom::H},
+     { AT_H73,Atom::H},
+     { AT_UNKNOWN, Atom::UNKNOWN_ELEMENT}};
 
   struct ElementMap {
-    std::map<AtomType, AtomDecorator::Element> map_;
+    std::map<AtomType, Atom::Element> map_;
     ElementMap() {
       for (unsigned int i=0; element_data[i].at != AT_UNKNOWN; ++i) {
         map_[element_data[i].at]= element_data[i].e;
       }
     }
-    AtomDecorator::Element get_element(AtomType at) const {
+    Atom::Element get_element(AtomType at) const {
       IMP_check(map_.find(at) != map_.end(),
                 "Unknown AtomType in get_element.",
                 ValueException);
@@ -376,7 +376,7 @@ namespace {
     unsigned int get_number_of_types() const {
       return map_.size();
     }
-    void add_element(AtomType at, AtomDecorator::Element e) {
+    void add_element(AtomType at, Atom::Element e) {
       map_[at]= e;
     }
   };
@@ -390,17 +390,17 @@ namespace {
   }
 }
 
-AtomDecorator AtomDecorator::create(Particle *p, AtomType t) {
+Atom Atom::create(Particle *p, AtomType t) {
   p->add_attribute(get_type_key(), t.get_index());
-  MolecularHierarchyDecorator::create(p, MolecularHierarchyDecorator::ATOM);
-  AtomDecorator ret(p);
+  MolecularHierarchy::create(p, MolecularHierarchy::ATOM);
+  Atom ret(p);
   return ret;
 }
 
-AtomDecorator AtomDecorator::create(Particle *p, AtomDecorator o) {
+Atom Atom::create(Particle *p, Atom o) {
   p->add_attribute(get_type_key(), o.get_atom_type().get_index());
-  MolecularHierarchyDecorator::create(p, MolecularHierarchyDecorator::ATOM);
-  AtomDecorator ret(p);
+  MolecularHierarchy::create(p, MolecularHierarchy::ATOM);
+  Atom ret(p);
   if (o.get_element() != UNKNOWN_ELEMENT) {
     ret.set_element(o.get_element());
   }
@@ -425,7 +425,7 @@ AtomType atom_type_from_pdb_string(std::string nm) {
   return AtomType(nm.c_str());
 }
 
-void AtomDecorator::show(std::ostream &out, std::string prefix) const
+void Atom::show(std::ostream &out, std::string prefix) const
 {
   //out <<prefix << "Element:"<< get_element() << std::endl;
   out << prefix<< "Type: "<< get_atom_type();
@@ -436,7 +436,7 @@ void AtomDecorator::show(std::ostream &out, std::string prefix) const
 }
 
 
-void AtomDecorator::set_atom_type(AtomType t)
+void Atom::set_atom_type(AtomType t)
 {
   // ultimate the secondary info should be set from a
   // better source. But this is good enough for now.
@@ -446,77 +446,77 @@ void AtomDecorator::set_atom_type(AtomType t)
   }
 }
 
-IntKey AtomDecorator::get_type_key() {
+IntKey Atom::get_type_key() {
   static IntKey k("atom_type");
   return k;
 }
 
-IntKey AtomDecorator::get_element_key() {
+IntKey Atom::get_element_key() {
   static IntKey k("element");
   return k;
 }
 
-FloatKey AtomDecorator::get_mass_key() {
+FloatKey Atom::get_mass_key() {
   static FloatKey k("atom_mass");
   return k;
 }
 
-FloatKey AtomDecorator::get_charge_key() {
+FloatKey Atom::get_charge_key() {
   static FloatKey k("atom_charge");
   return k;
 }
 
-IntKey AtomDecorator::get_input_index_key() {
+IntKey Atom::get_input_index_key() {
   static IntKey k("pdb_atom_index");
   return k;
 }
 
-int get_residue_index(AtomDecorator d) {
+int get_residue_index(Atom d) {
   return get_residue(d).get_index();
 }
 
 
-ResidueType get_residue_type(AtomDecorator d) {
+ResidueType get_residue_type(Atom d) {
   return get_residue(d).get_residue_type();
 }
 
-ResidueDecorator get_residue(AtomDecorator d) {
-  MolecularHierarchyDecorator mhd(d.get_particle());
+Residue get_residue(Atom d) {
+  MolecularHierarchy mhd(d.get_particle());
   do {
     mhd= mhd.get_parent();
-    if (mhd== MolecularHierarchyDecorator()) {
+    if (mhd== MolecularHierarchy()) {
       throw InvalidStateException("Atom is not the child of a residue");
     }
-  } while (!ResidueDecorator::is_instance_of(mhd.get_particle()));
-  ResidueDecorator rd(mhd.get_particle());
+  } while (!Residue::is_instance_of(mhd.get_particle()));
+  Residue rd(mhd.get_particle());
   return rd;
 }
 
-AtomDecorator get_atom(ResidueDecorator rd, AtomType at) {
-  MolecularHierarchyDecorator mhd(rd.get_particle());
+Atom get_atom(Residue rd, AtomType at) {
+  MolecularHierarchy mhd(rd.get_particle());
   for (unsigned int i=0; i< mhd.get_number_of_children(); ++i) {
-    AtomDecorator a(mhd.get_child(i).get_particle());
+    Atom a(mhd.get_child(i).get_particle());
     if (a.get_atom_type() == at) return a;
   }
   IMP_LOG(VERBOSE, "Atom not found " << at << std::endl);
-  return AtomDecorator();
+  return Atom();
 }
 
-char get_chain(AtomDecorator d) {
-  ResidueDecorator rd = get_residue(d);
-  MolecularHierarchyDecorator mhd(rd.get_particle());
+char get_chain(Atom d) {
+  Residue rd = get_residue(d);
+  MolecularHierarchy mhd(rd.get_particle());
   do {
     mhd= mhd.get_parent();
-    if (mhd == MolecularHierarchyDecorator()) {
+    if (mhd == MolecularHierarchy()) {
       throw InvalidStateException("Residue is not the child of a chain");
     }
-  } while (mhd.get_type() != MolecularHierarchyDecorator::CHAIN);
-  ChainDecorator cd(mhd.get_particle());
+  } while (mhd.get_type() != MolecularHierarchy::CHAIN);
+  Chain cd(mhd.get_particle());
   return cd.get_id();
 }
 
 
-std::string AtomDecorator::get_pdb_string(int index) {
+std::string Atom::get_pdb_string(int index) {
   std::stringstream out;
   Particle *p = get_particle();
   out.setf(std::ios::left, std::ios::adjustfield);
@@ -573,7 +573,7 @@ std::string AtomDecorator::get_pdb_string(int index) {
   out << get_residue(*this).get_insertion_code();
   out.setf(std::ios::fixed, std::ios::floatfield);
   out << "   "; // skip 3 undefined positions (28-30)
-  core::XYZDecorator xyz= core::XYZDecorator::cast(p);
+  core::XYZ xyz= core::XYZ::cast(p);
   // coordinates (31-38,39-46,47-54)
   out.width(8);
   out.precision(3);
@@ -598,7 +598,7 @@ std::string AtomDecorator::get_pdb_string(int index) {
 
 
 AtomType add_atom_type(std::string name,
-                       AtomDecorator::Element element) {
+                       Atom::Element element) {
   IMP_check(!AtomType::get_key_exists(name),
             "An AtomType with that name already exists: "
             << name, ValueException);

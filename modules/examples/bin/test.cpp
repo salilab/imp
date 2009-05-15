@@ -12,9 +12,9 @@ int main(){
   set_log_level(VERBOSE);
   WeakPointer<Model> m(new Model());
   Particle* p0= new Particle(m);
-  core::XYZDecorator d0= core::XYZDecorator::create(p0);
+  core::XYZ d0= core::XYZ::create(p0);
   Particle* p1= new Particle(m);
-  core::XYZDecorator d1= core::XYZDecorator::create(p1);
+  core::XYZ d1= core::XYZ::create(p1);
   core::DistancePairScore *dps
     = new core::DistancePairScore(new core::Linear(0,1));
   core::ListPairContainer *pc= new core::ListPairContainer();

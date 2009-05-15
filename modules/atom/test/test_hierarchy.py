@@ -3,15 +3,15 @@ import IMP
 import IMP.test
 import IMP.atom
 
-ATOM = IMP.atom.MolecularHierarchyDecorator.ATOM
-RESIDUE = IMP.atom.MolecularHierarchyDecorator.RESIDUE
-UNKNOWN = IMP.atom.MolecularHierarchyDecorator.UNKNOWN
+ATOM = IMP.atom.MolecularHierarchy.ATOM
+RESIDUE = IMP.atom.MolecularHierarchy.RESIDUE
+UNKNOWN = IMP.atom.MolecularHierarchy.UNKNOWN
 
 def _make_hierarchy_decorators(m, *types):
     decorators = []
     for t in types:
         p = IMP.Particle(m)
-        d = IMP.atom.MolecularHierarchyDecorator.create(p, t)
+        d = IMP.atom.MolecularHierarchy.create(p, t)
         decorators.append(d)
     return decorators
 
@@ -23,9 +23,9 @@ def _make_bonded_atoms(m):
         r1.add_child(a)
     for a in atoms2:
         r2.add_child(a)
-    bonded1 = [IMP.atom.BondedDecorator.create(a.get_particle())
+    bonded1 = [IMP.atom.Bonded.create(a.get_particle())
                for a in atoms1]
-    bonded2 = [IMP.atom.BondedDecorator.create(a.get_particle())
+    bonded2 = [IMP.atom.Bonded.create(a.get_particle())
                for a in atoms2]
     return r1, r2, bonded1, bonded2
 
@@ -88,13 +88,13 @@ class HierarchyTests(IMP.test.TestCase):
         m = IMP.Model()
         # Bonds external to the hierarchy should not be counted
         r1, r2, bonded1, bonded2 = _make_bonded_atoms(m)
-        IMP.atom.bond(bonded1[0], bonded2[0], IMP.atom.BondDecorator.COVALENT)
+        IMP.atom.bond(bonded1[0], bonded2[0], IMP.atom.Bond.COVALENT)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r1)), 0)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r2)), 0)
 
         # Each bond should only be counted once
         r1, r2, bonded1, bonded2 = _make_bonded_atoms(m)
-        IMP.atom.bond(bonded1[0], bonded1[3], IMP.atom.BondDecorator.COVALENT)
+        IMP.atom.bond(bonded1[0], bonded1[3], IMP.atom.Bond.COVALENT)
         bonds = IMP.atom.get_internal_bonds(r1)
         self.assertEqual(len(bonds), 1)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r2)), 0)
@@ -105,7 +105,7 @@ class HierarchyTests(IMP.test.TestCase):
         r1, r2, bonded1, bonded2 = _make_bonded_atoms(m)
         for end in (1, 2, 3):
             IMP.atom.bond(bonded1[0], bonded1[end],
-                          IMP.atom.BondDecorator.COVALENT)
+                          IMP.atom.Bond.COVALENT)
         self.assertEqual(len(IMP.atom.get_internal_bonds(r1)), 3)
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@
 
 #include <IMP/core/LeavesRefiner.h>
 
-#include <IMP/core/HierarchyDecorator.h>
+#include <IMP/core/Hierarchy.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -19,9 +19,9 @@ LeavesRefiner
 
 bool LeavesRefiner::get_can_refine(Particle *p) const
 {
-  if (!core::HierarchyDecorator::is_instance_of(p, traits_)) return false;
-  if (core::HierarchyDecorator(p, traits_).get_number_of_children() != 0) {
-    cache_[p]=get_leaves(core::HierarchyDecorator(p, traits_));
+  if (!core::Hierarchy::is_instance_of(p, traits_)) return false;
+  if (core::Hierarchy(p, traits_).get_number_of_children() != 0) {
+    cache_[p]=get_leaves(core::Hierarchy(p, traits_));
     return true;
   } else {
     return false;

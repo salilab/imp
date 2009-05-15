@@ -20,8 +20,8 @@ rbss1 = IMP.core.create_rigid_body(rbp1, rbps1)
 m.add_score_state(rbss1)
 
 # make sure the rigid bodies have a large enough radius to include their members
-IMP.core.cover_members(IMP.core.RigidBodyDecorator(rbp0))
-IMP.core.cover_members(IMP.core.RigidBodyDecorator(rbp1))
+IMP.core.cover_members(IMP.core.RigidBody(rbp0))
+IMP.core.cover_members(IMP.core.RigidBody(rbp1))
 
 lsc= IMP.core.ListSingletonContainer()
 lsc.add_particle(rbp0)

@@ -25,10 +25,10 @@ IMPEXAMPLES_BEGIN_NAMESPACE
     non-empty.
 
     The source code is as follows:
-    \include ExampleDecorator.h
-    \include ExampleDecorator.cpp
+    \include Example.h
+    \include Example.cpp
 */
-class IMPEXAMPLESEXPORT ExampleDecorator: public Decorator
+class IMPEXAMPLESEXPORT Example: public Decorator
 {
   /* Use a static variable in a static method to create the key
      so that it is only done once and is only done when it is first
@@ -44,11 +44,11 @@ public:
       the initial state of the Decorator to be reasonable (i.e.
       make sure there is a non-empty name).
    */
-  static ExampleDecorator create(Particle *p, std::string name) {
+  static Example create(Particle *p, std::string name) {
     IMP_check(!name.empty(), "The name cannot be empty.",
               ValueException);
     p->add_attribute(get_name_key(), name);
-    ExampleDecorator ret(p);
+    Example ret(p);
     return ret;
   }
 
@@ -68,11 +68,11 @@ public:
     return get_particle()->get_value(get_name_key());
   }
   /* Declare the basic constructors and the cast function.*/
-  IMP_DECORATOR(ExampleDecorator, Decorator)
+  IMP_DECORATOR(Example, Decorator)
 };
 
 // Make it so the C++ operator<< can be used.
-IMP_OUTPUT_OPERATOR(ExampleDecorator);
+IMP_OUTPUT_OPERATOR(Example);
 
 IMPEXAMPLES_END_NAMESPACE
 

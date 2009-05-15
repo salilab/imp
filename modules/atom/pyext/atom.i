@@ -28,7 +28,7 @@
 /*namespace IMP {
 namespace core {
 // stupid hack for swig
-class XYZDecorator {
+class XYZ {
 public:
 void set_x(Float f);
 };
@@ -36,7 +36,7 @@ void set_x(Float f);
 }*/
 
 // it is used as a base class
-%include "IMP/atom/MolecularHierarchyDecorator.h"
+%include "IMP/atom/MolecularHierarchy.h"
 
 
 /* Wrap our own classes */
@@ -46,9 +46,9 @@ void set_x(Float f);
 %include "IMP/atom/BondPairContainer.h"
 %include "IMP/atom/BondSingletonScore.h"
 %include "IMP/atom/BrownianDynamics.h"
-%include "IMP/atom/DiffusionDecorator.h"
-%include "IMP/atom/ChainDecorator.h"
-%include "IMP/atom/DomainDecorator.h"
+%include "IMP/atom/Diffusion.h"
+%include "IMP/atom/Chain.h"
+%include "IMP/atom/Domain.h"
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/selectors.h"
@@ -56,9 +56,9 @@ void set_x(Float f);
 
 namespace IMP {
   namespace atom {
-    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::MolecularHierarchyDecorator>;
+    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::MolecularHierarchy>;
     // swig gets scope wrong, I can't fix it
-    %template(BondDecorators) ::std::vector<IMP::atom::BondDecorator>;
+    %template(Bonds) ::std::vector<IMP::atom::Bond>;
   }
 }
 
@@ -68,9 +68,9 @@ namespace atom {
    // swig has random, perplexing issues if these are higher in the file
    %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
    %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
-   %template(MolecularHierarchyDecorators) ::std::vector<MolecularHierarchyDecorator>;	
+   %template(MolecularHierarchys) ::std::vector<MolecularHierarchy>;	
 
 }
 }
-%include "IMP/atom/AtomDecorator.h"
-%include "IMP/atom/ResidueDecorator.h"
+%include "IMP/atom/Atom.h"
+%include "IMP/atom/Residue.h"

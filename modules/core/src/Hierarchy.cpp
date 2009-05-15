@@ -1,19 +1,18 @@
 /**
- *  \file HierarchyDecorator.cpp   \brief Decorator for helping deal with
+ *  \file Hierarchy.cpp   \brief Decorator for helping deal with
  *                                        a hierarchy.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include <IMP/core/HierarchyDecorator.h>
-#include <IMP/core/NameDecorator.h>
+#include <IMP/core/Hierarchy.h>
 
 #include <sstream>
 
 IMPCORE_BEGIN_NAMESPACE
 
-const HierarchyTraits& HierarchyDecorator::get_default_traits() {
+const HierarchyTraits& Hierarchy::get_default_traits() {
   static HierarchyTraits ret("hierarchy");
   return ret;
 }
@@ -24,16 +23,16 @@ HierarchyTraits::HierarchyTraits(std::string name): P(name),
 }
 
 
-/*HierarchyDecorator::HierarchyDecorator(Particle *p,
+/*Hierarchy::Hierarchy(Particle *p,
                                        HierarchyTraits traits): P(p),
                                                                 traits_(traits){
 }
 
-HierarchyDecorator::HierarchyDecorator(HierarchyTraits traits): traits_(traits){
+Hierarchy::Hierarchy(HierarchyTraits traits): traits_(traits){
 }*/
 
 
-void HierarchyDecorator::validate_node() const
+void Hierarchy::validate_node() const
 {
   //get_particle()->get_model()->show(std::cerr);
   if (has_parent()) {
@@ -48,13 +47,13 @@ void HierarchyDecorator::validate_node() const
   }
 }
 
-void HierarchyDecorator::show(std::ostream &out, std::string) const
+void Hierarchy::show(std::ostream &out, std::string) const
 {
-  out << "HierarchyDecorator";
+  out << "Hierarchy";
 }
 
 
-unsigned int count_hierarchy(HierarchyDecorator h)
+unsigned int count_hierarchy(Hierarchy h)
 {
   HierarchyCounter hc;
   depth_first_traversal(h,hc);
@@ -72,7 +71,7 @@ struct AssertHierarchy: public HierarchyVisitor
   HierarchyTraits traits_;
   AssertHierarchy(HierarchyTraits tr): traits_(tr){}
   bool visit(Particle *p) {
-    HierarchyDecorator d= HierarchyDecorator::cast(p, traits_);
+    Hierarchy d= Hierarchy::cast(p, traits_);
     d.validate_node();
     return true;
   }
@@ -81,7 +80,7 @@ struct AssertHierarchy: public HierarchyVisitor
 } // namespace internal
 
 
-void HierarchyDecorator::validate() const
+void Hierarchy::validate() const
 {
   //std::cerr << "Checking hierarchy" << std::endl;
   internal::AssertHierarchy ah(traits_);
@@ -89,7 +88,7 @@ void HierarchyDecorator::validate() const
 }
 
 
-int HierarchyDecorator::get_child_index(HierarchyDecorator c) const
+int Hierarchy::get_child_index(Hierarchy c) const
 {
   IMP_check(traits_.get_name() == c.traits_.get_name(),
             "Attemping to mix hierarchy of type " << traits_.get_name()
@@ -102,13 +101,13 @@ int HierarchyDecorator::get_child_index(HierarchyDecorator c) const
 }
 
 
-void breadth_first_traversal(HierarchyDecorator d, HierarchyVisitor &f)
+void breadth_first_traversal(Hierarchy d, HierarchyVisitor &f)
 {
-  std::deque<HierarchyDecorator> stack;
+  std::deque<Hierarchy> stack;
   stack.push_back(d);
   //d.show(std::cerr);
   do {
-    HierarchyDecorator cur= stack.front();
+    Hierarchy cur= stack.front();
     stack.pop_front();
     if (f.visit(cur.get_particle())) {
       //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
@@ -119,12 +118,12 @@ void breadth_first_traversal(HierarchyDecorator d, HierarchyVisitor &f)
   } while (!stack.empty());
 }
 
-void depth_first_traversal(HierarchyDecorator d, HierarchyVisitor &f)
+void depth_first_traversal(Hierarchy d, HierarchyVisitor &f)
 {
-  std::vector<HierarchyDecorator> stack;
+  std::vector<Hierarchy> stack;
   stack.push_back(d);
   do {
-    HierarchyDecorator cur= stack.back();
+    Hierarchy cur= stack.back();
     stack.pop_back();
     if (f.visit(cur.get_particle())) {
       for (int i=cur.get_number_of_children()-1; i>=0; --i) {
@@ -144,7 +143,7 @@ struct MHDMatchingLeaves
   HierarchyTraits traits_;
   MHDMatchingLeaves(HierarchyTraits tr): traits_(tr){}
   bool operator()(Particle *p) const {
-    HierarchyDecorator mhd(p, traits_);
+    Hierarchy mhd(p, traits_);
     return mhd.get_number_of_children()==0;
   }
 };
@@ -153,7 +152,7 @@ struct MHDMatchingLeaves
 
 
 Particles
-get_leaves(HierarchyDecorator mhd)
+get_leaves(Hierarchy mhd)
 {
   Particles out;
   gather(mhd, MHDMatchingLeaves(mhd.get_traits()),
@@ -175,7 +174,7 @@ struct MHDMatchingAll
 } // namespace
 
 Particles
-get_all_descendants(HierarchyDecorator mhd)
+get_all_descendants(Hierarchy mhd)
 {
   Particles out;
   gather(mhd, MHDMatchingAll(),

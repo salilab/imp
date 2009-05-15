@@ -9,7 +9,7 @@
 #define IMPATOM_BOND_GRAPH_H
 
 #include "bond_decorators.h"
-#include "MolecularHierarchyDecorator.h"
+#include "MolecularHierarchy.h"
 #include "internal/bond_graph_functors.h"
 #include <IMP/core/ListSingletonContainer.h>
 #include <IMP/internal/NestedIterator.h>
@@ -32,9 +32,9 @@ IMPATOM_BEGIN_NAMESPACE
 \external{www.boost.org/doc/libs/1_39_0/libs/graph/doc/table_of_contents.html,
     Boost.Graph manual} for more details and a list of algorithms.
 
-    The vertices are BondedDecorators. The type of the edge_descriptors
+    The vertices are Bondeds. The type of the edge_descriptors
     is internal. You can use the get_bond() method to get the corresponding
-    BondDecorator.
+    Bond.
 
     And all vertices can be assumed to have internal boost vertex indices.
     The Boost.PropertyMap to access these can be accessed using the
@@ -46,9 +46,9 @@ IMPATOM_BEGIN_NAMESPACE
         boost::isomorphism_map(BondGraph::VertexVertexPropertyMap(pk))
         .vertex_index1_map(a.get_vertex_index_map())
         .vertex_index2_map(b.get_vertex_index_map()));
-boost::dijkstra_shortest_paths(a, BondedDecorator(),
+boost::dijkstra_shortest_paths(a, Bonded(),
  boost::predecessor_map(BondGraph::VertexVertexPropertyMap(pk))
- .weight_map(BondGraph::EdgeFloatPropertyMap(BondDecorator::get_legnth_key()))
+ .weight_map(BondGraph::EdgeFloatPropertyMap(Bond::get_legnth_key()))
  .distance_map(BondGraph::VertexFloatPropertyMap(FloatKey("graph distance")))
  .vertex_index_map(a.get_vertex_index_map()));
     \endcode
@@ -62,12 +62,12 @@ class IMPATOMEXPORT BondGraph: public NullDefault{
 public:
   IMP_NO_DOXYGEN(Pointer<core::ListSingletonContainer> sc_;)
 
-  //! The graph is on the leaves of the MolecularHierachyDecorator
+  //! The graph is on the leaves of the MolecularHierachy
   /** All the leaves will be made Bonded particles if they are not already.
       \note The hierarchy must not have any bonds to particles not in the
       hierarchy.
    */
-  BondGraph(MolecularHierarchyDecorator bd);
+  BondGraph(MolecularHierarchy bd);
 
   BondGraph(){}
 
@@ -79,7 +79,7 @@ public:
     VertexFloatPropertyMap;
   typedef internal::AttributeVertexPropertyMap<IntKey, Int>
     VertexIntPropertyMap;
-  typedef internal::AttributeVertexPropertyMap<ParticleKey, BondedDecorator>
+  typedef internal::AttributeVertexPropertyMap<ParticleKey, Bonded>
     VertexVertexPropertyMap;
 
 
@@ -119,11 +119,11 @@ public:
 
 
 #ifndef IMP_DOXYGEN
-  typedef std::pair<BondedDecorator,
-         BondedDecorator> edge_descriptor;
+  typedef std::pair<Bonded,
+         Bonded> edge_descriptor;
 #endif
 
-  BondDecorator get_bond(edge_descriptor d) const {
+  Bond get_bond(edge_descriptor d) const {
     return IMP::atom::get_bond(d.first, d.second);
   }
 
@@ -134,7 +134,7 @@ public:
     //public virtual boost::incidence_graph_tag
                              public virtual boost::bidirectional_graph_tag
   {};
-  typedef BondedDecorator vertex_descriptor;
+  typedef Bonded vertex_descriptor;
   //typedef undirected_tag directed_category;
   typedef int vertices_size_type;
   typedef int edges_size_type;

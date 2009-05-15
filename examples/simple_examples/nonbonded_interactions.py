@@ -11,8 +11,8 @@ ps = IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 1.0))
 
 # create a bond between two particles
 bonds= IMP.core.ListSingletonContainer()
-bd0= IMP.atom.BondedDecorator.create(ps.get_particle(0))
-bd1= IMP.atom.BondedDecorator.create(ps.get_particle(1))
+bd0= IMP.atom.Bonded.create(ps.get_particle(0))
+bd1= IMP.atom.Bonded.create(ps.get_particle(1))
 bonds.add_particle(IMP.atom.custom_bond(bd0, bd1, 2.0).get_particle())
 
 # Set up the nonbonded list

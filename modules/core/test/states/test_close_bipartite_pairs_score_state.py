@@ -7,8 +7,8 @@ import random
 
 class TestBL(IMP.test.TestCase):
     def _are_close(self, a, b, rk, d):
-        da= IMP.core.XYZDecorator(a)
-        db= IMP.core.XYZDecorator(b)
+        da= IMP.core.XYZ(a)
+        db= IMP.core.XYZ(b)
         r=0
         if rk != IMP.FloatKey():
             r= a.get_value(rk)+ b.get_value(rk)
@@ -55,26 +55,26 @@ class TestBL(IMP.test.TestCase):
         print "adding a radius"
         cpss.set_distance(0)
         for p in ps0:
-            d= IMP.core.XYZRDecorator.create(p)
+            d= IMP.core.XYZR.create(p)
             d.set_radius(random.uniform(0,2))
         for p in ps1:
-            d= IMP.core.XYZRDecorator.create(p)
+            d= IMP.core.XYZR.create(p)
             d.set_radius(random.uniform(0,2))
-        cpss.set_radius_key(IMP.core.XYZRDecorator.get_default_radius_key())
+        cpss.set_radius_key(IMP.core.XYZR.get_default_radius_key())
         self._compare_lists(m, cpss)
 
         for p in ps0:
-            d= IMP.core.XYZRDecorator.cast(p)
+            d= IMP.core.XYZR.cast(p)
             d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         self._compare_lists(m, cpss)
 
         for p in ps1:
-            d= IMP.core.XYZRDecorator.cast(p)
+            d= IMP.core.XYZR.cast(p)
             d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
         self._compare_lists(m, cpss)
 
         print "changing radius"
-        cpss.set_radius_key(IMP.core.XYZDecorator.get_xyz_keys()[0])
+        cpss.set_radius_key(IMP.core.XYZ.get_xyz_keys()[0])
         self._compare_lists(m, cpss)
 
 

@@ -17,9 +17,9 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
   saxs_score_ = new Score(ff_table_, (Profile*)&exp_profile);
 
   for(unsigned int i=0; i<particles.size(); i++) {
-    if(core::RigidBodyDecorator::is_instance_of(particles[i])) {
+    if(core::RigidBody::is_instance_of(particles[i])) {
       rigid_bodies_decorators_.push_back(
-                              core::RigidBodyDecorator::cast(particles[i]));
+                              core::RigidBody::cast(particles[i]));
       rigid_bodies_.push_back(
                      rigid_bodies_decorators_.back().get_member_particles());
       // compute non-changing profile
@@ -27,7 +27,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
       rigid_part_profile.calculate_profile(rigid_bodies_.back());
       rigid_bodies_profile_.add(rigid_part_profile);
     } else {
-      if(atom::AtomDecorator::is_instance_of(particles[i])) {
+      if(atom::Atom::is_instance_of(particles[i])) {
         particles_.push_back(particles[i]);
       }
     }
@@ -79,7 +79,7 @@ Float Restraint::evaluate(DerivativeAccumulator *acc)
   IMP_LOG(TERSE, "SAXS Restraint::compute derivatives\n");
 
   std::vector<IMP::algebra::Vector3D> derivatives;
-  const FloatKeys keys = IMP::core::XYZDecorator::get_xyz_keys();
+  const FloatKeys keys = IMP::core::XYZ::get_xyz_keys();
 
   // 1. compute derivatives for each rigid body
   for(unsigned int i=0; i<rigid_bodies_.size(); i++) {

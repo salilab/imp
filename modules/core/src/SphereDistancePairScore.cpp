@@ -7,7 +7,7 @@
 
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/core/DistancePairScore.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 
 #include <IMP/UnaryFunction.h>
@@ -39,8 +39,8 @@ Float SphereDistancePairScore::evaluate(Particle *a, Particle *b,
             ValueException);
   Float ra = a->get_value(radius_);
   Float rb = b->get_value(radius_);
-  return internal::evaluate_distance_pair_score(XYZDecorator(a),
-                                                XYZDecorator(b),
+  return internal::evaluate_distance_pair_score(XYZ(a),
+                                                XYZ(b),
                                                 da, f_.get(),
                                                 boost::lambda::_1-(ra+rb));
 }

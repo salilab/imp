@@ -302,7 +302,7 @@ public:                                                      \
     - a method get_model()
     - comparisons.
 
-    \param[in] Name is the name of the decorator, such as NameDecorator
+    \param[in] Name is the name of the decorator, such as XYZR
     \param[in] Parent The class name for the parent of this class,
     typically Decorator
 
@@ -361,7 +361,7 @@ IMP_NO_SWIG(IMP_NO_DOXYGEN(operator bool_type() const {                 \
 /** This macro is the same as IMP_DECORATOR() except that an extra object
     of type TraitsType is passed after the particle to
     Decorator::is_instance_of(), Decorator::create() and Decorator::cast().
-    As in the IMP::core::XYZRDecorator or IMP::core::HierarchyDecorator,
+    As in the IMP::core::XYZR or IMP::core::Hierarchy,
     this object can be used to parameterize the Decorator. The traits
     object is stored in the decorator and made accessible through
     the get_traits() method.

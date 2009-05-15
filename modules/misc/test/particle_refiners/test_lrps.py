@@ -17,15 +17,15 @@ class Test(IMP.test.TestCase):
         m= IMP.Model()
         pp0= IMP.Particle(m)
         pp1= IMP.Particle(m)
-        hpp= [IMP.core.HierarchyDecorator.create(pp0),
-              IMP.core.HierarchyDecorator.create(pp1)]
+        hpp= [IMP.core.Hierarchy.create(pp0),
+              IMP.core.Hierarchy.create(pp1)]
         ds=[[],[]]
         for i in range(0,10):
             p= IMP.Particle(m)
-            d= IMP.core.XYZDecorator.create(p)
+            d= IMP.core.XYZ.create(p)
             d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
             ds[i%2].append(d)
-            hp= IMP.core.HierarchyDecorator.create(p)
+            hp= IMP.core.Hierarchy.create(p)
             hpp[i%2].add_child(hp)
         # could be more clever
         md= 1000000
@@ -33,7 +33,7 @@ class Test(IMP.test.TestCase):
             for p1 in ds[1]:
                 d= IMP.core.distance(p0, p1)
                 if d < md: md=d
-        pr= IMP.core.ChildrenRefiner(IMP.core.HierarchyDecorator.get_default_traits())
+        pr= IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
         cps= IMP.core.Linear(0,1)
         dps= IMP.core.DistancePairScore(cps)
         rps= IMP.misc.LowestRefinedPairScore(pr, dps)

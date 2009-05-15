@@ -1,6 +1,6 @@
 /**
  *  \file SphereGeometry.h
- *  \brief Represent an SphereDecorator particle with a sphere
+ *  \brief Represent an Sphere particle with a sphere
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */

@@ -118,8 +118,8 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
   IMP_CHECK_OBJECT(f_);
   if (!xyzc_[0]) {
     IMP_LOG(TERSE, "Virgin ss" << std::endl);
-    xyzc_[0] =new MaximumChangeScoreState(in_[0], XYZDecorator::get_xyz_keys());
-    xyzc_[1] =new MaximumChangeScoreState(in_[1], XYZDecorator::get_xyz_keys());
+    xyzc_[0] =new MaximumChangeScoreState(in_[0], XYZ::get_xyz_keys());
+    xyzc_[1] =new MaximumChangeScoreState(in_[1], XYZ::get_xyz_keys());
     if (rk_ != FloatKey()) {
       rc_[0]= new MaximumChangeScoreState(in_[0], FloatKeys(1, rk_));
       rc_[1]= new MaximumChangeScoreState(in_[1], FloatKeys(1, rk_));

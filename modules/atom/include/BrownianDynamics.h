@@ -11,7 +11,7 @@
 
 #include "config.h"
 #include "internal/version_info.h"
-#include "DiffusionDecorator.h"
+#include "Diffusion.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
 
     Particles without optimized x,y,z and nonoptimized D are skipped.
 
-    \see DiffusionDecorator
+    \see Diffusion
   */
 class IMPATOMEXPORT BrownianDynamics : public Optimizer
 {

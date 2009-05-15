@@ -1,5 +1,5 @@
 /**
- *  \file BondDecoratorSingletonScore.cpp
+ *  \file BondSingletonScore.cpp
  *  \brief A score based a bond decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
@@ -8,7 +8,7 @@
 #include "IMP/atom/BondSingletonScore.h"
 #include "IMP/core/internal/evaluate_distance_pair_score.h"
 #include "IMP/atom/bond_decorators.h"
-#include "IMP/core/XYZDecorator.h"
+#include "IMP/core/XYZ.h"
 #include <boost/lambda/lambda.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -19,9 +19,9 @@ Float BondSingletonScore::evaluate(Particle *b,
                                    DerivativeAccumulator *da) const
 {
   IMP_IF_CHECK(EXPENSIVE) {
-    BondDecorator::cast(b);
+    Bond::cast(b);
   }
-  BondDecorator bd(b);
+  Bond bd(b);
   Float l= bd.get_length();
   Float s= bd.get_stiffness();
   if (l < 0) {
@@ -40,8 +40,8 @@ Float BondSingletonScore::evaluate(Particle *b,
   }
   return
     IMP::core::internal::
-    evaluate_distance_pair_score(IMP::core::XYZDecorator(pa),
-                                 IMP::core::XYZDecorator(pb),
+    evaluate_distance_pair_score(IMP::core::XYZ(pa),
+                                 IMP::core::XYZ(pb),
                                  da,
                                  f_.get(),
                                  s*(boost::lambda::_1-l));

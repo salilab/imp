@@ -9,8 +9,8 @@
 #define IMPCORE_INTERNAL_RIGID_BODIES_H
 
 #include "../config.h"
-#include "../XYZDecorator.h"
-#include "../HierarchyDecorator.h"
+#include "../XYZ.h"
+#include "../Hierarchy.h"
 #include <IMP/algebra/Sphere3D.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -48,7 +48,7 @@ inline bool get_has_required_attributes_for_body(Particle *p) {
             && p->has_attribute(rigid_body_data().quaternion_[1])
             && p->has_attribute(rigid_body_data().quaternion_[2])
             && p->has_attribute(rigid_body_data().quaternion_[3])
-             && XYZDecorator::is_instance_of(p))
+             && XYZ::is_instance_of(p))
             || (!p->has_attribute(rigid_body_data().quaternion_[0])
                 && !p->has_attribute(rigid_body_data().quaternion_[1])
                 && !p->has_attribute(rigid_body_data().quaternion_[2])
@@ -66,7 +66,7 @@ get_has_required_attributes_for_member(Particle *p) {
     if (!p->has_attribute(rigid_body_data().child_keys_[i])) return false;
   }
   for (unsigned int i=0; i< 3; ++i) {
-    if (!p->has_attribute(XYZDecorator::get_coordinate_key(i)))
+    if (!p->has_attribute(XYZ::get_coordinate_key(i)))
       return false;
   }
   return true;
@@ -76,9 +76,9 @@ inline void add_required_attributes_for_body(Particle *p) {
   for (unsigned int i=0; i< 4; ++i) {
     p->add_attribute(rigid_body_data().quaternion_[i], 0);
   }
-  HierarchyDecorator::create(p, rigid_body_data().htraits_);
-  if (!XYZDecorator::is_instance_of(p)) {
-      XYZDecorator::create(p);
+  Hierarchy::create(p, rigid_body_data().htraits_);
+  if (!XYZ::is_instance_of(p)) {
+      XYZ::create(p);
   }
 }
 
@@ -86,8 +86,8 @@ inline void add_required_attributes_for_member(Particle *p) {
   for (unsigned int i=0; i< 3; ++i) {
     p->add_attribute(rigid_body_data().child_keys_[i], 0);
   }
-  HierarchyDecorator::create(p, rigid_body_data().htraits_);
-  XYZDecorator::cast(p);
+  Hierarchy::create(p, rigid_body_data().htraits_);
+  XYZ::cast(p);
 }
 
 

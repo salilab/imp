@@ -20,8 +20,8 @@
 #include <IMP/internal/IndexingIterator.h>
 IMPATOM_BEGIN_NAMESPACE
 
-class BondDecorator;
-class BondedDecorator;
+class Bond;
+class Bonded;
 
 /** \defgroup bond Creating and restraining bonds
     A set of classes and functions for manipulating bonds.
@@ -29,18 +29,18 @@ class BondedDecorator;
 
 //! A decorator for wrapping a particle representing a molecular bond
 /**
-   As with AtomDecorator, the types of bonds will eventually be run-time
+   As with Atom, the types of bonds will eventually be run-time
    expandible.
 
    \ingroup bond
-   \see BondedDecorator
+   \see Bonded
    \see IMP::atom::get_internal_bonds()
  */
-class IMPATOMEXPORT BondDecorator: public Decorator
+class IMPATOMEXPORT Bond: public Decorator
 {
-  friend class BondedDecorator;
+  friend class Bonded;
 public:
-  IMP_DECORATOR(BondDecorator, Decorator)
+  IMP_DECORATOR(Bond, Decorator)
 
   //! Return true if the particle is a bond.
   static bool is_instance_of(Particle *p) {
@@ -56,9 +56,9 @@ public:
 
   //! Get the atom i of the bond
   /** \param[in] i 0 or 1
-      \return BondedDecorator for the atom in question
+      \return Bonded for the atom in question
   */
-  BondedDecorator get_bonded(unsigned int i) const ;
+  Bonded get_bonded(unsigned int i) const ;
 
   IMP_DECORATOR_GET_SET_OPT(type,
                             internal::get_bond_data().type_, Int, Int,
@@ -81,47 +81,47 @@ public:
   }
 };
 
-IMP_OUTPUT_OPERATOR(BondDecorator);
+IMP_OUTPUT_OPERATOR(Bond);
 
 
 
 //! A decorator for a particle which has bonds.
 /** \ingroup bond
-    \see BondDecorator
+    \see Bond
  */
-class IMPATOMEXPORT BondedDecorator: public Decorator
+class IMPATOMEXPORT Bonded: public Decorator
 {
   struct GetBond {
-    typedef BondDecorator result_type;
+    typedef Bond result_type;
     Particle* d_;
     GetBond():d_(NULL){}
     GetBond(Particle* d): d_(d){}
-    BondDecorator operator()(unsigned int i) const;
+    Bond operator()(unsigned int i) const;
     bool operator==(const GetBond &o) const {
       return d_== o.d_;
     }
   };
   struct GetBonded {
-    typedef BondedDecorator result_type;
+    typedef Bonded result_type;
     Particle* d_;
     GetBonded():d_(NULL){}
     GetBonded(Particle* d): d_(d){}
-    BondedDecorator operator()(unsigned int i) const;
+    Bonded operator()(unsigned int i) const;
     bool operator==(const GetBonded &o) const {
       return d_== o.d_;
     }
   };
 public:
-  IMP_DECORATOR(BondedDecorator, Decorator)
+  IMP_DECORATOR(Bonded, Decorator)
   //! return true if it is a bonded particle
   static bool is_instance_of(Particle *p) {
     return IMP::core::internal::graph_is_node(p,
                              internal::get_bond_data().graph_);
   }
 
-  static BondedDecorator create(Particle *p) {
+  static Bonded create(Particle *p) {
     graph_initialize_node(p, internal::get_bond_data().graph_);
-  return BondedDecorator(p);
+  return Bonded(p);
   }
 
   /** */
@@ -131,17 +131,17 @@ public:
   }
 
 
-  //! Get a BondDecorator of the ith bond
+  //! Get a Bond of the ith bond
   /** \return decorator of the ith child, or throw an exception if there
               is no such bond
   */
-  BondDecorator get_bond(unsigned int i) const {
+  Bond get_bond(unsigned int i) const {
     Particle *p= graph_get_edge(get_particle(), i,
                                      internal::get_bond_data().graph_);
-    return BondDecorator(p);
+    return Bond(p);
   }
 
-  //! Get a BondedDecorator of the ith bonded particle
+  //! Get a Bonded of the ith bonded particle
   /** \return decorator of the ith child, or throw an exception if there
               is no such bond
 
@@ -151,10 +151,10 @@ public:
       could later pull the edge endpoints into the vertex if
       desired.
   */
-  BondedDecorator get_bonded(unsigned int i) const {
+  Bonded get_bonded(unsigned int i) const {
     Particle *p= graph_get_edge(get_particle(), i,
                                 internal::get_bond_data().graph_);
-    BondDecorator bd(p);
+    Bond bd(p);
     if (bd.get_bonded(0) == *this) return bd.get_bonded(1);
     else return bd.get_bonded(0);
   }
@@ -191,60 +191,60 @@ public:
   /** @} */
 };
 
-IMP_OUTPUT_OPERATOR(BondedDecorator);
+IMP_OUTPUT_OPERATOR(Bonded);
 
-//! A collection of BondDecorators
-typedef std::vector<BondDecorator> BondDecorators;
+//! A collection of Bonds
+typedef std::vector<Bond> Bonds;
 
-inline BondedDecorator BondDecorator::get_bonded(unsigned int i) const
+inline Bonded Bond::get_bonded(unsigned int i) const
 {
   Particle *p= graph_get_node(get_particle(), i,
                               internal::get_bond_data().graph_);
-  return BondedDecorator(p);
+  return Bonded(p);
 }
 
 #ifndef IMP_DOXYGEN
-inline BondDecorator BondedDecorator::GetBond::operator()(unsigned int i)
+inline Bond Bonded::GetBond::operator()(unsigned int i)
   const {
-  return BondedDecorator(d_).get_bond(i);
+  return Bonded(d_).get_bond(i);
 }
-inline BondedDecorator BondedDecorator::GetBonded::operator()(unsigned int i)
+inline Bonded Bonded::GetBonded::operator()(unsigned int i)
   const {
-  return BondedDecorator(d_).get_bonded(i);
+  return Bonded(d_).get_bonded(i);
 }
 #endif
 
 
 //! Connect the two wrapped particles by a bond.
-/** \param[in] a The first Particle as a BondedDecorator
-    \param[in] b The second Particle as a BondedDecorator
+/** \param[in] a The first Particle as a Bonded
+    \param[in] b The second Particle as a Bonded
     \param[in] t The type to use for the bond
-    \return BondDecorator of the bond Particle.
+    \return Bond of the bond Particle.
 
     \ingroup bond
-    \relatesalso BondDecorator
-    \relatesalso BondedDecorator
+    \relatesalso Bond
+    \relatesalso Bonded
  */
 IMPATOMEXPORT
-BondDecorator bond(BondedDecorator a, BondedDecorator b, Int t);
+Bond bond(Bonded a, Bonded b, Int t);
 
 
 //! Connect the two wrapped particles by a custom bond.
-/** \param[in] a The first Particle as a BondedDecorator
-    \param[in] b The second Particle as a BondedDecorator
+/** \param[in] a The first Particle as a Bonded
+    \param[in] b The second Particle as a Bonded
     \param[in] length The length of the bond.
     \param[in] stiffness The stiffness of the bond.
-    \return BondDecorator of the bond Particle.
+    \return Bond of the bond Particle.
 
     \ingroup bond
-    \relatesalso BondDecorator
-    \relatesalso BondedDecorator
+    \relatesalso Bond
+    \relatesalso Bonded
  */
 IMPATOMEXPORT
-inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
+inline Bond custom_bond(Bonded a, Bonded b,
                           Float length, Float stiffness=-1) {
   IMP_assert(length>=0, "Length must be positive");
-  BondDecorator bd=bond(a,b, BondDecorator::CUSTOM);
+  Bond bd=bond(a,b, Bond::CUSTOM);
   bd.set_length(length);
   bd.get_particle()->set_name(std::string("bond ")+
                               a.get_particle()->get_name()
@@ -258,13 +258,13 @@ inline BondDecorator custom_bond(BondedDecorator a, BondedDecorator b,
 /** Create a bond by copying the information from the othr bond
 
     \ingroup bond
-    \relatesalso BondDecorator
-    \relatesalso BondedDecorator
+    \relatesalso Bond
+    \relatesalso Bonded
  */
 IMPATOMEXPORT
-inline BondDecorator copy_bond(BondedDecorator a, BondedDecorator b,
-                                 BondDecorator o) {
-  BondDecorator bd=bond(a,b, o.get_type());
+inline Bond copy_bond(Bonded a, Bonded b,
+                                 Bond o) {
+  Bond bd=bond(a,b, o.get_type());
   if (o.get_length() > 0) bd.set_length(o.get_length());
   bd.get_particle()->set_name(std::string("bond ")+
                               a.get_particle()->get_name()
@@ -276,20 +276,20 @@ inline BondDecorator copy_bond(BondedDecorator a, BondedDecorator b,
 //! Destroy the bond connecting to particles.
 /** \param[in] b The bond.
     \ingroup bond
-    \relatesalso BondDecorator
-    \relatesalso BondedDecorator
+    \relatesalso Bond
+    \relatesalso Bonded
  */
 IMPATOMEXPORT
-void unbond(BondDecorator b);
+void unbond(Bond b);
 
 //! Get the bond between two particles.
-/** BondDecorator() is returned if the particles are not bonded.
+/** Bond() is returned if the particles are not bonded.
     \ingroup bond
-    \relatesalso BondDecorator
-    \relatesalso BondedDecorator
+    \relatesalso Bond
+    \relatesalso Bonded
  */
 IMPATOMEXPORT
-BondDecorator get_bond(BondedDecorator a, BondedDecorator b);
+Bond get_bond(Bonded a, Bonded b);
 
 IMPATOM_END_NAMESPACE
 

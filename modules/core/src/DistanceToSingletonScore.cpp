@@ -6,7 +6,7 @@
  */
 
 #include <IMP/core/DistanceToSingletonScore.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/algebra/Vector3D.h>
 
@@ -33,10 +33,10 @@ DistanceToSingletonScore::DistanceToSingletonScore(UnaryFunction *f,
 Float DistanceToSingletonScore::evaluate(Particle *b,
                                          DerivativeAccumulator *da) const
 {
-  Float v= internal::evaluate_distance_pair_score(XYZDecorator(b),
+  Float v= internal::evaluate_distance_pair_score(XYZ(b),
                                                   StaticD(pt_), da,
                                                   f_.get(), boost::lambda::_1);
-  IMP_LOG(VERBOSE, "DistanceTo from " << XYZDecorator(b) << " to "
+  IMP_LOG(VERBOSE, "DistanceTo from " << XYZ(b) << " to "
           << pt_ << " scored " << v << std::endl);
   return v;
 }

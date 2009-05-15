@@ -1,17 +1,17 @@
 /**
- *  \file atom/MolecularHierarchyDecorator.h
+ *  \file atom/MolecularHierarchy.h
  *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPATOM_MOLECULAR_HIERARCHY_DECORATOR_H
-#define IMPATOM_MOLECULAR_HIERARCHY_DECORATOR_H
+#ifndef IMPATOM_MOLECULAR_HIERARCHY_H
+#define IMPATOM_MOLECULAR_HIERARCHY_H
 
 #include "config.h"
 #include <IMP/core/utility.h>
-#include <IMP/core/HierarchyDecorator.h>
+#include <IMP/core/Hierarchy.h>
 #include "bond_decorators.h"
 #include <IMP/core/rigid_bodies.h>
 
@@ -26,16 +26,16 @@ IMPATOM_BEGIN_NAMESPACE
 //! A decorator for helping deal with a hierarchy of molecules
 /** \ingroup hierarchy
     \ingroup decorators
-    \see ResidueDecorator
-    \see AtomDecorator
+    \see Residue
+    \see Atom
     \see write_pdb
     \see read_pdb
     \see get_molecular_rigid_body_traits
  */
-class IMPATOMEXPORT MolecularHierarchyDecorator:
-  public IMP::core::HierarchyDecorator
+class IMPATOMEXPORT MolecularHierarchy:
+  public IMP::core::Hierarchy
 {
-  typedef IMP::core::HierarchyDecorator P;
+  typedef IMP::core::Hierarchy P;
 public:
 
   //! The various values for levels of the hierarchy
@@ -63,37 +63,37 @@ public:
             };
 
   // swig gets unhappy if it is private
-  IMP_NO_DOXYGEN(typedef MolecularHierarchyDecorator This;)
+  IMP_NO_DOXYGEN(typedef MolecularHierarchy This;)
 
 
-  //! Create a HiearchyDecorator on the Particle
+  //! Create a Hiearchy on the Particle
   /** A traits class can be specified if the default one is not desired.
    */
-  MolecularHierarchyDecorator(Particle *p):
+  MolecularHierarchy(Particle *p):
     P(p,get_traits()){
     IMP_assert(is_instance_of(p), "Missing required attributes for "
-               << "MolecularHierarchyDecorator" << *p);
+               << "MolecularHierarchy" << *p);
   }
 
   //! null constructor
-  MolecularHierarchyDecorator() {}
+  MolecularHierarchy() {}
 
   //! cast a particle which has the needed attributes
-  static MolecularHierarchyDecorator cast(Particle *p) {
-    IMP::core::HierarchyDecorator::cast(p, get_traits());
+  static MolecularHierarchy cast(Particle *p) {
+    IMP::core::Hierarchy::cast(p, get_traits());
     IMP_check(p->has_attribute(get_type_key()), "Particle is missing attribute "
               << get_type_key(),
               InvalidStateException);
-    return MolecularHierarchyDecorator(p);
+    return MolecularHierarchy(p);
   }
 
-  /** Create a MolecularHierarchyDecorator of level t by adding the needed
+  /** Create a MolecularHierarchy of level t by adding the needed
       attributes. */
-  static MolecularHierarchyDecorator create(Particle *p,
+  static MolecularHierarchy create(Particle *p,
                                             Type t= UNKNOWN) {
-    HierarchyDecorator::create(p, get_traits());
+    Hierarchy::create(p, get_traits());
     p->add_attribute(get_type_key(), t);
-    return MolecularHierarchyDecorator(p);
+    return MolecularHierarchy(p);
   }
 
   /** Check if the particle has the needed attributes for a
@@ -150,7 +150,7 @@ public:
     case TRAJECTORY:
       return "trajectory";
     default:
-      IMP_assert(0, "Invalid MolecularHierarchyDecorator type");
+      IMP_assert(0, "Invalid MolecularHierarchy type");
       return std::string();
     }
   }
@@ -159,7 +159,7 @@ public:
   /** A child must have a type that is listed before the parent in the
       Type enum list.
    */
-  unsigned int add_child(MolecularHierarchyDecorator o) {
+  unsigned int add_child(MolecularHierarchy o) {
     IMP_check(get_type() > o.get_type(),
               "Parent type must subsume child type",
               InvalidStateException);
@@ -174,7 +174,7 @@ public:
   /** A child must have a type that is listed before the parent in the
       Type enum list.
    */
-  void add_child_at(MolecularHierarchyDecorator o, unsigned int i) {
+  void add_child_at(MolecularHierarchy o, unsigned int i) {
     IMP_check(get_type() > o.get_type(),
               "Parent type must subsume child type",
               InvalidStateException);
@@ -186,16 +186,16 @@ public:
   }
 
   /** Get the ith child */
-  MolecularHierarchyDecorator get_child(unsigned int i) const {
-    HierarchyDecorator hd= P::get_child(i);
+  MolecularHierarchy get_child(unsigned int i) const {
+    Hierarchy hd= P::get_child(i);
     return cast(hd.get_particle());
   }
 
   /** Get the parent particle. */
-  MolecularHierarchyDecorator get_parent() const {
-    HierarchyDecorator hd= P::get_parent();
-    if (hd == HierarchyDecorator()) {
-      return MolecularHierarchyDecorator();
+  MolecularHierarchy get_parent() const {
+    Hierarchy hd= P::get_parent();
+    if (hd == Hierarchy()) {
+      return MolecularHierarchy();
     } else {
       return cast(hd.get_particle());
     }
@@ -208,34 +208,34 @@ public:
 
 };
 
-/** A colleciton of MolecularHierarchyDecorators. */
-typedef std::vector<MolecularHierarchyDecorator> MolecularHierarchyDecorators;
+/** A colleciton of MolecularHierarchys. */
+typedef std::vector<MolecularHierarchy> MolecularHierarchys;
 
 
 /**
    Gather all the molecular particles of a certain level
    in the molecular hierarchy
    \ingroup hierarchy
-   \relatesalso MolecularHierarchyDecorator
+   \relatesalso MolecularHierarchy
 */
 IMPATOMEXPORT Particles
-get_by_type(MolecularHierarchyDecorator mhd,
-                                MolecularHierarchyDecorator::Type t);
+get_by_type(MolecularHierarchy mhd,
+                                MolecularHierarchy::Type t);
 
-class ResidueDecorator;
+class Residue;
 
 //! Get the residue with the specified index
 /** Find the leaf containing the residue with the appropriate index.
     This is the PDB index, not the offset in the chain (if they are different).
 
     \throw ValueException if mhd's type is not one of CHAIN, PROTEIN, NUCLEOTIDE
-    \return MolecularHierarchyDecorator() if that residue is not found.
+    \return MolecularHierarchy() if that residue is not found.
 
     \ingroup hierarchy
-    \relatesalso MolecularHierarchyDecorator
+    \relatesalso MolecularHierarchy
  */
-IMPATOMEXPORT MolecularHierarchyDecorator
-get_residue(MolecularHierarchyDecorator mhd,
+IMPATOMEXPORT MolecularHierarchy
+get_residue(MolecularHierarchy mhd,
             unsigned int index);
 
 
@@ -247,29 +247,29 @@ get_residue(MolecularHierarchyDecorator mhd,
 
     \throw ValueException If all the particles do not have the same parent.
     \ingroup hierarchy
-    \relatesalso MolecularHierarchyDecorator
+    \relatesalso MolecularHierarchy
  */
-IMPATOMEXPORT MolecularHierarchyDecorator
-create_fragment(const MolecularHierarchyDecorators &ps);
+IMPATOMEXPORT MolecularHierarchy
+create_fragment(const MolecularHierarchys &ps);
 
 //! Get the bonds internal to this tree
-/**     \relatesalso MolecularHierarchyDecorator
-        \see BondDecorator
+/**     \relatesalso MolecularHierarchy
+        \see Bond
  */
-IMPATOMEXPORT atom::BondDecorators
-get_internal_bonds(MolecularHierarchyDecorator mhd);
+IMPATOMEXPORT atom::Bonds
+get_internal_bonds(MolecularHierarchy mhd);
 
 
 //! Clone the MolecularHiearchy
-/** This method copies the bonds, AtomDecorator data, ResidueDecorator
-    data, DomainDecorator data and NameDecorator data to the new copies
-    in addition to the MolecularHierarchyDecorator relationships.
+/** This method copies the bonds, Atom data, Residue
+    data, Domain data and Name data to the new copies
+    in addition to the MolecularHierarchy relationships.
 
     \note This method has not been tested at all
-    \relatesalso MolecularHierarchyDecorator
+    \relatesalso MolecularHierarchy
 */
 IMPATOMEXPORT
-MolecularHierarchyDecorator clone(MolecularHierarchyDecorator d);
+MolecularHierarchy clone(MolecularHierarchy d);
 
 
 //! Create a coarse grained molecule
@@ -303,4 +303,4 @@ IMPATOMEXPORT Restraint* create_protein(Particle *p,
                                         double spring_strength=1);
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_MOLECULAR_HIERARCHY_DECORATOR_H */
+#endif  /* IMPATOM_MOLECULAR_HIERARCHY_H */

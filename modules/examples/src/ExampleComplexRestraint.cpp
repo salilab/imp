@@ -8,7 +8,7 @@
 
 #include "IMP/examples/ExampleComplexRestraint.h"
 #include <IMP/PairContainer.h>
-#include <IMP/core/XYZRDecorator.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/PairsRestraint.h>
 #include <IMP/core/CoverRefined.h>
@@ -58,12 +58,12 @@ void ExampleComplexRestraint::set_model(Model *m) {
 Float ExampleComplexRestraint::evaluate(DerivativeAccumulator *da) {
   IMP_CHECK_OBJECT(sc_.get());
   double v=0;
-  core::XYZDecorator dp(p_);
+  core::XYZ dp(p_);
   double radius= diameter_/2.0;
   for (SingletonContainer::ParticleIterator pit= sc_->particles_begin();
        pit != sc_->particles_end(); ++pit) {
     v+= core::internal::evaluate_distance_pair_score(dp,
-                                               core::XYZDecorator(*pit),
+                                               core::XYZ(*pit),
                                                da, f_.get(),
                                                boost::lambda::_1-radius);
   }

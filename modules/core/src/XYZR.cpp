@@ -1,18 +1,18 @@
 /**
- *  \file XYZRDecorator.cpp   \brief Simple xyzr decorator.
+ *  \file XYZR.cpp   \brief Simple xyzr decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/core/XYZRDecorator.h"
+#include "IMP/core/XYZR.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/vector_generators.h>
-#include "IMP/core/HierarchyDecorator.h"
+#include "IMP/core/Hierarchy.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
-void XYZRDecorator::show(std::ostream &out, std::string prefix) const
+void XYZR::show(std::ostream &out, std::string prefix) const
 {
   out << prefix << "(" << get_x()<< ", "
       << get_y() << ", " << get_z() << ": " << get_radius() << ")";
@@ -20,18 +20,18 @@ void XYZRDecorator::show(std::ostream &out, std::string prefix) const
 }
 
 
-Float distance(XYZRDecorator a, XYZRDecorator b)
+Float distance(XYZR a, XYZR b)
 {
   return distance(a.get_sphere(), b.get_sphere());
 }
 
 
-void set_enclosing_sphere(XYZRDecorator out,
+void set_enclosing_sphere(XYZR out,
                           const Particles &v)
 {
   algebra::Sphere3Ds ss(v.size());
   for (unsigned int i=0; i< v.size(); ++i) {
-    XYZDecorator d(v[i]);
+    XYZ d(v[i]);
     Float r=0;
     if (v[i]->has_attribute(out.get_radius_key())) {
       r= v[i]->get_value(out.get_radius_key());
@@ -50,7 +50,7 @@ Particles create_xyzr_particles(Model *m,
   Particles ret;
   for (unsigned int i=0; i< num; ++i) {
     Particle *p= new Particle(m);
-    XYZRDecorator d= XYZRDecorator::create(p);
+    XYZR d= XYZR::create(p);
     d.set_coordinates(algebra::random_vector_in_box(
                             algebra::Vector3D(-box_side, -box_side, -box_side),
                             algebra::Vector3D(box_side, box_side, box_side)));
@@ -63,7 +63,7 @@ Particles create_xyzr_particles(Model *m,
 
 
 
-HierarchyDecorator
+Hierarchy
 create_sphere_hierarchy(const Particles &ps,
                         const HierarchyTraits& traits) {
   IMP_failure("Not Implemented", InvalidStateException);
@@ -74,7 +74,7 @@ create_sphere_hierarchy(const Particles &ps,
      - divide the points at the midpoint (of one or more directions)
      - recurse and add the two return values as children to the new particle
    */
-  return HierarchyDecorator();
+  return Hierarchy();
 }
 
 

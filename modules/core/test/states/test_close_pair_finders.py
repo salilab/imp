@@ -15,8 +15,8 @@ class TestCPFL(IMP.test.TestCase):
         r1=0
         if p0.has_attribute(rk): r0= p0.get_value(rk)
         if p1.has_attribute(rk): r1= p1.get_value(rk)
-        d0=IMP.core.XYZDecorator(p0)
-        d1=IMP.core.XYZDecorator(p1)
+        d0=IMP.core.XYZ(p0)
+        d1=IMP.core.XYZ(p1)
         d= IMP.core.distance(d0, d1)
         print str(d0.get_x()) + " " + str(d0.get_y()) + " " + str(d0.get_z()) + " " + str(r0)
         print str(d1.get_x()) + " " + str(d1.get_y()) + " " + str(d1.get_z()) + " " + str(r1)
@@ -63,7 +63,7 @@ class TestCPFL(IMP.test.TestCase):
                 if d <= .95*dist:
                     #print "searching for "+str(ps[i].get_name()) + " "\
                     #    + str(ps[j].get_name())
-                    #XYZDecorator(ps[
+                    #XYZ(ps[
                     self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
                                                                                  ps[j]))
                                  or
@@ -142,8 +142,8 @@ class TestCPFL(IMP.test.TestCase):
                 ps[i].set_name("rbpb"+str(i))
             else:
                 fps.append(ps[i])
-        rba= IMP.core.RigidBodyDecorator.create(IMP.Particle(m), rbpsa)
-        rbb= IMP.core.RigidBodyDecorator.create(IMP.Particle(m), rbpsb)
+        rba= IMP.core.RigidBody.create(IMP.Particle(m), rbpsa)
+        rbb= IMP.core.RigidBody.create(IMP.Particle(m), rbpsb)
         rba.get_particle().set_name("rba")
         rbb.get_particle().set_name("rbb")
         IMP.core.cover_members(rba, rk)
@@ -175,8 +175,8 @@ class TestCPFL(IMP.test.TestCase):
                 rbpsb2.append(ps2[i])
             else:
                 fps2.append(ps2[i])
-        rba2= IMP.core.RigidBodyDecorator.create(IMP.Particle(m), rbpsa2)
-        rbb2= IMP.core.RigidBodyDecorator.create(IMP.Particle(m), rbpsb2)
+        rba2= IMP.core.RigidBody.create(IMP.Particle(m), rbpsa2)
+        rbb2= IMP.core.RigidBody.create(IMP.Particle(m), rbpsb2)
         IMP.core.cover_members(rba2, rk)
         IMP.core.cover_members(rbb2, rk)
         fps.append(rba2.get_particle())

@@ -2,17 +2,17 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
-         'AtomDecorator.cpp',
+         'Atom.cpp',
          'BondEndpointsRefiner.cpp',
          'BondPairContainer.cpp',
          'BondSingletonScore.cpp',
          'BrownianDynamics.cpp',
-         'ChainDecorator.cpp',
-         'DiffusionDecorator.cpp',
-         'DomainDecorator.cpp',
+         'Chain.cpp',
+         'Diffusion.cpp',
+         'Domain.cpp',
          'MolecularDynamics.cpp',
-         'MolecularHierarchyDecorator.cpp',
-         'ResidueDecorator.cpp',
+         'MolecularHierarchy.cpp',
+         'Residue.cpp',
          'VelocityScalingOptimizerState.cpp',
          'bond_decorators.cpp',
          'bond_graph.cpp',

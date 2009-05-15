@@ -6,7 +6,7 @@
  */
 
 #include <IMP/atom/BrownianDynamics.h>
-#include <IMP/core/XYZDecorator.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
 
 #include <IMP/log.h>
@@ -48,11 +48,11 @@ void BrownianDynamics::set_time_step(unit::Femtosecond t)
 void BrownianDynamics::setup_particles()
 {
   clear_particles();
-  FloatKeys xyzk=IMP::core::XYZDecorator::get_xyz_keys();
+  FloatKeys xyzk=IMP::core::XYZ::get_xyz_keys();
   for (Model::ParticleIterator it = get_model()->particles_begin();
        it != get_model()->particles_end(); ++it) {
     Particle *p = *it;
-    DiffusionDecorator d= DiffusionDecorator::cast(p);
+    Diffusion d= Diffusion::cast(p);
     if (d && d.get_coordinates_are_optimized()) {
       add_particle(p);
     }
@@ -95,14 +95,14 @@ void BrownianDynamics::take_step() {
   update_states();
   get_model()->evaluate(true);
 
-  FloatKeys xyzk=IMP::core::XYZDecorator::get_xyz_keys();
+  FloatKeys xyzk=IMP::core::XYZ::get_xyz_keys();
 
   IMP_LOG(VERBOSE, "dt is " << dt_ << std::endl);
 
 
   for (unsigned int i=0; i< get_number_of_particles(); ++i) {
     Particle *p= get_particle(i);
-    IMP::core::XYZDecorator d(p);
+    IMP::core::XYZ d(p);
     IMP_IF_CHECK(CHEAP) {
       for (unsigned int j=0; j< 3; ++j) {
         // GDB 6.6 prints infinity as 0 on 64 bit machines. Grumble.
@@ -123,7 +123,7 @@ void BrownianDynamics::take_step() {
     }
 
     //double xi= 6*pi*eta*radius; // kg/s
-    DiffusionDecorator dd(p);
+    Diffusion dd(p);
     unit::SquareCentimeterPerSecond D= dd.get_D();
     IMP_check(D.get_value() > 0
               && D.get_value() < std::numeric_limits<Float>::max(),

@@ -1,13 +1,13 @@
 /**
- *  \file AtomDecorator.cpp   \brief Simple atoms decorator.
+ *  \file Atom.cpp   \brief Simple atoms decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include <IMP/atom/ResidueDecorator.h>
-#include <IMP/atom/AtomDecorator.h>
-#include <IMP/atom/ChainDecorator.h>
+#include <IMP/atom/Residue.h>
+#include <IMP/atom/Atom.h>
+#include <IMP/atom/Chain.h>
 
 #include <IMP/base_types.h>
 #include <IMP/log.h>
@@ -61,36 +61,36 @@ ResidueType residue_type_from_pdb_string(std::string nm) {
   return ResidueType(nm.c_str());
 }
 
-void ResidueDecorator::show(std::ostream &out, std::string pre) const
+void Residue::show(std::ostream &out, std::string pre) const
 {
   out << pre << "residue #" << get_index() << " of type "
       << get_residue_type() << std::endl;
 }
 
-IntKey ResidueDecorator::get_index_key() {
+IntKey Residue::get_index_key() {
   static IntKey k("residue_index");
   return k;
 }
 
-IntKey ResidueDecorator::get_type_key() {
+IntKey Residue::get_type_key() {
   static IntKey k("residue_type");
   return k;
 }
 
-IntKey ResidueDecorator::get_insertion_code_key() {
+IntKey Residue::get_insertion_code_key() {
   static IntKey k("residue_icode");
   return k;
 }
 
-char get_chain(ResidueDecorator rd) {
-  MolecularHierarchyDecorator mhd(rd.get_particle());
+char get_chain(Residue rd) {
+  MolecularHierarchy mhd(rd.get_particle());
   do {
     mhd= mhd.get_parent();
-    if (mhd == MolecularHierarchyDecorator()) {
+    if (mhd == MolecularHierarchy()) {
       throw InvalidStateException("Residue is not the child of a chain");
     }
-  } while (mhd.get_type() != MolecularHierarchyDecorator::CHAIN);
-  ChainDecorator cd(mhd.get_particle());
+  } while (mhd.get_type() != MolecularHierarchy::CHAIN);
+  Chain cd(mhd.get_particle());
   return cd.get_id();
 }
 

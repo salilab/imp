@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "internal/version_info.h"
-#include "XYZRDecorator.h"
+#include "XYZR.h"
 
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** The Refiner implicitly defines a tree rooted at each particle.
     This PairScore applies another PairScore to all pairs of leaves, one
     taken from each tree such that the leaves are closer than the threshold.
-    \note All particles in the tree must be XYZRDecorator particles for the
+    \note All particles in the tree must be XYZR particles for the
     passed radius. In addition, the ball defined by a particle must contain
     the balls of all its leaves.
     \see ClosePairsScoreState
@@ -43,7 +43,7 @@ public:
    */
   ClosePairsPairScore(Refiner *r, PairScore *f,
                       Float max_distance,
-                      FloatKey rk= XYZRDecorator::get_default_radius_key());
+                      FloatKey rk= XYZR::get_default_radius_key());
   virtual ~ClosePairsPairScore(){}
   virtual Float evaluate(Particle *a, Particle *b,
                          DerivativeAccumulator *da) const;

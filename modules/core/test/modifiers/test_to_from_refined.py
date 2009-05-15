@@ -21,12 +21,12 @@ class TestREFCover(IMP.test.TestCase):
         p0= self._create_particle(m, ks)
         p1= self._create_particle(m, ks)
         p2= self._create_particle(m, ks)
-        h0= IMP.core.HierarchyDecorator.create(p0)
-        h1= IMP.core.HierarchyDecorator.create(p1)
-        h2= IMP.core.HierarchyDecorator.create(p2)
+        h0= IMP.core.Hierarchy.create(p0)
+        h1= IMP.core.Hierarchy.create(p1)
+        h2= IMP.core.Hierarchy.create(p2)
         h0.add_child(h1)
         h0.add_child(h2)
-        r= IMP.core.ChildrenRefiner(IMP.core.HierarchyDecorator.get_default_traits())
+        r= IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
         return h0, h1, h2, p0, p1, p2, r, ks, m
     def test_to(self):
         """Test copying derivatives to refined"""

@@ -1,17 +1,17 @@
 Import('env')
 
 files = [
-         'AtomDecorator.h',
+         'Atom.h',
          'BondEndpointsRefiner.h',
          'BondPairContainer.h',
          'BondSingletonScore.h',
          'BrownianDynamics.h',
-         'ChainDecorator.h',
-         'DiffusionDecorator.h',
-         'DomainDecorator.h',
+         'Chain.h',
+         'Diffusion.h',
+         'Domain.h',
          'MolecularDynamics.h',
-         'MolecularHierarchyDecorator.h',
-         'ResidueDecorator.h',
+         'MolecularHierarchy.h',
+         'Residue.h',
          'VelocityScalingOptimizerState.h',
          'bond_decorators.h',
          'bond_graph.h',

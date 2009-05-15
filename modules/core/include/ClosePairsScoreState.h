@@ -65,7 +65,7 @@ public:
   //! Create the score state for particles in the container in
   /** rk can be FloatKey() in which case the radius is ignored. */
   ClosePairsScoreState(SingletonContainer *in,
-                       FloatKey rk= XYZRDecorator::get_default_radius_key());
+                       FloatKey rk= XYZR::get_default_radius_key());
   // rk needs to be there so that we don't get an error for missing attributs
   //! Create the score state for particles in the container in
   /** rk can be FloatKey() in which case the radius is ignored.
@@ -73,7 +73,7 @@ public:
   */
   ClosePairsScoreState(SingletonContainer *in,
                        FilteredListPairContainer *out,
-                       FloatKey rk= XYZRDecorator::get_default_radius_key());
+                       FloatKey rk= XYZR::get_default_radius_key());
 
   //! Set the distance threshold
   void set_distance(Float d);

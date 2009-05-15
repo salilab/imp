@@ -17,7 +17,7 @@ void test_one(ClosePairsFinder *cpf, unsigned int n, float rmin, float rmax) {
   Particles ps = create_xyzr_particles(m, n, rmin);
   ::boost::uniform_real<> rand(rmin, rmax);
   for (unsigned int i=0; i< ps.size(); ++i) {
-    XYZRDecorator(ps[i]).set_radius(rand(random_number_generator));
+    XYZR(ps[i]).set_radius(rand(random_number_generator));
   }
   ListSingletonContainer *lsc= new ListSingletonContainer(ps);
   ClosePairsScoreState *cpss= new ClosePairsScoreState(lsc);
@@ -29,13 +29,13 @@ void test_one(ClosePairsFinder *cpf, unsigned int n, float rmin, float rmax) {
   double setuptime;
   IMP_TIME({
       for (unsigned int i=0; i< ps.size(); ++i) {
-        XYZDecorator(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
+        XYZ(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
       }
     }, setuptime);
   double runtime;
   IMP_TIME({
       for (unsigned int i=0; i< ps.size(); ++i) {
-        XYZDecorator(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
+        XYZ(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
       }
       cpss->before_evaluate();
     }, runtime);

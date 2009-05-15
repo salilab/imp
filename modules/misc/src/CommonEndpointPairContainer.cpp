@@ -22,12 +22,12 @@ void CommonEndpointPairContainer::show(std::ostream &out) const {
 
 bool CommonEndpointPairContainer
 ::get_contains_particle_pair(ParticlePair p) const {
-  if (!IMP::atom::BondDecorator::is_instance_of(p[0])
-      || !IMP::atom::BondDecorator::is_instance_of(p[1])) {
+  if (!IMP::atom::Bond::is_instance_of(p[0])
+      || !IMP::atom::Bond::is_instance_of(p[1])) {
     return false;
   } else {
-    IMP::atom::BondDecorator b0(p[0]);
-    IMP::atom::BondDecorator b1(p[1]);
+    IMP::atom::Bond b0(p[0]);
+    IMP::atom::Bond b1(p[1]);
     return b0.get_bonded(0) == b1.get_bonded(1)
       || b0.get_bonded(1) == b1.get_bonded(0)
       || b0.get_bonded(0) == b1.get_bonded(0)
