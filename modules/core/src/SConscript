@@ -27,6 +27,7 @@ files = [
          'DistancePairScore.cpp',
          'DistanceRestraint.cpp',
          'DistanceToSingletonScore.cpp',
+         'ExcludedVolumeRestraint.cpp',
          'FilteredListPairContainer.cpp',
          'FilteredListSingletonContainer.cpp',
          'FixedRefiner.cpp',
