@@ -14,10 +14,10 @@
 IMPCORE_BEGIN_NAMESPACE
 
 // These functions probably should be exposed at some point
-
-static void random_point_in_sphere(unsigned int D,
+namespace {
+void random_point_in_sphere(unsigned int D,
                                    Float radius,
-                                   std::vector<Float> v)
+                                   std::vector<Float> &v)
 {
   IMP_assert(radius > 0, "No volume there");
   ::boost::uniform_real<> rand(-radius, radius);
@@ -31,7 +31,7 @@ static void random_point_in_sphere(unsigned int D,
   } while (norm > radius*radius);
 }
 
-static std::vector<Float>
+std::vector<Float>
 random_point_in_sphere(const std::vector<Float> &center,
                        Float radius)
 {
@@ -44,8 +44,7 @@ random_point_in_sphere(const std::vector<Float> &center,
   }
   return r;
 }
-
-
+}
 
 BallMover::BallMover(SingletonContainer *sc,
                      const FloatKeys &vars,
@@ -58,12 +57,17 @@ BallMover::BallMover(SingletonContainer *sc,
 void BallMover::generate_move(Float scale)
 {
   std::vector<Float> center(get_number_of_float_keys());
+  IMP_LOG(TERSE, "Generating ball moves for " <<
+          get_container()->get_number_of_particles() << std::endl);
   for (unsigned int i = 0;
        i < get_container()->get_number_of_particles(); ++i) {
     for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
       center[j] = get_float(i, j);
     }
     std::vector<Float> npos = random_point_in_sphere(center, scale * radius_);
+    IMP_LOG(VERBOSE, "Old pos is " << center[0] << " " << center[1] << " "
+            << center[2] << " new is " << npos[0] << " " << npos[1]
+            << " " << npos[2] << std::endl);
     for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
       propose_value(i, j, npos[j]);
     }
