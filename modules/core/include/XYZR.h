@@ -102,7 +102,7 @@ IMP_OUTPUT_OPERATOR(XYZR);
  */
 IMPCOREEXPORT Float distance(XYZR a, XYZR b);
 
-//! Set the coordinates and radius of the last to enclose the list
+//! Set the coordinates and radius of the first to enclose the list
 /** \param[in] v The vector of XYZ or XYZR particles to enclose
     \param[out] b The one whose values should be set
     Any particle which does not have the attribute b.get_radius()
@@ -118,6 +118,21 @@ IMPCOREEXPORT Float distance(XYZR a, XYZR b);
     \relatesalso XYZR
  */
 IMPCOREEXPORT void set_enclosing_sphere(XYZR b,
+                                        const Particles &v);
+
+//! Set the radius of the first to enclose the list
+/** \param[in] v The vector of XYZ or XYZR particles to enclose
+    \param[out] b The one whose radius should be set
+    Any particle which does not have the attribute b.get_radius()
+    is assumed to have a radius of 0.
+
+    \note This takes a Particles object rather than a vector of
+    something else since you can't easily cast vectors of
+    different things to one another.
+
+    \relatesalso XYZR
+ */
+IMPCOREEXPORT void set_enclosing_radius(XYZR b,
                                         const Particles &v);
 
 //! Create a set of particles which random coordinates
@@ -140,7 +155,7 @@ class HierarchyTraits;
 class Hierarchy;
 
 //! Create a hierarchical cover of a set of XYZR particles
-/** \note Not implemented yet.
+/** \unimplemented{create_sphere_hierarchy}
 */
 IMPCOREEXPORT Hierarchy
 create_sphere_hierarchy(const Particles &ps,
