@@ -43,6 +43,26 @@ void set_enclosing_sphere(XYZR out,
 }
 
 
+void set_enclosing_radius(XYZR out,
+                          const Particles &v)
+{
+  double r=0;
+  for (unsigned int i=0; i< v.size(); ++i) {
+    if (XYZR::is_instance_of(v[i], out.get_radius_key())) {
+      XYZR d(v[i]);
+      double dist= distance(static_cast<XYZ>(out), static_cast<XYZ>(d));
+      dist+= d.get_radius();
+      r= std::max(dist, r);
+    } else {
+      XYZ d(v[i]);
+      double dist= distance(static_cast<XYZ>(out), static_cast<XYZ>(d));
+      r= std::max(dist, r);
+    }
+  }
+  out.set_radius(r);
+}
+
+
 Particles create_xyzr_particles(Model *m,
                                 unsigned int num,
                                 Float radius,
