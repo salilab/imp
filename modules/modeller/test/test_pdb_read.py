@@ -35,7 +35,7 @@ class PDBReadTest(IMP.test.TestCase):
         self.assertEqual(i_num_atom_type, f_num_atom_type, "too many atom types")
         self.assertEqual(1377, hc.get_count(),
                          "Wrong number of particles created")
-        rd= IMP.atom.get_residue(mp, 29)
+        rd= IMP.atom.Residue(IMP.atom.get_residue(mp, 29).get_particle())
         at= IMP.atom.get_atom(rd, IMP.atom.AtomType("C"))
         self.assertEqual(IMP.atom.get_residue_index(at), rd.get_index())
         self.assertEqual(rd.get_index(), 29)
