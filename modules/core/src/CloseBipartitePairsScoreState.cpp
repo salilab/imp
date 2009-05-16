@@ -112,6 +112,7 @@ void CloseBipartitePairsScoreState::set_radius_key(FloatKey k) {
 
 void CloseBipartitePairsScoreState::do_before_evaluate()
 {
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(in_[0]);
   IMP_CHECK_OBJECT(in_[1]);
   IMP_CHECK_OBJECT(out_);

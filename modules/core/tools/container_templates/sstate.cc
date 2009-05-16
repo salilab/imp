@@ -26,6 +26,7 @@ GroupnameScoreState::GroupnameScoreState(GroupnameModifier *before,
 
 void GroupnameScoreState::do_before_evaluate()
 {
+  IMP_OBJECT_LOG;
   if (!f_) return;
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
@@ -36,6 +37,7 @@ void GroupnameScoreState::do_before_evaluate()
 
 void GroupnameScoreState::do_after_evaluate(DerivativeAccumulator *da)
 {
+  IMP_OBJECT_LOG;
   if (!af_) return;
   IMP_LOG(TERSE, "Begin GroupnamesScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);

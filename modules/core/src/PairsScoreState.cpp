@@ -26,6 +26,7 @@ PairsScoreState::PairsScoreState(PairContainer *c,
 
 void PairsScoreState::do_before_evaluate()
 {
+  IMP_OBJECT_LOG;
   if (!f_) return;
   IMP_LOG(TERSE, "Begin PairsScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
@@ -37,6 +38,7 @@ void PairsScoreState::do_before_evaluate()
 
 void PairsScoreState::do_after_evaluate(DerivativeAccumulator *da)
 {
+  IMP_OBJECT_LOG;
   if (!af_) return;
   IMP_LOG(TERSE, "Begin PairsScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);

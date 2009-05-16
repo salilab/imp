@@ -27,7 +27,7 @@ SingletonRestraint
 
 Float SingletonRestraint::evaluate(DerivativeAccumulator *accum)
 {
-
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
 
   Float score=0;
@@ -40,6 +40,7 @@ Float SingletonRestraint::evaluate(DerivativeAccumulator *accum)
 
 ParticlesList SingletonRestraint::get_interacting_particles() const
 {
+  IMP_OBJECT_LOG;
   if (!IMP::internal::ContainerTraits<Particle>::is_singleton) {
     ParticlesList ret;
     ret.push_back(IMP::internal

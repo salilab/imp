@@ -77,6 +77,7 @@ void ClosePairsScoreState::set_radius_key(FloatKey k) {
 
 void ClosePairsScoreState::do_before_evaluate()
 {
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(in_);
   IMP_CHECK_OBJECT(out_);
   IMP_CHECK_OBJECT(f_);

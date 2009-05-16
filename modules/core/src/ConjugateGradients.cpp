@@ -265,6 +265,7 @@ ConjugateGradients::~ConjugateGradients()
 
 Float ConjugateGradients::optimize(unsigned int max_steps)
 {
+  IMP_OBJECT_LOG;
   IMP_check(get_model(),
             "Must set the model on the optimizer before optimizing",
             ValueException);
