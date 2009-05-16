@@ -1,5 +1,12 @@
 /** \page recent Change History
 
+\par Week of May 15
+
+- Each IMP::Object has its own log level. If IMP::Object::set_log_level() is called
+  with a value other than IMP::DEFAULT, the value is used for code within and
+  called by the object. To support this in your objects you need to add IMP_OBJECT_LOG
+  to the start of each major method. It has been added to some of the core objects.
+
 \par Week of May 8
 
 - IMP::atom::MolecularHierarchy has been renamed to IMP::atom::Hierarchy. Use \command{sed -i.old "s#MolecularHierarchy#Hierarchy#g" my_files}

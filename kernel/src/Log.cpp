@@ -20,6 +20,15 @@ Log &Log::get() {
   }
   return *logpt_;
 }
-
-
 IMP_END_INTERNAL_NAMESPACE
+
+IMP_BEGIN_NAMESPACE
+void set_log_level(LogLevel l)
+{
+  IMP_check(l != DEFAULT, "DEFAULT log level can only be used when "
+            << "setting a local log level", ValueException);
+  internal::Log::get().set_level(l);
+}
+
+
+IMP_END_NAMESPACE

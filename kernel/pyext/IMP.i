@@ -106,6 +106,7 @@ IMP_DIRECTOR_KERNEL_CLASS(PairContainer);
 IMP_DIRECTOR_KERNEL_CLASS(SingletonModifier);
 IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 
+%include "IMP/log.h"
 %include "IMP/base_types.h"
 %include "IMP/utility.h"
 %include "IMP/directories.h"
@@ -118,7 +119,6 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 %include "Restraint.i"
 %include "IMP/ScoreState.h"
 %include "IMP/OptimizerState.h"
-%include "IMP/log.h"
 %include "IMP/Model.h"
 %include "IMP/PairScore.h"
 %include "IMP/Refiner.h"

@@ -33,6 +33,8 @@ IMP_BEGIN_NAMESPACE
 
 //! The log levels supported by IMP
 /** \ingroup log
+    DEFAULT is only local logging (like in IMP::Object), it means use
+    the global log level
     VERBOSE prints very large amounts of information. It should be enough
     to allow the computational flow to be understood.
     TERSE prints a few lines per restraint or per state each time
@@ -41,7 +43,8 @@ IMP_BEGIN_NAMESPACE
     MEMORY print information about allocations and deallocations to debug
     memory issues
  */
-enum LogLevel {SILENT=0, WARNING=1, TERSE=2, VERBOSE=3, MEMORY=4};
+enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, TERSE=2, VERBOSE=3,
+               MEMORY=4};
 
 //! The targets for IMP logging
 /** \ingroup log
@@ -51,10 +54,7 @@ enum LogTarget {COUT, FILE, CERR};
 //! Set the current log level for IMP
 /** \ingroup log
  */
-IMPEXPORT inline void set_log_level(LogLevel l)
-{
-  internal::Log::get().set_level(l);
-}
+IMPEXPORT void set_log_level(LogLevel l);
 
 //! Set the target of logs
 /** \ingroup log
@@ -119,13 +119,20 @@ class IMPEXPORT SetLogState
 public:
   //! Construct it with the desired level and target
   SetLogState(LogLevel l, LogTarget t= get_log_target()):
-    level_(get_log_level()), target_(get_log_target()) {
-    set_log_level(l);
-    set_log_target(t);
+    target_(get_log_target()) {
+    if (l != DEFAULT) {
+      level_= get_log_level();
+      internal::Log::get().set_level(l);
+      set_log_target(t);
+    } else {
+      level_=DEFAULT;
+    }
   }
   ~SetLogState() {
-    set_log_level(level_);
-    set_log_target(target_);
+    if (level_ != DEFAULT) {
+      internal::Log::get().set_level(level_);
+      set_log_target(target_);
+    }
   }
 private:
   LogLevel level_;
