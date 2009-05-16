@@ -4,6 +4,7 @@ import sys
 import os.path
 from reindent import Reindenter
 import re
+import traceback
 try:
     import cpp_format
 except ImportError:
@@ -110,8 +111,11 @@ def main():
 
     modfiles = get_all_files()
     for filename in modfiles:
-        check_modified_file(filename, errors)
-
+        try:
+            check_modified_file(filename, errors)
+        except:
+            print "Exception processing file "+filename
+            traceback.print_exc()
     if len(errors) > 0:
         sys.stderr.write("The following problems needed to be fixed:\n\n")
         sys.stderr.write("\n".join(errors))
