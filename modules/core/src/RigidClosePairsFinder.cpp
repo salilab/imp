@@ -308,7 +308,7 @@ void RigidClosePairsFinder::setup(Particle *p) const {
     data_.add_data(p, algebra::Sphere3D(d.get_coordinates(),
                             (r+get_distance()/2.0)*EXPANSION));
   }
-  IMP_LOG_WRITE(VERBOSE, data_.get_data(p).show_tree(IMP_STREAM, p));
+  //IMP_LOG_WRITE(VERBOSE, data_.get_data(p).show_tree(IMP_STREAM, p));
 }
 
 
@@ -391,13 +391,13 @@ RigidClosePairsFinder::process_one(Particle *a, Particle *b,
         Particle *pl=db.get_particle(cj, l, b);
         algebra::Sphere3D sl(XYZ(pl).get_coordinates(),
                              get_radius(pl)+get_distance()*.5);
-        IMP_LOG(VERBOSE, "Trying member particles " << pk->get_name()
-                << " and " << pl->get_name() << std::endl);
+        /*IMP_LOG(VERBOSE, "Trying member particles " << pk->get_name()
+          << " and " << pl->get_name() << std::endl);*/
         if (interiors_intersect(sk, sl)) {
           out->add_particle_pair(ParticlePair(pk, pl));
         } else {
-          IMP_LOG(VERBOSE, "Spheres do not interesct " << sk << " | " << sl
-                  << std::endl);
+          /*IMP_LOG(VERBOSE, "Spheres do not interesct " << sk << " | " << sl
+            << std::endl);*/
         }
       }
     }
@@ -417,8 +417,8 @@ void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
   }
 
   EditGuard<FilteredListPairContainer> e(out);
-  IMP_LOG(VERBOSE, "Testing " << a->get_name() << " and " << b->get_name()
-          << " for addition to list" << std::endl);
+  /*IMP_LOG(VERBOSE, "Testing " << a->get_name() << " and " << b->get_name()
+    << " for addition to list" << std::endl);*/
   const internal::RigidBodyParticleData &da= data_.get_data(a);
   const internal::RigidBodyParticleData &db= data_.get_data(b);
   std::vector<std::pair<int, int> > stack;
@@ -426,8 +426,8 @@ void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
   while (!stack.empty()) {
     std::pair<int, int> cur= stack.back();
     stack.pop_back();
-    IMP_LOG(VERBOSE, "Processing pair " << cur.first << " "
-            << cur.second << std::endl);
+    /*IMP_LOG(VERBOSE, "Processing pair " << cur.first << " "
+      << cur.second << std::endl);*/
     for (unsigned int i=0; i< da.get_number_of_children(cur.first);
          ++i) {
       int ci=da.get_child(cur.first, i);
@@ -439,8 +439,8 @@ void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
         if (interiors_intersect(si, sj)) {
           process_one(a,b,out, da, db, ci, cj, stack);
         } else {
-          IMP_LOG(VERBOSE, "Rejected " << ci << " " << cj << ": "
-                  << si << " | " << sj << std::endl);
+          /*IMP_LOG(VERBOSE, "Rejected " << ci << " " << cj << ": "
+            << si << " | " << sj << std::endl);*/
         }
       }
     }

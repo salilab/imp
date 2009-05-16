@@ -35,7 +35,7 @@ PairsRestraint
 
 Float PairsRestraint::evaluate(DerivativeAccumulator *accum)
 {
-
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
 
@@ -58,6 +58,7 @@ Float PairsRestraint::evaluate(DerivativeAccumulator *accum)
 
 ParticlesList PairsRestraint::get_interacting_particles() const
 {
+  IMP_OBJECT_LOG;
   if (!IMP::internal::ContainerTraits<ParticlePair>::is_singleton) {
     ParticlesList ret;
     for (PairContainer::ParticlePairIterator it

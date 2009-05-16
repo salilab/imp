@@ -35,7 +35,7 @@ GroupnamesRestraint
 
 Float GroupnamesRestraint::evaluate(DerivativeAccumulator *accum)
 {
-
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
 
@@ -58,6 +58,7 @@ Float GroupnamesRestraint::evaluate(DerivativeAccumulator *accum)
 
 ParticlesList GroupnamesRestraint::get_interacting_particles() const
 {
+  IMP_OBJECT_LOG;
   if (!IMP::internal::ContainerTraits<Classname>::is_singleton) {
     ParticlesList ret;
     for (GroupnameContainer::ClassnameIterator it

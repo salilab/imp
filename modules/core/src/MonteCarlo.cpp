@@ -30,12 +30,10 @@ MonteCarlo::MonteCarlo(): temp_(1),
                           stat_upward_steps_taken_(0),
                           stat_num_failures_(0){}
 
-MonteCarlo::~MonteCarlo()
-{
-}
 
 Float MonteCarlo::optimize(unsigned int max_steps)
 {
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   if (cg_) {
     IMP_CHECK_OBJECT(cg_.get());
