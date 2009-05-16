@@ -13,6 +13,7 @@
 #include "exception.h"
 #include "VersionInfo.h"
 #include "macros.h"
+#include "log.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -42,7 +43,9 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Object: public RefCounted
 {
   // hide the inheritance from RefCounted as it is a detail
+  LogLevel log_level_;
 protected:
+  IMP_NO_DOXYGEN(LogLevel get_log_level() const { return log_level_;});
   IMP_NO_DOXYGEN(Object());
   IMP_NO_DOXYGEN(virtual ~Object());
 
@@ -54,6 +57,18 @@ public:
   }
 #endif
 
+  //! Set the logging level used in this object
+  /** Each object can be assigned a different log level in order to,
+      for example, suppress messages for verbose and uninteresting
+      object. If set to DEFAULT, the global level is used, otherwise
+      the local one is used.
+   */
+  void set_log_level(LogLevel l) {
+    IMP_check(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
+              << l, ValueException);
+    log_level_=l;
+  }
+
   //! Print out one or more lines of text describing the object
   virtual void show(std::ostream &out=std::cout) const=0;
 
@@ -61,7 +76,7 @@ public:
   virtual VersionInfo get_version_info() const=0;
 
 private:
-  Object(const Object &o){}
+  Object(const Object &o) {}
   const Object& operator=(const Object &o) {return *this;}
 
   /* Do not use NDEBUG to remove check_value_ as that changes the memory
@@ -81,4 +96,13 @@ IMP_END_NAMESPACE
     IMP_assert((obj)->get_is_valid(), "Object was previously freed");     \
 } while (false)
 
+
+#ifndef NDEBUG
+//! Set the log level to the objects log level.
+/** All non-trivial Object functions should start with this.
+ */
+#define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level())
+#else
+#define IMP_OBJECT_LOG
+#endif
 #endif  /* IMP_OBJECT_H */

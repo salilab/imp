@@ -66,6 +66,7 @@ FloatRange Model::get_range(FloatKey k) const {
 
 Float Model::evaluate(bool calc_derivs)
 {
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   IMP_LOG(TERSE,
           "Begin Model::evaluate" << std::endl);

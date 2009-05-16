@@ -21,6 +21,7 @@ RefCounted::~ RefCounted() {
 
 Object::Object()
 {
+  log_level_=DEFAULT;
   check_value_=111111111;
   IMP_LOG(MEMORY, "Creating object " << this << std::endl);
 }

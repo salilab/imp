@@ -15,7 +15,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include <cassert>
 #include <string>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -70,6 +69,7 @@ private:
   std::ofstream fstream_;
   static Log *logpt_;
 };
+
 
 
 IMP_END_INTERNAL_NAMESPACE
