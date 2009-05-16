@@ -51,9 +51,9 @@ int main() {
   Particles atoms;
   std::vector<RigidBody> rbs;
   for (int i=0; i< 5; ++i) {
-    Hierarchy mhd
+    atom::Hierarchy mhd
       = read_pdb("benchmarks/input/single_protein.pdb", m);
-    Particles catoms= get_by_type(mhd, Hierarchy::ATOM);
+    Particles catoms= get_by_type(mhd, atom::Hierarchy::ATOM);
     IMP_assert(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
     ScoreState *ss= create_rigid_body(mhd.get_particle(),
