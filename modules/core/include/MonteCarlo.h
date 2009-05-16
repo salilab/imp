@@ -37,10 +37,10 @@ class IMPCOREEXPORT MonteCarlo: public Optimizer
 public:
   /** */
   MonteCarlo();
-  ~MonteCarlo();
 
   IMP_OPTIMIZER(internal::version_info)
-public:
+    IMP_REF_COUNTED_DESTRUCTOR(MonteCarlo);
+ public:
   //! Return the local optimizer used or NULL
   Optimizer *get_local_optimizer() const {
     return cg_.get();
