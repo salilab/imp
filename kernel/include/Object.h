@@ -19,26 +19,25 @@ IMP_BEGIN_NAMESPACE
 
 //! Common base class for heavy weight IMP objects.
 /** All the heavy-weight IMP objects have IMP::Object as a base class.
-    Anything inheriting from IMP::Object should have the following
+    Anything inheriting from IMP::Object has the following
     properties:
     - have a method Object::show() which writes one or more lines of text
     to a stream
     - have embedded information about the author and version which can be
     accessed using Object::get_version_info()
-    - support output to a stream using \c operator<<. This produces the same
-    output as Object::show()
     - be initialized to a known good state with the default constructor
+    - it has a local logging level which can override the global one
+    allowing fine grained logging control.
+
+    Objects can be outputted to standard streams using operator<<()
+    which will call the Object::show() method.
 
     \cpp Types inheriting from Object should always be created using
     \c new in C++ and passed, passed using pointers and stored using
     IMP::Pointer objects. Note that you have to be careful of cycles
     and so must use IMP::WeakPointer objects to break cycles. See
-    IMP::RefCounted for more information on reference counting.\n\n
-    Special care must taken when using the SWIG python interface
-    to make sure that Python reference counting is turned off for all
-    objects which are being reference counted in C++. The
-    IMP_OWN_CONSTRUCTOR(), IMP_OWN_METHOD(), IMP_OWN_FUNCTION() macros
-    aid this process.
+    IMP::RefCounted for more information on reference counting. IMP_NEW()
+    can help shorten creating a ref counted pointer.
  */
 class IMPEXPORT Object: public RefCounted
 {
@@ -60,8 +59,11 @@ public:
   //! Set the logging level used in this object
   /** Each object can be assigned a different log level in order to,
       for example, suppress messages for verbose and uninteresting
-      object. If set to DEFAULT, the global level is used, otherwise
-      the local one is used.
+      object. If set to DEFAULT, the global level as returned by
+      IMP::get_log_level() is used, otherwise
+      the local one is used. Methods in classes inheriting from
+      Object should start with IMP_OBJECT_LOG to change the log
+      level to the local one for this object.
    */
   void set_log_level(LogLevel l) {
     IMP_check(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
@@ -99,7 +101,9 @@ IMP_END_NAMESPACE
 
 #ifndef NDEBUG
 //! Set the log level to the objects log level.
-/** All non-trivial Object functions should start with this.
+/** All non-trivial Object methods should start with this. It creates a
+    RAII-style object which sets the log level to the local one,
+    if appropriate, until it goes out of scope.
  */
 #define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level())
 #else
