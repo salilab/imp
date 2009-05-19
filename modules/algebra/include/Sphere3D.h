@@ -11,6 +11,7 @@
 #include <cmath>
 #include <IMP/constants.h>
 #include "internal/cgal_predicates.h"
+#include "BoundingBoxD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -104,6 +105,13 @@ inline bool interiors_intersect(const Sphere3D &a, const Sphere3D &b) {
   }
   return squared_distance(a.get_center(), b.get_center())
     < square(sr);
+}
+
+
+inline BoundingBox3D bounding_box(const Sphere3D &s) {
+  BoundingBox3D b(s.get_center());
+  b+= s.get_radius();
+  return b;
 }
 
 #ifndef SWIG
