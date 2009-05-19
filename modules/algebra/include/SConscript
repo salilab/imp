@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'BoundingBoxD.h',
          'Cone3D.h',
          'Cylinder3D.h',
          'Matrix2D.h',

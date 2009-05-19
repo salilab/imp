@@ -23,6 +23,7 @@
 
 namespace IMP {
   namespace algebra {
+    typedef BoundingBoxD<3> BoundingBox3D;
     typedef VectorD<3> Vector3D;
     typedef VectorD<4> Vector4D;
   }
@@ -44,6 +45,7 @@ namespace multi_array_types {
 
 /* Wrap our own base classes */
 %include "VectorD.i"
+%include "BoundingBoxD.i"
 %include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/Rotation3D.h"
 %include "IMP/algebra/Transformation3D.h"
