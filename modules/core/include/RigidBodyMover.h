@@ -43,7 +43,7 @@ public:
   VersionInfo get_version_info() const {
     return internal::version_info;
   }
-
+  IMP_REF_COUNTED_DESTRUCTOR(RigidBodyMover)
 private:
   algebra::Transformation3D last_transformation_;
   Float max_translation_;

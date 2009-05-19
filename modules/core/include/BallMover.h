@@ -45,6 +45,7 @@ public:
   VersionInfo get_version_info() const {
     return internal::version_info;
   }
+  IMP_REF_COUNTED_DESTRUCTOR(BallMover)
 protected:
   void generate_move(Float a);
 

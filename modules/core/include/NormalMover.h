@@ -43,6 +43,7 @@ public:
   VersionInfo get_version_info() const {
     return internal::version_info;
   }
+  IMP_REF_COUNTED_DESTRUCTOR(NormalMover)
 protected:
   virtual void generate_move(Float f);
 private:
