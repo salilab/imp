@@ -14,8 +14,8 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /**
-   Geometric objects should have a get_bounding_box() method
-   which returns an appropriate dimensional bounding box.
+   There should be methods like bounding_box() which get bounding boxes
+   of objects.
    \untested{BoundingBoxD}
 */
 template <unsigned int D>
