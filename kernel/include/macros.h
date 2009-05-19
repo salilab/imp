@@ -502,13 +502,16 @@ IMP_NO_SWIG(IMP_NO_DOXYGEN(operator bool_type() const {                 \
    - add_required_attributes_for_name(Particle *)
 
    \param[in] protection Whether it should be public, protected or private
+   \param[in] Class The name of the wrapping class
+   \param[in] The capitalized name of the prefix to use
    \param[in] name the name prefix to use, see the above method names
    \param[in] plural the plural form of the name
    \param[in] traits the traits object to use to manipulate things. This should
    inherit from or implement the interface of internal::ArrayOnAttributesHelper
    \param[in] ExternalType The name of the type to wrap the return type with.
  */
-#define IMP_DECORATOR_ARRAY_DECL(protection, name, plural,              \
+#define IMP_DECORATOR_ARRAY_DECL(protection, Class,                     \
+                                 Name, name, plural,                    \
                                  traits, ExternalType)                  \
 private:                                                                \
  template <class T>                                                     \
@@ -521,7 +524,27 @@ private:                                                                \
                                                 const T &traits) {      \
    return traits.add_required_attributes(p);                            \
  }                                                                      \
+ struct AttrArrayAccessor {                                             \
+   const Class &d_;                                                     \
+   AttrArrayAccessor(const Class &d): d_(d){}                           \
+   typedef ExternalType result_type;                                    \
+   result_type operator()(unsigned int i) const {                       \
+     return d_.get_##name(i);                                           \
+   }                                                                    \
+   bool operator==(const AttrArrayAccessor &o) const {                  \
+     return d_== o.d_;                                                  \
+   }                                                                    \
+ };                                                                     \
 protection:                                                             \
+ IMP_NO_SWIG(typedef IMP::internal::IndexingIterator<AttrArrayAccessor> \
+             Name##Iterator;)                                           \
+ IMP_NO_SWIG(Name##Iterator plural##_begin() const {                    \
+     return Name##Iterator(AttrArrayAccessor(*this));                   \
+ }                                                                      \
+ Name##Iterator plural##_end() const {                                  \
+   return Name##Iterator(AttrArrayAccessor(*this),                      \
+                         get_number_of_##plural());                     \
+ })                                                                     \
  ExternalType get_##name(unsigned int i) const {                        \
    return traits.wrap(traits.get_value(get_particle(), i));             \
  }                                                                      \
