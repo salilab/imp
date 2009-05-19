@@ -100,7 +100,7 @@ protected:
   }
 
   MoverBase(SingletonContainer *sc): pc_(sc) {}
-  ~MoverBase(){}
+  IMP_REF_COUNTED_DESTRUCTOR(MoverBase);
 };
 
 IMPCORE_END_NAMESPACE
