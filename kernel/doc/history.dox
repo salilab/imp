@@ -2,8 +2,8 @@
 
 \par Week of May 15
 
-- There is now an IMP::algebra::BoundingBoxD to track bounding box. Geometric
-  objects should have get_bounding_box methods which return a bounding box.
+- There is now an IMP::algebra::BoundingBoxD to track bounding box. There will
+  be methods like IMP::algebra::bound_box(Sphere3D) which get the bounding box.
 
 - Each IMP::Object has its own log level. If IMP::Object::set_log_level() is called
   with a value other than IMP::DEFAULT, the value is used for code within and
