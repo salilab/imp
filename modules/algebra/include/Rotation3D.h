@@ -407,6 +407,34 @@ public:
   }
 };
 
+
+
+//! A simple class for returning XYZ Euler angles
+/**
+   \see rotation_from_fixed_xyz()
+   \see fixed_xyz_from_rotation()
+ */
+class FixedXYZ: public UninitializedDefault {
+  double v_[3];
+public:
+  FixedXYZ(){}
+  FixedXYZ(double x, double y, double z)
+  {v_[0]=x; v_[1]= y; v_[2]=z;}
+  double get_x() const {
+    return v_[0];
+  }
+  double get_y() const {
+    return v_[1];
+  }
+  double get_z() const {
+    return v_[2];
+  }
+  void show(std::ostream &out=std::cout) const {
+    out << v_[0] << " " << v_[1] << " " << v_[2];
+  }
+};
+
+
 IMP_OUTPUT_OPERATOR(FixedZYZ);
 
 //! The inverse of rotation_from_fixed_zyz()
@@ -416,6 +444,13 @@ IMP_OUTPUT_OPERATOR(FixedZYZ);
  */
 IMPALGEBRAEXPORT FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r);
 
+
+//! The inverse of rotation_from_fixed_xyz()
+/**
+   \see rotation_from_fixed_xyz()
+   \relatesalso Rotation3D
+ */
+IMPALGEBRAEXPORT FixedXYZ fixed_xyz_from_rotation(const Rotation3D &r);
 
 /** @}*/
 

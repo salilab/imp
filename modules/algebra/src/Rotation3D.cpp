@@ -209,5 +209,20 @@ FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r) {
   return FixedZYZ(rot, tilt, psi);
 }
 
-
+FixedXYZ fixed_xyz_from_rotation(const Rotation3D &r) {
+  VectorD<4> quat = r.get_quaternion();
+  double q00 = std::pow(quat[0],2);
+  double q11 = std::pow(quat[1],2);
+  double q22 = std::pow(quat[2],2);
+  double q33 = std::pow(quat[3],2);
+  double mat11 = q00 +  q11 - q22 - q33;
+  double mat21 = 2*(quat[1]*quat[2] + quat[0]*quat[3]);
+  double mat23 = 2*(quat[2]*quat[3] - quat[0]*quat[1]);
+  double mat31 = 2*(quat[1]*quat[3] - quat[0]*quat[2]);
+  double mat32 = 2*(quat[2]*quat[3] + quat[0]*quat[1]);
+  double mat33 = q00 - q11 - q22 + q33;
+  return FixedXYZ(std::atan2(mat32, mat33),
+     std::atan2(mat31, std::sqrt(std::pow(mat21,2)+ std::pow(mat11,2))),
+     std::atan2(mat21, mat11));
+}
 IMPALGEBRA_END_NAMESPACE
