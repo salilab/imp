@@ -331,12 +331,12 @@ public:
   }
 
   //! Get the data in a particular cell
-  VoxelData& get_voxel(Index gi) {
+  typename std::vector<VT>::reference get_voxel(Index gi) {
     return data_[index(gi)];
   }
 
   //! Get the data in a particular cell
-  const VoxelData& get_voxel(Index gi) const  {
+  typename std::vector<VT>::const_reference get_voxel(Index gi) const  {
     return data_[index(gi)];
   }
 
