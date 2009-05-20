@@ -11,6 +11,7 @@
 
 #include "../config.h"
 #include "../macros.h"
+#include "IMP/internal/IndexingIterator.h"
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
