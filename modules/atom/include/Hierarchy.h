@@ -295,7 +295,7 @@ create_fragment(const Hierarchys &ps);
         \see Bond
  */
 IMPATOMEXPORT atom::Bonds
-get_internal_bonds(Hierarchy mhd);
+internal_bonds(Hierarchy mhd);
 
 
 //! Clone the MolecularHiearchy
@@ -317,12 +317,22 @@ Hierarchy clone(Hierarchy d);
     That is, if the root has x,y,z,r then it is the bounding box
     if that sphere. If only the leaves have radii, it is the bounding
     box of the leaves. If no such cut exists, the behavior is undefined.
+    \relatesalso Hierarchy
+    \relatesalso IMP::algebra::BoundingBoxD
  */
 IMPATOMEXPORT
-algebra::BoundingBox3D get_bounding_box(const Hierarchy &h,
+algebra::BoundingBox3D bounding_box(const Hierarchy &h,
                                     FloatKey r
                                     = core::XYZR::get_default_radius_key());
 
+
+/** See get_bounding_box() for more details.
+    \relates Hierarchy
+ */
+IMPATOMEXPORT
+algebra::Sphere3D bounding_sphere(const Hierarchy &h,
+                                    FloatKey r
+                                    = core::XYZR::get_default_radius_key());
 
 //! Create a coarse grained molecule
 /** The coarse grained model is created with a number of spheres
@@ -376,8 +386,8 @@ IMPATOMEXPORT Restraint* create_protein(Particle *p,
     \untested{simplify_protein}
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchy simplify_protein(Hierarchy in,
-                                         double resolution);
+IMPATOMEXPORT Hierarchy simplified_protein(Hierarchy in,
+                                           double resolution);
 IMPATOM_END_NAMESPACE
 
 

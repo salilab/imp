@@ -34,11 +34,6 @@ public:
     return radius_;
   }
   const Vector3D &get_center() const {return center_;}
-  Cylinder3D get_bounding_cylinder() const {
-    return Cylinder3D(Segment3D(get_center()-Vector3D(0.0,0.0,get_radius()),
-                                get_center()+Vector3D(0.0,0.0,get_radius())),
-                      get_radius());
-  }
   //! Return true if this sphere contains the other one
   bool get_contains(const Sphere3D &o) const {
     double d= (get_center()-o.get_center()).get_magnitude();
@@ -109,13 +104,24 @@ inline bool interiors_intersect(const Sphere3D &a, const Sphere3D &b) {
 
 
 /** \relatesalso Sphere3D
-    \relatesalso BoundingBox3D
+    \relatesalso BoundingBoxD
 */
-inline BoundingBox3D get_bounding_box(const Sphere3D &s) {
+inline BoundingBox3D bounding_box(const Sphere3D &s) {
   BoundingBox3D b(s.get_center());
   b+= s.get_radius();
   return b;
 }
+
+/** \relatesalso Sphere3D
+    \unstable{bounding_cylinder}
+ */
+inline Cylinder3D bounding_cylinder(const Sphere3D &s) {
+    return Cylinder3D(Segment3D(s.get_center()-Vector3D(0.0,0.0,
+                                                        s.get_radius()),
+                                s.get_center()+Vector3D(0.0,0.0,
+                                                        s.get_radius())),
+                      s.get_radius());
+  }
 
 #ifndef SWIG
 
