@@ -23,10 +23,10 @@ void CartesianProductSampler::populate_states_of_particles(Particles *particles,
                        std::map<std::string,CombState *> *states) const
 {
   CombState *calc_state;
-  int comb_size = particles->size();
+  unsigned int comb_size = particles->size();
   std::vector<int> v_int(comb_size);
   std::vector<int> c_int(comb_size);
-  int i;
+  unsigned int i;
   for(i=0;i<comb_size;i++){
     v_int[i] = ds_->get_number_of_mapped_states((*particles)[i]);
     c_int[i] = 0;
