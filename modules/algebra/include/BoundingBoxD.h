@@ -14,7 +14,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /**
-   There should be methods like get_bounding_box() which get bounding boxes
+   There should be methods like bounding_box() which get bounding boxes
    of objects.
    \untested{BoundingBoxD}
 */

@@ -317,14 +317,14 @@ get_simplified_representation(Hierarchy h) {
   return ret;
 }
 
-algebra::BoundingBox3D get_bounding_box(const Hierarchy &h,
+algebra::BoundingBox3D bounding_box(const Hierarchy &h,
                                     FloatKey r) {
   Particles rep= get_simplified_representation(h);
   algebra::BoundingBox3D bb;
   for (unsigned int i=0; i< rep.size(); ++i) {
     core::XYZR xyzr= core::XYZR::cast(rep[i], r);
     if (xyzr) {
-      bb+= algebra::get_bounding_box(xyzr.get_sphere());
+      bb+= algebra::bounding_box(xyzr.get_sphere());
     } else if (core::XYZ::is_instance_of(rep[i])) {
       bb+= algebra::BoundingBox3D(core::XYZ(rep[i]).get_coordinates());
     }
@@ -332,6 +332,23 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h,
   IMP_LOG(VERBOSE, "Bounding box is " << bb << std::endl);
   return bb;
 }
+
+algebra::Sphere3D bounding_sphere(const Hierarchy &h,
+                                           FloatKey r) {
+  Particles rep= get_simplified_representation(h);
+  algebra::Sphere3Ds ss;
+  for (unsigned int i=0; i< rep.size(); ++i) {
+    core::XYZR xyzr= core::XYZR::cast(rep[i], r);
+    if (xyzr) {
+      ss.push_back(xyzr.get_sphere());
+    } else if (core::XYZ::is_instance_of(rep[i])) {
+      ss.push_back(algebra::Sphere3D(core::XYZ(rep[i]).get_coordinates(),
+                                     0));
+    }
+  }
+  return algebra::enclosing_sphere(ss);;
+}
+
 
 
 namespace {
@@ -432,7 +449,7 @@ namespace {
                     Vectors &inside,
                     Vectors &outside) {
 
-    algebra::BoundingBox3D bb= get_bounding_box(in);
+    algebra::BoundingBox3D bb= bounding_box(in);
     bb+= res;
     typedef IMP::core::internal::Grid3D<bool> Grid;
     Grid grid(cell_size(res), bb.get_corner(0), bb.get_corner(1),
@@ -496,7 +513,7 @@ namespace {
                                                               dist);
       /*IMP_LOG(VERBOSE, "Point " << i << " center " << j
         << " dist " << dist << " bound " << *it << std::endl);*/
-      int score;
+      unsigned int score;
       /*if (it -dists[j].begin() < offsets[j]) {
         score=0;
         } else {*/
@@ -619,7 +636,7 @@ namespace {
     - take each amino acid, figure out which sphere it is closest to
     add it as a child of that sphere with no coordinates
  */
-Hierarchy simplify_protein(Hierarchy in,
+Hierarchy simplified_protein(Hierarchy in,
                            double resolution) {
   // compute outside points
   Vectors outside;

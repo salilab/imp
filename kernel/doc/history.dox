@@ -2,6 +2,15 @@
 
 \par Week of May 15
 
+- We are trying to be a bit more specific about what is expected from a
+  IMP::atom::Hierachy. Towards that end, there are two methods for extracting
+  a representation from a hierarchy, IMP::atom::get_detailed_representation(),
+  and IMP::atom::get_simplified_representation()
+
+- A method has been added to produce a simplified copy of an IMP::atom::Hierarchy.
+  The method is still a bit crude and could benifit from other people inspecting
+  the output and saying how it should be improved.
+
 - There is now an IMP::algebra::BoundingBoxD to track bounding box. There will
   be methods like IMP::algebra::bound_box(Sphere3D) which get the bounding box.
 
