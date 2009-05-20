@@ -19,7 +19,6 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/core/internal/Grid3D.h>
-#include <debug/vector>
 
 #include <boost/random/uniform_int.hpp>
 
@@ -383,9 +382,9 @@ IMPATOMEXPORT Restraint* create_protein(Particle *p,
 
 
 namespace {
-  typedef __gnu_debug::vector<algebra::Sphere3D> Spheres;
-  typedef __gnu_debug::vector<algebra::Vector3D> Vectors;
-  typedef __gnu_debug::vector<unsigned int> Indexes;
+  typedef std::vector<algebra::Sphere3D> Spheres;
+  typedef std::vector<algebra::Vector3D> Vectors;
+  typedef std::vector<unsigned int> Indexes;
 
 
   double cell_size(double resolution) {
