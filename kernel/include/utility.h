@@ -141,7 +141,7 @@ int compare(const T &a, const T &b) {
     if they are not. To turn off this warning for a particular object, call
     the set_was_owned() method with true.
 */
-class Ownable {
+class IMPEXPORT Ownable {
   bool was_owned_;
 public:
   Ownable(): was_owned_(true){}
