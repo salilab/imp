@@ -8,7 +8,7 @@
 #include "IMP/utility.h"
 #include "IMP/log.h"
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 
 Ownable::~Ownable() {
