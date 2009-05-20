@@ -96,6 +96,10 @@ public:
   std::string get_name() const {
     return get_prefix();
   }
+
+  bool operator==(const HierarchyTraits &o) const {
+    return get_name() == o.get_name();
+  }
 };
 
 
@@ -156,8 +160,8 @@ class IMPCOREEXPORT Hierarchy: public Decorator
 {
   typedef Decorator P;
 
-  IMP_DECORATOR_ARRAY_DECL(public, child, children, traits_,
-                           Hierarchy)
+  IMP_DECORATOR_ARRAY_DECL(public, Hierarchy, Child, child, children,
+                           traits_, Hierarchy)
 public:
   IMP_DECORATOR_TRAITS(Hierarchy, Decorator,
                        HierarchyTraits, traits,
