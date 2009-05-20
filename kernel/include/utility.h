@@ -128,6 +128,11 @@ struct UninitializedDefault{
 struct Comparable {};
 
 
+template <class T>
+int compare(const T &a, const T &b) {
+  return a.compare(b);
+}
+
 
 /** \brief A base class which provides a warning if the object is never passed
     to another before being destroyed.
@@ -151,10 +156,17 @@ public:
   }
 };
 
-template <class T>
-int compare(const T &a, const T &b) {
-  return a.compare(b);
-}
+
+/** \brief RAII-style objects
+
+    RAII-style are a convenient way of controlling a resource. They assume
+    "ownership" of the resource on creation and then "free" it on destruction.
+    Examples include, setting the log level to a particular value and restoring
+    the old value when the object goes out of scope (\see SetLogLevel) or
+    incrementing and decrementing a ref-counted pointer (\see Pointer).
+ */
+class RAII {};
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_UTILITY_H */

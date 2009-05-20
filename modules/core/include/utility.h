@@ -53,7 +53,7 @@ algebra::Segment3D diameter(const Particles &ps);
      \see ListPairContainer
 */
 template <class Container>
-class EditGuard {
+class EditGuard: public RAII {
   Pointer<Container> c_;
 public:
   EditGuard(Container *c) {
