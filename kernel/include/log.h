@@ -114,7 +114,7 @@ IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
    want. When it goes out of scope, it will restore the old level.
    \ingroup log
  */
-class IMPEXPORT SetLogState
+class IMPEXPORT SetLogState: public RAII
 {
 public:
   //! Construct it with the desired level and target
