@@ -47,8 +47,8 @@ algebra::Segment3D diameter(const Particles &ps);
       // guard is destoyed end closes the editing session
      }
      \endcode
-     \see FilteredSingletonListContainer
-     \see FilteredPairListContainer
+     \see FilteredListSingletonContainer
+     \see FilteredListPairContainer
      \see ListSingletonContainer
      \see ListPairContainer
 */
