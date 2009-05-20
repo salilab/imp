@@ -114,6 +114,7 @@ struct MatchResidueIndex
       return (rd.get_index() == index_);
     } else {
       if (mhd.get_number_of_children()==0) {
+        IMP_LOG(VERBOSE, "Trying " << mhd << std::endl);
         Domain dd= Domain::cast(p);
         return dd && dd.get_begin_index() <= index_
           && dd.get_end_index()> index_;
@@ -389,6 +390,8 @@ IMPATOMEXPORT Restraint* create_protein(Particle *p,
     xyzd.set_radius(nr.second);
     xyzd.set_coordinates_are_optimized(true);
     ps.push_back(pc);
+    Domain::create(pc, i*(number_of_residues/nr.first)+ first_residue_index,
+                   (i+1)*(number_of_residues/nr.first)+ first_residue_index);
   }
   IMP_NEW(core::Harmonic, h, ((1-overlap_frac)*2*nr.second, spring_strength));
   IMP_NEW(core::DistancePairScore, dps, (h));
