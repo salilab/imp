@@ -1,16 +1,17 @@
-/**
-    \defgroup unstable "Unstable API"
+/** \page unstuff Warnings about IMP classes and functions
+    Functionality can be tagged in a variety of ways to indicate potential
+    pitfalls. Some detailed below.
+
+    \section unstable Unstable API
     The interface of classes and functions in this group are liable to
     change.
-*/
-/**
-    \defgroup untested "Lightly Tested Functionality"
+
+    \section untested Lightly Tested Functionality
     The classes and functions in this group have not yet been thoroughly
     tested and so may contain bugs (unlike the rest of \imp :-). Use with
     caution and please contribute any test code that you write.
- */
-/**
-    \defgroup unimplemented "Unimplemented Functionality"
+
+    \section unimplemented Unimplemented Functionality
     Sometimes it is useful to check in the API of a class or function before
     there is time to implement it. This can be useful to make sure people
     converge on one function or to spark discussion. If you want to use
