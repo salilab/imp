@@ -162,8 +162,8 @@ public:
     RAII-style are a convenient way of controlling a resource. They assume
     "ownership" of the resource on creation and then "free" it on destruction.
     Examples include, setting the log level to a particular value and restoring
-    the old value when the object goes out of scope (\see SetLogLevel) or
-    incrementing and decrementing a ref-counted pointer (\see Pointer).
+    the old value when the object goes out of scope (SetLogState) or
+    incrementing and decrementing a ref-counted pointer (Pointer).
  */
 class RAII {};
 
