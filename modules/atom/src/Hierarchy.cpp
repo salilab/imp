@@ -317,14 +317,14 @@ get_simplified_representation(Hierarchy h) {
   return ret;
 }
 
-algebra::BoundingBox3D bounding_box(const Hierarchy &h,
+algebra::BoundingBox3D get_bounding_box(const Hierarchy &h,
                                     FloatKey r) {
   Particles rep= get_simplified_representation(h);
   algebra::BoundingBox3D bb;
   for (unsigned int i=0; i< rep.size(); ++i) {
     core::XYZR xyzr= core::XYZR::cast(rep[i], r);
     if (xyzr) {
-      bb+= algebra::bounding_box(xyzr.get_sphere());
+      bb+= algebra::get_bounding_box(xyzr.get_sphere());
     } else if (core::XYZ::is_instance_of(rep[i])) {
       bb+= algebra::BoundingBox3D(core::XYZ(rep[i]).get_coordinates());
     }
@@ -432,7 +432,7 @@ namespace {
                     Vectors &inside,
                     Vectors &outside) {
 
-    algebra::BoundingBox3D bb= bounding_box(in);
+    algebra::BoundingBox3D bb= get_bounding_box(in);
     bb+= res;
     typedef IMP::core::internal::Grid3D<bool> Grid;
     Grid grid(cell_size(res), bb.get_corner(0), bb.get_corner(1),
