@@ -1,11 +1,11 @@
 /**
- *  \file  SphericalCoords.h
+ *  \file  SphericalVector3D.h
  *  \brief stores and converts sperhical coordinates
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
-#ifndef IMPALGEBRA_SPHERICAL_COORDS_H
-#define IMPALGEBRA_SPHERICAL_COORDS_H
+#ifndef IMPALGEBRA_SPHERICAL_VECTOR_3D_H
+#define IMPALGEBRA_SPHERICAL_VECTOR_3D_H
 
 #include "config.h"
 #include "Vector3D.h"
@@ -22,16 +22,15 @@ IMPALGEBRA_BEGIN_NAMESPACE
   zenith - angle with axis z
   azimuth - angle with axis x
 */
-class IMPALGEBRAEXPORT SphericalCoords: public UninitializedDefault
+class IMPALGEBRAEXPORT SphericalVector3D: public UninitializedDefault
 {
   bool check(double r, double tetha, double psi);
  public:
-  //! Empty constructor
-  SphericalCoords() {};
+  SphericalVector3D() {};
 
   //! Constructor that directly converts to spherical coordinates from a vector
   //! v in cartesian coordinates
-  SphericalCoords(Vector3D &v) {
+  SphericalVector3D(Vector3D &v) {
     set_cartesian_coordinates(v);
   }
 
@@ -41,7 +40,8 @@ class IMPALGEBRAEXPORT SphericalCoords: public UninitializedDefault
     \param[in] apply_check set it to false if you do not want the check
   **/
   //! v in cartesian coordinates
-  SphericalCoords(double r, double tetha, double psi,bool apply_check=true) {
+  SphericalVector3D(double r, double tetha,
+                         double psi,bool apply_check=true) {
     if(apply_check) {
       if(!check(r,tetha,psi)) {
         String msg = "SphericalCoords:: wrong SphericalCoords coordinates." ;
@@ -65,16 +65,14 @@ class IMPALGEBRAEXPORT SphericalCoords: public UninitializedDefault
     return v_[i];
   }
 
-  //! Retunrs a vector with the cartesian coordinates
+  //! Returns a vector with the cartesian coordinates
   Vector3D get_cartesian_coordinates();
 
-  //! converts a vector in cartesian coordinates to spherical coordinates
-  void set_cartesian_coordinates(Vector3D& v);
-
  private:
+  void set_cartesian_coordinates(Vector3D& v);
   double v_[3];
 };
 
 IMPALGEBRA_END_NAMESPACE
 
-#endif /* IMPALGEBRA_SPHERICAL_COORDS_H */
+#endif /* IMPALGEBRA_SPHERICAL_VECTOR_3D_H */
