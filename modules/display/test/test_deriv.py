@@ -3,6 +3,7 @@ import IMP.algebra
 import IMP.display
 import IMP.core
 import IMP.test
+import IMP.helper
 import unittest
 
 class TestBL(IMP.test.TestCase):
@@ -39,7 +40,7 @@ class TestBL(IMP.test.TestCase):
             w.add_geometry(IMP.display.XYZDerivativeGeometry(IMP.core.XYZ(ps[i])))
         w.set_file_name("")
 
-        ss= IMP.core.create_rigid_body(p, ps)
+        ss= IMP.helper.create_rigid_body(p, ps)
         rbd= IMP.core.RigidBody(p)
         IMP.set_log_level(IMP.TERSE)
         print "eval"

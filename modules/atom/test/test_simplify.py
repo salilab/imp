@@ -10,7 +10,7 @@ class DecoratorTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         p= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb'), m)
-        IMP.atom.simplify_protein(p, 30)
+        IMP.atom.simplified_hierarchy(p, 30)
 
 
 if __name__ == '__main__':

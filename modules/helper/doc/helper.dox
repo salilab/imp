@@ -1,0 +1,12 @@
+/** \namespace IMP::helper
+\brief %IMP.%helper Provides high level functionality to assist in setting up and manipulating models
+
+\author Daniel Russel and Ben Webb
+
+\overview %IMP.%helper provides high level functionality to assist in setting up and manipulating models. Much of the functionality is built using components from %IMP%.core.
+
+\publications
+\standard_imp_publications
+
+\license \standard_imp_license
+*/

@@ -1,0 +1,10 @@
+Import('env')
+
+e = env.IMPPythonExtensionEnvironment()
+
+e.IMPPythonExtension('helper.i')
+
+files = (Glob('helper/*.py'))
+
+# Install the Python files:
+env.IMPPython(files)

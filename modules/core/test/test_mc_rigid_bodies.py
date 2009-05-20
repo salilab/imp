@@ -15,8 +15,8 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.m2 = IMP.atom.read_pdb(self.get_input_file_name("1z5s_C.pdb"),
                                     self.m,IMP.atom.NonWaterSelector())
         #create rigid bodies
-        self.rb1 = IMP.core.create_rigid_body(self.m1.get_particle(),IMP.core.get_leaves(self.m1))
-        self.rb2 = IMP.core.create_rigid_body(self.m2.get_particle(),IMP.core.get_leaves(self.m2))
+        self.rb1 = IMP.helper.create_rigid_body(self.m1.get_particle(),IMP.core.get_leaves(self.m1))
+        self.rb2 = IMP.helper.create_rigid_body(self.m2.get_particle(),IMP.core.get_leaves(self.m2))
         self.m.add_score_state(self.rb1)
         self.m.add_score_state(self.rb2)
         #add restraints

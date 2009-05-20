@@ -1,6 +1,7 @@
 import IMP
 import IMP.core
 import IMP.atom
+import IMP.helper
 
 # This example addes a restraint on nonbonded interactions
 # Since it is between two rigid bodies, internal interactions are ignored
@@ -13,15 +14,15 @@ rbps1= IMP.core.create_xyzr_particles(m, 50, 1)
 rbp0= IMP.Particle(m)
 rbp1= IMP.Particle(m)
 
-rbss0 = IMP.core.create_rigid_body(rbp0, rbps0)
+rbss0 = IMP.helper.create_rigid_body(rbp0, rbps0)
 m.add_score_state(rbss0)
 
-rbss1 = IMP.core.create_rigid_body(rbp1, rbps1)
+rbss1 = IMP.helper.create_rigid_body(rbp1, rbps1)
 m.add_score_state(rbss1)
 
 # make sure the rigid bodies have a large enough radius to include their members
-IMP.core.cover_members(IMP.core.RigidBody(rbp0))
-IMP.core.cover_members(IMP.core.RigidBody(rbp1))
+IMP.helper.cover_members(IMP.core.RigidBody(rbp0))
+IMP.helper.cover_members(IMP.core.RigidBody(rbp1))
 
 lsc= IMP.core.ListSingletonContainer()
 lsc.add_particle(rbp0)
