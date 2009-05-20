@@ -24,7 +24,7 @@ class IMPEMEXPORT KernelParameters
 {
 public:
   // swig doesn't support nested classes
-#ifndef IMP_SWIG
+#ifndef SWIG
   //! Calculates kernel parameters as a function of a specific radius.
   class Parameters
   {
