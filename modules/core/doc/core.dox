@@ -9,7 +9,8 @@ expected to be used by a wide variety of \imp users.
 expected to be used by a wide variety of \imp users. The classes in it
 should not directly incorporate experimental data and instead should
 provide basic building blocks for making restraints and manipulating
-Particle objects.
+Particle objects. See the IMP::helper module for a higher level layer
+built on top of %IMP.%core (and other modules).
 
 \publications
 \standard_imp_publications

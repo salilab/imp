@@ -3,6 +3,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
+import IMP.helper
 import math
 
 class AngleRestraintTests(IMP.test.TestCase):
@@ -12,9 +13,9 @@ class AngleRestraintTests(IMP.test.TestCase):
         m= IMP.Model()
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         p1= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
-        r0s= IMP.core.create_rigid_body(p0.get_particle(),
+        r0s= IMP.helper.create_rigid_body(p0.get_particle(),
                                         IMP.core.get_leaves(p0))
-        r1s= IMP.core.create_rigid_body(p1.get_particle(),
+        r1s= IMP.helper.create_rigid_body(p1.get_particle(),
                                         IMP.core.get_leaves(p1))
         for p in IMP.core.get_leaves(p0)+IMP.core.get_leaves(p1):
             d= IMP.core.XYZR.create(p)

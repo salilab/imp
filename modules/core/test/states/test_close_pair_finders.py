@@ -2,6 +2,7 @@ import unittest
 import IMP
 import IMP.test
 import IMP.core
+import IMP.helper
 import sys
 import random
 
@@ -146,8 +147,8 @@ class TestCPFL(IMP.test.TestCase):
         rbb= IMP.core.RigidBody.create(IMP.Particle(m), rbpsb)
         rba.get_particle().set_name("rba")
         rbb.get_particle().set_name("rbb")
-        IMP.core.cover_members(rba, rk)
-        IMP.core.cover_members(rbb, rk)
+        IMP.helper.cover_members(rba, rk)
+        IMP.helper.cover_members(rbb, rk)
         fps.append(rba.get_particle())
         fps.append(rbb.get_particle())
         pc= IMP.core.ListSingletonContainer(fps)
@@ -177,8 +178,8 @@ class TestCPFL(IMP.test.TestCase):
                 fps2.append(ps2[i])
         rba2= IMP.core.RigidBody.create(IMP.Particle(m), rbpsa2)
         rbb2= IMP.core.RigidBody.create(IMP.Particle(m), rbpsb2)
-        IMP.core.cover_members(rba2, rk)
-        IMP.core.cover_members(rbb2, rk)
+        IMP.helper.cover_members(rba2, rk)
+        IMP.helper.cover_members(rbb2, rk)
         fps.append(rba2.get_particle())
         fps.append(rbb2.get_particle())
         rba2.get_particle().set_name("rba2")

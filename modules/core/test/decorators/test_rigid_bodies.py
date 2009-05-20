@@ -4,7 +4,7 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 import IMP.atom
-
+import IMP.helper
 
 
 class RBDTests(IMP.test.TestCase):
@@ -41,7 +41,7 @@ class RBDTests(IMP.test.TestCase):
             m= IMP.Model()
             IMP.set_log_level(IMP.SILENT)
             p= self._create_hierarchy(m,  htr)
-            ss=IMP.core.create_rigid_body(p, IMP.core.Hierarchy(p, htr).get_child_particles(), snap)
+            ss=IMP.helper.create_rigid_body(p, IMP.core.Hierarchy(p, htr).get_child_particles(), snap)
             m.add_score_state(ss)
             rbd= IMP.core.RigidBody(p)
             p.show()
@@ -65,7 +65,7 @@ class RBDTests(IMP.test.TestCase):
             for i in range(0,2):
                 p= self._create_hierarchy(m, htr)
                 l.add_particle(p)
-            ss=IMP.core.create_rigid_bodies(l, IMP.core.ChildrenRefiner(htr), snap)
+            ss=IMP.helper.create_rigid_bodies(l, IMP.core.ChildrenRefiner(htr), snap)
             m.add_score_state(ss)
             for p in l.get_particles():
                 rbd= IMP.core.RigidBody(p)

@@ -1,5 +1,5 @@
 /**
- *  \file rigid_bodies.h
+ *  \file core/rigid_bodies.h
  *  \brief functionality for defining rigid bodies
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
@@ -224,56 +224,6 @@ class IMPCOREEXPORT UpdateRigidBodyMembers: public SingletonModifier {
   UpdateRigidBodyMembers(){}
   IMP_SINGLETON_MODIFIER(internal::version_info);
 };
-
-//! Sets up the ScoreState needed for a rigid body
-/**
-   \param[in] rbs particles to make into rigid bodies
-   \param[in] pr The refiner to get the constituent particles
-   \param[in] snapping Whether to use snapping or to optimize the coordinates
-   directly
-   \relatesalso RigidBody
-   \note The rigid bodies are set to be optimized.
-   \note The composition of the rigid bodies may be cached and changes after
-   setup may not be detected.
-
-
-   To make ths body rigid, add the score state to the model.
-   To stop keeping the body rigid, remove the returned score state from the
-   model.
- */
-IMPCOREEXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
-                                              Refiner *pr,
-                                              bool snapping=false);
-
-//! Creates a rigid body and sets up the needed score states
-/**
-   \param[in] p the particle to create the rigid body using
-   \param[in] members The XYZ particles comprising the rigid body
-   \param[in] snapping Whether to use snapping or to optimize the coordinates
-   directly
-   \relatesalso RigidBody
-
-   \note The rigid body is set to be optimized.
-   \note The composition of the rigid bodies may be cached and changes after
-   setup may not be detected.
-
-   To make ths body rigid, add the score state to the model.
-   To stop keeping the body rigid, remove the returned score state from the
-   model.
- */
-IMPCOREEXPORT ScoreState* create_rigid_body(Particle *p,
-                                            const Particles &members,
-                                            bool snapping=false);
-
-
-//! Give the rigid body a radius to include its members
-/** Make sure that the RigidBody particle has a radius large enough to include
-    its members. One cannot use the cover_particles() method as that will
-    change the location of the center.
-    \relatesalso RigidBody
- */
-IMPCOREEXPORT void cover_members(RigidBody d,
-                   FloatKey rk= XYZR::get_default_radius_key());
 
 IMPCORE_END_NAMESPACE
 
