@@ -69,6 +69,7 @@ private:
   VectorD<D> lb_, ub_;
 };
 
+#ifndef IMP_DOXYGEN
 template <unsigned int D>
 inline std::ostream &operator<<(std::ostream &out,
                                 const BoundingBoxD<D> &s)
@@ -76,6 +77,7 @@ inline std::ostream &operator<<(std::ostream &out,
   s.show(out);
   return out;
 }
+#endif
 
 typedef BoundingBoxD<3> BoundingBox3D;
 
