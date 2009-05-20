@@ -1,5 +1,5 @@
 /**
- *  \file Example.cpp   \brief Add a name to a particle.
+ *  \file ExampleDecorator.cpp   \brief Add a name to a particle.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *

@@ -25,8 +25,8 @@ IMPEXAMPLES_BEGIN_NAMESPACE
     non-empty.
 
     The source code is as follows:
-    \include Example.h
-    \include Example.cpp
+    \include ExampleDecorator.h
+    \include ExampleDecorator.cpp
 */
 class IMPEXAMPLESEXPORT Example: public Decorator
 {
