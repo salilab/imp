@@ -626,7 +626,7 @@ Hierarchy simplify_protein(Hierarchy in,
   Vectors inside;
   IMP_LOG(VERBOSE, "Rasterizing protein " << std::flush);
   rasterize_io(in, resolution, inside, outside);
-  write_outside(outside);
+  //write_outside(outside);
   IMP_LOG(VERBOSE, inside.size() << " inside and " << outside.size()
           << " outside " << std::endl);
   std::random_shuffle(inside.begin(), inside.end());
@@ -641,7 +641,7 @@ Hierarchy simplify_protein(Hierarchy in,
     int index= r(random_number_generator);
     centers[i]= algebra::Sphere3D(inside[index], 10000);
   }
-  write_spheres(centers, 0);
+  //write_spheres(centers, 0);
   Indexes assignments(inside.size());
   double old_score= std::numeric_limits<double>::max();
   std::vector< std::vector<float> > dists(centers.size());
@@ -663,10 +663,10 @@ Hierarchy simplify_protein(Hierarchy in,
     old_score=new_score;
     IMP_LOG(VERBOSE, "Computing assignments " << std::endl);
     compute_assignments(inside, dists, centers, offsets,  assignments);
-    write_assignments(inside, assignments, i);
+    //write_assignments(inside, assignments, i);
     IMP_LOG(VERBOSE, "Recomputing centers " << std::endl);
     recompute_centers(inside, assignments, resolution, centers);
-    write_spheres(centers, i+1);
+    //write_spheres(centers, i+1);
   }
 
   IMP_NEW(Particle, root, (in.get_particle()->get_model()));
@@ -703,7 +703,7 @@ Hierarchy simplify_protein(Hierarchy in,
       h.get_child(close_center).add_child(residue);
     }
   }
-  write_spheres(centers, 1000);
+  //write_spheres(centers, 1000);
 
   return h;
 }
