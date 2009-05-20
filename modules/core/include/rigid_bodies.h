@@ -79,7 +79,7 @@ public:
       score states in order to keep the rigid body rigid.
    */
   static RigidBody create(Particle *p,
-                                   const Particles &members);
+                          const Particles &members);
 
   ~RigidBody();
 

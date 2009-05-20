@@ -503,7 +503,7 @@ IMP_NO_SWIG(IMP_NO_DOXYGEN(operator bool_type() const {                 \
 
    \param[in] protection Whether it should be public, protected or private
    \param[in] Class The name of the wrapping class
-   \param[in] The capitalized name of the prefix to use
+   \param[in] Name The capitalized name of the prefix to use
    \param[in] name the name prefix to use, see the above method names
    \param[in] plural the plural form of the name
    \param[in] traits the traits object to use to manipulate things. This should

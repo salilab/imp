@@ -1,5 +1,5 @@
 /**
- *  \file Restraint.h
+ *  \file saxs/Restraint.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
  *  Copyright 2007-8 Sali Lab. All rights reserved.
