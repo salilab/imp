@@ -2,6 +2,12 @@
 
 \par Week of May 15
 
+- IMP::algebra::SphericalCoords was renamed to IMP::algebra::SphericalVector3D to
+  be consistent with other algebra classes.
+
+- IMP::algebra::Rotation2D is now IMP::InvalidDefault to be consistent with
+  the other similar classes.
+
 - We are trying to be a bit more specific about what is expected from a
   IMP::atom::Hierachy. Towards that end, there are two methods for extracting
   a representation from a hierarchy, IMP::atom::get_detailed_representation(),
