@@ -108,7 +108,10 @@ inline bool interiors_intersect(const Sphere3D &a, const Sphere3D &b) {
 }
 
 
-inline BoundingBox3D bounding_box(const Sphere3D &s) {
+/** \relatesalso Sphere3D
+    \relatesalso BoundingBox3D
+*/
+inline BoundingBox3D get_bounding_box(const Sphere3D &s) {
   BoundingBox3D b(s.get_center());
   b+= s.get_radius();
   return b;
