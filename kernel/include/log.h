@@ -10,6 +10,7 @@
 
 #include "config.h"
 #include "internal/log_internal.h"
+#include "utility.h"
 
 #include <iostream>
 #include <fstream>

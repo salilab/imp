@@ -10,7 +10,6 @@
 
 #include "macros.h"
 #include "config.h"
-#include "log.h"
 #include <boost/version.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
@@ -149,11 +148,7 @@ public:
   void set_was_owned(bool tf) {
     was_owned_=tf;
   }
-  ~Ownable() {
-    if (!was_owned_) {
-      IMP_WARN("Object " << this << " destroyed without being owned");
-    }
-  }
+  ~Ownable();
 };
 
 

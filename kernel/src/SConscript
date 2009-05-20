@@ -31,7 +31,7 @@ files = ['base_types.cpp', 'Model.cpp',
          'UnaryFunction.cpp', 'PairScore.cpp',
          'SingletonScore.cpp', 'TripletScore.cpp',
          'SingletonModifier.cpp', 'PairModifier.cpp',
-         'SingletonContainer.cpp', 'PairContainer.cpp'
+         'SingletonContainer.cpp', 'PairContainer.cpp', 'utility.cpp'
         ] + internal_files + [directories]
 
 # Build the shared library:
