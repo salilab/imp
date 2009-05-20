@@ -24,7 +24,7 @@ class SphereTests(IMP.test.TestCase):
         radius=5.0
         sph = IMP.algebra.Sphere3D(center,radius)
         #print sph.get_bild_string()
-        cyl = sph.get_bounding_cylinder()
+        cyl = IMP.algebra.bounding_cylinder(sph)
         #print cyl.get_bild_string()
         self.assertEqual(cyl.get_radius(),radius)
         self.assertEqual(cyl.get_segment().get_length(),2.0*radius)
@@ -67,7 +67,7 @@ class SphereTests(IMP.test.TestCase):
         center = IMP.algebra.Vector3D(3.0,6.0,2.0)
         radius=5.0
         sph = IMP.algebra.Sphere3D(center,radius)
-        cyl = sph.get_bounding_cylinder()
+        cyl=IMP.algebra.bounding_cylinder(sph)
         points = IMP.algebra.grid_cover(cyl,8,8)
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
         self.assertEqual(len(points),8*8)
