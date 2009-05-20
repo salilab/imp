@@ -5,7 +5,7 @@ Import('env')
 penv = env.Clone()
 penv.Prepend(CPPPATH=['#/build/include'])
 penv.Prepend(LIBPATH=['#/build/lib'])
-penv.Prepend(LIBS=["imp", "imp_core", "imp_atom", "imp_algebra"])
+penv.Prepend(LIBS=["imp", "imp_helper", "imp_core", "imp_atom", "imp_algebra"])
 if env['build']=='profile' and env['CC'] == 'gcc':
     penv.Prepend(LINKFLAGS=['-static'])
 
