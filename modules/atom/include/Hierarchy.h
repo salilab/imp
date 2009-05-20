@@ -24,7 +24,15 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for helping deal with a hierarchy of molecules
-/** \ingroup hierarchy
+/** A hierarchy can have any tree structure as long as child nodes
+    are valid subtypes of their parents (for example, an ATOM can be
+    a child of a RESIDUE or CHAIN or PROTEIN, but a RESIDUE can't
+    be a child of an ATOM). For most applications it is expected
+    that there exists at least one cut through the tree such that
+    all nodes in that cut are XYZ particles. This need not be
+    the leaves, which may not have coordinates at all.
+
+   \ingroup hierarchy
     \ingroup decorators
     \see Residue
     \see Atom
@@ -65,6 +73,13 @@ public:
   // swig gets unhappy if it is private
   IMP_NO_DOXYGEN(typedef Hierarchy This;)
 
+  //! The traits must match
+  Hierarchy(IMP::core::Hierarchy h): P(h) {
+    IMP_check(h.get_traits() == get_traits(),
+              "Cannot construct a IMP.atom.Hierarchy from a general "
+              " IMP.core.Hierarchy",
+              ValueException);
+  }
 
   //! Create a Hiearchy on the Particle
   /** A traits class can be specified if the default one is not desired.
@@ -208,6 +223,8 @@ public:
 
 };
 
+IMP_OUTPUT_OPERATOR(Hierarchy);
+
 /** A colleciton of Hierarchys. */
 typedef std::vector<Hierarchy> Hierarchys;
 
@@ -220,7 +237,28 @@ typedef std::vector<Hierarchy> Hierarchys;
 */
 IMPATOMEXPORT Particles
 get_by_type(Hierarchy mhd,
-                                Hierarchy::Type t);
+            Hierarchy::Type t);
+
+/** Get the set of particles providing the most detailed representation
+    of the structure. That is, a set of particles with x,y,z coordinates
+    which are either leaves or have children without coordinates.
+    \unstable{get_detailed_representation}
+    \untested{get_detailed_representation}
+    \relatesalso Hierarchy
+*/
+IMPATOMEXPORT Particles
+get_detailed_representation(Hierarchy mhd);
+
+
+/** Get the set of particles providing the least detailed representation
+    of the structure. That is, a set of particles with x,y,z coordinates
+    which are either the root or have parents without coordinates.
+    \unstable{get_simplified_representation}
+    \untested{get_simplified_representation}
+    \relatesalso Hierarchy
+*/
+IMPATOMEXPORT Particles
+get_simplified_representation(Hierarchy mhd);
 
 class Residue;
 
@@ -272,6 +310,20 @@ IMPATOMEXPORT
 Hierarchy clone(Hierarchy d);
 
 
+//! Get a bounding box for the Hierarchy
+/** This bounding box is that of the highest (in the CS sense of a tree
+    growning down from the root) cut
+    through the tree where each node in the cut has x,y,z, and r.
+    That is, if the root has x,y,z,r then it is the bounding box
+    if that sphere. If only the leaves have radii, it is the bounding
+    box of the leaves. If no such cut exists, the behavior is undefined.
+ */
+IMPATOMEXPORT
+algebra::BoundingBox3D bounding_box(const Hierarchy &h,
+                                    FloatKey r
+                                    = core::XYZR::get_default_radius_key());
+
+
 //! Create a coarse grained molecule
 /** The coarse grained model is created with a number of spheres
     based on the resolution and the volume. If the volume is not provided
@@ -294,6 +346,7 @@ Hierarchy clone(Hierarchy d);
     of the protein.
     \untested{create_protein}
     \unstable{create_protein}
+    \relatesalso Hierarchy
  */
 IMPATOMEXPORT Restraint* create_protein(Particle *p,
                                         double resolution,
@@ -301,6 +354,23 @@ IMPATOMEXPORT Restraint* create_protein(Particle *p,
                                         int first_residue_index=0,
                                         double volume=-1,
                                         double spring_strength=1);
+
+
+/** Simplify a molecular hierarchy to be represented by fewer
+    balls. The number of balls used is guessed from the resolution.
+    Things that could be improved:
+    - the resulting protein is always larger than the input. It would
+    be nice to conserve volume.
+    - the way of guessing the number of spheres is pretty crude. One
+    could search for it
+    - the code is really slow, would be nice for it to be faster.
+    \untested{simplify_protein}
+    \relatesalso Hierarchy
+ */
+IMPATOMEXPORT Hierarchy simplify_protein(Hierarchy in,
+                                         double resolution);
 IMPATOM_END_NAMESPACE
+
+
 
 #endif  /* IMPATOM_HIERARCHY_H */
