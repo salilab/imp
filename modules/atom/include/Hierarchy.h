@@ -295,7 +295,7 @@ create_fragment(const Hierarchys &ps);
         \see Bond
  */
 IMPATOMEXPORT atom::Bonds
-internal_bonds(Hierarchy mhd);
+get_internal_bonds(Hierarchy mhd);
 
 
 //! Clone the MolecularHiearchy

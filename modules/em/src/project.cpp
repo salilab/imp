@@ -16,7 +16,7 @@ void project_given_direction(DensityMap& map,
              const IMP::algebra::Vector3D& shift,
              const double equality_tolerance) {
 
-  IMP::algebra::SphericalCoords sph(direction);
+  IMP::algebra::SphericalVector3D sph(direction);
   algebra::Rotation3D angles
     = algebra::rotation_from_fixed_zyz(sph[2],sph[1],0.0);
   project_given_rotation(map,m2,Ydim,Xdim,angles,shift,equality_tolerance);
