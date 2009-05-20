@@ -15,6 +15,8 @@
 #include "Vector3D.h"
 #include "Matrix2D.h"
 #include "Rotation3D.h"
+#include <IMP/utility.h>
+#include <limits>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -24,17 +26,44 @@ IMPALGEBRA_BEGIN_NAMESPACE
   onvention used is that the rotations are performed rotating counterclockwise
   (right hand side convention).
 **/
-class Rotation2D
+class Rotation2D: public UninitializedDefault
 {
 public:
-  Rotation2D() {
-    set_angle(0.0);
-  };
+  Rotation2D(): psi_(std::numeric_limits<double>::quiet_NaN()) {};
 
   //! Builds the matrix for the given angle
   Rotation2D(double psi) {
     set_angle(psi);
   }
+
+  //! rotates a 2D point
+  /**
+  * \param[in] o a 2D vector to be rotated
+  */
+  VectorD<2> rotate(const VectorD<2> &o) const {
+    IMP_assert(!is_nan(psi_),
+               "Attempting to use uninitialized rotation");
+    return rotate(o[0],o[1]);
+  }
+
+  //! rotates a 2D point
+  VectorD<2> rotate(const double x,const double y) const {
+    IMP_assert(!is_nan(psi_),
+               "Attempting to use uninitialized rotation");
+    return VectorD<2>(c_*x-s_*y , s_*x+c_*y);
+  }
+
+  //! Returns the matrix for the inverse rotation
+  Rotation2D get_inverse() const {
+    IMP_assert(!is_nan(psi_),
+               "Attempting to use uninitialized rotation");
+    return Rotation2D(-psi_);
+  }
+private:
+  double psi_; // angle
+  double c_; // cosine of the angle
+  double s_; // sine of the angle
+
 
   //! sets the angle for the rotation
   /**
@@ -45,28 +74,6 @@ public:
     c_ = cos(psi);
     s_ = sin(psi);
   }
-
-  //! rotates a 2D point
-  /**
-  * \param[in] o a 2D vector to be rotated
-  */
-  VectorD<2> rotate(const VectorD<2> &o) const {
-    return rotate(o[0],o[1]);
-  }
-
-  //! rotates a 2D point
-  VectorD<2> rotate(const double x,const double y) const {
-    return VectorD<2>(c_*x-s_*y , s_*x+c_*y);
-  }
-
-  //! Returns the matrix for the inverse rotation
-  Rotation2D get_inverse() {
-    return Rotation2D(-psi_);
-  }
-private:
-  double psi_; // angle
-  double c_; // cosine of the angle
-  double s_; // sine of the angle
 };
 
 
