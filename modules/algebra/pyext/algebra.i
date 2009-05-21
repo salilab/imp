@@ -43,12 +43,12 @@ namespace multi_array_types {
 }
 }
 
-/* Wrap our own base classes */
+/* Wrap our own classes */
 %include "VectorD.i"
 %include "BoundingBoxD.i"
 %include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/Rotation3D.h"
-%include "IMP/algebra/Transformation3D.h"
+%include "Transformation3D.i"
 %include "IMP/algebra/geometric_alignment.h"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
