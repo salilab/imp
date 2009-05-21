@@ -24,6 +24,37 @@ class RigidTransformationTests(IMP.test.TestCase):
         self.assertEqual((v1_t- v1_t_res).get_magnitude() < 0.01,True)
         self.assertEqual((v2_t- v2_t_res).get_magnitude() < 0.01,True)
 
+    def test_delta(self):
+        """Check that the delta transformation between two transformations is correct"""
+        rot1=IMP.algebra.random_rotation()
+        trans1 = IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(-10.,-10.,-10),
+                                                  IMP.algebra.Vector3D(10.,10.,10))
+        rot2=IMP.algebra.random_rotation()
+        trans2 = IMP.algebra.random_vector_in_box(IMP.algebra.Vector3D(-10.,-10.,-10),
+                                                  IMP.algebra.Vector3D(10.,10.,10))
+        t1 = IMP.algebra.Transformation3D(rot1,trans1)
+        t2 = IMP.algebra.Transformation3D(rot2,trans2)
+        #a transformation to apply on rot1 to get to rot2
+        t12 =  t2/t1
+        #a transformation to apply on rot2 to get to rot1
+        t21 =  t1/t2
+        t22 = t12*t1
+        #check that rot22 is indeed rot2
+        id_rot = (t22.get_inverse()*t2).get_rotation()
+        q_id = id_rot.get_quaternion()
+        self.assertAlmostEqual(q_id[0],1.0)
+        self.assertAlmostEqual(q_id[1],0.0)
+        self.assertAlmostEqual(q_id[2],0.0)
+        self.assertAlmostEqual(q_id[3],0.0)
+
+        t11 = t21*t2
+        #check that rot11 is indeed rot1
+        id_rot = (t11.get_inverse()*t1).get_rotation()
+        q_id = id_rot.get_quaternion()
+        self.assertAlmostEqual(q_id[0],1.0)
+        self.assertAlmostEqual(q_id[1],0.0)
+        self.assertAlmostEqual(q_id[2],0.0)
+        self.assertAlmostEqual(q_id[3],0.0)
 
 if __name__ == '__main__':
     unittest.main()
