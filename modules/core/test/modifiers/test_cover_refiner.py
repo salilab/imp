@@ -24,13 +24,11 @@ class TestREFCover(IMP.test.TestCase):
         n= random.randrange(1,10)
         ps=IMP.Particles()
         ds=IMP.core.XYZRs()
-        pp= IMP.Particle()
-        m.add_particle(pp)
+        pp= IMP.Particle(m)
         hd= IMP.core.Hierarchy.create(pp)
         dd= IMP.core.XYZR.create(pp)
         for i in range(0,n):
-            p= IMP.Particle()
-            m.add_particle(p)
+            p= IMP.Particle(m)
             d=IMP.core.XYZR.create(p)
             ps.append(p)
             ds.append(d)
@@ -43,22 +41,5 @@ class TestREFCover(IMP.test.TestCase):
         c.apply(pp)
         self.check_cover(pp, ps)
 
-    def test_it(self):
-        """Test cover refined helper"""
-        m= IMP.Model()
-        IMP.set_log_level(IMP.MEMORY)
-        n= random.randrange(1,10)
-        ps=IMP.core.create_xyzr_particles(m, 10, 1)
-        p=IMP.Particle(m)
-        ss= IMP.core.create_cover(p,
-                                 IMP.core.FixedRefiner(ps),
-                                 IMP.core.XYZR.get_default_radius_key(), 1)
-        m.add_score_state(ss)
-        sss= m.get_score_states()
-        for s in sss:
-            s.show()
-        print "eval"
-        m.evaluate(True)
-        self.check_cover(p, ps)
 if __name__ == '__main__':
     unittest.main()

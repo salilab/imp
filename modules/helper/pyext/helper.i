@@ -5,12 +5,12 @@
 #include "IMP/core.h"
 #include "IMP/algebra.h"
 #include "IMP/helper.h"
+#include "IMP/atom.h"
 %}
 
 
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
-
 %include "helper_config.i"
 
 %include "std_vector.i"
@@ -28,6 +28,7 @@ def get_is_xyz_particle(p):
 %import "kernel/pyext/IMP.i"
 %import "modules/core/pyext/core.i"
 %import "modules/algebra/pyext/algebra.i"
+%import "modules/atom/pyext/atom.i"
 
 namespace IMP {
 namespace helper {
@@ -36,3 +37,5 @@ namespace helper {
 
 /* Wrap our own classes */
 %include "IMP/helper/rigid_bodies.h"
+%include "IMP/helper/covers.h"
+%include "IMP/helper/atom_hierarchy.h"

@@ -31,6 +31,7 @@ class IMPCOREEXPORT DiameterRestraint: public Restraint
   Float diameter_;
   Pointer<SingletonContainer> sc_;
   Pointer<UnaryFunction> f_;
+  FloatKey dr_;
 public:
   //! Use f to restraint sc to be withing diameter of one another
   /** f should have a minimum at 0 and be an upper bound-style function.

@@ -3,6 +3,7 @@ from StringIO import StringIO
 import IMP
 import IMP.test
 import IMP.atom
+import IMP.helper
 
 class PDBReadWriteTest(IMP.test.TestCase):
 
@@ -24,7 +25,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         p= IMP.Particle(m)
-        IMP.atom.create_protein(p, 10, 100)
+        IMP.helper.create_protein(p, 10, 100)
         mp= IMP.atom.Hierarchy(p)
         r = IMP.atom.get_residue(mp, 10)
         r.show()
