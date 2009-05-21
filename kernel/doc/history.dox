@@ -2,6 +2,9 @@
 
 \par Week of May 15
 
+- The IMP::helper module was added and various functionality moved there. See its
+  documentation page for a list of what is there.
+
 - IMP::algebra::SphericalCoords was renamed to IMP::algebra::SphericalVector3D to
   be consistent with other algebra classes.
 
