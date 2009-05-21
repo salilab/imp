@@ -51,8 +51,11 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
       IMP_LOG(TERSE, "MC Trying move " << **it << std::endl);
       IMP_CHECK_OBJECT(*it);
+      IMP_LOG(VERBOSE, "start\n");
       (*it)->propose_move(probability_);
+      IMP_LOG(VERBOSE, "end\n");
     }
+    IMP_LOG(VERBOSE, "after\n");
     Float next_energy;
     if (cg_ && num_local_steps_!= 0) {
       IMP_LOG(VERBOSE,
@@ -100,7 +103,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     if (prior_energy_ < stop_energy_) break;
   }
   IMP_LOG(VERBOSE, "MC Final energy is " << prior_energy_ << std::endl);
-  return prior_energy_;
+  return get_model()->evaluate(false); //force coordinate update
 }
 
 
