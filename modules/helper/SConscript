@@ -2,7 +2,7 @@ Import('env')
 
 env.IMPModuleAbout(author="Someone", version="SVN", description="A private module")
 
-env.Append(LIBS=['imp_core'])
+env.Append(LIBS=['imp_core', 'imp_atom'])
 env.validate()
 
 # Subdirectories:

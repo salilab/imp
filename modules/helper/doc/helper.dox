@@ -3,7 +3,7 @@
 
 \author Daniel Russel and Ben Webb
 
-\overview %IMP.%helper provides high level functionality to assist in setting up and manipulating models. Much of the functionality is built using components from %IMP%.core.
+\overview %IMP.%helper provides high level functionality to assist in setting up and manipulating models. Much of the functionality is built using components from %IMP%.core. In general, the code in this module should be written to be more readable than in other modules so that the helper functions can be easily adapted to different uses
 
 \publications
 \standard_imp_publications

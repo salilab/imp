@@ -4,6 +4,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.display
+import IMP.helper
 from IMP.algebra import *
 
 class MolecularDynamicsTests(IMP.test.TestCase):
@@ -12,7 +13,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         """Testing create_protein"""
         m= IMP.Model()
         rp= IMP.Particle(m)
-        r= IMP.atom.create_protein(rp, 10.0, 150)
+        r= IMP.helper.create_protein(rp, 10.0, 150)
         print "back"
         r.show()
         m.add_restraint(r)

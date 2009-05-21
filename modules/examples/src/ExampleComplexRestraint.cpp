@@ -12,6 +12,7 @@
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/PairsRestraint.h>
 #include <IMP/core/CoverRefined.h>
+#include <IMP/core/SingletonScoreState.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <boost/lambda/lambda.hpp>
@@ -21,7 +22,8 @@ IMPEXAMPLES_BEGIN_NAMESPACE
 ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
                                      SingletonContainer *sc,
                                      Float diameter):diameter_(diameter),
-                                                     sc_(sc), f_(f){
+                                                     sc_(sc), f_(f),
+                                                     dr_("diameter_radius"){
   IMP_check(sc->get_number_of_particles()>2,
             "Need at least two particles to restrain diameter",
             ValueException);
@@ -36,11 +38,14 @@ void ExampleComplexRestraint::set_model(Model *m) {
     Model *m= sc_->get_particle(0)->get_model();
 
     p_= new Particle(m);
-    ss_=core::create_cover(p_,
-               new core::FixedRefiner(Particles(sc_->particles_begin(),
-                                                sc_->particles_end())),
-                     FloatKey("diameter_radius"),
-                     0);
+    core::XYZR d= core::XYZR::create(p_, dr_);
+    d.set_coordinates_are_optimized(false);
+    core::CoverRefined *cr
+      = new core::CoverRefined(
+             new core::FixedRefiner(Particles(sc_->particles_begin(),
+                                              sc_->particles_end())),
+                               dr_, 0);
+    ss_= new core::SingletonScoreState(cr, NULL, p_);
     m->add_score_state(ss_);
   } else {
     IMP_LOG(TERSE, "Removing components of ExampleComplexRestraint"

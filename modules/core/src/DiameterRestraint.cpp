@@ -13,7 +13,9 @@
 #include <IMP/core/PairsRestraint.h>
 #include <IMP/core/CoverRefined.h>
 #include <IMP/core/DistancePairScore.h>
+#include <IMP/core/SingletonScoreState.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
+#include <IMP/core/FixedRefiner.h>
 #include <boost/lambda/lambda.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -21,7 +23,8 @@ IMPCORE_BEGIN_NAMESPACE
 DiameterRestraint::DiameterRestraint(UnaryFunction *f,
                                      SingletonContainer *sc,
                                      Float diameter):diameter_(diameter),
-                                                     sc_(sc), f_(f){
+                                                     sc_(sc), f_(f),
+                                                     dr_("diameter_radius"){
   IMP_check(sc->get_number_of_particles()>2,
             "Need at least two particles to restrain diameter",
             ValueException);
@@ -36,11 +39,15 @@ void DiameterRestraint::set_model(Model *m) {
 
     // make pairs from special generator
     p_= new Particle(m);
-    ss_=create_cover(p_,
-                     new FixedRefiner(Particles(sc_->particles_begin(),
-                                                sc_->particles_end())),
-                     FloatKey("diameter_radius"),
-                     0);
+    XYZR d= XYZR::create(p_, dr_);
+    d.set_coordinates_are_optimized(false);
+    core::CoverRefined *cr
+      = new core::CoverRefined(
+            new FixedRefiner(Particles(sc_->particles_begin(),
+                                       sc_->particles_end())),
+                               dr_, 0);
+    ss_= new core::SingletonScoreState(cr, NULL, p_);
+
     m->add_score_state(ss_);
   } else {
     IMP_LOG(TERSE, "Removing components of DiameterRestraint" << std::endl);

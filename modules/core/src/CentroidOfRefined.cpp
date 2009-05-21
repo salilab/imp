@@ -59,48 +59,5 @@ void CentroidOfRefined::show(std::ostream &out) const
   out << "CentroidOfRefined" << std::endl;
 }
 
-ScoreState* create_centroids(SingletonContainer *sc,
-                      Refiner *pr,
-                      FloatKey weight,
-                      FloatKeys ks) {
-  IMP_check(sc->get_number_of_particles() >0,
-            "Need some particles to set up as centroid",
-            ValueException);
-  for (SingletonContainer::ParticleIterator pit= sc->particles_begin();
-       pit != sc->particles_end(); ++pit) {
-    for (unsigned int i=0; i< ks.size(); ++i) {
-      if (!(*pit)->has_attribute(ks[i])) {
-        (*pit)->add_attribute(ks[i], 0, false);
-      }
-    }
-  }
-
-  CentroidOfRefined *cr= new CentroidOfRefined(pr, weight, ks);
-  DerivativesToRefined *dtr= new DerivativesToRefined(pr,
-                                                      ks);
-  SingletonsScoreState *sss= new SingletonsScoreState(sc, cr, dtr);
-  return sss;
-}
-
-
-
-ScoreState* create_centroid(Particle *p, Refiner *pr,
-                     FloatKey weight,
-                     FloatKeys ks) {
-  for (unsigned int i=0; i< ks.size(); ++i) {
-    if (!p->has_attribute(ks[i])) {
-      p->add_attribute(ks[i], 0, false);
-    }
-  }
-
-  CentroidOfRefined *cr= new CentroidOfRefined(pr, weight, ks);
-  DerivativesToRefined *dtr= new DerivativesToRefined(pr,ks);
-  SingletonScoreState *sss= new SingletonScoreState(cr, dtr, p);
-  IMP_check(pr->get_refined(p).size()>0,
-             "Need particles to compute the centroid of",
-             ValueException);
-  return sss;
-}
-
 
 IMPCORE_END_NAMESPACE
