@@ -44,13 +44,31 @@ public:
     return rot_.rotate(o) + trans_;
   }
   //! apply transformation
-  Vector3D operator*(const Vector3D &v) {
+  Vector3D operator*(const Vector3D &v) const {
     return transform(v);
   }
-  /** multiply two rigid transformation such that for any vector v
+  /** compose two rigid transformation such that for any vector v
       (rt1*rt2)*v = rt1*(rt2*v) */
-  Transformation3D operator*(const Transformation3D &tr) {
+  Transformation3D operator*(const Transformation3D &tr) const {
     return compose(*this, tr);
+  }
+  const Transformation3D& operator*=(const Transformation3D &o) {
+    *this=compose(*this, o);
+    return *this;
+  }
+  /** Compute the transformation which, when composed with b, gives *this.
+      That is a(x)== d(b(x)) for all x.
+
+      For consistency, this should probably have a nice name, but
+      I don't know what name to give it.
+  */
+  Transformation3D operator/(const Transformation3D &b) const {
+    Transformation3D ret= compose(*this, b.get_inverse());
+    return ret;
+  }
+  const Transformation3D& operator/=(const Transformation3D &o) {
+    *this= *this/o;
+    return *this;
   }
   const Rotation3D& get_rotation() const {
     return rot_;
@@ -131,6 +149,7 @@ inline Transformation3D compose(const Transformation3D &a,
   return Transformation3D(compose(a.get_rotation(), b.get_rotation()),
                           a.transform(b.get_translation()));
 }
+
 
 IMPALGEBRA_END_NAMESPACE
 
