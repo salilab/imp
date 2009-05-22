@@ -43,7 +43,7 @@ public:
   Vector3D transform(const Vector3D &o) const {
     return rot_.rotate(o) + trans_;
   }
-  //! apply transformation
+  //! apply transformation (rotate and then translate)
   Vector3D operator*(const Vector3D &v) const {
     return transform(v);
   }
@@ -141,7 +141,7 @@ rotation_about_point(const Vector3D &point,
 }
 
 //! compose two transformations
-  /** For any vector v (a*a)*v = a*(b*v).
+  /** For any vector v (a*b)*v = a*(b*v).
       \relatesalso Transformation3D
    */
 inline Transformation3D compose(const Transformation3D &a,
