@@ -5,6 +5,6 @@
 #include <IMP/log.h>
 
 int main(int, char*[]) {
-  IMP_LOG(SILENT, "Hello world" << std::endl);
+  IMP_LOG(IMP::SILENT, "Hello world" << std::endl);
   return 0;
 }
