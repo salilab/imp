@@ -72,6 +72,7 @@ SConscript('examples/SConscript')
 SConscript('build/SConscript')
 SConscript('modules/SConscript')
 SConscript('benchmarks/SConscript')
+SConscript('applications/SConscript')
 
 Clean('build', ['build/tmp/',
                 'build/include',
