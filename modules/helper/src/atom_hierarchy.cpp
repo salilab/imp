@@ -179,14 +179,18 @@ namespace {
              const Spheres &centers,
              const Indexes &offsets,
              const algebra::Vector3D &v) {
-    double best_score=std::numeric_limits<double>::max();
-    int best_center=-1;
-    unsigned int best_offset=-1;
+    std::size_t best_score=dists[0].size();
+    int best_center=0;
+    unsigned int best_offset=dists[0].size();
     for (unsigned int j=0; j< centers.size(); ++j) {
       float dist = distance(v, centers[j].get_center());
-      std::vector<float>::const_iterator it= std::upper_bound(dists[j].begin(),
-                                                              dists[j].end(),
-                                                              dist);
+      std::vector<float>::const_iterator it
+        = std::upper_bound(dists[j].begin(),
+                           dists[j].begin()
+                           +std::min(best_score,
+                                     dists[j].size()),
+                           dist);
+      if (it == dists[j].end()) continue;
       /*IMP_LOG(VERBOSE, "Point " << i << " center " << j
         << " dist " << dist << " bound " << *it << std::endl);*/
       unsigned int score;
@@ -402,7 +406,7 @@ atom::Hierarchy simplified(atom::Hierarchy in,
 }
 
 
-IMPATOMEXPORT Particles
+Particles
 get_detailed_representation(atom::Hierarchy hi){
   Particles ret;
   std::vector<atom::Hierarchy> front;
@@ -429,7 +433,7 @@ get_detailed_representation(atom::Hierarchy hi){
   return ret;
 }
 
-IMPATOMEXPORT Particles
+Particles
 get_simplified_representation(atom::Hierarchy h) {
   Particles ret;
   std::vector<atom::Hierarchy> front;
@@ -453,7 +457,7 @@ get_simplified_representation(atom::Hierarchy h) {
 
 
 namespace {
-IMPATOMEXPORT
+
 atom::Hierarchy clone_internal(atom::Hierarchy d,
                                            std::map<Particle*,
                                            Particle*> &map) {
