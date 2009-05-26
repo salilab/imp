@@ -6,7 +6,7 @@ env.IMPModuleAbout(author='Keren Lasker, Javier Velazquez-Muriel,'
 
 env.validate()
 
-env.Append(LIBS=['imp_core', 'imp_atom','imp_algebra','imp_display','imp_helper'])
+env.Append(LIBS=['imp_core', 'imp_algebra','imp_display'])
 
 
 # _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
