@@ -183,9 +183,11 @@ public:
   int lswap;
 
   //! Returns the resolution of the map
-  inline float get_resolution() { return resolution_;}
+  inline float get_resolution() const { return resolution_;}
   //! Sets the resolution of the map
   void set_resolution(float resolution) { resolution_=resolution;}
+  inline float get_spacing() {return Objectpixelsize;}
+  inline void set_spacing(float spacing) {Objectpixelsize = spacing;}
   //! Returns the origin on the map (x-coordinate)
   inline float get_xorigin() const {return xorigin_;}
   //! Returns the origin on the map (y-coordinate)
@@ -207,11 +209,20 @@ public:
       default: return get_zorigin();
     }
   }
-  //! Sets the origin on the map (x-coordinate)
+  //! Sets the origin on the map (x-coordinate).
+  /**
+   \note This is an absolute position in space.
+   */
   inline void set_xorigin(float x)  {xorigin_=x; top_calculated_=false;}
   //! Sets the origin on the map (y-coordinate)
+  /**
+    \note This is an absolute position in space.
+  */
   inline void set_yorigin(float y)  {yorigin_=y; top_calculated_=false;}
   //! Sets the origin on the map (z-coordinate)
+  /**
+   \note This is an absolute position in space.
+  */
   inline void set_zorigin(float z)  {zorigin_=z; top_calculated_=false;}
   //! True if the top coodinates (bounding-box) are calculated
   inline bool is_top_calculated() const { return top_calculated_;}
