@@ -14,7 +14,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
 static double heuristic_value=238471628;
 
-KeyData::KeyData(): heuristic_(heuristic_value), next_key_(0){}
+KeyData::KeyData(): heuristic_(heuristic_value){}
 
 void KeyData::assert_is_initialized() const
 {
