@@ -14,7 +14,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
 static double heuristic_value=238471628;
 
-KeyData::KeyData(): heuristic_(heuristic_value){}
+KeyData::KeyData(): heuristic_(heuristic_value), next_key_(0){}
 
 void KeyData::assert_is_initialized() const
 {
@@ -36,6 +36,8 @@ namespace {
       operator[](fk).add_key("x");
       operator[](fk).add_key("y");
       operator[](fk).add_key("z");
+      operator[](fk).add_key("radius");
+      operator[](fk).add_key("bounding_radius");
     }
   };
 };
