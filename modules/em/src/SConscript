@@ -21,6 +21,7 @@ files = [
          'header_converters.cpp',
          'filters.cpp',
          'project.cpp',
+         'rigid_fitting.cpp'
         ]
 
 # Build and install the shared library:

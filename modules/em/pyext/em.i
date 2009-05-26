@@ -2,9 +2,12 @@
 
 %{
 #include "IMP.h"
+#include "IMP/algebra.h"
+#include "IMP/core.h"
 #include "IMP/em.h"
 #include "IMP/algebra.h"
 #include "IMP/core.h"
+#include "IMP/display.h"
 #include "IMP/atom.h"
 %}
 
@@ -33,10 +36,11 @@ IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 
 /* Get definitions of kernel and module base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
+/* Get definitions of algebra base classes (but do not wrap) */
 %import "modules/algebra/pyext/algebra.i"
 %import "modules/core/pyext/core.i"
 %import "modules/atom/pyext/atom.i"
-
+%import "modules/display/pyext/display.i"
 /* Wrap our own classes */
 %include "IMP/em/def.h"
 %include "IMP/em/DensityHeader.h"
@@ -64,6 +68,7 @@ IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 %include "IMP/em/Image.h"
 %include "IMP/em/noise.h"
 %include "IMP/em/filters.h"
+%include "IMP/em/rigid_fitting.h"
 
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
@@ -73,7 +78,6 @@ namespace IMP {
         return dynamic_cast<IMP::em::FitRestraint *>(r);
       }
     }
-
     %template(project_given_rotation1) 
                   ::IMP::em::project_given_rotation1<float>;
     %template(project_given_direction1) 
