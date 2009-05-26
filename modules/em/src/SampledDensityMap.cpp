@@ -102,6 +102,11 @@ SampledDensityMap::SampledDensityMap(const ParticlesAccessPoint &access_p,
   std::vector<float> lower_bound, upper_bound;
   float maxradius;
   calculate_particles_bounding_box(access_p,lower_bound,upper_bound, maxradius);
+  IMP_LOG(VERBOSE, "particles bounding box  is : min=("
+            << lower_bound[0] << "," << lower_bound[1] << ","
+            << lower_bound[2] << ") max=("
+            << upper_bound[0]<<","<< upper_bound[1] <<","
+            << upper_bound[2]<<")"<<std::endl);
 
   set_header(lower_bound, upper_bound, maxradius, resolution, voxel_size,
              sig_cutoff);
@@ -110,7 +115,6 @@ SampledDensityMap::SampledDensityMap(const ParticlesAccessPoint &access_p,
   //set up the sampling parameters
   kernel_params_ = KernelParameters(resolution);
   resample(access_p);
-
 }
 
 
@@ -120,6 +124,7 @@ SampledDensityMap::SampledDensityMap(const ParticlesAccessPoint &access_p,
 
 void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
 {
+  IMP_LOG(VERBOSE,"going to resample map" <<std::endl);
   reset_data();
   calc_all_voxel2loc();
   // TODO - probably the top is not set
@@ -133,6 +138,7 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
 
   float rsq,tmp;
   const  KernelParameters::Parameters *params;
+  IMP_LOG(VERBOSE,"sampling "<<access_p.get_size()<<" particles "<< std::endl);
   for (int ii=0; ii<access_p.get_size(); ii++) {
     // If the kernel parameters for the particles have not been
     // precomputed, do it
@@ -149,7 +155,6 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
     calc_sampling_bounding_box(access_p.get_x(ii), access_p.get_y(ii),
                                access_p.get_z(ii), params->get_kdist(),
                                iminx, iminy, iminz, imaxx, imaxy, imaxz);
-
     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       znxny=ivoxz * nxny;
       for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
@@ -164,8 +169,9 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
           tmp = EXP(-rsq * params->get_inv_sigsq());
           //tmp = exp(-rsq * params->get_inv_sigsq());
           // if statement to ensure even sampling within the box
-          if (tmp>kernel_params_.get_lim())
+          if (tmp>kernel_params_.get_lim()) {
             data_[ivox]+= params->get_normfac() * access_p.get_w(ii) * tmp;
+          }
           ivox++;
         }
       }
