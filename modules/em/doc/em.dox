@@ -1,7 +1,7 @@
 /** \namespace IMP::em
 \brief %IMP.%em allows density maps to be used to generate restraints. 
 
-\author Keren Lasker and Friedrich Foerster.
+\author Keren Lasker, Javier Velazquez-Muriel, Friedrich Foerster.
 
 \overview %IMP.%em provides methods to manipulate EM density maps, and allows
 these maps to be used as restraints.
