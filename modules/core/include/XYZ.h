@@ -13,6 +13,7 @@
 
 #include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/Transformation3D.h>
 
 #include <vector>
 #include <limits>
@@ -154,6 +155,14 @@ IMP_OUTPUT_OPERATOR(XYZ);
     \relatesalso XYZ
  */
 IMPCOREEXPORT Float distance(XYZ a, XYZ b);
+
+//! Apply a transformation to the particle
+/** \relatesalso RigidBody
+    \relatesalso Transformation3D
+*/
+inline void transform(XYZ a, const algebra::Transformation3D &tr) {
+  a.set_coordinates(tr.transform(a.get_coordinates()));
+}
 
 IMPCORE_END_NAMESPACE
 
