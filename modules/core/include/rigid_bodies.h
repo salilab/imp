@@ -127,6 +127,15 @@ public:
 IMP_OUTPUT_OPERATOR(RigidBody);
 
 
+//! Apply a transformation to the particle
+/** \relatesalso RigidBody
+    \relatesalso Transformation3D
+*/
+inline void transform(RigidBody a, const algebra::Transformation3D &tr) {
+  a.set_transformation(compose(tr, a.get_transformation()), true);
+}
+
+
 //! A decorator for a particle that is part of a rigid body
 /**
    \see RigidBody
