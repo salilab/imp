@@ -8,6 +8,11 @@
 #include <IMP/atom/bond_graph.h>
 #include <boost/graph/graph_concepts.hpp>
 #include <IMP/SingletonContainer.h>
+
+#ifdef _MSC_VER
+#pragma warning( disable : 4675)
+#endif
+
 #include <boost/graph/isomorphism.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_utility.hpp>
