@@ -19,14 +19,16 @@ struct IMPEXPORT KeyData
 {
   typedef std::map<std::string, int> Map;
   typedef std::vector<std::string> RMap;
+  unsigned int next_index_;
 
   void show(std::ostream &out= std::cout) const;
   KeyData();
   void assert_is_initialized() const;
   unsigned int add_key(std::string str) {
-    unsigned int i= map_.size();
+    unsigned int i= next_index_;
     map_[str]=i;
     rmap_.push_back(str);
+    ++next_index_;
     return i;
   }
   unsigned int add_alias(std::string str, unsigned int i) {
