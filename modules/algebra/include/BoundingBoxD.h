@@ -61,6 +61,14 @@ public:
     else return ub_;
   }
 
+  bool get_contains(const VectorD<D> &o) const {
+    for (unsigned int i=0; i< D; ++i) {
+      if (o[i] < get_corner(0)[i]
+          || o[i] > get_corner(1)[i]) return false;
+    }
+    return true;
+  }
+
   void show(std::ostream &out=std::cout) const {
     out << lb_ << ": " << ub_;
   }
