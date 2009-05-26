@@ -44,13 +44,10 @@ FitRestraint::FitRestraint(const Particles &ps,
   //target_dens_map->std_normalize();
 
 
-  //     IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << endl);
+  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after std norm" << std::endl);
   //  have an initial sampling of the model grid
-  std::cout<<"RSR_EM_Fit::RSR_EM_Fit after std norm:"<<std::endl;
-  std::cout<<model_dens_map_<<std::endl;
   model_dens_map_->resample(access_p_);
-  std::cout<<"RSR_EM_Fit::RSR_EM_Fit after resample " <<std::endl;
-  // IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << endl);
+  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << std::endl);
 }
 
 IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*,  {
