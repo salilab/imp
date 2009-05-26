@@ -95,6 +95,10 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader)
   calcRMS();
   calc_all_voxel2loc();
   header_.compute_xyz_top();
+  if (header_.get_spacing() == 1.0) {
+    IMP_WARN("The pixel size is set to the default value 1.0."<<
+              "Please make sure that this is indeed the pixel size of the map");
+  }
 }
 
 void DensityMap::float2real(float *f_data, emreal **r_data)
