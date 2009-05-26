@@ -33,8 +33,6 @@ float CoarseCC::evaluate(DensityMap &em_map,
   // here we ask not to recalculate the rms ( already calculated)
   float escore = cross_correlation_coefficient(em_map, model_map,
                          voxel_data_threshold,false,divide_by_rms);
-  //  std::cout <<" CoarseCC::evaluate >> cross_correlation_coefficient : "<<
-  //escore << endl;
   escore = scalefac * (1. - escore);
   //compute the derivatives if required
   if (lderiv) {
@@ -139,11 +137,11 @@ float CoarseCC::cross_correlation_coefficient(const DensityMap &em_map,
       ccc = (ccc-nvox*em_header->dmean*model_header->dmean)
             /(nvox*em_header->rms * model_header->rms);
     }
-    //    std::cout << " ccc : " << ccc << " voxel# " << nvox
-    //          << " norm factors (map,model) " << em_header->rms
-    //          << "  " <<  model_header->rms << " means(map,model) "
-    //          << em_header->dmean << " " << model_header->dmean << std::endl;
   }
+  IMP_LOG(VERBOSE, " ccc : " << ccc << " voxel# " << nvox
+          << " norm factors (map,model) " << em_header->rms
+          << "  " <<  model_header->rms << " means(map,model) "
+          << em_header->dmean << " " << model_header->dmean << std::endl);
   return ccc;
 }
 
@@ -171,7 +169,6 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
 
   int nvox = em_header->nx * em_header->ny * em_header->nz;
   int ivox;
-
 
   // validate that the model and em maps are not empty
   IMP_check(em_header->rms >= EPS,
