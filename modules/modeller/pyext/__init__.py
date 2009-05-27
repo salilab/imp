@@ -377,7 +377,7 @@ def copy_residue(r, model):
     """Copy residue information from modeller to imp"""
     #print "residue "+str(r)
     p=IMP.Particle(model)
-    rp= IMP.atom.Residue.create(p, IMP.atom.ResidueType(r.name),
+    rp= IMP.atom.Residue.create(p, IMP.atom.ResidueType(r.pdb_name),
                                          r.index)
     p.set_name(str("residue "+r.num));
     return p
