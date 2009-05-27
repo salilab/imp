@@ -46,16 +46,16 @@ TYPE_DEF(TRP);
 TYPE_DEF(ACE);
 TYPE_DEF(NH2);
 // RNA/DNA
-TYPE_DEF2(ADE, "  A");
-TYPE_DEF2(URA, "  U");
-TYPE_DEF2(CYT, "  C");
-TYPE_DEF2(GUA, "  G");
-TYPE_DEF2(THY, "  T");
-TYPE_DEF2(DADE, " DA");
-TYPE_DEF2(DURA, " DU");
-TYPE_DEF2(DCYT, " DC");
-TYPE_DEF2(DGUA, " DG");
-TYPE_DEF2(DTHY, " DT");
+TYPE_DEF2(ADE, "A");
+TYPE_DEF2(URA, "U");
+TYPE_DEF2(CYT, "C");
+TYPE_DEF2(GUA, "G");
+TYPE_DEF2(THY, "T");
+TYPE_DEF2(DADE, "DA");
+TYPE_DEF2(DURA, "DU");
+TYPE_DEF2(DCYT, "DC");
+TYPE_DEF2(DGUA, "DG");
+TYPE_DEF2(DTHY, "DT");
 // old format support
 // the second parameter is a dummy name for macro only
 TYPE_ALIAS(ADE, ADE_A, "ADE");
