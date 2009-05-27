@@ -96,7 +96,7 @@ IMPHELPEREXPORT Particles
 get_simplified_representation(atom::Hierarchy mhd);
 
 
-//! Clone the MolecularHierarchy
+//! Clone the atom::Hierarchy
 /** This method copies the bonds, Atom data, Residue
     data, atom::Domain data and Name data to the new copies
     in addition to the atom::Hierarchy relationships.
