@@ -130,7 +130,7 @@ TYPE_DEF(2HH2);
 TYPE_DEF(2HH3);
 TYPE_DEF(3HH3);
 TYPE_DEF(1HH3);
-TYPE_ALIAS(1HH3, HH31);
+//TYPE_ALIAS(1HH3, HH31);
 
 //TYPE(HH31);
 //TYPE(HH32);
@@ -504,15 +504,7 @@ Atom get_atom(Residue rd, AtomType at) {
 
 char get_chain(Atom d) {
   Residue rd = get_residue(d);
-  Hierarchy mhd(rd.get_particle());
-  do {
-    mhd= mhd.get_parent();
-    if (mhd == Hierarchy()) {
-      throw InvalidStateException("Residue is not the child of a chain");
-    }
-  } while (mhd.get_type() != Hierarchy::CHAIN);
-  Chain cd(mhd.get_particle());
-  return cd.get_id();
+  return get_chain(rd);
 }
 
 
