@@ -18,6 +18,10 @@
 IMPATOM_BEGIN_NAMESPACE
 
 #define TYPE_DEF(STR) const ResidueType STR(#STR);
+#define TYPE_DEF2(NAME, STR) const ResidueType NAME(STR)
+#define TYPE_ALIAS(OLD_NAME, NAME, STRING) const ResidueType NAME       \
+  (ResidueType::add_alias(OLD_NAME, STRING))
+
 TYPE_DEF(UNK);
 TYPE_DEF(GLY);
 TYPE_DEF(ALA);
@@ -41,16 +45,25 @@ TYPE_DEF(TYR);
 TYPE_DEF(TRP);
 TYPE_DEF(ACE);
 TYPE_DEF(NH2);
-TYPE_DEF(ADE);
-TYPE_DEF(URA);
-TYPE_DEF(CYT);
-TYPE_DEF(GUA);
-TYPE_DEF(THY);
-TYPE_DEF(DADE);
-TYPE_DEF(DURA);
-TYPE_DEF(DCYT);
-TYPE_DEF(DGUA);
-TYPE_DEF(DTHY);
+// RNA/DNA
+TYPE_DEF2(ADE, "  A");
+TYPE_DEF2(URA, "  U");
+TYPE_DEF2(CYT, "  C");
+TYPE_DEF2(GUA, "  G");
+TYPE_DEF2(THY, "  T");
+TYPE_DEF2(DADE, " DA");
+TYPE_DEF2(DURA, " DU");
+TYPE_DEF2(DCYT, " DC");
+TYPE_DEF2(DGUA, " DG");
+TYPE_DEF2(DTHY, " DT");
+// old format support
+// the second parameter is a dummy name for macro only
+TYPE_ALIAS(ADE, ADE_A, "ADE");
+TYPE_ALIAS(URA, ADE_U, "URA");
+TYPE_ALIAS(CYT, ADE_C, "CYT");
+TYPE_ALIAS(GUA, ADE_G, "GUA");
+TYPE_ALIAS(THY, ADE_T, "THY");
+
 
 ResidueType residue_type_from_pdb_string(std::string nm) {
   if (!ResidueType::get_key_exists(nm)) {
@@ -89,7 +102,9 @@ char get_chain(Residue rd) {
     if (mhd == Hierarchy()) {
       throw InvalidStateException("Residue is not the child of a chain");
     }
-  } while (mhd.get_type() != Hierarchy::CHAIN);
+  } while (mhd.get_type() != Hierarchy::CHAIN &&
+           mhd.get_type() != Hierarchy::NUCLEOTIDE &&
+           mhd.get_type() != Hierarchy::MOLECULE);
   Chain cd(mhd.get_particle());
   return cd.get_id();
 }
