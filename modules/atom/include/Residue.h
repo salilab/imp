@@ -159,7 +159,7 @@ public:
     return ResidueType(get_particle()->get_value(get_type_key()));
   }
 
-  //! Update the stored ResidueType and the MolecularHierarchy::Type.
+  //! Update the stored ResidueType and the atom::Hierarchy::Type.
   void set_residue_type(ResidueType t) {
     get_particle()->set_value(get_type_key(), t.get_index());
     if (get_residue_type().get_index() >= GLY.get_index() &&
