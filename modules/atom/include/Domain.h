@@ -1,6 +1,6 @@
 /**
  *  \file Domain.h
- *  \brief A decorator for associating a MolecularHiearchy piece with a domain
+ *  \brief A decorator for associating a MolecularHierarchy piece with a domain
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  */

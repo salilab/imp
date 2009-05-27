@@ -62,7 +62,7 @@ class IMPATOMEXPORT BondGraph: public NullDefault{
 public:
   IMP_NO_DOXYGEN(Pointer<core::ListSingletonContainer> sc_;)
 
-  //! The graph is on the leaves of the MolecularHierachy
+  //! The graph is on the leaves of the MolecularHierarchy
   /** All the leaves will be made Bonded particles if they are not already.
       \note The hierarchy must not have any bonds to particles not in the
       hierarchy.

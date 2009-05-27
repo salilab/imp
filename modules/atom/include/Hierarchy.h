@@ -81,7 +81,7 @@ public:
               ValueException);
   }
 
-  //! Create a Hiearchy on the Particle
+  //! Create a Hierarchy on the Particle
   /** A traits class can be specified if the default one is not desired.
    */
   Hierarchy(Particle *p):
