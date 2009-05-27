@@ -249,97 +249,74 @@ void FormFactorTable::compute_form_factors_heavy_atoms()
 FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
                        const atom::AtomType& atom_type,
                        const atom::ResidueType& residue_type) const {
+  // protein atoms
   // CA
   if (atom_type == atom::AT_CA) {
-    if (residue_type == atom::GLY)
-      return CH2;                   // Glycine has 2 hydrogens
+    if (residue_type == atom::GLY) return CH2; // Glycine has 2 hydrogens
     return CH;
   }
-
   // CH3 at C-term
   //if(atom_type == atom::AT_CT) return CH3;
-
   // CH2
   if (atom_type == atom::AT_CH2) return CH2;
-
   // C
   if (atom_type == atom::AT_C) return C;
-
   // CB
   if (atom_type == atom::AT_CB) {
-    if (residue_type == atom::ILE ||
-        residue_type == atom::THR ||
+    if (residue_type == atom::ILE || residue_type == atom::THR ||
         residue_type == atom::VAL) return CH;
     if (residue_type == atom::ALA) return CH3;
     return CH2;
   }
-
   // CG1
   if (atom_type == atom::AT_CG) {
-    if (residue_type == atom::ASN ||
-        residue_type == atom::ASP ||
-        residue_type == atom::HIS ||
-        residue_type == atom::PHE ||
-        residue_type == atom::TRP ||
-        residue_type == atom::TYR) return C;
+    if (residue_type == atom::ASN || residue_type == atom::ASP ||
+        residue_type == atom::HIS || residue_type == atom::PHE ||
+        residue_type == atom::TRP || residue_type == atom::TYR) return C;
     if (residue_type == atom::LEU) return CH;
     return CH2;
   }
-
   // CG1
   if (atom_type == atom::AT_CG1) {
     if (residue_type == atom::ILE) return CH2;
     if (residue_type == atom::VAL) return CH3;
   }
-
   // CG2 - only VAL, ILE, and THR
   if (atom_type == atom::AT_CG2) return CH3;
-
   // CD
   if (atom_type == atom::AT_CD) {
-    if (residue_type == atom::GLU ||
-        residue_type == atom::GLN) return C;
+    if (residue_type == atom::GLU || residue_type == atom::GLN) return C;
     return CH2;
   }
-
   // CD1
   if (atom_type == atom::AT_CD1) {
-    if (residue_type == atom::LEU ||
-        residue_type == atom::ILE) return CH3;
-    if (residue_type == atom::PHE ||
-        residue_type == atom::TRP ||
+    if (residue_type == atom::LEU || residue_type == atom::ILE) return CH3;
+    if (residue_type == atom::PHE || residue_type == atom::TRP ||
         residue_type == atom::TYR) return CH;
     return C;
   }
-
   // CD2
   if (atom_type == atom::AT_CD2) {
     if (residue_type == atom::LEU) return CH3;
-    if (residue_type == atom::PHE ||
-        residue_type == atom::HIS ||
+    if (residue_type == atom::PHE || residue_type == atom::HIS ||
         residue_type == atom::TYR) return CH;
     return C;
   }
-
   // CE
   if (atom_type == atom::AT_CE) {
     if (residue_type == atom::LYS) return CH2;
     if (residue_type == atom::MET) return CH3;
     return C;
   }
-
   // CE1
   if (atom_type == atom::AT_CE1) {
-    if (residue_type == atom::PHE ||
-        residue_type == atom::HIS ||
+    if (residue_type == atom::PHE || residue_type == atom::HIS ||
         residue_type == atom::TYR) return CH;
     return C;
   }
-
   // CE2
   if (atom_type == atom::AT_CE2) {
-    if (residue_type == atom::PHE ||
-        residue_type == atom::TYR) return CH;
+    if (residue_type == atom::PHE || residue_type == atom::TYR) return CH;
     return C;
   }
   // CZ
@@ -349,7 +326,6 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
   }
 //   // CZ1
 //   if(atom_type == atom::AT_CZ1) return C;
-
   // CZ2, CZ3, CE3
   if (atom_type == atom::AT_CZ2 ||
       atom_type == atom::AT_CZ3 ||
@@ -358,8 +334,37 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
     return C;
   }
 
+  // DNA/RNA atoms
+  // C5'
+  if (atom_type == atom::AT_C5p) return CH2;
+  // C1', C2', C3', C4'
+  if (atom_type == atom::AT_C4p || atom_type == atom::AT_C3p ||
+      atom_type == atom::AT_C2p || atom_type == atom::AT_C1p) return CH;
+  // C2
+  if (atom_type == atom::AT_C2) {
+    if(residue_type == atom::DADE || residue_type == atom::ADE) return CH;
+    return C;
+  }
+  // C4
+  if (atom_type == atom::AT_C4) return C;
+  // C5
+  if (atom_type == atom::AT_C5) {
+    if(residue_type == atom::DCYT || residue_type == atom::CYT ||
+       residue_type == atom::DURA || residue_type == atom::URA) return CH;
+    return C;
+  }
+  // C6
+  if (atom_type == atom::AT_C6) {
+    if(residue_type == atom::DCYT || residue_type == atom::CYT ||
+       residue_type == atom::DURA || residue_type == atom::URA ||
+       residue_type == atom::DTHY || residue_type == atom::THY) return CH;
+    return C;
+  }
+  // C8
+  if (atom_type == atom::AT_C8) return CH;
+
   std::cerr << "Error in get_carbon_atom_type: atom not found "
-      << atom_type << " " << residue_type << std::endl;
+            << atom_type << " " << residue_type << std::endl;
   return C;
 }
 
@@ -367,6 +372,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
 FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
                      const atom::AtomType& atom_type,
                      const atom::ResidueType& residue_type) const {
+  // protein atoms
   // N
   if (atom_type == atom::AT_N) {
     if (residue_type == atom::PRO) return N;
@@ -385,8 +391,7 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
     return N;
   }
   // NH1, NH2
-  if (atom_type == atom::AT_NH1 ||
-      atom_type == atom::AT_NH2) {
+  if (atom_type == atom::AT_NH1 || atom_type == atom::AT_NH2) {
     if (residue_type == atom::ARG) return NH2;
     return N;
   }
@@ -410,8 +415,26 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
     if (residue_type == atom::LYS) return NH3;
     return N;
   }
+
+  // DNA/RNA atoms
+  // N1
+  if (atom_type == atom::AT_N1) {
+    if(residue_type == atom::DGUA || residue_type == atom::GUA) return NH;
+    return N;
+  }
+  // N2, N4, N6
+  if (atom_type == atom::AT_N2 || atom_type == atom::AT_N4 ||
+      atom_type == atom::AT_N6) return NH2;
+  // N3
+  if (atom_type == atom::AT_N3) {
+    if(residue_type == atom::DURA || residue_type == atom::URA) return NH;
+    return N;
+  }
+  // N7, N9
+  if (atom_type == atom::AT_N7 || atom_type == atom::AT_N9) return N;
+
   std::cerr << "Error in get_nitrogen_atom_type: atom not found "
-      << atom_type << " " << residue_type << std::endl;
+            << atom_type << " " << residue_type << std::endl;
   return N;
 }
 
@@ -446,8 +469,21 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
     if (residue_type == atom::TYR) return OH;
     return O;
   }
+
+  // DNA/RNA atoms
+  // O1P, O3',O4',05', O2,O4,O6
+  if (atom_type == atom::AT_OP1 || atom_type == atom::AT_O3p ||
+      atom_type == atom::AT_O4p || atom_type == atom::AT_O5p ||
+      atom_type == atom::AT_O2 || atom_type == atom::AT_O4 ||
+      atom_type == atom::AT_O6) return O;
+  // O2P, O2'
+  if (atom_type == atom::AT_OP2 || atom_type == atom::AT_O2p) {
+    if(residue_type == atom::DADE || residue_type == atom::ADE) return OH;
+    return O;
+  }
+
   std::cerr << "Error in get_oxygen_atom_type: atom not found "
-      << atom_type << " " << residue_type << std::endl;
+            << atom_type << " " << residue_type << std::endl;
   return O;
 }
 
