@@ -123,8 +123,8 @@ public:
     unsigned int nr,nc;
     nr = get_number_of_rows();
     nc = get_number_of_columns();
-    for(int i=0;i<nr;i++) {
-      for(int j=0;j<nc;j++) {
+    for(unsigned int i=0;i<nr;i++) {
+      for(unsigned int j=0;j<nc;j++) {
         (*this)(i,j)=0.;
       }
     }
@@ -133,7 +133,7 @@ public:
   void set_identity() {
     IMP_assert(is_square(), "the matrix must be square");
     set_zero();
-    for (unsigned int i = 0; i < get_number_of_rows(); i++) {
+    for (int i = 0; i < get_number_of_rows(); i++) {
       (*this)(i,i)=1.;
     }
   }
