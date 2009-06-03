@@ -452,6 +452,7 @@ public:
         aux = ((*this)(idx)-v(idx));
         sum += aux*aux;
       }
+      return sum;
     } else {
       String msg = "squared_difference:: operation "
                    "not supported with arrays of different shape "
