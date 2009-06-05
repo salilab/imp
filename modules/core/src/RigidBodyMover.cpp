@@ -15,7 +15,6 @@ RigidBodyMover::RigidBodyMover(RigidBody d,
   IMP_LOG(VERBOSE,"start RigidBodyMover constructor");
   max_translation_=max_translation;
   max_angle_ =max_angle*PI/180.;
-  last_transformation_ = algebra::identity_transformation();
   d_= d;
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
@@ -43,6 +42,7 @@ void RigidBodyMover::accept_move()
 //! Roll back any changes made to the Particles
 void RigidBodyMover::reject_move() {
   d_.set_transformation(last_transformation_);
+  last_transformation_= algebra::Transformation3D();
 }
 
 IMPCORE_END_NAMESPACE
