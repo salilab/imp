@@ -125,6 +125,7 @@ struct MatchResidueIndex
   }
 };
 
+
 } // namespace
 
 
@@ -146,7 +147,53 @@ get_residue(Hierarchy mhd,
   }
 }
 
-
+bool Hierarchy::get_is_valid(bool print_info) const {
+  Particles leaves= get_leaves(*this);
+  if (leaves.empty()) {
+    return true;
+  }
+  bool has_coords= core::XYZ::is_instance_of(leaves[0]);
+  for (unsigned int i=0; i< leaves.size(); ++i) {
+    if (has_coords) {
+      if (!core::XYZ::is_instance_of(leaves[i])) {
+        if (print_info) {
+          IMP_LOG(SILENT, "Leaf " << leaves[i]->get_name()
+                  << " does not have coordinates");
+        }
+        return false;
+      }
+    } else {
+      if (core::XYZ::is_instance_of(leaves[i])) {
+        if (print_info) {
+          IMP_LOG(SILENT, "Leaf " << leaves[i]->get_name()
+                  << " has coordinates, but other leaves do not.");
+        }
+        return false;
+      }
+    }
+  }
+  for (unsigned int i=0; i< leaves.size(); ++i) {
+    bool is_protein=false;
+    Hierarchy cur(leaves[i]);
+    if (cur.get_type() != ATOM) continue;
+    while (cur.get_parent() != Hierarchy()) {
+      cur= cur.get_parent();
+      if (cur.get_type() == PROTEIN || cur.get_type()== NUCLEOTIDE) {
+        is_protein=true;
+        break;
+      }
+    }
+    if (is_protein && Hierarchy(leaves[i]).get_parent().get_type()
+        != RESIDUE) {
+      if (print_info) {
+        IMP_LOG(SILENT, "Atom in polymer must have residue parent: "
+                << leaves[i]->get_name());
+      }
+      return false;
+    }
+  }
+  return true;
+}
 
 Hierarchy
 create_fragment(const Hierarchys &ps)
