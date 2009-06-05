@@ -27,12 +27,21 @@ IMPATOM_BEGIN_NAMESPACE
 /** A hierarchy can have any tree structure as long as child nodes
     are valid subtypes of their parents (for example, an ATOM can be
     a child of a RESIDUE or CHAIN or PROTEIN, but a RESIDUE can't
-    be a child of an ATOM). For most applications it is expected
-    that there exists at least one cut through the tree such that
-    all nodes in that cut are XYZ particles. This need not be
-    the leaves, which may not have coordinates at all.
+    be a child of an ATOM).
 
-   \ingroup hierarchy
+    A hierarchy is considered "valid" if:
+    - all the leaves have coordinates (or none of the nodes have
+    coordinates)
+    - for any protein in the Hierarchy, each residue in the protein
+    either has a Residue particle, or is part of a leaf Domain or
+    Fragment
+    - all bounding spheres in the hierachy bound their subtrees
+    - Any atom that is part of a protein or DNA or RNA has a residue
+    as a parent.
+
+    The get_is_valid() method checks some of these.
+
+    \ingroup hierarchy
     \ingroup decorators
     \see Residue
     \see Atom
@@ -132,6 +141,13 @@ public:
   void set_type(Type t) {
     get_particle()->set_value(get_type_key(), t);
   }
+
+  //! Return true if the hierarchy is valid.
+  /** Print information about the hierarchy if print_info is
+      true and things are invalid.
+      \note Returning true only means that no problems were
+      found, it can't check everything.*/
+  bool get_is_valid(bool print_info) const;
 
   //! Return a string representation of the current level of the hierarchy
   std::string get_type_string() const {
