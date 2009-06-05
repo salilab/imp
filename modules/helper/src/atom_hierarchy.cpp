@@ -95,31 +95,35 @@ namespace {
   }
 
 
-  void teleport(Spheres &centers, double resolution) {
+  void teleport(Spheres &centers, double resolution,
+                const Indexes &offsets) {
+    static int dir=0;
+    ++dir;
     double minr= std::numeric_limits<double>::max();
-      double maxr=-minr;
-      int minc=-1;
-      int maxc=-1;
-      for (unsigned int i=0; i< centers.size(); ++i) {
-        if (centers[i].get_radius() < minr) {
-          minr= centers[i].get_radius();
-          minc= i;
-        }
-        if (centers[i].get_radius() > maxr) {
-          maxr= centers[i].get_radius();
-          maxc=i;
-        }
+    unsigned int maxo=0;
+    int minc=-1;
+    int maxc=-1;
+    for (unsigned int i=0; i< centers.size(); ++i) {
+      if (centers[i].get_radius() < minr) {
+        minr= centers[i].get_radius();
+        minc= i;
       }
-      IMP_LOG(VERBOSE, "Teleporting " << centers[minc] << " to ");
-      // move minr to near maxr
-      algebra::Vector3D offset(0,0, cell_size(resolution));
-      centers[minc]=algebra::Sphere3D(centers[maxc].get_center()
-                                      +offset,
-                                      centers[maxc].get_radius());
-      centers[maxc]=algebra::Sphere3D(centers[maxc].get_center()
-                                      -offset,
-                                      centers[maxc].get_radius());
-      IMP_LOG(VERBOSE, centers[minc] << std::endl);
+      if (offsets[i] > maxo) {
+        maxo= offsets[i];
+        maxc=i;
+      }
+    }
+    IMP_LOG(VERBOSE, "Teleporting " << centers[minc] << " to ");
+    // move minr to near maxr
+    algebra::Vector3D offset= algebra::basis_vector<3>(dir%3)
+      * cell_size(resolution);
+    centers[minc]=algebra::Sphere3D(centers[maxc].get_center()
+                                    +offset,
+                                    centers[maxc].get_radius()/2.0);
+    centers[maxc]=algebra::Sphere3D(centers[maxc].get_center()
+                                    -offset,
+                                    centers[maxc].get_radius()/2.0);
+    IMP_LOG(VERBOSE, centers[minc] << std::endl);
   }
 
   void rasterize_io(atom::Hierarchy in, double res,
@@ -171,7 +175,7 @@ namespace {
         dists[i][j]= distance(outside[j], centers[i].get_center());
       }
       std::sort(dists[i].begin(), dists[i].end());
-      /*IMP_LOG(VERBOSE, "Sphere " << i << " has lb of " << dists[i].front()
+      /*IMP_LOG(VERBOSE, "Sphere " << i < <" has lb of " << dists[i].front()
         << " and ub of " << dists[i].back() << std::endl);*/
     }
   }
@@ -179,10 +183,11 @@ namespace {
   int assign(const std::vector< std::vector<float> > &dists,
              const Spheres &centers,
              const Indexes &offsets,
-             const algebra::Vector3D &v) {
-    std::size_t best_score=dists[0].size();
+             const algebra::Vector3D &v,
+             std::size_t &best_score) {
+    best_score=dists[0].size();
     int best_center=0;
-    unsigned int best_offset=dists[0].size();
+    int cur_best=200000;
     for (unsigned int j=0; j< centers.size(); ++j) {
       float dist = distance(v, centers[j].get_center());
       std::vector<float>::const_iterator it
@@ -191,7 +196,9 @@ namespace {
                            +std::min(best_score,
                                      dists[j].size()),
                            dist);
-      if (it == dists[j].end()) continue;
+      if (it == dists[j].begin()
+          +std::min(best_score,
+                    dists[j].size())) continue;
       /*IMP_LOG(VERBOSE, "Point " << i << " center " << j
         << " dist " << dist << " bound " << *it << std::endl);*/
       unsigned int score;
@@ -199,13 +206,14 @@ namespace {
         score=0;
         } else {*/
       score= std::distance(dists[j].begin(), it);
-      if (score < offsets[j]) score=0;
-      else score= score-offsets[j];
+      unsigned int nscore=score;
+      if (nscore < offsets[j]) nscore=0;
+      else nscore= nscore-offsets[j];
       //}
-      if (score < best_score) {
+      if (nscore < cur_best) {
         best_score=score;
         best_center=j;
-        best_offset= score;
+        cur_best= nscore;
       }
     }
     return best_center;
@@ -218,15 +226,14 @@ namespace {
                            Indexes &offsets,
                            Indexes &assignments) {
      for (unsigned int i=0; i< inside.size(); ++i) {
-       assignments[i]= assign(dists, centers, offsets, inside[i]);
-       float dist= distance(centers[assignments[i]].get_center(), inside[i]);
-       unsigned int score= std::upper_bound(dists[assignments[i]].begin(),
-                                            dists[assignments[i]].end(),
-                                            dist)
-         - dists[assignments[i]].begin();
-       offsets[assignments[i]]= std::max(offsets[assignments[i]], score);
+       std::size_t score;
+       assignments[i]= assign(dists, centers, offsets, inside[i],
+                              score);
+       offsets[assignments[i]]= std::max(offsets[assignments[i]],
+                                         static_cast<unsigned int>(score));
     }
   }
+
   void recompute_centers(const Vectors &inside, const Indexes &assignments,
                          double resolution,
                          Spheres &centers) {
@@ -300,10 +307,37 @@ namespace {
   }
 
 
+  struct CompareFirst {
+    template <class T>
+    bool operator()(const T &a, const T &b) {
+      return a.first < b.first;
+    }
+  };
+
+  void sort_inside(const Spheres &centers,
+                   Vectors& inside) {
+    std::vector<std::pair<float, int> > dists(inside.size());
+    for (unsigned int i=0; i< inside.size(); ++i) {
+      float d=1000000;
+      for (unsigned int j=0; j< centers.size(); ++j) {
+        float cd= distance(centers[j].get_center(), inside[i]);
+        d= std::min(cd, d);
+      }
+      dists[i]= std::pair<float,int>(d, i);
+    }
+    std::sort(dists.begin(), dists.end(), CompareFirst());
+    Vectors t;
+    std::swap(t,inside);
+    inside.resize(t.size());
+    for (unsigned int i=0; i< t.size(); ++i) {
+      inside[i]= t[dists[i].second];
+    }
+  }
 
   void partition_particles(const algebra::Sphere3Ds &centers,
                            const Particles &ps,
                            std::vector<Particles> &out) {
+    IMP_LOG(VERBOSE, "Partitioning " << ps.size() << " particles"<<std::endl);
     out.resize(centers.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
       algebra::Vector3D v= core::XYZ(ps[i]).get_coordinates();
@@ -317,6 +351,7 @@ namespace {
           close_center=j;
         }
       }
+      IMP_assert(close_center >=0, "Nothing close found");
       out[close_center].push_back(ps[i]);
     }
   }
@@ -365,6 +400,7 @@ atom::Hierarchy simplified(atom::Hierarchy in,
   Indexes assignments(inside.size());
   double old_score= std::numeric_limits<double>::max();
   std::vector< std::vector<float> > dists(centers.size());
+  unsigned int teleports=0;
   for (unsigned int i=0; i<100; ++i) {
   // generate sorted lists of distance
 
@@ -376,11 +412,17 @@ atom::Hierarchy simplified(atom::Hierarchy in,
 
     if (new_score==0) break;
     if (old_score <= new_score) {
+      if (teleports ==10) break;
+      IMP_LOG(VERBOSE, "Computing assignments " << std::endl);
+      compute_assignments(inside, dists, centers, offsets,  assignments);
       IMP_LOG(VERBOSE, "teleporting " << std::endl);
-      teleport(centers, resolution);
+      teleport(centers, resolution, offsets);
+      ++teleports;
       sort_outside(outside, centers, dists);
     }
     old_score=new_score;
+    IMP_LOG(VERBOSE, "Sorting into addition order " << std::endl);
+    sort_inside(centers, inside);
     IMP_LOG(VERBOSE, "Computing assignments " << std::endl);
     compute_assignments(inside, dists, centers, offsets,  assignments);
     //write_assignments(inside, assignments, i);
@@ -428,9 +470,11 @@ atom::Hierarchy simplified(atom::Hierarchy in,
   }
   for (unsigned int i=0; i< centers.size(); ++i) {
     atom::Fragment f= atom::Fragment::create(h.get_child(i).get_particle());
-    f.set_residue_indexes(residues[i]);
+    if (!residues[i].empty()) {
+      f.set_residue_indexes(residues[i]);
+    }
   }
-
+  IMP_assert(h.get_is_valid(true), "Produced invalid hierarchy");
   return h;
 }
 
