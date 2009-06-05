@@ -9,6 +9,7 @@ files = [
          'Chain.h',
          'Diffusion.h',
          'Domain.h',
+         'Fragment.h',
          'Hierarchy.h',
          'MolecularDynamics.h',
          'Residue.h',
