@@ -28,7 +28,9 @@ class IMPALGEBRAEXPORT Segment3D: public UninitializedDefault
 #endif
     return p_[i];
   }
-  Vector3D get_middle_point() const {return (p_[0]+p_[1])/2.0;}
+  Vector3D get_middle_point() const {
+    return .5*p_[0]+ .5*p_[1];
+  }
   /** \brief Get a normalized direction vector pointing from
       get_point(0) to get_point(1).
   */
@@ -57,6 +59,7 @@ IMPALGEBRAEXPORT double distance(const Segment3D &a, const Segment3D &b);
     This produces the wrong answer for points that don't project between
     the endpoints.
     \relatesalso Segment3D
+    \unstable{projection}
  */
 IMPALGEBRAEXPORT Vector3D projection(const Segment3D &s, const Vector3D &p);
 
