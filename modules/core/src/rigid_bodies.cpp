@@ -196,7 +196,11 @@ RigidMember RigidBody::get_member(unsigned int i) const {
 Particles
 RigidBody::get_member_particles() const {
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  return hd.get_child_particles();
+  Particles ps(hd.get_number_of_children());
+  for (unsigned int i=0; i< hd.get_number_of_children(); ++i) {
+    ps[i]= hd.get_child(i).get_particle();
+  }
+  return ps;
 }
 
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {

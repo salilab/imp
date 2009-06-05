@@ -68,7 +68,7 @@ class IMPCOREEXPORT HierarchyTraits
     d.get_particle()->remove_attribute(parent_key_);
   }
   template <class HD>
-  Particle *get_value(HD d) {
+  Particle *get_value(HD d) const {
     return d.get_particle();
   }
   template <class HD>
@@ -202,6 +202,16 @@ public:
                              HierarchyTraits traits
                              =Hierarchy::get_default_traits()){
     return has_required_attributes_for_child(p, traits);
+  }
+
+  /** Return the particles of the children
+   */
+  Particles get_child_particles() const {
+    Particles ps(get_number_of_children());
+    for (unsigned int i=0; i< get_number_of_children(); ++i) {
+      ps[i]= get_child(i).get_particle();
+    }
+    return ps;
   }
 
   /** \return the parent particle, or Hierarchy()
@@ -545,6 +555,8 @@ get_leaves(Hierarchy mhd);
  */
 IMPCOREEXPORT Particles
 get_all_descendants(Hierarchy mhd);
+
+typedef std::vector<Hierarchy> Hierarchies;
 
 IMPCORE_END_NAMESPACE
 

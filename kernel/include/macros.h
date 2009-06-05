@@ -484,9 +484,6 @@ IMP_NO_SWIG(IMP_NO_DOXYGEN(operator bool_type() const {                 \
 
 //! Define a set of attributes which form an array
 /**
-   This macro should go in the header and IMP_DECORATOR_ARRAY_CPP into the .cpp
-   and IMP_DECORATOR_ARRAY_INIT in the initialize_static_data function
-
    The macro defines a set of functions for using the array:
    - get_name(unsigned int)
 
@@ -524,36 +521,30 @@ private:                                                                \
                                                 const T &traits) {      \
    return traits.add_required_attributes(p);                            \
  }                                                                      \
- struct AttrArrayAccessor {                                             \
+ struct Name##AttrArrayAccessor {                                       \
    const Class &d_;                                                     \
-   AttrArrayAccessor(const Class &d): d_(d){}                           \
+   Name##AttrArrayAccessor(const Class &d): d_(d){}                     \
    typedef ExternalType result_type;                                    \
    result_type operator()(unsigned int i) const {                       \
      return d_.get_##name(i);                                           \
    }                                                                    \
-   bool operator==(const AttrArrayAccessor &o) const {                  \
+   bool operator==(const Name##AttrArrayAccessor &o) const {            \
      return d_== o.d_;                                                  \
    }                                                                    \
  };                                                                     \
 protection:                                                             \
- IMP_NO_SWIG(typedef IMP::internal::IndexingIterator<AttrArrayAccessor> \
+ IMP_NO_SWIG(typedef IMP::internal                                      \
+             ::IndexingIterator<Name##AttrArrayAccessor>                \
              Name##Iterator;)                                           \
  IMP_NO_SWIG(Name##Iterator plural##_begin() const {                    \
-     return Name##Iterator(AttrArrayAccessor(*this));                   \
+     return Name##Iterator(Name##AttrArrayAccessor(*this));             \
  }                                                                      \
  Name##Iterator plural##_end() const {                                  \
-   return Name##Iterator(AttrArrayAccessor(*this),                      \
+   return Name##Iterator(Name##AttrArrayAccessor(*this),                \
                          get_number_of_##plural());                     \
  })                                                                     \
  ExternalType get_##name(unsigned int i) const {                        \
    return traits.wrap(traits.get_value(get_particle(), i));             \
- }                                                                      \
- Particles get_##name##_particles() const {                             \
-   Particles ret(get_number_of_##plural());                             \
-   for (unsigned int i=0; i< ret.size(); ++i) {                         \
-     ret[i]= get_##name(i).get_particle();                              \
-   }                                                                    \
-   return ret;                                                          \
  }                                                                      \
  unsigned int get_number_of_##plural() const {                          \
    return traits.get_size(get_particle());                              \
@@ -588,15 +579,22 @@ protection:                                                             \
                        traits.get_value(get_particle(), i),             \
                        i+1, i);                                         \
    }                                                                    \
+ }                                                                      \
+ void clear_##plural() {                                                \
+   traits.clear(get_particle());                                        \
  }
 
 //! @}
 
-
-
-
-
-
+/*
+ Particles get_##name##_particles() const {                             \
+   Particles ret(get_number_of_##plural());                             \
+   for (unsigned int i=0; i< ret.size(); ++i) {                         \
+     ret[i]= get_##name(i).get_particle();                              \
+   }                                                                    \
+   return ret;                                                          \
+ }                                                                      \
+*/
 
 
 /** \name Macros to aid with implementation classes
