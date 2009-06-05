@@ -27,7 +27,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-IMPEMEXPORT class FittingSolutions {
+class IMPEMEXPORT FittingSolutions {
 typedef std::pair<algebra::Transformation3D,Float> FittingSolution;
 struct sort_by_cc
 {
