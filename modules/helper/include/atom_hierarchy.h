@@ -74,15 +74,6 @@ IMPHELPEREXPORT atom::Hierarchy simplified(atom::Hierarchy in,
 
 
 
-/** Get the set of particles providing the most detailed representation
-    of the structure. That is, a set of particles with x,y,z coordinates
-    which are either leaves or have children without coordinates.
-    \unstable{get_detailed_representation}
-    \untested{get_detailed_representation}
-    \relatesalso atom::Hierarchy
-*/
-IMPHELPEREXPORT Particles
-get_detailed_representation(atom::Hierarchy mhd);
 
 
 /** Get the set of particles providing the least detailed representation

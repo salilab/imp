@@ -16,6 +16,7 @@
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Chain.h>
+#include <IMP/atom/Fragment.h>
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/estimates.h>
 
@@ -130,7 +131,7 @@ namespace {
     typedef IMP::core::internal::Grid3D<bool> Grid;
     Grid grid(cell_size(res), bb.get_corner(0), bb.get_corner(1),
               false);
-    Particles leaves= get_detailed_representation(in);
+    Particles leaves= get_leaves(in);
     algebra::Vector3D ones(1,1,1);
     for (unsigned int i=0; i< leaves.size(); ++i) {
       algebra::Sphere3D s= get_sphere(leaves[i]);
@@ -297,6 +298,28 @@ namespace {
     }
     return sum;
   }
+
+
+
+  void partition_particles(const algebra::Sphere3Ds &centers,
+                           const Particles &ps,
+                           std::vector<Particles> &out) {
+    out.resize(centers.size());
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      algebra::Vector3D v= core::XYZ(ps[i]).get_coordinates();
+      double close_distance=10000;
+      int close_center=-1;
+      for (unsigned int j=0; j< centers.size(); ++j) {
+        double d= algebra::distance(v, centers[j].get_center())
+          -centers[j].get_radius();
+        if (d < close_distance) {
+          close_distance=d;
+          close_center=j;
+        }
+      }
+      out[close_center].push_back(ps[i]);
+    }
+  }
 }
 
 /** Simplify a molecular hierarchy to be represented by fewer
@@ -317,7 +340,7 @@ namespace {
     add it as a child of that sphere with no coordinates
  */
 atom::Hierarchy simplified(atom::Hierarchy in,
-                     double resolution) {
+                           double resolution) {
   // compute outside points
   Vectors outside;
   Vectors inside;
@@ -375,63 +398,43 @@ atom::Hierarchy simplified(atom::Hierarchy in,
     core::XYZR::create(c, centers[i]);
   }
 
-  Particles l= get_detailed_representation(in);
-  for (unsigned int j=0; j < l.size(); ++j) {
-    Particle *rp=NULL;
-    atom::Atom ad= atom::Atom::cast(l[j]);
-    if (ad && ad.get_atom_type() == atom::AT_CA) {
-      rp= get_residue(atom::Atom(l[j])).get_particle();
-    } else if (atom::Residue::is_instance_of(l[j])) {
-      rp=l[j];
-    }
-    if (rp) {
-      IMP_NEW(Particle, res, (rp->get_model()));
-      atom::Residue residue= atom::Residue::create(res, atom::Residue(rp));
-      double close_distance=10000;
-      int close_center=-1;
-      for (unsigned int i=0; i< centers.size(); ++i) {
-        algebra::Sphere3D s= get_sphere(l[j]);
-        double d= algebra::distance(s, centers[i]);
-        if (d < close_distance) {
-          close_distance=d;
-          close_center=i;
+
+  // copy residue information
+  std::vector<Particles> partitioned;
+  partition_particles(centers, get_leaves(in), partitioned);
+  std::vector<Ints> residues(centers.size());
+  for (unsigned int i=0; i < partitioned.size(); ++i) {
+    for (unsigned int j=0; j < partitioned[i].size(); ++j) {
+      if (atom::Atom::is_instance_of(partitioned[i][j])) {
+        atom::Atom at(partitioned[i][j]);
+        if (at.get_atom_type() == atom::AT_CA) {
+          residues[i].push_back(atom::Residue(at.get_parent()
+                                              .get_particle()).get_index());
+        }
+      } else if (atom::Residue::is_instance_of(partitioned[i][j])) {
+        residues[i].push_back(atom::Residue(partitioned[i][j]).get_index());
+      } else if (atom::Fragment::is_instance_of(partitioned[i][j])) {
+        atom::Fragment f(partitioned[i][j]);
+        residues[i].insert(residues[i].end(),
+                           f.residue_indexes_begin(),
+                           f.residue_indexes_end());
+      } else if (atom::Domain::is_instance_of(partitioned[i][j])) {
+        atom::Domain d(partitioned[i][j]);
+        for (int k=d.get_begin_index(); k != d.get_end_index(); ++k) {
+          residues[i].push_back(k);
         }
       }
-      h.get_child(close_center).add_child(residue);
     }
   }
-  //write_spheres(centers, 1000);
+  for (unsigned int i=0; i< centers.size(); ++i) {
+    atom::Fragment f= atom::Fragment::create(h.get_child(i).get_particle());
+    f.set_residue_indexes(residues[i]);
+  }
 
   return h;
 }
 
 
-Particles
-get_detailed_representation(atom::Hierarchy hi){
-  Particles ret;
-  std::vector<atom::Hierarchy> front;
-  front.push_back(hi);
-  do {
-    atom::Hierarchy h= front.back();
-    front.pop_back();
-    //IMP_LOG(VERBOSE, "Trying " << h << std::endl);
-    if (h.get_number_of_children() > 0
-        && core::XYZ::is_instance_of(h.get_child(0).get_particle())) {
-      front.insert(front.end(),
-                   h.children_begin(),
-                   h.children_end());
-    } else if (core::XYZ::is_instance_of(h.get_particle())) {
-      ret.push_back(h.get_particle());
-    } else {
-       front.insert(front.end(),
-                   h.children_begin(),
-                   h.children_end());
-    }
-  } while (!front.empty());
-  IMP_LOG(VERBOSE, "Detailed representation has size " << ret.size()
-          << std::endl);
-  return ret;
-}
 
 Particles
 get_simplified_representation(atom::Hierarchy h) {
@@ -472,6 +475,8 @@ atom::Hierarchy clone_internal(atom::Hierarchy d,
     nd= atom::Domain::create(p, atom::Domain(d.get_particle()));
   } else if (atom::Chain::is_instance_of(d.get_particle())) {
     nd= atom::Chain::create(p, atom::Chain(d.get_particle()));
+  } else if (atom::Fragment::is_instance_of(d.get_particle())) {
+    nd= atom::Fragment::create(p, atom::Fragment(d.get_particle()));
   } else {
     nd=atom::Hierarchy::create(p, d.get_type());
   }
