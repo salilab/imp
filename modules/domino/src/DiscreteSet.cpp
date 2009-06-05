@@ -39,7 +39,8 @@ Float DiscreteSet::get_state_val(long state_ind, IMP::FloatKey key) const {
   std::stringstream err_msg;
   err_msg <<"DiscreteSet::get_state_val the input state index: " << state_ind;
   err_msg << " is out of range ( " << states_.size() << " ) " ;
-  IMP_assert(state_ind<states_.size(),err_msg.str());
+  IMP_assert(static_cast<unsigned int>(state_ind)
+             <states_.size(),err_msg.str());
   return states_[state_ind]->get_value(key);
   // if the key does not exist Particle will raise an exception
 }
