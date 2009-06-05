@@ -39,7 +39,8 @@ Particle * MappedDiscreteSet::get_mapped_state(Particle *p_target,
   std::stringstream err_msg;
   err_msg <<"MappedDiscreteSet::get_mapped_state the input state index: ";
   err_msg << state_ind << " is out of range ( " << states_.size() << " ) ";
-  IMP_assert(state_ind<states_map_.find(p_target)->second.size(),err_msg.str());
+  IMP_assert(static_cast<unsigned int>(state_ind)
+             <states_map_.find(p_target)->second.size(),err_msg.str());
   return (states_map_.find(p_target)->second)[state_ind];
 }
 
