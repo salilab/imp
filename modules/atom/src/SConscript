@@ -10,6 +10,7 @@ files = [
          'Chain.cpp',
          'Diffusion.cpp',
          'Domain.cpp',
+         'Fragment.cpp',
          'Hierarchy.cpp',
          'MolecularDynamics.cpp',
          'Residue.cpp',
