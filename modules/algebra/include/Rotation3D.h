@@ -220,6 +220,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(Rotation3D)
 
+typedef std::vector<Rotation3D> Rotation3Ds;
+
 
 //! Return a rotation that does not do anything
 /** \relatesalso Rotation3D */
@@ -304,6 +306,17 @@ IMPALGEBRAEXPORT Rotation3D random_rotation();
 */
 IMPALGEBRAEXPORT Rotation3D random_rotation(const Rotation3D &center,
                                             double distance);
+
+
+//! Cover the space of rotations evenly
+/** If you care about the distance between samples instead of the number
+    of samples, the "surface area" of the set of rotations is pi^2. If
+    you allocate each sample a volume of 4/3 pi d^3 (to space them d apart),
+    Then you want 3/4 pi/d^3 points.
+
+    Creates at least num_points rotations.
+*/
+IMPALGEBRAEXPORT Rotation3Ds uniform_cover_rotations(unsigned int num_points);
 
 //! Compute a rotatation from an unnormalized quaternion
 /** \relatesalso Rotation3D */

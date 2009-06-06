@@ -12,6 +12,7 @@
 
 %include "algebra_config.i"
 %include "exception.i"
+%include "std_vector.i"
 %include "std_except.i"
 
 /* Get definitions of kernel base classes (but do not wrap) */
@@ -73,7 +74,9 @@ namespace IMP {
    %template(random_vector_in_unit_sphere) random_vector_in_unit_sphere<3>;
    %template(random_vector_in_unit_box) random_vector_in_unit_box<3>;
    %template(random_vector_on_box) random_vector_on_box<3>;
+   %template(uniform_cover_sphere) uniform_cover_sphere<3>;
    %template(basis_vector) basis_vector<3>;
+   %template(zeros) zeros<3>;
    // for debugging
    %template(Sphere3Ds) ::std::vector<IMP::algebra::Sphere3D>;
    %template(SpherePair) ::std::pair<IMP::algebra::Sphere3D,IMP::algebra::Sphere3D>;
@@ -85,5 +88,6 @@ namespace IMP {
       ::IMP::algebra::auto_rotate_matrix_2D<float>;
    %template(auto_rotate_matrix_2Dd)
       ::IMP::algebra::auto_rotate_matrix_2D<double>;
+   %template(Rotation3Ds) ::std::vector<Rotation3D>;
  }
 }

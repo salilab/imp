@@ -29,39 +29,6 @@ class SphereTests(IMP.test.TestCase):
         self.assertEqual(cyl.get_radius(),radius)
         self.assertEqual(cyl.get_segment().get_length(),2.0*radius)
 
-    def test_uniform_cover(self):
-        """Check uniform cover on a sphere"""
-        center = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        radius=20.0
-        sph = IMP.algebra.Sphere3D(center,radius)
-        numpts=600
-        points=IMP.algebra.uniform_cover(sph,numpts)
-        #check that the centroid is still the center
-        sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        self.assertEqual(len(points),numpts)
-        for p in points:
-            sampled_centroid = sampled_centroid + p
-        sampled_centroid.show()
-        sampled_centroid = sampled_centroid * (1.0/len(points))
-        sampled_centroid.show()
-        self.assertInTolerance((sampled_centroid-center).get_magnitude(),0,
-                               4*radius/numpts**.5)
-
-
-    def test_uniform_cover_not_on_000(self):
-        """Check uniform cover when the the center is not on (0,0,0)"""
-        center = IMP.algebra.Vector3D(4.0,5.0,-9.0)
-        radius=5.0
-        sph = IMP.algebra.Sphere3D(center,radius)
-        points=IMP.algebra.uniform_cover(sph,400)
-        #check that the centroid is still the center
-        sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        self.assertEqual(len(points),400)
-        for i in range(len(points)):
-            sampled_centroid = sampled_centroid + points[i]
-        sampled_centroid = sampled_centroid * (1.0/len(points))
-        self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
-
     def test_sampling_of_bounding_cylinder(self):
         """Check bounding cylinder"""
         center = IMP.algebra.Vector3D(3.0,6.0,2.0)
