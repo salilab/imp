@@ -4,6 +4,7 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
+
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/VectorD.h"
 #include "IMP/algebra/vector_generators.h"
@@ -94,6 +95,25 @@ Rotation3D random_rotation() {
   return Rotation3D(r[0], r[1], r[2], r[3]);
 }
 
+
+Rotation3Ds uniform_cover_rotations(unsigned int n) {
+  // "surface area" is 2 pi^2 r^3= 2pi^2.
+  // each rotation has an area of approximately 4/3 pi distance^3
+  std::vector<VectorD<4> > vs
+    = internal::uniform_cover_sphere<4, true>(n*2,
+                                              zeros<4>(),
+                                              1);
+  Rotation3Ds ret;
+  for (unsigned int i=0; i< vs.size(); ++i) {
+    if (vs[i][0] >=0) {
+      ret.push_back(Rotation3D(vs[i][0],
+                               vs[i][1],
+                               vs[i][2],
+                               vs[i][3]));
+    }
+  }
+  return ret;
+}
 
 
 Rotation3D random_rotation(const Rotation3D &center,

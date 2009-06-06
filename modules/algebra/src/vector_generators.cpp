@@ -82,15 +82,9 @@ Vector3Ds grid_cover(const Cylinder3D &cyl,
 }
 
 Vector3Ds uniform_cover(const Sphere3D &sph,int number_of_points) {
-  //find bounding cylinder
-  Vector3Ds points;
-  //  Cylinder3D cyl = sph.get_bounding_cylinder();
-  // Vector3Ds cylinder_sampled_points = uniform_cover(cyl,number_of_points);
-  for(int i=0;i<number_of_points;i++){
-    points.push_back(
-       random_vector_on_sphere(sph.get_center(),sph.get_radius()));
-  }
-  return points;
+  return internal::uniform_cover_sphere<3,false>(number_of_points,
+                                                 sph.get_center(),
+                                                 sph.get_radius());
 }
 
 Vector3Ds uniform_cover(const Sphere3DPatch &sph,

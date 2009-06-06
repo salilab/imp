@@ -13,6 +13,9 @@
 #include "Cone3D.h"
 #include "Sphere3D.h"
 #include "Sphere3DPatch.h"
+
+#include "internal/vector_generators.h"
+
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** @name Vector Generators
@@ -173,16 +176,31 @@ random_vector_on_sphere(const VectorD<D> &center,
 }
 
 
+
 //! Generate a random vector on a sphere with uniform density
 template <unsigned int D>
 VectorD<D>
 random_vector_on_unit_sphere() {
-  VectorD<D> v;
-  for (unsigned int i=0; i < D; ++i) {
-    v[i]=0;
-  }
-  return random_vector_on_sphere(v, 1);
+  return random_vector_on_sphere(zeros<D>(), 1);
 }
+
+
+//! Generate a set of vectors which covers a sphere uniformly
+/** The function is currently pretty slow, especially in non-optimized
+    builds. Complain if this bugs you. We might be able to do better,
+    at least in 3D.
+
+    Creates at least the requested number of points.
+    \cgalpredicate
+    */
+template <unsigned int D>
+std::vector<VectorD<D> >
+uniform_cover_sphere(unsigned int n,
+                     const VectorD<D> &center,
+                     double radius) {
+  return internal::uniform_cover_sphere<D, false>(n, center, radius);
+}
+
 
 //! Generate a set of 3d points that uniformly cover a cylinder
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Cylinder3D &cyl,
@@ -194,6 +212,7 @@ IMPALGEBRAEXPORT Vector3Ds grid_cover(const Cylinder3D &cyl,
                                       int number_of_points_on_cycle);
 
 //! Generate a set of 3d points that uniformly cover a sphere
+/** Creates at least number_of_points points. */
 IMPALGEBRAEXPORT Vector3Ds uniform_cover(const Sphere3D &sph,
                                          int number_of_points) ;
 //! Generate a set of 3d points that uniformly cover a patch of a sphere
