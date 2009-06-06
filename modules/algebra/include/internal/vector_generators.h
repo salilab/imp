@@ -103,7 +103,7 @@ uniform_cover_sphere(unsigned int n,
 
 
 #else
-  IMP_WARNING("cover_sphere produces bad covers if CGAL is not found");
+  IMP_WARN("cover_sphere produces bad covers if CGAL is not found");
   ret.resize(n);
   for (unsigned int i=0; i< n; ++i) {
     ret[i]= random_vector_on_unit_sphere<D>();
