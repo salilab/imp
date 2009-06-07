@@ -70,7 +70,7 @@ public:
               index is not part of the map, the function returns -1.
       \todo change to const and throw exception if loc_calculated == false
    */
-  float voxel2loc(const int &index,int dim);
+  float voxel2loc(const int &index,int dim) const;
 
 
   //! Calculate the voxel of a given xyz indexes
@@ -100,6 +100,13 @@ public:
       \return true if the point is part of the grid, false otherwise.
    */
   bool is_part_of_volume(float x,float y,float z) const;
+  //! Checks whether a given point is in the grid the voxel of a given location
+  /** \param[in] v The position ( in angstroms)
+      \return true if the point is part of the grid, false otherwise.
+   */
+  bool is_part_of_volume(const algebra::Vector3D &v) const {
+    return is_part_of_volume(v[0],v[1],v[2]);
+  }
 
   //! Gets the value of the voxel located at (x,y,z)
   /** \param[in] x The position ( in angstroms) of the x coordinate
@@ -140,7 +147,9 @@ public:
     \param z the new z (angstroms)
   */
   void set_origin(float x,float y,float z);
-
+  void set_origin(const IMP::algebra::Vector3D &v) {
+    set_origin(v[0],v[1],v[2]);
+  }
 
   // inspection functions
   const DensityHeader *get_header()const {return &header_;}
@@ -201,7 +210,7 @@ public:
   //! density above a given threshold
   /** \param[in] threshold the input threshold
   */
-  algebra::Vector3D get_centroid(emreal threshold=0.0);
+  algebra::Vector3D get_centroid(emreal threshold=0.0) const;
   //! Returns the the value of the voxel with the highest density.
   emreal get_max_value() const;
   emreal get_min_value() const;
@@ -237,6 +246,9 @@ public:
 
   //! Updated the voxel size of the map
   void update_voxel_size(float new_apix);
+
+  //! Updated the voxel size of the map
+  Float get_spacing() const {return header_.get_spacing();}
 
 protected:
 

@@ -133,17 +133,22 @@ long DensityMap::get_number_of_voxels() const {
   return header_.nx * header_.ny * header_.nz;
 }
 
-float DensityMap::voxel2loc(const int &index, int dim)
+float DensityMap::voxel2loc(const int &index, int dim) const
 {
-  if (!loc_calculated_)
-    calc_all_voxel2loc();
+  IMP_check(loc_calculated_,
+            "locations should be calculated prior to calling this function",
+            InvalidStateException);
+//   if (!loc_calculated_)
+//     calc_all_voxel2loc();
+  IMP_check((dim>=0)and(dim<=2),
+            "the dim index should be 0-2 (x-z) dim value:" << dim,
+            ValueException);
   if (dim==0) {
     return x_loc_[index];
     }
   else if (dim==1) {
     return y_loc_[index];
     }
-  //TODO - add error handling, dim is not 0,1,2
   return z_loc_[index];
 }
 
@@ -358,7 +363,7 @@ bool DensityMap::same_voxel_size(const DensityMap &other) const
   return false;
 }
 
-algebra::Vector3D DensityMap::get_centroid(emreal threshold)  {
+algebra::Vector3D DensityMap::get_centroid(emreal threshold)  const{
   emreal max_val = get_max_value();
   IMP_check(threshold < max_val,
             "The input threshold with value " << threshold
