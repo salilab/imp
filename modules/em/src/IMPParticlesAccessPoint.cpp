@@ -7,6 +7,7 @@
  */
 
 #include <IMP/em/IMPParticlesAccessPoint.h>
+#include <IMP/core/utility.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -20,6 +21,9 @@ IMPParticlesAccessPoint::IMPParticlesAccessPoint(
   weight_key_ = weight_key;
 }
 
+algebra::Vector3D IMPParticlesAccessPoint::get_centroid() const {
+  return core::centroid(particles_);
+}
 
 void IMPParticlesAccessPoint::reselect(const Particles& ps)
 {
