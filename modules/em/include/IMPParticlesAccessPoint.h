@@ -114,6 +114,7 @@ public:
   FloatKey get_z_key() const {
     return IMP::core::XYZ::get_xyz_keys()[2];
   }
+  algebra::Vector3D get_centroid() const;
 
 private:
   Particles particles_;

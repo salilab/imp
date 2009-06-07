@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iomanip>
 #include <vector>
+#include <IMP/algebra/Vector3D.h>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -31,6 +32,7 @@ public:
   virtual void set_x(unsigned int index, float xval)=0;
   virtual void set_y(unsigned int index, float yval)=0;
   virtual void set_z(unsigned int index, float zval)=0;
+  virtual algebra::Vector3D get_centroid() const=0;
 };
 
 
@@ -94,7 +96,20 @@ public:
   void set_z(unsigned int index, float zval) {
     if (index < z_.size() && index >= 0) z_[index] = zval;
   }
-
+  algebra::Vector3D get_centroid() const{
+    float x_mean=0.;
+    float y_mean=0.;
+    float z_mean=0.;
+    for(unsigned int i=0;i<x_.size();i++) {
+      x_mean += x_[i];
+      y_mean += y_[i];
+      z_mean += z_[i];
+    }
+    x_mean /= x_.size();
+    y_mean /= x_.size();
+    z_mean /= x_.size();
+    return algebra::Vector3D(x_mean,y_mean,z_mean);
+  }
 protected:
   std::vector<float> x_, y_, z_, radii_, weights_;
 };
