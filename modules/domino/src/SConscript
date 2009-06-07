@@ -2,6 +2,7 @@ Import('env')
 e = env.IMPSharedLibraryEnvironment()
 
 files = [
+         'JunctionTree.cpp',
          'CartesianProductSampler.cpp',
          'CombState.cpp',
          'DiscreteSet.cpp',
