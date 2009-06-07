@@ -186,8 +186,8 @@ public:
   inline float get_resolution() const { return resolution_;}
   //! Sets the resolution of the map
   void set_resolution(float resolution) { resolution_=resolution;}
-  inline float get_spacing() {return Objectpixelsize;}
-  inline void set_spacing(float spacing) {Objectpixelsize = spacing;}
+  inline float get_spacing() const {return Objectpixelsize;}
+  inline void set_spacing(float spacing)  {Objectpixelsize = spacing;}
   //! Returns the origin on the map (x-coordinate)
   inline float get_xorigin() const {return xorigin_;}
   //! Returns the origin on the map (y-coordinate)
