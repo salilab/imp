@@ -47,13 +47,14 @@ public:
       \param[in] scalefactor scale factor to apply to the value of the cross
              correlation term
       \param[in] lderiv if true, the derivatives of the term are computed
+      \param[in] resample if true, the model density map is resampled
       \return the value of the cross correlation term: scalefac*(1-ccc)
    */
   static float evaluate(DensityMap &data, SampledDensityMap &model_map,
                         const ParticlesAccessPoint &access_p,
                         std::vector<float> &dvx, std::vector<float>&dvy,
                         std::vector<float>&dvz, float scalefac, bool lderiv,
-                         bool divide_by_rms=true);
+                        bool divide_by_rms=true,bool resample=true);
 
 
 /*!
