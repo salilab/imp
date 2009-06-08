@@ -17,11 +17,13 @@ float CoarseCC::evaluate(DensityMap &em_map,
                          const ParticlesAccessPoint &access_p,
                          std::vector<float> &dvx, std::vector<float>&dvy,
                          std::vector<float>&dvz, float scalefac, bool lderiv,
-                         bool divide_by_rms)
+                         bool divide_by_rms,bool resample)
 {
   //resample the map for the particle provided
   // TODO(frido): rename: resample -> sample
+  if (resample) {
   model_map.resample(access_p);
+  }
 
   if (divide_by_rms) {
     em_map.calcRMS();
@@ -175,7 +177,9 @@ void CoarseCC::calc_derivatives(const DensityMap &em_map,
             "EM map is empty ! em_header->rms = " << em_header->rms,
             InvalidStateException);
   IMP_check(model_header->rms >= EPS,
-            "Model map is empty ! model_header->rms = " << em_header->rms,
+            "Model map is empty ! model_header->rms = " << model_header->rms
+            <<" the model centroid is : " << access_p.get_centroid() <<
+            " the map centroid is " << em_map.get_centroid() <<std::endl,
             InvalidStateException);
   // Compute the derivatives
   for (int ii=0; ii<access_p.get_size(); ii++) {
