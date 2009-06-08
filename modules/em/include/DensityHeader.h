@@ -59,11 +59,9 @@ public:
    */
   emreal get_top(int ind) const
   {
-    if (!top_calculated_) {
-      std::cerr << " DensityHeader::get_top  the top coordinates of the map "
-                << "have not been setup yet " << std::endl;
-      throw 1;
-    }
+    IMP_check(top_calculated_,
+               " DensityHeader::get_top  the top coordinates of the map "
+               << "have not been setup yet " << std::endl,ValueException);
     if (ind==0) return xtop_;
     if (ind==1) return ytop_;
     return ztop_;
