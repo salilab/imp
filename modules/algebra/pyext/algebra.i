@@ -48,7 +48,6 @@ namespace multi_array_types {
 %include "VectorD.i"
 %include "BoundingBoxD.i"
 %include "IMP/algebra/Rotation2D.h"
-%include "IMP/algebra/Rotation3D.h"
 %include "Transformation3D.i"
 %include "IMP/algebra/geometric_alignment.h"
 %include "IMP/algebra/eigen_analysis.h"
