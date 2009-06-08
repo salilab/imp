@@ -421,8 +421,6 @@ std::string DensityMap::get_locations_string(float t)  {
       x=voxel2loc(i,0);
       y=voxel2loc(i,1);
       z=voxel2loc(i,2);
-      std::cout<< i << " || " << x << " " << y<<"  "<< z <<
-        " || " << loc2voxel(x,y,z) << std::endl;
       out<<x << " " << y << " " << z << std::endl;
     }
   }
