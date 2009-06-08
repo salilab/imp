@@ -140,7 +140,7 @@ float DensityMap::voxel2loc(const int &index, int dim) const
             InvalidStateException);
 //   if (!loc_calculated_)
 //     calc_all_voxel2loc();
-  IMP_check((dim>=0)and(dim<=2),
+  IMP_check(((dim>=0)and(dim<=2)),
             "the dim index should be 0-2 (x-z) dim value:" << dim,
             ValueException);
   if (dim==0) {
