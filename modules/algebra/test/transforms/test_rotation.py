@@ -29,28 +29,6 @@ class TransformFunct:
 class RotationTests(IMP.test.TestCase):
     """Test rotations"""
 
-
-    def test_axis_rotation(self):
-        """Check rotation around axis that does not pass through (0,0,0)"""
-        for ii in xrange(1,10):
-            direction= IMP.algebra.random_vector_on_unit_sphere()
-            point = IMP.algebra.random_vector_in_unit_box()*10
-            angle= math.pi/ii#random.uniform(-math.pi,math.pi)
-
-            r= IMP.algebra.rotation_around_axis(point,direction,angle)
-            ri= r.get_inverse()
-            v_start = IMP.algebra.random_vector_in_unit_box()
-            vt = v_start
-            for i in xrange(2*ii):
-                vt= r.transform(vt)
-                if i==0:
-                    vti= ri.transform(vt)
-            self.assertInTolerance(IMP.algebra.distance(v_start,vt),0., .1)
-            self.assertInTolerance(vti[0], v_start[0], .1)
-            self.assertInTolerance(vti[1], v_start[1], .1)
-            self.assertInTolerance(vti[2], v_start[2], .1)
-
-
     def test_axis_rotation(self):
         """Check rotation about axis """
         for ii in xrange(1,10):
@@ -123,6 +101,21 @@ class RotationTests(IMP.test.TestCase):
             rot = IMP.algebra.rotation_taking_first_to_second(axis[i],axis[i+1])
             self.assertAlmostEqual(IMP.algebra.distance(rot*axis[i],axis[i+1]),0.0)
 
+    def test_interpolate(self):
+        """Check that rotations can be interpolated"""
+        r0= IMP.algebra.random_rotation()
+        r1= IMP.algebra.random_rotation()
+        print "Inputs"
+        r0.show()
+        r1.show()
+        r5= IMP.algebra.interpolate(r0, r1, .5)
+        d= r5/r0
+        r1p= d*d*r0
+        print "final"
+        r1.show()
+        print "out"
+        r1p.show()
+        self.assertInTolerance((r1.get_quaternion()-r1p.get_quaternion()).get_squared_magnitude(), 0, .1)
 
 if __name__ == '__main__':
     unittest.main()

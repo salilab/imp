@@ -63,6 +63,9 @@ class IMPALGEBRAEXPORT Rotation3D: public UninitializedDefault {
 #endif
   }
 public:
+  //! Create a rotation from an unnormalized vector 4
+  Rotation3D(const VectorD<4> &v): v_(v.get_unit_vector()){}
+
   //! Create an invalid rotation
   Rotation3D():v_(0,0,0,0) {}
   //! Create a rotation from a quaternion
@@ -130,9 +133,27 @@ public:
     return v_;
   }
 
+  //! return the quaterion so that it can be stored
+  /** This quaternion has it sign chosen so as to be interoperable
+      with q (that is, they are in the same hemisphere). */
+  const VectorD<4> get_quaternion(const VectorD<4> &q) const {
+    if (v_*q < 0) return -v_;
+    else return v_;
+  }
+
   //! multiply two rotations
   Rotation3D operator*(const Rotation3D& q) const {
     return compose(*this, q);
+  }
+
+  //! Compute the rotation which when composed with b gives this
+  Rotation3D operator/(const Rotation3D &r) const {
+    return compose(*this, r.get_inverse());
+  }
+
+  const Rotation3D &operator/=(const Rotation3D &r) {
+    *this= *this/r;
+    return *this;
   }
 
   /** \brief Return the derivative of the position x with respect to
@@ -466,6 +487,15 @@ IMPALGEBRAEXPORT FixedZYZ fixed_zyz_from_rotation(const Rotation3D &r);
 IMPALGEBRAEXPORT FixedXYZ fixed_xyz_from_rotation(const Rotation3D &r);
 
 /** @}*/
+
+
+//! Interpolate between two rotations
+/** It f ==0, return b, if f==1 return a. */
+inline Rotation3D interpolate(const Rotation3D &a,
+                              const Rotation3D &b,
+                              double f) {
+  return f*a.get_quaternion()+(1-f)*b.get_quaternion(a.get_quaternion());
+}
 
 IMPALGEBRA_END_NAMESPACE
 #endif  /* IMPALGEBRA_ROTATION_3D_H */
