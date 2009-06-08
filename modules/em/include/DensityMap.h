@@ -249,14 +249,14 @@ public:
 
   //! Updated the voxel size of the map
   Float get_spacing() const {return header_.get_spacing();}
-
-protected:
-
   //! Calculates the coordinates that correspond to all voxels.
   /** Can be precomputed to make corr faster.
       \todo which is a better design - have it public or call it from voxel2loc?
    */
   void calc_all_voxel2loc();
+
+protected:
+
   void reset_voxel2loc();
 
   void allocated_data();

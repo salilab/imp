@@ -464,6 +464,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
   long new_size = nx*ny*nz;
   long cur_size = get_number_of_voxels();
   reset_voxel2loc();
+  calc_all_voxel2loc();
   emreal * new_data = new emreal[new_size];
   for (long i = 0; i < new_size; i++) {
     new_data[i] = val;
