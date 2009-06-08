@@ -35,7 +35,8 @@ class IMPATOMEXPORT Fragment: public Hierarchy
   IMP_DECORATOR_ARRAY_DECL(private, Fragment, ResidueEnd,
                            residue_end,
                            residue_ends, etraits_, int)
-    static Traits btraits_, etraits_;
+    static Traits btraits_;
+    static Traits etraits_;
   //! Add a set of residues to this Fragment
   /** The values passed is intepreted as a range. That is,
       the Fragment will then contain [begin, end).
