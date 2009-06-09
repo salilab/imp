@@ -294,7 +294,14 @@ IMPATOMEXPORT atom::Bonds
 get_internal_bonds(Hierarchy mhd);
 
 
-
+//! Return the root of the hierarchy
+/** \relatesalso Hierarchy */
+inline Hierarchy root(Hierarchy h) {
+  while (h.has_parent()) {
+    h= h.get_parent();
+  }
+  return h;
+}
 
 IMPATOM_END_NAMESPACE
 
