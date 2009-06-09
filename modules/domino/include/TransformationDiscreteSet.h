@@ -17,6 +17,7 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
+//! Holds a set of transformations
 class IMPDOMINOEXPORT TransformationDiscreteSet : public DiscreteSet
 {
 public:

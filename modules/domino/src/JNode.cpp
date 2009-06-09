@@ -69,8 +69,7 @@ void JNode::show_sampling_space(std::ostream& out) const
   for (Particles::const_iterator pi = particles_.begin();
        pi != particles_.end(); pi++) {
     out << std::endl << " states for particle name : " <<
-      //    (*pi)->get_value(IMP::StringKey("name")) << ":" << std::endl;
-      (*pi)->get_name() << ":" << std::endl;
+      (*pi)->get_value(node_name_key()) << ":" << std::endl;
     ds_->show_space(*pi, out);
   }
 }
@@ -82,8 +81,7 @@ void JNode::show(std::ostream& out) const
   out << "particle_indices: " << std::endl;
   for (Particles::const_iterator it = particles_.begin(); it !=
        particles_.end(); it++) {
-    //    out << (*it)->get_value(IMP::StringKey("name")) << " || " ;
-    out << (*it)->get_name() << " || " ;
+    out << (*it)->get_value(node_name_key()) << " || " ;
   }
   out << std::endl << "==combinations ( " << comb_states_.size();
   out << " ): " << std::endl;
@@ -99,6 +97,16 @@ bool JNode::is_part(const Particles &ps) const
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     other_sorted_particle_indexes.push_back(*it);
   }
+  IMP_LOG(VERBOSE,"interaction between : " << std::endl);
+  for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
+    IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
+  }
+  IMP_LOG(VERBOSE,"and : " << std::endl);
+  for (Particles::const_iterator it = particles_.begin();
+       it != particles_.end(); it++) {
+    IMP_LOG(VERBOSE,(*it)->get_value(node_name_key()) << " : ");
+  }
+  IMP_LOG(VERBOSE,std::endl);
   sort(other_sorted_particle_indexes.begin(),
        other_sorted_particle_indexes.end());
   set_intersection(particles_.begin(),
@@ -142,6 +150,7 @@ void JNode::move2state(CombState *cs)
 
 void JNode::realize(Restraint *r, Particles *ps, Float weight)
 {
+  IMP_LOG(VERBOSE,"start realize node : " << node_ind_ << std::endl);
   std::map<std::string, float> temp_calculations;
   // stores calculated discrete values. It might be that each appears more
   // than once, since the node may contain more particles than the ones
@@ -149,20 +158,15 @@ void JNode::realize(Restraint *r, Particles *ps, Float weight)
   std::map<std::string, float> result_cache; // to avoid multiple calculation
                                              // of the same configuration.
   float score;
-//   Particles r_particles;
-//   ParticlesList pl = r->get_interacting_particles();
-//   for(ParticlesList::iterator it1 = pl.begin();
-//       it1 != pl.end(); it1++){
-//     for(Particles::iterator it2 = it1->begin(); it2 != it1->end(); it2++) {
-//       r_particles.push_back(*it2);
-//      }
-//   }
   std::string partial_key;
   for (std::map<std::string, CombState *>::iterator it =  comb_states_.begin();
        it != comb_states_.end(); it++) {
     partial_key = it->second->partial_key(ps);
+    //IMP_LOG(VERBOSE,"key : " << partial_key << std::endl);
     if (result_cache.find(partial_key) == result_cache.end()) {
+      //IMP_LOG(VERBOSE,"key : " << partial_key << std::endl);
       move2state(it->second);
+      //IMP_LOG(VERBOSE,"after move to state" << std::endl);
       score = r->evaluate(NULL) * weight;
       result_cache[partial_key] = score;
     } else {
@@ -170,6 +174,7 @@ void JNode::realize(Restraint *r, Particles *ps, Float weight)
     }
     it->second->update_total_score(0.0, score);
   }
+  IMP_LOG(VERBOSE,"end realize node : " << node_ind_ << std::endl);
 }
 
 std::vector<CombState *> JNode::min_marginalize(const CombState &s,

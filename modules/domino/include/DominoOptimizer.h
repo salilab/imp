@@ -10,6 +10,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "RestraintGraph.h"
+#include "JunctionTree.h"
 
 #include <IMP/core/RestraintSet.h>
 
@@ -26,7 +27,7 @@ class IMPDOMINOEXPORT DominoOptimizer : public Optimizer
 {
   typedef boost::tuple<Restraint *,Particles,Float> OptTuple;
 public:
-  DominoOptimizer(std::string jt_filename, Model *m);
+  DominoOptimizer(const JunctionTree &jt, Model *m);
   IMP_OPTIMIZER(internal::version_info)
 
   void show(std::ostream &out = std::cout) const {

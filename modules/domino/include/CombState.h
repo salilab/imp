@@ -8,15 +8,14 @@
 #define IMPDOMINO_COMB_STATE_H
 
 #include "config.h"
-//#include "DiscreteSampler.h"
-
 #include <IMP/Particle.h>
 #include <IMP/Restraint.h>
 #include <vector>
 #include <sstream>
 #include <algorithm>
-
+#include "IMP/base_types.h"
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
+
 // backwards compatibility functions
 inline  unsigned int particle_index(Particle *p) {
   Model::ParticleIterator pit= p->get_model()->particles_begin();
@@ -64,13 +63,12 @@ public:
   total_score_ = other.total_score_;
   }
   void add_data_item(Particle *p, unsigned int val) {
-  std::stringstream error_message;
-  error_message << "CombState::add_data_item the particle is already part"
-                << "CombState : " << p;
-  IMP_assert(data_.find(p) == data_.end(), error_message.str());
-  data_[p] = val;
-
+    IMP_assert(data_.find(p) == data_.end(),
+             "CombState::add_data_item the particle is already part"
+             << "CombState : " << p <<std::endl);
+    data_[p] = val;
   }
+
   bool has_particle(Particle *p) {
     return data_.find(p) != data_.end();
   }
@@ -133,6 +131,8 @@ public:
   /** \param[in] other the other combination
    */
   void combine(CombState *other) {
+  IMP_LOG(VERBOSE,"before combination the size is : " <<
+                  data_.size() << std::endl);
   for (CombData::const_iterator it = other->data_.begin();
        it != other->data_.end(); it++) {
     Particle *p = it->first;
@@ -141,14 +141,16 @@ public:
       data_[p] = it->second;
     } else {
       std::stringstream error_message;
-      error_message << " CombState::combine the state of particle with name :"
-                    << p->get_value(node_name_key()) << " is wrong"
-                    << " - expect ( " << it->second << " instead of "
-                    << data_[p] << " )";
-      IMP_assert(data_[p] == it->second, error_message.str());
+      IMP_assert(data_[p] == it->second,
+                 " CombState::combine the state of particle with name :"
+                 << p->get_value(node_name_key()) << " is wrong"
+                 << " - expect ( " << it->second << " instead of "
+                 << data_[p] << " )"<<std::endl);
+
     }
   }
-
+  IMP_LOG(VERBOSE,"after combination the size is : "
+                  << data_.size() << std::endl);
   }
   const CombData * get_data() const {
     return &data_;

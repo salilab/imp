@@ -38,6 +38,9 @@ public:
   void populate_states_of_particles(Particles *particles,
                std::map<std::string, CombState *> *states) const;
   void move2state(const CombState *cs);
+  //! Show the sampling space of a single particle
+  void show_space(Particle *p,
+                  std::ostream& out = std::cout) const {}
 
 protected:
   //  void construct();

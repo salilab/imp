@@ -20,6 +20,14 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
+//! CartesianProductSampler
+/**
+The class samples all  combinations in a discrete set
+to particles. for example, in the case of anchor points each anchor point can be
+mapped to one particle for a specific mapping. For example, for anchor points
+[1,2,3,4,5] to particles [a,b,c,d] the sampling space would be:
+[1,1,1,1],[1,1,1,2],[1,1,1,3],[1,1,1,4],......,[5,5,5,4],[5,5,5,5]
+ */
 class  IMPDOMINOEXPORT CartesianProductSampler :  public DiscreteSampler
 {
 public:

@@ -18,7 +18,6 @@ void read_junction_tree(const std::string &filename, JunctionTree *jt) {
   int node_ind = 0;
   while (!jt_f.eof()) {
     getline (jt_f,line);
-    std::cout<<line<<std::endl;
     std::vector<std::string> ls;
     boost::split(ls, line, boost::is_any_of(" "));
     if (status==0) {
@@ -37,14 +36,25 @@ void read_junction_tree(const std::string &filename, JunctionTree *jt) {
       else {
         for(std::vector<std::string>::iterator it =  ls.begin();
             it != ls.end(); it++) {
-          jt->set_node_name(node_ind,*it);
+          boost::trim(*it);
+          if (it->size() >0) {
+            jt->set_node_name(node_ind,*it);
+            IMP_LOG(VERBOSE,"adding component "<< *it <<
+                            " to node " << node_ind << std::endl);
+          }
         }
         node_ind = node_ind +1;
       }
     }
     else if (status == 2) {
-      jt->add_edge(boost::lexical_cast<int>(ls[0]),
+      if (ls.size() == 2) {
+        IMP_LOG(VERBOSE,"adding edge"<<std::endl);
+        jt->add_edge(boost::lexical_cast<int>(ls[0]),
                    boost::lexical_cast<int>(ls[1]));
+      }
+      else {
+        IMP_WARN("edge line was not parsed: ");
+      }
     }
   }
   IMP_check(status==2,"wrong junction tree format",ValueException);
