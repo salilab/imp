@@ -25,6 +25,7 @@ IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 %import "kernel/pyext/IMP.i"
 %import "modules/algebra/pyext/algebra.i"
 /* Wrap our own classes */
+%include "IMP/domino/JunctionTree.h"
 %include "IMP/domino/CombState.h"
 %include "IMP/domino/DiscreteSampler.h"
 %include "IMP/domino/JNode.h"

@@ -93,8 +93,8 @@ void SimpleDiscreteRestraint::show(std::ostream& out) const
     out << "simple discrete restraint (inactive):" << std::endl;
   }
   get_version_info().show(out);
-  out << "  particles: " << get_particle(0)->get_name();
-  out << " and " << get_particle(1)->get_name();
+  out << "  particles: " << get_particle(0)->get_value(node_name_key());
+  out << " and " << get_particle(1)->get_value(node_name_key());
   out << std::endl;
 }
 

@@ -16,7 +16,10 @@
 #include "DiscreteSet.h"
 
 IMPDOMINO_BEGIN_NAMESPACE
+//! The key for the string Domino uses as a unique index
+IMPDOMINOEXPORT StringKey node_name_key();
 
+//! MappedDiscreteSet
 class IMPDOMINOEXPORT MappedDiscreteSet : public DiscreteSet
 {
 public:

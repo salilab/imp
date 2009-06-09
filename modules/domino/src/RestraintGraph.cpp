@@ -12,6 +12,7 @@
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
 
+
 IMPDOMINO_BEGIN_NAMESPACE
 
 StringKey node_name_key() {
@@ -19,113 +20,42 @@ StringKey node_name_key() {
   return k;
 }
 
-  void RestraintGraph::parse_jt_file(const std::string &filename, Model *mdl)
-  {
-    // for fast access to particle by its name, create a map
-    std::map<std::string, Particle *> p_map;
-    IMP_LOG(VERBOSE,"start checking particles"<< std::endl);
-    for (Model::ParticleIterator it = mdl->particles_begin();
+void RestraintGraph::load_data(const JunctionTree &jt,Model *mdl) {
+  initialize_graph(jt.get_number_of_nodes());
+  std::map<std::string, Particle *> p_map;
+  IMP_LOG(VERBOSE,"RestraintGraph::load_data with : " <<
+                  mdl->get_number_of_particles() << " particles "<<std::endl);
+  for (Model::ParticleIterator it = mdl->particles_begin();
          it != mdl->particles_end(); it++ ) {
-      if ((*it)->has_attribute(node_name_key())) {
-        IMP_LOG(VERBOSE,"particle: " << (*it)->get_name()
-                << " has node name "
-                << (*it)->get_value(node_name_key())<< std::endl);
-        p_map[(*it)->get_value(node_name_key())] = *it;
-      }
+    if ((*it)->has_attribute(node_name_key())) {
+      p_map[(*it)->get_value(node_name_key())] = *it;
     }
-    IMP_LOG(VERBOSE,"end checking particles"<< std::endl);
-    // load the nodes and edges
-    IMP_LOG(VERBOSE,"going to open file: " << filename<< std::endl);
-    std::ifstream myfile(filename.c_str());
-    IMP_assert(myfile.is_open(),
-               "could not open junction tree file: " << filename<< std::endl);
-    char line[1024];
-    unsigned int number_of_nodes=0;
-    unsigned int status = 0;
-    std::vector<std::string> v;
-    std::stringstream err_msg;
-    while (myfile.getline(line, 1024) && status != 2) {
-      IMP_LOG(VERBOSE,"line: " << line);
-      v.clear();
-      char *pch = strtok(line, " ");
-      while (pch != NULL) {
-        v.push_back(std::string(pch));
-        pch = strtok(NULL, " ");
-      }
-      if (status == 0) {
-        if (v[0] == "nodes:") {
-          status = 1;
-        }
-        else {
-          err_msg.clear();
-          err_msg << "RestraintGraph::parse_jt_file wrong file format:";
-          IMP_assert(true, err_msg.str());
-        }
-      }
-      else if (status==1) {
-        if  (v[0]=="edges:") {
-          status=2;
-        }
-        else {
-          number_of_nodes++;
-        }
-      }
+  }
+  // load nodes
+  for(int i=0;i<jt.get_number_of_nodes();i++) {
+    Particles ps;
+    for(int j=0;j<jt.get_number_of_components(i);j++) {
+      std::string comp_name = jt.get_component_name(i,j);
+      IMP_assert(p_map.find(comp_name) != p_map.end(), "node with key : " <<
+                 comp_name << " was not found" << std::endl);
+      ps.push_back(p_map[comp_name]);
     }
-    initialize_graph(number_of_nodes);
-    std::pair<int, int> last_key;
-    status = 0;
-    unsigned int node_index = 0;
-    // move back to the beginning of the file
-    myfile.seekg (0);
-    //TODO - remove this when possible
-    std::ifstream myfile1(filename.c_str());
-    IMP_assert(myfile1.is_open(),
-               "could not open junction tree file: " << filename<< std::endl);
-    //TODO END
-    while (myfile1.getline(line, 1024)) {
-      v.clear();
-      char *pch = strtok(line, " ");
-      while (pch != NULL) {
-        v.push_back(std::string(pch));
-        pch = strtok(NULL, " ");
-      }
-      if (status == 0) {
-        if (v[0] == "nodes:") {
-          status = 1;
-        }
-        else {
-          err_msg.clear();
-          err_msg << "RestraintGraph::parse_jt_file wrong file format:";
-          IMP_assert(true, err_msg.str());
-        }
-      }
-      else if (status==1) {
-        if  (v[0]=="edges:") {
-          status=2;
-        }
-        else {
-          Particles ps;
-          for(std::vector<std::string>::iterator it =  v.begin();
-              it != v.end(); it++) {
-            IMP_assert(p_map.find(*it) != p_map.end(), "node with key : " <<
-                       *it << " was not found" << std::endl);
-            ps.push_back(p_map[*it]);
-          }
-          add_node(node_index, ps);
-          node_index = node_index+1;
-        }
-      }
-      else if (status ==2) {
-        IMP_assert(v.size()==2,
-           "wrong format of edge line:" << line << std::endl);
-        add_edge(atoi(v[0].c_str()),atoi(v[1].c_str()));
+    add_node(i, ps);
+  }
+  //load edges
+  for(int n1=0;n1<jt.get_number_of_nodes();n1++) {
+    for(int n2=n1+1;n2<jt.get_number_of_nodes();n2++) {
+      if (jt.has_edge(n1,n2)) {
+        IMP_LOG(VERBOSE,"in Restraint Graph adding edge between : "
+                        << n1 << " and " << n2 << std::endl);
+        add_edge(n1,n2);
       }
     }
   }
+}
 
-RestraintGraph::RestraintGraph(const std::string &filename, Model *mdl)
-{
-  parse_jt_file(filename, mdl);
+RestraintGraph::RestraintGraph(const JunctionTree &jt,Model *mdl) {
+  load_data(jt,mdl);
   infered_ = false;
   min_combs_ = new std::vector<CombState *>();
 }
@@ -258,12 +188,15 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
     r->show(std::cerr);
     std::cerr << " between particles: ";
     for (Particles::const_iterator ii = ps->begin();ii < ps->end();ii++) {
-      std::cerr << (*ii)->get_name() << " ("
-                <<(*ii)->get_value(node_name_key())<<"):: ";
+      std::cerr << (*ii)->get_value(node_name_key()) << " ("
+                <<(*ii)->get_value(node_name_key()) <<"):: ";
     }
     std::cerr << " has not been realized." << std::endl;
   }
   else {
+    IMP_LOG(VERBOSE,"restraint : " );
+    IMP_LOG_WRITE(VERBOSE,r->show());
+    IMP_LOG(VERBOSE,"is optimized by node with index : "<<jn->get_node_index());
     jn->realize(r, ps, weight);
   }
 }
@@ -317,23 +250,32 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
       it != temp_min_combs->end(); it++) {
     min_comb = new CombState(**(it));
     distribute_minimum(root_, min_comb);
-    IMP_LOG(VERBOSE,"====MINIMUM COMBINATION number " <<
+    IMP_LOG(TERSE,"====MINIMUM COMBINATION number " <<
             it-temp_min_combs->begin()<<" : ============== " << std::endl);
-    min_comb->show(); //TODO _ move to log
+    IMP_LOG_WRITE(VERBOSE,min_comb->show());
     min_combs_->push_back(min_comb);
   }
   delete temp_min_combs;
   infered_ = true;
+  IMP_LOG(VERBOSE,"going to move to global minimum"<< std::endl);
   move_model2global_minimum();
+  IMP_LOG(VERBOSE,"the model is at his global minimum"<< std::endl);
 }
 
 void RestraintGraph::distribute_minimum(unsigned int father_ind,
                                         CombState *min_comb)
 {
-  boost::graph_traits<Graph>::adjacency_iterator adj_first, adj_last;
+  IMP_LOG(VERBOSE,"going to distribute the minimum for node : "
+          << father_ind << "with " << boost::degree(father_ind,g_)
+          << " children the total number of edges is : "
+          << boost::num_edges(g_) << std::endl);
+ boost::graph_traits<Graph>::adjacency_iterator adj_first, adj_last;
   boost::tie(adj_first, adj_last) = adjacent_vertices(father_ind, g_);
   for (boost::graph_traits<Graph>::adjacency_iterator child_it = adj_first;
        child_it != adj_last;  child_it++) {
+    IMP_LOG(VERBOSE,"discover time of father : (" << father_ind << ") is : "
+            << discover_time[father_ind] << " discover time of child (" <<
+            *child_it << ") is: " << discover_time[*child_it] << std::endl);
     if (!(discover_time[*child_it] > discover_time[father_ind])) {
       continue;
     }
@@ -349,14 +291,13 @@ void RestraintGraph::distribute_minimum(unsigned int father_ind,
       try {
         min_comb->combine(*it);
         passed = true;
-      } catch (IMP::ErrorException e) {}
+      } catch (IMP::ErrorException e) {
+         IMP_WARN("problem distributing minimum");
+        }
       it++;
     }
-    if (!passed) {
-      std::cerr << " could not combine any of the " << child_min_state.size()
-                << " states " << std::endl;
-      throw 1;
-    }
+    IMP_assert(passed,"could not combine any of the " << child_min_state.size()
+               << " states " << std::endl);
     //TODO - should we free here min_father_separator  and child_min_state
     distribute_minimum(*child_it, min_comb);
   }
@@ -397,7 +338,8 @@ void RestraintGraph::distribute_evidence(unsigned int father_ind)
 
 void RestraintGraph::update(unsigned int w, unsigned int v)
 {
-  std::cout<<"RestraintGraph::update start from "<< w <<" to " <<v<< std::endl;
+  IMP_LOG(VERBOSE,"RestraintGraph::update start from "<< w <<" to "
+                  <<v<< std::endl);
   // update node with index w  based on node with index: v
   // check if there is an edge between w and v
   std::stringstream error_message;
@@ -410,16 +352,18 @@ void RestraintGraph::update(unsigned int w, unsigned int v)
   JNode *v_data = node_data_[v];
   //minimize over all sub-configurations in  v that do not involve the w
   JEdge *e = edge_data_[get_edge_key(w,v)];
-  std::cout<<"RestraintGraph::update before min_marginalize"<< std::endl;
+  IMP_LOG(VERBOSE,"RestraintGraph::update before min_marginalize"<< std::endl);
   e->min_marginalize(v_data, w_data);
   //now update the to_node according to the new separators
   Particles intersection_set;
   v_data->get_intersection(*w_data, intersection_set);
-  std::cout<<"RestraintGraph::update before update potentials"<< std::endl;
+  IMP_LOG(VERBOSE,"RestraintGraph::update before update potentials"
+                  << std::endl);
   w_data->update_potentials(*(e->get_old_separators(w_data)),
                             *(e->get_new_separators(w_data)),
                             intersection_set);
-  std::cout<<"RestraintGraph::update end from "<< w <<" to "<<v<< std::endl;
+  IMP_LOG(VERBOSE,"RestraintGraph::update end from "<< w
+                  <<" to "<<v<< std::endl);
 
 }
 

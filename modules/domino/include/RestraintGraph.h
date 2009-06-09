@@ -13,6 +13,7 @@
 #include "JNode.h"
 #include "JEdge.h"
 #include "DiscreteSampler.h"
+#include "JunctionTree.h"
 
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
@@ -22,12 +23,11 @@
 #include <sstream>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
-
 IMPDOMINO_BEGIN_NAMESPACE
+
 
 //! The key for the string Domino uses as a unique index
 IMPDOMINOEXPORT StringKey node_name_key();
-
 
 template < typename TimeMap > class dfs_time_visitor :
       public boost::default_dfs_visitor
@@ -65,17 +65,16 @@ class IMPDOMINOEXPORT RestraintGraph
     boost::property<boost::edge_weight_t,
     boost::vecS> > Graph;
 
-
 public:
   //! Constructor
-  /** \param[in] filename the file holds the graph structure (nodes and edges)
-      \param[in] mdl
+  /** \param[in] jt Holds the junction tree that represent the
+                    system dependencies
+      \param[in] mdl The IMP model
    */
-  RestraintGraph(const std::string & filename, Model *mdl);
+  RestraintGraph(const JunctionTree &jt,Model *mdl);
   //    void clear_states();
   //void set_model(IMP::Model *m_);
   void initialize_graph(int number_of_nodes);
-  void parse_jt_file(const std::string &filename, Model *mdl);
   void move_model2global_minimum() const;
   CombState * get_minimum_comb() const;
   //! Creates a new node and add it to the graph
@@ -149,6 +148,14 @@ public:
    */
   JNode * get_node(const Particles &p);
 protected:
+  //! Load junction tree and set the restraint graph
+  /**
+  \param[in] jt contains the junction tree data
+  \param[in] mdl
+  \note The function uses the particle name attribute as identifier
+   */
+  void load_data(const JunctionTree &jt,Model *mdl);
+
   //! Determine a DFS
   /** \param[in]  root_ind the index of the node from which the DFS starts
       Stores the discover order of the nodes.

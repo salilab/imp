@@ -22,24 +22,24 @@ namespace {
 }
 
 
-DominoOptimizer::DominoOptimizer(std::string jt_filename, Model *m)
+DominoOptimizer::DominoOptimizer(const JunctionTree &jt, Model *m)
 {
   ds_ = NULL;
-  g_ = new RestraintGraph(jt_filename, m);
+  g_ = new RestraintGraph(jt, m);
   set_model(m);
   num_of_solutions_=1;
 }
 void DominoOptimizer::set_sampling_space(DiscreteSampler *ds)
 {
   ds_ = ds;
- g_->set_sampling_space(*ds_);
- Restraint *r; Particles ps; Float w;
- for(std::vector<OptTuple>::iterator it = rs_.begin(); it != rs_.end();it++) {
-   r = boost::get<0>(*it);
-   ps = boost::get<1>(*it);
-   w = boost::get<2>(*it);
-   g_->initialize_potentials(r,&ps,w);
- }
+  g_->set_sampling_space(*ds_);
+  Restraint *r; Particles ps; Float w;
+  for(std::vector<OptTuple>::iterator it = rs_.begin(); it != rs_.end();it++) {
+    r = boost::get<0>(*it);
+    ps = boost::get<1>(*it);
+    w = boost::get<2>(*it);
+    g_->initialize_potentials(r,&ps,w);
+  }
 }
 
 void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
@@ -49,15 +49,21 @@ void DominoOptimizer::initialize_jt_graph(int number_of_nodes)
 
 Float DominoOptimizer::optimize(unsigned int max_steps)
 {
-  std::stringstream error_message;
   IMP_assert(ds_ != NULL,
-             "DominoOptimizer::optimize the sampling space was not set");
+             "DominoOptimizer::optimize the sampling space was not set"
+             <<std::endl);
   //init all the potentials
   g_->clear();
+  IMP_LOG(VERBOSE," DominoOptimizer::optimize going to set sampling space"
+                  <<std::endl);
   set_sampling_space(ds_);
   // now infer the minimum
+  IMP_LOG(VERBOSE," DominoOptimizer::optimize going to infer solutions"
+                  <<std::endl);
   g_->infer(num_of_solutions_);
   //move the model to the states that reach the global minimum
+  IMP_LOG(VERBOSE," DominoOptimizer::optimize going to move the "
+          <<"model to the global minimum"<<std::endl);
   g_->move_model2global_minimum();
   return g_->get_minimum_score();
 }

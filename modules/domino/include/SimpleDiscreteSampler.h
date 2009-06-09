@@ -16,7 +16,8 @@
 
 
 IMPDOMINO_BEGIN_NAMESPACE
-
+//! Sample discrete states
+IMPDOMINOEXPORT StringKey node_name_key();
 class SimpleDiscreteSampler : public DiscreteSampler
 {
 public:
@@ -27,13 +28,16 @@ public:
     Particle *p;
     SimpleDiscreteSpace *ds;
     const std::vector<FloatKey> *atts;
-    for (std::map<Particle *,unsigned int>::const_iterator it
-         = cs->get_data()->begin();it != cs->get_data()->end(); it++) {
+    for (std::map<Particle *,unsigned int>::const_iterator
+         it = cs->get_data()->begin();it != cs->get_data()->end(); it++) {
       p = it->first;
       ds = data.find(p)->second;
       atts = ds->get_att_keys();
       for (std::vector<FloatKey>::const_iterator k_iter = atts->begin();
         k_iter != atts->end(); k_iter++) {
+        IMP_LOG(VERBOSE,"particle : " << p->get_value(node_name_key())
+                << "setting value for: " << *k_iter <<" to: "
+                << it->second <<std::endl);
         p->set_value(*k_iter,ds->get_state_val(it->second, *k_iter));
       }
     }
@@ -68,12 +72,12 @@ public:
   virtual void show_space(Particle *p,
                  std::ostream& out = std::cout) const {}
 
-  void show(std::ostream& out) const {
+  void show(std::ostream& out=std::cout) const {
     out << "================ show sampling spaces ============== " << std::endl;
     for (std::map<const Particle *,SimpleDiscreteSpace *>::const_iterator it
          = data.begin(); it != data.end(); it++) {
       out << " space for particle with index: "
-          << it->first->get_name() << " is : ";
+          << it->first->get_value(node_name_key()) << " is : ";
       it->second->show(out);
       out << std::endl;
     }
