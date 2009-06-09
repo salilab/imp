@@ -75,7 +75,9 @@ class DOMINOTests(IMP.test.TestCase):
         Test that the global minimum is achived
         """
         jt_filename = self.get_input_file_name("permutation_test_jt.txt")
-        d_opt = IMP.domino.DominoOptimizer(jt_filename,self.imp_model)
+        self.jt = IMP.domino.JunctionTree()
+        IMP.domino.read_junction_tree(jt_filename,self.jt)
+        d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model)
         for r in self.rsrs:
             d_opt.add_restraint(r)
 

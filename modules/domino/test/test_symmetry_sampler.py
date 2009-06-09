@@ -63,7 +63,9 @@ class DOMINOTests(IMP.test.TestCase):
         self.sampler = IMP.domino.SymmetrySampler(self.ps,self.rt,self.cyl)
     def set_restraint_graph(self):
         jt_filename = self.get_input_file_name("simple_jt3.txt")
-        self.d_opt = IMP.domino.DominoOptimizer(jt_filename,self.m)
+        self.jt = IMP.domino.JunctionTree()
+        IMP.domino.read_junction_tree(jt_filename,self.jt)
+        self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.m)
         self.d_opt.set_sampling_space(self.sampler)
 
     def setUp(self):
