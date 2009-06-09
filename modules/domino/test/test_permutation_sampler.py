@@ -4,7 +4,6 @@ import IMP
 import IMP.test
 import IMP.domino
 import IMP.core
-
 class DOMINOTests(IMP.test.TestCase):
     def __set_sampling_space__(self):
         atts=IMP.FloatKeys()
@@ -32,7 +31,6 @@ class DOMINOTests(IMP.test.TestCase):
         p2 = self.create_point_particle(self.imp_model,0.0,0.0,0.0)
         p3 = self.create_point_particle(self.imp_model,0.0,0.0,0.0)
         p4 = self.create_point_particle(self.imp_model,0.0,0.0,0.0)
-        #name_key = IMP.StringKey("name")
         p1.add_attribute(IMP.domino.node_name_key(),"0")
         p2.add_attribute(IMP.domino.node_name_key(),"1")
         p3.add_attribute(IMP.domino.node_name_key(),"2")
@@ -41,7 +39,6 @@ class DOMINOTests(IMP.test.TestCase):
         self.particles.append(p2)
         self.particles.append(p3)
         self.particles.append(p4)
-
         #set restraints
         self.rsrs = []
         sf = IMP.core.Harmonic(1.0, 0.5)
@@ -68,7 +65,9 @@ class DOMINOTests(IMP.test.TestCase):
         of an ordered ring)
         """
         jt_filename = self.get_input_file_name("permutation_test_jt.txt")
-        d_opt = IMP.domino.DominoOptimizer(jt_filename,self.imp_model)
+        self.jt = IMP.domino.JunctionTree()
+        IMP.domino.read_junction_tree(jt_filename,self.jt)
+        d_opt = IMP.domino.DominoOptimizer(self.jt,self.imp_model)
         for r in self.rsrs:
             d_opt.add_restraint(r)
         d_opt.set_sampling_space(self.sampler)

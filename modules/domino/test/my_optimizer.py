@@ -6,7 +6,6 @@ except ImportError:
 import IMP.domino
 import IMP.core
 import IMP
-
 class my_optimizer:
     def __init__(self,jt_filename, restraints_filename,num_of_particles):
         self.mdl = IMP.Model()
@@ -17,7 +16,7 @@ class my_optimizer:
             new_p = IMP.Particle(self.mdl)
             self.particles.append(new_p)
             new_p.add_attribute(IMP.domino.node_name_key(),str(i))
-            new_p.add_attribute(IMP.FloatKey("OPT"),0)
+            new_p.add_attribute(IMP.FloatKey("OPT"),0,False)
         self.__jt_setup(jt_filename)
         self.init_sampling_space()
         self.init_restraints(restraints_filename)
@@ -46,7 +45,9 @@ class my_optimizer:
         return min_score
 
     def __jt_setup(self, jt_filename):
-        self.d_opt = IMP.domino.DominoOptimizer(jt_filename,self.mdl)
+        self.jt = IMP.domino.JunctionTree()
+        IMP.domino.read_junction_tree(jt_filename,self.jt)
+        self.d_opt = IMP.domino.DominoOptimizer(self.jt,self.mdl)
 
     def init_restraints(self,restraints_filename):
         self.all_restraints.append(IMP.core.RestraintSet("simple"))

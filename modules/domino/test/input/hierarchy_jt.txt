@@ -1,4 +1,4 @@
-nodes:
+nodes: 2
 prot1 prot2
 prot2 prot3
 edges:
