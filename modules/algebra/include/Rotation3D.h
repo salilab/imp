@@ -135,7 +135,8 @@ public:
 
   //! return the quaterion so that it can be stored
   /** This quaternion has it sign chosen so as to be interoperable
-      with q (that is, they are in the same hemisphere). */
+      with q (that is, they are in the same hemisphere). Use this
+      when writing code to average or clustering rotations.*/
   const VectorD<4> get_quaternion(const VectorD<4> &q) const {
     if (v_*q < 0) return -v_;
     else return v_;
@@ -490,7 +491,8 @@ IMPALGEBRAEXPORT FixedXYZ fixed_xyz_from_rotation(const Rotation3D &r);
 
 
 //! Interpolate between two rotations
-/** It f ==0, return b, if f==1 return a. */
+/** It f ==0, return b, if f==1 return a.
+    \relatesalso Rotation3D*/
 inline Rotation3D interpolate(const Rotation3D &a,
                               const Rotation3D &b,
                               double f) {
