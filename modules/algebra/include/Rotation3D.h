@@ -147,7 +147,7 @@ public:
     return compose(*this, q);
   }
 
-  //! Compute the rotation which when composed with b gives this
+  //! Compute the rotation which when composed with r gives this
   Rotation3D operator/(const Rotation3D &r) const {
     return compose(*this, r.get_inverse());
   }
