@@ -39,6 +39,7 @@ class HierarchyTests(IMP.test.TestCase):
                                                     ATOM, ATOM)
         r1.add_child(a1)
         r1.add_child(a2)
+        self.assertEqual(r1, IMP.atom.root(a1))
         # Both atoms should be found under r1 (none under r2)
         self.assertEqual(IMP.atom.get_by_type(r1, ATOM),
                          (a1.get_particle(), a2.get_particle()))

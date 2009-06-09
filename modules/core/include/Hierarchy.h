@@ -556,6 +556,15 @@ get_leaves(Hierarchy mhd);
 IMPCOREEXPORT Particles
 get_all_descendants(Hierarchy mhd);
 
+//! Return the root of the hierarchy
+/** \relatesalso Hierarchy */
+inline Hierarchy root(Hierarchy h) {
+  while (h.has_parent()) {
+    h= h.get_parent();
+  }
+  return h;
+}
+
 typedef std::vector<Hierarchy> Hierarchies;
 
 IMPCORE_END_NAMESPACE
