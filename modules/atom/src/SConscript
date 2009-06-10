@@ -8,6 +8,7 @@ files = [
          'BondSingletonScore.cpp',
          'BrownianDynamics.cpp',
          'Chain.cpp',
+         'Charmm.cpp',
          'Diffusion.cpp',
          'Domain.cpp',
          'Fragment.cpp',

@@ -192,5 +192,26 @@ void Topology::parse_bond_line(const String& line,
   }
 }
 
+String Topology::get_charmm_atom_type(const AtomType& atom_type,
+                                      const ResidueType& residue_type) const {
+  static String empty_atom_type;
+  if(atom_res_type_2_charmm_atom_type_.find(residue_type) ==
+     atom_res_type_2_charmm_atom_type_.end()) {
+    std::cerr << "Warning! Residue not found " << residue_type << std::endl;
+    return empty_atom_type;
+  }
+
+  //  string fixedAtomName = fixAtomName(atomName, residueName, NORM);
+  const AtomTypeMap& atom_map =
+    atom_res_type_2_charmm_atom_type_.find(residue_type)->second;
+  if(atom_map.find(atom_type) == atom_map.end()) {
+    std::cerr << "Warning! Atom not found " << atom_type
+              << " residue " << residue_type << std::endl;
+    return empty_atom_type;
+  }
+
+  return atom_map.find(atom_type)->second.first;
+}
+
 
 IMPATOM_END_INTERNAL_NAMESPACE

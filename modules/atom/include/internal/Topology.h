@@ -27,6 +27,10 @@ public:
   //! add bonds to the structure defined in the hierarchy
   void add_bonds(Hierarchy mhd);
 
+  //! returns charmm atom type
+  String get_charmm_atom_type(const AtomType& atom_type,
+                              const ResidueType& residue_type) const;
+
  private:
   class Bond {
   public:
