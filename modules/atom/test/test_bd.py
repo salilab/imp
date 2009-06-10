@@ -37,7 +37,9 @@ class MCOptimizerTest(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         bd.set_time_step_in_femtoseconds(1e4)
         IMP.set_log_level(IMP.SILENT)
+        bd.set_log_level(IMP.TERSE)
         bd.optimize(1000)
+        print "time is " + str(bd.get_current_time_in_femtoseconds())
         moments= self._compute_moments(ps)
         print moments
         for p in ps:
@@ -45,12 +47,15 @@ class MCOptimizerTest(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.Vector3D(0,0,0))
         bd.set_time_step_in_femtoseconds(1e7)
         bd.optimize(1)
+        print bd.get_current_time_in_femtoseconds()
         big_moments= self._compute_moments(ps)
         print big_moments
         for i in range(0,3):
+            print i
             self.assertInTolerance(big_moments[i], moments[i],
                                    len(ps)**.5)
         for i in range(3,6):
+            print i
             self.assertInTolerance(big_moments[i], moments[i],
                                    .1*(big_moments[i]+ moments[i]))
 
