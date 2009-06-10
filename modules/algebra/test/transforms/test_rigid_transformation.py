@@ -13,26 +13,6 @@ class RigidTransformationTests(IMP.test.TestCase):
         self.v1 = IMP.algebra.Vector3D(-63.537,76.945,84.162)
         self.v2 = IMP.algebra.Vector3D(-41.472,8.922,-63.657)
 
-    def test_axis_rotation(self):
-        """Check rotation around axis that does not pass through (0,0,0)"""
-        for ii in xrange(1,10):
-            direction= IMP.algebra.random_vector_on_unit_sphere()
-            point = IMP.algebra.random_vector_in_unit_box()*10
-            angle= math.pi/ii#random.uniform(-math.pi,math.pi)
-
-            r= IMP.algebra.rotation_around_axis(point,direction,angle)
-            ri= r.get_inverse()
-            v_start = IMP.algebra.random_vector_in_unit_box()
-            vt = v_start
-            for i in xrange(2*ii):
-                vt= r.transform(vt)
-                if i==0:
-                    vti= ri.transform(vt)
-            self.assertInTolerance(IMP.algebra.distance(v_start,vt),0., .1)
-            self.assertInTolerance(vti[0], v_start[0], .1)
-            self.assertInTolerance(vti[1], v_start[1], .1)
-            self.assertInTolerance(vti[2], v_start[2], .1)
-
 
     def test_transformation(self):
         """Check that the rotation function is ok"""
