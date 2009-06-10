@@ -10,6 +10,7 @@
 #include <IMP/atom/Residue.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/atom/Chain.h>
+#include <IMP/atom/Charmm.h>
 #include <IMP/atom/internal/Topology.h>
 #include <IMP/directories.h>
 
@@ -206,6 +207,19 @@ void add_bonds(Hierarchy d, std::string topology_file_name)
   } else {
     topology.add_bonds(d);
   }
+}
+
+void add_radius(Hierarchy d, std::string par_file_name,
+                std::string top_file_name)
+{
+  std::string def_top_file_name = IMP::get_data_directory() +"/atom/top.lib";
+  std::string def_par_file_name = IMP::get_data_directory() +"/atom/par.lib";
+
+  if(!par_file_name.empty()) def_par_file_name = par_file_name;
+  if(!top_file_name.empty()) def_top_file_name = top_file_name;
+
+  Charmm charmm(def_par_file_name, def_top_file_name);
+  charmm.add_radius(d);
 }
 
 void write_pdb(const Particles& ps, std::ostream &out)

@@ -7,6 +7,7 @@ files = [
          'BondSingletonScore.h',
          'BrownianDynamics.h',
          'Chain.h',
+         'Charmm.h',
          'Diffusion.h',
          'Domain.h',
          'Fragment.h',
