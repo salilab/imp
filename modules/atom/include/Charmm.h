@@ -22,6 +22,8 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Storage and access to Charmm force field
+/** \unstable{Charmm}
+ */
 class Charmm {
 public:
 
