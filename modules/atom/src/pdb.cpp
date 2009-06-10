@@ -260,14 +260,14 @@ void write_pdb(Hierarchy mhd, std::ostream &out)
   write_pdb(ps, out);
 }
 
-void write_pdb(const Hierarchys& mhd, std::ostream &out)
+void write_pdb(const Hierarchies& mhd, std::ostream &out)
 {
   for (unsigned int i=0; i< mhd.size(); ++i) {
     write_pdb(mhd[i], out);
   }
 }
 
-void write_pdb(const Hierarchys& mhd, std::string file_name)
+void write_pdb(const Hierarchies& mhd, std::string file_name)
 {
   std::ofstream out_file(file_name.c_str());
   if (!out_file) {

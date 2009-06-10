@@ -32,10 +32,10 @@ class IMPDISPLAYEXPORT PDBOptimizerState: public OptimizerState
   unsigned int skip_steps_;
   std::string name_template_;
 
-  atom::Hierarchys mh_;
+  atom::Hierarchies mh_;
 public:
   //! Write files using name_template as a template (must have a %d in it)
-  PDBOptimizerState(const atom::Hierarchys &mh,
+  PDBOptimizerState(const atom::Hierarchies &mh,
                     std::string name_template);
 
   virtual ~PDBOptimizerState();

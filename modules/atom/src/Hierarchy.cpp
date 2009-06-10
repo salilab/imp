@@ -196,7 +196,7 @@ bool Hierarchy::get_is_valid(bool print_info) const {
 }
 
 Hierarchy
-create_fragment(const Hierarchys &ps)
+create_fragment(const Hierarchies &ps)
 {
   IMP_check(!ps.empty(), "Need some particles",
             ValueException);

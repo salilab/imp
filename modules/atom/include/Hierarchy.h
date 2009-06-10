@@ -241,8 +241,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
 
-/** A colleciton of Hierarchys. */
-typedef std::vector<Hierarchy> Hierarchys;
+/** A colleciton of Hierarchies. */
+typedef std::vector<Hierarchy> Hierarchies;
 
 
 /**
@@ -284,7 +284,7 @@ get_residue(Hierarchy mhd,
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-create_fragment(const Hierarchys &ps);
+create_fragment(const Hierarchies &ps);
 
 //! Get the bonds internal to this tree
 /**     \relatesalso Hierarchy
