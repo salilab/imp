@@ -40,7 +40,7 @@ public:
   IMP_OPTIMIZER(internal::version_info);
 
   //! Simulate until the given time in fs
-  void simulate(float time_in_fs);
+  double simulate(float time_in_fs);
 
   //! Set time step in fs
   void set_time_step_in_femtoseconds(Float t) {
@@ -100,11 +100,20 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*);
 
+
+  void set_max_force_change(double df) {
+    IMP_check(df > 0, "The max change must be positive",
+              ValueException);
+    max_squared_force_change_=square(df);
+  }
 private:
+  void copy_forces(algebra::Vector3Ds &v) const;
+  void copy_coordinates(algebra::Vector3Ds &v) const;
+  void revert_coordinates(algebra::Vector3Ds &v);
 
   unit::Femtosecond get_time_step_units() const {return dt_;}
 
-  void take_step();
+  void take_step(double dt);
 
   unit::Femtojoule kt() const;
 
@@ -136,6 +145,7 @@ private:
 
   unit::Femtosecond dt_, cur_time_;
   unit::Kelvin T_;
+  double max_squared_force_change_;
 };
 
 IMPATOM_END_NAMESPACE

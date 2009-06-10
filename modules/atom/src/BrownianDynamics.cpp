@@ -17,6 +17,7 @@
 #include <boost/random/normal_distribution.hpp>
 
 #include <cmath>
+#include <limits>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -28,7 +29,8 @@ unit::Shift<unit::Multiply<unit::Pascal,
 
 BrownianDynamics::BrownianDynamics() :
   dt_(1e7), cur_time_(0),
-  T_(IMP::internal::DEFAULT_TEMPERATURE)
+  T_(IMP::internal::DEFAULT_TEMPERATURE),
+  max_squared_force_change_(std::numeric_limits<double>::max())
 {
 }
 
@@ -48,7 +50,6 @@ void BrownianDynamics::set_time_step(unit::Femtosecond t)
 void BrownianDynamics::setup_particles()
 {
   clear_particles();
-  FloatKeys xyzk=IMP::core::XYZ::get_xyz_keys();
   for (Model::ParticleIterator it = get_model()->particles_begin();
        it != get_model()->particles_end(); ++it) {
     Particle *p = *it;
@@ -58,6 +59,31 @@ void BrownianDynamics::setup_particles()
     }
   }
 }
+
+
+void BrownianDynamics::copy_forces(algebra::Vector3Ds &v) const {
+  v.resize(get_number_of_particles());
+  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
+    core::XYZ d(get_particle(i));
+    v[i]= d.get_derivatives();
+  }
+}
+
+void BrownianDynamics::copy_coordinates(algebra::Vector3Ds &v) const {
+  v.resize(get_number_of_particles());
+  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
+    core::XYZ d(get_particle(i));
+    v[i]= d.get_coordinates();
+  }
+}
+
+void BrownianDynamics::revert_coordinates(algebra::Vector3Ds &v) {
+  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
+    core::XYZ d(get_particle(i));
+    d.set_coordinates(v[i]);
+  }
+}
+
 
 // rt_dt= rt+Fdt/psi + sqrt(2kTdt/psi)omega
 // omega has variance 6 phi kT
@@ -80,26 +106,12 @@ Float BrownianDynamics::optimize(unsigned int max_steps)
 {
  IMP_check(get_model() != NULL, "Must set model before calling optimize",
            ValueException);
-  setup_particles();
-  IMP_LOG(TERSE, "Running brownian dynamics on " << get_number_of_particles()
-          << " particles with a step of " << dt_ << std::endl);
-  setup_particles();
-  for (unsigned int i = 0; i < max_steps; ++i) {
-    take_step();
-  }
-  return get_model()->evaluate(false);
+ return simulate(cur_time_.get_value()+max_steps*dt_.get_value());
 }
 
 
-void BrownianDynamics::take_step() {
-  update_states();
-  get_model()->evaluate(true);
-
-  FloatKeys xyzk=IMP::core::XYZ::get_xyz_keys();
-
-  IMP_LOG(VERBOSE, "dt is " << dt_ << std::endl);
-
-
+void BrownianDynamics::take_step(double dt) {
+  IMP_LOG(TERSE, "dt is " << dt << std::endl);
   for (unsigned int i=0; i< get_number_of_particles(); ++i) {
     Particle *p= get_particle(i);
     IMP::core::XYZ d(p);
@@ -131,12 +143,12 @@ void BrownianDynamics::take_step() {
               ValueException);
     unit::Angstrom sigma(compute_sigma_from_D(D));
     IMP_IF_CHECK(EXPENSIVE) {
-      unit::Angstrom osigma(sqrt(2.0*D*dt_));
+      unit::Angstrom osigma(sqrt(2.0*D*dt));
       IMP_check(sigma - osigma
                 <= .01* sigma,
                 "Sigma computations don't match " << sigma
                 << " "
-                << sqrt(2.0*D*dt_),
+                << sqrt(2.0*D*dt),
                 ErrorException);
     }
     IMP_LOG(VERBOSE, p->get_name() << ": sigma is "
@@ -156,7 +168,7 @@ void BrownianDynamics::take_step() {
       unit::Femtonewton nforce
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
-      unit::Angstrom force_term(nforce*dt_*D/kt());
+      unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*D/kt());
       if (force_term > 5*sigma) {
         IMP_WARN("Forces are too high to stably integrate: "
                  << p->get_name());
@@ -181,18 +193,58 @@ void BrownianDynamics::take_step() {
       d.set_coordinate(j, d.get_coordinate(j) + delta[j].get_value());
     }
   }
-  cur_time_= cur_time_+dt_;
 }
 
-void BrownianDynamics::simulate(float max_time)
+double BrownianDynamics::simulate(float max_time)
 {
+  IMP_OBJECT_LOG;
   IMP_check(get_model() != NULL, "Must set model before calling simulate",
             ValueException);
   setup_particles();
-  unit::Femtosecond mt(max_time);
-  while (cur_time_ < mt) {
-    take_step();
+    setup_particles();
+  IMP_LOG(TERSE, "Running brownian dynamics on " << get_number_of_particles()
+          << " particles with a step of " << dt_.get_value()
+          << "fs until time " << max_time << std::endl);
+  algebra::Vector3Ds old_forces, old_coordinates;
+  double dt=dt_.get_value();
+  get_model()->evaluate(true);
+  copy_coordinates(old_coordinates);
+  copy_forces(old_forces);
+  while (cur_time_.get_value() < max_time){
+    dt= std::min(dt, max_time-cur_time_.get_value());
+    take_step(dt);
+    get_model()->evaluate(true);
+    bool failed=false;
+    for (unsigned int i=0; i< get_number_of_particles(); ++i) {
+      core::XYZ d(get_particle(i));
+      algebra::Vector3D diff= old_forces[i]- d.get_derivatives();
+      if (diff.get_squared_magnitude() > max_squared_force_change_) {
+        IMP_LOG(TERSE, "Reducing step size because of particle "
+                << get_particle(i)->get_name() << std::endl);
+        failed=true;
+        break;
+      }
+    }
+    if (failed) {
+      revert_coordinates(old_coordinates);
+      get_model()->evaluate(true);
+      dt/=2.0;
+      if (dt < 1e-20) {
+        IMP_failure("Something is wrong with the restraints"
+                    << " and they are highly discontinuous",
+                    InvalidStateException);
+      }
+    } else {
+      cur_time_= cur_time_+unit::Femtosecond(dt);
+      dt= std::min(dt_.get_value(),dt*1.3);
+      IMP_LOG(TERSE, "Updating dt to " << dt
+              << " (" << dt_.get_value() << ")" << std::endl);
+      copy_coordinates(old_coordinates);
+      copy_forces(old_forces);
+      update_states();
+    }
   }
+  return get_model()->evaluate(false);
 }
 
 
