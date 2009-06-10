@@ -22,7 +22,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.m = IMP.Model()
         self.mp= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
                               self.m, IMP.atom.CAlphaSelector())#IMP.atom.NonWaterSelector())
-        self.mps = IMP.atom.Hierarchys()
+        self.mps = IMP.atom.Hierarchies()
         self.mps.append(self.mp)
         self.radius_key = IMP.FloatKey("radius")
         self.weight_key = IMP.FloatKey("weight")
