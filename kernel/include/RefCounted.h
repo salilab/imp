@@ -94,4 +94,6 @@ protected:
 
 IMP_END_NAMESPACE
 
+#include "internal/ref_counting.h"
+
 #endif  /* IMP_REF_COUNTED_H */
