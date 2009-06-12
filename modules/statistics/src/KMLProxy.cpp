@@ -66,7 +66,7 @@ void KMLProxy::run(Particles *initial_centers) {
   Float exec_time = elapsed_time(start);
   // print summary
   IMP_LOG_WRITE(TERSE,log_summary(&best_clusters,exec_time));
-  IMP_LOG_WRITE(TERSE,best_clusters.show());
+  IMP_LOG_WRITE(TERSE,best_clusters.show(IMP_STREAM));
   IMP_assert(kcenters_ == (unsigned int) best_clusters.get_number_of_centers(),
              "The final number of centers does not match the requested one");
   IMP_assert (dim_ == (unsigned int) best_clusters.get_dim(),

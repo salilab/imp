@@ -31,7 +31,7 @@ KMFilterCenters::~KMFilterCenters() {
 }
 
 void KMFilterCenters::invalidate() {
-  IMP_LOG_WRITE(VERBOSE,show());
+  IMP_LOG_WRITE(VERBOSE,show(IMP_STREAM));
   clear_data();
   valid_ = false;
 }
@@ -118,8 +118,8 @@ void KMFilterCenters::move_to_centroid()
     }
     invalidate();
 }
-void KMFilterCenters::show(std::ostream& out) {
-  if (!valid_) compute_distortion();
+void KMFilterCenters::show(std::ostream& out) const {
+  if (!valid_) const_cast<KMFilterCenters*>(this)->compute_distortion();
   for (int j = 0; j < get_number_of_centers(); j++) {
     out << "    " << std::setw(4) << j << "\t";
     print_point(*((*centers_)[j]), out);
