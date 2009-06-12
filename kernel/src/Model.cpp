@@ -35,10 +35,12 @@ Model::~Model()
 }
 
 IMP_LIST_IMPL(Model, Restraint, restraint, Restraint*,
+              Restraints,
               {obj->set_model(this);},,
               {obj->set_model(NULL);});
 
 IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
+              ScoreStates,
               {obj->set_model(this);},,
               {obj->set_model(NULL);});
 

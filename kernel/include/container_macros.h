@@ -45,11 +45,10 @@
      \param[in] Ucname The name of the type of container in uppercase.
      \param[in] lcname The name of the type of container in lower case.
      \param[in] Data The type of the data to store.
+     \param[in] PluralData The plural of the data name. This should be a
+     container type.
 
      An accompanying IMP_LIST_IMPL must go in a \c .cpp file.
-
-     \note the type Ucnames must be declared and be a vector of
-     Data.
 
      \note This macro should be given an appropriate name and wrapped in a
      doxygen comment block such as by starting with a C++ comment like
@@ -63,7 +62,7 @@
      @}
      \endverbatim
  */
-#define IMP_LIST(protection, Ucname, lcname, Data)                      \
+#define IMP_LIST(protection, Ucname, lcname, Data, PluralData)          \
   IMP_PROTECTION(protection)                                            \
   /** \brief Remove any occurences of d from the container. */          \
   void remove_##lcname(Data d);                                         \
@@ -81,7 +80,7 @@ unsigned int add_##lcname(Data obj);                                    \
 /** Add several objects to the container. They are not necessarily
     added at the end.
 */                                                                      \
-void add_##lcname##s(const std::vector<Data>& obj);                     \
+void add_##lcname##s(const PluralData& obj);                            \
 void clear_##lcname##s();                                               \
 unsigned int get_number_of_##lcname##s() const {                        \
   return lcname##_vector_.size();}                                      \
@@ -129,7 +128,7 @@ IMP_PROTECTION(protection)                                              \
 
  For all of these the current object is called obj.
 */
-#define IMP_LIST_IMPL(Class, Ucname, lcname, Data, OnAdd,              \
+#define IMP_LIST_IMPL(Class, Ucname, lcname, Data, PluralData, OnAdd,  \
                       OnChanged, OnRemoved)                            \
   unsigned int Class::add_##lcname(Data obj) {                         \
     unsigned int index= lcname##_vector_.push_back(obj);               \
@@ -138,7 +137,7 @@ IMP_PROTECTION(protection)                                              \
     if (false) {index=index; obj=obj;};                                \
     return index;                                                      \
   }                                                                    \
-  void Class::add_##lcname##s(const std::vector<Data> &objs) {         \
+  void Class::add_##lcname##s(const PluralData &objs) {                \
     unsigned int osz= lcname##_vector_.size();                         \
     lcname##_vector_.insert(lcname##_vector_.end(), objs.begin(),      \
                             objs.end());                               \
@@ -151,11 +150,12 @@ IMP_PROTECTION(protection)                                              \
     OnChanged;                                                         \
   }                                                                    \
   void Class::remove_##lcname##s(Ucname##s d) {                        \
-    std::sort(d.begin(), d.end());                                     \
+    std::vector<Data> ds(d.begin(), d.end());                           \
+    std::sort(ds.begin(), ds.end());                                    \
     IMP::internal::Vector<Data> ::iterator e                            \
       =std::remove_if(lcname##_vector_.begin(),                         \
                       lcname##_vector_.end(),                           \
-                      ::IMP::internal::list_contains(d));               \
+                      ::IMP::internal::list_contains(ds));              \
     for (IMP::internal::Vector<Data> ::iterator it= e;                  \
          it != lcname##_vector_.end(); ++it) {                          \
       Data obj= *it;                                                    \
