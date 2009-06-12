@@ -36,7 +36,7 @@ public:
   */
   /**@{*/
   IMP_LIST(public, SingletonContainer, singleton_container,
-           SingletonContainer*);
+           SingletonContainer*, SingletonContainers);
   /**@}*/
 };
 
