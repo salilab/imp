@@ -33,7 +33,7 @@ public:
      the list use these methods.
   */
   /**@{*/
-  IMP_LIST(public, ParticlePair, particle_pair, ParticlePair);
+  IMP_LIST(public, ParticlePair, particle_pair, ParticlePair, ParticlePairs);
   /**@}*/
 
   //! log n time

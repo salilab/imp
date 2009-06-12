@@ -21,7 +21,7 @@ ListPairContainer::ListPairContainer(const ParticlePairs &ps){
 }
 
 IMP_LIST_IMPL(ListPairContainer, ParticlePair,
-              particle_pair, ParticlePair,, {
+              particle_pair, ParticlePair,ParticlePairs,, {
                 if (sorted_) std::sort(particle_pairs_begin(),
                                        particle_pairs_end());
               },);
