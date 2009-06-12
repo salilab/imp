@@ -13,8 +13,8 @@ files = [
          'KMLocalSearchLloyd.h',
          'KMRectangle.h',
          'KMTerminationCondition.h',
-         'random_generator.h',
-        ]
+        ] \
+        + SConscript('internal/SConscript')
 
 # Install the include files:
 env.IMPHeaders(files)

@@ -11,10 +11,8 @@
 
 #include "KMCenters.h"
 #include <iostream>
-#include "random_generator.h"
 #include "KMData.h"
 #include "KMCentersTree.h"
-#include <limits.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 

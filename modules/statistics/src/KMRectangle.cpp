@@ -5,7 +5,7 @@
  *
  */
 #include <IMP/statistics/KMRectangle.h>
-#include <IMP/statistics/random_generator.h>
+#include <IMP/statistics/internal/random_generator.h>
 #include <iostream>
 IMPSTATISTICS_BEGIN_NAMESPACE
 double km_distance2(const KMPoint &p,const KMPoint &q){
@@ -43,7 +43,7 @@ KMRectangle KMRectangle::expand(double x){
 KMPoint KMRectangle::sample(){
   KMPoint p;
   for (unsigned int i = 0; i < lo_.size(); i++)
-    p.push_back(random_uniform(lo_[i], hi_[i]));
+    p.push_back(internal::random_uniform(lo_[i], hi_[i]));
   return p;
 }
 

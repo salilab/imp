@@ -7,7 +7,7 @@
  */
 
 #include <IMP/statistics/KMCentersNodeLeaf.h>
-#include <IMP/statistics/random_generator.h>
+#include <IMP/statistics/internal/random_generator.h>
 #include <limits.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 void KMCentersNodeLeaf::compute_sums() {
@@ -24,7 +24,7 @@ void KMCentersNodeLeaf::compute_sums() {
 }
 
 KMPoint KMCentersNodeLeaf::sample_center() {
-  int ri = random_int(n_data_);
+  int ri = internal::random_int(n_data_);
   return *((*(centers_->get_data()))[data_ps_[ri]]);
 }
 

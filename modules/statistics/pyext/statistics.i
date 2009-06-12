@@ -19,4 +19,3 @@
 
 /* Wrap our own classes */
 %include "IMP/statistics/KMLProxy.h"
-%include "IMP/statistics/random_generator.h"

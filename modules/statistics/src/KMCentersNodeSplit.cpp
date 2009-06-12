@@ -7,7 +7,7 @@
  */
 
 #include <IMP/statistics/KMCentersNodeSplit.h>
-#include <IMP/statistics/random_generator.h>
+#include <IMP/statistics/internal/random_generator.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 KMCentersNodeSplit::~KMCentersNodeSplit() {
@@ -32,7 +32,7 @@ void KMCentersNodeSplit::compute_sums() {
 
 KMPoint KMCentersNodeSplit::sample_center()
 {
-  int r = random_int(get_subtree_size());
+  int r = internal::random_int(get_subtree_size());
   if (r == 0) {// sample from this node
     KMRectangle exp_box = bnd_box_.expand(3); // compute 3x expanded box
     return exp_box.sample();

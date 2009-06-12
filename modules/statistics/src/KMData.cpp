@@ -5,7 +5,7 @@
  *
  */
 #include <IMP/statistics/KMData.h>
-#include <IMP/statistics/random_generator.h>
+#include <IMP/statistics/internal/random_generator.h>
 #include <iostream>
 IMPSTATISTICS_BEGIN_NAMESPACE
 KMData::KMData(int d, int n) : dim_(d) {
@@ -16,13 +16,13 @@ KMData::~KMData() {
   deallocate_points(points_);
 }
 KMPoint KMData::sample_center(double offset){
-  KMPoint *sampled_p = (*points_)[random_int(points_->size())];
+  KMPoint *sampled_p = (*points_)[internal::random_int(points_->size())];
   if (offset == 0.) {
     return *sampled_p;
   }
   KMPoint p;
   for(int i=0;i<dim_;i++) {
-    p.push_back((*sampled_p)[i]+random_uniform(-1.,1)*offset);
+    p.push_back((*sampled_p)[i]+internal::random_uniform(-1.,1)*offset);
   }
   return p;
 }
@@ -36,7 +36,7 @@ void KMData::sample_centers( KMPointArray *sample,int k,
                 "not enough points to sample from");
    std::vector<int> sampled_ind;
    for (int i = 0; i < k; i++) {
-     int ri = random_int(points_->size());
+     int ri = internal::random_int(points_->size());
      if (!allow_duplicate) {
        bool dup_found;
        do {
@@ -45,7 +45,7 @@ void KMData::sample_centers( KMPointArray *sample,int k,
          for (int j = 0; j < i; j++) {
            if (sampled_ind[j] == ri) {
              dup_found = true;
-             ri = random_int(points_->size());
+             ri = internal::random_int(points_->size());
              break;
            }
          }
@@ -55,7 +55,7 @@ void KMData::sample_centers( KMPointArray *sample,int k,
      KMPoint *p = new KMPoint();
      KMPoint *copied_p = (*points_)[ri];
      for(int j=0;j<dim_;j++) {
-       p->push_back((*copied_p)[j]+random_uniform(-1.,1)*offset);
+       p->push_back((*copied_p)[j]+internal::random_uniform(-1.,1)*offset);
      }
      sample->push_back(p);
    }
