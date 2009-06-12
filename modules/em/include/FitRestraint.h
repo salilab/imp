@@ -55,7 +55,7 @@ public:
     return ParticlesList(1, Particles(particles_begin(), particles_end()));
   }
 
-  IMP_LIST(private, Particle, particle, Particle*)
+  IMP_LIST(private, Particle, particle, Particle*, Particles)
 private:
   DensityMap *target_dens_map_;
   SampledDensityMap *model_dens_map_;
