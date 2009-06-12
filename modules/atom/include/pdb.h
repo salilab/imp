@@ -42,19 +42,6 @@ read_pdb(std::string pdb_file_name,
          bool select_first_model = true,
          bool ignore_alternatives = true);
 
-/** Add bonds using definitions from topology file
-    if topology file is not given, default file is used
-*/
-IMPATOMEXPORT void add_bonds(Hierarchy d,
-                             std::string topology_file_name = std::string());
-
-/** Add vdW radius from Charmm parameter file.
-    if files are not given, default files are used
-*/
-IMPATOMEXPORT void add_radius(Hierarchy d,
-                              std::string par_file_name = std::string(),
-                              std::string top_file_name = std::string());
-
 /** \note This function produces files that are not valid PDB files,
     i.e. only ATOM/HETATM lines are printed for all Atom particles
     in the hierarchy. Complain if your favorite program can't read them and
