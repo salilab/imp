@@ -747,10 +747,11 @@ class IMPEXPORT Particles {
     data_.push_back(p);
   }
   bool empty() const {return data_.empty();}
-
+#ifndef IMP_DOXYGEN
   void swap_with(Particles &a) {
     std::swap(a.data_, data_);
   }
+#endif
   void clear(){ data_.clear();}
 };
 
