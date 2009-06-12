@@ -217,9 +217,7 @@
     the method \c swap_with().
 */
 #define IMP_SWAP(Name) \
-  inline void swap(Name &a, Name &b) {          \
-    a.swap_with(b);                             \
-  }
+  IMP_NO_DOXYGEN(inline void swap(Name &a, Name &b) {a.swap_with(b);})
 
 #define IMP_SWAP_2(Name)                          \
   template <class A, class B>                     \

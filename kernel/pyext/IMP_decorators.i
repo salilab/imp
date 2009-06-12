@@ -9,33 +9,34 @@
 
 %ignore IMP::Decorators::operator[];
 %extend IMP::Decorators {
-  D __getitem__(int index) const {
+  Decorator __getitem__(int index) const {
     if (index < 0) index=self->size()+index;
     return self->operator[](index);
   }
-  void __setitem__(int index, D val) {
+  void __setitem__(int index, Decorator val) {
     if (index < 0) index=self->size()+index;
     self->set(index, val);
   }
   int __len__() const {
     return self->size();
   }
-  void append(D d) {
+  void append(Decorator d) {
     self->push_back(d);
   }
-  Decorators< D, P > __add__(const Decorators< D, P > &o) {
-    IMP::Decorators< D, P > ret(*self);
+  Decorators< Decorator, ParentDecorators >
+   __add__(const Decorators< Decorator, ParentDecorators > &o) {
+    IMP::Decorators< Decorator, ParentDecorators > ret(*self);
     ret.insert(ret.end(), o.begin(), o.end());
     return ret;
   }
-  std::vector<D> __list__() const {
-    std::vector<D> ret(self->begin(), self->end());
+  std::vector<Decorator> __list__() const {
+    std::vector<Decorator> ret(self->begin(), self->end());
     return ret;
   }
-  Decorators< D, P > __getslice__(int b, int e) const {
+  Decorators< Decorator, ParentDecorators > __getslice__(int b, int e) const {
     if (e < 0) e= self->size()+e;
     if (b < 0) b= self->size()+b;
-    IMP::Decorators< D, P > ret;
+    IMP::Decorators< Decorator, ParentDecorators > ret;
     for ( int c=b; c!= e; ++c) {
        ret.push_back(self->operator[](c));
     }
@@ -45,33 +46,35 @@
 
 %ignore IMP::DecoratorsWithTraits::operator[];
 %extend IMP::DecoratorsWithTraits {
-  D __getitem__(int index) const {
+  Decorator __getitem__(int index) const {
     if (index < 0) index=self->size()+index;
     return self->operator[](index);
   }
-  std::vector<D> __list__() const {
+  std::vector<Decorator> __list__() const {
     std::vector<D> ret(self->begin(), self->end());
     return ret;
   }
-  void __setitem__(int index, D val) {
+  void __setitem__(int index, Decorator val) {
     if (index < 0) index=self->size()+index;
     self->set(index, val);
   }
   int __len__() const {
     return self->size();
   }
-  void append(D d) {
+  void append(Decorator d) {
     self->push_back(d);
   }
-  DecoratorsWithTraits< D, P, Traits > __add__(const DecoratorsWithTraits<D, P, Traits > &o) {
+  DecoratorsWithTraits< Decorator, ParentDecorators, Traits >
+  __add__(const DecoratorsWithTraits<Decorator, ParentDecorators, Traits > &o) {
     IMP::DecoratorsWithTraits< D, P, Traits > ret(*self);
     ret.insert(ret.end(), o.begin(), o.end());
     return ret;
   }
-  DecoratorsWithTraits< D, P, Traits > __getslice__(int b, int e) const {
+  DecoratorsWithTraits< Decorator, ParentDecorators, Traits >
+  __getslice__(int b, int e) const {
     if (e < 0) e= self->size()+e;
     if (b < 0) b= self->size()+b;
-    IMP::DecoratorsWithTraits< D, P, Traits > ret;
+    IMP::DecoratorsWithTraits< Decorator, ParentDecorators, Traits > ret;
     for ( int c=b; c!= e; ++c) {
        ret.push_back(self->operator[](c));
     }

@@ -148,123 +148,143 @@ inline bool operator==(Particle *p, Decorator d) {
 
 /** A collection of Decorator objects. It supports construction
     from a collection of particles. The interface should be that of
-    a std::vector or python list. Any differences are due to laziness
-    on our part and should be reported.
+    a std::vector or python list, with the exception that changing
+    elements in the container must be done using Decorators::set().
+    Any other differences are due to laziness on our part and should
+    be reported.
 
-    A Decorators can be cast to a Particles.
+    In general, a Decorators is convertable to a Decorators of a
+    parent type of the Decorator or to a Particles.
+
     \see Decorator
     \see DecoratorsWithTraits
 */
-template <class D, class P>
-class Decorators: public P {
+template <class Decorator, class ParentDecorators>
+class Decorators: public ParentDecorators {
   struct Accessor: public NullDefault {
     typedef Accessor This;
-    typedef D result_type;
+    typedef Decorator result_type;
     typedef unsigned int argument_type;
     result_type operator()(argument_type i) const {
       return o_->operator[](i);
     }
-    Accessor(Decorators<D,P> *pc): o_(pc){}
+    Accessor(Decorators<Decorator,ParentDecorators> *pc): o_(pc){}
     Accessor(): o_(NULL){}
     IMP_COMPARISONS_1(o_);
   private:
     // This should be ref counted, but swig memory management is broken
-    Decorators<D,P>* o_;
+    Decorators<Decorator,ParentDecorators>* o_;
   };
 
 
 
  public:
-  typedef const D const_reference;
-  typedef D value_type;
-  explicit Decorators(const Particles &ps): P(ps) {
+  typedef const Decorator const_reference;
+  typedef Decorator value_type;
+  explicit Decorators(const Particles &ps): ParentDecorators(ps) {
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_check(D::is_instance_of(ps[i]), "Particle "
+      IMP_check(Decorator::is_instance_of(ps[i]), "Particle "
                 << ps[i]->get_name() << " missing required attributes",
                 ValueException);
     }
   }
-  Decorators(unsigned int i): P(i){}
+  Decorators(unsigned int i): ParentDecorators(i){}
   Decorators(){}
-  void push_back(D d) {
-    P::push_back(d);
+  void push_back(Decorator d) {
+    ParentDecorators::push_back(d);
   }
   void push_back(Particle *p) {
-    IMP_check(D::is_instance_of(p),
+    IMP_check(Decorators::is_instance_of(p),
               "Particle is missing required attributes",
               ValueException);
-    P::push_back(p);
+    ParentDecorators::push_back(p);
   }
-  const D operator[](unsigned int i) const {
-    return D(P::operator[](i));
+  const Decorator operator[](unsigned int i) const {
+    return Decorators(ParentDecorators::operator[](i));
   }
-  void set(unsigned int i, D d) {
-    IMP_check(i < P::size(), "Index out of range", IndexException);
-    P::set(i, d);
+  void set(unsigned int i, Decorator d) {
+    IMP_check(i < ParentDecorators::size(), "Index out of range",
+              IndexException);
+    ParentDecorators::set(i, d);
   }
+#ifndef IMP_DOXYGEN
   typedef internal::IndexingIterator<Accessor> iterator;
   typedef internal::IndexingIterator<Accessor> const_iterator;
+#else
+  class iterator;
+  class const_iterator;
+#endif
   iterator begin() const {
-    return iterator(Accessor(const_cast<Decorators<D, P>*>(this)), 0);
+    return iterator(Accessor(const_cast<Decorators<Decorator,
+                             ParentDecorators>*>(this)), 0);
   }
   iterator end() const {
-    return iterator(Accessor(const_cast<Decorators<D, P>*>(this)), P::size());
+    return iterator(Accessor(const_cast<Decorators<Decorator,
+                             ParentDecorators>*>(this)),
+                    ParentDecorators::size());
   }
   template <class It>
   void insert(iterator loc, It b, It e) {
     for (It c=b; c!= e; ++c) {
-      IMP_check(D::is_instance_of(*c), "Particle "
+      IMP_check(Decorator::is_instance_of(*c), "Particle "
                 << " missing required attributes",
                 ValueException);
     }
-    P::insert(P::begin()+(loc-begin()), b, e);
+    ParentDecorators::insert(ParentDecorators::begin()+(loc-begin()), b, e);
   }
+#ifndef IMP_DOXYGEN
   void swap_with(Decorators &o) {
-    P::swap_with(o);
+    ParentDecorators::swap_with(o);
   }
+#endif
 };
 
+#ifndef IMP_DOXYGEN
 IMP_SWAP_2(Decorators);
+#endif
 
-/** A version for decorators which required traits.
+/** A version for decorators which required traits. See Decorators
+    for more full docs.
 
     A DecoratorsWithTraits can be cast to a Particles or its parent
     type. All decorators in it must have the same traits.
     \see Decorators*/
-template <class D, class P, class Traits>
-class DecoratorsWithTraits: public P {
+template <class Decorator, class ParentDecorators, class Traits>
+class DecoratorsWithTraits: public ParentDecorators {
   Traits tr_;
   bool has_traits_;
   struct Accessor: public NullDefault {
     typedef Accessor This;
-    typedef D result_type;
+    typedef Decorator result_type;
     typedef unsigned int argument_type;
     result_type operator()(argument_type i) const {
       return o_->operator[](i);
     }
-    Accessor(DecoratorsWithTraits<D,P, Traits> *pc): o_(pc){}
+    Accessor(DecoratorsWithTraits<Decorator,ParentDecorators,
+             Traits> *pc): o_(pc){}
     Accessor(): o_(NULL){}
     IMP_COMPARISONS_1(o_);
   private:
     // This should be ref counted, but swig memory management is broken
-    DecoratorsWithTraits<D,P, Traits>* o_;
+    DecoratorsWithTraits<Decorator,ParentDecorators, Traits>* o_;
   };
 
 public:
-  typedef const D const_reference;
-  typedef D value_type;
+  typedef const Decorator const_reference;
+  typedef Decorator value_type;
   DecoratorsWithTraits(Traits tr): tr_(tr), has_traits_(true){}
   DecoratorsWithTraits(const Particles &ps,
                        Traits tr): tr_(tr), has_traits_(true) {
-    P::resize(ps.size());
+    ParentDecorators::resize(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
-      P::set(i, D(ps[i], tr));
+      ParentDecorators::set(i, D(ps[i], tr));
     }
   }
   DecoratorsWithTraits(unsigned int i,
-                       Traits tr): P(i), tr_(tr), has_traits_(true){}
+                       Traits tr): ParentDecorators(i), tr_(tr),
+                                   has_traits_(true){}
   DecoratorsWithTraits(): has_traits_(false){}
-  void push_back(D d) {
+  void push_back(Decorator d) {
     if (!has_traits_) {
       tr_= d.get_traits();
       has_traits_=true;
@@ -273,21 +293,22 @@ public:
                 "Traits don't match",
                 ValueException);
     }
-    P::push_back(d);
+    ParentDecorators::push_back(d);
   }
   void push_back(Particle *p) {
     IMP_check(has_traits_, "Must set traits before adding particles",
               InvalidStateException);
-    IMP_check(D::is_instance_of(p, tr_),
+    IMP_check(Decorator::is_instance_of(p, tr_),
               "Particle is missing required attributes",
               ValueException);
-    P::push_back(p);
+    ParentDecorators::push_back(p);
   }
-  const D operator[](unsigned int i) const {
-    return D(P::operator[](i), tr_);
+  const Decorator operator[](unsigned int i) const {
+    return Decorator(ParentDecorators::operator[](i), tr_);
   }
-  void set(unsigned int i, D d) {
-    IMP_check(i < P::size(), "Index out of range", IndexException);
+  void set(unsigned int i, Decorator d) {
+    IMP_check(i < ParentDecorators::size(),
+              "Index out of range", IndexException);
     if (!has_traits_) {
       tr_= d.get_traits();
       has_traits_=true;
@@ -296,19 +317,26 @@ public:
                 "Traits don't match",
                 ValueException);
     }
-    P::set(i, d);
+    ParentDecorators::set(i, d);
   }
+#ifndef IMP_DOXYGEN
   typedef internal::IndexingIterator<Accessor> iterator;
   typedef internal::IndexingIterator<Accessor> const_iterator;
+#else
+  class iterator;
+  class const_iterator;
+#endif
   iterator begin() const {
-    return iterator(Accessor(const_cast<DecoratorsWithTraits<D, P,
+    return iterator(Accessor(const_cast<DecoratorsWithTraits<Decorator,
+                             ParentDecorators,
                              Traits>* >(this)),
                     0);
   }
   iterator end() const {
-    return iterator(Accessor(const_cast<DecoratorsWithTraits<D, P,
-                                        Traits>* >(this)),
-                    P::size());
+    return iterator(Accessor(const_cast<DecoratorsWithTraits<Decorator,
+                             ParentDecorators,
+                             Traits>* >(this)),
+                    ParentDecorators::size());
   }
   template <class It>
   void insert(iterator loc, It b, It e) {
@@ -318,19 +346,24 @@ public:
       has_traits_=true;
     }
     for (It c=b; c!= e; ++c) {
-      IMP_check(D::is_instance_of(*c, tr_), "Particle "
+      IMP_check(Decorator::is_instance_of(*c, tr_), "Particle "
                 << " missing required attributes",
                 ValueException);
     }
-    P::insert(P::begin()+(loc-begin()), b, e);
+    ParentDecorators::insert(ParentDecorators::begin()+(loc-begin()), b, e);
   }
+#ifndef IMP_DOXYGEN
   void swap_with(DecoratorsWithTraits &o) {
-    P::swap_with(o);
+    ParentDecorators::swap_with(o);
   }
+#endif
 };
 
+#ifndef IMP_DOXYGEN
 IMP_SWAP_3(DecoratorsWithTraits);
+#endif
 
+#ifndef IMP_DOXYGEN
 /** A version for decorators which provide traits for their parents.
 
     A DecoratorsWithTraits can be cast to a Particles or its parent
@@ -350,7 +383,7 @@ public:
 };
 
 IMP_SWAP_2(DecoratorsWithImplicitTraits);
-
+#endif
 
 IMP_END_NAMESPACE
 
