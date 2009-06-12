@@ -29,8 +29,9 @@ IMPCORE_BEGIN_NAMESPACE
     These functions and classes aid in manipulating particles representing
     molecules at multiple levels.
  */
-
+#ifndef SWIG
 class Hierarchy;
+#endif
 
 //! Define the type for a type of hierarchy
 /** The hierarchy class is identified by the passed string so two
@@ -39,7 +40,6 @@ class Hierarchy;
 
     This example shows how to make and use a custom hierarchy:
     \verbinclude custom_hierarchy.py
-    \see Hierarchy
     \see Hierarchy
 */
 class IMPCOREEXPORT HierarchyTraits
@@ -105,50 +105,6 @@ public:
 
 
 
-//! A visitor for traversal of a hierarchy
-/** This works from both C++ and Python
-    \ingroup hierarchy
-    \ingroup decorators
-    \see Hierarchy
- */
-class IMPCOREEXPORT HierarchyVisitor
-{
-public:
-  HierarchyVisitor() {}
-  //! Return true if the traversal should visit this node's children
-  /** The const is needed to make memory management simple. Just declare
-      internal data mutable.
-   */
-  virtual bool visit(Particle *p) = 0;
-  virtual ~HierarchyVisitor() {}
-};
-
-
-
-//! A which applies a singleton modifier to each Particle in a hierarchy
-/** This works from both C++ and Python
-    \ingroup hierarchy
-    \ingroup decorators
-    \see SingletonModifier
-    \see Hierarchy
- */
-class IMPCOREEXPORT ModifierVisitor: public HierarchyVisitor
-{
-  Pointer<SingletonModifier> sm_;
-public:
-  ModifierVisitor(SingletonModifier *sm): sm_(sm) {}
-  virtual bool visit(Particle *p) {
-    sm_->apply(p);
-    return true;
-  }
-  virtual ~ModifierVisitor() {}
-};
-
-
-
-
-
-
 //! A decorator for helping deal with a hierarchy.
 /**
     See HierarchyTraits for an example of how to define a custom hierarchy
@@ -165,13 +121,13 @@ class IMPCOREEXPORT Hierarchy: public Decorator
 public:
   IMP_DECORATOR_TRAITS(Hierarchy, Decorator,
                        HierarchyTraits, traits,
-                       Hierarchy::get_default_traits());
+                       get_default_traits());
 
 
   //! Add the needed attributes to a particle
   static Hierarchy create(Particle *p,
-                                   HierarchyTraits traits
-                                   =Hierarchy::get_default_traits()) {
+                          HierarchyTraits traits
+                          =Hierarchy::get_default_traits()) {
     add_required_attributes_for_child(p, traits);
     return Hierarchy(p, traits);
   }
@@ -181,9 +137,9 @@ public:
       already.
   */
   static Hierarchy create(Particle *p,
-                                   const Particles &children,
-                                   HierarchyTraits traits
-                                   =Hierarchy::get_default_traits()) {
+                          const Particles &children,
+                          HierarchyTraits traits
+                          =Hierarchy::get_default_traits()) {
     add_required_attributes_for_child(p, traits);
     Hierarchy h(p, traits);
     for (unsigned int i=0; i< children.size(); ++i) {
@@ -206,10 +162,12 @@ public:
 
   /** Return the particles of the children
    */
-  Particles get_child_particles() const {
-    Particles ps(get_number_of_children());
+  DecoratorsWithTraits<Hierarchy, Particles,
+    HierarchyTraits> get_children() const {
+    DecoratorsWithTraits<Hierarchy, Particles,
+      HierarchyTraits> ps(get_number_of_children(), get_traits());
     for (unsigned int i=0; i< get_number_of_children(); ++i) {
-      ps[i]= get_child(i).get_particle();
+      ps.set(i, get_child(i));
     }
     return ps;
   }
@@ -217,7 +175,7 @@ public:
   /** \return the parent particle, or Hierarchy()
       if it has no parent.
    */
-  This get_parent() const {
+  Hierarchy get_parent() const {
     IMP_DECORATOR_GET(traits_.parent_key_, Particle*,
                       return This(VALUE, traits_),
                       return This());
@@ -251,10 +209,56 @@ public:
 
   //! Get the default hierarchy traits
   static const HierarchyTraits& get_default_traits();
-  };
+};
 
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
+
+typedef DecoratorsWithTraits<Hierarchy, Particles,
+                             HierarchyTraits> GenericHierarchies;
+
+//! A visitor for traversal of a hierarchy
+/** This works from both C++ and Python
+    \ingroup hierarchy
+    \ingroup decorators
+    \see Hierarchy
+ */
+class IMPCOREEXPORT HierarchyVisitor
+{
+public:
+  HierarchyVisitor() {}
+  //! Return true if the traversal should visit this node's children
+  /** The const is needed to make memory management simple. Just declare
+      internal data mutable.
+   */
+  virtual bool visit(Hierarchy p) = 0;
+  virtual ~HierarchyVisitor() {}
+};
+
+
+
+//! A which applies a singleton modifier to each Particle in a hierarchy
+/** This works from both C++ and Python
+    \ingroup hierarchy
+    \ingroup decorators
+    \see SingletonModifier
+    \see Hierarchy
+ */
+class IMPCOREEXPORT ModifierVisitor: public HierarchyVisitor
+{
+  Pointer<SingletonModifier> sm_;
+public:
+  ModifierVisitor(SingletonModifier *sm): sm_(sm) {}
+  virtual bool visit(Hierarchy p) {
+    sm_->apply(p.get_particle());
+    return true;
+  }
+  virtual ~ModifierVisitor() {}
+};
+
+
+
+
 
 //! Collect the matching visiting nodes into a container.
 /** A node is collected if the function evaluates true.
@@ -265,7 +269,7 @@ struct Gather: public HierarchyVisitor
 {
   //! initialize with the function and the container
   Gather(F f, Out out): f_(f), out_(out) {}
-  bool visit(Particle *p) {
+  bool visit(Hierarchy p) {
     if (f_(p)) {
       *out_=p;
       ++out_;
@@ -371,7 +375,7 @@ F depth_first_traversal_with_data(HD d,  F f, typename F::result_type i)
   do {
     DP cur= stack.back();
     stack.pop_back();
-    typename F::result_type r=f(cur.second.get_particle(), cur.first);
+    typename F::result_type r=f(cur.second, cur.first);
     //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
     for (int i=cur.second.get_number_of_children()-1; i>=0; --i) {
       stack.push_back(DP(r, cur.second.get_child(i)));
@@ -392,18 +396,14 @@ template <class PD>
 struct HierarchyPrinter
 {
   HierarchyPrinter(std::ostream &out,
-                   unsigned int max_depth,
-                   HierarchyTraits traits
-                   = Hierarchy::get_default_traits()): traits_(traits),
-                                                                out_(out),
-                                                                md_(max_depth)
+                   unsigned int max_depth): out_(out),
+                                            md_(max_depth)
   {}
 
   typedef unsigned int result_type;
-  int operator()(Particle *p, unsigned int depth) const {
+  int operator()(Hierarchy hd, unsigned int depth) const {
     if (depth > md_) return depth+1;
 
-    Hierarchy hd= Hierarchy::cast(p, traits_);
     std::string prefix;
     for (unsigned int i=0; i< depth; ++i) {
       out_ << " ";
@@ -414,9 +414,9 @@ struct HierarchyPrinter
     } else {
       out_ << "+";
     }
-    out_ << "Particle " << p->get_name() << std::endl;
+    out_ << "Particle " << hd.get_particle()->get_name() << std::endl;
     prefix += "  ";
-    PD nd= PD::cast(p);
+    PD nd= PD::cast(hd.get_particle());
     if (nd != PD()) {
       nd.show(out_, prefix);
     } else {
@@ -425,7 +425,6 @@ struct HierarchyPrinter
     out_ << std::endl;
     return depth+1;
   }
-  HierarchyTraits traits_;
   std::ostream &out_;
   unsigned int md_;
 };
@@ -441,8 +440,7 @@ std::ostream &show(Hierarchy h, std::ostream &out=std::cout,
                    unsigned int max_depth
                    = std::numeric_limits<unsigned int>::max())
 {
-  depth_first_traversal_with_data(h, HierarchyPrinter<ND>(out, max_depth,
-                                                          h.get_traits()), 0);
+  depth_first_traversal_with_data(h, HierarchyPrinter<ND>(out, max_depth), 0);
   return out;
 }
 
@@ -457,7 +455,7 @@ struct HierarchyCounter: public HierarchyVisitor
   HierarchyCounter(): ct_(0) {}
 
   //! Increment the counter
-  bool visit(Particle*) {
+  bool visit(Hierarchy) {
     ++ct_;
     return true;
   }
@@ -470,7 +468,7 @@ private:
   unsigned int ct_;
 };
 
-//! Gather all the Particle* in the hierarchy which meet some criteria
+//! Gather all the particles in the hierarchy which meet some criteria
 /** \ingroup hierarchy
     \relatesalso Hierarchy
  */
@@ -482,7 +480,7 @@ Out gather(Hierarchy h, F f, Out out)
   return gather.get_out();
 }
 
-//! Gather all the Particle* in the hierarchy which match on an attribute
+//! Gather all the particles in the hierarchy which match on an attribute
 /** \ingroup hierarchy
     \relatesalso Hierarchy
  */
@@ -499,7 +497,7 @@ Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
 
 
 
-//! Gather all the Particle* in the hierarchy which match on two attributes
+//! Gather all the particles in the hierarchy which match on two attributes
 /** \ingroup hierarchy
     \relatesalso Hierarchy
  */
@@ -547,13 +545,13 @@ HD breadth_first_find(HD h, F f)
 //! Get all the leaves of the bit of hierarchy
 /**     \relatesalso Hierarchy
  */
-IMPCOREEXPORT Particles
+IMPCOREEXPORT GenericHierarchies
 get_leaves(Hierarchy mhd);
 
 //! Get all the particles in the subtree
 /**     \relatesalso Hierarchy
  */
-IMPCOREEXPORT Particles
+IMPCOREEXPORT GenericHierarchies
 get_all_descendants(Hierarchy mhd);
 
 //! Return the root of the hierarchy
@@ -564,8 +562,6 @@ inline Hierarchy root(Hierarchy h) {
   }
   return h;
 }
-
-typedef std::vector<Hierarchy> Hierarchies;
 
 IMPCORE_END_NAMESPACE
 

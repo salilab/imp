@@ -13,7 +13,10 @@ class DecoratorTests(IMP.test.TestCase):
                               m)
         IMP.atom.show_molecular_hierarchy(mh)
         mhc= IMP.helper.clone(mh)
-        nb= IMP.atom.get_internal_bonds(mh).size()
+        bds=IMP.atom.get_internal_bonds(mh)
+        print bds
+        print IMP.atom.Bonds()
+        nb= bds.size()
         nnb= IMP.atom.get_internal_bonds(mhc).size()
         self.assertEqual(nb, nnb)
         IMP.atom.show_molecular_hierarchy(mhc)

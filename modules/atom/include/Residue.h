@@ -197,6 +197,9 @@ public:
 
 IMP_OUTPUT_OPERATOR(Residue);
 
+
+typedef Decorators<Residue, Hierarchies> Residues;
+
 //! Return the residue type from the three letter code in the PDB
 /** The string should be capitalized, as in the PDB.
     \throw ValueException if nm is invalid.

@@ -22,7 +22,7 @@ IMPParticlesAccessPoint::IMPParticlesAccessPoint(
 }
 
 algebra::Vector3D IMPParticlesAccessPoint::get_centroid() const {
-  return core::centroid(particles_);
+  return core::centroid(core::XYZs(particles_));
 }
 
 void IMPParticlesAccessPoint::reselect(const Particles& ps)

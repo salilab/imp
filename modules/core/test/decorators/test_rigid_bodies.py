@@ -14,10 +14,10 @@ class RBDTests(IMP.test.TestCase):
         r= IMP.algebra.identity_rotation()
         t= IMP.algebra.random_vector_in_unit_sphere()
         tr= IMP.algebra.Transformation3D(r,t)
-        mbs= rbd.get_member_particles()
+        mbs= rbd.get_members()
         m= rbd.get_particle().get_model()
         for b in mbs:
-            mb= IMP.core.RigidMember(b)
+            mb= IMP.core.RigidMember(b.get_particle())
             lc= mb.get_internal_coordinates()
             lct= tr.transform(lc)
             dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1), lct)
@@ -41,7 +41,9 @@ class RBDTests(IMP.test.TestCase):
             m= IMP.Model()
             IMP.set_log_level(IMP.SILENT)
             p= self._create_hierarchy(m,  htr)
-            ss=IMP.helper.create_rigid_body(p, IMP.core.Hierarchy(p, htr).get_child_particles(), snap)
+            ss=IMP.helper.create_rigid_body(p,
+                                            IMP.core.XYZs(IMP.core.Hierarchy(p, htr).get_children()),
+                                            snap)
             m.add_score_state(ss)
             rbd= IMP.core.RigidBody(p)
             p.show()

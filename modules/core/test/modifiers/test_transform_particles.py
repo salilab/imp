@@ -11,15 +11,14 @@ class ParticleTransformationTests(IMP.test.TestCase):
         imp_model = IMP.Model()
         particles = IMP.core.create_xyzr_particles(imp_model, 4, 1.0);
 
-        coords= [IMP.core.XYZ(x).get_coordinates() for x in particles]
+        coords= [x.get_coordinates() for x in particles]
         r = IMP.algebra.rotation_from_fixed_xyz(0.2,0.8,-0.4)
         t=IMP.algebra.Transformation3D(r,IMP.algebra.Vector3D(20.0,-12.4,18.6))
         tf=IMP.core.Transform(t)
         for p in particles:
-            r = tf.apply(p)
+            r = tf.apply(p.get_particle())
         for i in range(0,len(particles)):
-            xyz = IMP.core.XYZ(particles[i])
-            v = xyz.get_coordinates()
+            v = particles[i].get_coordinates()
             self.assertInTolerance((v-t.transform(coords[i])).get_magnitude(), 0, 0.01)
 
     def test_transformation2(self):
@@ -27,14 +26,13 @@ class ParticleTransformationTests(IMP.test.TestCase):
         imp_model = IMP.Model()
         particles = IMP.core.create_xyzr_particles(imp_model, 4, 1.0);
 
-        coords= [IMP.core.XYZ(x).get_coordinates() for x in particles]
+        coords= [x.get_coordinates() for x in particles]
         r = IMP.algebra.rotation_from_fixed_xyz(0.2,0.8,-0.4)
         t=IMP.algebra.Transformation3D(r,IMP.algebra.Vector3D(20.0,-12.4,18.6))
         tf=IMP.core.Transform(t)
-        map( IMP.SingletonFunctor(tf), particles)
+        map( IMP.SingletonFunctor(tf), [x.get_particle() for x in particles])
         for i in range(0,len(particles)):
-            xyz = IMP.core.XYZ(particles[i])
-            v = xyz.get_coordinates()
+            v = particles[i].get_coordinates()
             self.assertInTolerance((v-t.transform(coords[i])).get_magnitude(), 0, 0.01)
 
 if __name__ == '__main__':

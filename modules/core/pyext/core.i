@@ -71,10 +71,6 @@ namespace IMP {
 
 %include "IMP/core/XYZ.h"
 
-/* Must be included before Hierarchy.h since it is not easy
-   to predeclare a typedef (for Bonds) */ 
-%include "IMP/core/RestraintSet.h"
-
 /* Wrap the final classes */
 %include "IMP/core/AllPairsPairContainer.h"
 %include "IMP/core/AngleRestraint.h"
@@ -116,6 +112,7 @@ namespace IMP {
 %include "IMP/core/OpenCubicSpline.h"
 %include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/RefinedPairsPairScore.h"
+%include "IMP/core/RestraintSet.h"
 %include "IMP/core/rigid_bodies.h"
 %include "IMP/core/RigidClosePairsFinder.h"
 %include "IMP/core/SphereDistancePairScore.h"
@@ -153,12 +150,19 @@ namespace IMP {
 namespace IMP {
   namespace core {
     %template(Movers) ::std::vector<Mover*>;
-    %template(XYZs) ::std::vector<XYZ>;
-    %template(XYZRs) ::std::vector<XYZR>;
-    %template(RigidMembers) ::std::vector<RigidMember>;
     %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
     %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
+    IMP_DECORATORS(XYZ, XYZs, Particles)
+    IMP_DECORATORS(XYZR, XYZRs, XYZs)
+    IMP_DECORATORS(RigidBody, RigidBodies, XYZs)
+    IMP_DECORATORS(RigidMember, RigidMembers, XYZs)
+    /* Swig bitches about it having "the same name" as IMP.atom.Hierarchies
+       even though it doesn't. */
+    %template(GenericHierarchies) ::IMP::DecoratorsWithTraits<IMP::core::Hierarchy,
+                                                       IMP::Particles,
+                                                       IMP::core::HierarchyTraits>;
+    %template(GenericHierarchyVector) ::std::vector<IMP::core::Hierarchy>;
     // swig screws up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
   }

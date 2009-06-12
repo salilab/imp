@@ -55,7 +55,7 @@ Matrix compute_I(const std::vector<RigidMember> &ds,
 
 
 RigidBody RigidBody::create(Particle *p,
-                                              const Particles &members){
+                            const XYZs &members){
   IMP_check(!internal::get_has_required_attributes_for_body(p),
             "The RigidBody is already set up.",
             InvalidStateException);
@@ -178,7 +178,7 @@ RigidBody::get_members() const {
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
   RigidMembers rbms(hd.get_number_of_children());
   for (unsigned int i=0; i< rbms.size(); ++i) {
-    rbms[i]= RigidMember(hd.get_child(i).get_particle());
+    rbms.set(i, RigidMember(hd.get_child(i)));
   }
   return rbms;
 }
@@ -191,16 +191,6 @@ unsigned int RigidBody::get_number_of_members() const {
 RigidMember RigidBody::get_member(unsigned int i) const {
   Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
   return RigidMember(hd.get_child(i).get_particle());
-}
-
-Particles
-RigidBody::get_member_particles() const {
-  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  Particles ps(hd.get_number_of_children());
-  for (unsigned int i=0; i< hd.get_number_of_children(); ++i) {
-    ps[i]= hd.get_child(i).get_particle();
-  }
-  return ps;
 }
 
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {

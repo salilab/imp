@@ -164,6 +164,8 @@ inline void transform(XYZ a, const algebra::Transformation3D &tr) {
   a.set_coordinates(tr.transform(a.get_coordinates()));
 }
 
+typedef Decorators<XYZ, Particles> XYZs;
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_XY_Z_H */

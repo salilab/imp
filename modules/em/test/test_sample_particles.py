@@ -13,7 +13,7 @@ class SampleTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #init IMP model ( the environment)
         self.imp_model = IMP.Model()
-        self.particles = []
+        self.particles = IMP.Particles()
         ## -  create a set of three particles in imp
         npart = 3
         for i, (x,y,z) in enumerate(((9.0, 9.0, 9.0),

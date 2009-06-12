@@ -51,7 +51,7 @@ void RigidBodyDerivativeGeometry::show(std::ostream &out) const {
 }
 
 Geometries RigidBodyDerivativeGeometry::get_geometry() const {
-  Particles ms=d_.get_member_particles();
+  Particles ms=d_.get_members();
   Geometries ret;
   algebra::Transformation3D otr= d_.get_transformation();
   algebra::VectorD<4> rderiv= d_.get_rotational_derivatives();

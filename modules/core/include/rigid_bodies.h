@@ -30,7 +30,7 @@ class UpdateRigidBodyOrientation;
 class AccumulateRigidBodyDerivatives;
 class UpdateRigidBodyMembers;
 
-typedef std::vector<RigidMember> RigidMembers;
+typedef Decorators<RigidMember, XYZs> RigidMembers;
 
 //! A decorator for a rigid body
 /** A rigid body's orientation is stored using a transformation that
@@ -57,13 +57,15 @@ class IMPCOREEXPORT RigidBody: public XYZ {
   friend class UpdateRigidBodyOrientation;
   friend class UpdateRigidBodyMembers;
 #endif
-  RigidMembers get_members() const;
   //! Return the location of a member particle given the current position
   /** This method computes the coordinates of p given its internal coordinates
       and the current position and orientation of the rigid body.
    */
   algebra::Vector3D get_coordinates(RigidMember p) const;
 public:
+
+  RigidMembers get_members() const;
+
   IMP_DECORATOR(RigidBody, XYZ)
 
   //! Create a new rigid body, but do not add score states
@@ -79,7 +81,7 @@ public:
       score states in order to keep the rigid body rigid.
    */
   static RigidBody create(Particle *p,
-                          const Particles &members);
+                          const XYZs &members);
 
   ~RigidBody();
 
@@ -117,14 +119,14 @@ public:
   //! Get the derivatives of the quaternion
   algebra::VectorD<4> get_rotational_derivatives() const;
 
-  Particles get_member_particles() const;
-
   unsigned int get_number_of_members() const;
 
   RigidMember get_member(unsigned int i) const;
 };
 
 IMP_OUTPUT_OPERATOR(RigidBody);
+
+typedef Decorators<RigidBody, XYZs> RigidBodies;
 
 
 //! Apply a transformation to the particle

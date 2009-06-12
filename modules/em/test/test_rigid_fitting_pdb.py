@@ -21,15 +21,11 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.m = IMP.Model()
         self.mp= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
                               self.m, IMP.atom.CAlphaSelector())#IMP.atom.NonWaterSelector())
-        self.mps = IMP.atom.Hierarchies()
-        self.mps.append(self.mp)
         self.radius_key = IMP.FloatKey("radius")
         self.weight_key = IMP.FloatKey("weight")
         #add radius and weight attributes
-        self.particles = IMP.Particles()
-        for p in IMP.core.get_leaves(self.mp):
-            self.particles.append(p)
-        for p in self.particles:
+        self.particles = IMP.core.get_leaves(self.mp)
+        for p in [x.get_particle() for x in self.particles]:
             p.add_attribute(self.radius_key, 1.5)
             p.add_attribute(self.weight_key, 1.0)
 
@@ -45,7 +41,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         """Check that the local rigid fitting functionality works"""
         #create a rigid body
         rb_p = IMP.Particle(self.imp_model)
-        rb_state = IMP.helper.create_rigid_body(rb_p,self.particles)
+        rb_state = IMP.helper.create_rigid_body(rb_p,IMP.core.XYZs(self.particles))
         rb_d = IMP.core.RigidBody.cast(rb_p);
         ref_trans = rb_d.get_transformation()
         fr = IMP.em.FittingSolutions()

@@ -135,7 +135,7 @@ inline void local_rigid_fitting(
    Int number_of_cg_steps=100,
    Float max_translation=2., Float max_rotation=5.) {
    algebra::Vector3D rb_cen=
-       IMP::core::centroid(rb.get_member_particles());
+     IMP::core::centroid(core::XYZs(rb.get_members()));
    local_rigid_fitting_around_point(
      rb, rb_state, rad_key, wei_key,dmap, rb_cen,fr,display_log,
      number_of_optimization_runs, number_of_mc_steps,

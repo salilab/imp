@@ -157,6 +157,8 @@ public:
 };
 
 
+typedef Decorators<Fragment, Hierarchies> Fragments;
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_FRAGMENT_H */

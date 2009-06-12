@@ -210,7 +210,7 @@ namespace {
       if (nscore < offsets[j]) nscore=0;
       else nscore= nscore-offsets[j];
       //}
-      if (nscore < static_cast<int>(cur_best)) {
+      if (static_cast<int>(nscore) < cur_best) {
         best_score=score;
         best_center=j;
         cur_best= nscore;
