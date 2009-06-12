@@ -35,3 +35,10 @@
 %include "IMP/saxs/Restraint.h"
 %include "IMP/saxs/Distribution.h"
 %include "IMP/saxs/utility.h"
+
+namespace IMP {
+namespace saxs {
+%template(FloatDistribution) Distribution<Float>;
+%template(VectorDistribution) Distribution<IMP::algebra::Vector3D>;
+}
+}
