@@ -18,7 +18,7 @@ inline Float sinc(Float value) {
 }
 
 //! compute max distance
-inline Float compute_max_distance(const std::vector<Particle*>& particles) {
+inline Float compute_max_distance(const Particles& particles) {
   Float max_dist2 = 0;
   std::vector<algebra::Vector3D> coordinates(particles.size());
   for (unsigned int i = 0; i < particles.size(); i++) {
@@ -36,8 +36,8 @@ inline Float compute_max_distance(const std::vector<Particle*>& particles) {
 
 //! compute max distance between pairs of particles one from particles1
 //! and the other from particles2
-inline Float compute_max_distance(const std::vector<Particle*>& particles1,
-                                  const std::vector<Particle*>& particles2) {
+inline Float compute_max_distance(const Particles& particles1,
+                                  const Particles& particles2) {
   Float max_dist2 = 0;
   std::vector<algebra::Vector3D> coordinates1(particles1.size());
   std::vector<algebra::Vector3D> coordinates2(particles2.size());
@@ -58,7 +58,7 @@ inline Float compute_max_distance(const std::vector<Particle*>& particles1,
 }
 
 //! compute radius_of_gyration
-inline Float radius_of_gyration(const std::vector<Particle*>& particles) {
+inline Float radius_of_gyration(const Particles& particles) {
   algebra::Vector3D centroid(0.0, 0.0, 0.0);
   std::vector<algebra::Vector3D> coordinates(particles.size());
   for (unsigned int i = 0; i < particles.size(); i++) {

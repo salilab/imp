@@ -79,12 +79,12 @@ public:
   friend class Profile;
 
   //! computes radial distribution function for a set of particles
-  void calculate_distribution(const std::vector<Particle*>& particles);
+  void calculate_distribution(const Particles& particles);
 
   //! computes distribution contribution from inter-molecular
   //! interactions between the particles
-  void calculate_distribution(const std::vector<Particle*>& particles1,
-                              const std::vector<Particle*>& particles2);
+  void calculate_distribution(const Particles& particles1,
+                              const Particles& particles2);
 
   //! scale distribution by a constant
   void scale(Float c);
@@ -124,7 +124,7 @@ DeltaDistributionFunction : public Distribution<algebra::Vector3D> {
 public:
   //! Constructor
   DeltaDistributionFunction(FormFactorTable* ff_table,
-                            const std::vector<Particle*>& particles,
+                            const Particles& particles,
                             Float max_distance = 0.0,
                             Float bin_size = pr_resolution);
 
