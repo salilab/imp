@@ -9,7 +9,7 @@ class KMeansTests(IMP.test.TestCase):
     "Test kmeans on set of particles randomly distributed around three centers"
     def load_particles(self):
         self.centers=[]
-        self.ps=[]
+        self.ps=IMP.Particles()
         self.cluster_points=[]
         for i in xrange(5):
             p = IMP.Particle(self.m)

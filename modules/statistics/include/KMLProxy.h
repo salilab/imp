@@ -20,7 +20,6 @@
 #include "KMData.h"
 #include "KMFilterCenters.h"
 #include "KMLocalSearch.h"
-#include "random_generator.h"
 #include "KMLocalSearchLloyd.h"
 
 IMPSTATISTICS_BEGIN_NAMESPACE

@@ -7,7 +7,7 @@
  */
 
 #include <IMP/statistics/KMFilterCenters.h>
-#include <IMP/statistics/random_generator.h>
+#include <IMP/statistics/internal/random_generator.h>
 IMPSTATISTICS_BEGIN_NAMESPACE
 KMFilterCenters::KMFilterCenters(){}
 KMFilterCenters::KMFilterCenters(int k, KMData* data,
@@ -44,7 +44,7 @@ void KMFilterCenters::generate_random_centers(int k) {
       for(int j=0;j<data_points_->get_dim();j++) {
         KMPoint *p= (*ini_cen_arr_)[i];
         (*(*centers_)[i])[j]=
-        random_uniform((*(p))[j]-20.,(*(p))[j]+20.);
+          internal::random_uniform((*(p))[j]-20.,(*(p))[j]+20.);
         //kmCopyPt(pts->getDim(),(*ini_cen_arr_)[i],ctrs[i]);
       }//for j
     }//for i
