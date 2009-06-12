@@ -15,7 +15,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Charmm force field
-class Charmm : public ForceFieldParameters {
+class IMPATOMEXPORT Charmm : public ForceFieldParameters {
 public:
 
   /** construction with Charmm parameters file

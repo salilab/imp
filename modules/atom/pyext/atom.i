@@ -46,7 +46,6 @@
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/selectors.h"
 %include "IMP/atom/pdb.h"
-%include "IMP/atom/force_fields.h"
 %include "IMP/atom/Fragment.h"
 
 namespace IMP {
@@ -81,3 +80,8 @@ namespace IMP {
    IMP_DECORATORS(Diffusion, Diffusions, core::XYZs)
   }
 }
+
+%include "IMP/atom/ForceFieldParameters.h"
+%include "IMP/atom/Charmm.h"
+%include "IMP/atom/force_fields.h"
+
