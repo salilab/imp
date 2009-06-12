@@ -221,6 +221,19 @@
     a.swap_with(b);                             \
   }
 
+#define IMP_SWAP_2(Name)                          \
+  template <class A, class B>                     \
+  inline void swap(Name<A,B> &a, Name<A,B> &b) {  \
+    a.swap_with(b);                               \
+  }
+
+#define IMP_SWAP_3(Name)                                \
+  template <class A, class B, class C>                  \
+  inline void swap(Name<A,B,C> &a, Name<A,B,C> &b) {    \
+    a.swap_with(b);                                     \
+  }
+
+
 //! swap two member variables assuming the other object is called o
 /** Swap the member \c var_name of the two objects (this and o).
  */
@@ -351,10 +364,6 @@ explicit Name(::IMP::Particle *p): Parent(p) {                          \
  }                                                                      \
  void show(std::ostream &out=std::cout,                                 \
            std::string prefix=std::string()) const;                     \
-IMP_NO_SWIG(IMP_NO_DOXYGEN(operator bool_type() const {                 \
-    return is_null()? 0: &Decorator::safe_bool_function;                \
-    }))
-
 
 
 //! Define the basic things needed by a Decorator which has a traits object.
@@ -393,11 +402,6 @@ void show(std::ostream &out=std::cout,                                  \
 const TraitsType &get_##traits_name() const {                           \
   return traits_name##_;                                                \
 }                                                                       \
-IMP_NO_SWIG(IMP_NO_DOXYGEN(operator bool_type() const {                 \
-    return is_null()? 0: &Decorator::safe_bool_function;                \
-    }))
-
-
 
 
 //! Perform actions dependent on whether a particle has an attribute.
