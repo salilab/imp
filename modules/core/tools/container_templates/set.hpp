@@ -36,7 +36,7 @@ public:
   */
   /**@{*/
   IMP_LIST(public, GroupnameContainer, groupname_container,
-           GroupnameContainer*);
+           GroupnameContainer*, GroupnameContainers);
   /**@}*/
 };
 

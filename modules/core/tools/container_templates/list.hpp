@@ -33,7 +33,7 @@ public:
      the list use these methods.
   */
   /**@{*/
-  IMP_LIST(public, Classname, classname, Value);
+  IMP_LIST(public, Classname, classname, Value, Classnames);
   /**@}*/
 
   //! log n time

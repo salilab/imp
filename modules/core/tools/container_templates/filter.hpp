@@ -96,7 +96,7 @@ public:
   */
   /**@{*/
   IMP_LIST(public, GroupnameFilter, groupname_filter,
-           GroupnameContainer*);
+           GroupnameContainer*, GroupnameContainers);
    /**@}*/
 };
 

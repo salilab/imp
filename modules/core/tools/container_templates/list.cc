@@ -21,7 +21,7 @@ ListGroupnameContainer::ListGroupnameContainer(const Classnames &ps){
 }
 
 IMP_LIST_IMPL(ListGroupnameContainer, Classname,
-              classname, Value,, {
+              classname, Value,Classnames,, {
                 if (sorted_) std::sort(classnames_begin(),
                                        classnames_end());
               },);

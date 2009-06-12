@@ -98,6 +98,7 @@ FilteredListGroupnameContainer::get_classname(unsigned int i) const {
 IMP_LIST_IMPL(FilteredListGroupnameContainer,
               GroupnameFilter,
               groupname_filter,
-              GroupnameContainer*,,,)
+              GroupnameContainer*,
+              GroupnameContainers,,,)
 
 IMPCORE_END_NAMESPACE
