@@ -27,6 +27,7 @@ class ScoreState;
 typedef std::vector<Restraint*> Restraints;
 typedef std::vector<ScoreState*> ScoreStates;
 
+
 //! Class for storing model, its restraints, and particles.
 /** The Model maintains a standard IMP container for each of Particle,
     ScoreState and Restraint object types.
@@ -89,7 +90,7 @@ public:
       methods below to manipulate the list of ScoreState objects.
   */
   /**@{*/
-  IMP_LIST(public, ScoreState, score_state, ScoreState*);
+  IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates);
   /**@}*/
 
   /** @name Restraints
@@ -98,7 +99,7 @@ public:
       objects. Use the methods below to manipulate the list.
    */
   /**@{*/
-  IMP_LIST(public, Restraint, restraint, Restraint*);
+  IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
   /**@}*/
  public:
 

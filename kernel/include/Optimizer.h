@@ -80,7 +80,8 @@ public:
        To manipulate the list of optimizer states use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*);
+  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*,
+           OptimizerStates);
   /**@}*/
 
 
