@@ -28,6 +28,7 @@
 %ignore operator<<(std::ostream& q, const IntensityEntry& e);
 %ignore operator>>(std::istream& q, IntensityEntry& e);
 
+
 /* Wrap our own classes */
 %include "IMP/saxs/FormFactorTable.h"
 %include "IMP/saxs/Profile.h"
@@ -35,10 +36,3 @@
 %include "IMP/saxs/Restraint.h"
 %include "IMP/saxs/Distribution.h"
 %include "IMP/saxs/utility.h"
-
-namespace IMP {
-namespace saxs {
-%template(FloatDistribution) Distribution<Float>;
-%template(VectorDistribution) Distribution<IMP::algebra::Vector3D>;
-}
-}
