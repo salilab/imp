@@ -27,9 +27,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.radius_key = IMP.FloatKey("radius")
         self.weight_key = IMP.FloatKey("weight")
         #add radius and weight attributes
-        self.particles = IMP.Particles()
-        for p in IMP.core.get_leaves(self.mp):
-            self.particles.append(p)
+        self.particles = IMP.core.get_leaves(self.mp)
         for p in self.particles:
             p.add_attribute(self.radius_key, 1.5)
             p.add_attribute(self.weight_key, 1.0)
