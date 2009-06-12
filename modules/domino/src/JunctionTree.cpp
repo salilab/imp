@@ -72,7 +72,7 @@ void JunctionTree::show(std::ostream& out) const {
   out << "===========Junction Tree=========" << std::endl;
   out << " Nodes: " << std::endl;
   for (unsigned int vi = 0;vi < boost::num_vertices(g_);vi++) {
-    for(int j=0;j<data_[vi].size();j++) {
+    for(unsigned int j=0;j<data_[vi].size();j++) {
       out<<data_[vi][j]<<" || ";
     }
     out<<std::endl;
