@@ -66,7 +66,7 @@
   }
   DecoratorsWithTraits< Decorator, ParentDecorators, Traits >
   __add__(const DecoratorsWithTraits<Decorator, ParentDecorators, Traits > &o) {
-    IMP::DecoratorsWithTraits< Decorators, ParentDecorators, Traits > ret(*self);
+    IMP::DecoratorsWithTraits< Decorator, ParentDecorators, Traits > ret(*self);
     ret.insert(ret.end(), o.begin(), o.end());
     return ret;
   }
