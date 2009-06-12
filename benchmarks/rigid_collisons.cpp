@@ -59,7 +59,7 @@ int main() {
     IMP_assert(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
     ScoreState *ss= create_rigid_body(mhd.get_particle(),
-                                       catoms);
+                                      XYZs(catoms));
     m->add_score_state(ss);
     rbs.push_back(RigidBody(mhd.get_particle()));
     cover_members(rbs.back());
@@ -89,7 +89,7 @@ int main() {
   {
     Particles rbsp(rbs.size());
     for (unsigned int i=0; i< rbs.size(); ++i){
-      rbsp[i]= rbs[i].get_particle();
+      rbsp.set(i, rbs[i].get_particle());
     }
     lsc->set_particles(rbsp);
     IMP_NEW(RigidClosePairsFinder, rcps, ());
