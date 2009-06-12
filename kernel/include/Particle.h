@@ -705,6 +705,59 @@ typedef std::vector<ParticleTriplet> ParticleTriplets;
 IMP_OUTPUT_OPERATOR(ParticleTriplet);
 
 
+//! A class which is used for representing collections of particles
+/** Documentation for std::vector can be found at as part of the SGI
+    stl documentation, among other places
+    (http://www.sgi.com/tech/stl/Vector.html).
+
+    When used within Python, IMP::Particles acts like a Python list.
+ */
+class IMPEXPORT Particles {
+  typedef std::vector<Particle*> Data;
+  Data data_;
+ public:
+  typedef Particle* const_reference;
+  typedef Particle* value_type;
+  template <class It>
+    Particles(It b, It e): data_(b,e){}
+  Particles(unsigned int i): data_(i, NULL){}
+  Particles(){}
+  ~Particles();
+  Particle* operator[](unsigned int i) const {
+    IMP_check(i < size(), "Index out of range", IndexException);
+    return data_[i];
+  }
+  void set(unsigned int i, Particle *p) {
+    IMP_check(i < size(), "Index out of range", IndexException);
+    data_[i]=p;
+  }
+  unsigned int size() const {return data_.size();}
+  void resize(unsigned int i) {data_.resize(i);}
+  typedef Data::iterator iterator;
+  typedef Data::const_iterator const_iterator;
+  const_iterator begin() const {return data_.begin();}
+  const_iterator end() const {return data_.end();}
+  iterator begin() {return data_.begin();}
+  iterator end() {return data_.end();}
+  template <class It>
+  void insert(iterator loc, It b, It e) {
+    data_.insert(data_.begin()+(loc-data_.begin()), b, e);
+  }
+  void push_back(Particle *p) {
+    data_.push_back(p);
+  }
+  bool empty() const {return data_.empty();}
+
+  void swap_with(Particles &a) {
+    std::swap(a.data_, data_);
+  }
+  void clear(){ data_.clear();}
+};
+
+
+IMP_SWAP(Particles);
+
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_PARTICLE_H */

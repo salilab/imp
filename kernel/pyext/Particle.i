@@ -15,6 +15,9 @@ namespace IMP {
     bool __eq__(const Particle *other) {
       return self == other;
     }
+/*    bool __eq__(IMP::Decorator other) {
+      return self == other;
+    }*/
   }
 
   // need to special case particle so can't add this to macro
@@ -90,5 +93,40 @@ namespace IMP {
   %}
 
 }
+
+%ignore IMP::Particles::operator[];
+%extend IMP::Particles {
+
+
+  Particle* __getitem__(int index) const {
+    if (index < 0) index=self->size()+index;
+    return self->operator[](index);
+  }
+  std::vector<Particle*> __list__() const {
+    std::vector<IMP::Particle*> ret(self->begin(), self->end());
+    return ret;
+  }
+  int __len__() const {
+    return self->size();
+  }
+  void append(Particle* d) {
+    self->push_back(d);
+  }
+  Particles __add__(const Particles &o) {
+    IMP::Particles ret(*self);
+    ret.insert(ret.end(), o.begin(), o.end());
+    return ret;
+  }
+  Particles __getslice__(int b, int e) const {
+    if (e < 0) e= self->size()+e;
+    if (b < 0) b= self->size()+b;
+    IMP::Particles ret;
+    for ( int c=b; c!= e; ++c) {
+       ret.push_back(self->operator[](c));
+    }
+    return ret;
+  }
+}
+
 
 %include "IMP/Particle.h"

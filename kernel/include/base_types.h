@@ -43,17 +43,6 @@ typedef std::vector<Int> Ints;
 //! Standard way to pass a bunch of String values
 typedef std::vector<String> Strings;
 
-/* This needs to be here so that both Model and Particle can use Particles */
-class Particle;
-
-//! A class which is used for representing collections of particles
-/** Documentation for std::vector can be found at as part of the SGI
-    stl documentation, among other places
-    (http://www.sgi.com/tech/stl/Vector.html).
-
-    When used within Python, IMP::Particles acts like a Python list.
- */
-typedef std::vector<Particle*> Particles;
 
 /** @name Attribute Keys
     Each type of attribute has an associated type of key. The keys can
@@ -71,38 +60,6 @@ IMP_DECLARE_KEY_TYPE(StringKey, 2);
 //! The type used to identify a particle attribute in the Particles
 IMP_DECLARE_KEY_TYPE(ParticleKey, 3);
 /** @} */
-
-#ifndef IMP_DOXYGEN
-
-
-template <class K>
-struct KeyAttributeType {
-  typedef void Type;
-};
-
-template <>
-struct KeyAttributeType<FloatKey> {
-  typedef Float Type;
-};
-
-template <>
-struct KeyAttributeType<IntKey> {
-  typedef Int Type;
-};
-
-
-template <>
-struct KeyAttributeType<StringKey> {
-  typedef String Type;
-};
-
-template <>
-struct KeyAttributeType<ParticleKey> {
-  typedef Particle* Type;
-};
-
-
-#endif
 
 IMP_END_NAMESPACE
 
