@@ -65,7 +65,8 @@ SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model& model_,
   model = &model_;
 }
 
-IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,  {
+IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,
+              Particles, {
               IMP_assert(get_number_of_particles()==0
                          || obj->get_model()
                          == (*particles_begin())->get_model(),
