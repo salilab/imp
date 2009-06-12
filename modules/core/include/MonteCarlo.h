@@ -110,7 +110,7 @@ public:
        to change the current configuration.
   */
   /**@{*/
-  IMP_LIST(public, Mover, mover, Mover*);
+  IMP_LIST(public, Mover, mover, Mover*, Movers);
   /**@}*/
 private:
   Float temp_;
