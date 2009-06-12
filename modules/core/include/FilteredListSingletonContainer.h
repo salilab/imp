@@ -96,7 +96,7 @@ public:
   */
   /**@{*/
   IMP_LIST(public, SingletonFilter, singleton_filter,
-           SingletonContainer*);
+           SingletonContainer*, SingletonContainers);
    /**@}*/
 };
 

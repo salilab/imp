@@ -96,7 +96,7 @@ public:
   */
   /**@{*/
   IMP_LIST(public, PairFilter, pair_filter,
-           PairContainer*);
+           PairContainer*, PairContainers);
    /**@}*/
 };
 
