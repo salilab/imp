@@ -259,6 +259,9 @@ IMPEXPORT void check_fail(const char *msg);
     IMP::check_fail(oss.str().c_str());                                 \
     throw ExceptionType(oss.str().c_str());}
 
+//! Use this to make that the method is not implemented yet
+#define IMP_not_implemented IMP_check_fail("This method is not implemented.");
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_EXCEPTION_H */
