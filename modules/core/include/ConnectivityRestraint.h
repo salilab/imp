@@ -46,7 +46,7 @@ public:
        attributes expected by the PairScore used.
   */
   /*@{*/
-  IMP_LIST(public, Particle, particle, Particle*)
+  IMP_LIST(public, Particle, particle, Particle*, Particles)
   /*@}*/
 
   ParticlesList get_interacting_particles() const

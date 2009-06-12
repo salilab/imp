@@ -33,7 +33,7 @@ public:
      manipulate the stored set use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, Restraint, restraint, Restraint*);
+    IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
   /**@}*/
  public:
 

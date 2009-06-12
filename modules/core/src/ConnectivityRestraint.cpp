@@ -29,7 +29,9 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps): ps_(ps)
 {
 }
 
-IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,  {
+IMP_LIST_IMPL(ConnectivityRestraint, Particle, particle,Particle*,
+              Particles,
+              {
               IMP_assert(get_number_of_particles()==0
                          || obj->get_model()
                           == (*particles_begin())->get_model(),

@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT FixedRefiner: public Refiner
 {
-  IMP_LIST(private, Particle, particle, Particle*);
+  IMP_LIST(private, Particle, particle, Particle*, Particles);
 public:
   //! Store the set of particles
   FixedRefiner(const Particles &ps);

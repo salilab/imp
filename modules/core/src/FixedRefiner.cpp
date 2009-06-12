@@ -12,7 +12,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-IMP_LIST_IMPL(FixedRefiner, Particle, particle, Particle*,,,)
+IMP_LIST_IMPL(FixedRefiner, Particle, particle, Particle*,Particles,,,)
 
 FixedRefiner::FixedRefiner(const Particles &ps){
   IMP_LOG(VERBOSE, "Created fixed particle refiner with " << ps.size()

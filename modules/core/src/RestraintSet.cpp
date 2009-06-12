@@ -24,6 +24,7 @@ RestraintSet::RestraintSet(const std::string& name)
 
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
+              Restraints,
               if (get_is_part_of_model()) {
                 obj->set_model(get_model());
               },,obj->set_model(NULL););
