@@ -126,6 +126,7 @@ class TestCase(unittest.TestCase):
                 pass
             else:
                 return
+        eval(testcall)
         raise AssertError("Too many failures")
 
     def failure_probability(self, testcall):
