@@ -54,22 +54,22 @@ private:
 
 public:
   //! computes theoretical profile
-  void calculate_profile(const std::vector<Particle*>& particles) {
+  void calculate_profile(const Particles& particles) {
     calculate_profile_real(particles);
   }
 
   //! computes theoretical profile faster for cyclically symmetric particles
   //! assumes that the units particles are ordered one after another in the
   //! input particles vector (n - symmetry order)
-  void calculate_profile(const std::vector<Particle*>& particles,
+  void calculate_profile(const Particles& particles,
                          unsigned int n) {
     calculate_profile_real(particles, n);
   }
 
   //! computes theoretical profile contribution from iter-molecular
   //! interactions between the particles
-  void calculate_profile(const std::vector<Particle*>& particles1,
-                         const std::vector<Particle*>& particles2) {
+  void calculate_profile(const Particles& particles1,
+                         const Particles& particles2) {
     calculate_profile_real(particles1, particles2);
   }
 
@@ -123,18 +123,18 @@ public:
  private:
   void init();
 
-  void calculate_profile_reciprocal(const std::vector<Particle*>& particles);
+  void calculate_profile_reciprocal(const Particles& particles);
 
-  void calculate_profile_reciprocal(const std::vector<Particle*>& particles1,
-                                    const std::vector<Particle*>& particles2);
+  void calculate_profile_reciprocal(const Particles& particles1,
+                                    const Particles& particles2);
 
-  void calculate_profile_real(const std::vector<Particle*>& particles);
+  void calculate_profile_real(const Particles& particles);
 
-  void calculate_profile_real(const std::vector<Particle*>& particles1,
-                              const std::vector<Particle*>& particles2);
+  void calculate_profile_real(const Particles& particles1,
+                              const Particles& particles2);
 
   // for symmetry
-  void calculate_profile_real(const std::vector<Particle*>& particles,
+  void calculate_profile_real(const Particles& particles,
                               unsigned int n);
 
   void radial_distribution_2_profile(const RadialDistributionFunction& r_dist);

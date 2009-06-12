@@ -164,7 +164,7 @@ void Profile::write_SAXS_file(const String& file_name)
   out_file.close();
 }
 
-void Profile::calculate_profile_real(const std::vector<Particle*>& particles)
+void Profile::calculate_profile_real(const Particles& particles)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
@@ -174,7 +174,7 @@ void Profile::calculate_profile_real(const std::vector<Particle*>& particles)
   radial_distribution_2_profile(r_dist);
 }
 
-void Profile::calculate_profile_real(const std::vector<Particle*>& particles,
+void Profile::calculate_profile_real(const Particles& particles,
                                      unsigned int n)
 {
   IMP_check(n > 1, "Attempting to use symmetric computation, symmetry order"
@@ -188,7 +188,7 @@ void Profile::calculate_profile_real(const std::vector<Particle*>& particles,
   std::vector<Particles> units(number_of_distances+1, Particles(unit_size));
   for(unsigned int i=0; i<=number_of_distances; i++) {
     for(unsigned int j=0; j<unit_size; j++) {
-      units[i][j] = particles[i*unit_size+j];
+      units[i].set(j, particles[i*unit_size+j]);
     }
   }
 
@@ -214,8 +214,8 @@ void Profile::calculate_profile_real(const std::vector<Particle*>& particles,
   radial_distribution_2_profile(r_dist2);
 }
 
-void Profile::calculate_profile_real(const std::vector<Particle *>& particles1,
-                                     const std::vector<Particle *>& particles2)
+void Profile::calculate_profile_real(const Particles& particles1,
+                                     const Particles& particles2)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles1.size() << " + " << particles2.size()

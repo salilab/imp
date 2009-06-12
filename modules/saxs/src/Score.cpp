@@ -202,8 +202,8 @@ void Score::compute_profile_difference(const Profile& model_profile,
 }
 
 void Score::compute_chi_derivative(const Profile& model_profile,
-                                   const std::vector<Particle*>& particles1,
-                                   const std::vector<Particle*>& particles2,
+                                   const Particles& particles1,
+                                   const Particles& particles2,
                                    std::vector<algebra::Vector3D>& derivatives,
                                    bool use_offset) const {
 
@@ -224,8 +224,8 @@ derivatives of an atom
 Delta(r) = f_iatom * sum_i f_i delta(r-r_{i,iatom}) (x_iatom-x_i)
 */
 void Score::compute_chi_real_derivative(const Profile& model_profile,
-                                 const std::vector<Particle*>& particles1,
-                                 const std::vector<Particle*>& particles2,
+                                 const Particles& particles1,
+                                 const Particles& particles2,
                                  std::vector<algebra::Vector3D>& derivatives,
                                  bool use_offset) const
 {

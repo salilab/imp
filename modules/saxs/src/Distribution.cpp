@@ -20,7 +20,7 @@ RadialDistributionFunction(FormFactorTable * ff_table, Float bin_size)
 }
 
 void RadialDistributionFunction::
-calculate_distribution(const std::vector<Particle*>& particles)
+calculate_distribution(const Particles& particles)
 {
   IMP_LOG(VERBOSE, "start distribution calculation for "
           << particles.size() << " particles" << std::endl);
@@ -46,8 +46,8 @@ calculate_distribution(const std::vector<Particle*>& particles)
 }
 
 void RadialDistributionFunction::
-calculate_distribution(const std::vector<Particle*>& particles1,
-                       const std::vector<Particle*>& particles2)
+calculate_distribution(const Particles& particles1,
+                       const Particles& particles2)
 {
   IMP_LOG(VERBOSE, "start distribution calculation for "
           << particles1.size() << " + " << particles2.size()
@@ -101,7 +101,7 @@ show(std::ostream& out, std::string prefix) const
 
 DeltaDistributionFunction::
 DeltaDistributionFunction(FormFactorTable* ff_table,
-                          const std::vector<Particle*>& particles,
+                          const Particles& particles,
                           Float max_distance, Float bin_size)
   : Distribution<algebra::Vector3D>(bin_size), ff_table_(ff_table)
 {

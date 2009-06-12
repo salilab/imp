@@ -58,7 +58,7 @@ public:
      \return chi square score for current particle setup
   */
   void compute_chi_derivative(const Profile& model_profile,
-                              const std::vector<Particle*>& particles,
+                              const Particles& particles,
                               std::vector<algebra::Vector3D>& derivatives,
                               bool use_offset = false) const {
     return compute_chi_derivative(model_profile, particles, particles,
@@ -78,8 +78,8 @@ public:
      \return chi square score for current particle setup
   */
   void compute_chi_derivative(const Profile& model_profile,
-                              const std::vector<Particle*>& particles1,
-                              const std::vector<Particle*>& particles2,
+                              const Particles& particles1,
+                              const Particles& particles2,
                               std::vector<algebra::Vector3D>& derivatives,
                               bool use_offset = false) const;
  private:
@@ -111,8 +111,8 @@ public:
 
   // compute derivatives for each particle
   void compute_chi_real_derivative(const Profile& model_profile,
-                                   const std::vector<Particle*>& particles1,
-                                   const std::vector<Particle*>& particles2,
+                                   const Particles& particles1,
+                                   const Particles& particles2,
                                    std::vector<algebra::Vector3D>& derivatives,
                                    bool use_offset) const;
 
