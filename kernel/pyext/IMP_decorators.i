@@ -51,7 +51,7 @@
     return self->operator[](index);
   }
   std::vector<Decorator> __list__() const {
-    std::vector<D> ret(self->begin(), self->end());
+    std::vector<Decorator> ret(self->begin(), self->end());
     return ret;
   }
   void __setitem__(int index, Decorator val) {
