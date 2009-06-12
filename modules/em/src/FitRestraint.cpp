@@ -50,7 +50,8 @@ FitRestraint::FitRestraint(const Particles &ps,
   IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after resample " << std::endl);
 }
 
-IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*,  {
+IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
+              {
               IMP_assert(get_number_of_particles()==0
                          || obj->get_model()
                          == (*particles_begin())->get_model(),
