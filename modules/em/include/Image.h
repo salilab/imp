@@ -107,7 +107,7 @@ typedef Image<T> This;
     \todo Under implementation
   **/
   void align2d_trans(This& img) {
-    int a = 1;
+    IMP_not_implemented;
   }
 
   //! The image is used as reference to rotationally align the
@@ -117,7 +117,7 @@ typedef Image<T> This;
     \todo Under implementation
   **/
   void align2d_rot(This& img) {
-    int a = 1;
+    IMP_not_implemented;
   }
 
   //! The image is used as reference to rotationally and translationally align
@@ -127,7 +127,7 @@ typedef Image<T> This;
     \todo Under implementation
   **/
   void align2d_complete(This& img) {
-    int a = 1;
+    IMP_not_implemented;
   }
 
 protected:
