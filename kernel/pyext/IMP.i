@@ -27,7 +27,7 @@ have_cgal=True
 #endif
 
 // Make sure that Python refcounts any returned pointers to IMP types
-//IMP_REFCOUNT_RETURN(IMP::Particle)
+IMP_REFCOUNT_RETURN(IMP::Particle)
 IMP_REFCOUNT_RETURN(IMP::Restraint)
 IMP_REFCOUNT_RETURN(IMP::ScoreState)
 IMP_REFCOUNT_RETURN(IMP::OptimizerState)
