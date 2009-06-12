@@ -74,7 +74,7 @@ void KMCentersNodeSplit::get_neighbors(const std::vector<int> &cands,
     std::vector<int> new_cands;
     IMP_LOG(VERBOSE,
     "KMCentersNodeSplit::get_neighbors compute close centers for node:\n");
-    IMP_LOG_WRITE(VERBOSE,show());
+    IMP_LOG_WRITE(VERBOSE,show(IMP_STREAM));
     compute_close_centers(cands,&new_cands);
     for(unsigned int i=0;i<new_cands.size();i++) {
       IMP_LOG(VERBOSE,new_cands[i]<<"  | ");

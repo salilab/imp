@@ -78,7 +78,7 @@ public:
 
 //! Generate random centers
   virtual void generate_random_centers(int k);
-void show(std::ostream& out=std::cout);
+  void show(std::ostream& out=std::cout) const;
   //!  move centers to cluster centroids
   /** Moves each center point to the centroid of its associated cluster.
       We call compute_distortion() if necessary to compute the weights

@@ -64,7 +64,7 @@ void KMLocalSearch::try_acceptance() {
     << " old distortions=" << best_.get_distortion()
     << " new distortions=" << curr_->get_distortion() <<"\n");
   IMP_LOG(VERBOSE,"The current filtered centers are :\n");
-  IMP_LOG_WRITE(VERBOSE,curr_->show());
+  IMP_LOG_WRITE(VERBOSE,curr_->show(IMP_STREAM));
   if (curr_->get_distortion() <= best_.get_distortion()) {
     IMP_LOG(VERBOSE,"KMLocalSearch::try_acceptance new centers accepted.\n");
     best_ = KMFilterCentersResults(*curr_);
