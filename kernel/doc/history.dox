@@ -3,6 +3,18 @@
 
 - Hierarchys to IMP::atom::Hierarchies
 
+- IMP::Particles has been changed to a new type. It no longer plays quite so well with python lists (you can't create a part one from an arbitrary python list).
+
+- The contains for multiple decorators have been revised to make them more useful. See IMP::Decorators. You can now implicitly convert, for example, a IMP::core::XYZs to an IMP::Particles (as well as use IMP::Decorators::get_particles()). All methods that take a collection of particles with a certain type now instead take a IMP::Decorators.
+
+- A method that has expectations about the particles it takes should take decorators rather than particles. That is, anything which expects IMP::core::XYZ particles, should take an IMP::core::XYZs instead of IMP::Particles.
+
+- IMP_LIST() now takes an extra argument (the name of the plural container)
+
+- In C++ IMP::Decorator objects are implicitly convertible to IMP::Particle* objects. Unfortunately, making this work in Python is problematic.
+
+- More methods take and return decorators rather than IMP::Particles. This means it is clearer what their expectations are and what they produce.
+
 \par Week of May 15
 
 - The IMP::helper module was added and various functionality moved there. See its

@@ -16,11 +16,18 @@
 %include "IMP_directors.i"
 %include "IMP_streams_kernel.i"
 %include "IMP_streams.i"
+%include "IMP_decorators.i"
 
 %include "typemaps.i"
 
+#ifdef IMP_USE_CGAL
+%pythoncode %{
+have_cgal=True
+%}
+#endif
+
 // Make sure that Python refcounts any returned pointers to IMP types
-IMP_REFCOUNT_RETURN(IMP::Particle)
+//IMP_REFCOUNT_RETURN(IMP::Particle)
 IMP_REFCOUNT_RETURN(IMP::Restraint)
 IMP_REFCOUNT_RETURN(IMP::ScoreState)
 IMP_REFCOUNT_RETURN(IMP::OptimizerState)
@@ -108,14 +115,19 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 
 %include "IMP/log.h"
 %include "IMP/base_types.h"
+
 %include "IMP/utility.h"
 %include "IMP/directories.h"
 %include "IMP/deprecation.h"
 %include "IMP/VersionInfo.h"
 %include "IMP/RefCounted.h"
 %include "Object.i"
-%include "IMP/UnaryFunction.h"
 %include "IMP/DerivativeAccumulator.h"
+%include "Particle.i"
+%include "IMP/Decorator.h"
+
+
+%include "IMP/UnaryFunction.h"
 %include "Restraint.i"
 %include "IMP/ScoreState.h"
 %include "IMP/OptimizerState.h"
@@ -124,19 +136,17 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 %include "IMP/Refiner.h"
 %include "IMP/SingletonScore.h"
 %include "IMP/TripletScore.h"
-%include "Particle.i"
 %include "random.i"
-%include "IMP/Decorator.h"
 %include "IMP/Optimizer.h"
 %include "IMP/SingletonContainer.h"
 %include "IMP/PairContainer.h"
 %include "IMP/SingletonModifier.h"
 %include "IMP/PairModifier.h"
-    
+
 
 namespace IMP {
-  %template(Particles) ::std::vector<Particle*>;
   %template(ParticlesList) ::std::vector<Particles>;
+  %template(ParticleVector) ::std::vector<Particle*>;
   %template(ParticlePairs) ::std::vector<ParticlePair>;
   %template(ParticleTriplets) ::std::vector<ParticleTriplet>;
   %template(Restraints) ::std::vector<IMP::Restraint*>;
