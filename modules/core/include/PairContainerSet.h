@@ -36,7 +36,7 @@ public:
   */
   /**@{*/
   IMP_LIST(public, PairContainer, pair_container,
-           PairContainer*);
+           PairContainer*, PairContainers);
   /**@}*/
 };
 
