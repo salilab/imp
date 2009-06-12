@@ -21,7 +21,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
       rigid_bodies_decorators_.push_back(
                               core::RigidBody::cast(particles[i]));
       rigid_bodies_.push_back(
-                     rigid_bodies_decorators_.back().get_member_particles());
+                     rigid_bodies_decorators_.back().get_members());
       // compute non-changing profile
       Profile rigid_part_profile(ff_table_);
       rigid_part_profile.calculate_profile(rigid_bodies_.back());

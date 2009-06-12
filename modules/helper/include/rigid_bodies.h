@@ -52,8 +52,8 @@ IMPHELPEREXPORT ScoreState* create_rigid_bodies(SingletonContainer* rbs,
    model.
  */
 IMPHELPEREXPORT ScoreState* create_rigid_body(Particle *p,
-                                            const Particles &members,
-                                            bool snapping=false);
+                                              const core::XYZs &members,
+                                              bool snapping=false);
 
 
 //! Give the rigid body a radius to include its members

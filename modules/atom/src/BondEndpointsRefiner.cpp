@@ -36,8 +36,8 @@ const Particles BondEndpointsRefiner::get_refined(Particle *p) const
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
   Bond d(p);
   Particles ps(2);
-  ps[0]= d.get_bonded(0).get_particle();
-  ps[1]= d.get_bonded(1).get_particle();
+  ps.set(0, d.get_bonded(0));
+  ps.set(1, d.get_bonded(1));
   return ps;
 }
 

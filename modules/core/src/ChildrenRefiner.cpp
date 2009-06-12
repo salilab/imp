@@ -43,7 +43,7 @@ const Particles ChildrenRefiner::get_refined(Particle *p) const {
     Hierarchy hd(p, traits_);
     Particles ret(hd.get_number_of_children());
     for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= hd.get_child(i).get_particle();
+      ret.set(i, hd.get_child(i));
     }
     return ret;
   }

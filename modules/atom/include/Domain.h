@@ -71,6 +71,7 @@ public:
   IMP_DECORATOR(Domain, Hierarchy)
 };
 
+typedef Decorators<Domain, Hierarchies> Domains;
 
 IMPATOM_END_NAMESPACE
 

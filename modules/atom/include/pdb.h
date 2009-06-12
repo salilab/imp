@@ -70,19 +70,6 @@ IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
 IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
                              std::string file_name);
 
-/**
-\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
-\unstable{write_pdb}
-*/
-IMPATOMEXPORT void write_pdb(const Particles& ps, std::ostream &out);
-
-/**
-\copydetails write_pdb(Hierarchy mhd,std::ostream &out)
-\unstable{write_pdb}
-*/
-IMPATOMEXPORT void write_pdb(const Particles& ps, std::string file_name);
-
-
 //!@}
 
 IMPATOM_END_NAMESPACE

@@ -109,6 +109,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(XYZR);
 
+typedef Decorators< XYZR, XYZs > XYZRs;
+
 //! Compute the distance between a pair of particles
 /** \relatesalso XYZR
  */
@@ -120,17 +122,13 @@ IMPCOREEXPORT Float distance(XYZR a, XYZR b);
     Any particle which does not have the attribute b.get_radius()
     is assumed to have a radius of 0.
 
-    \note This takes a Particles object rather than a vector of
-    something else since you can't easily cast vectors of
-    different things to one another.
-
     \note This function produces tighter bounds if the \ref CGAL "CGAL"
     library is available.
     \ingroup CGAL
     \relatesalso XYZR
  */
 IMPCOREEXPORT void set_enclosing_sphere(XYZR b,
-                                        const Particles &v);
+                                        const XYZs &v);
 
 //! Set the radius of the first to enclose the list
 /** \param[in] v The vector of XYZ or XYZR particles to enclose
@@ -138,14 +136,10 @@ IMPCOREEXPORT void set_enclosing_sphere(XYZR b,
     Any particle which does not have the attribute b.get_radius()
     is assumed to have a radius of 0.
 
-    \note This takes a Particles object rather than a vector of
-    something else since you can't easily cast vectors of
-    different things to one another.
-
     \relatesalso XYZR
  */
 IMPCOREEXPORT void set_enclosing_radius(XYZR b,
-                                        const Particles &v);
+                                        const XYZs &v);
 
 //! Create a set of particles which random coordinates
 /** This function is mostly to be used to keep demo code brief.
@@ -158,10 +152,10 @@ IMPCOREEXPORT void set_enclosing_radius(XYZR b,
 
     The particles coordinates are optimized.
  */
-IMPCOREEXPORT Particles create_xyzr_particles(Model *m,
-                                              unsigned int num,
-                                              Float radius,
-                                              Float box_side=10);
+IMPCOREEXPORT XYZRs create_xyzr_particles(Model *m,
+                                          unsigned int num,
+                                          Float radius,
+                                          Float box_side=10);
 
 class HierarchyTraits;
 class Hierarchy;
@@ -170,7 +164,7 @@ class Hierarchy;
 /** \unimplemented{create_sphere_hierarchy}
 */
 IMPCOREEXPORT Hierarchy
-create_sphere_hierarchy(const Particles &ps,
+create_sphere_hierarchy(const XYZRs &ps,
                         const HierarchyTraits &traits);
 
 IMPCORE_END_NAMESPACE

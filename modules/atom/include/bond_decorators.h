@@ -194,7 +194,8 @@ public:
 IMP_OUTPUT_OPERATOR(Bonded);
 
 //! A collection of Bonds
-typedef std::vector<Bond> Bonds;
+typedef Decorators<Bond, Particles> Bonds;
+typedef Decorators<Bonded, Particles> Bondeds;
 
 inline Bonded Bond::get_bonded(unsigned int i) const
 {

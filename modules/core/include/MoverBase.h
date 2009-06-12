@@ -47,8 +47,8 @@ public:
        the container.
   */
   /**@{*/
-  IMP_LIST(protected, FloatKey, float_key, FloatKey);
-  IMP_LIST(public, IntKey, int_key, IntKey);
+  IMP_LIST(protected, FloatKey, float_key, FloatKey, FloatKeys);
+  IMP_LIST(public, IntKey, int_key, IntKey, IntKeys);
   /**@}*/
   SingletonContainer* get_container() const {
     return pc_;

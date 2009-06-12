@@ -13,7 +13,7 @@ class TestREFCover(IMP.test.TestCase):
         d= IMP.core.XYZR(p)
         d.show()
         for cp in ps:
-            dc= IMP.core.XYZR(cp)
+            dc= IMP.core.XYZR(cp.get_particle())
             dc.show()
             #d.get_sphere().get_center().show()
             #dc.get_sphere().get_center().show()

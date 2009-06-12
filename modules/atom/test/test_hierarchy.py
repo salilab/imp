@@ -41,19 +41,19 @@ class HierarchyTests(IMP.test.TestCase):
         r1.add_child(a2)
         self.assertEqual(r1, IMP.atom.root(a1))
         # Both atoms should be found under r1 (none under r2)
-        self.assertEqual(IMP.atom.get_by_type(r1, ATOM),
-                         (a1.get_particle(), a2.get_particle()))
-        self.assertEqual(IMP.atom.get_by_type(r2, ATOM), ())
+        self.assertEqual(list(IMP.atom.get_by_type(r1, ATOM)),
+                         [a1.get_particle(), a2.get_particle()])
+        self.assertEqual(list(IMP.atom.get_by_type(r2, ATOM)), [])
 
         # Each residue should be found under itself
-        self.assertEqual(IMP.atom.get_by_type(r1, RESIDUE),
-                         (r1.get_particle(),))
-        self.assertEqual(IMP.atom.get_by_type(r2, RESIDUE),
-                         (r2.get_particle(),))
+        self.assertEqual(list(IMP.atom.get_by_type(r1, RESIDUE)),
+                         [r1.get_particle(),])
+        self.assertEqual(list(IMP.atom.get_by_type(r2, RESIDUE)),
+                         [r2.get_particle(),])
 
         # Neither residue should be found under any atom
-        self.assertEqual(IMP.atom.get_by_type(a1, RESIDUE), ())
-        self.assertEqual(IMP.atom.get_by_type(a2, RESIDUE), ())
+        self.assertEqual(list(IMP.atom.get_by_type(a1, RESIDUE)), [])
+        self.assertEqual(list(IMP.atom.get_by_type(a2, RESIDUE)), [])
 
     def test_get_add_child(self):
         """Check hierarchy get_child and add_child"""

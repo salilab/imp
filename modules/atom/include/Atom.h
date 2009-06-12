@@ -317,6 +317,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(Atom);
 
+typedef Decorators<Atom, Hierarchies> Atoms;
+
 //! Return the AtomType from the four letter code in the PDB
 /** \throw ValueException if nm is invalid.
     \relatesalso Atom

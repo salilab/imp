@@ -50,7 +50,7 @@ class DOMINOTests(IMP.test.TestCase):
                 ps.append(self.particles[i+j])
             print "ps_refined lenght is : " + str(len(ps_refined))
             for e in ps_refined:
-                r.add_particles(e)
+                r.add_particles(e.get_particles())
             self.imp_model.add_restraint(r)
             r.set_was_owned(True)
             self.d_opt.add_restraint(r,ps)

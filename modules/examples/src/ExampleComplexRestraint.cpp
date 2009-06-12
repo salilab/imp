@@ -84,8 +84,8 @@ ParticlesList ExampleComplexRestraint::get_interacting_particles() const {
   for (SingletonContainer::ParticleIterator pit= sc_->particles_begin();
        pit != sc_->particles_end(); ++pit) {
     Particles ps(2);
-    ps[0]= p_;
-    ps[1]=*pit;
+    ps.set(0,p_);
+    ps.set(1,*pit);
     ret.push_back(ps);
   }
   return ret;

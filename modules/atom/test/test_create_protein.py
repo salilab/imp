@@ -18,9 +18,12 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         r.show()
         m.add_restraint(r)
         p= IMP.atom.Hierarchy(rp)
+        print "printing"
         print p.get_number_of_children()
-        for c in p.get_child_particles():
-            d= IMP.core.XYZ(c)
+        print p.get_children()
+        print p.get_children().size()
+        for c in p.get_children():
+            d= IMP.core.XYZ(c.get_particle())
             d.set_coordinates(random_vector_in_box(Vector3D(0,0,0),
                                                    Vector3D(300, 300, 300)))
         o= IMP.core.SteepestDescent()
@@ -28,8 +31,8 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         score=o.optimize(1000)
         print score
         w= IMP.display.ChimeraWriter(self.get_tmp_file_name("proteinconf.py"))
-        for c in p.get_child_particles():
-            d= IMP.core.XYZR(c)
+        for c in p.get_children():
+            d= IMP.core.XYZR(c.get_particle())
             w.add_geometry(IMP.display.XYZRGeometry(d))
         self.assert_(score < 1)
 

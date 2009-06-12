@@ -11,7 +11,7 @@
 
 #include "config.h"
 #include "internal/version_info.h"
-
+#include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
 
@@ -26,7 +26,6 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState
 {
  public:
-  /** */
   VelocityScalingOptimizerState(const Particles &pis, Float temperature,
                                 unsigned skip_steps);
   virtual ~VelocityScalingOptimizerState() {}

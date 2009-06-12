@@ -222,6 +222,22 @@ public:
     return cast(hd.get_particle());
   }
 
+#ifndef IMP_DOXYGEN
+  Decorators<Hierarchy,
+    IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
+    IMP::core::GenericHierarchies> > get_children() const {
+    Decorators<Hierarchy,
+                   IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
+                          IMP::core::GenericHierarchies> > ps;
+    for (unsigned int i=0; i< get_number_of_children(); ++i) {
+      ps.push_back( get_child(i) );
+    }
+    return ps;
+  }
+#else
+  Hierarchies get_children() const;
+#endif
+
   /** Get the parent particle. */
   Hierarchy get_parent() const {
     IMP::core::Hierarchy hd= P::get_parent();
@@ -241,8 +257,10 @@ public:
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
 
-/** A colleciton of Hierarchies. */
-typedef std::vector<Hierarchy> Hierarchies;
+/** A collecton of Hierarchies. */
+typedef Decorators<Hierarchy,
+                   IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
+                          IMP::core::GenericHierarchies> > Hierarchies;
 
 
 /**
@@ -251,7 +269,7 @@ typedef std::vector<Hierarchy> Hierarchies;
    \ingroup hierarchy
    \relatesalso Hierarchy
 */
-IMPATOMEXPORT Particles
+IMPATOMEXPORT Hierarchies
 get_by_type(Hierarchy mhd,
             Hierarchy::Type t);
 
@@ -290,7 +308,7 @@ create_fragment(const Hierarchies &ps);
 /**     \relatesalso Hierarchy
         \see Bond
  */
-IMPATOMEXPORT atom::Bonds
+IMPATOMEXPORT Bonds
 get_internal_bonds(Hierarchy mhd);
 
 
@@ -301,6 +319,10 @@ inline Hierarchy root(Hierarchy h) {
     h= h.get_parent();
   }
   return h;
+}
+
+inline Hierarchies get_leaves(Hierarchy h) {
+  return Hierarchies(IMP::core::get_leaves(h));
 }
 
 IMPATOM_END_NAMESPACE

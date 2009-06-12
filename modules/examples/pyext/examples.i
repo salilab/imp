@@ -11,6 +11,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
+%include "kernel/pyext/IMP_decorators.i"
 
 %include "examples_config.i"
 
@@ -28,3 +29,9 @@
 %include "IMP/examples/ExampleRestraint.h"
 %include "IMP/examples/ExampleDecorator.h"
 %include "IMP/examples/ExampleUnaryFunction.h"
+
+namespace IMP {
+  namespace examples {
+   IMP_DECORATORS(ExampleDecorator, ExampleDecorators, Particles)
+  }
+}

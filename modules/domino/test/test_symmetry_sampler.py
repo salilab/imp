@@ -35,7 +35,7 @@ class DOMINOTests(IMP.test.TestCase):
         #set 10 transformations on a patch of a sphere
         self.rt = IMP.domino.TransformationDiscreteSet()
         self.rt.set_model(self.m)
-        max_d1 = IMP.core.diameter(IMP.core.get_leaves(self.ref))
+        max_d1 = IMP.core.diameter(IMP.core.XYZs(IMP.core.get_leaves(self.ref)))
         max_d=IMP.algebra.Segment3D(max_d1.get_point(1),max_d1.get_point(0))
         #print ".dot " + str(max_d.get_point(0)[0]) + " " + str(max_d.get_point(0)[1]) + " " + str(max_d.get_point(0)[2])
         #print ".dot " +str(max_d.get_point(1)[0]) + " " + str(max_d.get_point(1)[1]) + " " + str(max_d.get_point(1)[2])

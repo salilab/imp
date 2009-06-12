@@ -57,7 +57,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         self.model = IMP.Model()
-        self.particles = []
+        self.particles = IMP.Particles()
         self.particles.append(self.create_point_particle(self.model,
                                                          -43.0, 65.0, 93.0))
         self.particles[-1].add_attribute(masskey, cmass, False)
@@ -166,7 +166,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         """Test get_optimizer_states() method"""
         wrtraj = WriteTrajState([])
         scaler = IMP.atom.VelocityScalingOptimizerState(
-                             IMP.Particles(self.particles), 298.0, 10)
+                             self.particles, 298.0, 10)
         self.md.add_optimizer_state(wrtraj)
         self.md.add_optimizer_state(scaler)
         m = self.md.get_optimizer_states()
@@ -182,7 +182,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
             self.particles[-1].add_attribute(masskey, cmass, False)
         self.md.assign_velocities(100.0)
         scaler = IMP.atom.VelocityScalingOptimizerState(
-                             IMP.Particles(self.particles), 298.0, 10)
+                             self.particles, 298.0, 10)
         self.md.add_optimizer_state(scaler)
         self.md.optimize(10)
         # Temperature should have been rescaled to 298.0 at some point:

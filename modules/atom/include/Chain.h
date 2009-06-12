@@ -60,6 +60,7 @@ public:
   static IntKey get_id_key();
 };
 
+typedef Decorators<Chain, Hierarchies> Chains;
 
 IMPATOM_END_NAMESPACE
 

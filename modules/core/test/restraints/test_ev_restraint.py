@@ -14,11 +14,12 @@ class AngleRestraintTests(IMP.test.TestCase):
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         p1= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         r0s= IMP.helper.create_rigid_body(p0.get_particle(),
-                                        IMP.core.get_leaves(p0))
+                                        IMP.core.XYZs(IMP.core.get_leaves(p0)))
         r1s= IMP.helper.create_rigid_body(p1.get_particle(),
-                                        IMP.core.get_leaves(p1))
+                                        IMP.core.XYZs(IMP.core.get_leaves(p1)))
         for p in IMP.core.get_leaves(p0)+IMP.core.get_leaves(p1):
-            d= IMP.core.XYZR.create(p)
+            print p.get_particle().get_name()
+            d= IMP.core.XYZR.create(p.get_particle())
             d.set_radius(1)
         m.add_score_state(r0s)
         m.add_score_state(r1s)
@@ -27,13 +28,13 @@ class AngleRestraintTests(IMP.test.TestCase):
         rb0.set_coordinates_are_optimized(True)
         rb1.set_coordinates_are_optimized(True)
         sc= IMP.core.ListSingletonContainer()
-        fps=[]
+        fps=IMP.core.XYZRs()
         for i in range(0,10):
             p= IMP.Particle(m)
             d= IMP.core.XYZR.create(p)
             d.set_radius(10)
             sc.add_particle(p)
-            fps.append(p)
+            fps.append(d)
             d.set_coordinates_are_optimized(True)
         for p in sc.get_particles():
             d= IMP.core.XYZ(p)
@@ -51,13 +52,13 @@ class AngleRestraintTests(IMP.test.TestCase):
         o.set_model(m)
         IMP.set_log_level(IMP.VERBOSE)
         o.optimize(10)
-        for pa in fps+ list(IMP.core.get_leaves(p1)):
-            for pb in fps+ list(IMP.core.get_leaves(p0)):
+        for pa in fps+ IMP.core.XYZRs(IMP.core.get_leaves(p1)):
+            for pb in fps+ IMP.core.XYZRs(IMP.core.get_leaves(p0)):
                 if pa == pb: continue
                 else:
-                    r0 = IMP.core.XYZR(pa)
-                    r1 = IMP.core.XYZR(pb)
-                    d= IMP.core.distance(r0, r1)
+                    print pa
+                    print pb
+                    d= IMP.core.distance(pa, pb)
                     self.assert_(d > -.1)
 
 if __name__ == '__main__':

@@ -44,7 +44,7 @@ void ExcludedVolumeRestraint::set_model(Model *m) {
         RigidBody rb(*it);
         if (!XYZR::is_instance_of(*it)) {
           XYZR d= XYZR::create(*it);
-          set_enclosing_radius(d, rb.get_member_particles());
+          set_enclosing_radius(d, core::XYZs(rb.get_members()));
         }
       }
     }

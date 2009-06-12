@@ -14,6 +14,7 @@
 #include <IMP/base_types.h>
 #include <IMP/Pointer.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/Particle.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

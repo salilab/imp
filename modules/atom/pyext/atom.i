@@ -10,6 +10,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
+%include "kernel/pyext/IMP_decorators.i"
 
 %include "atom_config.i"
 
@@ -25,23 +26,15 @@
 %import "modules/algebra/pyext/algebra.i"
 %import "modules/core/pyext/core.i"
 
-/*namespace IMP {
-namespace core {
-// stupid hack for swig
-class XYZ {
-public:
-void set_x(Float f);
-};
-}
-}*/
+
+// must be before hierarchy
+%include "IMP/atom/bond_decorators.h"
 
 // it is used as a base class
 %include "IMP/atom/Hierarchy.h"
 
-
 /* Wrap our own classes */
 %include "IMP/atom/estimates.h"
-%include "IMP/atom/bond_decorators.h"
 %include "IMP/atom/BondEndpointsRefiner.h"
 %include "IMP/atom/BondPairContainer.h"
 %include "IMP/atom/BondSingletonScore.h"
@@ -59,20 +52,32 @@ void set_x(Float f);
 namespace IMP {
   namespace atom {
     %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
-    // swig gets scope wrong, I can't fix it
-    %template(Bonds) ::std::vector<IMP::atom::Bond>;
-  }
-}
-
-
-namespace IMP {
-namespace atom {
    // swig has random, perplexing issues if these are higher in the file
    %template(AtomTypeBase) ::IMP::KeyBase<IMP_ATOM_TYPE_INDEX>;
    %template(ResidueTypeBase) ::IMP::KeyBase<IMP_RESIDUE_TYPE_INDEX>;
-   %template(Hierarchies) ::std::vector<Hierarchy>;	
-
-}
+  }
 }
 %include "IMP/atom/Atom.h"
 %include "IMP/atom/Residue.h"
+
+
+
+namespace IMP {
+  namespace atom {
+   // must go after the above headers
+   %template(HIBase) ::IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
+                      IMP::core::GenericHierarchies>;
+   %template(Hierarchies) ::IMP::Decorators< IMP::atom::Hierarchy,
+                                            ::IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
+                      IMP::core::GenericHierarchies> >;
+   %template(HierarchyVector) ::std::vector<IMP::atom::Hierarchy>;
+   IMP_DECORATORS(Atom, Atoms, Hierarchies)
+   IMP_DECORATORS(Residue, Residues, Hierarchies)
+   IMP_DECORATORS(Fragment, Fragments, Hierarchies)
+   IMP_DECORATORS(Domain, Domains, Hierarchies)
+   IMP_DECORATORS(Chain, Chains, Hierarchies)
+   IMP_DECORATORS(Bond, Bonds, Particles)
+   IMP_DECORATORS(Bonded, Bondeds, Particles)
+   IMP_DECORATORS(Diffusion, Diffusions, core::XYZs)
+  }
+}

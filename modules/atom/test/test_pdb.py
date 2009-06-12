@@ -15,6 +15,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
                               m, IMP.atom.NonWaterSelector())
         self.assertEqual(m.get_number_of_particles(), 1132)
         #IMP.atom.show_molecular_hierarchy(mp)
+        print mp
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
         self.assertEqual(bds.size(), 1020)

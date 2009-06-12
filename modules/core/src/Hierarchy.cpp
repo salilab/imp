@@ -68,11 +68,9 @@ namespace internal
 
 struct AssertHierarchy: public HierarchyVisitor
 {
-  HierarchyTraits traits_;
-  AssertHierarchy(HierarchyTraits tr): traits_(tr){}
-  bool visit(Particle *p) {
-    Hierarchy d= Hierarchy::cast(p, traits_);
-    d.validate_node();
+  AssertHierarchy(){}
+  bool visit(Hierarchy p) {
+    p.validate_node();
     return true;
   }
 };
@@ -83,7 +81,7 @@ struct AssertHierarchy: public HierarchyVisitor
 void Hierarchy::validate() const
 {
   //std::cerr << "Checking hierarchy" << std::endl;
-  internal::AssertHierarchy ah(traits_);
+  internal::AssertHierarchy ah;
   depth_first_traversal(*this, ah);
 }
 
@@ -109,7 +107,7 @@ void breadth_first_traversal(Hierarchy d, HierarchyVisitor &f)
   do {
     Hierarchy cur= stack.front();
     stack.pop_front();
-    if (f.visit(cur.get_particle())) {
+    if (f.visit(cur)) {
       //std::cerr << "Visiting particle " << cur.get_particle() << std::endl;
       for (int i=cur.get_number_of_children()-1; i>=0; --i) {
         stack.push_back(cur.get_child(i));
@@ -125,7 +123,7 @@ void depth_first_traversal(Hierarchy d, HierarchyVisitor &f)
   do {
     Hierarchy cur= stack.back();
     stack.pop_back();
-    if (f.visit(cur.get_particle())) {
+    if (f.visit(cur)) {
       for (int i=cur.get_number_of_children()-1; i>=0; --i) {
         stack.push_back(cur.get_child(i));
       }
@@ -151,10 +149,10 @@ struct MHDMatchingLeaves
 } // namespace
 
 
-Particles
+GenericHierarchies
 get_leaves(Hierarchy mhd)
 {
-  Particles out;
+  GenericHierarchies out;
   gather(mhd, MHDMatchingLeaves(mhd.get_traits()),
                    std::back_inserter(out));
   return out;
@@ -173,10 +171,10 @@ struct MHDMatchingAll
 
 } // namespace
 
-Particles
+GenericHierarchies
 get_all_descendants(Hierarchy mhd)
 {
-  Particles out;
+  GenericHierarchies out;
   gather(mhd, MHDMatchingAll(),
          std::back_inserter(out));
   return out;

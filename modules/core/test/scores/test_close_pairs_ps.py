@@ -16,10 +16,13 @@ class Test(IMP.test.TestCase):
             d = IMP.core.XYZR.create(p, IMP.algebra.Sphere3D(IMP.algebra.random_vector_in_unit_box(),
                                               .1))
         else:
-            children= [self._random_hierarchy(m, depth-1) for x in range(0,width)]
-            cps= [x.get_particle() for x in children]
+            children= IMP.core.GenericHierarchies()
+            for x in range(0, width):
+                children.append(self._random_hierarchy(m, depth-1))
+            #cps= [x.get_particle() for x in children]
             d= IMP.core.XYZR.create(p)
-            IMP.core.set_enclosing_sphere(d, cps)
+            print children
+            IMP.core.set_enclosing_sphere(d, IMP.core.XYZs(children))
             for c in children:
                 h.add_child(c)
         return h
@@ -43,13 +46,16 @@ class Test(IMP.test.TestCase):
             print
         for l0 in ls0:
             for l1 in ls1:
-                d0= IMP.core.XYZR.cast(l0)
-                d1= IMP.core.XYZR.cast(l1)
+                d0= IMP.core.XYZR.cast(l0.get_particle())
+                d1= IMP.core.XYZR.cast(l1.get_particle())
                 if (IMP.core.distance(d0, d1) < threshold):
-                    print l0.get_name() + " " + l1.get_name()
-                    self.assert_(lps.get_contains(IMP.ParticlePair(l0, l1)))
+                    print l0.get_particle().get_name() + " " \
+                        + l1.get_particle().get_name()
+                    self.assert_(lps.get_contains(IMP.ParticlePair(l0.get_particle(),
+                                                                   l1.get_particle())))
                 else:
-                    self.assert_(not lps.get_contains(IMP.ParticlePair(l0, l1)))
+                    self.assert_(not lps.get_contains(IMP.ParticlePair(l0.get_particle(),
+                                                                       l1.get_particle())))
 
 
 

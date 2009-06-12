@@ -26,7 +26,7 @@ core::RestraintSet * add_restraints(Model *model, DensityMap &dmap,
    model->add_score_state(rb_state);
    //add fitting restraint
    FitRestraint *fit_rs =
-     new FitRestraint( rb.get_member_particles(),dmap,rad_key,wei_key,1.0);
+     new FitRestraint( rb.get_members(),dmap,rad_key,wei_key,1.0);
    rsrs->add_restraint(fit_rs);
    return rsrs;
 }
@@ -68,14 +68,14 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     //make sure that all of the members are in the correct transformation
     rb.set_transformation(rb.get_transformation(),true);
     algebra::Vector3D ps_centroid =
-       IMP::core::centroid(rb.get_member_particles());
+      IMP::core::centroid(core::XYZs(rb.get_members()));
 
     algebra::Transformation3D move2centroid(algebra::identity_rotation(),
                                           anchor_centroid-ps_centroid);
     core::transform(rb,move2centroid);
     rb.set_transformation(rb.get_transformation(),true);
     ps_centroid =
-       IMP::core::centroid(rb.get_member_particles());
+      IMP::core::centroid(core::XYZs(rb.get_members()));
     IMP_LOG(VERBOSE, "rigid body centroid before optimization : "
                       << ps_centroid << std::endl);
     //optimize
@@ -83,7 +83,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       e = opt->optimize(number_of_mc_steps);
       rb.set_transformation(rb.get_transformation(),true);
       ps_centroid =
-       IMP::core::centroid(rb.get_member_particles());
+        IMP::core::centroid(core::XYZs(rb.get_members()));
       IMP_LOG(VERBOSE, "rigid body centroid after optimization : "
                         << ps_centroid << std::endl);
       fr.add_solution(rb.get_transformation(),e);
@@ -114,7 +114,7 @@ void local_rigid_fitting_around_point(
    IMP_assert(dmap.is_part_of_volume(anchor_centroid),
               "The centroid is not part of the map");
    //add restraints
-   Model *model = rb.get_member_particles()[0]->get_model();
+   Model *model = rb.get_members()[0].get_particle()->get_model();
    core::RestraintSet *rsrs = add_restraints(model, dmap, rb,
                                              rb_state, rad_key, wei_key);
    //create a rigid body mover and set the optimizer
@@ -144,7 +144,7 @@ void local_rigid_fitting_around_points(
            " MC optimization runs, each with " << number_of_mc_steps <<
            " Monte Carlo steps , each with " << number_of_cg_steps <<
            " Conjugate Gradients rounds. " << std::endl);
-   Model *model = rb.get_member_particles()[0]->get_model();
+   Model *model = rb.get_members()[0].get_particle()->get_model();
 
 
    core::RestraintSet *rsrs = add_restraints(model, dmap, rb,
@@ -199,7 +199,7 @@ void local_rigid_fitting_grid_search(
    for(algebra::Rotation3Ds::iterator it = rots.begin();
                                       it != rots.end();it++) {
         algebra::Transformation3D t1 =algebra::rotation_about_point(
-                                       IMP::core::centroid(ps),*it);
+                                 core::centroid(core::XYZs(ps)),*it);
 
      //transform all particles
      std::for_each(ps.begin(), ps.end(),

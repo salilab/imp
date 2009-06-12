@@ -39,7 +39,8 @@ BrownianDynamics::~BrownianDynamics()
 {
 }
 
-IMP_LIST_IMPL(BrownianDynamics, Particle, particle, Particle*,,,);
+IMP_LIST_IMPL(BrownianDynamics, Particle, particle, Particle*,Particles,
+              ,,);
 
 
 void BrownianDynamics::set_time_step(unit::Femtosecond t)

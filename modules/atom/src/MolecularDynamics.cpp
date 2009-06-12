@@ -37,6 +37,7 @@ MolecularDynamics::~MolecularDynamics()
 }
 
 IMP_LIST_IMPL(MolecularDynamics, Particle, particle, Particle*,
+              Particles,
               {
                 if (0) std::cout << index;
                 for (unsigned int i=0; i< 3; ++i) {

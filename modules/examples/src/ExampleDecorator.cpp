@@ -9,7 +9,7 @@
 
 IMPEXAMPLES_BEGIN_NAMESPACE
 
-StringKey Example::get_name_key() {
+StringKey ExampleDecorator::get_name_key() {
   /* the compiler will make sure this is initialized the first time the
    method is called. */
   static StringKey mykey("my name");
@@ -19,7 +19,7 @@ StringKey Example::get_name_key() {
 /* output the prefix first in order to get the spacing right when
    printing a hierarchy.
  */
-void Example::show(std::ostream &out, std::string prefix) const {
+void ExampleDecorator::show(std::ostream &out, std::string prefix) const {
   out << prefix << get_name();
 }
 

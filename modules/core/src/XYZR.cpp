@@ -27,14 +27,14 @@ Float distance(XYZR a, XYZR b)
 
 
 void set_enclosing_sphere(XYZR out,
-                          const Particles &v)
+                          const XYZs &v)
 {
   algebra::Sphere3Ds ss(v.size());
   for (unsigned int i=0; i< v.size(); ++i) {
     XYZ d(v[i]);
     Float r=0;
-    if (v[i]->has_attribute(out.get_radius_key())) {
-      r= v[i]->get_value(out.get_radius_key());
+    if (v[i].get_particle()->has_attribute(out.get_radius_key())) {
+      r= v[i].get_particle()->get_value(out.get_radius_key());
     }
     ss[i]= algebra::Sphere3D(d.get_coordinates(), r);
   }
@@ -44,7 +44,7 @@ void set_enclosing_sphere(XYZR out,
 
 
 void set_enclosing_radius(XYZR out,
-                          const Particles &v)
+                          const XYZs &v)
 {
   double r=0;
   for (unsigned int i=0; i< v.size(); ++i) {
@@ -63,11 +63,11 @@ void set_enclosing_radius(XYZR out,
 }
 
 
-Particles create_xyzr_particles(Model *m,
+XYZRs create_xyzr_particles(Model *m,
                                 unsigned int num,
                                 Float radius,
                                 Float box_side) {
-  Particles ret;
+  XYZRs ret;
   for (unsigned int i=0; i< num; ++i) {
     Particle *p= new Particle(m);
     XYZR d= XYZR::create(p);
@@ -76,7 +76,7 @@ Particles create_xyzr_particles(Model *m,
                             algebra::Vector3D(box_side, box_side, box_side)));
     d.set_radius(radius);
     d.set_coordinates_are_optimized(true);
-    ret.push_back(p);
+    ret.push_back(d);
   }
   return ret;
 }
@@ -84,7 +84,7 @@ Particles create_xyzr_particles(Model *m,
 
 
 Hierarchy
-create_sphere_hierarchy(const Particles &ps,
+create_sphere_hierarchy(const XYZRs &ps,
                         const HierarchyTraits& traits) {
   IMP_failure("Not Implemented", InvalidStateException);
   /* - if ps is empty, return

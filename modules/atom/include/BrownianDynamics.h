@@ -98,7 +98,7 @@ public:
     set_current_time( unit::Femtosecond(fs));
   }
 
-  IMP_LIST(private, Particle, particle, Particle*);
+  IMP_LIST(private, Particle, particle, Particle*, Particles);
 
 
   void set_max_force_change(double df) {

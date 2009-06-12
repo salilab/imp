@@ -89,10 +89,10 @@ struct MHDMatchingType
 
 } // namespace
 
-Particles get_by_type(Hierarchy mhd,
+Hierarchies get_by_type(Hierarchy mhd,
                       Hierarchy::Type t)
 {
-  Particles out;
+  Hierarchies out;
   gather(mhd, MHDMatchingType(t),
          std::back_inserter(out));
   return out;

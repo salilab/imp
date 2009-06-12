@@ -34,7 +34,7 @@ void CoverRefined::apply(Particle *p) const
   IMP_CHECK_OBJECT(ref_.get());
   IMP_check(ref_->get_can_refine(p), "Passed particles cannot be refined",
             ValueException);
-  Particles ps= ref_->get_refined(p);
+  XYZs ps(ref_->get_refined(p));
   set_enclosing_sphere(dp, ps);
   dp.set_radius(dp.get_radius()+slack_);
 }

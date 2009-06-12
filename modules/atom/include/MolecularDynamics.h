@@ -57,7 +57,7 @@ public:
   //! Assign velocities representative of the given temperature
   void assign_velocities(Float temperature);
 
-  IMP_LIST(private, Particle, particle, Particle*);
+  IMP_LIST(private, Particle, particle, Particle*, Particles);
 
 private:
   //! Perform a single dynamics step.
