@@ -35,7 +35,7 @@ public:
   {
     return ParticlesList(1, Particles(particles_begin(), particles_end()));
   }
-  IMP_LIST(private, Particle, particle, Particle*)
+  IMP_LIST(private, Particle, particle, Particle*, Particles)
 protected:
   void load_restraints(std::string restraint_filename);
   Model *model;

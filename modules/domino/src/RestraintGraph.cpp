@@ -195,7 +195,7 @@ void RestraintGraph::initialize_potentials(Restraint *r, Particles *ps,
   }
   else {
     IMP_LOG(VERBOSE,"restraint : " );
-    IMP_LOG_WRITE(VERBOSE,r->show());
+    IMP_LOG_WRITE(VERBOSE,r->show(IMP_STREAM));
     IMP_LOG(VERBOSE,"is optimized by node with index : "<<jn->get_node_index());
     jn->realize(r, ps, weight);
   }
@@ -252,7 +252,7 @@ void  RestraintGraph::infer(unsigned int num_of_solutions)
     distribute_minimum(root_, min_comb);
     IMP_LOG(TERSE,"====MINIMUM COMBINATION number " <<
             it-temp_min_combs->begin()<<" : ============== " << std::endl);
-    IMP_LOG_WRITE(VERBOSE,min_comb->show());
+    IMP_LOG_WRITE(VERBOSE,min_comb->show(IMP_STREAM));
     min_combs_->push_back(min_comb);
   }
   delete temp_min_combs;
