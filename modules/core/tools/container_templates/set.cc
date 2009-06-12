@@ -64,6 +64,7 @@ GroupnameContainerSet::get_classname(unsigned int i) const {
 IMP_LIST_IMPL(GroupnameContainerSet,
               GroupnameContainer,
               groupname_container,
-              GroupnameContainer*,,,)
+              GroupnameContainer*,
+              GroupnameContainers,,,)
 
 IMPCORE_END_NAMESPACE
