@@ -11,6 +11,7 @@ files = [
          'Charmm.cpp',
          'Diffusion.cpp',
          'Domain.cpp',
+         'ForceFieldParameters.cpp',
          'Fragment.cpp',
          'Hierarchy.cpp',
          'MolecularDynamics.cpp',
@@ -19,6 +20,7 @@ files = [
          'bond_decorators.cpp',
          'bond_graph.cpp',
          'estimates.cpp',
+         'force_fields.cpp',
          'pdb.cpp',
         ] \
         + SConscript('internal/SConscript')
