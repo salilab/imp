@@ -25,7 +25,7 @@ void PermutationSampler::populate_states_of_particles(Particles *particles,
   CombState *calc_state;
   int comb_size = particles->size();
   std::vector<int> v_int(ds_->get_number_of_states());
-  for (unsigned int i = 0; i < ds_->get_number_of_states(); ++i) {
+  for (int i = 0; i < ds_->get_number_of_states(); ++i) {
     v_int[i] = i;
     }
   do {
