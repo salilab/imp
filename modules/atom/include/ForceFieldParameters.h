@@ -16,7 +16,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Storage and access to force field
-class ForceFieldParameters {
+class IMPATOMEXPORT ForceFieldParameters {
 public:
 
   //! get radius
@@ -31,7 +31,7 @@ public:
   void add_radius(Hierarchy mhd, FloatKey radius_key= FloatKey("radius")) const;
 
   //! add bonds to the structure defined in the hierarchy
-  void add_bonds(Hierarchy mhd);
+  void add_bonds(Hierarchy mhd) const;
 
 protected:
   class Bond {
@@ -47,9 +47,9 @@ protected:
   Float get_epsilon(const String& force_field_atom_type) const;
   String get_force_field_atom_type(const AtomType& atom_type,
                                    const ResidueType& residue_type) const;
-  void add_bonds(Residue rd);
-  void add_bonds(Hierarchy mhd, Hierarchy::Type type);
-  void add_bonds(Residue rd1, Residue rd2);
+  void add_bonds(Residue rd) const;
+  void add_bonds(Hierarchy mhd, Hierarchy::Type type) const;
+  void add_bonds(Residue rd1, Residue rd2) const;
 
 protected:
 

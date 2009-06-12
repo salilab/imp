@@ -35,6 +35,7 @@ void ForceFieldParameters::add_radius(Hierarchy mhd, FloatKey radius_key) const
                               get_residue_type(Atom(ps[i])));
     core::XYZR::create(ps[i], radius, radius_key);
   }
+  // TODO: handle N-term and C-term
 }
 
 Float ForceFieldParameters::get_radius(
@@ -64,14 +65,14 @@ Float ForceFieldParameters::get_epsilon(
 }
 
 
-void ForceFieldParameters::add_bonds(Hierarchy mhd) {
+void ForceFieldParameters::add_bonds(Hierarchy mhd) const {
   add_bonds(mhd, Hierarchy::RESIDUE);
   add_bonds(mhd, Hierarchy::NUCLEICACID);
   add_bonds(mhd, Hierarchy::FRAGMENT);
 }
 
 void ForceFieldParameters::add_bonds(Hierarchy mhd,
-                         Hierarchy::Type type) {
+                         Hierarchy::Type type) const {
   // get all residues
   Particles ps = get_by_type(mhd, type);
   Residue prev_rd;
@@ -87,7 +88,7 @@ void ForceFieldParameters::add_bonds(Hierarchy mhd,
   }
 }
 
-void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) {
+void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) const {
   Atom ad1, ad2;
   // connect two residues by C-N bond
   if(rd1.get_type() == Hierarchy::RESIDUE &&
@@ -115,11 +116,11 @@ void ForceFieldParameters::add_bonds(Residue rd1, Residue rd2) {
   IMP::atom::Bond bd = bond(b1, b2, IMP::atom::Bond::COVALENT);
 }
 
-void ForceFieldParameters::add_bonds(Residue rd) {
+void ForceFieldParameters::add_bonds(Residue rd) const {
   ResidueType type = rd.get_residue_type();
   if(residue_bonds_.find(type) == residue_bonds_.end()) return;
 
-  std::vector<Bond>& bonds = residue_bonds_[type];
+  const std::vector<Bond>& bonds = residue_bonds_.find(type)->second;
   for(unsigned int i=0; i<bonds.size(); i++) {
     Atom ad1 = get_atom(rd, bonds[i].type1_);
     Atom ad2 = get_atom(rd, bonds[i].type2_);

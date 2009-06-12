@@ -25,6 +25,11 @@ void add_bonds(Hierarchy d, std::string topology_file_name)
   }
 }
 
+void add_bonds(Hierarchy d, const ForceFieldParameters& ffp)
+{
+  ffp.add_bonds(d);
+}
+
 void add_radius(Hierarchy d, std::string par_file_name,
                 std::string top_file_name)
 {
@@ -39,6 +44,12 @@ void add_radius(Hierarchy d, std::string par_file_name,
   } else {
     charmm.add_radius(d);
   }
+}
+
+void add_radius(Hierarchy d, const ForceFieldParameters& ffp,
+                FloatKey radius_key)
+{
+  ffp.add_radius(d, radius_key);
 }
 
 IMPATOM_END_NAMESPACE

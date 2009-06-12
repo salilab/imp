@@ -357,6 +357,39 @@ namespace {
      { AT_H73,Atom::H},
      { AT_UNKNOWN, Atom::UNKNOWN_ELEMENT}};
 
+  // from http://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl
+  float mass[] = { 0.0, 1.007, 4.002, 6.941, 9.012, 10.811, 12.0107, 14.0067,
+                   //UNKNOWN_ELEMENT=0, H=1, He=2, Li=3, Be=4, B=5, C=6, N=7,
+                   15.9994, 18.998, 20.1797, 22.989, 24.3050, 26.981, 28.0855,
+                   //O=8, F=9, Ne=10, Na=11, Mg=12, Al=13, Si=14,
+                   30.973, 32.065, 35.453, 39.948, 39.0983, 40.078, 44.955,
+                   //P=15, S=16, Cl=17, Ar=18, K=19, Ca=20, Sc=21,
+                   47.867, 50.9415, 51.9961, 54.938, 55.845, 58.933, 58.6934,
+                   //Ti=22, V=23, Cr=24, Mn=25, Fe=26, Co=27, Ni=28,
+                   63.546, 65.409, 69.723, 72.64, 74.921, 78.96, 79.904,
+                   //Cu=29, Zn=30, Ga=31, Ge=32, As=33, Se=34, Br=35,
+                   83.798, 85.4678, 87.62, 88.905, 91.224, 92.906, 95.94,
+                   //Kr=36, Rb=37, Sr=38, Y=39, Zr=40, Nb=41, Mo=42,
+                   97.907, 101.07, 102.905, 106.42, 107.8682, 112.411, 114.818,
+                   //Tc=43, Ru=44, Rh=45, Pd=46, Ag=47, Cd=48, In=49,
+                   118.71, 121.76, 127.60, 126.90, 131.29, 132.91, 137.33,
+                   //Sn=50, Sb=51, Te=52, I=53, Xe=54, Cs=55, Ba=56,
+                   138.91, 140.12, 140.91, 144.24, 145, 150.36, 151.96,
+                   //La=57, Ce=58, Pr=59, Nd=60, Pm=61, Sm=62, Eu=63,
+                   157.25, 158.93, 162.50, 164.93, 167.26, 168.93, 173.04,
+                   //Gd=64, Tb=65, Dy=66, Ho=67, Er=68, Tm=69, Yb=70,
+                   174.97, 178.49, 180.95, 183.84, 186.21, 190.23, 192.22,
+                   //Lu=71, Hf=72, Ta=73, W=74, Re=75, Os=76, Ir=77,
+                   195.08, 196.97, 200.59, 204.38, 207.2, 208.98, 208.98,
+                   //Pt=78, Au=79, Hg=80, Tl=81, Pb=82, Bi=83, Po=84,
+                   209.99, 222.02, 223.0, 226.0, 227.0, 232.04, 231.04,
+                   //At=85, Rn=86, Fr=87, Ra=88, Ac=89, Th=90, Pa=91,
+                   238.03, 237.0, 244.0, 243.0, 247.0, 247.0, 251.0,
+                   //U=92, Np=93, Pu=94, Am=95, Cm=96, Bk=97, Cf=98,
+                   252.0, 257.0, 258.0, 259.0, 262.0, 262.0, 262.0, 262.0
+                   //Es=99,Fm=100,Md=101,No=102,Lr=103,Db=104,Jl=105,Rf=106
+  };
+
   struct ElementMap {
     std::map<AtomType, Atom::Element> map_;
     ElementMap() {
@@ -372,6 +405,10 @@ namespace {
     }
     bool get_has_element(AtomType at) const {
       return map_.find(at) != map_.end();
+    }
+    float get_mass(AtomType at) const {
+      Atom::Element e = get_element(at);
+      return mass[e];
     }
     unsigned int get_number_of_types() const {
       return map_.size();
@@ -394,6 +431,11 @@ Atom Atom::create(Particle *p, AtomType t) {
   p->add_attribute(get_type_key(), t.get_index());
   Hierarchy::create(p, Hierarchy::ATOM);
   Atom ret(p);
+  //ret.set_atom_type(t);
+  if (get_element_map().get_has_element(t)) {
+    ret.set_element(get_element_map().get_element(t));
+    ret.set_mass(get_element_map().get_mass(t));
+  }
   return ret;
 }
 
@@ -427,8 +469,9 @@ AtomType atom_type_from_pdb_string(std::string nm) {
 
 void Atom::show(std::ostream &out, std::string prefix) const
 {
-  //out <<prefix << "Element:"<< get_element() << std::endl;
-  out << prefix<< "Type: "<< get_atom_type();
+  out << prefix << "Element:"<< get_element()
+      << " mass " << get_mass() << std::endl;
+  out << prefix << "Type: "<< get_atom_type();
   if (get_input_index() != -1) {
     out << " atom number: " << get_input_index();
   }
@@ -443,6 +486,7 @@ void Atom::set_atom_type(AtomType t)
   get_particle()->set_value(get_type_key(), t.get_index());
   if (get_element_map().get_has_element(t)) {
     set_element(get_element_map().get_element(t));
+    set_mass(get_element_map().get_mass(t));
   }
 }
 
