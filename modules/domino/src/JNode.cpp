@@ -93,7 +93,8 @@ void JNode::show(std::ostream& out) const
 }
 bool JNode::is_part(const Particles &ps) const
 {
-  Particles intersection, other_sorted_particle_indexes;
+  typedef std::vector<Particle*>  P;
+  P intersection, other_sorted_particle_indexes;
   for (Particles::const_iterator it = ps.begin(); it != ps.end(); it++) {
     other_sorted_particle_indexes.push_back(*it);
   }
@@ -124,14 +125,14 @@ void JNode::get_intersection(const JNode &other, Particles &in) const
 {
   // since the list should be sorted we use the indexes and not the pointers,
   // as we can not predict the order of the pointers.
-  Particles inter_indexes;
+  std::vector<Particle*> inter_indexes;
   set_intersection(particles_.begin(),
                    particles_.end(),
                    other.particles_.begin(),
                    other.particles_.end(),
                    std::inserter(inter_indexes, inter_indexes.begin()));
   //TODO - do this more efficient
-  for (Particles::const_iterator it = inter_indexes.begin();
+  for (std::vector<Particle*>::const_iterator it = inter_indexes.begin();
        it != inter_indexes.end(); it++) {
     for (Particles::const_iterator pi = particles_.begin();
          pi != particles_.end(); pi++) {
