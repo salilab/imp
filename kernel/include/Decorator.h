@@ -194,7 +194,7 @@ class Decorators: public ParentDecorators {
     ParentDecorators::push_back(d);
   }
   void push_back(Particle *p) {
-    IMP_check(Decorators::is_instance_of(p),
+    IMP_check(Decorator::is_instance_of(p),
               "Particle is missing required attributes",
               ValueException);
     ParentDecorators::push_back(p);
