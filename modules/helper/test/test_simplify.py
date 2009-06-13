@@ -14,7 +14,7 @@ class DecoratorTests(IMP.test.TestCase):
         s= IMP.helper.simplified(p, 10)
         ls= IMP.core.get_leaves(s)
         for q in ls:
-            d= IMP.core.XYZR(q)
+            d= IMP.core.XYZR(q.get_particle())
             print ".sphere " +str(d.get_coordinates()[0]) + " "\
                 + str(d.get_coordinates()[1]) + " "\
                 + str(d.get_coordinates()[2]) + " "\
