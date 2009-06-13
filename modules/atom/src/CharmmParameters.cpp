@@ -1,16 +1,18 @@
 /**
- * \file Charmm \brief access to Charmm force field parameters
+ * \file CharmmParameters \brief access to CharmmParameters
+ *  force field parameters
  *
  * Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
-#include <IMP/atom/Charmm.h>
+#include <IMP/atom/CharmmParameters.h>
 
 #include <boost/algorithm/string.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
-Charmm::Charmm(const String& top_file_name, const String& par_file_name)
+CharmmParameters::CharmmParameters(const String& top_file_name,
+                                   const String& par_file_name)
 {
   std::ifstream top_file(top_file_name.c_str());
   if(!top_file) {
@@ -31,7 +33,7 @@ Charmm::Charmm(const String& top_file_name, const String& par_file_name)
   }
 }
 
-void Charmm::read_topology_file(std::ifstream& input_file) {
+void CharmmParameters::read_topology_file(std::ifstream& input_file) {
   const String RESI_LINE = "RESI";
   const String PRES_LINE = "PRES"; //protonated
   const String ATOM_LINE = "ATOM";
@@ -70,7 +72,7 @@ void Charmm::read_topology_file(std::ifstream& input_file) {
   }
 }
 
-ResidueType Charmm::parse_residue_line(const String& line) {
+ResidueType CharmmParameters::parse_residue_line(const String& line) {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
                boost::token_compress_on);
@@ -79,7 +81,7 @@ ResidueType Charmm::parse_residue_line(const String& line) {
   return ResidueType(curr_residue.c_str());
 }
 
-void Charmm::parse_atom_line(const String& line,
+void CharmmParameters::parse_atom_line(const String& line,
                              const ResidueType& curr_res_type)
 {
   std::vector<String> split_results;
@@ -101,7 +103,7 @@ void Charmm::parse_atom_line(const String& line,
                           std::make_pair(charmm_atom_type, charge)));
 }
 
-void Charmm::parse_bond_line(const String& line,
+void CharmmParameters::parse_bond_line(const String& line,
                              const ResidueType& curr_res_type)
 {
   std::vector<String> split_results;
@@ -128,7 +130,7 @@ void Charmm::parse_bond_line(const String& line,
   }
 }
 
-void Charmm::read_VdW_params(std::ifstream& input_file) {
+void CharmmParameters::read_VdW_params(std::ifstream& input_file) {
   const String NONBONDED_LINE = "NONBONDED";
 
   bool in_nonbonded = false;

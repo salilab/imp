@@ -7,7 +7,7 @@ files = [
          'BondSingletonScore.h',
          'BrownianDynamics.h',
          'Chain.h',
-         'Charmm.h',
+         'CharmmParameters.h',
          'Diffusion.h',
          'Domain.h',
          'ForceFieldParameters.h',

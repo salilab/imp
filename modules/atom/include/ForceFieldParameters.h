@@ -10,13 +10,14 @@
 #include "Residue.h"
 #include "Atom.h"
 #include "Hierarchy.h"
-
+#include "internal/version_info.h"
+#include <IMP/directories.h>
 #include <IMP/base_types.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
 //! Storage and access to force field
-class IMPATOMEXPORT ForceFieldParameters {
+class IMPATOMEXPORT ForceFieldParameters: public Object {
 public:
 
   //! get radius
@@ -28,11 +29,19 @@ public:
                     const ResidueType& residue_type) const;
 
   //! add radii to the structure defined in the hierarchy
-  void add_radius(Hierarchy mhd, FloatKey radius_key= FloatKey("radius")) const;
+  void add_radii(Hierarchy mhd, FloatKey radius_key= FloatKey("radius")) const;
 
   //! add bonds to the structure defined in the hierarchy
   void add_bonds(Hierarchy mhd) const;
 
+  void show(std::ostream &out) const {
+    out << "Force field parameters\n";
+  }
+
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
+  IMP_REF_COUNTED_DESTRUCTOR(ForceFieldParameters);
 protected:
   class Bond {
   public:
@@ -67,6 +76,9 @@ protected:
   // key=force_field_atom_type, value=(epsilon,radius)
   std::map<String, std::pair<float, float> > force_field_2_vdW_;
 };
+
+
+IMPATOMEXPORT ForceFieldParameters* default_force_field_parameters();
 
 IMPATOM_END_NAMESPACE
 
