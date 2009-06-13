@@ -19,7 +19,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         IMP.atom.add_bonds(mp)
         bds = IMP.atom.get_internal_bonds(mp)
         self.assertEqual(bds.size(), 1020)
-        IMP.atom.add_radius(mp)
+        IMP.atom.add_radii(mp)
         IMP.atom.show_molecular_hierarchy(mp)
 
         m2 = IMP.Model()

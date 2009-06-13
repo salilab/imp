@@ -48,6 +48,7 @@
 %include "IMP/atom/pdb.h"
 %include "IMP/atom/Fragment.h"
 
+
 namespace IMP {
   namespace atom {
     %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
@@ -58,6 +59,9 @@ namespace IMP {
 }
 %include "IMP/atom/Atom.h"
 %include "IMP/atom/Residue.h"
+%include "IMP/atom/ForceFieldParameters.h"
+%include "IMP/atom/CharmmParameters.h"
+%include "IMP/atom/force_fields.h"
 
 
 
@@ -80,8 +84,3 @@ namespace IMP {
    IMP_DECORATORS(Diffusion, Diffusions, core::XYZs)
   }
 }
-
-%include "IMP/atom/ForceFieldParameters.h"
-%include "IMP/atom/Charmm.h"
-%include "IMP/atom/force_fields.h"
-

@@ -8,6 +8,7 @@
 #include <IMP/atom/ForceFieldParameters.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/Particle.h>
+#include <IMP/atom/CharmmParameters.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -27,7 +28,7 @@ Float ForceFieldParameters::get_epsilon(const AtomType& atom_type,
   return get_epsilon(force_field_atom_type);
 }
 
-void ForceFieldParameters::add_radius(Hierarchy mhd, FloatKey radius_key) const
+void ForceFieldParameters::add_radii(Hierarchy mhd, FloatKey radius_key) const
 {
   Particles ps = get_by_type(mhd, Hierarchy::ATOM);
   for(unsigned int i=0; i<ps.size(); i++) {
@@ -160,6 +161,14 @@ String ForceFieldParameters::get_force_field_atom_type(
   }
 
   return atom_map.find(atom_type)->second.first;
+}
+
+
+ForceFieldParameters *default_force_field_parameters() {
+  static Pointer<CharmmParameters> cfp
+    (new CharmmParameters(IMP::get_data_directory() +"/atom/top.lib",
+                          IMP::get_data_directory() +"/atom/par.lib"));
+  return cfp;
 }
 
 IMPATOM_END_NAMESPACE

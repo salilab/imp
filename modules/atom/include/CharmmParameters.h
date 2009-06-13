@@ -4,8 +4,8 @@
  * Copyright 2007-8 Sali Lab. All rights reserved.
  *
  */
-#ifndef IMPATOM_CHARMM_H
-#define IMPATOM_CHARMM_H
+#ifndef IMPATOM_CHARMM_PARAMETERS_H
+#define IMPATOM_CHARMM_PARAMETERS_H
 
 #include "ForceFieldParameters.h"
 
@@ -15,16 +15,16 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Charmm force field
-class IMPATOMEXPORT Charmm : public ForceFieldParameters {
+class IMPATOMEXPORT CharmmParameters : public ForceFieldParameters {
 public:
 
   /** construction with Charmm parameters file
       for addition of bonds topology file is enough,
       for the rest both files are needed
    */
-  Charmm(const String& topology_file_name,
-         const String& par_file_name = std::string());
-
+  CharmmParameters(const String& topology_file_name,
+                   const String& par_file_name = std::string());
+  IMP_REF_COUNTED_DESTRUCTOR(CharmmParameters);
 private:
 
   // read non-bonded parameters for VdW computation
@@ -40,4 +40,4 @@ private:
 
 IMPATOM_END_NAMESPACE
 
-#endif /* IMPATOM_CHARMM_H */
+#endif /* IMPATOM_CHARMM_PARAMETERS_H */
