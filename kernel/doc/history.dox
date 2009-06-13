@@ -1,6 +1,8 @@
 /** \page recent Change History
 \par Week of June 8
 
+- new methods IMP::atom::add_radii() and IMP::atom::add_bonds();
+
 - Hierarchys to IMP::atom::Hierarchies
 
 - IMP::Particles has been changed to a new type. It no longer plays quite so well with python lists (you can't create a part one from an arbitrary python list).
