@@ -13,14 +13,32 @@
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraint::FitRestraint(const Particles &ps,
-                           DensityMap &em_map,
+                           DensityMap *em_map,
                            FloatKey radius_key,
                            FloatKey weight_key,
                            float scale)
 {
-  target_dens_map_ = &em_map;
-  scalefac_ = scale;
-  model_dens_map_ = new SampledDensityMap(*em_map.get_header());
+  target_dens_map_ = em_map;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+      IMP_check(ps[i]->has_attribute(radius_key),
+                "Particle " << ps[i]->get_name()
+                << " is missing the radius "<< radius_key
+                << std::endl, ValueException);
+      IMP_check(ps[i]->has_attribute(radius_key),
+                "Particle " << ps[i]->get_name()
+                << " is missing the mass "<< weight_key
+                << std::endl, ValueException);
+  }
+  if (scale==-1) {
+    double total_mass=0;
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      total_mass+= ps[i]->get_value(weight_key);
+    }
+    scalefac_= total_mass/20;
+  } else {
+    scalefac_ = scale;
+  }
+  model_dens_map_ = new SampledDensityMap(*em_map->get_header());
   add_particles(ps);
   //  IMP_LOG(VERBOSE, "RSR_EM_Fit::RSR_EM_Fit after setting up particles "
   //                   << endl );

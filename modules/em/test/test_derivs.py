@@ -45,7 +45,7 @@ class DerivativesTest(IMP.test.TestCase):
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         #init IMP model ( the environment)
         self.imp_model = IMP.Model()
-        self.particles = []
+        self.particles = IMP.Particles()
         #add IMP Restraints into the modeller scoring function
         t = self.env.edat.energy_terms
         t.append(IMP.modeller.IMPRestraints(self.imp_model, self.particles))
@@ -74,10 +74,9 @@ class DerivativesTest(IMP.test.TestCase):
         yorigin = model_map.get_header().get_yorigin()
         zorigin = model_map.get_header().get_zorigin()
         print("x= " + str(xorigin) + " y=" + str(yorigin) + " z=" + str(zorigin) )
-        model_map.Write("xxx.em",erw)
+        IMP.em.write_map(model_map, "xxx.em",erw)
         # EM restraint
-        em_map = IMP.em.DensityMap()
-        em_map.Read("xxx.em",erw)
+        em_map = IMP.em.read_map("xxx.em",erw)
         em_map.get_header_writable().set_xorigin(xorigin)
         em_map.get_header_writable().set_yorigin(yorigin)
         em_map.get_header_writable().set_zorigin(zorigin)

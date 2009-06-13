@@ -1,4 +1,13 @@
 /** \page recent Change History
+\par Week of June 15
+
+- box distrubutions (IMP::algebra::random_vector_on_box(), IMP::algebra::random_vector_in_box()) take bounding boxes
+
+- IMP::em::DensityMap are now IMP::Object objects. Some current allocations on the stack may need to be changed.
+
+- IMP::em::DensityMap::Read() is now deprecated (as is Write). Use IMP::em::read() and IMP::em::write() instead. It was previously violating lots of coding conventions.
+
+
 \par Week of June 8
 
 - new methods IMP::atom::add_radii() and IMP::atom::add_bonds();
@@ -37,8 +46,7 @@
   The method is still a bit crude and could benifit from other people inspecting
   the output and saying how it should be improved.
 
-- There is now an IMP::algebra::BoundingBoxD to track bounding box. There will
-  be methods like IMP::algebra::bound_box(Sphere3D) which get the bounding box.
+- There is now an IMP::algebra::BoundingBoxD (and IMP::algebra::BoundingBox3D) to track bounding boxes. There are methods like IMP::algebra::bound_box(Sphere3D) which gets the bounding box of a sphere.
 
 - Each IMP::Object has its own log level. If IMP::Object::set_log_level() is called
   with a value other than IMP::DEFAULT, the value is used for code within and

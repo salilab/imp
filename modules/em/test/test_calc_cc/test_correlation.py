@@ -15,9 +15,8 @@ class CrossCorrelationTests(IMP.test.TestCase):
         self.pixel_size=1.0
 
 
-        self.EM_map = IMP.em.DensityMap()
         self.mrc_rw = IMP.em.MRCReaderWriter()
-        self.EM_map.Read(self.fn_in,self.mrc_rw)
+        self.EM_map = IMP.em.read_map(self.fn_in,self.mrc_rw)
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
 

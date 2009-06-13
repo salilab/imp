@@ -9,13 +9,11 @@ class ToParticlesTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_maps(self):
-        self.scene1 = IMP.em.DensityMap()
-        self.scene2 = IMP.em.DensityMap()
         mrw = IMP.em.MRCReaderWriter()
         erw = IMP.em.EMReaderWriter()
         print self.get_input_file_name("in.em")
-        self.scene1.Read(self.get_input_file_name("in.em"), erw)
-        self.scene2.Read(self.get_input_file_name("1z5s.mrc"), mrw)
+        self.scene1= IMP.em.read_map(self.get_input_file_name("in.em"), erw)
+        self.scene2= IMP.em.read_map(self.get_input_file_name("1z5s.mrc"), mrw)
         self.scene1.get_header_writable().set_resolution(3.)
         self.scene2.get_header_writable().set_resolution(10.)
         self.scene2.update_voxel_size(3.0)

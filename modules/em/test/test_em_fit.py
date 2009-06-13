@@ -9,9 +9,8 @@ class FittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_map(self):
-        self.scene = IMP.em.DensityMap()
         erw = IMP.em.EMReaderWriter()
-        self.scene.Read(self.get_input_file_name("in.em"), erw)
+        self.scene = IMP.em.read_map(self.get_input_file_name("in.em"), erw)
         self.scene.get_header_writable().set_resolution(3.)
         header = self.scene.get_header()
         self.assertEqual(header.nx, 27)

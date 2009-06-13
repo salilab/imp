@@ -54,7 +54,6 @@ public:
   SampledDensityMap(const ParticlesAccessPoint &access_p, float resolution,
                     float voxel_size, int sig_cuttoff=3);
 
-  virtual ~SampledDensityMap() {}
 
   //! Sampling beads on an EM grid
   /** /param[in] access_p   access point to the particles (locations,
@@ -69,7 +68,7 @@ public:
 
   KernelParameters *get_kernel_params()  { return &kernel_params_;}
 
-
+  IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap)
 protected:
   //! Calculate the parameters of the particles bounding box
   /** \param[in]  access_p     access point to the particles (locations,
