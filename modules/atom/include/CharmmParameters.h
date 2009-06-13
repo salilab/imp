@@ -1,5 +1,5 @@
 /**
- * \file Charmm \brief access to Charmm force field parameters
+ * \file atom/CharmmParameters.h \brief access to Charmm force field parameters
  *
  * Copyright 2007-8 Sali Lab. All rights reserved.
  *
