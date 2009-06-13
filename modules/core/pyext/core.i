@@ -60,6 +60,7 @@ namespace IMP {
 }
 
 
+IMP_REFCOUNT_RETURN(IMP::core::Mover)
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
