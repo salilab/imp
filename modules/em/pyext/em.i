@@ -14,6 +14,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
+%include "kernel/pyext/IMP_refcount.i"
 
 /* Ignore things to prevent SWIG warning about them */
 namespace IMP::em {
@@ -34,6 +35,10 @@ namespace IMP::em {
 IMP_DIRECTOR_MODULE_CLASS(em, ParticlesAccessPoint);
 IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 
+// swig doesn't work right
+//IMP_REFCOUNT_RETURN(IMP::em::DensityMap)
+
+
 /* Get definitions of kernel and module base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
 /* Get definitions of algebra base classes (but do not wrap) */
@@ -41,6 +46,7 @@ IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 %import "modules/core/pyext/core.i"
 %import "modules/atom/pyext/atom.i"
 %import "modules/display/pyext/display.i"
+
 /* Wrap our own classes */
 %include "IMP/em/def.h"
 %include "IMP/em/DensityHeader.h"

@@ -86,7 +86,7 @@ protected:
 IMPEMEXPORT void  local_rigid_fitting_around_point(
    core::RigidBody &rb, ScoreState *rb_state, const FloatKey &rad_key,
    const FloatKey &wei_key,
-   DensityMap &dmap, const algebra::Vector3D &anchor_centroid,
+   DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
    FittingSolutions &fr,
    OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
@@ -128,7 +128,7 @@ IMPEMEXPORT void  local_rigid_fitting_around_point(
 inline void local_rigid_fitting(
    core::RigidBody &rb, ScoreState *rb_state, const FloatKey &rad_key,
    const FloatKey &wei_key,
-   DensityMap &dmap,
+   DensityMap *dmap,
    FittingSolutions &fr,
    OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
@@ -145,7 +145,7 @@ inline void local_rigid_fitting(
 IMPEMEXPORT void local_rigid_fitting_around_points(
    core::RigidBody &rb, ScoreState *rb_state,
    const FloatKey &rad_key, const FloatKey &wei_key,
-   DensityMap &dmap, const algebra::Vector3Ds &anchor_centroid,
+   DensityMap *dmap, const algebra::Vector3Ds &anchor_centroid,
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
@@ -179,7 +179,7 @@ IMPEMEXPORT void local_rigid_fitting_around_points(
 IMPEMEXPORT void local_rigid_fitting_grid_search(
    Particles &ps, Model *model, const FloatKey &rad_key,
    const FloatKey &wei_key,
-   DensityMap &dmap,
+   DensityMap *dmap,
    FittingSolutions &fr,
    Int max_voxels_translation=2,
    Int translation_step=1, Int number_of_rotations = 200);

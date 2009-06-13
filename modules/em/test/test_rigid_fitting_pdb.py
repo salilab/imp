@@ -11,9 +11,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_map(self):
-        self.scene = IMP.em.DensityMap()
         mrw = IMP.em.MRCReaderWriter()
-        self.scene.Read(self.get_input_file_name("1z5s_10.mrc"), mrw)
+        self.scene = IMP.em.read_map(self.get_input_file_name("1z5s_10.mrc"), mrw)
         self.scene.get_header_writable().set_resolution(10.)
         self.scene.get_header_writable().set_spacing(2.0)
         self.scene.set_origin(34.0,8.0,-92.0)

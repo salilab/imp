@@ -16,6 +16,9 @@
 #include "SampledDensityMap.h"
 #include "IMPParticlesAccessPoint.h"
 
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/Atom.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/VersionInfo.h>
@@ -38,10 +41,10 @@ public:
     \param[in] scale
    */
   FitRestraint(const Particles &ps,
-                 DensityMap &em_map,
-                 FloatKey radius_key,
-                 FloatKey weight_key,
-                 float scale);
+               DensityMap *em_map,
+               FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
+               FloatKey weight_key= IMP::atom::Atom::get_mass_key(),
+               float scale=-1);
 
   //! \return the predicted density map of the model
   SampledDensityMap *get_model_dens_map() {
@@ -57,8 +60,8 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*, Particles)
 private:
-  DensityMap *target_dens_map_;
-  SampledDensityMap *model_dens_map_;
+    Pointer<DensityMap> target_dens_map_;
+  Pointer<SampledDensityMap> model_dens_map_;
   // reference to the IMP environment
   float scalefac_;
   int num_particles_; // can it be removed ?

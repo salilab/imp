@@ -81,9 +81,8 @@ void DensityMap::CreateVoidMap(const int &nx, const int &ny, const int &nz)
   header_.nz = nz;
 }
 
-
-void DensityMap::Read(const char *filename, MapReaderWriter &reader)
-{
+#ifndef IMP_DEPRECATED
+void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
   // we need to pass a pointer to data_
@@ -99,6 +98,28 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader)
     IMP_WARN("The pixel size is set to the default value 1.0."<<
               "Please make sure that this is indeed the pixel size of the map");
   }
+}
+#endif
+
+DensityMap* read_map(const char *filename, MapReaderWriter &reader)
+{
+  // TODO: we need to decide who does the allocation ( mapreaderwriter or
+  // density)? if we keep the current implementation ( mapreaderwriter )
+  // we need to pass a pointer to data_
+  DensityMap *m= new DensityMap();
+  float *f_data;
+  reader.Read(filename, &f_data, m->header_);
+  m->float2real(f_data, &m->data_);
+  delete[] f_data;
+  m->normalized_ = false;
+  m->calcRMS();
+  m->calc_all_voxel2loc();
+  m->header_.compute_xyz_top();
+  if (m->header_.get_spacing() == 1.0) {
+    IMP_WARN("The pixel size is set to the default value 1.0."<<
+              "Please make sure that this is indeed the pixel size of the map");
+  }
+  return m;
 }
 
 void DensityMap::float2real(float *f_data, emreal **r_data)
@@ -119,13 +140,18 @@ void DensityMap::real2float(emreal *r_data, float **f_data)
   }
 }
 
+#ifndef IMP_DEPRECATED
 
+void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
+  IMP::em::write_map(this, filename, writer);
+}
+#endif
 
-void DensityMap::Write(const char *filename, MapReaderWriter &writer)
+void write_map(DensityMap *d, const char *filename, MapReaderWriter &writer)
 {
   float *f_data;
-  real2float(data_, &f_data);
-  writer.Write(filename, f_data, header_);
+  d->real2float(d->data_, &f_data);
+  writer.Write(filename, f_data, d->header_);
   delete[] f_data;
 }
 

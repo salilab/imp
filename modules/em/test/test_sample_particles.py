@@ -41,9 +41,9 @@ class SampleTests(IMP.test.TestCase):
         model_map = IMP.em.SampledDensityMap(access_p, resolution, voxel_size)
         model_map.calcRMS()
         erw = IMP.em.EMReaderWriter()
-        model_map.Write("xxx.em",erw)
+        IMP.em.write_map(model_map, "xxx.em",erw)
         em_map = IMP.em.DensityMap()
-        em_map.Read("xxx.em",erw)
+        em_map= IMP.em.read_map("xxx.em",erw)
         em_map.calcRMS()
         self.assert_(abs(em_map.get_header().rms - \
                          model_map.get_header().rms) < .000001,

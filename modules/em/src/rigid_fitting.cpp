@@ -16,7 +16,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-core::RestraintSet * add_restraints(Model *model, DensityMap &dmap,
+core::RestraintSet * add_restraints(Model *model, DensityMap *dmap,
                     core::RigidBody &rb, ScoreState *rb_state,
                     const FloatKey &rad_key, const FloatKey &wei_key) {
   core::RestraintSet *rsrs = new core::RestraintSet();
@@ -100,7 +100,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
 void local_rigid_fitting_around_point(
    core::RigidBody &rb, ScoreState *rb_state,
    const FloatKey &rad_key, const FloatKey &wei_key,
-   DensityMap &dmap, const algebra::Vector3D &anchor_centroid,
+   DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
@@ -111,7 +111,7 @@ void local_rigid_fitting_around_point(
           " Monte Carlo steps , each with " << number_of_cg_steps <<
           " Conjugate Gradients rounds. " << std::endl
            <<" The anchor point is : " << anchor_centroid << std::endl);
-   IMP_assert(dmap.is_part_of_volume(anchor_centroid),
+   IMP_assert(dmap->is_part_of_volume(anchor_centroid),
               "The centroid is not part of the map");
    //add restraints
    Model *model = rb.get_members()[0].get_particle()->get_model();
@@ -134,7 +134,7 @@ void local_rigid_fitting_around_point(
 void local_rigid_fitting_around_points(
    core::RigidBody &rb, ScoreState *rb_state,
    const FloatKey &rad_key, const FloatKey &wei_key,
-   DensityMap &dmap, const algebra::Vector3Ds &anchor_centroids,
+   DensityMap *dmap, const algebra::Vector3Ds &anchor_centroids,
    FittingSolutions &fr, OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
@@ -154,7 +154,7 @@ void local_rigid_fitting_around_points(
 
    for(algebra::Vector3Ds::const_iterator it = anchor_centroids.begin();
                                           it != anchor_centroids.end(); it++) {
-     IMP_assert(dmap.is_part_of_volume(*it),
+     IMP_assert(dmap->is_part_of_volume(*it),
                 "The centroid is not part of the map");
      IMP_LOG(VERBOSE, "optimizing around anchor point " << *it << std::endl);
      optimize(number_of_optimization_runs,
@@ -171,12 +171,12 @@ void local_rigid_fitting_around_points(
 void local_rigid_fitting_grid_search(
    Particles &ps, Model *model, const FloatKey &rad_key,
    const FloatKey &wei_key,
-   DensityMap &dmap,
+   DensityMap *dmap,
    FittingSolutions &fr,
    Int max_voxels_translation,
    Int translation_step, Int number_of_rotations) {
-   Float max_t = dmap.get_spacing()*max_voxels_translation;
-   Float step_t = dmap.get_spacing()*translation_step;
+   Float max_t = dmap->get_spacing()*max_voxels_translation;
+   Float step_t = dmap->get_spacing()*translation_step;
 
    IMP_LOG(VERBOSE,
       "going to preform local rigid fitting using a grid search method"
@@ -186,7 +186,7 @@ void local_rigid_fitting_grid_search(
       << " number of rotations : " << number_of_rotations <<std::endl);
 
    IMP::em::SampledDensityMap *model_dens_map =
-       new IMP::em::SampledDensityMap(*dmap.get_header());
+       new IMP::em::SampledDensityMap(*dmap->get_header());
 
    // init the access_p
    IMP::em::IMPParticlesAccessPoint access_p(ps, rad_key,wei_key);
@@ -216,7 +216,7 @@ void local_rigid_fitting_grid_search(
               algebra::Transformation3D(algebra::identity_rotation(),
                                         algebra::Vector3D(x,y,z));
            model_dens_map->set_origin(t.transform(origin));
-           score = IMP::em::CoarseCC::evaluate(dmap,*model_dens_map,access_p,
+           score = IMP::em::CoarseCC::evaluate(*dmap,*model_dens_map,access_p,
                                                dx,dy,dz,1.0,false,true,false);
            fr.add_solution(IMP::algebra::compose(t,t1),score);
            model_dens_map->set_origin(origin);

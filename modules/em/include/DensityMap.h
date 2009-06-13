@@ -12,11 +12,27 @@
 #include "config.h"
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
+#include "internal/version_info.h"
+#include <IMP/RefCounted.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/BoundingBoxD.h>
 #include <iostream>
 #include <iomanip>
 
 IMPEM_BEGIN_NAMESPACE
+
+class DensityMap;
+
+/** Read a density map from a file and return it.
+    \relatesalso DensityMap
+*/
+IMPEMEXPORT DensityMap* read_map(const char *filename, MapReaderWriter &reader);
+/** Write a density map to a file.
+    \relatesalso DensityMap
+*/
+IMPEMEXPORT void write_map(DensityMap* m, const char *filename,
+                           MapReaderWriter &writer);
+
 
 //! Class for handling density maps.
 /** CONVENTIONS
@@ -24,14 +40,18 @@ IMPEM_BEGIN_NAMESPACE
        VALUES THAT IT DEFINES AS A BOX.
        This is important for function calc_all_voxel2loc()
  */
-class IMPEMEXPORT DensityMap
+class IMPEMEXPORT DensityMap: public Object
 {
+  IMP_NO_SWIG(friend DensityMap* read_map(const char *filename,
+                                          MapReaderWriter &reader));
+  IMP_NO_SWIG(friend void write_map(DensityMap* m, const char *filename,
+                                    MapReaderWriter &writer));
+
 public:
   DensityMap();
   DensityMap(const DensityMap &other);
+  virtual ~DensityMap();
   DensityMap&  operator=(const DensityMap &other );
-  ~DensityMap();
-
   //! Creates a new map with the given dimension
   /**
     param[in] nx x-dimension (voxels)
@@ -40,8 +60,12 @@ public:
    */
   void CreateVoidMap(const int &nx,const int &ny,const int &nz);
 
+#ifndef IMP_DEPRECATED
+  /** \deprecated Use read() instead.*/
   void Read(const char *filename, MapReaderWriter &reader);
+  /** \deprecated Use write() instead.*/
   void Write(const char *filename,MapReaderWriter &writer);
+#endif
 
 
   //!  Set the density voxels to some calue and reset the managment flags.
@@ -151,6 +175,18 @@ public:
     set_origin(v[0],v[1],v[2]);
   }
 
+  algebra::Vector3D get_origin() const{
+    return algebra::Vector3D(header_.get_origin(0),
+                             header_.get_origin(1),
+                             header_.get_origin(2));
+  }
+
+  algebra::Vector3D get_top() const {
+    return algebra::Vector3D(header_.get_top(0),
+                             header_.get_top(1),
+                             header_.get_top(2));
+  }
+
   // inspection functions
   const DensityHeader *get_header()const {return &header_;}
   //! Returns a pointer to the header of the map in a writable version
@@ -255,6 +291,13 @@ public:
    */
   void calc_all_voxel2loc();
 
+  virtual void show(std::ostream &out=std::cout) const {
+    out << "DensityMap\n";
+  }
+  virtual VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
+
 protected:
 
   void reset_voxel2loc();
@@ -264,7 +307,7 @@ protected:
   void real2float(emreal *r_data, float **f_data);
 
   DensityHeader header_; // holds all the info about the map
-  emreal *data_; // the order is ZYX (Z-slowest)
+  emreal* data_; // the order is ZYX (Z-slowest)
   bool data_allocated_;
 
   //! Locations for each of the voxels of the map (they are precomputed and
@@ -277,6 +320,13 @@ protected:
   bool rms_calculated_;
 
 };
+
+
+inline algebra::BoundingBox3D bounding_box(const DensityMap *m) {
+  return algebra::BoundingBox3D(m->get_origin(),
+                       m->get_top());
+}
+
 
 IMPEM_END_NAMESPACE
 

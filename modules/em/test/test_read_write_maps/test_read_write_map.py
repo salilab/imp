@@ -24,13 +24,13 @@ class MRCWriteTest(IMP.test.TestCase):
         print "RMSD of original map = " + str(self.rms)
         self.erw = IMP.em.MRCReaderWriter()
         self.out_filename = "aa.mrc"
-        em_map.Write(self.out_filename,self.erw)
+        IMP.em.write_map(em_map, self.out_filename,self.erw)
 
     def test_read(self):
         """read map back in and check that rmsd is the same """
         em_map = IMP.em.DensityMap()
         print self.out_filename
-        em_map.Read(self.out_filename,self.erw)
+        em_map = IMP.em.read_map(self.out_filename,self.erw)
         os.unlink(self.out_filename)
         em_map.calcRMS()
         rms2 = em_map.get_header().rms
@@ -51,10 +51,9 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         in_filename = self.get_input_file_name("three_particles_in.em")
         out_filename = "three_particles_out.em"
 
-        scene = IMP.em.DensityMap()
         xrw = IMP.em.EMReaderWriter()
 
-        scene.Read(in_filename,xrw)
+        scene = IMP.em.read_map(in_filename,xrw)
         header = scene.get_header()
         self.assertEqual(header.nx, 55)
         self.assertEqual(header.ny, 55)
@@ -64,10 +63,9 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         self.assertEqual(header.Cs, 0.)
         self.assertEqual(header.Objectpixelsize, 1.)
         self.assertInTolerance(scene.calcRMS(), 404.5, 1.0)
-        scene.Write(out_filename,xrw);
+        IMP.em.write_map(scene, out_filename,xrw);
 
-        scene2 = IMP.em.DensityMap()
-        scene2.Read(out_filename, xrw)
+        scene2 = IMP.em.read_map(out_filename, xrw)
         header2 = scene2.get_header()
         self.assertEqual(header2.nx, header.nx)
         self.assertEqual(header2.ny, header.ny)
@@ -84,7 +82,7 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         out_filename =  "1tdx_sampled_out.mrc"
         scene = IMP.em.DensityMap()
         mrc_rw = IMP.em.MRCReaderWriter()
-        scene.Read(in_filename,mrc_rw)
+        scene= IMP.em.read_map(in_filename,mrc_rw)
 
         # Check header size
         self.assertEqual(74,scene.get_header().nx)
@@ -92,7 +90,7 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         self.assertEqual(65,scene.get_header().nz)
         print "rms: " + str(scene.calcRMS())
         self.assertInTolerance(scene.calcRMS(), 0.00688, 1.0)
-        scene.Write(out_filename,mrc_rw)
+        IMP.em.write_map(scene, out_filename,mrc_rw)
         os.unlink(out_filename)
 
     def test_emheader(self):
@@ -101,7 +99,7 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         print "read in "+in_filename + " ..."
         scene = IMP.em.DensityMap()
         em_rw = IMP.em.EMReaderWriter()
-        scene.Read(in_filename, em_rw)
+        scene= IMP.em.read_map(in_filename, em_rw)
         pixsize = scene.get_header().Objectpixelsize
         print "ObjectPixelsize = " + str(pixsize)
         self.assertEqual(3.0 ,scene.get_header().Objectpixelsize)

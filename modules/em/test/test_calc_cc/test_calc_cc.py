@@ -13,10 +13,9 @@ class SampleParticlesTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         in_filename = self.get_input_file_name("three_particles_in.em")
 
-        self.scene = IMP.em.DensityMap()
         mrw = IMP.em.MRCReaderWriter()
         erw = IMP.em.EMReaderWriter()
-        self.scene.Read(in_filename,erw)
+        self.scene= IMP.em.read_map(in_filename,erw)
 
         self.scene.get_header_writable().resolution = 2.0
         self.scene.std_normalize()

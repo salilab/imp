@@ -127,7 +127,7 @@ public:
   }
 };
 
-
+/** A class to read and write MRC files. */
 class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter
 {
 public:
