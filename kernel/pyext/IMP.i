@@ -24,6 +24,20 @@
 %pythoncode %{
 have_cgal=True
 %}
+#else
+%pythoncode %{
+have_cgal=False
+%}
+#endif
+
+#ifdef IMP_USE_MODELLER
+%pythoncode %{
+have_modeller=True
+%}
+#else
+%pythoncode %{
+have_modeller=False
+%}
 #endif
 
 // Make sure that Python refcounts any returned pointers to IMP types
