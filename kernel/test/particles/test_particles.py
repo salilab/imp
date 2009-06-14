@@ -79,7 +79,7 @@ class ParticleTests(IMP.test.TestCase):
         self.assert_(p0 != p1)
 
     def test_bad_attributes(self):
-        """Asking for non-existent attributes should cause an error"""
+        """Asking for non-existent attributes should cause an exception"""
         p1 = self.particles[0]
         self.assertRaises(IndexError, p1.get_value, IMP.FloatKey("notexist"))
         self.assertRaises(IndexError, p1.get_value, IMP.IntKey("notexist"))
