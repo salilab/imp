@@ -10,11 +10,17 @@
 %ignore IMP::Decorators::operator[];
 %extend IMP::Decorators {
   Decorator __getitem__(int index) const {
-    if (index < 0) index=self->size()+index;
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       throw IMP::IndexException("Index out of range");
+    }
     return self->operator[](index);
   }
   void __setitem__(int index, Decorator val) {
-    if (index < 0) index=self->size()+index;
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       throw IMP::IndexException("Index out of range");
+    }
     self->set(index, val);
   }
   int __len__() const {
