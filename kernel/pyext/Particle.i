@@ -96,11 +96,19 @@ namespace IMP {
 
 %ignore IMP::Particles::operator[];
 %extend IMP::Particles {
-
-
   Particle* __getitem__(int index) const {
-    if (index < 0) index=self->size()+index;
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       throw IMP::IndexException("Index out of range");
+    }
     return self->operator[](index);
+  }
+  void __setitem__(int index, Particle *p) {
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       throw IMP::IndexException("Index out of range");
+    }
+    return self->set(index, p);
   }
   std::vector<Particle*> __list__() const {
     std::vector<IMP::Particle*> ret(self->begin(), self->end());
