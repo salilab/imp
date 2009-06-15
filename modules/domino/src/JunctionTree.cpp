@@ -9,7 +9,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 void read_junction_tree(const std::string &filename, JunctionTree *jt) {
   std::ifstream jt_f (filename.c_str());
-  if (not jt_f.is_open()) {
+  if (! jt_f.is_open()) {
     std::cerr<<"problem opening junction tree file: "<< filename << std::endl;
     exit(0);
   }
