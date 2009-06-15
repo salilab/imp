@@ -181,6 +181,7 @@ class Decorators: public ParentDecorators {
  public:
   typedef const Decorator const_reference;
   typedef Decorator value_type;
+  typedef const Decorator reference;
   explicit Decorators(const Particles &ps): ParentDecorators(ps) {
     for (unsigned int i=0; i< ps.size(); ++i) {
       IMP_check(Decorator::is_instance_of(ps[i]), "Particle "
@@ -272,6 +273,7 @@ class DecoratorsWithTraits: public ParentDecorators {
 public:
   typedef const Decorator const_reference;
   typedef Decorator value_type;
+  typedef const Decorator reference;
   DecoratorsWithTraits(Traits tr): tr_(tr), has_traits_(true){}
   DecoratorsWithTraits(const Particles &ps,
                        Traits tr): tr_(tr), has_traits_(true) {
