@@ -721,6 +721,7 @@ class IMPEXPORT Particles {
   template <class It>
     Particles(It b, It e): data_(b,e){}
   Particles(unsigned int i): data_(i, NULL){}
+  explicit Particles(Particle* p): data_(1, p){}
   Particles(){}
   ~Particles();
   Particle* operator[](unsigned int i) const {

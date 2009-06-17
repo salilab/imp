@@ -189,7 +189,8 @@ class Decorators: public ParentDecorators {
                 ValueException);
     }
   }
-  Decorators(unsigned int i): ParentDecorators(i){}
+  explicit Decorators(unsigned int i): ParentDecorators(i){}
+  explicit Decorators(Decorator d): ParentDecorators(d){}
   Decorators(){}
   void push_back(Decorator d) {
     ParentDecorators::push_back(d);
@@ -286,7 +287,10 @@ public:
   typedef const Decorator const_reference;
   typedef Decorator value_type;
   typedef const Decorator reference;
-  DecoratorsWithTraits(Traits tr): tr_(tr), has_traits_(true){}
+  explicit DecoratorsWithTraits(Traits tr): tr_(tr), has_traits_(true){}
+  explicit DecoratorsWithTraits(Decorator d): ParentDecorators(d),
+                                              tr_(d.get_traits()),
+                           has_traits_(true){}
   DecoratorsWithTraits(const Particles &ps,
                        Traits tr): tr_(tr), has_traits_(true) {
     ParentDecorators::resize(ps.size());
@@ -403,6 +407,7 @@ public:
     P(ps, D::get_traits()){
   }
   DecoratorsWithImplicitTraits(unsigned int i): P(i, D::get_traits()){}
+  DecoratorsWithImplicitTraits(D d): P(d){}
   void swap_with(DecoratorsWithImplicitTraits &o) {
     P::swap_with(o);
   }
