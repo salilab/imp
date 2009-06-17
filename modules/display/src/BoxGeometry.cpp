@@ -14,12 +14,18 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 BoxGeometry::BoxGeometry(const algebra::Vector3D &min,
                          const algebra::Vector3D &max,
-                         const Color &color): min_(min), max_(max),
+                         const Color &color): bb_(min, max),
                                               color_(color){
   CompoundGeometry::set_name("Bounding Box");
 }
 
-#define PICK(v, i) (vertices[v][i]?min_[i]: max_[i])
+BoxGeometry::BoxGeometry(const algebra::BoundingBox3D &bb,
+                         const Color &color): bb_(bb),
+                                              color_(color){
+  CompoundGeometry::set_name("Bounding Box");
+}
+
+#define PICK(v, i) (bb_.get_corner(vertices[v][i])[i])
 
 Geometries BoxGeometry::get_geometry() const {
   static const int vertices[8][3]={{0,0,0}, {0,0,1}, {0,1,0},
@@ -61,7 +67,7 @@ Geometries BoxGeometry::get_geometry() const {
 
 
 void BoxGeometry::show(std::ostream &out) const {
-  out << "BoxGeometry: " << min_ << " " << max_ << std::endl;
+  out << "BoxGeometry: " << bb_ << std::endl;
 }
 
 IMPDISPLAY_END_NAMESPACE
