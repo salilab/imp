@@ -13,6 +13,7 @@
 #include "Cone3D.h"
 #include "Sphere3D.h"
 #include "Sphere3DPatch.h"
+#include "BoundingBoxD.h"
 
 #include "internal/vector_generators.h"
 
@@ -41,13 +42,11 @@ VectorD<D> constant_vector(double s) {
 //! Generate a random vector in a box with uniform density
 template <unsigned int D>
 VectorD<D>
-random_vector_in_box(const VectorD<D> &lb,
-                     const VectorD<D> &ub) {
+random_vector_in_box(const BoundingBoxD<D> &bb) {
   VectorD<D> ret;
   for (unsigned int i=0; i< D; ++i) {
-    IMP_check(lb[i] < ub[i], "Box for randomize must be non-empty",
-              ValueException);
-    ::boost::uniform_real<> rand(lb[i], ub[i]);
+    ::boost::uniform_real<> rand(bb.get_corner(0)[i],
+                                 bb.get_corner(1)[i]);
     ret[i]=rand(random_number_generator);
   }
   return ret;
@@ -56,9 +55,10 @@ random_vector_in_box(const VectorD<D> &lb,
 //! Generate a random vector on a box with uniform density
 template <unsigned int D>
 VectorD<D>
-random_vector_on_box(const VectorD<D> &lb,
-                     const VectorD<D> &ub) {
+random_vector_on_box(const BoundingBoxD<D> &bb) {
   double areas[D*2];
+  VectorD<D> lb= bb.get_corner(0);
+  VectorD<D> ub= bb.get_corner(1);
   for (unsigned int i=0; i< D; ++i) {
     areas[i]=1;
     for (unsigned int j=1; j< D; ++j) {
@@ -87,7 +87,7 @@ random_vector_on_box(const VectorD<D> &lb,
     fmin[i-1]= 0;
     fmax[i-1]= ub[(coord+i)%D]- lb[(coord+i)%D];
   }
-  sv= random_vector_in_box(fmin, fmax);
+  sv= random_vector_in_box(BoundingBoxD<D-1>(fmin, fmax));
 
   VectorD<D> ret;
   //std::cout << "Side is " << side << std::endl;
@@ -106,12 +106,32 @@ random_vector_on_box(const VectorD<D> &lb,
   return ret;
 }
 
+
+/** \copydoc random_vector_in_box(const BoundindBoxD<D> &bb)
+ */
+template <unsigned int D>
+VectorD<D>
+random_vector_in_box(const VectorD<D>&min,
+                     const VectorD<D>&max) {
+  return random_vector_in_box(BoundingBoxD<D>(min,max));
+}
+
+/** \copydoc random_vector_on_box(const BoundindBoxD<D> &bb)
+ */
+template <unsigned int D>
+VectorD<D>
+random_vector_on_box(const VectorD<D>&min,
+                     const VectorD<D>&max) {
+  return random_vector_on_box(BoundingBoxD<D>(min,max));
+}
+
+
 //! Generate a random vector in a box with uniform density
 template <unsigned int D>
 VectorD<D>
 random_vector_in_unit_box() {
-  return random_vector_in_box(VectorD<D>(0,0,0),
-                              VectorD<D>(1,1,1));
+  return random_vector_in_box(BoundingBoxD<D>(VectorD<D>(0,0,0),
+                                              VectorD<D>(1,1,1)));
 }
 
 //! Generate a random vector in a sphere with uniform density
@@ -129,7 +149,7 @@ random_vector_in_sphere(const VectorD<D> &center,
   double r2= square(radius);
   // \todo This algorithm could be more efficient.
   do {
-    ret=random_vector_in_box(min, max);
+    ret=random_vector_in_box(BoundingBoxD<D>(min, max));
     norm= (center- ret).get_squared_magnitude();
   } while (norm > r2);
   return ret;
