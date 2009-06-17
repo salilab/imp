@@ -731,6 +731,16 @@ class IMPEXPORT Particles {
     IMP_check(i < size(), "Index out of range", IndexException);
     data_[i]=p;
   }
+  Particle *back() const {
+    IMP_check(!empty(), "Can't call back on empty Particles",
+              InvalidStateException);
+    return data_.back();
+  }
+  Particle *front() const {
+    IMP_check(!empty(), "Can't call back on empty Particles",
+              InvalidStateException);
+    return data_.front();
+  }
   unsigned int size() const {return data_.size();}
   void resize(unsigned int i) {data_.resize(i);}
   typedef Data::iterator iterator;

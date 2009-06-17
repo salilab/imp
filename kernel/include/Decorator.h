@@ -208,6 +208,18 @@ class Decorators: public ParentDecorators {
               IndexException);
     ParentDecorators::set(i, d);
   }
+  Decorator back() const {
+    IMP_check(!ParentDecorators::empty(),
+              "Can't call back on empty Decorators",
+              InvalidStateException);
+    return ParentDecorators::back();
+  }
+  Decorator front() const {
+    IMP_check(!ParentDecorators::empty(),
+              "Can't call front on empty Decorators",
+              InvalidStateException);
+    return ParentDecorators::front();
+  }
 #ifndef IMP_DOXYGEN
   typedef internal::IndexingIterator<Accessor> iterator;
   typedef internal::IndexingIterator<Accessor> const_iterator;
@@ -320,6 +332,18 @@ public:
                 ValueException);
     }
     ParentDecorators::set(i, d);
+  }
+  Decorator back() const {
+    IMP_check(!ParentDecorators::empty(),
+              "Can't call back on empty Decorators",
+              InvalidStateException);
+    return ParentDecorators::back();
+  }
+  Decorator front() const {
+    IMP_check(!ParentDecorators::empty(),
+              "Can't call back on empty Decorators",
+              InvalidStateException);
+    return ParentDecorators::front();
   }
 #ifndef IMP_DOXYGEN
   typedef internal::IndexingIterator<Accessor> iterator;
