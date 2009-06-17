@@ -3,6 +3,7 @@ import sys
 import os
 import random
 import IMP
+import time
 
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
@@ -47,6 +48,7 @@ class TestCase(unittest.TestCase):
         self.__check_level = IMP.get_check_level()
         # Turn on expensive runtime checks while running the test suite:
         IMP.set_check_level(IMP.EXPENSIVE)
+        IMP.random_number_generator.seed(hash(time.time())%2**30)
 
     def tearDown(self):
         # Restore original check level
