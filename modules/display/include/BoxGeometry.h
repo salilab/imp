@@ -11,6 +11,7 @@
 #include "config.h"
 #include "macros.h"
 #include "geometry.h"
+#include <IMP/algebra/BoundingBoxD.h>
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -21,9 +22,11 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT BoxGeometry: public CompoundGeometry
 {
-  algebra::Vector3D min_, max_;
+  algebra::BoundingBox3D bb_;
   Color color_;
 public:
+  BoxGeometry(const algebra::BoundingBox3D &bb,
+              const Color&color=Color());
   BoxGeometry(const algebra::Vector3D &min,
               const algebra::Vector3D &max,
               const Color &color=Color());
