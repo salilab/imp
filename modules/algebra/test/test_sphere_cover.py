@@ -30,13 +30,17 @@ class SphereTests(IMP.test.TestCase):
 
     def test_uniform_cover_not_on_000(self):
         """Check uniform cover when the the center is not on (0,0,0)"""
+        #IMP.random_number_generator.seed(1)
         center = IMP.algebra.Vector3D(4.0,5.0,-9.0)
         radius=5.0
         sph = IMP.algebra.Sphere3D(center,radius)
-        points=IMP.algebra.uniform_cover(sph,40)
+        nump=40
+        if not IMP.has_cgal:
+            nump=400
+        points=IMP.algebra.uniform_cover(sph,nump)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        self.assert_(len(points)>=40)
+        self.assert_(len(points)>=nump)
         print "the sample"
         for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]
@@ -45,7 +49,7 @@ class SphereTests(IMP.test.TestCase):
         sampled_centroid = sampled_centroid * (1.0/len(points))
         sampled_centroid.show()
         center.show()
-        self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
+        self.assertInTolerance((sampled_centroid-center).get_magnitude(), 0, 1.0)
 
 
 if __name__ == '__main__':
