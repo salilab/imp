@@ -22,11 +22,11 @@
 
 #ifdef IMP_USE_CGAL
 %pythoncode %{
-have_cgal=True
+has_cgal=True
 %}
 #else
 %pythoncode %{
-have_cgal=False
+has_cgal=False
 %}
 #endif
 
