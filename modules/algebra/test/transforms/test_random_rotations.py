@@ -8,7 +8,7 @@ import math
 class RotationTests(IMP.test.TestCase):
     """Test rotations"""
     def test_uniform_random(self):
-        if not IMP.have_cgal: return
+        if not IMP.has_cgal: return
         rots= IMP.algebra.uniform_cover_rotations(100);
         pts= [IMP.algebra.Vector3D(1,0,0),
               IMP.algebra.Vector3D(0,1,0)]
