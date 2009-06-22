@@ -17,6 +17,7 @@ class PadTests(IMP.test.TestCase):
         self.d1 = IMP.em.SampledDensityMap(self.prot1_atoms,3.0,1.0)
         self.d2 = IMP.em.SampledDensityMap(self.prot2_atoms,3.0,1.0)
     def test_map_padding(self):
+        """Test map padding"""
         h1=self.d1.get_header()
         h2=self.d2.get_header()
         min1=self.d1.get_min_value()

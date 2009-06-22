@@ -29,6 +29,7 @@ class SurfaceTests(IMP.test.TestCase):
         self.prot2_bad_shell_map.resample(self.prot2_bad_atoms)
 
     def test_good_geo_comp(self):
+        """Check good geometric complementarity score"""
         erw = IMP.em.EMReaderWriter()
 #        self.prot1_shell_map.Write("prot1_shell.em",erw)
 #        self.prot2_shell_map.Write("prot2_shell.em",erw)
@@ -48,6 +49,7 @@ class SurfaceTests(IMP.test.TestCase):
                                                    0.0,False,False)
         print "SCORE : " + str(score)
     def test_bad_geo_comp(self):
+        """Check bad geometric complementarity score"""
         erw = IMP.em.EMReaderWriter()
         #        self.prot1_shell_map.Write("prot1_shell.em",erw)
         #        self.prot2_shell_map.Write("prot2_shell.em",erw)
