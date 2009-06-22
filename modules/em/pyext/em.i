@@ -35,9 +35,7 @@ namespace IMP::em {
 IMP_DIRECTOR_MODULE_CLASS(em, ParticlesAccessPoint);
 IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 
-// swig doesn't work right
-//IMP_REFCOUNT_RETURN(IMP::em::DensityMap)
-
+IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
 
 /* Get definitions of kernel and module base classes (but do not wrap) */
 %import "kernel/pyext/IMP.i"
