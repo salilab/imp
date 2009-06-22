@@ -6,13 +6,13 @@ def regressionTest():
        subdirectories"""
     os.environ['TEST_DIRECTORY'] = path
     modobjs = []
+    test = re.compile("test_.*\.py$", re.IGNORECASE)
     for subdir in [''] + [x for x in os.listdir(path) \
                           if os.path.isdir(os.path.join(path, x))]:
-        files = os.listdir(os.path.join(path, subdir))
-        test = re.compile("^test_.*\.py$", re.IGNORECASE)
-        files = filter(test.search, files)
-        modnames = [os.path.splitext(f)[0] for f in files]
-        sys.path.insert(0, os.path.join(path, subdir))
+        subpath = os.path.join(path, subdir)
+        modnames = [os.path.splitext(f)[0] for f in os.listdir(subpath) \
+                    if test.match(f)]
+        sys.path.insert(0, subpath)
         modobjs.extend([__import__(m) for m in modnames])
         sys.path.pop(0)
 
@@ -21,6 +21,5 @@ def regressionTest():
 
 if __name__ == "__main__":
     path = sys.argv[1]
-    print "Print running tests in " + path
     sys.argv=[sys.argv[0]]+sys.argv[2:]
     unittest.main(defaultTest="regressionTest")
