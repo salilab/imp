@@ -9,7 +9,7 @@ import IMP.test
 import sys
 import IMP.em
 import unittest
-from os import unlink
+import os
 
 
 def init_particle(particles,p_ind_,x_,y_,z_,r_=0.0,w_=1.0,protein_=1):
@@ -94,7 +94,7 @@ class DerivativesTest(IMP.test.TestCase):
                                       detailed_debugging=True)
         self.assert_(nviol < 1, "at least one partial derivative is wrong!")
         print " derivs done ..."
-        unlink("xxx.em")
+        os.unlink("xxx.em")
 
 if __name__ == '__main__':
     unittest.main()
