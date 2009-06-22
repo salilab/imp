@@ -7,14 +7,14 @@ import imp
 global path
 
 class _TestModuleImporter(object):
-    """Import a Python module specifically from a given directory. The module
+    """Import a Python test module. The module
        is given a unique name (_test_0, _test_1 etc.) so that modules with
        the same name but in different directories can be read without
        overwriting each other in sys.modules."""
     def __init__(self):
         self._serial = 0
-    def __call__(self, name, dir):
-        fh, pathname, desc = imp.find_module(name, [dir])
+    def __call__(self, name):
+        fh, pathname, desc = imp.find_module(name)
         self._serial += 1
         try:
             return imp.load_module('_test_%d' % self._serial, fh,
@@ -23,7 +23,7 @@ class _TestModuleImporter(object):
             # Make sure the file is closed regardless of what happens
             if fh:
                 fh.close()
-_import_from_dir = _TestModuleImporter()
+_import_test = _TestModuleImporter()
 
 def regressionTest():
     """Run all tests in files called test_*.py in current directory and
@@ -36,7 +36,9 @@ def regressionTest():
         subpath = os.path.join(path, subdir)
         modnames = [os.path.splitext(f)[0] for f in os.listdir(subpath) \
                     if test.match(f)]
-        modobjs.extend([_import_from_dir(m, subpath) for m in modnames])
+        sys.path.insert(0, subpath)
+        modobjs.extend([_import_test(m) for m in modnames])
+        sys.path.pop(0)
 
     tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
     return unittest.TestSuite(tests)
