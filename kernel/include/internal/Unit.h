@@ -70,6 +70,12 @@ struct Divide
   typedef typename transform<UA, UB, minus<_1, _2> >::type type;
 };
 
+template <class UA>
+struct Inverse
+{
+  typedef typename transform<UA, minus<int_<0>, _1> >::type type;
+};
+
 template <class UA, class UB>
 struct Multiply
 {
@@ -218,6 +224,7 @@ struct IsNoUnits<O, O, Units >
 
 
 
+
 //! \internal A base class for units
 template <class TagT, int EXPT, class UnitsT>
 class Unit
@@ -279,22 +286,6 @@ public:
   }
 
 
-  template <int OEXP, class OUnits>
-  Unit<Tag, OEXP+EXP,
-       typename internal::Multiply<Units, OUnits>::type >
-  operator*(Unit<Tag, OEXP, OUnits> o) const {
-    return Unit<Tag, OEXP+EXP,
-      typename internal::Multiply<Units, OUnits>::type >(v_*o.v_);
-  }
-
-  template <int OEXP, class OUnits>
-  Unit<Tag, EXP-OEXP,
-       typename internal::Divide<Units, OUnits>::type >
-  operator/(Unit<Tag, OEXP, OUnits> o) const {
-    return Unit<Tag, EXP-OEXP,
-      typename internal::Divide<Units, OUnits>::type > (v_/o.v_);
-  }
-
   This operator+(This o) const {
     return This(v_+o.v_);
   }
@@ -322,58 +313,7 @@ std::ostream &operator<<(std::ostream &out,
 }
 
 
-typedef boost::mpl::vector_c<int> SingletonUnit;
 
-
-
-/** \internal need to be careful of integer division
- */
-template <class Tag, int EXP, class Units>
-Unit<Tag, EXP/2, typename internal::Sqrt<Units>::type >
-sqrt(Unit<Tag, EXP, Units> o) {
-  return Unit<Tag, EXP/2, typename internal::Sqrt<Units>::type >
-    (ExponentialNumber<EXP/2>(std::sqrt(o.get_value())));
-}
-
-/** \internal
- */
-template <class Tag, int EXP, class Units>
-Unit<Tag, EXP*2, typename internal::Multiply<Units, Units>::type >
-square(Unit<Tag, EXP, Units> o) {
-  return Unit<Tag, EXP*2, typename internal::Multiply<Units, Units>::type >
-    (::IMP::square(o.get_value()));
-}
-
-template <class Tag, int EXP, class Units>
-Unit<Tag, EXP, Units >
-operator*(Unit<Tag, EXP, Units> o, double d) {
-  return Unit<Tag, EXP, Units>(d*o.get_value());
-}
-
-template <class Tag, int EXP, class Units>
-Unit<Tag, EXP, Units >
-operator*(double d, Unit<Tag, EXP, Units> o) {
-  return Unit<Tag, EXP, Units>(d*o.get_value());
-}
-
-template <class Tag, int EXP, class Units>
-Unit<Tag, EXP, Units >
-operator/(Unit<Tag, EXP, Units> o, double d) {
-  return Unit<Tag, EXP, Units>(o.get_value()/d);
-}
-
-template <class Tag, int EXP, class Units>
-Unit<Tag, EXP, Units >
-operator/(double d, Unit<Tag, EXP, Units> o) {
-  return Unit<Tag, EXP, Units>(d/o.get_value());
-}
-
-
-template <class Tag, int EXP, int EXP2, class Units>
-Unit<Tag, EXP-EXP2, Units >
-operator/(Unit<Tag, EXP, Units> u, ExponentialNumber<EXP2> o) {
-  return Unit<Tag, EXP-EXP2, Units>(u.get_exponential_value()/o);
-}
 
 // Multiply and divide Unit instantiations
 
@@ -401,6 +341,16 @@ struct Multiply
                          units > type;
 };
 
+template <class U0>
+struct Inverse
+{
+  typedef typename internal::Inverse<typename U0::Units>::type raw_units;
+  typedef typename internal::Normalize<raw_units>::type units;
+  typedef Unit<typename U0::Tag, -U0::EXP,
+                         units > type;
+};
+
+
 template <class U, int E>
 struct Shift
 {
@@ -427,6 +377,93 @@ struct Exchange
                units> type;
 
 };
+
+
+
+
+typedef boost::mpl::vector_c<int> SingletonUnit;
+
+
+
+/** \internal need to be careful of integer division
+ */
+template <class Tag, int EXP, class Units>
+Unit<Tag, EXP/2, typename internal::Sqrt<Units>::type >
+sqrt(Unit<Tag, EXP, Units> o) {
+  return Unit<Tag, EXP/2, typename internal::Sqrt<Units>::type >
+    (ExponentialNumber<EXP/2>(std::sqrt(o.get_value())));
+}
+
+/** \internal
+ */
+template <class Tag, int EXP, class Units>
+typename Multiply<Unit<Tag, EXP, Units> , Unit<Tag, EXP, Units> >::type
+square(Unit<Tag, EXP, Units> o) {
+  return typename Multiply<Unit<Tag, EXP, Units> , Unit<Tag, EXP, Units> >::type
+    (::IMP::square(o.get_value()));
+}
+
+template <class Tag, int EXP, class Units>
+Unit<Tag, EXP, Units >
+operator*(Unit<Tag, EXP, Units> o, double d) {
+  return Unit<Tag, EXP, Units>(d*o.get_value());
+}
+
+template <class Tag, int EXP, class Units>
+Unit<Tag, EXP, Units >
+operator*(double d, Unit<Tag, EXP, Units> o) {
+  return Unit<Tag, EXP, Units>(d*o.get_value());
+}
+
+template <class Tag, int EXP0, int EXP1, class Units0, class Units1>
+typename Multiply<Unit<Tag, EXP0, Units0>,
+                  Unit<Tag, EXP1, Units1> >::type
+operator*(Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
+  return
+    typename Multiply<Unit<Tag, EXP0, Units0>,
+    Unit<Tag, EXP1, Units1> >::type(a.get_value()*b.get_value());
+}
+
+
+template <class Tag, int EXP0, int EXP1, class Units0, class Units1>
+typename Divide<Unit<Tag, EXP0, Units0>,
+                  Unit<Tag, EXP1, Units1> >::type
+operator/(Unit<Tag, EXP0, Units0> a, Unit<Tag, EXP1, Units1> b) {
+ return
+    typename Divide<Unit<Tag, EXP0, Units0>,
+    Unit<Tag, EXP1, Units1> >::type(a.get_value()/b.get_value());
+}
+
+
+template <class Tag, int EXP, class Units>
+Unit<Tag, EXP, Units >
+operator/(Unit<Tag, EXP, Units> o, double d) {
+  return Unit<Tag, EXP, Units>(o.get_value()/d);
+}
+
+template <class Tag, int EXP, class Units>
+typename Inverse<Unit<Tag, EXP, Units> >::type
+operator/(double d, Unit<Tag, EXP, Units> o) {
+  return typename Inverse<Unit<Tag, EXP, Units> >::type(d/o.get_value());
+}
+
+
+template <class Tag, int EXP, int EXP2, class Units>
+Unit<Tag, EXP-EXP2, Units >
+operator/(Unit<Tag, EXP, Units> u, ExponentialNumber<EXP2> o) {
+  return Unit<Tag, EXP-EXP2, Units>(u.get_exponential_value()/o);
+}
+
+template <class Tag, int EXP, int EXP2, class Units>
+Unit<Tag, EXP2-EXP,
+   typename internal::Normalize
+   <typename internal::Inverse<Units>::type>::type>
+operator/(ExponentialNumber<EXP2> o, Unit<Tag, EXP, Units> u) {
+  return Unit<Tag, EXP2-EXP,
+    typename internal::Normalize
+          <typename internal::Inverse<Units>::type>:: type>
+    (o/u.get_exponential_value());
+}
 
 } // namespace unit
 
