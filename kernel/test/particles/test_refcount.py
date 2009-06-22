@@ -69,7 +69,7 @@ class RefCountTests(IMP.test.TestCase):
         del p
         refcnt.assert_number(0)
 
-    def temporarily_disabled_test_delete_model_accessor(self):
+    def test_delete_model_accessor(self):
         "Python Particles from vector accessors should survive model deletion"
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()
