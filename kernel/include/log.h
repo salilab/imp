@@ -30,6 +30,9 @@ IMP_BEGIN_NAMESPACE
     code. Make sure you run your code with the level set to at least
     CHEAP before running your final optimization to make sure that
     \imp is used correctly.
+
+    Use the gdbinit file provided in tools to automatically have gdb
+    break when errors are detected.
  */
 
 //! The log levels supported by IMP
