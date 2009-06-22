@@ -37,7 +37,6 @@ class BrownianDynamics;
    it is used by IMP::atom::BrownianDynamics. It you want to access such
    info from IMP::atom::MolecularDynamics, give us a hollar.
 
-   Times are in femtoseconds and temperature in kelvin.
    \unstable{SimulationInfo}
  */
 class IMPATOMEXPORT SimulationInfo: public Decorator
