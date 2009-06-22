@@ -27,10 +27,9 @@ unit::Shift<unit::Multiply<unit::Pascal,
             -3>::type MillipascalSecond;
 
 
-BrownianDynamics::BrownianDynamics() :
-  dt_(1e7), cur_time_(0),
-  T_(IMP::internal::DEFAULT_TEMPERATURE),
-  max_squared_force_change_(std::numeric_limits<double>::max())
+BrownianDynamics::BrownianDynamics(SimulationInfo si) :
+  max_squared_force_change_(std::numeric_limits<double>::max()),
+  si_(si)
 {
 }
 
@@ -42,11 +41,6 @@ BrownianDynamics::~BrownianDynamics()
 IMP_LIST_IMPL(BrownianDynamics, Particle, particle, Particle*,Particles,
               ,,);
 
-
-void BrownianDynamics::set_time_step(unit::Femtosecond t)
-{
-  dt_= t;
-}
 
 void BrownianDynamics::setup_particles()
 {
@@ -107,7 +101,8 @@ Float BrownianDynamics::optimize(unsigned int max_steps)
 {
  IMP_check(get_model() != NULL, "Must set model before calling optimize",
            ValueException);
- return simulate(cur_time_.get_value()+max_steps*dt_.get_value());
+ return simulate(si_.get_current_time().get_value()
+                 +max_steps*si_.get_maximum_time_step().get_value());
 }
 
 
@@ -204,15 +199,15 @@ double BrownianDynamics::simulate(float max_time)
   setup_particles();
     setup_particles();
   IMP_LOG(TERSE, "Running brownian dynamics on " << get_number_of_particles()
-          << " particles with a step of " << dt_.get_value()
-          << "fs until time " << max_time << std::endl);
+          << " particles with a step of " << si_.get_maximum_time_step()
+          << " until time " << max_time << std::endl);
   algebra::Vector3Ds old_forces, old_coordinates;
-  double dt=dt_.get_value();
+  double dt=si_.get_maximum_time_step().get_value();
   get_model()->evaluate(true);
   copy_coordinates(old_coordinates);
   copy_forces(old_forces);
-  while (cur_time_.get_value() < max_time){
-    dt= std::min(dt, max_time-cur_time_.get_value());
+  while (si_.get_current_time().get_value() < max_time){
+    dt= std::min(dt, max_time-si_.get_current_time().get_value());
     take_step(dt);
     get_model()->evaluate(true);
     bool failed=false;
@@ -236,10 +231,10 @@ double BrownianDynamics::simulate(float max_time)
                     InvalidStateException);
       }
     } else {
-      cur_time_= cur_time_+unit::Femtosecond(dt);
-      dt= std::min(dt_.get_value(),dt*1.3);
+      si_.set_current_time(si_.get_current_time()+unit::Femtosecond(dt));
+      dt= std::min(si_.get_maximum_time_step().get_value(),dt*1.3);
       IMP_LOG(TERSE, "Updating dt to " << dt
-              << " (" << dt_.get_value() << ")" << std::endl);
+              << " (" << si_.get_maximum_time_step() << ")" << std::endl);
       copy_coordinates(old_coordinates);
       copy_forces(old_forces);
       update_states();
@@ -251,7 +246,7 @@ double BrownianDynamics::simulate(float max_time)
 
 unit::Femtojoule BrownianDynamics::kt() const
 {
-  return IMP::unit::Femtojoule(IMP::internal::KB*T_);
+  return IMP::unit::Femtojoule(IMP::internal::KB*si_.get_temperature());
 }
 
 
@@ -281,7 +276,7 @@ unit::Angstrom
 BrownianDynamics
 ::compute_sigma_from_D(unit::SquareCentimeterPerSecond D) const
 {
-  return sqrt(2.0*D*dt_); //6*xi*kb*T_;
+  return sqrt(2.0*D*si_.get_maximum_time_step()); //6*xi*kb*T_;
 }
 
 unit::KilocaloriePerAngstromPerMol BrownianDynamics
@@ -290,7 +285,7 @@ unit::KilocaloriePerAngstromPerMol BrownianDynamics
   // force motion is f*dt_*D/kT
   // sigma*kT/(dt_*D)
   unit::Angstrom s=compute_sigma_from_D(D);
-  unit::Piconewton pn= s*kt()/(dt_*D);
+  unit::Piconewton pn= s*kt()/(si_.get_maximum_time_step()*D);
   unit::YoctoKilocaloriePerAngstrom yc=unit::convert_J_to_Cal(pn);
   return unit::operator*(unit::ATOMS_PER_MOL,yc);
 }

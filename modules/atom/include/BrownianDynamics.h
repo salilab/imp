@@ -12,6 +12,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "Diffusion.h"
+#include "SimulationInfo.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
@@ -19,6 +20,9 @@
 #include <IMP/algebra/Vector3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
+
+// for swig
+class SimulationInfo;
 
 //! Simple Brownian dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
@@ -28,36 +32,24 @@ IMPATOM_BEGIN_NAMESPACE
 
     Particles without optimized x,y,z and nonoptimized D are skipped.
 
+    Currently, rigid bodies are not supported. The necessary information
+    can be found at \xternal{en.wikipedia.org/wiki/Rotational_diffusion,
+    the wikipedia}.
+
     \see Diffusion
   */
 class IMPATOMEXPORT BrownianDynamics : public Optimizer
 {
 public:
   //! Create the optimizer
-  BrownianDynamics();
+  /** */
+  BrownianDynamics(SimulationInfo si);
   virtual ~BrownianDynamics();
 
   IMP_OPTIMIZER(internal::version_info);
 
   //! Simulate until the given time in fs
   double simulate(float time_in_fs);
-
-  //! Set time step in fs
-  void set_time_step_in_femtoseconds(Float t) {
-    set_time_step(unit::Femtosecond(t));
-  }
-
-  //! Time step in fs
-  Float get_time_step_in_femtoseconds() const {
-    return get_time_step_units().get_value();
-  }
-
-  /** In Kelvin*/
-  void set_temperature_in_kelvin(Float t) { set_temperature(unit::Kelvin(t)); }
-  /** In Kelvin */
-  Float get_temperature_in_kelvin() const {
-    return get_temperature_units().get_value();
-  }
 
   //! Estimate the radius of a protein from the mass
   /** Proteins are assumed to be spherical. The density is estimated
@@ -88,16 +80,6 @@ public:
     return get_force_scale_from_D(du).get_value();
   }
 
-  //! Get the current time in femtoseconds
-  Float get_current_time_in_femtoseconds() const {
-    return get_current_time_units().get_value();
-  }
-
-  //! Set the current time in femtoseconds
-  void set_current_time_in_femptoseconds(Float fs) {
-    set_current_time( unit::Femtosecond(fs));
-  }
-
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 
 
@@ -111,19 +93,11 @@ private:
   void copy_coordinates(algebra::Vector3Ds &v) const;
   void revert_coordinates(algebra::Vector3Ds &v);
 
-  unit::Femtosecond get_time_step_units() const {return dt_;}
-
   void take_step(double dt);
 
   unit::Femtojoule kt() const;
 
   void setup_particles();
-
-  void set_time_step(unit::Femtosecond t);
-
-  void set_temperature(unit::Kelvin t) { T_=t;}
-
-  unit::Kelvin get_temperature_units() const { return T_;}
 
   static unit::Angstrom
     estimate_radius_from_mass_units(unit::Kilodalton mass_in_kd);
@@ -134,18 +108,9 @@ private:
   unit::KilocaloriePerAngstromPerMol
     get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const;
 
-  unit::Femtosecond get_current_time_units() const {
-    return cur_time_;
-  }
 
-  //! Set the current time in femtoseconds
-  void set_current_time(unit::Femtosecond fs) {
-    cur_time_= fs;
-  }
-
-  unit::Femtosecond dt_, cur_time_;
-  unit::Kelvin T_;
   double max_squared_force_change_;
+  SimulationInfo si_;
 };
 
 IMPATOM_END_NAMESPACE
