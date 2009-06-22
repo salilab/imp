@@ -40,7 +40,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.load_protein("1z5s_A.pdb")
 
     def test_local_fitting(self):
-        """Check that the local rigid fitting functionality works"""
+        """Check that the local rigid fitting grid search works"""
         #create a rigid body
         fr = IMP.em.FittingSolutions()
         print "start : "
