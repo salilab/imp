@@ -181,14 +181,14 @@ IMPEXPORT void set_print_exceptions(bool tf);
 #endif
 
 //! This is just here so you can catch errors more easily in the debugger
-/** Break on exception.cpp:31 to catch assertion failures.
-    \ingroup assert
+/** Use the provide gdbinit in the tools to automatically break in
+    this function.
  */
 IMPEXPORT void assert_fail(const char *msg);
 
 //! Here so you can catch check failures more easily in the debugger
-/** Break on exception.cpp:35 to catch check failures.
-    \ingroup assert
+/** Use the provide gdbinit in the tools to automatically break in
+    this function.
  */
 IMPEXPORT void check_fail(const char *msg);
 
@@ -260,6 +260,8 @@ IMPEXPORT void check_fail(const char *msg);
     throw ExceptionType(oss.str().c_str());}
 
 //! Use this to make that the method is not implemented yet
+/** \ingroup assert
+ */
 #define IMP_not_implemented IMP::assert_fail("This method is not implemented.");
 
 IMP_END_NAMESPACE
