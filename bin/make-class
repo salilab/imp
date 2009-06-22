@@ -80,16 +80,17 @@ def main():
         exit(1)
     modulename = sys.argv[1]
     classname =sys.argv[2]
-    if len(sys.argv) >3:
-        type= sys.argv[3]
-        typemacro= "IMP_"+type.upper()+"("+ucclassname +", internal::version_info)"
-    else:
-        type="RefCountedObject"
-        typemacro=""
-    print "Adding "+classname+" to " + modulename
     ccclassname= classname.replace(" ", "")
     ucclassname= classname.upper().replace(" ", "_")
     ucmodname= modulename.upper()
+
+    if len(sys.argv) >3:
+        type= sys.argv[3]
+        typemacro= "IMP_"+type.upper()+"("+ccclassname +", internal::version_info)"
+    else:
+        type="RefCountedObject"
+        typemacro="IMP_REF_COUNTED_DESTRUCTOR("+ccclassname+")"
+    print "Adding "+classname+" to " + modulename
     header=rawheader.replace("ClassName", ccclassname)\
         .replace("modulename", modulename)\
         .replace("CLASS_NAME", ucclassname)\
