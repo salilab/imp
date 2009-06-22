@@ -1,7 +1,25 @@
-// Make sure that we refcount any pointers to TYPE (e.g. IMP::Particle)
-// returned from C++ methods.
-%define IMP_REFCOUNT_RETURN(TYPE)
+// IMP methods that return pointers to IMP objects (e.g. IMP::Particle)
+// always return 'weak' pointers (known to Python as "borrowed references").
+// It is the responsibility of the caller to handle the reference count.
+// Thus, when we create a SWIG Python proxy of any such object, we should
+// make sure that we increase the reference count so that C++ does not
+// free the object while we have a Python reference to it.
 
+// There are two functions defined here which should be used for any IMP
+// refcounted type that is returned from IMP methods:
+
+// IMP_REFCOUNT_RETURN(TYPE) should be used for types that can be returned
+//     either by regular methods or by iterators. Typically this is any type
+//     that is used in an IMP_LIST or a std::vector (e.g. Particles,
+//     Restraints, ScoreStates). If in doubt, use this function.
+
+// IMP_REFCOUNT_RETURN_SINGLE(TYPE) should be used for types that are never used
+//     in an iterator. Use this if you tried IMP_REFCOUNT_RETURN(TYPE) and it
+//     failed to compile with an error like
+//     'type_name' is not a member of 'swig::traits<TYPE>'
+
+
+%define IMP_REFCOUNT_RETURN_SINGLE(TYPE)
 // If a C++ method returns a pointer to TYPE, increase its reference count
 // so that the object is not deleted while Python holds a pointer to it.
 // Take ownership of the pointer (SWIG_POINTER_OWN) so that SWIG calls unref
@@ -14,6 +32,11 @@
    }
    %set_output(SWIG_NewPointerObj(%as_voidptr($1), $descriptor(TYPE *), $owner | SWIG_POINTER_OWN));
 }
+%enddef
+
+
+%define IMP_REFCOUNT_RETURN(TYPE)
+IMP_REFCOUNT_RETURN_SINGLE(TYPE)
 
 // Specialize the traits_from class to do the same thing as the out typemap.
 // This class is used by swig::from(), which is primarily used by SWIG
