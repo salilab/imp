@@ -31,7 +31,7 @@ class SampleParticlesTest(IMP.test.TestCase):
         scene.std_normalize()
 
         erw = IMP.em.EMReaderWriter()
-        scene.Write(out_filename,erw)
+        IMP.em.write_map(scene, out_filename, erw)
         # make sure that the output file is created
         os.unlink(out_filename)
 
