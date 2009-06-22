@@ -26,7 +26,9 @@ class MCOptimizerTest(IMP.test.TestCase):
     def test_step_size(self):
         """Testing the step size invariance of free diffusion"""
         m= IMP.Model()
-        bd= IMP.atom.BrownianDynamics()
+        si=IMP.atom.SimulationInfo.create(IMP.Particle(m), 1e3)
+        si.show()
+        bd= IMP.atom.BrownianDynamics(si)
         bd.set_model(m)
         radius=2
         ps= IMP.core.create_xyzr_particles(m, 1000, radius)
@@ -35,19 +37,19 @@ class MCOptimizerTest(IMP.test.TestCase):
             d.set_D_from_radius_in_angstroms(radius)
             d.set_coordinates_are_optimized(True)
             d.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-        bd.set_time_step_in_femtoseconds(1e4)
+        si.set_maximum_time_step_in_femtoseconds(1e4)
         IMP.set_log_level(IMP.SILENT)
         bd.set_log_level(IMP.TERSE)
         bd.optimize(1000)
-        print "time is " + str(bd.get_current_time_in_femtoseconds())
+        print "time is " + str(si.get_current_time_in_femtoseconds())
         moments= self._compute_moments(ps)
         print moments
         for p in ps:
             d= IMP.atom.Diffusion(p.get_particle())
             d.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-        bd.set_time_step_in_femtoseconds(1e7)
+        si.set_maximum_time_step_in_femtoseconds(1e7)
         bd.optimize(1)
-        print bd.get_current_time_in_femtoseconds()
+        print si.get_current_time_in_femtoseconds()
         big_moments= self._compute_moments(ps)
         print big_moments
         for i in range(0,3):
