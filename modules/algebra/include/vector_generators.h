@@ -159,7 +159,7 @@ random_vector_in_sphere(const VectorD<D> &center,
 template <unsigned int D>
 VectorD<D>
 random_vector_in_unit_sphere(){
-  return random_vector_in_sphere(VectorD<D>(0,0,0), 1);
+  return random_vector_in_sphere(zeros<D>(), 1);
 }
 
 //! Generate a random vector on a sphere with uniform density
