@@ -28,8 +28,6 @@
 IMPATOM_BEGIN_NAMESPACE
 
 
-class BrownianDynamics;
-
 //! A decorator for a particle storing parameters of the current simulation.
 /**
    This particle stores parametersrmation about the current state of a
@@ -41,14 +39,14 @@ class BrownianDynamics;
  */
 class IMPATOMEXPORT SimulationParameters: public Decorator
 {
-  friend class BrownianDynamics;
 public:
   IMP_DECORATOR(SimulationParameters, Decorator)
 
   /** Create a decorator. Bad constructor, be careful not to switch
       values.*/
-    static SimulationParameters create(Particle *p, double time_step,
-                                 double T
+    static SimulationParameters create(Particle *p,
+                                       double time_step=1e3,
+                                       double T
 #ifndef SWIG
                                  =IMP::internal::DEFAULT_TEMPERATURE.get_value()
 #else
@@ -92,7 +90,9 @@ public:
   static FloatKey get_maximum_time_step_key();
 
   static FloatKey get_temperature_key();
- private:
+
+#ifndef IMP_DOXYGEN
+#ifndef SWIG
   unit::Femtosecond get_current_time() const {
     return unit::Femtosecond(get_current_time_in_femtoseconds());
   }
@@ -108,6 +108,8 @@ public:
   void set_current_time(unit::Femtosecond t) {
     set_current_time_in_femtoseconds(t.get_value());
   }
+#endif
+#endif
 };
 
 IMP_OUTPUT_OPERATOR(SimulationParameters);
