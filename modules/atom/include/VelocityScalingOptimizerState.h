@@ -28,9 +28,6 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState
  public:
   VelocityScalingOptimizerState(const Particles &pis, Float temperature,
                                 unsigned skip_steps);
-  virtual ~VelocityScalingOptimizerState() {}
-
-  IMP_OPTIMIZER_STATE(internal::version_info)
 
   //! Set the number of update calls to skip between rescaling.
   void set_skip_steps(unsigned skip_steps) {
@@ -49,6 +46,9 @@ class IMPATOMEXPORT VelocityScalingOptimizerState : public OptimizerState
 
   //! Rescale the velocities now
   void rescale_velocities() const;
+
+  IMP_OPTIMIZER_STATE(VelocityScalingOptimizerState,
+                      internal::version_info)
 
 private:
   Particles pis_;

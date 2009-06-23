@@ -38,14 +38,12 @@ public:
   PDBOptimizerState(const atom::Hierarchies &mh,
                     std::string name_template);
 
-  virtual ~PDBOptimizerState();
-
   //! Set the number of steps to skip
   void set_skip_steps(unsigned int i) {
     skip_steps_=i;
   }
 
-  IMP_OPTIMIZER_STATE(internal::version_info)
+  IMP_OPTIMIZER_STATE(PDBOptimizerState, internal::version_info)
 };
 
 
