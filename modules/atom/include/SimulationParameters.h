@@ -102,11 +102,14 @@ public:
   unit::Femtosecond get_maximum_time_step() const {
     return unit::Femtosecond(get_maximum_time_step_in_femtoseconds());
   }
+  void set_maximum_time_step(unit::Femtosecond ts) {
+    set_maximum_time_step_in_femtoseconds(unit::strip_units(ts));
+  }
   unit::Kelvin get_temperature() const {
     return unit::Kelvin(get_temperature_in_kelvin());
   }
   void set_current_time(unit::Femtosecond t) {
-    set_current_time_in_femtoseconds(t.get_value());
+    set_current_time_in_femtoseconds(unit::strip_units(t));
   }
 #endif
 #endif
