@@ -244,6 +244,13 @@ Bonds get_internal_bonds(Hierarchy mhd)
 }
 
 
+
+FloatKey Hierarchy::get_mass_key() {
+  static FloatKey k("hierarchy_mass");
+  return k;
+}
+
+
 /*
   Volume of two spheres overlap is
   Vi= pi*(r0+r1-d)^2*(d^2+2*d*r1-3*r1^2+2*d*r0+6*r0*r1-3*r0^2)/(12*d)

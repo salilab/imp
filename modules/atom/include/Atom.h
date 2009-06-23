@@ -277,8 +277,6 @@ public:
   IMP_DECORATOR_GET_SET_OPT(element, get_element_key(),
                             Int, Int, 0);
 
-  IMP_DECORATOR_GET_SET_OPT(mass, get_mass_key(),
-                            Float, Float, 0);
   /** @name The atom index in the input file
       This index is not necessarily unique over any particular
       set of atoms and so should never be used as an atom identifier
@@ -306,8 +304,6 @@ public:
   static IntKey get_type_key();
 
   static IntKey get_element_key();
-
-  static FloatKey get_mass_key();
 
   static FloatKey get_charge_key();
 

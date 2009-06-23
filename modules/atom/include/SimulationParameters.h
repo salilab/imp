@@ -1,12 +1,12 @@
 /**
- *  \file SimulationInfo.h     \brief Simple atom decorator.
+ *  \file SimulationParameters.h     \brief Simple atom decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#ifndef IMPATOM_SIMULATION_INFO_H
-#define IMPATOM_SIMULATION_INFO_H
+#ifndef IMPATOM_SIMULATION_PARAMETERS_H
+#define IMPATOM_SIMULATION_PARAMETERS_H
 
 #include "config.h"
 #include "macros.h"
@@ -30,24 +30,24 @@ IMPATOM_BEGIN_NAMESPACE
 
 class BrownianDynamics;
 
-//! A decorator for a particle storing info about the current simulation.
+//! A decorator for a particle storing parameters of the current simulation.
 /**
-   This particle stores information about the current state of a
+   This particle stores parametersrmation about the current state of a
    simulation in a form that can be accessed by other objects. Currently,
    it is used by IMP::atom::BrownianDynamics. It you want to access such
-   info from IMP::atom::MolecularDynamics, give us a hollar.
+   parameters from IMP::atom::MolecularDynamics, give us a hollar.
 
-   \unstable{SimulationInfo}
+   \unstable{SimulationParameters}
  */
-class IMPATOMEXPORT SimulationInfo: public Decorator
+class IMPATOMEXPORT SimulationParameters: public Decorator
 {
   friend class BrownianDynamics;
 public:
-  IMP_DECORATOR(SimulationInfo, Decorator)
+  IMP_DECORATOR(SimulationParameters, Decorator)
 
   /** Create a decorator. Bad constructor, be careful not to switch
       values.*/
-    static SimulationInfo create(Particle *p, double time_step,
+    static SimulationParameters create(Particle *p, double time_step,
                                  double T
 #ifndef SWIG
                                  =IMP::internal::DEFAULT_TEMPERATURE.get_value()
@@ -110,10 +110,10 @@ public:
   }
 };
 
-IMP_OUTPUT_OPERATOR(SimulationInfo);
+IMP_OUTPUT_OPERATOR(SimulationParameters);
 
-typedef Decorators<SimulationInfo, Decorator> SimulationInfos;
+typedef Decorators<SimulationParameters, Decorator> SimulationParameterss;
 
 IMPATOM_END_NAMESPACE
 
-#endif  /* IMPATOM_SIMULATION_INFO_H */
+#endif  /* IMPATOM_SIMULATION_PARAMETERS_H */

@@ -16,7 +16,7 @@ files = [
          'Hierarchy.cpp',
          'MolecularDynamics.cpp',
          'Residue.cpp',
-         'SimulationInfo.cpp',
+         'SimulationParameters.cpp',
          'VelocityScalingOptimizerState.cpp',
          'bond_decorators.cpp',
          'bond_graph.cpp',

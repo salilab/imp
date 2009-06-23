@@ -15,7 +15,7 @@ files = [
          'Hierarchy.h',
          'MolecularDynamics.h',
          'Residue.h',
-         'SimulationInfo.h',
+         'SimulationParameters.h',
          'VelocityScalingOptimizerState.h',
          'bond_decorators.h',
          'bond_graph.h',
