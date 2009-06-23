@@ -201,7 +201,7 @@ class Decorators: public ParentDecorators {
               ValueException);
     ParentDecorators::push_back(p);
   }
-  const Decorator operator[](unsigned int i) const {
+  Decorator operator[](unsigned int i) const {
     return Decorator(ParentDecorators::operator[](i));
   }
   void set(unsigned int i, Decorator d) {
@@ -321,7 +321,7 @@ public:
               ValueException);
     ParentDecorators::push_back(p);
   }
-  const Decorator operator[](unsigned int i) const {
+  Decorator operator[](unsigned int i) const {
     return Decorator(ParentDecorators::operator[](i), tr_);
   }
   void set(unsigned int i, Decorator d) {
