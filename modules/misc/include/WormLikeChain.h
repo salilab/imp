@@ -42,8 +42,8 @@ public:
 private:
   unit::Piconewton cderiv(unit::Angstrom l) const {
     unit::Piconewton pn= IMP::internal::KB*IMP::internal::DEFAULT_TEMPERATURE
-      /lp_*(.25/ square(1.0-(l/lmax_).get_normalized_value())
-            -.25+(l/lmax_).to_scalar());
+      /lp_*(.25/ square(1.0-(l/lmax_))
+            -.25+(l/lmax_));
      return pn;
   }
 
