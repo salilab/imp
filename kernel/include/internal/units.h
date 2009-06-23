@@ -215,7 +215,7 @@ operator*(internal::AtomsPerMol,
 
   // define moles
 typedef Unit<internal::MolarTag, 0, SingletonUnit> Molar;
-typedef Unit<internal::MolarTag, -6, SingletonUnit> MicroMolar;
+typedef Unit<internal::MolarTag, -6, SingletonUnit> Micromolar;
 
 template <int E>
 Unit<internal::MolarTag, E, SingletonUnit>
