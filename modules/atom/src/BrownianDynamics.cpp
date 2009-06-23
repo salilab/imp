@@ -15,6 +15,7 @@
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
+#include <IMP/core/ListSingletonContainer.h>
 
 #include <cmath>
 #include <limits>
@@ -27,10 +28,12 @@ unit::Shift<unit::Multiply<unit::Pascal,
             -3>::type MillipascalSecond;
 
 
-BrownianDynamics::BrownianDynamics(SimulationParameters si) :
+BrownianDynamics::BrownianDynamics(SimulationParameters si,
+                                   SingletonContainer *sc) :
   max_squared_force_change_(std::numeric_limits<double>::max()),
   si_(si)
 {
+  if (sc) sc_=sc;
 }
 
 
@@ -38,43 +41,56 @@ BrownianDynamics::~BrownianDynamics()
 {
 }
 
-IMP_LIST_IMPL(BrownianDynamics, Particle, particle, Particle*,Particles,
-              ,,);
-
-
-void BrownianDynamics::setup_particles()
+SingletonContainer *BrownianDynamics::setup_particles()
 {
-  clear_particles();
-  for (Model::ParticleIterator it = get_model()->particles_begin();
-       it != get_model()->particles_end(); ++it) {
-    Particle *p = *it;
-    Diffusion d= Diffusion::cast(p);
-    if (d && d.get_coordinates_are_optimized()) {
-      add_particle(p);
+  if (sc_) {
+    // check them
+    for (SingletonContainer::ParticleIterator it= sc_->particles_begin();
+         it != sc_->particles_end(); ++it) {
+      IMP_check(Diffusion::is_instance_of(*it),
+                "Particles must be Diffusion particles to be used in "
+                << "Brownian dynamics. Particle "<< (*it)->get_name()
+                << " is not.",
+                InvalidStateException);
     }
+    return sc_;
+  } else {
+    core::ListSingletonContainer *lsc= new core::ListSingletonContainer();
+    for (Model::ParticleIterator it = get_model()->particles_begin();
+         it != get_model()->particles_end(); ++it) {
+      Particle *p = *it;
+      Diffusion d= Diffusion::cast(p);
+      if (d && d.get_coordinates_are_optimized()) {
+        lsc->add_particle(p);
+      }
+    }
+    return lsc;
   }
 }
 
 
-void BrownianDynamics::copy_forces(algebra::Vector3Ds &v) const {
-  v.resize(get_number_of_particles());
-  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
-    core::XYZ d(get_particle(i));
+void BrownianDynamics::copy_forces(SingletonContainer *sc,
+                                   algebra::Vector3Ds &v) const {
+  v.resize(sc->get_number_of_particles());
+  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
+    core::XYZ d(sc->get_particle(i));
     v[i]= d.get_derivatives();
   }
 }
 
-void BrownianDynamics::copy_coordinates(algebra::Vector3Ds &v) const {
-  v.resize(get_number_of_particles());
-  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
-    core::XYZ d(get_particle(i));
+void BrownianDynamics::copy_coordinates(SingletonContainer *sc,
+                                        algebra::Vector3Ds &v) const {
+  v.resize(sc->get_number_of_particles());
+  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
+    core::XYZ d(sc->get_particle(i));
     v[i]= d.get_coordinates();
   }
 }
 
-void BrownianDynamics::revert_coordinates(algebra::Vector3Ds &v) {
-  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
-    core::XYZ d(get_particle(i));
+void BrownianDynamics::revert_coordinates(SingletonContainer *sc,
+                                          algebra::Vector3Ds &v) {
+  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
+    core::XYZ d(sc->get_particle(i));
     d.set_coordinates(v[i]);
   }
 }
@@ -106,10 +122,10 @@ Float BrownianDynamics::optimize(unsigned int max_steps)
 }
 
 
-void BrownianDynamics::take_step(double dt) {
+void BrownianDynamics::take_step(SingletonContainer *sc, double dt) {
   IMP_LOG(TERSE, "dt is " << dt << std::endl);
-  for (unsigned int i=0; i< get_number_of_particles(); ++i) {
-    Particle *p= get_particle(i);
+  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
+    Particle *p= sc->get_particle(i);
     IMP::core::XYZ d(p);
     IMP_IF_CHECK(CHEAP) {
       for (unsigned int j=0; j< 3; ++j) {
@@ -165,7 +181,7 @@ void BrownianDynamics::take_step(double dt) {
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
       unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*D/kt());
-      if (force_term > 5*sigma) {
+      if (force_term > 5.0*sigma) {
         IMP_WARN("Forces are too high to stably integrate: "
                  << p->get_name());
       }
@@ -196,33 +212,34 @@ double BrownianDynamics::simulate(float max_time)
   IMP_OBJECT_LOG;
   IMP_check(get_model() != NULL, "Must set model before calling simulate",
             ValueException);
-  setup_particles();
-    setup_particles();
-  IMP_LOG(TERSE, "Running brownian dynamics on " << get_number_of_particles()
+  Pointer<SingletonContainer> sc
+    = Pointer<SingletonContainer>(setup_particles());
+  IMP_LOG(TERSE, "Running brownian dynamics on "
+          << sc->get_number_of_particles()
           << " particles with a step of " << si_.get_maximum_time_step()
           << " until time " << max_time << std::endl);
   algebra::Vector3Ds old_forces, old_coordinates;
   double dt=si_.get_maximum_time_step().get_value();
   get_model()->evaluate(true);
-  copy_coordinates(old_coordinates);
-  copy_forces(old_forces);
+  copy_coordinates(sc, old_coordinates);
+  copy_forces(sc, old_forces);
   while (si_.get_current_time().get_value() < max_time){
     dt= std::min(dt, max_time-si_.get_current_time().get_value());
-    take_step(dt);
+    take_step(sc, dt);
     get_model()->evaluate(true);
     bool failed=false;
-    for (unsigned int i=0; i< get_number_of_particles(); ++i) {
-      core::XYZ d(get_particle(i));
+    for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
+      core::XYZ d(sc->get_particle(i));
       algebra::Vector3D diff= old_forces[i]- d.get_derivatives();
       if (diff.get_squared_magnitude() > max_squared_force_change_) {
         IMP_LOG(TERSE, "Reducing step size because of particle "
-                << get_particle(i)->get_name() << std::endl);
+                << sc->get_particle(i)->get_name() << std::endl);
         failed=true;
         break;
       }
     }
     if (failed) {
-      revert_coordinates(old_coordinates);
+      revert_coordinates(sc, old_coordinates);
       get_model()->evaluate(true);
       dt/=2.0;
       if (dt < 1e-20) {
@@ -235,9 +252,9 @@ double BrownianDynamics::simulate(float max_time)
       dt= std::min(si_.get_maximum_time_step().get_value(),dt*1.3);
       IMP_LOG(TERSE, "Updating dt to " << dt
               << " (" << si_.get_maximum_time_step() << ")" << std::endl);
-      copy_coordinates(old_coordinates);
-      copy_forces(old_forces);
       update_states();
+      copy_coordinates(sc, old_coordinates);
+      copy_forces(sc, old_forces);
     }
   }
   return get_model()->evaluate(false);
