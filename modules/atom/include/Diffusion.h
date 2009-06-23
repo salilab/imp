@@ -37,8 +37,8 @@ class IMPATOMEXPORT Diffusion:
       D is assumed to be in cm2/sec.
   */
   static Diffusion create(Particle *p,
-                             const algebra::Vector3D &v,
-                                   Float D) {
+                          const algebra::Vector3D &v,
+                          Float D) {
     XYZ::create(p, v);
     p->add_attribute(get_D_key(), D);
     return Diffusion(p);
@@ -49,7 +49,7 @@ class IMPATOMEXPORT Diffusion:
       is assumed to already have x,y,z attributes
   */
   static Diffusion create(Particle *p,
-                                   Float D=0) {
+                          Float D=0) {
     IMP_check(XYZ::is_instance_of(p),
               "Particle must already be an XYZ particle",
               ValueException);
@@ -76,10 +76,16 @@ class IMPATOMEXPORT Diffusion:
   }
 
 #ifndef SWIG
+#ifndef IMP_DOXYGEN
   unit::SquareCentimeterPerSecond get_D() const {
     return
       unit::SquareCentimeterPerSecond(get_particle()->get_value(get_D_key()));
   }
+
+  void set_D(unit::SquareCentimeterPerSecond D) {
+    set_D_in_cm2_per_second(D.get_value());
+  }
+#endif
 #endif
 
   //! Get the D key
