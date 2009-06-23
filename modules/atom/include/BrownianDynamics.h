@@ -12,7 +12,7 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "Diffusion.h"
-#include "SimulationInfo.h"
+#include "SimulationParameters.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
@@ -22,7 +22,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 // for swig
-class SimulationInfo;
+class SimulationParameters;
 
 //! Simple Brownian dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
@@ -43,7 +43,7 @@ class IMPATOMEXPORT BrownianDynamics : public Optimizer
 public:
   //! Create the optimizer
   /** */
-  BrownianDynamics(SimulationInfo si);
+  BrownianDynamics(SimulationParameters si);
   virtual ~BrownianDynamics();
 
   IMP_OPTIMIZER(internal::version_info);
@@ -110,7 +110,7 @@ private:
 
 
   double max_squared_force_change_;
-  SimulationInfo si_;
+  SimulationParameters si_;
 };
 
 IMPATOM_END_NAMESPACE

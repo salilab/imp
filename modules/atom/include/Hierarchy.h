@@ -238,6 +238,11 @@ public:
   Hierarchies get_children() const;
 #endif
 
+  IMP_DECORATOR_GET_SET_OPT(mass, get_mass_key(),
+                            Float, Float, 0);
+
+  static FloatKey get_mass_key();
+
   /** Get the parent particle. */
   Hierarchy get_parent() const {
     IMP::core::Hierarchy hd= P::get_parent();

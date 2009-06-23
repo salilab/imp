@@ -500,11 +500,6 @@ IntKey Atom::get_element_key() {
   return k;
 }
 
-FloatKey Atom::get_mass_key() {
-  static FloatKey k("atom_mass");
-  return k;
-}
-
 FloatKey Atom::get_charge_key() {
   static FloatKey k("atom_charge");
   return k;

@@ -26,7 +26,7 @@ class MCOptimizerTest(IMP.test.TestCase):
     def test_step_size(self):
         """Testing the step size invariance of free diffusion"""
         m= IMP.Model()
-        si=IMP.atom.SimulationInfo.create(IMP.Particle(m), 1e3)
+        si=IMP.atom.SimulationParameters.create(IMP.Particle(m), 1e3)
         si.show()
         bd= IMP.atom.BrownianDynamics(si)
         bd.set_model(m)

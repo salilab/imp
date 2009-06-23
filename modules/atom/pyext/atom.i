@@ -47,7 +47,7 @@
 %include "IMP/atom/selectors.h"
 %include "IMP/atom/pdb.h"
 %include "IMP/atom/Fragment.h"
-%include "IMP/atom/SimulationInfo.h"
+%include "IMP/atom/SimulationParameters.h"
 
 
 namespace IMP {
@@ -83,6 +83,6 @@ namespace IMP {
    IMP_DECORATORS(Bond, Bonds, Particles)
    IMP_DECORATORS(Bonded, Bondeds, Particles)
    IMP_DECORATORS(Diffusion, Diffusions, core::XYZs)
-   IMP_DECORATORS(SimulationInfo, SimulationInfos, Particles)
+   IMP_DECORATORS(SimulationParameters, SimulationParameterss, Particles)
   }
 }

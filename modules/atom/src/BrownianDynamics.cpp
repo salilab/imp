@@ -27,7 +27,7 @@ unit::Shift<unit::Multiply<unit::Pascal,
             -3>::type MillipascalSecond;
 
 
-BrownianDynamics::BrownianDynamics(SimulationInfo si) :
+BrownianDynamics::BrownianDynamics(SimulationParameters si) :
   max_squared_force_change_(std::numeric_limits<double>::max()),
   si_(si)
 {
