@@ -428,9 +428,9 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
-# 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class is
-#    renamed with a module-specific prefix, to avoid collisions when using
-#    multiple modules
+# 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
+#    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
+#    prefix, to avoid collisions when using multiple modules
 # 2. If module names contain '.' characters, SWIG emits these into the CPP
 #    macros used in the director header. Work around this by replacing them
 #    with '_'. A longer term fix is not to call our modules "IMP.foo" but
@@ -446,10 +446,12 @@ class _swig_postprocess(object):
             path = t.path
             if path.endswith('.cc'):
                 lines = file(path, 'r').readlines()
-                repl = '"swig::IMP%s_PySwigIterator *"' % self.modprefix
+                repl1 = '"swig::IMP%s_PySwigIterator *"' % self.modprefix
+                repl2 = '"swig::IMP%s_SwigPyIterator *"' % self.modprefix
                 fh = file(path, 'w')
                 for line in lines:
-                    fh.write(line.replace('"swig::PySwigIterator *"', repl))
+                    line = line.replace('"swig::PySwigIterator *"', repl1)
+                    fh.write(line.replace('"swig::SwigPyIterator *"', repl2))
                 fh.close()
             elif path.endswith('.h'):
                 lines = file(path, 'r').readlines()
@@ -474,7 +476,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
 
     if cplusplus and isinstance(e['SWIGCOM'], str):
         # See _swig_postprocess class comments:
-        repl = '$SWIG -DPySwigIterator=IMP%s_PySwigIterator ' % mod_prefix
+        repl = '$SWIG -DPySwigIterator=IMP%s_PySwigIterator ' % mod_prefix \
+               + '-DSwigPyIterator=IMP%s_SwigPyIterator ' % mod_prefix
         e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
         if not env.get('deprecated', "True"):
             repl = '$SWIG '
