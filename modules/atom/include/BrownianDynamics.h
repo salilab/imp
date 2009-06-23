@@ -36,14 +36,29 @@ class SimulationParameters;
     can be found at \xternal{en.wikipedia.org/wiki/Rotational_diffusion,
     the wikipedia}.
 
+    BrownianDynamics uses a SimulationParameters particle to store the
+    parameters of the simulation. Such a particle must be passed on
+    creation. The BrownianDynamics object will at least see updates
+    to the SimulationParamters particle which occur before the
+    call to BrownianDynamics::optimize() or BrownianDynamics::simulate(),
+    changing the the parameters during optimization has undefined
+    results.
+
+    The optimizer can either automatically determine which particles
+    to use from the model or be passed a SingletonContainer for the
+    particles. If such a container is passed, particles added to it
+    during optimization state updates are handled properly.
+
     \see Diffusion
   */
 class IMPATOMEXPORT BrownianDynamics : public Optimizer
 {
 public:
   //! Create the optimizer
-  /** */
-  BrownianDynamics(SimulationParameters si);
+  /** If sc is not null, that container will be used to find particles
+      to move, otherwise the model will be searched.*/
+  BrownianDynamics(SimulationParameters si,
+                   SingletonContainer *sc=NULL);
   virtual ~BrownianDynamics();
 
   IMP_OPTIMIZER(internal::version_info);
@@ -80,24 +95,21 @@ public:
     return get_force_scale_from_D(du).get_value();
   }
 
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
-
-
   void set_max_force_change(double df) {
     IMP_check(df > 0, "The max change must be positive",
               ValueException);
     max_squared_force_change_=square(df);
   }
 private:
-  void copy_forces(algebra::Vector3Ds &v) const;
-  void copy_coordinates(algebra::Vector3Ds &v) const;
-  void revert_coordinates(algebra::Vector3Ds &v);
+  void copy_forces(SingletonContainer* sc, algebra::Vector3Ds &v) const;
+  void copy_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v) const;
+  void revert_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v);
 
-  void take_step(double dt);
+  void take_step(SingletonContainer *sc, double dt);
 
   unit::Femtojoule kt() const;
 
-  void setup_particles();
+  SingletonContainer* setup_particles();
 
   static unit::Angstrom
     estimate_radius_from_mass_units(unit::Kilodalton mass_in_kd);
@@ -111,6 +123,7 @@ private:
 
   double max_squared_force_change_;
   SimulationParameters si_;
+  Pointer<SingletonContainer> sc_;
 };
 
 IMPATOM_END_NAMESPACE
