@@ -258,14 +258,15 @@ public:
   template <int OEXP>
   Unit(Unit<Tag, OEXP, Units> o): v_(o.v_) {}
 
-  double to_scalar() const {
+  operator double() const {
     BOOST_STATIC_ASSERT((internal::IsNoUnits<0,
                          boost::mpl::size<Units>::type::value, Units>::value));
-    return get_normalized_value();
+    return v_.get_normalized_value();
   }
 
   IMP_COMPARISONS_1(v_);
 
+#ifndef IMP_DOXYGEN
   //! Get the current value
   /** \note The value returned is the value before it is multiplied
       by the appropriate power of 10. That means, 1 Angstrom returns 1,
@@ -274,16 +275,11 @@ public:
   double get_value() const {
     return v_.get_value();
   }
-  //! Get the value with the proper exponent
-  /** 1 Angstrom returns 1e-10.
-   */
-  double get_normalized_value() const {
-    return v_.get_normalized_value();
-  }
 
   V get_exponential_value() const {
     return v_;
   }
+#endif
 
 
   This operator+(This o) const {
@@ -412,6 +408,11 @@ operator*(Unit<Tag, EXP, Units> o, double d) {
 template <class Tag, int EXP, class Units>
 Unit<Tag, EXP, Units >
 operator*(double d, Unit<Tag, EXP, Units> o) {
+  return Unit<Tag, EXP, Units>(d*o.get_value());
+}
+template <class Tag, int EXP, class Units>
+Unit<Tag, EXP, Units >
+operator*(int d, Unit<Tag, EXP, Units> o) {
   return Unit<Tag, EXP, Units>(d*o.get_value());
 }
 

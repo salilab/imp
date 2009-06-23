@@ -237,7 +237,7 @@ Unit<internal::MKSTag,E1+23-3,boost::mpl::vector_c<int, 0,-3,0,0,0>  >
 density_from_molarity(Unit<internal::MolarTag, E1, SingletonUnit> molar) {
   Unit<internal::MKSTag,E1+23, boost::mpl::vector_c<int, 0,-3,0,0,0>  >
     count_per_liter(molar.get_exponential_value()*NA);
-  return count_per_liter*1000;
+  return count_per_liter*1000.0;
 }
 
 // define Daltons
@@ -257,6 +257,12 @@ convert_to_Dalton(Unit<internal::MKSTag, EXP, Mass> d) {
   return Unit<internal::DaltonTag,
     EXP+26, SingletonUnit>(d.get_value()*NA.get_value());
 }
+
+template <class TagT, int EXPT, class UnitsT>
+double strip_units(Unit<TagT, EXPT, UnitsT> u) {
+  return u.get_value();
+}
+
 
 } // namespace unit
 
