@@ -17,8 +17,6 @@ PDBOptimizerState::PDBOptimizerState(
   step_(0), skip_steps_(0), name_template_(name),  mh_(mh){
 }
 
-PDBOptimizerState::~PDBOptimizerState(){}
-
 void PDBOptimizerState::show(std::ostream &out) const {
   out << "PDBOptimizerState" << std::endl;
 }

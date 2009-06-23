@@ -15,8 +15,6 @@ LogOptimizerState::LogOptimizerState(Writer *w, std::string name ):
   writer_(w), step_(0), skip_steps_(0), name_template_(name){
 }
 
-LogOptimizerState::~LogOptimizerState(){}
-
 void LogOptimizerState::show(std::ostream &out) const {
   out << "LogOptimizerState" << std::endl;
 }

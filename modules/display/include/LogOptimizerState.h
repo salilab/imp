@@ -40,8 +40,6 @@ public:
   //! Write files using name_template as a template (must have a %d in it)
   LogOptimizerState(Writer *writer, std::string name_template);
 
-  virtual ~LogOptimizerState();
-
   //! Set the number of steps to skip
   void set_skip_steps(unsigned int i) {
     skip_steps_=i;
@@ -67,7 +65,7 @@ public:
     }
   }
 
-  IMP_OPTIMIZER_STATE(internal::version_info)
+  IMP_OPTIMIZER_STATE(LogOptimizerState, internal::version_info)
 };
 
 

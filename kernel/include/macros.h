@@ -647,12 +647,14 @@ protection:                                                             \
     - void show(std::ostream &out) const
     and defines the function
     - get_version_info
+    \param[in] Name The name of the class
     \param[in] version_info The version info object to return.
 */
-#define IMP_OPTIMIZER_STATE(version_info)                               \
+#define IMP_OPTIMIZER_STATE(Name, version_info)                         \
   virtual void update();                                                \
   virtual void show(std::ostream &out=std::cout) const;                 \
-  virtual IMP::VersionInfo get_version_info() const { return version_info; }
+  virtual IMP::VersionInfo get_version_info() const { return version_info; }\
+  IMP_REF_COUNTED_DESTRUCTOR(Name)
 
 //! Define the basics needed for a ScoreState
 /** This macro declares the required functions
