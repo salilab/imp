@@ -103,6 +103,7 @@ typedef Unit<internal::MKSTag, 0, Time> Second;
 typedef Unit<internal::MKSTag, 0, Energy> Joule;
 typedef Unit<internal::MKSTag, 0, Temperature> Kelvin;
 typedef Unit<internal::MKSTag, -3, Volume> Liter;
+typedef Unit<internal::MKSTag, 0, Volume> CubicMeter;
 typedef Shift<Meter, -10>::type Angstrom;
 typedef Multiply<Angstrom, Angstrom>::type SquareAngstrom;
 typedef Shift<Joule, -15>::type Femtojoule;
@@ -218,17 +219,20 @@ typedef Unit<internal::MolarTag, 0, SingletonUnit> Molar;
 typedef Unit<internal::MolarTag, -6, SingletonUnit> Micromolar;
 
 template <int E>
-Unit<internal::MolarTag, E, SingletonUnit>
+Molar
 molarity_from_count(double count, Unit<internal::MKSTag, E, Volume> volume) {
-  Unit<internal::MKSTag, -E-23+3,
+  Unit<internal::MKSTag, -E,
     boost::mpl::vector_c<int, 0,-3,0,0,0>  >
-    moles_per_cubic_meter(unit::ExponentialNumber<0>(count)/volume/NA);
-  Unit<internal::MKSTag, -E-23, boost::mpl::vector_c<int, 0,-3,0,0,0>  >
-    moles_per_liter(moles_per_cubic_meter.get_exponential_value()
-                    /ExponentialNumber<3>(1));
-
-  return Unit<internal::MolarTag, -E-23, SingletonUnit>
-    (moles_per_liter.get_value());
+    per_cubic_meter(unit::ExponentialNumber<0>(count)/volume);
+  IMP_LOG(VERBOSE, "per cubic meter " << per_cubic_meter << std::endl);
+  typedef Inverse<CubicMeter>::type PerCubicMeter;
+  PerCubicMeter moles_per_cubic_meter(per_cubic_meter/NA);
+  IMP_LOG(VERBOSE, "moles per cubic meter " << moles_per_cubic_meter
+          << std::endl);
+  typedef Inverse<Liter>::type PerLiter;
+  PerLiter moles_per_liter= moles_per_cubic_meter;
+  IMP_LOG(VERBOSE, "moles per liter " << moles_per_liter << std::endl);
+  return Molar(moles_per_liter.get_value());
 }
 
 
