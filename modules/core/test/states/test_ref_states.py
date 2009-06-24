@@ -35,7 +35,7 @@ class RefCountTests(IMP.test.TestCase):
         del m
         refcnt.assert_number(0)
 
-    def _test_delete_model_constructor(self):
+    def test_delete_model_constructor(self):
         """Constructed Python states should survive model deletion"""
         refcnt, m, s = self._make_objects()
         self.assertEqual(s.get_ref_count(), 2)
@@ -47,7 +47,7 @@ class RefCountTests(IMP.test.TestCase):
         del s
         refcnt.assert_number(0)
 
-    def _test_delete_model_iterator(self):
+    def test_delete_model_iterator(self):
         """ScoreStates from iterators should survive Model deletion"""
         refcnt, m, s = self._make_objects()
         del s
@@ -64,7 +64,7 @@ class RefCountTests(IMP.test.TestCase):
         del s
         refcnt.assert_number(0)
 
-    def _test_delete_optimizer_accessor(self):
+    def test_delete_optimizer_accessor(self):
         "ScoreStates from vector accessors should survive Model deletion"
         refcnt, m, s = self._make_objects()
         del s
