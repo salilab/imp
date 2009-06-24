@@ -6,6 +6,10 @@ env.IMPModuleAbout(author='Keren Lasker, Javier Velazquez-Muriel,'
 
 env.validate()
 
+# Link against CGAL if present:
+if env['CGAL_LIBS']:
+    env.Append(LIBS=env['CGAL_LIBS'])
+
 env.Append(LIBS=['imp_atom', 'imp_core', 'imp_algebra','imp_display'])
 
 

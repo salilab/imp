@@ -3,6 +3,10 @@ Import('env')
 env.IMPModuleAbout(author='IMP developers', version='SVN',
                    description='Code to write to graphics formats.')
 
+# Link against CGAL if present:
+if env['CGAL_LIBS']:
+    env.Append(LIBS=env['CGAL_LIBS'])
+
 env.Append(LIBS=['imp_core', 'imp_algebra', 'imp_atom'])
 env.validate()
 
