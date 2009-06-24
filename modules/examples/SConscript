@@ -3,6 +3,11 @@ Import('env')
 env.IMPModuleAbout(author='Daniel Russel', version='SVN',
                    description='C++ example code for IMP.')
 
+# Link against CGAL if present:
+if env['CGAL_LIBS']:
+    env.Append(LIBS=env['CGAL_LIBS'])
+
+
 env.Append(LIBS=['imp_core', 'imp_algebra'])
 env.validate()
 

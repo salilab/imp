@@ -3,6 +3,10 @@ Import('env')
 env.IMPModuleAbout(author='Keren Lasker', version='SVN',
                    description='DOMINO optimizer')
 
+# Link against CGAL if present:
+if env['CGAL_LIBS']:
+    env.Append(LIBS=env['CGAL_LIBS'])
+
 # No dependent libraries, so this module can always be built:
 env.validate()
 
