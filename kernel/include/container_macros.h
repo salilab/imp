@@ -10,7 +10,6 @@
 
 #include "internal/Vector.h"
 #include "macros.h"
-#include <algorithm>
 
 
 
@@ -67,7 +66,7 @@
   /** \brief Remove any occurences of d from the container. */          \
   void remove_##lcname(Data d);                                         \
   /** \brief Remove any occurences of each item in d. */                \
-  void remove_##lcname##s(Ucname##s d);                                 \
+  void remove_##lcname##s(const Ucname##s& d);                          \
   /** Set the contents of the container to ps removing all its current
       contents. */                                                      \
   void set_##lcname##s(const Ucname##s &ps) {                           \
@@ -130,42 +129,37 @@ IMP_PROTECTION(protection)                                              \
 
  For all of these the current object is called obj.
 */
-#define IMP_LIST_IMPL(Class, Ucname, lcname, Data, PluralData, OnAdd,  \
-                      OnChanged, OnRemoved)                            \
-  unsigned int Class::add_##lcname(Data obj) {                         \
-    unsigned int index= lcname##_vector_.push_back(obj);               \
-    OnAdd;                                                             \
-    OnChanged;                                                         \
-    if (false) {index=index; obj=obj;};                                \
-    return index;                                                      \
-  }                                                                    \
-  void Class::add_##lcname##s(const PluralData &objs) {                \
-    unsigned int osz= lcname##_vector_.size();                         \
-    lcname##_vector_.insert(lcname##_vector_.end(), objs.begin(),      \
-                            objs.end());                               \
-    for (unsigned int i=0; i< objs.size(); ++i) {                      \
-      Data obj= lcname##_vector_[osz+i];                               \
-      unsigned int index(osz+i);                                       \
-      OnAdd;                                                           \
-      if (false) {obj=obj; index=index;}                               \
-    }                                                                  \
-    OnChanged;                                                         \
-  }                                                                    \
-  void Class::remove_##lcname##s(Ucname##s d) {                        \
+#define IMP_LIST_IMPL(Class, Ucname, lcname, Data, PluralData, OnAdd,   \
+                      OnChanged, OnRemoved)                             \
+  unsigned int Class::add_##lcname(Data obj) {                          \
+    unsigned int index= lcname##_vector_.push_back(obj);                \
+    OnAdd;                                                              \
+    OnChanged;                                                          \
+    if (false) {index=index; obj=obj;};                                 \
+    return index;                                                       \
+  }                                                                     \
+  void Class::add_##lcname##s(const PluralData &objs) {                 \
+    unsigned int osz= lcname##_vector_.size();                          \
+    lcname##_vector_.insert(lcname##_vector_.end(), objs.begin(),       \
+                            objs.end());                                \
+    for (unsigned int i=0; i< objs.size(); ++i) {                       \
+      Data obj= lcname##_vector_[osz+i];                                \
+      unsigned int index(osz+i);                                        \
+      OnAdd;                                                            \
+      if (false) {obj=obj; index=index;}                                \
+    }                                                                   \
+    OnChanged;                                                          \
+  }                                                                     \
+  void Class::remove_##lcname##s(const Ucname##s& d) {                  \
     std::vector<Data> ds(d.begin(), d.end());                           \
     std::sort(ds.begin(), ds.end());                                    \
-    IMP::internal::Vector<Data> ::iterator e                            \
-      =std::remove_if(lcname##_vector_.begin(),                         \
-                      lcname##_vector_.end(),                           \
-                      ::IMP::internal::list_contains(ds));              \
-    for (IMP::internal::Vector<Data> ::iterator it= e;                  \
-         it != lcname##_vector_.end(); ++it) {                          \
-      Data obj= *it;                                                    \
+    for (unsigned int i=0; i< ds.size(); ++i) {                         \
+      Data obj= ds[i];                                                  \
       if (0) std::cout << obj;                                          \
       OnRemoved;                                                        \
     }                                                                   \
-    lcname##_vector_.erase(e, lcname##_vector_.end());                  \
-}                                                                       \
+    lcname##_vector_.remove_if(::IMP::internal::list_contains(ds));     \
+  }                                                                     \
   void Class::clear_##lcname##s(){                                      \
     lcname##_vector_.clear();                                           \
     OnChanged;                                                          \

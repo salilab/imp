@@ -28,10 +28,12 @@ IMP_BEGIN_INTERNAL_NAMESPACE
    is not really designed to be used independently.
  */
 template <class D>
-class Vector: public std::vector<D>
+class Vector: private std::vector<D>
 {
 public:
   typedef std::vector<D> P;
+  typedef typename P::iterator iterator;
+  typedef typename P::const_iterator const_iterator;
   Vector(){}
 
   template <class It>
@@ -45,6 +47,10 @@ public:
 
   ~Vector(){clear();}
 
+  unsigned int size() const {
+    return P::size();
+  }
+
   const D& operator[](unsigned int i) const {
     IMP_check(i < P::size(),
               "Index " << i << " out of range",
@@ -52,7 +58,7 @@ public:
     return P::operator[](i);
   }
 
-  D& operator[](unsigned int i) {
+  D operator[](unsigned int i) {
     IMP_check(i < P::size(),
               "Index " << i << " out of range",
               IndexException);
@@ -90,6 +96,16 @@ public:
     P::clear();
   }
 
+  bool empty() const {return P::empty();}
+
+  void reserve(unsigned int t, D v) {
+    P::reserve(t, v);
+  }
+
+  void reserve(unsigned int t) {
+    P::reserve(t);
+  }
+
   template <class It>
   void insert(typename P::iterator it, It b, It e) {
     for (It c= b; c != e; ++c) {
@@ -97,6 +113,26 @@ public:
       ref(d);
     }
     P::insert(it, b, e);
+  }
+
+  iterator begin() {
+    return P::begin();
+  }
+  iterator end() {
+    return P::end();
+  }
+  const_iterator begin() const {
+    return P::begin();
+  }
+  const_iterator end() const {
+    return P::end();
+  }
+  template <class F>
+  void remove_if(const F &f) {
+    for (iterator it= begin(); it != end(); ++it) {
+      if (f(*it)) unref(*it);
+    }
+    P::erase(std::remove_if(begin(), end(), f), end());
   }
 };
 
