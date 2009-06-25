@@ -764,8 +764,19 @@ class IMPEXPORT Particles {
   }
 #endif
   void clear(){ data_.clear();}
+  void show(std::ostream &out) const {
+    for (unsigned int i=0; i< size(); ++i) {
+      if (operator[](i)) {
+        out << operator[](i)->get_name() << " ";
+      } else {
+        out << "NULL ";
+      }
+    }
+  }
 };
 
+
+IMP_OUTPUT_OPERATOR(Particles)
 
 IMP_SWAP(Particles);
 
