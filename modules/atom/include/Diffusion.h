@@ -85,6 +85,11 @@ class IMPATOMEXPORT Diffusion:
   void set_D(unit::SquareCentimeterPerSecond D) {
     set_D_in_cm2_per_second(D.get_value());
   }
+
+  unit::Angstrom
+    get_sigma(unit::Femtosecond dt) const {
+    return sqrt(2.0*dt*get_D());
+  }
 #endif
 #endif
 
@@ -93,6 +98,8 @@ class IMPATOMEXPORT Diffusion:
 };
 
 IMP_OUTPUT_OPERATOR(Diffusion);
+
+typedef Decorators<Diffusion, core::XYZs> Diffusions;
 
 IMPATOM_END_NAMESPACE
 

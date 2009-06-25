@@ -16,6 +16,7 @@
 #include <IMP/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
 #include <IMP/core/ListSingletonContainer.h>
+#include <IMP/atom/Diffusion.h>
 
 #include <cmath>
 #include <limits>
@@ -122,11 +123,12 @@ Float BrownianDynamics::optimize(unsigned int max_steps)
 }
 
 
-void BrownianDynamics::take_step(SingletonContainer *sc, double dt) {
+void BrownianDynamics::take_step(SingletonContainer *sc,
+                                 unit::Femtosecond dt) {
   IMP_LOG(TERSE, "dt is " << dt << std::endl);
   for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
     Particle *p= sc->get_particle(i);
-    IMP::core::XYZ d(p);
+    Diffusion d(p);
     IMP_IF_CHECK(CHEAP) {
       for (unsigned int j=0; j< 3; ++j) {
         // GDB 6.6 prints infinity as 0 on 64 bit machines. Grumble.
@@ -146,21 +148,19 @@ void BrownianDynamics::take_step(SingletonContainer *sc, double dt) {
       }
     }
 
-    //double xi= 6*pi*eta*radius; // kg/s
-    Diffusion dd(p);
-    unit::SquareCentimeterPerSecond D= dd.get_D();
-    IMP_check(D.get_value() > 0
-              && D.get_value() < std::numeric_limits<Float>::max(),
+    IMP_check(unit::strip_units(d.get_D()) > 0
+              && unit::strip_units(d.get_D())
+              < std::numeric_limits<Float>::max(),
               "Bad diffusion coefficient on particle " << p->get_name(),
               ValueException);
-    unit::Angstrom sigma(compute_sigma_from_D(D));
+    unit::Angstrom sigma= d.get_sigma(dt);
     IMP_IF_CHECK(EXPENSIVE) {
-      unit::Angstrom osigma(sqrt(2.0*D*dt));
+      unit::Angstrom osigma(sqrt(2.0*d.get_D()*dt));
       IMP_check(sigma - osigma
                 <= .01* sigma,
                 "Sigma computations don't match " << sigma
                 << " "
-                << sqrt(2.0*D*dt),
+                << sqrt(2.0*d.get_D()*dt),
                 ErrorException);
     }
     IMP_LOG(VERBOSE, p->get_name() << ": sigma is "
@@ -180,7 +180,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc, double dt) {
       unit::Femtonewton nforce
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
-      unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*D/kt());
+      unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*d.get_D()/kt());
       if (force_term > 5.0*sigma) {
         IMP_WARN("Forces are too high to stably integrate: "
                  << p->get_name());
@@ -202,7 +202,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc, double dt) {
             << "[" << d.get_derivatives() << "]" << std::endl);
 
     for (unsigned int j=0; j< 3; ++j) {
-      d.set_coordinate(j, d.get_coordinate(j) + delta[j].get_value());
+      d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
     }
   }
 }
@@ -225,7 +225,7 @@ double BrownianDynamics::simulate(float max_time)
   copy_forces(sc, old_forces);
   while (si_.get_current_time().get_value() < max_time){
     dt= std::min(dt, max_time-si_.get_current_time().get_value());
-    take_step(sc, dt);
+    take_step(sc, unit::Femtosecond(dt));
     get_model()->evaluate(true);
     bool failed=false;
     for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
@@ -266,7 +266,7 @@ unit::Femtojoule BrownianDynamics::kt() const
   return IMP::unit::Femtojoule(IMP::internal::KB*si_.get_temperature());
 }
 
-
+/*
 unit::Angstrom
 BrownianDynamics
 ::estimate_radius_from_mass_units(unit::Kilodalton mass_in_kd)
@@ -289,13 +289,6 @@ BrownianDynamics
   return unit::Angstrom(std::pow(v.get_value(), .3333));
 }
 
-unit::Angstrom
-BrownianDynamics
-::compute_sigma_from_D(unit::SquareCentimeterPerSecond D) const
-{
-  return sqrt(2.0*D*si_.get_maximum_time_step()); //6*xi*kb*T_;
-}
-
 unit::KilocaloriePerAngstromPerMol BrownianDynamics
 ::get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const
 {
@@ -307,4 +300,5 @@ unit::KilocaloriePerAngstromPerMol BrownianDynamics
   return unit::operator*(unit::ATOMS_PER_MOL,yc);
 }
 
+*/
 IMPATOM_END_NAMESPACE
