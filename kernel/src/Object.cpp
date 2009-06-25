@@ -28,6 +28,7 @@ Object::Object()
 
 Object::~Object()
 {
+  IMP_OBJECT_LOG;
   IMP_assert(get_is_valid(), "Object " << this << " previously freed.");
   check_value_=666666666;
   IMP_LOG(MEMORY, "Destroying object " << this << std::endl);
