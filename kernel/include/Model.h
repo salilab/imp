@@ -108,7 +108,9 @@ public:
       objects until all references are removed, however attributes of
       removed particles cannot be changed or inspected.*/
   void remove_particle(Particle *p) {
+    IMP_OBJECT_LOG;
     IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(p);
     IMP_check(p->get_model() == this,
               "The particle does not belong to this model",
               ValueException);
