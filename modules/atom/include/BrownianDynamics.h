@@ -66,35 +66,6 @@ public:
   //! Simulate until the given time in fs
   double simulate(float time_in_fs);
 
-  //! Estimate the radius of a protein from the mass
-  /** Proteins are assumed to be spherical. The density is estimated
-      using the formula from
-      <http://www.proteinscience.org/cgi/content/full/13/10/2825>
-
-      The formula is:
-      density= 1.410+ 0.145 exp(-M/13) g/cm^3
-   */
-  static Float estimate_radius_from_mass(Float mass_in_kd) {
-    return
- estimate_radius_from_mass_units(unit::Kilodalton(mass_in_kd)).get_value();
-  }
-
-  //! Return the expected distance moved for a particle with a given D
-  /** The units on D are cm^2/sec and the return has units of angstroms.
-   */
-  Float compute_sigma_from_D(Float D) const {
-    unit::SquareCentimeterPerSecond du(D);
-    return compute_sigma_from_D(du).get_value();
-  }
-
-  //! Returns a force value which would move the particle by sigma
-  /** This value is in KCal/A/mol
-   */
-  Float get_force_scale_from_D(Float D) const {
-    unit::SquareCentimeterPerSecond du(D);
-    return get_force_scale_from_D(du).get_value();
-  }
-
   void set_max_force_change(double df) {
     IMP_check(df > 0, "The max change must be positive",
               ValueException);
@@ -105,20 +76,14 @@ private:
   void copy_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v) const;
   void revert_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v);
 
-  void take_step(SingletonContainer *sc, double dt);
+  void take_step(SingletonContainer *sc, unit::Femtosecond dt);
 
   unit::Femtojoule kt() const;
 
   SingletonContainer* setup_particles();
 
-  static unit::Angstrom
-    estimate_radius_from_mass_units(unit::Kilodalton mass_in_kd);
-
-  unit::Angstrom
-    compute_sigma_from_D(unit::SquareCentimeterPerSecond D) const;
-
-  unit::KilocaloriePerAngstromPerMol
-    get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const;
+  /* unit::KilocaloriePerAngstromPerMol
+     get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const;*/
 
 
   double max_squared_force_change_;
