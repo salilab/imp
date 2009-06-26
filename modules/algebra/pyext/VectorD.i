@@ -48,6 +48,7 @@ namespace IMP {
   void __idiv__(double f) { self->operator/=(f); }
   void __isub__(const VectorD &o) { self->operator-=(o); }
   unsigned int __len__() {return D;}
+  const VectorD __rmul__(double f) const {return self->operator*(f);}
 };
 
 %include "IMP/algebra/VectorD.h"
