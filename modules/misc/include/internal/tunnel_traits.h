@@ -113,13 +113,12 @@ class TunnelTraits {
     case INSLAB:
     case OUTSLAB:
       {
-      algebra::Vector3D rv(0,0,0);
-      rv[coordinate_]=1;
-      if (v[coordinate_] > center_[coordinate_]) {
-        return rv;
-      } else {
-        return -rv;
-      }
+        algebra::Vector3D rv= algebra::basis_vector<3>(coordinate_);
+        if (v[coordinate_] > center_[coordinate_]) {
+          return rv;
+        } else {
+          return -rv;
+        }
       }
     case RING:
     case TUNNEL:
