@@ -18,14 +18,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! A decorator for a particle with x,y,z coordinates and a radius.
 /** \ingroup decorators
-    There are two standard radii, one, the default one, whose key is
-    gotten by XYZR::get_default_radius_key() is for attributes which store
-    the either the actual radius of the object or a radius which best
-    approproximates the object by a sphere. The other,
-    XYZR::get_bounding_radius_key() is for bounding volumes. The value
-    associated with this radius should be large enough to include all
-    associated geometry. It is used by the ClosePairsFinder in preference
-    to the default radius when available.
 
     A simple example illustrating some of the functionality.
     \verbinclude xyzrdecorator.py
@@ -100,10 +92,6 @@ public:
   //! Get the default radius key.
   static FloatKey get_default_radius_key() {
     return IMP::internal::radius_key;
-  }
-  //! Get the bounding radius key.
-  static FloatKey get_bounding_radius_key() {
-    return IMP::internal::bounding_radius_key;
   }
 };
 
