@@ -51,8 +51,8 @@ public:
      The default is "radius".
    */
   static XYZR create(Particle *p,
-                              Float radius,
-                              FloatKey radius_key= FloatKey("radius")) {
+                     Float radius,
+                     FloatKey radius_key= FloatKey("radius")) {
     p->add_attribute(radius_key, radius, false);
     return XYZR(p, radius_key);
   }
@@ -64,8 +64,8 @@ public:
      The default is "radius".
    */
   static XYZR create(Particle *p,
-                              const algebra::Sphere3D &s,
-                              FloatKey radius_key= FloatKey("radius")) {
+                     const algebra::Sphere3D &s,
+                     FloatKey radius_key= FloatKey("radius")) {
     XYZ::create(p, s.get_center());
     p->add_attribute(radius_key, s.get_radius(), false);
     return XYZR(p, radius_key);
