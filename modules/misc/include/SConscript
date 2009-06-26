@@ -1,7 +1,6 @@
 Import('env')
 
 files = [
-         'BondBondPairScore.h',
          'CommonEndpointPairContainer.h',
          'LogPairScore.h',
          'LowestRefinedPairScore.h',
