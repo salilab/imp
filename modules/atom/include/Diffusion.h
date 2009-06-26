@@ -90,6 +90,11 @@ class IMPATOMEXPORT Diffusion:
     get_sigma(unit::Femtosecond dt) const {
     return sqrt(2.0*dt*get_D());
   }
+  void set_D_from_radius(unit::Angstrom radius,
+                         unit::Kelvin t= IMP::internal::DEFAULT_TEMPERATURE) {
+    set_D_from_radius_in_angstroms(unit::strip_units(radius),
+                                   unit::strip_units(t));
+  }
 #endif
 #endif
 
