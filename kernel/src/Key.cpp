@@ -37,7 +37,6 @@ namespace {
       operator[](fk).add_key("y");
       operator[](fk).add_key("z");
       operator[](fk).add_key("radius");
-      operator[](fk).add_key("bounding_radius");
     }
   };
 };
