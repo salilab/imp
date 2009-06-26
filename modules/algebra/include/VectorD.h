@@ -345,6 +345,17 @@ VectorD<D> zeros() {
 }
 
 
+//! Return a vector of ones (or another constant)
+template <unsigned int D>
+VectorD<D> ones(double v=1) {
+  VectorD<D> vv;
+  for (unsigned int i=0; i< D; ++i) {
+    vv[i]=v;
+  }
+  return vv;
+}
+
+
 #ifndef SWIG
 
 #ifndef IMP_DOXYGEN
