@@ -17,18 +17,16 @@ IMPCORE_BEGIN_NAMESPACE
 
 ClosePairsScoreState::ClosePairsScoreState(SingletonContainer *pc,
                                      FilteredListPairContainer* out,
-                                           FloatKey rk)
+                                           FloatKey rk): in_(pc),
+                                                         out_(out)
 {
-  in_=pc;
-  out_=out;
   rk_=rk;
   initialize();
 }
 
 ClosePairsScoreState::ClosePairsScoreState(SingletonContainer *pc,
-                                           FloatKey rk)
+                                           FloatKey rk): in_(pc)
 {
-  in_=pc;
   out_=new FilteredListPairContainer();
   rk_=rk;
   initialize();
