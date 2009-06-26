@@ -84,7 +84,7 @@ class IMPCOREEXPORT XYZ: public Decorator
   }
   //! Add something to the derivative of the coordinates
   void add_to_derivatives(const algebra::Vector3D& v,
-                                     DerivativeAccumulator &d) {
+                          DerivativeAccumulator &d) {
     add_to_derivative(0, v[0], d);
     add_to_derivative(1, v[1], d);
     add_to_derivative(2, v[2], d);
