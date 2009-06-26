@@ -105,6 +105,7 @@ typedef Unit<internal::MKSTag, 0, Temperature> Kelvin;
 typedef Unit<internal::MKSTag, -3, Volume> Liter;
 typedef Unit<internal::MKSTag, 0, Volume> CubicMeter;
 typedef Shift<Meter, -10>::type Angstrom;
+  typedef Shift<Meter, -9>::type Nanometer;
 typedef Multiply<Angstrom, Angstrom>::type SquareAngstrom;
 typedef Shift<Joule, -15>::type Femtojoule;
 typedef Shift<Joule, -12>::type Picojoule;
