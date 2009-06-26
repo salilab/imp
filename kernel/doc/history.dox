@@ -3,9 +3,9 @@
 
 - box distrubutions (IMP::algebra::random_vector_on_box(), IMP::algebra::random_vector_in_box()) take bounding boxes
 
-- IMP::em::DensityMap are now IMP::Object objects. Some current allocations on the stack may need to be changed.
+- IMP::em::DensityMap are now IMP::Object objects. Some current allocations on the stack may need to be changed (since ref counted objects can't be stack allocated).
 
-- IMP::em::DensityMap::Read() is now deprecated (as is Write). Use IMP::em::read() and IMP::em::write() instead. It was previously violating lots of coding conventions.
+- IMP::em::DensityMap::Read() is now deprecated (as is IMP::em::DensityMap::Write) as they violated a slew of conventions. Use IMP::em::read_map() and IMP::em::write_map() instead.
 
 
 \par Week of June 8
