@@ -66,11 +66,17 @@ public:
   //! Simulate until the given time in fs
   double simulate(float time_in_fs);
 
-  void set_max_force_change(double df) {
+  void set_maximum_force_change(double df) {
     IMP_check(df > 0, "The max change must be positive",
               ValueException);
     max_squared_force_change_=square(df);
   }
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  void set_maximum_force_change(unit::KilocaloriePerAngstromPerMol f) {
+    set_maximum_force_change(unit::strip_units(f));
+  }
+#endif
+
 private:
   void copy_forces(SingletonContainer* sc, algebra::Vector3Ds &v) const;
   void copy_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v) const;
