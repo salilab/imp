@@ -18,13 +18,16 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 inline void do_ref(RefCounted* r) {
-  ++r->count_;
+  RefCounted *rc= r;
+  ++rc->count_;
 }
 
-inline void do_unref(RefCounted *r) {
-  IMP_assert(r->count_ !=0, "Too many unrefs on object");
-  --r->count_;
-  if (r->count_==0) {
+template <class R>
+inline void do_unref(R *r) {
+  RefCounted *rc= r;
+  IMP_assert(rc->count_ !=0, "Too many unrefs on object");
+  --rc->count_;
+  if (rc->count_==0) {
     delete r;
   }
 }

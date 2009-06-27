@@ -21,7 +21,8 @@
 namespace IMP {
   class RefCounted;
   namespace internal {
-    void do_unref(IMP::RefCounted*);
+    template <class R>
+    void do_unref(R*);
     void do_ref(IMP::RefCounted*);
   }
 }
@@ -70,14 +71,15 @@ class IMPEXPORT RefCounted
   RefCounted& operator=(const RefCounted &){return *this;}
 
 #ifndef IMP_DOXYGEN
-  friend void internal::do_unref(RefCounted*);
+  template <class R>
+    friend void internal::do_unref(R*);
   friend void internal::do_ref(RefCounted*);
 protected:
   RefCounted() {
      ++live_objects_;
      count_=0;
   }
-  virtual ~RefCounted();
+  ~RefCounted();
 
  public:
   unsigned int get_ref_count() const {
