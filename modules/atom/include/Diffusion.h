@@ -91,7 +91,12 @@ class IMPATOMEXPORT Diffusion:
     return sqrt(2.0*dt*get_D());
   }
   void set_D_from_radius(unit::Angstrom radius,
-                         unit::Kelvin t= IMP::internal::DEFAULT_TEMPERATURE) {
+                         unit::Kelvin t
+#ifndef _MSC_VER
+                         // it ICEs on this.
+                         = IMP::internal::DEFAULT_TEMPERATURE
+#endif
+) {
     set_D_from_radius_in_angstroms(unit::strip_units(radius),
                                    unit::strip_units(t));
   }
