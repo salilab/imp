@@ -85,14 +85,7 @@ public:
   /**@}*/
 
 
-#if defined(SWIG)
- public:
-#else
- protected:
-  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);)
-  IMP_NO_DOXYGEN(friend class IMP::internal::UnRef<true>;)
-#endif
-  virtual ~Optimizer(){}
+  IMP_REF_COUNTED_DESTRUCTOR(Optimizer)
 
 protected:
   //! Update optimizer state, should be called at each successful step
