@@ -133,14 +133,7 @@ private:
   Storage::iterator iterator_;
 #endif
 
-#if defined(SWIG)
- public:
-#else
- protected:
-  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);)
-  IMP_NO_DOXYGEN(friend class IMP::internal::UnRef<true>;)
-#endif
-  virtual ~Particle();
+  IMP_REF_COUNTED_DESTRUCTOR(Particle)
 
 public:
 
