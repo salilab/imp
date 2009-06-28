@@ -72,7 +72,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Geometry);
 
-typedef std::vector<Geometry* > Geometries;
+typedef VectorOfRefCounted<Geometry*> Geometries;
 
 //! Produce some geometry from a particle
 class IMPDISPLAYEXPORT CompoundGeometry: public Object {
@@ -98,7 +98,7 @@ class IMPDISPLAYEXPORT CompoundGeometry: public Object {
 };
 IMP_OUTPUT_OPERATOR(CompoundGeometry);
 
-typedef std::vector<CompoundGeometry* > CompoundGeometries;
+typedef VectorOfRefCounted<CompoundGeometry*> CompoundGeometries;
 
 
 IMPDISPLAY_END_NAMESPACE

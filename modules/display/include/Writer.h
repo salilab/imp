@@ -97,17 +97,14 @@ class IMPDISPLAYEXPORT Writer: public Object
     Geometries g= cgp->get_geometry();
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
-      Pointer<Geometry> gi(g[i]);
-
-      add_geometry(gi);
+      add_geometry(g[i]);
     }
   }
 
   virtual void add_geometry(const CompoundGeometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
-      Pointer<CompoundGeometry> gi(g[i]);
-      add_geometry(gi);
+      add_geometry(g[i]);
     }
   }
 

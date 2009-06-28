@@ -32,5 +32,20 @@ Float XYZRGeometry::get_size() const {
   return d_.get_radius();
 }
 
+XYZRsGeometry::XYZRsGeometry(SingletonContainer *sc,
+                             FloatKey rk): sc_(sc), rk_(rk){}
+
+void XYZRsGeometry::show(std::ostream &out) const {
+  out << "XYZRs" << std::endl;
+}
+
+Geometries XYZRsGeometry::get_geometry() const {
+  Geometries ret(sc_->get_number_of_particles());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret.set(i, new XYZRGeometry(core::XYZR(sc_->get_particle(i))));
+  }
+  return ret;
+}
+
 
 IMPDISPLAY_END_NAMESPACE

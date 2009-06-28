@@ -35,6 +35,14 @@ public:
   IMP_GEOMETRY(XYZRGeometry, internal::version_info)
 };
 
+class IMPDISPLAYEXPORT XYZRsGeometry: public CompoundGeometry {
+  Pointer<SingletonContainer> sc_;
+  FloatKey rk_;
+ public:
+  XYZRsGeometry(SingletonContainer *sc, FloatKey rk);
+  IMP_COMPOUND_GEOMETRY(XYZRsGeometry, internal::version_info)
+};
+
 
 IMPDISPLAY_END_NAMESPACE
 
