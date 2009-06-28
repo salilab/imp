@@ -90,6 +90,7 @@ template <class O>
 void ref(O o)
 {
   BOOST_STATIC_ASSERT(!boost::is_pointer<O>::value);
+  BOOST_STATIC_ASSERT(!(boost::is_base_of<RefCounted, O >::value));
 }
 
 // Can be called on any object and will only unref it if appropriate
