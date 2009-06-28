@@ -54,7 +54,7 @@ IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
 
 namespace IMP {
 namespace display {
-  %template(Geometries) ::std::vector<Geometry*>;
-  %template(CompoundGeometries) ::std::vector<CompoundGeometry*>;
+  %template(Geometries) ::IMP::VectorOfRefCounted< ::IMP::display::Geometry*>;
+  %template(CompoundGeometries) ::IMP::VectorOfRefCounted< ::IMP::display::CompoundGeometry*>;
  }
 }
