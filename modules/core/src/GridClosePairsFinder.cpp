@@ -17,7 +17,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
-  typedef IMP::internal::Vector<internal::ParticleGrid*> GVector;
+  typedef IMP::VectorOfRefCounted<internal::ParticleGrid*> GVector;
 
   static const unsigned int min_grid_size=100;
 
@@ -168,7 +168,7 @@ void GridClosePairsFinder
 
   EditGuard<FilteredListPairContainer> guard(out);
 
-  IMP::internal::Vector<internal::ParticleGrid*> bins;
+  IMP::VectorOfRefCounted<internal::ParticleGrid*> bins;
 
   if (get_radius_key()== FloatKey()) {
     Particles ps(c->particles_begin(), c->particles_end());
