@@ -8,6 +8,7 @@
 #ifndef IMP_CONTAINER_MACROS_H
 #define IMP_CONTAINER_MACROS_H
 
+#include "RefCounted.h"
 #include "internal/Vector.h"
 #include "macros.h"
 
@@ -95,9 +96,9 @@ Data get_##lcname(unsigned int i) const {                              \
 void reserve_##lcname##s(unsigned int sz) {                             \
   lcname##_vector_.reserve(sz);                                         \
 }                                                                       \
-IMP_NO_DOXYGEN(typedef IMP::internal::Vector<Data>                      \
+IMP_NO_DOXYGEN(typedef IMP::VectorOfRefCounted<Data>                    \
                ::iterator Ucname##Iterator;)                            \
-IMP_NO_DOXYGEN(typedef IMP::internal::Vector<Data>::const_iterator      \
+IMP_NO_DOXYGEN(typedef IMP::VectorOfRefCounted<Data>::const_iterator    \
                Ucname##ConstIterator;)                                  \
 IMP_ONLY_DOXYGEN(class Ucname##Iterator; class Ucname##ConstIterator;)  \
 Ucname##Iterator lcname##s_begin() {return lcname##_vector_.begin();}   \
@@ -107,7 +108,7 @@ Ucname##ConstIterator lcname##s_begin() const {                         \
 Ucname##ConstIterator lcname##s_end() const {                           \
   return lcname##_vector_.end();}                                       \
 IMP_NO_DOXYGEN(private:)                                                \
-IMP_NO_DOXYGEN(IMP::internal::Vector<Data> lcname##_vector_;)           \
+IMP_NO_DOXYGEN(IMP::VectorOfRefCounted<Data> lcname##_vector_;)         \
 IMP_PROTECTION(protection)                                              \
 
 
@@ -132,7 +133,8 @@ IMP_PROTECTION(protection)                                              \
 #define IMP_LIST_IMPL(Class, Ucname, lcname, Data, PluralData, OnAdd,   \
                       OnChanged, OnRemoved)                             \
   unsigned int Class::add_##lcname(Data obj) {                          \
-    unsigned int index= lcname##_vector_.push_back(obj);                \
+    unsigned int index= lcname##_vector_.size();                        \
+    lcname##_vector_.push_back(obj);                                    \
     OnAdd;                                                              \
     OnChanged;                                                          \
     if (false) {index=index; obj=obj;};                                 \

@@ -65,3 +65,46 @@ extern "C" {
 #endif
 %}
 %enddef
+
+
+%ignore IMP::VectorOfRefCounted::operator[];
+%extend IMP::VectorOfRefCounted {
+  RC __getitem__(int index) const {
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       throw IMP::IndexException("Index out of range");
+    }
+    return self->operator[](index);
+  }
+  void __setitem__(int index, RC p) {
+    if (index < 0) index= index+self->size();
+    if (index >= static_cast<int>(self->size())) {
+       throw IMP::IndexException("Index out of range");
+    }
+    return self->set(index, p);
+  }
+  std::vector< RC> __list__() const {
+    std::vector< RC> ret(self->begin(), self->end());
+    return ret;
+  }
+  int __len__() const {
+    return self->size();
+  }
+  void append(RC d) {
+    self->push_back(d);
+  }
+  VectorOfRefCounted< RC> __add__(const VectorOfRefCounted &o) {
+    IMP::VectorOfRefCounted< RC> ret(*self);
+    ret.insert(ret.end(), o.begin(), o.end());
+    return ret;
+  }
+  VectorOfRefCounted< RC> __getslice__(int b, int e) const {
+    if (e < 0) e= self->size()+e;
+    if (b < 0) b= self->size()+b;
+    IMP::VectorOfRefCounted< RC> ret;
+    for ( int c=b; c!= e; ++c) {
+       ret.push_back(self->operator[](c));
+    }
+    return ret;
+  }
+}
