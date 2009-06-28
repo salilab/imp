@@ -57,6 +57,4 @@ void Particle::show(std::ostream& out) const
   }
 }
 
-Particles::~Particles(){}
-
 IMP_END_NAMESPACE
