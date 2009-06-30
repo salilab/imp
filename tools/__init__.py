@@ -3,7 +3,6 @@
 import os.path
 import re
 import sys
-import popen2
 from SCons.Script import *
 import hierarchy
 import generate_doxygen
@@ -72,15 +71,17 @@ def GetInstallDirectory(env, varname, *subdirs):
         installdir = env.Dir('#/' + installdir).abspath
     return os.path.join(installdir, *subdirs)
 
-# Provide a portable way to use the popen2.Popen3 class (we need this rather
-# than the popen3() factory function so we can call wait() to get exit status,
-# and can't use subprocess just yet since that requires a newer Python).
-if hasattr(popen2, 'Popen3'):
-    MyPopen3 = popen2.Popen3
-else:
-    class MyPopen3(object):
-        def __init__(self, cmd, capturestderr):
-            (self.tochild, self.fromchild, self.childerr) \
+# On older Pythons that don't have subprocess, fall back to os.popen3
+try:
+    import subprocess
+    def MyPopen(cmd):
+        return subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                close_fds=True)
+except ImportError:
+    class MyPopen(object):
+        def __init__(self, cmd):
+            (self.stdin, self.stdout, self.stderr) \
                 = os.popen3(cmd, 't', -1)
         def wait(self):
             return 0
@@ -244,15 +245,15 @@ def CheckModeller(context):
     # Last matching entry is probably the latest version:
     modbin = os.path.join(moddir, files[-1])
     try:
-        p = MyPopen3(modbin + " -", True)
-        print >> p.tochild, "print 'EXE type: ', info.exe_type"
-        p.tochild.close()
+        p = MyPopen(modbin + " -")
+        print >> p.stdin, "print 'EXE type: ', info.exe_type"
+        p.stdin.close()
     except IOError, e:
         context.Result("could not run MODELLER script %s: %s" % (modbin, e))
         return False
-    err = p.childerr.read()
+    err = p.stderr.read()
     exetype = None
-    for line in p.fromchild:
+    for line in p.stdout:
         if line.startswith("EXE type"):
             exetype=line[11:].rstrip('\r\n')
     ret = p.wait()
