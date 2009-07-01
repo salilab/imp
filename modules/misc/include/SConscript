@@ -6,11 +6,9 @@ files = [
          'LowestRefinedPairScore.h',
          'RefineOncePairScore.h',
          'StateAdaptor.h',
-         'TunnelSingletonScore.h',
          'WormLikeChain.h',
          'attribute_statistics.h',
-        ] \
-        + SConscript('internal/SConscript')
+        ]
 
 # Install the include files:
 env.IMPHeaders(files)
