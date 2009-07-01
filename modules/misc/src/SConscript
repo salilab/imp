@@ -6,7 +6,6 @@ files = [
          'LowestRefinedPairScore.cpp',
          'RefineOncePairScore.cpp',
          'StateAdaptor.cpp',
-         'TunnelSingletonScore.cpp',
          'attribute_statistics.cpp',
         ]
 
