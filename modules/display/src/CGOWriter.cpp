@@ -37,7 +37,9 @@ void CGOAnimationWriter::on_close() {
                << "', " << count_ << ")\n";
 }
 
-void CGOAnimationWriter::set_file_name(std::string) {
+void CGOAnimationWriter::set_file_name(std::string str) {
+  // not a real file
+  if (str.empty()) return;
   if (initialized_) {
     on_close();
     ++count_;
@@ -86,13 +88,18 @@ void CGOWriter::on_close() {
 }
 
 void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
+  IMP_CHECK_OBJECT(g);
+  Color last_color;
   if (g->get_dimension() ==0) {
     for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
       algebra::Vector3D v=g->get_vertex(i);
-      out << "COLOR, " << g->get_color().get_red()
-               << ", " << g->get_color().get_green()
-               << ", " << g->get_color().get_blue()
-               << ",\n";
+      if (g->get_color() != last_color) {
+        out << "COLOR, " << g->get_color().get_red()
+            << ", " << g->get_color().get_green()
+            << ", " << g->get_color().get_blue()
+            << ",\n";
+        last_color= g->get_color();
+      }
       double r= .1;
       if (g->get_size() != 0) r= g->get_size();
       out << "SPHERE, " << algebra::commas_io(v) << ", " << r
@@ -125,10 +132,13 @@ void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
       algebra::Vector3D n=
         vector_product(g->get_vertex(1)-g->get_vertex(0),
                        g->get_vertex(2)-g->get_vertex(0)).get_unit_vector();
-      out << "COLOR, " << g->get_color().get_red()
-                   << ", " << g->get_color().get_green()
-                   << ", " << g->get_color().get_blue()
-                   << ",\n";
+      if (g->get_color() != last_color) {
+        out << "COLOR, " << g->get_color().get_red()
+            << ", " << g->get_color().get_green()
+            << ", " << g->get_color().get_blue()
+            << ",\n";
+        last_color= g->get_color();
+      }
       out << "NORMAL, " << algebra::commas_io(n)
                    << ",\n";
       for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
