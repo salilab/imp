@@ -59,7 +59,7 @@ class IMPDISPLAYEXPORT Writer: public Object
 
   //! Open a new file with the given name
   /** Set it to "" to close. */
-  void set_file_name(std::string name) {
+  virtual void set_file_name(std::string name) {
     if (get_stream_is_open()) {
       on_close();
       out_.close();
