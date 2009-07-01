@@ -27,6 +27,9 @@ IMPDISPLAY_BEGIN_NAMESPACE
     frame rather than to actually open a new file.
 
     The frames will be numbered from 1.
+
+    \note This class currently counts as a bit of a hack and so
+    may not behave as expected always.
  */
 class IMPDISPLAYEXPORT CGOAnimationWriter: public Writer
 {
