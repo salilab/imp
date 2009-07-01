@@ -33,6 +33,24 @@ public:
   IMP_GEOMETRY(CylinderGeometry, internal::version_info)
 };
 
+
+//! Represent a chain of static cylinder (or segment)
+/**
+ */
+class IMPDISPLAYEXPORT PolyCylinderGeometry: public Geometry
+{
+  algebra::Vector3Ds c_;
+  double r_;
+public:
+  //! Create a static cylinder or segment
+  /** If the radius is 0, it is a segment. If the color is skipped,
+      the default color (gray) is used.
+  */
+  PolyCylinderGeometry(const algebra::Vector3Ds &c,
+                       double r);
+
+  IMP_GEOMETRY(PolyCylinderGeometry, internal::version_info)
+};
 IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_CYLINDER_GEOMETRY_H */
