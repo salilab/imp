@@ -17,66 +17,6 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-inline void do_ref(RefCounted* r) {
-  RefCounted *rc= r;
-  ++rc->count_;
-}
-
-template <class R>
-inline void do_unref(R *r) {
-  RefCounted *rc= r;
-  IMP_assert(rc->count_ !=0, "Too many unrefs on object");
-  --rc->count_;
-  if (rc->count_==0) {
-    delete r;
-  }
-}
-
-template <bool REF>
-struct Ref
-{
-  template <class O>
-  static void eval(O* o) {
-    BOOST_STATIC_ASSERT((!boost::is_base_of<RefCounted, O >::value));
-    IMP_LOG(MEMORY, "Not refing particle " << o << std::endl);
-  }
-};
-
-template <>
-struct Ref<true>
-{
-  template <class O>
-  static void eval(O* o) {
-    IMP_LOG(MEMORY, "Refing object " << o << " with count "
-            << o->get_ref_count() << std::endl);
-    //o->assert_is_valid();
-    do_ref(o);
-  }
-};
-
-template <bool REF>
-struct UnRef
-{
-  template <class O>
-  static void eval(O* o) {
-    BOOST_STATIC_ASSERT((!boost::is_base_of<RefCounted, O >::value));
-    IMP_LOG(MEMORY, "Not Unrefing object " << o << std::endl);
-  }
-};
-
-template <>
-struct UnRef<true>
-{
-  template <class O>
-  static void eval(O *o) {
-    IMP_LOG(MEMORY, "Unrefing object " << o << " with count "
-            << o->get_ref_count() << std::endl);
-    //o->assert_is_valid();
-    do_unref(o);
-  }
-  };
-
-
 // Can be called on any object and will only unref it if appropriate
 template <class O>
 void unref(O o)
@@ -97,7 +37,14 @@ void ref(O o)
 template <class O>
 void unref(O* o)
 {
-  UnRef<(boost::is_base_of<RefCounted, O >::value)>::eval(o);
+  // need to know about possible virtual destructors
+  // or the correct non-virtual one
+  RefCounted *rc= o;
+  IMP_assert(rc->count_ !=0, "Too many unrefs on object");
+  --rc->count_;
+  if (rc->count_==0) {
+    delete o;
+  }
 }
 
 
@@ -105,7 +52,8 @@ void unref(O* o)
 template <class O>
 void ref(O* o)
 {
-  Ref<(boost::is_base_of<RefCounted, O >::value)>::eval(o);
+  RefCounted *r= o;
+  ++r->count_;
 }
 
 IMP_END_INTERNAL_NAMESPACE

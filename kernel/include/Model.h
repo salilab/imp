@@ -72,7 +72,7 @@ private:
  public:
 #else
  private:
-  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::do_unref(T*);)
+  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);)
 #endif
 
   virtual ~Model();
