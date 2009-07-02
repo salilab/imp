@@ -73,6 +73,15 @@ void ClosePairsScoreState::set_radius_key(FloatKey k) {
   f_->set_radius_key(rk_);
 }
 
+
+namespace {
+  struct IsInactive {
+    bool operator()(const ParticlePair &p) const {
+      return !p[0]->get_is_active() || !p[1]->get_is_active();
+    }
+  };
+}
+
 void ClosePairsScoreState::do_before_evaluate()
 {
   IMP_OBJECT_LOG;
@@ -108,6 +117,8 @@ void ClosePairsScoreState::do_before_evaluate()
       if (rc_) {
         rc_->reset();
       }
+    } else {
+      out_->remove_particle_pairs_if(IsInactive());
     }
   }
 }
