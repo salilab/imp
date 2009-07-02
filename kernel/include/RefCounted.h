@@ -21,11 +21,11 @@
 #ifndef SWIG
 
 namespace IMP {
-  class RefCounted;
   namespace internal {
     template <class R>
-    void do_unref(R*);
-    void do_ref(IMP::RefCounted*);
+    void unref(R*);
+    template <class R>
+    void ref(R*);
   }
 }
 //IMP_END_INTERNAL_NAMESPACE
@@ -74,8 +74,9 @@ class IMPEXPORT RefCounted
 
 #ifndef IMP_DOXYGEN
   template <class R>
-    friend void internal::do_unref(R*);
-  friend void internal::do_ref(RefCounted*);
+    friend void internal::unref(R*);
+  template <class R>
+    friend void internal::ref(R*);
 protected:
   RefCounted() {
      ++live_objects_;
