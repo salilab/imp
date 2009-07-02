@@ -22,7 +22,7 @@ namespace internal
 {
 
 /** \internal */
-class ParticleGrid
+  class ParticleGrid: public RefCounted
 {
   // don't need ref counting since mc_ has the same set of points
   typedef internal::Grid3D<Particles> Grid;
@@ -177,6 +177,7 @@ public:
                                  grid_.all_indexes_end(),
                                  &grid_);
   }
+  IMP_REF_COUNTED_DESTRUCTOR(ParticleGrid);
 };
 
 IMP_OUTPUT_OPERATOR(ParticleGrid);
