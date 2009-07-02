@@ -112,7 +112,7 @@ IMP_BEGIN_NAMESPACE
     When used within Python, IMP::VectorOfRefCounted acts like a Python list.
  */
 template <class RC>
-class IMPEXPORT VectorOfRefCounted {
+class VectorOfRefCounted {
   typedef std::vector<RC> Data;
   Data data_;
   // make sure they are converted to RC
