@@ -288,7 +288,7 @@ public:                                                      \
  */
 #define IMP_REF_COUNTED_DESTRUCTOR(Classname)                           \
   protected:                                                            \
-  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::do_unref(T*);) \
+  IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);) \
   virtual ~Classname(){}
 #endif // SWIG
 #endif // _MSC_VER
@@ -811,7 +811,7 @@ public:                                                                 \
   bool get_contains_particle(Particle* p) const;                    \
   unsigned int get_number_of_particles() const;                     \
   Particle* get_particle(unsigned int i) const;                     \
-  void show(std::ostream &out= std::cout) const;                    \
+  void show(std::ostream &out= std::cout) const;                        \
   IMP::VersionInfo get_version_info() const { return version_info; }\
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                  \
   public:
