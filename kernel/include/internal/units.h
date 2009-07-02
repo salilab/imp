@@ -225,14 +225,10 @@ molarity_from_count(double count, Unit<internal::MKSTag, E, Volume> volume) {
   Unit<internal::MKSTag, -E,
     boost::mpl::vector_c<int, 0,-3,0,0,0>  >
     per_cubic_meter(unit::ExponentialNumber<0>(count)/volume);
-  IMP_LOG(VERBOSE, "per cubic meter " << per_cubic_meter << std::endl);
   typedef Inverse<CubicMeter>::type PerCubicMeter;
   PerCubicMeter moles_per_cubic_meter(per_cubic_meter/NA);
-  IMP_LOG(VERBOSE, "moles per cubic meter " << moles_per_cubic_meter
-          << std::endl);
   typedef Inverse<Liter>::type PerLiter;
   PerLiter moles_per_liter= moles_per_cubic_meter;
-  IMP_LOG(VERBOSE, "moles per liter " << moles_per_liter << std::endl);
   return Molar(moles_per_liter.get_value());
 }
 
