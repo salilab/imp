@@ -94,7 +94,6 @@ FilteredListSingletonContainer::get_particle(unsigned int i) const {
 }
 
 
-
 IMP_LIST_IMPL(FilteredListSingletonContainer,
               SingletonFilter,
               singleton_filter,

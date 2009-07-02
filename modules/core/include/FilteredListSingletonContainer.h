@@ -15,6 +15,7 @@
 #include "internal/version_info.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/container_macros.h>
+#include <IMP/RefCounted.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -43,7 +44,7 @@ class IMPCOREEXPORT FilteredListSingletonContainer
   : public SingletonContainer
 {
   bool sorted_;
-  mutable std::vector<Particle*> data_;
+  mutable VectorOfRefCounted<Particle*> data_;
 public:
   //! cannot pass a Singletons on construction
   FilteredListSingletonContainer();
@@ -61,6 +62,12 @@ public:
   void reserve_particles(unsigned int sz) {
     data_.reserve(sz);
   }
+
+  template <class F>
+  void remove_particles_if(const F &f) {
+    data_.remove_if(f);
+  }
+
 
   /** @name Faster editing
 

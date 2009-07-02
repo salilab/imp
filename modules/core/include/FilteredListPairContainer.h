@@ -15,6 +15,7 @@
 #include "internal/version_info.h"
 #include <IMP/PairContainer.h>
 #include <IMP/container_macros.h>
+#include <IMP/RefCounted.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -43,7 +44,7 @@ class IMPCOREEXPORT FilteredListPairContainer
   : public PairContainer
 {
   bool sorted_;
-  mutable std::vector<ParticlePair> data_;
+  mutable VectorOfRefCounted<ParticlePair> data_;
 public:
   //! cannot pass a Pairs on construction
   FilteredListPairContainer();
@@ -61,6 +62,12 @@ public:
   void reserve_particle_pairs(unsigned int sz) {
     data_.reserve(sz);
   }
+
+  template <class F>
+  void remove_particle_pairs_if(const F &f) {
+    data_.remove_if(f);
+  }
+
 
   /** @name Faster editing
 

@@ -15,6 +15,7 @@
 #include "internal/version_info.h"
 #include <IMP/GroupnameContainer.h>
 #include <IMP/container_macros.h>
+#include <IMP/RefCounted.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -43,7 +44,7 @@ class IMPCOREEXPORT FilteredListGroupnameContainer
   : public GroupnameContainer
 {
   bool sorted_;
-  mutable std::vector<Value> data_;
+  mutable VectorOfRefCounted<Value> data_;
 public:
   //! cannot pass a Groupnames on construction
   FilteredListGroupnameContainer();
@@ -61,6 +62,12 @@ public:
   void reserve_classnames(unsigned int sz) {
     data_.reserve(sz);
   }
+
+  template <class F>
+  void remove_classnames_if(const F &f) {
+    data_.remove_if(f);
+  }
+
 
   /** @name Faster editing
 
