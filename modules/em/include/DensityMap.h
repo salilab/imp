@@ -16,6 +16,7 @@
 #include <IMP/RefCounted.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
+#include <IMP/VectorOfRefCounted.h>
 #include <iostream>
 #include <iomanip>
 
