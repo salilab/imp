@@ -44,7 +44,7 @@ class IMPCOREEXPORT FilteredListSingletonContainer
   : public SingletonContainer
 {
   bool sorted_;
-  mutable VectorOfRefCounted<Particle*> data_;
+  Particles data_;
 public:
   //! cannot pass a Singletons on construction
   FilteredListSingletonContainer();

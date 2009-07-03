@@ -18,20 +18,6 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 
-template <class O>
-void unref(O o) {
-  for (unsigned int i=0; i< o.size(); ++i) {
-    unref(o[i]);
-  }
-}
-
-template <class O>
-void ref(O o) {
-  for (unsigned int i=0; i< o.size(); ++i) {
-    ref(o[i]);
-  }
-}
-
 // Can be called on any object and will only unref it if appropriate
 template <class O>
 void unref(O* o)

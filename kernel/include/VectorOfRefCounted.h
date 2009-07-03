@@ -32,10 +32,10 @@ class VectorOfRefCounted {
   Data data_;
   // make sure they are converted to RC
   void ref(RC v) {
-    internal::ref(v);
+    Policy::ref(v);
   }
   void unref(RC v) {
-    internal::unref(v);
+    Policy::unref(v);
   }
   template <class It>
     void ref(It b, It e) {
