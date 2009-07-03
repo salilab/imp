@@ -24,8 +24,8 @@ IMP_BEGIN_NAMESPACE
 class Particle;
 class Restraint;
 class ScoreState;
-typedef std::vector<Restraint*> Restraints;
-typedef std::vector<ScoreState*> ScoreStates;
+typedef VectorOfRefCounted<Restraint*> Restraints;
+typedef VectorOfRefCounted<ScoreState*> ScoreStates;
 
 
 //! Class for storing model, its restraints, and particles.

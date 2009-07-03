@@ -41,10 +41,10 @@ have_modeller=False
 #endif
 
 // Make sure that Python refcounts any returned pointers to IMP types
-IMP_REFCOUNT_RETURN(IMP::Particle)
-IMP_REFCOUNT_RETURN(IMP::Restraint)
-IMP_REFCOUNT_RETURN(IMP::ScoreState)
-IMP_REFCOUNT_RETURN(IMP::OptimizerState)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::Particle)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::Restraint)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::ScoreState)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::OptimizerState)
 
 %{
 #ifdef NDEBUG
@@ -135,6 +135,7 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 %include "IMP/deprecation.h"
 %include "IMP/VersionInfo.h"
 %include "IMP/RefCounted.h"
+%include "IMP/VectorOfRefCounted.h"
 %include "Object.i"
 %include "IMP/DerivativeAccumulator.h"
 %include "Particle.i"
@@ -162,11 +163,12 @@ namespace IMP {
   %template(Particles) ::IMP::VectorOfRefCounted<Particle*> ;
   %template(ParticlesList) ::std::vector<Particles>;
   %template(ParticleVector) ::std::vector<Particle*>;
-  %template(ParticlePairs) ::std::vector<ParticlePair>;
-  %template(ParticleTriplets) ::std::vector<ParticleTriplet>;
-  %template(Restraints) ::std::vector<IMP::Restraint*>;
-  %template(ScoreStates) ::std::vector<ScoreState*>;
-  %template(OptimizerStates) ::std::vector<OptimizerState*>;
+  %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, RefCountParticlePair>;
+  %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, RefCountParticleTriplet>;
+  %template(Restraints) ::IMP::VectorOfRefCounted< Restraint*>;
+  %template(ScoreStates) ::IMP::VectorOfRefCounted< ScoreState*>;
+  %template(OptimizerStates) ::IMP::VectorOfRefCounted< OptimizerState*>;
+  %template(Refiners) ::IMP::VectorOfRefCounted< Refiner*>;
   %template(FloatKeys) ::std::vector<FloatKey>;
   %template(StringKeys) ::std::vector<StringKey>;
   %template(IntKeys) ::std::vector<IntKey>;
@@ -174,8 +176,8 @@ namespace IMP {
   %template(Floats) ::std::vector<Float>;
   %template(Strings) ::std::vector<String>;
   %template(Ints) ::std::vector<Int>;
-  %template(SingletonContainers) ::std::vector<SingletonContainer*>;
-  %template(PairContainers) ::std::vector<PairContainer*>;
+  %template(SingletonContainers) ::IMP::VectorOfRefCounted<SingletonContainer*>;
+  %template(PairContainers) ::IMP::VectorOfRefCounted<PairContainer*>;
   %template(float_pair) ::std::pair<float,float>;
   %template(double_pair) ::std::pair<double, double>;
 }

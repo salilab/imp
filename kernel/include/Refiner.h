@@ -70,7 +70,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(Refiner)
 };
 //! a collection of Refiner objects
-typedef std::vector<Refiner*> Refiners;
+typedef VectorOfRefCounted<Refiner*> Refiners;
 
 IMP_OUTPUT_OPERATOR(Refiner);
 

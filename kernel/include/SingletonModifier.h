@@ -16,6 +16,7 @@
 #include "SingletonContainer.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
+#include "VectorOfRefCounted.h"
 
 IMP_BEGIN_NAMESPACE
 // to keep swig happy
@@ -54,7 +55,7 @@ IMP_OUTPUT_OPERATOR(SingletonModifier)
 
 
 //! A collection
-typedef std::vector<SingletonModifier*> SingletonModifiers;
+typedef VectorOfRefCounted<SingletonModifier*> SingletonModifiers;
 
 //! Create a functor which can be used with build in C++ and python commands
 /** For example, you can do

@@ -9,6 +9,7 @@
 #define IMP_CONTAINER_MACROS_H
 
 #include "RefCounted.h"
+#include "VectorOfRefCounted.h"
 #include "internal/Vector.h"
 #include "macros.h"
 
@@ -73,7 +74,7 @@
          ++it) {                                                        \
       if (f(*it)) handle_remove(*it);                                   \
     }                                                                   \
-    lcname##_vector_.remove_if(f);                                      \
+    IMP::internal::remove_if(lcname##_vector_, (f));                    \
   }                                                                     \
   /** \brief Remove any occurences of each item in d. */                \
   void remove_##lcname##s(const Ucname##s& d);                          \
@@ -118,7 +119,7 @@ Ucname##ConstIterator lcname##s_end() const {                           \
   return lcname##_vector_.end();}                                       \
 IMP_NO_DOXYGEN(private:)                                                \
 void handle_remove(Data d);                                             \
-IMP_NO_DOXYGEN(IMP::VectorOfRefCounted<Data> lcname##_vector_;)         \
+IMP_NO_DOXYGEN(PluralData lcname##_vector_;)                            \
 IMP_PROTECTION(protection)                                              \
 
 
@@ -172,7 +173,8 @@ IMP_PROTECTION(protection)                                              \
     for (unsigned int i=0; i< ds.size(); ++i) {                         \
       handle_remove(ds[i]);                                             \
     }                                                                   \
-    lcname##_vector_.remove_if(::IMP::internal::list_contains(ds));     \
+    IMP::internal::remove_if(lcname##_vector_,                          \
+                             ::IMP::internal::list_contains(ds));       \
   }                                                                     \
   void Class::clear_##lcname##s(){                                      \
     lcname##_vector_.clear();                                           \

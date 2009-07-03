@@ -22,7 +22,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-typedef std::vector<OptimizerState*> OptimizerStates;
+typedef VectorOfRefCounted<OptimizerState*> OptimizerStates;
 
 //! Base class for all optimizers.
 /** The Optimizer maintains a list of OptimizerStates which are

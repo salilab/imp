@@ -18,6 +18,7 @@
 #include "VersionInfo.h"
 #include "base_types.h"
 #include "Pointer.h"
+#include "VectorOfRefCounted.h"
 #include "VersionInfo.h"
 
 IMP_BEGIN_NAMESPACE
@@ -83,7 +84,7 @@ public:
 IMP_OUTPUT_OPERATOR(SingletonContainer);
 
 //! A collection of containers
-typedef std::vector<SingletonContainer*> SingletonContainers;
+typedef VectorOfRefCounted<SingletonContainer*> SingletonContainers;
 
 IMP_END_NAMESPACE
 
