@@ -321,12 +321,13 @@ protected:
 
 };
 
-
 inline algebra::BoundingBox3D bounding_box(const DensityMap *m) {
   return algebra::BoundingBox3D(m->get_origin(),
                        m->get_top());
 }
 
+
+typedef VectorOfRefCounted<DensityMap*> DensityMaps;
 
 IMPEM_END_NAMESPACE
 
