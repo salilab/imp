@@ -25,7 +25,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Applies a SingletonScore to each Particle in a list.
-/** This restraint stores the used particles in a SingletonContainer.
+/** This restraint stores the used particles in a Particles.
     The container used can be set so that the list can be shared
     with other containers (or a nonbonded list can be used). By default
     a ListSingletonContainer is used and the

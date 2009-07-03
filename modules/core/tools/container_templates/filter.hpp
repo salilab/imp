@@ -44,7 +44,7 @@ class IMPCOREEXPORT FilteredListGroupnameContainer
   : public GroupnameContainer
 {
   bool sorted_;
-  Values data_;
+  Classnames data_;
 public:
   //! cannot pass a Groupnames on construction
   FilteredListGroupnameContainer();
