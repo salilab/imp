@@ -207,8 +207,9 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
   }
 }
 
-double BrownianDynamics::simulate(float max_time)
+double BrownianDynamics::simulate(float max_time_nu)
 {
+  unit::Femtosecond max_time(max_time_nu);
   IMP_OBJECT_LOG;
   IMP_check(get_model() != NULL, "Must set model before calling simulate",
             ValueException);
@@ -219,37 +220,39 @@ double BrownianDynamics::simulate(float max_time)
           << " particles with a step of " << si_.get_maximum_time_step()
           << " until time " << max_time << std::endl);
   algebra::Vector3Ds old_forces, old_coordinates;
-  double dt=si_.get_maximum_time_step().get_value();
+  unit::Femtosecond dt=si_.get_maximum_time_step();
   get_model()->evaluate(true);
   copy_coordinates(sc, old_coordinates);
   copy_forces(sc, old_forces);
-  while (si_.get_current_time().get_value() < max_time){
-    dt= std::min(dt, max_time-si_.get_current_time().get_value());
+  while (si_.get_current_time() < max_time){
+    dt= std::min(dt, max_time-si_.get_current_time());
     take_step(sc, unit::Femtosecond(dt));
     get_model()->evaluate(true);
-    bool failed=false;
+    Particle *blamed=NULL;
     for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
       core::XYZ d(sc->get_particle(i));
       algebra::Vector3D diff= old_forces[i]- d.get_derivatives();
       if (diff.get_squared_magnitude() > max_squared_force_change_) {
         IMP_LOG(TERSE, "Reducing step size because of particle "
                 << sc->get_particle(i)->get_name() << std::endl);
-        failed=true;
+        blamed= sc->get_particle(i);
         break;
       }
     }
-    if (failed) {
+    if (blamed) {
       revert_coordinates(sc, old_coordinates);
       get_model()->evaluate(true);
-      dt/=2.0;
-      if (dt < 1e-20) {
+      dt= dt/2.0;
+      if (dt < unit::Femtosecond(1e-7)) {
         IMP_failure("Something is wrong with the restraints"
-                    << " and they are highly discontinuous",
+                    << " and they are highly discontinuous due"
+                    << " to particle " << *blamed
+                    << "\n" << *get_model(),
                     InvalidStateException);
       }
     } else {
       si_.set_current_time(si_.get_current_time()+unit::Femtosecond(dt));
-      dt= std::min(si_.get_maximum_time_step().get_value(),dt*1.3);
+      dt= std::min(si_.get_maximum_time_step(),dt*1.3);
       IMP_LOG(TERSE, "Updating dt to " << dt
               << " (" << si_.get_maximum_time_step() << ")" << std::endl);
       update_states();
