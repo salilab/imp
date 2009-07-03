@@ -93,15 +93,15 @@ extern "C" {
   void append(RC d) {
     self->push_back(d);
   }
-  VectorOfRefCounted< RC> __add__(const VectorOfRefCounted &o) {
-    IMP::VectorOfRefCounted< RC> ret(*self);
+  VectorOfRefCounted< RC, Policy> __add__(const VectorOfRefCounted<RC, Policy> &o) {
+    IMP::VectorOfRefCounted< RC, Policy> ret(*self);
     ret.insert(ret.end(), o.begin(), o.end());
     return ret;
   }
-  VectorOfRefCounted< RC> __getslice__(int b, int e) const {
+  VectorOfRefCounted< RC, Policy> __getslice__(int b, int e) const {
     if (e < 0) e= self->size()+e;
     if (b < 0) b= self->size()+b;
-    IMP::VectorOfRefCounted< RC> ret;
+    IMP::VectorOfRefCounted< RC, Policy> ret;
     for ( int c=b; c!= e; ++c) {
        ret.push_back(self->operator[](c));
     }

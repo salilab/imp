@@ -15,9 +15,9 @@
 #include "Key.h"
 #include "internal/AttributeTable.h"
 #include "internal/kernel_version_info.h"
-#include "internal/ObjectContainer.h"
 #include "DerivativeAccumulator.h"
 #include "Pointer.h"
+#include "VectorOfRefCounted.h"
 
 // should use this once we move to a new enough boost (1.35)
 //#include <boost/intrusive/list.hpp>
@@ -632,7 +632,23 @@ public:
   }
 };
 
-typedef std::vector<ParticlePair> ParticlePairs;
+
+#if !defined(IMP_DOXYGEN)
+struct RefCountParticlePair {
+  template <class O>
+  static void ref(O o) {
+    internal::ref(o[0]);
+    internal::ref(o[1]);
+  }
+  template <class O>
+  static void unref(O o) {
+    internal::unref(o[0]);
+    internal::unref(o[1]);
+  }
+};
+#endif
+
+typedef VectorOfRefCounted<ParticlePair, RefCountParticlePair> ParticlePairs;
 
 
 IMP_OUTPUT_OPERATOR(ParticlePair);
@@ -676,8 +692,6 @@ public:
         throw IndexException("Invalid member of triplet");
     };
   }
-
-
   void show(std::ostream &out= std::cout) const {
     out << "(";
     if (first) out << first->get_name();
@@ -693,13 +707,46 @@ public:
 
 };
 
-typedef std::vector<ParticleTriplet> ParticleTriplets;
+#if!defined(IMP_DOXYGEN)
+struct RefCountParticleTriplet {
+  template <class O>
+  static void ref(O o) {
+    internal::ref(o[0]);
+    internal::ref(o[1]);
+    internal::ref(o[2]);
+  }
+  template <class O>
+  static void unref(O o) {
+    internal::unref(o[0]);
+    internal::unref(o[1]);
+    internal::unref(o[2]);
+  }
+};
+#endif
+
+
+typedef VectorOfRefCounted<ParticleTriplet,
+                           RefCountParticleTriplet> ParticleTriplets;
 
 IMP_OUTPUT_OPERATOR(ParticleTriplet);
 
 
 //! A class which is used for representing collections of particles
 typedef VectorOfRefCounted<Particle*> Particles;
+
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+inline std::ostream &operator<<(std::ostream &out, const Particles &ps) {
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (ps[i]) {
+      out << ps[i]->get_name() << " ";
+    } else {
+      out << "NULL ";
+    }
+  }
+  return out;
+}
+#endif
 
 IMP_END_NAMESPACE
 

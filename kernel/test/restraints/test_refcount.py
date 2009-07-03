@@ -53,7 +53,7 @@ class RefCountTests(IMP.test.TestCase):
         # Now create new Python Restraint r from C++ iterator
         # This calls swig::from() internally, which is modified by template
         # specialization in our SWIG interface.
-        r = m.get_restraints().__iter__().value()
+        r = m.get_restraints()[0]
         # Python reference r plus C++ reference from m
         self.assertEqual(r.get_ref_count(), 2)
         del m

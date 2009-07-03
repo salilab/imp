@@ -24,6 +24,7 @@ files = [
     'SingletonScore.h',
     'TripletScore.h',
     'UnaryFunction.h',
+    'VectorOfRefCounted.h',
     'VersionInfo.h',
     'WeakPointer.h',
     'base_types.h',
