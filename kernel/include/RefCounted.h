@@ -68,15 +68,21 @@ class IMPEXPORT RefCounted
 {
   typedef RefCounted This;
   static unsigned int live_objects_;
-  mutable int count_;
   RefCounted(const RefCounted &){}
   RefCounted& operator=(const RefCounted &){return *this;}
 
 #ifndef IMP_DOXYGEN
+#ifndef _MSC_VER
   template <class R>
     friend void internal::unref(R*);
   template <class R>
     friend void internal::ref(R*);
+#endif // _MSC_VER
+#endif // IMP_DOXYGEN
+#ifdef _MSC_VER
+ public:
+#endif // _MSC_VER
+  mutable int count_;
 protected:
   RefCounted() {
      ++live_objects_;
