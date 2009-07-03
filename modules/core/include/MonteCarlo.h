@@ -17,7 +17,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-typedef std::vector<Mover*> Movers;
 
 //! A Monte Carlo optimizer.
 /** The optimizer uses a set of Mover objects to propose steps. Currently

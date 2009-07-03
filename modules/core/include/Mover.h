@@ -66,7 +66,7 @@ public:
 IMP_OUTPUT_OPERATOR(Mover);
 
 //! A collection of Mover objects
-typedef std::vector<Mover*> Movers;
+typedef VectorOfRefCounted<Mover*> Movers;
 
 IMPCORE_END_NAMESPACE
 

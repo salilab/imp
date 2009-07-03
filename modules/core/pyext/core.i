@@ -60,7 +60,7 @@ namespace IMP {
 }
 
 
-IMP_REFCOUNT_RETURN(IMP::core::Mover)
+IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
@@ -150,7 +150,7 @@ IMP_REFCOUNT_RETURN(IMP::core::Mover)
 
 namespace IMP {
   namespace core {
-    %template(Movers) ::std::vector<Mover*>;
+    %template(Movers) ::IMP::VectorOfRefCounted<Mover*>;
     %template(TruncatedHarmonicLowerBound) ::IMP::core::TruncatedHarmonic<LOWER>;
     %template(TruncatedHarmonicUpperBound) ::IMP::core::TruncatedHarmonic<UPPER>;
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;

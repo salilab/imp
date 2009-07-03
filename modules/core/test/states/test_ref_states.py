@@ -54,7 +54,7 @@ class RefCountTests(IMP.test.TestCase):
         # Now create new Python ScoreState s from C++ iterator
         # This calls swig::from() internally, which is modified by template
         # specialization in our SWIG interface.
-        s = m.get_score_states().__iter__().value()
+        s = m.get_score_states()[0]
         # Python reference s plus C++ reference from m
         self.assertEqual(s.get_ref_count(), 2)
         del m

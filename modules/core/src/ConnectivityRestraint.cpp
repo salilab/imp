@@ -119,8 +119,8 @@ ParticlePairs ConnectivityRestraint::get_connected_pairs() const {
   for (unsigned int index=0; index< mst.size(); ++index) {
     int i= boost::target(mst[index], g);
     int j= boost::source(mst[index], g);
-    ret[index]= ParticlePair(get_particle(i),
-                             get_particle(j));
+    ret.set(index, ParticlePair(get_particle(i),
+                                get_particle(j)));
   }
   return ret;
 }
