@@ -150,10 +150,16 @@ class VectorOfRefCounted {
   }
   template <class F>
   void remove_if(const F &f) {
+    std::vector<RC> bye;
     for (iterator it= begin(); it != end(); ++it) {
-      if (f(*it)) unref(*it);
+      if (f(*it)) bye.push_back(*it);
     }
-    data_.erase(std::remove_if(begin(), end(), f), end());
+    if (!bye.empty()) {
+      data_.erase(std::remove_if(begin(), end(), f), end());
+      for (unsigned int i=0; i< bye.size(); ++i) {
+        unref(bye[i]);
+      }
+    }
   }
 };
 
