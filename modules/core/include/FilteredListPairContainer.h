@@ -44,7 +44,7 @@ class IMPCOREEXPORT FilteredListPairContainer
   : public PairContainer
 {
   bool sorted_;
-  mutable VectorOfRefCounted<ParticlePair> data_;
+  ParticlePairs data_;
 public:
   //! cannot pass a Pairs on construction
   FilteredListPairContainer();
