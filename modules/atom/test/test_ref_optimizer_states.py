@@ -37,27 +37,6 @@ class RefCountTests(IMP.test.TestCase):
         del s
         refcnt.assert_number(0)
 
-    def test_delete_optimizer_iterator(self):
-        """OptimizerStates from iterators should survive Optimizer deletion"""
-        refcnt = IMP.test.RefCountChecker(self)
-        o = IMP.atom.MolecularDynamics()
-        ps = IMP.Particles()
-        s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
-        o.add_optimizer_state(s)
-        del s
-        # Now create new Python OptimizerState s from C++ iterator
-        # This calls swig::from() internally, which is modified by template
-        # specialization in our SWIG interface.
-        s = o.get_optimizer_states().__iter__().value()
-        # Python reference s plus C++ reference from o
-        self.assertEqual(s.get_ref_count(), 2)
-        del o
-        # Now only the Python reference s should survive
-        self.assertEqual(s.get_ref_count(), 1)
-        refcnt.assert_number(1)
-        del s
-        refcnt.assert_number(0)
-
     def test_delete_optimizer_accessor(self):
         "OptimizerStates from vector accessors should survive Optimizer del."
         refcnt = IMP.test.RefCountChecker(self)
