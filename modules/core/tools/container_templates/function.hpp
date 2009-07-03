@@ -16,6 +16,7 @@
 #include "GroupnameContainer.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
+#include "VectorOfRefCounted.h"
 
 IMP_BEGIN_NAMESPACE
 // to keep swig happy
@@ -54,7 +55,7 @@ IMP_OUTPUT_OPERATOR(GroupnameModifier)
 
 
 //! A collection
-typedef std::vector<GroupnameModifier*> GroupnameModifiers;
+typedef VectorOfRefCounted<GroupnameModifier*> GroupnameModifiers;
 
 //! Create a functor which can be used with build in C++ and python commands
 /** For example, you can do
