@@ -83,6 +83,7 @@ class IMPEXPORT RefCounted
  public:
 #endif // _MSC_VER
   mutable int count_;
+#ifndef IMP_DOXYGEN
 protected:
   RefCounted() {
      ++live_objects_;
