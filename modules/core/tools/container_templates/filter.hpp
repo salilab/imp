@@ -44,7 +44,7 @@ class IMPCOREEXPORT FilteredListGroupnameContainer
   : public GroupnameContainer
 {
   bool sorted_;
-  mutable VectorOfRefCounted<Value> data_;
+  Values data_;
 public:
   //! cannot pass a Groupnames on construction
   FilteredListGroupnameContainer();
