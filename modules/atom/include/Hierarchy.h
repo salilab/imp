@@ -14,6 +14,7 @@
 #include <IMP/core/Hierarchy.h>
 #include "bond_decorators.h"
 #include <IMP/core/rigid_bodies.h>
+#include "macros.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
@@ -22,6 +23,14 @@
 #include <deque>
 
 IMPATOM_BEGIN_NAMESPACE
+
+
+class Hierarchy;
+/** A collecton of Hierarchies. */
+typedef Decorators<Hierarchy,
+                   IMP::DecoratorsWithImplicitTraits< Hierarchy,
+                              IMP::core::GenericHierarchies> > Hierarchies;
+
 
 //! A decorator for helping deal with a hierarchy of molecules
 /** A hierarchy can have any tree structure as long as child nodes
@@ -222,21 +231,13 @@ public:
     return cast(hd.get_particle());
   }
 
-#ifndef IMP_DOXYGEN
-  Decorators<Hierarchy,
-    IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
-    IMP::core::GenericHierarchies> > get_children() const {
-    Decorators<Hierarchy,
-                   IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
-                          IMP::core::GenericHierarchies> > ps;
+  Hierarchies get_children() const {
+    Hierarchies ps;
     for (unsigned int i=0; i< get_number_of_children(); ++i) {
       ps.push_back( get_child(i) );
     }
     return ps;
   }
-#else
-  Hierarchies get_children() const;
-#endif
 
   IMP_DECORATOR_GET_SET_OPT(mass, get_mass_key(),
                             Float, Float, 0);
@@ -261,11 +262,6 @@ public:
 };
 
 IMP_OUTPUT_OPERATOR(Hierarchy);
-
-/** A collecton of Hierarchies. */
-typedef Decorators<Hierarchy,
-                   IMP::DecoratorsWithImplicitTraits< IMP::atom::Hierarchy,
-                          IMP::core::GenericHierarchies> > Hierarchies;
 
 
 /**
