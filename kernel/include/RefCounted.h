@@ -66,24 +66,21 @@ IMP_BEGIN_NAMESPACE
  */
 class IMPEXPORT RefCounted
 {
+#ifndef IMP_DOXYGEN
   typedef RefCounted This;
   static unsigned int live_objects_;
   RefCounted(const RefCounted &){}
   RefCounted& operator=(const RefCounted &){return *this;}
 
-#ifndef IMP_DOXYGEN
 #ifndef _MSC_VER
   template <class R>
     friend void internal::unref(R*);
   template <class R>
     friend void internal::ref(R*);
-#endif // _MSC_VER
-#endif // IMP_DOXYGEN
-#ifdef _MSC_VER
+#else
  public:
 #endif // _MSC_VER
   mutable int count_;
-#ifndef IMP_DOXYGEN
 protected:
   RefCounted() {
      ++live_objects_;
@@ -120,7 +117,7 @@ protected:
     }
   };
 #endif
-#endif
+#endif // IMP_DOXYGEN
 
 };
 
