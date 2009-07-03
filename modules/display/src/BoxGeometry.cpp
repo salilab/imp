@@ -39,6 +39,7 @@ Geometries BoxGeometry::get_geometry() const {
                                  {5,7},
                                  {6,7}};
   Geometries ret;
+  double r=.01*(bb_.get_corner(1)[0] - bb_.get_corner(0)[0]);
   for (unsigned int i=0; i< 12; ++i) {
     int v0=edges[i][0];
     int v1=edges[i][1];
@@ -56,7 +57,7 @@ Geometries BoxGeometry::get_geometry() const {
                            PICK(v1, 2));
     CylinderGeometry *ncg=
       new CylinderGeometry(algebra::Cylinder3D(algebra::Segment3D(omin,
-                                                                  omax), 0));
+                                                                  omax), r));
     if (color_ != Color()) {
       ncg->set_color(color_);
     }
