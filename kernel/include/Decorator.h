@@ -221,7 +221,7 @@ class Decorators: public ParentDecorators {
               InvalidStateException);
     return Decorator(ParentDecorators::front());
   }
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   typedef internal::IndexingIterator<Accessor> iterator;
   typedef internal::IndexingIterator<Accessor> const_iterator;
 #else
@@ -349,7 +349,7 @@ public:
               InvalidStateException);
     return Decorator(ParentDecorators::front(), tr_);
   }
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   typedef internal::IndexingIterator<Accessor> iterator;
   typedef internal::IndexingIterator<Accessor> const_iterator;
 #else
