@@ -138,6 +138,17 @@ public:
   ~IOException() throw();
 };
 
+
+typedef bool (*FailureFunction)(std::string message);
+
+//! You can install a custom function to be called on an error
+/** When a custom function is registered, no exception is thrown or error
+    message printed. The function should return true if the
+    the remainder of the built in error handle should still execute (that is,
+    if the message should be printed and an exception thrown).
+*/
+IMPEXPORT void set_failure_function(FailureFunction f);
+
 //! Determine the level of runtime checks performed
 /** NONE means that minimial checks are used. CHEAP
     means that only constant time checks are performed
@@ -190,7 +201,7 @@ IMPEXPORT void assert_fail(const char *msg);
 /** Use the provide gdbinit in the tools to automatically break in
     this function.
  */
-IMPEXPORT void check_fail(const char *msg);
+IMPEXPORT bool check_fail(const char *msg);
 
 #ifndef NDEBUG
 
@@ -239,8 +250,9 @@ IMPEXPORT void check_fail(const char *msg);
     if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {              \
       std::ostringstream oss;                                           \
       oss << message << std::endl;                                      \
-      IMP::check_fail(oss.str().c_str());                               \
-      throw ExceptionType(oss.str().c_str());                           \
+      if (IMP::check_fail(oss.str().c_str())) {                         \
+        throw ExceptionType(oss.str().c_str());                         \
+      }                                                                 \
     }                                                                   \
   } while (false)
 #else

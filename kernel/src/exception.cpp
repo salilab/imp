@@ -9,12 +9,20 @@
 
 IMP_BEGIN_NAMESPACE
 
+namespace {
+FailureFunction failure_function=NULL;
+
 static CheckLevel check_mode =
 #ifdef NDEBUG
   NONE;
 #else
   EXPENSIVE;
 #endif
+}
+
+void set_failure_function(FailureFunction f) {
+  failure_function=f;
+}
 
 void set_check_level(CheckLevel cm)
 {
@@ -71,16 +79,24 @@ void set_print_exceptions(bool ft) {
 
 void assert_fail(const char *msg)
 {
-  if (print_exceptions) {
-    IMP_ERROR(msg);
+  if (failure_function && !failure_function(msg)) {
+  } else {
+    if (print_exceptions) {
+      IMP_ERROR(msg);
+    }
+    throw ErrorException(msg);
   }
-  throw ErrorException(msg);
 }
 
-void check_fail(const char *msg)
+bool check_fail(const char *msg)
 {
-  if (print_exceptions) {
-    IMP_ERROR(msg);
+  if (failure_function && !failure_function(msg)) {
+    return false;
+  } else {
+    if (print_exceptions) {
+      IMP_ERROR(msg);
+    }
+    return true;
   }
 }
 
