@@ -28,7 +28,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
 {
-  Pointer<Writer> writer_;
+  mutable Pointer<Writer> writer_;
   unsigned int step_;
   unsigned int skip_steps_;
   std::string name_template_;
@@ -64,6 +64,8 @@ public:
       add_geometry(g);
     }
   }
+  //! Force writing the a file with the given name
+  void write(std::string file_name) const;
 
   IMP_OPTIMIZER_STATE(LogOptimizerState, internal::version_info)
 };

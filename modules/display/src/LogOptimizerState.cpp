@@ -19,6 +19,21 @@ void LogOptimizerState::show(std::ostream &out) const {
   out << "LogOptimizerState" << std::endl;
 }
 
+
+void LogOptimizerState::write(std::string name) const {
+  writer_->set_file_name(name);
+  IMP_LOG(VERBOSE, "Writing extractors"<< std::endl);
+  for (unsigned int i=0; i< edata_.size(); ++i) {
+    Geometries gs=edata_[i]->get_geometry();
+    writer_->add_geometry(gs);
+  }
+  IMP_LOG(VERBOSE, "Writing geometries"<< std::endl);
+  for (unsigned int i=0; i < gdata_.size(); ++i) {
+    writer_->add_geometry(gdata_[i]);
+  }
+  writer_->set_file_name("");
+}
+
 void LogOptimizerState::update() {
   ++step_;
   if (step_%(skip_steps_+1)==0) {
@@ -28,17 +43,7 @@ void LogOptimizerState::update() {
     char buf[1000];
     sprintf(buf, name_template_.c_str(), n);
     IMP_LOG(TERSE, "Writing file " << buf << std::endl);
-    writer_->set_file_name(buf);
-    IMP_LOG(VERBOSE, "Writing extractors"<< std::endl);
-    for (unsigned int i=0; i< edata_.size(); ++i) {
-      Geometries gs=edata_[i]->get_geometry();
-      writer_->add_geometry(gs);
-    }
-    IMP_LOG(VERBOSE, "Writing geometries"<< std::endl);
-    for (unsigned int i=0; i < gdata_.size(); ++i) {
-      writer_->add_geometry(gdata_[i]);
-    }
-    writer_->set_file_name("");
+    write(buf);
   }
 }
 
