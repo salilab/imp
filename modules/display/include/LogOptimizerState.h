@@ -70,6 +70,17 @@ public:
   IMP_OPTIMIZER_STATE(LogOptimizerState, internal::version_info)
 };
 
+//! This function sets it up so that the passed log is used to write on an error
+/** When an error (check or assertion failure) occurs, log is used to write the
+    current state to a file.
+
+    If the file name contains %d, then it is used to generate a unique file name
+    for each error.
+    \untested(set_error_display_log)
+ */
+IMPDISPLAYEXPORT void set_failure_display_log(LogOptimizerState *log,
+                                              std::string file_name);
+
 
 IMPDISPLAY_END_NAMESPACE
 
