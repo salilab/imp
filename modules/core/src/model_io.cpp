@@ -309,4 +309,38 @@ void read(std::string in,
   read(iss, m);
 }
 
+
+
+
+namespace {
+  Pointer<Model> error_model;
+  std::string error_name;
+  int error_index;
+  bool throw_more;
+
+  bool log_failure_function(std::string message) {
+    std::string fname;
+    if (error_name.find("%d") != std::string::npos) {
+      char buf[1000];
+      sprintf(buf, error_name.c_str(), error_index);
+      ++error_index;
+      fname= buf;
+    } else {
+      fname= error_name;
+    }
+    write(error_model, error_name);
+    return throw_more;
+  }
+}
+
+void set_failure_dump(Model *m,
+                      std::string file_name) {
+  error_name=file_name;
+  error_model=m;
+  error_index=0;
+  throw_more= true;
+  set_failure_function(log_failure_function);
+}
+
+
 IMPCORE_END_NAMESPACE
