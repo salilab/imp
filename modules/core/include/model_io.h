@@ -67,6 +67,22 @@ IMPCOREEXPORT void read(std::string file_name, Model *m);
 IMP_NO_DOXYGEN(IMP_NO_SWIG(IMPCOREEXPORT
                            void read(std::istream &in, Model *m);))
 
+
+
+/** \brief This function sets it up so that the the model is dumped to
+    a file on an error
+
+    When an error (check or assertion failure) occurs, the model is
+    dumped to the specified file.
+
+    If the file name contains %d, then it is used to generate a unique
+    file name for each error.
+
+    \untested(set_failure_dump)
+ */
+IMPCOREEXPORT void set_failure_dump(Model *m, std::string file_name);
+
+
 IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_MODEL_IO_H */
