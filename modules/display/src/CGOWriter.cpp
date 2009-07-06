@@ -12,14 +12,12 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 
-CGOAnimationWriter::CGOAnimationWriter(std::string file_name,
-                                       std::string name): Writer(file_name),
-                                                          name_(name),
-                                                          initialized_(false){
+CGOAnimationWriter
+::CGOAnimationWriter(std::string file_name): Writer(file_name),
+                                             name_("animation"),
+                                             initialized_(false){
   IMP_check(!file_name.empty(), "CGOAnimationWrite must be passed a "
             << "file name on construction.", ValueException);
-  IMP_check(!name.empty(), "CGOAnimationWrite must be passed a "
-            << "object name on construction.", ValueException);
   count_=1;
 }
 
@@ -30,23 +28,13 @@ void CGOAnimationWriter::show(std::ostream &out) const {
 
 void CGOAnimationWriter::on_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
+  get_stream() << "model= [\n";
 }
 
 void CGOAnimationWriter::on_close() {
   get_stream() << "]\n\ncmd.load_cgo(model,'" << name_
                << "', " << count_ << ")\n";
-}
-
-void CGOAnimationWriter::set_file_name(std::string str) {
-  // not a real file
-  if (str.empty()) return;
-  if (initialized_) {
-    on_close();
-    ++count_;
-  } else {
-    initialized_=true;
-  }
-  get_stream() << "model= [\n";
+  ++count_;
 }
 
 void CGOAnimationWriter::add_geometry(Geometry *g) {
@@ -64,9 +52,8 @@ void CGOAnimationWriter::add_geometry(Geometry *g) {
 
 
 
-CGOWriter::CGOWriter(std::string file_name,
-                     std::string name): Writer(file_name),
-                                        name_(name){
+CGOWriter::CGOWriter(std::string file_name): Writer(file_name),
+                                             name_("model"){
   count_=0;
 }
 

@@ -38,14 +38,18 @@ class IMPDISPLAYEXPORT CGOAnimationWriter: public Writer
   bool initialized_;
 public:
   //! write to a file using the name to  name the files
-  CGOAnimationWriter(std::string file_name=std::string(),
-            std::string pymol_name="geometry");
+  /** The pymol_name parameter is the name used to identify it
+      within pymol. */
+  CGOAnimationWriter(std::string file_name);
 
   IMP_WRITER(CGOAnimationWriter, internal::version_info)
 
   IMP_WRITER_ADD_GEOMETRY
 
-  void set_file_name(std::string fname);
+ //! Set the name used to identify the model in pymol
+  void set_name(std::string name) {
+    name_=name;
+  }
 };
 
 
@@ -63,10 +67,14 @@ class IMPDISPLAYEXPORT CGOWriter: public Writer
   static void write_geometry(Geometry *g, std::ostream &out);
 public:
   //! write to a file using the name to  name the files
-  CGOWriter(std::string file_name=std::string(),
-            std::string pymol_name="geometry");
+  CGOWriter(std::string file_name=std::string());
 
   IMP_WRITER(CGOWriter, internal::version_info)
+
+    //! Set the name used to identify the model in pymol
+  void set_name(std::string name) {
+    name_=name;
+  }
 
   IMP_WRITER_ADD_GEOMETRY
 };
