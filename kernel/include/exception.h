@@ -158,16 +158,27 @@ IMPEXPORT void set_failure_function(FailureFunction f);
 enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
 
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+namespace internal {
+IMPEXPORT extern CheckLevel check_mode;
+}
+#endif
+
+
 //! Control runtime checks in the code
 /** The default level of checks is CHEAP.
     \ingroup assert
  */
-IMPEXPORT void set_check_level(CheckLevel tf);
+inline void set_check_level(CheckLevel tf) {
+  internal::check_mode= tf;
+}
 
 //! Get the current audit mode
 /**  \ingroup assert
  */
-IMPEXPORT CheckLevel get_check_level();
+inline CheckLevel get_check_level() {
+  return internal::check_mode;
+}
 
 
 //! Set whether exception messages are printed or not
