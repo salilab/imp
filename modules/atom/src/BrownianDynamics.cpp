@@ -122,6 +122,21 @@ Float BrownianDynamics::optimize(unsigned int max_steps)
                  +max_steps*si_.get_maximum_time_step().get_value());
 }
 
+namespace {
+  struct AddTime {
+    SimulationParameters si_;
+    unit::Femtosecond accum_;
+    AddTime(SimulationParameters si): si_(si), accum_(0){}
+    void add(unit::Femtosecond a) {accum_= accum_+a;}
+    ~AddTime() {
+      si_.set_current_time(si_.get_current_time()+accum_);
+    }
+    unit::Femtosecond get_current_time() const {
+      return si_.get_current_time() + accum_;
+    }
+  };
+}
+
 
 void BrownianDynamics::take_step(SingletonContainer *sc,
                                  unit::Femtosecond dt) {
@@ -224,8 +239,9 @@ double BrownianDynamics::simulate(float max_time_nu)
   get_model()->evaluate(true);
   copy_coordinates(sc, old_coordinates);
   copy_forces(sc, old_forces);
-  while (si_.get_current_time() < max_time){
-    dt= std::min(dt, max_time-si_.get_current_time());
+  AddTime at(si_);
+  while (at.get_current_time() < max_time){
+    dt= std::min(dt, max_time-at.get_current_time());
     take_step(sc, unit::Femtosecond(dt));
     get_model()->evaluate(true);
     Particle *blamed=NULL;
@@ -243,7 +259,7 @@ double BrownianDynamics::simulate(float max_time_nu)
       revert_coordinates(sc, old_coordinates);
       get_model()->evaluate(true);
       dt= dt/2.0;
-      if (dt < unit::Femtosecond(1e-7)) {
+      if (dt < unit::Femtosecond(1)) {
         IMP_failure("Something is wrong with the restraints"
                     << " and they are highly discontinuous due"
                     << " to particle " << *blamed
@@ -251,7 +267,15 @@ double BrownianDynamics::simulate(float max_time_nu)
                     InvalidStateException);
       }
     } else {
-      si_.set_current_time(si_.get_current_time()+unit::Femtosecond(dt));
+      at.add( dt );
+      si_.set_last_time_step(dt);
+      //si_.set_current_time(si_.get_current_time()+unit::Femtosecond(dt));
+      /*if (ct== si_.get_current_time()) {
+        IMP_WARN("Unable to advance time due to roundoff: "
+        << si_.get_current_time()
+                 << " + " << unit::Femtosecond(dt)<< std::endl);
+        throw InvalidStateException("Unable to advance time");
+        }*/
       dt= std::min(si_.get_maximum_time_step(),dt*1.3);
       IMP_LOG(TERSE, "Updating dt to " << dt
               << " (" << si_.get_maximum_time_step() << ")" << std::endl);

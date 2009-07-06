@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
 SimulationParameters SimulationParameters::create(Particle *p,
                                                   double dt, double T) {
   p->add_attribute(get_current_time_key(), 0, false);
-  p->add_attribute(get_last_time_key(), 0, false);
+  p->add_attribute(get_last_time_step_key(), 0, false);
   p->add_attribute(get_temperature_key(), T, false);
   p->add_attribute(get_maximum_time_step_key(), dt, false);
   IMP_check(dt > 0, "Time step must be positive", ValueException);
@@ -33,7 +33,7 @@ SimulationParameters SimulationParameters::create(Particle *p,
 void SimulationParameters::show(std::ostream &out, std::string prefix) const
 {
   out << "Current time is " << get_current_time() << "\n";
-  out << "Last time was " << get_last_time() << "\n";
+  out << "Last time step was " << get_last_time_step() << "\n";
   out << "Temperature is " << get_temperature() << "\n";
   out << std::endl;
 }
@@ -49,8 +49,8 @@ FloatKey SimulationParameters::get_current_time_key() {
   return k;
 }
 
-FloatKey SimulationParameters::get_last_time_key() {
-  static FloatKey k("last_time");
+FloatKey SimulationParameters::get_last_time_step_key() {
+  static FloatKey k("last_time_step");
   return k;
 }
 

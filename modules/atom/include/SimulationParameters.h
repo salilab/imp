@@ -58,32 +58,38 @@ public:
   //! return true if the particle has the needed attributes
   static bool is_instance_of(Particle *p) {
     return p->has_attribute(get_current_time_key())
-      && p->has_attribute(get_last_time_key());
+      && p->has_attribute(get_last_time_step_key());
   }
 
-  IMP_DECORATOR_GET_SET_OPT(maximum_time_step_in_femtoseconds,
-                            get_maximum_time_step_key(),
-                            Float, Float,
-                            std::numeric_limits<Float>::max());
   Float get_temperature_in_kelvin() const {
     return get_particle()->get_value(get_temperature_key());
   }
   Float get_current_time_in_femtoseconds() const {
     return get_particle()->get_value(get_current_time_key());
   }
-  Float get_last_time_in_femtoseconds() const {
-    return get_particle()->get_value(get_last_time_key());
+  Float get_last_time_step_in_femtoseconds() const {
+    return get_particle()->get_value(get_last_time_step_key());
+  }
+  Float get_maximum_time_step_in_femtoseconds() const {
+    return get_particle()->get_value(get_maximum_time_step_key());
   }
 
-  //! Update current and last time
   void set_current_time_in_femtoseconds(double t) {
-    get_particle()->set_value(get_last_time_key(),
-                              get_current_time_in_femtoseconds());
     get_particle()->set_value(get_current_time_key(),
                               t);
   }
 
-  static FloatKey get_last_time_key();
+  void set_last_time_step_in_femtoseconds(double t) {
+    get_particle()->set_value(get_last_time_step_key(),
+                              t);
+  }
+  void set_maximum_time_step_in_femtoseconds(double t) {
+    get_particle()->set_value(get_maximum_time_step_key(),
+                              t);
+  }
+
+
+  static FloatKey get_last_time_step_key();
 
   static FloatKey get_current_time_key();
 
@@ -96,14 +102,18 @@ public:
   unit::Femtosecond get_current_time() const {
     return unit::Femtosecond(get_current_time_in_femtoseconds());
   }
-  unit::Femtosecond get_last_time() const {
-    return unit::Femtosecond(get_last_time_in_femtoseconds());
+  unit::Femtosecond get_last_time_step() const {
+    return unit::Femtosecond(get_last_time_step_in_femtoseconds());
   }
   unit::Femtosecond get_maximum_time_step() const {
     return unit::Femtosecond(get_maximum_time_step_in_femtoseconds());
   }
   void set_maximum_time_step(unit::Femtosecond ts) {
+    if (get_last_time_step() == unit::Femtosecond(0)) set_last_time_step(ts);
     set_maximum_time_step_in_femtoseconds(unit::strip_units(ts));
+  }
+  void set_last_time_step(unit::Femtosecond ts) {
+    set_last_time_step_in_femtoseconds(unit::strip_units(ts));
   }
   unit::Kelvin get_temperature() const {
     return unit::Kelvin(get_temperature_in_kelvin());
