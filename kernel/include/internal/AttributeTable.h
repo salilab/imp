@@ -127,10 +127,8 @@ class AttributeTable
   Map map_;
 
   void check_contains(typename Traits::Key k) const {
-    IMP_assert(map_.size() > k.get_index(),
-               "Attribute \"" << k.get_string()
-               << "\" not found in table.");
-    IMP_check(Traits::get_is_valid(map_[k.get_index()]),
+    IMP_check(map_.size() > k.get_index()
+              && Traits::get_is_valid(map_[k.get_index()]),
               "Attribute \"" << k.get_string()
               << "\" not found in table.",
               IndexException);

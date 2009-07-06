@@ -11,28 +11,23 @@ IMP_BEGIN_NAMESPACE
 
 namespace {
 FailureFunction failure_function=NULL;
+}
 
-static CheckLevel check_mode =
+namespace internal {
+
+CheckLevel check_mode =
 #ifdef NDEBUG
   NONE;
 #else
   EXPENSIVE;
 #endif
+
 }
 
 void set_failure_function(FailureFunction f) {
   failure_function=f;
 }
 
-void set_check_level(CheckLevel cm)
-{
-  check_mode = cm;
-}
-
-CheckLevel get_check_level()
-{
-  return check_mode;
-}
 
 Exception::~Exception() throw()
 {
