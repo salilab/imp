@@ -7,7 +7,6 @@
 #include "IMP/em.h"
 #include "IMP/algebra.h"
 #include "IMP/core.h"
-#include "IMP/display.h"
 #include "IMP/atom.h"
 %}
 
@@ -43,7 +42,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
 %import "modules/algebra/pyext/algebra.i"
 %import "modules/core/pyext/core.i"
 %import "modules/atom/pyext/atom.i"
-%import "modules/display/pyext/display.i"
 
 /* Wrap our own classes */
 %include "IMP/em/def.h"
