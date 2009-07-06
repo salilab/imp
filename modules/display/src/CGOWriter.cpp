@@ -12,45 +12,6 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 
-CGOAnimationWriter
-::CGOAnimationWriter(std::string file_name): Writer(file_name),
-                                             name_("animation"),
-                                             initialized_(false){
-  IMP_check(!file_name.empty(), "CGOAnimationWrite must be passed a "
-            << "file name on construction.", ValueException);
-  count_=1;
-}
-
-
-void CGOAnimationWriter::show(std::ostream &out) const {
-  out << "CGOAnimationWriter" << std::endl;
-}
-
-void CGOAnimationWriter::on_open() {
-  get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
-  get_stream() << "model= [\n";
-}
-
-void CGOAnimationWriter::on_close() {
-  get_stream() << "]\n\ncmd.load_cgo(model,'" << name_
-               << "', " << count_ << ")\n";
-  ++count_;
-}
-
-void CGOAnimationWriter::add_geometry(Geometry *g) {
-  IMP_CHECK_OBJECT(g);
-  CGOWriter::write_geometry(g, get_stream());
-}
-
-
-
-
-
-
-
-
-
-
 
 CGOWriter::CGOWriter(std::string file_name): Writer(file_name),
                                              name_("model"){
@@ -70,7 +31,7 @@ void CGOWriter::on_close() {
   char buf[1000];
   sprintf(buf, name_.c_str(), count_);
   get_stream() << "]\n\ncmd.load_cgo(model,'" << buf
-               << "',   1)\n";
+               << "',   0)\n";
   ++count_;
 }
 
