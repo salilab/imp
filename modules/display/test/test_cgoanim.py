@@ -31,10 +31,10 @@ class TestBL(IMP.test.TestCase):
 
     def test_5(self):
         """Testing the CGOAnimation writer"""
-        nm=self.get_tmp_file_name("test.pymol.py")
+        nm=self.get_tmp_file_name("test.%04d.pymol.py")
         w=IMP.display.CGOAnimationWriter(nm)
         for i in range(0,20):
-            w.set_file_name(nm)
+            w.set_file_name(nm%i)
             self._testit(w,i)
 
 
