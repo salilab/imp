@@ -6,6 +6,7 @@
  */
 
 #include "IMP/exception.h"
+#include "IMP/log.h"
 
 IMP_BEGIN_NAMESPACE
 
