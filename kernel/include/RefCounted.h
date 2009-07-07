@@ -11,7 +11,6 @@
 
 #include "config.h"
 #include "exception.h"
-#include "log.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 

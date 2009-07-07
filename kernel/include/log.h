@@ -112,37 +112,6 @@ IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
 }
 
 
-//! A class to change and restore log state
-/**
-   To use, create an instance of this class which the log level you
-   want. When it goes out of scope, it will restore the old level.
-   \ingroup log
- */
-class IMPEXPORT SetLogState: public RAII
-{
-public:
-  //! Construct it with the desired level and target
-  SetLogState(LogLevel l, LogTarget t= get_log_target()):
-    target_(get_log_target()) {
-    if (l != DEFAULT) {
-      level_= get_log_level();
-      internal::Log::get().set_level(l);
-      set_log_target(t);
-    } else {
-      level_=DEFAULT;
-    }
-  }
-  ~SetLogState() {
-    if (level_ != DEFAULT) {
-      internal::Log::get().set_level(level_);
-      set_log_target(target_);
-    }
-  }
-private:
-  LogLevel level_;
-  LogTarget target_;
-};
-
 #ifndef IMP_DISABLE_LOGGING
 
 

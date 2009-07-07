@@ -19,6 +19,7 @@ files = [
     'RefCounted.h',
     'Restraint.h',
     'ScoreState.h',
+    'SetLogState.h',
     'SingletonContainer.h',
     'SingletonModifier.h',
     'SingletonScore.h',
