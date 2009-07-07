@@ -86,6 +86,14 @@ class IMPATOMEXPORT Diffusion:
     set_D_in_cm2_per_second(D.get_value());
   }
 
+  static unit::SquareCentimeterPerSecond D_from_r(unit::Angstrom radius,
+                                                  unit::Kelvin t
+#ifndef _MSC_VER
+                                                  // it ICEs on this.
+                              = IMP::internal::DEFAULT_TEMPERATURE
+#endif
+                                                  );
+
   unit::Angstrom
     get_sigma(unit::Femtosecond dt) const {
     return sqrt(2.0*dt*get_D());
