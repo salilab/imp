@@ -8,7 +8,6 @@
 #ifndef IMP_EXCEPTION_H
 #define IMP_EXCEPTION_H
 
-#include "log.h"
 #include "config.h"
 
 #include <cassert>
