@@ -121,8 +121,9 @@ public:
         < get_rmap().size()) {
       return get_rmap()[i];
     } else {
-      IMP_WARN("Corrupted Key Table asking for key " << i
-               << " with a table of size " << get_rmap().size());
+      std::cerr << "Corrupted Key Table asking for key " << i
+                << " with a table of size " << get_rmap().size()
+                << std::endl;
       std::ostringstream oss;
       oss<< "Invalid index " << i;
       return oss.str();

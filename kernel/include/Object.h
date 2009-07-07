@@ -44,7 +44,6 @@ class IMPEXPORT Object: public RefCounted
   // hide the inheritance from RefCounted as it is a detail
   LogLevel log_level_;
 protected:
-  IMP_NO_DOXYGEN(LogLevel get_log_level() const { return log_level_;});
   IMP_NO_DOXYGEN(Object());
   IMP_NO_DOXYGEN(virtual ~Object());
 
@@ -70,6 +69,8 @@ public:
               << l, ValueException);
     log_level_=l;
   }
+
+  IMP_NO_DOXYGEN(LogLevel get_log_level() const { return log_level_;});
 
   //! Print out one or more lines of text describing the object
   virtual void show(std::ostream &out=std::cout) const=0;
@@ -98,6 +99,7 @@ IMP_END_NAMESPACE
     IMP_assert((obj)->get_is_valid(), "Object was previously freed");     \
 } while (false)
 
+#include "SetLogState.h"
 
 #ifndef NDEBUG
 //! Set the log level to the objects log level.
