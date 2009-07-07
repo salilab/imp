@@ -125,14 +125,20 @@ Float BrownianDynamics::optimize(unsigned int max_steps)
 namespace {
   struct AddTime {
     SimulationParameters si_;
+    unit::Femtosecond orig_time_;
     unit::Femtosecond accum_;
-    AddTime(SimulationParameters si): si_(si), accum_(0){}
-    void add(unit::Femtosecond a) {accum_= accum_+a;}
+    AddTime(SimulationParameters si): si_(si),
+                                      orig_time_(si_.get_current_time()),
+                                      accum_(0){}
+    void add(unit::Femtosecond a) {
+      accum_= accum_+a;
+      si_.set_current_time(orig_time_+accum_);
+    }
     ~AddTime() {
-      si_.set_current_time(si_.get_current_time()+accum_);
+      si_.set_current_time(orig_time_+accum_);
     }
     unit::Femtosecond get_current_time() const {
-      return si_.get_current_time() + accum_;
+      return orig_time_ + accum_;
     }
   };
 }
