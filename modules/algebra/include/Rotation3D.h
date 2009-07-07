@@ -10,8 +10,12 @@
 
 #include "config.h"
 #include "Vector3D.h"
+
+#include <IMP/log.h>
+
 #include <iostream>
 #include <algorithm>
+
 IMPALGEBRA_BEGIN_NAMESPACE
 
 #ifndef IMP_DOXYGEN

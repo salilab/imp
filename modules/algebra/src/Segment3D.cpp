@@ -6,6 +6,7 @@
  */
 #include <IMP/algebra/Segment3D.h>
 #include <IMP/algebra/internal/shortest_segment.h>
+#include <IMP/log.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 Segment3D::Segment3D(const Vector3D &start,const Vector3D &end) {
   p_[0]=start;
