@@ -49,9 +49,9 @@ public:
   //! Create with the given refiner and radius key
   /** Slack is the amount added to the radius.*/
   CoverRefined(Refiner *ref,
-                                FloatKey rk
-                                =XYZR::get_default_radius_key(),
-                                Float slack=0);
+               FloatKey rk
+               =XYZR::get_default_radius_key(),
+               Float slack=0);
   ~CoverRefined();
 
   IMP_SINGLETON_MODIFIER(internal::version_info);
