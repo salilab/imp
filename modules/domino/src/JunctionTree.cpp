@@ -6,6 +6,8 @@
  *
  */
 #include "IMP/domino/JunctionTree.h"
+#include <fstream>
+#include <IMP/log.h>
 IMPDOMINO_BEGIN_NAMESPACE
 void read_junction_tree(const std::string &filename, JunctionTree *jt) {
   std::ifstream jt_f (filename.c_str());

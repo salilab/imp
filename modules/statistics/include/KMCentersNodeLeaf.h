@@ -11,6 +11,7 @@
 #include "KMCentersNode.h"
 #include "KMData.h"
 #include "KMRectangle.h"
+#include "IMP/log.h"
 IMPSTATISTICS_BEGIN_NAMESPACE
 /** Leaf nodes of the kc-tree store the set of points associated with this
     bucket, stored as an array of point indices.  These are indices in the

@@ -6,6 +6,7 @@
  */
 #include <IMP/statistics/KMData.h>
 #include <IMP/statistics/internal/random_generator.h>
+#include <IMP/log.h>
 #include <iostream>
 IMPSTATISTICS_BEGIN_NAMESPACE
 KMData::KMData(int d, int n) : dim_(d) {

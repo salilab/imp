@@ -7,7 +7,7 @@
  */
 
 #include <IMP/algebra/vector_generators.h>
-
+#include <IMP/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
