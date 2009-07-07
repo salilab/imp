@@ -71,10 +71,9 @@ void Diffusion::set_D_from_radius_in_angstroms(Float ir) {
                             IMP::internal::DEFAULT_TEMPERATURE.get_value());
 }
 
-void Diffusion::set_D_from_radius_in_angstroms(Float ir,
-                                                        Float it) {
-  unit::Kelvin t(it);
-  unit::Angstrom r(ir);
+
+unit::SquareCentimeterPerSecond Diffusion::D_from_r(unit::Angstrom radius,
+                                                    unit::Kelvin t) {
   MillipascalSecond e=eta(t);
   //unit::MKSUnit<-13, 0, 1, 0, -1> etar( e*r);
   /*std::cout << e << " " << etar << " " << kt << std::endl;
@@ -82,9 +81,17 @@ void Diffusion::set_D_from_radius_in_angstroms(Float ir,
             << std::endl;
   std::cout << "ret pre conv " << (kt/(unit::Scalar(6* unit::PI)*etar))
   << std::endl;*/
-  unit::SquareCentimeterPerSecond ret(kt(t)/(6.0* IMP::PI*e*r));
+  unit::SquareCentimeterPerSecond ret(kt(t)/(6.0* PI*e*radius));
   //std::cout << "ret " << ret << std::endl;
-  set_D_in_cm2_per_second(ret.get_value());
+  return ret;
+}
+
+
+
+void Diffusion::set_D_from_radius_in_angstroms(Float ir,
+                                                        Float it) {
+  set_D(D_from_r(unit::Angstrom(ir),
+                 unit::Kelvin(it)));
 }
 
 void Diffusion::show(std::ostream &out, std::string prefix) const
