@@ -36,6 +36,19 @@ public:
   IMP_GEOMETRY(BondGeometry, internal::version_info)
 };
 
+//! Represent a set of bonds with segments
+/** \see BondGeometry
+ */
+class IMPDISPLAYEXPORT BondsGeometry: public CompoundGeometry
+{
+  Pointer<SingletonContainer> sc_;
+  FloatKey rk_;
+public:
+  BondsGeometry(SingletonContainer *sc, FloatKey radiuskey);
+
+  IMP_COMPOUND_GEOMETRY(BondsGeometry, internal::version_info)
+};
+
 IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_BOND_GEOMETRY_H */

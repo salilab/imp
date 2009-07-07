@@ -36,4 +36,26 @@ Float BondGeometry::get_size() const {
 unsigned int BondGeometry::get_number_of_vertices() const{
   return 2;
 }
+
+
+
+
+
+BondsGeometry::BondsGeometry(SingletonContainer *sc,
+                             FloatKey rk): sc_(sc), rk_(rk){}
+
+void BondsGeometry::show(std::ostream &out) const {
+  out << "Bondss" << std::endl;
+}
+
+Geometries BondsGeometry::get_geometry() const {
+  Geometries ret(sc_->get_number_of_particles());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    double r= sc_->get_particle(i)->get_value(rk_);
+    ret.set(i, new BondGeometry(atom::Bond(sc_->get_particle(i)), r));
+  }
+  return ret;
+}
+
+
 IMPDISPLAY_END_NAMESPACE
