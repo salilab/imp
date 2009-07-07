@@ -134,7 +134,7 @@ typedef Multiply<Multiply<Angstrom, Angstrom>::type,
 typedef Multiply<Angstrom, Angstrom>::type  SquaredAngstrom;
 typedef Shift<CubicCentimeter, 3>::type Liter;
 typedef Divide<Gram, CubicCentimeter>::type GramPerCubicCentimeter;
-
+typedef Shift<Meter, -6>::type Micron;
 
 
 template <int EXP, class Units>
