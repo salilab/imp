@@ -204,7 +204,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
       unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*d.get_D()/kt());
       if (force_term > 5.0*sigma) {
         IMP_WARN("Forces are too high to stably integrate: "
-                 << p->get_name());
+                 << p->get_name() << std::endl);
       }
       //std::cout << "Force term is " << force_term << " and R is "
       //<< R << std::endl;
@@ -283,8 +283,10 @@ double BrownianDynamics::simulate(float max_time_nu)
         throw InvalidStateException("Unable to advance time");
         }*/
       dt= std::min(si_.get_maximum_time_step(),dt*1.3);
-      IMP_LOG(TERSE, "Updating dt to " << dt
-              << " (" << si_.get_maximum_time_step() << ")" << std::endl);
+      if (dt != si_.get_maximum_time_step()) {
+        IMP_LOG(TERSE, "Updating dt to " << dt
+                << " (" << si_.get_maximum_time_step() << ")" << std::endl);
+      }
       update_states();
       copy_coordinates(sc, old_coordinates);
       copy_forces(sc, old_forces);
