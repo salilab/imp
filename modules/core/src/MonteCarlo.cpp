@@ -58,7 +58,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     IMP_LOG(VERBOSE, "after\n");
     Float next_energy;
     if (cg_ && num_local_steps_!= 0) {
-      IMP_LOG(VERBOSE,
+      IMP_LOG(TERSE,
               "MC Performing local optimization "<< std::flush);
       IMP_CHECK_OBJECT(cg_.get());
       next_energy =cg_->optimize(num_local_steps_);
@@ -79,15 +79,15 @@ Float MonteCarlo::optimize(unsigned int max_steps)
         ++stat_upward_steps_taken_;
       }
     }
-    IMP_LOG(VERBOSE,  "MC Prior energy is " << prior_energy_
+    IMP_LOG(TERSE,  "MC Prior energy is " << prior_energy_
             << " and next is " << next_energy << " ");
     if (accept) {
-      IMP_LOG(VERBOSE,  " accept" << std::endl);
+      IMP_LOG(TERSE,  " accept" << std::endl);
       for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
         (*it)->accept_move();
       }
     } else {
-      IMP_LOG(VERBOSE,  " reject" << std::endl);
+      IMP_LOG(TERSE,  " reject" << std::endl);
       for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
         (*it)->reject_move();
       }
@@ -102,7 +102,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     }
     if (prior_energy_ < stop_energy_) break;
   }
-  IMP_LOG(VERBOSE, "MC Final energy is " << prior_energy_ << std::endl);
+  IMP_LOG(TERSE, "MC Final energy is " << prior_energy_ << std::endl);
   return get_model()->evaluate(false); //force coordinate update
 }
 
