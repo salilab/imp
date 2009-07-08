@@ -8,8 +8,8 @@
 #define IMPALGEBRA_INTERNAL_SHORTEST_SEGMENT_H
 
 #include "../config.h"
-#include <IMP/base_types.h>
 #include "../Segment3D.h"
+#include <IMP/base_types.h>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
