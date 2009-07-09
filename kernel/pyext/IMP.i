@@ -137,6 +137,7 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 %include "IMP/RefCounted.h"
 %include "IMP/VectorOfRefCounted.h"
 %include "Object.i"
+%include "IMP/FailureHandler.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "Particle.i"
 %include "IMP/Decorator.h"

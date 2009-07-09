@@ -22,7 +22,7 @@ IMP_BEGIN_NAMESPACE
 //! The general base class for IMP exceptions
 /** This way we can catch IMP exceptions without getting memory allocation
     errors and everything. And it enforces having a description.
- */
+*/
 class IMPEXPORT Exception
 {
   struct refstring {
@@ -30,7 +30,7 @@ class IMPEXPORT Exception
     int ct_;
   };
   refstring *str_;
-public:
+ public:
   const char *what() const throw() {
     return str_? str_->message_: NULL;
   }
@@ -48,7 +48,7 @@ public:
 
       \todo Should probably have a macro for exception classes to make sure this
       is always done correctly.
-   */
+  */
   virtual ~Exception() throw();
 
   Exception(const Exception &o) {copy(o);}
@@ -85,7 +85,7 @@ struct IMPEXPORT ErrorException: public Exception
  */
 class IMPEXPORT InvalidStateException : public Exception
 {
-public:
+ public:
   //! Create exception with an error message
   InvalidStateException(const char *t): Exception(t){}
   ~InvalidStateException() throw();
@@ -96,7 +96,7 @@ public:
  */
 class IMPEXPORT InactiveParticleException : public Exception
 {
-public:
+ public:
   //! Create exception with an error message
   InactiveParticleException(const char *msg
                             ="Attempting to use inactive particle"):
@@ -109,7 +109,7 @@ public:
  */
 class IMPEXPORT IndexException: public Exception
 {
-public:
+ public:
   //! Create exception with an error message
   IndexException(const char *t): Exception(t){}
   ~IndexException() throw();
@@ -120,7 +120,7 @@ public:
  */
 class IMPEXPORT ValueException: public Exception
 {
-public:
+ public:
   //! Create exception with an error message
   ValueException(const char *t): Exception(t){}
   ~ValueException() throw();
@@ -131,35 +131,24 @@ public:
  */
 class IMPEXPORT IOException: public Exception
 {
-public:
+ public:
   //! Create exception with an error message
   IOException(const char *t): Exception(t){}
   ~IOException() throw();
 };
-
-
-typedef bool (*FailureFunction)(std::string message);
-
-//! You can install a custom function to be called on an error
-/** When a custom function is registered, no exception is thrown or error
-    message printed. The function should return true if the
-    the remainder of the built in error handle should still execute (that is,
-    if the message should be printed and an exception thrown).
-*/
-IMPEXPORT void set_failure_function(FailureFunction f);
 
 //! Determine the level of runtime checks performed
 /** NONE means that minimial checks are used. CHEAP
     means that only constant time checks are performed
     and with EXPENSIVE non-linear time checks will be run.
     \ingroup assert
- */
+*/
 enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
 
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
-IMPEXPORT extern CheckLevel check_mode;
+  IMPEXPORT extern CheckLevel check_mode;
 }
 #endif
 
@@ -167,7 +156,7 @@ IMPEXPORT extern CheckLevel check_mode;
 //! Control runtime checks in the code
 /** The default level of checks is CHEAP.
     \ingroup assert
- */
+*/
 inline void set_check_level(CheckLevel tf) {
   internal::check_mode= tf;
 }
@@ -194,24 +183,19 @@ IMPEXPORT void set_print_exceptions(bool tf);
    The next code block (delimited by { }) is executed if
    get_check_level() <= level.
    \ingroup assert
- */
-#define IMP_IF_CHECK(level)\
+*/
+#define IMP_IF_CHECK(level)                     \
   if (level <= ::IMP::get_check_level())
 #else
 #define IMP_IF_CHECK(level) if (0)
 #endif
 
-//! This is just here so you can catch errors more easily in the debugger
-/** Use the provide gdbinit in the tools to automatically break in
-    this function.
- */
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+namespace internal {
 IMPEXPORT void assert_fail(const char *msg);
+}
+#endif
 
-//! Here so you can catch check failures more easily in the debugger
-/** Use the provide gdbinit in the tools to automatically break in
-    this function.
- */
-IMPEXPORT bool check_fail(const char *msg);
 
 #ifndef NDEBUG
 
@@ -228,16 +212,17 @@ IMPEXPORT bool check_fail(const char *msg);
     \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
     \ingroup assert
- */
-#define IMP_assert(expr, message)                                       \
-  do {                                                                  \
-    if (IMP::get_check_level() >= IMP::EXPENSIVE && !(expr)) {          \
-      std::ostringstream oss;                                           \
-      oss << message << std::endl                                       \
-          << "  File \"" << __FILE__ << "\", line " << __LINE__         \
-          << std::endl;                                                 \
-      IMP::assert_fail(oss.str().c_str());                              \
-    }                                                                   \
+*/
+#define IMP_assert(expr, message)                               \
+  do {                                                          \
+    if (IMP::get_check_level() >= IMP::EXPENSIVE && !(expr)) {  \
+      std::ostringstream oss;                                   \
+      oss << message << std::endl                               \
+          << "  File \"" << __FILE__ << "\", line " << __LINE__ \
+          << std::endl;                                         \
+      IMP::internal::assert_fail(oss.str().c_str());            \
+      throw ErrorException(oss.str().c_str());                  \
+    }                                                           \
   } while(false)
 #else
 #define IMP_assert(expr, message)
@@ -254,16 +239,15 @@ IMPEXPORT bool check_fail(const char *msg);
     to throw necessary exceptions (throw the exception yourself); use them
     only to check for errors, such as inappropriate input.
     \ingroup assert
- */
-#define IMP_check(expr, message, ExceptionType)                         \
-  do {                                                                  \
-    if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {              \
-      std::ostringstream oss;                                           \
-      oss << message << std::endl;                                      \
-      if (IMP::check_fail(oss.str().c_str())) {                         \
-        throw ExceptionType(oss.str().c_str());                         \
-      }                                                                 \
-    }                                                                   \
+*/
+#define IMP_check(expr, message, ExceptionType)                 \
+  do {                                                          \
+    if (IMP::get_check_level() >= IMP::CHEAP && !(expr)) {      \
+      std::ostringstream oss;                                   \
+      oss << message << std::endl;                              \
+      IMP::internal::assert_fail(oss.str().c_str());            \
+      throw ExceptionType(oss.str().c_str());                   \
+    }                                                           \
   } while (false)
 #else
 #define IMP_check(e,m,E)
@@ -274,17 +258,21 @@ IMPEXPORT bool check_fail(const char *msg);
     \param[in] ExceptionType Throw an exception of this type. The exception
     must be constructable from a char *.
     \ingroup assert
- */
-#define IMP_failure(message, ExceptionType) { \
-    std::ostringstream oss;                                             \
-    oss << message << std::endl;                                        \
-    IMP::check_fail(oss.str().c_str());                                 \
-    throw ExceptionType(oss.str().c_str());}
+*/
+#define IMP_failure(message, ExceptionType) do {                        \
+  std::ostringstream oss;                                               \
+  oss << message << std::endl;                                          \
+  IMP::internal::assert_fail(oss.str().c_str());                        \
+  throw ExceptionType(oss.str().c_str());                               \
+  } while (true)
 
 //! Use this to make that the method is not implemented yet
 /** \ingroup assert
  */
-#define IMP_not_implemented IMP::assert_fail("This method is not implemented.");
+#define IMP_not_implemented do {                                        \
+    IMP::internal::assert_fail("This method is not implemented.");      \
+    throw ErrorException("Not implemented");                            \
+  } while(true)
 
 IMP_END_NAMESPACE
 
