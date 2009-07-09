@@ -3,7 +3,7 @@
 
 - Hooks have been added to allow actions to be taken on an assertion or check failure. See IMP::HandleFailure and its descendents for more details.
 
-- output to pymol CGO files has been much improved and now allows provides lots of display-time control and easy building of animations.
+- IMP::display::CGOWriter has been much improved and now allows provides lots of display-time control and easy building of animations.
 
 \par Week of June 15
 
