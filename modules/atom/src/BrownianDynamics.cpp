@@ -243,11 +243,16 @@ double BrownianDynamics::simulate(float max_time_nu)
   algebra::Vector3Ds old_forces, old_coordinates;
   unit::Femtosecond dt=si_.get_maximum_time_step();
   get_model()->evaluate(true);
+  update_states();
   copy_coordinates(sc, old_coordinates);
   AddTime at(si_);
+  bool success=false;
   while (at.get_current_time() < max_time){
     dt= std::min(dt, max_time-at.get_current_time());
     get_model()->evaluate(true);
+    if (success) {
+      update_states();
+    }
     try {
       take_step(sc, unit::Femtosecond(dt));
       at.add( dt );
@@ -257,8 +262,8 @@ double BrownianDynamics::simulate(float max_time_nu)
         IMP_LOG(TERSE, "Updating dt to " << dt
                 << " (" << si_.get_maximum_time_step() << ")" << std::endl);
       }
-      update_states();
       copy_coordinates(sc, old_coordinates);
+      success=true;
      } catch (const BadStepException &e) {
       IMP_LOG(TERSE, "Reducing step size because of particle "
                 << e.blamed->get_name() << std::endl);
@@ -272,9 +277,12 @@ double BrownianDynamics::simulate(float max_time_nu)
                     << "\n" << *get_model(),
                     InvalidStateException);
       }
+      success=false;
     }
   }
-  return get_model()->evaluate(false);
+  double v= get_model()->evaluate(false);
+  update_states();
+  return v;
 }
 
 
