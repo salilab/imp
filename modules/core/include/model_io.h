@@ -9,9 +9,10 @@
 #define IMPCORE_MODEL_IO_H
 
 #include "config.h"
-
+#include "internal/version_info.h"
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
+#include <IMP/FailureHandler.h>
 
 #include <string>
 #include <iostream>
@@ -69,18 +70,21 @@ IMP_NO_DOXYGEN(IMP_NO_SWIG(IMPCOREEXPORT
 
 
 
-/** \brief This function sets it up so that the the model is dumped to
-    a file on an error
+/** \brief Dump the state of the model to a file on an error and then
+    go on the the other handlers.
 
     When an error (check or assertion failure) occurs, the model is
     dumped to the specified file.
 
-    If the file name contains %d, then it is used to generate a unique
-    file name for each error.
-
     \untested(set_failure_dump)
  */
-IMPCOREEXPORT void set_failure_dump(Model *m, std::string file_name);
+class IMPCOREEXPORT DumpModelOnFailure: public FailureHandler {
+  Model *m_;
+  std::string file_name_;
+ public:
+  DumpModelOnFailure(Model *m, std::string file_name);
+  IMP_FAILURE_HANDLER(DumpModelOnFailure, internal::version_info);
+};
 
 
 IMPCORE_END_NAMESPACE
