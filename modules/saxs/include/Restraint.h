@@ -44,7 +44,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
      \param[in] ff_table Form Factor Table
   */
   Restraint(const Particles& particles, const Profile& exp_profile,
-            FormFactorTable* ff_table);
+            FormFactorTable* ff_table = default_form_factor_table());
 
   IMP_RESTRAINT(Restraint, internal::version_info)
 

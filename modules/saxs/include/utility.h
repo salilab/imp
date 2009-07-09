@@ -9,6 +9,7 @@
 
 #include "config.h"
 #include <IMP/exception.h>
+#include <IMP/core/XYZ.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -17,13 +18,33 @@ inline Float sinc(Float value) {
   return std::sin(value)/value;
 }
 
+inline void copy_coordinates(const Particles& particles,
+                             std::vector<algebra::Vector3D>& coordinates) {
+  // copy everything in advance for fast access
+  coordinates.resize(particles.size());
+  for (unsigned int i=0; i<particles.size(); i++) {
+    coordinates[i] = core::XYZ(particles[i]).get_coordinates();
+  }
+}
+
+inline void copy_data(const Particles& particles,
+                      FormFactorTable* ff_table,
+                      std::vector<algebra::Vector3D>& coordinates,
+                      Floats& form_factors) {
+  // copy everything in advance for fast access
+  coordinates.resize(particles.size());
+  form_factors.resize(particles.size());
+  for (unsigned int i=0; i<particles.size(); i++) {
+    coordinates[i] = core::XYZ(particles[i]).get_coordinates();
+    form_factors[i] = ff_table->get_form_factor(particles[i]);
+  }
+}
+
 //! compute max distance
 inline Float compute_max_distance(const Particles& particles) {
   Float max_dist2 = 0;
   std::vector<algebra::Vector3D> coordinates(particles.size());
-  for (unsigned int i = 0; i < particles.size(); i++) {
-    coordinates[i] = core::XYZ::cast(particles[i]).get_coordinates();
-  }
+  copy_coordinates(particles, coordinates);
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = i + 1; j < coordinates.size(); j++) {
       Float dist2 = squared_distance(coordinates[i], coordinates[j]);

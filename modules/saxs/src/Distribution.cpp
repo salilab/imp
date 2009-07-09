@@ -11,6 +11,8 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/XYZ.h>
 
+#include <boost/algorithm/string.hpp>
+
 IMPSAXS_BEGIN_NAMESPACE
 
 RadialDistributionFunction::
@@ -19,20 +21,21 @@ RadialDistributionFunction(FormFactorTable * ff_table, Float bin_size)
 {
 }
 
-void RadialDistributionFunction::
-calculate_distribution(const Particles& particles)
+RadialDistributionFunction::
+RadialDistributionFunction(const String& file_name, Float bin_size)
+: Distribution<Float>(bin_size)
 {
-  IMP_LOG(VERBOSE, "start distribution calculation for "
-          << particles.size() << " particles" << std::endl);
+  read_pr_file(file_name);
+}
 
+
+void RadialDistributionFunction::
+calculate_distribution(const Particles& particles, bool autocorrelation)
+{
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
   std::vector < algebra::Vector3D > coordinates;
   Floats form_factors;
-  for (unsigned int i = 0; i < particles.size(); i++) {
-    coordinates.push_back(core::XYZ::cast(particles[i]).
-                          get_coordinates());
-    form_factors.push_back(ff_table_->get_form_factor(particles[i]));
-  }
+  copy_data(particles, ff_table_, coordinates, form_factors);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates.size(); i++) {
@@ -41,36 +44,63 @@ calculate_distribution(const Particles& particles)
       add_to_distribution(dist, 2.0 * form_factors[i] * form_factors[j]);
     }
     // add autocorrelation part
-    add_to_distribution(0.0, square(form_factors[i]));
+    if(autocorrelation)
+      add_to_distribution(0.0, square(form_factors[i]));
   }
 }
 
 void RadialDistributionFunction::
-calculate_distribution(const Particles& particles1,
-                       const Particles& particles2)
+calculate_squared_distribution(const Particles& particles, bool autocorrelation)
 {
-  IMP_LOG(VERBOSE, "start distribution calculation for "
-          << particles1.size() << " + " << particles2.size()
-          << " particles" << std::endl);
+  // copy coordinates and form factors in advance, to avoid n^2 copy operations
+  std::vector < algebra::Vector3D > coordinates;
+  Floats form_factors;
+  copy_data(particles, ff_table_, coordinates, form_factors);
 
+  // iterate over pairs of atoms
+  for (unsigned int i = 0; i < coordinates.size(); i++) {
+    for (unsigned int j = i + 1; j < coordinates.size(); j++) {
+      Float dist = squared_distance(coordinates[i], coordinates[j]);
+      add_to_distribution(dist, 2.0 * form_factors[i] * form_factors[j]);
+    }
+    // add autocorrelation part
+    if(autocorrelation)
+      add_to_distribution(0.0, square(form_factors[i]));
+  }
+}
+
+void RadialDistributionFunction::
+calculate_distribution(const Particles& particles1, const Particles& particles2)
+{
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
   std::vector < algebra::Vector3D > coordinates1, coordinates2;
   Floats form_factors1, form_factors2;
-  for (unsigned int i = 0; i < particles1.size(); i++) {
-    coordinates1.push_back(core::XYZ::cast(particles1[i]).
-                           get_coordinates());
-    form_factors1.push_back(ff_table_->get_form_factor(particles1[i]));
-  }
-  for (unsigned int i = 0; i < particles2.size(); i++) {
-    coordinates2.push_back(core::XYZ::cast(particles2[i]).
-                           get_coordinates());
-    form_factors2.push_back(ff_table_->get_form_factor(particles2[i]));
-  }
+  copy_data(particles1, ff_table_, coordinates1, form_factors1);
+  copy_data(particles2, ff_table_, coordinates2, form_factors2);
 
   // iterate over pairs of atoms
   for (unsigned int i = 0; i < coordinates1.size(); i++) {
     for (unsigned int j = 0; j < coordinates2.size(); j++) {
       Float dist = distance(coordinates1[i], coordinates2[j]);
+      add_to_distribution(dist, 2 * form_factors1[i] * form_factors2[j]);
+    }
+  }
+}
+
+void RadialDistributionFunction::
+calculate_squared_distribution(const Particles& particles1,
+                               const Particles& particles2)
+{
+  // copy coordinates and form factors in advance, to avoid n^2 copy operations
+  std::vector < algebra::Vector3D > coordinates1, coordinates2;
+  Floats form_factors1, form_factors2;
+  copy_data(particles1, ff_table_, coordinates1, form_factors1);
+  copy_data(particles2, ff_table_, coordinates2, form_factors2);
+
+  // iterate over pairs of atoms
+  for (unsigned int i = 0; i < coordinates1.size(); i++) {
+    for (unsigned int j = 0; j < coordinates2.size(); j++) {
+      Float dist = squared_distance(coordinates1[i], coordinates2[j]);
       add_to_distribution(dist, 2 * form_factors1[i] * form_factors2[j]);
     }
   }
@@ -89,15 +119,98 @@ void RadialDistributionFunction::add(const RadialDistributionFunction& other_rd)
   }
 }
 
+Float RadialDistributionFunction::
+R_factor_score(const RadialDistributionFunction& other_rd)
+{
+  Float sum1=0.0, sum2=0.0;
+  unsigned int distribution_size = std::min(distribution_.size(),
+                                            other_rd.distribution_.size());
+
+  for (unsigned int i = 0; i < distribution_size; i++) {
+    sum1 += std::abs(distribution_[i] - other_rd.distribution_[i]);
+    sum2 += std::abs(distribution_[i]);
+  }
+  return sum1/sum2;
+}
+
+Float RadialDistributionFunction::
+chi_score(const RadialDistributionFunction& other_rd)
+{
+  Float chi_square = 0.0;
+  unsigned int distribution_size = std::min(distribution_.size(),
+                                            other_rd.distribution_.size());
+
+  // compute chi
+  for (unsigned int i = 0; i < distribution_size; i++) {
+    chi_square += square(other_rd.distribution_[i] - distribution_[i]);
+  }
+  chi_square /= distribution_size;
+  return sqrt(chi_square);
+}
+
 void RadialDistributionFunction::
 show(std::ostream& out, std::string prefix) const
 {
   for (unsigned int i = 0; i < distribution_.size(); i++) {
-    out << prefix << " dist " << index2dist(i) << " " << distribution_[i]
-    << std::endl;
+    out << index2dist(i) << " " << distribution_[i] << std::endl;
   }
 }
 
+void RadialDistributionFunction::normalize() {
+  // calculate area
+  Float sum = 0.0;
+  for (unsigned int i = 0; i < distribution_.size(); i++) {
+    sum += distribution_[i];
+  }
+  std::cerr << "sum = " << sum  << std::endl;
+  // normalize
+  for (unsigned int i = 0; i < distribution_.size(); i++) {
+    distribution_[i] /= sum;
+  }
+  sum = 0.0;
+  for (unsigned int i = 0; i < distribution_.size(); i++) {
+    sum += distribution_[i];
+  }
+  std::cerr << "sum = " << sum  << std::endl;
+}
+
+void RadialDistributionFunction::read_pr_file(const String& file_name) {
+  const String TITLE_LINE = "Distance distribution";
+  std::cerr << "start reading pr file " << file_name << std::endl;
+  std::ifstream in_file(file_name.c_str());
+  if (!in_file) {
+    std::cerr << "Can't open file " << file_name << std::endl;
+    exit(1);
+  }
+
+  double count = 0.0;
+  std::string line;
+  bool in_distribution = false;
+  while(!in_file.eof()) {
+    getline(in_file, line);
+    boost::trim(line); // remove all spaces
+    //std::cerr << line << std::endl;
+    if(line.substr(0, TITLE_LINE.length()) == TITLE_LINE) {
+      in_distribution = true;
+      continue;
+    }
+    if(!in_distribution || line.length() == 0 ||
+       line[0] == '\0' || !isdigit(line[0])) continue;
+    // read distribution line
+    std::vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of("\t "),
+                 boost::token_compress_on);
+    if (split_results.size() < 2) continue;
+    Float r = atof(split_results[0].c_str());
+    Float pr = atof(split_results[1].c_str());
+    add_to_distribution(r, pr);
+    count += pr;
+  }
+
+  IMP_LOG(TERSE, "read_pr_file: " << file_name
+          << " size=" << distribution_.size() << " area="
+          << count << std::endl);
+}
 
 DeltaDistributionFunction::
 DeltaDistributionFunction(FormFactorTable* ff_table,
@@ -106,12 +219,7 @@ DeltaDistributionFunction(FormFactorTable* ff_table,
   : Distribution<algebra::Vector3D>(bin_size), ff_table_(ff_table)
 {
   // copy coordinates and form factors in advance, to avoid n^2 copy operations
-  coordinates_.resize(particles.size());
-  form_factors_.resize(particles.size());
-  for (unsigned int i=0; i<particles.size(); i++) {
-    coordinates_[i] = core::XYZ::cast(particles[i]).get_coordinates();
-    form_factors_[i] = ff_table_->get_form_factor(particles[i]);
-  }
+  copy_data(particles, ff_table_, coordinates_, form_factors_);
   // compute max distance if not given
   max_distance_ = max_distance;
   if (max_distance_ <= 0.0) max_distance_ = compute_max_distance(particles);
@@ -134,9 +242,8 @@ calculate_derivative_distribution(Particle* particle)
   }
 }
 
-
 void DeltaDistributionFunction::
-show(std::ostream & out, std::string prefix) const
+show(std::ostream& out, std::string prefix) const
 {
   out << "DeltaDistributionFunction::show" << std::endl;
   for (unsigned int i = 0; i < distribution_.size(); i++) {

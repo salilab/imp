@@ -31,10 +31,11 @@ class IMPSAXSEXPORT Score {
 public:
   //! Constructor
   /**
-     \param[in] ff_table Form Factors Table
      \param[in] exp_profile Experimental profile we want to fit
+     \param[in] ff_table Form Factors Table
   */
-  Score(FormFactorTable* ff_table, Profile* exp_profile);
+  Score(Profile* exp_profile,
+        FormFactorTable* ff_table = default_form_factor_table());
 
   //! compute chi value
   Float compute_chi_score(const Profile& model_profile,

@@ -31,7 +31,7 @@ public:
   Profile(const String& file_name);
 
   //! init for theoretical profile
-  Profile(FormFactorTable* ff_table,
+  Profile(FormFactorTable* ff_table = default_form_factor_table(),
           Float qmin = 0.0, Float qmax = 0.5, Float delta = 0.005);
 
 private:
@@ -54,8 +54,10 @@ private:
 
 public:
   //! computes theoretical profile
-  void calculate_profile(const Particles& particles) {
-    calculate_profile_real(particles);
+  void calculate_profile(const Particles& particles,
+                         bool reciprocal=false, bool autocorrelation = true) {
+    if(!reciprocal) calculate_profile_real(particles, autocorrelation);
+    else calculate_profile_reciprocal(particles);
   }
 
   //! computes theoretical profile faster for cyclically symmetric particles
@@ -73,7 +75,7 @@ public:
     calculate_profile_real(particles1, particles2);
   }
 
-  //! convert to real space distribution
+  //! convert to real space distribution \untested{profile_2_distribution}
   void profile_2_distribution(RadialDistributionFunction& rd,
                               Float max_distance) const;
 
@@ -123,12 +125,14 @@ public:
  private:
   void init();
 
-  void calculate_profile_reciprocal(const Particles& particles);
+  void calculate_profile_reciprocal(const Particles& particles,
+                                    bool autocorrelation = true);
 
   void calculate_profile_reciprocal(const Particles& particles1,
                                     const Particles& particles2);
 
-  void calculate_profile_real(const Particles& particles);
+  void calculate_profile_real(const Particles& particles,
+                              bool autocorrelation = true);
 
   void calculate_profile_real(const Particles& particles1,
                               const Particles& particles2);
@@ -138,6 +142,8 @@ public:
                               unsigned int n);
 
   void radial_distribution_2_profile(const RadialDistributionFunction& r_dist);
+  void squared_radial_distribution_2_profile(
+                                     const RadialDistributionFunction& r_dist);
 
  protected:
   std::vector<IntensityEntry> profile_; // the profile

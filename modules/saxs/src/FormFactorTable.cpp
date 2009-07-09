@@ -21,6 +21,13 @@ FloatKey FormFactorTable::form_factor_key_ = FloatKey("form factor key");
 
 String FormFactorTable::element_names_[] = {"H", "C", "N", "O", "S", "P", "AU"};
 
+Float FormFactorTable::zero_form_factors_[] = {
+    -0.720147, 0.50824, 6.16294, 4.94998, 9.36656, 13.0855, 72.324,
+    //   H        C        N        O        S         P      AU
+    -0.211907, -0.932054, -1.6522, 5.44279, 4.72265, 4.0025, 4.22983, 8.64641
+    //  CH        CH2        CH3     NH       NH2       NH3     OH      SH
+};
+
 // electron density of solvent - default=0.334 e/A^3 (H2O)
 Float FormFactorTable::rho_ = 0.334;
 
@@ -63,34 +70,37 @@ FormFactorTable::FormFactorTable(const String& table_name, Float min_q,
                                  Float max_q, Float delta_q):
   min_q_(min_q), max_q_(max_q), delta_q_(delta_q)
 {
-  // init all the tables
-  form_factors_coefficients_ =
-      std::vector < AtomFactorCoefficients > (ALL_ATOM_SIZE);
-  unsigned int number_of_q_entries = algebra::round(
-                                             (max_q_ - min_q_) / delta_q_ ) + 1;
-  Floats form_factor_template(number_of_q_entries, 0.0);
-  form_factors_ =
-      std::vector < Floats > (HEAVY_ATOM_SIZE, form_factor_template);
-  zero_form_factors_ = Floats(HEAVY_ATOM_SIZE, 0.0);
+  // read form factor coefficients from file
+  int ffnum = read_form_factor_table(table_name);
 
-  // read ff table
-  read_form_factor_table(table_name);
+  if(ffnum > 0) { // form factors found in form factor file
+    // init zero_form_factors so that they are computed from  the file
+    for(int i=0; i<HEAVY_ATOM_SIZE; i++) zero_form_factors_[i] = 0.0;
 
-  // compute all the form factors
-  compute_form_factors_all_atoms();
-  compute_form_factors_heavy_atoms();
+    // init all the tables
+    unsigned int number_of_q_entries =
+      algebra::round((max_q_ - min_q_) / delta_q_ ) + 1;
+    Floats form_factor_template(number_of_q_entries, 0.0);
+    form_factors_ = std::vector<Floats> (HEAVY_ATOM_SIZE, form_factor_template);
+
+    // compute all the form factors
+    compute_form_factors_all_atoms();
+    compute_form_factors_heavy_atoms();
+  }
 }
-
 
 int FormFactorTable::read_form_factor_table(const String & table_name)
 {
   std::ifstream s(table_name.c_str());
   if (!s) {
-    std::
-        cerr << "Can't find form factor table file " << table_name <<
-        std::endl;
+    std::cerr << "Can't find form factor table file " << table_name <<std::endl;
     exit(1);
   }
+
+  // init coefficients table
+  form_factors_coefficients_ =
+    std::vector<AtomFactorCoefficients>(ALL_ATOM_SIZE);
+
   // skip the comment lines
   char c;
   const int MAX_LENGTH = 1000;
@@ -106,26 +116,26 @@ int FormFactorTable::read_form_factor_table(const String & table_name)
 
   // read the data files
   AtomFactorCoefficients coeff;
+  int counter = 0;
   while (s >> coeff) {
     // find FormFactorAtomType
     for (unsigned int i = 0; i < ALL_ATOM_SIZE; i++) {
       if (element_names_[i] == coeff.atom_type_) {
         form_factors_coefficients_[i] = coeff;
-        std::cerr << "read_form_factor_table: Atom type found: " <<
-            coeff.atom_type_ << std::endl;
+        counter++;
+        IMP_LOG(VERBOSE, "read_form_factor_table: Atom type found: " <<
+                coeff.atom_type_ << std::endl);
       }
     }
-    //std::cerr << coeff << std::endl;
   }
-  std::cerr << form_factors_coefficients_.size()
-      << " form factors were read from file " << std::endl;
-  return form_factors_coefficients_.size();
+  IMP_LOG(TERSE, counter << " form factors were read from file " << std::endl);
+  return counter;
 }
 
 
 void FormFactorTable::show(std::ostream & out, std::string prefix) const
 {
-  for (unsigned int i = 0; i < zero_form_factors_.size(); i++) {
+  for (unsigned int i = 0; i < HEAVY_ATOM_SIZE; i++) {
     out << prefix << " FFATOMTYPE " << i << " " << zero_form_factors_[i]
         << std::endl;
   }
@@ -550,6 +560,12 @@ Float FormFactorTable::get_form_factor(Particle *p,
     return p->get_value(form_factor_key_);
 
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
+  if(ff_atom_type >= HEAVY_ATOM_SIZE) {
+    std::cerr << "Can't find form factor for particle "
+              << atom::Atom(p).get_atom_type().get_string()
+              << " using default " << std::endl;
+    ff_atom_type = O;
+  }
   Float form_factor = zero_form_factors_[(int)ff_atom_type];
   //std::cerr << "form_factor " << form_factor << std::endl;
   p->add_attribute(form_factor_key_, form_factor);
@@ -560,7 +576,18 @@ Float FormFactorTable::get_form_factor(Particle *p,
 const Floats& FormFactorTable::get_form_factors(Particle * p,
                                                 FormFactorType ff_type) const {
   FormFactorAtomType ff_atom_type = get_form_factor_atom_type(p, ff_type);
+  if(ff_atom_type >= HEAVY_ATOM_SIZE) {
+    std::cerr << "Can't find form factor for particle "
+              << atom::Atom(p).get_atom_type().get_string()
+              << " using default " << std::endl;
+    ff_atom_type = O;
+  }
   return form_factors_[(int)ff_atom_type];
+}
+
+FormFactorTable* default_form_factor_table() {
+  static FormFactorTable ff;
+  return &ff;
 }
 
 IMPSAXS_END_NAMESPACE

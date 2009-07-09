@@ -26,29 +26,19 @@ class SAXSProfileTest(IMP.test.TestCase):
         print 'max_q = ' + str(exp_profile.get_max_q())
         print 'delta_q = ' + str(exp_profile.get_delta_q())
 
-        #! read form-factors
-        f_table = IMP.saxs.FormFactorTable(
-                  self.get_input_file_name('formfactors-int_tab_solvation.lib'),
-                  exp_profile.get_min_q(),
-                  exp_profile.get_max_q(),
-                  exp_profile.get_delta_q())
-        #f_table.show()
-
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.Hierarchy.ATOM)
 
         #! calculate SAXS profile
-        model_profile = IMP.saxs.Profile(f_table,
-                                         exp_profile.get_min_q(),
-                                         exp_profile.get_max_q(),
-                                         exp_profile.get_delta_q())
+        model_profile = IMP.saxs.Profile()
         model_profile.calculate_profile(particles)
         #model_profile.write_SAXS_file('i_single_protein_IMP.txt')
 
         #! calculate chi-square
-        saxs_score = IMP.saxs.Score(f_table, exp_profile)
+        saxs_score = IMP.saxs.Score(exp_profile)
         chi = saxs_score.compute_chi_score(model_profile)
         print 'Chi = ' + str(chi)
+        self.assertInTolerance(chi, 0.5, 0.1)
 
         t_start = time.clock()
         #! calculate derivatives of chi-square per particle
@@ -79,27 +69,20 @@ class SAXSProfileTest(IMP.test.TestCase):
         #! read experimental profile
         exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
 
-        #! read form-factors
-        f_table = IMP.saxs.FormFactorTable(
-                  self.get_input_file_name('formfactors-int_tab_solvation.lib'),
-                  exp_profile.get_min_q(), exp_profile.get_max_q(),
-                  exp_profile.get_delta_q())
-
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.Hierarchy.ATOM)
 
         #! calculate SAXS profile
-        model_profile = IMP.saxs.Profile(f_table, exp_profile.get_min_q(),
-                                         exp_profile.get_max_q(), exp_profile.get_delta_q())
+        model_profile = IMP.saxs.Profile()
         model_profile.calculate_profile(particles)
 
         #! calculate chi-square
-        saxs_score = IMP.saxs.Score(f_table, exp_profile)
-        chi_square = saxs_score.compute_chi_score(model_profile)
-        print 'Chi_square  = ' + str(chi_square)
+        saxs_score = IMP.saxs.Score(exp_profile)
+        chi = saxs_score.compute_chi_score(model_profile)
+        print 'Chi = ' + str(chi)
 
         #! define restraint
-        saxs_restraint = IMP.saxs.Restraint(particles, exp_profile, f_table)
+        saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
         m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(None)
         print 'initial score = ' + str(score)

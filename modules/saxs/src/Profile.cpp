@@ -9,6 +9,7 @@
 #include <IMP/saxs/utility.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/utility.h>
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/constants.h>
 
 #include <boost/algorithm/string.hpp>
@@ -67,11 +68,10 @@ void Profile::read_SAXS_file(const String& file_name)
     std::vector < std::string > split_results;
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
-    if (split_results.size() != 2 && split_results.size() != 3)
-      continue;                 // 3 values with error, 2 without
+    if (split_results.size() < 2) continue;
     entry.q_ = atof(split_results[0].c_str());
     entry.intensity_ = atof(split_results[1].c_str());
-    if (split_results.size() == 3) {
+    if (split_results.size() >= 3) {
       entry.error_ = atof(split_results[2].c_str());
       with_error = true;
     }
@@ -109,6 +109,7 @@ void Profile::read_SAXS_file(const String& file_name)
 }
 
 void Profile::add_errors() {
+  if(profile_.size() <= 0) return;
   Float sig_exp = 0.3 * profile_[profile_.size() - 1].intensity_;
   for (unsigned int i=0; i<profile_.size(); i++)
     profile_[i].error_ = sig_exp;
@@ -164,14 +165,15 @@ void Profile::write_SAXS_file(const String& file_name)
   out_file.close();
 }
 
-void Profile::calculate_profile_real(const Particles& particles)
+void Profile::calculate_profile_real(const Particles& particles,
+                                     bool autocorrelation)
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
   init();
   RadialDistributionFunction r_dist(ff_table_);
-  r_dist.calculate_distribution(particles);
-  radial_distribution_2_profile(r_dist);
+  r_dist.calculate_squared_distribution(particles, autocorrelation);
+  squared_radial_distribution_2_profile(r_dist);
 }
 
 void Profile::calculate_profile_real(const Particles& particles,
@@ -194,24 +196,24 @@ void Profile::calculate_profile_real(const Particles& particles,
 
   RadialDistributionFunction r_dist(ff_table_);
   // distribution within unit
-  r_dist.calculate_distribution(units[0]);
+  r_dist.calculate_squared_distribution(units[0]);
 
   // distributions between units separated by distance i
   for(unsigned int i=1; i<number_of_distances; i++) {
-    r_dist.calculate_distribution(units[0], units[i]);
+    r_dist.calculate_squared_distribution(units[0], units[i]);
   }
   r_dist.scale(n);
 
   // distribution between units separated by distance n/2
   RadialDistributionFunction r_dist2(ff_table_);
-  r_dist2.calculate_distribution(units[0], units[number_of_distances]);
+  r_dist2.calculate_squared_distribution(units[0], units[number_of_distances]);
   // if n is even, the scale is by n/2
   // if n is odd the scale is by n
   if(n & 1) r_dist2.scale(n); //odd
   else r_dist2.scale(n/2); //even
   r_dist2.add(r_dist);
 
-  radial_distribution_2_profile(r_dist2);
+  squared_radial_distribution_2_profile(r_dist2);
 }
 
 void Profile::calculate_profile_real(const Particles& particles1,
@@ -222,8 +224,8 @@ void Profile::calculate_profile_real(const Particles& particles1,
           << " particles" << std::endl);
   init();
   RadialDistributionFunction r_dist(ff_table_);
-  r_dist.calculate_distribution(particles1, particles2);
-  radial_distribution_2_profile(r_dist);
+  r_dist.calculate_squared_distribution(particles1, particles2);
+  squared_radial_distribution_2_profile(r_dist);
 }
 
 void Profile::
@@ -235,6 +237,24 @@ radial_distribution_2_profile(const RadialDistributionFunction& r_dist)
     // iterate over radial distribution
     for (unsigned int r = 0; r < r_dist.distribution_.size(); r++) {
       Float dist = r_dist.index2dist(r);
+      Float x = dist * profile_[k].q_;
+      x = sinc(x);
+      profile_[k].intensity_ += r_dist.distribution_[r] * x;
+    }
+    profile_[k].intensity_ *= std::exp(- modulation_function_parameter_
+                                       * square(profile_[k].q_));
+  }
+}
+
+void Profile::
+squared_radial_distribution_2_profile(const RadialDistributionFunction& r_dist)
+{
+  // iterate over intensity profile (assumes initialized profile: q, I(q)=0)
+  for (unsigned int k = 0; k < profile_.size(); k++) {
+
+    // iterate over radial distribution
+    for (unsigned int r = 0; r < r_dist.distribution_.size(); r++) {
+      Float dist = sqrt(r_dist.index2dist(r));
       Float x = dist * profile_[k].q_;
       x = sinc(x);
       profile_[k].intensity_ += r_dist.distribution_[r] * x;
@@ -277,6 +297,39 @@ void Profile::profile_2_distribution(RadialDistributionFunction& rd,
     }
     rd.add_to_distribution(r, r*scale*sum);
   }
+}
+
+void Profile::calculate_profile_reciprocal(const Particles& particles,
+                                           bool autocorrelation) {
+  IMP_LOG(TERSE, "start reciprocal profile calculation for "
+          << particles.size() << " particles" << std::endl);
+  init();
+  std::vector<algebra::Vector3D> coordinates;
+  copy_coordinates(particles, coordinates);
+
+  // iterate over pairs of atoms
+  // loop1
+  for(unsigned int i = 0; i < coordinates.size(); i++) {
+    const Floats& factors1 = ff_table_->get_form_factors(particles[i]);
+    // loop2
+    for(unsigned int j = i+1; j < coordinates.size(); j++) {
+      const Floats& factors2 = ff_table_->get_form_factors(particles[j]);
+      Float dist = distance(coordinates[i], coordinates[j]);
+      // loop 3
+      // iterate over intensity profile (assumes initialized profile: s, I(s)=0)
+      for(unsigned int k = 0; k < profile_.size(); k++) {
+        Float x = dist * profile_[k].q_;
+        x = sinc(x);
+        profile_[k].intensity_ += 2*x*factors1[k]*factors2[k];
+      } // end of loop 3
+    } // end of loop 2
+    // add autocorrelation part
+    if(autocorrelation) {
+      for(unsigned int k = 0; k < profile_.size(); k++) {
+        profile_[k].intensity_ += factors1[k]*factors1[k];
+      }
+    }
+  } // end of loop1
 }
 
 IMPSAXS_END_NAMESPACE

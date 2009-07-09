@@ -14,7 +14,7 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Score::Score(FormFactorTable* ff_table, Profile* exp_profile) :
+Score::Score(Profile* exp_profile, FormFactorTable* ff_table) :
 ff_table_(ff_table), exp_profile_(exp_profile)
 {}
 
