@@ -102,7 +102,7 @@ void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
   out << "]\n";
   out << "k= '" << name << "'" << std::endl;
   out << "if k in data.keys():\n   data[k]= data[k]+curdata\nelse:\n"
-      <<"   data[k]=curdata\n\n";
+      << "   data[k]=curdata\n\n";
 }
 
 void CGOWriter::add_geometry(Geometry *g) {
