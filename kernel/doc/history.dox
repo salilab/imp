@@ -1,4 +1,10 @@
 /** \page recent Change History
+\par Week of July 4
+
+- Hooks have been added to allow actions to be taken on an assertion or check failure. See IMP::HandleFailure and its descendents for more details.
+
+- output to pymol CGO files has been much improved and now allows provides lots of display-time control and easy building of animations.
+
 \par Week of June 15
 
 - box distrubutions (IMP::algebra::random_vector_on_box(), IMP::algebra::random_vector_in_box()) take bounding boxes
