@@ -41,16 +41,32 @@ public:
 
 
 //! Represent repesent a set of pairs of particles with segments
-/** \see PairGeometry
+/** If a scoring function is passed it will display the derivatives
+    for that function and, if threshold is set, only show pairs
+    for which the function exceeds the threshold.
+
+    \see PairGeometry
     \untested{PairsGeometries}
  */
-class IMPDISPLAYEXPORT PairsGeometry: public Geometry
+class IMPDISPLAYEXPORT PairsGeometry: public CompoundGeometry
 {
-  Pointer<PairContainer> pc_;;
-  Float radius_;
+  Pointer<PairScore> f_;
+  Pointer<PairContainer> c_;
+  double threshold_;
+  double radius_;
 public:
   PairsGeometry(PairContainer *pc,
                Float radius=0);
+
+  PairsGeometry(PairScore *f, PairContainer *c);
+
+  void set_radius(double r){
+    radius_=r;
+  }
+
+  void set_threshold(double t) {
+    threshold_=t;
+  }
 
   IMP_COMPOUND_GEOMETRY(PairsGeometry, internal::version_info)
 };
