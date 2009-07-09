@@ -66,19 +66,23 @@ public:
   //! Simulate until the given time in fs
   double simulate(float time_in_fs);
 
-  void set_maximum_force_change(double df) {
+
+  //! Define the feature size of the system
+  /** The time step will be scaled so that particles do not move further than
+      this in a single step. This ensures that objects cannot pass through
+      one another or miss important features of the force field. */
+  void set_minimum_feature_size(double df) {
     IMP_check(df > 0, "The max change must be positive",
               ValueException);
-    max_squared_force_change_=square(df);
+    feature_size_2_=unit::SquareAngstrom(square(df));
   }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  void set_maximum_force_change(unit::KilocaloriePerAngstromPerMol f) {
-    set_maximum_force_change(unit::strip_units(f));
+  void set_minimum_feature_size(unit::Angstrom f) {
+    set_minimum_feature_size(unit::strip_units(f));
   }
 #endif
 
 private:
-  void copy_forces(SingletonContainer* sc, algebra::Vector3Ds &v) const;
   void copy_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v) const;
   void revert_coordinates(SingletonContainer *sc, algebra::Vector3Ds &v);
 
@@ -92,7 +96,7 @@ private:
      get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const;*/
 
 
-  double max_squared_force_change_;
+  unit::SquareAngstrom feature_size_2_;
   SimulationParameters si_;
   Pointer<SingletonContainer> sc_;
 };

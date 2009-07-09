@@ -22,6 +22,13 @@
 #include <limits>
 
 IMPATOM_BEGIN_NAMESPACE
+namespace {
+  struct BadStepException{
+    Particle *blamed;
+    BadStepException(Particle *p): blamed(p){}
+  };
+}
+
 
 typedef
 unit::Shift<unit::Multiply<unit::Pascal,
@@ -31,7 +38,7 @@ unit::Shift<unit::Multiply<unit::Pascal,
 
 BrownianDynamics::BrownianDynamics(SimulationParameters si,
                                    SingletonContainer *sc) :
-  max_squared_force_change_(std::numeric_limits<double>::max()),
+  feature_size_2_(std::numeric_limits<double>::max()),
   si_(si)
 {
   if (sc) sc_=sc;
@@ -66,16 +73,6 @@ SingletonContainer *BrownianDynamics::setup_particles()
       }
     }
     return lsc;
-  }
-}
-
-
-void BrownianDynamics::copy_forces(SingletonContainer *sc,
-                                   algebra::Vector3Ds &v) const {
-  v.resize(sc->get_number_of_particles());
-  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    core::XYZ d(sc->get_particle(i));
-    v[i]= d.get_derivatives();
   }
 }
 
@@ -195,6 +192,14 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
 
     unit::Angstrom delta[3];
 
+    do {
+      for (unsigned j = 0; j < 3; ++j) {
+        delta[j]=unit::Angstrom(sampler());
+      }
+      // kill the tail
+    } while (square(delta[0])+square(delta[1])+square(delta[2])
+             > square(10.0*sigma));
+
     for (unsigned j = 0; j < 3; ++j) {
       unit::KilocaloriePerAngstromPerMol
         force( -d.get_derivative(j));
@@ -202,15 +207,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
       unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*d.get_D()/kt());
-      if (force_term > 5.0*sigma) {
-        IMP_WARN("Forces are too high to stably integrate: "
-                 << p->get_name() << std::endl);
-      }
-      //std::cout << "Force term is " << force_term << " and R is "
-      //<< R << std::endl;
-      unit::Angstrom dr= force_term +  R; //std::sqrt(2*kb*T_*ldt/xi) *
-      // get back from meters
-      delta[j]=dr;
+      delta[j]= delta[j]+force_term;
     }
 
     //unit::Angstrom max_motion= unit::Scalar(4)*sigma;
@@ -222,6 +219,9 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
             << " from a force of "
             << "[" << d.get_derivatives() << "]" << std::endl);
 
+    if (square(delta[0])+square(delta[1])+square(delta[2]) > feature_size_2_) {
+      throw BadStepException(p);
+    }
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
     }
@@ -244,44 +244,14 @@ double BrownianDynamics::simulate(float max_time_nu)
   unit::Femtosecond dt=si_.get_maximum_time_step();
   get_model()->evaluate(true);
   copy_coordinates(sc, old_coordinates);
-  copy_forces(sc, old_forces);
   AddTime at(si_);
   while (at.get_current_time() < max_time){
     dt= std::min(dt, max_time-at.get_current_time());
-    take_step(sc, unit::Femtosecond(dt));
     get_model()->evaluate(true);
-    Particle *blamed=NULL;
-    for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-      core::XYZ d(sc->get_particle(i));
-      algebra::Vector3D diff= old_forces[i]- d.get_derivatives();
-      if (diff.get_squared_magnitude() > max_squared_force_change_) {
-        IMP_LOG(TERSE, "Reducing step size because of particle "
-                << sc->get_particle(i)->get_name() << std::endl);
-        blamed= sc->get_particle(i);
-        break;
-      }
-    }
-    if (blamed) {
-      revert_coordinates(sc, old_coordinates);
-      get_model()->evaluate(true);
-      dt= dt/2.0;
-      if (dt < unit::Femtosecond(1)) {
-        IMP_failure("Something is wrong with the restraints"
-                    << " and they are highly discontinuous due"
-                    << " to particle " << *blamed
-                    << "\n" << *get_model(),
-                    InvalidStateException);
-      }
-    } else {
+    try {
+      take_step(sc, unit::Femtosecond(dt));
       at.add( dt );
       si_.set_last_time_step(dt);
-      //si_.set_current_time(si_.get_current_time()+unit::Femtosecond(dt));
-      /*if (ct== si_.get_current_time()) {
-        IMP_WARN("Unable to advance time due to roundoff: "
-        << si_.get_current_time()
-                 << " + " << unit::Femtosecond(dt)<< std::endl);
-        throw InvalidStateException("Unable to advance time");
-        }*/
       dt= std::min(si_.get_maximum_time_step(),dt*1.3);
       if (dt != si_.get_maximum_time_step()) {
         IMP_LOG(TERSE, "Updating dt to " << dt
@@ -289,7 +259,19 @@ double BrownianDynamics::simulate(float max_time_nu)
       }
       update_states();
       copy_coordinates(sc, old_coordinates);
-      copy_forces(sc, old_forces);
+     } catch (const BadStepException &e) {
+      IMP_LOG(TERSE, "Reducing step size because of particle "
+                << e.blamed->get_name() << std::endl);
+      revert_coordinates(sc, old_coordinates);
+      get_model()->evaluate(true);
+      dt= dt/2.0;
+      if (dt < unit::Femtosecond(1)) {
+        IMP_failure("Something is wrong with the restraints"
+                    << " and they are highly discontinuous due"
+                    << " to particle " << *e.blamed
+                    << "\n" << *get_model(),
+                    InvalidStateException);
+      }
     }
   }
   return get_model()->evaluate(false);
