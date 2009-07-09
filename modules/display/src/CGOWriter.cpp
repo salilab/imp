@@ -38,6 +38,7 @@ void CGOWriter::on_close() {
 void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
   IMP_CHECK_OBJECT(g);
   Color last_color;
+  out << "# " << g->get_name() << std::endl;
   if (g->get_dimension() ==0) {
     for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
       algebra::Vector3D v=g->get_vertex(i);
