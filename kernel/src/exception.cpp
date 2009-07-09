@@ -64,8 +64,6 @@ namespace
 
 // The error message is already in the exception
 bool print_exceptions=true;
-
-
 }
 
 void set_print_exceptions(bool ft) {
