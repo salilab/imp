@@ -44,6 +44,8 @@ Geometries XYZRsGeometry::get_geometry() const {
   Geometries ret(sc_->get_number_of_particles());
   for (unsigned int i=0; i< ret.size(); ++i) {
     IMP_NEW( XYZRGeometry, g, (core::XYZR(sc_->get_particle(i))));
+    if (!get_name().empty()) g->set_name(get_name());
+    g->set_color(get_color());
     ret.set(i, g);
   }
   return ret;

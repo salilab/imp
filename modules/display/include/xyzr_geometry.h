@@ -29,9 +29,6 @@ class IMPDISPLAYEXPORT XYZRGeometry: public Geometry
 public:
   XYZRGeometry(core::XYZR d);
 
-  std::string get_name() const {
-    return d_.get_particle()->get_name();
-  }
   IMP_GEOMETRY(XYZRGeometry, internal::version_info)
 };
 

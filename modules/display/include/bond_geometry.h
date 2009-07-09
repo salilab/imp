@@ -29,10 +29,6 @@ class IMPDISPLAYEXPORT BondGeometry: public Geometry
 public:
   BondGeometry(atom::Bond d, Float radius=0);
 
-  std::string get_name() const {
-    return d_.get_particle()->get_name();
-  }
-
   IMP_GEOMETRY(BondGeometry, internal::version_info)
 };
 

@@ -58,6 +58,7 @@ Geometries BoxGeometry::get_geometry() const {
     CylinderGeometry *ncg=
       new CylinderGeometry(algebra::Cylinder3D(algebra::Segment3D(omin,
                                                                   omax), r));
+    ncg->set_name(get_name());
     if (color_ != Color()) {
       ncg->set_color(color_);
     }

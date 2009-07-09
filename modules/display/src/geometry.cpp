@@ -20,6 +20,6 @@ void Geometry::show(std::ostream &out) const {
 }
 
 
-CompoundGeometry::CompoundGeometry(){}
+CompoundGeometry::CompoundGeometry(): color_(.7, .7, .7){}
 
 IMPDISPLAY_END_NAMESPACE
