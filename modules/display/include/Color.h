@@ -104,6 +104,24 @@ inline CommasIO commas_io(const Color &v) {
   return CommasIO(v);
 }
 
+#if !defined(IMP_DOXYGEN)
+//! Multiply a color by a value less than 1
+/** \unstable{Color multiplication}
+ */
+inline Color operator*(double d, Color c) {
+  IMP_check(d <=1 && d>=0, "Colors can only fade with multiplication",
+            ValueException);
+  return Color(c.get_red()*d, c.get_green()*d, c.get_blue()*d);
+}
+
+//! Multiply a color by a value less than 1
+/** \unstable{Color multiplication}
+ */
+inline Color operator*(Color c, double d) {
+  return d*c;
+}
+#endif
+
 #endif // SWIG
 
 IMPDISPLAY_END_NAMESPACE
