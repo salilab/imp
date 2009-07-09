@@ -15,6 +15,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 BondGeometry::BondGeometry(atom::Bond p,
                            Float radius): d_(p),
                                           radius_(radius){
+  set_name(p.get_particle()->get_name());
 }
 
 void BondGeometry::show(std::ostream &out) const {

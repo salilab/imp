@@ -12,6 +12,7 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 XYZRGeometry::XYZRGeometry(core::XYZR d): d_(d){
+  set_name(d.get_particle()->get_name());
 }
 
 void XYZRGeometry::show(std::ostream &out) const {
@@ -42,7 +43,8 @@ void XYZRsGeometry::show(std::ostream &out) const {
 Geometries XYZRsGeometry::get_geometry() const {
   Geometries ret(sc_->get_number_of_particles());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ret.set(i, new XYZRGeometry(core::XYZR(sc_->get_particle(i))));
+    IMP_NEW( XYZRGeometry, g, (core::XYZR(sc_->get_particle(i))));
+    ret.set(i, g);
   }
   return ret;
 }
