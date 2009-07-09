@@ -880,6 +880,16 @@ public:                                                                 \
   public:
 
 
+//! Declare a IMP::FailureHandler
+/** The method bool handle_failure(std::string, const Exception &) needs to
+    be implemented as well as the usual show method.
+*/
+#define IMP_FAILURE_HANDLER(Name, version_info)                 \
+  VersionInfo get_version_info() const {return version_info;}   \
+  void show(std::ostream &out=std::cout) const;                 \
+  void handle_failure();                                        \
+  IMP_REF_COUNTED_DESTRUCTOR(Name)
+
 //! @}
 
 #ifndef IMP_DOXYGEN
