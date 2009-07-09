@@ -28,8 +28,6 @@ void CGOWriter::on_open() {
 }
 
 void CGOWriter::on_close() {
-  char buf[1000];
-  sprintf(buf, name_.c_str(), count_);
   get_stream() << "\n\nfor k in data.keys():\n  cmd.load_cgo(data[k], k, 0)\n";
   ++count_;
 }
