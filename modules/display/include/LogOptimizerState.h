@@ -15,6 +15,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/display/geometry.h>
 #include <IMP/Pointer.h>
+#include <IMP/FailureHandler.h>
 #include <vector>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -59,17 +60,24 @@ public:
   IMP_OPTIMIZER_STATE(LogOptimizerState, internal::version_info)
 };
 
-//! This function sets it up so that the passed log is used to write on an error
-/** When an error (check or assertion failure) occurs, log is used to write the
-    current state to a file.
 
-    If the file name contains %d, then it is used to generate a unique file name
-    for each error.
-    \untested(set_error_display_log)
+
+/** \brief Dump the state of the model to a file on an error and then
+    go on the the other handlers.
+
+    When an error (check or assertion failure) occurs, the model is
+    dumped to the specified using the geometry given in the
+    LogOptimizerState.
+
+    \untested(set_failure_dump)
  */
-IMPDISPLAYEXPORT void set_failure_display_log(LogOptimizerState *log,
-                                              std::string file_name);
-
+class IMPDISPLAYEXPORT DisplayModelOnFailure: public FailureHandler {
+  Pointer<LogOptimizerState> s_;
+  std::string file_name_;
+ public:
+  DisplayModelOnFailure(LogOptimizerState *m, std::string file_name);
+  IMP_FAILURE_HANDLER(DisplayModelOnFailure, internal::version_info);
+};
 
 IMPDISPLAY_END_NAMESPACE
 
