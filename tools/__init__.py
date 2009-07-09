@@ -339,6 +339,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
             env['rpath']=False
             print "WARNING rpath not supported on platform "+ env['PLATFORM']
+    env.Decider('MD5-timestamp')
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
