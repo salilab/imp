@@ -33,6 +33,9 @@ class IMPDISPLAYEXPORT Writer: public Object
   std::ostream &get_stream() {
     if (!out_.is_open() && !file_name_.empty()) {
       out_.open(file_name_.c_str());
+      if (!out_.is_open()) {
+        throw InvalidStateException("Could not open output file");
+      }
       on_open();
     }
     IMP_check(out_.is_open(), "Error opening file '" << file_name_ << "'",
