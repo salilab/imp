@@ -14,7 +14,7 @@ IMPSAXS_BEGIN_NAMESPACE
 Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
                      FormFactorTable* ff_table) :
   ff_table_(ff_table), rigid_bodies_profile_(ff_table) {
-  saxs_score_ = new Score(ff_table_, (Profile*)&exp_profile);
+  saxs_score_ = new Score( (Profile*)&exp_profile, ff_table_);
 
   for(unsigned int i=0; i<particles.size(); i++) {
     if(core::RigidBody::is_instance_of(particles[i])) {

@@ -72,19 +72,33 @@ protected:
 class IMPSAXSEXPORT RadialDistributionFunction : public Distribution<Float> {
 
 public:
-  //! Constructor
-  RadialDistributionFunction(FormFactorTable* ff_table,
+  //! Constructor (default)
+  RadialDistributionFunction(FormFactorTable* ff_table =
+                             default_form_factor_table(),
+                             Float bin_size = pr_resolution);
+
+  //! Constructor from gnom file \untested{read_pr_file}
+  RadialDistributionFunction(const String& file_name,
                              Float bin_size = pr_resolution);
 
   friend class Profile;
 
   //! computes radial distribution function for a set of particles
-  void calculate_distribution(const Particles& particles);
+  void calculate_distribution(const Particles& particles,
+                              bool autocorrelation = true);
 
   //! computes distribution contribution from inter-molecular
   //! interactions between the particles
   void calculate_distribution(const Particles& particles1,
                               const Particles& particles2);
+
+  //! the distribution is a function of squared distance
+  void calculate_squared_distribution(const Particles& particles,
+                                      bool autocorrelation = true);
+
+  //! the distribution is a function of squared distance
+  void calculate_squared_distribution(const Particles& particles1,
+                                      const Particles& particles2);
 
   //! scale distribution by a constant
   void scale(Float c);
@@ -95,6 +109,14 @@ public:
   //! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;
 
+  //! analogy crystallographic R-factor score \untested{R_factor}
+  Float R_factor_score(const RadialDistributionFunction& other_rdf);
+
+  //! analogy to chi score \untested{chi_score}
+  Float chi_score(const RadialDistributionFunction& other_rdf);
+
+  //! \untested{normalize}
+  void normalize();
  private:
   void add_to_distribution(Float dist, Float value) {
     unsigned int index = dist2index(dist);
@@ -106,6 +128,8 @@ public:
     }
     distribution_[index] += value;
   }
+
+  void read_pr_file(const String& file_name);
 
  protected:
   FormFactorTable* ff_table_; // pointer to form factors table

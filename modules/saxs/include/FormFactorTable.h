@@ -26,8 +26,10 @@ class that deals with form factor computation
 */
 class IMPSAXSEXPORT FormFactorTable {
 public:
+  //! default constructor
+  FormFactorTable() {}
 
-  //! constructor
+  //! constructor with form factor table file
   FormFactorTable(const String& table_name, Float min_q, Float max_q,
                   Float delta_q);
 
@@ -60,6 +62,9 @@ private:
   // the names correspond to the first FormFactorAtomTypes
   // (the order should be the same)
   static String element_names_[];// {"H", "C", "N", "O", "S", "P", "AU"};
+
+  // form factors for q=0
+  static Float zero_form_factors_[];
 
   // a key for storing zero form factor in Particle as attribute
   static FloatKey form_factor_key_;
@@ -111,12 +116,11 @@ private:
   // table of form factors for 14 atom types
   std::vector<Floats> form_factors_;
 
-  // form factors for q=0
-  Floats zero_form_factors_;
-
   // min/max q and sampling resolution for form factor computation
   Float min_q_, max_q_, delta_q_;
 };
+
+IMPSAXSEXPORT FormFactorTable* default_form_factor_table();
 
 IMPSAXS_END_NAMESPACE
 
