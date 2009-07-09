@@ -38,6 +38,33 @@ Float XYZDerivativeGeometry::get_size() const {
 }
 
 
+
+
+
+XYZsDerivativeGeometry::XYZsDerivativeGeometry(SingletonContainer *d,
+                                               Float radius): sc_(d),
+                                                              radius_(radius){
+}
+
+void XYZsDerivativeGeometry::show(std::ostream &out) const {
+  out << "XYZDerivativeGeometry" << std::endl;
+}
+
+Geometries XYZsDerivativeGeometry::get_geometry() const {
+  Geometries ret(sc_->get_number_of_particles());
+  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
+    IMP_NEW(XYZDerivativeGeometry, g,
+            (core::XYZ(sc_->get_particle(i)), radius_));
+    if (!get_name().empty()) g->set_name(get_name());
+    g->set_color(get_color());
+    ret.set(i, g);
+  }
+  return ret;
+}
+
+
+
+
 RigidBodyDerivativeGeometry
 ::RigidBodyDerivativeGeometry(core::RigidBody d): d_(d){
   xyzcolor_=Color(1,0,0);

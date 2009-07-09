@@ -45,25 +45,14 @@ public:
     skip_steps_=i;
   }
 
-  void add_geometry(CompoundGeometry* g) {
-    edata_.push_back(Pointer<CompoundGeometry>(g));
-  }
+  void add_geometry(CompoundGeometry* g);
 
-  void add_geometry(Geometry* g) {
-    gdata_.push_back(Pointer<Geometry>(g));
-  }
+  void add_geometry(Geometry* g);
 
-  void add_geometry(const CompoundGeometries& g) {
-    for (unsigned int i=0; i< g.size(); ++i) {
-      add_geometry(g);
-    }
-  }
+  void add_geometry(const CompoundGeometries& g);
 
-  void add_geometry(const Geometries& g) {
-    for (unsigned int i=0; i< g.size(); ++i) {
-      add_geometry(g);
-    }
-  }
+  void add_geometry(const Geometries& g);
+
   //! Force writing the a file with the given name
   void write(std::string file_name) const;
 

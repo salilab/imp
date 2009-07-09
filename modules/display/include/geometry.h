@@ -77,6 +77,7 @@ typedef VectorOfRefCounted<Geometry*> Geometries;
 //! Produce some geometry from a particle
 class IMPDISPLAYEXPORT CompoundGeometry: public Object {
   std::string name_;
+  Color color_;
  public:
   CompoundGeometry();
 
@@ -90,8 +91,16 @@ class IMPDISPLAYEXPORT CompoundGeometry: public Object {
     return name_;
   }
 
-  void set_name(std::string name) const {
-    name=name_;
+  void set_color(const Color& c) {
+    color_=c;
+  }
+
+  Color get_color() const {
+    return color_;
+  }
+
+  void set_name(std::string name) {
+    name_=name;
   }
 
   IMP_REF_COUNTED_DESTRUCTOR(CompoundGeometry);

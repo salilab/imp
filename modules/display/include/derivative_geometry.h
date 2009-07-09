@@ -39,6 +39,20 @@ public:
 };
 
 
+
+//! Display the derivatives of a set of XYZ particles
+class IMPDISPLAYEXPORT XYZsDerivativeGeometry: public CompoundGeometry
+{
+  Pointer<SingletonContainer> sc_;
+  Float radius_;
+public:
+  XYZsDerivativeGeometry(SingletonContainer *d, Float radius=0);
+
+  IMP_COMPOUND_GEOMETRY(XYZsDerivativeGeometry, internal::version_info)
+};
+
+
+
 //! Display the derivatives of an RigidBody particle
 /** This class displays the derivatives of a rigid body. Currently,
     it draws a cylinder like the XYZDerivativeGeometry for each of

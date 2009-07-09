@@ -53,7 +53,10 @@ Geometries BondsGeometry::get_geometry() const {
   Geometries ret(sc_->get_number_of_particles());
   for (unsigned int i=0; i< ret.size(); ++i) {
     double r= sc_->get_particle(i)->get_value(rk_);
-    ret.set(i, new BondGeometry(atom::Bond(sc_->get_particle(i)), r));
+    IMP_NEW(BondGeometry, g, (atom::Bond(sc_->get_particle(i)), r));
+    if (!get_name().empty()) g->set_name(get_name());
+    g->set_color(get_color());
+    ret.set(i, g);
   }
   return ret;
 }

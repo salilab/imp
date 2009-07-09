@@ -79,5 +79,24 @@ void set_failure_display_log(LogOptimizerState *log,
 
 
 
+void LogOptimizerState::add_geometry(CompoundGeometry* g) {
+  edata_.push_back(Pointer<CompoundGeometry>(g));
+}
+
+void LogOptimizerState::add_geometry(Geometry* g) {
+  gdata_.push_back(Pointer<Geometry>(g));
+}
+
+void LogOptimizerState::add_geometry(const CompoundGeometries& g) {
+  for (unsigned int i=0; i< g.size(); ++i) {
+    add_geometry(g);
+  }
+}
+
+void LogOptimizerState::add_geometry(const Geometries& g) {
+  for (unsigned int i=0; i< g.size(); ++i) {
+    add_geometry(g);
+  }
+}
 
 IMPDISPLAY_END_NAMESPACE

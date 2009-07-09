@@ -24,21 +24,23 @@ void CGOWriter::show(std::ostream &out) const {
 
 void CGOWriter::on_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
-  get_stream() << "model= [\n";
+  get_stream() << "data= {}\n";
 }
 
 void CGOWriter::on_close() {
   char buf[1000];
   sprintf(buf, name_.c_str(), count_);
-  get_stream() << "]\n\ncmd.load_cgo(model,'" << buf
-               << "',   0)\n";
+  get_stream() << "\n\nfor k in data.keys():\n  cmd.load_cgo(data[k], k, 0)\n";
   ++count_;
 }
 
 void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
   IMP_CHECK_OBJECT(g);
   Color last_color;
+  std::string name= g->get_name();
+  if (name.empty()) name= "unnamed";
   out << "# " << g->get_name() << std::endl;
+  out << "curdata=[\n";
   if (g->get_dimension() ==0) {
     for (unsigned int i=0; i< g->get_number_of_vertices(); ++i) {
       algebra::Vector3D v=g->get_vertex(i);
@@ -97,6 +99,10 @@ void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
       out << "END,\n";
     }
   }
+  out << "]\n";
+  out << "k= '" << name << "'" << std::endl;
+  out << "if k in data.keys():\n   data[k]= data[k]+curdata\nelse:\n"
+      <<"   data[k]=curdata\n\n";
 }
 
 void CGOWriter::add_geometry(Geometry *g) {
