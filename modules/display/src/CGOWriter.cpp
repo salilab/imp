@@ -13,8 +13,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 
 
-CGOWriter::CGOWriter(std::string file_name): Writer(file_name),
-                                             name_("model"){
+CGOWriter::CGOWriter(std::string file_name): Writer(file_name){
   count_=0;
 }
 
