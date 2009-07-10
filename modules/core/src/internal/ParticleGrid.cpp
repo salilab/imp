@@ -19,7 +19,7 @@ namespace internal
 static const int target_cell_occupancy=10;
 
 ParticleGrid::ParticleGrid(Float tvs,
-                           const Particles &ps): target_voxel_side_(tvs)
+                           const Storage &ps): target_voxel_side_(tvs)
 {
   IMP_assert(tvs >0, "Target voxel edge size must be positive");
   build_grid(ps);
@@ -29,7 +29,7 @@ ParticleGrid::ParticleGrid(): target_voxel_side_(0)
 {
 }
 
-void ParticleGrid::build_grid(const Particles &ps)
+void ParticleGrid::build_grid(const Storage &ps)
 {
   audit_particles(ps);
   IMP_LOG(TERSE, "Creating nonbonded grid..." << std::flush);
@@ -73,7 +73,7 @@ void ParticleGrid::build_grid(const Particles &ps)
 
 
 
-void ParticleGrid::audit_particles(const Particles &ps) const
+void ParticleGrid::audit_particles(const Storage &ps) const
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
     try {

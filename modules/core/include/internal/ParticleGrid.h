@@ -24,19 +24,21 @@ namespace internal
 /** \internal */
   class ParticleGrid: public RefCounted
 {
+public:
   typedef std::vector<Particle*> Storage;
+private:
   // don't need ref counting since mc_ has the same set of points
   typedef internal::Grid3D<Storage > Grid;
   Grid grid_;
   Float target_voxel_side_;
 
-  void build_grid(const Particles &ps);
-  void audit_particles(const Particles &ps) const;
+  void build_grid(const Storage &ps);
+  void audit_particles(const Storage &ps) const;
   void add_particle_to_grid(Particle *p);
 public:
   ParticleGrid();
   //! suggested grid edge size.
-  ParticleGrid(Float sz, const Particles &ps);
+  ParticleGrid(Float sz, const Storage &ps);
 
   Float get_voxel_size() const {return target_voxel_side_;}
 
@@ -115,7 +117,7 @@ public:
   {
     Grid::IndexIterator cvoxel_;
     Grid::IndexIterator evoxel_;
-    Particles::const_iterator curp_;
+    Storage::const_iterator curp_;
     const Grid *grid_;
     typedef std::pair<Particle *, Grid::Index> VT;
     VT temp_;
