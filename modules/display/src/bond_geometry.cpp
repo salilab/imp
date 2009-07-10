@@ -43,7 +43,10 @@ unsigned int BondGeometry::get_number_of_vertices() const{
 
 
 BondsGeometry::BondsGeometry(SingletonContainer *sc,
-                             FloatKey rk): sc_(sc), rk_(rk){}
+                             FloatKey rk): sc_(sc), r_(-1), rk_(rk){}
+
+BondsGeometry::BondsGeometry(SingletonContainer *sc,
+                             double r): sc_(sc), r_(r){}
 
 void BondsGeometry::show(std::ostream &out) const {
   out << "Bondss" << std::endl;
@@ -52,7 +55,10 @@ void BondsGeometry::show(std::ostream &out) const {
 Geometries BondsGeometry::get_geometry() const {
   Geometries ret(sc_->get_number_of_particles());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    double r= sc_->get_particle(i)->get_value(rk_);
+    double r=r_;
+    if (rk_ != FloatKey()) {
+      r= sc_->get_particle(i)->get_value(rk_);
+    }
     IMP_NEW(BondGeometry, g, (atom::Bond(sc_->get_particle(i)), r));
     if (!get_name().empty()) g->set_name(get_name());
     g->set_color(get_color());
