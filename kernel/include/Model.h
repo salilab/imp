@@ -105,7 +105,13 @@ public:
   //! Remove the particle from this model
   /** Since particles are ref counted the object will still be valid
       objects until all references are removed, however attributes of
-      removed particles cannot be changed or inspected.*/
+      removed particles cannot be changed or inspected.
+
+      \note It is an error to remove particles from the model during
+      Restraint evaluation or ScoreState evaluation. It is OK to
+      remove them during OptimizerState updates, although not all
+      optimizers support this yet.
+  */
   void remove_particle(Particle *p) {
     IMP_OBJECT_LOG;
     IMP_CHECK_OBJECT(this);
