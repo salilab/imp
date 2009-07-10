@@ -569,8 +569,7 @@ void inline Particle::add_attribute(ParticleKey name, Particle* value)
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
-  particles_.insert(name,
-                           Pointer<Particle>(value));
+  particles_.insert(name,value);
 }
 
 
