@@ -17,12 +17,10 @@
 #include <IMP/core/ListSingletonContainer.h>
 #include <IMP/OptimizerState.h>
 
-IMP_BEGIN_NAMESPACE
-// for swig
-class ListSingletonContainer;
-IMP_END_NAMESPACE
-
 IMPCORE_BEGIN_NAMESPACE
+
+class ListSingletonContainer;
+
 //! Remove inactive Singletons from a list
 /** This optimizer state can be used to clean up particles which have
     been inactived by other OptimizaterState objects.
