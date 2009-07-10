@@ -95,7 +95,7 @@ private:
     static Value get_invalid() {
       return Value();
     }
-    static bool get_is_valid(Value f) {
+    static bool get_is_valid(const Value& f) {
       return f!= Value();
     }
   };

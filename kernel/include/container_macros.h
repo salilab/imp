@@ -74,7 +74,7 @@
          ++it) {                                                        \
       if (f(*it)) handle_remove(*it);                                   \
     }                                                                   \
-    IMP::internal::remove_if(lcname##_vector_, (f));                    \
+    IMP::internal::remove_if(lcname##_vector_, f);                      \
   }                                                                     \
   /** \brief Remove any occurences of each item in d. */                \
   void remove_##lcname##s(const PluralData& d);                         \
