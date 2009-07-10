@@ -5,6 +5,8 @@
 
 - IMP::display::CGOWriter has been much improved and now allows provides lots of display-time control and easy building of animations.
 
+- Generic optimizer states have been added (IMP::core::SingletonsOptimizerState and IMP::core::PairsOptimizerState).
+
 \par Week of June 15
 
 - box distrubutions (IMP::algebra::random_vector_on_box(), IMP::algebra::random_vector_in_box()) take bounding boxes
