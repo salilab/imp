@@ -77,10 +77,10 @@
     IMP::internal::remove_if(lcname##_vector_, (f));                    \
   }                                                                     \
   /** \brief Remove any occurences of each item in d. */                \
-  void remove_##lcname##s(const Ucname##s& d);                          \
+  void remove_##lcname##s(const PluralData& d);                         \
   /** Set the contents of the container to ps removing all its current
       contents. */                                                      \
-  void set_##lcname##s(const Ucname##s &ps) {                           \
+void set_##lcname##s(const PluralData &ps) {                            \
     clear_##lcname##s();                                                \
     add_##lcname##s(ps);                                                \
   }                                                                     \
@@ -167,7 +167,7 @@ IMP_PROTECTION(protection)                                              \
     }                                                                   \
     OnChanged;                                                          \
   }                                                                     \
-  void Class::remove_##lcname##s(const Ucname##s& d) {                  \
+  void Class::remove_##lcname##s(const PluralData& d) {                 \
     std::vector<Data> ds(d.begin(), d.end());                           \
     std::sort(ds.begin(), ds.end());                                    \
     for (unsigned int i=0; i< ds.size(); ++i) {                         \
