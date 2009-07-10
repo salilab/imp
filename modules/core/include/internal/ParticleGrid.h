@@ -24,8 +24,9 @@ namespace internal
 /** \internal */
   class ParticleGrid: public RefCounted
 {
+  typedef std::vector<Particle*> Storage;
   // don't need ref counting since mc_ has the same set of points
-  typedef internal::Grid3D<Particles> Grid;
+  typedef internal::Grid3D<Storage > Grid;
   Grid grid_;
   Float target_voxel_side_;
 
@@ -101,7 +102,7 @@ public:
 
   template <class F>
   void apply_to_cell_pairs(F f, const Grid::Index &center) const {
-    const Particles &ps= grid_.get_voxel(center);
+    const Storage &ps= grid_.get_voxel(center);
     for (unsigned int i=0; i< ps.size(); ++i) {
       for (unsigned int j=0; j< i; ++j) {
         f(ps[i], ps[j]);
