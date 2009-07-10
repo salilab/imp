@@ -90,6 +90,7 @@ private:
   struct ParticleAttributeTableTraits
   {
     typedef Pointer<Particle> Value;
+    typedef Particle* PassValue;
     typedef ParticleKey Key;
     static Value get_invalid() {
       return Value();
@@ -501,7 +502,7 @@ inline Particle* Particle::get_value(ParticleKey name) const
 {
   IMP_check(get_is_active(), "Do not touch inactive particles",
             InactiveParticleException);
-  return particles_.get_value(name).get();
+  return particles_.get_value(name);
 }
 
 

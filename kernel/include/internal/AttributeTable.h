@@ -29,6 +29,7 @@ template <class T, class K >
 struct DefaultTraits
 {
   typedef T Value;
+  typedef T PassValue;
   typedef K Key;
 };
 
@@ -135,6 +136,7 @@ class AttributeTable
   }
 public:
   typedef typename Traits::Value Value;
+  typedef typename Traits::PassValue PassValue;
   typedef typename Traits::Key Key;
   AttributeTable(){}
 
@@ -142,34 +144,35 @@ public:
     map_.clear();
   }
 
-  const Value get_value(Key k) const {
+  const PassValue get_value(Key k) const {
     check_contains(k);
     return map_[k.get_index()];
   }
 
 
-  void set_value(Key k, Value v) {
+  void set_value(Key k, PassValue v) {
     check_contains(k);
-    IMP_check(Traits::get_is_valid(v),
+    Value vv(v);
+    IMP_check(Traits::get_is_valid(vv),
               "Cannot set value of attribute to " << v,
               ValueException);
-    map_[k.get_index()] = v;
+    map_[k.get_index()] = vv;
   }
 
-  void set_values(Value v) {
+  void set_values(PassValue v) {
     for (unsigned int i=0; i< map_.size(); ++i) {
       map_[i]=v;
     }
   }
 
-  void insert(Key k, Value v) {
+  void insert(Key k, PassValue v) {
     IMP_assert(!contains(k),
                "Trying to add attribute \"" << k.get_string()
                << "\" twice");
     insert_always(k, v);
   }
 
-  void insert_always(Key k, Value v);
+  void insert_always(Key k, PassValue v);
 
   void remove(Key k) {
     check_contains(k);
@@ -245,13 +248,14 @@ IMP_OUTPUT_OPERATOR_1(AttributeTable)
 
 
 template <class Traits>
-inline void AttributeTable<Traits>::insert_always(Key k, Value v)
+inline void AttributeTable<Traits>::insert_always(Key k, PassValue v)
 {
   /*std::cout << "Insert " << k << " in v of size "
     << size_ << " " << map_ << " " << k.get_index() << std::endl;*/
   IMP_assert(k != Key(),
             "Can't insert default key");
-  IMP_check(Traits::get_is_valid(v),
+  Value vv(v);
+  IMP_check(Traits::get_is_valid(vv),
             "Trying to insert invalid value for attribute "
             << v << " into attribute " << k,
             ValueException);
@@ -262,7 +266,7 @@ inline void AttributeTable<Traits>::insert_always(Key k, Value v)
   map_.resize(std::max(map_.size(),
                        val+1),
               Traits::get_invalid());
-  map_[k.get_index()]= v;
+  map_[k.get_index()]= vv;
 }
 
 
