@@ -62,7 +62,7 @@ void ParticleGrid::build_grid(const Particles &ps)
   grid_= Grid(target_voxel_side_,
               algebra::Vector3D(mn[0], mn[1], mn[2]),
               algebra::Vector3D(mx[0], mx[1], mx[2]),
-              Particles());
+              Storage());
   for (unsigned int i = 0; i < ps.size(); ++i) {
     XYZ d(ps[i]);
     algebra::Vector3D v(d.get_x(), d.get_y(), d.get_z());
