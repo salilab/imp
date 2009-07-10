@@ -38,9 +38,12 @@ public:
 class IMPDISPLAYEXPORT BondsGeometry: public CompoundGeometry
 {
   Pointer<SingletonContainer> sc_;
+  double r_;
   FloatKey rk_;
 public:
   BondsGeometry(SingletonContainer *sc, FloatKey radiuskey);
+
+  BondsGeometry(SingletonContainer *sc, double r);
 
   IMP_COMPOUND_GEOMETRY(BondsGeometry, internal::version_info)
 };
