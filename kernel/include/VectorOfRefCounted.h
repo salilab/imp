@@ -155,10 +155,8 @@ class VectorOfRefCounted {
       if (f(*it)) bye.push_back(*it);
     }
     if (!bye.empty()) {
-      data_.erase(std::remove_if(begin(), end(), f), end());
-      for (unsigned int i=0; i< bye.size(); ++i) {
-        unref(bye[i]);
-      }
+      data_.resize(std::remove_if(begin(), end(), f)-begin());
+      unref(bye.begin(), bye.end());
     }
   }
 };
@@ -180,10 +178,19 @@ void swap(VectorOfRefCounted<RC, Policy> &a,
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
+
 template <class T, class F>
-void remove_if(VectorOfRefCounted<T> &t, const F &f) {
+void remove_if(T &t, const F &f) {
   t.remove_if(f);
 }
+
+template <class T, class F>
+void remove_if(std::vector<T> &t, const F &f) {
+  t.erase(std::remove_if(t.begin(), t.end(), f), t.end());
+}
+
+
+
 }
 #endif
 

@@ -46,13 +46,6 @@ void ref(O* o)
   ++r->count_;
 }
 
-
-template <class T, class F>
-void remove_if(T &t, const F &f) {
-  t.erase(std::remove_if(t.begin(), t.end(), f), t.end());
-}
-
-
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_REF_COUNTING_H */
