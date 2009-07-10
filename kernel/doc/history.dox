@@ -1,6 +1,8 @@
 /** \page recent Change History
 \par Week of July 4
 
+- FilteredListSingletonContainer and FilteredPairSingletonContainer went away as there was too much hard to factor code shared with ListSingletonContainer and PairSingletonContainer. The IMP::core::ClosePairsScoreState is now handled by a list of filters on the class itself. That is, do IMP::core::ClosePairsScoreState::add_close_pair_filter() to add a filter.
+
 - Hooks have been added to allow actions to be taken on an assertion or check failure. See IMP::HandleFailure and its descendents for more details.
 
 - IMP::display::CGOWriter has been much improved and now allows provides lots of display-time control and easy building of animations.

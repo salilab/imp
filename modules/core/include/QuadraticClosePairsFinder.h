@@ -22,11 +22,11 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
   ~QuadraticClosePairsFinder();
 
   void add_close_pairs(SingletonContainer *pc,
-                       FilteredListPairContainer *out) const;
+                       ListPairContainer *out) const;
 
   void add_close_pairs(SingletonContainer *pca,
                        SingletonContainer *pcb,
-                       FilteredListPairContainer *out) const;
+                       ListPairContainer *out) const;
   //! Return true if the two particles are closer than distance.
   bool get_are_close(Particle *a, Particle *b) const;
 

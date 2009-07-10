@@ -186,33 +186,6 @@ class ParticlePairContainerTest(IMP.test.TestCase):
         r.add_particle_pair(p)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
-    def test_filter(self):
-        """Testing FilteredListPairContainer"""
-        IMP.set_log_level(IMP.VERBOSE)
-        m= IMP.Model()
-        c= IMP.core.FilteredListPairContainer()
-        f= IMP.core.ListPairContainer()
-        self.assertEqual(f.get_ref_count(), 1)
-        print "add"
-        f.show()
-        c.add_pair_filter(f)
-        self.assertEqual(f.get_ref_count(), 2)
-        print "assert"
-        f.show()
-        print "range"
-        for i in range(0,10):
-            print "filter add"
-            f.add_particle_pair(self.create_particle_pair(m))
-        print "done 1"
-        for i in range(0,10):
-            c.add_particle_pair(self.create_particle_pair(m))
-        print "done 2"
-        for p in f.get_particle_pairs():
-            print "adding one"
-            c.add_particle_pair(p)
-        self.assertEqual(c.get_number_of_particle_pairs(), 10)
-        print "all done"
-
     def test_set(self):
         """Testing PairContainerSet"""
         IMP.set_log_level(IMP.VERBOSE)

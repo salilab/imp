@@ -59,7 +59,7 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 {
   mutable internal::RigidBodyCollisionData data_;
   Pointer<ClosePairsFinder> cpf_;
-  Pointer<FilteredListPairContainer> cpfout_;
+  Pointer<ListPairContainer> cpfout_;
 
   void setup(Particle *) const;
   void setup(const algebra::Sphere3Ds &spheres,
@@ -70,7 +70,7 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   const algebra::Sphere3D get_transformed(Particle *a,
                                           const algebra::Sphere3D &s) const;
   void process_one(Particle *a, Particle *b,
-                   FilteredListPairContainer *out,
+                   ListPairContainer *out,
                    const internal::RigidBodyParticleData &da,
                    const internal::RigidBodyParticleData &db,
                    unsigned int ci,
@@ -83,13 +83,13 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   ~RigidClosePairsFinder();
 
   void add_close_pairs(SingletonContainer *pc,
-                       FilteredListPairContainer *out) const;
+                       ListPairContainer *out) const;
 
   void add_close_pairs(SingletonContainer *pca,
                        SingletonContainer *pcb,
-                       FilteredListPairContainer *out) const;
+                       ListPairContainer *out) const;
   void add_close_pairs(Particle *a, Particle *b,
-                       FilteredListPairContainer *out) const;
+                       ListPairContainer *out) const;
 
   void show(std::ostream &out= std::cout) const {
     out << "RigidClosePairsFinder" << std::endl;

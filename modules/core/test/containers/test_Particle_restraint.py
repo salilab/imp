@@ -186,33 +186,6 @@ class ParticleContainerTest(IMP.test.TestCase):
         r.add_particle(p)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
-    def test_filter(self):
-        """Testing FilteredListSingletonContainer"""
-        IMP.set_log_level(IMP.VERBOSE)
-        m= IMP.Model()
-        c= IMP.core.FilteredListSingletonContainer()
-        f= IMP.core.ListSingletonContainer()
-        self.assertEqual(f.get_ref_count(), 1)
-        print "add"
-        f.show()
-        c.add_singleton_filter(f)
-        self.assertEqual(f.get_ref_count(), 2)
-        print "assert"
-        f.show()
-        print "range"
-        for i in range(0,10):
-            print "filter add"
-            f.add_particle(self.create_particle(m))
-        print "done 1"
-        for i in range(0,10):
-            c.add_particle(self.create_particle(m))
-        print "done 2"
-        for p in f.get_particles():
-            print "adding one"
-            c.add_particle(p)
-        self.assertEqual(c.get_number_of_particles(), 10)
-        print "all done"
-
     def test_set(self):
         """Testing SingletonContainerSet"""
         IMP.set_log_level(IMP.VERBOSE)

@@ -15,20 +15,20 @@
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
-  class DegeneratePairContainer: public PairContainer {
+  class Found {
+    typedef CloseBipartitePairsScoreState
+    ::ClosePairFilterIterator It;
+    It b_,e_;
   public:
-    DegeneratePairContainer(){}
-    unsigned int get_number_of_particle_pairs() const {return 0;}
-    ParticlePair get_particle_pair(unsigned int) const {
-      IMP_failure("The container contains no pairs", ErrorException);
-    }
-    bool get_contains_particle_pair(ParticlePair pp) const {
-      return pp.first==pp.second;
-    }
-    void show(std::ostream &out) const {
-    }
-    VersionInfo get_version_info() const {
-      return internal::version_info;
+    Found(It b,
+          It e):
+      b_(b), e_(e){}
+    bool operator()(ParticlePair vt) const {
+      if (vt.first==vt.second) return true;
+      for (It c=b_; c != e_; ++c) {
+        if ((*c)->get_contains_particle_pair(vt)) return true;
+      }
+      return false;
     }
   };
 }
@@ -36,7 +36,7 @@ namespace {
 CloseBipartitePairsScoreState
 ::CloseBipartitePairsScoreState(SingletonContainer *pc0,
                                 SingletonContainer *pc1,
-                                FilteredListPairContainer* out,
+                                ListPairContainer* out,
                                 FloatKey rk)
 {
   in_[0]=pc0;
@@ -44,7 +44,6 @@ CloseBipartitePairsScoreState
   out_=out;
   rk_=rk;
   initialize();
-  out_->add_pair_filter(new DegeneratePairContainer());
 }
 
 CloseBipartitePairsScoreState
@@ -54,8 +53,7 @@ CloseBipartitePairsScoreState
 {
   in_[0]=pc0;
   in_[1]=pc1;
-  out_=new FilteredListPairContainer();
-  out_->add_pair_filter(new DegeneratePairContainer());
+  out_=new ListPairContainer();
   rk_=rk;
   initialize();
 }
@@ -137,6 +135,8 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
     IMP_LOG(TERSE, "adding pairs" << std::endl);
     out_->clear_particle_pairs();
     f_->add_close_pairs(in_[0], in_[1],out_);
+    out_->remove_particle_pairs_if(Found(close_pair_filters_begin(),
+                                         close_pair_filters_end()));
     IMP_LOG(TERSE, "done"<< std::endl);
     return;
   } else {
@@ -154,14 +154,14 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
     if (delta > slack_) {
       out_->clear_particle_pairs();
       f_->add_close_pairs(in_[0], in_[1],out_);
+      out_->remove_particle_pairs_if(Found(close_pair_filters_begin(),
+                                           close_pair_filters_end()));
       xyzc_[0]->reset();
       xyzc_[1]->reset();
       if (rk_ != FloatKey()) {
         rc_[0]->reset();
         rc_[1]->reset();
       }
-    } else {
-      out_->remove_particle_pairs_if(IsInactive());
     }
   }
 }
@@ -175,5 +175,13 @@ void CloseBipartitePairsScoreState::show(std::ostream &out) const
 {
   out << "CloseBipartitePairsScoreState" << std::endl;
 }
+
+
+
+IMP_LIST_IMPL(CloseBipartitePairsScoreState,
+              ClosePairFilter,
+              close_pair_filter,
+              PairContainer*,
+              PairContainers,,,)
 
 IMPCORE_END_NAMESPACE

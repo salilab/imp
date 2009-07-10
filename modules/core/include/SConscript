@@ -27,8 +27,6 @@ files = [
          'DistanceRestraint.h',
          'DistanceToSingletonScore.h',
          'ExcludedVolumeRestraint.h',
-         'FilteredListPairContainer.h',
-         'FilteredListSingletonContainer.h',
          'FixedRefiner.h',
          'GridClosePairsFinder.h',
          'Harmonic.h',

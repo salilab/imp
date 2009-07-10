@@ -23,7 +23,7 @@ static const double EXPANSION=1.0;
 static const unsigned int MAX_LEAF_SIZE=10;
 
 RigidClosePairsFinder::RigidClosePairsFinder():
-  cpfout_(new FilteredListPairContainer()){
+  cpfout_(new ListPairContainer()){
   #ifdef IMP_USE_CGAL
   cpf_=Pointer<ClosePairsFinder>(new BoxSweepClosePairsFinder());
 #else
@@ -32,7 +32,7 @@ RigidClosePairsFinder::RigidClosePairsFinder():
 }
 RigidClosePairsFinder
 ::RigidClosePairsFinder(ClosePairsFinder *cpf): cpf_(cpf),
-                        cpfout_(new FilteredListPairContainer()){}
+                        cpfout_(new ListPairContainer()){}
 
 RigidClosePairsFinder::~RigidClosePairsFinder(){}
 
@@ -346,15 +346,16 @@ namespace {
 void RigidClosePairsFinder
 ::add_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb,
-                  FilteredListPairContainer *out) const {
+                  ListPairContainer *out) const {
   IMP_LOG(TERSE, "Rigid add_close_pairs called with "
           << ca->get_number_of_particles() << " and "
           << cb->get_number_of_particles() << std::endl);
-  EditGuard<FilteredListPairContainer> e(out);
+  EditGuard<ListPairContainer> e(out);
   check_particles(ca, get_radius_key());
   check_particles(cb, get_radius_key());
   cpf_->add_close_pairs(ca,cb, cpfout_);
-  for (PairContainer::ParticlePairIterator it= cpfout_->particle_pairs_begin();
+  for (ListPairContainer::ParticlePairConstIterator
+         it= cpfout_->particle_pairs_begin();
        it != cpfout_->particle_pairs_end(); ++it) {
     add_close_pairs(it->first, it->second, out);
   }
@@ -362,13 +363,14 @@ void RigidClosePairsFinder
 
 void RigidClosePairsFinder
 ::add_close_pairs(SingletonContainer *c,
-                  FilteredListPairContainer *out) const {
+                  ListPairContainer *out) const {
   IMP_LOG(TERSE, "Adding close pairs from "
           << c->get_number_of_particles() << " particles." << std::endl);
-  EditGuard<FilteredListPairContainer> e(out);
+  EditGuard<ListPairContainer> e(out);
   check_particles(c, get_radius_key());
   cpf_->add_close_pairs(c, cpfout_);
-  for (PairContainer::ParticlePairIterator it= cpfout_->particle_pairs_begin();
+  for (ListPairContainer::ParticlePairConstIterator
+         it= cpfout_->particle_pairs_begin();
        it != cpfout_->particle_pairs_end(); ++it) {
      add_close_pairs(it->first, it->second, out);
   }
@@ -376,7 +378,7 @@ void RigidClosePairsFinder
 
 inline void
 RigidClosePairsFinder::process_one(Particle *a, Particle *b,
-                                   FilteredListPairContainer *out,
+                                   ListPairContainer *out,
                                    const internal::RigidBodyParticleData &da,
                                    const internal::RigidBodyParticleData &db,
                                    unsigned int ci,
@@ -408,7 +410,7 @@ RigidClosePairsFinder::process_one(Particle *a, Particle *b,
 
 
 void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
-                                   FilteredListPairContainer *out) const {
+                                            ListPairContainer *out) const {
   if (!data_.has_data(a)) {
     setup(a);
   }
@@ -416,7 +418,7 @@ void RigidClosePairsFinder::add_close_pairs(Particle *a, Particle *b,
     setup(b);
   }
 
-  EditGuard<FilteredListPairContainer> e(out);
+  EditGuard<ListPairContainer> e(out);
   /*IMP_LOG(VERBOSE, "Testing " << a->get_name() << " and " << b->get_name()
     << " for addition to list" << std::endl);*/
   const internal::RigidBodyParticleData &da= data_.get_data(a);

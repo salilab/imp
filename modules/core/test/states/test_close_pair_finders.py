@@ -38,7 +38,7 @@ class TestCPFL(IMP.test.TestCase):
             ps[i].add_attribute(rk, random.uniform(0,1))
         pc= IMP.core.ListSingletonContainer(ps)
         pc.show()
-        out= IMP.core.FilteredListPairContainer()
+        out= IMP.core.ListPairContainer()
         out.show()
         cpf.add_close_pairs(pc, out)
         print "done " + str(out.get_number_of_particle_pairs())
@@ -49,7 +49,7 @@ class TestCPFL(IMP.test.TestCase):
         for i in range(0, len(ps2)):
             ps2[i].add_attribute(rk, random.uniform(0,2))
         pc2= IMP.core.ListSingletonContainer(ps2)
-        out= IMP.core.FilteredListPairContainer()
+        out= IMP.core.ListPairContainer()
 
         cpf.add_close_pairs(pc, pc2, out)
         print "done bipartite " + str(out.get_number_of_particle_pairs())
@@ -153,7 +153,7 @@ class TestCPFL(IMP.test.TestCase):
         fps.append(rbb.get_particle())
         pc= IMP.core.ListSingletonContainer(fps)
         pc.show()
-        out= IMP.core.FilteredListPairContainer()
+        out= IMP.core.ListPairContainer()
         out.show()
         cpf= IMP.core.RigidClosePairsFinder()
         cpf.set_radius_key(rk)
@@ -186,7 +186,7 @@ class TestCPFL(IMP.test.TestCase):
         rbb2.get_particle().set_name("rbb2")
 
         pc2= IMP.core.ListSingletonContainer(ps2)
-        out= IMP.core.FilteredListPairContainer()
+        out= IMP.core.ListPairContainer()
 
         cpf.add_close_pairs(pc, pc2, out)
         print "done bipartite " + str(out.get_number_of_particle_pairs())
