@@ -43,6 +43,9 @@ struct ContainerTraits<Particle> {
                     DerivativeAccumulator *da) {
     ss->apply(p, *da);
   }
+  static bool is_inactive(const Particle* p) {
+    return !p->get_is_active();
+  }
 };
 
 template <>
@@ -69,6 +72,9 @@ struct ContainerTraits<ParticlePair> {
                     const ParticlePair &p,
                     DerivativeAccumulator *da) {
     ss->apply(p.first, p.second, *da);
+  }
+  static bool is_inactive(const ParticlePair &p) {
+    return !p[0]->get_is_active() || !p[1]->get_is_active();
   }
 };
 

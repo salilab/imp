@@ -58,6 +58,16 @@ def make_one(name, value, multi, args, fromargs, asargs, ):
                path+"/modules/core/tools/container_templates/state.hpp"),
               ("modules/core/src/"+multi + "sScoreState.cpp",
                path+"/modules/core/tools/container_templates/state.cc"),
+
+              ("modules/core/include/"+multi + "sOptimizerState.h",
+               path+"/modules/core/tools/container_templates/ostate.hpp"),
+              ("modules/core/src/"+multi + "sOptimizerState.cpp",
+               path+"/modules/core/tools/container_templates/ostate.cc"),
+
+              ("modules/core/include/RemoveInactive"+multi + "sOptimizerState.h",
+               path+"/modules/core/tools/container_templates/inactive.hpp"),
+              ("modules/core/src/RemoveInactive"+multi + "sOptimizerState.cpp",
+               path+"/modules/core/tools/container_templates/inactive.cc"),
   
               ("modules/core/include/"+multi + "ScoreState.h",
                path+"/modules/core/tools/container_templates/sstate.hpp"),
