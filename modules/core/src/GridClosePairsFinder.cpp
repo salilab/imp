@@ -22,11 +22,11 @@ namespace {
   static const unsigned int min_grid_size=100;
 
   struct AddToList {
-    FilteredListPairContainer *out_;
+    ListPairContainer *out_;
     Particle *p_;
     FloatKey rk_;
     double d_;
-    AddToList(FilteredListPairContainer *o,
+    AddToList(ListPairContainer *o,
               Particle *p, FloatKey rk, double d): out_(o), p_(p),
                                                    rk_(rk), d_(d){}
     void operator()(Particle *p) {
@@ -38,10 +38,10 @@ namespace {
   };
 
   struct AddToList2 {
-    FilteredListPairContainer *out_;
+    ListPairContainer *out_;
     FloatKey rk_;
     double d_;
-    AddToList2(FilteredListPairContainer *o,
+    AddToList2(ListPairContainer *o,
                FloatKey rk, double d): out_(o),
                                        rk_(rk), d_(d){}
     void operator()(Particle *a, Particle *b) {
@@ -83,7 +83,7 @@ namespace {
     } while (curr < maxr);
     cuts.push_back(2*maxr);
 
-    std::vector<Particles> ops(cuts.size());
+    std::vector<internal::ParticleGrid::Storage> ops(cuts.size());
     for (unsigned int i=0; i< c->get_number_of_particles(); ++i) {
       double r= c->get_particle(i)->get_value(rk);
       bool found=false;
@@ -125,7 +125,7 @@ void grid_generate_nbl(const internal::ParticleGrid *particle_bin,
                        const internal::ParticleGrid *grid_bin,
                        Float distance,
                        FloatKey rk,
-                       FilteredListPairContainer *out)
+                       ListPairContainer *out)
 {
   IMP_LOG(VERBOSE, "Generate nbl for pair " << std::endl);
   for (internal::ParticleGrid::ParticleVoxelIterator
@@ -153,7 +153,7 @@ GridClosePairsFinder::~GridClosePairsFinder(){}
 void GridClosePairsFinder
 ::add_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb,
-                  FilteredListPairContainer *out) const {
+                  ListPairContainer *out) const {
   QuadraticClosePairsFinder qp;
   qp.set_radius_key(get_radius_key());
   qp.set_distance(get_distance());
@@ -162,16 +162,17 @@ void GridClosePairsFinder
 
 void GridClosePairsFinder
 ::add_close_pairs(SingletonContainer *c,
-                  FilteredListPairContainer *out) const {
+                  ListPairContainer *out) const {
   IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
 
-  EditGuard<FilteredListPairContainer> guard(out);
+  EditGuard<ListPairContainer> guard(out);
 
   IMP::VectorOfRefCounted<internal::ParticleGrid*> bins;
 
   if (get_radius_key()== FloatKey()) {
-    Particles ps(c->particles_begin(), c->particles_end());
+    internal::ParticleGrid::Storage ps(c->particles_begin(),
+                                       c->particles_end());
     /** \todo need to pick better value here.
      */
     bins.push_back(new internal::ParticleGrid(1.0, ps));

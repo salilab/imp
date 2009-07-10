@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "XYZR.h"
-#include "FilteredListPairContainer.h"
+#include "ListPairContainer.h"
 
 #include <IMP/RefCounted.h>
 #include <IMP/SingletonContainer.h>
@@ -18,7 +18,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 // to make SWIG happy
-class FilteredListPairContainer;
+class ListPairContainer;
 
 //! A base class for algorithms to find spatial proximities
 /** In general, the algorithm should make sure it returns all
@@ -56,11 +56,11 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       @{
    */
   virtual void add_close_pairs(SingletonContainer *pc,
-                               FilteredListPairContainer *out) const =0;
+                               ListPairContainer *out) const =0;
 
   virtual void add_close_pairs(SingletonContainer *pca,
                        SingletonContainer *pcb,
-                       FilteredListPairContainer *out) const =0;
+                       ListPairContainer *out) const =0;
   /** @} */
   /** \name The radius key
       If the radius key is non-default, then all particles must have

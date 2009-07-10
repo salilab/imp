@@ -186,33 +186,6 @@ class ClassnameContainerTest(IMP.test.TestCase):
         r.add_classname(p)
         self.assertInTolerance(m.evaluate(False), f, .1*f)
 
-    def test_filter(self):
-        """Testing FilteredListGroupnameContainer"""
-        IMP.set_log_level(IMP.VERBOSE)
-        m= IMP.Model()
-        c= IMP.core.FilteredListGroupnameContainer()
-        f= IMP.core.ListGroupnameContainer()
-        self.assertEqual(f.get_ref_count(), 1)
-        print "add"
-        f.show()
-        c.add_groupname_filter(f)
-        self.assertEqual(f.get_ref_count(), 2)
-        print "assert"
-        f.show()
-        print "range"
-        for i in range(0,10):
-            print "filter add"
-            f.add_classname(self.create_classname(m))
-        print "done 1"
-        for i in range(0,10):
-            c.add_classname(self.create_classname(m))
-        print "done 2"
-        for p in f.get_classnames():
-            print "adding one"
-            c.add_classname(p)
-        self.assertEqual(c.get_number_of_classnames(), 10)
-        print "all done"
-
     def test_set(self):
         """Testing GroupnameContainerSet"""
         IMP.set_log_level(IMP.VERBOSE)

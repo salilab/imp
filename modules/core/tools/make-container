@@ -46,10 +46,6 @@ def make_one(name, value, multi, args, fromargs, asargs, ):
               ("modules/core/src/"+multi + "Restraint.cpp",
                path+"/modules/core/tools/container_templates/srestraint.cc"),
 
-              ("modules/core/include/FilteredList"+multi + "Container.h",
-               path+"/modules/core/tools/container_templates/filter.hpp"),
-              ("modules/core/src/FilteredList"+multi + "Container.cpp",
-               path+"/modules/core/tools/container_templates/filter.cc"),
               ("modules/core/include/"+multi + "ContainerSet.h",
                path+"/modules/core/tools/container_templates/set.hpp"),
               ("modules/core/src/"+multi + "ContainerSet.cpp",

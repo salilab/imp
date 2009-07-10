@@ -10,7 +10,7 @@
 #include "config.h"
 #include "MaximumChangeScoreState.h"
 #include "ClosePairsFinder.h"
-#include "FilteredListPairContainer.h"
+#include "ListPairContainer.h"
 #include <IMP/ScoreState.h>
 
 #include <IMP/SingletonContainer.h>
@@ -18,12 +18,12 @@
 IMPCORE_BEGIN_NAMESPACE
 
 // for SWIG
-class FilteredListPairContainer;
+class ListPairContainer;
 class MaximumChangeScoreState;
 class ClosePairsFinder;
 
 //! Maintains a list of spatially close pairs of particles
-/** An object of this class fills a FilteredListPairContainer with
+/** An object of this class fills a ListPairContainer with
     all pairs of particles whose inter-sphere distance is
     smaller than the distance parameter.
 
@@ -55,7 +55,7 @@ class IMPCOREEXPORT ClosePairsScoreState : public ScoreState
   Pointer<MaximumChangeScoreState> rc_;
   Pointer<ClosePairsFinder> f_;
   Pointer<SingletonContainer> in_;
-  Pointer<FilteredListPairContainer> out_;
+  Pointer<ListPairContainer> out_;
   Float distance_, slack_;
   FloatKey rk_;
 
@@ -72,7 +72,7 @@ public:
       The close pairs are placed in out.
   */
   ClosePairsScoreState(SingletonContainer *in,
-                       FilteredListPairContainer *out,
+                       ListPairContainer *out,
                        FloatKey rk= XYZR::get_default_radius_key());
 
   //! Set the distance threshold
@@ -85,7 +85,7 @@ public:
   void set_slack(Float s);
 
   //! Get the container where the list of close pairs is put
-  FilteredListPairContainer* get_close_pairs_container() const {
+  ListPairContainer* get_close_pairs_container() const {
     return out_;
   }
 
@@ -113,6 +113,18 @@ public:
   Float get_distance() const {
     return distance_;
   }
+
+  /** @name Methods to control the set of filters
+
+     PairContainer objects can be used as filters to prevent
+     the addition of pairs to the containeroutput list. Pairs
+     which are contained in any container added to this list
+     will be excluded from the close pairs list.
+  */
+  /**@{*/
+  IMP_LIST(public, ClosePairFilter, close_pair_filter,
+           PairContainer*, PairContainers);
+   /**@}*/
 
   IMP_SCORE_STATE(ClosePairsScoreState, internal::version_info)
 };

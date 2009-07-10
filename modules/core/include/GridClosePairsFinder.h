@@ -24,11 +24,11 @@ class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
   ~GridClosePairsFinder();
 
   void add_close_pairs(SingletonContainer *pc,
-                       FilteredListPairContainer *out) const;
+                       ListPairContainer *out) const;
 
   void add_close_pairs(SingletonContainer *pca,
                        SingletonContainer *pcb,
-                       FilteredListPairContainer *out) const;
+                       ListPairContainer *out) const;
 
 
   void show(std::ostream &out= std::cout) const {

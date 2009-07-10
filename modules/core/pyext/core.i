@@ -128,8 +128,6 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/ListPairContainer.h"
 %include "IMP/core/PairsRestraint.h"
 %include "IMP/core/PairRestraint.h"
-%include "IMP/core/FilteredListSingletonContainer.h"
-%include "IMP/core/FilteredListPairContainer.h"
 %include "IMP/core/PairsScoreState.h"
 %include "IMP/core/PairScoreState.h"
 %include "IMP/core/SingletonsRestraint.h"
