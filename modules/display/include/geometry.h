@@ -110,6 +110,25 @@ IMP_OUTPUT_OPERATOR(CompoundGeometry);
 typedef VectorOfRefCounted<CompoundGeometry*> CompoundGeometries;
 
 
+struct NullGeometry: public Geometry {
+  unsigned int get_dimension() const {return 0;}
+
+  algebra::Vector3D get_vertex(unsigned int i) const {
+    throw InvalidStateException("No vertices");
+  }
+
+  unsigned int get_number_of_vertices() const {
+    return 0;
+  }
+
+  void show(std::ostream &out) const {
+    out << "Null geometry";
+  }
+  VersionInfo get_version_info() const {
+    return internal::version_info;
+  }
+};
+
 IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_GEOMETRY_H */
