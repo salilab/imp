@@ -147,6 +147,9 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
   for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
     Particle *p= sc->get_particle(i);
     Diffusion d(p);
+
+    IMP_assert(d.get_coordinates().get_squared_magnitude() >10,
+               "Where did it come from?");
     IMP_IF_CHECK(CHEAP) {
       for (unsigned int j=0; j< 3; ++j) {
         // GDB 6.6 prints infinity as 0 on 64 bit machines. Grumble.
@@ -225,6 +228,8 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
     }
+    IMP_assert(d.get_coordinates().get_squared_magnitude() >10,
+               "Where did it come from?");
   }
 }
 
@@ -252,6 +257,7 @@ double BrownianDynamics::simulate(float max_time_nu)
     get_model()->evaluate(true);
     if (success) {
       update_states();
+      copy_coordinates(sc, old_coordinates);
     }
     try {
       take_step(sc, unit::Femtosecond(dt));
@@ -262,7 +268,6 @@ double BrownianDynamics::simulate(float max_time_nu)
         IMP_LOG(TERSE, "Updating dt to " << dt
                 << " (" << si_.get_maximum_time_step() << ")" << std::endl);
       }
-      copy_coordinates(sc, old_coordinates);
       success=true;
      } catch (const BadStepException &e) {
       IMP_LOG(TERSE, "Reducing step size because of particle "
