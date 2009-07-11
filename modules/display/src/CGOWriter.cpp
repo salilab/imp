@@ -31,6 +31,21 @@ void CGOWriter::on_close() {
   ++count_;
 }
 
+void CGOWriter::add_geometry(CompoundGeometry* cg) {
+  Pointer<CompoundGeometry> cgp(cg);
+  Geometries g= cgp->get_geometry();
+  if (g.empty() && !cg->get_name().empty()) {
+    get_stream() << "k= '" << cg->get_name() << "'\n";
+    get_stream() << "if not k in data.keys():\n"
+                 << "   data[k]=[]\n";
+  } else {
+    for (unsigned int i=0; i< g.size(); ++i) {
+      IMP_CHECK_OBJECT(g[i]);
+      add_geometry(g[i]);
+    }
+  }
+}
+
 void CGOWriter::write_geometry(Geometry *g, std::ostream &out) {
   IMP_CHECK_OBJECT(g);
   Color last_color;

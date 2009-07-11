@@ -40,9 +40,16 @@ public:
   //! write to a file using the name to  name the files
   CGOWriter(std::string file_name=std::string());
 
-  IMP_WRITER(CGOWriter, internal::version_info)
+  virtual void add_geometry(CompoundGeometry* cg);
+  virtual void add_geometry(const IMP::display::Geometries &g) {
+    Writer::add_geometry(g);
+  }
+  virtual void add_geometry(const IMP::display::CompoundGeometries &g) {
+    Writer::add_geometry(g);
+  }
 
-  IMP_WRITER_ADD_GEOMETRY
+
+  IMP_WRITER(CGOWriter, internal::version_info)
 };
 
 
