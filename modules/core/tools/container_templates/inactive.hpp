@@ -15,11 +15,11 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include <IMP/core/ListGroupnameContainer.h>
+#include <IMP/core/FilteredListGroupnameContainer.h>
 #include <IMP/OptimizerState.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
-class ListGroupnameContainer;
 
 //! Remove inactive Groupnames from a list
 /** This optimizer state can be used to clean up particles which have
