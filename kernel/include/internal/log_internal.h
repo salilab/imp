@@ -19,32 +19,20 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
+
 class IMPEXPORT Log: boost::noncopyable
 {
 public:
   static Log& get();
 
-  unsigned int get_level() {
-    return level_;
-  }
-  void set_level(unsigned int l) {
-    level_=l;
-  }
-
   std::ostream &get_stream(unsigned int l) {
-    if (is_output(l)) {
-      if (target_== 0) {
-        return std::cout;
-      } else if (target_== 1) {
-        return std::cerr;
-      } else {
-        return fstream_;
-      }
-    } else return std::cout;
-  }
-
-  bool is_output(unsigned int l) {
-    return l <= get_level();
+    if (target_== 0) {
+      return std::cout;
+    } else if (target_== 1) {
+      return std::cerr;
+    } else {
+      return fstream_;
+    }
   }
 
   unsigned int get_target() {
@@ -62,12 +50,9 @@ public:
 
 private:
 
-  Log(unsigned int level, unsigned int target)  :level_(level),
-                                                 target_(target) {}
-  unsigned int level_;
+  Log(unsigned int target)  : target_(target) {}
   unsigned int target_;
   std::ofstream fstream_;
-  static Log *logpt_;
 };
 
 

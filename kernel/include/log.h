@@ -55,10 +55,19 @@ enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, TERSE=2, VERBOSE=3,
  */
 enum LogTarget {COUT, FILE, CERR};
 
+
+#if !defined SWIG && !defined(IMP_DOXYGEN)
+namespace internal {
+  IMPEXPORT extern LogLevel log_level;
+}
+#endif
+
 //! Set the current log level for IMP
 /** \ingroup log
  */
-IMPEXPORT void set_log_level(LogLevel l);
+inline void set_log_level(LogLevel l) {
+  internal::log_level=l;
+}
 
 //! Set the target of logs
 /** \ingroup log
@@ -71,9 +80,9 @@ IMPEXPORT inline void set_log_target(LogTarget l)
 //! Get the current log level for IMP
 /** \ingroup log
  */
-IMPEXPORT inline LogLevel get_log_level()
+inline LogLevel get_log_level()
 {
-  return LogLevel(internal::Log::get().get_level());
+  return internal::log_level;
 }
 
 //! Get the target of logs
@@ -98,7 +107,7 @@ IMPEXPORT inline void set_log_file(std::string l)
  */
 IMPEXPORT inline bool is_log_output(LogLevel l)
 {
-  return internal::Log::get().is_output(l);
+  return l <= get_log_level();
 }
 
 

@@ -26,7 +26,7 @@ internal_files = SConscript('internal/SConscript')
 # Source files
 files = ['base_types.cpp', 'Model.cpp', 'FailureHandler.cpp',
          'Particle.cpp', 'ScoreState.cpp', 'Object.cpp',
-         'OptimizerState.cpp', 'Log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
+         'OptimizerState.cpp', 'log.cpp', 'Restraint.cpp', 'Optimizer.cpp',
          'random.cpp', 'Key.cpp', 'exception.cpp', 'Refiner.cpp',
          'UnaryFunction.cpp', 'PairScore.cpp',
          'SingletonScore.cpp', 'TripletScore.cpp',

@@ -31,7 +31,7 @@ public:
     target_(get_log_target()), obj_(NULL) {
     if (l != DEFAULT) {
       level_= get_log_level();
-      internal::Log::get().set_level(l);
+      set_log_level(l);
       set_log_target(t);
     } else {
       level_=DEFAULT;
@@ -52,7 +52,7 @@ public:
       if (obj_) {
         obj_->set_log_level(level_);
       } else {
-        internal::Log::get().set_level(level_);
+        set_log_level(level_);
         set_log_target(target_);
       }
     }
