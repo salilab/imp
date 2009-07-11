@@ -67,6 +67,10 @@ Geometries PairsGeometry::get_geometry() const {
   }
   DerivativeAccumulator da;
   Geometries ret;
+  ret.push_back(new NullGeometry());
+  ret.back()->set_name(get_name()+" derivative");
+  ret.push_back(new NullGeometry());
+  ret.back()->set_name(get_name());
   for (PairContainer::ParticlePairIterator pit = c_->particle_pairs_begin();
        pit != c_->particle_pairs_end(); ++pit) {
     if (!f_ || f_->evaluate((*pit)[0], (*pit)[1], &da) > threshold_) {
