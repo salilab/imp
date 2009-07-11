@@ -67,8 +67,8 @@ static void copy_particles_to_boxes(const SingletonContainer *ps,
 }
 
 struct AddToList {
-  FilteredListPairContainer *out_;
-  AddToList(FilteredListPairContainer *out): out_(out){}
+  ListPairContainer *out_;
+  AddToList(ListPairContainer *out): out_(out){}
   void operator()(const NBLBbox &a, const NBLBbox &b) {
     if (squared_distance(XYZ(a).get_coordinates(),
                          XYZ(b).get_coordinates())
@@ -88,12 +88,12 @@ BoxSweepClosePairsFinder::~BoxSweepClosePairsFinder(){}
 void BoxSweepClosePairsFinder
 ::add_close_pairs(SingletonContainer *ca,
                   SingletonContainer *cb,
-                  FilteredListPairContainer *out) const {
+                  ListPairContainer *out) const {
   std::vector<NBLBbox> boxes0, boxes1;
   copy_particles_to_boxes(ca, get_radius_key(), get_distance(), boxes0);
   copy_particles_to_boxes(cb, get_radius_key(), get_distance(), boxes1);
 
-  EditGuard<FilteredListPairContainer> guard(out);
+  EditGuard<ListPairContainer> guard(out);
 
   CGAL::box_intersection_d( boxes0.begin(), boxes0.end(),
                             boxes1.begin(), boxes1.end(), AddToList(out));
@@ -101,11 +101,11 @@ void BoxSweepClosePairsFinder
 
 void BoxSweepClosePairsFinder
 ::add_close_pairs(SingletonContainer *c,
-                  FilteredListPairContainer *out) const {
+                  ListPairContainer *out) const {
   std::vector<NBLBbox> boxes;
   copy_particles_to_boxes(c, get_radius_key(), get_distance(), boxes);
 
-  EditGuard<FilteredListPairContainer> guard(out);
+  EditGuard<ListPairContainer> guard(out);
 
   CGAL::box_self_intersection_d( boxes.begin(), boxes.end(), AddToList(out));
 
