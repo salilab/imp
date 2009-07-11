@@ -21,6 +21,7 @@ void LogOptimizerState::show(std::ostream &out) const {
 
 
 void LogOptimizerState::write(std::string name) const {
+  IMP_LOG(TERSE, "Writing log file " << name << std::endl);
   writer_->set_file_name(name);
   IMP_LOG(VERBOSE, "Writing extractors"<< std::endl);
   for (unsigned int i=0; i< edata_.size(); ++i) {
@@ -35,6 +36,7 @@ void LogOptimizerState::write(std::string name) const {
 }
 
 void LogOptimizerState::update() {
+  IMP_OBJECT_LOG;
   ++step_;
   if (step_%(skip_steps_+1)==0) {
     unsigned int n= step_;
