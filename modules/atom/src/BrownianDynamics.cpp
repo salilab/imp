@@ -148,8 +148,6 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     Particle *p= sc->get_particle(i);
     Diffusion d(p);
 
-    IMP_assert(d.get_coordinates().get_squared_magnitude() >10,
-               "Where did it come from?");
     IMP_IF_CHECK(CHEAP) {
       for (unsigned int j=0; j< 3; ++j) {
         // GDB 6.6 prints infinity as 0 on 64 bit machines. Grumble.
@@ -228,8 +226,6 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
     for (unsigned int j=0; j< 3; ++j) {
       d.set_coordinate(j, d.get_coordinate(j) + unit::strip_units(delta[j]));
     }
-    IMP_assert(d.get_coordinates().get_squared_magnitude() >10,
-               "Where did it come from?");
   }
 }
 
