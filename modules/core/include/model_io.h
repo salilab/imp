@@ -37,6 +37,8 @@ IMPCORE_BEGIN_NAMESPACE
 //! Write as Model to a file
 /** \note This method is here for python users since we don't have stream
     support in python.
+
+    \throw ValueException if the file cannot be opened.
     \ingroup helpers
     \ingroup yaml
 */
@@ -57,6 +59,8 @@ IMP_NO_DOXYGEN(IMP_NO_SWIG(IMPCOREEXPORT void write(Model *m,
     out to a file. Some time later, when you want to reload the model,
     you can reuse the initialization code to set up the restraints,
     and then read in the values for the attributes.
+
+    \throw ValueException if the file cannot be opened.
 
     \note The base indent is determined from the first line.
 

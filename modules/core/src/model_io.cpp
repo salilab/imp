@@ -278,7 +278,10 @@ void write(Model *m,
 
 void write(Model *m, std::string out) {
   std::ofstream outf(out.c_str());
-  IMP_check(outf, "Invalid file name " << out, ValueException);
+  if (!outf) {
+    IMP_failure("Could not open file " << out << " for writing",
+                ValueException);
+  }
   write(m, outf, "");
 }
 
@@ -305,7 +308,10 @@ void read(std::istream &in,
 void read(std::string in,
           Model *m) {
   std::ifstream iss(in.c_str());
-  IMP_check(iss, "Invalid file name " << in, ValueException);
+  if (!iss) {
+    IMP_failure("Could not open file " << in << " for reading",
+                ValueException);
+  }
   read(iss, m);
 }
 
