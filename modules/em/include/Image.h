@@ -33,7 +33,7 @@ typedef Image<T> This;
   //! Empty constructor
   Image() {
     name_ = "";
-    if (typeid(T) == typeid(Float)) {
+    if (typeid(T) == typeid(double)) {
       header_.set_image_type(ImageHeader::IMG_IMPEM);
     }
   }
@@ -42,7 +42,7 @@ typedef Image<T> This;
   Image(Int Ydim, Int Xdim) {
     data_.resize(Ydim, Xdim);
     header_.set_header();
-    if (typeid(T) == typeid(Float)) {
+    if (typeid(T) == typeid(double)) {
       header_.set_image_type(ImageHeader::IMG_IMPEM);
     }
   }
@@ -50,6 +50,15 @@ typedef Image<T> This;
   //! Access to the matrix of data
   algebra::Matrix2D<T>& get_data() {
     return data_;
+  }
+
+  //! Set the matrix of data
+  void set_data(algebra::Matrix2D<T> &v) {
+  data_.resize(v);
+    for(unsigned long i=0;i<v.num_elements();i++) {
+      data_.data()[i] = v.data()[i];
+    }
+    this->adjust_header();
   }
 
   //! Access to the header
@@ -63,7 +72,7 @@ typedef Image<T> This;
     if (typeid(T) == typeid(std::complex< double >)) {
       header_.set_image_type(ImageHeader::IMG_FOURIER);
     } else if (typeid(T) == typeid(double) ||
-               typeid(T) == typeid(Float)) {
+               typeid(T) == typeid(double)) {
       header_.set_image_type(ImageHeader::IMG_IMPEM);
     }
     header_.set_number_of_slices(1.0);
@@ -87,47 +96,6 @@ typedef Image<T> This;
   void write(String filename, ImageReaderWriter<T>& writer) {
     adjust_header(); // First adjust the header to guarantee consistence
     writer.write(filename,header_,data_);
-  }
-
-
-  //! Rotates the image a given angle in radians. The center is the center of
-  //! rotation.
-  /**
-    \param[in] ang angle
-    \param[in] wrap if true, the Matrix2D is wrapped.
-  **/
-  void rotate(double ang,bool wrap=false) {
-    IMP::algebra::auto_rotate_matrix_2D(this->get_data(),ang,wrap);
-  }
-
-  //! The image is used as reference to translationally align the
-  //! parameter image with it.
-  /**
-    \param[in] img Image to align with the reference
-    \todo Under implementation
-  **/
-  void align2d_trans(This& img) {
-    IMP_not_implemented;
-  }
-
-  //! The image is used as reference to rotationally align the
-  //! parameter image with it.
-  /**
-    \param[in] img Image to align with the reference
-    \todo Under implementation
-  **/
-  void align2d_rot(This& img) {
-    IMP_not_implemented;
-  }
-
-  //! The image is used as reference to rotationally and translationally align
-  //! the parameter image with it.
-  /**
-    \param[in] img Image to align with the reference
-    \todo Under implementation
-  **/
-  void align2d_complete(This& img) {
-    IMP_not_implemented;
   }
 
 protected:
