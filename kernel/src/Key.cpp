@@ -43,9 +43,6 @@ namespace {
 
 IMPEXPORT KeyData& get_key_data(unsigned int index) {
   static KeyTable key_data;
-  if (key_data.find(index) == key_data.end()) {
-    IMP_LOG(TERSE, "Initializing key table with index " << index << std::endl);
-  }
   return key_data[index];
 }
 
