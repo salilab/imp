@@ -261,7 +261,8 @@ public:
   long get_number_of_voxels() const;
 
   //! Increase the dimension of the map
-  //! The function pads zeros to the  left-bottom section on the map.
+  //! The function pads zeros to the  right-upper section on the map.
+  //! The original content of the map will be in the lower XYZ part of the map
   /** \param[in] x_vox the number of voxels on the X axis
       \param[in] y_vox the number of voxels on the Y axis
       \param[in] z_vox the number of voxels on the Z axis
