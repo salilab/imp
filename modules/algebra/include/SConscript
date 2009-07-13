@@ -14,6 +14,7 @@ files = [
          'Sphere3D.h',
          'Sphere3DPatch.h',
          'SphericalVector3D.h',
+         'Transformation2D.h',
          'Transformation3D.h',
          'Vector3D.h',
          'VectorD.h',

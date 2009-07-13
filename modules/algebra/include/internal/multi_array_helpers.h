@@ -62,100 +62,76 @@ bool roll_inds(T1& inds, T2* dims, T3* start)
   return false;
 }
 
-
-
-
-//! This function operates with two arrays of the same shape on a element
-//! per element basis.
-/**
-  Supported operations: sum, rest, multiplication and division
- */
+//! Operates with two arrays of the same shape on a element per element basis.
 template <typename T, int D>
 void operate_arrays(const MultiArray<T, D>& a1, const MultiArray<T, D>& a2,
                     MultiArray<T, D>& result, const char operation)
 {
-  if (a1.same_shape(a2) && a1.same_shape(result)) {
-    typedef boost::multi_array_types::index index;
-    std::vector<index> idx(D);
-    while (roll_inds(idx, a1.shape(), a1.index_bases())) {
-      switch (operation) {
-      case '+':
-        result(idx) = a1(idx) + a2(idx);
-        break;
-      case '-':
-        result(idx) = a1(idx) - a2(idx);
-        break;
-      case '*':
-        result(idx) = a1(idx) * a2(idx);
-        break;
-      case '/':
-        result(idx) = a1(idx) / a2(idx);
-        break;
-      }
-    }
-  } else {
+  if (!(a1.same_shape(a2) && a1.same_shape(result))) {
     String op(&operation);
-    String msg = "operate_arrays:: Operator " + op +
-                 " not supported with arrays of different shape "
-                  "(size and origin).";
+    String msg = "operate_arrays:: Operator "+op+" not supported with arrays "
+       "of different shape size and origin).";
     throw ErrorException(msg.c_str());
+  }
+  for (unsigned long i=0;i<a1.num_elements();i++) {
+    switch (operation) {
+    case '+':
+      result.data()[i] = a1.data()[i] + a2.data()[i];
+      break;
+    case '-':
+      result.data()[i] = a1.data()[i] - a2.data()[i];
+      break;
+    case '*':
+      result.data()[i] = a1.data()[i] * a2.data()[i];
+      break;
+    case '/':
+      result.data()[i] = a1.data()[i] / a2.data()[i];
+      break;
+    }
   }
 }
 
-//! This function operates with one scalar and an array on a element
-//! per element basis.
-/**
-  Supported operations: sum, rest, multiplication and division
- // */
+//! Operates with one array and a scalar on a element per element basis.
+template <typename T, int D>
+void operate_array_and_scalar(const MultiArray<T, D>& a1, const T& X,
+         MultiArray<T, D>& result, const char operation) {
+  for (unsigned long i=0;i<a1.num_elements();i++) {
+    switch (operation) {
+    case '+':
+      result.data()[i] = a1.data()[i] + X;
+      break;
+    case '-':
+      result.data()[i] = a1.data()[i] - X;
+      break;
+    case '*':
+      result.data()[i] = a1.data()[i] * X;
+      break;
+    case '/':
+      result.data()[i] = a1.data()[i] / X;
+      break;
+    }
+  }
+}
+
+//! Operates with one scalar and an array on a element per element basis.
 template <typename T, int D>
 void operate_scalar_and_array(const T& X, const MultiArray<T, D>& a1,
                               MultiArray<T, D>& result, const char operation)
 {
-  typedef boost::multi_array_types::index index;
-  std::vector<index> idx(D);
-  while (roll_inds(idx, a1.shape(), a1.index_bases())) {
+
+  for (unsigned long i=0;i<a1.num_elements();i++) {
     switch (operation) {
     case '+':
-      result(idx) = X + a1(idx);
+      result.data()[i] = X + a1.data()[i];
       break;
     case '-':
-      result(idx) = X - a1(idx);
+      result.data()[i] = X - a1.data()[i];
       break;
     case '*':
-      result(idx) = X * a1(idx);
+      result.data()[i] = X * a1.data()[i];
       break;
     case '/':
-      result(idx) = X / a1(idx);
-      break;
-    }
-  }
-}
-
-
-//! This function operates with one array and a scalar on a element
-//! per element basis.
-/**
-  Supported operations: sum, rest, multiplication and division
- // */
-template <typename T, int D>
-void operate_array_and_scalar(const MultiArray<T, D>& a1, const T& X,
-                              MultiArray<T, D>& result, const char operation)
-{
-  typedef boost::multi_array_types::index index;
-  std::vector<index> idx(D);
-  while (roll_inds(idx, a1.shape(), a1.index_bases())) {
-    switch (operation) {
-    case '+':
-      result(idx) = a1(idx) + X;
-      break;
-    case '-':
-      result(idx) = a1(idx) - X;
-      break;
-    case '*':
-      result(idx) = a1(idx) * X;
-      break;
-    case '/':
-      result(idx) = a1(idx) / X;
+      result.data()[i] = X / a1.data()[i];
       break;
     }
   }

@@ -29,8 +29,7 @@ public:
     typedef Matrix3D<T> This;
 
   //! Empty constructor
-  Matrix3D() : MA3() {
-  }
+  Matrix3D() : MA3() {}
 
   //! Constructor
   Matrix3D(int Zdim, int Ydim, int Xdim) : MA3() {
@@ -40,7 +39,7 @@ public:
   // Copy constructor
   Matrix3D(const This& v) : MA3() {
     this->reshape(v);
-    this->copy(v);
+    MA3::copy((MA3 &)v);
   }
 
   //! Resizes the matrix
@@ -59,10 +58,9 @@ public:
    * \param[in] v Matrix3D whose size to copy
    */
   template<typename T1>
-  void resize(const Matrix3D<T1>& v) {
+  void resize(const Matrix3D<T1> &v) {
     this->resize(v.shape()[0], v.shape()[1], v.shape()[2]);
   }
-
 
   //! Reshapes the matrix copying the size and range of a given one
   /**
@@ -79,18 +77,6 @@ public:
     resize(shape[0], shape[1], shape[2]);
     this->reindex(start);
  }
-
-  //! Copies the contents of a matrix to this one (does not resize this one).
-  //! For guarantee a copy with resizing use operator=
-  /**
-   * \param[in] v Matrix3D whose contents to copy
-   */
-  void copy(const This& v) {
-    std::vector<index> idx(3);
-    while (internal::roll_inds(idx, v.shape(),v.index_bases())) {
-      (*this)(idx) = v(idx);
-    }
-  }
 
   //! Access operator. The returned element is the LOGICAL element of the
   //! matrix, NOT the direct one
@@ -135,10 +121,9 @@ public:
     return (int)this->get_size(2);
   }
 
-
   void operator=(const This& v) {
     this->reshape(v);
-    this->copy(v);
+    MA3::copy((MA3 &)v);
   }
 
   //! Sum operator
@@ -257,7 +242,7 @@ public:
   friend This operator+(const T& X, const This& a1) {
     This result;
     result.resize(a1);
-    internal::operate_scalar_and_array(X, a1, result, '+');
+    internal::operate_scalar_and_array(X,a1,result,"+");
     return result;
   }
 
@@ -265,7 +250,7 @@ public:
   friend This operator-(const T& X, const This& a1) {
     This result;
     result.resize(a1);
-    internal::operate_scalar_and_array(X, a1, result, '-');
+    internal::operate_scalar_and_array(X,a1,result,"-");
     return result;
   }
 
@@ -273,7 +258,7 @@ public:
   friend This operator*(const T& X, const This& a1) {
     This result;
     result.resize(a1);
-    internal::operate_scalar_and_array(X, a1, result, '*');
+    internal::operate_scalar_and_array(X,a1,result,"*");
     return result;
   }
 
@@ -281,7 +266,7 @@ public:
   friend This operator/(const T& X, const This& a1) {
     This result;
     result.resize(a1);
-    internal::operate_scalar_and_array(X, a1, result, '/');
+    internal::operate_scalar_and_array(X,a1,result,"/");
     return result;
   }
 
