@@ -41,9 +41,9 @@ void Score::resample(const Profile& model_profile,
       } else {
         Float alpha = (q - model_profile.get_q(i-1)) / delta_q;
         if(alpha > 1.0) alpha = 1.0; // handle rounding errors
-        Float intensity = algebra::simple_iterpolate(alpha,
-                                   model_profile.get_intensity(i-1),
-                                   model_profile.get_intensity(i));
+        Float intensity = model_profile.get_intensity(i-1)
+          + (alpha)*(model_profile.get_intensity(i)
+                     - model_profile.get_intensity(i-1));
         resampled_profile.add_entry(q, intensity);
       }
     }
