@@ -29,6 +29,8 @@ class IMPDISPLAYEXPORT BondGeometry: public Geometry
 public:
   BondGeometry(atom::Bond d, Float radius=0);
 
+  Color get_color() const;
+
   IMP_GEOMETRY(BondGeometry, internal::version_info)
 };
 
