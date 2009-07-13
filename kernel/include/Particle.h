@@ -369,7 +369,7 @@ IMP_OUTPUT_OPERATOR(Particle)
 
 inline bool Particle::has_attribute(FloatKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   return floats_.contains(name);
 }
@@ -378,7 +378,8 @@ inline bool Particle::has_attribute(FloatKey name) const
 
 inline Float Particle::get_value(FloatKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles "
+            << get_name(),
             InactiveParticleException);
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
@@ -387,7 +388,7 @@ inline Float Particle::get_value(FloatKey name) const
 
 inline Float Particle::get_derivative(FloatKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
@@ -396,7 +397,7 @@ inline Float Particle::get_derivative(FloatKey name) const
 
 inline void Particle::set_value(FloatKey name, Float value)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
@@ -405,7 +406,7 @@ inline void Particle::set_value(FloatKey name, Float value)
 
 inline bool Particle::get_is_optimized(FloatKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   IMP_check(floats_.contains(name), "get_is_optimized called "
             << "with invalid attribute" << name,
@@ -415,7 +416,7 @@ inline bool Particle::get_is_optimized(FloatKey name) const
 
 inline void Particle::set_is_optimized(FloatKey name, bool tf)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   IMP_check(floats_.contains(name), "set_is_optimized called "
             << "with invalid attribute" << name,
@@ -430,7 +431,7 @@ inline void Particle::set_is_optimized(FloatKey name, bool tf)
 inline void Particle::add_to_derivative(FloatKey name, Float value,
                                         const DerivativeAccumulator &da)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   IMP_assert(!is_nan(value), "Can't add NaN to derivative in particle "
              << *this);
@@ -441,7 +442,7 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
 
 inline bool Particle::has_attribute(IntKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   return ints_.contains(name);
 }
@@ -450,7 +451,7 @@ inline bool Particle::has_attribute(IntKey name) const
 
 inline Int Particle::get_value(IntKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   IMP_assert(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
@@ -460,14 +461,14 @@ inline Int Particle::get_value(IntKey name) const
 
 inline void Particle::set_value(IntKey name, Int value)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   ints_.set_value(name, value);
 }
 
 inline bool Particle::has_attribute(StringKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   return strings_.contains(name);
 }
@@ -476,14 +477,14 @@ inline bool Particle::has_attribute(StringKey name) const
 
 inline String Particle::get_value(StringKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   return strings_.get_value(name);
 }
 
 inline void Particle::set_value(StringKey name, String value)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   strings_.set_value(name, value);
 }
@@ -491,7 +492,7 @@ inline void Particle::set_value(StringKey name, String value)
 
 inline bool Particle::has_attribute(ParticleKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   return particles_.contains(name);
 }
@@ -500,7 +501,7 @@ inline bool Particle::has_attribute(ParticleKey name) const
 
 inline Particle* Particle::get_value(ParticleKey name) const
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   return particles_.get_value(name);
 }
@@ -508,7 +509,7 @@ inline Particle* Particle::get_value(ParticleKey name) const
 
 inline void Particle::set_value(ParticleKey name, Particle* value)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   particles_.set_value(name, Pointer<Particle>(value));
 }
@@ -517,7 +518,7 @@ inline void Particle::set_value(ParticleKey name, Particle* value)
 void inline Particle::add_attribute(FloatKey name, const Float value,
                                     bool is_optimized)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   floats_.insert(name, value);
   derivatives_.insert(name, 0);
@@ -528,7 +529,7 @@ void inline Particle::add_attribute(FloatKey name, const Float value,
 
 void inline Particle::remove_attribute(FloatKey name)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   floats_.remove(name);
   derivatives_.remove(name);
@@ -538,14 +539,14 @@ void inline Particle::remove_attribute(FloatKey name)
 
 void inline Particle::add_attribute(IntKey name, const Int value)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   ints_.insert(name, value);
 }
 
 void inline Particle::remove_attribute(IntKey name)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   ints_.remove(name);
 }
@@ -553,21 +554,21 @@ void inline Particle::remove_attribute(IntKey name)
 
 void inline Particle::add_attribute(StringKey name, const String value)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   strings_.insert(name, value);
 }
 
 void inline Particle::remove_attribute(StringKey name)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   strings_.remove(name);
 }
 
 void inline Particle::add_attribute(ParticleKey name, Particle* value)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   particles_.insert(name,value);
 }
@@ -575,7 +576,7 @@ void inline Particle::add_attribute(ParticleKey name, Particle* value)
 
 void inline Particle::remove_attribute(ParticleKey name)
 {
-  IMP_check(get_is_active(), "Do not touch inactive particles",
+  IMP_check(get_is_active(), "Do not touch inactive particles " << get_name(),
             InactiveParticleException);
   particles_.remove(name);
 }
