@@ -8,6 +8,7 @@
 
 #include "IMP/display/bond_geometry.h"
 #include <IMP/core/XYZ.h>
+#include <IMP/display/Colored.h>
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -37,6 +38,12 @@ Float BondGeometry::get_size() const {
 unsigned int BondGeometry::get_number_of_vertices() const{
   return 2;
 }
+
+Color BondGeometry::get_color() const {
+  if (Colored::is_instance_of(d_)) return Colored(d_).get_color();
+  else return Geometry::get_color();
+}
+
 
 
 

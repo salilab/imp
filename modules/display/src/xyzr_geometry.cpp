@@ -7,7 +7,7 @@
  */
 
 #include "IMP/display/xyzr_geometry.h"
-
+#include <IMP/display/Colored.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -31,6 +31,11 @@ algebra::Vector3D XYZRGeometry::get_vertex(unsigned int i) const {
 
 Float XYZRGeometry::get_size() const {
   return d_.get_radius();
+}
+
+Color XYZRGeometry::get_color() const {
+  if (Colored::is_instance_of(d_)) return Colored(d_).get_color();
+  else return Geometry::get_color();
 }
 
 XYZRsGeometry::XYZRsGeometry(SingletonContainer *sc,

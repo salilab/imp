@@ -29,6 +29,8 @@ class IMPDISPLAYEXPORT XYZRGeometry: public Geometry
 public:
   XYZRGeometry(core::XYZR d);
 
+  Color get_color() const;
+
   IMP_GEOMETRY(XYZRGeometry, internal::version_info)
 };
 

@@ -43,6 +43,7 @@ IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
 %include "IMP/display/VRMLWriter.h"
 %include "IMP/display/BildWriter.h"
 %include "IMP/display/CMMWriter.h"
+%include "IMP/display/Colored.h"
 %include "IMP/display/CGOWriter.h"
 %include "IMP/display/ChimeraWriter.h"
 %include "IMP/display/LogOptimizerState.h"
