@@ -34,8 +34,8 @@ class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
   unsigned int skip_steps_;
   std::string name_template_;
 
-  std::vector<Pointer<CompoundGeometry> > edata_;
-  std::vector<Pointer<Geometry> > gdata_;
+  CompoundGeometries edata_;
+  Geometries gdata_;
 
 public:
   //! Write files using name_template as a template (must have a %d in it)
