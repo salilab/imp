@@ -17,6 +17,7 @@
 #include "IMP/algebra/utility.h"
 #include "IMP/algebra/endian.h"
 #include "IMP/algebra/internal/multi_array_helpers.h"
+#include "IMP/algebra/VectorD.h"
 #include <ctime>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -40,8 +41,10 @@ class MultiArray
 public:
   typedef boost::multi_array_types::index index;
   typedef boost::multi_array_types::size_type size_type;
+  typedef boost::multi_array_types::extent_gen extent_gen;
   typedef boost::multi_array<T, D> BMA;
   typedef MultiArray<T, D> This;
+
 public:
   //! Empty constructor
   MultiArray() : BMA() {}
@@ -115,9 +118,26 @@ public:
 
   //! All the values of the array are set to zero
   void init_zeros() {
-    std::vector<int> idx(D);
-    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-      (*this)(idx) = 0;
+    for (unsigned long i=0;i<this->num_elements() ;i++) {
+      this->data()[i] = 0;
+    }
+  }
+
+  //! Fill all the voxels of the array with a given value
+  void fill_with_value(T val=0) {
+    for (unsigned long i=0;i<this->num_elements() ;i++) {
+      this->data()[i] = val;
+    }
+  }
+
+  //! Copies the contents of a MultiArray to this one (no resizing is done).
+  //! For copying with resizing use operator=
+  /**
+   * \param[in] v MultiArray whose contents to copy
+   */
+  void copy(This &v) {
+    for (unsigned long i=0;i<this->num_elements() ;i++) {
+      this->data()[i] = v.data()[i];
     }
   }
 
@@ -315,11 +335,29 @@ public:
 
   //! Maximum of the values in the array
   T compute_max() const {
+    T maxval = first_element();
+    for(unsigned long i = 0; i < this->num_elements();i++) {
+      if(this->data()[i] > maxval) {
+        maxval = this->data()[i];
+      }
+    }
+    return maxval;
+  }
+
+  //! Maximum of the values in the array
+  /**
+    \param[out] max_idx index containing the maximum value
+  **/
+  template<typename T1>
+  T compute_max(T1& max_idx) const {
     std::vector<index> idx(D);
     T maxval = first_element();
     while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       if ((*this)(idx) > maxval) {
         maxval = (*this)(idx);
+        for(int i=0;i<D;i++) {
+          max_idx[i]=idx[i];
+        }
       }
     }
     return maxval;
@@ -327,11 +365,29 @@ public:
 
   //! Minimum of the values in the array
   T compute_min() const {
+    T minval = first_element();
+    for(unsigned long i = 0; i < this->num_elements();i++) {
+      if(this->data()[i] > minval) {
+        minval = this->data()[i];
+      }
+    }
+    return minval;
+  }
+
+  //! Minimum of the values in the array
+  /**
+    \param[out] min_idx index containing the minimum value
+  **/
+  template<typename T1>
+  T compute_min(T1& min_idx) const {
     std::vector<index> idx(D);
     T minval = first_element();
     while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       if ((*this)(idx) < minval) {
         minval = (*this)(idx);
+        for(int i=0;i<D;i++) {
+          min_idx[i]=idx[i];
+        }
       }
     }
     return minval;
@@ -342,34 +398,27 @@ public:
   /**
    * The returned value is always double, independently of the type of the
    * array.
-   //  */
+   **/
   double compute_avg() const {
-    if (this->num_elements() <= 0) { return 0; }
+    if (this->num_elements() == 0) { return 0; }
     double avg = 0;
-    std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(), this->index_bases())) {
-      avg += static_cast<double>((*this)(idx));
+    for (unsigned long i=0;i<this->num_elements() ;i++) {
+      avg += static_cast<double>(this->data()[i]);
     }
     return avg / (this->num_elements());
   }
 
-  /** Standard deviation of the values in the array.
-   * The returned value is always double, independently of the type of the
-   * array.
-   // */
+  //! Standard deviation of the values in the array.
   double compute_stddev() const {
     size_type n_elem = this->num_elements();
     if (n_elem <= 1) {
       return 0;
     }
-    T val;
-    double avg = 0, stddev = 0;
-    std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
-      val = (*this)(idx);
-      avg += static_cast<double>(val);
-      stddev += static_cast<double>(val) * static_cast<double>(val);
+    double avg = 0, stddev = 0,val;
+    for (unsigned long i=0;i<this->num_elements() ;i++) {
+      val = static_cast<double>(this->data()[i]);
+      avg += val;
+      stddev += val*val;
     }
     avg /= n_elem;
     stddev = stddev / n_elem - avg * avg;
@@ -379,26 +428,21 @@ public:
     return stddev;
   }
 
-  //! Compute statistics.
-  /**
-   * The average, standard deviation, minimum and maximum value are
-   * returned.
-   */
+  //! Compute average, standard deviation, minimum and maximum values
   void compute_stats(double& avg, double& stddev, T& minval, T& maxval) const {
     if (is_void()) {
       avg = stddev = minval = maxval = 0;
-    }
-    else {
+    } else {
       T val = first_element();
       avg = stddev = 0;
       maxval = minval = val;
       std::vector<index> idx(D);
-      while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-        val = (*this)(idx);
-        if (val > maxval) { maxval = val; }
-        if (val < minval) { minval = val; }
-        avg += static_cast<double>(val);
-        stddev += static_cast<double>(val) * static_cast<double>(val);
+      for (unsigned long i=0;i<this->num_elements() ;i++) {
+        if (this->data()[i] > maxval) { maxval = val; }
+        if (this->data()[i] < minval) { minval = val; }
+        val = static_cast<double>(this->data()[i]);
+        avg += val;
+        stddev += val*val;
       }
       // Average
       size_type n_elem = this->num_elements();
@@ -418,9 +462,8 @@ public:
   //! Computes the sum of all the array elements.
   T sum_elements() const {
     T sum = 0;
-    std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-      sum += (*this)(idx);
+    for (unsigned long i=0;i<this->num_elements();i++) {
+      sum += this->data()[i];
     }
     return sum;
   }
@@ -429,9 +472,8 @@ public:
   //! (Frobenius norm)
   T sum_squared_elements() const {
     T sum = 0;
-    std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-      sum += (*this)(idx) * (*this)(idx);
+    for (unsigned long i=0;i<this->num_elements();i++) {
+      sum += this->data()[i]*this->data()[i];
     }
     return sum;
   }
@@ -443,21 +485,17 @@ public:
     \note Both MultiArrays are required to have the same shape (size and origin)
   */
   T squared_difference(const This& v) const {
-    if (this->same_shape(v)) {
-      T sum = 0;
-      T aux;
-      typedef boost::multi_array_types::index index;
-      std::vector<index> idx(D);
-      while (internal::roll_inds(idx, this->shape(), this->index_bases())) {
-        aux = ((*this)(idx)-v(idx));
+    if(!this->same_shape(v)) {
+      String msg = "squared_difference:: operation not supported with arrays "
+                   "of different shape (size and origin).";
+      throw ErrorException(msg.c_str());
+    } else {
+      T sum = 0,aux;
+      for (unsigned long i=0;i<this->num_elements();i++) {
+        aux = this->data()[i] - v.data()[i];
         sum += aux*aux;
       }
       return sum;
-    } else {
-      String msg = "squared_difference:: operation "
-                   "not supported with arrays of different shape "
-                   "(size and origin).";
-      throw ErrorException(msg.c_str());
     }
   }
 
@@ -554,6 +592,84 @@ public:
   }
 
 
+  //! Pad the MultiArray. Padding is defined as doubling the size
+  //! in each dimension and fill the new values with the previous average value.
+  /**
+    \param[in] padded the MultiArray padded
+  **/
+  void pad(This& padded) {
+    double avg = this->compute_avg();
+    // Resize
+    std::vector<int> extents(D);
+    for(int i=0;i<D;i++) {
+      extents[i]=2*this->get_size(i);
+    }
+    padded.resize(extents);
+    // Copy values
+    padded.fill_with_value(avg);
+    std::vector<index> idx(D),idx_for_padded(D);
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
+      for(int i=0;i<D;i++) {
+        idx_for_padded[i]=idx[i]+(int)this->get_size(i)/2;
+      }
+      padded(idx_for_padded)=(*this)(idx);
+    }
+  }
+
+  //! Pad with a given value
+  void pad(This& padded,T val) {
+    // Resize
+    std::vector<int> extents(D);
+    for(int i=0;i<D;i++) {
+      extents[i]=2*this->get_size(i);
+    }
+    padded.resize(extents);
+    // Copy values
+    padded.fill_with_value(val);
+    std::vector<index> idx(D),idx_for_padded(D);
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
+      for(int i=0;i<D;i++) {
+        idx_for_padded[i]=idx[i]+(int)this->get_size(i)/2;
+      }
+      padded(idx_for_padded)=(*this)(idx);
+    }
+  }
+
+  //! Cast values
+  template<typename T1>
+  void cast_values(MultiArray<T1, D> &out) {
+    boost::array<int, D> shape;
+    std::copy(this->shape(), this->shape() + D, shape.begin());
+    out.resize(shape);
+    for(unsigned int i=0; i<this->num_elements(); i++) {
+      out.data()[i] = this->data()[i];
+    }
+  }
+
+  //! Float the MultiArray. Float is defined as substract the average,
+  //! doubling size in each dimension, and fill new elements with zeros.
+  /**
+    \param[in] floated the MultiArray floated
+  **/
+  void float_with_average(This& floated) {
+    double avg = this->compute_avg();
+    // Resize
+    std::vector<int> extents(D);
+    for(int i=0;i<D;i++) {
+      extents[i]=2*this->get_size(i);
+    }
+    floated.resize(extents);
+    // Copy values
+    floated.fill_with_value(0.0);
+    std::vector<index> idx(D),idx_for_floated(D);
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
+      for(int i=0;i<D;i++) {
+        idx_for_floated[i]=idx[i]+(int)this->get_size(i)/2;
+      }
+      floated(idx_for_floated)=(*this)(idx)-avg;
+    }
+  }
+
   //! Read from an ASCII file.
   /**
    * The array must be previously resized to the correct size.
@@ -589,13 +705,11 @@ public:
    * The array must be previously resized to the correct size.
    */
   void read_binary(std::ifstream& in,bool reversed=false) {
-    std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
-      if(!reversed) {
-        in.read(reinterpret_cast< char* >(&((*this)(idx))), sizeof(T));
+    for (unsigned long i=0;i<this->num_elements();i++) {
+      if (!reversed) {
+        in.read(reinterpret_cast< char* >(&(this->data()[i])), sizeof(T));
       } else {
-        reversed_read(reinterpret_cast< char* >(&((*this)(idx))),
+        reversed_read(reinterpret_cast< char* >(&(this->data()[i])),
                        sizeof(T),1,in,true);
       }
     }
@@ -606,8 +720,8 @@ public:
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out);
     if (!out) {
-      String msg = "MultiArray::write: File " + filename +
-                   " cannot be opened for output" ;
+      String msg = "MultiArray::write: "+
+                    filename+" cannot be opened for output" ;
       throw ErrorException(msg.c_str());
     }
     out << *this;
@@ -619,8 +733,8 @@ public:
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     if (!out) {
-      String msg = "MultiArray::write: File " + filename +
-                   " cannot be opened for output" ;
+      String msg = "MultiArray::write: " +
+                  filename +" cannot be opened for output" ;
       throw ErrorException(msg.c_str());
     }
     write_binary(out,reversed);
@@ -629,24 +743,19 @@ public:
 
   //! Write to a output stream in binary mode.
   void write_binary(std::ofstream& out,bool reversed=false) {
-    std::vector<index> idx(D);
-    while (internal::roll_inds(idx, this->shape(),
-                                        this->index_bases())) {
-      if(!reversed) {
-        out.write(reinterpret_cast< char* >(&((*this)(idx))), sizeof(T));
+    for (unsigned long i=0;i<this->num_elements();i++) {
+      if (!reversed) {
+        out.write(reinterpret_cast< char* >(&(this->data()[i])), sizeof(T));
       } else {
-        reversed_write(reinterpret_cast< char* >(&((*this)(idx))),
-                     sizeof(T),1,out,true);
+        reversed_write(reinterpret_cast< char* >(&(this->data()[i])),
+                       sizeof(T),1,out,true);
       }
     }
   }
 
-
-
   friend std::istream& operator>>(std::istream& in,This& v) {
-    std::vector<index> idx(D);
-    while (internal::roll_inds(idx, v.shape(), v.index_bases())) {
-      in >> v(idx);
+    for (unsigned long i=0;i<v.num_elements();i++) {
+      in >> v.data()[i];
     }
     return in;
   }
@@ -683,9 +792,7 @@ std::ostream& operator<<(std::ostream& ostrm,
       if (v.get_size(0) > 1) ostrm << "Slice No. " << k << std::endl;
       for (index j = (v).get_start(1);j <= (v).get_finish(1);j++) {
         for (index i = (v).get_start(2);i <= (v).get_finish(2);i++) {
-          idx[0] = k;
-          idx[1] = j;
-          idx[2] = i;
+          idx[0] = k; idx[1] = j; idx[2] = i;
           ostrm << internal::float_to_string((double)v(idx), 10, prec) << ' ';
         }
         ostrm << std::endl;
@@ -694,8 +801,7 @@ std::ostream& operator<<(std::ostream& ostrm,
   } else if (D == 2) {
     for (index j = (v).get_start(0);j <= (v).get_finish(0);j++) {
       for (index i = (v).get_start(1);i <= (v).get_finish(1);i++) {
-        idx[0] = j;
-        idx[1] = i;
+        idx[0] = j; idx[1] = i;
         ostrm << internal::float_to_string((double)v(idx), 10, prec) << ' ';
       }
       ostrm << std::endl;
@@ -715,7 +821,7 @@ template <class T, int D>
   MultiArray<T, D> operator+(const T& X,
                              const MultiArray<T, D>& a1) {
     MultiArray<T, D> result(a1->shape());
-    internal::operate_scalar_and_array(X, a1, result, '+');
+    internal::operate_scalar_and_array(X,a1,result,"+");
     return result;
   }
 
@@ -724,8 +830,7 @@ template <class T, int D>
   MultiArray<T, D> operator-(const T& X,
                              const MultiArray<T, D>& a1) {
     MultiArray<T, D> result(a1->shape());
-    internal::operate_scalar_and_array(X, a1, result, '-');
-    return result;
+    internal::operate_scalar_and_array(X,a1,result,"-");
   }
 
   //! Multiplication operator for a scalar and an array
@@ -733,7 +838,7 @@ template <class T, int D>
   MultiArray<T, D> operator*(const T& X,
                              const MultiArray<T, D>& a1) {
     MultiArray<T, D> result(a1->shape());
-    internal::operate_scalar_and_array(X, a1, result, '*');
+    internal::operate_scalar_and_array(X,a1,result,"*");
     return result;
   }
 
@@ -742,7 +847,7 @@ template <class T, int D>
   MultiArray<T, D> operator/(const T& X,
                              const MultiArray<T, D>& a1) {
     MultiArray<T, D> result(a1->shape());
-    internal::operate_scalar_and_array(X, a1, result, '/');
+    internal::operate_scalar_and_array(X,a1,result,"/");
     return result;
   }
 #endif

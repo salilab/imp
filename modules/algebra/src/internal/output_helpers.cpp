@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <cmath>
 #include <cerrno>
-
+#include <complex>
 
 #include <sstream>
 
@@ -70,5 +70,8 @@ std::string float_to_string(double F, Int width, Int pre)
 
   return retval;
 }
+
+
+
 
 IMPALGEBRA_END_INTERNAL_NAMESPACE

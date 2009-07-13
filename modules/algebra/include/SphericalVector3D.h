@@ -34,7 +34,7 @@ class IMPALGEBRAEXPORT SphericalVector3D: public UninitializedDefault
     set_cartesian_coordinates(v);
   }
 
-  //! Direct Constructor. A check a check for the validity of the coords is done
+  //! Direct Constructor. A check for the validity of the coords is done
   //! by default
   /**
     \param[in] apply_check set it to false if you do not want the check
@@ -72,6 +72,26 @@ class IMPALGEBRAEXPORT SphericalVector3D: public UninitializedDefault
   void set_cartesian_coordinates(Vector3D& v);
   double v_[3];
 };
+
+
+inline std::ostream &operator<<(std::ostream &out, const SphericalVector3D &v) {
+  out << "( " << v[0] << " , " << v[1] << " , " << v[2] << " )";
+  return out;
+}
+
+
+typedef std::vector<SphericalVector3D> SphericalVector3Ds;
+
+//! quasi-evenly distributes N points into a sphere. Saff, math. intel. (1997)
+/**
+  \param[in] N number of points
+  \param[out] vs A vector of SphericalVector3D classes
+  \param[in] r radius of the sphere
+**/
+IMPALGEBRAEXPORT void quasi_evenly_spherical_distribution(
+                              unsigned long N,
+                              SphericalVector3Ds &vs,double r=1.0);
+
 
 IMPALGEBRA_END_NAMESPACE
 

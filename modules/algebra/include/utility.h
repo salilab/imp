@@ -14,17 +14,6 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-//! Simple interpolation that is only valid for values of a ranging from 0 to 1.
-/**
- *
- * \return The returned value is the low (l) argument when a=0 and the high
- * (h) argument when a=1. Specifically, l+(h-l)*a
- */
-template <class T>
-T simple_iterpolate(T a, T l, T h) {
-  IMP_assert(a>=0 && a <=1, "Argument " << a << " must be between 0 and 1.");
-  return ((l) + ((h) - (l)) * (a));
-}
 //! xor operation between two values
 inline bool xorT(bool x, bool y)
 {
@@ -103,6 +92,21 @@ inline bool almost_equal(const double a, const double b, const double epsilon)
 inline bool almost_equal(const float a, const float b, const float epsilon)
 {
   return (std::abs(a-b) < epsilon);
+}
+
+
+//! Closest power of 2 that can contain a number x
+inline float closest_pow2(float x) {
+  float p=1;
+  while(p<x) {p*=2;}
+  return p;
+}
+
+//! Closest power of 2 that can contain a number x
+inline double closest_pow2(double x) {
+  double p=1;
+  while(p<x) {p*=2;}
+  return p;
 }
 
 IMPALGEBRA_END_NAMESPACE

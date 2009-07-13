@@ -47,8 +47,10 @@ namespace multi_array_types {
 /* Wrap our own classes */
 %include "VectorD.i"
 %include "BoundingBoxD.i"
-%include "IMP/algebra/Rotation2D.h"
 %include "Transformation3D.i"
+%include "Matrix2D.i"
+%include "Matrix3D.i"
+%include "SphericalCoords.i"
 %include "IMP/algebra/geometric_alignment.h"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
@@ -60,9 +62,7 @@ namespace multi_array_types {
 %include "IMP/algebra/vector_generators.h"
 %include "IMP/algebra/io.h"
 %include "IMP/algebra/endian.h"
-%include "Matrix2D.i"
-%include "Matrix3D.i"
-%include "SphericalCoords.i"
+%include "IMP/algebra/Rotation2D.h"
 
 namespace IMP {
  namespace algebra {
@@ -81,12 +81,6 @@ namespace IMP {
    %template(SpherePair) ::std::pair<IMP::algebra::Sphere3D,IMP::algebra::Sphere3D>;
    %template(Sphere3DPairs) ::std::vector< SpherePair >;
    // rotation operations
-   %template(rotate_matrix_2D) ::IMP::algebra::rotate_matrix_2D<float>;
-   %template(rotate_matrix_2Dd) ::IMP::algebra::rotate_matrix_2D<double>;
-   %template(auto_rotate_matrix_2D) 
-      ::IMP::algebra::auto_rotate_matrix_2D<float>;
-   %template(auto_rotate_matrix_2Dd)
-      ::IMP::algebra::auto_rotate_matrix_2D<double>;
    %template(Rotation3Ds) ::std::vector<Rotation3D>;
  }
 }
