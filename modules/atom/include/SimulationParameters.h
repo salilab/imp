@@ -121,6 +121,8 @@ public:
   void set_current_time(unit::Femtosecond t) {
     set_current_time_in_femtoseconds(unit::strip_units(t));
   }
+
+  unit::Femtojoule get_kT() const;
 #endif
 #endif
 };

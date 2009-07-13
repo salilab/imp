@@ -207,7 +207,8 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
       unit::Femtonewton nforce
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
-      unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*d.get_D()/kt());
+      unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*d.get_D()
+                                /si_.get_kT());
       delta[j]= delta[j]+force_term;
     }
 
@@ -284,12 +285,6 @@ double BrownianDynamics::simulate(float max_time_nu)
   double v= get_model()->evaluate(false);
   update_states();
   return v;
-}
-
-
-unit::Femtojoule BrownianDynamics::kt() const
-{
-  return IMP::unit::Femtojoule(IMP::internal::KB*si_.get_temperature());
 }
 
 /*
