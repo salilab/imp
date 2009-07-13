@@ -59,5 +59,9 @@ FloatKey SimulationParameters::get_maximum_time_step_key() {
   return k;
 }
 
+unit::Femtojoule SimulationParameters::get_kT() const {
+  return IMP::unit::Femtojoule(IMP::internal::KB*get_temperature());
+}
+
 
 IMPATOM_END_NAMESPACE

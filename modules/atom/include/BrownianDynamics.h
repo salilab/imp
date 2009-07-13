@@ -88,8 +88,6 @@ private:
 
   void take_step(SingletonContainer *sc, unit::Femtosecond dt);
 
-  unit::Femtojoule kt() const;
-
   SingletonContainer* setup_particles();
 
   /* unit::KilocaloriePerAngstromPerMol
