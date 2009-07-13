@@ -49,6 +49,7 @@ IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);
 %include "IMP/display/SphereGeometry.h"
 %include "IMP/display/CylinderGeometry.h"
 %include "IMP/display/BoxGeometry.h"
+%include "IMP/display/PolygonGeometry.h"
 %include "IMP/display/TriangleGeometry.h"
 %include "IMP/display/PDBOptimizerState.h"
 
