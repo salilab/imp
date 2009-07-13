@@ -1,5 +1,5 @@
 /**
- *  \file  SphericalCoords.cpp
+ *  \file  SphericalVector3D.cpp
  *  \author Javier Velazquez-Muriel
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
