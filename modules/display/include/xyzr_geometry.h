@@ -36,7 +36,8 @@ class IMPDISPLAYEXPORT XYZRsGeometry: public CompoundGeometry {
   Pointer<SingletonContainer> sc_;
   FloatKey rk_;
  public:
-  XYZRsGeometry(SingletonContainer *sc, FloatKey rk);
+  XYZRsGeometry(SingletonContainer *sc,
+                FloatKey rk=core::XYZR::get_default_radius_key());
   IMP_COMPOUND_GEOMETRY(XYZRsGeometry, internal::version_info)
 };
 
