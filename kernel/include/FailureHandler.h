@@ -17,7 +17,6 @@ IMP_BEGIN_NAMESPACE
 
 /** A class to handle actions to take on check failures.
     The function is called when an assertion or check fails.
-    \unstable{FailureHandler}
     \ingroup assert
  */
 class IMPEXPORT FailureHandler: public Object {
@@ -30,7 +29,7 @@ class IMPEXPORT FailureHandler: public Object {
 
 
 //! Add a custom function to be called on an error
-/** \relates_also FailureHandler
+/** \relatesalso FailureHandler
     \ingroup assert
 */
 IMPEXPORT void add_failure_handler(FailureHandler *f);
