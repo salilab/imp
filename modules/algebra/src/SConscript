@@ -17,6 +17,7 @@ files = [
          'geometric_alignment.cpp',
          'io.cpp',
          'vector_generators.cpp',
+          'interpolation.cpp',
         ] \
         + SConscript('internal/SConscript')
 
