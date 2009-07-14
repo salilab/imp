@@ -88,9 +88,9 @@ get_simplified_representation(atom::Hierarchy mhd);
 
 
 //! Clone the atom::Hierarchy
-/** This method copies the bonds, Atom data, Residue
-    data, atom::Domain data and Name data to the new copies
-    in addition to the atom::Hierarchy relationships.
+/** This method copies the atom::Bond, atom::Bonded, atom::Atom,
+    atom::Residue, and atom::Domain data and the particle name to the
+    new copies in addition to the atom::Hierarchy relationships.
 
     \untested{clone}
     \relatesalso atom::Hierarchy
