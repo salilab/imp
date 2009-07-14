@@ -19,6 +19,10 @@ namespace {
                               std::ostream &out) const {
       return out << t;
     }
+    template <class K>
+    bool should_write(Particle *, K) const {
+      return true;
+    }
   };
   struct ParticleWrite {
     ParticleWrite(){}
@@ -26,12 +30,20 @@ namespace {
                               std::ostream &out) const {
       return out << p;
     }
+    bool should_write(Particle *p, ParticleKey) const {
+      return true;
+    }
   };
   struct FloatWrite {
+    bool opt_only_;
+    FloatWrite(bool opt_only): opt_only_(opt_only){}
     std::ostream & operator()(Float t,
                               std::ostream &out) const {
       // set format better
       return out << t;
+    }
+    bool should_write(Particle *p, FloatKey k) const {
+      return !opt_only_ || p->get_is_optimized(k);
     }
   };
 
@@ -41,9 +53,11 @@ namespace {
                         It b, It e, Write w,
                         std::ostream &out) {
     for (It c= b; c != e; ++c) {
-      /** \todo should escape things properly */
-      out << indent << c->get_string() << ": ";
-      w(p->get_value(*c), out) << "\n";
+      if (w.should_write(p, *c)) {
+        /** \todo should escape things properly */
+        out << indent << c->get_string() << ": ";
+        w(p->get_value(*c), out) << "\n";
+      }
     }
   }
 
@@ -143,6 +157,31 @@ namespace {
     }
   };
 
+  struct FloatRead {
+    bool opt_only_;
+    FloatRead(bool opt_only): opt_only_(opt_only){}
+    void operator()(Particle *p, std::string key, std::string value) const {
+      IMP_LOG(VERBOSE,
+              "Reading values from pair " << key << " "
+              << value << std::endl);
+      FloatKey k(key.c_str());
+      if (!opt_only_ || p->get_is_optimized(k)) {
+        std::istringstream iss(value.c_str());
+        Float v;
+        iss >> v;
+        IMP_check(iss, "Error reading value. Got " << v , ValueException);
+        p->set_value(k, v);
+      } else {
+        IMP_LOG(VERBOSE, "Skipping reading attribute "
+                << k << " of particle " << p->get_name()
+                << " because !(" << !opt_only_ << "||"
+                << p->get_is_optimized(k) << ")" <<std::endl);
+      }
+    }
+  };
+
+
+
   struct ParticleRead {
     std::set<Particle*> unused_;
     std::map<std::string, Particle *> used_;
@@ -191,7 +230,8 @@ namespace {
 
   void read(Model *m, Particle *p, ParticleRead &pr,
             LineStream &in,
-            unsigned int indent) {
+            unsigned int indent,
+            bool opt_only) {
     LineStream::LinePair lp=in.get_line(indent);
     if (lp.first.empty()) return;
     //IMP_LOG(VERBOSE, "Got line " << buf << std::endl);
@@ -213,7 +253,7 @@ namespace {
       if (lp.first.compare("name")==0) {
         p->set_name(lp.second);
       } else if (lp.first.compare("float-attributes")==0) {
-        read_attributes(p, in, indent, DefaultRead<FloatKey, Float>());
+        read_attributes(p, in, indent, FloatRead(opt_only));
       } else if (lp.first.compare("int-attributes")==0) {
         read_attributes(p, in, indent, DefaultRead<IntKey, Int>());
       } else if (lp.first.compare("string-attributes")==0) {
@@ -226,13 +266,36 @@ namespace {
     }
     IMP_LOG(VERBOSE, "Done reading particle " << lp.second << std::endl);
   }
+
+  void read(std::istream &in,
+            Model *m,
+            bool opt_only) {
+    LineStream r(in);
+    Particles ps(m->particles_begin(), m->particles_end());
+    std::reverse(ps.begin(), ps.end());
+    ParticleRead pr(ps);
+    Model::ParticleIterator pit= m->particles_begin();
+    int nump=0;
+    do {
+      read(m, *pit, pr, r, r.get_next_indent(), opt_only);
+      ++pit;
+      ++nump;
+    } while (r);
+    IMP_check(pit== m->particles_end(),
+              "Read wrong number of particles. Got " << nump
+              << " but expected " << m->get_number_of_particles()
+              << " Model is probably corrupt.",
+              ErrorException);
+  }
+
 }
 
 static std::string indent_level="  ";
 
 void write(Particle *p,
            std::ostream &out,
-           std::string indent) {
+           std::string indent,
+           bool opt_only) {
   std::ostringstream oss;
   oss<< p;
   out << indent << "particle: " << oss.str() << "\n";
@@ -242,7 +305,7 @@ void write(Particle *p,
                    p,
                    p->float_keys_begin(),
                    p->float_keys_end(),
-                   FloatWrite(),
+                   FloatWrite(opt_only),
                    out);
   out << indent << indent_level << "int-attributes:\n";
   write_attributes(indent+indent_level+"  ",
@@ -272,7 +335,15 @@ void write(Model *m,
            std::string indent) {
   for (Model::ParticleIterator pit= m->particles_begin();
        pit != m->particles_end(); ++pit) {
-    write(*pit, out, indent);
+    write(*pit, out, indent, false);
+  }
+}
+
+void write_optimized_attributes(Model *m,
+                                std::ostream &out) {
+  for (Model::ParticleIterator pit= m->particles_begin();
+       pit != m->particles_end(); ++pit) {
+    write(*pit, out, "", true);
   }
 }
 
@@ -285,24 +356,17 @@ void write(Model *m, std::string out) {
   write(m, outf, "");
 }
 
+
+
 void read(std::istream &in,
           Model *m) {
-  LineStream r(in);
-  Particles ps(m->particles_begin(), m->particles_end());
-  std::reverse(ps.begin(), ps.end());
-  ParticleRead pr(ps);
-  Model::ParticleIterator pit= m->particles_begin();
-  int nump=0;
-  do {
-    read(m, *pit, pr, r, r.get_next_indent());
-    ++pit;
-    ++nump;
-  } while (r);
-  IMP_check(pit== m->particles_end(),
-            "Read wrong number of particles. Got " << nump
-            << " but expected " << m->get_number_of_particles()
-            << " Model is probably corrupt.",
-            ErrorException);
+  read(in, m, false);
+}
+
+
+void read_optimized_attributes(std::istream &in,
+                               Model *m) {
+  read(in, m, true);
 }
 
 void read(std::string in,

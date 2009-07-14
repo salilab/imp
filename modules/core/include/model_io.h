@@ -43,10 +43,19 @@ IMPCORE_BEGIN_NAMESPACE
     \ingroup yaml
 */
 IMPCOREEXPORT void write(Model *m,
-                         std::string file_name);
-IMP_NO_DOXYGEN(IMP_NO_SWIG(IMPCOREEXPORT void write(Model *m,
-                                                    std::ostream &out,
-                                      std::string indent=std::string());))
+                         std::ostream &out,
+                         std::string indent=std::string());
+
+//! Write only the optimized attributes
+/** \ingroup yaml
+    \ingroup helpers
+ */
+IMPCOREEXPORT void write_optimized_attributes(Model *m,
+                                              std::ostream &out);
+
+IMP_NO_SWIG(IMPCOREEXPORT void write(Model *m,
+                                     std::string file_name);)
+
 
 //! Read the Model from a stream
 /** The model must already have particles matching all read particles.
@@ -67,10 +76,17 @@ IMP_NO_DOXYGEN(IMP_NO_SWIG(IMPCOREEXPORT void write(Model *m,
     \ingroup helpers
     \ingroup yaml
 */
-IMPCOREEXPORT void read(std::string file_name, Model *m);
+IMPCOREEXPORT void read(std::istream &in, Model *m);
 
-IMP_NO_DOXYGEN(IMP_NO_SWIG(IMPCOREEXPORT
-                           void read(std::istream &in, Model *m);))
+//! Only change the values of the optimize attributes
+/** \see read(std::istream&, Model*)
+    \ingroup yaml
+    \ingroup helpers
+ */
+IMPCOREEXPORT void read_optimized_attributes(std::istream &in, Model *m);
+
+
+IMP_NO_SWIG(IMPCOREEXPORT void read(std::string file_name, Model *m);)
 
 
 
