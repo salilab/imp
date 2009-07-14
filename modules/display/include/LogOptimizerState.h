@@ -68,8 +68,6 @@ public:
     When an error (check or assertion failure) occurs, the model is
     dumped to the specified using the geometry given in the
     LogOptimizerState.
-
-    \untested(set_failure_dump)
  */
 class IMPDISPLAYEXPORT DisplayModelOnFailure: public FailureHandler {
   Pointer<LogOptimizerState> s_;
