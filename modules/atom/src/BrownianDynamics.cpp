@@ -267,7 +267,8 @@ double BrownianDynamics::simulate(float max_time_nu)
       }
       success=true;
      } catch (const BadStepException &e) {
-      IMP_LOG(TERSE, "Reducing step size because of particle "
+      IMP_LOG(TERSE, "Reducing step size to " << dt/2.0
+              << " because of particle "
                 << e.blamed->get_name() << std::endl);
       revert_coordinates(sc, old_coordinates);
       get_model()->evaluate(true);
