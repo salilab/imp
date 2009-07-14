@@ -52,11 +52,13 @@ typedef Decorators<Hierarchy,
 
     \ingroup hierarchy
     \ingroup decorators
-    \see Residue
     \see Atom
+    \see Chain
+    \see Domain
+    \see Fragment
+    \see Residue
     \see write_pdb
     \see read_pdb
-    \see get_molecular_rigid_body_traits
  */
 class IMPATOMEXPORT Hierarchy:
   public IMP::core::Hierarchy
