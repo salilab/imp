@@ -18,8 +18,10 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Render a polygon.
-/** The polygon should be simple, and, to be completely safe, convex.
-  This latter can be fixed if needed.
+/** The polygon must be simple, planar and convex. This is not currently
+    checked, but should be. When there is demand, we can relax these
+    restrictions using CGAL.
+    \unstable{PolygonGeometry}
  */
 class IMPDISPLAYEXPORT PolygonGeometry: public Geometry
 {
