@@ -96,7 +96,7 @@ IMP_NO_SWIG(IMPCOREEXPORT void read(std::string file_name, Model *m);)
     When an error (check or assertion failure) occurs, the model is
     dumped to the specified file.
 
-    \untested(set_failure_dump)
+    \verbinclude dump_on_error.py
  */
 class IMPCOREEXPORT DumpModelOnFailure: public FailureHandler {
   Model *m_;
