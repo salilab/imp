@@ -599,27 +599,18 @@ public:
   **/
   void pad(This& padded) {
     double avg = this->compute_avg();
-    // Resize
-    std::vector<int> extents(D);
-    for(int i=0;i<D;i++) {
-      extents[i]=2*this->get_size(i);
-    }
-    padded.resize(extents);
-    // Copy values
-    padded.fill_with_value(avg);
-    std::vector<index> idx(D),idx_for_padded(D);
-    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-      for(int i=0;i<D;i++) {
-        idx_for_padded[i]=idx[i]+(int)this->get_size(i)/2;
-      }
-      padded(idx_for_padded)=(*this)(idx);
-    }
+    this->pad(padded,avg);
   }
 
   //! Pad with a given value
+  /**
+    \param[out] padded the output MultiArray
+    \param[in] val the value to pad with
+  **/
   void pad(This& padded,T val) {
     // Resize
-    std::vector<int> extents(D);
+    boost::array<index, D> extents;
+//    std::vector<int> extents(D);
     for(int i=0;i<D;i++) {
       extents[i]=2*this->get_size(i);
     }
@@ -654,7 +645,8 @@ public:
   void float_with_average(This& floated) {
     double avg = this->compute_avg();
     // Resize
-    std::vector<int> extents(D);
+    boost::array<index, D> extents;
+//    std::vector<int> extents(D);
     for(int i=0;i<D;i++) {
       extents[i]=2*this->get_size(i);
     }
