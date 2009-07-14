@@ -57,7 +57,7 @@ public:
   //! initialize to NULL
   Pointer() {}
   /** initialize from a pointer */
-  explicit Pointer(O* o) {
+  Pointer(O* o) {
     IMP_assert(o, "Can't initialize with NULL pointer");
     set_pointer(o);
   }
