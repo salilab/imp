@@ -17,8 +17,6 @@ IMPATOM_BEGIN_NAMESPACE
  */
 IMPATOMEXPORT double rmsd(const core::XYZs& m1 ,const core::XYZs& m2);
 
-IMPATOMEXPORT double rmsd(const Hierarchy& m1 ,const Hierarchy& m2);
-
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_DISTANCE_H */
