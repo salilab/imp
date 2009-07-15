@@ -23,6 +23,7 @@ files = [
          'estimates.cpp',
          'force_fields.cpp',
          'pdb.cpp',
+         'distance.cpp',
         ] \
         + SConscript('internal/SConscript')
 
