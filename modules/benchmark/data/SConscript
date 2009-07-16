@@ -1,0 +1,9 @@
+Import('env')
+
+files = [
+         'single_protein.pdb',
+         'big_protein.pdb'
+        ]
+
+# Install the data files:
+env.IMPData(files)

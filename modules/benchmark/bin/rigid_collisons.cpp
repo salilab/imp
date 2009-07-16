@@ -8,6 +8,7 @@
 #include <IMP/atom.h>
 #include <IMP/helper.h>
 #include <boost/timer.hpp>
+#include <IMP/benchmark/utility.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -15,13 +16,12 @@ using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::helper;
 
-void test_one(Model *m,
+void test_one(std::string name,
+              Model *m,
               std::vector<RigidBody> rbs,
               float side) {
   Vector3D minc(0,0,0), maxc(side, side, side);
-  set_log_level(SILENT);
   m->evaluate(false);
-  set_log_level(SILENT);
   double runtime, inittime;
   IMP_TIME(
            {
@@ -44,17 +44,21 @@ void test_one(Model *m,
              value+=m->evaluate(false);
            }, runtime);
 
-  std::cout << " took " << runtime-inittime << " with side " << side
-            << " and value " << value << std::endl;
+  /*std::cout << " took " << runtime-inittime << " with side " << side
+    << " and value " << value << std::endl;*/
+  std::ostringstream oss;
+  oss << "rigid " << name << " " << side;
+  IMP::benchmark::report(oss.str(), runtime-inittime, value);
 }
 
 int main() {
+  set_log_level(SILENT);
   Pointer<Model> m(new Model());
   Particles atoms;
   std::vector<RigidBody> rbs;
   for (int i=0; i< 5; ++i) {
     atom::Hierarchy mhd
-      = read_pdb("benchmarks/input/single_protein.pdb", m);
+      = read_pdb(IMP::get_data_directory()+"/benchmark/single_protein.pdb", m);
     Particles catoms= get_by_type(mhd, atom::Hierarchy::ATOM);
     IMP_assert(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
@@ -78,12 +82,12 @@ int main() {
     IMP_NEW(QuadraticClosePairsFinder,qcpf, ());
     //lsc->set_particles(atoms);
     cpss->set_close_pairs_finder(qcpf);
-    std::cout << "Quadratic:" << std::endl;
-    test_one(m, rbs, 10);
+    //std::cout << "Quadratic:" << std::endl;
+    test_one("quadratic", m, rbs, 10);
 
-    test_one(m, rbs, 100);
+    test_one("quadratic", m, rbs, 100);
 
-    test_one(m, rbs, 1000);
+    test_one("quadratic", m, rbs, 1000);
 
   }
   {
@@ -94,12 +98,12 @@ int main() {
     lsc->set_particles(rbsp);
     IMP_NEW(RigidClosePairsFinder, rcps, ());
     cpss->set_close_pairs_finder(rcps);
-    std::cout << "Hierarchy:" << std::endl;
-    test_one(m, rbs, 10);
+    //std::cout << "Hierarchy:" << std::endl;
+    test_one("hierarchy", m, rbs, 10);
 
-    test_one(m, rbs, 100);
+    test_one("hierarchy", m, rbs, 100);
 
-    test_one(m, rbs, 1000);
+    test_one("hierarchy", m, rbs, 1000);
 
   }
   return 0;

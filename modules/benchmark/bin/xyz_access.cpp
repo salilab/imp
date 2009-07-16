@@ -6,6 +6,7 @@
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
 #include <boost/timer.hpp>
+#include <IMP/benchmark/utility.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -80,19 +81,14 @@ double compute_distances_direct_access(
   return tdist;
 }
 
-int main(int argc, char **argv) {
-
-  if(argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " <pdb file> " << std::endl;
-    return 0;
-  }
+void do_benchmark(std::string descr, std::string fname) {
   // read pdb, prepare particles
   Model *model = new IMP::Model();
   atom::Hierarchy mhd
-    = read_pdb(argv[1], model, NonWaterNonHydrogenSelector());
+    = read_pdb(fname, model, NonWaterNonHydrogenSelector());
   IMP::Particles particles =
     get_by_type(mhd, atom::Hierarchy::ATOM);
-  std::cout << "Number of particles " << particles.size() << std::endl;
+  //std::cout << "Number of particles " << particles.size() << std::endl;
   set_check_level(IMP::NONE);
   set_log_level(SILENT);
   {
@@ -103,8 +99,9 @@ int main(int argc, char **argv) {
              {
                dist=compute_distances_decorator_access(particles);
              }, runtime);
-    std::cout << "TEST1 (decorator_access)  took " << runtime
-              << " (" << dist << ")"<< std::endl;
+    /*std::cout << "TEST1 (decorator_access)  took " << runtime
+      << " (" << dist << ")"<< std::endl;*/
+    IMP::benchmark::report("xyz vector "+descr, runtime, dist);
   }
   {
     // TEST 2
@@ -120,8 +117,9 @@ int main(int argc, char **argv) {
              {
                dist=compute_distances_class_access(my_particles);
              }, runtime);
-    std::cout << "TEST2 (class access) took " << runtime
-              << " (" << dist << ")"<< std::endl;
+    /*std::cout << "TEST2 (class access) took " << runtime
+      << " (" << dist << ")"<< std::endl;*/
+    IMP::benchmark::report("xyz internal "+descr, runtime, dist);
   }
 
   // TEST 2.5
@@ -138,8 +136,9 @@ int main(int argc, char **argv) {
              {
                dist=compute_distances_class_access(my_particles);
              }, runtime);
-    std::cout << "TEST2.5 (class access) took " << runtime
-              << " (" << dist << ")"<< std::endl;
+    /*std::cout << "TEST2.5 (class access) took " << runtime
+      << " (" << dist << ")"<< std::endl;*/
+    IMP::benchmark::report("xyz *internal "+descr, runtime, dist);
   }
   // TEST 3
   {
@@ -154,8 +153,16 @@ int main(int argc, char **argv) {
              {
                dist=compute_distances_direct_access(coordinates);
              }, runtime);
-    std::cout << "TEST3 (direct access) took " << runtime
-              << " (" << dist << ")"<< std::endl;
+    /*std::cout << "TEST3 (direct access) took " << runtime
+      << " (" << dist << ")"<< std::endl;*/
+    IMP::benchmark::report("xyz decorator "+descr, runtime, dist);
   }
+}
+
+int main(int argc, char **argv) {
+  do_benchmark("small", IMP::get_data_directory()
+               +"/benchmark/single_protein.pdb");
+  do_benchmark("large", IMP::get_data_directory()
+               +"/benchmark/big_protein.pdb");
   return 0;
 }

@@ -1,0 +1,10 @@
+Import('env')
+
+e = env.IMPPythonExtensionEnvironment()
+
+e.IMPPythonExtension('benchmark.i')
+
+files = (Glob('benchmark/*.py'))
+
+# Install the Python files:
+env.IMPPython(files)
