@@ -6,8 +6,7 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-//#include "IMP/algebra/interpolation.h"
-#include "interpolation.h"
+#include "IMP/algebra/interpolation.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

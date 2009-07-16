@@ -16,16 +16,17 @@ files = [
          'SphericalVector3D.h',
          'Transformation2D.h',
          'Transformation3D.h',
+         'Vector2D.h',
          'Vector3D.h',
          'VectorD.h',
          'eigen_analysis.h',
          'endian.h',
          'geometric_alignment.h',
          'grid_range_D.h',
+         'interpolation.h',
          'io.h',
          'utility.h',
          'vector_generators.h',
-          'interpolation.h',
         ] \
         + SConscript('internal/SConscript')
 

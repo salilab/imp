@@ -20,7 +20,7 @@ files = [
          'tnt_stopwatch.h',
          'tnt_subscript.h',
          'tnt_version.h',
-         'vector_generators.h'
+         'vector_generators.h',
         ]
 
 files = [File(x) for x in files]

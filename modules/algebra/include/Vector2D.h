@@ -24,7 +24,6 @@ typedef VectorD<2> Vector2D;
 //! A collection of Vector2D
 typedef std::vector<Vector2D> Vector2Ds;
 
-
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_2D_H */
