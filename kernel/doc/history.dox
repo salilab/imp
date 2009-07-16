@@ -1,5 +1,7 @@
 /** \page recent Change History
 \par Week of July 11
+- The conventions have been split into \ref code_conventions "Coding conventions" and \ref conventions "API conventions" and linked from the main page.
+
 - benchmarks got moved to their own module, IMP::benchmark and will now be tracked over time
 
 \par Week of July 4

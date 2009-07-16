@@ -18,10 +18,16 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-//! A location in 3D
+//! A location in 3D space
+/** Stores the x,y,z coordinates of a vector.
+    \relatesalso VectorD
+*/
 typedef VectorD<3> Vector3D;
 
 //! A collection of Vector3D
+/**
+   \relatesalso VectorD
+ */
 typedef std::vector<Vector3D> Vector3Ds;
 
 //! Returns the vector product (cross product) of two vectors.
