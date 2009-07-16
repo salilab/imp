@@ -53,7 +53,7 @@ IMPCOREEXPORT void write(Model *m,
 IMPCOREEXPORT void write_optimized_attributes(Model *m,
                                               std::ostream &out);
 
-IMP_NO_SWIG(IMPCOREEXPORT void write(Model *m,
+IMP_NO_DOXYGEN(IMPCOREEXPORT void write(Model *m,
                                      std::string file_name);)
 
 
@@ -86,7 +86,7 @@ IMPCOREEXPORT void read(std::istream &in, Model *m);
 IMPCOREEXPORT void read_optimized_attributes(std::istream &in, Model *m);
 
 
-IMP_NO_SWIG(IMPCOREEXPORT void read(std::string file_name, Model *m);)
+IMP_NO_DOXYGEN(IMPCOREEXPORT void read(std::string file_name, Model *m);)
 
 
 

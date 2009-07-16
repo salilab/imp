@@ -15,7 +15,7 @@ class YamlTests(IMP.test.TestCase):
     def test_yaml(self):
         """Check writing to yaml """
         m= self._create_model()
-        IMP.core.write(m, self.get_tmp_file_name("test.yaml"))
+        IMP.core.write(m, open(self.get_tmp_file_name("test.yaml"), "w"))
     def test_read(self):
         """Check reading from yaml"""
         m= self._create_model()
@@ -41,7 +41,7 @@ particle: 1324215
         f.write(st)
         f.close()
         print "m has " + str(m.get_number_of_particles())
-        IMP.core.read(self.get_tmp_file_name("tmp.yaml"), m)
+        IMP.core.read(open(self.get_tmp_file_name("tmp.yaml")), m)
         ps= m.get_particles()
         d0= IMP.core.XYZ.cast(ps[0])
         self.assertEqual(d0.get_z(), 2)

@@ -15,7 +15,7 @@ class YamlTests(IMP.test.TestCase):
         d1.set_coordinates_are_optimized(True)
         return (m,d0, d1)
     def test_yaml(self):
-        """Check writing to yaml """
+        """Check reading and writing optimized attributes of models """
         (m,d0, d1)= self._create_model()
         IMP.set_log_level(IMP.VERBOSE)
         IMP.core.write_optimized_attributes(m, open(self.get_tmp_file_name("test2.yaml"),
