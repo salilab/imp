@@ -20,6 +20,7 @@ Model::Model()
 {
   iteration_ = 0;
   next_particle_index_=0;
+  cur_stage_=NOT_EVALUATING;
 }
 
 
@@ -83,6 +84,7 @@ Float Model::evaluate(bool calc_derivs)
 
   IMP_LOG(TERSE,
           "Begin update ScoreStates " << std::endl);
+  cur_stage_= BEFORE_EVALUATE;
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
@@ -101,7 +103,7 @@ Float Model::evaluate(bool calc_derivs)
           "Begin evaluate restraints "
           << (calc_derivs?"with derivatives":"without derivatives")
           << std::endl);
-
+  cur_stage_= EVALUATE;
   for (RestraintIterator it = restraints_begin();
        it != restraints_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
@@ -119,7 +121,7 @@ Float Model::evaluate(bool calc_derivs)
 
   IMP_LOG(TERSE,
           "Begin after_evaluate of ScoreStates " << std::endl);
-
+  cur_stage_= AFTER_EVALUATE;
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
@@ -130,7 +132,7 @@ Float Model::evaluate(bool calc_derivs)
   IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
 
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
-
+  cur_stage_=NOT_EVALUATING;
   ++iteration_;
   return score;
 }
