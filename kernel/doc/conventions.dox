@@ -5,11 +5,11 @@
     adhered to when writing code for \imp.
 
     \section physical Measurements
-    Unless these is a good reason, the following units should be used
+    Unless these is a good reason, the following units are be used
     - angstrom for all distances
     - kcal/mol angstrom for forces/derivatives
     - kcal/mol for energies
-    - radians for angles measured counterclockwise
+    - radians for angles. All angles are counterclockwise.
 
     Anything that breaks from these conventions must be labeled clearly and accompanied
     by an explaination of why the normal units could not be used.
