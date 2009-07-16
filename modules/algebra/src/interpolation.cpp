@@ -6,16 +6,17 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#include "IMP/algebra/interpolation.h"
+//#include "IMP/algebra/interpolation.h"
+#include "interpolation.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 double interpolate(Matrix2D<double>&m,
-                   VectorD<2>&idx,
+                   Vector2D&idx,
                    bool wrap,
                    double outside,
                    int interp) {
-  double result;
+  double result=0.0;
   switch(interp) {
     case 0:
       result=bilinear_interpolation(m,idx,wrap,outside);
@@ -29,7 +30,7 @@ double interpolate(Matrix2D<double>&m,
 
 
 double bilinear_interpolation(Matrix2D<double>& m,
-                  VectorD<2>& idx,
+                  Vector2D& idx,
                   bool wrap,
                   double outside) {
   // lower limits (xlow,ylow) are stored in v1, upper limits (xup,yup) in v2
@@ -87,7 +88,7 @@ double bilinear_interpolation(Matrix2D<double>& m,
 }
 
 double Bspline_interpolation(Matrix2D<double>& m,
-                  VectorD<2>& idx,
+                  Vector2D& idx,
                   bool wrap,
                   double outside) {
   // TODO: Implement B-spline interpolation
