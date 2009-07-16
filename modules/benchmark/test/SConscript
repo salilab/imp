@@ -1,0 +1,3 @@
+Import('env')
+
+env.IMPModuleTest("test.passed", "#/tools/run-all-tests.py")

@@ -1,0 +1,12 @@
+/** \namespace IMP::benchmark
+\brief %IMP.%benchmark does something. 
+
+\author Daniel Russel and Dina Schneidman
+
+\overview %IMP.%benchmark provides benchmarks of various parts of IMP.
+
+\publications
+\standard_imp_publications
+
+\license \standard_imp_license
+*/
