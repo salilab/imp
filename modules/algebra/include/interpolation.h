@@ -15,7 +15,7 @@
 #include "IMP/algebra/utility.h"
 #include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/Matrix3D.h"
-#include "IMP/algebra/VectorD.h"
+#include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Vector3D.h"
 #include <complex>
 
@@ -26,7 +26,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
   \return The returned value is lower+diff*(upper-lower).  (0 < diff < 1)
 **/
 template<typename T>
-IMPALGEBRAEXPORT T simple_interpolate(double diff,T lower,T upper) {
+T simple_interpolate(double diff,T lower,T upper) {
   return lower+diff*(upper-lower);
 }
 
@@ -41,7 +41,7 @@ IMPALGEBRAEXPORT T simple_interpolate(double diff,T lower,T upper) {
               limits of the matrix. (It is never used if wrap is requested)
 **/
 template<typename T>
-IMPALGEBRAEXPORT T trilinear_interpolation(Matrix3D<T> &m,
+T trilinear_interpolation(Matrix3D<T> &m,
                   Vector3D &idx,
                    bool wrap,
                    T outside) {
@@ -117,8 +117,8 @@ IMPALGEBRAEXPORT T trilinear_interpolation(Matrix3D<T> &m,
   \param[in] interp type of interpolation desired. Right now it is only
              bilinear interpolation
 **/
-IMPALGEBRAEXPORT double interpolate(algebra::Matrix2D<double> &m,
-                    VectorD<2>& idx,
+double interpolate(algebra::Matrix2D<double> &m,
+                    Vector2D& idx,
                     bool wrap = false,
                     double outside = 0.0,
                     int interp=0);
@@ -137,7 +137,7 @@ IMPALGEBRAEXPORT double interpolate(algebra::Matrix2D<double> &m,
              trilinear interpolation
 **/
 template<typename T>
-IMPALGEBRAEXPORT T interpolate(algebra::Matrix3D<T> &m,
+T interpolate(algebra::Matrix3D<T> &m,
                     Vector3D &idx,
                     bool wrap = false,
                     T outside = 0.0,
@@ -171,12 +171,12 @@ IMPALGEBRAEXPORT T interpolate(algebra::Matrix3D<T> &m,
               limits of the matrix. (It is never used if wrap is requested)
 **/
 IMPALGEBRAEXPORT double bilinear_interpolation(Matrix2D<double>& m,
-                  VectorD<2>& idx,
+                  Vector2D& idx,
                   bool wrap = false,
                   double outside = 0.0);
 
 IMPALGEBRAEXPORT double Bspline_interpolation(Matrix2D<double>& m,
-                  VectorD<2>& idx,
+                  Vector2D& idx,
                   bool wrap = false,
                   double outside = 0.0);
 
