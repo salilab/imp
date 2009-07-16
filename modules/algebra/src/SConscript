@@ -15,9 +15,9 @@ files = [
          'eigen_analysis.cpp',
          'endian.cpp',
          'geometric_alignment.cpp',
+         'interpolation.cpp',
          'io.cpp',
          'vector_generators.cpp',
-          'interpolation.cpp',
         ] \
         + SConscript('internal/SConscript')
 
