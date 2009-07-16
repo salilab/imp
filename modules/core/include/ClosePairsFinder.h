@@ -59,8 +59,8 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
                                ListPairContainer *out) const =0;
 
   virtual void add_close_pairs(SingletonContainer *pca,
-                       SingletonContainer *pcb,
-                       ListPairContainer *out) const =0;
+                               SingletonContainer *pcb,
+                               ListPairContainer *out) const =0;
   /** @} */
   /** \name The radius key
       If the radius key is non-default, then all particles must have
