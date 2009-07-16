@@ -24,7 +24,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** */
+/** Store a vector of Cartesian coordinates.*/
 template <unsigned int D>
 class VectorD: public UninitializedDefault
 {
@@ -106,14 +106,16 @@ public:
     }
 #endif
   }
-
+  /** Return the ith Cartesian coordinate. In 3D use [0] to get
+      the x coordinate etc.*/
   double operator[](unsigned int i) const {
     IMP_assert(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
     check_vector();
     return vec_[i];
   }
-
+  /** Return the ith Cartesian coordinate. In 3D use [0] to get
+      the x coordinate etc. */
   double& operator[](unsigned int i) {
     IMP_assert(i < D, "Invalid component of vector requested: "
                << i << " of " << D);
