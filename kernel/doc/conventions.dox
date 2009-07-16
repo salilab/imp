@@ -14,9 +14,9 @@
     Anything that breaks from these conventions must be labeled clearly and accompanied
     by an explaination of why the normal units could not be used.
 
-    \section storage Basic classes
+    \section storage Passing and storing data
     - 3D points and vectors are stored and passed using IMP::algebra::Vector3D objects.
-    - 3D rotations are passed using IMP::algebra::Rotation3D objects.
+    - 3D rotations are stored and passed using IMP::algebra::Rotation3D objects.
     - Likewise for spheres (IMP::algebra::Sphere3D), segments (IMP::algebra::Segment3D) etc.
     - Collections of object Foo are passed using the type Foos. For example,
     a bunch of IMP::algebra::Vector3D objects is passed using a IMP::algebra::Vector3Ds
