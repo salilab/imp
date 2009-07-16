@@ -36,13 +36,15 @@
  - \ref api "API Documentation"
  - \salilab{imp/bugs,Bug Tracker}
  - \ref recent "Change history"
+ - \ref conventions "Conventions"
+ - \ref coding_conventions "Coding Conventions"
  - \salilab{internal/imp/tests.html,Daily build status}
  - \salilab{imp/doc/doxygen/deprecated.html,
    Deprecated functionality list}
  - \ref devguide "Developer guide"
  - \ref examples "Examples"
- - \wiki{FrontPage,IMP wiki}
  - \wiki{FAQ, FAQ}
+ - \wiki{FrontPage,IMP wiki}
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}
  - \ref installation "Installation Instructions"
  - \ref introduction "Introduction to IMP"
