@@ -47,6 +47,12 @@ private:
   ParticleStorage particles_;
   unsigned int next_particle_index_;
   std::map<FloatKey, FloatRange> ranges_;
+  enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
+  Stage cur_stage_;
+
+  Stage get_stage() const {
+    return cur_stage_;
+  }
 
   void add_particle_internal(Particle *p) {
     IMP_CHECK_OBJECT(this);
@@ -121,6 +127,8 @@ public:
               ValueException);
     IMP_LOG(VERBOSE, "Removing particle " << p->get_name()
             << std::endl);
+    IMP_assert(get_stage() == Model::NOT_EVALUATING,
+               "Particles cannot be removed from the model during evaluation");
     particles_.erase(p->iterator_);
     p->model_=NULL;
     internal::unref(p);
