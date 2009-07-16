@@ -85,17 +85,17 @@ public:
   }
 
   //! Initialize a 4-vector from separate w,x,y,z values.
-  VectorD(double w, double x, double y, double z) {
+  VectorD(double x0, double x1, double x2, double x3) {
 #ifdef IMP_SWIG_WRAPPER
     IMP_check(D==4, "Need " << D << " to construct a "
               << D << "-vector.", ValueException);
 #else
     BOOST_STATIC_ASSERT(D==4);
 #endif
-    vec_[0] = w;
-    vec_[1] = x;
-    vec_[2] = y;
-    vec_[3] = z;
+    vec_[0] = x0;
+    vec_[1] = x1;
+    vec_[2] = x2;
+    vec_[3] = x3;
   }
 
   //! Default constructor
