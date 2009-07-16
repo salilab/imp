@@ -16,7 +16,11 @@
 IMP_BEGIN_NAMESPACE
 
 //! A vector-like container for reference counted objects
-/** Documentation for std::vector can be found at as part of the SGI
+/** The interface of this class is like that of std::vector except
+    you must use VectorOfRefCounted::set() to change existing members
+    instead of VectorOfRefCounted::operator[]().
+
+    Documentation for std::vector can be found at as part of the SGI
     stl documentation, among other places
     (http://www.sgi.com/tech/stl/Vector.html).
 
