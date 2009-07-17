@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <string>
+#include <sstream>
 
 IMP_BEGIN_NAMESPACE
 
@@ -59,8 +60,12 @@ enum LogTarget {COUT, FILE, CERR};
 #if !defined SWIG && !defined(IMP_DOXYGEN)
 namespace internal {
   IMPEXPORT extern LogLevel log_level;
+  IMPEXPORT extern unsigned int log_indent;
 }
 #endif
+
+//! Write a string to the log
+IMPEXPORT void log_write(std::string to_write);
 
 //! Set the current log level for IMP
 /** \ingroup log
@@ -72,10 +77,7 @@ inline void set_log_level(LogLevel l) {
 //! Set the target of logs
 /** \ingroup log
  */
-IMPEXPORT inline void set_log_target(LogTarget l)
-{
-  internal::Log::get().set_target(l);
-}
+IMPEXPORT void set_log_target(LogTarget l);
 
 //! Get the current log level for IMP
 /** \ingroup log
@@ -85,39 +87,18 @@ inline LogLevel get_log_level()
   return internal::log_level;
 }
 
-//! Get the target of logs
-/** \ingroup log
- */
-IMPEXPORT inline LogTarget get_log_target()
-{
-  return LogTarget(internal::Log::get().get_target());
-}
-
 //! Set the file name for the IMP log; must be called if a file is to be used.
 /** \ingroup log
  */
-IMPEXPORT inline void set_log_file(std::string l)
-{
-  internal::Log::get().set_filename(l);
-}
+IMPEXPORT void set_log_file(std::string l);
 
 //! Determine whether a given log level should be output.
 /** \note This probably should not be called in C++.
     \ingroup log
  */
-IMPEXPORT inline bool is_log_output(LogLevel l)
+inline bool is_log_output(LogLevel l)
 {
   return l <= get_log_level();
-}
-
-
-//! The stream to output a particular log level to.
-/** \note This probably should not be called in C++.
-    \ingroup log
- */
-IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
-{
-  return internal::Log::get().get_stream(l);
 }
 
 
@@ -139,7 +120,10 @@ IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
     \ingroup log
  */
 #define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
-    { IMP::get_log_stream(level) << expr << std::flush;};
+    { std::ostringstream oss;                               \
+      oss<< expr << std::flush;                             \
+      IMP::log_write(oss.str());                            \
+    };
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] level The IMP::Log_Level for the message
@@ -147,7 +131,10 @@ IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
     \ingroup log
  */
 #define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
-    {std::ostream &IMP_STREAM= IMP::get_log_stream(level); expr;}
+    {std::ostringstream IMP_STREAM;                               \
+      expr;                                                       \
+      IMP::log_write(IMP_STREAM.str());                           \
+    }
 
 #else
 #define IMP_LOG(l,e)
@@ -163,7 +150,10 @@ IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
     \ingroup log
  */
 #define IMP_WARN(expr) if (IMP::is_log_output(IMP::WARNING)) \
-    { IMP::get_log_stream(IMP::WARNING) << "WARNING  " << expr << std::flush;};
+    { std::ostringstream oss;                                \
+      oss << "WARNING  " << expr << std::flush;              \
+      IMP::log_write(oss.str());                             \
+    };
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] expr An expression which writes something to IMP_STREAM.
@@ -171,7 +161,10 @@ IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
     \ingroup log
  */
 #define IMP_WARN_WRITE(expr) if (IMP::is_log_output(IMP::WARNING)) \
-    {std::ostream &IMP_STREAM= IMP::get_log_stream(IMP::Log::WARNING); expr;}
+    {std::ostringstream IMP_STREAM;                                \
+      expr;                                                        \
+      IMP::log_write(IMP_STREAM.str());                            \
+    }
 
 
 
@@ -187,11 +180,11 @@ IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
                     It is prefixed by "ERROR"
     \ingroup log
  */
-#define IMP_ERROR_WRITE(expr) { \
+#define IMP_ERROR_WRITE(expr) {         \
   std::ostream &IMP_STREAM = std::cerr; \
-  std:cerr<< "ERROR "; \
-  expr; \
-  std::cerr << std::endl; \
+  std:cerr<< "ERROR ";                  \
+  expr;                                 \
+  std::cerr << std::endl;               \
 }
 
 
@@ -199,6 +192,18 @@ IMPEXPORT inline std::ostream& get_log_stream(LogLevel l)
 /** \ingroup log
  */
 #define IMP_SET_LOG_LEVEL(level) IMP::Log::get()::set_level(level);
+
+
+
+//! Increase the current indent in the log by one level
+struct IncreaseIndent: public RAII {
+  IncreaseIndent(){
+    internal::log_indent+=2;
+  }
+  ~IncreaseIndent() {
+    internal::log_indent-=2;
+  }
+};
 
 IMP_END_NAMESPACE
 

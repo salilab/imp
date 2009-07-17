@@ -107,7 +107,8 @@ IMP_END_NAMESPACE
     RAII-style object which sets the log level to the local one,
     if appropriate, until it goes out of scope.
  */
-#define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level())
+#define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level());\
+  IncreaseIndent object_increase_indent__
 #else
 #define IMP_OBJECT_LOG
 #endif
