@@ -23,23 +23,19 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT SetLogState: public RAII
 {
   LogLevel level_;
-  LogTarget target_;
   Object* obj_;
 public:
   //! Construct it with the desired level and target
-  SetLogState(LogLevel l, LogTarget t= get_log_target()):
-    target_(get_log_target()), obj_(NULL) {
+  SetLogState(LogLevel l): obj_(NULL) {
     if (l != DEFAULT) {
       level_= get_log_level();
       set_log_level(l);
-      set_log_target(t);
     } else {
       level_=DEFAULT;
     }
   }
   //! Control the log level of the object instead of the global one
-  SetLogState(Object *o, LogLevel l):
-    target_(get_log_target()), obj_(o) {
+  SetLogState(Object *o, LogLevel l): obj_(o) {
     if (l != DEFAULT) {
       level_= obj_->get_log_level();
       obj_->set_log_level(l);
@@ -53,7 +49,6 @@ public:
         obj_->set_log_level(level_);
       } else {
         set_log_level(level_);
-        set_log_target(target_);
       }
     }
   }
