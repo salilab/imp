@@ -1,26 +1,51 @@
 /** \page recent Change History
-\par Week of July 11
-- The conventions have been split into \ref code_conventions "Coding conventions" and \ref conventions "API conventions" and linked from the main page.
 
-- benchmarks got moved to their own module, IMP::benchmark and will now be tracked over time
+\par Week of July 11
+
+- Per Javi's suggestion, the conventions have been split into \ref
+  coding_conventions "Coding conventions" and \ref conventions "API
+  conventions" and linked from the main page.
+
+- benchmarks got moved to their own module, IMP::benchmark and will
+  now be tracked over time
+
+- There is a \wiki{optimization_protocols,wiki page on optimization}
 
 \par Week of July 4
 
-- FilteredListSingletonContainer and FilteredPairSingletonContainer went away as there was too much hard to factor code shared with ListSingletonContainer and PairSingletonContainer. The IMP::core::ClosePairsScoreState is now handled by a list of filters on the class itself. That is, do IMP::core::ClosePairsScoreState::add_close_pair_filter() to add a filter.
+- FilteredListSingletonContainer and FilteredPairSingletonContainer
+  went away as there was too much hard to factor code shared with
+  ListSingletonContainer and PairSingletonContainer. The
+  IMP::core::ClosePairsScoreState is now handled by a list of filters
+  on the class itself. That is, do
+  IMP::core::ClosePairsScoreState::add_close_pair_filter() to add a
+  filter.
 
-- Hooks have been added to allow actions to be taken on an assertion or check failure. See IMP::HandleFailure and its descendents for more details.
+- Hooks have been added to allow actions to be taken on an assertion
+  or check failure. See IMP::HandleFailure and its descendants for
+  more details.
 
-- IMP::display::CGOWriter has been much improved and now allows provides lots of display-time control and easy building of animations.
+- IMP::display::CGOWriter has been much improved and now allows
+  provides lots of display-time control and easy building of
+  animations.
 
-- Generic optimizer states have been added (IMP::core::SingletonsOptimizerState and IMP::core::PairsOptimizerState).
+- Generic optimizer states have been added
+  (IMP::core::SingletonsOptimizerState and
+  IMP::core::PairsOptimizerState).
 
 \par Week of June 15
 
-- box distrubutions (IMP::algebra::random_vector_on_box(), IMP::algebra::random_vector_in_box()) take bounding boxes
+- box distributions (IMP::algebra::random_vector_on_box(),
+  IMP::algebra::random_vector_in_box()) take bounding boxes
 
-- IMP::em::DensityMap are now IMP::Object objects. Some current allocations on the stack may need to be changed (since ref counted objects can't be stack allocated).
+- IMP::em::DensityMap are now IMP::Object objects. Some current
+  allocations on the stack may need to be changed (since ref counted
+  objects can't be stack allocated).
 
-- IMP::em::DensityMap::Read() is now deprecated (as is IMP::em::DensityMap::Write) as they violated a slew of conventions. Use IMP::em::read_map() and IMP::em::write_map() instead.
+- IMP::em::DensityMap::Read() is now deprecated (as is
+  IMP::em::DensityMap::Write) as they violated a slew of
+  conventions. Use IMP::em::read_map() and IMP::em::write_map()
+  instead.
 
 
 \par Week of June 8
@@ -29,157 +54,239 @@
 
 - Hierarchys to IMP::atom::Hierarchies
 
-- IMP::Particles has been changed to a new type. It no longer plays quite so well with python lists (you can't create a part one from an arbitrary python list).
+- IMP::Particles has been changed to a new type. It no longer plays
+  quite so well with python lists (you can't create a part one from an
+  arbitrary python list).
 
-- The contains for multiple decorators have been revised to make them more useful. See IMP::Decorators. You can now implicitly convert, for example, a IMP::core::XYZs to an IMP::Particles (as well as use IMP::Decorators::get_particles()). All methods that take a collection of particles with a certain type now instead take a IMP::Decorators.
+- The contains for multiple decorators have been revised to make them
+  more useful. See IMP::Decorators. You can now implicitly convert,
+  for example, a IMP::core::XYZs to an IMP::Particles (as well as use
+  IMP::Decorators::get_particles()). All methods that take a
+  collection of particles with a certain type now instead take a
+  IMP::Decorators.
 
-- A method that has expectations about the particles it takes should take decorators rather than particles. That is, anything which expects IMP::core::XYZ particles, should take an IMP::core::XYZs instead of IMP::Particles.
+- A method that has expectations about the particles it takes should
+  take decorators rather than particles. That is, anything which
+  expects IMP::core::XYZ particles, should take an IMP::core::XYZs
+  instead of IMP::Particles.
 
-- IMP_LIST() now takes an extra argument (the name of the plural container)
+- IMP_LIST() now takes an extra argument (the name of the plural
+  container)
 
-- In C++ IMP::Decorator objects are implicitly convertible to IMP::Particle* objects. Unfortunately, making this work in Python is problematic.
+- In C++ IMP::Decorator objects are implicitly convertible to
+  IMP::Particle* objects. Unfortunately, making this work in Python is
+  problematic.
 
-- More methods take and return decorators rather than IMP::Particles. This means it is clearer what their expectations are and what they produce.
+- More methods take and return decorators rather than
+  IMP::Particles. This means it is clearer what their expectations are
+  and what they produce.
 
 \par Week of May 15
 
-- The IMP::helper module was added and various functionality moved there. See its
-  documentation page for a list of what is there.
+- The IMP::helper module was added and various functionality moved
+  there. See its documentation page for a list of what is there.
 
-- IMP::algebra::SphericalCoords was renamed to IMP::algebra::SphericalVector3D to
-  be consistent with other algebra classes.
+- IMP::algebra::SphericalCoords was renamed to
+  IMP::algebra::SphericalVector3D to be consistent with other algebra
+  classes.
 
-- IMP::algebra::Rotation2D is now IMP::InvalidDefault to be consistent with
-  the other similar classes.
+- IMP::algebra::Rotation2D is now IMP::InvalidDefault to be consistent
+  with the other similar classes.
 
-- We are trying to be a bit more specific about what is expected from a
-  IMP::atom::Hierachy. Towards that end, there are two methods for extracting
-  a representation from a hierarchy, IMP::atom::get_detailed_representation(),
-  and IMP::atom::get_simplified_representation()
+- We are trying to be a bit more specific about what is expected from
+  a IMP::atom::Hierarchy. Towards that end, there are two methods for
+  extracting a representation from a hierarchy,
+  IMP::atom::get_detailed_representation(), and
+  IMP::atom::get_simplified_representation()
 
-- A method has been added to produce a simplified copy of an IMP::atom::Hierarchy.
-  The method is still a bit crude and could benifit from other people inspecting
-  the output and saying how it should be improved.
+- A method has been added to produce a simplified copy of an
+  IMP::atom::Hierarchy.  The method is still a bit crude and could
+  benifit from other people inspecting the output and saying how it
+  should be improved.
 
-- There is now an IMP::algebra::BoundingBoxD (and IMP::algebra::BoundingBox3D) to track bounding boxes. There are methods like IMP::algebra::bound_box(Sphere3D) which gets the bounding box of a sphere.
+- There is now an IMP::algebra::BoundingBoxD (and
+  IMP::algebra::BoundingBox3D) to track bounding boxes. There are
+  methods like IMP::algebra::bound_box(Sphere3D) which gets the
+  bounding box of a sphere.
 
-- Each IMP::Object has its own log level. If IMP::Object::set_log_level() is called
-  with a value other than IMP::DEFAULT, the value is used for code within and
-  called by the object. To support this in your objects you need to add IMP_OBJECT_LOG
-  to the start of each major method. It has been added to some of the core objects.
+- Each IMP::Object has its own log level. If
+  IMP::Object::set_log_level() is called with a value other than
+  IMP::DEFAULT, the value is used for code within and called by the
+  object. To support this in your objects you need to add
+  IMP_OBJECT_LOG to the start of each major method. It has been added
+  to some of the core objects.
 
 \par Week of May 8
 
-- IMP::atom::MolecularHierarchy has been renamed to IMP::atom::Hierarchy. Use \command{sed -i.old "s#MolecularHierarchy#Hierarchy#g" my_files}
+- IMP::atom::MolecularHierarchy has been renamed to
+  IMP::atom::Hierarchy. Use \command{sed -i.old
+  "s#MolecularHierarchy#Hierarchy#g" my_files}
 
 - the long-deprecated Name(Decorator) was removed
 
-- The decorator suffix has been removed from decorator names. To update your code do \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" **/*.h **/*.cpp **/*.py **/*.i} or \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" `find * -name \*.h -or -name \*.cpp`} (and the various suffixes).
+- The decorator suffix has been removed from decorator names. To
+  update your code do \command{sed -i.old
+  "s#\([a-zA-Z]\)Decorator#\1#g" **/*.h **/*.cpp **/*.py **/*.i} or
+  \command{sed -i.old "s#\([a-zA-Z]\)Decorator#\1#g" `find * -name
+  \*.h -or -name \*.cpp`} (and the various suffixes).
 
-- Unit conventions have been established and documented for distance, energy, force and angle.
+- Unit conventions have been established and documented for distance,
+  energy, force and angle.
 
-- there is a function IMP::atom::create_protein() to create a coarse grained
-  protein. The function is crude so far, but the idea is that we should have
-  standard ways of generating such things so that everyone can benifit from
-  best practices.
+- there is a function IMP::atom::create_protein() to create a coarse
+  grained protein. The function is crude so far, but the idea is that
+  we should have standard ways of generating such things so that
+  everyone can benifit from best practices.
 
-- a class IMP::atom::BondGraph has been added so Boost.Graph algorithms can be used with bond graphs
+- a class IMP::atom::BondGraph has been added so Boost.Graph
+  algorithms can be used with bond graphs
 
 - the \imp-specific doxygen commands have been documented.
 
-- the doxygen commands  unstable{name} and untested{name} have been added to doxygen to be used for marking methods and functions as likely to change or not well tested. Pass the name of the class or method as name.
+- the doxygen commands unstable{name} and untested{name} have been
+  added to doxygen to be used for marking methods and functions as
+  likely to change or not well tested. Pass the name of the class or
+  method as name.
 
-- bonds can now be added to molecular hierarchies automatically see IMP::atom::add_bonds()
+- bonds can now be added to molecular hierarchies automatically see
+  IMP::atom::add_bonds()
 
 \par Week of May 1
 
 - There is a IMP::Rotation2D
 
-- You can now extract fixed Euler ZYZ angles from a IMP::Rotation3D. This code can serve as a template for extracting other Euler angle conventions if they are needed.
+- You can now extract fixed Euler ZYZ angles from a
+  IMP::Rotation3D. This code can serve as a template for extracting
+  other Euler angle conventions if they are needed.
 
-- IMP::algebra::rotation_between_two_vectors() changed to IMP::algebra::rotation_taking_first_to_second() to make it clear which direction the rotation goes.
+- IMP::algebra::rotation_between_two_vectors() changed to
+  IMP::algebra::rotation_taking_first_to_second() to make it clear
+  which direction the rotation goes.
 
 \par Week of April 27
 
-- IMP::Decorator derived objects are now convertible to bool. So code like
-\code
- if (d) {
-    blah
-}
-\endcode
-works.
+- IMP::Decorator derived objects are now convertible to bool. So code
+like \code if (d) { blah } \endcode works.
 
-- IMP::Decorator::cast now returns a null decorator (\c DecoratorName()) rather than throwing an exception. This might make it actually useful.
+- IMP::Decorator::cast now returns a null decorator (\c
+  DecoratorName()) rather than throwing an exception. This might make
+  it actually useful.
 
-- New IMP::statistics module for statistical methods (e.g. clustering).
+- New IMP::statistics module for statistical methods
+  (e.g. clustering).
 
 \par Week of April 20
 
-- Support for taking advantage of rigid bodies in collision detection has been
-  added via the IMP::core::RigidClosePairsFinder.
+- Support for taking advantage of rigid bodies in collision detection
+  has been added via the IMP::core::RigidClosePairsFinder.
 
-- All IMP::core::ClosePairsScoreState-related functinality has been optimized and
-  should be noticeably faster.
+- All IMP::core::ClosePairsScoreState-related functinality has been
+  optimized and should be noticeably faster.
 
-- The EMBED project has been merged into the IMP::em module. Thus, it is no
-  longer necessary to obtain EMBED separately to build IMP::em.
+- The EMBED project has been merged into the IMP::em module. Thus, it
+  is no longer necessary to obtain EMBED separately to build IMP::em.
 
-- All C++ methods which work with std::istream or std::ostream arguments should
-  now be usable from Python: any Python file-like object can be used.
+- All C++ methods which work with std::istream or std::ostream
+  arguments should now be usable from Python: any Python file-like
+  object can be used.
 
-- The SWIG interface now ties in to the reference counting mechanism used in
-  the C++ code, for all classes derived from IMP::RefCounted. So, for example,
-  deleting a Python object should not free the underlying C++ object if another
-  C++ object holds a reference to it, and unrefing a C++ object should not
-  delete it if a Python object still holds a reference to it. There should be no
-  further need to manually keep references to Python objects to prevent things
-  from being prematurely cleaned up. This should be transparent to the user;
-  please report any problems.
+- The SWIG interface now ties in to the reference counting mechanism
+  used in the C++ code, for all classes derived from
+  IMP::RefCounted. So, for example, deleting a Python object should
+  not free the underlying C++ object if another C++ object holds a
+  reference to it, and unrefing a C++ object should not delete it if a
+  Python object still holds a reference to it. There should be no
+  further need to manually keep references to Python objects to
+  prevent things from being prematurely cleaned up. This should be
+  transparent to the user; please report any problems.
 
-- IMP::atom::AtomDecorator no longer inherits from IMP::core::XYZDecorator.
+- IMP::atom::AtomDecorator no longer inherits from
+  IMP::core::XYZDecorator.
 
 \par Week of April 13
 
-- The decorators IMP::atom::AtomDecorator, IMP::atom::ChainDecorator, IMP::atom::ResidueDecorator etc. now inhertic from IMP::atom::MolecularHierarchyDecorator. This means they can set their IMP::atom::MolecularHierarchyDecorator::Type properly and saves a lot of typing in the common case. We can always make hierarchy decorators zero memory overhead if we find that the cost matters.
+- The decorators IMP::atom::AtomDecorator, IMP::atom::ChainDecorator,
+  IMP::atom::ResidueDecorator etc. now inhertic from
+  IMP::atom::MolecularHierarchyDecorator. This means they can set
+  their IMP::atom::MolecularHierarchyDecorator::Type properly and
+  saves a lot of typing in the common case. We can always make
+  hierarchy decorators zero memory overhead if we find that the cost
+  matters.
 
-- The base classes IMP::Comparable, IMP::NullDefault, IMP::ValidDefault and IMP::UninitializedDefault were added to document what the default constructors do for various objects in \imp.
+- The base classes IMP::Comparable, IMP::NullDefault,
+  IMP::ValidDefault and IMP::UninitializedDefault were added to
+  document what the default constructors do for various objects in
+  \imp.
 
 \par Week of April 6
 
-- IMP::Object now defines pure virtual methods IMP::Object::get_version_info() and IMP::Object::show(). All non-abstract classes which inherit from IMP::Object must implement them. Doing this means they are more uniformly implemented and are documented in one place.
+- IMP::Object now defines pure virtual methods
+  IMP::Object::get_version_info() and IMP::Object::show(). All
+  non-abstract classes which inherit from IMP::Object must implement
+  them. Doing this means they are more uniformly implemented and are
+  documented in one place.
 
-- IMP::Object is now reference counted (the only objects this changes are IMP::Model and IMP::Optimizer). As a result optimizers and IMP::Model objects must be created on the heap.
+- IMP::Object is now reference counted (the only objects this changes
+  are IMP::Model and IMP::Optimizer). As a result optimizers and
+  IMP::Model objects must be created on the heap.
 
-- IMP::RefCounted has had its name changed and no longer inherits from IMP::Object. This makes it easier to use independently.
+- IMP::RefCounted has had its name changed and no longer inherits from
+  IMP::Object. This makes it easier to use independently.
 
-- the docs for reference counting (IMP::RefCounted) and \ref decorators decorators (and IMP::Decorator) have been improved
+- the docs for reference counting (IMP::RefCounted) and \ref
+  decorators decorators (and IMP::Decorator) have been improved
 
-- running doxygen produces no warnings. Let's try to keep it that way. Run \command{scons doc > /dev/null} before you check in large blocks of new code to make sure that you didn't introduce warnings.
+- running doxygen produces no warnings. Let's try to keep it that
+  way. Run \command{scons doc > /dev/null} before you check in large
+  blocks of new code to make sure that you didn't introduce warnings.
 
-- Helper classes have been added to make SingletonModiefier and PairModifier objects look like functors for C++ and python. This makes it so you can use \c map in Python and \c for_each in C++. See IMP::SingletonFunctor and IMP::PairFunctor for more information.
+- Helper classes have been added to make SingletonModiefier and
+  PairModifier objects look like functors for C++ and python. This
+  makes it so you can use \c map in Python and \c for_each in C++. See
+  IMP::SingletonFunctor and IMP::PairFunctor for more information.
 
-- The recent changes page has moved to a doxygen page to make it easier to link changes back to the relevant source code.
+- The recent changes page has moved to a doxygen page to make it
+  easier to link changes back to the relevant source code.
 
 \par Week of March 20:
 
-- create_rigid_body(), create_rigid_bodies(), create_centroid() etc. now require you to add the score state to the model yourself. Whether the rigid body is enforced or not can be controlled by adding or removing the returned IMP::ScoreState.
+- create_rigid_body(), create_rigid_bodies(), create_centroid()
+  etc. now require you to add the score state to the model
+  yourself. Whether the rigid body is enforced or not can be
+  controlled by adding or removing the returned IMP::ScoreState.
 
-- All previously deprecated code has been removed. This includes indexes in particles, the no-argument constructor for particles and the functionality that was moved from core to atom.
+- All previously deprecated code has been removed. This includes
+  indexes in particles, the no-argument constructor for particles and
+  the functionality that was moved from core to atom.
 
-- The IMP::core::RigidBodyDecorator and IMP::core::RigidMemberDecorator have been simplified by removing the traits classes. There is now only one type of rigid body and it stores the list of member particles internally.
+- The IMP::core::RigidBodyDecorator and
+  IMP::core::RigidMemberDecorator have been simplified by removing the
+  traits classes. There is now only one type of rigid body and it
+  stores the list of member particles internally.
 
-- IMP::core::NameDecorator has been deprecated as IMP::Particles have built in names (use IMP::Particle::get_name(), IMP::Particle::set_name()).
+- IMP::core::NameDecorator has been deprecated as IMP::Particles have
+  built in names (use IMP::Particle::get_name(),
+  IMP::Particle::set_name()).
 
 - IMP::atom::ChainDecorator has been added
 
 \par Week of March 13:
 
-- A new IMP::display::Writer, IMP::display::ChimeraWriter has been added which exports geometry to native Chimera constructs. It probably should be used instead of bild and cmm for most purposes as it combines the best of both types.
+- A new IMP::display::Writer, IMP::display::ChimeraWriter has been
+  added which exports geometry to native Chimera constructs. It
+  probably should be used instead of bild and cmm for most purposes as
+  it combines the best of both types.
 
-- compose() for transformation is now a free function so compose(rotation, vector) will work via promotions.
+- compose() for transformation is now a free function so
+  compose(rotation, vector) will work via promotions.
 
- - the geometry classes have been cleaned up and are now more consistent with IMP standards (and more likely to do what their names/comments suggest). See IMP::algebra::Sphere3D, IMP::algebra::Cylinder3D, IMP::algebra::Segment3D, IMP::algebra::Plane3D etc.
+ - the geometry classes have been cleaned up and are now more
+   consistent with IMP standards (and more likely to do what their
+   names/comments suggest). See IMP::algebra::Sphere3D,
+   IMP::algebra::Cylinder3D, IMP::algebra::Segment3D,
+   IMP::algebra::Plane3D etc.
 
-- ParticleRefiner has been renamed to IMP::Refiner since the Particle was long and unnecessary. 
+- ParticleRefiner has been renamed to IMP::Refiner since the Particle
+  was long and unnecessary.
 
 */

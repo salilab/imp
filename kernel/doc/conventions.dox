@@ -30,7 +30,7 @@
     more info. These all have a IMP::Object::show() method and an
     IMP::Object::get_version_info() method.
     - data objects which do not inherit from IMP::Object. These are passed by value or
-    \cc const reference and copies of them should be stored when they are stored. Data
+    \c const reference and copies of them should be stored when they are stored. Data
     objects are never passed using pointers. Data objects are divided into several
     groups based on what the default contructor does. The groups are
     IMP::UninitializedDefault, IMP::ValidDefault, IMP::NullDefault.

@@ -1,7 +1,7 @@
 /** 
     \page coding_conventions Coding conventions
 
-    Make sure you read the \ref conventions "IMP Conventions page first".
+    Make sure you read the \ref conventions "API conventions" page first.
 
     To ensure code consistency and readability, certain conventions should be
     adhered to when writing code for \imp. Some of these conventions are
