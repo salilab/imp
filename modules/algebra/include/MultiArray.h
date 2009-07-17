@@ -19,6 +19,7 @@
 #include "IMP/algebra/internal/multi_array_helpers.h"
 #include "IMP/algebra/VectorD.h"
 #include <ctime>
+#include "boost/version.hpp"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -41,7 +42,7 @@ class MultiArray
 public:
   typedef boost::multi_array_types::index index;
   typedef boost::multi_array_types::size_type size_type;
-  typedef boost::multi_array_types::extent_gen extent_gen;
+//  typedef boost::multi_array_types::extent_gen extent_gen;
   typedef boost::multi_array<T, D> BMA;
   typedef MultiArray<T, D> This;
 
@@ -597,34 +598,32 @@ public:
   /**
     \param[in] padded the MultiArray padded
   **/
-  void pad(This& padded) {
-    double avg = this->compute_avg();
-    this->pad(padded,avg);
-  }
+//  void pad(This& padded) {
+//    double avg = this->compute_avg();
+//    this->pad(padded,avg);
+//  }
 
-  //! Pad with a given value
+  //! Pad with a given value (only works for boost 1.37 and higher)
   /**
     \param[out] padded the output MultiArray
     \param[in] val the value to pad with
   **/
-  void pad(This& padded,T val) {
-    // Resize
-    boost::array<index, D> extents;
+//  void pad(This& padded,T val) {
 //    std::vector<int> extents(D);
-    for(int i=0;i<D;i++) {
-      extents[i]=2*this->get_size(i);
-    }
-    padded.resize(extents);
-    // Copy values
-    padded.fill_with_value(val);
-    std::vector<index> idx(D),idx_for_padded(D);
-    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-      for(int i=0;i<D;i++) {
-        idx_for_padded[i]=idx[i]+(int)this->get_size(i)/2;
-      }
-      padded(idx_for_padded)=(*this)(idx);
-    }
-  }
+//    for(int i=0;i<D;i++) {
+//      extents[i]=2*this->get_size(i);
+//    }
+//    padded.resize(extents);
+//    // Copy values
+//    padded.fill_with_value(val);
+//    std::vector<index> idx(D),idx_for_padded(D);
+//    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
+//      for(int i=0;i<D;i++) {
+//        idx_for_padded[i]=idx[i]+(int)this->get_size(i)/2;
+//      }
+//      padded(idx_for_padded)=(*this)(idx);
+//    }
+//  }
 
   //! Cast values
   template<typename T1>
@@ -634,31 +633,6 @@ public:
     out.resize(shape);
     for(unsigned int i=0; i<this->num_elements(); i++) {
       out.data()[i] = this->data()[i];
-    }
-  }
-
-  //! Float the MultiArray. Float is defined as substract the average,
-  //! doubling size in each dimension, and fill new elements with zeros.
-  /**
-    \param[in] floated the MultiArray floated
-  **/
-  void float_with_average(This& floated) {
-    double avg = this->compute_avg();
-    // Resize
-    boost::array<index, D> extents;
-//    std::vector<int> extents(D);
-    for(int i=0;i<D;i++) {
-      extents[i]=2*this->get_size(i);
-    }
-    floated.resize(extents);
-    // Copy values
-    floated.fill_with_value(0.0);
-    std::vector<index> idx(D),idx_for_floated(D);
-    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
-      for(int i=0;i<D;i++) {
-        idx_for_floated[i]=idx[i]+(int)this->get_size(i)/2;
-      }
-      floated(idx_for_floated)=(*this)(idx)-avg;
     }
   }
 
