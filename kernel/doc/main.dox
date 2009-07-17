@@ -12,7 +12,10 @@
    Instructions on how to build and install \imp can be found in
    the \ref installation "installation instructions". Once \imp
    is built and installed, read the \ref introduction "Introduction to IMP"
-   to get an overview of how \imp works. Users should use the stable
+   to get an overview of how \imp works. Paying attention to the 
+   \ref conventions "conventions" used in %IMP will make your life easier.
+
+   Users should use the stable
    branch of \imp (https://svn.salilab.org/imp/branches/stable/) or a
    pre-built binary.
 
@@ -29,7 +32,8 @@
  \section developers IMP developers
 
   In addition to the user documentation, developers should also be familiar
-  with the \ref devguide "developers guide" and monitor the \impdev email list.
+  with the \ref coding_conventions "coding conventions" and
+  \ref devguide "developers guide" and monitor the \impdev email list.
 
 
  \section key_pages Key pages
@@ -47,5 +51,4 @@
  - \salilab{imp/archives/imp-dev/,imp-dev list archive}
  - \ref installation "Installation Instructions"
  - \ref introduction "Introduction to IMP"
- - \wiki{FrontPage,Wiki}
  */
