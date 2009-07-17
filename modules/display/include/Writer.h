@@ -34,12 +34,11 @@ class IMPDISPLAYEXPORT Writer: public Object
     if (!out_.is_open() && !file_name_.empty()) {
       out_.open(file_name_.c_str());
       if (!out_.is_open()) {
-        throw InvalidStateException("Could not open output file");
+        IMP_failure("Could not open output file " << file_name_,
+                    InvalidStateException);
       }
       on_open();
     }
-    IMP_check(out_.is_open(), "Error opening file '" << file_name_ << "'",
-               InvalidStateException);
     return out_;
   }
 
