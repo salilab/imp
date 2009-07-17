@@ -78,6 +78,37 @@ public:
     this->reindex(start);
  }
 
+
+  //! Pad with a given value. Padding is defined as doubling the size
+  //! in each dimension and fill the new values with the value.
+  /**
+    \param[out] padded the output MultiArray
+    \param[in] val the value to pad with
+  **/
+  void pad(This& padded,T val) {
+    padded.resize(2*this->get_size(0),2*this->get_size(1),2*this->get_size(2));
+    // Copy values
+    padded.fill_with_value(val);
+    std::vector<index> idx(3),idx_for_padded(3);
+    while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
+      for(int i=0;i<3;i++) {
+        idx_for_padded[i]=idx[i]+(int)this->get_size(i)/2;
+      }
+      padded(idx_for_padded)=(*this)(idx);
+    }
+  }
+
+  //! Pad the MultiArray. Padding is defined as doubling the size
+  //! in each dimension and fill the new values with the previous average value.
+  /**
+    \param[in] padded the MultiArray padded
+  **/
+  void pad(This& padded) {
+    double avg = this->compute_avg();
+    this->pad(padded,avg);
+  }
+
+
   //! Access operator. The returned element is the LOGICAL element of the
   //! matrix, NOT the direct one
   /**
