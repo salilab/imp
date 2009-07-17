@@ -49,7 +49,7 @@ IMPATOM_BEGIN_NAMESPACE
 IMPATOMEXPORT double volume_from_mass_in_kDa(double v);
 
 
-//! Estimate the mass of a protein from the numnber of amino acids
+//! Estimate the mass of a protein from the number of amino acids
 /** This function currently uses the numbers from
     \external{http://en.wikipedia.org/wiki/Protein,wikipedia} that yeast
     proteins average 53kDa in mass and 466 residues in length.
