@@ -53,6 +53,7 @@ void test_one(std::string name,
 
 int main() {
   set_log_level(SILENT);
+  set_check_level(IMP::NONE);
   Pointer<Model> m(new Model());
   Particles atoms;
   std::vector<RigidBody> rbs;
@@ -83,10 +84,7 @@ int main() {
     //lsc->set_particles(atoms);
     cpss->set_close_pairs_finder(qcpf);
     //std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", m, rbs, 10);
-
     test_one("quadratic", m, rbs, 100);
-
     test_one("quadratic", m, rbs, 1000);
 
   }
@@ -99,10 +97,7 @@ int main() {
     IMP_NEW(RigidClosePairsFinder, rcps, ());
     cpss->set_close_pairs_finder(rcps);
     //std::cout << "Hierarchy:" << std::endl;
-    test_one("hierarchy", m, rbs, 10);
-
     test_one("hierarchy", m, rbs, 100);
-
     test_one("hierarchy", m, rbs, 1000);
 
   }

@@ -17,6 +17,7 @@ void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax) {
   set_log_level(SILENT);
+  set_check_level(IMP::NONE);
   Vector3D minc(0,0,0), maxc(10,10,10);
   Model *m= new Model();
   Particles ps = create_xyzr_particles(m, n, rmin);
@@ -29,7 +30,6 @@ void test_one(std::string name,
   cpss->set_slack(0);
   cpss->set_close_pairs_finder(cpf);
 
-  set_check_level(NONE);
   double setuptime;
   IMP_TIME({
       for (unsigned int i=0; i< ps.size(); ++i) {

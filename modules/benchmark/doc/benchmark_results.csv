@@ -7,10 +7,8 @@ quadratic 10000 0.5, 0.000344069, 0
 grid 1000 1, 0, 0
 grid 10000 0.1, 2.08568e-05, 0
 grid 10000 0.5, 1.89979e-05, 0
-rigid quadratic 10, 0.378845, 0
 rigid quadratic 100, 0.352644, 0
 rigid quadratic 1000, 0.333796, 0
-rigid hierarchy 10, 0.510564, 0
 rigid hierarchy 100, 0.059368, 0
 rigid hierarchy 1000, 0.00232316, 0
 rotation (cache), 8.97247e-05, 217918
@@ -31,10 +29,8 @@ quadratic 10000 0.5, 0.000344069, 0
 grid 1000 1, 0, 0
 grid 10000 0.1, 2.08568e-05, 0
 grid 10000 0.5, 1.89979e-05, 0
-rigid quadratic 10, 0.378845, 0
 rigid quadratic 100, 0.352644, 0
 rigid quadratic 1000, 0.333796, 0
-rigid hierarchy 10, 0.510564, 0
 rigid hierarchy 100, 0.059368, 0
 rigid hierarchy 1000, 0.00232316, 0
 rotation (cache), 8.97247e-05, 217918
@@ -59,10 +55,8 @@ box 10000 0.5, 1.69275e-05, 235867
 grid 1000 1, 0, 13224.8
 grid 10000 0.1, 1.92182e-05, 1945.52
 grid 10000 0.5, 2.60792e-05, 168295
-rigid quadratic 10, 0.383148, 0
 rigid quadratic 100, 0.347652, 0
 rigid quadratic 1000, 0.3439, 0
-rigid hierarchy 10, 0.475935, 0
 rigid hierarchy 100, 0.0535882, 0
 rigid hierarchy 1000, 0.00258369, 0
 rotation (cache), 8.95865e-05, 532018
@@ -86,10 +80,8 @@ box 10000 0.5, 0.000342438, 241319
 grid 1000 1, 1.29004e-06, 11907.3
 grid 10000 0.1, 0.000341167, 1765.33
 grid 10000 0.5, 0.000341763, 167129
-rigid quadratic 10, 2.51706, 0
 rigid quadratic 100, 2.31704, 0
 rigid quadratic 1000, 2.26205, 0
-rigid hierarchy 10, 1.32038, 0
 rigid hierarchy 100, 0.180128, 0
 rigid hierarchy 1000, 0.00989206, 0
 rotation (cache), 0.000474563, -99387.5
@@ -104,56 +96,52 @@ xyz *internal large, 302.56, 1.56319e+11
 xyz decorator large, 126.42, 1.56319e+11
 date,  07/17/09
 mode,fast
-connectivity, 0.8225, 58.6575
-quadratic 1000 1, 6.47975e-08, 18206.6
-quadratic 10000 0.1, 0.000470818, 2092.05
-quadratic 10000 0.5, 0.00057686, 239359
-box 1000 1, 2.72976e-07, 17707
-box 10000 0.1, 8.78554e-06, 1955.5
-box 10000 0.5, 1.69275e-05, 235867
-grid 1000 1, 0, 13224.8
-grid 10000 0.1, 1.92182e-05, 1945.52
-grid 10000 0.5, 2.60792e-05, 168295
-rigid quadratic 10, 0.383148, 0
-rigid quadratic 100, 0.347652, 0
-rigid quadratic 1000, 0.3439, 0
-rigid hierarchy 10, 0.475935, 0
-rigid hierarchy 100, 0.0535882, 0
-rigid hierarchy 1000, 0.00258369, 0
-rotation (cache), 8.95865e-05, 532018
-rotation (nocache), 0.000156553, -686342
-xyz vector small, 0.0185926, 1.50082e+07
-xyz internal small, 0.0185185, 1.50082e+07
-xyz *internal small, 0.0184559, 1.50082e+07
-xyz decorator small, 0.0183824, 1.50082e+07
-xyz vector large, 161.27, 1.56319e+11
-xyz internal large, 47.5, 1.56319e+11
-xyz *internal large, 129.41, 1.56319e+11
-xyz decorator large, 42.7, 1.56319e+11
+connectivity,0.827500,5.534296e+01
+quadratic 1000 1,0.000000,1.674836e+04
+quadratic 10000 0.1,0.000300,2.072187e+03
+quadratic 10000 0.5,0.000338,2.407893e+05
+box 1000 1,0.000000,1.729331e+04
+box 10000 0.1,0.000005,2.124610e+03
+box 10000 0.5,0.000016,2.450959e+05
+grid 1000 1,0.000000,1.227792e+04
+grid 10000 0.1,0.000013,1.997831e+03
+grid 10000 0.5,0.000020,1.637915e+05
+rigid quadratic 100,0.342664,0.000000e+00
+rigid quadratic 1000,0.331414,0.000000e+00
+rigid hierarchy 100,0.066863,0.000000e+00
+rigid hierarchy 1000,0.002487,0.000000e+00
+rotation (cache),0.000089,6.242534e+05
+rotation (nocache),0.000155,-4.904174e+05
+xyz vector small,0.018519,1.500823e+07
+xyz internal small,0.018519,1.500823e+07
+xyz *internal small,0.018519,1.500823e+07
+xyz decorator small,0.018382,1.500823e+07
+xyz vector large,158.280000,1.563192e+11
+xyz internal large,55.400000,1.563192e+11
+xyz *internal large,140.050000,1.563192e+11
+xyz decorator large,42.720000,1.563192e+11
 mode,release
-connectivity, 0.97, 44.9068
-quadratic 1000 1, 6.25894e-06, 18230.5
-quadratic 10000 0.1, 5.88801, 33.1283
-quadratic 10000 0.5, 6.488, 18041.7
-box 1000 1, 5.93199e-07, 16133.3
-box 10000 0.1, 0.000316532, 2198.41
-box 10000 0.5, 0.000342438, 241319
-grid 1000 1, 1.29004e-06, 11907.3
-grid 10000 0.1, 0.000341167, 1765.33
-grid 10000 0.5, 0.000341763, 167129
-rigid quadratic 10, 2.51706, 0
-rigid quadratic 100, 2.31704, 0
-rigid quadratic 1000, 2.26205, 0
-rigid hierarchy 10, 1.32038, 0
-rigid hierarchy 100, 0.180128, 0
-rigid hierarchy 1000, 0.00989206, 0
-rotation (cache), 0.000474563, -99387.5
-rotation (nocache), 0.00776398, 2217.93
-xyz vector small, 0.106667, 1.50082e+07
-xyz internal small, 0.0540426, 1.50082e+07
-xyz *internal small, 0.0547826, 1.50082e+07
-xyz decorator small, 0.0538298, 1.50082e+07
-xyz vector large, 589.24, 1.56319e+11
-xyz internal large, 157.59, 1.56319e+11
-xyz *internal large, 302.56, 1.56319e+11
-xyz decorator large, 126.42, 1.56319e+11
+connectivity,0.953333,4.410267e+01
+quadratic 1000 1,0.000006,1.606315e+04
+quadratic 10000 0.1,5.778054,3.399684e+01
+quadratic 10000 0.5,6.208050,1.802173e+04
+box 1000 1,0.000004,1.890199e+04
+box 10000 0.1,0.000153,1.877313e+03
+box 10000 0.5,0.000359,2.461550e+05
+grid 1000 1,0.000004,1.370324e+04
+grid 10000 0.1,0.000378,2.046718e+03
+grid 10000 0.5,0.000194,1.479693e+05
+rigid quadratic 100,2.261566,0.000000e+00
+rigid quadratic 1000,2.251749,0.000000e+00
+rigid hierarchy 100,0.182862,0.000000e+00
+rigid hierarchy 1000,0.010002,0.000000e+00
+rotation (cache),0.000477,-2.436127e+05
+rotation (nocache),0.007764,-2.024375e+04
+xyz vector small,0.103600,1.500823e+07
+xyz internal small,0.053617,1.500823e+07
+xyz *internal small,0.054565,1.500823e+07
+xyz decorator small,0.055556,1.500823e+07
+xyz vector large,579.190000,1.563192e+11
+xyz internal large,204.920000,1.563192e+11
+xyz *internal large,317.570000,1.563192e+11
+xyz decorator large,127.800000,1.563192e+11
