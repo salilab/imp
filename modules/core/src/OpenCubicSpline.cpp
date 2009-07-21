@@ -10,9 +10,15 @@
 IMPCORE_BEGIN_NAMESPACE
 
 OpenCubicSpline::OpenCubicSpline(const std::vector<Float> &values,
-                                 Float minrange, Float spacing) :
-    values_(values), minrange_(minrange), spacing_(spacing)
+                                 Float minrange, Float spacing,
+                                 bool extend) :
+  values_(values), minrange_(minrange), spacing_(spacing),
+  extend_(extend)
 {
+  IMP_check(spacing >0, "The spacing between values must be positive.",
+            ValueException);
+  IMP_check(values.size() >=1, "You must provide at least one value.",
+            ValueException);
   int npoints = values_.size();
   maxrange_ = minrange_ + spacing_ * (npoints - 1);
 
@@ -46,7 +52,12 @@ double OpenCubicSpline::evaluate(double feature) const
 {
   // check for feature in range
   if (feature < minrange_ || feature > maxrange_) {
-    throw ValueException("Value out of range for open cubic spline");
+    if (extend_) {
+      if (feature < minrange_) return values_.front();
+      else return values_.back();
+    } else {
+      throw ValueException("Value out of range for open cubic spline");
+    }
   }
 
   // determine bin index and thus the cubic fragment to use:

@@ -14,9 +14,11 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Open cubic spline function.
-/** This function is defined by evenly-spaced spline values over a finite
-    range, and is non-periodic. Natural boundary conditions (zero second
-    derivatives at termini) are used.
+/** This function interpolates a set of eveny spaced values using a spline.
+    The the second derivative at the termini is set to zero. See
+    ClosedCubicSpline for a periodic version.
+
+    \see ClosedCubicSpline
  */
 class IMPCOREEXPORT OpenCubicSpline : public UnaryFunction
 {
@@ -25,9 +27,11 @@ public:
   /** \param[in] values   Score value at each spline point
       \param[in] minrange Feature value at first spline point
       \param[in] spacing  Distance (in feature space) between points
+      \param[in] extend  If extend is true, the nearest value is used
+      as the value for any feature outside of the range.
    */
   OpenCubicSpline(const Floats &values, Float minrange,
-                  Float spacing);
+                  Float spacing, bool extend=false);
 
   IMP_UNARY_FUNCTION(OpenCubicSpline, internal::version_info);
 private:
@@ -38,6 +42,7 @@ private:
   Float spacing_;
   Float minderiv_;
   Float maxderiv_;
+  bool extend_;
 };
 
 IMPCORE_END_NAMESPACE

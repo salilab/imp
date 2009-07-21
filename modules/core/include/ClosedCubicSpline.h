@@ -14,17 +14,16 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Closed cubic spline function.
-/** This function is defined by evenly-spaced spline values over a finite
-    range, and is periodic.
-    \see OpenCubcSpline
+/** This function is a cubic spline interpolating a set of values.
+    The function is periodic, so the score will also have the same value at
+    minrange + spacing * values.size(). See OpenCubicSpline for a
+    non-periodic spline.
+    \see OpenCubicSpline
  */
 class IMPCOREEXPORT ClosedCubicSpline : public UnaryFunction
 {
 public:
-  //! Constructor.
-  /** \param[in] values   Score value at each spline point. Since the function
-      is periodic, the score will also have the same value at
-      minrange + spacing * values.size()
+  /** \param[in] values   Score value at each spline point.
       \param[in] minrange Feature value at first spline point.
       \param[in] spacing  Distance (in feature space) between points
    */
