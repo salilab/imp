@@ -29,7 +29,8 @@ void PairsOptimizerState::update()
   IMP_LOG(TERSE, "Begin PairsOptimizerState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  std::for_each(c_->particle_pairs_begin(), c_->particle_pairs_end(),
+  ParticlePairs set(c_->particle_pairs_begin(), c_->particle_pairs_end());
+  std::for_each(set.begin(), set.end(),
                 PairFunctor(f_));
 
   IMP_LOG(TERSE, "End PairsOptimizerState::update" << std::endl);
