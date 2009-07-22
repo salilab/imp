@@ -48,7 +48,7 @@ class TestBL(IMP.test.TestCase):
         cpss.set_distance(3)
         print "add cpss"
         cpss.set_close_pairs_finder(IMP.core.QuadraticClosePairsFinder())
-        cpss.add_close_pair_filter(IMP.atom.BondPairContainer())top
+        cpss.add_close_pair_filter(IMP.atom.BondPairContainer())
         m.add_score_state(cpss)
         self._compare_lists(m, cpss)
 
