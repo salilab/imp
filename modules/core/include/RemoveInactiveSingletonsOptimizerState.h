@@ -19,7 +19,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-class ListSingletonContainer;
 
 //! Remove inactive Singletons from a list
 /** This optimizer state can be used to clean up particles which have

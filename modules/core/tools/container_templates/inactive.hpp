@@ -15,7 +15,6 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include <IMP/core/ListGroupnameContainer.h>
-#include <IMP/core/FilteredListGroupnameContainer.h>
 #include <IMP/OptimizerState.h>
 
 IMPCORE_BEGIN_NAMESPACE
