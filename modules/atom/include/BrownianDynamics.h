@@ -97,6 +97,8 @@ private:
   unit::SquareAngstrom feature_size_2_;
   SimulationParameters si_;
   Pointer<SingletonContainer> sc_;
+  unsigned int failed_steps_;
+  unsigned int successful_steps_;
 };
 
 IMPATOM_END_NAMESPACE
