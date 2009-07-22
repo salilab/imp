@@ -42,6 +42,9 @@ BrownianDynamics::BrownianDynamics(SimulationParameters si,
   si_(si)
 {
   if (sc) sc_=sc;
+
+  failed_steps_=0;
+  successful_steps_=0;
 }
 
 
@@ -143,7 +146,6 @@ namespace {
 
 void BrownianDynamics::take_step(SingletonContainer *sc,
                                  unit::Femtosecond dt) {
-  IMP_LOG(TERSE, "dt is " << dt << std::endl);
   for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
     Particle *p= sc->get_particle(i);
     Diffusion d(p);
@@ -260,16 +262,20 @@ double BrownianDynamics::simulate(float max_time_nu)
       take_step(sc, unit::Femtosecond(dt));
       at.add( dt );
       si_.set_last_time_step(dt);
-      dt= std::min(si_.get_maximum_time_step(),dt*1.3);
-      if (dt != si_.get_maximum_time_step()) {
+      dt= std::min(si_.get_maximum_time_step(),dt*1.1);
+      if (dt < si_.get_maximum_time_step()) {
         IMP_LOG(TERSE, "Updating dt to " << dt
                 << " (" << si_.get_maximum_time_step() << ")" << std::endl);
       }
+      ++successful_steps_;
       success=true;
      } catch (const BadStepException &e) {
+      ++failed_steps_;
       IMP_LOG(TERSE, "Reducing step size to " << dt/2.0
               << " because of particle "
-                << e.blamed->get_name() << std::endl);
+              << e.blamed->get_name()
+              << " steps: " << failed_steps_ << " vs "
+              << successful_steps_ << std::endl);
       revert_coordinates(sc, old_coordinates);
       get_model()->evaluate(true);
       dt= dt/2.0;
