@@ -52,7 +52,7 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       input list (or lists, for the bipartite version) to the out
       list. You can add filters to the out list to prevent centerain
       pairs or types of pairs from being added to the list of close
-      pairs. For example, see IMP::atom::BondPairContainer.
+      pairs. For example, see IMP::atom::BondPairFilter.
       @{
    */
   virtual void add_close_pairs(SingletonContainer *pc,

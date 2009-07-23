@@ -1,5 +1,12 @@
 /** \page recent Change History
 
+\par Week of July 18
+
+- The atom::BondPairContainer has been renamed to atom::BondPairFilter
+  since it wasn't a real container. A real atom::BondPairContainer has
+  been added.
+
+
 \par Week of July 11
 
 - Per Javi's suggestion, the conventions have been split into \ref
