@@ -34,7 +34,7 @@ public:
      The default is "radius".
    */
   static XYZR create(Particle *p,
-                              FloatKey radius_key= FloatKey("radius")) {
+                     FloatKey radius_key= get_default_radius_key()) {
     if (!XYZ::is_instance_of(p)) {
       XYZ::create(p);
     }
@@ -52,7 +52,7 @@ public:
    */
   static XYZR create(Particle *p,
                      Float radius,
-                     FloatKey radius_key= FloatKey("radius")) {
+                     FloatKey radius_key= get_default_radius_key()) {
     p->add_attribute(radius_key, radius, false);
     return XYZR(p, radius_key);
   }
@@ -65,7 +65,7 @@ public:
    */
   static XYZR create(Particle *p,
                      const algebra::Sphere3D &s,
-                     FloatKey radius_key= FloatKey("radius")) {
+                     FloatKey radius_key= get_default_radius_key()) {
     XYZ::create(p, s.get_center());
     p->add_attribute(radius_key, s.get_radius(), false);
     return XYZR(p, radius_key);
@@ -73,7 +73,7 @@ public:
 
   //! Check if the particle has the required attributes
   static bool is_instance_of(Particle *p,
-                             FloatKey radius_key= FloatKey("radius")) {
+                             FloatKey radius_key= get_default_radius_key()) {
     return p->has_attribute(radius_key);
   }
   IMP_DECORATOR_GET_SET(radius, get_radius_key(), Float, Float);
@@ -91,7 +91,7 @@ public:
   }
   //! Get the default radius key.
   static FloatKey get_default_radius_key() {
-    return IMP::internal::radius_key;
+    return IMP::internal::xyzr_keys[3];
   }
 };
 
