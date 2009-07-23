@@ -115,7 +115,7 @@ public:
   void set_identity() {
     IMP_assert(is_square(), "the matrix must be square");
     this->init_zeros();
-    for (unsigned int i = 0; i < get_number_of_rows(); i++) {
+    for (int i = 0; i < get_number_of_rows(); i++) {
       (*this)(i,i)=1.;
     }
   }
