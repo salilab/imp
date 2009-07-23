@@ -34,8 +34,14 @@ files = ['base_types.cpp', 'Model.cpp', 'FailureHandler.cpp',
          'SingletonContainer.cpp', 'PairContainer.cpp', 'utility.cpp'
         ] + internal_files + [directories]
 
-# Build the shared library:
-lib = env.SharedLibrary('#/build/lib/imp', files)
+
+
+if env['build']=='profile' and env['CC'] == 'gcc':
+    lib = env.StaticLibrary('#/build/lib/imp', files)
+else:
+    # Build the shared library:
+    lib = env.SharedLibrary('#/build/lib/imp', files)
+
 
 # Make sure that any necessary data files are installed in the build
 # directory prior to making the shared libraries available
@@ -44,18 +50,13 @@ env.Requires(lib, '#/build/data')
 # Install the library:
 libdir = env.GetInstallDirectory('libdir')
 libinst = env.Install(libdir, lib)
-
-if env['build']=='profile' and env['CC'] == 'gcc':
-    staticlib = env.StaticLibrary('#/build/lib/imp', files)
-    staticlibinst = env.Install(libdir, staticlib)
 if env['PLATFORM'] == 'darwin':
     env.AddPostAction (lib, "install_name_tool -id %s %s" \
                            % (lib[0].abspath, lib[0].path))
     env.AddPostAction (libinst, "install_name_tool -id %s %s" \
                            % (libinst[0].abspath, libinst[0].path))
+
 env.Alias('kernel-install', [libinst])
 env.Alias('install', [libinst])
-if env['build']=='profile' and env['CC'] == 'gcc':
-    Return('lib', 'staticlib')
-else:
-    Return('lib')
+
+Return('lib')

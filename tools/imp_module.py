@@ -205,28 +205,28 @@ def IMPSharedLibrary(env, files, install=True):
        shared library. This is only available from within an environment
        created by `IMPSharedLibraryEnvironment`."""
     module = env['IMP_MODULE']
-    lib = env.SharedLibrary('#/build/lib/imp_%s' % module,
-                            list(files) + [env['VER_CPP'], \
-                                               env['LINK_0_CPP'],\
-                                               env['LINK_1_CPP']])
+
+    if env['build']=='profile' and env['CC'] == 'gcc':
+        lib = env.StaticLibrary('#/build/lib/imp_%s' % module,
+                                      list(files) + [env['VER_CPP'], \
+                                                     env['LINK_0_CPP'],\
+                                                     env['LINK_1_CPP']])
+    else:
+        lib = env.SharedLibrary('#/build/lib/imp_%s' % module,
+                           list(files) + [env['VER_CPP'], \
+                                              env['LINK_0_CPP'],\
+                                              env['LINK_1_CPP']])
+
     # Make sure that any necessary data files are installed in the build
     # directory prior to making the shared libraries available
     env.Requires(lib, '#/build/data')
 
-    if env['build']=='profile' and env['CC'] == 'gcc':
-        staticlib = env.StaticLibrary('#/build/lib/imp_%s' % module,
-                                      list(files) + [env['VER_CPP'], \
-                                                     env['LINK_0_CPP'],\
-                                                     env['LINK_1_CPP']])
     if env['PLATFORM'] == 'darwin':
         env.AddPostAction (lib, "install_name_tool -id %s %s" \
                                % (lib[0].abspath, lib[0].path))
         libdir= os.path.split(lib[0].abspath)[0]
     if install:
         libinst = env.Install(env.GetInstallDirectory('libdir'), lib)
-        if env['build']=='profile' and env['CC'] == 'gcc':
-            staticlibinst = env.Install(env.GetInstallDirectory('libdir'),
-                                        staticlib)
         if env['PLATFORM'] == 'darwin':
             env.AddPostAction (libinst, "install_name_tool -id %s %s" \
                                    % (libinst[0].abspath, libinst[0].path))
@@ -238,15 +238,9 @@ def IMPSharedLibrary(env, files, install=True):
         for alias in _get_module_install_aliases(env):
             env.Alias(alias, [libinst])
 
-        if env['build']=='profile' and env['CC'] == 'gcc':
-            return lib, staticlib, libinst, staticlibinst
-        else:
-            return lib, libinst
+        return lib, libinst
     else:
-        if env['build']=='profile' and env['CC'] == 'gcc':
-            return lib, staticlib
-        else:
-            return lib
+        return lib
 
 def IMPSharedLibraryEnvironment(env):
     """Create a customized environment suitable for building IMP module C++
