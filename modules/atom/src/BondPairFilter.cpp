@@ -1,20 +1,20 @@
 /**
- *  \file BondPairContainer.cpp
+ *  \file BondPairFilter.cpp
  *  \brief A fake container that returns true if a pair of particles are bonded
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
  */
 
-#include "IMP/atom/BondPairContainer.h"
+#include "IMP/atom/BondPairFilter.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
-BondPairContainer
-::BondPairContainer(SingletonContainer *sc): sc_(sc){
+BondPairFilter
+::BondPairFilter(){
 }
 
-bool BondPairContainer
+bool BondPairFilter
 ::get_contains_particle_pair(ParticlePair pp) const {
   if (!Bonded::is_instance_of(pp.first)
       || ! Bonded::is_instance_of(pp.second)) {
@@ -24,23 +24,24 @@ bool BondPairContainer
   Bonded ba(pp.first);
   Bonded bb(pp.second);
   Bond bd=get_bond(ba, bb);
-  return sc_->get_contains_particle(bd);
+  return bd != Bond();
 }
 
-unsigned int BondPairContainer
+unsigned int BondPairFilter
 ::get_number_of_particle_pairs() const {
-  return sc_->get_number_of_particles();
+  return 0;
 }
 
-ParticlePair BondPairContainer
+ParticlePair BondPairFilter
 ::get_particle_pair(unsigned int i) const {
-  Bond bd(sc_->get_particle(i));
-  return ParticlePair(bd.get_bonded(0), bd.get_bonded(1));
+  throw InvalidStateException("BondPairFilter does" \
+                              " not contain any pairs");
+  return ParticlePair();
 }
 
 
-void BondPairContainer::show(std::ostream &out) const {
-  out << "BondPairContainer" << std::endl;
+void BondPairFilter::show(std::ostream &out) const {
+  out << "BondPairFilter" << std::endl;
 }
 
 IMPATOM_END_NAMESPACE

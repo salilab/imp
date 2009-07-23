@@ -37,6 +37,7 @@
 %include "IMP/atom/estimates.h"
 %include "IMP/atom/BondEndpointsRefiner.h"
 %include "IMP/atom/BondPairContainer.h"
+%include "IMP/atom/BondPairFilter.h"
 %include "IMP/atom/BondSingletonScore.h"
 %include "IMP/atom/BrownianDynamics.h"
 %include "IMP/atom/Diffusion.h"

@@ -13,20 +13,23 @@
 #include "internal/version_info.h"
 
 #include <IMP/PairContainer.h>
+#include <IMP/SingletonContainer.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! A container that pretends to contain all bonds.
-/** This is to be used with a ClosePairsScoreState to exclude all bonded pairs.
+//! A container that returns pairs of the endpoints of the bonds.
+/** Turn a container of Bond particles into a container of ParticlePair
+    objects of the endpoints.
     \ingroup bond
     \see Bonded
  */
 class IMPATOMEXPORT BondPairContainer :
   public PairContainer
 {
+  Pointer<SingletonContainer> sc_;
 public:
-  //! no arguments
-  BondPairContainer();
+  //! The container containing the bonds
+  BondPairContainer(SingletonContainer *sc);
 
   IMP_PAIR_CONTAINER(BondPairContainer, internal::version_info)
 };

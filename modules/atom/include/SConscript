@@ -4,6 +4,7 @@ files = [
          'Atom.h',
          'BondEndpointsRefiner.h',
          'BondPairContainer.h',
+         'BondPairFilter.h',
          'BondSingletonScore.h',
          'BrownianDynamics.h',
          'Chain.h',
@@ -19,12 +20,12 @@ files = [
          'VelocityScalingOptimizerState.h',
          'bond_decorators.h',
          'bond_graph.h',
+         'distance.h',
          'estimates.h',
          'force_fields.h',
          'macros.h',
          'pdb.h',
          'selectors.h',
-         'distance.h',
         ] \
         + SConscript('internal/SConscript')
 
