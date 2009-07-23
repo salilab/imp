@@ -78,18 +78,6 @@ unsigned int graph_get_number_of_edges(Particle *a, const GraphData &d)
   return d.get_size(a);
 }
 
-Particle* graph_get_node(Particle *a, int i, const GraphData &d)
-{
-  IMP_assert(i<2, "bad node requested");
-  return a->get_value(d.node_keys_[i]);
-}
-
-bool graph_is_edge(Particle *a, const GraphData &d)
-{
-  return a->has_attribute(d.node_keys_[0])
-         && a->has_attribute(d.node_keys_[1]);
-}
-
 void graph_initialize_edge(Particle *a, const GraphData &d)
 {
   a->add_attribute(d.node_keys_[0], NULL);

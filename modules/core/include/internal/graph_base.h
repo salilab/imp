@@ -66,11 +66,23 @@ IMPCOREEXPORT unsigned int graph_get_number_of_edges(Particle *a,
                                                     const GraphData &d);
 
 /** \internal */
-IMPCOREEXPORT Particle* graph_get_node(Particle *a, int i,
-                                      const GraphData &d);
+inline Particle* graph_get_node(Particle *a, int i,
+                                      const GraphData &d)
+{
+  IMP_assert(i<2, "bad node requested");
+  return a->get_value(d.node_keys_[i]);
+}
+
 
 /** \internal */
-IMPCOREEXPORT bool graph_is_edge(Particle *a, const GraphData &d);
+inline bool graph_is_edge(Particle *a, const GraphData &d) {
+  IMP_assert((a->has_attribute(d.node_keys_[0])
+              && a->has_attribute(d.node_keys_[1])) ||
+             (!a->has_attribute(d.node_keys_[0])
+              && !a->has_attribute(d.node_keys_[1])),
+             "Potential graph edge is in invalid state.");
+  return a->has_attribute(d.node_keys_[0]);
+}
 
 /** \internal */
 IMPCOREEXPORT void graph_initialize_edge(Particle *a, const GraphData &d);
