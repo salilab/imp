@@ -136,7 +136,8 @@ def _add_build_flags(env):
     if env['build'] == 'fast':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=["-O3"])
+            env.Append(CCFLAGS=["-O3", "-fexpensive-optimizations",
+                                "-ffast-math"])
     elif env['build'] == 'release':
         if env['CC'] == 'gcc':
             env.Append(CCFLAGS=["-O2"])
@@ -146,9 +147,10 @@ def _add_build_flags(env):
     elif env['build'] == 'profile':
         env.Append(CPPDEFINES=['NDEBUG'])
         if env['CC'] == 'gcc':
-            env.Append(CCFLAGS=[ "-O3"])
+            env.Append(CCFLAGS=[ "-O3", "-fexpensive-optimizations",
+                                 "-ffast-math"])
             env.Append(CCFLAGS=['-g', '-pg'])
-            env.Append(LINKFLAGS=['-pg'])
+            env.Append(LINKFLAGS=['-pg', '-static'])
 
 def CheckGNUHash(context):
     """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
