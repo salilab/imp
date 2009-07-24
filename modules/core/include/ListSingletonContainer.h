@@ -66,6 +66,16 @@ public:
 
   virtual void show(std::ostream &out = std::cout) const;
 
+  virtual void apply(const SingletonModifier *sm);
+
+  virtual void apply(const SingletonModifier *sm, DerivativeAccumulator *da);
+
+  virtual double evaluate(const SingletonScore *s,
+                          DerivativeAccumulator *da) const;
+
+  virtual Particles get_particles() const;
+
+
   // for some reason swig gets this wrong
   //IMP_REF_COUNTED_DESTRUCTOR(ListSingletonContainer)
   ~ListSingletonContainer(){}

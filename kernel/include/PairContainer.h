@@ -20,6 +20,9 @@
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
 #include "VersionInfo.h"
+#include "PairModifier.h"
+#include "PairScore.h"
+#include "DerivativeAccumulator.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -77,6 +80,19 @@ public:
       ParticlePairIterator(Accessor(const_cast<PairContainer*>(this)),
                         get_number_of_particle_pairs());
     }
+
+  //! Apply a SingletonModifier to the contents
+  virtual void apply(const PairModifier *sm)=0;
+
+  //! Apply a SingletonModifier to the contents
+  virtual void apply(const PairModifier *sm, DerivativeAccumulator *da)=0;
+
+  //! Avaluate a score on the contents
+  virtual double evaluate(const PairScore *s,
+                          DerivativeAccumulator *da) const=0;
+
+  //! Get all the ParticlePairs from the container
+  virtual ParticlePairs get_particle_pairs() const=0;
 
   IMP_REF_COUNTED_DESTRUCTOR(PairContainer)
 };

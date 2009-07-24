@@ -67,4 +67,37 @@ IMP_LIST_IMPL(PairContainerSet,
               PairContainer*,
               PairContainers,,,)
 
+
+void PairContainerSet::apply(const PairModifier *sm) {
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    get_pair_container(i)->apply(sm);
+  }
+}
+
+void PairContainerSet::apply(const PairModifier *sm,
+                               DerivativeAccumulator *da) {
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    get_pair_container(i)->apply(sm, da);
+  }
+}
+
+double PairContainerSet::evaluate(const PairScore *s,
+                                       DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    score+=get_pair_container(i)->evaluate(s, da);
+  }
+  return score;
+}
+
+ParticlePairs PairContainerSet::get_particle_pairs() const {
+  ParticlePairs ret;
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    ParticlePairs c= get_pair_container(i)->get_particle_pairs();
+    ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
+
+
 IMPCORE_END_NAMESPACE

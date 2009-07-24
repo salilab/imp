@@ -67,4 +67,37 @@ IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainer*,
               SingletonContainers,,,)
 
+
+void SingletonContainerSet::apply(const SingletonModifier *sm) {
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    get_singleton_container(i)->apply(sm);
+  }
+}
+
+void SingletonContainerSet::apply(const SingletonModifier *sm,
+                               DerivativeAccumulator *da) {
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    get_singleton_container(i)->apply(sm, da);
+  }
+}
+
+double SingletonContainerSet::evaluate(const SingletonScore *s,
+                                       DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    score+=get_singleton_container(i)->evaluate(s, da);
+  }
+  return score;
+}
+
+Particles SingletonContainerSet::get_particles() const {
+  Particles ret;
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    Particles c= get_singleton_container(i)->get_particles();
+    ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
+
+
 IMPCORE_END_NAMESPACE

@@ -13,7 +13,6 @@
 #include "config.h"
 #include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
-#include "SingletonContainer.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "VectorOfRefCounted.h"
@@ -75,11 +74,11 @@ typedef VectorOfRefCounted<SingletonModifier*> SingletonModifiers;
     \see IMP::SingletonModifier
  */
 class SingletonFunctor {
-  Pointer<SingletonModifier> f_;
+  Pointer<const SingletonModifier> f_;
   DerivativeAccumulator *da_;
 public:
   //! Store the SingletonModifier and the optional DerivativeAccumulator
-  SingletonFunctor(SingletonModifier *f,
+  SingletonFunctor(const SingletonModifier *f,
                    DerivativeAccumulator *da=NULL): f_(f), da_(da){}
 
   void operator()( Particle* p) const {

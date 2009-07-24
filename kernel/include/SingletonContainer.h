@@ -20,6 +20,9 @@
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
 #include "VersionInfo.h"
+#include "SingletonModifier.h"
+#include "SingletonScore.h"
+#include "DerivativeAccumulator.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -77,6 +80,19 @@ public:
       ParticleIterator(Accessor(const_cast<SingletonContainer*>(this)),
                         get_number_of_particles());
     }
+
+  //! Apply a SingletonModifier to the contents
+  virtual void apply(const SingletonModifier *sm)=0;
+
+  //! Apply a SingletonModifier to the contents
+  virtual void apply(const SingletonModifier *sm, DerivativeAccumulator *da)=0;
+
+  //! Avaluate a score on the contents
+  virtual double evaluate(const SingletonScore *s,
+                          DerivativeAccumulator *da) const=0;
+
+  //! Get all the Particles from the container
+  virtual Particles get_particles() const=0;
 
   IMP_REF_COUNTED_DESTRUCTOR(SingletonContainer)
 };

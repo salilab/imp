@@ -47,4 +47,26 @@ ParticlePair CommonEndpointPairContainer
 }
 
 
+ void CommonEndpointPairContainer
+ ::apply(const PairModifier *sm) {
+   IMP_failure("Not a real container", ErrorException);
+ }
+
+void CommonEndpointPairContainer
+::apply(const PairModifier *sm, DerivativeAccumulator *da) {
+   IMP_failure("Not a real container", ErrorException);
+}
+
+ double CommonEndpointPairContainer
+::evaluate(const PairScore *s,
+           DerivativeAccumulator *da) const {
+   IMP_failure("Not a real container", ErrorException);
+   return 0;
+ }
+
+ParticlePairs CommonEndpointPairContainer::get_particle_pairs() const {
+  IMP_failure("Not a real container", ErrorException);
+  return 0;
+}
+
 IMPMISC_END_NAMESPACE

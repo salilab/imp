@@ -154,10 +154,10 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 %include "IMP/TripletScore.h"
 %include "random.i"
 %include "IMP/Optimizer.h"
-%include "IMP/SingletonContainer.h"
-%include "IMP/PairContainer.h"
 %include "IMP/SingletonModifier.h"
 %include "IMP/PairModifier.h"
+%include "IMP/SingletonContainer.h"
+%include "IMP/PairContainer.h"
 
 
 namespace IMP {

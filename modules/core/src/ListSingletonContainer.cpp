@@ -50,4 +50,37 @@ void ListSingletonContainer::show(std::ostream &out) const {
       << " particles." << std::endl;
 }
 
+void ListSingletonContainer::apply(const SingletonModifier *sm) {
+
+  std::for_each(ListSingletonContainer::particles_begin(),
+                ListSingletonContainer::particles_end(),
+                SingletonFunctor(sm));
+}
+
+void ListSingletonContainer::apply(const SingletonModifier *sm,
+                               DerivativeAccumulator *da) {
+
+  std::for_each(ListSingletonContainer::particles_begin(),
+                ListSingletonContainer::particles_end(),
+                SingletonFunctor(sm, da));
+}
+
+double ListSingletonContainer::evaluate(const SingletonScore *s,
+                                    DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0;
+       i< ListSingletonContainer::get_number_of_particles();
+       ++i) {
+    double lscore= IMP::internal::ContainerTraits<Particle>
+      ::evaluate(s, ListSingletonContainer::get_particle(i), da);
+  }
+  return score;
+}
+
+
+Particles ListSingletonContainer::get_particles() const {
+  return Particles(ListSingletonContainer::particles_begin(),
+                    ListSingletonContainer::particles_end());
+}
+
 IMPCORE_END_NAMESPACE
