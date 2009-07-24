@@ -10,6 +10,7 @@ files = [
          'BrownianDynamics.cpp',
          'Chain.cpp',
          'CharmmParameters.cpp',
+         'CoverBond.cpp',
          'Diffusion.cpp',
          'Domain.cpp',
          'ForceFieldParameters.cpp',
