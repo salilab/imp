@@ -16,6 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 ListPairContainer::ListPairContainer(const ParticlePairs &ps){
   sorted_=false;
+  rev_=0;
   set_particle_pairs(ps);
   set_is_editing(false);
 }
@@ -24,7 +25,8 @@ IMP_LIST_IMPL(ListPairContainer, ParticlePair,
               particle_pair, ParticlePair,ParticlePairs,, {
                 if (sorted_) std::sort(particle_pairs_begin(),
                                        particle_pairs_end());
-              },);
+                ++rev_;
+              },++rev_);
 
 
 void ListPairContainer::set_is_editing(bool tf) {
@@ -33,6 +35,7 @@ void ListPairContainer::set_is_editing(bool tf) {
     sorted_=!tf;
     if (sorted_) {
       std::sort(particle_pairs_begin(), particle_pairs_end());
+      ++rev_;
     }
   }
 }
@@ -81,6 +84,10 @@ double ListPairContainer::evaluate(const PairScore *s,
 ParticlePairs ListPairContainer::get_particle_pairs() const {
   return ParticlePairs(ListPairContainer::particle_pairs_begin(),
                     ListPairContainer::particle_pairs_end());
+}
+
+unsigned int ListPairContainer::get_revision() const {
+  return rev_;
 }
 
 IMPCORE_END_NAMESPACE

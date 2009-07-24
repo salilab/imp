@@ -102,4 +102,8 @@ ParticlePairs AllPairsPairContainer::get_particle_pairs() const {
   return ret;
 }
 
+unsigned int AllPairsPairContainer::get_revision() const {
+  return c_->get_revision();
+}
+
 IMPCORE_END_NAMESPACE

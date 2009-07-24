@@ -29,12 +29,11 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MaximumChangeScoreState: public ScoreState
 {
-  typedef IMP::internal::
-    AttributeTable<IMP::internal::FloatAttributeTableTraits> AT;
   FloatKeys keys_;
-  std::map<Particle*, AT> orig_values_;
+  std::vector<Floats> orig_values_;
   Float maximum_change_;
   Pointer<SingletonContainer> pc_;
+  unsigned int rev_;
 public:
   //! Track the changes with the specified keys.
   MaximumChangeScoreState(SingletonContainer *pc,

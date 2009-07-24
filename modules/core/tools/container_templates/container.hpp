@@ -94,6 +94,14 @@ public:
   //! Get all the Classnames from the container
   virtual Classnames get_classnames() const=0;
 
+  /** \brief The revision number of a container is incremented every time the
+      contents change.
+
+      Anything wishing to monitor a container can simply check if the revision
+      number is different than the last one it saw.
+  */
+  virtual unsigned int get_revision() const =0;
+
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameContainer)
 };
 

@@ -24,6 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ListGroupnameContainer : public GroupnameContainer
 {
   bool sorted_;
+  unsigned int rev_;
 public:
   //! construct and pass an initial set of classnames
   ListGroupnameContainer(const Classnames &ps= Classnames());
@@ -75,6 +76,7 @@ public:
 
   virtual Classnames get_classnames() const;
 
+  virtual unsigned int get_revision() const;
 
   // for some reason swig gets this wrong
   //IMP_REF_COUNTED_DESTRUCTOR(ListGroupnameContainer)

@@ -24,6 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT SingletonContainerSet
   : public SingletonContainer
 {
+  unsigned int rev_;
 public:
   //! Construct and empty set
   SingletonContainerSet();

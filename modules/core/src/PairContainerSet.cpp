@@ -17,6 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 PairContainerSet
 ::PairContainerSet(){
+  rev_=0;
 }
 
 bool
@@ -65,7 +66,7 @@ IMP_LIST_IMPL(PairContainerSet,
               PairContainer,
               pair_container,
               PairContainer*,
-              PairContainers,,,)
+              PairContainers,++rev_,++rev_,++rev_)
 
 
 void PairContainerSet::apply(const PairModifier *sm) {
@@ -99,5 +100,13 @@ ParticlePairs PairContainerSet::get_particle_pairs() const {
   return ret;
 }
 
+
+unsigned int PairContainerSet::get_revision() const {
+  unsigned int ret=rev_;
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    ret+= get_pair_container(i)->get_revision();
+  }
+  return ret;
+}
 
 IMPCORE_END_NAMESPACE

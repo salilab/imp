@@ -82,5 +82,9 @@ ParticlePairs BondPairContainer::get_particle_pairs() const {
   return ret;
 }
 
+unsigned int BondPairContainer::get_revision() const {
+  return sc_->get_revision();
+}
+
 
 IMPATOM_END_NAMESPACE

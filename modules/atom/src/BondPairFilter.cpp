@@ -68,4 +68,8 @@ ParticlePairs BondPairFilter::get_particle_pairs() const {
   return 0;
 }
 
+
+unsigned int BondPairFilter::get_revision() const {
+  return 0;
+}
 IMPATOM_END_NAMESPACE
