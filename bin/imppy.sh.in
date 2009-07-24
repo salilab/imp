@@ -8,6 +8,4 @@
 
 @PRECOMMAND@
 
-echo "Running " ${precommand} "$@"
-
 exec ${precommand} "$@"
