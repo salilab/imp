@@ -15,5 +15,4 @@ IMP_BEGIN_NAMESPACE
 
 GroupnameContainer::GroupnameContainer(){}
 
-
 IMP_END_NAMESPACE

@@ -67,4 +67,37 @@ IMP_LIST_IMPL(GroupnameContainerSet,
               GroupnameContainer*,
               GroupnameContainers,,,)
 
+
+void GroupnameContainerSet::apply(const GroupnameModifier *sm) {
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    get_groupname_container(i)->apply(sm);
+  }
+}
+
+void GroupnameContainerSet::apply(const GroupnameModifier *sm,
+                               DerivativeAccumulator *da) {
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    get_groupname_container(i)->apply(sm, da);
+  }
+}
+
+double GroupnameContainerSet::evaluate(const GroupnameScore *s,
+                                       DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    score+=get_groupname_container(i)->evaluate(s, da);
+  }
+  return score;
+}
+
+Classnames GroupnameContainerSet::get_classnames() const {
+  Classnames ret;
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    Classnames c= get_groupname_container(i)->get_classnames();
+    ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
+
+
 IMPCORE_END_NAMESPACE

@@ -50,4 +50,37 @@ void ListGroupnameContainer::show(std::ostream &out) const {
       << " classnames." << std::endl;
 }
 
+void ListGroupnameContainer::apply(const GroupnameModifier *sm) {
+
+  std::for_each(ListGroupnameContainer::classnames_begin(),
+                ListGroupnameContainer::classnames_end(),
+                GroupnameFunctor(sm));
+}
+
+void ListGroupnameContainer::apply(const GroupnameModifier *sm,
+                               DerivativeAccumulator *da) {
+
+  std::for_each(ListGroupnameContainer::classnames_begin(),
+                ListGroupnameContainer::classnames_end(),
+                GroupnameFunctor(sm, da));
+}
+
+double ListGroupnameContainer::evaluate(const GroupnameScore *s,
+                                    DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0;
+       i< ListGroupnameContainer::get_number_of_classnames();
+       ++i) {
+    double lscore= IMP::internal::ContainerTraits<Classname>
+      ::evaluate(s, ListGroupnameContainer::get_classname(i), da);
+  }
+  return score;
+}
+
+
+Classnames ListGroupnameContainer::get_classnames() const {
+  return Classnames(ListGroupnameContainer::classnames_begin(),
+                    ListGroupnameContainer::classnames_end());
+}
+
 IMPCORE_END_NAMESPACE

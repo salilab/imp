@@ -29,7 +29,7 @@ void GroupnamesOptimizerState::update()
   IMP_LOG(TERSE, "Begin GroupnamesOptimizerState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  Classnames set(c_->classnames_begin(), c_->classnames_end());
+  Classnames set =c_->get_classnames();
   std::for_each(set.begin(), set.end(),
                 GroupnameFunctor(f_));
 
