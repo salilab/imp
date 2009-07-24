@@ -633,6 +633,9 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('path', 'Extra executable path ' + \
                           '(e.g. "/opt/local/bin/") to search for build tools', None,
                           PathVariable.PathAccept))
+    vars.Add(PathVariable('precommand', 'A command to be run to wrap program invocations.' + \
+                          'For example, "valgrind --db-attach=yes --suppressions=valgrind-python.supp"', "",
+                          PathVariable.PathAccept))
     vars.Add(PathVariable('pythonpath', 'Extra python path ' + \
                           '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None,
                           PathVariable.PathAccept))

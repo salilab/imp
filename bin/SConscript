@@ -37,11 +37,13 @@ def builder_script_file(target, source, env):
             pl=[source[1].get_contents()+"/build/data/IMP"]
             line= "IMP_DATA_DIRECTORY='%s/build/data/IMP'" \
                   % source[1].get_contents() + "\nexport IMP_DATA_DIRECTORY"
-        if line == "@MODPY@":
+        if line == "@PRECOMMAND@":
+            line="precommand='"
             if len(source[3].get_contents())!=0:
-                line = "modeller_init_script='" + source[3].get_contents()+"'"
-            else:
-                line=""
+                line = line + source[3].get_contents()
+            if len(source[6].get_contents()) != 0:
+                line = line+ source[6].get_contents()
+            line=line+"'"
         print >> outfile, line
     outfile.close()
     infile.close()
@@ -51,17 +53,21 @@ env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
 
 libpath=""
 ldpath=""
+prec=""
 if not env['rpath']:
     libpath=":".join(env['libpath'])
 if env.get('ldlibpath', None) is not None:
     ldpath= env.get('ldlibpath', "")
-
+prec=""
+if env.get('precommand', None) is not None:
+    prec= env['precommand']
 bin = env.ScriptFile("imppy.sh",
                      ["imppy.sh.in", env.Value(env.Dir('#').abspath),
                       env.Value(env.get('pythonpath', "")),
                       env.Value(env['MODELLER_MODPY']),
                       env.Value(libpath),
-                      env.Value(ldpath)])
+                      env.Value(ldpath),
+                      env.Value(prec)])
 
 env.AlwaysBuild("imppy.sh")
 
