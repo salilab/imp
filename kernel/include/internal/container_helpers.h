@@ -27,7 +27,7 @@ template <>
 struct ContainerTraits<Particle> {
   static const bool is_singleton=true;
   static Particles create_set(Particle*p) {return Particles();}
-  static Float evaluate(SingletonScore *ss,
+  static Float evaluate(const SingletonScore *ss,
                         Particle *p,
                         DerivativeAccumulator *ac) {
     return ss->evaluate(p, ac);
@@ -57,7 +57,7 @@ struct ContainerTraits<ParticlePair> {
     ret.push_back(p.second);
     return ret;
   }
-  static Float evaluate(PairScore *ss,
+  static Float evaluate(const PairScore *ss,
                         ParticlePair p,
                         DerivativeAccumulator *ac) {
     return ss->evaluate(p.first, p.second, ac);

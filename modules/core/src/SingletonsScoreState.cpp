@@ -31,8 +31,7 @@ void SingletonsScoreState::do_before_evaluate()
   IMP_LOG(TERSE, "Begin SingletonsScoreState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  std::for_each(c_->particles_begin(), c_->particles_end(),
-                SingletonFunctor(f_));
+  c_->apply(f_);
   IMP_LOG(TERSE, "End SingletonsScoreState::update" << std::endl);
 }
 
@@ -43,8 +42,7 @@ void SingletonsScoreState::do_after_evaluate(DerivativeAccumulator *da)
   IMP_LOG(TERSE, "Begin SingletonsScoreState::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
-  std::for_each(c_->particles_begin(), c_->particles_end(),
-                SingletonFunctor(af_, da));
+  c_->apply(af_, da);
   IMP_LOG(TERSE, "End SingletonsScoreState::after_evaluate" << std::endl);
 }
 

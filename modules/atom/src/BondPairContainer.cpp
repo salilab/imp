@@ -43,4 +43,44 @@ void BondPairContainer::show(std::ostream &out) const {
   out << "BondPairContainer" << std::endl;
 }
 
+
+void BondPairContainer
+::apply(const PairModifier *sm) {
+  unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
+  for (unsigned int i=0; i< sz; ++i) {
+     ParticlePair pp= BondPairContainer::get_particle_pair(i);
+     sm->apply(pp[0], pp[1]);
+   }
+}
+
+void BondPairContainer
+::apply(const PairModifier *sm, DerivativeAccumulator *da) {
+  unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
+  for (unsigned int i=0; i< sz; ++i) {
+     ParticlePair pp= BondPairContainer::get_particle_pair(i);
+     sm->apply(pp[0], pp[1], *da);
+   }
+}
+
+ double BondPairContainer
+::evaluate(const PairScore *s,
+           DerivativeAccumulator *da) const {
+   unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
+   double score=0;
+   for (unsigned int i=0; i< sz; ++i) {
+     ParticlePair pp= BondPairContainer::get_particle_pair(i);
+     score+=s->evaluate(pp[0], pp[1], da);
+   }
+   return score;
+ }
+
+ParticlePairs BondPairContainer::get_particle_pairs() const {
+  ParticlePairs ret(BondPairContainer::get_number_of_particle_pairs());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= BondPairContainer::get_particle_pair(i);
+  }
+  return ret;
+}
+
+
 IMPATOM_END_NAMESPACE

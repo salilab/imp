@@ -44,4 +44,28 @@ void BondPairFilter::show(std::ostream &out) const {
   out << "BondPairFilter" << std::endl;
 }
 
+
+
+void BondPairFilter
+ ::apply(const PairModifier *sm) {
+   IMP_failure("Not a real container", ErrorException);
+ }
+
+void BondPairFilter
+::apply(const PairModifier *sm, DerivativeAccumulator *da) {
+   IMP_failure("Not a real container", ErrorException);
+}
+
+ double BondPairFilter
+::evaluate(const PairScore *s,
+           DerivativeAccumulator *da) const {
+   IMP_failure("Not a real container", ErrorException);
+   return 0;
+ }
+
+ParticlePairs BondPairFilter::get_particle_pairs() const {
+  IMP_failure("Not a real container", ErrorException);
+  return 0;
+}
+
 IMPATOM_END_NAMESPACE

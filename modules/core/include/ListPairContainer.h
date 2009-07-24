@@ -66,6 +66,16 @@ public:
 
   virtual void show(std::ostream &out = std::cout) const;
 
+  virtual void apply(const PairModifier *sm);
+
+  virtual void apply(const PairModifier *sm, DerivativeAccumulator *da);
+
+  virtual double evaluate(const PairScore *s,
+                          DerivativeAccumulator *da) const;
+
+  virtual ParticlePairs get_particle_pairs() const;
+
+
   // for some reason swig gets this wrong
   //IMP_REF_COUNTED_DESTRUCTOR(ListPairContainer)
   ~ListPairContainer(){}

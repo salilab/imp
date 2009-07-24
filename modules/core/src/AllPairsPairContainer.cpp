@@ -61,4 +61,45 @@ void AllPairsPairContainer::show(std::ostream &out) const {
   c_->show(out);
 }
 
+void AllPairsPairContainer::apply(const PairModifier *sm) {
+  for (unsigned int i=0;
+       i< AllPairsPairContainer::get_number_of_particle_pairs();
+       ++i) {
+    ParticlePair pp= AllPairsPairContainer::get_particle_pair(i);
+    sm->apply(pp[0], pp[1]);
+  }
+}
+
+void AllPairsPairContainer::apply(const PairModifier *sm,
+                                  DerivativeAccumulator *da) {
+  for (unsigned int i=0;
+       i< AllPairsPairContainer::get_number_of_particle_pairs();
+       ++i) {
+    ParticlePair pp= AllPairsPairContainer::get_particle_pair(i);
+    sm->apply(pp[0], pp[1], *da);
+  }
+}
+
+double AllPairsPairContainer::evaluate(const PairScore *s,
+                                       DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0;
+       i< AllPairsPairContainer::get_number_of_particle_pairs();
+       ++i) {
+    ParticlePair pp= AllPairsPairContainer::get_particle_pair(i);
+    score+=s->evaluate(pp[0], pp[1], da);
+  }
+  return score;
+}
+
+ParticlePairs AllPairsPairContainer::get_particle_pairs() const {
+  ParticlePairs ret(AllPairsPairContainer::get_number_of_particle_pairs());
+  for (unsigned int i=0;
+       i< AllPairsPairContainer::get_number_of_particle_pairs();
+       ++i) {
+    ret[i]= AllPairsPairContainer::get_particle_pair(i);
+  }
+  return ret;
+}
+
 IMPCORE_END_NAMESPACE

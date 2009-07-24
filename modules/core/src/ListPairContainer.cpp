@@ -50,4 +50,37 @@ void ListPairContainer::show(std::ostream &out) const {
       << " particle_pairs." << std::endl;
 }
 
+void ListPairContainer::apply(const PairModifier *sm) {
+
+  std::for_each(ListPairContainer::particle_pairs_begin(),
+                ListPairContainer::particle_pairs_end(),
+                PairFunctor(sm));
+}
+
+void ListPairContainer::apply(const PairModifier *sm,
+                               DerivativeAccumulator *da) {
+
+  std::for_each(ListPairContainer::particle_pairs_begin(),
+                ListPairContainer::particle_pairs_end(),
+                PairFunctor(sm, da));
+}
+
+double ListPairContainer::evaluate(const PairScore *s,
+                                    DerivativeAccumulator *da) const {
+  double score=0;
+  for (unsigned int i=0;
+       i< ListPairContainer::get_number_of_particle_pairs();
+       ++i) {
+    double lscore= IMP::internal::ContainerTraits<ParticlePair>
+      ::evaluate(s, ListPairContainer::get_particle_pair(i), da);
+  }
+  return score;
+}
+
+
+ParticlePairs ListPairContainer::get_particle_pairs() const {
+  return ParticlePairs(ListPairContainer::particle_pairs_begin(),
+                    ListPairContainer::particle_pairs_end());
+}
+
 IMPCORE_END_NAMESPACE

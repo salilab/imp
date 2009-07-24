@@ -13,7 +13,6 @@
 #include "config.h"
 #include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
-#include "PairContainer.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "VectorOfRefCounted.h"
@@ -75,11 +74,11 @@ typedef VectorOfRefCounted<PairModifier*> PairModifiers;
     \see IMP::PairModifier
  */
 class PairFunctor {
-  Pointer<PairModifier> f_;
+  Pointer<const PairModifier> f_;
   DerivativeAccumulator *da_;
 public:
   //! Store the PairModifier and the optional DerivativeAccumulator
-  PairFunctor(PairModifier *f,
+  PairFunctor(const PairModifier *f,
                    DerivativeAccumulator *da=NULL): f_(f), da_(da){}
 
   void operator()( ParticlePair p) const {

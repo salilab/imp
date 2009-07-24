@@ -8,7 +8,7 @@ if env['CGAL_LIBS']:
 # No dependent libraries, so this module can always be built:
 env.validate()
 
-env.Append(LIBS=['imp_helper', 'imp_atom', 'imp_core', 'imp_algebra'])
+env.Prepend(LIBS=['imp_helper', 'imp_atom', 'imp_core', 'imp_algebra'])
 env.validate()
 
 # Subdirectories:

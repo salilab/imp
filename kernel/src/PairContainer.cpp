@@ -15,5 +15,4 @@ IMP_BEGIN_NAMESPACE
 
 PairContainer::PairContainer(){}
 
-
 IMP_END_NAMESPACE

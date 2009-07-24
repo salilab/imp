@@ -39,20 +39,7 @@ Float PairsRestraint::evaluate(DerivativeAccumulator *accum)
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
 
-  double score=0;
-
-
-  for (PairContainer::ParticlePairIterator
-         it= pc_->particle_pairs_begin();
-       it != pc_->particle_pairs_end(); ++it) {
-    double lscore= IMP::internal::ContainerTraits<ParticlePair>
-      ::evaluate(ss_, *it, accum);
-    IMP_LOG(VERBOSE, IMP::internal::streamable(*it).get_name()
-            << " has score " << lscore << std::endl);
-    score+=lscore;
-  }
-
-  return score;
+  return pc_->evaluate(ss_, accum);
 }
 
 

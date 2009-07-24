@@ -813,6 +813,12 @@ public:                                                                 \
   Particle* get_particle(unsigned int i) const;                     \
   void show(std::ostream &out= std::cout) const;                        \
   IMP::VersionInfo get_version_info() const { return version_info; }\
+  void apply(const SingletonModifier *sm);                          \
+  void apply(const SingletonModifier *sm,                            \
+             DerivativeAccumulator *da);                            \
+  double evaluate(const SingletonScore *s,                          \
+                  DerivativeAccumulator *da) const;                 \
+  Particles get_particles() const;                                  \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                  \
   public:
 
@@ -826,6 +832,12 @@ public:                                                                 \
   ParticlePair get_particle_pair(unsigned int i) const;                 \
   void show(std::ostream &out= std::cout) const;                        \
   IMP::VersionInfo get_version_info() const { return version_info; }    \
+  void apply(const PairModifier *sm);                                   \
+  void apply(const PairModifier *sm,                                     \
+             DerivativeAccumulator *da);                                \
+  double evaluate(const PairScore *s,                                   \
+                  DerivativeAccumulator *da) const;                     \
+  ParticlePairs get_particle_pairs() const;                             \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
   public:
 

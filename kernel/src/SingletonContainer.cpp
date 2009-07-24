@@ -15,5 +15,4 @@ IMP_BEGIN_NAMESPACE
 
 SingletonContainer::SingletonContainer(){}
 
-
 IMP_END_NAMESPACE
