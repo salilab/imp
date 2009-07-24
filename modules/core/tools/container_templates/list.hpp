@@ -66,6 +66,16 @@ public:
 
   virtual void show(std::ostream &out = std::cout) const;
 
+  virtual void apply(const GroupnameModifier *sm);
+
+  virtual void apply(const GroupnameModifier *sm, DerivativeAccumulator *da);
+
+  virtual double evaluate(const GroupnameScore *s,
+                          DerivativeAccumulator *da) const;
+
+  virtual Classnames get_classnames() const;
+
+
   // for some reason swig gets this wrong
   //IMP_REF_COUNTED_DESTRUCTOR(ListGroupnameContainer)
   ~ListGroupnameContainer(){}

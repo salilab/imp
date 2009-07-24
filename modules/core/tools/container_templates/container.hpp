@@ -20,6 +20,9 @@
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
 #include "VersionInfo.h"
+#include "GroupnameModifier.h"
+#include "GroupnameScore.h"
+#include "DerivativeAccumulator.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -77,6 +80,19 @@ public:
       ClassnameIterator(Accessor(const_cast<GroupnameContainer*>(this)),
                         get_number_of_classnames());
     }
+
+  //! Apply a SingletonModifier to the contents
+  virtual void apply(const GroupnameModifier *sm)=0;
+
+  //! Apply a SingletonModifier to the contents
+  virtual void apply(const GroupnameModifier *sm, DerivativeAccumulator *da)=0;
+
+  //! Avaluate a score on the contents
+  virtual double evaluate(const GroupnameScore *s,
+                          DerivativeAccumulator *da) const=0;
+
+  //! Get all the Classnames from the container
+  virtual Classnames get_classnames() const=0;
 
   IMP_REF_COUNTED_DESTRUCTOR(GroupnameContainer)
 };

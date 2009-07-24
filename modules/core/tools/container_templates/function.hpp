@@ -13,7 +13,6 @@
 #include "config.h"
 #include "internal/kernel_version_info.h"
 #include "internal/container_helpers.h"
-#include "GroupnameContainer.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "VectorOfRefCounted.h"
@@ -75,11 +74,11 @@ typedef VectorOfRefCounted<GroupnameModifier*> GroupnameModifiers;
     \see IMP::GroupnameModifier
  */
 class GroupnameFunctor {
-  Pointer<GroupnameModifier> f_;
+  Pointer<const GroupnameModifier> f_;
   DerivativeAccumulator *da_;
 public:
   //! Store the GroupnameModifier and the optional DerivativeAccumulator
-  GroupnameFunctor(GroupnameModifier *f,
+  GroupnameFunctor(const GroupnameModifier *f,
                    DerivativeAccumulator *da=NULL): f_(f), da_(da){}
 
   void operator()( Value p) const {
