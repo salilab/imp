@@ -99,7 +99,7 @@ void PairsRestraint::clear_particle_pairs() {
 
 void PairsRestraint::show(std::ostream& out) const
 {
-  out << "ContainerRestraint with score function ";
+  out << "PairRestraint with score function ";
   ss_->show(out);
   out << " and container ";
   pc_->show(out);

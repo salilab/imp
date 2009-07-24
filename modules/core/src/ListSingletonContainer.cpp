@@ -71,7 +71,7 @@ double ListSingletonContainer::evaluate(const SingletonScore *s,
   for (unsigned int i=0;
        i< ListSingletonContainer::get_number_of_particles();
        ++i) {
-    double lscore= IMP::internal::ContainerTraits<Particle>
+    score+= IMP::internal::ContainerTraits<Particle>
       ::evaluate(s, ListSingletonContainer::get_particle(i), da);
   }
   return score;
