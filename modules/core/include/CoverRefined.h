@@ -29,6 +29,7 @@ class XYZR;
  \see DerivativesFromRefined
  \see DerivativesToRefined
  \see CentroidOfRefined
+ \see atom::CoverBond
 
  Set the coordinates and radius of the passed particle to cover the particles
  listed by the particle refiner.
