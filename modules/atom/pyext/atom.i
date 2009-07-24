@@ -39,6 +39,7 @@
 %include "IMP/atom/BondPairContainer.h"
 %include "IMP/atom/BondPairFilter.h"
 %include "IMP/atom/BondSingletonScore.h"
+%include "IMP/atom/CoverBond.h"
 %include "IMP/atom/BrownianDynamics.h"
 %include "IMP/atom/Diffusion.h"
 %include "IMP/atom/Chain.h"

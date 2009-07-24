@@ -9,6 +9,7 @@ files = [
          'BrownianDynamics.h',
          'Chain.h',
          'CharmmParameters.h',
+         'CoverBond.h',
          'Diffusion.h',
          'Domain.h',
          'ForceFieldParameters.h',
