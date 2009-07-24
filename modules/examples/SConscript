@@ -8,7 +8,7 @@ if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])
 
 
-env.Append(LIBS=['imp_core', 'imp_algebra'])
+env.Prepend(LIBS=['imp_core', 'imp_algebra'])
 env.validate()
 
 # Subdirectories:
