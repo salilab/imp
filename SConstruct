@@ -68,7 +68,7 @@ bin = SConscript('bin/SConscript')
 Export('bin')
 SConscript('doc/SConscript')
 SConscript('examples/SConscript')
-(src, pyext) = SConscript('kernel/SConscript')
+(src) = SConscript('kernel/SConscript')
 SConscript('build/SConscript')
 SConscript('modules/SConscript')
 SConscript('applications/SConscript')
@@ -82,5 +82,3 @@ Clean('build', ['build/tmp/',
 
 # Build the binaries by default:
 env.Default([bin, src])
-if env.get('python', True):
-    env.Default(pyext)
