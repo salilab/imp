@@ -4,8 +4,11 @@ Import('env')
 src = SConscript('src/SConscript')
 SConscript('doc/SConscript')
 SConscript('include/SConscript')
-pyext = SConscript('pyext/SConscript')
-test = SConscript('test/SConscript')
-env.Depends(test, pyext)
+if env.get('python', True):
+    (pyext, pymod, pyfiles)=SConscript('pyext/SConscript')
+    test = SConscript('test/SConscript')
+    env.Depends(test, pyext)
+else:
+    print "Testing disable since there is no python support"
 
-Return('src', 'pyext')
+Return('src')
