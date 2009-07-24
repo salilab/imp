@@ -78,9 +78,12 @@ class SingletonFunctor {
   DerivativeAccumulator *da_;
 public:
   //! Store the SingletonModifier and the optional DerivativeAccumulator
+  SingletonFunctor(const SingletonModifier *f): f_(f), da_(NULL){}
   SingletonFunctor(const SingletonModifier *f,
-                   DerivativeAccumulator *da=NULL): f_(f), da_(da){}
-
+                   DerivativeAccumulator *da): f_(f), da_(da){
+    IMP_check(da_, "The passed derivative accumulator should not be null.",
+              InvalidStateException);
+  }
   void operator()( Particle* p) const {
     if (da_) {
       IMP::internal::ContainerTraits<Particle>::apply(f_.get(), p, da_);
@@ -89,9 +92,6 @@ public:
     }
   }
 };
-
-
-//! Return a functor which can be used to call the apply method
 
 
 IMP_END_NAMESPACE

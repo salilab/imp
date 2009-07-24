@@ -27,6 +27,12 @@ IMP_END_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a SingletonFunction to a SingletonContainer to maintain an invariant
 /** \ingroup restraint
+    The score state is passed up to two SingletonModifiers, one to
+    apply before evaluation and the other after. The one after
+    should take a DerivativeAccumulator as its last argument for
+    SingletonModifier::apply() and will only be called if
+    the score was computed with derivatives.
+
     An example showing a how to use such a score state to maintain a cover
     of the atoms of a protein by a sphere per residue.
     \verbinclude simple_examples/cover_particles.py

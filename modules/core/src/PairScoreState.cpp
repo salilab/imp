@@ -44,9 +44,6 @@ void PairScoreState::do_after_evaluate(DerivativeAccumulator *da)
   if (da) {
     IMP::internal::ContainerTraits<ParticlePair>
       ::apply(af_.get(), v_, da);
-  } else {
-    IMP::internal::ContainerTraits<ParticlePair>
-      ::apply(af_.get(), v_);
   }
   IMP_LOG(TERSE, "End PairsScoreState::after_evaluate" << std::endl);
 }
