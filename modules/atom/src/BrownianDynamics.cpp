@@ -146,6 +146,8 @@ namespace {
 
 void BrownianDynamics::take_step(SingletonContainer *sc,
                                  unit::Femtosecond dt) {
+  unit::Divide<unit::Femtosecond,
+    unit::Femtojoule>::type dtikt=dt/si_.get_kT();
   for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
     Particle *p= sc->get_particle(i);
     Diffusion d(p);
@@ -175,15 +177,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
               "Bad diffusion coefficient on particle " << p->get_name(),
               ValueException);
     unit::Angstrom sigma= d.get_sigma(dt);
-    IMP_IF_CHECK(EXPENSIVE) {
-      unit::Angstrom osigma(sqrt(2.0*d.get_D()*dt));
-      IMP_check(sigma - osigma
-                <= .01* sigma,
-                "Sigma computations don't match " << sigma
-                << " "
-                << sqrt(2.0*d.get_D()*dt),
-                ErrorException);
-    }
+
     IMP_LOG(VERBOSE, p->get_name() << ": sigma is "
             << sigma << std::endl);
     boost::normal_distribution<double> mrng(0, sigma.get_value());
@@ -209,8 +203,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
       unit::Femtonewton nforce
         = unit::convert_Cal_to_J(force/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
-      unit::Angstrom force_term(nforce*unit::Femtosecond(dt)*d.get_D()
-                                /si_.get_kT());
+      unit::Angstrom force_term(nforce*d.get_D()*dtikt);
       delta[j]= delta[j]+force_term;
     }
 
@@ -278,7 +271,7 @@ double BrownianDynamics::simulate(float max_time_nu)
               << successful_steps_ << std::endl);
       revert_coordinates(sc, old_coordinates);
       get_model()->evaluate(true);
-      dt= dt/2.0;
+      dt= dt*.5;
       if (dt < unit::Femtosecond(1)) {
         IMP_failure("Something is wrong with the restraints"
                     << " and they are highly discontinuous due"
