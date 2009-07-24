@@ -12,12 +12,15 @@ class TestREFCover(IMP.test.TestCase):
     def check_cover(self, p, ps):
         d= IMP.core.XYZR(p)
         d.show()
+        s=d.get_sphere()
+        cs=IMP.algebra.Sphere3D(s.get_center(),
+                                s.get_radius()*1.1)
         for cp in ps:
             dc= IMP.core.XYZR(cp)
             dc.show()
             #d.get_sphere().get_center().show()
             #dc.get_sphere().get_center().show()
-            self.assert_(d.get_sphere().get_contains(dc.get_sphere()))
+            self.assert_(cs.get_contains(dc.get_sphere()))
 
     def test_it(self):
         """Test cover bond"""
@@ -30,15 +33,15 @@ class TestREFCover(IMP.test.TestCase):
             ps.append(p)
             ds.append(d)
             d.set_coordinates(IMP.algebra.random_vector_in_unit_box())
-            d.set_radius(random.uniform(0,1))
+            d.set_radius(0)
         #c= IMP.core.CentroidOfRefined(r)
-        b= IMP.atom.custom_bond(IMP.atom.Bonded.create(ps[0])
+        b= IMP.atom.custom_bond(IMP.atom.Bonded.create(ps[0]),
                                 IMP.atom.Bonded.create(ps[1]),
                                 5, 1)
-        IMP.core.XYZR.create(b)
+        IMP.core.XYZR.create(b.get_particle())
         c= IMP.atom.CoverBond()
         c.apply(b.get_particle())
-        self.check_cover(pp, ps)
+        self.check_cover(b.get_particle(), ps)
 
 if __name__ == '__main__':
     unittest.main()
