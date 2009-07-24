@@ -71,7 +71,7 @@ double ListPairContainer::evaluate(const PairScore *s,
   for (unsigned int i=0;
        i< ListPairContainer::get_number_of_particle_pairs();
        ++i) {
-    double lscore= IMP::internal::ContainerTraits<ParticlePair>
+    score+= IMP::internal::ContainerTraits<ParticlePair>
       ::evaluate(s, ListPairContainer::get_particle_pair(i), da);
   }
   return score;

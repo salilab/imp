@@ -99,7 +99,7 @@ void GroupnamesRestraint::clear_classnames() {
 
 void GroupnamesRestraint::show(std::ostream& out) const
 {
-  out << "ContainerRestraint with score function ";
+  out << "GroupnameRestraint with score function ";
   ss_->show(out);
   out << " and container ";
   pc_->show(out);

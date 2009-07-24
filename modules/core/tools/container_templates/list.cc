@@ -71,7 +71,7 @@ double ListGroupnameContainer::evaluate(const GroupnameScore *s,
   for (unsigned int i=0;
        i< ListGroupnameContainer::get_number_of_classnames();
        ++i) {
-    double lscore= IMP::internal::ContainerTraits<Classname>
+    score+= IMP::internal::ContainerTraits<Classname>
       ::evaluate(s, ListGroupnameContainer::get_classname(i), da);
   }
   return score;

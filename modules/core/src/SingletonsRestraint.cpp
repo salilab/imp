@@ -99,7 +99,7 @@ void SingletonsRestraint::clear_particles() {
 
 void SingletonsRestraint::show(std::ostream& out) const
 {
-  out << "ContainerRestraint with score function ";
+  out << "SingletonRestraint with score function ";
   ss_->show(out);
   out << " and container ";
   pc_->show(out);
