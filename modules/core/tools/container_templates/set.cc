@@ -17,6 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 GroupnameContainerSet
 ::GroupnameContainerSet(){
+  rev_=0;
 }
 
 bool
@@ -65,7 +66,7 @@ IMP_LIST_IMPL(GroupnameContainerSet,
               GroupnameContainer,
               groupname_container,
               GroupnameContainer*,
-              GroupnameContainers,,,)
+              GroupnameContainers,++rev_,++rev_,++rev_)
 
 
 void GroupnameContainerSet::apply(const GroupnameModifier *sm) {
@@ -99,5 +100,13 @@ Classnames GroupnameContainerSet::get_classnames() const {
   return ret;
 }
 
+
+unsigned int GroupnameContainerSet::get_revision() const {
+  unsigned int ret=rev_;
+  for (unsigned int i=0; i< get_number_of_groupname_containers(); ++i) {
+    ret+= get_groupname_container(i)->get_revision();
+  }
+  return ret;
+}
 
 IMPCORE_END_NAMESPACE

@@ -15,6 +15,54 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+
+  class RecordValues:public SingletonModifier {
+    std::vector<Floats> &values_;
+    FloatKeys &keys_;
+    mutable int i_;
+  public:
+    RecordValues(std::vector<Floats> &values, FloatKeys &keys): values_(values),
+                                                                keys_(keys){
+      i_=0;
+    }
+    VersionInfo get_version_info() const {return internal::version_info;}
+    void show(std::ostream &out) const{}
+    void apply(Particle *p) const {
+      values_[i_].resize(keys_.size());
+      for (unsigned int i=0; i< keys_.size(); ++i) {
+        values_[i_][i]= p->get_value(keys_[i]);
+      }
+      ++i_;
+    }
+    void apply(Particle*, DerivativeAccumulator&) const {}
+  };
+  class CompareValues:public SingletonModifier {
+    std::vector<Floats> &values_;
+    FloatKeys &keys_;
+    mutable double change_;
+    mutable int i_;
+  public:
+    CompareValues(std::vector<Floats> &values,
+                  FloatKeys &keys): values_(values),
+                                    keys_(keys){
+      change_=0;
+      i_=0;
+    }
+    VersionInfo get_version_info() const {return internal::version_info;}
+    void show(std::ostream &out) const{}
+    void apply(Particle *p) const {
+      for (unsigned int i=0; i< keys_.size(); ++i) {
+        change_= std::max(change_,
+                          std::abs(values_[i_][i]-p->get_value(keys_[i])));
+      }
+      ++i_;
+    }
+    void apply(Particle*, DerivativeAccumulator&) const {}
+    double get_change() const {return change_;}
+  };
+}
+
 MaximumChangeScoreState::MaximumChangeScoreState(SingletonContainer *pc,
                                                  const FloatKeys &keys):
   keys_(keys), pc_(pc)
@@ -25,21 +73,13 @@ MaximumChangeScoreState::MaximumChangeScoreState(SingletonContainer *pc,
 void MaximumChangeScoreState::do_before_evaluate()
 {
   IMP_CHECK_OBJECT(pc_);
-  maximum_change_=0;
-  for (SingletonContainer::ParticleIterator it= pc_->particles_begin();
-       it != pc_->particles_end(); ++it) {
-    IMP_CHECK_OBJECT((*it));
-    if (orig_values_.find(*it) == orig_values_.end()) {
-      maximum_change_= std::numeric_limits<Float>::max();
-      break;
-    } else {
-      for (unsigned int j=0; j < keys_.size(); ++j) {
-        Float v= (*it)->get_value(keys_[j]);
-        Float ov= orig_values_[*it].get_value(keys_[j]);
-        maximum_change_= std::max(maximum_change_,
-                                  std::abs(v-ov));
-      }
-    }
+  if (rev_ != pc_->get_revision()) {
+    reset();
+    maximum_change_= std::numeric_limits<double>::max();
+  } else {
+    IMP_NEW(CompareValues,  cv, (orig_values_, keys_));
+    pc_->apply(cv);
+    maximum_change_= cv->get_change();
   }
   IMP_LOG(TERSE, "MaximumChange update got " << maximum_change_ << std::endl);
 }
@@ -52,15 +92,10 @@ void MaximumChangeScoreState::reset()
 {
   maximum_change_=0;
   orig_values_.clear();
-  for (SingletonContainer::ParticleIterator it= pc_->particles_begin();
-       it != pc_->particles_end(); ++it) {
-    IMP_CHECK_OBJECT(*it);
-    orig_values_[*it]=AT();
-    for (unsigned int i=0; i< keys_.size(); ++i) {
-      orig_values_[*it].insert(keys_[i],
-                              (*it)->get_value(keys_[i]));
-    }
-  }
+  orig_values_.resize(pc_->get_number_of_particles());
+  IMP_NEW(RecordValues, rv, (orig_values_, keys_));
+  pc_->apply(rv);
+  rev_=pc_->get_revision();
 }
 
 void MaximumChangeScoreState::show(std::ostream &out) const

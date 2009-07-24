@@ -16,6 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 ListSingletonContainer::ListSingletonContainer(const Particles &ps){
   sorted_=false;
+  rev_=0;
   set_particles(ps);
   set_is_editing(false);
 }
@@ -24,7 +25,8 @@ IMP_LIST_IMPL(ListSingletonContainer, Particle,
               particle, Particle*,Particles,, {
                 if (sorted_) std::sort(particles_begin(),
                                        particles_end());
-              },);
+                ++rev_;
+              },++rev_);
 
 
 void ListSingletonContainer::set_is_editing(bool tf) {
@@ -33,6 +35,7 @@ void ListSingletonContainer::set_is_editing(bool tf) {
     sorted_=!tf;
     if (sorted_) {
       std::sort(particles_begin(), particles_end());
+      ++rev_;
     }
   }
 }
@@ -81,6 +84,10 @@ double ListSingletonContainer::evaluate(const SingletonScore *s,
 Particles ListSingletonContainer::get_particles() const {
   return Particles(ListSingletonContainer::particles_begin(),
                     ListSingletonContainer::particles_end());
+}
+
+unsigned int ListSingletonContainer::get_revision() const {
+  return rev_;
 }
 
 IMPCORE_END_NAMESPACE

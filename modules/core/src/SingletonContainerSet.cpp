@@ -17,6 +17,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 SingletonContainerSet
 ::SingletonContainerSet(){
+  rev_=0;
 }
 
 bool
@@ -65,7 +66,7 @@ IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainer,
               singleton_container,
               SingletonContainer*,
-              SingletonContainers,,,)
+              SingletonContainers,++rev_,++rev_,++rev_)
 
 
 void SingletonContainerSet::apply(const SingletonModifier *sm) {
@@ -99,5 +100,13 @@ Particles SingletonContainerSet::get_particles() const {
   return ret;
 }
 
+
+unsigned int SingletonContainerSet::get_revision() const {
+  unsigned int ret=rev_;
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    ret+= get_singleton_container(i)->get_revision();
+  }
+  return ret;
+}
 
 IMPCORE_END_NAMESPACE

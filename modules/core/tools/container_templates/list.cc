@@ -16,6 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 ListGroupnameContainer::ListGroupnameContainer(const Classnames &ps){
   sorted_=false;
+  rev_=0;
   set_classnames(ps);
   set_is_editing(false);
 }
@@ -24,7 +25,8 @@ IMP_LIST_IMPL(ListGroupnameContainer, Classname,
               classname, Value,Classnames,, {
                 if (sorted_) std::sort(classnames_begin(),
                                        classnames_end());
-              },);
+                ++rev_;
+              },++rev_);
 
 
 void ListGroupnameContainer::set_is_editing(bool tf) {
@@ -33,6 +35,7 @@ void ListGroupnameContainer::set_is_editing(bool tf) {
     sorted_=!tf;
     if (sorted_) {
       std::sort(classnames_begin(), classnames_end());
+      ++rev_;
     }
   }
 }
@@ -81,6 +84,10 @@ double ListGroupnameContainer::evaluate(const GroupnameScore *s,
 Classnames ListGroupnameContainer::get_classnames() const {
   return Classnames(ListGroupnameContainer::classnames_begin(),
                     ListGroupnameContainer::classnames_end());
+}
+
+unsigned int ListGroupnameContainer::get_revision() const {
+  return rev_;
 }
 
 IMPCORE_END_NAMESPACE

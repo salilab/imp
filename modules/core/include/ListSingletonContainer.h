@@ -24,6 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ListSingletonContainer : public SingletonContainer
 {
   bool sorted_;
+  unsigned int rev_;
 public:
   //! construct and pass an initial set of particles
   ListSingletonContainer(const Particles &ps= Particles());
@@ -75,6 +76,7 @@ public:
 
   virtual Particles get_particles() const;
 
+  virtual unsigned int get_revision() const;
 
   // for some reason swig gets this wrong
   //IMP_REF_COUNTED_DESTRUCTOR(ListSingletonContainer)

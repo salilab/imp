@@ -289,7 +289,7 @@ public:                                                      \
 #define IMP_REF_COUNTED_DESTRUCTOR(Classname)                           \
   protected:                                                            \
   IMP_NO_DOXYGEN(template <class T> friend void IMP::internal::unref(T*);) \
-  virtual ~Classname(){}
+  IMP_NO_DOXYGEN(virtual ~Classname(){})
 #endif // SWIG
 #endif // _MSC_VER
 #endif // doxygen
@@ -819,6 +819,7 @@ public:                                                                 \
   double evaluate(const SingletonScore *s,                          \
                   DerivativeAccumulator *da) const;                 \
   Particles get_particles() const;                                  \
+  unsigned int get_revision() const;                                \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                  \
   public:
 
@@ -837,6 +838,7 @@ public:                                                                 \
              DerivativeAccumulator *da);                                \
   double evaluate(const PairScore *s,                                   \
                   DerivativeAccumulator *da) const;                     \
+  unsigned int get_revision() const;                                    \
   ParticlePairs get_particle_pairs() const;                             \
   IMP_REF_COUNTED_DESTRUCTOR(Name)                                      \
   public:

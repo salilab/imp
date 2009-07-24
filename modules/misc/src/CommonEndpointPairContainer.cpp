@@ -69,4 +69,8 @@ ParticlePairs CommonEndpointPairContainer::get_particle_pairs() const {
   return 0;
 }
 
+unsigned int CommonEndpointPairContainer::get_revision() const {
+  return 0;
+}
+
 IMPMISC_END_NAMESPACE
