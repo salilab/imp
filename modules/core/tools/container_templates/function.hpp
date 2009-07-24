@@ -78,9 +78,12 @@ class GroupnameFunctor {
   DerivativeAccumulator *da_;
 public:
   //! Store the GroupnameModifier and the optional DerivativeAccumulator
+  GroupnameFunctor(const GroupnameModifier *f): f_(f), da_(NULL){}
   GroupnameFunctor(const GroupnameModifier *f,
-                   DerivativeAccumulator *da=NULL): f_(f), da_(da){}
-
+                   DerivativeAccumulator *da): f_(f), da_(da){
+    IMP_check(da_, "The passed derivative accumulator should not be null.",
+              InvalidStateException);
+  }
   void operator()( Value p) const {
     if (da_) {
       IMP::internal::ContainerTraits<Classname>::apply(f_.get(), p, da_);
@@ -89,9 +92,6 @@ public:
     }
   }
 };
-
-
-//! Return a functor which can be used to call the apply method
 
 
 IMP_END_NAMESPACE

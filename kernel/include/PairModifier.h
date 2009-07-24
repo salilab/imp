@@ -78,9 +78,12 @@ class PairFunctor {
   DerivativeAccumulator *da_;
 public:
   //! Store the PairModifier and the optional DerivativeAccumulator
+  PairFunctor(const PairModifier *f): f_(f), da_(NULL){}
   PairFunctor(const PairModifier *f,
-                   DerivativeAccumulator *da=NULL): f_(f), da_(da){}
-
+                   DerivativeAccumulator *da): f_(f), da_(da){
+    IMP_check(da_, "The passed derivative accumulator should not be null.",
+              InvalidStateException);
+  }
   void operator()( ParticlePair p) const {
     if (da_) {
       IMP::internal::ContainerTraits<ParticlePair>::apply(f_.get(), p, da_);
@@ -89,9 +92,6 @@ public:
     }
   }
 };
-
-
-//! Return a functor which can be used to call the apply method
 
 
 IMP_END_NAMESPACE

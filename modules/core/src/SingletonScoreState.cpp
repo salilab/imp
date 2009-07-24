@@ -44,9 +44,6 @@ void SingletonScoreState::do_after_evaluate(DerivativeAccumulator *da)
   if (da) {
     IMP::internal::ContainerTraits<Particle>
       ::apply(af_.get(), v_, da);
-  } else {
-    IMP::internal::ContainerTraits<Particle>
-      ::apply(af_.get(), v_);
   }
   IMP_LOG(TERSE, "End SingletonsScoreState::after_evaluate" << std::endl);
 }

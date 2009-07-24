@@ -24,7 +24,13 @@ IMP_END_NAMESPACE
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a PairFunction to a Pair
-/** \ingroup restraint
+/** The score state is passed up to two PairModifiers, one to
+    apply before evaluation and the other after. The one after
+    should take a DerivativeAccumulator as its last argument for
+    PairModifier::apply() and will only be called if
+    the score was computed with derivatives.
+
+    \ingroup restraint
     \see PairsScoreState
  */
 class IMPCOREEXPORT PairScoreState : public ScoreState
