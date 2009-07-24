@@ -1,5 +1,7 @@
 import os.path
 
+
+
 Import('env', 'get_pyext_environment')
 
 # Get a modified build environment suitable for building Python extensions:
@@ -28,12 +30,12 @@ libinst = e.Install(env.GetInstallDirectory('pyextdir'), pyext)
 if e['PLATFORM'] == 'darwin':
     libdir= os.path.split(pyext[0].abspath)[0]
     e.AddPostAction (libinst,\
-                     "install_name_tool -change %s/libimp.dylib %s/libimp.dylib %s" \
-                                   % (libdir, e['libdir'], libinst[0].path))
+                         "install_name_tool -change %s/libimp.dylib %s/libimp.dylib %s" \
+                         % (libdir, e['libdir'], libinst[0].path))
 e.Alias('install', libinst)
 e.Alias('kernel-install', libinst)
 
 # Subdirectories
 pyfiles = SConscript('IMP/SConscript')
-
+env.Default(pyext)
 Return('pyext', 'pymod', 'pyfiles')

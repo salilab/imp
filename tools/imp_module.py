@@ -267,14 +267,14 @@ def IMPHeaders(env, files):
 
 def IMPPython(env, files):
     """Install the given Python files for this IMP module."""
-    from tools.hierarchy import InstallPythonHierarchy
-    pydir = env.GetInstallDirectory('pythondir', 'IMP')
-    inst, lib = InstallPythonHierarchy(env, pydir, env['IMP_MODULE'], files)
-    for alias in _get_module_install_aliases(env):
-        env.Alias(alias, inst)
     if env.get('python', True):
+        from tools.hierarchy import InstallPythonHierarchy
+        pydir = env.GetInstallDirectory('pythondir', 'IMP')
+        inst, lib = InstallPythonHierarchy(env, pydir, env['IMP_MODULE'], files)
+        for alias in _get_module_install_aliases(env):
+            env.Alias(alias, inst)
         _add_module_default_alias(env, lib)
-    return lib
+        return lib
 
 def IMPData(env, files):
     """Install the given data files for this IMP module."""
@@ -367,11 +367,12 @@ def IMPModuleTest(env, target, source, **keys):
        If the TEST_ENVSCRIPT construction variable is set, it is a shell
        script to run to set up the environment to run the test script.
        A convenience alias for the tests is added, and they are always run."""
-    test = env._IMPModuleTest(target, source, **keys)
-    for alias in _get_module_test_aliases(env):
-        env.Alias(alias, test)
-    env.AlwaysBuild(target)
-    return test
+    if env.get('python', True):
+        test = env._IMPModuleTest(target, source, **keys)
+        for alias in _get_module_test_aliases(env):
+            env.Alias(alias, test)
+        env.AlwaysBuild(target)
+        return test
 
 def invalidate(env, fail_action):
     """'Break' an environment, so that any builds with it use the fail_action
