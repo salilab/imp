@@ -368,6 +368,9 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         env.Prepend(LIBPATH=env['libpath'])
     else:
         env['libpath'] = []
+    if env.get('libs', None) is not None:
+        libs= env['libs'].split(":")
+        env.Append(LIBS=libs);
     _add_build_flags(env)
 
     sys = platform.system()
@@ -615,6 +618,9 @@ def add_common_variables(vars, package):
                           None, PathVariable.PathAccept))
     vars.Add(PathVariable('libpath', 'Library search path ' + \
                           '(e.g. "/usr/local/lib:/opt/local/lib")', None,
+                          PathVariable.PathAccept))
+    vars.Add(PathVariable('libs', 'Extra libs to add to link commands ' + \
+                          '(e.g. "efence:pthread")', None,
                           PathVariable.PathAccept))
     vars.Add(BoolVariable('rpath',
                           'Add any entries from libpath to library search ' + \

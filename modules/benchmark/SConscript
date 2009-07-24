@@ -3,7 +3,7 @@ Import('env')
 env.IMPModuleAbout(author="Someone", version="SVN", description="A private module")
 
 if env['CGAL_LIBS']:
-    env.Append(LIBS=env['CGAL_LIBS'])
+    env.Prepend(LIBS=env['CGAL_LIBS'])
 
 # No dependent libraries, so this module can always be built:
 env.validate()
