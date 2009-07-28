@@ -3,7 +3,8 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 import SCons.Node.FS
 import os
 
-example_path = Dir('#/examples')
+example_path = Dir('#/examples').abspath
+print example_path
 print example_path
 
 def nice_name(string):

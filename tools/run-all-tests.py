@@ -3,8 +3,8 @@ import sys
 import os
 import re
 import imp
-
-global path
+import os.path
+global files
 
 class _TestModuleImporter(object):
     """Import a Python test module. The module
@@ -28,22 +28,31 @@ _import_test = _TestModuleImporter()
 def regressionTest():
     """Run all tests in files called test_*.py in current directory and
        subdirectories"""
-    os.environ['TEST_DIRECTORY'] = path
+    if len(files) ==0:
+        return unittest.TestSuite([])
+    a_file=files[0]
+    # evil hack
+    os.environ['TEST_DIRECTORY'] = a_file[0:a_file.find("/test/")+6]
+    print os.environ['TEST_DIRECTORY']
+    #return 0
     modobjs = []
-    test = re.compile("test_.*\.py$", re.IGNORECASE)
-    for subdir in [''] + [x for x in os.listdir(path) \
-                          if os.path.isdir(os.path.join(path, x))]:
-        subpath = os.path.join(path, subdir)
-        modnames = [os.path.splitext(f)[0] for f in os.listdir(subpath) \
-                    if test.match(f)]
-        sys.path.insert(0, subpath)
-        modobjs.extend([_import_test(m) for m in modnames])
+    for f in files:
+        print f
+        nm= os.path.split(f)[1]
+        print nm
+        dir= os.path.split(f)[0]
+        print dir
+        modname = os.path.splitext(nm)[0]
+        sys.path.insert(0, dir)
+        modobjs.extend([_import_test(modname)])
+        print modobjs
         sys.path.pop(0)
 
     tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
     return unittest.TestSuite(tests)
 
 if __name__ == "__main__":
-    path = sys.argv[1]
-    sys.argv=[sys.argv[0]]+sys.argv[2:]
+    files = sys.argv[1:]
+    print files
+    sys.argv=[sys.argv[0], "-v"]
     unittest.main(defaultTest="regressionTest")
