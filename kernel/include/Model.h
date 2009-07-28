@@ -12,7 +12,7 @@
 #include "config.h"
 #include "Object.h"
 #include "Particle.h"
-#include "internal/kernel_version_info.h"
+#include "internal/version_info.h"
 #include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
@@ -206,7 +206,7 @@ public:
   //! \return version and authorship information.
   VersionInfo get_version_info() const {
     IMP_CHECK_OBJECT(this);
-    return internal::kernel_version_info;
+    return internal::version_info;
   }
 };
 

@@ -9,10 +9,11 @@ EnsureSConsVersion(0, 98)
 vars = Variables('config.py')
 add_common_variables(vars, "imp")
 vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
+print Dir("#").abspath+"/tools"
 env = MyEnvironment(variables=vars, require_modeller=False,
                     tools=["default", "doxygen", "docbook", "swig",
                            "imp_module"],
-                    toolpath=["tools"])
+                    toolpath=[Dir("#").abspath+"/tools"])
 unknown = vars.UnknownVariables()
 if unknown:
     print "Unknown variables: ", unknown.keys()
@@ -68,7 +69,9 @@ bin = SConscript('bin/SConscript')
 Export('bin')
 SConscript('doc/SConscript')
 SConscript('examples/SConscript')
-(src) = SConscript('kernel/SConscript')
+env.IMPModuleSetup('kernel', module_suffix="", module_include_path="IMP",
+                   module_src_path="kernel", module_preproc="IMP", module_namespace="IMP",
+                   module_libs=[])
 SConscript('build/SConscript')
 SConscript('modules/SConscript')
 SConscript('applications/SConscript')
@@ -81,4 +84,4 @@ Clean('build', ['build/tmp/',
 #env.Depends(bin, [src, pyext])
 
 # Build the binaries by default:
-env.Default([bin, src])
+env.Default([bin])

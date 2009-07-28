@@ -6,7 +6,7 @@
  */
 
 #include "IMP/exception.h"
-#include "IMP/internal/kernel_version_info.h"
+#include "IMP/internal/version_info.h"
 #include "IMP/FailureHandler.h"
 #include "IMP/log.h"
 #include "IMP/VectorOfRefCounted.h"

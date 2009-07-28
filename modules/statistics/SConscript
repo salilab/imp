@@ -1,12 +1,4 @@
 Import('env')
 
-env.IMPModuleAbout(author="Keren Lasker", version="SVN",
+env.IMPModuleBuild(author="Keren Lasker", version="SVN",
                    description="Various statistics and clustering methods")
-
-env.validate()
-
-# Subdirectories:
-SConscript('src/SConscript', exports='env')
-SConscript('include/SConscript', exports='env')
-SConscript('pyext/SConscript', exports='env')
-SConscript('test/SConscript', exports='env')

@@ -14,7 +14,7 @@
 #include "utility.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
-#include "internal/kernel_version_info.h"
+#include "internal/version_info.h"
 #include "DerivativeAccumulator.h"
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
@@ -327,7 +327,7 @@ public:
   }
 
   VersionInfo get_version_info() const {
-    return internal::kernel_version_info;
+    return internal::version_info;
   }
 
   //! Show the particle

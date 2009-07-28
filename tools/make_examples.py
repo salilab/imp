@@ -4,6 +4,7 @@ import SCons.Node.FS
 import os
 
 example_path = Dir('#/examples')
+print example_path
 
 def nice_name(string):
     return string.title().replace("_", " ").replace("Cxx", "C++")

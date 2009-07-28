@@ -1,0 +1,6 @@
+Import('env')
+
+files = []
+
+# Install the data files:
+env.IMPData(files)

@@ -1,13 +1,5 @@
 Import('env')
 
-env.IMPModuleAbout(author="Someone", version="SVN", description="A private module")
-
 env.Append(LIBS=['imp_core'])
-env.validate()
 
-# Subdirectories:
-SConscript('src/SConscript', exports='env')
-SConscript('include/SConscript', exports='env')
-SConscript('pyext/SConscript', exports='env')
-SConscript('test/SConscript', exports='env')
-SConscript('bin/SConscript', exports='env')
+env.IMPModuleBuild(author="Someone", version="SVN", description="A private module")

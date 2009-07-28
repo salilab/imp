@@ -1,6 +1,4 @@
 Import('env')
 
-files = ('__init__.py',)
-
 # Install the Python files:
-env.IMPPython(files)
+env.IMPPythonExtension("")

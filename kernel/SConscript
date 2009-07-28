@@ -1,14 +1,6 @@
 Import('env')
+import os.path
 
-# Subdirectories:
-src = SConscript('src/SConscript')
-SConscript('doc/SConscript')
-SConscript('include/SConscript')
-if env.get('python', True):
-    (pyext, pymod, pyfiles)=SConscript('pyext/SConscript')
-    test = SConscript('test/SConscript')
-    env.Depends(test, pyext)
-else:
-    print "Testing disable since there is no python support"
+env.Append(CPPDEFINES=["IMP_DATA_DIRECTORY=\\\""+os.path.join(env['datadir'],"IMP")+"\\\""])
 
-Return('src')
+env.IMPModuleBuild(author='IMP developers', version='SVN', description='The IMP base classes')

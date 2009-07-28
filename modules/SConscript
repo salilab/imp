@@ -2,7 +2,7 @@ Import('env')
 
 cppmodules=['algebra',
             'atom',
-                        'benchmark',
+            'benchmark',
             'core',
             'display',
             'domino',
@@ -16,12 +16,10 @@ cppmodules=['algebra',
 pymodules=['modeller']
 
 for p in cppmodules:
-    print "Configuring IMP."+p
-    env.IMPModule(p)
+    env.IMPModuleSetup(p)
 
 for p in pymodules:
-    print "Configuring IMP."+p
-    env.IMPModule(p, cpp=False)
+    env.IMPModuleSetup(p, cpp=False)
 
 if env.get('localmodules', False):
     import os.path
@@ -30,5 +28,4 @@ if env.get('localmodules', False):
 
     for m in [os.path.split(str(d))[0] for d in dirs]:
         if m not in cppmodules and m not in pymodules:
-            print "Configuring IMP."+m
-            env.IMPModule(m)
+            env.IMPModuleSetup(m)
