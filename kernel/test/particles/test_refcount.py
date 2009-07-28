@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 
 # We probably shouldn't require IMP.core to test the kernel; temporary hack
-import IMP.core
+#import IMP.core
 
 class RefCountTests(IMP.test.TestCase):
     """Test refcounting of particles"""
@@ -89,7 +89,7 @@ class RefCountTests(IMP.test.TestCase):
         del p
         refcnt.assert_number(0)
 
-    def test_shared(self):
+    def _test_shared(self):
         """Check that ref counting works with shared particles"""
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()
