@@ -34,9 +34,12 @@ def _build_header(target, source, env):
     print >> fh, " *  Copyright 2007-9 Sali Lab. All rights reserved."
     print >> fh, " *\n */\n"
     print >> fh, "#ifndef %(PREPROC)s_H\n#define %(PREPROC)s_H\n" % vars
-    prefix = len(os.path.commonprefix([f.path for f in source]))
+    # prefix does not work when there are a mix of generated and source files
+    #= len(os.path.commonprefix([f.path for f in source]))
     for f in source:
-        src = f.path[prefix:]
+        full = f.path
+        src = full[full.find("include")+8:]
+        #print src
         if not src.startswith('internal'):
             vars['header']= src
             print >> fh, '#include <%(module_include_path)s/%(header)s>' %vars
@@ -56,9 +59,14 @@ def _make_nodes(files):
 def _install_hierarchy_internal(env, dir, sources, can_link):
     insttargets = []
     sources = _make_nodes(sources)
-    prefix = len(os.path.commonprefix([f.path for f in sources]))
     for f in sources:
-        src = f.path[prefix:]
+        full = f.path
+        if full.find("include") != -1:
+            src = full[full.find("include")+8:]
+        elif full.find("src") != -1:
+            src= full[full.find("src")+4]
+        else:
+            raise ValueError(full)
         dest = os.path.join(dir, os.path.dirname(src))
         if can_link:
             insttargets.append(env.LinkInstall(dest, f))

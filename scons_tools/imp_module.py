@@ -3,8 +3,8 @@
 import os.path
 import pyscanner
 
-from SCons.Script import Builder, File, Action, Glob, Return, Alias
-from tools.hierarchy import InstallPythonHierarchy
+from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
+import hierarchy
 
 def postprocess_lib(env, target, suffix):
     """    if env['PLATFORM'] == 'darwin':
@@ -218,7 +218,7 @@ def IMPSharedLibraryEnvironment(env):
     """Create a customized environment suitable for building IMP module C++
        shared libraries. Use the resulting object's `IMPSharedLibrary` pseudo
        builder to actually build the shared library."""
-    from tools import get_sharedlib_environment
+    from scons_tools import get_sharedlib_environment
     vars= make_vars(env)
     env = get_sharedlib_environment(env, '%(PREPROC)s_EXPORTS' % vars,
                                     cplusplus=True)
@@ -228,23 +228,21 @@ def IMPSharedLibraryEnvironment(env):
 def IMPHeaders(env, files):
     """Install the given header files, plus any auto-generated files for this
        IMP module."""
-    from tools.hierarchy import InstallHierarchy
     vars=make_vars(env)
     includedir = env.GetInstallDirectory('includedir')
-    install = InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
+    install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
                             list(files) + [env['CONFIG_H'], env['VER_H']])
-    build=InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
+    build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
                             list(files) + [env['CONFIG_H'], env['VER_H']], True)
     env.Alias(vars['module']+"-include", build)
     env.Alias(vars['module']+"-install-include", install)
 
 def IMPData(env, files):
     """Install the given data files for this IMP module."""
-    from tools.hierarchy import InstallDataHierarchy
     vars=make_vars(env)
     datadir = env.GetInstallDirectory('datadir')
-    install = InstallDataHierarchy(env, datadir+"/"+vars['module_include_path'], files, False)
-    build = InstallDataHierarchy(env, "#/build/data/"+vars['module_include_path'], files, True)
+    install = hierarchy.InstallDataHierarchy(env, datadir+"/"+vars['module_include_path'], files, False)
+    build = hierarchy.InstallDataHierarchy(env, "#/build/data/"+vars['module_include_path'], files, True)
     env.Alias(vars['module']+"-data", build)
     env.Alias(vars['module']+"-install-data", install)
 
@@ -283,13 +281,19 @@ def IMPPythonExtension(envi, swig_interface):
         install.append(installinit)
         install.append(installlib)
     files = Glob('src/*.py')
-
-    installfiles = InstallPythonHierarchy(env, env.GetInstallDirectory('pythondir',
-                                                                       vars['module_include_path']), files, False)
-    buildfiles= InstallPythonHierarchy(env, "#build/lib/"+vars['module_include_path'], files, True)
-    build.append(buildfiles)
-    install.append(installfiles)
-
+    #print [x.path for x in Glob("*")]
+    #print Dir("src").path
+    #print [x.path for x in Glob("src/*")]
+    #print [x.path for x in Glob("src/*.py")]
+    for f in Glob("src/*.py"):
+        #print f
+        nm= os.path.split(f.path)[1]
+        #print ('#/build/lib/%s/'+nm) % vars['module_include_path']
+        build.append(env.LinkInstallAs(('#/build/lib/%s/'+nm) % vars['module_include_path'],
+                                       f))
+        install.append(env.InstallAs(env.GetInstallDirectory('pythondir',
+                                                             vars['module_include_path'],
+                                                             nm),f))
     # Install the Python extension and module:
     #buildlib = env.Install("#/build/lib", pyext)
 
@@ -300,7 +304,7 @@ def IMPPythonExtensionEnvironment(env):
     """Create a customized environment suitable for building IMP module Python
        extensions. Use the resulting object's `IMPPythonExtension` pseudo
        builder to actually build the extension."""
-    from tools import get_pyext_environment
+    from scons_tools import get_pyext_environment
     module = env['IMP_MODULE']
     module_suffix= env['IMP_MODULE_SUFFIX']
     env = get_pyext_environment(env, module.upper(), cplusplus=True)
@@ -311,36 +315,22 @@ def IMPPythonExtensionEnvironment(env):
     return env
 
 def _action_unit_test(target, source, env):
-    scripts = [File('#/bin/imppy.sh')]
-    if env['TEST_ENVSCRIPT']:
-        scripts.append(File(env['TEST_ENVSCRIPT']))
     #app = "cd %s; %s %s %s -v > /dev/null" \
-    app = "%s %s %s %s -v > /dev/null" \
+    app = "%s %s %s %s > /dev/null" \
           % (#os.path.split(target[0].path)[0],
-             " ".join([x.abspath for x in scripts]), env['PYTHON'], source[0].abspath,
-             os.path.split(target[0].path)[0])
+             source[0].abspath, env['PYTHON'],
+             source[1].abspath,
+             " ".join([x.abspath for x in source[2:]]))
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
     else:
         print "IMP.%s unit tests FAILED" % env['IMP_MODULE']
         return 1
 
-def _print_unit_test(target, source, env):
-    return "IMPModuleTest('%s')" % source[0]
+#   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
+#        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
-def _emit_unit_test(target, source, env):
-    # Add all test_*.py scripts to sources
-    for dirpath, dirnames, filenames in os.walk('.'):
-        for f in filenames:
-            if f.startswith('test_') and f.endswith('.py'):
-                source.append(os.path.join(dirpath, f))
-    # Add environment scripts to sources
-    source.append('#/bin/imppy.sh')
-    if env['TEST_ENVSCRIPT']:
-        source.append(env['TEST_ENVSCRIPT'])
-    return target, source
-
-def IMPModuleTest(env, target, source, **keys):
+def IMPModuleTest(env, dependencies=[], **keys):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
@@ -349,10 +339,16 @@ def IMPModuleTest(env, target, source, **keys):
        If the TEST_ENVSCRIPT construction variable is set, it is a shell
        script to run to set up the environment to run the test script.
        A convenience alias for the tests is added, and they are always run."""
-    test = env._IMPModuleTest(target, source, **keys)
-    env.AlwaysBuild(target)
+    files= ["#/bin/imppy.sh", "#/tools/run-all-tests.py"]+\
+        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
+    #print files
+    test = env._IMPModuleTest("test.passed", files, **keys)
+    env.AlwaysBuild("test.passed")
     vars=make_vars(env)
-    env.Alias(vars['module']+"-test", test);
+    ta=env.Alias(vars['module']+"-test", test)
+    env.Alias('test', vars['module']+"-test")
+    for d in dependencies:
+        env.Depends(ta, Alias(d+"-python"))
 
 def invalidate(env, fail_action):
     """'Break' an environment, so that any builds with it use the fail_action
@@ -397,9 +393,10 @@ def IMPModuleBuild(env, author, version, description):
                     [Alias(vars['module']+"-src")])
         env.Default([env.Alias(vars['module']+"-python")])
         env.Alias('test', [env.Alias(vars['module']+"-test")])
+        env.Alias('pythonlibs', [env.Alias(vars['module']+"-python")])
     else:
         env.Default([env.Alias(vars['module']+"-src")])
-        pass
+        env.Alias('libs', [env.Alias(vars['module']+"-src")])
 
 
 
@@ -479,9 +476,7 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
     env.AddMethod(validate)
     env.AddMethod(invalidate)
     env.Append(BUILDERS={'_IMPModuleTest': \
-                         Builder(action=Action(_action_unit_test,
-                                               _print_unit_test),
-                                 emitter=_emit_unit_test,
+                         Builder(action=Action(_action_unit_test),
                                  source_scanner=pyscanner.PythonScanner)})
     env['TEST_ENVSCRIPT'] = None
     env['VALIDATED'] = None
