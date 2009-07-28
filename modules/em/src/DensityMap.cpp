@@ -81,7 +81,7 @@ void DensityMap::CreateVoidMap(const int &nx, const int &ny, const int &nz)
   header_.nz = nz;
 }
 
-#ifndef IMP_DEPRECATED
+#ifndef IMP_NO_DEPRECATED
 void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
@@ -245,9 +245,9 @@ void DensityMap::set_value(float x, float y, float z,emreal value) {
 
 void DensityMap::reset_voxel2loc() {
   loc_calculated_=false;
-  delete x_loc_;
-  delete y_loc_;
-  delete z_loc_;
+  delete [] x_loc_;
+  delete [] y_loc_;
+  delete [] z_loc_;
   x_loc_=NULL;y_loc_=NULL;z_loc_=NULL;
 }
 void DensityMap::calc_all_voxel2loc()
@@ -506,7 +506,7 @@ void DensityMap::pad(int nx, int ny, int nz,float val) {
     new_data[new_vox] = data_[i];
   }
   header_.update_map_dimensions(nx,ny,nz);
-  delete(data_);
+  delete [] data_;
   data_ = new_data;
   calc_all_voxel2loc();
 }
