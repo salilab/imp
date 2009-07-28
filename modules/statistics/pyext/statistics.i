@@ -8,7 +8,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 
-%include "statistics_config.i"
+%include "modules/statistics/pyext/statistics_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

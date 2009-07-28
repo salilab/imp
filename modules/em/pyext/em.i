@@ -23,7 +23,7 @@ namespace IMP::em {
 %ignore operator<<(std::ostream&, const EMHeader &);
 %ignore operator<<(std::ostream&, const MRCHeader &);
 
-%include "em_config.i"
+%include "modules/em/pyext/em_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

@@ -13,7 +13,7 @@
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
 
-%include "display_config.i"
+%include "modules/display/pyext/display_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

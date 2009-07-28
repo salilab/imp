@@ -11,7 +11,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 
-%include "benchmark_config.i"
+%include "modules/benchmark/pyext/benchmark_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"
