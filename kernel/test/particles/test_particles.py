@@ -2,8 +2,6 @@ import unittest
 import IMP
 import IMP.test
 
-# We probably shouldn't require IMP.core to test the kernel; temporary hack
-import IMP.core
 
 xkey = IMP.FloatKey("x")
 ykey = IMP.FloatKey("y")
@@ -47,21 +45,6 @@ class ParticleTests(IMP.test.TestCase):
         self.assertRaises(ValueError, p1.add_attribute, IMP.IntKey("Test"), 0)
         self.assertRaises(ValueError, p1.get_value, xkey)
         self.assertRaises(ValueError, p1.set_value, xkey, 0.0)
-
-    def test_inactive(self):
-        """Check that operations fail on inactivated particles"""
-        print("Testing inactive")
-        p0 = self.particles[0]
-        p1 = self.particles[-1]
-        r = IMP.core.DistanceRestraint(IMP.core.Harmonic(10.0, 0.1), p0, p1)
-        self.model.add_restraint(r)
-        self.model.remove_particle(p1)
-        self.assertRaises(ValueError, p1.get_value, xkey)
-        self.assertRaises(ValueError, p1.set_value, xkey, 0.0)
-        self.assertRaises(ValueError, self.model.evaluate, False)
-        # Making the particle active again should fix everything:
-        self.model.remove_restraint(r)
-        self.particles= self.particles[0:-1]
 
     def _test_equality(self):
         """Check particle identity"""
