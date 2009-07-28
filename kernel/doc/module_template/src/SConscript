@@ -4,7 +4,7 @@ ns= Glob("*.cpp")+ Glob("*/*.cpp")
 
 skip=["internal/version_info.cpp",
       "internal/link_0.cpp",
-          "internal/link_1.cpp"]
+      "internal/link_1.cpp"]
 
 files=[]
 for h in ns:

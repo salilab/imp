@@ -1,34 +1,4 @@
-Import('env', 'bin')
+Import('env')
 
-from tools import pyscanner
-import os
-import os.path
-
-e = env.Clone()
-
-# Custom builder to run unit tests:
-def builder_unit_test(target, source, env):
-    pysrcs= [x.abspath for x in source[2:]]
-    prefix= os.path.commonprefix(pysrcs)
-    app = "%s %s %s %s -v > /dev/null" % (source[1].abspath, e['PYTHON'],
-                                          source[0].abspath,
-                                          prefix
-                                          )
-    if env.Execute(app) == 0:
-        file(str(target[0]), 'w').write('PASSED\n')
-    else:
-        print "IMP kernel unit tests FAILED"
-        return 1
-
-e.Append(BUILDERS = {'Test': Builder(action=builder_unit_test,
-                                     source_scanner=pyscanner.PythonScanner)})
-
-test = e.Test("test.passed", ["#/tools/run-all-tests.py",  bin,
-                              # Make sure we depend on IMP.core being built:
-                              Glob("#/kernel/test/*.py"),
-                              Glob("#/kernel/test/*/*.py")])
-e.Alias("test", test)
-e.Alias("kernel-test", test)
-e.AlwaysBuild("test.passed")
-
-Return('test')
+t= env.IMPModuleTest("test.passed", "#/tools/run-all-tests.py")
+Return('t')

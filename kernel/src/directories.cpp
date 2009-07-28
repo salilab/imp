@@ -1,7 +1,7 @@
 /**
  *  \file directories.cpp
  *  \brief Get directories used by IMP.
- *  \note  @AUTOGEN@
+ *  \note  Auto-generated from directories.cpp.in; do not edit.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
@@ -20,7 +20,7 @@ String get_data_directory()
     return String(env);
   } else {
     // Default to compiled-in value
-    return String(@IMP_DATA_DIRECTORY@);
+    return String(IMP_DATA_DIRECTORY);
   }
 }
 

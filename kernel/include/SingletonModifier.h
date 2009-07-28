@@ -11,7 +11,7 @@
 #define IMP_SINGLETON_MODIFIER_H
 
 #include "config.h"
-#include "internal/kernel_version_info.h"
+#include "internal/version_info.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"

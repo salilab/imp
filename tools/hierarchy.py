@@ -5,26 +5,42 @@ import os
 import UserList
 from SCons.Script import Action, Entry
 
-def _build_header(target, source, env):
-    fname = target[0].path
+# should merge with one in imp_module.py
+
+def make_vars(env):
+    """Make a map which can be used for all string substitutions"""
     module = env['IMP_MODULE']
-    description = env['IMP_MODULE_DESCRIPTION']
-    if module == 'IMP':
-        guard = "IMP_H"
-    else:
-        guard = "IMP_%s_H" % module.upper()
+    module_include_path = env['IMP_MODULE_INCLUDE_PATH']
+    module_src_path = env['IMP_MODULE_SRC_PATH']
+    module_preproc = env['IMP_MODULE_PREPROC']
+    module_namespace = env['IMP_MODULE_NAMESPACE']
+    author = env['IMP_MODULE_AUTHOR']#source[0].get_contents()
+    version = env['IMP_MODULE_VERSION']#source[1].get_contents()
+    vars={'module_include_path':module_include_path,
+          'module_src_path':module_src_path, 'module':module,
+          'PREPROC':module_preproc, 'author':author, 'version':version,
+          'namespace':module_namespace}
+    return vars
+
+
+
+def _build_header(target, source, env):
+    vars= make_vars(env);
+    fname = target[0].path
+    vars['fname']=fname
     fh = file(fname, 'w')
-    print >> fh, "/**\n *  \\file %s   \\brief %s\n *" \
-             % (os.path.basename(fname), description)
+    print >> fh, "/**\n *  \\file %(fname)s   \\brief Include all the headers\n *" \
+             % vars
     print >> fh, " *  Copyright 2007-9 Sali Lab. All rights reserved."
     print >> fh, " *\n */\n"
-    print >> fh, "#ifndef %s\n#define %s\n" % (guard, guard)
+    print >> fh, "#ifndef %(PREPROC)s_H\n#define %(PREPROC)s_H\n" % vars
     prefix = len(os.path.commonprefix([f.path for f in source]))
     for f in source:
         src = f.path[prefix:]
         if not src.startswith('internal'):
-            print >> fh, '#include "%s/%s"' % (module, src)
-    print >> fh, "\n#endif  /* %s */" % guard
+            vars['header']= src
+            print >> fh, '#include <%(module_include_path)s/%(header)s>' %vars
+    print >> fh, "\n#endif  /* %(PREPROC)s_H */" % vars
 
 def _make_nodes(files):
     nodes = []
@@ -37,63 +53,45 @@ def _make_nodes(files):
             nodes.append(f)
     return nodes
 
-def _install_hierarchy_internal(env, buildtop, dir, module, sources):
+def _install_hierarchy_internal(env, dir, sources, can_link):
     insttargets = []
-    builddir_targets = []
     sources = _make_nodes(sources)
     prefix = len(os.path.commonprefix([f.path for f in sources]))
-    if module != 'IMP':
-        builddir = os.path.join(buildtop, 'IMP')
-    else:
-        builddir = buildtop
     for f in sources:
         src = f.path[prefix:]
-        dest = os.path.join(dir, module, os.path.dirname(src))
-        insttargets.append(env.Install(dest, f))
-        # Also place the file in the build directory:
-        dest = os.path.join(builddir, module, os.path.dirname(src))
-        builddir_targets.append(env.LinkInstall(dest, f))
-    return insttargets, builddir_targets
+        dest = os.path.join(dir, os.path.dirname(src))
+        if can_link:
+            insttargets.append(env.LinkInstall(dest, f))
+        else:
+            insttargets.append(env.Install(dest, f))
+    return insttargets
 
-def InstallHierarchy(env, dir, module, description, sources):
-    """Given a set of header files, install them all under `dir`. They are
-       placed in the `module` subdirectory (common prefix is stripped from the
-       filenames) and a file `module`.h is generated in `dir` which includes
-       all headers, and with the given comment description. A list of all
-       installed headers is returned, suitable for an 'install' alias. The
-       headers are also installed in the build directory, but these targets
-       are not returned."""
-    buildtop = '#/build/include'
-    targets, builddir_targets = \
-       _install_hierarchy_internal(env, buildtop, dir, module, sources)
-    if module != 'IMP':
-        builddir = os.path.join(buildtop, 'IMP')
-    else:
-        builddir = buildtop
+def InstallHierarchy(env, dir, sources, can_link=False):
+    """Given a set of header files, install them all under `dir`. A file
+       dir.h is created , and with the given comment description. A list of all
+       installed headers is returned, suitable for an 'install' alias."""
+    targets = \
+       _install_hierarchy_internal(env, dir, sources, can_link)
 
-    gen_heads = []
-    for d in (dir, builddir):
-        t = env.Command(os.path.join(d, module + '.h'), builddir_targets,
-                        Action(_build_header,
-                               'Auto-generating header ${TARGET}'),
-                        IMP_MODULE=module, IMP_MODULE_DESCRIPTION=description)
-        gen_heads.append(t)
-    targets.append(gen_heads[0])
+    t = env.Command(dir + '.h', sources,
+                    Action(_build_header,
+                               'Auto-generating header ${TARGET}'))
+
+    targets.append(t)
     return targets
 
-def InstallPythonHierarchy(env, dir, module, sources):
+def InstallPythonHierarchy(env, dir, sources, can_link=False):
     """Given a set of Python files, install them all under `dir`. They are
        placed in the `module` subdirectory (common prefix is stripped from the
        filenames). A list of all installed files is returned, suitable for an
        'install' alias, plus another list of the files in the build
        directory."""
-    return _install_hierarchy_internal(env, '#/build/lib', dir, module, sources)
+    return _install_hierarchy_internal(env, dir, sources, can_link)
 
-def InstallDataHierarchy(env, dir, module, sources):
+def InstallDataHierarchy(env, dir, sources, can_link):
     """Given a set of data files, install them all under `dir`. They are
        placed in the `module` subdirectory (common prefix is stripped from the
        filenames). A list of all installed files is returned, suitable for an
        'install' alias, plus another list of the files in the build
        directory."""
-    return _install_hierarchy_internal(env, '#/build/data', dir, module,
-                                       sources)
+    return _install_hierarchy_internal(env, dir, sources, can_link)

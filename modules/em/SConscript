@@ -1,23 +1,12 @@
 Import('env')
 
-env.IMPModuleAbout(author='Keren Lasker, Javier Velazquez-Muriel,'
-                    'Friedrich Foerster', version='SVN',
-                   description='Handling of EM density maps.')
-
-env.validate()
+env.Prepend(LIBS=['imp_atom'])
 
 # Link against CGAL if present:
 if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])
 
-env.Append(LIBS=['imp_atom', 'imp_core', 'imp_algebra','imp_display'])
 
-
-# _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
-env.Append(CPPDEFINES='_USE_MATH_DEFINES')
-
-# Subdirectories:
-SConscript('src/SConscript', exports='env')
-SConscript('include/SConscript', exports='env')
-SConscript('pyext/SConscript', exports='env')
-SConscript('test/SConscript', exports='env')
+env.IMPModuleBuild(author='Keren Lasker, Javier Velazquez-Muriel,'
+                    'Friedrich Foerster', version='SVN',
+                   description='Handling of EM density maps.')

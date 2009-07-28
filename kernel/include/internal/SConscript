@@ -8,7 +8,6 @@ files = [
     'constants.h',
     'container_helpers.h',
     'deprecation.h',
-    'kernel_version_info.h',
     'key_helpers.h',
     'log_internal.h',
     'ref_counting.h',

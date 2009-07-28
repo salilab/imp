@@ -1,7 +1,5 @@
 Import('env')
 
-env.IMPModuleAbout(author='Ben Webb', version='SVN',
-                   description='Interface to the MODELLER package.')
 
 
 def modeller_fail(env, target, source):
@@ -17,8 +15,5 @@ def modeller_fail(env, target, source):
 if env['MODELLER_EXETYPE'] == '':
     env.invalidate(modeller_fail)
 else:
-    env.validate()
-
-# Subdirectories:
-SConscript('pyext/SConscript', exports='env')
-SConscript('test/SConscript', exports='env')
+    env.IMPModuleBuild(author='Ben Webb', version='SVN',
+                       description='Interface to the MODELLER package.')

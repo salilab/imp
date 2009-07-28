@@ -1,41 +1,4 @@
-import os.path
-
-
-
-Import('env', 'get_pyext_environment')
-
-# Get a modified build environment suitable for building Python extensions:
-e = get_pyext_environment(env, '', cplusplus=True)
-e.Prepend(CPPPATH=['#/build/include'])
-e.Prepend(LIBPATH=['#/build/lib'], LIBS='imp')
+Import('env')
 
 # Build the Python extension from SWIG interface file:
-pyext = e.LoadableModule('#/build/lib/_IMP', 'IMP.i',
-                         SWIGPATH=['#/build/include', env['CPPPATH'],
-                                   env['SWIGPATH']],
-                         SWIGFLAGS='-python -c++ -naturalvar')
-# .py file should also be generated:
-gen_pymod = File('IMP.py')
-e.Depends(gen_pymod, pyext)
-# Place in lib directory:
-pymod = e.LinkInstallAs('#/build/lib/IMP/__init__.py', gen_pymod)
-# Install
-pydir = env.GetInstallDirectory('pythondir', 'IMP')
-pyinst = env.Install(pydir, pymod)
-env.Alias('install', pyinst)
-env.Alias('kernel-install', pyinst)
-
-# Install the Python extension:
-libinst = e.Install(env.GetInstallDirectory('pyextdir'), pyext)
-if e['PLATFORM'] == 'darwin':
-    libdir= os.path.split(pyext[0].abspath)[0]
-    e.AddPostAction (libinst,\
-                         "install_name_tool -change %s/libimp.dylib %s/libimp.dylib %s" \
-                         % (libdir, e['libdir'], libinst[0].path))
-e.Alias('install', libinst)
-e.Alias('kernel-install', libinst)
-
-# Subdirectories
-pyfiles = SConscript('IMP/SConscript')
-env.Default(pyext)
-Return('pyext', 'pymod', 'pyfiles')
+env.IMPPythonExtension('IMP.i')

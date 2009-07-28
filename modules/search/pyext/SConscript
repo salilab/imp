@@ -1,5 +1,3 @@
 Import('env')
 
-e = env.IMPPythonExtensionEnvironment()
-
-e.IMPPythonExtension('search.i')
+env.IMPPythonExtension('search.i')

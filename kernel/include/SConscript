@@ -30,7 +30,6 @@ files = [
     'VersionInfo.h',
     'WeakPointer.h',
     'base_types.h',
-    'config.h',
     'container_macros.h',
     'deprecation.h',
     'exception.h',
@@ -38,15 +37,8 @@ files = [
     'macros.h',
     'random.h',
     'utility.h',
-    ]
+    ]+SConscript('internal/SConscript')
 
-# Subdirectories
-files = [File(f) for f in files] \
-        + SConscript('internal/SConscript')
 
-# Install the include files:
-includedir = env.GetInstallDirectory('includedir')
-inst = env.InstallHierarchy(includedir, 'IMP',
-                            'IMP, an Integrative Modeling Platform.', files)
-env.Alias('kernel-install', inst)
-env.Alias('install', inst)
+
+env.IMPHeaders(files)

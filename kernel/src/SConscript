@@ -1,24 +1,6 @@
-Import('env', 'get_sharedlib_environment')
-import os.path
+Import('env')
+e = env.IMPSharedLibraryEnvironment()
 
-# Get an environment suitable for building a shared library:
-env = get_sharedlib_environment(env, 'IMP_EXPORTS', cplusplus=True)
-env.Prepend(CPPPATH=["#/build/include"])
-
-# Auto-generated files:
-def gen_file(target, source, env):
-    infile = open(source[0].abspath, 'r')
-    outfile = open(target[0].abspath, 'w')
-    for line in infile:
-        line = line.replace('@AUTOGEN@',
-                            'Auto-generated from %s; do not edit.' \
-                            % os.path.basename(source[0].path))
-        line = line.replace('@IMP_DATA_DIRECTORY@', source[1].get_contents())
-        outfile.write(line)
-env.Append(BUILDERS={'GenFile': Builder(action=gen_file)})
-directories = env.GenFile("directories.cpp",
-                          ["directories.cpp.in",
-                           env.Value('"%s/IMP"' % env.subst(env['datadir']))])
 
 # Subdirectories:
 internal_files = SConscript('internal/SConscript')
@@ -31,32 +13,8 @@ files = ['base_types.cpp', 'Model.cpp', 'FailureHandler.cpp',
          'UnaryFunction.cpp', 'PairScore.cpp',
          'SingletonScore.cpp', 'TripletScore.cpp',
          'SingletonModifier.cpp', 'PairModifier.cpp',
+         'directories.cpp',
          'SingletonContainer.cpp', 'PairContainer.cpp', 'utility.cpp'
-        ] + internal_files + [directories]
+        ] + internal_files
 
-
-
-if env['build']=='profile' and env['CC'] == 'gcc':
-    lib = env.StaticLibrary('#/build/lib/imp', files)
-else:
-    # Build the shared library:
-    lib = env.SharedLibrary('#/build/lib/imp', files)
-
-
-# Make sure that any necessary data files are installed in the build
-# directory prior to making the shared libraries available
-env.Requires(lib, '#/build/data')
-
-# Install the library:
-libdir = env.GetInstallDirectory('libdir')
-libinst = env.Install(libdir, lib)
-if env['PLATFORM'] == 'darwin':
-    env.AddPostAction (lib, "install_name_tool -id %s %s" \
-                           % (lib[0].abspath, lib[0].path))
-    env.AddPostAction (libinst, "install_name_tool -id %s %s" \
-                           % (libinst[0].abspath, libinst[0].path))
-
-env.Alias('kernel-install', [libinst])
-env.Alias('install', [libinst])
-
-Return('lib')
+e.IMPSharedLibrary(files, install=True)

@@ -1,19 +1,9 @@
 Import('env')
 
-env.IMPModuleAbout(author='Daniel Russel', version='SVN',
-                   description='Build search structures over particles.')
 
 # Link against CGAL if present:
 if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])
 
-# No dependent libraries, so this module can always be built:
-env.validate()
-
-env.Append(LIBS=['imp_algebra'])
-
-# Subdirectories:
-SConscript('src/SConscript', exports='env')
-SConscript('include/SConscript', exports='env')
-SConscript('pyext/SConscript', exports='env')
-SConscript('test/SConscript', exports='env')
+env.IMPModuleBuild(author='Daniel Russel', version='SVN',
+                   description='Build search structures over particles.')
