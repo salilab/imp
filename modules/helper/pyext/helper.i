@@ -12,7 +12,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_decorators.i"
-%include "helper_config.i"
+%include "modules/helper/pyext/helper_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

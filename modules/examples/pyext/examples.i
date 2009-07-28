@@ -13,7 +13,7 @@
 %include "kernel/pyext/IMP_streams.i"
 %include "kernel/pyext/IMP_decorators.i"
 
-%include "examples_config.i"
+%include "modules/examples/pyext/examples_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

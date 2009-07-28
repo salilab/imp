@@ -10,7 +10,7 @@
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
 
-%include "misc_config.i"
+%include "modules/misc/pyext/misc_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

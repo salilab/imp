@@ -12,7 +12,7 @@
 %include "kernel/pyext/IMP_streams.i"
 %include "kernel/pyext/IMP_decorators.i"
 
-%include "atom_config.i"
+%include "modules/atom/pyext/atom_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

@@ -10,7 +10,7 @@
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
 
-%include "saxs_config.i"
+%include "modules/saxs/pyext/saxs_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"

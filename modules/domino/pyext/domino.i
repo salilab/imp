@@ -11,7 +11,7 @@
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
 
-%include "domino_config.i"
+%include "modules/domino/pyext/domino_config.i"
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_except.i"

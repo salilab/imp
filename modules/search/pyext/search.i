@@ -9,7 +9,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 
-%include "search_config.i"
+%include "modules/search/pyext/search_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"
@@ -30,5 +30,3 @@ namespace IMP {
     %template(IntMapValue) IntMapScoreState::Value;*/
   }
 }
-
-

@@ -10,7 +10,7 @@
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
 
-%include "algebra_config.i"
+%include "modules/algebra/pyext/algebra_config.i"
 %include "exception.i"
 %include "std_vector.i"
 %include "std_except.i"
