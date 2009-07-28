@@ -1,19 +1,21 @@
 # Include IMP build utility functions:
-from tools import *
-from tools import boost, cgal
+import scons_tools
+import scons_tools.boost
+import scons_tools.cgal
 
 # We need scons 0.98 or later
 EnsureSConsVersion(0, 98)
 
 # Set up build environment:
 vars = Variables('config.py')
-add_common_variables(vars, "imp")
+scons_tools.add_common_variables(vars, "imp")
 vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
-print Dir("#").abspath+"/tools"
-env = MyEnvironment(variables=vars, require_modeller=False,
+print Dir("scons_tools").abspath
+print Dir("#").abspath+"/scons_tools"
+env = scons_tools.MyEnvironment(variables=vars, require_modeller=False,
                     tools=["default", "doxygen", "docbook", "swig",
                            "imp_module"],
-                    toolpath=[Dir("#").abspath+"/tools"])
+                    toolpath=["scons_tools"])
 unknown = vars.UnknownVariables()
 if unknown:
     print "Unknown variables: ", unknown.keys()
@@ -24,8 +26,8 @@ if unknown:
 if not env.GetOption('clean') and not env.GetOption('help'):
     env.EnsureSWIGVersion(1, 3, 34)
 
-boost.configure_check(env, '1.33')
-cgal.configure_check(env)
+scons_tools.boost.configure_check(env, '1.33')
+scons_tools.cgal.configure_check(env)
 
 conf=env.Configure(config_h="kernel/include/internal/config.h")
 if env['CGAL_LIBS'] != ['']:
@@ -58,7 +60,8 @@ Other useful targets:
 """)
 
 # Make these objects available to SConscript files:
-Export('env', 'get_pyext_environment', 'get_sharedlib_environment')
+Export('env')
+#, 'get_pyext_environment', 'get_sharedlib_environment')
 
 # Check code for coding standards:
 standards = env.Command("standards", "SConstruct", "tools/check-standards.py")
@@ -67,7 +70,7 @@ env.AlwaysBuild(standards)
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')
 Export('bin')
-SConscript('doc/SConscript')
+#SConscript('doc/SConscript')
 SConscript('examples/SConscript')
 env.IMPModuleSetup('kernel', module_suffix="", module_include_path="IMP",
                    module_src_path="kernel", module_preproc="IMP", module_namespace="IMP",

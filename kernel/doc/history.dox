@@ -18,11 +18,13 @@
 
 - There is a \wiki{optimization_protocols,wiki page on optimization}
 
+- There is now a \wiki{internal_functionality,wiki page to list undocumented IMP-related functionality}
+
 \par Week of July 4
 
 - FilteredListSingletonContainer and FilteredPairSingletonContainer
   went away as there was too much hard to factor code shared with
-  ListSingletonContainer and PairSingletonContainer. The
+  IMP::core::ListSingletonContainer and IMP::core::PairSingletonContainer. The
   IMP::core::ClosePairsScoreState is now handled by a list of filters
   on the class itself. That is, do
   IMP::core::ClosePairsScoreState::add_close_pair_filter() to add a

@@ -3,7 +3,7 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 import SCons.Node.FS
 import os
 
-example_path = Dir('#/examples').abspath
+example_path = Dir('#/examples')
 print example_path
 print example_path
 
