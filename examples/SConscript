@@ -1,4 +1,4 @@
-from tools import pyscanner
+from scons_tools import pyscanner
 import os.path
 
 Import('env', 'bin')
@@ -10,6 +10,10 @@ example_py = [x for x in Glob("*.py") + Glob("*/*.py") \
 example_cpp = [x for x in Glob("*.cpp") + Glob("*/*.cpp") \
               if 'fragments' not in x.path]
 
+
+example_data= [
+    'data/single_protein.pdb'
+]
 
 e = env.Clone()
 
@@ -42,5 +46,12 @@ e.AlwaysBuild("examples.passed")
 docdir = e.GetInstallDirectory('docdir', 'examples')
 e.Install(docdir, example_py)
 e.Alias('docinstall', docdir)
+e.Depends(test, Alias('pythonlibs'))
 
-Return('test')
+for f in example_data:
+    datadir = env.GetInstallDirectory('datadir', 'examples')
+    install = env.InstallAs(datadir, f)
+    build = env.LinkInstallAs("#/build/data/examples", f)
+    a0=env.Alias("examples-data", build)
+    a1=env.Alias("examples-install-data", install)
+    env.Depends(test, [a0, a1])

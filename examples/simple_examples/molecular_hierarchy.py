@@ -3,7 +3,8 @@ import IMP.core
 import IMP.atom
 
 m = IMP.Model()
-mp0= IMP.atom.read_pdb('examples/simple_examples/single_protein.pdb', m)
+mp0= IMP.atom.read_pdb(IMP.get_data_directory()\
+                           +'/examples/single_protein.pdb', m)
 # get the 16th residue
 r16 = IMP.atom.get_residue(mp0, 16)
 r16.show()
