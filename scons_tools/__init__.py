@@ -647,5 +647,8 @@ def add_common_variables(vars, package):
                           PathVariable.PathAccept))
     vars.Add(BoolVariable('deprecated',
                           'Build deprecated classes and functions', True))
+    vars.Add(BoolVariable('dot',
+                          'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
+                          True))
     vars.Add(BoolVariable('python', 'Whether to build the python libraries ', True))
     vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))
