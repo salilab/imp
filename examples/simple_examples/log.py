@@ -4,7 +4,7 @@ import IMP.core
 import IMP.core
 
 m= IMP.Model()
-c= IMP.core.ListSingletonContainer(ps)(IMP.core.create_xyzr_particles(m, 20, 5))
+c= IMP.core.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 5))
 
 log= IMP.display.LogOptimizerState(IMP.display.CGOWriter(), "log_file.%04d.pym")
 g= IMP.display.XYZRsGeometry(c)
