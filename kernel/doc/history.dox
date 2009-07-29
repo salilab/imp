@@ -6,6 +6,13 @@
   since it wasn't a real container. A real atom::BondPairContainer has
   been added.
 
+- Out of source builds now work (sort of). The works bit is you can do
+  \command{scons -Y ../IMP -f ../IMP/SConscript}
+  to build %IMP in the current directory from a checkout in \c ../IMP. The
+  sortof bit is that you first need to create a link to the \c scons_tools
+  directory in the place where you want to build in. As you might expect,
+  your \c config.py should be in the build directory.
+
 
 \par Week of July 11
 
