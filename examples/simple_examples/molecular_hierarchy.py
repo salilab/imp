@@ -25,7 +25,8 @@ for r in residues:
     IMP.core.set_enclosing_sphere(d, IMP.core.XYZs(atoms))
 
 # load another copy
-mp1= IMP.atom.read_pdb('examples/simple_examples/single_protein.pdb', m)
+mp1= IMP.atom.read_pdb(IMP.get_data_directory() \
+                       + '/examples/single_protein.pdb', m)
 
 p = IMP.Particle(m)
 rmp= IMP.atom.Hierarchy.create(p, IMP.atom.Hierarchy.ASSEMBLY)
