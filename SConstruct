@@ -70,7 +70,7 @@ env.AlwaysBuild(standards)
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')
 Export('bin')
-#SConscript('doc/SConscript')
+SConscript('doc/SConscript')
 SConscript('examples/SConscript')
 env.IMPModuleSetup('kernel', module_suffix="", module_include_path="IMP",
                    module_src_path="kernel", module_preproc="IMP", module_namespace="IMP",
