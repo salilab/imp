@@ -406,7 +406,7 @@ def IMPModuleBuild(env, author, version, description):
 
 def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
                    module_include_path=None, module_src_path=None, module_preproc=None,
-                   module_namespace=None, module_libs='imp'):
+                   module_namespace=None, module_libs=['imp']):
     """Set up an IMP module. The module's SConscript gets its own
        customized environment ('env') in which the following pseudo-builders
        or methods are available: IMPPython, IMPModuleTest, validate
