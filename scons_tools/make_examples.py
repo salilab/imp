@@ -3,86 +3,72 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 import SCons.Node.FS
 import os
 
-example_path = Dir('#/examples')
-print example_path
-print example_path
-
 def nice_name(string):
     return string.title().replace("_", " ").replace("Cxx", "C++")
 
-def find_examples(top):
-    files = Glob("%s/*" % top.abspath)
-    subdirs = [x for x in files if isinstance(x, SCons.Node.FS.Dir)]
-    examples = [x for x in files if (x.path.endswith('py') \
-                or x.path.endswith('cpp'))]
+def find_examples(examples):
+    print [str(x) for x in examples]
+    pyfiles={}
+    cppfiles={}
+    readmes={}
+    for x in examples:
+        (dir, name)= os.path.split(str(x))
+        if name == "README":
+            c= open(x.abspath).read()
+            pyfiles[dir]=[]
+            cppfiles[dir]=[]
+            readmes[dir]=c
+        else:
+            (prefix, ext)= os.path.splitext(name)
+            rm= open(os.path.join(dir, prefix+".readme")).read()
+            if ext == 'cpp':
+                cppfiles[dir].append((prefix, rm, str(x)))
+            elif ext == 'py':
+                pyfiles[dir].append((prefix, rm, str(x)))
+    return (readmes, cppfiles, pyfiles)
 
-    sublist = []
-    dirdescr = file(top.File('README').abspath).read()
-    elist=[]
-    for ex in examples:
-        readme = os.path.splitext(ex.abspath)[0] + ".readme"
-        edesc = file(readme).read()
-        elist.append((ex, edesc))
-    sublist.append((top, dirdescr, elist))
-    for x in subdirs:
-        sublist.extend(find_examples(x))
-    return sublist
-
-def write_doxygen(tree, outputname):
-    for d in tree:
-        path= d[0].path
+def write_doxygen(readmes, cpps, pys, outputname):
+    for path in readmes.keys():
         name= os.path.split(path)[1]
         outfile= file(outputname+"/"+name+".dox", 'w')
         outfile.write("/**\n")
 
-        descr= d[1]
-        if name == "": wname="Examples"
+        if name == "examples": wname="Examples"
         else: wname=name
         outfile.write("\page "+wname+ " " + nice_name(wname) +"\n\n")
-        outfile.write(descr+"\n\n")
+        outfile.write(readmes[path]+"\n\n")
         # find subpages
-        for dp in tree:
-            pth = dp[0].path
-            parent= os.path.split(os.path.split(pth)[0])[1]
-            if parent is name and pth is not name:
+        for pth in readmes.keys():
+            if os.path.split(pth)[0] == path:
                 outfile.write("\subpage "+os.path.split(pth)[1]+"\n\n")
 
         #print d
-        for e in d[2]:
-            pth = e[0].path
-            nm= os.path.splitext(os.path.split(pth)[1])[0]
-            path=os.path.splitext(pth)[0]
+        for e in cpps[path]:
+            pth = e[2]
+            nm= e[0]
             outfile.write("\section " +nm + " " + nice_name(nm)+"\n\n")
             outfile.write(e[1]+"\n\n")
-            if pth.endswith('py'):
-                outfile.write("\htmlonly\n")
-                colorize_python.Parser(file(pth).read(),
-                                       outfile).format(None, None)
-                outfile.write("\endhtmlonly\n\n")
-            else:
-                outfile.write("\include "+nm+".cpp\n\n")
+            outfile.write("\include "+nm+".cpp\n\n")
+        for e in pys[path]:
+            pth = e[2]
+            nm= e[0]
+            outfile.write("\section " +nm + " " + nice_name(nm)+"\n\n")
+            outfile.write(e[1]+"\n\n")
+            outfile.write("\htmlonly\n")
+            colorize_python.Parser(file(pth).read(),
+                                   outfile).format(None, None)
+            outfile.write("\endhtmlonly\n\n")
+
         outfile.write("*/\n")
 
 
 def _action_make_examples(target, source, env):
-    tree = find_examples(example_path)
-    write_doxygen(tree, os.path.dirname(target[0].path))
+    (readmes, cpps, pys) = find_examples(source)
+    write_doxygen(readmes, cpps, pys, os.path.dirname(target[0].path))
 
-def _emit_make_examples(target, source, env):
-    tree = find_examples(example_path)
-    dir = Dir(os.path.dirname(target[0].abspath))
-    source = []
-    for d in tree:
-        # Only add Python files as sources, since they are directly
-        # incorporated into the .dox files (not .cpp files, which are
-        # \include'd, and thus don't change the .dox files themselves)
-        source.extend([x[0] for x in d[2] if x[0].path.endswith('.py')])
-    target = [dir.File(os.path.split(x[0].path)[1] + '.dox') for x in tree]
-    return (target, source)
 
 def _print_make_examples(target, source, env):
     print "Generating doxygen pages for examples"
 
 MakeExamples = Builder(action=Action(_action_make_examples,
-                                     _print_make_examples),
-                       emitter=_emit_make_examples)
+                                     _print_make_examples))
