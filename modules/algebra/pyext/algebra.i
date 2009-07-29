@@ -9,6 +9,7 @@
 %include "kernel/pyext/IMP_macros.i"
 %include "kernel/pyext/IMP_exceptions.i"
 %include "kernel/pyext/IMP_streams.i"
+%include "kernel/pyext/IMP_typemaps.i"
 
 %include "modules/algebra/pyext/algebra_config.i"
 %include "exception.i"
@@ -27,6 +28,13 @@ namespace IMP {
     typedef BoundingBoxD<3> BoundingBox3D;
     typedef VectorD<3> Vector3D;
     typedef VectorD<4> Vector4D;
+
+    /* Copy returned references to non-refcounted classes */
+    %apply REFCOPY & { const Rotation2D & };
+    %apply REFCOPY & { const Rotation3D & };
+    %apply REFCOPY & { const Vector3D & };
+    %apply REFCOPY & { const Vector4D & };
+    %apply REFCOPY & { const BoundingBox3D & };
   }
 }
 
