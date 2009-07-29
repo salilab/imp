@@ -1,7 +1,6 @@
 Import('env')
 
 import os
-
 dox = env.Doxygen("#/doc/html/index.html", "#/doc/doxygen/doxygen.conf")
 
 docdir = env.GetInstallDirectory('docdir', 'doxygen')
@@ -37,5 +36,9 @@ env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
 dox=env.GenerateDoxygen("doxygen.conf", "doxygen.conf.in")
 env.AlwaysBuild("doxygen.conf")
 Clean(dox, Glob("#/doc/html/*"))
-examples = env.MakeExamples("#/doc/doxygen/.examples/examples.dox", None)
+input_files=Glob("#/examples/README") +Glob("#/examples/*/README")\
+    +Glob("#/examples/*.py") +Glob("#/examples/*/*.py")\
+    +Glob("#/examples/*.cpp") +Glob("#/examples/*/*.cpp")
+examples = env.MakeExamples("#/doc/doxygen/.examples/examples.dox",
+                            input_files)
 Return('dox', 'examples')
