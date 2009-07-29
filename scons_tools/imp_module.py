@@ -6,15 +6,29 @@ import pyscanner
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 import hierarchy
 
-def postprocess_lib(env, target, suffix):
+def do_mac_name_thing(env, source, target):
+    targetdir= os.path.split(target[0].abspath)[0]
+    sourcedir= os.path.split(source[0].abspath)[0]
+    print targetdir
+    print sourcedir
+    env.Execute("install_name_tool -id %s %s"% (target[0].abspath, target[0].abspath))
+    env.Execute("install_name_tool -change %s %s %s"%(os.path.join(sourcedir, 'libimp.dylib'),
+                                                      os.path.join(targetdir, 'libimp.dylib'),
+                                                      target[0].abspath))
+    for m in env['IMP_MODULES_ALL']:
+        oname=os.path.join(sourcedir, "libimp_"+m+".dylib")
+        nname=os.path.join(targetdir, "libimp_"+m+".dylib")
+        print oname
+        print nname
+        env.Execute("install_name_tool -change %s %s %s"%(oname,
+                                                          nname,
+                                                          target[0].abspath))
+def postprocess_lib(env, target):
     """ for now assume that all libs go in the same place"""
     if env['PLATFORM'] == 'darwin':
-        pass
-    """libdir= os.path.split(pyext[0].abspath)[0]
-       env.AddPostAction (libinst, "install_name_tool -change %s/libimp%s.dylib %s/libimp%s.dylib %s" \
-                                  % (libdir, module_suffix,
-                                     env['libdir'], module_suffix,
-                                     libinst[0].path))"""
+        dir= os.path.split(target[0].abspath)[0]
+        env.AddPostAction(target, do_mac_name_thing)
+
 
 def make_vars(env):
     """Make a map which can be used for all string substitutions"""
@@ -209,9 +223,9 @@ def IMPSharedLibrary(env, files, install=True):
                            list(files) + [env['VER_CPP'], \
                                               env['LINK_0_CPP'],\
                                               env['LINK_1_CPP']])
-        postprocess_lib(env, build, "something")
+        postprocess_lib(env, build)
     install = env.Install(env.GetInstallDirectory('libdir'), build)
-    postprocess_lib(env, install, "something")
+    postprocess_lib(env, install)
     env.Alias(vars['module']+"-lib", build)
     env.Alias(vars['module']+"-install-lib", install)
     env.Alias("install", install)
@@ -280,7 +294,7 @@ def IMPPythonExtension(envi, swig_interface):
                                                             ' __init__.py'),
                                     gen_pymod)
         installlib = env.Install(env.GetInstallDirectory('pyextdir'), buildlib)
-        postprocess_lib(env, buildlib, module_suffix)
+        postprocess_lib(env, buildlib)
         build.append(buildlib)
         build.append(buildinit)
         install.append(installinit)
@@ -319,19 +333,6 @@ def IMPPythonExtensionEnvironment(env):
     env.Append(SWIGFLAGS='-python -c++ -naturalvar')
     env.AddMethod(IMPPythonExtension)
     return env
-
-def _action_unit_test(target, source, env):
-    #app = "cd %s; %s %s %s -v > /dev/null" \
-    app = "%s %s %s %s > /dev/null" \
-          % (#os.path.split(target[0].path)[0],
-             source[0].abspath, env['PYTHON'],
-             source[1].abspath,
-             " ".join([x.abspath for x in source[2:]]))
-    if env.Execute(app) == 0:
-        file(str(target[0]), 'w').write('PASSED\n')
-    else:
-        print "IMP.%s unit tests FAILED" % env['IMP_MODULE']
-        return 1
 
 def IMPModuleGetHeaders(env):
     vars = make_vars(env)
@@ -380,6 +381,21 @@ def IMPModuleGetData(env):
             continue
         files.append(f)
     return files
+
+
+
+def _action_unit_test(target, source, env):
+    #app = "cd %s; %s %s %s -v > /dev/null" \
+    app = "%s %s %s %s > /dev/null" \
+          % (#os.path.split(target[0].path)[0],
+             source[0].abspath, env['PYTHON'],
+             source[1].abspath,
+             " ".join([x.abspath for x in source[2:]]))
+    if env.Execute(app) == 0:
+        file(str(target[0]), 'w').write('PASSED\n')
+    else:
+        print "IMP.%s unit tests FAILED" % env['IMP_MODULE']
+        return 1
 
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
