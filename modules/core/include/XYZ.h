@@ -137,11 +137,7 @@ class IMPCOREEXPORT XYZ: public Decorator
   //! Get a vector containing the keys for x,y,z
   /** This is quite handy for initializing movers and things.
    */
-  static const FloatKeys& get_xyz_keys() {
-    static FloatKeys fks(IMP::internal::xyzr_keys,
-                         IMP::internal::xyzr_keys+3);
-    return fks;
-  }
+  static const FloatKeys& get_xyz_keys();
 };
 
 IMP_OUTPUT_OPERATOR(XYZ);

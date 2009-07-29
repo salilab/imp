@@ -17,6 +17,12 @@ void XYZ::show(std::ostream &out, std::string prefix) const
 
 }
 
+const FloatKeys& XYZ::get_xyz_keys() {
+  static FloatKeys fks(IMP::internal::xyzr_keys,
+                       IMP::internal::xyzr_keys+3);
+  return fks;
+}
+
 Float distance(XYZ a, XYZ b)
 {
   return algebra::distance(a.get_coordinates(),b.get_coordinates());
