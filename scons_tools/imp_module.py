@@ -7,8 +7,10 @@ from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 import hierarchy
 
 def postprocess_lib(env, target, suffix):
-    """    if env['PLATFORM'] == 'darwin':
-       libdir= os.path.split(pyext[0].abspath)[0]
+    """ for now assume that all libs go in the same place"""
+    if env['PLATFORM'] == 'darwin':
+        pass
+    """libdir= os.path.split(pyext[0].abspath)[0]
        env.AddPostAction (libinst, "install_name_tool -change %s/libimp%s.dylib %s/libimp%s.dylib %s" \
                                   % (libdir, module_suffix,
                                      env['libdir'], module_suffix,
@@ -367,6 +369,18 @@ def IMPModuleGetSource(env):
         files.append(f)
     return files
 
+def IMPModuleGetData(env):
+    vars = make_vars(env)
+    raw_files=Glob("*")
+    files=[]
+    for f in raw_files:
+        if f=="SConscript":
+            continue
+        if str(f).startswith("."):
+            continue
+        files.append(f)
+    return files
+
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
@@ -413,10 +427,8 @@ def IMPModuleBuild(env, author, version, description, required_modules=[]):
     #env.SConscript('doc/SConscript', exports='env')
     nnl=False
     print "Configuring module " + vars['module'],
-    if os.path.exists(env.Dir("data").abspath):
-        env.SConscript('data/SConscript', exports='env')
-    else:
-        print " (no data)",
+    env.SConscript('data/SConscript', exports='env')
+
     if not env['IMP_MODULE_CPP']:
         print " (python only)",
     print
@@ -432,11 +444,12 @@ def IMPModuleBuild(env, author, version, description, required_modules=[]):
         env.SConscript('include/SConscript', exports='env')
         env.SConscript('src/SConscript', exports='env')
         env.Depends(env.Alias(vars['module']+"-src"), [Alias(vars['module']+"-include")])
+        env.Depends(env.Alias(vars['module']+"-src"), [Alias(vars['module']+"-data")])
     if env.get('python', True):
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
-        env.Depends(env.Alias(vars['module']+"-test"), [Alias(vars['module']+"-python"),
-                                                        Alias(vars['module']+"-data")])
+        env.Depends(env.Alias(vars['module']+"-python"), [Alias(vars['module']+"-data")])
+        env.Depends(env.Alias(vars['module']+"-test"), [Alias(vars['module']+"-python")])
         env.Depends(env.Alias(vars['module']+"-python"),
                     [Alias(vars['module']+"-src")])
         env.Default([env.Alias(vars['module']+"-python")])
@@ -517,11 +530,12 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
                                                 [])[0]
         env.AddMethod(IMPSharedLibraryEnvironment)
         env.AddMethod(IMPHeaders)
-        env.AddMethod(IMPData)
+    env.AddMethod(IMPData)
     env.AddMethod(IMPPythonExtension)
     env.AddMethod(IMPModuleTest)
     env.AddMethod(IMPModuleBuild)
     env.AddMethod(IMPModuleGetHeaders)
+    env.AddMethod(IMPModuleGetData)
     env.AddMethod(IMPModuleGetSource)
     env.AddMethod(validate)
     env.AddMethod(invalidate)
