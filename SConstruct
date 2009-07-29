@@ -10,8 +10,6 @@ EnsureSConsVersion(0, 98)
 vars = Variables('config.py')
 scons_tools.add_common_variables(vars, "imp")
 vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
-print Dir("scons_tools").abspath
-print Dir("#").abspath+"/scons_tools"
 env = scons_tools.MyEnvironment(variables=vars, require_modeller=False,
                     tools=["default", "doxygen", "docbook", "swig",
                            "imp_module"],
