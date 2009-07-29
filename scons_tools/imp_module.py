@@ -212,6 +212,7 @@ def IMPSharedLibrary(env, files, install=True):
     postprocess_lib(env, install, "something")
     env.Alias(vars['module']+"-lib", build)
     env.Alias(vars['module']+"-install-lib", install)
+    env.Alias("install", install)
 
 
 def IMPSharedLibraryEnvironment(env):
@@ -236,6 +237,7 @@ def IMPHeaders(env, files):
                             list(files) + [env['CONFIG_H'], env['VER_H']], True)
     env.Alias(vars['module']+"-include", build)
     env.Alias(vars['module']+"-install-include", install)
+    env.Alias("install", install)
 
 def IMPData(env, files):
     """Install the given data files for this IMP module."""
@@ -245,6 +247,7 @@ def IMPData(env, files):
     build = hierarchy.InstallDataHierarchy(env, "#/build/data/"+vars['module_include_path'], files, True)
     env.Alias(vars['module']+"-data", build)
     env.Alias(vars['module']+"-install-data", install)
+    env.Alias("install", install)
 
 
 def IMPPythonExtension(envi, swig_interface):
@@ -299,6 +302,7 @@ def IMPPythonExtension(envi, swig_interface):
 
     env.Alias(vars['module']+"-python", build)
     env.Alias(vars['module']+"-install-python", install)
+    env.Alias("install", install)
 
 def IMPPythonExtensionEnvironment(env):
     """Create a customized environment suitable for building IMP module Python
