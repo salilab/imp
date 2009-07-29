@@ -22,8 +22,6 @@ def find_examples(examples):
             readmes[dir]=c
     for x in examples:
         (dir, name)= os.path.split(str(x))
-        print "Name is "+str(x)
-        print "dir is " +dir
         if name != "README":
             (prefix, ext)= os.path.splitext(name)
             rm= open(os.path.join(dir, prefix+".readme")).read()
