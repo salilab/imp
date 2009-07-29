@@ -331,6 +331,42 @@ def _action_unit_test(target, source, env):
         print "IMP.%s unit tests FAILED" % env['IMP_MODULE']
         return 1
 
+def IMPModuleGetHeaders(env):
+    vars = make_vars(env)
+    raw_files=Glob("*.h")+Glob("*/*.h")
+    files=[]
+    for f in raw_files:
+        s= str(f)
+        #print s
+        fname= os.path.split(s)[1]
+        if fname.startswith("."):
+            continue
+        if s== "internal/version_info.h":
+            continue
+        if s=="config.h":
+            continue
+        files.append(f)
+    return files
+
+def IMPModuleGetSource(env):
+    vars = make_vars(env)
+    raw_files=Glob("*.cpp")+Glob("*/*.cpp")
+    files=[]
+    for f in raw_files:
+        s= str(f)
+        #print s
+        fname= os.path.split(s)[1]
+        if fname.startswith("."):
+            continue
+        if s== "internal/link_0.cpp":
+            continue
+        if s== "internal/link_1.cpp":
+            continue
+        if s=="internal/version_info.cpp":
+            continue
+        files.append(f)
+    return files
+
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
@@ -485,6 +521,8 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
     env.AddMethod(IMPPythonExtension)
     env.AddMethod(IMPModuleTest)
     env.AddMethod(IMPModuleBuild)
+    env.AddMethod(IMPModuleGetHeaders)
+    env.AddMethod(IMPModuleGetSource)
     env.AddMethod(validate)
     env.AddMethod(invalidate)
     env.Append(BUILDERS={'_IMPModuleTest': \
