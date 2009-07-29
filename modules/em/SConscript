@@ -4,6 +4,8 @@ Import('env')
 if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])
 
+# needed for M_LN2 on windows
+env.Append(CPPDEFINES=['_USE_MATH_DEFINES'])
 
 env.IMPModuleBuild(author='Keren Lasker, Javier Velazquez-Muriel,'
                     'Friedrich Foerster', version='SVN',
