@@ -368,7 +368,7 @@ def validate(env):
     module = env['IMP_MODULE']
     env['VALIDATED'] = True
 
-def IMPModuleBuild(env, author, version, description):
+def IMPModuleBuild(env, author, version, description, required_modules=[]):
     env['IMP_MODULE_DESCRIPTION'] = description
     env['IMP_MODULE_VERSION'] = version
     env['IMP_MODULE_AUTHOR'] = author
@@ -385,6 +385,14 @@ def IMPModuleBuild(env, author, version, description):
         print " (python only)",
     print
     if env['IMP_MODULE_CPP']:
+        if required_modules is not None:
+            env.Prepend(LIBS=['imp'])
+            for x in required_modules:
+                if x.startswith("imp_"):
+                    print "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
+                if x=='kernel':
+                    print "You do not need to list the kernel as a required module"
+            env.Prepend(LIBS=['imp_'+x for x in required_modules])
         env.SConscript('include/SConscript', exports='env')
         env.SConscript('src/SConscript', exports='env')
         env.Depends(env.Alias(vars['module']+"-src"), [Alias(vars['module']+"-include")])
@@ -406,7 +414,7 @@ def IMPModuleBuild(env, author, version, description):
 
 def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
                    module_include_path=None, module_src_path=None, module_preproc=None,
-                   module_namespace=None, module_libs=['imp']):
+                   module_namespace=None):
     """Set up an IMP module. The module's SConscript gets its own
        customized environment ('env') in which the following pseudo-builders
        or methods are available: IMPPython, IMPModuleTest, validate
@@ -453,7 +461,7 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
     env['IMP_MODULE_AUTHOR'] = "A. Biologist"
     env['IMP_MODULE_CPP']= cpp
     env.Prepend(CPPPATH=['#/build/include'])
-    env.Prepend(LIBPATH=['#/build/lib'], LIBS=module_libs)
+    env.Prepend(LIBPATH=['#/build/lib'])
     vars=make_vars(env)
     if cpp:
         # Generate version information

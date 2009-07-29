@@ -4,6 +4,6 @@ Import('env')
 if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])
 
-
 env.IMPModuleBuild(author='Daniel Russel', version='SVN',
-                   description='C++ example code for IMP.')
+                   description='C++ example code for IMP.',
+                   required_modules=['core'])

@@ -1,10 +1,9 @@
 Import('env')
 
-env.Prepend(LIBS=['imp_atom'])
-
 # Link against CGAL if present:
 if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])
 
 env.IMPModuleBuild(author='Dina Schneidman and Seung Joong Kim', version='SVN',
-                   description='Small Angle X-ray Scattering methods.')
+                   description='Small Angle X-ray Scattering methods.',
+                   required_modules=['atom', 'core', 'algebra'])

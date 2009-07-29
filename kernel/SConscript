@@ -3,4 +3,4 @@ import os.path
 
 env.Append(CPPDEFINES=["IMP_DATA_DIRECTORY=\\\""+os.path.join(env['datadir'],"IMP")+"\\\""])
 
-env.IMPModuleBuild(author='IMP developers', version='SVN', description='The IMP base classes')
+env.IMPModuleBuild(author='IMP developers', version='SVN', description='The IMP base classes', required_modules=None)
