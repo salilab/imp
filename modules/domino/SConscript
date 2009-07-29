@@ -1,11 +1,10 @@
 Import('env')
 
-env.Prepend(LIBS=['imp_atom'])
-
 # Link against CGAL if present:
 if env['CGAL_LIBS']:
     env.Append(LIBS=env['CGAL_LIBS'])
 
 
 env.IMPModuleBuild(author='Keren Lasker', version='SVN',
-                   description='DOMINO optimizer')
+                   description='DOMINO optimizer',
+                   required_modules=['atom', 'core', 'algebra'])

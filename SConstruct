@@ -73,8 +73,7 @@ Export('bin')
 SConscript('doc/SConscript')
 SConscript('examples/SConscript')
 env.IMPModuleSetup('kernel', module_suffix="", module_include_path="IMP",
-                   module_src_path="kernel", module_preproc="IMP", module_namespace="IMP",
-                   module_libs=[])
+                   module_src_path="kernel", module_preproc="IMP", module_namespace="IMP")
 SConscript('build/SConscript')
 SConscript('modules/SConscript')
 SConscript('applications/SConscript')

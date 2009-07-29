@@ -6,4 +6,5 @@ if env['CGAL_LIBS']:
 
 
 env.IMPModuleBuild(author="Daniel Russel", version="SVN",
-                   description="Benchmarks")
+                   description="Benchmarks",
+                   required_modules=['atom', 'core', 'algebra'])
