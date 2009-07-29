@@ -13,18 +13,26 @@ def find_examples(examples):
     readmes={}
     for x in examples:
         (dir, name)= os.path.split(str(x))
+        print "Name is "+str(x)
+        print "dir is " +dir
         if name == "README":
             c= open(x.abspath).read()
             pyfiles[dir]=[]
             cppfiles[dir]=[]
             readmes[dir]=c
-        else:
+    for x in examples:
+        (dir, name)= os.path.split(str(x))
+        print "Name is "+str(x)
+        print "dir is " +dir
+        if name != "README":
             (prefix, ext)= os.path.splitext(name)
             rm= open(os.path.join(dir, prefix+".readme")).read()
-            if ext == 'cpp':
+            if ext == '.cpp':
                 cppfiles[dir].append((prefix, rm, str(x)))
-            elif ext == 'py':
+            elif ext == '.py':
                 pyfiles[dir].append((prefix, rm, str(x)))
+            else:
+                raise ValueError(ext)
     return (readmes, cppfiles, pyfiles)
 
 def write_doxygen(readmes, cpps, pys, outputname):
@@ -32,7 +40,7 @@ def write_doxygen(readmes, cpps, pys, outputname):
         name= os.path.split(path)[1]
         outfile= file(outputname+"/"+name+".dox", 'w')
         outfile.write("/**\n")
-
+        #print "working on " +path
         if name == "examples": wname="Examples"
         else: wname=name
         outfile.write("\page "+wname+ " " + nice_name(wname) +"\n\n")
@@ -44,12 +52,14 @@ def write_doxygen(readmes, cpps, pys, outputname):
 
         #print d
         for e in cpps[path]:
+            #print "   cpp is " + e[2]
             pth = e[2]
             nm= e[0]
             outfile.write("\section " +nm + " " + nice_name(nm)+"\n\n")
             outfile.write(e[1]+"\n\n")
             outfile.write("\include "+nm+".cpp\n\n")
         for e in pys[path]:
+            #print "   py is " + e[2]
             pth = e[2]
             nm= e[0]
             outfile.write("\section " +nm + " " + nice_name(nm)+"\n\n")
