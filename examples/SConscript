@@ -55,3 +55,4 @@ for f in example_data:
     a0=env.Alias("examples-data", build)
     env.Depends(test, a0)
     env.Alias("examples-install-data", install)
+    env.Alias("install", install)
