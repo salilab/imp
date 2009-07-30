@@ -43,7 +43,7 @@ namespace IMP {
 
 
 /* Get definitions of base classes (but do not wrap) */
-%import "kernel/pyext/IMP.i"
+%import "kernel/pyext/kernel.i"
 %import "kernel/pyext/IMP_keys.i"
 %import "modules/algebra/pyext/algebra.i"
 %include "singleton_containers.i"

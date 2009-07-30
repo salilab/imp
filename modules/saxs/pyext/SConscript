@@ -2,4 +2,4 @@ Import('env')
 
 
 # Build the Python extension from SWIG interface file:
-env.IMPPythonExtension('saxs.i')
+env.IMPModulePython()

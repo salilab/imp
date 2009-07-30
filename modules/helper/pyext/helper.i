@@ -26,7 +26,7 @@ def get_is_xyz_particle(p):
 %}
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/IMP.i"
+%import "kernel/pyext/kernel.i"
 %import "modules/core/pyext/core.i"
 %import "modules/algebra/pyext/algebra.i"
 %import "modules/atom/pyext/atom.i"

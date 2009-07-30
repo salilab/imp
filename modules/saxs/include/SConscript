@@ -9,4 +9,4 @@ files = [
          'utility.h']
 
 # Install the include files:
-env.IMPHeaders(files)
+env.IMPModuleInclude(files)

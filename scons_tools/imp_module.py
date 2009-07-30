@@ -37,12 +37,14 @@ def make_vars(env):
     module_src_path = env['IMP_MODULE_SRC_PATH']
     module_preproc = env['IMP_MODULE_PREPROC']
     module_namespace = env['IMP_MODULE_NAMESPACE']
+    module_suffix = env['IMP_MODULE_SUFFIX']
     author = env['IMP_MODULE_AUTHOR']#source[0].get_contents()
     version = env['IMP_MODULE_VERSION']#source[1].get_contents()
     vars={'module_include_path':module_include_path,
           'module_src_path':module_src_path, 'module':module,
           'PREPROC':module_preproc, 'author':author, 'version':version,
-          'namespace':module_namespace}
+          'namespace':module_namespace,
+          'module_suffix':module_suffix}
     return vars
 
 
@@ -206,10 +208,14 @@ def action_link_test(target, source, env):
 #endif""" % vars
 
 
-def IMPSharedLibrary(env, files, install=True):
+def IMPModuleLib(envi, files):
     """Build, and optionally also install, an IMP module's C++
        shared library. This is only available from within an environment
        created by `IMPSharedLibraryEnvironment`."""
+    from scons_tools import get_sharedlib_environment
+    vars= make_vars(envi)
+    env = get_sharedlib_environment(envi, '%(PREPROC)s_EXPORTS' % vars,
+                                    cplusplus=True)
     module = env['IMP_MODULE']
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars= make_vars(env)
@@ -231,18 +237,7 @@ def IMPSharedLibrary(env, files, install=True):
     env.Alias("install", install)
 
 
-def IMPSharedLibraryEnvironment(env):
-    """Create a customized environment suitable for building IMP module C++
-       shared libraries. Use the resulting object's `IMPSharedLibrary` pseudo
-       builder to actually build the shared library."""
-    from scons_tools import get_sharedlib_environment
-    vars= make_vars(env)
-    env = get_sharedlib_environment(env, '%(PREPROC)s_EXPORTS' % vars,
-                                    cplusplus=True)
-    env.AddMethod(IMPSharedLibrary)
-    return env
-
-def IMPHeaders(env, files):
+def IMPModuleInclude(env, files):
     """Install the given header files, plus any auto-generated files for this
        IMP module."""
     vars=make_vars(env)
@@ -255,7 +250,7 @@ def IMPHeaders(env, files):
     env.Alias(vars['module']+"-install-include", install)
     env.Alias("install", install)
 
-def IMPData(env, files):
+def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
     vars=make_vars(env)
     datadir = env.GetInstallDirectory('datadir')
@@ -266,14 +261,48 @@ def IMPData(env, files):
     env.Alias("install", install)
 
 
-def IMPPythonExtension(envi, swig_interface):
+def IMPModuleBin(envi, files, required_modules=[], extra_libs=[]):
+    from scons_tools import get_bin_environment
+    env= get_bin_environment(envi)
+    vars=make_vars(env)
+    env.Prepend(LIBS=(['imp%(module_suffix)s' % vars]+["imp_"+x for x in required_modules]))
+    env.Append(LIBS=extra_libs);
+    build=[]
+    install=[]
+    bindir = env.GetInstallDirectory('bindir')
+    for f in files:
+        prog= env.Program(f)
+        cb= env.Install("#/build/bin", prog)
+        ci= env.Install(bindir, prog)
+        build.append(cb)
+        install.append(ci)
+        build.append(prog)
+    env.Alias(vars['module']+"-bin", build)
+    env.Alias(vars['module']+"-install-bin", install)
+    env.Depends(vars['module']+"-bin", [vars['module']+"-include",
+                                        vars['module']+"-lib",
+                                        vars['module']+"-data"])
+    env.Depends(vars['module']+"-install-bin", [vars['module']+"-install-lib",
+                                                vars['module']+"-install-data"])
+    env.Default(env.Alias(vars['module']+"-bin"))
+
+
+def IMPModulePython(envi):
     """Build and install an IMP module's Python extension and the associated
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
-    env= IMPPythonExtensionEnvironment(envi)
+    from scons_tools import get_pyext_environment
+    env=envi.Clone()
+    module = env['IMP_MODULE']
+    module_suffix= env['IMP_MODULE_SUFFIX']
+    env = get_pyext_environment(env, module.upper(), cplusplus=True)
+    env.Append(LIBS=['imp%s' % module_suffix])
+    env['SWIGPATH'] = [env['CPPPATH'], '#']
+    env.Append(SWIGFLAGS='-python -c++ -naturalvar')
     module = env['IMP_MODULE']
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars=make_vars(env)
+    swig_interface=module+".i"
     build=[]
     install=[]
     if env['IMP_MODULE_CPP']:
@@ -320,19 +349,6 @@ def IMPPythonExtension(envi, swig_interface):
     env.Alias(vars['module']+"-install-python", install)
     env.Alias("install", install)
 
-def IMPPythonExtensionEnvironment(env):
-    """Create a customized environment suitable for building IMP module Python
-       extensions. Use the resulting object's `IMPPythonExtension` pseudo
-       builder to actually build the extension."""
-    from scons_tools import get_pyext_environment
-    module = env['IMP_MODULE']
-    module_suffix= env['IMP_MODULE_SUFFIX']
-    env = get_pyext_environment(env, module.upper(), cplusplus=True)
-    env.Append(LIBS=['imp%s' % module_suffix])
-    env['SWIGPATH'] = [env['CPPPATH'], '#']
-    env.Append(SWIGFLAGS='-python -c++ -naturalvar')
-    env.AddMethod(IMPPythonExtension)
-    return env
 
 def IMPModuleGetHeaders(env):
     vars = make_vars(env)
@@ -351,7 +367,7 @@ def IMPModuleGetHeaders(env):
         files.append(f)
     return files
 
-def IMPModuleGetSource(env):
+def IMPModuleGetSources(env):
     vars = make_vars(env)
     raw_files=Glob("*.cpp")+Glob("*/*.cpp")
     files=[]
@@ -382,7 +398,10 @@ def IMPModuleGetData(env):
         files.append(f)
     return files
 
-
+def IMPModuleGetBins(env):
+    vars = make_vars(env)
+    raw_files= Glob("*.cpp")
+    return raw_files
 
 def _action_unit_test(target, source, env):
     #app = "cd %s; %s %s %s -v > /dev/null" \
@@ -461,6 +480,7 @@ def IMPModuleBuild(env, author, version, description, required_modules=[]):
         env.SConscript('src/SConscript', exports='env')
         env.Depends(env.Alias(vars['module']+"-src"), [Alias(vars['module']+"-include")])
         env.Depends(env.Alias(vars['module']+"-src"), [Alias(vars['module']+"-data")])
+        env.SConscript('bin/SConscript', exports='env')
     if env.get('python', True):
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
@@ -544,15 +564,17 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
                                                 [])[0]
         env['LINK_1_CPP']=env.IMPModuleLinkTest('#/%(module_src_path)s/src/internal/link_1.cpp'%vars,
                                                 [])[0]
-        env.AddMethod(IMPSharedLibraryEnvironment)
-        env.AddMethod(IMPHeaders)
-    env.AddMethod(IMPData)
-    env.AddMethod(IMPPythonExtension)
+        env.AddMethod(IMPModuleLib)
+        env.AddMethod(IMPModuleInclude)
+    env.AddMethod(IMPModuleData)
+    env.AddMethod(IMPModulePython)
     env.AddMethod(IMPModuleTest)
     env.AddMethod(IMPModuleBuild)
     env.AddMethod(IMPModuleGetHeaders)
     env.AddMethod(IMPModuleGetData)
-    env.AddMethod(IMPModuleGetSource)
+    env.AddMethod(IMPModuleGetSources)
+    env.AddMethod(IMPModuleGetBins)
+    env.AddMethod(IMPModuleBin)
     env.AddMethod(validate)
     env.AddMethod(invalidate)
     env.Append(BUILDERS={'_IMPModuleTest': \

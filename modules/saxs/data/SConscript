@@ -5,4 +5,4 @@ files = [
         ]
 
 # Install the data files:
-env.IMPData(files)
+env.IMPModuleData(files)

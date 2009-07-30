@@ -1,4 +1,4 @@
 Import('env')
 
 # Install all files in this directory as data
-env.IMPData(env.IMPModuleGetData())
+env.IMPModuleData(env.IMPModuleGetData())

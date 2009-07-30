@@ -25,4 +25,4 @@ files = [
         + SConscript('boost/SConscript')
 
 # Install the include files:
-env.IMPHeaders(files)
+env.IMPModuleInclude(files)

@@ -1,4 +1,4 @@
 Import('env')
 
 # Build the Python extension from SWIG interface file:
-env.IMPPythonExtension('core.i')
+env.IMPModulePython()

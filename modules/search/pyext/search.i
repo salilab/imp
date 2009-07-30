@@ -16,7 +16,7 @@
 %include "std_except.i"
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/IMP.i"
+%import "kernel/pyext/kernel.i"
 %import "kernel/pyext/IMP_keys.i"
 
 /* Wrap our own classes */

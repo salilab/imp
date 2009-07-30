@@ -1,7 +1,4 @@
 Import('env')
 
-# _USE_MATH_DEFINES is needed to get math.h to define M_LN2 under w32
-env.Append(CPPDEFINES='_USE_MATH_DEFINES')
-
 # Build the Python extension from SWIG interface file:
-env.IMPPythonExtension('domino.i')
+env.IMPModulePython()

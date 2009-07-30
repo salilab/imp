@@ -1,3 +1,3 @@
 Import('env')
 
-env.IMPPythonExtension('algebra.i')
+env.IMPModulePython()

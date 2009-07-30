@@ -22,7 +22,7 @@ IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSampler);
 IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/IMP.i"
+%import "kernel/pyext/kernel.i"
 %import "modules/algebra/pyext/algebra.i"
 /* Wrap our own classes */
 %include "IMP/domino/JunctionTree.h"
