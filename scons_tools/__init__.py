@@ -412,6 +412,20 @@ def _fix_aix_cpp_link(env, cplusplus, linkflags):
         env[linkflags] = slflags.replace('-qmkshrobj -qsuppress=1501-218',
                                          '-shared')
 
+def _add_rpath(env):
+    # when supported, change the rpath so that libraries can be found at runtime
+    # also, add to the rpath used when linking so the linux linker can resolve
+    # inter-library dependencies
+    if e['PLATFORM'] == 'posix':
+        dylinkflags=[]
+        for p in e['LIBPATH']:
+            if p[0] is not '#':
+                # append/prepend must match other uses
+                if  env['rpath']:
+                    env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
+                env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+p])
+        env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
+
 def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     """Get a modified environment suitable for building shared libraries
        (i.e. using gcc ELF visibility macros or MSVC dllexport/dllimport macros
@@ -425,26 +439,14 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
              CCFLAGS='${VIS_CCFLAGS}')
     if env['PLATFORM'] == 'darwin':
         env.Append(SHLINKFLAGS=['-headerpad_max_install_names'])
-    if e['PLATFORM'] == 'posix' and e['rpath']:
-        dylinkflags=[]
-        for p in e['LIBPATH']:
-            if p[0] is not '#':
-                # append/prepend must match other uses
-                dylinkflags.append('-Wl,-rpath,'+p)
-        e.Prepend(LINKFLAGS=dylinkflags)
+    _add_rpath(env)
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
 
 def get_bin_environment(envi):
     env= envi.Clone()
-    if env['PLATFORM'] == 'posix' and env['rpath']:
-        for p in env['LIBPATH']:
-            if p[0] is not '#':
-                # append/prepend must match other uses
-                env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
-                env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+p])
-        env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
+    _add_rpath(env)
     return env
 
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
