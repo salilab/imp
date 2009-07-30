@@ -1,10 +1,5 @@
 Import('env')
 
-# Link against CGAL if present:
-if env['CGAL_LIBS']:
-    env.Append(LIBS=env['CGAL_LIBS'])
-
-
 env.IMPModuleBuild(author='IMP developers', version='SVN',
                    description='Code to write to graphics formats.',
                    required_modules=['atom', 'core', 'algebra'])

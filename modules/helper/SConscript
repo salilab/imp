@@ -1,9 +1,7 @@
 Import('env')
 
-# Link against CGAL if present:
-if env['CGAL_LIBS']:
-    env.Append(LIBS=env['CGAL_LIBS'])
 
-
-env.IMPModuleBuild(author="Daniel Russel", version="SVN", description="High level helper functions built on other modules.",
-                   required_modules=['atom', 'core', 'algebra'])
+env.IMPModuleBuild(author="Daniel Russel", version="SVN",
+                   description="High level helper functions built on other modules.",
+                   required_modules=['atom', 'core', 'algebra'],
+                   optional_dependencies=['CGAL'])

@@ -261,29 +261,32 @@ def IMPModuleData(env, files):
     env.Alias("install", install)
 
 
-def IMPModuleBin(envi, files, required_modules=[], extra_libs=[]):
+def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     from scons_tools import get_bin_environment
     env= get_bin_environment(envi)
     vars=make_vars(env)
     env.Prepend(LIBS=(['imp%(module_suffix)s' % vars]+["imp_"+x for x in required_modules]))
     env.Append(LIBS=extra_libs);
     build=[]
-    install=[]
+    installl=[]
     bindir = env.GetInstallDirectory('bindir')
     for f in files:
         prog= env.Program(f)
         cb= env.Install("#/build/bin", prog)
         ci= env.Install(bindir, prog)
         build.append(cb)
-        install.append(ci)
+        if install:
+            installl.append(ci)
         build.append(prog)
     env.Alias(vars['module']+"-bin", build)
-    env.Alias(vars['module']+"-install-bin", install)
+    if install:
+        env.Alias(vars['module']+"-install-bin", installl)
+        env.Depends(vars['module']+"-install-bin", [vars['module']+"-install-lib",
+                                                    vars['module']+"-install-data"])
     env.Depends(vars['module']+"-bin", [vars['module']+"-include",
                                         vars['module']+"-lib",
                                         vars['module']+"-data"])
-    env.Depends(vars['module']+"-install-bin", [vars['module']+"-install-lib",
-                                                vars['module']+"-install-data"])
+
     env.Default(env.Alias(vars['module']+"-bin"))
 
 
@@ -453,7 +456,8 @@ def validate(env):
     module = env['IMP_MODULE']
     env['VALIDATED'] = True
 
-def IMPModuleBuild(env, author, version, description, required_modules=[]):
+def IMPModuleBuild(env, author, version, description, required_modules=[],
+                   optional_dependencies=[]):
     env['IMP_MODULE_DESCRIPTION'] = description
     env['IMP_MODULE_VERSION'] = version
     env['IMP_MODULE_AUTHOR'] = author
@@ -463,6 +467,14 @@ def IMPModuleBuild(env, author, version, description, required_modules=[]):
     nnl=False
     print "Configuring module " + vars['module'],
     env.SConscript('data/SConscript', exports='env')
+
+    for d in optional_dependencies:
+        if d== "CGAL":
+            if env['CGAL_LIBS']:
+                env.Prepend(LIBS=env['CGAL_LIBS'])
+        else:
+            print "Do not understand optional dependency: " +d
+            raise ValueException
 
     if not env['IMP_MODULE_CPP']:
         print " (python only)",

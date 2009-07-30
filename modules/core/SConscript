@@ -1,9 +1,6 @@
 Import('env')
 
-# Link against CGAL if present:
-if env['CGAL_LIBS']:
-    env.Prepend(LIBS=env['CGAL_LIBS'])
-
 env.IMPModuleBuild(author='IMP developers', version='SVN',
                    description='General purpose features of broad utility.',
-                   required_modules=['algebra'])
+                   required_modules=['algebra'],
+                   optional_dependencies=['CGAL'])
