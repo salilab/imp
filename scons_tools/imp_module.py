@@ -291,7 +291,7 @@ def IMPPythonExtension(envi, swig_interface):
                                       gen_pymod)
         installinit = env.InstallAs(env.GetInstallDirectory('pythondir',
                                                             vars['module_include_path'],
-                                                            ' __init__.py'),
+                                                            '__init__.py'),
                                     gen_pymod)
         installlib = env.Install(env.GetInstallDirectory('pyextdir'), buildlib)
         postprocess_lib(env, buildlib)
