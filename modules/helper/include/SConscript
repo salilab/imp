@@ -1,4 +1,4 @@
 Import('env')
 
 # Install the include files:
-env.IMPHeaders(env.IMPModuleGetHeaders())
+env.IMPModuleInclude(env.IMPModuleGetHeaders())

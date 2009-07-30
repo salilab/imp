@@ -435,6 +435,18 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
     return e
 
+
+def get_bin_environment(envi):
+    env= envi.Clone()
+    if env['PLATFORM'] == 'posix' and env['rpath']:
+        for p in env['LIBPATH']:
+            if p[0] is not '#':
+                # append/prepend must match other uses
+                env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
+                env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+p])
+        env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
+    return env
+
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
 #    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
 #    prefix, to avoid collisions when using multiple modules
@@ -573,9 +585,11 @@ def add_common_variables(vars, package):
         # Install in /usr/lib64 rather than /usr/lib on x86_64 Linux boxes
         libdir += '64'
     vars.Add(PathVariable('prefix', 'Top-level installation directory', '/usr',
-                          PathVariable.PathAccept))
+                          PathVariable.PathIsDirCreate))
     vars.Add(PathVariable('datadir', 'Data file installation directory',
-                          '${prefix}/share', PathVariable.PathAccept))
+                          '${prefix}/share', PathVariable.PathIsDirCreate))
+    vars.Add(PathVariable('bindir', 'Executable installation directory',
+                          '${prefix}/bin', PathVariable.PathIsDirCreate))
     vars.Add(PathVariable('libdir', 'Shared library installation directory',
                           libdir, PathVariable.PathAccept))
     vars.Add(PathVariable('includedir', 'Include file installation directory',

@@ -1,5 +1,4 @@
 Import('env')
-e = env.IMPSharedLibraryEnvironment()
 
 
 # Subdirectories:
@@ -17,4 +16,4 @@ files = ['base_types.cpp', 'Model.cpp', 'FailureHandler.cpp',
          'SingletonContainer.cpp', 'PairContainer.cpp', 'utility.cpp'
         ] + internal_files
 
-e.IMPSharedLibrary(files, install=True)
+env.IMPModuleLib(files)

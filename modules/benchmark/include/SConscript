@@ -1,3 +1,3 @@
 Import('env')
 
-env.IMPHeaders(env.IMPModuleGetHeaders())
+env.IMPModuleInclude(env.IMPModuleGetHeaders())

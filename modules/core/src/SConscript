@@ -1,5 +1,4 @@
 Import('env')
-e = env.IMPSharedLibraryEnvironment()
 
 files = [
          'AllPairsPairContainer.cpp',
@@ -77,4 +76,4 @@ files = [
         + SConscript('internal/SConscript')
 
 # Build and install the shared library:
-e.IMPSharedLibrary(files, install=True)
+env.IMPModuleLib(files)

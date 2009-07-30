@@ -37,7 +37,7 @@ IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
 
 /* Get definitions of kernel and module base classes (but do not wrap) */
-%import "kernel/pyext/IMP.i"
+%import "kernel/pyext/kernel.i"
 /* Get definitions of algebra base classes (but do not wrap) */
 %import "modules/algebra/pyext/algebra.i"
 %import "modules/core/pyext/core.i"

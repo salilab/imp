@@ -1,5 +1,4 @@
 Import('env')
-e = env.IMPSharedLibraryEnvironment()
 
 # Build and install the shared library:
-e.IMPSharedLibrary(env.IMPModuleGetSource())
+env.IMPModuleLib(env.IMPModuleGetSources())
