@@ -416,9 +416,9 @@ def _add_rpath(env):
     # when supported, change the rpath so that libraries can be found at runtime
     # also, add to the rpath used when linking so the linux linker can resolve
     # inter-library dependencies
-    if e['PLATFORM'] == 'posix':
+    if env['PLATFORM'] == 'posix':
         dylinkflags=[]
-        for p in e['LIBPATH']:
+        for p in env['LIBPATH']:
             if p[0] is not '#':
                 # append/prepend must match other uses
                 if  env['rpath']:
