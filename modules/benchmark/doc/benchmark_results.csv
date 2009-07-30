@@ -486,3 +486,6 @@ xyz vector large,607.000000,1.563192e+11
 xyz internal large,157.900000,1.563192e+11
 xyz *internal large,320.680000,1.563192e+11
 xyz decorator large,126.380000,1.563192e+11
+date,  07/30/09
+mode,fast
+mode,release
