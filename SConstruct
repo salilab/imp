@@ -3,6 +3,7 @@ import scons_tools
 import scons_tools.boost
 import scons_tools.cgal
 
+
 # We need scons 0.98 or later
 EnsureSConsVersion(0, 98)
 
@@ -23,6 +24,10 @@ if unknown:
 # We need SWIG 1.3.34 or later
 if not env.GetOption('clean') and not env.GetOption('help'):
     env.EnsureSWIGVersion(1, 3, 34)
+
+if env.get('repository', None) is not None:
+    Repository(env['repository'])
+
 
 scons_tools.boost.configure_check(env, '1.33')
 scons_tools.cgal.configure_check(env)
