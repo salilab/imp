@@ -1,3 +1,4 @@
 Import('env')
 
-env.IMPModuleBin(env.IMPModuleGetBins(), required_modules=['helper'])
+env.IMPModuleBin(env.IMPModuleGetBins(), required_modules=['helper'],
+                 install=False)

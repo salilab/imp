@@ -1,9 +1,5 @@
 Import('env')
 
-# Link against CGAL if present:
-if env['CGAL_LIBS']:
-    env.Append(LIBS=env['CGAL_LIBS'])
-
 # needed for M_LN2 on windows
 env.Append(CPPDEFINES=['_USE_MATH_DEFINES'])
 

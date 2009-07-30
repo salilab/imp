@@ -1,10 +1,7 @@
 Import('env')
 
 
-if env['CGAL_LIBS']:
-    env.Prepend(LIBS=env['CGAL_LIBS'])
-
-
 env.IMPModuleBuild(author="Daniel Russel", version="SVN",
                    description="Benchmarks",
-                   required_modules=['atom', 'core', 'algebra'])
+                   required_modules=['atom', 'core', 'algebra'],
+                   optional_dependencies=['CGAL'])

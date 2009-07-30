@@ -1,11 +1,7 @@
 Import('env')
 
-# Link against CGAL if present:
-if env['CGAL_LIBS']:
-    env.Append(LIBS=env['CGAL_LIBS'])
-
-
 env.IMPModuleBuild(author="Ben Webb, Daniel Russel and Dina Schneidman",
                    version="SVN",
                    description="Code for dealing with protein and atomic structures.",
-                   required_modules=['core'])
+                   required_modules=['core'],
+                   optional_dependencies=['CGAL'])
