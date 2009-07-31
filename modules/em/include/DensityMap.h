@@ -104,7 +104,7 @@ public:
       \param[in] z The voxel index on the z axis of the grid
       \return the voxel index.
    */
-  long xyz_ind2voxel(int voxx,int voxy,int voxz) const;
+  long xyz_ind2voxel(int x,int y,int z) const;
 
   //! Calculate the voxel of a given location
   /** \param[in] x The position ( in angstroms) of the x coordinate
@@ -153,15 +153,14 @@ public:
   //! Set the value of the voxel at a given index
   /**
     \param[in] index voxel number in physical sense, NOT logical
-    \param[in] val value
+    \param[in] value value
   */
   void set_value(long index,emreal value);
 
 
   //! Set the value of the voxel at a given index
   /**
-    \param[in] index voxel number in physical sense, NOT logical
-    \param[in] val value
+    index voxel number in physical sense, NOT logical
   */
   void set_value(float x, float y, float z,emreal value);
 
@@ -263,9 +262,9 @@ public:
   //! Increase the dimension of the map
   //! The function pads zeros to the  right-upper section on the map.
   //! The original content of the map will be in the lower XYZ part of the map
-  /** \param[in] x_vox the number of voxels on the X axis
-      \param[in] y_vox the number of voxels on the Y axis
-      \param[in] z_vox the number of voxels on the Z axis
+  /** \param[in] nx the number of voxels on the X axis
+      \param[in] ny the number of voxels on the Y axis
+      \param[in] nz the number of voxels on the Z axis
       \param[in] val   all additional voxels will have this value
       \exception if the input  x/y/z voxels is smaller than the one
                  currently in the map

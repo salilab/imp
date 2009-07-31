@@ -80,11 +80,11 @@ public:
     (rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist) must have been set.
     \param[in] radius the radius
   */
-  void set_params(float radii);
+  void set_params(float radius);
 
   //! Finds the precomputed parameters given a particle radius.
   /**
-    \param[in] raidus the radius
+    \param[in] radius the radius
     \exception if the parameters of the radius have not been set
   */
   const KernelParameters::Parameters* find_params(float radius) {
