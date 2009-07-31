@@ -1,5 +1,5 @@
 /**
- * \file KMCenetersNode.h \brief generic node of the kc-tree
+ * \file KMCentersNode.h \brief generic node of the kc-tree
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *
