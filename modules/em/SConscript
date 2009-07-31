@@ -3,7 +3,5 @@ Import('env')
 # needed for M_LN2 on windows
 env.Append(CPPDEFINES=['_USE_MATH_DEFINES'])
 
-env.IMPModuleBuild(author='Keren Lasker, Javier Velazquez-Muriel,'
-                    'Friedrich Foerster', version='SVN',
-                   description='Handling of EM density maps.',
+env.IMPModuleBuild(version='SVN',
                    required_modules=['atom', 'core', 'algebra'])

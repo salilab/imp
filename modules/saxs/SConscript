@@ -1,5 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(author='Dina Schneidman and Seung Joong Kim', version='SVN',
-                   description='Small Angle X-ray Scattering methods.',
+env.IMPModuleBuild(version='SVN',
                    required_modules=['atom', 'core', 'algebra'])

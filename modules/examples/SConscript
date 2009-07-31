@@ -1,5 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(author='Daniel Russel', version='SVN',
-                   description='C++ example code for IMP.',
+env.IMPModuleBuild(version='SVN',
                    required_modules=['core'])

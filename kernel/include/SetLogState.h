@@ -1,5 +1,5 @@
 /**
- *  \file log.h     \brief Logging and error reporting support.
+ *  \file SetLogState.h     \brief Logging and error reporting support.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *

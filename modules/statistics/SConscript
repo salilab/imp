@@ -1,5 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(author="Keren Lasker", version="SVN",
-                   description="Various statistics and clustering methods",
+env.IMPModuleBuild(version="SVN",
                    required_modules=['algebra'])

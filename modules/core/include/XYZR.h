@@ -20,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** \ingroup decorators
 
     A simple example illustrating some of the functionality.
-    \verbinclude xyzrdecorator.py
+    \htmlinclude XYZR_Decorator.py.html
  */
 class IMPCOREEXPORT XYZR: public XYZ
 {

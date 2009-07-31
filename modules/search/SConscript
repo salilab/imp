@@ -1,5 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(author='Daniel Russel', version='SVN',
-                   description='Build search structures over particles.',
+env.IMPModuleBuild(version='SVN',
                    optional_dependencies=['CGAL'])

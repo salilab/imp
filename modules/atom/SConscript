@@ -1,7 +1,5 @@
 Import('env')
 
-env.IMPModuleBuild(author="Ben Webb, Daniel Russel and Dina Schneidman",
-                   version="SVN",
-                   description="Code for dealing with protein and atomic structures.",
+env.IMPModuleBuild(version="SVN",
                    required_modules=['core'],
                    optional_dependencies=['CGAL'])

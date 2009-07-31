@@ -15,6 +15,12 @@
   can add \c repository="../IMP/" in your \c config.py and link to your
   \c SConsctruct in the build directory.
 
+- The SConscript setup for a module has been greatly simplified so it should
+  be easy enough for users to maintain their own module and updates to the
+  build system shouldn't involve changes to user SConscripts any more. This does
+  mean that any non-svn modules need to be updated. Look at IMP.core or another
+  module and copy what is there.
+
 
 \par Week of July 11
 
