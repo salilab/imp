@@ -11,7 +11,6 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "Hierarchy.h"
-#include <IMP/atom/Hierarchy.h>
 
 #include <IMP/Refiner.h>
 
