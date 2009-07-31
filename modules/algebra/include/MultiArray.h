@@ -603,11 +603,11 @@ public:
 //    this->pad(padded,avg);
 //  }
 
-  //! Pad with a given value (only works for boost 1.37 and higher)
-  /**
-    \param[out] padded the output MultiArray
-    \param[in] val the value to pad with
-  **/
+//  //! Pad with a given value (only works for boost 1.37 and higher)
+//  /**
+//    \param[out] padded the output MultiArray
+//    \param[in] val the value to pad with
+//  **/
 //  void pad(This& padded,T val) {
 //    std::vector<int> extents(D);
 //    for(int i=0;i<D;i++) {
