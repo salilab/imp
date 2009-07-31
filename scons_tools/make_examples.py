@@ -13,8 +13,8 @@ def find_examples(examples):
     readmes={}
     for x in examples:
         (dir, name)= os.path.split(str(x))
-        print "Name is "+str(x)
-        print "dir is " +dir
+        #print "Name is "+str(x)
+        #print "dir is " +dir
         if name == "README":
             c= open(x.abspath).read()
             pyfiles[dir]=[]
