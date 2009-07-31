@@ -1,5 +1,5 @@
 /**
- *  \file Atom.h     \brief Simple atom decorator.
+ *  \file atom/Atom.h     \brief Simple atom decorator.
  *
  *  Copyright 2007-9 Sali Lab. All rights reserved.
  *

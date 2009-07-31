@@ -1,5 +1,5 @@
 /**
- * \file force_fields \brief
+ * \file force_fields.h \brief
  *
  * Copyright 2007-8 Sali Lab. All rights reserved.
  *
