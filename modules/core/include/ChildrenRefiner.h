@@ -11,7 +11,6 @@
 #include "config.h"
 #include "internal/version_info.h"
 #include "Hierarchy.h"
-#include <IMP/atom/Hierarchy.h>
 
 #include <IMP/Refiner.h>
 
@@ -22,7 +21,7 @@ class HierarchyTraits;
 //! Return the hierarchy children of a particle.
 /** \ingroup hierarchy
     A simple example using is
-    \verbinclude simple_examples/cover_particles.py
+    \htmlinclude cover_particles.py.html
     \see Hierarchy
     \see Hierarchy
 */
