@@ -59,7 +59,6 @@ int main() {
   {
     QuadraticClosePairsFinder *cpf= new QuadraticClosePairsFinder();
     //std::cout << "Quadratic:" << std::endl;
-    test_one("quadratic", cpf, 1000, 0, 1);
     test_one("quadratic", cpf, 10000, 0, .1);
     test_one("quadratic", cpf, 10000, 0, .5);
   }
@@ -67,7 +66,6 @@ int main() {
   {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
     //std::cout << "Box:" << std::endl;
-    test_one("box", cpf, 1000, 0, 1);
     test_one("box", cpf, 10000, 0, .1);
     test_one("box", cpf, 10000, 0, .5);
   }
@@ -75,9 +73,9 @@ int main() {
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
     //std::cout << "Grid:" << std::endl;
-    test_one("grid", cpf, 1000, 0, 1);
     test_one("grid", cpf, 10000, 0, .1);
     test_one("grid", cpf, 10000, 0, .5);
+    test_one("grid", cpf, 100000, 0, .5);
   }
   return 0;
 }
