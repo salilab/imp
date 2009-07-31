@@ -1,5 +1,5 @@
 /**
- * \file ForceFieldParameters \brief force field base class
+ * \file ForceFieldParameters.h \brief force field base class
  *
  * Copyright 2007-8 Sali Lab. All rights reserved.
  *

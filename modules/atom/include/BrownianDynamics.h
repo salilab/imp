@@ -33,7 +33,7 @@ class SimulationParameters;
     Particles without optimized x,y,z and nonoptimized D are skipped.
 
     Currently, rigid bodies are not supported. The necessary information
-    can be found at \xternal{en.wikipedia.org/wiki/Rotational_diffusion,
+    can be found at \external{en.wikipedia.org/wiki/Rotational_diffusion,
     the wikipedia}.
 
     BrownianDynamics uses a SimulationParameters particle to store the
