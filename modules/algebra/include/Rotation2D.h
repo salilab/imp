@@ -67,9 +67,6 @@ public:
   }
 
   //! gets the angle
-  /**
-  * \param[in] angle the angle
-  */
   double get_angle() const {
     return angle_;
   }

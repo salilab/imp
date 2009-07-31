@@ -37,11 +37,10 @@ class IMPALGEBRAEXPORT SphericalVector3D: public UninitializedDefault
   //! Direct Constructor. A check for the validity of the coords is done
   //! by default
   /**
-    \param[in] apply_check set it to false if you do not want the check
+    Set apply_check to false if you do not want the check
   **/
-  //! v in cartesian coordinates
   SphericalVector3D(double r, double tetha,
-                         double psi,bool apply_check=true) {
+                    double psi,bool apply_check=true) {
     if(apply_check) {
       if(!check(r,tetha,psi)) {
         String msg = "SphericalCoords:: wrong SphericalCoords coordinates." ;

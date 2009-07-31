@@ -59,7 +59,6 @@ public:
 
   //! Perform the transformation on an 2D vector
   /**
-    \param[in] o vector where the transformation is applied
     \note: The transformation is done firstly applying the rotation and then
     the translation
   **/
