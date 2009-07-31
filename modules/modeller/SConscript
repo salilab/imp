@@ -15,6 +15,5 @@ def modeller_fail(env, target, source):
 if env['MODELLER_EXETYPE'] == '':
     env.invalidate(modeller_fail)
 else:
-    env.IMPModuleBuild(author='Ben Webb', version='SVN',
-                       description='Interface to the MODELLER package.',
+    env.IMPModuleBuild(version='SVN',
                        required_modules=None)

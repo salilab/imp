@@ -63,9 +63,7 @@ IMP_check(boolean_condition, "An error has occurred with value "
 The control functions are accessible from Python, but the check and log macros are not.
 
 Saving state
-\htmlonly
-IMP_PYTHON(fragments/read_write)
-\endhtmlonly
+\htmlinclude read_write.py.html
 
 \verbatim
 IMP::core::write(my_imp_model, "somefile");
@@ -76,9 +74,7 @@ IMP::core::read("somefile", my_imp_model);
 
 \section i6 Examples
 The following examples all are in python and C++ The following code is ommitted from the examples:
-\htmlonly
-IMP_PYTHON(fragments/setup)
-\endhtmlonly
+\htmlinclude setup.py.html
 
 \code
 #include <IMP.h>
@@ -106,9 +102,7 @@ for (int i=0; i< 100; ++i) {
 
 Restrain the distance between the first two particles.
 
-\htmlonly
-IMP_PYTHON(fragments/pair_restraint)
-\endhtmlonly
+\htmlinclude fragments/pair_restraint.py.html
 
 
 \code
@@ -122,9 +116,7 @@ m->add_restraint(r);
 
 \section i8 Preventing collisions
 The ClosePairsScoreState maintains a list of all pairs of particles which contains all pairs closer than min distance (between the spheres). The HarmonicLowerBound forces the spheres apart.
-\htmlonly
-IMP_PYTHON(fragments/excluded_volume)
-\endhtmlonly
+\htmlinclude fragments/excluded_volume.py.html
 
 \code
 IMP::core::ClosePairsScoreState *nbl= new IMP::core::ClosePairsScoreState(ps);
@@ -146,9 +138,7 @@ m->add_restraint(nbr);
 
 Load a protein and restrain all the bonds to have the correct length. Bond angles is a bit trickier at the moment.
 
-\htmlonly
-IMP_PYTHON(fragments/load_protein_restrain_bonds)
-\endhtmlonly
+\htmlinclude fragments/load_protein_restrain_bonds.py.html
 
 \code
 IMP::core::MolecularHierarchyDecorator prot=IMP::atom::read_pdb("my.pdb", m);
@@ -170,9 +160,7 @@ m->add_restraint(br);
 
 \section i10 Simple optimization setup
 A basic setup for optimizing a model.
-\htmlonly
-IMP_PYTHON(fragments/basic_optimization)
-\endhtmlonly
+\htmlinclude basic_optimization.py.html
 
 \code
 IMP::Pointer<IMP::Model> m= new IMP::Model();

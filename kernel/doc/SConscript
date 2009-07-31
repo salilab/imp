@@ -1,4 +1,3 @@
 Import('env')
 
-for f in Glob("*.dox.in"):
-    env.GenerateDoxFromIn(f)
+env.IMPModuleDoc(Glob("*.dox")+Glob("*.dox.in"))

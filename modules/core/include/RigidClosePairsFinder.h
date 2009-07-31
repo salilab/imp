@@ -45,7 +45,7 @@ IMPCORE_BEGIN_NAMESPACE
     grid cells to use should be explored. In addition, with highly
     excentric sets of points, there will be too many cells.
 
-    \verbinclude simple_examples/rigid_collisions.py
+    \htmlinclude rigid_collisions.py.html
 
     \note This class uses the IMP::core::BoxSweepClosePairsFinder by
     default if \ref CGAL "CGAL" is available.

@@ -595,9 +595,9 @@ public:
 
   //! Pad the MultiArray. Padding is defined as doubling the size
   //! in each dimension and fill the new values with the previous average value.
-  /**
-    \param[in] padded the MultiArray padded
-  **/
+  //  /**
+  // \param[in] padded the MultiArray padded
+  //**/
 //  void pad(This& padded) {
 //    double avg = this->compute_avg();
 //    this->pad(padded,avg);

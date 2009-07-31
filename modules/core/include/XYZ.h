@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 //! A a decorator for a particle with x,y,z coordinates.
 /** \ingroup helper
     \ingroup decorators
-    \verbinclude xyzdecorator.py
+    \htmlinclude XYZ_Decorator.py.html
     \see XYZR
  */
 class IMPCOREEXPORT XYZ: public Decorator

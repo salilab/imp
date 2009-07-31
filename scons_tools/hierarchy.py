@@ -26,10 +26,8 @@ def make_vars(env):
 
 def _build_header(target, source, env):
     vars= make_vars(env);
-    fname = target[0].path
-    vars['fname']=fname
-    fh = file(fname, 'w')
-    print >> fh, "/**\n *  \\file %(fname)s   \\brief Include all the headers\n *" \
+    fh = file(target[0].abspath, 'w')
+    print >> fh, "/**\n *  \\file %(module_include_path)s.h   \\brief Include all the headers\n *" \
              % vars
     print >> fh, " *  Copyright 2007-9 Sali Lab. All rights reserved."
     print >> fh, " *\n */\n"

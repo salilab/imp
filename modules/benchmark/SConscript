@@ -1,7 +1,6 @@
 Import('env')
 
 
-env.IMPModuleBuild(author="Daniel Russel", version="SVN",
-                   description="Benchmarks",
+env.IMPModuleBuild(version="SVN",
                    required_modules=['atom', 'core', 'algebra'],
                    optional_dependencies=['CGAL'])

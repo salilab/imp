@@ -11,7 +11,7 @@ class DecoratorTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         p= IMP.atom.read_pdb(self.get_input_file_name('single_protein.pdb'), m)
-        s= IMP.helper.simplified(p, 10)
+        s= IMP.helper.simplified(p, 30)
         ls= IMP.core.get_leaves(s)
         for q in ls:
             d= IMP.core.XYZR(q.get_particle())

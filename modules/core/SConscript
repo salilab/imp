@@ -1,6 +1,5 @@
 Import('env')
 
-env.IMPModuleBuild(author='IMP developers', version='SVN',
-                   description='General purpose features of broad utility.',
+env.IMPModuleBuild(version='SVN',
                    required_modules=['algebra'],
                    optional_dependencies=['CGAL'])

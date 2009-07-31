@@ -1,6 +1,5 @@
 Import('env')
 
-env.IMPModuleBuild(author='IMP developers', version='SVN',
-                   description='Miscellaneous and/or experimental features.',
+env.IMPModuleBuild(version='SVN',
                    required_modules=['atom', 'core'],
                    optional_dependencies=['CGAL'])

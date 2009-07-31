@@ -4,7 +4,7 @@ import IMP.atom
 
 m = IMP.Model()
 mp0= IMP.atom.read_pdb(IMP.get_data_directory()\
-                           +'/examples/single_protein.pdb', m)
+                           +'/atom/example_protein.pdb', m)
 # get the 16th residue
 r16 = IMP.atom.get_residue(mp0, 16)
 r16.show()
@@ -26,7 +26,7 @@ for r in residues:
 
 # load another copy
 mp1= IMP.atom.read_pdb(IMP.get_data_directory() \
-                       + '/examples/single_protein.pdb', m)
+                       + '/atom/example_protein.pdb', m)
 
 p = IMP.Particle(m)
 rmp= IMP.atom.Hierarchy.create(p, IMP.atom.Hierarchy.ASSEMBLY)

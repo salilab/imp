@@ -53,13 +53,15 @@ Type: 'scons' to build the IMP kernel and all configured modules (i.e. those
               with no unmet dependencies);
       'scons test' to run unit tests for the kernel and all configured modules;
       'scons install' to install the kernel and all configured modules;
-      'scons examples' to run the examples;
+      'scons doc{-install}' to build (and optionally install) doc
 
 Other useful targets:
-      'kernel-test', 'kernel-install' to test or install the kernel;
-      'modules-test', 'modules-install' to test or install ALL modules (even
-          attempt to do so for those not configured);
-      'foo-test', 'foo-install' to test or install the module 'foo'.
+      '[kernel,module-name]-test' to test all modules, the kernel, or a particular module
+      '[kernel, module-name]-test-examples' to test the examples for a particular module or the kernel
+      'all' to build and test everything (and clean up everything in conjunction with '-c')
+
+Infrequently changing settings can be stored in a 'config.py' file in the build directory. An
+example is provided in tools/example-config.py.
 """)
 
 # Make these objects available to SConscript files:
@@ -73,13 +75,15 @@ env.AlwaysBuild(standards)
 # Subdirectories to build:
 bin = SConscript('bin/SConscript')
 Export('bin')
-SConscript('doc/SConscript')
-SConscript('examples/SConscript')
 env.IMPModuleSetup('kernel', module_suffix="", module_include_path="IMP",
                    module_src_path="kernel", module_preproc="IMP", module_namespace="IMP")
 SConscript('build/SConscript')
 SConscript('modules/SConscript')
 SConscript('applications/SConscript')
+# This must be after the other SConscipt calls so that it knows about all the generated files
+SConscript('doc/SConscript')
+
+env.Alias(env.Alias('test'), [env.Alias('examples-test')])
 
 Clean('build', ['build/tmp/',
                 'build/include',

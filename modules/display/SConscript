@@ -1,5 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(author='IMP developers', version='SVN',
-                   description='Code to write to graphics formats.',
+env.IMPModuleBuild(version='SVN',
                    required_modules=['atom', 'core', 'algebra'])

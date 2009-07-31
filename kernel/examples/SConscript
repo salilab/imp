@@ -1,0 +1,2 @@
+Import('env')
+env.IMPModuleExamples(env.IMPModuleGetExamples(), required_modules=['core', 'display'])

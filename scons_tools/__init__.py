@@ -6,7 +6,6 @@ import sys
 from SCons.Script import *
 import hierarchy
 import generate_doxygen
-import make_examples
 import symlinks
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
@@ -347,10 +346,7 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(EnsureSWIGVersion)
     env.AddMethod(GetInstallDirectory)
-    env.Prepend(SCANNERS = [_SWIGScanner],
-                BUILDERS = {'GenerateDoxFromIn':
-                            generate_doxygen.GenerateDoxFromIn,
-                            'MakeExamples': make_examples.MakeExamples})
+
     if env.get('cxxflags', None) is not None:
         env.Append(CXXFLAGS = [env['cxxflags'].split(" ")])
     if env.get('linkflags', None) is not None:

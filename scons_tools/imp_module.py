@@ -2,15 +2,38 @@
 
 import os.path
 import pyscanner
+import examples
+import test
+
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 import hierarchy
 
+def module_depends(env, target, source):
+    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
+
+def module_alias(env, target, source, is_default=False):
+    a=env.Alias(env['IMP_MODULE']+"-"+target, [source])
+    if is_default:
+        env.Default(a)
+
+def global_depends(env, target, source):
+    env.Alias(env.Alias(target), [env.Alias(env['IMP_MODULE']+'-'+source)])
+
+def module_alias_depends(env, target, source):
+    env.Depends(env.Alias(env['IMP_MODULE']+'-'+target),
+                [env.Alias(env['IMP_MODULE']+'-'+source)])
+
+def module_deps_depends(env, target, source, dependencies):
+    env.Depends(target,
+              [env.Alias(x+'-'+source) for x in dependencies])
+
+
 def do_mac_name_thing(env, source, target):
     targetdir= os.path.split(target[0].abspath)[0]
     sourcedir= os.path.split(source[0].abspath)[0]
-    print targetdir
-    print sourcedir
+    #print targetdir
+    #print sourcedir
     env.Execute("install_name_tool -id %s %s"% (target[0].abspath, target[0].abspath))
     env.Execute("install_name_tool -change %s %s %s"%(os.path.join(sourcedir, 'libimp.dylib'),
                                                       os.path.join(targetdir, 'libimp.dylib'),
@@ -18,8 +41,8 @@ def do_mac_name_thing(env, source, target):
     for m in env['IMP_MODULES_ALL']:
         oname=os.path.join(sourcedir, "libimp_"+m+".dylib")
         nname=os.path.join(targetdir, "libimp_"+m+".dylib")
-        print oname
-        print nname
+        #print oname
+        #print nname
         env.Execute("install_name_tool -change %s %s %s"%(oname,
                                                           nname,
                                                           target[0].abspath))
@@ -38,13 +61,15 @@ def make_vars(env):
     module_preproc = env['IMP_MODULE_PREPROC']
     module_namespace = env['IMP_MODULE_NAMESPACE']
     module_suffix = env['IMP_MODULE_SUFFIX']
-    author = env['IMP_MODULE_AUTHOR']#source[0].get_contents()
     version = env['IMP_MODULE_VERSION']#source[1].get_contents()
+    nicename= env['IMP_MODULE_NICENAME']
+    author = nicename+" development team"
     vars={'module_include_path':module_include_path,
           'module_src_path':module_src_path, 'module':module,
           'PREPROC':module_preproc, 'author':author, 'version':version,
           'namespace':module_namespace,
-          'module_suffix':module_suffix}
+          'module_suffix':module_suffix,
+          'module_nicename':nicename}
     return vars
 
 
@@ -232,9 +257,11 @@ def IMPModuleLib(envi, files):
         postprocess_lib(env, build)
     install = env.Install(env.GetInstallDirectory('libdir'), build)
     postprocess_lib(env, install)
-    env.Alias(vars['module']+"-lib", build)
-    env.Alias(vars['module']+"-install-lib", install)
-    env.Alias("install", install)
+    module_depends(env, build, 'include')
+    module_alias(env, 'lib', build, True)
+    global_depends(env, 'all', 'lib')
+    module_alias(env, 'install-lib', install)
+    module_alias_depends(env, 'install', 'install-lib')
 
 
 def IMPModuleInclude(env, files):
@@ -246,9 +273,10 @@ def IMPModuleInclude(env, files):
                             list(files) + [env['CONFIG_H'], env['VER_H']])
     build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
                             list(files) + [env['CONFIG_H'], env['VER_H']], True)
-    env.Alias(vars['module']+"-include", build)
-    env.Alias(vars['module']+"-install-include", install)
-    env.Alias("install", install)
+    module_alias(env, 'include', build)
+    global_depends(env, 'all', 'include')
+    module_alias(env, 'install-include', install)
+    module_alias_depends(env, 'install', 'install-include')
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
@@ -256,10 +284,27 @@ def IMPModuleData(env, files):
     datadir = env.GetInstallDirectory('datadir')
     install = hierarchy.InstallDataHierarchy(env, datadir+"/"+vars['module_include_path'], files, False)
     build = hierarchy.InstallDataHierarchy(env, "#/build/data/"+vars['module_include_path'], files, True)
-    env.Alias(vars['module']+"-data", build)
-    env.Alias(vars['module']+"-install-data", install)
-    env.Alias("install", install)
+    module_alias(env, 'data', build)
+    global_depends(env, 'all', 'data')
+    module_alias(env, 'install-data', install)
+    module_alias_depends(env, 'install', 'install-data')
 
+
+def IMPModuleExamples(env, files, required_modules=[]):
+    vars=make_vars(env)
+    #for f in files:
+    #    print f.abspath
+    (build, install, test)= examples.handle_example_dir(env, Dir("."), vars['module'], vars['module_include_path'], files)
+    module_alias(env, 'examples', build)
+    global_depends(env, 'all', 'examples')
+    module_alias(env, 'install-examples', install)
+    module_alias_depends(env, 'install', 'install-examples')
+    module_alias(env, 'test-examples', test)
+    global_depends(env, 'test', 'test-examples')
+    module_depends(env, test, 'python')
+    module_depends(env, test, 'data')
+    global_depends(env, 'doc', 'examples')
+    module_deps_depends(env, test, 'python', required_modules)
 
 def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     from scons_tools import get_bin_environment
@@ -278,16 +323,15 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
         if install:
             installl.append(ci)
         build.append(prog)
-    env.Alias(vars['module']+"-bin", build)
+    module_alias(env, 'bin', build, True)
+    global_depends(env, 'all', 'bin')
     if install:
-        env.Alias(vars['module']+"-install-bin", installl)
-        env.Depends(vars['module']+"-install-bin", [vars['module']+"-install-lib",
-                                                    vars['module']+"-install-data"])
-    env.Depends(vars['module']+"-bin", [vars['module']+"-include",
-                                        vars['module']+"-lib",
-                                        vars['module']+"-data"])
-
-    env.Default(env.Alias(vars['module']+"-bin"))
+        module_alias(env, 'install-bin', install)
+        module_alias_depends(env, 'install', 'install-bin')
+    module_depends(env, build, 'include')
+    module_depends(env, build, 'lib')
+    module_depends(env, build, 'data')
+    module_deps_depends(env, build, 'lib', required_modules)
 
 
 def IMPModulePython(envi):
@@ -347,11 +391,19 @@ def IMPModulePython(envi):
                                                              nm),f))
     # Install the Python extension and module:
     #buildlib = env.Install("#/build/lib", pyext)
+    module_alias(env, 'python', build, True)
+    global_depends(env, 'all', 'python')
+    module_alias(env, 'install-python', install)
+    module_alias_depends(env, 'install', 'install-python')
+    module_deps_depends(env, build, 'include', env['IMP_REQUIRED_MODULES'])
+    if env['IMP_MODULE_CPP']:
+        module_depends(env, build, 'include')
+        module_depends(env, build, 'lib')
 
-    env.Alias(vars['module']+"-python", build)
-    env.Alias(vars['module']+"-install-python", install)
-    env.Alias("install", install)
-
+def IMPModuleGetExamples(env):
+    vars= make_vars(env)
+    files=Glob("*.py")+ Glob("*/*.py")+Glob("*.readme") + Glob("*/*.readme")
+    return files
 
 def IMPModuleGetHeaders(env):
     vars = make_vars(env)
@@ -393,8 +445,10 @@ def IMPModuleGetData(env):
     vars = make_vars(env)
     raw_files=Glob("*")
     files=[]
-    for f in raw_files:
-        if f=="SConscript":
+    for f in [os.path.split(str(x))[1] for x in raw_files]:
+        if str(f).endswith("SConscript"):
+            continue
+        if str(f).endswith(".old"):
             continue
         if str(f).startswith("."):
             continue
@@ -406,23 +460,33 @@ def IMPModuleGetBins(env):
     raw_files= Glob("*.cpp")
     return raw_files
 
-def _action_unit_test(target, source, env):
-    #app = "cd %s; %s %s %s -v > /dev/null" \
-    app = "%s %s %s %s > /dev/null" \
-          % (#os.path.split(target[0].path)[0],
-             source[0].abspath, env['PYTHON'],
-             source[1].abspath,
-             " ".join([x.abspath for x in source[2:]]))
-    if env.Execute(app) == 0:
-        file(str(target[0]), 'w').write('PASSED\n')
-    else:
-        print "IMP.%s unit tests FAILED" % env['IMP_MODULE']
-        return 1
+def IMPModuleGetDocs(env):
+    files=Glob("*.dox.in")+ Glob("*.dox")+Glob("*.png") + Glob("*.html") + Glob("*.pdf")
+    return files
+
+
+def IMPModuleDoc(env, files):
+    vars= make_vars(env)
+    build=[]
+    #install=[]
+    docdir=env['docdir']+"/"+vars['module_include_path']
+    for f in files:
+        if str(f).endswith(".dox"):
+            pass
+        else:
+            build.append(env.Install(f, "#/doc/html/"+vars['module']))
+            #install.append(env.Install(f, docdir))
+    module_alias(env, 'doc', build)
+    global_depends(env, 'all', 'doc')
+    #module_alias(env, 'install-doc', install)
+    #module_alias_depends(env, 'install', 'install-doc')
+
+
 
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
-def IMPModuleTest(env, dependencies=[], **keys):
+def IMPModuleTest(env, required_modules=[], **keys):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
@@ -436,11 +500,12 @@ def IMPModuleTest(env, dependencies=[], **keys):
     #print files
     test = env._IMPModuleTest("test.passed", files, **keys)
     env.AlwaysBuild("test.passed")
-    vars=make_vars(env)
-    ta=env.Alias(vars['module']+"-test", test)
-    env.Alias('test', vars['module']+"-test")
-    for d in dependencies:
-        env.Depends(ta, Alias(d+"-python"))
+    module_alias(env, 'test', test)
+    global_depends(env, 'test', 'test')
+    module_depends(env, test, 'python')
+    module_deps_depends(env, test, 'python', required_modules)
+    module_deps_depends(env, test, 'python', env['IMP_REQUIRED_MODULES'])
+    module_depends(env, test, 'data')
 
 def invalidate(env, fail_action):
     """'Break' an environment, so that any builds with it use the fail_action
@@ -448,7 +513,7 @@ def invalidate(env, fail_action):
     for var in ('SHLINKCOM', 'CCCOM', 'CXXCOM', 'SHCCCOM', 'SHCXXCOM',
                 'SWIGCOM'):
         env[var] = fail_action
-    env.Append(BUILDERS={'_IMPModuleTest': Builder(action=fail_action)})
+    #env.Append(BUILDERS={'_IMPModuleTest': Builder(action=fail_action)})
     env['VALIDATED'] = False
 
 def validate(env):
@@ -456,17 +521,20 @@ def validate(env):
     module = env['IMP_MODULE']
     env['VALIDATED'] = True
 
-def IMPModuleBuild(env, author, version, description, required_modules=[],
+def IMPModuleBuild(env, version, required_modules=[],
                    optional_dependencies=[]):
-    env['IMP_MODULE_DESCRIPTION'] = description
     env['IMP_MODULE_VERSION'] = version
-    env['IMP_MODULE_AUTHOR'] = author
     vars=make_vars(env)
     env.validate()
-    #env.SConscript('doc/SConscript', exports='env')
+    env.SConscript('doc/SConscript', exports='env')
+    env.SConscript('examples/SConscript', exports='env')
     nnl=False
     print "Configuring module " + vars['module'],
     env.SConscript('data/SConscript', exports='env')
+    if required_modules is not None:
+        env['IMP_REQUIRED_MODULES']= required_modules
+    else:
+        env['IMP_REQUIRED_MODULES']= []
 
     for d in optional_dependencies:
         if d== "CGAL":
@@ -490,28 +558,18 @@ def IMPModuleBuild(env, author, version, description, required_modules=[],
             env.Prepend(LIBS=['imp_'+x for x in required_modules])
         env.SConscript('include/SConscript', exports='env')
         env.SConscript('src/SConscript', exports='env')
-        env.Depends(env.Alias(vars['module']+"-src"), [Alias(vars['module']+"-include")])
-        env.Depends(env.Alias(vars['module']+"-src"), [Alias(vars['module']+"-data")])
         env.SConscript('bin/SConscript', exports='env')
     if env.get('python', True):
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
-        env.Depends(env.Alias(vars['module']+"-python"), [Alias(vars['module']+"-data")])
-        env.Depends(env.Alias(vars['module']+"-test"), [Alias(vars['module']+"-python")])
-        env.Depends(env.Alias(vars['module']+"-python"),
-                    [Alias(vars['module']+"-src")])
-        env.Default([env.Alias(vars['module']+"-python")])
-        env.Alias('test', [env.Alias(vars['module']+"-test")])
-        env.Alias('pythonlibs', [env.Alias(vars['module']+"-python")])
     else:
-        env.Default([env.Alias(vars['module']+"-src")])
-        env.Alias('libs', [env.Alias(vars['module']+"-src")])
+        global_depends(env, 'install', 'install')
 
 
 
 def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
                    module_include_path=None, module_src_path=None, module_preproc=None,
-                   module_namespace=None):
+                   module_namespace=None, module_nicename=None):
     """Set up an IMP module. The module's SConscript gets its own
        customized environment ('env') in which the following pseudo-builders
        or methods are available: IMPPython, IMPModuleTest, validate
@@ -533,6 +591,8 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
         module_preproc="IMP"+module.upper()
     if module_namespace is None:
         module_namespace="IMP::"+module
+    if module_nicename is None:
+        module_nicename= "IMP."+module
     #print module_suffix
     #print module_src_path
     #print module_include_path
@@ -553,7 +613,7 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
     env['IMP_MODULE_SRC_PATH'] = module_src_path
     env['IMP_MODULE_PREPROC'] = module_preproc
     env['IMP_MODULE_NAMESPACE'] = module_namespace
-    env['IMP_MODULE_DESCRIPTION'] = "An IMP Module"
+    env['IMP_MODULE_NICENAME'] = module_nicename
     env['IMP_MODULE_VERSION'] = "SVN"
     env['IMP_MODULE_AUTHOR'] = "A. Biologist"
     env['IMP_MODULE_CPP']= cpp
@@ -583,15 +643,19 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
     env.AddMethod(IMPModuleTest)
     env.AddMethod(IMPModuleBuild)
     env.AddMethod(IMPModuleGetHeaders)
+    env.AddMethod(IMPModuleGetExamples)
     env.AddMethod(IMPModuleGetData)
     env.AddMethod(IMPModuleGetSources)
     env.AddMethod(IMPModuleGetBins)
     env.AddMethod(IMPModuleBin)
+    env.AddMethod(IMPModuleDoc)
+    env.AddMethod(IMPModuleExamples)
+    env.AddMethod(IMPModuleGetDocs)
+    env.Append(BUILDERS={'_IMPModuleTest': test.UnitTest})
+    env.Append(BUILDERS={'_IMPColorizePython': examples.ColorizePython})
+    env.Append(BUILDERS={'_IMPExamplesDox': examples.MakeDox})
     env.AddMethod(validate)
     env.AddMethod(invalidate)
-    env.Append(BUILDERS={'_IMPModuleTest': \
-                         Builder(action=Action(_action_unit_test),
-                                 source_scanner=pyscanner.PythonScanner)})
     env['TEST_ENVSCRIPT'] = None
     env['VALIDATED'] = None
     env.SConscript('%s/SConscript' % module, exports='env')
