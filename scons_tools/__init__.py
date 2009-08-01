@@ -5,7 +5,6 @@ import re
 import sys
 from SCons.Script import *
 import hierarchy
-import generate_doxygen
 import symlinks
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
