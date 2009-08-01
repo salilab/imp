@@ -9,4 +9,14 @@
 \standard_imp_publications
 
 \license \standard_imp_license
+
+The benchmarks are run daily on flute.ucsf.edu. The results are displayed
+normalized against the fastest runtime.
+
+\image html "benchmark/doc/benchmarks.png"
+
+The ratio of of runtimes for fast vs release mode.
+
+\image html "benchmark/doc/comparisons.png"
+
 */
