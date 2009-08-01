@@ -88,6 +88,9 @@ env.Alias(env.Alias('test'), [env.Alias('examples-test')])
 Clean('build', ['build/tmp/',
                 'build/include',
                 'build/lib'])
+Clean('all', Glob('scons_tools/*.pyc')\
+                          + Glob('tools/*.pyc')\
+                          + Glob('bin/*.pyc'))
 
 # bin script first requires kernel libraries to be built:
 #env.Depends(bin, [src, pyext])
