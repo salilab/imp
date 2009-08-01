@@ -98,8 +98,4 @@ env.Depends('doc-install', env.Alias('doc'))
 env.Depends(env.Alias('all'), [env.Alias('doc')])
 Clean(dox, Glob("#/doc/html/*"))
 
-# until the nightly build scripts get fixed
-env.Alias('docinstall', env.Alias('doc-install'))
-
-
 Return('dox', 'examples')
