@@ -31,7 +31,11 @@ def generate_doxygen(target, source, env):
     for x in source:
         print str(x)
     for line in infile:
-        if '@INPUTS@' in line:
+        if '@IMP_IMAGES@' in line:
+            for s in source[1:]:
+                if str(s).endswith(".png"):
+                    outfile.write("     \""+s.abspath + "\"\\\n")
+        elif '@INPUTS@' in line:
             for s in source[1:]:
                 if str(s).find('example') ==-1 or str(s).endswith(".dox"):
                     outfile.write("     \""+s.abspath + "\"\\\n")
@@ -83,7 +87,15 @@ examples= Glob("#/modules/examples/src/*.cpp") + Glob("#/modules/examples/includ
     + Glob("#/modules/*/examples/*.html") + Glob("#/modules/*/examples/*/*.html")\
     + Glob("#/kernel/examples/*.py") + Glob("#/kernel/examples/*/*.py")\
     + Glob("#/kernel/examples/*.cpp") + Glob("#/kernel/examples/*/*.cpp")\
-    + Glob("#/kernel/examples/*.html") + Glob("#/kernel/examples/*/*.html")
+    + Glob("#/kernel/examples/*.html") + Glob("#/kernel/examples/*/*.html")\
+    + Glob("#/modules/*/doc/*.dox") + Glob("#/modules/*/doc/*/*.dox")\
+    + Glob("#/modules/*/doc/*.png") + Glob("#/modules/*/doc/*/*.png")\
+    + Glob("#/modules/*/doc/*.html") + Glob("#/modules/*/doc/*/*.html")\
+    + Glob("#/kernel/doc/*.dox") + Glob("#/kernel/doc/*/*.dox")\
+    + Glob("#/kernel/doc/*.png") + Glob("#/kernel/doc/*/*.png")\
+    + Glob("#/kernel/doc/*.html") + Glob("#/kernel/doc/*/*.html")\
+
+
 env.Depends(examplei, modexamples)
 doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf.in"] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])

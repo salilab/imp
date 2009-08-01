@@ -461,7 +461,7 @@ def IMPModuleGetBins(env):
     return raw_files
 
 def IMPModuleGetDocs(env):
-    files=Glob("*.dox.in")+ Glob("*.dox")+Glob("*.png") + Glob("*.html") + Glob("*.pdf")
+    files=Glob("*.dox.in")+ Glob("*.dox") + Glob("*.pdf")
     return files
 
 
