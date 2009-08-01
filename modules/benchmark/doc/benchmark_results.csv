@@ -439,7 +439,8 @@ xyz decorator small,0.054043,1.500823e+07
 xyz vector large,605.640000,1.563192e+11
 xyz internal large,157.030000,1.563192e+11
 xyz *internal large,285.560000,1.563192e+11
-xyz decorator large,126.580000,1.563192e+11date,  07/31/09
+xyz decorator large,126.580000,1.563192e+11
+date,  07/31/09
 mode,fast
 connectivity,0.896667,4.416940e+01
 quadratic 10000 0.1,0.000082,2.106625e+03
