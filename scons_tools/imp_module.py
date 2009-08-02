@@ -262,6 +262,9 @@ def IMPModuleLib(envi, files):
     global_depends(env, 'all', 'lib')
     module_alias(env, 'install-lib', install)
     module_alias_depends(env, 'install', 'install-lib')
+    module_deps_depends(env, build, 'include', env['IMP_REQUIRED_MODULES'])
+    module_deps_depends(env, build, 'lib', env['IMP_REQUIRED_MODULES'])
+    module_deps_depends(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
 
 def IMPModuleInclude(env, files):
@@ -399,6 +402,7 @@ def IMPModulePython(envi):
     if env['IMP_MODULE_CPP']:
         module_depends(env, build, 'include')
         module_depends(env, build, 'lib')
+        module_deps_depends(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
 def IMPModuleGetExamples(env):
     vars= make_vars(env)
