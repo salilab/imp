@@ -352,7 +352,7 @@ def IMPModulePython(envi):
     module = env['IMP_MODULE']
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars=make_vars(env)
-    swig_interface=module+".i"
+    swig_interface=File(module+".i")
     build=[]
     install=[]
     if env['IMP_MODULE_CPP']:
@@ -378,6 +378,7 @@ def IMPModulePython(envi):
         build.append(buildinit)
         install.append(installinit)
         install.append(installlib)
+        build.append(swig_interface)
     files = Glob('src/*.py')
     #print [x.path for x in Glob("*")]
     #print Dir("src").path
@@ -398,10 +399,10 @@ def IMPModulePython(envi):
     global_depends(env, 'all', 'python')
     module_alias(env, 'install-python', install)
     module_alias_depends(env, 'install', 'install-python')
-    module_deps_depends(env, build, 'include', env['IMP_REQUIRED_MODULES'])
     if env['IMP_MODULE_CPP']:
         module_depends(env, build, 'include')
         module_depends(env, build, 'lib')
+        module_deps_depends(env, build, 'include', env['IMP_REQUIRED_MODULES'])
         module_deps_depends(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
 def IMPModuleGetExamples(env):
