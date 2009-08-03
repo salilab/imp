@@ -43,11 +43,11 @@ IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
 */
 /** */
 IMPATOMEXPORT extern const AtomType AT_UNKNOWN;
-#ifndef IMP_DOXYGEN
 /** */
 IMPATOMEXPORT extern const AtomType AT_N;
 /** */
 IMPATOMEXPORT extern const AtomType AT_CA;
+#ifndef IMP_DOXYGEN
 /** */
 IMPATOMEXPORT extern const AtomType AT_C;
 /** */
