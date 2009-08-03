@@ -29,7 +29,9 @@ public:
    */
   MappedDiscreteSet(Particles *ps_target);
   //! Create the discrete set
-  /** \param[in] atts the attributes for the states held in the set
+  /** \param[in] ps_target the set of particles to be mapped on a
+      discrete set
+      \param[in] atts the attributes for the states held in the set
    */
   MappedDiscreteSet(Particles *ps_target,
                     const std::vector<FloatKey> &atts);
