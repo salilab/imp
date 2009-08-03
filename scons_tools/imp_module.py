@@ -567,8 +567,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     if env.get('python', True):
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
-    else:
-        global_depends(env, 'install', 'install')
+    global_depends(env, 'install', 'install')
 
 
 
