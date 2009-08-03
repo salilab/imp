@@ -15,5 +15,4 @@ def modeller_fail(env, target, source):
 if env['MODELLER_EXETYPE'] == '':
     env.invalidate(modeller_fail)
 else:
-    env.IMPModuleBuild(version='SVN',
-                       required_modules=None)
+    env.IMPModuleBuild(version='SVN', required_modules=[])
