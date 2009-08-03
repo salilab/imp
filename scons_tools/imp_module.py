@@ -528,19 +528,31 @@ def validate(env):
 
 def IMPModuleBuild(env, version, required_modules=[],
                    optional_dependencies=[]):
-    env['IMP_MODULE_VERSION'] = version
-    vars=make_vars(env)
-    env.validate()
-    env.SConscript('doc/SConscript', exports='env')
-    env.SConscript('examples/SConscript', exports='env')
-    nnl=False
-    print "Configuring module " + vars['module'],
-    env.SConscript('data/SConscript', exports='env')
+    print "Configuring module " + env['IMP_MODULE'],
+
+    if not env['IMP_MODULE_CPP']:
+        print " (python only)",
+    if required_modules is not None and len(required_modules) != 0:
+        print "(requires " +", ".join(required_modules) + ")",
+    print
+
+    # Check required modules and add kernel
     if required_modules is not None:
+        env.Prepend(LIBS=['imp'])
+        env.Prepend(LIBS=['imp_'+x for x in required_modules])
+        for x in required_modules:
+            if x.startswith("imp_"):
+                print "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
+                print required_modules
+                raise ValueError(x)
+            if x=='kernel':
+                print "You do not need to list the kernel as a required module"
+                print required_modules
+                raise ValueError(x)
+        required_modules.append('kernel')
         env['IMP_REQUIRED_MODULES']= required_modules
     else:
         env['IMP_REQUIRED_MODULES']= []
-
     for d in optional_dependencies:
         if d== "CGAL":
             if env['CGAL_LIBS']:
@@ -549,24 +561,22 @@ def IMPModuleBuild(env, version, required_modules=[],
             print "Do not understand optional dependency: " +d
             raise ValueException
 
-    if not env['IMP_MODULE_CPP']:
-        print " (python only)",
-    print
+
+    env['IMP_MODULE_VERSION'] = version
+    vars=make_vars(env)
+    env.validate()
+    env.SConscript('doc/SConscript', exports='env')
+    env.SConscript('examples/SConscript', exports='env')
+    env.SConscript('data/SConscript', exports='env')
+
     if env['IMP_MODULE_CPP']:
-        if required_modules is not None:
-            env.Prepend(LIBS=['imp'])
-            for x in required_modules:
-                if x.startswith("imp_"):
-                    print "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
-                if x=='kernel':
-                    print "You do not need to list the kernel as a required module"
-            env.Prepend(LIBS=['imp_'+x for x in required_modules])
         env.SConscript('include/SConscript', exports='env')
         env.SConscript('src/SConscript', exports='env')
         env.SConscript('bin/SConscript', exports='env')
     if env.get('python', True):
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
+
     global_depends(env, 'install', 'install')
 
 
