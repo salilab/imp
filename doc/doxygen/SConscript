@@ -10,7 +10,7 @@ def run_doxygen(target, source, env):
 
 env.Append(BUILDERS = {'RunDoxygen': Builder(action=run_doxygen)})
 
-docdir = env.GetInstallDirectory('docdir', 'doxygen')
+docdir = env.GetInstallDirectory('docdir', 'html')
 
 # Install all files from 'dox' directory into the 'docdir' directory (cannot
 # use env.InstallAs() right now, due to scons bug #1751)
@@ -72,7 +72,8 @@ Each modules has its own set of examples demonstrating how to use the features o
 
 env.Append(BUILDERS = {'GenerateExamples': Builder(action=generate_example_index)})
 
-examplei= env.GenerateExamples("all_examples.dox", Glob("#/modules/*/examples/examples.dox") + Glob("#/kernel/examples/examples.dox"))
+examplei= env.GenerateExamples("all_examples.dox", Glob("#/modules/*/examples/examples.dox")\
+                                   + Glob("#/kernel/examples/examples.dox"))
 
 headers=[]
 for h in Glob("#/build/include/*.h") + Glob("#/build/include/IMP/*.h") +Glob("#/build/include/IMP/*/*.h"):
@@ -106,9 +107,7 @@ install=env.Command(Dir(env.subst(docdir)), dox,
                     "install -d $TARGET && install ${SOURCE.dir}/* $TARGET")
 env.Alias('doc-install', install)
 env.Alias('doc', dox)
-env.Depends('doc-install', env.Alias('doc'))
+env.Depends(install, env.Alias('doc'))
 env.Depends(env.Alias('all'), [env.Alias('doc')])
 Clean(dox, Glob("#/doc/html/*"))
 env.Depends(env.Alias('install'), env.Alias('doc-install'))
-
-Return('dox', 'examples')
