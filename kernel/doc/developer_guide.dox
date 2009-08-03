@@ -72,6 +72,8 @@ When designing the interface for your new code, you should
   IMP::ParticleRefiner, or a IMP::SingletonContainer or just an arbitrary
   IMP::Particles object.
 
+You may want to read \ref design_example "the design example".
+
 \section testing Testing
 
 Each class and method should have one or more associated tests in the
