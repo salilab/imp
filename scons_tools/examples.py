@@ -2,6 +2,7 @@ import colorize_python
 from SCons.Script import Glob, Dir, File, Builder, Action
 import SCons.Node.FS
 import os
+import os.path
 
 
 def _action_colorize_python(target, source, env):
@@ -54,13 +55,14 @@ def handle_example_dir(env, dirpath, name, includepath, files):
     build=[]
     install=[]
     exampledir = env.GetInstallDirectory('docdir')+"/examples"
+    prefix= os.path.split(includepath)[1]
     for f in files:
         if str(f).endswith(".py"):
-            c= env._IMPColorizePython(str(f)+".html", f)
+            c= env._IMPColorizePython(str(f)+".html", f.abspath)
             build.append(c)
-            install.append(env.Install(exampledir+"/"+includepath, f))
+            install.append(env.Install(exampledir+"/"+prefix, f.abspath))
         elif str(f).endswith(".readme"):
-            install.append(env.Install(exampledir+"/"+includepath, f))
+            install.append(env.Install(exampledir+"/"+prefix, f.abspath))
     test= env._IMPModuleTest('tests.passed', ["#/bin/imppy.sh", "#/tools/run-all-tests.py"]\
                                  +[x for x in files if str(x).endswith(".py") and str(x).find("fragment")==-1])
     env.AlwaysBuild("test.passed")
