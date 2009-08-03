@@ -7,12 +7,12 @@
   been added.
 
 - Out of source builds now work (sort of). The works bit is you can do
-  \command{scons -Y ../IMP -f ../IMP/SConstruct}
-  to build %IMP in the current directory from a checkout in \c ../IMP. The
+  \command{scons -Y ../impdir -f ../impdir/SConstruct}
+  to build %IMP in the current directory from a checkout in \c ../impdir. The
   sortof bit is that you first need to create a link to the \c scons_tools
   directory in the place where you want to build in. As you might expect,
   your \c config.py should be in the build directory. To make it easier, you
-  can add \c repository="../IMP/" in your \c config.py and link to your
+  can add \c repository="../impdir/" in your \c config.py and link to your
   \c SConsctruct in the build directory.
 
 - The SConscript setup for a module has been greatly simplified so it should
