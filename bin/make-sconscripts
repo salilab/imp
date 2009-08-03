@@ -91,16 +91,16 @@ def main():
         sys.exit(1)
 
     g = SConscriptGenerator(os.path.join('modules', module, 'src'), '.cpp',
-                            "e = env.IMPSharedLibraryEnvironment()\n",
+                            "",
                             "\n# Build and install the shared library:\n" + \
-                            "e.IMPSharedLibrary(files, install=True)",
+                            "env.IMPModuleLib(files)",
                             cpp_excludes)
     g.make()
 
     g = SConscriptGenerator(os.path.join('modules', module, 'include'),
                             '.h', "",
                             "\n# Install the include files:\n" + \
-                            "env.IMPHeaders(files)", h_excludes)
+                            "env.IMPModuleInclude(files)", h_excludes)
     g.make()
 
 
