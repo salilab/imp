@@ -55,7 +55,10 @@ def handle_example_dir(env, dirpath, name, includepath, files):
     build=[]
     install=[]
     exampledir = env.GetInstallDirectory('docdir')+"/examples"
-    prefix= os.path.split(includepath)[1]
+    split= os.path.split(includepath)
+    prefix=split[1]
+    if len(split[0])==0:
+        prefix=""
     for f in files:
         if str(f).endswith(".py"):
             c= env._IMPColorizePython(str(f)+".html", f.abspath)
