@@ -151,8 +151,8 @@ void ClosePairsScoreState::do_before_evaluate()
       IMP_LOG(VERBOSE, "Removing unneeded pairs" << std::endl);
       IMP_IF_LOG(VERBOSE) {
         for (unsigned int i=0; i< out_->get_number_of_particle_pairs(); ++i) {
-          IMP_LOG(VERBOSE, "(" << out_->get_particle_pair(i)[0]
-                  << ", " << out_->get_particle_pair(i)[1] << ") ");
+          IMP_LOG(VERBOSE, "(" << out_->get_particle_pair(i)[0]->get_name()
+                  << ", " << out_->get_particle_pair(i)[1]->get_name() << ") ");
         }
         IMP_LOG(VERBOSE, std::endl);
       }
@@ -161,8 +161,8 @@ void ClosePairsScoreState::do_before_evaluate()
       IMP_LOG(VERBOSE, "Done" << std::endl);
       IMP_IF_LOG(VERBOSE) {
         for (unsigned int i=0; i< out_->get_number_of_particle_pairs(); ++i) {
-          IMP_LOG(VERBOSE, "(" << out_->get_particle_pair(i)[0]
-                  << ", " << out_->get_particle_pair(i)[1] << ") ");
+          IMP_LOG(VERBOSE, "(" << out_->get_particle_pair(i)[0]->get_name()
+                  << ", " << out_->get_particle_pair(i)[1]->get_name() << ") ");
         }
         IMP_LOG(VERBOSE, std::endl);
       }
