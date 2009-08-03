@@ -107,7 +107,10 @@ random_vector_on_box(const BoundingBoxD<D> &bb) {
 }
 
 
-/** \copydoc random_vector_in_box(const BoundindBoxD<D> &bb)
+/** Generate a random vector in a box with uniform density.
+
+    The box defined by the corners min, max must be properly
+    oriented and non-empty.
  */
 template <unsigned int D>
 VectorD<D>
@@ -116,7 +119,10 @@ random_vector_in_box(const VectorD<D>&min,
   return random_vector_in_box(BoundingBoxD<D>(min,max));
 }
 
-/** \copydoc random_vector_on_box(const BoundindBoxD<D> &bb)
+/** Generate a random vector in a box with uniform density.
+
+    The box defined by the corners min, max must be properly
+    oriented and non-empty.
  */
 template <unsigned int D>
 VectorD<D>

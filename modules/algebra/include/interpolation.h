@@ -126,6 +126,7 @@ double interpolate(algebra::Matrix2D<double> &m,
 
 //! General function to call in case of interpolation in 3D matrices
 /**
+  \param[in] m The matrix to interpolate within.
   \param[in] idx must be a class supporting access via [] and must have 2
               elements.
   \param[in] wrap If true, the matrix is wrapped: values from the right are

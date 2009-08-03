@@ -592,22 +592,22 @@ public:
     return ccc;
   }
 
-
-  //! Pad the MultiArray. Padding is defined as doubling the size
-  //! in each dimension and fill the new values with the previous average value.
-  //  /**
+  // note removal of doxygen docs
+  // Pad the MultiArray. Padding is defined as doubling the size
+  // in each dimension and fill the new values with the previous average value.
+  //  /*
   // \param[in] padded the MultiArray padded
-  //**/
+  //*/
 //  void pad(This& padded) {
 //    double avg = this->compute_avg();
 //    this->pad(padded,avg);
 //  }
 
-//  //! Pad with a given value (only works for boost 1.37 and higher)
-//  /**
+//  // Pad with a given value (only works for boost 1.37 and higher)
+//  /*
 //    \param[out] padded the output MultiArray
 //    \param[in] val the value to pad with
-//  **/
+//  */
 //  void pad(This& padded,T val) {
 //    std::vector<int> extents(D);
 //    for(int i=0;i<D;i++) {
