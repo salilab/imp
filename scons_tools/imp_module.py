@@ -316,7 +316,7 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     env.Prepend(LIBS=(['imp%(module_suffix)s' % vars]+["imp_"+x for x in required_modules]))
     env.Append(LIBS=extra_libs);
     build=[]
-    installl=[]
+    install_list=[]
     bindir = env.GetInstallDirectory('bindir')
     for f in files:
         prog= env.Program(f)
@@ -324,12 +324,12 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
         ci= env.Install(bindir, prog)
         build.append(cb)
         if install:
-            installl.append(ci)
+            install_list.append(ci)
         build.append(prog)
     module_alias(env, 'bin', build, True)
     global_depends(env, 'all', 'bin')
     if install:
-        module_alias(env, 'install-bin', install)
+        module_alias(env, 'install-bin', install_list)
         module_alias_depends(env, 'install', 'install-bin')
     module_depends(env, build, 'include')
     module_depends(env, build, 'lib')
