@@ -109,5 +109,6 @@ env.Alias('doc', dox)
 env.Depends('doc-install', env.Alias('doc'))
 env.Depends(env.Alias('all'), [env.Alias('doc')])
 Clean(dox, Glob("#/doc/html/*"))
+env.Depends(env.Alias('install'), env.Alias('doc-install'))
 
 Return('dox', 'examples')
