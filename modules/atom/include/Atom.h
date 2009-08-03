@@ -35,7 +35,7 @@ IMP_DECLARE_KEY_TYPE(AtomType, IMP_ATOM_TYPE_INDEX);
     readability. New types can be added using the
     add_atom_type() function.
 
-    \see Atom
+    \see IMP::atom::Atom
 */
 /*@{*/
 /* each static must be on a separate line because of MSVC bug C2487:
@@ -313,7 +313,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Atom);
 
-typedef Decorators<Atom, Hierarchies> Atoms;
+typedef IMP::Decorators<Atom, Hierarchies> Atoms;
 
 //! Return the AtomType from the four letter code in the PDB
 /** \throw ValueException if nm is invalid.
