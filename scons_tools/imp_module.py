@@ -564,8 +564,7 @@ def IMPModuleBuild(env, version, required_modules=[],
             if env['CGAL_LIBS']:
                 env.Prepend(LIBS=env['CGAL_LIBS'])
         else:
-            print "Do not understand optional dependency: " +d
-            raise ValueException
+            raise ValueError("Do not understand optional dependency: " +d)
 
 
     env['IMP_MODULE_VERSION'] = version
