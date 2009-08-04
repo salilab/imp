@@ -40,7 +40,7 @@ def builder_script_file(target, source, env):
         if line == "@PRECOMMAND@":
             line="precommand='"
             if len(source[3].get_contents())!=0:
-                line = line + source[3].get_contents()
+                line = line + source[3].get_contents()+" "
             if len(source[6].get_contents()) != 0:
                 line = line+ source[6].get_contents()
             line=line+"'"
