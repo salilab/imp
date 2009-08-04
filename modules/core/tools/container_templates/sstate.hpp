@@ -43,7 +43,8 @@ public:
       evaluate.
    */
   GroupnameScoreState(GroupnameModifier *before,
-                      GroupnameModifier *after, ClassnameArguments);
+                      GroupnameModifier *after, ClassnameArguments,
+                       std::string name="GroupnameScoreState %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(GroupnameModifier* f) {

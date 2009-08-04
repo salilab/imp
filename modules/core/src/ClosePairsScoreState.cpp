@@ -37,15 +37,19 @@ namespace {
 
 ClosePairsScoreState::ClosePairsScoreState(SingletonContainer *pc,
                                            ListPairContainer* out,
-                                           FloatKey rk): in_(pc),
-                                                         out_(out)
+                                           FloatKey rk):
+  ScoreState("ClosePairsScoreState %1%"),
+  in_(pc),
+  out_(out)
 {
   rk_=rk;
   initialize();
 }
 
 ClosePairsScoreState::ClosePairsScoreState(SingletonContainer *pc,
-                                           FloatKey rk): in_(pc)
+                                           FloatKey rk):
+  ScoreState("ClosePairsScoreState %1%"),
+  in_(pc)
 {
   out_=new ListPairContainer();
   rk_=rk;

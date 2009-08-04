@@ -60,7 +60,7 @@ class Model;
 class IMPEXPORT Restraint : public Object, public Ownable
 {
 public:
-  Restraint();
+  Restraint(std::string name="Restraint %1%");
 
   //! Return the score for this restraint for the current state of the model.
   /** \param[in] accum If not NULL, use this object to accumulate partial first

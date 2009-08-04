@@ -37,7 +37,8 @@ CloseBipartitePairsScoreState
 ::CloseBipartitePairsScoreState(SingletonContainer *pc0,
                                 SingletonContainer *pc1,
                                 ListPairContainer* out,
-                                FloatKey rk)
+                                FloatKey rk):
+  ScoreState("CloseBipartitePairsScoreState %1%")
 {
   in_[0]=pc0;
   in_[1]=pc1;
@@ -49,7 +50,8 @@ CloseBipartitePairsScoreState
 CloseBipartitePairsScoreState
 ::CloseBipartitePairsScoreState(SingletonContainer *pc0,
                                 SingletonContainer *pc1,
-                                           FloatKey rk)
+                                FloatKey rk):
+  ScoreState("CloseBipartitePairsScoreState %1%")
 {
   in_[0]=pc0;
   in_[1]=pc1;

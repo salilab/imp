@@ -16,7 +16,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 RemoveInactiveSingletonsOptimizerState
-::RemoveInactiveSingletonsOptimizerState(ListSingletonContainer *c):
+::RemoveInactiveSingletonsOptimizerState(ListSingletonContainer *c,
+                                         std::string name):
+  OptimizerState(name),
   c_(c){
 }
 

@@ -9,10 +9,16 @@
  */
 
 #include "IMP/PairModifier.h"
+#include "IMP/internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
 
-PairModifier::PairModifier(){
+namespace {
+  unsigned int next_index=0;
+}
+
+PairModifier::PairModifier(std::string name){
+  set_name(internal::make_object_name(name, next_index++));
 }
 
 IMP_END_NAMESPACE

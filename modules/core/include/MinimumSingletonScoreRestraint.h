@@ -37,7 +37,9 @@ public:
    */
   MinimumSingletonScoreRestraint(SingletonScore *f,
                                  SingletonContainer *c,
-                                 unsigned int n=1);
+                                 unsigned int n=1,
+                                 std::string name
+                                 ="MinimumSingletonScoreRestraint %1%");
 
   IMP_RESTRAINT(MinimumSingletonScoreRestraint, internal::version_info);
 

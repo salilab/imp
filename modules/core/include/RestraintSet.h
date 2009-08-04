@@ -24,7 +24,7 @@ class IMPCOREEXPORT RestraintSet : public Restraint
 {
 public:
   //! Create an empty set
-  RestraintSet(const std::string& name=std::string());
+  RestraintSet(const std::string& name="RestraintSet %1%");
 
   IMP_RESTRAINT(RestraintSet, internal::version_info)
  /** @name Methods to control the nested Restraint objects
@@ -55,8 +55,6 @@ private:
 
   //! Weight for all restraints.
   Float weight_;
-
-  std::string name_;
 };
 
 IMPCORE_END_NAMESPACE

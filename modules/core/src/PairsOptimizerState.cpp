@@ -15,9 +15,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-PairsOptimizerState::PairsOptimizerState(PairContainer *c,
-                                           PairModifier *gm):
-  c_(c){
+PairsOptimizerState
+::PairsOptimizerState(PairContainer *c,
+                           PairModifier *gm,
+                           std::string name):
+  OptimizerState(name),
+  c_(c)
+{
   f_=gm;
 }
 

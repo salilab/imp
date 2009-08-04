@@ -27,7 +27,11 @@ class IMPCOREEXPORT ListSingletonContainer : public SingletonContainer
   unsigned int rev_;
 public:
   //! construct and pass an initial set of particles
-  ListSingletonContainer(const Particles &ps= Particles());
+  ListSingletonContainer(const Particles &ps,
+                         std::string name= "ListSingletonContainer %1%");
+
+  ListSingletonContainer(std::string name= "ListSingletonContainer %1%");
+
  /** @name Methods to control the contained objects
 
      This container stores a list of Particle objects. To manipulate

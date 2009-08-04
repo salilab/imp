@@ -11,12 +11,18 @@
 #include "IMP/Model.h"
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
+#include "IMP/internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
 
-Restraint::Restraint()
+namespace {
+  unsigned int restraint_index=0;
+}
+
+Restraint::Restraint(std::string name)
 {
   is_active_ = true; // active by default
+  set_name(internal::make_object_name(name, restraint_index++));
 }
 
 void Restraint::set_is_active(const bool is_active)

@@ -43,7 +43,8 @@ public:
       evaluate.
    */
   SingletonScoreState(SingletonModifier *before,
-                      SingletonModifier *after, Particle *a);
+                      SingletonModifier *after, Particle *a,
+                       std::string name="SingletonScoreState %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(SingletonModifier* f) {

@@ -27,7 +27,7 @@ class IMPCOREEXPORT GroupnameContainerSet
   unsigned int rev_;
 public:
   //! Construct and empty set
-  GroupnameContainerSet();
+  GroupnameContainerSet(std::string name="GroupnameContainerSet %1%");
 
   IMP_GROUPNAME_CONTAINER(GroupnameContainerSet, internal::version_info);
  /** @name Methods to control the nested container

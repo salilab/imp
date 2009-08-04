@@ -88,6 +88,7 @@ Float Model::evaluate(bool calc_derivs)
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
+    IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
     (*it)->before_evaluate(iteration_);
     IMP_LOG(VERBOSE, "." << std::flush);
   }
@@ -107,14 +108,12 @@ Float Model::evaluate(bool calc_derivs)
   for (RestraintIterator it = restraints_begin();
        it != restraints_end(); ++it) {
     IMP_CHECK_OBJECT(*it);
-    IMP_LOG(TERSE, "Evaluate restraint "
-            << std::endl << **it);
-    Float tscore=0;
     if ((*it)->get_is_active()) {
-      tscore = (*it)->evaluate(accpt);
+      IMP_LOG(TERSE, "Evaluate restraint " << (*it)->get_name() << std::endl);
+      double tscore = (*it)->evaluate(accpt);
+      IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
+      score+= tscore;
     }
-    IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
-    score+= tscore;
   }
 
   IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
@@ -125,6 +124,7 @@ Float Model::evaluate(bool calc_derivs)
   for (ScoreStateIterator it = score_states_begin(); it != score_states_end();
        ++it) {
     IMP_CHECK_OBJECT(*it);
+    IMP_LOG(TERSE, "Updating " << (*it)->get_name() << std::endl);
     (*it)->after_evaluate(iteration_, accpt);
     IMP_LOG(VERBOSE, "." << std::flush);
   }

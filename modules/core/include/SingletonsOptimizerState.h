@@ -37,7 +37,8 @@ public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The SingletonModifier to apply to all elements.
    */
-  SingletonsOptimizerState(SingletonContainer *c, SingletonModifier *gf);
+  SingletonsOptimizerState(SingletonContainer *c, SingletonModifier *gf,
+                           std::string name="SingletonsOptimizerState %1%");
 
   IMP_OPTIMIZER_STATE(SingletonsOptimizerState, internal::version_info)
 };

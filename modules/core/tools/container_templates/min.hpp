@@ -37,7 +37,9 @@ public:
    */
   MinimumGroupnameScoreRestraint(GroupnameScore *f,
                                  GroupnameContainer *c,
-                                 unsigned int n=1);
+                                 unsigned int n=1,
+                                 std::string name
+                                 ="MinimumGroupnameScoreRestraint %1%");
 
   IMP_RESTRAINT(MinimumGroupnameScoreRestraint, internal::version_info);
 

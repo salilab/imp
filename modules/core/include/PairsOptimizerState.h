@@ -37,7 +37,8 @@ public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The PairModifier to apply to all elements.
    */
-  PairsOptimizerState(PairContainer *c, PairModifier *gf);
+  PairsOptimizerState(PairContainer *c, PairModifier *gf,
+                           std::string name="PairsOptimizerState %1%");
 
   IMP_OPTIMIZER_STATE(PairsOptimizerState, internal::version_info)
 };

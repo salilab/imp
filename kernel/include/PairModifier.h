@@ -32,7 +32,7 @@ class Particle;
 class IMPEXPORT PairModifier : public Object
 {
 public:
-  PairModifier();
+  PairModifier(std::string name="PairModifier %1%");
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a, Particle *b,

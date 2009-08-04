@@ -21,7 +21,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 PairsRestraint
 ::PairsRestraint(PairScore *ss,
-                      const ParticlePairs &pc):
+                      const ParticlePairs &pc,
+                      std::string name):
+  Restraint(name),
   ss_(ss),
   pc_(new ListPairContainer(pc))
 {

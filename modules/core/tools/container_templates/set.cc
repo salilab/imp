@@ -16,7 +16,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 GroupnameContainerSet
-::GroupnameContainerSet(){
+::GroupnameContainerSet(std::string name):
+  GroupnameContainer(name) {
   rev_=0;
 }
 

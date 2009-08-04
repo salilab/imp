@@ -11,7 +11,7 @@
 #define IMP_GROUPNAME_MODIFIER_H
 
 #include "config.h"
-#include "internal/kernel_version_info.h"
+#include "internal/version_info.h"
 #include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
@@ -32,7 +32,7 @@ class Particle;
 class IMPEXPORT GroupnameModifier : public Object
 {
 public:
-  GroupnameModifier();
+  GroupnameModifier(std::string name="GroupnameModifier %1%");
 
   /** Apply the function to a single value*/
   virtual void apply(ClassnameArguments,

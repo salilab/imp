@@ -25,7 +25,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ConnectivityRestraint::ConnectivityRestraint(PairScore *ps): ps_(ps)
+ConnectivityRestraint::ConnectivityRestraint(PairScore *ps):
+  Restraint("ConnectivityRestraint %1%"),
+  ps_(ps)
 {
 }
 

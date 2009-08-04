@@ -15,9 +15,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-SingletonsOptimizerState::SingletonsOptimizerState(SingletonContainer *c,
-                                           SingletonModifier *gm):
-  c_(c){
+SingletonsOptimizerState
+::SingletonsOptimizerState(SingletonContainer *c,
+                           SingletonModifier *gm,
+                           std::string name):
+  OptimizerState(name),
+  c_(c)
+{
   f_=gm;
 }
 

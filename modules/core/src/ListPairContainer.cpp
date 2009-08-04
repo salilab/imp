@@ -14,12 +14,23 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ListPairContainer::ListPairContainer(const ParticlePairs &ps){
+ListPairContainer
+::ListPairContainer(const ParticlePairs &ps,
+                         std::string name):
+  PairContainer(name){
   sorted_=false;
   rev_=0;
   set_particle_pairs(ps);
   set_is_editing(false);
 }
+
+ListPairContainer
+::ListPairContainer(std::string name):
+  PairContainer(name){
+  sorted_=true;
+  rev_=0;
+}
+
 
 IMP_LIST_IMPL(ListPairContainer, ParticlePair,
               particle_pair, ParticlePair,ParticlePairs,, {

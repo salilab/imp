@@ -48,7 +48,7 @@ class IMPEXPORT PairContainer : public Object
   };
 
 public:
-  PairContainer();
+  PairContainer(std::string name="PairContainer %1%");
 
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.

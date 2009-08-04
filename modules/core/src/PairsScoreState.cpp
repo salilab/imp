@@ -17,10 +17,11 @@ IMPCORE_BEGIN_NAMESPACE
 
 PairsScoreState::PairsScoreState(PairContainer *c,
                                            PairModifier *before,
-                                           PairModifier *after):
-  c_(c){
-    if (before) f_=before;
-    if (after) af_=after;
+                                           PairModifier *after,
+                                           std::string name):
+  ScoreState(name), c_(c) {
+  if (before) f_=before;
+  if (after) af_=after;
 }
 
 

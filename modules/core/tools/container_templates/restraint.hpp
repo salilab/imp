@@ -43,7 +43,8 @@ public:
       \param[in] ps The list of particles to use in the restraint.
    */
   GroupnamesRestraint(GroupnameScore *ss,
-                      const Classnames &ps=Classnames());
+                      const Classnames &ps=Classnames(),
+                      std::string name="GroupnamesRestraint %1%");
 
  //! Create the restraint with a shared container
   /** \param[in] ss The function to apply to each particle.

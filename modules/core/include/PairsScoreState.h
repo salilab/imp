@@ -35,7 +35,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     An example showing a how to use such a score state to maintain a cover
     of the atoms of a protein by a sphere per residue.
-    \htmlinclude cover_particles.py.html
+    \verbinclude simple_examples/cover_particles.py
     \see PairScoreState
  */
 class IMPCOREEXPORT PairsScoreState : public ScoreState
@@ -51,7 +51,8 @@ public:
        after evaluate.
    */
   PairsScoreState(PairContainer *c, PairModifier *before,
-                       PairModifier *after);
+                       PairModifier *after,
+                       std::string name="PairScoreState %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(PairModifier* f) {

@@ -37,7 +37,9 @@ public:
    */
   MinimumPairScoreRestraint(PairScore *f,
                                  PairContainer *c,
-                                 unsigned int n=1);
+                                 unsigned int n=1,
+                                 std::string name
+                                 ="MinimumPairScoreRestraint %1%");
 
   IMP_RESTRAINT(MinimumPairScoreRestraint, internal::version_info);
 

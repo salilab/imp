@@ -27,7 +27,11 @@ class IMPCOREEXPORT ListGroupnameContainer : public GroupnameContainer
   unsigned int rev_;
 public:
   //! construct and pass an initial set of classnames
-  ListGroupnameContainer(const Classnames &ps= Classnames());
+  ListGroupnameContainer(const Classnames &ps,
+                         std::string name= "ListGroupnameContainer %1%");
+
+  ListGroupnameContainer(std::string name= "ListGroupnameContainer %1%");
+
  /** @name Methods to control the contained objects
 
      This container stores a list of Classname objects. To manipulate

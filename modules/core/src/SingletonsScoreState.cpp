@@ -17,10 +17,11 @@ IMPCORE_BEGIN_NAMESPACE
 
 SingletonsScoreState::SingletonsScoreState(SingletonContainer *c,
                                            SingletonModifier *before,
-                                           SingletonModifier *after):
-  c_(c){
-    if (before) f_=before;
-    if (after) af_=after;
+                                           SingletonModifier *after,
+                                           std::string name):
+  ScoreState(name), c_(c) {
+  if (before) f_=before;
+  if (after) af_=after;
 }
 
 

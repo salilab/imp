@@ -27,7 +27,11 @@ class IMPCOREEXPORT ListPairContainer : public PairContainer
   unsigned int rev_;
 public:
   //! construct and pass an initial set of particle_pairs
-  ListPairContainer(const ParticlePairs &ps= ParticlePairs());
+  ListPairContainer(const ParticlePairs &ps,
+                         std::string name= "ListPairContainer %1%");
+
+  ListPairContainer(std::string name= "ListPairContainer %1%");
+
  /** @name Methods to control the contained objects
 
      This container stores a list of ParticlePair objects. To manipulate

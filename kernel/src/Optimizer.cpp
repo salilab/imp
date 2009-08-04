@@ -8,11 +8,17 @@
 #include "IMP/log.h"
 #include "IMP/Optimizer.h"
 #include "IMP/OptimizerState.h"
+#include "IMP/internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
 
-Optimizer::Optimizer()
+namespace {
+  unsigned int optimizer_index=0;
+}
+
+Optimizer::Optimizer(std::string name)
 {
+  set_name(internal::make_object_name(name, optimizer_index++));
 }
 
 void Optimizer::update_states() const
