@@ -37,22 +37,18 @@ void test_one(std::string name,
       }
     }, setuptime);
   double runtime;
+  double result=0;
   IMP_TIME({
       for (unsigned int i=0; i< ps.size(); ++i) {
         XYZ(ps[i]).set_coordinates(random_vector_in_box(minc, maxc));
       }
       cpss->before_evaluate();
+      result+= cpss->get_close_pairs_container()
+        ->get_number_of_particle_pairs();
     }, runtime);
-  IMP_NEW(PairsRestraint, pr, (new DistancePairScore(new Linear(0,1)),
-                               cpss->get_close_pairs_container()));
-  /*std::cout << n << " particles with radii from "
-            << rmin << " to " << rmax
-            << " took " << runtime-setuptime
-            << " with value " << pr->evaluate(NULL)
-            << std::endl;*/
   std::ostringstream oss;
   oss << name << " " << n << " " << rmax;
-  report(oss.str(), runtime-setuptime, pr->evaluate(NULL));
+  report(oss.str(), runtime-setuptime, result);
 }
 
 int main() {
@@ -67,15 +63,14 @@ int main() {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
     //std::cout << "Box:" << std::endl;
     test_one("box", cpf, 10000, 0, .1);
-    test_one("box", cpf, 10000, 0, .5);
+    test_one("box", cpf, 100000, 0, .01);
   }
 #endif
   {
     GridClosePairsFinder *cpf= new GridClosePairsFinder();
     //std::cout << "Grid:" << std::endl;
     test_one("grid", cpf, 10000, 0, .1);
-    test_one("grid", cpf, 10000, 0, .5);
-    test_one("grid", cpf, 100000, 0, .5);
+    test_one("grid", cpf, 100000, 0, .01);
   }
   return 0;
 }
