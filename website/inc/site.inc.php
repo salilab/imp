@@ -4,7 +4,7 @@
    function GetLinks () {
       echo "<ul>
                <li><a href=\"".$GLOBALS["home"]."\">imp</a></li>
-               <li><a href=\"https://salilab.org/imp/doc/doxygen/\" class=\"link\">doc</a></li>
+               <li><a href=\"https://salilab.org/imp/doc/html/\" class=\"link\">doc</a></li>
                <li><a href=\"https://salilab.org/imp/wiki/\" class=\"link\">wiki</a></li>
                <li><a href=\"pubs.html\">publications</a></li>
                <li><a href=\"groups.html\">groups</a></li>
