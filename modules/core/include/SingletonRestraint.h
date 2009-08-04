@@ -37,7 +37,8 @@ public:
       stored Singleton and the Singleton.
    */
   SingletonRestraint(SingletonScore *ss,
-                      Particle *a);
+                     Particle *a,
+                     std::string name="SingletonRestraint %1%");
 
   IMP_RESTRAINT(SingletonRestraint, internal::version_info);
 

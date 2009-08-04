@@ -27,7 +27,7 @@ class IMPCOREEXPORT PairContainerSet
   unsigned int rev_;
 public:
   //! Construct and empty set
-  PairContainerSet();
+  PairContainerSet(std::string name="PairContainerSet %1%");
 
   IMP_PAIR_CONTAINER(PairContainerSet, internal::version_info);
  /** @name Methods to control the nested container

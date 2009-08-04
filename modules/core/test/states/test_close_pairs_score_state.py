@@ -34,6 +34,7 @@ class TestBL(IMP.test.TestCase):
     def test_it(self):
         """Test ClosePairsScoreState"""
         m=IMP.Model()
+        IMP.set_log_level(IMP.VERBOSE)
         ps= self.create_particles_in_box(m, 30)
         # test rebuilding under move, set input and change radius
         pc= IMP.core.ListSingletonContainer(ps)
@@ -53,7 +54,7 @@ class TestBL(IMP.test.TestCase):
         self._compare_lists(m, cpss)
 
         print "adding a radius"
-        cpss.set_distance(0)
+        cpss.set_distance(5)
         for p in ps:
             d= IMP.core.XYZR.create(p)
             d.set_radius(random.uniform(0,2))

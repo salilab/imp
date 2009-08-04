@@ -37,7 +37,8 @@ public:
       stored Pair and the Pair.
    */
   PairRestraint(PairScore *ss,
-                      Particle *a, Particle *b);
+                     Particle *a, Particle *b,
+                     std::string name="PairRestraint %1%");
 
   IMP_RESTRAINT(PairRestraint, internal::version_info);
 

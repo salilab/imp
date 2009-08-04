@@ -14,12 +14,23 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ListGroupnameContainer::ListGroupnameContainer(const Classnames &ps){
+ListGroupnameContainer
+::ListGroupnameContainer(const Classnames &ps,
+                         std::string name):
+  GroupnameContainer(name){
   sorted_=false;
   rev_=0;
   set_classnames(ps);
   set_is_editing(false);
 }
+
+ListGroupnameContainer
+::ListGroupnameContainer(std::string name):
+  GroupnameContainer(name){
+  sorted_=true;
+  rev_=0;
+}
+
 
 IMP_LIST_IMPL(ListGroupnameContainer, Classname,
               classname, Value,Classnames,, {

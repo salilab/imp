@@ -34,7 +34,9 @@ class IMPCOREEXPORT RemoveInactiveSingletonsOptimizerState :
 public:
   /** \param[in] c The Container to hold the elements to process
    */
-  RemoveInactiveSingletonsOptimizerState(ListSingletonContainer *c);
+  RemoveInactiveSingletonsOptimizerState(ListSingletonContainer *c,
+                                         std::string name
+                                         ="RemoveInactive %1%");
 
   IMP_OPTIMIZER_STATE(RemoveInactiveSingletonsOptimizerState,
                       internal::version_info)

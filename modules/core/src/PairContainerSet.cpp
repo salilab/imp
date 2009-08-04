@@ -16,7 +16,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 PairContainerSet
-::PairContainerSet(){
+::PairContainerSet(std::string name):
+  PairContainer(name) {
   rev_=0;
 }
 

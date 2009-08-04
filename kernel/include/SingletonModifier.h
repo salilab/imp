@@ -32,7 +32,7 @@ class Particle;
 class IMPEXPORT SingletonModifier : public Object
 {
 public:
-  SingletonModifier();
+  SingletonModifier(std::string name="SingletonModifier %1%");
 
   /** Apply the function to a single value*/
   virtual void apply(Particle *a,

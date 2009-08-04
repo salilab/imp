@@ -38,7 +38,9 @@ public:
    */
   MaximumSingletonScoreRestraint(SingletonScore *f,
                                  SingletonContainer *c,
-                                 unsigned int n=1);
+                                 unsigned int n=1,
+                                 std::string name
+                                 ="MaximumSingletonScoreRestraint %1%");
 
   IMP_RESTRAINT(MaximumSingletonScoreRestraint, internal::version_info);
 

@@ -15,9 +15,13 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-GroupnamesOptimizerState::GroupnamesOptimizerState(GroupnameContainer *c,
-                                           GroupnameModifier *gm):
-  c_(c){
+GroupnamesOptimizerState
+::GroupnamesOptimizerState(GroupnameContainer *c,
+                           GroupnameModifier *gm,
+                           std::string name):
+  OptimizerState(name),
+  c_(c)
+{
   f_=gm;
 }
 

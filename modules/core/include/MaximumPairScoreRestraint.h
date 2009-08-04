@@ -38,7 +38,9 @@ public:
    */
   MaximumPairScoreRestraint(PairScore *f,
                                  PairContainer *c,
-                                 unsigned int n=1);
+                                 unsigned int n=1,
+                                 std::string name
+                                 ="MaximumPairScoreRestraint %1%");
 
   IMP_RESTRAINT(MaximumPairScoreRestraint, internal::version_info);
 

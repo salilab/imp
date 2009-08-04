@@ -37,7 +37,8 @@ public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The GroupnameModifier to apply to all elements.
    */
-  GroupnamesOptimizerState(GroupnameContainer *c, GroupnameModifier *gf);
+  GroupnamesOptimizerState(GroupnameContainer *c, GroupnameModifier *gf,
+                           std::string name="GroupnamesOptimizerState %1%");
 
   IMP_OPTIMIZER_STATE(GroupnamesOptimizerState, internal::version_info)
 };

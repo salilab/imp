@@ -19,7 +19,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 PairRestraint
 ::PairRestraint(PairScore *ss,
-                     Particle *a, Particle *b):
+                     Particle *a, Particle *b,
+                     std::string name):
+  Restraint(name),
   ss_(ss),
   v_(ParticlePair(a,b))
 {

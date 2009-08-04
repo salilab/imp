@@ -17,10 +17,11 @@ IMPCORE_BEGIN_NAMESPACE
 
 GroupnamesScoreState::GroupnamesScoreState(GroupnameContainer *c,
                                            GroupnameModifier *before,
-                                           GroupnameModifier *after):
-  c_(c){
-    if (before) f_=before;
-    if (after) af_=after;
+                                           GroupnameModifier *after,
+                                           std::string name):
+  ScoreState(name), c_(c) {
+  if (before) f_=before;
+  if (after) af_=after;
 }
 
 

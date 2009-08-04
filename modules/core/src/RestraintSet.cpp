@@ -16,9 +16,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 RestraintSet::RestraintSet(const std::string& name)
-    : weight_(1.0)
+  : Restraint(name), weight_(1.0)
 {
-  name_=name;
 }
 
 
@@ -33,6 +32,7 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
 Float RestraintSet::evaluate(DerivativeAccumulator *accum)
 {
   if (get_weight() == 0) return 0;
+  IMP_OBJECT_LOG;
   Float score;
   typedef std::auto_ptr<DerivativeAccumulator> DAP;
   // Use a local copy of the accumulator for our sub-restraints
@@ -44,7 +44,10 @@ Float RestraintSet::evaluate(DerivativeAccumulator *accum)
   score = (Float) 0.0;
   for (RestraintIterator it= restraints_begin(); it != restraints_end(); ++it) {
     if ((*it)->get_is_active()) {
-      score += (*it)->evaluate(ouracc.get());
+      IMP_LOG(TERSE, "Evaluate restraint " << (*it)->get_name() << std::endl);
+      double tscore= (*it)->evaluate(ouracc.get());
+      score+=tscore;
+      IMP_LOG(TERSE, "Restraint score is " << tscore << std::endl);
     }
   }
 
@@ -72,12 +75,12 @@ ParticlesList RestraintSet::get_interacting_particles() const
 
 void RestraintSet::show(std::ostream& out) const
 {
-  out << "restraint set " << name_ << ":..." << std::endl;
+  out << "restraint set " << get_name() << ":..." << std::endl;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
     (*it)->show(out);
   }
-  out << "... end restraint set " << name_ << std::endl;
+  out << "... end restraint set " << get_name() << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

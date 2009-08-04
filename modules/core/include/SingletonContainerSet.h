@@ -27,7 +27,7 @@ class IMPCOREEXPORT SingletonContainerSet
   unsigned int rev_;
 public:
   //! Construct and empty set
-  SingletonContainerSet();
+  SingletonContainerSet(std::string name="SingletonContainerSet %1%");
 
   IMP_SINGLETON_CONTAINER(SingletonContainerSet, internal::version_info);
  /** @name Methods to control the nested container

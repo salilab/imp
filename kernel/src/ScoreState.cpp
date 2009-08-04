@@ -7,17 +7,21 @@
 
 #include "IMP/log.h"
 #include "IMP/ScoreState.h"
-
+#include "IMP/internal/utility.h"
 #include <cmath>
 #include <limits>
 
 IMP_BEGIN_NAMESPACE
 
-//! Constructor
+namespace {
+  unsigned int scorestate_index=0;
+}
+
 ScoreState::ScoreState(std::string name) : name_(name)
 {
   update_iteration_= std::numeric_limits<unsigned int>::max();
   after_iteration_= std::numeric_limits<unsigned int>::max();
+  set_name(internal::make_object_name(name, scorestate_index++));
 }
 
 

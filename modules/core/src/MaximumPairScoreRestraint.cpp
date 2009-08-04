@@ -19,7 +19,10 @@ IMPCORE_BEGIN_NAMESPACE
 MaximumPairScoreRestraint
 ::MaximumPairScoreRestraint(PairScore *f,
                                  PairContainer *c,
-                                 unsigned int n): f_(f), c_(c), n_(n){
+                                 unsigned int n,
+                                 std::string name):
+  Restraint(name),
+  f_(f), c_(c), n_(n){
 }
 
 namespace {

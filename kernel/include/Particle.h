@@ -36,50 +36,50 @@ class Model;
 
 //! Class to handle individual model particles.
 /**
-    A IMP::Particle is a mapping between keys and values.
+   A IMP::Particle is a mapping between keys and values.
 
-    Four possible types of values:
-    - Float (float)
-    - String (std::string or Python string)
-    - Int (int)
-    - Particle (A pointer to another IMP::Particle)
+   Four possible types of values:
+   - Float (float)
+   - String (std::string or Python string)
+   - Int (int)
+   - Particle (A pointer to another IMP::Particle)
 
-    To use an attribute you first create a key
-    \verbatim
-    f= IMP.FloatKey("MyAttribute")
-    \endverbatim
-    Creating a key is expensive and should not be done often.
+   To use an attribute you first create a key
+   \verbatim
+   f= IMP.FloatKey("MyAttribute")
+   \endverbatim
+   Creating a key is expensive and should not be done often.
 
-    Then use it to maniputate the attribute.
-    \verbatim
-    p.add_attribute(f, initial_value, whether_attribute_is_optimized)
-    p.set_attribute(f, new_value)
-    p.remove_attribute(f)
-    \endverbatim
+   Then use it to maniputate the attribute.
+   \verbatim
+   p.add_attribute(f, initial_value, whether_attribute_is_optimized)
+   p.set_attribute(f, new_value)
+   p.remove_attribute(f)
+   \endverbatim
 
 
 
-    This class contains particle methods and indexes to particle attributes.
-    To prevent a particle from being moved by the optimizer during
-    optimization, mark all of its attributes as being non-optimizable
-    (set_is_optimized method). Note that this only affects the optimizer,
-    ScoreStates may still change the particle attributes.
+   This class contains particle methods and indexes to particle attributes.
+   To prevent a particle from being moved by the optimizer during
+   optimization, mark all of its attributes as being non-optimizable
+   (set_is_optimized method). Note that this only affects the optimizer,
+   ScoreStates may still change the particle attributes.
 
-    A particle may only belong to one model.
+   A particle may only belong to one model.
 
-    Any attempt to access or change an attribute which the particle does not
-    have results is undefined. It will throw an exception if checks are
-    or possibly just crash if they are not. Likewise an attempt to touch
-    an inactive particle is also undefined (and will throw an exception if
-    checks are enabled).
+   Any attempt to access or change an attribute which the particle does not
+   have results is undefined. It will throw an exception if checks are
+   or possibly just crash if they are not. Likewise an attempt to touch
+   an inactive particle is also undefined (and will throw an exception if
+   checks are enabled).
 
-    \note In general, Particles should only be used through
-    \ref decorators "Decorators" as these provide a nice and more reliable
-    interface.
- */
+   \note In general, Particles should only be used through
+   \ref decorators "Decorators" as these provide a nice and more reliable
+   interface.
+*/
 class IMPEXPORT Particle : public Object
 {
-private:
+ private:
   // doxygen produces funny docs for these things
 #ifndef IMP_DOXYGEN
   friend class Model;
@@ -90,9 +90,10 @@ private:
 
   void assert_values_mutable() const;
 
+  void assert_can_change_optimization() const;
+
   void assert_can_change_derivatives() const;
 
-  void assert_can_change_optimization() const;
 
   /* This has to be declared here since boost 1.35 wants the full
      definition of Particle to be available when the Pointer
@@ -111,22 +112,20 @@ private:
     }
   };
 
- typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
-   FloatTable;
- typedef internal::AttributeTable<internal::DoubleAttributeTableTraits>
-   DerivativeTable;
- typedef internal::AttributeTable<internal::BoolAttributeTableTraits>
-   OptimizedTable;
- typedef internal::AttributeTable<internal::IntAttributeTableTraits>
-   IntTable;
+  typedef internal::AttributeTable<internal::FloatAttributeTableTraits>
+    FloatTable;
+  typedef internal::AttributeTable<internal::DoubleAttributeTableTraits>
+    DerivativeTable;
+  typedef internal::AttributeTable<internal::BoolAttributeTableTraits>
+    OptimizedTable;
+  typedef internal::AttributeTable<internal::IntAttributeTableTraits>
+    IntTable;
   typedef internal::AttributeTable<internal::StringAttributeTableTraits>
     StringTable;
   typedef internal::AttributeTable<ParticleAttributeTableTraits>
     ParticleTable;
 
   WeakPointer<Model> model_;
-
-  std::string name_;
 
   // float attributes associated with the particle
   FloatTable floats_;
@@ -147,14 +146,14 @@ private:
 
   IMP_REF_COUNTED_DESTRUCTOR(Particle)
 
-public:
+ public:
 
   //! Construct a particle and add it to the Model
-  Particle(Model *m);
+  Particle(Model *m, std::string name="P%1%");
 
   /** Get pointer to Model containing this particle.
       \throw InvalidStateException if now Model contains this particle.
-   */
+  */
   Model* get_model() const {
     return model_;
   }
@@ -165,13 +164,13 @@ public:
 
       All distances are assumed to be in angstroms
       and derivatives in kcal/mol angstrom. This is not enforced.
-   */
+  */
   /*@{*/
   /** \param[in] key The key identifying the float attribute.
       \param[in] value Initial value of the attribute.
       \param[in] is_optimized Whether the attribute's value can be
       changed by the optimizer.
-   */
+  */
   void add_attribute(FloatKey key, const Float value,
                      const bool is_optimized = false);
 
@@ -188,7 +187,7 @@ public:
   /** \param[in] key Key identifying the attribute.
       \param[in] value Amount to add to the derivative.
       \param[in] da The DerivativeAccumulator to scale the value.
-   */
+  */
   void add_to_derivative(FloatKey key, Float value,
                          const DerivativeAccumulator &da);
 
@@ -203,7 +202,7 @@ public:
 
   IMP_NO_DOXYGEN(typedef FloatTable::AttributeKeyIterator
                  FloatKeyIterator;)
-  FloatKeyIterator float_keys_begin() const {
+    FloatKeyIterator float_keys_begin() const {
     return floats_.attribute_keys_begin();
   }
   FloatKeyIterator float_keys_end() const {
@@ -211,8 +210,8 @@ public:
   }
 
   IMP_NO_DOXYGEN(typedef OptimizedTable::AttributeKeyIterator
-                OptimizedKeyIterator;)
-  OptimizedKeyIterator optimized_keys_begin() const {
+                 OptimizedKeyIterator;)
+    OptimizedKeyIterator optimized_keys_begin() const {
     return optimizeds_.attribute_keys_begin();
   }
   OptimizedKeyIterator optimized_keys_end() const {
@@ -225,7 +224,7 @@ public:
   /*@{*/
   /** \param[in] key The key identifying the attribute being added.
       \param[in] value Initial value of the attribute.
-   */
+  */
   void add_attribute(IntKey key, const Int value);
 
   void remove_attribute(IntKey name);
@@ -257,7 +256,7 @@ public:
   /** Add a String attribute to this particle.
       \param[in] name Name of the attribute being added.
       \param[in] value Initial value of the attribute.
-   */
+  */
   void add_attribute(StringKey name, const String value);
 
   void remove_attribute(StringKey name);
@@ -285,12 +284,12 @@ public:
   /** @name Particle Attributes
       Particle attributes store a pointer to another particle. They are
       useful for setting up graphs and hierarchies.
-   */
+  */
   /*@{*/
   /** Add a Particle attribute to this particle.
       \param[in] key Name of the attribute being added.
       \param[in] value Initial value of the attribute.
-   */
+  */
   void add_attribute(ParticleKey key, Particle* value);
 
   void remove_attribute(ParticleKey name);
@@ -318,7 +317,7 @@ public:
   /** Restraints referencing the particle are only evaluated for 'active'
       particles.
       \return true it the particle is active.
-   */
+  */
   bool get_is_active() const {
     IMP_IF_CHECK(EXPENSIVE) {
       IMP_assert(get_is_valid(), "Particle has been previously freed.");
@@ -335,12 +334,12 @@ public:
 
       All the attributes are shown. In addition, the deriviatives of the
       optimized attributes are printed.
-   */
+  */
   void show(std::ostream& out = std::cout) const;
 
   /** @name Python accessors for the keys of all attributes
-   These should only be used from python. Use the iterators in C++.
-   \todo These should be move to the swig file and made %extends.
+      These should only be used from python. Use the iterators in C++.
+      \todo These should be move to the swig file and made %extends.
   */
   /*@{*/
   FloatKeys get_float_attributes() const {
@@ -356,21 +355,6 @@ public:
     return particles_.get_keys();
   }
   /*@}*/
-
-  /** @name Names
-      All particles have names to aid in debugging and inspection
-      of the state of the system. These names are not necessarily unique
-      and should not be used to store data or as keys into a table. If
-      you need a unique key identifying a particle, add a new attribuite.
-      @{
-  */
-  const std::string& get_name() const {
-    return name_;
-  }
-  void set_name(std::string name) {
-    name_=name;
-  }
-  /* @} */
 };
 
 
@@ -583,7 +567,7 @@ void inline Particle::remove_attribute(ParticleKey name)
     gynmastics.
 
     \note ParticlePair objects are ordered.
- */
+*/
 class ParticlePair: public NullDefault,
                     public Comparable {
 public:
@@ -591,26 +575,26 @@ public:
   Particle *first, *second;
   ParticlePair(): first(NULL), second(NULL){}
   ParticlePair(Particle *a, Particle *b):
-  first(a), second(b) {}
+    first(a), second(b) {}
   IMP_COMPARISONS_2(first, second)
   Particle * operator[](unsigned int i) const {
     switch (i) {
-      case 0:
-        return first;
-      case 1:
-        return second;
-      default:
-        throw IndexException("Invalid member of pair");
+    case 0:
+      return first;
+    case 1:
+      return second;
+    default:
+      throw IndexException("Invalid member of pair");
     }
   }
   Particle *& operator[](unsigned int i) {
     switch (i) {
-      case 0:
-        return first;
-      case 1:
-        return second;
-      default:
-        throw IndexException("Invalid member of pair");
+    case 0:
+      return first;
+    case 1:
+      return second;
+    default:
+      throw IndexException("Invalid member of pair");
     }
   }
 
@@ -662,30 +646,30 @@ public:
   Particle *first, *second, *third;
   ParticleTriplet(): first(NULL), second(NULL), third(NULL){}
   ParticleTriplet(Particle *a, Particle *b, Particle *c):
-  first(a), second(b), third(c) {}
+    first(a), second(b), third(c) {}
   IMP_COMPARISONS_3(first, second, third)
   Particle *operator[](unsigned int i) const {
     switch (i) {
-      case 0:
-        return first;
-      case 1:
-        return second;
-      case 2:
-        return third;
-      default:
-        throw IndexException("Invalid member of triplet");
+    case 0:
+      return first;
+    case 1:
+      return second;
+    case 2:
+      return third;
+    default:
+      throw IndexException("Invalid member of triplet");
     };
   }
   Particle *&operator[](unsigned int i) {
     switch (i) {
-      case 0:
-        return first;
-      case 1:
-        return second;
-      case 2:
-        return third;
-      default:
-        throw IndexException("Invalid member of triplet");
+    case 0:
+      return first;
+    case 1:
+      return second;
+    case 2:
+      return third;
+    default:
+      throw IndexException("Invalid member of triplet");
     };
   }
   void show(std::ostream &out= std::cout) const {
@@ -748,5 +732,7 @@ IMP_END_NAMESPACE
 
 #undef IMP_CHECK_ACTIVE
 #undef IMP_CHECK_MUTABLE
+
+#include "Model.h"
 
 #endif  /* IMP_PARTICLE_H */

@@ -34,7 +34,9 @@ class IMPCOREEXPORT RemoveInactivePairsOptimizerState :
 public:
   /** \param[in] c The Container to hold the elements to process
    */
-  RemoveInactivePairsOptimizerState(ListPairContainer *c);
+  RemoveInactivePairsOptimizerState(ListPairContainer *c,
+                                         std::string name
+                                         ="RemoveInactive %1%");
 
   IMP_OPTIMIZER_STATE(RemoveInactivePairsOptimizerState,
                       internal::version_info)

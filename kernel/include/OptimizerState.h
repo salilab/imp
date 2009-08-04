@@ -37,7 +37,7 @@ class IMPEXPORT OptimizerState : public Object
   void set_optimizer(Optimizer* optimizer);
 
 public:
-  OptimizerState();
+  OptimizerState(std::string name="OptimizerState %1%");
 
   //! Called when the Optimizer accepts a new conformation
   virtual void update() = 0;

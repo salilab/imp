@@ -19,7 +19,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 SingletonRestraint
 ::SingletonRestraint(SingletonScore *ss,
-                     Particle *a):
+                     Particle *a,
+                     std::string name):
+  Restraint(name),
   ss_(ss),
   v_(a)
 {

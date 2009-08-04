@@ -14,12 +14,23 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ListSingletonContainer::ListSingletonContainer(const Particles &ps){
+ListSingletonContainer
+::ListSingletonContainer(const Particles &ps,
+                         std::string name):
+  SingletonContainer(name){
   sorted_=false;
   rev_=0;
   set_particles(ps);
   set_is_editing(false);
 }
+
+ListSingletonContainer
+::ListSingletonContainer(std::string name):
+  SingletonContainer(name){
+  sorted_=true;
+  rev_=0;
+}
+
 
 IMP_LIST_IMPL(ListSingletonContainer, Particle,
               particle, Particle*,Particles,, {

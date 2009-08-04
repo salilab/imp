@@ -21,7 +21,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 GroupnamesRestraint
 ::GroupnamesRestraint(GroupnameScore *ss,
-                      const Classnames &pc):
+                      const Classnames &pc,
+                      std::string name):
+  Restraint(name),
   ss_(ss),
   pc_(new ListGroupnameContainer(pc))
 {

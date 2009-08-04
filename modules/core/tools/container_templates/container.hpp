@@ -48,7 +48,7 @@ class IMPEXPORT GroupnameContainer : public Object
   };
 
 public:
-  GroupnameContainer();
+  GroupnameContainer(std::string name="GroupnameContainer %1%");
 
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.

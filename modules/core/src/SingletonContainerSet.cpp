@@ -16,7 +16,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 SingletonContainerSet
-::SingletonContainerSet(){
+::SingletonContainerSet(std::string name):
+  SingletonContainer(name) {
   rev_=0;
 }
 

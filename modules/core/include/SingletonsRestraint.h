@@ -43,7 +43,8 @@ public:
       \param[in] ps The list of particles to use in the restraint.
    */
   SingletonsRestraint(SingletonScore *ss,
-                      const Particles &ps=Particles());
+                      const Particles &ps=Particles(),
+                      std::string name="SingletonsRestraint %1%");
 
  //! Create the restraint with a shared container
   /** \param[in] ss The function to apply to each particle.

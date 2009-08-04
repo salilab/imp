@@ -43,6 +43,7 @@ class IMPEXPORT Object: public RefCounted
 {
   // hide the inheritance from RefCounted as it is a detail
   LogLevel log_level_;
+  std::string name_;
 protected:
   IMP_NO_DOXYGEN(Object());
   IMP_NO_DOXYGEN(virtual ~Object());
@@ -77,6 +78,22 @@ public:
 
   //! Get information about the author and version of the object
   virtual VersionInfo get_version_info() const=0;
+
+ /** @name Names
+      All objects have names to aid in debugging and inspection
+      of the state of the system. These names are not necessarily unique
+      and should not be used to store data or as keys into a table. Use
+      the address of the object instead since objects cannot be copied.
+      @{
+  */
+  const std::string& get_name() const {
+    return name_;
+  }
+  void set_name(std::string name) {
+    name_=name;
+  }
+  /* @} */
+
 
 private:
   Object(const Object &o) {}

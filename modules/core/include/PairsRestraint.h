@@ -43,7 +43,8 @@ public:
       \param[in] ps The list of particles to use in the restraint.
    */
   PairsRestraint(PairScore *ss,
-                      const ParticlePairs &ps=ParticlePairs());
+                      const ParticlePairs &ps=ParticlePairs(),
+                      std::string name="PairsRestraint %1%");
 
  //! Create the restraint with a shared container
   /** \param[in] ss The function to apply to each particle.

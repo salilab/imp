@@ -16,7 +16,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 RemoveInactiveGroupnamesOptimizerState
-::RemoveInactiveGroupnamesOptimizerState(ListGroupnameContainer *c):
+::RemoveInactiveGroupnamesOptimizerState(ListGroupnameContainer *c,
+                                         std::string name):
+  OptimizerState(name),
   c_(c){
 }
 

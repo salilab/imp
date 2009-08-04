@@ -16,7 +16,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 RemoveInactivePairsOptimizerState
-::RemoveInactivePairsOptimizerState(ListPairContainer *c):
+::RemoveInactivePairsOptimizerState(ListPairContainer *c,
+                                         std::string name):
+  OptimizerState(name),
   c_(c){
 }
 

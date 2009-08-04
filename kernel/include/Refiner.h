@@ -27,7 +27,7 @@ class IMPEXPORT Refiner : public Object
 {
   struct Accessor;
 public:
-  Refiner() {}
+  Refiner(std::string name="Refiner %1%");
   //! Return true if this refiner can refine that particle
   /** This should not throw, so be careful what fields are touched.
    */

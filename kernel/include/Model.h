@@ -212,6 +212,31 @@ public:
 
 IMP_OUTPUT_OPERATOR(Model);
 
+
+// these require Model be defined
+
+inline void Particle::assert_values_mutable() const {
+  IMP_assert(get_model()->get_stage() != Model::EVALUATE,
+             "Restraints are not allowed to change attribute values during "
+             << "evaluation.");
+  IMP_assert(get_model()->get_stage() != Model::AFTER_EVALUATE,
+             "ScoreStates are not allowed to change attribute values after "
+             << "evaluation.");
+}
+
+inline void Particle::assert_can_change_optimization() const {
+  IMP_assert(get_model()->get_stage() == Model::NOT_EVALUATING,
+             "The set of optimized attributes cannot be changed during "
+             << "evaluation.");
+}
+
+inline void Particle::assert_can_change_derivatives() const {
+  IMP_assert(get_model()->get_stage() != Model::BEFORE_EVALUATE,
+             "Derivatives can only be changed during restraint "
+             << "evaluation and score state after evaluation calls.");
+}
+
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_MODEL_H */

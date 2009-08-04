@@ -9,10 +9,16 @@
  */
 
 #include "IMP/GroupnameModifier.h"
+#include "IMP/internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
 
-GroupnameModifier::GroupnameModifier(){
+namespace {
+  unsigned int next_index=0;
+}
+
+GroupnameModifier::GroupnameModifier(std::string name){
+  set_name(internal::make_object_name(name, next_index++));
 }
 
 IMP_END_NAMESPACE

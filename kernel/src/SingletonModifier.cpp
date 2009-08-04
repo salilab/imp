@@ -9,10 +9,16 @@
  */
 
 #include "IMP/SingletonModifier.h"
+#include "IMP/internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
 
-SingletonModifier::SingletonModifier(){
+namespace {
+  unsigned int next_index=0;
+}
+
+SingletonModifier::SingletonModifier(std::string name){
+  set_name(internal::make_object_name(name, next_index++));
 }
 
 IMP_END_NAMESPACE

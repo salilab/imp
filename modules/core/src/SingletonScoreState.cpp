@@ -17,10 +17,11 @@ IMPCORE_BEGIN_NAMESPACE
 
 SingletonScoreState::SingletonScoreState(SingletonModifier *before,
                                          SingletonModifier *after,
-                                         Particle *a):
-  v_(a){
-    if (before) f_=before;
-    if (after) af_=after;
+                                         Particle *a,
+                                         std::string name):
+  ScoreState(name), v_(a){
+  if (before) f_=before;
+  if (after) af_=after;
 }
 
 

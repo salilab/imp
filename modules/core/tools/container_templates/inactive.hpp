@@ -34,7 +34,9 @@ class IMPCOREEXPORT RemoveInactiveGroupnamesOptimizerState :
 public:
   /** \param[in] c The Container to hold the elements to process
    */
-  RemoveInactiveGroupnamesOptimizerState(ListGroupnameContainer *c);
+  RemoveInactiveGroupnamesOptimizerState(ListGroupnameContainer *c,
+                                         std::string name
+                                         ="RemoveInactive %1%");
 
   IMP_OPTIMIZER_STATE(RemoveInactiveGroupnamesOptimizerState,
                       internal::version_info)
