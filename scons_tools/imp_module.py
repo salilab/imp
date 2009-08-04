@@ -12,6 +12,9 @@ import hierarchy
 def module_depends(env, target, source):
     env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
 
+def module_requires(env, target, source):
+    env.Requires(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
+
 def module_alias(env, target, source, is_default=False):
     a=env.Alias(env['IMP_MODULE']+"-"+target, [source])
     if is_default:
@@ -26,6 +29,10 @@ def module_alias_depends(env, target, source):
 
 def module_deps_depends(env, target, source, dependencies):
     env.Depends(target,
+              [env.Alias(x+'-'+source) for x in dependencies])
+
+def module_deps_requires(env, target, source, dependencies):
+    env.Requires(target,
               [env.Alias(x+'-'+source) for x in dependencies])
 
 
@@ -258,12 +265,13 @@ def IMPModuleLib(envi, files):
     install = env.Install(env.GetInstallDirectory('libdir'), build)
     postprocess_lib(env, install)
     module_depends(env, build, 'include')
+    module_requires(env, build, 'data')
     module_alias(env, 'lib', build, True)
     global_depends(env, 'all', 'lib')
     module_alias(env, 'install-lib', install)
     module_alias_depends(env, 'install', 'install-lib')
-    module_deps_depends(env, build, 'include', env['IMP_REQUIRED_MODULES'])
-    module_deps_depends(env, build, 'lib', env['IMP_REQUIRED_MODULES'])
+    module_deps_requires(env, build, 'include', env['IMP_REQUIRED_MODULES'])
+    module_deps_requires(env, build, 'lib', env['IMP_REQUIRED_MODULES'])
     module_deps_depends(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
 
@@ -305,9 +313,8 @@ def IMPModuleExamples(env, files, required_modules=[]):
     module_alias(env, 'test-examples', test)
     global_depends(env, 'test', 'test-examples')
     module_depends(env, test, 'python')
-    module_depends(env, test, 'data')
     global_depends(env, 'doc', 'examples')
-    module_deps_depends(env, test, 'python', required_modules)
+    module_deps_requires(env, test, 'python', required_modules)
 
 def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     from scons_tools import get_bin_environment
@@ -334,7 +341,7 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     module_depends(env, build, 'include')
     module_depends(env, build, 'lib')
     module_depends(env, build, 'data')
-    module_deps_depends(env, build, 'lib', required_modules)
+    module_deps_requires(env, build, 'lib', required_modules)
 
 
 def IMPModulePython(envi):
@@ -402,8 +409,8 @@ def IMPModulePython(envi):
     if env['IMP_MODULE_CPP']:
         module_depends(env, build, 'include')
         module_depends(env, build, 'lib')
-        module_deps_depends(env, build, 'include', env['IMP_REQUIRED_MODULES'])
-        module_deps_depends(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
+        module_deps_requires(env, build, 'include', env['IMP_REQUIRED_MODULES'])
+        module_deps_requires(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
 def IMPModuleGetExamples(env):
     vars= make_vars(env)
@@ -508,9 +515,8 @@ def IMPModuleTest(env, required_modules=[], **keys):
     module_alias(env, 'test', test)
     global_depends(env, 'test', 'test')
     module_depends(env, test, 'python')
-    module_deps_depends(env, test, 'python', required_modules)
-    module_deps_depends(env, test, 'python', env['IMP_REQUIRED_MODULES'])
-    module_depends(env, test, 'data')
+    module_deps_requires(env, test, 'python', required_modules)
+    module_deps_requires(env, test, 'python', env['IMP_REQUIRED_MODULES'])
 
 def invalidate(env, fail_action):
     """'Break' an environment, so that any builds with it use the fail_action
