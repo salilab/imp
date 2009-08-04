@@ -589,3 +589,30 @@ xyz vector large,597.740000,1.563192e+11
 xyz internal large,157.780000,1.563192e+11
 xyz *internal large,278.470000,1.563192e+11
 xyz decorator large,126.140000,1.563192e+11
+date,  08/04/09
+mode,fast
+connectivity,0.810000,5.724129e+01
+quadratic 10000 0.1,0.000070,2.114607e+03
+quadratic 10000 0.5,0.000073,2.447058e+05
+box 10000 0.1,0.000005,2.017524e+03
+box 10000 0.5,0.000006,2.466378e+05
+grid 10000 0.1,0.000006,1.795381e+03
+grid 10000 0.5,0.000000,1.550640e+05
+grid 100000 0.5,0.012080,1.113971e+07
+rigid quadratic 100,0.335361,0.000000e+00
+rigid quadratic 1000,0.340363,0.000000e+00
+rigid hierarchy 100,0.000646,0.000000e+00
+rigid hierarchy 1000,0.000647,0.000000e+00
+rotation (cache),0.000086,-1.135720e+04
+rotation (nocache),0.000152,3.886675e+02
+xyz vector small,0.018593,1.500823e+07
+xyz internal small,0.018456,1.500823e+07
+xyz *internal small,0.018321,1.500823e+07
+xyz decorator small,0.018321,1.500823e+07
+xyz vector large,145.950000,1.563192e+11
+xyz internal large,69.310000,1.563192e+11
+xyz *internal large,104.630000,1.563192e+11
+xyz decorator large,42.580000,1.563192e+11
+mode,release
+rotation (cache),0.000494,-2.110377e+04
+rotation (nocache),0.006649,-1.165884e+04
