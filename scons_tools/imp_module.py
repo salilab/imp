@@ -301,7 +301,7 @@ def IMPModuleExamples(env, files, required_modules=[]):
     module_alias(env, 'examples', build)
     global_depends(env, 'all', 'examples')
     module_alias(env, 'install-examples', install)
-    module_alias_depends(env, 'doc-install', 'install-examples')
+    global_depends(env, 'doc-install', 'install-examples')
     module_alias(env, 'test-examples', test)
     global_depends(env, 'test', 'test-examples')
     module_depends(env, test, 'python')
