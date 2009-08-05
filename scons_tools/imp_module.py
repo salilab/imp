@@ -251,7 +251,7 @@ def IMPModuleLib(envi, files):
     module = env['IMP_MODULE']
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars= make_vars(env)
-    if env['build']=='profile' and env['CC'] == 'gcc':
+    if env.get('static', False) and env['CC'] == 'gcc':
         build = env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files) + [env['VER_CPP'], \
                                                      env['LINK_0_CPP'],\

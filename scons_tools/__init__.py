@@ -127,6 +127,11 @@ def _add_build_flags(env):
     env.Append(CCFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
+    if env.get('static', False):
+        if env['CC'] == 'gcc':
+            env.Append(LINKFLAGS=['-static'])
+        else:
+            print "Static builds only supported with GCC, ignored."
     if env['CC'] == 'gcc':
         env.Append(CCFLAGS=["-Wall"])
     if env['CXX'] == 'g++':
@@ -148,7 +153,8 @@ def _add_build_flags(env):
             env.Append(CCFLAGS=[ "-O3", "-fexpensive-optimizations",
                                  "-ffast-math"])
             env.Append(CCFLAGS=['-g', '-pg'])
-            env.Append(LINKFLAGS=['-pg', '-static'])
+            env.Append(LINKFLAGS=['-pg'])
+
 
 def CheckGNUHash(context):
     """Disable GNU_HASH-style linking (if found) for backwards compatibility"""
@@ -355,6 +361,10 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         env['includepath'] = [os.path.abspath(x) for x in \
                           env['includepath'].split(os.path.pathsep)]
         env.Prepend(CPPPATH=env['includepath'])
+    if env.get('build', "release") == 'profile':
+        env['static']=True
+    if env.get('static', False):
+        env['python']=False
     # make sure it is there
     env.Append(LIBPATH=[])
     if env.get('libpath', None) is not None:
@@ -664,3 +674,5 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('python', 'Whether to build the python libraries ', True))
     vars.Add(BoolVariable('localmodules', 'Whether to build local modules that are not part of the IMP distribution', False))
     vars.Add(PathVariable('repository', 'Where to find the source code to build. This is only needed if building in a different directory than the source.', None, PathVariable.PathIsDir))
+    vars.Add(BoolVariable('static', 'Whether to only build static libraries. This implies python=False ', False))
+    #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
