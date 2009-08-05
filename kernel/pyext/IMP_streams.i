@@ -6,14 +6,11 @@
 // Typemaps to allow Python file-like objects to be used for C++ code that
 // expects a std::ostream
 
-%typemap(in) std::ostream& (PyOutFileAdapter *tmp=NULL) {
-  tmp = new PyOutFileAdapter($input);
-  $1 = new std::ostream(tmp);
-  $1->exceptions(std::ostream::badbit);
-}
-%typemap(freearg) std::ostream& {
-  if ($1) delete $1;
-  if (tmp$argnum) delete tmp$argnum;
+%typemap(in) std::ostream& (PyOutFileAdapter tmp) {
+  $1 = tmp.set_python_file($input);
+  if (!$1) {
+    SWIG_fail;
+  }
 }
 
 // Something of an abuse of argout: force anything in our streambuf adapter to
@@ -25,7 +22,7 @@
 // after the ostream.
 %typemap(argout) std::ostream& {
   try {
-    tmp$argnum->pubsync();
+    tmp$argnum.pubsync();
   } catch (...) {
     Py_DECREF($result);
     if (!PyErr_Occurred()) {
@@ -43,14 +40,24 @@
 class PyOutFileAdapter : public std::streambuf
 {
   std::vector<char> buffer_;
-  PyObject *p_;
+  std::ostream *ostr_;
+  PyObject *write_method_;
 public:
-  PyOutFileAdapter(PyObject *p) : buffer_(1024), p_(p) {
+  PyOutFileAdapter() : buffer_(1024), ostr_(NULL), write_method_(NULL) {
     setp(&buffer_.front(), &buffer_.front() + buffer_.size());
-    Py_XINCREF(p_);
   }
 
-  virtual ~PyOutFileAdapter() { Py_XDECREF(p_); }
+  virtual ~PyOutFileAdapter() { Py_XDECREF(write_method_); delete ostr_; }
+
+  std::ostream* set_python_file(PyObject *p) {
+    if (!(write_method_ = PyObject_GetAttrString(p, "write"))) {
+      return NULL;
+    }
+
+    ostr_ = new std::ostream(this);
+    ostr_->exceptions(std::ostream::badbit);
+    return ostr_;
+  }
 
 protected:
   virtual int_type overflow(int_type c) {
@@ -65,13 +72,12 @@ protected:
   virtual int_type sync() {
     // Python API uses char* arguments rather than const char*, so create
     // here to quell the compiler warning
-    static char method[] = "write";
     static char fmt[] = "(s#)";
     int num = pptr() - pbase();
     if (num <= 0) {
       return 0;
     }
-    PyObject *result = PyObject_CallMethod(p_, method, fmt, pbase(), num);
+    PyObject *result = PyObject_CallFunction(write_method_, fmt, pbase(), num);
     if (!result) {
       // Python exception will be reraised when SWIG method finishes
       throw std::ostream::failure("Python error on write");
@@ -88,9 +94,8 @@ protected:
       // result per call (one here, potentially one in sync) rather than one per
       // buffer_.size() characters via the regular buffering
       sync();
-      static char method[] = "write";
       static char fmt[] = "(s#)";
-      PyObject *result = PyObject_CallMethod(p_, method, fmt, s, n);
+      PyObject *result = PyObject_CallFunction(write_method_, fmt, s, n);
       if (!result) {
         throw std::ostream::failure("Python error on write");
       } else {
