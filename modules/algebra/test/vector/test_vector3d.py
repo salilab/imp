@@ -21,10 +21,13 @@ class Vector3DTests(IMP.test.TestCase):
         vs1.push_back(IMP.algebra.Vector3D(4.0, 5.0, 6.0))
         noncallable = NotAFile()
         noncallable.write = "foo"
+        noncallable.read = "foo"
         self.assertRaises(AttributeError, IMP.algebra.write_pts, vs1, None)
         self.assertRaises(AttributeError, IMP.algebra.write_pts, vs1, "foo")
         self.assertRaises(TypeError, IMP.algebra.write_pts, vs1, noncallable)
         self.assertRaises(AttributeError, IMP.algebra.read_pts, None)
+        self.assertRaises(AttributeError, IMP.algebra.read_pts, "foo")
+        self.assertRaises(TypeError, IMP.algebra.read_pts, noncallable)
 
         # Test read/write for regular files and file-like objects
         sio = StringIO.StringIO()
