@@ -15,14 +15,16 @@ def _check(context, version):
 
     context.Message('Checking for Boost version >= %s... ' % (version))
     ret = context.TryRun("""#include <boost/version.hpp>
+#include <iostream>
 
         int main()
         {
+            std::cout << BOOST_LIB_VERSION <<std::endl;
             return BOOST_VERSION >= %d ? 0 : 1;
         }
-        """ % version_n, '.cpp')[0]
-    context.Result(ret)
-    return ret
+        """ % version_n, '.cpp')
+    context.Result(ret[1].replace("_", "."))
+    return ret[0]
 
 def configure_check(env, version):
     custom_tests = {'CheckBoost':_check}
