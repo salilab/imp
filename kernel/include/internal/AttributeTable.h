@@ -36,18 +36,19 @@ struct DefaultTraits
 struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
 {
   static float get_invalid() {
-    if (std::numeric_limits<float>::has_quiet_NaN) {
+    /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
+    /*if (std::numeric_limits<float>::has_quiet_NaN) {
       return std::numeric_limits<float>::quiet_NaN();
-    } else if (std::numeric_limits<float>::has_infinity) {
+      } else*/ if (std::numeric_limits<float>::has_infinity) {
       return std::numeric_limits<float>::infinity();
     } else {
       return std::numeric_limits<float>::max();
     }
   }
   static bool get_is_valid(float f) {
-    if (std::numeric_limits<float>::has_quiet_NaN) {
-      return isnan(f);
-    } else {
+    /*if (std::numeric_limits<float>::has_quiet_NaN) {
+      return !is_nan(f);
+      } else*/ {
       return f != get_invalid();
     }
   }
@@ -57,18 +58,19 @@ struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
 struct DoubleAttributeTableTraits: public DefaultTraits<double, FloatKey>
 {
   static double get_invalid() {
-    if (std::numeric_limits<double>::has_quiet_NaN) {
+    /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
+    /*if (std::numeric_limits<double>::has_quiet_NaN) {
       return std::numeric_limits<double>::quiet_NaN();
-    } else if (std::numeric_limits<double>::has_infinity) {
+      } else*/ if (std::numeric_limits<double>::has_infinity) {
       return std::numeric_limits<double>::infinity();
     } else {
       return std::numeric_limits<double>::max();
     }
   }
   static bool get_is_valid(double f) {
-    if (std::numeric_limits<double>::has_quiet_NaN) {
-      return isnan(f);
-    } else {
+    /*if (std::numeric_limits<double>::has_quiet_NaN) {
+      return !is_nan(f);
+      } else*/ {
       return f != get_invalid();
     }
   }
