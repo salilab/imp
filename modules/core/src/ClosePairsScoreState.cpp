@@ -81,7 +81,6 @@ void ClosePairsScoreState::set_singleton_container(SingletonContainer *pc) {
   // needs to be first for the case of assigning the pc that is already there
   in_=pc;
   xyzc_->set_singleton_container(in_);
-  if (rc_) rc_->set_singleton_container(in_);
 }
 
 void ClosePairsScoreState::set_close_pairs_finder(ClosePairsFinder *f) {
@@ -92,7 +91,6 @@ void ClosePairsScoreState::set_close_pairs_finder(ClosePairsFinder *f) {
 
 void ClosePairsScoreState::set_radius_key(FloatKey k) {
   rk_=k;
-  rc_=NULL;
   xyzc_=NULL;
   f_->set_radius_key(rk_);
 }
@@ -114,10 +112,7 @@ void ClosePairsScoreState::do_before_evaluate()
   IMP_CHECK_OBJECT(f_);
   if (!xyzc_) {
     //std::cout << "Virgin ss" << std::endl;
-    xyzc_ =new MaximumChangeScoreState(in_, XYZ::get_xyz_keys());
-    if (rk_ != FloatKey()) {
-      rc_= new MaximumChangeScoreState(in_, FloatKeys(1, rk_));
-    }
+    xyzc_ =new MaximumChangeXYZRScoreState(in_, rk_);
     //std::cout << "adding pairs" << std::endl;
     unsigned int sz= out_->get_number_of_particle_pairs();
     out_->clear_particle_pairs();
@@ -132,11 +127,7 @@ void ClosePairsScoreState::do_before_evaluate()
     return;
   } else {
     xyzc_->before_evaluate(ScoreState::get_before_evaluate_iteration());
-    if (rc_){
-      rc_->before_evaluate(ScoreState::get_before_evaluate_iteration());
-    }
-    Float delta= xyzc_->get_maximum_change()
-      + (rc_ ? rc_->get_maximum_change(): 0);
+    Float delta= xyzc_->get_maximum_change();
     if (delta*2 > slack_) {
       unsigned int sz= out_->get_number_of_particle_pairs();
       IMP_IF_LOG(VERBOSE) {
@@ -171,9 +162,6 @@ void ClosePairsScoreState::do_before_evaluate()
         IMP_LOG(VERBOSE, std::endl);
       }
       xyzc_->reset();
-      if (rc_) {
-        rc_->reset();
-      }
     }
   }
 }

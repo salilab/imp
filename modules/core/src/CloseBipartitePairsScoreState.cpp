@@ -80,8 +80,6 @@ void CloseBipartitePairsScoreState::set_slack(Float d) {
 void CloseBipartitePairsScoreState::clear() {
   xyzc_[0]=NULL;
   xyzc_[1]=NULL;
-  rc_[0]=NULL;
-  rc_[1]=NULL;
 }
 
 void CloseBipartitePairsScoreState
@@ -128,12 +126,8 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
   IMP_CHECK_OBJECT(f_);
   if (!xyzc_[0]) {
     IMP_LOG(TERSE, "Virgin ss" << std::endl);
-    xyzc_[0] =new MaximumChangeScoreState(in_[0], XYZ::get_xyz_keys());
-    xyzc_[1] =new MaximumChangeScoreState(in_[1], XYZ::get_xyz_keys());
-    if (rk_ != FloatKey()) {
-      rc_[0]= new MaximumChangeScoreState(in_[0], FloatKeys(1, rk_));
-      rc_[1]= new MaximumChangeScoreState(in_[1], FloatKeys(1, rk_));
-    }
+    xyzc_[0] =new MaximumChangeXYZRScoreState(in_[0],rk_);
+    xyzc_[1] =new MaximumChangeXYZRScoreState(in_[1],rk_);
     IMP_LOG(TERSE, "adding pairs" << std::endl);
     out_->clear_particle_pairs();
     f_->add_close_pairs(in_[0], in_[1],out_);
@@ -146,12 +140,6 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
     xyzc_[1]->before_evaluate(ScoreState::get_before_evaluate_iteration());
     Float delta= xyzc_[0]->get_maximum_change()
                + xyzc_[1]->get_maximum_change();
-    if (rk_!= FloatKey()){
-      rc_[0]->before_evaluate(ScoreState::get_before_evaluate_iteration());
-      rc_[1]->before_evaluate(ScoreState::get_before_evaluate_iteration());
-      delta+= rc_[0]->get_maximum_change();
-      delta+= rc_[1]->get_maximum_change();
-    }
 
     if (delta > slack_) {
       out_->clear_particle_pairs();
@@ -160,10 +148,6 @@ void CloseBipartitePairsScoreState::do_before_evaluate()
                                            close_pair_filters_end()));
       xyzc_[0]->reset();
       xyzc_[1]->reset();
-      if (rk_ != FloatKey()) {
-        rc_[0]->reset();
-        rc_[1]->reset();
-      }
     }
   }
 }

@@ -108,6 +108,7 @@ IMP_REFCOUNT_RETURN_SINGLE(IMP::core::Mover)
 %include "IMP/core/LeavesRefiner.h"
 %include "IMP/core/Linear.h"
 %include "IMP/core/MaximumChangeScoreState.h"
+%include "IMP/core/MaximumChangeXYZRScoreState.h"
 %include "IMP/core/MonteCarlo.h"
 %include "IMP/core/NormalMover.h"
 %include "IMP/core/OpenCubicSpline.h"

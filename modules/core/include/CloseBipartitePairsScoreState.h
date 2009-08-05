@@ -9,7 +9,7 @@
 #define IMPCORE_CLOSE_BIPARTITE_PAIRS_SCORE_STATE_H
 
 #include "config.h"
-#include "MaximumChangeScoreState.h"
+#include "MaximumChangeXYZRScoreState.h"
 #include "ClosePairsFinder.h"
 #include "ListPairContainer.h"
 #include <IMP/ScoreState.h>
@@ -38,8 +38,7 @@ class ClosePairsFinder;
  */
 class IMPCOREEXPORT CloseBipartitePairsScoreState : public ScoreState
 {
-  Pointer<MaximumChangeScoreState> xyzc_[2];
-  Pointer<MaximumChangeScoreState> rc_[2];
+  Pointer<MaximumChangeXYZRScoreState> xyzc_[2];
   Pointer<ClosePairsFinder> f_;
   Pointer<SingletonContainer> in_[2];
   Pointer<ListPairContainer> out_;
