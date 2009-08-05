@@ -8,7 +8,7 @@
 #define IMPCORE_CLOSE_PAIRS_SCORE_STATE_H
 
 #include "config.h"
-#include "MaximumChangeScoreState.h"
+#include "MaximumChangeXYZRScoreState.h"
 #include "ClosePairsFinder.h"
 #include "ListPairContainer.h"
 #include <IMP/ScoreState.h>
@@ -19,7 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 // for SWIG
 class ListPairContainer;
-class MaximumChangeScoreState;
+class MaximumChangeXYZRScoreState;
 class ClosePairsFinder;
 
 //! Maintains a list of spatially close pairs of particles
@@ -51,8 +51,7 @@ class ClosePairsFinder;
  */
 class IMPCOREEXPORT ClosePairsScoreState : public ScoreState
 {
-  Pointer<MaximumChangeScoreState> xyzc_;
-  Pointer<MaximumChangeScoreState> rc_;
+  Pointer<MaximumChangeXYZRScoreState> xyzc_;
   Pointer<ClosePairsFinder> f_;
   Pointer<SingletonContainer> in_;
   Pointer<ListPairContainer> out_;

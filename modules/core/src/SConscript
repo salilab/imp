@@ -34,6 +34,7 @@ files = [
          'ListPairContainer.cpp',
          'ListSingletonContainer.cpp',
          'MaximumChangeScoreState.cpp',
+         'MaximumChangeXYZRScoreState.cpp',
          'MaximumPairScoreRestraint.cpp',
          'MaximumSingletonScoreRestraint.cpp',
          'MinimumPairScoreRestraint.cpp',

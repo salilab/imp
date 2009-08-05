@@ -38,6 +38,7 @@ files = [
          'ListPairContainer.h',
          'ListSingletonContainer.h',
          'MaximumChangeScoreState.h',
+         'MaximumChangeXYZRScoreState.h',
          'MaximumPairScoreRestraint.h',
          'MaximumSingletonScoreRestraint.h',
          'MinimumPairScoreRestraint.h',

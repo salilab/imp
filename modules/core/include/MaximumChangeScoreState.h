@@ -26,6 +26,9 @@ IMPCORE_BEGIN_NAMESPACE
 
     Adding a new particle to the container without calling reset()
     results in a max change of std::numeric_limits<Float>::max().
+
+    If you are interested in the cartesian coordinates and the
+    radius, see MaximumChangeXYZRScoreState.
  */
 class IMPCOREEXPORT MaximumChangeScoreState: public ScoreState
 {
@@ -57,7 +60,6 @@ public:
   SingletonContainer *get_singleton_container() const {
     return pc_;
   }
-
 };
 
 IMPCORE_END_NAMESPACE
