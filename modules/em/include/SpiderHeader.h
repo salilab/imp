@@ -51,7 +51,7 @@ struct SpiderHeader {
   //! Standard deviation. If -1 it means that it has no been computed
   float fSig;
   //! FLAG INDICATING IF THE HISTOGRAM HAS BE COMPUTED. NOT USED IN 3D FILES!
-  float fIhist;
+  float fIhist; // It is obsolete in Spider
   //! Number of columns
   float fNcol;
   //! number of records in file header (label)
