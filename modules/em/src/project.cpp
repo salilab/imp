@@ -10,7 +10,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 void project_given_direction(DensityMap& map,
-             IMP::algebra::Matrix2D<float>& m2,
+             IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              IMP::algebra::Vector3D& direction,
              const IMP::algebra::Vector3D& shift,
@@ -24,7 +24,7 @@ void project_given_direction(DensityMap& map,
 
 
 void project_given_rotation(DensityMap& map,
-             IMP::algebra::Matrix2D<float>& m2,
+             IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              const IMP::algebra::Rotation3D& Rot,
              const IMP::algebra::Vector3D& shift,
