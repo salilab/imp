@@ -14,6 +14,7 @@
 #include <IMP/base_types.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Atom.h>
+#include <IMP/atom/element.h>
 #include <IMP/algebra/utility.h>
 
 #include <iostream>
@@ -27,7 +28,7 @@ class that deals with form factor computation
 class IMPSAXSEXPORT FormFactorTable {
 public:
   //! default constructor
-  FormFactorTable() {}
+  FormFactorTable();
 
   //! constructor with form factor table file
   FormFactorTable(const String& table_name, Float min_q, Float max_q,
@@ -54,16 +55,15 @@ private:
   // connected to them
   // ALL_ATOM_SIZE is number of types needed for all atom representation
   // this indexing is used in form_factors arrays
-  enum FormFactorAtomType
-    {H=0, C=1, N=2, O=3, S=4, P=5, AU=6, ALL_ATOM_SIZE = 7,
-     CH=7, CH2=8, CH3=9, NH=10, NH2=11, NH3=12, OH=13, SH=14,
-     HEAVY_ATOM_SIZE=15, UNK=16};
+  enum FormFactorAtomType {
+    H, C, N, O, S, P, He, Ne, Na, Mg, Ca, Fe, Zn, Se, Au, ALL_ATOM_SIZE = 15,
+    CH=15, CH2=16, CH3=17, NH=18, NH2=19, NH3=20, OH=21, SH=22,
+    HEAVY_ATOM_SIZE=23, UNK=24};
 
-  // the names correspond to the first FormFactorAtomTypes
-  // (the order should be the same)
-  static String element_names_[];// {"H", "C", "N", "O", "S", "P", "AU"};
+  // map between atom element and FormFactorAtomType
+  static std::map<atom::Element, FormFactorAtomType> element_ff_type_map_;
 
-  // form factors for q=0
+  // form factors for q=0, the order as in the FormFactorAtomType enum
   static Float zero_form_factors_[];
 
   // a key for storing zero form factor in Particle as attribute
@@ -90,9 +90,13 @@ private:
 private:
   int read_form_factor_table(const String& table_name);
 
+  void init_element_form_factor_map();
+
   void compute_form_factors_all_atoms();
 
   void compute_form_factors_heavy_atoms();
+
+  FormFactorAtomType get_form_factor_atom_type(atom::Element e) const;
 
   FormFactorAtomType get_form_factor_atom_type(Particle* p,
                                                FormFactorType ff_type) const;

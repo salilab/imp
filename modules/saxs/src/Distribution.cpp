@@ -22,8 +22,8 @@ RadialDistributionFunction(FormFactorTable * ff_table, Float bin_size)
 }
 
 RadialDistributionFunction::
-RadialDistributionFunction(const String& file_name, Float bin_size)
-: Distribution<Float>(bin_size)
+RadialDistributionFunction(const std::string& file_name)
+: Distribution<Float>(pr_resolution)
 {
   read_pr_file(file_name);
 }
@@ -64,8 +64,7 @@ calculate_squared_distribution(const Particles& particles, bool autocorrelation)
       add_to_distribution(dist, 2.0 * form_factors[i] * form_factors[j]);
     }
     // add autocorrelation part
-    if(autocorrelation)
-      add_to_distribution(0.0, square(form_factors[i]));
+    if(autocorrelation) add_to_distribution(0.0, square(form_factors[i]));
   }
 }
 
@@ -106,76 +105,84 @@ calculate_squared_distribution(const Particles& particles1,
   }
 }
 
-void RadialDistributionFunction::scale(Float c) {
-  for (unsigned int i = 0; i < distribution_.size(); i++) {
-    distribution_[i]*=c;
-  }
+void RadialDistributionFunction::scale(Float c)
+{
+  for (unsigned int i = 0; i < size(); i++) (*this)[i]*=c;
 }
 
 void RadialDistributionFunction::add(const RadialDistributionFunction& other_rd)
 {
-  for (unsigned int i = 0; i < other_rd.distribution_.size(); i++) {
-    add_to_distribution(other_rd.index2dist(i), other_rd.distribution_[i]);
+  for (unsigned int i = 0; i < other_rd.size(); i++) {
+    add_to_distribution(other_rd.index2dist(i), other_rd[i]);
   }
 }
 
 Float RadialDistributionFunction::
-R_factor_score(const RadialDistributionFunction& other_rd)
+R_factor_score(const RadialDistributionFunction& model_pr)
 {
   Float sum1=0.0, sum2=0.0;
-  unsigned int distribution_size = std::min(distribution_.size(),
-                                            other_rd.distribution_.size());
+  unsigned int distribution_size = std::min(size(), model_pr.size());
 
-  for (unsigned int i = 0; i < distribution_size; i++) {
-    sum1 += std::abs(distribution_[i] - other_rd.distribution_[i]);
-    sum2 += std::abs(distribution_[i]);
+  for(unsigned int i = 0; i < distribution_size; i++) {
+    sum1 += std::abs((*this)[i] - model_pr[i]);
+    sum2 += std::abs((*this)[i]);
   }
   return sum1/sum2;
 }
 
 Float RadialDistributionFunction::
-chi_score(const RadialDistributionFunction& other_rd)
+chi_score(const RadialDistributionFunction& model_pr)
 {
   Float chi_square = 0.0;
-  unsigned int distribution_size = std::min(distribution_.size(),
-                                            other_rd.distribution_.size());
+  unsigned int distribution_size = std::min(size(), model_pr.size());
 
   // compute chi
-  for (unsigned int i = 0; i < distribution_size; i++) {
-    chi_square += square(other_rd.distribution_[i] - distribution_[i]);
+  for(unsigned int i = 0; i < distribution_size; i++) {
+    chi_square += square(model_pr[i] - (*this)[i]);
   }
   chi_square /= distribution_size;
   return sqrt(chi_square);
 }
 
+void RadialDistributionFunction::write_fit_file(const std::string& file_name,
+                                  const RadialDistributionFunction& model_pr)
+{
+  std::ofstream out_file(file_name.c_str());
+  if(!out_file) {
+    std::cerr << "Can't open file " << file_name << std::endl;
+    exit(1);
+  }
+
+  unsigned int distribution_size = std::min(size(), model_pr.size());
+  for(unsigned int i = 0; i < distribution_size; i++) {
+    out_file << index2dist(i) << " " << (*this)[i]
+                              << " " << model_pr[i] << std::endl;
+  }
+  out_file.close();
+}
+
 void RadialDistributionFunction::
 show(std::ostream& out, std::string prefix) const
 {
-  for (unsigned int i = 0; i < distribution_.size(); i++) {
-    out << index2dist(i) << " " << distribution_[i] << std::endl;
+  for(unsigned int i = 0; i < size(); i++) {
+    out << index2dist(i) << " " << (*this)[i] << std::endl;
   }
 }
 
-void RadialDistributionFunction::normalize() {
+void RadialDistributionFunction::normalize()
+{
   // calculate area
   Float sum = 0.0;
-  for (unsigned int i = 0; i < distribution_.size(); i++) {
-    sum += distribution_[i];
-  }
+  for(unsigned int i=0; i<size(); i++) sum += (*this)[i];
   std::cerr << "sum = " << sum  << std::endl;
+
   // normalize
-  for (unsigned int i = 0; i < distribution_.size(); i++) {
-    distribution_[i] /= sum;
-  }
-  sum = 0.0;
-  for (unsigned int i = 0; i < distribution_.size(); i++) {
-    sum += distribution_[i];
-  }
-  std::cerr << "sum = " << sum  << std::endl;
+  for(unsigned int i=0; i <size(); i++) (*this)[i] /= sum;
 }
 
-void RadialDistributionFunction::read_pr_file(const String& file_name) {
-  const String TITLE_LINE = "Distance distribution";
+void RadialDistributionFunction::read_pr_file(const std::string& file_name)
+{
+  const std::string TITLE_LINE = "Distance distribution";
   std::cerr << "start reading pr file " << file_name << std::endl;
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
@@ -186,6 +193,7 @@ void RadialDistributionFunction::read_pr_file(const String& file_name) {
   double count = 0.0;
   std::string line;
   bool in_distribution = false;
+  bool bin_size_set = false;
   while(!in_file.eof()) {
     getline(in_file, line);
     boost::trim(line); // remove all spaces
@@ -203,12 +211,17 @@ void RadialDistributionFunction::read_pr_file(const String& file_name) {
     if (split_results.size() < 2) continue;
     Float r = atof(split_results[0].c_str());
     Float pr = atof(split_results[1].c_str());
+    if(!bin_size_set && r > 0.0) {
+      init(r);
+      bin_size_set = true;
+      std::cerr << "read_pr_file: bin_size set to " << r << std::endl;
+    }
     add_to_distribution(r, pr);
     count += pr;
   }
 
   IMP_LOG(TERSE, "read_pr_file: " << file_name
-          << " size=" << distribution_.size() << " area="
+          << " size=" << size() << " area="
           << count << std::endl);
 }
 
@@ -233,7 +246,6 @@ calculate_derivative_distribution(Particle* particle)
   algebra::Vector3D particle_coordinate =
     core::XYZ::cast(particle).get_coordinates();
   Float particle_form_factor = ff_table_->get_form_factor(particle);
-
   for (unsigned int i=0; i<coordinates_.size(); i++) {
     Float dist = distance(coordinates_[i], particle_coordinate);
     algebra::Vector3D diff_vector = particle_coordinate - coordinates_[i];
@@ -246,8 +258,8 @@ void DeltaDistributionFunction::
 show(std::ostream& out, std::string prefix) const
 {
   out << "DeltaDistributionFunction::show" << std::endl;
-  for (unsigned int i = 0; i < distribution_.size(); i++) {
-    out << prefix << " dist " << index2dist(i) << " value " << distribution_[i]
+  for (unsigned int i = 0; i < size(); i++) {
+    out << prefix << " dist " << index2dist(i) << " value " << (*this)[i]
         << std::endl;
   }
 }
