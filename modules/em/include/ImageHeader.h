@@ -169,7 +169,7 @@ public:
   //! Writes the header of a EM image to an output file stream
   void write(std::ofstream& f, bool force_reversed = false);
 
-  //! Clear header data (set all header to zero )
+  //! Clear header data and sets a consistent header
   void clear();
 
   //! Sets a consistent header
@@ -544,6 +544,14 @@ public:
     return header_.fPsi2;
   }
 
+  bool is_normalized() const {
+    if(algebra::almost_equal((double)this->get_fAv(),0.0,1e-6) &&
+                 algebra::almost_equal((double)this->get_fSig(),1.0,1e-6)) {
+       return true;
+    }
+    return false;
+  }
+
   // Date and Time
   char* get_date() const;
   char* get_time() const;
@@ -567,10 +575,9 @@ public:
 
 private:
 
-  // ! The header is directly in format Spider with a couple of additions
+  // The header is directly in format Spider with a couple of additions
   SpiderHeader header_;
   bool reversed_;
-
 }; // ImageHeader
 
 IMPEM_END_NAMESPACE
