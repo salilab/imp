@@ -5,8 +5,8 @@
  *  Copyright 2007-9 Sali Lab. All rights reserved.
 */
 
-#include <IMP/em/SpiderReaderWriter.h>
-#include <IMP/algebra/endian.h>
+#include "IMP/em/SpiderReaderWriter.h"
+#include "IMP/algebra/endian.h"
 
 IMPEM_BEGIN_NAMESPACE
 
