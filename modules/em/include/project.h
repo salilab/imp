@@ -60,7 +60,7 @@ IMPEM_BEGIN_NAMESPACE
  */
 template<typename T>
 void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
-             IMP::algebra::Matrix2D<float>& m2,
+             IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              const IMP::algebra::Rotation3D& Rot,
              const IMP::algebra::Vector3D& shift,
@@ -257,7 +257,6 @@ void project_given_rotation1(IMP::algebra::Matrix3D<T>& m3,
 }
 
 
-
 template<typename T>
 void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
              IMP::algebra::Matrix2D<T>& m2,
@@ -311,7 +310,7 @@ void project_given_direction1(IMP::algebra::Matrix3D<T>& m3,
  *   vector3D using the (x,y,z) convention.
  */
 void IMPEMEXPORT project_given_direction(DensityMap& map,
-             IMP::algebra::Matrix2D<float>& m2,
+             IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              IMP::algebra::Vector3D& direction,
              const IMP::algebra::Vector3D& shift,
@@ -356,7 +355,7 @@ void IMPEMEXPORT project_given_direction(DensityMap& map,
  *   vector3D using the (x,y,z) convention.
  */
 void IMPEMEXPORT project_given_rotation(DensityMap& map,
-             IMP::algebra::Matrix2D<float>& m2,
+             IMP::algebra::Matrix2D<double>& m2,
              const int Ydim,const int Xdim,
              const IMP::algebra::Rotation3D& Rot,
              const IMP::algebra::Vector3D& shift,
