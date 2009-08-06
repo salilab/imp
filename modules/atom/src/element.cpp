@@ -82,9 +82,8 @@ ElementTable::ElementTable() {
 Element ElementTable::get_element(const std::string& s) const {
   std::string copy_s = s;
   boost::to_upper(copy_s);
-  IMP_check(string_2_element_.find(copy_s) != string_2_element_.end(),
-            "Unknown element name in get_element.",
-            ValueException);
+  if(string_2_element_.find(copy_s) == string_2_element_.end())
+    return UNKNOWN_ELEMENT;
   return string_2_element_.find(copy_s)->second;
 }
 
