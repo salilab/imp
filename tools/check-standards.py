@@ -26,16 +26,16 @@ def check_c_file(filename, errors):
         line = line.rstrip('\r\n')
         # No way to split URLs, so let them exceed 80 characters:
         if len(line) > 80 and not url.search(line):
-            errors.append('%s:%d: Line is longer than 80 characters.' \
+            errors.append('%s:%d: error: Line is longer than 80 characters.' \
                           % (filename, num+1))
         if line.find('\t') >= 0:
-            errors.append('%s:%d: Line contains tabs.' % (filename, num+1))
+            errors.append('%s:%d: error: Line contains tabs.' % (filename, num+1))
         if srch.search(line):
-            errors.append('%s:%d: Line has trailing whitespace' \
+            errors.append('%s:%d: error: Line has trailing whitespace' \
                           % (filename, num+1))
         if not filename.endswith(".cpp") and line.startswith("#define ") \
            and not line.startswith("#define IMP"):
-            errors.append('%s:%d: Preprocessor symbols must start with IMP' \
+            errors.append('%s:%d: error: Preprocessor symbols must start with IMP' \
                           % (filename, num+1))
         blank = (len(line) == 0)
         if line.startswith('#include "'):
@@ -46,7 +46,7 @@ def check_c_file(filename, errors):
         errors.append('%s:1000: File has trailing blank line(s)' % filename)
     if not configh and filename.endswith(".h") and not filename.endswith("config.h")\
             and not filename.endswith("macros.h") and filename.find("internal") == -1:
-        errors.append('%s: Non-internal header files must include config.h at least indirectly, use #include "config.h"' \
+        errors.append('%s: error: Non-internal header files must include config.h at least indirectly, use #include "config.h"' \
                           % (filename))
 
 def check_python_file(filename, errors):
@@ -108,8 +108,10 @@ def get_all_files():
 
 def main():
     errors = []
-
-    modfiles = get_all_files()
+    if len(sys.argv) == 1:
+        modfiles= get_all_files()
+    else:
+        modfiles = sys.argv[1:]
     for filename in modfiles:
         try:
             check_modified_file(filename, errors)
