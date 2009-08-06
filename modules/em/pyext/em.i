@@ -81,22 +81,22 @@ namespace IMP {
       }
     }
     %template(project_given_rotation1) 
-                  ::IMP::em::project_given_rotation1<float>;
+                  ::IMP::em::project_given_rotation1<double>;
     %template(project_given_direction1) 
-                  ::IMP::em::project_given_direction1<float>;
-    %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<float>;
+                  ::IMP::em::project_given_direction1<double>;
+    %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<double>;
     %template(_SpiderImageReaderWriter)
-                          ::IMP::em::SpiderImageReaderWriter<float>;
-    %template(_Image) ::IMP::em::Image<float>;
-    %template(_Volume) ::IMP::em::Volume<float>;
+                          ::IMP::em::SpiderImageReaderWriter<double>;
+    %template(_Image) ::IMP::em::Image<double>;
+    %template(_Volume) ::IMP::em::Volume<double>;
     %template(floats) ::std::vector<float>;
 
-    %template(add_noise) ::IMP::em::add_noise<::IMP::algebra::Matrix2D<float> >;
+    %template(add_noise) ::IMP::em::add_noise<::IMP::algebra::Matrix2D<double> >;
     %template(add_noise_d) 
               ::IMP::em::add_noise<::IMP::algebra::Matrix2D<double> >;
 
-    %template(FilterByThreshold2D) ::IMP::em::FilterByThreshold<float,2>;
-    %template(FilterByThreshold3D) ::IMP::em::FilterByThreshold<float,3>;
+    %template(FilterByThreshold2D) ::IMP::em::FilterByThreshold<double,2>;
+    %template(FilterByThreshold3D) ::IMP::em::FilterByThreshold<double,3>;
   }
 }
 
