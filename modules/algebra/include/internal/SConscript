@@ -7,7 +7,6 @@ files = [
          'jama_svd.h',
          'multi_array_helpers.h',
          'output_helpers.h',
-         'shortest_segment.h',
          'tnt_array1d.h',
          'tnt_array1d_utils.h',
          'tnt_array2d.h',

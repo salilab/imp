@@ -71,6 +71,7 @@ namespace multi_array_types {
 %include "IMP/algebra/io.h"
 %include "IMP/algebra/endian.h"
 %include "IMP/algebra/Rotation2D.h"
+%include "IMP/algebra/shortest_segment.h"
 
 namespace IMP {
  namespace algebra {
