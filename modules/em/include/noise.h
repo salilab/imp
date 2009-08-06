@@ -39,7 +39,7 @@ IMPEM_BEGIN_NAMESPACE
   * // gaussian distribution with 0 mean and stddev=1
   *
   * \endcode
-  * \note Tested with MuiltiArray, Matrix2D and Matrix3D
+  * \note Tested with MultiArray, Matrix2D and Matrix3D
   */
 template<typename T>
 void add_noise(T& data, double op1, double op2,
