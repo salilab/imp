@@ -374,7 +374,7 @@ void ImageHeader::set_header()
       }
     }
   }
-  // Satistical information (compatibility with Spider again)
+  // Set the statistics to not computed (Spider compatibility again)
   header_.fSig = -1;
   header_.fImami = 0;
 }
