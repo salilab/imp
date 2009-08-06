@@ -1,159 +1,104 @@
-# This is a copy of the SWIG tool from SCons 1.0.0, with our patch for
-# issue 2278 applied (http://scons.tigris.org/issues/show_bug.cgi?id=2278)
 
-"""SCons.Tool.swig
-
-Tool-specific initialization for swig.
-
-There normally shouldn't be any need to import this module directly.
-It will usually be imported through the generic SCons.Tool.Tool()
-selection method.
-
-"""
-
-#
-# Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 The SCons Foundation
-#
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-# KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#
-
-__revision__ = "src/engine/SCons/Tool/swig.py 3315 2008/08/26 11:30:08 scons"
-
-import os.path
+import imp_module
+from SCons.Script import Glob, Dir, File, Builder, Action, Exit
+import os
+import sys
 import re
 
-import SCons.Action
-import SCons.Defaults
-import SCons.Scanner
-import SCons.Tool
-import SCons.Util
+# 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
+#    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
+#    prefix, to avoid collisions when using multiple modules
+# 2. If module names contain '.' characters, SWIG emits these into the CPP
+#    macros used in the director header. Work around this by replacing them
+#    with '_'. A longer term fix is not to call our modules "IMP.foo" but
+#    to say %module(package=IMP) foo but this doesn't work in SWIG stable
+#    as of 1.3.36 (Python imports incorrectly come out as 'import foo'
+#    rather than 'import IMP.foo'). See also IMP bug #41 at
+#    https://salilab.org/imp/bugs/show_bug.cgi?id=41
+def _action_patch_swig_wrap(target, source, env):
+    lines = file(source[0].path, 'r').readlines()
+    repl1 = '"swig::%s_PySwigIterator *"' % env['IMP_MODULE_PREPROC']
+    repl2 = '"swig::%s_SwigPyIterator *"' % env['IMP_MODULE_PREPROC']
+    orig = 'SWIG_IMP.%s_WRAP_H_' % env['IMP_MODULE']
+    repl = 'SWIG_IMP_%s_WRAP_H_' % env['IMP_MODULE']
+    fh= file(target[0].path, 'w')
+    for line in lines:
+        line = line.replace('"swig::PySwigIterator *"', repl1)
+        line = line.replace('"swig::SwigPyIterator *"', repl2)
+        line = line.replace(orig, repl)
+        line = line.replace("wrap.h", "patched_wrap.h")
+        fh.write(line.replace('"swig::SwigPyIterator *"', repl2))
+    fh.close()
 
-SwigAction = SCons.Action.Action('$SWIGCOM', '$SWIGCOMSTR')
+def _print_patch_swig_wrap(target, source, env):
+    print "Patching swig file"
 
-def swigSuffixEmitter(env, source):
-    if '-c++' in SCons.Util.CLVar(env.subst("$SWIGFLAGS", source=source)):
-        return '$SWIGCXXFILESUFFIX'
-    else:
-        return '$SWIGCFILESUFFIX'
+PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
+                                _print_patch_swig_wrap))
 
-# Match '%module test', as well as '%module(directors="1") test'
-# Also allow for test to be quoted (SWIG permits double quotes, but not single)
-_reModule = re.compile(r'%module(\s*\(.*\))?\s+("?)(.+)\2')
 
-def _find_modules(src):
-    """Find all modules referenced by %module lines in `src`, a SWIG .i file.
-       Returns a list of all modules, and a flag set if SWIG directors have
-       been requested (SWIG will generate an additional header file in this
-       case.)"""
-    directors = False
-    mnames = []
-    matches = _reModule.findall(open(src).read())
-    for m in matches:
-        mnames.append(m[2])
-        directors = directors or 'directors' in m[0]
-    return mnames, directors
+def _action_simple_swig(target, source, env):
+    vars= imp_module.make_vars(env)
+    #print [x.abspath for x in source]
+    cppflags= ""
+    for x in env['CPPFLAGS']:
+        if x.startswith("-I") or x.startswith("-D"):
+            cppflags= cppflags+" " + x
+    base="swig -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -Ibuild/include -python -c++ -naturalvar "%vars
+    #print base
+    out= "-o "+ target[0].abspath
+    doti= source[0].abspath
+    includes= " ".join(["-I"+str(x) for x in env['CPPPATH']])\
+        +" -I"+Dir("#/build/swig").abspath #+ " -I"+Dir("#/build/include").abspath
+    command=base + " " +out + " "\
+         + " "+ includes + " " +cppflags + "-DIMP_SWIG " + doti
+    #print command
+    env.Execute(command)
 
-def _add_director_header_targets(target, env):
-    # Directors only work with C++ code, not C
-    suffix = env.subst(env['SWIGCXXFILESUFFIX'])
-    # For each file ending in SWIGCXXFILESUFFIX, add a new target director
-    # header by replacing the ending with SWIGDIRECTORSUFFIX.
-    for x in target[:]:
-        n = x.name
-        d = x.dir
-        if n.endswith(suffix):
-            target.append(d.File(n[:-len(suffix)] + env['SWIGDIRECTORSUFFIX']))
+def _print_simple_swig(target, source, env):
+    print "Generating swig file"
 
-def _swigEmitter(target, source, env):
-    swigflags = env.subst("$SWIGFLAGS", target=target, source=source)
-    flags = SCons.Util.CLVar(swigflags)
-    for src in source:
-        src = str(src.rfile())
-        mnames = None
-        if "-python" in flags and "-noproxy" not in flags:
-            if mnames is None:
-                mnames, directors = _find_modules(src)
-            if directors:
-                _add_director_header_targets(target, env)
-            target.extend(map(lambda m, d=target[0].dir:
-                                     d.File(m + ".py"), mnames))
-        if "-java" in flags:
-            if mnames is None:
-                mnames, directors = _find_modules(src)
-            if directors:
-                _add_director_header_targets(target, env)
-            java_files = map(lambda m: [m + ".java", m + "JNI.java"], mnames)
-            java_files = SCons.Util.flatten(java_files)
-            outdir = env.subst('$SWIGOUTDIR', target=target, source=source)
-            if outdir:
-                java_files = map(lambda j, o=outdir: os.path.join(o, j), java_files)
-            java_files = map(env.fs.File, java_files)
-            for jf in java_files:
-                t_from_s = lambda t, p, s, x: t.dir
-                SCons.Util.AddMethod(jf, t_from_s, 'target_from_source')
-            target.extend(java_files)
-    return (target, source)
+SwigIt = Builder(action=Action(_action_simple_swig,
+                                _print_simple_swig))
+
 
 def _get_swig_version(env):
     """Run the SWIG command line tool to get and return the version number"""
-    out = os.popen(env['SWIG'] + ' -version').read()
+    #print "swig version"
+    out = os.popen('swig' + ' -version').read()
     match = re.search(r'SWIG Version\s+(\S+)$', out, re.MULTILINE)
+    print match
     if match:
+        #print "Found " + match.group(1)
         return match.group(1)
+    else:
+        return ""
 
-def generate(env):
-    """Add Builders and construction variables for swig to an Environment."""
-    c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
 
-    c_file.suffix['.i'] = swigSuffixEmitter
-    cxx_file.suffix['.i'] = swigSuffixEmitter
+def _check(context):
+    context.Message('Checking for swig version ')
+    try:
+        out = os.popen('swig' + ' -version').read()
+        match = re.search(r'SWIG Version\s+(\S+)$', out, re.MULTILINE)
+        version= match.group(1)
+    except:
+        print sys.exc_info()
+        context.Result("failed")
+        return False
+    sv= version.split(".")
+    v= [int(sv[0]), int(sv[1]), int(sv[2])]
+    success = v> [1,3,24]
+    if success:
+        context.Result(version)
+        return True
+    else:
+        return False
 
-    c_file.add_action('.i', SwigAction)
-    c_file.add_emitter('.i', _swigEmitter)
-    cxx_file.add_action('.i', SwigAction)
-    cxx_file.add_emitter('.i', _swigEmitter)
-
-    java_file = SCons.Tool.CreateJavaFileBuilder(env)
-
-    java_file.suffix['.i'] = swigSuffixEmitter
-
-    java_file.add_action('.i', SwigAction)
-    java_file.add_emitter('.i', _swigEmitter)
-
-    env['SWIG']              = env.WhereIs('swig')
-    env['SWIGVERSION']       = _get_swig_version(env)
-    env['SWIGFLAGS']         = SCons.Util.CLVar('')
-    env['SWIGDIRECTORSUFFIX'] = '_wrap.h'
-    env['SWIGCFILESUFFIX']   = '_wrap$CFILESUFFIX'
-    env['SWIGCXXFILESUFFIX'] = '_wrap$CXXFILESUFFIX'
-    env['_SWIGOUTDIR']       = '${"-outdir " + str(SWIGOUTDIR)}'
-    env['SWIGPATH']          = []
-    env['SWIGINCPREFIX']     = '-I'
-    env['SWIGINCSUFFIX']     = ''
-    env['_SWIGINCFLAGS']     = '$( ${_concat(SWIGINCPREFIX, SWIGPATH, SWIGINCSUFFIX, __env__, RDirs, TARGET, SOURCE)} $)'
-    env['SWIGCOM']           = '$SWIG -o $TARGET ${_SWIGOUTDIR} ${_SWIGINCFLAGS} $SWIGFLAGS $SOURCES'
-
-    expr = '^[ \t]*%[ \t]*(?:include|import|extern)[ \t]*(<|"?)([^>\s"]+)(?:>|"?)'
-    scanner = SCons.Scanner.ClassicCPP("SWIGScan", ".i", "SWIGPATH", expr)
-
-    env.Append(SCANNERS = scanner)
-
-def exists(env):
-    return env.Detect(['swig'])
+def configure_check(env):
+    custom_tests = {'CheckSWIG':_check}
+    conf = env.Configure(custom_tests=custom_tests)
+    if not env.GetOption('clean') and not env.GetOption('help') \
+       and conf.CheckSWIG() is False:
+        print """SWIG with a version > 1.3.34 must be installed to support python. Please make sure 'swig' is found in the path passed to scons."""
+        env['python']=False
+    conf.Finish()

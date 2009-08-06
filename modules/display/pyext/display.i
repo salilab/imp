@@ -9,9 +9,9 @@
 %}
 
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_streams.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_streams.i"
 
 %include "modules/display/pyext/display_config.i"
 
@@ -20,13 +20,13 @@
 %include "std_except.i"
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "modules/core/pyext/core.i"
-%import "modules/atom/pyext/atom.i"
-%import "modules/algebra/pyext/algebra.i"
+%import "kernel.i"
+%import "core.i"
+%import "atom.i"
+%import "algebra.i"
 
 /* Make selected classes extensible in Python */
-%import "kernel/pyext/IMP_directors.i"
+%import "IMP_directors.i"
 IMP_DIRECTOR_MODULE_CLASS(display, Writer);
 IMP_DIRECTOR_MODULE_CLASS(display, Geometry);
 IMP_DIRECTOR_MODULE_CLASS(display, CompoundGeometry);

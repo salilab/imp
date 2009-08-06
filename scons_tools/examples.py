@@ -42,7 +42,6 @@ def _action_make_examples(target, source, env):
     name= env['IMP_MODULE_NICENAME']
     write_doxygen(env, name, source, target[0].path)
 
-
 def _print_make_examples(target, source, env):
     print "Generating doxygen page for examples"
 

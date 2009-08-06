@@ -10,10 +10,10 @@
 #include "IMP/atom.h"
 %}
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_streams.i"
-%include "kernel/pyext/IMP_refcount.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_streams.i"
+%include "IMP_refcount.i"
 
 /* Ignore things to prevent SWIG warning about them */
 namespace IMP::em {
@@ -30,18 +30,18 @@ namespace IMP::em {
 %include "std_except.i"
 
 /* Make selected classes extensible in Python */
-%import "kernel/pyext/IMP_directors.i"
+%import "IMP_directors.i"
 IMP_DIRECTOR_MODULE_CLASS(em, ParticlesAccessPoint);
 IMP_DIRECTOR_MODULE_CLASS(em, IMPParticlesAccessPoint);
 
 IMP_REFCOUNT_RETURN_SINGLE(IMP::em::DensityMap)
 
 /* Get definitions of kernel and module base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
+%import "kernel.i"
 /* Get definitions of algebra base classes (but do not wrap) */
-%import "modules/algebra/pyext/algebra.i"
-%import "modules/core/pyext/core.i"
-%import "modules/atom/pyext/atom.i"
+%import "algebra.i"
+%import "core.i"
+%import "atom.i"
 
 /* Wrap our own classes */
 %include "IMP/em/def.h"

@@ -7,9 +7,9 @@
 #include "IMP/core.h"
 %}
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_streams.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_streams.i"
 
 %include "modules/domino/pyext/domino_config.i"
 %include "std_vector.i"
@@ -17,13 +17,13 @@
 %include "std_except.i"
 
 /* Make selected classes extensible in Python */
-%import "kernel/pyext/IMP_directors.i"
+%import "IMP_directors.i"
 IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSampler);
 IMP_DIRECTOR_MODULE_CLASS(domino, DiscreteSet);
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "modules/algebra/pyext/algebra.i"
+%import "kernel.i"
+%import "algebra.i"
 /* Wrap our own classes */
 %include "IMP/domino/JunctionTree.h"
 %include "IMP/domino/CombState.h"

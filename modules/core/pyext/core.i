@@ -6,11 +6,11 @@
 #include "IMP/core.h"
 %}
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_streams.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_streams.i"
 
-%include "modules/core/pyext/core_config.i"
+%include "core_config.i"
 
 %include "std_vector.i"
 %include "std_string.i"
@@ -43,9 +43,9 @@ namespace IMP {
 
 
 /* Get definitions of base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "kernel/pyext/IMP_keys.i"
-%import "modules/algebra/pyext/algebra.i"
+%import "kernel.i"
+%import "IMP_keys.i"
+%import "algebra.i"
 %include "singleton_containers.i"
 %include "pair_containers.i"
 

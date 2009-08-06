@@ -6,9 +6,9 @@
 %}
 
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_streams.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_streams.i"
 
 %include "modules/misc/pyext/misc_config.i"
 
@@ -17,8 +17,8 @@
 %include "std_except.i"
 
 /* Get definitions of base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "modules/algebra/pyext/algebra.i"
+%import "kernel.i"
+%import "algebra.i"
 
 namespace IMP {
   typedef VectorD<3> Vector3D;

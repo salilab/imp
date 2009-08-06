@@ -163,7 +163,7 @@ IMP_DIRECTOR_KERNEL_CLASS(PairModifier);
 namespace IMP {
   %template(Particles) ::IMP::VectorOfRefCounted<Particle*> ;
   %template(ParticlesList) ::std::vector<Particles>;
-  %template(ParticleVector) ::std::vector<Particle*>;
+  %template(ParticlesTemp) ::std::vector<Particle*>;
   %template(ParticlePairs) ::IMP::VectorOfRefCounted< ParticlePair, RefCountParticlePair>;
   %template(ParticleTriplets) ::IMP::VectorOfRefCounted< ParticleTriplet, RefCountParticleTriplet>;
   %template(Restraints) ::IMP::VectorOfRefCounted< Restraint*>;
