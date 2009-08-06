@@ -260,7 +260,7 @@ void Score::compute_chi_real_derivative(const Profile& model_profile,
       for (unsigned int ir=0; ir<delta_dist.size(); ir++) {
         // delta_dist.distribution = sum_i [f_k(0) * f_i(0) * (x_k - x_i)]
         // sinc_cos_values = (sinc(qr) - cos_(qr)) / (r*r)
-        delta_q += delta_dist.distribution_[ir] * sinc_cos_values[iq][ir];
+        delta_q += delta_dist[ir] * sinc_cos_values[iq][ir];
       }
       // profile_diff = weight_tilda * (I_exp - c*I_model)
       // e_q = exp( -0.23 * q*q )
@@ -275,7 +275,6 @@ void Score::write_SAXS_fit_file(const std::string& file_name,
                                 const Float chi_square,
                                 const Float c, const Float offset) const {
   std::ofstream out_file(file_name.c_str());
-
   if (!out_file) {
     std::cerr << "Can't open file " << file_name << std::endl;
     exit(1);

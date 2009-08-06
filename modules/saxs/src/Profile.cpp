@@ -170,10 +170,9 @@ void Profile::calculate_profile_real(const Particles& particles,
 {
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles.size() << " particles" << std::endl);
-  init();
   RadialDistributionFunction r_dist(ff_table_);
   r_dist.calculate_squared_distribution(particles, autocorrelation);
-  squared_radial_distribution_2_profile(r_dist);
+  squared_distribution_2_profile(r_dist);
 }
 
 void Profile::calculate_profile_real(const Particles& particles,
@@ -183,7 +182,6 @@ void Profile::calculate_profile_real(const Particles& particles,
             << " should be > 1. Got: " << n, ValueException);
   IMP_LOG(TERSE, "start real profile calculation for " << particles.size()
           << " particles with symmetry = " << n << std::endl);
-  init();
   // split units, only number_of_distances units is needed
   unsigned int number_of_distances = n/2;
   unsigned int unit_size = particles.size()/n;
@@ -213,7 +211,7 @@ void Profile::calculate_profile_real(const Particles& particles,
   else r_dist2.scale(n/2); //even
   r_dist2.add(r_dist);
 
-  squared_radial_distribution_2_profile(r_dist2);
+  squared_distribution_2_profile(r_dist2);
 }
 
 void Profile::calculate_profile_real(const Particles& particles1,
@@ -222,43 +220,41 @@ void Profile::calculate_profile_real(const Particles& particles1,
   IMP_LOG(TERSE, "start real profile calculation for "
           << particles1.size() << " + " << particles2.size()
           << " particles" << std::endl);
-  init();
   RadialDistributionFunction r_dist(ff_table_);
   r_dist.calculate_squared_distribution(particles1, particles2);
-  squared_radial_distribution_2_profile(r_dist);
+  squared_distribution_2_profile(r_dist);
 }
 
-void Profile::
-radial_distribution_2_profile(const RadialDistributionFunction& r_dist)
+void Profile::distribution_2_profile(const RadialDistributionFunction& r_dist)
 {
-  // iterate over intensity profile (assumes initialized profile: q, I(q)=0)
+  init();
+  // iterate over intensity profile
   for (unsigned int k = 0; k < profile_.size(); k++) {
-
     // iterate over radial distribution
-    for (unsigned int r = 0; r < r_dist.distribution_.size(); r++) {
+    for (unsigned int r = 0; r < r_dist.size(); r++) {
       Float dist = r_dist.index2dist(r);
       Float x = dist * profile_[k].q_;
       x = sinc(x);
-      profile_[k].intensity_ += r_dist.distribution_[r] * x;
+      profile_[k].intensity_ += r_dist[r] * x;
     }
-    profile_[k].intensity_ *= std::exp(- modulation_function_parameter_
-                                       * square(profile_[k].q_));
   }
 }
 
 void Profile::
-squared_radial_distribution_2_profile(const RadialDistributionFunction& r_dist)
+squared_distribution_2_profile(const RadialDistributionFunction& r_dist)
 {
-  // iterate over intensity profile (assumes initialized profile: q, I(q)=0)
+  init();
+  // iterate over intensity profile
   for (unsigned int k = 0; k < profile_.size(); k++) {
-
     // iterate over radial distribution
-    for (unsigned int r = 0; r < r_dist.distribution_.size(); r++) {
+    for (unsigned int r = 0; r < r_dist.size(); r++) {
       Float dist = sqrt(r_dist.index2dist(r));
       Float x = dist * profile_[k].q_;
       x = sinc(x);
-      profile_[k].intensity_ += r_dist.distribution_[r] * x;
+      profile_[k].intensity_ += r_dist[r] * x;
     }
+    // this correction is required since we apporximate the form factor
+    // as f(q) = f(0) * exp(-b*q^2)
     profile_[k].intensity_ *= std::exp(- modulation_function_parameter_
                                        * square(profile_[k].q_));
   }
@@ -285,15 +281,17 @@ void Profile::scale(Float c) {
 
 void Profile::profile_2_distribution(RadialDistributionFunction& rd,
                                      Float max_distance) const {
-  float scale = 1 / (2*PI*PI);
+  float scale = 1.0/(2*PI*PI);
   unsigned int distribution_size = rd.dist2index(max_distance) + 1;
+
   // iterate over r
-  for (unsigned int i = 0; i < distribution_size; i++) {
+  for(unsigned int i = 0; i < distribution_size; i++) {
     Float r = rd.index2dist(i);
     Float sum = 0.0;
     // sum over q: SUM (I(q)*q*sin(qr))
-    for (unsigned int k = 0; k < profile_.size(); k++) {
-      sum += profile_[i].intensity_ * profile_[i].q_ * sin(profile_[i].q_ * r);
+    for(unsigned int k = 0; k < profile_.size(); k++) {
+      sum +=
+        profile_[k].intensity_ * profile_[k].q_ * std::sin(profile_[k].q_*r);
     }
     rd.add_to_distribution(r, r*scale*sum);
   }
@@ -316,7 +314,7 @@ void Profile::calculate_profile_reciprocal(const Particles& particles,
       const Floats& factors2 = ff_table_->get_form_factors(particles[j]);
       Float dist = distance(coordinates[i], coordinates[j]);
       // loop 3
-      // iterate over intensity profile (assumes initialized profile: s, I(s)=0)
+      // iterate over intensity profile
       for(unsigned int k = 0; k < profile_.size(); k++) {
         Float x = dist * profile_[k].q_;
         x = sinc(x);

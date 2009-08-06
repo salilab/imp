@@ -63,8 +63,7 @@ public:
   //! computes theoretical profile faster for cyclically symmetric particles
   //! assumes that the units particles are ordered one after another in the
   //! input particles vector (n - symmetry order)
-  void calculate_profile(const Particles& particles,
-                         unsigned int n) {
+  void calculate_profile(const Particles& particles, unsigned int n) {
     calculate_profile_real(particles, n);
   }
 
@@ -75,9 +74,13 @@ public:
     calculate_profile_real(particles1, particles2);
   }
 
-  //! convert to real space distribution \untested{profile_2_distribution}
+  //! convert to real space P(r) function P(r) = 1/2PI^2 Sum(I(q)*qr*sin(qr))
+  //! \untested{profile_2_distribution}
   void profile_2_distribution(RadialDistributionFunction& rd,
                               Float max_distance) const;
+
+  //! convert to reciprocal space I(q) = Sum(P(r)*sin(qr)/qr)
+  void distribution_2_profile(const RadialDistributionFunction& r_dist);
 
   //! add another profile - useful for rigid bodies
   void add(const Profile& other_profile);
@@ -141,9 +144,8 @@ public:
   void calculate_profile_real(const Particles& particles,
                               unsigned int n);
 
-  void radial_distribution_2_profile(const RadialDistributionFunction& r_dist);
-  void squared_radial_distribution_2_profile(
-                                     const RadialDistributionFunction& r_dist);
+
+  void squared_distribution_2_profile(const RadialDistributionFunction& r_dist);
 
  protected:
   std::vector<IntensityEntry> profile_; // the profile

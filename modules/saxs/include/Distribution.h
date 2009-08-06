@@ -32,21 +32,10 @@ namespace { // anonymous
 base class for distribution classes
 */
 template<class ValueT>
-class Distribution {
+class Distribution : public std::vector< ValueT > {
 public:
   //! Constructor
-  Distribution(Float bin_size = pr_resolution) {
-    bin_size_ = bin_size;
-    one_over_bin_size_ = 1.0 / bin_size_;     // for faster calculation
-    max_distance_ = 50.0;      // start with ~50A (by default)
-    distribution_.reserve(dist2index(max_distance_) + 1);
-  }
-
-  //! get distribution as array of ValueT
-  std::vector< ValueT > get_distribution() const { return distribution_; }
-
-  //! returns distribution vector size
-  unsigned int size() const { return distribution_.size(); }
+  Distribution(Float bin_size = pr_resolution) { init(bin_size); }
 
   //! returns maximal distance value of distribution
   Float get_max_distance() { return max_distance_; }
@@ -55,12 +44,18 @@ public:
   Float get_bin_size() { return bin_size_; }
 
 protected:
+  void init(Float bin_size) {
+    //  clear();
+    bin_size_ = bin_size;
+    one_over_bin_size_ = 1.0/bin_size_;     // for faster calculation
+    max_distance_ = 50.0;      // start with ~50A (by default)
+    reserve(dist2index(max_distance_) + 1);
+  }
   unsigned int dist2index(Float dist) const {
     return algebra::round( dist * one_over_bin_size_ );
   }
   Float index2dist(unsigned int index) const { return index * bin_size_; }
 protected:
-  std::vector< ValueT > distribution_;
   Float bin_size_, one_over_bin_size_; // resolution of discretization
   Float max_distance_;  // parameter for maximum r value for p(r) function
 };
@@ -78,8 +73,7 @@ public:
                              Float bin_size = pr_resolution);
 
   //! Constructor from gnom file \untested{read_pr_file}
-  RadialDistributionFunction(const String& file_name,
-                             Float bin_size = pr_resolution);
+  RadialDistributionFunction(const std::string& file_name);
 
   friend class Profile;
 
@@ -104,32 +98,37 @@ public:
   void scale(Float c);
 
   //! add another distribution
-  void add(const RadialDistributionFunction& other_rdf);
+  void add(const RadialDistributionFunction& model_pr);
 
   //! print tables
   void show(std::ostream &out=std::cout, std::string prefix="") const;
 
   //! analogy crystallographic R-factor score \untested{R_factor}
-  Float R_factor_score(const RadialDistributionFunction& other_rdf);
+  Float R_factor_score(const RadialDistributionFunction& model_pr);
 
   //! analogy to chi score \untested{chi_score}
-  Float chi_score(const RadialDistributionFunction& other_rdf);
+  Float chi_score(const RadialDistributionFunction& model_pr);
 
-  //! \untested{normalize}
+  //! write fit file for the two distributions
+  void write_fit_file(const std::string& file_name,
+                      const RadialDistributionFunction& model_pr);
+
+  //! normalize to area = 1.0
   void normalize();
+
  private:
   void add_to_distribution(Float dist, Float value) {
     unsigned int index = dist2index(dist);
-    if (index >= distribution_.size()) {
-      if(distribution_.capacity() <= index)
-        distribution_.reserve(2 * index);   // to avoid many re-allocations
-      distribution_.resize(index + 1, 0);
+    if(index >= size()) {
+      if(capacity() <= index)
+        reserve(2 * index);   // to avoid many re-allocations
+      resize(index + 1, 0);
       max_distance_ = index2dist(index + 1);
     }
-    distribution_[index] += value;
+    (*this)[index] += value;
   }
 
-  void read_pr_file(const String& file_name);
+  void read_pr_file(const std::string& file_name);
 
  protected:
   FormFactorTable* ff_table_; // pointer to form factors table
@@ -163,20 +162,19 @@ public:
  private:
   void add_to_distribution(Float dist, const algebra::Vector3D& value) {
     unsigned int index = dist2index(dist);
-    if (index >= distribution_.size()) {
-      if(distribution_.capacity() <= index)
-        distribution_.reserve(2 * index);   // to avoid many re-allocations
-      distribution_.resize(index + 1, algebra::Vector3D(0.0, 0.0, 0.0));
+    if(index >= size()) {
+      if(capacity() <= index)
+        reserve(2 * index);   // to avoid many re-allocations
+      resize(index + 1, algebra::Vector3D(0.0, 0.0, 0.0));
       max_distance_ = index2dist(index + 1);
     }
-    distribution_[index] += value;
+    (*this)[index] += value;
   }
 
   void init() {
-    distribution_.clear();
-    distribution_.insert(distribution_.begin(),
-                         dist2index(max_distance_) + 1,
-                         algebra::Vector3D(0.0, 0.0, 0.0));
+    clear();
+    insert(begin(), dist2index(max_distance_) + 1,
+           algebra::Vector3D(0.0, 0.0, 0.0));
   }
 
  protected:

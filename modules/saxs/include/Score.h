@@ -83,14 +83,13 @@ public:
                               const Particles& particles2,
                               std::vector<algebra::Vector3D>& derivatives,
                               bool use_offset = false) const;
- private:
 
-  // required to fit the q values of computational profile to the experimental
-  void resample(const Profile& model_profile, Profile& resampled_profile) const;
-
-  // computes scale factor given offset value
+  //! computes scale factor given offset value
   Float compute_scale_factor(const Profile& model_profile,
                              Float offset = 0.0) const;
+ private:
+  // required to fit the q values of computational profile to the experimental
+  void resample(const Profile& model_profile, Profile& resampled_profile) const;
 
   // computes offset
   Float compute_offset(const Profile& model_profile) const;
