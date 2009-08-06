@@ -14,6 +14,7 @@
 #include "IMP/exception.h"
 #include "MultiArray.h"
 #include "VectorD.h"
+#include <complex>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -186,6 +187,14 @@ public:
     this->pad(padded,avg);
   }
 
+  //! Cast values
+  template<typename T1>
+  void cast_values(Matrix2D<T1> &out) {
+    out.resize(*this);
+    for(unsigned int i=0; i<this->num_elements(); i++) {
+      out.data()[i] = (T1)this->data()[i];
+    }
+  }
 
   //! Access operator. The returned element is the LOGICAL element of the
   //! matrix, NOT the direct one
