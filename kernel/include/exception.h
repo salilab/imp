@@ -19,6 +19,25 @@
 
 IMP_BEGIN_NAMESPACE
 
+
+/**
+    \defgroup assert Error checking and reporting
+
+    By default \imp performs a variety of runtime error checks. These
+    can be controlled using the IMP::set_check_level function. Call
+    IMP::set_check_level with IMP::NONE to disable all checks when you
+    are performing your optimization as opposed to testing your
+    code. Make sure you run your code with the level set to at least
+    CHEAP before running your final optimization to make sure that
+    \imp is used correctly.
+
+    Error handling is provided by IMP/exception.h,
+
+    Use the \c gdbinit file provided in tools to automatically have \c gdb
+    break when errors are detected.
+    @{
+ */
+
 //! The general base class for IMP exceptions
 /** This way we can catch IMP exceptions without getting memory allocation
     errors and everything. And it enforces having a description.
@@ -70,78 +89,10 @@ class IMPEXPORT Exception
   }
 };
 
-//! A general exception for an error in IMP.
-/** \ingroup assert
- */
-struct IMPEXPORT ErrorException: public Exception
-{
-  //! Create exception with an error message
-  ErrorException(const char *msg="Fatal error"): Exception(msg){}
-  ~ErrorException() throw();
-};
-
-//! An exception for an invalid model state
-/** \ingroup assert
- */
-class IMPEXPORT InvalidStateException : public Exception
-{
- public:
-  //! Create exception with an error message
-  InvalidStateException(const char *t): Exception(t){}
-  ~InvalidStateException() throw();
-};
-
-//! An exception for trying to access an inactive particle
-/** \ingroup assert
- */
-class IMPEXPORT InactiveParticleException : public Exception
-{
- public:
-  //! Create exception with an error message
-  InactiveParticleException(const char *msg
-                            ="Attempting to use inactive particle"):
-    Exception(msg){}
-  ~InactiveParticleException() throw();
-};
-
-//! An exception for a request for an invalid member of a container
-/** \ingroup assert
- */
-class IMPEXPORT IndexException: public Exception
-{
- public:
-  //! Create exception with an error message
-  IndexException(const char *t): Exception(t){}
-  ~IndexException() throw();
-};
-
-//! An exception for a passing an out of range value
-/** \ingroup assert
- */
-class IMPEXPORT ValueException: public Exception
-{
- public:
-  //! Create exception with an error message
-  ValueException(const char *t): Exception(t){}
-  ~ValueException() throw();
-};
-
-//! An input/output exception
-/** \ingroup assert
- */
-class IMPEXPORT IOException: public Exception
-{
- public:
-  //! Create exception with an error message
-  IOException(const char *t): Exception(t){}
-  ~IOException() throw();
-};
-
 //! Determine the level of runtime checks performed
 /** NONE means that minimial checks are used. CHEAP
     means that only constant time checks are performed
     and with EXPENSIVE non-linear time checks will be run.
-    \ingroup assert
 */
 enum CheckLevel {NONE=0, CHEAP=1, EXPENSIVE=2};
 
@@ -155,14 +106,13 @@ namespace internal {
 
 //! Control runtime checks in the code
 /** The default level of checks is CHEAP.
-    \ingroup assert
 */
 inline void set_check_level(CheckLevel tf) {
   internal::check_mode= tf;
 }
 
 //! Get the current audit mode
-/**  \ingroup assert
+/**
  */
 inline CheckLevel get_check_level() {
   return internal::check_mode;
@@ -173,7 +123,6 @@ inline CheckLevel get_check_level() {
 /** By default the error message associated with thrown exceptions are printed
     when using IMP from C++, but not from Python (since the error messages of
     unhandled exception are printed by the python runtime).
-    \ingroup assert
 */
 IMPEXPORT void set_print_exceptions(bool tf);
 
@@ -182,7 +131,6 @@ IMPEXPORT void set_print_exceptions(bool tf);
 /**
    The next code block (delimited by { }) is executed if
    get_check_level() <= level.
-   \ingroup assert
 */
 #define IMP_IF_CHECK(level)                     \
   if (level <= ::IMP::get_check_level())
@@ -211,7 +159,6 @@ IMPEXPORT void assert_fail(const char *msg);
 
     \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
-    \ingroup assert
 */
 #define IMP_assert(expr, message)                               \
   do {                                                          \
@@ -238,7 +185,6 @@ IMPEXPORT void assert_fail(const char *msg);
     CHEAP, the check is not performed. Do not use these checks as a shorthand
     to throw necessary exceptions (throw the exception yourself); use them
     only to check for errors, such as inappropriate input.
-    \ingroup assert
 */
 #define IMP_check(expr, message, ExceptionType)                 \
   do {                                                          \
@@ -257,7 +203,6 @@ IMPEXPORT void assert_fail(const char *msg);
 /** \param[in] message Failure message to write.
     \param[in] ExceptionType Throw an exception of this type. The exception
     must be constructable from a char *.
-    \ingroup assert
 */
 #define IMP_failure(message, ExceptionType) do {                        \
   std::ostringstream oss;                                               \
@@ -267,12 +212,84 @@ IMPEXPORT void assert_fail(const char *msg);
   } while (true)
 
 //! Use this to make that the method is not implemented yet
-/** \ingroup assert
+/**
  */
 #define IMP_not_implemented do {                                        \
     IMP::internal::assert_fail("This method is not implemented.");      \
     throw ErrorException("Not implemented");                            \
   } while(true)
+
+
+/** @} */
+
+
+
+//! A general exception for an error in IMP.
+/**
+ */
+struct IMPEXPORT ErrorException: public Exception
+{
+  //! Create exception with an error message
+  ErrorException(const char *msg="Fatal error"): Exception(msg){}
+  ~ErrorException() throw();
+};
+
+//! An exception for an invalid model state
+/**
+ */
+class IMPEXPORT InvalidStateException : public Exception
+{
+ public:
+  //! Create exception with an error message
+  InvalidStateException(const char *t): Exception(t){}
+  ~InvalidStateException() throw();
+};
+
+//! An exception for trying to access an inactive particle
+/**
+ */
+class IMPEXPORT InactiveParticleException : public Exception
+{
+ public:
+  //! Create exception with an error message
+  InactiveParticleException(const char *msg
+                            ="Attempting to use inactive particle"):
+    Exception(msg){}
+  ~InactiveParticleException() throw();
+};
+
+//! An exception for a request for an invalid member of a container
+/**
+ */
+class IMPEXPORT IndexException: public Exception
+{
+ public:
+  //! Create exception with an error message
+  IndexException(const char *t): Exception(t){}
+  ~IndexException() throw();
+};
+
+//! An exception for a passing an out of range value
+/**
+ */
+class IMPEXPORT ValueException: public Exception
+{
+ public:
+  //! Create exception with an error message
+  ValueException(const char *t): Exception(t){}
+  ~ValueException() throw();
+};
+
+//! An input/output exception
+/**
+ */
+class IMPEXPORT IOException: public Exception
+{
+ public:
+  //! Create exception with an error message
+  IOException(const char *t): Exception(t){}
+  ~IOException() throw();
+};
 
 IMP_END_NAMESPACE
 

@@ -18,7 +18,7 @@ IMP_BEGIN_NAMESPACE
 /**
    To use, create an instance of this class which the log level you
    want. When it goes out of scope, it will restore the old level.
-   \ingroup log
+   \ingroup logging
  */
 class IMPEXPORT SetLogState: public RAII
 {
