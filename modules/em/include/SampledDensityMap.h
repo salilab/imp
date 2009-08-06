@@ -51,8 +51,8 @@ public:
                  (ii) to determine the voxels around the coords participating
                       in the sampling procedure.
    */
-  SampledDensityMap(const ParticlesAccessPoint &access_p, float resolution,
-                    float voxel_size, int sig_cuttoff=3);
+  SampledDensityMap(const ParticlesAccessPoint &access_p, emreal resolution,
+                    emreal voxel_size, int sig_cuttoff=3);
 
 
   //! Sampling beads on an EM grid
@@ -61,8 +61,9 @@ public:
    */
   virtual void resample(const ParticlesAccessPoint &access_p);
 
-  void calc_sampling_bounding_box(const float &x,const float &y,const float &z,
-                                  const float &kdist,
+  void calc_sampling_bounding_box(const emreal &x,const emreal &y,
+                                  const emreal &z,
+                                  const emreal &kdist,
                                   int &iminx,int &iminy, int &iminz,
                                   int &imaxx,int &imaxy, int &imaxz) const;
 
@@ -82,18 +83,18 @@ protected:
                                the model.
    */
   void calculate_particles_bounding_box(const ParticlesAccessPoint &access_p,
-                                        std::vector<float> &lower_bound,
-                                        std::vector<float> &upper_bound,
-                                        float &maxradius);
+                                        std::vector<emreal> &lower_bound,
+                                        std::vector<emreal> &upper_bound,
+                                        emreal &maxradius);
 
-  void set_header(const std::vector<float> &lower_bound,
-                  const std::vector<float> &upper_bound,
-                  float maxradius, float resolution, float voxel_size,
+  void set_header(const std::vector<emreal> &lower_bound,
+                  const std::vector<emreal> &upper_bound,
+                  emreal maxradius, emreal resolution, emreal voxel_size,
                   int sig_offset);
 
   // bookkeeping functions
-  int lower_voxel_shift(const float &loc, const float &kdist,
-                        const float &orig, int ndim) const {
+  int lower_voxel_shift(const emreal &loc, const emreal &kdist,
+                        const emreal &orig, int ndim) const {
     int imin;
     imin = (int)floor(((loc-kdist-orig) / header_.Objectpixelsize));
     //bookkeeping
@@ -105,8 +106,8 @@ protected:
   }
 
 
-  int upper_voxel_shift(const float &loc, const float &kdist,
-                        const float &orig, int ndim) const {
+  int upper_voxel_shift(const emreal &loc, const emreal &kdist,
+                        const emreal &orig, int ndim) const {
     int imax;
     imax = (int)floor(((loc+kdist-orig) / header_.Objectpixelsize));
     //bookkeeping
