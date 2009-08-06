@@ -6,6 +6,7 @@ import sys
 from SCons.Script import *
 import hierarchy
 import symlinks
+import standards
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
            "get_sharedlib_environment"]
