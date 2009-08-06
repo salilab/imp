@@ -500,7 +500,6 @@ public:
     }
   }
 
-
   //! Computes the cross correlation coeffcient between two MultiArrays
   /**
     \note Both MultiArrays are required to have the same size, but not the
@@ -625,16 +624,16 @@ public:
 //    }
 //  }
 
-  //! Cast values
-  template<typename T1>
-  void cast_values(MultiArray<T1, D> &out) {
-    boost::array<int, D> shape;
-    std::copy(this->shape(), this->shape() + D, shape.begin());
-    out.resize(shape);
-    for(unsigned int i=0; i<this->num_elements(); i++) {
-      out.data()[i] = this->data()[i];
-    }
-  }
+//  //! Cast values (only works for boost 1.37 and higher)
+//  template<typename T1>
+//  void cast_values(MultiArray<T1, D> &out) {
+//    boost::array<int, D> shape;
+//    std::copy(this->shape(), this->shape() + D, shape.begin());
+//    out.resize(shape);
+//    for(unsigned int i=0; i<this->num_elements(); i++) {
+//      out.data()[i] = this->data()[i];
+//    }
+//  }
 
   //! Read from an ASCII file.
   /**
