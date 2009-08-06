@@ -10,4 +10,7 @@ a sub-namespace.
 \standard_imp_publications
 
 \license \standard_imp_license
+
+The kernel also provides \ref logging "Logging" and \ref assert "Error Reporting"
+support.
  */

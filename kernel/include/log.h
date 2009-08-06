@@ -21,30 +21,36 @@
 
 IMP_BEGIN_NAMESPACE
 
-/** \defgroup log Logging
-    \defgroup assert Error checking and reporting
+/** \defgroup logging Logging
 
-    By default \imp performs a variety of runtime error checks. These
-    can be controlled using the IMP::set_check_level function. Call
-    IMP::set_check_level with IMP::NONE to disable all checks when you
-    are performing your optimization as opposed to testing your
-    code. Make sure you run your code with the level set to at least
-    CHEAP before running your final optimization to make sure that
-    \imp is used correctly.
+    IMP provides tools for controlling the amount of log output produced
+    and directing it to the terminal or a file. Only log messages tagged
+    with a lower level than the current LogLevel are emitted. In addition
+    to a global local level (get_log_level(), set_log_level()), each
+    IMP::Object has an internal log level (IMP::Object::get_log_level(),
+    IMP::Object::set_log_level()) which is used when executing code on
+    that object.
 
-    Use the gdbinit file provided in tools to automatically have gdb
-    break when errors are detected.
+    Logging is provided by IMP/log.h.
+
+    People implementing IMP::Object classes should also see IMP_OBJECT_LOG()
+    and IMP::SetLogState.
+    @{
  */
 
 //! The log levels supported by IMP
-/** \ingroup log
+/**
     DEFAULT is only local logging (like in IMP::Object), it means use
     the global log level
+
     VERBOSE prints very large amounts of information. It should be enough
     to allow the computational flow to be understood.
+
     TERSE prints a few lines per restraint or per state each time
     the score is evaluated.
+
     WARNING prints only warnings.
+
     MEMORY print information about allocations and deallocations to debug
     memory issues
  */
@@ -52,8 +58,6 @@ enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, TERSE=2, VERBOSE=3,
                MEMORY=4};
 
 //! The targets for IMP logging
-/** \ingroup log
- */
 enum LogTarget {COUT, FILE, CERR};
 
 
@@ -68,38 +72,28 @@ namespace internal {
 IMPEXPORT void log_write(std::string to_write);
 
 //! Set the current log level for IMP
-/** \ingroup log
- */
 inline void set_log_level(LogLevel l) {
   internal::log_level=l;
 }
 
 //! Set the target of logs
-/** \ingroup log
- */
 IMPEXPORT void set_log_target(LogTarget l);
 
 //! Get the current log level for IMP
-/** \ingroup log
- */
 inline LogLevel get_log_level()
 {
   return internal::log_level;
 }
 
 //! Set the file name for the IMP log; must be called if a file is to be used.
-/** \ingroup log
- */
 IMPEXPORT void set_log_file(std::string l);
 
-//! Determine whether a given log level should be output.
-/** \note This probably should not be called in C++.
-    \ingroup log
- */
+#ifndef IMP_DOXYGEN
 inline bool is_log_output(LogLevel l)
 {
   return l <= get_log_level();
 }
+#endif
 
 
 #ifndef IMP_DISABLE_LOGGING
@@ -117,7 +111,6 @@ inline bool is_log_output(LogLevel l)
 //! Write an entry to a log.
 /** \param[in] level The IMP::Log_Level for the message
     \param[in] expr A stream expression to be sent to the output stream
-    \ingroup log
  */
 #define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
     { std::ostringstream oss;                               \
@@ -128,7 +121,6 @@ inline bool is_log_output(LogLevel l)
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] level The IMP::Log_Level for the message
     \param[in] expr An expression which writes something to IMP_STREAM
-    \ingroup log
  */
 #define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
     {std::ostringstream IMP_STREAM;                               \
@@ -147,7 +139,6 @@ inline bool is_log_output(LogLevel l)
 //! Write a warning to a log.
 /** \param[in] expr An expression to be output to the log. It is prefixed
                     by "WARNING"
-    \ingroup log
  */
 #define IMP_WARN(expr) if (IMP::is_log_output(IMP::WARNING)) \
     { std::ostringstream oss;                                \
@@ -158,7 +149,6 @@ inline bool is_log_output(LogLevel l)
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] expr An expression which writes something to IMP_STREAM.
                     It is prefixed by "WARNING"
-    \ingroup log
  */
 #define IMP_WARN_WRITE(expr) if (IMP::is_log_output(IMP::WARNING)) \
     {std::ostringstream IMP_STREAM;                                \
@@ -171,14 +161,12 @@ inline bool is_log_output(LogLevel l)
 //! Write a warning to standard error.
 /** \param[in] expr An expression to be output to std::cerr. It is prefixed
                     by "ERROR"
-    \ingroup log
  */
 #define IMP_ERROR(expr) std::cerr << "ERROR: " << expr << std::endl;
 
 //! Write an entry to standard error; for objects with no operator<<.
 /** \param[in] expr An expression which writes something to IMP_STREAM.
                     It is prefixed by "ERROR"
-    \ingroup log
  */
 #define IMP_ERROR_WRITE(expr) {         \
   std::ostream &IMP_STREAM = std::cerr; \
@@ -189,7 +177,7 @@ inline bool is_log_output(LogLevel l)
 
 
 //! Set the log level
-/** \ingroup log
+/**
  */
 #define IMP_SET_LOG_LEVEL(level) IMP::Log::get()::set_level(level);
 
@@ -204,6 +192,8 @@ struct IncreaseIndent: public RAII {
     internal::log_indent-=2;
   }
 };
+
+/** @} */
 
 IMP_END_NAMESPACE
 
