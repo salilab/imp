@@ -57,10 +57,11 @@ unsigned int TableRefiner::get_number_of_refined(Particle *p) const {
   return map_.find(p)->second.size();
 }
 
-const Particles TableRefiner::get_refined(Particle *p) const {
+const ParticlesTemp TableRefiner::get_refined(Particle *p) const {
   IMP_assert(map_.find(p) != map_.end(),
              "Particle is not found in table to refine");
-  return map_.find(p)->second;
+  return ParticlesTemp(map_.find(p)->second.begin(),
+                       map_.find(p)->second.end());
 }
 
 IMPCORE_END_NAMESPACE

@@ -31,13 +31,13 @@ unsigned int BondEndpointsRefiner::get_number_of_refined(Particle *p) const {
   return 2;
 }
 
-const Particles BondEndpointsRefiner::get_refined(Particle *p) const
+const ParticlesTemp BondEndpointsRefiner::get_refined(Particle *p) const
 {
   IMP_assert(get_can_refine(p), "Trying to refine the unrefinable");
   Bond d(p);
-  Particles ps(2);
-  ps.set(0, d.get_bonded(0));
-  ps.set(1, d.get_bonded(1));
+  ParticlesTemp ps(2);
+  ps[0]= d.get_bonded(0);
+  ps[1]= d.get_bonded(1);
   return ps;
 }
 
