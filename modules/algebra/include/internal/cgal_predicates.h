@@ -15,7 +15,7 @@
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-typedef CGAL::Exact_predicates_inexact_constructions_kernel CGALKernel;
+typedef ::CGAL::Exact_predicates_inexact_constructions_kernel CGALKernel;
 
 /* actually, the sphere ones aren't exact due to the squaring. They should be
    reasonably consistent, but... */

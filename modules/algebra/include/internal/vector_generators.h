@@ -14,6 +14,8 @@
 //#define NDEBUG
 #define IMP_NO_HAD_NDEBUG
 #endif
+
+
 #include <CGAL/Cartesian_d.h>
 #include <CGAL/Convex_hull_d.h>
 #include <CGAL/Gmpq.h>
@@ -50,11 +52,11 @@ uniform_cover_sphere(unsigned int n,
     }*/
 #ifdef IMP_USE_CGAL
 
-  typedef typename CGAL::Cartesian_d<CGAL::Gmpq> K;
+  typedef typename ::CGAL::Cartesian_d< ::CGAL::Gmpq> K;
   typedef typename K::Point_d P;
-  typedef CGAL::Convex_hull_d<K> CH;
-  typedef CGAL::Optimisation_d_traits_d<K>       Traits;
-  typedef CGAL::Min_sphere_d<Traits>             Min_sphere;
+  typedef ::CGAL::Convex_hull_d<K> CH;
+  typedef ::CGAL::Optimisation_d_traits_d<K>       Traits;
+  typedef ::CGAL::Min_sphere_d<Traits>             Min_sphere;
   std::map<typename CH::Vertex_handle, unsigned int> indexes;
   for (unsigned int i=0; i< D; ++i) {
     ret.push_back(basis_vector<D>(i));
@@ -68,9 +70,9 @@ uniform_cover_sphere(unsigned int n,
     indexes[vh]= j;
     /*std::cout << "added vertex " << j << std::endl;
     std::cout << ret[indexes[vh]]
-              << " " << CGAL::to_double(vh->point().cartesian(0))
-              << " " << CGAL::to_double(vh->point().cartesian(1))
-              << " " << CGAL::to_double(vh->point().cartesian(2))
+              << " " << ::CGAL::to_double(vh->point().cartesian(0))
+              << " " << ::CGAL::to_double(vh->point().cartesian(1))
+              << " " << ::CGAL::to_double(vh->point().cartesian(2))
               << std::endl;*/
   }
   /* ch.number_of_facets()+ */
@@ -93,9 +95,9 @@ uniform_cover_sphere(unsigned int n,
       indexes[vh]= ret.size()+i;
       //std::cout << "Added vertex " << ret.size() << std::endl;
       /*std::cout << ret[indexes[vh]]
-                << " " << CGAL::to_double(vh->point().cartesian(0))
-                << " " << CGAL::to_double(vh->point().cartesian(1))
-                << " " << CGAL::to_double(vh->point().cartesian(2))
+                << " " << ::CGAL::to_double(vh->point().cartesian(0))
+                << " " << ::CGAL::to_double(vh->point().cartesian(1))
+                << " " << ::CGAL::to_double(vh->point().cartesian(2))
                 << std::endl;*/
     }
     ret.insert(ret.end(), to_insert.begin(), to_insert.end());
@@ -103,7 +105,7 @@ uniform_cover_sphere(unsigned int n,
 
 
 #else
-  IMP_WARN("cover_sphere produces bad covers if CGAL is not found");
+  IMP_WARN("cover_sphere produces bad covers if ::CGAL is not found");
   ret.resize(n);
   for (unsigned int i=0; i< n; ++i) {
     ret[i]= random_vector_on_unit_sphere<D>();
@@ -133,10 +135,10 @@ uniform_cover_sphere(unsigned int n,
   ch.clear(D);
 
 
-  typedef CGAL::Cartesian_d<double> DK;
+  typedef ::CGAL::Cartesian_d<double> DK;
   typedef DK::Point_d PD;
-  typedef CGAL::Search_traits_d<DK> TreeTraits;
-  typedef CGAL::K_neighbor_search<TreeTraits> Neighbor_search;
+  typedef ::CGAL::Search_traits_d<DK> TreeTraits;
+  typedef ::CGAL::K_neighbor_search<TreeTraits> Neighbor_search;
   typedef Neighbor_search::Tree Tree;
 
 
@@ -159,17 +161,17 @@ uniform_cover_sphere(unsigned int n,
                                  << spaces_io(radius*ret[index_k]+center)
 << " .1" << std::endl;
           outf << ".cylinder "
-               << radius*CGAL::to_double(ch.point_of_facet(it,
+               << radius*::CGAL::to_double(ch.point_of_facet(it,
                j).cartesian(0)) +center[0]<< " "
-               << radius*CGAL::to_double(ch.point_of_facet(it,
+               << radius*::CGAL::to_double(ch.point_of_facet(it,
                j).cartesian(1)) +center[1] << " "
-               << radius*CGAL::to_double(ch.point_of_facet(it,
+               << radius*::CGAL::to_double(ch.point_of_facet(it,
                j).cartesian(2)) +center[2] << " "
-               << radius*CGAL::to_double(ch.point_of_facet(it,
+               << radius*::CGAL::to_double(ch.point_of_facet(it,
                (j+1)%D).cartesian(0)) +center[0] << " "
-               << radius*CGAL::to_double(ch.point_of_facet(it,
+               << radius*::CGAL::to_double(ch.point_of_facet(it,
                (j+1)%D).cartesian(1)) +center[1] << " "
-               << radius*CGAL::to_double(ch.point_of_facet(it,
+               << radius*::CGAL::to_double(ch.point_of_facet(it,
                (j+1)%D).cartesian(2)) +center[2] << " "
                << " .1" << std::endl;
         }
@@ -206,13 +208,13 @@ uniform_cover_sphere(unsigned int n,
       }
     }
     for (unsigned int j=0; j< n; ++j) {
-      //typename K::Vector_d vps=ps[j]-CGAL::ORIGIN;
+      //typename K::Vector_d vps=ps[j]-::CGAL::ORIGIN;
       //typename K::Vector_d v=(force[j]- (force[j]*vps)*vps)
-      //+(ps[j]-CGAL::ORIGIN);
+      //+(ps[j]-::CGAL::ORIGIN);
       //VectorD<D> v= force[j]/degree[j];
       VectorD<D> v;
       for (unsigned int i=0; i< D; ++i) {
-        v[i]= CGAL::to_double(min_spheres[j].center().cartesian(i));
+        v[i]= ::CGAL::to_double(min_spheres[j].center().cartesian(i));
       }
       ret[j]=v.get_unit_vector();
     }

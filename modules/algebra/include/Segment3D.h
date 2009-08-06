@@ -63,6 +63,8 @@ IMPALGEBRAEXPORT double distance(const Segment3D &a, const Segment3D &b);
  */
 IMPALGEBRAEXPORT Vector3D projection(const Segment3D &s, const Vector3D &p);
 
+
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_SEGMENT_3D_H */

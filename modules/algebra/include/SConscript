@@ -25,6 +25,7 @@ files = [
          'grid_range_D.h',
          'interpolation.h',
          'io.h',
+         'shortest_segment.h',
          'utility.h',
          'vector_generators.h',
         ] \
