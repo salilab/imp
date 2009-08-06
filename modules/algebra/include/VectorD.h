@@ -24,7 +24,10 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Store a vector of Cartesian coordinates.*/
+/** Store a vector of Cartesian coordinates.
+    \see Vector3D
+    \see Vector2D
+ */
 template <unsigned int D>
 class VectorD: public UninitializedDefault
 {
