@@ -264,7 +264,7 @@ def IMPModuleLib(envi, files):
         postprocess_lib(env, build)
     install = env.Install(env.GetInstallDirectory('libdir'), build)
     postprocess_lib(env, install)
-    module_depends(env, build, 'include')
+    module_requires(env, build, 'include')
     module_requires(env, build, 'data')
     module_alias(env, 'lib', build, True)
     global_depends(env, 'all', 'lib')
