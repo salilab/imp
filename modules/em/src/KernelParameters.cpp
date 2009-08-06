@@ -39,15 +39,16 @@ void KernelParameters::init(float resolution_)
 {
   // the number of sigmas used - 3 means that 99% of density is considered.
   timessig=3.;
+  // convert resolution to sigma squared. Full width at half maximum criterion
+  // (Topf 2008)
+  rsig = resolution_/(2*sqrt(2.*log(2.))); // sigma
+  rsigsq = rsig * rsig; // sigma squared
+  inv_rsigsq = 1./(2.*rsigsq); // term for the exponential
+  // normalization factor for the gaussian
   sq2pi3 = 1. / sqrt(8. * PI * PI * PI);
-  // convert resolution to sigma squared
-  rsig = 1./(sqrt(2.*log(2.))) * resolution_ / 2.;
-  rsigsq = rsig * rsig;
-  inv_rsigsq = 1./rsigsq * .5;
   rnormfac = sq2pi3 * 1. / (rsig * rsig * rsig);
   rkdist   = timessig * rsig;
   lim = exp(-0.5 * (timessig - EPS) * (timessig - EPS));
-
 }
 
 
