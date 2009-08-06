@@ -11,6 +11,7 @@
 #include "IMP/base_types.h"
 #include "IMP/exception.h"
 #include "MultiArray.h"
+#include <complex>
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -106,6 +107,15 @@ public:
   void pad(This& padded) {
     double avg = this->compute_avg();
     this->pad(padded,avg);
+  }
+
+  //! Cast values
+  template<typename T1>
+  void cast_values(Matrix3D<T1> &out) {
+    out.resize(*this);
+    for(unsigned int i=0; i<this->num_elements(); i++) {
+      out.data()[i] = (T1)this->data()[i];
+    }
   }
 
 
