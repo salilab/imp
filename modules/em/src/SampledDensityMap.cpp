@@ -23,9 +23,9 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header)
 
 void SampledDensityMap::calculate_particles_bounding_box(
     const ParticlesAccessPoint &access_p,
-    std::vector<float> &lower_bound,
-    std::vector<float> &upper_bound,
-    float &maxradius)
+    std::vector<emreal> &lower_bound,
+    std::vector<emreal> &upper_bound,
+    emreal &maxradius)
 {
   //read the points and determine the dimentions of the map
 
@@ -62,10 +62,10 @@ void SampledDensityMap::calculate_particles_bounding_box(
 }
 
 
-void SampledDensityMap::set_header(const std::vector<float> &lower_bound,
-                                   const std::vector<float> &upper_bound,
-                                   float maxradius, float resolution,
-                                   float voxel_size, int sig_cutoff)
+void SampledDensityMap::set_header(const std::vector<emreal> &lower_bound,
+                                   const std::vector<emreal> &upper_bound,
+                                   emreal maxradius, emreal resolution,
+                                   emreal voxel_size, int sig_cutoff)
 {
   //set the map header
   header_ = DensityHeader();
@@ -96,11 +96,11 @@ void SampledDensityMap::set_header(const std::vector<float> &lower_bound,
 }
 
 SampledDensityMap::SampledDensityMap(const ParticlesAccessPoint &access_p,
-                                     float resolution, float voxel_size,
+                                     emreal resolution, emreal voxel_size,
                                      int sig_cutoff)
 {
-  std::vector<float> lower_bound, upper_bound;
-  float maxradius;
+  std::vector<emreal> lower_bound, upper_bound;
+  emreal maxradius;
   calculate_particles_bounding_box(access_p,lower_bound,upper_bound, maxradius);
   IMP_LOG(VERBOSE, "particles bounding box  is : min=("
             << lower_bound[0] << "," << lower_bound[1] << ","
@@ -132,11 +132,11 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
   int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
 
   // actual sampling
-  float tmpx,tmpy,tmpz;
+  emreal tmpx,tmpy,tmpz;
   // variables to avoid some multiplications
   int nxny=header_.nx*header_.ny; int znxny;
 
-  float rsq,tmp;
+  emreal rsq,tmp;
   const  KernelParameters::Parameters *params;
   IMP_LOG(VERBOSE,"sampling "<<access_p.get_size()<<" particles "<< std::endl);
   for (int ii=0; ii<access_p.get_size(); ii++) {
@@ -184,7 +184,7 @@ void SampledDensityMap::resample(const ParticlesAccessPoint &access_p)
 
 
 void SampledDensityMap::calc_sampling_bounding_box(
-    const float &x, const float &y, const float &z, const float &kdist,
+    const emreal &x, const emreal &y, const emreal &z, const emreal &kdist,
     int &iminx, int &iminy, int &iminz, int &imaxx,
     int &imaxy, int &imaxz) const
 {
