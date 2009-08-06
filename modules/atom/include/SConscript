@@ -22,6 +22,7 @@ files = [
          'bond_decorators.h',
          'bond_graph.h',
          'distance.h',
+         'element.h',
          'estimates.h',
          'force_fields.h',
          'macros.h',

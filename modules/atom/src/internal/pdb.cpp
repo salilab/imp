@@ -104,7 +104,9 @@ float atom_temp_factor(const String& pdb_line)
 
 String atom_element(const String& pdb_line)
 {
-  String element_name = pdb_line.substr(atom_element_field_, 2);
+  String element_name;
+  if(pdb_line.length() > atom_element_field_ + 2)
+    element_name = pdb_line.substr(atom_element_field_, 2);
   return element_name;
 }
 
