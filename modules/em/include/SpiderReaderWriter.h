@@ -9,14 +9,12 @@
 #ifndef IMPEM_SPIDER_READER_WRITER_H
 #define IMPEM_SPIDER_READER_WRITER_H
 
-// #define DEBUG
-
-#include "config.h"
-#include "ImageHeader.h"
-#include "ImageReaderWriter.h"
-#include "header_converters.h"
-#include "MapReaderWriter.h"
-#include "DensityHeader.h"
+#include "IMP/em/config.h"
+#include "IMP/em/ImageHeader.h"
+#include "IMP/em/ImageReaderWriter.h"
+#include "IMP/em/header_converters.h"
+#include "IMP/em/MapReaderWriter.h"
+#include "IMP/em/DensityHeader.h"
 #include <IMP/algebra/Matrix2D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
@@ -76,10 +74,11 @@ public:
   //! Reads a image file in Spider format and stores the content
   //! the header and data parameters
   /**
-   *  \param[in] filename file to read
-   *  \param[in] header header to store the info
-   *  \param[in] data a matrix to store the grid of data of the image
-   */
+    \note: It is assumed that the image is stored as a collection of floats
+    \param[in] filename file to read
+    \param[in] header header to store the info
+    \param[in] data a matrix to store the grid of data of the image
+  **/
   void read(String filename, ImageHeader& header,
             algebra::Matrix2D<T>& data) {
 #ifdef DEBUG
@@ -99,6 +98,31 @@ public:
     in.close();
   }
 
+  void read_from_floats(String filename, ImageHeader& header,
+            algebra::Matrix2D<T>& data) {
+    std::ifstream in;
+    in.open(filename.c_str(), std::ios::in | std::ios::binary);
+    //! The header format is already in Spider format, just read it
+    header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
+#ifdef DEBUG
+    std::cout << header << std::endl;
+#endif
+    // Adjust size of the matrix according to the header
+    data.resize(header.get_number_of_rows(),header.get_number_of_columns());
+    // Read with casting
+    float aux;
+    for (unsigned long i=0;i<data.num_elements();i++) {
+      if (!(force_reversed_ ^ algebra::is_big_endian())) {
+        in.read(reinterpret_cast< char* >(&aux), sizeof(float));
+      } else {
+        algebra::reversed_read(reinterpret_cast< char* >(&aux),
+                                              sizeof(float),1,in,true);
+      }
+      data.data()[i] = (T)aux;
+    }
+    in.close();
+  }
+
   //! Writes an EM image in Spider format
   /**
    *  \param[in] filename file to write
@@ -109,12 +133,34 @@ public:
             algebra::Matrix2D<T>& data) {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
-    //! Take advantage that the image header is already in Spider format and
-    //! just write it
+    //! The image header is already in Spider format, just write it
     header.write(out, force_reversed_ ^ algebra::is_big_endian());
     data.write_binary(out,force_reversed_ ^ algebra::is_big_endian());
     out.close();
   }
+
+
+  void write_to_floats(String filename, ImageHeader& header,
+            algebra::Matrix2D<T>& data) {
+    std::ofstream out;
+    out.open(filename.c_str(), std::ios::out | std::ios::binary);
+    //! The image header is already in Spider format, just write it
+    header.write(out, force_reversed_ ^ algebra::is_big_endian());
+
+    float aux;
+    for (unsigned long i=0;i<data.num_elements();i++) {
+      aux = (float)data.data()[i];
+      if (!(force_reversed_ ^ algebra::is_big_endian())) {
+        out.write(reinterpret_cast< char* >(&aux), sizeof(float));
+      } else {
+        algebra::reversed_write(reinterpret_cast< char* >(&aux),
+                       sizeof(float),1,out,true);
+      }
+    }
+
+    out.close();
+  }
+
 };
 
 //! Class to read EM maps (3D) in Spider and Xmipp formats
@@ -175,7 +221,5 @@ public:
 };
 
 IMPEM_END_NAMESPACE
-
-// #undef DEBUG
 
 #endif /* IMPEM_SPIDER_READER_WRITER_H */
