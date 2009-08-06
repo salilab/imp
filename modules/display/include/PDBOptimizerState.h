@@ -24,7 +24,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** The State writes a series of files generated from a
     printf-style format string.
     \verbinclude log.py
-    \ingroup log
+    \ingroup logging
  */
 class IMPDISPLAYEXPORT PDBOptimizerState: public OptimizerState
 {
