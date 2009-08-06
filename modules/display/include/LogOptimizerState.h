@@ -25,7 +25,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     printf-style format string. The added geometry objects
     are stored by reference internally.
     \verbinclude log.py
-    \ingroup log
+    \ingroup logging
  */
 class IMPDISPLAYEXPORT LogOptimizerState: public OptimizerState
 {
