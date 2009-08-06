@@ -1,5 +1,10 @@
 /** \page recent Change History
 
+\par Week of August 1
+
+- a function, Restraint::safe_evaluate() has been added to be used
+  when requesting the value of restraints outside of the Model::evaluate().
+
 \par Week of July 18
 
 - The atom::BondPairContainer has been renamed to atom::BondPairFilter
