@@ -10,6 +10,7 @@
 #include <IMP/atom/Residue.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/atom/Chain.h>
+#include <IMP/atom/element.h>
 
 #include <boost/algorithm/string.hpp>
 
@@ -38,6 +39,17 @@ Particle* atom_particle(Model *m, const String& pdb_line)
   Atom d = Atom::create(p, atom_type);
   core::XYZ::create(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
+
+  // element and mass
+  String element_name = internal::atom_element(pdb_line);
+  boost::trim(element_name);
+  ElementTable& e_table = get_element_table();
+  Element e = e_table.get_element(element_name);
+  if(e == UNKNOWN_ELEMENT) { // try to determine element from AtomType
+    e = e_table.get_element(atom_type);
+  }
+  d.set_element(e);
+  d.set_mass(e_table.get_mass(e));
 
   return p;
 }

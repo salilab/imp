@@ -22,6 +22,7 @@ files = [
          'bond_decorators.cpp',
          'bond_graph.cpp',
          'distance.cpp',
+         'element.cpp',
          'estimates.cpp',
          'force_fields.cpp',
          'pdb.cpp',
