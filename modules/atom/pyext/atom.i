@@ -7,10 +7,10 @@
 #include "IMP/atom.h"
 %}
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_streams.i"
-%include "kernel/pyext/IMP_decorators.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_streams.i"
+%include "IMP_decorators.i"
 
 %include "modules/atom/pyext/atom_config.i"
 
@@ -21,10 +21,10 @@
 
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "kernel/pyext/IMP_keys.i"
-%import "modules/algebra/pyext/algebra.i"
-%import "modules/core/pyext/core.i"
+%import "kernel.i"
+%import "IMP_keys.i"
+%import "algebra.i"
+%import "core.i"
 
 
 // must be before hierarchy

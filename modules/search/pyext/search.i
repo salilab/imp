@@ -6,8 +6,8 @@
 %}
 
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
 
 %include "modules/search/pyext/search_config.i"
 
@@ -16,8 +16,8 @@
 %include "std_except.i"
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "kernel/pyext/IMP_keys.i"
+%import "kernel.i"
+%import "IMP_keys.i"
 
 /* Wrap our own classes */
 %include "IMP/search/AttributeMapScoreState.h"

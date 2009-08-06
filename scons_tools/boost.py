@@ -23,7 +23,7 @@ def _check(context, version):
             return BOOST_VERSION >= %d ? 0 : 1;
         }
         """ % version_n, '.cpp')
-    context.Result(ret[1].replace("_", "."))
+    context.Result(ret[1].replace("_", ".").split('\n')[0])
     return ret[0]
 
 def configure_check(env, version):

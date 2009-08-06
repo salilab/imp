@@ -6,19 +6,19 @@
 #include "IMP/algebra.h"
 %}
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_streams.i"
-%include "kernel/pyext/IMP_typemaps.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_streams.i"
+%include "IMP_typemaps.i"
 
-%include "modules/algebra/pyext/algebra_config.i"
+%include "algebra_config.i"
 %include "exception.i"
 %include "std_vector.i"
 %include "std_except.i"
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "kernel/pyext/IMP_keys.i"
+%import "kernel.i"
+%import "IMP_keys.i"
 
 /* Ignore friends */
 %ignore compose(const Rotation3D &a, const Rotation3D &b);

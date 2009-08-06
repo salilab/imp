@@ -2,6 +2,7 @@
 import scons_tools
 import scons_tools.boost
 import scons_tools.cgal
+import scons_tools.swig
 
 
 # We need scons 0.98 or later
@@ -12,7 +13,7 @@ vars = Variables('config.py')
 scons_tools.add_common_variables(vars, "imp")
 vars.Add(BoolVariable('cgal', 'Whether to use the CGAL package', True))
 env = scons_tools.MyEnvironment(variables=vars, require_modeller=False,
-                    tools=["default", "docbook", "swig",
+                    tools=["default", "docbook",
                            "imp_module"],
                     toolpath=["scons_tools"])
 unknown = vars.UnknownVariables()
@@ -21,9 +22,6 @@ if unknown:
     print "Use 'scons -h' to get a list of the accepted variables."
     Exit(1)
 
-# We need SWIG 1.3.34 or later
-if not env.GetOption('clean') and not env.GetOption('help'):
-    env.EnsureSWIGVersion(1, 3, 34)
 
 if env.get('repository', None) is not None:
     Repository(env['repository'])
@@ -31,6 +29,7 @@ if env.get('repository', None) is not None:
 
 scons_tools.boost.configure_check(env, '1.33')
 scons_tools.cgal.configure_check(env)
+scons_tools.swig.configure_check(env)
 
 conf=env.Configure(config_h="kernel/include/internal/config.h")
 if env['CGAL_LIBS'] != ['']:

@@ -4,6 +4,7 @@ import os.path
 import pyscanner
 import examples
 import test
+import swig
 
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
@@ -11,6 +12,18 @@ import hierarchy
 
 #def module_depends(env, target, source):
 #    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
+
+def file_compare(a, b):
+    pa= a.abspath
+    pb= b.abspath
+    return cmp(pa,pb)
+
+def module_glob(patterns):
+    ret=[]
+    for x in patterns:
+        ret= ret+Glob(x)
+    ret.sort()#cmp= file_compare)
+    return ret
 
 def module_requires(env, target, source):
     env.Requires(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
@@ -346,54 +359,62 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
     module_deps_requires(env, build, 'lib', required_modules)
 
 
-def IMPModulePython(envi):
+def IMPModulePython(env):
     """Build and install an IMP module's Python extension and the associated
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
     from scons_tools import get_pyext_environment
-    env=envi.Clone()
     module = env['IMP_MODULE']
     module_suffix= env['IMP_MODULE_SUFFIX']
-    env = get_pyext_environment(env, module.upper(), cplusplus=True)
-    env.Append(LIBS=['imp%s' % module_suffix])
-    env['SWIGPATH'] = [env['CPPPATH'], '#']
-    env.Append(SWIGFLAGS='-python -c++ -naturalvar')
-    module = env['IMP_MODULE']
-    module_suffix = env['IMP_MODULE_SUFFIX']
     vars=make_vars(env)
-    swig_interface=File(module+".i")
     build=[]
     install=[]
     if env['IMP_MODULE_CPP']:
-        swigcom = env['SWIGCOM']
-        if isinstance(swigcom, list) and isinstance(swigcom[0], str):
-            repl = '$SWIG -interface _IMP%s ' % module_suffix
-            swigcom[0] = swigcom[0].replace('$SWIG ', repl)
-        buildlib = env.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
-                                      swig_interface,
-                                      SWIGCOM=swigcom)
+        penv = get_pyext_environment(env, module.upper(), cplusplus=True)
+        penv.Append(LIBS=['imp%s' % module_suffix])
+        #penv.Append(CPPPATH=[Dir('#').abspath])
+        #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
+        interfaces= module_glob(["*.i"])
+        for i in interfaces:
+            cb= env.LinkInstallAs("#/build/swig/"+str(i), i)
+            build.append(cb)
+
+        swig_interface=File(module+".i")
+        globlist=["#/build/include/%(module_include_path)s/*.h"%vars]\
+            + ["#/module/"+x+"/pyext/*.i" for x in env['IMP_REQUIRED_MODULES']]\
+            +['%(module)s.i'%vars]
+        #print globlist
+        deps= module_glob(globlist)
+        penv._IMPSWIG(target=['wrap.cc',
+                              'wrap.h'],
+                      source=["%(module)s.i"%vars]+deps)
+        penv._IMPPatchSWIG(target=['patched_wrap.cc'], source=['wrap.cc'])
+        penv._IMPPatchSWIG(target=['patched_wrap.h'], source=['wrap.h'])
+        buildlib = penv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
+                                       "patched_wrap.cc"%vars)
         # Place the generated Python wrapper in lib directory:
         gen_pymod = File('IMP%s.py' % module_suffix.replace("_","."))
-        buildinit = env.LinkInstallAs('#/build/lib/%s/__init__.py'
+        env.Depends(gen_pymod, buildlib)
+        buildinit = penv.LinkInstallAs('#/build/lib/%s/__init__.py'
                                       % vars['module_include_path'],
                                       gen_pymod)
-        installinit = env.InstallAs(env.GetInstallDirectory('pythondir',
+        installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
                                                             vars['module_include_path'],
                                                             '__init__.py'),
                                     gen_pymod)
-        installlib = env.Install(env.GetInstallDirectory('pyextdir'), buildlib)
-        postprocess_lib(env, buildlib)
+        installlib = penv.Install(penv.GetInstallDirectory('pyextdir'), buildlib)
+        postprocess_lib(penv, buildlib)
         build.append(buildlib)
         build.append(buildinit)
         install.append(installinit)
         install.append(installlib)
         build.append(swig_interface)
-    files = Glob('src/*.py')
+    files = module_glob(['src/*.py'])
     #print [x.path for x in Glob("*")]
     #print Dir("src").path
     #print [x.path for x in Glob("src/*")]
     #print [x.path for x in Glob("src/*.py")]
-    for f in Glob("src/*.py"):
+    for f in files:
         #print f
         nm= os.path.split(f.path)[1]
         #print ('#/build/lib/%s/'+nm) % vars['module_include_path']
@@ -411,17 +432,18 @@ def IMPModulePython(envi):
     if env['IMP_MODULE_CPP']:
         module_requires(env, build, 'include')
         module_requires(env, build, 'lib')
+        module_deps_requires(env, build, 'python',env['IMP_REQUIRED_MODULES'] )
         module_deps_requires(env, build, 'include', env['IMP_REQUIRED_MODULES'])
         module_deps_requires(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
 def IMPModuleGetExamples(env):
     vars= make_vars(env)
-    files=Glob("*.py")+ Glob("*/*.py")+Glob("*.readme") + Glob("*/*.readme")
+    files=module_glob(["*.py", "*/*.py","*.readme","*/*.readme"])
     return files
 
 def IMPModuleGetHeaders(env):
     vars = make_vars(env)
-    raw_files=Glob("*.h")+Glob("*/*.h")
+    raw_files=module_glob(["*.h", "*/*.h"])
     files=[]
     for f in raw_files:
         s= str(f)
@@ -438,7 +460,7 @@ def IMPModuleGetHeaders(env):
 
 def IMPModuleGetSources(env):
     vars = make_vars(env)
-    raw_files=Glob("*.cpp")+Glob("*/*.cpp")
+    raw_files=module_glob(["*.cpp", "*/*.cpp"])
     files=[]
     for f in raw_files:
         s= str(f)
@@ -457,7 +479,7 @@ def IMPModuleGetSources(env):
 
 def IMPModuleGetData(env):
     vars = make_vars(env)
-    raw_files=Glob("*")
+    raw_files=module_glob(["*"])
     files=[]
     for f in [os.path.split(str(x))[1] for x in raw_files]:
         if str(f).endswith("SConscript"):
@@ -471,11 +493,11 @@ def IMPModuleGetData(env):
 
 def IMPModuleGetBins(env):
     vars = make_vars(env)
-    raw_files= Glob("*.cpp")
+    raw_files= module_glob(["*.cpp"])
     return raw_files
 
 def IMPModuleGetDocs(env):
-    files=Glob("*.dox.in")+ Glob("*.dox") + Glob("*.pdf")
+    files=module_glob(["*.dox.in", "*.dox", "*.pdf"])
     return files
 
 
@@ -510,7 +532,7 @@ def IMPModuleTest(env, required_modules=[], **keys):
        script to run to set up the environment to run the test script.
        A convenience alias for the tests is added, and they are always run."""
     files= ["#/bin/imppy.sh", "#/tools/run-all-tests.py"]+\
-        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
+        [x.abspath for x in module_glob(["test_*.py", "*/test_*.py"])]
     #print files
     test = env._IMPModuleTest("test.passed", files, **keys)
     env.AlwaysBuild("test.passed")
@@ -675,6 +697,8 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
     env.Append(BUILDERS={'_IMPModuleTest': test.UnitTest})
     env.Append(BUILDERS={'_IMPColorizePython': examples.ColorizePython})
     env.Append(BUILDERS={'_IMPExamplesDox': examples.MakeDox})
+    env.Append(BUILDERS={'_IMPSWIG': swig.SwigIt})
+    env.Append(BUILDERS={'_IMPPatchSWIG': swig.PatchSwig})
     env.AddMethod(validate)
     env.AddMethod(invalidate)
     env['TEST_ENVSCRIPT'] = None

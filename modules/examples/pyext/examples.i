@@ -8,10 +8,10 @@
 %}
 
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_streams.i"
-%include "kernel/pyext/IMP_decorators.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_streams.i"
+%include "IMP_decorators.i"
 
 %include "modules/examples/pyext/examples_config.i"
 
@@ -21,9 +21,9 @@
 
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "modules/core/pyext/core.i"
-%import "modules/algebra/pyext/algebra.i"
+%import "kernel.i"
+%import "core.i"
+%import "algebra.i"
 
 /* Wrap our own classes */
 %include "IMP/examples/ExampleRestraint.h"

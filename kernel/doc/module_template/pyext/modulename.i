@@ -8,8 +8,8 @@
 %}
 
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
 
 %include "modulename_config.i"
 
@@ -25,9 +25,9 @@ def get_is_xyz_particle(p):
 %}
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "modules/core/pyext/core.i"
-%import "modules/algebra/pyext/algebra.i"
+%import "kernel.i"
+%import "core.i"
+%import "algebra.i"
 
 namespace IMP {
 namespace modulename {

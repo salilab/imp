@@ -9,9 +9,9 @@
 %}
 
 
-%include "kernel/pyext/IMP_macros.i"
-%include "kernel/pyext/IMP_exceptions.i"
-%include "kernel/pyext/IMP_decorators.i"
+%include "IMP_macros.i"
+%include "IMP_exceptions.i"
+%include "IMP_decorators.i"
 %include "modules/helper/pyext/helper_config.i"
 
 %include "std_vector.i"
@@ -26,10 +26,10 @@ def get_is_xyz_particle(p):
 %}
 
 /* Get definitions of kernel base classes (but do not wrap) */
-%import "kernel/pyext/kernel.i"
-%import "modules/core/pyext/core.i"
-%import "modules/algebra/pyext/algebra.i"
-%import "modules/atom/pyext/atom.i"
+%import "kernel.i"
+%import "core.i"
+%import "algebra.i"
+%import "atom.i"
 
 namespace IMP {
 namespace helper {

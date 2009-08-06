@@ -18,40 +18,7 @@ _SWIGScanner = SCons.Scanner.ClassicCPP(
     '^[ \t]*[%,#][ \t]*(?:include|import)[ \t]*(<|")([^>"]+)(>|")'
 )
 
-def get_swig_version(env):
-    version = env.get('SWIGVERSION', None)
-    if version:
-        match = re.match('(\d+)\.(\d+)\.(\d+)', version)
-        if match:
-            try:
-                return [int(x) for x in match.groups()]
-            except ValueError:
-                pass
 
-def EnsureSWIGVersion(env, major, minor, revision):
-    installed = get_swig_version(env)
-    desired = [major, minor, revision]
-    if not installed:
-        msg = "but the SWIG version could not be determined " + \
-              "in the form xx.yy.zz."
-    elif installed >= desired:
-        return
-    else:
-        msg = "but version %d.%d.%d was found." % tuple(installed)
-
-    print """
-SWIG version %d.%d.%d or later is required to build IMP,
-%s
-
-Please install a sufficiently recent version of SWIG (http://www.swig.org/).
-Note that if you install SWIG in a non-standard location, please use the
-'path' option to add this location to the search path.
-For example, a Mac using SWIG installed with MacPorts will have the 'swig'
-program in /opt/local/bin, so edit (or create) config.py and add the line
-
-path='/opt/local/bin'
-""" % (desired[0], desired[1], desired[2], msg)
-    Exit(1)
 
 def GetInstallDirectory(env, varname, *subdirs):
     """Get a directory to install files in. The top directory is env[varname],
@@ -345,11 +312,10 @@ def MyEnvironment(variables=None, require_modeller=True, *args, **kw):
         if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
             env['rpath']=False
             print "WARNING rpath not supported on platform "+ env['PLATFORM']
-    env.Decider('MD5-timestamp')
+    #env.Decider('MD5-timestamp')
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
-    env.AddMethod(EnsureSWIGVersion)
     env.AddMethod(GetInstallDirectory)
 
     if env.get('cxxflags', None) is not None:
@@ -454,40 +420,7 @@ def get_bin_environment(envi):
     _add_rpath(env)
     return env
 
-# 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
-#    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
-#    prefix, to avoid collisions when using multiple modules
-# 2. If module names contain '.' characters, SWIG emits these into the CPP
-#    macros used in the director header. Work around this by replacing them
-#    with '_'. A longer term fix is not to call our modules "IMP.foo" but
-#    to say %module(package=IMP) foo but this doesn't work in SWIG stable
-#    as of 1.3.36 (Python imports incorrectly come out as 'import foo'
-#    rather than 'import IMP.foo'). See also IMP bug #41 at
-#    https://salilab.org/imp/bugs/show_bug.cgi?id=41
-class _swig_postprocess(object):
-    def __init__(self, modprefix):
-        self.modprefix = modprefix
-    def builder(self, source, target, env):
-        for t in target:
-            path = t.path
-            if path.endswith('.cc'):
-                lines = file(path, 'r').readlines()
-                repl1 = '"swig::IMP%s_PySwigIterator *"' % self.modprefix
-                repl2 = '"swig::IMP%s_SwigPyIterator *"' % self.modprefix
-                fh = file(path, 'w')
-                for line in lines:
-                    line = line.replace('"swig::PySwigIterator *"', repl1)
-                    fh.write(line.replace('"swig::SwigPyIterator *"', repl2))
-                fh.close()
-            elif path.endswith('.h'):
-                lines = file(path, 'r').readlines()
-                orig = 'SWIG_IMP.%s_WRAP_H_' % self.modprefix.lower()
-                repl = 'SWIG_IMP_%s_WRAP_H_' % self.modprefix
-                fh = file(path, 'w')
-                for line in lines:
-                    fh.write(line.replace(orig, repl))
-                fh.close()
-        return 0
+
 
 def get_pyext_environment(env, mod_prefix, cplusplus=False):
     """Get a modified environment for building a Python extension.
@@ -496,19 +429,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
        extension is done."""
     from platform import system
     e = env.Clone()
-    if 'swig' not in e['TOOLS'] and not env.GetOption('clean'):
-        print "ERROR: SWIG could not be found. SWIG is needed to build."
-        Exit(1)
 
-    if cplusplus and isinstance(e['SWIGCOM'], str):
-        # See _swig_postprocess class comments:
-        repl = '$SWIG -DPySwigIterator=IMP%s_PySwigIterator ' % mod_prefix \
-               + '-DSwigPyIterator=IMP%s_SwigPyIterator ' % mod_prefix
-        e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
-        if not env.get('deprecated', "True"):
-            repl = '$SWIG '
-            e['SWIGCOM'] = e['SWIGCOM'].replace('$SWIG ', repl)
-        e['SWIGCOM'] = [e['SWIGCOM'], _swig_postprocess(mod_prefix).builder]
     e['LDMODULEPREFIX'] = ''
     # We're not going to link against the extension, so don't need a Windows
     # import library (.lib file):
