@@ -18,15 +18,19 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+/** \name 3D Vectors
+    We provide a specialization of VectorD for 3-space and
+    several additional functions on it.
+    @{
+*/
+
 //! A location in 3D space
-/** Stores the x,y,z coordinates of a vector.
-    \relatesalso VectorD
+/** Stores a 3-vector using cartesian coordinates.
 */
 typedef VectorD<3> Vector3D;
 
 //! A collection of Vector3D
 /**
-   \relatesalso VectorD
  */
 typedef std::vector<Vector3D> Vector3Ds;
 
@@ -54,6 +58,7 @@ inline Vector3D orthogonal_vector(const Vector3D &v) {
   }
 }
 
+/** @} */
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_3D_H */
