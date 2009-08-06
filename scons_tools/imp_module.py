@@ -9,8 +9,8 @@ import test
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 import hierarchy
 
-def module_depends(env, target, source):
-    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
+#def module_depends(env, target, source):
+#    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
 
 def module_requires(env, target, source):
     env.Requires(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
@@ -20,16 +20,18 @@ def module_alias(env, target, source, is_default=False):
     if is_default:
         env.Default(a)
 
-def global_depends(env, target, source):
+def add_to_global_alias(env, target, source):
     env.Alias(env.Alias(target), [env.Alias(env['IMP_MODULE']+'-'+source)])
 
-def module_alias_depends(env, target, source):
-    env.Depends(env.Alias(env['IMP_MODULE']+'-'+target),
-                [env.Alias(env['IMP_MODULE']+'-'+source)])
 
-def module_deps_depends(env, target, source, dependencies):
-    env.Depends(target,
-              [env.Alias(x+'-'+source) for x in dependencies])
+def add_to_module_alias(env, target, source):
+    env.Alias(env.Alias(env['IMP_MODULE']+'-'+target),
+              [env.Alias(env['IMP_MODULE']+'-'+source)])
+
+
+#def module_deps_depends(env, target, source, dependencies):
+#    env.Depends(target,
+#              [env.Alias(x+'-'+source) for x in dependencies])
 
 def module_deps_requires(env, target, source, dependencies):
     env.Requires(target,
@@ -267,12 +269,12 @@ def IMPModuleLib(envi, files):
     module_requires(env, build, 'include')
     module_requires(env, build, 'data')
     module_alias(env, 'lib', build, True)
-    global_depends(env, 'all', 'lib')
+    add_to_global_alias(env, 'all', 'lib')
     module_alias(env, 'install-lib', install)
-    module_alias_depends(env, 'install', 'install-lib')
+    add_to_module_alias(env, 'install', 'install-lib')
     module_deps_requires(env, build, 'include', env['IMP_REQUIRED_MODULES'])
     module_deps_requires(env, build, 'lib', env['IMP_REQUIRED_MODULES'])
-    module_deps_depends(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
+    module_deps_requires(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
 
 def IMPModuleInclude(env, files):
@@ -285,9 +287,9 @@ def IMPModuleInclude(env, files):
     build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
                             list(files) + [env['CONFIG_H'], env['VER_H']], True)
     module_alias(env, 'include', build)
-    global_depends(env, 'all', 'include')
+    add_to_global_alias(env, 'all', 'include')
     module_alias(env, 'install-include', install)
-    module_alias_depends(env, 'install', 'install-include')
+    add_to_module_alias(env, 'install', 'install-include')
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
@@ -296,9 +298,9 @@ def IMPModuleData(env, files):
     install = hierarchy.InstallDataHierarchy(env, datadir+"/"+vars['module_include_path'], files, False)
     build = hierarchy.InstallDataHierarchy(env, "#/build/data/"+vars['module_include_path'], files, True)
     module_alias(env, 'data', build)
-    global_depends(env, 'all', 'data')
+    add_to_global_alias(env, 'all', 'data')
     module_alias(env, 'install-data', install)
-    module_alias_depends(env, 'install', 'install-data')
+    add_to_module_alias(env, 'install', 'install-data')
 
 
 def IMPModuleExamples(env, files, required_modules=[]):
@@ -307,13 +309,13 @@ def IMPModuleExamples(env, files, required_modules=[]):
     #    print f.abspath
     (build, install, test)= examples.handle_example_dir(env, Dir("."), vars['module'], vars['module_include_path'], files)
     module_alias(env, 'examples', build)
-    global_depends(env, 'all', 'examples')
+    add_to_global_alias(env, 'all', 'examples')
     module_alias(env, 'install-examples', install)
-    global_depends(env, 'doc-install', 'install-examples')
+    add_to_global_alias(env, 'doc-install', 'install-examples')
     module_alias(env, 'test-examples', test)
-    global_depends(env, 'test', 'test-examples')
-    module_depends(env, test, 'python')
-    global_depends(env, 'doc', 'examples')
+    add_to_global_alias(env, 'test', 'test-examples')
+    module_requires(env, test, 'python')
+    add_to_global_alias(env, 'doc', 'examples')
     module_deps_requires(env, test, 'python', required_modules)
 
 def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
@@ -334,13 +336,13 @@ def IMPModuleBin(envi, files, required_modules=[], extra_libs=[], install=True):
             install_list.append(ci)
         build.append(prog)
     module_alias(env, 'bin', build, True)
-    global_depends(env, 'all', 'bin')
+    add_to_global_alias(env, 'all', 'bin')
     if install:
         module_alias(env, 'install-bin', install_list)
-        module_alias_depends(env, 'install', 'install-bin')
-    module_depends(env, build, 'include')
-    module_depends(env, build, 'lib')
-    module_depends(env, build, 'data')
+        add_to_module_alias(env, 'install', 'install-bin')
+    module_requires(env, build, 'include')
+    module_requires(env, build, 'lib')
+    module_requires(env, build, 'data')
     module_deps_requires(env, build, 'lib', required_modules)
 
 
@@ -403,12 +405,12 @@ def IMPModulePython(envi):
     # Install the Python extension and module:
     #buildlib = env.Install("#/build/lib", pyext)
     module_alias(env, 'python', build, True)
-    global_depends(env, 'all', 'python')
+    add_to_global_alias(env, 'all', 'python')
     module_alias(env, 'install-python', install)
-    module_alias_depends(env, 'install', 'install-python')
+    add_to_module_alias(env, 'install', 'install-python')
     if env['IMP_MODULE_CPP']:
-        module_depends(env, build, 'include')
-        module_depends(env, build, 'lib')
+        module_requires(env, build, 'include')
+        module_requires(env, build, 'lib')
         module_deps_requires(env, build, 'include', env['IMP_REQUIRED_MODULES'])
         module_deps_requires(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
 
@@ -489,9 +491,9 @@ def IMPModuleDoc(env, files):
             build.append(env.Install(f, "#/doc/html/"+vars['module']))
             #install.append(env.Install(f, docdir))
     module_alias(env, 'doc', build)
-    global_depends(env, 'all', 'doc')
+    add_to_global_alias(env, 'all', 'doc')
     #module_alias(env, 'install-doc', install)
-    #module_alias_depends(env, 'install', 'install-doc')
+    #add_to_module_alias(env, 'install', 'install-doc')
 
 
 
@@ -513,8 +515,8 @@ def IMPModuleTest(env, required_modules=[], **keys):
     test = env._IMPModuleTest("test.passed", files, **keys)
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
-    global_depends(env, 'test', 'test')
-    module_depends(env, test, 'python')
+    add_to_global_alias(env, 'test', 'test')
+    module_requires(env, test, 'python')
     module_deps_requires(env, test, 'python', required_modules)
     module_deps_requires(env, test, 'python', env['IMP_REQUIRED_MODULES'])
 
@@ -582,7 +584,7 @@ def IMPModuleBuild(env, version, required_modules=[],
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
 
-    global_depends(env, 'install', 'install')
+    add_to_global_alias(env, 'install', 'install')
 
 
 
