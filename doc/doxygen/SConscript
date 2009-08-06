@@ -8,20 +8,9 @@ def run_doxygen(target, source, env):
     env.Execute("doxygen "+source[0].abspath)
 
 
-env.Append(BUILDERS = {'RunDoxygen': Builder(action=run_doxygen)})
-
-docdir = env.GetInstallDirectory('docdir', 'html')
-
-# Install all files from 'dox' directory into the 'docdir' directory (cannot
-# use env.InstallAs() right now, due to scons bug #1751)
-
-input_files=Glob("#/examples/README") +Glob("#/examples/*/README")\
-    +Glob("#/examples/*.py") +Glob("#/examples/*/*.py")\
-    +Glob("#/examples/*.cpp") +Glob("#/examples/*/*.cpp")
-
-
 # Generate doxygen.conf from doxygen.conf.in
 def generate_doxygen(target, source, env):
+    print "generatind doxygen conf"
     infile = file(source[0].path, 'r')
     outfile = file(target[0].path, 'w')
     source_path= os.path.split(os.path.split(os.path.split(source[0].abspath)[0])[0])[0]
@@ -57,9 +46,9 @@ def generate_doxygen(target, source, env):
     infile.close()
     outfile.close()
 
-env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
 
 def generate_example_index(target, source, env):
+    print "generating index"
     outfile= open(target[0].abspath, "w")
     print >> outfile, """/** \page examples IMP Examples
 Each modules has its own set of examples demonstrating how to use the features of that particular module."""
@@ -69,6 +58,24 @@ Each modules has its own set of examples demonstrating how to use the features o
         name= contents[contents.find("\page")+6:].split(" ")[0]
         print >> outfile, " - \\ref "+name +"\n"
     print >> outfile, "*/"
+    print "done generating examples"
+
+env.Append(BUILDERS = {'RunDoxygen': Builder(action=run_doxygen)})
+
+docdir = env.GetInstallDirectory('docdir', 'html')
+
+# Install all files from 'dox' directory into the 'docdir' directory (cannot
+# use env.InstallAs() right now, due to scons bug #1751)
+
+input_files=Glob("#/examples/README") +Glob("#/examples/*/README")\
+    +Glob("#/examples/*.py") +Glob("#/examples/*/*.py")\
+    +Glob("#/examples/*.cpp") +Glob("#/examples/*/*.cpp")
+
+
+
+env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=generate_doxygen)})
+
+
 
 env.Append(BUILDERS = {'GenerateExamples': Builder(action=generate_example_index)})
 
@@ -96,6 +103,9 @@ examples= Glob("#/modules/examples/src/*.cpp") + Glob("#/modules/examples/includ
     + Glob("#/kernel/doc/*.png") + Glob("#/kernel/doc/*/*.png")\
     + Glob("#/kernel/doc/*.html") + Glob("#/kernel/doc/*/*.html")\
 
+modexamples.sort()
+sources.sort()
+examples.sort()
 
 env.Depends(examplei, modexamples)
 doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf.in"] +sources+examples)
@@ -107,6 +117,6 @@ install=env.Command(Dir(env.subst(docdir)), dox,
                     "install -d $TARGET && install ${SOURCE.dir}/* $TARGET")
 env.Alias('doc-install', install)
 env.Alias('doc', dox)
-env.Depends(install, env.Alias('doc'))
+env.Requires(install, env.Alias('doc'))
 env.Depends(env.Alias('all'), [env.Alias('doc')])
 Clean(dox, Glob("#/doc/html/*"))
