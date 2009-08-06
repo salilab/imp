@@ -695,7 +695,7 @@ public:                                                                 \
   virtual bool get_can_refine(Particle*) const;                         \
   virtual void show(std::ostream &out) const;                           \
   virtual Particle* get_refined(Particle *, unsigned int) const;        \
-  virtual const Particles get_refined(Particle *) const;                \
+  virtual const ParticlesTemp get_refined(Particle *) const;       \
   virtual unsigned int get_number_of_refined(Particle *) const;         \
   virtual IMP::VersionInfo get_version_info() const {                   \
     return version_info;                                                \

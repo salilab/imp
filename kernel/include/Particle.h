@@ -715,6 +715,12 @@ IMP_OUTPUT_OPERATOR(ParticleTriplet);
 typedef VectorOfRefCounted<Particle*> Particles;
 
 
+//! A type to use when returning sets of particles so as to avoid refcounting
+/** Always store using Particles instead.
+ */
+typedef std::vector<Particle*> ParticlesTemp;
+
+
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 inline std::ostream &operator<<(std::ostream &out, const Particles &ps) {
   for (unsigned int i=0; i< ps.size(); ++i) {

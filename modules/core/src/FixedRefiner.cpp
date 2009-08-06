@@ -39,8 +39,8 @@ unsigned int FixedRefiner::get_number_of_refined(Particle *) const {
   return get_number_of_particles();
 }
 
-const Particles FixedRefiner::get_refined(Particle *p) const {
-  return Particles(particles_begin(), particles_end());
+const ParticlesTemp FixedRefiner::get_refined(Particle *p) const {
+  return ParticlesTemp(particles_begin(), particles_end());
 }
 
 IMPCORE_END_NAMESPACE
