@@ -29,6 +29,8 @@ void IMPParticlesAccessPoint::reselect(const Particles& ps)
 {
   particles_ = ps;
 }
-
+void IMPParticlesAccessPoint::add(const Particles& ps) {
+  particles_.insert(particles_.end(),ps.begin(),ps.end());
+}
 
 IMPEM_END_NAMESPACE

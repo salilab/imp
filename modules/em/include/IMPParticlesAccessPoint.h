@@ -34,7 +34,12 @@ public:
   IMPParticlesAccessPoint(const Particles &particles,
                           FloatKey radius_key,
                           FloatKey weight_key);
-
+  //! Add more particles to the access point.
+  /**
+  \note Notice that the index of ps[0] will be the current number of particles
+        stored in the access point.
+   */
+  void add(const Particles& ps);
   void reselect(const Particles& ps);
   //! Get the number of particles
   int get_size() const {
