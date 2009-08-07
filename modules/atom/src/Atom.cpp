@@ -386,7 +386,11 @@ std::string Atom::get_pdb_string(int index) {
   // 77 - 78  LString(2)      Element symbol, right-justified.
   out.width(2);
   out.setf(std::ios::right, std::ios::adjustfield);
-  out << get_element_table().get_name((Element)get_element());
+  Element e = (Element)get_element();
+  if(e == UNKNOWN_ELEMENT) { // try to determine element from AtomType
+    e = get_element_table().get_element(get_atom_type());
+  }
+  out << get_element_table().get_name(e);
   //     79 - 80        LString(2)      Charge on the atom.
   out.width(2);
   out << ""<<std::endl; //TODO
