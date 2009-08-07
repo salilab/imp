@@ -379,7 +379,8 @@ def IMPModulePython(env):
     install=[]
     if env['IMP_MODULE_CPP']:
         penv = get_pyext_environment(env, module.upper(), cplusplus=True)
-        penv.Append(LIBS=['imp%s' % module_suffix])
+        penv['LIBS']=[]
+        penv.Prepend(LIBS=['imp%s' % module_suffix])
         #penv.Append(CPPPATH=[Dir('#').abspath])
         #penv.Append(SWIGFLAGS='-python -c++ -naturalvar')
         interfaces= module_glob(["*.i"])
