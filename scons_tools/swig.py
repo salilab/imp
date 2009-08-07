@@ -41,7 +41,7 @@ def _action_simple_swig(target, source, env):
     vars= imp_module.make_vars(env)
     #print [x.abspath for x in source]
     cppflags= ""
-    for x in env['CPPFLAGS']:
+    for x in env.get('CPPFLAGS', []):
         if x.startswith("-I") or x.startswith("-D"):
             cppflags= cppflags+" " + x
     base="swig -interface _IMP%(module_suffix)s -DPySwigIterator=%(PREPROC)s_PySwigIterator -DSwigPyIterator=%(PREPROC)s_SwigPyIterator -Ibuild/include -python -c++ -naturalvar "%vars
