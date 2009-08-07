@@ -266,16 +266,13 @@ def IMPModuleLib(envi, files):
     module = env['IMP_MODULE']
     module_suffix = env['IMP_MODULE_SUFFIX']
     vars= make_vars(env)
+    files =files+['internal/link_0.cpp', 'internal/link_1.cpp', 'internal/version_info.cpp']
     if env.get('static', False) and env['CC'] == 'gcc':
         build = env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
-                                      list(files) + [env['VER_CPP'], \
-                                                     env['LINK_0_CPP'],\
-                                                     env['LINK_1_CPP']])
+                                      list(files))
     else:
         build = env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
-                           list(files) + [env['VER_CPP'], \
-                                              env['LINK_0_CPP'],\
-                                              env['LINK_1_CPP']])
+                                  list(files) )
         postprocess_lib(env, build)
     install = env.Install(env.GetInstallDirectory('libdir'), build)
     postprocess_lib(env, install)
@@ -295,10 +292,11 @@ def IMPModuleInclude(env, files):
        IMP module."""
     vars=make_vars(env)
     includedir = env.GetInstallDirectory('includedir')
+    files=files+['config.h', 'internal/version_info.h']
     install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
-                            list(files) + [env['CONFIG_H'], env['VER_H']])
+                                         list(files))
     build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
-                            list(files) + [env['CONFIG_H'], env['VER_H']], True)
+                                     list(files), True)
     module_alias(env, 'include', build)
     add_to_global_alias(env, 'all', 'include')
     module_alias(env, 'install-include', install)
@@ -382,7 +380,7 @@ def IMPModulePython(env):
         swig_interface=File(module+".i")
         globlist=["#/build/include/%(module_include_path)s/*.h"%vars]\
             + ["#/module/"+x+"/pyext/*.i" for x in env['IMP_REQUIRED_MODULES']]\
-            +['%(module)s.i'%vars]
+            + ["*.i"]
         #print globlist
         deps= module_glob(globlist)
         penv._IMPSWIG(target=['wrap.cc',
@@ -432,6 +430,7 @@ def IMPModulePython(env):
     if env['IMP_MODULE_CPP']:
         module_requires(env, build, 'include')
         module_requires(env, build, 'lib')
+        module_requires(env, build, 'config')
         module_deps_requires(env, build, 'python',env['IMP_REQUIRED_MODULES'] )
         module_deps_requires(env, build, 'include', env['IMP_REQUIRED_MODULES'])
         module_deps_requires(env, install, 'install-lib', env['IMP_REQUIRED_MODULES'])
@@ -664,23 +663,25 @@ def IMPModuleSetup(env, module, cpp=True, module_suffix=None,
     env.Prepend(LIBPATH=['#/build/lib'])
     vars=make_vars(env)
     if cpp:
+        build_config=[]
         # Generate version information
-        env['VER_CPP'], env['VER_H'] = \
+        build_config.append(
             env.IMPModuleVersionInfo(
                  ('%s/src/internal/version_info.cpp' % (module),
                   '%s/include/internal/version_info.h' % (module)),
-                 ())
+                 ()))
         # Generate config header and SWIG equivalent
-        env['CONFIG_H'] = env.IMPModuleConfig(('%s/include/config.h' % module,
-                                               '%s/pyext/%s_config.i' \
-                                               % (module, module)),
-                                              [])[0]
-        env['LINK_0_CPP']=env.IMPModuleLinkTest('#/%(module_src_path)s/src/internal/link_0.cpp'%vars,
-                                                [])[0]
-        env['LINK_1_CPP']=env.IMPModuleLinkTest('#/%(module_src_path)s/src/internal/link_1.cpp'%vars,
-                                                [])[0]
+        build_config.append(env.IMPModuleConfig(target=['%s/include/config.h' % module,
+                                                      '%s/pyext/%s_config.i' \
+                                                          % (module, module)],
+                                                source=[]))
+        build_config.append(env.IMPModuleLinkTest(target=['#/%(module_src_path)s/src/internal/link_0.cpp'%vars],
+                                                source=[]))
+        build_config.append(env.IMPModuleLinkTest(target=['#/%(module_src_path)s/src/internal/link_1.cpp'%vars],
+                                                source=[]))
         env.AddMethod(IMPModuleLib)
         env.AddMethod(IMPModuleInclude)
+        module_alias(env, 'config', build_config)
     env.AddMethod(IMPModuleData)
     env.AddMethod(IMPModulePython)
     env.AddMethod(IMPModuleTest)
